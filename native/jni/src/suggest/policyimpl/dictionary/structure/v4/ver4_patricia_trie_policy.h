@@ -21,6 +21,7 @@
 #include "suggest/core/policy/dictionary_structure_with_buffer_policy.h"
 #include "suggest/policyimpl/dictionary/header/header_policy.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_dict_buffers.h"
+#include "suggest/policyimpl/dictionary/structure/v4/ver4_patricia_trie_node_reader.h"
 #include "suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer.h"
 
 namespace latinime {
@@ -33,7 +34,11 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
  public:
     Ver4PatriciaTriePolicy(const Ver4DictBuffers::Ver4DictBuffersPtr &buffers)
             : mBuffers(buffers),
-              mHeaderPolicy(mBuffers.get()->getRawDictBuffer(), FormatUtils::VERSION_4) {};
+              mHeaderPolicy(mBuffers.get()->getRawDictBuffer(), FormatUtils::VERSION_4),
+              mDictBuffer(mBuffers.get()->getRawDictBuffer() + mHeaderPolicy.getSize(),
+                      mBuffers.get()->getRawDictBufferSize() - mHeaderPolicy.getSize(),
+                      BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE),
+              mNodeReader(&mDictBuffer, mBuffers.get()->getProbabilityDictContent()) {};
 
     AK_FORCE_INLINE int getRootPosition() const {
         return 0;
@@ -91,6 +96,8 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
 
     const Ver4DictBuffers::Ver4DictBuffersPtr mBuffers;
     const HeaderPolicy mHeaderPolicy;
+    BufferWithExtendableBuffer mDictBuffer;
+    Ver4PatriciaTrieNodeReader mNodeReader;
 };
 } // namespace latinime
 #endif // LATINIME_VER4_PATRICIA_TRIE_POLICY_H

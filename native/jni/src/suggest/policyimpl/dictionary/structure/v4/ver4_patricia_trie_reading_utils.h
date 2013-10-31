@@ -27,6 +27,9 @@ class BufferWithExtendableBuffer;
 
 class Ver4PatriciaTrieReadingUtils {
  public:
+    static int getTerminalIdAndAdvancePosition(const uint8_t *const buffer,
+            int *const pos);
+
     static int getProbability(const BufferWithExtendableBuffer *const probabilityBuffer,
             const int terminalId);
 

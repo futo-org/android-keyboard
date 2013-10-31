@@ -16,45 +16,110 @@
 
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_patricia_trie_policy.h"
 
+#include "suggest/core/dicnode/dic_node.h"
+#include "suggest/core/dicnode/dic_node_vector.h"
+#include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_reading_helper.h"
+#include "suggest/policyimpl/dictionary/structure/v4/ver4_patricia_trie_node_reader.h"
+#include "suggest/policyimpl/dictionary/utils/forgetting_curve_utils.h"
+#include "suggest/policyimpl/dictionary/utils/probability_utils.h"
+
 namespace latinime {
 
 void Ver4PatriciaTriePolicy::createAndGetAllChildDicNodes(const DicNode *const dicNode,
         DicNodeVector *const childDicNodes) const {
-    // TODO: Implement.
+    if (!dicNode->hasChildren()) {
+        return;
+    }
+    DynamicPatriciaTrieReadingHelper readingHelper(&mDictBuffer, &mNodeReader);
+    readingHelper.initWithPtNodeArrayPos(dicNode->getChildrenPtNodeArrayPos());
+    while (!readingHelper.isEnd()) {
+        const PtNodeParams ptNodeParams = readingHelper.getPtNodeParams();
+        if (!ptNodeParams.isValid()) {
+            break;
+        }
+        bool isTerminal = ptNodeParams.isTerminal() && !ptNodeParams.isDeleted();
+        if (isTerminal && mHeaderPolicy.isDecayingDict()) {
+            // A DecayingDict may have a terminal PtNode that has a terminal DicNode whose
+            // probability is NOT_A_PROBABILITY. In such case, we don't want to treat it as a
+            // valid terminal DicNode.
+            isTerminal = getProbability(ptNodeParams.getProbability(), NOT_A_PROBABILITY)
+                    != NOT_A_PROBABILITY;
+        }
+        childDicNodes->pushLeavingChild(dicNode, ptNodeParams.getHeadPos(),
+                ptNodeParams.getChildrenPos(), ptNodeParams.getProbability(), isTerminal,
+                ptNodeParams.hasChildren(),
+                ptNodeParams.isBlacklisted()
+                        || ptNodeParams.isNotAWord() /* isBlacklistedOrNotAWord */,
+                ptNodeParams.getCodePointCount(), ptNodeParams.getCodePoints());
+        readingHelper.readNextSiblingNode(ptNodeParams);
+    }
 }
 
 int Ver4PatriciaTriePolicy::getCodePointsAndProbabilityAndReturnCodePointCount(
         const int ptNodePos, const int maxCodePointCount, int *const outCodePoints,
         int *const outUnigramProbability) const {
-    // TODO: Implement.
-    return 0;
+    DynamicPatriciaTrieReadingHelper readingHelper(&mDictBuffer, &mNodeReader);
+    readingHelper.initWithPtNodePos(ptNodePos);
+    return readingHelper.getCodePointsAndProbabilityAndReturnCodePointCount(
+            maxCodePointCount, outCodePoints, outUnigramProbability);
 }
 
 int Ver4PatriciaTriePolicy::getTerminalPtNodePositionOfWord(const int *const inWord,
         const int length, const bool forceLowerCaseSearch) const {
-    // TODO: Implement.
-    return NOT_A_DICT_POS;
+    DynamicPatriciaTrieReadingHelper readingHelper(&mDictBuffer, &mNodeReader);
+    readingHelper.initWithPtNodeArrayPos(getRootPosition());
+    return readingHelper.getTerminalPtNodePositionOfWord(inWord, length, forceLowerCaseSearch);
 }
 
 int Ver4PatriciaTriePolicy::getProbability(const int unigramProbability,
         const int bigramProbability) const {
-    // TODO: Implement.
-    return NOT_A_PROBABILITY;
+    if (mHeaderPolicy.isDecayingDict()) {
+        // Both probabilities are encoded. Decode them and get probability.
+        return ForgettingCurveUtils::getProbability(unigramProbability, bigramProbability);
+    } else {
+        if (unigramProbability == NOT_A_PROBABILITY) {
+            return NOT_A_PROBABILITY;
+        } else if (bigramProbability == NOT_A_PROBABILITY) {
+            return ProbabilityUtils::backoff(unigramProbability);
+        } else {
+            // bigramProbability is a bigram probability delta.
+            return ProbabilityUtils::computeProbabilityForBigram(unigramProbability,
+                    bigramProbability);
+        }
+    }
 }
 
 int Ver4PatriciaTriePolicy::getUnigramProbabilityOfPtNode(const int ptNodePos) const {
-    // TODO: Implement.
-    return NOT_A_PROBABILITY;
+    if (ptNodePos == NOT_A_DICT_POS) {
+        return NOT_A_PROBABILITY;
+    }
+    const PtNodeParams ptNodeParams(mNodeReader.fetchNodeInfoInBufferFromPtNodePos(ptNodePos));
+    if (ptNodeParams.isDeleted() || ptNodeParams.isBlacklisted() || ptNodeParams.isNotAWord()) {
+        return NOT_A_PROBABILITY;
+    }
+    return getProbability(ptNodeParams.getProbability(), NOT_A_PROBABILITY);
 }
 
 int Ver4PatriciaTriePolicy::getShortcutPositionOfPtNode(const int ptNodePos) const {
-    // TODO: Implement.
-    return NOT_A_DICT_POS;
+    if (ptNodePos == NOT_A_DICT_POS) {
+        return NOT_A_DICT_POS;
+    }
+    const PtNodeParams ptNodeParams(mNodeReader.fetchNodeInfoInBufferFromPtNodePos(ptNodePos));
+    if (ptNodeParams.isDeleted()) {
+        return NOT_A_DICT_POS;
+    }
+    return ptNodeParams.getTerminalId();
 }
 
 int Ver4PatriciaTriePolicy::getBigramsPositionOfPtNode(const int ptNodePos) const {
-    // TODO: Implement.
-    return NOT_A_DICT_POS;
+    if (ptNodePos == NOT_A_DICT_POS) {
+        return NOT_A_DICT_POS;
+    }
+    const PtNodeParams ptNodeParams(mNodeReader.fetchNodeInfoInBufferFromPtNodePos(ptNodePos));
+    if (ptNodeParams.isDeleted()) {
+        return NOT_A_DICT_POS;
+    }
+    return ptNodeParams.getTerminalId();
 }
 
 bool Ver4PatriciaTriePolicy::addUnigramWord(const int *const word, const int length,
