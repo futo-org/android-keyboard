@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Locale;
 
+// TODO: Add a test to evaluate the speed of operations of Ver4 dictionary.
 @LargeTest
 public class Ver4BinaryDictionaryTests extends AndroidTestCase {
     private static final String TAG = Ver4BinaryDictionaryTests.class.getSimpleName();
@@ -89,5 +90,34 @@ public class Ver4BinaryDictionaryTests extends AndroidTestCase {
                 0 /* offset */, trieFile.length(), true /* useFullEditDistance */,
                 Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
         assertTrue(binaryDictionary.isValidDictionary());
+    }
+
+    // TODO: Add large tests.
+    public void testReadProbability() {
+        final String dictVersion = Long.toString(System.currentTimeMillis());
+        final FusionDictionary dict = new FusionDictionary(new PtNodeArray(),
+                getDictionaryOptions(TEST_LOCALE, dictVersion));
+
+        final int frequency = 100;
+        dict.add("a", frequency, null, false /* isNotAWord */);
+        dict.add("aaa", frequency, null, false /* isNotAWord */);
+        dict.add("ab", frequency, null, false /* isNotAWord */);
+
+        DictEncoder encoder = new Ver4DictEncoder(getContext().getCacheDir());
+        try {
+            encoder.writeDictionary(dict, FORMAT_OPTIONS);
+        } catch (IOException e) {
+            Log.e(TAG, "IOException while writing dictionary", e);
+        } catch (UnsupportedFormatException e) {
+            Log.e(TAG, "Unsupported format", e);
+        }
+        File trieFile = getTrieFile(TEST_LOCALE, dictVersion);
+        BinaryDictionary binaryDictionary = new BinaryDictionary(trieFile.getAbsolutePath(),
+                0 /* offset */, trieFile.length(), true /* useFullEditDistance */,
+                Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
+        assertTrue(binaryDictionary.isValidDictionary());
+        assertEquals(frequency, binaryDictionary.getFrequency("a"));
+        assertEquals(frequency, binaryDictionary.getFrequency("aaa"));
+        assertEquals(frequency, binaryDictionary.getFrequency("ab"));
     }
 }

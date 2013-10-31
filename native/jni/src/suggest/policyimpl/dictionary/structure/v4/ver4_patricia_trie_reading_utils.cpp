@@ -18,8 +18,14 @@
 
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_dict_constants.h"
 #include "suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer.h"
+#include "suggest/policyimpl/dictionary/utils/byte_array_utils.h"
 
 namespace latinime {
+
+/* static */ int Ver4PatriciaTrieReadingUtils::getTerminalIdAndAdvancePosition(
+        const uint8_t *const buffer, int *pos) {
+    return ByteArrayUtils::readUint32AndAdvancePosition(buffer, pos);
+}
 
 /* static */ int Ver4PatriciaTrieReadingUtils::getProbability(
         const BufferWithExtendableBuffer *const probabilityBuffer, const int terminalId) {
