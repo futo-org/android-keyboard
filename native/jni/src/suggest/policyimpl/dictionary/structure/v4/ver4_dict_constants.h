@@ -38,6 +38,10 @@ class Ver4DictConstants {
     static const int PROBABILITY_SIZE;
     static const int FLAGS_IN_PROBABILITY_FILE_SIZE;
 
+    static const int BIGRAM_ADDRESS_TABLE_BLOCK_SIZE;
+    static const int BIGRAM_ADDRESS_TABLE_DATA_SIZE;
+    static const int SHORTCUT_ADDRESS_TABLE_BLOCK_SIZE;
+    static const int SHORTCUT_ADDRESS_TABLE_DATA_SIZE;
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(Ver4DictConstants);
 };
