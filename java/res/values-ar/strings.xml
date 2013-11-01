@@ -38,7 +38,7 @@
     <string name="show_language_switch_key" msgid="5915478828318774384">"مفتاح تبديل اللغة"</string>
     <string name="show_language_switch_key_summary" msgid="7343403647474265713">"يظهر عندما يتم تمكين لغات الإدخال متعددة"</string>
     <string name="sliding_key_input_preview" msgid="6604262359510068370">"إظهار مؤشر التمرير"</string>
-    <string name="sliding_key_input_preview_summary" msgid="6340524345729093886">"عرض تلميح مرئي أثناء التمرير من مفتاح Shift أو Symbol"</string>
+    <string name="sliding_key_input_preview_summary" msgid="6340524345729093886">"‏عرض تلميح مرئي أثناء التمرير من مفتاح Shift أو Symbol"</string>
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"تأخير إزالة النافذة المنبثقة الأساسية"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"بلا تأخير"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"افتراضي"</string>
@@ -82,14 +82,14 @@
     <string name="label_pause_key" msgid="181098308428035340">"توقف مؤقت"</string>
     <string name="label_wait_key" msgid="6402152600878093134">"انتظار"</string>
     <string name="spoken_use_headphones" msgid="896961781287283493">"يمكنك توصيل سماعة رأس لسماع مفاتيح كلمة المرور منطوقة بصوت عالٍ."</string>
-    <string name="spoken_current_text_is" msgid="2485723011272583845">"النص الحالي هو %s"</string>
+    <string name="spoken_current_text_is" msgid="2485723011272583845">"‏النص الحالي هو %s"</string>
     <string name="spoken_no_text_entered" msgid="7479685225597344496">"لم يتم إدخال نص"</string>
     <string name="spoken_auto_correct" msgid="8005997889020109763">"<xliff:g id="KEY">%1$s</xliff:g> لتصحيح <xliff:g id="ORIGINAL_WORD">%2$s</xliff:g> إلى <xliff:g id="CORRECTED">%3$s</xliff:g>"</string>
     <string name="spoken_auto_correct_obscured" msgid="6276420476908833791">"<xliff:g id="KEY">%1$s</xliff:g> للتصحيح التلقائي"</string>
-    <string name="spoken_description_unknown" msgid="3197434010402179157">"رمز المفتاح %d"</string>
+    <string name="spoken_description_unknown" msgid="3197434010402179157">"‏رمز المفتاح %d"</string>
     <string name="spoken_description_shift" msgid="244197883292549308">"العالي"</string>
-    <string name="spoken_description_shift_shifted" msgid="1681877323344195035">"Shift يعمل (انقر للتعطيل)"</string>
-    <string name="spoken_description_caps_lock" msgid="3276478269526304432">"Caps lock يعمل (انقر للتعطيل)"</string>
+    <string name="spoken_description_shift_shifted" msgid="1681877323344195035">"‏Shift يعمل (انقر للتعطيل)"</string>
+    <string name="spoken_description_caps_lock" msgid="3276478269526304432">"‏Caps lock يعمل (انقر للتعطيل)"</string>
     <string name="spoken_description_delete" msgid="8740376944276199801">"حذف"</string>
     <string name="spoken_description_to_symbol" msgid="5486340107500448969">"الرموز"</string>
     <string name="spoken_description_to_alpha" msgid="23129338819771807">"أحرف"</string>
@@ -105,9 +105,9 @@
     <string name="spoken_description_language_switch" msgid="5507091328222331316">"تبديل اللغة"</string>
     <string name="spoken_description_action_next" msgid="8636078276664150324">"التالي"</string>
     <string name="spoken_description_action_previous" msgid="800872415009336208">"السابق"</string>
-    <string name="spoken_description_shiftmode_on" msgid="5700440798609574589">"تم تمكين Shift"</string>
-    <string name="spoken_description_shiftmode_locked" msgid="593175803181701830">"تم تمكين Caps lock"</string>
-    <string name="spoken_description_shiftmode_off" msgid="657219998449174808">"تم تعطيل Shift"</string>
+    <string name="spoken_description_shiftmode_on" msgid="5700440798609574589">"‏تم تمكين Shift"</string>
+    <string name="spoken_description_shiftmode_locked" msgid="593175803181701830">"‏تم تمكين Caps lock"</string>
+    <string name="spoken_description_shiftmode_off" msgid="657219998449174808">"‏تم تعطيل Shift"</string>
     <string name="spoken_description_mode_symbol" msgid="7183343879909747642">"وضع الرموز"</string>
     <string name="spoken_description_mode_alpha" msgid="3528307674390156956">"وضع الأحرف"</string>
     <string name="spoken_description_mode_phone" msgid="6520207943132026264">"وضع الهاتف"</string>
@@ -122,7 +122,7 @@
     <string name="keyboard_mode_phone" msgid="6851627527401433229">"الهاتف"</string>
     <string name="keyboard_mode_text" msgid="6479436687899701619">"النص"</string>
     <string name="keyboard_mode_time" msgid="4381856885582143277">"الوقت"</string>
-    <string name="keyboard_mode_url" msgid="1519819835514911218">"عنوان URL"</string>
+    <string name="keyboard_mode_url" msgid="1519819835514911218">"‏عنوان URL"</string>
     <string name="voice_input" msgid="3583258583521397548">"مفتاح الإدخال الصوتي"</string>
     <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"لوحة مفاتيح رئيسية"</string>
     <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"لوحة مفاتيح الرموز"</string>
@@ -147,12 +147,12 @@
     <string name="subtype_with_layout_es_US" msgid="6261791057007890189">"الإسبانية (الأمريكية) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_nepali_traditional" msgid="9032247506728040447">"<xliff:g id="LANGUAGE">%s</xliff:g> (التقليدية)"</string>
     <string name="subtype_no_language" msgid="7137390094240139495">"بدون لغة (أبجدية)"</string>
-    <string name="subtype_no_language_qwerty" msgid="244337630616742604">"الأبجدية (QWERTY)"</string>
-    <string name="subtype_no_language_qwertz" msgid="443066912507547976">"الأبجدية (QWERTZ)"</string>
-    <string name="subtype_no_language_azerty" msgid="8144348527575640087">"الأبجدية (AZERTY)"</string>
-    <string name="subtype_no_language_dvorak" msgid="1564494667584718094">"الأبجدية (Dvorak)"</string>
-    <string name="subtype_no_language_colemak" msgid="5837418400010302623">"الأبجدية (Colemak)"</string>
-    <string name="subtype_no_language_pcqwerty" msgid="5354918232046200018">"الأبجدية (PC)"</string>
+    <string name="subtype_no_language_qwerty" msgid="244337630616742604">"‏الأبجدية (QWERTY)"</string>
+    <string name="subtype_no_language_qwertz" msgid="443066912507547976">"‏الأبجدية (QWERTZ)"</string>
+    <string name="subtype_no_language_azerty" msgid="8144348527575640087">"‏الأبجدية (AZERTY)"</string>
+    <string name="subtype_no_language_dvorak" msgid="1564494667584718094">"‏الأبجدية (Dvorak)"</string>
+    <string name="subtype_no_language_colemak" msgid="5837418400010302623">"‏الأبجدية (Colemak)"</string>
+    <string name="subtype_no_language_pcqwerty" msgid="5354918232046200018">"‏الأبجدية (PC)"</string>
     <string name="subtype_emoji" msgid="7483586578074549196">"الرموز التعبيرية"</string>
     <string name="custom_input_styles_title" msgid="8429952441821251512">"أنماط الإدخال المخصصة"</string>
     <string name="add_style" msgid="6163126614514489951">"إضافة نمط"</string>
@@ -217,9 +217,9 @@
     <string name="install_dict" msgid="180852772562189365">"تثبيت"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"إلغاء"</string>
     <string name="delete_dict" msgid="756853268088330054">"حذف"</string>
-    <string name="should_download_over_metered_prompt" msgid="2878629598667658845">"اللغة المحددة على جهازك الجوال تشتمل على قاموس متوفر.&lt;br/&gt; نوصي &lt;b&gt;بتنزيل&lt;/b&gt; قاموس <xliff:g id="LANGUAGE">%1$s</xliff:g> لتحسين تجربة الكتابة.&lt;br/&gt; &lt;br/&gt; قد يستغرق التنزيل دقيقة أو دقيقتين أكثر من المدة التي يستغرقها التنزيل عبر شبكة الجيل الثالث. قد تنطبق الرسوم إذا لم تكن مشتركًا في &lt;b&gt;خطة البيانات غير المحدودة&lt;/b&gt;.&lt;br/&gt; إذا لم تكن متأكدًا من خطة البيانات المتوفرة لديك، فنحن نوصي بالبحث عن اتصال Wi-Fi لبدء عملية التنزيل تلقائيًا.&lt;br/&gt; &lt;br/&gt; نصيحة: يمكنك تنزيل القواميس وإزالتها عن طريق الانتقال إلى &lt;b&gt;اللغة والإدخال&lt;/b&gt; في قائمة &lt;b&gt;إعدادات&lt;/b&gt; في جهازك الجوَّال."</string>
+    <string name="should_download_over_metered_prompt" msgid="2878629598667658845">"‏اللغة المحددة على جهازك الجوال تشتمل على قاموس متوفر.&lt;br/&gt; نوصي &lt;b&gt;بتنزيل&lt;/b&gt; قاموس <xliff:g id="LANGUAGE">%1$s</xliff:g> لتحسين تجربة الكتابة.&lt;br/&gt; &lt;br/&gt; قد يستغرق التنزيل دقيقة أو دقيقتين أكثر من المدة التي يستغرقها التنزيل عبر شبكة الجيل الثالث. قد تنطبق الرسوم إذا لم تكن مشتركًا في &lt;b&gt;خطة البيانات غير المحدودة&lt;/b&gt;.&lt;br/&gt; إذا لم تكن متأكدًا من خطة البيانات المتوفرة لديك، فنحن نوصي بالبحث عن اتصال Wi-Fi لبدء عملية التنزيل تلقائيًا.&lt;br/&gt; &lt;br/&gt; نصيحة: يمكنك تنزيل القواميس وإزالتها عن طريق الانتقال إلى &lt;b&gt;اللغة والإدخال&lt;/b&gt; في قائمة &lt;b&gt;إعدادات&lt;/b&gt; في جهازك الجوَّال."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"التنزيل الآن (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> ميغابايت)"</string>
-    <string name="do_not_download_over_metered" msgid="2176209579313941583">"التنزيل عبر شبكة Wi-Fi"</string>
+    <string name="do_not_download_over_metered" msgid="2176209579313941583">"‏التنزيل عبر شبكة Wi-Fi"</string>
     <string name="dict_available_notification_title" msgid="6514288591959117288">"هناك قاموس متوفر للغة <xliff:g id="LANGUAGE">%1$s</xliff:g>"</string>
     <string name="dict_available_notification_description" msgid="1075194169443163487">"اضغط للمراجعة والتنزيل"</string>
     <string name="toast_downloading_suggestions" msgid="1313027353588566660">"جارٍ التنزيل: ستتوفر اقتراحات للغة <xliff:g id="LANGUAGE">%1$s</xliff:g> بعد قليل."</string>
