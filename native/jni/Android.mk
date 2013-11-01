@@ -96,7 +96,8 @@ LATIN_IME_CORE_SRC_FILES := \
         dict_file_writing_utils.cpp \
         forgetting_curve_utils.cpp \
         format_utils.cpp \
-        mmapped_buffer.cpp) \
+        mmapped_buffer.cpp \
+        sparse_table.cpp) \
     suggest/policyimpl/gesture/gesture_suggest_policy_factory.cpp \
     $(addprefix suggest/policyimpl/typing/, \
         scoring_params.cpp \

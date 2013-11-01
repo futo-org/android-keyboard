@@ -67,11 +67,15 @@ class Ver4DictBuffers {
               mBigramDictContent(dictDirPath,
                       Ver4DictConstants::BIGRAM_LOOKUP_TABLE_FILE_EXTENSION,
                       Ver4DictConstants::BIGRAM_CONTENT_TABLE_FILE_EXTENSION,
-                      Ver4DictConstants::BIGRAM_FILE_EXTENSION, isUpdatable),
+                      Ver4DictConstants::BIGRAM_FILE_EXTENSION, isUpdatable,
+                      Ver4DictConstants::BIGRAM_ADDRESS_TABLE_BLOCK_SIZE,
+                      Ver4DictConstants::BIGRAM_ADDRESS_TABLE_DATA_SIZE),
               mShortcutDictContent(dictDirPath,
                       Ver4DictConstants::SHORTCUT_LOOKUP_TABLE_FILE_EXTENSION,
                       Ver4DictConstants::SHORTCUT_CONTENT_TABLE_FILE_EXTENSION,
-                      Ver4DictConstants::SHORTCUT_FILE_EXTENSION, isUpdatable) {}
+                      Ver4DictConstants::SHORTCUT_FILE_EXTENSION, isUpdatable,
+                      Ver4DictConstants::SHORTCUT_ADDRESS_TABLE_BLOCK_SIZE,
+                      Ver4DictConstants::SHORTCUT_ADDRESS_TABLE_DATA_SIZE) {}
 
     const MmappedBuffer::MmappedBufferPtr mDictBuffer;
     SingleDictContent mTerminalAddressTable;
