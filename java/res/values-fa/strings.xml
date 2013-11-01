@@ -38,7 +38,7 @@
     <string name="show_language_switch_key" msgid="5915478828318774384">"کلید تغییر زبان"</string>
     <string name="show_language_switch_key_summary" msgid="7343403647474265713">"وقتی چند زبان ورودی فعال است نشان داده شود"</string>
     <string name="sliding_key_input_preview" msgid="6604262359510068370">"نمایش نشانگر لغزاندن"</string>
-    <string name="sliding_key_input_preview_summary" msgid="6340524345729093886">"نمایش نشان بصری، هنگام لغزاندن کلیدهای Shift یا نماد"</string>
+    <string name="sliding_key_input_preview_summary" msgid="6340524345729093886">"‏نمایش نشان بصری، هنگام لغزاندن کلیدهای Shift یا نماد"</string>
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"تأخیر در رد کردن کلید نمایشی"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"بدون تأخیر"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"پیش‌فرض"</string>
@@ -92,8 +92,8 @@
     <!-- no translation found for spoken_description_unknown (3197434010402179157) -->
     <skip />
     <string name="spoken_description_shift" msgid="244197883292549308">"Shift"</string>
-    <string name="spoken_description_shift_shifted" msgid="1681877323344195035">"Shift فعال است (برای غیرفعال کردن ضربه بزنید)"</string>
-    <string name="spoken_description_caps_lock" msgid="3276478269526304432">"Caps Lock روشن است (برای غیرفعال کردن ضربه بزنید)"</string>
+    <string name="spoken_description_shift_shifted" msgid="1681877323344195035">"‏Shift فعال است (برای غیرفعال کردن ضربه بزنید)"</string>
+    <string name="spoken_description_caps_lock" msgid="3276478269526304432">"‏Caps Lock روشن است (برای غیرفعال کردن ضربه بزنید)"</string>
     <string name="spoken_description_delete" msgid="8740376944276199801">"Delete"</string>
     <string name="spoken_description_to_symbol" msgid="5486340107500448969">"نمادها"</string>
     <string name="spoken_description_to_alpha" msgid="23129338819771807">"حروف"</string>
@@ -109,9 +109,9 @@
     <string name="spoken_description_language_switch" msgid="5507091328222331316">"تغییر زبان"</string>
     <string name="spoken_description_action_next" msgid="8636078276664150324">"بعدی"</string>
     <string name="spoken_description_action_previous" msgid="800872415009336208">"قبلی"</string>
-    <string name="spoken_description_shiftmode_on" msgid="5700440798609574589">"Shift فعال است"</string>
-    <string name="spoken_description_shiftmode_locked" msgid="593175803181701830">"Caps lock فعال شد"</string>
-    <string name="spoken_description_shiftmode_off" msgid="657219998449174808">"Shift غیرفعال است"</string>
+    <string name="spoken_description_shiftmode_on" msgid="5700440798609574589">"‏Shift فعال است"</string>
+    <string name="spoken_description_shiftmode_locked" msgid="593175803181701830">"‏Caps lock فعال شد"</string>
+    <string name="spoken_description_shiftmode_off" msgid="657219998449174808">"‏Shift غیرفعال است"</string>
     <string name="spoken_description_mode_symbol" msgid="7183343879909747642">"حالت نمادها"</string>
     <string name="spoken_description_mode_alpha" msgid="3528307674390156956">"حالت حروف"</string>
     <string name="spoken_description_mode_phone" msgid="6520207943132026264">"حالت تلفن"</string>
@@ -151,12 +151,12 @@
     <string name="subtype_with_layout_es_US" msgid="6261791057007890189">"اسپانیایی (آمریکا) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_nepali_traditional" msgid="9032247506728040447">"<xliff:g id="LANGUAGE">%s</xliff:g> (سنتی)"</string>
     <string name="subtype_no_language" msgid="7137390094240139495">"بدون زبان (حروف الفبا)"</string>
-    <string name="subtype_no_language_qwerty" msgid="244337630616742604">"حروف الفبا (QWERTY)"</string>
-    <string name="subtype_no_language_qwertz" msgid="443066912507547976">"حروف الفبا (QWERTZ)"</string>
-    <string name="subtype_no_language_azerty" msgid="8144348527575640087">"حروف الفبا (AZERTY)"</string>
-    <string name="subtype_no_language_dvorak" msgid="1564494667584718094">"حروف الفبا (Dvorak)"</string>
-    <string name="subtype_no_language_colemak" msgid="5837418400010302623">"حروف الفبا (Colemak)"</string>
-    <string name="subtype_no_language_pcqwerty" msgid="5354918232046200018">"حروف الفبا (PC)"</string>
+    <string name="subtype_no_language_qwerty" msgid="244337630616742604">"‏حروف الفبا (QWERTY)"</string>
+    <string name="subtype_no_language_qwertz" msgid="443066912507547976">"‏حروف الفبا (QWERTZ)"</string>
+    <string name="subtype_no_language_azerty" msgid="8144348527575640087">"‏حروف الفبا (AZERTY)"</string>
+    <string name="subtype_no_language_dvorak" msgid="1564494667584718094">"‏حروف الفبا (Dvorak)"</string>
+    <string name="subtype_no_language_colemak" msgid="5837418400010302623">"‏حروف الفبا (Colemak)"</string>
+    <string name="subtype_no_language_pcqwerty" msgid="5354918232046200018">"‏حروف الفبا (PC)"</string>
     <string name="subtype_emoji" msgid="7483586578074549196">"Emoji"</string>
     <string name="custom_input_styles_title" msgid="8429952441821251512">"سبک‌های ورودی سفارشی"</string>
     <string name="add_style" msgid="6163126614514489951">"افزودن سبک"</string>
@@ -221,9 +221,9 @@
     <string name="install_dict" msgid="180852772562189365">"نصب"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"لغو"</string>
     <string name="delete_dict" msgid="756853268088330054">"حذف"</string>
-    <string name="should_download_over_metered_prompt" msgid="2878629598667658845">"برای زبان انتخاب شده در دستگاه همراه شما فرهنگ لغتی موجود است.&lt;br/&gt; توصیه می‌کنیم فرهنگ لغت <xliff:g id="LANGUAGE">%1$s</xliff:g> را &lt;b&gt;دانلود کنید&lt;/b&gt; تا بهتر تایپ کنید.&lt;br/&gt; &lt;br/&gt; دانلود از طریق 3G ممکن است چند لحظه طول بکشد. اگر &lt;b&gt;طرح داده نامحدود&lt;/b&gt; نداشته باشید ممکن است برایتان هزینه داشته باشد.&lt;br/&gt; اگر مطمئن نیستید طرح داده شما چیست٬ توصیه می‌کنیم یک اتصال Wi-Fi پیدا کنید تا دانلود بطور خودکار شروع شود.&lt;br/&gt; &lt;br/&gt; نکته: می‌توانید فرهنگ لغت را با رفتن به منوی &lt;b&gt;زبان و ورودی&lt;/b&gt; در &lt;b&gt;تنظیمات&lt;/b&gt; در دستگاه همراه خود دانلود و حذف کنید."</string>
+    <string name="should_download_over_metered_prompt" msgid="2878629598667658845">"‏برای زبان انتخاب شده در دستگاه همراه شما فرهنگ لغتی موجود است.&lt;br/&gt; توصیه می‌کنیم فرهنگ لغت <xliff:g id="LANGUAGE">%1$s</xliff:g> را &lt;b&gt;دانلود کنید&lt;/b&gt; تا بهتر تایپ کنید.&lt;br/&gt; &lt;br/&gt; دانلود از طریق 3G ممکن است چند لحظه طول بکشد. اگر &lt;b&gt;طرح داده نامحدود&lt;/b&gt; نداشته باشید ممکن است برایتان هزینه داشته باشد.&lt;br/&gt; اگر مطمئن نیستید طرح داده شما چیست٬ توصیه می‌کنیم یک اتصال Wi-Fi پیدا کنید تا دانلود بطور خودکار شروع شود.&lt;br/&gt; &lt;br/&gt; نکته: می‌توانید فرهنگ لغت را با رفتن به منوی &lt;b&gt;زبان و ورودی&lt;/b&gt; در &lt;b&gt;تنظیمات&lt;/b&gt; در دستگاه همراه خود دانلود و حذف کنید."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"هم‌اکنون بارگیری شود (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> مگابایت)"</string>
-    <string name="do_not_download_over_metered" msgid="2176209579313941583">"دانلود ازطریق Wi-Fi"</string>
+    <string name="do_not_download_over_metered" msgid="2176209579313941583">"‏دانلود ازطریق Wi-Fi"</string>
     <string name="dict_available_notification_title" msgid="6514288591959117288">"یک فرهنگ لغت برای <xliff:g id="LANGUAGE">%1$s</xliff:g> موجود است"</string>
     <string name="dict_available_notification_description" msgid="1075194169443163487">"برای مرور و دانلود فشار دهید"</string>
     <string name="toast_downloading_suggestions" msgid="1313027353588566660">"دانلود لغات پیشنهادی برای <xliff:g id="LANGUAGE">%1$s</xliff:g> به زودی شروع می‌شود."</string>
