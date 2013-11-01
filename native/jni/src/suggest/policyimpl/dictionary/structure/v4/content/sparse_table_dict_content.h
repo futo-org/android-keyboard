@@ -21,6 +21,7 @@
 #include "suggest/policyimpl/dictionary/structure/v4/content/dict_content.h"
 #include "suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer.h"
 #include "suggest/policyimpl/dictionary/utils/mmapped_buffer.h"
+#include "suggest/policyimpl/dictionary/utils/sparse_table.h"
 
 namespace latinime {
 
@@ -29,7 +30,8 @@ class SparseTableDictContent : public DictContent {
  public:
     AK_FORCE_INLINE SparseTableDictContent(const char *const dictDirPath,
             const char *const lookupTableFileName, const char *const addressTableFileName,
-            const char *const contentFileName, const bool isUpdatable)
+            const char *const contentFileName, const bool isUpdatable,
+            const int sparseTableBlockSize, const int sparseTableDataSize)
             : mLookupTableBuffer(
                       MmappedBuffer::openBuffer(dictDirPath, lookupTableFileName, isUpdatable)),
               mAddressTableBuffer(
@@ -45,7 +47,9 @@ class SparseTableDictContent : public DictContent {
                       BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE),
               mExpandableContentBuffer(mContentBuffer.get() ? mContentBuffer.get()->getBuffer() : 0,
                       mContentBuffer.get() ? mContentBuffer.get()->getBufferSize() : 0,
-                      BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE) {}
+                      BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE),
+              mAddressLookupTable(&mExpandableLookupTableBuffer, &mExpandableAddressTableBuffer,
+                      sparseTableBlockSize, sparseTableDataSize) {}
 
     virtual ~SparseTableDictContent() {}
 
@@ -64,6 +68,7 @@ class SparseTableDictContent : public DictContent {
     BufferWithExtendableBuffer mExpandableLookupTableBuffer;
     BufferWithExtendableBuffer mExpandableAddressTableBuffer;
     BufferWithExtendableBuffer mExpandableContentBuffer;
+    SparseTable mAddressLookupTable;
 };
 } // namespace latinime
 #endif /* LATINIME_SPARSE_TABLE_DICT_CONTENT_H */
