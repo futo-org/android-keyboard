@@ -29,10 +29,10 @@ namespace latinime {
 
 /* static */ int Ver4PatriciaTrieReadingUtils::getProbability(
         const BufferWithExtendableBuffer *const probabilityBuffer, const int terminalId) {
-    int pos = terminalId * (Ver4DictConstants::FLAGS_IN_PROBABILITY_FILE_SIZE
+    const int pos = terminalId * (Ver4DictConstants::FLAGS_IN_PROBABILITY_FILE_SIZE
             + Ver4DictConstants::PROBABILITY_SIZE)
                     + Ver4DictConstants::FLAGS_IN_PROBABILITY_FILE_SIZE;
-    return probabilityBuffer->readUintAndAdvancePosition(Ver4DictConstants::PROBABILITY_SIZE, &pos);
+    return probabilityBuffer->readUint(Ver4DictConstants::PROBABILITY_SIZE, pos);
 }
 
 } // namespace latinime
