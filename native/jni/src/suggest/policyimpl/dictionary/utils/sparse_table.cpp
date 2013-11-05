@@ -21,11 +21,10 @@ namespace latinime {
 const int SparseTable::NOT_EXIST = -1;
 
 bool SparseTable::contains(const int id) const {
-    if (id < 0 || mIndexTableBuffer->getTailPosition() <= id * mDataSize) {
+    const int readingPos = id / mBlockSize * mDataSize;
+    if (id < 0 || mIndexTableBuffer->getTailPosition() <= readingPos) {
         return false;
     }
-    const int indexTableIndex = id / mBlockSize;
-    const int readingPos = indexTableIndex * mDataSize;
     const int index = mIndexTableBuffer->readUint(mDataSize, readingPos);
     return index != NOT_EXIST;
 }

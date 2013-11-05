@@ -29,11 +29,14 @@ namespace latinime {
 
 class TerminalPositionLookupTable : public SingleDictContent {
  public:
-    TerminalPositionLookupTable(const char *const dictDirPath, const bool isUpdatable)
+    // TODO: Quit using headerRegionSize.
+    TerminalPositionLookupTable(const char *const dictDirPath, const bool isUpdatable,
+            const int headerRegionSize)
             : SingleDictContent(dictDirPath,
                       Ver4DictConstants::TERMINAL_ADDRESS_TABLE_FILE_EXTENSION, isUpdatable),
               mSize(getBuffer()->getTailPosition()
-                      / Ver4DictConstants::TERMINAL_ADDRESS_TABLE_ADDRESS_SIZE) {}
+                      / Ver4DictConstants::TERMINAL_ADDRESS_TABLE_ADDRESS_SIZE),
+              mHeaderRegionSize(headerRegionSize) {}
 
     int getTerminalPtNodePosition(const int terminalId) const {
         if (terminalId < 0 || terminalId >= mSize) {
@@ -41,13 +44,14 @@ class TerminalPositionLookupTable : public SingleDictContent {
         }
         const int readingPos = terminalId * Ver4DictConstants::TERMINAL_ADDRESS_TABLE_ADDRESS_SIZE;
         return getBuffer()->readUint(Ver4DictConstants::TERMINAL_ADDRESS_TABLE_ADDRESS_SIZE,
-                readingPos);
+                readingPos) - mHeaderRegionSize;
     }
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(TerminalPositionLookupTable);
 
     const int mSize;
+    const int mHeaderRegionSize;
 };
 } // namespace latinime
 #endif // LATINIME_TERMINAL_POSITION_LOOKUP_TABLE_H

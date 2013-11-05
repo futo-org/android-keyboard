@@ -20,6 +20,7 @@ import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.LargeTest;
 import android.util.Log;
 
+import com.android.inputmethod.latin.makedict.BinaryDictEncoderUtils;
 import com.android.inputmethod.latin.makedict.DictEncoder;
 import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.makedict.FusionDictionary;
@@ -62,7 +63,7 @@ public class Ver4BinaryDictionaryTests extends AndroidTestCase {
 
     // TODO: remove after native code support dictionary creation.
     private File getTrieFile(final String id, final String version) {
-        return new File(getContext().getCacheDir() + "/" + id + "." + version, 
+        return new File(getContext().getCacheDir() + "/" + id + "." + version,
                 TEST_LOCALE + "." + version + FormatSpec.TRIE_FILE_EXTENSION);
     }
 
@@ -119,5 +120,56 @@ public class Ver4BinaryDictionaryTests extends AndroidTestCase {
         assertEquals(frequency, binaryDictionary.getFrequency("a"));
         assertEquals(frequency, binaryDictionary.getFrequency("aaa"));
         assertEquals(frequency, binaryDictionary.getFrequency("ab"));
+    }
+
+    public static int getCalculatedBigramProbabiliy(BinaryDictionary binaryDictionary,
+            final int unigramFrequency, final int bigramFrequency) {
+        final int bigramFrequencyDiff = BinaryDictEncoderUtils.getBigramFrequencyDiff(
+                unigramFrequency, bigramFrequency);
+        return binaryDictionary.calculateProbability(unigramFrequency, bigramFrequencyDiff);
+    }
+
+    // TODO: Add large tests.
+    public void testReadBigrams() {
+        final String dictVersion = Long.toString(System.currentTimeMillis());
+        final FusionDictionary dict = new FusionDictionary(new PtNodeArray(),
+                getDictionaryOptions(TEST_LOCALE, dictVersion));
+
+        final int unigramFrequency = 1;
+        final int bigramFrequency0 = 150;
+        final int bigramFrequency1 = 1;
+        final int bigramFrequency2 = 255;
+        dict.add("a", unigramFrequency, null, false /* isNotAWord */);
+        dict.add("aaa", unigramFrequency, null, false /* isNotAWord */);
+        dict.add("ab", unigramFrequency, null, false /* isNotAWord */);
+        dict.setBigram("a", "aaa", bigramFrequency0);
+        dict.setBigram("a", "ab", bigramFrequency1);
+        dict.setBigram("aaa", "ab", bigramFrequency2);
+
+        DictEncoder encoder = new Ver4DictEncoder(getContext().getCacheDir());
+        try {
+            encoder.writeDictionary(dict, FORMAT_OPTIONS);
+        } catch (IOException e) {
+            Log.e(TAG, "IOException while writing dictionary", e);
+        } catch (UnsupportedFormatException e) {
+            Log.e(TAG, "Unsupported format", e);
+        }
+        File trieFile = getTrieFile(TEST_LOCALE, dictVersion);
+        BinaryDictionary binaryDictionary = new BinaryDictionary(trieFile.getAbsolutePath(),
+                0 /* offset */, trieFile.length(), true /* useFullEditDistance */,
+                Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
+
+        assertTrue(binaryDictionary.isValidDictionary());
+
+        assertEquals(getCalculatedBigramProbabiliy(binaryDictionary, unigramFrequency,
+                bigramFrequency0), binaryDictionary.getBigramProbability("a", "aaa"));
+        assertEquals(getCalculatedBigramProbabiliy(binaryDictionary, unigramFrequency,
+                bigramFrequency1), binaryDictionary.getBigramProbability("a", "ab"));
+        assertEquals(getCalculatedBigramProbabiliy(binaryDictionary, unigramFrequency,
+                bigramFrequency2), binaryDictionary.getBigramProbability("aaa", "ab"));
+
+        assertFalse(binaryDictionary.isValidBigram("aaa", "a"));
+        assertFalse(binaryDictionary.isValidBigram("ab", "a"));
+        assertFalse(binaryDictionary.isValidBigram("ab", "aaa"));
     }
 }

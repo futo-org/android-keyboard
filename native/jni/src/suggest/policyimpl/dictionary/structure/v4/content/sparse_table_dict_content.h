@@ -58,6 +58,15 @@ class SparseTableDictContent : public DictContent {
                 && mContentBuffer.get() != 0;
     }
 
+ protected:
+    const SparseTable *getAddressLookupTable() const {
+        return &mAddressLookupTable;
+    }
+
+    const BufferWithExtendableBuffer *getContentBuffer() const {
+        return &mExpandableContentBuffer;
+    }
+
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(SparseTableDictContent);
 

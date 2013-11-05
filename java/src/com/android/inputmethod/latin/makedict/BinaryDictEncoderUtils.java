@@ -711,6 +711,13 @@ public class BinaryDictEncoderUtils {
                     + word + " is " + unigramFrequency);
             bigramFrequency = unigramFrequency;
         }
+        bigramFlags += getBigramFrequencyDiff(unigramFrequency, bigramFrequency)
+                & FormatSpec.FLAG_BIGRAM_SHORTCUT_ATTR_FREQUENCY;
+        return bigramFlags;
+    }
+
+    public static int getBigramFrequencyDiff(final int unigramFrequency,
+            final int bigramFrequency) {
         // We compute the difference between 255 (which means probability = 1) and the
         // unigram score. We split this into a number of discrete steps.
         // Now, the steps are numbered 0~15; 0 represents an increase of 1 step while 15
@@ -744,9 +751,7 @@ public class BinaryDictEncoderUtils {
         // include this bigram in the dictionary. For now, register as 0, and live with the
         // small over-estimation that we get in this case. TODO: actually remove this bigram
         // if discretizedFrequency < 0.
-        final int finalBigramFrequency = discretizedFrequency > 0 ? discretizedFrequency : 0;
-        bigramFlags += finalBigramFrequency & FormatSpec.FLAG_BIGRAM_SHORTCUT_ATTR_FREQUENCY;
-        return bigramFlags;
+        return discretizedFrequency > 0 ? discretizedFrequency : 0;
     }
 
     /**
