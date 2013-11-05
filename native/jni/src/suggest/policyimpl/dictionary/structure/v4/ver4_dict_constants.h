@@ -37,6 +37,7 @@ class Ver4DictConstants {
     static const int NOT_A_TERMINAL_ID;
     static const int PROBABILITY_SIZE;
     static const int FLAGS_IN_PROBABILITY_FILE_SIZE;
+    static const int TERMINAL_ADDRESS_TABLE_ADDRESS_SIZE;
 
     static const int BIGRAM_ADDRESS_TABLE_BLOCK_SIZE;
     static const int BIGRAM_ADDRESS_TABLE_DATA_SIZE;
