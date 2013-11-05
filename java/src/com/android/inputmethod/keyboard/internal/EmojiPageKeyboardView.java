@@ -20,25 +20,21 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
-import android.widget.ScrollView;
-import android.widget.Scroller;
 
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.KeyDetector;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardView;
+import com.android.inputmethod.keyboard.PointerTracker;
 import com.android.inputmethod.latin.R;
 
 /**
- * This is an extended {@link KeyboardView} class that hosts a vertical scroll keyboard.
+ * This is an extended {@link KeyboardView} class that hosts an emoji page keyboard.
  * Multi-touch unsupported. No {@link PointerTracker}s. No gesture support.
- * TODO: Vertical scroll capability should be removed from this class because it's no longer used.
  */
 // TODO: Implement key popup preview.
-public final class ScrollKeyboardView extends KeyboardView implements
-        ScrollViewWithNotifier.ScrollListener, GestureDetector.OnGestureListener {
-    private static final boolean PAGINATION = false;
-
+public final class EmojiPageKeyboardView extends KeyboardView implements
+        GestureDetector.OnGestureListener {
     public interface OnKeyClickListener {
         public void onKeyClick(Key key);
     }
@@ -52,63 +48,15 @@ public final class ScrollKeyboardView extends KeyboardView implements
     private final KeyDetector mKeyDetector = new KeyDetector(0.0f /*keyHysteresisDistance */);
     private final GestureDetector mGestureDetector;
 
-    private final Scroller mScroller;
-    private ScrollViewWithNotifier mScrollView;
-
-    public ScrollKeyboardView(final Context context, final AttributeSet attrs) {
+    public EmojiPageKeyboardView(final Context context, final AttributeSet attrs) {
         this(context, attrs, R.attr.keyboardViewStyle);
     }
 
-    public ScrollKeyboardView(final Context context, final AttributeSet attrs, final int defStyle) {
+    public EmojiPageKeyboardView(final Context context, final AttributeSet attrs,
+            final int defStyle) {
         super(context, attrs, defStyle);
         mGestureDetector = new GestureDetector(context, this);
         mGestureDetector.setIsLongpressEnabled(false /* isLongpressEnabled */);
-        mScroller = new Scroller(context);
-    }
-
-    public void setScrollView(final ScrollViewWithNotifier scrollView) {
-        mScrollView = scrollView;
-        scrollView.setScrollListener(this);
-    }
-
-    private final Runnable mScrollTask = new Runnable() {
-        @Override
-        public void run() {
-            final Scroller scroller = mScroller;
-            final ScrollView scrollView = mScrollView;
-            scroller.computeScrollOffset();
-            scrollView.scrollTo(0, scroller.getCurrY());
-            if (!scroller.isFinished()) {
-                scrollView.post(this);
-            }
-        }
-    };
-
-    // {@link ScrollViewWithNotified#ScrollListener} methods.
-    @Override
-    public void notifyScrollChanged(final int scrollX, final int scrollY, final int oldX,
-            final int oldY) {
-        if (PAGINATION) {
-            mScroller.forceFinished(true /* finished */);
-            mScrollView.removeCallbacks(mScrollTask);
-            final int currentTop = mScrollView.getScrollY();
-            final int pageHeight = getKeyboard().mBaseHeight;
-            final int lastPageNo = currentTop / pageHeight;
-            final int lastPageTop = lastPageNo * pageHeight;
-            final int nextPageNo = lastPageNo + 1;
-            final int nextPageTop = Math.min(nextPageNo * pageHeight, getHeight() - pageHeight);
-            final int scrollTo = (currentTop - lastPageTop) < (nextPageTop - currentTop)
-                    ? lastPageTop : nextPageTop;
-            final int deltaY = scrollTo - currentTop;
-            mScroller.startScroll(0, currentTop, 0, deltaY, 300);
-            mScrollView.post(mScrollTask);
-        }
-    }
-
-    @Override
-    public void notifyOverScrolled(final int scrollX, final int scrollY, final boolean clampedX,
-            final boolean clampedY) {
-        releaseCurrentKey();
     }
 
     public void setOnKeyClickListener(final OnKeyClickListener listener) {
