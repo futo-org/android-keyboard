@@ -44,8 +44,7 @@ import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TextView;
 
 import com.android.inputmethod.keyboard.internal.DynamicGridKeyboard;
-import com.android.inputmethod.keyboard.internal.ScrollKeyboardView;
-import com.android.inputmethod.keyboard.internal.ScrollViewWithNotifier;
+import com.android.inputmethod.keyboard.internal.EmojiPageKeyboardView;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SubtypeSwitcher;
@@ -72,7 +71,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public final class EmojiPalettesView extends LinearLayout implements OnTabChangeListener,
         ViewPager.OnPageChangeListener, View.OnClickListener,
-        ScrollKeyboardView.OnKeyClickListener {
+        EmojiPageKeyboardView.OnKeyClickListener {
     private static final String TAG = EmojiPalettesView.class.getSimpleName();
     private static final boolean DEBUG_PAGER = false;
     private final int mKeyBackgroundId;
@@ -628,16 +627,16 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
     }
 
     private static class EmojiPalettesAdapter extends PagerAdapter {
-        private final ScrollKeyboardView.OnKeyClickListener mListener;
+        private final EmojiPageKeyboardView.OnKeyClickListener mListener;
         private final DynamicGridKeyboard mRecentsKeyboard;
-        private final SparseArray<ScrollKeyboardView> mActiveKeyboardViews =
+        private final SparseArray<EmojiPageKeyboardView> mActiveKeyboardViews =
                 CollectionUtils.newSparseArray();
         private final EmojiCategory mEmojiCategory;
         private int mActivePosition = 0;
 
         public EmojiPalettesAdapter(final EmojiCategory emojiCategory,
                 final KeyboardLayoutSet layoutSet,
-                final ScrollKeyboardView.OnKeyClickListener listener) {
+                final EmojiPageKeyboardView.OnKeyClickListener listener) {
             mEmojiCategory = emojiCategory;
             mListener = listener;
             mRecentsKeyboard = mEmojiCategory.getKeyboard(CATEGORY_ID_RECENTS, 0);
@@ -675,7 +674,7 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
             if (mActivePosition == position) {
                 return;
             }
-            final ScrollKeyboardView oldKeyboardView = mActiveKeyboardViews.get(mActivePosition);
+            final EmojiPageKeyboardView oldKeyboardView = mActiveKeyboardViews.get(mActivePosition);
             if (oldKeyboardView != null) {
                 oldKeyboardView.releaseCurrentKey();
                 oldKeyboardView.deallocateMemory();
@@ -688,7 +687,7 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
             if (DEBUG_PAGER) {
                 Log.d(TAG, "instantiate item: " + position);
             }
-            final ScrollKeyboardView oldKeyboardView = mActiveKeyboardViews.get(position);
+            final EmojiPageKeyboardView oldKeyboardView = mActiveKeyboardViews.get(position);
             if (oldKeyboardView != null) {
                 oldKeyboardView.deallocateMemory();
                 // This may be redundant but wanted to be safer..
@@ -697,18 +696,13 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
             final Keyboard keyboard =
                     mEmojiCategory.getKeyboardFromPagePosition(position);
             final LayoutInflater inflater = LayoutInflater.from(container.getContext());
-            final View view = inflater.inflate(
+            final EmojiPageKeyboardView keyboardView = (EmojiPageKeyboardView)inflater.inflate(
                     R.layout.emoji_keyboard_page, container, false /* attachToRoot */);
-            final ScrollKeyboardView keyboardView = (ScrollKeyboardView)view.findViewById(
-                    R.id.emoji_keyboard_page);
             keyboardView.setKeyboard(keyboard);
             keyboardView.setOnKeyClickListener(mListener);
-            final ScrollViewWithNotifier scrollView = (ScrollViewWithNotifier)view.findViewById(
-                    R.id.emoji_keyboard_scroller);
-            keyboardView.setScrollView(scrollView);
-            container.addView(view);
+            container.addView(keyboardView);
             mActiveKeyboardViews.put(position, keyboardView);
-            return view;
+            return keyboardView;
         }
 
         @Override
@@ -722,7 +716,7 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
             if (DEBUG_PAGER) {
                 Log.d(TAG, "destroy item: " + position + ", " + object.getClass().getSimpleName());
             }
-            final ScrollKeyboardView keyboardView = mActiveKeyboardViews.get(position);
+            final EmojiPageKeyboardView keyboardView = mActiveKeyboardViews.get(position);
             if (keyboardView != null) {
                 keyboardView.deallocateMemory();
                 mActiveKeyboardViews.remove(position);

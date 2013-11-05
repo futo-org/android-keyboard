@@ -18,16 +18,9 @@
 */
 -->
 
-<com.android.inputmethod.keyboard.internal.ScrollViewWithNotifier
+<com.android.inputmethod.keyboard.internal.EmojiPageKeyboardView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/emoji_keyboard_scroller"
-    android:clipToPadding="false"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
->
-    <com.android.inputmethod.keyboard.internal.ScrollKeyboardView
-        android:id="@+id/emoji_keyboard_page"
-        android:layoutDirection="ltr"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-</com.android.inputmethod.keyboard.internal.ScrollViewWithNotifier>
+    android:id="@+id/emoji_keyboard_page"
+    android:layoutDirection="ltr"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content" />
