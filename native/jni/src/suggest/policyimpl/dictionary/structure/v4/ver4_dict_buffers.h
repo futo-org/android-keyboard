@@ -18,6 +18,8 @@
 #define LATINIME_VER4_DICT_BUFFER_H
 
 #include "defines.h"
+#include "suggest/policyimpl/dictionary/header/header_read_write_utils.h"
+#include "suggest/policyimpl/dictionary/structure/v4/content/bigram_dict_content.h"
 #include "suggest/policyimpl/dictionary/structure/v4/content/probability_dict_content.h"
 #include "suggest/policyimpl/dictionary/structure/v4/content/single_dict_content.h"
 #include "suggest/policyimpl/dictionary/structure/v4/content/sparse_table_dict_content.h"
@@ -52,8 +54,16 @@ class Ver4DictBuffers {
         return mDictBuffer.get()->getBufferSize();
     }
 
+    AK_FORCE_INLINE const TerminalPositionLookupTable *getTerminalPositionLookupTable() const {
+        return &mTerminalPositionLookupTable;
+    }
+
     AK_FORCE_INLINE const ProbabilityDictContent *getProbabilityDictContent() const {
         return &mProbabilityDictContent;
+    }
+
+    AK_FORCE_INLINE const BigramDictContent *getBigramDictContent() const {
+        return &mBigramDictContent;
     }
 
  private:
@@ -62,14 +72,11 @@ class Ver4DictBuffers {
     AK_FORCE_INLINE Ver4DictBuffers(const char *const dictDirPath,
             const MmappedBuffer::MmappedBufferPtr &dictBuffer, const bool isUpdatable)
             : mDictBuffer(dictBuffer),
-              mTerminalPositionLookupTable(dictDirPath, isUpdatable),
+              // TODO: Quit using getHeaderSize.
+              mTerminalPositionLookupTable(dictDirPath, isUpdatable,
+                      HeaderReadWriteUtils::getHeaderSize(mDictBuffer.get()->getBuffer())),
               mProbabilityDictContent(dictDirPath, isUpdatable),
-              mBigramDictContent(dictDirPath,
-                      Ver4DictConstants::BIGRAM_LOOKUP_TABLE_FILE_EXTENSION,
-                      Ver4DictConstants::BIGRAM_CONTENT_TABLE_FILE_EXTENSION,
-                      Ver4DictConstants::BIGRAM_FILE_EXTENSION, isUpdatable,
-                      Ver4DictConstants::BIGRAM_ADDRESS_TABLE_BLOCK_SIZE,
-                      Ver4DictConstants::BIGRAM_ADDRESS_TABLE_DATA_SIZE),
+              mBigramDictContent(dictDirPath, isUpdatable),
               mShortcutDictContent(dictDirPath,
                       Ver4DictConstants::SHORTCUT_LOOKUP_TABLE_FILE_EXTENSION,
                       Ver4DictConstants::SHORTCUT_CONTENT_TABLE_FILE_EXTENSION,
@@ -80,7 +87,7 @@ class Ver4DictBuffers {
     const MmappedBuffer::MmappedBufferPtr mDictBuffer;
     TerminalPositionLookupTable mTerminalPositionLookupTable;
     ProbabilityDictContent mProbabilityDictContent;
-    SparseTableDictContent mBigramDictContent;
+    BigramDictContent mBigramDictContent;
     SparseTableDictContent mShortcutDictContent;
 };
 } // namespace latinime

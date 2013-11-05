@@ -119,7 +119,8 @@ int Ver4PatriciaTriePolicy::getBigramsPositionOfPtNode(const int ptNodePos) cons
     if (ptNodeParams.isDeleted()) {
         return NOT_A_DICT_POS;
     }
-    return ptNodeParams.getTerminalId();
+    return mBuffers.get()->getBigramDictContent()->getBigramListHeadPos(
+            ptNodeParams.getTerminalId());
 }
 
 bool Ver4PatriciaTriePolicy::addUnigramWord(const int *const word, const int length,
