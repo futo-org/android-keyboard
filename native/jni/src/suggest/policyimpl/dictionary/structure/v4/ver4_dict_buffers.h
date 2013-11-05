@@ -21,6 +21,7 @@
 #include "suggest/policyimpl/dictionary/structure/v4/content/probability_dict_content.h"
 #include "suggest/policyimpl/dictionary/structure/v4/content/single_dict_content.h"
 #include "suggest/policyimpl/dictionary/structure/v4/content/sparse_table_dict_content.h"
+#include "suggest/policyimpl/dictionary/structure/v4/content/terminal_position_lookup_table.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_dict_constants.h"
 #include "suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer.h"
 #include "suggest/policyimpl/dictionary/utils/mmapped_buffer.h"
@@ -39,7 +40,7 @@ class Ver4DictBuffers {
 
     AK_FORCE_INLINE bool isValid() const {
         return mDictBuffer.get() != 0 && mProbabilityDictContent.isValid()
-                && mTerminalAddressTable.isValid() && mBigramDictContent.isValid()
+                && mTerminalPositionLookupTable.isValid() && mBigramDictContent.isValid()
                 && mShortcutDictContent.isValid();
     }
 
@@ -61,8 +62,7 @@ class Ver4DictBuffers {
     AK_FORCE_INLINE Ver4DictBuffers(const char *const dictDirPath,
             const MmappedBuffer::MmappedBufferPtr &dictBuffer, const bool isUpdatable)
             : mDictBuffer(dictBuffer),
-              mTerminalAddressTable(dictDirPath,
-                      Ver4DictConstants::TERMINAL_ADDRESS_TABLE_FILE_EXTENSION, isUpdatable),
+              mTerminalPositionLookupTable(dictDirPath, isUpdatable),
               mProbabilityDictContent(dictDirPath, isUpdatable),
               mBigramDictContent(dictDirPath,
                       Ver4DictConstants::BIGRAM_LOOKUP_TABLE_FILE_EXTENSION,
@@ -78,7 +78,7 @@ class Ver4DictBuffers {
                       Ver4DictConstants::SHORTCUT_ADDRESS_TABLE_DATA_SIZE) {}
 
     const MmappedBuffer::MmappedBufferPtr mDictBuffer;
-    SingleDictContent mTerminalAddressTable;
+    TerminalPositionLookupTable mTerminalPositionLookupTable;
     ProbabilityDictContent mProbabilityDictContent;
     SparseTableDictContent mBigramDictContent;
     SparseTableDictContent mShortcutDictContent;
