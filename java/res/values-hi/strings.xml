@@ -188,11 +188,11 @@
     <string name="setup_step2_instruction" msgid="9141481964870023336">"इसके बाद, \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" को अपनी सक्रिय पाठ-इनपुट पद्धति के रूप में चुनें."</string>
     <string name="setup_step2_action" msgid="1660330307159824337">"इनपुट पद्धतियां स्विच करें"</string>
     <string name="setup_step3_title" msgid="3154757183631490281">"बधाई हो, आप बिल्कुल तैयार हैं!"</string>
-    <string name="setup_step3_instruction" msgid="8025981829605426000">"अब आप <xliff:g id="APPLICATION_NAME">%s</xliff:g> के साथ अपने सभी पसंदीदा एप्स में लिख सकते हैं."</string>
+    <string name="setup_step3_instruction" msgid="8025981829605426000">"अब आप <xliff:g id="APPLICATION_NAME">%s</xliff:g> के साथ अपने सभी पसंदीदा ऐप्स  में लिख सकते हैं."</string>
     <string name="setup_step3_action" msgid="600879797256942259">"अतिरिक्त भाषाएं कॉन्फ़िगर करना"</string>
     <string name="setup_finish_action" msgid="276559243409465389">"समाप्त"</string>
-    <string name="show_setup_wizard_icon" msgid="5008028590593710830">"एप्स आइकन दिखाएं"</string>
-    <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"लॉन्चर में एप्स आइकन प्रदर्शित करें"</string>
+    <string name="show_setup_wizard_icon" msgid="5008028590593710830">"ऐप्स  आइकन दिखाएं"</string>
+    <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"लॉन्चर में ऐप्स  आइकन प्रदर्शित करें"</string>
     <string name="app_name" msgid="6320102637491234792">"डिक्‍शनरी प्रदाता"</string>
     <string name="dictionary_provider_name" msgid="3027315045397363079">"डिक्‍शनरी प्रदाता"</string>
     <string name="dictionary_service_name" msgid="6237472350693511448">"डिक्‍शनरी सेवा"</string>
