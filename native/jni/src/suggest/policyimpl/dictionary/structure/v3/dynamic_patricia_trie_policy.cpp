@@ -27,6 +27,7 @@
 #include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_node_reader.h"
 #include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_reading_helper.h"
 #include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_reading_utils.h"
+#include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_updating_helper.h"
 #include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_writing_helper.h"
 #include "suggest/policyimpl/dictionary/utils/forgetting_curve_utils.h"
 #include "suggest/policyimpl/dictionary/utils/probability_utils.h"
@@ -152,10 +153,8 @@ bool DynamicPatriciaTriePolicy::addUnigramWord(const int *const word, const int 
     }
     DynamicPatriciaTrieReadingHelper readingHelper(&mBufferWithExtendableBuffer, &mNodeReader);
     readingHelper.initWithPtNodeArrayPos(getRootPosition());
-    DynamicPatriciaTrieWritingHelper writingHelper(&mBufferWithExtendableBuffer, &mNodeReader,
-            &mNodeWriter, &mBigramListPolicy, &mShortcutListPolicy, mHeaderPolicy.isDecayingDict());
     bool addedNewUnigram = false;
-    if (writingHelper.addUnigramWord(&readingHelper, word, length, probability,
+    if (mUpdatingHelper.addUnigramWord(&readingHelper, word, length, probability,
             &addedNewUnigram)) {
         if (addedNewUnigram) {
             mUnigramCount++;
@@ -187,10 +186,8 @@ bool DynamicPatriciaTriePolicy::addBigramWords(const int *const word0, const int
     if (word1Pos == NOT_A_DICT_POS) {
         return false;
     }
-    DynamicPatriciaTrieWritingHelper writingHelper(&mBufferWithExtendableBuffer, &mNodeReader,
-            &mNodeWriter, &mBigramListPolicy, &mShortcutListPolicy, mHeaderPolicy.isDecayingDict());
     bool addedNewBigram = false;
-    if (writingHelper.addBigramWords(word0Pos, word1Pos, probability, &addedNewBigram)) {
+    if (mUpdatingHelper.addBigramWords(word0Pos, word1Pos, probability, &addedNewBigram)) {
         if (addedNewBigram) {
             mBigramCount++;
         }
@@ -221,9 +218,7 @@ bool DynamicPatriciaTriePolicy::removeBigramWords(const int *const word0, const 
     if (word1Pos == NOT_A_DICT_POS) {
         return false;
     }
-    DynamicPatriciaTrieWritingHelper writingHelper(&mBufferWithExtendableBuffer, &mNodeReader,
-            &mNodeWriter, &mBigramListPolicy, &mShortcutListPolicy, mHeaderPolicy.isDecayingDict());
-    if (writingHelper.removeBigramWords(word0Pos, word1Pos)) {
+    if (mUpdatingHelper.removeBigramWords(word0Pos, word1Pos)) {
         mBigramCount--;
         return true;
     } else {

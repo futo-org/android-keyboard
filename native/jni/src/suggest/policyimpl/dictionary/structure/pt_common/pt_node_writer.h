@@ -46,6 +46,9 @@ class PtNodeWriter {
             const PtNodeParams *const targetPtNodeParam, const int probability,
             bool *const outAddedNewBigram) = 0;
 
+    virtual bool removeBigramEntry(const PtNodeParams *const sourcePtNodeParams,
+            const PtNodeParams *const targetPtNodeParam) = 0;
+
  protected:
     PtNodeWriter() {};
 
