@@ -21,6 +21,7 @@
 #include "suggest/core/policy/dictionary_structure_with_buffer_policy.h"
 #include "suggest/policyimpl/dictionary/bigram/ver4_bigram_list_policy.h"
 #include "suggest/policyimpl/dictionary/header/header_policy.h"
+#include "suggest/policyimpl/dictionary/shortcut/ver4_shortcut_list_policy.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_dict_buffers.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_patricia_trie_node_reader.h"
 #include "suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer.h"
@@ -40,6 +41,8 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
                       mBuffers.get()->getRawDictBufferSize() - mHeaderPolicy.getSize(),
                       BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE),
               mBigramPolicy(mBuffers.get()->getBigramDictContent(),
+                      mBuffers.get()->getTerminalPositionLookupTable()),
+              mShortcutPolicy(mBuffers.get()->getShortcutDictContent(),
                       mBuffers.get()->getTerminalPositionLookupTable()),
               mNodeReader(&mDictBuffer, mBuffers.get()->getProbabilityDictContent()) {};
 
@@ -74,7 +77,7 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     }
 
     const DictionaryShortcutsStructurePolicy *getShortcutsStructurePolicy() const {
-        return 0;
+        return &mShortcutPolicy;
     }
 
     bool addUnigramWord(const int *const word, const int length, const int probability);
@@ -101,6 +104,7 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     const HeaderPolicy mHeaderPolicy;
     BufferWithExtendableBuffer mDictBuffer;
     const Ver4BigramListPolicy mBigramPolicy;
+    const Ver4ShortcutListPolicy mShortcutPolicy;
     Ver4PatriciaTrieNodeReader mNodeReader;
 };
 } // namespace latinime

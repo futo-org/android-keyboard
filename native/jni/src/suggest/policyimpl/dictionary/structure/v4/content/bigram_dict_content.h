@@ -38,7 +38,7 @@ class BigramDictContent : public SparseTableDictContent {
         const BufferWithExtendableBuffer *const bigramListBuffer = getContentBuffer();
         if (outBigramFlags) {
             *outBigramFlags = bigramListBuffer->readUintAndAdvancePosition(
-                    Ver4DictConstants::BIGRAM_FRAGS_FIELD_SIZE, bigramEntryPos);
+                    Ver4DictConstants::BIGRAM_FLAGS_FIELD_SIZE, bigramEntryPos);
         }
         if (outTargetTerminalId) {
             *outTargetTerminalId = bigramListBuffer->readUintAndAdvancePosition(

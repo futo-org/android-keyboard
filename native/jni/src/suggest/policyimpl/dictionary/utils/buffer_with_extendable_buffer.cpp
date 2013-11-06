@@ -36,6 +36,19 @@ uint32_t BufferWithExtendableBuffer::readUintAndAdvancePosition(const int size,
     return value;
 }
 
+void BufferWithExtendableBuffer::readCodePointsAndAdvancePosition(const int maxCodePointCount,
+        int *const outCodePoints, int *outCodePointCount, int *const pos) const {
+    const bool readingPosIsInAdditionalBuffer = isInAdditionalBuffer(*pos);
+    if (readingPosIsInAdditionalBuffer) {
+        *pos -= mOriginalBufferSize;
+    }
+    *outCodePointCount = ByteArrayUtils::readStringAndAdvancePosition(
+            getBuffer(readingPosIsInAdditionalBuffer), maxCodePointCount, outCodePointCount, pos);
+    if (readingPosIsInAdditionalBuffer) {
+        *pos += mOriginalBufferSize;
+    }
+}
+
 bool BufferWithExtendableBuffer::writeUintAndAdvancePosition(const uint32_t data, const int size,
         int *const pos) {
     if (!(size >= 1 && size <= 4)) {
@@ -59,7 +72,7 @@ bool BufferWithExtendableBuffer::writeUintAndAdvancePosition(const uint32_t data
 }
 
 bool BufferWithExtendableBuffer::writeCodePointsAndAdvancePosition(const int *const codePoints,
-        const int codePointCount, const bool writesTerminator ,int *const pos) {
+        const int codePointCount, const bool writesTerminator, int *const pos) {
     const size_t size = ByteArrayUtils::calculateRequiredByteCountToStoreCodePoints(
             codePoints, codePointCount, writesTerminator);
     if (!checkAndPrepareWriting(*pos, size)) {

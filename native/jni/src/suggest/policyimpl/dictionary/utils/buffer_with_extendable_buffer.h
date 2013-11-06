@@ -75,6 +75,9 @@ class BufferWithExtendableBuffer {
 
     uint32_t readUintAndAdvancePosition(const int size, int *const pos) const;
 
+    void readCodePointsAndAdvancePosition(const int maxCodePointCount,
+            int *const outCodePoints, int *outCodePointCount, int *const pos) const;
+
     AK_FORCE_INLINE int getOriginalBufferSize() const {
         return mOriginalBufferSize;
     }
