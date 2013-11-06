@@ -23,13 +23,13 @@
 #include "suggest/policyimpl/dictionary/bigram/dynamic_bigram_list_policy.h"
 #include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_reading_helper.h"
 #include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_writing_helper.h"
-#include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_writing_utils.h"
 #include "suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer.h"
 #include "utils/hash_map_compat.h"
 
 namespace latinime {
 
 class DictionaryHeaderStructurePolicy;
+class PtNodeWriter;
 class PtNodeParams;
 
 class DynamicPatriciaTrieGcEventListeners {
@@ -42,9 +42,9 @@ class DynamicPatriciaTrieGcEventListeners {
      public:
         TraversePolicyToUpdateUnigramProbabilityAndMarkUselessPtNodesAsDeleted(
                 const DictionaryHeaderStructurePolicy *const headerPolicy,
-                DynamicPatriciaTrieWritingHelper *const writingHelper,
-                BufferWithExtendableBuffer *const buffer, const bool isDecayingDict)
-                : mHeaderPolicy(headerPolicy), mWritingHelper(writingHelper), mBuffer(buffer),
+                PtNodeWriter *const ptNodeWriter, BufferWithExtendableBuffer *const buffer,
+                const bool isDecayingDict)
+                : mHeaderPolicy(headerPolicy), mPtNodeWriter(ptNodeWriter), mBuffer(buffer),
                   mIsDecayingDict(isDecayingDict), mValueStack(), mChildrenValue(0),
                   mValidUnigramCount(0) {}
 
@@ -78,7 +78,7 @@ class DynamicPatriciaTrieGcEventListeners {
                 TraversePolicyToUpdateUnigramProbabilityAndMarkUselessPtNodesAsDeleted);
 
         const DictionaryHeaderStructurePolicy *const mHeaderPolicy;
-        DynamicPatriciaTrieWritingHelper *const mWritingHelper;
+        PtNodeWriter *const mPtNodeWriter;
         BufferWithExtendableBuffer *const mBuffer;
         const bool mIsDecayingDict;
         std::vector<int> mValueStack;
@@ -118,11 +118,10 @@ class DynamicPatriciaTrieGcEventListeners {
             : public DynamicPatriciaTrieReadingHelper::TraversingEventListener {
      public:
         TraversePolicyToPlaceAndWriteValidPtNodesToBuffer(
-                DynamicPatriciaTrieWritingHelper *const writingHelper,
-                BufferWithExtendableBuffer *const bufferToWrite,
+                PtNodeWriter *const ptNodeWriter, BufferWithExtendableBuffer *const bufferToWrite,
                 DynamicPatriciaTrieWritingHelper::DictPositionRelocationMap *const
                         dictPositionRelocationMap)
-                : mWritingHelper(writingHelper), mBufferToWrite(bufferToWrite),
+                : mPtNodeWriter(ptNodeWriter), mBufferToWrite(bufferToWrite),
                   mDictPositionRelocationMap(dictPositionRelocationMap), mValidPtNodeCount(0),
                   mPtNodeArraySizeFieldPos(NOT_A_DICT_POS) {};
 
@@ -137,7 +136,7 @@ class DynamicPatriciaTrieGcEventListeners {
      private:
         DISALLOW_IMPLICIT_CONSTRUCTORS(TraversePolicyToPlaceAndWriteValidPtNodesToBuffer);
 
-        DynamicPatriciaTrieWritingHelper *const mWritingHelper;
+        PtNodeWriter *const mPtNodeWriter;
         BufferWithExtendableBuffer *const mBufferToWrite;
         DynamicPatriciaTrieWritingHelper::DictPositionRelocationMap *const
                 mDictPositionRelocationMap;
@@ -149,13 +148,11 @@ class DynamicPatriciaTrieGcEventListeners {
             : public DynamicPatriciaTrieReadingHelper::TraversingEventListener {
      public:
         TraversePolicyToUpdateAllPositionFields(
-                DynamicPatriciaTrieWritingHelper *const writingHelper,
                 DynamicBigramListPolicy *const bigramPolicy,
                 BufferWithExtendableBuffer *const bufferToWrite,
                 const DynamicPatriciaTrieWritingHelper::DictPositionRelocationMap *const
                         dictPositionRelocationMap)
-                : mWritingHelper(writingHelper), mBigramPolicy(bigramPolicy),
-                  mBufferToWrite(bufferToWrite),
+                : mBigramPolicy(bigramPolicy), mBufferToWrite(bufferToWrite),
                   mDictPositionRelocationMap(dictPositionRelocationMap), mUnigramCount(0),
                   mBigramCount(0) {};
 
@@ -178,7 +175,6 @@ class DynamicPatriciaTrieGcEventListeners {
      private:
         DISALLOW_IMPLICIT_CONSTRUCTORS(TraversePolicyToUpdateAllPositionFields);
 
-        DynamicPatriciaTrieWritingHelper *const mWritingHelper;
         DynamicBigramListPolicy *const mBigramPolicy;
         BufferWithExtendableBuffer *const mBufferToWrite;
         const DynamicPatriciaTrieWritingHelper::DictPositionRelocationMap *const

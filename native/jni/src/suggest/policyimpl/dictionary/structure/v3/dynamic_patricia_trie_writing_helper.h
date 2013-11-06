@@ -20,6 +20,7 @@
 #include <stdint.h>
 
 #include "defines.h"
+#include "suggest/policyimpl/dictionary/structure/pt_common/pt_node_params.h"
 #include "utils/hash_map_compat.h"
 
 namespace latinime {
@@ -29,7 +30,8 @@ class DynamicBigramListPolicy;
 class DynamicPatriciaTrieReadingHelper;
 class DynamicShortcutListPolicy;
 class HeaderPolicy;
-class PtNodeParams;
+class PtNodeReader;
+class PtNodeWriter;
 
 // TODO: Make it independent from a particular format and move to pt_common.
 class DynamicPatriciaTrieWritingHelper {
@@ -51,9 +53,11 @@ class DynamicPatriciaTrieWritingHelper {
     static const size_t MAX_DICTIONARY_SIZE;
 
     DynamicPatriciaTrieWritingHelper(BufferWithExtendableBuffer *const buffer,
+            const PtNodeReader *const ptNodeReader, PtNodeWriter *const ptNodeWriter,
             DynamicBigramListPolicy *const bigramPolicy,
             DynamicShortcutListPolicy *const shortcutPolicy, const bool needsToDecay)
-            : mBuffer(buffer), mBigramPolicy(bigramPolicy), mShortcutPolicy(shortcutPolicy),
+            : mBuffer(buffer), mPtNodeReader(ptNodeReader), mPtNodeWriter(ptNodeWriter),
+              mBigramPolicy(bigramPolicy), mShortcutPolicy(shortcutPolicy),
               mNeedsToDecay(needsToDecay) {}
 
     ~DynamicPatriciaTrieWritingHelper() {}
@@ -76,39 +80,17 @@ class DynamicPatriciaTrieWritingHelper {
     void writeToDictFileWithGC(const int rootPtNodeArrayPos, const char *const fileName,
             const HeaderPolicy *const headerPolicy);
 
-    // CAVEAT: This method must be called only from inner classes of
-    // DynamicPatriciaTrieGcEventListeners.
-    bool markNodeAsDeleted(const PtNodeParams *const toBeUpdatedPtNodeParams);
-
-    // CAVEAT: This method must be called only from this class or inner classes of
-    // DynamicPatriciaTrieGcEventListeners.
-    bool writePtNodeToBufferByCopyingPtNodeInfo(BufferWithExtendableBuffer *const bufferToWrite,
-            const PtNodeParams *const originalPtNodeParams, const int parentPos,
-            const int *const codePoints, const int codePointCount, const int probability,
-            int *const writingPos);
-
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(DynamicPatriciaTrieWritingHelper);
 
     static const int CHILDREN_POSITION_FIELD_SIZE;
 
     BufferWithExtendableBuffer *const mBuffer;
+    const PtNodeReader *const mPtNodeReader;
+    PtNodeWriter *const mPtNodeWriter;
     DynamicBigramListPolicy *const mBigramPolicy;
     DynamicShortcutListPolicy *const mShortcutPolicy;
     const bool mNeedsToDecay;
-
-    bool markNodeAsMovedAndSetPosition(const PtNodeParams *const toBeUpdatedPtNodeParams,
-            const int movedPos, const int bigramLinkedNodePos);
-
-    bool writePtNodeWithFullInfoToBuffer(BufferWithExtendableBuffer *const bufferToWrite,
-            const bool isBlacklisted, const bool isNotAWord,
-            const int parentPos,  const int *const codePoints, const int codePointCount,
-            const int probability, const int childrenPos, const int originalBigramListPos,
-            const int originalShortcutListPos, int *const writingPos);
-
-    bool writePtNodeToBuffer(BufferWithExtendableBuffer *const bufferToWrite,
-            const int parentPos, const int *const codePoints, const int codePointCount,
-            const int probability, int *const writingPos);
 
     bool createAndInsertNodeIntoPtNodeArray(const int parentPos, const int *const nodeCodePoints,
             const int nodeCodePointCount, const int probability, int *const forwardLinkFieldPos);
@@ -131,7 +113,14 @@ class DynamicPatriciaTrieWritingHelper {
             BufferWithExtendableBuffer *const bufferToWrite, int *const outUnigramCount,
             int *const outBigramCount);
 
-    int getUpdatedProbability(const int originalProbability, const int newProbability);
+    int getUpdatedProbability(const int originalProbability, const int newProbability) const;
+
+    const PtNodeParams getUpdatedPtNodeParams(const PtNodeParams *const originalPtNodeParams,
+            const int parentPos, const int codePointCount, const int *const codePoints,
+            const int probability) const;
+
+    const PtNodeParams getPtNodeParamsForNewPtNode(const int parentPos, const int codePointCount,
+            const int *const codePoints, const int probability) const;
 };
 } // namespace latinime
 #endif /* LATINIME_DYNAMIC_PATRICIA_TRIE_WRITING_HELPER_H */

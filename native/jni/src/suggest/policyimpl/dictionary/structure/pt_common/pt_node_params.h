@@ -86,6 +86,38 @@ class PtNodeParams {
         memcpy(mCodePoints, codePoints, sizeof(int) * mCodePointCount);
     }
 
+    // Construct new params by updating existing PtNode params.
+    PtNodeParams(const PtNodeParams *const ptNodeParams,
+            const PatriciaTrieReadingUtils::NodeFlags flags, const int parentPos,
+            const int codePointCount, const int *const codePoints, const int probability)
+            : mHeadPos(ptNodeParams->getHeadPos()), mFlags(flags), mParentPos(parentPos),
+              mCodePointCount(codePointCount), mCodePoints(),
+              mTerminalIdFieldPos(ptNodeParams->getTerminalIdFieldPos()),
+              mTerminalId(ptNodeParams->getTerminalId()),
+              mProbabilityFieldPos(ptNodeParams->getProbabilityFieldPos()),
+              mProbability(probability),
+              mChildrenPosFieldPos(ptNodeParams->getChildrenPosFieldPos()),
+              mChildrenPos(ptNodeParams->getChildrenPos()),
+              mBigramLinkedNodePos(ptNodeParams->getBigramLinkedNodePos()),
+              mShortcutPos(ptNodeParams->getShortcutPos()),
+              mBigramPos(ptNodeParams->getBigramsPos()),
+              mSiblingPos(ptNodeParams->getSiblingNodePos()) {
+        memcpy(mCodePoints, codePoints, sizeof(int) * mCodePointCount);
+    }
+
+    PtNodeParams(const PatriciaTrieReadingUtils::NodeFlags flags, const int parentPos,
+            const int codePointCount, const int *const codePoints, const int probability)
+            : mHeadPos(NOT_A_DICT_POS), mFlags(flags), mParentPos(parentPos),
+              mCodePointCount(codePointCount), mCodePoints(),
+              mTerminalIdFieldPos(NOT_A_DICT_POS),
+              mTerminalId(Ver4DictConstants::NOT_A_TERMINAL_ID),
+              mProbabilityFieldPos(NOT_A_DICT_POS), mProbability(probability),
+              mChildrenPosFieldPos(NOT_A_DICT_POS), mChildrenPos(NOT_A_DICT_POS),
+              mBigramLinkedNodePos(NOT_A_DICT_POS), mShortcutPos(NOT_A_DICT_POS),
+              mBigramPos(NOT_A_DICT_POS), mSiblingPos(NOT_A_DICT_POS) {
+        memcpy(mCodePoints, codePoints, sizeof(int) * mCodePointCount);
+    }
+
     AK_FORCE_INLINE bool isValid() const {
         return mCodePointCount > 0;
     }
