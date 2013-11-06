@@ -23,6 +23,7 @@
 #include "suggest/policyimpl/dictionary/header/header_policy.h"
 #include "suggest/policyimpl/dictionary/shortcut/dynamic_shortcut_list_policy.h"
 #include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_node_reader.h"
+#include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_node_writer.h"
 #include "suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer.h"
 #include "suggest/policyimpl/dictionary/utils/format_utils.h"
 #include "suggest/policyimpl/dictionary/utils/mmapped_buffer.h"
@@ -46,6 +47,8 @@ class DynamicPatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
               mBigramListPolicy(&mHeaderPolicy, &mBufferWithExtendableBuffer, &mShortcutListPolicy,
                       mHeaderPolicy.isDecayingDict()),
               mNodeReader(&mBufferWithExtendableBuffer, &mBigramListPolicy, &mShortcutListPolicy),
+              mNodeWriter(&mBufferWithExtendableBuffer, &mNodeReader, &mBigramListPolicy,
+                      &mShortcutListPolicy),
               mUnigramCount(mHeaderPolicy.getUnigramCount()),
               mBigramCount(mHeaderPolicy.getBigramCount()), mNeedsToDecayForTesting(false) {}
 
@@ -117,6 +120,7 @@ class DynamicPatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     DynamicShortcutListPolicy mShortcutListPolicy;
     DynamicBigramListPolicy mBigramListPolicy;
     DynamicPatriciaTrieNodeReader mNodeReader;
+    DynamicPatriciaTrieNodeWriter mNodeWriter;
     int mUnigramCount;
     int mBigramCount;
     int mNeedsToDecayForTesting;

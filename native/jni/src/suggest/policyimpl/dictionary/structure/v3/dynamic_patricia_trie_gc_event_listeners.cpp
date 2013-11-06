@@ -18,6 +18,8 @@
 
 #include "suggest/core/policy/dictionary_header_structure_policy.h"
 #include "suggest/policyimpl/dictionary/structure/pt_common/pt_node_params.h"
+#include "suggest/policyimpl/dictionary/structure/pt_common/pt_node_writer.h"
+#include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_writing_utils.h"
 #include "suggest/policyimpl/dictionary/utils/forgetting_curve_utils.h"
 
 namespace latinime {
@@ -54,7 +56,7 @@ bool DynamicPatriciaTrieGcEventListeners
     }
     if (isUselessPtNode) {
         // Current PtNode is no longer needed. Mark it as deleted.
-        if (!mWritingHelper->markNodeAsDeleted(ptNodeParams)) {
+        if (!mPtNodeWriter->markPtNodeAsDeleted(ptNodeParams)) {
             return false;
         }
     } else {
@@ -130,9 +132,7 @@ bool DynamicPatriciaTrieGcEventListeners::TraversePolicyToPlaceAndWriteValidPtNo
                     ptNodeParams->getHeadPos(), writingPos));
     mValidPtNodeCount++;
     // Writes current PtNode.
-    return mWritingHelper->writePtNodeToBufferByCopyingPtNodeInfo(mBufferToWrite, ptNodeParams,
-            ptNodeParams->getParentPos(), ptNodeParams->getCodePoints(),
-            ptNodeParams->getCodePointCount(), ptNodeParams->getProbability(), &writingPos);
+    return mPtNodeWriter->writePtNodeAndAdvancePosition(ptNodeParams, &writingPos);
 }
 
 bool DynamicPatriciaTrieGcEventListeners::TraversePolicyToUpdateAllPositionFields
