@@ -23,6 +23,7 @@ import static com.android.inputmethod.latin.Constants.Subtype.ExtraValue.UNTRANS
 
 import android.os.Build;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.compat.InputMethodSubtypeCompatUtils;
@@ -32,6 +33,8 @@ import com.android.inputmethod.latin.R;
 import java.util.ArrayList;
 
 public final class AdditionalSubtypeUtils {
+    private static final String TAG = AdditionalSubtypeUtils.class.getSimpleName();
+
     private static final InputMethodSubtype[] EMPTY_SUBTYPE_ARRAY = new InputMethodSubtype[0];
 
     private AdditionalSubtypeUtils() {
@@ -43,6 +46,11 @@ public final class AdditionalSubtypeUtils {
     }
 
     private static final String LOCALE_AND_LAYOUT_SEPARATOR = ":";
+    private static final int INDEX_OF_LOCALE = 0;
+    private static final int INDEX_OF_KEYBOARD_LAYOUT = 1;
+    private static final int INDEX_OF_EXTRA_VALUE = 2;
+    private static final int LENGTH_WITHOUT_EXTRA_VALUE = (INDEX_OF_KEYBOARD_LAYOUT + 1);
+    private static final int LENGTH_WITH_EXTRA_VALUE = (INDEX_OF_EXTRA_VALUE + 1);
     private static final String PREF_SUBTYPE_SEPARATOR = ";";
 
     public static InputMethodSubtype createAdditionalSubtype(final String localeString,
@@ -79,17 +87,6 @@ public final class AdditionalSubtypeUtils {
                 : basePrefSubtype + LOCALE_AND_LAYOUT_SEPARATOR + extraValue;
     }
 
-    public static InputMethodSubtype createAdditionalSubtype(final String prefSubtype) {
-        final String elems[] = prefSubtype.split(LOCALE_AND_LAYOUT_SEPARATOR);
-        if (elems.length < 2 || elems.length > 3) {
-            throw new RuntimeException("Unknown additional subtype specified: " + prefSubtype);
-        }
-        final String localeString = elems[0];
-        final String keyboardLayoutSetName = elems[1];
-        final String extraValue = (elems.length == 3) ? elems[2] : null;
-        return createAdditionalSubtype(localeString, keyboardLayoutSetName, extraValue);
-    }
-
     public static InputMethodSubtype[] createAdditionalSubtypesArray(final String prefSubtypes) {
         if (TextUtils.isEmpty(prefSubtypes)) {
             return EMPTY_SUBTYPE_ARRAY;
@@ -98,7 +95,19 @@ public final class AdditionalSubtypeUtils {
         final ArrayList<InputMethodSubtype> subtypesList =
                 CollectionUtils.newArrayList(prefSubtypeArray.length);
         for (final String prefSubtype : prefSubtypeArray) {
-            final InputMethodSubtype subtype = createAdditionalSubtype(prefSubtype);
+            final String elems[] = prefSubtype.split(LOCALE_AND_LAYOUT_SEPARATOR);
+            if (elems.length != LENGTH_WITHOUT_EXTRA_VALUE
+                    && elems.length != LENGTH_WITH_EXTRA_VALUE) {
+                Log.w(TAG, "Unknown additional subtype specified: " + prefSubtype + " in "
+                        + prefSubtypes);
+                continue;
+            }
+            final String localeString = elems[INDEX_OF_LOCALE];
+            final String keyboardLayoutSetName = elems[INDEX_OF_KEYBOARD_LAYOUT];
+            final String extraValue = (elems.length == LENGTH_WITH_EXTRA_VALUE)
+                    ? elems[INDEX_OF_EXTRA_VALUE] : null;
+            final InputMethodSubtype subtype = createAdditionalSubtype(
+                    localeString, keyboardLayoutSetName, extraValue);
             if (subtype.getNameResId() == SubtypeLocaleUtils.UNKNOWN_KEYBOARD_LAYOUT) {
                 // Skip unknown keyboard layout subtype. This may happen when predefined keyboard
                 // layout has been removed.
