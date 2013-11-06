@@ -224,4 +224,13 @@ bool DynamicPatriciaTrieNodeWriter::addNewBigramEntry(
     }
 }
 
+bool DynamicPatriciaTrieNodeWriter::removeBigramEntry(
+        const PtNodeParams *const sourcePtNodeParams, const PtNodeParams *const targetPtNodeParam) {
+    if (sourcePtNodeParams->getBigramsPos() == NOT_A_DICT_POS) {
+        return false;
+    }
+    return mBigramPolicy->removeBigram(sourcePtNodeParams->getBigramsPos(),
+            targetPtNodeParam->getHeadPos());
+}
+
 }

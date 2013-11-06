@@ -20,7 +20,6 @@
 #include <stdint.h>
 
 #include "defines.h"
-#include "suggest/policyimpl/dictionary/structure/pt_common/pt_node_params.h"
 #include "utils/hash_map_compat.h"
 
 namespace latinime {
@@ -62,18 +61,6 @@ class DynamicPatriciaTrieWritingHelper {
 
     ~DynamicPatriciaTrieWritingHelper() {}
 
-    // Add a word to the dictionary. If the word already exists, update the probability.
-    bool addUnigramWord(DynamicPatriciaTrieReadingHelper *const readingHelper,
-            const int *const wordCodePoints, const int codePointCount, const int probability,
-            bool *const outAddedNewUnigram);
-
-    // Add a bigram relation from word0Pos to word1Pos.
-    bool addBigramWords(const int word0Pos, const int word1Pos, const int probability,
-            bool *const outAddedNewBigram);
-
-    // Remove a bigram relation from word0Pos to word1Pos.
-    bool removeBigramWords(const int word0Pos, const int word1Pos);
-
     void writeToDictFile(const char *const fileName, const HeaderPolicy *const headerPolicy,
             const int unigramCount, const int bigramCount);
 
@@ -83,8 +70,6 @@ class DynamicPatriciaTrieWritingHelper {
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(DynamicPatriciaTrieWritingHelper);
 
-    static const int CHILDREN_POSITION_FIELD_SIZE;
-
     BufferWithExtendableBuffer *const mBuffer;
     const PtNodeReader *const mPtNodeReader;
     PtNodeWriter *const mPtNodeWriter;
@@ -92,35 +77,9 @@ class DynamicPatriciaTrieWritingHelper {
     DynamicShortcutListPolicy *const mShortcutPolicy;
     const bool mNeedsToDecay;
 
-    bool createAndInsertNodeIntoPtNodeArray(const int parentPos, const int *const nodeCodePoints,
-            const int nodeCodePointCount, const int probability, int *const forwardLinkFieldPos);
-
-    bool setPtNodeProbability(const PtNodeParams *const originalPtNodeParams, const int probability,
-            bool *const outAddedNewUnigram);
-
-    bool createChildrenPtNodeArrayAndAChildPtNode(const PtNodeParams *const parentPtNodeParams,
-            const int probability, const int *const codePoints, const int codePointCount);
-
-    bool createNewPtNodeArrayWithAChildPtNode(const int parentPos, const int *const nodeCodePoints,
-            const int nodeCodePointCount, const int probability);
-
-    bool reallocatePtNodeAndAddNewPtNodes(
-            const PtNodeParams *const reallocatingPtNodeParams, const int overlappingCodePointCount,
-            const int probabilityOfNewPtNode, const int *const newNodeCodePoints,
-            const int newNodeCodePointCount);
-
     bool runGC(const int rootPtNodeArrayPos, const HeaderPolicy *const headerPolicy,
             BufferWithExtendableBuffer *const bufferToWrite, int *const outUnigramCount,
             int *const outBigramCount);
-
-    int getUpdatedProbability(const int originalProbability, const int newProbability) const;
-
-    const PtNodeParams getUpdatedPtNodeParams(const PtNodeParams *const originalPtNodeParams,
-            const int parentPos, const int codePointCount, const int *const codePoints,
-            const int probability) const;
-
-    const PtNodeParams getPtNodeParamsForNewPtNode(const int parentPos, const int codePointCount,
-            const int *const codePoints, const int probability) const;
 };
 } // namespace latinime
 #endif /* LATINIME_DYNAMIC_PATRICIA_TRIE_WRITING_HELPER_H */

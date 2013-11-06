@@ -84,6 +84,7 @@ LATIN_IME_CORE_SRC_FILES := \
         dynamic_patricia_trie_policy.cpp \
         dynamic_patricia_trie_reading_helper.cpp \
         dynamic_patricia_trie_reading_utils.cpp \
+        dynamic_patricia_trie_updating_helper.cpp \
         dynamic_patricia_trie_writing_helper.cpp \
         dynamic_patricia_trie_writing_utils.cpp) \
     $(addprefix suggest/policyimpl/dictionary/structure/v4/, \

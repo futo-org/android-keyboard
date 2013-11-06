@@ -63,6 +63,9 @@ class DynamicPatriciaTrieNodeWriter : public PtNodeWriter {
             const PtNodeParams *const targetPtNodeParam, const int probability,
             bool *const outAddedNewBigram);
 
+    virtual bool removeBigramEntry(const PtNodeParams *const sourcePtNodeParams,
+            const PtNodeParams *const targetPtNodeParam);
+
  private:
     DISALLOW_COPY_AND_ASSIGN(DynamicPatriciaTrieNodeWriter);
 
