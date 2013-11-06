@@ -44,8 +44,11 @@ class Ver4DictConstants {
     static const int SHORTCUT_ADDRESS_TABLE_BLOCK_SIZE;
     static const int SHORTCUT_ADDRESS_TABLE_DATA_SIZE;
 
-    static const int BIGRAM_FRAGS_FIELD_SIZE;
+    static const int BIGRAM_FLAGS_FIELD_SIZE;
     static const int BIGRAM_TARGET_TERMINAL_ID_FIELD_SIZE;
+
+    static const int SHORTCUT_FLAGS_FIELD_SIZE;
+
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(Ver4DictConstants);
 };

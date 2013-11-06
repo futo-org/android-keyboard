@@ -21,8 +21,7 @@
 #include "suggest/policyimpl/dictionary/header/header_read_write_utils.h"
 #include "suggest/policyimpl/dictionary/structure/v4/content/bigram_dict_content.h"
 #include "suggest/policyimpl/dictionary/structure/v4/content/probability_dict_content.h"
-#include "suggest/policyimpl/dictionary/structure/v4/content/single_dict_content.h"
-#include "suggest/policyimpl/dictionary/structure/v4/content/sparse_table_dict_content.h"
+#include "suggest/policyimpl/dictionary/structure/v4/content/shortcut_dict_content.h"
 #include "suggest/policyimpl/dictionary/structure/v4/content/terminal_position_lookup_table.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_dict_constants.h"
 #include "suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer.h"
@@ -66,6 +65,10 @@ class Ver4DictBuffers {
         return &mBigramDictContent;
     }
 
+    AK_FORCE_INLINE const ShortcutDictContent *getShortcutDictContent() const {
+        return &mShortcutDictContent;
+    }
+
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(Ver4DictBuffers);
 
@@ -77,18 +80,13 @@ class Ver4DictBuffers {
                       HeaderReadWriteUtils::getHeaderSize(mDictBuffer.get()->getBuffer())),
               mProbabilityDictContent(dictDirPath, isUpdatable),
               mBigramDictContent(dictDirPath, isUpdatable),
-              mShortcutDictContent(dictDirPath,
-                      Ver4DictConstants::SHORTCUT_LOOKUP_TABLE_FILE_EXTENSION,
-                      Ver4DictConstants::SHORTCUT_CONTENT_TABLE_FILE_EXTENSION,
-                      Ver4DictConstants::SHORTCUT_FILE_EXTENSION, isUpdatable,
-                      Ver4DictConstants::SHORTCUT_ADDRESS_TABLE_BLOCK_SIZE,
-                      Ver4DictConstants::SHORTCUT_ADDRESS_TABLE_DATA_SIZE) {}
+              mShortcutDictContent(dictDirPath, isUpdatable) {}
 
     const MmappedBuffer::MmappedBufferPtr mDictBuffer;
     TerminalPositionLookupTable mTerminalPositionLookupTable;
     ProbabilityDictContent mProbabilityDictContent;
     BigramDictContent mBigramDictContent;
-    SparseTableDictContent mShortcutDictContent;
+    ShortcutDictContent mShortcutDictContent;
 };
 } // namespace latinime
 #endif /* LATINIME_VER4_DICT_BUFFER_H */

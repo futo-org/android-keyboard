@@ -108,7 +108,8 @@ int Ver4PatriciaTriePolicy::getShortcutPositionOfPtNode(const int ptNodePos) con
     if (ptNodeParams.isDeleted()) {
         return NOT_A_DICT_POS;
     }
-    return ptNodeParams.getTerminalId();
+    return mBuffers.get()->getShortcutDictContent()->getShortcutListHeadPos(
+            ptNodeParams.getTerminalId());
 }
 
 int Ver4PatriciaTriePolicy::getBigramsPositionOfPtNode(const int ptNodePos) const {
