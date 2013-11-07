@@ -74,13 +74,6 @@
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"Anteprima mobile dinamica"</string>
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"Visualizza la parola suggerita durante il gesto"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : parola salvata"</string>
-    <string name="label_go_key" msgid="1635148082137219148">"Vai"</string>
-    <string name="label_next_key" msgid="362972844525672568">"Avanti"</string>
-    <string name="label_previous_key" msgid="1211868118071386787">"Indietro"</string>
-    <string name="label_done_key" msgid="2441578748772529288">"Fine"</string>
-    <string name="label_send_key" msgid="2815056534433717444">"Invia"</string>
-    <string name="label_pause_key" msgid="181098308428035340">"Pausa"</string>
-    <string name="label_wait_key" msgid="6402152600878093134">"Attesa"</string>
     <string name="spoken_use_headphones" msgid="896961781287283493">"Collega gli auricolari per ascoltare la pronuncia dei tasti premuti per la password."</string>
     <string name="spoken_current_text_is" msgid="2485723011272583845">"Il testo attuale è %s"</string>
     <string name="spoken_no_text_entered" msgid="7479685225597344496">"Nessun testo inserito"</string>
