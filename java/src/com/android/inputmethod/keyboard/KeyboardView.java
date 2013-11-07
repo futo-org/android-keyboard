@@ -454,6 +454,9 @@ public class KeyboardView extends View {
             blendAlpha(paint, params.mAnimAlpha);
             final float labelCharHeight = TypefaceUtils.getReferenceCharHeight(paint);
             final float labelCharWidth = TypefaceUtils.getReferenceCharWidth(paint);
+            final KeyVisualAttributes visualAttr = key.getVisualAttributes();
+            final float adjustmentY = (visualAttr == null) ? 0.0f
+                    : visualAttr.mHintLabelVerticalAdjustment * labelCharHeight;
             final float hintX, hintY;
             if (key.hasHintLabel()) {
                 // The hint label is placed just right of the key label. Used mainly on
@@ -477,7 +480,7 @@ public class KeyboardView extends View {
                 hintY = -paint.ascent();
                 paint.setTextAlign(Align.CENTER);
             }
-            canvas.drawText(hintLabel, 0, hintLabel.length(), hintX, hintY, paint);
+            canvas.drawText(hintLabel, 0, hintLabel.length(), hintX, hintY + adjustmentY, paint);
 
             if (LatinImeLogger.sVISUALDEBUG) {
                 final Paint line = new Paint();
