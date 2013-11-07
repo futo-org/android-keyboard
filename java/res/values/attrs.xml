@@ -276,6 +276,8 @@
         <attr name="keyLabel" format="string" />
         <!-- The hint label to display on the key in conjunction with the label. -->
         <attr name="keyHintLabel" format="string" />
+        <!-- The vertical adjustment of key hint label in proportion to its height. -->
+        <attr name="keyHintLabelVerticalAdjustment" format="fraction" />
         <!-- The key label flags. -->
         <attr name="keyLabelFlags" format="integer">
             <!-- This should be aligned with Key.LABEL_FLAGS__* -->
