@@ -295,14 +295,16 @@
             <flag name="withIconLeft" value="0x1000" />
             <flag name="withIconRight" value="0x2000" />
             <flag name="autoXScale" value="0x4000" />
+            <!-- The autoScale value implies autoXScale bit on to optimize scaling code path. -->
+            <flag name="autoScale" value="0xc000" />
             <!-- If true, character case of code, altCode, moreKeys, keyOutputText, keyLabel,
                  or keyHintLabel will never be subject to change. -->
-            <flag name="preserveCase" value="0x8000" />
+            <flag name="preserveCase" value="0x10000" />
             <!-- If true, use keyShiftedLetterHintActivatedColor for the shifted letter hint and
                  keyTextInactivatedColor for the primary key top label. -->
-            <flag name="shiftedLetterActivated" value="0x10000" />
+            <flag name="shiftedLetterActivated" value="0x20000" />
             <!-- If true, use EditorInfo.actionLabel for the key label. -->
-            <flag name="fromCustomActionLabel" value="0x20000" />
+            <flag name="fromCustomActionLabel" value="0x40000" />
             <!-- If true, disable keyHintLabel. -->
             <flag name="disableKeyHintLabel" value="0x40000000" />
             <!-- If true, disable additionalMoreKeys. -->
