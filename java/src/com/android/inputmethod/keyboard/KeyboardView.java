@@ -404,9 +404,15 @@ public class KeyboardView extends View {
                 positionX = centerX;
                 paint.setTextAlign(Align.CENTER);
             }
-            if (key.needsXScale()) {
-                paint.setTextScaleX(Math.min(1.0f,
-                        (keyWidth * MAX_LABEL_RATIO) / TypefaceUtils.getLabelWidth(label, paint)));
+            if (key.needsAutoXScale()) {
+                final float ratio = Math.min(1.0f, (keyWidth * MAX_LABEL_RATIO) /
+                        TypefaceUtils.getLabelWidth(label, paint));
+                if (key.needsAutoScale()) {
+                    final float autoSize = paint.getTextSize() * ratio;
+                    paint.setTextSize(autoSize);
+                } else {
+                    paint.setTextScaleX(ratio);
+                }
             }
 
             paint.setColor(key.selectTextColor(params));
