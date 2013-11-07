@@ -37,6 +37,7 @@
             <Key
                 latin:keyLabel="&#x17BA;"
                 latin:keyHintLabel="&#x17DD;"
+                latin:keyHintLabelVerticalAdjustment="40%"
                 latin:moreKeys="&#x17DD;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+17C2: "ែ" KHMER VOWEL SIGN AE -->
