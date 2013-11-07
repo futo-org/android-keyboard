@@ -64,6 +64,7 @@
             <Key
                 latin:keyLabel="&#x17D0;"
                 latin:keyHintLabel="&#x17DA;"
+                latin:keyHintLabelVerticalAdjustment="-30%"
                 latin:moreKeys="&#x17DA;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+17CF: "៏" KHMER SIGN AHSDA -->
