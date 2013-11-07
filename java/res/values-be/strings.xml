@@ -77,13 +77,6 @@
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"Дынамічны плаваючы прагляд"</string>
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"Праглядаць прапанаванае слова падчас жэсту"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : Захаваныя"</string>
-    <string name="label_go_key" msgid="1635148082137219148">"Пачаць"</string>
-    <string name="label_next_key" msgid="362972844525672568">"Далей"</string>
-    <string name="label_previous_key" msgid="1211868118071386787">"Назад"</string>
-    <string name="label_done_key" msgid="2441578748772529288">"Гатова"</string>
-    <string name="label_send_key" msgid="2815056534433717444">"Адправіць"</string>
-    <string name="label_pause_key" msgid="181098308428035340">"Паўза"</string>
-    <string name="label_wait_key" msgid="6402152600878093134">"Чакае"</string>
     <string name="spoken_use_headphones" msgid="896961781287283493">"Каб праслухаць паролi, падключыце гарнiтуру."</string>
     <string name="spoken_current_text_is" msgid="2485723011272583845">"Бягучы тэкст %s"</string>
     <string name="spoken_no_text_entered" msgid="7479685225597344496">"Тэкст не ўведзены"</string>
