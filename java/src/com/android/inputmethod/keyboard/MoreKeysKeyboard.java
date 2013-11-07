@@ -327,7 +327,7 @@ public final class MoreKeysKeyboard extends Keyboard {
                 // If the label is single letter, minKeyWidth is enough to hold the label.
                 if (label != null && StringUtils.codePointCount(label) > 1) {
                     maxWidth = Math.max(maxWidth,
-                            (int)(TypefaceUtils.getLabelWidth(label, paint) + padding));
+                            (int)(TypefaceUtils.getStringWidth(label, paint) + padding));
                 }
             }
             return maxWidth;

@@ -1193,7 +1193,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     private boolean fitsTextIntoWidth(final int width, final String text, final Paint paint) {
         final int maxTextWidth = width - mLanguageOnSpacebarHorizontalMargin * 2;
         paint.setTextScaleX(1.0f);
-        final float textWidth = TypefaceUtils.getLabelWidth(text, paint);
+        final float textWidth = TypefaceUtils.getStringWidth(text, paint);
         if (textWidth < width) {
             return true;
         }
@@ -1204,7 +1204,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         }
 
         paint.setTextScaleX(scaleX);
-        return TypefaceUtils.getLabelWidth(text, paint) < maxTextWidth;
+        return TypefaceUtils.getStringWidth(text, paint) < maxTextWidth;
     }
 
     // Layout language name on spacebar.

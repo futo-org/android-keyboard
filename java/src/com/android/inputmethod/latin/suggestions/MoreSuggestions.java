@@ -75,7 +75,7 @@ public final class MoreSuggestions extends Keyboard {
             while (index < size) {
                 final String word = suggestedWords.getWord(index);
                 // TODO: Should take care of text x-scaling.
-                mWidths[index] = (int)(TypefaceUtils.getLabelWidth(word, paint) + padding);
+                mWidths[index] = (int)(TypefaceUtils.getStringWidth(word, paint) + padding);
                 final int numColumn = index - rowStartIndex + 1;
                 final int columnWidth =
                         (maxWidth - mDividerWidth * (numColumn - 1)) / numColumn;
