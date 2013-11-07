@@ -78,7 +78,7 @@ public class Ver4BinaryDictionaryTests extends AndroidTestCase {
 
         final FusionDictionary dict = new FusionDictionary(new PtNodeArray(),
                 getDictionaryOptions(TEST_LOCALE, dictVersion));
-        DictEncoder encoder = new Ver4DictEncoder(getContext().getCacheDir());
+        final DictEncoder encoder = new Ver4DictEncoder(getContext().getCacheDir());
         try {
             encoder.writeDictionary(dict, FORMAT_OPTIONS);
         } catch (IOException e) {
@@ -104,7 +104,7 @@ public class Ver4BinaryDictionaryTests extends AndroidTestCase {
         dict.add("aaa", frequency, null, false /* isNotAWord */);
         dict.add("ab", frequency, null, false /* isNotAWord */);
 
-        DictEncoder encoder = new Ver4DictEncoder(getContext().getCacheDir());
+        final DictEncoder encoder = new Ver4DictEncoder(getContext().getCacheDir());
         try {
             encoder.writeDictionary(dict, FORMAT_OPTIONS);
         } catch (IOException e) {
@@ -112,8 +112,8 @@ public class Ver4BinaryDictionaryTests extends AndroidTestCase {
         } catch (UnsupportedFormatException e) {
             Log.e(TAG, "Unsupported format", e);
         }
-        File trieFile = getTrieFile(TEST_LOCALE, dictVersion);
-        BinaryDictionary binaryDictionary = new BinaryDictionary(trieFile.getAbsolutePath(),
+        final File trieFile = getTrieFile(TEST_LOCALE, dictVersion);
+        final BinaryDictionary binaryDictionary = new BinaryDictionary(trieFile.getAbsolutePath(),
                 0 /* offset */, trieFile.length(), true /* useFullEditDistance */,
                 Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
         assertTrue(binaryDictionary.isValidDictionary());
@@ -122,7 +122,7 @@ public class Ver4BinaryDictionaryTests extends AndroidTestCase {
         assertEquals(frequency, binaryDictionary.getFrequency("ab"));
     }
 
-    public static int getCalculatedBigramProbabiliy(BinaryDictionary binaryDictionary,
+    public static int getCalculatedBigramProbabiliy(final BinaryDictionary binaryDictionary,
             final int unigramFrequency, final int bigramFrequency) {
         final int bigramFrequencyDiff = BinaryDictEncoderUtils.getBigramFrequencyDiff(
                 unigramFrequency, bigramFrequency);
@@ -146,7 +146,7 @@ public class Ver4BinaryDictionaryTests extends AndroidTestCase {
         dict.setBigram("a", "ab", bigramFrequency1);
         dict.setBigram("aaa", "ab", bigramFrequency2);
 
-        DictEncoder encoder = new Ver4DictEncoder(getContext().getCacheDir());
+        final DictEncoder encoder = new Ver4DictEncoder(getContext().getCacheDir());
         try {
             encoder.writeDictionary(dict, FORMAT_OPTIONS);
         } catch (IOException e) {
@@ -154,8 +154,8 @@ public class Ver4BinaryDictionaryTests extends AndroidTestCase {
         } catch (UnsupportedFormatException e) {
             Log.e(TAG, "Unsupported format", e);
         }
-        File trieFile = getTrieFile(TEST_LOCALE, dictVersion);
-        BinaryDictionary binaryDictionary = new BinaryDictionary(trieFile.getAbsolutePath(),
+        final File trieFile = getTrieFile(TEST_LOCALE, dictVersion);
+        final BinaryDictionary binaryDictionary = new BinaryDictionary(trieFile.getAbsolutePath(),
                 0 /* offset */, trieFile.length(), true /* useFullEditDistance */,
                 Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
 
@@ -172,4 +172,38 @@ public class Ver4BinaryDictionaryTests extends AndroidTestCase {
         assertFalse(binaryDictionary.isValidBigram("ab", "a"));
         assertFalse(binaryDictionary.isValidBigram("ab", "aaa"));
     }
+
+    // TODO: Add large tests.
+    public void testWriteUnigrams() {
+        final String dictVersion = Long.toString(System.currentTimeMillis());
+        final FusionDictionary dict = new FusionDictionary(new PtNodeArray(),
+                getDictionaryOptions(TEST_LOCALE, dictVersion));
+        final DictEncoder encoder = new Ver4DictEncoder(getContext().getCacheDir());
+        try {
+            encoder.writeDictionary(dict, FORMAT_OPTIONS);
+        } catch (IOException e) {
+            Log.e(TAG, "IOException while writing dictionary", e);
+        } catch (UnsupportedFormatException e) {
+            Log.e(TAG, "Unsupported format", e);
+        }
+        final File trieFile = getTrieFile(TEST_LOCALE, dictVersion);
+        final BinaryDictionary binaryDictionary = new BinaryDictionary(trieFile.getAbsolutePath(),
+                0 /* offset */, trieFile.length(), true /* useFullEditDistance */,
+                Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
+        assertTrue(binaryDictionary.isValidDictionary());
+
+        final int probability = 100;
+        binaryDictionary.addUnigramWord("aaa", probability);
+        binaryDictionary.addUnigramWord("abc", probability);
+        binaryDictionary.addUnigramWord("bcd", probability);
+        binaryDictionary.addUnigramWord("x", probability);
+        binaryDictionary.addUnigramWord("y", probability);
+
+        assertEquals(probability, binaryDictionary.getFrequency("aaa"));
+        assertEquals(probability, binaryDictionary.getFrequency("abc"));
+        assertEquals(probability, binaryDictionary.getFrequency("bcd"));
+        assertEquals(probability, binaryDictionary.getFrequency("x"));
+        assertEquals(probability, binaryDictionary.getFrequency("y"));
+    }
+
 }

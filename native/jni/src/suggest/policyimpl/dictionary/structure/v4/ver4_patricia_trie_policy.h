@@ -22,8 +22,10 @@
 #include "suggest/policyimpl/dictionary/bigram/ver4_bigram_list_policy.h"
 #include "suggest/policyimpl/dictionary/header/header_policy.h"
 #include "suggest/policyimpl/dictionary/shortcut/ver4_shortcut_list_policy.h"
+#include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_updating_helper.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_dict_buffers.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_patricia_trie_node_reader.h"
+#include "suggest/policyimpl/dictionary/structure/v4/ver4_patricia_trie_node_writer.h"
 #include "suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer.h"
 
 namespace latinime {
@@ -44,7 +46,13 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
                       mBuffers.get()->getTerminalPositionLookupTable()),
               mShortcutPolicy(mBuffers.get()->getShortcutDictContent(),
                       mBuffers.get()->getTerminalPositionLookupTable()),
-              mNodeReader(&mDictBuffer, mBuffers.get()->getProbabilityDictContent()) {};
+              mNodeReader(&mDictBuffer, mBuffers.get()->getProbabilityDictContent()),
+              mNodeWriter(&mDictBuffer, mBuffers.get(), &mNodeReader, &mBigramPolicy,
+                      &mShortcutPolicy),
+              mUpdatingHelper(&mDictBuffer, &mNodeReader, &mNodeWriter,
+                      mHeaderPolicy.isDecayingDict()),
+              mUnigramCount(mHeaderPolicy.getUnigramCount()),
+              mBigramCount(mHeaderPolicy.getBigramCount()) {};
 
     AK_FORCE_INLINE int getRootPosition() const {
         return 0;
@@ -100,12 +108,21 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(Ver4PatriciaTriePolicy);
 
-    const Ver4DictBuffers::Ver4DictBuffersPtr mBuffers;
+    // When the dictionary size is near the maximum size, we have to refuse dynamic operations to
+    // prevent the dictionary from overflowing.
+    static const int MARGIN_TO_REFUSE_DYNAMIC_OPERATIONS;
+    static const int MIN_DICT_SIZE_TO_REFUSE_DYNAMIC_OPERATIONS;
+
+    Ver4DictBuffers::Ver4DictBuffersPtr mBuffers;
     const HeaderPolicy mHeaderPolicy;
     BufferWithExtendableBuffer mDictBuffer;
-    const Ver4BigramListPolicy mBigramPolicy;
-    const Ver4ShortcutListPolicy mShortcutPolicy;
+    Ver4BigramListPolicy mBigramPolicy;
+    Ver4ShortcutListPolicy mShortcutPolicy;
     Ver4PatriciaTrieNodeReader mNodeReader;
+    Ver4PatriciaTrieNodeWriter mNodeWriter;
+    DynamicPatriciaTrieUpdatingHelper mUpdatingHelper;
+    int mUnigramCount;
+    int mBigramCount;
 };
 } // namespace latinime
 #endif // LATINIME_VER4_PATRICIA_TRIE_POLICY_H

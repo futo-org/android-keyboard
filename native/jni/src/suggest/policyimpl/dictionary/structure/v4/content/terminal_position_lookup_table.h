@@ -47,10 +47,28 @@ class TerminalPositionLookupTable : public SingleDictContent {
                 readingPos) - mHeaderRegionSize;
     }
 
+    bool setTerminalPtNodePosition(const int terminalId, const int terminalPtNodePos) {
+        if (terminalId < 0 || terminalId > mSize) {
+            return NOT_A_DICT_POS;
+        }
+        if (terminalId == mSize) {
+            // Use new terminal id.
+            mSize += 1;
+        }
+        int writingPos = terminalId * Ver4DictConstants::TERMINAL_ADDRESS_TABLE_ADDRESS_SIZE;
+        return getWritableBuffer()->writeUintAndAdvancePosition(
+                terminalPtNodePos + mHeaderRegionSize,
+                Ver4DictConstants::TERMINAL_ADDRESS_TABLE_ADDRESS_SIZE, &writingPos);
+    }
+
+    int getNextTerminalId() const {
+        return mSize;
+    }
+
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(TerminalPositionLookupTable);
 
-    const int mSize;
+    int mSize;
     const int mHeaderRegionSize;
 };
 } // namespace latinime

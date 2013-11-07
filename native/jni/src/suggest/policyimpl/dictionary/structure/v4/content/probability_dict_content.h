@@ -38,6 +38,28 @@ class ProbabilityDictContent : public SingleDictContent {
         return Ver4PatriciaTrieReadingUtils::getProbability(getBuffer(), terminalId);
     }
 
+    bool setProbability(const int terminalId, const int probability) {
+        if (terminalId < 0 || terminalId > getSize()) {
+            return false;
+        }
+        if (terminalId == getSize()) {
+            // Write new entry.
+            int flagWritingPos = terminalId * (Ver4DictConstants::FLAGS_IN_PROBABILITY_FILE_SIZE
+                    + Ver4DictConstants::PROBABILITY_SIZE);
+            const int dummyFlags = 0;
+            // Write dummy flags.
+            if (!getWritableBuffer()->writeUintAndAdvancePosition(dummyFlags,
+                    Ver4DictConstants::FLAGS_IN_PROBABILITY_FILE_SIZE, &flagWritingPos)) {
+                return false;
+            }
+        }
+        int probabilityWritingPos = terminalId * (Ver4DictConstants::FLAGS_IN_PROBABILITY_FILE_SIZE
+                + Ver4DictConstants::PROBABILITY_SIZE)
+                        + Ver4DictConstants::FLAGS_IN_PROBABILITY_FILE_SIZE;
+        return getWritableBuffer()->writeUintAndAdvancePosition(probability,
+                Ver4DictConstants::PROBABILITY_SIZE, &probabilityWritingPos);
+    }
+
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(ProbabilityDictContent);
 
