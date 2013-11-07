@@ -35,7 +35,7 @@ namespace latinime {
         AKLOGE("DICT: Can't open the source. path=%s errno=%d", path, errno);
         return MmappedBufferPtr(0);
     }
-    const int pagesize = getpagesize();
+    const int pagesize = sysconf(_SC_PAGESIZE);
     const int offset = bufferOffset % pagesize;
     int alignedOffset = bufferOffset - offset;
     int alignedSize = bufferSize + offset;
