@@ -74,13 +74,6 @@
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"Dinamični plavajoči predogled"</string>
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"Prikaz predlagane besede med vnosom s prstom"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g>: shranjeno"</string>
-    <string name="label_go_key" msgid="1635148082137219148">"Pojdi"</string>
-    <string name="label_next_key" msgid="362972844525672568">"Naprej"</string>
-    <string name="label_previous_key" msgid="1211868118071386787">"Nazaj"</string>
-    <string name="label_done_key" msgid="2441578748772529288">"Dokončano"</string>
-    <string name="label_send_key" msgid="2815056534433717444">"Pošlji"</string>
-    <string name="label_pause_key" msgid="181098308428035340">"Premor"</string>
-    <string name="label_wait_key" msgid="6402152600878093134">"Čakaj"</string>
     <string name="spoken_use_headphones" msgid="896961781287283493">"Priključite slušalke, če želite slišati izgovorjene tipke gesla."</string>
     <string name="spoken_current_text_is" msgid="2485723011272583845">"Trenutno besedilo je %s"</string>
     <string name="spoken_no_text_entered" msgid="7479685225597344496">"Ni vnesenega besedila"</string>

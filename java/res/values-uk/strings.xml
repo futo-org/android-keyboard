@@ -74,13 +74,6 @@
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"Динамічний спливаючий перегляд"</string>
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"Показувати пропоноване слово під час введення тексту жестами"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : збережено"</string>
-    <string name="label_go_key" msgid="1635148082137219148">"OK"</string>
-    <string name="label_next_key" msgid="362972844525672568">"Далі"</string>
-    <string name="label_previous_key" msgid="1211868118071386787">"Назад"</string>
-    <string name="label_done_key" msgid="2441578748772529288">"Готово"</string>
-    <string name="label_send_key" msgid="2815056534433717444">"Надісл."</string>
-    <string name="label_pause_key" msgid="181098308428035340">"Пауза"</string>
-    <string name="label_wait_key" msgid="6402152600878093134">"Чек."</string>
     <string name="spoken_use_headphones" msgid="896961781287283493">"Підключіть гарнітуру, щоб прослухати відтворені вголос символи пароля."</string>
     <string name="spoken_current_text_is" msgid="2485723011272583845">"Поточний текст – %s."</string>
     <string name="spoken_no_text_entered" msgid="7479685225597344496">"Текст не введено"</string>

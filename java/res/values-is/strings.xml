@@ -128,15 +128,6 @@
     <skip />
     <!-- no translation found for added_word (8993883354622484372) -->
     <skip />
-    <string name="label_go_key" msgid="1635148082137219148">"Áfram"</string>
-    <string name="label_next_key" msgid="362972844525672568">"Næsta"</string>
-    <string name="label_previous_key" msgid="1211868118071386787">"Fyrra"</string>
-    <string name="label_done_key" msgid="2441578748772529288">"Lokið"</string>
-    <string name="label_send_key" msgid="2815056534433717444">"Senda"</string>
-    <!-- no translation found for label_pause_key (181098308428035340) -->
-    <skip />
-    <!-- no translation found for label_wait_key (6402152600878093134) -->
-    <skip />
     <!-- no translation found for spoken_use_headphones (896961781287283493) -->
     <skip />
     <!-- no translation found for spoken_current_text_is (2485723011272583845) -->

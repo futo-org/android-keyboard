@@ -74,13 +74,6 @@
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"動態浮動預覽"</string>
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"使用滑行輸入時顯示建議字詞"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g>：已儲存"</string>
-    <string name="label_go_key" msgid="1635148082137219148">"前往"</string>
-    <string name="label_next_key" msgid="362972844525672568">"下一頁"</string>
-    <string name="label_previous_key" msgid="1211868118071386787">"上一頁"</string>
-    <string name="label_done_key" msgid="2441578748772529288">"完成"</string>
-    <string name="label_send_key" msgid="2815056534433717444">"傳送"</string>
-    <string name="label_pause_key" msgid="181098308428035340">"暫停"</string>
-    <string name="label_wait_key" msgid="6402152600878093134">"等待"</string>
     <string name="spoken_use_headphones" msgid="896961781287283493">"連接耳機即可聽取系統朗讀密碼按鍵。"</string>
     <string name="spoken_current_text_is" msgid="2485723011272583845">"目前文字為 %s"</string>
     <string name="spoken_no_text_entered" msgid="7479685225597344496">"未輸入文字"</string>

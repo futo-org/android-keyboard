@@ -87,11 +87,11 @@ public final class KeyboardTextsSet {
         return (text == null) ? LANGUAGE_DEFAULT[id] : text;
     }
 
+    // These texts' name should be aligned with the @string/<name> in
+    // values*/strings-action-keys.xml.
     private static final String[] RESOURCE_NAMES = {
-        // These texts' name should be aligned with the @string/<name> in values/strings.xml.
         // Labels for action.
         "label_go_key",
-        // "label_search_key",
         "label_send_key",
         "label_next_key",
         "label_done_key",
