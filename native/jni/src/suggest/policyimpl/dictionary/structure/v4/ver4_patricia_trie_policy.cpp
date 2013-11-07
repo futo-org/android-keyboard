@@ -19,11 +19,16 @@
 #include "suggest/core/dicnode/dic_node.h"
 #include "suggest/core/dicnode/dic_node_vector.h"
 #include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_reading_helper.h"
+#include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_writing_helper.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_patricia_trie_node_reader.h"
 #include "suggest/policyimpl/dictionary/utils/forgetting_curve_utils.h"
 #include "suggest/policyimpl/dictionary/utils/probability_utils.h"
 
 namespace latinime {
+
+const int Ver4PatriciaTriePolicy::MARGIN_TO_REFUSE_DYNAMIC_OPERATIONS = 1024;
+const int Ver4PatriciaTriePolicy::MIN_DICT_SIZE_TO_REFUSE_DYNAMIC_OPERATIONS =
+        DynamicPatriciaTrieWritingHelper::MAX_DICTIONARY_SIZE - MARGIN_TO_REFUSE_DYNAMIC_OPERATIONS;
 
 void Ver4PatriciaTriePolicy::createAndGetAllChildDicNodes(const DicNode *const dicNode,
         DicNodeVector *const childDicNodes) const {
@@ -126,8 +131,27 @@ int Ver4PatriciaTriePolicy::getBigramsPositionOfPtNode(const int ptNodePos) cons
 
 bool Ver4PatriciaTriePolicy::addUnigramWord(const int *const word, const int length,
         const int probability) {
-    // TODO: Implement.
-    return false;
+    if (!mBuffers.get()->isUpdatable()) {
+        AKLOGI("Warning: addUnigramWord() is called for non-updatable dictionary.");
+        return false;
+    }
+    if (mDictBuffer.getTailPosition()
+            >= MIN_DICT_SIZE_TO_REFUSE_DYNAMIC_OPERATIONS) {
+        AKLOGE("The dictionary is too large to dynamically update.");
+        return false;
+    }
+    DynamicPatriciaTrieReadingHelper readingHelper(&mDictBuffer, &mNodeReader);
+    readingHelper.initWithPtNodeArrayPos(getRootPosition());
+    bool addedNewUnigram = false;
+    if (mUpdatingHelper.addUnigramWord(&readingHelper, word, length, probability,
+            &addedNewUnigram)) {
+        if (addedNewUnigram) {
+            mUnigramCount++;
+        }
+        return true;
+    } else {
+        return false;
+    }
 }
 
 bool Ver4PatriciaTriePolicy::addBigramWords(const int *const word0, const int length0,

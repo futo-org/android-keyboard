@@ -53,8 +53,17 @@ class Ver4DictBuffers {
         return mDictBuffer.get()->getBufferSize();
     }
 
+
+    AK_FORCE_INLINE TerminalPositionLookupTable *getUpdatableTerminalPositionLookupTable() {
+        return &mTerminalPositionLookupTable;
+    }
+
     AK_FORCE_INLINE const TerminalPositionLookupTable *getTerminalPositionLookupTable() const {
         return &mTerminalPositionLookupTable;
+    }
+
+    AK_FORCE_INLINE ProbabilityDictContent *getUpdatableProbabilityDictContent() {
+        return &mProbabilityDictContent;
     }
 
     AK_FORCE_INLINE const ProbabilityDictContent *getProbabilityDictContent() const {
@@ -69,6 +78,10 @@ class Ver4DictBuffers {
         return &mShortcutDictContent;
     }
 
+    AK_FORCE_INLINE bool isUpdatable() const {
+        return mIsUpdatable;
+    }
+
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(Ver4DictBuffers);
 
@@ -80,13 +93,15 @@ class Ver4DictBuffers {
                       HeaderReadWriteUtils::getHeaderSize(mDictBuffer.get()->getBuffer())),
               mProbabilityDictContent(dictDirPath, isUpdatable),
               mBigramDictContent(dictDirPath, isUpdatable),
-              mShortcutDictContent(dictDirPath, isUpdatable) {}
+              mShortcutDictContent(dictDirPath, isUpdatable),
+              mIsUpdatable(isUpdatable) {}
 
     const MmappedBuffer::MmappedBufferPtr mDictBuffer;
     TerminalPositionLookupTable mTerminalPositionLookupTable;
     ProbabilityDictContent mProbabilityDictContent;
     BigramDictContent mBigramDictContent;
     ShortcutDictContent mShortcutDictContent;
+    const int mIsUpdatable;
 };
 } // namespace latinime
 #endif /* LATINIME_VER4_DICT_BUFFER_H */
