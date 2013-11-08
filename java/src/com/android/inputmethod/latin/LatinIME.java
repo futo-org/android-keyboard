@@ -1457,7 +1457,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     private boolean maybeDoubleSpacePeriod() {
         final SettingsValues currentSettingsValues = mSettings.getCurrent();
-        if (!currentSettingsValues.mCorrectionEnabled) return false;
         if (!currentSettingsValues.mUseDoubleSpacePeriod) return false;
         if (!mHandler.isAcceptingDoubleSpacePeriod()) return false;
         // We only do this when we see two spaces and an accepted code point before the cursor.
