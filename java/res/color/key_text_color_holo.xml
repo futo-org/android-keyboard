@@ -17,32 +17,32 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- Functional keys. -->
     <item android:state_single="true" android:state_pressed="true"
-          android:color="@color/key_text_color_functional_ics" />
+          android:color="@color/key_text_color_functional_holo" />
     <item android:state_single="true"
-          android:color="@color/key_text_color_functional_ics" />
+          android:color="@color/key_text_color_functional_holo" />
 
     <!-- Action keys. -->
     <item android:state_active="true" android:state_pressed="true"
-          android:color="@color/key_text_color_normal_ics" />
+          android:color="@color/key_text_color_normal_holo" />
     <item android:state_active="true"
-          android:color="@color/key_text_color_normal_ics" />
+          android:color="@color/key_text_color_normal_holo" />
 
     <!-- Toggle keys. Use checkable/checked state. -->
     <item android:state_checkable="true" android:state_checked="true" android:state_pressed="true"
-          android:color="@color/key_text_color_normal_ics" />
+          android:color="@color/key_text_color_normal_holo" />
     <item android:state_checkable="true" android:state_pressed="true"
-          android:color="@color/key_text_color_normal_ics" />
+          android:color="@color/key_text_color_normal_holo" />
     <item android:state_checkable="true" android:state_checked="true"
-          android:color="@color/key_text_color_normal_ics" />
+          android:color="@color/key_text_color_normal_holo" />
     <item android:state_checkable="true"
-          android:color="@color/key_text_color_normal_ics" />
+          android:color="@color/key_text_color_normal_holo" />
 
     <!-- Empty background keys. -->
     <item android:state_empty="true"
-          android:color="@color/key_text_color_normal_ics" />
+          android:color="@color/key_text_color_normal_holo" />
 
     <!-- Normal keys. -->
     <item android:state_pressed="true"
-          android:color="@color/key_text_color_normal_ics" />
-    <item android:color="@color/key_text_color_normal_ics" />
+          android:color="@color/key_text_color_normal_holo" />
+    <item android:color="@color/key_text_color_normal_holo" />
 </selector>

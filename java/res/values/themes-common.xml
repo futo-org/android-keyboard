@@ -110,7 +110,7 @@
         name="EmojiPalettesView"
         parent="KeyboardView"
     >
-        <item name="emojiTabLabelColor">@color/emoji_tab_label_color_ics</item>
+        <item name="emojiTabLabelColor">@color/emoji_tab_label_color_holo</item>
     </style>
     <style name="MoreKeysKeyboard" />
     <style
