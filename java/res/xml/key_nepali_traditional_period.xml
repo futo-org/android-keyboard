@@ -39,10 +39,11 @@
                  set of Key definitions are needed based on the API version. -->
             <include
                 latin:keyboardLayout="@xml/keystyle_devanagari_sign_virama" />
+            <!-- U+002E: "." FULL STOP -->
             <Key
                 latin:keyStyle="baseKeyDevanagariSignVirama"
                 latin:keyLabelFlags="hasPopupHint"
-                latin:moreKeys="!fixedColumnOrder!4,.,!text/more_keys_for_punctuation"
+                latin:moreKeys="!fixedColumnOrder!9,&#x002E;,!text/more_keys_for_punctuation"
                 latin:backgroundType="functional" />
         </default>
     </switch>
