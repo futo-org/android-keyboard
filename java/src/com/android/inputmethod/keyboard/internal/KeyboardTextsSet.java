@@ -284,7 +284,7 @@ public final class KeyboardTextsSet {
         /* 56 */ "\u00A2,\u00A3,\u20AC,\u00A5,\u20B1",
         /* 57 */ "$",
         /* 58 */ "$,\u00A2,\u20AC,\u00A3,\u00A5,\u20B1",
-        /* 59 */ "!fixedColumnOrder!4,#,!,\\,,?,-,:,',@",
+        /* 59 */ "!fixedColumnOrder!8,;,/,(,),#,!,\\,,?,&,\\%,+,\",-,:,',@",
         // U+2020: "†" DAGGER
         // U+2021: "‡" DOUBLE DAGGER
         // U+2605: "★" BLACK STAR
@@ -795,7 +795,7 @@ public final class KeyboardTextsSet {
         null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         /* ~58 */
         // U+00B7: "·" MIDDLE DOT
-        /* 59 */ "!fixedColumnOrder!4,\u00B7,!,\\,,?,:,;,@",
+        /* 59 */ "!fixedColumnOrder!9,;,/,(,),#,\u00B7,!,\\,,?,&,\\%,+,\",-,:,',@",
         /* 60~ */
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
@@ -1981,7 +1981,7 @@ public final class KeyboardTextsSet {
         // U+20AA: "₪" NEW SHEQEL SIGN
         /* 57 */ "\u20AA",
         /* 58 */ null,
-        /* 59 */ null,
+        /* 59 */ "!fixedColumnOrder!8,;,/,(|),)|(,#,!,\\,,?,&,\\%,+,\",-,:,',@",
         // U+2605: "★" BLACK STAR
         /* 60 */ "\u2605",
         /* 61 */ null,
