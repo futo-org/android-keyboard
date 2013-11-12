@@ -38,10 +38,19 @@ class SparseTable {
 
     uint32_t get(const int id) const;
 
+    bool set(const int id, const uint32_t value);
+
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(SparseTable);
 
+    int getIndexFromContentTablePos(const int contentTablePos) const;
+
+    int getPosInIndexTable(const int id) const;
+
+    int getPosInContentTable(const int id, const int index) const;
+
     static const int NOT_EXIST;
+    static const int INDEX_SIZE;
 
     BufferWithExtendableBuffer *const mIndexTableBuffer;
     BufferWithExtendableBuffer *const mContentTableBuffer;

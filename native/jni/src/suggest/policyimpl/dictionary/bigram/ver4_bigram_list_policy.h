@@ -19,46 +19,35 @@
 
 #include "defines.h"
 #include "suggest/core/policy/dictionary_bigrams_structure_policy.h"
-#include "suggest/policyimpl/dictionary/bigram/bigram_list_read_write_utils.h"
-#include "suggest/policyimpl/dictionary/structure/v4/content/bigram_dict_content.h"
-#include "suggest/policyimpl/dictionary/structure/v4/content/terminal_position_lookup_table.h"
 
 namespace latinime {
 
+class BigramDictContent;
+class TerminalPositionLookupTable;
+
 class Ver4BigramListPolicy : public DictionaryBigramsStructurePolicy {
  public:
-    Ver4BigramListPolicy(const BigramDictContent *const bigramDictContent,
+    Ver4BigramListPolicy(BigramDictContent *const bigramDictContent,
             const TerminalPositionLookupTable *const terminalPositionLookupTable)
             : mBigramDictContent(bigramDictContent),
               mTerminalPositionLookupTable(terminalPositionLookupTable) {}
 
     void getNextBigram(int *const outBigramPos, int *const outProbability,
-            bool *const outHasNext, int *const bigramEntryPos) const {
-        int bigramFlags = 0;
-        int targetTerminalId = Ver4DictConstants::NOT_A_TERMINAL_ID;
-        mBigramDictContent->getBigramEntryAndAdvancePosition(&bigramFlags, &targetTerminalId,
-                bigramEntryPos);
-        if (outProbability) {
-            *outProbability = BigramListReadWriteUtils::getProbabilityFromFlags(bigramFlags);
-        }
-        if (outHasNext) {
-            *outHasNext = BigramListReadWriteUtils::hasNext(bigramFlags);
-        }
-        if (outBigramPos) {
-            // Lookup target PtNode position.
-            *outBigramPos =
-                    mTerminalPositionLookupTable->getTerminalPtNodePosition(targetTerminalId);
-        }
-    }
+            bool *const outHasNext, int *const bigramEntryPos) const;
 
     void skipAllBigrams(int *const pos) const {
         // Do nothing because we don't need to skip bigram lists in ver4 dictionaries.
     }
 
+    bool addNewEntry(const int terminalId, const int newTargetTerminalId, const int newProbability,
+            bool *const outAddedNewEntry);
+
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(Ver4BigramListPolicy);
 
-    const BigramDictContent *const mBigramDictContent;
+    int getEntryPosToUpdate(const int targetTerminalIdToFind, const int bigramListPos) const;
+
+    BigramDictContent *const mBigramDictContent;
     const TerminalPositionLookupTable *const mTerminalPositionLookupTable;
 };
 } // namespace latinime

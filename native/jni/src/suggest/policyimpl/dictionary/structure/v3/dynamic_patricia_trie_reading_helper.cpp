@@ -238,6 +238,9 @@ int DynamicPatriciaTrieReadingHelper::getTerminalPtNodePositionOfWord(const int 
         }
         // All characters are matched.
         if (length == getTotalCodePointCount(ptNodeParams)) {
+            if (!ptNodeParams.isTerminal()) {
+                return NOT_A_DICT_POS;
+            }
             // Terminal position is found.
             return ptNodeParams.getHeadPos();
         }

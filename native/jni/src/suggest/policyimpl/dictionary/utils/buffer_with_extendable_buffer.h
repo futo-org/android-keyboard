@@ -93,6 +93,8 @@ class BufferWithExtendableBuffer {
      * Writing is allowed for original buffer, already written region of additional buffer and the
      * tail of additional buffer.
      */
+    bool writeUint(const uint32_t data, const int size, const int pos);
+
     bool writeUintAndAdvancePosition(const uint32_t data, const int size, int *const pos);
 
     bool writeCodePointsAndAdvancePosition(const int *const codePoints, const int codePointCount,

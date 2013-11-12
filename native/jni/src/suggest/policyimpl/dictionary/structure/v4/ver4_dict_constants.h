@@ -47,6 +47,8 @@ class Ver4DictConstants {
 
     static const int BIGRAM_FLAGS_FIELD_SIZE;
     static const int BIGRAM_TARGET_TERMINAL_ID_FIELD_SIZE;
+    static const int BIGRAM_PROBABILITY_MASK;
+    static const int BIGRAM_HAS_NEXT_MASK;
 
     static const int SHORTCUT_FLAGS_FIELD_SIZE;
 
