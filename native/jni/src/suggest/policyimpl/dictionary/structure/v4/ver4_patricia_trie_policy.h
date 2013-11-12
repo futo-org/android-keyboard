@@ -38,18 +38,17 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
  public:
     Ver4PatriciaTriePolicy(const Ver4DictBuffers::Ver4DictBuffersPtr &buffers)
             : mBuffers(buffers),
-              mHeaderPolicy(mBuffers.get()->getRawDictBuffer(), FormatUtils::VERSION_4),
-              mDictBuffer(mBuffers.get()->getRawDictBuffer() + mHeaderPolicy.getSize(),
-                      mBuffers.get()->getRawDictBufferSize() - mHeaderPolicy.getSize(),
-                      BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE),
+              mHeaderPolicy(mBuffers.get()->getWritableHeaderBuffer()->getBuffer(
+                      false /* usesAdditionalBuffer*/), FormatUtils::VERSION_4),
+              mDictBuffer(mBuffers.get()->getWritableTrieBuffer()),
               mBigramPolicy(mBuffers.get()->getUpdatableBigramDictContent(),
                       mBuffers.get()->getTerminalPositionLookupTable()),
               mShortcutPolicy(mBuffers.get()->getShortcutDictContent(),
                       mBuffers.get()->getTerminalPositionLookupTable()),
-              mNodeReader(&mDictBuffer, mBuffers.get()->getProbabilityDictContent()),
-              mNodeWriter(&mDictBuffer, mBuffers.get(), &mNodeReader, &mBigramPolicy,
+              mNodeReader(mDictBuffer, mBuffers.get()->getProbabilityDictContent()),
+              mNodeWriter(mDictBuffer, mBuffers.get(), &mNodeReader, &mBigramPolicy,
                       &mShortcutPolicy),
-              mUpdatingHelper(&mDictBuffer, &mNodeReader, &mNodeWriter,
+              mUpdatingHelper(mDictBuffer, &mNodeReader, &mNodeWriter,
                       mHeaderPolicy.isDecayingDict()),
               mUnigramCount(mHeaderPolicy.getUnigramCount()),
               mBigramCount(mHeaderPolicy.getBigramCount()) {};
@@ -115,7 +114,7 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
 
     Ver4DictBuffers::Ver4DictBuffersPtr mBuffers;
     const HeaderPolicy mHeaderPolicy;
-    BufferWithExtendableBuffer mDictBuffer;
+    BufferWithExtendableBuffer *const mDictBuffer;
     Ver4BigramListPolicy mBigramPolicy;
     Ver4ShortcutListPolicy mShortcutPolicy;
     Ver4PatriciaTrieNodeReader mNodeReader;

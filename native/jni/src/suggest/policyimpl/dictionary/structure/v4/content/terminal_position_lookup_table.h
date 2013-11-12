@@ -38,6 +38,8 @@ class TerminalPositionLookupTable : public SingleDictContent {
                       / Ver4DictConstants::TERMINAL_ADDRESS_TABLE_ADDRESS_SIZE),
               mHeaderRegionSize(headerRegionSize) {}
 
+    TerminalPositionLookupTable() : mSize(0), mHeaderRegionSize(0) {}
+
     int getTerminalPtNodePosition(const int terminalId) const {
         if (terminalId < 0 || terminalId >= mSize) {
             return NOT_A_DICT_POS;
@@ -66,7 +68,7 @@ class TerminalPositionLookupTable : public SingleDictContent {
     }
 
  private:
-    DISALLOW_IMPLICIT_CONSTRUCTORS(TerminalPositionLookupTable);
+    DISALLOW_COPY_AND_ASSIGN(TerminalPositionLookupTable);
 
     int mSize;
     const int mHeaderRegionSize;

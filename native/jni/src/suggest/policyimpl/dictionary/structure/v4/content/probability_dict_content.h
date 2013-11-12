@@ -31,6 +31,8 @@ class ProbabilityDictContent : public SingleDictContent {
             : SingleDictContent(dictDirPath, Ver4DictConstants::FREQ_FILE_EXTENSION,
                     isUpdatable) {}
 
+    ProbabilityDictContent() {}
+
     int getProbability(const int terminalId) const {
         if (terminalId < 0 || terminalId >= getSize()) {
             return NOT_A_PROBABILITY;
@@ -61,7 +63,7 @@ class ProbabilityDictContent : public SingleDictContent {
     }
 
  private:
-    DISALLOW_IMPLICIT_CONSTRUCTORS(ProbabilityDictContent);
+    DISALLOW_COPY_AND_ASSIGN(ProbabilityDictContent);
 
     int getSize() const {
         return getBuffer()->getTailPosition() / (Ver4DictConstants::PROBABILITY_SIZE

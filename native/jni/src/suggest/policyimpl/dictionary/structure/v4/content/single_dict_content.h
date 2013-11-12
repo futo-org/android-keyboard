@@ -19,6 +19,7 @@
 
 #include "defines.h"
 #include "suggest/policyimpl/dictionary/structure/v4/content/dict_content.h"
+#include "suggest/policyimpl/dictionary/structure/v4/ver4_dict_constants.h"
 #include "suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer.h"
 #include "suggest/policyimpl/dictionary/utils/mmapped_buffer.h"
 
@@ -31,12 +32,17 @@ class SingleDictContent : public DictContent {
             : mMmappedBuffer(MmappedBuffer::openBuffer(dictDirPath, contentFileName, isUpdatable)),
               mExpandableContentBuffer(mMmappedBuffer.get() ? mMmappedBuffer.get()->getBuffer() : 0,
                       mMmappedBuffer.get() ? mMmappedBuffer.get()->getBufferSize() : 0,
-                      BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE) {}
+                      BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE),
+              mIsValid(mMmappedBuffer.get() != 0) {}
+
+    SingleDictContent()
+            : mMmappedBuffer(0), mExpandableContentBuffer(Ver4DictConstants::MAX_DICTIONARY_SIZE),
+              mIsValid(true) {}
 
     virtual ~SingleDictContent() {}
 
     virtual bool isValid() const {
-        return mMmappedBuffer.get() != 0;
+        return mIsValid;
     }
 
  protected:
@@ -49,10 +55,11 @@ class SingleDictContent : public DictContent {
     }
 
  private:
-    DISALLOW_IMPLICIT_CONSTRUCTORS(SingleDictContent);
+    DISALLOW_COPY_AND_ASSIGN(SingleDictContent);
 
     const MmappedBuffer::MmappedBufferPtr mMmappedBuffer;
     BufferWithExtendableBuffer mExpandableContentBuffer;
+    const bool mIsValid;
 };
 } // namespace latinime
 #endif /* LATINIME_SINGLE_DICT_CONTENT_H */

@@ -34,6 +34,8 @@ class Ver4DictConstants {
     static const char *const SHORTCUT_LOOKUP_TABLE_FILE_EXTENSION;
     static const char *const SHORTCUT_CONTENT_TABLE_FILE_EXTENSION;
 
+    static const int MAX_DICTIONARY_SIZE;
+
     static const int NOT_A_TERMINAL_ID;
     static const int PROBABILITY_SIZE;
     static const int FLAGS_IN_PROBABILITY_FILE_SIZE;

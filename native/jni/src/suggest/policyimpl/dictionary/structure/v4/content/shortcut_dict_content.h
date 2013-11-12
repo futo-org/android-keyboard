@@ -33,6 +33,10 @@ class ShortcutDictContent : public SparseTableDictContent {
                       Ver4DictConstants::SHORTCUT_ADDRESS_TABLE_BLOCK_SIZE,
                       Ver4DictConstants::SHORTCUT_ADDRESS_TABLE_DATA_SIZE) {}
 
+    ShortcutDictContent()
+            : SparseTableDictContent(Ver4DictConstants::SHORTCUT_ADDRESS_TABLE_BLOCK_SIZE,
+                      Ver4DictConstants::SHORTCUT_ADDRESS_TABLE_DATA_SIZE) {}
+
     void getShortcutEntryAndAdvancePosition(const int maxCodePointCount,
             int *const outCodePoint, int *const outCodePointCount, int *const outShortcutFlags,
             int *const shortcutEntryPos) const {
@@ -57,7 +61,7 @@ class ShortcutDictContent : public SparseTableDictContent {
     }
 
  private:
-    DISALLOW_IMPLICIT_CONSTRUCTORS(ShortcutDictContent);
+    DISALLOW_COPY_AND_ASSIGN(ShortcutDictContent);
 };
 } // namespace latinime
 #endif /* LATINIME_SHORTCUT_DICT_CONTENT_H */
