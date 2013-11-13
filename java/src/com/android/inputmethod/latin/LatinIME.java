@@ -910,6 +910,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 false /* shouldFinishComposition */)) {
             // We try resetting the caches up to 5 times before giving up.
             mHandler.postResetCaches(isDifferentTextField, 5 /* remainingTries */);
+            // mLastSelection{Start,End} are reset later in this method, don't need to do it here
             canReachInputConnection = false;
         } else {
             if (isDifferentTextField) {
@@ -989,10 +990,16 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             if (textLength > mLastSelectionStart
                     || (textLength < Constants.EDITOR_CONTENTS_CACHE_SIZE
                             && mLastSelectionStart < Constants.EDITOR_CONTENTS_CACHE_SIZE)) {
+                // It should not be possible to have only one of those variables be
+                // NOT_A_CURSOR_POSITION, so if they are equal, either the selection is zero-sized
+                // (simple cursor, no selection) or there is no cursor/we don't know its pos
+                final boolean wasEqual = mLastSelectionStart == mLastSelectionEnd;
                 mLastSelectionStart = textLength;
                 // We can't figure out the value of mLastSelectionEnd :(
-                // But at least if it's smaller than mLastSelectionStart something is wrong
-                if (mLastSelectionStart > mLastSelectionEnd) {
+                // But at least if it's smaller than mLastSelectionStart something is wrong,
+                // and if they used to be equal we also don't want to make it look like there is a
+                // selection.
+                if (wasEqual || mLastSelectionStart > mLastSelectionEnd) {
                     mLastSelectionEnd = mLastSelectionStart;
                 }
             }
