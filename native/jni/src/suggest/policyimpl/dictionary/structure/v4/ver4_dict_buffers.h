@@ -70,6 +70,10 @@ class Ver4DictBuffers {
         return &mProbabilityDictContent;
     }
 
+    AK_FORCE_INLINE BigramDictContent *getUpdatableBigramDictContent() {
+        return &mBigramDictContent;
+    }
+
     AK_FORCE_INLINE const BigramDictContent *getBigramDictContent() const {
         return &mBigramDictContent;
     }

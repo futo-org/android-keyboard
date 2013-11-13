@@ -59,8 +59,16 @@ class SparseTableDictContent : public DictContent {
     }
 
  protected:
+    SparseTable *getUpdatableAddressLookupTable() {
+        return &mAddressLookupTable;
+    }
+
     const SparseTable *getAddressLookupTable() const {
         return &mAddressLookupTable;
+    }
+
+    BufferWithExtendableBuffer *getWritableContentBuffer() {
+        return &mExpandableContentBuffer;
     }
 
     const BufferWithExtendableBuffer *getContentBuffer() const {

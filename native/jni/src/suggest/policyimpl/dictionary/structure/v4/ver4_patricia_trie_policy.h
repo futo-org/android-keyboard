@@ -42,7 +42,7 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
               mDictBuffer(mBuffers.get()->getRawDictBuffer() + mHeaderPolicy.getSize(),
                       mBuffers.get()->getRawDictBufferSize() - mHeaderPolicy.getSize(),
                       BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE),
-              mBigramPolicy(mBuffers.get()->getBigramDictContent(),
+              mBigramPolicy(mBuffers.get()->getUpdatableBigramDictContent(),
                       mBuffers.get()->getTerminalPositionLookupTable()),
               mShortcutPolicy(mBuffers.get()->getShortcutDictContent(),
                       mBuffers.get()->getTerminalPositionLookupTable()),
