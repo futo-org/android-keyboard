@@ -21,6 +21,7 @@
 
 #include "suggest/policyimpl/dictionary/header/header_policy.h"
 #include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_writing_utils.h"
+#include "suggest/policyimpl/dictionary/structure/v4/ver4_dict_buffers.h"
 #include "suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer.h"
 #include "suggest/policyimpl/dictionary/utils/format_utils.h"
 
@@ -34,7 +35,7 @@ const char *const DictFileWritingUtils::TEMP_FILE_SUFFIX_FOR_WRITING_DICT_FILE =
         case 3:
             return createEmptyV3DictFile(filePath, attributeMap);
         case 4:
-            // TODO: Support version 4 dictionary format.
+            return createEmptyV4DictFile(filePath, attributeMap);
             return false;
         default:
             // Only version 3 dictionary is supported for now.
@@ -58,6 +59,20 @@ const char *const DictFileWritingUtils::TEMP_FILE_SUFFIX_FOR_WRITING_DICT_FILE =
     return flushAllHeaderAndBodyToFile(filePath, &headerBuffer, &bodyBuffer);
 }
 
+/* static */ bool DictFileWritingUtils::createEmptyV4DictFile(const char *const filePath,
+        const HeaderReadWriteUtils::AttributeMap *const attributeMap) {
+    Ver4DictBuffers::Ver4DictBuffersPtr dictBuffers = Ver4DictBuffers::createVer4DictBuffers();
+    HeaderPolicy headerPolicy(FormatUtils::VERSION_4, attributeMap);
+    headerPolicy.writeHeaderToBuffer(dictBuffers.get()->getWritableHeaderBuffer(),
+            true /* updatesLastUpdatedTime */, true /* updatesLastDecayedTime */,
+            0 /* unigramCount */, 0 /* bigramCount */, 0 /* extendedRegionSize */);
+    if (!DynamicPatriciaTrieWritingUtils::writeEmptyDictionary(
+            dictBuffers.get()->getWritableTrieBuffer(), 0 /* rootPos */)) {
+        return false;
+    }
+    return dictBuffers.get()->flush(filePath);
+}
+
 /* static */ bool DictFileWritingUtils::flushAllHeaderAndBodyToFile(const char *const filePath,
         BufferWithExtendableBuffer *const dictHeader, BufferWithExtendableBuffer *const dictBody) {
     const int tmpFileNameBufSize = strlen(filePath)
@@ -69,21 +84,21 @@ const char *const DictFileWritingUtils::TEMP_FILE_SUFFIX_FOR_WRITING_DICT_FILE =
             TEMP_FILE_SUFFIX_FOR_WRITING_DICT_FILE);
     FILE *const file = fopen(tmpFileName, "wb");
     if (!file) {
-        AKLOGE("Dictionary file %s cannnot be opened.", tmpFileName);
+        AKLOGE("Dictionary file %s cannot be opened.", tmpFileName);
         ASSERT(false);
         return false;
     }
     // Write the dictionary header.
     if (!writeBufferToFile(file, dictHeader)) {
         remove(tmpFileName);
-        AKLOGE("Dictionary header cannnot be written. size: %d", dictHeader->getTailPosition());
+        AKLOGE("Dictionary header cannot be written. size: %d", dictHeader->getTailPosition());
         ASSERT(false);
         return false;
     }
     // Write the dictionary body.
     if (!writeBufferToFile(file, dictBody)) {
         remove(tmpFileName);
-        AKLOGE("Dictionary body cannnot be written. size: %d", dictBody->getTailPosition());
+        AKLOGE("Dictionary body cannot be written. size: %d", dictBody->getTailPosition());
         ASSERT(false);
         return false;
     }

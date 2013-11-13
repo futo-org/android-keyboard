@@ -28,14 +28,14 @@ namespace latinime {
 
 const int Ver4PatriciaTriePolicy::MARGIN_TO_REFUSE_DYNAMIC_OPERATIONS = 1024;
 const int Ver4PatriciaTriePolicy::MIN_DICT_SIZE_TO_REFUSE_DYNAMIC_OPERATIONS =
-        DynamicPatriciaTrieWritingHelper::MAX_DICTIONARY_SIZE - MARGIN_TO_REFUSE_DYNAMIC_OPERATIONS;
+        Ver4DictConstants::MAX_DICTIONARY_SIZE - MARGIN_TO_REFUSE_DYNAMIC_OPERATIONS;
 
 void Ver4PatriciaTriePolicy::createAndGetAllChildDicNodes(const DicNode *const dicNode,
         DicNodeVector *const childDicNodes) const {
     if (!dicNode->hasChildren()) {
         return;
     }
-    DynamicPatriciaTrieReadingHelper readingHelper(&mDictBuffer, &mNodeReader);
+    DynamicPatriciaTrieReadingHelper readingHelper(mDictBuffer, &mNodeReader);
     readingHelper.initWithPtNodeArrayPos(dicNode->getChildrenPtNodeArrayPos());
     while (!readingHelper.isEnd()) {
         const PtNodeParams ptNodeParams = readingHelper.getPtNodeParams();
@@ -63,7 +63,7 @@ void Ver4PatriciaTriePolicy::createAndGetAllChildDicNodes(const DicNode *const d
 int Ver4PatriciaTriePolicy::getCodePointsAndProbabilityAndReturnCodePointCount(
         const int ptNodePos, const int maxCodePointCount, int *const outCodePoints,
         int *const outUnigramProbability) const {
-    DynamicPatriciaTrieReadingHelper readingHelper(&mDictBuffer, &mNodeReader);
+    DynamicPatriciaTrieReadingHelper readingHelper(mDictBuffer, &mNodeReader);
     readingHelper.initWithPtNodePos(ptNodePos);
     return readingHelper.getCodePointsAndProbabilityAndReturnCodePointCount(
             maxCodePointCount, outCodePoints, outUnigramProbability);
@@ -71,7 +71,7 @@ int Ver4PatriciaTriePolicy::getCodePointsAndProbabilityAndReturnCodePointCount(
 
 int Ver4PatriciaTriePolicy::getTerminalPtNodePositionOfWord(const int *const inWord,
         const int length, const bool forceLowerCaseSearch) const {
-    DynamicPatriciaTrieReadingHelper readingHelper(&mDictBuffer, &mNodeReader);
+    DynamicPatriciaTrieReadingHelper readingHelper(mDictBuffer, &mNodeReader);
     readingHelper.initWithPtNodeArrayPos(getRootPosition());
     return readingHelper.getTerminalPtNodePositionOfWord(inWord, length, forceLowerCaseSearch);
 }
@@ -135,12 +135,12 @@ bool Ver4PatriciaTriePolicy::addUnigramWord(const int *const word, const int len
         AKLOGI("Warning: addUnigramWord() is called for non-updatable dictionary.");
         return false;
     }
-    if (mDictBuffer.getTailPosition() >= MIN_DICT_SIZE_TO_REFUSE_DYNAMIC_OPERATIONS) {
+    if (mDictBuffer->getTailPosition() >= MIN_DICT_SIZE_TO_REFUSE_DYNAMIC_OPERATIONS) {
         AKLOGE("The dictionary is too large to dynamically update. Dictionary size: %d",
-                mDictBuffer.getTailPosition());
+                mDictBuffer->getTailPosition());
         return false;
     }
-    DynamicPatriciaTrieReadingHelper readingHelper(&mDictBuffer, &mNodeReader);
+    DynamicPatriciaTrieReadingHelper readingHelper(mDictBuffer, &mNodeReader);
     readingHelper.initWithPtNodeArrayPos(getRootPosition());
     bool addedNewUnigram = false;
     if (mUpdatingHelper.addUnigramWord(&readingHelper, word, length, probability,
@@ -160,9 +160,9 @@ bool Ver4PatriciaTriePolicy::addBigramWords(const int *const word0, const int le
         AKLOGI("Warning: addBigramWords() is called for non-updatable dictionary.");
         return false;
     }
-    if (mDictBuffer.getTailPosition() >= MIN_DICT_SIZE_TO_REFUSE_DYNAMIC_OPERATIONS) {
+    if (mDictBuffer->getTailPosition() >= MIN_DICT_SIZE_TO_REFUSE_DYNAMIC_OPERATIONS) {
         AKLOGE("The dictionary is too large to dynamically update. Dictionary size: %d",
-                mDictBuffer.getTailPosition());
+                mDictBuffer->getTailPosition());
         return false;
     }
     const int word0Pos = getTerminalPtNodePositionOfWord(word0, length0,
@@ -192,9 +192,9 @@ bool Ver4PatriciaTriePolicy::removeBigramWords(const int *const word0, const int
         AKLOGI("Warning: addBigramWords() is called for non-updatable dictionary.");
         return false;
     }
-    if (mDictBuffer.getTailPosition() >= MIN_DICT_SIZE_TO_REFUSE_DYNAMIC_OPERATIONS) {
+    if (mDictBuffer->getTailPosition() >= MIN_DICT_SIZE_TO_REFUSE_DYNAMIC_OPERATIONS) {
         AKLOGE("The dictionary is too large to dynamically update. Dictionary size: %d",
-                mDictBuffer.getTailPosition());
+                mDictBuffer->getTailPosition());
         return false;
     }
     const int word0Pos = getTerminalPtNodePositionOfWord(word0, length0,
