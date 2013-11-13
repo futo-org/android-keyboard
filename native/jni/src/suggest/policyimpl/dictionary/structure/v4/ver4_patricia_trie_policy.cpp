@@ -188,8 +188,31 @@ bool Ver4PatriciaTriePolicy::addBigramWords(const int *const word0, const int le
 
 bool Ver4PatriciaTriePolicy::removeBigramWords(const int *const word0, const int length0,
         const int *const word1, const int length1) {
-    // TODO: Implement.
-    return false;
+    if (!mBuffers.get()->isUpdatable()) {
+        AKLOGI("Warning: addBigramWords() is called for non-updatable dictionary.");
+        return false;
+    }
+    if (mDictBuffer.getTailPosition() >= MIN_DICT_SIZE_TO_REFUSE_DYNAMIC_OPERATIONS) {
+        AKLOGE("The dictionary is too large to dynamically update. Dictionary size: %d",
+                mDictBuffer.getTailPosition());
+        return false;
+    }
+    const int word0Pos = getTerminalPtNodePositionOfWord(word0, length0,
+            false /* forceLowerCaseSearch */);
+    if (word0Pos == NOT_A_DICT_POS) {
+        return false;
+    }
+    const int word1Pos = getTerminalPtNodePositionOfWord(word1, length1,
+            false /* forceLowerCaseSearch */);
+    if (word1Pos == NOT_A_DICT_POS) {
+        return false;
+    }
+    if (mUpdatingHelper.removeBigramWords(word0Pos, word1Pos)) {
+        mBigramCount--;
+        return true;
+    } else {
+        return false;
+    }
 }
 
 void Ver4PatriciaTriePolicy::flush(const char *const filePath) {

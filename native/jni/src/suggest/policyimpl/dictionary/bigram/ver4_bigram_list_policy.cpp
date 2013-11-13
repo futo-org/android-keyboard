@@ -91,6 +91,33 @@ bool Ver4BigramListPolicy::addNewEntry(const int terminalId, const int newTarget
     return mBigramDictContent->copyBigramList(bigramListPos, writingPos);
 }
 
+bool Ver4BigramListPolicy::removeEntry(const int terminalId, const int targetTerminalId) {
+    const int bigramListPos = mBigramDictContent->getBigramListHeadPos(terminalId);
+    if (bigramListPos == NOT_A_DICT_POS) {
+        // Bigram list does't exist.
+        return false;
+    }
+    const int entryPosToUpdate = getEntryPosToUpdate(targetTerminalId, bigramListPos);
+    if (entryPosToUpdate == NOT_A_DICT_POS) {
+        // Bigram entry doesn't exist.
+        return false;
+    }
+    int readingPos = entryPosToUpdate;
+    bool hasNext = false;
+    int probability = NOT_A_PROBABILITY;
+    int originalTargetTerminalId = Ver4DictConstants::NOT_A_TERMINAL_ID;
+    mBigramDictContent->getBigramEntryAndAdvancePosition(&probability, &hasNext,
+            &originalTargetTerminalId, &readingPos);
+    if (targetTerminalId != originalTargetTerminalId) {
+        // Bigram entry doesn't exist.
+        return false;
+    }
+    int writingPos = entryPosToUpdate;
+    // Remove bigram entry by overwriting target terminal Id.
+    return mBigramDictContent->writeBigramEntryAndAdvancePosition(probability, hasNext,
+            Ver4DictConstants::NOT_A_TERMINAL_ID /* targetTerminalId */, &writingPos);
+}
+
 int Ver4BigramListPolicy::getEntryPosToUpdate(const int targetTerminalIdToFind,
         const int bigramListPos) const {
     bool hasNext = true;
