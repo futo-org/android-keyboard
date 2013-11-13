@@ -246,4 +246,56 @@ public class Ver4BinaryDictionaryTests extends AndroidTestCase {
         assertEquals(probability, binaryDictionary.getBigramProbability("abb", "aaa"));
         assertEquals(probability, binaryDictionary.getBigramProbability("abb", "bcc"));
     }
+
+    public void testRemoveBigramWords() {
+        final String dictVersion = Long.toString(System.currentTimeMillis());
+        final FusionDictionary dict = new FusionDictionary(new PtNodeArray(),
+                getDictionaryOptions(TEST_LOCALE, dictVersion));
+        final DictEncoder encoder = new Ver4DictEncoder(getContext().getCacheDir());
+        try {
+            encoder.writeDictionary(dict, FORMAT_OPTIONS);
+        } catch (IOException e) {
+            Log.e(TAG, "IOException while writing dictionary", e);
+        } catch (UnsupportedFormatException e) {
+            Log.e(TAG, "Unsupported format", e);
+        }
+        final File trieFile = getTrieFile(TEST_LOCALE, dictVersion);
+        final BinaryDictionary binaryDictionary = new BinaryDictionary(trieFile.getAbsolutePath(),
+                0 /* offset */, trieFile.length(), true /* useFullEditDistance */,
+                Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
+        assertTrue(binaryDictionary.isValidDictionary());
+
+        final int unigramProbability = 100;
+        final int bigramProbability = 10;
+        binaryDictionary.addUnigramWord("aaa", unigramProbability);
+        binaryDictionary.addUnigramWord("abb", unigramProbability);
+        binaryDictionary.addUnigramWord("bcc", unigramProbability);
+        binaryDictionary.addBigramWords("aaa", "abb", bigramProbability);
+        binaryDictionary.addBigramWords("aaa", "bcc", bigramProbability);
+        binaryDictionary.addBigramWords("abb", "aaa", bigramProbability);
+        binaryDictionary.addBigramWords("abb", "bcc", bigramProbability);
+
+        assertEquals(true, binaryDictionary.isValidBigram("aaa", "abb"));
+        assertEquals(true, binaryDictionary.isValidBigram("aaa", "bcc"));
+        assertEquals(true, binaryDictionary.isValidBigram("abb", "aaa"));
+        assertEquals(true, binaryDictionary.isValidBigram("abb", "bcc"));
+
+        binaryDictionary.removeBigramWords("aaa", "abb");
+        assertEquals(false, binaryDictionary.isValidBigram("aaa", "abb"));
+        binaryDictionary.addBigramWords("aaa", "abb", bigramProbability);
+        assertEquals(true, binaryDictionary.isValidBigram("aaa", "abb"));
+
+        binaryDictionary.removeBigramWords("aaa", "bcc");
+        assertEquals(false, binaryDictionary.isValidBigram("aaa", "bcc"));
+        binaryDictionary.removeBigramWords("abb", "aaa");
+        assertEquals(false, binaryDictionary.isValidBigram("abb", "aaa"));
+        binaryDictionary.removeBigramWords("abb", "bcc");
+        assertEquals(false, binaryDictionary.isValidBigram("abb", "bcc"));
+
+        binaryDictionary.removeBigramWords("aaa", "abb");
+        // Test remove non-existing bigram operation.
+        binaryDictionary.removeBigramWords("aaa", "abb");
+        binaryDictionary.removeBigramWords("bcc", "aaa");
+    }
+
 }

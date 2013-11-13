@@ -192,8 +192,8 @@ bool Ver4PatriciaTrieNodeWriter::addNewBigramEntry(
 
 bool Ver4PatriciaTrieNodeWriter::removeBigramEntry(
         const PtNodeParams *const sourcePtNodeParams, const PtNodeParams *const targetPtNodeParam) {
-    // TODO: Implement.
-    return false;
+    return mBigramPolicy->removeEntry(sourcePtNodeParams->getTerminalId(),
+            targetPtNodeParam->getTerminalId());
 }
 
 }
