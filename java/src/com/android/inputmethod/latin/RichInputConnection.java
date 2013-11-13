@@ -61,7 +61,7 @@ public final class RichInputConnection {
      * cursor may end up after all the keyboard-triggered updates have passed. We keep this to
      * compare it to the actual cursor position to guess whether the move was caused by a
      * keyboard command or not.
-     * It's not really the cursor position: the cursor may not be there yet, and it's also expected 
+     * It's not really the cursor position: the cursor may not be there yet, and it's also expected
      * there be cases where it never actually comes to be there.
      */
     private int mExpectedCursorPosition = INVALID_CURSOR_POSITION; // in chars, not code points
@@ -292,7 +292,11 @@ public final class RichInputConnection {
                 mCommittedTextBeforeComposingText.length() + mComposingText.length();
         // If we have enough characters to satisfy the request, or if we have all characters in
         // the text field, then we can return the cached version right away.
-        if (cachedLength >= n || cachedLength >= mExpectedCursorPosition) {
+        // However, if we don't have an expected cursor position, then we should always
+        // go fetch the cache again (as it happens, INVALID_CURSOR_POSITION < 0, so we need to
+        // test for this explicitly)
+        if (INVALID_CURSOR_POSITION != mExpectedCursorPosition
+                && (cachedLength >= n || cachedLength >= mExpectedCursorPosition)) {
             final StringBuilder s = new StringBuilder(mCommittedTextBeforeComposingText);
             // We call #toString() here to create a temporary object.
             // In some situations, this method is called on a worker thread, and it's possible
