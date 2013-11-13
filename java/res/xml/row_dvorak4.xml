@@ -27,42 +27,11 @@
         <Key
             latin:keyStyle="toSymbolKeyStyle"
             latin:keyWidth="15%p" />
-        <switch>
-            <case
-                latin:hasShortcutKey="true"
-                latin:keyboardLayoutSetElement="alphabet"
-            >
-                <Key
-                    latin:keyLabel="q"
-                    latin:backgroundType="normal"
-                    latin:additionalMoreKeys="!text/shortcut_as_more_key"
-                    latin:keyStyle="f1MoreKeysStyle" />
-            </case>
-            <case
-                latin:hasShortcutKey="true"
-            >
-                <Key
-                    latin:keyLabel="Q"
-                    latin:backgroundType="normal"
-                    latin:additionalMoreKeys="!text/shortcut_as_more_key"
-                    latin:keyStyle="f1MoreKeysStyle" />
-            </case>
-            <!-- latin:hasShortcutKey="false" -->
-            <case
-                latin:keyboardLayoutSetElement="alphabet"
-            >
-                <Key
-                    latin:keyLabel="q"
-                    latin:backgroundType="normal"
-                    latin:keyStyle="f1MoreKeysStyle" />
-            </case>
-            <default>
-                <Key
-                    latin:keyLabel="Q"
-                    latin:backgroundType="normal"
-                    latin:keyStyle="f1MoreKeysStyle" />
-            </default>
-        </switch>
+        <Key
+            latin:keyLabel="q"
+            latin:backgroundType="normal"
+            latin:additionalMoreKeys="!text/shortcut_as_more_key"
+            latin:keyStyle="f1MoreKeysStyle" />
         <include
             latin:keyXPos="25%p"
             latin:keyboardLayout="@xml/key_space_5kw" />
