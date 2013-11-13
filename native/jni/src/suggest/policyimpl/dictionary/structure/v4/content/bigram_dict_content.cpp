@@ -31,9 +31,12 @@ void BigramDictContent::getBigramEntryAndAdvancePosition(int *const outProbabili
     if (outHasNext) {
         *outHasNext = (bigramFlags & Ver4DictConstants::BIGRAM_HAS_NEXT_MASK) != 0;
     }
+    const int targetTerminalId = bigramListBuffer->readUintAndAdvancePosition(
+            Ver4DictConstants::BIGRAM_TARGET_TERMINAL_ID_FIELD_SIZE, bigramEntryPos);
     if (outTargetTerminalId) {
-        *outTargetTerminalId = bigramListBuffer->readUintAndAdvancePosition(
-                Ver4DictConstants::BIGRAM_TARGET_TERMINAL_ID_FIELD_SIZE, bigramEntryPos);
+        *outTargetTerminalId =
+                (targetTerminalId == Ver4DictConstants::INVALID_BIGRAM_TARGET_TERMINAL_ID) ?
+                        Ver4DictConstants::NOT_A_TERMINAL_ID : targetTerminalId;
     }
 }
 
@@ -45,7 +48,10 @@ bool BigramDictContent::writeBigramEntryAndAdvancePosition(const int probability
             Ver4DictConstants::BIGRAM_FLAGS_FIELD_SIZE, entryWritingPos)) {
         return false;
     }
-    return bigramListBuffer->writeUintAndAdvancePosition(targetTerminalId,
+    const int targetTerminalIdToWrite =
+            (targetTerminalId == Ver4DictConstants::NOT_A_TERMINAL_ID) ?
+                    Ver4DictConstants::INVALID_BIGRAM_TARGET_TERMINAL_ID : targetTerminalId;
+    return bigramListBuffer->writeUintAndAdvancePosition(targetTerminalIdToWrite,
             Ver4DictConstants::BIGRAM_TARGET_TERMINAL_ID_FIELD_SIZE, entryWritingPos);
 }
 

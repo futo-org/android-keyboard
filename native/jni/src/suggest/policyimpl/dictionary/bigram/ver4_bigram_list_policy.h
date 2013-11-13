@@ -42,6 +42,8 @@ class Ver4BigramListPolicy : public DictionaryBigramsStructurePolicy {
     bool addNewEntry(const int terminalId, const int newTargetTerminalId, const int newProbability,
             bool *const outAddedNewEntry);
 
+    bool removeEntry(const int terminalId, const int targetTerminalId);
+
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(Ver4BigramListPolicy);
 

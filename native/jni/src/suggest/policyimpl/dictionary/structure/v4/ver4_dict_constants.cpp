@@ -42,6 +42,10 @@ const int Ver4DictConstants::SHORTCUT_ADDRESS_TABLE_BLOCK_SIZE = 16;
 const int Ver4DictConstants::SHORTCUT_ADDRESS_TABLE_DATA_SIZE = 4;
 
 const int Ver4DictConstants::BIGRAM_TARGET_TERMINAL_ID_FIELD_SIZE = 3;
+// Unsigned int max value of BIGRAM_TARGET_TERMINAL_ID_FIELD_SIZE-byte is used for representing
+// invalid terminal ID in bigram lists.
+const int Ver4DictConstants::INVALID_BIGRAM_TARGET_TERMINAL_ID =
+        (1 << (BIGRAM_TARGET_TERMINAL_ID_FIELD_SIZE * 8)) - 1;
 const int Ver4DictConstants::BIGRAM_FLAGS_FIELD_SIZE = 1;
 const int Ver4DictConstants::BIGRAM_PROBABILITY_MASK = 0x0F;
 const int Ver4DictConstants::BIGRAM_HAS_NEXT_MASK = 0x80;
