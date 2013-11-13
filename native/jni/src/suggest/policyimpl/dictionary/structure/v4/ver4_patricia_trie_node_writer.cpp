@@ -16,7 +16,7 @@
 
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_patricia_trie_node_writer.h"
 
-#include "suggest/policyimpl/dictionary/bigram/dynamic_bigram_list_policy.h"
+#include "suggest/policyimpl/dictionary/bigram/ver4_bigram_list_policy.h"
 #include "suggest/policyimpl/dictionary/shortcut/dynamic_shortcut_list_policy.h"
 #include "suggest/policyimpl/dictionary/structure/v2/patricia_trie_reading_utils.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_patricia_trie_node_reader.h"
@@ -167,8 +167,6 @@ bool Ver4PatriciaTrieNodeWriter::writePtNodeAndAdvancePosition(
             ptNodeParams->getChildrenPos(), ptNodeWritingPos)) {
         return false;
     }
-    // TODO: Implement bigram and shortcut writing.
-
     // Create node flags and write them.
     PatriciaTrieReadingUtils::NodeFlags nodeFlags =
             PatriciaTrieReadingUtils::createAndGetFlags(ptNodeParams->isBlacklisted(),
@@ -188,8 +186,8 @@ bool Ver4PatriciaTrieNodeWriter::addNewBigramEntry(
         const PtNodeParams *const sourcePtNodeParams,
         const PtNodeParams *const targetPtNodeParam, const int probability,
         bool *const outAddedNewBigram) {
-    // TODO: Implement.
-    return false;
+    return mBigramPolicy->addNewEntry(sourcePtNodeParams->getTerminalId(),
+            targetPtNodeParam->getTerminalId(), probability, outAddedNewBigram);
 }
 
 bool Ver4PatriciaTrieNodeWriter::removeBigramEntry(

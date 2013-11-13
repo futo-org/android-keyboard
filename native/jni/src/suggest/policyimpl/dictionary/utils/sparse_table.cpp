@@ -19,23 +19,68 @@
 namespace latinime {
 
 const int SparseTable::NOT_EXIST = -1;
+const int SparseTable::INDEX_SIZE = 4;
 
 bool SparseTable::contains(const int id) const {
-    const int readingPos = id / mBlockSize * mDataSize;
+    const int readingPos = getPosInIndexTable(id);
     if (id < 0 || mIndexTableBuffer->getTailPosition() <= readingPos) {
         return false;
     }
-    const int index = mIndexTableBuffer->readUint(mDataSize, readingPos);
+    const int index = mIndexTableBuffer->readUint(INDEX_SIZE, readingPos);
     return index != NOT_EXIST;
 }
 
 uint32_t SparseTable::get(const int id) const {
-    const int indexTableIndex = id / mBlockSize;
-    int readingPos = indexTableIndex * mDataSize;
-    const int index = mIndexTableBuffer->readUint(mDataSize, readingPos);
+    const int indexTableReadingPos = getPosInIndexTable(id);
+    const int index = mIndexTableBuffer->readUint(INDEX_SIZE, indexTableReadingPos);
+    const int contentTableReadingPos = getPosInContentTable(id, index);
+    return mContentTableBuffer->readUint(mDataSize, contentTableReadingPos);
+}
+
+bool SparseTable::set(const int id, const uint32_t value) {
+    const int posInIndexTable = getPosInIndexTable(id);
+    // Extends the index table if needed.
+    if (mIndexTableBuffer->getTailPosition() < posInIndexTable) {
+        int tailPos = mIndexTableBuffer->getTailPosition();
+        while(tailPos < posInIndexTable) {
+            if (!mIndexTableBuffer->writeUintAndAdvancePosition(NOT_EXIST, INDEX_SIZE, &tailPos)) {
+                return false;
+            }
+        }
+    }
+    if (contains(id)) {
+        // The entry is already in the content table.
+        const int index = mIndexTableBuffer->readUint(INDEX_SIZE, posInIndexTable);
+        return mContentTableBuffer->writeUint(value, mDataSize, getPosInContentTable(id, index));
+    }
+    // The entry is not in the content table.
+    // Create new entry in the content table.
+    const int index = getIndexFromContentTablePos(mContentTableBuffer->getTailPosition());
+    if (!mIndexTableBuffer->writeUint(index, INDEX_SIZE, posInIndexTable)) {
+        return false;
+    }
+    // Write a new block that containing the entry to be set.
+    int writingPos = getPosInContentTable(0 /* id */, index);
+    for (int i = 0; i < mBlockSize; ++i) {
+        if (!mContentTableBuffer->writeUintAndAdvancePosition(NOT_A_DICT_POS, mDataSize,
+                &writingPos)) {
+            return false;
+        }
+    }
+    return mContentTableBuffer->writeUint(value, mDataSize, getPosInContentTable(id, index));
+}
+
+int SparseTable::getIndexFromContentTablePos(const int contentTablePos) const {
+    return contentTablePos / mDataSize / mBlockSize;
+}
+
+int SparseTable::getPosInIndexTable(const int id) const {
+    return (id / mBlockSize) * INDEX_SIZE;
+}
+
+int SparseTable::getPosInContentTable(const int id, const int index) const {
     const int offset = id % mBlockSize;
-    readingPos = (index * mDataSize + offset) * mBlockSize;
-    return mContentTableBuffer->readUint(mDataSize, readingPos);
+    return (index * mDataSize + offset) * mBlockSize;
 }
 
 } // namespace latinime

@@ -49,6 +49,11 @@ void BufferWithExtendableBuffer::readCodePointsAndAdvancePosition(const int maxC
     }
 }
 
+bool BufferWithExtendableBuffer::writeUint(const uint32_t data, const int size, const int pos) {
+    int writingPos = pos;
+    return writeUintAndAdvancePosition(data, size, &writingPos);
+}
+
 bool BufferWithExtendableBuffer::writeUintAndAdvancePosition(const uint32_t data, const int size,
         int *const pos) {
     if (!(size >= 1 && size <= 4)) {

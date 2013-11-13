@@ -68,12 +68,14 @@ LATIN_IME_CORE_SRC_FILES := \
     suggest/core/policy/weighting.cpp \
     suggest/core/session/dic_traverse_session.cpp \
     $(addprefix suggest/policyimpl/dictionary/, \
-        bigram/bigram_list_read_write_utils.cpp \
-        bigram/dynamic_bigram_list_policy.cpp \
         header/header_policy.cpp \
         header/header_read_write_utils.cpp \
         shortcut/shortcut_list_reading_utils.cpp \
         structure/dictionary_structure_with_buffer_policy_factory.cpp) \
+    $(addprefix suggest/policyimpl/dictionary/bigram/, \
+        bigram_list_read_write_utils.cpp \
+        dynamic_bigram_list_policy.cpp \
+        ver4_bigram_list_policy.cpp) \
     $(addprefix suggest/policyimpl/dictionary/structure/v2/, \
         patricia_trie_policy.cpp \
         patricia_trie_reading_utils.cpp) \
@@ -88,6 +90,7 @@ LATIN_IME_CORE_SRC_FILES := \
         dynamic_patricia_trie_writing_helper.cpp \
         dynamic_patricia_trie_writing_utils.cpp) \
     $(addprefix suggest/policyimpl/dictionary/structure/v4/, \
+        content/bigram_dict_content.cpp \
         ver4_dict_constants.cpp \
         ver4_patricia_trie_node_reader.cpp \
         ver4_patricia_trie_node_writer.cpp \
