@@ -35,8 +35,8 @@ namespace latinime {
                         const int bufOffset, const int size, const bool isUpdatable) {
     // Allocated buffer in MmapedBuffer::newBuffer() will be freed in the destructor of
     // MmappedBufferWrapper if the instance has the responsibility.
-    MmappedBuffer::MmappedBufferPtr mmappedBuffer(MmappedBuffer::openBuffer(path, bufOffset, size,
-            isUpdatable));
+    MmappedBuffer::MmappedBufferPtr mmappedBuffer = MmappedBuffer::openBuffer(path, bufOffset, size,
+            isUpdatable);
     if (!mmappedBuffer.get()) {
         return DictionaryStructureWithBufferPolicy::StructurePoilcyPtr(0);
     }
@@ -58,8 +58,8 @@ namespace latinime {
             }
             // Removing extension to get the base path.
             dictDirPath.erase(pos);
-            const Ver4DictBuffers::Ver4DictBuffersPtr dictBuffers(
-                    Ver4DictBuffers::openVer4DictBuffers(dictDirPath.c_str(), mmappedBuffer));
+            const Ver4DictBuffers::Ver4DictBuffersPtr dictBuffers =
+                    Ver4DictBuffers::openVer4DictBuffers(dictDirPath.c_str(), mmappedBuffer);
             if (!dictBuffers.get()->isValid()) {
                 AKLOGE("DICT: The dictionary doesn't satisfy ver4 format requirements.");
                 ASSERT(false);

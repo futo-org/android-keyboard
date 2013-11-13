@@ -30,6 +30,10 @@ const char *const Ver4DictConstants::SHORTCUT_LOOKUP_TABLE_FILE_EXTENSION = ".sh
 const char *const Ver4DictConstants::SHORTCUT_CONTENT_TABLE_FILE_EXTENSION =
         ".shortcut_index_shortcut";
 
+// Version 4 dictionary size is implicitly limited to 8MB due to 3-byte offsets.
+// TODO: Make MAX_DICTIONARY_SIZE 8MB.
+const int Ver4DictConstants::MAX_DICTIONARY_SIZE = 2 * 1024 * 1024;
+
 const int Ver4DictConstants::NOT_A_TERMINAL_ID = -1;
 const int Ver4DictConstants::PROBABILITY_SIZE = 1;
 const int Ver4DictConstants::FLAGS_IN_PROBABILITY_FILE_SIZE = 1;

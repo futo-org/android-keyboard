@@ -33,6 +33,10 @@ class BigramDictContent : public SparseTableDictContent {
                       Ver4DictConstants::BIGRAM_ADDRESS_TABLE_BLOCK_SIZE,
                       Ver4DictConstants::BIGRAM_ADDRESS_TABLE_DATA_SIZE) {}
 
+    BigramDictContent()
+            : SparseTableDictContent(Ver4DictConstants::BIGRAM_ADDRESS_TABLE_BLOCK_SIZE,
+                      Ver4DictConstants::BIGRAM_ADDRESS_TABLE_DATA_SIZE) {}
+
     void getBigramEntryAndAdvancePosition(int *const outProbability, bool *const outHasNext,
             int *const outTargetTerminalId, int *const bigramEntryPos) const;
 
@@ -56,7 +60,7 @@ class BigramDictContent : public SparseTableDictContent {
     bool copyBigramList(const int bigramListPos, const int toPos);
 
  private:
-    DISALLOW_IMPLICIT_CONSTRUCTORS(BigramDictContent);
+    DISALLOW_COPY_AND_ASSIGN(BigramDictContent);
 
     int createAndGetBigramFlags(const int probability, const bool hasNext) const {
         return (probability & Ver4DictConstants::BIGRAM_PROBABILITY_MASK)

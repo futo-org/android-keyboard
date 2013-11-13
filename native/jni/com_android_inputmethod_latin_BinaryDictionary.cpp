@@ -86,10 +86,10 @@ static jlong latinime_BinaryDictionary_open(JNIEnv *env, jclass clazz, jstring s
     char sourceDirChars[sourceDirUtf8Length + 1];
     env->GetStringUTFRegion(sourceDir, 0, env->GetStringLength(sourceDir), sourceDirChars);
     sourceDirChars[sourceDirUtf8Length] = '\0';
-    DictionaryStructureWithBufferPolicy::StructurePoilcyPtr dictionaryStructureWithBufferPolicy(
+    DictionaryStructureWithBufferPolicy::StructurePoilcyPtr dictionaryStructureWithBufferPolicy =
             DictionaryStructureWithBufferPolicyFactory::newDictionaryStructureWithBufferPolicy(
                     sourceDirChars, static_cast<int>(dictOffset), static_cast<int>(dictSize),
-                    isUpdatable == JNI_TRUE));
+                    isUpdatable == JNI_TRUE);
     if (!dictionaryStructureWithBufferPolicy.get()) {
         return 0;
     }

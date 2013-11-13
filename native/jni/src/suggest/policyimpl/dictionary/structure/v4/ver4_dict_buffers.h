@@ -33,10 +33,14 @@ class Ver4DictBuffers {
  public:
     typedef ExclusiveOwnershipPointer<Ver4DictBuffers> Ver4DictBuffersPtr;
 
-    static Ver4DictBuffersPtr openVer4DictBuffers(const char *const dictDirPath,
+    static AK_FORCE_INLINE Ver4DictBuffersPtr openVer4DictBuffers(const char *const dictDirPath,
             const MmappedBuffer::MmappedBufferPtr &dictBuffer) {
         const bool isUpdatable = dictBuffer.get() ? dictBuffer.get()->isUpdatable() : false;
         return Ver4DictBuffersPtr(new Ver4DictBuffers(dictDirPath, dictBuffer, isUpdatable));
+    }
+
+    static AK_FORCE_INLINE Ver4DictBuffersPtr createVer4DictBuffers() {
+        return Ver4DictBuffersPtr(new Ver4DictBuffers());
     }
 
     AK_FORCE_INLINE bool isValid() const {
@@ -45,14 +49,13 @@ class Ver4DictBuffers {
                 && mShortcutDictContent.isValid();
     }
 
-    AK_FORCE_INLINE uint8_t *getRawDictBuffer() const {
-        return mDictBuffer.get()->getBuffer();
+    AK_FORCE_INLINE BufferWithExtendableBuffer *getWritableHeaderBuffer() {
+        return &mExpandableHeaderBuffer;
     }
 
-    AK_FORCE_INLINE int getRawDictBufferSize() const {
-        return mDictBuffer.get()->getBufferSize();
+    AK_FORCE_INLINE BufferWithExtendableBuffer *getWritableTrieBuffer() {
+        return &mExpandableTrieBuffer;
     }
-
 
     AK_FORCE_INLINE TerminalPositionLookupTable *getUpdatableTerminalPositionLookupTable() {
         return &mTerminalPositionLookupTable;
@@ -86,21 +89,41 @@ class Ver4DictBuffers {
         return mIsUpdatable;
     }
 
+    bool flush(const char *const dictDirPath) {
+        // TODO: Implement.
+        return false;
+    }
+
  private:
-    DISALLOW_IMPLICIT_CONSTRUCTORS(Ver4DictBuffers);
+    DISALLOW_COPY_AND_ASSIGN(Ver4DictBuffers);
 
     AK_FORCE_INLINE Ver4DictBuffers(const char *const dictDirPath,
             const MmappedBuffer::MmappedBufferPtr &dictBuffer, const bool isUpdatable)
             : mDictBuffer(dictBuffer),
-              // TODO: Quit using getHeaderSize.
-              mTerminalPositionLookupTable(dictDirPath, isUpdatable,
-                      HeaderReadWriteUtils::getHeaderSize(mDictBuffer.get()->getBuffer())),
+              mHeaderSize(HeaderReadWriteUtils::getHeaderSize(mDictBuffer.get()->getBuffer())),
+              mExpandableHeaderBuffer(dictBuffer.get()->getBuffer(), mHeaderSize,
+                      BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE),
+              mExpandableTrieBuffer(dictBuffer.get()->getBuffer() + mHeaderSize,
+                      dictBuffer.get()->getBufferSize() - mHeaderSize,
+                      BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE),
+              // TODO: Quit using header size.
+              mTerminalPositionLookupTable(dictDirPath, isUpdatable, mHeaderSize),
               mProbabilityDictContent(dictDirPath, isUpdatable),
               mBigramDictContent(dictDirPath, isUpdatable),
               mShortcutDictContent(dictDirPath, isUpdatable),
               mIsUpdatable(isUpdatable) {}
 
+    AK_FORCE_INLINE Ver4DictBuffers()
+            : mDictBuffer(0), mHeaderSize(0),
+              mExpandableHeaderBuffer(Ver4DictConstants::MAX_DICTIONARY_SIZE),
+              mExpandableTrieBuffer(Ver4DictConstants::MAX_DICTIONARY_SIZE),
+              mTerminalPositionLookupTable(), mProbabilityDictContent(),
+              mBigramDictContent(), mShortcutDictContent(), mIsUpdatable(true) {}
+
     const MmappedBuffer::MmappedBufferPtr mDictBuffer;
+    const int mHeaderSize;
+    BufferWithExtendableBuffer mExpandableHeaderBuffer;
+    BufferWithExtendableBuffer mExpandableTrieBuffer;
     TerminalPositionLookupTable mTerminalPositionLookupTable;
     ProbabilityDictContent mProbabilityDictContent;
     BigramDictContent mBigramDictContent;

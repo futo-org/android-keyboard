@@ -19,6 +19,7 @@
 
 #include "defines.h"
 #include "suggest/policyimpl/dictionary/structure/v4/content/dict_content.h"
+#include "suggest/policyimpl/dictionary/structure/v4/ver4_dict_constants.h"
 #include "suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer.h"
 #include "suggest/policyimpl/dictionary/utils/mmapped_buffer.h"
 #include "suggest/policyimpl/dictionary/utils/sparse_table.h"
@@ -49,13 +50,22 @@ class SparseTableDictContent : public DictContent {
                       mContentBuffer.get() ? mContentBuffer.get()->getBufferSize() : 0,
                       BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE),
               mAddressLookupTable(&mExpandableLookupTableBuffer, &mExpandableAddressTableBuffer,
-                      sparseTableBlockSize, sparseTableDataSize) {}
+                      sparseTableBlockSize, sparseTableDataSize),
+              mIsValid(mLookupTableBuffer.get() != 0 && mAddressTableBuffer.get() != 0
+                      && mContentBuffer.get() != 0) {}
+
+    SparseTableDictContent(const int sparseTableBlockSize, const int sparseTableDataSize)
+            : mLookupTableBuffer(0), mAddressTableBuffer(0), mContentBuffer(0),
+              mExpandableLookupTableBuffer(Ver4DictConstants::MAX_DICTIONARY_SIZE),
+              mExpandableAddressTableBuffer(Ver4DictConstants::MAX_DICTIONARY_SIZE),
+              mExpandableContentBuffer(Ver4DictConstants::MAX_DICTIONARY_SIZE),
+              mAddressLookupTable(&mExpandableLookupTableBuffer, &mExpandableAddressTableBuffer,
+                      sparseTableBlockSize, sparseTableDataSize), mIsValid(true) {}
 
     virtual ~SparseTableDictContent() {}
 
     virtual bool isValid() const {
-        return mLookupTableBuffer.get() != 0 && mAddressTableBuffer.get() != 0
-                && mContentBuffer.get() != 0;
+        return mIsValid;
     }
 
  protected:
@@ -78,7 +88,6 @@ class SparseTableDictContent : public DictContent {
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(SparseTableDictContent);
 
-    // TODO: Have sparse table.
     const MmappedBuffer::MmappedBufferPtr mLookupTableBuffer;
     const MmappedBuffer::MmappedBufferPtr mAddressTableBuffer;
     const MmappedBuffer::MmappedBufferPtr mContentBuffer;
@@ -86,6 +95,7 @@ class SparseTableDictContent : public DictContent {
     BufferWithExtendableBuffer mExpandableAddressTableBuffer;
     BufferWithExtendableBuffer mExpandableContentBuffer;
     SparseTable mAddressLookupTable;
+    const bool mIsValid;
 };
 } // namespace latinime
 #endif /* LATINIME_SPARSE_TABLE_DICT_CONTENT_H */
