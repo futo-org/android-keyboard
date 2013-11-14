@@ -17,6 +17,7 @@
 package com.android.inputmethod.latin.utils;
 
 import static com.android.inputmethod.latin.Constants.Subtype.KEYBOARD_MODE;
+import static com.android.inputmethod.latin.Constants.Subtype.ExtraValue.EMOJI_CAPABLE;
 import static com.android.inputmethod.latin.Constants.Subtype.ExtraValue.IS_ADDITIONAL_SUBTYPE;
 import static com.android.inputmethod.latin.Constants.Subtype.ExtraValue.KEYBOARD_LAYOUT_SET;
 import static com.android.inputmethod.latin.Constants.Subtype.ExtraValue.UNTRANSLATABLE_STRING_IN_SUBTYPE_NAME;
@@ -27,10 +28,10 @@ import android.util.Log;
 import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.compat.InputMethodSubtypeCompatUtils;
-import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.R;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public final class AdditionalSubtypeUtils {
     private static final String TAG = AdditionalSubtypeUtils.class.getSimpleName();
@@ -146,31 +147,36 @@ public final class AdditionalSubtypeUtils {
         return sb.toString();
     }
 
-    private static InputMethodSubtype buildInputMethodSubtype(int nameId, String localeString,
-            String layoutExtraValue, String additionalSubtypeExtraValue) {
-        // CAVEAT! If you want to change subtypeId after changing the extra values,
-        // you must change "getInputMethodSubtypeId". But it will remove the additional keyboard
-        // from the current users. So, you should be really careful to change it.
-        final int subtypeId = getInputMethodSubtypeId(nameId, localeString, layoutExtraValue,
-                additionalSubtypeExtraValue);
+    private static InputMethodSubtype buildInputMethodSubtype(final int nameId,
+            final String localeString, final String layoutExtraValue,
+            final String additionalSubtypeExtraValue) {
+        // To preserve additional subtype settings and user's selection across OS updates, subtype
+        // id shouldn't be changed. New attributes, such as emojiCapable, are carefully excluded
+        // from the calculation of subtype id.
+        final String compatibleExtraValue = StringUtils.joinCommaSplittableText(
+                layoutExtraValue, additionalSubtypeExtraValue);
+        final int compatibleSubtypeId = getInputMethodSubtypeId(localeString, compatibleExtraValue);
         final String extraValue;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            extraValue = layoutExtraValue + "," + additionalSubtypeExtraValue
-                    + "," + Constants.Subtype.ExtraValue.ASCII_CAPABLE
-                    + "," + Constants.Subtype.ExtraValue.EMOJI_CAPABLE;
+        // Color Emoji is supported from KitKat.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            extraValue = StringUtils.appendToCommaSplittableTextIfNotExists(
+                    EMOJI_CAPABLE, compatibleExtraValue);
         } else {
-            extraValue = layoutExtraValue + "," + additionalSubtypeExtraValue;
+            extraValue = compatibleExtraValue;
         }
         return InputMethodSubtypeCompatUtils.newInputMethodSubtype(nameId,
                 R.drawable.ic_ime_switcher_dark, localeString, KEYBOARD_MODE, extraValue,
-                false, false, subtypeId);
+                false, false, compatibleSubtypeId);
     }
 
-    private static int getInputMethodSubtypeId(int nameId, String localeString,
-            String layoutExtraValue, String additionalSubtypeExtraValue) {
-        // TODO: Use InputMethodSubtypeBuilder once we use SDK version 19.
-        return (new InputMethodSubtype(nameId, R.drawable.ic_ime_switcher_dark,
-                localeString, KEYBOARD_MODE, layoutExtraValue + "," + additionalSubtypeExtraValue,
-                        false, false)).hashCode();
+    private static int getInputMethodSubtypeId(final String localeString, final String extraValue) {
+        // From the compatibility point of view, the calculation of subtype id has been copied from
+        // {@link InputMethodSubtype} of JellyBean MR2.
+        return Arrays.hashCode(new Object[] {
+                localeString,
+                KEYBOARD_MODE,
+                extraValue,
+                false /* isAuxiliary */,
+                false /* overrideImplicitlyEnabledSubtype */ });
     }
 }
