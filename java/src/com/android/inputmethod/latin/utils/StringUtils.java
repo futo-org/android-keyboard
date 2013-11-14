@@ -82,8 +82,6 @@ public final class StringUtils {
         return containsInArray(text, extraValues.split(SEPARATOR_FOR_COMMA_SPLITTABLE_TEXT));
     }
 
-    // Remove @UsedForTesting annotation once this method is used in the production code.
-    @UsedForTesting
     public static String joinCommaSplittableText(final String head, final String tail) {
         if (TextUtils.isEmpty(head) && TextUtils.isEmpty(tail)) {
             return EMPTY_STRING;
