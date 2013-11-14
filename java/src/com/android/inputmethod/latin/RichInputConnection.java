@@ -160,21 +160,12 @@ public final class RichInputConnection {
             final boolean shouldFinishComposition) {
         mExpectedCursorPosition = newCursorPosition;
         mComposingText.setLength(0);
-        mCommittedTextBeforeComposingText.setLength(0);
-        mIC = mParent.getCurrentInputConnection();
-        // Call upon the inputconnection directly since our own method is using the cache, and
-        // we want to refresh it.
-        final CharSequence textBeforeCursor = null == mIC ? null :
-                mIC.getTextBeforeCursor(Constants.EDITOR_CONTENTS_CACHE_SIZE, 0);
-        if (null == textBeforeCursor) {
-            // For some reason the app thinks we are not connected to it. This looks like a
-            // framework bug... Fall back to ground state and return false.
-            mExpectedCursorPosition = INVALID_CURSOR_POSITION;
-            Log.e(TAG, "Unable to connect to the editor to retrieve text... will retry later");
+        final boolean didReloadTextSuccessfully = reloadTextCache();
+        if (!didReloadTextSuccessfully) {
+            Log.d(TAG, "Will try to retrieve text later.");
             return false;
         }
-        mCommittedTextBeforeComposingText.append(textBeforeCursor);
-        final int lengthOfTextBeforeCursor = textBeforeCursor.length();
+        final int lengthOfTextBeforeCursor = mCommittedTextBeforeComposingText.length();
         if (lengthOfTextBeforeCursor > newCursorPosition
                 || (lengthOfTextBeforeCursor < Constants.EDITOR_CONTENTS_CACHE_SIZE
                         && newCursorPosition < Constants.EDITOR_CONTENTS_CACHE_SIZE)) {
@@ -190,6 +181,29 @@ public final class RichInputConnection {
                 ResearchLogger.richInputConnection_finishComposingText();
             }
         }
+        return true;
+    }
+
+    /**
+     * Reload the cached text from the InputConnection.
+     *
+     * @return true if successful
+     */
+    private boolean reloadTextCache() {
+        mCommittedTextBeforeComposingText.setLength(0);
+        mIC = mParent.getCurrentInputConnection();
+        // Call upon the inputconnection directly since our own method is using the cache, and
+        // we want to refresh it.
+        final CharSequence textBeforeCursor = null == mIC ? null :
+                mIC.getTextBeforeCursor(Constants.EDITOR_CONTENTS_CACHE_SIZE, 0);
+        if (null == textBeforeCursor) {
+            // For some reason the app thinks we are not connected to it. This looks like a
+            // framework bug... Fall back to ground state and return false.
+            mExpectedCursorPosition = INVALID_CURSOR_POSITION;
+            Log.e(TAG, "Unable to connect to the editor to retrieve text.");
+            return false;
+        }
+        mCommittedTextBeforeComposingText.append(textBeforeCursor);
         return true;
     }
 
@@ -269,10 +283,9 @@ public final class RichInputConnection {
         // getCapsMode should be updated to be able to return a "not enough info" result so that
         // we can get more context only when needed.
         if (TextUtils.isEmpty(mCommittedTextBeforeComposingText) && 0 != mExpectedCursorPosition) {
-            final CharSequence textBeforeCursor = getTextBeforeCursor(
-                    Constants.EDITOR_CONTENTS_CACHE_SIZE, 0);
-            if (!TextUtils.isEmpty(textBeforeCursor)) {
-                mCommittedTextBeforeComposingText.append(textBeforeCursor);
+            if (!reloadTextCache()) {
+                Log.w(TAG, "Unable to connect to the editor. "
+                        + "Setting caps mode without knowing text.");
             }
         }
         // This never calls InputConnection#getCapsMode - in fact, it's a static method that
@@ -443,19 +456,30 @@ public final class RichInputConnection {
         if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
     }
 
-    public void setSelection(final int start, final int end) {
+    /**
+     * Set the selection of the text editor.
+     *
+     * Calls through to {@link InputConnection#setSelection(int, int)}.
+     *
+     * @param start the character index where the selection should start.
+     * @param end the character index where the selection should end.
+     * @return Returns true on success, false if the input connection is no longer valid either when
+     * setting the selection or when retrieving the text cache at that point.
+     */
+    public boolean setSelection(final int start, final int end) {
         if (DEBUG_BATCH_NESTING) checkBatchEdit();
         if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
+        mExpectedCursorPosition = start;
         if (null != mIC) {
-            mIC.setSelection(start, end);
+            final boolean isIcValid = mIC.setSelection(start, end);
+            if (!isIcValid) {
+                return false;
+            }
             if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
                 ResearchLogger.richInputConnection_setSelection(start, end);
             }
         }
-        mExpectedCursorPosition = start;
-        mCommittedTextBeforeComposingText.setLength(0);
-        mCommittedTextBeforeComposingText.append(
-                getTextBeforeCursor(Constants.EDITOR_CONTENTS_CACHE_SIZE, 0));
+        return reloadTextCache();
     }
 
     public void commitCorrection(final CorrectionInfo correctionInfo) {
