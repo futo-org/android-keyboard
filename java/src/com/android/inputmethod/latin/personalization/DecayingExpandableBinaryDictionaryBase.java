@@ -76,7 +76,6 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
         mFileName = fileName;
         mPrefs = sp;
         if (mLocale != null && mLocale.length() > 1) {
-            asyncLoadDictionaryToMemory();
             reloadDictionaryIfRequired();
         }
     }
@@ -85,9 +84,6 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
     public void close() {
         if (DBG_DUMP_ON_CLOSE) {
             dumpAllWordsForDebug();
-        }
-        if (!ExpandableBinaryDictionary.ENABLE_BINARY_DICTIONARY_DYNAMIC_UPDATE) {
-            closeBinaryDictionary();
         }
         // Flush pending writes.
         // TODO: Remove after this class become to use a dynamic binary dictionary.
@@ -130,9 +126,8 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
                 (word0 != null && word0.length() >= Constants.DICTIONARY_MAX_WORD_LENGTH)) {
             return;
         }
-        final int frequency = ENABLE_BINARY_DICTIONARY_DYNAMIC_UPDATE ?
-                (isValid ? FREQUENCY_FOR_WORDS_IN_DICTS : FREQUENCY_FOR_WORDS_NOT_IN_DICTS) :
-                        FREQUENCY_FOR_TYPED;
+        final int frequency = isValid ?
+                FREQUENCY_FOR_WORDS_IN_DICTS : FREQUENCY_FOR_WORDS_NOT_IN_DICTS;
         addWordDynamically(word1, null /* shortcutTarget */, frequency, 0 /* shortcutFreq */,
                 false /* isNotAWord */);
         // Do not insert a word as a bigram of itself

@@ -214,9 +214,7 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
 
     public void testAddManyWords() {
         final String testFilenameSuffix = "testRandomWords" + System.currentTimeMillis();
-        final int numberOfWords =
-                ExpandableBinaryDictionary.ENABLE_BINARY_DICTIONARY_DYNAMIC_UPDATE ?
-                        10000 : 1000;
+        final int numberOfWords = 10000;
         final Random random = new Random(123456);
         clearHistory(testFilenameSuffix);
         try {
