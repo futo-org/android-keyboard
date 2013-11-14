@@ -44,7 +44,7 @@ public class StringUtilsTests extends AndroidTestCase {
         }));
     }
 
-    public void testContainsInExtraValues() {
+    public void testContainsInCommaSplittableText() {
         assertFalse("null", StringUtils.containsInCommaSplittableText("key", null));
         assertFalse("empty", StringUtils.containsInCommaSplittableText("key", ""));
         assertFalse("not in 1 element",
@@ -56,7 +56,28 @@ public class StringUtilsTests extends AndroidTestCase {
         assertTrue("in 2 elements", StringUtils.containsInCommaSplittableText("key", "key1,key"));
     }
 
-    public void testAppendToExtraValuesIfNotExists() {
+    public void testJoinCommaSplittableText() {
+        assertEquals("2 nulls", "",
+                StringUtils.joinCommaSplittableText(null, null));
+        assertEquals("null and empty", "",
+                StringUtils.joinCommaSplittableText(null, ""));
+        assertEquals("empty and null", "",
+                StringUtils.joinCommaSplittableText("", null));
+        assertEquals("2 empties", "",
+                StringUtils.joinCommaSplittableText("", ""));
+        assertEquals("text and null", "text",
+                StringUtils.joinCommaSplittableText("text", null));
+        assertEquals("text and empty", "text",
+                StringUtils.joinCommaSplittableText("text", ""));
+        assertEquals("null and text", "text",
+                StringUtils.joinCommaSplittableText(null, "text"));
+        assertEquals("empty and text", "text",
+                StringUtils.joinCommaSplittableText("", "text"));
+        assertEquals("2 texts", "text1,text2",
+                StringUtils.joinCommaSplittableText("text1", "text2"));
+    }
+
+    public void testAppendToCommaSplittableTextIfNotExists() {
         assertEquals("null", "key",
                 StringUtils.appendToCommaSplittableTextIfNotExists("key", null));
         assertEquals("empty", "key",
@@ -77,7 +98,7 @@ public class StringUtilsTests extends AndroidTestCase {
                 StringUtils.appendToCommaSplittableTextIfNotExists("key", "key1,key,key3"));
     }
 
-    public void testRemoveFromExtraValuesIfExists() {
+    public void testRemoveFromCommaSplittableTextIfExists() {
         assertEquals("null", "", StringUtils.removeFromCommaSplittableTextIfExists("key", null));
         assertEquals("empty", "", StringUtils.removeFromCommaSplittableTextIfExists("key", ""));
 
