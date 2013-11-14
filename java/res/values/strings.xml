@@ -452,6 +452,13 @@ mobile devices. [CHAR LIMIT=25] -->
     <!-- Description for Emoji keyboard subtype [CHAR LIMIT=25] -->
     <string name="subtype_emoji">Emoji</string>
 
+    <!-- Title of the preference settings for switching keyboard color scheme [CHAR LIMIT=35] -->
+    <string name="keyboard_color_scheme">Color scheme</string>
+    <!-- The keyboard color scheme name, White [CHAR LIMIT=16] -->
+    <string name="keyboard_color_scheme_white">White</string>
+    <!-- The keyboard color scheme name, Blue [CHAR LIMIT=16] -->
+    <string name="keyboard_color_scheme_blue">Blue</string>
+
     <!-- Title of the preference settings for custom input styles (language and keyboard layout pairs) [CHAR LIMIT=35]-->
     <string name="custom_input_styles_title">Custom input styles</string>
     <!-- Title of the option menu to add a new style entry in the preference settings [CHAR LIMIT=16] -->
