@@ -39,6 +39,8 @@ public final class StringUtils {
     public static final int CAPITALIZE_FIRST = 1; // First only
     public static final int CAPITALIZE_ALL = 2;   // All caps
 
+    private static final String EMPTY_STRING = "";
+
     private StringUtils() {
         // This utility class is not publicly instantiable.
     }
@@ -80,6 +82,22 @@ public final class StringUtils {
         return containsInArray(text, extraValues.split(SEPARATOR_FOR_COMMA_SPLITTABLE_TEXT));
     }
 
+    // Remove @UsedForTesting annotation once this method is used in the production code.
+    @UsedForTesting
+    public static String joinCommaSplittableText(final String head, final String tail) {
+        if (TextUtils.isEmpty(head) && TextUtils.isEmpty(tail)) {
+            return EMPTY_STRING;
+        }
+        // Here either head or tail is not null.
+        if (TextUtils.isEmpty(head)) {
+            return tail;
+        }
+        if (TextUtils.isEmpty(tail)) {
+            return head;
+        }
+        return head + SEPARATOR_FOR_COMMA_SPLITTABLE_TEXT + tail;
+    }
+
     public static String appendToCommaSplittableTextIfNotExists(final String text,
             final String extraValues) {
         if (TextUtils.isEmpty(extraValues)) {
@@ -94,7 +112,7 @@ public final class StringUtils {
     public static String removeFromCommaSplittableTextIfExists(final String text,
             final String extraValues) {
         if (TextUtils.isEmpty(extraValues)) {
-            return "";
+            return EMPTY_STRING;
         }
         final String[] elements = extraValues.split(SEPARATOR_FOR_COMMA_SPLITTABLE_TEXT);
         if (!containsInArray(text, elements)) {
@@ -380,7 +398,7 @@ public final class StringUtils {
     @UsedForTesting
     public static String byteArrayToHexString(byte[] bytes) {
         if (bytes == null || bytes.length == 0) {
-            return "";
+            return EMPTY_STRING;
         }
         final StringBuilder sb = new StringBuilder();
         for (byte b : bytes) {
@@ -444,7 +462,7 @@ public final class StringUtils {
 
     public static String listToJsonStr(List<Object> list) {
         if (list == null || list.isEmpty()) {
-            return "";
+            return EMPTY_STRING;
         }
         final StringWriter sw = new StringWriter();
         final JsonWriter writer = new JsonWriter(sw);
@@ -470,6 +488,6 @@ public final class StringUtils {
             } catch (IOException e) {
             }
         }
-        return "";
+        return EMPTY_STRING;
     }
 }
