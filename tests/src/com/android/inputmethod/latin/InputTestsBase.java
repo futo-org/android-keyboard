@@ -44,8 +44,8 @@ public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
 
     private static final String PREF_DEBUG_MODE = "debug_mode";
 
-    // The message that sets the underline is posted with a 200 ms delay
-    protected static final int DELAY_TO_WAIT_FOR_UNDERLINE = 200;
+    // The message that sets the underline is posted with a 500 ms delay
+    protected static final int DELAY_TO_WAIT_FOR_UNDERLINE = 500;
     // The message that sets predictions is posted with a 200 ms delay
     protected static final int DELAY_TO_WAIT_FOR_PREDICTIONS = 200;
 
