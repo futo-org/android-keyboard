@@ -725,8 +725,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         LatinImeLogger.commit();
         LatinImeLogger.onDestroy();
         if (mInputUpdater != null) {
-            mInputUpdater.onDestroy();
-            mInputUpdater = null;
+            mInputUpdater.quitLooper();
         }
         super.onDestroy();
     }
@@ -1824,13 +1823,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mWordComposer.setCapitalizedModeAtStartComposingTime(getActualCapsMode());
     }
 
-    private static final class InputUpdater implements Handler.Callback {
+    static final class InputUpdater implements Handler.Callback {
         private final Handler mHandler;
         private final LatinIME mLatinIme;
         private final Object mLock = new Object();
         private boolean mInBatchInput; // synchronized using {@link #mLock}.
 
-        private InputUpdater(final LatinIME latinIme) {
+        InputUpdater(final LatinIME latinIme) {
             final HandlerThread handlerThread = new HandlerThread(
                     InputUpdater.class.getSimpleName());
             handlerThread.start();
@@ -1947,7 +1946,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     .sendToTarget();
         }
 
-        private void onDestroy() {
+        void quitLooper() {
             mHandler.removeMessages(MSG_GET_SUGGESTED_WORDS);
             mHandler.removeMessages(MSG_UPDATE_GESTURE_PREVIEW_AND_SUGGESTION_STRIP);
             mHandler.getLooper().quit();
