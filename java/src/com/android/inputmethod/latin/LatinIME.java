@@ -905,7 +905,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // refresh later.
         final boolean canReachInputConnection;
         if (!mConnection.resetCachesUponCursorMoveAndReturnSuccess(editorInfo.initialSelStart,
-                false /* shouldFinishComposition */)) {
+                editorInfo.initialSelEnd, false /* shouldFinishComposition */)) {
             // We try resetting the caches up to 5 times before giving up.
             mHandler.postResetCaches(isDifferentTextField, 5 /* remainingTries */);
             // mLastSelection{Start,End} are reset later in this method, don't need to do it here
@@ -1107,7 +1107,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // TODO: revisit this when LatinIME supports hardware keyboards.
         // NOTE: the test harness subclasses LatinIME and overrides isInputViewShown().
         // TODO: find a better way to simulate actual execution.
-        if (isInputViewShown() && !mConnection.isBelatedExpectedUpdate(oldSelStart, newSelStart)) {
+        if (isInputViewShown() && !mConnection.isBelatedExpectedUpdate(oldSelStart, newSelStart,
+                    oldSelEnd, newSelEnd)) {
             // TODO: the following is probably better done in resetEntireInputState().
             // it should only happen when the cursor moved, and the very purpose of the
             // test below is to narrow down whether this happened or not. Likewise with
@@ -1133,13 +1134,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 // Another option would be to send suggestions each time we set the composing
                 // text, but that is probably too expensive to do, so we decided to leave things
                 // as is.
-                resetEntireInputState(newSelStart);
+                resetEntireInputState(newSelStart, newSelEnd);
             } else {
-                // resetEntireInputState calls resetCachesUponCursorMove, but with the second
-                // argument as true. But in all cases where we don't reset the entire input state,
-                // we still want to tell the rich input connection about the new cursor position so
-                // that it can update its caches.
-                mConnection.resetCachesUponCursorMoveAndReturnSuccess(newSelStart,
+                // resetEntireInputState calls resetCachesUponCursorMove, but forcing the
+                // composition to end.  But in all cases where we don't reset the entire input
+                // state, we still want to tell the rich input connection about the new cursor
+                // position so that it can update its caches.
+                mConnection.resetCachesUponCursorMoveAndReturnSuccess(newSelStart, newSelEnd,
                         false /* shouldFinishComposition */);
             }
 
@@ -1362,7 +1363,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     // This will reset the whole input state to the starting state. It will clear
     // the composing word, reset the last composed word, tell the inputconnection about it.
-    private void resetEntireInputState(final int newCursorPosition) {
+    private void resetEntireInputState(final int newSelStart, final int newSelEnd) {
         final boolean shouldFinishComposition = mWordComposer.isComposingWord();
         resetComposingState(true /* alsoResetLastComposedWord */);
         final SettingsValues settingsValues = mSettings.getCurrent();
@@ -1371,7 +1372,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         } else {
             setSuggestedWords(settingsValues.mSuggestPuncList, false);
         }
-        mConnection.resetCachesUponCursorMoveAndReturnSuccess(newCursorPosition,
+        mConnection.resetCachesUponCursorMoveAndReturnSuccess(newSelStart, newSelEnd,
                 shouldFinishComposition);
     }
 
@@ -1714,7 +1715,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 if (mWordComposer.isCursorFrontOrMiddleOfComposingWord()) {
                     // If we are in the middle of a recorrection, we need to commit the recorrection
                     // first so that we can insert the character at the current cursor position.
-                    resetEntireInputState(mLastSelectionStart);
+                    resetEntireInputState(mLastSelectionStart, mLastSelectionEnd);
                 } else {
                     commitTyped(LastComposedWord.NOT_A_SEPARATOR);
                 }
@@ -1782,7 +1783,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             if (mWordComposer.isCursorFrontOrMiddleOfComposingWord()) {
                 // If we are in the middle of a recorrection, we need to commit the recorrection
                 // first so that we can insert the batch input at the current cursor position.
-                resetEntireInputState(mLastSelectionStart);
+                resetEntireInputState(mLastSelectionStart, mLastSelectionEnd);
             } else if (wordComposerSize <= 1) {
                 // We auto-correct the previous (typed, not gestured) string iff it's one character
                 // long. The reason for this is, even in the middle of gesture typing, you'll still
@@ -2070,7 +2071,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (mWordComposer.isCursorFrontOrMiddleOfComposingWord()) {
             // If we are in the middle of a recorrection, we need to commit the recorrection
             // first so that we can remove the character at the current cursor position.
-            resetEntireInputState(mLastSelectionStart);
+            resetEntireInputState(mLastSelectionStart, mLastSelectionEnd);
             // When we exit this if-clause, mWordComposer.isComposingWord() will return false.
         }
         if (mWordComposer.isComposingWord()) {
@@ -2238,7 +2239,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (mWordComposer.isCursorFrontOrMiddleOfComposingWord()) {
             // If we are in the middle of a recorrection, we need to commit the recorrection
             // first so that we can insert the character at the current cursor position.
-            resetEntireInputState(mLastSelectionStart);
+            resetEntireInputState(mLastSelectionStart, mLastSelectionEnd);
             isComposingWord = false;
         }
         // We want to find out whether to start composing a new word with this character. If so,
@@ -2350,7 +2351,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (mWordComposer.isCursorFrontOrMiddleOfComposingWord()) {
             // If we are in the middle of a recorrection, we need to commit the recorrection
             // first so that we can insert the separator at the current cursor position.
-            resetEntireInputState(mLastSelectionStart);
+            resetEntireInputState(mLastSelectionStart, mLastSelectionEnd);
         }
         if (mWordComposer.isComposingWord()) { // May have changed since we stored wasComposing
             if (currentSettings.mCorrectionEnabled) {
@@ -2982,7 +2983,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
      * @param remainingTries How many times we may try again before giving up.
      */
     private void retryResetCaches(final boolean tryResumeSuggestions, final int remainingTries) {
-        if (!mConnection.resetCachesUponCursorMoveAndReturnSuccess(mLastSelectionStart, false)) {
+        if (!mConnection.resetCachesUponCursorMoveAndReturnSuccess(mLastSelectionStart,
+                    mLastSelectionEnd, false)) {
             if (0 < remainingTries) {
                 mHandler.postResetCaches(tryResumeSuggestions, remainingTries - 1);
                 return;
