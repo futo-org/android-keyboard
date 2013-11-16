@@ -57,14 +57,19 @@ public final class RichInputConnection {
     private static final int INVALID_CURSOR_POSITION = -1;
 
     /**
-     * This variable contains an expected value for the cursor position. This is where the
-     * cursor may end up after all the keyboard-triggered updates have passed. We keep this to
-     * compare it to the actual cursor position to guess whether the move was caused by a
-     * keyboard command or not.
-     * It's not really the cursor position: the cursor may not be there yet, and it's also expected
-     * there be cases where it never actually comes to be there.
+     * This variable contains an expected value for the selection start position. This is where the
+     * cursor or selection start may end up after all the keyboard-triggered updates have passed. We
+     * keep this to compare it to the actual selection start to guess whether the move was caused by
+     * a keyboard command or not.
+     * It's not really the selection start position: the selection start may not be there yet, and
+     * in some cases, it may never arrive there.
      */
     private int mExpectedSelStart = INVALID_CURSOR_POSITION; // in chars, not code points
+    /**
+     * The expected selection end.  Only differs from mExpectedSelStart if a non-empty selection is
+     * expected.  The same caveats as mExpectedSelStart apply.
+     */
+    private int mExpectedSelEnd = INVALID_CURSOR_POSITION; // in chars, not code points
     /**
      * This contains the committed text immediately preceding the cursor and the composing
      * text if any. It is refreshed when the cursor moves by calling upon the TextView.
@@ -150,15 +155,17 @@ public final class RichInputConnection {
      * data, so we empty the cache and note that we don't know the new cursor position, and we
      * return false so that the caller knows about this and can retry later.
      *
-     * @param newSelStart The new position of the selection start, as received from the system.
-     * @param shouldFinishComposition Whether we should finish the composition in progress.
+     * @param newSelStart the new position of the selection start, as received from the system.
+     * @param newSelEnd the new position of the selection end, as received from the system.
+     * @param shouldFinishComposition whether we should finish the composition in progress.
      * @return true if we were able to connect to the editor successfully, false otherwise. When
      *   this method returns false, the caches could not be correctly refreshed so they were only
      *   reset: the caller should try again later to return to normal operation.
      */
     public boolean resetCachesUponCursorMoveAndReturnSuccess(final int newSelStart,
-            final boolean shouldFinishComposition) {
+            final int newSelEnd, final boolean shouldFinishComposition) {
         mExpectedSelStart = newSelStart;
+        mExpectedSelEnd = newSelEnd;
         mComposingText.setLength(0);
         final boolean didReloadTextSuccessfully = reloadTextCache();
         if (!didReloadTextSuccessfully) {
@@ -169,11 +176,13 @@ public final class RichInputConnection {
         if (lengthOfTextBeforeCursor > newSelStart
                 || (lengthOfTextBeforeCursor < Constants.EDITOR_CONTENTS_CACHE_SIZE
                         && newSelStart < Constants.EDITOR_CONTENTS_CACHE_SIZE)) {
-            // newSelStart may be lying -- when rotating the device (probably a framework bug). If
-            // we have less chars than we asked for, then we know how many chars we have, and if we
-            // got more than newSelStart says, then we know it was lying. In both cases the length
-            // is more reliable.
+            // newSelStart and newSelEnd may be lying -- when rotating the device (probably a
+            // framework bug). If we have less chars than we asked for, then we know how many chars
+            // we have, and if we got more than newSelStart says, then we know it was lying. In both
+            // cases the length is more reliable.  Note that we only have to check newSelStart (not
+            // newSelEnd) since if newSelEnd is wrong, the newSelStart will be wrong as well.
             mExpectedSelStart = lengthOfTextBeforeCursor;
+            mExpectedSelEnd = lengthOfTextBeforeCursor;
         }
         if (null != mIC && shouldFinishComposition) {
             mIC.finishComposingText();
@@ -200,6 +209,7 @@ public final class RichInputConnection {
             // For some reason the app thinks we are not connected to it. This looks like a
             // framework bug... Fall back to ground state and return false.
             mExpectedSelStart = INVALID_CURSOR_POSITION;
+            mExpectedSelEnd = INVALID_CURSOR_POSITION;
             Log.e(TAG, "Unable to connect to the editor to retrieve text.");
             return false;
         }
@@ -351,8 +361,12 @@ public final class RichInputConnection {
         }
         if (mExpectedSelStart > beforeLength) {
             mExpectedSelStart -= beforeLength;
+            mExpectedSelEnd -= beforeLength;
         } else {
+            // There are fewer characters before the cursor in the buffer than we are being asked to
+            // delete.  Only delete what is there.
             mExpectedSelStart = 0;
+            mExpectedSelEnd -= mExpectedSelStart;
         }
         if (null != mIC) {
             mIC.deleteSurroundingText(beforeLength, afterLength);
@@ -387,6 +401,7 @@ public final class RichInputConnection {
             case KeyEvent.KEYCODE_ENTER:
                 mCommittedTextBeforeComposingText.append("\n");
                 mExpectedSelStart += 1;
+                mExpectedSelEnd = mExpectedSelStart;
                 break;
             case KeyEvent.KEYCODE_DEL:
                 if (0 == mComposingText.length()) {
@@ -398,18 +413,24 @@ public final class RichInputConnection {
                 } else {
                     mComposingText.delete(mComposingText.length() - 1, mComposingText.length());
                 }
-                if (mExpectedSelStart > 0) mExpectedSelStart -= 1;
+                if (mExpectedSelStart > 0 && mExpectedSelStart == mExpectedSelEnd) {
+                    // TODO: Handle surrogate pairs.
+                    mExpectedSelStart -= 1;
+                }
+                mExpectedSelEnd = mExpectedSelStart;
                 break;
             case KeyEvent.KEYCODE_UNKNOWN:
                 if (null != keyEvent.getCharacters()) {
                     mCommittedTextBeforeComposingText.append(keyEvent.getCharacters());
                     mExpectedSelStart += keyEvent.getCharacters().length();
+                    mExpectedSelEnd = mExpectedSelStart;
                 }
                 break;
             default:
                 final String text = new String(new int[] { keyEvent.getUnicodeChar() }, 0, 1);
                 mCommittedTextBeforeComposingText.append(text);
                 mExpectedSelStart += text.length();
+                mExpectedSelEnd = mExpectedSelStart;
                 break;
             }
         }
@@ -444,9 +465,11 @@ public final class RichInputConnection {
         if (DEBUG_BATCH_NESTING) checkBatchEdit();
         if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
         mExpectedSelStart += text.length() - mComposingText.length();
+        mExpectedSelEnd = mExpectedSelStart;
         mComposingText.setLength(0);
         mComposingText.append(text);
-        // TODO: support values of i != 1. At this time, this is never called with i != 1.
+        // TODO: support values of newCursorPosition != 1. At this time, this is never called with
+        // newCursorPosition != 1.
         if (null != mIC) {
             mIC.setComposingText(text, newCursorPosition);
             if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
@@ -782,20 +805,30 @@ public final class RichInputConnection {
      * this update and not the ones in-between. This is almost impossible to achieve even trying
      * very very hard.
      *
-     * @param oldSelStart The value of the old cursor position in the update.
-     * @param newSelStart The value of the new cursor position in the update.
+     * @param oldSelStart The value of the old selection in the update.
+     * @param newSelStart The value of the new selection in the update.
+     * @param oldSelEnd The value of the old selection end in the update.
+     * @param newSelEnd The value of the new selection end in the update.
      * @return whether this is a belated expected update or not.
      */
-    public boolean isBelatedExpectedUpdate(final int oldSelStart, final int newSelStart) {
-        // If this is an update that arrives at our expected position, it's a belated update.
-        if (newSelStart == mExpectedSelStart) return true;
-        // If this is an update that moves the cursor from our expected position, it must be
-        // an explicit move.
-        if (oldSelStart == mExpectedSelStart) return false;
-        // The following returns true if newSelStart is between oldSelStart and
-        // mCurrentCursorPosition. We assume that if the updated position is between the old
-        // position and the expected position, then it must be a belated update.
-        return (newSelStart - oldSelStart) * (mExpectedSelStart - newSelStart) >= 0;
+    public boolean isBelatedExpectedUpdate(final int oldSelStart, final int newSelStart,
+            final int oldSelEnd, final int newSelEnd) {
+        // This update is "belated" if we are expecting it.  That is, mExpectedSelStart and
+        // mExpectedSelEnd match the new values that the TextView is updating TO.
+        if (mExpectedSelStart == newSelStart && mExpectedSelEnd == newSelEnd) return true;
+        // This update is not belated if mExpectedSelStart and mExpeectedSelend match the old
+        // values, and one of newSelStart or newSelEnd is updated to a different value.  In this
+        // case, there is likely something other than the IME that has moved the selection endpoint
+        // to the new value.
+        if (mExpectedSelStart == oldSelStart && mExpectedSelEnd == oldSelEnd
+                && (oldSelStart != newSelStart || oldSelEnd != newSelEnd)) return false;
+        // If nether of the above two cases holds, then the system may be having trouble keeping up
+        // with updates.  If 1) the selection is a cursor, 2) newSelStart is between oldSelStart
+        // and mExpectedSelStart, and 3) newSelEnd is between oldSelEnd and mExpectedSelEnd, then
+        // assume a belated update.
+        return (newSelStart == newSelEnd)
+                && (newSelStart - oldSelStart) * (mExpectedSelStart - newSelStart) >= 0
+                && (newSelEnd - oldSelEnd) * (mExpectedSelEnd - newSelEnd) >= 0;
     }
 
     /**
