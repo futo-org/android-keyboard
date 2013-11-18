@@ -34,7 +34,6 @@ import android.preference.PreferenceManager;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.util.SparseArray;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -71,6 +70,9 @@ import com.android.inputmethod.latin.utils.UsabilityStudyLogUtils;
 import com.android.inputmethod.latin.utils.ViewLayoutUtils;
 import com.android.inputmethod.research.ResearchLogger;
 
+import java.util.ArrayDeque;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.WeakHashMap;
 
 /**
@@ -158,7 +160,10 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     private final int mKeyPreviewLayoutId;
     private final int mKeyPreviewOffset;
     private final int mKeyPreviewHeight;
-    private final SparseArray<TextView> mKeyPreviewTexts = CollectionUtils.newSparseArray();
+    // Free {@link TextView} pool that can be used for key preview.
+    private final ArrayDeque<TextView> mFreeKeyPreviewTextViews = CollectionUtils.newArrayDeque();
+    // Map from {@link Key} to {@link TextView} that is currently being displayed as key preview.
+    private final HashMap<Key,TextView> mShowingKeyPreviewTextViews = CollectionUtils.newHashMap();
     private final KeyPreviewDrawParams mKeyPreviewDrawParams = new KeyPreviewDrawParams();
     private boolean mShowKeyPreviewPopup = true;
     private int mKeyPreviewLingerTimeout;
@@ -381,13 +386,16 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         public void handleMessage(final Message msg) {
             final MainKeyboardView mainKeyboardView = getOuterInstance();
             if (mainKeyboardView == null) return;
-            final PointerTracker tracker = (PointerTracker) msg.obj;
             switch (msg.what) {
             case MSG_DISMISS_KEY_PREVIEW:
-                final TextView previewText = mainKeyboardView.mKeyPreviewTexts.get(
-                        tracker.mPointerId);
-                if (previewText != null) {
-                    previewText.setVisibility(INVISIBLE);
+                final Key key = (Key)msg.obj;
+                if (key != null) {
+                    final TextView previewTextView =
+                            mainKeyboardView.mShowingKeyPreviewTextViews.remove(key);
+                    if (previewTextView != null) {
+                        previewTextView.setVisibility(INVISIBLE);
+                        mainKeyboardView.mFreeKeyPreviewTextViews.add(previewTextView);
+                    }
                 }
                 break;
             case MSG_DISMISS_GESTURE_FLOATING_PREVIEW_TEXT:
@@ -396,12 +404,8 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
             }
         }
 
-        public void dismissKeyPreview(final long delay, final PointerTracker tracker) {
-            sendMessageDelayed(obtainMessage(MSG_DISMISS_KEY_PREVIEW, tracker), delay);
-        }
-
-        public void cancelDismissKeyPreview(final PointerTracker tracker) {
-            removeMessages(MSG_DISMISS_KEY_PREVIEW, tracker);
+        public void dismissKeyPreview(final long delay, final Key key) {
+            sendMessageDelayed(obtainMessage(MSG_DISMISS_KEY_PREVIEW, key), delay);
         }
 
         private void cancelAllDismissKeyPreviews() {
@@ -681,33 +685,34 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         return mShowKeyPreviewPopup;
     }
 
-    private void addKeyPreview(final TextView keyPreview) {
-        locatePreviewPlacerView();
-        mPreviewPlacerView.addView(
-                keyPreview, ViewLayoutUtils.newLayoutParam(mPreviewPlacerView, 0, 0));
-    }
-
-    private TextView getKeyPreviewText(final int pointerId) {
-        TextView previewText = mKeyPreviewTexts.get(pointerId);
-        if (previewText != null) {
-            return previewText;
+    private TextView getKeyPreviewTextView(final Key key) {
+        TextView previewTextView = mShowingKeyPreviewTextViews.remove(key);
+        if (previewTextView != null) {
+            return previewTextView;
+        }
+        previewTextView = mFreeKeyPreviewTextViews.poll();
+        if (previewTextView != null) {
+            return previewTextView;
         }
         final Context context = getContext();
         if (mKeyPreviewLayoutId != 0) {
-            previewText = (TextView)LayoutInflater.from(context).inflate(mKeyPreviewLayoutId, null);
+            previewTextView = (TextView)LayoutInflater.from(context)
+                    .inflate(mKeyPreviewLayoutId, null);
         } else {
-            previewText = new TextView(context);
+            previewTextView = new TextView(context);
         }
-        mKeyPreviewTexts.put(pointerId, previewText);
-        return previewText;
+        locatePreviewPlacerView();
+        mPreviewPlacerView.addView(
+                previewTextView, ViewLayoutUtils.newLayoutParam(mPreviewPlacerView, 0, 0));
+        return previewTextView;
     }
 
     private void dismissAllKeyPreviews() {
-        final int pointerCount = mKeyPreviewTexts.size();
-        for (int id = 0; id < pointerCount; id++) {
-            final TextView previewText = mKeyPreviewTexts.get(id);
-            if (previewText != null) {
-                previewText.setVisibility(INVISIBLE);
+        for (final Key key : new HashSet<Key>(mShowingKeyPreviewTextViews.keySet())) {
+            final TextView previewTextView = mShowingKeyPreviewTextViews.remove(key);
+            if (previewTextView != null) {
+                previewTextView.setVisibility(INVISIBLE);
+                mFreeKeyPreviewTextViews.add(previewTextView);
             }
         }
         PointerTracker.setReleasedKeyGraphicsToAllKeys();
@@ -735,23 +740,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     private static final int STATE_HAS_MOREKEYS = 1;
 
     @Override
-    public void showKeyPreview(final PointerTracker tracker) {
-        final KeyPreviewDrawParams previewParams = mKeyPreviewDrawParams;
-        final Keyboard keyboard = getKeyboard();
-        if (!mShowKeyPreviewPopup) {
-            previewParams.mPreviewVisibleOffset = -keyboard.mVerticalGap;
-            return;
-        }
-
-        final TextView previewText = getKeyPreviewText(tracker.mPointerId);
-        // If the key preview has no parent view yet, add it to the ViewGroup which can place
-        // key preview absolutely in SoftInputWindow.
-        if (previewText.getParent() == null) {
-            addKeyPreview(previewText);
-        }
-
-        mDrawingHandler.cancelDismissKeyPreview(tracker);
-        final Key key = tracker.getKey();
+    public void showKeyPreview(final Key key) {
         // If key is invalid or IME is already closed, we must not show key preview.
         // Trying to show key preview while root window is closed causes
         // WindowManager.BadTokenException.
@@ -759,38 +748,47 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
             return;
         }
 
+        final KeyPreviewDrawParams previewParams = mKeyPreviewDrawParams;
+        final Keyboard keyboard = getKeyboard();
+        if (!mShowKeyPreviewPopup) {
+            previewParams.mPreviewVisibleOffset = -keyboard.mVerticalGap;
+            return;
+        }
+
+        final TextView previewTextView = getKeyPreviewTextView(key);
         final KeyDrawParams drawParams = mKeyDrawParams;
-        previewText.setTextColor(drawParams.mPreviewTextColor);
-        final Drawable background = previewText.getBackground();
+        previewTextView.setTextColor(drawParams.mPreviewTextColor);
+        final Drawable background = previewTextView.getBackground();
         final String label = key.getPreviewLabel();
         // What we show as preview should match what we show on a key top in onDraw().
         if (label != null) {
             // TODO Should take care of temporaryShiftLabel here.
-            previewText.setCompoundDrawables(null, null, null, null);
-            previewText.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+            previewTextView.setCompoundDrawables(null, null, null, null);
+            previewTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX,
                     key.selectPreviewTextSize(drawParams));
-            previewText.setTypeface(key.selectPreviewTypeface(drawParams));
-            previewText.setText(label);
+            previewTextView.setTypeface(key.selectPreviewTypeface(drawParams));
+            previewTextView.setText(label);
         } else {
-            previewText.setCompoundDrawables(null, null, null,
+            previewTextView.setCompoundDrawables(null, null, null,
                     key.getPreviewIcon(keyboard.mIconsSet));
-            previewText.setText(null);
+            previewTextView.setText(null);
         }
 
-        previewText.measure(
+        previewTextView.measure(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         final int keyDrawWidth = key.getDrawWidth();
-        final int previewWidth = previewText.getMeasuredWidth();
+        final int previewWidth = previewTextView.getMeasuredWidth();
         final int previewHeight = mKeyPreviewHeight;
         // The width and height of visible part of the key preview background. The content marker
         // of the background 9-patch have to cover the visible part of the background.
-        previewParams.mPreviewVisibleWidth = previewWidth - previewText.getPaddingLeft()
-                - previewText.getPaddingRight();
-        previewParams.mPreviewVisibleHeight = previewHeight - previewText.getPaddingTop()
-                - previewText.getPaddingBottom();
+        previewParams.mPreviewVisibleWidth = previewWidth - previewTextView.getPaddingLeft()
+                - previewTextView.getPaddingRight();
+        previewParams.mPreviewVisibleHeight = previewHeight - previewTextView.getPaddingTop()
+                - previewTextView.getPaddingBottom();
         // The distance between the top edge of the parent key and the bottom of the visible part
         // of the key preview background.
-        previewParams.mPreviewVisibleOffset = mKeyPreviewOffset - previewText.getPaddingBottom();
+        previewParams.mPreviewVisibleOffset =
+                mKeyPreviewOffset - previewTextView.getPaddingBottom();
         getLocationInWindow(mOriginCoords);
         // The key preview is horizontally aligned with the center of the visible part of the
         // parent key. If it doesn't fit in this {@link KeyboardView}, it is moved inward to fit and
@@ -817,13 +815,14 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
             background.setState(KEY_PREVIEW_BACKGROUND_STATE_TABLE[statePosition][hasMoreKeys]);
         }
         ViewLayoutUtils.placeViewAt(
-                previewText, previewX, previewY, previewWidth, previewHeight);
-        previewText.setVisibility(VISIBLE);
+                previewTextView, previewX, previewY, previewWidth, previewHeight);
+        previewTextView.setVisibility(VISIBLE);
+        mShowingKeyPreviewTextViews.put(key, previewTextView);
     }
 
     @Override
-    public void dismissKeyPreview(final PointerTracker tracker) {
-        mDrawingHandler.dismissKeyPreview(mKeyPreviewLingerTimeout, tracker);
+    public void dismissKeyPreview(final Key key) {
+        mDrawingHandler.dismissKeyPreview(mKeyPreviewLingerTimeout, key);
     }
 
     public void setSlidingKeyInputPreviewEnabled(final boolean enabled) {
