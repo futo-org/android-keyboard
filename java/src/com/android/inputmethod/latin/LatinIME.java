@@ -3081,8 +3081,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     private void hapticAndAudioFeedback(final int code, final int repeatCount) {
         final MainKeyboardView keyboardView = mKeyboardSwitcher.getMainKeyboardView();
-        if (keyboardView != null && keyboardView.isInSlidingKeyInput()) {
-            // No need to feedback while sliding input.
+        if (keyboardView != null && keyboardView.isInDraggingFinger()) {
+            // No need to feedback while finger is dragging.
             return;
         }
         if (repeatCount > 0) {

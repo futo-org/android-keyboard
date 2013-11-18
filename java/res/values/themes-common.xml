@@ -67,7 +67,7 @@
         <item name="keyHysteresisDistanceForSlidingModifier">@dimen/config_key_hysteresis_distance_for_sliding_modifier</item>
         <item name="touchNoiseThresholdTime">@integer/config_touch_noise_threshold_time</item>
         <item name="touchNoiseThresholdDistance">@dimen/config_touch_noise_threshold_distance</item>
-        <item name="slidingKeyInputEnable">@bool/config_sliding_key_input_enabled</item>
+        <item name="keySelectionByDraggingFinger">@bool/config_key_selection_by_dragging_finger</item>
         <item name="slidingKeyInputPreviewWidth">@dimen/config_sliding_key_input_preview_width</item>
         <item name="slidingKeyInputPreviewBodyRatio">@integer/config_sliding_key_input_preview_body_ratio</item>
         <item name="slidingKeyInputPreviewShadowRatio">@integer/config_sliding_key_input_preview_shadow_ratio</item>

@@ -87,8 +87,8 @@
         <attr name="touchNoiseThresholdTime" format="integer" />
         <!-- Touch noise threshold distance in millimeter -->
         <attr name="touchNoiseThresholdDistance" format="dimension" />
-        <!-- Sliding key input enable -->
-        <attr name="slidingKeyInputEnable" format="boolean" />
+        <!-- Enable key selection by dragging finger -->
+        <attr name="keySelectionByDraggingFinger" format="boolean" />
         <attr name="slidingKeyInputPreviewColor" format="color" />
         <attr name="slidingKeyInputPreviewWidth" format="dimension" />
         <attr name="slidingKeyInputPreviewBodyRatio" format="integer" />
