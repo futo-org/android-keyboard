@@ -67,6 +67,10 @@ class TerminalPositionLookupTable : public SingleDictContent {
         return mSize;
     }
 
+    bool flushToFile(const char *const dictDirPath) const {
+        return flush(dictDirPath, Ver4DictConstants::TERMINAL_ADDRESS_TABLE_FILE_EXTENSION);
+    }
+
  private:
     DISALLOW_COPY_AND_ASSIGN(TerminalPositionLookupTable);
 

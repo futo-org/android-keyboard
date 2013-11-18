@@ -60,6 +60,12 @@ class ShortcutDictContent : public SparseTableDictContent {
         return addressLookupTable->get(terminalId);
     }
 
+   bool flushToFile(const char *const dictDirPath) const {
+       return flush(dictDirPath, Ver4DictConstants::SHORTCUT_LOOKUP_TABLE_FILE_EXTENSION,
+               Ver4DictConstants::SHORTCUT_CONTENT_TABLE_FILE_EXTENSION,
+               Ver4DictConstants::SHORTCUT_FILE_EXTENSION);
+   }
+
  private:
     DISALLOW_COPY_AND_ASSIGN(ShortcutDictContent);
 };

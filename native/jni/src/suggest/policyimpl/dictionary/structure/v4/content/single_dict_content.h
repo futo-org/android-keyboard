@@ -21,6 +21,7 @@
 #include "suggest/policyimpl/dictionary/structure/v4/content/dict_content.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_dict_constants.h"
 #include "suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer.h"
+#include "suggest/policyimpl/dictionary/utils/dict_file_writing_utils.h"
 #include "suggest/policyimpl/dictionary/utils/mmapped_buffer.h"
 
 namespace latinime {
@@ -52,6 +53,12 @@ class SingleDictContent : public DictContent {
 
     const BufferWithExtendableBuffer *getBuffer() const {
         return &mExpandableContentBuffer;
+    }
+
+    bool flush(const char *const dictDirPath, const char *const contentFileName) const {
+        const BufferWithExtendableBuffer *bufferPtr = &mExpandableContentBuffer;
+        return DictFileWritingUtils::flushBuffersToFileInDir(dictDirPath, contentFileName,
+                &bufferPtr, 1 /* bufferCount */);
     }
 
  private:

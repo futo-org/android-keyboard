@@ -17,12 +17,12 @@
 #include "suggest/policyimpl/dictionary/utils/dict_file_writing_utils.h"
 
 #include <cstdio>
-#include <cstring>
 
 #include "suggest/policyimpl/dictionary/header/header_policy.h"
 #include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_writing_utils.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_dict_buffers.h"
 #include "suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer.h"
+#include "suggest/policyimpl/dictionary/utils/file_utils.h"
 #include "suggest/policyimpl/dictionary/utils/format_utils.h"
 
 namespace latinime {
@@ -36,9 +36,9 @@ const char *const DictFileWritingUtils::TEMP_FILE_SUFFIX_FOR_WRITING_DICT_FILE =
             return createEmptyV3DictFile(filePath, attributeMap);
         case 4:
             return createEmptyV4DictFile(filePath, attributeMap);
-            return false;
         default:
-            // Only version 3 dictionary is supported for now.
+            AKLOGE("Cannot create dictionary %s because format version %d is not supported.",
+                    filePath, dictVersion);
             return false;
     }
 }
@@ -54,12 +54,13 @@ const char *const DictFileWritingUtils::TEMP_FILE_SUFFIX_FOR_WRITING_DICT_FILE =
     BufferWithExtendableBuffer bodyBuffer(
             BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE);
     if (!DynamicPatriciaTrieWritingUtils::writeEmptyDictionary(&bodyBuffer, 0 /* rootPos */)) {
+        AKLOGE("Empty ver3 dictionary structure cannot be created on memory.");
         return false;
     }
     return flushAllHeaderAndBodyToFile(filePath, &headerBuffer, &bodyBuffer);
 }
 
-/* static */ bool DictFileWritingUtils::createEmptyV4DictFile(const char *const filePath,
+/* static */ bool DictFileWritingUtils::createEmptyV4DictFile(const char *const dirPath,
         const HeaderReadWriteUtils::AttributeMap *const attributeMap) {
     Ver4DictBuffers::Ver4DictBuffersPtr dictBuffers = Ver4DictBuffers::createVer4DictBuffers();
     HeaderPolicy headerPolicy(FormatUtils::VERSION_4, attributeMap);
@@ -68,42 +69,59 @@ const char *const DictFileWritingUtils::TEMP_FILE_SUFFIX_FOR_WRITING_DICT_FILE =
             0 /* unigramCount */, 0 /* bigramCount */, 0 /* extendedRegionSize */);
     if (!DynamicPatriciaTrieWritingUtils::writeEmptyDictionary(
             dictBuffers.get()->getWritableTrieBuffer(), 0 /* rootPos */)) {
+        AKLOGE("Empty ver4 dictionary structure cannot be created on memory.");
         return false;
     }
-    return dictBuffers.get()->flush(filePath);
+    return dictBuffers.get()->flush(dirPath);
 }
 
 /* static */ bool DictFileWritingUtils::flushAllHeaderAndBodyToFile(const char *const filePath,
         BufferWithExtendableBuffer *const dictHeader, BufferWithExtendableBuffer *const dictBody) {
-    const int tmpFileNameBufSize = strlen(filePath)
-            + strlen(TEMP_FILE_SUFFIX_FOR_WRITING_DICT_FILE) + 1 /* terminator */;
+    const int tmpFileNameBufSize = FileUtils::getFilePathWithSuffixBufSize(filePath,
+            TEMP_FILE_SUFFIX_FOR_WRITING_DICT_FILE);
     // Name of a temporary file used for writing that is a connected string of original name and
     // TEMP_FILE_SUFFIX_FOR_WRITING_DICT_FILE.
     char tmpFileName[tmpFileNameBufSize];
-    snprintf(tmpFileName, tmpFileNameBufSize, "%s%s", filePath,
-            TEMP_FILE_SUFFIX_FOR_WRITING_DICT_FILE);
-    FILE *const file = fopen(tmpFileName, "wb");
+    FileUtils::getFilePathWithSuffix(filePath, TEMP_FILE_SUFFIX_FOR_WRITING_DICT_FILE,
+            tmpFileNameBufSize, tmpFileName);
+    const BufferWithExtendableBuffer *buffers[] = {dictHeader, dictBody};
+    if (!DictFileWritingUtils::flushBuffersToFile(tmpFileName, buffers, 2 /* bufferCount */)) {
+        AKLOGE("Dictionary structure cannot be written to %s.", tmpFileName);
+        return false;
+    }
+    if (rename(tmpFileName, filePath) != 0) {
+        AKLOGE("Dictionary file %s cannot be renamed to %s", tmpFileName, filePath);;
+    }
+    return true;
+}
+
+/* static */ bool DictFileWritingUtils::flushBuffersToFileInDir(const char *const dirPath,
+        const char *const fileName, const BufferWithExtendableBuffer **const buffers,
+        const int bufferCount) {
+    const int filePathBufSize = FileUtils::getFilePathBufSize(dirPath, fileName);
+    char filePath[filePathBufSize];
+    FileUtils::getFilePath(dirPath, fileName, filePathBufSize, filePath);
+    return flushBuffersToFile(filePath, buffers, bufferCount);
+}
+
+/* static */ bool DictFileWritingUtils::flushBuffersToFile(const char *const filePath,
+        const BufferWithExtendableBuffer **const buffers, const int bufferCount) {
+    FILE *const file = fopen(filePath, "wb");
     if (!file) {
-        AKLOGE("Dictionary file %s cannot be opened.", tmpFileName);
+        AKLOGE("File %s cannot be opened.", filePath);
         ASSERT(false);
         return false;
     }
-    // Write the dictionary header.
-    if (!writeBufferToFile(file, dictHeader)) {
-        remove(tmpFileName);
-        AKLOGE("Dictionary header cannot be written. size: %d", dictHeader->getTailPosition());
-        ASSERT(false);
-        return false;
-    }
-    // Write the dictionary body.
-    if (!writeBufferToFile(file, dictBody)) {
-        remove(tmpFileName);
-        AKLOGE("Dictionary body cannot be written. size: %d", dictBody->getTailPosition());
-        ASSERT(false);
-        return false;
+    for (int i = 0; i < bufferCount; ++i) {
+        if (!writeBufferToFile(file, buffers[i])) {
+            remove(filePath);
+            AKLOGE("Buffer cannot be written to the file %s. size: %d", filePath,
+                    buffers[i]->getTailPosition());
+            ASSERT(false);
+            return false;
+        }
     }
     fclose(file);
-    rename(tmpFileName, filePath);
     return true;
 }
 

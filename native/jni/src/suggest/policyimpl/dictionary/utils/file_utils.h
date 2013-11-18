@@ -17,11 +17,6 @@
 #ifndef LATINIME_FILE_UTILS_H
 #define LATINIME_FILE_UTILS_H
 
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <unistd.h>
-
 #include "defines.h"
 
 namespace latinime {
@@ -29,19 +24,20 @@ namespace latinime {
 class FileUtils {
  public:
     // Returns -1 on error.
-    static int getFileSize(const char *const filePath) {
-        const int fd = open(filePath, O_RDONLY);
-        if (fd == -1) {
-            return -1;
-        }
-        struct stat statBuf;
-        if (fstat(fd, &statBuf) != 0) {
-            close(fd);
-            return -1;
-        }
-        close(fd);
-        return static_cast<int>(statBuf.st_size);
-    }
+    static int getFileSize(const char *const filePath);
+
+    // Remove a directory and all files in the directory.
+    static bool removeDirAndFiles(const char *const dirPath);
+
+    static int getFilePathWithSuffixBufSize(const char *const filePath, const char *const suffix);
+
+    static void getFilePathWithSuffix(const char *const filePath, const char *const suffix,
+            const int filePathBufSize, char *const outFilePath);
+
+    static int getFilePathBufSize(const char *const dirPath, const char *const fileName);
+
+    static void getFilePath(const char *const dirPath, const char *const fileName,
+            const int filePathBufSize, char *const outFilePath);
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(FileUtils);
