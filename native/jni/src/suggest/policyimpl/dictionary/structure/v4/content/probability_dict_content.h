@@ -62,6 +62,10 @@ class ProbabilityDictContent : public SingleDictContent {
                 Ver4DictConstants::PROBABILITY_SIZE, &probabilityWritingPos);
     }
 
+    bool flushToFile(const char *const dictDirPath) const {
+        return flush(dictDirPath, Ver4DictConstants::FREQ_FILE_EXTENSION);
+    }
+
  private:
     DISALLOW_COPY_AND_ASSIGN(ProbabilityDictContent);
 

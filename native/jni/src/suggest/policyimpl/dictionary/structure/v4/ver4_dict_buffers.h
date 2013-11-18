@@ -89,10 +89,7 @@ class Ver4DictBuffers {
         return mIsUpdatable;
     }
 
-    bool flush(const char *const dictDirPath) {
-        // TODO: Implement.
-        return false;
-    }
+    bool flush(const char *const dictDirPath) const;
 
  private:
     DISALLOW_COPY_AND_ASSIGN(Ver4DictBuffers);

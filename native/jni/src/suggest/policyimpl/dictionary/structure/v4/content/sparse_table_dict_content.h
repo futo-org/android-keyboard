@@ -21,6 +21,7 @@
 #include "suggest/policyimpl/dictionary/structure/v4/content/dict_content.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_dict_constants.h"
 #include "suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer.h"
+#include "suggest/policyimpl/dictionary/utils/dict_file_writing_utils.h"
 #include "suggest/policyimpl/dictionary/utils/mmapped_buffer.h"
 #include "suggest/policyimpl/dictionary/utils/sparse_table.h"
 
@@ -84,6 +85,9 @@ class SparseTableDictContent : public DictContent {
     const BufferWithExtendableBuffer *getContentBuffer() const {
         return &mExpandableContentBuffer;
     }
+
+    bool flush(const char *const dictDirPath, const char *const lookupTableFileName,
+            const char *const addressTableFileName, const char *const contentFileName) const;
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(SparseTableDictContent);

@@ -28,6 +28,8 @@ class BufferWithExtendableBuffer;
 
 class DictFileWritingUtils {
  public:
+    static const char *const TEMP_FILE_SUFFIX_FOR_WRITING_DICT_FILE;
+
     static bool createEmptyDictFile(const char *const filePath, const int dictVersion,
             const HeaderReadWriteUtils::AttributeMap *const attributeMap);
 
@@ -35,16 +37,20 @@ class DictFileWritingUtils {
             BufferWithExtendableBuffer *const dictHeader,
             BufferWithExtendableBuffer *const dictBody);
 
+    static bool flushBuffersToFileInDir(const char *const dirPath, const char *const fileName,
+            const BufferWithExtendableBuffer **const buffers, const int bufferCount);
+
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(DictFileWritingUtils);
-
-    static const char *const TEMP_FILE_SUFFIX_FOR_WRITING_DICT_FILE;
 
     static bool createEmptyV3DictFile(const char *const filePath,
             const HeaderReadWriteUtils::AttributeMap *const attributeMap);
 
     static bool createEmptyV4DictFile(const char *const filePath,
             const HeaderReadWriteUtils::AttributeMap *const attributeMap);
+
+    static bool flushBuffersToFile(const char *const filePath,
+            const BufferWithExtendableBuffer **const buffers, const int bufferCount);
 
     static bool writeBufferToFile(FILE *const file,
             const BufferWithExtendableBuffer *const buffer);
