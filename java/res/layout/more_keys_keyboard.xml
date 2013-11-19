@@ -22,11 +22,9 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    style="?attr/moreKeysKeyboardContainerStyle"
+    android:orientation="vertical"
 >
     <com.android.inputmethod.keyboard.MoreKeysKeyboardView
-        xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
         android:id="@+id/more_keys_keyboard_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
