@@ -32,8 +32,6 @@
         <attr name="moreKeysKeyboardStyle" format="reference" />
         <!-- MoreKeysKeyboardView style -->
         <attr name="moreKeysKeyboardViewStyle" format="reference" />
-        <!-- MoreKeysKeyboardView container style -->
-        <attr name="moreKeysKeyboardContainerStyle" format="reference" />
         <!-- Suggestions strip style -->
         <attr name="suggestionStripViewStyle" format="reference" />
         <!-- Suggestion word style -->

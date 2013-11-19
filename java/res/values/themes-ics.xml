@@ -26,7 +26,6 @@
         <item name="emojiPalettesViewStyle">@style/EmojiPalettesView.ICS</item>
         <item name="moreKeysKeyboardStyle">@style/MoreKeysKeyboard.ICS</item>
         <item name="moreKeysKeyboardViewStyle">@style/MoreKeysKeyboardView.ICS</item>
-        <item name="moreKeysKeyboardContainerStyle">@style/MoreKeysKeyboardContainer.ICS</item>
         <item name="suggestionStripViewStyle">@style/SuggestionStripView.ICS</item>
         <item name="suggestionWordStyle">@style/SuggestionWord.ICS</item>
     </style>
@@ -96,15 +95,10 @@
         name="MoreKeysKeyboardView.ICS"
         parent="KeyboardView.ICS"
     >
-        <item name="android:background">@null</item>
+        <item name="android:background">@drawable/keyboard_popup_panel_background_ics</item>
         <item name="keyBackground">@drawable/btn_keyboard_key_popup_ics</item>
         <item name="keyTypeface">normal</item>
         <item name="verticalCorrection">@dimen/more_keys_keyboard_vertical_correction_holo</item>
-    </style>
-    <style
-        name="MoreKeysKeyboardContainer.ICS"
-    >
-        <item name="android:background">@drawable/keyboard_popup_panel_background_ics</item>
     </style>
     <style
         name="SuggestionStripView.ICS"
