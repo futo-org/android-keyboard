@@ -18,6 +18,8 @@ package com.android.inputmethod.latin.personalization;
 
 import android.content.Context;
 
+import com.android.inputmethod.latin.ExpandableBinaryDictionary;
+
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
@@ -111,6 +113,20 @@ public abstract class PersonalizationDictionaryUpdateSession {
             return;
         }
         dictionary.addToDictionary(word0, word1, isValid);
+    }
+
+    // TODO: Support multi locale.
+    public void addMultipleDictionaryEntriesToPersonalizationDictionary(
+            final ArrayList<ExpandableBinaryDictionary.LanguageModelParam> languageModelParams,
+            final ExpandableBinaryDictionary.AddMultipleDictionaryEntriesCallback callback) {
+        final DecayingExpandableBinaryDictionaryBase dictionary = getPredictionDictionary();
+        if (dictionary == null) {
+            if (callback != null) {
+                callback.onFinished();
+            }
+            return;
+        }
+        dictionary.addMultipleDictionaryEntriesToDictionary(languageModelParams, callback);
     }
 
     // Bulk import
