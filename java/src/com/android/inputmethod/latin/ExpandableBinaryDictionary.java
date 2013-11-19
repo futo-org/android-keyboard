@@ -288,7 +288,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     private void runGCIfRequiredInternalLocked(final boolean mindsBlockByGC) {
         // Calls to needsToRunGC() need to be serialized.
         if (mBinaryDictionary.needsToRunGC(mindsBlockByGC)) {
-            if (setIsRegeneratingIfNotRegenerating()) {
+            if (setProcessingLargeTaskIfNot()) {
                 // Run GC after currently existing time sensitive operations.
                 getExecutor(mFilename).executePrioritized(new Runnable() {
                     @Override
@@ -296,7 +296,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                         try {
                             mBinaryDictionary.flushWithGC();
                         } finally {
-                            mFilenameDictionaryUpdateController.mIsRegenerating.set(false);
+                            mFilenameDictionaryUpdateController.mProcessingLargeTask.set(false);
                         }
                     }
                 });
@@ -359,13 +359,76 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         });
     }
 
+    public interface AddMultipleDictionaryEntriesCallback {
+        public void onFinished();
+    }
+
+    public static class LanguageModelParam {
+        public final String mWord0;
+        public final String mWord1;
+        public final boolean mIsValid;
+        public final int mFrequency;
+        public final int mBigramFrequency;
+        public LanguageModelParam(final String word0, final String word1, final boolean isValid,
+                final int frequency, final int bigramFrequency) {
+            mWord0 = word0;
+            mWord1 = word1;
+            mIsValid = isValid;
+            mFrequency = frequency;
+            mBigramFrequency = bigramFrequency;
+        }
+    }
+
+    /**
+     * Dynamically add multiple entries to the dictionary.
+     */
+    protected void addMultipleDictionaryEntriesDynamically(
+            final ArrayList<LanguageModelParam> languageModelParams,
+            final AddMultipleDictionaryEntriesCallback callback) {
+        if (!mIsUpdatable) {
+            Log.w(TAG, "addMultipleDictionaryEntriesDynamically is called for non-updatable " +
+                    "dictionary: " + mFilename);
+            return;
+        }
+        getExecutor(mFilename).execute(new Runnable() {
+            @Override
+            public void run() {
+                final boolean locked = setProcessingLargeTaskIfNot();
+                try {
+                    for (final LanguageModelParam languageModelParam : languageModelParams) {
+                        if (languageModelParam.mWord1 == null) {
+                            continue;
+                        }
+                        if (mBinaryDictionary.needsToRunGC(true /* mindsBlockByGC */)) {
+                            mBinaryDictionary.flushWithGC();
+                        }
+                        mBinaryDictionary.addUnigramWord(languageModelParam.mWord1,
+                                languageModelParam.mFrequency);
+                        if (languageModelParam.mWord0 != null
+                                && !languageModelParam.mWord0.equals(languageModelParam.mWord1)) {
+                            mBinaryDictionary.addBigramWords(languageModelParam.mWord0,
+                                    languageModelParam.mWord1, languageModelParam.mBigramFrequency);
+                        }
+                    }
+                } finally {
+                    if (callback != null) {
+                        callback.onFinished();
+                    }
+                    if (locked) {
+                        mFilenameDictionaryUpdateController.mProcessingLargeTask.set(false);
+                    }
+                }
+            }
+        });
+    }
+
     @Override
     public ArrayList<SuggestedWordInfo> getSuggestionsWithSessionId(final WordComposer composer,
             final String prevWord, final ProximityInfo proximityInfo,
             final boolean blockOffensiveWords, final int[] additionalFeaturesOptions,
             final int sessionId) {
         reloadDictionaryIfRequired();
-        if (isRegenerating()) {
+        if (processingLargeTask()) {
             return null;
         }
         final AsyncResultHolder<ArrayList<SuggestedWordInfo>> holder =
@@ -402,7 +465,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     }
 
     protected boolean isValidWordInner(final String word) {
-        if (isRegenerating()) {
+        if (processingLargeTask()) {
             return false;
         }
         final AsyncResultHolder<Boolean> holder = new AsyncResultHolder<Boolean>();
@@ -524,7 +587,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
      */
     public final void reloadDictionaryIfRequired() {
         if (!isReloadRequired()) return;
-        if (setIsRegeneratingIfNotRegenerating()) {
+        if (setProcessingLargeTaskIfNot()) {
             reloadDictionary();
         }
     }
@@ -536,13 +599,14 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         return mBinaryDictionary == null || mPerInstanceDictionaryUpdateController.isOutOfDate();
     }
 
-    private boolean isRegenerating() {
-        return mFilenameDictionaryUpdateController.mIsRegenerating.get();
+    private boolean processingLargeTask() {
+        return mFilenameDictionaryUpdateController.mProcessingLargeTask.get();
     }
 
-    // Returns whether the dictionary can be regenerated.
-    private boolean setIsRegeneratingIfNotRegenerating() {
-        return mFilenameDictionaryUpdateController.mIsRegenerating.compareAndSet(
+    // Returns whether the dictionary is being used for a large task. If true, we should not use
+    // this dictionary for latency sensitive operations.
+    private boolean setProcessingLargeTaskIfNot() {
+        return mFilenameDictionaryUpdateController.mProcessingLargeTask.compareAndSet(
                 false /* expect */ , true /* update */);
     }
 
@@ -592,7 +656,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                     }
                     mPerInstanceDictionaryUpdateController.mLastUpdateTime = time;
                 } finally {
-                    mFilenameDictionaryUpdateController.mIsRegenerating.set(false);
+                    mFilenameDictionaryUpdateController.mProcessingLargeTask.set(false);
                 }
             }
         });
@@ -619,13 +683,13 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     }
 
     /**
-     * For tracking whether the dictionary is out of date and the dictionary is regenerating.
-     * Can be shared across multiple dictionary instances that access the same filename.
+     * For tracking whether the dictionary is out of date and the dictionary is used in a large
+     * task. Can be shared across multiple dictionary instances that access the same filename.
      */
     private static class DictionaryUpdateController {
         public volatile long mLastUpdateTime = 0;
         public volatile long mLastUpdateRequestTime = 0;
-        public volatile AtomicBoolean mIsRegenerating = new AtomicBoolean();
+        public volatile AtomicBoolean mProcessingLargeTask = new AtomicBoolean();
 
         public boolean isOutOfDate() {
             return (mLastUpdateRequestTime > mLastUpdateTime);
@@ -666,7 +730,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                     mBinaryDictionary.flushWithGC();
                     r.run();
                 } finally {
-                    mFilenameDictionaryUpdateController.mIsRegenerating.set(false);
+                    mFilenameDictionaryUpdateController.mProcessingLargeTask.set(false);
                 }
             }
         });
