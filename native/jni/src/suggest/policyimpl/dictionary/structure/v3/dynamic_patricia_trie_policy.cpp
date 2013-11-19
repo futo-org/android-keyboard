@@ -42,7 +42,7 @@ const char *const DynamicPatriciaTriePolicy::MAX_UNIGRAM_COUNT_QUERY = "MAX_UNIG
 const char *const DynamicPatriciaTriePolicy::MAX_BIGRAM_COUNT_QUERY = "MAX_BIGRAM_COUNT";
 const char *const DynamicPatriciaTriePolicy::SET_NEEDS_TO_DECAY_FOR_TESTING_QUERY =
         "SET_NEEDS_TO_DECAY_FOR_TESTING";
-const int DynamicPatriciaTriePolicy::MAX_DICT_EXTENDED_REGION_SIZE = 1024 * 1024;
+const int DynamicPatriciaTriePolicy::MAX_DICT_EXTENDED_REGION_SIZE = 32 * 1024;
 const int DynamicPatriciaTriePolicy::MIN_DICT_SIZE_TO_REFUSE_DYNAMIC_OPERATIONS =
         DynamicPatriciaTrieWritingHelper::MAX_DICTIONARY_SIZE - 1024;
 
