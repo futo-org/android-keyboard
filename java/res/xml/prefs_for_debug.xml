@@ -58,6 +58,12 @@
         android:persistent="true"
         android:title="@string/prefs_use_only_personalization_dictionary" />
 
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="boost_personalization_dictionary_for_debug"
+        android:persistent="true"
+        android:title="@string/prefs_boost_personalization_dictionary" />
+
     <PreferenceScreen
         android:key="read_external_dictionary"
         android:title="@string/prefs_read_external_dictionary" />
