@@ -223,7 +223,7 @@ public final class MoreKeysKeyboard extends Keyboard {
         }
 
         public int getDefaultKeyCoordX() {
-            return mLeftKeys * mColumnWidth;
+            return mLeftKeys * mColumnWidth + mLeftPadding;
         }
 
         public int getX(final int n, final int row) {
