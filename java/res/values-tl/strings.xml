@@ -74,13 +74,6 @@
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"Dynamic na floating preview"</string>
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"Tingnan ang iminungkahing salita habang gumagalaw"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : Na-save"</string>
-    <string name="label_go_key" msgid="1635148082137219148">"Punta"</string>
-    <string name="label_next_key" msgid="362972844525672568">"Susunod"</string>
-    <string name="label_previous_key" msgid="1211868118071386787">"Nkrn"</string>
-    <string name="label_done_key" msgid="2441578748772529288">"Tapos na"</string>
-    <string name="label_send_key" msgid="2815056534433717444">"Ipadala"</string>
-    <string name="label_pause_key" msgid="181098308428035340">"Pause"</string>
-    <string name="label_wait_key" msgid="6402152600878093134">"Intay"</string>
     <string name="spoken_use_headphones" msgid="896961781287283493">"Mag-plug in ng headset upang marinig ang mga password key na binabanggit nang malakas."</string>
     <string name="spoken_current_text_is" msgid="2485723011272583845">"Ang kasalukuyang teksto ay %s"</string>
     <string name="spoken_no_text_entered" msgid="7479685225597344496">"Walang tekstong inilagay"</string>
@@ -154,6 +147,9 @@
     <string name="subtype_no_language_colemak" msgid="5837418400010302623">"Alpabeto (Colemak)"</string>
     <string name="subtype_no_language_pcqwerty" msgid="5354918232046200018">"Alpabeto (PC)"</string>
     <string name="subtype_emoji" msgid="7483586578074549196">"Emoji"</string>
+    <string name="keyboard_color_scheme" msgid="9192934113872818070">"Scheme ng kulay"</string>
+    <string name="keyboard_color_scheme_white" msgid="6684064723850265438">"Puti"</string>
+    <string name="keyboard_color_scheme_blue" msgid="2488527224758177593">"Asul"</string>
     <string name="custom_input_styles_title" msgid="8429952441821251512">"Custom style ng input"</string>
     <string name="add_style" msgid="6163126614514489951">"Dagdag style"</string>
     <string name="add" msgid="8299699805688017798">"Idagdag"</string>

@@ -74,13 +74,6 @@
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"Dinamiese sweefvoorskou"</string>
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"Sien die voorgestelde woord tydens gebare"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : Gestoor"</string>
-    <string name="label_go_key" msgid="1635148082137219148">"Gaan"</string>
-    <string name="label_next_key" msgid="362972844525672568">"Volgende"</string>
-    <string name="label_previous_key" msgid="1211868118071386787">"Vorige"</string>
-    <string name="label_done_key" msgid="2441578748772529288">"Klaar"</string>
-    <string name="label_send_key" msgid="2815056534433717444">"Stuur"</string>
-    <string name="label_pause_key" msgid="181098308428035340">"Laat wag"</string>
-    <string name="label_wait_key" msgid="6402152600878093134">"Wag"</string>
     <string name="spoken_use_headphones" msgid="896961781287283493">"Koppel \'n kopstuk om te hoor hoe wagwoordsleutels hardop gesê word."</string>
     <string name="spoken_current_text_is" msgid="2485723011272583845">"Huidige teks is %s"</string>
     <string name="spoken_no_text_entered" msgid="7479685225597344496">"Geen teks ingevoer nie"</string>
@@ -154,6 +147,9 @@
     <string name="subtype_no_language_colemak" msgid="5837418400010302623">"Alfabet (Colemak)"</string>
     <string name="subtype_no_language_pcqwerty" msgid="5354918232046200018">"Alfabet (PC)"</string>
     <string name="subtype_emoji" msgid="7483586578074549196">"Emosiekone"</string>
+    <string name="keyboard_color_scheme" msgid="9192934113872818070">"Kleurskema"</string>
+    <string name="keyboard_color_scheme_white" msgid="6684064723850265438">"Wit"</string>
+    <string name="keyboard_color_scheme_blue" msgid="2488527224758177593">"Blou"</string>
     <string name="custom_input_styles_title" msgid="8429952441821251512">"Gepasmaakte invoerstyle"</string>
     <string name="add_style" msgid="6163126614514489951">"Voeg styl by"</string>
     <string name="add" msgid="8299699805688017798">"Voeg by"</string>

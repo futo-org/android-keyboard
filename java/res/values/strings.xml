@@ -151,21 +151,6 @@
     <!-- Indicates that a word has been added to the dictionary -->
     <string name="added_word"><xliff:g id="word">%s</xliff:g> : Saved</string>
 
-    <!-- Label for soft enter key when it performs GO action.  Must be short to fit on key! [CHAR LIMIT=5] -->
-    <string name="label_go_key">Go</string>
-    <!-- Label for soft enter key when it performs NEXT action.  Must be short to fit on key! [CHAR LIMIT=5] -->
-    <string name="label_next_key">Next</string>
-    <!-- Label for soft enter key when it performs PREVIOUS action.  Must be short to fit on key! [CHAR LIMIT=5] -->
-    <string name="label_previous_key">Prev</string>
-    <!-- Label for soft enter key when it performs DONE action.  Must be short to fit on key! [CHAR LIMIT=5] -->
-    <string name="label_done_key">Done</string>
-    <!-- Label for soft enter key when it performs SEND action.  Must be short to fit on key! [CHAR LIMIT=5] -->
-    <string name="label_send_key">Send</string>
-    <!-- Label for "Pause" key of phone number keyboard.  Must be short to fit on key! [CHAR LIMIT=5] -->
-    <string name="label_pause_key">Pause</string>
-    <!-- Label for "Wait" key of phone number keyboard.  Must be short to fit on key! [CHAR LIMIT=5]-->
-    <string name="label_wait_key">Wait</string>
-
     <!-- Spoken description to let the user know that when typing in a password, they can plug in a headset in to hear spoken descriptions of the keys they type. [CHAR LIMIT=NONE] -->
     <string name="spoken_use_headphones">Plug in a headset to hear password keys spoken aloud.</string>
 
@@ -466,6 +451,13 @@ mobile devices. [CHAR LIMIT=25] -->
     <string name="subtype_no_language_pcqwerty">Alphabet (PC)</string>
     <!-- Description for Emoji keyboard subtype [CHAR LIMIT=25] -->
     <string name="subtype_emoji">Emoji</string>
+
+    <!-- Title of the preference settings for switching keyboard color scheme [CHAR LIMIT=35] -->
+    <string name="keyboard_color_scheme">Color scheme</string>
+    <!-- The keyboard color scheme name, White [CHAR LIMIT=16] -->
+    <string name="keyboard_color_scheme_white">White</string>
+    <!-- The keyboard color scheme name, Blue [CHAR LIMIT=16] -->
+    <string name="keyboard_color_scheme_blue">Blue</string>
 
     <!-- Title of the preference settings for custom input styles (language and keyboard layout pairs) [CHAR LIMIT=35]-->
     <string name="custom_input_styles_title">Custom input styles</string>

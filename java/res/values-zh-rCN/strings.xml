@@ -74,13 +74,6 @@
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"动态漂浮预览"</string>
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"在滑行输入过程中显示建议字词"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g>：已保存"</string>
-    <string name="label_go_key" msgid="1635148082137219148">"开始"</string>
-    <string name="label_next_key" msgid="362972844525672568">"下个"</string>
-    <string name="label_previous_key" msgid="1211868118071386787">"后退"</string>
-    <string name="label_done_key" msgid="2441578748772529288">"完成"</string>
-    <string name="label_send_key" msgid="2815056534433717444">"发送"</string>
-    <string name="label_pause_key" msgid="181098308428035340">"暂停"</string>
-    <string name="label_wait_key" msgid="6402152600878093134">"等待"</string>
     <string name="spoken_use_headphones" msgid="896961781287283493">"需要插入耳机才能听到密码的按键声。"</string>
     <string name="spoken_current_text_is" msgid="2485723011272583845">"当前文本为%s"</string>
     <string name="spoken_no_text_entered" msgid="7479685225597344496">"未输入文字"</string>
@@ -154,6 +147,9 @@
     <string name="subtype_no_language_colemak" msgid="5837418400010302623">"字母 (Colemak)"</string>
     <string name="subtype_no_language_pcqwerty" msgid="5354918232046200018">"字母 (PC)"</string>
     <string name="subtype_emoji" msgid="7483586578074549196">"表情符号"</string>
+    <string name="keyboard_color_scheme" msgid="9192934113872818070">"配色方案"</string>
+    <string name="keyboard_color_scheme_white" msgid="6684064723850265438">"白色"</string>
+    <string name="keyboard_color_scheme_blue" msgid="2488527224758177593">"蓝色"</string>
     <string name="custom_input_styles_title" msgid="8429952441821251512">"自定义输入风格"</string>
     <string name="add_style" msgid="6163126614514489951">"添加样式"</string>
     <string name="add" msgid="8299699805688017798">"添加"</string>

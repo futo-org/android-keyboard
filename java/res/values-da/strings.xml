@@ -29,10 +29,10 @@
     <string name="popup_on_keypress" msgid="123894815723512944">"Pop op ved tastetryk"</string>
     <string name="general_category" msgid="1859088467017573195">"Generelt"</string>
     <string name="correction_category" msgid="2236750915056607613">"Tekstkorrigering"</string>
-    <string name="gesture_typing_category" msgid="497263612130532630">"Skrivning med berøring"</string>
+    <string name="gesture_typing_category" msgid="497263612130532630">"Glidende indtastning"</string>
     <string name="misc_category" msgid="6894192814868233453">"Andre valgmuligheder"</string>
     <string name="advanced_settings" msgid="362895144495591463">"Avancerede indstillinger"</string>
-    <string name="advanced_settings_summary" msgid="4487980456152830271">"Muligheder for eksperter"</string>
+    <string name="advanced_settings_summary" msgid="4487980456152830271">"Indstillinger for øvede"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Skift inputmetode"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Tasten til sprogskift gælder også for andre inputmetoder"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Tast til sprogskift"</string>
@@ -68,19 +68,12 @@
     <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"Meget aggressiv"</string>
     <string name="bigram_prediction" msgid="1084449187723948550">"Forslag til næste ord"</string>
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"Brug det forrige ord til at give forslag"</string>
-    <string name="gesture_input" msgid="826951152254563827">"Aktivér skrivning med berøring"</string>
+    <string name="gesture_input" msgid="826951152254563827">"Aktivér glidende indtastning"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"Skriv et ord ved at glide mellem bogstaverne"</string>
-    <string name="gesture_preview_trail" msgid="3802333369335722221">"Vis spor af berøring"</string>
-    <string name="gesture_floating_preview_text" msgid="4443240334739381053">"Dynamisk flydende eks.visning"</string>
-    <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"Se det foreslåede ord, mens berøringer udføres"</string>
+    <string name="gesture_preview_trail" msgid="3802333369335722221">"Vis glidende trykspor"</string>
+    <string name="gesture_floating_preview_text" msgid="4443240334739381053">"Dynamiske ordeksempler"</string>
+    <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"Se ordforslag ved glidende indtastning"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g>: Gemt"</string>
-    <string name="label_go_key" msgid="1635148082137219148">"Gå"</string>
-    <string name="label_next_key" msgid="362972844525672568">"Næste"</string>
-    <string name="label_previous_key" msgid="1211868118071386787">"Forr."</string>
-    <string name="label_done_key" msgid="2441578748772529288">"Udfør"</string>
-    <string name="label_send_key" msgid="2815056534433717444">"Send"</string>
-    <string name="label_pause_key" msgid="181098308428035340">"Pause"</string>
-    <string name="label_wait_key" msgid="6402152600878093134">"Vent"</string>
     <string name="spoken_use_headphones" msgid="896961781287283493">"Tilslut et headset for at høre indtastningen blive læst højt ved angivelse af adgangskode."</string>
     <string name="spoken_current_text_is" msgid="2485723011272583845">"Nuværende tekst er %s"</string>
     <string name="spoken_no_text_entered" msgid="7479685225597344496">"Der er ingen indtastet tekst"</string>
@@ -154,6 +147,9 @@
     <string name="subtype_no_language_colemak" msgid="5837418400010302623">"Alfabet (Colemak)"</string>
     <string name="subtype_no_language_pcqwerty" msgid="5354918232046200018">"Alfabet (PC)"</string>
     <string name="subtype_emoji" msgid="7483586578074549196">"Emoji"</string>
+    <string name="keyboard_color_scheme" msgid="9192934113872818070">"Farver"</string>
+    <string name="keyboard_color_scheme_white" msgid="6684064723850265438">"Hvid"</string>
+    <string name="keyboard_color_scheme_blue" msgid="2488527224758177593">"Blå"</string>
     <string name="custom_input_styles_title" msgid="8429952441821251512">"Tilpasset inputtypografi"</string>
     <string name="add_style" msgid="6163126614514489951">"Tilføj typografi"</string>
     <string name="add" msgid="8299699805688017798">"Tilføj"</string>
@@ -166,7 +162,7 @@
     <string name="not_now" msgid="6172462888202790482">"Ikke nu"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Denne inputstil findes allerede: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Tilstand for brugsstudie"</string>
-    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"For sene lange tastetryk"</string>
+    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Forsinket langt tastetryk"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Vibrationstid ved tastetryk"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Lydstyrke ved tastetryk"</string>
     <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"Læs ekstern ordbogsfil"</string>
@@ -176,7 +172,7 @@
     <string name="error" msgid="8940763624668513648">"Der opstod en fejl"</string>
     <string name="button_default" msgid="3988017840431881491">"Standard"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"Velkommen til <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_welcome_additional_description" msgid="8150252008545768953">"med Berøringsinput"</string>
+    <string name="setup_welcome_additional_description" msgid="8150252008545768953">"med glidende indtastning"</string>
     <string name="setup_start_action" msgid="8936036460897347708">"Kom godt i gang"</string>
     <string name="setup_next_action" msgid="371821437915144603">"Næste trin"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> konfigureres"</string>
