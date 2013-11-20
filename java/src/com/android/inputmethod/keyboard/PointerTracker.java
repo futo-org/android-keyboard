@@ -84,8 +84,8 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
 
     public interface DrawingProxy {
         public void invalidateKey(Key key);
-        public void showKeyPreview(PointerTracker tracker);
-        public void dismissKeyPreview(PointerTracker tracker);
+        public void showKeyPreview(Key key);
+        public void dismissKeyPreview(Key key);
         public void showSlidingKeyInputPreview(PointerTracker tracker);
         public void dismissSlidingKeyInputPreview();
         public void showGestureTrail(PointerTracker tracker, boolean showsFloatingPreviewText);
@@ -637,7 +637,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
     }
 
     private void setReleasedKeyGraphics(final Key key) {
-        mDrawingProxy.dismissKeyPreview(this);
+        mDrawingProxy.dismissKeyPreview(key);
         if (key == null) {
             return;
         }
@@ -685,7 +685,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         }
 
         if (!key.noKeyPreview() && !sInGesture && !needsToSuppressKeyPreviewPopup(eventTime)) {
-            mDrawingProxy.showKeyPreview(this);
+            mDrawingProxy.showKeyPreview(key);
         }
         updatePressKeyGraphics(key);
 
