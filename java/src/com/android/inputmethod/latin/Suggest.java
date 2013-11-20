@@ -432,7 +432,8 @@ public final class Suggest {
             final String scoreInfoString;
             if (normalizedScore > 0) {
                 scoreInfoString = String.format(
-                        Locale.ROOT, "%d (%4.2f)", cur.mScore, normalizedScore);
+                        Locale.ROOT, "%d (%4.2f), %s", cur.mScore, normalizedScore,
+                        cur.mSourceDict.mDictType);
             } else {
                 scoreInfoString = Integer.toString(cur.mScore);
             }
