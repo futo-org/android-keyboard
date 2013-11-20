@@ -225,6 +225,7 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
                         Integer.parseInt(binaryDictionary.getPropertyForTests(
                                 BinaryDictionary.UNIGRAM_COUNT_QUERY));
                 while (binaryDictionary.needsToRunGC(true /* mindsBlockByGC */)) {
+                    binaryDictionary.getPropertyForTests(SET_NEEDS_TO_DECAY_FOR_TESTING_KEY);
                     binaryDictionary.flushWithGC();
                 }
                 final int unigramCountAfterGC =
@@ -291,6 +292,7 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
                         Integer.parseInt(binaryDictionary.getPropertyForTests(
                                 BinaryDictionary.BIGRAM_COUNT_QUERY));
                 while (binaryDictionary.needsToRunGC(true /* mindsBlockByGC */)) {
+                    binaryDictionary.getPropertyForTests(SET_NEEDS_TO_DECAY_FOR_TESTING_KEY);
                     binaryDictionary.flushWithGC();
                 }
                 final int bigramCountAfterGC =
