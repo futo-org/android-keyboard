@@ -147,6 +147,9 @@
     <string name="subtype_no_language_colemak" msgid="5837418400010302623">"Ábécé (Colemak)"</string>
     <string name="subtype_no_language_pcqwerty" msgid="5354918232046200018">"Ábécé (PC)"</string>
     <string name="subtype_emoji" msgid="7483586578074549196">"Hangulatjel"</string>
+    <string name="keyboard_color_scheme" msgid="9192934113872818070">"Színséma"</string>
+    <string name="keyboard_color_scheme_white" msgid="6684064723850265438">"Fehér"</string>
+    <string name="keyboard_color_scheme_blue" msgid="2488527224758177593">"Kék"</string>
     <string name="custom_input_styles_title" msgid="8429952441821251512">"Egyedi bevitelstílusok"</string>
     <string name="add_style" msgid="6163126614514489951">"Új stílus"</string>
     <string name="add" msgid="8299699805688017798">"Hozzáadás"</string>

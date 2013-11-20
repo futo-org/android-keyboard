@@ -147,6 +147,9 @@
     <string name="subtype_no_language_colemak" msgid="5837418400010302623">"Abjad (Colemak)"</string>
     <string name="subtype_no_language_pcqwerty" msgid="5354918232046200018">"Abjad (PC)"</string>
     <string name="subtype_emoji" msgid="7483586578074549196">"Emoji"</string>
+    <string name="keyboard_color_scheme" msgid="9192934113872818070">"Skim warna"</string>
+    <string name="keyboard_color_scheme_white" msgid="6684064723850265438">"Putih"</string>
+    <string name="keyboard_color_scheme_blue" msgid="2488527224758177593">"Biru"</string>
     <string name="custom_input_styles_title" msgid="8429952441821251512">"Gaya input peribadi"</string>
     <string name="add_style" msgid="6163126614514489951">"Tambah gaya"</string>
     <string name="add" msgid="8299699805688017798">"Tambah"</string>

@@ -147,6 +147,9 @@
     <string name="subtype_no_language_colemak" msgid="5837418400010302623">"‏אלף-בית (Colemak)"</string>
     <string name="subtype_no_language_pcqwerty" msgid="5354918232046200018">"‏אלף-בית (PC)"</string>
     <string name="subtype_emoji" msgid="7483586578074549196">"אמוג\'י"</string>
+    <string name="keyboard_color_scheme" msgid="9192934113872818070">"ערכת צבעים"</string>
+    <string name="keyboard_color_scheme_white" msgid="6684064723850265438">"לבן"</string>
+    <string name="keyboard_color_scheme_blue" msgid="2488527224758177593">"כחול"</string>
     <string name="custom_input_styles_title" msgid="8429952441821251512">"סגנונות קלט מותאמים אישית"</string>
     <string name="add_style" msgid="6163126614514489951">"הוסף סגנון"</string>
     <string name="add" msgid="8299699805688017798">"הוסף"</string>
@@ -210,7 +213,7 @@
     <string name="install_dict" msgid="180852772562189365">"התקן"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"בטל"</string>
     <string name="delete_dict" msgid="756853268088330054">"מחק"</string>
-    <string name="should_download_over_metered_prompt" msgid="2878629598667658845">"‏לשפה הנבחרת במכשיר הנייד שלך יש מילון זמין.&lt;br/&gt; אנו ממליצים &lt;b&gt;להוריד&lt;/b&gt; את המילון ב<xliff:g id="LANGUAGE">%1$s</xliff:g> כדי לשפר את חוויית ההקלדה.&lt;br/&gt; &lt;br/&gt; ההורדה עשויה לארוך דקה או שתיים ב-3G. ייתכן שתחויב אם אין לך &lt;b&gt;תוכנית נתונים בלתי מוגבלת&lt;/b&gt;.&lt;br/&gt; אם אינך בטוח איזו תוכנית נתונים יש לך, אנו ממליצים לחפש חיבור Wi-Fi כדי להתחיל בהורדה באופן אוטומטי.&lt;br/&gt; &lt;br/&gt; טיפ: ניתן להוריד ולהסיר מילונים ב&lt;b&gt;שפה וקלט&lt;/b&gt; בתפריט &lt;b&gt;הגדרות&lt;/b&gt; של המכשיר הנייד שלך."</string>
+    <string name="should_download_over_metered_prompt" msgid="2878629598667658845">"‏לשפה הנבחרת במכשיר הנייד שלך יש מילון זמין.&lt;br/&gt; אנו ממליצים &lt;b&gt;להוריד&lt;/b&gt; את המילון ב<xliff:g id="LANGUAGE">%1$s</xliff:g> כדי לשפר את חוויית ההקלדה.&lt;br/&gt; &lt;br/&gt; ההורדה עשויה לארוך דקה או שתיים ב-3G. ייתכן שתחויב אם אין לך &lt;b&gt;תכנית נתונים בלתי מוגבלת&lt;/b&gt;.&lt;br/&gt; אם אינך בטוח איזו תכנית נתונים יש לך, אנו ממליצים לחפש חיבור Wi-Fi כדי להתחיל בהורדה באופן אוטומטי.&lt;br/&gt; &lt;br/&gt; טיפ: ניתן להוריד ולהסיר מילונים ב&lt;b&gt;שפה וקלט&lt;/b&gt; בתפריט &lt;b&gt;הגדרות&lt;/b&gt; של המכשיר הנייד שלך."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"‏הורד עכשיו (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"‏הורד באמצעות Wi-Fi"</string>
     <string name="dict_available_notification_title" msgid="6514288591959117288">"יש מילון זמין עבור <xliff:g id="LANGUAGE">%1$s</xliff:g>"</string>

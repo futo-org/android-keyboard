@@ -147,6 +147,9 @@
     <string name="subtype_no_language_colemak" msgid="5837418400010302623">"Цагаан толгой (Colemak)"</string>
     <string name="subtype_no_language_pcqwerty" msgid="5354918232046200018">"Цагаан толгой (PC)"</string>
     <string name="subtype_emoji" msgid="7483586578074549196">"Инээмсэглэл"</string>
+    <string name="keyboard_color_scheme" msgid="9192934113872818070">"Өнгөний схем"</string>
+    <string name="keyboard_color_scheme_white" msgid="6684064723850265438">"Цагаан"</string>
+    <string name="keyboard_color_scheme_blue" msgid="2488527224758177593">"Хөх"</string>
     <string name="custom_input_styles_title" msgid="8429952441821251512">"Өөрийн оруулах загвар"</string>
     <string name="add_style" msgid="6163126614514489951">"Загвар нэмэх"</string>
     <string name="add" msgid="8299699805688017798">"Нэмэх"</string>
