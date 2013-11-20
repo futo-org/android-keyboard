@@ -51,8 +51,9 @@ import java.util.TreeMap;
 @LargeTest
 public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
     private static final String TAG = BinaryDictDecoderEncoderTests.class.getSimpleName();
-    private static final int DEFAULT_MAX_UNIGRAMS = 100;
+    private static final int DEFAULT_MAX_UNIGRAMS = 300;
     private static final int DEFAULT_CODE_POINT_SET_SIZE = 50;
+    private static final int LARGE_CODE_POINT_SET_SIZE = 300;
     private static final int UNIGRAM_FREQ = 10;
     private static final int BIGRAM_FREQ = 50;
     private static final int TOLERANCE_OF_BIGRAM_FREQ = 5;
@@ -60,6 +61,8 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
     private static final int NUM_OF_SHORTCUTS = 5;
 
     private static final ArrayList<String> sWords = CollectionUtils.newArrayList();
+    private static final ArrayList<String> sWordsWithVariousCodePoints =
+            CollectionUtils.newArrayList();
     private static final SparseArray<List<Integer>> sEmptyBigrams =
             CollectionUtils.newSparseArray();
     private static final SparseArray<List<Integer>> sStarBigrams = CollectionUtils.newSparseArray();
@@ -76,9 +79,8 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         Log.e(TAG, "Testing dictionary: seed is " + seed);
         final Random random = new Random(seed);
         sWords.clear();
-        final int[] codePointSet = CodePointUtils.generateCodePointSet(DEFAULT_CODE_POINT_SET_SIZE,
-                random);
-        generateWords(maxUnigrams, random, codePointSet);
+        sWordsWithVariousCodePoints.clear();
+        generateWords(maxUnigrams, random);
 
         for (int i = 0; i < sWords.size(); ++i) {
             sChainBigrams.put(i, new ArrayList<Integer>());
@@ -105,12 +107,22 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         }
     }
 
-    private void generateWords(final int number, final Random random, final int[] codePointSet) {
+    private void generateWords(final int number, final Random random) {
+        final int[] codePointSet = CodePointUtils.generateCodePointSet(DEFAULT_CODE_POINT_SET_SIZE,
+                random);
         final Set<String> wordSet = CollectionUtils.newHashSet();
         while (wordSet.size() < number) {
             wordSet.add(CodePointUtils.generateWord(random, codePointSet));
         }
         sWords.addAll(wordSet);
+
+        final int[] largeCodePointSet = CodePointUtils.generateCodePointSet(
+                LARGE_CODE_POINT_SET_SIZE, random);
+        wordSet.clear();
+        while (wordSet.size() < number) {
+            wordSet.add(CodePointUtils.generateWord(random, largeCodePointSet));
+        }
+        sWordsWithVariousCodePoints.addAll(wordSet);
     }
 
     /**
@@ -278,6 +290,9 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
                 "chain with shortcuts"));
         results.add(runReadAndWrite(sWords, sStarBigrams, sShortcuts, bufferType, formatOptions,
                 "star with shortcuts"));
+        results.add(runReadAndWrite(sWordsWithVariousCodePoints, sEmptyBigrams,
+                null /* shortcuts */, bufferType, formatOptions,
+                "unigram with various code points"));
     }
 
     // Unit test for CharEncoding.readString and CharEncoding.writeString.
