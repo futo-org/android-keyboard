@@ -396,6 +396,8 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
                         previewTextView.setVisibility(INVISIBLE);
                         mainKeyboardView.mFreeKeyPreviewTextViews.add(previewTextView);
                     }
+                    // To redraw key top letter.
+                    mainKeyboardView.invalidateKey(key);
                 }
                 break;
             case MSG_DISMISS_GESTURE_FLOATING_PREVIEW_TEXT:
@@ -1173,6 +1175,12 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
             final KeyDrawParams params) {
         if (key.altCodeWhileTyping() && key.isEnabled()) {
             params.mAnimAlpha = mAltCodeKeyWhileTypingAnimAlpha;
+        }
+        // Don't draw key top letter when key preview is showing.
+        if (mShowingKeyPreviewTextViews.containsKey(key)) {
+            // TODO: Fade out animation for the key top letter, and fade in animation for the key
+            // background color when the user presses the key.
+            return;
         }
         final int code = key.getCode();
         if (code == Constants.CODE_SPACE) {
