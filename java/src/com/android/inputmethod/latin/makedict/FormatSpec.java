@@ -304,6 +304,8 @@ public final class FormatSpec {
     static final int INVALID_CHARACTER = -1;
 
     static final int MAX_PTNODES_FOR_ONE_BYTE_PTNODE_COUNT = 0x7F; // 127
+    // Large PtNode array size field size is 2 bytes.
+    static final int LARGE_PTNODE_ARRAY_SIZE_FIELD_SIZE_FLAG = 0x8000;
     static final int MAX_PTNODES_IN_A_PT_NODE_ARRAY = 0x7FFF; // 32767
     static final int MAX_BIGRAMS_IN_A_PTNODE = 10000;
     static final int MAX_SHORTCUT_LIST_SIZE_IN_A_PTNODE = 0xFFFF;
