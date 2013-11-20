@@ -97,7 +97,8 @@ LATIN_IME_CORE_SRC_FILES := \
         ver4_patricia_trie_node_reader.cpp \
         ver4_patricia_trie_node_writer.cpp \
         ver4_patricia_trie_policy.cpp \
-        ver4_patricia_trie_reading_utils.cpp ) \
+        ver4_patricia_trie_reading_utils.cpp \
+        ver4_patricia_trie_writing_helper.cpp) \
     $(addprefix suggest/policyimpl/dictionary/utils/, \
         buffer_with_extendable_buffer.cpp \
         byte_array_utils.cpp \

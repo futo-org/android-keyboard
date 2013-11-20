@@ -25,7 +25,8 @@
 
 namespace latinime {
 
-bool Ver4DictBuffers::flush(const char *const dictDirPath) const {
+bool Ver4DictBuffers::flushHeaderAndDictBuffers(const char *const dictDirPath,
+        const BufferWithExtendableBuffer *const headerBuffer) const {
     // Create temporary directory.
     const int tmpDirPathBufSize = FileUtils::getFilePathWithSuffixBufSize(dictDirPath,
             DictFileWritingUtils::TEMP_FILE_SUFFIX_FOR_WRITING_DICT_FILE);
@@ -38,8 +39,7 @@ bool Ver4DictBuffers::flush(const char *const dictDirPath) const {
         return false;
     }
     // Write trie file.
-    const BufferWithExtendableBuffer *buffers[] =
-            {&mExpandableHeaderBuffer, &mExpandableTrieBuffer};
+    const BufferWithExtendableBuffer *buffers[] = {headerBuffer, &mExpandableTrieBuffer};
     if (!DictFileWritingUtils::flushBuffersToFileInDir(tmpDirPath,
             Ver4DictConstants::TRIE_FILE_EXTENSION, buffers, 2 /* bufferCount */)) {
         AKLOGE("Dictionary trie file %s/%s cannot be written.", tmpDirPath,
@@ -47,7 +47,7 @@ bool Ver4DictBuffers::flush(const char *const dictDirPath) const {
         return false;
     }
     // Write dictionary contents.
-    if (!mTerminalPositionLookupTable.flushToFile(tmpDirPath)) {
+    if (!mTerminalPositionLookupTable.flushToFile(tmpDirPath, headerBuffer->getTailPosition())) {
         AKLOGE("Terminal position lookup table cannot be written. %s", tmpDirPath);
         return false;
     }

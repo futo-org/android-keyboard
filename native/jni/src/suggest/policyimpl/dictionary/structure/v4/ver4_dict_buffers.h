@@ -57,6 +57,10 @@ class Ver4DictBuffers {
         return &mExpandableTrieBuffer;
     }
 
+    AK_FORCE_INLINE const BufferWithExtendableBuffer *getTrieBuffer() const {
+        return &mExpandableTrieBuffer;
+    }
+
     AK_FORCE_INLINE TerminalPositionLookupTable *getUpdatableTerminalPositionLookupTable() {
         return &mTerminalPositionLookupTable;
     }
@@ -89,7 +93,12 @@ class Ver4DictBuffers {
         return mIsUpdatable;
     }
 
-    bool flush(const char *const dictDirPath) const;
+    bool flush(const char *const dictDirPath) const {
+        return flushHeaderAndDictBuffers(dictDirPath, &mExpandableHeaderBuffer);
+    }
+
+    bool flushHeaderAndDictBuffers(const char *const dictDirPath,
+            const BufferWithExtendableBuffer *const headerBuffer) const;
 
  private:
     DISALLOW_COPY_AND_ASSIGN(Ver4DictBuffers);
