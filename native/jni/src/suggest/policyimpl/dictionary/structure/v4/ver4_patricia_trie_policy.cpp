@@ -216,7 +216,11 @@ bool Ver4PatriciaTriePolicy::removeBigramWords(const int *const word0, const int
 }
 
 void Ver4PatriciaTriePolicy::flush(const char *const filePath) {
-    // TODO: Implement.
+    if (!mBuffers.get()->isUpdatable()) {
+        AKLOGI("Warning: flush() is called for non-updatable dictionary. filePath: %s", filePath);
+        return;
+    }
+    mWritingHelper.writeToDictFile(filePath, &mHeaderPolicy, mUnigramCount, mBigramCount);
 }
 
 void Ver4PatriciaTriePolicy::flushWithGC(const char *const filePath) {

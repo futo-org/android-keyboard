@@ -88,4 +88,43 @@ namespace latinime {
     snprintf(outFilePath, filePathBufSize, "%s/%s", dirPath, fileName);
 }
 
+/* static */ bool FileUtils::getFilePathWithoutSuffix(const char *const filePath,
+        const char *const suffix, const int outDirPathBufSize, char *const outDirPath) {
+    const int filePathLength = strlen(filePath);
+    const int suffixLength = strlen(suffix);
+    if (filePathLength <= suffixLength) {
+        AKLOGE("File path length (%s:%d) is shorter that suffix length (%s:%d).",
+                filePath, filePathLength, suffix, suffixLength);
+        return false;
+    }
+    const int resultFilePathLength = filePathLength - suffixLength;
+    if (outDirPathBufSize <= resultFilePathLength) {
+        AKLOGE("outDirPathBufSize is too small. filePath: %s, suffix: %s, outDirPathBufSize: %d",
+                filePath, suffix, outDirPathBufSize);
+        return false;
+    }
+    if (strncmp(filePath + resultFilePathLength, suffix, suffixLength) != 0) {
+        AKLOGE("File Path %s does not have %s as a suffix", filePath, suffix);
+        return false;
+    }
+    snprintf(outDirPath, resultFilePathLength + 1 /* terminator */, "%s", filePath);
+    return true;
+}
+
+/* static */ void FileUtils::getDirPath(const char *const filePath, const int outDirPathBufSize,
+        char *const outDirPath) {
+    for (int i = strlen(filePath) - 1; i >= 0; --i) {
+        if (filePath[i] == '/') {
+            if (i >= outDirPathBufSize) {
+                AKLOGE("outDirPathBufSize is too small. filePath: %s, outDirPathBufSize: %d",
+                        filePath, outDirPathBufSize);
+                ASSERT(false);
+                return;
+            }
+            snprintf(outDirPath, i + 1 /* terminator */, "%s", filePath);
+            return;
+        }
+    }
+}
+
 } // namespace latinime

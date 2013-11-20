@@ -67,8 +67,28 @@ class TerminalPositionLookupTable : public SingleDictContent {
         return mSize;
     }
 
-    bool flushToFile(const char *const dictDirPath) const {
-        return flush(dictDirPath, Ver4DictConstants::TERMINAL_ADDRESS_TABLE_FILE_EXTENSION);
+    bool flushToFile(const char *const dictDirPath, const int newHeaderRegionSize) const {
+        const int headerRegionSizeDiff = newHeaderRegionSize - mHeaderRegionSize;
+        // If header region size has been changed, terminal PtNode positions have to be adjusted
+        // depending on the new header region size.
+        if (headerRegionSizeDiff != 0) {
+            TerminalPositionLookupTable lookupTableToWrite;
+            for (int i = 0; i < mSize; ++i) {
+                const int terminalPtNodePosition = getTerminalPtNodePosition(i)
+                        + headerRegionSizeDiff;
+                if (!lookupTableToWrite.setTerminalPtNodePosition(i, terminalPtNodePosition)) {
+                    AKLOGE("Cannot set terminal position to lookupTableToWrite."
+                            " terminalId: %d, position: %d", i, terminalPtNodePosition);
+                    return false;
+                }
+            }
+            return lookupTableToWrite.flush(dictDirPath,
+                    Ver4DictConstants::TERMINAL_ADDRESS_TABLE_FILE_EXTENSION);
+        } else {
+            // We can simply use this lookup table because the header region size has not been
+            // changed.
+            return flush(dictDirPath, Ver4DictConstants::TERMINAL_ADDRESS_TABLE_FILE_EXTENSION);
+        }
     }
 
  private:
