@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
 /*
 **
 ** Copyright 2013, The Android Open Source Project
@@ -16,14 +16,15 @@
 ** See the License for the specific language governing permissions and
 ** limitations under the License.
 */
--->
+ -->
 
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="label_go_key" msgid="1635148082137219148">"Поиск"</string>
-    <string name="label_next_key" msgid="362972844525672568">"Далее"</string>
-    <string name="label_previous_key" msgid="1211868118071386787">"Пред."</string>
-    <string name="label_done_key" msgid="2441578748772529288">"Готово"</string>
-    <string name="label_send_key" msgid="2815056534433717444">"Отправить"</string>
-    <string name="label_pause_key" msgid="181098308428035340">"Пауза"</string>
-    <string name="label_wait_key" msgid="6402152600878093134">"Ждать"</string>
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="label_go_key" msgid="4033615332628671065">"ОК"</string>
+    <string name="label_next_key" msgid="5586407279258592635">"Далее"</string>
+    <string name="label_previous_key" msgid="1421141755779895275">"Назад"</string>
+    <string name="label_done_key" msgid="7564866296502630852">"Готово"</string>
+    <string name="label_send_key" msgid="482252074224462163">"Отправить"</string>
+    <string name="label_pause_key" msgid="2225922926459730642">"Пауза"</string>
+    <string name="label_wait_key" msgid="5891247853595466039">"Пауза"</string>
 </resources>
