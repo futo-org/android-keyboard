@@ -429,7 +429,9 @@ public final class BinaryDictIOUtils {
         if (countSize != 1 && countSize != 2) {
             throw new RuntimeException("Strange size from getPtNodeCountSize : " + countSize);
         }
-        BinaryDictEncoderUtils.writeUIntToStream(destination, ptNodeCount, countSize);
+        final int encodedPtNodeCount = (countSize == 2) ?
+                (ptNodeCount | FormatSpec.LARGE_PTNODE_ARRAY_SIZE_FIELD_SIZE_FLAG) : ptNodeCount;
+        BinaryDictEncoderUtils.writeUIntToStream(destination, encodedPtNodeCount, countSize);
         return countSize;
     }
 
