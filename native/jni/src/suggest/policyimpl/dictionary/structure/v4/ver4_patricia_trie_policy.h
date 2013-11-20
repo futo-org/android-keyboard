@@ -26,6 +26,7 @@
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_dict_buffers.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_patricia_trie_node_reader.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_patricia_trie_node_writer.h"
+#include "suggest/policyimpl/dictionary/structure/v4/ver4_patricia_trie_writing_helper.h"
 #include "suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer.h"
 
 namespace latinime {
@@ -50,6 +51,7 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
                       &mShortcutPolicy),
               mUpdatingHelper(mDictBuffer, &mNodeReader, &mNodeWriter,
                       mHeaderPolicy.isDecayingDict()),
+              mWritingHelper(mBuffers.get()),
               mUnigramCount(mHeaderPolicy.getUnigramCount()),
               mBigramCount(mHeaderPolicy.getBigramCount()) {};
 
@@ -120,6 +122,7 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     Ver4PatriciaTrieNodeReader mNodeReader;
     Ver4PatriciaTrieNodeWriter mNodeWriter;
     DynamicPatriciaTrieUpdatingHelper mUpdatingHelper;
+    Ver4PatriciaTrieWritingHelper mWritingHelper;
     int mUnigramCount;
     int mBigramCount;
 };

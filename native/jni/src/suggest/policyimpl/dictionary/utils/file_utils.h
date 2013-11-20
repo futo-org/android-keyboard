@@ -39,6 +39,13 @@ class FileUtils {
     static void getFilePath(const char *const dirPath, const char *const fileName,
             const int filePathBufSize, char *const outFilePath);
 
+    // Returns whether the filePath have the suffix.
+    static bool getFilePathWithoutSuffix(const char *const filePath, const char *const suffix,
+            const int dirPathBufSize, char *const outDirPath);
+
+    static void getDirPath(const char *const filePath, const int dirPathBufSize,
+            char *const outDirPath);
+
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(FileUtils);
 };

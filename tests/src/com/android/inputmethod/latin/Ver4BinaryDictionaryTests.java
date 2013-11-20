@@ -250,4 +250,51 @@ public class Ver4BinaryDictionaryTests extends AndroidTestCase {
         binaryDictionary.removeBigramWords("bcc", "aaa");
     }
 
+    public void testFlushDictionary() {
+        final String dictVersion = Long.toString(System.currentTimeMillis());
+        File trieFile = null;
+        try {
+            trieFile = createEmptyDictionaryAndGetTrieFile(dictVersion);
+        } catch (IOException e) {
+            fail("IOException while writing an initial dictionary : " + e);
+        }
+        BinaryDictionary binaryDictionary = new BinaryDictionary(trieFile.getAbsolutePath(),
+                0 /* offset */, trieFile.length(), true /* useFullEditDistance */,
+                Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
+
+        final int probability = 100;
+        binaryDictionary.addUnigramWord("aaa", probability);
+        binaryDictionary.addUnigramWord("abcd", probability);
+        // Close without flushing.
+        binaryDictionary.close();
+
+        binaryDictionary = new BinaryDictionary(trieFile.getAbsolutePath(),
+                0 /* offset */, trieFile.length(), true /* useFullEditDistance */,
+                Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
+
+        assertEquals(Dictionary.NOT_A_PROBABILITY, binaryDictionary.getFrequency("aaa"));
+        assertEquals(Dictionary.NOT_A_PROBABILITY, binaryDictionary.getFrequency("abcd"));
+
+        binaryDictionary.addUnigramWord("aaa", probability);
+        binaryDictionary.addUnigramWord("abcd", probability);
+        binaryDictionary.flush();
+        binaryDictionary.close();
+
+        binaryDictionary = new BinaryDictionary(trieFile.getAbsolutePath(),
+                0 /* offset */, trieFile.length(), true /* useFullEditDistance */,
+                Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
+
+        assertEquals(probability, binaryDictionary.getFrequency("aaa"));
+        assertEquals(probability, binaryDictionary.getFrequency("abcd"));
+        binaryDictionary.addUnigramWord("bcde", probability);
+        binaryDictionary.flush();
+        binaryDictionary.close();
+
+        binaryDictionary = new BinaryDictionary(trieFile.getAbsolutePath(),
+                0 /* offset */, trieFile.length(), true /* useFullEditDistance */,
+                Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
+        assertEquals(probability, binaryDictionary.getFrequency("bcde"));
+        binaryDictionary.close();
+    }
+
 }
