@@ -90,7 +90,7 @@ import java.util.WeakHashMap;
  * @attr ref R.styleable#MainKeyboardView_keyHysteresisDistance
  * @attr ref R.styleable#MainKeyboardView_touchNoiseThresholdTime
  * @attr ref R.styleable#MainKeyboardView_touchNoiseThresholdDistance
- * @attr ref R.styleable#MainKeyboardView_slidingKeyInputEnable
+ * @attr ref R.styleable#MainKeyboardView_keySelectionByDraggingFinger
  * @attr ref R.styleable#MainKeyboardView_keyRepeatStartTimeout
  * @attr ref R.styleable#MainKeyboardView_keyRepeatInterval
  * @attr ref R.styleable#MainKeyboardView_longPressKeyTimeout
@@ -985,11 +985,11 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         tracker.onShowMoreKeysPanel(moreKeysPanel);
     }
 
-    public boolean isInSlidingKeyInput() {
+    public boolean isInDraggingFinger() {
         if (isShowingMoreKeysPanel()) {
             return true;
         }
-        return PointerTracker.isAnyInSlidingKeyInput();
+        return PointerTracker.isAnyInDraggingFinger();
     }
 
     @Override

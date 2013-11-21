@@ -29,7 +29,7 @@
     <!--
         Configuration for MainKeyboardView
     -->
-    <bool name="config_sliding_key_input_enabled">false</bool>
+    <bool name="config_key_selection_by_dragging_finger">false</bool>
     <!-- Showing more keys keyboard, just above the touched point if true, aligned to the key if
          false -->
     <bool name="config_show_more_keys_keyboard_at_touched_point">true</bool>
