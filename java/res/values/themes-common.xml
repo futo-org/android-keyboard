@@ -75,6 +75,7 @@
         <item name="keyRepeatInterval">@integer/config_key_repeat_interval</item>
         <item name="longPressShiftLockTimeout">@integer/config_longpress_shift_lock_timeout</item>
         <item name="ignoreAltCodeKeyTimeout">@integer/config_ignore_alt_code_key_timeout</item>
+        <item name="keyPreviewLayout">@layout/key_preview</item>
         <item name="keyPreviewHeight">@dimen/key_preview_height</item>
         <item name="keyPreviewLingerTimeout">@integer/config_key_preview_linger_timeout</item>
         <item name="moreKeysKeyboardLayout">@layout/more_keys_keyboard</item>
@@ -104,6 +105,7 @@
     <style
         name="MainKeyboardView"
         parent="KeyboardView" />
+    <style name="KeyPreviewTextView" />
     <!-- Though {@link EmojiPalettesView} doesn't extend {@link KeyboardView}, some views inside it,
          for instance delete button, need themed {@link KeyboardView} attributes. -->
     <style

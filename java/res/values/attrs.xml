@@ -26,6 +26,8 @@
         <attr name="keyboardViewStyle" format="reference" />
         <!-- MainKeyboardView style -->
         <attr name="mainKeyboardViewStyle" format="reference" />
+        <!-- Key preview text view style -->
+        <attr name="keyPreviewTextViewStyle" format="reference"/>
         <!-- EmojiPalettesView style -->
         <attr name="emojiPalettesViewStyle" format="reference" />
         <!-- MoreKeysKeyboard style -->
