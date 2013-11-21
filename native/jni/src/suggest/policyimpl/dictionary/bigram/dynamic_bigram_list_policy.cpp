@@ -182,8 +182,8 @@ bool DynamicBigramListPolicy::updateAllBigramEntriesAndDeleteUselessEntries(
 
 // Updates bigram target PtNode positions in the list after the placing step in GC.
 bool DynamicBigramListPolicy::updateAllBigramTargetPtNodePositions(int *const bigramListPos,
-        const DynamicPatriciaTrieWritingHelper::PtNodePositionRelocationMap *const
-                ptNodePositionRelocationMap, int *const outBigramEntryCount) {
+        const PtNodeWriter::PtNodePositionRelocationMap *const ptNodePositionRelocationMap,
+        int *const outBigramEntryCount) {
     const bool usesAdditionalBuffer = mBuffer->isInAdditionalBuffer(*bigramListPos);
     if (usesAdditionalBuffer) {
         *bigramListPos -= mBuffer->getOriginalBufferSize();
@@ -213,7 +213,7 @@ bool DynamicBigramListPolicy::updateAllBigramTargetPtNodePositions(int *const bi
             bigramTargetPtNodePos += mBuffer->getOriginalBufferSize();
         }
 
-        DynamicPatriciaTrieWritingHelper::PtNodePositionRelocationMap::const_iterator it =
+        PtNodeWriter::PtNodePositionRelocationMap::const_iterator it =
                 ptNodePositionRelocationMap->find(bigramTargetPtNodePos);
         if (it != ptNodePositionRelocationMap->end()) {
             bigramTargetPtNodePos = it->second;

@@ -32,8 +32,16 @@ class Ver4PatriciaTrieWritingHelper {
     void writeToDictFile(const char *const trieFilePath, const HeaderPolicy *const headerPolicy,
             const int unigramCount, const int bigramCount) const;
 
+    void writeToDictFileWithGC(const int rootPtNodeArrayPos,
+            const char *const trieFilePath, const HeaderPolicy *const headerPolicy,
+            const bool needsToDecay);
+
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(Ver4PatriciaTrieWritingHelper);
+
+    bool runGC(const int rootPtNodeArrayPos, const HeaderPolicy *const headerPolicy,
+            Ver4DictBuffers *const buffersToWrite, int *const outUnigramCount,
+            int *const outBigramCount, const bool needsToDecay);
 
     Ver4DictBuffers *const mBuffers;
 };

@@ -20,9 +20,8 @@
 #include <vector>
 
 #include "defines.h"
-#include "suggest/policyimpl/dictionary/bigram/dynamic_bigram_list_policy.h"
+#include "suggest/policyimpl/dictionary/structure/pt_common/pt_node_writer.h"
 #include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_reading_helper.h"
-#include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_writing_helper.h"
 #include "suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer.h"
 #include "utils/hash_map_compat.h"
 
@@ -32,6 +31,7 @@ class DictionaryHeaderStructurePolicy;
 class PtNodeWriter;
 class PtNodeParams;
 
+// TODO: Move to pt_common.
 class DynamicPatriciaTrieGcEventListeners {
  public:
     // Updates all PtNodes that can be reached from the root. Checks if each PtNode is useless or
@@ -91,9 +91,8 @@ class DynamicPatriciaTrieGcEventListeners {
     class TraversePolicyToUpdateBigramProbability
             : public DynamicPatriciaTrieReadingHelper::TraversingEventListener {
      public:
-        TraversePolicyToUpdateBigramProbability(
-                DynamicBigramListPolicy *const bigramPolicy)
-                : mBigramPolicy(bigramPolicy), mValidBigramEntryCount(0) {}
+        TraversePolicyToUpdateBigramProbability(PtNodeWriter *const ptNodeWriter)
+                : mPtNodeWriter(ptNodeWriter), mValidBigramEntryCount(0) {}
 
         bool onAscend() { return true; }
 
@@ -110,7 +109,7 @@ class DynamicPatriciaTrieGcEventListeners {
      private:
         DISALLOW_IMPLICIT_CONSTRUCTORS(TraversePolicyToUpdateBigramProbability);
 
-        DynamicBigramListPolicy *const mBigramPolicy;
+        PtNodeWriter *const mPtNodeWriter;
         int mValidBigramEntryCount;
     };
 
@@ -119,8 +118,7 @@ class DynamicPatriciaTrieGcEventListeners {
      public:
         TraversePolicyToPlaceAndWriteValidPtNodesToBuffer(
                 PtNodeWriter *const ptNodeWriter, BufferWithExtendableBuffer *const bufferToWrite,
-                DynamicPatriciaTrieWritingHelper::DictPositionRelocationMap *const
-                        dictPositionRelocationMap)
+                PtNodeWriter::DictPositionRelocationMap *const dictPositionRelocationMap)
                 : mPtNodeWriter(ptNodeWriter), mBufferToWrite(bufferToWrite),
                   mDictPositionRelocationMap(dictPositionRelocationMap), mValidPtNodeCount(0),
                   mPtNodeArraySizeFieldPos(NOT_A_DICT_POS) {};
@@ -138,8 +136,7 @@ class DynamicPatriciaTrieGcEventListeners {
 
         PtNodeWriter *const mPtNodeWriter;
         BufferWithExtendableBuffer *const mBufferToWrite;
-        DynamicPatriciaTrieWritingHelper::DictPositionRelocationMap *const
-                mDictPositionRelocationMap;
+        PtNodeWriter::DictPositionRelocationMap *const mDictPositionRelocationMap;
         int mValidPtNodeCount;
         int mPtNodeArraySizeFieldPos;
     };
@@ -147,12 +144,9 @@ class DynamicPatriciaTrieGcEventListeners {
     class TraversePolicyToUpdateAllPositionFields
             : public DynamicPatriciaTrieReadingHelper::TraversingEventListener {
      public:
-        TraversePolicyToUpdateAllPositionFields(
-                DynamicBigramListPolicy *const bigramPolicy,
-                BufferWithExtendableBuffer *const bufferToWrite,
-                const DynamicPatriciaTrieWritingHelper::DictPositionRelocationMap *const
-                        dictPositionRelocationMap)
-                : mBigramPolicy(bigramPolicy), mBufferToWrite(bufferToWrite),
+        TraversePolicyToUpdateAllPositionFields(PtNodeWriter *const ptNodeWriter,
+                const PtNodeWriter::DictPositionRelocationMap *const dictPositionRelocationMap)
+                : mPtNodeWriter(ptNodeWriter),
                   mDictPositionRelocationMap(dictPositionRelocationMap), mUnigramCount(0),
                   mBigramCount(0) {};
 
@@ -175,10 +169,8 @@ class DynamicPatriciaTrieGcEventListeners {
      private:
         DISALLOW_IMPLICIT_CONSTRUCTORS(TraversePolicyToUpdateAllPositionFields);
 
-        DynamicBigramListPolicy *const mBigramPolicy;
-        BufferWithExtendableBuffer *const mBufferToWrite;
-        const DynamicPatriciaTrieWritingHelper::DictPositionRelocationMap *const
-                mDictPositionRelocationMap;
+        PtNodeWriter *const mPtNodeWriter;
+        const PtNodeWriter::DictPositionRelocationMap *const mDictPositionRelocationMap;
         int mUnigramCount;
         int mBigramCount;
     };

@@ -196,4 +196,18 @@ bool Ver4PatriciaTrieNodeWriter::removeBigramEntry(
             targetPtNodeParam->getTerminalId());
 }
 
+bool Ver4PatriciaTrieNodeWriter::updateAllBigramEntriesAndDeleteUselessEntries(
+            const PtNodeParams *const sourcePtNodeParams, int *const outBigramEntryCount) {
+    // TODO: Implement.
+    return false;
+}
+
+bool Ver4PatriciaTrieNodeWriter::updateAllPositionFields(
+        const PtNodeParams *const toBeUpdatedPtNodeParams,
+        const DictPositionRelocationMap *const dictPositionRelocationMap,
+        int *const outBigramEntryCount) {
+    // TODO: Implement.
+    return false;
+}
+
 }

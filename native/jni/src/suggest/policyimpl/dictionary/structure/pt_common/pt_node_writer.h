@@ -20,12 +20,27 @@
 #include "defines.h"
 
 #include "suggest/policyimpl/dictionary/structure/pt_common/pt_node_params.h"
+#include "utils/hash_map_compat.h"
 
 namespace latinime {
 
 // Interface class used to write PtNode information.
 class PtNodeWriter {
  public:
+    typedef hash_map_compat<int, int> PtNodeArrayPositionRelocationMap;
+    typedef hash_map_compat<int, int> PtNodePositionRelocationMap;
+    struct DictPositionRelocationMap {
+     public:
+        DictPositionRelocationMap()
+                : mPtNodeArrayPositionRelocationMap(), mPtNodePositionRelocationMap() {}
+
+        PtNodeArrayPositionRelocationMap mPtNodeArrayPositionRelocationMap;
+        PtNodePositionRelocationMap mPtNodePositionRelocationMap;
+
+     private:
+        DISALLOW_COPY_AND_ASSIGN(DictPositionRelocationMap);
+    };
+
     virtual ~PtNodeWriter() {}
 
     virtual bool markPtNodeAsDeleted(const PtNodeParams *const toBeUpdatedPtNodeParams) = 0;
@@ -48,6 +63,13 @@ class PtNodeWriter {
 
     virtual bool removeBigramEntry(const PtNodeParams *const sourcePtNodeParams,
             const PtNodeParams *const targetPtNodeParam) = 0;
+
+    virtual bool updateAllBigramEntriesAndDeleteUselessEntries(
+            const PtNodeParams *const sourcePtNodeParams, int *const outBigramEntryCount) = 0;
+
+    virtual bool updateAllPositionFields(const PtNodeParams *const toBeUpdatedPtNodeParams,
+            const DictPositionRelocationMap *const dictPositionRelocationMap,
+            int *const outBigramEntryCount) = 0;
 
  protected:
     PtNodeWriter() {};
