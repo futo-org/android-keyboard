@@ -46,6 +46,10 @@ class SingleDictContent : public DictContent {
         return mIsValid;
     }
 
+    bool isNearSizeLimit() const {
+        return mExpandableContentBuffer.isNearSizeLimit();
+    }
+
  protected:
     BufferWithExtendableBuffer *getWritableBuffer() {
         return &mExpandableContentBuffer;

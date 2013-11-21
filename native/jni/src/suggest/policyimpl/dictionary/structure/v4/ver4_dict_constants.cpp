@@ -33,6 +33,9 @@ const char *const Ver4DictConstants::SHORTCUT_CONTENT_TABLE_FILE_EXTENSION =
 // Version 4 dictionary size is implicitly limited to 8MB due to 3-byte offsets.
 // TODO: Make MAX_DICTIONARY_SIZE 8MB.
 const int Ver4DictConstants::MAX_DICTIONARY_SIZE = 2 * 1024 * 1024;
+// Extended region size, which is not GCed region size in dict file + additional buffer size, is
+// limited to 1MB to prevent from inefficient traversing.
+const int Ver4DictConstants::MAX_DICT_EXTENDED_REGION_SIZE = 1 * 1024 * 1024;
 
 const int Ver4DictConstants::NOT_A_TERMINAL_ID = -1;
 const int Ver4DictConstants::PROBABILITY_SIZE = 1;
