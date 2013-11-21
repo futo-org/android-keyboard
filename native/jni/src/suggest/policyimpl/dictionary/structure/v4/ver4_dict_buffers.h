@@ -49,6 +49,14 @@ class Ver4DictBuffers {
                 && mShortcutDictContent.isValid();
     }
 
+    AK_FORCE_INLINE bool isNearSizeLimit() const {
+        return mExpandableTrieBuffer.isNearSizeLimit()
+                || mTerminalPositionLookupTable.isNearSizeLimit()
+                || mProbabilityDictContent.isNearSizeLimit()
+                || mBigramDictContent.isNearSizeLimit()
+                || mShortcutDictContent.isNearSizeLimit();
+    }
+
     AK_FORCE_INLINE BufferWithExtendableBuffer *getWritableHeaderBuffer() {
         return &mExpandableHeaderBuffer;
     }

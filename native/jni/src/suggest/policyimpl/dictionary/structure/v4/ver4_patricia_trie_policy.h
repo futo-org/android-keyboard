@@ -53,7 +53,7 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
                       mHeaderPolicy.isDecayingDict()),
               mWritingHelper(mBuffers.get()),
               mUnigramCount(mHeaderPolicy.getUnigramCount()),
-              mBigramCount(mHeaderPolicy.getBigramCount()) {};
+              mBigramCount(mHeaderPolicy.getBigramCount()), mNeedsToDecayForTesting(false) {};
 
     AK_FORCE_INLINE int getRootPosition() const {
         return 0;
@@ -125,6 +125,7 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     Ver4PatriciaTrieWritingHelper mWritingHelper;
     int mUnigramCount;
     int mBigramCount;
+    bool mNeedsToDecayForTesting;
 };
 } // namespace latinime
 #endif // LATINIME_VER4_PATRICIA_TRIE_POLICY_H

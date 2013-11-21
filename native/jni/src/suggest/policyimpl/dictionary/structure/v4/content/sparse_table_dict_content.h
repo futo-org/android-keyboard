@@ -69,6 +69,12 @@ class SparseTableDictContent : public DictContent {
         return mIsValid;
     }
 
+    bool isNearSizeLimit() const {
+        return mExpandableLookupTableBuffer.isNearSizeLimit()
+                || mExpandableAddressTableBuffer.isNearSizeLimit()
+                || mExpandableContentBuffer.isNearSizeLimit();
+    }
+
  protected:
     SparseTable *getUpdatableAddressLookupTable() {
         return &mAddressLookupTable;

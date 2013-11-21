@@ -19,7 +19,6 @@
 #include "suggest/core/dicnode/dic_node.h"
 #include "suggest/core/dicnode/dic_node_vector.h"
 #include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_reading_helper.h"
-#include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_writing_helper.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_patricia_trie_node_reader.h"
 #include "suggest/policyimpl/dictionary/utils/forgetting_curve_utils.h"
 #include "suggest/policyimpl/dictionary/utils/probability_utils.h"
@@ -228,7 +227,25 @@ void Ver4PatriciaTriePolicy::flushWithGC(const char *const filePath) {
 }
 
 bool Ver4PatriciaTriePolicy::needsToRunGC(const bool mindsBlockByGC) const {
-    // TODO: Implement.
+    if (!mBuffers.get()->isUpdatable()) {
+        AKLOGI("Warning: needsToRunGC() is called for non-updatable dictionary.");
+        return false;
+    }
+    if (mBuffers.get()->isNearSizeLimit()) {
+        // Additional buffer size is near the limit.
+        return true;
+    } else if (mHeaderPolicy.getExtendedRegionSize() + mDictBuffer->getUsedAdditionalBufferSize()
+            > Ver4DictConstants::MAX_DICT_EXTENDED_REGION_SIZE) {
+        // Total extended region size of the trie exceeds the limit.
+        return true;
+    } else if (mDictBuffer->getTailPosition() >= MIN_DICT_SIZE_TO_REFUSE_DYNAMIC_OPERATIONS
+            && mDictBuffer->getUsedAdditionalBufferSize() > 0) {
+        // Needs to reduce dictionary size.
+        return true;
+    } else if (mHeaderPolicy.isDecayingDict()) {
+        return mNeedsToDecayForTesting || ForgettingCurveUtils::needsToDecay(
+                mindsBlockByGC, mUnigramCount, mBigramCount, &mHeaderPolicy);
+    }
     return false;
 }
 
