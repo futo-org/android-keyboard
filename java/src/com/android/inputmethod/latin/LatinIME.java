@@ -2163,26 +2163,12 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 // later (typically, in a subsequent press on backspace).
                 mLastSelectionEnd = mLastSelectionStart;
                 mConnection.deleteSurroundingText(numCharsDeleted, 0);
-                if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-                    ResearchLogger.latinIME_handleBackspace(numCharsDeleted,
-                            false /* shouldUncommitLogUnit */);
-                }
             } else {
                 // There is no selection, just delete one character.
                 if (NOT_A_CURSOR_POSITION == mLastSelectionEnd) {
                     // This should never happen.
                     Log.e(TAG, "Backspace when we don't know the selection position");
                 }
-                final int codePointBeforeCursor = mConnection.getCodePointBeforeCursor();
-                if (codePointBeforeCursor == Constants.NOT_A_CODE) {
-                    // Nothing to delete before the cursor. We have to revert the deletion states
-                    // that were updated at the beginning of this method.
-                    mDeleteCount--;
-                    mExpectingUpdateSelection = false;
-                    return;
-                }
-                final int lengthToDelete =
-                        Character.isSupplementaryCodePoint(codePointBeforeCursor) ? 2 : 1;
                 if (mAppWorkAroundsUtils.isBeforeJellyBean() ||
                         currentSettings.mInputAttributes.isTypeNull()) {
                     // There are two possible reasons to send a key event: either the field has
@@ -2193,23 +2179,28 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     // applications are relying on this behavior so we continue to support it for
                     // older apps, so we retain this behavior if the app has target SDK < JellyBean.
                     sendDownUpKeyEvent(KeyEvent.KEYCODE_DEL);
+                    if (mDeleteCount > DELETE_ACCELERATE_AT) {
+                        sendDownUpKeyEvent(KeyEvent.KEYCODE_DEL);
+                    }
                 } else {
+                    final int codePointBeforeCursor = mConnection.getCodePointBeforeCursor();
+                    if (codePointBeforeCursor == Constants.NOT_A_CODE) {
+                        // Nothing to delete before the cursor. We have to revert the deletion
+                        // states that were updated at the beginning of this method.
+                        mDeleteCount--;
+                        mExpectingUpdateSelection = false;
+                        return;
+                    }
+                    final int lengthToDelete =
+                            Character.isSupplementaryCodePoint(codePointBeforeCursor) ? 2 : 1;
                     mConnection.deleteSurroundingText(lengthToDelete, 0);
-                }
-                if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-                    ResearchLogger.latinIME_handleBackspace(lengthToDelete,
-                            true /* shouldUncommitLogUnit */);
-                }
-                if (mDeleteCount > DELETE_ACCELERATE_AT) {
-                    final int codePointBeforeCursorToDeleteAgain =
-                            mConnection.getCodePointBeforeCursor();
-                    if (codePointBeforeCursorToDeleteAgain != Constants.NOT_A_CODE) {
-                        final int lengthToDeleteAgain = Character.isSupplementaryCodePoint(
-                                codePointBeforeCursorToDeleteAgain) ? 2 : 1;
-                        mConnection.deleteSurroundingText(lengthToDeleteAgain, 0);
-                        if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-                            ResearchLogger.latinIME_handleBackspace(lengthToDeleteAgain,
-                                    true /* shouldUncommitLogUnit */);
+                    if (mDeleteCount > DELETE_ACCELERATE_AT) {
+                        final int codePointBeforeCursorToDeleteAgain =
+                                mConnection.getCodePointBeforeCursor();
+                        if (codePointBeforeCursorToDeleteAgain != Constants.NOT_A_CODE) {
+                            final int lengthToDeleteAgain = Character.isSupplementaryCodePoint(
+                                   codePointBeforeCursorToDeleteAgain) ? 2 : 1;
+                            mConnection.deleteSurroundingText(lengthToDeleteAgain, 0);
                         }
                     }
                 }
