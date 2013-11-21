@@ -20,7 +20,6 @@
 #include <stdint.h>
 
 #include "defines.h"
-#include "utils/hash_map_compat.h"
 
 namespace latinime {
 
@@ -35,20 +34,6 @@ class PtNodeWriter;
 // TODO: Make it independent from a particular format and move to pt_common.
 class DynamicPatriciaTrieWritingHelper {
  public:
-    typedef hash_map_compat<int, int> PtNodeArrayPositionRelocationMap;
-    typedef hash_map_compat<int, int> PtNodePositionRelocationMap;
-    struct DictPositionRelocationMap {
-     public:
-        DictPositionRelocationMap()
-                : mPtNodeArrayPositionRelocationMap(), mPtNodePositionRelocationMap() {}
-
-        PtNodeArrayPositionRelocationMap mPtNodeArrayPositionRelocationMap;
-        PtNodePositionRelocationMap mPtNodePositionRelocationMap;
-
-     private:
-        DISALLOW_COPY_AND_ASSIGN(DictPositionRelocationMap);
-    };
-
     static const size_t MAX_DICTIONARY_SIZE;
 
     DynamicPatriciaTrieWritingHelper(BufferWithExtendableBuffer *const buffer,

@@ -233,4 +233,60 @@ bool DynamicPatriciaTrieNodeWriter::removeBigramEntry(
             targetPtNodeParam->getHeadPos());
 }
 
+bool DynamicPatriciaTrieNodeWriter::updateAllBigramEntriesAndDeleteUselessEntries(
+        const PtNodeParams *const sourcePtNodeParams, int *const outBigramEntryCount) {
+    int bigramListPos = sourcePtNodeParams->getBigramsPos();
+    return mBigramPolicy->updateAllBigramEntriesAndDeleteUselessEntries(&bigramListPos,
+            outBigramEntryCount);
+}
+
+bool DynamicPatriciaTrieNodeWriter::updateAllPositionFields(
+        const PtNodeParams *const toBeUpdatedPtNodeParams,
+        const DictPositionRelocationMap *const dictPositionRelocationMap,
+        int *const outBigramEntryCount) {
+    int parentPos = toBeUpdatedPtNodeParams->getParentPos();
+    if (parentPos != NOT_A_DICT_POS) {
+        PtNodeWriter::PtNodePositionRelocationMap::const_iterator it =
+                dictPositionRelocationMap->mPtNodePositionRelocationMap.find(parentPos);
+        if (it != dictPositionRelocationMap->mPtNodePositionRelocationMap.end()) {
+            parentPos = it->second;
+        }
+    }
+    int writingPos = toBeUpdatedPtNodeParams->getHeadPos()
+            + DynamicPatriciaTrieWritingUtils::NODE_FLAG_FIELD_SIZE;
+    // Write an updated offset to the parent PtNode.
+    if (!DynamicPatriciaTrieWritingUtils::writeParentPosOffsetAndAdvancePosition(mBuffer,
+            parentPos, toBeUpdatedPtNodeParams->getHeadPos(), &writingPos)) {
+        return false;
+    }
+
+    // Updates children position that is a PtNodeArray position.
+    int childrenPos = toBeUpdatedPtNodeParams->getChildrenPos();
+    if (childrenPos != NOT_A_DICT_POS) {
+        PtNodeWriter::PtNodeArrayPositionRelocationMap::const_iterator it =
+                dictPositionRelocationMap->mPtNodeArrayPositionRelocationMap.find(childrenPos);
+        if (it != dictPositionRelocationMap->mPtNodeArrayPositionRelocationMap.end()) {
+            childrenPos = it->second;
+        }
+    }
+    if (!updateChildrenPosition(toBeUpdatedPtNodeParams, childrenPos)) {
+        return false;
+    }
+    // Updates bigram target PtNode positions in the bigram list.
+    int bigramsPos = toBeUpdatedPtNodeParams->getBigramsPos();
+    int bigramCount = 0;
+    if (bigramsPos != NOT_A_DICT_POS) {
+        int bigramEntryCount;
+        if (!mBigramPolicy->updateAllBigramTargetPtNodePositions(&bigramsPos,
+                &dictPositionRelocationMap->mPtNodePositionRelocationMap, &bigramEntryCount)) {
+            return false;
+        }
+        bigramCount += bigramEntryCount;
+    }
+    if (outBigramEntryCount) {
+        *outBigramEntryCount = bigramCount;
+    }
+    return true;
+}
+
 }

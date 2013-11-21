@@ -92,7 +92,7 @@ bool DynamicPatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
 
     readingHelper.initWithPtNodeArrayPos(rootPtNodeArrayPos);
     DynamicPatriciaTrieGcEventListeners::TraversePolicyToUpdateBigramProbability
-            traversePolicyToUpdateBigramProbability(mBigramPolicy);
+            traversePolicyToUpdateBigramProbability(mPtNodeWriter);
     if (!readingHelper.traverseAllPtNodesInPostorderDepthFirstManner(
             &traversePolicyToUpdateBigramProbability)) {
         return false;
@@ -103,10 +103,10 @@ bool DynamicPatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
     }
 
     // Mapping from positions in mBuffer to positions in bufferToWrite.
-    DictPositionRelocationMap dictPositionRelocationMap;
+    PtNodeWriter::DictPositionRelocationMap dictPositionRelocationMap;
     readingHelper.initWithPtNodeArrayPos(rootPtNodeArrayPos);
-    DynamicPatriciaTrieNodeWriter newPtNodeWriter(bufferToWrite,
-            &ptNodeReader, mBigramPolicy, mShortcutPolicy);
+    DynamicPatriciaTrieNodeWriter newPtNodeWriter(bufferToWrite, &ptNodeReader, mBigramPolicy,
+            mShortcutPolicy);
     DynamicPatriciaTrieGcEventListeners::TraversePolicyToPlaceAndWriteValidPtNodesToBuffer
             traversePolicyToPlaceAndWriteValidPtNodesToBuffer(&newPtNodeWriter, bufferToWrite,
                     &dictPositionRelocationMap);
@@ -123,10 +123,11 @@ bool DynamicPatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
     DynamicPatriciaTrieNodeReader newDictNodeReader(bufferToWrite, &newDictBigramPolicy,
             &newDictShortcutPolicy);
     DynamicPatriciaTrieReadingHelper newDictReadingHelper(bufferToWrite, &newDictNodeReader);
+    DynamicPatriciaTrieNodeWriter newDictNodeWriter(bufferToWrite, &newDictNodeReader,
+            &newDictBigramPolicy, &newDictShortcutPolicy);
     newDictReadingHelper.initWithPtNodeArrayPos(rootPtNodeArrayPos);
     DynamicPatriciaTrieGcEventListeners::TraversePolicyToUpdateAllPositionFields
-            traversePolicyToUpdateAllPositionFields(&newDictBigramPolicy, bufferToWrite,
-                    &dictPositionRelocationMap);
+            traversePolicyToUpdateAllPositionFields(&newDictNodeWriter, &dictPositionRelocationMap);
     if (!newDictReadingHelper.traverseAllPtNodesInPtNodeArrayLevelPreorderDepthFirstManner(
             &traversePolicyToUpdateAllPositionFields)) {
         return false;

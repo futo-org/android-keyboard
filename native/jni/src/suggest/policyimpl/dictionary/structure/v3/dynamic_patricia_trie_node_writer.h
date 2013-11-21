@@ -66,6 +66,13 @@ class DynamicPatriciaTrieNodeWriter : public PtNodeWriter {
     virtual bool removeBigramEntry(const PtNodeParams *const sourcePtNodeParams,
             const PtNodeParams *const targetPtNodeParam);
 
+    virtual bool updateAllBigramEntriesAndDeleteUselessEntries(
+            const PtNodeParams *const sourcePtNodeParams, int *const outBigramEntryCount);
+
+    virtual bool updateAllPositionFields(const PtNodeParams *const toBeUpdatedPtNodeParams,
+            const DictPositionRelocationMap *const dictPositionRelocationMap,
+            int *const outBigramEntryCount);
+
  private:
     DISALLOW_COPY_AND_ASSIGN(DynamicPatriciaTrieNodeWriter);
 
