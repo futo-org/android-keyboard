@@ -27,7 +27,7 @@ public class PointerTrackerQueueTests extends AndroidTestCase {
 
         public final int mId;
         public boolean mIsModifier;
-        public boolean mIsInSlidingKeyInput;
+        public boolean mIsInDraggingFinger;
         public long mPhantomUpEventTime = NOT_HAPPENED;
 
         public Element(int id) {
@@ -40,8 +40,8 @@ public class PointerTrackerQueueTests extends AndroidTestCase {
         }
 
         @Override
-        public boolean isInSlidingKeyInput() {
-            return mIsInSlidingKeyInput;
+        public boolean isInDraggingFinger() {
+            return mIsInDraggingFinger;
         }
 
         @Override
@@ -297,19 +297,19 @@ public class PointerTrackerQueueTests extends AndroidTestCase {
         assertEquals(Element.NOT_HAPPENED, mElement4.mPhantomUpEventTime);
     }
 
-    public void testIsAnyInSlidingKeyInput() {
+    public void testIsAnyInDraggingFinger() {
         Element.sPhantomUpCount = 0;
-        assertFalse(mQueue.isAnyInSlidingKeyInput());
+        assertFalse(mQueue.isAnyInDraggingFinger());
 
         mQueue.add(mElement1);
         mQueue.add(mElement2);
         mQueue.add(mElement3);
         mQueue.add(mElement4);
 
-        assertFalse(mQueue.isAnyInSlidingKeyInput());
+        assertFalse(mQueue.isAnyInDraggingFinger());
 
-        mElement3.mIsInSlidingKeyInput = true;
-        assertTrue(mQueue.isAnyInSlidingKeyInput());
+        mElement3.mIsInDraggingFinger = true;
+        assertTrue(mQueue.isAnyInDraggingFinger());
 
         assertEquals(0, Element.sPhantomUpCount);
         assertEquals(4, mQueue.size());
