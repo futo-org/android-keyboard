@@ -157,6 +157,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     private final SlidingKeyInputPreview mSlidingKeyInputPreview;
 
     // Key preview
+    private static final boolean FADE_OUT_KEY_TOP_LETTER_WHEN_KEY_IS_PRESSED = false;
     private final int mKeyPreviewLayoutId;
     private final int mKeyPreviewOffset;
     private final int mKeyPreviewHeight;
@@ -1177,7 +1178,8 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
             params.mAnimAlpha = mAltCodeKeyWhileTypingAnimAlpha;
         }
         // Don't draw key top letter when key preview is showing.
-        if (mShowingKeyPreviewTextViews.containsKey(key)) {
+        if (FADE_OUT_KEY_TOP_LETTER_WHEN_KEY_IS_PRESSED
+                && mShowingKeyPreviewTextViews.containsKey(key)) {
             // TODO: Fade out animation for the key top letter, and fade in animation for the key
             // background color when the user presses the key.
             return;
