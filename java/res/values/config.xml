@@ -52,6 +52,8 @@
     <dimen name="config_key_hysteresis_distance_for_sliding_modifier">8.0dp</dimen>
     <integer name="config_touch_noise_threshold_time">40</integer>
     <dimen name="config_touch_noise_threshold_distance">12.6dp</dimen>
+    <integer name="config_key_preview_zoom_in_duration">35</integer>
+    <integer name="config_key_preview_zoom_out_duration">40</integer>
     <integer name="config_key_preview_linger_timeout">70</integer>
     <bool name="config_key_selection_by_dragging_finger">true</bool>
     <!-- Sliding key input preview parameters -->

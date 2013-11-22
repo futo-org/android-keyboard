@@ -109,6 +109,10 @@
         <attr name="keyPreviewOffset" format="dimension" />
         <!-- Height of the key press feedback popup. -->
         <attr name="keyPreviewHeight" format="dimension" />
+        <!-- Duration of key preview popup zoom in animation in millisecond -->
+        <attr name="keyPreviewZoomInDuration" format="integer" />
+        <!-- Duration of key preview popup zoom out animation in millisecond -->
+        <attr name="keyPreviewZoomOutDuration" format="integer" />
         <!-- Delay after key releasing and key press feedback dismissing in millisecond -->
         <attr name="keyPreviewLingerTimeout" format="integer" />
         <!-- Layout resource for more keys keyboard -->
