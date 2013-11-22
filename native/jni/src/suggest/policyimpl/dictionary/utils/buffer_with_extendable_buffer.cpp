@@ -131,4 +131,21 @@ bool BufferWithExtendableBuffer::checkAndPrepareWriting(const int pos, const int
     return true;
 }
 
+bool BufferWithExtendableBuffer::copy(const BufferWithExtendableBuffer *const sourceBuffer) {
+    int copyingPos = 0;
+    const int tailPos = sourceBuffer->getTailPosition();
+    const int maxDataChunkSize = sizeof(uint32_t);
+    while (copyingPos < tailPos) {
+        const int remainingSize = tailPos - copyingPos;
+        const int copyingSize = (remainingSize >= maxDataChunkSize) ?
+                maxDataChunkSize : remainingSize;
+        const uint32_t data = sourceBuffer->readUint(copyingSize, copyingPos);
+        if (!writeUint(data, copyingSize, copyingPos)) {
+            return false;
+        }
+        copyingPos += copyingSize;
+    }
+    return true;
+}
+
 }

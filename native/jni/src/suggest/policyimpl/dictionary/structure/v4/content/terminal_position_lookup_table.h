@@ -44,23 +44,27 @@ class TerminalPositionLookupTable : public SingleDictContent {
         if (terminalId < 0 || terminalId >= mSize) {
             return NOT_A_DICT_POS;
         }
-        const int readingPos = terminalId * Ver4DictConstants::TERMINAL_ADDRESS_TABLE_ADDRESS_SIZE;
         return getBuffer()->readUint(Ver4DictConstants::TERMINAL_ADDRESS_TABLE_ADDRESS_SIZE,
-                readingPos) - mHeaderRegionSize;
+                getEntryPos(terminalId)) - mHeaderRegionSize;
     }
 
     bool setTerminalPtNodePosition(const int terminalId, const int terminalPtNodePos) {
-        if (terminalId < 0 || terminalId > mSize) {
+        if (terminalId < 0) {
             return NOT_A_DICT_POS;
         }
-        if (terminalId == mSize) {
-            // Use new terminal id.
-            mSize += 1;
+        if (terminalId >= mSize) {
+            int writingPos = getBuffer()->getTailPosition();
+            while(writingPos <= getEntryPos(terminalId)) {
+                // Write new entry.
+                getWritableBuffer()->writeUintAndAdvancePosition(
+                        Ver4DictConstants::NOT_A_TERMINAL_ADDRESS,
+                        Ver4DictConstants::TERMINAL_ADDRESS_TABLE_ADDRESS_SIZE, &writingPos);
+            }
+            mSize = getBuffer()->getTailPosition()
+                    / Ver4DictConstants::TERMINAL_ADDRESS_TABLE_ADDRESS_SIZE;
         }
-        int writingPos = terminalId * Ver4DictConstants::TERMINAL_ADDRESS_TABLE_ADDRESS_SIZE;
-        return getWritableBuffer()->writeUintAndAdvancePosition(
-                terminalPtNodePos + mHeaderRegionSize,
-                Ver4DictConstants::TERMINAL_ADDRESS_TABLE_ADDRESS_SIZE, &writingPos);
+        return getWritableBuffer()->writeUint(terminalPtNodePos + mHeaderRegionSize,
+                Ver4DictConstants::TERMINAL_ADDRESS_TABLE_ADDRESS_SIZE, getEntryPos(terminalId));
     }
 
     int getNextTerminalId() const {
@@ -93,6 +97,10 @@ class TerminalPositionLookupTable : public SingleDictContent {
 
  private:
     DISALLOW_COPY_AND_ASSIGN(TerminalPositionLookupTable);
+
+    int getEntryPos(const int terminalId) const {
+        return terminalId * Ver4DictConstants::TERMINAL_ADDRESS_TABLE_ADDRESS_SIZE;
+    }
 
     int mSize;
     const int mHeaderRegionSize;

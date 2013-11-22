@@ -41,25 +41,29 @@ class ProbabilityDictContent : public SingleDictContent {
     }
 
     bool setProbability(const int terminalId, const int probability) {
-        if (terminalId < 0 || terminalId > getSize()) {
+        if (terminalId < 0) {
             return false;
         }
-        if (terminalId == getSize()) {
+        if (terminalId >= getSize()) {
             // Write new entry.
-            int flagWritingPos = terminalId * (Ver4DictConstants::FLAGS_IN_PROBABILITY_FILE_SIZE
-                    + Ver4DictConstants::PROBABILITY_SIZE);
-            const int dummyFlags = 0;
-            // Write dummy flags.
-            if (!getWritableBuffer()->writeUintAndAdvancePosition(dummyFlags,
-                    Ver4DictConstants::FLAGS_IN_PROBABILITY_FILE_SIZE, &flagWritingPos)) {
-                return false;
+            int writingPos = getBuffer()->getTailPosition();
+            while (writingPos <= getEntryPos(terminalId)) {
+                const int dummyFlags = 0;
+                if (!getWritableBuffer()->writeUintAndAdvancePosition(dummyFlags,
+                        Ver4DictConstants::FLAGS_IN_PROBABILITY_FILE_SIZE, &writingPos)) {
+                    return false;
+                }
+                const int dummyProbability = 0;
+                if (!getWritableBuffer()->writeUintAndAdvancePosition(dummyProbability,
+                        Ver4DictConstants::PROBABILITY_SIZE, &writingPos)) {
+                    return false;
+                }
             }
         }
-        int probabilityWritingPos = terminalId * (Ver4DictConstants::FLAGS_IN_PROBABILITY_FILE_SIZE
-                + Ver4DictConstants::PROBABILITY_SIZE)
-                        + Ver4DictConstants::FLAGS_IN_PROBABILITY_FILE_SIZE;
-        return getWritableBuffer()->writeUintAndAdvancePosition(probability,
-                Ver4DictConstants::PROBABILITY_SIZE, &probabilityWritingPos);
+        const int probabilityWritingPos = getEntryPos(terminalId)
+                + Ver4DictConstants::FLAGS_IN_PROBABILITY_FILE_SIZE;
+        return getWritableBuffer()->writeUint(probability,
+                Ver4DictConstants::PROBABILITY_SIZE, probabilityWritingPos);
     }
 
     bool flushToFile(const char *const dictDirPath) const {
@@ -68,6 +72,11 @@ class ProbabilityDictContent : public SingleDictContent {
 
  private:
     DISALLOW_COPY_AND_ASSIGN(ProbabilityDictContent);
+
+    int getEntryPos(const int terminalId) const {
+        return terminalId * (Ver4DictConstants::FLAGS_IN_PROBABILITY_FILE_SIZE
+                + Ver4DictConstants::PROBABILITY_SIZE);
+    }
 
     int getSize() const {
         return getBuffer()->getTailPosition() / (Ver4DictConstants::PROBABILITY_SIZE

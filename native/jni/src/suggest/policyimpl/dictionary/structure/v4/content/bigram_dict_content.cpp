@@ -59,7 +59,7 @@ bool BigramDictContent::copyBigramList(const int bigramListPos, const int toPos)
     bool hasNext = true;
     int readingPos = bigramListPos;
     int writingPos = toPos;
-    while(hasNext) {
+    while (hasNext) {
         int probability = NOT_A_PROBABILITY;
         int targetTerminalId = Ver4DictConstants::NOT_A_TERMINAL_ID;
         getBigramEntryAndAdvancePosition(&probability, &hasNext, &targetTerminalId,
