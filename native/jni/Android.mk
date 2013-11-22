@@ -90,8 +90,6 @@ LATIN_IME_CORE_SRC_FILES := \
         dynamic_patricia_trie_writing_helper.cpp \
         dynamic_patricia_trie_writing_utils.cpp) \
     $(addprefix suggest/policyimpl/dictionary/structure/v4/, \
-        content/bigram_dict_content.cpp \
-        content/sparse_table_dict_content.cpp \
         ver4_dict_buffers.cpp \
         ver4_dict_constants.cpp \
         ver4_patricia_trie_node_reader.cpp \
@@ -99,6 +97,10 @@ LATIN_IME_CORE_SRC_FILES := \
         ver4_patricia_trie_policy.cpp \
         ver4_patricia_trie_reading_utils.cpp \
         ver4_patricia_trie_writing_helper.cpp) \
+    $(addprefix suggest/policyimpl/dictionary/structure/v4/content/, \
+        bigram_dict_content.cpp \
+        shortcut_dict_content.cpp \
+        sparse_table_dict_content.cpp) \
     $(addprefix suggest/policyimpl/dictionary/utils/, \
         buffer_with_extendable_buffer.cpp \
         byte_array_utils.cpp \

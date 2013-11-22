@@ -19,6 +19,7 @@
 
 #include "defines.h"
 #include "suggest/policyimpl/dictionary/structure/v4/content/sparse_table_dict_content.h"
+#include "suggest/policyimpl/dictionary/structure/v4/content/terminal_position_lookup_table.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_dict_constants.h"
 
 namespace latinime {
@@ -39,35 +40,21 @@ class ShortcutDictContent : public SparseTableDictContent {
 
     void getShortcutEntryAndAdvancePosition(const int maxCodePointCount,
             int *const outCodePoint, int *const outCodePointCount, int *const outShortcutFlags,
-            int *const shortcutEntryPos) const {
-        const BufferWithExtendableBuffer *const shortcutListBuffer = getContentBuffer();
-        if (outShortcutFlags) {
-            *outShortcutFlags = shortcutListBuffer->readUintAndAdvancePosition(
-                    Ver4DictConstants::SHORTCUT_FLAGS_FIELD_SIZE, shortcutEntryPos);
-        }
-        if (outCodePoint && outCodePointCount) {
-            shortcutListBuffer->readCodePointsAndAdvancePosition(
-                    maxCodePointCount, outCodePoint, outCodePointCount, shortcutEntryPos);
-        }
-    }
+            int *const shortcutEntryPos) const;
 
    // Returns head position of shortcut list for a PtNode specified by terminalId.
-   int getShortcutListHeadPos(const int terminalId) const {
-        const SparseTable *const addressLookupTable = getAddressLookupTable();
-        if (!addressLookupTable->contains(terminalId)) {
-            return NOT_A_DICT_POS;
-        }
-        return addressLookupTable->get(terminalId);
-    }
+   int getShortcutListHeadPos(const int terminalId) const;
 
-   bool flushToFile(const char *const dictDirPath) const {
-       return flush(dictDirPath, Ver4DictConstants::SHORTCUT_LOOKUP_TABLE_FILE_EXTENSION,
-               Ver4DictConstants::SHORTCUT_CONTENT_TABLE_FILE_EXTENSION,
-               Ver4DictConstants::SHORTCUT_FILE_EXTENSION);
-   }
+   bool flushToFile(const char *const dictDirPath) const;
 
  private:
     DISALLOW_COPY_AND_ASSIGN(ShortcutDictContent);
+
+    bool copyShortcutList(const int shortcutListPos,
+            const ShortcutDictContent *const sourceShortcutDictContent, const int toPos);
+
+    bool writeShortcutEntryAndAdvancePosition(const int *const codePoint,
+            const int codePointCount, const int shortcutFlags, int *const shortcutEntryPos);
 };
 } // namespace latinime
 #endif /* LATINIME_SHORTCUT_DICT_CONTENT_H */
