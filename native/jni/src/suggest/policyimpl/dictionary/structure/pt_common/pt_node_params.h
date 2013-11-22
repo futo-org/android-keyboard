@@ -148,6 +148,14 @@ class PtNodeParams {
         return PatriciaTrieReadingUtils::isNotAWord(mFlags);
     }
 
+    AK_FORCE_INLINE bool hasBigrams() const {
+        return PatriciaTrieReadingUtils::hasBigrams(mFlags);
+    }
+
+    AK_FORCE_INLINE bool hasShortcutTargets() const {
+        return PatriciaTrieReadingUtils::hasShortcutTargets(mFlags);
+    }
+
     // Parent node position
     AK_FORCE_INLINE int getParentPos() const {
         return mParentPos;

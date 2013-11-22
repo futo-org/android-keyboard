@@ -18,6 +18,22 @@
 
 namespace latinime {
 
+bool SparseTableDictContent::copyContent(
+        const SparseTableDictContent *const sparseTableDictContent) {
+    if (!mExpandableLookupTableBuffer.copy(
+            &sparseTableDictContent->mExpandableLookupTableBuffer)) {
+        return false;
+    }
+    if (!mExpandableAddressTableBuffer.copy(
+            &sparseTableDictContent->mExpandableAddressTableBuffer)) {
+        return false;
+    }
+    if (!mExpandableContentBuffer.copy(&sparseTableDictContent->mExpandableContentBuffer)) {
+        return false;
+    }
+    return true;
+}
+
 bool SparseTableDictContent::flush(const char *const dictDirPath,
         const char *const lookupTableFileName, const char *const addressTableFileName,
         const char *const contentFileName) const {

@@ -94,7 +94,7 @@ bool Ver4BigramListPolicy::addNewEntry(const int terminalId, const int newTarget
 bool Ver4BigramListPolicy::removeEntry(const int terminalId, const int targetTerminalId) {
     const int bigramListPos = mBigramDictContent->getBigramListHeadPos(terminalId);
     if (bigramListPos == NOT_A_DICT_POS) {
-        // Bigram list does't exist.
+        // Bigram list doesn't exist.
         return false;
     }
     const int entryPosToUpdate = getEntryPosToUpdate(targetTerminalId, bigramListPos);
@@ -118,12 +118,62 @@ bool Ver4BigramListPolicy::removeEntry(const int terminalId, const int targetTer
             Ver4DictConstants::NOT_A_TERMINAL_ID /* targetTerminalId */, &writingPos);
 }
 
+bool Ver4BigramListPolicy::updateAllBigramEntriesAndDeleteUselessEntries(const int terminalId,
+        int *const outBigramCount) {
+    const int bigramListPos = mBigramDictContent->getBigramListHeadPos(terminalId);
+    if (bigramListPos == NOT_A_DICT_POS) {
+        // Bigram list doesn't exist.
+        return true;
+    }
+    bool hasNext = true;
+    int readingPos = bigramListPos;
+    while (hasNext) {
+        const int entryPos = readingPos;
+        int probability = NOT_A_PROBABILITY;
+        int targetTerminalId = Ver4DictConstants::NOT_A_TERMINAL_ID;
+        mBigramDictContent->getBigramEntryAndAdvancePosition(&probability, &hasNext,
+                &targetTerminalId, &readingPos);
+        if (targetTerminalId == Ver4DictConstants::NOT_A_TERMINAL_ID) {
+            continue;
+        }
+        const int targetPtNodePos = mTerminalPositionLookupTable->getTerminalPtNodePosition(
+                targetTerminalId);
+        if (targetPtNodePos == NOT_A_DICT_POS) {
+            // Invalidate bigram entry.
+            int writingPos = entryPos;
+            return mBigramDictContent->writeBigramEntryAndAdvancePosition(probability, hasNext,
+                    Ver4DictConstants::NOT_A_TERMINAL_ID /* targetTerminalId */, &writingPos);
+        }
+    }
+    return true;
+}
+
+int Ver4BigramListPolicy::getBigramEntryConut(const int terminalId) {
+    const int bigramListPos = mBigramDictContent->getBigramListHeadPos(terminalId);
+    if (bigramListPos == NOT_A_DICT_POS) {
+        // Bigram list doesn't exist.
+        return 0;
+    }
+    int bigramCount = 0;
+    bool hasNext = true;
+    int readingPos = bigramListPos;
+    while (hasNext) {
+        int targetTerminalId = Ver4DictConstants::NOT_A_TERMINAL_ID;
+        mBigramDictContent->getBigramEntryAndAdvancePosition(0 /* probability */, &hasNext,
+                &targetTerminalId, &readingPos);
+        if (targetTerminalId != Ver4DictConstants::NOT_A_TERMINAL_ID) {
+            bigramCount++;
+        }
+    }
+    return bigramCount;
+}
+
 int Ver4BigramListPolicy::getEntryPosToUpdate(const int targetTerminalIdToFind,
         const int bigramListPos) const {
     bool hasNext = true;
     int invalidEntryPos = NOT_A_DICT_POS;
     int readingPos = bigramListPos;
-    while(hasNext) {
+    while (hasNext) {
         const int entryPos = readingPos;
         int targetTerminalId = Ver4DictConstants::NOT_A_TERMINAL_ID;
         mBigramDictContent->getBigramEntryAndAdvancePosition(0 /* probability */, &hasNext,

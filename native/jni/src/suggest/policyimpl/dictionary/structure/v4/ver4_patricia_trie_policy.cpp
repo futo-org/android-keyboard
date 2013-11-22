@@ -223,7 +223,15 @@ void Ver4PatriciaTriePolicy::flush(const char *const filePath) {
 }
 
 void Ver4PatriciaTriePolicy::flushWithGC(const char *const filePath) {
-    // TODO: Implement.
+    if (!mBuffers.get()->isUpdatable()) {
+        AKLOGI("Warning: flushWithGC() is called for non-updatable dictionary.");
+        return;
+    }
+    const bool needsToDecay = mHeaderPolicy.isDecayingDict()
+            && (mNeedsToDecayForTesting || ForgettingCurveUtils::needsToDecay(
+                    false /* mindsBlockByDecay */, mUnigramCount, mBigramCount, &mHeaderPolicy));
+    mWritingHelper.writeToDictFileWithGC(getRootPosition(), filePath, &mHeaderPolicy, needsToDecay);
+    mNeedsToDecayForTesting = false;
 }
 
 bool Ver4PatriciaTriePolicy::needsToRunGC(const bool mindsBlockByGC) const {

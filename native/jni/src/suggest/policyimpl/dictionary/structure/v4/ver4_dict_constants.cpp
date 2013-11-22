@@ -41,6 +41,7 @@ const int Ver4DictConstants::NOT_A_TERMINAL_ID = -1;
 const int Ver4DictConstants::PROBABILITY_SIZE = 1;
 const int Ver4DictConstants::FLAGS_IN_PROBABILITY_FILE_SIZE = 1;
 const int Ver4DictConstants::TERMINAL_ADDRESS_TABLE_ADDRESS_SIZE = 3;
+const int Ver4DictConstants::NOT_A_TERMINAL_ADDRESS = 0;
 const int Ver4DictConstants::TERMINAL_ID_FIELD_SIZE = 4;
 
 const int Ver4DictConstants::BIGRAM_ADDRESS_TABLE_BLOCK_SIZE = 4;

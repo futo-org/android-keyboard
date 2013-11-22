@@ -67,16 +67,13 @@ bool DynamicPatriciaTrieGcEventListeners
 
 bool DynamicPatriciaTrieGcEventListeners::TraversePolicyToUpdateBigramProbability
         ::onVisitingPtNode(const PtNodeParams *const ptNodeParams) {
-    if (!ptNodeParams->isDeleted()) {
-        int pos = ptNodeParams->getBigramsPos();
-        if (pos != NOT_A_DICT_POS) {
-            int bigramEntryCount = 0;
-            if (!mPtNodeWriter->updateAllBigramEntriesAndDeleteUselessEntries(ptNodeParams,
-                    &bigramEntryCount)) {
-                return false;
-            }
-            mValidBigramEntryCount += bigramEntryCount;
+    if (!ptNodeParams->isDeleted() && ptNodeParams->hasBigrams()) {
+        int bigramEntryCount = 0;
+        if (!mPtNodeWriter->updateAllBigramEntriesAndDeleteUselessEntries(ptNodeParams,
+                &bigramEntryCount)) {
+            return false;
         }
+        mValidBigramEntryCount += bigramEntryCount;
     }
     return true;
 }

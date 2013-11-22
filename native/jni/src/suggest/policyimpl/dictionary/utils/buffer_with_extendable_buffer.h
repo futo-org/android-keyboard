@@ -100,6 +100,8 @@ class BufferWithExtendableBuffer {
     bool writeCodePointsAndAdvancePosition(const int *const codePoints, const int codePointCount,
             const bool writesTerminator, int *const pos);
 
+    bool copy(const BufferWithExtendableBuffer *const sourceBuffer);
+
  private:
     DISALLOW_COPY_AND_ASSIGN(BufferWithExtendableBuffer);
 
