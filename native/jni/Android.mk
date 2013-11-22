@@ -100,7 +100,8 @@ LATIN_IME_CORE_SRC_FILES := \
     $(addprefix suggest/policyimpl/dictionary/structure/v4/content/, \
         bigram_dict_content.cpp \
         shortcut_dict_content.cpp \
-        sparse_table_dict_content.cpp) \
+        sparse_table_dict_content.cpp \
+        terminal_position_lookup_table.cpp) \
     $(addprefix suggest/policyimpl/dictionary/utils/, \
         buffer_with_extendable_buffer.cpp \
         byte_array_utils.cpp \
