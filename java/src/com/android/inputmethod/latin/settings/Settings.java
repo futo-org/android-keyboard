@@ -65,6 +65,7 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
             "pref_show_language_switch_key";
     public static final String PREF_INCLUDE_OTHER_IMES_IN_LANGUAGE_SWITCH_LIST =
             "pref_include_other_imes_in_language_switch_list";
+    public static final String PREF_KEYBOARD_LAYOUT = "pref_keyboard_layout_20110916";
     public static final String PREF_CUSTOM_INPUT_STYLES = "custom_input_styles";
     public static final String PREF_KEY_PREVIEW_POPUP_DISMISS_DELAY =
             "pref_key_preview_popup_dismiss_delay";
@@ -260,6 +261,28 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
             editor.apply();
         }
         return prefs.getBoolean(PREF_SHOW_LANGUAGE_SWITCH_KEY, true);
+    }
+
+    public static int readKeyboardThemeIndex(final SharedPreferences prefs, final Resources res) {
+        final String defaultThemeIndex = res.getString(
+                R.string.config_default_keyboard_theme_index);
+        final String themeIndex = prefs.getString(PREF_KEYBOARD_LAYOUT, defaultThemeIndex);
+        try {
+            return Integer.valueOf(themeIndex);
+        } catch (final NumberFormatException e) {
+            // Format error, returns default keyboard theme index.
+            Log.e(TAG, "Illegal keyboard theme in preference: " + themeIndex + ", default to "
+                    + defaultThemeIndex, e);
+            return Integer.valueOf(defaultThemeIndex);
+        }
+    }
+
+    public static int resetAndGetDefaultKeyboardThemeIndex(final SharedPreferences prefs,
+            final Resources res) {
+        final String defaultThemeIndex = res.getString(
+                R.string.config_default_keyboard_theme_index);
+        prefs.edit().putString(PREF_KEYBOARD_LAYOUT, defaultThemeIndex).apply();
+        return Integer.valueOf(defaultThemeIndex);
     }
 
     public static String readPrefAdditionalSubtypes(final SharedPreferences prefs,
