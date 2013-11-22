@@ -258,8 +258,7 @@ const PtNodeParams DynamicPatriciaTrieUpdatingHelper::getUpdatedPtNodeParams(
     const PatriciaTrieReadingUtils::NodeFlags flags = PatriciaTrieReadingUtils::createAndGetFlags(
             originalPtNodeParams->isBlacklisted(), originalPtNodeParams->isNotAWord(),
             probability != NOT_A_PROBABILITY /* isTerminal */,
-            originalPtNodeParams->getShortcutPos() != NOT_A_DICT_POS /* hasShortcutTargets */,
-            originalPtNodeParams->getBigramsPos() != NOT_A_DICT_POS /* hasBigrams */,
+            originalPtNodeParams->hasShortcutTargets(), originalPtNodeParams->hasBigrams(),
             codePointCount > 1 /* hasMultipleChars */, CHILDREN_POSITION_FIELD_SIZE);
     return PtNodeParams(originalPtNodeParams, flags, parentPos, codePointCount, codePoints,
             probability);

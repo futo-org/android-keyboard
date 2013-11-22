@@ -75,6 +75,8 @@ class SparseTableDictContent : public DictContent {
                 || mExpandableContentBuffer.isNearSizeLimit();
     }
 
+    bool copyContent(const SparseTableDictContent *const sparseTableDictContent);
+
  protected:
     SparseTable *getUpdatableAddressLookupTable() {
         return &mAddressLookupTable;

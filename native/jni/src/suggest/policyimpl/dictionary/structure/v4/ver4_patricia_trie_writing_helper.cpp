@@ -20,6 +20,7 @@
 
 #include "suggest/policyimpl/dictionary/bigram/ver4_bigram_list_policy.h"
 #include "suggest/policyimpl/dictionary/header/header_policy.h"
+#include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_gc_event_listeners.h"
 #include "suggest/policyimpl/dictionary/shortcut/ver4_shortcut_list_policy.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_dict_buffers.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_dict_constants.h"
@@ -91,7 +92,78 @@ bool Ver4PatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
 
     DynamicPatriciaTrieReadingHelper readingHelper(mBuffers->getTrieBuffer(), &ptNodeReader);
     readingHelper.initWithPtNodeArrayPos(rootPtNodeArrayPos);
+    DynamicPatriciaTrieGcEventListeners
+            ::TraversePolicyToUpdateUnigramProbabilityAndMarkUselessPtNodesAsDeleted
+                    traversePolicyToUpdateUnigramProbabilityAndMarkUselessPtNodesAsDeleted(
+                            headerPolicy, &ptNodeWriter, mBuffers->getWritableTrieBuffer(),
+                            needsToDecay);
+    if (!readingHelper.traverseAllPtNodesInPostorderDepthFirstManner(
+            &traversePolicyToUpdateUnigramProbabilityAndMarkUselessPtNodesAsDeleted)) {
+        return false;
+    }
+    if (needsToDecay && traversePolicyToUpdateUnigramProbabilityAndMarkUselessPtNodesAsDeleted
+            .getValidUnigramCount() > ForgettingCurveUtils::MAX_UNIGRAM_COUNT_AFTER_GC) {
+        // TODO: Remove more unigrams.
+    }
 
+    readingHelper.initWithPtNodeArrayPos(rootPtNodeArrayPos);
+    DynamicPatriciaTrieGcEventListeners::TraversePolicyToUpdateBigramProbability
+            traversePolicyToUpdateBigramProbability(&ptNodeWriter);
+    if (!readingHelper.traverseAllPtNodesInPostorderDepthFirstManner(
+            &traversePolicyToUpdateBigramProbability)) {
+        return false;
+    }
+    if (needsToDecay && traversePolicyToUpdateBigramProbability.getValidBigramEntryCount()
+            > ForgettingCurveUtils::MAX_BIGRAM_COUNT_AFTER_GC) {
+        // TODO: Remove more bigrams.
+    }
+
+    // Mapping from positions in mBuffer to positions in bufferToWrite.
+    PtNodeWriter::DictPositionRelocationMap dictPositionRelocationMap;
+    readingHelper.initWithPtNodeArrayPos(rootPtNodeArrayPos);
+    Ver4PatriciaTrieNodeWriter ptNodeWriterForNewBuffers(buffersToWrite->getWritableTrieBuffer(),
+            buffersToWrite, &ptNodeReader, &bigramPolicy, &shortcutPolicy);
+    DynamicPatriciaTrieGcEventListeners::TraversePolicyToPlaceAndWriteValidPtNodesToBuffer
+            traversePolicyToPlaceAndWriteValidPtNodesToBuffer(&ptNodeWriterForNewBuffers,
+                    buffersToWrite->getWritableTrieBuffer(), &dictPositionRelocationMap);
+    if (!readingHelper.traverseAllPtNodesInPtNodeArrayLevelPreorderDepthFirstManner(
+            &traversePolicyToPlaceAndWriteValidPtNodesToBuffer)) {
+        return false;
+    }
+
+    // Create policy instances for the GCed dictionary.
+    Ver4PatriciaTrieNodeReader newPtNodeReader(buffersToWrite->getTrieBuffer(),
+            buffersToWrite->getProbabilityDictContent());
+    Ver4BigramListPolicy newBigramPolicy(buffersToWrite->getUpdatableBigramDictContent(),
+            buffersToWrite->getTerminalPositionLookupTable());
+    Ver4ShortcutListPolicy newShortcutPolicy(buffersToWrite->getShortcutDictContent(),
+            buffersToWrite->getTerminalPositionLookupTable());
+    Ver4PatriciaTrieNodeWriter newPtNodeWriter(buffersToWrite->getWritableTrieBuffer(),
+            buffersToWrite, &newPtNodeReader, &newBigramPolicy, &newShortcutPolicy);
+
+    if(!buffersToWrite->getUpdatableBigramDictContent()->copyContent(
+            mBuffers->getBigramDictContent())) {
+        return false;
+    }
+    if(!buffersToWrite->getUpdatableShortcutDictContent()->copyContent(
+            mBuffers->getShortcutDictContent())) {
+        return false;
+    }
+
+    DynamicPatriciaTrieReadingHelper newDictReadingHelper(buffersToWrite->getTrieBuffer(),
+            &newPtNodeReader);
+    newDictReadingHelper.initWithPtNodeArrayPos(rootPtNodeArrayPos);
+    DynamicPatriciaTrieGcEventListeners::TraversePolicyToUpdateAllPositionFields
+            traversePolicyToUpdateAllPositionFields(&newPtNodeWriter, &dictPositionRelocationMap);
+    if (!newDictReadingHelper.traverseAllPtNodesInPtNodeArrayLevelPreorderDepthFirstManner(
+            &traversePolicyToUpdateAllPositionFields)) {
+        return false;
+    }
+
+    // TODO: GC for dict contents.
+
+    *outUnigramCount = traversePolicyToUpdateAllPositionFields.getUnigramCount();
+    *outBigramCount = traversePolicyToUpdateAllPositionFields.getBigramCount();
     return true;
 }
 

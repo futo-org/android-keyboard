@@ -44,6 +44,11 @@ class Ver4BigramListPolicy : public DictionaryBigramsStructurePolicy {
 
     bool removeEntry(const int terminalId, const int targetTerminalId);
 
+    bool updateAllBigramEntriesAndDeleteUselessEntries(const int terminalId,
+            int *const outBigramCount);
+
+    int getBigramEntryConut(const int terminalId);
+
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(Ver4BigramListPolicy);
 

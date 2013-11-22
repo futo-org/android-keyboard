@@ -93,6 +93,10 @@ class Ver4DictBuffers {
         return &mBigramDictContent;
     }
 
+    AK_FORCE_INLINE ShortcutDictContent *getUpdatableShortcutDictContent() {
+        return &mShortcutDictContent;
+    }
+
     AK_FORCE_INLINE const ShortcutDictContent *getShortcutDictContent() const {
         return &mShortcutDictContent;
     }

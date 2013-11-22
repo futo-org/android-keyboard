@@ -45,8 +45,17 @@ bool Ver4PatriciaTrieNodeWriter::markPtNodeAsDeleted(
                     true /* isDeleted */);
     int writingPos = toBeUpdatedPtNodeParams->getHeadPos();
     // Update flags.
-    return DynamicPatriciaTrieWritingUtils::writeFlagsAndAdvancePosition(mTrieBuffer, updatedFlags,
-            &writingPos);
+    if (!DynamicPatriciaTrieWritingUtils::writeFlagsAndAdvancePosition(mTrieBuffer, updatedFlags,
+            &writingPos)) {
+        return false;
+    }
+    if (toBeUpdatedPtNodeParams->getTerminalId() != NOT_A_DICT_POS) {
+        // The PtNode is a terminal. Delete entry from the terminal position lookup table.
+        return mBuffers->getUpdatableTerminalPositionLookupTable()->setTerminalPtNodePosition(
+                toBeUpdatedPtNodeParams->getTerminalId(), NOT_A_DICT_POS /* ptNodePos */);
+    } else {
+        return true;
+    }
 }
 
 bool Ver4PatriciaTrieNodeWriter::markPtNodeAsMoved(
@@ -171,7 +180,7 @@ bool Ver4PatriciaTrieNodeWriter::writePtNodeAndAdvancePosition(
     PatriciaTrieReadingUtils::NodeFlags nodeFlags =
             PatriciaTrieReadingUtils::createAndGetFlags(ptNodeParams->isBlacklisted(),
                     ptNodeParams->isNotAWord(), isTerminal,
-                    false /* hasShortcutTargets */, false /* hasBigrams */,
+                    ptNodeParams->hasShortcutTargets(), ptNodeParams->hasBigrams(),
                     ptNodeParams->getCodePointCount() > 1 /* hasMultipleChars */,
                     CHILDREN_POSITION_FIELD_SIZE);
     int flagsFieldPos = nodePos;
@@ -198,16 +207,49 @@ bool Ver4PatriciaTrieNodeWriter::removeBigramEntry(
 
 bool Ver4PatriciaTrieNodeWriter::updateAllBigramEntriesAndDeleteUselessEntries(
             const PtNodeParams *const sourcePtNodeParams, int *const outBigramEntryCount) {
-    // TODO: Implement.
-    return false;
+    return mBigramPolicy->updateAllBigramEntriesAndDeleteUselessEntries(
+            sourcePtNodeParams->getTerminalId(), outBigramEntryCount);
 }
 
 bool Ver4PatriciaTrieNodeWriter::updateAllPositionFields(
         const PtNodeParams *const toBeUpdatedPtNodeParams,
         const DictPositionRelocationMap *const dictPositionRelocationMap,
         int *const outBigramEntryCount) {
-    // TODO: Implement.
-    return false;
+    int parentPos = toBeUpdatedPtNodeParams->getParentPos();
+    if (parentPos != NOT_A_DICT_POS) {
+        PtNodeWriter::PtNodePositionRelocationMap::const_iterator it =
+                dictPositionRelocationMap->mPtNodePositionRelocationMap.find(parentPos);
+        if (it != dictPositionRelocationMap->mPtNodePositionRelocationMap.end()) {
+            parentPos = it->second;
+        }
+    }
+    int writingPos = toBeUpdatedPtNodeParams->getHeadPos()
+            + DynamicPatriciaTrieWritingUtils::NODE_FLAG_FIELD_SIZE;
+    // Write updated parent offset.
+    if (!DynamicPatriciaTrieWritingUtils::writeParentPosOffsetAndAdvancePosition(mTrieBuffer,
+            parentPos, toBeUpdatedPtNodeParams->getHeadPos(), &writingPos)) {
+        return false;
+    }
+
+    // Updates children position.
+    int childrenPos = toBeUpdatedPtNodeParams->getChildrenPos();
+    if (childrenPos != NOT_A_DICT_POS) {
+        PtNodeWriter::PtNodeArrayPositionRelocationMap::const_iterator it =
+                dictPositionRelocationMap->mPtNodeArrayPositionRelocationMap.find(childrenPos);
+        if (it != dictPositionRelocationMap->mPtNodeArrayPositionRelocationMap.end()) {
+            childrenPos = it->second;
+        }
+    }
+    if (!updateChildrenPosition(toBeUpdatedPtNodeParams, childrenPos)) {
+        return false;
+    }
+
+    // Counts bigram entries.
+    if (outBigramEntryCount) {
+        *outBigramEntryCount = mBigramPolicy->getBigramEntryConut(
+                toBeUpdatedPtNodeParams->getTerminalId());
+    }
+    return true;
 }
 
 }
