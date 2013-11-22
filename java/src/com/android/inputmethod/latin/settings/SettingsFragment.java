@@ -255,6 +255,7 @@ public final class SettingsFragment extends InputMethodSettingsFragment
         }
         updateShowCorrectionSuggestionsSummary();
         updateKeyPreviewPopupDelaySummary();
+        updateColorSchemeSummary(prefs, getResources());
         updateCustomInputStylesSummary();
     }
 
@@ -288,6 +289,7 @@ public final class SettingsFragment extends InputMethodSettingsFragment
         ensureConsistencyOfAutoCorrectionSettings();
         updateShowCorrectionSuggestionsSummary();
         updateKeyPreviewPopupDelaySummary();
+        updateColorSchemeSummary(prefs, res);
         refreshEnablingsOfKeypressSoundAndVibrationSettings(prefs, getResources());
     }
 
@@ -303,6 +305,25 @@ public final class SettingsFragment extends InputMethodSettingsFragment
                 getResources().getStringArray(R.array.prefs_suggestion_visibilities)
                 [mShowCorrectionSuggestionsPreference.findIndexOfValue(
                         mShowCorrectionSuggestionsPreference.getValue())]);
+    }
+
+    private void updateColorSchemeSummary(final SharedPreferences prefs, final Resources res) {
+        // Because the "%s" summary trick of {@link ListPreference} doesn't work properly before
+        // KitKat, we need to update the summary by code.
+        final Preference preference = findPreference(Settings.PREF_KEYBOARD_LAYOUT);
+        if (!(preference instanceof ListPreference)) {
+            Log.w(TAG, "Can't find Keyboard Color Scheme preference");
+            return;
+        }
+        final ListPreference colorSchemePreference = (ListPreference)preference;
+        final int themeIndex = Settings.readKeyboardThemeIndex(prefs, res);
+        int entryIndex = colorSchemePreference.findIndexOfValue(Integer.toString(themeIndex));
+        if (entryIndex < 0) {
+            final int defaultThemeIndex = Settings.resetAndGetDefaultKeyboardThemeIndex(prefs, res);
+            entryIndex = colorSchemePreference.findIndexOfValue(
+                    Integer.toString(defaultThemeIndex));
+        }
+        colorSchemePreference.setSummary(colorSchemePreference.getEntries()[entryIndex]);
     }
 
     private void updateCustomInputStylesSummary() {
