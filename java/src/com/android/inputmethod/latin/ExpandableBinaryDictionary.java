@@ -59,7 +59,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
      */
     protected static final int MAX_WORD_LENGTH = Constants.DICTIONARY_MAX_WORD_LENGTH;
 
-    private static final int DICTIONARY_FORMAT_VERSION = 3;
+    private static final int DICTIONARY_FORMAT_VERSION = 4;
 
     private static final String SUPPORTS_DYNAMIC_UPDATE =
             FormatSpec.FileHeader.ATTRIBUTE_VALUE_TRUE;
@@ -237,7 +237,8 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
             public void run() {
                 if (mDictionaryWriter == null) {
                     mBinaryDictionary.close();
-                    final File file = new File(mContext.getFilesDir(), mFilename);
+                    final File file = new File(mContext.getFilesDir(), mFilename + "/"
+                            + FormatSpec.TRIE_FILE_EXTENSION);
                     BinaryDictionary.createEmptyDictFile(file.getAbsolutePath(),
                             DICTIONARY_FORMAT_VERSION, getHeaderAttributeMap());
                     mBinaryDictionary = new BinaryDictionary(
@@ -508,7 +509,8 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                     + mFilenameDictionaryUpdateController.mLastUpdateTime);
         }
 
-        final File file = new File(mContext.getFilesDir(), mFilename);
+        final File file = new File(mContext.getFilesDir(), mFilename + "/"
+                + FormatSpec.TRIE_FILE_EXTENSION);
         final String filename = file.getAbsolutePath();
         final long length = file.length();
 
