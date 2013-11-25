@@ -126,6 +126,12 @@ bool Ver4PatriciaTrieNodeWriter::updateChildrenPosition(
             newChildrenPosition, &childrenPosFieldPos);
 }
 
+bool Ver4PatriciaTrieNodeWriter::updateTerminalId(const PtNodeParams *const toBeUpdatedPtNodeParams,
+        const int newTerminalId) {
+    return mTrieBuffer->writeUint(newTerminalId, Ver4DictConstants::TERMINAL_ID_FIELD_SIZE,
+            toBeUpdatedPtNodeParams->getTerminalIdFieldPos());
+}
+
 bool Ver4PatriciaTrieNodeWriter::writePtNodeAndAdvancePosition(
         const PtNodeParams *const ptNodeParams, int *const ptNodeWritingPos) {
     const int nodePos = *ptNodeWritingPos;
