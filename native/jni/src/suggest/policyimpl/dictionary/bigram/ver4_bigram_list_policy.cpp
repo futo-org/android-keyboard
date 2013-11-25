@@ -52,6 +52,9 @@ bool Ver4BigramListPolicy::addNewEntry(const int terminalId, const int newTarget
                 false /* hasNext */, newTargetTerminalId, &writingPos)) {
             return false;
         }
+        if (outAddedNewEntry) {
+            *outAddedNewEntry = true;
+        }
         return true;
     }
 

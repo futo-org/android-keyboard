@@ -103,7 +103,7 @@ class DynamicPatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
 
     bool needsToRunGC(const bool mindsBlockByGC) const;
 
-    void getProperty(const char *const query, char *const outResult,
+    void getProperty(const char *const query, const int queryLength, char *const outResult,
             const int maxResultLength);
 
  private:
