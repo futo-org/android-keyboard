@@ -30,6 +30,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
+import android.view.inputmethod.InputMethodSubtype;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 
@@ -37,6 +38,7 @@ import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.utils.LocaleUtils;
+import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 
 import java.util.Locale;
 
@@ -244,7 +246,18 @@ public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
 
     protected void changeLanguageWithoutWait(final String locale) {
         mEditText.mCurrentLocale = LocaleUtils.constructLocaleFromString(locale);
-        SubtypeSwitcher.getInstance().forceLocale(mEditText.mCurrentLocale);
+        final InputMethodSubtype subtype = new InputMethodSubtype(
+            R.string.subtype_no_language_qwerty, R.drawable.ic_ime_switcher_dark,
+            locale, "keyboard", "KeyboardLayoutSet="
+                    // TODO: this is forcing a QWERTY keyboard for all locales, which is wrong.
+                    // It's still better than using whatever keyboard is the current one, but we
+                    // should actually use the default keyboard for this locale.
+                    + SubtypeLocaleUtils.QWERTY
+                    + "," + Constants.Subtype.ExtraValue.ASCII_CAPABLE
+                    + "," + Constants.Subtype.ExtraValue.ENABLED_WHEN_DEFAULT_IS_NOT_ASCII_CAPABLE
+                    + Constants.Subtype.ExtraValue.EMOJI_CAPABLE,
+                    false /* isAuxiliary */, false /* overridesImplicitlyEnabledSubtype */);
+        SubtypeSwitcher.getInstance().forceSubtype(subtype);
         mLatinIME.loadKeyboard();
         runMessages();
         mKeyboard = mLatinIME.mKeyboardSwitcher.getKeyboard();
