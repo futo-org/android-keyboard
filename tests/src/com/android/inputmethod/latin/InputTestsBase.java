@@ -45,6 +45,10 @@ import java.util.Locale;
 public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
 
     private static final String PREF_DEBUG_MODE = "debug_mode";
+    private static final String PREF_AUTO_CORRECTION_THRESHOLD = "auto_correction_threshold";
+    // Default value for auto-correction threshold. This is the string representation of the
+    // index in the resources array of auto-correction threshold settings.
+    private static final String DEFAULT_AUTO_CORRECTION_THRESHOLD = "1";
 
     // The message that sets the underline is posted with a 500 ms delay
     protected static final int DELAY_TO_WAIT_FOR_UNDERLINE = 500;
@@ -56,6 +60,8 @@ public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
     protected MyEditText mEditText;
     protected View mInputView;
     protected InputConnection mInputConnection;
+    private boolean mPreviousDebugSetting;
+    private String mPreviousAutoCorrectSetting;
 
     // A helper class to ease span tests
     public static class SpanGetter {
@@ -137,7 +143,17 @@ public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
         final boolean previousSetting = prefs.getBoolean(key, defaultValue);
         final SharedPreferences.Editor editor = prefs.edit();
         editor.putBoolean(key, value);
-        editor.commit();
+        editor.apply();
+        return previousSetting;
+    }
+
+    protected String setStringPreference(final String key, final String value,
+            final String defaultValue) {
+        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mLatinIME);
+        final String previousSetting = prefs.getString(key, defaultValue);
+        final SharedPreferences.Editor editor = prefs.edit();
+        editor.putString(key, value);
+        editor.apply();
         return previousSetting;
     }
 
@@ -156,9 +172,10 @@ public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
         mEditText.setEnabled(true);
         setupService();
         mLatinIME = getService();
-        final boolean previousDebugSetting = setDebugMode(true);
+        mPreviousDebugSetting = setDebugMode(true);
+        mPreviousAutoCorrectSetting = setStringPreference(PREF_AUTO_CORRECTION_THRESHOLD,
+                DEFAULT_AUTO_CORRECTION_THRESHOLD, DEFAULT_AUTO_CORRECTION_THRESHOLD);
         mLatinIME.onCreate();
-        setDebugMode(previousDebugSetting);
         final EditorInfo ei = new EditorInfo();
         final InputConnection ic = mEditText.onCreateInputConnection(ei);
         final LayoutInflater inflater =
@@ -172,6 +189,13 @@ public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
         mLatinIME.onStartInputView(ei, false);
         mInputConnection = ic;
         changeLanguage("en_US");
+    }
+
+    @Override
+    protected void tearDown() {
+        setStringPreference(PREF_AUTO_CORRECTION_THRESHOLD, mPreviousAutoCorrectSetting,
+                DEFAULT_AUTO_CORRECTION_THRESHOLD);
+        setDebugMode(mPreviousDebugSetting);
     }
 
     // We need to run the messages added to the handler from LatinIME. The only way to do
@@ -255,7 +279,7 @@ public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
                     + SubtypeLocaleUtils.QWERTY
                     + "," + Constants.Subtype.ExtraValue.ASCII_CAPABLE
                     + "," + Constants.Subtype.ExtraValue.ENABLED_WHEN_DEFAULT_IS_NOT_ASCII_CAPABLE
-                    + Constants.Subtype.ExtraValue.EMOJI_CAPABLE,
+                    + "," + Constants.Subtype.ExtraValue.EMOJI_CAPABLE,
                     false /* isAuxiliary */, false /* overridesImplicitlyEnabledSubtype */);
         SubtypeSwitcher.getInstance().forceSubtype(subtype);
         mLatinIME.loadKeyboard();
