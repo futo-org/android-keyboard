@@ -221,7 +221,7 @@
     <string name="toast_downloading_suggestions" msgid="1313027353588566660">"डाउनलोड हो रहा है: <xliff:g id="LANGUAGE">%1$s</xliff:g> के लिए सुझाव जल्दी ही तैयार हो जाएंगे."</string>
     <string name="version_text" msgid="2715354215568469385">"संस्करण <xliff:g id="VERSION_NUMBER">%1$s</xliff:g>"</string>
     <string name="user_dict_settings_add_menu_title" msgid="1254195365689387076">"जोड़ें"</string>
-    <string name="user_dict_settings_add_dialog_title" msgid="4096700390211748168">"शब्दकोष में जोड़ें"</string>
+    <string name="user_dict_settings_add_dialog_title" msgid="4096700390211748168">"शब्दकोश में जोड़ें"</string>
     <string name="user_dict_settings_add_screen_title" msgid="5818914331629278758">"वाक्यांश"</string>
     <string name="user_dict_settings_add_dialog_more_options" msgid="5671682004887093112">"अधिक विकल्प"</string>
     <string name="user_dict_settings_add_dialog_less_options" msgid="2716586567241724126">"कम विकल्‍प"</string>
