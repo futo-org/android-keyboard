@@ -19,6 +19,7 @@
 
 #include "defines.h"
 #include "suggest/policyimpl/dictionary/structure/v4/content/single_dict_content.h"
+#include "suggest/policyimpl/dictionary/structure/v4/content/terminal_position_lookup_table.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_dict_constants.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_patricia_trie_reading_utils.h"
 #include "suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer.h"
@@ -28,13 +29,14 @@ namespace latinime {
 class ProbabilityDictContent : public SingleDictContent {
  public:
     ProbabilityDictContent(const char *const dictDirPath, const bool isUpdatable)
-            : SingleDictContent(dictDirPath, Ver4DictConstants::FREQ_FILE_EXTENSION,
-                    isUpdatable) {}
+            : SingleDictContent(dictDirPath, Ver4DictConstants::FREQ_FILE_EXTENSION, isUpdatable),
+              mSize(getBuffer()->getTailPosition() / (Ver4DictConstants::PROBABILITY_SIZE
+                      + Ver4DictConstants::FLAGS_IN_PROBABILITY_FILE_SIZE)) {}
 
-    ProbabilityDictContent() {}
+    ProbabilityDictContent() : mSize(0) {}
 
     int getProbability(const int terminalId) const {
-        if (terminalId < 0 || terminalId >= getSize()) {
+        if (terminalId < 0 || terminalId >= mSize) {
             return NOT_A_PROBABILITY;
         }
         return Ver4PatriciaTrieReadingUtils::getProbability(getBuffer(), terminalId);
@@ -44,7 +46,7 @@ class ProbabilityDictContent : public SingleDictContent {
         if (terminalId < 0) {
             return false;
         }
-        if (terminalId >= getSize()) {
+        if (terminalId >= mSize) {
             // Write new entry.
             int writingPos = getBuffer()->getTailPosition();
             while (writingPos <= getEntryPos(terminalId)) {
@@ -58,6 +60,7 @@ class ProbabilityDictContent : public SingleDictContent {
                         Ver4DictConstants::PROBABILITY_SIZE, &writingPos)) {
                     return false;
                 }
+                mSize++;
             }
         }
         const int probabilityWritingPos = getEntryPos(terminalId)
@@ -67,7 +70,32 @@ class ProbabilityDictContent : public SingleDictContent {
     }
 
     bool flushToFile(const char *const dictDirPath) const {
-        return flush(dictDirPath, Ver4DictConstants::FREQ_FILE_EXTENSION);
+        if (getEntryPos(mSize) < getBuffer()->getTailPosition()) {
+            ProbabilityDictContent probabilityDictContentToWrite;
+            for (int i = 0; i < mSize; ++i) {
+                if (!probabilityDictContentToWrite.setProbability(i, getProbability(i))) {
+                    return false;
+                }
+            }
+            return probabilityDictContentToWrite.flush(dictDirPath,
+                    Ver4DictConstants::FREQ_FILE_EXTENSION);
+        } else {
+            return flush(dictDirPath, Ver4DictConstants::FREQ_FILE_EXTENSION);
+        }
+    }
+
+    bool runGC(const TerminalPositionLookupTable::TerminalIdMap *const terminalIdMap,
+            const ProbabilityDictContent *const originalProbabilityDictContent) {
+        mSize = 0;
+        for (TerminalPositionLookupTable::TerminalIdMap::const_iterator it = terminalIdMap->begin();
+                it != terminalIdMap->end(); ++it) {
+            if (!setProbability(it->second,
+                    originalProbabilityDictContent->getProbability(it->first))) {
+                return false;
+            }
+            mSize++;
+        }
+        return true;
     }
 
  private:
@@ -78,10 +106,7 @@ class ProbabilityDictContent : public SingleDictContent {
                 + Ver4DictConstants::PROBABILITY_SIZE);
     }
 
-    int getSize() const {
-        return getBuffer()->getTailPosition() / (Ver4DictConstants::PROBABILITY_SIZE
-                + Ver4DictConstants::FLAGS_IN_PROBABILITY_FILE_SIZE);
-    }
+    int mSize;
 };
 } // namespace latinime
 #endif /* LATINIME_PROBABILITY_DICT_CONTENT_H */

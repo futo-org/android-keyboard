@@ -47,6 +47,9 @@ class ShortcutDictContent : public SparseTableDictContent {
 
    bool flushToFile(const char *const dictDirPath) const;
 
+   bool runGC(const TerminalPositionLookupTable::TerminalIdMap *const terminalIdMap,
+           const ShortcutDictContent *const originalShortcutDictContent);
+
  private:
     DISALLOW_COPY_AND_ASSIGN(ShortcutDictContent);
 

@@ -48,6 +48,30 @@ bool ShortcutDictContent::flushToFile(const char *const dictDirPath) const {
             Ver4DictConstants::SHORTCUT_FILE_EXTENSION);
 }
 
+bool ShortcutDictContent::runGC(
+        const TerminalPositionLookupTable::TerminalIdMap *const terminalIdMap,
+        const ShortcutDictContent *const originalShortcutDictContent) {
+   for (TerminalPositionLookupTable::TerminalIdMap::const_iterator it = terminalIdMap->begin();
+           it != terminalIdMap->end(); ++it) {
+       const int originalShortcutListPos =
+               originalShortcutDictContent->getShortcutListHeadPos(it->first);
+       if (originalShortcutListPos == NOT_A_DICT_POS) {
+           continue;
+       }
+       const int shortcutListPos = getContentBuffer()->getTailPosition();
+       // Copy shortcut list with GC from original content.
+       if (!copyShortcutList(originalShortcutListPos, originalShortcutDictContent,
+               shortcutListPos)) {
+           return false;
+       }
+       // Set shortcut list position to the lookup table.
+       if (!getUpdatableAddressLookupTable()->set(it->second, shortcutListPos)) {
+           return false;
+       }
+   }
+   return true;
+}
+
 bool ShortcutDictContent::copyShortcutList(const int shortcutListPos,
         const ShortcutDictContent *const sourceShortcutDictContent, const int toPos) {
     bool hasNext = true;

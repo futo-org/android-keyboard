@@ -20,7 +20,6 @@
 
 #include "suggest/policyimpl/dictionary/bigram/ver4_bigram_list_policy.h"
 #include "suggest/policyimpl/dictionary/header/header_policy.h"
-#include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_gc_event_listeners.h"
 #include "suggest/policyimpl/dictionary/shortcut/ver4_shortcut_list_policy.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_dict_buffers.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_dict_constants.h"
@@ -141,15 +140,6 @@ bool Ver4PatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
     Ver4PatriciaTrieNodeWriter newPtNodeWriter(buffersToWrite->getWritableTrieBuffer(),
             buffersToWrite, &newPtNodeReader, &newBigramPolicy, &newShortcutPolicy);
 
-    if(!buffersToWrite->getUpdatableBigramDictContent()->copyContent(
-            mBuffers->getBigramDictContent())) {
-        return false;
-    }
-    if(!buffersToWrite->getUpdatableShortcutDictContent()->copyContent(
-            mBuffers->getShortcutDictContent())) {
-        return false;
-    }
-
     DynamicPatriciaTrieReadingHelper newDictReadingHelper(buffersToWrite->getTrieBuffer(),
             &newPtNodeReader);
     newDictReadingHelper.initWithPtNodeArrayPos(rootPtNodeArrayPos);
@@ -160,11 +150,50 @@ bool Ver4PatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
         return false;
     }
 
-    // TODO: GC for dict contents.
-
+    // Re-assign terminal IDs for valid terminal PtNodes.
+    TerminalPositionLookupTable::TerminalIdMap terminalIdMap;
+    if(!buffersToWrite->getUpdatableTerminalPositionLookupTable()->runGCTerminalIds(
+            &terminalIdMap)) {
+        return false;
+    }
+    TraversePolicyToUpdateAllTerminalIds traversePolicyToUpdateAllTerminalIds(&newPtNodeWriter,
+            &terminalIdMap);
+    if (!newDictReadingHelper.traverseAllPtNodesInPostorderDepthFirstManner(
+            &traversePolicyToUpdateAllTerminalIds)) {
+        return false;
+    }
+    // Run GC for probability dict content.
+    if (!buffersToWrite->getUpdatableProbabilityDictContent()->runGC(&terminalIdMap,
+            mBuffers->getProbabilityDictContent())) {
+        return false;
+    }
+    // Run GC for bigram dict content.
+    if(!buffersToWrite->getUpdatableBigramDictContent()->runGC(&terminalIdMap,
+            mBuffers->getBigramDictContent(), outBigramCount)) {
+        return false;
+    }
+    // Run GC for shortcut dict content.
+    if(!buffersToWrite->getUpdatableShortcutDictContent()->runGC(&terminalIdMap,
+            mBuffers->getShortcutDictContent())) {
+        return false;
+    }
     *outUnigramCount = traversePolicyToUpdateAllPositionFields.getUnigramCount();
-    *outBigramCount = traversePolicyToUpdateAllPositionFields.getBigramCount();
     return true;
+}
+
+bool Ver4PatriciaTrieWritingHelper::TraversePolicyToUpdateAllTerminalIds::onVisitingPtNode(
+        const PtNodeParams *const ptNodeParams) {
+    if (!ptNodeParams->isTerminal()) {
+        return true;
+    }
+    TerminalPositionLookupTable::TerminalIdMap::const_iterator it =
+            mTerminalIdMap->find(ptNodeParams->getTerminalId());
+    if (it == mTerminalIdMap->end()) {
+        AKLOGE("terminal Id %d is not in the terminal position map. map size: %zd",
+                ptNodeParams->getTerminalId(), mTerminalIdMap->size());
+        return false;
+    }
+    return mPtNodeWriter->updateTerminalId(ptNodeParams, it->second);
 }
 
 } // namespace latinime

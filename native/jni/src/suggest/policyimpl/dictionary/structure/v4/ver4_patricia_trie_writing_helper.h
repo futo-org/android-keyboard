@@ -18,11 +18,14 @@
 #define LATINIME_VER4_PATRICIA_TRIE_WRITING_HELPER_H
 
 #include "defines.h"
+#include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_gc_event_listeners.h"
+#include "suggest/policyimpl/dictionary/structure/v4/content/terminal_position_lookup_table.h"
 
 namespace latinime {
 
 class HeaderPolicy;
 class Ver4DictBuffers;
+class Ver4PatriciaTrieNodeWriter;
 
 class Ver4PatriciaTrieWritingHelper {
  public:
@@ -38,6 +41,28 @@ class Ver4PatriciaTrieWritingHelper {
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(Ver4PatriciaTrieWritingHelper);
+
+    class TraversePolicyToUpdateAllTerminalIds
+            : public DynamicPatriciaTrieReadingHelper::TraversingEventListener {
+     public:
+          TraversePolicyToUpdateAllTerminalIds(Ver4PatriciaTrieNodeWriter *const ptNodeWriter,
+                const TerminalPositionLookupTable::TerminalIdMap *const terminalIdMap)
+                : mPtNodeWriter(ptNodeWriter), mTerminalIdMap(terminalIdMap) {};
+
+        bool onAscend() { return true; }
+
+        bool onDescend(const int ptNodeArrayPos) { return true; }
+
+        bool onReadingPtNodeArrayTail() { return true; }
+
+        bool onVisitingPtNode(const PtNodeParams *const ptNodeParams);
+
+     private:
+        DISALLOW_IMPLICIT_CONSTRUCTORS(TraversePolicyToUpdateAllTerminalIds);
+
+        Ver4PatriciaTrieNodeWriter *const mPtNodeWriter;
+        const TerminalPositionLookupTable::TerminalIdMap *const mTerminalIdMap;
+    };
 
     bool runGC(const int rootPtNodeArrayPos, const HeaderPolicy *const headerPolicy,
             Ver4DictBuffers *const buffersToWrite, int *const outUnigramCount,
