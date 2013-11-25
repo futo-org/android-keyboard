@@ -34,7 +34,7 @@
 
 namespace latinime {
 
-// Note that these are corresponding definitions in Java side in BinaryDictionaryTests and
+// Note that there are corresponding definitions in Java side in BinaryDictionaryTests and
 // BinaryDictionaryDecayingTests.
 const char *const DynamicPatriciaTriePolicy::UNIGRAM_COUNT_QUERY = "UNIGRAM_COUNT";
 const char *const DynamicPatriciaTriePolicy::BIGRAM_COUNT_QUERY = "BIGRAM_COUNT";
@@ -277,21 +277,22 @@ bool DynamicPatriciaTriePolicy::needsToRunGC(const bool mindsBlockByGC) const {
     return false;
 }
 
-void DynamicPatriciaTriePolicy::getProperty(const char *const query, char *const outResult,
-        const int maxResultLength) {
-    if (strncmp(query, UNIGRAM_COUNT_QUERY, maxResultLength) == 0) {
+void DynamicPatriciaTriePolicy::getProperty(const char *const query, const int queryLength,
+        char *const outResult, const int maxResultLength) {
+    const int compareLength = queryLength + 1 /* terminator */;
+    if (strncmp(query, UNIGRAM_COUNT_QUERY, compareLength) == 0) {
         snprintf(outResult, maxResultLength, "%d", mUnigramCount);
-    } else if (strncmp(query, BIGRAM_COUNT_QUERY, maxResultLength) == 0) {
+    } else if (strncmp(query, BIGRAM_COUNT_QUERY, compareLength) == 0) {
         snprintf(outResult, maxResultLength, "%d", mBigramCount);
-    } else if (strncmp(query, MAX_UNIGRAM_COUNT_QUERY, maxResultLength) == 0) {
+    } else if (strncmp(query, MAX_UNIGRAM_COUNT_QUERY, compareLength) == 0) {
         snprintf(outResult, maxResultLength, "%d",
                 mHeaderPolicy.isDecayingDict() ? ForgettingCurveUtils::MAX_UNIGRAM_COUNT :
                         static_cast<int>(DynamicPatriciaTrieWritingHelper::MAX_DICTIONARY_SIZE));
-    } else if (strncmp(query, MAX_BIGRAM_COUNT_QUERY, maxResultLength) == 0) {
+    } else if (strncmp(query, MAX_BIGRAM_COUNT_QUERY, compareLength) == 0) {
         snprintf(outResult, maxResultLength, "%d",
                 mHeaderPolicy.isDecayingDict() ? ForgettingCurveUtils::MAX_BIGRAM_COUNT :
                         static_cast<int>(DynamicPatriciaTrieWritingHelper::MAX_DICTIONARY_SIZE));
-    } else if (strncmp(query, SET_NEEDS_TO_DECAY_FOR_TESTING_QUERY, maxResultLength) == 0) {
+    } else if (strncmp(query, SET_NEEDS_TO_DECAY_FOR_TESTING_QUERY, compareLength) == 0) {
         mNeedsToDecayForTesting = true;
     }
 }

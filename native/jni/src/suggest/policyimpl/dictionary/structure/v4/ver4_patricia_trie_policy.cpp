@@ -25,6 +25,14 @@
 
 namespace latinime {
 
+// Note that there are corresponding definitions in Java side in BinaryDictionaryTests and
+// BinaryDictionaryDecayingTests.
+const char *const Ver4PatriciaTriePolicy::UNIGRAM_COUNT_QUERY = "UNIGRAM_COUNT";
+const char *const Ver4PatriciaTriePolicy::BIGRAM_COUNT_QUERY = "BIGRAM_COUNT";
+const char *const Ver4PatriciaTriePolicy::MAX_UNIGRAM_COUNT_QUERY = "MAX_UNIGRAM_COUNT";
+const char *const Ver4PatriciaTriePolicy::MAX_BIGRAM_COUNT_QUERY = "MAX_BIGRAM_COUNT";
+const char *const Ver4PatriciaTriePolicy::SET_NEEDS_TO_DECAY_FOR_TESTING_QUERY =
+        "SET_NEEDS_TO_DECAY_FOR_TESTING";
 const int Ver4PatriciaTriePolicy::MARGIN_TO_REFUSE_DYNAMIC_OPERATIONS = 1024;
 const int Ver4PatriciaTriePolicy::MIN_DICT_SIZE_TO_REFUSE_DYNAMIC_OPERATIONS =
         Ver4DictConstants::MAX_DICTIONARY_SIZE - MARGIN_TO_REFUSE_DYNAMIC_OPERATIONS;
@@ -257,9 +265,24 @@ bool Ver4PatriciaTriePolicy::needsToRunGC(const bool mindsBlockByGC) const {
     return false;
 }
 
-void Ver4PatriciaTriePolicy::getProperty(const char *const query, char *const outResult,
-        const int maxResultLength) {
-    // TODO: Implement.
+void Ver4PatriciaTriePolicy::getProperty(const char *const query, const int queryLength,
+        char *const outResult, const int maxResultLength) {
+    const int compareLength = queryLength + 1 /* terminator */;
+    if (strncmp(query, UNIGRAM_COUNT_QUERY, compareLength) == 0) {
+        snprintf(outResult, maxResultLength, "%d", mUnigramCount);
+    } else if (strncmp(query, BIGRAM_COUNT_QUERY, compareLength) == 0) {
+        snprintf(outResult, maxResultLength, "%d", mBigramCount);
+    } else if (strncmp(query, MAX_UNIGRAM_COUNT_QUERY, compareLength) == 0) {
+        snprintf(outResult, maxResultLength, "%d",
+                mHeaderPolicy.isDecayingDict() ? ForgettingCurveUtils::MAX_UNIGRAM_COUNT :
+                        static_cast<int>(Ver4DictConstants::MAX_DICTIONARY_SIZE));
+    } else if (strncmp(query, MAX_BIGRAM_COUNT_QUERY, compareLength) == 0) {
+        snprintf(outResult, maxResultLength, "%d",
+                mHeaderPolicy.isDecayingDict() ? ForgettingCurveUtils::MAX_BIGRAM_COUNT :
+                        static_cast<int>(Ver4DictConstants::MAX_DICTIONARY_SIZE));
+    } else if (strncmp(query, SET_NEEDS_TO_DECAY_FOR_TESTING_QUERY, compareLength) == 0) {
+        mNeedsToDecayForTesting = true;
+    }
 }
 
 } // namespace latinime

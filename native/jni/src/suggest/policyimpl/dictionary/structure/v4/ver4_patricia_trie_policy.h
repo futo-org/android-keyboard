@@ -103,12 +103,17 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
 
     bool needsToRunGC(const bool mindsBlockByGC) const;
 
-    void getProperty(const char *const query, char *const outResult,
+    void getProperty(const char *const query, const int queryLength, char *const outResult,
             const int maxResultLength);
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(Ver4PatriciaTriePolicy);
 
+    static const char *const UNIGRAM_COUNT_QUERY;
+    static const char *const BIGRAM_COUNT_QUERY;
+    static const char *const MAX_UNIGRAM_COUNT_QUERY;
+    static const char *const MAX_BIGRAM_COUNT_QUERY;
+    static const char *const SET_NEEDS_TO_DECAY_FOR_TESTING_QUERY;
     // When the dictionary size is near the maximum size, we have to refuse dynamic operations to
     // prevent the dictionary from overflowing.
     static const int MARGIN_TO_REFUSE_DYNAMIC_OPERATIONS;

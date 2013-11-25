@@ -343,7 +343,7 @@ static jstring latinime_BinaryDictionary_getProperty(JNIEnv *env, jclass clazz, 
     static const int GET_PROPERTY_RESULT_LENGTH = 100;
     char resultChars[GET_PROPERTY_RESULT_LENGTH];
     resultChars[0] = '\0';
-    dictionary->getProperty(queryChars, resultChars, GET_PROPERTY_RESULT_LENGTH);
+    dictionary->getProperty(queryChars, queryUtf8Length, resultChars, GET_PROPERTY_RESULT_LENGTH);
     return env->NewStringUTF(resultChars);
 }
 
