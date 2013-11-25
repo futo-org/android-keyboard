@@ -90,7 +90,7 @@
     <string name="spoken_description_settings" msgid="4627462689603838099">"Mipangilio"</string>
     <string name="spoken_description_tab" msgid="2667716002663482248">"Kichupo"</string>
     <string name="spoken_description_space" msgid="2582521050049860859">"Nafasi"</string>
-    <string name="spoken_description_mic" msgid="615536748882611950">"Uingizaji sauti"</string>
+    <string name="spoken_description_mic" msgid="615536748882611950">"Kuweka data kwa kutamka"</string>
     <string name="spoken_description_smiley" msgid="2256309826200113918">"Uso wenye tabasamu"</string>
     <string name="spoken_description_return" msgid="8178083177238315647">"Rudi"</string>
     <string name="spoken_description_search" msgid="1247236163755920808">"Tafuta"</string>
@@ -116,13 +116,13 @@
     <string name="keyboard_mode_text" msgid="6479436687899701619">"maandishi"</string>
     <string name="keyboard_mode_time" msgid="4381856885582143277">"wakati"</string>
     <string name="keyboard_mode_url" msgid="1519819835514911218">"URL"</string>
-    <string name="voice_input" msgid="3583258583521397548">"Kibao cha kuingizia sauti"</string>
+    <string name="voice_input" msgid="3583258583521397548">"Kibao cha kuweka data kwa kutamka"</string>
     <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"Kwenye kibodi kuu"</string>
     <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"Kwenye kibodi ya ishara"</string>
     <string name="voice_input_modes_off" msgid="3745699748218082014">"Zima"</string>
     <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Maikrofoni kwenye kibodi kuu"</string>
     <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Maikrofoni kwenye kibodi ya ishara"</string>
-    <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Uingizaji sauti umelemazwa"</string>
+    <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Kipengele cha kuweka data kwa kutamka kimezimwa"</string>
     <string name="configure_input_method" msgid="373356270290742459">"Sanidi mbinu za uingizaji"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Lugha za uingizaji"</string>
     <string name="send_feedback" msgid="1780431884109392046">"Tuma maoni"</string>
