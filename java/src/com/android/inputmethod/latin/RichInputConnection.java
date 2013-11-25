@@ -243,6 +243,7 @@ public final class RichInputConnection {
         if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
         mCommittedTextBeforeComposingText.append(text);
         mExpectedSelStart += text.length() - mComposingText.length();
+        mExpectedSelEnd = mExpectedSelStart;
         mComposingText.setLength(0);
         if (null != mIC) {
             mIC.commitText(text, i);
@@ -493,6 +494,7 @@ public final class RichInputConnection {
         if (DEBUG_BATCH_NESTING) checkBatchEdit();
         if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
         mExpectedSelStart = start;
+        mExpectedSelEnd = end;
         if (null != mIC) {
             final boolean isIcValid = mIC.setSelection(start, end);
             if (!isIcValid) {
@@ -524,6 +526,7 @@ public final class RichInputConnection {
         if (null == text) text = "";
         mCommittedTextBeforeComposingText.append(text);
         mExpectedSelStart += text.length() - mComposingText.length();
+        mExpectedSelEnd = mExpectedSelStart;
         mComposingText.setLength(0);
         if (null != mIC) {
             mIC.commitCompletion(completionInfo);
