@@ -85,7 +85,7 @@ class DictionaryStructureWithBufferPolicy {
 
     // Currently, this method is used only for testing. You may want to consider creating new
     // dedicated method instead of this if you want to use this in the production.
-    virtual void getProperty(const char *const query, char *const outResult,
+    virtual void getProperty(const char *const query, const int queryLength, char *const outResult,
             const int maxResultLength) = 0;
 
  protected:

@@ -120,9 +120,10 @@ bool Dictionary::needsToRunGC(const bool mindsBlockByGC) {
     return mDictionaryStructureWithBufferPolicy.get()->needsToRunGC(mindsBlockByGC);
 }
 
-void Dictionary::getProperty(const char *const query, char *const outResult,
+void Dictionary::getProperty(const char *const query, const int queryLength, char *const outResult,
         const int maxResultLength) {
-    return mDictionaryStructureWithBufferPolicy.get()->getProperty(query, outResult, maxResultLength);
+    return mDictionaryStructureWithBufferPolicy.get()->getProperty(query, queryLength, outResult,
+            maxResultLength);
 }
 
 void Dictionary::logDictionaryInfo(JNIEnv *const env) const {
