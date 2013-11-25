@@ -48,24 +48,60 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         super.tearDown();
     }
 
-    private File createEmptyDictionaryAndGetFile(final String filename) throws IOException {
-        final File file = File.createTempFile(filename, TEST_DICT_FILE_EXTENSION,
+    private File createEmptyDictionaryAndGetFile(final String dictId,
+            final int formatVersion) throws IOException {
+        if (formatVersion == 3) {
+            return createEmptyVer3DictionaryAndGetFile(dictId);
+        } else if (formatVersion == 4) {
+            return createEmptyVer4DictionaryAndGetFile(dictId);
+        } else {
+            throw new IOException("Dictionary format version " + formatVersion
+                    + " is not supported.");
+        }
+    }
+
+    private File createEmptyVer4DictionaryAndGetFile(final String dictId) throws IOException {
+        final File file = File.createTempFile(dictId, TEST_DICT_FILE_EXTENSION,
                 getContext().getCacheDir());
+        file.delete();
+        file.mkdir();
         Map<String, String> attributeMap = new HashMap<String, String>();
         attributeMap.put(FormatSpec.FileHeader.SUPPORTS_DYNAMIC_UPDATE_ATTRIBUTE,
                 FormatSpec.FileHeader.ATTRIBUTE_VALUE_TRUE);
         if (BinaryDictionary.createEmptyDictFile(file.getAbsolutePath(),
-                3 /* dictVersion */, attributeMap)) {
+                4 /* dictVersion */, attributeMap)) {
+            return new File(file, FormatSpec.TRIE_FILE_EXTENSION);
+        } else {
+            throw new IOException("Empty dictionary " + file.getAbsolutePath() + " "
+                    + FormatSpec.TRIE_FILE_EXTENSION + " cannot be created.");
+        }
+    }
+
+    private File createEmptyVer3DictionaryAndGetFile(final String dictId) throws IOException {
+        final File file = File.createTempFile(dictId, TEST_DICT_FILE_EXTENSION,
+                getContext().getCacheDir());
+        file.delete();
+        Map<String, String> attributeMap = new HashMap<String, String>();
+        attributeMap.put(FormatSpec.FileHeader.SUPPORTS_DYNAMIC_UPDATE_ATTRIBUTE,
+                FormatSpec.FileHeader.ATTRIBUTE_VALUE_TRUE);
+        if (BinaryDictionary.createEmptyDictFile(file.getAbsolutePath(), 3 /* dictVersion */,
+                attributeMap)) {
             return file;
         } else {
-            throw new IOException("Empty dictionary cannot be created.");
+            throw new IOException(
+                    "Empty dictionary " + file.getAbsolutePath() + " cannot be created.");
         }
     }
 
     public void testIsValidDictionary() {
+        testIsValidDictionary(3 /* formatVersion */);
+        testIsValidDictionary(4 /* formatVersion */);
+    }
+
+    private void testIsValidDictionary(final int formatVersion) {
         File dictFile = null;
         try {
-            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary");
+            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary", formatVersion);
         } catch (IOException e) {
             fail("IOException while writing an initial dictionary : " + e);
         }
@@ -87,9 +123,14 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     }
 
     public void testAddUnigramWord() {
+        testAddUnigramWord(3 /* formatVersion */);
+        testAddUnigramWord(4 /* formatVersion */);
+    }
+
+    private void testAddUnigramWord(final int formatVersion) {
         File dictFile = null;
         try {
-            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary");
+            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary", formatVersion);
         } catch (IOException e) {
             fail("IOException while writing an initial dictionary : " + e);
         }
@@ -125,13 +166,18 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     }
 
     public void testRandomlyAddUnigramWord() {
+        testRandomlyAddUnigramWord(3 /* formatVersion */);
+        testRandomlyAddUnigramWord(4 /* formatVersion */);
+    }
+
+    private void testRandomlyAddUnigramWord(final int formatVersion) {
         final int wordCount = 1000;
         final int codePointSetSize = 50;
         final long seed = System.currentTimeMillis();
 
         File dictFile = null;
         try {
-            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary");
+            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary", formatVersion);
         } catch (IOException e) {
             fail("IOException while writing an initial dictionary : " + e);
         }
@@ -157,9 +203,14 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     }
 
     public void testAddBigramWords() {
+        testAddBigramWords(3 /* formatVersion */);
+        testAddBigramWords(4 /* formatVersion */);
+    }
+
+    private void testAddBigramWords(final int formatVersion) {
         File dictFile = null;
         try {
-            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary");
+            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary", formatVersion);
         } catch (IOException e) {
             fail("IOException while writing an initial dictionary : " + e);
         }
@@ -221,6 +272,11 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     }
 
     public void testRandomlyAddBigramWords() {
+        testRandomlyAddBigramWords(3 /* formatVersion */);
+        testRandomlyAddBigramWords(4 /* formatVersion */);
+    }
+
+    private void testRandomlyAddBigramWords(final int formatVersion) {
         final int wordCount = 100;
         final int bigramCount = 1000;
         final int codePointSetSize = 50;
@@ -229,7 +285,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
 
         File dictFile = null;
         try {
-            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary");
+            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary", formatVersion);
         } catch (IOException e) {
             fail("IOException while writing an initial dictionary : " + e);
         }
@@ -278,9 +334,14 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     }
 
     public void testRemoveBigramWords() {
+        testRemoveBigramWords(3 /* formatVersion */);
+        testRemoveBigramWords(4 /* formatVersion */);
+    }
+
+    private void testRemoveBigramWords(final int formatVersion) {
         File dictFile = null;
         try {
-            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary");
+            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary", formatVersion);
         } catch (IOException e) {
             fail("IOException while writing an initial dictionary : " + e);
         }
@@ -324,9 +385,14 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     }
 
     public void testFlushDictionary() {
+        testFlushDictionary(3 /* formatVersion */);
+        testFlushDictionary(4 /* formatVersion */);
+    }
+
+    private void testFlushDictionary(final int formatVersion) {
         File dictFile = null;
         try {
-            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary");
+            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary", formatVersion);
         } catch (IOException e) {
             fail("IOException while writing an initial dictionary : " + e);
         }
@@ -372,9 +438,14 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     }
 
     public void testFlushWithGCDictionary() {
+        testFlushWithGCDictionary(3 /* formatVersion */);
+        testFlushWithGCDictionary(4 /* formatVersion */);
+    }
+
+    private void testFlushWithGCDictionary(final int formatVersion) {
         File dictFile = null;
         try {
-            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary");
+            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary", formatVersion);
         } catch (IOException e) {
             fail("IOException while writing an initial dictionary : " + e);
         }
@@ -415,8 +486,13 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         dictFile.delete();
     }
 
-    // TODO: Evaluate performance of GC
     public void testAddBigramWordsAndFlashWithGC() {
+        testAddBigramWordsAndFlashWithGC(3 /* formatVersion */);
+        testAddBigramWordsAndFlashWithGC(4 /* formatVersion */);
+    }
+
+    // TODO: Evaluate performance of GC
+    private void testAddBigramWordsAndFlashWithGC(final int formatVersion) {
         final int wordCount = 100;
         final int bigramCount = 1000;
         final int codePointSetSize = 30;
@@ -425,7 +501,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
 
         File dictFile = null;
         try {
-            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary");
+            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary", formatVersion);
         } catch (IOException e) {
             fail("IOException while writing an initial dictionary : " + e);
         }
@@ -481,6 +557,11 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     }
 
     public void testRandomOperetionsAndFlashWithGC() {
+        testRandomOperetionsAndFlashWithGC(3 /* formatVersion */);
+        testRandomOperetionsAndFlashWithGC(4 /* formatVersion */);
+    }
+
+    private void testRandomOperetionsAndFlashWithGC(final int formatVersion) {
         final int flashWithGCIterationCount = 50;
         final int operationCountInEachIteration = 200;
         final int initialUnigramCount = 100;
@@ -494,7 +575,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
 
         File dictFile = null;
         try {
-            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary");
+            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary", formatVersion);
         } catch (IOException e) {
             fail("IOException while writing an initial dictionary : " + e);
         }
@@ -588,6 +669,11 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     }
 
     public void testAddManyUnigramsAndFlushWithGC() {
+        testAddManyUnigramsAndFlushWithGC(3 /* formatVersion */);
+        testAddManyUnigramsAndFlushWithGC(4 /* formatVersion */);
+    }
+
+    private void testAddManyUnigramsAndFlushWithGC(final int formatVersion) {
         final int flashWithGCIterationCount = 3;
         final int codePointSetSize = 50;
 
@@ -596,7 +682,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
 
         File dictFile = null;
         try {
-            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary");
+            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary", formatVersion);
         } catch (IOException e) {
             fail("IOException while writing an initial dictionary : " + e);
         }
@@ -632,6 +718,11 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     }
 
     public void testUnigramAndBigramCount() {
+        testUnigramAndBigramCount(3 /* formatVersion */);
+        testUnigramAndBigramCount(4 /* formatVersion */);
+    }
+
+    private void testUnigramAndBigramCount(final int formatVersion) {
         final int flashWithGCIterationCount = 10;
         final int codePointSetSize = 50;
         final int unigramCountPerIteration = 1000;
@@ -641,7 +732,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
 
         File dictFile = null;
         try {
-            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary");
+            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary", formatVersion);
         } catch (IOException e) {
             fail("IOException while writing an initial dictionary : " + e);
         }
