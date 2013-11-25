@@ -19,6 +19,7 @@
 
 #include "defines.h"
 #include "suggest/policyimpl/dictionary/structure/v4/content/sparse_table_dict_content.h"
+#include "suggest/policyimpl/dictionary/structure/v4/content/terminal_position_lookup_table.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_dict_constants.h"
 
 namespace latinime {
@@ -65,6 +66,10 @@ class BigramDictContent : public SparseTableDictContent {
                 Ver4DictConstants::BIGRAM_FILE_EXTENSION);
     }
 
+    bool runGC(const TerminalPositionLookupTable::TerminalIdMap *const terminalIdMap,
+            const BigramDictContent *const originalBigramDictContent,
+            int *const outBigramEntryCount);
+
  private:
     DISALLOW_COPY_AND_ASSIGN(BigramDictContent);
 
@@ -72,6 +77,11 @@ class BigramDictContent : public SparseTableDictContent {
         return (probability & Ver4DictConstants::BIGRAM_PROBABILITY_MASK)
                 | (hasNext ? Ver4DictConstants::BIGRAM_HAS_NEXT_MASK : 0);
     }
+
+    bool runGCBigramList(const int bigramListPos,
+            const BigramDictContent *const sourceBigramDictContent, const int toPos,
+            const TerminalPositionLookupTable::TerminalIdMap *const terminalIdMap,
+            int *const outEntryCount);
 };
 } // namespace latinime
 #endif /* LATINIME_BIGRAM_DICT_CONTENT_H */

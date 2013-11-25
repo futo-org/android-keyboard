@@ -57,6 +57,9 @@ class Ver4PatriciaTrieNodeWriter : public PtNodeWriter {
     virtual bool updateChildrenPosition(const PtNodeParams *const toBeUpdatedPtNodeParams,
             const int newChildrenPosition);
 
+    bool updateTerminalId(const PtNodeParams *const toBeUpdatedPtNodeParams,
+            const int newTerminalId);
+
     virtual bool writePtNodeAndAdvancePosition(const PtNodeParams *const ptNodeParams,
             int *const ptNodeWritingPos);
 

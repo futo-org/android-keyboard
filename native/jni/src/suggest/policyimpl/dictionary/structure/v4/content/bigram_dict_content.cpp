@@ -72,4 +72,66 @@ bool BigramDictContent::copyBigramList(const int bigramListPos, const int toPos)
     return true;
 }
 
+bool BigramDictContent::runGC(const TerminalPositionLookupTable::TerminalIdMap *const terminalIdMap,
+        const BigramDictContent *const originalBigramDictContent,
+        int *const outBigramEntryCount) {
+    for (TerminalPositionLookupTable::TerminalIdMap::const_iterator it = terminalIdMap->begin();
+            it != terminalIdMap->end(); ++it) {
+        const int originalBigramListPos =
+                originalBigramDictContent->getBigramListHeadPos(it->first);
+        if (originalBigramListPos == NOT_A_DICT_POS) {
+            // This terminal does not have a bigram list.
+            continue;
+        }
+        const int bigramListPos = getContentBuffer()->getTailPosition();
+        int bigramEntryCount = 0;
+        // Copy bigram list with GC from original content.
+        if (!runGCBigramList(originalBigramListPos, originalBigramDictContent, bigramListPos,
+                terminalIdMap, &bigramEntryCount)) {
+            return false;
+        }
+        if (bigramEntryCount == 0) {
+            // All bigram entries are useless. This terminal does not have a bigram list.
+            continue;
+        }
+        *outBigramEntryCount += bigramEntryCount;
+        // Set bigram list position to the lookup table.
+        if (!getUpdatableAddressLookupTable()->set(it->second, bigramListPos)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool BigramDictContent::runGCBigramList(const int bigramListPos,
+        const BigramDictContent *const sourceBigramDictContent, const int toPos,
+        const TerminalPositionLookupTable::TerminalIdMap *const terminalIdMap,
+        int *const outEntrycount) {
+    bool hasNext = true;
+    int readingPos = bigramListPos;
+    int writingPos = toPos;
+    while (hasNext) {
+        int probability = NOT_A_PROBABILITY;
+        int targetTerminalId = Ver4DictConstants::NOT_A_TERMINAL_ID;
+        sourceBigramDictContent->getBigramEntryAndAdvancePosition(&probability, &hasNext,
+                &targetTerminalId, &readingPos);
+        if (targetTerminalId == Ver4DictConstants::NOT_A_TERMINAL_ID) {
+            continue;
+        }
+        TerminalPositionLookupTable::TerminalIdMap::const_iterator it =
+                terminalIdMap->find(targetTerminalId);
+        if (it == terminalIdMap->end()) {
+            AKLOGE("terminal Id %d is not in the terminal position map. map size: %zd",
+                    targetTerminalId, terminalIdMap->size());
+            return false;
+        }
+        if (!writeBigramEntryAndAdvancePosition(probability, hasNext, it->second,
+                &writingPos)) {
+            return false;
+        }
+        *outEntrycount += 1;
+    }
+    return true;
+}
+
 } // namespace latinime
