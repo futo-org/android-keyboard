@@ -1803,6 +1803,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mSpaceState = SPACE_STATE_PHANTOM;
         }
         mConnection.endBatchEdit();
+        mKeyboardSwitcher.updateShiftState();
         mWordComposer.setCapitalizedModeAtStartComposingTime(getActualCapsMode());
     }
 
