@@ -57,6 +57,8 @@ public final class BinaryDictionary extends Dictionary {
     @UsedForTesting
     public static final String MAX_BIGRAM_COUNT_QUERY = "MAX_BIGRAM_COUNT";
 
+    private static final int NOT_A_VALID_TIME_STAMP = -1;
+
     private long mNativeDict;
     private final Locale mLocale;
     private final long mDictSize;
@@ -133,9 +135,11 @@ public final class BinaryDictionary extends Dictionary {
             int[] outputAutoCommitFirstWordConfidence);
     private static native float calcNormalizedScoreNative(int[] before, int[] after, int score);
     private static native int editDistanceNative(int[] before, int[] after);
-    private static native void addUnigramWordNative(long dict, int[] word, int probability);
+    private static native void addUnigramWordNative(long dict, int[] word, int probability,
+            int[] shortcutTarget, int shortcutProbability, boolean isNotAWord,
+            boolean isBlacklisted, int timeStamp);
     private static native void addBigramWordsNative(long dict, int[] word0, int[] word1,
-            int probability);
+            int probability, int timeStamp);
     private static native void removeBigramWordsNative(long dict, int[] word0, int[] word1);
     private static native int addMultipleDictionaryEntriesNative(long dict,
             LanguageModelParam[] languageModelParams, int startIndex);
@@ -282,7 +286,10 @@ public final class BinaryDictionary extends Dictionary {
             return;
         }
         final int[] codePoints = StringUtils.toCodePointArray(word);
-        addUnigramWordNative(mNativeDict, codePoints, probability);
+        final int[] shortcutTarget = new int[0];
+        addUnigramWordNative(mNativeDict, codePoints, probability, shortcutTarget,
+                NOT_A_PROBABILITY, false /* isNotAWord */, false /* isBlacklisted */,
+                NOT_A_VALID_TIME_STAMP);
     }
 
     // Add a bigram entry to binary dictionary in native code.
@@ -292,7 +299,8 @@ public final class BinaryDictionary extends Dictionary {
         }
         final int[] codePoints0 = StringUtils.toCodePointArray(word0);
         final int[] codePoints1 = StringUtils.toCodePointArray(word1);
-        addBigramWordsNative(mNativeDict, codePoints0, codePoints1, probability);
+        addBigramWordsNative(mNativeDict, codePoints0, codePoints1, probability,
+                NOT_A_VALID_TIME_STAMP);
     }
 
     // Remove a bigram entry form binary dictionary in native code.
@@ -308,15 +316,25 @@ public final class BinaryDictionary extends Dictionary {
     public static class LanguageModelParam {
         public final int[] mWord0;
         public final int[] mWord1;
+        public final int[] mShortcutTarget;
         public final int mUnigramProbability;
         public final int mBigramProbability;
+        public final int mShortcutProbability;
+        public final boolean mIsNotAWord;
+        public final boolean mIsBlacklisted;
+        public final int mTimeStamp;
 
         // Constructor for unigram.
         public LanguageModelParam(final String word, final int unigramProbability) {
             mWord0 = null;
             mWord1 = StringUtils.toCodePointArray(word);
+            mShortcutTarget = null;
             mUnigramProbability = unigramProbability;
             mBigramProbability = NOT_A_PROBABILITY;
+            mShortcutProbability = NOT_A_PROBABILITY;
+            mIsNotAWord = false;
+            mIsBlacklisted = false;
+            mTimeStamp = NOT_A_VALID_TIME_STAMP;
         }
 
         // Constructor for unigram and bigram.
@@ -324,8 +342,13 @@ public final class BinaryDictionary extends Dictionary {
                 final int unigramProbability, final int bigramProbability) {
             mWord0 = StringUtils.toCodePointArray(word0);
             mWord1 = StringUtils.toCodePointArray(word1);
+            mShortcutTarget = null;
             mUnigramProbability = unigramProbability;
             mBigramProbability = bigramProbability;
+            mShortcutProbability = NOT_A_PROBABILITY;
+            mIsNotAWord = false;
+            mIsBlacklisted = false;
+            mTimeStamp = NOT_A_VALID_TIME_STAMP;
         }
     }
 
