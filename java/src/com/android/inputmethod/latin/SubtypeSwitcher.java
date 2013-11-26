@@ -64,7 +64,7 @@ public final class SubtypeSwitcher {
                     + SubtypeLocaleUtils.QWERTY
                     + "," + Constants.Subtype.ExtraValue.ASCII_CAPABLE
                     + "," + Constants.Subtype.ExtraValue.ENABLED_WHEN_DEFAULT_IS_NOT_ASCII_CAPABLE
-                    + Constants.Subtype.ExtraValue.EMOJI_CAPABLE,
+                    + "," + Constants.Subtype.ExtraValue.EMOJI_CAPABLE,
             false /* isAuxiliary */, false /* overridesImplicitlyEnabledSubtype */);
     // Caveat: We probably should remove this when we add an Emoji subtype in {@link R.xml.method}.
     // Dummy Emoji subtype. See {@link R.xml.method}.
