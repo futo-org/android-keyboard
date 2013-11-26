@@ -17,6 +17,7 @@
 #ifndef LATINIME_DYNAMIC_PATRICIA_TRIE_WRITING_HELPER_H
 #define LATINIME_DYNAMIC_PATRICIA_TRIE_WRITING_HELPER_H
 
+#include <cstddef>
 #include <stdint.h>
 
 #include "defines.h"

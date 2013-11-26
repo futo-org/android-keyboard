@@ -99,6 +99,7 @@ LATIN_IME_CORE_SRC_FILES := \
         ver4_patricia_trie_writing_helper.cpp) \
     $(addprefix suggest/policyimpl/dictionary/structure/v4/content/, \
         bigram_dict_content.cpp \
+        probability_dict_content.cpp \
         shortcut_dict_content.cpp \
         sparse_table_dict_content.cpp \
         terminal_position_lookup_table.cpp) \
