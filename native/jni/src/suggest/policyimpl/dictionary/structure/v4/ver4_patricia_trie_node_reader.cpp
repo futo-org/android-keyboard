@@ -19,6 +19,7 @@
 #include "suggest/policyimpl/dictionary/structure/v2/patricia_trie_reading_utils.h"
 #include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_reading_utils.h"
 #include "suggest/policyimpl/dictionary/structure/v4/content/probability_dict_content.h"
+#include "suggest/policyimpl/dictionary/structure/v4/ver4_patricia_trie_reading_utils.h"
 #include "suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer.h"
 
 namespace latinime {
