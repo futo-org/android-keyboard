@@ -137,6 +137,8 @@ public final class BinaryDictionary extends Dictionary {
     private static native void addBigramWordsNative(long dict, int[] word0, int[] word1,
             int probability);
     private static native void removeBigramWordsNative(long dict, int[] word0, int[] word1);
+    private static native int addMultipleDictionaryEntriesNative(long dict,
+            LanguageModelParam[] languageModelParams, int startIndex);
     private static native int calculateProbabilityNative(long dict, int unigramProbability,
             int bigramProbability);
     private static native String getPropertyNative(long dict, String query);
@@ -301,6 +303,46 @@ public final class BinaryDictionary extends Dictionary {
         final int[] codePoints0 = StringUtils.toCodePointArray(word0);
         final int[] codePoints1 = StringUtils.toCodePointArray(word1);
         removeBigramWordsNative(mNativeDict, codePoints0, codePoints1);
+    }
+
+    public static class LanguageModelParam {
+        public final int[] mWord0;
+        public final int[] mWord1;
+        public final int mUnigramProbability;
+        public final int mBigramProbability;
+
+        // Constructor for unigram.
+        public LanguageModelParam(final String word, final int unigramProbability) {
+            mWord0 = null;
+            mWord1 = StringUtils.toCodePointArray(word);
+            mUnigramProbability = unigramProbability;
+            mBigramProbability = NOT_A_PROBABILITY;
+        }
+
+        // Constructor for unigram and bigram.
+        public LanguageModelParam(final String word0, final String word1,
+                final int unigramProbability, final int bigramProbability) {
+            mWord0 = StringUtils.toCodePointArray(word0);
+            mWord1 = StringUtils.toCodePointArray(word1);
+            mUnigramProbability = unigramProbability;
+            mBigramProbability = bigramProbability;
+        }
+    }
+
+    public void addMultipleDictionaryEntries(final LanguageModelParam[] languageModelParams) {
+        if (!isValidDictionary()) return;
+        int processedParamCount = 0;
+        while (processedParamCount < languageModelParams.length) {
+            if (needsToRunGC(true /* mindsBlockByGC */)) {
+                flushWithGC();
+            }
+            processedParamCount = addMultipleDictionaryEntriesNative(mNativeDict,
+                    languageModelParams, processedParamCount);
+            if (processedParamCount <= 0) {
+                return;
+            }
+        }
+
     }
 
     private void reopen() {

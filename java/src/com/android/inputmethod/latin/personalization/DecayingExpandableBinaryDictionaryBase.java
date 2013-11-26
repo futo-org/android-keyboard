@@ -21,6 +21,7 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.android.inputmethod.annotations.UsedForTesting;
+import com.android.inputmethod.latin.BinaryDictionary.LanguageModelParam;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.ExpandableBinaryDictionary;
@@ -147,7 +148,7 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
             return;
         }
         if (null != word0) {
-            addBigramDynamically(word0, word1, frequency, isValid);
+            addBigramDynamically(word0, word1, frequency);
         }
     }
 

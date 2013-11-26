@@ -18,6 +18,7 @@ package com.android.inputmethod.latin.personalization;
 
 import android.content.Context;
 
+import com.android.inputmethod.latin.BinaryDictionary.LanguageModelParam;
 import com.android.inputmethod.latin.ExpandableBinaryDictionary;
 
 import java.lang.ref.WeakReference;
@@ -28,24 +29,6 @@ import java.util.ArrayList;
  * dictionary.
  */
 public abstract class PersonalizationDictionaryUpdateSession {
-    /**
-     * This class is a parameter for a new unigram or bigram word which will be added
-     * to the personalization dictionary.
-     */
-    public static class PersonalizationLanguageModelParam {
-        public final String mWord0;
-        public final String mWord1;
-        public final boolean mIsValid;
-        public final int mFrequency;
-        public PersonalizationLanguageModelParam(String word0, String word1, boolean isValid,
-                int frequency) {
-            mWord0 = word0;
-            mWord1 = word1;
-            mIsValid = isValid;
-            mFrequency = frequency;
-        }
-    }
-
     // TODO: Use a dynamic binary dictionary instead
     public WeakReference<PersonalizationDictionary> mDictionary;
     public WeakReference<DecayingExpandableBinaryDictionaryBase> mPredictionDictionary;
@@ -117,7 +100,7 @@ public abstract class PersonalizationDictionaryUpdateSession {
 
     // TODO: Support multi locale.
     public void addMultipleDictionaryEntriesToPersonalizationDictionary(
-            final ArrayList<ExpandableBinaryDictionary.LanguageModelParam> languageModelParams,
+            final ArrayList<LanguageModelParam> languageModelParams,
             final ExpandableBinaryDictionary.AddMultipleDictionaryEntriesCallback callback) {
         final DecayingExpandableBinaryDictionaryBase dictionary = getPredictionDictionary();
         if (dictionary == null) {
@@ -127,18 +110,5 @@ public abstract class PersonalizationDictionaryUpdateSession {
             return;
         }
         dictionary.addMultipleDictionaryEntriesToDictionary(languageModelParams, callback);
-    }
-
-    // Bulk import
-    // TODO: Support multi locale to add bigram
-    public void addBigramsToPersonalizationDictionary(
-            final ArrayList<PersonalizationLanguageModelParam> lmParams) {
-        final DecayingExpandableBinaryDictionaryBase dictionary = getPredictionDictionary();
-        if (dictionary == null) {
-            return;
-        }
-        for (final PersonalizationLanguageModelParam lmParam : lmParams) {
-            dictionary.addToDictionary(lmParam.mWord0, lmParam.mWord1, lmParam.mIsValid);
-        }
     }
 }
