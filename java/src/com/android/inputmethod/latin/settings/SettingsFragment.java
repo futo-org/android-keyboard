@@ -60,18 +60,20 @@ public final class SettingsFragment extends InputMethodSettingsFragment
             DBG_USE_INTERNAL_PERSONAL_DICTIONARY_SETTINGS
                     || Build.VERSION.SDK_INT <= 18 /* Build.VERSION.JELLY_BEAN_MR2 */;
 
-    private CheckBoxPreference mVoiceInputKeyPreference;
-    private ListPreference mShowCorrectionSuggestionsPreference;
-    private ListPreference mAutoCorrectionThresholdPreference;
-    private ListPreference mKeyPreviewPopupDismissDelay;
-    // Use bigrams to predict the next word when there is no input for it yet
-    private CheckBoxPreference mBigramPrediction;
-
     private void setPreferenceEnabled(final String preferenceKey, final boolean enabled) {
         final Preference preference = findPreference(preferenceKey);
         if (preference != null) {
             preference.setEnabled(enabled);
         }
+    }
+
+    private void updateListPreferenceSummaryToCurrentValue(final String prefKey) {
+        // Because the "%s" summary trick of {@link ListPreference} doesn't work properly before
+        // KitKat, we need to update the summary programmatically.
+        final ListPreference listPreference = (ListPreference)findPreference(prefKey);
+        final CharSequence entries[] = listPreference.getEntries();
+        final int entryIndex = listPreference.findIndexOfValue(listPreference.getValue());
+        listPreference.setSummary(entries[entryIndex]);
     }
 
     private static void removePreference(final String preferenceKey, final PreferenceGroup parent) {
@@ -106,16 +108,9 @@ public final class SettingsFragment extends InputMethodSettingsFragment
         SubtypeLocaleUtils.init(context);
         AudioAndHapticFeedbackManager.init(context);
 
-        mVoiceInputKeyPreference =
-                (CheckBoxPreference) findPreference(Settings.PREF_VOICE_INPUT_KEY);
-        mShowCorrectionSuggestionsPreference =
-                (ListPreference) findPreference(Settings.PREF_SHOW_SUGGESTIONS_SETTING);
         final SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
         prefs.registerOnSharedPreferenceChangeListener(this);
 
-        mAutoCorrectionThresholdPreference =
-                (ListPreference) findPreference(Settings.PREF_AUTO_CORRECTION_THRESHOLD);
-        mBigramPrediction = (CheckBoxPreference) findPreference(Settings.PREF_BIGRAM_PREDICTIONS);
         ensureConsistencyOfAutoCorrectionSettings();
 
         final PreferenceGroup generalSettings =
@@ -161,7 +156,7 @@ public final class SettingsFragment extends InputMethodSettingsFragment
         final boolean showVoiceKeyOption = res.getBoolean(
                 R.bool.config_enable_show_voice_key_option);
         if (!showVoiceKeyOption) {
-            generalSettings.removePreference(mVoiceInputKeyPreference);
+            removePreference(Settings.PREF_VOICE_INPUT_KEY, generalSettings);
         }
 
         final PreferenceGroup advancedSettings =
@@ -171,26 +166,27 @@ public final class SettingsFragment extends InputMethodSettingsFragment
             removePreference(Settings.PREF_VIBRATION_DURATION_SETTINGS, advancedSettings);
         }
 
-        mKeyPreviewPopupDismissDelay =
-                (ListPreference) findPreference(Settings.PREF_KEY_PREVIEW_POPUP_DISMISS_DELAY);
         if (!Settings.readFromBuildConfigIfToShowKeyPreviewPopupSettingsOption(res)) {
             removePreference(Settings.PREF_POPUP_ON, generalSettings);
             removePreference(Settings.PREF_KEY_PREVIEW_POPUP_DISMISS_DELAY, advancedSettings);
         } else {
+            // TODO: Cleanup this setup.
+            final ListPreference keyPreviewPopupDismissDelay =
+                    (ListPreference) findPreference(Settings.PREF_KEY_PREVIEW_POPUP_DISMISS_DELAY);
             final String popupDismissDelayDefaultValue = Integer.toString(res.getInteger(
                     R.integer.config_key_preview_linger_timeout));
-            mKeyPreviewPopupDismissDelay.setEntries(new String[] {
+            keyPreviewPopupDismissDelay.setEntries(new String[] {
                     res.getString(R.string.key_preview_popup_dismiss_no_delay),
                     res.getString(R.string.key_preview_popup_dismiss_default_delay),
             });
-            mKeyPreviewPopupDismissDelay.setEntryValues(new String[] {
+            keyPreviewPopupDismissDelay.setEntryValues(new String[] {
                     "0",
                     popupDismissDelayDefaultValue
             });
-            if (null == mKeyPreviewPopupDismissDelay.getValue()) {
-                mKeyPreviewPopupDismissDelay.setValue(popupDismissDelayDefaultValue);
+            if (null == keyPreviewPopupDismissDelay.getValue()) {
+                keyPreviewPopupDismissDelay.setValue(popupDismissDelayDefaultValue);
             }
-            mKeyPreviewPopupDismissDelay.setEnabled(
+            keyPreviewPopupDismissDelay.setEnabled(
                     Settings.readKeyPreviewPopupEnabled(prefs, res));
         }
 
@@ -237,20 +233,19 @@ public final class SettingsFragment extends InputMethodSettingsFragment
     @Override
     public void onResume() {
         super.onResume();
-        final boolean isShortcutImeEnabled = SubtypeSwitcher.getInstance().isShortcutImeEnabled();
-        if (!isShortcutImeEnabled) {
-            getPreferenceScreen().removePreference(mVoiceInputKeyPreference);
-        }
         final SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
+        final Resources res = getResources();
+        final boolean isShortcutImeEnabled = SubtypeSwitcher.getInstance().isShortcutImeEnabled();
+        setPreferenceEnabled(Settings.PREF_VOICE_INPUT_KEY, isShortcutImeEnabled);
         final CheckBoxPreference showSetupWizardIcon =
                 (CheckBoxPreference)findPreference(Settings.PREF_SHOW_SETUP_WIZARD_ICON);
         if (showSetupWizardIcon != null) {
             showSetupWizardIcon.setChecked(Settings.readShowSetupWizardIcon(prefs, getActivity()));
         }
-        updateShowCorrectionSuggestionsSummary();
-        updateKeyPreviewPopupDelaySummary();
-        updateColorSchemeSummary(prefs, getResources());
-        updateCustomInputStylesSummary();
+        updateListPreferenceSummaryToCurrentValue(Settings.PREF_SHOW_SUGGESTIONS_SETTING);
+        updateListPreferenceSummaryToCurrentValue(Settings.PREF_KEY_PREVIEW_POPUP_DISMISS_DELAY);
+        updateListPreferenceSummaryToCurrentValue(Settings.PREF_KEYBOARD_LAYOUT);
+        updateCustomInputStylesSummary(prefs, res);
     }
 
     @Override
@@ -281,50 +276,26 @@ public final class SettingsFragment extends InputMethodSettingsFragment
             LauncherIconVisibilityManager.updateSetupWizardIconVisibility(getActivity());
         }
         ensureConsistencyOfAutoCorrectionSettings();
-        updateShowCorrectionSuggestionsSummary();
-        updateKeyPreviewPopupDelaySummary();
-        updateColorSchemeSummary(prefs, res);
+        updateListPreferenceSummaryToCurrentValue(Settings.PREF_SHOW_SUGGESTIONS_SETTING);
+        updateListPreferenceSummaryToCurrentValue(Settings.PREF_KEY_PREVIEW_POPUP_DISMISS_DELAY);
+        updateListPreferenceSummaryToCurrentValue(Settings.PREF_KEYBOARD_LAYOUT);
         refreshEnablingsOfKeypressSoundAndVibrationSettings(prefs, getResources());
     }
 
     private void ensureConsistencyOfAutoCorrectionSettings() {
         final String autoCorrectionOff = getResources().getString(
                 R.string.auto_correction_threshold_mode_index_off);
-        final String currentSetting = mAutoCorrectionThresholdPreference.getValue();
-        mBigramPrediction.setEnabled(!currentSetting.equals(autoCorrectionOff));
+        final ListPreference autoCorrectionThresholdPref = (ListPreference)findPreference(
+                Settings.PREF_AUTO_CORRECTION_THRESHOLD);
+        final String currentSetting = autoCorrectionThresholdPref.getValue();
+        setPreferenceEnabled(
+                Settings.PREF_BIGRAM_PREDICTIONS, !currentSetting.equals(autoCorrectionOff));
     }
 
-    private void updateShowCorrectionSuggestionsSummary() {
-        mShowCorrectionSuggestionsPreference.setSummary(
-                getResources().getStringArray(R.array.prefs_suggestion_visibilities)
-                [mShowCorrectionSuggestionsPreference.findIndexOfValue(
-                        mShowCorrectionSuggestionsPreference.getValue())]);
-    }
-
-    private void updateColorSchemeSummary(final SharedPreferences prefs, final Resources res) {
-        // Because the "%s" summary trick of {@link ListPreference} doesn't work properly before
-        // KitKat, we need to update the summary by code.
-        final Preference preference = findPreference(Settings.PREF_KEYBOARD_LAYOUT);
-        if (!(preference instanceof ListPreference)) {
-            Log.w(TAG, "Can't find Keyboard Color Scheme preference");
-            return;
-        }
-        final ListPreference colorSchemePreference = (ListPreference)preference;
-        final int themeIndex = Settings.readKeyboardThemeIndex(prefs, res);
-        int entryIndex = colorSchemePreference.findIndexOfValue(Integer.toString(themeIndex));
-        if (entryIndex < 0) {
-            final int defaultThemeIndex = Settings.resetAndGetDefaultKeyboardThemeIndex(prefs, res);
-            entryIndex = colorSchemePreference.findIndexOfValue(
-                    Integer.toString(defaultThemeIndex));
-        }
-        colorSchemePreference.setSummary(colorSchemePreference.getEntries()[entryIndex]);
-    }
-
-    private void updateCustomInputStylesSummary() {
+    private void updateCustomInputStylesSummary(final SharedPreferences prefs,
+            final Resources res) {
         final PreferenceScreen customInputStyles =
                 (PreferenceScreen)findPreference(Settings.PREF_CUSTOM_INPUT_STYLES);
-        final SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
-        final Resources res = getResources();
         final String prefSubtype = Settings.readPrefAdditionalSubtypes(prefs, res);
         final InputMethodSubtype[] subtypes =
                 AdditionalSubtypeUtils.createAdditionalSubtypesArray(prefSubtype);
@@ -334,13 +305,6 @@ public final class SettingsFragment extends InputMethodSettingsFragment
             styles.append(SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(subtype));
         }
         customInputStyles.setSummary(styles);
-    }
-
-    private void updateKeyPreviewPopupDelaySummary() {
-        final ListPreference lp = mKeyPreviewPopupDismissDelay;
-        final CharSequence[] entries = lp.getEntries();
-        if (entries == null || entries.length <= 0) return;
-        lp.setSummary(entries[lp.findIndexOfValue(lp.getValue())]);
     }
 
     private void refreshEnablingsOfKeypressSoundAndVibrationSettings(
