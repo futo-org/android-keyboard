@@ -22,6 +22,7 @@ import android.util.Log;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.ProximityInfo;
+import com.android.inputmethod.latin.BinaryDictionary.LanguageModelParam;
 import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.utils.AsyncResultHolder;
@@ -326,7 +327,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
      * Dynamically adds a word bigram in the dictionary. May overwrite an existing entry.
      */
     protected void addBigramDynamically(final String word0, final String word1,
-            final int frequency, final boolean isValid) {
+            final int frequency) {
         if (!mIsUpdatable) {
             Log.w(TAG, "addBigramDynamically is called for non-updatable dictionary: "
                     + mFilename);
@@ -363,22 +364,6 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         public void onFinished();
     }
 
-    public static class LanguageModelParam {
-        public final String mWord0;
-        public final String mWord1;
-        public final boolean mIsValid;
-        public final int mFrequency;
-        public final int mBigramFrequency;
-        public LanguageModelParam(final String word0, final String word1, final boolean isValid,
-                final int frequency, final int bigramFrequency) {
-            mWord0 = word0;
-            mWord1 = word1;
-            mIsValid = isValid;
-            mFrequency = frequency;
-            mBigramFrequency = bigramFrequency;
-        }
-    }
-
     /**
      * Dynamically add multiple entries to the dictionary.
      */
@@ -395,21 +380,9 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
             public void run() {
                 final boolean locked = setProcessingLargeTaskIfNot();
                 try {
-                    for (final LanguageModelParam languageModelParam : languageModelParams) {
-                        if (languageModelParam.mWord1 == null) {
-                            continue;
-                        }
-                        if (mBinaryDictionary.needsToRunGC(true /* mindsBlockByGC */)) {
-                            mBinaryDictionary.flushWithGC();
-                        }
-                        mBinaryDictionary.addUnigramWord(languageModelParam.mWord1,
-                                languageModelParam.mFrequency);
-                        if (languageModelParam.mWord0 != null
-                                && !languageModelParam.mWord0.equals(languageModelParam.mWord1)) {
-                            mBinaryDictionary.addBigramWords(languageModelParam.mWord0,
-                                    languageModelParam.mWord1, languageModelParam.mBigramFrequency);
-                        }
-                    }
+                    mBinaryDictionary.addMultipleDictionaryEntries(
+                            languageModelParams.toArray(
+                                    new LanguageModelParam[languageModelParams.size()]));
                 } finally {
                     if (callback != null) {
                         callback.onFinished();

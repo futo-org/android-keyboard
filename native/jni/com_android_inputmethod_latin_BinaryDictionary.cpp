@@ -320,6 +320,60 @@ static void latinime_BinaryDictionary_removeBigramWords(JNIEnv *env, jclass claz
             word1Length);
 }
 
+
+// Returns how many language model params are processed.
+static int latinime_BinaryDictionary_addMultipleDictionaryEntries(JNIEnv *env, jclass clazz,
+        jlong dict, jobjectArray languageModelParams, jint startIndex) {
+    Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
+    if (!dictionary) {
+        return 0;
+    }
+    jsize languageModelParamCount = env->GetArrayLength(languageModelParams);
+    if (languageModelParamCount == 0 || startIndex >= languageModelParamCount) {
+        return 0;
+    }
+    jobject languageModelParam = env->GetObjectArrayElement(languageModelParams, 0);
+    jclass languageModelParamClass = env->GetObjectClass(languageModelParam);
+    env->DeleteLocalRef(languageModelParam);
+    jfieldID word0FieldId = env->GetFieldID(languageModelParamClass, "mWord0", "[I");
+    jfieldID word1FieldId = env->GetFieldID(languageModelParamClass, "mWord1", "[I");
+    jfieldID unigramProbabilityFieldId =
+            env->GetFieldID(languageModelParamClass, "mUnigramProbability", "I");
+    jfieldID bigramProbabilityFieldId =
+            env->GetFieldID(languageModelParamClass, "mBigramProbability", "I");
+    env->DeleteLocalRef(languageModelParamClass);
+
+    for (int i = startIndex; i < languageModelParamCount; ++i) {
+        jobject languageModelParam = env->GetObjectArrayElement(languageModelParams, i);
+        jintArray word0 = static_cast<jintArray>(
+                env->GetObjectField(languageModelParam, word0FieldId));
+        jsize word0Length = word0 ? env->GetArrayLength(word0) : 0;
+        int word0CodePoints[word0Length];
+        if (word0) {
+            env->GetIntArrayRegion(word0, 0, word0Length, word0CodePoints);
+        }
+        jintArray word1 = static_cast<jintArray>(
+                env->GetObjectField(languageModelParam, word1FieldId));
+        jsize word1Length = env->GetArrayLength(word1);
+        int word1CodePoints[word1Length];
+        env->GetIntArrayRegion(word1, 0, word1Length, word1CodePoints);
+        jint unigramProbability = env->GetIntField(languageModelParam, unigramProbabilityFieldId);
+        dictionary->addUnigramWord(word1CodePoints, word1Length, unigramProbability);
+        if (word0) {
+            jint bigramProbability = env->GetIntField(languageModelParam, bigramProbabilityFieldId);
+            dictionary->addBigramWords(word0CodePoints, word0Length, word1CodePoints, word1Length,
+                    bigramProbability);
+        }
+        if (dictionary->needsToRunGC(true /* mindsBlockByGC */)) {
+            return i + 1;
+        }
+        env->DeleteLocalRef(word0);
+        env->DeleteLocalRef(word1);
+        env->DeleteLocalRef(languageModelParam);
+    }
+    return languageModelParamCount;
+}
+
 static int latinime_BinaryDictionary_calculateProbabilityNative(JNIEnv *env, jclass clazz,
         jlong dict, jint unigramProbability, jint bigramProbability) {
     Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
@@ -417,6 +471,12 @@ static const JNINativeMethod sMethods[] = {
         const_cast<char *>("removeBigramWordsNative"),
         const_cast<char *>("(J[I[I)V"),
         reinterpret_cast<void *>(latinime_BinaryDictionary_removeBigramWords)
+    },
+    {
+        const_cast<char *>("addMultipleDictionaryEntriesNative"),
+        const_cast<char *>(
+                "(J[Lcom/android/inputmethod/latin/BinaryDictionary$LanguageModelParam;I)I"),
+        reinterpret_cast<void *>(latinime_BinaryDictionary_addMultipleDictionaryEntries)
     },
     {
         const_cast<char *>("calculateProbabilityNative"),
