@@ -32,6 +32,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.annotations.UsedForTesting;
+import com.android.inputmethod.compat.InputMethodSubtypeCompatUtils;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.latin.utils.LocaleUtils;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
@@ -57,23 +58,34 @@ public final class SubtypeSwitcher {
     private InputMethodSubtype mEmojiSubtype;
     private boolean mIsNetworkConnected;
 
+    private static final String KEYBOARD_MODE = "keyboard";
     // Dummy no language QWERTY subtype. See {@link R.xml.method}.
-    private static final InputMethodSubtype DUMMY_NO_LANGUAGE_SUBTYPE = new InputMethodSubtype(
-            R.string.subtype_no_language_qwerty, R.drawable.ic_ime_switcher_dark,
-            SubtypeLocaleUtils.NO_LANGUAGE, "keyboard", "KeyboardLayoutSet="
-                    + SubtypeLocaleUtils.QWERTY
-                    + "," + Constants.Subtype.ExtraValue.ASCII_CAPABLE
-                    + "," + Constants.Subtype.ExtraValue.ENABLED_WHEN_DEFAULT_IS_NOT_ASCII_CAPABLE
-                    + "," + Constants.Subtype.ExtraValue.EMOJI_CAPABLE,
-            false /* isAuxiliary */, false /* overridesImplicitlyEnabledSubtype */);
+    private static final int SUBTYPE_ID_OF_DUMMY_NO_LANGUAGE_SUBTYPE = 0xdde0bfd3;
+    private static final String EXTRA_VALUE_OF_DUMMY_NO_LANGUAGE_SUBTYPE =
+            "KeyboardLayoutSet=" + SubtypeLocaleUtils.QWERTY
+            + "," + Constants.Subtype.ExtraValue.ASCII_CAPABLE
+            + "," + Constants.Subtype.ExtraValue.ENABLED_WHEN_DEFAULT_IS_NOT_ASCII_CAPABLE
+            + "," + Constants.Subtype.ExtraValue.EMOJI_CAPABLE;
+    private static final InputMethodSubtype DUMMY_NO_LANGUAGE_SUBTYPE =
+            InputMethodSubtypeCompatUtils.newInputMethodSubtype(
+                    R.string.subtype_no_language_qwerty, R.drawable.ic_ime_switcher_dark,
+                    SubtypeLocaleUtils.NO_LANGUAGE, KEYBOARD_MODE,
+                    EXTRA_VALUE_OF_DUMMY_NO_LANGUAGE_SUBTYPE,
+                    false /* isAuxiliary */, false /* overridesImplicitlyEnabledSubtype */,
+                    SUBTYPE_ID_OF_DUMMY_NO_LANGUAGE_SUBTYPE);
     // Caveat: We probably should remove this when we add an Emoji subtype in {@link R.xml.method}.
     // Dummy Emoji subtype. See {@link R.xml.method}.
-    private static final InputMethodSubtype DUMMY_EMOJI_SUBTYPE = new InputMethodSubtype(
-            R.string.subtype_emoji, R.drawable.ic_ime_switcher_dark,
-            SubtypeLocaleUtils.NO_LANGUAGE, "keyboard", "KeyboardLayoutSet="
-                    + SubtypeLocaleUtils.EMOJI + ","
-                    + Constants.Subtype.ExtraValue.EMOJI_CAPABLE,
-            false /* isAuxiliary */, false /* overridesImplicitlyEnabledSubtype */);
+    private static final int SUBTYPE_ID_OF_DUMMY_EMOJI_SUBTYPE = 0xd78b2ed0;
+    private static final String EXTRA_VALUE_OF_DUMMY_EMOJI_SUBTYPE =
+            "KeyboardLayoutSet=" + SubtypeLocaleUtils.EMOJI
+            + "," + Constants.Subtype.ExtraValue.EMOJI_CAPABLE;
+    private static final InputMethodSubtype DUMMY_EMOJI_SUBTYPE =
+            InputMethodSubtypeCompatUtils.newInputMethodSubtype(
+                    R.string.subtype_emoji, R.drawable.ic_ime_switcher_dark,
+                    SubtypeLocaleUtils.NO_LANGUAGE, KEYBOARD_MODE,
+                    EXTRA_VALUE_OF_DUMMY_EMOJI_SUBTYPE,
+                    false /* isAuxiliary */, false /* overridesImplicitlyEnabledSubtype */,
+                    SUBTYPE_ID_OF_DUMMY_EMOJI_SUBTYPE);
 
     static final class NeedsToDisplayLanguage {
         private int mEnabledSubtypeCount;
