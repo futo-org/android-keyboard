@@ -38,6 +38,13 @@ class BigramDictContent : public SparseTableDictContent {
             : SparseTableDictContent(Ver4DictConstants::BIGRAM_ADDRESS_TABLE_BLOCK_SIZE,
                       Ver4DictConstants::BIGRAM_ADDRESS_TABLE_DATA_SIZE) {}
 
+    void getBigramEntry(int *const outProbability, bool *const outHasNext,
+            int *const outTargetTerminalId, const int bigramEntryPos) const {
+        int readingPos = bigramEntryPos;
+        getBigramEntryAndAdvancePosition(outProbability, outHasNext, outTargetTerminalId,
+                &readingPos);
+    }
+
     void getBigramEntryAndAdvancePosition(int *const outProbability, bool *const outHasNext,
             int *const outTargetTerminalId, int *const bigramEntryPos) const;
 
@@ -48,6 +55,13 @@ class BigramDictContent : public SparseTableDictContent {
             return NOT_A_DICT_POS;
         }
         return addressLookupTable->get(terminalId);
+    }
+
+    bool writeBigramEntry(const int probability, const int hasNext, const int targetTerminalId,
+            const int entryWritingPos) {
+        int writingPos = entryWritingPos;
+        return writeBigramEntryAndAdvancePosition(probability, hasNext, targetTerminalId,
+                &writingPos);
     }
 
     bool writeBigramEntryAndAdvancePosition(const int probability, const int hasNext,

@@ -83,7 +83,7 @@ bool Ver4PatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
     Ver4PatriciaTrieNodeReader ptNodeReader(mBuffers->getTrieBuffer(),
             mBuffers->getProbabilityDictContent());
     Ver4BigramListPolicy bigramPolicy(mBuffers->getUpdatableBigramDictContent(),
-            mBuffers->getTerminalPositionLookupTable());
+            mBuffers->getTerminalPositionLookupTable(), headerPolicy, needsToDecay);
     Ver4ShortcutListPolicy shortcutPolicy(mBuffers->getShortcutDictContent(),
             mBuffers->getTerminalPositionLookupTable());
     Ver4PatriciaTrieNodeWriter ptNodeWriter(mBuffers->getWritableTrieBuffer(),
@@ -134,7 +134,8 @@ bool Ver4PatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
     Ver4PatriciaTrieNodeReader newPtNodeReader(buffersToWrite->getTrieBuffer(),
             buffersToWrite->getProbabilityDictContent());
     Ver4BigramListPolicy newBigramPolicy(buffersToWrite->getUpdatableBigramDictContent(),
-            buffersToWrite->getTerminalPositionLookupTable());
+            buffersToWrite->getTerminalPositionLookupTable(), headerPolicy,
+            false /* needsToDecay */);
     Ver4ShortcutListPolicy newShortcutPolicy(buffersToWrite->getShortcutDictContent(),
             buffersToWrite->getTerminalPositionLookupTable());
     Ver4PatriciaTrieNodeWriter newPtNodeWriter(buffersToWrite->getWritableTrieBuffer(),

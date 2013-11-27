@@ -72,26 +72,63 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
         }
     }
 
-    private File createEmptyDictionaryAndGetFile(final String filename) throws IOException {
-        final File file = File.createTempFile(filename, TEST_DICT_FILE_EXTENSION,
+    private File createEmptyDictionaryAndGetFile(final String dictId,
+            final int formatVersion) throws IOException {
+        if (formatVersion == 3) {
+            return createEmptyVer3DictionaryAndGetFile(dictId);
+        } else if (formatVersion == 4) {
+            return createEmptyVer4DictionaryAndGetFile(dictId);
+        } else {
+            throw new IOException("Dictionary format version " + formatVersion
+                    + " is not supported.");
+        }
+    }
+    private File createEmptyVer4DictionaryAndGetFile(final String dictId) throws IOException {
+        final File file = File.createTempFile(dictId, TEST_DICT_FILE_EXTENSION,
                 getContext().getCacheDir());
+        file.delete();
+        file.mkdir();
         Map<String, String> attributeMap = new HashMap<String, String>();
         attributeMap.put(FormatSpec.FileHeader.SUPPORTS_DYNAMIC_UPDATE_ATTRIBUTE,
                 FormatSpec.FileHeader.ATTRIBUTE_VALUE_TRUE);
         attributeMap.put(FormatSpec.FileHeader.USES_FORGETTING_CURVE_ATTRIBUTE,
                 FormatSpec.FileHeader.ATTRIBUTE_VALUE_TRUE);
         if (BinaryDictionary.createEmptyDictFile(file.getAbsolutePath(),
-                3 /* dictVersion */, attributeMap)) {
+                4 /* dictVersion */, attributeMap)) {
+            return new File(file, FormatSpec.TRIE_FILE_EXTENSION);
+        } else {
+            throw new IOException("Empty dictionary " + file.getAbsolutePath() + " "
+                    + FormatSpec.TRIE_FILE_EXTENSION + " cannot be created.");
+        }
+    }
+
+    private File createEmptyVer3DictionaryAndGetFile(final String dictId) throws IOException {
+        final File file = File.createTempFile(dictId, TEST_DICT_FILE_EXTENSION,
+                getContext().getCacheDir());
+        file.delete();
+        Map<String, String> attributeMap = new HashMap<String, String>();
+        attributeMap.put(FormatSpec.FileHeader.SUPPORTS_DYNAMIC_UPDATE_ATTRIBUTE,
+                FormatSpec.FileHeader.ATTRIBUTE_VALUE_TRUE);
+        attributeMap.put(FormatSpec.FileHeader.USES_FORGETTING_CURVE_ATTRIBUTE,
+                FormatSpec.FileHeader.ATTRIBUTE_VALUE_TRUE);
+        if (BinaryDictionary.createEmptyDictFile(file.getAbsolutePath(), 3 /* dictVersion */,
+                attributeMap)) {
             return file;
         } else {
-            throw new IOException("Empty dictionary cannot be created.");
+            throw new IOException(
+                    "Empty dictionary " + file.getAbsolutePath() + " cannot be created.");
         }
     }
 
     public void testAddValidAndInvalidWords() {
+        testAddValidAndInvalidWords(3 /* formatVersion */);
+        testAddValidAndInvalidWords(4 /* formatVersion */);
+    }
+
+    private void testAddValidAndInvalidWords(final int formatVersion) {
         File dictFile = null;
         try {
-            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary");
+            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary", formatVersion);
         } catch (IOException e) {
             fail("IOException while writing an initial dictionary : " + e);
         }
@@ -111,7 +148,6 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
         binaryDictionary.addUnigramWord("b", DUMMY_PROBABILITY);
         assertTrue(binaryDictionary.isValidWord("b"));
 
-        final int unigramProbability = binaryDictionary.getFrequency("a");
         binaryDictionary.addBigramWords("a", "b", Dictionary.NOT_A_PROBABILITY);
         assertFalse(binaryDictionary.isValidBigram("a", "b"));
         binaryDictionary.addBigramWords("a", "b", Dictionary.NOT_A_PROBABILITY);
@@ -136,9 +172,14 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
     }
 
     public void testDecayingProbability() {
+        testDecayingProbability(3 /* formatVersion */);
+        testDecayingProbability(4 /* formatVersion */);
+    }
+
+    private void testDecayingProbability(final int formatVersion) {
         File dictFile = null;
         try {
-            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary");
+            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary", formatVersion);
         } catch (IOException e) {
             fail("IOException while writing an initial dictionary : " + e);
         }
@@ -190,6 +231,11 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
     }
 
     public void testAddManyUnigramsToDecayingDict() {
+        testAddManyUnigramsToDecayingDict(3 /* formatVersion */);
+        testAddManyUnigramsToDecayingDict(4 /* formatVersion */);
+    }
+
+    private void testAddManyUnigramsToDecayingDict(final int formatVersion) {
         final int unigramCount = 30000;
         final int unigramTypedCount = 100000;
         final int codePointSetSize = 50;
@@ -198,7 +244,7 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
 
         File dictFile = null;
         try {
-            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary");
+            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary", formatVersion);
         } catch (IOException e) {
             fail("IOException while writing an initial dictionary : " + e);
         }
@@ -242,6 +288,11 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
     }
 
     public void testAddManyBigramsToDecayingDict() {
+        testAddManyBigramsToDecayingDict(3 /* formatVersion */);
+        testAddManyBigramsToDecayingDict(4 /* formatVersion */);
+    }
+
+    private void testAddManyBigramsToDecayingDict(final int formatVersion) {
         final int unigramCount = 5000;
         final int bigramCount = 30000;
         final int bigramTypedCount = 100000;
@@ -251,7 +302,7 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
 
         File dictFile = null;
         try {
-            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary");
+            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary", formatVersion);
         } catch (IOException e) {
             fail("IOException while writing an initial dictionary : " + e);
         }
