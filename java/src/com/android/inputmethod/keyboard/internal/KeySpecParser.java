@@ -483,7 +483,7 @@ public final class KeySpecParser {
     public static int toUpperCaseOfCodeForLocale(final int code, final boolean needsToUpperCase,
             final Locale locale) {
         if (!Constants.isLetterCode(code) || !needsToUpperCase) return code;
-        final String text = new String(new int[] { code } , 0, 1);
+        final String text = StringUtils.newSingleCodePointString(code);
         final String casedText = KeySpecParser.toUpperCaseOfStringForLocale(
                 text, needsToUpperCase, locale);
         return StringUtils.codePointCount(casedText) == 1
