@@ -277,7 +277,8 @@ static jint latinime_BinaryDictionary_editDistance(JNIEnv *env, jclass clazz, ji
 }
 
 static void latinime_BinaryDictionary_addUnigramWord(JNIEnv *env, jclass clazz, jlong dict,
-        jintArray word, jint probability) {
+        jintArray word, jint probability, jintArray shortcutTarget, jint shortuctProbability,
+        jboolean isNotAWord, jboolean isBlacklisted, jint timeStamp) {
     Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
     if (!dictionary) {
         return;
@@ -285,11 +286,16 @@ static void latinime_BinaryDictionary_addUnigramWord(JNIEnv *env, jclass clazz, 
     jsize wordLength = env->GetArrayLength(word);
     int codePoints[wordLength];
     env->GetIntArrayRegion(word, 0, wordLength, codePoints);
+    jsize shortcutLength = shortcutTarget ? env->GetArrayLength(shortcutTarget) : 0;
+    int shortcutTargetCodePoints[wordLength];
+    if (shortcutTarget) {
+        env->GetIntArrayRegion(shortcutTarget, 0, shortcutLength, shortcutTargetCodePoints);
+    }
     dictionary->addUnigramWord(codePoints, wordLength, probability);
 }
 
 static void latinime_BinaryDictionary_addBigramWords(JNIEnv *env, jclass clazz, jlong dict,
-        jintArray word0, jintArray word1, jint probability) {
+        jintArray word0, jintArray word1, jint probability, jint timeStamp) {
     Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
     if (!dictionary) {
         return;
@@ -335,6 +341,8 @@ static int latinime_BinaryDictionary_addMultipleDictionaryEntries(JNIEnv *env, j
     jobject languageModelParam = env->GetObjectArrayElement(languageModelParams, 0);
     jclass languageModelParamClass = env->GetObjectClass(languageModelParam);
     env->DeleteLocalRef(languageModelParam);
+
+    // TODO: Support shortcut, timestamp and flags.
     jfieldID word0FieldId = env->GetFieldID(languageModelParamClass, "mWord0", "[I");
     jfieldID word1FieldId = env->GetFieldID(languageModelParamClass, "mWord1", "[I");
     jfieldID unigramProbabilityFieldId =
@@ -345,6 +353,9 @@ static int latinime_BinaryDictionary_addMultipleDictionaryEntries(JNIEnv *env, j
 
     for (int i = startIndex; i < languageModelParamCount; ++i) {
         jobject languageModelParam = env->GetObjectArrayElement(languageModelParams, i);
+        // languageModelParam is a set of params for word1; thus, word1 cannot be null. On the
+        // other hand, word0 can be null and then it means the set of params doesn't contain bigram
+        // information.
         jintArray word0 = static_cast<jintArray>(
                 env->GetObjectField(languageModelParam, word0FieldId));
         jsize word0Length = word0 ? env->GetArrayLength(word0) : 0;
@@ -459,12 +470,12 @@ static const JNINativeMethod sMethods[] = {
     },
     {
         const_cast<char *>("addUnigramWordNative"),
-        const_cast<char *>("(J[II)V"),
+        const_cast<char *>("(J[II[IIZZI)V"),
         reinterpret_cast<void *>(latinime_BinaryDictionary_addUnigramWord)
     },
     {
         const_cast<char *>("addBigramWordsNative"),
-        const_cast<char *>("(J[I[II)V"),
+        const_cast<char *>("(J[I[III)V"),
         reinterpret_cast<void *>(latinime_BinaryDictionary_addBigramWords)
     },
     {
