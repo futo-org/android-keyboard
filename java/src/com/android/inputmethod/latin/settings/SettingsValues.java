@@ -374,16 +374,20 @@ public final class SettingsValues {
         return autoCorrectionThreshold;
     }
 
-    private static boolean needsToShowVoiceInputKey(SharedPreferences prefs, Resources res) {
-        final String voiceModeMain = res.getString(R.string.voice_mode_main);
-        final String voiceMode = prefs.getString(Settings.PREF_VOICE_MODE_OBSOLETE, voiceModeMain);
-        final boolean showsVoiceInputKey = voiceMode == null || voiceMode.equals(voiceModeMain);
-        if (!showsVoiceInputKey) {
-            // Migrate settings from PREF_VOICE_MODE_OBSOLETE to PREF_VOICE_INPUT_KEY
-            // Set voiceModeMain as a value of obsolete voice mode settings.
-            prefs.edit().putString(Settings.PREF_VOICE_MODE_OBSOLETE, voiceModeMain).apply();
-            // Disable voice input key.
-            prefs.edit().putBoolean(Settings.PREF_VOICE_INPUT_KEY, false).apply();
+    private static boolean needsToShowVoiceInputKey(final SharedPreferences prefs,
+            final Resources res) {
+        if (!prefs.contains(Settings.PREF_VOICE_INPUT_KEY)) {
+            // Migrate preference from {@link Settings#PREF_VOICE_MODE_OBSOLETE} to
+            // {@link Settings#PREF_VOICE_INPUT_KEY}.
+            final String voiceModeMain = res.getString(R.string.voice_mode_main);
+            final String voiceMode = prefs.getString(
+                    Settings.PREF_VOICE_MODE_OBSOLETE, voiceModeMain);
+            final boolean shouldShowVoiceInputKey = voiceModeMain.equals(voiceMode);
+            prefs.edit().putBoolean(Settings.PREF_VOICE_INPUT_KEY, shouldShowVoiceInputKey).apply();
+        }
+        // Remove the obsolete preference if exists.
+        if (prefs.contains(Settings.PREF_VOICE_MODE_OBSOLETE)) {
+            prefs.edit().remove(Settings.PREF_VOICE_MODE_OBSOLETE).apply();
         }
         return prefs.getBoolean(Settings.PREF_VOICE_INPUT_KEY, true);
     }

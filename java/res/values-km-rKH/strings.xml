@@ -117,12 +117,6 @@
     <string name="keyboard_mode_time" msgid="4381856885582143277">"ពេលវេលា"</string>
     <string name="keyboard_mode_url" msgid="1519819835514911218">"URL"</string>
     <string name="voice_input" msgid="3583258583521397548">"គ្រាប់​ចុច​បញ្ចូល​​សំឡេង"</string>
-    <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"នៅ​លើ​ក្ដារចុច​ចម្បង"</string>
-    <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"នៅ​លើ​ក្ដារចុច​​និមិត្ត​សញ្ញា"</string>
-    <string name="voice_input_modes_off" msgid="3745699748218082014">"បិទ"</string>
-    <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"មីក្រូហ្វូន​នៅ​លើ​​ក្ដារចុច​ចម្បង"</string>
-    <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"មីក្រូហ្វូន​នៅ​លើ​​ក្ដារចុច​និមិត្ត​សញ្ញា"</string>
-    <string name="voice_input_modes_summary_off" msgid="63875609591897607">"បាន​បិទ​ការ​បញ្ចូល​សំឡេង"</string>
     <string name="configure_input_method" msgid="373356270290742459">"កំណត់​រចនាសម្ព័ន្ធ​វិធីសាស្ត្រ​បញ្ចូល"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"បញ្ចូល​ភាសា"</string>
     <string name="send_feedback" msgid="1780431884109392046">"ផ្ញើ​មតិ​អ្នក​ប្រើ"</string>

@@ -117,12 +117,6 @@
     <string name="keyboard_mode_time" msgid="4381856885582143277">"時刻"</string>
     <string name="keyboard_mode_url" msgid="1519819835514911218">"URL"</string>
     <string name="voice_input" msgid="3583258583521397548">"音声入力キー"</string>
-    <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"メインキーボード上"</string>
-    <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"記号キーボード上"</string>
-    <string name="voice_input_modes_off" msgid="3745699748218082014">"OFF"</string>
-    <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"メインキーボードのマイク"</string>
-    <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"記号キーボードのマイク"</string>
-    <string name="voice_input_modes_summary_off" msgid="63875609591897607">"音声入力は無効です"</string>
     <string name="configure_input_method" msgid="373356270290742459">"入力方法を設定"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"入力言語"</string>
     <string name="send_feedback" msgid="1780431884109392046">"フィードバックを送信"</string>

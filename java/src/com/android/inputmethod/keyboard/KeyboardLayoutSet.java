@@ -106,9 +106,6 @@ public final class KeyboardLayoutSet {
         EditorInfo mEditorInfo;
         boolean mDisableTouchPositionCorrectionDataForTest;
         boolean mVoiceKeyEnabled;
-        // TODO: Remove mVoiceKeyOnMain when it's certainly confirmed that we no longer show
-        // the voice input key on the symbol layout
-        boolean mVoiceKeyOnMain;
         boolean mNoSettingsKey;
         boolean mLanguageSwitchKeyEnabled;
         InputMethodSubtype mSubtype;
@@ -261,9 +258,7 @@ public final class KeyboardLayoutSet {
             return this;
         }
 
-        // TODO: Remove mVoiceKeyOnMain when it's certainly confirmed that we no longer show
-        // the voice input key on the symbol layout
-        public Builder setOptions(final boolean voiceKeyEnabled, final boolean voiceKeyOnMain,
+        public Builder setOptions(final boolean voiceKeyEnabled,
                 final boolean languageSwitchKeyEnabled) {
             @SuppressWarnings("deprecation")
             final boolean deprecatedNoMicrophone = InputAttributes.inPrivateImeOptions(
@@ -272,7 +267,6 @@ public final class KeyboardLayoutSet {
                     mPackageName, NO_MICROPHONE, mParams.mEditorInfo)
                     || deprecatedNoMicrophone;
             mParams.mVoiceKeyEnabled = voiceKeyEnabled && !noMicrophone;
-            mParams.mVoiceKeyOnMain = voiceKeyOnMain;
             mParams.mLanguageSwitchKeyEnabled = languageSwitchKeyEnabled;
             return this;
         }
