@@ -71,7 +71,6 @@ public final class KeyboardId {
     private final EditorInfo mEditorInfo;
     public final boolean mClobberSettingsKey;
     public final boolean mShortcutKeyEnabled;
-    public final boolean mShortcutKeyOnSymbols;
     public final boolean mLanguageSwitchKeyEnabled;
     public final String mCustomActionLabel;
     public final boolean mHasShortcutKey;
@@ -88,16 +87,10 @@ public final class KeyboardId {
         mEditorInfo = params.mEditorInfo;
         mClobberSettingsKey = params.mNoSettingsKey;
         mShortcutKeyEnabled = params.mVoiceKeyEnabled;
-        mShortcutKeyOnSymbols = mShortcutKeyEnabled && !params.mVoiceKeyOnMain;
         mLanguageSwitchKeyEnabled = params.mLanguageSwitchKeyEnabled;
         mCustomActionLabel = (mEditorInfo.actionLabel != null)
                 ? mEditorInfo.actionLabel.toString() : null;
-        final boolean alphabetMayHaveShortcutKey = isAlphabetKeyboard(elementId)
-                && !mShortcutKeyOnSymbols;
-        final boolean symbolsMayHaveShortcutKey = (elementId == KeyboardId.ELEMENT_SYMBOLS)
-                && mShortcutKeyOnSymbols;
-        mHasShortcutKey = mShortcutKeyEnabled
-                && (alphabetMayHaveShortcutKey || symbolsMayHaveShortcutKey);
+        mHasShortcutKey = mShortcutKeyEnabled && isAlphabetKeyboard(elementId);
 
         mHashCode = computeHashCode(this);
     }
@@ -111,7 +104,6 @@ public final class KeyboardId {
                 id.passwordInput(),
                 id.mClobberSettingsKey,
                 id.mShortcutKeyEnabled,
-                id.mShortcutKeyOnSymbols,
                 id.mLanguageSwitchKeyEnabled,
                 id.isMultiLine(),
                 id.imeAction(),
@@ -132,7 +124,6 @@ public final class KeyboardId {
                 && other.passwordInput() == passwordInput()
                 && other.mClobberSettingsKey == mClobberSettingsKey
                 && other.mShortcutKeyEnabled == mShortcutKeyEnabled
-                && other.mShortcutKeyOnSymbols == mShortcutKeyOnSymbols
                 && other.mLanguageSwitchKeyEnabled == mLanguageSwitchKeyEnabled
                 && other.isMultiLine() == isMultiLine()
                 && other.imeAction() == imeAction()
@@ -186,7 +177,7 @@ public final class KeyboardId {
 
     @Override
     public String toString() {
-        return String.format(Locale.ROOT, "[%s %s:%s %dx%d %s %s %s%s%s%s%s%s%s%s%s]",
+        return String.format(Locale.ROOT, "[%s %s:%s %dx%d %s %s %s%s%s%s%s%s%s%s]",
                 elementIdToName(mElementId),
                 mLocale, mSubtype.getExtraValueOf(KEYBOARD_LAYOUT_SET),
                 mWidth, mHeight,
@@ -197,10 +188,9 @@ public final class KeyboardId {
                 (mClobberSettingsKey ? " clobberSettingsKey" : ""),
                 (passwordInput() ? " passwordInput" : ""),
                 (mShortcutKeyEnabled ? " shortcutKeyEnabled" : ""),
-                (mShortcutKeyOnSymbols ? " shortcutKeyOnSymbols" : ""),
                 (mHasShortcutKey ? " hasShortcutKey" : ""),
                 (mLanguageSwitchKeyEnabled ? " languageSwitchKeyEnabled" : ""),
-                (isMultiLine() ? "isMultiLine" : "")
+                (isMultiLine() ? " isMultiLine" : "")
         );
     }
 

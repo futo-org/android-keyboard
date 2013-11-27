@@ -74,26 +74,9 @@
       <item>@string/auto_correction_threshold_mode_very_aggressive</item>
     </string-array>
 
+    <!-- For backward compatibility.
+         See {@link SettingsValues#needsToShowVoiceInputKey(SharedPreferences,Resources)} -->
     <string name="voice_mode_main">0</string>
-    <string name="voice_mode_symbols">1</string>
-    <string name="voice_mode_off">2</string>
-    <string-array name="voice_input_modes_values">
-        <item>@string/voice_mode_main</item>
-        <item>@string/voice_mode_symbols</item>
-        <item>@string/voice_mode_off</item>
-    </string-array>
-    <!-- Array of Voice Input modes -->
-    <string-array name="voice_input_modes">
-        <item>@string/voice_input_modes_main_keyboard</item>
-        <item>@string/voice_input_modes_symbols_keyboard</item>
-        <item>@string/voice_input_modes_off</item>
-    </string-array>
-    <!-- Array of Voice Input modes summary -->
-    <string-array name="voice_input_modes_summary">
-        <item>@string/voice_input_modes_summary_main_keyboard</item>
-        <item>@string/voice_input_modes_summary_symbols_keyboard</item>
-        <item>@string/voice_input_modes_summary_off</item>
-    </string-array>
 
     <!-- Title for Latin keyboard debug settings activity / dialog -->
     <string name="english_ime_debug_settings">Android keyboard Debug settings</string>

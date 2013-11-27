@@ -40,7 +40,6 @@
         <item name="iconSearchKey">@drawable/sym_keyboard_search_holo_dark</item>
         <item name="iconTabKey">@drawable/sym_keyboard_tab_holo_dark</item>
         <item name="iconShortcutKey">@drawable/sym_keyboard_mic_holo_dark</item>
-        <item name="iconShortcutForLabel">@drawable/sym_keyboard_label_mic_holo_dark</item>
         <item name="iconSpaceKeyForNumberLayout">@drawable/sym_keyboard_space</item>
         <item name="iconShiftKeyShifted">@drawable/sym_keyboard_shift_locked_holo_dark</item>
         <!-- TODO: Needs non-holo disabled shortcut icon drawable -->

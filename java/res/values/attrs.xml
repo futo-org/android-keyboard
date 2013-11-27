@@ -221,7 +221,6 @@
         <attr name="iconSearchKey" format="reference" />
         <attr name="iconTabKey" format="reference" />
         <attr name="iconShortcutKey" format="reference" />
-        <attr name="iconShortcutForLabel" format="reference" />
         <attr name="iconSpaceKeyForNumberLayout" format="reference" />
         <attr name="iconShiftKeyShifted" format="reference" />
         <attr name="iconShortcutKeyDisabled" format="reference" />
@@ -298,6 +297,7 @@
             <flag name="hasPopupHint" value="0x200" />
             <flag name="hasShiftedLetterHint" value="0x400" />
             <flag name="hasHintLabel" value="0x800" />
+            <!-- These two flags are currently unused. Leave these for possible future use. -->
             <flag name="withIconLeft" value="0x1000" />
             <flag name="withIconRight" value="0x2000" />
             <flag name="autoXScale" value="0x4000" />
@@ -424,7 +424,6 @@
         <attr name="passwordInput" format="boolean" />
         <attr name="clobberSettingsKey" format="boolean" />
         <attr name="shortcutKeyEnabled" format="boolean" />
-        <attr name="shortcutKeyOnSymbols" format="boolean" />
         <attr name="hasShortcutKey" format="boolean" />
         <attr name="languageSwitchKeyEnabled" format="boolean" />
         <attr name="isMultiLine" format="boolean" />

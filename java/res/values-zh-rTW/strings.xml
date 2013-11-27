@@ -117,12 +117,6 @@
     <string name="keyboard_mode_time" msgid="4381856885582143277">"時間"</string>
     <string name="keyboard_mode_url" msgid="1519819835514911218">"網址"</string>
     <string name="voice_input" msgid="3583258583521397548">"語音輸入按鍵"</string>
-    <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"主鍵盤上"</string>
-    <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"符號鍵盤上"</string>
-    <string name="voice_input_modes_off" msgid="3745699748218082014">"關閉"</string>
-    <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"主鍵盤上的麥克風"</string>
-    <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"符號鍵盤上的麥克風"</string>
-    <string name="voice_input_modes_summary_off" msgid="63875609591897607">"語音輸入已停用"</string>
     <string name="configure_input_method" msgid="373356270290742459">"設定輸入法"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"輸入語言"</string>
     <string name="send_feedback" msgid="1780431884109392046">"提供意見"</string>
