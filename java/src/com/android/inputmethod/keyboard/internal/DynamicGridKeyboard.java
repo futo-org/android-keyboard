@@ -53,7 +53,7 @@ public class DynamicGridKeyboard extends Keyboard {
     private Key[] mCachedGridKeys;
 
     public DynamicGridKeyboard(final SharedPreferences prefs, final Keyboard templateKeyboard,
-            final int maxKeyCount, final int categoryId, final int categoryPageId) {
+            final int maxKeyCount, final int categoryId) {
         super(templateKeyboard);
         final Key key0 = getTemplateKey(TEMPLATE_KEY_CODE_0);
         final Key key1 = getTemplateKey(TEMPLATE_KEY_CODE_1);
@@ -124,7 +124,7 @@ public class DynamicGridKeyboard extends Keyboard {
                 final int keyY0 = getKeyY0(index);
                 final int keyX1 = getKeyX1(index);
                 final int keyY1 = getKeyY1(index);
-                gridKey.updateCorrdinates(keyX0, keyY0, keyX1, keyY1);
+                gridKey.updateCoordinates(keyX0, keyY0, keyX1, keyY1);
                 index++;
             }
         }
@@ -143,32 +143,44 @@ public class DynamicGridKeyboard extends Keyboard {
         Settings.writeEmojiRecentKeys(mPrefs, jsonStr);
     }
 
-    private static Key getKey(final Collection<DynamicGridKeyboard> keyboards, final Object o) {
-        for (final DynamicGridKeyboard kbd : keyboards) {
-            if (o instanceof Integer) {
-                final int code = (Integer) o;
-                final Key key = kbd.getKey(code);
-                if (key != null) {
-                    return key;
-                }
-            } else if (o instanceof String) {
-                final String outputText = (String) o;
-                final Key key = kbd.getKeyFromOutputText(outputText);
-                if (key != null) {
-                    return key;
-                }
-            } else {
-                Log.w(TAG, "Invalid object: " + o);
+    private static Key getKeyByCode(final Collection<DynamicGridKeyboard> keyboards,
+            final int code) {
+        for (final DynamicGridKeyboard keyboard : keyboards) {
+            final Key key = keyboard.getKey(code);
+            if (key != null) {
+                return key;
             }
         }
         return null;
     }
 
-    public void loadRecentKeys(Collection<DynamicGridKeyboard> keyboards) {
+    private static Key getKeyByOutputText(final Collection<DynamicGridKeyboard> keyboards,
+            final String outputText) {
+        for (final DynamicGridKeyboard kbd : keyboards) {
+            final Key key = kbd.getKeyFromOutputText(outputText);
+            if (key != null) {
+                return key;
+            }
+        }
+        return null;
+    }
+
+    public void loadRecentKeys(final Collection<DynamicGridKeyboard> keyboards) {
         final String str = Settings.readEmojiRecentKeys(mPrefs);
         final List<Object> keys = StringUtils.jsonStrToList(str);
         for (final Object o : keys) {
-            addKeyLast(getKey(keyboards, o));
+            final Key key;
+            if (o instanceof Integer) {
+                final int code = (Integer)o;
+                key = getKeyByCode(keyboards, code);
+            } else if (o instanceof String) {
+                final String outputText = (String)o;
+                key = getKeyByOutputText(keyboards, outputText);
+            } else {
+                Log.w(TAG, "Invalid object: " + o);
+                continue;
+            }
+            addKeyLast(key);
         }
     }
 
@@ -217,7 +229,7 @@ public class DynamicGridKeyboard extends Keyboard {
             super(originalKey);
         }
 
-        public void updateCorrdinates(final int x0, final int y0, final int x1, final int y1) {
+        public void updateCoordinates(final int x0, final int y0, final int x1, final int y1) {
             mCurrentX = x0;
             mCurrentY = y0;
             getHitBox().set(x0, y0, x1, y1);

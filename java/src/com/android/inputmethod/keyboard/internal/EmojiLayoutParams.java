@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.inputmethod.keyboard;
+package com.android.inputmethod.keyboard.internal;
 
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.utils.ResourceUtils;
@@ -37,22 +37,22 @@ public class EmojiLayoutParams {
     private final int mBottomPadding;
     private final int mTopPadding;
 
-    public EmojiLayoutParams(Resources res) {
+    public EmojiLayoutParams(final Resources res) {
         final int defaultKeyboardHeight = ResourceUtils.getDefaultKeyboardHeight(res);
         final int defaultKeyboardWidth = ResourceUtils.getDefaultKeyboardWidth(res);
         mKeyVerticalGap = (int) res.getFraction(R.fraction.key_bottom_gap_holo,
-                (int) defaultKeyboardHeight, (int) defaultKeyboardHeight);
+                defaultKeyboardHeight, defaultKeyboardHeight);
         mBottomPadding = (int) res.getFraction(R.fraction.keyboard_bottom_padding_holo,
-                (int) defaultKeyboardHeight, (int) defaultKeyboardHeight);
+                defaultKeyboardHeight, defaultKeyboardHeight);
         mTopPadding = (int) res.getFraction(R.fraction.keyboard_top_padding_holo,
-                (int) defaultKeyboardHeight, (int) defaultKeyboardHeight);
+                defaultKeyboardHeight, defaultKeyboardHeight);
         mKeyHorizontalGap = (int) (res.getFraction(R.fraction.key_horizontal_gap_holo,
                 defaultKeyboardWidth, defaultKeyboardWidth));
         mEmojiCategoryPageIdViewHeight =
                 (int) (res.getDimension(R.dimen.emoji_category_page_id_height));
         final int baseheight = defaultKeyboardHeight - mBottomPadding - mTopPadding
                 + mKeyVerticalGap;
-        mEmojiActionBarHeight = ((int) baseheight) / DEFAULT_KEYBOARD_ROWS
+        mEmojiActionBarHeight = baseheight / DEFAULT_KEYBOARD_ROWS
                 - (mKeyVerticalGap - mBottomPadding) / 2;
         mEmojiPagerHeight = defaultKeyboardHeight - mEmojiActionBarHeight
                 - mEmojiCategoryPageIdViewHeight;
@@ -60,26 +60,26 @@ public class EmojiLayoutParams {
         mEmojiKeyboardHeight = mEmojiPagerHeight - mEmojiPagerBottomMargin - 1;
     }
 
-    public void setPagerProperties(ViewPager vp) {
+    public void setPagerProperties(final ViewPager vp) {
         final LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) vp.getLayoutParams();
         lp.height = mEmojiKeyboardHeight;
         lp.bottomMargin = mEmojiPagerBottomMargin;
         vp.setLayoutParams(lp);
     }
 
-    public void setCategoryPageIdViewProperties(LinearLayout ll) {
+    public void setCategoryPageIdViewProperties(final LinearLayout ll) {
         final LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) ll.getLayoutParams();
         lp.height = mEmojiCategoryPageIdViewHeight;
         ll.setLayoutParams(lp);
     }
 
-    public void setActionBarProperties(LinearLayout ll) {
+    public void setActionBarProperties(final LinearLayout ll) {
         final LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) ll.getLayoutParams();
         lp.height = mEmojiActionBarHeight - mBottomPadding;
         ll.setLayoutParams(lp);
     }
 
-    public void setKeyProperties(ImageView ib) {
+    public void setKeyProperties(final ImageView ib) {
         final LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) ib.getLayoutParams();
         lp.leftMargin = mKeyHorizontalGap / 2;
         lp.rightMargin = mKeyHorizontalGap / 2;

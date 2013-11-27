@@ -16,15 +16,16 @@
 
 package com.android.inputmethod.latin.utils;
 
-import com.android.inputmethod.annotations.UsedForTesting;
-import com.android.inputmethod.latin.Constants;
-import com.android.inputmethod.latin.settings.SettingsValues;
-
 import android.text.TextUtils;
 import android.util.JsonReader;
 import android.util.JsonWriter;
 import android.util.Log;
 
+import com.android.inputmethod.annotations.UsedForTesting;
+import com.android.inputmethod.latin.Constants;
+import com.android.inputmethod.latin.settings.SettingsValues;
+
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -383,7 +384,7 @@ public final class StringUtils {
         return false;
     }
 
-    public static boolean isEmptyStringOrWhiteSpaces(String s) {
+    public static boolean isEmptyStringOrWhiteSpaces(final String s) {
         final int N = codePointCount(s);
         for (int i = 0; i < N; ++i) {
             if (!Character.isWhitespace(s.codePointAt(i))) {
@@ -394,7 +395,7 @@ public final class StringUtils {
     }
 
     @UsedForTesting
-    public static String byteArrayToHexString(byte[] bytes) {
+    public static String byteArrayToHexString(final byte[] bytes) {
         if (bytes == null || bytes.length == 0) {
             return EMPTY_STRING;
         }
@@ -409,7 +410,7 @@ public final class StringUtils {
      * Convert hex string to byte array. The string length must be an even number.
      */
     @UsedForTesting
-    public static byte[] hexStringToByteArray(String hexString) {
+    public static byte[] hexStringToByteArray(final String hexString) {
         if (TextUtils.isEmpty(hexString)) {
             return null;
         }
@@ -426,19 +427,22 @@ public final class StringUtils {
         return bytes;
     }
 
-    public static List<Object> jsonStrToList(String s) {
-        final ArrayList<Object> retval = CollectionUtils.newArrayList();
+    private static final String INTEGER_CLASS_NAME = Integer.class.getSimpleName();
+    private static final String STRING_CLASS_NAME = String.class.getSimpleName();
+
+    public static List<Object> jsonStrToList(final String s) {
+        final ArrayList<Object> list = CollectionUtils.newArrayList();
         final JsonReader reader = new JsonReader(new StringReader(s));
         try {
             reader.beginArray();
-            while(reader.hasNext()) {
+            while (reader.hasNext()) {
                 reader.beginObject();
                 while (reader.hasNext()) {
                     final String name = reader.nextName();
-                    if (name.equals(Integer.class.getSimpleName())) {
-                        retval.add(reader.nextInt());
-                    } else if (name.equals(String.class.getSimpleName())) {
-                        retval.add(reader.nextString());
+                    if (name.equals(INTEGER_CLASS_NAME)) {
+                        list.add(reader.nextInt());
+                    } else if (name.equals(STRING_CLASS_NAME)) {
+                        list.add(reader.nextString());
                     } else {
                         Log.w(TAG, "Invalid name: " + name);
                         reader.skipValue();
@@ -447,18 +451,15 @@ public final class StringUtils {
                 reader.endObject();
             }
             reader.endArray();
-            return retval;
-        } catch (IOException e) {
+            return list;
+        } catch (final IOException e) {
         } finally {
-            try {
-                reader.close();
-            } catch (IOException e) {
-            }
+            close(reader);
         }
         return Collections.<Object>emptyList();
     }
 
-    public static String listToJsonStr(List<Object> list) {
+    public static String listToJsonStr(final List<Object> list) {
         if (list == null || list.isEmpty()) {
             return EMPTY_STRING;
         }
@@ -469,23 +470,28 @@ public final class StringUtils {
             for (final Object o : list) {
                 writer.beginObject();
                 if (o instanceof Integer) {
-                    writer.name(Integer.class.getSimpleName()).value((Integer)o);
+                    writer.name(INTEGER_CLASS_NAME).value((Integer)o);
                 } else if (o instanceof String) {
-                    writer.name(String.class.getSimpleName()).value((String)o);
+                    writer.name(STRING_CLASS_NAME).value((String)o);
                 }
                 writer.endObject();
             }
             writer.endArray();
             return sw.toString();
-        } catch (IOException e) {
+        } catch (final IOException e) {
         } finally {
-            try {
-                if (writer != null) {
-                    writer.close();
-                }
-            } catch (IOException e) {
-            }
+            close(writer);
         }
         return EMPTY_STRING;
+    }
+
+    private static void close(final Closeable closeable) {
+        try {
+            if (closeable != null) {
+                closeable.close();
+            }
+        } catch (final IOException e) {
+            // Ignore
+        }
     }
 }
