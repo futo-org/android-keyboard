@@ -23,14 +23,18 @@
 namespace latinime {
 
 class BigramDictContent;
+class DictionaryHeaderStructurePolicy;
 class TerminalPositionLookupTable;
 
 class Ver4BigramListPolicy : public DictionaryBigramsStructurePolicy {
  public:
     Ver4BigramListPolicy(BigramDictContent *const bigramDictContent,
-            const TerminalPositionLookupTable *const terminalPositionLookupTable)
+            const TerminalPositionLookupTable *const terminalPositionLookupTable,
+            const DictionaryHeaderStructurePolicy *const headerPolicy,
+            const bool needsToDecayWhenUpdating)
             : mBigramDictContent(bigramDictContent),
-              mTerminalPositionLookupTable(terminalPositionLookupTable) {}
+              mTerminalPositionLookupTable(terminalPositionLookupTable),
+              mHeaderPolicy(headerPolicy), mNeedsToDecayWhenUpdating(needsToDecayWhenUpdating) {}
 
     void getNextBigram(int *const outBigramPos, int *const outProbability,
             bool *const outHasNext, int *const bigramEntryPos) const;
@@ -54,8 +58,12 @@ class Ver4BigramListPolicy : public DictionaryBigramsStructurePolicy {
 
     int getEntryPosToUpdate(const int targetTerminalIdToFind, const int bigramListPos) const;
 
+    int getUpdatedProbability(const int originalProbability, const int newProbability) const;
+
     BigramDictContent *const mBigramDictContent;
     const TerminalPositionLookupTable *const mTerminalPositionLookupTable;
+    const DictionaryHeaderStructurePolicy *const mHeaderPolicy;
+    const bool mNeedsToDecayWhenUpdating;
 };
 } // namespace latinime
 #endif /* LATINIME_VER4_BIGRAM_LIST_POLICY_H */
