@@ -193,6 +193,7 @@ public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
 
     @Override
     protected void tearDown() {
+        mLatinIME.mHandler.removeAllMessages();
         setStringPreference(PREF_AUTO_CORRECTION_THRESHOLD, mPreviousAutoCorrectSetting,
                 DEFAULT_AUTO_CORRECTION_THRESHOLD);
         setDebugMode(mPreviousDebugSetting);

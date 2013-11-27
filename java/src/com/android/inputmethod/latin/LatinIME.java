@@ -233,6 +233,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         private static final int MSG_REOPEN_DICTIONARIES = 5;
         private static final int MSG_ON_END_BATCH_INPUT = 6;
         private static final int MSG_RESET_CACHES = 7;
+        // Update this when adding new messages
+        private static final int MSG_LAST = MSG_RESET_CACHES;
 
         private static final int ARG1_NOT_GESTURE_INPUT = 0;
         private static final int ARG1_DISMISS_GESTURE_FLOATING_PREVIEW_TEXT = 1;
@@ -342,6 +344,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         public void cancelUpdateShiftState() {
             removeMessages(MSG_UPDATE_SHIFT_STATE);
+        }
+
+        @UsedForTesting
+        public void removeAllMessages() {
+            for (int i = 0; i <= MSG_LAST; ++i) {
+                removeMessages(i);
+            }
         }
 
         public void showGesturePreviewAndSuggestionStrip(final SuggestedWords suggestedWords,
