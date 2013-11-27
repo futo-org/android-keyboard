@@ -67,7 +67,7 @@ public final class SettingsValues {
     public final boolean mVibrateOn;
     public final boolean mSoundOn;
     public final boolean mKeyPreviewPopupOn;
-    private final boolean mShowsVoiceInputKey;
+    public final boolean mShowsVoiceInputKey;
     public final boolean mIncludesOtherImesInLanguageSwitchList;
     public final boolean mShowsLanguageSwitchKey;
     public final boolean mUseContactsDict;
@@ -269,13 +269,6 @@ public final class SettingsValues {
 
     public boolean shouldInsertSpacesAutomatically() {
         return mInputAttributes.mShouldInsertSpacesAutomatically;
-    }
-
-    public boolean isVoiceKeyEnabled(final EditorInfo editorInfo) {
-        final boolean shortcutImeEnabled = SubtypeSwitcher.getInstance().isShortcutImeEnabled();
-        final int inputType = (editorInfo != null) ? editorInfo.inputType : 0;
-        return shortcutImeEnabled && mShowsVoiceInputKey
-                && !InputTypeUtils.isPasswordInputType(inputType);
     }
 
     public boolean isLanguageSwitchKeyEnabled() {

@@ -1357,8 +1357,9 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     private static final LogStatement LOGSTATEMENT_MAINKEYBOARDVIEW_SETKEYBOARD =
             new LogStatement("MainKeyboardViewSetKeyboard", false, false, "elementId", "locale",
                     "orientation", "width", "modeName", "action", "navigateNext",
-                    "navigatePrevious", "clobberSettingsKey", "passwordInput", "shortcutKeyEnabled",
-                    "hasShortcutKey", "languageSwitchKeyEnabled", "isMultiLine", "tw", "th",
+                    "navigatePrevious", "clobberSettingsKey", "passwordInput",
+                    "supportsSwitchingToShortcutIme", "hasShortcutKey", "languageSwitchKeyEnabled",
+                    "isMultiLine", "tw", "th",
                     "keys");
     public static void mainKeyboardView_setKeyboard(final Keyboard keyboard,
             final int orientation) {
@@ -1371,7 +1372,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                 kid.mLocale + ":" + kid.mSubtype.getExtraValueOf(KEYBOARD_LAYOUT_SET),
                 orientation, kid.mWidth, KeyboardId.modeName(kid.mMode), kid.imeAction(),
                 kid.navigateNext(), kid.navigatePrevious(), kid.mClobberSettingsKey,
-                isPasswordView, kid.mShortcutKeyEnabled, kid.mHasShortcutKey,
+                isPasswordView, kid.mSupportsSwitchingToShortcutIme, kid.mHasShortcutKey,
                 kid.mLanguageSwitchKeyEnabled, kid.isMultiLine(), keyboard.mOccupiedWidth,
                 keyboard.mOccupiedHeight, keyboard.getKeys());
     }

@@ -649,8 +649,9 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
                     R.styleable.Keyboard_Case_passwordInput, id.passwordInput());
             final boolean clobberSettingsKeyMatched = matchBoolean(caseAttr,
                     R.styleable.Keyboard_Case_clobberSettingsKey, id.mClobberSettingsKey);
-            final boolean shortcutKeyEnabledMatched = matchBoolean(caseAttr,
-                    R.styleable.Keyboard_Case_shortcutKeyEnabled, id.mShortcutKeyEnabled);
+            final boolean supportsSwitchingToShortcutImeMatched = matchBoolean(caseAttr,
+                    R.styleable.Keyboard_Case_supportsSwitchingToShortcutIme,
+                    id.mSupportsSwitchingToShortcutIme);
             final boolean hasShortcutKeyMatched = matchBoolean(caseAttr,
                     R.styleable.Keyboard_Case_hasShortcutKey, id.mHasShortcutKey);
             final boolean languageSwitchKeyEnabledMatched = matchBoolean(caseAttr,
@@ -669,7 +670,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
             final boolean selected = keyboardLayoutSetMatched && keyboardLayoutSetElementMatched
                     && modeMatched && navigateNextMatched && navigatePreviousMatched
                     && passwordInputMatched && clobberSettingsKeyMatched
-                    && shortcutKeyEnabledMatched && hasShortcutKeyMatched
+                    && supportsSwitchingToShortcutImeMatched && hasShortcutKeyMatched
                     && languageSwitchKeyEnabledMatched && isMultiLineMatched && imeActionMatched
                     && localeCodeMatched && languageCodeMatched && countryCodeMatched;
 
@@ -691,8 +692,9 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
                                 "clobberSettingsKey"),
                         booleanAttr(caseAttr, R.styleable.Keyboard_Case_passwordInput,
                                 "passwordInput"),
-                        booleanAttr(caseAttr, R.styleable.Keyboard_Case_shortcutKeyEnabled,
-                                "shortcutKeyEnabled"),
+                        booleanAttr(
+                                caseAttr, R.styleable.Keyboard_Case_supportsSwitchingToShortcutIme,
+                                "supportsSwitchingToShortcutIme"),
                         booleanAttr(caseAttr, R.styleable.Keyboard_Case_hasShortcutKey,
                                 "hasShortcutKey"),
                         booleanAttr(caseAttr, R.styleable.Keyboard_Case_languageSwitchKeyEnabled,
