@@ -35,7 +35,7 @@ public final class LatinImeLoggerUtils {
     public static void onSeparator(final int code, final int x, final int y) {
         // Helper method to log a single code point separator
         // TODO: cache this mapping of a code point to a string in a sparse array in StringUtils
-        onSeparator(new String(new int[]{code}, 0, 1), x, y);
+        onSeparator(StringUtils.newSingleCodePointString(code), x, y);
     }
 
     public static void onSeparator(final String separator, final int x, final int y) {

@@ -428,7 +428,7 @@ public final class RichInputConnection {
                 }
                 break;
             default:
-                final String text = new String(new int[] { keyEvent.getUnicodeChar() }, 0, 1);
+                final String text = StringUtils.newSingleCodePointString(keyEvent.getUnicodeChar());
                 mCommittedTextBeforeComposingText.append(text);
                 mExpectedSelStart += text.length();
                 mExpectedSelEnd = mExpectedSelStart;
