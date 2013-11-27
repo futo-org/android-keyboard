@@ -27,15 +27,6 @@
         latin:backgroundType="functional"
         latin:keyLabel="/" />
 
-    <switch>
-        <case latin:hasShortcutKey="true" >
-            <Key latin:keyStyle="shortcutKeyStyle" />
-        </case>
-        <!-- latin:hasShortcutKey="false" -->
-        <default>
-        </default>
-    </switch>
-
     <include latin:keyboardLayout="@xml/key_space_symbols" />
     <include latin:keyboardLayout="@xml/keys_comma_period" />
 

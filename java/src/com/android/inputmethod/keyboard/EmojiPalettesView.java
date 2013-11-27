@@ -412,7 +412,8 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
         builder.setSubtype(SubtypeSwitcher.getInstance().getEmojiSubtype());
         builder.setKeyboardGeometry(ResourceUtils.getDefaultKeyboardWidth(res),
                 mEmojiLayoutParams.mEmojiKeyboardHeight);
-        builder.setOptions(false /* voiceKeyEnabled */, false /* lanuageSwitchKeyEnabled */);
+        builder.setOptions(false /* shortcutImeEnabled */, false /* showsVoiceInputKey */,
+                false /* languageSwitchKeyEnabled */);
         mEmojiCategory = new EmojiCategory(PreferenceManager.getDefaultSharedPreferences(context),
                 context.getResources(), builder.build());
         mDeleteKeyOnTouchListener = new DeleteKeyOnTouchListener(context);
