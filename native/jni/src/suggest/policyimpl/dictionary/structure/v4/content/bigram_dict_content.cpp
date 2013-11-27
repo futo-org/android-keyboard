@@ -103,6 +103,7 @@ bool BigramDictContent::runGC(const TerminalPositionLookupTable::TerminalIdMap *
     return true;
 }
 
+// Returns whether GC for the bigram list was succeeded or not.
 bool BigramDictContent::runGCBigramList(const int bigramListPos,
         const BigramDictContent *const sourceBigramDictContent, const int toPos,
         const TerminalPositionLookupTable::TerminalIdMap *const terminalIdMap,
@@ -121,9 +122,8 @@ bool BigramDictContent::runGCBigramList(const int bigramListPos,
         TerminalPositionLookupTable::TerminalIdMap::const_iterator it =
                 terminalIdMap->find(targetTerminalId);
         if (it == terminalIdMap->end()) {
-            AKLOGE("terminal Id %d is not in the terminal position map. map size: %zd",
-                    targetTerminalId, terminalIdMap->size());
-            return false;
+            // Target word has been removed.
+            continue;
         }
         if (!writeBigramEntryAndAdvancePosition(probability, hasNext, it->second,
                 &writingPos)) {
