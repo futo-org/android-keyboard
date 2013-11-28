@@ -57,6 +57,7 @@ import com.android.inputmethod.keyboard.internal.GestureFloatingPreviewText;
 import com.android.inputmethod.keyboard.internal.GestureTrailsPreview;
 import com.android.inputmethod.keyboard.internal.KeyDrawParams;
 import com.android.inputmethod.keyboard.internal.KeyPreviewDrawParams;
+import com.android.inputmethod.keyboard.internal.MainKeyboardViewDrawingHandler;
 import com.android.inputmethod.keyboard.internal.NonDistinctMultitouchHelper;
 import com.android.inputmethod.keyboard.internal.PreviewPlacerView;
 import com.android.inputmethod.keyboard.internal.SlidingKeyInputPreview;
@@ -387,49 +388,8 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         }
     }
 
-    private final DrawingHandler mDrawingHandler = new DrawingHandler(this);
-
-    public static class DrawingHandler extends StaticInnerHandlerWrapper<MainKeyboardView> {
-        private static final int MSG_DISMISS_KEY_PREVIEW = 0;
-        private static final int MSG_DISMISS_GESTURE_FLOATING_PREVIEW_TEXT = 1;
-
-        public DrawingHandler(final MainKeyboardView outerInstance) {
-            super(outerInstance);
-        }
-
-        @Override
-        public void handleMessage(final Message msg) {
-            final MainKeyboardView mainKeyboardView = getOuterInstance();
-            if (mainKeyboardView == null) return;
-            switch (msg.what) {
-            case MSG_DISMISS_KEY_PREVIEW:
-                mainKeyboardView.dismissKeyPreviewWithoutDelay((Key)msg.obj);
-                break;
-            case MSG_DISMISS_GESTURE_FLOATING_PREVIEW_TEXT:
-                mainKeyboardView.showGestureFloatingPreviewText(SuggestedWords.EMPTY);
-                break;
-            }
-        }
-
-        public void dismissKeyPreview(final long delay, final Key key) {
-            sendMessageDelayed(obtainMessage(MSG_DISMISS_KEY_PREVIEW, key), delay);
-        }
-
-        private void cancelAllDismissKeyPreviews() {
-            removeMessages(MSG_DISMISS_KEY_PREVIEW);
-            final MainKeyboardView mainKeyboardView = getOuterInstance();
-            if (mainKeyboardView == null) return;
-            mainKeyboardView.dismissAllKeyPreviews();
-        }
-
-        public void dismissGestureFloatingPreviewText(final long delay) {
-            sendMessageDelayed(obtainMessage(MSG_DISMISS_GESTURE_FLOATING_PREVIEW_TEXT), delay);
-        }
-
-        public void cancelAllMessages() {
-            cancelAllDismissKeyPreviews();
-        }
-    }
+    private final MainKeyboardViewDrawingHandler mDrawingHandler =
+            new MainKeyboardViewDrawingHandler(this);
 
     public MainKeyboardView(final Context context, final AttributeSet attrs) {
         this(context, attrs, R.attr.mainKeyboardViewStyle);
@@ -721,7 +681,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         return previewTextView;
     }
 
-    private void dismissAllKeyPreviews() {
+    public void dismissAllKeyPreviews() {
         for (final Key key : new HashSet<Key>(mShowingKeyPreviewTextViews.keySet())) {
             dismissKeyPreviewWithoutDelay(key);
         }
@@ -915,7 +875,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     }
 
     // TODO: Take this method out of this class.
-    private void dismissKeyPreviewWithoutDelay(final Key key) {
+    public void dismissKeyPreviewWithoutDelay(final Key key) {
         if (key == null) {
             return;
         }
