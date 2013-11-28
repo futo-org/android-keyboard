@@ -39,9 +39,10 @@ class DynamicPatriciaTrieNodeWriter : public PtNodeWriter {
     DynamicPatriciaTrieNodeWriter(BufferWithExtendableBuffer *const buffer,
             const DynamicPatriciaTrieNodeReader *const ptNodeReader,
             DynamicBigramListPolicy *const bigramPolicy,
-            DynamicShortcutListPolicy *const shortcutPolicy)
+            DynamicShortcutListPolicy *const shortcutPolicy, const bool needsToDecayWhenUpdating)
             : mBuffer(buffer), mPtNodeReader(ptNodeReader), mReadingHelper(mBuffer, ptNodeReader),
-              mBigramPolicy(bigramPolicy), mShortcutPolicy(shortcutPolicy) {}
+              mBigramPolicy(bigramPolicy), mShortcutPolicy(shortcutPolicy),
+              mNeedsToDecayWhenUpdating(needsToDecayWhenUpdating) {}
 
     virtual ~DynamicPatriciaTrieNodeWriter() {}
 
@@ -58,6 +59,9 @@ class DynamicPatriciaTrieNodeWriter : public PtNodeWriter {
 
     virtual bool writePtNodeAndAdvancePosition(const PtNodeParams *const ptNodeParams,
             int *const ptNodeWritingPos);
+
+    virtual bool writeNewTerminalPtNodeAndAdvancePosition(
+            const PtNodeParams *const ptNodeParams, int *const ptNodeWritingPos);
 
     virtual bool addNewBigramEntry(const PtNodeParams *const sourcePtNodeParams,
             const PtNodeParams *const targetPtNodeParam, const int probability,
@@ -76,6 +80,12 @@ class DynamicPatriciaTrieNodeWriter : public PtNodeWriter {
  private:
     DISALLOW_COPY_AND_ASSIGN(DynamicPatriciaTrieNodeWriter);
 
+    bool writePtNodeAndGetProbabilityFieldPosAndAdvancePosition(
+            const PtNodeParams *const ptNodeParams, int *const outProbabilityFieldPos,
+            int *const ptNodeWritingPos);
+
+    int getUpdatedProbability(const int originalProbability, const int newProbability) const;
+
     static const int CHILDREN_POSITION_FIELD_SIZE;
 
     BufferWithExtendableBuffer *const mBuffer;
@@ -83,7 +93,7 @@ class DynamicPatriciaTrieNodeWriter : public PtNodeWriter {
     DynamicPatriciaTrieReadingHelper mReadingHelper;
     DynamicBigramListPolicy *const mBigramPolicy;
     DynamicShortcutListPolicy *const mShortcutPolicy;
-
+    const bool mNeedsToDecayWhenUpdating;
 };
 } // namespace latinime
 #endif /* LATINIME_DYNAMIC_PATRICIA_TRIE_NODE_WRITER_H */

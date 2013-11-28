@@ -22,7 +22,6 @@
 #include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_reading_helper.h"
 #include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_writing_utils.h"
 #include "suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer.h"
-#include "suggest/policyimpl/dictionary/utils/forgetting_curve_utils.h"
 
 namespace latinime {
 
@@ -53,9 +52,7 @@ bool DynamicPatriciaTrieUpdatingHelper::addUnigramWord(
             if (nextIndex >= codePointCount || !readingHelper->isMatchedCodePoint(ptNodeParams, j,
                     wordCodePoints[matchedCodePointCount + j])) {
                 *outAddedNewUnigram = true;
-                return reallocatePtNodeAndAddNewPtNodes(&ptNodeParams, j,
-                        getUpdatedProbability(NOT_A_PROBABILITY /* originalProbability */,
-                                probability),
+                return reallocatePtNodeAndAddNewPtNodes(&ptNodeParams, j, probability,
                         wordCodePoints + matchedCodePointCount,
                         codePointCount - matchedCodePointCount);
             }
@@ -66,8 +63,7 @@ bool DynamicPatriciaTrieUpdatingHelper::addUnigramWord(
         }
         if (!ptNodeParams.hasChildren()) {
             *outAddedNewUnigram = true;
-            return createChildrenPtNodeArrayAndAChildPtNode(&ptNodeParams,
-                    getUpdatedProbability(NOT_A_PROBABILITY /* originalProbability */, probability),
+            return createChildrenPtNodeArrayAndAChildPtNode(&ptNodeParams, probability,
                     wordCodePoints + readingHelper->getTotalCodePointCount(ptNodeParams),
                     codePointCount - readingHelper->getTotalCodePointCount(ptNodeParams));
         }
@@ -83,8 +79,7 @@ bool DynamicPatriciaTrieUpdatingHelper::addUnigramWord(
     *outAddedNewUnigram = true;
     return createAndInsertNodeIntoPtNodeArray(parentPos,
             wordCodePoints + readingHelper->getPrevTotalCodePointCount(),
-            codePointCount - readingHelper->getPrevTotalCodePointCount(),
-            getUpdatedProbability(NOT_A_PROBABILITY /* originalProbability */, probability), &pos);
+            codePointCount - readingHelper->getPrevTotalCodePointCount(), probability, &pos);
 }
 
 bool DynamicPatriciaTrieUpdatingHelper::addBigramWords(const int word0Pos, const int word1Pos,
@@ -124,19 +119,18 @@ bool DynamicPatriciaTrieUpdatingHelper::setPtNodeProbability(
     if (originalPtNodeParams->isTerminal()) {
         // Overwrites the probability.
         *outAddedNewUnigram = false;
-        const int probabilityToWrite = getUpdatedProbability(
-                originalPtNodeParams->getProbability(), probability);
-        return mPtNodeWriter->updatePtNodeProbability(originalPtNodeParams, probabilityToWrite);
+        return mPtNodeWriter->updatePtNodeProbability(originalPtNodeParams, probability);
     } else {
         // Make the node terminal and write the probability.
         *outAddedNewUnigram = true;
         const int movedPos = mBuffer->getTailPosition();
         int writingPos = movedPos;
         const PtNodeParams ptNodeParamsToWrite(getUpdatedPtNodeParams(originalPtNodeParams,
-                originalPtNodeParams->getParentPos(), originalPtNodeParams->getCodePointCount(),
-                originalPtNodeParams->getCodePoints(),
-                getUpdatedProbability(NOT_A_PROBABILITY /* originalProbability */, probability)));
-        if (!mPtNodeWriter->writePtNodeAndAdvancePosition(&ptNodeParamsToWrite, &writingPos)) {
+                true /* isTerminal */, originalPtNodeParams->getParentPos(),
+                originalPtNodeParams->getCodePointCount(), originalPtNodeParams->getCodePoints(),
+                probability));
+        if (!mPtNodeWriter->writeNewTerminalPtNodeAndAdvancePosition(&ptNodeParamsToWrite,
+                &writingPos)) {
             return false;
         }
         if (!mPtNodeWriter->markPtNodeAsMoved(originalPtNodeParams, movedPos, movedPos)) {
@@ -165,9 +159,10 @@ bool DynamicPatriciaTrieUpdatingHelper::createNewPtNodeArrayWithAChildPtNode(
             1 /* arraySize */, &writingPos)) {
         return false;
     }
-    const PtNodeParams ptNodeParamsToWrite(getPtNodeParamsForNewPtNode(
+    const PtNodeParams ptNodeParamsToWrite(getPtNodeParamsForNewPtNode(true /* isTerminal */,
             parentPtNodePos, nodeCodePointCount, nodeCodePoints, probability));
-    if (!mPtNodeWriter->writePtNodeAndAdvancePosition(&ptNodeParamsToWrite, &writingPos)) {
+    if (!mPtNodeWriter->writeNewTerminalPtNodeAndAdvancePosition(&ptNodeParamsToWrite,
+            &writingPos)) {
         return false;
     }
     if (!DynamicPatriciaTrieWritingUtils::writeForwardLinkPositionAndAdvancePosition(mBuffer,
@@ -194,12 +189,21 @@ bool DynamicPatriciaTrieUpdatingHelper::reallocatePtNodeAndAddNewPtNodes(
     int writingPos = firstPartOfReallocatedPtNodePos;
     // Write the 1st part of the reallocating node. The children position will be updated later
     // with actual children position.
-    const int newProbability = addsExtraChild ? NOT_A_PROBABILITY : probabilityOfNewPtNode;
-    const PtNodeParams ptNodeParamsToWrite(getPtNodeParamsForNewPtNode(
-            reallocatingPtNodeParams->getParentPos(), overlappingCodePointCount,
-            reallocatingPtNodeParams->getCodePoints(), newProbability));
-    if (!mPtNodeWriter->writePtNodeAndAdvancePosition(&ptNodeParamsToWrite, &writingPos)) {
-        return false;
+    if (addsExtraChild) {
+        const PtNodeParams ptNodeParamsToWrite(getPtNodeParamsForNewPtNode(false /* isTerminal */,
+                reallocatingPtNodeParams->getParentPos(), overlappingCodePointCount,
+                reallocatingPtNodeParams->getCodePoints(), NOT_A_PROBABILITY));
+        if (!mPtNodeWriter->writePtNodeAndAdvancePosition(&ptNodeParamsToWrite, &writingPos)) {
+            return false;
+        }
+    } else {
+        const PtNodeParams ptNodeParamsToWrite(getPtNodeParamsForNewPtNode(true /* isTerminal */,
+                reallocatingPtNodeParams->getParentPos(), overlappingCodePointCount,
+                reallocatingPtNodeParams->getCodePoints(), probabilityOfNewPtNode));
+        if (!mPtNodeWriter->writeNewTerminalPtNodeAndAdvancePosition(&ptNodeParamsToWrite,
+                &writingPos)) {
+            return false;
+        }
     }
     const int actualChildrenPos = writingPos;
     // Create new children PtNode array.
@@ -211,7 +215,7 @@ bool DynamicPatriciaTrieUpdatingHelper::reallocatePtNodeAndAddNewPtNodes(
     // Write the 2nd part of the reallocating node.
     const int secondPartOfReallocatedPtNodePos = writingPos;
     const PtNodeParams childPartPtNodeParams(getUpdatedPtNodeParams(reallocatingPtNodeParams,
-            firstPartOfReallocatedPtNodePos,
+            reallocatingPtNodeParams->isTerminal(), firstPartOfReallocatedPtNodePos,
             reallocatingPtNodeParams->getCodePointCount() - overlappingCodePointCount,
             reallocatingPtNodeParams->getCodePoints() + overlappingCodePointCount,
             reallocatingPtNodeParams->getProbability()));
@@ -219,10 +223,11 @@ bool DynamicPatriciaTrieUpdatingHelper::reallocatePtNodeAndAddNewPtNodes(
         return false;
     }
     if (addsExtraChild) {
-        const PtNodeParams extraChildPtNodeParams(getPtNodeParamsForNewPtNode(
+        const PtNodeParams extraChildPtNodeParams(getPtNodeParamsForNewPtNode(true /* isTerminal */,
                 firstPartOfReallocatedPtNodePos, newNodeCodePointCount - overlappingCodePointCount,
                 newNodeCodePoints + overlappingCodePointCount, probabilityOfNewPtNode));
-        if (!mPtNodeWriter->writePtNodeAndAdvancePosition(&extraChildPtNodeParams, &writingPos)) {
+        if (!mPtNodeWriter->writeNewTerminalPtNodeAndAdvancePosition(&extraChildPtNodeParams,
+                &writingPos)) {
             return false;
         }
     }
@@ -242,22 +247,11 @@ bool DynamicPatriciaTrieUpdatingHelper::reallocatePtNodeAndAddNewPtNodes(
     return mPtNodeWriter->updateChildrenPosition(&ptNodeParams, actualChildrenPos);
 }
 
-int DynamicPatriciaTrieUpdatingHelper::getUpdatedProbability(const int originalProbability,
-        const int newProbability) const {
-    if (mNeedsToDecay) {
-        return ForgettingCurveUtils::getUpdatedEncodedProbability(originalProbability,
-                newProbability);
-    } else {
-        return newProbability;
-    }
-}
-
 const PtNodeParams DynamicPatriciaTrieUpdatingHelper::getUpdatedPtNodeParams(
-        const PtNodeParams *const originalPtNodeParams, const int parentPos,
+        const PtNodeParams *const originalPtNodeParams, const bool isTerminal, const int parentPos,
         const int codePointCount, const int *const codePoints, const int probability) const {
     const PatriciaTrieReadingUtils::NodeFlags flags = PatriciaTrieReadingUtils::createAndGetFlags(
-            originalPtNodeParams->isBlacklisted(), originalPtNodeParams->isNotAWord(),
-            probability != NOT_A_PROBABILITY /* isTerminal */,
+            originalPtNodeParams->isBlacklisted(), originalPtNodeParams->isNotAWord(), isTerminal,
             originalPtNodeParams->hasShortcutTargets(), originalPtNodeParams->hasBigrams(),
             codePointCount > 1 /* hasMultipleChars */, CHILDREN_POSITION_FIELD_SIZE);
     return PtNodeParams(originalPtNodeParams, flags, parentPos, codePointCount, codePoints,
@@ -265,11 +259,10 @@ const PtNodeParams DynamicPatriciaTrieUpdatingHelper::getUpdatedPtNodeParams(
 }
 
 const PtNodeParams DynamicPatriciaTrieUpdatingHelper::getPtNodeParamsForNewPtNode(
-        const int parentPos, const int codePointCount, const int *const codePoints,
-        const int probability) const {
+        const bool isTerminal, const int parentPos, const int codePointCount,
+        const int *const codePoints, const int probability) const {
     const PatriciaTrieReadingUtils::NodeFlags flags = PatriciaTrieReadingUtils::createAndGetFlags(
-            false /* isBlacklisted */, false /* isNotAWord */,
-            probability != NOT_A_PROBABILITY /* isTerminal */,
+            false /* isBlacklisted */, false /* isNotAWord */, isTerminal,
             false /* hasShortcutTargets */, false /* hasBigrams */,
             codePointCount > 1 /* hasMultipleChars */, CHILDREN_POSITION_FIELD_SIZE);
     return PtNodeParams(flags, parentPos, codePointCount, codePoints, probability);

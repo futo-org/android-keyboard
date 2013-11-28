@@ -57,6 +57,9 @@ class PtNodeWriter {
     virtual bool writePtNodeAndAdvancePosition(const PtNodeParams *const ptNodeParams,
             int *const ptNodeWritingPos) = 0;
 
+    virtual bool writeNewTerminalPtNodeAndAdvancePosition(const PtNodeParams *const ptNodeParams,
+            int *const ptNodeWritingPos) = 0;
+
     virtual bool addNewBigramEntry(const PtNodeParams *const sourcePtNodeParams,
             const PtNodeParams *const targetPtNodeParam, const int probability,
             bool *const outAddedNewBigram) = 0;
