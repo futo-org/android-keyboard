@@ -297,7 +297,7 @@ static void latinime_BinaryDictionary_addUnigramWord(JNIEnv *env, jclass clazz, 
     if (shortcutTarget) {
         env->GetIntArrayRegion(shortcutTarget, 0, shortcutLength, shortcutTargetCodePoints);
     }
-    dictionary->addUnigramWord(codePoints, wordLength, probability);
+    dictionary->addUnigramWord(codePoints, wordLength, probability, timeStamp);
 }
 
 static void latinime_BinaryDictionary_addBigramWords(JNIEnv *env, jclass clazz, jlong dict,
@@ -313,7 +313,7 @@ static void latinime_BinaryDictionary_addBigramWords(JNIEnv *env, jclass clazz, 
     int word1CodePoints[word1Length];
     env->GetIntArrayRegion(word1, 0, word1Length, word1CodePoints);
     dictionary->addBigramWords(word0CodePoints, word0Length, word1CodePoints,
-            word1Length, probability);
+            word1Length, probability, timeStamp);
 }
 
 static void latinime_BinaryDictionary_removeBigramWords(JNIEnv *env, jclass clazz, jlong dict,
@@ -348,13 +348,15 @@ static int latinime_BinaryDictionary_addMultipleDictionaryEntries(JNIEnv *env, j
     jclass languageModelParamClass = env->GetObjectClass(languageModelParam);
     env->DeleteLocalRef(languageModelParam);
 
-    // TODO: Support shortcut, timestamp and flags.
+    // TODO: Support shortcut and flags.
     jfieldID word0FieldId = env->GetFieldID(languageModelParamClass, "mWord0", "[I");
     jfieldID word1FieldId = env->GetFieldID(languageModelParamClass, "mWord1", "[I");
     jfieldID unigramProbabilityFieldId =
             env->GetFieldID(languageModelParamClass, "mUnigramProbability", "I");
     jfieldID bigramProbabilityFieldId =
             env->GetFieldID(languageModelParamClass, "mBigramProbability", "I");
+    jfieldID timeStampFieldId =
+            env->GetFieldID(languageModelParamClass, "mTimeStamp", "I");
     env->DeleteLocalRef(languageModelParamClass);
 
     for (int i = startIndex; i < languageModelParamCount; ++i) {
@@ -375,11 +377,12 @@ static int latinime_BinaryDictionary_addMultipleDictionaryEntries(JNIEnv *env, j
         int word1CodePoints[word1Length];
         env->GetIntArrayRegion(word1, 0, word1Length, word1CodePoints);
         jint unigramProbability = env->GetIntField(languageModelParam, unigramProbabilityFieldId);
-        dictionary->addUnigramWord(word1CodePoints, word1Length, unigramProbability);
+        jint timeStamp = env->GetIntField(languageModelParam, timeStampFieldId);
+        dictionary->addUnigramWord(word1CodePoints, word1Length, unigramProbability, timeStamp);
         if (word0) {
             jint bigramProbability = env->GetIntField(languageModelParam, bigramProbabilityFieldId);
             dictionary->addBigramWords(word0CodePoints, word0Length, word1CodePoints, word1Length,
-                    bigramProbability);
+                    bigramProbability, timeStamp);
         }
         if (dictionary->needsToRunGC(true /* mindsBlockByGC */)) {
             return i + 1;

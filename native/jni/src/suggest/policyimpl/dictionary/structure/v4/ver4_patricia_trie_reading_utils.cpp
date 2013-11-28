@@ -16,8 +16,6 @@
 
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_patricia_trie_reading_utils.h"
 
-#include "suggest/policyimpl/dictionary/structure/v4/ver4_dict_constants.h"
-#include "suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer.h"
 #include "suggest/policyimpl/dictionary/utils/byte_array_utils.h"
 
 namespace latinime {
@@ -25,14 +23,6 @@ namespace latinime {
 /* static */ int Ver4PatriciaTrieReadingUtils::getTerminalIdAndAdvancePosition(
         const uint8_t *const buffer, int *pos) {
     return ByteArrayUtils::readUint32AndAdvancePosition(buffer, pos);
-}
-
-/* static */ int Ver4PatriciaTrieReadingUtils::getProbability(
-        const BufferWithExtendableBuffer *const probabilityBuffer, const int terminalId) {
-    const int pos = terminalId * (Ver4DictConstants::FLAGS_IN_PROBABILITY_FILE_SIZE
-            + Ver4DictConstants::PROBABILITY_SIZE)
-                    + Ver4DictConstants::FLAGS_IN_PROBABILITY_FILE_SIZE;
-    return probabilityBuffer->readUint(Ver4DictConstants::PROBABILITY_SIZE, pos);
 }
 
 } // namespace latinime

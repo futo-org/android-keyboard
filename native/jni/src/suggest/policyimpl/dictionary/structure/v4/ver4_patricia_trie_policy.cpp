@@ -137,7 +137,7 @@ int Ver4PatriciaTriePolicy::getBigramsPositionOfPtNode(const int ptNodePos) cons
 }
 
 bool Ver4PatriciaTriePolicy::addUnigramWord(const int *const word, const int length,
-        const int probability) {
+        const int probability, const int timestamp) {
     if (!mBuffers.get()->isUpdatable()) {
         AKLOGI("Warning: addUnigramWord() is called for non-updatable dictionary.");
         return false;
@@ -150,7 +150,7 @@ bool Ver4PatriciaTriePolicy::addUnigramWord(const int *const word, const int len
     DynamicPatriciaTrieReadingHelper readingHelper(mDictBuffer, &mNodeReader);
     readingHelper.initWithPtNodeArrayPos(getRootPosition());
     bool addedNewUnigram = false;
-    if (mUpdatingHelper.addUnigramWord(&readingHelper, word, length, probability,
+    if (mUpdatingHelper.addUnigramWord(&readingHelper, word, length, probability, timestamp,
             &addedNewUnigram)) {
         if (addedNewUnigram) {
             mUnigramCount++;
@@ -162,7 +162,8 @@ bool Ver4PatriciaTriePolicy::addUnigramWord(const int *const word, const int len
 }
 
 bool Ver4PatriciaTriePolicy::addBigramWords(const int *const word0, const int length0,
-        const int *const word1, const int length1, const int probability) {
+        const int *const word1, const int length1, const int probability,
+        const int timestamp) {
     if (!mBuffers.get()->isUpdatable()) {
         AKLOGI("Warning: addBigramWords() is called for non-updatable dictionary.");
         return false;
@@ -183,7 +184,8 @@ bool Ver4PatriciaTriePolicy::addBigramWords(const int *const word0, const int le
         return false;
     }
     bool addedNewBigram = false;
-    if (mUpdatingHelper.addBigramWords(word0Pos, word1Pos, probability, &addedNewBigram)) {
+    if (mUpdatingHelper.addBigramWords(word0Pos, word1Pos, probability, timestamp,
+            &addedNewBigram)) {
         if (addedNewBigram) {
             mBigramCount++;
         }

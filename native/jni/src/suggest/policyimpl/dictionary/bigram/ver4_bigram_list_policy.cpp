@@ -36,7 +36,7 @@ void Ver4BigramListPolicy::getNextBigram(int *const outBigramPos, int *const out
 }
 
 bool Ver4BigramListPolicy::addNewEntry(const int terminalId, const int newTargetTerminalId,
-        const int newProbability, bool *const outAddedNewEntry) {
+        const int newProbability, const int timestamp, bool *const outAddedNewEntry) {
     if (outAddedNewEntry) {
         *outAddedNewEntry = false;
     }

@@ -47,7 +47,9 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
               mBigramCount(HeaderReadWriteUtils::readIntAttributeValue(&mAttributeMap,
                       BIGRAM_COUNT_KEY, 0 /* defaultValue */)),
               mExtendedRegionSize(HeaderReadWriteUtils::readIntAttributeValue(&mAttributeMap,
-                      EXTENDED_REGION_SIZE_KEY, 0 /* defaultValue */)) {}
+                      EXTENDED_REGION_SIZE_KEY, 0 /* defaultValue */)),
+              mHasHistoricalInfoOfWords(HeaderReadWriteUtils::readBoolAttributeValue(
+                      &mAttributeMap, HAS_HISTORICAL_INFO_KEY, false /* defaultValue */)) {}
 
     // Constructs header information using an attribute map.
     HeaderPolicy(const FormatUtils::FORMAT_VERSION dictFormatVersion,
@@ -62,7 +64,9 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
                       LAST_UPDATED_TIME_KEY, time(0) /* defaultValue */)),
               mLastDecayedTime(HeaderReadWriteUtils::readIntAttributeValue(&mAttributeMap,
                       LAST_UPDATED_TIME_KEY, time(0) /* defaultValue */)),
-              mUnigramCount(0), mBigramCount(0), mExtendedRegionSize(0) {}
+              mUnigramCount(0), mBigramCount(0), mExtendedRegionSize(0),
+              mHasHistoricalInfoOfWords(HeaderReadWriteUtils::readBoolAttributeValue(
+                      &mAttributeMap, HAS_HISTORICAL_INFO_KEY, false /* defaultValue */)) {}
 
     ~HeaderPolicy() {}
 
@@ -123,6 +127,10 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
         return mExtendedRegionSize;
     }
 
+    AK_FORCE_INLINE bool hasHistricalInfoOfWords() const {
+        return mHasHistoricalInfoOfWords;
+    }
+
     void readHeaderValueOrQuestionMark(const char *const key,
             int *outValue, int outValueSize) const;
 
@@ -140,6 +148,7 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
     static const char *const UNIGRAM_COUNT_KEY;
     static const char *const BIGRAM_COUNT_KEY;
     static const char *const EXTENDED_REGION_SIZE_KEY;
+    static const char *const HAS_HISTORICAL_INFO_KEY;
     static const int DEFAULT_MULTIPLE_WORDS_DEMOTION_RATE;
     static const float MULTIPLE_WORD_COST_MULTIPLIER_SCALE;
 
@@ -154,6 +163,7 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
     const int mUnigramCount;
     const int mBigramCount;
     const int mExtendedRegionSize;
+    const bool mHasHistoricalInfoOfWords;
 
     float readMultipleWordCostMultiplier() const;
 

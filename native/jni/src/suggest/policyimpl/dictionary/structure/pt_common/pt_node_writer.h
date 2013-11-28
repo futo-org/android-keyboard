@@ -49,7 +49,7 @@ class PtNodeWriter {
             const int movedPos, const int bigramLinkedNodePos) = 0;
 
     virtual bool updatePtNodeProbability(const PtNodeParams *const toBeUpdatedPtNodeParams,
-            const int probability) = 0;
+            const int probability, const int timestamp) = 0;
 
     virtual bool updateChildrenPosition(const PtNodeParams *const toBeUpdatedPtNodeParams,
                 const int newChildrenPosition) = 0;
@@ -58,10 +58,10 @@ class PtNodeWriter {
             int *const ptNodeWritingPos) = 0;
 
     virtual bool writeNewTerminalPtNodeAndAdvancePosition(const PtNodeParams *const ptNodeParams,
-            int *const ptNodeWritingPos) = 0;
+            const int timestamp, int *const ptNodeWritingPos) = 0;
 
     virtual bool addNewBigramEntry(const PtNodeParams *const sourcePtNodeParams,
-            const PtNodeParams *const targetPtNodeParam, const int probability,
+            const PtNodeParams *const targetPtNodeParam, const int probability, const int timestamp,
             bool *const outAddedNewBigram) = 0;
 
     virtual bool removeBigramEntry(const PtNodeParams *const sourcePtNodeParams,

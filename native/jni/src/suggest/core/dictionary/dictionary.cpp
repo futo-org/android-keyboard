@@ -93,14 +93,16 @@ int Dictionary::getBigramProbability(const int *word0, int length0, const int *w
     return mBigramDictionary.get()->getBigramProbability(word0, length0, word1, length1);
 }
 
-void Dictionary::addUnigramWord(const int *const word, const int length, const int probability) {
-    mDictionaryStructureWithBufferPolicy.get()->addUnigramWord(word, length, probability);
+void Dictionary::addUnigramWord(const int *const word, const int length, const int probability,
+        const int timestamp) {
+    mDictionaryStructureWithBufferPolicy.get()->addUnigramWord(word, length, probability,
+            timestamp);
 }
 
 void Dictionary::addBigramWords(const int *const word0, const int length0, const int *const word1,
-        const int length1, const int probability) {
+        const int length1, const int probability, const int timestamp) {
     mDictionaryStructureWithBufferPolicy.get()->addBigramWords(word0, length0, word1, length1,
-            probability);
+            probability, timestamp);
 }
 
 void Dictionary::removeBigramWords(const int *const word0, const int length0,
