@@ -73,7 +73,7 @@ public final class SettingsFragment extends InputMethodSettingsFragment
         final ListPreference listPreference = (ListPreference)findPreference(prefKey);
         final CharSequence entries[] = listPreference.getEntries();
         final int entryIndex = listPreference.findIndexOfValue(listPreference.getValue());
-        listPreference.setSummary(entries[entryIndex]);
+        listPreference.setSummary(entryIndex < 0 ? null : entries[entryIndex]);
     }
 
     private static void removePreference(final String preferenceKey, final PreferenceGroup parent) {
