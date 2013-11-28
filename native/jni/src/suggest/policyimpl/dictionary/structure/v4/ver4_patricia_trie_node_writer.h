@@ -39,10 +39,12 @@ class Ver4PatriciaTrieNodeWriter : public PtNodeWriter {
  public:
     Ver4PatriciaTrieNodeWriter(BufferWithExtendableBuffer *const trieBuffer,
             Ver4DictBuffers *const buffers, const Ver4PatriciaTrieNodeReader *const ptNodeReader,
-            Ver4BigramListPolicy *const bigramPolicy, Ver4ShortcutListPolicy *const shortcutPolicy)
+            Ver4BigramListPolicy *const bigramPolicy, Ver4ShortcutListPolicy *const shortcutPolicy,
+            const bool needsToDecayWhenUpdating)
             : mTrieBuffer(trieBuffer), mBuffers(buffers), mPtNodeReader(ptNodeReader),
               mReadingHelper(mTrieBuffer, mPtNodeReader),
-              mBigramPolicy(bigramPolicy), mShortcutPolicy(shortcutPolicy) {}
+              mBigramPolicy(bigramPolicy), mShortcutPolicy(shortcutPolicy),
+              mNeedsToDecayWhenUpdating(needsToDecayWhenUpdating) {}
 
     virtual ~Ver4PatriciaTrieNodeWriter() {}
 
@@ -63,6 +65,9 @@ class Ver4PatriciaTrieNodeWriter : public PtNodeWriter {
     virtual bool writePtNodeAndAdvancePosition(const PtNodeParams *const ptNodeParams,
             int *const ptNodeWritingPos);
 
+    virtual bool writeNewTerminalPtNodeAndAdvancePosition(
+            const PtNodeParams *const ptNodeParams, int *const ptNodeWritingPos);
+
     virtual bool addNewBigramEntry(const PtNodeParams *const sourcePtNodeParams,
             const PtNodeParams *const targetPtNodeParam, const int probability,
             bool *const outAddedNewBigram);
@@ -80,6 +85,12 @@ class Ver4PatriciaTrieNodeWriter : public PtNodeWriter {
  private:
     DISALLOW_COPY_AND_ASSIGN(Ver4PatriciaTrieNodeWriter);
 
+    bool writePtNodeAndGetTerminalIdAndAdvancePosition(
+            const PtNodeParams *const ptNodeParams, int *const outTerminalId,
+            int *const ptNodeWritingPos);
+
+    int getUpdatedProbability(const int originalProbability, const int newProbability) const;
+
     static const int CHILDREN_POSITION_FIELD_SIZE;
 
     BufferWithExtendableBuffer *const mTrieBuffer;
@@ -88,6 +99,7 @@ class Ver4PatriciaTrieNodeWriter : public PtNodeWriter {
     DynamicPatriciaTrieReadingHelper mReadingHelper;
     Ver4BigramListPolicy *const mBigramPolicy;
     Ver4ShortcutListPolicy *const mShortcutPolicy;
+    const bool mNeedsToDecayWhenUpdating;
 };
 } // namespace latinime
 #endif /* LATINIME_VER4_PATRICIA_TRIE_NODE_WRITER_H */

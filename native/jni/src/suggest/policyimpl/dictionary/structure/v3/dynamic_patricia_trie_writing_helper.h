@@ -29,8 +29,6 @@ class DynamicBigramListPolicy;
 class DynamicPatriciaTrieReadingHelper;
 class DynamicShortcutListPolicy;
 class HeaderPolicy;
-class PtNodeReader;
-class PtNodeWriter;
 
 // TODO: Make it independent from a particular format and move to pt_common.
 class DynamicPatriciaTrieWritingHelper {
@@ -38,11 +36,9 @@ class DynamicPatriciaTrieWritingHelper {
     static const size_t MAX_DICTIONARY_SIZE;
 
     DynamicPatriciaTrieWritingHelper(BufferWithExtendableBuffer *const buffer,
-            const PtNodeReader *const ptNodeReader, PtNodeWriter *const ptNodeWriter,
             DynamicBigramListPolicy *const bigramPolicy,
             DynamicShortcutListPolicy *const shortcutPolicy, const bool needsToDecay)
-            : mBuffer(buffer), mPtNodeReader(ptNodeReader), mPtNodeWriter(ptNodeWriter),
-              mBigramPolicy(bigramPolicy), mShortcutPolicy(shortcutPolicy),
+            : mBuffer(buffer), mBigramPolicy(bigramPolicy), mShortcutPolicy(shortcutPolicy),
               mNeedsToDecay(needsToDecay) {}
 
     ~DynamicPatriciaTrieWritingHelper() {}
@@ -57,8 +53,6 @@ class DynamicPatriciaTrieWritingHelper {
     DISALLOW_IMPLICIT_CONSTRUCTORS(DynamicPatriciaTrieWritingHelper);
 
     BufferWithExtendableBuffer *const mBuffer;
-    const PtNodeReader *const mPtNodeReader;
-    PtNodeWriter *const mPtNodeWriter;
     DynamicBigramListPolicy *const mBigramPolicy;
     DynamicShortcutListPolicy *const mShortcutPolicy;
     const bool mNeedsToDecay;

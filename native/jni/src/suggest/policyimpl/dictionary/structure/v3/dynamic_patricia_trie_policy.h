@@ -49,9 +49,8 @@ class DynamicPatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
                       mHeaderPolicy.isDecayingDict()),
               mNodeReader(&mBufferWithExtendableBuffer, &mBigramListPolicy, &mShortcutListPolicy),
               mNodeWriter(&mBufferWithExtendableBuffer, &mNodeReader, &mBigramListPolicy,
-                      &mShortcutListPolicy),
-              mUpdatingHelper(&mBufferWithExtendableBuffer, &mNodeReader, &mNodeWriter,
-                      mHeaderPolicy.isDecayingDict()),
+                      &mShortcutListPolicy, mHeaderPolicy.isDecayingDict()),
+              mUpdatingHelper(&mBufferWithExtendableBuffer, &mNodeReader, &mNodeWriter),
               mUnigramCount(mHeaderPolicy.getUnigramCount()),
               mBigramCount(mHeaderPolicy.getBigramCount()), mNeedsToDecayForTesting(false) {}
 

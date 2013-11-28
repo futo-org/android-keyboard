@@ -34,10 +34,8 @@ class PtNodeWriter;
 class DynamicPatriciaTrieUpdatingHelper {
  public:
     DynamicPatriciaTrieUpdatingHelper(BufferWithExtendableBuffer *const buffer,
-            const PtNodeReader *const ptNodeReader, PtNodeWriter *const ptNodeWriter,
-            const bool needsToDecay)
-            : mBuffer(buffer), mPtNodeReader(ptNodeReader), mPtNodeWriter(ptNodeWriter),
-              mNeedsToDecay(needsToDecay) {}
+            const PtNodeReader *const ptNodeReader, PtNodeWriter *const ptNodeWriter)
+            : mBuffer(buffer), mPtNodeReader(ptNodeReader), mPtNodeWriter(ptNodeWriter) {}
 
     ~DynamicPatriciaTrieUpdatingHelper() {}
 
@@ -61,7 +59,6 @@ class DynamicPatriciaTrieUpdatingHelper {
     BufferWithExtendableBuffer *const mBuffer;
     const PtNodeReader *const mPtNodeReader;
     PtNodeWriter *const mPtNodeWriter;
-    const bool mNeedsToDecay;
 
     bool createAndInsertNodeIntoPtNodeArray(const int parentPos, const int *const nodeCodePoints,
             const int nodeCodePointCount, const int probability, int *const forwardLinkFieldPos);
@@ -80,14 +77,12 @@ class DynamicPatriciaTrieUpdatingHelper {
             const int probabilityOfNewPtNode, const int *const newNodeCodePoints,
             const int newNodeCodePointCount);
 
-    int getUpdatedProbability(const int originalProbability, const int newProbability) const;
-
     const PtNodeParams getUpdatedPtNodeParams(const PtNodeParams *const originalPtNodeParams,
-            const int parentPos, const int codePointCount, const int *const codePoints,
-            const int probability) const;
-
-    const PtNodeParams getPtNodeParamsForNewPtNode(const int parentPos, const int codePointCount,
+            const bool isTerminal, const int parentPos, const int codePointCount,
             const int *const codePoints, const int probability) const;
+
+    const PtNodeParams getPtNodeParamsForNewPtNode(const bool isTerminal, const int parentPos,
+            const int codePointCount, const int *const codePoints, const int probability) const;
 };
 } // namespace latinime
 #endif /* LATINIME_DYNAMIC_PATRICIA_TRIE_UPDATING_HELPER_H */
