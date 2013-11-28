@@ -43,10 +43,10 @@ class DynamicPatriciaTrieGcEventListeners {
         TraversePolicyToUpdateUnigramProbabilityAndMarkUselessPtNodesAsDeleted(
                 const DictionaryHeaderStructurePolicy *const headerPolicy,
                 PtNodeWriter *const ptNodeWriter, BufferWithExtendableBuffer *const buffer,
-                const bool isDecayingDict)
+                const bool needsToDecayWhenUpdating)
                 : mHeaderPolicy(headerPolicy), mPtNodeWriter(ptNodeWriter), mBuffer(buffer),
-                  mIsDecayingDict(isDecayingDict), mValueStack(), mChildrenValue(0),
-                  mValidUnigramCount(0) {}
+                  mNeedsToDecayWhenUpdating(needsToDecayWhenUpdating), mValueStack(),
+                  mChildrenValue(0), mValidUnigramCount(0) {}
 
         ~TraversePolicyToUpdateUnigramProbabilityAndMarkUselessPtNodesAsDeleted() {};
 
@@ -80,7 +80,7 @@ class DynamicPatriciaTrieGcEventListeners {
         const DictionaryHeaderStructurePolicy *const mHeaderPolicy;
         PtNodeWriter *const mPtNodeWriter;
         BufferWithExtendableBuffer *const mBuffer;
-        const bool mIsDecayingDict;
+        const bool mNeedsToDecayWhenUpdating;
         std::vector<int> mValueStack;
         int mChildrenValue;
         int mValidUnigramCount;

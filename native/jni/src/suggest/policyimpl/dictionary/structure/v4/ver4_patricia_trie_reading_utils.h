@@ -30,9 +30,6 @@ class Ver4PatriciaTrieReadingUtils {
     static int getTerminalIdAndAdvancePosition(const uint8_t *const buffer,
             int *const pos);
 
-    static int getProbability(const BufferWithExtendableBuffer *const probabilityBuffer,
-            const int terminalId);
-
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(Ver4PatriciaTrieReadingUtils);
 };

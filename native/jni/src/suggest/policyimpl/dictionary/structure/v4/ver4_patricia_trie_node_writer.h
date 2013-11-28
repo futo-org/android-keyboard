@@ -54,7 +54,7 @@ class Ver4PatriciaTrieNodeWriter : public PtNodeWriter {
             const int movedPos, const int bigramLinkedNodePos);
 
     virtual bool updatePtNodeProbability(const PtNodeParams *const toBeUpdatedPtNodeParams,
-            const int newProbability);
+            const int newProbability, const int timestamp);
 
     virtual bool updateChildrenPosition(const PtNodeParams *const toBeUpdatedPtNodeParams,
             const int newChildrenPosition);
@@ -65,11 +65,11 @@ class Ver4PatriciaTrieNodeWriter : public PtNodeWriter {
     virtual bool writePtNodeAndAdvancePosition(const PtNodeParams *const ptNodeParams,
             int *const ptNodeWritingPos);
 
-    virtual bool writeNewTerminalPtNodeAndAdvancePosition(
-            const PtNodeParams *const ptNodeParams, int *const ptNodeWritingPos);
+    virtual bool writeNewTerminalPtNodeAndAdvancePosition(const PtNodeParams *const ptNodeParams,
+            const int timestamp, int *const ptNodeWritingPos);
 
     virtual bool addNewBigramEntry(const PtNodeParams *const sourcePtNodeParams,
-            const PtNodeParams *const targetPtNodeParam, const int probability,
+            const PtNodeParams *const targetPtNodeParam, const int probability, const int timestamp,
             bool *const outAddedNewBigram);
 
     virtual bool removeBigramEntry(const PtNodeParams *const sourcePtNodeParams,
