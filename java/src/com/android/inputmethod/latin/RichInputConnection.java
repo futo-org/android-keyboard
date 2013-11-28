@@ -538,7 +538,7 @@ public final class RichInputConnection {
     }
 
     @SuppressWarnings("unused")
-    public String getNthPreviousWord(final String sentenceSeperators, final int n) {
+    public String getNthPreviousWord(final SettingsValues currentSettingsValues, final int n) {
         mIC = mParent.getCurrentInputConnection();
         if (null == mIC) return null;
         final CharSequence prev = getTextBeforeCursor(LOOKBACK_CHARACTER_NUM, 0);
@@ -557,7 +557,7 @@ public final class RichInputConnection {
                 }
             }
         }
-        return getNthPreviousWord(prev, sentenceSeperators, n);
+        return getNthPreviousWord(prev, currentSettingsValues, n);
     }
 
     private static boolean isSeparator(int code, String sep) {
@@ -581,7 +581,7 @@ public final class RichInputConnection {
     // (n = 2) "abc |" -> null
     // (n = 2) "abc. def|" -> null
     public static String getNthPreviousWord(final CharSequence prev,
-            final String sentenceSeperators, final int n) {
+            final SettingsValues currentSettingsValues, final int n) {
         if (prev == null) return null;
         final String[] w = spaceRegex.split(prev);
 
@@ -593,7 +593,8 @@ public final class RichInputConnection {
 
         // If ends in a separator, return null
         final char lastChar = nthPrevWord.charAt(length - 1);
-        if (sentenceSeperators.contains(String.valueOf(lastChar))) return null;
+        if (currentSettingsValues.isWordSeparator(lastChar)
+                || currentSettingsValues.isWordConnector(lastChar)) return null;
 
         return nthPrevWord;
     }
