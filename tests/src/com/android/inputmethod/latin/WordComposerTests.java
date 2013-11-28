@@ -34,7 +34,7 @@ public class WordComposerTests extends AndroidTestCase {
         // http://en.wikipedia.org/wiki/Plane_(Unicode)#Basic_Multilingual_Plane
         final String STR_WITHIN_BMP = "abcdef";
         final String PREVWORD = "prevword";
-        wc.setComposingWord(STR_WITHIN_BMP, PREVWORD, null);
+        wc.setComposingWord(STR_WITHIN_BMP, PREVWORD, null /* keyboard */);
         assertEquals(wc.size(),
                 STR_WITHIN_BMP.codePointCount(0, STR_WITHIN_BMP.length()));
         assertFalse(wc.isCursorFrontOrMiddleOfComposingWord());
@@ -62,7 +62,8 @@ public class WordComposerTests extends AndroidTestCase {
 
         // \uD861\uDED7 is 𨛗, a character outside the BMP
         final String STR_WITH_SUPPLEMENTARY_CHAR = "abcde\uD861\uDED7fgh";
-        wc.setComposingWord(STR_WITH_SUPPLEMENTARY_CHAR, null, null);
+        wc.setComposingWord(STR_WITH_SUPPLEMENTARY_CHAR, null /* previousWord */,
+                null /* keyboard */);
         assertEquals(wc.size(), STR_WITH_SUPPLEMENTARY_CHAR.codePointCount(0,
                         STR_WITH_SUPPLEMENTARY_CHAR.length()));
         assertFalse(wc.isCursorFrontOrMiddleOfComposingWord());
@@ -74,38 +75,44 @@ public class WordComposerTests extends AndroidTestCase {
         assertFalse(wc.isCursorFrontOrMiddleOfComposingWord());
         assertNull(wc.getPreviousWord());
 
-        wc.setComposingWord(STR_WITH_SUPPLEMENTARY_CHAR, STR_WITHIN_BMP, null);
+        wc.setComposingWord(STR_WITH_SUPPLEMENTARY_CHAR, STR_WITHIN_BMP, null /* keyboard */);
         wc.setCursorPositionWithinWord(3);
         assertTrue(wc.moveCursorByAndReturnIfInsideComposingWord(7));
         assertEquals(STR_WITHIN_BMP, wc.getPreviousWord());
 
-        wc.setComposingWord(STR_WITH_SUPPLEMENTARY_CHAR, STR_WITH_SUPPLEMENTARY_CHAR, null);
+        wc.setComposingWord(STR_WITH_SUPPLEMENTARY_CHAR, STR_WITH_SUPPLEMENTARY_CHAR,
+                null /* keyboard */);
         wc.setCursorPositionWithinWord(3);
         assertTrue(wc.moveCursorByAndReturnIfInsideComposingWord(7));
         assertEquals(STR_WITH_SUPPLEMENTARY_CHAR, wc.getPreviousWord());
 
-        wc.setComposingWord(STR_WITH_SUPPLEMENTARY_CHAR, STR_WITHIN_BMP, null);
+        wc.setComposingWord(STR_WITH_SUPPLEMENTARY_CHAR, STR_WITHIN_BMP, null /* keyboard */);
         wc.setCursorPositionWithinWord(3);
         assertTrue(wc.moveCursorByAndReturnIfInsideComposingWord(-3));
         assertFalse(wc.moveCursorByAndReturnIfInsideComposingWord(-1));
         assertEquals(STR_WITHIN_BMP, wc.getPreviousWord());
 
-        wc.setComposingWord(STR_WITH_SUPPLEMENTARY_CHAR, null, null);
+        wc.setComposingWord(STR_WITH_SUPPLEMENTARY_CHAR, null /* previousWord */,
+                null /* keyboard */);
         wc.setCursorPositionWithinWord(3);
         assertFalse(wc.moveCursorByAndReturnIfInsideComposingWord(-9));
         assertNull(wc.getPreviousWord());
 
-        wc.setComposingWord(STR_WITH_SUPPLEMENTARY_CHAR, STR_WITH_SUPPLEMENTARY_CHAR, null);
+        wc.setComposingWord(STR_WITH_SUPPLEMENTARY_CHAR, STR_WITH_SUPPLEMENTARY_CHAR,
+                null /* keyboard */);
         assertTrue(wc.moveCursorByAndReturnIfInsideComposingWord(-10));
         assertEquals(STR_WITH_SUPPLEMENTARY_CHAR, wc.getPreviousWord());
 
-        wc.setComposingWord(STR_WITH_SUPPLEMENTARY_CHAR, null, null);
+        wc.setComposingWord(STR_WITH_SUPPLEMENTARY_CHAR, null /* previousWord */,
+                null /* keyboard */);
         assertFalse(wc.moveCursorByAndReturnIfInsideComposingWord(-11));
 
-        wc.setComposingWord(STR_WITH_SUPPLEMENTARY_CHAR, null, null);
+        wc.setComposingWord(STR_WITH_SUPPLEMENTARY_CHAR, null /* previousWord */,
+                null /* keyboard */);
         assertTrue(wc.moveCursorByAndReturnIfInsideComposingWord(0));
 
-        wc.setComposingWord(STR_WITH_SUPPLEMENTARY_CHAR, null, null);
+        wc.setComposingWord(STR_WITH_SUPPLEMENTARY_CHAR, null /* previousWord */,
+                null /* keyboard */);
         wc.setCursorPositionWithinWord(2);
         assertTrue(wc.moveCursorByAndReturnIfInsideComposingWord(0));
     }
