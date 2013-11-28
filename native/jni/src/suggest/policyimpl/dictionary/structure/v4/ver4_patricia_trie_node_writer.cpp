@@ -112,7 +112,8 @@ bool Ver4PatriciaTrieNodeWriter::markPtNodeAsMoved(
 }
 
 bool Ver4PatriciaTrieNodeWriter::updatePtNodeProbability(
-        const PtNodeParams *const toBeUpdatedPtNodeParams, const int newProbability) {
+        const PtNodeParams *const toBeUpdatedPtNodeParams, const int newProbability,
+        const int timestamp) {
     if (!toBeUpdatedPtNodeParams->isTerminal()) {
         return false;
     }
@@ -143,7 +144,7 @@ bool Ver4PatriciaTrieNodeWriter::writePtNodeAndAdvancePosition(
 
 
 bool Ver4PatriciaTrieNodeWriter::writeNewTerminalPtNodeAndAdvancePosition(
-        const PtNodeParams *const ptNodeParams, int *const ptNodeWritingPos) {
+        const PtNodeParams *const ptNodeParams, const int timestamp, int *const ptNodeWritingPos) {
     int terminalId = Ver4DictConstants::NOT_A_TERMINAL_ID;
     if (!writePtNodeAndGetTerminalIdAndAdvancePosition(ptNodeParams, &terminalId,
             ptNodeWritingPos)) {
@@ -158,10 +159,10 @@ bool Ver4PatriciaTrieNodeWriter::writeNewTerminalPtNodeAndAdvancePosition(
 
 bool Ver4PatriciaTrieNodeWriter::addNewBigramEntry(
         const PtNodeParams *const sourcePtNodeParams,
-        const PtNodeParams *const targetPtNodeParam, const int probability,
+        const PtNodeParams *const targetPtNodeParam, const int probability, const int timestamp,
         bool *const outAddedNewBigram) {
     return mBigramPolicy->addNewEntry(sourcePtNodeParams->getTerminalId(),
-            targetPtNodeParam->getTerminalId(), probability, outAddedNewBigram);
+            targetPtNodeParam->getTerminalId(), probability, timestamp, outAddedNewBigram);
 }
 
 bool Ver4PatriciaTrieNodeWriter::removeBigramEntry(

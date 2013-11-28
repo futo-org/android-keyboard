@@ -88,10 +88,11 @@ class DynamicPatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
         return &mShortcutListPolicy;
     }
 
-    bool addUnigramWord(const int *const word, const int length, const int probability);
+    bool addUnigramWord(const int *const word, const int length, const int probability,
+            const int timestamp);
 
     bool addBigramWords(const int *const word0, const int length0, const int *const word1,
-            const int length1, const int probability);
+            const int length1, const int probability, const int timestamp);
 
     bool removeBigramWords(const int *const word0, const int length0, const int *const word1,
             const int length1);

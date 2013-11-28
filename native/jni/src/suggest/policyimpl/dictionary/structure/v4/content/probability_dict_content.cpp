@@ -28,7 +28,9 @@ int ProbabilityDictContent::getProbability(const int terminalId) const {
     if (terminalId < 0 || terminalId >= mSize) {
         return NOT_A_PROBABILITY;
     }
-    return Ver4PatriciaTrieReadingUtils::getProbability(getBuffer(), terminalId);
+    const int probabilityFieldPos =
+            getEntryPos(terminalId) + Ver4DictConstants::FLAGS_IN_PROBABILITY_FILE_SIZE;
+    return getBuffer()->readUint(Ver4DictConstants::PROBABILITY_SIZE, probabilityFieldPos);
 }
 
 bool ProbabilityDictContent::setProbability(const int terminalId, const int probability) {

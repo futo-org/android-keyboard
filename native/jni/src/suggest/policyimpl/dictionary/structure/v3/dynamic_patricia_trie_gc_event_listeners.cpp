@@ -30,12 +30,14 @@ bool DynamicPatriciaTrieGcEventListeners
     // PtNode is useless when the PtNode is not a terminal and doesn't have any not useless
     // children.
     bool isUselessPtNode = !ptNodeParams->isTerminal();
-    if (ptNodeParams->isTerminal() && mIsDecayingDict) {
+    if (ptNodeParams->isTerminal() && mNeedsToDecayWhenUpdating) {
+        // TODO: Avoid decaying probability during GC.
         const int newProbability =
                 ForgettingCurveUtils::getEncodedProbabilityToSave(ptNodeParams->getProbability(),
                         mHeaderPolicy);
         // Update probability.
-        if (!mPtNodeWriter->updatePtNodeProbability(ptNodeParams, newProbability)) {
+        if (!mPtNodeWriter->updatePtNodeProbability(ptNodeParams, newProbability,
+                0 /* timestamp */)) {
             return false;
         }
         if (!ForgettingCurveUtils::isValidEncodedProbability(newProbability)) {

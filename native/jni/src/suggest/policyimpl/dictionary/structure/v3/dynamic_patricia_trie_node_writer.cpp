@@ -102,7 +102,8 @@ bool DynamicPatriciaTrieNodeWriter::markPtNodeAsMoved(
 }
 
 bool DynamicPatriciaTrieNodeWriter::updatePtNodeProbability(
-        const PtNodeParams *const toBeUpdatedPtNodeParams, const int newProbability) {
+        const PtNodeParams *const toBeUpdatedPtNodeParams, const int newProbability,
+        const int timestamp) {
     if (!toBeUpdatedPtNodeParams->isTerminal()) {
         return false;
     }
@@ -127,7 +128,7 @@ bool DynamicPatriciaTrieNodeWriter::writePtNodeAndAdvancePosition(
 }
 
 bool DynamicPatriciaTrieNodeWriter::writeNewTerminalPtNodeAndAdvancePosition(
-        const PtNodeParams *const ptNodeParams, int *const ptNodeWritingPos) {
+        const PtNodeParams *const ptNodeParams, const int timestamp, int *const ptNodeWritingPos) {
     int probabilityFieldPos = NOT_A_DICT_POS;
     if (!writePtNodeAndGetProbabilityFieldPosAndAdvancePosition(ptNodeParams, &probabilityFieldPos,
             ptNodeWritingPos)) {
@@ -144,7 +145,7 @@ bool DynamicPatriciaTrieNodeWriter::writeNewTerminalPtNodeAndAdvancePosition(
 
 bool DynamicPatriciaTrieNodeWriter::addNewBigramEntry(
         const PtNodeParams *const sourcePtNodeParams,
-        const PtNodeParams *const targetPtNodeParam, const int probability,
+        const PtNodeParams *const targetPtNodeParam, const int probability, const int timestamp,
         bool *const outAddedNewBigram) {
     const int newNodePos = mBuffer->getTailPosition();
     int writingPos = newNodePos;
