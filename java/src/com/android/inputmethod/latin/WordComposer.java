@@ -48,6 +48,10 @@ public final class WordComposer {
     // at any given time. However this is not limited in size, while mPrimaryKeyCodes is limited
     // to MAX_WORD_LENGTH code points.
     private final StringBuilder mTypedWord;
+    // The previous word (before the composing word). Used as context for suggestions. May be null
+    // after resetting and before starting a new composing word, or when there is no context like
+    // at the start of text for example.
+    private String mPreviousWord;
     private String mAutoCorrection;
     private boolean mIsResumed;
     private boolean mIsBatchMode;
@@ -85,6 +89,7 @@ public final class WordComposer {
         mIsBatchMode = false;
         mCursorPositionWithinWord = 0;
         mRejectedBatchModeSuggestion = null;
+        mPreviousWord = null;
         refreshSize();
     }
 
@@ -101,6 +106,7 @@ public final class WordComposer {
         mIsBatchMode = source.mIsBatchMode;
         mCursorPositionWithinWord = source.mCursorPositionWithinWord;
         mRejectedBatchModeSuggestion = source.mRejectedBatchModeSuggestion;
+        mPreviousWord = source.mPreviousWord;
         refreshSize();
     }
 
@@ -118,6 +124,7 @@ public final class WordComposer {
         mIsBatchMode = false;
         mCursorPositionWithinWord = 0;
         mRejectedBatchModeSuggestion = null;
+        mPreviousWord = null;
         refreshSize();
     }
 
@@ -284,8 +291,13 @@ public final class WordComposer {
     /**
      * Set the currently composing word to the one passed as an argument.
      * This will register NOT_A_COORDINATE for X and Ys, and use the passed keyboard for proximity.
+     * @param word the char sequence to set as the composing word.
+     * @param previousWord the previous word, to use as context for suggestions. Can be null if
+     *   the context is nil (typically, at start of text).
+     * @param keyboard the keyboard this is typed on, for coordinate info/proximity.
      */
-    public void setComposingWord(final CharSequence word, final Keyboard keyboard) {
+    public void setComposingWord(final CharSequence word, final String previousWord,
+            final Keyboard keyboard) {
         reset();
         final int length = word.length();
         for (int i = 0; i < length; i = Character.offsetByCodePoints(word, i, 1)) {
@@ -293,6 +305,7 @@ public final class WordComposer {
             addKeyInfo(codePoint, keyboard);
         }
         mIsResumed = true;
+        mPreviousWord = previousWord;
     }
 
     /**
@@ -343,6 +356,10 @@ public final class WordComposer {
         return mTypedWord.toString();
     }
 
+    public String getPreviousWord() {
+        return mPreviousWord;
+    }
+
     /**
      * Whether or not the user typed a capital letter as the first letter in the word
      * @return capitalization preference
@@ -388,18 +405,21 @@ public final class WordComposer {
     }
 
     /**
-     * Saves the caps mode at the start of composing.
+     * Saves the caps mode and the previous word at the start of composing.
      *
-     * WordComposer needs to know about this for several reasons. The first is, we need to know
-     * after the fact what the reason was, to register the correct form into the user history
-     * dictionary: if the word was automatically capitalized, we should insert it in all-lower
-     * case but if it's a manual pressing of shift, then it should be inserted as is.
+     * WordComposer needs to know about the caps mode for several reasons. The first is, we need
+     * to know after the fact what the reason was, to register the correct form into the user
+     * history dictionary: if the word was automatically capitalized, we should insert it in
+     * all-lower case but if it's a manual pressing of shift, then it should be inserted as is.
      * Also, batch input needs to know about the current caps mode to display correctly
      * capitalized suggestions.
      * @param mode the mode at the time of start
+     * @param previousWord the previous word as context for suggestions. May be null if none.
      */
-    public void setCapitalizedModeAtStartComposingTime(final int mode) {
+    public void setCapitalizedModeAndPreviousWordAtStartComposingTime(final int mode,
+            final String previousWord) {
         mCapitalizedMode = mode;
+        mPreviousWord = previousWord;
     }
 
     /**
@@ -451,6 +471,7 @@ public final class WordComposer {
         mCapsCount = 0;
         mDigitsCount = 0;
         mIsBatchMode = false;
+        mPreviousWord = mTypedWord.toString();
         mTypedWord.setLength(0);
         mCodePointSize = 0;
         mTrailingSingleQuotesCount = 0;
@@ -464,7 +485,8 @@ public final class WordComposer {
         return lastComposedWord;
     }
 
-    public void resumeSuggestionOnLastComposedWord(final LastComposedWord lastComposedWord) {
+    public void resumeSuggestionOnLastComposedWord(final LastComposedWord lastComposedWord,
+            final String previousWord) {
         mPrimaryKeyCodes = lastComposedWord.mPrimaryKeyCodes;
         mInputPointers.set(lastComposedWord.mInputPointers);
         mTypedWord.setLength(0);
@@ -475,6 +497,7 @@ public final class WordComposer {
         mCursorPositionWithinWord = mCodePointSize;
         mRejectedBatchModeSuggestion = null;
         mIsResumed = true;
+        mPreviousWord = previousWord;
     }
 
     public boolean isBatchMode() {
