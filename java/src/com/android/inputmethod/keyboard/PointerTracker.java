@@ -67,13 +67,13 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
     public interface TimerProxy {
         public void startTypingStateTimer(Key typedKey);
         public boolean isTypingState();
-        public void startKeyRepeatTimer(PointerTracker tracker, int repeatCount, int delay);
-        public void startLongPressTimer(PointerTracker tracker, int delay);
-        public void cancelLongPressTimer();
+        public void startKeyRepeatTimerOf(PointerTracker tracker, int repeatCount, int delay);
+        public void startLongPressTimerOf(PointerTracker tracker, int delay);
+        public void cancelLongPressTimerOf(PointerTracker tracker);
+        public void cancelKeyTimersOf(PointerTracker tracker);
         public void startDoubleTapShiftKeyTimer();
         public void cancelDoubleTapShiftKeyTimer();
         public boolean isInDoubleTapShiftKeyTimeout();
-        public void cancelKeyTimers();
         public void startUpdateBatchInputTimer(PointerTracker tracker);
         public void cancelUpdateBatchInputTimer(PointerTracker tracker);
         public void cancelAllUpdateBatchInputTimers();
@@ -84,19 +84,19 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
             @Override
             public boolean isTypingState() { return false; }
             @Override
-            public void startKeyRepeatTimer(PointerTracker tracker, int repeatCount, int delay) {}
+            public void startKeyRepeatTimerOf(PointerTracker tracker, int repeatCount, int delay) {}
             @Override
-            public void startLongPressTimer(PointerTracker tracker, int delay) {}
+            public void startLongPressTimerOf(PointerTracker tracker, int delay) {}
             @Override
-            public void cancelLongPressTimer() {}
+            public void cancelLongPressTimerOf(PointerTracker tracker) {}
+            @Override
+            public void cancelKeyTimersOf(PointerTracker tracker) {}
             @Override
             public void startDoubleTapShiftKeyTimer() {}
             @Override
             public void cancelDoubleTapShiftKeyTimer() {}
             @Override
             public boolean isInDoubleTapShiftKeyTimeout() { return false; }
-            @Override
-            public void cancelKeyTimers() {}
             @Override
             public void startUpdateBatchInputTimer(PointerTracker tracker) {}
             @Override
@@ -741,7 +741,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
             sListener.onStartBatchInput();
             dismissAllMoreKeysPanels();
         }
-        sTimerProxy.cancelLongPressTimer();
+        sTimerProxy.cancelLongPressTimerOf(this);
         // A gesture floating preview text will be shown at the oldest pointer/finger on the screen.
         sDrawingProxy.showGestureTrail(
                 this, isOldestTrackerInQueue() /* showsFloatingPreviewText */);
@@ -1072,7 +1072,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         setReleasedKeyGraphics(oldKey);
         callListenerOnRelease(oldKey, oldKey.getCode(), true /* withSliding */);
         startKeySelectionByDraggingFinger(oldKey);
-        sTimerProxy.cancelKeyTimers();
+        sTimerProxy.cancelKeyTimersOf(this);
     }
 
     private void dragFingerFromOldKeyToNewKey(final Key key, final int x, final int y,
@@ -1195,15 +1195,12 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         if (DEBUG_EVENT) {
             printTouchEvent("onPhntEvent:", mLastX, mLastY, eventTime);
         }
-        if (isShowingMoreKeysPanel()) {
-            return;
-        }
         onUpEventInternal(mLastX, mLastY, eventTime);
         cancelTrackingForAction();
     }
 
     private void onUpEventInternal(final int x, final int y, final long eventTime) {
-        sTimerProxy.cancelKeyTimers();
+        sTimerProxy.cancelKeyTimersOf(this);
         final boolean isInDraggingFinger = mIsInDraggingFinger;
         final boolean isInSlidingKeyInput = mIsInSlidingKeyInput;
         resetKeySelectionByDraggingFinger();
@@ -1282,7 +1279,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
     }
 
     private void onCancelEventInternal() {
-        sTimerProxy.cancelKeyTimers();
+        sTimerProxy.cancelKeyTimersOf(this);
         setReleasedKeyGraphics(mCurrentKey);
         resetKeySelectionByDraggingFinger();
         if (isShowingMoreKeysPanel()) {
@@ -1345,7 +1342,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         if (mIsInDraggingFinger && key.getMoreKeys() == null) return;
 
         final int delay = getLongPressTimeout(key.getCode());
-        sTimerProxy.startLongPressTimer(this, delay);
+        sTimerProxy.startLongPressTimerOf(this, delay);
     }
 
     private int getLongPressTimeout(final int code) {
@@ -1398,7 +1395,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
     private void startKeyRepeatTimer(final int repeatCount) {
         final int delay =
                 (repeatCount == 1) ? sParams.mKeyRepeatStartTimeout : sParams.mKeyRepeatInterval;
-        sTimerProxy.startKeyRepeatTimer(this, repeatCount, delay);
+        sTimerProxy.startKeyRepeatTimerOf(this, repeatCount, delay);
     }
 
     private void printTouchEvent(final String title, final int x, final int y,
