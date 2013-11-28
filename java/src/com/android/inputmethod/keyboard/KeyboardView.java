@@ -319,7 +319,7 @@ public class KeyboardView extends View {
         params.mAnimAlpha = Constants.Color.ALPHA_OPAQUE;
 
         if (!key.isSpacer()) {
-            onDrawKeyBackground(key, canvas);
+            onDrawKeyBackground(key, canvas, mKeyBackground);
         }
         onDrawKeyTopVisuals(key, canvas, paint, params);
 
@@ -327,14 +327,14 @@ public class KeyboardView extends View {
     }
 
     // Draw key background.
-    protected void onDrawKeyBackground(final Key key, final Canvas canvas) {
+    protected void onDrawKeyBackground(final Key key, final Canvas canvas,
+            final Drawable background) {
         final Rect padding = mKeyBackgroundPadding;
         final int bgWidth = key.getDrawWidth() + padding.left + padding.right;
         final int bgHeight = key.getHeight() + padding.top + padding.bottom;
         final int bgX = -padding.left;
         final int bgY = -padding.top;
         final int[] drawableState = key.getCurrentDrawableState();
-        final Drawable background = mKeyBackground;
         background.setState(drawableState);
         final Rect bounds = background.getBounds();
         if (bgWidth != bounds.right || bgHeight != bounds.bottom) {

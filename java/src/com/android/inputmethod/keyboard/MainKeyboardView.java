@@ -84,6 +84,7 @@ import java.util.WeakHashMap;
  * @attr ref R.styleable#MainKeyboardView_languageOnSpacebarTextRatio
  * @attr ref R.styleable#MainKeyboardView_languageOnSpacebarTextColor
  * @attr ref R.styleable#MainKeyboardView_languageOnSpacebarTextShadowColor
+ * @attr ref R.styleable#MainKeyboardView_spacebarBackground
  * @attr ref R.styleable#MainKeyboardView_languageOnSpacebarFinalAlpha
  * @attr ref R.styleable#MainKeyboardView_languageOnSpacebarFadeoutAnimator
  * @attr ref R.styleable#MainKeyboardView_altCodeKeyWhileTypingFadeoutAnimator
@@ -124,9 +125,10 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     /** Listener for {@link KeyboardActionListener}. */
     private KeyboardActionListener mKeyboardActionListener;
 
-    /* Space key and its icons */
+    /* Space key and its icon and background. */
     private Key mSpaceKey;
-    private Drawable mSpaceIcon;
+    private Drawable mSpacebarIcon;
+    private final Drawable mSpacebarBackground;
     // Stuff to draw language name on spacebar.
     private final int mLanguageOnSpacebarFinalAlpha;
     private ObjectAnimator mLanguageOnSpacebarFadeoutAnimator;
@@ -244,6 +246,8 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
                 R.styleable.MainKeyboardView_backgroundDimAlpha, 0);
         mBackgroundDimAlphaPaint.setColor(Color.BLACK);
         mBackgroundDimAlphaPaint.setAlpha(backgroundDimAlpha);
+        mSpacebarBackground = mainKeyboardViewAttr.getDrawable(
+                R.styleable.MainKeyboardView_spacebarBackground);
         mAutoCorrectionSpacebarLedEnabled = mainKeyboardViewAttr.getBoolean(
                 R.styleable.MainKeyboardView_autoCorrectionSpacebarLedEnabled, false);
         mAutoCorrectionSpacebarLedIcon = mainKeyboardViewAttr.getDrawable(
@@ -431,7 +435,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         mMoreKeysKeyboardCache.clear();
 
         mSpaceKey = keyboard.getKey(Constants.CODE_SPACE);
-        mSpaceIcon = (mSpaceKey != null)
+        mSpacebarIcon = (mSpaceKey != null)
                 ? mSpaceKey.getIcon(keyboard.mIconsSet, Constants.Color.ALPHA_OPAQUE) : null;
         final int keyHeight = keyboard.mMostCommonKeyHeight - keyboard.mVerticalGap;
         mLanguageOnSpacebarTextSize = keyHeight * mLanguageOnSpacebarTextRatio;
@@ -1103,6 +1107,17 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         }
     }
 
+    // Draw key background.
+    @Override
+    protected void onDrawKeyBackground(final Key key, final Canvas canvas,
+            final Drawable background) {
+        if (key.getCode() == Constants.CODE_SPACE) {
+            super.onDrawKeyBackground(key, canvas, mSpacebarBackground);
+            return;
+        }
+        super.onDrawKeyBackground(key, canvas, background);
+    }
+
     @Override
     protected void onDrawKeyTopVisuals(final Key key, final Canvas canvas, final Paint paint,
             final KeyDrawParams params) {
@@ -1201,12 +1216,12 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
             int x = (width - iconWidth) / 2;
             int y = height - iconHeight;
             drawIcon(canvas, mAutoCorrectionSpacebarLedIcon, x, y, iconWidth, iconHeight);
-        } else if (mSpaceIcon != null) {
-            final int iconWidth = mSpaceIcon.getIntrinsicWidth();
-            final int iconHeight = mSpaceIcon.getIntrinsicHeight();
+        } else if (mSpacebarIcon != null) {
+            final int iconWidth = mSpacebarIcon.getIntrinsicWidth();
+            final int iconHeight = mSpacebarIcon.getIntrinsicHeight();
             int x = (width - iconWidth) / 2;
             int y = height - iconHeight;
-            drawIcon(canvas, mSpaceIcon, x, y, iconWidth, iconHeight);
+            drawIcon(canvas, mSpacebarIcon, x, y, iconWidth, iconHeight);
         }
     }
 
