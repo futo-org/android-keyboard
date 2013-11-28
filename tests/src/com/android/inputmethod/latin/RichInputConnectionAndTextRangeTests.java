@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.latin;
 
+import com.android.inputmethod.latin.settings.SettingsValues;
 import com.android.inputmethod.latin.utils.TextRange;
 
 import android.inputmethodservice.InputMethodService;
@@ -39,7 +40,8 @@ public class RichInputConnectionAndTextRangeTests extends AndroidTestCase {
 
     // The following is meant to be a reasonable default for
     // the "word_separators" resource.
-    private static final String sSeparators = ".,:;!?-";
+    private static final SettingsValues sSettings =
+            SettingsValues.makeDummySettingsValuesForTest(Locale.ENGLISH);
 
     @Override
     protected void setUp() throws Exception {
@@ -137,9 +139,9 @@ public class RichInputConnectionAndTextRangeTests extends AndroidTestCase {
      */
     public void testGetPreviousWord() {
         // If one of the following cases breaks, the bigram suggestions won't work.
-        assertEquals(RichInputConnection.getNthPreviousWord("abc def", sSeparators, 2), "abc");
-        assertNull(RichInputConnection.getNthPreviousWord("abc", sSeparators, 2));
-        assertNull(RichInputConnection.getNthPreviousWord("abc. def", sSeparators, 2));
+        assertEquals(RichInputConnection.getNthPreviousWord("abc def", sSettings, 2), "abc");
+        assertNull(RichInputConnection.getNthPreviousWord("abc", sSettings, 2));
+        assertNull(RichInputConnection.getNthPreviousWord("abc. def", sSettings, 2));
 
         // The following tests reflect the current behavior of the function
         // RichInputConnection#getNthPreviousWord.
@@ -148,15 +150,15 @@ public class RichInputConnectionAndTextRangeTests extends AndroidTestCase {
         // this function if needed - especially since it does not seem very
         // logical. These tests are just there to catch any unintentional
         // changes in the behavior of the RichInputConnection#getPreviousWord method.
-        assertEquals(RichInputConnection.getNthPreviousWord("abc def ", sSeparators, 2), "abc");
-        assertEquals(RichInputConnection.getNthPreviousWord("abc def.", sSeparators, 2), "abc");
-        assertEquals(RichInputConnection.getNthPreviousWord("abc def .", sSeparators, 2), "def");
-        assertNull(RichInputConnection.getNthPreviousWord("abc ", sSeparators, 2));
+        assertEquals(RichInputConnection.getNthPreviousWord("abc def ", sSettings, 2), "abc");
+        assertEquals(RichInputConnection.getNthPreviousWord("abc def.", sSettings, 2), "abc");
+        assertEquals(RichInputConnection.getNthPreviousWord("abc def .", sSettings, 2), "def");
+        assertNull(RichInputConnection.getNthPreviousWord("abc ", sSettings, 2));
 
-        assertEquals(RichInputConnection.getNthPreviousWord("abc def", sSeparators, 1), "def");
-        assertEquals(RichInputConnection.getNthPreviousWord("abc def ", sSeparators, 1), "def");
-        assertNull(RichInputConnection.getNthPreviousWord("abc def.", sSeparators, 1));
-        assertNull(RichInputConnection.getNthPreviousWord("abc def .", sSeparators, 1));
+        assertEquals(RichInputConnection.getNthPreviousWord("abc def", sSettings, 1), "def");
+        assertEquals(RichInputConnection.getNthPreviousWord("abc def ", sSettings, 1), "def");
+        assertNull(RichInputConnection.getNthPreviousWord("abc def.", sSettings, 1));
+        assertNull(RichInputConnection.getNthPreviousWord("abc def .", sSettings, 1));
     }
 
     /**

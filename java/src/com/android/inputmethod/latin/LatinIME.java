@@ -2541,7 +2541,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (currentSettings.mCurrentLanguageHasSpaces) {
             // If we are typing in a language with spaces we can just look up the previous
             // word from textview.
-            return mConnection.getNthPreviousWord(currentSettings.mWordSeparators,
+            return mConnection.getNthPreviousWord(currentSettings,
                     mWordComposer.isComposingWord() ? 2 : 1);
         } else {
             return LastComposedWord.NOT_A_COMPOSED_WORD == mLastComposedWord ? null
@@ -2832,7 +2832,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final UserHistoryDictionary userHistoryDictionary = mUserHistoryDictionary;
         if (userHistoryDictionary == null) return null;
 
-        final String prevWord = mConnection.getNthPreviousWord(currentSettings.mWordSeparators, 2);
+        final String prevWord = mConnection.getNthPreviousWord(currentSettings, 2);
         final String secondWord;
         if (mWordComposer.wasAutoCapitalized() && !mWordComposer.isMostlyCaps()) {
             secondWord = suggestion.toLowerCase(mSubtypeSwitcher.getCurrentSubtypeLocale());
