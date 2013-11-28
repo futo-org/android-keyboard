@@ -34,6 +34,13 @@ bool Ver4DictBuffers::flushHeaderAndDictBuffers(const char *const dictDirPath,
     FileUtils::getFilePathWithSuffix(dictDirPath,
             DictFileWritingUtils::TEMP_FILE_SUFFIX_FOR_WRITING_DICT_FILE, tmpDirPathBufSize,
             tmpDirPath);
+    if (FileUtils::existsDir(tmpDirPath)) {
+        if (!FileUtils::removeDirAndFiles(tmpDirPath)) {
+            AKLOGE("Existing directory %s cannot be removed.", tmpDirPath);
+            ASSERT(false);
+            return false;
+        }
+    }
     if (mkdir(tmpDirPath, S_IRWXU) == -1) {
         AKLOGE("Cannot create directory: %s. errno: %d.", tmpDirPath, errno);
         return false;

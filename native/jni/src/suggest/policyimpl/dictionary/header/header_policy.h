@@ -66,6 +66,19 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
 
     ~HeaderPolicy() {}
 
+    virtual int getFormatVersionNumber() const {
+        switch (mDictFormatVersion) {
+            case FormatUtils::VERSION_2:
+                return 2;
+            case FormatUtils::VERSION_3:
+                return 3;
+            case FormatUtils::VERSION_4:
+                return 4;
+            default:
+                return 0;
+        }
+    }
+
     AK_FORCE_INLINE int getSize() const {
         return mSize;
     }

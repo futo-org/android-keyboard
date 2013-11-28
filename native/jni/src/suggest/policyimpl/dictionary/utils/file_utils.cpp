@@ -41,6 +41,15 @@ namespace latinime {
     return static_cast<int>(statBuf.st_size);
 }
 
+/* static */ bool FileUtils::existsDir(const char *const dirPath) {
+    DIR *const dir = opendir(dirPath);
+    if (dir == NULL) {
+        return false;
+    }
+    closedir(dir);
+    return true;
+}
+
 // Remove a directory and all files in the directory.
 /* static */ bool FileUtils::removeDirAndFiles(const char *const dirPath) {
     DIR *const dir = opendir(dirPath);
@@ -58,9 +67,11 @@ namespace latinime {
         getFilePath(dirPath, dirent->d_name, filePathBufSize, filePath);
         if (remove(filePath) != 0) {
             AKLOGE("Cannot remove file %s.", filePath);
+            closedir(dir);
             return false;
         }
     }
+    closedir(dir);
     if (remove(dirPath) != 0) {
         AKLOGE("Cannot remove directory %s.", dirPath);
         return false;

@@ -29,6 +29,8 @@ class DictionaryHeaderStructurePolicy {
  public:
     virtual ~DictionaryHeaderStructurePolicy() {}
 
+    virtual int getFormatVersionNumber() const = 0;
+
     virtual bool supportsDynamicUpdate() const = 0;
 
     virtual bool requiresGermanUmlautProcessing() const = 0;

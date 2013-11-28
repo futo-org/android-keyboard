@@ -56,6 +56,8 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
     public static final int FREQUENCY_FOR_WORDS_IN_DICTS = FREQUENCY_FOR_TYPED;
     public static final int FREQUENCY_FOR_WORDS_NOT_IN_DICTS = Dictionary.NOT_A_PROBABILITY;
 
+    public static final int REQUIRED_BINARY_DICTIONARY_VERSION = 4;
+
     /** Locale for which this user history dictionary is storing words */
     private final String mLocale;
 
@@ -112,6 +114,16 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
     @Override
     protected boolean needsToReloadBeforeWriting() {
         return false;
+    }
+
+    @Override
+    protected boolean isValidBinaryDictFormatVersion(final int formatVersion) {
+        return formatVersion >= REQUIRED_BINARY_DICTIONARY_VERSION;
+    }
+
+    @Override
+    protected String getFileNameExtentionToOpenDict() {
+        return "/" + FormatSpec.TRIE_FILE_EXTENSION;
     }
 
     public void addMultipleDictionaryEntriesToDictionary(
