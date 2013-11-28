@@ -125,6 +125,7 @@ public final class BinaryDictionary extends Dictionary {
     private static native boolean needsToRunGCNative(long dict, boolean mindsBlockByGC);
     private static native void flushWithGCNative(long dict, String filePath);
     private static native void closeNative(long dict);
+    private static native int getFormatVersionNative(long dict);
     private static native int getProbabilityNative(long dict, int[] word);
     private static native int getBigramProbabilityNative(long dict, int[] word0, int[] word1);
     private static native int getSuggestionsNative(long dict, long proximityInfo,
@@ -239,6 +240,10 @@ public final class BinaryDictionary extends Dictionary {
 
     public boolean isValidDictionary() {
         return mNativeDict != 0;
+    }
+
+    public int getFormatVersion() {
+        return getFormatVersionNative(mNativeDict);
     }
 
     public static float calcNormalizedScore(final String before, final String after,
