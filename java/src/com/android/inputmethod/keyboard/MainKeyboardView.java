@@ -31,8 +31,6 @@ import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
-import android.os.Message;
-import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
@@ -41,7 +39,6 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
@@ -58,6 +55,7 @@ import com.android.inputmethod.keyboard.internal.GestureTrailsPreview;
 import com.android.inputmethod.keyboard.internal.KeyDrawParams;
 import com.android.inputmethod.keyboard.internal.KeyPreviewDrawParams;
 import com.android.inputmethod.keyboard.internal.MainKeyboardViewDrawingHandler;
+import com.android.inputmethod.keyboard.internal.MainKeyboardViewTimerHandler;
 import com.android.inputmethod.keyboard.internal.NonDistinctMultitouchHelper;
 import com.android.inputmethod.keyboard.internal.PreviewPlacerView;
 import com.android.inputmethod.keyboard.internal.SlidingKeyInputPreview;
@@ -69,7 +67,6 @@ import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.latin.settings.DebugSettings;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.CoordinateUtils;
-import com.android.inputmethod.latin.utils.StaticInnerHandlerWrapper;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 import com.android.inputmethod.latin.utils.TypefaceUtils;
 import com.android.inputmethod.latin.utils.UsabilityStudyLogUtils;
@@ -151,8 +148,8 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     private static final int SPACE_LED_LENGTH_PERCENT = 80;
 
     // Stuff to draw altCodeWhileTyping keys.
-    private ObjectAnimator mAltCodeKeyWhileTypingFadeoutAnimator;
-    private ObjectAnimator mAltCodeKeyWhileTypingFadeinAnimator;
+    private final ObjectAnimator mAltCodeKeyWhileTypingFadeoutAnimator;
+    private final ObjectAnimator mAltCodeKeyWhileTypingFadeinAnimator;
     private int mAltCodeKeyWhileTypingAnimAlpha = Constants.Color.ALPHA_OPAQUE;
 
     // Preview placer view
@@ -202,191 +199,8 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     private KeyDetector mKeyDetector;
     private final NonDistinctMultitouchHelper mNonDistinctMultitouchHelper;
 
-    private final KeyTimerHandler mKeyTimerHandler;
+    private final MainKeyboardViewTimerHandler mKeyTimerHandler;
     private final int mLanguageOnSpacebarHorizontalMargin;
-
-    private static final class KeyTimerHandler extends StaticInnerHandlerWrapper<MainKeyboardView>
-            implements TimerProxy {
-        private static final int MSG_TYPING_STATE_EXPIRED = 0;
-        private static final int MSG_REPEAT_KEY = 1;
-        private static final int MSG_LONGPRESS_KEY = 2;
-        private static final int MSG_DOUBLE_TAP_SHIFT_KEY = 3;
-        private static final int MSG_UPDATE_BATCH_INPUT = 4;
-
-        private final int mIgnoreAltCodeKeyTimeout;
-        private final int mGestureRecognitionUpdateTime;
-
-        public KeyTimerHandler(final MainKeyboardView outerInstance,
-                final TypedArray mainKeyboardViewAttr) {
-            super(outerInstance);
-
-            mIgnoreAltCodeKeyTimeout = mainKeyboardViewAttr.getInt(
-                    R.styleable.MainKeyboardView_ignoreAltCodeKeyTimeout, 0);
-            mGestureRecognitionUpdateTime = mainKeyboardViewAttr.getInt(
-                    R.styleable.MainKeyboardView_gestureRecognitionUpdateTime, 0);
-        }
-
-        @Override
-        public void handleMessage(final Message msg) {
-            final MainKeyboardView keyboardView = getOuterInstance();
-            if (keyboardView == null) {
-                return;
-            }
-            final PointerTracker tracker = (PointerTracker) msg.obj;
-            switch (msg.what) {
-            case MSG_TYPING_STATE_EXPIRED:
-                startWhileTypingFadeinAnimation(keyboardView);
-                break;
-            case MSG_REPEAT_KEY:
-                tracker.onKeyRepeat(msg.arg1 /* code */, msg.arg2 /* repeatCount */);
-                break;
-            case MSG_LONGPRESS_KEY:
-                keyboardView.onLongPress(tracker);
-                break;
-            case MSG_UPDATE_BATCH_INPUT:
-                tracker.updateBatchInputByTimer(SystemClock.uptimeMillis());
-                startUpdateBatchInputTimer(tracker);
-                break;
-            }
-        }
-
-        @Override
-        public void startKeyRepeatTimer(final PointerTracker tracker, final int repeatCount,
-                final int delay) {
-            final Key key = tracker.getKey();
-            if (key == null || delay == 0) {
-                return;
-            }
-            sendMessageDelayed(
-                    obtainMessage(MSG_REPEAT_KEY, key.getCode(), repeatCount, tracker), delay);
-        }
-
-        public void cancelKeyRepeatTimer() {
-            removeMessages(MSG_REPEAT_KEY);
-        }
-
-        // TODO: Suppress layout changes in key repeat mode
-        public boolean isInKeyRepeat() {
-            return hasMessages(MSG_REPEAT_KEY);
-        }
-
-        @Override
-        public void startLongPressTimer(final PointerTracker tracker, final int delay) {
-            cancelLongPressTimer();
-            if (delay <= 0) return;
-            sendMessageDelayed(obtainMessage(MSG_LONGPRESS_KEY, tracker), delay);
-        }
-
-        @Override
-        public void cancelLongPressTimer() {
-            removeMessages(MSG_LONGPRESS_KEY);
-        }
-
-        private static void cancelAndStartAnimators(final ObjectAnimator animatorToCancel,
-                final ObjectAnimator animatorToStart) {
-            if (animatorToCancel == null || animatorToStart == null) {
-                // TODO: Stop using null as a no-operation animator.
-                return;
-            }
-            float startFraction = 0.0f;
-            if (animatorToCancel.isStarted()) {
-                animatorToCancel.cancel();
-                startFraction = 1.0f - animatorToCancel.getAnimatedFraction();
-            }
-            final long startTime = (long)(animatorToStart.getDuration() * startFraction);
-            animatorToStart.start();
-            animatorToStart.setCurrentPlayTime(startTime);
-        }
-
-        private static void startWhileTypingFadeinAnimation(final MainKeyboardView keyboardView) {
-            cancelAndStartAnimators(keyboardView.mAltCodeKeyWhileTypingFadeoutAnimator,
-                    keyboardView.mAltCodeKeyWhileTypingFadeinAnimator);
-        }
-
-        private static void startWhileTypingFadeoutAnimation(final MainKeyboardView keyboardView) {
-            cancelAndStartAnimators(keyboardView.mAltCodeKeyWhileTypingFadeinAnimator,
-                    keyboardView.mAltCodeKeyWhileTypingFadeoutAnimator);
-        }
-
-        @Override
-        public void startTypingStateTimer(final Key typedKey) {
-            if (typedKey.isModifier() || typedKey.altCodeWhileTyping()) {
-                return;
-            }
-
-            final boolean isTyping = isTypingState();
-            removeMessages(MSG_TYPING_STATE_EXPIRED);
-            final MainKeyboardView keyboardView = getOuterInstance();
-
-            // When user hits the space or the enter key, just cancel the while-typing timer.
-            final int typedCode = typedKey.getCode();
-            if (typedCode == Constants.CODE_SPACE || typedCode == Constants.CODE_ENTER) {
-                if (isTyping) {
-                    startWhileTypingFadeinAnimation(keyboardView);
-                }
-                return;
-            }
-
-            sendMessageDelayed(
-                    obtainMessage(MSG_TYPING_STATE_EXPIRED), mIgnoreAltCodeKeyTimeout);
-            if (isTyping) {
-                return;
-            }
-            startWhileTypingFadeoutAnimation(keyboardView);
-        }
-
-        @Override
-        public boolean isTypingState() {
-            return hasMessages(MSG_TYPING_STATE_EXPIRED);
-        }
-
-        @Override
-        public void startDoubleTapShiftKeyTimer() {
-            sendMessageDelayed(obtainMessage(MSG_DOUBLE_TAP_SHIFT_KEY),
-                    ViewConfiguration.getDoubleTapTimeout());
-        }
-
-        @Override
-        public void cancelDoubleTapShiftKeyTimer() {
-            removeMessages(MSG_DOUBLE_TAP_SHIFT_KEY);
-        }
-
-        @Override
-        public boolean isInDoubleTapShiftKeyTimeout() {
-            return hasMessages(MSG_DOUBLE_TAP_SHIFT_KEY);
-        }
-
-        @Override
-        public void cancelKeyTimers() {
-            cancelKeyRepeatTimer();
-            cancelLongPressTimer();
-        }
-
-        @Override
-        public void startUpdateBatchInputTimer(final PointerTracker tracker) {
-            if (mGestureRecognitionUpdateTime <= 0) {
-                return;
-            }
-            removeMessages(MSG_UPDATE_BATCH_INPUT, tracker);
-            sendMessageDelayed(obtainMessage(MSG_UPDATE_BATCH_INPUT, tracker),
-                    mGestureRecognitionUpdateTime);
-        }
-
-        @Override
-        public void cancelUpdateBatchInputTimer(final PointerTracker tracker) {
-            removeMessages(MSG_UPDATE_BATCH_INPUT, tracker);
-        }
-
-        @Override
-        public void cancelAllUpdateBatchInputTimers() {
-            removeMessages(MSG_UPDATE_BATCH_INPUT);
-        }
-
-        public void cancelAllMessages() {
-            cancelKeyTimers();
-            cancelAllUpdateBatchInputTimers();
-        }
-    }
 
     private final MainKeyboardViewDrawingHandler mDrawingHandler =
             new MainKeyboardViewDrawingHandler(this);
@@ -442,7 +256,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
                 R.styleable.MainKeyboardView_keyHysteresisDistanceForSlidingModifier, 0.0f);
         mKeyDetector = new KeyDetector(
                 keyHysteresisDistance, keyHysteresisDistanceForSlidingModifier);
-        mKeyTimerHandler = new KeyTimerHandler(this, mainKeyboardViewAttr);
+        mKeyTimerHandler = new MainKeyboardViewTimerHandler(this, mainKeyboardViewAttr);
         mKeyPreviewOffset = mainKeyboardViewAttr.getDimensionPixelOffset(
                 R.styleable.MainKeyboardView_keyPreviewOffset, 0);
         mKeyPreviewHeight = mainKeyboardViewAttr.getDimensionPixelSize(
@@ -512,6 +326,32 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
             animator.setTarget(target);
         }
         return animator;
+    }
+
+    private static void cancelAndStartAnimators(final ObjectAnimator animatorToCancel,
+            final ObjectAnimator animatorToStart) {
+        if (animatorToCancel == null || animatorToStart == null) {
+            // TODO: Stop using null as a no-operation animator.
+            return;
+        }
+        float startFraction = 0.0f;
+        if (animatorToCancel.isStarted()) {
+            animatorToCancel.cancel();
+            startFraction = 1.0f - animatorToCancel.getAnimatedFraction();
+        }
+        final long startTime = (long)(animatorToStart.getDuration() * startFraction);
+        animatorToStart.start();
+        animatorToStart.setCurrentPlayTime(startTime);
+    }
+
+    public void startWhileTypingFadeinAnimation() {
+        cancelAndStartAnimators(
+                mAltCodeKeyWhileTypingFadeoutAnimator, mAltCodeKeyWhileTypingFadeinAnimator);
+    }
+
+    public void startWhileTypingFadeoutAnimation() {
+        cancelAndStartAnimators(
+                mAltCodeKeyWhileTypingFadeinAnimator, mAltCodeKeyWhileTypingFadeoutAnimator);
     }
 
     @ExternallyReferenced
@@ -1012,7 +852,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
      * Called when a key is long pressed.
      * @param tracker the pointer tracker which pressed the parent key
      */
-    private void onLongPress(final PointerTracker tracker) {
+    public void onLongPress(final PointerTracker tracker) {
         if (isShowingMoreKeysPanel()) {
             return;
         }
