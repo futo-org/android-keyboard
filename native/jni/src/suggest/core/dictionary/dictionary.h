@@ -22,6 +22,7 @@
 #include "defines.h"
 #include "jni.h"
 #include "suggest/core/dictionary/bigram_dictionary.h"
+#include "suggest/core/policy/dictionary_header_structure_policy.h"
 #include "suggest/core/policy/dictionary_structure_with_buffer_policy.h"
 #include "suggest/core/suggest_interface.h"
 #include "utils/exclusive_ownership_pointer.h"
@@ -90,6 +91,11 @@ class Dictionary {
 
     const DictionaryStructureWithBufferPolicy *getDictionaryStructurePolicy() const {
         return mDictionaryStructureWithBufferPolicy.get();
+    }
+
+    int getFormatVersionNumber() const {
+        return mDictionaryStructureWithBufferPolicy.get()->getHeaderStructurePolicy()
+                ->getFormatVersionNumber();
     }
 
  private:

@@ -28,6 +28,7 @@ import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.utils.AsyncResultHolder;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.PrioritizedSerialExecutor;
+import com.android.inputmethod.latin.utils.StringUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -127,6 +128,14 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
      * from file. Note that the shared binary dictionary is locked when this is called.
      */
     protected abstract boolean hasContentChanged();
+
+    protected boolean isValidBinaryDictFormatVersion(final int formatVersion) {
+        return true;
+    }
+
+    protected String getFileNameExtentionToOpenDict() {
+        return "";
+    }
 
     /**
      * Gets the dictionary update controller for the given filename.
@@ -238,12 +247,18 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
             public void run() {
                 if (mDictionaryWriter == null) {
                     mBinaryDictionary.close();
-                    final File file = new File(mContext.getFilesDir(), mFilename + "/"
-                            + FormatSpec.TRIE_FILE_EXTENSION);
+                    final File file = new File(mContext.getFilesDir(), mFilename);
+                    file.delete();
                     BinaryDictionary.createEmptyDictFile(file.getAbsolutePath(),
                             DICTIONARY_FORMAT_VERSION, getHeaderAttributeMap());
+                    // We have 'fileToOpen' in addition to 'file' for the v4 dictionary format
+                    // where 'file' is a directory, and 'fileToOpen' is a normal file.
+                    final File fileToOpen = new File(mContext.getFilesDir(), mFilename
+                            + getFileNameExtentionToOpenDict());
+                    // TODO: Make BinaryDictionary's constructor be able to accept filename
+                    // without extension.
                     mBinaryDictionary = new BinaryDictionary(
-                            file.getAbsolutePath(), 0 /* offset */, file.length(),
+                            fileToOpen.getAbsolutePath(), 0 /* offset */, fileToOpen.length(),
                             true /* useFullEditDistance */, null, mDictType, mIsUpdatable);
                 } else {
                     mDictionaryWriter.clear();
@@ -482,8 +497,8 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                     + mFilenameDictionaryUpdateController.mLastUpdateTime);
         }
 
-        final File file = new File(mContext.getFilesDir(), mFilename + "/"
-                + FormatSpec.TRIE_FILE_EXTENSION);
+        final File file = new File(mContext.getFilesDir(), mFilename
+                + getFileNameExtentionToOpenDict());
         final String filename = file.getAbsolutePath();
         final long length = file.length();
 
@@ -526,8 +541,10 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
             loadDictionaryAsync();
             mDictionaryWriter.write(mFilename, getHeaderAttributeMap());
         } else {
-            if (mBinaryDictionary == null || !mBinaryDictionary.isValidDictionary()) {
+            if (mBinaryDictionary == null || !mBinaryDictionary.isValidDictionary()
+                    || !isValidBinaryDictFormatVersion(mBinaryDictionary.getFormatVersion())) {
                 final File file = new File(mContext.getFilesDir(), mFilename);
+                file.delete();
                 BinaryDictionary.createEmptyDictFile(file.getAbsolutePath(),
                         DICTIONARY_FORMAT_VERSION, getHeaderAttributeMap());
             } else {
@@ -623,8 +640,11 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                         // load the shared dictionary.
                         loadBinaryDictionary();
                     }
-                    if (mBinaryDictionary != null && !mBinaryDictionary.isValidDictionary()) {
-                        // Binary dictionary is not valid. Regenerate the dictionary file.
+                    if (mBinaryDictionary != null && !(mBinaryDictionary.isValidDictionary()
+                            && isValidBinaryDictFormatVersion(
+                                    mBinaryDictionary.getFormatVersion()))) {
+                        // Binary dictionary or its format version is not valid. Regenerate the
+                        // dictionary file.
                         mFilenameDictionaryUpdateController.mLastUpdateTime = time;
                         writeBinaryDictionary();
                         loadBinaryDictionary();

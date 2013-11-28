@@ -26,6 +26,8 @@ class FileUtils {
     // Returns -1 on error.
     static int getFileSize(const char *const filePath);
 
+    static bool existsDir(const char *const dirPath);
+
     // Remove a directory and all files in the directory.
     static bool removeDirAndFiles(const char *const dirPath);
 
