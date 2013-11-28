@@ -49,9 +49,8 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
                       mBuffers.get()->getTerminalPositionLookupTable()),
               mNodeReader(mDictBuffer, mBuffers.get()->getProbabilityDictContent()),
               mNodeWriter(mDictBuffer, mBuffers.get(), &mNodeReader, &mBigramPolicy,
-                      &mShortcutPolicy),
-              mUpdatingHelper(mDictBuffer, &mNodeReader, &mNodeWriter,
-                      mHeaderPolicy.isDecayingDict()),
+                      &mShortcutPolicy, mHeaderPolicy.isDecayingDict()),
+              mUpdatingHelper(mDictBuffer, &mNodeReader, &mNodeWriter),
               mWritingHelper(mBuffers.get()),
               mUnigramCount(mHeaderPolicy.getUnigramCount()),
               mBigramCount(mHeaderPolicy.getBigramCount()), mNeedsToDecayForTesting(false) {};

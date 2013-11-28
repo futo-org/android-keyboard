@@ -87,7 +87,8 @@ bool Ver4PatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
     Ver4ShortcutListPolicy shortcutPolicy(mBuffers->getShortcutDictContent(),
             mBuffers->getTerminalPositionLookupTable());
     Ver4PatriciaTrieNodeWriter ptNodeWriter(mBuffers->getWritableTrieBuffer(),
-            mBuffers, &ptNodeReader, &bigramPolicy, &shortcutPolicy);
+            mBuffers, &ptNodeReader, &bigramPolicy, &shortcutPolicy,
+            false /* needsToDecayWhenUpdating */);
 
     DynamicPatriciaTrieReadingHelper readingHelper(mBuffers->getTrieBuffer(), &ptNodeReader);
     readingHelper.initWithPtNodeArrayPos(rootPtNodeArrayPos);
@@ -121,7 +122,8 @@ bool Ver4PatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
     PtNodeWriter::DictPositionRelocationMap dictPositionRelocationMap;
     readingHelper.initWithPtNodeArrayPos(rootPtNodeArrayPos);
     Ver4PatriciaTrieNodeWriter ptNodeWriterForNewBuffers(buffersToWrite->getWritableTrieBuffer(),
-            buffersToWrite, &ptNodeReader, &bigramPolicy, &shortcutPolicy);
+            buffersToWrite, &ptNodeReader, &bigramPolicy, &shortcutPolicy,
+            false /* needsToDecayWhenUpdating */);
     DynamicPatriciaTrieGcEventListeners::TraversePolicyToPlaceAndWriteValidPtNodesToBuffer
             traversePolicyToPlaceAndWriteValidPtNodesToBuffer(&ptNodeWriterForNewBuffers,
                     buffersToWrite->getWritableTrieBuffer(), &dictPositionRelocationMap);
@@ -139,7 +141,8 @@ bool Ver4PatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
     Ver4ShortcutListPolicy newShortcutPolicy(buffersToWrite->getShortcutDictContent(),
             buffersToWrite->getTerminalPositionLookupTable());
     Ver4PatriciaTrieNodeWriter newPtNodeWriter(buffersToWrite->getWritableTrieBuffer(),
-            buffersToWrite, &newPtNodeReader, &newBigramPolicy, &newShortcutPolicy);
+            buffersToWrite, &newPtNodeReader, &newBigramPolicy, &newShortcutPolicy,
+            false /* needsToDecayWhenUpdating */);
 
     DynamicPatriciaTrieReadingHelper newDictReadingHelper(buffersToWrite->getTrieBuffer(),
             &newPtNodeReader);

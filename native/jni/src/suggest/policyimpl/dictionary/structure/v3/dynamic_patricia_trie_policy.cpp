@@ -231,8 +231,8 @@ void DynamicPatriciaTriePolicy::flush(const char *const filePath) {
         AKLOGI("Warning: flush() is called for non-updatable dictionary.");
         return;
     }
-    DynamicPatriciaTrieWritingHelper writingHelper(&mBufferWithExtendableBuffer, &mNodeReader,
-            &mNodeWriter, &mBigramListPolicy, &mShortcutListPolicy, false /* needsToDecay */);
+    DynamicPatriciaTrieWritingHelper writingHelper(&mBufferWithExtendableBuffer,
+            &mBigramListPolicy, &mShortcutListPolicy, false /* needsToDecay */);
     writingHelper.writeToDictFile(filePath, &mHeaderPolicy, mUnigramCount, mBigramCount);
 }
 
@@ -246,8 +246,8 @@ void DynamicPatriciaTriePolicy::flushWithGC(const char *const filePath) {
                     false /* mindsBlockByDecay */, mUnigramCount, mBigramCount, &mHeaderPolicy));
     DynamicBigramListPolicy bigramListPolicyForGC(&mHeaderPolicy, &mBufferWithExtendableBuffer,
             &mShortcutListPolicy, needsToDecay);
-    DynamicPatriciaTrieWritingHelper writingHelper(&mBufferWithExtendableBuffer, &mNodeReader,
-            &mNodeWriter, &bigramListPolicyForGC, &mShortcutListPolicy, needsToDecay);
+    DynamicPatriciaTrieWritingHelper writingHelper(&mBufferWithExtendableBuffer,
+            &bigramListPolicyForGC, &mShortcutListPolicy, needsToDecay);
     writingHelper.writeToDictFileWithGC(getRootPosition(), filePath, &mHeaderPolicy);
     mNeedsToDecayForTesting = false;
 }

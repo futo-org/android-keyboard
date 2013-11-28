@@ -76,11 +76,13 @@ bool DynamicPatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
         int *const outUnigramCount, int *const outBigramCount) {
     DynamicPatriciaTrieNodeReader ptNodeReader(mBuffer, mBigramPolicy, mShortcutPolicy);
     DynamicPatriciaTrieReadingHelper readingHelper(mBuffer, &ptNodeReader);
+    DynamicPatriciaTrieNodeWriter ptNodeWriter(mBuffer, &ptNodeReader, mBigramPolicy,
+            mShortcutPolicy, false /* needsToDecayWhenUpdating */);
     readingHelper.initWithPtNodeArrayPos(rootPtNodeArrayPos);
     DynamicPatriciaTrieGcEventListeners
             ::TraversePolicyToUpdateUnigramProbabilityAndMarkUselessPtNodesAsDeleted
                     traversePolicyToUpdateUnigramProbabilityAndMarkUselessPtNodesAsDeleted(
-                            headerPolicy, mPtNodeWriter, mBuffer, mNeedsToDecay);
+                            headerPolicy, &ptNodeWriter, mBuffer, mNeedsToDecay);
     if (!readingHelper.traverseAllPtNodesInPostorderDepthFirstManner(
             &traversePolicyToUpdateUnigramProbabilityAndMarkUselessPtNodesAsDeleted)) {
         return false;
@@ -92,7 +94,7 @@ bool DynamicPatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
 
     readingHelper.initWithPtNodeArrayPos(rootPtNodeArrayPos);
     DynamicPatriciaTrieGcEventListeners::TraversePolicyToUpdateBigramProbability
-            traversePolicyToUpdateBigramProbability(mPtNodeWriter);
+            traversePolicyToUpdateBigramProbability(&ptNodeWriter);
     if (!readingHelper.traverseAllPtNodesInPostorderDepthFirstManner(
             &traversePolicyToUpdateBigramProbability)) {
         return false;
@@ -106,7 +108,7 @@ bool DynamicPatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
     PtNodeWriter::DictPositionRelocationMap dictPositionRelocationMap;
     readingHelper.initWithPtNodeArrayPos(rootPtNodeArrayPos);
     DynamicPatriciaTrieNodeWriter newPtNodeWriter(bufferToWrite, &ptNodeReader, mBigramPolicy,
-            mShortcutPolicy);
+            mShortcutPolicy, false /* needsToDecayWhenUpdating */);
     DynamicPatriciaTrieGcEventListeners::TraversePolicyToPlaceAndWriteValidPtNodesToBuffer
             traversePolicyToPlaceAndWriteValidPtNodesToBuffer(&newPtNodeWriter, bufferToWrite,
                     &dictPositionRelocationMap);
@@ -124,7 +126,7 @@ bool DynamicPatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
             &newDictShortcutPolicy);
     DynamicPatriciaTrieReadingHelper newDictReadingHelper(bufferToWrite, &newDictNodeReader);
     DynamicPatriciaTrieNodeWriter newDictNodeWriter(bufferToWrite, &newDictNodeReader,
-            &newDictBigramPolicy, &newDictShortcutPolicy);
+            &newDictBigramPolicy, &newDictShortcutPolicy, false /* needsToDecayWhenUpdating */);
     newDictReadingHelper.initWithPtNodeArrayPos(rootPtNodeArrayPos);
     DynamicPatriciaTrieGcEventListeners::TraversePolicyToUpdateAllPositionFields
             traversePolicyToUpdateAllPositionFields(&newDictNodeWriter, &dictPositionRelocationMap);

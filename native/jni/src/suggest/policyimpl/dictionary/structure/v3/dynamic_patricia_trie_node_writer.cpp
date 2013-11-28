@@ -23,6 +23,7 @@
 #include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_reading_utils.h"
 #include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_writing_utils.h"
 #include "suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer.h"
+#include "suggest/policyimpl/dictionary/utils/forgetting_curve_utils.h"
 
 namespace latinime {
 
@@ -105,9 +106,11 @@ bool DynamicPatriciaTrieNodeWriter::updatePtNodeProbability(
     if (!toBeUpdatedPtNodeParams->isTerminal()) {
         return false;
     }
+    const int probabilityToWrite = getUpdatedProbability(toBeUpdatedPtNodeParams->getProbability(),
+            newProbability);
     int probabilityFieldPos = toBeUpdatedPtNodeParams->getProbabilityFieldPos();
     return DynamicPatriciaTrieWritingUtils::writeProbabilityAndAdvancePosition(mBuffer,
-            newProbability, &probabilityFieldPos);
+            probabilityToWrite, &probabilityFieldPos);
 }
 
 bool DynamicPatriciaTrieNodeWriter::updateChildrenPosition(
@@ -119,67 +122,24 @@ bool DynamicPatriciaTrieNodeWriter::updateChildrenPosition(
 
 bool DynamicPatriciaTrieNodeWriter::writePtNodeAndAdvancePosition(
         const PtNodeParams *const ptNodeParams, int *const ptNodeWritingPos) {
-    const int nodePos = *ptNodeWritingPos;
-    // Write dummy flags. The Node flags are updated with appropriate flags at the last step of the
-    // PtNode writing.
-    if (!DynamicPatriciaTrieWritingUtils::writeFlagsAndAdvancePosition(mBuffer,
-            0 /* nodeFlags */, ptNodeWritingPos)) {
+    return writePtNodeAndGetProbabilityFieldPosAndAdvancePosition(ptNodeParams,
+            0 /* outProbabilityFieldPos */, ptNodeWritingPos);
+}
+
+bool DynamicPatriciaTrieNodeWriter::writeNewTerminalPtNodeAndAdvancePosition(
+        const PtNodeParams *const ptNodeParams, int *const ptNodeWritingPos) {
+    int probabilityFieldPos = NOT_A_DICT_POS;
+    if (!writePtNodeAndGetProbabilityFieldPosAndAdvancePosition(ptNodeParams, &probabilityFieldPos,
+            ptNodeWritingPos)) {
         return false;
     }
-    // Calculate a parent offset and write the offset.
-    if (!DynamicPatriciaTrieWritingUtils::writeParentPosOffsetAndAdvancePosition(mBuffer,
-            ptNodeParams->getParentPos(), nodePos, ptNodeWritingPos)) {
+    if (probabilityFieldPos == NOT_A_DICT_POS) {
         return false;
     }
-    // Write code points
-    if (!DynamicPatriciaTrieWritingUtils::writeCodePointsAndAdvancePosition(mBuffer,
-            ptNodeParams->getCodePoints(), ptNodeParams->getCodePointCount(), ptNodeWritingPos)) {
-        return false;
-    }
-    // Write probability when the probability is a valid probability, which means this node is
-    // terminal.
-    if (ptNodeParams->getProbability() != NOT_A_PROBABILITY) {
-        if (!DynamicPatriciaTrieWritingUtils::writeProbabilityAndAdvancePosition(mBuffer,
-                ptNodeParams->getProbability(), ptNodeWritingPos)) {
-            return false;
-        }
-    }
-    // Write children position
-    if (!DynamicPatriciaTrieWritingUtils::writeChildrenPositionAndAdvancePosition(mBuffer,
-            ptNodeParams->getChildrenPos(), ptNodeWritingPos)) {
-        return false;
-    }
-    // Copy shortcut list when the originalShortcutListPos is valid dictionary position.
-    if (ptNodeParams->getShortcutPos() != NOT_A_DICT_POS) {
-        int fromPos = ptNodeParams->getShortcutPos();
-        if (!mShortcutPolicy->copyAllShortcutsAndReturnIfSucceededOrNot(mBuffer, &fromPos,
-                ptNodeWritingPos)) {
-            return false;
-        }
-    }
-    // Copy bigram list when the originalBigramListPos is valid dictionary position.
-    int bigramCount = 0;
-    if (ptNodeParams->getBigramsPos() != NOT_A_DICT_POS) {
-        int fromPos = ptNodeParams->getBigramsPos();
-        if (!mBigramPolicy->copyAllBigrams(mBuffer, &fromPos, ptNodeWritingPos, &bigramCount)) {
-            return false;
-        }
-    }
-    // Create node flags and write them.
-    PatriciaTrieReadingUtils::NodeFlags nodeFlags =
-            PatriciaTrieReadingUtils::createAndGetFlags(ptNodeParams->isBlacklisted(),
-                    ptNodeParams->isNotAWord(),
-                    ptNodeParams->getProbability() != NOT_A_PROBABILITY /* isTerminal */,
-                    ptNodeParams->getShortcutPos() != NOT_A_DICT_POS /* hasShortcutTargets */,
-                    bigramCount > 0 /* hasBigrams */,
-                    ptNodeParams->getCodePointCount() > 1 /* hasMultipleChars */,
-                    CHILDREN_POSITION_FIELD_SIZE);
-    int flagsFieldPos = nodePos;
-    if (!DynamicPatriciaTrieWritingUtils::writeFlagsAndAdvancePosition(mBuffer, nodeFlags,
-            &flagsFieldPos)) {
-        return false;
-    }
-    return true;
+    const int probabilityToWrite = getUpdatedProbability(
+            NOT_A_PROBABILITY /* originalProbability */, ptNodeParams->getProbability());
+    return DynamicPatriciaTrieWritingUtils::writeProbabilityAndAdvancePosition(mBuffer,
+            probabilityToWrite, &probabilityFieldPos);
 }
 
 bool DynamicPatriciaTrieNodeWriter::addNewBigramEntry(
@@ -287,6 +247,92 @@ bool DynamicPatriciaTrieNodeWriter::updateAllPositionFields(
         *outBigramEntryCount = bigramCount;
     }
     return true;
+}
+
+bool DynamicPatriciaTrieNodeWriter::writePtNodeAndGetProbabilityFieldPosAndAdvancePosition(
+        const PtNodeParams *const ptNodeParams, int *const outProbabilityFieldPos,
+        int *const ptNodeWritingPos) {
+    const int nodePos = *ptNodeWritingPos;
+    // Write dummy flags. The Node flags are updated with appropriate flags at the last step of the
+    // PtNode writing.
+    if (!DynamicPatriciaTrieWritingUtils::writeFlagsAndAdvancePosition(mBuffer,
+            0 /* nodeFlags */, ptNodeWritingPos)) {
+        return false;
+    }
+    // Calculate a parent offset and write the offset.
+    if (!DynamicPatriciaTrieWritingUtils::writeParentPosOffsetAndAdvancePosition(mBuffer,
+            ptNodeParams->getParentPos(), nodePos, ptNodeWritingPos)) {
+        return false;
+    }
+    // Write code points
+    if (!DynamicPatriciaTrieWritingUtils::writeCodePointsAndAdvancePosition(mBuffer,
+            ptNodeParams->getCodePoints(), ptNodeParams->getCodePointCount(), ptNodeWritingPos)) {
+        return false;
+    }
+    // Write probability when the probability is a valid probability, which means this node is
+    // terminal.
+    if (ptNodeParams->isTerminal()) {
+        if (outProbabilityFieldPos) {
+            *outProbabilityFieldPos = *ptNodeWritingPos;
+        }
+        if (ptNodeParams->getProbability() == NOT_A_PROBABILITY) {
+            // Write a dummy probability.
+            if (!DynamicPatriciaTrieWritingUtils::writeProbabilityAndAdvancePosition(mBuffer,
+                    0 /* probability */, ptNodeWritingPos)) {
+                return false;
+            }
+        } else {
+            if (!DynamicPatriciaTrieWritingUtils::writeProbabilityAndAdvancePosition(mBuffer,
+                    ptNodeParams->getProbability(), ptNodeWritingPos)) {
+                return false;
+            }
+        }
+    }
+    // Write children position
+    if (!DynamicPatriciaTrieWritingUtils::writeChildrenPositionAndAdvancePosition(mBuffer,
+            ptNodeParams->getChildrenPos(), ptNodeWritingPos)) {
+        return false;
+    }
+    // Copy shortcut list when the originalShortcutListPos is valid dictionary position.
+    if (ptNodeParams->getShortcutPos() != NOT_A_DICT_POS) {
+        int fromPos = ptNodeParams->getShortcutPos();
+        if (!mShortcutPolicy->copyAllShortcutsAndReturnIfSucceededOrNot(mBuffer, &fromPos,
+                ptNodeWritingPos)) {
+            return false;
+        }
+    }
+    // Copy bigram list when the originalBigramListPos is valid dictionary position.
+    int bigramCount = 0;
+    if (ptNodeParams->getBigramsPos() != NOT_A_DICT_POS) {
+        int fromPos = ptNodeParams->getBigramsPos();
+        if (!mBigramPolicy->copyAllBigrams(mBuffer, &fromPos, ptNodeWritingPos, &bigramCount)) {
+            return false;
+        }
+    }
+    // Create node flags and write them.
+    PatriciaTrieReadingUtils::NodeFlags nodeFlags =
+            PatriciaTrieReadingUtils::createAndGetFlags(ptNodeParams->isBlacklisted(),
+                    ptNodeParams->isNotAWord(), ptNodeParams->isTerminal(),
+                    ptNodeParams->getShortcutPos() != NOT_A_DICT_POS /* hasShortcutTargets */,
+                    bigramCount > 0 /* hasBigrams */,
+                    ptNodeParams->getCodePointCount() > 1 /* hasMultipleChars */,
+                    CHILDREN_POSITION_FIELD_SIZE);
+    int flagsFieldPos = nodePos;
+    if (!DynamicPatriciaTrieWritingUtils::writeFlagsAndAdvancePosition(mBuffer, nodeFlags,
+            &flagsFieldPos)) {
+        return false;
+    }
+    return true;
+}
+
+int DynamicPatriciaTrieNodeWriter::getUpdatedProbability(const int originalProbability,
+        const int newProbability) const {
+    if (mNeedsToDecayWhenUpdating) {
+        return ForgettingCurveUtils::getUpdatedEncodedProbability(originalProbability,
+                newProbability);
+    } else {
+        return newProbability;
+    }
 }
 
 }

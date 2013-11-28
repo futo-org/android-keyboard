@@ -24,6 +24,7 @@
 #include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_writing_utils.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_dict_buffers.h"
 #include "suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer.h"
+#include "suggest/policyimpl/dictionary/utils/forgetting_curve_utils.h"
 
 namespace latinime {
 
@@ -115,8 +116,10 @@ bool Ver4PatriciaTrieNodeWriter::updatePtNodeProbability(
     if (!toBeUpdatedPtNodeParams->isTerminal()) {
         return false;
     }
+    const int probabilityToWrite = getUpdatedProbability(toBeUpdatedPtNodeParams->getProbability(),
+            newProbability);
     return mBuffers->getUpdatableProbabilityDictContent()->setProbability(
-            toBeUpdatedPtNodeParams->getTerminalId(), newProbability);
+            toBeUpdatedPtNodeParams->getTerminalId(), probabilityToWrite);
 }
 
 bool Ver4PatriciaTrieNodeWriter::updateChildrenPosition(
@@ -134,67 +137,23 @@ bool Ver4PatriciaTrieNodeWriter::updateTerminalId(const PtNodeParams *const toBe
 
 bool Ver4PatriciaTrieNodeWriter::writePtNodeAndAdvancePosition(
         const PtNodeParams *const ptNodeParams, int *const ptNodeWritingPos) {
-    const int nodePos = *ptNodeWritingPos;
-    // Write dummy flags. The Node flags are updated with appropriate flags at the last step of the
-    // PtNode writing.
-    if (!DynamicPatriciaTrieWritingUtils::writeFlagsAndAdvancePosition(mTrieBuffer,
-            0 /* nodeFlags */, ptNodeWritingPos)) {
-        return false;
-    }
-    // Calculate a parent offset and write the offset.
-    if (!DynamicPatriciaTrieWritingUtils::writeParentPosOffsetAndAdvancePosition(mTrieBuffer,
-            ptNodeParams->getParentPos(), nodePos, ptNodeWritingPos)) {
-        return false;
-    }
-    // Write code points
-    if (!DynamicPatriciaTrieWritingUtils::writeCodePointsAndAdvancePosition(mTrieBuffer,
-            ptNodeParams->getCodePoints(), ptNodeParams->getCodePointCount(), ptNodeWritingPos)) {
-        return false;
-    }
+    return writePtNodeAndGetTerminalIdAndAdvancePosition(ptNodeParams, 0 /* outTerminalId */,
+            ptNodeWritingPos);
+}
+
+
+bool Ver4PatriciaTrieNodeWriter::writeNewTerminalPtNodeAndAdvancePosition(
+        const PtNodeParams *const ptNodeParams, int *const ptNodeWritingPos) {
     int terminalId = Ver4DictConstants::NOT_A_TERMINAL_ID;
-    if (ptNodeParams->getTerminalId() != Ver4DictConstants::NOT_A_TERMINAL_ID) {
-        terminalId = ptNodeParams->getTerminalId();
-    } else if (ptNodeParams->getProbability() != NOT_A_PROBABILITY) {
-        // Write terminal information using a new terminal id.
-        // Get a new unused terminal id.
-        terminalId = mBuffers->getTerminalPositionLookupTable()->getNextTerminalId();
-    }
-    const int isTerminal = terminalId != Ver4DictConstants::NOT_A_TERMINAL_ID;
-    if (isTerminal) {
-        // Update the lookup table.
-        if (!mBuffers->getUpdatableTerminalPositionLookupTable()->setTerminalPtNodePosition(
-                terminalId, nodePos)) {
-            return false;
-        }
-        // Write terminal Id.
-        if (!mTrieBuffer->writeUintAndAdvancePosition(terminalId,
-                Ver4DictConstants::TERMINAL_ID_FIELD_SIZE, ptNodeWritingPos)) {
-            return false;
-        }
-        // Write probability.
-        if (!mBuffers->getUpdatableProbabilityDictContent()->setProbability(
-                terminalId, ptNodeParams->getProbability())) {
-            return false;
-        }
-    }
-    // Write children position
-    if (!DynamicPatriciaTrieWritingUtils::writeChildrenPositionAndAdvancePosition(mTrieBuffer,
-            ptNodeParams->getChildrenPos(), ptNodeWritingPos)) {
+    if (!writePtNodeAndGetTerminalIdAndAdvancePosition(ptNodeParams, &terminalId,
+            ptNodeWritingPos)) {
         return false;
     }
-    // Create node flags and write them.
-    PatriciaTrieReadingUtils::NodeFlags nodeFlags =
-            PatriciaTrieReadingUtils::createAndGetFlags(ptNodeParams->isBlacklisted(),
-                    ptNodeParams->isNotAWord(), isTerminal,
-                    ptNodeParams->hasShortcutTargets(), ptNodeParams->hasBigrams(),
-                    ptNodeParams->getCodePointCount() > 1 /* hasMultipleChars */,
-                    CHILDREN_POSITION_FIELD_SIZE);
-    int flagsFieldPos = nodePos;
-    if (!DynamicPatriciaTrieWritingUtils::writeFlagsAndAdvancePosition(mTrieBuffer, nodeFlags,
-            &flagsFieldPos)) {
-        return false;
-    }
-    return true;
+    // Write probability.
+    const int probabilityToWrite = getUpdatedProbability(NOT_A_PROBABILITY,
+            ptNodeParams->getProbability());
+    return mBuffers->getUpdatableProbabilityDictContent()->setProbability(terminalId,
+            probabilityToWrite);
 }
 
 bool Ver4PatriciaTrieNodeWriter::addNewBigramEntry(
@@ -256,6 +215,87 @@ bool Ver4PatriciaTrieNodeWriter::updateAllPositionFields(
                 toBeUpdatedPtNodeParams->getTerminalId());
     }
     return true;
+}
+
+bool Ver4PatriciaTrieNodeWriter::writePtNodeAndGetTerminalIdAndAdvancePosition(
+        const PtNodeParams *const ptNodeParams, int *const outTerminalId,
+        int *const ptNodeWritingPos) {
+    const int nodePos = *ptNodeWritingPos;
+    // Write dummy flags. The Node flags are updated with appropriate flags at the last step of the
+    // PtNode writing.
+    if (!DynamicPatriciaTrieWritingUtils::writeFlagsAndAdvancePosition(mTrieBuffer,
+            0 /* nodeFlags */, ptNodeWritingPos)) {
+        return false;
+    }
+    // Calculate a parent offset and write the offset.
+    if (!DynamicPatriciaTrieWritingUtils::writeParentPosOffsetAndAdvancePosition(mTrieBuffer,
+            ptNodeParams->getParentPos(), nodePos, ptNodeWritingPos)) {
+        return false;
+    }
+    // Write code points
+    if (!DynamicPatriciaTrieWritingUtils::writeCodePointsAndAdvancePosition(mTrieBuffer,
+            ptNodeParams->getCodePoints(), ptNodeParams->getCodePointCount(), ptNodeWritingPos)) {
+        return false;
+    }
+    int terminalId = Ver4DictConstants::NOT_A_TERMINAL_ID;
+    if (ptNodeParams->getTerminalId() != Ver4DictConstants::NOT_A_TERMINAL_ID) {
+        terminalId = ptNodeParams->getTerminalId();
+    } else if (ptNodeParams->isTerminal()) {
+        // Write terminal information using a new terminal id.
+        // Get a new unused terminal id.
+        terminalId = mBuffers->getTerminalPositionLookupTable()->getNextTerminalId();
+    }
+    const int isTerminal = terminalId != Ver4DictConstants::NOT_A_TERMINAL_ID;
+    if (isTerminal) {
+        // Update the lookup table.
+        if (!mBuffers->getUpdatableTerminalPositionLookupTable()->setTerminalPtNodePosition(
+                terminalId, nodePos)) {
+            return false;
+        }
+        // Write terminal Id.
+        if (!mTrieBuffer->writeUintAndAdvancePosition(terminalId,
+                Ver4DictConstants::TERMINAL_ID_FIELD_SIZE, ptNodeWritingPos)) {
+            return false;
+        }
+        // Write probability.
+        if (ptNodeParams->getProbability() != NOT_A_PROBABILITY) {
+            if (!mBuffers->getUpdatableProbabilityDictContent()->setProbability(
+                    terminalId, ptNodeParams->getProbability())) {
+                return false;
+            }
+        }
+        if (outTerminalId) {
+            *outTerminalId = terminalId;
+        }
+    }
+    // Write children position
+    if (!DynamicPatriciaTrieWritingUtils::writeChildrenPositionAndAdvancePosition(mTrieBuffer,
+            ptNodeParams->getChildrenPos(), ptNodeWritingPos)) {
+        return false;
+    }
+    // Create node flags and write them.
+    PatriciaTrieReadingUtils::NodeFlags nodeFlags =
+            PatriciaTrieReadingUtils::createAndGetFlags(ptNodeParams->isBlacklisted(),
+                    ptNodeParams->isNotAWord(), isTerminal,
+                    ptNodeParams->hasShortcutTargets(), ptNodeParams->hasBigrams(),
+                    ptNodeParams->getCodePointCount() > 1 /* hasMultipleChars */,
+                    CHILDREN_POSITION_FIELD_SIZE);
+    int flagsFieldPos = nodePos;
+    if (!DynamicPatriciaTrieWritingUtils::writeFlagsAndAdvancePosition(mTrieBuffer, nodeFlags,
+            &flagsFieldPos)) {
+        return false;
+    }
+    return true;
+}
+
+int Ver4PatriciaTrieNodeWriter::getUpdatedProbability(const int originalProbability,
+        const int newProbability) const {
+    if (mNeedsToDecayWhenUpdating) {
+        return ForgettingCurveUtils::getUpdatedEncodedProbability(originalProbability,
+                newProbability);
+    } else {
+        return newProbability;
+    }
 }
 
 }
