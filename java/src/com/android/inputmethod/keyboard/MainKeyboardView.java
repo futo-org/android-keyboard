@@ -50,15 +50,15 @@ import com.android.inputmethod.accessibility.AccessibleKeyboardViewProxy;
 import com.android.inputmethod.annotations.ExternallyReferenced;
 import com.android.inputmethod.keyboard.PointerTracker.DrawingProxy;
 import com.android.inputmethod.keyboard.PointerTracker.TimerProxy;
+import com.android.inputmethod.keyboard.internal.DrawingHandler;
 import com.android.inputmethod.keyboard.internal.GestureFloatingPreviewText;
 import com.android.inputmethod.keyboard.internal.GestureTrailsPreview;
 import com.android.inputmethod.keyboard.internal.KeyDrawParams;
 import com.android.inputmethod.keyboard.internal.KeyPreviewDrawParams;
-import com.android.inputmethod.keyboard.internal.MainKeyboardViewDrawingHandler;
-import com.android.inputmethod.keyboard.internal.MainKeyboardViewTimerHandler;
 import com.android.inputmethod.keyboard.internal.NonDistinctMultitouchHelper;
 import com.android.inputmethod.keyboard.internal.PreviewPlacerView;
 import com.android.inputmethod.keyboard.internal.SlidingKeyInputPreview;
+import com.android.inputmethod.keyboard.internal.TimerHandler;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
@@ -120,7 +120,8 @@ import java.util.WeakHashMap;
  * @attr ref R.styleable#MainKeyboardView_suppressKeyPreviewAfterBatchInputDuration
  */
 public final class MainKeyboardView extends KeyboardView implements PointerTracker.KeyEventHandler,
-        PointerTracker.DrawingProxy, MoreKeysPanel.Controller {
+        PointerTracker.DrawingProxy, MoreKeysPanel.Controller, DrawingHandler.Callbacks,
+        TimerHandler.Callbacks {
     private static final String TAG = MainKeyboardView.class.getSimpleName();
 
     /** Listener for {@link KeyboardActionListener}. */
@@ -196,14 +197,14 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     // TODO: Make this parameter customizable by user via settings.
     private int mGestureFloatingPreviewTextLingerTimeout;
 
-    private KeyDetector mKeyDetector;
+    private final KeyDetector mKeyDetector;
     private final NonDistinctMultitouchHelper mNonDistinctMultitouchHelper;
 
-    private final MainKeyboardViewTimerHandler mKeyTimerHandler;
+    private final TimerHandler mKeyTimerHandler;
     private final int mLanguageOnSpacebarHorizontalMargin;
 
-    private final MainKeyboardViewDrawingHandler mDrawingHandler =
-            new MainKeyboardViewDrawingHandler(this);
+    private final DrawingHandler mDrawingHandler =
+            new DrawingHandler(this);
 
     public MainKeyboardView(final Context context, final AttributeSet attrs) {
         this(context, attrs, R.attr.mainKeyboardViewStyle);
@@ -256,7 +257,12 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
                 R.styleable.MainKeyboardView_keyHysteresisDistanceForSlidingModifier, 0.0f);
         mKeyDetector = new KeyDetector(
                 keyHysteresisDistance, keyHysteresisDistanceForSlidingModifier);
-        mKeyTimerHandler = new MainKeyboardViewTimerHandler(this, mainKeyboardViewAttr);
+        final int ignoreAltCodeKeyTimeout = mainKeyboardViewAttr.getInt(
+                R.styleable.MainKeyboardView_ignoreAltCodeKeyTimeout, 0);
+        final int gestureRecognitionUpdateTime = mainKeyboardViewAttr.getInt(
+                R.styleable.MainKeyboardView_gestureRecognitionUpdateTime, 0);
+        mKeyTimerHandler = new TimerHandler(
+                this, ignoreAltCodeKeyTimeout, gestureRecognitionUpdateTime);
         mKeyPreviewOffset = mainKeyboardViewAttr.getDimensionPixelOffset(
                 R.styleable.MainKeyboardView_keyPreviewOffset, 0);
         mKeyPreviewHeight = mainKeyboardViewAttr.getDimensionPixelSize(
@@ -344,11 +350,14 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         animatorToStart.setCurrentPlayTime(startTime);
     }
 
+    // Implements {@link TimerHander.Callbacks} method.
+    @Override
     public void startWhileTypingFadeinAnimation() {
         cancelAndStartAnimators(
                 mAltCodeKeyWhileTypingFadeoutAnimator, mAltCodeKeyWhileTypingFadeinAnimator);
     }
 
+    @Override
     public void startWhileTypingFadeoutAnimation() {
         cancelAndStartAnimators(
                 mAltCodeKeyWhileTypingFadeinAnimator, mAltCodeKeyWhileTypingFadeoutAnimator);
@@ -521,6 +530,8 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         return previewTextView;
     }
 
+    // Implements {@link DrawingHandler.Callbacks} method.
+    @Override
     public void dismissAllKeyPreviews() {
         for (final Key key : new HashSet<Key>(mShowingKeyPreviewTextViews.keySet())) {
             dismissKeyPreviewWithoutDelay(key);
@@ -714,7 +725,9 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         return zoomOutAnimation;
     }
 
+    // Implements {@link TimerHandler.Callbacks} method.
     // TODO: Take this method out of this class.
+    @Override
     public void dismissKeyPreviewWithoutDelay(final Key key) {
         if (key == null) {
             return;
@@ -773,6 +786,8 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         mGestureTrailsPreview.setPreviewEnabled(isGestureTrailEnabled);
     }
 
+    // Implements {@link DrawingHandler.Callbacks} method.
+    @Override
     public void showGestureFloatingPreviewText(final SuggestedWords suggestedWords) {
         locatePreviewPlacerView();
         mGestureFloatingPreviewText.setSuggetedWords(suggestedWords);
@@ -848,10 +863,12 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         return moreKeysKeyboardView;
     }
 
+    // Implements {@link TimerHandler.Callbacks} method.
     /**
      * Called when a key is long pressed.
      * @param tracker the pointer tracker which pressed the parent key
      */
+    @Override
     public void onLongPress(final PointerTracker tracker) {
         if (isShowingMoreKeysPanel()) {
             return;

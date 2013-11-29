@@ -19,30 +19,37 @@ package com.android.inputmethod.keyboard.internal;
 import android.os.Message;
 
 import com.android.inputmethod.keyboard.Key;
-import com.android.inputmethod.keyboard.MainKeyboardView;
+import com.android.inputmethod.keyboard.internal.DrawingHandler.Callbacks;
 import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.utils.LeakGuardHandlerWrapper;
 
-public class MainKeyboardViewDrawingHandler extends LeakGuardHandlerWrapper<MainKeyboardView> {
+// TODO: Separate this class into KeyPreviewHandler and BatchInputPreviewHandler or so.
+public class DrawingHandler extends LeakGuardHandlerWrapper<Callbacks> {
+    public interface Callbacks {
+        public void dismissKeyPreviewWithoutDelay(Key key);
+        public void dismissAllKeyPreviews();
+        public void showGestureFloatingPreviewText(SuggestedWords suggestedWords);
+    }
+
     private static final int MSG_DISMISS_KEY_PREVIEW = 0;
     private static final int MSG_DISMISS_GESTURE_FLOATING_PREVIEW_TEXT = 1;
 
-    public MainKeyboardViewDrawingHandler(final MainKeyboardView ownerInstance) {
+    public DrawingHandler(final Callbacks ownerInstance) {
         super(ownerInstance);
     }
 
     @Override
     public void handleMessage(final Message msg) {
-        final MainKeyboardView mainKeyboardView = getOwnerInstance();
-        if (mainKeyboardView == null) {
+        final Callbacks callbacks = getOwnerInstance();
+        if (callbacks == null) {
             return;
         }
         switch (msg.what) {
         case MSG_DISMISS_KEY_PREVIEW:
-            mainKeyboardView.dismissKeyPreviewWithoutDelay((Key)msg.obj);
+            callbacks.dismissKeyPreviewWithoutDelay((Key)msg.obj);
             break;
         case MSG_DISMISS_GESTURE_FLOATING_PREVIEW_TEXT:
-            mainKeyboardView.showGestureFloatingPreviewText(SuggestedWords.EMPTY);
+            callbacks.showGestureFloatingPreviewText(SuggestedWords.EMPTY);
             break;
         }
     }
@@ -53,11 +60,11 @@ public class MainKeyboardViewDrawingHandler extends LeakGuardHandlerWrapper<Main
 
     private void cancelAllDismissKeyPreviews() {
         removeMessages(MSG_DISMISS_KEY_PREVIEW);
-        final MainKeyboardView mainKeyboardView = getOwnerInstance();
-        if (mainKeyboardView == null) {
+        final Callbacks callbacks = getOwnerInstance();
+        if (callbacks == null) {
             return;
         }
-        mainKeyboardView.dismissAllKeyPreviews();
+        callbacks.dismissAllKeyPreviews();
     }
 
     public void dismissGestureFloatingPreviewText(final long delay) {

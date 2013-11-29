@@ -16,21 +16,25 @@
 
 package com.android.inputmethod.keyboard.internal;
 
-import android.content.res.TypedArray;
 import android.os.Message;
 import android.os.SystemClock;
 import android.view.ViewConfiguration;
 
 import com.android.inputmethod.keyboard.Key;
-import com.android.inputmethod.keyboard.MainKeyboardView;
 import com.android.inputmethod.keyboard.PointerTracker;
 import com.android.inputmethod.keyboard.PointerTracker.TimerProxy;
+import com.android.inputmethod.keyboard.internal.TimerHandler.Callbacks;
 import com.android.inputmethod.latin.Constants;
-import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.utils.LeakGuardHandlerWrapper;
 
-public final class MainKeyboardViewTimerHandler extends LeakGuardHandlerWrapper<MainKeyboardView>
-        implements TimerProxy {
+// TODO: Separate this class into KeyTimerHandler and BatchInputTimerHandler or so.
+public final class TimerHandler extends LeakGuardHandlerWrapper<Callbacks> implements TimerProxy {
+    public interface Callbacks {
+        public void startWhileTypingFadeinAnimation();
+        public void startWhileTypingFadeoutAnimation();
+        public void onLongPress(PointerTracker tracker);
+    }
+
     private static final int MSG_TYPING_STATE_EXPIRED = 0;
     private static final int MSG_REPEAT_KEY = 1;
     private static final int MSG_LONGPRESS_KEY = 2;
@@ -40,32 +44,29 @@ public final class MainKeyboardViewTimerHandler extends LeakGuardHandlerWrapper<
     private final int mIgnoreAltCodeKeyTimeout;
     private final int mGestureRecognitionUpdateTime;
 
-    public MainKeyboardViewTimerHandler(final MainKeyboardView ownerInstance,
-            final TypedArray mainKeyboardViewAttr) {
+    public TimerHandler(final Callbacks ownerInstance, final int ignoreAltCodeKeyTimeout,
+            final int gestureRecognitionUpdateTime) {
         super(ownerInstance);
-
-        mIgnoreAltCodeKeyTimeout = mainKeyboardViewAttr.getInt(
-                R.styleable.MainKeyboardView_ignoreAltCodeKeyTimeout, 0);
-        mGestureRecognitionUpdateTime = mainKeyboardViewAttr.getInt(
-                R.styleable.MainKeyboardView_gestureRecognitionUpdateTime, 0);
+        mIgnoreAltCodeKeyTimeout = ignoreAltCodeKeyTimeout;
+        mGestureRecognitionUpdateTime = gestureRecognitionUpdateTime;
     }
 
     @Override
     public void handleMessage(final Message msg) {
-        final MainKeyboardView mainKeyboardView = getOwnerInstance();
-        if (mainKeyboardView == null) {
+        final Callbacks callbacks = getOwnerInstance();
+        if (callbacks == null) {
             return;
         }
         final PointerTracker tracker = (PointerTracker) msg.obj;
         switch (msg.what) {
         case MSG_TYPING_STATE_EXPIRED:
-            mainKeyboardView.startWhileTypingFadeinAnimation();
+            callbacks.startWhileTypingFadeinAnimation();
             break;
         case MSG_REPEAT_KEY:
             tracker.onKeyRepeat(msg.arg1 /* code */, msg.arg2 /* repeatCount */);
             break;
         case MSG_LONGPRESS_KEY:
-            mainKeyboardView.onLongPress(tracker);
+            callbacks.onLongPress(tracker);
             break;
         case MSG_UPDATE_BATCH_INPUT:
             tracker.updateBatchInputByTimer(SystemClock.uptimeMillis());
@@ -114,8 +115,8 @@ public final class MainKeyboardViewTimerHandler extends LeakGuardHandlerWrapper<
 
         final boolean isTyping = isTypingState();
         removeMessages(MSG_TYPING_STATE_EXPIRED);
-        final MainKeyboardView mainKeyboardView = getOwnerInstance();
-        if (mainKeyboardView == null) {
+        final Callbacks callbacks = getOwnerInstance();
+        if (callbacks == null) {
             return;
         }
 
@@ -123,7 +124,7 @@ public final class MainKeyboardViewTimerHandler extends LeakGuardHandlerWrapper<
         final int typedCode = typedKey.getCode();
         if (typedCode == Constants.CODE_SPACE || typedCode == Constants.CODE_ENTER) {
             if (isTyping) {
-                mainKeyboardView.startWhileTypingFadeinAnimation();
+                callbacks.startWhileTypingFadeinAnimation();
             }
             return;
         }
@@ -133,7 +134,7 @@ public final class MainKeyboardViewTimerHandler extends LeakGuardHandlerWrapper<
         if (isTyping) {
             return;
         }
-        mainKeyboardView.startWhileTypingFadeoutAnimation();
+        callbacks.startWhileTypingFadeoutAnimation();
     }
 
     @Override
