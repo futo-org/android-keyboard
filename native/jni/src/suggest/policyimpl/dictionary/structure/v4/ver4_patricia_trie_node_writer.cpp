@@ -51,7 +51,7 @@ bool Ver4PatriciaTrieNodeWriter::markPtNodeAsDeleted(
             &writingPos)) {
         return false;
     }
-    if (toBeUpdatedPtNodeParams->getTerminalId() != NOT_A_DICT_POS) {
+    if (toBeUpdatedPtNodeParams->isTerminal()) {
         // The PtNode is a terminal. Delete entry from the terminal position lookup table.
         return mBuffers->getUpdatableTerminalPositionLookupTable()->setTerminalPtNodePosition(
                 toBeUpdatedPtNodeParams->getTerminalId(), NOT_A_DICT_POS /* ptNodePos */);

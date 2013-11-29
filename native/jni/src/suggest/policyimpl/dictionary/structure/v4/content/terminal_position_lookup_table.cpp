@@ -44,9 +44,6 @@ bool TerminalPositionLookupTable::setTerminalPtNodePosition(
         }
         mSize++;
     }
-    if (terminalPtNodePos == NOT_A_DICT_POS) {
-        return true;
-    }
     const int terminalPos = (terminalPtNodePos != NOT_A_DICT_POS) ?
             terminalPtNodePos + mHeaderRegionSize : Ver4DictConstants::NOT_A_TERMINAL_ADDRESS;
     return getWritableBuffer()->writeUint(terminalPos,
