@@ -45,6 +45,8 @@ const int Ver4DictConstants::TERMINAL_ADDRESS_TABLE_ADDRESS_SIZE = 3;
 const int Ver4DictConstants::NOT_A_TERMINAL_ADDRESS = 0;
 const int Ver4DictConstants::TERMINAL_ID_FIELD_SIZE = 4;
 const int Ver4DictConstants::TIME_STAMP_FIELD_SIZE = 4;
+const int Ver4DictConstants::WORD_LEVEL_FIELD_SIZE = 1;
+const int Ver4DictConstants::WORD_COUNT_FIELD_SIZE = 1;
 
 const int Ver4DictConstants::BIGRAM_ADDRESS_TABLE_BLOCK_SIZE = 4;
 const int Ver4DictConstants::BIGRAM_ADDRESS_TABLE_DATA_SIZE = 4;

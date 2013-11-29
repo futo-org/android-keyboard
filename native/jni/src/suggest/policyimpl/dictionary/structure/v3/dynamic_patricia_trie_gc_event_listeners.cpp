@@ -127,7 +127,8 @@ bool DynamicPatriciaTrieGcEventListeners::TraversePolicyToPlaceAndWriteValidPtNo
                     ptNodeParams->getHeadPos(), writingPos));
     mValidPtNodeCount++;
     // Writes current PtNode.
-    return mPtNodeWriter->writePtNodeAndAdvancePosition(ptNodeParams, &writingPos);
+    return mPtNodeWriter->writeNewTerminalPtNodeAndAdvancePosition(ptNodeParams,
+            0 /* timestamp */, &writingPos);
 }
 
 bool DynamicPatriciaTrieGcEventListeners::TraversePolicyToUpdateAllPositionFields
