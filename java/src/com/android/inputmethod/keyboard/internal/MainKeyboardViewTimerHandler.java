@@ -27,9 +27,9 @@ import com.android.inputmethod.keyboard.PointerTracker;
 import com.android.inputmethod.keyboard.PointerTracker.TimerProxy;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.R;
-import com.android.inputmethod.latin.utils.StaticInnerHandlerWrapper;
+import com.android.inputmethod.latin.utils.LeakGuardHandlerWrapper;
 
-public final class MainKeyboardViewTimerHandler extends StaticInnerHandlerWrapper<MainKeyboardView>
+public final class MainKeyboardViewTimerHandler extends LeakGuardHandlerWrapper<MainKeyboardView>
         implements TimerProxy {
     private static final int MSG_TYPING_STATE_EXPIRED = 0;
     private static final int MSG_REPEAT_KEY = 1;
@@ -40,9 +40,9 @@ public final class MainKeyboardViewTimerHandler extends StaticInnerHandlerWrappe
     private final int mIgnoreAltCodeKeyTimeout;
     private final int mGestureRecognitionUpdateTime;
 
-    public MainKeyboardViewTimerHandler(final MainKeyboardView outerInstance,
+    public MainKeyboardViewTimerHandler(final MainKeyboardView ownerInstance,
             final TypedArray mainKeyboardViewAttr) {
-        super(outerInstance);
+        super(ownerInstance);
 
         mIgnoreAltCodeKeyTimeout = mainKeyboardViewAttr.getInt(
                 R.styleable.MainKeyboardView_ignoreAltCodeKeyTimeout, 0);
@@ -52,20 +52,20 @@ public final class MainKeyboardViewTimerHandler extends StaticInnerHandlerWrappe
 
     @Override
     public void handleMessage(final Message msg) {
-        final MainKeyboardView keyboardView = getOuterInstance();
-        if (keyboardView == null) {
+        final MainKeyboardView mainKeyboardView = getOwnerInstance();
+        if (mainKeyboardView == null) {
             return;
         }
         final PointerTracker tracker = (PointerTracker) msg.obj;
         switch (msg.what) {
         case MSG_TYPING_STATE_EXPIRED:
-            keyboardView.startWhileTypingFadeinAnimation();
+            mainKeyboardView.startWhileTypingFadeinAnimation();
             break;
         case MSG_REPEAT_KEY:
             tracker.onKeyRepeat(msg.arg1 /* code */, msg.arg2 /* repeatCount */);
             break;
         case MSG_LONGPRESS_KEY:
-            keyboardView.onLongPress(tracker);
+            mainKeyboardView.onLongPress(tracker);
             break;
         case MSG_UPDATE_BATCH_INPUT:
             tracker.updateBatchInputByTimer(SystemClock.uptimeMillis());
@@ -114,13 +114,16 @@ public final class MainKeyboardViewTimerHandler extends StaticInnerHandlerWrappe
 
         final boolean isTyping = isTypingState();
         removeMessages(MSG_TYPING_STATE_EXPIRED);
-        final MainKeyboardView keyboardView = getOuterInstance();
+        final MainKeyboardView mainKeyboardView = getOwnerInstance();
+        if (mainKeyboardView == null) {
+            return;
+        }
 
         // When user hits the space or the enter key, just cancel the while-typing timer.
         final int typedCode = typedKey.getCode();
         if (typedCode == Constants.CODE_SPACE || typedCode == Constants.CODE_ENTER) {
             if (isTyping) {
-                keyboardView.startWhileTypingFadeinAnimation();
+                mainKeyboardView.startWhileTypingFadeinAnimation();
             }
             return;
         }
@@ -130,7 +133,7 @@ public final class MainKeyboardViewTimerHandler extends StaticInnerHandlerWrappe
         if (isTyping) {
             return;
         }
-        keyboardView.startWhileTypingFadeoutAnimation();
+        mainKeyboardView.startWhileTypingFadeoutAnimation();
     }
 
     @Override

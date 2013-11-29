@@ -31,7 +31,7 @@ import android.view.View;
 import com.android.inputmethod.keyboard.PointerTracker;
 import com.android.inputmethod.keyboard.internal.GestureTrail.Params;
 import com.android.inputmethod.latin.utils.CollectionUtils;
-import com.android.inputmethod.latin.utils.StaticInnerHandlerWrapper;
+import com.android.inputmethod.latin.utils.LeakGuardHandlerWrapper;
 
 /**
  * Draw gesture trail preview graphics during gesture.
@@ -52,21 +52,23 @@ public final class GestureTrailsPreview extends AbstractDrawingPreview {
     private final DrawingHandler mDrawingHandler;
 
     private static final class DrawingHandler
-            extends StaticInnerHandlerWrapper<GestureTrailsPreview> {
+            extends LeakGuardHandlerWrapper<GestureTrailsPreview> {
         private static final int MSG_UPDATE_GESTURE_TRAIL = 0;
 
         private final Params mGestureTrailParams;
 
-        public DrawingHandler(final GestureTrailsPreview outerInstance,
+        public DrawingHandler(final GestureTrailsPreview ownerInstance,
                 final Params gestureTrailParams) {
-            super(outerInstance);
+            super(ownerInstance);
             mGestureTrailParams = gestureTrailParams;
         }
 
         @Override
         public void handleMessage(final Message msg) {
-            final GestureTrailsPreview preview = getOuterInstance();
-            if (preview == null) return;
+            final GestureTrailsPreview preview = getOwnerInstance();
+            if (preview == null) {
+                return;
+            }
             switch (msg.what) {
             case MSG_UPDATE_GESTURE_TRAIL:
                 preview.getDrawingView().invalidate();
