@@ -143,27 +143,10 @@ bool Ver4PatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
     Ver4PatriciaTrieNodeWriter newPtNodeWriter(buffersToWrite->getWritableTrieBuffer(),
             buffersToWrite, &newPtNodeReader, &newBigramPolicy, &newShortcutPolicy,
             false /* needsToDecayWhenUpdating */);
-
-    DynamicPatriciaTrieReadingHelper newDictReadingHelper(buffersToWrite->getTrieBuffer(),
-            &newPtNodeReader);
-    newDictReadingHelper.initWithPtNodeArrayPos(rootPtNodeArrayPos);
-    DynamicPatriciaTrieGcEventListeners::TraversePolicyToUpdateAllPositionFields
-            traversePolicyToUpdateAllPositionFields(&newPtNodeWriter, &dictPositionRelocationMap);
-    if (!newDictReadingHelper.traverseAllPtNodesInPtNodeArrayLevelPreorderDepthFirstManner(
-            &traversePolicyToUpdateAllPositionFields)) {
-        return false;
-    }
-
     // Re-assign terminal IDs for valid terminal PtNodes.
     TerminalPositionLookupTable::TerminalIdMap terminalIdMap;
     if(!buffersToWrite->getUpdatableTerminalPositionLookupTable()->runGCTerminalIds(
             &terminalIdMap)) {
-        return false;
-    }
-    TraversePolicyToUpdateAllTerminalIds traversePolicyToUpdateAllTerminalIds(&newPtNodeWriter,
-            &terminalIdMap);
-    if (!newDictReadingHelper.traverseAllPtNodesInPostorderDepthFirstManner(
-            &traversePolicyToUpdateAllTerminalIds)) {
         return false;
     }
     // Run GC for probability dict content.
@@ -179,6 +162,22 @@ bool Ver4PatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
     // Run GC for shortcut dict content.
     if(!buffersToWrite->getUpdatableShortcutDictContent()->runGC(&terminalIdMap,
             mBuffers->getShortcutDictContent())) {
+        return false;
+    }
+    DynamicPatriciaTrieReadingHelper newDictReadingHelper(buffersToWrite->getTrieBuffer(),
+            &newPtNodeReader);
+    newDictReadingHelper.initWithPtNodeArrayPos(rootPtNodeArrayPos);
+    DynamicPatriciaTrieGcEventListeners::TraversePolicyToUpdateAllPositionFields
+            traversePolicyToUpdateAllPositionFields(&newPtNodeWriter, &dictPositionRelocationMap);
+    if (!newDictReadingHelper.traverseAllPtNodesInPtNodeArrayLevelPreorderDepthFirstManner(
+            &traversePolicyToUpdateAllPositionFields)) {
+        return false;
+    }
+    newDictReadingHelper.initWithPtNodeArrayPos(rootPtNodeArrayPos);
+    TraversePolicyToUpdateAllTerminalIds traversePolicyToUpdateAllTerminalIds(&newPtNodeWriter,
+            &terminalIdMap);
+    if (!newDictReadingHelper.traverseAllPtNodesInPostorderDepthFirstManner(
+            &traversePolicyToUpdateAllTerminalIds)) {
         return false;
     }
     *outUnigramCount = traversePolicyToUpdateAllPositionFields.getUnigramCount();
