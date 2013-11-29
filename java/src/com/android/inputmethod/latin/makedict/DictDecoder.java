@@ -128,7 +128,8 @@ public interface DictDecoder {
      * Opens the dictionary file and makes DictBuffer.
      */
     @UsedForTesting
-    public void openDictBuffer() throws FileNotFoundException, IOException;
+    public void openDictBuffer() throws FileNotFoundException, IOException,
+            UnsupportedFormatException;
     @UsedForTesting
     public boolean isDictBufferOpen();
 
@@ -229,4 +230,9 @@ public interface DictDecoder {
     }
 
     public void skipPtNode(final FormatOptions formatOptions);
+
+    /**
+     * @return whether this decoder has a valid binary dictionary that it can decode.
+     */
+    public boolean hasValidRawBinaryDictionary();
 }
