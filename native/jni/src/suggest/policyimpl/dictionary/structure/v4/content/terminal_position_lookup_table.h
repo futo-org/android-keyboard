@@ -28,19 +28,13 @@ class TerminalPositionLookupTable : public SingleDictContent {
  public:
     typedef hash_map_compat<int, int> TerminalIdMap;
 
-    // TODO: Quit using headerRegionSize.
-    TerminalPositionLookupTable(const char *const dictDirPath, const bool isUpdatable,
-            const int headerRegionSize)
+    TerminalPositionLookupTable(const char *const dictDirPath, const bool isUpdatable)
             : SingleDictContent(dictDirPath,
                       Ver4DictConstants::TERMINAL_ADDRESS_TABLE_FILE_EXTENSION, isUpdatable),
               mSize(getBuffer()->getTailPosition()
-                      / Ver4DictConstants::TERMINAL_ADDRESS_TABLE_ADDRESS_SIZE),
-              mHeaderRegionSize(headerRegionSize) {}
+                      / Ver4DictConstants::TERMINAL_ADDRESS_TABLE_ADDRESS_SIZE) {}
 
-    explicit TerminalPositionLookupTable(const int headerRegionSize)
-            : mSize(0), mHeaderRegionSize(headerRegionSize) {}
-
-    TerminalPositionLookupTable() : mSize(0), mHeaderRegionSize(0) {}
+    TerminalPositionLookupTable() : mSize(0) {}
 
     int getTerminalPtNodePosition(const int terminalId) const;
 
@@ -50,7 +44,7 @@ class TerminalPositionLookupTable : public SingleDictContent {
         return mSize;
     }
 
-    bool flushToFile(const char *const dictDirPath, const int newHeaderRegionSize) const;
+    bool flushToFile(const char *const dictDirPath) const;
 
     bool runGCTerminalIds(TerminalIdMap *const terminalIdMap);
 
@@ -62,7 +56,6 @@ class TerminalPositionLookupTable : public SingleDictContent {
     }
 
     int mSize;
-    const int mHeaderRegionSize;
 };
 } // namespace latinime
 #endif // LATINIME_TERMINAL_POSITION_LOOKUP_TABLE_H

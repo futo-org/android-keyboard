@@ -29,17 +29,18 @@ public class BinaryDictUtils {
 
     public static final String TEST_DICT_FILE_EXTENSION = ".testDict";
 
-    public static final FormatSpec.FormatOptions VERSION2 = new FormatSpec.FormatOptions(2);
+    public static final FormatSpec.FormatOptions VERSION2 =
+            new FormatSpec.FormatOptions(FormatSpec.VERSION2);
     public static final FormatSpec.FormatOptions VERSION3_WITHOUT_DYNAMIC_UPDATE =
-            new FormatSpec.FormatOptions(3, false /* supportsDynamicUpdate */);
+            new FormatSpec.FormatOptions(FormatSpec.VERSION3, false /* supportsDynamicUpdate */);
     public static final FormatSpec.FormatOptions VERSION3_WITH_DYNAMIC_UPDATE =
-            new FormatSpec.FormatOptions(3, true /* supportsDynamicUpdate */);
+            new FormatSpec.FormatOptions(FormatSpec.VERSION3, true /* supportsDynamicUpdate */);
     public static final FormatSpec.FormatOptions VERSION4_WITHOUT_DYNAMIC_UPDATE =
-            new FormatSpec.FormatOptions(4, false /* supportsDynamicUpdate */);
+            new FormatSpec.FormatOptions(FormatSpec.VERSION4, false /* supportsDynamicUpdate */);
     public static final FormatSpec.FormatOptions VERSION4_WITH_DYNAMIC_UPDATE =
-            new FormatSpec.FormatOptions(4, true /* supportsDynamicUpdate */);
+            new FormatSpec.FormatOptions(FormatSpec.VERSION4, true /* supportsDynamicUpdate */);
     public static final FormatSpec.FormatOptions VERSION4_WITH_DYNAMIC_UPDATE_AND_TIMESTAMP =
-            new FormatSpec.FormatOptions(4, true /* supportsDynamicUpdate */,
+            new FormatSpec.FormatOptions(FormatSpec.VERSION4, true /* supportsDynamicUpdate */,
                     true /* hasTimestamp */);
 
     public static DictionaryOptions makeDictionaryOptions(final String id, final String version) {
@@ -53,9 +54,10 @@ public class BinaryDictUtils {
 
     public static File getDictFile(final String name, final String version,
             final FormatOptions formatOptions, final File directory) {
-        if (formatOptions.mVersion == 2 || formatOptions.mVersion == 3) {
+        if (formatOptions.mVersion == FormatSpec.VERSION2
+                || formatOptions.mVersion == FormatSpec.VERSION3) {
             return new File(directory, name + "." + version + TEST_DICT_FILE_EXTENSION);
-        } else if (formatOptions.mVersion == 4) {
+        } else if (formatOptions.mVersion == FormatSpec.VERSION4) {
             return new File(directory, name + "." + version);
         } else {
             throw new RuntimeException("the format option has a wrong version : "
@@ -67,7 +69,8 @@ public class BinaryDictUtils {
             final File cacheDir) {
         if (formatOptions.mVersion == FormatSpec.VERSION4) {
             return new Ver4DictEncoder(cacheDir);
-        } else if (formatOptions.mVersion == 3 || formatOptions.mVersion == 2) {
+        } else if (formatOptions.mVersion == FormatSpec.VERSION3
+                || formatOptions.mVersion == FormatSpec.VERSION2) {
             return new Ver3DictEncoder(file);
         } else {
             throw new RuntimeException("The format option has a wrong version : "
@@ -79,7 +82,7 @@ public class BinaryDictUtils {
             throws UnsupportedFormatException {
         if (formatOptions.mVersion == FormatSpec.VERSION4) {
             return new Ver4DictUpdater(file, DictDecoder.USE_WRITABLE_BYTEBUFFER);
-        } else if (formatOptions.mVersion == 3) {
+        } else if (formatOptions.mVersion == FormatSpec.VERSION3) {
             return new Ver3DictUpdater(file, DictDecoder.USE_WRITABLE_BYTEBUFFER);
         } else {
             throw new UnsupportedFormatException("The format option has a wrong version : "

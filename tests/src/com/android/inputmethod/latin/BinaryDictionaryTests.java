@@ -72,10 +72,10 @@ public class BinaryDictionaryTests extends AndroidTestCase {
                 FormatSpec.FileHeader.ATTRIBUTE_VALUE_TRUE);
         if (BinaryDictionary.createEmptyDictFile(file.getAbsolutePath(),
                 FormatSpec.VERSION4, attributeMap)) {
-            return new File(file, FormatSpec.TRIE_FILE_EXTENSION);
+            return new File(file, FormatSpec.HEADER_FILE_EXTENSION);
         } else {
             throw new IOException("Empty dictionary " + file.getAbsolutePath() + " "
-                    + FormatSpec.TRIE_FILE_EXTENSION + " cannot be created.");
+                    + FormatSpec.HEADER_FILE_EXTENSION + " cannot be created.");
         }
     }
 

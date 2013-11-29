@@ -18,7 +18,9 @@
 
 namespace latinime {
 
+// These values MUST match the definitions in FormatSpec.java.
 const char *const Ver4DictConstants::TRIE_FILE_EXTENSION = ".trie";
+const char *const Ver4DictConstants::HEADER_FILE_EXTENSION = ".header";
 const char *const Ver4DictConstants::FREQ_FILE_EXTENSION = ".freq";
 // tat = Terminal Address Table
 const char *const Ver4DictConstants::TERMINAL_ADDRESS_TABLE_FILE_EXTENSION = ".tat";

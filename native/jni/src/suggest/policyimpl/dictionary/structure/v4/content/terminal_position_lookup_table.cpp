@@ -28,7 +28,7 @@ int TerminalPositionLookupTable::getTerminalPtNodePosition(const int terminalId)
     const int terminalPos = getBuffer()->readUint(
             Ver4DictConstants::TERMINAL_ADDRESS_TABLE_ADDRESS_SIZE, getEntryPos(terminalId));
     return (terminalPos == Ver4DictConstants::NOT_A_TERMINAL_ADDRESS) ?
-            NOT_A_DICT_POS : terminalPos - mHeaderRegionSize;
+            NOT_A_DICT_POS : terminalPos;
 }
 
 bool TerminalPositionLookupTable::setTerminalPtNodePosition(
@@ -45,18 +45,16 @@ bool TerminalPositionLookupTable::setTerminalPtNodePosition(
         mSize++;
     }
     const int terminalPos = (terminalPtNodePos != NOT_A_DICT_POS) ?
-            terminalPtNodePos + mHeaderRegionSize : Ver4DictConstants::NOT_A_TERMINAL_ADDRESS;
+            terminalPtNodePos : Ver4DictConstants::NOT_A_TERMINAL_ADDRESS;
     return getWritableBuffer()->writeUint(terminalPos,
             Ver4DictConstants::TERMINAL_ADDRESS_TABLE_ADDRESS_SIZE, getEntryPos(terminalId));
 }
 
-bool TerminalPositionLookupTable::flushToFile(const char *const dictDirPath,
-        const int newHeaderRegionSize) const {
-    const int headerRegionSizeDiff = newHeaderRegionSize - mHeaderRegionSize;
-    // If header region size has been changed or used buffer size is smaller than actual buffer
-    // size, regenerate lookup table and write the new table to file.
-    if (headerRegionSizeDiff != 0 || getEntryPos(mSize) < getBuffer()->getTailPosition()) {
-        TerminalPositionLookupTable lookupTableToWrite(newHeaderRegionSize);
+bool TerminalPositionLookupTable::flushToFile(const char *const dictDirPath) const {
+    // If the used buffer size is smaller than the actual buffer size, regenerate the lookup
+    // table and write the new table to the file.
+    if (getEntryPos(mSize) < getBuffer()->getTailPosition()) {
+        TerminalPositionLookupTable lookupTableToWrite;
         for (int i = 0; i < mSize; ++i) {
             const int terminalPtNodePosition = getTerminalPtNodePosition(i);
             if (!lookupTableToWrite.setTerminalPtNodePosition(i, terminalPtNodePosition)) {
@@ -68,7 +66,7 @@ bool TerminalPositionLookupTable::flushToFile(const char *const dictDirPath,
         return lookupTableToWrite.flush(dictDirPath,
                 Ver4DictConstants::TERMINAL_ADDRESS_TABLE_FILE_EXTENSION);
     } else {
-        // We can simply use this lookup table because the header region size has not been
+        // We can simply use this lookup table because the buffer size has not been
         // changed.
         return flush(dictDirPath, Ver4DictConstants::TERMINAL_ADDRESS_TABLE_FILE_EXTENSION);
     }

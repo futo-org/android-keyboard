@@ -45,10 +45,12 @@ public class Ver4DictDecoder extends AbstractDictDecoder {
     protected static final int FILETYPE_TERMINAL_ADDRESS_TABLE = 3;
     protected static final int FILETYPE_BIGRAM_FREQ = 4;
     protected static final int FILETYPE_SHORTCUT = 5;
+    protected static final int FILETYPE_HEADER = 6;
 
     protected final File mDictDirectory;
     protected final DictionaryBufferFactory mBufferFactory;
     protected DictBuffer mDictBuffer;
+    protected DictBuffer mHeaderBuffer;
     protected DictBuffer mFrequencyBuffer;
     protected DictBuffer mTerminalAddressTableBuffer;
     private BigramContentReader mBigramReader;
@@ -83,7 +85,7 @@ public class Ver4DictDecoder extends AbstractDictDecoder {
     @UsedForTesting
     /* package */ Ver4DictDecoder(final File dictDirectory, final int factoryFlag) {
         mDictDirectory = dictDirectory;
-        mDictBuffer = mFrequencyBuffer = null;
+        mDictBuffer = mHeaderBuffer = mFrequencyBuffer = null;
 
         if ((factoryFlag & MASK_DICTBUFFER) == USE_READONLY_BYTEBUFFER) {
             mBufferFactory = new DictionaryBufferFromReadOnlyByteBufferFactory();
@@ -100,13 +102,16 @@ public class Ver4DictDecoder extends AbstractDictDecoder {
     /* package */ Ver4DictDecoder(final File dictDirectory, final DictionaryBufferFactory factory) {
         mDictDirectory = dictDirectory;
         mBufferFactory = factory;
-        mDictBuffer = mFrequencyBuffer = null;
+        mDictBuffer = mHeaderBuffer = mFrequencyBuffer = null;
     }
 
     protected File getFile(final int fileType) throws UnsupportedFormatException {
         if (fileType == FILETYPE_TRIE) {
             return new File(mDictDirectory,
                     mDictDirectory.getName() + FormatSpec.TRIE_FILE_EXTENSION);
+        } else if (fileType == FILETYPE_HEADER) {
+            return new File(mDictDirectory,
+                    mDictDirectory.getName() + FormatSpec.HEADER_FILE_EXTENSION);
         } else if (fileType == FILETYPE_FREQUENCY) {
             return new File(mDictDirectory,
                     mDictDirectory.getName() + FormatSpec.FREQ_FILE_EXTENSION);
@@ -132,6 +137,7 @@ public class Ver4DictDecoder extends AbstractDictDecoder {
         if (!mDictDirectory.isDirectory()) {
             throw new UnsupportedFormatException("Format 4 dictionary needs a directory");
         }
+        mHeaderBuffer = mBufferFactory.getDictionaryBuffer(getFile(FILETYPE_HEADER));
         mDictBuffer = mBufferFactory.getDictionaryBuffer(getFile(FILETYPE_TRIE));
         mFrequencyBuffer = mBufferFactory.getDictionaryBuffer(getFile(FILETYPE_FREQUENCY));
         mTerminalAddressTableBuffer = mBufferFactory.getDictionaryBuffer(
@@ -150,16 +156,22 @@ public class Ver4DictDecoder extends AbstractDictDecoder {
     }
 
     @UsedForTesting
+    /* package */ DictBuffer getHeaderBuffer() {
+        return mHeaderBuffer;
+    }
+
+    @UsedForTesting
     /* package */ DictBuffer getDictBuffer() {
         return mDictBuffer;
     }
 
     @Override
     public FileHeader readHeader() throws IOException, UnsupportedFormatException {
-        if (mDictBuffer == null) {
+        if (mHeaderBuffer == null) {
             openDictBuffer();
         }
-        final FileHeader header = super.readHeader(mDictBuffer);
+        mHeaderBuffer.position(0);
+        final FileHeader header = super.readHeader(mHeaderBuffer);
         final int version = header.mFormatOptions.mVersion;
         if (version != FormatSpec.VERSION4) {
             throw new UnsupportedFormatException("File header has a wrong version : " + version);

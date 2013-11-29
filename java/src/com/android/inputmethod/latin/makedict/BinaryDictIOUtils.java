@@ -62,7 +62,7 @@ public final class BinaryDictIOUtils {
      * Retrieves all node arrays without recursive call.
      */
     private static void readUnigramsAndBigramsBinaryInner(final DictDecoder dictDecoder,
-            final int headerSize, final Map<Integer, String> words,
+            final int bodyOffset, final Map<Integer, String> words,
             final Map<Integer, Integer> frequencies,
             final Map<Integer, ArrayList<PendingAttribute>> bigrams,
             final FormatOptions formatOptions) {
@@ -71,7 +71,7 @@ public final class BinaryDictIOUtils {
         Stack<Position> stack = new Stack<Position>();
         int index = 0;
 
-        Position initPos = new Position(headerSize, 0);
+        Position initPos = new Position(bodyOffset, 0);
         stack.push(initPos);
 
         while (!stack.empty()) {
@@ -154,7 +154,7 @@ public final class BinaryDictIOUtils {
             UnsupportedFormatException {
         // Read header
         final FileHeader header = dictDecoder.readHeader();
-        readUnigramsAndBigramsBinaryInner(dictDecoder, header.mHeaderSize, words,
+        readUnigramsAndBigramsBinaryInner(dictDecoder, header.mBodyOffset, words,
                 frequencies, bigrams, header.mFormatOptions);
     }
 
