@@ -25,18 +25,23 @@
 
 namespace latinime {
 
+class ProbabilityEntry;
+
 class ProbabilityDictContent : public SingleDictContent {
  public:
-    ProbabilityDictContent(const char *const dictDirPath, const bool isUpdatable)
+    ProbabilityDictContent(const char *const dictDirPath, const bool hasHistoricalInfo,
+            const bool isUpdatable)
             : SingleDictContent(dictDirPath, Ver4DictConstants::FREQ_FILE_EXTENSION, isUpdatable),
-              mSize(getBuffer()->getTailPosition() / (Ver4DictConstants::PROBABILITY_SIZE
-                      + Ver4DictConstants::FLAGS_IN_PROBABILITY_FILE_SIZE)) {}
+              mHasHistoricalInfo(hasHistoricalInfo),
+              mSize(getBuffer()->getTailPosition() / getEntrySize()) {}
 
-    ProbabilityDictContent() : mSize(0) {}
+    ProbabilityDictContent(const bool hasHistoricalInfo)
+            : mHasHistoricalInfo(hasHistoricalInfo), mSize(0) {}
 
-    int getProbability(const int terminalId) const;
+    void getProbabilityEntry(const int terminalId,
+            ProbabilityEntry *const outProbabilityEntry) const;
 
-    bool setProbability(const int terminalId, const int probability);
+    bool setProbabilityEntry(const int terminalId, const ProbabilityEntry *const probabilityEntry);
 
     bool flushToFile(const char *const dictDirPath) const;
 
@@ -46,8 +51,13 @@ class ProbabilityDictContent : public SingleDictContent {
  private:
     DISALLOW_COPY_AND_ASSIGN(ProbabilityDictContent);
 
+    int getEntrySize() const;
+
     int getEntryPos(const int terminalId) const;
 
+    bool writeEntry(const ProbabilityEntry *const probabilityEntry, const int entryPos);
+
+    bool mHasHistoricalInfo;
     int mSize;
 };
 } // namespace latinime
