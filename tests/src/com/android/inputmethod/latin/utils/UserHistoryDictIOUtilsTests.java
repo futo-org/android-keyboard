@@ -26,6 +26,7 @@ import com.android.inputmethod.latin.makedict.DictEncoder;
 import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.makedict.FusionDictionary;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNode;
+import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
 import com.android.inputmethod.latin.makedict.Ver3DictDecoder;
 import com.android.inputmethod.latin.makedict.Ver3DictEncoder;
 import com.android.inputmethod.latin.personalization.UserHistoryDictionaryBigramList;
@@ -142,15 +143,10 @@ public class UserHistoryDictIOUtilsTests extends AndroidTestCase
         UserHistoryDictIOUtils.writeDictionary(dictEncoder, this, bigramList, FORMAT_OPTIONS);
     }
 
-    private void readDictFromFile(final File file, final OnAddWordListener listener) {
+    private void readDictFromFile(final File file, final OnAddWordListener listener)
+            throws IOException, FileNotFoundException, UnsupportedFormatException {
         final DictDecoder dictDecoder = FormatSpec.getDictDecoder(file, DictDecoder.USE_BYTEARRAY);
-        try {
-            dictDecoder.openDictBuffer();
-        } catch (FileNotFoundException e) {
-            Log.e(TAG, "file not found", e);
-        } catch (IOException e) {
-            Log.e(TAG, "IOException", e);
-        }
+        dictDecoder.openDictBuffer();
         UserHistoryDictIOUtils.readDictionaryBinary(dictDecoder, listener);
     }
 
@@ -169,7 +165,8 @@ public class UserHistoryDictIOUtilsTests extends AndroidTestCase
         checkWordsInFusionDict(fusionDict, addedWords);
     }
 
-    public void testReadAndWrite() {
+    public void testReadAndWrite() throws IOException, FileNotFoundException,
+            UnsupportedFormatException {
         final Context context = getContext();
 
         File file = null;

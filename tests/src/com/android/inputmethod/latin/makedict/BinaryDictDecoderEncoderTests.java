@@ -29,6 +29,7 @@ import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNode;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
+import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
 import com.android.inputmethod.latin.utils.ByteArrayDictBuffer;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 
@@ -563,7 +564,8 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         try {
             dictDecoder.openDictBuffer();
         } catch (IOException e) {
-            // ignore
+            Log.e(TAG, "IOException while opening the buffer", e);
+        } catch (UnsupportedFormatException e) {
             Log.e(TAG, "IOException while opening the buffer", e);
         }
         assertTrue("Can't get the buffer", dictDecoder.isDictBufferOpen());
@@ -639,7 +641,8 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         }
     }
 
-    private void runTestDeleteWord(final FormatOptions formatOptions) {
+    private void runTestDeleteWord(final FormatOptions formatOptions)
+            throws IOException, UnsupportedFormatException {
         final String dictName = "testDeleteWord";
         final String dictVersion = Long.toString(System.currentTimeMillis());
         final File file = BinaryDictUtils.getDictFile(dictName, dictVersion, formatOptions,
@@ -652,25 +655,20 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         timeWritingDictToFile(file, dict, formatOptions);
 
         final DictUpdater dictUpdater = BinaryDictUtils.getDictUpdater(file, formatOptions);
+        MoreAsserts.assertNotEqual(FormatSpec.NOT_VALID_WORD,
+                dictUpdater.getTerminalPosition(sWords.get(0)));
+        dictUpdater.deleteWord(sWords.get(0));
+        assertEquals(FormatSpec.NOT_VALID_WORD,
+                dictUpdater.getTerminalPosition(sWords.get(0)));
 
-        try {
-            MoreAsserts.assertNotEqual(FormatSpec.NOT_VALID_WORD,
-                    dictUpdater.getTerminalPosition(sWords.get(0)));
-            dictUpdater.deleteWord(sWords.get(0));
-            assertEquals(FormatSpec.NOT_VALID_WORD,
-                    dictUpdater.getTerminalPosition(sWords.get(0)));
-
-            MoreAsserts.assertNotEqual(FormatSpec.NOT_VALID_WORD,
-                    dictUpdater.getTerminalPosition(sWords.get(5)));
-            dictUpdater.deleteWord(sWords.get(5));
-            assertEquals(FormatSpec.NOT_VALID_WORD,
-                    dictUpdater.getTerminalPosition(sWords.get(5)));
-        } catch (IOException e) {
-        } catch (UnsupportedFormatException e) {
-        }
+        MoreAsserts.assertNotEqual(FormatSpec.NOT_VALID_WORD,
+                dictUpdater.getTerminalPosition(sWords.get(5)));
+        dictUpdater.deleteWord(sWords.get(5));
+        assertEquals(FormatSpec.NOT_VALID_WORD,
+                dictUpdater.getTerminalPosition(sWords.get(5)));
     }
 
-    public void testDeleteWord() {
+    public void testDeleteWord() throws IOException, UnsupportedFormatException {
         runTestDeleteWord(BinaryDictUtils.VERSION3_WITH_DYNAMIC_UPDATE);
         runTestDeleteWord(BinaryDictUtils.VERSION4_WITH_DYNAMIC_UPDATE);
     }

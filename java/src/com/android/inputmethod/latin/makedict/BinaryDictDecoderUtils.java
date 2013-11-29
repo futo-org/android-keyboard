@@ -24,12 +24,9 @@ import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.TreeMap;
@@ -639,32 +636,10 @@ public final class BinaryDictDecoderUtils {
     /**
      * Basic test to find out whether the file is a binary dictionary or not.
      *
-     * Concretely this only tests the magic number.
-     *
      * @param file The file to test.
      * @return true if it's a binary dictionary, false otherwise
      */
     public static boolean isBinaryDictionary(final File file) {
-        FileInputStream inStream = null;
-        try {
-            inStream = new FileInputStream(file);
-            final ByteBuffer buffer = inStream.getChannel().map(
-                    FileChannel.MapMode.READ_ONLY, 0, file.length());
-            final int version = getFormatVersion(new ByteBufferDictBuffer(buffer));
-            return (version >= FormatSpec.MINIMUM_SUPPORTED_VERSION
-                    && version <= FormatSpec.MAXIMUM_SUPPORTED_VERSION);
-        } catch (FileNotFoundException e) {
-            return false;
-        } catch (IOException e) {
-            return false;
-        } finally {
-            if (inStream != null) {
-                try {
-                    inStream.close();
-                } catch (IOException e) {
-                    // do nothing
-                }
-            }
-        }
+        return FormatSpec.getDictDecoder(file).hasValidRawBinaryDictionary();
     }
 }

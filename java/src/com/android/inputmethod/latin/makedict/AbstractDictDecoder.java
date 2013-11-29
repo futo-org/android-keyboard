@@ -32,6 +32,10 @@ import java.util.TreeMap;
  * A base class of the binary dictionary decoder.
  */
 public abstract class AbstractDictDecoder implements DictDecoder {
+    private static final int SUCCESS = 0;
+    private static final int ERROR_CANNOT_READ = 1;
+    private static final int ERROR_WRONG_FORMAT = 2;
+
     protected FileHeader readHeader(final DictBuffer dictBuffer)
             throws IOException, UnsupportedFormatException {
         if (dictBuffer == null) {
@@ -203,5 +207,26 @@ public abstract class AbstractDictDecoder implements DictDecoder {
             }
             return readLength;
         }
+    }
+
+    /**
+     * Check whether the header contains the expected information. This is a no-error method,
+     * that will return an error code and never throw a checked exception.
+     * @return an error code, either ERROR_* or SUCCESS.
+     */
+    private int checkHeader() {
+        try {
+            readHeader();
+        } catch (IOException e) {
+            return ERROR_CANNOT_READ;
+        } catch (UnsupportedFormatException e) {
+            return ERROR_WRONG_FORMAT;
+        }
+        return SUCCESS;
+    }
+
+    @Override
+    public boolean hasValidRawBinaryDictionary() {
+        return checkHeader() == SUCCESS;
     }
 }
