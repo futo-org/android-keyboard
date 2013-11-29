@@ -19,6 +19,7 @@
 #include "suggest/policyimpl/dictionary/bigram/ver4_bigram_list_policy.h"
 #include "suggest/policyimpl/dictionary/shortcut/dynamic_shortcut_list_policy.h"
 #include "suggest/policyimpl/dictionary/structure/v2/patricia_trie_reading_utils.h"
+#include "suggest/policyimpl/dictionary/structure/v4/content/probability_entry.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_patricia_trie_node_reader.h"
 #include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_reading_utils.h"
 #include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_writing_utils.h"
@@ -119,8 +120,12 @@ bool Ver4PatriciaTrieNodeWriter::updatePtNodeProbability(
     }
     const int probabilityToWrite = getUpdatedProbability(toBeUpdatedPtNodeParams->getProbability(),
             newProbability);
-    return mBuffers->getUpdatableProbabilityDictContent()->setProbability(
-            toBeUpdatedPtNodeParams->getTerminalId(), probabilityToWrite);
+    ProbabilityEntry probabilityEntry;
+    mBuffers->getProbabilityDictContent()->getProbabilityEntry(
+            toBeUpdatedPtNodeParams->getTerminalId(), &probabilityEntry);
+    probabilityEntry.setProbability(probabilityEntry.getFlags(), probabilityToWrite);
+    return mBuffers->getUpdatableProbabilityDictContent()->setProbabilityEntry(
+            toBeUpdatedPtNodeParams->getTerminalId(), &probabilityEntry);
 }
 
 bool Ver4PatriciaTrieNodeWriter::updateChildrenPosition(
@@ -153,8 +158,10 @@ bool Ver4PatriciaTrieNodeWriter::writeNewTerminalPtNodeAndAdvancePosition(
     // Write probability.
     const int probabilityToWrite = getUpdatedProbability(NOT_A_PROBABILITY,
             ptNodeParams->getProbability());
-    return mBuffers->getUpdatableProbabilityDictContent()->setProbability(terminalId,
-            probabilityToWrite);
+    ProbabilityEntry probabilityEntry;
+    probabilityEntry.setProbability(0 /* flags */, probabilityToWrite);
+    return mBuffers->getUpdatableProbabilityDictContent()->setProbabilityEntry(terminalId,
+            &probabilityEntry);
 }
 
 bool Ver4PatriciaTrieNodeWriter::addNewBigramEntry(
@@ -257,13 +264,6 @@ bool Ver4PatriciaTrieNodeWriter::writePtNodeAndGetTerminalIdAndAdvancePosition(
         if (!mTrieBuffer->writeUintAndAdvancePosition(terminalId,
                 Ver4DictConstants::TERMINAL_ID_FIELD_SIZE, ptNodeWritingPos)) {
             return false;
-        }
-        // Write probability.
-        if (ptNodeParams->getProbability() != NOT_A_PROBABILITY) {
-            if (!mBuffers->getUpdatableProbabilityDictContent()->setProbability(
-                    terminalId, ptNodeParams->getProbability())) {
-                return false;
-            }
         }
         if (outTerminalId) {
             *outTerminalId = terminalId;
