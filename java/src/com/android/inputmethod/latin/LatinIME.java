@@ -68,7 +68,6 @@ import com.android.inputmethod.compat.InputMethodServiceCompatUtils;
 import com.android.inputmethod.compat.SuggestionSpanUtils;
 import com.android.inputmethod.dictionarypack.DictionaryPackConstants;
 import com.android.inputmethod.event.EventInterpreter;
-import com.android.inputmethod.keyboard.KeyDetector;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardActionListener;
 import com.android.inputmethod.keyboard.KeyboardId;
@@ -2284,16 +2283,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             resetComposingState(false /* alsoResetLastComposedWord */);
         }
         if (isComposingWord) {
-            final int keyX, keyY;
-            if (Constants.isValidCoordinate(x) && Constants.isValidCoordinate(y)) {
-                final KeyDetector keyDetector =
-                        mKeyboardSwitcher.getMainKeyboardView().getKeyDetector();
-                keyX = keyDetector.getTouchX(x);
-                keyY = keyDetector.getTouchY(y);
-            } else {
-                keyX = x;
-                keyY = y;
-            }
+            final MainKeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
+            // TODO: We should reconsider which coordinate system should be used to represent
+            // keyboard event.
+            final int keyX = mainKeyboardView.getKeyX(x);
+            final int keyY = mainKeyboardView.getKeyY(y);
             mWordComposer.add(primaryCode, keyX, keyY);
             // If it's the first letter, make note of auto-caps state
             if (mWordComposer.size() == 1) {
