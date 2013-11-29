@@ -97,8 +97,8 @@ import com.android.inputmethod.latin.utils.InputTypeUtils;
 import com.android.inputmethod.latin.utils.IntentUtils;
 import com.android.inputmethod.latin.utils.JniUtils;
 import com.android.inputmethod.latin.utils.LatinImeLoggerUtils;
+import com.android.inputmethod.latin.utils.LeakGuardHandlerWrapper;
 import com.android.inputmethod.latin.utils.RecapitalizeStatus;
-import com.android.inputmethod.latin.utils.StaticInnerHandlerWrapper;
 import com.android.inputmethod.latin.utils.StringUtils;
 import com.android.inputmethod.latin.utils.TargetPackageInfoGetterTask;
 import com.android.inputmethod.latin.utils.TextRange;
@@ -224,7 +224,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     public final UIHandler mHandler = new UIHandler(this);
     private InputUpdater mInputUpdater;
 
-    public static final class UIHandler extends StaticInnerHandlerWrapper<LatinIME> {
+    public static final class UIHandler extends LeakGuardHandlerWrapper<LatinIME> {
         private static final int MSG_UPDATE_SHIFT_STATE = 0;
         private static final int MSG_PENDING_IMS_CALLBACK = 1;
         private static final int MSG_UPDATE_SUGGESTION_STRIP = 2;
@@ -247,12 +247,12 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         private long mDoubleSpacePeriodTimeout;
         private long mDoubleSpacePeriodTimerStart;
 
-        public UIHandler(final LatinIME outerInstance) {
-            super(outerInstance);
+        public UIHandler(final LatinIME ownerInstance) {
+            super(ownerInstance);
         }
 
         public void onCreate() {
-            final Resources res = getOuterInstance().getResources();
+            final Resources res = getOwnerInstance().getResources();
             mDelayUpdateSuggestions =
                     res.getInteger(R.integer.config_delay_update_suggestions);
             mDelayUpdateShiftState =
@@ -263,7 +263,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         @Override
         public void handleMessage(final Message msg) {
-            final LatinIME latinIme = getOuterInstance();
+            final LatinIME latinIme = getOwnerInstance();
             final KeyboardSwitcher switcher = latinIme.mKeyboardSwitcher;
             switch (msg.what) {
             case MSG_UPDATE_SUGGESTION_STRIP:
@@ -407,7 +407,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             removeMessages(MSG_PENDING_IMS_CALLBACK);
             resetPendingImsCallback();
             mIsOrientationChanging = true;
-            final LatinIME latinIme = getOuterInstance();
+            final LatinIME latinIme = getOwnerInstance();
             if (latinIme.isInputViewShown()) {
                 latinIme.mKeyboardSwitcher.saveKeyboardState();
             }
@@ -440,7 +440,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     mIsOrientationChanging = false;
                     mPendingSuccessiveImsCallback = true;
                 }
-                final LatinIME latinIme = getOuterInstance();
+                final LatinIME latinIme = getOwnerInstance();
                 executePendingImsCallback(latinIme, editorInfo, restarting);
                 latinIme.onStartInputInternal(editorInfo, restarting);
             }
@@ -459,7 +459,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     sendMessageDelayed(obtainMessage(MSG_PENDING_IMS_CALLBACK),
                             PENDING_IMS_CALLBACK_DURATION);
                 }
-                final LatinIME latinIme = getOuterInstance();
+                final LatinIME latinIme = getOwnerInstance();
                 executePendingImsCallback(latinIme, editorInfo, restarting);
                 latinIme.onStartInputViewInternal(editorInfo, restarting);
                 mAppliedEditorInfo = editorInfo;
@@ -471,7 +471,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 // Typically this is the first onFinishInputView after orientation changed.
                 mHasPendingFinishInputView = true;
             } else {
-                final LatinIME latinIme = getOuterInstance();
+                final LatinIME latinIme = getOwnerInstance();
                 latinIme.onFinishInputViewInternal(finishingInput);
                 mAppliedEditorInfo = null;
             }
@@ -482,7 +482,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 // Typically this is the first onFinishInput after orientation changed.
                 mHasPendingFinishInput = true;
             } else {
-                final LatinIME latinIme = getOuterInstance();
+                final LatinIME latinIme = getOwnerInstance();
                 executePendingImsCallback(latinIme, null, false);
                 latinIme.onFinishInputInternal();
             }

@@ -21,22 +21,22 @@ import android.os.Looper;
 
 import java.lang.ref.WeakReference;
 
-public class StaticInnerHandlerWrapper<T> extends Handler {
-    private final WeakReference<T> mOuterInstanceRef;
+public class LeakGuardHandlerWrapper<T> extends Handler {
+    private final WeakReference<T> mOwnerInstanceRef;
 
-    public StaticInnerHandlerWrapper(final T outerInstance) {
-        this(outerInstance, Looper.myLooper());
+    public LeakGuardHandlerWrapper(final T ownerInstance) {
+        this(ownerInstance, Looper.myLooper());
     }
 
-    public StaticInnerHandlerWrapper(final T outerInstance, final Looper looper) {
+    public LeakGuardHandlerWrapper(final T ownerInstance, final Looper looper) {
         super(looper);
-        if (outerInstance == null) {
-            throw new NullPointerException("outerInstance is null");
+        if (ownerInstance == null) {
+            throw new NullPointerException("ownerInstance is null");
         }
-        mOuterInstanceRef = new WeakReference<T>(outerInstance);
+        mOwnerInstanceRef = new WeakReference<T>(ownerInstance);
     }
 
-    public T getOuterInstance() {
-        return mOuterInstanceRef.get();
+    public T getOwnerInstance() {
+        return mOwnerInstanceRef.get();
     }
 }
