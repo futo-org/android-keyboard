@@ -26,9 +26,8 @@ namespace latinime {
 void ProbabilityDictContent::getProbabilityEntry(const int terminalId,
         ProbabilityEntry *const outProbabilityEntry) const {
     if (terminalId < 0 || terminalId >= mSize) {
+        // This method can be called with invalid terminal id during GC.
         outProbabilityEntry->setProbability(0 /* flags */, NOT_A_PROBABILITY);
-        AKLOGE("Terminal id (%d) is not in the probability dict content. mSize: %d", terminalId,
-                mSize);
         return;
     }
     const BufferWithExtendableBuffer *const buffer = getBuffer();

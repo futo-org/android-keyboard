@@ -174,8 +174,7 @@ bool DynamicPatriciaTrieNodeWriter::addNewBigramEntry(
         // Then, Mark as the PtNode having bigram list in the flags.
         const PatriciaTrieReadingUtils::NodeFlags updatedFlags =
                 PatriciaTrieReadingUtils::createAndGetFlags(newPtNodeParams.isBlacklisted(),
-                        newPtNodeParams.isNotAWord(),
-                        newPtNodeParams.getProbability() != NOT_A_PROBABILITY,
+                        newPtNodeParams.isNotAWord(), newPtNodeParams.isTerminal(),
                         newPtNodeParams.getShortcutPos() != NOT_A_DICT_POS, true /* hasBigrams */,
                         newPtNodeParams.getCodePointCount() > 1, CHILDREN_POSITION_FIELD_SIZE);
         writingPos = newNodePos;
