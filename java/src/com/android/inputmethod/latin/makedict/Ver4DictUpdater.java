@@ -45,7 +45,8 @@ public class Ver4DictUpdater extends Ver4DictDecoder implements DictUpdater {
     private final File mFrequencyFile;
 
     @UsedForTesting
-    public Ver4DictUpdater(final File dictDirectory, final int factoryType) {
+    public Ver4DictUpdater(final File dictDirectory, final int factoryType)
+            throws UnsupportedFormatException {
         // DictUpdater must have an updatable DictBuffer.
         super(dictDirectory, ((factoryType & MASK_DICTBUFFER) == USE_BYTEARRAY)
                 ? USE_BYTEARRAY : USE_WRITABLE_BYTEBUFFER);
@@ -664,7 +665,8 @@ public class Ver4DictUpdater extends Ver4DictDecoder implements DictUpdater {
         frequencyStream.close();
     }
 
-    private void insertTerminalPosition(final int posOfTerminal) throws IOException {
+    private void insertTerminalPosition(final int posOfTerminal) throws IOException,
+            UnsupportedFormatException {
         final OutputStream terminalPosStream = new FileOutputStream(
                 getFile(FILETYPE_TERMINAL_ADDRESS_TABLE), true /* append */);
         BinaryDictEncoderUtils.writeUIntToStream(terminalPosStream, posOfTerminal,
@@ -702,7 +704,7 @@ public class Ver4DictUpdater extends Ver4DictDecoder implements DictUpdater {
         updater.insertShortcuts(terminalId, shortcuts);
     }
 
-    private void openBuffersAndStream() throws IOException {
+    private void openBuffersAndStream() throws IOException, UnsupportedFormatException {
         openDictBuffer();
         mDictStream = new FileOutputStream(getFile(FILETYPE_TRIE), true /* append */);
     }

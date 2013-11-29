@@ -103,7 +103,7 @@ public class Ver4DictDecoder extends AbstractDictDecoder {
         mDictBuffer = mFrequencyBuffer = null;
     }
 
-    protected File getFile(final int fileType) {
+    protected File getFile(final int fileType) throws UnsupportedFormatException {
         if (fileType == FILETYPE_TRIE) {
             return new File(mDictDirectory,
                     mDictDirectory.getName() + FormatSpec.TRIE_FILE_EXTENSION);
@@ -122,12 +122,16 @@ public class Ver4DictDecoder extends AbstractDictDecoder {
                     mDictDirectory.getName() + FormatSpec.SHORTCUT_FILE_EXTENSION
                             + FormatSpec.SHORTCUT_CONTENT_ID);
         } else {
-            throw new RuntimeException("Unsupported kind of file : " + fileType);
+            throw new UnsupportedFormatException("Unsupported kind of file : " + fileType);
         }
     }
 
     @Override
-    public void openDictBuffer() throws FileNotFoundException, IOException {
+    public void openDictBuffer() throws FileNotFoundException, IOException,
+            UnsupportedFormatException {
+        if (!mDictDirectory.isDirectory()) {
+            throw new UnsupportedFormatException("Format 4 dictionary needs a directory");
+        }
         mDictBuffer = mBufferFactory.getDictionaryBuffer(getFile(FILETYPE_TRIE));
         mFrequencyBuffer = mBufferFactory.getDictionaryBuffer(getFile(FILETYPE_FREQUENCY));
         mTerminalAddressTableBuffer = mBufferFactory.getDictionaryBuffer(

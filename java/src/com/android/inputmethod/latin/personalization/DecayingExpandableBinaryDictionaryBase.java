@@ -28,6 +28,7 @@ import com.android.inputmethod.latin.ExpandableBinaryDictionary;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.makedict.DictDecoder;
 import com.android.inputmethod.latin.makedict.FormatSpec;
+import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
 import com.android.inputmethod.latin.settings.Settings;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.UserHistoryDictIOUtils;
@@ -222,6 +223,8 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
             UserHistoryDictIOUtils.readDictionaryBinary(dictDecoder, listener);
         } catch (IOException e) {
             Log.d(TAG, "IOException on opening a bytebuffer", e);
+        } catch (UnsupportedFormatException e) {
+            Log.d(TAG, "Unsupported format, can't read the dictionary", e);
         } finally {
             if (PROFILE_SAVE_RESTORE) {
                 final long diff = System.currentTimeMillis() - now;
@@ -291,6 +294,8 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
             UserHistoryDictIOUtils.readDictionaryBinary(dictDecoder, listener);
         } catch (IOException e) {
             Log.d(TAG, "IOException on opening a bytebuffer", e);
+        } catch (UnsupportedFormatException e) {
+            Log.d(TAG, "Unsupported format, can't read the dictionary", e);
         }
     }
 
