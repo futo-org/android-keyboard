@@ -131,7 +131,8 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     protected abstract boolean hasContentChanged();
 
     protected boolean isValidBinaryDictFormatVersion(final int formatVersion) {
-        return true;
+        // TODO: Use ver4 format.
+        return formatVersion == 2;
     }
 
     protected String getFileNameExtentionToOpenDict() {
