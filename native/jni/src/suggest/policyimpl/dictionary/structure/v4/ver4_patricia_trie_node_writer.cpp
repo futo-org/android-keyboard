@@ -17,7 +17,7 @@
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_patricia_trie_node_writer.h"
 
 #include "suggest/policyimpl/dictionary/bigram/ver4_bigram_list_policy.h"
-#include "suggest/policyimpl/dictionary/shortcut/dynamic_shortcut_list_policy.h"
+#include "suggest/policyimpl/dictionary/shortcut/ver4_shortcut_list_policy.h"
 #include "suggest/policyimpl/dictionary/structure/v2/patricia_trie_reading_utils.h"
 #include "suggest/policyimpl/dictionary/structure/v4/content/probability_entry.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_patricia_trie_node_reader.h"
