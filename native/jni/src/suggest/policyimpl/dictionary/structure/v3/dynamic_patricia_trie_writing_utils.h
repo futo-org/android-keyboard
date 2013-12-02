@@ -49,9 +49,6 @@ class DynamicPatriciaTrieWritingUtils {
     static bool writeCodePointsAndAdvancePosition(BufferWithExtendableBuffer *const buffer,
             const int *const codePoints, const int codePointCount, int *const codePointFieldPos);
 
-    static bool writeProbabilityAndAdvancePosition(BufferWithExtendableBuffer *const buffer,
-            const int probability, int *const probabilityFieldPos);
-
     static bool writeChildrenPositionAndAdvancePosition(BufferWithExtendableBuffer *const buffer,
             const int childrenPosition, int *const childrenPositionFieldPos);
 
@@ -67,7 +64,6 @@ class DynamicPatriciaTrieWritingUtils {
     static const int MAX_DICT_OFFSET_VALUE;
     static const int MIN_DICT_OFFSET_VALUE;
     static const int DICT_OFFSET_NEGATIVE_FLAG;
-    static const int PROBABILITY_FIELD_SIZE;
 
     static bool writeDictOffset(BufferWithExtendableBuffer *const buffer, const int targetPos,
             const int basePos, int *const offsetFieldPos);

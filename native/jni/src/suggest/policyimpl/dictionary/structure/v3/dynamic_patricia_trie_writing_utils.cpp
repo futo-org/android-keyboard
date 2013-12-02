@@ -33,7 +33,6 @@ const int DynamicPatriciaTrieWritingUtils::DICT_OFFSET_FIELD_SIZE = 3;
 const int DynamicPatriciaTrieWritingUtils::MAX_DICT_OFFSET_VALUE = 0x7FFFFF;
 const int DynamicPatriciaTrieWritingUtils::MIN_DICT_OFFSET_VALUE = -0x7FFFFF;
 const int DynamicPatriciaTrieWritingUtils::DICT_OFFSET_NEGATIVE_FLAG = 0x800000;
-const int DynamicPatriciaTrieWritingUtils::PROBABILITY_FIELD_SIZE = 1;
 const int DynamicPatriciaTrieWritingUtils::NODE_FLAG_FIELD_SIZE = 1;
 
 /* static */ bool DynamicPatriciaTrieWritingUtils::writeEmptyDictionary(
@@ -99,19 +98,6 @@ const int DynamicPatriciaTrieWritingUtils::NODE_FLAG_FIELD_SIZE = 1;
     const bool hasMultipleCodePoints = codePointCount > 1;
     return buffer->writeCodePointsAndAdvancePosition(codePoints, codePointCount,
             hasMultipleCodePoints, codePointFieldPos);
-}
-
-/* static */ bool DynamicPatriciaTrieWritingUtils::writeProbabilityAndAdvancePosition(
-        BufferWithExtendableBuffer *const buffer, const int probability,
-        int *const probabilityFieldPos) {
-    if (probability < 0 || probability > MAX_PROBABILITY) {
-        AKLOGI("probability cannot be written because the probability is invalid: %d",
-                probability);
-        ASSERT(false);
-        return false;
-    }
-    return buffer->writeUintAndAdvancePosition(probability, PROBABILITY_FIELD_SIZE,
-            probabilityFieldPos);
 }
 
 /* static */ bool DynamicPatriciaTrieWritingUtils::writeChildrenPositionAndAdvancePosition(

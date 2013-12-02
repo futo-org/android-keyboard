@@ -32,8 +32,6 @@ const char *const DictFileWritingUtils::TEMP_FILE_SUFFIX_FOR_WRITING_DICT_FILE =
 /* static */ bool DictFileWritingUtils::createEmptyDictFile(const char *const filePath,
         const int dictVersion, const HeaderReadWriteUtils::AttributeMap *const attributeMap) {
     switch (dictVersion) {
-        case 3:
-            return createEmptyV3DictFile(filePath, attributeMap);
         case 4:
             return createEmptyV4DictFile(filePath, attributeMap);
         default:
@@ -41,23 +39,6 @@ const char *const DictFileWritingUtils::TEMP_FILE_SUFFIX_FOR_WRITING_DICT_FILE =
                     filePath, dictVersion);
             return false;
     }
-}
-
-/* static */ bool DictFileWritingUtils::createEmptyV3DictFile(const char *const filePath,
-        const HeaderReadWriteUtils::AttributeMap *const attributeMap) {
-    BufferWithExtendableBuffer headerBuffer(
-            BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE);
-    HeaderPolicy headerPolicy(FormatUtils::VERSION_3, attributeMap);
-    headerPolicy.writeHeaderToBuffer(&headerBuffer, true /* updatesLastUpdatedTime */,
-            true /* updatesLastDecayedTime */, 0 /* unigramCount */, 0 /* bigramCount */,
-            0 /* extendedRegionSize */);
-    BufferWithExtendableBuffer bodyBuffer(
-            BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE);
-    if (!DynamicPatriciaTrieWritingUtils::writeEmptyDictionary(&bodyBuffer, 0 /* rootPos */)) {
-        AKLOGE("Empty ver3 dictionary structure cannot be created on memory.");
-        return false;
-    }
-    return flushAllHeaderAndBodyToFile(filePath, &headerBuffer, &bodyBuffer);
 }
 
 /* static */ bool DictFileWritingUtils::createEmptyV4DictFile(const char *const dirPath,

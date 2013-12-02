@@ -74,9 +74,7 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
 
     private File createEmptyDictionaryAndGetFile(final String dictId,
             final int formatVersion) throws IOException {
-        if (formatVersion == 3) {
-            return createEmptyVer3DictionaryAndGetFile(dictId);
-        } else if (formatVersion == 4) {
+        if (formatVersion == 4) {
             return createEmptyVer4DictionaryAndGetFile(dictId);
         } else {
             throw new IOException("Dictionary format version " + formatVersion
@@ -102,26 +100,7 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
         }
     }
 
-    private File createEmptyVer3DictionaryAndGetFile(final String dictId) throws IOException {
-        final File file = File.createTempFile(dictId, TEST_DICT_FILE_EXTENSION,
-                getContext().getCacheDir());
-        file.delete();
-        Map<String, String> attributeMap = new HashMap<String, String>();
-        attributeMap.put(FormatSpec.FileHeader.SUPPORTS_DYNAMIC_UPDATE_ATTRIBUTE,
-                FormatSpec.FileHeader.ATTRIBUTE_VALUE_TRUE);
-        attributeMap.put(FormatSpec.FileHeader.USES_FORGETTING_CURVE_ATTRIBUTE,
-                FormatSpec.FileHeader.ATTRIBUTE_VALUE_TRUE);
-        if (BinaryDictionary.createEmptyDictFile(file.getAbsolutePath(), 3 /* dictVersion */,
-                attributeMap)) {
-            return file;
-        } else {
-            throw new IOException(
-                    "Empty dictionary " + file.getAbsolutePath() + " cannot be created.");
-        }
-    }
-
     public void testAddValidAndInvalidWords() {
-        testAddValidAndInvalidWords(3 /* formatVersion */);
         testAddValidAndInvalidWords(4 /* formatVersion */);
     }
 
@@ -172,7 +151,6 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
     }
 
     public void testDecayingProbability() {
-        testDecayingProbability(3 /* formatVersion */);
         testDecayingProbability(4 /* formatVersion */);
     }
 
@@ -231,7 +209,6 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
     }
 
     public void testAddManyUnigramsToDecayingDict() {
-        testAddManyUnigramsToDecayingDict(3 /* formatVersion */);
         testAddManyUnigramsToDecayingDict(4 /* formatVersion */);
     }
 
@@ -288,7 +265,6 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
     }
 
     public void testAddManyBigramsToDecayingDict() {
-        testAddManyBigramsToDecayingDict(3 /* formatVersion */);
         testAddManyBigramsToDecayingDict(4 /* formatVersion */);
     }
 
