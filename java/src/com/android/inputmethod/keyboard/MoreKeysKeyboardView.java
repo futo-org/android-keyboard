@@ -52,7 +52,7 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
 
         final Resources res = context.getResources();
         mKeyDetector = new MoreKeysDetector(
-                res.getDimension(R.dimen.more_keys_keyboard_slide_allowance));
+                res.getDimension(R.dimen.config_more_keys_keyboard_slide_allowance));
     }
 
     @Override

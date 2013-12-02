@@ -298,7 +298,7 @@ public final class MoreKeysKeyboard extends Keyboard {
                 height = keyPreviewDrawParams.mPreviewVisibleHeight + mParams.mVerticalGap;
             } else {
                 final float padding = context.getResources().getDimension(
-                        R.dimen.more_keys_keyboard_key_horizontal_padding)
+                        R.dimen.config_more_keys_keyboard_key_horizontal_padding)
                         + (parentKey.hasLabelsInMoreKeys()
                                 ? mParams.mDefaultKeyWidth * LABEL_PADDING_RATIO : 0.0f);
                 width = getMaxKeyWidth(parentKey, mParams.mDefaultKeyWidth, padding,

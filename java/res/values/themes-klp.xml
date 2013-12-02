@@ -36,10 +36,10 @@
     >
         <!-- This should be aligned with KeyboardSwitcher.KEYBOARD_THEMES[] -->
         <item name="themeId">0</item>
-        <item name="keyboardTopPadding">@fraction/keyboard_top_padding_holo</item>
-        <item name="keyboardBottomPadding">@fraction/keyboard_bottom_padding_holo</item>
-        <item name="horizontalGap">@fraction/key_horizontal_gap_holo</item>
-        <item name="verticalGap">@fraction/key_bottom_gap_holo</item>
+        <item name="keyboardTopPadding">@fraction/config_keyboard_top_padding_holo</item>
+        <item name="keyboardBottomPadding">@fraction/config_keyboard_bottom_padding_holo</item>
+        <item name="horizontalGap">@fraction/config_key_horizontal_gap_holo</item>
+        <item name="verticalGap">@fraction/config_key_vertical_gap_holo</item>
         <item name="touchPositionCorrectionData">@array/touch_position_correction_data_holo</item>
     </style>
     <style
@@ -63,15 +63,15 @@
         name="MainKeyboardView.KLP"
         parent="KeyboardView.KLP"
     >
-        <item name="keyPreviewOffset">@dimen/key_preview_offset_holo</item>
+        <item name="keyPreviewOffset">@dimen/config_key_preview_offset_holo</item>
         <item name="gestureFloatingPreviewTextColor">@color/highlight_color_klp</item>
         <item name="gestureFloatingPreviewColor">@color/gesture_floating_preview_color_holo</item>
         <item name="gestureTrailColor">@color/highlight_color_klp</item>
         <item name="slidingKeyInputPreviewColor">@color/highlight_translucent_color_klp</item>
         <item name="autoCorrectionSpacebarLedEnabled">false</item>
         <item name="autoCorrectionSpacebarLedIcon">@drawable/sym_keyboard_space_led_holo</item>
-        <item name="spacebarTextColor">@color/spacebar_text_color_holo</item>
-        <item name="spacebarTextShadowColor">@color/spacebar_text_shadow_color_holo</item>
+        <item name="languageOnSpacebarTextColor">@color/spacebar_text_color_holo</item>
+        <item name="languageOnSpacebarTextShadowColor">@color/spacebar_text_shadow_color_holo</item>
     </style>
     <style
         name="KeyPreviewTextView.KLP"
@@ -104,7 +104,7 @@
         <item name="android:background">@drawable/keyboard_popup_panel_background_klp</item>
         <item name="keyBackground">@drawable/btn_keyboard_key_popup_klp</item>
         <item name="keyTypeface">normal</item>
-        <item name="verticalCorrection">@dimen/more_keys_keyboard_vertical_correction_holo</item>
+        <item name="verticalCorrection">@dimen/config_more_keys_keyboard_vertical_correction_holo</item>
     </style>
     <style
         name="SuggestionStripView.KLP"

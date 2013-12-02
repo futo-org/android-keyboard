@@ -41,10 +41,10 @@
             android:id="@+id/suggestion_strip_view"
             android:layoutDirection="ltr"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/suggestions_strip_height"
+            android:layout_height="@dimen/config_suggestions_strip_height"
             android:gravity="center_vertical"
-            android:paddingRight="@dimen/suggestions_strip_padding"
-            android:paddingLeft="@dimen/suggestions_strip_padding"
+            android:paddingRight="@dimen/config_suggestions_strip_horizontal_padding"
+            android:paddingLeft="@dimen/config_suggestions_strip_horizontal_padding"
             style="?attr/suggestionStripViewStyle" />
 
         <!-- To ensure that key preview popup is correctly placed when the current system locale is
