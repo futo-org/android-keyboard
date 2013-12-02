@@ -189,7 +189,7 @@ bool BigramDictContent::runGCBigramList(const int bigramListPos,
         // Update has next flag in the last written entry.
         const BigramEntry bigramEntry = getBigramEntry(lastEntryPos).updateHasNextAndGetEntry(
                 false /* hasNext */);
-        if (!writeBigramEntry(&bigramEntry, writingPos)) {
+        if (!writeBigramEntry(&bigramEntry, lastEntryPos)) {
             AKLOGE("Cannot write bigram entry to set hasNext flag after GC. pos: %d", writingPos);
             return false;
         }
