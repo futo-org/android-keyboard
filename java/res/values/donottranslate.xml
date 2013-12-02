@@ -57,23 +57,6 @@
        <item>@string/prefs_suggestion_visibility_hide_name</item>
     </string-array>
 
-    <string name="auto_correction_threshold_mode_index_off">0</string>
-    <string name="auto_correction_threshold_mode_index_modest">1</string>
-    <string name="auto_correction_threshold_mode_index_aggressive">2</string>
-    <string name="auto_correction_threshold_mode_index_very_aggressive">3</string>
-    <string-array name="auto_correction_threshold_mode_indexes">
-      <item>@string/auto_correction_threshold_mode_index_off</item>
-      <item>@string/auto_correction_threshold_mode_index_modest</item>
-      <item>@string/auto_correction_threshold_mode_index_aggressive</item>
-      <item>@string/auto_correction_threshold_mode_index_very_aggressive</item>
-    </string-array>
-    <string-array name="auto_correction_threshold_modes">
-      <item>@string/auto_correction_threshold_mode_off</item>
-      <item>@string/auto_correction_threshold_mode_modest</item>
-      <item>@string/auto_correction_threshold_mode_aggressive</item>
-      <item>@string/auto_correction_threshold_mode_very_aggressive</item>
-    </string-array>
-
     <!-- For backward compatibility.
          See {@link SettingsValues#needsToShowVoiceInputKey(SharedPreferences,Resources)} -->
     <string name="voice_mode_main">0</string>
