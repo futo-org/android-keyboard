@@ -649,14 +649,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
-        mUserHistoryDictionary = PersonalizationHelper.getUserHistoryDictionary(
-                this, localeStr, prefs);
+        mUserHistoryDictionary = PersonalizationHelper.getUserHistoryDictionary(this, localeStr);
         newSuggest.setUserHistoryDictionary(mUserHistoryDictionary);
-        mPersonalizationDictionary = PersonalizationHelper
-                .getPersonalizationDictionary(this, localeStr, prefs);
+        mPersonalizationDictionary =
+                PersonalizationHelper.getPersonalizationDictionary(this, localeStr);
         newSuggest.setPersonalizationDictionary(mPersonalizationDictionary);
-        mPersonalizationPredictionDictionary = PersonalizationHelper
-                .getPersonalizationPredictionDictionary(this, localeStr, prefs);
+        mPersonalizationPredictionDictionary =
+                PersonalizationHelper.getPersonalizationPredictionDictionary(this, localeStr);
         newSuggest.setPersonalizationPredictionDictionary(mPersonalizationPredictionDictionary);
 
         final Suggest oldSuggest = mSuggest;
