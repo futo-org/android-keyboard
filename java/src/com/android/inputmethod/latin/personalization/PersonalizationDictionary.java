@@ -36,8 +36,7 @@ public class PersonalizationDictionary extends ExpandableBinaryDictionary {
     /** Locale for which this user history dictionary is storing words */
     private final String mLocale;
 
-    public PersonalizationDictionary(final Context context, final String locale,
-            final SharedPreferences prefs) {
+    public PersonalizationDictionary(final Context context, final String locale) {
         // TODO: Make isUpdatable true.
         super(context, getFilenameWithLocale(NAME, locale), Dictionary.TYPE_PERSONALIZATION,
                 false /* isUpdatable */);

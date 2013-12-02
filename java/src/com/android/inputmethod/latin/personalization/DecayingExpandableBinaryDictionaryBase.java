@@ -17,7 +17,6 @@
 package com.android.inputmethod.latin.personalization;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.android.inputmethod.annotations.UsedForTesting;
@@ -25,11 +24,9 @@ import com.android.inputmethod.latin.BinaryDictionary.LanguageModelParam;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.ExpandableBinaryDictionary;
-import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.makedict.DictDecoder;
 import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
-import com.android.inputmethod.latin.settings.Settings;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.UserHistoryDictIOUtils;
 import com.android.inputmethod.latin.utils.UserHistoryDictIOUtils.OnAddWordListener;
@@ -47,9 +44,7 @@ import java.util.Map;
 public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableBinaryDictionary {
     private static final String TAG = DecayingExpandableBinaryDictionaryBase.class.getSimpleName();
     public static final boolean DBG_SAVE_RESTORE = false;
-    private static final boolean DBG_STRESS_TEST = false;
     private static final boolean DBG_DUMP_ON_CLOSE = false;
-    private static final boolean PROFILE_SAVE_RESTORE = LatinImeLogger.sDBG;
 
     /** Any pair being typed or picked */
     public static final int FREQUENCY_FOR_TYPED = 2;
@@ -64,8 +59,6 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
 
     private final String mFileName;
 
-    private final SharedPreferences mPrefs;
-
     private final ArrayList<PersonalizationDictionaryUpdateSession> mSessions =
             CollectionUtils.newArrayList();
 
@@ -73,12 +66,10 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
     @UsedForTesting boolean mIsTest = false;
 
     /* package */ DecayingExpandableBinaryDictionaryBase(final Context context,
-            final String locale, final SharedPreferences sp, final String dictionaryType,
-            final String fileName) {
+            final String locale, final String dictionaryType, final String fileName) {
         super(context, fileName, dictionaryType, true);
         mLocale = locale;
         mFileName = fileName;
-        mPrefs = sp;
         if (mLocale != null && mLocale.length() > 1) {
             reloadDictionaryIfRequired();
         }
@@ -92,7 +83,6 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
         // Flush pending writes.
         // TODO: Remove after this class become to use a dynamic binary dictionary.
         asyncFlashAllBinaryDictionary();
-        Settings.writeLastUserHistoryWriteTime(mPrefs, mLocale);
     }
 
     @Override
@@ -171,67 +161,7 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
 
     @Override
     protected void loadDictionaryAsync() {
-        final int[] profTotalCount = { 0 };
-        final String locale = getLocale();
-        if (DBG_STRESS_TEST) {
-            try {
-                Log.w(TAG, "Start stress in loading: " + locale);
-                Thread.sleep(15000);
-                Log.w(TAG, "End stress in loading");
-            } catch (InterruptedException e) {
-            }
-        }
-        final long last = Settings.readLastUserHistoryWriteTime(mPrefs, locale);
-        final long now = System.currentTimeMillis();
-        final ExpandableBinaryDictionary dictionary = this;
-        final OnAddWordListener listener = new OnAddWordListener() {
-            @Override
-            public void setUnigram(final String word, final String shortcutTarget,
-                    final int frequency, final int shortcutFreq) {
-                if (DBG_SAVE_RESTORE) {
-                    Log.d(TAG, "load unigram: " + word + "," + frequency);
-                }
-                addWord(word, shortcutTarget, frequency, shortcutFreq, false /* isNotAWord */);
-                ++profTotalCount[0];
-            }
-
-            @Override
-            public void setBigram(final String word0, final String word1, final int frequency) {
-                if (word0.length() < Constants.DICTIONARY_MAX_WORD_LENGTH
-                        && word1.length() < Constants.DICTIONARY_MAX_WORD_LENGTH) {
-                    if (DBG_SAVE_RESTORE) {
-                        Log.d(TAG, "load bigram: " + word0 + "," + word1 + "," + frequency);
-                    }
-                    ++profTotalCount[0];
-                    addBigram(word0, word1, frequency, last);
-                }
-            }
-        };
-
-        // Load the dictionary from binary file
-        final File dictFile = new File(mContext.getFilesDir(), mFileName);
-        final DictDecoder dictDecoder = FormatSpec.getDictDecoder(dictFile,
-                DictDecoder.USE_BYTEARRAY);
-        if (dictDecoder == null) {
-            // This is an expected condition: we don't have a user history dictionary for this
-            // language yet. It will be created sometime later.
-            return;
-        }
-
-        try {
-            dictDecoder.openDictBuffer();
-            UserHistoryDictIOUtils.readDictionaryBinary(dictDecoder, listener);
-        } catch (IOException e) {
-            Log.d(TAG, "IOException on opening a bytebuffer", e);
-        } catch (UnsupportedFormatException e) {
-            Log.d(TAG, "Unsupported format, can't read the dictionary", e);
-        } finally {
-            if (PROFILE_SAVE_RESTORE) {
-                final long diff = System.currentTimeMillis() - now;
-                Log.d(TAG, "PROF: Load UserHistoryDictionary: "
-                        + locale + ", " + diff + "ms. load " + profTotalCount[0] + "entries.");
-            }
-        }
+        // Never loaded to memory in Java side.
     }
 
     protected String getLocale() {

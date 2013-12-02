@@ -16,8 +16,6 @@
 
 package com.android.inputmethod.latin.personalization;
 
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.LargeTest;
 import android.util.Log;
@@ -38,7 +36,6 @@ import java.util.concurrent.TimeUnit;
 @LargeTest
 public class UserHistoryDictionaryTests extends AndroidTestCase {
     private static final String TAG = UserHistoryDictionaryTests.class.getSimpleName();
-    private SharedPreferences mPrefs;
 
     private static final String[] CHARACTERS = {
         "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m",
@@ -47,11 +44,6 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
 
     private static final int MIN_USER_HISTORY_DICTIONARY_FILE_SIZE = 1000;
     private static final int WAIT_TERMINATING_IN_MILLISECONDS = 100;
-
-    @Override
-    public void setUp() {
-        mPrefs = PreferenceManager.getDefaultSharedPreferences(getContext());
-    }
 
     /**
      * Generates a random word.
@@ -92,7 +84,7 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
         final List<String> words = generateWords(numberOfWords, random);
         final UserHistoryDictionary dict =
                 PersonalizationHelper.getUserHistoryDictionary(getContext(),
-                        testFilenameSuffix /* locale */, mPrefs);
+                        testFilenameSuffix /* locale */);
         // Add random words to the user history dictionary.
         addToDict(dict, words);
         if (checkContents) {
@@ -116,7 +108,7 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
     private void clearHistory(final String testFilenameSuffix) {
         final UserHistoryDictionary dict =
                 PersonalizationHelper.getUserHistoryDictionary(getContext(),
-                        testFilenameSuffix /* locale */, mPrefs);
+                        testFilenameSuffix /* locale */);
         dict.clearAndFlushDictionary();
         dict.close();
     }
@@ -129,7 +121,7 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
         try {
             final UserHistoryDictionary dict =
                     PersonalizationHelper.getUserHistoryDictionary(getContext(),
-                            testFilenameSuffix, mPrefs);
+                            testFilenameSuffix);
             dict.shutdownExecutorForTests();
             while (!dict.isTerminatedForTests()) {
                 Thread.sleep(WAIT_TERMINATING_IN_MILLISECONDS);
