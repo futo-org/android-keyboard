@@ -50,6 +50,8 @@ class BloomFilter {
     }
 
  private:
+    DISALLOW_ASSIGNMENT_OPERATOR(BloomFilter);
+
     // Size, in bytes, of the bloom filter index for bigrams
     // 128 gives us 1024 buckets. The probability of false positive is (1 - e ** (-kn/m))**k,
     // where k is the number of hash functions, n the number of bigrams, and m the number of

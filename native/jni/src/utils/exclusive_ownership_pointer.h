@@ -56,8 +56,7 @@ class ExclusiveOwnershipPointer {
  private:
     // This class allows to copy and assign and ensures only one instance has the ownership of the
     // managed pointer.
-
-    ExclusiveOwnershipPointer() : mPointer(0), mSharedOwnerPtr(0) {}
+    DISALLOW_DEFAULT_CONSTRUCTOR(ExclusiveOwnershipPointer);
 
     void transferOwnership(const ExclusiveOwnershipPointer<T> *const src) {
         if (*mSharedOwnerPtr != src) {

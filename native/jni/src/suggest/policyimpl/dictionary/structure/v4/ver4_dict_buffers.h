@@ -127,7 +127,7 @@ class Ver4DictBuffers {
               // TODO: Quit using header size.
               mTerminalPositionLookupTable(dictDirPath, isUpdatable, mHeaderSize),
               mProbabilityDictContent(dictDirPath, false /* hasHistoricalInfo */, isUpdatable),
-              mBigramDictContent(dictDirPath, isUpdatable),
+              mBigramDictContent(dictDirPath, false /* hasHistoricalInfo */, isUpdatable),
               mShortcutDictContent(dictDirPath, isUpdatable),
               mIsUpdatable(isUpdatable) {}
 
@@ -137,7 +137,8 @@ class Ver4DictBuffers {
               mExpandableTrieBuffer(Ver4DictConstants::MAX_DICTIONARY_SIZE),
               mTerminalPositionLookupTable(),
               mProbabilityDictContent(false /* hasHistoricalInfo */),
-              mBigramDictContent(), mShortcutDictContent(), mIsUpdatable(true) {}
+              mBigramDictContent(false /* hasHistoricalInfo */), mShortcutDictContent(),
+              mIsUpdatable(true) {}
 
     const MmappedBuffer::MmappedBufferPtr mDictBuffer;
     const int mHeaderSize;

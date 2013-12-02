@@ -18,6 +18,7 @@
 #define LATINIME_BIGRAM_DICT_CONTENT_H
 
 #include "defines.h"
+#include "suggest/policyimpl/dictionary/structure/v4/content/bigram_entry.h"
 #include "suggest/policyimpl/dictionary/structure/v4/content/sparse_table_dict_content.h"
 #include "suggest/policyimpl/dictionary/structure/v4/content/terminal_position_lookup_table.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_dict_constants.h"
@@ -26,27 +27,27 @@ namespace latinime {
 
 class BigramDictContent : public SparseTableDictContent {
  public:
-    BigramDictContent(const char *const dictDirPath, const bool isUpdatable)
+    BigramDictContent(const char *const dictDirPath, const bool hasHistoricalInfo,
+            const bool isUpdatable)
             : SparseTableDictContent(dictDirPath,
                       Ver4DictConstants::BIGRAM_LOOKUP_TABLE_FILE_EXTENSION,
                       Ver4DictConstants::BIGRAM_CONTENT_TABLE_FILE_EXTENSION,
                       Ver4DictConstants::BIGRAM_FILE_EXTENSION, isUpdatable,
                       Ver4DictConstants::BIGRAM_ADDRESS_TABLE_BLOCK_SIZE,
-                      Ver4DictConstants::BIGRAM_ADDRESS_TABLE_DATA_SIZE) {}
+                      Ver4DictConstants::BIGRAM_ADDRESS_TABLE_DATA_SIZE),
+              mHasHistoricalInfo(hasHistoricalInfo) {}
 
-    BigramDictContent()
+    BigramDictContent(const bool hasHistoricalInfo)
             : SparseTableDictContent(Ver4DictConstants::BIGRAM_ADDRESS_TABLE_BLOCK_SIZE,
-                      Ver4DictConstants::BIGRAM_ADDRESS_TABLE_DATA_SIZE) {}
+                      Ver4DictConstants::BIGRAM_ADDRESS_TABLE_DATA_SIZE),
+              mHasHistoricalInfo(hasHistoricalInfo) {}
 
-    void getBigramEntry(int *const outProbability, bool *const outHasNext,
-            int *const outTargetTerminalId, const int bigramEntryPos) const {
+    const BigramEntry getBigramEntry(const int bigramEntryPos) const {
         int readingPos = bigramEntryPos;
-        getBigramEntryAndAdvancePosition(outProbability, outHasNext, outTargetTerminalId,
-                &readingPos);
+        return getBigramEntryAndAdvancePosition(&readingPos);
     }
 
-    void getBigramEntryAndAdvancePosition(int *const outProbability, bool *const outHasNext,
-            int *const outTargetTerminalId, int *const bigramEntryPos) const;
+    const BigramEntry getBigramEntryAndAdvancePosition(int *const bigramEntryPos) const;
 
     // Returns head position of bigram list for a PtNode specified by terminalId.
     int getBigramListHeadPos(const int terminalId) const {
@@ -57,15 +58,13 @@ class BigramDictContent : public SparseTableDictContent {
         return addressLookupTable->get(terminalId);
     }
 
-    bool writeBigramEntry(const int probability, const int hasNext, const int targetTerminalId,
-            const int entryWritingPos) {
+    bool writeBigramEntry(const BigramEntry *const bigramEntryToWrite, const int entryWritingPos) {
         int writingPos = entryWritingPos;
-        return writeBigramEntryAndAdvancePosition(probability, hasNext, targetTerminalId,
-                &writingPos);
+        return writeBigramEntryAndAdvancePosition(bigramEntryToWrite, &writingPos);
     }
 
-    bool writeBigramEntryAndAdvancePosition(const int probability, const int hasNext,
-            const int targetTerminalId, int *const entryWritingPos);
+    bool writeBigramEntryAndAdvancePosition(const BigramEntry *const bigramEntryToWrite,
+            int *const entryWritingPos);
 
     bool createNewBigramList(const int terminalId) {
         const int bigramListPos = getContentBuffer()->getTailPosition();
@@ -96,6 +95,8 @@ class BigramDictContent : public SparseTableDictContent {
             const BigramDictContent *const sourceBigramDictContent, const int toPos,
             const TerminalPositionLookupTable::TerminalIdMap *const terminalIdMap,
             int *const outEntryCount);
+
+    bool mHasHistoricalInfo;
 };
 } // namespace latinime
 #endif /* LATINIME_BIGRAM_DICT_CONTENT_H */

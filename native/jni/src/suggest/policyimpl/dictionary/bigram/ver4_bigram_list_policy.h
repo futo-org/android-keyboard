@@ -19,6 +19,7 @@
 
 #include "defines.h"
 #include "suggest/core/policy/dictionary_bigrams_structure_policy.h"
+#include "suggest/policyimpl/dictionary/structure/v4/content/bigram_entry.h"
 
 namespace latinime {
 
@@ -58,7 +59,8 @@ class Ver4BigramListPolicy : public DictionaryBigramsStructurePolicy {
 
     int getEntryPosToUpdate(const int targetTerminalIdToFind, const int bigramListPos) const;
 
-    int getUpdatedProbability(const int originalProbability, const int newProbability) const;
+    const BigramEntry getUpdatedBigramEntry(const BigramEntry *const originalBigramEntry,
+            const int newProbability, const int timestamp) const;
 
     BigramDictContent *const mBigramDictContent;
     const TerminalPositionLookupTable *const mTerminalPositionLookupTable;

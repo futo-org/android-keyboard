@@ -26,12 +26,18 @@ namespace latinime {
 
 void Ver4BigramListPolicy::getNextBigram(int *const outBigramPos, int *const outProbability,
         bool *const outHasNext, int *const bigramEntryPos) const {
-    int targetTerminalId = Ver4DictConstants::NOT_A_TERMINAL_ID;
-    mBigramDictContent->getBigramEntryAndAdvancePosition(outProbability, outHasNext,
-            &targetTerminalId, bigramEntryPos);
+    const BigramEntry bigramEntry =
+            mBigramDictContent->getBigramEntryAndAdvancePosition(bigramEntryPos);
     if (outBigramPos) {
         // Lookup target PtNode position.
-        *outBigramPos = mTerminalPositionLookupTable->getTerminalPtNodePosition(targetTerminalId);
+        *outBigramPos = mTerminalPositionLookupTable->getTerminalPtNodePosition(
+                bigramEntry.getTargetTerminalId());
+    }
+    if (outProbability) {
+        *outProbability = bigramEntry.getProbability();
+    }
+    if (outHasNext) {
+        *outHasNext = bigramEntry.hasNext();
     }
 }
 
@@ -47,12 +53,13 @@ bool Ver4BigramListPolicy::addNewEntry(const int terminalId, const int newTarget
         if (!mBigramDictContent->createNewBigramList(terminalId)) {
             return false;
         }
-        const int probabilityToWrite = getUpdatedProbability(
-                NOT_A_PROBABILITY /* originalProbability */, newProbability);
+        const BigramEntry newBigramEntry(false /* hasNext */, NOT_A_PROBABILITY,
+                newTargetTerminalId);
+        const BigramEntry bigramEntryToWrite = getUpdatedBigramEntry(&newBigramEntry,
+                newProbability, timestamp);
         // Write an entry.
         const int writingPos =  mBigramDictContent->getBigramListHeadPos(terminalId);
-        if (!mBigramDictContent->writeBigramEntry(probabilityToWrite, false /* hasNext */,
-                newTargetTerminalId, writingPos)) {
+        if (!mBigramDictContent->writeBigramEntry(&bigramEntryToWrite, writingPos)) {
             return false;
         }
         if (outAddedNewEntry) {
@@ -64,18 +71,19 @@ bool Ver4BigramListPolicy::addNewEntry(const int terminalId, const int newTarget
     const int entryPosToUpdate = getEntryPosToUpdate(newTargetTerminalId, bigramListPos);
     if (entryPosToUpdate != NOT_A_DICT_POS) {
         // Overwrite existing entry.
-        bool hasNext = false;
-        int probability = NOT_A_PROBABILITY;
-        int targetTerminalId = Ver4DictConstants::NOT_A_TERMINAL_ID;
-        mBigramDictContent->getBigramEntry(&probability, &hasNext, &targetTerminalId,
-                entryPosToUpdate);
-        const int probabilityToWrite = getUpdatedProbability(probability, newProbability);
-        if (targetTerminalId == Ver4DictConstants::NOT_A_TERMINAL_ID && outAddedNewEntry) {
+        const BigramEntry originalBigramEntry =
+                mBigramDictContent->getBigramEntry(entryPosToUpdate);
+        if (!originalBigramEntry.isValid()) {
             // Reuse invalid entry.
-            *outAddedNewEntry = true;
+            if (outAddedNewEntry) {
+                *outAddedNewEntry = true;
+            }
         }
-        return mBigramDictContent->writeBigramEntry(probabilityToWrite, hasNext,
-                newTargetTerminalId, entryPosToUpdate);
+        const BigramEntry updatedBigramEntry =
+                originalBigramEntry.updateTargetTerminalIdAndGetEntry(newTargetTerminalId);
+        const BigramEntry bigramEntryToWrite = getUpdatedBigramEntry(
+                &updatedBigramEntry, newProbability, timestamp);
+        return mBigramDictContent->writeBigramEntry(&bigramEntryToWrite, entryPosToUpdate);
     }
 
     // Add new entry to the bigram list.
@@ -85,10 +93,10 @@ bool Ver4BigramListPolicy::addNewEntry(const int terminalId, const int newTarget
     }
     // Write new entry at a head position of the bigram list.
     int writingPos = mBigramDictContent->getBigramListHeadPos(terminalId);
-    const int probabilityToWrite = getUpdatedProbability(
-            NOT_A_PROBABILITY /* originalProbability */, newProbability);
-    if (!mBigramDictContent->writeBigramEntryAndAdvancePosition(probabilityToWrite,
-            true /* hasNext */, newTargetTerminalId, &writingPos)) {
+    const BigramEntry newBigramEntry(true /* hasNext */, NOT_A_PROBABILITY, newTargetTerminalId);
+    const BigramEntry bigramEntryToWrite = getUpdatedBigramEntry(
+            &newBigramEntry, newProbability, timestamp);
+    if (!mBigramDictContent->writeBigramEntryAndAdvancePosition(&bigramEntryToWrite, &writingPos)) {
         return false;
     }
     if (outAddedNewEntry) {
@@ -109,18 +117,14 @@ bool Ver4BigramListPolicy::removeEntry(const int terminalId, const int targetTer
         // Bigram entry doesn't exist.
         return false;
     }
-    bool hasNext = false;
-    int probability = NOT_A_PROBABILITY;
-    int originalTargetTerminalId = Ver4DictConstants::NOT_A_TERMINAL_ID;
-    mBigramDictContent->getBigramEntry(&probability, &hasNext, &originalTargetTerminalId,
-            entryPosToUpdate);
-    if (targetTerminalId != originalTargetTerminalId) {
+    const BigramEntry bigramEntry = mBigramDictContent->getBigramEntry(entryPosToUpdate);
+    if (targetTerminalId != bigramEntry.getTargetTerminalId()) {
         // Bigram entry doesn't exist.
         return false;
     }
-    // Remove bigram entry by overwriting target terminal Id.
-    return mBigramDictContent->writeBigramEntry(probability, hasNext,
-            Ver4DictConstants::NOT_A_TERMINAL_ID /* targetTerminalId */, entryPosToUpdate);
+    // Remove bigram entry by marking it as invalid entry and overwriting the original entry.
+    const BigramEntry updatedBigramEntry = bigramEntry.getInvalidatedEntry();
+    return mBigramDictContent->writeBigramEntry(&updatedBigramEntry, entryPosToUpdate);
 }
 
 bool Ver4BigramListPolicy::updateAllBigramEntriesAndDeleteUselessEntries(const int terminalId,
@@ -134,34 +138,35 @@ bool Ver4BigramListPolicy::updateAllBigramEntriesAndDeleteUselessEntries(const i
     int readingPos = bigramListPos;
     while (hasNext) {
         const int entryPos = readingPos;
-        int probability = NOT_A_PROBABILITY;
-        int targetTerminalId = Ver4DictConstants::NOT_A_TERMINAL_ID;
-        mBigramDictContent->getBigramEntryAndAdvancePosition(&probability, &hasNext,
-                &targetTerminalId, &readingPos);
-        if (targetTerminalId == Ver4DictConstants::NOT_A_TERMINAL_ID) {
+        const BigramEntry bigramEntry =
+                mBigramDictContent->getBigramEntryAndAdvancePosition(&readingPos);
+        hasNext = bigramEntry.hasNext();
+        if (!bigramEntry.isValid()) {
             continue;
         }
         const int targetPtNodePos = mTerminalPositionLookupTable->getTerminalPtNodePosition(
-                targetTerminalId);
+                bigramEntry.getTargetTerminalId());
         if (targetPtNodePos == NOT_A_DICT_POS) {
             // Invalidate bigram entry.
-            if (!mBigramDictContent->writeBigramEntry(probability, hasNext,
-                    Ver4DictConstants::NOT_A_TERMINAL_ID /* targetTerminalId */, entryPos)) {
+            const BigramEntry updatedBigramEntry = bigramEntry.getInvalidatedEntry();
+            if (!mBigramDictContent->writeBigramEntry(&updatedBigramEntry, entryPos)) {
                 return false;
             }
         } else if (mNeedsToDecayWhenUpdating) {
-            probability = ForgettingCurveUtils::getEncodedProbabilityToSave(
-                    probability, mHeaderPolicy);
+            // TODO: Quit decaying probability during GC.
+            const int probability = ForgettingCurveUtils::getEncodedProbabilityToSave(
+                    bigramEntry.getProbability(), mHeaderPolicy);
             if (ForgettingCurveUtils::isValidEncodedProbability(probability)) {
-                if (!mBigramDictContent->writeBigramEntry(probability, hasNext, targetTerminalId,
-                        entryPos)) {
+                const BigramEntry updatedBigramEntry =
+                        bigramEntry.updateProbabilityAndGetEntry(probability);
+                if (!mBigramDictContent->writeBigramEntry(&updatedBigramEntry, entryPos)) {
                     return false;
                 }
                 *outBigramCount += 1;
             } else {
                 // Remove entry.
-                if (!mBigramDictContent->writeBigramEntry(probability, hasNext,
-                        Ver4DictConstants::NOT_A_TERMINAL_ID /* targetTerminalId */, entryPos)) {
+                const BigramEntry updatedBigramEntry = bigramEntry.getInvalidatedEntry();
+                if (!mBigramDictContent->writeBigramEntry(&updatedBigramEntry, entryPos)) {
                     return false;
                 }
             }
@@ -182,10 +187,10 @@ int Ver4BigramListPolicy::getBigramEntryConut(const int terminalId) {
     bool hasNext = true;
     int readingPos = bigramListPos;
     while (hasNext) {
-        int targetTerminalId = Ver4DictConstants::NOT_A_TERMINAL_ID;
-        mBigramDictContent->getBigramEntryAndAdvancePosition(0 /* probability */, &hasNext,
-                &targetTerminalId, &readingPos);
-        if (targetTerminalId != Ver4DictConstants::NOT_A_TERMINAL_ID) {
+        const BigramEntry bigramEntry =
+                mBigramDictContent->getBigramEntryAndAdvancePosition(&readingPos);
+        hasNext = bigramEntry.hasNext();
+        if (bigramEntry.isValid()) {
             bigramCount++;
         }
     }
@@ -199,13 +204,13 @@ int Ver4BigramListPolicy::getEntryPosToUpdate(const int targetTerminalIdToFind,
     int readingPos = bigramListPos;
     while (hasNext) {
         const int entryPos = readingPos;
-        int targetTerminalId = Ver4DictConstants::NOT_A_TERMINAL_ID;
-        mBigramDictContent->getBigramEntryAndAdvancePosition(0 /* probability */, &hasNext,
-                &targetTerminalId, &readingPos);
-        if (targetTerminalId == targetTerminalIdToFind) {
+        const BigramEntry bigramEntry =
+                mBigramDictContent->getBigramEntryAndAdvancePosition(&readingPos);
+        hasNext = bigramEntry.hasNext();
+        if (bigramEntry.getTargetTerminalId() == targetTerminalIdToFind) {
             // Entry with same target is found.
             return entryPos;
-        } else if (targetTerminalId == Ver4DictConstants::NOT_A_TERMINAL_ID) {
+        } else if (!bigramEntry.isValid()) {
             // Invalid entry that can be reused is found.
             invalidEntryPos = entryPos;
         }
@@ -213,13 +218,16 @@ int Ver4BigramListPolicy::getEntryPosToUpdate(const int targetTerminalIdToFind,
     return invalidEntryPos;
 }
 
-int Ver4BigramListPolicy::getUpdatedProbability(const int originalProbability,
-        const int newProbability) const {
+const BigramEntry Ver4BigramListPolicy::getUpdatedBigramEntry(
+        const BigramEntry *const originalBigramEntry, const int newProbability,
+        const int timestamp) const {
     if (mNeedsToDecayWhenUpdating) {
-        return ForgettingCurveUtils::getUpdatedEncodedProbability(originalProbability,
-                newProbability);
+        // TODO: Update historical information.
+        const int probability = ForgettingCurveUtils::getUpdatedEncodedProbability(
+                originalBigramEntry->getProbability(), newProbability);
+        return originalBigramEntry->updateProbabilityAndGetEntry(probability);
     } else {
-        return newProbability;
+        return originalBigramEntry->updateProbabilityAndGetEntry(newProbability);
     }
 }
 

@@ -341,12 +341,21 @@ template<typename T> AK_FORCE_INLINE const T &max(const T &a, const T &b) { retu
 #define INPUTLENGTH_FOR_DEBUG (-1)
 #define MIN_OUTPUT_INDEX_FOR_DEBUG (-1)
 
-#define DISALLOW_COPY_AND_ASSIGN(TypeName) \
-  TypeName(const TypeName&);               \
+#define DISALLOW_DEFAULT_CONSTRUCTOR(TypeName) \
+  TypeName()
+
+#define DISALLOW_COPY_CONSTRUCTOR(TypeName) \
+  TypeName(const TypeName&)
+
+#define DISALLOW_ASSIGNMENT_OPERATOR(TypeName) \
   void operator=(const TypeName&)
 
+#define DISALLOW_COPY_AND_ASSIGN(TypeName) \
+  DISALLOW_COPY_CONSTRUCTOR(TypeName);     \
+  DISALLOW_ASSIGNMENT_OPERATOR(TypeName)
+
 #define DISALLOW_IMPLICIT_CONSTRUCTORS(TypeName) \
-  TypeName();                                    \
+  DISALLOW_DEFAULT_CONSTRUCTOR(TypeName);        \
   DISALLOW_COPY_AND_ASSIGN(TypeName)
 
 // Used as a return value for character comparison
