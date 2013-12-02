@@ -71,6 +71,9 @@ public final class SettingsFragment extends InputMethodSettingsFragment
         // Because the "%s" summary trick of {@link ListPreference} doesn't work properly before
         // KitKat, we need to update the summary programmatically.
         final ListPreference listPreference = (ListPreference)findPreference(prefKey);
+        if (listPreference == null) {
+            return;
+        }
         final CharSequence entries[] = listPreference.getEntries();
         final int entryIndex = listPreference.findIndexOfValue(listPreference.getValue());
         listPreference.setSummary(entryIndex < 0 ? null : entries[entryIndex]);
