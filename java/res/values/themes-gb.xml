@@ -58,10 +58,10 @@
         <!-- This should be aligned with KeyboardSwitcher.KEYBOARD_THEMES[] -->
         <item name="themeId">1</item>
         <item name="touchPositionCorrectionData">@array/touch_position_correction_data_gb</item>
-        <item name="keyboardTopPadding">@fraction/keyboard_top_padding_gb</item>
-        <item name="keyboardBottomPadding">@fraction/keyboard_bottom_padding_gb</item>
-        <item name="horizontalGap">@fraction/key_horizontal_gap_gb</item>
-        <item name="verticalGap">@fraction/key_bottom_gap_gb</item>
+        <item name="keyboardTopPadding">@fraction/config_keyboard_top_padding_gb</item>
+        <item name="keyboardBottomPadding">@fraction/config_keyboard_bottom_padding_gb</item>
+        <item name="horizontalGap">@fraction/config_key_horizontal_gap_gb</item>
+        <item name="verticalGap">@fraction/config_key_vertical_gap_gb</item>
     </style>
     <style
         name="KeyboardView.GB"
@@ -84,15 +84,15 @@
         name="MainKeyboardView.GB"
         parent="KeyboardView.GB"
     >
-        <item name="keyPreviewOffset">@dimen/key_preview_offset_gb</item>
+        <item name="keyPreviewOffset">@dimen/config_key_preview_offset_gb</item>
         <item name="gestureFloatingPreviewTextColor">@color/highlight_color_gb</item>
         <item name="gestureFloatingPreviewColor">@color/gesture_floating_preview_color_gb</item>
         <item name="gestureTrailColor">@color/highlight_color_gb</item>
         <item name="slidingKeyInputPreviewColor">@color/highlight_translucent_color_gb</item>
         <item name="autoCorrectionSpacebarLedEnabled">true</item>
         <item name="autoCorrectionSpacebarLedIcon">@drawable/sym_keyboard_space_led_gb</item>
-        <item name="spacebarTextColor">@color/spacebar_text_color_gb</item>
-        <item name="spacebarTextShadowColor">@color/spacebar_text_shadow_color_gb</item>
+        <item name="languageOnSpacebarTextColor">@color/spacebar_text_color_gb</item>
+        <item name="languageOnSpacebarTextShadowColor">@color/spacebar_text_shadow_color_gb</item>
     </style>
     <style
         name="KeyPreviewTextView.GB"
@@ -125,7 +125,7 @@
         <item name="android:background">@drawable/keyboard_popup_panel_background_gb</item>
         <item name="keyBackground">@drawable/btn_keyboard_key_popup_gb</item>
         <item name="keyTypeface">normal</item>
-        <item name="verticalCorrection">@dimen/more_keys_keyboard_vertical_correction_gb</item>
+        <item name="verticalCorrection">@dimen/config_more_keys_keyboard_vertical_correction_gb</item>
     </style>
     <style
         name="SuggestionStripView.GB"

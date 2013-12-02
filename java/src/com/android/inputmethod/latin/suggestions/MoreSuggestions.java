@@ -66,7 +66,8 @@ public final class MoreSuggestions extends Keyboard {
             clearKeys();
             mDivider = res.getDrawable(R.drawable.more_suggestions_divider);
             mDividerWidth = mDivider.getIntrinsicWidth();
-            final float padding = res.getDimension(R.dimen.more_suggestions_key_horizontal_padding);
+            final float padding = res.getDimension(
+                    R.dimen.config_more_suggestions_key_horizontal_padding);
 
             int row = 0;
             int index = fromIndex;

@@ -24,6 +24,7 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -83,9 +84,9 @@ import java.util.WeakHashMap;
  *
  * @attr ref R.styleable#MainKeyboardView_autoCorrectionSpacebarLedEnabled
  * @attr ref R.styleable#MainKeyboardView_autoCorrectionSpacebarLedIcon
- * @attr ref R.styleable#MainKeyboardView_spacebarTextRatio
- * @attr ref R.styleable#MainKeyboardView_spacebarTextColor
- * @attr ref R.styleable#MainKeyboardView_spacebarTextShadowColor
+ * @attr ref R.styleable#MainKeyboardView_languageOnSpacebarTextRatio
+ * @attr ref R.styleable#MainKeyboardView_languageOnSpacebarTextColor
+ * @attr ref R.styleable#MainKeyboardView_languageOnSpacebarTextShadowColor
  * @attr ref R.styleable#MainKeyboardView_languageOnSpacebarFinalAlpha
  * @attr ref R.styleable#MainKeyboardView_languageOnSpacebarFadeoutAnimator
  * @attr ref R.styleable#MainKeyboardView_altCodeKeyWhileTypingFadeoutAnimator
@@ -136,10 +137,10 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     private boolean mNeedsToDisplayLanguage;
     private boolean mHasMultipleEnabledIMEsOrSubtypes;
     private int mLanguageOnSpacebarAnimAlpha = Constants.Color.ALPHA_OPAQUE;
-    private final float mSpacebarTextRatio;
-    private float mSpacebarTextSize;
-    private final int mSpacebarTextColor;
-    private final int mSpacebarTextShadowColor;
+    private final float mLanguageOnSpacebarTextRatio;
+    private float mLanguageOnSpacebarTextSize;
+    private final int mLanguageOnSpacebarTextColor;
+    private final int mLanguageOnSpacebarTextShadowColor;
     // The minimum x-scale to fit the language name on spacebar.
     private static final float MINIMUM_XSCALE_OF_LANGUAGE_NAME = 0.8f;
     // Stuff to draw auto correction LED on spacebar.
@@ -213,7 +214,8 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     public MainKeyboardView(final Context context, final AttributeSet attrs, final int defStyle) {
         super(context, attrs, defStyle);
 
-        PointerTracker.init(getResources());
+        final Resources res = getResources();
+        PointerTracker.init(res);
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         final boolean forceNonDistinctMultitouch = prefs.getBoolean(
                 DebugSettings.PREF_FORCE_NON_DISTINCT_MULTITOUCH, false);
@@ -235,12 +237,12 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
                 R.styleable.MainKeyboardView_autoCorrectionSpacebarLedEnabled, false);
         mAutoCorrectionSpacebarLedIcon = mainKeyboardViewAttr.getDrawable(
                 R.styleable.MainKeyboardView_autoCorrectionSpacebarLedIcon);
-        mSpacebarTextRatio = mainKeyboardViewAttr.getFraction(
-                R.styleable.MainKeyboardView_spacebarTextRatio, 1, 1, 1.0f);
-        mSpacebarTextColor = mainKeyboardViewAttr.getColor(
-                R.styleable.MainKeyboardView_spacebarTextColor, 0);
-        mSpacebarTextShadowColor = mainKeyboardViewAttr.getColor(
-                R.styleable.MainKeyboardView_spacebarTextShadowColor, 0);
+        mLanguageOnSpacebarTextRatio = mainKeyboardViewAttr.getFraction(
+                R.styleable.MainKeyboardView_languageOnSpacebarTextRatio, 1, 1, 1.0f);
+        mLanguageOnSpacebarTextColor = mainKeyboardViewAttr.getColor(
+                R.styleable.MainKeyboardView_languageOnSpacebarTextColor, 0);
+        mLanguageOnSpacebarTextShadowColor = mainKeyboardViewAttr.getColor(
+                R.styleable.MainKeyboardView_languageOnSpacebarTextShadowColor, 0);
         mLanguageOnSpacebarFinalAlpha = mainKeyboardViewAttr.getInt(
                 R.styleable.MainKeyboardView_languageOnSpacebarFinalAlpha,
                 Constants.Color.ALPHA_OPAQUE);
@@ -311,8 +313,8 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
 
         mKeyboardActionListener = KeyboardActionListener.EMPTY_LISTENER;
 
-        mLanguageOnSpacebarHorizontalMargin =
-                (int) getResources().getDimension(R.dimen.language_on_spacebar_horizontal_margin);
+        mLanguageOnSpacebarHorizontalMargin = (int)res.getDimension(
+                R.dimen.config_language_on_spacebar_horizontal_margin);
     }
 
     @Override
@@ -445,7 +447,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         mSpaceIcon = (mSpaceKey != null)
                 ? mSpaceKey.getIcon(keyboard.mIconsSet, Constants.Color.ALPHA_OPAQUE) : null;
         final int keyHeight = keyboard.mMostCommonKeyHeight - keyboard.mVerticalGap;
-        mSpacebarTextSize = keyHeight * mSpacebarTextRatio;
+        mLanguageOnSpacebarTextSize = keyHeight * mLanguageOnSpacebarTextRatio;
         if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
             final int orientation = getContext().getResources().getConfiguration().orientation;
             ResearchLogger.mainKeyboardView_setKeyboard(keyboard, orientation);
@@ -1190,17 +1192,17 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         if (mNeedsToDisplayLanguage) {
             paint.setTextAlign(Align.CENTER);
             paint.setTypeface(Typeface.DEFAULT);
-            paint.setTextSize(mSpacebarTextSize);
+            paint.setTextSize(mLanguageOnSpacebarTextSize);
             final InputMethodSubtype subtype = getKeyboard().mId.mSubtype;
             final String language = layoutLanguageOnSpacebar(paint, subtype, width);
             // Draw language text with shadow
             final float descent = paint.descent();
             final float textHeight = -paint.ascent() + descent;
             final float baseline = height / 2 + textHeight / 2;
-            paint.setColor(mSpacebarTextShadowColor);
+            paint.setColor(mLanguageOnSpacebarTextShadowColor);
             paint.setAlpha(mLanguageOnSpacebarAnimAlpha);
             canvas.drawText(language, width / 2, baseline - descent - 1, paint);
-            paint.setColor(mSpacebarTextColor);
+            paint.setColor(mLanguageOnSpacebarTextColor);
             paint.setAlpha(mLanguageOnSpacebarAnimAlpha);
             canvas.drawText(language, width / 2, baseline - descent, paint);
         }

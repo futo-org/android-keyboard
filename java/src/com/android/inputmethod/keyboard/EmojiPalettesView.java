@@ -149,7 +149,7 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
         public EmojiCategory(final SharedPreferences prefs, final Resources res,
                 final KeyboardLayoutSet layoutSet) {
             mPrefs = prefs;
-            mMaxPageKeyCount = res.getInteger(R.integer.emoji_keyboard_max_key_count);
+            mMaxPageKeyCount = res.getInteger(R.integer.config_emoji_keyboard_max_page_key_count);
             mLayoutSet = layoutSet;
             for (int i = 0; i < sCategoryName.length; ++i) {
                 mCategoryNameToIdMap.put(sCategoryName[i], i);
@@ -427,7 +427,7 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
         final int width = ResourceUtils.getDefaultKeyboardWidth(res)
                 + getPaddingLeft() + getPaddingRight();
         final int height = ResourceUtils.getDefaultKeyboardHeight(res)
-                + res.getDimensionPixelSize(R.dimen.suggestions_strip_height)
+                + res.getDimensionPixelSize(R.dimen.config_suggestions_strip_height)
                 + getPaddingTop() + getPaddingBottom();
         setMeasuredDimension(width, height);
     }
