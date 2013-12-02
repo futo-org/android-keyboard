@@ -186,7 +186,7 @@
     <string name="setup_step3_title" msgid="3154757183631490281">"Gratulerer, du er klar!"</string>
     <string name="setup_step3_instruction" msgid="8025981829605426000">"Nå kan du skrive inn alle favorittappene dine med <xliff:g id="APPLICATION_NAME">%s</xliff:g>."</string>
     <string name="setup_step3_action" msgid="600879797256942259">"Konfigurer flere språk"</string>
-    <string name="setup_finish_action" msgid="276559243409465389">"Fullført"</string>
+    <string name="setup_finish_action" msgid="276559243409465389">"Ferdig"</string>
     <string name="show_setup_wizard_icon" msgid="5008028590593710830">"Vis app-ikonet"</string>
     <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"Vis app-ikonet i appvelgeren"</string>
     <string name="app_name" msgid="6320102637491234792">"Ordlisteleverandør"</string>
