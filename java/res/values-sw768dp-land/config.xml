@@ -47,7 +47,7 @@
     <fraction name="config_key_label_ratio">28%</fraction>
     <fraction name="config_key_hint_letter_ratio">23%</fraction>
     <fraction name="config_key_hint_label_ratio">28%</fraction>
-    <fraction name="config_key_uppercase_letter_ratio">24%</fraction>
+    <fraction name="config_key_shifted_letter_hint_ratio">24%</fraction>
     <fraction name="config_language_on_spacebar_text_ratio">24.00%</fraction>
     <dimen name="config_key_preview_height">107.1dp</dimen>
 
