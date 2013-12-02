@@ -558,12 +558,12 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         dictFile.delete();
     }
 
-    public void testRandomOperetionsAndFlashWithGC() {
-        testRandomOperetionsAndFlashWithGC(3 /* formatVersion */);
-        testRandomOperetionsAndFlashWithGC(4 /* formatVersion */);
+    public void testRandomOperationsAndFlashWithGC() {
+        testRandomOperationsAndFlashWithGC(3 /* formatVersion */);
+        testRandomOperationsAndFlashWithGC(4 /* formatVersion */);
     }
 
-    private void testRandomOperetionsAndFlashWithGC(final int formatVersion) {
+    private void testRandomOperationsAndFlashWithGC(final int formatVersion) {
         final int flashWithGCIterationCount = 50;
         final int operationCountInEachIteration = 200;
         final int initialUnigramCount = 100;
