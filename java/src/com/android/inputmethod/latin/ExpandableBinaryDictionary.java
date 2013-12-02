@@ -53,6 +53,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
 
     /** Whether to print debug output to log */
     private static boolean DEBUG = false;
+    private static final boolean DBG_STRESS_TEST = false;
 
     private static final int TIMEOUT_FOR_READ_OPS_IN_MILLISECONDS = 100;
 
@@ -495,6 +496,16 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
             Log.d(TAG, "Loading binary dictionary: " + mFilename + " request="
                     + mFilenameDictionaryUpdateController.mLastUpdateRequestTime + " update="
                     + mFilenameDictionaryUpdateController.mLastUpdateTime);
+        }
+        if (DBG_STRESS_TEST) {
+            // Test if this class does not cause problems when it takes long time to load binary
+            // dictionary.
+            try {
+                Log.w(TAG, "Start stress in loading: " + mFilename);
+                Thread.sleep(15000);
+                Log.w(TAG, "End stress in loading");
+            } catch (InterruptedException e) {
+            }
         }
 
         final File file = new File(mContext.getFilesDir(), mFilename

@@ -20,7 +20,6 @@ import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.ExpandableBinaryDictionary;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 
 /**
  * Locally gathers stats about the words user types and various other signals like auto-correction
@@ -29,9 +28,8 @@ import android.content.SharedPreferences;
 public class UserHistoryDictionary extends DecayingExpandableBinaryDictionaryBase {
     /* package for tests */ static final String NAME =
             UserHistoryDictionary.class.getSimpleName();
-    /* package */ UserHistoryDictionary(final Context context, final String locale,
-            final SharedPreferences sp) {
-        super(context, locale, sp, Dictionary.TYPE_USER_HISTORY, getDictionaryFileName(locale));
+    /* package */ UserHistoryDictionary(final Context context, final String locale) {
+        super(context, locale, Dictionary.TYPE_USER_HISTORY, getDictionaryFileName(locale));
     }
 
     private static String getDictionaryFileName(final String locale) {
