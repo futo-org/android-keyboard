@@ -20,53 +20,98 @@
 
 namespace latinime {
 
-void BigramDictContent::getBigramEntryAndAdvancePosition(int *const outProbability,
-        bool *const outHasNext, int *const outTargetTerminalId, int *const bigramEntryPos) const {
+const BigramEntry BigramDictContent::getBigramEntryAndAdvancePosition(
+        int *const bigramEntryPos) const {
     const BufferWithExtendableBuffer *const bigramListBuffer = getContentBuffer();
     const int bigramFlags = bigramListBuffer->readUintAndAdvancePosition(
             Ver4DictConstants::BIGRAM_FLAGS_FIELD_SIZE, bigramEntryPos);
-    if (outProbability) {
-        *outProbability = bigramFlags & Ver4DictConstants::BIGRAM_PROBABILITY_MASK;
+    const int hasNext = (bigramFlags & Ver4DictConstants::BIGRAM_HAS_NEXT_MASK) != 0;
+    int probability = NOT_A_PROBABILITY;
+    int timestamp = Ver4DictConstants::NOT_A_TIME_STAMP;
+    int level = 0;
+    int count = 0;
+    if (mHasHistoricalInfo) {
+        probability = bigramListBuffer->readUintAndAdvancePosition(
+                Ver4DictConstants::PROBABILITY_SIZE, bigramEntryPos);
+        timestamp = bigramListBuffer->readUintAndAdvancePosition(
+                Ver4DictConstants::TIME_STAMP_FIELD_SIZE, bigramEntryPos);
+        level = bigramListBuffer->readUintAndAdvancePosition(
+                Ver4DictConstants::WORD_LEVEL_FIELD_SIZE, bigramEntryPos);
+        count = bigramListBuffer->readUintAndAdvancePosition(
+                Ver4DictConstants::WORD_COUNT_FIELD_SIZE, bigramEntryPos);
+    } else {
+        probability = bigramFlags & Ver4DictConstants::BIGRAM_PROBABILITY_MASK;
     }
-    if (outHasNext) {
-        *outHasNext = (bigramFlags & Ver4DictConstants::BIGRAM_HAS_NEXT_MASK) != 0;
-    }
-    const int targetTerminalId = bigramListBuffer->readUintAndAdvancePosition(
+    const int encodedTargetTerminalId = bigramListBuffer->readUintAndAdvancePosition(
             Ver4DictConstants::BIGRAM_TARGET_TERMINAL_ID_FIELD_SIZE, bigramEntryPos);
-    if (outTargetTerminalId) {
-        *outTargetTerminalId =
-                (targetTerminalId == Ver4DictConstants::INVALID_BIGRAM_TARGET_TERMINAL_ID) ?
-                        Ver4DictConstants::NOT_A_TERMINAL_ID : targetTerminalId;
+    const int targetTerminalId =
+            (encodedTargetTerminalId == Ver4DictConstants::INVALID_BIGRAM_TARGET_TERMINAL_ID) ?
+                    Ver4DictConstants::NOT_A_TERMINAL_ID : encodedTargetTerminalId;
+    if (mHasHistoricalInfo) {
+        return BigramEntry(hasNext, probability, timestamp, level, count, targetTerminalId);
+    } else {
+        return BigramEntry(hasNext, probability, targetTerminalId);
     }
 }
 
-bool BigramDictContent::writeBigramEntryAndAdvancePosition(const int probability, const int hasNext,
-        const int targetTerminalId, int *const entryWritingPos) {
+bool BigramDictContent::writeBigramEntryAndAdvancePosition(
+        const BigramEntry *const bigramEntryToWrite, int *const entryWritingPos) {
     BufferWithExtendableBuffer *const bigramListBuffer = getWritableContentBuffer();
-    const int bigramFlags = createAndGetBigramFlags(probability, hasNext);
+    const int bigramFlags = createAndGetBigramFlags(
+            mHasHistoricalInfo ? 0 : bigramEntryToWrite->getProbability(),
+            bigramEntryToWrite->hasNext());
     if (!bigramListBuffer->writeUintAndAdvancePosition(bigramFlags,
             Ver4DictConstants::BIGRAM_FLAGS_FIELD_SIZE, entryWritingPos)) {
         AKLOGE("Cannot write bigram flags. pos: %d, flags: %x", *entryWritingPos, bigramFlags);
         return false;
     }
+    if (mHasHistoricalInfo) {
+        if (!bigramListBuffer->writeUintAndAdvancePosition(bigramEntryToWrite->getProbability(),
+                Ver4DictConstants::PROBABILITY_SIZE, entryWritingPos)) {
+            AKLOGE("Cannot write bigram probability. pos: %d, probability: %d", *entryWritingPos,
+                    bigramEntryToWrite->getProbability());
+            return false;
+        }
+        if (!bigramListBuffer->writeUintAndAdvancePosition(bigramEntryToWrite->getTimeStamp(),
+                Ver4DictConstants::TIME_STAMP_FIELD_SIZE, entryWritingPos)) {
+            AKLOGE("Cannot write bigram timestamps. pos: %d, timestamp: %d", *entryWritingPos,
+                    bigramEntryToWrite->getTimeStamp());
+            return false;
+        }
+        if (!bigramListBuffer->writeUintAndAdvancePosition(bigramEntryToWrite->getLevel(),
+                Ver4DictConstants::WORD_LEVEL_FIELD_SIZE, entryWritingPos)) {
+            AKLOGE("Cannot write bigram level. pos: %d, level: %d", *entryWritingPos,
+                    bigramEntryToWrite->getLevel());
+            return false;
+        }
+        if (!bigramListBuffer->writeUintAndAdvancePosition(bigramEntryToWrite->getCount(),
+                Ver4DictConstants::WORD_COUNT_FIELD_SIZE, entryWritingPos)) {
+            AKLOGE("Cannot write bigram count. pos: %d, count: %d", *entryWritingPos,
+                    bigramEntryToWrite->getCount());
+            return false;
+        }
+    }
     const int targetTerminalIdToWrite =
-            (targetTerminalId == Ver4DictConstants::NOT_A_TERMINAL_ID) ?
-                    Ver4DictConstants::INVALID_BIGRAM_TARGET_TERMINAL_ID : targetTerminalId;
-    return bigramListBuffer->writeUintAndAdvancePosition(targetTerminalIdToWrite,
-            Ver4DictConstants::BIGRAM_TARGET_TERMINAL_ID_FIELD_SIZE, entryWritingPos);
+            (bigramEntryToWrite->getTargetTerminalId() == Ver4DictConstants::NOT_A_TERMINAL_ID) ?
+                    Ver4DictConstants::INVALID_BIGRAM_TARGET_TERMINAL_ID :
+                            bigramEntryToWrite->getTargetTerminalId();
+    if (!bigramListBuffer->writeUintAndAdvancePosition(targetTerminalIdToWrite,
+            Ver4DictConstants::BIGRAM_TARGET_TERMINAL_ID_FIELD_SIZE, entryWritingPos)) {
+        AKLOGE("Cannot write bigram target terminal id. pos: %d, target terminal id: %d",
+                *entryWritingPos, bigramEntryToWrite->getTargetTerminalId());
+        return false;
+    }
+    return true;
 }
 
 bool BigramDictContent::copyBigramList(const int bigramListPos, const int toPos) {
-    bool hasNext = true;
     int readingPos = bigramListPos;
     int writingPos = toPos;
+    bool hasNext = true;
     while (hasNext) {
-        int probability = NOT_A_PROBABILITY;
-        int targetTerminalId = Ver4DictConstants::NOT_A_TERMINAL_ID;
-        getBigramEntryAndAdvancePosition(&probability, &hasNext, &targetTerminalId,
-                &readingPos);
-        if (!writeBigramEntryAndAdvancePosition(probability, hasNext, targetTerminalId,
-                &writingPos)) {
+        const BigramEntry bigramEntry = getBigramEntryAndAdvancePosition(&readingPos);
+        hasNext = bigramEntry.hasNext();
+        if (!writeBigramEntryAndAdvancePosition(&bigramEntry, &writingPos)) {
             AKLOGE("Cannot write bigram entry to copy. pos: %d", writingPos);
             return false;
         }
@@ -119,22 +164,22 @@ bool BigramDictContent::runGCBigramList(const int bigramListPos,
     int writingPos = toPos;
     int lastEntryPos = NOT_A_DICT_POS;
     while (hasNext) {
-        int probability = NOT_A_PROBABILITY;
-        int targetTerminalId = Ver4DictConstants::NOT_A_TERMINAL_ID;
-        sourceBigramDictContent->getBigramEntryAndAdvancePosition(&probability, &hasNext,
-                &targetTerminalId, &readingPos);
-        if (targetTerminalId == Ver4DictConstants::NOT_A_TERMINAL_ID) {
+        const BigramEntry originalBigramEntry =
+                sourceBigramDictContent->getBigramEntryAndAdvancePosition(&readingPos);
+        hasNext = originalBigramEntry.hasNext();
+        if (originalBigramEntry.getTargetTerminalId() == Ver4DictConstants::NOT_A_TERMINAL_ID) {
             continue;
         }
         TerminalPositionLookupTable::TerminalIdMap::const_iterator it =
-                terminalIdMap->find(targetTerminalId);
+                terminalIdMap->find(originalBigramEntry.getTargetTerminalId());
         if (it == terminalIdMap->end()) {
             // Target word has been removed.
             continue;
         }
         lastEntryPos = hasNext ? writingPos : NOT_A_DICT_POS;
-        if (!writeBigramEntryAndAdvancePosition(probability, hasNext, it->second,
-                &writingPos)) {
+        const BigramEntry updatedBigramEntry =
+                originalBigramEntry.updateTargetTerminalIdAndGetEntry(it->second);
+        if (!writeBigramEntryAndAdvancePosition(&updatedBigramEntry, &writingPos)) {
             AKLOGE("Cannot write bigram entry to run GC. pos: %d", writingPos);
             return false;
         }
@@ -142,10 +187,9 @@ bool BigramDictContent::runGCBigramList(const int bigramListPos,
     }
     if (lastEntryPos != NOT_A_DICT_POS) {
         // Update has next flag in the last written entry.
-        int probability = NOT_A_PROBABILITY;
-        int targetTerminalId = Ver4DictConstants::NOT_A_TERMINAL_ID;
-        getBigramEntry(&probability, 0 /* outHasNext */, &targetTerminalId, lastEntryPos);
-        if (!writeBigramEntry(probability, false /* hasNext */, targetTerminalId, writingPos)) {
+        const BigramEntry bigramEntry = getBigramEntry(lastEntryPos).updateHasNextAndGetEntry(
+                false /* hasNext */);
+        if (!writeBigramEntry(&bigramEntry, writingPos)) {
             AKLOGE("Cannot write bigram entry to set hasNext flag after GC. pos: %d", writingPos);
             return false;
         }
