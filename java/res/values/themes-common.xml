@@ -37,7 +37,7 @@
         <item name="keyLargeLabelRatio">@fraction/config_key_large_label_ratio</item>
         <item name="keyHintLetterRatio">@fraction/config_key_hint_letter_ratio</item>
         <item name="keyHintLabelRatio">@fraction/config_key_hint_label_ratio</item>
-        <item name="keyShiftedLetterHintRatio">@fraction/config_key_uppercase_letter_ratio</item>
+        <item name="keyShiftedLetterHintRatio">@fraction/config_key_shifted_letter_hint_ratio</item>
         <item name="keyTypeface">normal</item>
         <item name="keyLabelHorizontalPadding">@dimen/config_key_label_horizontal_padding</item>
         <item name="keyHintLetterPadding">@dimen/config_key_hint_letter_padding</item>
