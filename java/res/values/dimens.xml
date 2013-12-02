@@ -18,6 +18,7 @@
 */
 -->
 
+<!-- Configurable dimensions for Small Phone Portrait. -->
 <resources>
     <!-- Preferable keyboard height in absolute scale: 1.285in -->
     <!-- This keyboardHeight value should match with keyboard-heights.xml -->

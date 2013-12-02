@@ -18,6 +18,7 @@
 */
 -->
 
+<!-- Configuration values for Small Tablet Portrait. -->
 <resources>
     <bool name="config_enable_show_voice_key_option">false</bool>
 </resources>

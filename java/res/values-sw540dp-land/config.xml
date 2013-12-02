@@ -18,6 +18,7 @@
 */
 -->
 
+<!-- Configuration values for Large Phone and Small Tablet Landscape. -->
 <resources>
     <bool name="config_use_fullscreen_mode">false</bool>
 </resources>

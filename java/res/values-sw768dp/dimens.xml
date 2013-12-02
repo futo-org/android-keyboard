@@ -18,6 +18,7 @@
 */
 -->
 
+<!-- Configurable dimensions for Large Tablet Portrait. -->
 <resources>
     <!-- Preferable keyboard height in absolute scale: 48.0mm -->
     <!-- This keyboardHeight value should match with keyboard-heights.xml -->

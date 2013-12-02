@@ -18,6 +18,7 @@
 */
 -->
 
+<!-- Configuration values for Large Phone and Small Tablet Portrait. -->
 <resources>
     <bool name="config_enable_show_option_of_key_preview_popup">false</bool>
     <!-- Whether or not Popup on key press is enabled by default -->
