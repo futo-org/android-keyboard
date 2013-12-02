@@ -18,6 +18,7 @@
 */
 -->
 
+<!-- Configuration values for Large Tablet Portrait. -->
 <resources>
     <bool name="config_enable_show_voice_key_option">false</bool>
     <bool name="config_enable_show_option_of_key_preview_popup">false</bool>
