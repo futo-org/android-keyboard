@@ -379,6 +379,15 @@ public final class FormatSpec {
             mHeaderSize = headerSize;
             mDictionaryOptions = dictionaryOptions;
             mFormatOptions = formatOptions;
+            if (null == getLocaleString()) {
+                throw new RuntimeException("Cannot create a FileHeader without a locale");
+            }
+            if (null == getVersion()) {
+                throw new RuntimeException("Cannot create a FileHeader without a version");
+            }
+            if (null == getId()) {
+                throw new RuntimeException("Cannot create a FileHeader without an ID");
+            }
         }
 
         // Helper method to get the locale as a String

@@ -233,7 +233,7 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
 
         // set an initial dictionary.
         final FusionDictionary dict = new FusionDictionary(new PtNodeArray(),
-                BinaryDictUtils.getDictionaryOptions(testName, version));
+                BinaryDictUtils.makeDictionaryOptions(testName, version));
         dict.add("abcd", 10, null, false);
 
         try {
@@ -301,7 +301,7 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
 
         // set an initial dictionary.
         final FusionDictionary dict = new FusionDictionary(new PtNodeArray(),
-                BinaryDictUtils.getDictionaryOptions(testName, version));
+                BinaryDictUtils.makeDictionaryOptions(testName, version));
         dict.add("abcd", 10, null, false);
         dict.add("efgh", 15, null, false);
 
@@ -341,7 +341,7 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
 
         // set an initial dictionary.
         final FusionDictionary dict = new FusionDictionary(new PtNodeArray(),
-                BinaryDictUtils.getDictionaryOptions(testName, version));
+                BinaryDictUtils.makeDictionaryOptions(testName, version));
         dict.add("initial", 10, null, false);
 
         try {

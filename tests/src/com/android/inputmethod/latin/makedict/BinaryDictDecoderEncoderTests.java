@@ -265,7 +265,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
                 getContext().getCacheDir());
 
         final FusionDictionary dict = new FusionDictionary(new PtNodeArray(),
-                BinaryDictUtils.getDictionaryOptions(dictName, dictVersion));
+                BinaryDictUtils.makeDictionaryOptions(dictName, dictVersion));
         addUnigrams(words.size(), dict, words, shortcuts);
         addBigrams(dict, words, bigrams);
         checkDictionary(dict, words, bigrams, shortcuts);
@@ -444,7 +444,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
 
         // making the dictionary from lists of words.
         final FusionDictionary dict = new FusionDictionary(new PtNodeArray(),
-                BinaryDictUtils.getDictionaryOptions(dictName, dictVersion));
+                BinaryDictUtils.makeDictionaryOptions(dictName, dictVersion));
         addUnigrams(words.size(), dict, words, null /* shortcutMap */);
         addBigrams(dict, words, bigrams);
 
@@ -555,7 +555,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
                 getContext().getCacheDir());
 
         final FusionDictionary dict = new FusionDictionary(new PtNodeArray(),
-                BinaryDictUtils.getDictionaryOptions(dictName, dictVersion));
+                BinaryDictUtils.makeDictionaryOptions(dictName, dictVersion));
         addUnigrams(sWords.size(), dict, sWords, null /* shortcutMap */);
         addBigrams(dict, words, bigrams);
         timeWritingDictToFile(file, dict, formatOptions);
@@ -649,8 +649,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
                 getContext().getCacheDir());
 
         final FusionDictionary dict = new FusionDictionary(new PtNodeArray(),
-                new FusionDictionary.DictionaryOptions(
-                        new HashMap<String, String>(), false, false));
+                BinaryDictUtils.makeDictionaryOptions(dictName, dictVersion));
         addUnigrams(sWords.size(), dict, sWords, null /* shortcutMap */);
         timeWritingDictToFile(file, dict, formatOptions);
 
