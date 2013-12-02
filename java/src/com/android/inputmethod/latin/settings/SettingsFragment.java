@@ -169,7 +169,7 @@ public final class SettingsFragment extends InputMethodSettingsFragment
             removePreference(Settings.PREF_VIBRATION_DURATION_SETTINGS, advancedSettings);
         }
 
-        if (!Settings.readFromBuildConfigIfToShowKeyPreviewPopupSettingsOption(res)) {
+        if (!Settings.readFromBuildConfigIfToShowKeyPreviewPopupOption(res)) {
             removePreference(Settings.PREF_POPUP_ON, generalSettings);
             removePreference(Settings.PREF_KEY_PREVIEW_POPUP_DISMISS_DELAY, advancedSettings);
         } else {

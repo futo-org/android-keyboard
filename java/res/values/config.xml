@@ -22,83 +22,16 @@
 <resources>
     <bool name="config_use_fullscreen_mode">false</bool>
     <bool name="config_enable_show_voice_key_option">true</bool>
-    <bool name="config_enable_show_option_of_key_preview_popup">true</bool>
+    <bool name="config_enable_show_key_preview_popup_option">true</bool>
     <!-- Whether or not Popup on key press is enabled by default -->
     <bool name="config_default_key_preview_popup">true</bool>
-    <!-- Default value for next word prediction: after entering a word and a space only, should we look
-         at input history to suggest a hopefully helpful suggestions for the next word? -->
-    <bool name="config_default_next_word_prediction">true</bool>
     <bool name="config_default_sound_enabled">false</bool>
-    <bool name="config_default_vibration_enabled">true</bool>
-    <integer name="config_max_vibration_duration">100</integer> <!-- milliseconds -->
-    <integer name="config_delay_update_suggestions">100</integer>
-    <integer name="config_delay_update_old_suggestions">300</integer>
-    <integer name="config_delay_update_shift_state">100</integer>
-    <integer name="config_language_on_spacebar_final_alpha">128</integer>
-    <integer name="config_more_keys_keyboard_fadein_anim_time">0</integer>
-    <integer name="config_more_keys_keyboard_fadeout_anim_time">100</integer>
-    <integer name="config_keyboard_grid_width">32</integer>
-    <integer name="config_keyboard_grid_height">16</integer>
-    <integer name="config_double_space_period_timeout">1100</integer>
-    <!-- This configuration is an index of  {@link KeyboardSwitcher#KEYBOARD_THEMES[]}. -->
-    <string name="config_default_keyboard_theme_index" translatable="false">2</string>
-    <integer name="config_max_more_keys_column">5</integer>
 
-    <!--
-         Configuration for MainKeyboardView
-    -->
     <dimen name="config_key_hysteresis_distance">8.0dp</dimen>
-    <dimen name="config_key_hysteresis_distance_for_sliding_modifier">8.0dp</dimen>
-    <integer name="config_touch_noise_threshold_time">40</integer>
-    <dimen name="config_touch_noise_threshold_distance">12.6dp</dimen>
-    <integer name="config_key_preview_zoom_in_duration">35</integer>
-    <integer name="config_key_preview_zoom_out_duration">40</integer>
-    <integer name="config_key_preview_linger_timeout">70</integer>
     <bool name="config_key_selection_by_dragging_finger">true</bool>
-    <!-- Sliding key input preview parameters -->
-    <dimen name="config_sliding_key_input_preview_width">8.0dp</dimen>
-    <!-- Percentages of sliding key input preview body and shadow, in proportion to the width.
-         A negative value of the shadow ratio disables drawing shadow. -->
-    <!-- TODO: May use the shadow to alleviate rugged trail drawing. -->
-    <integer name="config_sliding_key_input_preview_body_ratio">100</integer>
-    <integer name="config_sliding_key_input_preview_shadow_ratio">-1</integer>
-    <integer name="config_key_repeat_start_timeout">400</integer>
-    <integer name="config_key_repeat_interval">50</integer>
-    <integer name="config_default_longpress_key_timeout">300</integer>  <!-- milliseconds -->
-    <integer name="config_longpress_timeout_step">10</integer> <!-- milliseconds -->
-    <integer name="config_min_longpress_timeout">100</integer> <!-- milliseconds -->
-    <integer name="config_max_longpress_timeout">700</integer> <!-- milliseconds -->
-    <!-- Long pressing shift will invoke caps-lock if > 0, never invoke caps-lock if == 0 -->
-    <integer name="config_longpress_shift_lock_timeout">1200</integer> <!-- milliseconds -->
-    <integer name="config_ignore_alt_code_key_timeout">350</integer> <!-- milliseconds -->
     <!-- Showing more keys keyboard, just above the touched point if true, aligned to the key if
          false -->
     <bool name="config_show_more_keys_keyboard_at_touched_point">false</bool>
-    <bool name="config_block_potentially_offensive">true</bool>
-    <integer name="config_gesture_floating_preview_text_linger_timeout">200</integer>
-    <integer name="config_gesture_trail_fadeout_start_delay">100</integer>
-    <integer name="config_gesture_trail_fadeout_duration">800</integer>
-    <integer name="config_gesture_trail_update_interval">20</integer>
-    <!-- Static threshold for gesture after fast typing (msec) -->
-    <integer name="config_gesture_static_time_threshold_after_fast_typing">500</integer>
-    <!-- Static threshold for starting gesture detection (keyWidth%/sec) -->
-    <fraction name="config_gesture_detect_fast_move_speed_threshold">150%</fraction>
-    <!-- Dynamic threshold for gesture after fast typing (msec) -->
-    <integer name="config_gesture_dynamic_threshold_decay_duration">450</integer>
-    <!-- Time based threshold values for gesture detection (msec) -->
-    <integer name="config_gesture_dynamic_time_threshold_from">300</integer>
-    <integer name="config_gesture_dynamic_time_threshold_to">20</integer>
-    <!-- Distance based threshold values for gesture detection (keyWidth%/sec) -->
-    <fraction name="config_gesture_dynamic_distance_threshold_from">600%</fraction>
-    <fraction name="config_gesture_dynamic_distance_threshold_to">50%</fraction>
-    <!-- Parameter for gesture sampling (keyWidth%/sec) -->
-    <fraction name="config_gesture_sampling_minimum_distance">16.6666%</fraction>
-    <!-- Parameters for gesture recognition (msec) and (keyWidth%/sec) -->
-    <integer name="config_gesture_recognition_minimum_time">100</integer>
-    <integer name="config_gesture_recognition_update_time">100</integer>
-    <fraction name="config_gesture_recognition_speed_threshold">550%</fraction>
-    <!-- Suppress showing key preview duration after batch input in millisecond -->
-    <integer name="config_suppress_key_preview_after_batch_input_duration">1000</integer>
 
     <!-- Preferable keyboard height in absolute scale: 1.285in -->
     <!-- This config_default_keyboard_height value should match with keyboard-heights.xml -->
@@ -109,9 +42,6 @@
     <dimen name="config_more_keys_keyboard_key_height">52.8dp</dimen>
 
     <dimen name="config_more_keys_keyboard_key_horizontal_padding">8dp</dimen>
-
-    <fraction name="config_keyboard_left_padding">0%p</fraction>
-    <fraction name="config_keyboard_right_padding">0%p</fraction>
 
     <fraction name="config_keyboard_top_padding_gb">1.556%p</fraction>
     <fraction name="config_keyboard_bottom_padding_gb">4.669%p</fraction>
@@ -128,7 +58,6 @@
     <dimen name="config_more_keys_keyboard_slide_allowance">63.36dp</dimen>
     <!-- config_more_keys_keyboard_key_height x -1.0 -->
     <dimen name="config_more_keys_keyboard_vertical_correction_gb">-52.8dp</dimen>
-    <dimen name="config_keyboard_vertical_correction">0.0dp</dimen>
 
     <fraction name="config_key_letter_ratio">55%</fraction>
     <fraction name="config_key_large_letter_ratio">65%</fraction>
@@ -144,7 +73,6 @@
 
     <dimen name="config_key_label_horizontal_padding">4dp</dimen>
     <dimen name="config_key_hint_letter_padding">1dp</dimen>
-    <dimen name="config_key_popup_hint_letter_padding">2dp</dimen>
     <dimen name="config_key_shifted_letter_hint_padding">2dp</dimen>
 
     <!-- For 5-row keyboard -->
@@ -157,37 +85,15 @@
     <dimen name="config_more_keys_keyboard_vertical_correction_holo">-26.4dp</dimen>
 
     <dimen name="config_suggestions_strip_height">40dp</dimen>
-    <dimen name="config_more_suggestions_key_horizontal_padding">12dp</dimen>
     <dimen name="config_more_suggestions_row_height">40dp</dimen>
-    <dimen name="config_more_suggestions_bottom_gap">6dp</dimen>
-    <dimen name="config_more_suggestions_modal_tolerance">32.0dp</dimen>
     <integer name="config_max_more_suggestions_row">6</integer>
     <fraction name="config_min_more_suggestions_width">90%</fraction>
-    <fraction name="config_more_suggestions_info_ratio">18%</fraction>
     <dimen name="config_suggestions_strip_horizontal_padding">0dp</dimen>
     <dimen name="config_suggestion_min_width">44dp</dimen>
     <dimen name="config_suggestion_text_horizontal_padding">6dp</dimen>
     <dimen name="config_suggestion_text_size">18dp</dimen>
     <dimen name="config_more_suggestions_hint_text_size">27dp</dimen>
-    <integer name="config_suggestions_count_in_strip">3</integer>
-    <fraction name="config_center_suggestion_percentile">36%</fraction>
 
-    <!-- Gesture trail parameters -->
-    <!-- Minimum distance between gesture trail sampling points. -->
-    <dimen name="config_gesture_trail_min_sampling_distance">9.6dp</dimen>
-    <!-- Maximum angular threshold between gesture trails interpolation segments in degree. -->
-    <integer name="config_gesture_trail_max_interpolation_angular_threshold">15</integer>
-    <!-- Maximum distance threshold between gesture trails interpolation segments. -->
-    <dimen name="config_gesture_trail_max_interpolation_distance_threshold">16.0dp</dimen>
-    <!-- Maximum number of gesture trail interpolation segments. -->
-    <integer name="config_gesture_trail_max_interpolation_segments">6</integer>
-    <dimen name="config_gesture_trail_start_width">10.0dp</dimen>
-    <dimen name="config_gesture_trail_end_width">2.5dp</dimen>
-    <!-- Percentages of gesture preview taril body and shadow, in proportion to the trail width.
-         A negative value of the shadow ratio disables drawing shadow. -->
-    <!-- TODO: May use the shadow to alleviate rugged trail drawing. -->
-    <integer name="config_gesture_trail_body_ratio">100</integer>
-    <integer name="config_gesture_trail_shadow_ratio">-1</integer>
     <!-- Gesture floating preview text parameters -->
     <dimen name="config_gesture_floating_preview_text_size">24dp</dimen>
     <dimen name="config_gesture_floating_preview_text_offset">73dp</dimen>
@@ -200,12 +106,4 @@
     <fraction name="config_emoji_keyboard_row_height">33%p</fraction>
     <fraction name="config_emoji_keyboard_key_letter_size">68%p</fraction>
     <integer name="config_emoji_keyboard_max_page_key_count">21</integer>
-    <dimen name="config_emoji_category_page_id_height">3dp</dimen>
-
-    <!-- Inset used in Accessibility mode to avoid accidental key presses when a finger slides off the screen. -->
-    <dimen name="config_accessibility_edge_slop">8dp</dimen>
-
-    <integer name="config_user_dictionary_max_word_length" translatable="false">48</integer>
-
-    <dimen name="config_language_on_spacebar_horizontal_margin">1dp</dimen>
 </resources>
