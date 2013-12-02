@@ -235,8 +235,11 @@ int Suggest::outputSuggestions(DicTraverseSession *traverseSession, int *frequen
             // Shortcut is not supported for multiple words suggestions.
             // TODO: Check shortcuts during traversal for multiple words suggestions.
             const bool sameAsTyped = TRAVERSAL->sameAsTyped(traverseSession, terminalDicNode);
+            const int shortcutBaseScore = SCORING->doesAutoCorrectValidWord() ?
+                     SCORING->calculateFinalScore(compoundDistance, traverseSession->getInputSize(),
+                             true /* forceCommit */) : finalScore;
             const int updatedOutputWordIndex = ShortcutUtils::outputShortcuts(&shortcutIt,
-                    outputWordIndex,  finalScore, outputCodePoints, frequencies, outputTypes,
+                    outputWordIndex, shortcutBaseScore, outputCodePoints, frequencies, outputTypes,
                     sameAsTyped);
             const int secondWordFirstInputIndex = terminalDicNode->getSecondWordFirstInputIndex(
                     traverseSession->getProximityInfoState(0));
