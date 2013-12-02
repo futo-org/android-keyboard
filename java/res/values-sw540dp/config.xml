@@ -23,9 +23,6 @@
     <!-- Whether or not Popup on key press is enabled by default -->
     <bool name="config_default_key_preview_popup">false</bool>
     <bool name="config_default_sound_enabled">true</bool>
-    <bool name="config_auto_correction_spacebar_led_enabled">false</bool>
-    <!-- The language is never displayed if == 0, always displayed if < 0 -->
-    <integer name="config_delay_before_fadeout_language_on_spacebar">1200</integer>
     <integer name="config_max_more_keys_column">5</integer>
     <!--
         Configuration for MainKeyboardView

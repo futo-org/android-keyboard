@@ -80,7 +80,6 @@
     <dimen name="more_suggestions_row_height">40dp</dimen>
     <dimen name="more_suggestions_bottom_gap">6dp</dimen>
     <dimen name="more_suggestions_modal_tolerance">32.0dp</dimen>
-    <dimen name="more_suggestions_slide_allowance">16.0dp</dimen>
     <integer name="max_more_suggestions_row">6</integer>
     <fraction name="min_more_suggestions_width">90%</fraction>
     <fraction name="more_suggestions_info_ratio">18%</fraction>
