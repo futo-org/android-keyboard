@@ -303,7 +303,7 @@ public class Ver4DictEncoder implements DictEncoder {
 
     @Override
     public void setPosition(int position) {
-        if (mTrieBuf == null || position < 0 || position >- mTrieBuf.length) return;
+        if (mTrieBuf == null || position < 0 || position > mTrieBuf.length) return;
         mTriePos = position;
     }
 
