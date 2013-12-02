@@ -23,8 +23,6 @@
 #include "suggest/policyimpl/dictionary/header/header_policy.h"
 #include "suggest/policyimpl/dictionary/shortcut/dynamic_shortcut_list_policy.h"
 #include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_node_reader.h"
-#include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_node_writer.h"
-#include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_updating_helper.h"
 #include "suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer.h"
 #include "suggest/policyimpl/dictionary/utils/format_utils.h"
 #include "suggest/policyimpl/dictionary/utils/mmapped_buffer.h"
@@ -47,12 +45,7 @@ class DynamicPatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
               mShortcutListPolicy(&mBufferWithExtendableBuffer),
               mBigramListPolicy(&mHeaderPolicy, &mBufferWithExtendableBuffer, &mShortcutListPolicy,
                       mHeaderPolicy.isDecayingDict()),
-              mNodeReader(&mBufferWithExtendableBuffer, &mBigramListPolicy, &mShortcutListPolicy),
-              mNodeWriter(&mBufferWithExtendableBuffer, &mNodeReader, &mBigramListPolicy,
-                      &mShortcutListPolicy, mHeaderPolicy.isDecayingDict()),
-              mUpdatingHelper(&mBufferWithExtendableBuffer, &mNodeReader, &mNodeWriter),
-              mUnigramCount(mHeaderPolicy.getUnigramCount()),
-              mBigramCount(mHeaderPolicy.getBigramCount()), mNeedsToDecayForTesting(false) {}
+              mNodeReader(&mBufferWithExtendableBuffer, &mBigramListPolicy, &mShortcutListPolicy) {}
 
     AK_FORCE_INLINE int getRootPosition() const {
         return 0;
@@ -89,33 +82,52 @@ class DynamicPatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     }
 
     bool addUnigramWord(const int *const word, const int length, const int probability,
-            const int timestamp);
+            const int timestamp) {
+        // This method should not be called for non-updatable dictionary.
+        AKLOGI("Warning: addUnigramWord() is called for non-updatable dictionary.");
+        return false;
+    }
 
     bool addBigramWords(const int *const word0, const int length0, const int *const word1,
-            const int length1, const int probability, const int timestamp);
+            const int length1, const int probability, const int timestamp) {
+        // This method should not be called for non-updatable dictionary.
+        AKLOGI("Warning: addBigramWords() is called for non-updatable dictionary.");
+        return false;
+    }
 
     bool removeBigramWords(const int *const word0, const int length0, const int *const word1,
-            const int length1);
+            const int length1) {
+        // This method should not be called for non-updatable dictionary.
+        AKLOGI("Warning: removeBigramWords() is called for non-updatable dictionary.");
+        return false;
+    }
 
-    void flush(const char *const filePath);
+    void flush(const char *const filePath) {
+        // This method should not be called for non-updatable dictionary.
+        AKLOGI("Warning: flush() is called for non-updatable dictionary.");
+    }
 
-    void flushWithGC(const char *const filePath);
+    void flushWithGC(const char *const filePath) {
+        // This method should not be called for non-updatable dictionary.
+        AKLOGI("Warning: flushWithGC() is called for non-updatable dictionary.");
+    }
 
-    bool needsToRunGC(const bool mindsBlockByGC) const;
+    bool needsToRunGC(const bool mindsBlockByGC) const {
+        // This method should not be called for non-updatable dictionary.
+        AKLOGI("Warning: needsToRunGC() is called for non-updatable dictionary.");
+        return false;
+    }
 
     void getProperty(const char *const query, const int queryLength, char *const outResult,
-            const int maxResultLength);
+            const int maxResultLength) {
+        // getProperty is not supported for this class.
+        if (maxResultLength > 0) {
+            outResult[0] = '\0';
+        }
+    }
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(DynamicPatriciaTriePolicy);
-
-    static const char *const UNIGRAM_COUNT_QUERY;
-    static const char *const BIGRAM_COUNT_QUERY;
-    static const char *const MAX_UNIGRAM_COUNT_QUERY;
-    static const char *const MAX_BIGRAM_COUNT_QUERY;
-    static const char *const SET_NEEDS_TO_DECAY_FOR_TESTING_QUERY;
-    static const int MAX_DICT_EXTENDED_REGION_SIZE;
-    static const int MIN_DICT_SIZE_TO_REFUSE_DYNAMIC_OPERATIONS;
 
     const MmappedBuffer::MmappedBufferPtr mMmappedBuffer;
     const HeaderPolicy mHeaderPolicy;
@@ -123,11 +135,6 @@ class DynamicPatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     DynamicShortcutListPolicy mShortcutListPolicy;
     DynamicBigramListPolicy mBigramListPolicy;
     DynamicPatriciaTrieNodeReader mNodeReader;
-    DynamicPatriciaTrieNodeWriter mNodeWriter;
-    DynamicPatriciaTrieUpdatingHelper mUpdatingHelper;
-    int mUnigramCount;
-    int mBigramCount;
-    int mNeedsToDecayForTesting;
 };
 } // namespace latinime
 #endif // LATINIME_DYNAMIC_PATRICIA_TRIE_POLICY_H

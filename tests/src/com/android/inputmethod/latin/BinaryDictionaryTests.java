@@ -52,9 +52,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
 
     private File createEmptyDictionaryAndGetFile(final String dictId,
             final int formatVersion) throws IOException {
-        if (formatVersion == 3) {
-            return createEmptyVer3DictionaryAndGetFile(dictId);
-        } else if (formatVersion == 4) {
+       if (formatVersion == 4) {
             return createEmptyVer4DictionaryAndGetFile(dictId);
         } else {
             throw new IOException("Dictionary format version " + formatVersion
@@ -79,24 +77,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         }
     }
 
-    private File createEmptyVer3DictionaryAndGetFile(final String dictId) throws IOException {
-        final File file = File.createTempFile(dictId, TEST_DICT_FILE_EXTENSION,
-                getContext().getCacheDir());
-        file.delete();
-        Map<String, String> attributeMap = new HashMap<String, String>();
-        attributeMap.put(FormatSpec.FileHeader.SUPPORTS_DYNAMIC_UPDATE_ATTRIBUTE,
-                FormatSpec.FileHeader.ATTRIBUTE_VALUE_TRUE);
-        if (BinaryDictionary.createEmptyDictFile(file.getAbsolutePath(), 3 /* dictVersion */,
-                attributeMap)) {
-            return file;
-        } else {
-            throw new IOException(
-                    "Empty dictionary " + file.getAbsolutePath() + " cannot be created.");
-        }
-    }
-
     public void testIsValidDictionary() {
-        testIsValidDictionary(3 /* formatVersion */);
         testIsValidDictionary(4 /* formatVersion */);
     }
 
@@ -125,7 +106,6 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     }
 
     public void testAddUnigramWord() {
-        testAddUnigramWord(3 /* formatVersion */);
         testAddUnigramWord(4 /* formatVersion */);
     }
 
@@ -168,7 +148,6 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     }
 
     public void testRandomlyAddUnigramWord() {
-        testRandomlyAddUnigramWord(3 /* formatVersion */);
         testRandomlyAddUnigramWord(4 /* formatVersion */);
     }
 
@@ -205,7 +184,6 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     }
 
     public void testAddBigramWords() {
-        testAddBigramWords(3 /* formatVersion */);
         testAddBigramWords(4 /* formatVersion */);
     }
 
@@ -274,7 +252,6 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     }
 
     public void testRandomlyAddBigramWords() {
-        testRandomlyAddBigramWords(3 /* formatVersion */);
         testRandomlyAddBigramWords(4 /* formatVersion */);
     }
 
@@ -336,7 +313,6 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     }
 
     public void testRemoveBigramWords() {
-        testRemoveBigramWords(3 /* formatVersion */);
         testRemoveBigramWords(4 /* formatVersion */);
     }
 
@@ -387,7 +363,6 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     }
 
     public void testFlushDictionary() {
-        testFlushDictionary(3 /* formatVersion */);
         testFlushDictionary(4 /* formatVersion */);
     }
 
@@ -440,7 +415,6 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     }
 
     public void testFlushWithGCDictionary() {
-        testFlushWithGCDictionary(3 /* formatVersion */);
         testFlushWithGCDictionary(4 /* formatVersion */);
     }
 
@@ -489,7 +463,6 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     }
 
     public void testAddBigramWordsAndFlashWithGC() {
-        testAddBigramWordsAndFlashWithGC(3 /* formatVersion */);
         testAddBigramWordsAndFlashWithGC(4 /* formatVersion */);
     }
 
@@ -559,7 +532,6 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     }
 
     public void testRandomOperationsAndFlashWithGC() {
-        testRandomOperationsAndFlashWithGC(3 /* formatVersion */);
         testRandomOperationsAndFlashWithGC(4 /* formatVersion */);
     }
 
@@ -671,7 +643,6 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     }
 
     public void testAddManyUnigramsAndFlushWithGC() {
-        testAddManyUnigramsAndFlushWithGC(3 /* formatVersion */);
         testAddManyUnigramsAndFlushWithGC(4 /* formatVersion */);
     }
 
@@ -720,7 +691,6 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     }
 
     public void testUnigramAndBigramCount() {
-        testUnigramAndBigramCount(3 /* formatVersion */);
         testUnigramAndBigramCount(4 /* formatVersion */);
     }
 
@@ -780,7 +750,6 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     }
 
     public void testAddMultipleDictionaryEntries() {
-        testAddMultipleDictionaryEntries(3 /* formatVersion */);
         testAddMultipleDictionaryEntries(4 /* formatVersion */);
     }
 

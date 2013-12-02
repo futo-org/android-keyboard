@@ -22,7 +22,6 @@
 #include "defines.h"
 #include "suggest/core/policy/dictionary_bigrams_structure_policy.h"
 #include "suggest/policyimpl/dictionary/bigram/bigram_list_read_write_utils.h"
-#include "suggest/policyimpl/dictionary/structure/pt_common/pt_node_writer.h"
 #include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_gc_event_listeners.h"
 
 namespace latinime {
@@ -50,28 +49,6 @@ class DynamicBigramListPolicy : public DictionaryBigramsStructurePolicy {
 
     void skipAllBigrams(int *const bigramListPos) const;
 
-    // Copy bigrams from the bigram list that starts at fromPos in mBuffer to toPos in
-    // bufferToWrite and advance these positions after bigram lists. This method skips invalid
-    // bigram entries and write the valid bigram entry count to outBigramsCount.
-    bool copyAllBigrams(BufferWithExtendableBuffer *const bufferToWrite, int *const fromPos,
-            int *const toPos, int *const outBigramsCount) const;
-
-    bool updateAllBigramEntriesAndDeleteUselessEntries(int *const bigramListPos,
-            int *const outBigramEntryCount);
-
-    bool updateAllBigramTargetPtNodePositions(int *const bigramListPos,
-            const PtNodeWriter::PtNodePositionRelocationMap *const
-                    ptNodePositionRelocationMap, int *const outValidBigramEntryCount);
-
-    bool addNewBigramEntryToBigramList(const int bigramTargetPos, const int probability,
-            int *const bigramListPos, bool *const outAddedNewBigram);
-
-    bool writeNewBigramEntry(const int bigramTargetPos, const int probability,
-            int *const writingPos);
-
-    // Return whether or not targetBigramPos is found.
-    bool removeBigram(const int bigramListPos, const int bigramTargetPos);
-
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(DynamicBigramListPolicy);
 
@@ -85,9 +62,6 @@ class DynamicBigramListPolicy : public DictionaryBigramsStructurePolicy {
 
     // Follow bigram link and return the position of bigram target PtNode that is currently valid.
     int followBigramLinkAndGetCurrentBigramPtNodePos(const int originalBigramPos) const;
-
-    bool updateProbabilityForDecay(const BigramListReadWriteUtils::BigramFlags bigramFlags,
-            const int targetPtNodePos, int *const bigramEntryPos, bool *const outRemoved) const;
 };
 } // namespace latinime
 #endif // LATINIME_DYNAMIC_BIGRAM_LIST_POLICY_H

@@ -43,9 +43,6 @@ class DictFileWritingUtils {
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(DictFileWritingUtils);
 
-    static bool createEmptyV3DictFile(const char *const filePath,
-            const HeaderReadWriteUtils::AttributeMap *const attributeMap);
-
     static bool createEmptyV4DictFile(const char *const filePath,
             const HeaderReadWriteUtils::AttributeMap *const attributeMap);
 
