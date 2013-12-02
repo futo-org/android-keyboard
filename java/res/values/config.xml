@@ -118,12 +118,4 @@
     <!-- Threshold of the normalized score of the best suggestion for the spell checker to declare
          a word to be "recommended" -->
     <string name="spellchecker_recommended_threshold_value" translatable="false">0.11</string>
-    <!--  Screen metrics for logging.
-            0 = "mdpi phone screen"
-            1 = "hdpi phone screen"
-            2 = "mdpi 11 inch tablet screen"
-            3 = "xhdpi phone screen?"
-            4 = ?
-    -->
-    <integer name="log_screen_metrics">0</integer>
 </resources>
