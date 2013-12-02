@@ -119,7 +119,8 @@ final class SuggestionStripLayoutHelper {
         mDividerWidth = dividerView.getMeasuredWidth();
 
         final Resources res = wordView.getResources();
-        mSuggestionsStripHeight = res.getDimensionPixelSize(R.dimen.suggestions_strip_height);
+        mSuggestionsStripHeight = res.getDimensionPixelSize(
+                R.dimen.config_suggestions_strip_height);
 
         final TypedArray a = context.obtainStyledAttributes(attrs,
                 R.styleable.SuggestionStripView, defStyle, R.style.SuggestionStripView);
@@ -145,15 +146,17 @@ final class SuggestionStripLayoutHelper {
         a.recycle();
 
         mMoreSuggestionsHint = getMoreSuggestionsHint(res,
-                res.getDimension(R.dimen.more_suggestions_hint_text_size), mColorAutoCorrect);
+                res.getDimension(R.dimen.config_more_suggestions_hint_text_size),
+                mColorAutoCorrect);
         mCenterPositionInStrip = mSuggestionsCountInStrip / 2;
         // Assuming there are at least three suggestions. Also, note that the suggestions are
         // laid out according to script direction, so this is left of the center for LTR scripts
         // and right of the center for RTL scripts.
         mTypedWordPositionWhenAutocorrect = mCenterPositionInStrip - 1;
         mMoreSuggestionsBottomGap = res.getDimensionPixelOffset(
-                R.dimen.more_suggestions_bottom_gap);
-        mMoreSuggestionsRowHeight = res.getDimensionPixelSize(R.dimen.more_suggestions_row_height);
+                R.dimen.config_more_suggestions_bottom_gap);
+        mMoreSuggestionsRowHeight = res.getDimensionPixelSize(
+                R.dimen.config_more_suggestions_row_height);
 
         final LayoutInflater inflater = LayoutInflater.from(context);
         mWordToSaveView = (TextView)inflater.inflate(R.layout.suggestion_word, null);

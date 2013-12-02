@@ -29,7 +29,7 @@
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/suggestions_strip_height"
+        android:layout_height="@dimen/config_suggestions_strip_height"
     >
         <TabHost
             android:id="@+id/emoji_category_tabhost"

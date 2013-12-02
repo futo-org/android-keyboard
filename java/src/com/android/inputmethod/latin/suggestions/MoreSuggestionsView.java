@@ -54,7 +54,7 @@ public final class MoreSuggestionsView extends MoreKeysKeyboardView {
 
     public void adjustVerticalCorrectionForModalMode() {
         // Set vertical correction to zero (Reset more keys keyboard sliding allowance
-        // {@link R#dimen.more_keys_keyboard_slide_allowance}).
+        // {@link R#dimen.config_more_keys_keyboard_slide_allowance}).
         mKeyDetector.setKeyboard(getKeyboard(), -getPaddingLeft(), -getPaddingTop());
     }
 

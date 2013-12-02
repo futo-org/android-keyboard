@@ -23,7 +23,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:textSize="@dimen/suggestion_text_size"
+    android:textSize="@dimen/config_suggestion_text_size"
     android:gravity="center"
     android:paddingLeft="0dp"
     android:paddingTop="0dp"
