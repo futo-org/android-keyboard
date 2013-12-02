@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.latin.makedict;
 
+import com.android.inputmethod.latin.makedict.FormatSpec.FileHeader;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary.DictionaryOptions;
 
@@ -41,11 +42,12 @@ public class BinaryDictUtils {
             new FormatSpec.FormatOptions(4, true /* supportsDynamicUpdate */,
                     true /* hasTimestamp */);
 
-    public static DictionaryOptions getDictionaryOptions(final String id, final String version) {
+    public static DictionaryOptions makeDictionaryOptions(final String id, final String version) {
         final DictionaryOptions options = new DictionaryOptions(new HashMap<String, String>(),
                 false /* germanUmlautProcessing */, false /* frenchLigatureProcessing */);
-        options.mAttributes.put("dictionary", id);
-        options.mAttributes.put("version", version);
+        options.mAttributes.put(FileHeader.DICTIONARY_LOCALE_ATTRIBUTE, "en_US");
+        options.mAttributes.put(FileHeader.DICTIONARY_ID_ATTRIBUTE, id);
+        options.mAttributes.put(FileHeader.DICTIONARY_VERSION_ATTRIBUTE, version);
         return options;
     }
 

@@ -140,8 +140,10 @@ public class Ver4DictUpdater extends Ver4DictDecoder implements DictUpdater {
 
     @Override
     public void deleteWord(final String word) throws IOException, UnsupportedFormatException {
-        if (mDictBuffer == null) openDictBuffer();
-        readHeader();
+        if (mDictBuffer == null) {
+            openDictBuffer();
+            readHeader();
+        }
         final int wordPos = getTerminalPosition(word);
         if (wordPos != FormatSpec.NOT_VALID_WORD) {
             mDictBuffer.position(wordPos);
