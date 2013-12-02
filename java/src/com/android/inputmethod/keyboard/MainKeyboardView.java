@@ -24,7 +24,6 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -49,8 +48,6 @@ import android.widget.TextView;
 import com.android.inputmethod.accessibility.AccessibilityUtils;
 import com.android.inputmethod.accessibility.AccessibleKeyboardViewProxy;
 import com.android.inputmethod.annotations.ExternallyReferenced;
-import com.android.inputmethod.keyboard.PointerTracker.DrawingProxy;
-import com.android.inputmethod.keyboard.PointerTracker.TimerProxy;
 import com.android.inputmethod.keyboard.internal.DrawingHandler;
 import com.android.inputmethod.keyboard.internal.GestureFloatingPreviewText;
 import com.android.inputmethod.keyboard.internal.GestureTrailsPreview;
@@ -120,9 +117,8 @@ import java.util.WeakHashMap;
  * @attr ref R.styleable#MainKeyboardView_gestureRecognitionSpeedThreshold
  * @attr ref R.styleable#MainKeyboardView_suppressKeyPreviewAfterBatchInputDuration
  */
-public final class MainKeyboardView extends KeyboardView implements PointerTracker.KeyEventHandler,
-        PointerTracker.DrawingProxy, MoreKeysPanel.Controller, DrawingHandler.Callbacks,
-        TimerHandler.Callbacks {
+public final class MainKeyboardView extends KeyboardView implements PointerTracker.DrawingProxy,
+        MoreKeysPanel.Controller, DrawingHandler.Callbacks, TimerHandler.Callbacks {
     private static final String TAG = MainKeyboardView.class.getSimpleName();
 
     /** Listener for {@link KeyboardActionListener}. */
@@ -214,8 +210,27 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     public MainKeyboardView(final Context context, final AttributeSet attrs, final int defStyle) {
         super(context, attrs, defStyle);
 
-        final Resources res = getResources();
-        PointerTracker.init(res);
+        mPreviewPlacerView = new PreviewPlacerView(context, attrs);
+
+        final TypedArray mainKeyboardViewAttr = context.obtainStyledAttributes(
+                attrs, R.styleable.MainKeyboardView, defStyle, R.style.MainKeyboardView);
+        final int ignoreAltCodeKeyTimeout = mainKeyboardViewAttr.getInt(
+                R.styleable.MainKeyboardView_ignoreAltCodeKeyTimeout, 0);
+        final int gestureRecognitionUpdateTime = mainKeyboardViewAttr.getInt(
+                R.styleable.MainKeyboardView_gestureRecognitionUpdateTime, 0);
+        mKeyTimerHandler = new TimerHandler(
+                this, ignoreAltCodeKeyTimeout, gestureRecognitionUpdateTime);
+
+        final float keyHysteresisDistance = mainKeyboardViewAttr.getDimension(
+                R.styleable.MainKeyboardView_keyHysteresisDistance, 0.0f);
+        final float keyHysteresisDistanceForSlidingModifier = mainKeyboardViewAttr.getDimension(
+                R.styleable.MainKeyboardView_keyHysteresisDistanceForSlidingModifier, 0.0f);
+        mKeyDetector = new KeyDetector(
+                keyHysteresisDistance, keyHysteresisDistanceForSlidingModifier);
+
+        PointerTracker.init(mainKeyboardViewAttr, mKeyTimerHandler, this /* DrawingProxy */,
+                mKeyDetector);
+
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         final boolean forceNonDistinctMultitouch = prefs.getBoolean(
                 DebugSettings.PREF_FORCE_NON_DISTINCT_MULTITOUCH, false);
@@ -223,12 +238,8 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
                 .hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN_MULTITOUCH_DISTINCT)
                 && !forceNonDistinctMultitouch;
         mNonDistinctMultitouchHelper = hasDistinctMultitouch ? null
-                : new NonDistinctMultitouchHelper();
+                : new NonDistinctMultitouchHelper(PointerTracker.getPointerTracker(0));
 
-        mPreviewPlacerView = new PreviewPlacerView(context, attrs);
-
-        final TypedArray mainKeyboardViewAttr = context.obtainStyledAttributes(
-                attrs, R.styleable.MainKeyboardView, defStyle, R.style.MainKeyboardView);
         final int backgroundDimAlpha = mainKeyboardViewAttr.getInt(
                 R.styleable.MainKeyboardView_backgroundDimAlpha, 0);
         mBackgroundDimAlphaPaint.setColor(Color.BLACK);
@@ -253,18 +264,6 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         final int altCodeKeyWhileTypingFadeinAnimatorResId = mainKeyboardViewAttr.getResourceId(
                 R.styleable.MainKeyboardView_altCodeKeyWhileTypingFadeinAnimator, 0);
 
-        final float keyHysteresisDistance = mainKeyboardViewAttr.getDimension(
-                R.styleable.MainKeyboardView_keyHysteresisDistance, 0.0f);
-        final float keyHysteresisDistanceForSlidingModifier = mainKeyboardViewAttr.getDimension(
-                R.styleable.MainKeyboardView_keyHysteresisDistanceForSlidingModifier, 0.0f);
-        mKeyDetector = new KeyDetector(
-                keyHysteresisDistance, keyHysteresisDistanceForSlidingModifier);
-        final int ignoreAltCodeKeyTimeout = mainKeyboardViewAttr.getInt(
-                R.styleable.MainKeyboardView_ignoreAltCodeKeyTimeout, 0);
-        final int gestureRecognitionUpdateTime = mainKeyboardViewAttr.getInt(
-                R.styleable.MainKeyboardView_gestureRecognitionUpdateTime, 0);
-        mKeyTimerHandler = new TimerHandler(
-                this, ignoreAltCodeKeyTimeout, gestureRecognitionUpdateTime);
         mKeyPreviewOffset = mainKeyboardViewAttr.getDimensionPixelOffset(
                 R.styleable.MainKeyboardView_keyPreviewOffset, 0);
         mKeyPreviewHeight = mainKeyboardViewAttr.getDimensionPixelSize(
@@ -287,7 +286,6 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
 
         mGestureFloatingPreviewTextLingerTimeout = mainKeyboardViewAttr.getInt(
                 R.styleable.MainKeyboardView_gestureFloatingPreviewTextLingerTimeout, 0);
-        PointerTracker.setParameters(mainKeyboardViewAttr);
 
         mGestureFloatingPreviewText = new GestureFloatingPreviewText(
                 mPreviewPlacerView, mainKeyboardViewAttr);
@@ -313,7 +311,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
 
         mKeyboardActionListener = KeyboardActionListener.EMPTY_LISTENER;
 
-        mLanguageOnSpacebarHorizontalMargin = (int)res.getDimension(
+        mLanguageOnSpacebarHorizontalMargin = (int)getResources().getDimension(
                 R.dimen.config_language_on_spacebar_horizontal_margin);
     }
 
@@ -402,28 +400,16 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         PointerTracker.setKeyboardActionListener(listener);
     }
 
-    /**
-     * Returns the {@link KeyboardActionListener} object.
-     * @return the listener attached to this keyboard
-     */
-    @Override
-    public KeyboardActionListener getKeyboardActionListener() {
-        return mKeyboardActionListener;
+    // TODO: We should reconsider which coordinate system should be used to represent keyboard
+    // event.
+    public int getKeyX(final int x) {
+        return Constants.isValidCoordinate(x) ? mKeyDetector.getTouchX(x) : x;
     }
 
-    @Override
-    public KeyDetector getKeyDetector() {
-        return mKeyDetector;
-    }
-
-    @Override
-    public DrawingProxy getDrawingProxy() {
-        return this;
-    }
-
-    @Override
-    public TimerProxy getTimerProxy() {
-        return mKeyTimerHandler;
+    // TODO: We should reconsider which coordinate system should be used to represent keyboard
+    // event.
+    public int getKeyY(final int y) {
+        return Constants.isValidCoordinate(y) ? mKeyDetector.getTouchY(y) : y;
     }
 
     /**
@@ -441,6 +427,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         mKeyDetector.setKeyboard(
                 keyboard, -getPaddingLeft(), -getPaddingTop() + getVerticalCorrection());
         PointerTracker.setKeyDetector(mKeyDetector);
+        PointerTracker.setKeyboardActionListener(mKeyboardActionListener);
         mMoreKeysKeyboardCache.clear();
 
         mSpaceKey = keyboard.getKey(Constants.CODE_SPACE);
@@ -999,7 +986,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
                 mKeyTimerHandler.cancelKeyRepeatTimer();
             }
             // Non distinct multitouch screen support
-            mNonDistinctMultitouchHelper.processMotionEvent(me, this);
+            mNonDistinctMultitouchHelper.processMotionEvent(me, mKeyDetector);
             return true;
         }
         return processMotionEvent(me);
@@ -1016,8 +1003,8 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
 
         final int index = me.getActionIndex();
         final int id = me.getPointerId(index);
-        final PointerTracker tracker = PointerTracker.getPointerTracker(id, this);
-        tracker.processMotionEvent(me, this);
+        final PointerTracker tracker = PointerTracker.getPointerTracker(id);
+        tracker.processMotionEvent(me, mKeyDetector);
         return true;
     }
 
@@ -1046,7 +1033,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     @Override
     public boolean dispatchHoverEvent(final MotionEvent event) {
         if (AccessibilityUtils.getInstance().isTouchExplorationEnabled()) {
-            final PointerTracker tracker = PointerTracker.getPointerTracker(0, this);
+            final PointerTracker tracker = PointerTracker.getPointerTracker(0);
             return AccessibleKeyboardViewProxy.getInstance().dispatchHoverEvent(event, tracker);
         }
 
