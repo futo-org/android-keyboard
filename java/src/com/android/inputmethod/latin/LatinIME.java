@@ -614,7 +614,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final Locale switcherSubtypeLocale = mSubtypeSwitcher.getCurrentSubtypeLocale();
         final String switcherLocaleStr = switcherSubtypeLocale.toString();
         final Locale subtypeLocale;
-        final String localeStr;
         if (TextUtils.isEmpty(switcherLocaleStr)) {
             // This happens in very rare corner cases - for example, immediately after a switch
             // to LatinIME has been requested, about a frame later another switch happens. In this
@@ -624,10 +623,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             // of knowing anyway.
             Log.e(TAG, "System is reporting no current subtype.");
             subtypeLocale = getResources().getConfiguration().locale;
-            localeStr = subtypeLocale.toString();
         } else {
             subtypeLocale = switcherSubtypeLocale;
-            localeStr = switcherLocaleStr;
         }
 
         final Suggest newSuggest = new Suggest(this /* Context */, subtypeLocale,
@@ -642,19 +639,20 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             ResearchLogger.getInstance().initSuggest(newSuggest);
         }
 
-        mUserDictionary = new UserBinaryDictionary(this, localeStr);
+        mUserDictionary = new UserBinaryDictionary(this, subtypeLocale);
         mIsUserDictionaryAvailable = mUserDictionary.isEnabled();
         newSuggest.setUserDictionary(mUserDictionary);
 
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
-        mUserHistoryDictionary = PersonalizationHelper.getUserHistoryDictionary(this, localeStr);
+        mUserHistoryDictionary = PersonalizationHelper.getUserHistoryDictionary(
+                this, subtypeLocale);
         newSuggest.setUserHistoryDictionary(mUserHistoryDictionary);
         mPersonalizationDictionary =
-                PersonalizationHelper.getPersonalizationDictionary(this, localeStr);
+                PersonalizationHelper.getPersonalizationDictionary(this, subtypeLocale);
         newSuggest.setPersonalizationDictionary(mPersonalizationDictionary);
         mPersonalizationPredictionDictionary =
-                PersonalizationHelper.getPersonalizationPredictionDictionary(this, localeStr);
+                PersonalizationHelper.getPersonalizationPredictionDictionary(this, subtypeLocale);
         newSuggest.setPersonalizationPredictionDictionary(mPersonalizationPredictionDictionary);
 
         final Suggest oldSuggest = mSuggest;

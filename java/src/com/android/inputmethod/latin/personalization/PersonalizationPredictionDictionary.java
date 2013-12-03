@@ -19,14 +19,16 @@ package com.android.inputmethod.latin.personalization;
 import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.ExpandableBinaryDictionary;
 
+import java.util.Locale;
+
 import android.content.Context;
 
 public class PersonalizationPredictionDictionary extends DecayingExpandableBinaryDictionaryBase {
     private static final String NAME = PersonalizationPredictionDictionary.class.getSimpleName();
 
-    /* package */ PersonalizationPredictionDictionary(final Context context, final String locale) {
+    /* package */ PersonalizationPredictionDictionary(final Context context, final Locale locale) {
         super(context, locale, Dictionary.TYPE_PERSONALIZATION_PREDICTION_IN_JAVA,
-                getDictionaryFileName(locale));
+                getDictionaryFileName(locale.toString()));
     }
 
     private static String getDictionaryFileName(final String locale) {
