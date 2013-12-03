@@ -53,23 +53,6 @@ class PtNodeParams {
         memcpy(mCodePoints, ptNodeParams.getCodePoints(), sizeof(int) * mCodePointCount);
     }
 
-    // PtNode without terminal id.
-    PtNodeParams(const int headPos, const PatriciaTrieReadingUtils::NodeFlags flags,
-            const int parentPos, const int codePointCount, const int *const codePoints,
-            const int probabilityFieldPos, const int probability, const int childrenPosFieldPos,
-            const int childrenPos, const int bigramLinkedNodePos, const int shortcutPos,
-            const int bigramPos, const int siblingPos)
-            : mHeadPos(headPos), mFlags(flags), mParentPos(parentPos),
-              mCodePointCount(codePointCount), mCodePoints(),
-              mTerminalIdFieldPos(NOT_A_DICT_POS),
-              mTerminalId(Ver4DictConstants::NOT_A_TERMINAL_ID),
-              mProbabilityFieldPos(probabilityFieldPos), mProbability(probability),
-              mChildrenPosFieldPos(childrenPosFieldPos), mChildrenPos(childrenPos),
-              mBigramLinkedNodePos(bigramLinkedNodePos), mShortcutPos(shortcutPos),
-              mBigramPos(bigramPos), mSiblingPos(siblingPos) {
-        memcpy(mCodePoints, codePoints, sizeof(int) * mCodePointCount);
-    }
-
     // PtNode with a terminal id.
     PtNodeParams(const int headPos, const PatriciaTrieReadingUtils::NodeFlags flags,
             const int parentPos, const int codePointCount, const int *const codePoints,
