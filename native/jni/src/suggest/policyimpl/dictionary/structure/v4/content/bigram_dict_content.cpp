@@ -25,7 +25,7 @@ const BigramEntry BigramDictContent::getBigramEntryAndAdvancePosition(
     const BufferWithExtendableBuffer *const bigramListBuffer = getContentBuffer();
     const int bigramFlags = bigramListBuffer->readUintAndAdvancePosition(
             Ver4DictConstants::BIGRAM_FLAGS_FIELD_SIZE, bigramEntryPos);
-    const int hasNext = (bigramFlags & Ver4DictConstants::BIGRAM_HAS_NEXT_MASK) != 0;
+    const bool hasNext = (bigramFlags & Ver4DictConstants::BIGRAM_HAS_NEXT_MASK) != 0;
     int probability = NOT_A_PROBABILITY;
     int timestamp = Ver4DictConstants::NOT_A_TIME_STAMP;
     int level = 0;
