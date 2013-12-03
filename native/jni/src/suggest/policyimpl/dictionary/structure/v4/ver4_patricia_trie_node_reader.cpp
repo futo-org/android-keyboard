@@ -26,7 +26,7 @@
 namespace latinime {
 
 const PtNodeParams Ver4PatriciaTrieNodeReader::fetchPtNodeInfoFromBufferAndProcessMovedPtNode(
-        const int ptNodePos, const int siblingNodePos, const int bigramLinkedNodePos) const {
+        const int ptNodePos, const int siblingNodePos) const {
     if (ptNodePos < 0 || ptNodePos >= mBuffer->getTailPosition()) {
         // Reading invalid position because of bug or broken dictionary.
         AKLOGE("Fetching PtNode info from invalid dictionary position: %d, dictionary size: %d",
@@ -73,12 +73,6 @@ const PtNodeParams Ver4PatriciaTrieNodeReader::fetchPtNodeInfoFromBufferAndProce
     if (usesAdditionalBuffer && childrenPos != NOT_A_DICT_POS) {
         childrenPos += mBuffer->getOriginalBufferSize();
     }
-    int newBigramLinkedNodePos = bigramLinkedNodePos;
-    if (siblingNodePos == NOT_A_DICT_POS) {
-        if (DynamicPatriciaTrieReadingUtils::isMoved(flags)) {
-            newBigramLinkedNodePos = childrenPos;
-        }
-    }
     if (usesAdditionalBuffer) {
         pos += mBuffer->getOriginalBufferSize();
     }
@@ -87,12 +81,11 @@ const PtNodeParams Ver4PatriciaTrieNodeReader::fetchPtNodeInfoFromBufferAndProce
     // Read destination node if the read node is a moved node.
     if (DynamicPatriciaTrieReadingUtils::isMoved(flags)) {
         // The destination position is stored at the same place as the parent position.
-        return fetchPtNodeInfoFromBufferAndProcessMovedPtNode(parentPos, newSiblingNodePos,
-                newBigramLinkedNodePos);
+        return fetchPtNodeInfoFromBufferAndProcessMovedPtNode(parentPos, newSiblingNodePos);
     } else {
         return PtNodeParams(headPos, flags, parentPos, codePonitCount, codePoints,
                 terminalIdFieldPos, terminalId, probability, childrenPosFieldPos, childrenPos,
-                newBigramLinkedNodePos, newSiblingNodePos);
+                newSiblingNodePos);
     }
 }
 

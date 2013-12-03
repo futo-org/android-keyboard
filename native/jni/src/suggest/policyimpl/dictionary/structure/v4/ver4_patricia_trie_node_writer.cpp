@@ -86,12 +86,6 @@ bool Ver4PatriciaTrieNodeWriter::markPtNodeAsMoved(
             mTrieBuffer, movedPos, toBeUpdatedPtNodeParams->getHeadPos(), &writingPos)) {
         return false;
     }
-    // Update bigram linked node position, which is stored in the children position field.
-    int childrenPosFieldPos = toBeUpdatedPtNodeParams->getChildrenPosFieldPos();
-    if (!DynamicPatriciaTrieWritingUtils::writeChildrenPositionAndAdvancePosition(
-            mTrieBuffer, bigramLinkedNodePos, &childrenPosFieldPos)) {
-        return false;
-    }
     if (toBeUpdatedPtNodeParams->hasChildren()) {
         // Update children's parent position.
         mReadingHelper.initWithPtNodeArrayPos(toBeUpdatedPtNodeParams->getChildrenPos());
