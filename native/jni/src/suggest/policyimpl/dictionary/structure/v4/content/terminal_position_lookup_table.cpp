@@ -53,13 +53,12 @@ bool TerminalPositionLookupTable::setTerminalPtNodePosition(
 bool TerminalPositionLookupTable::flushToFile(const char *const dictDirPath,
         const int newHeaderRegionSize) const {
     const int headerRegionSizeDiff = newHeaderRegionSize - mHeaderRegionSize;
-    // If header region size has been changed, terminal PtNode positions have to be adjusted
-    // depending on the new header region size.
-    if (headerRegionSizeDiff != 0) {
-        TerminalPositionLookupTable lookupTableToWrite;
+    // If header region size has been changed or used buffer size is smaller than actual buffer
+    // size, regenerate lookup table and write the new table to file.
+    if (headerRegionSizeDiff != 0 || getEntryPos(mSize) < getBuffer()->getTailPosition()) {
+        TerminalPositionLookupTable lookupTableToWrite(newHeaderRegionSize);
         for (int i = 0; i < mSize; ++i) {
-            const int terminalPtNodePosition = getTerminalPtNodePosition(i)
-                    + headerRegionSizeDiff;
+            const int terminalPtNodePosition = getTerminalPtNodePosition(i);
             if (!lookupTableToWrite.setTerminalPtNodePosition(i, terminalPtNodePosition)) {
                 AKLOGE("Cannot set terminal position to lookupTableToWrite."
                         " terminalId: %d, position: %d", i, terminalPtNodePosition);

@@ -37,6 +37,9 @@ class TerminalPositionLookupTable : public SingleDictContent {
                       / Ver4DictConstants::TERMINAL_ADDRESS_TABLE_ADDRESS_SIZE),
               mHeaderRegionSize(headerRegionSize) {}
 
+    explicit TerminalPositionLookupTable(const int headerRegionSize)
+            : mSize(0), mHeaderRegionSize(headerRegionSize) {}
+
     TerminalPositionLookupTable() : mSize(0), mHeaderRegionSize(0) {}
 
     int getTerminalPtNodePosition(const int terminalId) const;
