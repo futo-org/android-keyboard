@@ -21,9 +21,9 @@ import com.android.inputmethod.latin.ExpandableBinaryDictionary;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 /**
  * This class is a dictionary for the personalized language model that uses binary dictionary.
@@ -33,14 +33,10 @@ public class PersonalizationDictionary extends ExpandableBinaryDictionary {
     private final ArrayList<PersonalizationDictionaryUpdateSession> mSessions =
             CollectionUtils.newArrayList();
 
-    /** Locale for which this user history dictionary is storing words */
-    private final String mLocale;
-
-    public PersonalizationDictionary(final Context context, final String locale) {
+    public PersonalizationDictionary(final Context context, final Locale locale) {
         // TODO: Make isUpdatable true.
-        super(context, getFilenameWithLocale(NAME, locale), Dictionary.TYPE_PERSONALIZATION,
-                false /* isUpdatable */);
-        mLocale = locale;
+        super(context, getFilenameWithLocale(NAME, locale), locale,
+                Dictionary.TYPE_PERSONALIZATION, false /* isUpdatable */);
         // TODO: Restore last updated time
         loadDictionary();
     }

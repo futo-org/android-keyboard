@@ -72,8 +72,8 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
     private final boolean mUseFirstLastBigrams;
 
     public ContactsBinaryDictionary(final Context context, final Locale locale) {
-        super(context, getFilenameWithLocale(NAME, locale.toString()), Dictionary.TYPE_CONTACTS,
-                false /* isUpdatable */);
+        super(context, getFilenameWithLocale(NAME, locale), locale,
+                Dictionary.TYPE_CONTACTS, false /* isUpdatable */);
         mLocale = locale;
         mUseFirstLastBigrams = useFirstLastBigramsForLocale(locale);
         registerObserver(context);

@@ -33,8 +33,10 @@ import com.android.inputmethod.latin.utils.StringUtils;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -98,6 +100,9 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
      * DictionaryTimeRecorder.
      */
     private final String mFilename;
+
+    /** Dictionary locale */
+    private final Locale mLocale;
 
     /** Whether to support dynamically updating the dictionary */
     private final boolean mIsUpdatable;
@@ -183,15 +188,17 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
      * @param context The application context of the parent.
      * @param filename The filename for this binary dictionary. Multiple dictionaries with the same
      *        filename is supported.
+     * @param locale the dictionary locale.
      * @param dictType the dictionary type, as a human-readable string
      * @param isUpdatable whether to support dynamically updating the dictionary. Please note that
      *        dynamic dictionary has negative effects on memory space and computation time.
      */
     public ExpandableBinaryDictionary(final Context context, final String filename,
-            final String dictType, final boolean isUpdatable) {
+            final Locale locale, final String dictType, final boolean isUpdatable) {
         super(dictType);
         mFilename = filename;
         mContext = context;
+        mLocale = locale;
         mIsUpdatable = isUpdatable;
         mBinaryDictionary = null;
         mFilenameDictionaryUpdateController = getDictionaryUpdateController(filename);
@@ -199,8 +206,8 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         mDictionaryWriter = getDictionaryWriter(context, dictType, isUpdatable);
     }
 
-    protected static String getFilenameWithLocale(final String name, final String localeStr) {
-        return name + "." + localeStr + DICT_FILE_EXTENSION;
+    protected static String getFilenameWithLocale(final String name, final Locale locale) {
+        return name + "." + locale.toString() + DICT_FILE_EXTENSION;
     }
 
     /**
@@ -237,9 +244,10 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
 
     protected Map<String, String> getHeaderAttributeMap() {
         HashMap<String, String> attributeMap = new HashMap<String, String>();
-        attributeMap.put(FormatSpec.FileHeader.SUPPORTS_DYNAMIC_UPDATE_ATTRIBUTE,
-                SUPPORTS_DYNAMIC_UPDATE);
         attributeMap.put(FormatSpec.FileHeader.DICTIONARY_ID_ATTRIBUTE, mFilename);
+        attributeMap.put(FormatSpec.FileHeader.DICTIONARY_LOCALE_ATTRIBUTE, mLocale.toString());
+        attributeMap.put(FormatSpec.FileHeader.DICTIONARY_VERSION_ATTRIBUTE,
+                String.valueOf(TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis())));
         return attributeMap;
     }
 
