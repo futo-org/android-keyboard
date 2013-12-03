@@ -376,7 +376,10 @@ public final class BinaryDictionary extends Dictionary {
     private void reopen() {
         close();
         final File dictFile = new File(mDictFilePath);
-        mNativeDict = openNative(dictFile.getAbsolutePath(), 0 /* startOffset */,
+        // WARNING: Because we pass 0 as the offstet and file.length() as the length, this can
+        // only be called for actual files. Right now it's only called by the flush() family of
+        // functions, which require an updatable dictionary, so it's okay. But beware.
+        loadDictionary(dictFile.getAbsolutePath(), 0 /* startOffset */,
                 dictFile.length(), true /* isUpdatable */);
     }
 
