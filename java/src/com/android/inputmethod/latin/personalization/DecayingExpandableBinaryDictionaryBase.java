@@ -35,7 +35,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This class is a base class of a dictionary that supports decaying for the personalized language
@@ -55,7 +57,7 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
     public static final int REQUIRED_BINARY_DICTIONARY_VERSION = 4;
 
     /** Locale for which this user history dictionary is storing words */
-    private final String mLocale;
+    private final Locale mLocale;
 
     private final String mFileName;
 
@@ -66,11 +68,11 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
     @UsedForTesting boolean mIsTest = false;
 
     /* package */ DecayingExpandableBinaryDictionaryBase(final Context context,
-            final String locale, final String dictionaryType, final String fileName) {
-        super(context, fileName, dictionaryType, true);
+            final Locale locale, final String dictionaryType, final String fileName) {
+        super(context, fileName, locale, dictionaryType, true);
         mLocale = locale;
         mFileName = fileName;
-        if (mLocale != null && mLocale.length() > 1) {
+        if (mLocale != null && mLocale.toString().length() > 1) {
             reloadDictionaryIfRequired();
         }
     }
@@ -93,7 +95,9 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
         attributeMap.put(FormatSpec.FileHeader.USES_FORGETTING_CURVE_ATTRIBUTE,
                 FormatSpec.FileHeader.ATTRIBUTE_VALUE_TRUE);
         attributeMap.put(FormatSpec.FileHeader.DICTIONARY_ID_ATTRIBUTE, mFileName);
-        attributeMap.put(FormatSpec.FileHeader.DICTIONARY_LOCALE_ATTRIBUTE, mLocale);
+        attributeMap.put(FormatSpec.FileHeader.DICTIONARY_LOCALE_ATTRIBUTE, mLocale.toString());
+        attributeMap.put(FormatSpec.FileHeader.DICTIONARY_VERSION_ATTRIBUTE,
+                String.valueOf(TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis())));
         return attributeMap;
     }
 
@@ -162,10 +166,6 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
     @Override
     protected void loadDictionaryAsync() {
         // Never loaded to memory in Java side.
-    }
-
-    protected String getLocale() {
-        return mLocale;
     }
 
     public void registerUpdateSession(PersonalizationDictionaryUpdateSession session) {

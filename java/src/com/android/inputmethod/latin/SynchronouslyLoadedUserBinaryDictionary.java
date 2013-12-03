@@ -22,14 +22,15 @@ import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 public final class SynchronouslyLoadedUserBinaryDictionary extends UserBinaryDictionary {
 
-    public SynchronouslyLoadedUserBinaryDictionary(final Context context, final String locale) {
+    public SynchronouslyLoadedUserBinaryDictionary(final Context context, final Locale locale) {
         this(context, locale, false);
     }
 
-    public SynchronouslyLoadedUserBinaryDictionary(final Context context, final String locale,
+    public SynchronouslyLoadedUserBinaryDictionary(final Context context, final Locale locale,
             final boolean alsoUseMoreRestrictiveLocales) {
         super(context, locale, alsoUseMoreRestrictiveLocales);
     }

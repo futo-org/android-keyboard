@@ -26,6 +26,7 @@ import com.android.inputmethod.latin.utils.CollectionUtils;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -84,7 +85,7 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
         final List<String> words = generateWords(numberOfWords, random);
         final UserHistoryDictionary dict =
                 PersonalizationHelper.getUserHistoryDictionary(getContext(),
-                        testFilenameSuffix /* locale */);
+                        new Locale(testFilenameSuffix));
         // Add random words to the user history dictionary.
         addToDict(dict, words);
         if (checkContents) {
@@ -108,7 +109,7 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
     private void clearHistory(final String testFilenameSuffix) {
         final UserHistoryDictionary dict =
                 PersonalizationHelper.getUserHistoryDictionary(getContext(),
-                        testFilenameSuffix /* locale */);
+                        new Locale(testFilenameSuffix));
         dict.clearAndFlushDictionary();
         dict.close();
     }
@@ -121,7 +122,7 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
         try {
             final UserHistoryDictionary dict =
                     PersonalizationHelper.getUserHistoryDictionary(getContext(),
-                            testFilenameSuffix);
+                            new Locale(testFilenameSuffix));
             dict.shutdownExecutorForTests();
             while (!dict.isTerminatedForTests()) {
                 Thread.sleep(WAIT_TERMINATING_IN_MILLISECONDS);
@@ -134,7 +135,7 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
     public void testRandomWords() {
         Log.d(TAG, "This test can be used for profiling.");
         Log.d(TAG, "Usage: please set UserHistoryDictionary.PROFILE_SAVE_RESTORE to true.");
-        final String testFilenameSuffix = "testRandomWords" + System.currentTimeMillis();
+        final String testFilenameSuffix = "test_random_words" + System.currentTimeMillis();
         final String fileName = UserHistoryDictionary.NAME + "." + testFilenameSuffix
                 + ExpandableBinaryDictionary.DICT_FILE_EXTENSION;
 
@@ -169,7 +170,7 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
 
             // Create filename suffixes for this test.
             for (int i = 0; i < numberOfLanguages; i++) {
-                testFilenameSuffixes[i] = "testSwitchingLanguages" + i;
+                testFilenameSuffixes[i] = "test_switching_languages" + i;
                 final String fileName = UserHistoryDictionary.NAME + "." +
                         testFilenameSuffixes[i] + ExpandableBinaryDictionary.DICT_FILE_EXTENSION;
                 dictFiles[i] = new File(getContext().getFilesDir(), fileName);
@@ -205,7 +206,7 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
     }
 
     public void testAddManyWords() {
-        final String testFilenameSuffix = "testRandomWords" + System.currentTimeMillis();
+        final String testFilenameSuffix = "test_random_words" + System.currentTimeMillis();
         final int numberOfWords = 10000;
         final Random random = new Random(123456);
         clearHistory(testFilenameSuffix);
