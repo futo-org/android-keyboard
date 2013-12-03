@@ -74,7 +74,6 @@ LATIN_IME_CORE_SRC_FILES := \
         structure/dictionary_structure_with_buffer_policy_factory.cpp) \
     $(addprefix suggest/policyimpl/dictionary/bigram/, \
         bigram_list_read_write_utils.cpp \
-        dynamic_bigram_list_policy.cpp \
         ver4_bigram_list_policy.cpp) \
     $(addprefix suggest/policyimpl/dictionary/structure/v2/, \
         patricia_trie_policy.cpp \
