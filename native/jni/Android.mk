@@ -81,8 +81,6 @@ LATIN_IME_CORE_SRC_FILES := \
         patricia_trie_reading_utils.cpp) \
     $(addprefix suggest/policyimpl/dictionary/structure/v3/, \
         dynamic_patricia_trie_gc_event_listeners.cpp \
-        dynamic_patricia_trie_node_reader.cpp \
-        dynamic_patricia_trie_policy.cpp \
         dynamic_patricia_trie_reading_helper.cpp \
         dynamic_patricia_trie_reading_utils.cpp \
         dynamic_patricia_trie_updating_helper.cpp \

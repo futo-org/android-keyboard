@@ -20,7 +20,6 @@
 
 #include "defines.h"
 #include "suggest/policyimpl/dictionary/structure/v2/patricia_trie_policy.h"
-#include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_policy.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_dict_buffers.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_patricia_trie_policy.h"
 #include "suggest/policyimpl/dictionary/utils/file_utils.h"
@@ -45,9 +44,6 @@ namespace latinime {
         case FormatUtils::VERSION_2:
             return DictionaryStructureWithBufferPolicy::StructurePoilcyPtr(
                     new PatriciaTriePolicy(mmappedBuffer));
-        case FormatUtils::VERSION_3:
-            return DictionaryStructureWithBufferPolicy::StructurePoilcyPtr(
-                    new DynamicPatriciaTriePolicy(mmappedBuffer));
         case FormatUtils::VERSION_4: {
             const int dictDirPathBufSize = strlen(path) + 1 /* terminator */;
             char dictDirPath[dictDirPathBufSize];
