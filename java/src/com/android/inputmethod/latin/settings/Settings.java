@@ -27,12 +27,10 @@ import com.android.inputmethod.latin.AudioAndHapticFeedbackManager;
 import com.android.inputmethod.latin.InputAttributes;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.utils.AdditionalSubtypeUtils;
-import com.android.inputmethod.latin.utils.LocaleUtils;
 import com.android.inputmethod.latin.utils.ResourceUtils;
 import com.android.inputmethod.latin.utils.RunInLocale;
 import com.android.inputmethod.latin.utils.StringUtils;
 
-import java.util.HashMap;
 import java.util.Locale;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -227,16 +225,15 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
                 res.getBoolean(R.bool.config_default_phrase_gesture_enabled));
     }
 
-    public static boolean readFromBuildConfigIfToShowKeyPreviewPopupSettingsOption(
-            final Resources res) {
-        return res.getBoolean(R.bool.config_enable_show_option_of_key_preview_popup);
+    public static boolean readFromBuildConfigIfToShowKeyPreviewPopupOption(final Resources res) {
+        return res.getBoolean(R.bool.config_enable_show_key_preview_popup_option);
     }
 
     public static boolean readKeyPreviewPopupEnabled(final SharedPreferences prefs,
             final Resources res) {
         final boolean defaultKeyPreviewPopup = res.getBoolean(
                 R.bool.config_default_key_preview_popup);
-        if (!readFromBuildConfigIfToShowKeyPreviewPopupSettingsOption(res)) {
+        if (!readFromBuildConfigIfToShowKeyPreviewPopupOption(res)) {
             return defaultKeyPreviewPopup;
         }
         return prefs.getBoolean(PREF_POPUP_ON, defaultKeyPreviewPopup);
