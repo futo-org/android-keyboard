@@ -72,6 +72,7 @@
         <item name="autoCorrectionSpacebarLedIcon">@drawable/sym_keyboard_space_led_holo</item>
         <item name="languageOnSpacebarTextColor">@color/spacebar_text_color_holo</item>
         <item name="languageOnSpacebarTextShadowColor">@color/spacebar_text_shadow_color_holo</item>
+        <item name="spacebarBackground">@drawable/btn_keyboard_spacebar_klp</item>
     </style>
     <style
         name="KeyPreviewTextView.KLP"
