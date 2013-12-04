@@ -141,21 +141,22 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
      * context, as in beginning of a sentence for example.
      * The second word may not be null (a NullPointerException would be thrown).
      */
-    public void addToDictionary(final String word0, final String word1, final boolean isValid) {
+    public void addToDictionary(final String word0, final String word1, final boolean isValid,
+            final int timestamp) {
         if (word1.length() >= Constants.DICTIONARY_MAX_WORD_LENGTH ||
                 (word0 != null && word0.length() >= Constants.DICTIONARY_MAX_WORD_LENGTH)) {
             return;
         }
         final int frequency = isValid ?
                 FREQUENCY_FOR_WORDS_IN_DICTS : FREQUENCY_FOR_WORDS_NOT_IN_DICTS;
-        addWordDynamically(word1, null /* shortcutTarget */, frequency, 0 /* shortcutFreq */,
-                false /* isNotAWord */);
+        addWordDynamically(word1, frequency, null /* shortcutTarget */, 0 /* shortcutFreq */,
+                false /* isNotAWord */, false /* isBlacklisted */, timestamp);
         // Do not insert a word as a bigram of itself
         if (word1.equals(word0)) {
             return;
         }
         if (null != word0) {
-            addBigramDynamically(word0, word1, frequency);
+            addBigramDynamically(word0, word1, frequency, timestamp);
         }
     }
 

@@ -71,7 +71,8 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
     private void addToDict(final UserHistoryDictionary dict, final List<String> words) {
         String prevWord = null;
         for (String word : words) {
-            dict.addToDictionary(prevWord, word, true);
+            // TODO: Use timestamp properly.
+            dict.addToDictionary(prevWord, word, true, 0 /* timestamp */);
             prevWord = word;
         }
     }

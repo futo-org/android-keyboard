@@ -109,6 +109,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.TreeSet;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Input method implementation for Qwerty'ish keyboard.
@@ -2871,7 +2872,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final int maxFreq = AutoCorrectionUtils.getMaxFrequency(
                 suggest.getUnigramDictionaries(), suggestion);
         if (maxFreq == 0) return null;
-        userHistoryDictionary.addToDictionary(prevWord, secondWord, maxFreq > 0);
+        userHistoryDictionary.addToDictionary(prevWord, secondWord, maxFreq > 0,
+                (int)TimeUnit.MILLISECONDS.toSeconds((System.currentTimeMillis())));
         return prevWord;
     }
 

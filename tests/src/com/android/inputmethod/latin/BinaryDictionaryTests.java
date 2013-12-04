@@ -780,10 +780,11 @@ public class BinaryDictionaryTests extends AndroidTestCase {
             final int bigramProbability = random.nextInt(0xF);
             unigramProbabilities.put(word, probability);
             if (prevWord == null) {
-                languageModelParams[i] = new LanguageModelParam(word, probability);
+                languageModelParams[i] = new LanguageModelParam(word, probability,
+                        BinaryDictionary.NOT_A_VALID_TIME_STAMP);
             } else {
                 languageModelParams[i] = new LanguageModelParam(prevWord, word, probability,
-                        bigramProbability);
+                        bigramProbability, BinaryDictionary.NOT_A_VALID_TIME_STAMP);
                 bigramProbabilities.put(new Pair<String, String>(prevWord, word),
                         bigramProbability);
             }
