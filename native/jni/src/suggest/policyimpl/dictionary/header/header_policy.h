@@ -68,6 +68,13 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
               mHasHistoricalInfoOfWords(HeaderReadWriteUtils::readBoolAttributeValue(
                       &mAttributeMap, HAS_HISTORICAL_INFO_KEY, false /* defaultValue */)) {}
 
+    // Temporary dummy header.
+    HeaderPolicy()
+            : mDictFormatVersion(FormatUtils::UNKNOWN_VERSION), mDictionaryFlags(0), mSize(0),
+              mAttributeMap(), mMultiWordCostMultiplier(0.0f), mIsDecayingDict(false),
+              mLastUpdatedTime(0), mLastDecayedTime(0), mUnigramCount(0), mBigramCount(0),
+              mExtendedRegionSize(0), mHasHistoricalInfoOfWords(false) {}
+
     ~HeaderPolicy() {}
 
     virtual int getFormatVersionNumber() const {
@@ -139,7 +146,7 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
             const int unigramCount, const int bigramCount, const int extendedRegionSize) const;
 
  private:
-    DISALLOW_IMPLICIT_CONSTRUCTORS(HeaderPolicy);
+    DISALLOW_COPY_AND_ASSIGN(HeaderPolicy);
 
     static const char *const MULTIPLE_WORDS_DEMOTION_RATE_KEY;
     static const char *const IS_DECAYING_DICT_KEY;
