@@ -24,25 +24,29 @@ namespace latinime {
 
 class ProbabilityEntry {
  public:
+    ProbabilityEntry(const ProbabilityEntry &probabilityEntry)
+            : mFlags(probabilityEntry.mFlags), mProbability(probabilityEntry.mProbability),
+              mTimestamp(probabilityEntry.mTimestamp), mLevel(probabilityEntry.mLevel),
+              mCount(probabilityEntry.mCount) {}
+
+    // Dummy entry
     ProbabilityEntry()
             : mFlags(0), mProbability(NOT_A_PROBABILITY),
               mTimestamp(Ver4DictConstants::NOT_A_TIME_STAMP), mLevel(0), mCount(0) {}
 
-    void setProbability(const int flags, const int probability) {
-        mFlags = flags;
-        mProbability = probability;
-        mTimestamp = Ver4DictConstants::NOT_A_TIME_STAMP;
-        mLevel = 0;
-        mCount = 0;
-    }
+    // Entry without historical information
+    ProbabilityEntry(const int flags, const int probability)
+            : mFlags(flags), mProbability(probability),
+              mTimestamp(Ver4DictConstants::NOT_A_TIME_STAMP), mLevel(0), mCount(0) {}
 
-    void setProbabilityWithHistricalInfo(const int flags, const int probability,
-            const int timestamp, const int level, const int count) {
-        mFlags = flags;
-        mProbability = probability;
-        mTimestamp = timestamp;
-        mLevel = level;
-        mCount = count;
+    // Entry with historical information.
+    ProbabilityEntry(const int flags, const int probability, const int timestamp,
+            const int level, const int count)
+            : mFlags(flags), mProbability(probability), mTimestamp(timestamp), mLevel(level),
+              mCount(count) {}
+
+    const ProbabilityEntry createEntryWithUpdatedProbability(const int probability) const {
+        return ProbabilityEntry(mFlags, probability, mTimestamp, mLevel, mCount);
     }
 
     int getFlags() const {
@@ -66,13 +70,14 @@ class ProbabilityEntry {
     }
 
  private:
-    DISALLOW_COPY_AND_ASSIGN(ProbabilityEntry);
+    // Copy constructor is public to use this class as a type of return value.
+    DISALLOW_ASSIGNMENT_OPERATOR(ProbabilityEntry);
 
-    int mFlags;
-    int mProbability;
-    int mTimestamp;
-    int mLevel;
-    int mCount;
+    const int mFlags;
+    const int mProbability;
+    const int mTimestamp;
+    const int mLevel;
+    const int mCount;
 };
 } // namespace latinime
 #endif /* LATINIME_PROBABILITY_ENTRY_H */

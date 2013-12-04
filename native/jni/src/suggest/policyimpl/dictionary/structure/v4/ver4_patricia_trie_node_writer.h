@@ -23,6 +23,7 @@
 #include "suggest/policyimpl/dictionary/structure/pt_common/pt_node_params.h"
 #include "suggest/policyimpl/dictionary/structure/pt_common/pt_node_writer.h"
 #include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_reading_helper.h"
+#include "suggest/policyimpl/dictionary/structure/v4/content/probability_entry.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_patricia_trie_node_reader.h"
 
 namespace latinime {
@@ -89,7 +90,11 @@ class Ver4PatriciaTrieNodeWriter : public PtNodeWriter {
             const PtNodeParams *const ptNodeParams, int *const outTerminalId,
             int *const ptNodeWritingPos);
 
-    int getUpdatedProbability(const int originalProbability, const int newProbability) const;
+    // Create updated probability entry using given probability and timestamp. In addition to the
+    // probability, this method updates historical information if needed.
+    const ProbabilityEntry createUpdatedEntryFrom(
+            const ProbabilityEntry *const originalProbabilityEntry, const int newProbability,
+            const int timestamp) const;
 
     static const int CHILDREN_POSITION_FIELD_SIZE;
 
