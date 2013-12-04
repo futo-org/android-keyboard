@@ -42,7 +42,7 @@ class Ver4PatriciaTrieNodeReader : public PtNodeReader {
 
     virtual const PtNodeParams fetchNodeInfoInBufferFromPtNodePos(const int ptNodePos) const {
         return fetchPtNodeInfoFromBufferAndProcessMovedPtNode(ptNodePos,
-                NOT_A_DICT_POS /* siblingNodePos */, NOT_A_DICT_POS /* bigramLinkedNodePos */);
+                NOT_A_DICT_POS /* siblingNodePos */);
     }
 
  private:
@@ -52,7 +52,7 @@ class Ver4PatriciaTrieNodeReader : public PtNodeReader {
     const ProbabilityDictContent *const mProbabilityDictContent;
 
     const PtNodeParams fetchPtNodeInfoFromBufferAndProcessMovedPtNode(const int ptNodePos,
-            const int siblingNodePos, const int bigramLinkedNodePos) const;
+            const int siblingNodePos) const;
 };
 } // namespace latinime
 #endif /* LATINIME_VER4_PATRICIA_TRIE_NODE_READER_H */

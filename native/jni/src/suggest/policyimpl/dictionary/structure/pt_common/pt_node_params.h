@@ -57,14 +57,13 @@ class PtNodeParams {
     PtNodeParams(const int headPos, const PatriciaTrieReadingUtils::NodeFlags flags,
             const int parentPos, const int codePointCount, const int *const codePoints,
             const int terminalIdFieldPos, const int terminalId, const int probability,
-            const int childrenPosFieldPos, const int childrenPos, const int bigramLinkedNodePos,
-            const int siblingPos)
+            const int childrenPosFieldPos, const int childrenPos, const int siblingPos)
             : mHeadPos(headPos), mFlags(flags), mParentPos(parentPos),
               mCodePointCount(codePointCount), mCodePoints(),
               mTerminalIdFieldPos(terminalIdFieldPos), mTerminalId(terminalId),
               mProbabilityFieldPos(NOT_A_DICT_POS), mProbability(probability),
               mChildrenPosFieldPos(childrenPosFieldPos), mChildrenPos(childrenPos),
-              mBigramLinkedNodePos(bigramLinkedNodePos), mShortcutPos(terminalId),
+              mBigramLinkedNodePos(NOT_A_DICT_POS), mShortcutPos(terminalId),
               mBigramPos(terminalId), mSiblingPos(siblingPos) {
         memcpy(mCodePoints, codePoints, sizeof(int) * mCodePointCount);
     }
