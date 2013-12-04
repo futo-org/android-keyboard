@@ -38,8 +38,7 @@ class ProbabilityDictContent : public SingleDictContent {
     ProbabilityDictContent(const bool hasHistoricalInfo)
             : mHasHistoricalInfo(hasHistoricalInfo), mSize(0) {}
 
-    void getProbabilityEntry(const int terminalId,
-            ProbabilityEntry *const outProbabilityEntry) const;
+    const ProbabilityEntry getProbabilityEntry(const int terminalId) const;
 
     bool setProbabilityEntry(const int terminalId, const ProbabilityEntry *const probabilityEntry);
 
