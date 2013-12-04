@@ -98,7 +98,7 @@ public final class BinaryDictionaryFileDumper {
      * This creates a URI builder able to build a URI pointing to the dictionary
      * pack content provider for a specific dictionary id.
      */
-    private static Uri.Builder getProviderUriBuilder(final String path) {
+    public static Uri.Builder getProviderUriBuilder(final String path) {
         return new Uri.Builder().scheme(ContentResolver.SCHEME_CONTENT)
                 .authority(DictionaryPackConstants.AUTHORITY).appendPath(path);
     }
@@ -339,15 +339,25 @@ public final class BinaryDictionaryFileDumper {
         Log.e(TAG, "Could not copy a word list. Will not be able to use it.");
         // If we can't copy it we should warn the dictionary provider so that it can mark it
         // as invalid.
-        wordListUriBuilder.appendQueryParameter(QUERY_PARAMETER_DELETE_RESULT,
-                QUERY_PARAMETER_FAILURE);
+        reportBrokenFileToDictionaryProvider(providerClient, clientId, wordlistId);
+    }
+
+    public static boolean reportBrokenFileToDictionaryProvider(
+            final ContentProviderClient providerClient, final String clientId,
+            final String wordlistId) {
         try {
+            final Uri.Builder wordListUriBuilder = getContentUriBuilderForType(clientId,
+                    providerClient, QUERY_PATH_DATAFILE, wordlistId /* extraPath */);
+            wordListUriBuilder.appendQueryParameter(QUERY_PARAMETER_DELETE_RESULT,
+                    QUERY_PARAMETER_FAILURE);
             if (0 >= providerClient.delete(wordListUriBuilder.build(), null, null)) {
-                Log.e(TAG, "In addition, we were unable to delete it.");
+                Log.e(TAG, "Unable to delete a word list.");
             }
         } catch (RemoteException e) {
-            Log.e(TAG, "In addition, communication with the dictionary provider was cut", e);
+            Log.e(TAG, "Communication with the dictionary provider was cut", e);
+            return false;
         }
+        return true;
     }
 
     // Ideally the two following methods should be merged, but AssetFileDescriptor does not

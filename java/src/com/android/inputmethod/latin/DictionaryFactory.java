@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.latin;
 
+import android.content.ContentProviderClient;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.Resources;
@@ -62,8 +63,12 @@ public final class DictionaryFactory {
                 final ReadOnlyBinaryDictionary readOnlyBinaryDictionary =
                         new ReadOnlyBinaryDictionary(f.mFilename, f.mOffset, f.mLength,
                                 useFullEditDistance, locale, Dictionary.TYPE_MAIN);
-                if (readOnlyBinaryDictionary.isValidDictionary()) {
+                if (readOnlyBinaryDictionary.hasValidContents()) {
                     dictList.add(readOnlyBinaryDictionary);
+                } else {
+                    readOnlyBinaryDictionary.close();
+                    // Prevent this dictionary to do any further harm.
+                    killDictionary(context, f);
                 }
             }
         }
@@ -72,6 +77,51 @@ public final class DictionaryFactory {
         // explicitly disabled the main dictionary), so the following is okay. dictList is never
         // null, but if for some reason it is, DictionaryCollection handles it gracefully.
         return new DictionaryCollection(Dictionary.TYPE_MAIN, dictList);
+    }
+
+    /**
+     * Kills a dictionary so that it is never used again, if possible.
+     * @param context The context to contact the dictionary provider, if possible.
+     * @param f A file address to the dictionary to kill.
+     */
+    private static void killDictionary(final Context context, final AssetFileAddress f) {
+        if (f.pointsToPhysicalFile()) {
+            f.deleteUnderlyingFile();
+            // Warn the dictionary provider if the dictionary came from there.
+            final ContentProviderClient providerClient;
+            try {
+                providerClient = context.getContentResolver().acquireContentProviderClient(
+                        BinaryDictionaryFileDumper.getProviderUriBuilder("").build());
+            } catch (final SecurityException e) {
+                Log.e(TAG, "No permission to communicate with the dictionary provider", e);
+                return;
+            }
+            if (null == providerClient) {
+                Log.e(TAG, "Can't establish communication with the dictionary provider");
+                return;
+            }
+            final String wordlistId =
+                    DictionaryInfoUtils.getWordListIdFromFileName(new File(f.mFilename).getName());
+            if (null != wordlistId) {
+                // TODO: this is a reasonable last resort, but it is suboptimal.
+                // The following will remove the entry for this dictionary with the dictionary
+                // provider. When the metadata is downloaded again, we will try downloading it
+                // again.
+                // However, in the practice that will mean the user will find themselves without
+                // the new dictionary. That's fine for languages where it's included in the APK,
+                // but for other languages it will leave the user without a dictionary at all until
+                // the next update, which may be a few days away.
+                // Ideally, we would trigger a new download right away, and use increasing retry
+                // delays for this particular id/version combination.
+                // Then again, this is expected to only ever happen in case of human mistake. If
+                // the wrong file is on the server, the following is still doing the right thing.
+                // If it's a file left over from the last version however, it's not great.
+                BinaryDictionaryFileDumper.reportBrokenFileToDictionaryProvider(
+                        providerClient,
+                        context.getString(R.string.dictionary_pack_client_id),
+                        wordlistId);
+            }
+        }
     }
 
     /**
