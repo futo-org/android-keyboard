@@ -60,8 +60,8 @@ const PtNodeParams Ver4PatriciaTrieNodeReader::fetchPtNodeInfoFromBufferAndProce
             terminalIdFieldPos += mBuffer->getOriginalBufferSize();
         }
         terminalId = Ver4PatriciaTrieReadingUtils::getTerminalIdAndAdvancePosition(dictBuf, &pos);
-        ProbabilityEntry probabilityEntry;
-        mProbabilityDictContent->getProbabilityEntry(terminalId, &probabilityEntry);
+        const ProbabilityEntry probabilityEntry =
+                mProbabilityDictContent->getProbabilityEntry(terminalId);
         probability = probabilityEntry.getProbability();
     }
     int childrenPosFieldPos = pos;

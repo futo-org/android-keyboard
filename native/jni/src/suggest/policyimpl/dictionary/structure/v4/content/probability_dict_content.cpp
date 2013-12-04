@@ -23,12 +23,10 @@
 
 namespace latinime {
 
-void ProbabilityDictContent::getProbabilityEntry(const int terminalId,
-        ProbabilityEntry *const outProbabilityEntry) const {
+const ProbabilityEntry ProbabilityDictContent::getProbabilityEntry(const int terminalId) const {
     if (terminalId < 0 || terminalId >= mSize) {
         // This method can be called with invalid terminal id during GC.
-        outProbabilityEntry->setProbability(0 /* flags */, NOT_A_PROBABILITY);
-        return;
+        return ProbabilityEntry(0 /* flags */, NOT_A_PROBABILITY);
     }
     const BufferWithExtendableBuffer *const buffer = getBuffer();
     int entryPos = getEntryPos(terminalId);
@@ -43,10 +41,9 @@ void ProbabilityDictContent::getProbabilityEntry(const int terminalId,
                 Ver4DictConstants::WORD_LEVEL_FIELD_SIZE, &entryPos);
         const int count = buffer->readUintAndAdvancePosition(
                 Ver4DictConstants::WORD_COUNT_FIELD_SIZE, &entryPos);
-        outProbabilityEntry->setProbabilityWithHistricalInfo(flags, probability, timestamp, level,
-                count);
+        return ProbabilityEntry(flags, probability, timestamp, level, count);
     } else {
-        outProbabilityEntry->setProbability(flags, probability);
+        return ProbabilityEntry(flags, probability);
     }
 }
 
@@ -76,9 +73,8 @@ bool ProbabilityDictContent::setProbabilityEntry(const int terminalId,
 bool ProbabilityDictContent::flushToFile(const char *const dictDirPath) const {
     if (getEntryPos(mSize) < getBuffer()->getTailPosition()) {
         ProbabilityDictContent probabilityDictContentToWrite(mHasHistoricalInfo);
-        ProbabilityEntry probabilityEntry;
         for (int i = 0; i < mSize; ++i) {
-            getProbabilityEntry(i, &probabilityEntry);
+            const ProbabilityEntry probabilityEntry = getProbabilityEntry(i);
             if (!probabilityDictContentToWrite.setProbabilityEntry(i, &probabilityEntry)) {
                 AKLOGE("Cannot set probability entry in flushToFile. terminalId: %d", i);
                 return false;
@@ -95,10 +91,10 @@ bool ProbabilityDictContent::runGC(
         const TerminalPositionLookupTable::TerminalIdMap *const terminalIdMap,
         const ProbabilityDictContent *const originalProbabilityDictContent) {
     mSize = 0;
-    ProbabilityEntry probabilityEntry;
     for (TerminalPositionLookupTable::TerminalIdMap::const_iterator it = terminalIdMap->begin();
             it != terminalIdMap->end(); ++it) {
-        originalProbabilityDictContent->getProbabilityEntry(it->first, &probabilityEntry);
+        const ProbabilityEntry probabilityEntry =
+                originalProbabilityDictContent->getProbabilityEntry(it->first);
         if (!setProbabilityEntry(it->second, &probabilityEntry)) {
             AKLOGE("Cannot set probability entry in runGC. terminalId: %d", it->second);
             return false;

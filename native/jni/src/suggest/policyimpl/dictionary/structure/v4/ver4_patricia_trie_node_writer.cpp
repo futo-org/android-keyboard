@@ -112,12 +112,11 @@ bool Ver4PatriciaTrieNodeWriter::updatePtNodeProbability(
     if (!toBeUpdatedPtNodeParams->isTerminal()) {
         return false;
     }
-    const int probabilityToWrite = getUpdatedProbability(toBeUpdatedPtNodeParams->getProbability(),
-            newProbability);
-    ProbabilityEntry probabilityEntry;
-    mBuffers->getProbabilityDictContent()->getProbabilityEntry(
-            toBeUpdatedPtNodeParams->getTerminalId(), &probabilityEntry);
-    probabilityEntry.setProbability(probabilityEntry.getFlags(), probabilityToWrite);
+    const ProbabilityEntry originalProbabilityEntry =
+            mBuffers->getProbabilityDictContent()->getProbabilityEntry(
+                    toBeUpdatedPtNodeParams->getTerminalId());
+    const ProbabilityEntry probabilityEntry = createUpdatedEntryFrom(&originalProbabilityEntry,
+            newProbability, timestamp);
     return mBuffers->getUpdatableProbabilityDictContent()->setProbabilityEntry(
             toBeUpdatedPtNodeParams->getTerminalId(), &probabilityEntry);
 }
@@ -150,12 +149,11 @@ bool Ver4PatriciaTrieNodeWriter::writeNewTerminalPtNodeAndAdvancePosition(
         return false;
     }
     // Write probability.
-    const int probabilityToWrite = getUpdatedProbability(NOT_A_PROBABILITY,
-            ptNodeParams->getProbability());
-    ProbabilityEntry probabilityEntry;
-    probabilityEntry.setProbability(0 /* flags */, probabilityToWrite);
+    ProbabilityEntry newProbabilityEntry;
+    const ProbabilityEntry probabilityEntryToWrite = createUpdatedEntryFrom(
+            &newProbabilityEntry, ptNodeParams->getProbability(), timestamp);
     return mBuffers->getUpdatableProbabilityDictContent()->setProbabilityEntry(terminalId,
-            &probabilityEntry);
+            &probabilityEntryToWrite);
 }
 
 bool Ver4PatriciaTrieNodeWriter::addNewBigramEntry(
@@ -283,13 +281,16 @@ bool Ver4PatriciaTrieNodeWriter::writePtNodeAndGetTerminalIdAndAdvancePosition(
     return true;
 }
 
-int Ver4PatriciaTrieNodeWriter::getUpdatedProbability(const int originalProbability,
-        const int newProbability) const {
+const ProbabilityEntry Ver4PatriciaTrieNodeWriter::createUpdatedEntryFrom(
+        const ProbabilityEntry *const originalProbabilityEntry, const int newProbability,
+        const int timestamp) const {
     if (mNeedsToDecayWhenUpdating) {
-        return ForgettingCurveUtils::getUpdatedEncodedProbability(originalProbability,
-                newProbability);
+        // TODO: Update historical information.
+        const int updatedProbability = ForgettingCurveUtils::getUpdatedEncodedProbability(
+                originalProbabilityEntry->getProbability(), newProbability);
+        return originalProbabilityEntry->createEntryWithUpdatedProbability(updatedProbability);
     } else {
-        return newProbability;
+        return originalProbabilityEntry->createEntryWithUpdatedProbability(newProbability);
     }
 }
 
