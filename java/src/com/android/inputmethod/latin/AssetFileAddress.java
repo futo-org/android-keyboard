@@ -52,4 +52,12 @@ public final class AssetFileAddress {
         if (!f.isFile()) return null;
         return new AssetFileAddress(filename, offset, length);
     }
+
+    public boolean pointsToPhysicalFile() {
+        return 0 == mOffset;
+    }
+
+    public void deleteUnderlyingFile() {
+        new File(mFilename).delete();
+    }
 }

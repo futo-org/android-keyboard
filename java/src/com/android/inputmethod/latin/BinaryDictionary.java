@@ -121,6 +121,7 @@ public final class BinaryDictionary extends Dictionary {
             String[] attributeKeyStringArray, String[] attributeValueStringArray);
     private static native long openNative(String sourceDir, long dictOffset, long dictSize,
             boolean isUpdatable);
+    private static native boolean hasValidContentsNative(long dict);
     private static native void flushNative(long dict, String filePath);
     private static native boolean needsToRunGCNative(long dict, boolean mindsBlockByGC);
     private static native void flushWithGCNative(long dict, String filePath);
@@ -240,6 +241,10 @@ public final class BinaryDictionary extends Dictionary {
 
     public boolean isValidDictionary() {
         return mNativeDict != 0;
+    }
+
+    public boolean hasValidContents() {
+        return hasValidContentsNative(mNativeDict);
     }
 
     public int getFormatVersion() {
@@ -380,7 +385,7 @@ public final class BinaryDictionary extends Dictionary {
     private void reopen() {
         close();
         final File dictFile = new File(mDictFilePath);
-        // WARNING: Because we pass 0 as the offstet and file.length() as the length, this can
+        // WARNING: Because we pass 0 as the offset and file.length() as the length, this can
         // only be called for actual files. Right now it's only called by the flush() family of
         // functions, which require an updatable dictionary, so it's okay. But beware.
         loadDictionary(dictFile.getAbsolutePath(), 0 /* startOffset */,

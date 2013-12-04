@@ -135,6 +135,14 @@ static void latinime_BinaryDictionary_close(JNIEnv *env, jclass clazz, jlong dic
     delete dictionary;
 }
 
+static bool latinime_BinaryDictionary_hasValidContents(JNIEnv *env, jclass clazz,
+        jlong dict) {
+    Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
+    if (!dictionary) return false;
+    // TODO: check format version
+    return true;
+}
+
 static int latinime_BinaryDictionary_getFormatVersion(JNIEnv *env, jclass clazz, jlong dict) {
     Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
     if (!dictionary) return 0;
@@ -436,6 +444,11 @@ static const JNINativeMethod sMethods[] = {
         const_cast<char *>("closeNative"),
         const_cast<char *>("(J)V"),
         reinterpret_cast<void *>(latinime_BinaryDictionary_close)
+    },
+    {
+        const_cast<char *>("hasValidContentsNative"),
+        const_cast<char *>("(J)Z"),
+        reinterpret_cast<void *>(latinime_BinaryDictionary_hasValidContents)
     },
     {
         const_cast<char *>("getFormatVersionNative"),
