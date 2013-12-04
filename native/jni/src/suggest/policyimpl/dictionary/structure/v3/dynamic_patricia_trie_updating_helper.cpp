@@ -30,7 +30,8 @@ const int DynamicPatriciaTrieUpdatingHelper::CHILDREN_POSITION_FIELD_SIZE = 3;
 bool DynamicPatriciaTrieUpdatingHelper::addUnigramWord(
         DynamicPatriciaTrieReadingHelper *const readingHelper,
         const int *const wordCodePoints, const int codePointCount, const int probability,
-        const int timestamp, bool *const outAddedNewUnigram) {
+        const bool isNotAWord, const bool isBlacklisted, const int timestamp,
+        bool *const outAddedNewUnigram) {
     int parentPos = NOT_A_DICT_POS;
     while (!readingHelper->isEnd()) {
         const PtNodeParams ptNodeParams(readingHelper->getPtNodeParams());
@@ -52,18 +53,20 @@ bool DynamicPatriciaTrieUpdatingHelper::addUnigramWord(
             if (nextIndex >= codePointCount || !readingHelper->isMatchedCodePoint(ptNodeParams, j,
                     wordCodePoints[matchedCodePointCount + j])) {
                 *outAddedNewUnigram = true;
-                return reallocatePtNodeAndAddNewPtNodes(&ptNodeParams, j, probability, timestamp,
-                        wordCodePoints + matchedCodePointCount,
+                return reallocatePtNodeAndAddNewPtNodes(&ptNodeParams, j, isNotAWord, isBlacklisted,
+                        probability, timestamp, wordCodePoints + matchedCodePointCount,
                         codePointCount - matchedCodePointCount);
             }
         }
         // All characters are matched.
         if (codePointCount == readingHelper->getTotalCodePointCount(ptNodeParams)) {
-            return setPtNodeProbability(&ptNodeParams, probability, timestamp, outAddedNewUnigram);
+            return setPtNodeProbability(&ptNodeParams, isNotAWord, isBlacklisted, probability,
+                    timestamp, outAddedNewUnigram);
         }
         if (!ptNodeParams.hasChildren()) {
             *outAddedNewUnigram = true;
-            return createChildrenPtNodeArrayAndAChildPtNode(&ptNodeParams, probability, timestamp,
+            return createChildrenPtNodeArrayAndAChildPtNode(&ptNodeParams,
+                    isNotAWord, isBlacklisted, probability, timestamp,
                     wordCodePoints + readingHelper->getTotalCodePointCount(ptNodeParams),
                     codePointCount - readingHelper->getTotalCodePointCount(ptNodeParams));
         }
@@ -79,8 +82,8 @@ bool DynamicPatriciaTrieUpdatingHelper::addUnigramWord(
     *outAddedNewUnigram = true;
     return createAndInsertNodeIntoPtNodeArray(parentPos,
             wordCodePoints + readingHelper->getPrevTotalCodePointCount(),
-            codePointCount - readingHelper->getPrevTotalCodePointCount(), probability,
-            timestamp, &pos);
+            codePointCount - readingHelper->getPrevTotalCodePointCount(),
+            isNotAWord, isBlacklisted, probability, timestamp, &pos);
 }
 
 bool DynamicPatriciaTrieUpdatingHelper::addBigramWords(const int word0Pos, const int word1Pos,
@@ -103,19 +106,21 @@ bool DynamicPatriciaTrieUpdatingHelper::removeBigramWords(const int word0Pos, co
 }
 
 bool DynamicPatriciaTrieUpdatingHelper::createAndInsertNodeIntoPtNodeArray(const int parentPos,
-        const int *const nodeCodePoints, const int nodeCodePointCount, const int probability,
-        const int timestamp, int *const forwardLinkFieldPos) {
+        const int *const nodeCodePoints, const int nodeCodePointCount,
+        const bool isNotAWord, const bool isBlacklisted, const int probability,
+        const int timestamp,  int *const forwardLinkFieldPos) {
     const int newPtNodeArrayPos = mBuffer->getTailPosition();
     if (!DynamicPatriciaTrieWritingUtils::writeForwardLinkPositionAndAdvancePosition(mBuffer,
             newPtNodeArrayPos, forwardLinkFieldPos)) {
         return false;
     }
     return createNewPtNodeArrayWithAChildPtNode(parentPos, nodeCodePoints, nodeCodePointCount,
-            probability, timestamp);
+            isNotAWord, isBlacklisted, probability, timestamp);
 }
 
 bool DynamicPatriciaTrieUpdatingHelper::setPtNodeProbability(
-        const PtNodeParams *const originalPtNodeParams, const int probability, const int timestamp,
+        const PtNodeParams *const originalPtNodeParams, const bool isNotAWord,
+        const bool isBlacklisted, const int probability, const int timestamp,
         bool *const outAddedNewUnigram) {
     if (originalPtNodeParams->isTerminal()) {
         // Overwrites the probability.
@@ -127,9 +132,9 @@ bool DynamicPatriciaTrieUpdatingHelper::setPtNodeProbability(
         const int movedPos = mBuffer->getTailPosition();
         int writingPos = movedPos;
         const PtNodeParams ptNodeParamsToWrite(getUpdatedPtNodeParams(originalPtNodeParams,
-                true /* isTerminal */, originalPtNodeParams->getParentPos(),
-                originalPtNodeParams->getCodePointCount(), originalPtNodeParams->getCodePoints(),
-                probability));
+                isNotAWord, isBlacklisted, true /* isTerminal */,
+                originalPtNodeParams->getParentPos(), originalPtNodeParams->getCodePointCount(),
+                originalPtNodeParams->getCodePoints(), probability));
         if (!mPtNodeWriter->writeNewTerminalPtNodeAndAdvancePosition(&ptNodeParamsToWrite,
                 timestamp, &writingPos)) {
             return false;
@@ -142,25 +147,28 @@ bool DynamicPatriciaTrieUpdatingHelper::setPtNodeProbability(
 }
 
 bool DynamicPatriciaTrieUpdatingHelper::createChildrenPtNodeArrayAndAChildPtNode(
-        const PtNodeParams *const parentPtNodeParams, const int probability, const int timestamp,
+        const PtNodeParams *const parentPtNodeParams, const bool isNotAWord,
+        const bool isBlacklisted, const int probability, const int timestamp,
         const int *const codePoints, const int codePointCount) {
     const int newPtNodeArrayPos = mBuffer->getTailPosition();
     if (!mPtNodeWriter->updateChildrenPosition(parentPtNodeParams, newPtNodeArrayPos)) {
         return false;
     }
     return createNewPtNodeArrayWithAChildPtNode(parentPtNodeParams->getHeadPos(), codePoints,
-            codePointCount, probability, timestamp);
+            codePointCount, isNotAWord, isBlacklisted, probability, timestamp);
 }
 
 bool DynamicPatriciaTrieUpdatingHelper::createNewPtNodeArrayWithAChildPtNode(
         const int parentPtNodePos, const int *const nodeCodePoints, const int nodeCodePointCount,
-        const int probability, const int timestamp) {
+        const bool isNotAWord, const bool isBlacklisted, const int probability,
+        const int timestamp) {
     int writingPos = mBuffer->getTailPosition();
     if (!DynamicPatriciaTrieWritingUtils::writePtNodeArraySizeAndAdvancePosition(mBuffer,
             1 /* arraySize */, &writingPos)) {
         return false;
     }
-    const PtNodeParams ptNodeParamsToWrite(getPtNodeParamsForNewPtNode(true /* isTerminal */,
+    const PtNodeParams ptNodeParamsToWrite(getPtNodeParamsForNewPtNode(
+            isNotAWord, isBlacklisted, true /* isTerminal */,
             parentPtNodePos, nodeCodePointCount, nodeCodePoints, probability));
     if (!mPtNodeWriter->writeNewTerminalPtNodeAndAdvancePosition(&ptNodeParamsToWrite, timestamp,
             &writingPos)) {
@@ -176,8 +184,8 @@ bool DynamicPatriciaTrieUpdatingHelper::createNewPtNodeArrayWithAChildPtNode(
 // Returns whether the dictionary updating was succeeded or not.
 bool DynamicPatriciaTrieUpdatingHelper::reallocatePtNodeAndAddNewPtNodes(
         const PtNodeParams *const reallocatingPtNodeParams, const int overlappingCodePointCount,
-        const int probabilityOfNewPtNode, const int timestamp, const int *const newNodeCodePoints,
-        const int newNodeCodePointCount) {
+        const bool isNotAWord, const bool isBlacklisted, const int probabilityOfNewPtNode,
+        const int timestamp, const int *const newNodeCodePoints, const int newNodeCodePointCount) {
     // When addsExtraChild is true, split the reallocating PtNode and add new child.
     // Reallocating PtNode: abcde, newNode: abcxy.
     // abc (1st, not terminal) __ de (2nd)
@@ -191,14 +199,16 @@ bool DynamicPatriciaTrieUpdatingHelper::reallocatePtNodeAndAddNewPtNodes(
     // Write the 1st part of the reallocating node. The children position will be updated later
     // with actual children position.
     if (addsExtraChild) {
-        const PtNodeParams ptNodeParamsToWrite(getPtNodeParamsForNewPtNode(false /* isTerminal */,
+        const PtNodeParams ptNodeParamsToWrite(getPtNodeParamsForNewPtNode(
+                false /* isNotAWord */, false /* isBlacklisted */, false /* isTerminal */,
                 reallocatingPtNodeParams->getParentPos(), overlappingCodePointCount,
                 reallocatingPtNodeParams->getCodePoints(), NOT_A_PROBABILITY));
         if (!mPtNodeWriter->writePtNodeAndAdvancePosition(&ptNodeParamsToWrite, &writingPos)) {
             return false;
         }
     } else {
-        const PtNodeParams ptNodeParamsToWrite(getPtNodeParamsForNewPtNode(true /* isTerminal */,
+        const PtNodeParams ptNodeParamsToWrite(getPtNodeParamsForNewPtNode(
+                isNotAWord, isBlacklisted, true /* isTerminal */,
                 reallocatingPtNodeParams->getParentPos(), overlappingCodePointCount,
                 reallocatingPtNodeParams->getCodePoints(), probabilityOfNewPtNode));
         if (!mPtNodeWriter->writeNewTerminalPtNodeAndAdvancePosition(&ptNodeParamsToWrite,
@@ -216,6 +226,7 @@ bool DynamicPatriciaTrieUpdatingHelper::reallocatePtNodeAndAddNewPtNodes(
     // Write the 2nd part of the reallocating node.
     const int secondPartOfReallocatedPtNodePos = writingPos;
     const PtNodeParams childPartPtNodeParams(getUpdatedPtNodeParams(reallocatingPtNodeParams,
+            reallocatingPtNodeParams->isNotAWord(), reallocatingPtNodeParams->isBlacklisted(),
             reallocatingPtNodeParams->isTerminal(), firstPartOfReallocatedPtNodePos,
             reallocatingPtNodeParams->getCodePointCount() - overlappingCodePointCount,
             reallocatingPtNodeParams->getCodePoints() + overlappingCodePointCount,
@@ -224,7 +235,8 @@ bool DynamicPatriciaTrieUpdatingHelper::reallocatePtNodeAndAddNewPtNodes(
         return false;
     }
     if (addsExtraChild) {
-        const PtNodeParams extraChildPtNodeParams(getPtNodeParamsForNewPtNode(true /* isTerminal */,
+        const PtNodeParams extraChildPtNodeParams(getPtNodeParamsForNewPtNode(
+                isNotAWord, isBlacklisted, true /* isTerminal */,
                 firstPartOfReallocatedPtNodePos, newNodeCodePointCount - overlappingCodePointCount,
                 newNodeCodePoints + overlappingCodePointCount, probabilityOfNewPtNode));
         if (!mPtNodeWriter->writeNewTerminalPtNodeAndAdvancePosition(&extraChildPtNodeParams,
@@ -249,23 +261,25 @@ bool DynamicPatriciaTrieUpdatingHelper::reallocatePtNodeAndAddNewPtNodes(
 }
 
 const PtNodeParams DynamicPatriciaTrieUpdatingHelper::getUpdatedPtNodeParams(
-        const PtNodeParams *const originalPtNodeParams, const bool isTerminal, const int parentPos,
+        const PtNodeParams *const originalPtNodeParams, const bool isNotAWord,
+        const bool isBlacklisted, const bool isTerminal, const int parentPos,
         const int codePointCount, const int *const codePoints, const int probability) const {
     const PatriciaTrieReadingUtils::NodeFlags flags = PatriciaTrieReadingUtils::createAndGetFlags(
-            originalPtNodeParams->isBlacklisted(), originalPtNodeParams->isNotAWord(), isTerminal,
-            originalPtNodeParams->hasShortcutTargets(), originalPtNodeParams->hasBigrams(),
-            codePointCount > 1 /* hasMultipleChars */, CHILDREN_POSITION_FIELD_SIZE);
+            isBlacklisted, isNotAWord, isTerminal, originalPtNodeParams->hasShortcutTargets(),
+            originalPtNodeParams->hasBigrams(), codePointCount > 1 /* hasMultipleChars */,
+            CHILDREN_POSITION_FIELD_SIZE);
     return PtNodeParams(originalPtNodeParams, flags, parentPos, codePointCount, codePoints,
             probability);
 }
 
 const PtNodeParams DynamicPatriciaTrieUpdatingHelper::getPtNodeParamsForNewPtNode(
-        const bool isTerminal, const int parentPos, const int codePointCount,
-        const int *const codePoints, const int probability) const {
+        const bool isNotAWord, const bool isBlacklisted, const bool isTerminal,
+        const int parentPos, const int codePointCount, const int *const codePoints,
+        const int probability) const {
     const PatriciaTrieReadingUtils::NodeFlags flags = PatriciaTrieReadingUtils::createAndGetFlags(
-            false /* isBlacklisted */, false /* isNotAWord */, isTerminal,
-            false /* hasShortcutTargets */, false /* hasBigrams */,
-            codePointCount > 1 /* hasMultipleChars */, CHILDREN_POSITION_FIELD_SIZE);
+            isBlacklisted, isNotAWord, isTerminal, false /* hasShortcutTargets */,
+            false /* hasBigrams */, codePointCount > 1 /* hasMultipleChars */,
+            CHILDREN_POSITION_FIELD_SIZE);
     return PtNodeParams(flags, parentPos, codePointCount, codePoints, probability);
 }
 

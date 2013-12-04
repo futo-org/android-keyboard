@@ -99,10 +99,13 @@ int Dictionary::getBigramProbability(const int *word0, int length0, const int *w
 }
 
 void Dictionary::addUnigramWord(const int *const word, const int length, const int probability,
+        const int *const shortcutTargetCodePoints, const int shortcutLength,
+        const int shortcutProbability, const bool isNotAWord, const bool isBlacklisted,
         const int timestamp) {
     TimeKeeper::setCurrentTime();
     mDictionaryStructureWithBufferPolicy.get()->addUnigramWord(word, length, probability,
-            timestamp);
+            shortcutTargetCodePoints, shortcutLength, shortcutProbability, isNotAWord,
+            isBlacklisted, timestamp);
 }
 
 void Dictionary::addBigramWords(const int *const word0, const int length0, const int *const word1,

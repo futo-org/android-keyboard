@@ -73,6 +73,8 @@ class Dictionary {
     int getBigramProbability(const int *word0, int length0, const int *word1, int length1) const;
 
     void addUnigramWord(const int *const word, const int length, const int probability,
+            const int *const shortcutTargetCodePoints, const int shortcutLength,
+            const int shortcutProbability, const bool isNotAWord, const bool isBlacklisted,
             const int timestamp);
 
     void addBigramWords(const int *const word0, const int length0, const int *const word1,

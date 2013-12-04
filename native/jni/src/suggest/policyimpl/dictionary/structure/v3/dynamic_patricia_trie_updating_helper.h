@@ -42,7 +42,8 @@ class DynamicPatriciaTrieUpdatingHelper {
     // Add a word to the dictionary. If the word already exists, update the probability.
     bool addUnigramWord(DynamicPatriciaTrieReadingHelper *const readingHelper,
             const int *const wordCodePoints, const int codePointCount, const int probability,
-            const int timestamp, bool *const outAddedNewUnigram);
+            const bool isNotAWord, const bool isBlacklisted, const int timestamp,
+            bool *const outAddedNewUnigram);
 
     // Add a bigram relation from word0Pos to word1Pos.
     bool addBigramWords(const int word0Pos, const int word1Pos, const int probability,
@@ -61,29 +62,34 @@ class DynamicPatriciaTrieUpdatingHelper {
     PtNodeWriter *const mPtNodeWriter;
 
     bool createAndInsertNodeIntoPtNodeArray(const int parentPos, const int *const nodeCodePoints,
-            const int nodeCodePointCount, const int probability, const int timestamp,
-            int *const forwardLinkFieldPos);
+            const int nodeCodePointCount, const bool isNotAWord, const bool isBlacklisted,
+            const int probability, const int timestamp, int *const forwardLinkFieldPos);
 
-    bool setPtNodeProbability(const PtNodeParams *const originalPtNodeParams, const int probability,
-            const int timestamp, bool *const outAddedNewUnigram);
+    bool setPtNodeProbability(const PtNodeParams *const originalPtNodeParams, const bool isNotAWord,
+            const bool isBlacklisted, const int probability, const int timestamp,
+            bool *const outAddedNewUnigram);
 
     bool createChildrenPtNodeArrayAndAChildPtNode(const PtNodeParams *const parentPtNodeParams,
-            const int probability, const int timestamp, const int *const codePoints,
-            const int codePointCount);
+            const bool isNotAWord, const bool isBlacklisted, const int probability,
+            const int timestamp, const int *const codePoints, const int codePointCount);
 
     bool createNewPtNodeArrayWithAChildPtNode(const int parentPos, const int *const nodeCodePoints,
-            const int nodeCodePointCount, const int probability, const int timestamp);
+            const int nodeCodePointCount, const bool isNotAWord, const bool isBlacklisted,
+            const int probability, const int timestamp);
 
     bool reallocatePtNodeAndAddNewPtNodes(
             const PtNodeParams *const reallocatingPtNodeParams, const int overlappingCodePointCount,
-            const int probabilityOfNewPtNode, const int timestamp,
-            const int *const newNodeCodePoints, const int newNodeCodePointCount);
+            const bool isNotAWord, const bool isBlacklisted, const int probabilityOfNewPtNode,
+            const int timestamp, const int *const newNodeCodePoints,
+            const int newNodeCodePointCount);
 
     const PtNodeParams getUpdatedPtNodeParams(const PtNodeParams *const originalPtNodeParams,
-            const bool isTerminal, const int parentPos, const int codePointCount,
+            const bool isNotAWord, const bool isBlacklisted, const bool isTerminal,
+            const int parentPos, const int codePointCount,
             const int *const codePoints, const int probability) const;
 
-    const PtNodeParams getPtNodeParamsForNewPtNode(const bool isTerminal, const int parentPos,
+    const PtNodeParams getPtNodeParamsForNewPtNode(const bool isNotAWord, const bool isBlacklisted,
+            const bool isTerminal, const int parentPos,
             const int codePointCount, const int *const codePoints, const int probability) const;
 };
 } // namespace latinime
