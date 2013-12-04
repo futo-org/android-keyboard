@@ -73,7 +73,7 @@
             android:background="@color/emoji_key_background_color"
             android:src="@drawable/sym_keyboard_delete_holo_dark" />
     </LinearLayout>
-    <android.support.v4.view.ViewPager
+    <com.android.inputmethod.keyboard.internal.CustomViewPager
         android:id="@+id/emoji_keyboard_pager"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
