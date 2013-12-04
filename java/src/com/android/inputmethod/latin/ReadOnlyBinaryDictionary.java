@@ -44,6 +44,15 @@ public final class ReadOnlyBinaryDictionary extends Dictionary {
                 locale, dictType, false /* isUpdatable */);
     }
 
+    public boolean hasValidContents() {
+        mLock.readLock().lock();
+        try {
+            return mBinaryDictionary.hasValidContents();
+        } finally {
+            mLock.readLock().unlock();
+        }
+    }
+
     public boolean isValidDictionary() {
         return mBinaryDictionary.isValidDictionary();
     }
