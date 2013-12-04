@@ -137,7 +137,9 @@ int Ver4PatriciaTriePolicy::getBigramsPositionOfPtNode(const int ptNodePos) cons
 }
 
 bool Ver4PatriciaTriePolicy::addUnigramWord(const int *const word, const int length,
-        const int probability, const int timestamp) {
+        const int probability, const int *const shortcutTargetCodePoints, const int shortcutLength,
+        const int shortcutProbability, const bool isNotAWord, const bool isBlacklisted,
+        const int timestamp) {
     if (!mBuffers.get()->isUpdatable()) {
         AKLOGI("Warning: addUnigramWord() is called for non-updatable dictionary.");
         return false;
@@ -150,8 +152,9 @@ bool Ver4PatriciaTriePolicy::addUnigramWord(const int *const word, const int len
     DynamicPatriciaTrieReadingHelper readingHelper(mDictBuffer, &mNodeReader);
     readingHelper.initWithPtNodeArrayPos(getRootPosition());
     bool addedNewUnigram = false;
-    if (mUpdatingHelper.addUnigramWord(&readingHelper, word, length, probability, timestamp,
-            &addedNewUnigram)) {
+    // TODO: Add shortcut.
+    if (mUpdatingHelper.addUnigramWord(&readingHelper, word, length, probability, isNotAWord,
+            isBlacklisted, timestamp,  &addedNewUnigram)) {
         if (addedNewUnigram) {
             mUnigramCount++;
         }

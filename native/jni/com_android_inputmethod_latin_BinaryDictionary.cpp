@@ -301,11 +301,12 @@ static void latinime_BinaryDictionary_addUnigramWord(JNIEnv *env, jclass clazz, 
     int codePoints[wordLength];
     env->GetIntArrayRegion(word, 0, wordLength, codePoints);
     jsize shortcutLength = shortcutTarget ? env->GetArrayLength(shortcutTarget) : 0;
-    int shortcutTargetCodePoints[wordLength];
+    int shortcutTargetCodePoints[shortcutLength];
     if (shortcutTarget) {
         env->GetIntArrayRegion(shortcutTarget, 0, shortcutLength, shortcutTargetCodePoints);
     }
-    dictionary->addUnigramWord(codePoints, wordLength, probability, timestamp);
+    dictionary->addUnigramWord(codePoints, wordLength, probability, shortcutTargetCodePoints,
+            shortcutLength, shortuctProbability, isNotAWord, isBlacklisted, timestamp);
 }
 
 static void latinime_BinaryDictionary_addBigramWords(JNIEnv *env, jclass clazz, jlong dict,
@@ -356,7 +357,6 @@ static int latinime_BinaryDictionary_addMultipleDictionaryEntries(JNIEnv *env, j
     jclass languageModelParamClass = env->GetObjectClass(languageModelParam);
     env->DeleteLocalRef(languageModelParam);
 
-    // TODO: Support shortcut and flags.
     jfieldID word0FieldId = env->GetFieldID(languageModelParamClass, "mWord0", "[I");
     jfieldID word1FieldId = env->GetFieldID(languageModelParamClass, "mWord1", "[I");
     jfieldID unigramProbabilityFieldId =
@@ -365,6 +365,14 @@ static int latinime_BinaryDictionary_addMultipleDictionaryEntries(JNIEnv *env, j
             env->GetFieldID(languageModelParamClass, "mBigramProbability", "I");
     jfieldID timestampFieldId =
             env->GetFieldID(languageModelParamClass, "mTimestamp", "I");
+    jfieldID shortcutTargetFieldId =
+            env->GetFieldID(languageModelParamClass, "mShortcutTarget", "[I");
+    jfieldID shortcutProbabilityFieldId =
+            env->GetFieldID(languageModelParamClass, "mShortcutProbability", "I");
+    jfieldID isNotAWordFieldId =
+            env->GetFieldID(languageModelParamClass, "mIsNotAWord", "Z");
+    jfieldID isBlacklistedFieldId =
+            env->GetFieldID(languageModelParamClass, "mIsBlacklisted", "Z");
     env->DeleteLocalRef(languageModelParamClass);
 
     for (int i = startIndex; i < languageModelParamCount; ++i) {
@@ -386,7 +394,19 @@ static int latinime_BinaryDictionary_addMultipleDictionaryEntries(JNIEnv *env, j
         env->GetIntArrayRegion(word1, 0, word1Length, word1CodePoints);
         jint unigramProbability = env->GetIntField(languageModelParam, unigramProbabilityFieldId);
         jint timestamp = env->GetIntField(languageModelParam, timestampFieldId);
-        dictionary->addUnigramWord(word1CodePoints, word1Length, unigramProbability, timestamp);
+        jboolean isNotAWord = env->GetBooleanField(languageModelParam, isNotAWordFieldId);
+        jboolean isBlacklisted = env->GetBooleanField(languageModelParam, isBlacklistedFieldId);
+        jintArray shortcutTarget = static_cast<jintArray>(
+                env->GetObjectField(languageModelParam, shortcutTargetFieldId));
+        jsize shortcutLength = shortcutTarget ? env->GetArrayLength(shortcutTarget) : 0;
+        int shortcutTargetCodePoints[shortcutLength];
+        if (shortcutTarget) {
+            env->GetIntArrayRegion(shortcutTarget, 0, shortcutLength, shortcutTargetCodePoints);
+        }
+        jint shortcutProbability = env->GetIntField(languageModelParam, shortcutProbabilityFieldId);
+        dictionary->addUnigramWord(word1CodePoints, word1Length, unigramProbability,
+                shortcutTargetCodePoints, shortcutLength, shortcutProbability,
+                isNotAWord, isBlacklisted, timestamp);
         if (word0) {
             jint bigramProbability = env->GetIntField(languageModelParam, bigramProbabilityFieldId);
             dictionary->addBigramWords(word0CodePoints, word0Length, word1CodePoints, word1Length,
@@ -397,6 +417,7 @@ static int latinime_BinaryDictionary_addMultipleDictionaryEntries(JNIEnv *env, j
         }
         env->DeleteLocalRef(word0);
         env->DeleteLocalRef(word1);
+        env->DeleteLocalRef(shortcutTarget);
         env->DeleteLocalRef(languageModelParam);
     }
     return languageModelParamCount;
