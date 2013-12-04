@@ -32,12 +32,11 @@ class Ver4PatriciaTrieWritingHelper {
     Ver4PatriciaTrieWritingHelper(Ver4DictBuffers *const buffers)
             : mBuffers(buffers) {}
 
-    void writeToDictFile(const char *const trieFilePath, const HeaderPolicy *const headerPolicy,
-            const int unigramCount, const int bigramCount) const;
+    void writeToDictFile(const char *const trieFilePath, const int unigramCount,
+            const int bigramCount) const;
 
     void writeToDictFileWithGC(const int rootPtNodeArrayPos,
-            const char *const trieFilePath, const HeaderPolicy *const headerPolicy,
-            const bool needsToDecay);
+            const char *const trieFilePath, const bool needsToDecay);
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(Ver4PatriciaTrieWritingHelper);

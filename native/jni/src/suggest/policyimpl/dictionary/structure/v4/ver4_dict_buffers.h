@@ -58,6 +58,10 @@ class Ver4DictBuffers {
                 || mShortcutDictContent.isNearSizeLimit();
     }
 
+    AK_FORCE_INLINE const HeaderPolicy *getHeaderPolicy() const {
+        return &mHeaderPolicy;
+    }
+
     AK_FORCE_INLINE BufferWithExtendableBuffer *getWritableHeaderBuffer() {
         return &mExpandableHeaderBuffer;
     }

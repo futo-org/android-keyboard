@@ -32,8 +32,8 @@
 namespace latinime {
 
 void Ver4PatriciaTrieWritingHelper::writeToDictFile(const char *const trieFilePath,
-        const HeaderPolicy *const headerPolicy, const int unigramCount,
-        const int bigramCount) const {
+        const int unigramCount, const int bigramCount) const {
+    const HeaderPolicy *const headerPolicy = mBuffers->getHeaderPolicy();
     const int dirPathBufSize = strlen(trieFilePath) + 1 /* terminator */;
     char dirPath[dirPathBufSize];
     FileUtils::getDirPath(trieFilePath, dirPathBufSize, dirPath);
@@ -53,8 +53,8 @@ void Ver4PatriciaTrieWritingHelper::writeToDictFile(const char *const trieFilePa
 }
 
 void Ver4PatriciaTrieWritingHelper::writeToDictFileWithGC(const int rootPtNodeArrayPos,
-        const char *const trieFilePath, const HeaderPolicy *const headerPolicy,
-        const bool needsToDecay) {
+        const char *const trieFilePath, const bool needsToDecay) {
+    const HeaderPolicy *const headerPolicy = mBuffers->getHeaderPolicy();
     Ver4DictBuffers::Ver4DictBuffersPtr dictBuffers(
             Ver4DictBuffers::createVer4DictBuffers(headerPolicy));
     int unigramCount = 0;
