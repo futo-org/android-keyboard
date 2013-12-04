@@ -28,6 +28,7 @@
 #include "suggest/policyimpl/gesture/gesture_suggest_policy_factory.h"
 #include "suggest/policyimpl/typing/typing_suggest_policy_factory.h"
 #include "utils/log_utils.h"
+#include "utils/time_keeper.h"
 
 namespace latinime {
 
@@ -47,6 +48,7 @@ int Dictionary::getSuggestions(ProximityInfo *proximityInfo, DicTraverseSession 
         int inputSize, int *prevWordCodePoints, int prevWordLength, int commitPoint,
         const SuggestOptions *const suggestOptions, int *outWords, int *frequencies,
         int *spaceIndices, int *outputTypes, int *outputAutoCommitFirstWordConfidence) const {
+    TimeKeeper::setCurrentTime();
     int result = 0;
     if (suggestOptions->isGesture()) {
         DicTraverseSession::initSessionInstance(
@@ -74,12 +76,14 @@ int Dictionary::getSuggestions(ProximityInfo *proximityInfo, DicTraverseSession 
 
 int Dictionary::getBigrams(const int *word, int length, int *outWords, int *frequencies,
         int *outputTypes) const {
+    TimeKeeper::setCurrentTime();
     if (length <= 0) return 0;
     return mBigramDictionary.get()->getPredictions(word, length, outWords, frequencies,
             outputTypes);
 }
 
 int Dictionary::getProbability(const int *word, int length) const {
+    TimeKeeper::setCurrentTime();
     int pos = getDictionaryStructurePolicy()->getTerminalPtNodePositionOfWord(word, length,
             false /* forceLowerCaseSearch */);
     if (NOT_A_DICT_POS == pos) {
@@ -90,40 +94,48 @@ int Dictionary::getProbability(const int *word, int length) const {
 
 int Dictionary::getBigramProbability(const int *word0, int length0, const int *word1,
         int length1) const {
+    TimeKeeper::setCurrentTime();
     return mBigramDictionary.get()->getBigramProbability(word0, length0, word1, length1);
 }
 
 void Dictionary::addUnigramWord(const int *const word, const int length, const int probability,
         const int timestamp) {
+    TimeKeeper::setCurrentTime();
     mDictionaryStructureWithBufferPolicy.get()->addUnigramWord(word, length, probability,
             timestamp);
 }
 
 void Dictionary::addBigramWords(const int *const word0, const int length0, const int *const word1,
         const int length1, const int probability, const int timestamp) {
+    TimeKeeper::setCurrentTime();
     mDictionaryStructureWithBufferPolicy.get()->addBigramWords(word0, length0, word1, length1,
             probability, timestamp);
 }
 
 void Dictionary::removeBigramWords(const int *const word0, const int length0,
         const int *const word1, const int length1) {
+    TimeKeeper::setCurrentTime();
     mDictionaryStructureWithBufferPolicy.get()->removeBigramWords(word0, length0, word1, length1);
 }
 
 void Dictionary::flush(const char *const filePath) {
+    TimeKeeper::setCurrentTime();
     mDictionaryStructureWithBufferPolicy.get()->flush(filePath);
 }
 
 void Dictionary::flushWithGC(const char *const filePath) {
+    TimeKeeper::setCurrentTime();
     mDictionaryStructureWithBufferPolicy.get()->flushWithGC(filePath);
 }
 
 bool Dictionary::needsToRunGC(const bool mindsBlockByGC) {
+    TimeKeeper::setCurrentTime();
     return mDictionaryStructureWithBufferPolicy.get()->needsToRunGC(mindsBlockByGC);
 }
 
 void Dictionary::getProperty(const char *const query, const int queryLength, char *const outResult,
         const int maxResultLength) {
+    TimeKeeper::setCurrentTime();
     return mDictionaryStructureWithBufferPolicy.get()->getProperty(query, queryLength, outResult,
             maxResultLength);
 }

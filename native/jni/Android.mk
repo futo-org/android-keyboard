@@ -117,7 +117,8 @@ LATIN_IME_CORE_SRC_FILES := \
     $(addprefix utils/, \
         autocorrection_threshold_utils.cpp \
         char_utils.cpp \
-        log_utils.cpp)
+        log_utils.cpp \
+        time_keeper.cpp)
 
 LOCAL_SRC_FILES := \
     $(LATIN_IME_JNI_SRC_FILES) \

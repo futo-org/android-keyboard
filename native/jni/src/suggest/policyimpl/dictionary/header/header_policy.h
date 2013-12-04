@@ -17,13 +17,13 @@
 #ifndef LATINIME_HEADER_POLICY_H
 #define LATINIME_HEADER_POLICY_H
 
-#include <ctime>
 #include <stdint.h>
 
 #include "defines.h"
 #include "suggest/core/policy/dictionary_header_structure_policy.h"
 #include "suggest/policyimpl/dictionary/header/header_read_write_utils.h"
 #include "suggest/policyimpl/dictionary/utils/format_utils.h"
+#include "utils/time_keeper.h"
 
 namespace latinime {
 
@@ -39,9 +39,9 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
               mIsDecayingDict(HeaderReadWriteUtils::readBoolAttributeValue(&mAttributeMap,
                       IS_DECAYING_DICT_KEY, false /* defaultValue */)),
               mLastUpdatedTime(HeaderReadWriteUtils::readIntAttributeValue(&mAttributeMap,
-                      LAST_UPDATED_TIME_KEY, time(0) /* defaultValue */)),
+                      LAST_UPDATED_TIME_KEY, TimeKeeper::peekCurrentTime() /* defaultValue */)),
               mLastDecayedTime(HeaderReadWriteUtils::readIntAttributeValue(&mAttributeMap,
-                      LAST_DECAYED_TIME_KEY, time(0) /* defaultValue */)),
+                      LAST_DECAYED_TIME_KEY, TimeKeeper::peekCurrentTime() /* defaultValue */)),
               mUnigramCount(HeaderReadWriteUtils::readIntAttributeValue(&mAttributeMap,
                       UNIGRAM_COUNT_KEY, 0 /* defaultValue */)),
               mBigramCount(HeaderReadWriteUtils::readIntAttributeValue(&mAttributeMap,
@@ -61,9 +61,9 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
               mIsDecayingDict(HeaderReadWriteUtils::readBoolAttributeValue(&mAttributeMap,
                       IS_DECAYING_DICT_KEY, false /* defaultValue */)),
               mLastUpdatedTime(HeaderReadWriteUtils::readIntAttributeValue(&mAttributeMap,
-                      LAST_UPDATED_TIME_KEY, time(0) /* defaultValue */)),
+                      LAST_UPDATED_TIME_KEY, TimeKeeper::peekCurrentTime() /* defaultValue */)),
               mLastDecayedTime(HeaderReadWriteUtils::readIntAttributeValue(&mAttributeMap,
-                      LAST_UPDATED_TIME_KEY, time(0) /* defaultValue */)),
+                      LAST_UPDATED_TIME_KEY, TimeKeeper::peekCurrentTime() /* defaultValue */)),
               mUnigramCount(0), mBigramCount(0), mExtendedRegionSize(0),
               mHasHistoricalInfoOfWords(HeaderReadWriteUtils::readBoolAttributeValue(
                       &mAttributeMap, HAS_HISTORICAL_INFO_KEY, false /* defaultValue */)) {}
