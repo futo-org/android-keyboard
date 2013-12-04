@@ -57,7 +57,7 @@ public final class BinaryDictionary extends Dictionary {
     @UsedForTesting
     public static final String MAX_BIGRAM_COUNT_QUERY = "MAX_BIGRAM_COUNT";
 
-    private static final int NOT_A_VALID_TIME_STAMP = -1;
+    public static final int NOT_A_VALID_TIME_STAMP = -1;
 
     private long mNativeDict;
     private final Locale mLocale;
@@ -138,9 +138,9 @@ public final class BinaryDictionary extends Dictionary {
     private static native int editDistanceNative(int[] before, int[] after);
     private static native void addUnigramWordNative(long dict, int[] word, int probability,
             int[] shortcutTarget, int shortcutProbability, boolean isNotAWord,
-            boolean isBlacklisted, int timeStamp);
+            boolean isBlacklisted, int timestamp);
     private static native void addBigramWordsNative(long dict, int[] word0, int[] word1,
-            int probability, int timeStamp);
+            int probability, int timestamp);
     private static native void removeBigramWordsNative(long dict, int[] word0, int[] word1);
     private static native int addMultipleDictionaryEntriesNative(long dict,
             LanguageModelParam[] languageModelParams, int startIndex);
@@ -291,10 +291,24 @@ public final class BinaryDictionary extends Dictionary {
             return;
         }
         final int[] codePoints = StringUtils.toCodePointArray(word);
-        final int[] shortcutTarget = new int[0];
-        addUnigramWordNative(mNativeDict, codePoints, probability, shortcutTarget,
+        final int[] shortcutTargetCodePoints = new int[0];
+        addUnigramWordNative(mNativeDict, codePoints, probability, shortcutTargetCodePoints,
                 NOT_A_PROBABILITY, false /* isNotAWord */, false /* isBlacklisted */,
                 NOT_A_VALID_TIME_STAMP);
+    }
+
+    // Add a unigram entry to binary dictionary with unigram attributes in native code.
+    public void addUnigramWord(final String word, final int probability,
+            final String shortcutTarget, final int shortcutProbability, final boolean isNotAWord,
+            final boolean isBlacklisted, final int timestamp) {
+        if (TextUtils.isEmpty(word)) {
+            return;
+        }
+        final int[] codePoints = StringUtils.toCodePointArray(word);
+        final int[] shortcutTargetCodePoints = (shortcutTarget != null) ?
+                StringUtils.toCodePointArray(shortcutTarget) : null;
+        addUnigramWordNative(mNativeDict, codePoints, probability, shortcutTargetCodePoints,
+                shortcutProbability, isNotAWord, isBlacklisted, timestamp);
     }
 
     // Add a bigram entry to binary dictionary in native code.
@@ -306,6 +320,17 @@ public final class BinaryDictionary extends Dictionary {
         final int[] codePoints1 = StringUtils.toCodePointArray(word1);
         addBigramWordsNative(mNativeDict, codePoints0, codePoints1, probability,
                 NOT_A_VALID_TIME_STAMP);
+    }
+
+    // Add a bigram entry to binary dictionary with timestamp in native code.
+    public void addBigramWords(final String word0, final String word1, final int probability,
+            final int timestamp) {
+        if (TextUtils.isEmpty(word0) || TextUtils.isEmpty(word1)) {
+            return;
+        }
+        final int[] codePoints0 = StringUtils.toCodePointArray(word0);
+        final int[] codePoints1 = StringUtils.toCodePointArray(word1);
+        addBigramWordsNative(mNativeDict, codePoints0, codePoints1, probability, timestamp);
     }
 
     // Remove a bigram entry form binary dictionary in native code.
@@ -327,10 +352,11 @@ public final class BinaryDictionary extends Dictionary {
         public final int mShortcutProbability;
         public final boolean mIsNotAWord;
         public final boolean mIsBlacklisted;
-        public final int mTimeStamp;
+        public final int mTimestamp;
 
         // Constructor for unigram.
-        public LanguageModelParam(final String word, final int unigramProbability) {
+        public LanguageModelParam(final String word, final int unigramProbability,
+                final int timestamp) {
             mWord0 = null;
             mWord1 = StringUtils.toCodePointArray(word);
             mShortcutTarget = null;
@@ -339,12 +365,13 @@ public final class BinaryDictionary extends Dictionary {
             mShortcutProbability = NOT_A_PROBABILITY;
             mIsNotAWord = false;
             mIsBlacklisted = false;
-            mTimeStamp = NOT_A_VALID_TIME_STAMP;
+            mTimestamp = timestamp;
         }
 
         // Constructor for unigram and bigram.
         public LanguageModelParam(final String word0, final String word1,
-                final int unigramProbability, final int bigramProbability) {
+                final int unigramProbability, final int bigramProbability,
+                final int timestamp) {
             mWord0 = StringUtils.toCodePointArray(word0);
             mWord1 = StringUtils.toCodePointArray(word1);
             mShortcutTarget = null;
@@ -353,7 +380,7 @@ public final class BinaryDictionary extends Dictionary {
             mShortcutProbability = NOT_A_PROBABILITY;
             mIsNotAWord = false;
             mIsBlacklisted = false;
-            mTimeStamp = NOT_A_VALID_TIME_STAMP;
+            mTimestamp = timestamp;
         }
     }
 

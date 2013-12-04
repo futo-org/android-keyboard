@@ -334,8 +334,9 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     /**
      * Dynamically adds a word unigram to the dictionary. May overwrite an existing entry.
      */
-    protected void addWordDynamically(final String word, final String shortcutTarget,
-            final int frequency, final int shortcutFreq, final boolean isNotAWord) {
+    protected void addWordDynamically(final String word, final int frequency,
+            final String shortcutTarget, final int shortcutFreq, final boolean isNotAWord,
+            final boolean isBlacklisted, final int timestamp) {
         if (!mIsUpdatable) {
             Log.w(TAG, "addWordDynamically is called for non-updatable dictionary: " + mFilename);
             return;
@@ -344,7 +345,8 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
             @Override
             public void run() {
                 runGCIfRequiredInternalLocked(true /* mindsBlockByGC */);
-                mBinaryDictionary.addUnigramWord(word, frequency);
+                mBinaryDictionary.addUnigramWord(word, frequency, shortcutTarget, shortcutFreq,
+                        isNotAWord, isBlacklisted, timestamp);
             }
         });
     }
@@ -353,7 +355,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
      * Dynamically adds a word bigram in the dictionary. May overwrite an existing entry.
      */
     protected void addBigramDynamically(final String word0, final String word1,
-            final int frequency) {
+            final int frequency, final int timestamp) {
         if (!mIsUpdatable) {
             Log.w(TAG, "addBigramDynamically is called for non-updatable dictionary: "
                     + mFilename);
@@ -363,7 +365,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
             @Override
             public void run() {
                 runGCIfRequiredInternalLocked(true /* mindsBlockByGC */);
-                mBinaryDictionary.addBigramWords(word0, word1, frequency);
+                mBinaryDictionary.addBigramWords(word0, word1, frequency, timestamp);
             }
         });
     }

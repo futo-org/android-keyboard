@@ -90,12 +90,12 @@ public abstract class PersonalizationDictionaryUpdateSession {
 
     // TODO: Support multi locale to add bigram
     public void addBigramToPersonalizationDictionary(String word0, String word1, boolean isValid,
-            int frequency) {
+            int frequency, int timestamp) {
         final DecayingExpandableBinaryDictionaryBase dictionary = getPredictionDictionary();
         if (dictionary == null) {
             return;
         }
-        dictionary.addToDictionary(word0, word1, isValid);
+        dictionary.addToDictionary(word0, word1, isValid, timestamp);
     }
 
     // TODO: Support multi locale.
