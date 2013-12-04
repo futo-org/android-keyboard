@@ -93,6 +93,7 @@
         <item name="autoCorrectionSpacebarLedIcon">@drawable/sym_keyboard_space_led_gb</item>
         <item name="languageOnSpacebarTextColor">@color/spacebar_text_color_gb</item>
         <item name="languageOnSpacebarTextShadowColor">@color/spacebar_text_shadow_color_gb</item>
+        <item name="spacebarBackground">@drawable/btn_keyboard_spacebar_gb</item>
     </style>
     <style
         name="KeyPreviewTextView.GB"

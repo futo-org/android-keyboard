@@ -41,9 +41,9 @@
     </declare-styleable>
 
     <declare-styleable name="KeyboardView">
-        <!-- Image for the key. This image needs to be a StateListDrawable, with the following
-             possible states: normal, pressed, checkable, checkable+pressed, checkable+checked,
-             checkable+checked+pressed. -->
+        <!-- Image for the key. This image needs to be a {@link StateListDrawable}, with the
+             following possible states: normal, pressed, checkable, checkable+pressed,
+             checkable+checked, checkable+checked+pressed. -->
         <attr name="keyBackground" format="reference" />
         <!-- Image for the functional key used in Emoji layout. -->
         <attr name="keyBackgroundEmojiFunctional" format="reference" />
@@ -75,6 +75,8 @@
         <attr name="languageOnSpacebarTextRatio" format="fraction" />
         <attr name="languageOnSpacebarTextColor" format="color" />
         <attr name="languageOnSpacebarTextShadowColor" format="color" />
+        <!-- Background image for the spacebar. -->
+        <attr name="spacebarBackground" format="reference" />
         <!-- Fadeout animator for spacebar language label. -->
         <attr name="languageOnSpacebarFinalAlpha" format="integer" />
         <attr name="languageOnSpacebarFadeoutAnimator" format="reference" />
