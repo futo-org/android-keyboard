@@ -57,7 +57,7 @@ public final class BinaryDictionary extends Dictionary {
     @UsedForTesting
     public static final String MAX_BIGRAM_COUNT_QUERY = "MAX_BIGRAM_COUNT";
 
-    public static final int NOT_A_VALID_TIME_STAMP = -1;
+    public static final int NOT_A_VALID_TIMESTAMP = -1;
 
     private long mNativeDict;
     private final Locale mLocale;
@@ -285,18 +285,6 @@ public final class BinaryDictionary extends Dictionary {
         return getBigramProbabilityNative(mNativeDict, codePoints0, codePoints1);
     }
 
-    // Add a unigram entry to binary dictionary in native code.
-    public void addUnigramWord(final String word, final int probability) {
-        if (TextUtils.isEmpty(word)) {
-            return;
-        }
-        final int[] codePoints = StringUtils.toCodePointArray(word);
-        final int[] shortcutTargetCodePoints = new int[0];
-        addUnigramWordNative(mNativeDict, codePoints, probability, shortcutTargetCodePoints,
-                NOT_A_PROBABILITY, false /* isNotAWord */, false /* isBlacklisted */,
-                NOT_A_VALID_TIME_STAMP);
-    }
-
     // Add a unigram entry to binary dictionary with unigram attributes in native code.
     public void addUnigramWord(final String word, final int probability,
             final String shortcutTarget, final int shortcutProbability, final boolean isNotAWord,
@@ -309,17 +297,6 @@ public final class BinaryDictionary extends Dictionary {
                 StringUtils.toCodePointArray(shortcutTarget) : null;
         addUnigramWordNative(mNativeDict, codePoints, probability, shortcutTargetCodePoints,
                 shortcutProbability, isNotAWord, isBlacklisted, timestamp);
-    }
-
-    // Add a bigram entry to binary dictionary in native code.
-    public void addBigramWords(final String word0, final String word1, final int probability) {
-        if (TextUtils.isEmpty(word0) || TextUtils.isEmpty(word1)) {
-            return;
-        }
-        final int[] codePoints0 = StringUtils.toCodePointArray(word0);
-        final int[] codePoints1 = StringUtils.toCodePointArray(word1);
-        addBigramWordsNative(mNativeDict, codePoints0, codePoints1, probability,
-                NOT_A_VALID_TIME_STAMP);
     }
 
     // Add a bigram entry to binary dictionary with timestamp in native code.
