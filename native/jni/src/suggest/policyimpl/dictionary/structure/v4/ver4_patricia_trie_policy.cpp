@@ -50,7 +50,7 @@ void Ver4PatriciaTriePolicy::createAndGetAllChildDicNodes(const DicNode *const d
             break;
         }
         bool isTerminal = ptNodeParams.isTerminal() && !ptNodeParams.isDeleted();
-        if (isTerminal && mHeaderPolicy.isDecayingDict()) {
+        if (isTerminal && mHeaderPolicy->isDecayingDict()) {
             // A DecayingDict may have a terminal PtNode that has a terminal DicNode whose
             // probability is NOT_A_PROBABILITY. In such case, we don't want to treat it as a
             // valid terminal DicNode.
@@ -85,7 +85,7 @@ int Ver4PatriciaTriePolicy::getTerminalPtNodePositionOfWord(const int *const inW
 
 int Ver4PatriciaTriePolicy::getProbability(const int unigramProbability,
         const int bigramProbability) const {
-    if (mHeaderPolicy.isDecayingDict()) {
+    if (mHeaderPolicy->isDecayingDict()) {
         // Both probabilities are encoded. Decode them and get probability.
         return ForgettingCurveUtils::getProbability(unigramProbability, bigramProbability);
     } else {
@@ -229,7 +229,7 @@ void Ver4PatriciaTriePolicy::flush(const char *const filePath) {
         AKLOGI("Warning: flush() is called for non-updatable dictionary. filePath: %s", filePath);
         return;
     }
-    mWritingHelper.writeToDictFile(filePath, &mHeaderPolicy, mUnigramCount, mBigramCount);
+    mWritingHelper.writeToDictFile(filePath, mUnigramCount, mBigramCount);
 }
 
 void Ver4PatriciaTriePolicy::flushWithGC(const char *const filePath) {
@@ -237,10 +237,10 @@ void Ver4PatriciaTriePolicy::flushWithGC(const char *const filePath) {
         AKLOGI("Warning: flushWithGC() is called for non-updatable dictionary.");
         return;
     }
-    const bool needsToDecay = mHeaderPolicy.isDecayingDict()
+    const bool needsToDecay = mHeaderPolicy->isDecayingDict()
             && (mNeedsToDecayForTesting || ForgettingCurveUtils::needsToDecay(
-                    false /* mindsBlockByDecay */, mUnigramCount, mBigramCount, &mHeaderPolicy));
-    mWritingHelper.writeToDictFileWithGC(getRootPosition(), filePath, &mHeaderPolicy, needsToDecay);
+                    false /* mindsBlockByDecay */, mUnigramCount, mBigramCount, mHeaderPolicy));
+    mWritingHelper.writeToDictFileWithGC(getRootPosition(), filePath, needsToDecay);
     mNeedsToDecayForTesting = false;
 }
 
@@ -252,7 +252,7 @@ bool Ver4PatriciaTriePolicy::needsToRunGC(const bool mindsBlockByGC) const {
     if (mBuffers.get()->isNearSizeLimit()) {
         // Additional buffer size is near the limit.
         return true;
-    } else if (mHeaderPolicy.getExtendedRegionSize() + mDictBuffer->getUsedAdditionalBufferSize()
+    } else if (mHeaderPolicy->getExtendedRegionSize() + mDictBuffer->getUsedAdditionalBufferSize()
             > Ver4DictConstants::MAX_DICT_EXTENDED_REGION_SIZE) {
         // Total extended region size of the trie exceeds the limit.
         return true;
@@ -260,9 +260,9 @@ bool Ver4PatriciaTriePolicy::needsToRunGC(const bool mindsBlockByGC) const {
             && mDictBuffer->getUsedAdditionalBufferSize() > 0) {
         // Needs to reduce dictionary size.
         return true;
-    } else if (mHeaderPolicy.isDecayingDict()) {
+    } else if (mHeaderPolicy->isDecayingDict()) {
         return mNeedsToDecayForTesting || ForgettingCurveUtils::needsToDecay(
-                mindsBlockByGC, mUnigramCount, mBigramCount, &mHeaderPolicy);
+                mindsBlockByGC, mUnigramCount, mBigramCount, mHeaderPolicy);
     }
     return false;
 }
@@ -276,11 +276,11 @@ void Ver4PatriciaTriePolicy::getProperty(const char *const query, const int quer
         snprintf(outResult, maxResultLength, "%d", mBigramCount);
     } else if (strncmp(query, MAX_UNIGRAM_COUNT_QUERY, compareLength) == 0) {
         snprintf(outResult, maxResultLength, "%d",
-                mHeaderPolicy.isDecayingDict() ? ForgettingCurveUtils::MAX_UNIGRAM_COUNT :
+                mHeaderPolicy->isDecayingDict() ? ForgettingCurveUtils::MAX_UNIGRAM_COUNT :
                         static_cast<int>(Ver4DictConstants::MAX_DICTIONARY_SIZE));
     } else if (strncmp(query, MAX_BIGRAM_COUNT_QUERY, compareLength) == 0) {
         snprintf(outResult, maxResultLength, "%d",
-                mHeaderPolicy.isDecayingDict() ? ForgettingCurveUtils::MAX_BIGRAM_COUNT :
+                mHeaderPolicy->isDecayingDict() ? ForgettingCurveUtils::MAX_BIGRAM_COUNT :
                         static_cast<int>(Ver4DictConstants::MAX_DICTIONARY_SIZE));
     } else if (strncmp(query, SET_NEEDS_TO_DECAY_FOR_TESTING_QUERY, compareLength) == 0) {
         mNeedsToDecayForTesting = true;
