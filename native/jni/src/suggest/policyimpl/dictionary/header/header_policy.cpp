@@ -92,12 +92,12 @@ bool HeaderPolicy::writeHeaderToBuffer(BufferWithExtendableBuffer *const bufferT
     if (updatesLastUpdatedTime) {
         // Set current time as a last updated time.
         HeaderReadWriteUtils::setIntAttribute(&attributeMapTowrite, LAST_UPDATED_TIME_KEY,
-                time(0));
+                TimeKeeper::peekCurrentTime());
     }
     if (updatesLastDecayedTime) {
         // Set current time as a last updated time.
         HeaderReadWriteUtils::setIntAttribute(&attributeMapTowrite, LAST_DECAYED_TIME_KEY,
-                time(0));
+                TimeKeeper::peekCurrentTime());
     }
     if (!HeaderReadWriteUtils::writeHeaderAttributes(bufferToWrite, &attributeMapTowrite,
             &writingPos)) {

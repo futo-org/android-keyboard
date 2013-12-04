@@ -30,24 +30,10 @@ class DictionaryHeaderStructurePolicy;
 // TODO: Quit using bigram probability to indicate the delta.
 class ForgettingCurveUtils {
  public:
-    class TimeKeeper {
-     public:
-        TimeKeeper() : mCurrentTime(0) {}
-        void setCurrentTime();
-        int peekCurrentTime() const { return mCurrentTime; };
-
-     private:
-        DISALLOW_COPY_AND_ASSIGN(TimeKeeper);
-
-        int mCurrentTime;
-    };
-
     static const int MAX_UNIGRAM_COUNT;
     static const int MAX_UNIGRAM_COUNT_AFTER_GC;
     static const int MAX_BIGRAM_COUNT;
     static const int MAX_BIGRAM_COUNT_AFTER_GC;
-
-    static TimeKeeper sTimeKeeper;
 
     static int getProbability(const int encodedUnigramProbability,
             const int encodedBigramProbability);

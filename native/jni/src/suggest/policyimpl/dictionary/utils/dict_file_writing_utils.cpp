@@ -24,6 +24,7 @@
 #include "suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer.h"
 #include "suggest/policyimpl/dictionary/utils/file_utils.h"
 #include "suggest/policyimpl/dictionary/utils/format_utils.h"
+#include "utils/time_keeper.h"
 
 namespace latinime {
 
@@ -31,6 +32,7 @@ const char *const DictFileWritingUtils::TEMP_FILE_SUFFIX_FOR_WRITING_DICT_FILE =
 
 /* static */ bool DictFileWritingUtils::createEmptyDictFile(const char *const filePath,
         const int dictVersion, const HeaderReadWriteUtils::AttributeMap *const attributeMap) {
+    TimeKeeper::setCurrentTime();
     switch (dictVersion) {
         case 4:
             return createEmptyV4DictFile(filePath, attributeMap);

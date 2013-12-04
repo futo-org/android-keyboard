@@ -59,9 +59,6 @@ void Ver4PatriciaTrieWritingHelper::writeToDictFileWithGC(const int rootPtNodeAr
             Ver4DictBuffers::createVer4DictBuffers(headerPolicy));
     int unigramCount = 0;
     int bigramCount = 0;
-    if (needsToDecay) {
-        ForgettingCurveUtils::sTimeKeeper.setCurrentTime();
-    }
     if (!runGC(rootPtNodeArrayPos, headerPolicy, dictBuffers.get(), &unigramCount, &bigramCount,
             needsToDecay)) {
         return;
