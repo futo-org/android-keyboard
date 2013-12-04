@@ -368,6 +368,7 @@ public final class FormatSpec {
         // and latinime::HeaderReadWriteUtils.
         public static final String SUPPORTS_DYNAMIC_UPDATE_ATTRIBUTE = "SUPPORTS_DYNAMIC_UPDATE";
         public static final String USES_FORGETTING_CURVE_ATTRIBUTE = "USES_FORGETTING_CURVE";
+        public static final String HAS_HISTORICAL_INFO_ATTRIBUTE = "HAS_HISTORICAL_INFO";
         public static final String ATTRIBUTE_VALUE_TRUE = "1";
 
         public static final String DICTIONARY_VERSION_ATTRIBUTE = "version";
