@@ -55,7 +55,8 @@ void Ver4PatriciaTrieWritingHelper::writeToDictFile(const char *const trieFilePa
 void Ver4PatriciaTrieWritingHelper::writeToDictFileWithGC(const int rootPtNodeArrayPos,
         const char *const trieFilePath, const HeaderPolicy *const headerPolicy,
         const bool needsToDecay) {
-    Ver4DictBuffers::Ver4DictBuffersPtr dictBuffers(Ver4DictBuffers::createVer4DictBuffers());
+    Ver4DictBuffers::Ver4DictBuffersPtr dictBuffers(
+            Ver4DictBuffers::createVer4DictBuffers(headerPolicy));
     int unigramCount = 0;
     int bigramCount = 0;
     if (needsToDecay) {

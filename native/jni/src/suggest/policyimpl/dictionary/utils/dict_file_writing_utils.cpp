@@ -43,8 +43,9 @@ const char *const DictFileWritingUtils::TEMP_FILE_SUFFIX_FOR_WRITING_DICT_FILE =
 
 /* static */ bool DictFileWritingUtils::createEmptyV4DictFile(const char *const dirPath,
         const HeaderReadWriteUtils::AttributeMap *const attributeMap) {
-    Ver4DictBuffers::Ver4DictBuffersPtr dictBuffers = Ver4DictBuffers::createVer4DictBuffers();
     HeaderPolicy headerPolicy(FormatUtils::VERSION_4, attributeMap);
+    Ver4DictBuffers::Ver4DictBuffersPtr dictBuffers =
+            Ver4DictBuffers::createVer4DictBuffers(&headerPolicy);
     headerPolicy.writeHeaderToBuffer(dictBuffers.get()->getWritableHeaderBuffer(),
             true /* updatesLastUpdatedTime */, true /* updatesLastDecayedTime */,
             0 /* unigramCount */, 0 /* bigramCount */, 0 /* extendedRegionSize */);
