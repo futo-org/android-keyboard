@@ -38,22 +38,20 @@ class DicNodeVector;
 class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
  public:
     Ver4PatriciaTriePolicy(const Ver4DictBuffers::Ver4DictBuffersPtr &buffers)
-            : mBuffers(buffers),
-              mHeaderPolicy(mBuffers.get()->getWritableHeaderBuffer()->getBuffer(
-                      false /* usesAdditionalBuffer*/), FormatUtils::VERSION_4),
+            : mBuffers(buffers), mHeaderPolicy(mBuffers.get()->getHeaderPolicy()),
               mDictBuffer(mBuffers.get()->getWritableTrieBuffer()),
               mBigramPolicy(mBuffers.get()->getUpdatableBigramDictContent(),
-                      mBuffers.get()->getTerminalPositionLookupTable(), &mHeaderPolicy,
-                      mHeaderPolicy.isDecayingDict()),
+                      mBuffers.get()->getTerminalPositionLookupTable(), mHeaderPolicy,
+                      mHeaderPolicy->isDecayingDict()),
               mShortcutPolicy(mBuffers.get()->getShortcutDictContent(),
                       mBuffers.get()->getTerminalPositionLookupTable()),
               mNodeReader(mDictBuffer, mBuffers.get()->getProbabilityDictContent()),
               mNodeWriter(mDictBuffer, mBuffers.get(), &mNodeReader, &mBigramPolicy,
-                      &mShortcutPolicy, mHeaderPolicy.isDecayingDict()),
+                      &mShortcutPolicy, mHeaderPolicy->isDecayingDict()),
               mUpdatingHelper(mDictBuffer, &mNodeReader, &mNodeWriter),
               mWritingHelper(mBuffers.get()),
-              mUnigramCount(mHeaderPolicy.getUnigramCount()),
-              mBigramCount(mHeaderPolicy.getBigramCount()), mNeedsToDecayForTesting(false) {};
+              mUnigramCount(mHeaderPolicy->getUnigramCount()),
+              mBigramCount(mHeaderPolicy->getBigramCount()), mNeedsToDecayForTesting(false) {};
 
     AK_FORCE_INLINE int getRootPosition() const {
         return 0;
@@ -78,7 +76,7 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     int getBigramsPositionOfPtNode(const int ptNodePos) const;
 
     const DictionaryHeaderStructurePolicy *getHeaderStructurePolicy() const {
-        return &mHeaderPolicy;
+        return mHeaderPolicy;
     }
 
     const DictionaryBigramsStructurePolicy *getBigramsStructurePolicy() const {
@@ -121,7 +119,7 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     static const int MIN_DICT_SIZE_TO_REFUSE_DYNAMIC_OPERATIONS;
 
     Ver4DictBuffers::Ver4DictBuffersPtr mBuffers;
-    const HeaderPolicy mHeaderPolicy;
+    const HeaderPolicy *const mHeaderPolicy;
     BufferWithExtendableBuffer *const mDictBuffer;
     Ver4BigramListPolicy mBigramPolicy;
     Ver4ShortcutListPolicy mShortcutPolicy;
