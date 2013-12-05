@@ -32,36 +32,8 @@
         <include
             latin:keyXPos="25%p"
             latin:keyboardLayout="@xml/key_space_5kw" />
-        <switch>
-            <case
-                latin:languageCode="ar|fa"
-            >
-                <Key
-                    latin:keyHintLabel="!text/keyhintlabel_for_arabic_diacritics"
-                    latin:keyLabelFlags="hasPopupHint|hasShiftedLetterHint"
-                    latin:moreKeys="!text/more_keys_for_arabic_diacritics"
-                    latin:keyStyle="punctuationKeyStyle" />
-            </case>
-            <case
-                latin:languageCode="ne"
-                latin:keyboardLayoutSet="nepali_traditional"
-            >
-                <include
-                    latin:keyboardLayout="@xml/key_nepali_traditional_period" />
-            </case>
-            <case
-                latin:languageCode="hy"
-            >
-                <!-- U+0589: "։" ARMENIAN FULL STOP -->
-                <Key
-                    latin:keyLabel="&#x0589;"
-                    latin:keyStyle="punctuationKeyStyle" />
-            </case>
-            <default>
-                <Key
-                    latin:keyStyle="punctuationKeyStyle" />
-            </default>
-        </switch>
+        <include
+            latin:keyboardLayout="@xml/key_period" />
         <Key
             latin:keyStyle="enterKeyStyle"
             latin:keyWidth="fillRight" />
