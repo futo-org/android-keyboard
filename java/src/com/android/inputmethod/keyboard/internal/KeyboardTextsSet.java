@@ -217,47 +217,44 @@ public final class KeyboardTextsSet {
         /* 112 */ "more_keys_for_tablet_comma",
         /* 113 */ "keyhintlabel_for_period",
         /* 114 */ "more_keys_for_period",
-        /* 115 */ "keylabel_for_apostrophe",
-        /* 116 */ "keyhintlabel_for_apostrophe",
-        /* 117 */ "more_keys_for_apostrophe",
-        /* 118 */ "more_keys_for_q",
-        /* 119 */ "more_keys_for_x",
-        /* 120 */ "keylabel_for_q",
-        /* 121 */ "keylabel_for_w",
-        /* 122 */ "keylabel_for_y",
-        /* 123 */ "keylabel_for_x",
-        /* 124 */ "keylabel_for_spanish_row2_10",
-        /* 125 */ "more_keys_for_am_pm",
-        /* 126 */ "settings_as_more_key",
-        /* 127 */ "shortcut_as_more_key",
-        /* 128 */ "action_next_as_more_key",
-        /* 129 */ "action_previous_as_more_key",
-        /* 130 */ "label_to_more_symbol_key",
-        /* 131 */ "label_to_more_symbol_for_tablet_key",
-        /* 132 */ "label_tab_key",
-        /* 133 */ "label_to_phone_numeric_key",
-        /* 134 */ "label_to_phone_symbols_key",
-        /* 135 */ "label_time_am",
-        /* 136 */ "label_time_pm",
-        /* 137 */ "keylabel_for_popular_domain",
-        /* 138 */ "more_keys_for_popular_domain",
-        /* 139 */ "more_keys_for_smiley",
-        /* 140 */ "single_laqm_raqm",
-        /* 141 */ "single_laqm_raqm_rtl",
-        /* 142 */ "single_raqm_laqm",
-        /* 143 */ "double_laqm_raqm",
-        /* 144 */ "double_laqm_raqm_rtl",
-        /* 145 */ "double_raqm_laqm",
-        /* 146 */ "single_lqm_rqm",
-        /* 147 */ "single_9qm_lqm",
-        /* 148 */ "single_9qm_rqm",
-        /* 149 */ "double_lqm_rqm",
-        /* 150 */ "double_9qm_lqm",
-        /* 151 */ "double_9qm_rqm",
-        /* 152 */ "more_keys_for_single_quote",
-        /* 153 */ "more_keys_for_double_quote",
-        /* 154 */ "more_keys_for_tablet_double_quote",
-        /* 155 */ "emoji_key_as_more_key",
+        /* 115 */ "more_keys_for_q",
+        /* 116 */ "more_keys_for_x",
+        /* 117 */ "keylabel_for_q",
+        /* 118 */ "keylabel_for_w",
+        /* 119 */ "keylabel_for_y",
+        /* 120 */ "keylabel_for_x",
+        /* 121 */ "keylabel_for_spanish_row2_10",
+        /* 122 */ "more_keys_for_am_pm",
+        /* 123 */ "settings_as_more_key",
+        /* 124 */ "shortcut_as_more_key",
+        /* 125 */ "action_next_as_more_key",
+        /* 126 */ "action_previous_as_more_key",
+        /* 127 */ "label_to_more_symbol_key",
+        /* 128 */ "label_to_more_symbol_for_tablet_key",
+        /* 129 */ "label_tab_key",
+        /* 130 */ "label_to_phone_numeric_key",
+        /* 131 */ "label_to_phone_symbols_key",
+        /* 132 */ "label_time_am",
+        /* 133 */ "label_time_pm",
+        /* 134 */ "keylabel_for_popular_domain",
+        /* 135 */ "more_keys_for_popular_domain",
+        /* 136 */ "more_keys_for_smiley",
+        /* 137 */ "single_laqm_raqm",
+        /* 138 */ "single_laqm_raqm_rtl",
+        /* 139 */ "single_raqm_laqm",
+        /* 140 */ "double_laqm_raqm",
+        /* 141 */ "double_laqm_raqm_rtl",
+        /* 142 */ "double_raqm_laqm",
+        /* 143 */ "single_lqm_rqm",
+        /* 144 */ "single_9qm_lqm",
+        /* 145 */ "single_9qm_rqm",
+        /* 146 */ "double_lqm_rqm",
+        /* 147 */ "double_9qm_lqm",
+        /* 148 */ "double_9qm_rqm",
+        /* 149 */ "more_keys_for_single_quote",
+        /* 150 */ "more_keys_for_double_quote",
+        /* 151 */ "more_keys_for_tablet_double_quote",
+        /* 152 */ "emoji_key_as_more_key",
     };
 
     private static final String EMPTY = "";
@@ -372,41 +369,38 @@ public final class KeyboardTextsSet {
         /* ~113 */
         // U+2026: "…" HORIZONTAL ELLIPSIS
         /* 114 */ "\u2026",
-        /* 115 */ "\'",
-        /* 116 */ "\"",
-        /* 117 */ "\"",
-        /* 118 */ EMPTY,
-        /* 119 */ EMPTY,
-        /* 120 */ "q",
-        /* 121 */ "w",
-        /* 122 */ "y",
-        /* 123 */ "x",
-        /* 124 */ EMPTY,
-        /* 125 */ "!fixedColumnOrder!2,!hasLabels!,!text/label_time_am,!text/label_time_pm",
-        /* 126 */ "!icon/settings_key|!code/key_settings",
-        /* 127 */ "!icon/shortcut_key|!code/key_shortcut",
-        /* 128 */ "!hasLabels!,!text/label_next_key|!code/key_action_next",
-        /* 129 */ "!hasLabels!,!text/label_previous_key|!code/key_action_previous",
+        /* 115 */ EMPTY,
+        /* 116 */ EMPTY,
+        /* 117 */ "q",
+        /* 118 */ "w",
+        /* 119 */ "y",
+        /* 120 */ "x",
+        /* 121 */ EMPTY,
+        /* 122 */ "!fixedColumnOrder!2,!hasLabels!,!text/label_time_am,!text/label_time_pm",
+        /* 123 */ "!icon/settings_key|!code/key_settings",
+        /* 124 */ "!icon/shortcut_key|!code/key_shortcut",
+        /* 125 */ "!hasLabels!,!text/label_next_key|!code/key_action_next",
+        /* 126 */ "!hasLabels!,!text/label_previous_key|!code/key_action_previous",
         // Label for "switch to more symbol" modifier key.  Must be short to fit on key!
-        /* 130 */ "= \\ <",
+        /* 127 */ "= \\ <",
         // Label for "switch to more symbol" modifier key on tablets.  Must be short to fit on key!
-        /* 131 */ "~ [ <",
+        /* 128 */ "~ [ <",
         // Label for "Tab" key.  Must be short to fit on key!
-        /* 132 */ "Tab",
+        /* 129 */ "Tab",
         // Label for "switch to phone numeric" key.  Must be short to fit on key!
-        /* 133 */ "123",
+        /* 130 */ "123",
         // Label for "switch to phone symbols" key.  Must be short to fit on key!
         // U+FF0A: "＊" FULLWIDTH ASTERISK
         // U+FF03: "＃" FULLWIDTH NUMBER SIGN
-        /* 134 */ "\uFF0A\uFF03",
+        /* 131 */ "\uFF0A\uFF03",
         // Key label for "ante meridiem"
-        /* 135 */ "AM",
+        /* 132 */ "AM",
         // Key label for "post meridiem"
-        /* 136 */ "PM",
-        /* 137 */ ".com",
+        /* 133 */ "PM",
+        /* 134 */ ".com",
         // popular web domains for the locale - most popular, displayed on the keyboard
-        /* 138 */ "!hasLabels!,.net,.org,.gov,.edu",
-        /* 139 */ "!fixedColumnOrder!5,!hasLabels!,=-O|=-O ,:-P|:-P ,;-)|;-) ,:-(|:-( ,:-)|:-) ,:-!|:-! ,:-$|:-$ ,B-)|B-) ,:O|:O ,:-*|:-* ,:-D|:-D ,:\'(|:\'( ,:-\\\\|:-\\\\ ,O:-)|O:-) ,:-[|:-[ ",
+        /* 135 */ "!hasLabels!,.net,.org,.gov,.edu",
+        /* 136 */ "!fixedColumnOrder!5,!hasLabels!,=-O|=-O ,:-P|:-P ,;-)|;-) ,:-(|:-( ,:-)|:-) ,:-!|:-! ,:-$|:-$ ,B-)|B-) ,:O|:O ,:-*|:-* ,:-D|:-D ,:\'(|:\'( ,:-\\\\|:-\\\\ ,O:-)|O:-) ,:-[|:-[ ",
         // U+2039: "‹" SINGLE LEFT-POINTING ANGLE QUOTATION MARK
         // U+203A: "›" SINGLE RIGHT-POINTING ANGLE QUOTATION MARK
         // U+00AB: "«" LEFT-POINTING DOUBLE ANGLE QUOTATION MARK
@@ -428,25 +422,25 @@ public final class KeyboardTextsSet {
         // The following each quotation mark pair consist of
         // <opening quotation mark>, <closing quotation mark>
         // and is named after (single|double)_<opening quotation mark>_<closing quotation mark>.
-        /* 140 */ "\u2039,\u203A",
-        /* 141 */ "\u2039|\u203A,\u203A|\u2039",
-        /* 142 */ "\u203A,\u2039",
-        /* 143 */ "\u00AB,\u00BB",
-        /* 144 */ "\u00AB|\u00BB,\u00BB|\u00AB",
-        /* 145 */ "\u00BB,\u00AB",
+        /* 137 */ "\u2039,\u203A",
+        /* 138 */ "\u2039|\u203A,\u203A|\u2039",
+        /* 139 */ "\u203A,\u2039",
+        /* 140 */ "\u00AB,\u00BB",
+        /* 141 */ "\u00AB|\u00BB,\u00BB|\u00AB",
+        /* 142 */ "\u00BB,\u00AB",
         // The following each quotation mark triplet consists of
         // <another quotation mark>, <opening quotation mark>, <closing quotation mark>
         // and is named after (single|double)_<opening quotation mark>_<closing quotation mark>.
-        /* 146 */ "\u201A,\u2018,\u2019",
-        /* 147 */ "\u2019,\u201A,\u2018",
-        /* 148 */ "\u2018,\u201A,\u2019",
-        /* 149 */ "\u201E,\u201C,\u201D",
-        /* 150 */ "\u201D,\u201E,\u201C",
-        /* 151 */ "\u201C,\u201E,\u201D",
-        /* 152 */ "!fixedColumnOrder!5,!text/single_quotes,!text/single_angle_quotes",
-        /* 153 */ "!fixedColumnOrder!5,!text/double_quotes,!text/double_angle_quotes",
-        /* 154 */ "!fixedColumnOrder!6,!text/double_quotes,!text/single_quotes,!text/double_angle_quotes,!text/single_angle_quotes",
-        /* 155 */ "!icon/emoji_key|!code/key_emoji",
+        /* 143 */ "\u201A,\u2018,\u2019",
+        /* 144 */ "\u2019,\u201A,\u2018",
+        /* 145 */ "\u2018,\u201A,\u2019",
+        /* 146 */ "\u201E,\u201C,\u201D",
+        /* 147 */ "\u201D,\u201E,\u201C",
+        /* 148 */ "\u201C,\u201E,\u201D",
+        /* 149 */ "!fixedColumnOrder!5,!text/single_quotes,!text/single_angle_quotes",
+        /* 150 */ "!fixedColumnOrder!5,!text/double_quotes,!text/double_angle_quotes",
+        /* 151 */ "!fixedColumnOrder!6,!text/double_quotes,!text/single_quotes,!text/double_angle_quotes,!text/single_angle_quotes",
+        /* 152 */ "!icon/emoji_key|!code/key_emoji",
     };
 
     /* Language af: Afrikaans */
@@ -523,9 +517,6 @@ public final class KeyboardTextsSet {
         /* 56~ */
         null, null, null,
         /* ~58 */
-        // U+061F: "؟" ARABIC QUESTION MARK
-        // U+060C: "،" ARABIC COMMA
-        // U+061B: "؛" ARABIC SEMICOLON
         /* 59 */ "!fixedColumnOrder!8,\",\',#,-,:,!,\u060C,\u061F,@,&,\\%,+,\u061B,/,(|),)|(",
         // U+2605: "★" BLACK STAR
         // U+066D: "٭" ARABIC FIVE POINTED STAR
@@ -618,15 +609,12 @@ public final class KeyboardTextsSet {
         /* 108 */ ";",
         // U+2030: "‰" PER MILLE SIGN
         /* 109 */ "\\%,\u2030",
-        /* 110~ */
-        null, null, null, null, null,
-        /* ~114 */
+        // U+061F: "؟" ARABIC QUESTION MARK
         // U+060C: "،" ARABIC COMMA
         // U+061B: "؛" ARABIC SEMICOLON
-        // U+061F: "؟" ARABIC QUESTION MARK
-        /* 115 */ "\u060C",
-        /* 116 */ "\u061F",
-        /* 117 */ "\u061F,\u061B,!,:,-,/,\',\"",
+        /* 110 */ "\u060C",
+        /* 111 */ "\u061F",
+        /* 112 */ "!fixedColumnOrder!4,:,!,\u061F,\u061B,-,/,\",\'",
     };
 
     /* Language az: Azerbaijani */
@@ -804,10 +792,10 @@ public final class KeyboardTextsSet {
         /* ~113 */
         /* 114 */ "?,\u00B7",
         /* 115~ */
-        null, null, null, null, null, null, null, null, null,
-        /* ~123 */
+        null, null, null, null, null, null,
+        /* ~120 */
         // U+00E7: "ç" LATIN SMALL LETTER C WITH CEDILLA
-        /* 124 */ "\u00E7",
+        /* 121 */ "\u00E7",
     };
 
     /* Language cs: Czech */
@@ -1206,20 +1194,20 @@ public final class KeyboardTextsSet {
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-        null, null, null, null, null, null, null, null,
-        /* ~117 */
-        /* 118 */ "q",
-        /* 119 */ "x",
+        null, null, null, null, null,
+        /* ~114 */
+        /* 115 */ "q",
+        /* 116 */ "x",
         // U+015D: "ŝ" LATIN SMALL LETTER S WITH CIRCUMFLEX
-        /* 120 */ "\u015D",
+        /* 117 */ "\u015D",
         // U+011D: "ĝ" LATIN SMALL LETTER G WITH CIRCUMFLEX
-        /* 121 */ "\u011D",
+        /* 118 */ "\u011D",
         // U+016D: "ŭ" LATIN SMALL LETTER U WITH BREVE
-        /* 122 */ "\u016D",
+        /* 119 */ "\u016D",
         // U+0109: "ĉ" LATIN SMALL LETTER C WITH CIRCUMFLEX
-        /* 123 */ "\u0109",
+        /* 120 */ "\u0109",
         // U+0135: "ĵ" LATIN SMALL LETTER J WITH CIRCUMFLEX
-        /* 124 */ "\u0135",
+        /* 121 */ "\u0135",
     };
 
     /* Language es: Spanish */
@@ -1294,14 +1282,11 @@ public final class KeyboardTextsSet {
         /* 113 */ null,
         // U+00BF: "¿" INVERTED QUESTION MARK
         /* 114 */ "?,\u00BF",
-        /* 115 */ "\"",
-        /* 116 */ "\'",
-        /* 117 */ "\'",
-        /* 118~ */
+        /* 115~ */
         null, null, null, null, null, null,
-        /* ~123 */
+        /* ~120 */
         // U+00F1: "ñ" LATIN SMALL LETTER N WITH TILDE
-        /* 124 */ "\u00F1",
+        /* 121 */ "\u00F1",
     };
 
     /* Language et: Estonian */
@@ -1533,13 +1518,10 @@ public final class KeyboardTextsSet {
         // U+00AB: "«" LEFT-POINTING DOUBLE ANGLE QUOTATION MARK
         // U+00BB: "»" RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK
         /* 110 */ "\u060C",
-        /* 111 */ "!",
-        /* 112 */ "!,\\,",
+        /* 111 */ "\u061F",
+        /* 112 */ "!fixedColumnOrder!4,:,!,\u061F,\u061B,-,/,\u00AB|\u00BB,\u00BB|\u00AB",
         /* 113 */ "\u061F",
         /* 114 */ "\u061F,?",
-        /* 115 */ "\u060C",
-        /* 116 */ "\u061F",
-        /* 117 */ "!fixedColumnOrder!4,:,!,\u061F,\u061B,-,/,\u00AB|\u00BB,\u00BB|\u00AB",
     };
 
     /* Language fi: Finnish */

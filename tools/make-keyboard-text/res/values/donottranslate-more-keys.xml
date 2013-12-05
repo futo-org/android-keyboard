@@ -178,9 +178,6 @@
     <string name="keyhintlabel_for_period"></string>
     <!-- U+2026: "…" HORIZONTAL ELLIPSIS -->
     <string name="more_keys_for_period">&#x2026;</string>
-    <string name="keylabel_for_apostrophe">\'</string>
-    <string name="keyhintlabel_for_apostrophe">\"</string>
-    <string name="more_keys_for_apostrophe">\"</string>
     <string name="more_keys_for_q"></string>
     <string name="more_keys_for_x"></string>
     <string name="keylabel_for_q">q</string>

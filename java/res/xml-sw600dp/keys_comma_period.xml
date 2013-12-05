@@ -39,30 +39,13 @@
                 latin:keyStyle="hasShiftedLetterHintStyle" />
         </case>
         <case
-            latin:languageCode="ar"
+            latin:languageCode="ar|fa"
         >
             <Key
-                latin:keyLabel="!text/keylabel_for_apostrophe"
-                latin:keyHintLabel="!text/keyhintlabel_for_apostrophe"
-                latin:moreKeys="!text/more_keys_for_apostrophe"
-                latin:backgroundType="functional"
-                latin:keyStyle="hasShiftedLetterHintStyle" />
-            <Key
-                latin:keyLabel="."
-                latin:keyHintLabel="!text/keyhintlabel_for_arabic_diacritics"
+                latin:keyLabel="!text/keylabel_for_tablet_comma"
+                latin:keyHintLabel="!text/keyhintlabel_for_tablet_comma"
                 latin:keyLabelFlags="hasPopupHint"
-                latin:moreKeys="!text/more_keys_for_arabic_diacritics"
-                latin:backgroundType="functional"
-                latin:keyStyle="hasShiftedLetterHintStyle" />
-        </case>
-        <case
-            latin:languageCode="fa"
-        >
-            <Key
-                latin:keyLabel="!text/keylabel_for_apostrophe"
-                latin:keyHintLabel="!text/keyhintlabel_for_apostrophe"
-                latin:keyLabelFlags="hasPopupHint"
-                latin:moreKeys="!text/more_keys_for_apostrophe"
+                latin:moreKeys="!text/more_keys_for_tablet_comma"
                 latin:backgroundType="functional"
                 latin:keyStyle="hasShiftedLetterHintStyle" />
             <Key
@@ -90,14 +73,12 @@
         <default>
             <Key
                 latin:keyLabel="!text/keylabel_for_tablet_comma"
-                latin:keyHintLabel="!text/keyhintlabel_for_tablet_comma"
-                latin:backgroundType="functional"
-                latin:moreKeys="!text/more_keys_for_tablet_comma" />
+                latin:moreKeys="!text/more_keys_for_tablet_comma"
+                latin:backgroundType="functional" />
             <Key
                 latin:keyLabel="."
-                latin:keyHintLabel="!text/keyhintlabel_for_period"
-                latin:backgroundType="functional"
-                latin:moreKeys="!text/more_keys_for_period" />
+                latin:moreKeys="!text/more_keys_for_period"
+                latin:backgroundType="functional" />
         </default>
     </switch>
 </merge>
