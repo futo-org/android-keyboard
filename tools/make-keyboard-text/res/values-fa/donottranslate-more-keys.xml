@@ -88,7 +88,6 @@
     <string name="keyhintlabel_for_tablet_comma">"&#x061F;"</string>
     <string name="more_keys_for_tablet_comma">"!fixedColumnOrder!4,:,!,&#x061F;,&#x061B;,-,/,&#x00AB;|&#x00BB;,&#x00BB;|&#x00AB;"</string>
     <string name="keyhintlabel_for_period">"&#x061F;"</string>
-    <string name="more_keys_for_period">"&#x061F;,\?"</string>
     <!-- U+FDFC: "﷼" RIAL SIGN -->
     <string name="keylabel_for_currency">&#xFDFC;</string>
     <!-- U+061F: "؟" ARABIC QUESTION MARK
