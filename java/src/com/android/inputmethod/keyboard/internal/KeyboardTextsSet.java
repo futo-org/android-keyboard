@@ -208,8 +208,8 @@ public final class KeyboardTextsSet {
         /* 103 */ "keylabel_for_symbols_question",
         /* 104 */ "keylabel_for_symbols_semicolon",
         /* 105 */ "keylabel_for_symbols_percent",
-        /* 106 */ "more_keys_for_symbols_exclamation",
-        /* 107 */ "more_keys_for_symbols_question",
+        /* 106 */ "more_keys_for_exclamation",
+        /* 107 */ "more_keys_for_question",
         /* 108 */ "more_keys_for_symbols_semicolon",
         /* 109 */ "more_keys_for_symbols_percent",
         /* 110 */ "keylabel_for_tablet_comma",
@@ -605,7 +605,8 @@ public final class KeyboardTextsSet {
         // U+066A: "٪" ARABIC PERCENT SIGN
         /* 105 */ "\u066A",
         /* 106 */ null,
-        /* 107 */ "?",
+        // U+00BF: "¿" INVERTED QUESTION MARK
+        /* 107 */ "?,\u00BF",
         /* 108 */ ";",
         // U+2030: "‰" PER MILLE SIGN
         /* 109 */ "\\%,\u2030",
@@ -1275,15 +1276,8 @@ public final class KeyboardTextsSet {
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-        null, null, null, null, null, null, null,
-        /* ~111 */
-        // U+00A1: "¡" INVERTED EXCLAMATION MARK
-        /* 112 */ "!,\u00A1",
-        /* 113 */ null,
-        // U+00BF: "¿" INVERTED QUESTION MARK
-        /* 114 */ "?,\u00BF",
-        /* 115~ */
-        null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null,
         /* ~120 */
         // U+00F1: "ñ" LATIN SMALL LETTER N WITH TILDE
         /* 121 */ "\u00F1",
@@ -1508,7 +1502,8 @@ public final class KeyboardTextsSet {
         // U+066A: "٪" ARABIC PERCENT SIGN
         /* 105 */ "\u066A",
         /* 106 */ null,
-        /* 107 */ "?",
+        // U+00BF: "¿" INVERTED QUESTION MARK
+        /* 107 */ "?,\u00BF",
         /* 108 */ ";",
         // U+2030: "‰" PER MILLE SIGN
         /* 109 */ "\\%,\u2030",

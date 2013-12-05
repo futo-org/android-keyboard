@@ -166,9 +166,9 @@
     <string name="keylabel_for_symbols_semicolon">;</string>
     <string name="keylabel_for_symbols_percent">%</string>
     <!-- U+00A1: "¡" INVERTED EXCLAMATION MARK -->
-    <string name="more_keys_for_symbols_exclamation">&#x00A1;</string>
+    <string name="more_keys_for_exclamation">&#x00A1;</string>
     <!-- U+00BF: "¿" INVERTED QUESTION MARK -->
-    <string name="more_keys_for_symbols_question">&#x00BF;</string>
+    <string name="more_keys_for_question">&#x00BF;</string>
     <string name="more_keys_for_symbols_semicolon"></string>
     <!-- U+2030: "‰" PER MILLE SIGN -->
     <string name="more_keys_for_symbols_percent">&#x2030;</string>
