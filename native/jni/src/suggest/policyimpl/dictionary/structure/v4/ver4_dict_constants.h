@@ -62,6 +62,8 @@ class Ver4DictConstants {
     static const int BIGRAM_LARGE_PROBABILITY_FIELD_SIZE;
 
     static const int SHORTCUT_FLAGS_FIELD_SIZE;
+    static const int SHORTCUT_PROBABILITY_MASK;
+    static const int SHORTCUT_HAS_NEXT_MASK;
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(Ver4DictConstants);

@@ -39,8 +39,8 @@ class ShortcutDictContent : public SparseTableDictContent {
                       Ver4DictConstants::SHORTCUT_ADDRESS_TABLE_DATA_SIZE) {}
 
     void getShortcutEntryAndAdvancePosition(const int maxCodePointCount,
-            int *const outCodePoint, int *const outCodePointCount, int *const outShortcutFlags,
-            int *const shortcutEntryPos) const;
+            int *const outCodePoint, int *const outCodePointCount, int *const outProbability,
+            bool *const outhasNext, int *const shortcutEntryPos) const;
 
    // Returns head position of shortcut list for a PtNode specified by terminalId.
    int getShortcutListHeadPos(const int terminalId) const;
@@ -50,14 +50,33 @@ class ShortcutDictContent : public SparseTableDictContent {
    bool runGC(const TerminalPositionLookupTable::TerminalIdMap *const terminalIdMap,
            const ShortcutDictContent *const originalShortcutDictContent);
 
+   bool createNewShortcutList(const int terminalId);
+
+   bool copyShortcutList(const int shortcutListPos, const int toPos);
+
+   bool setProbability(const int probability, const int shortcutEntryPos);
+
+   bool writeShortcutEntry(const int *const codePoint, const int codePointCount,
+           const int probability, const bool hasNext, const int shortcutEntryPos) {
+       int writingPos = shortcutEntryPos;
+       return writeShortcutEntryAndAdvancePosition(codePoint, codePointCount, probability,
+               hasNext, &writingPos);
+   }
+
+   bool writeShortcutEntryAndAdvancePosition(const int *const codePoint,
+           const int codePointCount, const int probability, const bool hasNext,
+           int *const shortcutEntryPos);
+
+   int findShortcutEntryAndGetPos(const int shortcutListPos,
+           const int *const targetCodePointsToFind, const int codePointCount) const;
+
  private:
     DISALLOW_COPY_AND_ASSIGN(ShortcutDictContent);
 
-    bool copyShortcutList(const int shortcutListPos,
+    bool copyShortcutListFromDictContent(const int shortcutListPos,
             const ShortcutDictContent *const sourceShortcutDictContent, const int toPos);
 
-    bool writeShortcutEntryAndAdvancePosition(const int *const codePoint,
-            const int codePointCount, const int shortcutFlags, int *const shortcutEntryPos);
+    int createAndGetShortcutFlags(const int probability, const bool hasNext) const;
 };
 } // namespace latinime
 #endif /* LATINIME_SHORTCUT_DICT_CONTENT_H */

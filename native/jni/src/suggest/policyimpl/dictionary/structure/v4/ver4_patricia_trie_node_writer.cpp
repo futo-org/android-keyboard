@@ -53,7 +53,7 @@ bool Ver4PatriciaTrieNodeWriter::markPtNodeAsDeleted(
     }
     if (toBeUpdatedPtNodeParams->isTerminal()) {
         // The PtNode is a terminal. Delete entry from the terminal position lookup table.
-        return mBuffers->getUpdatableTerminalPositionLookupTable()->setTerminalPtNodePosition(
+        return mBuffers->getMutableTerminalPositionLookupTable()->setTerminalPtNodePosition(
                 toBeUpdatedPtNodeParams->getTerminalId(), NOT_A_DICT_POS /* ptNodePos */);
     } else {
         return true;
@@ -117,7 +117,7 @@ bool Ver4PatriciaTrieNodeWriter::updatePtNodeProbability(
                     toBeUpdatedPtNodeParams->getTerminalId());
     const ProbabilityEntry probabilityEntry = createUpdatedEntryFrom(&originalProbabilityEntry,
             newProbability, timestamp);
-    return mBuffers->getUpdatableProbabilityDictContent()->setProbabilityEntry(
+    return mBuffers->getMutableProbabilityDictContent()->setProbabilityEntry(
             toBeUpdatedPtNodeParams->getTerminalId(), &probabilityEntry);
 }
 
@@ -152,7 +152,7 @@ bool Ver4PatriciaTrieNodeWriter::writeNewTerminalPtNodeAndAdvancePosition(
     ProbabilityEntry newProbabilityEntry;
     const ProbabilityEntry probabilityEntryToWrite = createUpdatedEntryFrom(
             &newProbabilityEntry, ptNodeParams->getProbability(), timestamp);
-    return mBuffers->getUpdatableProbabilityDictContent()->setProbabilityEntry(terminalId,
+    return mBuffers->getMutableProbabilityDictContent()->setProbabilityEntry(terminalId,
             &probabilityEntryToWrite);
 }
 
@@ -248,7 +248,7 @@ bool Ver4PatriciaTrieNodeWriter::writePtNodeAndGetTerminalIdAndAdvancePosition(
     const int isTerminal = terminalId != Ver4DictConstants::NOT_A_TERMINAL_ID;
     if (isTerminal) {
         // Update the lookup table.
-        if (!mBuffers->getUpdatableTerminalPositionLookupTable()->setTerminalPtNodePosition(
+        if (!mBuffers->getMutableTerminalPositionLookupTable()->setTerminalPtNodePosition(
                 terminalId, nodePos)) {
             return false;
         }
