@@ -72,8 +72,4 @@
     <!-- U+00A1: "¡" INVERTED EXCLAMATION MARK
          U+00BF: "¿" INVERTED QUESTION MARK -->
     <string name="more_keys_for_punctuation">"!fixedColumnOrder!4,;,!,\\,,\?,:,&#x00A1;,\@,&#x00BF;"</string>
-    <!-- U+00A1: "¡" INVERTED EXCLAMATION MARK -->
-    <string name="more_keys_for_tablet_comma">"!,&#x00A1;"</string>
-    <!-- U+00BF: "¿" INVERTED QUESTION MARK -->
-    <string name="more_keys_for_period">"\?,&#x00BF;"</string>
 </resources>

@@ -25,7 +25,7 @@
         latin:keyLabel="~" />
     <Key
         latin:keyLabel="!"
-        latin:additionalMoreKeys="!text/more_keys_for_symbols_exclamation" />
+        latin:additionalMoreKeys="!text/more_keys_for_exclamation" />
     <Key
         latin:keyLabel="\@" />
     <Key
