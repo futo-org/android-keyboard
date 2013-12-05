@@ -2000,15 +2000,6 @@ public final class KeyboardTextsSet {
         // U+203A: "›" SINGLE RIGHT-POINTING ANGLE QUOTATION MARK
         /* 65 */ "!fixedColumnOrder!3,\u2039|\u203A,\u2264|\u2265,\u00AB|\u00BB",
         /* 66 */ "!fixedColumnOrder!3,\u203A|\u2039,\u2265|\u2264,\u00BB|\u00AB",
-        /* 67~ */
-        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-        null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-        /* ~110 */
-        /* 111 */ "!",
-        /* 112 */ "!",
-        /* 113 */ "?",
-        /* 114 */ "?",
     };
 
     /* Language ka: Georgian */
