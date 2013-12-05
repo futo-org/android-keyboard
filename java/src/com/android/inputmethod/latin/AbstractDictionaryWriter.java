@@ -27,15 +27,13 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
-// TODO: Quit extending Dictionary after implementing dynamic binary dictionary.
-abstract public class AbstractDictionaryWriter extends Dictionary {
+abstract public class AbstractDictionaryWriter {
     /** Used for Log actions from this class */
     private static final String TAG = AbstractDictionaryWriter.class.getSimpleName();
 
     private final Context mContext;
 
-    public AbstractDictionaryWriter(final Context context, final String dictType) {
-        super(dictType);
+    public AbstractDictionaryWriter(final Context context) {
         mContext = context;
     }
 
