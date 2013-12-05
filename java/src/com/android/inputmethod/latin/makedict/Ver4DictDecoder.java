@@ -161,7 +161,7 @@ public class Ver4DictDecoder extends AbstractDictDecoder {
         }
         final FileHeader header = super.readHeader(mDictBuffer);
         final int version = header.mFormatOptions.mVersion;
-        if (version != 4) {
+        if (version != FormatSpec.VERSION4) {
             throw new UnsupportedFormatException("File header has a wrong version : " + version);
         }
         return header;

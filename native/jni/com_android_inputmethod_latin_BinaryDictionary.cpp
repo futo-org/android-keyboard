@@ -86,7 +86,7 @@ static jlong latinime_BinaryDictionary_open(JNIEnv *env, jclass clazz, jstring s
     char sourceDirChars[sourceDirUtf8Length + 1];
     env->GetStringUTFRegion(sourceDir, 0, env->GetStringLength(sourceDir), sourceDirChars);
     sourceDirChars[sourceDirUtf8Length] = '\0';
-    DictionaryStructureWithBufferPolicy::StructurePoilcyPtr dictionaryStructureWithBufferPolicy =
+    DictionaryStructureWithBufferPolicy::StructurePolicyPtr dictionaryStructureWithBufferPolicy =
             DictionaryStructureWithBufferPolicyFactory::newDictionaryStructureWithBufferPolicy(
                     sourceDirChars, static_cast<int>(dictOffset), static_cast<int>(dictSize),
                     isUpdatable == JNI_TRUE);
@@ -133,14 +133,6 @@ static void latinime_BinaryDictionary_close(JNIEnv *env, jclass clazz, jlong dic
     Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
     if (!dictionary) return;
     delete dictionary;
-}
-
-static bool latinime_BinaryDictionary_hasValidContents(JNIEnv *env, jclass clazz,
-        jlong dict) {
-    Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
-    if (!dictionary) return false;
-    // TODO: check format version
-    return true;
 }
 
 static int latinime_BinaryDictionary_getFormatVersion(JNIEnv *env, jclass clazz, jlong dict) {
@@ -465,11 +457,6 @@ static const JNINativeMethod sMethods[] = {
         const_cast<char *>("closeNative"),
         const_cast<char *>("(J)V"),
         reinterpret_cast<void *>(latinime_BinaryDictionary_close)
-    },
-    {
-        const_cast<char *>("hasValidContentsNative"),
-        const_cast<char *>("(J)Z"),
-        reinterpret_cast<void *>(latinime_BinaryDictionary_hasValidContents)
     },
     {
         const_cast<char *>("getFormatVersionNative"),

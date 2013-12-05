@@ -78,15 +78,18 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
     ~HeaderPolicy() {}
 
     virtual int getFormatVersionNumber() const {
+        // Conceptually this converts the symbolic value we use in the code into the
+        // hardcoded of the bytes in the file. But we want the constants to be the
+        // same so we use them for both here.
         switch (mDictFormatVersion) {
             case FormatUtils::VERSION_2:
-                return 2;
+                return FormatUtils::VERSION_2;
             case FormatUtils::VERSION_3:
-                return 3;
+                return FormatUtils::VERSION_3;
             case FormatUtils::VERSION_4:
-                return 4;
+                return FormatUtils::VERSION_4;
             default:
-                return 0;
+                return FormatUtils::UNKNOWN_VERSION;
         }
     }
 

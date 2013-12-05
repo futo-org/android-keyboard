@@ -56,8 +56,8 @@ class Dictionary {
     static const int KIND_FLAG_POSSIBLY_OFFENSIVE = 0x80000000;
     static const int KIND_FLAG_EXACT_MATCH = 0x40000000;
 
-    Dictionary(JNIEnv *env, const DictionaryStructureWithBufferPolicy::StructurePoilcyPtr
-            &dictionaryStructureWithBufferPoilcy);
+    Dictionary(JNIEnv *env, const DictionaryStructureWithBufferPolicy::StructurePolicyPtr
+            &dictionaryStructureWithBufferPolicy);
 
     int getSuggestions(ProximityInfo *proximityInfo, DicTraverseSession *traverseSession,
             int *xcoordinates, int *ycoordinates, int *times, int *pointerIds, int *inputCodePoints,
@@ -109,7 +109,7 @@ class Dictionary {
 
     static const int HEADER_ATTRIBUTE_BUFFER_SIZE;
 
-    const DictionaryStructureWithBufferPolicy::StructurePoilcyPtr
+    const DictionaryStructureWithBufferPolicy::StructurePolicyPtr
             mDictionaryStructureWithBufferPolicy;
     const BigramDictionaryPtr mBigramDictionary;
     const SuggestInterfacePtr mGestureSuggest;

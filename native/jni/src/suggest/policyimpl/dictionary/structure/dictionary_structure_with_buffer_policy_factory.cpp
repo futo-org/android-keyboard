@@ -28,7 +28,7 @@
 
 namespace latinime {
 
-/* static */ DictionaryStructureWithBufferPolicy::StructurePoilcyPtr
+/* static */ DictionaryStructureWithBufferPolicy::StructurePolicyPtr
         DictionaryStructureWithBufferPolicyFactory
                 ::newDictionaryStructureWithBufferPolicy(const char *const path,
                         const int bufOffset, const int size, const bool isUpdatable) {
@@ -37,12 +37,12 @@ namespace latinime {
     MmappedBuffer::MmappedBufferPtr mmappedBuffer = MmappedBuffer::openBuffer(path, bufOffset, size,
             isUpdatable);
     if (!mmappedBuffer.get()) {
-        return DictionaryStructureWithBufferPolicy::StructurePoilcyPtr(0);
+        return DictionaryStructureWithBufferPolicy::StructurePolicyPtr(0);
     }
     switch (FormatUtils::detectFormatVersion(mmappedBuffer.get()->getBuffer(),
             mmappedBuffer.get()->getBufferSize())) {
         case FormatUtils::VERSION_2:
-            return DictionaryStructureWithBufferPolicy::StructurePoilcyPtr(
+            return DictionaryStructureWithBufferPolicy::StructurePolicyPtr(
                     new PatriciaTriePolicy(mmappedBuffer));
         case FormatUtils::VERSION_4: {
             const int dictDirPathBufSize = strlen(path) + 1 /* terminator */;
@@ -50,22 +50,22 @@ namespace latinime {
             if (!FileUtils::getFilePathWithoutSuffix(path, Ver4DictConstants::TRIE_FILE_EXTENSION,
                     dictDirPathBufSize, dictDirPath)) {
                 // Dictionary file name is not valid as a version 4 dictionary.
-                return DictionaryStructureWithBufferPolicy::StructurePoilcyPtr(0);
+                return DictionaryStructureWithBufferPolicy::StructurePolicyPtr(0);
             }
             const Ver4DictBuffers::Ver4DictBuffersPtr dictBuffers =
                     Ver4DictBuffers::openVer4DictBuffers(dictDirPath, mmappedBuffer);
             if (!dictBuffers.get()->isValid()) {
                 AKLOGE("DICT: The dictionary doesn't satisfy ver4 format requirements.");
                 ASSERT(false);
-                return DictionaryStructureWithBufferPolicy::StructurePoilcyPtr(0);
+                return DictionaryStructureWithBufferPolicy::StructurePolicyPtr(0);
             }
-            return DictionaryStructureWithBufferPolicy::StructurePoilcyPtr(
+            return DictionaryStructureWithBufferPolicy::StructurePolicyPtr(
                     new Ver4PatriciaTriePolicy(dictBuffers));
         }
         default:
             AKLOGE("DICT: dictionary format is unknown, bad magic number");
             ASSERT(false);
-            return DictionaryStructureWithBufferPolicy::StructurePoilcyPtr(0);
+            return DictionaryStructureWithBufferPolicy::StructurePolicyPtr(0);
     }
 }
 

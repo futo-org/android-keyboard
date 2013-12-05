@@ -29,12 +29,12 @@ class DictionaryHeaderStructurePolicy;
 class DictionaryShortcutsStructurePolicy;
 
 /*
- * This class abstracts structure of dictionaries.
+ * This class abstracts the structure of dictionaries.
  * Implement this policy to support additional dictionaries.
  */
 class DictionaryStructureWithBufferPolicy {
  public:
-    typedef ExclusiveOwnershipPointer<DictionaryStructureWithBufferPolicy> StructurePoilcyPtr;
+    typedef ExclusiveOwnershipPointer<DictionaryStructureWithBufferPolicy> StructurePolicyPtr;
 
     virtual ~DictionaryStructureWithBufferPolicy() {}
 

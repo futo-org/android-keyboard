@@ -34,7 +34,7 @@ namespace latinime {
 
 const int Dictionary::HEADER_ATTRIBUTE_BUFFER_SIZE = 32;
 
-Dictionary::Dictionary(JNIEnv *env, const DictionaryStructureWithBufferPolicy::StructurePoilcyPtr
+Dictionary::Dictionary(JNIEnv *env, const DictionaryStructureWithBufferPolicy::StructurePolicyPtr
         &dictionaryStructureWithBufferPolicy)
         : mDictionaryStructureWithBufferPolicy(dictionaryStructureWithBufferPolicy),
           mBigramDictionary(new BigramDictionary(mDictionaryStructureWithBufferPolicy.get())),
