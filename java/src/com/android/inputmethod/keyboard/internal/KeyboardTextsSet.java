@@ -1271,7 +1271,7 @@ public final class KeyboardTextsSet {
         /* ~58 */
         // U+00A1: "¡" INVERTED EXCLAMATION MARK
         // U+00BF: "¿" INVERTED QUESTION MARK
-        /* 59 */ "!fixedColumnOrder!4,;,!,\\,,?,:,\u00A1,@,\u00BF",
+        /* 59 */ "!fixedColumnOrder!9,\u00A1,;,/,(,),#,!,\\,,?,\u00BF,&,\\%,+,\",-,:,',@",
         /* 60~ */
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
