@@ -80,9 +80,9 @@ bool Ver4PatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
         int *const outUnigramCount, int *const outBigramCount, const bool needsToDecay) {
     Ver4PatriciaTrieNodeReader ptNodeReader(mBuffers->getTrieBuffer(),
             mBuffers->getProbabilityDictContent());
-    Ver4BigramListPolicy bigramPolicy(mBuffers->getUpdatableBigramDictContent(),
+    Ver4BigramListPolicy bigramPolicy(mBuffers->getMutableBigramDictContent(),
             mBuffers->getTerminalPositionLookupTable(), headerPolicy, needsToDecay);
-    Ver4ShortcutListPolicy shortcutPolicy(mBuffers->getShortcutDictContent(),
+    Ver4ShortcutListPolicy shortcutPolicy(mBuffers->getMutableShortcutDictContent(),
             mBuffers->getTerminalPositionLookupTable());
     Ver4PatriciaTrieNodeWriter ptNodeWriter(mBuffers->getWritableTrieBuffer(),
             mBuffers, &ptNodeReader, &bigramPolicy, &shortcutPolicy,
@@ -133,32 +133,32 @@ bool Ver4PatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
     // Create policy instances for the GCed dictionary.
     Ver4PatriciaTrieNodeReader newPtNodeReader(buffersToWrite->getTrieBuffer(),
             buffersToWrite->getProbabilityDictContent());
-    Ver4BigramListPolicy newBigramPolicy(buffersToWrite->getUpdatableBigramDictContent(),
+    Ver4BigramListPolicy newBigramPolicy(buffersToWrite->getMutableBigramDictContent(),
             buffersToWrite->getTerminalPositionLookupTable(), headerPolicy,
             false /* needsToDecay */);
-    Ver4ShortcutListPolicy newShortcutPolicy(buffersToWrite->getShortcutDictContent(),
+    Ver4ShortcutListPolicy newShortcutPolicy(buffersToWrite->getMutableShortcutDictContent(),
             buffersToWrite->getTerminalPositionLookupTable());
     Ver4PatriciaTrieNodeWriter newPtNodeWriter(buffersToWrite->getWritableTrieBuffer(),
             buffersToWrite, &newPtNodeReader, &newBigramPolicy, &newShortcutPolicy,
             false /* needsToDecayWhenUpdating */);
     // Re-assign terminal IDs for valid terminal PtNodes.
     TerminalPositionLookupTable::TerminalIdMap terminalIdMap;
-    if(!buffersToWrite->getUpdatableTerminalPositionLookupTable()->runGCTerminalIds(
+    if(!buffersToWrite->getMutableTerminalPositionLookupTable()->runGCTerminalIds(
             &terminalIdMap)) {
         return false;
     }
     // Run GC for probability dict content.
-    if (!buffersToWrite->getUpdatableProbabilityDictContent()->runGC(&terminalIdMap,
+    if (!buffersToWrite->getMutableProbabilityDictContent()->runGC(&terminalIdMap,
             mBuffers->getProbabilityDictContent())) {
         return false;
     }
     // Run GC for bigram dict content.
-    if(!buffersToWrite->getUpdatableBigramDictContent()->runGC(&terminalIdMap,
+    if(!buffersToWrite->getMutableBigramDictContent()->runGC(&terminalIdMap,
             mBuffers->getBigramDictContent(), outBigramCount)) {
         return false;
     }
     // Run GC for shortcut dict content.
-    if(!buffersToWrite->getUpdatableShortcutDictContent()->runGC(&terminalIdMap,
+    if(!buffersToWrite->getMutableShortcutDictContent()->runGC(&terminalIdMap,
             mBuffers->getShortcutDictContent())) {
         return false;
     }

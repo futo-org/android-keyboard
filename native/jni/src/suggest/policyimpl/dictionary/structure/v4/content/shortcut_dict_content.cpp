@@ -21,12 +21,16 @@
 namespace latinime {
 
 void ShortcutDictContent::getShortcutEntryAndAdvancePosition(const int maxCodePointCount,
-        int *const outCodePoint, int *const outCodePointCount, int *const outShortcutFlags,
-        int *const shortcutEntryPos) const {
+        int *const outCodePoint, int *const outCodePointCount, int *const outProbability,
+        bool *const outhasNext, int *const shortcutEntryPos) const {
     const BufferWithExtendableBuffer *const shortcutListBuffer = getContentBuffer();
-    if (outShortcutFlags) {
-        *outShortcutFlags = shortcutListBuffer->readUintAndAdvancePosition(
-                Ver4DictConstants::SHORTCUT_FLAGS_FIELD_SIZE, shortcutEntryPos);
+    const int shortcutFlags = shortcutListBuffer->readUintAndAdvancePosition(
+            Ver4DictConstants::SHORTCUT_FLAGS_FIELD_SIZE, shortcutEntryPos);
+    if (outProbability) {
+        *outProbability = shortcutFlags & Ver4DictConstants::SHORTCUT_PROBABILITY_MASK;
+    }
+    if (outhasNext) {
+        *outhasNext = shortcutFlags & Ver4DictConstants::SHORTCUT_HAS_NEXT_MASK;
     }
     if (outCodePoint && outCodePointCount) {
         shortcutListBuffer->readCodePointsAndAdvancePosition(
@@ -59,50 +63,113 @@ bool ShortcutDictContent::runGC(
            continue;
        }
        const int shortcutListPos = getContentBuffer()->getTailPosition();
-       // Copy shortcut list with GC from original content.
-       if (!copyShortcutList(originalShortcutListPos, originalShortcutDictContent,
+       // Copy shortcut list from original content.
+       if (!copyShortcutListFromDictContent(originalShortcutListPos, originalShortcutDictContent,
                shortcutListPos)) {
+           AKLOGE("Cannot copy shortcut list during GC. original pos: %d, pos: %d",
+                   originalShortcutListPos, shortcutListPos);
            return false;
        }
        // Set shortcut list position to the lookup table.
        if (!getUpdatableAddressLookupTable()->set(it->second, shortcutListPos)) {
+           AKLOGE("Cannot set shortcut list position. terminal id: %d, pos: %d",
+                   it->second, shortcutListPos);
            return false;
        }
    }
    return true;
 }
 
-bool ShortcutDictContent::copyShortcutList(const int shortcutListPos,
+bool ShortcutDictContent::createNewShortcutList(const int terminalId) {
+    const int shortcutListListPos = getContentBuffer()->getTailPosition();
+    return getUpdatableAddressLookupTable()->set(terminalId, shortcutListListPos);
+}
+
+bool ShortcutDictContent::copyShortcutList(const int shortcutListPos, const int toPos) {
+    return copyShortcutListFromDictContent(shortcutListPos, this, toPos);
+}
+
+bool ShortcutDictContent::copyShortcutListFromDictContent(const int shortcutListPos,
         const ShortcutDictContent *const sourceShortcutDictContent, const int toPos) {
     bool hasNext = true;
     int readingPos = shortcutListPos;
     int writingPos = toPos;
     int codePoints[MAX_WORD_LENGTH];
     while (hasNext) {
-        int shortcutFlags = 0;
+        int probability = 0;
         int codePointCount = 0;
         sourceShortcutDictContent->getShortcutEntryAndAdvancePosition(MAX_WORD_LENGTH,
-                codePoints, &codePointCount, &shortcutFlags, &readingPos);
-        if (!writeShortcutEntryAndAdvancePosition(codePoints, codePointCount, shortcutFlags,
-                &writingPos)) {
+                codePoints, &codePointCount, &probability, &hasNext, &readingPos);
+        if (!writeShortcutEntryAndAdvancePosition(codePoints, codePointCount, probability,
+                hasNext, &writingPos)) {
+            AKLOGE("Cannot write shortcut entry to copy. pos: %d", writingPos);
             return false;
         }
     }
     return true;
 }
 
-bool ShortcutDictContent::writeShortcutEntryAndAdvancePosition(const int *const codePoint,
-        const int codePointCount, const int shortcutFlags, int *const shortcutEntryPos) {
+bool ShortcutDictContent::setProbability(const int probability, const int shortcutEntryPos) {
     BufferWithExtendableBuffer *const shortcutListBuffer = getWritableContentBuffer();
+    const int shortcutFlags = shortcutListBuffer->readUint(
+            Ver4DictConstants::SHORTCUT_FLAGS_FIELD_SIZE, shortcutEntryPos);
+    const bool hasNext = shortcutFlags & Ver4DictConstants::SHORTCUT_HAS_NEXT_MASK;
+    const int shortcutFlagsToWrite = createAndGetShortcutFlags(probability, hasNext);
+    return shortcutListBuffer->writeUint(shortcutFlagsToWrite,
+            Ver4DictConstants::SHORTCUT_FLAGS_FIELD_SIZE, shortcutEntryPos);
+}
+
+bool ShortcutDictContent::writeShortcutEntryAndAdvancePosition(const int *const codePoint,
+        const int codePointCount, const int probability, const bool hasNext,
+        int *const shortcutEntryPos) {
+    BufferWithExtendableBuffer *const shortcutListBuffer = getWritableContentBuffer();
+    const int shortcutFlags = createAndGetShortcutFlags(probability, hasNext);
     if (!shortcutListBuffer->writeUintAndAdvancePosition(shortcutFlags,
             Ver4DictConstants::SHORTCUT_FLAGS_FIELD_SIZE, shortcutEntryPos)) {
+        AKLOGE("Cannot write shortcut flags. flags; %x, pos: %d", shortcutFlags, *shortcutEntryPos);
         return false;
     }
     if (!shortcutListBuffer->writeCodePointsAndAdvancePosition(codePoint, codePointCount,
             true /* writesTerminator */, shortcutEntryPos)) {
+        AKLOGE("Cannot write shortcut target code points. pos: %d", *shortcutEntryPos);
         return false;
     }
     return true;
+}
+
+// Find a shortcut entry that has specified target and return its position.
+int ShortcutDictContent::findShortcutEntryAndGetPos(const int shortcutListPos,
+        const int *const targetCodePointsToFind, const int codePointCount) const {
+    bool hasNext = true;
+    int readingPos = shortcutListPos;
+    int targetCodePoints[MAX_WORD_LENGTH];
+    while (hasNext) {
+        const int entryPos = readingPos;
+        int probability = 0;
+        int targetCodePointCount = 0;
+        getShortcutEntryAndAdvancePosition(MAX_WORD_LENGTH, targetCodePoints, &targetCodePointCount,
+                &probability, &hasNext, &readingPos);
+        if (targetCodePointCount != codePointCount) {
+            continue;
+        }
+        bool matched = true;
+        for (int i = 0; i < codePointCount; ++i) {
+            if (targetCodePointsToFind[i] != targetCodePoints[i]) {
+                matched = false;
+                break;
+            }
+        }
+        if (matched) {
+            return entryPos;
+        }
+    }
+    return NOT_A_DICT_POS;
+}
+
+int ShortcutDictContent::createAndGetShortcutFlags(const int probability,
+        const bool hasNext) const {
+    return (probability & Ver4DictConstants::SHORTCUT_PROBABILITY_MASK)
+            | (hasNext ? Ver4DictConstants::SHORTCUT_HAS_NEXT_MASK : 0);
 }
 
 } // namespace latinime

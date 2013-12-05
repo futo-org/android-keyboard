@@ -40,10 +40,10 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     Ver4PatriciaTriePolicy(const Ver4DictBuffers::Ver4DictBuffersPtr &buffers)
             : mBuffers(buffers), mHeaderPolicy(mBuffers.get()->getHeaderPolicy()),
               mDictBuffer(mBuffers.get()->getWritableTrieBuffer()),
-              mBigramPolicy(mBuffers.get()->getUpdatableBigramDictContent(),
+              mBigramPolicy(mBuffers.get()->getMutableBigramDictContent(),
                       mBuffers.get()->getTerminalPositionLookupTable(), mHeaderPolicy,
                       mHeaderPolicy->isDecayingDict()),
-              mShortcutPolicy(mBuffers.get()->getShortcutDictContent(),
+              mShortcutPolicy(mBuffers.get()->getMutableShortcutDictContent(),
                       mBuffers.get()->getTerminalPositionLookupTable()),
               mNodeReader(mDictBuffer, mBuffers.get()->getProbabilityDictContent()),
               mNodeWriter(mDictBuffer, mBuffers.get(), &mNodeReader, &mBigramPolicy,

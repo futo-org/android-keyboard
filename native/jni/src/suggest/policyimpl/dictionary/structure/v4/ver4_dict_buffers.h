@@ -74,7 +74,7 @@ class Ver4DictBuffers {
         return &mExpandableTrieBuffer;
     }
 
-    AK_FORCE_INLINE TerminalPositionLookupTable *getUpdatableTerminalPositionLookupTable() {
+    AK_FORCE_INLINE TerminalPositionLookupTable *getMutableTerminalPositionLookupTable() {
         return &mTerminalPositionLookupTable;
     }
 
@@ -82,7 +82,7 @@ class Ver4DictBuffers {
         return &mTerminalPositionLookupTable;
     }
 
-    AK_FORCE_INLINE ProbabilityDictContent *getUpdatableProbabilityDictContent() {
+    AK_FORCE_INLINE ProbabilityDictContent *getMutableProbabilityDictContent() {
         return &mProbabilityDictContent;
     }
 
@@ -90,7 +90,7 @@ class Ver4DictBuffers {
         return &mProbabilityDictContent;
     }
 
-    AK_FORCE_INLINE BigramDictContent *getUpdatableBigramDictContent() {
+    AK_FORCE_INLINE BigramDictContent *getMutableBigramDictContent() {
         return &mBigramDictContent;
     }
 
@@ -98,7 +98,7 @@ class Ver4DictBuffers {
         return &mBigramDictContent;
     }
 
-    AK_FORCE_INLINE ShortcutDictContent *getUpdatableShortcutDictContent() {
+    AK_FORCE_INLINE ShortcutDictContent *getMutableShortcutDictContent() {
         return &mShortcutDictContent;
     }
 
