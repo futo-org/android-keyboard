@@ -29,7 +29,7 @@ namespace latinime {
 
 class Ver4ShortcutListPolicy : public DictionaryShortcutsStructurePolicy {
  public:
-    Ver4ShortcutListPolicy(const ShortcutDictContent *const shortcutDictContent,
+    Ver4ShortcutListPolicy(ShortcutDictContent *const shortcutDictContent,
             const TerminalPositionLookupTable *const terminalPositionLookupTable)
             : mShortcutDictContent(shortcutDictContent),
               mTerminalPositionLookupTable(terminalPositionLookupTable) {}
@@ -44,16 +44,11 @@ class Ver4ShortcutListPolicy : public DictionaryShortcutsStructurePolicy {
     void getNextShortcut(const int maxCodePointCount, int *const outCodePoint,
             int *const outCodePointCount, bool *const outIsWhitelist, bool *const outHasNext,
             int *const pos) const {
-        int shortcutFlags = 0;
-        if (outCodePoint && outCodePointCount) {
-            mShortcutDictContent->getShortcutEntryAndAdvancePosition(maxCodePointCount,
-                    outCodePoint, outCodePointCount, &shortcutFlags, pos);
-        }
-        if (outHasNext) {
-            *outHasNext = ShortcutListReadingUtils::hasNext(shortcutFlags);
-        }
+        int probability = 0;
+        mShortcutDictContent->getShortcutEntryAndAdvancePosition(maxCodePointCount,
+                outCodePoint, outCodePointCount, &probability, outHasNext, pos);
         if (outIsWhitelist) {
-            *outIsWhitelist = ShortcutListReadingUtils::isWhitelist(shortcutFlags);
+            *outIsWhitelist = ShortcutListReadingUtils::isWhitelist(probability);
         }
     }
 
@@ -61,10 +56,52 @@ class Ver4ShortcutListPolicy : public DictionaryShortcutsStructurePolicy {
         // Do nothing because we don't need to skip shortcut lists in ver4 dictionaries.
     }
 
+    bool addNewShortcut(const int terminalId, const int *const codePoints, const int codePointCount,
+            const int probability) {
+        const int shortcutListPos = mShortcutDictContent->getShortcutListHeadPos(terminalId);
+        if (shortcutListPos == NOT_A_DICT_POS) {
+            // Create shortcut list.
+            if (!mShortcutDictContent->createNewShortcutList(terminalId)) {
+                AKLOGE("Cannot create new shortcut list. terminal id: %d", terminalId);
+                return false;
+            }
+            const int writingPos =  mShortcutDictContent->getShortcutListHeadPos(terminalId);
+            return mShortcutDictContent->writeShortcutEntry(codePoints, codePointCount, probability,
+                    false /* hasNext */, writingPos);
+        }
+        const int entryPos = mShortcutDictContent->findShortcutEntryAndGetPos(shortcutListPos,
+                codePoints, codePointCount);
+        if (entryPos == NOT_A_DICT_POS) {
+            // Add new entry to the shortcut list.
+            // Create new shortcut list.
+            if (!mShortcutDictContent->createNewShortcutList(terminalId)) {
+                AKLOGE("Cannot create new shortcut list. terminal id: %d", terminalId);
+                return false;
+            }
+            int writingPos =  mShortcutDictContent->getShortcutListHeadPos(terminalId);
+            if (!mShortcutDictContent->writeShortcutEntryAndAdvancePosition(codePoints,
+                    codePointCount, probability, true /* hasNext */, &writingPos)) {
+                AKLOGE("Cannot write shortcut entry. terminal id: %d, pos: %d", terminalId,
+                        writingPos);
+                return false;
+            }
+            return mShortcutDictContent->copyShortcutList(shortcutListPos, writingPos);
+        }
+        // Overwrite existing entry.
+        int writingPos = entryPos;
+        if (!mShortcutDictContent->writeShortcutEntryAndAdvancePosition(codePoints,
+                codePointCount, probability, true /* hasNext */, &writingPos)) {
+            AKLOGE("Cannot overwrite shortcut entry. terminal id: %d, pos: %d", terminalId,
+                    writingPos);
+            return false;
+        }
+        return true;
+    }
+
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(Ver4ShortcutListPolicy);
 
-    const ShortcutDictContent *const mShortcutDictContent;
+    ShortcutDictContent *const mShortcutDictContent;
     const TerminalPositionLookupTable *const mTerminalPositionLookupTable;
 };
 } // namespace latinime

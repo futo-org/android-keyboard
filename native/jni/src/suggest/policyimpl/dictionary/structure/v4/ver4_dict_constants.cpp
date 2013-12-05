@@ -64,5 +64,7 @@ const int Ver4DictConstants::BIGRAM_HAS_NEXT_MASK = 0x80;
 const int Ver4DictConstants::BIGRAM_LARGE_PROBABILITY_FIELD_SIZE = 1;
 
 const int Ver4DictConstants::SHORTCUT_FLAGS_FIELD_SIZE = 1;
+const int Ver4DictConstants::SHORTCUT_PROBABILITY_MASK = 0x0F;
+const int Ver4DictConstants::SHORTCUT_HAS_NEXT_MASK = 0x80;
 
 } // namespace latinime
