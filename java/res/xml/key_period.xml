@@ -23,37 +23,26 @@
 >
     <switch>
         <case
-            latin:languageCode="ar|fa"
-        >
-            <Key
-                latin:keyLabel="."
-                latin:keyHintLabel="!text/keyhintlabel_for_arabic_diacritics"
-                latin:keyLabelFlags="hasPopupHint|hasShiftedLetterHint"
-                latin:moreKeys="!text/more_keys_for_arabic_diacritics"
-                latin:backgroundType="functional" />
-        </case>
-        <case
             latin:languageCode="ne"
             latin:keyboardLayoutSet="nepali_traditional"
         >
+            <!-- Because the font rendering system prior to API version 16 can't automatically
+                 render dotted circle for incomplete combining letter of some scripts, different
+                 set of Key definitions are needed based on the API version. -->
             <include
-                latin:keyboardLayout="@xml/key_nepali_traditional_period" />
-        </case>
-        <case
-            latin:languageCode="hy"
-        >
-            <!-- U+0589: "։" ARMENIAN FULL STOP -->
+                latin:keyboardLayout="@xml/keystyle_devanagari_sign_virama" />
             <Key
-                latin:keyLabel="&#x0589;"
+                latin:keyStyle="baseKeyDevanagariSignVirama"
                 latin:keyLabelFlags="hasPopupHint"
                 latin:moreKeys="!text/more_keys_for_punctuation"
                 latin:backgroundType="functional" />
         </case>
         <default>
             <Key
-                latin:keyLabel="."
-                latin:keyLabelFlags="hasPopupHint"
-                latin:moreKeys="!text/more_keys_for_punctuation"
+                latin:keyLabel="!text/keylabel_for_period"
+                latin:keyHintLabel="!text/keyhintlabel_for_period"
+                latin:keyLabelFlags="hasPopupHint|hasShiftedLetterHint"
+                latin:moreKeys="!text/more_keys_for_period"
                 latin:backgroundType="functional" />
         </default>
     </switch>

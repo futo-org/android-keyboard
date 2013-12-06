@@ -65,6 +65,11 @@
     <!-- U+060C: "،" ARABIC COMMA -->
     <string name="keylabel_for_comma">&#x060C;</string>
     <string name="more_keys_for_comma">"\\,"</string>
+    <!-- U+0651: "ّ" ARABIC SHADDA -->
+    <string name="keyhintlabel_for_period">&#x0651;</string>
+    <string name="more_keys_for_period">!text/more_keys_for_arabic_diacritics</string>
+    <string name="keyhintlabel_for_tablet_period">&#x0651;</string>
+    <string name="more_keys_for_tablet_period">!text/more_keys_for_arabic_diacritics</string>
     <string name="keylabel_for_symbols_question">&#x061F;</string>
     <string name="keylabel_for_symbols_semicolon">&#x061B;</string>
     <!-- U+066A: "٪" ARABIC PERCENT SIGN -->
@@ -119,5 +124,4 @@
     <!-- In order to make Tatweel easily distinguishable from other punctuations, we use consecutive Tatweels only for its displayed label. -->
     <!-- Note: The space character is needed as a preceding letter to draw Arabic diacritics characters correctly. -->
     <string name="more_keys_for_arabic_diacritics">"!fixedColumnOrder!7,&#x20;&#x0655;|&#x0655;,&#x20;&#x0654;|&#x0654;,&#x20;&#x0652;|&#x0652;,&#x20;&#x064D;|&#x064D;,&#x20;&#x064C;|&#x064C;,&#x20;&#x064B;|&#x064B;,&#x20;&#x0651;|&#x0651;,&#x20;&#x0656;|&#x0656;,&#x20;&#x0670;|&#x0670;,&#x20;&#x0653;|&#x0653;,&#x20;&#x0650;|&#x0650;,&#x20;&#x064F;|&#x064F;,&#x20;&#x064E;|&#x064E;,&#x0640;&#x0640;&#x0640;|&#x0640;"</string>
-    <string name="keyhintlabel_for_arabic_diacritics">&#x0651;</string>
 </resources>
