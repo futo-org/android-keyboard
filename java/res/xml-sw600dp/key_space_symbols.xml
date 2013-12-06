@@ -22,5 +22,6 @@
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
     <include
+        latin:backgroundType="normal"
         latin:keyboardLayout="@xml/key_space_5kw" />
 </merge>
