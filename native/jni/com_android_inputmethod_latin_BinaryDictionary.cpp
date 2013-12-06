@@ -24,6 +24,7 @@
 #include "jni.h"
 #include "jni_common.h"
 #include "suggest/core/dictionary/dictionary.h"
+#include "suggest/core/dictionary/unigram_property.h"
 #include "suggest/core/suggest_options.h"
 #include "suggest/policyimpl/dictionary/structure/dictionary_structure_with_buffer_policy_factory.h"
 #include "suggest/policyimpl/dictionary/utils/dict_file_writing_utils.h"
@@ -258,6 +259,21 @@ static jint latinime_BinaryDictionary_getBigramProbability(JNIEnv *env, jclass c
             word1Length);
 }
 
+static void latinime_BinaryDictionary_getUnigramProperty(JNIEnv *env, jclass clazz,
+        jlong dict, jintArray word, jintArray outCodePoints, jbooleanArray outFlags,
+        jintArray outProbability, jintArray outHistoricalInfo, jobject outShortcutTargets,
+        jobject outShortcutProbabilities) {
+    Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
+    if (!dictionary) return;
+    const jsize wordLength = env->GetArrayLength(word);
+    int wordCodePoints[wordLength];
+    env->GetIntArrayRegion(word, 0, wordLength, wordCodePoints);
+    const UnigramProperty unigramProperty = dictionary->getUnigramProperty(
+            wordCodePoints, wordLength);
+    unigramProperty.outputProperties(env, outCodePoints, outFlags, outProbability,
+            outHistoricalInfo, outShortcutTargets, outShortcutProbabilities);
+}
+
 static jfloat latinime_BinaryDictionary_calcNormalizedScore(JNIEnv *env, jclass clazz,
         jintArray before, jintArray after, jint score) {
     jsize beforeLength = env->GetArrayLength(before);
@@ -332,7 +348,6 @@ static void latinime_BinaryDictionary_removeBigramWords(JNIEnv *env, jclass claz
     dictionary->removeBigramWords(word0CodePoints, word0Length, word1CodePoints,
             word1Length);
 }
-
 
 // Returns how many language model params are processed.
 static int latinime_BinaryDictionary_addMultipleDictionaryEntries(JNIEnv *env, jclass clazz,
@@ -492,6 +507,11 @@ static const JNINativeMethod sMethods[] = {
         const_cast<char *>("getBigramProbabilityNative"),
         const_cast<char *>("(J[I[I)I"),
         reinterpret_cast<void *>(latinime_BinaryDictionary_getBigramProbability)
+    },
+    {
+        const_cast<char *>("getUnigramPropertyNative"),
+        const_cast<char *>("(J[I[I[Z[I[ILjava/util/ArrayList;Ljava/util/ArrayList;)V"),
+        reinterpret_cast<void *>(latinime_BinaryDictionary_getUnigramProperty)
     },
     {
         const_cast<char *>("calcNormalizedScoreNative"),

@@ -18,6 +18,7 @@
 #define LATINIME_DICTIONARY_STRUCTURE_POLICY_H
 
 #include "defines.h"
+#include "suggest/core/dictionary/unigram_property.h"
 #include "utils/exclusive_ownership_pointer.h"
 
 namespace latinime {
@@ -89,6 +90,10 @@ class DictionaryStructureWithBufferPolicy {
     // dedicated method instead of this if you want to use this in the production.
     virtual void getProperty(const char *const query, const int queryLength, char *const outResult,
             const int maxResultLength) = 0;
+
+    // Used for testing.
+    virtual const UnigramProperty getUnigramProperty(const int *const codePonts,
+            const int codePointCount) const = 0;
 
  protected:
     DictionaryStructureWithBufferPolicy() {}
