@@ -17,6 +17,7 @@
 #ifndef LATINIME_UNIGRAM_PROPERTY_H
 #define LATINIME_UNIGRAM_PROPERTY_H
 
+#include <cstring>
 #include <vector>
 
 #include "defines.h"
@@ -31,8 +32,7 @@ class UnigramProperty {
     UnigramProperty()
             : mCodePoints(), mCodePointCount(0), mIsNotAWord(false), mIsBlacklisted(false),
               mHasBigrams(false), mHasShortcuts(false), mProbability(NOT_A_PROBABILITY),
-              mTimestamp(0), mLevel(0), mCount(0), mShortcutTargets(),
-              mShortcutProbabilities() {}
+              mTimestamp(0), mLevel(0), mCount(0), mShortcutTargets(), mShortcutProbabilities() {}
 
     UnigramProperty(const UnigramProperty &unigramProperty)
             : mCodePoints(), mCodePointCount(unigramProperty.mCodePointCount),
