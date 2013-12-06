@@ -114,8 +114,10 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
     }
 
     @Override
-    protected boolean isValidBinaryDictFormatVersion(final int formatVersion) {
-        return formatVersion >= REQUIRED_BINARY_DICTIONARY_VERSION;
+    protected boolean matchesExpectedBinaryDictFormatVersionForThisType(final int formatVersion) {
+        // This class is using format 4 because it's used by all version 4 dictionaries.
+        // TODO: remove this when all dynamically generated dicts use version 4.
+        return formatVersion == REQUIRED_BINARY_DICTIONARY_VERSION;
     }
 
     @Override

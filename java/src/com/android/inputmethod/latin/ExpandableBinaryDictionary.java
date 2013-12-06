@@ -28,7 +28,6 @@ import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.utils.AsyncResultHolder;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.PrioritizedSerialExecutor;
-import com.android.inputmethod.latin.utils.StringUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -65,9 +64,6 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     protected static final int MAX_WORD_LENGTH = Constants.DICTIONARY_MAX_WORD_LENGTH;
 
     private static final int DICTIONARY_FORMAT_VERSION = 4;
-
-    private static final String SUPPORTS_DYNAMIC_UPDATE =
-            FormatSpec.FileHeader.ATTRIBUTE_VALUE_TRUE;
 
     /**
      * A static map of update controllers, each of which records the time of accesses to a single
@@ -135,9 +131,16 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
      */
     protected abstract boolean hasContentChanged();
 
-    protected boolean isValidBinaryDictFormatVersion(final int formatVersion) {
-        // TODO: Use ver4 format.
+    protected boolean matchesExpectedBinaryDictFormatVersionForThisType(final int formatVersion) {
+        // This class is using format 2 because it's used by the User and Contacts dictionary
+        // only, which right now use format 2 (dicts using format 4 use Decaying*, which overrides
+        // this method).
+        // TODO: Migrate these dicts to ver4 format, and remove this function.
         return formatVersion == 2;
+    }
+
+    public boolean hasValidContents() {
+        return mBinaryDictionary.hasValidContents();
     }
 
     protected String getFileNameExtentionToOpenDict() {
@@ -174,11 +177,11 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     }
 
     private static AbstractDictionaryWriter getDictionaryWriter(final Context context,
-            final String dictType, final boolean isDynamicPersonalizationDictionary) {
+            final boolean isDynamicPersonalizationDictionary) {
         if (isDynamicPersonalizationDictionary) {
              return null;
         } else {
-            return new DictionaryWriter(context, dictType);
+            return new DictionaryWriter(context);
         }
     }
 
@@ -203,7 +206,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         mBinaryDictionary = null;
         mFilenameDictionaryUpdateController = getDictionaryUpdateController(filename);
         // Currently, only dynamic personalization dictionary is updatable.
-        mDictionaryWriter = getDictionaryWriter(context, dictType, isUpdatable);
+        mDictionaryWriter = getDictionaryWriter(context, isUpdatable);
     }
 
     protected static String getFilenameWithLocale(final String name, final Locale locale) {
@@ -221,9 +224,6 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                 if (mBinaryDictionary!= null) {
                     mBinaryDictionary.close();
                     mBinaryDictionary = null;
-                }
-                if (mDictionaryWriter != null) {
-                    mDictionaryWriter.close();
                 }
             }
         });
@@ -564,7 +564,10 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
             mDictionaryWriter.write(mFilename, getHeaderAttributeMap());
         } else {
             if (mBinaryDictionary == null || !mBinaryDictionary.isValidDictionary()
-                    || !isValidBinaryDictFormatVersion(mBinaryDictionary.getFormatVersion())) {
+                    || !hasValidContents()
+                    // TODO: remove the check below
+                    || !matchesExpectedBinaryDictFormatVersionForThisType(
+                            mBinaryDictionary.getFormatVersion())) {
                 final File file = new File(mContext.getFilesDir(), mFilename);
                 file.delete();
                 BinaryDictionary.createEmptyDictFile(file.getAbsolutePath(),
@@ -663,7 +666,9 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                         loadBinaryDictionary();
                     }
                     if (mBinaryDictionary != null && !(mBinaryDictionary.isValidDictionary()
-                            && isValidBinaryDictFormatVersion(
+                            && hasValidContents()
+                            // TODO: remove the check below
+                            && matchesExpectedBinaryDictFormatVersionForThisType(
                                     mBinaryDictionary.getFormatVersion()))) {
                         // Binary dictionary or its format version is not valid. Regenerate the
                         // dictionary file.
