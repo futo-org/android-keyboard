@@ -84,6 +84,7 @@
     <string name="keylabel_for_currency">$</string>
     <string name="more_keys_for_currency">$,&#x00A2;,&#x20AC;,&#x00A3;,&#x00A5;,&#x20B1;</string>
     <string name="more_keys_for_punctuation">"!fixedColumnOrder!8,;,/,(,),#,!,\\,,\?,&amp;,\\%,+,\",-,:,',\@"</string>
+    <string name="more_keys_for_tablet_punctuation">"!fixedColumnOrder!7,;,/,(,),#,',\\,,&amp;,\\%,+,\",-,:,\@"</string>
     <!-- U+2020: "†" DAGGER
          U+2021: "‡" DOUBLE DAGGER
          U+2605: "★" BLACK STAR -->
@@ -171,8 +172,7 @@
     <string name="more_keys_for_period">!text/more_keys_for_punctuation</string>
     <string name="keylabel_for_tablet_period">.</string>
     <string name="keyhintlabel_for_tablet_period"></string>
-    <!-- U+2026: "…" HORIZONTAL ELLIPSIS -->
-    <string name="more_keys_for_tablet_period">&#x2026;</string>
+    <string name="more_keys_for_tablet_period">!text/more_keys_for_tablet_punctuation</string>
     <string name="keylabel_for_symbols_question">\?</string>
     <string name="keylabel_for_symbols_semicolon">;</string>
     <string name="keylabel_for_symbols_percent">%</string>
