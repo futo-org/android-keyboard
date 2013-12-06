@@ -27,6 +27,7 @@ import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.utils.AsyncResultHolder;
 import com.android.inputmethod.latin.utils.CollectionUtils;
+import com.android.inputmethod.latin.utils.FileUtils;
 import com.android.inputmethod.latin.utils.PrioritizedSerialExecutor;
 
 import java.io.File;
@@ -568,7 +569,9 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                     || !matchesExpectedBinaryDictFormatVersionForThisType(
                             mBinaryDictionary.getFormatVersion())) {
                 final File file = new File(mContext.getFilesDir(), mFilename);
-                file.delete();
+                if (!FileUtils.deleteRecursively(file)) {
+                    Log.e(TAG, "Can't remove a file: " + file.getName());
+                }
                 BinaryDictionary.createEmptyDictFile(file.getAbsolutePath(),
                         DICTIONARY_FORMAT_VERSION, getHeaderAttributeMap());
             } else {
@@ -664,17 +667,26 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                         // load the shared dictionary.
                         loadBinaryDictionary();
                     }
-                    if (mBinaryDictionary != null && !(isValidDictionary()
-                            // TODO: remove the check below
-                            && matchesExpectedBinaryDictFormatVersionForThisType(
-                                    mBinaryDictionary.getFormatVersion()))) {
-                        // Binary dictionary or its format version is not valid. Regenerate the
-                        // dictionary file.
-                        mFilenameDictionaryUpdateController.mLastUpdateTime = time;
-                        writeBinaryDictionary();
-                        loadBinaryDictionary();
-                    }
-                    mPerInstanceDictionaryUpdateController.mLastUpdateTime = time;
+                    // If we just loaded the binary dictionary, then mBinaryDictionary is not
+                    // up-to-date yet so it's useless to test it right away. Schedule the check
+                    // for right after it's loaded instead.
+                    getExecutor(mFilename).executePrioritized(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (mBinaryDictionary != null && !(isValidDictionary()
+                                    // TODO: remove the check below
+                                    && matchesExpectedBinaryDictFormatVersionForThisType(
+                                            mBinaryDictionary.getFormatVersion()))) {
+                                // Binary dictionary or its format version is not valid. Regenerate
+                                // the dictionary file. writeBinaryDictionary will remove the
+                                // existing files if appropriate.
+                                mFilenameDictionaryUpdateController.mLastUpdateTime = time;
+                                writeBinaryDictionary();
+                                loadBinaryDictionary();
+                            }
+                            mPerInstanceDictionaryUpdateController.mLastUpdateTime = time;
+                        }
+                    });
                 } finally {
                     mFilenameDictionaryUpdateController.mProcessingLargeTask.set(false);
                 }
