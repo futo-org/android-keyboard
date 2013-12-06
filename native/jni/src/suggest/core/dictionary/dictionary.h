@@ -22,6 +22,7 @@
 #include "defines.h"
 #include "jni.h"
 #include "suggest/core/dictionary/bigram_dictionary.h"
+#include "suggest/core/dictionary/unigram_property.h"
 #include "suggest/core/policy/dictionary_header_structure_policy.h"
 #include "suggest/core/policy/dictionary_structure_with_buffer_policy.h"
 #include "suggest/core/suggest_interface.h"
@@ -33,6 +34,7 @@ class DictionaryStructureWithBufferPolicy;
 class DicTraverseSession;
 class ProximityInfo;
 class SuggestOptions;
+class UnigramProperty;
 
 class Dictionary {
  public:
@@ -91,6 +93,8 @@ class Dictionary {
 
     void getProperty(const char *const query, const int queryLength, char *const outResult,
             const int maxResultLength);
+
+    const UnigramProperty getUnigramProperty(const int *const codePoints, const int codePointCount);
 
     const DictionaryStructureWithBufferPolicy *getDictionaryStructurePolicy() const {
         return mDictionaryStructureWithBufferPolicy.get();

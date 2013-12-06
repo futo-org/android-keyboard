@@ -58,7 +58,8 @@ LATIN_IME_CORE_SRC_FILES := \
         dictionary.cpp \
         digraph_utils.cpp \
         error_type_utils.cpp \
-        multi_bigram_map.cpp) \
+        multi_bigram_map.cpp \
+        unigram_property.cpp) \
     $(addprefix suggest/core/layout/, \
         additional_proximity_chars.cpp \
         proximity_info.cpp \

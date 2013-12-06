@@ -143,6 +143,13 @@ void Dictionary::getProperty(const char *const query, const int queryLength, cha
             maxResultLength);
 }
 
+const UnigramProperty Dictionary::getUnigramProperty(const int *const codePoints,
+        const int codePointCount) {
+    TimeKeeper::setCurrentTime();
+    return mDictionaryStructureWithBufferPolicy.get()->getUnigramProperty(
+            codePoints, codePointCount);
+}
+
 void Dictionary::logDictionaryInfo(JNIEnv *const env) const {
     int dictionaryIdCodePointBuffer[HEADER_ATTRIBUTE_BUFFER_SIZE];
     int versionStringCodePointBuffer[HEADER_ATTRIBUTE_BUFFER_SIZE];
