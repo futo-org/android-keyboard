@@ -109,7 +109,6 @@
     <string name="more_keys_for_less_than">!fixedColumnOrder!3,&#x2039;,&#x2264;,&#x00AB;</string>
     <string name="more_keys_for_greater_than">!fixedColumnOrder!3,&#x203A;,&#x2265;,&#x00BB;</string>
     <string name="more_keys_for_arabic_diacritics"></string>
-    <string name="keyhintlabel_for_arabic_diacritics"></string>
     <string name="keylabel_for_symbols_1">1</string>
     <string name="keylabel_for_symbols_2">2</string>
     <string name="keylabel_for_symbols_3">3</string>
@@ -160,8 +159,20 @@
     <!-- U+207F: "ⁿ" SUPERSCRIPT LATIN SMALL LETTER N
          U+2205: "∅" EMPTY SET -->
     <string name="more_keys_for_symbols_0">&#x207F;,&#x2205;</string>
+    <!-- Comma key -->
     <string name="keylabel_for_comma">,</string>
     <string name="more_keys_for_comma"></string>
+    <string name="keylabel_for_tablet_comma">,</string>
+    <string name="keyhintlabel_for_tablet_comma"></string>
+    <string name="more_keys_for_tablet_comma"></string>
+    <!-- Period key -->
+    <string name="keylabel_for_period">.</string>
+    <string name="keyhintlabel_for_period"></string>
+    <string name="more_keys_for_period">!text/more_keys_for_punctuation</string>
+    <string name="keylabel_for_tablet_period">.</string>
+    <string name="keyhintlabel_for_tablet_period"></string>
+    <!-- U+2026: "…" HORIZONTAL ELLIPSIS -->
+    <string name="more_keys_for_tablet_period">&#x2026;</string>
     <string name="keylabel_for_symbols_question">\?</string>
     <string name="keylabel_for_symbols_semicolon">;</string>
     <string name="keylabel_for_symbols_percent">%</string>
@@ -172,12 +183,6 @@
     <string name="more_keys_for_symbols_semicolon"></string>
     <!-- U+2030: "‰" PER MILLE SIGN -->
     <string name="more_keys_for_symbols_percent">&#x2030;</string>
-    <string name="keylabel_for_tablet_comma">,</string>
-    <string name="keyhintlabel_for_tablet_comma"></string>
-    <string name="more_keys_for_tablet_comma"></string>
-    <string name="keyhintlabel_for_period"></string>
-    <!-- U+2026: "…" HORIZONTAL ELLIPSIS -->
-    <string name="more_keys_for_period">&#x2026;</string>
     <string name="more_keys_for_q"></string>
     <string name="more_keys_for_x"></string>
     <string name="keylabel_for_q">q</string>
