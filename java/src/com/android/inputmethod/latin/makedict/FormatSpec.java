@@ -204,8 +204,8 @@ public final class FormatSpec {
     static final int NOT_A_VERSION_NUMBER = -1;
     static final int FIRST_VERSION_WITH_DYNAMIC_UPDATE = 3;
     static final int FIRST_VERSION_WITH_TERMINAL_ID = 4;
-    static final int VERSION3 = 3;
-    static final int VERSION4 = 4;
+    public static final int VERSION3 = 3;
+    public static final int VERSION4 = 4;
 
     // These options need to be the same numeric values as the one in the native reading code.
     static final int GERMAN_UMLAUT_PROCESSING_FLAG = 0x1;

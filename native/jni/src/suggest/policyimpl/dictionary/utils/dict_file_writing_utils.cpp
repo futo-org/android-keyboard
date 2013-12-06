@@ -34,7 +34,7 @@ const char *const DictFileWritingUtils::TEMP_FILE_SUFFIX_FOR_WRITING_DICT_FILE =
         const int dictVersion, const HeaderReadWriteUtils::AttributeMap *const attributeMap) {
     TimeKeeper::setCurrentTime();
     switch (dictVersion) {
-        case 4:
+        case FormatUtils::VERSION_4:
             return createEmptyV4DictFile(filePath, attributeMap);
         default:
             AKLOGE("Cannot create dictionary %s because format version %d is not supported.",

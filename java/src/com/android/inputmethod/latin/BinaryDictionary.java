@@ -121,7 +121,6 @@ public final class BinaryDictionary extends Dictionary {
             String[] attributeKeyStringArray, String[] attributeValueStringArray);
     private static native long openNative(String sourceDir, long dictOffset, long dictSize,
             boolean isUpdatable);
-    private static native boolean hasValidContentsNative(long dict);
     private static native void flushNative(long dict, String filePath);
     private static native boolean needsToRunGCNative(long dict, boolean mindsBlockByGC);
     private static native void flushWithGCNative(long dict, String filePath);
@@ -241,10 +240,6 @@ public final class BinaryDictionary extends Dictionary {
 
     public boolean isValidDictionary() {
         return mNativeDict != 0;
-    }
-
-    public boolean hasValidContents() {
-        return hasValidContentsNative(mNativeDict);
     }
 
     public int getFormatVersion() {

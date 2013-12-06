@@ -29,10 +29,10 @@ namespace latinime {
 class FormatUtils {
  public:
     enum FORMAT_VERSION {
-        VERSION_2,
-        VERSION_3,
-        VERSION_4,
-        UNKNOWN_VERSION
+        VERSION_2 = 2,
+        VERSION_3 = 3,
+        VERSION_4 = 4,
+        UNKNOWN_VERSION = -1
     };
 
     // 32 bit magic number is stored at the beginning of the dictionary header to reject

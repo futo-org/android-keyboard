@@ -63,7 +63,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
      */
     protected static final int MAX_WORD_LENGTH = Constants.DICTIONARY_MAX_WORD_LENGTH;
 
-    private static final int DICTIONARY_FORMAT_VERSION = 4;
+    private static final int DICTIONARY_FORMAT_VERSION = FormatSpec.VERSION4;
 
     /**
      * A static map of update controllers, each of which records the time of accesses to a single
@@ -139,8 +139,8 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         return formatVersion == 2;
     }
 
-    public boolean hasValidContents() {
-        return mBinaryDictionary.hasValidContents();
+    public boolean isValidDictionary() {
+        return mBinaryDictionary.isValidDictionary();
     }
 
     protected String getFileNameExtentionToOpenDict() {
@@ -563,8 +563,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
             loadDictionaryAsync();
             mDictionaryWriter.write(mFilename, getHeaderAttributeMap());
         } else {
-            if (mBinaryDictionary == null || !mBinaryDictionary.isValidDictionary()
-                    || !hasValidContents()
+            if (mBinaryDictionary == null || !isValidDictionary()
                     // TODO: remove the check below
                     || !matchesExpectedBinaryDictFormatVersionForThisType(
                             mBinaryDictionary.getFormatVersion())) {
@@ -665,8 +664,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                         // load the shared dictionary.
                         loadBinaryDictionary();
                     }
-                    if (mBinaryDictionary != null && !(mBinaryDictionary.isValidDictionary()
-                            && hasValidContents()
+                    if (mBinaryDictionary != null && !(isValidDictionary()
                             // TODO: remove the check below
                             && matchesExpectedBinaryDictFormatVersionForThisType(
                                     mBinaryDictionary.getFormatVersion()))) {

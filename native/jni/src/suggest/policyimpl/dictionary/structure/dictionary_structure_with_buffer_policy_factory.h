@@ -27,7 +27,7 @@ namespace latinime {
 
 class DictionaryStructureWithBufferPolicyFactory {
  public:
-    static DictionaryStructureWithBufferPolicy::StructurePoilcyPtr
+    static DictionaryStructureWithBufferPolicy::StructurePolicyPtr
             newDictionaryStructureWithBufferPolicy(const char *const path, const int bufOffset,
                     const int size, const bool isUpdatable);
 

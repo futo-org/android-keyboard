@@ -63,7 +63,7 @@ public final class DictionaryFactory {
                 final ReadOnlyBinaryDictionary readOnlyBinaryDictionary =
                         new ReadOnlyBinaryDictionary(f.mFilename, f.mOffset, f.mLength,
                                 useFullEditDistance, locale, Dictionary.TYPE_MAIN);
-                if (readOnlyBinaryDictionary.hasValidContents()) {
+                if (readOnlyBinaryDictionary.isValidDictionary()) {
                     dictList.add(readOnlyBinaryDictionary);
                 } else {
                     readOnlyBinaryDictionary.close();
