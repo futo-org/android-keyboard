@@ -49,6 +49,7 @@ public final class DictionaryPool extends LinkedBlockingQueue<DictAndKeyboard> {
     final static ArrayList<SuggestedWordInfo> noSuggestions = CollectionUtils.newArrayList();
     private final static DictAndKeyboard dummyDict = new DictAndKeyboard(
             new Dictionary(Dictionary.TYPE_MAIN) {
+                // TODO: this dummy dictionary should be a singleton in the Dictionary class.
                 @Override
                 public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
                         final String prevWord, final ProximityInfo proximityInfo,

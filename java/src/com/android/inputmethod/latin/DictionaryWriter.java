@@ -43,8 +43,8 @@ public class DictionaryWriter extends AbstractDictionaryWriter {
 
     private FusionDictionary mFusionDictionary;
 
-    public DictionaryWriter(final Context context, final String dictType) {
-        super(context, dictType);
+    public DictionaryWriter(final Context context) {
+        super(context);
         clear();
     }
 
@@ -91,19 +91,5 @@ public class DictionaryWriter extends AbstractDictionaryWriter {
             mFusionDictionary.addOptionAttribute(entry.getKey(), entry.getValue());
         }
         dictEncoder.writeDictionary(mFusionDictionary, FORMAT_OPTIONS);
-    }
-
-    @Override
-    public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
-            final String prevWord, final ProximityInfo proximityInfo,
-            boolean blockOffensiveWords, final int[] additionalFeaturesOptions) {
-        // This class doesn't support suggestion.
-        return null;
-    }
-
-    @Override
-    public boolean isValidWord(String word) {
-        // This class doesn't support dictionary retrieval.
-        return false;
     }
 }
