@@ -24,6 +24,7 @@ import android.util.Pair;
 import com.android.inputmethod.latin.BinaryDictionary.LanguageModelParam;
 import com.android.inputmethod.latin.makedict.CodePointUtils;
 import com.android.inputmethod.latin.makedict.FormatSpec;
+import com.android.inputmethod.latin.utils.UnigramProperty;
 
 import java.io.File;
 import java.io.IOException;
@@ -822,6 +823,54 @@ public class BinaryDictionaryTests extends AndroidTestCase {
             final int probability = binaryDictionary.calculateProbability(
                     unigramProbability, bigramProbability);
             assertEquals(probability, binaryDictionary.getBigramProbability(word0, word1));
+        }
+    }
+
+    public void testGetUnigramProperties() {
+        testGetUnigramProperties(4 /* formatVersion */);
+    }
+
+    private void testGetUnigramProperties(final int formatVersion) {
+        final long seed = System.currentTimeMillis();
+        final Random random = new Random(seed);
+        final int ITERATION_COUNT = 1000;
+        final int codePointSetSize = 20;
+        final int[] codePointSet = CodePointUtils.generateCodePointSet(codePointSetSize, random);
+
+        File dictFile = null;
+        try {
+            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary", formatVersion);
+        } catch (IOException e) {
+            fail("IOException while writing an initial dictionary : " + e);
+        }
+        final BinaryDictionary binaryDictionary = new BinaryDictionary(dictFile.getAbsolutePath(),
+                0 /* offset */, dictFile.length(), true /* useFullEditDistance */,
+                Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
+
+        final UnigramProperty invalidUnigramProperty =
+                binaryDictionary.getUnigramProperty("dummyWord");
+        assertFalse(invalidUnigramProperty.isValid());
+
+        for (int i = 0; i < ITERATION_COUNT; i++) {
+            final String word = CodePointUtils.generateWord(random, codePointSet);
+            final int unigramProbability = random.nextInt(0xFF);
+            final boolean isNotAWord = random.nextBoolean();
+            final boolean isBlacklisted = random.nextBoolean();
+            // TODO: Add tests for shortcut.
+            // TODO: Add tests for historical info.
+            binaryDictionary.addUnigramWord(word, unigramProbability,
+                    null /* shortcutTarget */, BinaryDictionary.NOT_A_PROBABILITY,
+                    isNotAWord, isBlacklisted, BinaryDictionary.NOT_A_VALID_TIMESTAMP);
+            final UnigramProperty unigramProperty =
+                    binaryDictionary.getUnigramProperty(word);
+            assertEquals(word, unigramProperty.mCodePoints);
+            assertTrue(unigramProperty.isValid());
+            assertEquals(isNotAWord, unigramProperty.mIsNotAWord);
+            assertEquals(isBlacklisted, unigramProperty.mIsBlacklisted);
+            assertEquals(false, unigramProperty.mHasBigrams);
+            assertEquals(false, unigramProperty.mHasShortcuts);
+            assertEquals(unigramProbability, unigramProperty.mProbability);
+            assertTrue(unigramProperty.mShortcutTargets.isEmpty());
         }
     }
 }

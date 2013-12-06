@@ -123,6 +123,12 @@ class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
         }
     }
 
+    const UnigramProperty getUnigramProperty(const int *const codePoints,
+            const int codePointCount) const {
+        // getUnigramProperty is not supported.
+        return UnigramProperty();
+    }
+
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(PatriciaTriePolicy);
 

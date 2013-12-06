@@ -16,8 +16,11 @@
 
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_patricia_trie_policy.h"
 
+#include <vector>
+
 #include "suggest/core/dicnode/dic_node.h"
 #include "suggest/core/dicnode/dic_node_vector.h"
+#include "suggest/core/dictionary/unigram_property.h"
 #include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_reading_helper.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_patricia_trie_node_reader.h"
 #include "suggest/policyimpl/dictionary/utils/forgetting_curve_utils.h"
@@ -288,6 +291,44 @@ void Ver4PatriciaTriePolicy::getProperty(const char *const query, const int quer
     } else if (strncmp(query, SET_NEEDS_TO_DECAY_FOR_TESTING_QUERY, compareLength) == 0) {
         mNeedsToDecayForTesting = true;
     }
+}
+
+const UnigramProperty Ver4PatriciaTriePolicy::getUnigramProperty(const int *const codePoints,
+        const int codePointCount) const {
+    const int ptNodePos = getTerminalPtNodePositionOfWord(codePoints, codePointCount,
+            false /* forceLowerCaseSearch */);
+    if (ptNodePos == NOT_A_DICT_POS) {
+        AKLOGE("fetchUnigramProperty is called for invalid word.");
+        return UnigramProperty();
+    }
+    const PtNodeParams ptNodeParams = mNodeReader.fetchNodeInfoInBufferFromPtNodePos(ptNodePos);
+    const ProbabilityEntry probabilityEntry =
+            mBuffers.get()->getProbabilityDictContent()->getProbabilityEntry(
+                    ptNodeParams.getTerminalId());
+    // Fetch shortcut information.
+    std::vector<std::vector<int> > shortcutTargets;
+    std::vector<int> shortcutProbabilities;
+    if (ptNodeParams.hasShortcutTargets()) {
+        int shortcutTarget[MAX_WORD_LENGTH];
+        const ShortcutDictContent *const shortcutDictContent =
+                mBuffers.get()->getShortcutDictContent();
+        bool hasNext = true;
+        int shortcutPos = getShortcutPositionOfPtNode(ptNodePos);
+        while (hasNext) {
+            int shortcutTargetLength = 0;
+            int shortcutProbability = NOT_A_PROBABILITY;
+            shortcutDictContent->getShortcutEntryAndAdvancePosition(MAX_WORD_LENGTH, shortcutTarget,
+                    &shortcutTargetLength, &shortcutProbability, &hasNext, &shortcutPos);
+            std::vector<int> target(shortcutTarget, shortcutTarget + shortcutTargetLength);
+            shortcutTargets.push_back(target);
+            shortcutProbabilities.push_back(shortcutProbability);
+        }
+    }
+    return UnigramProperty(ptNodeParams.getCodePoints(), ptNodeParams.getCodePointCount(),
+            ptNodeParams.isNotAWord(), ptNodeParams.isBlacklisted(), ptNodeParams.hasBigrams(),
+            ptNodeParams.hasShortcutTargets(), ptNodeParams.getProbability(),
+            probabilityEntry.getTimeStamp(), probabilityEntry.getLevel(),
+            probabilityEntry.getCount(), &shortcutTargets, &shortcutProbabilities);
 }
 
 } // namespace latinime
