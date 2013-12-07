@@ -28,7 +28,6 @@ import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.Xml;
 
 import com.android.inputmethod.keyboard.internal.KeyDrawParams;
@@ -53,8 +52,6 @@ import java.util.Locale;
  * Class for describing the position and characteristics of a single key in the keyboard.
  */
 public class Key implements Comparable<Key> {
-    private static final String TAG = Key.class.getSimpleName();
-
     /**
      * The key code (unicode or custom code) that this key generates.
      */
@@ -382,9 +379,6 @@ public class Key implements Comparable<Key> {
         mKeyVisualAttributes = KeyVisualAttributes.newInstance(keyAttr);
         keyAttr.recycle();
         mHashCode = computeHashCode(this);
-        if (hasShiftedLetterHint() && TextUtils.isEmpty(mHintLabel)) {
-            Log.w(TAG, "hasShiftedLetterHint specified without keyHintLabel: " + this);
-        }
     }
 
     /**
