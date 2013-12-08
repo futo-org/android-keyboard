@@ -38,7 +38,6 @@ const int Ver4DictConstants::MAX_DICTIONARY_SIZE = 2 * 1024 * 1024;
 const int Ver4DictConstants::MAX_DICT_EXTENDED_REGION_SIZE = 1 * 1024 * 1024;
 
 const int Ver4DictConstants::NOT_A_TERMINAL_ID = -1;
-const int Ver4DictConstants::NOT_A_TIME_STAMP = -1;
 const int Ver4DictConstants::PROBABILITY_SIZE = 1;
 const int Ver4DictConstants::FLAGS_IN_PROBABILITY_FILE_SIZE = 1;
 const int Ver4DictConstants::TERMINAL_ADDRESS_TABLE_ADDRESS_SIZE = 3;
