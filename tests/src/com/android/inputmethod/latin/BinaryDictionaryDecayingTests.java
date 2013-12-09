@@ -105,6 +105,8 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
                 FormatSpec.FileHeader.ATTRIBUTE_VALUE_TRUE);
         attributeMap.put(FormatSpec.FileHeader.USES_FORGETTING_CURVE_ATTRIBUTE,
                 FormatSpec.FileHeader.ATTRIBUTE_VALUE_TRUE);
+        attributeMap.put(FormatSpec.FileHeader.HAS_HISTORICAL_INFO_ATTRIBUTE,
+                FormatSpec.FileHeader.ATTRIBUTE_VALUE_TRUE);
         if (BinaryDictionary.createEmptyDictFile(file.getAbsolutePath(),
                 4 /* dictVersion */, attributeMap)) {
             return new File(file, FormatSpec.TRIE_FILE_EXTENSION);
