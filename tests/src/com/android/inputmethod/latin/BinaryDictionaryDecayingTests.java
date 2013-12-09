@@ -108,7 +108,7 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
         attributeMap.put(FormatSpec.FileHeader.HAS_HISTORICAL_INFO_ATTRIBUTE,
                 FormatSpec.FileHeader.ATTRIBUTE_VALUE_TRUE);
         if (BinaryDictionary.createEmptyDictFile(file.getAbsolutePath(),
-                4 /* dictVersion */, attributeMap)) {
+                FormatSpec.VERSION4, attributeMap)) {
             return new File(file, FormatSpec.TRIE_FILE_EXTENSION);
         } else {
             throw new IOException("Empty dictionary " + file.getAbsolutePath() + " "
@@ -117,7 +117,7 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
     }
 
     public void testAddValidAndInvalidWords() {
-        testAddValidAndInvalidWords(4 /* formatVersion */);
+        testAddValidAndInvalidWords(FormatSpec.VERSION4);
     }
 
     private void testAddValidAndInvalidWords(final int formatVersion) {
@@ -167,7 +167,7 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
     }
 
     public void testDecayingProbability() {
-        testDecayingProbability(4 /* formatVersion */);
+        testDecayingProbability(FormatSpec.VERSION4);
     }
 
     private void testDecayingProbability(final int formatVersion) {
@@ -225,7 +225,7 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
     }
 
     public void testAddManyUnigramsToDecayingDict() {
-        testAddManyUnigramsToDecayingDict(4 /* formatVersion */);
+        testAddManyUnigramsToDecayingDict(FormatSpec.VERSION4);
     }
 
     private void testAddManyUnigramsToDecayingDict(final int formatVersion) {
@@ -281,7 +281,7 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
     }
 
     public void testAddManyBigramsToDecayingDict() {
-        testAddManyBigramsToDecayingDict(4 /* formatVersion */);
+        testAddManyBigramsToDecayingDict(FormatSpec.VERSION4);
     }
 
     private void testAddManyBigramsToDecayingDict(final int formatVersion) {
