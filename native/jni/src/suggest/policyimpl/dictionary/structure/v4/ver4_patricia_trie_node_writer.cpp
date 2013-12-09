@@ -141,6 +141,42 @@ bool Ver4PatriciaTrieNodeWriter::updatePtNodeProbability(
             toBeUpdatedPtNodeParams->getTerminalId(), &probabilityEntry);
 }
 
+bool Ver4PatriciaTrieNodeWriter::updatePtNodeProbabilityAndGetNeedsToKeepPtNodeAfterGC(
+        const PtNodeParams *const toBeUpdatedPtNodeParams, bool *const outNeedsToKeepPtNode) {
+    if (!toBeUpdatedPtNodeParams->isTerminal()) {
+        AKLOGE("updatePtNodeProbabilityAndGetNeedsToSaveForGC is called for non-terminal PtNode.");
+        return false;
+    }
+    if (mBuffers->getHeaderPolicy()->isDecayingDict()) {
+        const ProbabilityEntry originalProbabilityEntry =
+                mBuffers->getProbabilityDictContent()->getProbabilityEntry(
+                        toBeUpdatedPtNodeParams->getTerminalId());
+        // TODO: Use historical info.
+        const int newProbability = ForgettingCurveUtils::getEncodedProbabilityToSave(
+                originalProbabilityEntry.getProbability(), mBuffers->getHeaderPolicy());
+        const ProbabilityEntry probabilityEntry =
+                originalProbabilityEntry.createEntryWithUpdatedProbability(newProbability);
+        if (!mBuffers->getMutableProbabilityDictContent()->setProbabilityEntry(
+                toBeUpdatedPtNodeParams->getTerminalId(), &probabilityEntry)) {
+            AKLOGE("Cannot write updated probability entry. terminalId: %d",
+                    toBeUpdatedPtNodeParams->getTerminalId());
+            return false;
+        }
+        const bool isValid = ForgettingCurveUtils::isValidEncodedProbability(newProbability);
+        if (!isValid) {
+            if (!markPtNodeAsWillBecomeNonTerminal(toBeUpdatedPtNodeParams)) {
+                AKLOGE("Cannot mark PtNode as willBecomeNonTerminal.");
+                return false;
+            }
+        }
+        *outNeedsToKeepPtNode = isValid;
+    } else {
+        // No need to update probability.
+        *outNeedsToKeepPtNode = true;
+    }
+    return true;
+}
+
 bool Ver4PatriciaTrieNodeWriter::updateChildrenPosition(
         const PtNodeParams *const toBeUpdatedPtNodeParams, const int newChildrenPosition) {
     int childrenPosFieldPos = toBeUpdatedPtNodeParams->getChildrenPosFieldPos();

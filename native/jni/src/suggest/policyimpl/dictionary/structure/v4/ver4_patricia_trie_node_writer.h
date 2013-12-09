@@ -60,6 +60,9 @@ class Ver4PatriciaTrieNodeWriter : public PtNodeWriter {
     virtual bool updatePtNodeProbability(const PtNodeParams *const toBeUpdatedPtNodeParams,
             const int newProbability, const int timestamp);
 
+    virtual bool updatePtNodeProbabilityAndGetNeedsToKeepPtNodeAfterGC(
+            const PtNodeParams *const toBeUpdatedPtNodeParams, bool *const outNeedsToKeepPtNode);
+
     virtual bool updateChildrenPosition(const PtNodeParams *const toBeUpdatedPtNodeParams,
             const int newChildrenPosition);
 

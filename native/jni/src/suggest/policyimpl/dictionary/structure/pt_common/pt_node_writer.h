@@ -54,6 +54,10 @@ class PtNodeWriter {
     virtual bool updatePtNodeProbability(const PtNodeParams *const toBeUpdatedPtNodeParams,
             const int probability, const int timestamp) = 0;
 
+    virtual bool updatePtNodeProbabilityAndGetNeedsToKeepPtNodeAfterGC(
+            const PtNodeParams *const toBeUpdatedPtNodeParams,
+            bool *const outNeedsToKeepPtNode) = 0;
+
     virtual bool updateChildrenPosition(const PtNodeParams *const toBeUpdatedPtNodeParams,
                 const int newChildrenPosition) = 0;
 
