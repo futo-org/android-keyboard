@@ -41,7 +41,8 @@ const ProbabilityEntry ProbabilityDictContent::getProbabilityEntry(const int ter
                 Ver4DictConstants::WORD_LEVEL_FIELD_SIZE, &entryPos);
         const int count = buffer->readUintAndAdvancePosition(
                 Ver4DictConstants::WORD_COUNT_FIELD_SIZE, &entryPos);
-        return ProbabilityEntry(flags, probability, timestamp, level, count);
+        const HistoricalInfo historicalInfo(timestamp, level, count);
+        return ProbabilityEntry(flags, probability, &historicalInfo);
     } else {
         return ProbabilityEntry(flags, probability);
     }
@@ -136,17 +137,18 @@ bool ProbabilityDictContent::writeEntry(const ProbabilityEntry *const probabilit
         return false;
     }
     if (mHasHistoricalInfo) {
-        if (!bufferToWrite->writeUintAndAdvancePosition(probabilityEntry->getTimeStamp(),
+        const HistoricalInfo *const historicalInfo = probabilityEntry->getHistoricalInfo();
+        if (!bufferToWrite->writeUintAndAdvancePosition(historicalInfo->getTimeStamp(),
                 Ver4DictConstants::TIME_STAMP_FIELD_SIZE, &writingPos)) {
             AKLOGE("Cannot write timestamp in probability dict content. pos: %d", writingPos);
             return false;
         }
-        if (!bufferToWrite->writeUintAndAdvancePosition(probabilityEntry->getLevel(),
+        if (!bufferToWrite->writeUintAndAdvancePosition(historicalInfo->getLevel(),
                 Ver4DictConstants::WORD_LEVEL_FIELD_SIZE, &writingPos)) {
             AKLOGE("Cannot write level in probability dict content. pos: %d", writingPos);
             return false;
         }
-        if (!bufferToWrite->writeUintAndAdvancePosition(probabilityEntry->getCount(),
+        if (!bufferToWrite->writeUintAndAdvancePosition(historicalInfo->getCount(),
                 Ver4DictConstants::WORD_COUNT_FIELD_SIZE, &writingPos)) {
             AKLOGE("Cannot write count in probability dict content. pos: %d", writingPos);
             return false;

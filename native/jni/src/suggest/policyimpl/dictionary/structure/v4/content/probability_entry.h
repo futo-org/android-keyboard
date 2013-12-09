@@ -19,6 +19,7 @@
 
 #include "defines.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_dict_constants.h"
+#include "suggest/policyimpl/dictionary/utils/historical_info.h"
 
 namespace latinime {
 
@@ -26,32 +27,28 @@ class ProbabilityEntry {
  public:
     ProbabilityEntry(const ProbabilityEntry &probabilityEntry)
             : mFlags(probabilityEntry.mFlags), mProbability(probabilityEntry.mProbability),
-              mTimestamp(probabilityEntry.mTimestamp), mLevel(probabilityEntry.mLevel),
-              mCount(probabilityEntry.mCount) {}
+              mHistoricalInfo(probabilityEntry.mHistoricalInfo) {}
 
     // Dummy entry
     ProbabilityEntry()
-            : mFlags(0), mProbability(NOT_A_PROBABILITY),
-              mTimestamp(NOT_A_TIMESTAMP), mLevel(0), mCount(0) {}
+            : mFlags(0), mProbability(NOT_A_PROBABILITY), mHistoricalInfo() {}
 
     // Entry without historical information
     ProbabilityEntry(const int flags, const int probability)
-            : mFlags(flags), mProbability(probability),
-              mTimestamp(NOT_A_TIMESTAMP), mLevel(0), mCount(0) {}
+            : mFlags(flags), mProbability(probability), mHistoricalInfo() {}
 
     // Entry with historical information.
-    ProbabilityEntry(const int flags, const int probability, const int timestamp,
-            const int level, const int count)
-            : mFlags(flags), mProbability(probability), mTimestamp(timestamp), mLevel(level),
-              mCount(count) {}
+    ProbabilityEntry(const int flags, const int probability,
+            const HistoricalInfo *const historicalInfo)
+            : mFlags(flags), mProbability(probability), mHistoricalInfo(*historicalInfo) {}
 
     const ProbabilityEntry createEntryWithUpdatedProbability(const int probability) const {
-        return ProbabilityEntry(mFlags, probability, mTimestamp, mLevel, mCount);
+        return ProbabilityEntry(mFlags, probability, &mHistoricalInfo);
     }
 
-    const ProbabilityEntry createEntryWithUpdatedHistoricalInfo(const int timestamp,
-            const int level, const int count) const {
-        return ProbabilityEntry(mFlags, mProbability, timestamp, level, count);
+    const ProbabilityEntry createEntryWithUpdatedHistoricalInfo(
+            const HistoricalInfo *const historicalInfo) const {
+        return ProbabilityEntry(mFlags, mProbability, historicalInfo);
     }
 
     int getFlags() const {
@@ -62,16 +59,8 @@ class ProbabilityEntry {
         return mProbability;
     }
 
-    int getTimeStamp() const {
-        return mTimestamp;
-    }
-
-    int getLevel() const {
-        return mLevel;
-    }
-
-    int getCount() const {
-        return mCount;
+    const HistoricalInfo *getHistoricalInfo() const {
+        return &mHistoricalInfo;
     }
 
  private:
@@ -80,9 +69,7 @@ class ProbabilityEntry {
 
     const int mFlags;
     const int mProbability;
-    const int mTimestamp;
-    const int mLevel;
-    const int mCount;
+    const HistoricalInfo mHistoricalInfo;
 };
 } // namespace latinime
 #endif /* LATINIME_PROBABILITY_ENTRY_H */
