@@ -74,6 +74,10 @@ class PtNodeWriter {
             const DictPositionRelocationMap *const dictPositionRelocationMap,
             int *const outBigramEntryCount) = 0;
 
+    virtual bool addShortcutTarget(const PtNodeParams *const ptNodeParams,
+            const int *const targetCodePoints, const int targetCodePointCount,
+            const int shortcutProbability) = 0;
+
  protected:
     PtNodeWriter() {};
 

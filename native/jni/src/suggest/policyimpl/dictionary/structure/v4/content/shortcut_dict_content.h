@@ -38,6 +38,14 @@ class ShortcutDictContent : public SparseTableDictContent {
             : SparseTableDictContent(Ver4DictConstants::SHORTCUT_ADDRESS_TABLE_BLOCK_SIZE,
                       Ver4DictConstants::SHORTCUT_ADDRESS_TABLE_DATA_SIZE) {}
 
+    void getShortcutEntry(const int maxCodePointCount, int *const outCodePoint,
+            int *const outCodePointCount, int *const outProbability, bool *const outhasNext,
+            const int shortcutEntryPos) {
+        int readingPos = shortcutEntryPos;
+        return getShortcutEntryAndAdvancePosition(maxCodePointCount, outCodePoint,
+                outCodePointCount, outProbability, outhasNext, &readingPos);
+    }
+
     void getShortcutEntryAndAdvancePosition(const int maxCodePointCount,
             int *const outCodePoint, int *const outCodePointCount, int *const outProbability,
             bool *const outhasNext, int *const shortcutEntryPos) const;

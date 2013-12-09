@@ -217,6 +217,13 @@ bool Ver4PatriciaTrieNodeWriter::updateAllPositionFields(
     return true;
 }
 
+bool Ver4PatriciaTrieNodeWriter::addShortcutTarget(const PtNodeParams *const ptNodeParams,
+        const int *const targetCodePoints, const int targetCodePointCount,
+        const int shortcutProbability) {
+    return mShortcutPolicy->addNewShortcut(ptNodeParams->getTerminalId(),
+            targetCodePoints, targetCodePointCount, shortcutProbability);
+}
+
 bool Ver4PatriciaTrieNodeWriter::writePtNodeAndGetTerminalIdAndAdvancePosition(
         const PtNodeParams *const ptNodeParams, int *const outTerminalId,
         int *const ptNodeWritingPos) {

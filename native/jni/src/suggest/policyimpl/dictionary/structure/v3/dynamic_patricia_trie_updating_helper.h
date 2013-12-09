@@ -52,6 +52,10 @@ class DynamicPatriciaTrieUpdatingHelper {
     // Remove a bigram relation from word0Pos to word1Pos.
     bool removeBigramWords(const int word0Pos, const int word1Pos);
 
+    // Add a shortcut target.
+    bool addShortcutTarget(const int wordPos, const int *const targetCodePoints,
+            const int targetCodePointCount, const int shortcutProbability);
+
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(DynamicPatriciaTrieUpdatingHelper);
 

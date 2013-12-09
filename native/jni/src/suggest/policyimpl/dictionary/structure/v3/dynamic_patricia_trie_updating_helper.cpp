@@ -105,6 +105,14 @@ bool DynamicPatriciaTrieUpdatingHelper::removeBigramWords(const int word0Pos, co
     return mPtNodeWriter->removeBigramEntry(&sourcePtNodeParams, &targetPtNodeParams);
 }
 
+bool DynamicPatriciaTrieUpdatingHelper::addShortcutTarget(const int wordPos,
+        const int *const targetCodePoints, const int targetCodePointCount,
+        const int shortcutProbability) {
+    const PtNodeParams ptNodeParams(mPtNodeReader->fetchNodeInfoInBufferFromPtNodePos(wordPos));
+    return mPtNodeWriter->addShortcutTarget(&ptNodeParams, targetCodePoints, targetCodePointCount,
+            shortcutProbability);
+}
+
 bool DynamicPatriciaTrieUpdatingHelper::createAndInsertNodeIntoPtNodeArray(const int parentPos,
         const int *const nodeCodePoints, const int nodeCodePointCount,
         const bool isNotAWord, const bool isBlacklisted, const int probability,
