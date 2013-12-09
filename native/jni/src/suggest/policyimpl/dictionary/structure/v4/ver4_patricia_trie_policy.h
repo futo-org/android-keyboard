@@ -118,6 +118,9 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     static const char *const MAX_UNIGRAM_COUNT_QUERY;
     static const char *const MAX_BIGRAM_COUNT_QUERY;
     static const char *const SET_NEEDS_TO_DECAY_FOR_TESTING_QUERY;
+    static const char *const SET_CURRENT_TIME_FOR_TESTING_QUERY_FORMAT;
+    static const char *const GET_CURRENT_TIME_QUERY;
+    static const char *const QUIT_TIMEKEEPER_TEST_MODE_QUERY;
     // When the dictionary size is near the maximum size, we have to refuse dynamic operations to
     // prevent the dictionary from overflowing.
     static const int MARGIN_TO_REFUSE_DYNAMIC_OPERATIONS;

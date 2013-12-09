@@ -37,9 +37,13 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
     private static final String TEST_LOCALE = "test";
 
     // Note that these are corresponding definitions in native code in
-    // latinime::DynamicPatriciaTriePolicy.
+    // latinime::Ver4PatriciaTriePolicy.
     private static final String SET_NEEDS_TO_DECAY_FOR_TESTING_KEY =
             "SET_NEEDS_TO_DECAY_FOR_TESTING";
+    private static final String SET_CURRENT_TIME_FOR_TESTING_QUERY =
+            "SET_CURRENT_TIME_FOR_TESTING";
+    private static final String GET_CURRENT_TIME_QUERY = "GET_CURRENT_TIME";
+    private static final String QUIT_TIMEKEEPER_TEST_MODE_QUERY = "QUIT_TIMEKEEPER_TEST_MODE";
 
     private static final int DUMMY_PROBABILITY = 0;
 
@@ -114,6 +118,45 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
             throw new IOException("Empty dictionary " + file.getAbsolutePath() + " "
                     + FormatSpec.TRIE_FILE_EXTENSION + " cannot be created.");
         }
+    }
+
+    private static int getCurrentTime(final BinaryDictionary binaryDictionary) {
+        return Integer.parseInt(binaryDictionary.getPropertyForTests(GET_CURRENT_TIME_QUERY));
+    }
+
+    private static void setCurrentTime(final BinaryDictionary binaryDictionary,
+            final int currentTime) {
+        final String query = SET_CURRENT_TIME_FOR_TESTING_QUERY + ":" + currentTime;
+        binaryDictionary.getPropertyForTests(query);
+    }
+
+    public void testControllCurrentTime() {
+        testControllCurrentTime(FormatSpec.VERSION4);
+    }
+
+    private void testControllCurrentTime(final int formatVersion) {
+        final int TEST_COUNT = 1000;
+        final long seed = System.currentTimeMillis();
+        final Random random = new Random(seed);
+        File dictFile = null;
+        try {
+            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary", formatVersion);
+        } catch (IOException e) {
+            fail("IOException while writing an initial dictionary : " + e);
+        }
+        BinaryDictionary binaryDictionary = new BinaryDictionary(dictFile.getAbsolutePath(),
+                0 /* offset */, dictFile.length(), true /* useFullEditDistance */,
+                Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
+        final int startTime = getCurrentTime(binaryDictionary);
+        for (int i = 0; i < TEST_COUNT; i++) {
+            final int currentTime = random.nextInt(Integer.MAX_VALUE);
+            setCurrentTime(binaryDictionary, currentTime);
+            assertEquals(currentTime, getCurrentTime(binaryDictionary));
+        }
+        binaryDictionary.getPropertyForTests(QUIT_TIMEKEEPER_TEST_MODE_QUERY);
+        final int endTime = getCurrentTime(binaryDictionary);
+        final int MAX_ALLOWED_ELAPSED_TIME = 10;
+        assertTrue(startTime <= endTime && endTime <= startTime + MAX_ALLOWED_ELAPSED_TIME);
     }
 
     public void testAddValidAndInvalidWords() {
