@@ -153,12 +153,16 @@ bool Ver4BigramListPolicy::updateAllBigramEntriesAndDeleteUselessEntries(const i
                 return false;
             }
         } else if (mNeedsToDecayWhenUpdating) {
-            // TODO: Quit decaying probability during GC.
             const int probability = ForgettingCurveUtils::getEncodedProbabilityToSave(
                     bigramEntry.getProbability(), mHeaderPolicy);
+            const HistoricalInfo historicalInfo =
+                    ForgettingCurveUtils::createHistoricalInfoToSave(
+                            bigramEntry.getHistoricalInfo());
+            // TODO: Use ForgettingCurveUtils::needsToKeep(&historicalInfo).
             if (ForgettingCurveUtils::isValidEncodedProbability(probability)) {
                 const BigramEntry updatedBigramEntry =
-                        bigramEntry.updateProbabilityAndGetEntry(probability);
+                        bigramEntry.updateProbabilityAndGetEntry(probability)
+                                .updateHistoricalInfoAndGetEntry(&historicalInfo);
                 if (!mBigramDictContent->writeBigramEntry(&updatedBigramEntry, entryPos)) {
                     return false;
                 }
@@ -225,7 +229,7 @@ const BigramEntry Ver4BigramListPolicy::createUpdatedBigramEntryFrom(
         const int probability = ForgettingCurveUtils::getUpdatedEncodedProbability(
                 originalBigramEntry->getProbability(), newProbability);
         const HistoricalInfo updatedHistoricalInfo =
-                ForgettingCurveUtils::createUpdatedHistoricalInfoFrom(
+                ForgettingCurveUtils::createUpdatedHistoricalInfo(
                         originalBigramEntry->getHistoricalInfo(), newProbability, timestamp);
         return originalBigramEntry->updateProbabilityAndGetEntry(probability)
                 .updateHistoricalInfoAndGetEntry(&updatedHistoricalInfo);

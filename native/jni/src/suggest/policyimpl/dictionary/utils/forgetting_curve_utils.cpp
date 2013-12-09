@@ -42,10 +42,13 @@ const int ForgettingCurveUtils::DECAY_INTERVAL_SECONDS = 2 * 60 * 60;
 const int ForgettingCurveUtils::MAX_LEVEL = 3;
 const int ForgettingCurveUtils::MAX_COUNT = 3;
 const int ForgettingCurveUtils::MIN_VALID_LEVEL = 1;
+const int ForgettingCurveUtils::TIME_STEP_DURATION_IN_SECONDS = 6 * 60 * 60;
+const int ForgettingCurveUtils::MAX_ELAPSED_TIME_STEP_COUNT = 15;
+const int ForgettingCurveUtils::DISCARD_LEVEL_ZERO_ENTRY_TIME_STEP_COUNT_THRESHOLD = 14;
 
 const ForgettingCurveUtils::ProbabilityTable ForgettingCurveUtils::sProbabilityTable;
 
-/* static */ const HistoricalInfo ForgettingCurveUtils::createUpdatedHistoricalInfoFrom(
+/* static */ const HistoricalInfo ForgettingCurveUtils::createUpdatedHistoricalInfo(
         const HistoricalInfo *const originalHistoricalInfo,
         const int newProbability, const int timestamp) {
     if (newProbability != NOT_A_PROBABILITY && originalHistoricalInfo->getLevel() == 0) {
@@ -110,6 +113,12 @@ const ForgettingCurveUtils::ProbabilityTable ForgettingCurveUtils::sProbabilityT
     return encodedProbability >= MIN_VALID_ENCODED_PROBABILITY;
 }
 
+/* static */ bool ForgettingCurveUtils::needsToKeep(const HistoricalInfo *const historicalInfo) {
+    return historicalInfo->getLevel() > 0
+            || getElapsedTimeStepCount(historicalInfo->getTimeStamp())
+                    < DISCARD_LEVEL_ZERO_ENTRY_TIME_STEP_COUNT_THRESHOLD;
+}
+
 /* static */ int ForgettingCurveUtils::getEncodedProbabilityToSave(const int encodedProbability,
         const DictionaryHeaderStructurePolicy *const headerPolicy) {
     const int elapsedTime = TimeKeeper::peekCurrentTime() - headerPolicy->getLastDecayedTime();
@@ -127,6 +136,26 @@ const ForgettingCurveUtils::ProbabilityTable ForgettingCurveUtils::sProbabilityT
         }
     }
     return currentEncodedProbability;
+}
+
+/* static */ const HistoricalInfo ForgettingCurveUtils::createHistoricalInfoToSave(
+        const HistoricalInfo *const originalHistoricalInfo) {
+    if (originalHistoricalInfo->getTimeStamp() == NOT_A_TIMESTAMP) {
+        return HistoricalInfo();
+    }
+    const int elapsedTimeStep = getElapsedTimeStepCount(originalHistoricalInfo->getTimeStamp());
+    if (elapsedTimeStep < MAX_ELAPSED_TIME_STEP_COUNT) {
+        // No need to update historical info.
+        return *originalHistoricalInfo;
+    }
+    // Level down.
+    const int maxLevelDownAmonut = elapsedTimeStep / MAX_ELAPSED_TIME_STEP_COUNT;
+    const int levelDownAmount = (maxLevelDownAmonut >= originalHistoricalInfo->getLevel()) ?
+            originalHistoricalInfo->getLevel() : maxLevelDownAmonut;
+    const int adjustedTimestamp = originalHistoricalInfo->getTimeStamp() +
+            levelDownAmount * MAX_ELAPSED_TIME_STEP_COUNT * TIME_STEP_DURATION_IN_SECONDS;
+    return HistoricalInfo(adjustedTimestamp,
+            originalHistoricalInfo->getLevel() - levelDownAmount, 0 /* count */);
 }
 
 /* static */ bool ForgettingCurveUtils::needsToDecay(const bool mindsBlockByDecay,
@@ -165,6 +194,10 @@ const ForgettingCurveUtils::ProbabilityTable ForgettingCurveUtils::sProbabilityT
     } else {
         return max(unigramProbability - 8, 0);
     }
+}
+
+/* static */ int ForgettingCurveUtils::getElapsedTimeStepCount(const int timestamp) {
+    return (TimeKeeper::peekCurrentTime() - timestamp) / TIME_STEP_DURATION_IN_SECONDS;
 }
 
 ForgettingCurveUtils::ProbabilityTable::ProbabilityTable() : mTable() {
