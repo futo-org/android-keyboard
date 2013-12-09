@@ -20,6 +20,7 @@
 #include <vector>
 
 #include "defines.h"
+#include "suggest/policyimpl/dictionary/utils/historical_info.h"
 
 namespace latinime {
 
@@ -34,6 +35,10 @@ class ForgettingCurveUtils {
     static const int MAX_UNIGRAM_COUNT_AFTER_GC;
     static const int MAX_BIGRAM_COUNT;
     static const int MAX_BIGRAM_COUNT_AFTER_GC;
+
+    static const HistoricalInfo createUpdatedHistoricalInfoFrom(
+            const HistoricalInfo *const originalHistoricalInfo, const int newProbability,
+            const int timestamp);
 
     static int getProbability(const int encodedUnigramProbability,
             const int encodedBigramProbability);
@@ -75,6 +80,10 @@ class ForgettingCurveUtils {
     static const int ENCODED_PROBABILITY_STEP;
     static const float MIN_PROBABILITY_TO_DECAY;
     static const int DECAY_INTERVAL_SECONDS;
+
+    static const int MAX_LEVEL;
+    static const int MAX_COUNT;
+    static const int MIN_VALID_LEVEL;
 
     static const ProbabilityTable sProbabilityTable;
 
