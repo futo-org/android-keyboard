@@ -41,12 +41,13 @@ class Ver4PatriciaTrieWritingHelper {
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(Ver4PatriciaTrieWritingHelper);
 
-    class TraversePolicyToUpdateAllTerminalIds
+    class TraversePolicyToUpdateAllPtNodeFlagsAndTerminalIds
             : public DynamicPatriciaTrieReadingHelper::TraversingEventListener {
      public:
-          TraversePolicyToUpdateAllTerminalIds(Ver4PatriciaTrieNodeWriter *const ptNodeWriter,
+        TraversePolicyToUpdateAllPtNodeFlagsAndTerminalIds(
+                Ver4PatriciaTrieNodeWriter *const ptNodeWriter,
                 const TerminalPositionLookupTable::TerminalIdMap *const terminalIdMap)
-                : mPtNodeWriter(ptNodeWriter), mTerminalIdMap(terminalIdMap) {};
+                : mPtNodeWriter(ptNodeWriter), mTerminalIdMap(terminalIdMap) {}
 
         bool onAscend() { return true; }
 
@@ -57,7 +58,7 @@ class Ver4PatriciaTrieWritingHelper {
         bool onVisitingPtNode(const PtNodeParams *const ptNodeParams);
 
      private:
-        DISALLOW_IMPLICIT_CONSTRUCTORS(TraversePolicyToUpdateAllTerminalIds);
+        DISALLOW_IMPLICIT_CONSTRUCTORS(TraversePolicyToUpdateAllPtNodeFlagsAndTerminalIds);
 
         Ver4PatriciaTrieNodeWriter *const mPtNodeWriter;
         const TerminalPositionLookupTable::TerminalIdMap *const mTerminalIdMap;

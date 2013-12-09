@@ -160,8 +160,21 @@ bool Ver4PatriciaTrieNodeWriter::addNewBigramEntry(
         const PtNodeParams *const sourcePtNodeParams,
         const PtNodeParams *const targetPtNodeParam, const int probability, const int timestamp,
         bool *const outAddedNewBigram) {
-    return mBigramPolicy->addNewEntry(sourcePtNodeParams->getTerminalId(),
-            targetPtNodeParam->getTerminalId(), probability, timestamp, outAddedNewBigram);
+    if (!mBigramPolicy->addNewEntry(sourcePtNodeParams->getTerminalId(),
+            targetPtNodeParam->getTerminalId(), probability, timestamp, outAddedNewBigram)) {
+        AKLOGE("Cannot add new bigram entry. terminalId: %d, targetTerminalId: %d",
+                sourcePtNodeParams->getTerminalId(), targetPtNodeParam->getTerminalId());
+        return false;
+    }
+    if (!sourcePtNodeParams->hasBigrams()) {
+        // Update has bigrams flag.
+        return updatePtNodeFlags(sourcePtNodeParams->getHeadPos(),
+                sourcePtNodeParams->isBlacklisted(), sourcePtNodeParams->isNotAWord(),
+                sourcePtNodeParams->isTerminal(), sourcePtNodeParams->hasShortcutTargets(),
+                true /* hasBigrams */,
+                sourcePtNodeParams->getCodePointCount() > 1 /* hasMultipleChars */);
+    }
+    return true;
 }
 
 bool Ver4PatriciaTrieNodeWriter::removeBigramEntry(
@@ -220,8 +233,31 @@ bool Ver4PatriciaTrieNodeWriter::updateAllPositionFields(
 bool Ver4PatriciaTrieNodeWriter::addShortcutTarget(const PtNodeParams *const ptNodeParams,
         const int *const targetCodePoints, const int targetCodePointCount,
         const int shortcutProbability) {
-    return mShortcutPolicy->addNewShortcut(ptNodeParams->getTerminalId(),
-            targetCodePoints, targetCodePointCount, shortcutProbability);
+    if (!mShortcutPolicy->addNewShortcut(ptNodeParams->getTerminalId(),
+            targetCodePoints, targetCodePointCount, shortcutProbability)) {
+        AKLOGE("Cannot add new shortuct entry. terminalId: %d", ptNodeParams->getTerminalId());
+        return false;
+    }
+    if (!ptNodeParams->hasShortcutTargets()) {
+        // Update has shortcut targets flag.
+        return updatePtNodeFlags(ptNodeParams->getHeadPos(),
+                ptNodeParams->isBlacklisted(), ptNodeParams->isNotAWord(),
+                ptNodeParams->isTerminal(), true /* hasShortcutTargets */,
+                ptNodeParams->hasBigrams(),
+                ptNodeParams->getCodePointCount() > 1 /* hasMultipleChars */);
+    }
+    return true;
+}
+
+bool Ver4PatriciaTrieNodeWriter::updatePtNodeHasBigramsAndShortcutTargetsFlags(
+        const PtNodeParams *const ptNodeParams) {
+    const bool hasBigrams = mBuffers->getBigramDictContent()->getBigramListHeadPos(
+            ptNodeParams->getTerminalId()) != NOT_A_DICT_POS;
+    const bool hasShortcutTargets = mBuffers->getShortcutDictContent()->getShortcutListHeadPos(
+            ptNodeParams->getTerminalId()) != NOT_A_DICT_POS;
+    return updatePtNodeFlags(ptNodeParams->getHeadPos(), ptNodeParams->isBlacklisted(),
+            ptNodeParams->isNotAWord(), ptNodeParams->isTerminal(), hasShortcutTargets,
+            hasBigrams, ptNodeParams->getCodePointCount() > 1 /* hasMultipleChars */);
 }
 
 bool Ver4PatriciaTrieNodeWriter::writePtNodeAndGetTerminalIdAndAdvancePosition(
@@ -273,19 +309,9 @@ bool Ver4PatriciaTrieNodeWriter::writePtNodeAndGetTerminalIdAndAdvancePosition(
             ptNodeParams->getChildrenPos(), ptNodeWritingPos)) {
         return false;
     }
-    // Create node flags and write them.
-    PatriciaTrieReadingUtils::NodeFlags nodeFlags =
-            PatriciaTrieReadingUtils::createAndGetFlags(ptNodeParams->isBlacklisted(),
-                    ptNodeParams->isNotAWord(), isTerminal,
-                    ptNodeParams->hasShortcutTargets(), ptNodeParams->hasBigrams(),
-                    ptNodeParams->getCodePointCount() > 1 /* hasMultipleChars */,
-                    CHILDREN_POSITION_FIELD_SIZE);
-    int flagsFieldPos = nodePos;
-    if (!DynamicPatriciaTrieWritingUtils::writeFlagsAndAdvancePosition(mTrieBuffer, nodeFlags,
-            &flagsFieldPos)) {
-        return false;
-    }
-    return true;
+    return updatePtNodeFlags(nodePos, ptNodeParams->isBlacklisted(), ptNodeParams->isNotAWord(),
+            isTerminal, ptNodeParams->hasShortcutTargets(), ptNodeParams->hasBigrams(),
+            ptNodeParams->getCodePointCount() > 1 /* hasMultipleChars */);
 }
 
 const ProbabilityEntry Ver4PatriciaTrieNodeWriter::createUpdatedEntryFrom(
@@ -302,6 +328,21 @@ const ProbabilityEntry Ver4PatriciaTrieNodeWriter::createUpdatedEntryFrom(
     } else {
         return originalProbabilityEntry->createEntryWithUpdatedProbability(newProbability);
     }
+}
+
+bool Ver4PatriciaTrieNodeWriter::updatePtNodeFlags(const int ptNodePos,
+        const bool isBlacklisted, const bool isNotAWord, const bool isTerminal,
+        const bool hasShortcutTargets, const bool hasBigrams, const bool hasMultipleChars) {
+    // Create node flags and write them.
+    PatriciaTrieReadingUtils::NodeFlags nodeFlags =
+            PatriciaTrieReadingUtils::createAndGetFlags(isBlacklisted, isNotAWord, isTerminal,
+                    hasShortcutTargets, hasBigrams, hasMultipleChars,
+                    CHILDREN_POSITION_FIELD_SIZE);
+    if (!DynamicPatriciaTrieWritingUtils::writeFlags(mTrieBuffer, nodeFlags, ptNodePos)) {
+        AKLOGE("Cannot write PtNode flags. flags: %x, pos: %d", nodeFlags, ptNodePos);
+        return false;
+    }
+    return true;
 }
 
 }
