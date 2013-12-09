@@ -39,6 +39,13 @@ class DynamicPatriciaTrieWritingUtils {
     static bool writePtNodeArraySizeAndAdvancePosition(BufferWithExtendableBuffer *const buffer,
             const size_t arraySize, int *const arraySizeFieldPos);
 
+    static bool writeFlags(BufferWithExtendableBuffer *const buffer,
+            const DynamicPatriciaTrieReadingUtils::NodeFlags nodeFlags,
+            const int nodeFlagsFieldPos) {
+        int writingPos = nodeFlagsFieldPos;
+        return writeFlagsAndAdvancePosition(buffer, nodeFlags, &writingPos);
+    }
+
     static bool writeFlagsAndAdvancePosition(BufferWithExtendableBuffer *const buffer,
             const DynamicPatriciaTrieReadingUtils::NodeFlags nodeFlags,
             int *const nodeFlagsFieldPos);

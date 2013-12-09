@@ -172,18 +172,18 @@ bool Ver4PatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
         return false;
     }
     newDictReadingHelper.initWithPtNodeArrayPos(rootPtNodeArrayPos);
-    TraversePolicyToUpdateAllTerminalIds traversePolicyToUpdateAllTerminalIds(&newPtNodeWriter,
-            &terminalIdMap);
+    TraversePolicyToUpdateAllPtNodeFlagsAndTerminalIds
+            traversePolicyToUpdateAllPtNodeFlagsAndTerminalIds(&newPtNodeWriter, &terminalIdMap);
     if (!newDictReadingHelper.traverseAllPtNodesInPostorderDepthFirstManner(
-            &traversePolicyToUpdateAllTerminalIds)) {
+            &traversePolicyToUpdateAllPtNodeFlagsAndTerminalIds)) {
         return false;
     }
     *outUnigramCount = traversePolicyToUpdateAllPositionFields.getUnigramCount();
     return true;
 }
 
-bool Ver4PatriciaTrieWritingHelper::TraversePolicyToUpdateAllTerminalIds::onVisitingPtNode(
-        const PtNodeParams *const ptNodeParams) {
+bool Ver4PatriciaTrieWritingHelper::TraversePolicyToUpdateAllPtNodeFlagsAndTerminalIds
+        ::onVisitingPtNode(const PtNodeParams *const ptNodeParams) {
     if (!ptNodeParams->isTerminal()) {
         return true;
     }
@@ -194,7 +194,10 @@ bool Ver4PatriciaTrieWritingHelper::TraversePolicyToUpdateAllTerminalIds::onVisi
                 ptNodeParams->getTerminalId(), mTerminalIdMap->size());
         return false;
     }
-    return mPtNodeWriter->updateTerminalId(ptNodeParams, it->second);
+    if (!mPtNodeWriter->updateTerminalId(ptNodeParams, it->second)) {
+        AKLOGE("Cannot update terminal id. %d -> %d", it->first, it->second);
+    }
+    return mPtNodeWriter->updatePtNodeHasBigramsAndShortcutTargetsFlags(ptNodeParams);
 }
 
 } // namespace latinime
