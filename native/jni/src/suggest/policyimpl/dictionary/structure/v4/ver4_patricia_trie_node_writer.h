@@ -54,6 +54,9 @@ class Ver4PatriciaTrieNodeWriter : public PtNodeWriter {
     virtual bool markPtNodeAsMoved(const PtNodeParams *const toBeUpdatedPtNodeParams,
             const int movedPos, const int bigramLinkedNodePos);
 
+    virtual bool markPtNodeAsWillBecomeNonTerminal(
+            const PtNodeParams *const toBeUpdatedPtNodeParams);
+
     virtual bool updatePtNodeProbability(const PtNodeParams *const toBeUpdatedPtNodeParams,
             const int newProbability, const int timestamp);
 

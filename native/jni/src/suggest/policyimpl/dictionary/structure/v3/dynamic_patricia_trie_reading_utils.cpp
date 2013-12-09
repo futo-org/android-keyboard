@@ -27,6 +27,7 @@ const DptReadingUtils::NodeFlags DptReadingUtils::MASK_MOVED = 0xC0;
 const DptReadingUtils::NodeFlags DptReadingUtils::FLAG_IS_NOT_MOVED = 0xC0;
 const DptReadingUtils::NodeFlags DptReadingUtils::FLAG_IS_MOVED = 0x40;
 const DptReadingUtils::NodeFlags DptReadingUtils::FLAG_IS_DELETED = 0x80;
+const DptReadingUtils::NodeFlags DptReadingUtils::FLAG_WILL_BECOME_NON_TERMINAL = 0x00;
 
 // TODO: Make DICT_OFFSET_ZERO_OFFSET = 0.
 // Currently, DICT_OFFSET_INVALID is 0 in Java side but offset can be 0 during GC. So, the maximum

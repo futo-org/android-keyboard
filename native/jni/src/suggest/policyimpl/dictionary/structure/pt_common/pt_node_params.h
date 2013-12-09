@@ -114,6 +114,10 @@ class PtNodeParams {
         return DynamicPatriciaTrieReadingUtils::isDeleted(mFlags);
     }
 
+    AK_FORCE_INLINE bool willBecomeNonTerminal() const {
+        return DynamicPatriciaTrieReadingUtils::willBecomeNonTerminal(mFlags);
+    }
+
     AK_FORCE_INLINE bool hasChildren() const {
         return mChildrenPos != NOT_A_DICT_POS;
     }
