@@ -54,7 +54,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
 
     private File createEmptyDictionaryAndGetFile(final String dictId,
             final int formatVersion) throws IOException {
-       if (formatVersion == 4) {
+       if (formatVersion == FormatSpec.VERSION4) {
             return createEmptyVer4DictionaryAndGetFile(dictId);
         } else {
             throw new IOException("Dictionary format version " + formatVersion
@@ -71,7 +71,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         attributeMap.put(FormatSpec.FileHeader.SUPPORTS_DYNAMIC_UPDATE_ATTRIBUTE,
                 FormatSpec.FileHeader.ATTRIBUTE_VALUE_TRUE);
         if (BinaryDictionary.createEmptyDictFile(file.getAbsolutePath(),
-                4 /* dictVersion */, attributeMap)) {
+                FormatSpec.VERSION4, attributeMap)) {
             return new File(file, FormatSpec.TRIE_FILE_EXTENSION);
         } else {
             throw new IOException("Empty dictionary " + file.getAbsolutePath() + " "
@@ -80,7 +80,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     }
 
     public void testIsValidDictionary() {
-        testIsValidDictionary(4 /* formatVersion */);
+        testIsValidDictionary(FormatSpec.VERSION4);
     }
 
     private void testIsValidDictionary(final int formatVersion) {
@@ -122,7 +122,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     }
 
     public void testAddUnigramWord() {
-        testAddUnigramWord(4 /* formatVersion */);
+        testAddUnigramWord(FormatSpec.VERSION4);
     }
 
     private void testAddUnigramWord(final int formatVersion) {
@@ -164,7 +164,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     }
 
     public void testRandomlyAddUnigramWord() {
-        testRandomlyAddUnigramWord(4 /* formatVersion */);
+        testRandomlyAddUnigramWord(FormatSpec.VERSION4);
     }
 
     private void testRandomlyAddUnigramWord(final int formatVersion) {
@@ -200,7 +200,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     }
 
     public void testAddBigramWords() {
-        testAddBigramWords(4 /* formatVersion */);
+        testAddBigramWords(FormatSpec.VERSION4);
     }
 
     private void testAddBigramWords(final int formatVersion) {
@@ -268,7 +268,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     }
 
     public void testRandomlyAddBigramWords() {
-        testRandomlyAddBigramWords(4 /* formatVersion */);
+        testRandomlyAddBigramWords(FormatSpec.VERSION4);
     }
 
     private void testRandomlyAddBigramWords(final int formatVersion) {
@@ -329,7 +329,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     }
 
     public void testRemoveBigramWords() {
-        testRemoveBigramWords(4 /* formatVersion */);
+        testRemoveBigramWords(FormatSpec.VERSION4);
     }
 
     private void testRemoveBigramWords(final int formatVersion) {
@@ -379,7 +379,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     }
 
     public void testFlushDictionary() {
-        testFlushDictionary(4 /* formatVersion */);
+        testFlushDictionary(FormatSpec.VERSION4);
     }
 
     private void testFlushDictionary(final int formatVersion) {
@@ -431,7 +431,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     }
 
     public void testFlushWithGCDictionary() {
-        testFlushWithGCDictionary(4 /* formatVersion */);
+        testFlushWithGCDictionary(FormatSpec.VERSION4);
     }
 
     private void testFlushWithGCDictionary(final int formatVersion) {
@@ -479,7 +479,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     }
 
     public void testAddBigramWordsAndFlashWithGC() {
-        testAddBigramWordsAndFlashWithGC(4 /* formatVersion */);
+        testAddBigramWordsAndFlashWithGC(FormatSpec.VERSION4);
     }
 
     // TODO: Evaluate performance of GC
@@ -548,7 +548,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     }
 
     public void testRandomOperationsAndFlashWithGC() {
-        testRandomOperationsAndFlashWithGC(4 /* formatVersion */);
+        testRandomOperationsAndFlashWithGC(FormatSpec.VERSION4);
     }
 
     private void testRandomOperationsAndFlashWithGC(final int formatVersion) {
@@ -659,7 +659,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     }
 
     public void testAddManyUnigramsAndFlushWithGC() {
-        testAddManyUnigramsAndFlushWithGC(4 /* formatVersion */);
+        testAddManyUnigramsAndFlushWithGC(FormatSpec.VERSION4);
     }
 
     private void testAddManyUnigramsAndFlushWithGC(final int formatVersion) {
@@ -707,7 +707,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     }
 
     public void testUnigramAndBigramCount() {
-        testUnigramAndBigramCount(4 /* formatVersion */);
+        testUnigramAndBigramCount(FormatSpec.VERSION4);
     }
 
     private void testUnigramAndBigramCount(final int formatVersion) {
@@ -766,7 +766,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     }
 
     public void testAddMultipleDictionaryEntries() {
-        testAddMultipleDictionaryEntries(4 /* formatVersion */);
+        testAddMultipleDictionaryEntries(FormatSpec.VERSION4);
     }
 
     private void testAddMultipleDictionaryEntries(final int formatVersion) {
@@ -828,7 +828,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     }
 
     public void testGetUnigramProperties() {
-        testGetUnigramProperties(4 /* formatVersion */);
+        testGetUnigramProperties(FormatSpec.VERSION4);
     }
 
     private void testGetUnigramProperties(final int formatVersion) {
@@ -875,7 +875,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     }
 
     public void testAddShortcuts() {
-        testAddShortcuts(4 /* formatVersion */);
+        testAddShortcuts(FormatSpec.VERSION4);
     }
 
     private void testAddShortcuts(final int formatVersion) {
@@ -933,7 +933,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     }
 
     public void testAddManyShortcuts() {
-        testAddManyShortcuts(4 /* formatVersion */);
+        testAddManyShortcuts(FormatSpec.VERSION4);
     }
 
     private void testAddManyShortcuts(final int formatVersion) {
