@@ -44,7 +44,7 @@ bool Ver4PatriciaTrieNodeWriter::markPtNodeAsDeleted(
             PatriciaTrieReadingUtils::getFlagsAndAdvancePosition(dictBuf, &pos);
     const PatriciaTrieReadingUtils::NodeFlags updatedFlags =
             DynamicPatriciaTrieReadingUtils::updateAndGetFlags(originalFlags, false /* isMoved */,
-                    true /* isDeleted */);
+                    true /* isDeleted */, false /* willBecomeNonTerminal */);
     int writingPos = toBeUpdatedPtNodeParams->getHeadPos();
     // Update flags.
     if (!DynamicPatriciaTrieWritingUtils::writeFlagsAndAdvancePosition(mTrieBuffer, updatedFlags,
@@ -74,7 +74,7 @@ bool Ver4PatriciaTrieNodeWriter::markPtNodeAsMoved(
             PatriciaTrieReadingUtils::getFlagsAndAdvancePosition(dictBuf, &pos);
     const PatriciaTrieReadingUtils::NodeFlags updatedFlags =
             DynamicPatriciaTrieReadingUtils::updateAndGetFlags(originalFlags, true /* isMoved */,
-                    false /* isDeleted */);
+                    false /* isDeleted */,  false /* willBecomeNonTerminal */);
     int writingPos = toBeUpdatedPtNodeParams->getHeadPos();
     // Update flags.
     if (!DynamicPatriciaTrieWritingUtils::writeFlagsAndAdvancePosition(mTrieBuffer, updatedFlags,
@@ -104,6 +104,26 @@ bool Ver4PatriciaTrieNodeWriter::markPtNodeAsMoved(
         }
     }
     return true;
+}
+
+bool Ver4PatriciaTrieNodeWriter::markPtNodeAsWillBecomeNonTerminal(
+        const PtNodeParams *const toBeUpdatedPtNodeParams) {
+    int pos = toBeUpdatedPtNodeParams->getHeadPos();
+    const bool usesAdditionalBuffer = mTrieBuffer->isInAdditionalBuffer(pos);
+    const uint8_t *const dictBuf = mTrieBuffer->getBuffer(usesAdditionalBuffer);
+    if (usesAdditionalBuffer) {
+        pos -= mTrieBuffer->getOriginalBufferSize();
+    }
+    // Read original flags
+    const PatriciaTrieReadingUtils::NodeFlags originalFlags =
+            PatriciaTrieReadingUtils::getFlagsAndAdvancePosition(dictBuf, &pos);
+    const PatriciaTrieReadingUtils::NodeFlags updatedFlags =
+            DynamicPatriciaTrieReadingUtils::updateAndGetFlags(originalFlags, false /* isMoved */,
+                    false /* isDeleted */, true /* willBecomeNonTerminal */);
+    int writingPos = toBeUpdatedPtNodeParams->getHeadPos();
+    // Update flags.
+    return DynamicPatriciaTrieWritingUtils::writeFlagsAndAdvancePosition(mTrieBuffer, updatedFlags,
+            &writingPos);
 }
 
 bool Ver4PatriciaTrieNodeWriter::updatePtNodeProbability(
@@ -281,12 +301,14 @@ bool Ver4PatriciaTrieNodeWriter::writePtNodeAndGetTerminalIdAndAdvancePosition(
         return false;
     }
     int terminalId = Ver4DictConstants::NOT_A_TERMINAL_ID;
-    if (ptNodeParams->getTerminalId() != Ver4DictConstants::NOT_A_TERMINAL_ID) {
-        terminalId = ptNodeParams->getTerminalId();
-    } else if (ptNodeParams->isTerminal()) {
-        // Write terminal information using a new terminal id.
-        // Get a new unused terminal id.
-        terminalId = mBuffers->getTerminalPositionLookupTable()->getNextTerminalId();
+    if (!ptNodeParams->willBecomeNonTerminal()) {
+        if (ptNodeParams->getTerminalId() != Ver4DictConstants::NOT_A_TERMINAL_ID) {
+            terminalId = ptNodeParams->getTerminalId();
+        } else if (ptNodeParams->isTerminal()) {
+            // Write terminal information using a new terminal id.
+            // Get a new unused terminal id.
+            terminalId = mBuffers->getTerminalPositionLookupTable()->getNextTerminalId();
+        }
     }
     const int isTerminal = terminalId != Ver4DictConstants::NOT_A_TERMINAL_ID;
     if (isTerminal) {

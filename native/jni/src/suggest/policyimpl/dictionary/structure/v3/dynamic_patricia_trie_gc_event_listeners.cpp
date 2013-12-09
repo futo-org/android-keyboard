@@ -42,6 +42,10 @@ bool DynamicPatriciaTrieGcEventListeners
         }
         if (!ForgettingCurveUtils::isValidEncodedProbability(newProbability)) {
             isUselessPtNode = true;
+            if (!mPtNodeWriter->markPtNodeAsWillBecomeNonTerminal(ptNodeParams)) {
+                AKLOGE("Cannot mark PtNode as willBecomeNonTerminal.");
+                return false;
+            }
         }
     }
     if (mChildrenValue > 0) {

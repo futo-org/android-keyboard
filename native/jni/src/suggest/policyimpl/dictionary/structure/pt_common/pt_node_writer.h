@@ -48,6 +48,9 @@ class PtNodeWriter {
     virtual bool markPtNodeAsMoved(const PtNodeParams *const toBeUpdatedPtNodeParams,
             const int movedPos, const int bigramLinkedNodePos) = 0;
 
+    virtual bool markPtNodeAsWillBecomeNonTerminal(
+            const PtNodeParams *const toBeUpdatedPtNodeParams) = 0;
+
     virtual bool updatePtNodeProbability(const PtNodeParams *const toBeUpdatedPtNodeParams,
             const int probability, const int timestamp) = 0;
 

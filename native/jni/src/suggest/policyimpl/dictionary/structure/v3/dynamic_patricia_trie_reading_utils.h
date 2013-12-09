@@ -54,12 +54,19 @@ class DynamicPatriciaTrieReadingUtils {
         return FLAG_IS_DELETED == (MASK_MOVED & flags);
     }
 
+    static AK_FORCE_INLINE bool willBecomeNonTerminal(const NodeFlags flags) {
+        return FLAG_WILL_BECOME_NON_TERMINAL == (MASK_MOVED & flags);
+    }
+
     static AK_FORCE_INLINE NodeFlags updateAndGetFlags(const NodeFlags originalFlags,
-            const bool isMoved, const bool isDeleted) {
+            const bool isMoved, const bool isDeleted, const bool willBecomeNonTerminal) {
         NodeFlags flags = originalFlags;
+        flags = willBecomeNonTerminal ?
+                ((flags & (~MASK_MOVED)) | FLAG_WILL_BECOME_NON_TERMINAL) : flags;
         flags = isMoved ? ((flags & (~MASK_MOVED)) | FLAG_IS_MOVED) : flags;
         flags = isDeleted ? ((flags & (~MASK_MOVED)) | FLAG_IS_DELETED) : flags;
-        flags = (!isMoved && !isDeleted) ? ((flags & (~MASK_MOVED)) | FLAG_IS_NOT_MOVED) : flags;
+        flags = (!isMoved && !isDeleted && !willBecomeNonTerminal) ?
+                ((flags & (~MASK_MOVED)) | FLAG_IS_NOT_MOVED) : flags;
         return flags;
     }
 
@@ -70,6 +77,7 @@ class DynamicPatriciaTrieReadingUtils {
     static const NodeFlags FLAG_IS_NOT_MOVED;
     static const NodeFlags FLAG_IS_MOVED;
     static const NodeFlags FLAG_IS_DELETED;
+    static const NodeFlags FLAG_WILL_BECOME_NON_TERMINAL;
 };
 } // namespace latinime
 #endif /* LATINIME_DYNAMIC_PATRICIA_TRIE_READING_UTILS_H */
