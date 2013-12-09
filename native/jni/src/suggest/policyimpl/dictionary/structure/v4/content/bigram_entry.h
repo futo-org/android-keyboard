@@ -32,7 +32,7 @@ class BigramEntry {
     // Entry with historical information.
     BigramEntry(const bool hasNext, const int probability, const int targetTerminalId)
             : mHasNext(hasNext), mProbability(probability),
-              mTimestamp(Ver4DictConstants::NOT_A_TIME_STAMP), mLevel(0), mCount(0),
+              mTimestamp(NOT_A_TIMESTAMP), mLevel(0), mCount(0),
               mTargetTerminalId(targetTerminalId) {}
 
     // Entry with historical information.

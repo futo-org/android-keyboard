@@ -32,12 +32,12 @@ class ProbabilityEntry {
     // Dummy entry
     ProbabilityEntry()
             : mFlags(0), mProbability(NOT_A_PROBABILITY),
-              mTimestamp(Ver4DictConstants::NOT_A_TIME_STAMP), mLevel(0), mCount(0) {}
+              mTimestamp(NOT_A_TIMESTAMP), mLevel(0), mCount(0) {}
 
     // Entry without historical information
     ProbabilityEntry(const int flags, const int probability)
             : mFlags(flags), mProbability(probability),
-              mTimestamp(Ver4DictConstants::NOT_A_TIME_STAMP), mLevel(0), mCount(0) {}
+              mTimestamp(NOT_A_TIMESTAMP), mLevel(0), mCount(0) {}
 
     // Entry with historical information.
     ProbabilityEntry(const int flags, const int probability, const int timestamp,
@@ -47,6 +47,11 @@ class ProbabilityEntry {
 
     const ProbabilityEntry createEntryWithUpdatedProbability(const int probability) const {
         return ProbabilityEntry(mFlags, probability, mTimestamp, mLevel, mCount);
+    }
+
+    const ProbabilityEntry createEntryWithUpdatedHistoricalInfo(const int timestamp,
+            const int level, const int count) const {
+        return ProbabilityEntry(mFlags, mProbability, timestamp, level, count);
     }
 
     int getFlags() const {

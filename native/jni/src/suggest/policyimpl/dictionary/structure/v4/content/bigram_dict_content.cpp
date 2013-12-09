@@ -27,7 +27,7 @@ const BigramEntry BigramDictContent::getBigramEntryAndAdvancePosition(
             Ver4DictConstants::BIGRAM_FLAGS_FIELD_SIZE, bigramEntryPos);
     const bool hasNext = (bigramFlags & Ver4DictConstants::BIGRAM_HAS_NEXT_MASK) != 0;
     int probability = NOT_A_PROBABILITY;
-    int timestamp = Ver4DictConstants::NOT_A_TIME_STAMP;
+    int timestamp = NOT_A_TIMESTAMP;
     int level = 0;
     int count = 0;
     if (mHasHistoricalInfo) {
