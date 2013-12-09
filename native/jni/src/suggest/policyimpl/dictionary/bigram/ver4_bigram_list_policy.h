@@ -59,7 +59,7 @@ class Ver4BigramListPolicy : public DictionaryBigramsStructurePolicy {
 
     int getEntryPosToUpdate(const int targetTerminalIdToFind, const int bigramListPos) const;
 
-    const BigramEntry getUpdatedBigramEntry(const BigramEntry *const originalBigramEntry,
+    const BigramEntry createUpdatedBigramEntryFrom(const BigramEntry *const originalBigramEntry,
             const int newProbability, const int timestamp) const;
 
     BigramDictContent *const mBigramDictContent;
