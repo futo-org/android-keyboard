@@ -155,11 +155,25 @@ bool Ver4PatriciaTriePolicy::addUnigramWord(const int *const word, const int len
     DynamicPatriciaTrieReadingHelper readingHelper(mDictBuffer, &mNodeReader);
     readingHelper.initWithPtNodeArrayPos(getRootPosition());
     bool addedNewUnigram = false;
-    // TODO: Add shortcut.
     if (mUpdatingHelper.addUnigramWord(&readingHelper, word, length, probability, isNotAWord,
             isBlacklisted, timestamp,  &addedNewUnigram)) {
         if (addedNewUnigram) {
             mUnigramCount++;
+        }
+        if (shortcutLength > 0) {
+            // Add shortcut target.
+            const int wordPos = getTerminalPtNodePositionOfWord(word, length,
+                    false /* forceLowerCaseSearch */);
+            if (wordPos == NOT_A_DICT_POS) {
+                AKLOGE("Cannot find terminal PtNode position to add shortcut target.");
+                return false;
+            }
+            if (!mUpdatingHelper.addShortcutTarget(wordPos, shortcutTargetCodePoints,
+                    shortcutLength, shortcutProbability)) {
+                AKLOGE("Cannot add new shortcut target. PtNodePos: %d, length: %d, probability: %d",
+                        wordPos, shortcutLength, shortcutProbability);
+                return false;
+            }
         }
         return true;
     } else {
@@ -309,12 +323,12 @@ const UnigramProperty Ver4PatriciaTriePolicy::getUnigramProperty(const int *cons
     // Fetch shortcut information.
     std::vector<std::vector<int> > shortcutTargets;
     std::vector<int> shortcutProbabilities;
-    if (ptNodeParams.hasShortcutTargets()) {
+    int shortcutPos = getShortcutPositionOfPtNode(ptNodePos);
+    if (shortcutPos != NOT_A_DICT_POS) {
         int shortcutTarget[MAX_WORD_LENGTH];
         const ShortcutDictContent *const shortcutDictContent =
                 mBuffers.get()->getShortcutDictContent();
         bool hasNext = true;
-        int shortcutPos = getShortcutPositionOfPtNode(ptNodePos);
         while (hasNext) {
             int shortcutTargetLength = 0;
             int shortcutProbability = NOT_A_PROBABILITY;

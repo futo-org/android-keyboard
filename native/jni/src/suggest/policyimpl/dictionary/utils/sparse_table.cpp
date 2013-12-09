@@ -44,6 +44,7 @@ bool SparseTable::set(const int id, const uint32_t value) {
         int tailPos = mIndexTableBuffer->getTailPosition();
         while(tailPos < posInIndexTable) {
             if (!mIndexTableBuffer->writeUintAndAdvancePosition(NOT_EXIST, INDEX_SIZE, &tailPos)) {
+                AKLOGE("cannot extend index table. tailPos: %d to: %d", tailPos, posInIndexTable);
                 return false;
             }
         }
@@ -51,12 +52,19 @@ bool SparseTable::set(const int id, const uint32_t value) {
     if (contains(id)) {
         // The entry is already in the content table.
         const int index = mIndexTableBuffer->readUint(INDEX_SIZE, posInIndexTable);
-        return mContentTableBuffer->writeUint(value, mDataSize, getPosInContentTable(id, index));
+        if (!mContentTableBuffer->writeUint(value, mDataSize, getPosInContentTable(id, index))) {
+            AKLOGE("cannot update value %d. pos: %d, tailPos: %d, mDataSize: %d", value,
+                    getPosInContentTable(id, index), mContentTableBuffer->getTailPosition(),
+                    mDataSize);
+            return false;
+        }
+        return true;
     }
     // The entry is not in the content table.
     // Create new entry in the content table.
     const int index = getIndexFromContentTablePos(mContentTableBuffer->getTailPosition());
     if (!mIndexTableBuffer->writeUint(index, INDEX_SIZE, posInIndexTable)) {
+        AKLOGE("cannot write index %d. pos %d", index, posInIndexTable);
         return false;
     }
     // Write a new block that containing the entry to be set.
@@ -64,6 +72,8 @@ bool SparseTable::set(const int id, const uint32_t value) {
     for (int i = 0; i < mBlockSize; ++i) {
         if (!mContentTableBuffer->writeUintAndAdvancePosition(NOT_A_DICT_POS, mDataSize,
                 &writingPos)) {
+            AKLOGE("cannot write content table to extend. writingPos: %d, tailPos: %d, "
+                    "mDataSize: %d", writingPos, mContentTableBuffer->getTailPosition(), mDataSize);
             return false;
         }
     }
@@ -80,7 +90,7 @@ int SparseTable::getPosInIndexTable(const int id) const {
 
 int SparseTable::getPosInContentTable(const int id, const int index) const {
     const int offset = id % mBlockSize;
-    return (index * mDataSize + offset) * mBlockSize;
+    return (index * mBlockSize + offset) * mDataSize;
 }
 
 } // namespace latinime

@@ -24,6 +24,7 @@ import android.util.Pair;
 import com.android.inputmethod.latin.BinaryDictionary.LanguageModelParam;
 import com.android.inputmethod.latin.makedict.CodePointUtils;
 import com.android.inputmethod.latin.makedict.FormatSpec;
+import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
 import com.android.inputmethod.latin.utils.UnigramProperty;
 
 import java.io.File;
@@ -856,7 +857,6 @@ public class BinaryDictionaryTests extends AndroidTestCase {
             final int unigramProbability = random.nextInt(0xFF);
             final boolean isNotAWord = random.nextBoolean();
             final boolean isBlacklisted = random.nextBoolean();
-            // TODO: Add tests for shortcut.
             // TODO: Add tests for historical info.
             binaryDictionary.addUnigramWord(word, unigramProbability,
                     null /* shortcutTarget */, BinaryDictionary.NOT_A_PROBABILITY,
@@ -871,6 +871,135 @@ public class BinaryDictionaryTests extends AndroidTestCase {
             assertEquals(false, unigramProperty.mHasShortcuts);
             assertEquals(unigramProbability, unigramProperty.mProbability);
             assertTrue(unigramProperty.mShortcutTargets.isEmpty());
+        }
+    }
+
+    public void testAddShortcuts() {
+        testAddShortcuts(4 /* formatVersion */);
+    }
+
+    private void testAddShortcuts(final int formatVersion) {
+        File dictFile = null;
+        try {
+            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary", formatVersion);
+        } catch (IOException e) {
+            fail("IOException while writing an initial dictionary : " + e);
+        }
+        final BinaryDictionary binaryDictionary = new BinaryDictionary(dictFile.getAbsolutePath(),
+                0 /* offset */, dictFile.length(), true /* useFullEditDistance */,
+                Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
+
+        final int unigramProbability = 100;
+        final int shortcutProbability = 10;
+        binaryDictionary.addUnigramWord("aaa", unigramProbability, "zzz",
+                shortcutProbability, false /* isNotAWord */, false /* isBlacklisted */,
+                0 /* timestamp */);
+        UnigramProperty unigramProperty = binaryDictionary.getUnigramProperty("aaa");
+        assertEquals(1, unigramProperty.mShortcutTargets.size());
+        assertEquals("zzz", unigramProperty.mShortcutTargets.get(0).mWord);
+        assertEquals(shortcutProbability, unigramProperty.mShortcutTargets.get(0).mFrequency);
+        final int updatedShortcutProbability = 2;
+        binaryDictionary.addUnigramWord("aaa", unigramProbability, "zzz",
+                updatedShortcutProbability, false /* isNotAWord */, false /* isBlacklisted */,
+                0 /* timestamp */);
+        unigramProperty = binaryDictionary.getUnigramProperty("aaa");
+        assertEquals(1, unigramProperty.mShortcutTargets.size());
+        assertEquals("zzz", unigramProperty.mShortcutTargets.get(0).mWord);
+        assertEquals(updatedShortcutProbability,
+                unigramProperty.mShortcutTargets.get(0).mFrequency);
+        binaryDictionary.addUnigramWord("aaa", unigramProbability, "yyy",
+                shortcutProbability, false /* isNotAWord */, false /* isBlacklisted */,
+                0 /* timestamp */);
+        final HashMap<String, Integer> shortcutTargets = new HashMap<String, Integer>();
+        shortcutTargets.put("zzz", updatedShortcutProbability);
+        shortcutTargets.put("yyy", shortcutProbability);
+        unigramProperty = binaryDictionary.getUnigramProperty("aaa");
+        assertEquals(2, unigramProperty.mShortcutTargets.size());
+        for (WeightedString shortcutTarget : unigramProperty.mShortcutTargets) {
+            assertTrue(shortcutTargets.containsKey(shortcutTarget.mWord));
+            assertEquals((int)shortcutTargets.get(shortcutTarget.mWord), shortcutTarget.mFrequency);
+            shortcutTargets.remove(shortcutTarget.mWord);
+        }
+        shortcutTargets.put("zzz", updatedShortcutProbability);
+        shortcutTargets.put("yyy", shortcutProbability);
+        binaryDictionary.flushWithGC();
+        unigramProperty = binaryDictionary.getUnigramProperty("aaa");
+        assertEquals(2, unigramProperty.mShortcutTargets.size());
+        for (WeightedString shortcutTarget : unigramProperty.mShortcutTargets) {
+            assertTrue(shortcutTargets.containsKey(shortcutTarget.mWord));
+            assertEquals((int)shortcutTargets.get(shortcutTarget.mWord), shortcutTarget.mFrequency);
+            shortcutTargets.remove(shortcutTarget.mWord);
+        }
+    }
+
+    public void testAddManyShortcuts() {
+        testAddManyShortcuts(4 /* formatVersion */);
+    }
+
+    private void testAddManyShortcuts(final int formatVersion) {
+        final long seed = System.currentTimeMillis();
+        final Random random = new Random(seed);
+        final int UNIGRAM_COUNT = 1000;
+        final int SHORTCUT_COUNT = 10000;
+        final int codePointSetSize = 20;
+        final int[] codePointSet = CodePointUtils.generateCodePointSet(codePointSetSize, random);
+
+        final ArrayList<String> words = new ArrayList<String>();
+        final HashMap<String, Integer> unigramProbabilities = new HashMap<String, Integer>();
+        final HashMap<String, HashMap<String, Integer>> shortcutTargets =
+                new HashMap<String, HashMap<String, Integer>>();
+
+        File dictFile = null;
+        try {
+            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary", formatVersion);
+        } catch (IOException e) {
+            fail("IOException while writing an initial dictionary : " + e);
+        }
+        final BinaryDictionary binaryDictionary = new BinaryDictionary(dictFile.getAbsolutePath(),
+                0 /* offset */, dictFile.length(), true /* useFullEditDistance */,
+                Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
+
+        for (int i = 0; i < UNIGRAM_COUNT; i++) {
+            final String word = CodePointUtils.generateWord(random, codePointSet);
+            final int unigramProbability = random.nextInt(0xFF);
+            addUnigramWord(binaryDictionary, word, unigramProbability);
+            words.add(word);
+            unigramProbabilities.put(word, unigramProbability);
+            if (binaryDictionary.needsToRunGC(true /* mindsBlockByGC */)) {
+                binaryDictionary.flushWithGC();
+            }
+        }
+        for (int i = 0; i < SHORTCUT_COUNT; i++) {
+            final String shortcutTarget = CodePointUtils.generateWord(random, codePointSet);
+            final int shortcutProbability = random.nextInt(0xF);
+            final String word = words.get(random.nextInt(words.size()));
+            final int unigramProbability = unigramProbabilities.get(word);
+            binaryDictionary.addUnigramWord(word, unigramProbability, shortcutTarget,
+                    shortcutProbability, false /* isNotAWord */, false /* isBlacklisted */,
+                    0 /* timestamp */);
+            if (shortcutTargets.containsKey(word)) {
+                final HashMap<String, Integer> shortcutTargetsOfWord = shortcutTargets.get(word);
+                shortcutTargetsOfWord.put(shortcutTarget, shortcutProbability);
+            } else {
+                final HashMap<String, Integer> shortcutTargetsOfWord =
+                        new HashMap<String, Integer>();
+                shortcutTargetsOfWord.put(shortcutTarget, shortcutProbability);
+                shortcutTargets.put(word, shortcutTargetsOfWord);
+            }
+            if (binaryDictionary.needsToRunGC(true /* mindsBlockByGC */)) {
+                binaryDictionary.flushWithGC();
+            }
+        }
+
+        for (final String word : words) {
+            final UnigramProperty unigramProperty = binaryDictionary.getUnigramProperty(word);
+            assertEquals((int)unigramProbabilities.get(word), unigramProperty.mProbability);
+            assertEquals(shortcutTargets.get(word).size(), unigramProperty.mShortcutTargets.size());
+            for (final WeightedString shortcutTarget : unigramProperty.mShortcutTargets) {
+                final String targetCodePonts = shortcutTarget.mWord;
+                assertEquals((int)shortcutTargets.get(word).get(targetCodePonts),
+                        shortcutTarget.mFrequency);
+            }
         }
     }
 }
