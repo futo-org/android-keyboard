@@ -292,10 +292,13 @@ const ProbabilityEntry Ver4PatriciaTrieNodeWriter::createUpdatedEntryFrom(
         const ProbabilityEntry *const originalProbabilityEntry, const int newProbability,
         const int timestamp) const {
     if (mNeedsToDecayWhenUpdating) {
-        // TODO: Update historical information.
         const int updatedProbability = ForgettingCurveUtils::getUpdatedEncodedProbability(
                 originalProbabilityEntry->getProbability(), newProbability);
-        return originalProbabilityEntry->createEntryWithUpdatedProbability(updatedProbability);
+        const HistoricalInfo updatedHistoricalInfo =
+                ForgettingCurveUtils::createUpdatedHistoricalInfoFrom(
+                        originalProbabilityEntry->getHistoricalInfo(), newProbability, timestamp);
+        return originalProbabilityEntry->createEntryWithUpdatedProbability(updatedProbability)
+                .createEntryWithUpdatedHistoricalInfo(&updatedHistoricalInfo);
     } else {
         return originalProbabilityEntry->createEntryWithUpdatedProbability(newProbability);
     }

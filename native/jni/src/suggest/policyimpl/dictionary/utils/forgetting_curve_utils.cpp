@@ -39,7 +39,38 @@ const int ForgettingCurveUtils::ENCODED_PROBABILITY_STEP = 1;
 const float ForgettingCurveUtils::MIN_PROBABILITY_TO_DECAY = 0.03f;
 const int ForgettingCurveUtils::DECAY_INTERVAL_SECONDS = 2 * 60 * 60;
 
+const int ForgettingCurveUtils::MAX_LEVEL = 3;
+const int ForgettingCurveUtils::MAX_COUNT = 3;
+const int ForgettingCurveUtils::MIN_VALID_LEVEL = 1;
+
 const ForgettingCurveUtils::ProbabilityTable ForgettingCurveUtils::sProbabilityTable;
+
+/* static */ const HistoricalInfo ForgettingCurveUtils::createUpdatedHistoricalInfoFrom(
+        const HistoricalInfo *const originalHistoricalInfo,
+        const int newProbability, const int timestamp) {
+    if (newProbability != NOT_A_PROBABILITY && originalHistoricalInfo->getLevel() == 0) {
+        return HistoricalInfo(timestamp, MIN_VALID_LEVEL /* level */, 0 /* count */);
+    } else if (originalHistoricalInfo->getTimeStamp() == NOT_A_TIMESTAMP) {
+        // Initial information.
+        return HistoricalInfo(timestamp, 0 /* level */, 0 /* count */);
+    } else {
+        const int updatedCount = originalHistoricalInfo->getCount() + 1;
+        if (updatedCount > MAX_COUNT) {
+            // The count exceeds the max value the level can be incremented.
+            if (originalHistoricalInfo->getLevel() >= MAX_LEVEL) {
+                // The level is already max.
+                return HistoricalInfo(timestamp, originalHistoricalInfo->getLevel(),
+                        originalHistoricalInfo->getCount());
+            } else {
+                // Level up.
+                return HistoricalInfo(timestamp, originalHistoricalInfo->getLevel() + 1,
+                        0 /* count */);
+            }
+        } else {
+            return HistoricalInfo(timestamp, originalHistoricalInfo->getLevel(), updatedCount);
+        }
+    }
+}
 
 /* static */ int ForgettingCurveUtils::getProbability(const int encodedUnigramProbability,
         const int encodedBigramProbability) {

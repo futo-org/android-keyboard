@@ -55,7 +55,7 @@ bool Ver4BigramListPolicy::addNewEntry(const int terminalId, const int newTarget
         }
         const BigramEntry newBigramEntry(false /* hasNext */, NOT_A_PROBABILITY,
                 newTargetTerminalId);
-        const BigramEntry bigramEntryToWrite = getUpdatedBigramEntry(&newBigramEntry,
+        const BigramEntry bigramEntryToWrite = createUpdatedBigramEntryFrom(&newBigramEntry,
                 newProbability, timestamp);
         // Write an entry.
         const int writingPos =  mBigramDictContent->getBigramListHeadPos(terminalId);
@@ -81,7 +81,7 @@ bool Ver4BigramListPolicy::addNewEntry(const int terminalId, const int newTarget
         }
         const BigramEntry updatedBigramEntry =
                 originalBigramEntry.updateTargetTerminalIdAndGetEntry(newTargetTerminalId);
-        const BigramEntry bigramEntryToWrite = getUpdatedBigramEntry(
+        const BigramEntry bigramEntryToWrite = createUpdatedBigramEntryFrom(
                 &updatedBigramEntry, newProbability, timestamp);
         return mBigramDictContent->writeBigramEntry(&bigramEntryToWrite, entryPosToUpdate);
     }
@@ -94,7 +94,7 @@ bool Ver4BigramListPolicy::addNewEntry(const int terminalId, const int newTarget
     // Write new entry at a head position of the bigram list.
     int writingPos = mBigramDictContent->getBigramListHeadPos(terminalId);
     const BigramEntry newBigramEntry(true /* hasNext */, NOT_A_PROBABILITY, newTargetTerminalId);
-    const BigramEntry bigramEntryToWrite = getUpdatedBigramEntry(
+    const BigramEntry bigramEntryToWrite = createUpdatedBigramEntryFrom(
             &newBigramEntry, newProbability, timestamp);
     if (!mBigramDictContent->writeBigramEntryAndAdvancePosition(&bigramEntryToWrite, &writingPos)) {
         return false;
@@ -218,14 +218,17 @@ int Ver4BigramListPolicy::getEntryPosToUpdate(const int targetTerminalIdToFind,
     return invalidEntryPos;
 }
 
-const BigramEntry Ver4BigramListPolicy::getUpdatedBigramEntry(
+const BigramEntry Ver4BigramListPolicy::createUpdatedBigramEntryFrom(
         const BigramEntry *const originalBigramEntry, const int newProbability,
         const int timestamp) const {
     if (mNeedsToDecayWhenUpdating) {
-        // TODO: Update historical information.
         const int probability = ForgettingCurveUtils::getUpdatedEncodedProbability(
                 originalBigramEntry->getProbability(), newProbability);
-        return originalBigramEntry->updateProbabilityAndGetEntry(probability);
+        const HistoricalInfo updatedHistoricalInfo =
+                ForgettingCurveUtils::createUpdatedHistoricalInfoFrom(
+                        originalBigramEntry->getHistoricalInfo(), newProbability, timestamp);
+        return originalBigramEntry->updateProbabilityAndGetEntry(probability)
+                .updateHistoricalInfoAndGetEntry(&updatedHistoricalInfo);
     } else {
         return originalBigramEntry->updateProbabilityAndGetEntry(newProbability);
     }
