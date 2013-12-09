@@ -48,7 +48,8 @@ const BigramEntry BigramDictContent::getBigramEntryAndAdvancePosition(
             (encodedTargetTerminalId == Ver4DictConstants::INVALID_BIGRAM_TARGET_TERMINAL_ID) ?
                     Ver4DictConstants::NOT_A_TERMINAL_ID : encodedTargetTerminalId;
     if (mHasHistoricalInfo) {
-        return BigramEntry(hasNext, probability, timestamp, level, count, targetTerminalId);
+        const HistoricalInfo historicalInfo(timestamp, level, count);
+        return BigramEntry(hasNext, probability, &historicalInfo, targetTerminalId);
     } else {
         return BigramEntry(hasNext, probability, targetTerminalId);
     }
@@ -72,22 +73,23 @@ bool BigramDictContent::writeBigramEntryAndAdvancePosition(
                     bigramEntryToWrite->getProbability());
             return false;
         }
-        if (!bigramListBuffer->writeUintAndAdvancePosition(bigramEntryToWrite->getTimeStamp(),
+        const HistoricalInfo *const historicalInfo = bigramEntryToWrite->getHistoricalInfo();
+        if (!bigramListBuffer->writeUintAndAdvancePosition(historicalInfo->getTimeStamp(),
                 Ver4DictConstants::TIME_STAMP_FIELD_SIZE, entryWritingPos)) {
             AKLOGE("Cannot write bigram timestamps. pos: %d, timestamp: %d", *entryWritingPos,
-                    bigramEntryToWrite->getTimeStamp());
+                    historicalInfo->getTimeStamp());
             return false;
         }
-        if (!bigramListBuffer->writeUintAndAdvancePosition(bigramEntryToWrite->getLevel(),
+        if (!bigramListBuffer->writeUintAndAdvancePosition(historicalInfo->getLevel(),
                 Ver4DictConstants::WORD_LEVEL_FIELD_SIZE, entryWritingPos)) {
             AKLOGE("Cannot write bigram level. pos: %d, level: %d", *entryWritingPos,
-                    bigramEntryToWrite->getLevel());
+                    historicalInfo->getLevel());
             return false;
         }
-        if (!bigramListBuffer->writeUintAndAdvancePosition(bigramEntryToWrite->getCount(),
+        if (!bigramListBuffer->writeUintAndAdvancePosition(historicalInfo->getCount(),
                 Ver4DictConstants::WORD_COUNT_FIELD_SIZE, entryWritingPos)) {
             AKLOGE("Cannot write bigram count. pos: %d, count: %d", *entryWritingPos,
-                    bigramEntryToWrite->getCount());
+                    historicalInfo->getCount());
             return false;
         }
     }

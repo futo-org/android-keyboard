@@ -305,6 +305,7 @@ const UnigramProperty Ver4PatriciaTriePolicy::getUnigramProperty(const int *cons
     const ProbabilityEntry probabilityEntry =
             mBuffers.get()->getProbabilityDictContent()->getProbabilityEntry(
                     ptNodeParams.getTerminalId());
+    const HistoricalInfo *const historicalInfo = probabilityEntry.getHistoricalInfo();
     // Fetch shortcut information.
     std::vector<std::vector<int> > shortcutTargets;
     std::vector<int> shortcutProbabilities;
@@ -327,8 +328,8 @@ const UnigramProperty Ver4PatriciaTriePolicy::getUnigramProperty(const int *cons
     return UnigramProperty(ptNodeParams.getCodePoints(), ptNodeParams.getCodePointCount(),
             ptNodeParams.isNotAWord(), ptNodeParams.isBlacklisted(), ptNodeParams.hasBigrams(),
             ptNodeParams.hasShortcutTargets(), ptNodeParams.getProbability(),
-            probabilityEntry.getTimeStamp(), probabilityEntry.getLevel(),
-            probabilityEntry.getCount(), &shortcutTargets, &shortcutProbabilities);
+            historicalInfo->getTimeStamp(), historicalInfo->getLevel(),
+            historicalInfo->getCount(), &shortcutTargets, &shortcutProbabilities);
 }
 
 } // namespace latinime
