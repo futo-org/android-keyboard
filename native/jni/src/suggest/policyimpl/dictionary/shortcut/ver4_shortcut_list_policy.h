@@ -88,11 +88,13 @@ class Ver4ShortcutListPolicy : public DictionaryShortcutsStructurePolicy {
             return mShortcutDictContent->copyShortcutList(shortcutListPos, writingPos);
         }
         // Overwrite existing entry.
-        int writingPos = entryPos;
-        if (!mShortcutDictContent->writeShortcutEntryAndAdvancePosition(codePoints,
-                codePointCount, probability, true /* hasNext */, &writingPos)) {
+        bool hasNext = false;
+        mShortcutDictContent->getShortcutEntry(MAX_WORD_LENGTH, 0 /* outCodePoint */,
+                0 /* outCodePointCount */ , 0 /* probability */, &hasNext, entryPos);
+        if (!mShortcutDictContent->writeShortcutEntry(codePoints,
+                codePointCount, probability, hasNext, entryPos)) {
             AKLOGE("Cannot overwrite shortcut entry. terminal id: %d, pos: %d", terminalId,
-                    writingPos);
+                    entryPos);
             return false;
         }
         return true;

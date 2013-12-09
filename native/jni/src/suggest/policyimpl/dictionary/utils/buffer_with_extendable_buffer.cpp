@@ -43,7 +43,7 @@ void BufferWithExtendableBuffer::readCodePointsAndAdvancePosition(const int maxC
         *pos -= mOriginalBufferSize;
     }
     *outCodePointCount = ByteArrayUtils::readStringAndAdvancePosition(
-            getBuffer(readingPosIsInAdditionalBuffer), maxCodePointCount, outCodePointCount, pos);
+            getBuffer(readingPosIsInAdditionalBuffer), maxCodePointCount, outCodePoints, pos);
     if (readingPosIsInAdditionalBuffer) {
         *pos += mOriginalBufferSize;
     }

@@ -83,6 +83,10 @@ class Ver4PatriciaTrieNodeWriter : public PtNodeWriter {
             const DictPositionRelocationMap *const dictPositionRelocationMap,
             int *const outBigramEntryCount);
 
+    virtual bool addShortcutTarget(const PtNodeParams *const ptNodeParams,
+            const int *const targetCodePoints, const int targetCodePointCount,
+            const int shortcutProbability);
+
  private:
     DISALLOW_COPY_AND_ASSIGN(Ver4PatriciaTrieNodeWriter);
 
