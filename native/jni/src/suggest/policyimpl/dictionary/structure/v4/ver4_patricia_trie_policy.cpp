@@ -36,6 +36,11 @@ const char *const Ver4PatriciaTriePolicy::MAX_UNIGRAM_COUNT_QUERY = "MAX_UNIGRAM
 const char *const Ver4PatriciaTriePolicy::MAX_BIGRAM_COUNT_QUERY = "MAX_BIGRAM_COUNT";
 const char *const Ver4PatriciaTriePolicy::SET_NEEDS_TO_DECAY_FOR_TESTING_QUERY =
         "SET_NEEDS_TO_DECAY_FOR_TESTING";
+const char *const Ver4PatriciaTriePolicy::SET_CURRENT_TIME_FOR_TESTING_QUERY_FORMAT =
+        "SET_CURRENT_TIME_FOR_TESTING:%d";
+const char *const Ver4PatriciaTriePolicy::GET_CURRENT_TIME_QUERY = "GET_CURRENT_TIME";
+const char *const Ver4PatriciaTriePolicy::QUIT_TIMEKEEPER_TEST_MODE_QUERY =
+        "QUIT_TIMEKEEPER_TEST_MODE";
 const int Ver4PatriciaTriePolicy::MARGIN_TO_REFUSE_DYNAMIC_OPERATIONS = 1024;
 const int Ver4PatriciaTriePolicy::MIN_DICT_SIZE_TO_REFUSE_DYNAMIC_OPERATIONS =
         Ver4DictConstants::MAX_DICTIONARY_SIZE - MARGIN_TO_REFUSE_DYNAMIC_OPERATIONS;
@@ -290,6 +295,7 @@ bool Ver4PatriciaTriePolicy::needsToRunGC(const bool mindsBlockByGC) const {
 void Ver4PatriciaTriePolicy::getProperty(const char *const query, const int queryLength,
         char *const outResult, const int maxResultLength) {
     const int compareLength = queryLength + 1 /* terminator */;
+    int timestamp = NOT_A_TIMESTAMP;
     if (strncmp(query, UNIGRAM_COUNT_QUERY, compareLength) == 0) {
         snprintf(outResult, maxResultLength, "%d", mUnigramCount);
     } else if (strncmp(query, BIGRAM_COUNT_QUERY, compareLength) == 0) {
@@ -304,6 +310,12 @@ void Ver4PatriciaTriePolicy::getProperty(const char *const query, const int quer
                         static_cast<int>(Ver4DictConstants::MAX_DICTIONARY_SIZE));
     } else if (strncmp(query, SET_NEEDS_TO_DECAY_FOR_TESTING_QUERY, compareLength) == 0) {
         mNeedsToDecayForTesting = true;
+    } else if (sscanf(query, SET_CURRENT_TIME_FOR_TESTING_QUERY_FORMAT, &timestamp) == 1) {
+        TimeKeeper::startTestModeWithForceCurrentTime(timestamp);
+    } else if (strncmp(query, GET_CURRENT_TIME_QUERY, compareLength) == 0) {
+        snprintf(outResult, maxResultLength, "%d", TimeKeeper::peekCurrentTime());
+    } else if (strncmp(query, QUIT_TIMEKEEPER_TEST_MODE_QUERY, compareLength) == 0) {
+        TimeKeeper::stopTestMode();
     }
 }
 
