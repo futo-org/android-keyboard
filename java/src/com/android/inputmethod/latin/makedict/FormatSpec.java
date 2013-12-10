@@ -352,18 +352,19 @@ public final class FormatSpec {
         public static final String DICTIONARY_ID_ATTRIBUTE = "dictionary";
         private static final String DICTIONARY_DESCRIPTION_ATTRIBUTE = "description";
         public FileHeader(final int headerSize, final DictionaryOptions dictionaryOptions,
-                final FormatOptions formatOptions) {
+                final FormatOptions formatOptions) throws UnsupportedFormatException {
             mDictionaryOptions = dictionaryOptions;
             mFormatOptions = formatOptions;
             mBodyOffset = formatOptions.mVersion < VERSION4 ? headerSize : 0;
             if (null == getLocaleString()) {
-                throw new RuntimeException("Cannot create a FileHeader without a locale");
+                throw new UnsupportedFormatException("Cannot create a FileHeader without a locale");
             }
             if (null == getVersion()) {
-                throw new RuntimeException("Cannot create a FileHeader without a version");
+                throw new UnsupportedFormatException(
+                        "Cannot create a FileHeader without a version");
             }
             if (null == getId()) {
-                throw new RuntimeException("Cannot create a FileHeader without an ID");
+                throw new UnsupportedFormatException("Cannot create a FileHeader without an ID");
             }
         }
 
