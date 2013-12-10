@@ -25,7 +25,7 @@
     af: Afrikaans/qwerty
     ar: Arabic/arabic
     (az: Azerbaijani/qwerty)  # disabled temporarily. waiting for string resources.
-    be: Belarusian/east_slavic
+    be_BY: Belarusian/east_slavic
     bg: Bulgarian/bulgarian
     bg: Bulgarian/bulgarian_bds
     ca: Catalan/spanish
@@ -144,7 +144,7 @@
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
             android:subtypeId="0x1dc3a859"
-            android:imeSubtypeLocale="be"
+            android:imeSubtypeLocale="be_BY"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=east_slavic,EmojiCapable"
             android:isAsciiCapable="false"
