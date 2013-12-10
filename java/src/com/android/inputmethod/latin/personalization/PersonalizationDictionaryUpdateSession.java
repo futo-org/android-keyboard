@@ -23,6 +23,7 @@ import com.android.inputmethod.latin.ExpandableBinaryDictionary;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Locale;
 
 /**
  * This class is a session where a data provider can communicate with a personalization
@@ -32,8 +33,9 @@ public abstract class PersonalizationDictionaryUpdateSession {
     // TODO: Use a dynamic binary dictionary instead
     public WeakReference<PersonalizationDictionary> mDictionary;
     public WeakReference<DecayingExpandableBinaryDictionaryBase> mPredictionDictionary;
-    public final String mSystemLocale;
-    public PersonalizationDictionaryUpdateSession(String locale) {
+    public final Locale mSystemLocale;
+
+    public PersonalizationDictionaryUpdateSession(final Locale locale) {
         mSystemLocale = locale;
     }
 
