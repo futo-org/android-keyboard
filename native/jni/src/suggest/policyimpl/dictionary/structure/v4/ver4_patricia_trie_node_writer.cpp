@@ -121,8 +121,14 @@ bool Ver4PatriciaTrieNodeWriter::markPtNodeAsWillBecomeNonTerminal(
     const PatriciaTrieReadingUtils::NodeFlags updatedFlags =
             DynamicPatriciaTrieReadingUtils::updateAndGetFlags(originalFlags, false /* isMoved */,
                     false /* isDeleted */, true /* willBecomeNonTerminal */);
-    int writingPos = toBeUpdatedPtNodeParams->getHeadPos();
+    if (!mBuffers->getMutableTerminalPositionLookupTable()->setTerminalPtNodePosition(
+            toBeUpdatedPtNodeParams->getTerminalId(), NOT_A_DICT_POS /* ptNodePos */)) {
+        AKLOGE("Cannot update terminal position lookup table. terminal id: %d",
+                toBeUpdatedPtNodeParams->getTerminalId());
+        return false;
+    }
     // Update flags.
+    int writingPos = toBeUpdatedPtNodeParams->getHeadPos();
     return DynamicPatriciaTrieWritingUtils::writeFlagsAndAdvancePosition(mTrieBuffer, updatedFlags,
             &writingPos);
 }
