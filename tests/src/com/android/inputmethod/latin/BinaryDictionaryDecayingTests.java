@@ -474,4 +474,83 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
         assertEquals(0, Integer.parseInt(binaryDictionary.getPropertyForTests(
                 BinaryDictionary.BIGRAM_COUNT_QUERY)));
     }
+
+    public void testOverflowBigrams() {
+        testOverflowBigrams(FormatSpec.VERSION4);
+    }
+
+    private void testOverflowBigrams(final int formatVersion) {
+        final int bigramCount = 20000;
+        final int unigramCount = 1000;
+        final int unigramTypedCount = 20;
+        final int eachBigramTypedCount = 5;
+        final int strongBigramTypedCount = 20;
+        final int weakBigramTypedCount = 1;
+        final int codePointSetSize = 50;
+        final long seed = System.currentTimeMillis();
+        final Random random = new Random(seed);
+
+        File dictFile = null;
+        try {
+            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary", formatVersion);
+        } catch (IOException e) {
+            fail("IOException while writing an initial dictionary : " + e);
+        }
+        BinaryDictionary binaryDictionary = new BinaryDictionary(dictFile.getAbsolutePath(),
+                0 /* offset */, dictFile.length(), true /* useFullEditDistance */,
+                Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
+        setCurrentTime(binaryDictionary, mCurrentTime);
+        final int[] codePointSet = CodePointUtils.generateCodePointSet(codePointSetSize, random);
+
+        final ArrayList<String> words = new ArrayList<String>();
+        for (int i = 0; i < unigramCount; i++) {
+            final String word = CodePointUtils.generateWord(random, codePointSet);
+            words.add(word);
+            for (int j = 0; j < unigramTypedCount; j++) {
+                addUnigramWord(binaryDictionary, word, DUMMY_PROBABILITY);
+            }
+        }
+        final String strong = "strong";
+        final String weak = "weak";
+        final String target = "target";
+        for (int j = 0; j < unigramTypedCount; j++) {
+            addUnigramWord(binaryDictionary, strong, DUMMY_PROBABILITY);
+            addUnigramWord(binaryDictionary, weak, DUMMY_PROBABILITY);
+            addUnigramWord(binaryDictionary, target, DUMMY_PROBABILITY);
+        }
+        binaryDictionary.flushWithGC();
+        for (int j = 0; j < strongBigramTypedCount; j++) {
+            addBigramWords(binaryDictionary, strong, target, DUMMY_PROBABILITY);
+        }
+        for (int j = 0; j < weakBigramTypedCount; j++) {
+            addBigramWords(binaryDictionary, weak, target, DUMMY_PROBABILITY);
+        }
+        assertTrue(binaryDictionary.isValidBigram(strong, target));
+        assertTrue(binaryDictionary.isValidBigram(weak, target));
+
+        for (int i = 0; i < bigramCount; i++) {
+            final int word0Index = random.nextInt(words.size());
+            final String word0 = words.get(word0Index);
+            final int index = random.nextInt(words.size() - 1);
+            final int word1Index = (index >= word0Index) ? index + 1 : index;
+            final String word1 = words.get(word1Index);
+
+            for (int j = 0; j < eachBigramTypedCount; j++) {
+                addBigramWords(binaryDictionary, word0, word1, DUMMY_PROBABILITY);
+            }
+            if (binaryDictionary.needsToRunGC(true /* mindsBlockByGC */)) {
+                final int bigramCountBeforeGC =
+                        Integer.parseInt(binaryDictionary.getPropertyForTests(
+                                BinaryDictionary.BIGRAM_COUNT_QUERY));
+                binaryDictionary.flushWithGC();
+                final int bigramCountAfterGC =
+                        Integer.parseInt(binaryDictionary.getPropertyForTests(
+                                BinaryDictionary.BIGRAM_COUNT_QUERY));
+                assertTrue(bigramCountBeforeGC > bigramCountAfterGC);
+                assertTrue(binaryDictionary.isValidBigram(strong, target));
+                assertFalse(binaryDictionary.isValidBigram(weak, target));
+                break;
+            }
+        }
+    }
 }

@@ -102,7 +102,7 @@ bool Ver4PatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
             .getValidUnigramCount();
     if (headerPolicy->isDecayingDict()
             && unigramCount > ForgettingCurveUtils::MAX_UNIGRAM_COUNT_AFTER_GC) {
-        if (!turncateUnigrams(&ptNodeReader, &ptNodeWriter,
+        if (!truncateUnigrams(&ptNodeReader, &ptNodeWriter,
                 ForgettingCurveUtils::MAX_UNIGRAM_COUNT_AFTER_GC)) {
             AKLOGE("Cannot remove unigrams. current: %d, max: %d", unigramCount,
                     ForgettingCurveUtils::MAX_UNIGRAM_COUNT_AFTER_GC);
@@ -117,10 +117,14 @@ bool Ver4PatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
             &traversePolicyToUpdateBigramProbability)) {
         return false;
     }
+    const int bigramCount = traversePolicyToUpdateBigramProbability.getValidBigramEntryCount();
     if (headerPolicy->isDecayingDict()
-            && traversePolicyToUpdateBigramProbability.getValidBigramEntryCount()
-                    > ForgettingCurveUtils::MAX_BIGRAM_COUNT_AFTER_GC) {
-        // TODO: Remove more bigrams.
+            && bigramCount > ForgettingCurveUtils::MAX_BIGRAM_COUNT_AFTER_GC) {
+        if (!truncateBigrams(ForgettingCurveUtils::MAX_BIGRAM_COUNT_AFTER_GC)) {
+            AKLOGE("Cannot remove bigrams. current: %d, max: %d", bigramCount,
+                    ForgettingCurveUtils::MAX_BIGRAM_COUNT_AFTER_GC);
+            return false;
+        }
     }
 
     // Mapping from positions in mBuffer to positions in bufferToWrite.
@@ -186,7 +190,7 @@ bool Ver4PatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
     return true;
 }
 
-bool Ver4PatriciaTrieWritingHelper::turncateUnigrams(
+bool Ver4PatriciaTrieWritingHelper::truncateUnigrams(
         const Ver4PatriciaTrieNodeReader *const ptNodeReader,
         Ver4PatriciaTrieNodeWriter *const ptNodeWriter, const int maxUnigramCount) {
     const TerminalPositionLookupTable *const terminalPosLookupTable =
@@ -215,6 +219,50 @@ bool Ver4PatriciaTrieWritingHelper::turncateUnigrams(
                 ptNodeReader->fetchNodeInfoInBufferFromPtNodePos(ptNodePos);
         if (!ptNodeWriter->markPtNodeAsWillBecomeNonTerminal(&ptNodeParams)) {
             AKLOGE("Cannot mark PtNode as willBecomeNonterminal. PtNode pos: %d", ptNodePos);
+            return false;
+        }
+        priorityQueue.pop();
+    }
+    return true;
+}
+
+bool Ver4PatriciaTrieWritingHelper::truncateBigrams(const int maxBigramCount) {
+    const TerminalPositionLookupTable *const terminalPosLookupTable =
+            mBuffers->getTerminalPositionLookupTable();
+    const int nextTerminalId = terminalPosLookupTable->getNextTerminalId();
+    std::priority_queue<DictProbability, std::vector<DictProbability>, DictProbabilityComparator>
+            priorityQueue;
+    BigramDictContent *const bigramDictContent = mBuffers->getMutableBigramDictContent();
+    for (int i = 0; i < nextTerminalId; ++i) {
+        const int bigramListPos = bigramDictContent->getBigramListHeadPos(i);
+        if (bigramListPos == NOT_A_DICT_POS) {
+            continue;
+        }
+        bool hasNext = true;
+        int readingPos = bigramListPos;
+        while (hasNext) {
+            const int entryPos = readingPos;
+            const BigramEntry bigramEntry =
+                    bigramDictContent->getBigramEntryAndAdvancePosition(&readingPos);
+            hasNext = bigramEntry.hasNext();
+            if (!bigramEntry.isValid()) {
+                continue;
+            }
+            const int probability = bigramEntry.hasHistoricalInfo() ?
+                    ForgettingCurveUtils::decodeProbability(bigramEntry.getHistoricalInfo()) :
+                            bigramEntry.getProbability();
+            priorityQueue.push(DictProbability(entryPos, probability,
+                    bigramEntry.getHistoricalInfo()->getTimeStamp()));
+        }
+    }
+
+    // Delete bigrams.
+    while (static_cast<int>(priorityQueue.size()) > maxBigramCount) {
+        const int entryPos = priorityQueue.top().getDictPos();
+        const BigramEntry bigramEntry = bigramDictContent->getBigramEntry(entryPos);
+        const BigramEntry invalidatedBigramEntry = bigramEntry.getInvalidatedEntry();
+        if (!bigramDictContent->writeBigramEntry(&invalidatedBigramEntry, entryPos)) {
+            AKLOGE("Cannot write bigram entry to remove. pos: %d", entryPos);
             return false;
         }
         priorityQueue.pop();
