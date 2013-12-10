@@ -84,7 +84,7 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
         }
         // Flush pending writes.
         // TODO: Remove after this class become to use a dynamic binary dictionary.
-        asyncFlashAllBinaryDictionary();
+        asyncFlushBinaryDictionary();
     }
 
     @Override
@@ -121,7 +121,7 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
     }
 
     @Override
-    protected String getFileNameExtentionToOpenDict() {
+    protected String getFileNameExtensionToOpenDict() {
         // TODO: pass the directory name instead
         return "/" + FormatSpec.HEADER_FILE_EXTENSION;
     }
@@ -240,7 +240,7 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
         // Clear the node structure on memory
         clear();
         // Then flush the cleared state of the dictionary on disk.
-        asyncFlashAllBinaryDictionary();
+        asyncFlushBinaryDictionary();
     }
 
     /* package */ void decayIfNeeded() {
