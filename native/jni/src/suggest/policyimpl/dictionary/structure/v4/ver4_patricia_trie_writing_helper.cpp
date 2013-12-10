@@ -17,6 +17,7 @@
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_patricia_trie_writing_helper.h"
 
 #include <cstring>
+#include <queue>
 
 #include "suggest/policyimpl/dictionary/bigram/ver4_bigram_list_policy.h"
 #include "suggest/policyimpl/dictionary/header/header_policy.h"
@@ -97,10 +98,16 @@ bool Ver4PatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
             &traversePolicyToUpdateUnigramProbabilityAndMarkUselessPtNodesAsDeleted)) {
         return false;
     }
+    const int unigramCount = traversePolicyToUpdateUnigramProbabilityAndMarkUselessPtNodesAsDeleted
+            .getValidUnigramCount();
     if (headerPolicy->isDecayingDict()
-            && traversePolicyToUpdateUnigramProbabilityAndMarkUselessPtNodesAsDeleted
-                    .getValidUnigramCount() > ForgettingCurveUtils::MAX_UNIGRAM_COUNT_AFTER_GC) {
-        // TODO: Remove more unigrams.
+            && unigramCount > ForgettingCurveUtils::MAX_UNIGRAM_COUNT_AFTER_GC) {
+        if (!turncateUnigrams(&ptNodeReader, &ptNodeWriter,
+                ForgettingCurveUtils::MAX_UNIGRAM_COUNT_AFTER_GC)) {
+            AKLOGE("Cannot remove unigrams. current: %d, max: %d", unigramCount,
+                    ForgettingCurveUtils::MAX_UNIGRAM_COUNT_AFTER_GC);
+            return false;
+        }
     }
 
     readingHelper.initWithPtNodeArrayPos(rootPtNodeArrayPos);
@@ -176,6 +183,42 @@ bool Ver4PatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
         return false;
     }
     *outUnigramCount = traversePolicyToUpdateAllPositionFields.getUnigramCount();
+    return true;
+}
+
+bool Ver4PatriciaTrieWritingHelper::turncateUnigrams(
+        const Ver4PatriciaTrieNodeReader *const ptNodeReader,
+        Ver4PatriciaTrieNodeWriter *const ptNodeWriter, const int maxUnigramCount) {
+    const TerminalPositionLookupTable *const terminalPosLookupTable =
+            mBuffers->getTerminalPositionLookupTable();
+    const int nextTerminalId = terminalPosLookupTable->getNextTerminalId();
+    std::priority_queue<DictProbability, std::vector<DictProbability>, DictProbabilityComparator>
+            priorityQueue;
+    for (int i = 0; i < nextTerminalId; ++i) {
+        const int terminalPos = terminalPosLookupTable->getTerminalPtNodePosition(i);
+        if (terminalPos == NOT_A_DICT_POS) {
+            continue;
+        }
+        const ProbabilityEntry probabilityEntry =
+                mBuffers->getProbabilityDictContent()->getProbabilityEntry(i);
+        const int probability = probabilityEntry.hasHistoricalInfo() ?
+                ForgettingCurveUtils::decodeProbability(probabilityEntry.getHistoricalInfo()) :
+                        probabilityEntry.getProbability();
+        priorityQueue.push(DictProbability(terminalPos, probability,
+                probabilityEntry.getHistoricalInfo()->getTimeStamp()));
+    }
+
+    // Delete unigrams.
+    while (static_cast<int>(priorityQueue.size()) > maxUnigramCount) {
+        const int ptNodePos = priorityQueue.top().getDictPos();
+        const PtNodeParams ptNodeParams =
+                ptNodeReader->fetchNodeInfoInBufferFromPtNodePos(ptNodePos);
+        if (!ptNodeWriter->markPtNodeAsWillBecomeNonTerminal(&ptNodeParams)) {
+            AKLOGE("Cannot mark PtNode as willBecomeNonterminal. PtNode pos: %d", ptNodePos);
+            return false;
+        }
+        priorityQueue.pop();
+    }
     return true;
 }
 

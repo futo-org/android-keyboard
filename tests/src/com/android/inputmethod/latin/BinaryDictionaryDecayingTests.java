@@ -303,6 +303,7 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
         BinaryDictionary binaryDictionary = new BinaryDictionary(dictFile.getAbsolutePath(),
                 0 /* offset */, dictFile.length(), true /* useFullEditDistance */,
                 Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
+        setCurrentTime(binaryDictionary, mCurrentTime);
 
         final int[] codePointSet = CodePointUtils.generateCodePointSet(codePointSetSize, random);
         final ArrayList<String> words = new ArrayList<String>();
@@ -339,7 +340,65 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
         forcePassingLongTime(binaryDictionary);
         assertEquals(0, Integer.parseInt(binaryDictionary.getPropertyForTests(
                 BinaryDictionary.UNIGRAM_COUNT_QUERY)));
+    }
 
+    public void testOverflowUnigrams() {
+        testOverflowUnigrams(FormatSpec.VERSION4);
+    }
+
+    private void testOverflowUnigrams(final int formatVersion) {
+        final int unigramCount = 20000;
+        final int eachUnigramTypedCount = 5;
+        final int strongUnigramTypedCount = 20;
+        final int weakUnigramTypedCount = 1;
+        final int codePointSetSize = 50;
+        final long seed = System.currentTimeMillis();
+        final Random random = new Random(seed);
+
+        File dictFile = null;
+        try {
+            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary", formatVersion);
+        } catch (IOException e) {
+            fail("IOException while writing an initial dictionary : " + e);
+        }
+        BinaryDictionary binaryDictionary = new BinaryDictionary(dictFile.getAbsolutePath(),
+                0 /* offset */, dictFile.length(), true /* useFullEditDistance */,
+                Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
+        setCurrentTime(binaryDictionary, mCurrentTime);
+        final int[] codePointSet = CodePointUtils.generateCodePointSet(codePointSetSize, random);
+
+        final String strong = "strong";
+        final String weak = "weak";
+        for (int j = 0; j < strongUnigramTypedCount; j++) {
+            addUnigramWord(binaryDictionary, strong, DUMMY_PROBABILITY);
+        }
+        for (int j = 0; j < weakUnigramTypedCount; j++) {
+            addUnigramWord(binaryDictionary, weak, DUMMY_PROBABILITY);
+        }
+        assertTrue(binaryDictionary.isValidWord(strong));
+        assertTrue(binaryDictionary.isValidWord(weak));
+
+        for (int i = 0; i < unigramCount; i++) {
+            final String word = CodePointUtils.generateWord(random, codePointSet);
+            for (int j = 0; j < eachUnigramTypedCount; j++) {
+                addUnigramWord(binaryDictionary, word, DUMMY_PROBABILITY);
+            }
+            if (binaryDictionary.needsToRunGC(true /* mindsBlockByGC */)) {
+                final int unigramCountBeforeGC =
+                        Integer.parseInt(binaryDictionary.getPropertyForTests(
+                                BinaryDictionary.UNIGRAM_COUNT_QUERY));
+                assertTrue(binaryDictionary.isValidWord(strong));
+                assertTrue(binaryDictionary.isValidWord(weak));
+                binaryDictionary.flushWithGC();
+                final int unigramCountAfterGC =
+                        Integer.parseInt(binaryDictionary.getPropertyForTests(
+                                BinaryDictionary.UNIGRAM_COUNT_QUERY));
+                assertTrue(unigramCountBeforeGC > unigramCountAfterGC);
+                assertFalse(binaryDictionary.isValidWord(weak));
+                assertTrue(binaryDictionary.isValidWord(strong));
+                break;
+            }
+        }
     }
 
     public void testAddManyBigramsToDecayingDict() {
@@ -363,6 +422,7 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
         BinaryDictionary binaryDictionary = new BinaryDictionary(dictFile.getAbsolutePath(),
                 0 /* offset */, dictFile.length(), true /* useFullEditDistance */,
                 Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
+        setCurrentTime(binaryDictionary, mCurrentTime);
 
         final int[] codePointSet = CodePointUtils.generateCodePointSet(codePointSetSize, random);
         final ArrayList<String> words = new ArrayList<String>();
