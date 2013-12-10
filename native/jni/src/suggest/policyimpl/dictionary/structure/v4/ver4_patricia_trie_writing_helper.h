@@ -65,7 +65,7 @@ class Ver4PatriciaTrieWritingHelper {
         const TerminalPositionLookupTable::TerminalIdMap *const mTerminalIdMap;
     };
 
-    // For truncateUnigrams().
+    // For truncateUnigrams() and truncateBigrams().
     class DictProbability {
      public:
         DictProbability(const int dictPos, const int probability, const int timestamp)
@@ -91,7 +91,7 @@ class Ver4PatriciaTrieWritingHelper {
         int mTimestamp;
     };
 
-    // For truncateUnigrams().
+    // For truncateUnigrams() and truncateBigrams().
     class DictProbabilityComparator {
      public:
         bool operator()(const DictProbability &left, const DictProbability &right) {
@@ -112,8 +112,10 @@ class Ver4PatriciaTrieWritingHelper {
             Ver4DictBuffers *const buffersToWrite, int *const outUnigramCount,
             int *const outBigramCount);
 
-    bool turncateUnigrams(const Ver4PatriciaTrieNodeReader *const ptNodeReader,
+    bool truncateUnigrams(const Ver4PatriciaTrieNodeReader *const ptNodeReader,
             Ver4PatriciaTrieNodeWriter *const ptNodeWriter, const int maxUnigramCount);
+
+    bool truncateBigrams(const int maxBigramCount);
 
     Ver4DictBuffers *const mBuffers;
 };
