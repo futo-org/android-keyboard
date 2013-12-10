@@ -169,7 +169,7 @@ public class Ver3DictEncoder implements DictEncoder {
 
     private void writeChildrenPosition(final PtNode ptNode, final FormatOptions formatOptions) {
         final int childrenPos = BinaryDictEncoderUtils.getChildrenPosition(ptNode, formatOptions);
-        if (formatOptions.mSupportsDynamicUpdate) {
+        if (formatOptions.supportsDynamicUpdate()) {
             mPosition += BinaryDictEncoderUtils.writeSignedChildrenPosition(mBuffer, mPosition,
                     childrenPos);
         } else {

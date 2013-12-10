@@ -50,8 +50,6 @@ public class CombinedInputOutput {
     private static final String NOT_A_WORD_TAG = "not_a_word";
     private static final String WHITELIST_TAG = "whitelist";
     private static final String OPTIONS_TAG = "options";
-    private static final String GERMAN_UMLAUT_PROCESSING_OPTION = "german_umlaut_processing";
-    private static final String FRENCH_LIGATURE_PROCESSING_OPTION = "french_ligature_processing";
     private static final String COMMENT_LINE_STARTER = "#";
 
     /**
@@ -112,13 +110,9 @@ public class CombinedInputOutput {
             attributes.put(keyValue[0], keyValue[1]);
         }
 
-        final boolean processUmlauts =
-                GERMAN_UMLAUT_PROCESSING_OPTION.equals(attributes.get(OPTIONS_TAG));
-        final boolean processLigatures =
-                FRENCH_LIGATURE_PROCESSING_OPTION.equals(attributes.get(OPTIONS_TAG));
         attributes.remove(OPTIONS_TAG);
-        final FusionDictionary dict = new FusionDictionary(new PtNodeArray(), new DictionaryOptions(
-                attributes, processUmlauts, processLigatures));
+        final FusionDictionary dict =
+                new FusionDictionary(new PtNodeArray(), new DictionaryOptions(attributes));
 
         String line;
         String word = null;
@@ -215,11 +209,6 @@ public class CombinedInputOutput {
         if (options.containsKey(DICTIONARY_TAG)) {
             destination.write(options.get(DICTIONARY_TAG));
             options.remove(DICTIONARY_TAG);
-        }
-        if (dict.mOptions.mGermanUmlautProcessing) {
-            destination.write("," + OPTIONS_TAG + "=" + GERMAN_UMLAUT_PROCESSING_OPTION);
-        } else if (dict.mOptions.mFrenchLigatureProcessing) {
-            destination.write("," + OPTIONS_TAG + "=" + FRENCH_LIGATURE_PROCESSING_OPTION);
         }
         for (final String key : dict.mOptions.mAttributes.keySet()) {
             final String value = dict.mOptions.mAttributes.get(key);

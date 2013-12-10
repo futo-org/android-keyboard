@@ -61,7 +61,7 @@ public final class DynamicBinaryDictIOUtils {
         final DictBuffer dictBuffer = dictUpdater.getDictBuffer();
         final int originalPosition = dictBuffer.position();
         dictBuffer.position(ptNodeOriginAddress);
-        if (!formatOptions.mSupportsDynamicUpdate) {
+        if (!formatOptions.supportsDynamicUpdate()) {
             throw new RuntimeException("this file format does not support parent addresses");
         }
         final int flags = dictBuffer.readUnsignedByte();
@@ -102,7 +102,7 @@ public final class DynamicBinaryDictIOUtils {
             }
             if (!dictUpdater.readAndFollowForwardLink()) break;
             if (dictUpdater.getPosition() == FormatSpec.NO_FORWARD_LINK_ADDRESS) break;
-        } while (formatOptions.mSupportsDynamicUpdate);
+        } while (formatOptions.supportsDynamicUpdate());
         dictUpdater.setPosition(originalPosition);
     }
 

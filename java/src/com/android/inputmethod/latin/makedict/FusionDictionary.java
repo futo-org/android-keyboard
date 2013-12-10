@@ -303,14 +303,9 @@ public final class FusionDictionary implements Iterable<Word> {
      * Options global to the dictionary.
      */
     public static final class DictionaryOptions {
-        public final boolean mGermanUmlautProcessing;
-        public final boolean mFrenchLigatureProcessing;
         public final HashMap<String, String> mAttributes;
-        public DictionaryOptions(final HashMap<String, String> attributes,
-                final boolean germanUmlautProcessing, final boolean frenchLigatureProcessing) {
+        public DictionaryOptions(final HashMap<String, String> attributes) {
             mAttributes = attributes;
-            mGermanUmlautProcessing = germanUmlautProcessing;
-            mFrenchLigatureProcessing = frenchLigatureProcessing;
         }
         @Override
         public String toString() { // Convenience method
@@ -338,14 +333,6 @@ public final class FusionDictionary implements Iterable<Word> {
                     s.append(mAttributes.get(optionKey));
                 }
                 s.append("\n");
-            }
-            if (mGermanUmlautProcessing) {
-                s.append(indent);
-                s.append("Needs German umlaut processing\n");
-            }
-            if (mFrenchLigatureProcessing) {
-                s.append(indent);
-                s.append("Needs French ligature processing\n");
             }
             return s.toString();
         }
@@ -699,138 +686,6 @@ public final class FusionDictionary implements Iterable<Word> {
         }
         return size;
     }
-
-    /**
-     * Recursively count the number of nodes in a given branch of the trie.
-     *
-     * @param nodeArray the node array to count.
-     * @return the number of nodes in this branch.
-     */
-    public static int countNodeArrays(final PtNodeArray nodeArray) {
-        int size = 1;
-        for (int i = nodeArray.mData.size() - 1; i >= 0; --i) {
-            PtNode ptNode = nodeArray.mData.get(i);
-            if (null != ptNode.mChildren)
-                size += countNodeArrays(ptNode.mChildren);
-        }
-        return size;
-    }
-
-    // Recursively find out whether there are any bigrams.
-    // This can be pretty expensive especially if there aren't any (we return as soon
-    // as we find one, so it's much cheaper if there are bigrams)
-    private static boolean hasBigramsInternal(final PtNodeArray nodeArray) {
-        if (null == nodeArray) return false;
-        for (int i = nodeArray.mData.size() - 1; i >= 0; --i) {
-            PtNode ptNode = nodeArray.mData.get(i);
-            if (null != ptNode.mBigrams) return true;
-            if (hasBigramsInternal(ptNode.mChildren)) return true;
-        }
-        return false;
-    }
-
-    /**
-     * Finds out whether there are any bigrams in this dictionary.
-     *
-     * @return true if there is any bigram, false otherwise.
-     */
-    // TODO: this is expensive especially for large dictionaries without any bigram.
-    // The up side is, this is always accurate and correct and uses no memory. We should
-    // find a more efficient way of doing this, without compromising too much on memory
-    // and ease of use.
-    public boolean hasBigrams() {
-        return hasBigramsInternal(mRootNodeArray);
-    }
-
-    // Historically, the tails of the words were going to be merged to save space.
-    // However, that would prevent the code to search for a specific address in log(n)
-    // time so this was abandoned.
-    // The code is still of interest as it does add some compression to any dictionary
-    // that has no need for attributes. Implementations that does not read attributes should be
-    // able to read a dictionary with merged tails.
-    // Also, the following code does support frequencies, as in, it will only merges
-    // tails that share the same frequency. Though it would result in the above loss of
-    // performance while searching by address, it is still technically possible to merge
-    // tails that contain attributes, but this code does not take that into account - it does
-    // not compare attributes and will merge terminals with different attributes regardless.
-    public void mergeTails() {
-        MakedictLog.i("Do not merge tails");
-        return;
-
-//        MakedictLog.i("Merging PtNodes. Number of PtNodes : " + countPtNodes(root));
-//        MakedictLog.i("Number of PtNodes : " + countPtNodes(root));
-//
-//        final HashMap<String, ArrayList<PtNodeArray>> repository =
-//                  new HashMap<String, ArrayList<PtNodeArray>>();
-//        mergeTailsInner(repository, root);
-//
-//        MakedictLog.i("Number of different pseudohashes : " + repository.size());
-//        int size = 0;
-//        for (ArrayList<PtNodeArray> a : repository.values()) {
-//            size += a.size();
-//        }
-//        MakedictLog.i("Number of nodes after merge : " + (1 + size));
-//        MakedictLog.i("Recursively seen nodes : " + countNodes(root));
-    }
-
-    // The following methods are used by the deactivated mergeTails()
-//   private static boolean isEqual(PtNodeArray a, PtNodeArray b) {
-//       if (null == a && null == b) return true;
-//       if (null == a || null == b) return false;
-//       if (a.data.size() != b.data.size()) return false;
-//       final int size = a.data.size();
-//       for (int i = size - 1; i >= 0; --i) {
-//           PtNode aPtNode = a.data.get(i);
-//           PtNode bPtNode = b.data.get(i);
-//           if (aPtNode.frequency != bPtNode.frequency) return false;
-//           if (aPtNode.alternates == null && bPtNode.alternates != null) return false;
-//           if (aPtNode.alternates != null && !aPtNode.equals(bPtNode.alternates)) return false;
-//           if (!Arrays.equals(aPtNode.chars, bPtNode.chars)) return false;
-//           if (!isEqual(aPtNode.children, bPtNode.children)) return false;
-//       }
-//       return true;
-//   }
-
-//   static private HashMap<String, ArrayList<PtNodeArray>> mergeTailsInner(
-//           final HashMap<String, ArrayList<PtNodeArray>> map, final PtNodeArray nodeArray) {
-//       final ArrayList<PtNode> branches = nodeArray.data;
-//       final int nodeSize = branches.size();
-//       for (int i = 0; i < nodeSize; ++i) {
-//           PtNode ptNode = branches.get(i);
-//           if (null != ptNode.children) {
-//               String pseudoHash = getPseudoHash(ptNode.children);
-//               ArrayList<PtNodeArray> similarList = map.get(pseudoHash);
-//               if (null == similarList) {
-//                   similarList = new ArrayList<PtNodeArray>();
-//                   map.put(pseudoHash, similarList);
-//               }
-//               boolean merged = false;
-//               for (PtNodeArray similar : similarList) {
-//                   if (isEqual(ptNode.children, similar)) {
-//                       ptNode.children = similar;
-//                       merged = true;
-//                       break;
-//                   }
-//               }
-//               if (!merged) {
-//                   similarList.add(ptNode.children);
-//               }
-//               mergeTailsInner(map, ptNode.children);
-//           }
-//       }
-//       return map;
-//   }
-
-//  private static String getPseudoHash(final PtNodeArray nodeArray) {
-//      StringBuilder s = new StringBuilder();
-//      for (PtNode ptNode : nodeArray.data) {
-//          s.append(ptNode.frequency);
-//          for (int ch : ptNode.chars) {
-//              s.append(Character.toChars(ch));
-//          }
-//      }
-//      return s.toString();
-//  }
 
     /**
      * Iterator to walk through a dictionary.
