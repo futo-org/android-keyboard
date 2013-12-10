@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 @LargeTest
 public class BinaryDictionaryDecayingTests extends AndroidTestCase {
@@ -38,8 +39,6 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
 
     // Note that these are corresponding definitions in native code in
     // latinime::Ver4PatriciaTriePolicy.
-    private static final String SET_NEEDS_TO_DECAY_FOR_TESTING_KEY =
-            "SET_NEEDS_TO_DECAY_FOR_TESTING";
     private static final String SET_CURRENT_TIME_FOR_TESTING_QUERY =
             "SET_CURRENT_TIME_FOR_TESTING";
     private static final String GET_CURRENT_TIME_QUERY = "GET_CURRENT_TIME";
@@ -47,14 +46,28 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
 
     private static final int DUMMY_PROBABILITY = 0;
 
+    private int mCurrentTime = 0;
+
     @Override
     protected void setUp() throws Exception {
         super.setUp();
+        mCurrentTime = 0;
     }
 
     @Override
     protected void tearDown() throws Exception {
         super.tearDown();
+        try {
+            final File dictFile =
+                    createEmptyDictionaryAndGetFile("TestBinaryDictionary", FormatSpec.VERSION4);
+            final BinaryDictionary binaryDictionary =
+                    new BinaryDictionary(dictFile.getAbsolutePath(), 0 /* offset */,
+                            dictFile.length(), true /* useFullEditDistance */, Locale.getDefault(),
+                            TEST_LOCALE, true /* isUpdatable */);
+            binaryDictionary.getPropertyForTests(QUIT_TIMEKEEPER_TEST_MODE_QUERY);
+        } catch (IOException e) {
+            fail("IOException while writing an initial dictionary : " + e);
+        }
     }
 
     private void addUnigramWord(final BinaryDictionary binaryDictionary, final String word,
@@ -62,32 +75,29 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
         binaryDictionary.addUnigramWord(word, probability, "" /* shortcutTarget */,
                 BinaryDictionary.NOT_A_PROBABILITY /* shortcutProbability */,
                 false /* isNotAWord */, false /* isBlacklisted */,
-                BinaryDictionary.NOT_A_VALID_TIMESTAMP /* timestamp */);
+                mCurrentTime /* timestamp */);
     }
 
     private void addBigramWords(final BinaryDictionary binaryDictionary, final String word0,
             final String word1, final int probability) {
         binaryDictionary.addBigramWords(word0, word1, probability,
-                BinaryDictionary.NOT_A_VALID_TIMESTAMP /* timestamp */);
+                mCurrentTime /* timestamp */);
     }
 
     private void forcePassingShortTime(final BinaryDictionary binaryDictionary) {
-        // Entries having low probability would be suppressed once in 3 GCs.
-        final int count = 3;
-        for (int i = 0; i < count; i++) {
-            binaryDictionary.getPropertyForTests(SET_NEEDS_TO_DECAY_FOR_TESTING_KEY);
-            binaryDictionary.flushWithGC();
-        }
+        // 4 days.
+        final int timeToElapse = (int)TimeUnit.SECONDS.convert(4, TimeUnit.DAYS);
+        mCurrentTime += timeToElapse;
+        setCurrentTime(binaryDictionary, mCurrentTime);
+        binaryDictionary.flushWithGC();
     }
 
     private void forcePassingLongTime(final BinaryDictionary binaryDictionary) {
-        // Currently, probabilities are decayed when GC is run. All entries that have never been
-        // typed in 128 GCs would be removed.
-        final int count = 128;
-        for (int i = 0; i < count; i++) {
-            binaryDictionary.getPropertyForTests(SET_NEEDS_TO_DECAY_FOR_TESTING_KEY);
-            binaryDictionary.flushWithGC();
-        }
+        // 60 days.
+        final int timeToElapse = (int)TimeUnit.SECONDS.convert(60, TimeUnit.DAYS);
+        mCurrentTime += timeToElapse;
+        setCurrentTime(binaryDictionary, mCurrentTime);
+        binaryDictionary.flushWithGC();
     }
 
     private File createEmptyDictionaryAndGetFile(final String dictId,
@@ -147,6 +157,7 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
         BinaryDictionary binaryDictionary = new BinaryDictionary(dictFile.getAbsolutePath(),
                 0 /* offset */, dictFile.length(), true /* useFullEditDistance */,
                 Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
+        binaryDictionary.getPropertyForTests(QUIT_TIMEKEEPER_TEST_MODE_QUERY);
         final int startTime = getCurrentTime(binaryDictionary);
         for (int i = 0; i < TEST_COUNT; i++) {
             final int currentTime = random.nextInt(Integer.MAX_VALUE);
@@ -233,6 +244,8 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
         addUnigramWord(binaryDictionary, "a", DUMMY_PROBABILITY);
         addUnigramWord(binaryDictionary, "a", DUMMY_PROBABILITY);
         addUnigramWord(binaryDictionary, "a", DUMMY_PROBABILITY);
+        addUnigramWord(binaryDictionary, "a", DUMMY_PROBABILITY);
+        assertTrue(binaryDictionary.isValidWord("a"));
         forcePassingShortTime(binaryDictionary);
         assertTrue(binaryDictionary.isValidWord("a"));
         forcePassingLongTime(binaryDictionary);
@@ -245,6 +258,9 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
         forcePassingShortTime(binaryDictionary);
         assertFalse(binaryDictionary.isValidBigram("a", "b"));
 
+        addUnigramWord(binaryDictionary, "a", DUMMY_PROBABILITY);
+        addUnigramWord(binaryDictionary, "b", DUMMY_PROBABILITY);
+        addBigramWords(binaryDictionary, "a", "b", DUMMY_PROBABILITY);
         addUnigramWord(binaryDictionary, "a", DUMMY_PROBABILITY);
         addUnigramWord(binaryDictionary, "b", DUMMY_PROBABILITY);
         addBigramWords(binaryDictionary, "a", "b", DUMMY_PROBABILITY);
@@ -307,8 +323,7 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
                         Integer.parseInt(binaryDictionary.getPropertyForTests(
                                 BinaryDictionary.UNIGRAM_COUNT_QUERY));
                 while (binaryDictionary.needsToRunGC(true /* mindsBlockByGC */)) {
-                    binaryDictionary.getPropertyForTests(SET_NEEDS_TO_DECAY_FOR_TESTING_KEY);
-                    binaryDictionary.flushWithGC();
+                    forcePassingShortTime(binaryDictionary);
                 }
                 final int unigramCountAfterGC =
                         Integer.parseInt(binaryDictionary.getPropertyForTests(
@@ -321,6 +336,10 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
                 BinaryDictionary.UNIGRAM_COUNT_QUERY)) > 0);
         assertTrue(Integer.parseInt(binaryDictionary.getPropertyForTests(
                 BinaryDictionary.UNIGRAM_COUNT_QUERY)) <= maxUnigramCount);
+        forcePassingLongTime(binaryDictionary);
+        assertEquals(0, Integer.parseInt(binaryDictionary.getPropertyForTests(
+                BinaryDictionary.UNIGRAM_COUNT_QUERY)));
+
     }
 
     public void testAddManyBigramsToDecayingDict() {
@@ -378,8 +397,7 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
                         Integer.parseInt(binaryDictionary.getPropertyForTests(
                                 BinaryDictionary.BIGRAM_COUNT_QUERY));
                 while (binaryDictionary.needsToRunGC(true /* mindsBlockByGC */)) {
-                    binaryDictionary.getPropertyForTests(SET_NEEDS_TO_DECAY_FOR_TESTING_KEY);
-                    binaryDictionary.flushWithGC();
+                    forcePassingShortTime(binaryDictionary);
                 }
                 final int bigramCountAfterGC =
                         Integer.parseInt(binaryDictionary.getPropertyForTests(
@@ -392,5 +410,8 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
                 BinaryDictionary.BIGRAM_COUNT_QUERY)) > 0);
         assertTrue(Integer.parseInt(binaryDictionary.getPropertyForTests(
                 BinaryDictionary.BIGRAM_COUNT_QUERY)) <= maxBigramCount);
+        forcePassingLongTime(binaryDictionary);
+        assertEquals(0, Integer.parseInt(binaryDictionary.getPropertyForTests(
+                BinaryDictionary.BIGRAM_COUNT_QUERY)));
     }
 }

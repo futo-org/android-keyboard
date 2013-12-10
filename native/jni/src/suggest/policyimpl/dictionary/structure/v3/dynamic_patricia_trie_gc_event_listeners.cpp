@@ -20,7 +20,6 @@
 #include "suggest/policyimpl/dictionary/structure/pt_common/pt_node_params.h"
 #include "suggest/policyimpl/dictionary/structure/pt_common/pt_node_writer.h"
 #include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_writing_utils.h"
-#include "suggest/policyimpl/dictionary/utils/forgetting_curve_utils.h"
 
 namespace latinime {
 
@@ -30,8 +29,7 @@ bool DynamicPatriciaTrieGcEventListeners
     // PtNode is useless when the PtNode is not a terminal and doesn't have any not useless
     // children.
     bool isUselessPtNode = !ptNodeParams->isTerminal();
-    // TODO: Quit checking mNeedsToDecayWhenUpdating.
-    if (ptNodeParams->isTerminal() && mNeedsToDecayWhenUpdating) {
+    if (ptNodeParams->isTerminal()) {
         bool needsToKeepPtNode = true;
         if (!mPtNodeWriter->updatePtNodeProbabilityAndGetNeedsToKeepPtNodeAfterGC(ptNodeParams,
                 &needsToKeepPtNode)) {

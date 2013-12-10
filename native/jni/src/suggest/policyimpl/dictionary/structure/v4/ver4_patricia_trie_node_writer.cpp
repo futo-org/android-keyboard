@@ -17,6 +17,7 @@
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_patricia_trie_node_writer.h"
 
 #include "suggest/policyimpl/dictionary/bigram/ver4_bigram_list_policy.h"
+#include "suggest/policyimpl/dictionary/header/header_policy.h"
 #include "suggest/policyimpl/dictionary/shortcut/ver4_shortcut_list_policy.h"
 #include "suggest/policyimpl/dictionary/structure/v2/patricia_trie_reading_utils.h"
 #include "suggest/policyimpl/dictionary/structure/v4/content/probability_entry.h"
@@ -147,27 +148,21 @@ bool Ver4PatriciaTrieNodeWriter::updatePtNodeProbabilityAndGetNeedsToKeepPtNodeA
         AKLOGE("updatePtNodeProbabilityAndGetNeedsToSaveForGC is called for non-terminal PtNode.");
         return false;
     }
-    if (mBuffers->getHeaderPolicy()->isDecayingDict()) {
-        const ProbabilityEntry originalProbabilityEntry =
-                mBuffers->getProbabilityDictContent()->getProbabilityEntry(
-                        toBeUpdatedPtNodeParams->getTerminalId());
-        // TODO: Remove.
-        const int newProbability = ForgettingCurveUtils::getEncodedProbabilityToSave(
-                originalProbabilityEntry.getProbability(), mBuffers->getHeaderPolicy());
-        const HistoricalInfo historicalInfo =
-                ForgettingCurveUtils::createHistoricalInfoToSave(
-                        originalProbabilityEntry.getHistoricalInfo());
+    const ProbabilityEntry originalProbabilityEntry =
+            mBuffers->getProbabilityDictContent()->getProbabilityEntry(
+                    toBeUpdatedPtNodeParams->getTerminalId());
+    if (originalProbabilityEntry.hasHistoricalInfo()) {
+        const HistoricalInfo historicalInfo = ForgettingCurveUtils::createHistoricalInfoToSave(
+                originalProbabilityEntry.getHistoricalInfo());
         const ProbabilityEntry probabilityEntry =
-                originalProbabilityEntry.createEntryWithUpdatedProbability(newProbability)
-                        .createEntryWithUpdatedHistoricalInfo(&historicalInfo);
+                originalProbabilityEntry.createEntryWithUpdatedHistoricalInfo(&historicalInfo);
         if (!mBuffers->getMutableProbabilityDictContent()->setProbabilityEntry(
                 toBeUpdatedPtNodeParams->getTerminalId(), &probabilityEntry)) {
             AKLOGE("Cannot write updated probability entry. terminalId: %d",
                     toBeUpdatedPtNodeParams->getTerminalId());
             return false;
         }
-        // TODO: Use ForgettingCurveUtils::needsToKeep(&historicalInfo).
-        const bool isValid = ForgettingCurveUtils::isValidEncodedProbability(newProbability);
+        const bool isValid = ForgettingCurveUtils::needsToKeep(&historicalInfo);
         if (!isValid) {
             if (!markPtNodeAsWillBecomeNonTerminal(toBeUpdatedPtNodeParams)) {
                 AKLOGE("Cannot mark PtNode as willBecomeNonTerminal.");
@@ -380,14 +375,13 @@ bool Ver4PatriciaTrieNodeWriter::writePtNodeAndGetTerminalIdAndAdvancePosition(
 const ProbabilityEntry Ver4PatriciaTrieNodeWriter::createUpdatedEntryFrom(
         const ProbabilityEntry *const originalProbabilityEntry, const int newProbability,
         const int timestamp) const {
-    if (mNeedsToDecayWhenUpdating) {
-        const int updatedProbability = ForgettingCurveUtils::getUpdatedEncodedProbability(
-                originalProbabilityEntry->getProbability(), newProbability);
+    // TODO: Consolidate historical info and probability.
+    if (mBuffers->getHeaderPolicy()->hasHistoricalInfoOfWords()) {
         const HistoricalInfo updatedHistoricalInfo =
                 ForgettingCurveUtils::createUpdatedHistoricalInfo(
                         originalProbabilityEntry->getHistoricalInfo(), newProbability, timestamp);
-        return originalProbabilityEntry->createEntryWithUpdatedProbability(updatedProbability)
-                .createEntryWithUpdatedHistoricalInfo(&updatedHistoricalInfo);
+        return originalProbabilityEntry->createEntryWithUpdatedHistoricalInfo(
+                &updatedHistoricalInfo);
     } else {
         return originalProbabilityEntry->createEntryWithUpdatedProbability(newProbability);
     }

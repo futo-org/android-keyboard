@@ -22,6 +22,7 @@
 #include "suggest/policyimpl/dictionary/structure/v4/content/probability_entry.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_patricia_trie_reading_utils.h"
 #include "suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer.h"
+#include "suggest/policyimpl/dictionary/utils/forgetting_curve_utils.h"
 
 namespace latinime {
 
@@ -62,7 +63,12 @@ const PtNodeParams Ver4PatriciaTrieNodeReader::fetchPtNodeInfoFromBufferAndProce
         terminalId = Ver4PatriciaTrieReadingUtils::getTerminalIdAndAdvancePosition(dictBuf, &pos);
         const ProbabilityEntry probabilityEntry =
                 mProbabilityDictContent->getProbabilityEntry(terminalId);
-        probability = probabilityEntry.getProbability();
+        if (probabilityEntry.hasHistoricalInfo()) {
+            probability = ForgettingCurveUtils::decodeProbability(
+                    probabilityEntry.getHistoricalInfo());
+        } else {
+            probability = probabilityEntry.getProbability();
+        }
     }
     int childrenPosFieldPos = pos;
     if (usesAdditionalBuffer) {

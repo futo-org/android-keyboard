@@ -45,9 +45,9 @@ class Ver4DictBuffers {
     }
 
     AK_FORCE_INLINE bool isValid() const {
-        return mDictBuffer.get() != 0 && mProbabilityDictContent.isValid()
-                && mTerminalPositionLookupTable.isValid() && mBigramDictContent.isValid()
-                && mShortcutDictContent.isValid();
+        return mDictBuffer.get() != 0 && mHeaderPolicy.isValid()
+                && mProbabilityDictContent.isValid() && mTerminalPositionLookupTable.isValid()
+                && mBigramDictContent.isValid() && mShortcutDictContent.isValid();
     }
 
     AK_FORCE_INLINE bool isNearSizeLimit() const {
@@ -131,9 +131,10 @@ class Ver4DictBuffers {
                       BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE),
               // TODO: Quit using header size.
               mTerminalPositionLookupTable(dictDirPath, isUpdatable, mHeaderPolicy.getSize()),
-              mProbabilityDictContent(dictDirPath, mHeaderPolicy.hasHistricalInfoOfWords(),
+              mProbabilityDictContent(dictDirPath, mHeaderPolicy.hasHistoricalInfoOfWords(),
                       isUpdatable),
-              mBigramDictContent(dictDirPath, mHeaderPolicy.hasHistricalInfoOfWords(), isUpdatable),
+              mBigramDictContent(dictDirPath, mHeaderPolicy.hasHistoricalInfoOfWords(),
+                      isUpdatable),
               mShortcutDictContent(dictDirPath, isUpdatable),
               mIsUpdatable(isUpdatable) {}
 
@@ -142,8 +143,8 @@ class Ver4DictBuffers {
               mExpandableHeaderBuffer(Ver4DictConstants::MAX_DICTIONARY_SIZE),
               mExpandableTrieBuffer(Ver4DictConstants::MAX_DICTIONARY_SIZE),
               mTerminalPositionLookupTable(),
-              mProbabilityDictContent(headerPolicy->hasHistricalInfoOfWords()),
-              mBigramDictContent(headerPolicy->hasHistricalInfoOfWords()), mShortcutDictContent(),
+              mProbabilityDictContent(headerPolicy->hasHistoricalInfoOfWords()),
+              mBigramDictContent(headerPolicy->hasHistoricalInfoOfWords()), mShortcutDictContent(),
               mIsUpdatable(true) {}
 
     const MmappedBuffer::MmappedBufferPtr mDictBuffer;

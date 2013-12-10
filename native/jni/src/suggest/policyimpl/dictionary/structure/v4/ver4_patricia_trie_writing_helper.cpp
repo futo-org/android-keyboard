@@ -53,20 +53,20 @@ void Ver4PatriciaTrieWritingHelper::writeToDictFile(const char *const trieFilePa
 }
 
 void Ver4PatriciaTrieWritingHelper::writeToDictFileWithGC(const int rootPtNodeArrayPos,
-        const char *const trieFilePath, const bool needsToDecay) {
+        const char *const trieFilePath) {
     const HeaderPolicy *const headerPolicy = mBuffers->getHeaderPolicy();
     Ver4DictBuffers::Ver4DictBuffersPtr dictBuffers(
             Ver4DictBuffers::createVer4DictBuffers(headerPolicy));
     int unigramCount = 0;
     int bigramCount = 0;
-    if (!runGC(rootPtNodeArrayPos, headerPolicy, dictBuffers.get(), &unigramCount, &bigramCount,
-            needsToDecay)) {
+    if (!runGC(rootPtNodeArrayPos, headerPolicy, dictBuffers.get(), &unigramCount, &bigramCount)) {
         return;
     }
     BufferWithExtendableBuffer headerBuffer(
             BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE);
     if (!headerPolicy->writeHeaderToBuffer(&headerBuffer, true /* updatesLastUpdatedTime */,
-            needsToDecay, unigramCount, bigramCount, 0 /* extendedRegionSize */)) {
+            true /* updatesLastDecayedTime */, unigramCount, bigramCount,
+            0 /* extendedRegionSize */)) {
         return;
     }
     const int dirPathBufSize = strlen(trieFilePath) + 1 /* terminator */;
@@ -77,30 +77,29 @@ void Ver4PatriciaTrieWritingHelper::writeToDictFileWithGC(const int rootPtNodeAr
 
 bool Ver4PatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
         const HeaderPolicy *const headerPolicy, Ver4DictBuffers *const buffersToWrite,
-        int *const outUnigramCount, int *const outBigramCount, const bool needsToDecay) {
+        int *const outUnigramCount, int *const outBigramCount) {
     Ver4PatriciaTrieNodeReader ptNodeReader(mBuffers->getTrieBuffer(),
             mBuffers->getProbabilityDictContent());
     Ver4BigramListPolicy bigramPolicy(mBuffers->getMutableBigramDictContent(),
-            mBuffers->getTerminalPositionLookupTable(), headerPolicy, needsToDecay);
+            mBuffers->getTerminalPositionLookupTable(), headerPolicy);
     Ver4ShortcutListPolicy shortcutPolicy(mBuffers->getMutableShortcutDictContent(),
             mBuffers->getTerminalPositionLookupTable());
     Ver4PatriciaTrieNodeWriter ptNodeWriter(mBuffers->getWritableTrieBuffer(),
-            mBuffers, &ptNodeReader, &bigramPolicy, &shortcutPolicy,
-            false /* needsToDecayWhenUpdating */);
+            mBuffers, &ptNodeReader, &bigramPolicy, &shortcutPolicy);
 
     DynamicPatriciaTrieReadingHelper readingHelper(mBuffers->getTrieBuffer(), &ptNodeReader);
     readingHelper.initWithPtNodeArrayPos(rootPtNodeArrayPos);
     DynamicPatriciaTrieGcEventListeners
             ::TraversePolicyToUpdateUnigramProbabilityAndMarkUselessPtNodesAsDeleted
                     traversePolicyToUpdateUnigramProbabilityAndMarkUselessPtNodesAsDeleted(
-                            headerPolicy, &ptNodeWriter, mBuffers->getWritableTrieBuffer(),
-                            needsToDecay);
+                            &ptNodeWriter);
     if (!readingHelper.traverseAllPtNodesInPostorderDepthFirstManner(
             &traversePolicyToUpdateUnigramProbabilityAndMarkUselessPtNodesAsDeleted)) {
         return false;
     }
-    if (needsToDecay && traversePolicyToUpdateUnigramProbabilityAndMarkUselessPtNodesAsDeleted
-            .getValidUnigramCount() > ForgettingCurveUtils::MAX_UNIGRAM_COUNT_AFTER_GC) {
+    if (headerPolicy->isDecayingDict()
+            && traversePolicyToUpdateUnigramProbabilityAndMarkUselessPtNodesAsDeleted
+                    .getValidUnigramCount() > ForgettingCurveUtils::MAX_UNIGRAM_COUNT_AFTER_GC) {
         // TODO: Remove more unigrams.
     }
 
@@ -111,8 +110,9 @@ bool Ver4PatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
             &traversePolicyToUpdateBigramProbability)) {
         return false;
     }
-    if (needsToDecay && traversePolicyToUpdateBigramProbability.getValidBigramEntryCount()
-            > ForgettingCurveUtils::MAX_BIGRAM_COUNT_AFTER_GC) {
+    if (headerPolicy->isDecayingDict()
+            && traversePolicyToUpdateBigramProbability.getValidBigramEntryCount()
+                    > ForgettingCurveUtils::MAX_BIGRAM_COUNT_AFTER_GC) {
         // TODO: Remove more bigrams.
     }
 
@@ -120,8 +120,7 @@ bool Ver4PatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
     PtNodeWriter::DictPositionRelocationMap dictPositionRelocationMap;
     readingHelper.initWithPtNodeArrayPos(rootPtNodeArrayPos);
     Ver4PatriciaTrieNodeWriter ptNodeWriterForNewBuffers(buffersToWrite->getWritableTrieBuffer(),
-            buffersToWrite, &ptNodeReader, &bigramPolicy, &shortcutPolicy,
-            false /* needsToDecayWhenUpdating */);
+            buffersToWrite, &ptNodeReader, &bigramPolicy, &shortcutPolicy);
     DynamicPatriciaTrieGcEventListeners::TraversePolicyToPlaceAndWriteValidPtNodesToBuffer
             traversePolicyToPlaceAndWriteValidPtNodesToBuffer(&ptNodeWriterForNewBuffers,
                     buffersToWrite->getWritableTrieBuffer(), &dictPositionRelocationMap);
@@ -134,13 +133,11 @@ bool Ver4PatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
     Ver4PatriciaTrieNodeReader newPtNodeReader(buffersToWrite->getTrieBuffer(),
             buffersToWrite->getProbabilityDictContent());
     Ver4BigramListPolicy newBigramPolicy(buffersToWrite->getMutableBigramDictContent(),
-            buffersToWrite->getTerminalPositionLookupTable(), headerPolicy,
-            false /* needsToDecay */);
+            buffersToWrite->getTerminalPositionLookupTable(), headerPolicy);
     Ver4ShortcutListPolicy newShortcutPolicy(buffersToWrite->getMutableShortcutDictContent(),
             buffersToWrite->getTerminalPositionLookupTable());
     Ver4PatriciaTrieNodeWriter newPtNodeWriter(buffersToWrite->getWritableTrieBuffer(),
-            buffersToWrite, &newPtNodeReader, &newBigramPolicy, &newShortcutPolicy,
-            false /* needsToDecayWhenUpdating */);
+            buffersToWrite, &newPtNodeReader, &newBigramPolicy, &newShortcutPolicy);
     // Re-assign terminal IDs for valid terminal PtNodes.
     TerminalPositionLookupTable::TerminalIdMap terminalIdMap;
     if(!buffersToWrite->getMutableTerminalPositionLookupTable()->runGCTerminalIds(

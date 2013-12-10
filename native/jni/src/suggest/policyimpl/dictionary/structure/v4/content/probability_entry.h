@@ -51,6 +51,10 @@ class ProbabilityEntry {
         return ProbabilityEntry(mFlags, mProbability, historicalInfo);
     }
 
+    bool hasHistoricalInfo() const {
+        return mHistoricalInfo.isValid();
+    }
+
     int getFlags() const {
         return mFlags;
     }

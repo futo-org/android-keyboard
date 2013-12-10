@@ -73,6 +73,10 @@ class BigramEntry {
         return mProbability;
     }
 
+    bool hasHistoricalInfo() const {
+        return mHistoricalInfo.isValid();
+    }
+
     const HistoricalInfo *getHistoricalInfo() const {
         return &mHistoricalInfo;
     }
