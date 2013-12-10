@@ -36,18 +36,26 @@ class ForgettingCurveUtils {
     static const int MAX_BIGRAM_COUNT;
     static const int MAX_BIGRAM_COUNT_AFTER_GC;
 
-    static const HistoricalInfo createUpdatedHistoricalInfoFrom(
+    static const HistoricalInfo createUpdatedHistoricalInfo(
             const HistoricalInfo *const originalHistoricalInfo, const int newProbability,
             const int timestamp);
+
+    static const HistoricalInfo createHistoricalInfoToSave(
+            const HistoricalInfo *const originalHistoricalInfo);
 
     static int getProbability(const int encodedUnigramProbability,
             const int encodedBigramProbability);
 
+    // TODO: Remove.
     static int getUpdatedEncodedProbability(const int originalEncodedProbability,
             const int newProbability);
 
+    // TODO: Remove.
     static int isValidEncodedProbability(const int encodedProbability);
 
+    static bool needsToKeep(const HistoricalInfo *const historicalInfo);
+
+    // TODO: Remove.
     static int getEncodedProbabilityToSave(const int encodedProbability,
             const DictionaryHeaderStructurePolicy *const headerPolicy);
 
@@ -84,12 +92,17 @@ class ForgettingCurveUtils {
     static const int MAX_LEVEL;
     static const int MAX_COUNT;
     static const int MIN_VALID_LEVEL;
+    static const int TIME_STEP_DURATION_IN_SECONDS;
+    static const int MAX_ELAPSED_TIME_STEP_COUNT;
+    static const int DISCARD_LEVEL_ZERO_ENTRY_TIME_STEP_COUNT_THRESHOLD;
 
     static const ProbabilityTable sProbabilityTable;
 
     static int decodeProbability(const int encodedProbability);
 
     static int backoff(const int unigramProbability);
+
+    static int getElapsedTimeStepCount(const int timestamp);
 };
 } // namespace latinime
 #endif /* LATINIME_FORGETTING_CURVE_UTILS_H */

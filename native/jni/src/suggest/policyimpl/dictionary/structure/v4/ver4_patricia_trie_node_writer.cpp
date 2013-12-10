@@ -151,17 +151,22 @@ bool Ver4PatriciaTrieNodeWriter::updatePtNodeProbabilityAndGetNeedsToKeepPtNodeA
         const ProbabilityEntry originalProbabilityEntry =
                 mBuffers->getProbabilityDictContent()->getProbabilityEntry(
                         toBeUpdatedPtNodeParams->getTerminalId());
-        // TODO: Use historical info.
+        // TODO: Remove.
         const int newProbability = ForgettingCurveUtils::getEncodedProbabilityToSave(
                 originalProbabilityEntry.getProbability(), mBuffers->getHeaderPolicy());
+        const HistoricalInfo historicalInfo =
+                ForgettingCurveUtils::createHistoricalInfoToSave(
+                        originalProbabilityEntry.getHistoricalInfo());
         const ProbabilityEntry probabilityEntry =
-                originalProbabilityEntry.createEntryWithUpdatedProbability(newProbability);
+                originalProbabilityEntry.createEntryWithUpdatedProbability(newProbability)
+                        .createEntryWithUpdatedHistoricalInfo(&historicalInfo);
         if (!mBuffers->getMutableProbabilityDictContent()->setProbabilityEntry(
                 toBeUpdatedPtNodeParams->getTerminalId(), &probabilityEntry)) {
             AKLOGE("Cannot write updated probability entry. terminalId: %d",
                     toBeUpdatedPtNodeParams->getTerminalId());
             return false;
         }
+        // TODO: Use ForgettingCurveUtils::needsToKeep(&historicalInfo).
         const bool isValid = ForgettingCurveUtils::isValidEncodedProbability(newProbability);
         if (!isValid) {
             if (!markPtNodeAsWillBecomeNonTerminal(toBeUpdatedPtNodeParams)) {
@@ -379,7 +384,7 @@ const ProbabilityEntry Ver4PatriciaTrieNodeWriter::createUpdatedEntryFrom(
         const int updatedProbability = ForgettingCurveUtils::getUpdatedEncodedProbability(
                 originalProbabilityEntry->getProbability(), newProbability);
         const HistoricalInfo updatedHistoricalInfo =
-                ForgettingCurveUtils::createUpdatedHistoricalInfoFrom(
+                ForgettingCurveUtils::createUpdatedHistoricalInfo(
                         originalProbabilityEntry->getHistoricalInfo(), newProbability, timestamp);
         return originalProbabilityEntry->createEntryWithUpdatedProbability(updatedProbability)
                 .createEntryWithUpdatedHistoricalInfo(&updatedHistoricalInfo);
