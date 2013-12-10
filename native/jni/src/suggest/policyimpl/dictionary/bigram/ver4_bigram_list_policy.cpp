@@ -17,6 +17,7 @@
 #include "suggest/policyimpl/dictionary/bigram/ver4_bigram_list_policy.h"
 
 #include "suggest/policyimpl/dictionary/bigram/bigram_list_read_write_utils.h"
+#include "suggest/policyimpl/dictionary/header/header_policy.h"
 #include "suggest/policyimpl/dictionary/structure/v4/content/bigram_dict_content.h"
 #include "suggest/policyimpl/dictionary/structure/v4/content/terminal_position_lookup_table.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_dict_constants.h"
@@ -34,7 +35,12 @@ void Ver4BigramListPolicy::getNextBigram(int *const outBigramPos, int *const out
                 bigramEntry.getTargetTerminalId());
     }
     if (outProbability) {
-        *outProbability = bigramEntry.getProbability();
+        if (bigramEntry.hasHistoricalInfo()) {
+            *outProbability =
+                    ForgettingCurveUtils::decodeProbability(bigramEntry.getHistoricalInfo());
+        } else {
+            *outProbability = bigramEntry.getProbability();
+        }
     }
     if (outHasNext) {
         *outHasNext = bigramEntry.hasNext();
@@ -152,17 +158,12 @@ bool Ver4BigramListPolicy::updateAllBigramEntriesAndDeleteUselessEntries(const i
             if (!mBigramDictContent->writeBigramEntry(&updatedBigramEntry, entryPos)) {
                 return false;
             }
-        } else if (mNeedsToDecayWhenUpdating) {
-            const int probability = ForgettingCurveUtils::getEncodedProbabilityToSave(
-                    bigramEntry.getProbability(), mHeaderPolicy);
-            const HistoricalInfo historicalInfo =
-                    ForgettingCurveUtils::createHistoricalInfoToSave(
-                            bigramEntry.getHistoricalInfo());
-            // TODO: Use ForgettingCurveUtils::needsToKeep(&historicalInfo).
-            if (ForgettingCurveUtils::isValidEncodedProbability(probability)) {
+        } else if (bigramEntry.hasHistoricalInfo()) {
+            const HistoricalInfo historicalInfo = ForgettingCurveUtils::createHistoricalInfoToSave(
+                    bigramEntry.getHistoricalInfo());
+            if (ForgettingCurveUtils::needsToKeep(&historicalInfo)) {
                 const BigramEntry updatedBigramEntry =
-                        bigramEntry.updateProbabilityAndGetEntry(probability)
-                                .updateHistoricalInfoAndGetEntry(&historicalInfo);
+                        bigramEntry.updateHistoricalInfoAndGetEntry(&historicalInfo);
                 if (!mBigramDictContent->writeBigramEntry(&updatedBigramEntry, entryPos)) {
                     return false;
                 }
@@ -225,14 +226,12 @@ int Ver4BigramListPolicy::getEntryPosToUpdate(const int targetTerminalIdToFind,
 const BigramEntry Ver4BigramListPolicy::createUpdatedBigramEntryFrom(
         const BigramEntry *const originalBigramEntry, const int newProbability,
         const int timestamp) const {
-    if (mNeedsToDecayWhenUpdating) {
-        const int probability = ForgettingCurveUtils::getUpdatedEncodedProbability(
-                originalBigramEntry->getProbability(), newProbability);
+    // TODO: Consolidate historical info and probability.
+    if (mHeaderPolicy->hasHistoricalInfoOfWords()) {
         const HistoricalInfo updatedHistoricalInfo =
                 ForgettingCurveUtils::createUpdatedHistoricalInfo(
                         originalBigramEntry->getHistoricalInfo(), newProbability, timestamp);
-        return originalBigramEntry->updateProbabilityAndGetEntry(probability)
-                .updateHistoricalInfoAndGetEntry(&updatedHistoricalInfo);
+        return originalBigramEntry->updateHistoricalInfoAndGetEntry(&updatedHistoricalInfo);
     } else {
         return originalBigramEntry->updateProbabilityAndGetEntry(newProbability);
     }

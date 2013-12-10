@@ -41,17 +41,16 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
             : mBuffers(buffers), mHeaderPolicy(mBuffers.get()->getHeaderPolicy()),
               mDictBuffer(mBuffers.get()->getWritableTrieBuffer()),
               mBigramPolicy(mBuffers.get()->getMutableBigramDictContent(),
-                      mBuffers.get()->getTerminalPositionLookupTable(), mHeaderPolicy,
-                      mHeaderPolicy->isDecayingDict()),
+                      mBuffers.get()->getTerminalPositionLookupTable(), mHeaderPolicy),
               mShortcutPolicy(mBuffers.get()->getMutableShortcutDictContent(),
                       mBuffers.get()->getTerminalPositionLookupTable()),
               mNodeReader(mDictBuffer, mBuffers.get()->getProbabilityDictContent()),
               mNodeWriter(mDictBuffer, mBuffers.get(), &mNodeReader, &mBigramPolicy,
-                      &mShortcutPolicy, mHeaderPolicy->isDecayingDict()),
+                      &mShortcutPolicy),
               mUpdatingHelper(mDictBuffer, &mNodeReader, &mNodeWriter),
               mWritingHelper(mBuffers.get()),
               mUnigramCount(mHeaderPolicy->getUnigramCount()),
-              mBigramCount(mHeaderPolicy->getBigramCount()), mNeedsToDecayForTesting(false) {};
+              mBigramCount(mHeaderPolicy->getBigramCount()) {};
 
     AK_FORCE_INLINE int getRootPosition() const {
         return 0;
@@ -117,7 +116,6 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     static const char *const BIGRAM_COUNT_QUERY;
     static const char *const MAX_UNIGRAM_COUNT_QUERY;
     static const char *const MAX_BIGRAM_COUNT_QUERY;
-    static const char *const SET_NEEDS_TO_DECAY_FOR_TESTING_QUERY;
     static const char *const SET_CURRENT_TIME_FOR_TESTING_QUERY_FORMAT;
     static const char *const GET_CURRENT_TIME_QUERY;
     static const char *const QUIT_TIMEKEEPER_TEST_MODE_QUERY;
@@ -137,7 +135,6 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     Ver4PatriciaTrieWritingHelper mWritingHelper;
     int mUnigramCount;
     int mBigramCount;
-    bool mNeedsToDecayForTesting;
 };
 } // namespace latinime
 #endif // LATINIME_VER4_PATRICIA_TRIE_POLICY_H

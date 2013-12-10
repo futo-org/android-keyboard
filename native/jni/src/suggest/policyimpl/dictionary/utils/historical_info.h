@@ -30,6 +30,10 @@ class HistoricalInfo {
     HistoricalInfo(const int timestamp, const int level, const int count)
             : mTimestamp(timestamp), mLevel(level), mCount(count) {}
 
+    bool isValid() const {
+        return mTimestamp != NOT_A_TIMESTAMP;
+    }
+
     int getTimeStamp() const {
         return mTimestamp;
     }

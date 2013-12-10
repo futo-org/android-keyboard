@@ -31,12 +31,6 @@ const int ForgettingCurveUtils::MAX_BIGRAM_COUNT = 12000;
 const int ForgettingCurveUtils::MAX_BIGRAM_COUNT_AFTER_GC = 10000;
 
 const int ForgettingCurveUtils::MAX_COMPUTED_PROBABILITY = 127;
-const int ForgettingCurveUtils::MAX_ENCODED_PROBABILITY = 15;
-const int ForgettingCurveUtils::MIN_VALID_ENCODED_PROBABILITY = 3;
-const int ForgettingCurveUtils::ENCODED_PROBABILITY_STEP = 1;
-// Currently, we try to decay each uni/bigram once every 2 hours. Accordingly, the expected
-// duration of the decay is approximately 66hours.
-const float ForgettingCurveUtils::MIN_PROBABILITY_TO_DECAY = 0.03f;
 const int ForgettingCurveUtils::DECAY_INTERVAL_SECONDS = 2 * 60 * 60;
 
 const int ForgettingCurveUtils::MAX_LEVEL = 3;
@@ -53,9 +47,9 @@ const ForgettingCurveUtils::ProbabilityTable ForgettingCurveUtils::sProbabilityT
         const int newProbability, const int timestamp) {
     if (newProbability != NOT_A_PROBABILITY && originalHistoricalInfo->getLevel() == 0) {
         return HistoricalInfo(timestamp, MIN_VALID_LEVEL /* level */, 0 /* count */);
-    } else if (originalHistoricalInfo->getTimeStamp() == NOT_A_TIMESTAMP) {
+    } else if (!originalHistoricalInfo->isValid()) {
         // Initial information.
-        return HistoricalInfo(timestamp, 0 /* level */, 0 /* count */);
+        return HistoricalInfo(timestamp, 0 /* level */, 1 /* count */);
     } else {
         const int updatedCount = originalHistoricalInfo->getCount() + 1;
         if (updatedCount > MAX_COUNT) {
@@ -75,42 +69,22 @@ const ForgettingCurveUtils::ProbabilityTable ForgettingCurveUtils::sProbabilityT
     }
 }
 
-/* static */ int ForgettingCurveUtils::getProbability(const int encodedUnigramProbability,
-        const int encodedBigramProbability) {
-    if (encodedUnigramProbability == NOT_A_PROBABILITY) {
+/* static */ int ForgettingCurveUtils::decodeProbability(
+        const HistoricalInfo *const historicalInfo) {
+    const int elapsedTimeStepCount = getElapsedTimeStepCount(historicalInfo->getTimeStamp());
+    return sProbabilityTable.getProbability(historicalInfo->getLevel(),
+            min(max(elapsedTimeStepCount, 0), MAX_ELAPSED_TIME_STEP_COUNT));
+}
+
+/* static */ int ForgettingCurveUtils::getProbability(const int unigramProbability,
+        const int bigramProbability) {
+    if (unigramProbability == NOT_A_PROBABILITY) {
         return NOT_A_PROBABILITY;
-    } else if (encodedBigramProbability == NOT_A_PROBABILITY) {
-        return backoff(decodeProbability(encodedUnigramProbability));
+    } else if (bigramProbability == NOT_A_PROBABILITY) {
+        return min(backoff(unigramProbability), MAX_COMPUTED_PROBABILITY);
     } else {
-        const int unigramProbability = decodeProbability(encodedUnigramProbability);
-        const int bigramProbability = decodeProbability(encodedBigramProbability);
         return min(max(unigramProbability, bigramProbability), MAX_COMPUTED_PROBABILITY);
     }
-}
-
-// Caveat: Unlike getProbability(), this method doesn't assume special bigram probability encoding
-// (i.e. unigram probability + bigram probability delta).
-/* static */ int ForgettingCurveUtils::getUpdatedEncodedProbability(
-        const int originalEncodedProbability, const int newProbability) {
-    if (originalEncodedProbability == NOT_A_PROBABILITY) {
-        // The bigram relation is not in this dictionary.
-        if (newProbability == NOT_A_PROBABILITY) {
-            // The bigram target is not in other dictionaries.
-            return 0;
-        } else {
-            return MIN_VALID_ENCODED_PROBABILITY;
-        }
-    } else {
-        if (newProbability != NOT_A_PROBABILITY
-                && originalEncodedProbability < MIN_VALID_ENCODED_PROBABILITY) {
-            return MIN_VALID_ENCODED_PROBABILITY;
-        }
-        return min(originalEncodedProbability + ENCODED_PROBABILITY_STEP, MAX_ENCODED_PROBABILITY);
-    }
-}
-
-/* static */ int ForgettingCurveUtils::isValidEncodedProbability(const int encodedProbability) {
-    return encodedProbability >= MIN_VALID_ENCODED_PROBABILITY;
 }
 
 /* static */ bool ForgettingCurveUtils::needsToKeep(const HistoricalInfo *const historicalInfo) {
@@ -119,41 +93,22 @@ const ForgettingCurveUtils::ProbabilityTable ForgettingCurveUtils::sProbabilityT
                     < DISCARD_LEVEL_ZERO_ENTRY_TIME_STEP_COUNT_THRESHOLD;
 }
 
-/* static */ int ForgettingCurveUtils::getEncodedProbabilityToSave(const int encodedProbability,
-        const DictionaryHeaderStructurePolicy *const headerPolicy) {
-    const int elapsedTime = TimeKeeper::peekCurrentTime() - headerPolicy->getLastDecayedTime();
-    const int decayIterationCount = max(elapsedTime / DECAY_INTERVAL_SECONDS, 1);
-    int currentEncodedProbability = max(min(encodedProbability, MAX_ENCODED_PROBABILITY), 0);
-    // TODO: Implement the decay in more proper way.
-    for (int i = 0; i < decayIterationCount; ++i) {
-        const float currentRate = static_cast<float>(currentEncodedProbability)
-                / static_cast<float>(MAX_ENCODED_PROBABILITY);
-        const float thresholdToDecay = (1.0f - MIN_PROBABILITY_TO_DECAY) * currentRate;
-        const float randValue = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
-        if (thresholdToDecay < randValue) {
-            currentEncodedProbability = max(currentEncodedProbability - ENCODED_PROBABILITY_STEP,
-                    0);
-        }
-    }
-    return currentEncodedProbability;
-}
-
 /* static */ const HistoricalInfo ForgettingCurveUtils::createHistoricalInfoToSave(
         const HistoricalInfo *const originalHistoricalInfo) {
     if (originalHistoricalInfo->getTimeStamp() == NOT_A_TIMESTAMP) {
         return HistoricalInfo();
     }
     const int elapsedTimeStep = getElapsedTimeStepCount(originalHistoricalInfo->getTimeStamp());
-    if (elapsedTimeStep < MAX_ELAPSED_TIME_STEP_COUNT) {
+    if (elapsedTimeStep <= MAX_ELAPSED_TIME_STEP_COUNT) {
         // No need to update historical info.
         return *originalHistoricalInfo;
     }
     // Level down.
-    const int maxLevelDownAmonut = elapsedTimeStep / MAX_ELAPSED_TIME_STEP_COUNT;
+    const int maxLevelDownAmonut = elapsedTimeStep / (MAX_ELAPSED_TIME_STEP_COUNT + 1);
     const int levelDownAmount = (maxLevelDownAmonut >= originalHistoricalInfo->getLevel()) ?
             originalHistoricalInfo->getLevel() : maxLevelDownAmonut;
     const int adjustedTimestamp = originalHistoricalInfo->getTimeStamp() +
-            levelDownAmount * MAX_ELAPSED_TIME_STEP_COUNT * TIME_STEP_DURATION_IN_SECONDS;
+            levelDownAmount * (MAX_ELAPSED_TIME_STEP_COUNT + 1) * TIME_STEP_DURATION_IN_SECONDS;
     return HistoricalInfo(adjustedTimestamp,
             originalHistoricalInfo->getLevel() - levelDownAmount, 0 /* count */);
 }
@@ -179,14 +134,6 @@ const ForgettingCurveUtils::ProbabilityTable ForgettingCurveUtils::sProbabilityT
     return false;
 }
 
-/* static */ int ForgettingCurveUtils::decodeProbability(const int encodedProbability) {
-    if (encodedProbability < MIN_VALID_ENCODED_PROBABILITY) {
-        return NOT_A_PROBABILITY;
-    } else {
-        return min(sProbabilityTable.getProbability(encodedProbability), MAX_ENCODED_PROBABILITY);
-    }
-}
-
 // See comments in ProbabilityUtils::backoff().
 /* static */ int ForgettingCurveUtils::backoff(const int unigramProbability) {
     if (unigramProbability == NOT_A_PROBABILITY) {
@@ -201,14 +148,24 @@ const ForgettingCurveUtils::ProbabilityTable ForgettingCurveUtils::sProbabilityT
 }
 
 ForgettingCurveUtils::ProbabilityTable::ProbabilityTable() : mTable() {
-    // Table entry is as follows:
-    // 1, 1, 1, 2, 3, 5, 6, 9, 13, 18, 25, 34, 48, 66, 91, 127.
-    // Note that first MIN_VALID_ENCODED_PROBABILITY values are not used.
-    mTable.resize(MAX_ENCODED_PROBABILITY + 1);
-    for (int i = 0; i <= MAX_ENCODED_PROBABILITY; ++i) {
-        const int probability = static_cast<int>(powf(static_cast<float>(MAX_COMPUTED_PROBABILITY),
-                static_cast<float>(i) / static_cast<float>(MAX_ENCODED_PROBABILITY)));
-         mTable[i] = min(MAX_COMPUTED_PROBABILITY, max(0, probability));
+    mTable.resize(MAX_LEVEL + 1);
+    for (int level = 0; level <= MAX_LEVEL; ++level) {
+        mTable[level].resize(MAX_ELAPSED_TIME_STEP_COUNT + 1);
+        const float initialProbability =
+                static_cast<float>(MAX_COMPUTED_PROBABILITY / (1 << (MAX_LEVEL - level)));
+        for (int timeStepCount = 0; timeStepCount <= MAX_ELAPSED_TIME_STEP_COUNT; ++timeStepCount) {
+            if (level == 0) {
+                mTable[level][timeStepCount] = NOT_A_PROBABILITY;
+                continue;
+            }
+            const int elapsedTime = timeStepCount * TIME_STEP_DURATION_IN_SECONDS;
+            const float probability = initialProbability
+                    * powf(2.0f, -1.0f * static_cast<float>(elapsedTime)
+                            / static_cast<float>(TIME_STEP_DURATION_IN_SECONDS
+                                    * (MAX_ELAPSED_TIME_STEP_COUNT + 1)));
+            mTable[level][timeStepCount] =
+                    min(max(static_cast<int>(probability), 1), MAX_COMPUTED_PROBABILITY);
+        }
     }
 }
 

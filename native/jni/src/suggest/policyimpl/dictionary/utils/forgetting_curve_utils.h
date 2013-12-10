@@ -26,8 +26,6 @@ namespace latinime {
 
 class DictionaryHeaderStructurePolicy;
 
-// TODO: Check the elapsed time and decrease the probability depending on the time. Time field is
-// required to introduced to each terminal PtNode and bigram entry.
 // TODO: Quit using bigram probability to indicate the delta.
 class ForgettingCurveUtils {
  public:
@@ -43,21 +41,12 @@ class ForgettingCurveUtils {
     static const HistoricalInfo createHistoricalInfoToSave(
             const HistoricalInfo *const originalHistoricalInfo);
 
+    static int decodeProbability(const HistoricalInfo *const historicalInfo);
+
     static int getProbability(const int encodedUnigramProbability,
             const int encodedBigramProbability);
 
-    // TODO: Remove.
-    static int getUpdatedEncodedProbability(const int originalEncodedProbability,
-            const int newProbability);
-
-    // TODO: Remove.
-    static int isValidEncodedProbability(const int encodedProbability);
-
     static bool needsToKeep(const HistoricalInfo *const historicalInfo);
-
-    // TODO: Remove.
-    static int getEncodedProbabilityToSave(const int encodedProbability,
-            const DictionaryHeaderStructurePolicy *const headerPolicy);
 
     static bool needsToDecay(const bool mindsBlockByDecay, const int unigramCount,
             const int bigramCount, const DictionaryHeaderStructurePolicy *const headerPolicy);
@@ -69,24 +58,17 @@ class ForgettingCurveUtils {
      public:
         ProbabilityTable();
 
-        int getProbability(const int encodedProbability) const {
-            if (encodedProbability < 0 || encodedProbability > static_cast<int>(mTable.size())) {
-                return NOT_A_PROBABILITY;
-            }
-            return mTable[encodedProbability];
+        int getProbability(const int level, const int elapsedTimeStepCount) const {
+            return mTable[level][elapsedTimeStepCount];
         }
 
      private:
         DISALLOW_COPY_AND_ASSIGN(ProbabilityTable);
 
-        std::vector<int> mTable;
+        std::vector<std::vector<int> > mTable;
     };
 
     static const int MAX_COMPUTED_PROBABILITY;
-    static const int MAX_ENCODED_PROBABILITY;
-    static const int MIN_VALID_ENCODED_PROBABILITY;
-    static const int ENCODED_PROBABILITY_STEP;
-    static const float MIN_PROBABILITY_TO_DECAY;
     static const int DECAY_INTERVAL_SECONDS;
 
     static const int MAX_LEVEL;
@@ -95,10 +77,9 @@ class ForgettingCurveUtils {
     static const int TIME_STEP_DURATION_IN_SECONDS;
     static const int MAX_ELAPSED_TIME_STEP_COUNT;
     static const int DISCARD_LEVEL_ZERO_ENTRY_TIME_STEP_COUNT_THRESHOLD;
+    static const int HALF_LIFE_TIME_IN_SECONDS;
 
     static const ProbabilityTable sProbabilityTable;
-
-    static int decodeProbability(const int encodedProbability);
 
     static int backoff(const int unigramProbability);
 

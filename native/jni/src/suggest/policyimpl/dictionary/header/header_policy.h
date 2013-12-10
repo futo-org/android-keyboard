@@ -93,6 +93,18 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
         }
     }
 
+    AK_FORCE_INLINE bool isValid() const {
+        // Decaying dictionary must have historical information.
+        if (!mIsDecayingDict) {
+            return true;
+        }
+        if (mHasHistoricalInfoOfWords) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     AK_FORCE_INLINE int getSize() const {
         return mSize;
     }
@@ -137,7 +149,7 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
         return mExtendedRegionSize;
     }
 
-    AK_FORCE_INLINE bool hasHistricalInfoOfWords() const {
+    AK_FORCE_INLINE bool hasHistoricalInfoOfWords() const {
         return mHasHistoricalInfoOfWords;
     }
 

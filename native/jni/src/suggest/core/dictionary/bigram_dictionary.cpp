@@ -163,7 +163,8 @@ int BigramDictionary::getBigramProbability(const int *word0, int length0, const 
             mDictionaryStructurePolicy->getBigramsStructurePolicy(), pos);
     while (bigramsIt.hasNext()) {
         bigramsIt.next();
-        if (bigramsIt.getBigramPos() == nextWordPos) {
+        if (bigramsIt.getBigramPos() == nextWordPos
+                && bigramsIt.getProbability() != NOT_A_PROBABILITY) {
             return mDictionaryStructurePolicy->getProbability(
                     mDictionaryStructurePolicy->getUnigramProbabilityOfPtNode(nextWordPos),
                     bigramsIt.getProbability());

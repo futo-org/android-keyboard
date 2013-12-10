@@ -27,8 +27,6 @@
 
 namespace latinime {
 
-class DictionaryHeaderStructurePolicy;
-class PtNodeWriter;
 class PtNodeParams;
 
 // TODO: Move to pt_common.
@@ -41,12 +39,9 @@ class DynamicPatriciaTrieGcEventListeners {
         : public DynamicPatriciaTrieReadingHelper::TraversingEventListener {
      public:
         TraversePolicyToUpdateUnigramProbabilityAndMarkUselessPtNodesAsDeleted(
-                const DictionaryHeaderStructurePolicy *const headerPolicy,
-                PtNodeWriter *const ptNodeWriter, BufferWithExtendableBuffer *const buffer,
-                const bool needsToDecayWhenUpdating)
-                : mHeaderPolicy(headerPolicy), mPtNodeWriter(ptNodeWriter), mBuffer(buffer),
-                  mNeedsToDecayWhenUpdating(needsToDecayWhenUpdating), mValueStack(),
-                  mChildrenValue(0), mValidUnigramCount(0) {}
+                PtNodeWriter *const ptNodeWriter)
+                : mPtNodeWriter(ptNodeWriter), mValueStack(), mChildrenValue(0),
+                  mValidUnigramCount(0) {}
 
         ~TraversePolicyToUpdateUnigramProbabilityAndMarkUselessPtNodesAsDeleted() {};
 
@@ -77,10 +72,7 @@ class DynamicPatriciaTrieGcEventListeners {
         DISALLOW_IMPLICIT_CONSTRUCTORS(
                 TraversePolicyToUpdateUnigramProbabilityAndMarkUselessPtNodesAsDeleted);
 
-        const DictionaryHeaderStructurePolicy *const mHeaderPolicy;
         PtNodeWriter *const mPtNodeWriter;
-        BufferWithExtendableBuffer *const mBuffer;
-        const bool mNeedsToDecayWhenUpdating;
         std::vector<int> mValueStack;
         int mChildrenValue;
         int mValidUnigramCount;

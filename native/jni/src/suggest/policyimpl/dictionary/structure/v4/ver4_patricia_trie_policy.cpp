@@ -34,8 +34,6 @@ const char *const Ver4PatriciaTriePolicy::UNIGRAM_COUNT_QUERY = "UNIGRAM_COUNT";
 const char *const Ver4PatriciaTriePolicy::BIGRAM_COUNT_QUERY = "BIGRAM_COUNT";
 const char *const Ver4PatriciaTriePolicy::MAX_UNIGRAM_COUNT_QUERY = "MAX_UNIGRAM_COUNT";
 const char *const Ver4PatriciaTriePolicy::MAX_BIGRAM_COUNT_QUERY = "MAX_BIGRAM_COUNT";
-const char *const Ver4PatriciaTriePolicy::SET_NEEDS_TO_DECAY_FOR_TESTING_QUERY =
-        "SET_NEEDS_TO_DECAY_FOR_TESTING";
 const char *const Ver4PatriciaTriePolicy::SET_CURRENT_TIME_FOR_TESTING_QUERY_FORMAT =
         "SET_CURRENT_TIME_FOR_TESTING:%d";
 const char *const Ver4PatriciaTriePolicy::GET_CURRENT_TIME_QUERY = "GET_CURRENT_TIME";
@@ -62,8 +60,7 @@ void Ver4PatriciaTriePolicy::createAndGetAllChildDicNodes(const DicNode *const d
             // A DecayingDict may have a terminal PtNode that has a terminal DicNode whose
             // probability is NOT_A_PROBABILITY. In such case, we don't want to treat it as a
             // valid terminal DicNode.
-            isTerminal = getProbability(ptNodeParams.getProbability(), NOT_A_PROBABILITY)
-                    != NOT_A_PROBABILITY;
+            isTerminal = ptNodeParams.getProbability() != NOT_A_PROBABILITY;
         }
         childDicNodes->pushLeavingChild(dicNode, ptNodeParams.getHeadPos(),
                 ptNodeParams.getChildrenPos(), ptNodeParams.getProbability(), isTerminal,
@@ -262,11 +259,7 @@ void Ver4PatriciaTriePolicy::flushWithGC(const char *const filePath) {
         AKLOGI("Warning: flushWithGC() is called for non-updatable dictionary.");
         return;
     }
-    const bool needsToDecay = mHeaderPolicy->isDecayingDict()
-            && (mNeedsToDecayForTesting || ForgettingCurveUtils::needsToDecay(
-                    false /* mindsBlockByDecay */, mUnigramCount, mBigramCount, mHeaderPolicy));
-    mWritingHelper.writeToDictFileWithGC(getRootPosition(), filePath, needsToDecay);
-    mNeedsToDecayForTesting = false;
+    mWritingHelper.writeToDictFileWithGC(getRootPosition(), filePath);
 }
 
 bool Ver4PatriciaTriePolicy::needsToRunGC(const bool mindsBlockByGC) const {
@@ -286,8 +279,8 @@ bool Ver4PatriciaTriePolicy::needsToRunGC(const bool mindsBlockByGC) const {
         // Needs to reduce dictionary size.
         return true;
     } else if (mHeaderPolicy->isDecayingDict()) {
-        return mNeedsToDecayForTesting || ForgettingCurveUtils::needsToDecay(
-                mindsBlockByGC, mUnigramCount, mBigramCount, mHeaderPolicy);
+        return ForgettingCurveUtils::needsToDecay(mindsBlockByGC, mUnigramCount, mBigramCount,
+                mHeaderPolicy);
     }
     return false;
 }
@@ -308,8 +301,6 @@ void Ver4PatriciaTriePolicy::getProperty(const char *const query, const int quer
         snprintf(outResult, maxResultLength, "%d",
                 mHeaderPolicy->isDecayingDict() ? ForgettingCurveUtils::MAX_BIGRAM_COUNT :
                         static_cast<int>(Ver4DictConstants::MAX_DICTIONARY_SIZE));
-    } else if (strncmp(query, SET_NEEDS_TO_DECAY_FOR_TESTING_QUERY, compareLength) == 0) {
-        mNeedsToDecayForTesting = true;
     } else if (sscanf(query, SET_CURRENT_TIME_FOR_TESTING_QUERY_FORMAT, &timestamp) == 1) {
         TimeKeeper::startTestModeWithForceCurrentTime(timestamp);
     } else if (strncmp(query, GET_CURRENT_TIME_QUERY, compareLength) == 0) {
