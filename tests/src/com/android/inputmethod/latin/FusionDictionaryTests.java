@@ -31,7 +31,7 @@ import java.util.HashMap;
 public class FusionDictionaryTests extends AndroidTestCase {
     public void testFindWordInTree() {
         FusionDictionary dict = new FusionDictionary(new PtNodeArray(),
-                new FusionDictionary.DictionaryOptions(new HashMap<String,String>(), false, false));
+                new FusionDictionary.DictionaryOptions(new HashMap<String,String>()));
 
         dict.add("abc", 10, null, false /* isNotAWord */);
         assertNull(FusionDictionary.findWordInTree(dict.mRootNodeArray, "aaa"));

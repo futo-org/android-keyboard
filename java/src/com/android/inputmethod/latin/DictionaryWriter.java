@@ -18,8 +18,6 @@ package com.android.inputmethod.latin;
 
 import android.content.Context;
 
-import com.android.inputmethod.keyboard.ProximityInfo;
-import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.makedict.DictEncoder;
 import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.makedict.FusionDictionary;
@@ -52,7 +50,7 @@ public class DictionaryWriter extends AbstractDictionaryWriter {
     public void clear() {
         final HashMap<String, String> attributes = CollectionUtils.newHashMap();
         mFusionDictionary = new FusionDictionary(new PtNodeArray(),
-                new FusionDictionary.DictionaryOptions(attributes, false, false));
+                new FusionDictionary.DictionaryOptions(attributes));
     }
 
     /**

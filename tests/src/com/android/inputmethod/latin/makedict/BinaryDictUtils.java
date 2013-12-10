@@ -29,23 +29,17 @@ public class BinaryDictUtils {
 
     public static final String TEST_DICT_FILE_EXTENSION = ".testDict";
 
-    public static final FormatSpec.FormatOptions VERSION2 =
+    public static final FormatSpec.FormatOptions VERSION2_OPTIONS =
             new FormatSpec.FormatOptions(FormatSpec.VERSION2);
-    public static final FormatSpec.FormatOptions VERSION3_WITHOUT_DYNAMIC_UPDATE =
-            new FormatSpec.FormatOptions(FormatSpec.VERSION3, false /* supportsDynamicUpdate */);
-    public static final FormatSpec.FormatOptions VERSION3_WITH_DYNAMIC_UPDATE =
-            new FormatSpec.FormatOptions(FormatSpec.VERSION3, true /* supportsDynamicUpdate */);
-    public static final FormatSpec.FormatOptions VERSION4_WITHOUT_DYNAMIC_UPDATE =
-            new FormatSpec.FormatOptions(FormatSpec.VERSION4, false /* supportsDynamicUpdate */);
-    public static final FormatSpec.FormatOptions VERSION4_WITH_DYNAMIC_UPDATE =
-            new FormatSpec.FormatOptions(FormatSpec.VERSION4, true /* supportsDynamicUpdate */);
-    public static final FormatSpec.FormatOptions VERSION4_WITH_DYNAMIC_UPDATE_AND_TIMESTAMP =
-            new FormatSpec.FormatOptions(FormatSpec.VERSION4, true /* supportsDynamicUpdate */,
-                    true /* hasTimestamp */);
+    public static final FormatSpec.FormatOptions VERSION3_OPTIONS =
+            new FormatSpec.FormatOptions(FormatSpec.VERSION3);
+    public static final FormatSpec.FormatOptions VERSION4_OPTIONS_WITHOUT_TIMESTAMP =
+            new FormatSpec.FormatOptions(FormatSpec.VERSION4, false /* hasTimestamp */);
+    public static final FormatSpec.FormatOptions VERSION4_OPTIONS_WITH_TIMESTAMP =
+            new FormatSpec.FormatOptions(FormatSpec.VERSION4, true /* hasTimestamp */);
 
     public static DictionaryOptions makeDictionaryOptions(final String id, final String version) {
-        final DictionaryOptions options = new DictionaryOptions(new HashMap<String, String>(),
-                false /* germanUmlautProcessing */, false /* frenchLigatureProcessing */);
+        final DictionaryOptions options = new DictionaryOptions(new HashMap<String, String>());
         options.mAttributes.put(FileHeader.DICTIONARY_LOCALE_ATTRIBUTE, "en_US");
         options.mAttributes.put(FileHeader.DICTIONARY_ID_ATTRIBUTE, id);
         options.mAttributes.put(FileHeader.DICTIONARY_VERSION_ATTRIBUTE, version);
