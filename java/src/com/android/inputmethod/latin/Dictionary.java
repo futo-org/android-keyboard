@@ -52,13 +52,10 @@ public abstract class Dictionary {
     public static final String TYPE_CONTACTS = "contacts";
     // User dictionary, the system-managed one.
     public static final String TYPE_USER = "user";
-    // User history dictionary internal to LatinIME. This assumes bigram prediction for now.
+    // User history dictionary internal to LatinIME.
     public static final String TYPE_USER_HISTORY = "history";
-    // Personalization binary dictionary internal to LatinIME.
-    public static final String TYPE_PERSONALIZATION = "personalization";
-    // Personalization prediction dictionary internal to LatinIME's Java code.
-    public static final String TYPE_PERSONALIZATION_PREDICTION_IN_JAVA =
-            "personalization_prediction_in_java";
+    // Personalization dictionary.
+    public static final String TYPE_PERSONALIZATION_PREDICTION_IN_JAVA = "personalization";
     public final String mDictType;
 
     public Dictionary(final String dictType) {

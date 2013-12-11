@@ -24,7 +24,6 @@ import android.util.Log;
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
-import com.android.inputmethod.latin.personalization.PersonalizationDictionary;
 import com.android.inputmethod.latin.personalization.PersonalizationPredictionDictionary;
 import com.android.inputmethod.latin.personalization.UserHistoryDictionary;
 import com.android.inputmethod.latin.settings.Settings;
@@ -89,7 +88,6 @@ public final class Suggest {
         if (Settings.readUseOnlyPersonalizationDictionaryForDebug(
                 PreferenceManager.getDefaultSharedPreferences(context))) {
             mOnlyDictionarySetForDebug = new HashSet<String>();
-            mOnlyDictionarySetForDebug.add(Dictionary.TYPE_PERSONALIZATION);
             mOnlyDictionarySetForDebug.add(Dictionary.TYPE_PERSONALIZATION_PREDICTION_IN_JAVA);
         }
     }
@@ -198,12 +196,6 @@ public final class Suggest {
             final PersonalizationPredictionDictionary personalizationPredictionDictionary) {
         addOrReplaceDictionaryInternal(Dictionary.TYPE_PERSONALIZATION_PREDICTION_IN_JAVA,
                 personalizationPredictionDictionary);
-    }
-
-    public void setPersonalizationDictionary(
-            final PersonalizationDictionary personalizationDictionary) {
-        addOrReplaceDictionaryInternal(Dictionary.TYPE_PERSONALIZATION,
-                personalizationDictionary);
     }
 
     public void setAutoCorrectionThreshold(float threshold) {

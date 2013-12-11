@@ -30,8 +30,6 @@ import java.util.Locale;
  * dictionary.
  */
 public abstract class PersonalizationDictionaryUpdateSession {
-    // TODO: Use a dynamic binary dictionary instead
-    public WeakReference<PersonalizationDictionary> mDictionary;
     public WeakReference<DecayingExpandableBinaryDictionaryBase> mPredictionDictionary;
     public final Locale mSystemLocale;
 
@@ -43,29 +41,13 @@ public abstract class PersonalizationDictionaryUpdateSession {
 
     public abstract void onDictionaryClosed(Context context);
 
-    public void setDictionary(PersonalizationDictionary dictionary) {
-        mDictionary = new WeakReference<PersonalizationDictionary>(dictionary);
-    }
-
     public void setPredictionDictionary(DecayingExpandableBinaryDictionaryBase dictionary) {
         mPredictionDictionary =
                 new WeakReference<DecayingExpandableBinaryDictionaryBase>(dictionary);
     }
 
-    protected PersonalizationDictionary getDictionary() {
-        return mDictionary == null ? null : mDictionary.get();
-    }
-
     protected DecayingExpandableBinaryDictionaryBase getPredictionDictionary() {
         return mPredictionDictionary == null ? null : mPredictionDictionary.get();
-    }
-
-    private void unsetDictionary() {
-        final PersonalizationDictionary dictionary = getDictionary();
-        if (dictionary == null) {
-            return;
-        }
-        dictionary.unRegisterUpdateSession(this);
     }
 
     private void unsetPredictionDictionary() {
@@ -85,19 +67,8 @@ public abstract class PersonalizationDictionaryUpdateSession {
     }
 
     public void closeSession(Context context) {
-        unsetDictionary();
         unsetPredictionDictionary();
         onDictionaryClosed(context);
-    }
-
-    // TODO: Support multi locale to add bigram
-    public void addBigramToPersonalizationDictionary(String word0, String word1, boolean isValid,
-            int frequency, int timestamp) {
-        final DecayingExpandableBinaryDictionaryBase dictionary = getPredictionDictionary();
-        if (dictionary == null) {
-            return;
-        }
-        dictionary.addToDictionary(word0, word1, isValid, timestamp);
     }
 
     // TODO: Support multi locale.
