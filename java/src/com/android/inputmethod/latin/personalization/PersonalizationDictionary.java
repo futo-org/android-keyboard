@@ -18,21 +18,35 @@ package com.android.inputmethod.latin.personalization;
 
 import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.ExpandableBinaryDictionary;
+import com.android.inputmethod.latin.utils.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.Locale;
 
 import android.content.Context;
 
-// TODO: Rename to PersonalizationDictionary.
-public class PersonalizationPredictionDictionary extends DecayingExpandableBinaryDictionaryBase {
-    private static final String NAME = PersonalizationPredictionDictionary.class.getSimpleName();
+public class PersonalizationDictionary extends DecayingExpandableBinaryDictionaryBase {
+    private static final String NAME = PersonalizationDictionary.class.getSimpleName();
 
-    /* package */ PersonalizationPredictionDictionary(final Context context, final Locale locale) {
-        super(context, locale, Dictionary.TYPE_PERSONALIZATION_PREDICTION_IN_JAVA,
+    private final ArrayList<PersonalizationDictionaryUpdateSession> mSessions =
+            CollectionUtils.newArrayList();
+
+    /* package */ PersonalizationDictionary(final Context context, final Locale locale) {
+        super(context, locale, Dictionary.TYPE_PERSONALIZATION,
                 getDictionaryFileName(locale.toString()));
     }
 
     private static String getDictionaryFileName(final String locale) {
         return NAME + "." + locale + ExpandableBinaryDictionary.DICT_FILE_EXTENSION;
+    }
+
+    public void registerUpdateSession(PersonalizationDictionaryUpdateSession session) {
+        session.setPredictionDictionary(this);
+        mSessions.add(session);
+        session.onDictionaryReady();
+    }
+
+    public void unRegisterUpdateSession(PersonalizationDictionaryUpdateSession session) {
+        mSessions.remove(session);
     }
 }

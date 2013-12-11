@@ -27,7 +27,6 @@ import com.android.inputmethod.latin.ExpandableBinaryDictionary;
 import com.android.inputmethod.latin.makedict.DictDecoder;
 import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
-import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.UserHistoryDictIOUtils;
 import com.android.inputmethod.latin.utils.UserHistoryDictIOUtils.OnAddWordListener;
 
@@ -61,12 +60,6 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
 
     private final String mFileName;
 
-    private final ArrayList<PersonalizationDictionaryUpdateSession> mSessions =
-            CollectionUtils.newArrayList();
-
-    // Should always be false except when we use this class for test
-    @UsedForTesting boolean mIsTest = false;
-
     /* package */ DecayingExpandableBinaryDictionaryBase(final Context context,
             final Locale locale, final String dictionaryType, final String fileName) {
         super(context, fileName, locale, dictionaryType, true);
@@ -83,7 +76,6 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
             dumpAllWordsForDebug();
         }
         // Flush pending writes.
-        // TODO: Remove after this class become to use a dynamic binary dictionary.
         asyncFlushBinaryDictionary();
     }
 
@@ -165,23 +157,9 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
         }
     }
 
-    public void cancelAddingUserHistory(final String word0, final String word1) {
-        removeBigramDynamically(word0, word1);
-    }
-
     @Override
     protected void loadDictionaryAsync() {
         // Never loaded to memory in Java side.
-    }
-
-    public void registerUpdateSession(PersonalizationDictionaryUpdateSession session) {
-        session.setPredictionDictionary(this);
-        mSessions.add(session);
-        session.onDictionaryReady();
-    }
-
-    public void unRegisterUpdateSession(PersonalizationDictionaryUpdateSession session) {
-        mSessions.remove(session);
     }
 
     @UsedForTesting

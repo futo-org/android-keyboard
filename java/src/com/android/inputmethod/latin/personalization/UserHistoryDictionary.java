@@ -38,4 +38,8 @@ public class UserHistoryDictionary extends DecayingExpandableBinaryDictionaryBas
     private static String getDictionaryFileName(final String locale) {
         return NAME + "." + locale + ExpandableBinaryDictionary.DICT_FILE_EXTENSION;
     }
+
+    public void cancelAddingUserHistory(final String word0, final String word1) {
+        removeBigramDynamically(word0, word1);
+    }
 }

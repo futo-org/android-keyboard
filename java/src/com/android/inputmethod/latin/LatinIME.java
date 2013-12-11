@@ -77,9 +77,9 @@ import com.android.inputmethod.latin.Suggest.OnGetSuggestedWordsCallback;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.latin.personalization.DictionaryDecayBroadcastReciever;
+import com.android.inputmethod.latin.personalization.PersonalizationDictionary;
 import com.android.inputmethod.latin.personalization.PersonalizationDictionarySessionRegister;
 import com.android.inputmethod.latin.personalization.PersonalizationHelper;
-import com.android.inputmethod.latin.personalization.PersonalizationPredictionDictionary;
 import com.android.inputmethod.latin.personalization.UserHistoryDictionary;
 import com.android.inputmethod.latin.settings.Settings;
 import com.android.inputmethod.latin.settings.SettingsActivity;
@@ -181,7 +181,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private boolean mIsMainDictionaryAvailable;
     private UserBinaryDictionary mUserDictionary;
     private UserHistoryDictionary mUserHistoryDictionary;
-    private PersonalizationPredictionDictionary mPersonalizationPredictionDictionary;
+    private PersonalizationDictionary mPersonalizationDictionary;
     private boolean mIsUserDictionaryAvailable;
 
     private LastComposedWord mLastComposedWord = LastComposedWord.NOT_A_COMPOSED_WORD;
@@ -645,9 +645,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mUserHistoryDictionary = PersonalizationHelper.getUserHistoryDictionary(
                 this, subtypeLocale);
         newSuggest.setUserHistoryDictionary(mUserHistoryDictionary);
-        mPersonalizationPredictionDictionary =
-                PersonalizationHelper.getPersonalizationPredictionDictionary(this, subtypeLocale);
-        newSuggest.setPersonalizationPredictionDictionary(mPersonalizationPredictionDictionary);
+        mPersonalizationDictionary =
+                PersonalizationHelper.getPersonalizationDictionary(this, subtypeLocale);
+        newSuggest.setPersonalizationDictionary(mPersonalizationDictionary);
 
         final Suggest oldSuggest = mSuggest;
         resetContactsDictionary(null != oldSuggest ? oldSuggest.getContactsDictionary() : null);
