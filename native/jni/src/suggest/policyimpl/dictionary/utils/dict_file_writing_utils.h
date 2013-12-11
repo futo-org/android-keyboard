@@ -37,7 +37,7 @@ class DictFileWritingUtils {
             BufferWithExtendableBuffer *const dictHeader,
             BufferWithExtendableBuffer *const dictBody);
 
-    static bool flushBufferToFileInDir(const char *const dirPath, const char *const fileName,
+    static bool flushBufferToFileWithSuffix(const char *const basePath, const char *const suffix,
             const BufferWithExtendableBuffer *const buffer);
 
  private:

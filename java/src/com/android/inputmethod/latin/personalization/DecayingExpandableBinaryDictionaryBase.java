@@ -58,13 +58,13 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
     /** Locale for which this user history dictionary is storing words */
     private final Locale mLocale;
 
-    private final String mFileName;
+    private final String mDictName;
 
     /* package */ DecayingExpandableBinaryDictionaryBase(final Context context,
-            final Locale locale, final String dictionaryType, final String fileName) {
-        super(context, fileName, locale, dictionaryType, true);
+            final Locale locale, final String dictionaryType, final String dictName) {
+        super(context, dictName, locale, dictionaryType, true);
         mLocale = locale;
-        mFileName = fileName;
+        mDictName = dictName;
         if (mLocale != null && mLocale.toString().length() > 1) {
             reloadDictionaryIfRequired();
         }
@@ -88,7 +88,7 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
                 FormatSpec.FileHeader.ATTRIBUTE_VALUE_TRUE);
         attributeMap.put(FormatSpec.FileHeader.HAS_HISTORICAL_INFO_ATTRIBUTE,
                 FormatSpec.FileHeader.ATTRIBUTE_VALUE_TRUE);
-        attributeMap.put(FormatSpec.FileHeader.DICTIONARY_ID_ATTRIBUTE, mFileName);
+        attributeMap.put(FormatSpec.FileHeader.DICTIONARY_ID_ATTRIBUTE, mDictName);
         attributeMap.put(FormatSpec.FileHeader.DICTIONARY_LOCALE_ATTRIBUTE, mLocale.toString());
         attributeMap.put(FormatSpec.FileHeader.DICTIONARY_VERSION_ATTRIBUTE,
                 String.valueOf(TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis())));
@@ -113,9 +113,13 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
     }
 
     @Override
-    protected String getFileNameExtensionToOpenDict() {
-        // TODO: pass the directory name instead
-        return "/" + FormatSpec.HEADER_FILE_EXTENSION;
+    protected String getFileNameToCreateDict(final String dictName) {
+        return dictName;
+    }
+
+    @Override
+    protected String getFileNameToOpenDict(final String dictName) {
+        return dictName + "/" + dictName + FormatSpec.HEADER_FILE_EXTENSION;
     }
 
     public void addMultipleDictionaryEntriesToDictionary(
@@ -194,7 +198,7 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
         };
 
         // Load the dictionary from binary file
-        final File dictFile = new File(mContext.getFilesDir(), mFileName);
+        final File dictFile = new File(mContext.getFilesDir(), mDictName);
         final DictDecoder dictDecoder = FormatSpec.getDictDecoder(dictFile,
                 DictDecoder.USE_BYTEARRAY);
         if (dictDecoder == null) {

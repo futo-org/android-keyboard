@@ -59,9 +59,9 @@ class SingleDictContent : public DictContent {
         return &mExpandableContentBuffer;
     }
 
-    bool flush(const char *const dictDirPath, const char *const contentFileName) const {
-        return DictFileWritingUtils::flushBufferToFileInDir(dictDirPath, contentFileName,
-                &mExpandableContentBuffer);
+    bool flush(const char *const dictBasePath, const char *const contentFileNameSuffix) const {
+        return DictFileWritingUtils::flushBufferToFileWithSuffix(dictBasePath,
+                contentFileNameSuffix, &mExpandableContentBuffer);
     }
 
  private:

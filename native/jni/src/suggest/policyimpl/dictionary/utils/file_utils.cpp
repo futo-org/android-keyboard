@@ -20,6 +20,7 @@
 #include <cstring>
 #include <dirent.h>
 #include <fcntl.h>
+#include <libgen.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -136,6 +137,21 @@ namespace latinime {
             return;
         }
     }
+}
+
+/* static */ void FileUtils::getBasename(const char *const filePath,
+        const int outNameBufSize, char *const outName) {
+    const int filePathBufSize = strlen(filePath) + 1 /* terminator */;
+    char filePathBuf[filePathBufSize];
+    snprintf(filePathBuf, filePathBufSize, "%s", filePath);
+    const char *const baseName = basename(filePathBuf);
+    const int baseNameLength = strlen(baseName);
+    if (baseNameLength >= outNameBufSize) {
+        AKLOGE("outNameBufSize is too small. dirPath: %s, outNameBufSize: %d",
+                filePath, outNameBufSize);
+        return;
+    }
+    snprintf(outName, baseNameLength + 1 /* terminator */, "%s", baseName);
 }
 
 } // namespace latinime

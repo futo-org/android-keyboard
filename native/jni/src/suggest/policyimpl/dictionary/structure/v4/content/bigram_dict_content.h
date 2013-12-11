@@ -73,8 +73,8 @@ class BigramDictContent : public SparseTableDictContent {
 
     bool copyBigramList(const int bigramListPos, const int toPos);
 
-    bool flushToFile(const char *const dictDirPath) const {
-        return flush(dictDirPath, Ver4DictConstants::BIGRAM_LOOKUP_TABLE_FILE_EXTENSION,
+    bool flushToFile(const char *const dictBasePath) const {
+        return flush(dictBasePath, Ver4DictConstants::BIGRAM_LOOKUP_TABLE_FILE_EXTENSION,
                 Ver4DictConstants::BIGRAM_CONTENT_TABLE_FILE_EXTENSION,
                 Ver4DictConstants::BIGRAM_FILE_EXTENSION);
     }

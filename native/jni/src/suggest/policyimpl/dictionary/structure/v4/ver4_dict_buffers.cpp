@@ -17,6 +17,7 @@
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_dict_buffers.h"
 
 #include <cerrno>
+#include <cstring>
 #include <sys/stat.h>
 #include <sys/types.h>
 
@@ -52,34 +53,42 @@ bool Ver4DictBuffers::flushHeaderAndDictBuffers(const char *const dictDirPath,
         AKLOGE("Cannot create directory: %s. errno: %d.", tmpDirPath, errno);
         return false;
     }
+    // Get dictionary base path.
+    const int dictNameBufSize = strlen(dictDirPath) + 1 /* terminator */;
+    char dictName[dictNameBufSize];
+    FileUtils::getBasename(dictDirPath, dictNameBufSize, dictName);
+    const int dictBasePathBufSize = FileUtils::getFilePathBufSize(tmpDirPath, dictName);
+    char dictBasePath[dictBasePathBufSize];
+    FileUtils::getFilePath(tmpDirPath, dictName, dictBasePathBufSize, dictBasePath);
+
     // Write header file.
-    if (!DictFileWritingUtils::flushBufferToFileInDir(tmpDirPath,
+    if (!DictFileWritingUtils::flushBufferToFileWithSuffix(dictBasePath,
             Ver4DictConstants::HEADER_FILE_EXTENSION, headerBuffer)) {
-        AKLOGE("Dictionary header file %s/%s cannot be written.", tmpDirPath,
+        AKLOGE("Dictionary header file %s%s cannot be written.", tmpDirPath,
                 Ver4DictConstants::HEADER_FILE_EXTENSION);
         return false;
     }
     // Write trie file.
-    if (!DictFileWritingUtils::flushBufferToFileInDir(tmpDirPath,
+    if (!DictFileWritingUtils::flushBufferToFileWithSuffix(dictBasePath,
             Ver4DictConstants::TRIE_FILE_EXTENSION, &mExpandableTrieBuffer)) {
-        AKLOGE("Dictionary trie file %s/%s cannot be written.", tmpDirPath,
+        AKLOGE("Dictionary trie file %s%s cannot be written.", tmpDirPath,
                 Ver4DictConstants::TRIE_FILE_EXTENSION);
         return false;
     }
     // Write dictionary contents.
-    if (!mTerminalPositionLookupTable.flushToFile(tmpDirPath)) {
+    if (!mTerminalPositionLookupTable.flushToFile(dictBasePath)) {
         AKLOGE("Terminal position lookup table cannot be written. %s", tmpDirPath);
         return false;
     }
-    if (!mProbabilityDictContent.flushToFile(tmpDirPath)) {
+    if (!mProbabilityDictContent.flushToFile(dictBasePath)) {
         AKLOGE("Probability dict content cannot be written. %s", tmpDirPath);
         return false;
     }
-    if (!mBigramDictContent.flushToFile(tmpDirPath)) {
+    if (!mBigramDictContent.flushToFile(dictBasePath)) {
         AKLOGE("Bigram dict content cannot be written. %s", tmpDirPath);
         return false;
     }
-    if (!mShortcutDictContent.flushToFile(tmpDirPath)) {
+    if (!mShortcutDictContent.flushToFile(dictBasePath)) {
         AKLOGE("Shortcut dict content cannot be written. %s", tmpDirPath);
         return false;
     }
