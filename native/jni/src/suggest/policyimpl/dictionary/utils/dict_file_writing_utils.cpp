@@ -83,11 +83,11 @@ const char *const DictFileWritingUtils::TEMP_FILE_SUFFIX_FOR_WRITING_DICT_FILE =
     return true;
 }
 
-/* static */ bool DictFileWritingUtils::flushBufferToFileInDir(const char *const dirPath,
-        const char *const fileName, const BufferWithExtendableBuffer *const buffer) {
-    const int filePathBufSize = FileUtils::getFilePathBufSize(dirPath, fileName);
+/* static */ bool DictFileWritingUtils::flushBufferToFileWithSuffix(const char *const basePath,
+        const char *const suffix, const BufferWithExtendableBuffer *const buffer) {
+    const int filePathBufSize = FileUtils::getFilePathWithSuffixBufSize(basePath, suffix);
     char filePath[filePathBufSize];
-    FileUtils::getFilePath(dirPath, fileName, filePathBufSize, filePath);
+    FileUtils::getFilePathWithSuffix(basePath, suffix, filePathBufSize, filePath);
     return flushBufferToFile(filePath, buffer);
 }
 

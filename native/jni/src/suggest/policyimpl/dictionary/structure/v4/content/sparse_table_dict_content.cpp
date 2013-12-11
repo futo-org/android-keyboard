@@ -18,18 +18,18 @@
 
 namespace latinime {
 
-bool SparseTableDictContent::flush(const char *const dictDirPath,
-        const char *const lookupTableFileName, const char *const addressTableFileName,
-        const char *const contentFileName) const {
-    if (!DictFileWritingUtils::flushBufferToFileInDir(dictDirPath, lookupTableFileName,
+bool SparseTableDictContent::flush(const char *const dictBasePath,
+        const char *const lookupTableFileNameSuffix, const char *const addressTableFileNameSuffix,
+        const char *const contentFileNameSuffix) const {
+    if (!DictFileWritingUtils::flushBufferToFileWithSuffix(dictBasePath, lookupTableFileNameSuffix,
             &mExpandableLookupTableBuffer)){
         return false;
     }
-    if (!DictFileWritingUtils::flushBufferToFileInDir(dictDirPath, addressTableFileName,
+    if (!DictFileWritingUtils::flushBufferToFileWithSuffix(dictBasePath, addressTableFileNameSuffix,
             &mExpandableAddressTableBuffer)) {
         return false;
     }
-    if (!DictFileWritingUtils::flushBufferToFileInDir(dictDirPath, contentFileName,
+    if (!DictFileWritingUtils::flushBufferToFileWithSuffix(dictBasePath, contentFileNameSuffix,
             &mExpandableContentBuffer)) {
         return false;
     }

@@ -44,7 +44,7 @@ class TerminalPositionLookupTable : public SingleDictContent {
         return mSize;
     }
 
-    bool flushToFile(const char *const dictDirPath) const;
+    bool flushToFile(const char *const dictBasePath) const;
 
     bool runGCTerminalIds(TerminalIdMap *const terminalIdMap);
 

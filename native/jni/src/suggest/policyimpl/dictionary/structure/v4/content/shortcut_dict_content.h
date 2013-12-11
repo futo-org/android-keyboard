@@ -53,7 +53,7 @@ class ShortcutDictContent : public SparseTableDictContent {
    // Returns head position of shortcut list for a PtNode specified by terminalId.
    int getShortcutListHeadPos(const int terminalId) const;
 
-   bool flushToFile(const char *const dictDirPath) const;
+   bool flushToFile(const char *const dictBasePath) const;
 
    bool runGC(const TerminalPositionLookupTable::TerminalIdMap *const terminalIdMap,
            const ShortcutDictContent *const originalShortcutDictContent);
