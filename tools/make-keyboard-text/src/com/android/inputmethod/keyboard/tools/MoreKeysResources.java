@@ -37,7 +37,7 @@ public class MoreKeysResources {
     private static final String MARK_DEFAULT_TEXTS = "@DEFAULT_TEXTS@";
     private static final String MARK_TEXTS = "@TEXTS@";
     private static final String MARK_LANGUAGES_AND_TEXTS = "@LANGUAGES_AND_TEXTS@";
-    private static final String DEFAUT_LANGUAGE_NAME = "DEFAULT";
+    private static final String DEFAULT_LANGUAGE_NAME = "DEFAULT";
     private static final String ARRAY_NAME_FOR_LANGUAGE = "LANGUAGE_%s";
     private static final String EMPTY_STRING_VAR = "EMPTY";
 
@@ -72,7 +72,7 @@ public class MoreKeysResources {
         final int languagePos = dirName.indexOf('-');
         if (languagePos < 0) {
             // Default resource.
-            return DEFAUT_LANGUAGE_NAME;
+            return DEFAULT_LANGUAGE_NAME;
         }
         final String language = dirName.substring(languagePos + 1);
         final int countryPos = language.indexOf("-r");
@@ -84,10 +84,12 @@ public class MoreKeysResources {
 
     public void writeToJava(final String outDir) {
         final ArrayList<String> list = JarUtils.getNameListing(mJar, JAVA_TEMPLATE);
-        if (list.isEmpty())
+        if (list.isEmpty()) {
             throw new RuntimeException("Can't find java template " + JAVA_TEMPLATE);
-        if (list.size() > 1)
+        }
+        if (list.size() > 1) {
             throw new RuntimeException("Found multiple java template " + JAVA_TEMPLATE);
+        }
         final String template = list.get(0);
         final String javaPackage = template.substring(0, template.lastIndexOf('/'));
         PrintStream ps = null;
@@ -131,7 +133,7 @@ public class MoreKeysResources {
     }
 
     private void dumpNames(final PrintStream out) {
-        final StringResourceMap defaultResMap = mResourcesMap.get(DEFAUT_LANGUAGE_NAME);
+        final StringResourceMap defaultResMap = mResourcesMap.get(DEFAULT_LANGUAGE_NAME);
         int id = 0;
         for (final StringResource res : defaultResMap.getResources()) {
             out.format("        /* %2d */ \"%s\",\n", id, res.mName);
@@ -141,17 +143,17 @@ public class MoreKeysResources {
     }
 
     private void dumpDefaultTexts(final PrintStream out) {
-        final StringResourceMap defaultResMap = mResourcesMap.get(DEFAUT_LANGUAGE_NAME);
+        final StringResourceMap defaultResMap = mResourcesMap.get(DEFAULT_LANGUAGE_NAME);
         dumpTextsInternal(out, defaultResMap, defaultResMap);
     }
 
     private void dumpTexts(final PrintStream out) {
-        final StringResourceMap defaultResMap = mResourcesMap.get(DEFAUT_LANGUAGE_NAME);
+        final StringResourceMap defaultResMap = mResourcesMap.get(DEFAULT_LANGUAGE_NAME);
         final ArrayList<String> allLanguages = new ArrayList<String>();
         allLanguages.addAll(mResourcesMap.keySet());
         Collections.sort(allLanguages);
         for (final String language : allLanguages) {
-            if (language.equals(DEFAUT_LANGUAGE_NAME)) {
+            if (language.equals(DEFAULT_LANGUAGE_NAME)) {
                 continue;
             }
             out.format("    /* Language %s: %s */\n", language, getLanguageDisplayName(language));
@@ -174,17 +176,22 @@ public class MoreKeysResources {
         allLanguages.addAll(mResourcesMap.keySet());
         Collections.sort(allLanguages);
         for (final String language : allLanguages) {
-            out.format("        \"%s\", " + ARRAY_NAME_FOR_LANGUAGE + ", /* %s */\n",
-                    language, language, getLanguageDisplayName(language));
+            final Locale locale = LocaleUtils.constructLocaleFromString(language);
+            // If we use a different key, dump the original as comment for now.
+            final String languageKeyToDump = locale.getCountry().isEmpty()
+                    ? String.format("\"%s\"", language)
+                    : String.format("\"%s\" /* \"%s\" */", locale.getLanguage(), language);
+            out.format("        %s, " + ARRAY_NAME_FOR_LANGUAGE + ", /* %s */\n",
+                    languageKeyToDump, language, getLanguageDisplayName(language));
         }
     }
 
     private static String getLanguageDisplayName(final String language) {
-        if (language.equals(NO_LANGUAGE_CODE)) {
+        final Locale locale = LocaleUtils.constructLocaleFromString(language);
+        if (locale.getLanguage().equals(NO_LANGUAGE_CODE)) {
             return NO_LANGUAGE_DISPLAY_NAME;
-        } else {
-            return new Locale(language).getDisplayLanguage();
         }
+        return locale.getDisplayName(Locale.ENGLISH);
     }
 
     private static void dumpTextsInternal(final PrintStream out, final StringResourceMap resMap,
