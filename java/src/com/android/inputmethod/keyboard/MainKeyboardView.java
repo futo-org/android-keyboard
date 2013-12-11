@@ -1008,6 +1008,12 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         final int index = me.getActionIndex();
         final int id = me.getPointerId(index);
         final PointerTracker tracker = PointerTracker.getPointerTracker(id);
+        // When a more keys panel is showing, we should ignore other fingers' single touch events
+        // other than the finger that is showing the more keys panel.
+        if (isShowingMoreKeysPanel() && !tracker.isShowingMoreKeysPanel()
+                && PointerTracker.getActivePointerTrackerCount() == 1) {
+            return true;
+        }
         tracker.processMotionEvent(me, mKeyDetector);
         return true;
     }
