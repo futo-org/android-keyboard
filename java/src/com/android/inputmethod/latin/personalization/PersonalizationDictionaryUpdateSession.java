@@ -30,7 +30,7 @@ import java.util.Locale;
  * dictionary.
  */
 public abstract class PersonalizationDictionaryUpdateSession {
-    public WeakReference<DecayingExpandableBinaryDictionaryBase> mPredictionDictionary;
+    public WeakReference<PersonalizationDictionary> mDictionary;
     public final Locale mSystemLocale;
 
     public PersonalizationDictionaryUpdateSession(final Locale locale) {
@@ -39,43 +39,42 @@ public abstract class PersonalizationDictionaryUpdateSession {
 
     public abstract void onDictionaryReady();
 
-    public abstract void onDictionaryClosed(Context context);
+    public abstract void onDictionaryClosed(final Context context);
 
-    public void setPredictionDictionary(DecayingExpandableBinaryDictionaryBase dictionary) {
-        mPredictionDictionary =
-                new WeakReference<DecayingExpandableBinaryDictionaryBase>(dictionary);
+    public void setPredictionDictionary(final PersonalizationDictionary dictionary) {
+        mDictionary = new WeakReference<PersonalizationDictionary>(dictionary);
     }
 
-    protected DecayingExpandableBinaryDictionaryBase getPredictionDictionary() {
-        return mPredictionDictionary == null ? null : mPredictionDictionary.get();
+    protected PersonalizationDictionary getDictionary() {
+        return mDictionary == null ? null : mDictionary.get();
     }
 
-    private void unsetPredictionDictionary() {
-        final DecayingExpandableBinaryDictionaryBase dictionary = getPredictionDictionary();
+    private void unsetDictionary() {
+        final PersonalizationDictionary dictionary = getDictionary();
         if (dictionary == null) {
             return;
         }
         dictionary.unRegisterUpdateSession(this);
     }
 
-    public void clearAndFlushPredictionDictionary(Context context) {
-        final DecayingExpandableBinaryDictionaryBase dictionary = getPredictionDictionary();
+    public void clearAndFlushDictionary(final Context context) {
+        final PersonalizationDictionary dictionary = getDictionary();
         if (dictionary == null) {
             return;
         }
         dictionary.clearAndFlushDictionary();
     }
 
-    public void closeSession(Context context) {
-        unsetPredictionDictionary();
+    public void closeSession(final Context context) {
+        unsetDictionary();
         onDictionaryClosed(context);
     }
 
     // TODO: Support multi locale.
-    public void addMultipleDictionaryEntriesToPersonalizationDictionary(
+    public void addMultipleDictionaryEntriesToDictionary(
             final ArrayList<LanguageModelParam> languageModelParams,
             final ExpandableBinaryDictionary.AddMultipleDictionaryEntriesCallback callback) {
-        final DecayingExpandableBinaryDictionaryBase dictionary = getPredictionDictionary();
+        final PersonalizationDictionary dictionary = getDictionary();
         if (dictionary == null) {
             if (callback != null) {
                 callback.onFinished();

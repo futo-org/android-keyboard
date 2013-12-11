@@ -55,7 +55,7 @@ public abstract class Dictionary {
     // User history dictionary internal to LatinIME.
     public static final String TYPE_USER_HISTORY = "history";
     // Personalization dictionary.
-    public static final String TYPE_PERSONALIZATION_PREDICTION_IN_JAVA = "personalization";
+    public static final String TYPE_PERSONALIZATION = "personalization";
     public final String mDictType;
 
     public Dictionary(final String dictType) {

@@ -20,18 +20,18 @@ import android.content.Context;
 import android.content.res.Configuration;
 
 public class PersonalizationDictionarySessionRegister {
-    public static void init(Context context) {
+    public static void init(final Context context) {
     }
 
     public static void onConfigurationChanged(final Context context, final Configuration conf) {
     }
 
-    public static void onUpdateData(Context context, String type) {
+    public static void onUpdateData(final Context context, final String type) {
     }
 
-    public static void onRemoveData(Context context, String type) {
+    public static void onRemoveData(final Context context, final String type) {
     }
 
-    public static void onDestroy(Context context) {
+    public static void onDestroy(final Context context) {
     }
 }
