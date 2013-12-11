@@ -68,42 +68,43 @@ const char *const DictFileWritingUtils::TEMP_FILE_SUFFIX_FOR_WRITING_DICT_FILE =
     char tmpFileName[tmpFileNameBufSize];
     FileUtils::getFilePathWithSuffix(filePath, TEMP_FILE_SUFFIX_FOR_WRITING_DICT_FILE,
             tmpFileNameBufSize, tmpFileName);
-    const BufferWithExtendableBuffer *buffers[] = {dictHeader, dictBody};
-    if (!DictFileWritingUtils::flushBuffersToFile(tmpFileName, buffers, 2 /* bufferCount */)) {
+    if (!DictFileWritingUtils::flushBufferToFile(tmpFileName, dictHeader)) {
+        AKLOGE("Dictionary header cannot be written to %s.", tmpFileName);
+        return false;
+    }
+    if (!DictFileWritingUtils::flushBufferToFile(tmpFileName, dictBody)) {
         AKLOGE("Dictionary structure cannot be written to %s.", tmpFileName);
         return false;
     }
     if (rename(tmpFileName, filePath) != 0) {
         AKLOGE("Dictionary file %s cannot be renamed to %s", tmpFileName, filePath);;
+        return false;
     }
     return true;
 }
 
-/* static */ bool DictFileWritingUtils::flushBuffersToFileInDir(const char *const dirPath,
-        const char *const fileName, const BufferWithExtendableBuffer **const buffers,
-        const int bufferCount) {
+/* static */ bool DictFileWritingUtils::flushBufferToFileInDir(const char *const dirPath,
+        const char *const fileName, const BufferWithExtendableBuffer *const buffer) {
     const int filePathBufSize = FileUtils::getFilePathBufSize(dirPath, fileName);
     char filePath[filePathBufSize];
     FileUtils::getFilePath(dirPath, fileName, filePathBufSize, filePath);
-    return flushBuffersToFile(filePath, buffers, bufferCount);
+    return flushBufferToFile(filePath, buffer);
 }
 
-/* static */ bool DictFileWritingUtils::flushBuffersToFile(const char *const filePath,
-        const BufferWithExtendableBuffer **const buffers, const int bufferCount) {
+/* static */ bool DictFileWritingUtils::flushBufferToFile(const char *const filePath,
+        const BufferWithExtendableBuffer *const buffer) {
     FILE *const file = fopen(filePath, "wb");
     if (!file) {
         AKLOGE("File %s cannot be opened.", filePath);
         ASSERT(false);
         return false;
     }
-    for (int i = 0; i < bufferCount; ++i) {
-        if (!writeBufferToFile(file, buffers[i])) {
-            remove(filePath);
-            AKLOGE("Buffer cannot be written to the file %s. size: %d", filePath,
-                    buffers[i]->getTailPosition());
-            ASSERT(false);
-            return false;
-        }
+    if (!writeBufferToFile(file, buffer)) {
+        remove(filePath);
+        AKLOGE("Buffer cannot be written to the file %s. size: %d", filePath,
+                buffer->getTailPosition());
+        ASSERT(false);
+        return false;
     }
     fclose(file);
     return true;

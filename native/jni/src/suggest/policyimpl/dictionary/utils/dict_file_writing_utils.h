@@ -37,8 +37,8 @@ class DictFileWritingUtils {
             BufferWithExtendableBuffer *const dictHeader,
             BufferWithExtendableBuffer *const dictBody);
 
-    static bool flushBuffersToFileInDir(const char *const dirPath, const char *const fileName,
-            const BufferWithExtendableBuffer **const buffers, const int bufferCount);
+    static bool flushBufferToFileInDir(const char *const dirPath, const char *const fileName,
+            const BufferWithExtendableBuffer *const buffer);
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(DictFileWritingUtils);
@@ -46,8 +46,8 @@ class DictFileWritingUtils {
     static bool createEmptyV4DictFile(const char *const filePath,
             const HeaderReadWriteUtils::AttributeMap *const attributeMap);
 
-    static bool flushBuffersToFile(const char *const filePath,
-            const BufferWithExtendableBuffer **const buffers, const int bufferCount);
+    static bool flushBufferToFile(const char *const filePath,
+            const BufferWithExtendableBuffer *const buffer);
 
     static bool writeBufferToFile(FILE *const file,
             const BufferWithExtendableBuffer *const buffer);

@@ -25,6 +25,7 @@ namespace latinime {
 class Ver4DictConstants {
  public:
     static const char *const TRIE_FILE_EXTENSION;
+    static const char *const HEADER_FILE_EXTENSION;
     static const char *const FREQ_FILE_EXTENSION;
     static const char *const TERMINAL_ADDRESS_TABLE_FILE_EXTENSION;
     static const char *const BIGRAM_FILE_EXTENSION;

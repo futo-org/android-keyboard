@@ -22,6 +22,7 @@ import android.util.Pair;
 
 import com.android.inputmethod.latin.makedict.CodePointUtils;
 import com.android.inputmethod.latin.makedict.FormatSpec;
+import com.android.inputmethod.latin.utils.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -102,7 +103,7 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
 
     private File createEmptyDictionaryAndGetFile(final String dictId,
             final int formatVersion) throws IOException {
-        if (formatVersion == 4) {
+        if (formatVersion == FormatSpec.VERSION4) {
             return createEmptyVer4DictionaryAndGetFile(dictId);
         } else {
             throw new IOException("Dictionary format version " + formatVersion
@@ -112,7 +113,7 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
     private File createEmptyVer4DictionaryAndGetFile(final String dictId) throws IOException {
         final File file = File.createTempFile(dictId, TEST_DICT_FILE_EXTENSION,
                 getContext().getCacheDir());
-        file.delete();
+        FileUtils.deleteRecursively(file);
         file.mkdir();
         Map<String, String> attributeMap = new HashMap<String, String>();
         attributeMap.put(FormatSpec.FileHeader.SUPPORTS_DYNAMIC_UPDATE_ATTRIBUTE,
@@ -123,10 +124,10 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
                 FormatSpec.FileHeader.ATTRIBUTE_VALUE_TRUE);
         if (BinaryDictionary.createEmptyDictFile(file.getAbsolutePath(),
                 FormatSpec.VERSION4, attributeMap)) {
-            return new File(file, FormatSpec.TRIE_FILE_EXTENSION);
+            return new File(file, FormatSpec.HEADER_FILE_EXTENSION);
         } else {
             throw new IOException("Empty dictionary " + file.getAbsolutePath() + " "
-                    + FormatSpec.TRIE_FILE_EXTENSION + " cannot be created.");
+                    + FormatSpec.HEADER_FILE_EXTENSION + " cannot be created.");
         }
     }
 

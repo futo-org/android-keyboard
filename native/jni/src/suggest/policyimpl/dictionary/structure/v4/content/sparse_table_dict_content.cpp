@@ -21,19 +21,16 @@ namespace latinime {
 bool SparseTableDictContent::flush(const char *const dictDirPath,
         const char *const lookupTableFileName, const char *const addressTableFileName,
         const char *const contentFileName) const {
-    const BufferWithExtendableBuffer *lookupTableBufferPtr = &mExpandableLookupTableBuffer;
-    if (!DictFileWritingUtils::flushBuffersToFileInDir(dictDirPath, lookupTableFileName,
-            &lookupTableBufferPtr, 1 /* bufferCount */)) {
+    if (!DictFileWritingUtils::flushBufferToFileInDir(dictDirPath, lookupTableFileName,
+            &mExpandableLookupTableBuffer)){
         return false;
     }
-    const BufferWithExtendableBuffer *addressTableBufferPtr = &mExpandableAddressTableBuffer;
-    if (!DictFileWritingUtils::flushBuffersToFileInDir(dictDirPath, addressTableFileName,
-            &addressTableBufferPtr, 1 /* bufferCount */)) {
+    if (!DictFileWritingUtils::flushBufferToFileInDir(dictDirPath, addressTableFileName,
+            &mExpandableAddressTableBuffer)) {
         return false;
     }
-    const BufferWithExtendableBuffer *contentBufferPtr = &mExpandableContentBuffer;
-    if (!DictFileWritingUtils::flushBuffersToFileInDir(dictDirPath, contentFileName,
-            &contentBufferPtr, 1 /* bufferCount */)) {
+    if (!DictFileWritingUtils::flushBufferToFileInDir(dictDirPath, contentFileName,
+            &mExpandableContentBuffer)) {
         return false;
     }
     return true;

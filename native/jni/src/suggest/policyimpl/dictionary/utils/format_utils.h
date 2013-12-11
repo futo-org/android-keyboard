@@ -29,9 +29,10 @@ namespace latinime {
 class FormatUtils {
  public:
     enum FORMAT_VERSION {
+        // These MUST have the same values as the relevant constants in FormatSpec.java.
         VERSION_2 = 2,
         VERSION_3 = 3,
-        VERSION_4 = 4,
+        VERSION_4 = 400,
         UNKNOWN_VERSION = -1
     };
 

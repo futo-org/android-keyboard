@@ -216,7 +216,7 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
             final DictDecoder dictDecoder = FormatSpec.getDictDecoder(file);
             final FileHeader fileHeader = dictDecoder.readHeader();
             assertEquals(word,
-                    BinaryDictDecoderUtils.getWordAtPosition(dictDecoder, fileHeader.mHeaderSize,
+                    BinaryDictDecoderUtils.getWordAtPosition(dictDecoder, fileHeader.mBodyOffset,
                             position, fileHeader.mFormatOptions).mWord);
         } catch (IOException e) {
             Log.e(TAG, "Raised an IOException while looking up a word", e);

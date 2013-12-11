@@ -36,27 +36,25 @@ public abstract class AbstractDictDecoder implements DictDecoder {
     private static final int ERROR_CANNOT_READ = 1;
     private static final int ERROR_WRONG_FORMAT = 2;
 
-    protected FileHeader readHeader(final DictBuffer dictBuffer)
+    protected FileHeader readHeader(final DictBuffer headerBuffer)
             throws IOException, UnsupportedFormatException {
-        if (dictBuffer == null) {
+        if (headerBuffer == null) {
             openDictBuffer();
         }
 
-        final int version = HeaderReader.readVersion(dictBuffer);
+        final int version = HeaderReader.readVersion(headerBuffer);
         if (version < FormatSpec.MINIMUM_SUPPORTED_VERSION
                 || version > FormatSpec.MAXIMUM_SUPPORTED_VERSION) {
           throw new UnsupportedFormatException("Unsupported version : " + version);
         }
         // TODO: Remove this field.
-        final int optionsFlags = HeaderReader.readOptionFlags(dictBuffer);
-
-        final int headerSize = HeaderReader.readHeaderSize(dictBuffer);
-
+        final int optionsFlags = HeaderReader.readOptionFlags(headerBuffer);
+        final int headerSize = HeaderReader.readHeaderSize(headerBuffer);
         if (headerSize < 0) {
             throw new UnsupportedFormatException("header size can't be negative.");
         }
 
-        final HashMap<String, String> attributes = HeaderReader.readAttributes(dictBuffer,
+        final HashMap<String, String> attributes = HeaderReader.readAttributes(headerBuffer,
                 headerSize);
 
         final FileHeader header = new FileHeader(headerSize,
