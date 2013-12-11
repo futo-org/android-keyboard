@@ -425,8 +425,8 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
      */
     @Override
     public void setKeyboard(final Keyboard keyboard) {
-        // Remove any pending messages, except dismissing preview and key repeat.
-        mKeyTimerHandler.cancelLongPressTimer();
+        // Remove any pending messages.
+        mKeyTimerHandler.cancelAllKeyTimers();
         super.setKeyboard(keyboard);
         mKeyDetector.setKeyboard(
                 keyboard, -getPaddingLeft(), -getPaddingTop() + getVerticalCorrection());
@@ -987,7 +987,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         if (mNonDistinctMultitouchHelper != null) {
             if (me.getPointerCount() > 1 && mKeyTimerHandler.isInKeyRepeat()) {
                 // Key repeating timer will be canceled if 2 or more keys are in action.
-                mKeyTimerHandler.cancelKeyRepeatTimer();
+                mKeyTimerHandler.cancelKeyRepeatTimers();
             }
             // Non distinct multitouch screen support
             mNonDistinctMultitouchHelper.processMotionEvent(me, mKeyDetector);
