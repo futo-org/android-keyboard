@@ -680,8 +680,8 @@ public final class KeyboardTextsSet {
         /* 15 */ "\u011F",
     };
 
-    /* Language be: Belarusian */
-    private static final String[] LANGUAGE_be = {
+    /* Language be_BY: Belarusian (Belarus) */
+    private static final String[] LANGUAGE_be_BY = {
         /* 0~ */
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         null, null, null, null, null, null, null, null, null, null,
@@ -1297,8 +1297,8 @@ public final class KeyboardTextsSet {
         /* 125 */ "\u00F1",
     };
 
-    /* Language et: Estonian */
-    private static final String[] LANGUAGE_et = {
+    /* Language et_EE: Estonian (Estonia) */
+    private static final String[] LANGUAGE_et_EE = {
         // U+00E4: "ä" LATIN SMALL LETTER A WITH DIAERESIS
         // U+0101: "ā" LATIN SMALL LETTER A WITH MACRON
         // U+00E0: "à" LATIN SMALL LETTER A WITH GRAVE
@@ -1803,8 +1803,8 @@ public final class KeyboardTextsSet {
         /* 55 */ "!text/double_raqm_laqm",
     };
 
-    /* Language hy: Armenian */
-    private static final String[] LANGUAGE_hy = {
+    /* Language hy_AM: Armenian (Armenia) */
+    private static final String[] LANGUAGE_hy_AM = {
         /* 0~ */
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
@@ -2015,8 +2015,8 @@ public final class KeyboardTextsSet {
         /* 67 */ "!fixedColumnOrder!3,\u203A|\u2039,\u2265|\u2264,\u00BB|\u00AB",
     };
 
-    /* Language ka: Georgian */
-    private static final String[] LANGUAGE_ka = {
+    /* Language ka_GE: Georgian (Georgia) */
+    private static final String[] LANGUAGE_ka_GE = {
         /* 0~ */
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
@@ -2082,8 +2082,8 @@ public final class KeyboardTextsSet {
         /* 51 */ "\u0410\u0411\u0412",
     };
 
-    /* Language km: Khmer */
-    private static final String[] LANGUAGE_km = {
+    /* Language km_KH: Khmer (Cambodia) */
+    private static final String[] LANGUAGE_km_KH = {
         /* 0~ */
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
@@ -2145,8 +2145,8 @@ public final class KeyboardTextsSet {
         /* 51 */ "\u0410\u0411\u0412",
     };
 
-    /* Language lo: Lao */
-    private static final String[] LANGUAGE_lo = {
+    /* Language lo_LA: Lao (Laos) */
+    private static final String[] LANGUAGE_lo_LA = {
         /* 0~ */
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
@@ -2389,8 +2389,8 @@ public final class KeyboardTextsSet {
         /* 53 */ "!text/double_9qm_lqm",
     };
 
-    /* Language mn: Mongolian */
-    private static final String[] LANGUAGE_mn = {
+    /* Language mn_MN: Mongolian (Mongolia) */
+    private static final String[] LANGUAGE_mn_MN = {
         /* 0~ */
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
@@ -3521,12 +3521,14 @@ public final class KeyboardTextsSet {
         /* 19 */ "\u0175",
     };
 
+    // TODO: Use the language + "_" + region representation for the locale string key.
+    // Currently we are dropping the region from the key.
     private static final Object[] LANGUAGES_AND_TEXTS = {
         "DEFAULT", LANGUAGE_DEFAULT, /* default */
         "af", LANGUAGE_af, /* Afrikaans */
         "ar", LANGUAGE_ar, /* Arabic */
         "az", LANGUAGE_az, /* Azerbaijani */
-        "be", LANGUAGE_be, /* Belarusian */
+        "be" /* "be_BY" */, LANGUAGE_be_BY, /* Belarusian (Belarus) */
         "bg", LANGUAGE_bg, /* Bulgarian */
         "ca", LANGUAGE_ca, /* Catalan */
         "cs", LANGUAGE_cs, /* Czech */
@@ -3536,26 +3538,26 @@ public final class KeyboardTextsSet {
         "en", LANGUAGE_en, /* English */
         "eo", LANGUAGE_eo, /* Esperanto */
         "es", LANGUAGE_es, /* Spanish */
-        "et", LANGUAGE_et, /* Estonian */
+        "et" /* "et_EE" */, LANGUAGE_et_EE, /* Estonian (Estonia) */
         "fa", LANGUAGE_fa, /* Persian */
         "fi", LANGUAGE_fi, /* Finnish */
         "fr", LANGUAGE_fr, /* French */
         "hi", LANGUAGE_hi, /* Hindi */
         "hr", LANGUAGE_hr, /* Croatian */
         "hu", LANGUAGE_hu, /* Hungarian */
-        "hy", LANGUAGE_hy, /* Armenian */
+        "hy" /* "hy_AM" */, LANGUAGE_hy_AM, /* Armenian (Armenia) */
         "is", LANGUAGE_is, /* Icelandic */
         "it", LANGUAGE_it, /* Italian */
         "iw", LANGUAGE_iw, /* Hebrew */
-        "ka", LANGUAGE_ka, /* Georgian */
+        "ka" /* "ka_GE" */, LANGUAGE_ka_GE, /* Georgian (Georgia) */
         "kk", LANGUAGE_kk, /* Kazakh */
-        "km", LANGUAGE_km, /* Khmer */
+        "km" /* "km_KH" */, LANGUAGE_km_KH, /* Khmer (Cambodia) */
         "ky", LANGUAGE_ky, /* Kirghiz */
-        "lo", LANGUAGE_lo, /* Lao */
+        "lo" /* "lo_LA" */, LANGUAGE_lo_LA, /* Lao (Laos) */
         "lt", LANGUAGE_lt, /* Lithuanian */
         "lv", LANGUAGE_lv, /* Latvian */
         "mk", LANGUAGE_mk, /* Macedonian */
-        "mn", LANGUAGE_mn, /* Mongolian */
+        "mn" /* "mn_MN" */, LANGUAGE_mn_MN, /* Mongolian (Mongolia) */
         "nb", LANGUAGE_nb, /* Norwegian Bokmål */
         "ne", LANGUAGE_ne, /* Nepali */
         "nl", LANGUAGE_nl, /* Dutch */

@@ -165,12 +165,14 @@ public final class LocaleUtils {
      * Creates a locale from a string specification.
      */
     public static Locale constructLocaleFromString(final String localeStr) {
-        if (localeStr == null)
+        if (localeStr == null) {
             return null;
+        }
         synchronized (sLocaleCache) {
-            if (sLocaleCache.containsKey(localeStr))
-                return sLocaleCache.get(localeStr);
-            Locale retval = null;
+            Locale retval = sLocaleCache.get(localeStr);
+            if (retval != null) {
+                return retval;
+            }
             String[] localeParams = localeStr.split("_", 3);
             if (localeParams.length == 1) {
                 retval = new Locale(localeParams[0]);
