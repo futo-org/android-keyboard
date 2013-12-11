@@ -66,6 +66,7 @@ public final class TimerHandler extends LeakGuardHandlerWrapper<Callbacks> imple
             tracker.onKeyRepeat(msg.arg1 /* code */, msg.arg2 /* repeatCount */);
             break;
         case MSG_LONGPRESS_KEY:
+            cancelLongPressTimers();
             callbacks.onLongPress(tracker);
             break;
         case MSG_UPDATE_BATCH_INPUT:
@@ -76,7 +77,7 @@ public final class TimerHandler extends LeakGuardHandlerWrapper<Callbacks> imple
     }
 
     @Override
-    public void startKeyRepeatTimer(final PointerTracker tracker, final int repeatCount,
+    public void startKeyRepeatTimerOf(final PointerTracker tracker, final int repeatCount,
             final int delay) {
         final Key key = tracker.getKey();
         if (key == null || delay == 0) {
@@ -86,7 +87,11 @@ public final class TimerHandler extends LeakGuardHandlerWrapper<Callbacks> imple
                 obtainMessage(MSG_REPEAT_KEY, key.getCode(), repeatCount, tracker), delay);
     }
 
-    public void cancelKeyRepeatTimer() {
+    private void cancelKeyRepeatTimerOf(final PointerTracker tracker) {
+        removeMessages(MSG_REPEAT_KEY, tracker);
+    }
+
+    public void cancelKeyRepeatTimers() {
         removeMessages(MSG_REPEAT_KEY);
     }
 
@@ -96,14 +101,19 @@ public final class TimerHandler extends LeakGuardHandlerWrapper<Callbacks> imple
     }
 
     @Override
-    public void startLongPressTimer(final PointerTracker tracker, final int delay) {
-        cancelLongPressTimer();
-        if (delay <= 0) return;
+    public void startLongPressTimerOf(final PointerTracker tracker, final int delay) {
+        if (delay <= 0) {
+            return;
+        }
         sendMessageDelayed(obtainMessage(MSG_LONGPRESS_KEY, tracker), delay);
     }
 
     @Override
-    public void cancelLongPressTimer() {
+    public void cancelLongPressTimerOf(final PointerTracker tracker) {
+        removeMessages(MSG_LONGPRESS_KEY, tracker);
+    }
+
+    private void cancelLongPressTimers() {
         removeMessages(MSG_LONGPRESS_KEY);
     }
 
@@ -159,9 +169,14 @@ public final class TimerHandler extends LeakGuardHandlerWrapper<Callbacks> imple
     }
 
     @Override
-    public void cancelKeyTimers() {
-        cancelKeyRepeatTimer();
-        cancelLongPressTimer();
+    public void cancelKeyTimersOf(final PointerTracker tracker) {
+        cancelKeyRepeatTimerOf(tracker);
+        cancelLongPressTimerOf(tracker);
+    }
+
+    public void cancelAllKeyTimers() {
+        cancelKeyRepeatTimers();
+        cancelLongPressTimers();
     }
 
     @Override
@@ -185,7 +200,7 @@ public final class TimerHandler extends LeakGuardHandlerWrapper<Callbacks> imple
     }
 
     public void cancelAllMessages() {
-        cancelKeyTimers();
+        cancelAllKeyTimers();
         cancelAllUpdateBatchInputTimers();
     }
 }
