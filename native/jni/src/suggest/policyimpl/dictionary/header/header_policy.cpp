@@ -20,6 +20,8 @@ namespace latinime {
 
 // Note that these are corresponding definitions in Java side in FormatSpec.FileHeader.
 const char *const HeaderPolicy::MULTIPLE_WORDS_DEMOTION_RATE_KEY = "MULTIPLE_WORDS_DEMOTION_RATE";
+const char *const HeaderPolicy::REQUIRES_GERMAN_UMLAUT_PROCESSING_KEY =
+        "REQUIRES_GERMAN_UMLAUT_PROCESSING";
 // TODO: Change attribute string to "IS_DECAYING_DICT".
 const char *const HeaderPolicy::IS_DECAYING_DICT_KEY = "USES_FORGETTING_CURVE";
 const char *const HeaderPolicy::LAST_UPDATED_TIME_KEY = "date";
@@ -64,6 +66,11 @@ float HeaderPolicy::readMultipleWordCostMultiplier() const {
         return static_cast<float>(MAX_VALUE_FOR_WEIGHTING);
     }
     return MULTIPLE_WORD_COST_MULTIPLIER_SCALE / static_cast<float>(demotionRate);
+}
+
+bool HeaderPolicy::readRequiresGermanUmlautProcessing() const {
+    return HeaderReadWriteUtils::readBoolAttributeValue(&mAttributeMap,
+            REQUIRES_GERMAN_UMLAUT_PROCESSING_KEY, false);
 }
 
 bool HeaderPolicy::writeHeaderToBuffer(BufferWithExtendableBuffer *const bufferToWrite,
