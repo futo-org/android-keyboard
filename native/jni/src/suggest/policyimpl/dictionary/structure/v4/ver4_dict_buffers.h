@@ -33,12 +33,8 @@ class Ver4DictBuffers {
  public:
     typedef ExclusiveOwnershipPointer<Ver4DictBuffers> Ver4DictBuffersPtr;
 
-    static AK_FORCE_INLINE Ver4DictBuffersPtr openVer4DictBuffers(const char *const dictDirPath,
-            const MmappedBuffer::MmappedBufferPtr &headerBuffer) {
-        const bool isUpdatable = headerBuffer.get() ? headerBuffer.get()->isUpdatable() : false;
-        // TODO: take only dictDirPath, and open both header and trie files in the constructor below
-        return Ver4DictBuffersPtr(new Ver4DictBuffers(dictDirPath, headerBuffer, isUpdatable));
-    }
+    static Ver4DictBuffersPtr openVer4DictBuffers(const char *const dictDirPath,
+            const MmappedBuffer::MmappedBufferPtr &headerBuffer);
 
     static AK_FORCE_INLINE Ver4DictBuffersPtr createVer4DictBuffers(
             const HeaderPolicy *const headerPolicy) {
@@ -121,33 +117,10 @@ class Ver4DictBuffers {
  private:
     DISALLOW_COPY_AND_ASSIGN(Ver4DictBuffers);
 
-    AK_FORCE_INLINE Ver4DictBuffers(const char *const dictDirPath,
-            const MmappedBuffer::MmappedBufferPtr &headerBuffer, const bool isUpdatable)
-            : mHeaderBuffer(headerBuffer),
-              mDictBuffer(MmappedBuffer::openBuffer(dictDirPath,
-                      Ver4DictConstants::TRIE_FILE_EXTENSION, isUpdatable)),
-              mHeaderPolicy(headerBuffer.get()->getBuffer(), FormatUtils::VERSION_4),
-              mExpandableHeaderBuffer(headerBuffer.get()->getBuffer(), mHeaderPolicy.getSize(),
-                      BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE),
-              mExpandableTrieBuffer(mDictBuffer.get()->getBuffer(),
-                      mDictBuffer.get()->getBufferSize(),
-                      BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE),
-              mTerminalPositionLookupTable(dictDirPath, isUpdatable),
-              mProbabilityDictContent(dictDirPath, mHeaderPolicy.hasHistoricalInfoOfWords(),
-                      isUpdatable),
-              mBigramDictContent(dictDirPath, mHeaderPolicy.hasHistoricalInfoOfWords(),
-                      isUpdatable),
-              mShortcutDictContent(dictDirPath, isUpdatable),
-              mIsUpdatable(isUpdatable) {}
+    Ver4DictBuffers(const char *const dictDirPath,
+            const MmappedBuffer::MmappedBufferPtr &headerBuffer, const bool isUpdatable);
 
-    AK_FORCE_INLINE Ver4DictBuffers(const HeaderPolicy *const headerPolicy)
-            : mHeaderBuffer(0), mDictBuffer(0), mHeaderPolicy(),
-              mExpandableHeaderBuffer(Ver4DictConstants::MAX_DICTIONARY_SIZE),
-              mExpandableTrieBuffer(Ver4DictConstants::MAX_DICTIONARY_SIZE),
-              mTerminalPositionLookupTable(),
-              mProbabilityDictContent(headerPolicy->hasHistoricalInfoOfWords()),
-              mBigramDictContent(headerPolicy->hasHistoricalInfoOfWords()), mShortcutDictContent(),
-              mIsUpdatable(true) {}
+    Ver4DictBuffers(const HeaderPolicy *const headerPolicy);
 
     const MmappedBuffer::MmappedBufferPtr mHeaderBuffer;
     const MmappedBuffer::MmappedBufferPtr mDictBuffer;
