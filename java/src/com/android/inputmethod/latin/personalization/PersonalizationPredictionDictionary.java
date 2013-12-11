@@ -23,6 +23,7 @@ import java.util.Locale;
 
 import android.content.Context;
 
+// TODO: Rename to PersonalizationDictionary.
 public class PersonalizationPredictionDictionary extends DecayingExpandableBinaryDictionaryBase {
     private static final String NAME = PersonalizationPredictionDictionary.class.getSimpleName();
 

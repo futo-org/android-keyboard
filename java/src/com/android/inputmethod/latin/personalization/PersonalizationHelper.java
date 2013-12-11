@@ -19,8 +19,6 @@ package com.android.inputmethod.latin.personalization;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
 import java.lang.ref.SoftReference;
@@ -32,9 +30,6 @@ public class PersonalizationHelper {
     private static final boolean DEBUG = false;
     private static final ConcurrentHashMap<String, SoftReference<UserHistoryDictionary>>
             sLangUserHistoryDictCache = CollectionUtils.newConcurrentHashMap();
-
-    private static final ConcurrentHashMap<String, SoftReference<PersonalizationDictionary>>
-            sLangPersonalizationDictCache = CollectionUtils.newConcurrentHashMap();
 
     private static final ConcurrentHashMap<String,
             SoftReference<PersonalizationPredictionDictionary>>
@@ -81,30 +76,6 @@ public class PersonalizationHelper {
         final PersonalizationPredictionDictionary predictionDictionary =
                 getPersonalizationPredictionDictionary(context, locale);
         predictionDictionary.registerUpdateSession(session);
-        final PersonalizationDictionary dictionary = getPersonalizationDictionary(context, locale);
-        dictionary.registerUpdateSession(session);
-    }
-
-    public static PersonalizationDictionary getPersonalizationDictionary(
-            final Context context, final Locale locale) {
-        final String localeStr = locale.toString();
-        synchronized (sLangPersonalizationDictCache) {
-            if (sLangPersonalizationDictCache.containsKey(localeStr)) {
-                final SoftReference<PersonalizationDictionary> ref =
-                        sLangPersonalizationDictCache.get(localeStr);
-                final PersonalizationDictionary dict = ref == null ? null : ref.get();
-                if (dict != null) {
-                    if (DEBUG) {
-                        Log.w(TAG, "Use cached PersonalizationDictCache for " + locale);
-                    }
-                    return dict;
-                }
-            }
-            final PersonalizationDictionary dict = new PersonalizationDictionary(context, locale);
-            sLangPersonalizationDictCache.put(
-                    localeStr, new SoftReference<PersonalizationDictionary>(dict));
-            return dict;
-        }
     }
 
     public static PersonalizationPredictionDictionary getPersonalizationPredictionDictionary(

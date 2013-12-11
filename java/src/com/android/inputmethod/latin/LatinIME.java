@@ -77,7 +77,6 @@ import com.android.inputmethod.latin.Suggest.OnGetSuggestedWordsCallback;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.latin.personalization.DictionaryDecayBroadcastReciever;
-import com.android.inputmethod.latin.personalization.PersonalizationDictionary;
 import com.android.inputmethod.latin.personalization.PersonalizationDictionarySessionRegister;
 import com.android.inputmethod.latin.personalization.PersonalizationHelper;
 import com.android.inputmethod.latin.personalization.PersonalizationPredictionDictionary;
@@ -183,7 +182,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private UserBinaryDictionary mUserDictionary;
     private UserHistoryDictionary mUserHistoryDictionary;
     private PersonalizationPredictionDictionary mPersonalizationPredictionDictionary;
-    private PersonalizationDictionary mPersonalizationDictionary;
     private boolean mIsUserDictionaryAvailable;
 
     private LastComposedWord mLastComposedWord = LastComposedWord.NOT_A_COMPOSED_WORD;
@@ -644,14 +642,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mIsUserDictionaryAvailable = mUserDictionary.isEnabled();
         newSuggest.setUserDictionary(mUserDictionary);
 
-        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-
         mUserHistoryDictionary = PersonalizationHelper.getUserHistoryDictionary(
                 this, subtypeLocale);
         newSuggest.setUserHistoryDictionary(mUserHistoryDictionary);
-        mPersonalizationDictionary =
-                PersonalizationHelper.getPersonalizationDictionary(this, subtypeLocale);
-        newSuggest.setPersonalizationDictionary(mPersonalizationDictionary);
         mPersonalizationPredictionDictionary =
                 PersonalizationHelper.getPersonalizationPredictionDictionary(this, subtypeLocale);
         newSuggest.setPersonalizationPredictionDictionary(mPersonalizationPredictionDictionary);
