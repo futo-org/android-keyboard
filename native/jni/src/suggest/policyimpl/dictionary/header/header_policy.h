@@ -36,6 +36,7 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
               mSize(HeaderReadWriteUtils::getHeaderSize(dictBuf)),
               mAttributeMap(createAttributeMapAndReadAllAttributes(dictBuf)),
               mMultiWordCostMultiplier(readMultipleWordCostMultiplier()),
+              mRequiresGermanUmlautProcessing(readRequiresGermanUmlautProcessing()),
               mIsDecayingDict(HeaderReadWriteUtils::readBoolAttributeValue(&mAttributeMap,
                       IS_DECAYING_DICT_KEY, false /* defaultValue */)),
               mLastUpdatedTime(HeaderReadWriteUtils::readIntAttributeValue(&mAttributeMap,
@@ -58,6 +59,7 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
               mDictionaryFlags(HeaderReadWriteUtils::createAndGetDictionaryFlagsUsingAttributeMap(
                       attributeMap)), mSize(0), mAttributeMap(*attributeMap),
               mMultiWordCostMultiplier(readMultipleWordCostMultiplier()),
+              mRequiresGermanUmlautProcessing(readRequiresGermanUmlautProcessing()),
               mIsDecayingDict(HeaderReadWriteUtils::readBoolAttributeValue(&mAttributeMap,
                       IS_DECAYING_DICT_KEY, false /* defaultValue */)),
               mLastUpdatedTime(HeaderReadWriteUtils::readIntAttributeValue(&mAttributeMap,
@@ -71,7 +73,8 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
     // Temporary dummy header.
     HeaderPolicy()
             : mDictFormatVersion(FormatUtils::UNKNOWN_VERSION), mDictionaryFlags(0), mSize(0),
-              mAttributeMap(), mMultiWordCostMultiplier(0.0f), mIsDecayingDict(false),
+              mAttributeMap(), mMultiWordCostMultiplier(0.0f),
+              mRequiresGermanUmlautProcessing(false), mIsDecayingDict(false),
               mLastUpdatedTime(0), mLastDecayedTime(0), mUnigramCount(0), mBigramCount(0),
               mExtendedRegionSize(0), mHasHistoricalInfoOfWords(false) {}
 
@@ -109,24 +112,16 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
         return mSize;
     }
 
-    AK_FORCE_INLINE bool supportsDynamicUpdate() const {
-        return HeaderReadWriteUtils::supportsDynamicUpdate(mDictionaryFlags);
-    }
-
-    AK_FORCE_INLINE bool requiresGermanUmlautProcessing() const {
-        return HeaderReadWriteUtils::requiresGermanUmlautProcessing(mDictionaryFlags);
-    }
-
-    AK_FORCE_INLINE bool requiresFrenchLigatureProcessing() const {
-        return HeaderReadWriteUtils::requiresFrenchLigatureProcessing(mDictionaryFlags);
-    }
-
     AK_FORCE_INLINE float getMultiWordCostMultiplier() const {
         return mMultiWordCostMultiplier;
     }
 
     AK_FORCE_INLINE bool isDecayingDict() const {
         return mIsDecayingDict;
+    }
+
+    AK_FORCE_INLINE bool requiresGermanUmlautProcessing() const {
+        return mRequiresGermanUmlautProcessing;
     }
 
     AK_FORCE_INLINE int getLastUpdatedTime() const {
@@ -164,6 +159,7 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
     DISALLOW_COPY_AND_ASSIGN(HeaderPolicy);
 
     static const char *const MULTIPLE_WORDS_DEMOTION_RATE_KEY;
+    static const char *const REQUIRES_GERMAN_UMLAUT_PROCESSING_KEY;
     static const char *const IS_DECAYING_DICT_KEY;
     static const char *const LAST_UPDATED_TIME_KEY;
     static const char *const LAST_DECAYED_TIME_KEY;
@@ -179,6 +175,7 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
     const int mSize;
     HeaderReadWriteUtils::AttributeMap mAttributeMap;
     const float mMultiWordCostMultiplier;
+    const bool mRequiresGermanUmlautProcessing;
     const bool mIsDecayingDict;
     const int mLastUpdatedTime;
     const int mLastDecayedTime;
@@ -188,6 +185,7 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
     const bool mHasHistoricalInfoOfWords;
 
     float readMultipleWordCostMultiplier() const;
+    bool readRequiresGermanUmlautProcessing() const;
 
     static HeaderReadWriteUtils::AttributeMap createAttributeMapAndReadAllAttributes(
             const uint8_t *const dictBuf);

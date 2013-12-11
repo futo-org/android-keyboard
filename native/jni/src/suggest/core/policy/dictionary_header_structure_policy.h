@@ -31,11 +31,7 @@ class DictionaryHeaderStructurePolicy {
 
     virtual int getFormatVersionNumber() const = 0;
 
-    virtual bool supportsDynamicUpdate() const = 0;
-
     virtual bool requiresGermanUmlautProcessing() const = 0;
-
-    virtual bool requiresFrenchLigatureProcessing() const = 0;
 
     virtual float getMultiWordCostMultiplier() const = 0;
 
