@@ -25,6 +25,13 @@
 
 namespace latinime {
 
+/* static */ Ver4DictBuffers::Ver4DictBuffersPtr Ver4DictBuffers::openVer4DictBuffers(
+        const char *const dictDirPath, const MmappedBuffer::MmappedBufferPtr &headerBuffer) {
+    const bool isUpdatable = headerBuffer.get() ? headerBuffer.get()->isUpdatable() : false;
+    // TODO: take only dictDirPath, and open both header and trie files in the constructor below
+    return Ver4DictBuffersPtr(new Ver4DictBuffers(dictDirPath, headerBuffer, isUpdatable));
+}
+
 bool Ver4DictBuffers::flushHeaderAndDictBuffers(const char *const dictDirPath,
         const BufferWithExtendableBuffer *const headerBuffer) const {
     // Create temporary directory.
@@ -90,5 +97,33 @@ bool Ver4DictBuffers::flushHeaderAndDictBuffers(const char *const dictDirPath,
     }
     return true;
 }
+
+Ver4DictBuffers::Ver4DictBuffers(const char *const dictDirPath,
+        const MmappedBuffer::MmappedBufferPtr &headerBuffer, const bool isUpdatable)
+        : mHeaderBuffer(headerBuffer),
+          mDictBuffer(MmappedBuffer::openBuffer(dictDirPath,
+                  Ver4DictConstants::TRIE_FILE_EXTENSION, isUpdatable)),
+          mHeaderPolicy(headerBuffer.get()->getBuffer(), FormatUtils::VERSION_4),
+          mExpandableHeaderBuffer(headerBuffer.get()->getBuffer(), mHeaderPolicy.getSize(),
+                  BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE),
+          mExpandableTrieBuffer(mDictBuffer.get()->getBuffer(),
+                  mDictBuffer.get()->getBufferSize(),
+                  BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE),
+          mTerminalPositionLookupTable(dictDirPath, isUpdatable),
+          mProbabilityDictContent(dictDirPath, mHeaderPolicy.hasHistoricalInfoOfWords(),
+                  isUpdatable),
+          mBigramDictContent(dictDirPath, mHeaderPolicy.hasHistoricalInfoOfWords(),
+                  isUpdatable),
+          mShortcutDictContent(dictDirPath, isUpdatable),
+          mIsUpdatable(isUpdatable) {}
+
+Ver4DictBuffers::Ver4DictBuffers(const HeaderPolicy *const headerPolicy)
+        : mHeaderBuffer(0), mDictBuffer(0), mHeaderPolicy(),
+          mExpandableHeaderBuffer(Ver4DictConstants::MAX_DICTIONARY_SIZE),
+          mExpandableTrieBuffer(Ver4DictConstants::MAX_DICTIONARY_SIZE),
+          mTerminalPositionLookupTable(),
+          mProbabilityDictContent(headerPolicy->hasHistoricalInfoOfWords()),
+          mBigramDictContent(headerPolicy->hasHistoricalInfoOfWords()), mShortcutDictContent(),
+          mIsUpdatable(true) {}
 
 } // namespace latinime

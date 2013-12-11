@@ -25,22 +25,23 @@ template<class T>
 class ExclusiveOwnershipPointer {
  public:
     // This instance become an owner of the raw pointer.
-    ExclusiveOwnershipPointer(T *const rawPointer)
+    AK_FORCE_INLINE ExclusiveOwnershipPointer(T *const rawPointer)
             : mPointer(rawPointer),
               mSharedOwnerPtr(new (ExclusiveOwnershipPointer<T> *)(this)) {}
 
     // Move the ownership.
-    ExclusiveOwnershipPointer(const ExclusiveOwnershipPointer<T> &pointer)
+    AK_FORCE_INLINE ExclusiveOwnershipPointer(const ExclusiveOwnershipPointer<T> &pointer)
             : mPointer(pointer.mPointer), mSharedOwnerPtr(pointer.mSharedOwnerPtr) {
         transferOwnership(&pointer);
     }
 
-    ~ExclusiveOwnershipPointer() {
+    AK_FORCE_INLINE ~ExclusiveOwnershipPointer() {
         deletePointersIfHavingOwnership();
     }
 
     // Move the ownership.
-    ExclusiveOwnershipPointer<T> &operator=(const ExclusiveOwnershipPointer<T> &pointer) {
+    AK_FORCE_INLINE ExclusiveOwnershipPointer<T> &operator=(
+            const ExclusiveOwnershipPointer<T> &pointer) {
         // Delete pointers when this is an owner of another pointer.
         deletePointersIfHavingOwnership();
         mPointer = pointer.mPointer;
@@ -49,7 +50,7 @@ class ExclusiveOwnershipPointer {
         return *this;
     }
 
-    T *get() const {
+    AK_FORCE_INLINE T *get() const {
         return mPointer;
     }
 
