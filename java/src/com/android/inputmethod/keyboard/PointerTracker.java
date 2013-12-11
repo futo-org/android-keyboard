@@ -715,7 +715,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         return newKey;
     }
 
-    private static int getActivePointerTrackerCount() {
+    /* package */ static int getActivePointerTrackerCount() {
         return sPointerTrackerQueue.size();
     }
 
@@ -827,12 +827,19 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         final int action = me.getActionMasked();
         final long eventTime = me.getEventTime();
         if (action == MotionEvent.ACTION_MOVE) {
+            // When this pointer is the only active pointer and is showing a more keys panel,
+            // we should ignore other pointers' motion event.
+            final boolean shouldIgnoreOtherPointers =
+                    isShowingMoreKeysPanel() && getActivePointerTrackerCount() == 1;
             final int pointerCount = me.getPointerCount();
             for (int index = 0; index < pointerCount; index++) {
                 final int id = me.getPointerId(index);
-                final PointerTracker tracker = getPointerTracker(id);
+                if (shouldIgnoreOtherPointers && id != mPointerId) {
+                    continue;
+                }
                 final int x = (int)me.getX(index);
                 final int y = (int)me.getY(index);
+                final PointerTracker tracker = getPointerTracker(id);
                 tracker.onMoveEvent(x, y, eventTime, me);
             }
             return;
@@ -903,7 +910,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         }
     }
 
-    private boolean isShowingMoreKeysPanel() {
+    /* package */ boolean isShowingMoreKeysPanel() {
         return (mMoreKeysPanel != null);
     }
 
