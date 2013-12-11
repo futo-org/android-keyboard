@@ -20,7 +20,6 @@ import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.LargeTest;
 import android.util.Log;
 
-import com.android.inputmethod.latin.ExpandableBinaryDictionary;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 
 import java.io.File;
@@ -137,8 +136,7 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
         Log.d(TAG, "This test can be used for profiling.");
         Log.d(TAG, "Usage: please set UserHistoryDictionary.PROFILE_SAVE_RESTORE to true.");
         final String testFilenameSuffix = "test_random_words" + System.currentTimeMillis();
-        final String fileName = UserHistoryDictionary.NAME + "." + testFilenameSuffix
-                + ExpandableBinaryDictionary.DICT_FILE_EXTENSION;
+        final String fileName = UserHistoryDictionary.NAME + "." + testFilenameSuffix;
 
         final int numberOfWords = 1000;
         final Random random = new Random(123456);
@@ -172,8 +170,7 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
             // Create filename suffixes for this test.
             for (int i = 0; i < numberOfLanguages; i++) {
                 testFilenameSuffixes[i] = "test_switching_languages" + i;
-                final String fileName = UserHistoryDictionary.NAME + "." +
-                        testFilenameSuffixes[i] + ExpandableBinaryDictionary.DICT_FILE_EXTENSION;
+                final String fileName = UserHistoryDictionary.NAME + "." + testFilenameSuffixes[i];
                 dictFiles[i] = new File(getContext().getFilesDir(), fileName);
                 clearHistory(testFilenameSuffixes[i]);
             }
@@ -217,8 +214,7 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
         } finally {
             Log.d(TAG, "waiting for writing ...");
             waitForWriting(testFilenameSuffix);
-            final String fileName = UserHistoryDictionary.NAME + "." + testFilenameSuffix
-                    + ExpandableBinaryDictionary.DICT_FILE_EXTENSION;
+            final String fileName = UserHistoryDictionary.NAME + "." + testFilenameSuffix;
             final File dictFile = new File(getContext().getFilesDir(), fileName);
             if (dictFile != null) {
                 assertTrue(dictFile.exists());

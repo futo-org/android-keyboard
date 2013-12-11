@@ -48,6 +48,9 @@ class FileUtils {
     static void getDirPath(const char *const filePath, const int dirPathBufSize,
             char *const outDirPath);
 
+    static void getBasename(const char *const filePath, const int outNameBufSize,
+            char *const outName);
+
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(FileUtils);
 };

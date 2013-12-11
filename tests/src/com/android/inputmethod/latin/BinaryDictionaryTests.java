@@ -70,12 +70,13 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         Map<String, String> attributeMap = new HashMap<String, String>();
         attributeMap.put(FormatSpec.FileHeader.SUPPORTS_DYNAMIC_UPDATE_ATTRIBUTE,
                 FormatSpec.FileHeader.ATTRIBUTE_VALUE_TRUE);
+        final String headerFileName = file.getName() + FormatSpec.HEADER_FILE_EXTENSION;
         if (BinaryDictionary.createEmptyDictFile(file.getAbsolutePath(),
                 FormatSpec.VERSION4, attributeMap)) {
-            return new File(file, FormatSpec.HEADER_FILE_EXTENSION);
+            return new File(file, headerFileName);
         } else {
             throw new IOException("Empty dictionary " + file.getAbsolutePath() + " "
-                    + FormatSpec.HEADER_FILE_EXTENSION + " cannot be created.");
+                    + headerFileName + " cannot be created.");
         }
     }
 

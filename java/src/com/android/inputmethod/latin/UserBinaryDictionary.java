@@ -18,7 +18,6 @@ package com.android.inputmethod.latin;
 
 import android.content.ContentProviderClient;
 import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.content.Context;
 import android.database.ContentObserver;
 import android.database.Cursor;
@@ -81,7 +80,7 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
 
     public UserBinaryDictionary(final Context context, final Locale locale,
             final boolean alsoUseMoreRestrictiveLocales) {
-        super(context, getFilenameWithLocale(NAME, locale), locale, Dictionary.TYPE_USER,
+        super(context, getDictNameWithLocale(NAME, locale), locale, Dictionary.TYPE_USER,
                 false /* isUpdatable */);
         if (null == locale) throw new NullPointerException(); // Catch the error earlier
         final String localeStr = locale.toString();
