@@ -144,7 +144,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         return mBinaryDictionary.isValidDictionary();
     }
 
-    protected String getFileNameExtentionToOpenDict() {
+    protected String getFileNameExtensionToOpenDict() {
         return "";
     }
 
@@ -265,7 +265,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                     // We have 'fileToOpen' in addition to 'file' for the v4 dictionary format
                     // where 'file' is a directory, and 'fileToOpen' is a normal file.
                     final File fileToOpen = new File(mContext.getFilesDir(), mFilename
-                            + getFileNameExtentionToOpenDict());
+                            + getFileNameExtensionToOpenDict());
                     // TODO: Make BinaryDictionary's constructor be able to accept filename
                     // without extension.
                     mBinaryDictionary = new BinaryDictionary(
@@ -521,7 +521,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         }
 
         final File file = new File(mContext.getFilesDir(), mFilename
-                + getFileNameExtentionToOpenDict());
+                + getFileNameExtensionToOpenDict());
         final String filename = file.getAbsolutePath();
         final long length = file.length();
 
@@ -703,7 +703,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     /**
      * Generate binary dictionary using DictionaryWriter.
      */
-    protected void asyncFlashAllBinaryDictionary() {
+    protected void asyncFlushBinaryDictionary() {
         final Runnable newTask = new Runnable() {
             @Override
             public void run() {

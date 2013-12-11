@@ -141,11 +141,11 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
         binaryDictionary.getPropertyForTests(query);
     }
 
-    public void testControllCurrentTime() {
-        testControllCurrentTime(FormatSpec.VERSION4);
+    public void testControlCurrentTime() {
+        testControlCurrentTime(FormatSpec.VERSION4);
     }
 
-    private void testControllCurrentTime(final int formatVersion) {
+    private void testControlCurrentTime(final int formatVersion) {
         final int TEST_COUNT = 1000;
         final long seed = System.currentTimeMillis();
         final Random random = new Random(seed);
