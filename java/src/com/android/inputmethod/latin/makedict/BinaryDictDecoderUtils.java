@@ -600,7 +600,7 @@ public final class BinaryDictDecoderUtils {
 
         Map<Integer, PtNodeArray> reverseNodeArrayMapping = new TreeMap<Integer, PtNodeArray>();
         Map<Integer, PtNode> reversePtNodeMapping = new TreeMap<Integer, PtNode>();
-        final PtNodeArray root = readNodeArray(dictDecoder, fileHeader.mHeaderSize,
+        final PtNodeArray root = readNodeArray(dictDecoder, fileHeader.mBodyOffset,
                 reverseNodeArrayMapping, reversePtNodeMapping, fileHeader.mFormatOptions);
 
         FusionDictionary newDict = new FusionDictionary(root, fileHeader.mDictionaryOptions);

@@ -122,7 +122,8 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
 
     @Override
     protected String getFileNameExtentionToOpenDict() {
-        return "/" + FormatSpec.TRIE_FILE_EXTENSION;
+        // TODO: pass the directory name instead
+        return "/" + FormatSpec.HEADER_FILE_EXTENSION;
     }
 
     public void addMultipleDictionaryEntriesToDictionary(

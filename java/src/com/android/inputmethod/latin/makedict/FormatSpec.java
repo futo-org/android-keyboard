@@ -199,13 +199,19 @@ public final class FormatSpec {
      */
 
     public static final int MAGIC_NUMBER = 0x9BC13AFE;
-    static final int MINIMUM_SUPPORTED_VERSION = 2;
-    static final int MAXIMUM_SUPPORTED_VERSION = 4;
     static final int NOT_A_VERSION_NUMBER = -1;
     static final int FIRST_VERSION_WITH_DYNAMIC_UPDATE = 3;
     static final int FIRST_VERSION_WITH_TERMINAL_ID = 4;
+
+    // These MUST have the same values as the relevant constants in format_utils.h.
+    // From version 4 on, we use version * 100 + revision as a version number. That allows
+    // us to change the format during development while having testing devices remove
+    // older files with each upgrade, while still having a readable versioning scheme.
+    public static final int VERSION2 = 2;
     public static final int VERSION3 = 3;
-    public static final int VERSION4 = 4;
+    public static final int VERSION4 = 400;
+    static final int MINIMUM_SUPPORTED_VERSION = VERSION2;
+    static final int MAXIMUM_SUPPORTED_VERSION = VERSION4;
 
     // These options need to be the same numeric values as the one in the native reading code.
     static final int GERMAN_UMLAUT_PROCESSING_FLAG = 0x1;
@@ -263,8 +269,10 @@ public final class FormatSpec {
     static final int PTNODE_ATTRIBUTE_MAX_ADDRESS_SIZE = 3;
     static final int PTNODE_SHORTCUT_LIST_SIZE_SIZE = 2;
 
-    // These values are used only by version 4 or later.
-    public static final String TRIE_FILE_EXTENSION = ".trie";
+    // These values are used only by version 4 or later. They MUST match the definitions in
+    // ver4_dict_constants.cpp.
+    static final String TRIE_FILE_EXTENSION = ".trie";
+    public static final String HEADER_FILE_EXTENSION = ".header";
     static final String FREQ_FILE_EXTENSION = ".freq";
     static final String UNIGRAM_TIMESTAMP_FILE_EXTENSION = ".timestamp";
     // tat = Terminal Address Table
@@ -361,7 +369,7 @@ public final class FormatSpec {
      * Class representing file header.
      */
     public static final class FileHeader {
-        public final int mHeaderSize;
+        public final int mBodyOffset;
         public final DictionaryOptions mDictionaryOptions;
         public final FormatOptions mFormatOptions;
         // Note that these are corresponding definitions in native code in latinime::HeaderPolicy
@@ -377,9 +385,9 @@ public final class FormatSpec {
         private static final String DICTIONARY_DESCRIPTION_ATTRIBUTE = "description";
         public FileHeader(final int headerSize, final DictionaryOptions dictionaryOptions,
                 final FormatOptions formatOptions) {
-            mHeaderSize = headerSize;
             mDictionaryOptions = dictionaryOptions;
             mFormatOptions = formatOptions;
+            mBodyOffset = formatOptions.mVersion < VERSION4 ? headerSize : 0;
             if (null == getLocaleString()) {
                 throw new RuntimeException("Cannot create a FileHeader without a locale");
             }

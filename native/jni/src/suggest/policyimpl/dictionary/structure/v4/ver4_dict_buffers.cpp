@@ -45,16 +45,22 @@ bool Ver4DictBuffers::flushHeaderAndDictBuffers(const char *const dictDirPath,
         AKLOGE("Cannot create directory: %s. errno: %d.", tmpDirPath, errno);
         return false;
     }
+    // Write header file.
+    if (!DictFileWritingUtils::flushBufferToFileInDir(tmpDirPath,
+            Ver4DictConstants::HEADER_FILE_EXTENSION, headerBuffer)) {
+        AKLOGE("Dictionary header file %s/%s cannot be written.", tmpDirPath,
+                Ver4DictConstants::HEADER_FILE_EXTENSION);
+        return false;
+    }
     // Write trie file.
-    const BufferWithExtendableBuffer *buffers[] = {headerBuffer, &mExpandableTrieBuffer};
-    if (!DictFileWritingUtils::flushBuffersToFileInDir(tmpDirPath,
-            Ver4DictConstants::TRIE_FILE_EXTENSION, buffers, 2 /* bufferCount */)) {
+    if (!DictFileWritingUtils::flushBufferToFileInDir(tmpDirPath,
+            Ver4DictConstants::TRIE_FILE_EXTENSION, &mExpandableTrieBuffer)) {
         AKLOGE("Dictionary trie file %s/%s cannot be written.", tmpDirPath,
                 Ver4DictConstants::TRIE_FILE_EXTENSION);
         return false;
     }
     // Write dictionary contents.
-    if (!mTerminalPositionLookupTable.flushToFile(tmpDirPath, headerBuffer->getTailPosition())) {
+    if (!mTerminalPositionLookupTable.flushToFile(tmpDirPath)) {
         AKLOGE("Terminal position lookup table cannot be written. %s", tmpDirPath);
         return false;
     }

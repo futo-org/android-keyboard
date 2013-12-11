@@ -26,6 +26,7 @@ import com.android.inputmethod.latin.makedict.FusionDictionary.PtNode;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
 import com.android.inputmethod.latin.utils.CollectionUtils;
+import com.android.inputmethod.latin.utils.FileUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -45,8 +46,8 @@ public class Ver4DictEncoder implements DictEncoder {
     private final File mDictPlacedDir;
     private byte[] mTrieBuf;
     private int mTriePos;
-    private int mHeaderSize;
     private OutputStream mTrieOutStream;
+    private OutputStream mHeaderOutStream;
     private OutputStream mFreqOutStream;
     private OutputStream mUnigramTimestampOutStream;
     private OutputStream mTerminalAddressTableOutStream;
@@ -185,16 +186,21 @@ public class Ver4DictEncoder implements DictEncoder {
         mBaseFilename = header.getId() + "." + header.getVersion();
         mDictDir = new File(mDictPlacedDir, mBaseFilename);
         final File trieFile = new File(mDictDir, mBaseFilename + FormatSpec.TRIE_FILE_EXTENSION);
+        final File headerFile = new File(mDictDir,
+                mBaseFilename + FormatSpec.HEADER_FILE_EXTENSION);
         final File freqFile = new File(mDictDir, mBaseFilename + FormatSpec.FREQ_FILE_EXTENSION);
         final File timestampFile = new File(mDictDir,
                 mBaseFilename + FormatSpec.UNIGRAM_TIMESTAMP_FILE_EXTENSION);
         final File terminalAddressTableFile = new File(mDictDir,
                 mBaseFilename + FormatSpec.TERMINAL_ADDRESS_TABLE_FILE_EXTENSION);
         if (!mDictDir.isDirectory()) {
-            if (mDictDir.exists()) mDictDir.delete();
+            if (mDictDir.exists()) {
+                FileUtils.deleteRecursively(mDictDir);
+            }
             mDictDir.mkdirs();
         }
         mTrieOutStream = new FileOutputStream(trieFile);
+        mHeaderOutStream = new FileOutputStream(headerFile);
         mFreqOutStream = new FileOutputStream(freqFile);
         mTerminalAddressTableOutStream = new FileOutputStream(terminalAddressTableFile);
         if (formatOptions.mHasTimestamp) {
@@ -207,6 +213,9 @@ public class Ver4DictEncoder implements DictEncoder {
             if (mTrieOutStream != null) {
                 mTrieOutStream.close();
             }
+            if (mHeaderOutStream != null) {
+                mHeaderOutStream.close();
+            }
             if (mFreqOutStream != null) {
                 mFreqOutStream.close();
             }
@@ -218,6 +227,7 @@ public class Ver4DictEncoder implements DictEncoder {
             }
         } finally {
             mTrieOutStream = null;
+            mHeaderOutStream = null;
             mFreqOutStream = null;
             mTerminalAddressTableOutStream = null;
         }
@@ -238,8 +248,7 @@ public class Ver4DictEncoder implements DictEncoder {
             openStreams(formatOptions, dict.mOptions);
         }
 
-        mHeaderSize = BinaryDictEncoderUtils.writeDictionaryHeader(mTrieOutStream, dict,
-                formatOptions);
+        BinaryDictEncoderUtils.writeDictionaryHeader(mHeaderOutStream, dict, formatOptions);
 
         MakedictLog.i("Flattening the tree...");
         ArrayList<PtNodeArray> flatNodes = BinaryDictEncoderUtils.flattenTree(dict.mRootNodeArray);
@@ -423,7 +432,7 @@ public class Ver4DictEncoder implements DictEncoder {
                             ptNode.mFrequency, FormatSpec.FREQUENCY_AND_FLAGS_SIZE);
                     BinaryDictEncoderUtils.writeUIntToBuffer(terminalAddressTableBuf,
                             ptNode.mTerminalId * FormatSpec.TERMINAL_ADDRESS_TABLE_ADDRESS_SIZE,
-                            ptNode.mCachedAddressAfterUpdate + mHeaderSize,
+                            ptNode.mCachedAddressAfterUpdate,
                             FormatSpec.TERMINAL_ADDRESS_TABLE_ADDRESS_SIZE);
                 }
             }

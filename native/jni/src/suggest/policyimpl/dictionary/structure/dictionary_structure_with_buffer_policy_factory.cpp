@@ -47,7 +47,7 @@ namespace latinime {
         case FormatUtils::VERSION_4: {
             const int dictDirPathBufSize = strlen(path) + 1 /* terminator */;
             char dictDirPath[dictDirPathBufSize];
-            if (!FileUtils::getFilePathWithoutSuffix(path, Ver4DictConstants::TRIE_FILE_EXTENSION,
+            if (!FileUtils::getFilePathWithoutSuffix(path, Ver4DictConstants::HEADER_FILE_EXTENSION,
                     dictDirPathBufSize, dictDirPath)) {
                 // Dictionary file name is not valid as a version 4 dictionary.
                 return DictionaryStructureWithBufferPolicy::StructurePolicyPtr(0);
