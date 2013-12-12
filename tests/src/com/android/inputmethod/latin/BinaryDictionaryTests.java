@@ -25,6 +25,7 @@ import com.android.inputmethod.latin.BinaryDictionary.LanguageModelParam;
 import com.android.inputmethod.latin.makedict.CodePointUtils;
 import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
+import com.android.inputmethod.latin.utils.FileUtils;
 import com.android.inputmethod.latin.utils.UnigramProperty;
 
 import java.io.File;
@@ -70,13 +71,12 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         Map<String, String> attributeMap = new HashMap<String, String>();
         attributeMap.put(FormatSpec.FileHeader.SUPPORTS_DYNAMIC_UPDATE_ATTRIBUTE,
                 FormatSpec.FileHeader.ATTRIBUTE_VALUE_TRUE);
-        final String headerFileName = file.getName() + FormatSpec.HEADER_FILE_EXTENSION;
         if (BinaryDictionary.createEmptyDictFile(file.getAbsolutePath(),
                 FormatSpec.VERSION4, attributeMap)) {
-            return new File(file, headerFileName);
+            return file;
         } else {
-            throw new IOException("Empty dictionary " + file.getAbsolutePath() + " "
-                    + headerFileName + " cannot be created.");
+            throw new IOException("Empty dictionary " + file.getAbsolutePath()
+                    + " cannot be created.");
         }
     }
 
@@ -99,7 +99,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         binaryDictionary.close();
         assertFalse("binaryDictionary must be invalid after closing.",
                 binaryDictionary.isValidDictionary());
-        dictFile.delete();
+        FileUtils.deleteRecursively(dictFile);
         binaryDictionary = new BinaryDictionary(dictFile.getAbsolutePath(), 0 /* offset */,
                 dictFile.length(), true /* useFullEditDistance */, Locale.getDefault(),
                 TEST_LOCALE, true /* isUpdatable */);

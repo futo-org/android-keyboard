@@ -30,15 +30,15 @@ namespace latinime {
 // TODO: Support multiple contents.
 class SparseTableDictContent : public DictContent {
  public:
-    AK_FORCE_INLINE SparseTableDictContent(const char *const dictDirPath,
+    AK_FORCE_INLINE SparseTableDictContent(const char *const dictPath,
             const char *const lookupTableFileName, const char *const addressTableFileName,
             const char *const contentFileName, const bool isUpdatable,
             const int sparseTableBlockSize, const int sparseTableDataSize)
             : mLookupTableBuffer(
-                      MmappedBuffer::openBuffer(dictDirPath, lookupTableFileName, isUpdatable)),
+                      MmappedBuffer::openBuffer(dictPath, lookupTableFileName, isUpdatable)),
               mAddressTableBuffer(
-                      MmappedBuffer::openBuffer(dictDirPath, addressTableFileName, isUpdatable)),
-              mContentBuffer(MmappedBuffer::openBuffer(dictDirPath, contentFileName, isUpdatable)),
+                      MmappedBuffer::openBuffer(dictPath, addressTableFileName, isUpdatable)),
+              mContentBuffer(MmappedBuffer::openBuffer(dictPath, contentFileName, isUpdatable)),
               mExpandableLookupTableBuffer(
                       mLookupTableBuffer.get() ? mLookupTableBuffer.get()->getBuffer() : 0,
                       mLookupTableBuffer.get() ? mLookupTableBuffer.get()->getBufferSize() : 0,

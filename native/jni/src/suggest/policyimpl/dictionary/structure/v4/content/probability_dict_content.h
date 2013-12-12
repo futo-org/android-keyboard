@@ -29,9 +29,9 @@ class ProbabilityEntry;
 
 class ProbabilityDictContent : public SingleDictContent {
  public:
-    ProbabilityDictContent(const char *const dictDirPath, const bool hasHistoricalInfo,
+    ProbabilityDictContent(const char *const dictPath, const bool hasHistoricalInfo,
             const bool isUpdatable)
-            : SingleDictContent(dictDirPath, Ver4DictConstants::FREQ_FILE_EXTENSION, isUpdatable),
+            : SingleDictContent(dictPath, Ver4DictConstants::FREQ_FILE_EXTENSION, isUpdatable),
               mHasHistoricalInfo(hasHistoricalInfo),
               mSize(getBuffer()->getTailPosition() / getEntrySize()) {}
 
@@ -42,7 +42,7 @@ class ProbabilityDictContent : public SingleDictContent {
 
     bool setProbabilityEntry(const int terminalId, const ProbabilityEntry *const probabilityEntry);
 
-    bool flushToFile(const char *const dictDirPath) const;
+    bool flushToFile(const char *const dictPath) const;
 
     bool runGC(const TerminalPositionLookupTable::TerminalIdMap *const terminalIdMap,
             const ProbabilityDictContent *const originalProbabilityDictContent);

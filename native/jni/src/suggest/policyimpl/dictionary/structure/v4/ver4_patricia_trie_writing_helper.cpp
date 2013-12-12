@@ -32,12 +32,9 @@
 
 namespace latinime {
 
-void Ver4PatriciaTrieWritingHelper::writeToDictFile(const char *const trieFilePath,
+void Ver4PatriciaTrieWritingHelper::writeToDictFile(const char *const dictDirPath,
         const int unigramCount, const int bigramCount) const {
     const HeaderPolicy *const headerPolicy = mBuffers->getHeaderPolicy();
-    const int dirPathBufSize = strlen(trieFilePath) + 1 /* terminator */;
-    char dirPath[dirPathBufSize];
-    FileUtils::getDirPath(trieFilePath, dirPathBufSize, dirPath);
     BufferWithExtendableBuffer headerBuffer(
             BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE);
     const int extendedRegionSize = headerPolicy->getExtendedRegionSize()
@@ -50,11 +47,11 @@ void Ver4PatriciaTrieWritingHelper::writeToDictFile(const char *const trieFilePa
                 extendedRegionSize);
         return;
     }
-    mBuffers->flushHeaderAndDictBuffers(dirPath, &headerBuffer);
+    mBuffers->flushHeaderAndDictBuffers(dictDirPath, &headerBuffer);
 }
 
 void Ver4PatriciaTrieWritingHelper::writeToDictFileWithGC(const int rootPtNodeArrayPos,
-        const char *const trieFilePath) {
+        const char *const dictDirPath) {
     const HeaderPolicy *const headerPolicy = mBuffers->getHeaderPolicy();
     Ver4DictBuffers::Ver4DictBuffersPtr dictBuffers(
             Ver4DictBuffers::createVer4DictBuffers(headerPolicy));
@@ -70,10 +67,7 @@ void Ver4PatriciaTrieWritingHelper::writeToDictFileWithGC(const int rootPtNodeAr
             0 /* extendedRegionSize */)) {
         return;
     }
-    const int dirPathBufSize = strlen(trieFilePath) + 1 /* terminator */;
-    char dirPath[dirPathBufSize];
-    FileUtils::getDirPath(trieFilePath, dirPathBufSize, dirPath);
-    dictBuffers.get()->flushHeaderAndDictBuffers(dirPath, &headerBuffer);
+    dictBuffers.get()->flushHeaderAndDictBuffers(dictDirPath, &headerBuffer);
 }
 
 bool Ver4PatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,

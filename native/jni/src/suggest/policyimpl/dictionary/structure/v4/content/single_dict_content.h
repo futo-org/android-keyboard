@@ -28,9 +28,9 @@ namespace latinime {
 
 class SingleDictContent : public DictContent {
  public:
-    SingleDictContent(const char *const dictDirPath, const char *const contentFileName,
+    SingleDictContent(const char *const dictPath, const char *const contentFileName,
             const bool isUpdatable)
-            : mMmappedBuffer(MmappedBuffer::openBuffer(dictDirPath, contentFileName, isUpdatable)),
+            : mMmappedBuffer(MmappedBuffer::openBuffer(dictPath, contentFileName, isUpdatable)),
               mExpandableContentBuffer(mMmappedBuffer.get() ? mMmappedBuffer.get()->getBuffer() : 0,
                       mMmappedBuffer.get() ? mMmappedBuffer.get()->getBufferSize() : 0,
                       BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE),
@@ -59,8 +59,8 @@ class SingleDictContent : public DictContent {
         return &mExpandableContentBuffer;
     }
 
-    bool flush(const char *const dictBasePath, const char *const contentFileNameSuffix) const {
-        return DictFileWritingUtils::flushBufferToFileWithSuffix(dictBasePath,
+    bool flush(const char *const dictPath, const char *const contentFileNameSuffix) const {
+        return DictFileWritingUtils::flushBufferToFileWithSuffix(dictPath,
                 contentFileNameSuffix, &mExpandableContentBuffer);
     }
 
