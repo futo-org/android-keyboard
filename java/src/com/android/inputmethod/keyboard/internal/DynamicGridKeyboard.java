@@ -25,7 +25,7 @@ import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.latin.settings.Settings;
 import com.android.inputmethod.latin.utils.CollectionUtils;
-import com.android.inputmethod.latin.utils.StringUtils;
+import com.android.inputmethod.latin.utils.JsonUtils;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -139,7 +139,7 @@ public class DynamicGridKeyboard extends Keyboard {
                 keys.add(key.getCode());
             }
         }
-        final String jsonStr = StringUtils.listToJsonStr(keys);
+        final String jsonStr = JsonUtils.listToJsonStr(keys);
         Settings.writeEmojiRecentKeys(mPrefs, jsonStr);
     }
 
@@ -167,7 +167,7 @@ public class DynamicGridKeyboard extends Keyboard {
 
     public void loadRecentKeys(final Collection<DynamicGridKeyboard> keyboards) {
         final String str = Settings.readEmojiRecentKeys(mPrefs);
-        final List<Object> keys = StringUtils.jsonStrToList(str);
+        final List<Object> keys = JsonUtils.jsonStrToList(str);
         for (final Object o : keys) {
             final Key key;
             if (o instanceof Integer) {
