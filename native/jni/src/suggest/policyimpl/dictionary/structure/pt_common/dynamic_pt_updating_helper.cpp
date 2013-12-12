@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-#include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_updating_helper.h"
+#include "suggest/policyimpl/dictionary/structure/pt_common/dynamic_pt_updating_helper.h"
 
+#include "suggest/policyimpl/dictionary/structure/pt_common/dynamic_pt_reading_helper.h"
+#include "suggest/policyimpl/dictionary/structure/pt_common/dynamic_pt_writing_utils.h"
 #include "suggest/policyimpl/dictionary/structure/pt_common/pt_node_reader.h"
 #include "suggest/policyimpl/dictionary/structure/pt_common/pt_node_writer.h"
 #include "suggest/policyimpl/dictionary/structure/v2/patricia_trie_reading_utils.h"
-#include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_reading_helper.h"
-#include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_writing_utils.h"
 #include "suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer.h"
 
 namespace latinime {
 
-const int DynamicPatriciaTrieUpdatingHelper::CHILDREN_POSITION_FIELD_SIZE = 3;
+const int DynamicPtUpdatingHelper::CHILDREN_POSITION_FIELD_SIZE = 3;
 
-bool DynamicPatriciaTrieUpdatingHelper::addUnigramWord(
-        DynamicPatriciaTrieReadingHelper *const readingHelper,
+bool DynamicPtUpdatingHelper::addUnigramWord(
+        DynamicPtReadingHelper *const readingHelper,
         const int *const wordCodePoints, const int codePointCount, const int probability,
         const bool isNotAWord, const bool isBlacklisted, const int timestamp,
         bool *const outAddedNewUnigram) {
@@ -86,7 +86,7 @@ bool DynamicPatriciaTrieUpdatingHelper::addUnigramWord(
             isNotAWord, isBlacklisted, probability, timestamp, &pos);
 }
 
-bool DynamicPatriciaTrieUpdatingHelper::addBigramWords(const int word0Pos, const int word1Pos,
+bool DynamicPtUpdatingHelper::addBigramWords(const int word0Pos, const int word1Pos,
         const int probability, const int timestamp, bool *const outAddedNewBigram) {
     const PtNodeParams sourcePtNodeParams(
             mPtNodeReader->fetchNodeInfoInBufferFromPtNodePos(word0Pos));
@@ -97,7 +97,7 @@ bool DynamicPatriciaTrieUpdatingHelper::addBigramWords(const int word0Pos, const
 }
 
 // Remove a bigram relation from word0Pos to word1Pos.
-bool DynamicPatriciaTrieUpdatingHelper::removeBigramWords(const int word0Pos, const int word1Pos) {
+bool DynamicPtUpdatingHelper::removeBigramWords(const int word0Pos, const int word1Pos) {
     const PtNodeParams sourcePtNodeParams(
             mPtNodeReader->fetchNodeInfoInBufferFromPtNodePos(word0Pos));
     const PtNodeParams targetPtNodeParams(
@@ -105,7 +105,7 @@ bool DynamicPatriciaTrieUpdatingHelper::removeBigramWords(const int word0Pos, co
     return mPtNodeWriter->removeBigramEntry(&sourcePtNodeParams, &targetPtNodeParams);
 }
 
-bool DynamicPatriciaTrieUpdatingHelper::addShortcutTarget(const int wordPos,
+bool DynamicPtUpdatingHelper::addShortcutTarget(const int wordPos,
         const int *const targetCodePoints, const int targetCodePointCount,
         const int shortcutProbability) {
     const PtNodeParams ptNodeParams(mPtNodeReader->fetchNodeInfoInBufferFromPtNodePos(wordPos));
@@ -113,12 +113,12 @@ bool DynamicPatriciaTrieUpdatingHelper::addShortcutTarget(const int wordPos,
             shortcutProbability);
 }
 
-bool DynamicPatriciaTrieUpdatingHelper::createAndInsertNodeIntoPtNodeArray(const int parentPos,
+bool DynamicPtUpdatingHelper::createAndInsertNodeIntoPtNodeArray(const int parentPos,
         const int *const nodeCodePoints, const int nodeCodePointCount,
         const bool isNotAWord, const bool isBlacklisted, const int probability,
         const int timestamp,  int *const forwardLinkFieldPos) {
     const int newPtNodeArrayPos = mBuffer->getTailPosition();
-    if (!DynamicPatriciaTrieWritingUtils::writeForwardLinkPositionAndAdvancePosition(mBuffer,
+    if (!DynamicPtWritingUtils::writeForwardLinkPositionAndAdvancePosition(mBuffer,
             newPtNodeArrayPos, forwardLinkFieldPos)) {
         return false;
     }
@@ -126,7 +126,7 @@ bool DynamicPatriciaTrieUpdatingHelper::createAndInsertNodeIntoPtNodeArray(const
             isNotAWord, isBlacklisted, probability, timestamp);
 }
 
-bool DynamicPatriciaTrieUpdatingHelper::setPtNodeProbability(
+bool DynamicPtUpdatingHelper::setPtNodeProbability(
         const PtNodeParams *const originalPtNodeParams, const bool isNotAWord,
         const bool isBlacklisted, const int probability, const int timestamp,
         bool *const outAddedNewUnigram) {
@@ -154,7 +154,7 @@ bool DynamicPatriciaTrieUpdatingHelper::setPtNodeProbability(
     return true;
 }
 
-bool DynamicPatriciaTrieUpdatingHelper::createChildrenPtNodeArrayAndAChildPtNode(
+bool DynamicPtUpdatingHelper::createChildrenPtNodeArrayAndAChildPtNode(
         const PtNodeParams *const parentPtNodeParams, const bool isNotAWord,
         const bool isBlacklisted, const int probability, const int timestamp,
         const int *const codePoints, const int codePointCount) {
@@ -166,12 +166,12 @@ bool DynamicPatriciaTrieUpdatingHelper::createChildrenPtNodeArrayAndAChildPtNode
             codePointCount, isNotAWord, isBlacklisted, probability, timestamp);
 }
 
-bool DynamicPatriciaTrieUpdatingHelper::createNewPtNodeArrayWithAChildPtNode(
+bool DynamicPtUpdatingHelper::createNewPtNodeArrayWithAChildPtNode(
         const int parentPtNodePos, const int *const nodeCodePoints, const int nodeCodePointCount,
         const bool isNotAWord, const bool isBlacklisted, const int probability,
         const int timestamp) {
     int writingPos = mBuffer->getTailPosition();
-    if (!DynamicPatriciaTrieWritingUtils::writePtNodeArraySizeAndAdvancePosition(mBuffer,
+    if (!DynamicPtWritingUtils::writePtNodeArraySizeAndAdvancePosition(mBuffer,
             1 /* arraySize */, &writingPos)) {
         return false;
     }
@@ -182,7 +182,7 @@ bool DynamicPatriciaTrieUpdatingHelper::createNewPtNodeArrayWithAChildPtNode(
             &writingPos)) {
         return false;
     }
-    if (!DynamicPatriciaTrieWritingUtils::writeForwardLinkPositionAndAdvancePosition(mBuffer,
+    if (!DynamicPtWritingUtils::writeForwardLinkPositionAndAdvancePosition(mBuffer,
             NOT_A_DICT_POS /* forwardLinkPos */, &writingPos)) {
         return false;
     }
@@ -190,7 +190,7 @@ bool DynamicPatriciaTrieUpdatingHelper::createNewPtNodeArrayWithAChildPtNode(
 }
 
 // Returns whether the dictionary updating was succeeded or not.
-bool DynamicPatriciaTrieUpdatingHelper::reallocatePtNodeAndAddNewPtNodes(
+bool DynamicPtUpdatingHelper::reallocatePtNodeAndAddNewPtNodes(
         const PtNodeParams *const reallocatingPtNodeParams, const int overlappingCodePointCount,
         const bool isNotAWord, const bool isBlacklisted, const int probabilityOfNewPtNode,
         const int timestamp, const int *const newNodeCodePoints, const int newNodeCodePointCount) {
@@ -227,7 +227,7 @@ bool DynamicPatriciaTrieUpdatingHelper::reallocatePtNodeAndAddNewPtNodes(
     const int actualChildrenPos = writingPos;
     // Create new children PtNode array.
     const size_t newPtNodeCount = addsExtraChild ? 2 : 1;
-    if (!DynamicPatriciaTrieWritingUtils::writePtNodeArraySizeAndAdvancePosition(mBuffer,
+    if (!DynamicPtWritingUtils::writePtNodeArraySizeAndAdvancePosition(mBuffer,
             newPtNodeCount, &writingPos)) {
         return false;
     }
@@ -252,7 +252,7 @@ bool DynamicPatriciaTrieUpdatingHelper::reallocatePtNodeAndAddNewPtNodes(
             return false;
         }
     }
-    if (!DynamicPatriciaTrieWritingUtils::writeForwardLinkPositionAndAdvancePosition(mBuffer,
+    if (!DynamicPtWritingUtils::writeForwardLinkPositionAndAdvancePosition(mBuffer,
             NOT_A_DICT_POS /* forwardLinkPos */, &writingPos)) {
         return false;
     }
@@ -268,7 +268,7 @@ bool DynamicPatriciaTrieUpdatingHelper::reallocatePtNodeAndAddNewPtNodes(
     return mPtNodeWriter->updateChildrenPosition(&ptNodeParams, actualChildrenPos);
 }
 
-const PtNodeParams DynamicPatriciaTrieUpdatingHelper::getUpdatedPtNodeParams(
+const PtNodeParams DynamicPtUpdatingHelper::getUpdatedPtNodeParams(
         const PtNodeParams *const originalPtNodeParams, const bool isNotAWord,
         const bool isBlacklisted, const bool isTerminal, const int parentPos,
         const int codePointCount, const int *const codePoints, const int probability) const {
@@ -280,7 +280,7 @@ const PtNodeParams DynamicPatriciaTrieUpdatingHelper::getUpdatedPtNodeParams(
             probability);
 }
 
-const PtNodeParams DynamicPatriciaTrieUpdatingHelper::getPtNodeParamsForNewPtNode(
+const PtNodeParams DynamicPtUpdatingHelper::getPtNodeParamsForNewPtNode(
         const bool isNotAWord, const bool isBlacklisted, const bool isTerminal,
         const int parentPos, const int codePointCount, const int *const codePoints,
         const int probability) const {

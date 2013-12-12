@@ -14,25 +14,25 @@
  * limitations under the License.
  */
 
-#include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_reading_helper.h"
+#include "suggest/policyimpl/dictionary/structure/pt_common/dynamic_pt_reading_helper.h"
 
 #include "suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer.h"
 #include "suggest/policyimpl/dictionary/structure/v2/patricia_trie_reading_utils.h"
-#include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_reading_utils.h"
+#include "suggest/policyimpl/dictionary/structure/pt_common/dynamic_pt_reading_utils.h"
 #include "utils/char_utils.h"
 
 namespace latinime {
 
 // To avoid infinite loop caused by invalid or malicious forward links.
-const int DynamicPatriciaTrieReadingHelper::MAX_CHILD_COUNT_TO_AVOID_INFINITE_LOOP = 100000;
-const int DynamicPatriciaTrieReadingHelper::MAX_PT_NODE_ARRAY_COUNT_TO_AVOID_INFINITE_LOOP = 100000;
-const size_t DynamicPatriciaTrieReadingHelper::MAX_READING_STATE_STACK_SIZE = MAX_WORD_LENGTH;
+const int DynamicPtReadingHelper::MAX_CHILD_COUNT_TO_AVOID_INFINITE_LOOP = 100000;
+const int DynamicPtReadingHelper::MAX_PT_NODE_ARRAY_COUNT_TO_AVOID_INFINITE_LOOP = 100000;
+const size_t DynamicPtReadingHelper::MAX_READING_STATE_STACK_SIZE = MAX_WORD_LENGTH;
 
 // Visits all PtNodes in post-order depth first manner.
 // For example, visits c -> b -> y -> x -> a for the following dictionary:
 // a _ b _ c
 //   \ x _ y
-bool DynamicPatriciaTrieReadingHelper::traverseAllPtNodesInPostorderDepthFirstManner(
+bool DynamicPtReadingHelper::traverseAllPtNodesInPostorderDepthFirstManner(
         TraversingEventListener *const listener) {
     bool alreadyVisitedChildren = false;
     // Descend from the root to the root PtNode array.
@@ -92,7 +92,7 @@ bool DynamicPatriciaTrieReadingHelper::traverseAllPtNodesInPostorderDepthFirstMa
 // For example, visits a -> b -> x -> c -> y for the following dictionary:
 // a _ b _ c
 //   \ x _ y
-bool DynamicPatriciaTrieReadingHelper::traverseAllPtNodesInPtNodeArrayLevelPreorderDepthFirstManner(
+bool DynamicPtReadingHelper::traverseAllPtNodesInPtNodeArrayLevelPreorderDepthFirstManner(
         TraversingEventListener *const listener) {
     bool alreadyVisitedAllPtNodesInArray = false;
     bool alreadyVisitedChildren = false;
@@ -169,7 +169,7 @@ bool DynamicPatriciaTrieReadingHelper::traverseAllPtNodesInPtNodeArrayLevelPreor
     return !isError();
 }
 
-int DynamicPatriciaTrieReadingHelper::getCodePointsAndProbabilityAndReturnCodePointCount(
+int DynamicPtReadingHelper::getCodePointsAndProbabilityAndReturnCodePointCount(
         const int maxCodePointCount, int *const outCodePoints, int *const outUnigramProbability) {
     // This method traverses parent nodes from the terminal by following parent pointers; thus,
     // node code points are stored in the buffer in the reverse order.
@@ -211,7 +211,7 @@ int DynamicPatriciaTrieReadingHelper::getCodePointsAndProbabilityAndReturnCodePo
     return totalCodePointCount;
 }
 
-int DynamicPatriciaTrieReadingHelper::getTerminalPtNodePositionOfWord(const int *const inWord,
+int DynamicPtReadingHelper::getTerminalPtNodePositionOfWord(const int *const inWord,
         const int length, const bool forceLowerCaseSearch) {
     int searchCodePoints[length];
     for (int i = 0; i < length; ++i) {
@@ -257,7 +257,7 @@ int DynamicPatriciaTrieReadingHelper::getTerminalPtNodePositionOfWord(const int 
 
 // Read node array size and process empty node arrays. Nodes and arrays are counted up in this
 // method to avoid an infinite loop.
-void DynamicPatriciaTrieReadingHelper::nextPtNodeArray() {
+void DynamicPtReadingHelper::nextPtNodeArray() {
     if (mReadingState.mPos < 0 || mReadingState.mPos >= mBuffer->getTailPosition()) {
         // Reading invalid position because of a bug or a broken dictionary.
         AKLOGE("Reading PtNode array info from invalid dictionary position: %d, dict size: %d",
@@ -308,7 +308,7 @@ void DynamicPatriciaTrieReadingHelper::nextPtNodeArray() {
 }
 
 // Follow the forward link and read the next node array if exists.
-void DynamicPatriciaTrieReadingHelper::followForwardLink() {
+void DynamicPtReadingHelper::followForwardLink() {
     if (mReadingState.mPos < 0 || mReadingState.mPos >= mBuffer->getTailPosition()) {
         // Reading invalid position because of bug or broken dictionary.
         AKLOGE("Reading forward link from invalid dictionary position: %d, dict size: %d",
@@ -324,12 +324,12 @@ void DynamicPatriciaTrieReadingHelper::followForwardLink() {
         mReadingState.mPos -= mBuffer->getOriginalBufferSize();
     }
     const int forwardLinkPosition =
-            DynamicPatriciaTrieReadingUtils::getForwardLinkPosition(dictBuf, mReadingState.mPos);
+            DynamicPtReadingUtils::getForwardLinkPosition(dictBuf, mReadingState.mPos);
     if (usesAdditionalBuffer) {
         mReadingState.mPos += mBuffer->getOriginalBufferSize();
     }
     mReadingState.mPosOfLastForwardLinkField = mReadingState.mPos;
-    if (DynamicPatriciaTrieReadingUtils::isValidForwardLinkPosition(forwardLinkPosition)) {
+    if (DynamicPtReadingUtils::isValidForwardLinkPosition(forwardLinkPosition)) {
         // Follow the forward link.
         mReadingState.mPos += forwardLinkPosition;
         nextPtNodeArray();

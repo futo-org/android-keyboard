@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef LATINIME_DYNAMIC_PATRICIA_TRIE_UPDATING_HELPER_H
-#define LATINIME_DYNAMIC_PATRICIA_TRIE_UPDATING_HELPER_H
+#ifndef LATINIME_DYNAMIC_PT_UPDATING_HELPER_H
+#define LATINIME_DYNAMIC_PT_UPDATING_HELPER_H
 
 #include <stdint.h>
 
@@ -26,21 +26,20 @@
 namespace latinime {
 
 class BufferWithExtendableBuffer;
-class DynamicPatriciaTrieReadingHelper;
+class DynamicPtReadingHelper;
 class PtNodeReader;
 class PtNodeWriter;
 
-// TODO: Move to pt_common.
-class DynamicPatriciaTrieUpdatingHelper {
+class DynamicPtUpdatingHelper {
  public:
-    DynamicPatriciaTrieUpdatingHelper(BufferWithExtendableBuffer *const buffer,
+    DynamicPtUpdatingHelper(BufferWithExtendableBuffer *const buffer,
             const PtNodeReader *const ptNodeReader, PtNodeWriter *const ptNodeWriter)
             : mBuffer(buffer), mPtNodeReader(ptNodeReader), mPtNodeWriter(ptNodeWriter) {}
 
-    ~DynamicPatriciaTrieUpdatingHelper() {}
+    ~DynamicPtUpdatingHelper() {}
 
     // Add a word to the dictionary. If the word already exists, update the probability.
-    bool addUnigramWord(DynamicPatriciaTrieReadingHelper *const readingHelper,
+    bool addUnigramWord(DynamicPtReadingHelper *const readingHelper,
             const int *const wordCodePoints, const int codePointCount, const int probability,
             const bool isNotAWord, const bool isBlacklisted, const int timestamp,
             bool *const outAddedNewUnigram);
@@ -57,7 +56,7 @@ class DynamicPatriciaTrieUpdatingHelper {
             const int targetCodePointCount, const int shortcutProbability);
 
  private:
-    DISALLOW_IMPLICIT_CONSTRUCTORS(DynamicPatriciaTrieUpdatingHelper);
+    DISALLOW_IMPLICIT_CONSTRUCTORS(DynamicPtUpdatingHelper);
 
     static const int CHILDREN_POSITION_FIELD_SIZE;
 
