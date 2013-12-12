@@ -28,8 +28,8 @@ import com.android.inputmethod.latin.makedict.FormatSpec.FileHeader;
 import com.android.inputmethod.latin.makedict.FusionDictionary;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNode;
 import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
-import com.android.inputmethod.latin.makedict.Ver3DictDecoder;
-import com.android.inputmethod.latin.makedict.Ver3DictEncoder;
+import com.android.inputmethod.latin.makedict.Ver2DictDecoder;
+import com.android.inputmethod.latin.makedict.Ver2DictEncoder;
 import com.android.inputmethod.latin.personalization.UserHistoryDictionaryBigramList;
 import com.android.inputmethod.latin.utils.UserHistoryDictIOUtils.BigramDictionaryInterface;
 import com.android.inputmethod.latin.utils.UserHistoryDictIOUtils.OnAddWordListener;
@@ -146,7 +146,7 @@ public class UserHistoryDictIOUtilsTests extends AndroidTestCase
 
     private void writeDictToFile(final File file,
             final UserHistoryDictionaryBigramList bigramList) {
-        final DictEncoder dictEncoder = new Ver3DictEncoder(file);
+        final DictEncoder dictEncoder = new Ver2DictEncoder(file);
         UserHistoryDictIOUtils.writeDictionary(dictEncoder, this, bigramList, FORMAT_OPTIONS,
                 HEADER_OPTIONS);
     }

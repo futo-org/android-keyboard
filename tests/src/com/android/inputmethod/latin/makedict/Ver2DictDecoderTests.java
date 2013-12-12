@@ -32,10 +32,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 /**
- * Unit tests for Ver3DictDecoder
+ * Unit tests for Ver2DictDecoder
  */
-public class Ver3DictDecoderTests extends AndroidTestCase {
-    private static final String TAG = Ver3DictDecoderTests.class.getSimpleName();
+public class Ver2DictDecoderTests extends AndroidTestCase {
+    private static final String TAG = Ver2DictDecoderTests.class.getSimpleName();
 
     private final byte[] data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 
@@ -68,7 +68,7 @@ public class Ver3DictDecoderTests extends AndroidTestCase {
         }
 
         assertNotNull(testFile);
-        final Ver3DictDecoder dictDecoder = new Ver3DictDecoder(testFile, factory);
+        final Ver2DictDecoder dictDecoder = new Ver2DictDecoder(testFile, factory);
         try {
             dictDecoder.openDictBuffer();
         } catch (Exception e) {
@@ -110,7 +110,7 @@ public class Ver3DictDecoderTests extends AndroidTestCase {
             Log.e(TAG, "IOException while the creating temporary file", e);
         }
 
-        final Ver3DictDecoder dictDecoder = new Ver3DictDecoder(testFile, factory);
+        final Ver2DictDecoder dictDecoder = new Ver2DictDecoder(testFile, factory);
 
         // the default return value of getBuffer() must be null.
         assertNull("the default return value of getBuffer() is not null",

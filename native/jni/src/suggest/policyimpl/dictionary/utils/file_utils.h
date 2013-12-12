@@ -53,6 +53,8 @@ class FileUtils {
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(FileUtils);
+
+    static bool removeDirAndFiles(const char *const dirPath, const int maxTries);
 };
 } // namespace latinime
 #endif /* LATINIME_FILE_UTILS_H */

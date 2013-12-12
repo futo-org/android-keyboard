@@ -27,14 +27,14 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 
 /**
- * An implementation of DictUpdater for version 3 binary dictionary.
+ * An implementation of DictUpdater for version 2 binary dictionary.
  */
 @UsedForTesting
-public class Ver3DictUpdater extends Ver3DictDecoder implements DictUpdater {
+public class Ver2DictUpdater extends Ver2DictDecoder implements DictUpdater {
     private OutputStream mOutStream;
 
     @UsedForTesting
-    public Ver3DictUpdater(final File dictFile, final int factoryType) {
+    public Ver2DictUpdater(final File dictFile, final int factoryType) {
         // DictUpdater must have an updatable DictBuffer.
         super(dictFile, ((factoryType & MASK_DICTBUFFER) == USE_BYTEARRAY)
                 ? USE_BYTEARRAY : USE_WRITABLE_BYTEBUFFER);

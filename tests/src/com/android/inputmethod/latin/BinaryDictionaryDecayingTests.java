@@ -119,13 +119,12 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
                 FormatSpec.FileHeader.ATTRIBUTE_VALUE_TRUE);
         attributeMap.put(FormatSpec.FileHeader.HAS_HISTORICAL_INFO_ATTRIBUTE,
                 FormatSpec.FileHeader.ATTRIBUTE_VALUE_TRUE);
-        final String headerFileName = file.getName() + FormatSpec.HEADER_FILE_EXTENSION;
         if (BinaryDictionary.createEmptyDictFile(file.getAbsolutePath(),
                 FormatSpec.VERSION4, attributeMap)) {
             return file;
         } else {
-            throw new IOException("Empty dictionary " + file.getAbsolutePath() + " "
-                    + headerFileName + " cannot be created.");
+            throw new IOException("Empty dictionary " + file.getAbsolutePath()
+                    + " cannot be created.");
         }
     }
 

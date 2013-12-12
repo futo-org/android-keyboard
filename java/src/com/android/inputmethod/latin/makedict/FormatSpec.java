@@ -401,7 +401,7 @@ public final class FormatSpec {
         if (dictFile.isDirectory()) {
             return new Ver4DictDecoder(dictFile, bufferType);
         } else if (dictFile.isFile()) {
-            return new Ver3DictDecoder(dictFile, bufferType);
+            return new Ver2DictDecoder(dictFile, bufferType);
         }
         return null;
     }
@@ -411,7 +411,7 @@ public final class FormatSpec {
         if (dictFile.isDirectory()) {
             return new Ver4DictDecoder(dictFile, factory);
         } else if (dictFile.isFile()) {
-            return new Ver3DictDecoder(dictFile, factory);
+            return new Ver2DictDecoder(dictFile, factory);
         }
         return null;
     }

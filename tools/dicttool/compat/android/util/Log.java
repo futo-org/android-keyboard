@@ -25,13 +25,19 @@ public class Log {
     public static void d(final String tag, final String message) {
         System.out.println(tag + " : " + message);
     }
-    public static void d(final String tag, final String message, final Throwable e) {
-        System.out.println(tag + " : " + message + " : " + e);
+    public static void d(final String tag, final String message, final Throwable t) {
+        System.out.println(tag + " : " + message + " : " + t);
     }
     public static void e(final String tag, final String message) {
         d(tag, message);
     }
-    public static void e(final String tag, final String message, final Throwable e) {
-        d(tag, message, e);
+    public static void e(final String tag, final String message, final Throwable t) {
+        d(tag, message, t);
+    }
+    public static void w(final String tag, final String message) {
+        d(tag, message);
+    }
+    public static void w(final String tag, final String message, final Throwable t) {
+        d(tag, message, t);
     }
 }

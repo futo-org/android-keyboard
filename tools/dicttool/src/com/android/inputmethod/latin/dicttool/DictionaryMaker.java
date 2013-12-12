@@ -23,7 +23,7 @@ import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.makedict.FusionDictionary;
 import com.android.inputmethod.latin.makedict.MakedictLog;
 import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
-import com.android.inputmethod.latin.makedict.Ver3DictEncoder;
+import com.android.inputmethod.latin.makedict.Ver2DictEncoder;
 import com.android.inputmethod.latin.makedict.Ver4DictEncoder;
 
 import java.io.BufferedWriter;
@@ -361,7 +361,7 @@ public class DictionaryMaker {
         if (version == FormatSpec.VERSION4) {
             dictEncoder = new Ver4DictEncoder(outputFile);
         } else {
-            dictEncoder = new Ver3DictEncoder(outputFile);
+            dictEncoder = new Ver2DictEncoder(outputFile);
         }
         dictEncoder.writeDictionary(dict, formatOptions);
     }

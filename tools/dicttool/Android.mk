@@ -27,11 +27,28 @@ LATINIME_BASE_SOURCE_DIRECTORY := $(LATINIME_LOCAL_DIR)/java/src/com/android/inp
 LATINIME_ANNOTATIONS_SOURCE_DIRECTORY := $(LATINIME_BASE_SOURCE_DIRECTORY)/annotations
 LATINIME_CORE_SOURCE_DIRECTORY := $(LATINIME_BASE_SOURCE_DIRECTORY)/latin
 MAKEDICT_CORE_SOURCE_DIRECTORY := $(LATINIME_CORE_SOURCE_DIRECTORY)/makedict
+
+# Dependencies for Dicttool. Most of these files are needed by BinaryDictionary.java. Note that
+# a significant part of the dependencies are mocked in the compat/ directory, with empty or
+# nearly-empty implementations, for parts that we don't use in Dicttool.
 USED_TARGETTED_UTILS := \
+        $(LATINIME_CORE_SOURCE_DIRECTORY)/BinaryDictionary.java \
+        $(LATINIME_CORE_SOURCE_DIRECTORY)/DicTraverseSession.java \
+        $(LATINIME_CORE_SOURCE_DIRECTORY)/Dictionary.java \
+        $(LATINIME_CORE_SOURCE_DIRECTORY)/InputPointers.java \
+        $(LATINIME_CORE_SOURCE_DIRECTORY)/LastComposedWord.java \
+        $(LATINIME_CORE_SOURCE_DIRECTORY)/LatinImeLogger.java \
+        $(LATINIME_CORE_SOURCE_DIRECTORY)/SuggestedWords.java \
+        $(LATINIME_CORE_SOURCE_DIRECTORY)/WordComposer.java \
+        $(LATINIME_CORE_SOURCE_DIRECTORY)/settings/NativeSuggestOptions.java \
         $(LATINIME_CORE_SOURCE_DIRECTORY)/utils/ByteArrayDictBuffer.java \
         $(LATINIME_CORE_SOURCE_DIRECTORY)/utils/CollectionUtils.java \
         $(LATINIME_CORE_SOURCE_DIRECTORY)/utils/FileUtils.java \
-        $(LATINIME_CORE_SOURCE_DIRECTORY)/utils/JniUtils.java
+        $(LATINIME_CORE_SOURCE_DIRECTORY)/utils/JniUtils.java \
+        $(LATINIME_CORE_SOURCE_DIRECTORY)/utils/LocaleUtils.java \
+        $(LATINIME_CORE_SOURCE_DIRECTORY)/utils/ResizableIntArray.java \
+        $(LATINIME_CORE_SOURCE_DIRECTORY)/utils/StringUtils.java \
+        $(LATINIME_CORE_SOURCE_DIRECTORY)/utils/UnigramProperty.java
 
 DICTTOOL_ONDEVICE_TESTS_DIRECTORY := \
         $(LATINIME_LOCAL_DIR)/tests/src/com/android/inputmethod/latin/makedict/

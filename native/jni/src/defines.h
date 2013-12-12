@@ -87,12 +87,21 @@ AK_FORCE_INLINE static int intArrayToCharArray(const int *const source, const in
 }
 
 #if defined(FLAG_DO_PROFILE) || defined(FLAG_DBG)
+#if defined(__ANDROID__)
 #include <android/log.h>
+#endif // defined(__ANDROID__)
 #ifndef LOG_TAG
 #define LOG_TAG "LatinIME: "
 #endif // LOG_TAG
+
+#if defined(HOST_TOOL)
+#include <stdio.h>
+#define AKLOGE(fmt, ...) printf(fmt "\n", ##__VA_ARGS__)
+#define AKLOGI(fmt, ...) printf(fmt "\n", ##__VA_ARGS__)
+#else // defined(HOST_TOOL)
 #define AKLOGE(fmt, ...) __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, fmt, ##__VA_ARGS__)
 #define AKLOGI(fmt, ...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, fmt, ##__VA_ARGS__)
+#endif // defined(HOST_TOOL)
 
 #define DUMP_RESULT(words, frequencies) do { dumpResult(words, frequencies); } while (0)
 #define DUMP_WORD(word, length) do { dumpWord(word, length); } while (0)
