@@ -36,6 +36,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
@@ -738,13 +739,19 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     }
 
     @UsedForTesting
-    public void shutdownExecutorForTests() {
-        getExecutor(mDictName).shutdown();
-    }
-
-    @UsedForTesting
-    public boolean isTerminatedForTests() {
-        return getExecutor(mDictName).isTerminated();
+    public void waitAllTasksForTests() {
+        final CountDownLatch countDownLatch = new CountDownLatch(1);
+        getExecutor(mDictName).execute(new Runnable() {
+            @Override
+            public void run() {
+                countDownLatch.countDown();
+            }
+        });
+        try {
+            countDownLatch.await();
+        } catch (InterruptedException e) {
+            Log.e(TAG, "Interrupted while waiting for finishing dictionary operations.", e);
+        }
     }
 
     @UsedForTesting
