@@ -384,7 +384,8 @@ public final class KeyboardTextsSet {
         /* 122 */ "w",
         /* 123 */ "y",
         /* 124 */ "x",
-        /* 125 */ EMPTY,
+        // U+00F1: "ñ" LATIN SMALL LETTER N WITH TILDE
+        /* 125 */ "\u00F1",
         /* 126 */ "!fixedColumnOrder!2,!hasLabels!,!text/label_time_am,!text/label_time_pm",
         /* 127 */ "!icon/settings_key|!code/key_settings",
         /* 128 */ "!icon/shortcut_key|!code/key_shortcut",
@@ -1286,15 +1287,6 @@ public final class KeyboardTextsSet {
         // U+00A1: "¡" INVERTED EXCLAMATION MARK
         // U+00BF: "¿" INVERTED QUESTION MARK
         /* 59 */ "!fixedColumnOrder!9,\u00A1,;,/,(,),#,!,\\,,?,\u00BF,&,\\%,+,\",-,:,',@",
-        /* 60~ */
-        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-        null, null, null, null, null,
-        /* ~124 */
-        // U+00F1: "ñ" LATIN SMALL LETTER N WITH TILDE
-        /* 125 */ "\u00F1",
     };
 
     /* Language et_EE: Estonian (Estonia) */

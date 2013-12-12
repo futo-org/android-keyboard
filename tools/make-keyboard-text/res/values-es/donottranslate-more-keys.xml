@@ -67,8 +67,6 @@
          U+0107: "ć" LATIN SMALL LETTER C WITH ACUTE
          U+010D: "č" LATIN SMALL LETTER C WITH CARON -->
     <string name="more_keys_for_c">&#x00E7;,&#x0107;,&#x010D;</string>
-    <!-- U+00F1: "ñ" LATIN SMALL LETTER N WITH TILDE -->
-    <string name="keylabel_for_spanish_row2_10">&#x00F1;</string>
     <!-- U+00A1: "¡" INVERTED EXCLAMATION MARK
          U+00BF: "¿" INVERTED QUESTION MARK -->
     <string name="more_keys_for_punctuation">"!fixedColumnOrder!9,&#x00A1;,;,/,(,),#,!,\\,,\?,&#x00BF;,&amp;,\\%,+,\",-,:,',\@"</string>
