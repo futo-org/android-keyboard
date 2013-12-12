@@ -105,6 +105,9 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     /** Whether to support dynamically updating the dictionary */
     private final boolean mIsUpdatable;
 
+    /** Dictionary file */
+    private final File mDictFile;
+
     // TODO: remove, once dynamic operations is serialized
     /** Controls updating the shared binary dictionary file across multiple instances. */
     private final DictionaryUpdateController mDictNameDictionaryUpdateController;
@@ -146,7 +149,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     }
 
     private File getDictFile() {
-        return new File(mContext.getFilesDir(), mDictName + DICT_FILE_EXTENSION);
+        return mDictFile;
     }
 
     /**
@@ -200,11 +203,20 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
      */
     public ExpandableBinaryDictionary(final Context context, final String dictName,
             final Locale locale, final String dictType, final boolean isUpdatable) {
+        this(context, dictName, locale, dictType, isUpdatable,
+                new File(context.getFilesDir(), dictName + DICT_FILE_EXTENSION));
+    }
+
+    // Creates an instance that uses a given dictionary file.
+    public ExpandableBinaryDictionary(final Context context, final String dictName,
+            final Locale locale, final String dictType, final boolean isUpdatable,
+            final File dictFile) {
         super(dictType);
         mDictName = dictName;
         mContext = context;
         mLocale = locale;
         mIsUpdatable = isUpdatable;
+        mDictFile = dictFile;
         mBinaryDictionary = null;
         mDictNameDictionaryUpdateController = getDictionaryUpdateController(dictName);
         // Currently, only dynamic personalization dictionary is updatable.
