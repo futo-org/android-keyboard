@@ -27,6 +27,8 @@
     <dimen name="config_default_keyboard_height">283.5dp</dimen>
     <fraction name="config_min_keyboard_height">45%p</fraction>
 
+    <dimen name="config_more_keys_keyboard_key_height">81.9dp</dimen>
+
     <fraction name="config_keyboard_top_padding_gb">2.444%p</fraction>
     <fraction name="config_keyboard_bottom_padding_gb">0.0%p</fraction>
     <fraction name="config_key_vertical_gap_gb">5.200%p</fraction>
@@ -37,11 +39,6 @@
     <fraction name="config_key_vertical_gap_holo">4.5%p</fraction>
     <fraction name="config_key_horizontal_gap_holo">0.9%p</fraction>
 
-    <dimen name="config_more_keys_keyboard_key_height">81.9dp</dimen>
-
-    <!-- left or right padding of label alignment -->
-    <dimen name="config_key_label_horizontal_padding">18dp</dimen>
-
     <fraction name="config_key_letter_ratio">50%</fraction>
     <fraction name="config_key_large_letter_ratio">48%</fraction>
     <fraction name="config_key_label_ratio">32%</fraction>
@@ -49,6 +46,8 @@
     <fraction name="config_key_hint_label_ratio">34%</fraction>
     <fraction name="config_key_shifted_letter_hint_ratio">29%</fraction>
     <fraction name="config_language_on_spacebar_text_ratio">30.0%</fraction>
+    <!-- left or right padding of label alignment -->
+    <dimen name="config_key_label_horizontal_padding">18dp</dimen>
     <dimen name="config_key_shifted_letter_hint_padding">4dp</dimen>
 
     <!-- For 5-row keyboard -->

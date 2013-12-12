@@ -20,17 +20,6 @@
 
 <!-- Configuration values for Large Tablet Portrait. -->
 <resources>
-    <bool name="config_enable_show_voice_key_option">false</bool>
-    <bool name="config_enable_show_key_preview_popup_option">false</bool>
-    <!-- Whether or not Popup on key press is enabled by default -->
-    <bool name="config_default_key_preview_popup">false</bool>
-    <bool name="config_default_sound_enabled">true</bool>
-
-    <bool name="config_key_selection_by_dragging_finger">false</bool>
-    <!-- Showing more keys keyboard, just above the touched point if true, aligned to the key if
-         false -->
-    <bool name="config_show_more_keys_keyboard_at_touched_point">true</bool>
-
     <!-- Preferable keyboard height in absolute scale: 48.0mm -->
     <!-- This config_default_keyboard_height value should match with keyboard-heights.xml -->
     <dimen name="config_default_keyboard_height">302.4dp</dimen>
@@ -41,26 +30,26 @@
     <fraction name="config_keyboard_bottom_padding_gb">0.0%p</fraction>
     <fraction name="config_key_vertical_gap_gb">4.687%p</fraction>
     <fraction name="config_key_horizontal_gap_gb">1.272%p</fraction>
+    <!-- config_more_keys_keyboard_key_height x -1.0 -->
+    <dimen name="config_more_keys_keyboard_vertical_correction_gb">-81.9dp</dimen>
+    <dimen name="config_key_preview_offset_gb">16.0dp</dimen>
 
     <fraction name="config_keyboard_top_padding_holo">2.335%p</fraction>
     <fraction name="config_keyboard_bottom_padding_holo">0.0%p</fraction>
     <fraction name="config_key_vertical_gap_holo">3.312%p</fraction>
     <fraction name="config_key_horizontal_gap_holo">1.066%p</fraction>
+    <!-- config_more_keys_keyboard_key_height x -0.5 -->
+    <dimen name="config_more_keys_keyboard_vertical_correction_holo">-31.5dp</dimen>
+    <dimen name="config_key_preview_offset_holo">8.0dp</dimen>
 
     <dimen name="config_more_keys_keyboard_key_height">63.0dp</dimen>
-
     <dimen name="config_more_keys_keyboard_key_horizontal_padding">12dp</dimen>
     <!-- Amount of allowance for selecting keys in a mini popup keyboard by sliding finger. -->
     <!-- config_more_keys_keyboard_key_height x 1.2 -->
     <dimen name="config_more_keys_keyboard_slide_allowance">98.3dp</dimen>
-    <!-- config_more_keys_keyboard_key_height x -1.0 -->
-    <dimen name="config_more_keys_keyboard_vertical_correction_gb">-81.9dp</dimen>
 
-    <!-- left or right padding of label alignment -->
-    <dimen name="config_key_label_horizontal_padding">6dp</dimen>
-    <dimen name="config_key_hint_letter_padding">3dp</dimen>
-    <dimen name="config_key_shifted_letter_hint_padding">3dp</dimen>
-
+    <dimen name="config_key_preview_height">94.5dp</dimen>
+    <fraction name="config_key_preview_text_ratio">50%</fraction>
     <fraction name="config_key_letter_ratio">40%</fraction>
     <fraction name="config_key_large_letter_ratio">42%</fraction>
     <fraction name="config_key_label_ratio">28%</fraction>
@@ -68,19 +57,16 @@
     <fraction name="config_key_hint_letter_ratio">23%</fraction>
     <fraction name="config_key_hint_label_ratio">28%</fraction>
     <fraction name="config_key_shifted_letter_hint_ratio">26%</fraction>
-    <fraction name="config_key_preview_text_ratio">50%</fraction>
     <fraction name="config_language_on_spacebar_text_ratio">29.03%</fraction>
-    <dimen name="config_key_preview_height">94.5dp</dimen>
-    <dimen name="config_key_preview_offset_gb">16.0dp</dimen>
+    <!-- left or right padding of label alignment -->
+    <dimen name="config_key_label_horizontal_padding">6dp</dimen>
+    <dimen name="config_key_hint_letter_padding">3dp</dimen>
+    <dimen name="config_key_shifted_letter_hint_padding">3dp</dimen>
 
     <!-- For 5-row keyboard -->
     <fraction name="config_key_vertical_gap_5row">2.95%p</fraction>
     <fraction name="config_key_letter_ratio_5row">51%</fraction>
     <fraction name="config_key_shifted_letter_hint_ratio_5row">33%</fraction>
-
-    <dimen name="config_key_preview_offset_holo">8.0dp</dimen>
-    <!-- config_more_keys_keyboard_key_height x -0.5 -->
-    <dimen name="config_more_keys_keyboard_vertical_correction_holo">-31.5dp</dimen>
 
     <dimen name="config_suggestions_strip_height">44dp</dimen>
     <dimen name="config_more_suggestions_row_height">44dp</dimen>
