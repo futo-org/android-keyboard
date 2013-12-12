@@ -147,7 +147,7 @@ namespace latinime {
     const char *const baseName = basename(filePathBuf);
     const int baseNameLength = strlen(baseName);
     if (baseNameLength >= outNameBufSize) {
-        AKLOGE("outNameBufSize is too small. dirPath: %s, outNameBufSize: %d",
+        AKLOGE("outNameBufSize is too small. filePath: %s, outNameBufSize: %d",
                 filePath, outNameBufSize);
         return;
     }

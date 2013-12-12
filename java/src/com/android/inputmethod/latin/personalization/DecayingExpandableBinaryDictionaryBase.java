@@ -112,16 +112,6 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
         return formatVersion == REQUIRED_BINARY_DICTIONARY_VERSION;
     }
 
-    @Override
-    protected String getFileNameToCreateDict(final String dictName) {
-        return dictName;
-    }
-
-    @Override
-    protected String getFileNameToOpenDict(final String dictName) {
-        return dictName + "/" + dictName + FormatSpec.HEADER_FILE_EXTENSION;
-    }
-
     public void addMultipleDictionaryEntriesToDictionary(
             final ArrayList<LanguageModelParam> languageModelParams,
             final ExpandableBinaryDictionary.AddMultipleDictionaryEntriesCallback callback) {

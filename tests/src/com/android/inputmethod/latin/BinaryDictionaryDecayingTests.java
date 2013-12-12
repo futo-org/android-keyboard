@@ -114,7 +114,6 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
         final File file = File.createTempFile(dictId, TEST_DICT_FILE_EXTENSION,
                 getContext().getCacheDir());
         FileUtils.deleteRecursively(file);
-        file.mkdir();
         Map<String, String> attributeMap = new HashMap<String, String>();
         attributeMap.put(FormatSpec.FileHeader.SUPPORTS_DYNAMIC_UPDATE_ATTRIBUTE,
                 FormatSpec.FileHeader.ATTRIBUTE_VALUE_TRUE);
@@ -125,7 +124,7 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
         final String headerFileName = file.getName() + FormatSpec.HEADER_FILE_EXTENSION;
         if (BinaryDictionary.createEmptyDictFile(file.getAbsolutePath(),
                 FormatSpec.VERSION4, attributeMap)) {
-            return new File(file, headerFileName);
+            return file;
         } else {
             throw new IOException("Empty dictionary " + file.getAbsolutePath() + " "
                     + headerFileName + " cannot be created.");

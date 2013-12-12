@@ -27,9 +27,9 @@ namespace latinime {
 
 class BigramDictContent : public SparseTableDictContent {
  public:
-    BigramDictContent(const char *const dictDirPath, const bool hasHistoricalInfo,
+    BigramDictContent(const char *const dictPath, const bool hasHistoricalInfo,
             const bool isUpdatable)
-            : SparseTableDictContent(dictDirPath,
+            : SparseTableDictContent(dictPath,
                       Ver4DictConstants::BIGRAM_LOOKUP_TABLE_FILE_EXTENSION,
                       Ver4DictConstants::BIGRAM_CONTENT_TABLE_FILE_EXTENSION,
                       Ver4DictConstants::BIGRAM_FILE_EXTENSION, isUpdatable,
@@ -73,8 +73,8 @@ class BigramDictContent : public SparseTableDictContent {
 
     bool copyBigramList(const int bigramListPos, const int toPos);
 
-    bool flushToFile(const char *const dictBasePath) const {
-        return flush(dictBasePath, Ver4DictConstants::BIGRAM_LOOKUP_TABLE_FILE_EXTENSION,
+    bool flushToFile(const char *const dictPath) const {
+        return flush(dictPath, Ver4DictConstants::BIGRAM_LOOKUP_TABLE_FILE_EXTENSION,
                 Ver4DictConstants::BIGRAM_CONTENT_TABLE_FILE_EXTENSION,
                 Ver4DictConstants::BIGRAM_FILE_EXTENSION);
     }

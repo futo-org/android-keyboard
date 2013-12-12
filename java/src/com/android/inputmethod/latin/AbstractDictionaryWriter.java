@@ -60,10 +60,9 @@ abstract public class AbstractDictionaryWriter {
     abstract protected void writeDictionary(final DictEncoder dictEncoder,
             final Map<String, String> attributeMap) throws IOException, UnsupportedFormatException;
 
-    public void write(final String fileName, final Map<String, String> attributeMap) {
-        final String tempFileName = fileName + ".temp";
-        final File file = new File(mContext.getFilesDir(), fileName);
-        final File tempFile = new File(mContext.getFilesDir(), tempFileName);
+    public void write(final File file, final Map<String, String> attributeMap) {
+        final String tempFilePath = file.getAbsolutePath() + ".temp";
+        final File tempFile = new File(tempFilePath);
         try {
             final DictEncoder dictEncoder = new Ver3DictEncoder(tempFile);
             writeDictionary(dictEncoder, attributeMap);

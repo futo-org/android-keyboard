@@ -33,6 +33,15 @@ class DictionaryStructureWithBufferPolicyFactory {
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(DictionaryStructureWithBufferPolicyFactory);
+
+    static DictionaryStructureWithBufferPolicy::StructurePolicyPtr
+            newPolicyforDirectoryDict(const char *const path, const bool isUpdatable);
+
+    static DictionaryStructureWithBufferPolicy::StructurePolicyPtr
+            newPolicyforFileDict(const char *const path, const int bufOffset, const int size);
+
+    static void getHeaderFilePathInDictDir(const char *const dirPath,
+            const int outHeaderFileBufSize, char *const outHeaderFilePath);
 };
 } // namespace latinime
 #endif // LATINIME_DICTIONARY_STRUCTURE_WITH_BUFFER_POLICY_FACTORY_H

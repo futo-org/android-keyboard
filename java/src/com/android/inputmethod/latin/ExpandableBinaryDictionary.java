@@ -144,20 +144,8 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         return mBinaryDictionary.isValidDictionary();
     }
 
-    protected String getFileNameToCreateDict(final String dictName) {
-        return dictName + DICT_FILE_EXTENSION;
-    }
-
-    protected String getFileNameToOpenDict(final String dictName) {
-        return getFileNameToCreateDict(dictName);
-    }
-
-    private File getFileToCreateDict() {
-        return new File(mContext.getFilesDir(), getFileNameToCreateDict(mDictName));
-    }
-
-    private File getFileToOpenDict() {
-        return new File(mContext.getFilesDir(), getFileNameToOpenDict(mDictName));
+    private File getDictFile() {
+        return new File(mContext.getFilesDir(), mDictName + DICT_FILE_EXTENSION);
     }
 
     /**
@@ -270,17 +258,14 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
             public void run() {
                 if (mDictionaryWriter == null) {
                     mBinaryDictionary.close();
-                    final File file = getFileToCreateDict();
-                    file.delete();
+                    final File file = getDictFile();
+                    if (file.exists() && !FileUtils.deleteRecursively(file)) {
+                        Log.e(TAG, "Can't remove a file: " + file.getName());
+                    }
                     BinaryDictionary.createEmptyDictFile(file.getAbsolutePath(),
                             DICTIONARY_FORMAT_VERSION, getHeaderAttributeMap());
-                    // We have 'fileToOpen' in addition to 'file' for the v4 dictionary format
-                    // where 'file' is a directory, and 'fileToOpen' is a normal file.
-                    final File fileToOpen = getFileToOpenDict();
-                    // TODO: Make BinaryDictionary's constructor be able to accept filename
-                    // without extension.
                     mBinaryDictionary = new BinaryDictionary(
-                            fileToOpen.getAbsolutePath(), 0 /* offset */, fileToOpen.length(),
+                            file.getAbsolutePath(), 0 /* offset */, file.length(),
                             true /* useFullEditDistance */, null, mDictType, mIsUpdatable);
                 } else {
                     mDictionaryWriter.clear();
@@ -531,7 +516,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
             }
         }
 
-        final File file = getFileToOpenDict();
+        final File file = getDictFile();
         final String filename = file.getAbsolutePath();
         final long length = file.length();
 
@@ -572,14 +557,14 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         if (needsToReloadBeforeWriting()) {
             mDictionaryWriter.clear();
             loadDictionaryAsync();
-            mDictionaryWriter.write(getFileNameToCreateDict(mDictName), getHeaderAttributeMap());
+            mDictionaryWriter.write(getDictFile(), getHeaderAttributeMap());
         } else {
             if (mBinaryDictionary == null || !isValidDictionary()
                     // TODO: remove the check below
                     || !matchesExpectedBinaryDictFormatVersionForThisType(
                             mBinaryDictionary.getFormatVersion())) {
-                final File file = getFileToCreateDict();
-                if (!FileUtils.deleteRecursively(file)) {
+                final File file = getDictFile();
+                if (file.exists() && !FileUtils.deleteRecursively(file)) {
                     Log.e(TAG, "Can't remove a file: " + file.getName());
                 }
                 BinaryDictionary.createEmptyDictFile(file.getAbsolutePath(),
@@ -706,8 +691,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
 
     // TODO: cache the file's existence so that we avoid doing a disk access each time.
     private boolean dictionaryFileExists() {
-        final File file = getFileToOpenDict();
-        return file.exists();
+        return getDictFile().exists();
     }
 
     /**

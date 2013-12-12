@@ -39,25 +39,15 @@ class ExclusiveOwnershipPointer {
         deletePointersIfHavingOwnership();
     }
 
-    // Move the ownership.
-    AK_FORCE_INLINE ExclusiveOwnershipPointer<T> &operator=(
-            const ExclusiveOwnershipPointer<T> &pointer) {
-        // Delete pointers when this is an owner of another pointer.
-        deletePointersIfHavingOwnership();
-        mPointer = pointer.mPointer;
-        mSharedOwnerPtr = pointer.mSharedOwnerPtr;
-        transferOwnership(pointer);
-        return *this;
-    }
-
     AK_FORCE_INLINE T *get() const {
         return mPointer;
     }
 
  private:
-    // This class allows to copy and assign and ensures only one instance has the ownership of the
+    // This class allows to copy and ensures only one instance has the ownership of the
     // managed pointer.
     DISALLOW_DEFAULT_CONSTRUCTOR(ExclusiveOwnershipPointer);
+    DISALLOW_ASSIGNMENT_OPERATOR(ExclusiveOwnershipPointer);
 
     void transferOwnership(const ExclusiveOwnershipPointer<T> *const src) {
         if (*mSharedOwnerPtr != src) {

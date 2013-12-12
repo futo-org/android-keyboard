@@ -26,8 +26,8 @@ namespace latinime {
 
 class ShortcutDictContent : public SparseTableDictContent {
  public:
-    ShortcutDictContent(const char *const dictDirPath, const bool isUpdatable)
-            : SparseTableDictContent(dictDirPath,
+    ShortcutDictContent(const char *const dictPath, const bool isUpdatable)
+            : SparseTableDictContent(dictPath,
                       Ver4DictConstants::SHORTCUT_LOOKUP_TABLE_FILE_EXTENSION,
                       Ver4DictConstants::SHORTCUT_CONTENT_TABLE_FILE_EXTENSION,
                       Ver4DictConstants::SHORTCUT_FILE_EXTENSION, isUpdatable,
@@ -53,7 +53,7 @@ class ShortcutDictContent : public SparseTableDictContent {
    // Returns head position of shortcut list for a PtNode specified by terminalId.
    int getShortcutListHeadPos(const int terminalId) const;
 
-   bool flushToFile(const char *const dictBasePath) const;
+   bool flushToFile(const char *const dictPath) const;
 
    bool runGC(const TerminalPositionLookupTable::TerminalIdMap *const terminalIdMap,
            const ShortcutDictContent *const originalShortcutDictContent);

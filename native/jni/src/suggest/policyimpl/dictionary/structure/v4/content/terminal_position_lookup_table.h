@@ -28,8 +28,8 @@ class TerminalPositionLookupTable : public SingleDictContent {
  public:
     typedef hash_map_compat<int, int> TerminalIdMap;
 
-    TerminalPositionLookupTable(const char *const dictDirPath, const bool isUpdatable)
-            : SingleDictContent(dictDirPath,
+    TerminalPositionLookupTable(const char *const dictPath, const bool isUpdatable)
+            : SingleDictContent(dictPath,
                       Ver4DictConstants::TERMINAL_ADDRESS_TABLE_FILE_EXTENSION, isUpdatable),
               mSize(getBuffer()->getTailPosition()
                       / Ver4DictConstants::TERMINAL_ADDRESS_TABLE_ADDRESS_SIZE) {}
@@ -44,7 +44,7 @@ class TerminalPositionLookupTable : public SingleDictContent {
         return mSize;
     }
 
-    bool flushToFile(const char *const dictBasePath) const;
+    bool flushToFile(const char *const dictPath) const;
 
     bool runGCTerminalIds(TerminalIdMap *const terminalIdMap);
 
