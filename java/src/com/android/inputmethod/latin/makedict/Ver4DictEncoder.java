@@ -365,7 +365,7 @@ public class Ver4DictEncoder implements DictEncoder {
 
     private void writeChildrenPosition(PtNode ptNode, FormatOptions formatOptions) {
         final int childrenPos = BinaryDictEncoderUtils.getChildrenPosition(ptNode, formatOptions);
-        if (formatOptions.mSupportsDynamicUpdate) {
+        if (formatOptions.supportsDynamicUpdate()) {
             mTriePos += BinaryDictEncoderUtils.writeSignedChildrenPosition(mTrieBuf,
                     mTriePos, childrenPos);
         } else {

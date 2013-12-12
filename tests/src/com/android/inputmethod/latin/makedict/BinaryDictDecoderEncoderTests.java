@@ -226,8 +226,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
             final FormatSpec.FormatOptions formatOptions) {
         String result = " : buffer type = "
                 + ((bufferType == BinaryDictUtils.USE_BYTE_BUFFER) ? "byte buffer" : "byte array");
-        result += " : version = " + formatOptions.mVersion;
-        return result + ", supportsDynamicUpdate = " + formatOptions.mSupportsDynamicUpdate;
+        return result + " : version = " + formatOptions.mVersion;
     }
 
     // Tests for readDictionaryBinary and writeDictionaryBinary
@@ -315,17 +314,11 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         final List<String> results = CollectionUtils.newArrayList();
 
         runReadAndWriteTests(results, BinaryDictUtils.USE_BYTE_BUFFER,
-                BinaryDictUtils.VERSION2);
+                BinaryDictUtils.VERSION2_OPTIONS);
         runReadAndWriteTests(results, BinaryDictUtils.USE_BYTE_BUFFER,
-                BinaryDictUtils.VERSION3_WITHOUT_DYNAMIC_UPDATE);
+                BinaryDictUtils.VERSION3_OPTIONS);
         runReadAndWriteTests(results, BinaryDictUtils.USE_BYTE_BUFFER,
-                BinaryDictUtils.VERSION3_WITH_DYNAMIC_UPDATE);
-        runReadAndWriteTests(results, BinaryDictUtils.USE_BYTE_BUFFER,
-                BinaryDictUtils.VERSION4_WITHOUT_DYNAMIC_UPDATE);
-        runReadAndWriteTests(results, BinaryDictUtils.USE_BYTE_BUFFER,
-                BinaryDictUtils.VERSION4_WITH_DYNAMIC_UPDATE);
-        runReadAndWriteTests(results, BinaryDictUtils.USE_BYTE_BUFFER,
-                BinaryDictUtils.VERSION4_WITH_DYNAMIC_UPDATE_AND_TIMESTAMP);
+                BinaryDictUtils.VERSION4_OPTIONS_WITH_TIMESTAMP);
 
         for (final String result : results) {
             Log.d(TAG, result);
@@ -336,17 +329,11 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         final List<String> results = CollectionUtils.newArrayList();
 
         runReadAndWriteTests(results, BinaryDictUtils.USE_BYTE_ARRAY,
-                BinaryDictUtils.VERSION2);
+                BinaryDictUtils.VERSION2_OPTIONS);
         runReadAndWriteTests(results, BinaryDictUtils.USE_BYTE_ARRAY,
-                BinaryDictUtils.VERSION3_WITHOUT_DYNAMIC_UPDATE);
+                BinaryDictUtils.VERSION3_OPTIONS);
         runReadAndWriteTests(results, BinaryDictUtils.USE_BYTE_ARRAY,
-                BinaryDictUtils.VERSION3_WITH_DYNAMIC_UPDATE);
-        runReadAndWriteTests(results, BinaryDictUtils.USE_BYTE_ARRAY,
-                BinaryDictUtils.VERSION4_WITHOUT_DYNAMIC_UPDATE);
-        runReadAndWriteTests(results, BinaryDictUtils.USE_BYTE_ARRAY,
-                BinaryDictUtils.VERSION4_WITH_DYNAMIC_UPDATE);
-        runReadAndWriteTests(results, BinaryDictUtils.USE_BYTE_ARRAY,
-                BinaryDictUtils.VERSION4_WITH_DYNAMIC_UPDATE_AND_TIMESTAMP);
+                BinaryDictUtils.VERSION4_OPTIONS_WITH_TIMESTAMP);
 
         for (final String result : results) {
             Log.d(TAG, result);
@@ -472,17 +459,11 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         final ArrayList<String> results = CollectionUtils.newArrayList();
 
         runReadUnigramsAndBigramsTests(results, BinaryDictUtils.USE_BYTE_BUFFER,
-                BinaryDictUtils.VERSION2);
+                BinaryDictUtils.VERSION2_OPTIONS);
         runReadUnigramsAndBigramsTests(results, BinaryDictUtils.USE_BYTE_BUFFER,
-                BinaryDictUtils.VERSION3_WITHOUT_DYNAMIC_UPDATE);
+                BinaryDictUtils.VERSION3_OPTIONS);
         runReadUnigramsAndBigramsTests(results, BinaryDictUtils.USE_BYTE_BUFFER,
-                BinaryDictUtils.VERSION3_WITH_DYNAMIC_UPDATE);
-        runReadUnigramsAndBigramsTests(results, BinaryDictUtils.USE_BYTE_BUFFER,
-                BinaryDictUtils.VERSION4_WITHOUT_DYNAMIC_UPDATE);
-        runReadUnigramsAndBigramsTests(results, BinaryDictUtils.USE_BYTE_BUFFER,
-                BinaryDictUtils.VERSION4_WITH_DYNAMIC_UPDATE);
-        runReadUnigramsAndBigramsTests(results, BinaryDictUtils.USE_BYTE_BUFFER,
-                BinaryDictUtils.VERSION4_WITH_DYNAMIC_UPDATE_AND_TIMESTAMP);
+                BinaryDictUtils.VERSION4_OPTIONS_WITH_TIMESTAMP);
 
         for (final String result : results) {
             Log.d(TAG, result);
@@ -493,17 +474,11 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         final ArrayList<String> results = CollectionUtils.newArrayList();
 
         runReadUnigramsAndBigramsTests(results, BinaryDictUtils.USE_BYTE_ARRAY,
-                BinaryDictUtils.VERSION2);
+                BinaryDictUtils.VERSION2_OPTIONS);
         runReadUnigramsAndBigramsTests(results, BinaryDictUtils.USE_BYTE_ARRAY,
-                BinaryDictUtils.VERSION3_WITHOUT_DYNAMIC_UPDATE);
+                BinaryDictUtils.VERSION3_OPTIONS);
         runReadUnigramsAndBigramsTests(results, BinaryDictUtils.USE_BYTE_ARRAY,
-                BinaryDictUtils.VERSION3_WITH_DYNAMIC_UPDATE);
-        runReadUnigramsAndBigramsTests(results, BinaryDictUtils.USE_BYTE_ARRAY,
-                BinaryDictUtils.VERSION4_WITHOUT_DYNAMIC_UPDATE);
-        runReadUnigramsAndBigramsTests(results, BinaryDictUtils.USE_BYTE_ARRAY,
-                BinaryDictUtils.VERSION4_WITH_DYNAMIC_UPDATE);
-        runReadUnigramsAndBigramsTests(results, BinaryDictUtils.USE_BYTE_ARRAY,
-                BinaryDictUtils.VERSION4_WITH_DYNAMIC_UPDATE_AND_TIMESTAMP);
+                BinaryDictUtils.VERSION4_OPTIONS_WITH_TIMESTAMP);
 
         for (final String result : results) {
             Log.d(TAG, result);
@@ -612,29 +587,19 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
     public void testGetTerminalPosition() {
         final ArrayList<String> results = CollectionUtils.newArrayList();
 
-        runGetTerminalPositionTests(BinaryDictUtils.USE_BYTE_ARRAY, BinaryDictUtils.VERSION2);
         runGetTerminalPositionTests(BinaryDictUtils.USE_BYTE_ARRAY,
-                BinaryDictUtils.VERSION3_WITHOUT_DYNAMIC_UPDATE);
+                BinaryDictUtils.VERSION2_OPTIONS);
         runGetTerminalPositionTests(BinaryDictUtils.USE_BYTE_ARRAY,
-                BinaryDictUtils.VERSION3_WITH_DYNAMIC_UPDATE);
+                BinaryDictUtils.VERSION3_OPTIONS);
         runGetTerminalPositionTests(BinaryDictUtils.USE_BYTE_ARRAY,
-                BinaryDictUtils.VERSION4_WITHOUT_DYNAMIC_UPDATE);
-        runGetTerminalPositionTests(BinaryDictUtils.USE_BYTE_ARRAY,
-                BinaryDictUtils.VERSION4_WITH_DYNAMIC_UPDATE);
-        runGetTerminalPositionTests(BinaryDictUtils.USE_BYTE_ARRAY,
-                BinaryDictUtils.VERSION4_WITH_DYNAMIC_UPDATE_AND_TIMESTAMP);
+                BinaryDictUtils.VERSION4_OPTIONS_WITH_TIMESTAMP);
 
-        runGetTerminalPositionTests(BinaryDictUtils.USE_BYTE_BUFFER, BinaryDictUtils.VERSION2);
         runGetTerminalPositionTests(BinaryDictUtils.USE_BYTE_BUFFER,
-                BinaryDictUtils.VERSION3_WITHOUT_DYNAMIC_UPDATE);
+                BinaryDictUtils.VERSION2_OPTIONS);
         runGetTerminalPositionTests(BinaryDictUtils.USE_BYTE_BUFFER,
-                BinaryDictUtils.VERSION3_WITH_DYNAMIC_UPDATE);
+                BinaryDictUtils.VERSION3_OPTIONS);
         runGetTerminalPositionTests(BinaryDictUtils.USE_BYTE_BUFFER,
-                BinaryDictUtils.VERSION4_WITHOUT_DYNAMIC_UPDATE);
-        runGetTerminalPositionTests(BinaryDictUtils.USE_BYTE_BUFFER,
-                BinaryDictUtils.VERSION4_WITH_DYNAMIC_UPDATE);
-        runGetTerminalPositionTests(BinaryDictUtils.USE_BYTE_BUFFER,
-                BinaryDictUtils.VERSION4_WITH_DYNAMIC_UPDATE_AND_TIMESTAMP);
+                BinaryDictUtils.VERSION4_OPTIONS_WITH_TIMESTAMP);
 
         for (final String result : results) {
             Log.d(TAG, result);
@@ -668,7 +633,6 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
     }
 
     public void testDeleteWord() throws IOException, UnsupportedFormatException {
-        runTestDeleteWord(BinaryDictUtils.VERSION3_WITH_DYNAMIC_UPDATE);
-        runTestDeleteWord(BinaryDictUtils.VERSION4_WITH_DYNAMIC_UPDATE);
+        runTestDeleteWord(BinaryDictUtils.VERSION3_OPTIONS);
     }
 }

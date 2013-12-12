@@ -330,7 +330,7 @@ public final class BinaryDictDecoderUtils {
 
     static int readChildrenAddress(final DictBuffer dictBuffer,
             final int optionFlags, final FormatOptions options) {
-        if (options.mSupportsDynamicUpdate) {
+        if (options.supportsDynamicUpdate()) {
             final int address = dictBuffer.readUnsignedInt24();
             if (address == 0) return FormatSpec.NO_CHILDREN_ADDRESS;
             if ((address & FormatSpec.MSB24) != 0) {
@@ -540,11 +540,11 @@ public final class BinaryDictDecoderUtils {
             }
 
             // reach the end of the array.
-            if (options.mSupportsDynamicUpdate) {
+            if (options.supportsDynamicUpdate()) {
                 final boolean hasValidForwardLink = dictDecoder.readAndFollowForwardLink();
                 if (!hasValidForwardLink) break;
             }
-        } while (options.mSupportsDynamicUpdate && dictDecoder.hasNextPtNodeArray());
+        } while (options.supportsDynamicUpdate() && dictDecoder.hasNextPtNodeArray());
 
         final PtNodeArray nodeArray = new PtNodeArray(nodeArrayContents);
         nodeArray.mCachedAddressBeforeUpdate = nodeArrayOriginPos;

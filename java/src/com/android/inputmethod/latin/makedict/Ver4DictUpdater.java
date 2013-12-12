@@ -54,8 +54,6 @@ public class Ver4DictUpdater extends Ver4DictDecoder implements DictUpdater {
     }
 
     private static class BigramContentUpdater extends SparseTableContentUpdater {
-        private final boolean mHasTimestamp;
-
         public BigramContentUpdater(final String name, final File baseDir,
                 final boolean hasTimestamp) {
             super(name + FormatSpec.BIGRAM_FILE_EXTENSION,
@@ -63,7 +61,6 @@ public class Ver4DictUpdater extends Ver4DictDecoder implements DictUpdater {
                     BigramContentReader.getContentFilenames(name, hasTimestamp),
                     BigramContentReader.getContentIds(hasTimestamp),
                     new DictionaryBufferFromWritableByteBufferFactory());
-            mHasTimestamp = hasTimestamp;
         }
 
         public void insertBigramEntries(final int terminalId, final int frequency,

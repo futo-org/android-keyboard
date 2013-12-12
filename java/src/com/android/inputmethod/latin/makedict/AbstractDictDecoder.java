@@ -58,12 +58,9 @@ public abstract class AbstractDictDecoder implements DictDecoder {
                 headerSize);
 
         final FileHeader header = new FileHeader(headerSize,
-                new FusionDictionary.DictionaryOptions(attributes,
-                        0 != (optionsFlags & FormatSpec.GERMAN_UMLAUT_PROCESSING_FLAG),
-                        0 != (optionsFlags & FormatSpec.FRENCH_LIGATURE_PROCESSING_FLAG)),
-                        new FormatOptions(version,
-                                0 != (optionsFlags & FormatSpec.SUPPORTS_DYNAMIC_UPDATE),
-                                0 != (optionsFlags & FormatSpec.CONTAINS_TIMESTAMP_FLAG)));
+                new FusionDictionary.DictionaryOptions(attributes),
+                new FormatOptions(version,
+                        0 != (optionsFlags & FormatSpec.CONTAINS_TIMESTAMP_FLAG)));
         return header;
     }
 

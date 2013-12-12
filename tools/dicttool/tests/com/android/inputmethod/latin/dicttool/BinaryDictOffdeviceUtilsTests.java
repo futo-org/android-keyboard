@@ -44,8 +44,7 @@ public class BinaryDictOffdeviceUtilsTests extends TestCase {
     public void testGetRawDictWorks() throws IOException, UnsupportedFormatException {
         // Create a thrice-compressed dictionary file.
         final FusionDictionary dict = new FusionDictionary(new PtNodeArray(),
-                new DictionaryOptions(new HashMap<String, String>(),
-                        false /* germanUmlautProcessing */, false /* frenchLigatureProcessing */));
+                new DictionaryOptions(new HashMap<String, String>()));
         dict.add("foo", TEST_FREQ, null, false /* isNotAWord */);
         dict.add("fta", 1, null, false /* isNotAWord */);
         dict.add("ftb", 1, null, false /* isNotAWord */);
