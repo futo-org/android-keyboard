@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef LATINIME_DYNAMIC_PATRICIA_TRIE_READING_HELPER_H
-#define LATINIME_DYNAMIC_PATRICIA_TRIE_READING_HELPER_H
+#ifndef LATINIME_DYNAMIC_PT_READING_HELPER_H
+#define LATINIME_DYNAMIC_PT_READING_HELPER_H
 
 #include <cstddef>
 #include <vector>
@@ -34,8 +34,7 @@ class DictionaryShortcutsStructurePolicy;
  * This class is used for traversing dynamic patricia trie. This class supports iterating nodes and
  * dealing with additional buffer. This class counts nodes and node arrays to avoid infinite loop.
  */
-// TODO: Move to pt_common.
-class DynamicPatriciaTrieReadingHelper {
+class DynamicPtReadingHelper {
  public:
     class TraversingEventListener {
      public:
@@ -60,12 +59,12 @@ class DynamicPatriciaTrieReadingHelper {
         DISALLOW_COPY_AND_ASSIGN(TraversingEventListener);
     };
 
-    DynamicPatriciaTrieReadingHelper(const BufferWithExtendableBuffer *const buffer,
+    DynamicPtReadingHelper(const BufferWithExtendableBuffer *const buffer,
             const PtNodeReader *const ptNodeReader)
             : mIsError(false), mReadingState(), mBuffer(buffer),
               mPtNodeReader(ptNodeReader), mReadingStateStack() {}
 
-    ~DynamicPatriciaTrieReadingHelper() {}
+    ~DynamicPtReadingHelper() {}
 
     AK_FORCE_INLINE bool isError() const {
         return mIsError;
@@ -205,7 +204,7 @@ class DynamicPatriciaTrieReadingHelper {
             const bool forceLowerCaseSearch);
 
  private:
-    DISALLOW_COPY_AND_ASSIGN(DynamicPatriciaTrieReadingHelper);
+    DISALLOW_COPY_AND_ASSIGN(DynamicPtReadingHelper);
 
     // This class encapsulates the reading state of a position in the dictionary. It points at a
     // specific PtNode in the dictionary.
@@ -267,4 +266,4 @@ class DynamicPatriciaTrieReadingHelper {
     }
 };
 } // namespace latinime
-#endif /* LATINIME_DYNAMIC_PATRICIA_TRIE_READING_HELPER_H */
+#endif /* LATINIME_DYNAMIC_PT_READING_HELPER_H */

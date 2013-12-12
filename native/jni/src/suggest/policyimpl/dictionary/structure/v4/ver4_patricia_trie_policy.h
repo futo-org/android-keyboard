@@ -22,7 +22,7 @@
 #include "suggest/policyimpl/dictionary/bigram/ver4_bigram_list_policy.h"
 #include "suggest/policyimpl/dictionary/header/header_policy.h"
 #include "suggest/policyimpl/dictionary/shortcut/ver4_shortcut_list_policy.h"
-#include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_updating_helper.h"
+#include "suggest/policyimpl/dictionary/structure/pt_common/dynamic_pt_updating_helper.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_dict_buffers.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_patricia_trie_node_reader.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_patricia_trie_node_writer.h"
@@ -131,7 +131,7 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     Ver4ShortcutListPolicy mShortcutPolicy;
     Ver4PatriciaTrieNodeReader mNodeReader;
     Ver4PatriciaTrieNodeWriter mNodeWriter;
-    DynamicPatriciaTrieUpdatingHelper mUpdatingHelper;
+    DynamicPtUpdatingHelper mUpdatingHelper;
     Ver4PatriciaTrieWritingHelper mWritingHelper;
     int mUnigramCount;
     int mBigramCount;

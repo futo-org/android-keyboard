@@ -16,7 +16,6 @@
 
 #include "suggest/policyimpl/dictionary/bigram/bigram_list_read_write_utils.h"
 
-#include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_reading_utils.h"
 #include "suggest/policyimpl/dictionary/utils/byte_array_utils.h"
 #include "suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer.h"
 
@@ -77,11 +76,6 @@ const BigramListReadWriteUtils::BigramFlags
         case FLAG_ATTRIBUTE_ADDRESS_TYPE_THREEBYTES:
             offset = ByteArrayUtils::readUint24AndAdvancePosition(bigramsBuf, pos);
             break;
-    }
-    if (offset == DynamicPatriciaTrieReadingUtils::DICT_OFFSET_INVALID) {
-        return NOT_A_DICT_POS;
-    } else if (offset == DynamicPatriciaTrieReadingUtils::DICT_OFFSET_ZERO_OFFSET) {
-        return origin;
     }
     if (isOffsetNegative(flags)) {
         return origin - offset;

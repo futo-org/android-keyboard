@@ -14,39 +14,38 @@
  * limitations under the License.
  */
 
-#include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_reading_utils.h"
+#include "suggest/policyimpl/dictionary/structure/pt_common/dynamic_pt_reading_utils.h"
 
 #include "defines.h"
 #include "suggest/policyimpl/dictionary/utils/byte_array_utils.h"
 
 namespace latinime {
 
-typedef DynamicPatriciaTrieReadingUtils DptReadingUtils;
-
-const DptReadingUtils::NodeFlags DptReadingUtils::MASK_MOVED = 0xC0;
-const DptReadingUtils::NodeFlags DptReadingUtils::FLAG_IS_NOT_MOVED = 0xC0;
-const DptReadingUtils::NodeFlags DptReadingUtils::FLAG_IS_MOVED = 0x40;
-const DptReadingUtils::NodeFlags DptReadingUtils::FLAG_IS_DELETED = 0x80;
-const DptReadingUtils::NodeFlags DptReadingUtils::FLAG_WILL_BECOME_NON_TERMINAL = 0x00;
+const DynamicPtReadingUtils::NodeFlags DynamicPtReadingUtils::MASK_MOVED = 0xC0;
+const DynamicPtReadingUtils::NodeFlags DynamicPtReadingUtils::FLAG_IS_NOT_MOVED = 0xC0;
+const DynamicPtReadingUtils::NodeFlags DynamicPtReadingUtils::FLAG_IS_MOVED = 0x40;
+const DynamicPtReadingUtils::NodeFlags DynamicPtReadingUtils::FLAG_IS_DELETED = 0x80;
+const DynamicPtReadingUtils::NodeFlags DynamicPtReadingUtils::FLAG_WILL_BECOME_NON_TERMINAL = 0x00;
 
 // TODO: Make DICT_OFFSET_ZERO_OFFSET = 0.
 // Currently, DICT_OFFSET_INVALID is 0 in Java side but offset can be 0 during GC. So, the maximum
 // value of offsets, which is 0x7FFFFF is used to represent 0 offset.
-const int DptReadingUtils::DICT_OFFSET_INVALID = 0;
-const int DptReadingUtils::DICT_OFFSET_ZERO_OFFSET = 0x7FFFFF;
+const int DynamicPtReadingUtils::DICT_OFFSET_INVALID = 0;
+const int DynamicPtReadingUtils::DICT_OFFSET_ZERO_OFFSET = 0x7FFFFF;
 
-/* static */ int DptReadingUtils::getForwardLinkPosition(const uint8_t *const buffer,
+/* static */ int DynamicPtReadingUtils::getForwardLinkPosition(const uint8_t *const buffer,
         const int pos) {
     int linkAddressPos = pos;
     return ByteArrayUtils::readSint24AndAdvancePosition(buffer, &linkAddressPos);
 }
 
-/* static */ int DptReadingUtils::getParentPtNodePosOffsetAndAdvancePosition(
+/* static */ int DynamicPtReadingUtils::getParentPtNodePosOffsetAndAdvancePosition(
         const uint8_t *const buffer, int *const pos) {
     return ByteArrayUtils::readSint24AndAdvancePosition(buffer, pos);
 }
 
-/* static */ int DptReadingUtils::getParentPtNodePos(const int parentOffset, const int ptNodePos) {
+/* static */ int DynamicPtReadingUtils::getParentPtNodePos(const int parentOffset,
+        const int ptNodePos) {
     if (parentOffset == DICT_OFFSET_INVALID) {
         return NOT_A_DICT_POS;
     } else if (parentOffset == DICT_OFFSET_ZERO_OFFSET) {
@@ -56,7 +55,7 @@ const int DptReadingUtils::DICT_OFFSET_ZERO_OFFSET = 0x7FFFFF;
     }
 }
 
-/* static */ int DptReadingUtils::readChildrenPositionAndAdvancePosition(
+/* static */ int DynamicPtReadingUtils::readChildrenPositionAndAdvancePosition(
         const uint8_t *const buffer, int *const pos) {
     const int base = *pos;
     const int offset = ByteArrayUtils::readSint24AndAdvancePosition(buffer, pos);

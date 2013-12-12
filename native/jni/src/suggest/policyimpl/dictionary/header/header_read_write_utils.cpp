@@ -89,9 +89,6 @@ const HeaderReadWriteUtils::DictionaryFlags HeaderReadWriteUtils::NO_FLAGS = 0;
         case FormatUtils::VERSION_2:
             // Version 2 dictionary writing is not supported.
             return false;
-        case FormatUtils::VERSION_3:
-            return buffer->writeUintAndAdvancePosition(FormatUtils::VERSION_3 /* data */,
-                    HEADER_DICTIONARY_VERSION_SIZE, writingPos);
         case FormatUtils::VERSION_4:
             return buffer->writeUintAndAdvancePosition(FormatUtils::VERSION_4 /* data */,
                     HEADER_DICTIONARY_VERSION_SIZE, writingPos);

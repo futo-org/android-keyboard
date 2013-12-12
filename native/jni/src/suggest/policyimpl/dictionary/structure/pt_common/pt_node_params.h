@@ -20,8 +20,8 @@
 #include <cstring>
 
 #include "defines.h"
+#include "suggest/policyimpl/dictionary/structure/pt_common/dynamic_pt_reading_utils.h"
 #include "suggest/policyimpl/dictionary/structure/v2/patricia_trie_reading_utils.h"
-#include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_reading_utils.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_dict_constants.h"
 
 namespace latinime {
@@ -111,11 +111,11 @@ class PtNodeParams {
 
     // Flags
     AK_FORCE_INLINE bool isDeleted() const {
-        return DynamicPatriciaTrieReadingUtils::isDeleted(mFlags);
+        return DynamicPtReadingUtils::isDeleted(mFlags);
     }
 
     AK_FORCE_INLINE bool willBecomeNonTerminal() const {
-        return DynamicPatriciaTrieReadingUtils::willBecomeNonTerminal(mFlags);
+        return DynamicPtReadingUtils::willBecomeNonTerminal(mFlags);
     }
 
     AK_FORCE_INLINE bool hasChildren() const {

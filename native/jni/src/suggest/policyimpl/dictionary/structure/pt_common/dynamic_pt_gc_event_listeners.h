@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-#ifndef LATINIME_DYNAMIC_PATRICIA_TRIE_GC_EVENT_LISTENERS_H
-#define LATINIME_DYNAMIC_PATRICIA_TRIE_GC_EVENT_LISTENERS_H
+#ifndef LATINIME_DYNAMIC_PT_GC_EVENT_LISTENERS_H
+#define LATINIME_DYNAMIC_PT_GC_EVENT_LISTENERS_H
 
 #include <vector>
 
 #include "defines.h"
+#include "suggest/policyimpl/dictionary/structure/pt_common/dynamic_pt_reading_helper.h"
 #include "suggest/policyimpl/dictionary/structure/pt_common/pt_node_writer.h"
-#include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_reading_helper.h"
 #include "suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer.h"
 #include "utils/hash_map_compat.h"
 
@@ -29,14 +29,13 @@ namespace latinime {
 
 class PtNodeParams;
 
-// TODO: Move to pt_common.
-class DynamicPatriciaTrieGcEventListeners {
+class DynamicPtGcEventListeners {
  public:
     // Updates all PtNodes that can be reached from the root. Checks if each PtNode is useless or
     // not and marks useless PtNodes as deleted. Such deleted PtNodes will be discarded in the GC.
     // TODO: Concatenate non-terminal PtNodes.
     class TraversePolicyToUpdateUnigramProbabilityAndMarkUselessPtNodesAsDeleted
-        : public DynamicPatriciaTrieReadingHelper::TraversingEventListener {
+        : public DynamicPtReadingHelper::TraversingEventListener {
      public:
         TraversePolicyToUpdateUnigramProbabilityAndMarkUselessPtNodesAsDeleted(
                 PtNodeWriter *const ptNodeWriter)
@@ -81,7 +80,7 @@ class DynamicPatriciaTrieGcEventListeners {
     // Updates all bigram entries that are held by valid PtNodes. This removes useless bigram
     // entries.
     class TraversePolicyToUpdateBigramProbability
-            : public DynamicPatriciaTrieReadingHelper::TraversingEventListener {
+            : public DynamicPtReadingHelper::TraversingEventListener {
      public:
         TraversePolicyToUpdateBigramProbability(PtNodeWriter *const ptNodeWriter)
                 : mPtNodeWriter(ptNodeWriter), mValidBigramEntryCount(0) {}
@@ -106,7 +105,7 @@ class DynamicPatriciaTrieGcEventListeners {
     };
 
     class TraversePolicyToPlaceAndWriteValidPtNodesToBuffer
-            : public DynamicPatriciaTrieReadingHelper::TraversingEventListener {
+            : public DynamicPtReadingHelper::TraversingEventListener {
      public:
         TraversePolicyToPlaceAndWriteValidPtNodesToBuffer(
                 PtNodeWriter *const ptNodeWriter, BufferWithExtendableBuffer *const bufferToWrite,
@@ -134,7 +133,7 @@ class DynamicPatriciaTrieGcEventListeners {
     };
 
     class TraversePolicyToUpdateAllPositionFields
-            : public DynamicPatriciaTrieReadingHelper::TraversingEventListener {
+            : public DynamicPtReadingHelper::TraversingEventListener {
      public:
         TraversePolicyToUpdateAllPositionFields(PtNodeWriter *const ptNodeWriter,
                 const PtNodeWriter::DictPositionRelocationMap *const dictPositionRelocationMap)
@@ -168,7 +167,7 @@ class DynamicPatriciaTrieGcEventListeners {
     };
 
  private:
-    DISALLOW_IMPLICIT_CONSTRUCTORS(DynamicPatriciaTrieGcEventListeners);
+    DISALLOW_IMPLICIT_CONSTRUCTORS(DynamicPtGcEventListeners);
 };
 } // namespace latinime
-#endif /* LATINIME_DYNAMIC_PATRICIA_TRIE_GC_EVENT_LISTENERS_H */
+#endif /* LATINIME_DYNAMIC_PT_GC_EVENT_LISTENERS_H */
