@@ -70,6 +70,19 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
         }
     }
 
+    // Creates an instance that uses a given dictionary file for testing.
+    @UsedForTesting
+    /* package */ DecayingExpandableBinaryDictionaryBase(final Context context,
+            final Locale locale, final String dictionaryType, final String dictName,
+            final File dictFile) {
+        super(context, dictName, locale, dictionaryType, true, dictFile);
+        mLocale = locale;
+        mDictName = dictName;
+        if (mLocale != null && mLocale.toString().length() > 1) {
+            reloadDictionaryIfRequired();
+        }
+    }
+
     @Override
     public void close() {
         if (DBG_DUMP_ON_CLOSE) {
