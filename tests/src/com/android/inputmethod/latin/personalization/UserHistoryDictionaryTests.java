@@ -43,9 +43,6 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
         "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"
     };
 
-    private static final int MIN_USER_HISTORY_DICTIONARY_FILE_SIZE = 1000;
-    private static final int WAIT_TERMINATING_IN_MILLISECONDS = 100;
-
     /**
      * Generates a random word.
      */
@@ -71,8 +68,8 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
     private void addToDict(final UserHistoryDictionary dict, final List<String> words) {
         String prevWord = null;
         for (String word : words) {
-            // TODO: Use timestamp properly.
-            dict.addToDictionary(prevWord, word, true, 0 /* timestamp */);
+            dict.addToDictionary(prevWord, word, true,
+                    (int)TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()));
             prevWord = word;
         }
     }
@@ -90,10 +87,7 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
         // Add random words to the user history dictionary.
         addToDict(dict, words);
         if (checkContents) {
-            try {
-                Thread.sleep(TimeUnit.MILLISECONDS.convert(5L, TimeUnit.SECONDS));
-            } catch (InterruptedException e) {
-            }
+            dict.waitAllTasksForTests();
             for (int i = 0; i < numberOfWords; ++i) {
                 final String word = words.get(i);
                 assertTrue(dict.isInDictionaryForTests(word));
@@ -120,17 +114,10 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
      * @param testFilenameSuffix file name suffix used for testing.
      */
     private void waitForWriting(final String testFilenameSuffix) {
-        try {
-            final UserHistoryDictionary dict =
-                    PersonalizationHelper.getUserHistoryDictionary(getContext(),
-                            new Locale(testFilenameSuffix));
-            dict.shutdownExecutorForTests();
-            while (!dict.isTerminatedForTests()) {
-                Thread.sleep(WAIT_TERMINATING_IN_MILLISECONDS);
-            }
-        } catch (InterruptedException e) {
-            Log.d(TAG, "InterruptedException: ", e);
-        }
+        final UserHistoryDictionary dict =
+                PersonalizationHelper.getUserHistoryDictionary(getContext(),
+                        new Locale(testFilenameSuffix));
+        dict.waitAllTasksForTests();
     }
 
     public void testRandomWords() {
