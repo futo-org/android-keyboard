@@ -19,7 +19,7 @@
 #include <cstdio>
 
 #include "suggest/policyimpl/dictionary/header/header_policy.h"
-#include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_writing_utils.h"
+#include "suggest/policyimpl/dictionary/structure/pt_common/dynamic_pt_writing_utils.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_dict_buffers.h"
 #include "suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer.h"
 #include "suggest/policyimpl/dictionary/utils/file_utils.h"
@@ -51,7 +51,7 @@ const char *const DictFileWritingUtils::TEMP_FILE_SUFFIX_FOR_WRITING_DICT_FILE =
     headerPolicy.writeHeaderToBuffer(dictBuffers.get()->getWritableHeaderBuffer(),
             true /* updatesLastUpdatedTime */, true /* updatesLastDecayedTime */,
             0 /* unigramCount */, 0 /* bigramCount */, 0 /* extendedRegionSize */);
-    if (!DynamicPatriciaTrieWritingUtils::writeEmptyDictionary(
+    if (!DynamicPtWritingUtils::writeEmptyDictionary(
             dictBuffers.get()->getWritableTrieBuffer(), 0 /* rootPos */)) {
         AKLOGE("Empty ver4 dictionary structure cannot be created on memory.");
         return false;

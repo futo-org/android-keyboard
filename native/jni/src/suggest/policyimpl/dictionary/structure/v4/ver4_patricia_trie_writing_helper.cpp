@@ -88,9 +88,9 @@ bool Ver4PatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
     Ver4PatriciaTrieNodeWriter ptNodeWriter(mBuffers->getWritableTrieBuffer(),
             mBuffers, &ptNodeReader, &bigramPolicy, &shortcutPolicy);
 
-    DynamicPatriciaTrieReadingHelper readingHelper(mBuffers->getTrieBuffer(), &ptNodeReader);
+    DynamicPtReadingHelper readingHelper(mBuffers->getTrieBuffer(), &ptNodeReader);
     readingHelper.initWithPtNodeArrayPos(rootPtNodeArrayPos);
-    DynamicPatriciaTrieGcEventListeners
+    DynamicPtGcEventListeners
             ::TraversePolicyToUpdateUnigramProbabilityAndMarkUselessPtNodesAsDeleted
                     traversePolicyToUpdateUnigramProbabilityAndMarkUselessPtNodesAsDeleted(
                             &ptNodeWriter);
@@ -111,7 +111,7 @@ bool Ver4PatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
     }
 
     readingHelper.initWithPtNodeArrayPos(rootPtNodeArrayPos);
-    DynamicPatriciaTrieGcEventListeners::TraversePolicyToUpdateBigramProbability
+    DynamicPtGcEventListeners::TraversePolicyToUpdateBigramProbability
             traversePolicyToUpdateBigramProbability(&ptNodeWriter);
     if (!readingHelper.traverseAllPtNodesInPostorderDepthFirstManner(
             &traversePolicyToUpdateBigramProbability)) {
@@ -132,7 +132,7 @@ bool Ver4PatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
     readingHelper.initWithPtNodeArrayPos(rootPtNodeArrayPos);
     Ver4PatriciaTrieNodeWriter ptNodeWriterForNewBuffers(buffersToWrite->getWritableTrieBuffer(),
             buffersToWrite, &ptNodeReader, &bigramPolicy, &shortcutPolicy);
-    DynamicPatriciaTrieGcEventListeners::TraversePolicyToPlaceAndWriteValidPtNodesToBuffer
+    DynamicPtGcEventListeners::TraversePolicyToPlaceAndWriteValidPtNodesToBuffer
             traversePolicyToPlaceAndWriteValidPtNodesToBuffer(&ptNodeWriterForNewBuffers,
                     buffersToWrite->getWritableTrieBuffer(), &dictPositionRelocationMap);
     if (!readingHelper.traverseAllPtNodesInPtNodeArrayLevelPreorderDepthFirstManner(
@@ -170,10 +170,10 @@ bool Ver4PatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
             mBuffers->getShortcutDictContent())) {
         return false;
     }
-    DynamicPatriciaTrieReadingHelper newDictReadingHelper(buffersToWrite->getTrieBuffer(),
+    DynamicPtReadingHelper newDictReadingHelper(buffersToWrite->getTrieBuffer(),
             &newPtNodeReader);
     newDictReadingHelper.initWithPtNodeArrayPos(rootPtNodeArrayPos);
-    DynamicPatriciaTrieGcEventListeners::TraversePolicyToUpdateAllPositionFields
+    DynamicPtGcEventListeners::TraversePolicyToUpdateAllPositionFields
             traversePolicyToUpdateAllPositionFields(&newPtNodeWriter, &dictPositionRelocationMap);
     if (!newDictReadingHelper.traverseAllPtNodesInPtNodeArrayLevelPreorderDepthFirstManner(
             &traversePolicyToUpdateAllPositionFields)) {

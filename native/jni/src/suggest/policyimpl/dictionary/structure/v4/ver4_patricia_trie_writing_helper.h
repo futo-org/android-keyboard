@@ -18,7 +18,7 @@
 #define LATINIME_VER4_PATRICIA_TRIE_WRITING_HELPER_H
 
 #include "defines.h"
-#include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_gc_event_listeners.h"
+#include "suggest/policyimpl/dictionary/structure/pt_common/dynamic_pt_gc_event_listeners.h"
 #include "suggest/policyimpl/dictionary/structure/v4/content/terminal_position_lookup_table.h"
 
 namespace latinime {
@@ -43,7 +43,7 @@ class Ver4PatriciaTrieWritingHelper {
     DISALLOW_IMPLICIT_CONSTRUCTORS(Ver4PatriciaTrieWritingHelper);
 
     class TraversePolicyToUpdateAllPtNodeFlagsAndTerminalIds
-            : public DynamicPatriciaTrieReadingHelper::TraversingEventListener {
+            : public DynamicPtReadingHelper::TraversingEventListener {
      public:
         TraversePolicyToUpdateAllPtNodeFlagsAndTerminalIds(
                 Ver4PatriciaTrieNodeWriter *const ptNodeWriter,

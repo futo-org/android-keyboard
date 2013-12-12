@@ -87,8 +87,6 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
         switch (mDictFormatVersion) {
             case FormatUtils::VERSION_2:
                 return FormatUtils::VERSION_2;
-            case FormatUtils::VERSION_3:
-                return FormatUtils::VERSION_3;
             case FormatUtils::VERSION_4:
                 return FormatUtils::VERSION_4;
             default:

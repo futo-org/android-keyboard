@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-#ifndef LATINIME_DYNAMIC_PATRICIA_TRIE_WRITING_UTILS_H
-#define LATINIME_DYNAMIC_PATRICIA_TRIE_WRITING_UTILS_H
+#ifndef LATINIME_DYNAMIC_PT_WRITING_UTILS_H
+#define LATINIME_DYNAMIC_PT_WRITING_UTILS_H
 
 #include <cstddef>
 
 #include "defines.h"
-#include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_reading_utils.h"
+#include "suggest/policyimpl/dictionary/structure/pt_common/dynamic_pt_reading_utils.h"
 
 namespace latinime {
 
 class BufferWithExtendableBuffer;
 
-class DynamicPatriciaTrieWritingUtils {
+class DynamicPtWritingUtils {
  public:
     static const int NODE_FLAG_FIELD_SIZE;
 
@@ -40,14 +40,14 @@ class DynamicPatriciaTrieWritingUtils {
             const size_t arraySize, int *const arraySizeFieldPos);
 
     static bool writeFlags(BufferWithExtendableBuffer *const buffer,
-            const DynamicPatriciaTrieReadingUtils::NodeFlags nodeFlags,
+            const DynamicPtReadingUtils::NodeFlags nodeFlags,
             const int nodeFlagsFieldPos) {
         int writingPos = nodeFlagsFieldPos;
         return writeFlagsAndAdvancePosition(buffer, nodeFlags, &writingPos);
     }
 
     static bool writeFlagsAndAdvancePosition(BufferWithExtendableBuffer *const buffer,
-            const DynamicPatriciaTrieReadingUtils::NodeFlags nodeFlags,
+            const DynamicPtReadingUtils::NodeFlags nodeFlags,
             int *const nodeFlagsFieldPos);
 
     static bool writeParentPosOffsetAndAdvancePosition(BufferWithExtendableBuffer *const buffer,
@@ -60,7 +60,7 @@ class DynamicPatriciaTrieWritingUtils {
             const int childrenPosition, int *const childrenPositionFieldPos);
 
  private:
-    DISALLOW_IMPLICIT_CONSTRUCTORS(DynamicPatriciaTrieWritingUtils);
+    DISALLOW_IMPLICIT_CONSTRUCTORS(DynamicPtWritingUtils);
 
     static const size_t MAX_PTNODE_ARRAY_SIZE_TO_USE_SMALL_SIZE_FIELD;
     static const size_t MAX_PTNODE_ARRAY_SIZE;
@@ -76,4 +76,4 @@ class DynamicPatriciaTrieWritingUtils {
             const int basePos, int *const offsetFieldPos);
 };
 } // namespace latinime
-#endif /* LATINIME_DYNAMIC_PATRICIA_TRIE_WRITING_UTILS_H */
+#endif /* LATINIME_DYNAMIC_PT_WRITING_UTILS_H */

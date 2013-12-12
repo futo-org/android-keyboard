@@ -19,11 +19,11 @@
 #include "suggest/policyimpl/dictionary/bigram/ver4_bigram_list_policy.h"
 #include "suggest/policyimpl/dictionary/header/header_policy.h"
 #include "suggest/policyimpl/dictionary/shortcut/ver4_shortcut_list_policy.h"
+#include "suggest/policyimpl/dictionary/structure/pt_common/dynamic_pt_reading_utils.h"
+#include "suggest/policyimpl/dictionary/structure/pt_common/dynamic_pt_writing_utils.h"
 #include "suggest/policyimpl/dictionary/structure/v2/patricia_trie_reading_utils.h"
 #include "suggest/policyimpl/dictionary/structure/v4/content/probability_entry.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_patricia_trie_node_reader.h"
-#include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_reading_utils.h"
-#include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_writing_utils.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_dict_buffers.h"
 #include "suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer.h"
 #include "suggest/policyimpl/dictionary/utils/forgetting_curve_utils.h"
@@ -44,11 +44,11 @@ bool Ver4PatriciaTrieNodeWriter::markPtNodeAsDeleted(
     const PatriciaTrieReadingUtils::NodeFlags originalFlags =
             PatriciaTrieReadingUtils::getFlagsAndAdvancePosition(dictBuf, &pos);
     const PatriciaTrieReadingUtils::NodeFlags updatedFlags =
-            DynamicPatriciaTrieReadingUtils::updateAndGetFlags(originalFlags, false /* isMoved */,
+            DynamicPtReadingUtils::updateAndGetFlags(originalFlags, false /* isMoved */,
                     true /* isDeleted */, false /* willBecomeNonTerminal */);
     int writingPos = toBeUpdatedPtNodeParams->getHeadPos();
     // Update flags.
-    if (!DynamicPatriciaTrieWritingUtils::writeFlagsAndAdvancePosition(mTrieBuffer, updatedFlags,
+    if (!DynamicPtWritingUtils::writeFlagsAndAdvancePosition(mTrieBuffer, updatedFlags,
             &writingPos)) {
         return false;
     }
@@ -74,16 +74,16 @@ bool Ver4PatriciaTrieNodeWriter::markPtNodeAsMoved(
     const PatriciaTrieReadingUtils::NodeFlags originalFlags =
             PatriciaTrieReadingUtils::getFlagsAndAdvancePosition(dictBuf, &pos);
     const PatriciaTrieReadingUtils::NodeFlags updatedFlags =
-            DynamicPatriciaTrieReadingUtils::updateAndGetFlags(originalFlags, true /* isMoved */,
+            DynamicPtReadingUtils::updateAndGetFlags(originalFlags, true /* isMoved */,
                     false /* isDeleted */,  false /* willBecomeNonTerminal */);
     int writingPos = toBeUpdatedPtNodeParams->getHeadPos();
     // Update flags.
-    if (!DynamicPatriciaTrieWritingUtils::writeFlagsAndAdvancePosition(mTrieBuffer, updatedFlags,
+    if (!DynamicPtWritingUtils::writeFlagsAndAdvancePosition(mTrieBuffer, updatedFlags,
             &writingPos)) {
         return false;
     }
     // Update moved position, which is stored in the parent offset field.
-    if (!DynamicPatriciaTrieWritingUtils::writeParentPosOffsetAndAdvancePosition(
+    if (!DynamicPtWritingUtils::writeParentPosOffsetAndAdvancePosition(
             mTrieBuffer, movedPos, toBeUpdatedPtNodeParams->getHeadPos(), &writingPos)) {
         return false;
     }
@@ -93,8 +93,8 @@ bool Ver4PatriciaTrieNodeWriter::markPtNodeAsMoved(
         while (!mReadingHelper.isEnd()) {
             const PtNodeParams childPtNodeParams(mReadingHelper.getPtNodeParams());
             int parentOffsetFieldPos = childPtNodeParams.getHeadPos()
-                    + DynamicPatriciaTrieWritingUtils::NODE_FLAG_FIELD_SIZE;
-            if (!DynamicPatriciaTrieWritingUtils::writeParentPosOffsetAndAdvancePosition(
+                    + DynamicPtWritingUtils::NODE_FLAG_FIELD_SIZE;
+            if (!DynamicPtWritingUtils::writeParentPosOffsetAndAdvancePosition(
                     mTrieBuffer, bigramLinkedNodePos, childPtNodeParams.getHeadPos(),
                     &parentOffsetFieldPos)) {
                 // Parent offset cannot be written because of a bug or a broken dictionary; thus,
@@ -119,7 +119,7 @@ bool Ver4PatriciaTrieNodeWriter::markPtNodeAsWillBecomeNonTerminal(
     const PatriciaTrieReadingUtils::NodeFlags originalFlags =
             PatriciaTrieReadingUtils::getFlagsAndAdvancePosition(dictBuf, &pos);
     const PatriciaTrieReadingUtils::NodeFlags updatedFlags =
-            DynamicPatriciaTrieReadingUtils::updateAndGetFlags(originalFlags, false /* isMoved */,
+            DynamicPtReadingUtils::updateAndGetFlags(originalFlags, false /* isMoved */,
                     false /* isDeleted */, true /* willBecomeNonTerminal */);
     if (!mBuffers->getMutableTerminalPositionLookupTable()->setTerminalPtNodePosition(
             toBeUpdatedPtNodeParams->getTerminalId(), NOT_A_DICT_POS /* ptNodePos */)) {
@@ -129,7 +129,7 @@ bool Ver4PatriciaTrieNodeWriter::markPtNodeAsWillBecomeNonTerminal(
     }
     // Update flags.
     int writingPos = toBeUpdatedPtNodeParams->getHeadPos();
-    return DynamicPatriciaTrieWritingUtils::writeFlagsAndAdvancePosition(mTrieBuffer, updatedFlags,
+    return DynamicPtWritingUtils::writeFlagsAndAdvancePosition(mTrieBuffer, updatedFlags,
             &writingPos);
 }
 
@@ -186,7 +186,7 @@ bool Ver4PatriciaTrieNodeWriter::updatePtNodeProbabilityAndGetNeedsToKeepPtNodeA
 bool Ver4PatriciaTrieNodeWriter::updateChildrenPosition(
         const PtNodeParams *const toBeUpdatedPtNodeParams, const int newChildrenPosition) {
     int childrenPosFieldPos = toBeUpdatedPtNodeParams->getChildrenPosFieldPos();
-    return DynamicPatriciaTrieWritingUtils::writeChildrenPositionAndAdvancePosition(mTrieBuffer,
+    return DynamicPtWritingUtils::writeChildrenPositionAndAdvancePosition(mTrieBuffer,
             newChildrenPosition, &childrenPosFieldPos);
 }
 
@@ -264,9 +264,9 @@ bool Ver4PatriciaTrieNodeWriter::updateAllPositionFields(
         }
     }
     int writingPos = toBeUpdatedPtNodeParams->getHeadPos()
-            + DynamicPatriciaTrieWritingUtils::NODE_FLAG_FIELD_SIZE;
+            + DynamicPtWritingUtils::NODE_FLAG_FIELD_SIZE;
     // Write updated parent offset.
-    if (!DynamicPatriciaTrieWritingUtils::writeParentPosOffsetAndAdvancePosition(mTrieBuffer,
+    if (!DynamicPtWritingUtils::writeParentPosOffsetAndAdvancePosition(mTrieBuffer,
             parentPos, toBeUpdatedPtNodeParams->getHeadPos(), &writingPos)) {
         return false;
     }
@@ -328,17 +328,17 @@ bool Ver4PatriciaTrieNodeWriter::writePtNodeAndGetTerminalIdAndAdvancePosition(
     const int nodePos = *ptNodeWritingPos;
     // Write dummy flags. The Node flags are updated with appropriate flags at the last step of the
     // PtNode writing.
-    if (!DynamicPatriciaTrieWritingUtils::writeFlagsAndAdvancePosition(mTrieBuffer,
+    if (!DynamicPtWritingUtils::writeFlagsAndAdvancePosition(mTrieBuffer,
             0 /* nodeFlags */, ptNodeWritingPos)) {
         return false;
     }
     // Calculate a parent offset and write the offset.
-    if (!DynamicPatriciaTrieWritingUtils::writeParentPosOffsetAndAdvancePosition(mTrieBuffer,
+    if (!DynamicPtWritingUtils::writeParentPosOffsetAndAdvancePosition(mTrieBuffer,
             ptNodeParams->getParentPos(), nodePos, ptNodeWritingPos)) {
         return false;
     }
     // Write code points
-    if (!DynamicPatriciaTrieWritingUtils::writeCodePointsAndAdvancePosition(mTrieBuffer,
+    if (!DynamicPtWritingUtils::writeCodePointsAndAdvancePosition(mTrieBuffer,
             ptNodeParams->getCodePoints(), ptNodeParams->getCodePointCount(), ptNodeWritingPos)) {
         return false;
     }
@@ -369,7 +369,7 @@ bool Ver4PatriciaTrieNodeWriter::writePtNodeAndGetTerminalIdAndAdvancePosition(
         }
     }
     // Write children position
-    if (!DynamicPatriciaTrieWritingUtils::writeChildrenPositionAndAdvancePosition(mTrieBuffer,
+    if (!DynamicPtWritingUtils::writeChildrenPositionAndAdvancePosition(mTrieBuffer,
             ptNodeParams->getChildrenPos(), ptNodeWritingPos)) {
         return false;
     }
@@ -401,7 +401,7 @@ bool Ver4PatriciaTrieNodeWriter::updatePtNodeFlags(const int ptNodePos,
             PatriciaTrieReadingUtils::createAndGetFlags(isBlacklisted, isNotAWord, isTerminal,
                     hasShortcutTargets, hasBigrams, hasMultipleChars,
                     CHILDREN_POSITION_FIELD_SIZE);
-    if (!DynamicPatriciaTrieWritingUtils::writeFlags(mTrieBuffer, nodeFlags, ptNodePos)) {
+    if (!DynamicPtWritingUtils::writeFlags(mTrieBuffer, nodeFlags, ptNodePos)) {
         AKLOGE("Cannot write PtNode flags. flags: %x, pos: %d", nodeFlags, ptNodePos);
         return false;
     }

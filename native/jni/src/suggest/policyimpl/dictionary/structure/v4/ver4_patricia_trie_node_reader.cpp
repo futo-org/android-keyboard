@@ -16,8 +16,8 @@
 
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_patricia_trie_node_reader.h"
 
+#include "suggest/policyimpl/dictionary/structure/pt_common/dynamic_pt_reading_utils.h"
 #include "suggest/policyimpl/dictionary/structure/v2/patricia_trie_reading_utils.h"
-#include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_reading_utils.h"
 #include "suggest/policyimpl/dictionary/structure/v4/content/probability_dict_content.h"
 #include "suggest/policyimpl/dictionary/structure/v4/content/probability_entry.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_patricia_trie_reading_utils.h"
@@ -45,10 +45,10 @@ const PtNodeParams Ver4PatriciaTrieNodeReader::fetchPtNodeInfoFromBufferAndProce
     const PatriciaTrieReadingUtils::NodeFlags flags =
             PatriciaTrieReadingUtils::getFlagsAndAdvancePosition(dictBuf, &pos);
     const int parentPosOffset =
-            DynamicPatriciaTrieReadingUtils::getParentPtNodePosOffsetAndAdvancePosition(
+            DynamicPtReadingUtils::getParentPtNodePosOffsetAndAdvancePosition(
                     dictBuf, &pos);
     const int parentPos =
-            DynamicPatriciaTrieReadingUtils::getParentPtNodePos(parentPosOffset, headPos);
+            DynamicPtReadingUtils::getParentPtNodePos(parentPosOffset, headPos);
     int codePoints[MAX_WORD_LENGTH];
     const int codePonitCount = PatriciaTrieReadingUtils::getCharsAndAdvancePosition(
             dictBuf, flags, MAX_WORD_LENGTH, codePoints, &pos);
@@ -74,7 +74,7 @@ const PtNodeParams Ver4PatriciaTrieNodeReader::fetchPtNodeInfoFromBufferAndProce
     if (usesAdditionalBuffer) {
         childrenPosFieldPos += mBuffer->getOriginalBufferSize();
     }
-    int childrenPos = DynamicPatriciaTrieReadingUtils::readChildrenPositionAndAdvancePosition(
+    int childrenPos = DynamicPtReadingUtils::readChildrenPositionAndAdvancePosition(
             dictBuf, &pos);
     if (usesAdditionalBuffer && childrenPos != NOT_A_DICT_POS) {
         childrenPos += mBuffer->getOriginalBufferSize();
@@ -85,7 +85,7 @@ const PtNodeParams Ver4PatriciaTrieNodeReader::fetchPtNodeInfoFromBufferAndProce
     // Sibling position is the tail position of original PtNode.
     int newSiblingNodePos = (siblingNodePos == NOT_A_DICT_POS) ? pos : siblingNodePos;
     // Read destination node if the read node is a moved node.
-    if (DynamicPatriciaTrieReadingUtils::isMoved(flags)) {
+    if (DynamicPtReadingUtils::isMoved(flags)) {
         // The destination position is stored at the same place as the parent position.
         return fetchPtNodeInfoFromBufferAndProcessMovedPtNode(parentPos, newSiblingNodePos);
     } else {

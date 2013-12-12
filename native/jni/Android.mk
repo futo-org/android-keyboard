@@ -76,15 +76,15 @@ LATIN_IME_CORE_SRC_FILES := \
     $(addprefix suggest/policyimpl/dictionary/bigram/, \
         bigram_list_read_write_utils.cpp \
         ver4_bigram_list_policy.cpp) \
+    $(addprefix suggest/policyimpl/dictionary/structure/pt_common/, \
+        dynamic_pt_gc_event_listeners.cpp \
+        dynamic_pt_reading_helper.cpp \
+        dynamic_pt_reading_utils.cpp \
+        dynamic_pt_updating_helper.cpp \
+        dynamic_pt_writing_utils.cpp) \
     $(addprefix suggest/policyimpl/dictionary/structure/v2/, \
         patricia_trie_policy.cpp \
         patricia_trie_reading_utils.cpp) \
-    $(addprefix suggest/policyimpl/dictionary/structure/v3/, \
-        dynamic_patricia_trie_gc_event_listeners.cpp \
-        dynamic_patricia_trie_reading_helper.cpp \
-        dynamic_patricia_trie_reading_utils.cpp \
-        dynamic_patricia_trie_updating_helper.cpp \
-        dynamic_patricia_trie_writing_utils.cpp) \
     $(addprefix suggest/policyimpl/dictionary/structure/v4/, \
         ver4_dict_buffers.cpp \
         ver4_dict_constants.cpp \

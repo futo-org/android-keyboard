@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-#include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_gc_event_listeners.h"
+#include "suggest/policyimpl/dictionary/structure/pt_common/dynamic_pt_gc_event_listeners.h"
 
 #include "suggest/core/policy/dictionary_header_structure_policy.h"
+#include "suggest/policyimpl/dictionary/structure/pt_common/dynamic_pt_writing_utils.h"
 #include "suggest/policyimpl/dictionary/structure/pt_common/pt_node_params.h"
 #include "suggest/policyimpl/dictionary/structure/pt_common/pt_node_writer.h"
-#include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_writing_utils.h"
 
 namespace latinime {
 
-bool DynamicPatriciaTrieGcEventListeners
+bool DynamicPtGcEventListeners
         ::TraversePolicyToUpdateUnigramProbabilityAndMarkUselessPtNodesAsDeleted
                 ::onVisitingPtNode(const PtNodeParams *const ptNodeParams) {
     // PtNode is useless when the PtNode is not a terminal and doesn't have any not useless
@@ -63,7 +63,7 @@ bool DynamicPatriciaTrieGcEventListeners
     return true;
 }
 
-bool DynamicPatriciaTrieGcEventListeners::TraversePolicyToUpdateBigramProbability
+bool DynamicPtGcEventListeners::TraversePolicyToUpdateBigramProbability
         ::onVisitingPtNode(const PtNodeParams *const ptNodeParams) {
     if (!ptNodeParams->isDeleted() && ptNodeParams->hasBigrams()) {
         int bigramEntryCount = 0;
@@ -77,7 +77,7 @@ bool DynamicPatriciaTrieGcEventListeners::TraversePolicyToUpdateBigramProbabilit
 }
 
 // Writes dummy PtNode array size when the head of PtNode array is read.
-bool DynamicPatriciaTrieGcEventListeners::TraversePolicyToPlaceAndWriteValidPtNodesToBuffer
+bool DynamicPtGcEventListeners::TraversePolicyToPlaceAndWriteValidPtNodesToBuffer
         ::onDescend(const int ptNodeArrayPos) {
     mValidPtNodeCount = 0;
     int writingPos = mBufferToWrite->getTailPosition();
@@ -86,21 +86,21 @@ bool DynamicPatriciaTrieGcEventListeners::TraversePolicyToPlaceAndWriteValidPtNo
     // Writes dummy PtNode array size because arrays can have a forward link or needles PtNodes.
     // This field will be updated later in onReadingPtNodeArrayTail() with actual PtNode count.
     mPtNodeArraySizeFieldPos = writingPos;
-    return DynamicPatriciaTrieWritingUtils::writePtNodeArraySizeAndAdvancePosition(
+    return DynamicPtWritingUtils::writePtNodeArraySizeAndAdvancePosition(
             mBufferToWrite, 0 /* arraySize */, &writingPos);
 }
 
 // Write PtNode array terminal and actual PtNode array size.
-bool DynamicPatriciaTrieGcEventListeners::TraversePolicyToPlaceAndWriteValidPtNodesToBuffer
+bool DynamicPtGcEventListeners::TraversePolicyToPlaceAndWriteValidPtNodesToBuffer
         ::onReadingPtNodeArrayTail() {
     int writingPos = mBufferToWrite->getTailPosition();
     // Write PtNode array terminal.
-    if (!DynamicPatriciaTrieWritingUtils::writeForwardLinkPositionAndAdvancePosition(
+    if (!DynamicPtWritingUtils::writeForwardLinkPositionAndAdvancePosition(
             mBufferToWrite, NOT_A_DICT_POS /* forwardLinkPos */, &writingPos)) {
         return false;
     }
     // Write actual PtNode array size.
-    if (!DynamicPatriciaTrieWritingUtils::writePtNodeArraySizeAndAdvancePosition(
+    if (!DynamicPtWritingUtils::writePtNodeArraySizeAndAdvancePosition(
             mBufferToWrite, mValidPtNodeCount, &mPtNodeArraySizeFieldPos)) {
         return false;
     }
@@ -108,7 +108,7 @@ bool DynamicPatriciaTrieGcEventListeners::TraversePolicyToPlaceAndWriteValidPtNo
 }
 
 // Write valid PtNode to buffer and memorize mapping from the old position to the new position.
-bool DynamicPatriciaTrieGcEventListeners::TraversePolicyToPlaceAndWriteValidPtNodesToBuffer
+bool DynamicPtGcEventListeners::TraversePolicyToPlaceAndWriteValidPtNodesToBuffer
         ::onVisitingPtNode(const PtNodeParams *const ptNodeParams) {
     if (ptNodeParams->isDeleted()) {
         // Current PtNode is not written in new buffer because it has been deleted.
@@ -126,7 +126,7 @@ bool DynamicPatriciaTrieGcEventListeners::TraversePolicyToPlaceAndWriteValidPtNo
     return mPtNodeWriter->writePtNodeAndAdvancePosition(ptNodeParams, &writingPos);
 }
 
-bool DynamicPatriciaTrieGcEventListeners::TraversePolicyToUpdateAllPositionFields
+bool DynamicPtGcEventListeners::TraversePolicyToUpdateAllPositionFields
         ::onVisitingPtNode(const PtNodeParams *const ptNodeParams) {
     // Updates parent position.
     int bigramCount = 0;

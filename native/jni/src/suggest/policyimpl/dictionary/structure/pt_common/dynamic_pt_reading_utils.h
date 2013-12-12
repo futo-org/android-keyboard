@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef LATINIME_DYNAMIC_PATRICIA_TRIE_READING_UTILS_H
-#define LATINIME_DYNAMIC_PATRICIA_TRIE_READING_UTILS_H
+#ifndef LATINIME_DYNAMIC_PT_READING_UTILS_H
+#define LATINIME_DYNAMIC_PT_READING_UTILS_H
 
 #include <stdint.h>
 
@@ -23,7 +23,7 @@
 
 namespace latinime {
 
-class DynamicPatriciaTrieReadingUtils {
+class DynamicPtReadingUtils {
  public:
     typedef uint8_t NodeFlags;
 
@@ -71,7 +71,7 @@ class DynamicPatriciaTrieReadingUtils {
     }
 
  private:
-    DISALLOW_IMPLICIT_CONSTRUCTORS(DynamicPatriciaTrieReadingUtils);
+    DISALLOW_IMPLICIT_CONSTRUCTORS(DynamicPtReadingUtils);
 
     static const NodeFlags MASK_MOVED;
     static const NodeFlags FLAG_IS_NOT_MOVED;
@@ -80,4 +80,4 @@ class DynamicPatriciaTrieReadingUtils {
     static const NodeFlags FLAG_WILL_BECOME_NON_TERMINAL;
 };
 } // namespace latinime
-#endif /* LATINIME_DYNAMIC_PATRICIA_TRIE_READING_UTILS_H */
+#endif /* LATINIME_DYNAMIC_PT_READING_UTILS_H */

@@ -21,6 +21,7 @@
 
 namespace latinime {
 
+// TODO: Create PtConstants under the pt_common and move some constant values there.
 // Note that there are corresponding definitions in FormatSpec.java.
 class Ver4DictConstants {
  public:

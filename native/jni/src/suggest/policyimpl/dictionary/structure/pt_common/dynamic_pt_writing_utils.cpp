@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_writing_utils.h"
+#include "suggest/policyimpl/dictionary/structure/pt_common/dynamic_pt_writing_utils.h"
 
 #include <cstddef>
 #include <cstdlib>
@@ -24,18 +24,18 @@
 
 namespace latinime {
 
-const size_t DynamicPatriciaTrieWritingUtils::MAX_PTNODE_ARRAY_SIZE_TO_USE_SMALL_SIZE_FIELD = 0x7F;
-const size_t DynamicPatriciaTrieWritingUtils::MAX_PTNODE_ARRAY_SIZE = 0x7FFF;
-const int DynamicPatriciaTrieWritingUtils::SMALL_PTNODE_ARRAY_SIZE_FIELD_SIZE = 1;
-const int DynamicPatriciaTrieWritingUtils::LARGE_PTNODE_ARRAY_SIZE_FIELD_SIZE = 2;
-const int DynamicPatriciaTrieWritingUtils::LARGE_PTNODE_ARRAY_SIZE_FIELD_SIZE_FLAG = 0x8000;
-const int DynamicPatriciaTrieWritingUtils::DICT_OFFSET_FIELD_SIZE = 3;
-const int DynamicPatriciaTrieWritingUtils::MAX_DICT_OFFSET_VALUE = 0x7FFFFF;
-const int DynamicPatriciaTrieWritingUtils::MIN_DICT_OFFSET_VALUE = -0x7FFFFF;
-const int DynamicPatriciaTrieWritingUtils::DICT_OFFSET_NEGATIVE_FLAG = 0x800000;
-const int DynamicPatriciaTrieWritingUtils::NODE_FLAG_FIELD_SIZE = 1;
+const size_t DynamicPtWritingUtils::MAX_PTNODE_ARRAY_SIZE_TO_USE_SMALL_SIZE_FIELD = 0x7F;
+const size_t DynamicPtWritingUtils::MAX_PTNODE_ARRAY_SIZE = 0x7FFF;
+const int DynamicPtWritingUtils::SMALL_PTNODE_ARRAY_SIZE_FIELD_SIZE = 1;
+const int DynamicPtWritingUtils::LARGE_PTNODE_ARRAY_SIZE_FIELD_SIZE = 2;
+const int DynamicPtWritingUtils::LARGE_PTNODE_ARRAY_SIZE_FIELD_SIZE_FLAG = 0x8000;
+const int DynamicPtWritingUtils::DICT_OFFSET_FIELD_SIZE = 3;
+const int DynamicPtWritingUtils::MAX_DICT_OFFSET_VALUE = 0x7FFFFF;
+const int DynamicPtWritingUtils::MIN_DICT_OFFSET_VALUE = -0x7FFFFF;
+const int DynamicPtWritingUtils::DICT_OFFSET_NEGATIVE_FLAG = 0x800000;
+const int DynamicPtWritingUtils::NODE_FLAG_FIELD_SIZE = 1;
 
-/* static */ bool DynamicPatriciaTrieWritingUtils::writeEmptyDictionary(
+/* static */ bool DynamicPtWritingUtils::writeEmptyDictionary(
         BufferWithExtendableBuffer *const buffer, const int rootPos) {
     int writingPos = rootPos;
     if (!writePtNodeArraySizeAndAdvancePosition(buffer, 0 /* arraySize */, &writingPos)) {
@@ -45,13 +45,13 @@ const int DynamicPatriciaTrieWritingUtils::NODE_FLAG_FIELD_SIZE = 1;
             &writingPos);
 }
 
-/* static */ bool DynamicPatriciaTrieWritingUtils::writeForwardLinkPositionAndAdvancePosition(
+/* static */ bool DynamicPtWritingUtils::writeForwardLinkPositionAndAdvancePosition(
         BufferWithExtendableBuffer *const buffer, const int forwardLinkPos,
         int *const forwardLinkFieldPos) {
     return writeDictOffset(buffer, forwardLinkPos, (*forwardLinkFieldPos), forwardLinkFieldPos);
 }
 
-/* static */ bool DynamicPatriciaTrieWritingUtils::writePtNodeArraySizeAndAdvancePosition(
+/* static */ bool DynamicPtWritingUtils::writePtNodeArraySizeAndAdvancePosition(
         BufferWithExtendableBuffer *const buffer, const size_t arraySize,
         int *const arraySizeFieldPos) {
     // Currently, all array size field to be created has LARGE_PTNODE_ARRAY_SIZE_FIELD_SIZE to
@@ -73,20 +73,20 @@ const int DynamicPatriciaTrieWritingUtils::NODE_FLAG_FIELD_SIZE = 1;
     }
 }
 
-/* static */ bool DynamicPatriciaTrieWritingUtils::writeFlagsAndAdvancePosition(
+/* static */ bool DynamicPtWritingUtils::writeFlagsAndAdvancePosition(
         BufferWithExtendableBuffer *const buffer,
-        const DynamicPatriciaTrieReadingUtils::NodeFlags nodeFlags, int *const nodeFlagsFieldPos) {
+        const DynamicPtReadingUtils::NodeFlags nodeFlags, int *const nodeFlagsFieldPos) {
     return buffer->writeUintAndAdvancePosition(nodeFlags, NODE_FLAG_FIELD_SIZE, nodeFlagsFieldPos);
 }
 
 // Note that parentOffset is offset from node's head position.
-/* static */ bool DynamicPatriciaTrieWritingUtils::writeParentPosOffsetAndAdvancePosition(
+/* static */ bool DynamicPtWritingUtils::writeParentPosOffsetAndAdvancePosition(
         BufferWithExtendableBuffer *const buffer, const int parentPos, const int basePos,
         int *const parentPosFieldPos) {
     return writeDictOffset(buffer, parentPos, basePos, parentPosFieldPos);
 }
 
-/* static */ bool DynamicPatriciaTrieWritingUtils::writeCodePointsAndAdvancePosition(
+/* static */ bool DynamicPtWritingUtils::writeCodePointsAndAdvancePosition(
         BufferWithExtendableBuffer *const buffer, const int *const codePoints,
         const int codePointCount, int *const codePointFieldPos) {
     if (codePointCount <= 0) {
@@ -100,21 +100,20 @@ const int DynamicPatriciaTrieWritingUtils::NODE_FLAG_FIELD_SIZE = 1;
             hasMultipleCodePoints, codePointFieldPos);
 }
 
-/* static */ bool DynamicPatriciaTrieWritingUtils::writeChildrenPositionAndAdvancePosition(
+/* static */ bool DynamicPtWritingUtils::writeChildrenPositionAndAdvancePosition(
         BufferWithExtendableBuffer *const buffer, const int childrenPosition,
         int *const childrenPositionFieldPos) {
     return writeDictOffset(buffer, childrenPosition, (*childrenPositionFieldPos),
             childrenPositionFieldPos);
 }
 
-/* static */ bool DynamicPatriciaTrieWritingUtils::writeDictOffset(
-        BufferWithExtendableBuffer *const buffer, const int targetPos, const int basePos,
-        int *const offsetFieldPos) {
+/* static */ bool DynamicPtWritingUtils::writeDictOffset(BufferWithExtendableBuffer *const buffer,
+        const int targetPos, const int basePos, int *const offsetFieldPos) {
     int offset = targetPos - basePos;
     if (targetPos == NOT_A_DICT_POS) {
-        offset = DynamicPatriciaTrieReadingUtils::DICT_OFFSET_INVALID;
+        offset = DynamicPtReadingUtils::DICT_OFFSET_INVALID;
     } else if (offset == 0) {
-        offset = DynamicPatriciaTrieReadingUtils::DICT_OFFSET_ZERO_OFFSET;
+        offset = DynamicPtReadingUtils::DICT_OFFSET_ZERO_OFFSET;
     }
     if (offset > MAX_DICT_OFFSET_VALUE || offset < MIN_DICT_OFFSET_VALUE) {
         AKLOGI("offset cannot be written because the offset is too large or too small: %d",

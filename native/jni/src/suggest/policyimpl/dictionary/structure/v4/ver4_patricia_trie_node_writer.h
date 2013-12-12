@@ -20,9 +20,9 @@
 #include <stdint.h>
 
 #include "defines.h"
+#include "suggest/policyimpl/dictionary/structure/pt_common/dynamic_pt_reading_helper.h"
 #include "suggest/policyimpl/dictionary/structure/pt_common/pt_node_params.h"
 #include "suggest/policyimpl/dictionary/structure/pt_common/pt_node_writer.h"
-#include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_reading_helper.h"
 #include "suggest/policyimpl/dictionary/structure/v4/content/probability_entry.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_patricia_trie_node_reader.h"
 
@@ -115,7 +115,7 @@ class Ver4PatriciaTrieNodeWriter : public PtNodeWriter {
     BufferWithExtendableBuffer *const mTrieBuffer;
     Ver4DictBuffers *const mBuffers;
     const Ver4PatriciaTrieNodeReader *const mPtNodeReader;
-    DynamicPatriciaTrieReadingHelper mReadingHelper;
+    DynamicPtReadingHelper mReadingHelper;
     Ver4BigramListPolicy *const mBigramPolicy;
     Ver4ShortcutListPolicy *const mShortcutPolicy;
 };
