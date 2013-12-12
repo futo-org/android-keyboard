@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Locale;
 
 @SmallTest
-public class StringUtilsTests extends AndroidTestCase {
+public class StringAndJsonUtilsTests extends AndroidTestCase {
     public void testContainsInArray() {
         assertFalse("empty array", StringUtils.containsInArray("key", new String[0]));
         assertFalse("not in 1 element", StringUtils.containsInArray("key", new String[] {
@@ -292,11 +292,11 @@ public class StringUtilsTests extends AndroidTestCase {
         assertTrue(bytesStr.equals(bytesStr2));
     }
 
-    public void testJsonStringUtils() {
+    public void testJsonUtils() {
         final Object[] objs = new Object[] { 1, "aaa", "bbb", 3 };
         final List<Object> objArray = Arrays.asList(objs);
-        final String str = StringUtils.listToJsonStr(objArray);
-        final List<Object> newObjArray = StringUtils.jsonStrToList(str);
+        final String str = JsonUtils.listToJsonStr(objArray);
+        final List<Object> newObjArray = JsonUtils.jsonStrToList(str);
         for (int i = 0; i < objs.length; ++i) {
             assertEquals(objs[i], newObjArray.get(i));
         }
