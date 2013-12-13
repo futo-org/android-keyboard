@@ -34,18 +34,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
- * An implementation of DictDecoder for version 3 binary dictionary.
+ * An implementation of DictDecoder for version 2 binary dictionary.
  */
 @UsedForTesting
-public class Ver3DictDecoder extends AbstractDictDecoder {
-    private static final String TAG = Ver3DictDecoder.class.getSimpleName();
-
-    static {
-        JniUtils.loadNativeLibrary();
-    }
-
-    // TODO: implement something sensical instead of just a phony method
-    private static native int doNothing();
+public class Ver2DictDecoder extends AbstractDictDecoder {
+    private static final String TAG = Ver2DictDecoder.class.getSimpleName();
 
     protected static class PtNodeReader extends AbstractDictDecoder.PtNodeReader {
         private static int readFrequency(final DictBuffer dictBuffer) {
@@ -57,7 +50,7 @@ public class Ver3DictDecoder extends AbstractDictDecoder {
     private final DictionaryBufferFactory mBufferFactory;
     protected DictBuffer mDictBuffer;
 
-    /* package */ Ver3DictDecoder(final File file, final int factoryFlag) {
+    /* package */ Ver2DictDecoder(final File file, final int factoryFlag) {
         mDictionaryBinaryFile = file;
         mDictBuffer = null;
 
@@ -72,7 +65,7 @@ public class Ver3DictDecoder extends AbstractDictDecoder {
         }
     }
 
-    /* package */ Ver3DictDecoder(final File file, final DictionaryBufferFactory factory) {
+    /* package */ Ver2DictDecoder(final File file, final DictionaryBufferFactory factory) {
         mDictionaryBinaryFile = file;
         mBufferFactory = factory;
     }
@@ -166,7 +159,7 @@ public class Ver3DictDecoder extends AbstractDictDecoder {
         final ArrayList<PendingAttribute> bigrams;
         if (0 != (flags & FormatSpec.FLAG_HAS_BIGRAMS)) {
             bigrams = new ArrayList<PendingAttribute>();
-            addressPointer += PtNodeReader.readBigramAddresses(mDictBuffer, bigrams, 
+            addressPointer += PtNodeReader.readBigramAddresses(mDictBuffer, bigrams,
                     addressPointer);
             if (bigrams.size() >= FormatSpec.MAX_BIGRAMS_IN_A_PTNODE) {
                 throw new RuntimeException("Too many bigrams in a PtNode (" + bigrams.size()

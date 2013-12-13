@@ -103,7 +103,7 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
         Log.d(TAG, "    end address = " + info.mEndAddress);
     }
 
-    private static void printNode(final Ver3DictDecoder dictDecoder,
+    private static void printNode(final Ver2DictDecoder dictDecoder,
             final FormatSpec.FormatOptions formatOptions) {
         final DictBuffer dictBuffer = dictDecoder.getDictBuffer();
         Log.d(TAG, "Node at " + dictBuffer.position());
@@ -121,7 +121,7 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
     }
 
     @SuppressWarnings("unused")
-    private static void printBinaryFile(final Ver3DictDecoder dictDecoder)
+    private static void printBinaryFile(final Ver2DictDecoder dictDecoder)
             throws IOException, UnsupportedFormatException {
         final FileHeader fileHeader = dictDecoder.readHeader();
         final DictBuffer dictBuffer = dictDecoder.getDictBuffer();

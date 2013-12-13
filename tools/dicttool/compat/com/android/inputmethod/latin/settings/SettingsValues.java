@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-#ifndef _COM_ANDROID_INPUTMETHOD_LATIN_MAKEDICT_VER3DICTDECODER_H
-#define _COM_ANDROID_INPUTMETHOD_LATIN_MAKEDICT_VER3DICTDECODER_H
+package com.android.inputmethod.latin.settings;
 
-#include "jni.h"
-
-namespace latinime {
-int register_Ver3DictDecoder(JNIEnv *env);
-} // namespace latinime
-#endif // _COM_ANDROID_INPUTMETHOD_LATIN_MAKEDICT_VER3DICTDECODER_H
+public class SettingsValues {
+    public boolean isWordCodePoint(final int code) {
+        return Character.isLetter(code);
+    }
+}

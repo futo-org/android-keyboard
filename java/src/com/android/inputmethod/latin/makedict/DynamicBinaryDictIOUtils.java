@@ -55,7 +55,7 @@ public final class DynamicBinaryDictIOUtils {
      * @param newParentAddress the absolute address of the parent.
      * @param formatOptions file format options.
      */
-    private static void updateParentAddress(final Ver3DictUpdater dictUpdater,
+    private static void updateParentAddress(final Ver2DictUpdater dictUpdater,
             final int ptNodeOriginAddress, final int newParentAddress,
             final FormatOptions formatOptions) {
         final DictBuffer dictBuffer = dictUpdater.getDictBuffer();
@@ -88,7 +88,7 @@ public final class DynamicBinaryDictIOUtils {
      * @param newParentAddress the address to be written.
      * @param formatOptions file format options.
      */
-    private static void updateParentAddresses(final Ver3DictUpdater dictUpdater,
+    private static void updateParentAddresses(final Ver2DictUpdater dictUpdater,
             final int ptNodeOriginAddress, final int newParentAddress,
             final FormatOptions formatOptions) {
         final int originalPosition = dictUpdater.getPosition();
@@ -114,7 +114,7 @@ public final class DynamicBinaryDictIOUtils {
      * @param newChildrenAddress the absolute address of the child.
      * @param formatOptions file format options.
      */
-    private static void updateChildrenAddress(final Ver3DictUpdater dictUpdater,
+    private static void updateChildrenAddress(final Ver2DictUpdater dictUpdater,
             final int ptNodeOriginAddress, final int newChildrenAddress,
             final FormatOptions formatOptions) {
         final DictBuffer dictBuffer = dictUpdater.getDictBuffer();
@@ -134,7 +134,7 @@ public final class DynamicBinaryDictIOUtils {
      * Helper method to move a PtNode to the tail of the file.
      */
     private static int movePtNode(final OutputStream destination,
-            final Ver3DictUpdater dictUpdater, final PtNodeInfo info,
+            final Ver2DictUpdater dictUpdater, final PtNodeInfo info,
             final int nodeArrayOriginAddress, final int oldNodeAddress,
             final FormatOptions formatOptions) throws IOException {
         final DictBuffer dictBuffer = dictUpdater.getDictBuffer();
@@ -151,7 +151,7 @@ public final class DynamicBinaryDictIOUtils {
     }
 
     @SuppressWarnings("unused")
-    private static void updateForwardLink(final Ver3DictUpdater dictUpdater,
+    private static void updateForwardLink(final Ver2DictUpdater dictUpdater,
             final int nodeArrayOriginAddress, final int newNodeArrayAddress,
             final FormatOptions formatOptions) {
         final DictBuffer dictBuffer = dictUpdater.getDictBuffer();
@@ -199,7 +199,7 @@ public final class DynamicBinaryDictIOUtils {
             final int length, final int flags, final int frequency, final int parentAddress,
             final ArrayList<WeightedString> shortcutTargets,
             final ArrayList<PendingAttribute> bigrams, final OutputStream destination,
-            final Ver3DictUpdater dictUpdater, final int oldPtNodeArrayOrigin,
+            final Ver2DictUpdater dictUpdater, final int oldPtNodeArrayOrigin,
             final int oldPtNodeOrigin, final FormatOptions formatOptions) throws IOException {
         int size = 0;
         final int newPtNodeOrigin = fileEndAddress + 1;
@@ -252,7 +252,7 @@ public final class DynamicBinaryDictIOUtils {
     // TODO: Support batch insertion.
     // TODO: Remove @UsedForTesting once UserHistoryDictionary is implemented by BinaryDictionary.
     @UsedForTesting
-    public static void insertWord(final Ver3DictUpdater dictUpdater,
+    public static void insertWord(final Ver2DictUpdater dictUpdater,
             final OutputStream destination, final String word, final int frequency,
             final ArrayList<WeightedString> bigramStrings,
             final ArrayList<WeightedString> shortcuts, final boolean isNotAWord,

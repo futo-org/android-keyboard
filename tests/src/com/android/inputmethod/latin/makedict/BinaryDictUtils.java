@@ -65,7 +65,7 @@ public class BinaryDictUtils {
             return new Ver4DictEncoder(cacheDir);
         } else if (formatOptions.mVersion == FormatSpec.VERSION3
                 || formatOptions.mVersion == FormatSpec.VERSION2) {
-            return new Ver3DictEncoder(file);
+            return new Ver2DictEncoder(file);
         } else {
             throw new RuntimeException("The format option has a wrong version : "
                     + formatOptions.mVersion);
@@ -77,7 +77,7 @@ public class BinaryDictUtils {
         if (formatOptions.mVersion == FormatSpec.VERSION4) {
             return new Ver4DictUpdater(file, DictDecoder.USE_WRITABLE_BYTEBUFFER);
         } else if (formatOptions.mVersion == FormatSpec.VERSION3) {
-            return new Ver3DictUpdater(file, DictDecoder.USE_WRITABLE_BYTEBUFFER);
+            return new Ver2DictUpdater(file, DictDecoder.USE_WRITABLE_BYTEBUFFER);
         } else {
             throw new UnsupportedFormatException("The format option has a wrong version : "
                     + formatOptions.mVersion);

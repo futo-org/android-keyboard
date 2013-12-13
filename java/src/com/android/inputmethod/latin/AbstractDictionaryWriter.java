@@ -21,7 +21,7 @@ import android.util.Log;
 
 import com.android.inputmethod.latin.makedict.DictEncoder;
 import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
-import com.android.inputmethod.latin.makedict.Ver3DictEncoder;
+import com.android.inputmethod.latin.makedict.Ver2DictEncoder;
 
 import java.io.File;
 import java.io.IOException;
@@ -64,7 +64,7 @@ abstract public class AbstractDictionaryWriter {
         final String tempFilePath = file.getAbsolutePath() + ".temp";
         final File tempFile = new File(tempFilePath);
         try {
-            final DictEncoder dictEncoder = new Ver3DictEncoder(tempFile);
+            final DictEncoder dictEncoder = new Ver2DictEncoder(tempFile);
             writeDictionary(dictEncoder, attributeMap);
             tempFile.renameTo(file);
         } catch (IOException e) {

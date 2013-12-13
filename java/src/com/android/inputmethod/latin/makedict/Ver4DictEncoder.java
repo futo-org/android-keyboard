@@ -1,5 +1,4 @@
 /*
-/*
  * Copyright (C) 2013 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,25 +17,15 @@
 package com.android.inputmethod.latin.makedict;
 
 import com.android.inputmethod.annotations.UsedForTesting;
-import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.CharEncoding;
-import com.android.inputmethod.latin.makedict.FormatSpec.FileHeader;
+import com.android.inputmethod.latin.BinaryDictionary;
+import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
-import com.android.inputmethod.latin.makedict.FusionDictionary.DictionaryOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNode;
-import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
-import com.android.inputmethod.latin.utils.CollectionUtils;
-import com.android.inputmethod.latin.utils.FileUtils;
+import com.android.inputmethod.latin.utils.LocaleUtils;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
 
 /**
  * An implementation of DictEncoder for version 4 binary dictionary.
@@ -44,197 +33,19 @@ import java.util.Iterator;
 @UsedForTesting
 public class Ver4DictEncoder implements DictEncoder {
     private final File mDictPlacedDir;
-    private byte[] mTrieBuf;
-    private int mTriePos;
-    private OutputStream mTrieOutStream;
-    private OutputStream mHeaderOutStream;
-    private OutputStream mFreqOutStream;
-    private OutputStream mUnigramTimestampOutStream;
-    private OutputStream mTerminalAddressTableOutStream;
-    private File mDictDir;
-    private String mBaseFilename;
-    private BigramContentWriter mBigramWriter;
-    private ShortcutContentWriter mShortcutWriter;
 
     @UsedForTesting
     public Ver4DictEncoder(final File dictPlacedDir) {
         mDictPlacedDir = dictPlacedDir;
     }
 
-    private static class BigramContentWriter extends SparseTableContentWriter {
-        private final boolean mWriteTimestamp;
-
-        public BigramContentWriter(final String name, final int initialCapacity,
-                final File baseDir, final boolean writeTimestamp) {
-            super(name + FormatSpec.BIGRAM_FILE_EXTENSION, initialCapacity,
-                    FormatSpec.BIGRAM_ADDRESS_TABLE_BLOCK_SIZE, baseDir,
-                    getContentFilenames(name, writeTimestamp), getContentIds(writeTimestamp));
-            mWriteTimestamp = writeTimestamp;
-        }
-
-        private static String[] getContentFilenames(final String name,
-                final boolean writeTimestamp) {
-            final String[] contentFilenames;
-            if (writeTimestamp) {
-                contentFilenames = new String[] { name + FormatSpec.BIGRAM_FILE_EXTENSION,
-                        name + FormatSpec.BIGRAM_FILE_EXTENSION };
-            } else {
-                contentFilenames = new String[] { name + FormatSpec.BIGRAM_FILE_EXTENSION };
-            }
-            return contentFilenames;
-        }
-
-        private static String[] getContentIds(final boolean writeTimestamp) {
-            final String[] contentIds;
-            if (writeTimestamp) {
-                contentIds = new String[] { FormatSpec.BIGRAM_FREQ_CONTENT_ID,
-                        FormatSpec.BIGRAM_TIMESTAMP_CONTENT_ID };
-            } else {
-                contentIds = new String[] { FormatSpec.BIGRAM_FREQ_CONTENT_ID };
-            }
-            return contentIds;
-        }
-
-        public void writeBigramsForOneWord(final int terminalId, final int bigramCount,
-                final Iterator<WeightedString> bigramIterator, final FusionDictionary dict)
-                        throws IOException {
-            write(FormatSpec.BIGRAM_FREQ_CONTENT_INDEX, terminalId,
-                    new SparseTableContentWriterInterface() {
-                        @Override
-                        public void write(final OutputStream outStream) throws IOException {
-                            writeBigramsForOneWordInternal(outStream, bigramIterator, dict);
-                        }});
-            if (mWriteTimestamp) {
-                write(FormatSpec.BIGRAM_TIMESTAMP_CONTENT_INDEX, terminalId,
-                        new SparseTableContentWriterInterface() {
-                            @Override
-                            public void write(final OutputStream outStream) throws IOException {
-                                initBigramTimestampsCountersAndLevelsForOneWordInternal(outStream,
-                                        bigramCount);
-                            }});
-            }
-        }
-
-        private void writeBigramsForOneWordInternal(final OutputStream outStream,
-                final Iterator<WeightedString> bigramIterator, final FusionDictionary dict)
-                        throws IOException {
-            while (bigramIterator.hasNext()) {
-                final WeightedString bigram = bigramIterator.next();
-                final PtNode target =
-                        FusionDictionary.findWordInTree(dict.mRootNodeArray, bigram.mWord);
-                final int unigramFrequencyForThisWord = target.mFrequency;
-                final int bigramFlags = BinaryDictEncoderUtils.makeBigramFlags(
-                        bigramIterator.hasNext(), 0, bigram.mFrequency,
-                        unigramFrequencyForThisWord, bigram.mWord);
-                BinaryDictEncoderUtils.writeUIntToStream(outStream, bigramFlags,
-                        FormatSpec.PTNODE_ATTRIBUTE_FLAGS_SIZE);
-                BinaryDictEncoderUtils.writeUIntToStream(outStream, target.mTerminalId,
-                        FormatSpec.PTNODE_ATTRIBUTE_MAX_ADDRESS_SIZE);
-            }
-        }
-
-        private void initBigramTimestampsCountersAndLevelsForOneWordInternal(
-                final OutputStream outStream, final int bigramCount) throws IOException {
-            for (int i = 0; i < bigramCount; ++i) {
-                // TODO: Figure out what initial values should be.
-                BinaryDictEncoderUtils.writeUIntToStream(outStream, 0 /* value */,
-                        FormatSpec.BIGRAM_TIMESTAMP_SIZE);
-                BinaryDictEncoderUtils.writeUIntToStream(outStream, 0 /* value */,
-                        FormatSpec.BIGRAM_COUNTER_SIZE);
-                BinaryDictEncoderUtils.writeUIntToStream(outStream, 0 /* value */,
-                        FormatSpec.BIGRAM_LEVEL_SIZE);
-            }
-        }
-    }
-
-    private static class ShortcutContentWriter extends SparseTableContentWriter {
-        public ShortcutContentWriter(final String name, final int initialCapacity,
-                final File baseDir) {
-            super(name + FormatSpec.SHORTCUT_FILE_EXTENSION, initialCapacity,
-                    FormatSpec.SHORTCUT_ADDRESS_TABLE_BLOCK_SIZE, baseDir,
-                    new String[] { name + FormatSpec.SHORTCUT_FILE_EXTENSION },
-                    new String[] { FormatSpec.SHORTCUT_CONTENT_ID });
-        }
-
-        public void writeShortcutForOneWord(final int terminalId,
-                final Iterator<WeightedString> shortcutIterator) throws IOException {
-            write(FormatSpec.SHORTCUT_CONTENT_INDEX, terminalId,
-                    new SparseTableContentWriterInterface() {
-                        @Override
-                        public void write(final OutputStream outStream) throws IOException {
-                            writeShortcutForOneWordInternal(outStream, shortcutIterator);
-                        }
-                    });
-        }
-
-        private void writeShortcutForOneWordInternal(final OutputStream outStream,
-                final Iterator<WeightedString> shortcutIterator) throws IOException {
-            while (shortcutIterator.hasNext()) {
-                final WeightedString target = shortcutIterator.next();
-                final int shortcutFlags = BinaryDictEncoderUtils.makeShortcutFlags(
-                        shortcutIterator.hasNext(), target.mFrequency);
-                BinaryDictEncoderUtils.writeUIntToStream(outStream, shortcutFlags,
-                        FormatSpec.PTNODE_ATTRIBUTE_FLAGS_SIZE);
-                CharEncoding.writeString(outStream, target.mWord);
-            }
-        }
-    }
-
-    private void openStreams(final FormatOptions formatOptions, final DictionaryOptions dictOptions)
-            throws FileNotFoundException, IOException {
-        final FileHeader header = new FileHeader(0, dictOptions, formatOptions);
-        mBaseFilename = header.getId() + "." + header.getVersion();
-        mDictDir = new File(mDictPlacedDir, mBaseFilename);
-        final File trieFile = new File(mDictDir, mBaseFilename + FormatSpec.TRIE_FILE_EXTENSION);
-        final File headerFile = new File(mDictDir,
-                mBaseFilename + FormatSpec.HEADER_FILE_EXTENSION);
-        final File freqFile = new File(mDictDir, mBaseFilename + FormatSpec.FREQ_FILE_EXTENSION);
-        final File timestampFile = new File(mDictDir,
-                mBaseFilename + FormatSpec.UNIGRAM_TIMESTAMP_FILE_EXTENSION);
-        final File terminalAddressTableFile = new File(mDictDir,
-                mBaseFilename + FormatSpec.TERMINAL_ADDRESS_TABLE_FILE_EXTENSION);
-        if (!mDictDir.isDirectory()) {
-            if (mDictDir.exists()) {
-                FileUtils.deleteRecursively(mDictDir);
-            }
-            mDictDir.mkdirs();
-        }
-        mTrieOutStream = new FileOutputStream(trieFile);
-        mHeaderOutStream = new FileOutputStream(headerFile);
-        mFreqOutStream = new FileOutputStream(freqFile);
-        mTerminalAddressTableOutStream = new FileOutputStream(terminalAddressTableFile);
-        if (formatOptions.mHasTimestamp) {
-            mUnigramTimestampOutStream = new FileOutputStream(timestampFile);
-        }
-    }
-
-    private void close() throws IOException {
-        try {
-            if (mTrieOutStream != null) {
-                mTrieOutStream.close();
-            }
-            if (mHeaderOutStream != null) {
-                mHeaderOutStream.close();
-            }
-            if (mFreqOutStream != null) {
-                mFreqOutStream.close();
-            }
-            if (mTerminalAddressTableOutStream != null) {
-                mTerminalAddressTableOutStream.close();
-            }
-            if (mUnigramTimestampOutStream != null) {
-                mUnigramTimestampOutStream.close();
-            }
-        } finally {
-            mTrieOutStream = null;
-            mHeaderOutStream = null;
-            mFreqOutStream = null;
-            mTerminalAddressTableOutStream = null;
-        }
-    }
-
+    // TODO: This builds a FusionDictionary first and iterates it to add words to the binary
+    // dictionary. However, it is possible to just add words directly to the binary dictionary
+    // instead.
+    // In the long run, when we stop supporting version 2, FusionDictionary will become deprecated
+    // and we can remove it. Then we'll be able to just call BinaryDictionary directly.
     @Override
-    public void writeDictionary(final FusionDictionary dict, final FormatOptions formatOptions)
+    public void writeDictionary(FusionDictionary dict, FormatOptions formatOptions)
             throws IOException, UnsupportedFormatException {
         if (formatOptions.mVersion != FormatSpec.VERSION4) {
             throw new UnsupportedFormatException("File header has a wrong version number : "
@@ -243,208 +54,70 @@ public class Ver4DictEncoder implements DictEncoder {
         if (!mDictPlacedDir.isDirectory()) {
             throw new UnsupportedFormatException("Given path is not a directory.");
         }
-
-        if (mTrieOutStream == null) {
-            openStreams(formatOptions, dict.mOptions);
+        if (!BinaryDictionary.createEmptyDictFile(mDictPlacedDir.getAbsolutePath(),
+                FormatSpec.VERSION4, dict.mOptions.mAttributes)) {
+            throw new IOException("Cannot create dictionary file");
         }
-
-        BinaryDictEncoderUtils.writeDictionaryHeader(mHeaderOutStream, dict, formatOptions);
-
-        MakedictLog.i("Flattening the tree...");
-        ArrayList<PtNodeArray> flatNodes = BinaryDictEncoderUtils.flattenTree(dict.mRootNodeArray);
-        int terminalCount = 0;
-        final ArrayList<PtNode> nodes = CollectionUtils.newArrayList();
-        for (final PtNodeArray array : flatNodes) {
-            for (final PtNode node : array.mData) {
-                if (node.isTerminal()) {
-                    nodes.add(node);
-                    node.mTerminalId = terminalCount++;
+        final BinaryDictionary binaryDict = new BinaryDictionary(mDictPlacedDir.getAbsolutePath(),
+                0l, mDictPlacedDir.length(), true /* useFullEditDistance */,
+                LocaleUtils.constructLocaleFromString(dict.mOptions.mAttributes.get(
+                        FormatSpec.FileHeader.DICTIONARY_LOCALE_ATTRIBUTE)),
+                Dictionary.TYPE_USER /* Dictionary type. Does not matter for us */,
+                true /* isUpdatable */);
+        if (!binaryDict.isValidDictionary()) {
+            // Somehow createEmptyDictFile returned true, but the file was not created correctly
+            throw new IOException("Cannot create dictionary file");
+        }
+        for (final Word word : dict) {
+            // TODO: switch to addMultipleDictionaryEntries when they support shortcuts
+            if (null == word.mShortcutTargets || word.mShortcutTargets.isEmpty()) {
+                binaryDict.addUnigramWord(word.mWord, word.mFrequency,
+                        null /* shortcutTarget */, 0 /* shortcutProbability */,
+                        word.mIsNotAWord, word.mIsBlacklistEntry, 0 /* timestamp */);
+            } else {
+                for (final WeightedString shortcutTarget : word.mShortcutTargets) {
+                    binaryDict.addUnigramWord(word.mWord, word.mFrequency,
+                            shortcutTarget.mWord, shortcutTarget.mFrequency,
+                            word.mIsNotAWord, word.mIsBlacklistEntry, 0 /* timestamp */);
                 }
             }
-        }
-        Collections.sort(nodes, new Comparator<PtNode>() {
-            @Override
-            public int compare(final PtNode lhs, final PtNode rhs) {
-                if (lhs.mFrequency != rhs.mFrequency) {
-                    return lhs.mFrequency < rhs.mFrequency ? -1 : 1;
-                }
-                if (lhs.mTerminalId < rhs.mTerminalId) return -1;
-                if (lhs.mTerminalId > rhs.mTerminalId) return 1;
-                return 0;
+            if (binaryDict.needsToRunGC(true /* mindsBlockByGC */)) {
+                binaryDict.flushWithGC();
             }
-        });
-        int count = 0;
-        for (final PtNode node : nodes) {
-            node.mTerminalId = count++;
         }
-
-        MakedictLog.i("Computing addresses...");
-        BinaryDictEncoderUtils.computeAddresses(dict, flatNodes, formatOptions);
-        if (MakedictLog.DBG) BinaryDictEncoderUtils.checkFlatPtNodeArrayList(flatNodes);
-
-        writeTerminalData(flatNodes, terminalCount);
-        if (formatOptions.mHasTimestamp) {
-            initUnigramTimestamps(terminalCount);
+        for (final Word word0 : dict) {
+            if (null == word0.mBigrams) continue;
+            for (final WeightedString word1 : word0.mBigrams) {
+                binaryDict.addBigramWords(word0.mWord, word1.mWord, word1.mFrequency,
+                        0 /* timestamp */);
+            }
+            if (binaryDict.needsToRunGC(true /* mindsBlockByGC */)) {
+                binaryDict.flushWithGC();
+            }
         }
-        mBigramWriter = new BigramContentWriter(mBaseFilename, terminalCount, mDictDir,
-                formatOptions.mHasTimestamp);
-        writeBigrams(flatNodes, dict);
-        mShortcutWriter = new ShortcutContentWriter(mBaseFilename, terminalCount, mDictDir);
-        writeShortcuts(flatNodes);
-
-        final PtNodeArray lastNodeArray = flatNodes.get(flatNodes.size() - 1);
-        final int bufferSize = lastNodeArray.mCachedAddressAfterUpdate + lastNodeArray.mCachedSize;
-        mTrieBuf = new byte[bufferSize];
-
-        MakedictLog.i("Writing file...");
-        for (PtNodeArray nodeArray : flatNodes) {
-            BinaryDictEncoderUtils.writePlacedPtNodeArray(dict, this, nodeArray, formatOptions);
-        }
-        if (MakedictLog.DBG) {
-            BinaryDictEncoderUtils.showStatistics(flatNodes);
-            MakedictLog.i("has " + terminalCount + " terminals.");
-        }
-        mTrieOutStream.write(mTrieBuf);
-
-        MakedictLog.i("Done");
-        close();
+        binaryDict.flushWithGC();
+        binaryDict.close();
     }
 
     @Override
     public void setPosition(int position) {
-        if (mTrieBuf == null || position < 0 || position > mTrieBuf.length) return;
-        mTriePos = position;
     }
 
     @Override
     public int getPosition() {
-        return mTriePos;
+        return 0;
     }
 
     @Override
     public void writePtNodeCount(int ptNodeCount) {
-        final int countSize = BinaryDictIOUtils.getPtNodeCountSize(ptNodeCount);
-        // ptNodeCount must fit on one byte or two bytes.
-        // Please see comments in FormatSpec
-        if (countSize != 1 && countSize != 2) {
-            throw new RuntimeException("Strange size from getPtNodeCountSize : " + countSize);
-        }
-        final int encodedPtNodeCount = (countSize == 2) ?
-                (ptNodeCount | FormatSpec.LARGE_PTNODE_ARRAY_SIZE_FIELD_SIZE_FLAG) : ptNodeCount;
-        mTriePos = BinaryDictEncoderUtils.writeUIntToBuffer(mTrieBuf, mTriePos, encodedPtNodeCount,
-                countSize);
-    }
-
-    private void writePtNodeFlags(final PtNode ptNode, final FormatOptions formatOptions) {
-        final int childrenPos = BinaryDictEncoderUtils.getChildrenPosition(ptNode, formatOptions);
-        mTriePos = BinaryDictEncoderUtils.writeUIntToBuffer(mTrieBuf, mTriePos,
-                BinaryDictEncoderUtils.makePtNodeFlags(ptNode, childrenPos, formatOptions),
-                FormatSpec.PTNODE_FLAGS_SIZE);
-    }
-
-    private void writeParentPosition(int parentPos, final PtNode ptNode,
-            final FormatOptions formatOptions) {
-        if (parentPos != FormatSpec.NO_PARENT_ADDRESS) {
-            parentPos -= ptNode.mCachedAddressAfterUpdate;
-        }
-        mTriePos = BinaryDictEncoderUtils.writeParentAddress(mTrieBuf, mTriePos, parentPos,
-                formatOptions);
-    }
-
-    private void writeCharacters(final int[] characters, final boolean hasSeveralChars) {
-        mTriePos = CharEncoding.writeCharArray(characters, mTrieBuf, mTriePos);
-        if (hasSeveralChars) {
-            mTrieBuf[mTriePos++] = FormatSpec.PTNODE_CHARACTERS_TERMINATOR;
-        }
-    }
-
-    private void writeTerminalId(final int terminalId) {
-        mTriePos = BinaryDictEncoderUtils.writeUIntToBuffer(mTrieBuf, mTriePos, terminalId,
-                FormatSpec.PTNODE_TERMINAL_ID_SIZE);
-    }
-
-    private void writeChildrenPosition(PtNode ptNode, FormatOptions formatOptions) {
-        final int childrenPos = BinaryDictEncoderUtils.getChildrenPosition(ptNode, formatOptions);
-        if (formatOptions.supportsDynamicUpdate()) {
-            mTriePos += BinaryDictEncoderUtils.writeSignedChildrenPosition(mTrieBuf,
-                    mTriePos, childrenPos);
-        } else {
-            mTriePos += BinaryDictEncoderUtils.writeChildrenPosition(mTrieBuf,
-                    mTriePos, childrenPos);
-        }
-    }
-
-    private void writeBigrams(final ArrayList<PtNodeArray> flatNodes, final FusionDictionary dict)
-            throws IOException {
-        mBigramWriter.openStreams();
-        for (final PtNodeArray nodeArray : flatNodes) {
-            for (final PtNode ptNode : nodeArray.mData) {
-                if (ptNode.mBigrams != null) {
-                    mBigramWriter.writeBigramsForOneWord(ptNode.mTerminalId, ptNode.mBigrams.size(),
-                            ptNode.mBigrams.iterator(), dict);
-                }
-            }
-        }
-        mBigramWriter.closeStreams();
-    }
-
-    private void writeShortcuts(final ArrayList<PtNodeArray> flatNodes) throws IOException {
-        mShortcutWriter.openStreams();
-        for (final PtNodeArray nodeArray : flatNodes) {
-            for (final PtNode ptNode : nodeArray.mData) {
-                if (ptNode.mShortcutTargets != null && !ptNode.mShortcutTargets.isEmpty()) {
-                    mShortcutWriter.writeShortcutForOneWord(ptNode.mTerminalId,
-                            ptNode.mShortcutTargets.iterator());
-                }
-            }
-        }
-        mShortcutWriter.closeStreams();
     }
 
     @Override
     public void writeForwardLinkAddress(int forwardLinkAddress) {
-        mTriePos = BinaryDictEncoderUtils.writeUIntToBuffer(mTrieBuf, mTriePos,
-                forwardLinkAddress, FormatSpec.FORWARD_LINK_ADDRESS_SIZE);
     }
 
     @Override
-    public void writePtNode(final PtNode ptNode, final int parentPosition,
-            final FormatOptions formatOptions, final FusionDictionary dict) {
-        writePtNodeFlags(ptNode, formatOptions);
-        writeParentPosition(parentPosition, ptNode, formatOptions);
-        writeCharacters(ptNode.mChars, ptNode.hasSeveralChars());
-        if (ptNode.isTerminal()) {
-            writeTerminalId(ptNode.mTerminalId);
-        }
-        writeChildrenPosition(ptNode, formatOptions);
-    }
-
-    private void writeTerminalData(final ArrayList<PtNodeArray> flatNodes,
-          final int terminalCount) throws IOException {
-        final byte[] freqBuf = new byte[terminalCount * FormatSpec.FREQUENCY_AND_FLAGS_SIZE];
-        final byte[] terminalAddressTableBuf =
-                new byte[terminalCount * FormatSpec.TERMINAL_ADDRESS_TABLE_ADDRESS_SIZE];
-        for (final PtNodeArray nodeArray : flatNodes) {
-            for (final PtNode ptNode : nodeArray.mData) {
-                if (ptNode.isTerminal()) {
-                    BinaryDictEncoderUtils.writeUIntToBuffer(freqBuf,
-                            ptNode.mTerminalId * FormatSpec.FREQUENCY_AND_FLAGS_SIZE,
-                            ptNode.mFrequency, FormatSpec.FREQUENCY_AND_FLAGS_SIZE);
-                    BinaryDictEncoderUtils.writeUIntToBuffer(terminalAddressTableBuf,
-                            ptNode.mTerminalId * FormatSpec.TERMINAL_ADDRESS_TABLE_ADDRESS_SIZE,
-                            ptNode.mCachedAddressAfterUpdate,
-                            FormatSpec.TERMINAL_ADDRESS_TABLE_ADDRESS_SIZE);
-                }
-            }
-        }
-        mFreqOutStream.write(freqBuf);
-        mTerminalAddressTableOutStream.write(terminalAddressTableBuf);
-    }
-
-    private void initUnigramTimestamps(final int terminalCount) throws IOException {
-        // Initial value of time stamps for each word is 0.
-        final byte[] unigramTimestampBuf =
-                new byte[terminalCount * FormatSpec.UNIGRAM_TIMESTAMP_SIZE];
-        mUnigramTimestampOutStream.write(unigramTimestampBuf);
+    public void writePtNode(
+            PtNode ptNode, int parentPosition, FormatOptions formatOptions, FusionDictionary dict) {
     }
 }

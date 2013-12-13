@@ -31,16 +31,16 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 /**
- * An implementation of DictEncoder for version 3 binary dictionary.
+ * An implementation of DictEncoder for version 2 binary dictionary.
  */
-public class Ver3DictEncoder implements DictEncoder {
+public class Ver2DictEncoder implements DictEncoder {
 
     private final File mDictFile;
     private OutputStream mOutStream;
     private byte[] mBuffer;
     private int mPosition;
 
-    public Ver3DictEncoder(final File dictFile) {
+    public Ver2DictEncoder(final File dictFile) {
         mDictFile = dictFile;
         mOutStream = null;
         mBuffer = null;
@@ -49,7 +49,7 @@ public class Ver3DictEncoder implements DictEncoder {
     // This constructor is used only by BinaryDictOffdeviceUtilsTests.
     // If you want to use this in the production code, you should consider keeping consistency of
     // the interface of Ver3DictDecoder by using factory.
-    public Ver3DictEncoder(final OutputStream outStream) {
+    public Ver2DictEncoder(final OutputStream outStream) {
         mDictFile = null;
         mOutStream = outStream;
     }

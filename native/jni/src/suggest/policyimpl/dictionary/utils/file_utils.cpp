@@ -53,6 +53,11 @@ namespace latinime {
 
 // Remove a directory and all files in the directory.
 /* static */ bool FileUtils::removeDirAndFiles(const char *const dirPath) {
+    return removeDirAndFiles(dirPath, 5 /* maxTries */);
+}
+
+// Remove a directory and all files in the directory, trying up to maxTimes.
+/* static */ bool FileUtils::removeDirAndFiles(const char *const dirPath, const int maxTries) {
     DIR *const dir = opendir(dirPath);
     if (dir == NULL) {
         AKLOGE("Cannot open dir %s.", dirPath);
@@ -60,7 +65,7 @@ namespace latinime {
     }
     struct dirent *dirent;
     while ((dirent = readdir(dir)) != NULL) {
-        if (dirent->d_type != DT_REG) {
+        if (dirent->d_type == DT_DIR) {
             continue;
         }
         const int filePathBufSize = getFilePathBufSize(dirPath, dirent->d_name);
@@ -74,8 +79,14 @@ namespace latinime {
     }
     closedir(dir);
     if (remove(dirPath) != 0) {
-        AKLOGE("Cannot remove directory %s.", dirPath);
-        return false;
+        if (maxTries > 0) {
+            // On NFS, deleting files sometimes creates new files. I'm not sure what the
+            // correct way of dealing with this is, but for the time being, this seems to work.
+            removeDirAndFiles(dirPath, maxTries - 1);
+        } else {
+            AKLOGE("Cannot remove directory %s.", dirPath);
+            return false;
+        }
     }
     return true;
 }

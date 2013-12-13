@@ -367,6 +367,7 @@ public final class BinaryDictionary extends Dictionary {
     public static class LanguageModelParam {
         public final int[] mWord0;
         public final int[] mWord1;
+        // TODO: this needs to be a list of shortcuts
         public final int[] mShortcutTarget;
         public final int mUnigramProbability;
         public final int mBigramProbability;
@@ -375,7 +376,7 @@ public final class BinaryDictionary extends Dictionary {
         public final boolean mIsBlacklisted;
         public final int mTimestamp;
 
-        // Constructor for unigram.
+        // Constructor for unigram. TODO: support shortcuts
         public LanguageModelParam(final String word, final int unigramProbability,
                 final int timestamp) {
             mWord0 = null;

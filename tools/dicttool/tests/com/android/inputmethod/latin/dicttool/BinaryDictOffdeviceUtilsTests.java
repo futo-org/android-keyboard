@@ -24,7 +24,7 @@ import com.android.inputmethod.latin.makedict.FusionDictionary;
 import com.android.inputmethod.latin.makedict.FusionDictionary.DictionaryOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
 import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
-import com.android.inputmethod.latin.makedict.Ver3DictEncoder;
+import com.android.inputmethod.latin.makedict.Ver2DictEncoder;
 
 import junit.framework.TestCase;
 
@@ -58,7 +58,7 @@ public class BinaryDictOffdeviceUtilsTests extends TestCase {
                 Compress.getCompressedStream(
                         Compress.getCompressedStream(
                                 new BufferedOutputStream(new FileOutputStream(dst)))));
-        final DictEncoder dictEncoder = new Ver3DictEncoder(out);
+        final DictEncoder dictEncoder = new Ver2DictEncoder(out);
         dictEncoder.writeDictionary(dict, new FormatOptions(2, false));
 
         // Test for an actually compressed dictionary and its contents
