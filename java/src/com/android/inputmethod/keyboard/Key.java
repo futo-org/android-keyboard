@@ -348,8 +348,7 @@ public class Key implements Comparable<Key> {
             if (StringUtils.codePointCount(mLabel) == 1) {
                 // Use the first letter of the hint label if shiftedLetterActivated flag is
                 // specified.
-                if (hasShiftedLetterHint() && isShiftedLetterActivated()
-                        && !TextUtils.isEmpty(mHintLabel)) {
+                if (hasShiftedLetterHint() && isShiftedLetterActivated()) {
                     mCode = mHintLabel.codePointAt(0);
                 } else {
                     mCode = mLabel.codePointAt(0);
@@ -687,7 +686,8 @@ public class Key implements Comparable<Key> {
     }
 
     public final boolean hasShiftedLetterHint() {
-        return (mLabelFlags & LABEL_FLAGS_HAS_SHIFTED_LETTER_HINT) != 0;
+        return (mLabelFlags & LABEL_FLAGS_HAS_SHIFTED_LETTER_HINT) != 0
+                && !TextUtils.isEmpty(mHintLabel);
     }
 
     public final boolean hasHintLabel() {
@@ -710,8 +710,9 @@ public class Key implements Comparable<Key> {
         return (mLabelFlags & LABEL_FLAGS_AUTO_SCALE) == LABEL_FLAGS_AUTO_SCALE;
     }
 
-    public final boolean isShiftedLetterActivated() {
-        return (mLabelFlags & LABEL_FLAGS_SHIFTED_LETTER_ACTIVATED) != 0;
+    private final boolean isShiftedLetterActivated() {
+        return (mLabelFlags & LABEL_FLAGS_SHIFTED_LETTER_ACTIVATED) != 0
+                && !TextUtils.isEmpty(mHintLabel);
     }
 
     public final int getMoreKeysColumn() {
