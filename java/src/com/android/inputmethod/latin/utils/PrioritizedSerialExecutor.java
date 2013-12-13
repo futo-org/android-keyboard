@@ -137,6 +137,7 @@ public class PrioritizedSerialExecutor {
     public void shutdown() {
         synchronized(mLock) {
             mIsShutdown = true;
+            mThreadPoolExecutor.shutdown();
         }
     }
 

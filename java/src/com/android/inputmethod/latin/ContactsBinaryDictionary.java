@@ -33,6 +33,7 @@ import android.util.Log;
 
 import com.android.inputmethod.latin.utils.StringUtils;
 
+import java.io.File;
 import java.util.List;
 import java.util.Locale;
 
@@ -81,6 +82,11 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
         // Load the current binary dictionary from internal storage. If no binary dictionary exists,
         // loadDictionary will start a new thread to generate one asynchronously.
         loadDictionary();
+    }
+
+    // Dummy constructor for tests.
+    public ContactsBinaryDictionary(final Context context, final Locale locale, final File file) {
+        this(context, locale);
     }
 
     private synchronized void registerObserver(final Context context) {

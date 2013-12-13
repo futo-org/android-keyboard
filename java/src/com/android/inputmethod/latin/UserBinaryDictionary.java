@@ -32,6 +32,7 @@ import com.android.inputmethod.compat.UserDictionaryCompatUtils;
 import com.android.inputmethod.latin.utils.LocaleUtils;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.Locale;
 
@@ -76,6 +77,11 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
 
     public UserBinaryDictionary(final Context context, final Locale locale) {
         this(context, locale, false);
+    }
+
+    // Dummy constructor for tests.
+    public UserBinaryDictionary(final Context context, final Locale locale, final File file) {
+        this(context, locale);
     }
 
     public UserBinaryDictionary(final Context context, final Locale locale,

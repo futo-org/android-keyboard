@@ -17,7 +17,6 @@
 package com.android.inputmethod.latin;
 
 import android.content.Context;
-import android.os.SystemClock;
 import android.util.Log;
 
 import com.android.inputmethod.annotations.UsedForTesting;
@@ -179,6 +178,19 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
             }
         }
         return executor;
+    }
+
+    /**
+     * Shutdowns all executors and removes all executors from the executor map for testing.
+     */
+    @UsedForTesting
+    public static void shutdownAllExecutors() {
+        synchronized(sDictNameExecutorMap) {
+            for (final PrioritizedSerialExecutor executor : sDictNameExecutorMap.values()) {
+                executor.shutdown();
+                sDictNameExecutorMap.remove(executor);
+            }
+        }
     }
 
     private static AbstractDictionaryWriter getDictionaryWriter(final Context context,
@@ -504,7 +516,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
      * dictionary exists, this method will generate one.
      */
     protected void loadDictionary() {
-        mPerInstanceDictionaryUpdateController.mLastUpdateRequestTime = SystemClock.uptimeMillis();
+        mPerInstanceDictionaryUpdateController.mLastUpdateRequestTime = System.currentTimeMillis();
         reloadDictionaryIfRequired();
     }
 
@@ -600,7 +612,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
      *        the current binary dictionary from file.
      */
     protected void setRequiresReload(final boolean requiresRebuild) {
-        final long time = SystemClock.uptimeMillis();
+        final long time = System.currentTimeMillis();
         mPerInstanceDictionaryUpdateController.mLastUpdateRequestTime = time;
         mDictNameDictionaryUpdateController.mLastUpdateRequestTime = time;
         if (DEBUG) {
@@ -648,7 +660,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
             @Override
             public void run() {
                 try {
-                    final long time = SystemClock.uptimeMillis();
+                    final long time = System.currentTimeMillis();
                     final boolean dictionaryFileExists = dictionaryFileExists();
                     if (mDictNameDictionaryUpdateController.isOutOfDate()
                             || !dictionaryFileExists) {
