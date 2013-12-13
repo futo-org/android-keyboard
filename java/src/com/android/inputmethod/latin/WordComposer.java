@@ -471,7 +471,12 @@ public final class WordComposer {
         mCapsCount = 0;
         mDigitsCount = 0;
         mIsBatchMode = false;
-        mPreviousWord = mTypedWord.toString();
+        final boolean isWhitespace = 1 == StringUtils.codePointCount(separatorString)
+                && Character.isWhitespace(separatorString.codePointAt(0));
+        // If not whitespace, we don't use the previous word for suggestion. This is consistent
+        // with how we get the previous word for suggestion: see RichInputConnection#spaceRegex and
+        // LatinIME#getNthPreviousWordForSuggestion.
+        mPreviousWord = isWhitespace ? mTypedWord.toString() : null;
         mTypedWord.setLength(0);
         mCodePointSize = 0;
         mTrailingSingleQuotesCount = 0;
@@ -483,6 +488,13 @@ public final class WordComposer {
         mIsResumed = false;
         mRejectedBatchModeSuggestion = null;
         return lastComposedWord;
+    }
+
+    public void doubleSpacePeriod() {
+        // When a period was entered with a double space, the separator we got has been
+        // changed by a period (see #commitWord). We should not use the previous word for
+        // suggestion.
+        mPreviousWord = null;
     }
 
     public void resumeSuggestionOnLastComposedWord(final LastComposedWord lastComposedWord,
