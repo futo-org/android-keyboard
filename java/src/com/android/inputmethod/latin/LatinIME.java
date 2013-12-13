@@ -1475,6 +1475,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 ResearchLogger.latinIME_maybeDoubleSpacePeriod(textToInsert,
                         false /* isBatchMode */);
             }
+            mWordComposer.doubleSpacePeriod();
             mKeyboardSwitcher.updateShiftState();
             return true;
         }
