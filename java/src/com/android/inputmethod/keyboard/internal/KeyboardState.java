@@ -304,6 +304,7 @@ public final class KeyboardState {
         mSwitchActions.setSymbolsKeyboard();
         mIsAlphabetMode = false;
         mIsSymbolShifted = false;
+        mRecapitalizeMode = RecapitalizeStatus.NOT_A_RECAPITALIZE_MODE;
         // Reset alphabet shift state.
         mAlphabetShiftState.setShiftLocked(false);
         mSwitchState = SWITCH_STATE_SYMBOL_BEGIN;
@@ -316,6 +317,7 @@ public final class KeyboardState {
         mSwitchActions.setSymbolsShiftedKeyboard();
         mIsAlphabetMode = false;
         mIsSymbolShifted = true;
+        mRecapitalizeMode = RecapitalizeStatus.NOT_A_RECAPITALIZE_MODE;
         // Reset alphabet shift state.
         mAlphabetShiftState.setShiftLocked(false);
         mSwitchState = SWITCH_STATE_SYMBOL_BEGIN;
@@ -327,6 +329,7 @@ public final class KeyboardState {
         }
         mIsAlphabetMode = false;
         mIsEmojiMode = true;
+        mRecapitalizeMode = RecapitalizeStatus.NOT_A_RECAPITALIZE_MODE;
         // Remember caps lock mode and reset alphabet shift state.
         mPrevMainKeyboardWasShiftLocked = mAlphabetShiftState.isShiftLocked();
         mAlphabetShiftState.setShiftLocked(false);
