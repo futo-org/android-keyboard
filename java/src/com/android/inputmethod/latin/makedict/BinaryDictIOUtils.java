@@ -112,7 +112,7 @@ public final class BinaryDictIOUtils {
             }
 
             if (p.mPosition == p.mNumOfPtNode) {
-                if (formatOptions.mSupportsDynamicUpdate) {
+                if (formatOptions.supportsDynamicUpdate()) {
                     final boolean hasValidForwardLinkAddress =
                             dictDecoder.readAndFollowForwardLink();
                     if (hasValidForwardLinkAddress && dictDecoder.hasNextPtNodeArray()) {
@@ -228,7 +228,7 @@ public final class BinaryDictIOUtils {
                 // a forward link address that we need to consult and possibly resume
                 // search on the next node array in the linked list.
                 if (foundNextPtNode) break;
-                if (!header.mFormatOptions.mSupportsDynamicUpdate) {
+                if (!header.mFormatOptions.supportsDynamicUpdate()) {
                     return FormatSpec.NOT_VALID_WORD;
                 }
 
@@ -507,7 +507,7 @@ public final class BinaryDictIOUtils {
      * Helper method to check whether the node is moved.
      */
     public static boolean isMovedPtNode(final int flags, final FormatOptions options) {
-        return options.mSupportsDynamicUpdate
+        return options.supportsDynamicUpdate()
                 && ((flags & FormatSpec.MASK_CHILDREN_ADDRESS_TYPE) == FormatSpec.FLAG_IS_MOVED);
     }
 
@@ -516,14 +516,14 @@ public final class BinaryDictIOUtils {
      */
     public static boolean supportsDynamicUpdate(final FormatOptions options) {
         return options.mVersion >= FormatSpec.FIRST_VERSION_WITH_DYNAMIC_UPDATE
-                && options.mSupportsDynamicUpdate;
+                && options.supportsDynamicUpdate();
     }
 
     /**
      * Helper method to check whether the node is deleted.
      */
     public static boolean isDeletedPtNode(final int flags, final FormatOptions formatOptions) {
-        return formatOptions.mSupportsDynamicUpdate
+        return formatOptions.supportsDynamicUpdate()
                 && ((flags & FormatSpec.MASK_CHILDREN_ADDRESS_TYPE) == FormatSpec.FLAG_IS_DELETED);
     }
 
@@ -546,7 +546,7 @@ public final class BinaryDictIOUtils {
 
     static int getChildrenAddressSize(final int optionFlags,
             final FormatOptions formatOptions) {
-        if (formatOptions.mSupportsDynamicUpdate) return FormatSpec.SIGNED_CHILDREN_ADDRESS_SIZE;
+        if (formatOptions.supportsDynamicUpdate()) return FormatSpec.SIGNED_CHILDREN_ADDRESS_SIZE;
         switch (optionFlags & FormatSpec.MASK_CHILDREN_ADDRESS_TYPE) {
             case FormatSpec.FLAG_CHILDREN_ADDRESS_TYPE_ONEBYTE:
                 return 1;

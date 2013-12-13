@@ -95,8 +95,7 @@ public final class UserHistoryDictIOUtils {
     static FusionDictionary constructFusionDictionary(final BigramDictionaryInterface dict,
             final UserHistoryDictionaryBigramList bigrams, final HashMap<String, String> options) {
         final FusionDictionary fusionDict = new FusionDictionary(new PtNodeArray(),
-                new FusionDictionary.DictionaryOptions(options, false,
-                        false));
+                new FusionDictionary.DictionaryOptions(options));
         int profTotal = 0;
         for (final String word1 : bigrams.keySet()) {
             final HashMap<String, Byte> word1Bigrams = bigrams.getBigrams(word1);

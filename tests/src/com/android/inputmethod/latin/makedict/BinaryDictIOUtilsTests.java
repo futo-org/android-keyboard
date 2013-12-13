@@ -114,7 +114,7 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
                     formatOptions);
             printPtNode(currentInfo);
         }
-        if (formatOptions.mSupportsDynamicUpdate) {
+        if (formatOptions.supportsDynamicUpdate()) {
             final int forwardLinkAddress = dictBuffer.readUnsignedInt24();
             Log.d(TAG, "    forwardLinkAddress = " + forwardLinkAddress);
         }
@@ -289,8 +289,9 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
     }
 
     public void testInsertWord() {
-        runTestInsertWord(BinaryDictUtils.VERSION3_WITH_DYNAMIC_UPDATE);
-        runTestInsertWord(BinaryDictUtils.VERSION4_WITH_DYNAMIC_UPDATE);
+        runTestInsertWord(BinaryDictUtils.VERSION3_OPTIONS);
+        runTestInsertWord(BinaryDictUtils.VERSION4_OPTIONS_WITHOUT_TIMESTAMP);
+        runTestInsertWord(BinaryDictUtils.VERSION4_OPTIONS_WITH_TIMESTAMP);
     }
 
     private void runTestInsertWordWithBigrams(final FormatOptions formatOptions) {
@@ -329,8 +330,9 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
     }
 
     public void testInsertWordWithBigrams() {
-        runTestInsertWordWithBigrams(BinaryDictUtils.VERSION3_WITH_DYNAMIC_UPDATE);
-        runTestInsertWordWithBigrams(BinaryDictUtils.VERSION4_WITH_DYNAMIC_UPDATE);
+        runTestInsertWordWithBigrams(BinaryDictUtils.VERSION3_OPTIONS);
+        runTestInsertWordWithBigrams(BinaryDictUtils.VERSION4_OPTIONS_WITHOUT_TIMESTAMP);
+        runTestInsertWordWithBigrams(BinaryDictUtils.VERSION4_OPTIONS_WITH_TIMESTAMP);
     }
 
     private void runTestRandomWords(final FormatOptions formatOptions) {
@@ -377,7 +379,8 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
     }
 
     public void testRandomWords() {
-        runTestRandomWords(BinaryDictUtils.VERSION3_WITH_DYNAMIC_UPDATE);
-        runTestRandomWords(BinaryDictUtils.VERSION4_WITH_DYNAMIC_UPDATE);
+        runTestRandomWords(BinaryDictUtils.VERSION3_OPTIONS);
+        runTestRandomWords(BinaryDictUtils.VERSION4_OPTIONS_WITHOUT_TIMESTAMP);
+        runTestRandomWords(BinaryDictUtils.VERSION4_OPTIONS_WITH_TIMESTAMP);
     }
 }

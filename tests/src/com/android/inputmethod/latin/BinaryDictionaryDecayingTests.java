@@ -115,8 +115,6 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
                 getContext().getCacheDir());
         FileUtils.deleteRecursively(file);
         Map<String, String> attributeMap = new HashMap<String, String>();
-        attributeMap.put(FormatSpec.FileHeader.SUPPORTS_DYNAMIC_UPDATE_ATTRIBUTE,
-                FormatSpec.FileHeader.ATTRIBUTE_VALUE_TRUE);
         attributeMap.put(FormatSpec.FileHeader.USES_FORGETTING_CURVE_ATTRIBUTE,
                 FormatSpec.FileHeader.ATTRIBUTE_VALUE_TRUE);
         attributeMap.put(FormatSpec.FileHeader.HAS_HISTORICAL_INFO_ATTRIBUTE,

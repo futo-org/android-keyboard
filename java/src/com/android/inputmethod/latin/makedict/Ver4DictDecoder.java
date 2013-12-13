@@ -183,14 +183,11 @@ public class Ver4DictDecoder extends AbstractDictDecoder {
      * An auxiliary class for reading bigrams.
      */
     protected static class BigramContentReader extends SparseTableContentReader {
-        private final boolean mHasTimestamp;
-
         public BigramContentReader(final String name, final File baseDir,
                 final DictionaryBufferFactory factory, final boolean hasTimestamp) {
             super(name + FormatSpec.BIGRAM_FILE_EXTENSION,
                     FormatSpec.BIGRAM_ADDRESS_TABLE_BLOCK_SIZE, baseDir,
                     getContentFilenames(name, hasTimestamp), getContentIds(hasTimestamp), factory);
-            mHasTimestamp = hasTimestamp;
         }
 
         // TODO: Consolidate this method and BigramContentWriter.getContentFilenames.

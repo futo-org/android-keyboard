@@ -95,8 +95,6 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
     @Override
     protected Map<String, String> getHeaderAttributeMap() {
         HashMap<String, String> attributeMap = new HashMap<String, String>();
-        attributeMap.put(FormatSpec.FileHeader.SUPPORTS_DYNAMIC_UPDATE_ATTRIBUTE,
-                FormatSpec.FileHeader.ATTRIBUTE_VALUE_TRUE);
         attributeMap.put(FormatSpec.FileHeader.USES_FORGETTING_CURVE_ATTRIBUTE,
                 FormatSpec.FileHeader.ATTRIBUTE_VALUE_TRUE);
         attributeMap.put(FormatSpec.FileHeader.HAS_HISTORICAL_INFO_ATTRIBUTE,
