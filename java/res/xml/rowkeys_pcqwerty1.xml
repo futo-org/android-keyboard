@@ -26,7 +26,7 @@
         latin:additionalMoreKeys="~" />
     <Key
         latin:keyLabel="1"
-        latin:additionalMoreKeys="!,!text/more_keys_for_exclamation"
+        latin:additionalMoreKeys="!,!text/more_keys_for_symbols_exclamation"
         latin:moreKeys="!text/more_keys_for_symbols_1" />
     <Key
         latin:keyLabel="2"

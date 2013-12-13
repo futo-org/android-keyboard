@@ -112,7 +112,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
 
         final Resources res = context.getResources();
         mMoreSuggestionsModalTolerance = res.getDimensionPixelOffset(
-                R.dimen.config_more_suggestions_modal_tolerance);
+                R.dimen.more_suggestions_modal_tolerance);
         mMoreSuggestionsSlidingDetector = new GestureDetector(
                 context, mMoreSuggestionsSlidingListener);
     }

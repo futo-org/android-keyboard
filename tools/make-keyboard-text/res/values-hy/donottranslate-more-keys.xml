@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+**
+** Copyright 2013, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- U+058A: "֊" ARMENIAN HYPHEN -->
+    <!-- U+055C: "՜" ARMENIAN EXCLAMATION MARK -->
+    <!-- U+055D: "՝" ARMENIAN COMMA -->
+    <!-- U+055E: "՞" ARMENIAN QUESTION MARK -->
+    <!-- U+0559: "ՙ" ARMENIAN MODIFIER LETTER LEFT HALF RING -->
+    <!-- U+055A: "՚" ARMENIAN APOSTROPHE -->
+    <!-- U+055B: "՛" ARMENIAN EMPHASIS MARK -->
+    <!-- U+055F: "՟" ARMENIAN ABBREVIATION MARK -->
+    <string name="more_keys_for_punctuation">"!fixedColumnOrder!8,!,?,\\,,.,&#x058A;,&#x055C;,&#x055D;,&#x055E;,:,;,\@,&#x0559;,&#x055A;,&#x055B;,&#x055F;"</string>
+    <!-- U+055E: "՞" ARMENIAN QUESTION MARK -->
+    <!-- U+00BF: "¿" INVERTED QUESTION MARK -->
+    <string name="more_keys_for_symbols_question">&#x055E;,&#x00BF;</string>
+    <!-- U+055C: "՜" ARMENIAN EXCLAMATION MARK -->
+    <!-- U+00A1: "¡" INVERTED EXCLAMATION MARK -->
+    <string name="more_keys_for_symbols_exclamation">&#x055C;,&#x00A1;</string>
+    <!-- U+058F: "֏" ARMENIAN DRAM SIGN -->
+    <!-- TODO: Enable this when we have glyph for the following letter
+         <string name="keylabel_for_currency">&#x058F;</string>
+    -->
+</resources>

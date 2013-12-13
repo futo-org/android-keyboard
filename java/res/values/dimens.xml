@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+**
+** Copyright 2008, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+
+<resources>
+    <!-- Preferable keyboard height in absolute scale: 1.285in -->
+    <!-- This keyboardHeight value should match with keyboard-heights.xml -->
+    <dimen name="keyboardHeight">205.6dp</dimen>
+    <fraction name="maxKeyboardHeight">46%p</fraction>
+    <fraction name="minKeyboardHeight">-61.8%p</fraction>
+
+    <dimen name="popup_key_height">52.8dp</dimen>
+
+    <dimen name="more_keys_keyboard_key_horizontal_padding">8dp</dimen>
+
+    <fraction name="keyboard_left_padding">0%p</fraction>
+    <fraction name="keyboard_right_padding">0%p</fraction>
+
+    <fraction name="keyboard_top_padding_gb">1.556%p</fraction>
+    <fraction name="keyboard_bottom_padding_gb">4.669%p</fraction>
+    <fraction name="key_bottom_gap_gb">6.495%p</fraction>
+    <fraction name="key_horizontal_gap_gb">1.971%p</fraction>
+
+    <fraction name="keyboard_top_padding_holo">2.335%p</fraction>
+    <fraction name="keyboard_bottom_padding_holo">4.669%p</fraction>
+    <fraction name="key_bottom_gap_holo">6.127%p</fraction>
+    <fraction name="key_horizontal_gap_holo">1.739%p</fraction>
+
+    <!-- Amount of allowance for selecting keys in a mini popup keyboard by sliding finger. -->
+    <!-- popup_key_height x 1.2 -->
+    <dimen name="more_keys_keyboard_slide_allowance">63.36dp</dimen>
+    <!-- popup_key_height x -1.0 -->
+    <dimen name="more_keys_keyboard_vertical_correction_gb">-52.8dp</dimen>
+    <dimen name="keyboard_vertical_correction">0.0dp</dimen>
+
+    <fraction name="key_letter_ratio">55%</fraction>
+    <fraction name="key_large_letter_ratio">65%</fraction>
+    <fraction name="key_label_ratio">34%</fraction>
+    <fraction name="key_large_label_ratio">40%</fraction>
+    <fraction name="key_hint_letter_ratio">25%</fraction>
+    <fraction name="key_hint_label_ratio">44%</fraction>
+    <fraction name="key_uppercase_letter_ratio">35%</fraction>
+    <fraction name="key_preview_text_ratio">82%</fraction>
+    <fraction name="spacebar_text_ratio">33.735%</fraction>
+    <dimen name="key_preview_height">80dp</dimen>
+    <dimen name="key_preview_offset_gb">-8.0dp</dimen>
+
+    <dimen name="key_label_horizontal_padding">4dp</dimen>
+    <dimen name="key_hint_letter_padding">1dp</dimen>
+    <dimen name="key_popup_hint_letter_padding">2dp</dimen>
+    <dimen name="key_uppercase_letter_padding">2dp</dimen>
+
+    <!-- For 5-row keyboard -->
+    <fraction name="key_bottom_gap_5row">3.20%p</fraction>
+    <fraction name="key_letter_ratio_5row">64%</fraction>
+    <fraction name="key_uppercase_letter_ratio_5row">41%</fraction>
+
+    <dimen name="key_preview_offset_holo">8.0dp</dimen>
+    <!-- popup_key_height x -0.5 -->
+    <dimen name="more_keys_keyboard_vertical_correction_holo">-26.4dp</dimen>
+
+    <dimen name="suggestions_strip_height">40dp</dimen>
+    <dimen name="more_suggestions_key_horizontal_padding">12dp</dimen>
+    <dimen name="more_suggestions_row_height">40dp</dimen>
+    <dimen name="more_suggestions_bottom_gap">6dp</dimen>
+    <dimen name="more_suggestions_modal_tolerance">32.0dp</dimen>
+    <dimen name="more_suggestions_slide_allowance">16.0dp</dimen>
+    <integer name="max_more_suggestions_row">6</integer>
+    <fraction name="min_more_suggestions_width">90%</fraction>
+    <fraction name="more_suggestions_info_ratio">18%</fraction>
+    <dimen name="suggestions_strip_padding">0dp</dimen>
+    <dimen name="suggestion_min_width">44dp</dimen>
+    <dimen name="suggestion_padding">6dp</dimen>
+    <dimen name="suggestion_text_size">18dp</dimen>
+    <dimen name="more_suggestions_hint_text_size">27dp</dimen>
+    <integer name="suggestions_count_in_strip">3</integer>
+    <fraction name="center_suggestion_percentile">36%</fraction>
+
+    <!-- Gesture trail parameters -->
+    <!-- Minimum distance between gesture trail sampling points. -->
+    <dimen name="gesture_trail_min_sampling_distance">9.6dp</dimen>
+    <!-- Maximum angular threshold between gesture trails interpolation segments in degree. -->
+    <integer name="gesture_trail_max_interpolation_angular_threshold">15</integer>
+    <!-- Maximum distance threshold between gesture trails interpolation segments. -->
+    <dimen name="gesture_trail_max_interpolation_distance_threshold">16.0dp</dimen>
+    <!-- Maximum number of gesture trail interpolation segments. -->
+    <integer name="gesture_trail_max_interpolation_segments">6</integer>
+    <dimen name="gesture_trail_start_width">10.0dp</dimen>
+    <dimen name="gesture_trail_end_width">2.5dp</dimen>
+    <!-- Percentages of gesture preview taril body and shadow, in proportion to the trail width.
+         A negative value of the shadow ratio disables drawing shadow. -->
+    <!-- TODO: May use the shadow to alleviate rugged trail drawing. -->
+    <integer name="gesture_trail_body_ratio">100</integer>
+    <integer name="gesture_trail_shadow_ratio">-1</integer>
+    <!-- Gesture floating preview text parameters -->
+    <dimen name="gesture_floating_preview_text_size">24dp</dimen>
+    <dimen name="gesture_floating_preview_text_offset">73dp</dimen>
+    <dimen name="gesture_floating_preview_horizontal_padding">24dp</dimen>
+    <dimen name="gesture_floating_preview_vertical_padding">16dp</dimen>
+    <dimen name="gesture_floating_preview_round_radius">2dp</dimen>
+
+    <!-- Emoji keyboard -->
+    <fraction name="emoji_keyboard_key_width">14.2857%p</fraction>
+    <fraction name="emoji_keyboard_row_height">33%p</fraction>
+    <fraction name="emoji_keyboard_key_letter_size">68%p</fraction>
+    <integer name="emoji_keyboard_max_key_count">21</integer>
+    <dimen name="emoji_category_page_id_height">3dp</dimen>
+
+    <!-- Inset used in Accessibility mode to avoid accidental key presses when a finger slides off the screen. -->
+    <dimen name="accessibility_edge_slop">8dp</dimen>
+
+    <integer name="user_dictionary_max_word_length" translatable="false">48</integer>
+
+    <dimen name="language_on_spacebar_horizontal_margin">1dp</dimen>
+
+</resources>

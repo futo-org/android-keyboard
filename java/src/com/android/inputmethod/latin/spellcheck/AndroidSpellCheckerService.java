@@ -428,7 +428,7 @@ public final class AndroidSpellCheckerService extends SpellCheckerService
         final String localeStr = locale.toString();
         UserBinaryDictionary userDictionary = mUserDictionaries.get(localeStr);
         if (null == userDictionary) {
-            userDictionary = new SynchronouslyLoadedUserBinaryDictionary(this, locale, true);
+            userDictionary = new SynchronouslyLoadedUserBinaryDictionary(this, localeStr, true);
             mUserDictionaries.put(localeStr, userDictionary);
         }
         dictionaryCollection.addDictionary(userDictionary);

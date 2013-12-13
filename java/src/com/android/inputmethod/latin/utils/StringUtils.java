@@ -16,15 +16,20 @@
 
 package com.android.inputmethod.latin.utils;
 
-import android.text.TextUtils;
-import android.util.Log;
-
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.settings.SettingsValues;
 
+import android.text.TextUtils;
+import android.util.JsonReader;
+import android.util.JsonWriter;
+import android.util.Log;
+
 import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -33,8 +38,6 @@ public final class StringUtils {
     public static final int CAPITALIZE_NONE = 0;  // No caps, or mixed case
     public static final int CAPITALIZE_FIRST = 1; // First only
     public static final int CAPITALIZE_ALL = 2;   // All caps
-
-    private static final String EMPTY_STRING = "";
 
     private StringUtils() {
         // This utility class is not publicly instantiable.
@@ -77,20 +80,6 @@ public final class StringUtils {
         return containsInArray(text, extraValues.split(SEPARATOR_FOR_COMMA_SPLITTABLE_TEXT));
     }
 
-    public static String joinCommaSplittableText(final String head, final String tail) {
-        if (TextUtils.isEmpty(head) && TextUtils.isEmpty(tail)) {
-            return EMPTY_STRING;
-        }
-        // Here either head or tail is not null.
-        if (TextUtils.isEmpty(head)) {
-            return tail;
-        }
-        if (TextUtils.isEmpty(tail)) {
-            return head;
-        }
-        return head + SEPARATOR_FOR_COMMA_SPLITTABLE_TEXT + tail;
-    }
-
     public static String appendToCommaSplittableTextIfNotExists(final String text,
             final String extraValues) {
         if (TextUtils.isEmpty(extraValues)) {
@@ -105,7 +94,7 @@ public final class StringUtils {
     public static String removeFromCommaSplittableTextIfExists(final String text,
             final String extraValues) {
         if (TextUtils.isEmpty(extraValues)) {
-            return EMPTY_STRING;
+            return "";
         }
         final String[] elements = extraValues.split(SEPARATOR_FOR_COMMA_SPLITTABLE_TEXT);
         if (!containsInArray(text, elements)) {
@@ -378,7 +367,7 @@ public final class StringUtils {
         return false;
     }
 
-    public static boolean isEmptyStringOrWhiteSpaces(final String s) {
+    public static boolean isEmptyStringOrWhiteSpaces(String s) {
         final int N = codePointCount(s);
         for (int i = 0; i < N; ++i) {
             if (!Character.isWhitespace(s.codePointAt(i))) {
@@ -389,9 +378,9 @@ public final class StringUtils {
     }
 
     @UsedForTesting
-    public static String byteArrayToHexString(final byte[] bytes) {
+    public static String byteArrayToHexString(byte[] bytes) {
         if (bytes == null || bytes.length == 0) {
-            return EMPTY_STRING;
+            return "";
         }
         final StringBuilder sb = new StringBuilder();
         for (byte b : bytes) {
@@ -404,7 +393,7 @@ public final class StringUtils {
      * Convert hex string to byte array. The string length must be an even number.
      */
     @UsedForTesting
-    public static byte[] hexStringToByteArray(final String hexString) {
+    public static byte[] hexStringToByteArray(String hexString) {
         if (TextUtils.isEmpty(hexString)) {
             return null;
         }
@@ -419,5 +408,68 @@ public final class StringUtils {
                     + Character.digit(hexString.charAt(i + 1), 16));
         }
         return bytes;
+    }
+
+    public static List<Object> jsonStrToList(String s) {
+        final ArrayList<Object> retval = CollectionUtils.newArrayList();
+        final JsonReader reader = new JsonReader(new StringReader(s));
+        try {
+            reader.beginArray();
+            while(reader.hasNext()) {
+                reader.beginObject();
+                while (reader.hasNext()) {
+                    final String name = reader.nextName();
+                    if (name.equals(Integer.class.getSimpleName())) {
+                        retval.add(reader.nextInt());
+                    } else if (name.equals(String.class.getSimpleName())) {
+                        retval.add(reader.nextString());
+                    } else {
+                        Log.w(TAG, "Invalid name: " + name);
+                        reader.skipValue();
+                    }
+                }
+                reader.endObject();
+            }
+            reader.endArray();
+            return retval;
+        } catch (IOException e) {
+        } finally {
+            try {
+                reader.close();
+            } catch (IOException e) {
+            }
+        }
+        return Collections.<Object>emptyList();
+    }
+
+    public static String listToJsonStr(List<Object> list) {
+        if (list == null || list.isEmpty()) {
+            return "";
+        }
+        final StringWriter sw = new StringWriter();
+        final JsonWriter writer = new JsonWriter(sw);
+        try {
+            writer.beginArray();
+            for (final Object o : list) {
+                writer.beginObject();
+                if (o instanceof Integer) {
+                    writer.name(Integer.class.getSimpleName()).value((Integer)o);
+                } else if (o instanceof String) {
+                    writer.name(String.class.getSimpleName()).value((String)o);
+                }
+                writer.endObject();
+            }
+            writer.endArray();
+            return sw.toString();
+        } catch (IOException e) {
+        } finally {
+            try {
+                if (writer != null) {
+                    writer.close();
+                }
+            } catch (IOException e) {
+            }
+        }
+        return "";
     }
 }

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+**
+** Copyright 2010, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+
+<resources>
+    <!-- Preferable keyboard height in absolute scale: 58.0mm -->
+    <!-- This keyboardHeight value should match with keyboard-heights.xml -->
+    <dimen name="keyboardHeight">365.4dp</dimen>
+    <fraction name="minKeyboardHeight">45%p</fraction>
+
+    <fraction name="keyboard_top_padding_gb">1.896%p</fraction>
+    <fraction name="keyboard_bottom_padding_gb">0.0%p</fraction>
+    <fraction name="key_bottom_gap_gb">3.896%p</fraction>
+    <fraction name="key_horizontal_gap_gb">1.195%p</fraction>
+
+    <fraction name="keyboard_top_padding_holo">1.896%p</fraction>
+    <fraction name="keyboard_bottom_padding_holo">0.0%p</fraction>
+    <fraction name="key_bottom_gap_holo">3.690%p</fraction>
+    <fraction name="key_horizontal_gap_holo">1.030%p</fraction>
+
+    <dimen name="popup_key_height">81.9dp</dimen>
+
+    <!-- left or right padding of label alignment -->
+    <dimen name="key_label_horizontal_padding">18dp</dimen>
+
+    <fraction name="key_letter_ratio">43%</fraction>
+    <fraction name="key_large_letter_ratio">42%</fraction>
+    <fraction name="key_label_ratio">28%</fraction>
+    <fraction name="key_hint_letter_ratio">23%</fraction>
+    <fraction name="key_hint_label_ratio">28%</fraction>
+    <fraction name="key_uppercase_letter_ratio">24%</fraction>
+    <fraction name="spacebar_text_ratio">24.00%</fraction>
+    <dimen name="key_preview_height">107.1dp</dimen>
+
+    <!-- For 5-row keyboard -->
+    <fraction name="key_bottom_gap_5row">2.65%p</fraction>
+    <fraction name="key_letter_ratio_5row">53%</fraction>
+    <fraction name="key_uppercase_letter_ratio_5row">30%</fraction>
+
+    <dimen name="key_preview_offset_holo">8.0dp</dimen>
+
+    <dimen name="suggestions_strip_padding">252.0dp</dimen>
+    <fraction name="min_more_suggestions_width">50%</fraction>
+
+    <!-- Gesture floating preview text parameters -->
+    <dimen name="gesture_floating_preview_text_size">32dp</dimen>
+    <dimen name="gesture_floating_preview_text_offset">100dp</dimen>
+    <dimen name="gesture_floating_preview_horizontal_padding">32dp</dimen>
+    <dimen name="gesture_floating_preview_vertical_padding">21dp</dimen>
+
+    <!-- Emoji keyboard -->
+    <fraction name="emoji_keyboard_key_width">7.69%p</fraction>
+    <fraction name="emoji_keyboard_row_height">33%p</fraction>
+    <fraction name="emoji_keyboard_key_letter_size">60%p</fraction>
+    <integer name="emoji_keyboard_max_key_count">39</integer>
+
+</resources>

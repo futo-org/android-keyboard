@@ -19,12 +19,24 @@
 -->
 
 <merge xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin" >
+
     <Key
+        latin:backgroundType="functional"
         latin:keyLabel="_" />
     <Key
+        latin:backgroundType="functional"
         latin:keyLabel="/" />
-    <include
-        latin:keyboardLayout="@xml/key_space_symbols" />
-    <include
-        latin:keyboardLayout="@xml/keys_comma_period_symbols" />
+
+    <switch>
+        <case latin:hasShortcutKey="true" >
+            <Key latin:keyStyle="shortcutKeyStyle" />
+        </case>
+        <!-- latin:hasShortcutKey="false" -->
+        <default>
+        </default>
+    </switch>
+
+    <include latin:keyboardLayout="@xml/key_space_symbols" />
+    <include latin:keyboardLayout="@xml/keys_comma_period" />
+
 </merge>

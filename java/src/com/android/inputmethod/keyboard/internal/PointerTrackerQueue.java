@@ -28,7 +28,7 @@ public final class PointerTrackerQueue {
 
     public interface Element {
         public boolean isModifier();
-        public boolean isInDraggingFinger();
+        public boolean isInSlidingKeyInput();
         public void onPhantomUpEvent(long eventTime);
         public void cancelTrackingForAction();
     }
@@ -193,13 +193,13 @@ public final class PointerTrackerQueue {
         }
     }
 
-    public boolean isAnyInDraggingFinger() {
+    public boolean isAnyInSlidingKeyInput() {
         synchronized (mExpandableArrayOfActivePointers) {
             final ArrayList<Element> expandableArray = mExpandableArrayOfActivePointers;
             final int arraySize = mArraySize;
             for (int index = 0; index < arraySize; index++) {
                 final Element element = expandableArray.get(index);
-                if (element.isInDraggingFinger()) {
+                if (element.isInSlidingKeyInput()) {
                     return true;
                 }
             }

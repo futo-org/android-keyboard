@@ -20,9 +20,9 @@
 
 <Keyboard
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
-    latin:keyWidth="@fraction/config_emoji_keyboard_key_width"
+    latin:keyWidth="@fraction/emoji_keyboard_key_width"
     latin:keyLetterSize="90%p"
-    latin:rowHeight="@fraction/config_emoji_keyboard_row_height"
+    latin:rowHeight="@fraction/emoji_keyboard_row_height"
 >
     <GridRows
         latin:codesArray="@array/emoji_places"

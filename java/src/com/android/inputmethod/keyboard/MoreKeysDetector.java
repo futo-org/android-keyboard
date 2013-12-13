@@ -28,7 +28,7 @@ public final class MoreKeysDetector extends KeyDetector {
     }
 
     @Override
-    public boolean alwaysAllowsKeySelectionByDraggingFinger() {
+    public boolean alwaysAllowsSlidingInput() {
         return true;
     }
 

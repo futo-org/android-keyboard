@@ -18,56 +18,6 @@
 */
 -->
 
-<!-- Configuration values for Large Phone and Small Tablet Landscape. -->
 <resources>
     <bool name="config_use_fullscreen_mode">false</bool>
-
-    <!-- Preferable keyboard height in absolute scale: 45.0mm -->
-    <!-- This config_default_keyboard_height value should match with keyboard-heights.xml -->
-    <dimen name="config_default_keyboard_height">283.5dp</dimen>
-    <fraction name="config_min_keyboard_height">45%p</fraction>
-
-    <dimen name="config_more_keys_keyboard_key_height">81.9dp</dimen>
-
-    <fraction name="config_keyboard_top_padding_gb">2.444%p</fraction>
-    <fraction name="config_keyboard_bottom_padding_gb">0.0%p</fraction>
-    <fraction name="config_key_vertical_gap_gb">5.200%p</fraction>
-    <fraction name="config_key_horizontal_gap_gb">1.447%p</fraction>
-
-    <fraction name="config_keyboard_top_padding_holo">2.727%p</fraction>
-    <fraction name="config_keyboard_bottom_padding_holo">0.0%p</fraction>
-    <fraction name="config_key_vertical_gap_holo">4.5%p</fraction>
-    <fraction name="config_key_horizontal_gap_holo">0.9%p</fraction>
-
-    <fraction name="config_key_letter_ratio">50%</fraction>
-    <fraction name="config_key_large_letter_ratio">48%</fraction>
-    <fraction name="config_key_label_ratio">32%</fraction>
-    <fraction name="config_key_hint_letter_ratio">23%</fraction>
-    <fraction name="config_key_hint_label_ratio">34%</fraction>
-    <fraction name="config_key_shifted_letter_hint_ratio">29%</fraction>
-    <fraction name="config_language_on_spacebar_text_ratio">30.0%</fraction>
-    <!-- left or right padding of label alignment -->
-    <dimen name="config_key_label_horizontal_padding">18dp</dimen>
-    <dimen name="config_key_shifted_letter_hint_padding">4dp</dimen>
-
-    <!-- For 5-row keyboard -->
-    <fraction name="config_key_vertical_gap_5row">3.20%p</fraction>
-    <fraction name="config_key_letter_ratio_5row">62%</fraction>
-    <fraction name="config_key_shifted_letter_hint_ratio_5row">36%</fraction>
-
-    <dimen name="config_suggestions_strip_horizontal_padding">252.0dp</dimen>
-    <integer name="config_max_more_suggestions_row">5</integer>
-    <fraction name="config_min_more_suggestions_width">50%</fraction>
-
-    <!-- Gesture floating preview text parameters -->
-    <dimen name="config_gesture_floating_preview_text_size">26dp</dimen>
-    <dimen name="config_gesture_floating_preview_text_offset">76dp</dimen>
-    <dimen name="config_gesture_floating_preview_horizontal_padding">26dp</dimen>
-    <dimen name="config_gesture_floating_preview_vertical_padding">17dp</dimen>
-
-    <!-- Emoji keyboard -->
-    <fraction name="config_emoji_keyboard_key_width">10%p</fraction>
-    <fraction name="config_emoji_keyboard_row_height">33%p</fraction>
-    <fraction name="config_emoji_keyboard_key_letter_size">70%p</fraction>
-    <integer name="config_emoji_keyboard_max_page_key_count">30</integer>
 </resources>

@@ -57,6 +57,8 @@ public class XmlDictInputOutput {
     private static final String NOT_A_WORD_ATTR = "not_a_word";
 
     private static final String OPTIONS_KEY = "options";
+    private static final String GERMAN_UMLAUT_PROCESSING_OPTION = "german_umlaut_processing";
+    private static final String FRENCH_LIGATURE_PROCESSING_OPTION = "french_ligature_processing";
 
     /**
      * SAX handler for a unigram XML file.
@@ -118,8 +120,12 @@ public class XmlDictInputOutput {
                     attributes.put(attrName, attrs.getValue(attrIndex));
                 }
                 final String optionsString = attributes.get(OPTIONS_KEY);
+                final boolean processUmlauts =
+                        GERMAN_UMLAUT_PROCESSING_OPTION.equals(optionsString);
+                final boolean processLigatures =
+                        FRENCH_LIGATURE_PROCESSING_OPTION.equals(optionsString);
                 mDictionary = new FusionDictionary(new PtNodeArray(),
-                        new DictionaryOptions(attributes));
+                        new DictionaryOptions(attributes, processUmlauts, processLigatures));
             } else {
                 mState = UNKNOWN;
             }
@@ -355,6 +361,11 @@ public class XmlDictInputOutput {
         // TODO: use an XMLSerializer if this gets big
         destination.write("<wordlist format=\"2\"");
         final HashMap<String, String> options = dict.mOptions.mAttributes;
+        if (dict.mOptions.mGermanUmlautProcessing) {
+            destination.write(" " + OPTIONS_KEY + "=\"" + GERMAN_UMLAUT_PROCESSING_OPTION + "\"");
+        } else if (dict.mOptions.mFrenchLigatureProcessing) {
+            destination.write(" " + OPTIONS_KEY + "=\"" + FRENCH_LIGATURE_PROCESSING_OPTION + "\"");
+        }
         for (final String key : dict.mOptions.mAttributes.keySet()) {
             final String value = dict.mOptions.mAttributes.get(key);
             destination.write(" " + key + "=\"" + value + "\"");

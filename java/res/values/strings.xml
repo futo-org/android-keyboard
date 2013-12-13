@@ -245,6 +245,21 @@
     <!-- Preferences item for enabling speech input -->
     <string name="voice_input">Voice input key</string>
 
+    <!-- Voice Input modes -->
+    <!-- On settings screen, voice input pop-up menu option to show voice key on main keyboard [CHAR LIMIT=20] -->
+    <string name="voice_input_modes_main_keyboard">On main keyboard</string>
+    <!-- On settings screen, voice input pop-up menu option to show voice key on symbols keyboard [CHAR LIMIT=20] -->
+    <string name="voice_input_modes_symbols_keyboard">On symbols keyboard</string>
+    <!-- On settings screen, voice input pop-up menu option to never show voice key [CHAR LIMIT=20] -->
+    <string name="voice_input_modes_off">Off</string>
+    <!-- Voice Input modes summary -->
+    <!-- On settings screen, voice input pop-up menu summary text to show voice key on main keyboard [CHAR LIMIT=20] -->
+    <string name="voice_input_modes_summary_main_keyboard">Mic on main keyboard</string>
+    <!-- On settings screen, voice input pop-up menu summary text to show voice key on symbols keyboard [CHAR LIMIT=20] -->
+    <string name="voice_input_modes_summary_symbols_keyboard">Mic on symbols keyboard</string>
+    <!-- On settings screen, voice input pop-up menu summary text to never show voice key [CHAR LIMIT=20] -->
+    <string name="voice_input_modes_summary_off">Voice input is disabled</string>
+
     <!-- Title for configuring input method settings [CHAR LIMIT=35] -->
     <string name="configure_input_method">Configure input methods</string>
 

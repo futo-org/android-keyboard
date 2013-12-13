@@ -62,7 +62,7 @@ public final class BinaryDictIOUtils {
      * Retrieves all node arrays without recursive call.
      */
     private static void readUnigramsAndBigramsBinaryInner(final DictDecoder dictDecoder,
-            final int bodyOffset, final Map<Integer, String> words,
+            final int headerSize, final Map<Integer, String> words,
             final Map<Integer, Integer> frequencies,
             final Map<Integer, ArrayList<PendingAttribute>> bigrams,
             final FormatOptions formatOptions) {
@@ -71,7 +71,7 @@ public final class BinaryDictIOUtils {
         Stack<Position> stack = new Stack<Position>();
         int index = 0;
 
-        Position initPos = new Position(bodyOffset, 0);
+        Position initPos = new Position(headerSize, 0);
         stack.push(initPos);
 
         while (!stack.empty()) {
@@ -112,7 +112,7 @@ public final class BinaryDictIOUtils {
             }
 
             if (p.mPosition == p.mNumOfPtNode) {
-                if (formatOptions.supportsDynamicUpdate()) {
+                if (formatOptions.mSupportsDynamicUpdate) {
                     final boolean hasValidForwardLinkAddress =
                             dictDecoder.readAndFollowForwardLink();
                     if (hasValidForwardLinkAddress && dictDecoder.hasNextPtNodeArray()) {
@@ -154,7 +154,7 @@ public final class BinaryDictIOUtils {
             UnsupportedFormatException {
         // Read header
         final FileHeader header = dictDecoder.readHeader();
-        readUnigramsAndBigramsBinaryInner(dictDecoder, header.mBodyOffset, words,
+        readUnigramsAndBigramsBinaryInner(dictDecoder, header.mHeaderSize, words,
                 frequencies, bigrams, header.mFormatOptions);
     }
 
@@ -228,7 +228,7 @@ public final class BinaryDictIOUtils {
                 // a forward link address that we need to consult and possibly resume
                 // search on the next node array in the linked list.
                 if (foundNextPtNode) break;
-                if (!header.mFormatOptions.supportsDynamicUpdate()) {
+                if (!header.mFormatOptions.mSupportsDynamicUpdate) {
                     return FormatSpec.NOT_VALID_WORD;
                 }
 
@@ -245,7 +245,8 @@ public final class BinaryDictIOUtils {
     /**
      * @return the size written, in bytes. Always 3 bytes.
      */
-    static int writeSInt24ToBuffer(final DictBuffer dictBuffer, final int value) {
+    static int writeSInt24ToBuffer(final DictBuffer dictBuffer,
+            final int value) {
         final int absValue = Math.abs(value);
         dictBuffer.put((byte)(((value < 0 ? 0x80 : 0) | (absValue >> 16)) & 0xFF));
         dictBuffer.put((byte)((absValue >> 8) & 0xFF));
@@ -297,6 +298,35 @@ public final class BinaryDictIOUtils {
         } else {
             CharEncoding.readChar(dictBuffer);
         }
+    }
+
+    /**
+     * Write a string to a stream.
+     *
+     * @param destination the stream to write.
+     * @param word the string to be written.
+     * @return the size written, in bytes.
+     * @throws IOException
+     */
+    private static int writeString(final OutputStream destination, final String word)
+            throws IOException {
+        int size = 0;
+        final int length = word.length();
+        for (int i = 0; i < length; i = word.offsetByCodePoints(i, 1)) {
+            final int codePoint = word.codePointAt(i);
+            if (CharEncoding.getCharSize(codePoint) == 1) {
+                destination.write((byte)codePoint);
+                size++;
+            } else {
+                destination.write((byte)(0xFF & (codePoint >> 16)));
+                destination.write((byte)(0xFF & (codePoint >> 8)));
+                destination.write((byte)(0xFF & codePoint));
+                size += 3;
+            }
+        }
+        destination.write((byte)FormatSpec.PTNODE_CHARACTERS_TERMINATOR);
+        size += FormatSpec.PTNODE_TERMINATOR_SIZE;
+        return size;
     }
 
     /**
@@ -357,7 +387,7 @@ public final class BinaryDictIOUtils {
                 destination.write((byte)BinaryDictEncoderUtils.makeShortcutFlags(
                         shortcutIterator.hasNext(), target.mFrequency));
                 size++;
-                size += CharEncoding.writeString(destination, target.mWord);
+                size += writeString(destination, target.mWord);
             }
         }
 
@@ -415,27 +445,6 @@ public final class BinaryDictIOUtils {
     }
 
     /**
-     * Writes a PtNodeCount to the stream.
-     *
-     * @param destination the stream to write.
-     * @param ptNodeCount the count.
-     * @return the size written in bytes.
-     */
-    static int writePtNodeCount(final OutputStream destination, final int ptNodeCount)
-            throws IOException {
-        final int countSize = BinaryDictIOUtils.getPtNodeCountSize(ptNodeCount);
-        // the count must fit on one byte or two bytes.
-        // Please see comments in FormatSpec.
-        if (countSize != 1 && countSize != 2) {
-            throw new RuntimeException("Strange size from getPtNodeCountSize : " + countSize);
-        }
-        final int encodedPtNodeCount = (countSize == 2) ?
-                (ptNodeCount | FormatSpec.LARGE_PTNODE_ARRAY_SIZE_FIELD_SIZE_FLAG) : ptNodeCount;
-        BinaryDictEncoderUtils.writeUIntToStream(destination, encodedPtNodeCount, countSize);
-        return countSize;
-    }
-
-    /**
      * Write a node array to the stream.
      *
      * @param destination the stream to write.
@@ -445,7 +454,20 @@ public final class BinaryDictIOUtils {
      */
     static int writeNodes(final OutputStream destination, final PtNodeInfo[] infos)
             throws IOException {
-        int size = writePtNodeCount(destination, infos.length);
+        int size = getPtNodeCountSize(infos.length);
+        switch (getPtNodeCountSize(infos.length)) {
+            case 1:
+                destination.write((byte)infos.length);
+                break;
+            case 2:
+                final int encodedPtNodeCount =
+                        infos.length | FormatSpec.LARGE_PTNODE_ARRAY_SIZE_FIELD_SIZE_FLAG;
+                destination.write((byte)(encodedPtNodeCount >> 8));
+                destination.write((byte)(encodedPtNodeCount & 0xFF));
+                break;
+            default:
+                throw new RuntimeException("Invalid node count size.");
+        }
         for (final PtNodeInfo info : infos) size += writePtNode(destination, info);
         writeSInt24ToStream(destination, FormatSpec.NO_FORWARD_LINK_ADDRESS);
         return size + FormatSpec.FORWARD_LINK_ADDRESS_SIZE;
@@ -507,7 +529,7 @@ public final class BinaryDictIOUtils {
      * Helper method to check whether the node is moved.
      */
     public static boolean isMovedPtNode(final int flags, final FormatOptions options) {
-        return options.supportsDynamicUpdate()
+        return options.mSupportsDynamicUpdate
                 && ((flags & FormatSpec.MASK_CHILDREN_ADDRESS_TYPE) == FormatSpec.FLAG_IS_MOVED);
     }
 
@@ -516,14 +538,14 @@ public final class BinaryDictIOUtils {
      */
     public static boolean supportsDynamicUpdate(final FormatOptions options) {
         return options.mVersion >= FormatSpec.FIRST_VERSION_WITH_DYNAMIC_UPDATE
-                && options.supportsDynamicUpdate();
+                && options.mSupportsDynamicUpdate;
     }
 
     /**
      * Helper method to check whether the node is deleted.
      */
     public static boolean isDeletedPtNode(final int flags, final FormatOptions formatOptions) {
-        return formatOptions.supportsDynamicUpdate()
+        return formatOptions.mSupportsDynamicUpdate
                 && ((flags & FormatSpec.MASK_CHILDREN_ADDRESS_TYPE) == FormatSpec.FLAG_IS_DELETED);
     }
 
@@ -546,7 +568,7 @@ public final class BinaryDictIOUtils {
 
     static int getChildrenAddressSize(final int optionFlags,
             final FormatOptions formatOptions) {
-        if (formatOptions.supportsDynamicUpdate()) return FormatSpec.SIGNED_CHILDREN_ADDRESS_SIZE;
+        if (formatOptions.mSupportsDynamicUpdate) return FormatSpec.SIGNED_CHILDREN_ADDRESS_SIZE;
         switch (optionFlags & FormatSpec.MASK_CHILDREN_ADDRESS_TYPE) {
             case FormatSpec.FLAG_CHILDREN_ADDRESS_TYPE_ONEBYTE:
                 return 1;

@@ -37,6 +37,18 @@ class HeaderReadWriteUtils {
 
     static DictionaryFlags getFlags(const uint8_t *const dictBuf);
 
+    static AK_FORCE_INLINE bool supportsDynamicUpdate(const DictionaryFlags flags) {
+        return (flags & SUPPORTS_DYNAMIC_UPDATE_FLAG) != 0;
+    }
+
+    static AK_FORCE_INLINE bool requiresGermanUmlautProcessing(const DictionaryFlags flags) {
+        return (flags & GERMAN_UMLAUT_PROCESSING_FLAG) != 0;
+    }
+
+    static AK_FORCE_INLINE bool requiresFrenchLigatureProcessing(const DictionaryFlags flags) {
+        return (flags & FRENCH_LIGATURE_PROCESSING_FLAG) != 0;
+    }
+
     static AK_FORCE_INLINE int getHeaderOptionsPosition() {
         return HEADER_MAGIC_NUMBER_SIZE + HEADER_DICTIONARY_VERSION_SIZE + HEADER_FLAG_SIZE
                 + HEADER_SIZE_FIELD_SIZE;
@@ -89,8 +101,17 @@ class HeaderReadWriteUtils {
     static const int HEADER_FLAG_SIZE;
     static const int HEADER_SIZE_FIELD_SIZE;
 
-    // Value for the "flags" field. It's unused at the moment.
     static const DictionaryFlags NO_FLAGS;
+    // Flags for special processing
+    // Those *must* match the flags in makedict (FormatSpec#*_PROCESSING_FLAGS) or
+    // something very bad (like, the apocalypse) will happen. Please update both at the same time.
+    static const DictionaryFlags GERMAN_UMLAUT_PROCESSING_FLAG;
+    static const DictionaryFlags SUPPORTS_DYNAMIC_UPDATE_FLAG;
+    static const DictionaryFlags FRENCH_LIGATURE_PROCESSING_FLAG;
+
+    static const char *const SUPPORTS_DYNAMIC_UPDATE_KEY;
+    static const char *const REQUIRES_GERMAN_UMLAUT_PROCESSING_KEY;
+    static const char *const REQUIRES_FRENCH_LIGATURE_PROCESSING_KEY;
 
     static void setIntAttributeInner(AttributeMap *const headerAttributes,
             const AttributeMap::key_type *const key, const int value);

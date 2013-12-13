@@ -62,22 +62,4 @@ public final class ApplicationUtils {
         }
         return "";
     }
-
-    /**
-     * A utility method to get the application's PackageInfo.versionCode
-     * @return the application's PackageInfo.versionCode
-     */
-    public static int getVersionCode(final Context context) {
-        try {
-            if (context == null) {
-                return 0;
-            }
-            final String packageName = context.getPackageName();
-            final PackageInfo info = context.getPackageManager().getPackageInfo(packageName, 0);
-            return info.versionCode;
-        } catch (final NameNotFoundException e) {
-            Log.e(TAG, "Could not find version info.", e);
-        }
-        return 0;
-    }
 }

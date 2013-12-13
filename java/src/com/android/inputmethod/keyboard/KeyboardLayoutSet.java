@@ -105,10 +105,10 @@ public final class KeyboardLayoutSet {
         int mMode;
         EditorInfo mEditorInfo;
         boolean mDisableTouchPositionCorrectionDataForTest;
-        boolean mIsPasswordField;
-        boolean mSupportsSwitchingToShortcutIme;
-        boolean mShowsVoiceInputKey;
-        boolean mNoMicrophoneKey;
+        boolean mVoiceKeyEnabled;
+        // TODO: Remove mVoiceKeyOnMain when it's certainly confirmed that we no longer show
+        // the voice input key on the symbol layout
+        boolean mVoiceKeyOnMain;
         boolean mNoSettingsKey;
         boolean mLanguageSwitchKeyEnabled;
         InputMethodSubtype mSubtype;
@@ -221,24 +221,16 @@ public final class KeyboardLayoutSet {
 
         private static final EditorInfo EMPTY_EDITOR_INFO = new EditorInfo();
 
-        public Builder(final Context context, final EditorInfo ei) {
+        public Builder(final Context context, final EditorInfo editorInfo) {
             mContext = context;
             mPackageName = context.getPackageName();
             mResources = context.getResources();
             final Params params = mParams;
 
-            final EditorInfo editorInfo = (ei != null) ? ei : EMPTY_EDITOR_INFO;
             params.mMode = getKeyboardMode(editorInfo);
-            params.mEditorInfo = editorInfo;
-            params.mIsPasswordField = InputTypeUtils.isPasswordInputType(editorInfo.inputType);
-            @SuppressWarnings("deprecation")
-            final boolean deprecatedNoMicrophone = InputAttributes.inPrivateImeOptions(
-                    null, NO_MICROPHONE_COMPAT, editorInfo);
-            params.mNoMicrophoneKey = InputAttributes.inPrivateImeOptions(
-                    mPackageName, NO_MICROPHONE, editorInfo)
-                    || deprecatedNoMicrophone;
+            params.mEditorInfo = (editorInfo != null) ? editorInfo : EMPTY_EDITOR_INFO;
             params.mNoSettingsKey = InputAttributes.inPrivateImeOptions(
-                    mPackageName, NO_SETTINGS_KEY, editorInfo);
+                    mPackageName, NO_SETTINGS_KEY, params.mEditorInfo);
         }
 
         public Builder setKeyboardGeometry(final int keyboardWidth, final int keyboardHeight) {
@@ -269,11 +261,18 @@ public final class KeyboardLayoutSet {
             return this;
         }
 
-        public Builder setOptions(final boolean isShortcutImeEnabled,
-                final boolean showsVoiceInputKey, final boolean languageSwitchKeyEnabled) {
-            mParams.mSupportsSwitchingToShortcutIme =
-                    isShortcutImeEnabled && !mParams.mNoMicrophoneKey && !mParams.mIsPasswordField;
-            mParams.mShowsVoiceInputKey = showsVoiceInputKey;
+        // TODO: Remove mVoiceKeyOnMain when it's certainly confirmed that we no longer show
+        // the voice input key on the symbol layout
+        public Builder setOptions(final boolean voiceKeyEnabled, final boolean voiceKeyOnMain,
+                final boolean languageSwitchKeyEnabled) {
+            @SuppressWarnings("deprecation")
+            final boolean deprecatedNoMicrophone = InputAttributes.inPrivateImeOptions(
+                    null, NO_MICROPHONE_COMPAT, mParams.mEditorInfo);
+            final boolean noMicrophone = InputAttributes.inPrivateImeOptions(
+                    mPackageName, NO_MICROPHONE, mParams.mEditorInfo)
+                    || deprecatedNoMicrophone;
+            mParams.mVoiceKeyEnabled = voiceKeyEnabled && !noMicrophone;
+            mParams.mVoiceKeyOnMain = voiceKeyOnMain;
             mParams.mLanguageSwitchKeyEnabled = languageSwitchKeyEnabled;
             return this;
         }
@@ -369,6 +368,9 @@ public final class KeyboardLayoutSet {
         }
 
         private static int getKeyboardMode(final EditorInfo editorInfo) {
+            if (editorInfo == null)
+                return KeyboardId.MODE_TEXT;
+
             final int inputType = editorInfo.inputType;
             final int variation = inputType & InputType.TYPE_MASK_VARIATION;
 

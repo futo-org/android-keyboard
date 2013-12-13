@@ -117,6 +117,12 @@
     <string name="keyboard_mode_time" msgid="4381856885582143277">"tid"</string>
     <string name="keyboard_mode_url" msgid="1519819835514911218">"Nettadresse"</string>
     <string name="voice_input" msgid="3583258583521397548">"Tast for taleinndata"</string>
+    <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"På hovedtastatur"</string>
+    <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"På talltastatur"</string>
+    <string name="voice_input_modes_off" msgid="3745699748218082014">"Av"</string>
+    <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Mikrofon på hovedtast."</string>
+    <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Mikrofon på talltastatur"</string>
+    <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Taleinndata er deaktiv."</string>
     <string name="configure_input_method" msgid="373356270290742459">"Konfigurer inndatametoder"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Inndataspråk"</string>
     <string name="send_feedback" msgid="1780431884109392046">"Send tilbakemelding"</string>
@@ -180,7 +186,7 @@
     <string name="setup_step3_title" msgid="3154757183631490281">"Gratulerer, du er klar!"</string>
     <string name="setup_step3_instruction" msgid="8025981829605426000">"Nå kan du skrive inn alle favorittappene dine med <xliff:g id="APPLICATION_NAME">%s</xliff:g>."</string>
     <string name="setup_step3_action" msgid="600879797256942259">"Konfigurer flere språk"</string>
-    <string name="setup_finish_action" msgid="276559243409465389">"Fullført"</string>
+    <string name="setup_finish_action" msgid="276559243409465389">"Ferdig"</string>
     <string name="show_setup_wizard_icon" msgid="5008028590593710830">"Vis app-ikonet"</string>
     <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"Vis app-ikonet i appvelgeren"</string>
     <string name="app_name" msgid="6320102637491234792">"Ordlisteleverandør"</string>

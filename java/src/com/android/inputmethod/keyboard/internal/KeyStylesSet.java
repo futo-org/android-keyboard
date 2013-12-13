@@ -27,7 +27,6 @@ import com.android.inputmethod.latin.utils.XmlParseUtils;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
-import java.util.Arrays;
 import java.util.HashMap;
 
 public final class KeyStylesSet {
@@ -91,8 +90,7 @@ public final class KeyStylesSet {
             }
             final Object value = mStyleAttributes.get(index);
             if (value != null) {
-                final String[] array = (String[])value;
-                return Arrays.copyOf(array, array.length);
+                return (String[])value;
             }
             final KeyStyle parentStyle = mStyles.get(mParentStyleName);
             return parentStyle.getStringArray(a, index);

@@ -16,13 +16,11 @@
 
 package com.android.inputmethod.latin.personalization;
 
-import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.Dictionary;
-
-import java.io.File;
-import java.util.Locale;
+import com.android.inputmethod.latin.ExpandableBinaryDictionary;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 
 /**
  * Locally gathers stats about the words user types and various other signals like auto-correction
@@ -31,19 +29,12 @@ import android.content.Context;
 public class UserHistoryDictionary extends DecayingExpandableBinaryDictionaryBase {
     /* package for tests */ static final String NAME =
             UserHistoryDictionary.class.getSimpleName();
-    /* package */ UserHistoryDictionary(final Context context, final Locale locale) {
-        super(context, locale, Dictionary.TYPE_USER_HISTORY, getDictNameWithLocale(NAME, locale));
+    /* package */ UserHistoryDictionary(final Context context, final String locale,
+            final SharedPreferences sp) {
+        super(context, locale, sp, Dictionary.TYPE_USER_HISTORY, getDictionaryFileName(locale));
     }
 
-    // Creates an instance that uses a given dictionary file for testing.
-    @UsedForTesting
-    public UserHistoryDictionary(final Context context, final Locale locale,
-            final File dictFile) {
-        super(context, locale, Dictionary.TYPE_USER_HISTORY, getDictNameWithLocale(NAME, locale),
-                dictFile);
-    }
-
-    public void cancelAddingUserHistory(final String word0, final String word1) {
-        removeBigramDynamically(word0, word1);
+    private static String getDictionaryFileName(final String locale) {
+        return NAME + "." + locale + ExpandableBinaryDictionary.DICT_FILE_EXTENSION;
     }
 }

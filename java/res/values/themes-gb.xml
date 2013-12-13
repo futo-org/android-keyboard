@@ -23,10 +23,10 @@
         <item name="keyboardStyle">@style/Keyboard.GB</item>
         <item name="keyboardViewStyle">@style/KeyboardView.GB</item>
         <item name="mainKeyboardViewStyle">@style/MainKeyboardView.GB</item>
-        <item name="keyPreviewTextViewStyle">@style/KeyPreviewTextView.GB</item>
         <item name="emojiPalettesViewStyle">@style/EmojiPalettesView.GB</item>
         <item name="moreKeysKeyboardStyle">@style/MoreKeysKeyboard.GB</item>
         <item name="moreKeysKeyboardViewStyle">@style/MoreKeysKeyboardView.GB</item>
+        <item name="moreKeysKeyboardContainerStyle">@style/MoreKeysKeyboardContainer.GB</item>
         <item name="suggestionStripViewStyle">@style/SuggestionStripView.GB</item>
         <item name="suggestionWordStyle">@style/SuggestionWord.GB</item>
     </style>
@@ -40,6 +40,7 @@
         <item name="iconSearchKey">@drawable/sym_keyboard_search_holo_dark</item>
         <item name="iconTabKey">@drawable/sym_keyboard_tab_holo_dark</item>
         <item name="iconShortcutKey">@drawable/sym_keyboard_mic_holo_dark</item>
+        <item name="iconShortcutForLabel">@drawable/sym_keyboard_label_mic_holo_dark</item>
         <item name="iconSpaceKeyForNumberLayout">@drawable/sym_keyboard_space</item>
         <item name="iconShiftKeyShifted">@drawable/sym_keyboard_shift_locked_holo_dark</item>
         <!-- TODO: Needs non-holo disabled shortcut icon drawable -->
@@ -58,10 +59,10 @@
         <!-- This should be aligned with KeyboardSwitcher.KEYBOARD_THEMES[] -->
         <item name="themeId">1</item>
         <item name="touchPositionCorrectionData">@array/touch_position_correction_data_gb</item>
-        <item name="keyboardTopPadding">@fraction/config_keyboard_top_padding_gb</item>
-        <item name="keyboardBottomPadding">@fraction/config_keyboard_bottom_padding_gb</item>
-        <item name="horizontalGap">@fraction/config_key_horizontal_gap_gb</item>
-        <item name="verticalGap">@fraction/config_key_vertical_gap_gb</item>
+        <item name="keyboardTopPadding">@fraction/keyboard_top_padding_gb</item>
+        <item name="keyboardBottomPadding">@fraction/keyboard_bottom_padding_gb</item>
+        <item name="horizontalGap">@fraction/key_horizontal_gap_gb</item>
+        <item name="verticalGap">@fraction/key_bottom_gap_gb</item>
     </style>
     <style
         name="KeyboardView.GB"
@@ -84,22 +85,16 @@
         name="MainKeyboardView.GB"
         parent="KeyboardView.GB"
     >
-        <item name="keyPreviewOffset">@dimen/config_key_preview_offset_gb</item>
+        <item name="keyPreviewLayout">@layout/key_preview_gb</item>
+        <item name="keyPreviewOffset">@dimen/key_preview_offset_gb</item>
         <item name="gestureFloatingPreviewTextColor">@color/highlight_color_gb</item>
         <item name="gestureFloatingPreviewColor">@color/gesture_floating_preview_color_gb</item>
         <item name="gestureTrailColor">@color/highlight_color_gb</item>
         <item name="slidingKeyInputPreviewColor">@color/highlight_translucent_color_gb</item>
         <item name="autoCorrectionSpacebarLedEnabled">true</item>
         <item name="autoCorrectionSpacebarLedIcon">@drawable/sym_keyboard_space_led_gb</item>
-        <item name="languageOnSpacebarTextColor">@color/spacebar_text_color_gb</item>
-        <item name="languageOnSpacebarTextShadowColor">@color/spacebar_text_shadow_color_gb</item>
-        <item name="spacebarBackground">@drawable/btn_keyboard_spacebar_gb</item>
-    </style>
-    <style
-        name="KeyPreviewTextView.GB"
-        parent="KeyPreviewTextView"
-    >
-        <item name="android:background">@drawable/keyboard_key_feedback_gb</item>
+        <item name="spacebarTextColor">@color/spacebar_text_color_gb</item>
+        <item name="spacebarTextShadowColor">@color/spacebar_text_shadow_color_gb</item>
     </style>
     <!-- Though {@link EmojiPalettesView} doesn't extend {@link KeyboardView}, some views inside it,
          for instance delete button, need themed {@link KeyboardView} attributes. -->
@@ -123,10 +118,15 @@
         name="MoreKeysKeyboardView.GB"
         parent="KeyboardView.GB"
     >
-        <item name="android:background">@drawable/keyboard_popup_panel_background_gb</item>
+        <item name="android:background">@null</item>
         <item name="keyBackground">@drawable/btn_keyboard_key_popup_gb</item>
         <item name="keyTypeface">normal</item>
-        <item name="verticalCorrection">@dimen/config_more_keys_keyboard_vertical_correction_gb</item>
+        <item name="verticalCorrection">@dimen/more_keys_keyboard_vertical_correction_gb</item>
+    </style>
+    <style
+        name="MoreKeysKeyboardContainer.GB"
+    >
+        <item name="android:background">@drawable/keyboard_popup_panel_background_gb</item>
     </style>
     <style
         name="SuggestionStripView.GB"

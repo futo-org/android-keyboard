@@ -22,9 +22,6 @@ import android.graphics.Typeface;
 import android.util.SparseArray;
 
 public final class TypefaceUtils {
-    private static final char[] KEY_LABEL_REFERENCE_CHAR = { 'M' };
-    private static final char[] KEY_NUMERIC_HINT_LABEL_REFERENCE_CHAR = { '8' };
-
     private TypefaceUtils() {
         // This utility class is not publicly instantiable.
     }
@@ -34,7 +31,7 @@ public final class TypefaceUtils {
     // Working variable for the following method.
     private static final Rect sTextHeightBounds = new Rect();
 
-    private static float getCharHeight(final char[] referenceChar, final Paint paint) {
+    public static float getCharHeight(final char[] referenceChar, final Paint paint) {
         final int key = getCharGeometryCacheKey(referenceChar[0], paint);
         synchronized (sTextHeightCache) {
             final Float cachedValue = sTextHeightCache.get(key);
@@ -54,7 +51,7 @@ public final class TypefaceUtils {
     // Working variable for the following method.
     private static final Rect sTextWidthBounds = new Rect();
 
-    private static float getCharWidth(final char[] referenceChar, final Paint paint) {
+    public static float getCharWidth(final char[] referenceChar, final Paint paint) {
         final int key = getCharGeometryCacheKey(referenceChar[0], paint);
         synchronized (sTextWidthCache) {
             final Float cachedValue = sTextWidthCache.get(key);
@@ -67,6 +64,11 @@ public final class TypefaceUtils {
             sTextWidthCache.put(key, width);
             return width;
         }
+    }
+
+    public static float getStringWidth(final String string, final Paint paint) {
+        paint.getTextBounds(string, 0, string.length(), sTextWidthBounds);
+        return sTextWidthBounds.width();
     }
 
     private static int getCharGeometryCacheKey(final char referenceChar, final Paint paint) {
@@ -84,25 +86,9 @@ public final class TypefaceUtils {
         }
     }
 
-    public static float getReferenceCharHeight(final Paint paint) {
-        return getCharHeight(KEY_LABEL_REFERENCE_CHAR, paint);
-    }
-
-    public static float getReferenceCharWidth(final Paint paint) {
-        return getCharWidth(KEY_LABEL_REFERENCE_CHAR, paint);
-    }
-
-    public static float getReferenceDigitWidth(final Paint paint) {
-        return getCharWidth(KEY_NUMERIC_HINT_LABEL_REFERENCE_CHAR, paint);
-    }
-
-    // Working variable for the following method.
-    private static final Rect sStringWidthBounds = new Rect();
-
-    public static float getStringWidth(final String string, final Paint paint) {
-        synchronized (sStringWidthBounds) {
-            paint.getTextBounds(string, 0, string.length(), sStringWidthBounds);
-            return sStringWidthBounds.width();
-        }
+    public static float getLabelWidth(final String label, final Paint paint) {
+        final Rect textBounds = new Rect();
+        paint.getTextBounds(label, 0, label.length(), textBounds);
+        return textBounds.width();
     }
 }

@@ -20,9 +20,6 @@ import android.util.Log;
 
 import java.util.concurrent.TimeUnit;
 
-import com.android.inputmethod.annotations.UsedForTesting;
-
-@UsedForTesting
 public final class UserHistoryForgettingCurveUtils {
     private static final String TAG = UserHistoryForgettingCurveUtils.class.getSimpleName();
     private static final boolean DEBUG = false;
@@ -121,22 +118,18 @@ public final class UserHistoryForgettingCurveUtils {
         }
     }
 
-    @UsedForTesting
     /* package */ static  int fcToElapsedTime(byte fc) {
         return fc & 0x0F;
     }
 
-    @UsedForTesting
     /* package */ static int fcToCount(byte fc) {
         return (fc >> 4) & 0x03;
     }
 
-    @UsedForTesting
     /* package */ static int fcToLevel(byte fc) {
         return (fc >> 6) & 0x03;
     }
 
-    @UsedForTesting
     private static int calcFreq(int elapsedTime, int count, int level) {
         if (level <= 0) {
             // Reserved words, just return -1
@@ -165,7 +158,6 @@ public final class UserHistoryForgettingCurveUtils {
         return calcFreq(elapsedTime, count, level);
     }
 
-    @UsedForTesting
     public static byte pushElapsedTime(byte fc) {
         int elapsedTime = fcToElapsedTime(fc);
         int count = fcToCount(fc);
@@ -181,7 +173,6 @@ public final class UserHistoryForgettingCurveUtils {
         return calcFc(elapsedTime, count, level);
     }
 
-    @UsedForTesting
     public static byte pushCount(byte fc, boolean isValid) {
         final int elapsedTime = fcToElapsedTime(fc);
         int count = fcToCount(fc);

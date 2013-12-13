@@ -18,6 +18,8 @@ package com.android.inputmethod.latin;
 
 import android.content.Context;
 
+import com.android.inputmethod.keyboard.ProximityInfo;
+import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.makedict.DictEncoder;
 import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.makedict.FusionDictionary;
@@ -35,14 +37,14 @@ import java.util.Map;
  * An in memory dictionary for memorizing entries and writing a binary dictionary.
  */
 public class DictionaryWriter extends AbstractDictionaryWriter {
-    private static final int BINARY_DICT_VERSION = 2;
+    private static final int BINARY_DICT_VERSION = 3;
     private static final FormatSpec.FormatOptions FORMAT_OPTIONS =
-            new FormatSpec.FormatOptions(BINARY_DICT_VERSION, false /* supportsDynamicUpdate */);
+            new FormatSpec.FormatOptions(BINARY_DICT_VERSION, true /* supportsDynamicUpdate */);
 
     private FusionDictionary mFusionDictionary;
 
-    public DictionaryWriter(final Context context) {
-        super(context);
+    public DictionaryWriter(final Context context, final String dictType) {
+        super(context, dictType);
         clear();
     }
 
@@ -50,7 +52,7 @@ public class DictionaryWriter extends AbstractDictionaryWriter {
     public void clear() {
         final HashMap<String, String> attributes = CollectionUtils.newHashMap();
         mFusionDictionary = new FusionDictionary(new PtNodeArray(),
-                new FusionDictionary.DictionaryOptions(attributes));
+                new FusionDictionary.DictionaryOptions(attributes, false, false));
     }
 
     /**
@@ -89,5 +91,19 @@ public class DictionaryWriter extends AbstractDictionaryWriter {
             mFusionDictionary.addOptionAttribute(entry.getKey(), entry.getValue());
         }
         dictEncoder.writeDictionary(mFusionDictionary, FORMAT_OPTIONS);
+    }
+
+    @Override
+    public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
+            final String prevWord, final ProximityInfo proximityInfo,
+            boolean blockOffensiveWords, final int[] additionalFeaturesOptions) {
+        // This class doesn't support suggestion.
+        return null;
+    }
+
+    @Override
+    public boolean isValidWord(String word) {
+        // This class doesn't support dictionary retrieval.
+        return false;
     }
 }

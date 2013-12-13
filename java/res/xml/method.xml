@@ -25,14 +25,13 @@
     af: Afrikaans/qwerty
     ar: Arabic/arabic
     (az: Azerbaijani/qwerty)  # disabled temporarily. waiting for string resources.
-    be_BY: Belarusian/east_slavic
+    be: Belarusian/east_slavic
     bg: Bulgarian/bulgarian
     bg: Bulgarian/bulgarian_bds
     ca: Catalan/spanish
     cs: Czech/qwertz
     da: Danish/nordic
     de: German/qwertz
-    de_CH: German Switzerland/swiss
     el: Greek/greek
     en_US: English United States/qwerty
     en_GB: English Great Britain/qwerty
@@ -45,7 +44,6 @@
     fi: Finnish/nordic
     fr: French/azerty
     fr_CA: French Canada/qwerty
-    fr_CH: French Switzerland/swiss
     hi: Hindi/hindi
     hr: Croatian/qwertz
     hu: Hungarian/qwertz
@@ -90,22 +88,19 @@
     (zz: Emoji/emoji)
     -->
 <!-- TODO: use <lang>_keyboard icon instead of a common keyboard icon. -->
-<!-- TODO: Remove "AsciiCapable" from the extra values when we can stop supporting JB-MR1 -->
 <!-- Note: SupportTouchPositionCorrection extra value is obsolete and maintained for backward
      compatibility. -->
 <!-- If IME doesn't have an applicable subtype, the first subtype will be used as a default
      subtype.-->
 <input-method xmlns:android="http://schemas.android.com/apk/res/android"
         android:settingsActivity="com.android.inputmethod.latin.settings.SettingsActivity"
-        android:isDefault="@bool/im_is_default"
-        android:supportsSwitchingToNextInputMethod="true">
+        android:isDefault="@bool/im_is_default">
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_en_US"
             android:subtypeId="0xc9194f98"
             android:imeSubtypeLocale="en_US"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="TrySuppressingImeSwitcher,AsciiCapable,SupportTouchPositionCorrection,EmojiCapable"
-            android:isAsciiCapable="true"
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_en_GB"
@@ -113,7 +108,6 @@
             android:imeSubtypeLocale="en_GB"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="TrySuppressingImeSwitcher,AsciiCapable,SupportTouchPositionCorrection,EmojiCapable"
-            android:isAsciiCapable="true"
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
@@ -121,7 +115,6 @@
             android:imeSubtypeLocale="af"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,AsciiCapable,EmojiCapable"
-            android:isAsciiCapable="true"
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
@@ -129,7 +122,6 @@
             android:imeSubtypeLocale="ar"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="SupportTouchPositionCorrection,EmojiCapable"
-            android:isAsciiCapable="false"
     />
     <!--
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
@@ -138,16 +130,14 @@
             android:imeSubtypeLocale="az"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,AsciiCapable,EmojiCapable"
-            android:isAsciiCapable="true"
     />
     -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
             android:subtypeId="0x1dc3a859"
-            android:imeSubtypeLocale="be_BY"
+            android:imeSubtypeLocale="be"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=east_slavic,EmojiCapable"
-            android:isAsciiCapable="false"
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
@@ -155,7 +145,6 @@
             android:imeSubtypeLocale="bg"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=bulgarian,EmojiCapable"
-            android:isAsciiCapable="false"
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_bulgarian_bds"
@@ -163,7 +152,6 @@
             android:imeSubtypeLocale="bg"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=bulgarian_bds,EmojiCapable"
-            android:isAsciiCapable="false"
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
@@ -171,7 +159,6 @@
             android:imeSubtypeLocale="ca"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=spanish,AsciiCapable,EmojiCapable"
-            android:isAsciiCapable="true"
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
@@ -179,7 +166,6 @@
             android:imeSubtypeLocale="cs"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="AsciiCapable,SupportTouchPositionCorrection,EmojiCapable"
-            android:isAsciiCapable="true"
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
@@ -187,7 +173,6 @@
             android:imeSubtypeLocale="da"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="AsciiCapable,SupportTouchPositionCorrection,EmojiCapable"
-            android:isAsciiCapable="true"
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
@@ -195,15 +180,6 @@
             android:imeSubtypeLocale="de"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="AsciiCapable,SupportTouchPositionCorrection,EmojiCapable"
-            android:isAsciiCapable="true"
-    />
-    <subtype android:icon="@drawable/ic_ime_switcher_dark"
-            android:label="@string/subtype_generic"
-            android:subtypeId="0x7acfd0aa"
-            android:imeSubtypeLocale="de_CH"
-            android:imeSubtypeMode="keyboard"
-            android:imeSubtypeExtraValue="KeyboardLayoutSet=swiss,AsciiCapable,SupportTouchPositionCorrection,EmojiCapable"
-            android:isAsciiCapable="true"
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
@@ -211,7 +187,6 @@
             android:imeSubtypeLocale="el"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=greek,EmojiCapable"
-            android:isAsciiCapable="false"
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
@@ -219,7 +194,6 @@
             android:imeSubtypeLocale="eo"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=spanish,EmojiCapable"
-            android:isAsciiCapable="false"
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
@@ -227,7 +201,6 @@
             android:imeSubtypeLocale="es"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="AsciiCapable,SupportTouchPositionCorrection,EmojiCapable"
-            android:isAsciiCapable="true"
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_es_US"
@@ -235,7 +208,6 @@
             android:imeSubtypeLocale="es_US"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=spanish,AsciiCapable,EmojiCapable"
-            android:isAsciiCapable="true"
     />
     <!--
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
@@ -244,7 +216,6 @@
             android:imeSubtypeLocale="es_419"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=spanish,AsciiCapable,EmojiCapable"
-            android:isAsciiCapable="true"
     />
     -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
@@ -253,7 +224,6 @@
             android:imeSubtypeLocale="et_EE"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=nordic,AsciiCapable,EmojiCapable"
-            android:isAsciiCapable="true"
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
@@ -261,7 +231,6 @@
             android:imeSubtypeLocale="fa"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=farsi,EmojiCapable"
-            android:isAsciiCapable="false"
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
@@ -269,7 +238,6 @@
             android:imeSubtypeLocale="fi"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="AsciiCapable,SupportTouchPositionCorrection,EmojiCapable"
-            android:isAsciiCapable="true"
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
@@ -277,7 +245,6 @@
             android:imeSubtypeLocale="fr"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="AsciiCapable,SupportTouchPositionCorrection,EmojiCapable"
-            android:isAsciiCapable="true"
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
@@ -285,15 +252,6 @@
             android:imeSubtypeLocale="fr_CA"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="AsciiCapable,SupportTouchPositionCorrection,EmojiCapable"
-            android:isAsciiCapable="true"
-    />
-    <subtype android:icon="@drawable/ic_ime_switcher_dark"
-            android:label="@string/subtype_generic"
-            android:subtypeId="0xeadc55f5"
-            android:imeSubtypeLocale="fr_CH"
-            android:imeSubtypeMode="keyboard"
-            android:imeSubtypeExtraValue="KeyboardLayoutSet=swiss,AsciiCapable,SupportTouchPositionCorrection,EmojiCapable"
-            android:isAsciiCapable="true"
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
@@ -301,7 +259,6 @@
             android:imeSubtypeLocale="hi"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=hindi,EmojiCapable"
-            android:isAsciiCapable="false"
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
@@ -309,7 +266,6 @@
             android:imeSubtypeLocale="hr"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="AsciiCapable,SupportTouchPositionCorrection,EmojiCapable"
-            android:isAsciiCapable="true"
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
@@ -317,7 +273,6 @@
             android:imeSubtypeLocale="hu"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="AsciiCapable,SupportTouchPositionCorrection,EmojiCapable"
-            android:isAsciiCapable="true"
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
@@ -325,7 +280,6 @@
             android:imeSubtypeLocale="hy_AM"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=armenian_phonetic,EmojiCapable"
-            android:isAsciiCapable="false"
     />
     <!-- Java uses the deprecated "in" code instead of the standard "id" code for Indonesian. -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
@@ -334,7 +288,6 @@
             android:imeSubtypeLocale="in"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,AsciiCapable,EmojiCapable"
-            android:isAsciiCapable="true"
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
@@ -342,7 +295,6 @@
             android:imeSubtypeLocale="is"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,AsciiCapable,EmojiCapable"
-            android:isAsciiCapable="true"
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
@@ -350,7 +302,6 @@
             android:imeSubtypeLocale="it"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="AsciiCapable,SupportTouchPositionCorrection,EmojiCapable"
-            android:isAsciiCapable="true"
     />
     <!-- Java uses the deprecated "iw" code instead of the standard "he" code for Hebrew. -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
@@ -359,7 +310,6 @@
             android:imeSubtypeLocale="iw"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="SupportTouchPositionCorrection,EmojiCapable"
-            android:isAsciiCapable="false"
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
@@ -367,7 +317,6 @@
             android:imeSubtypeLocale="ka_GE"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=georgian,EmojiCapable"
-            android:isAsciiCapable="false"
     />
     <!--
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
@@ -376,7 +325,6 @@
             android:imeSubtypeLocale="kk"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=east_slavic,EmojiCapable"
-            android:isAsciiCapable="false"
     />
     -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
@@ -385,7 +333,6 @@
             android:imeSubtypeLocale="km_KH"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=khmer,EmojiCapable"
-            android:isAsciiCapable="false"
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
@@ -393,7 +340,6 @@
             android:imeSubtypeLocale="ky"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=east_slavic,EmojiCapable"
-            android:isAsciiCapable="false"
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
@@ -401,7 +347,6 @@
             android:imeSubtypeLocale="lo_LA"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=lao,EmojiCapable"
-            android:isAsciiCapable="false"
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
@@ -409,7 +354,6 @@
             android:imeSubtypeLocale="lt"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,AsciiCapable,EmojiCapable"
-            android:isAsciiCapable="true"
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
@@ -417,7 +361,6 @@
             android:imeSubtypeLocale="lv"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,AsciiCapable,EmojiCapable"
-            android:isAsciiCapable="true"
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
@@ -425,7 +368,6 @@
             android:imeSubtypeLocale="mk"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=south_slavic,EmojiCapable"
-            android:isAsciiCapable="false"
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
@@ -433,7 +375,6 @@
             android:imeSubtypeLocale="mn_MN"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=mongolian,EmojiCapable"
-            android:isAsciiCapable="false"
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
@@ -441,7 +382,6 @@
             android:imeSubtypeLocale="ms_MY"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,AsciiCapable,EmojiCapable"
-            android:isAsciiCapable="true"
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
@@ -449,7 +389,6 @@
             android:imeSubtypeLocale="nb"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="AsciiCapable,SupportTouchPositionCorrection,EmojiCapable"
-            android:isAsciiCapable="true"
     />
     <!--
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
@@ -458,7 +397,6 @@
             android:imeSubtypeLocale="ne"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=nepali_romanized,EmojiCapable"
-            android:isAsciiCapable="false"
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_nepali_traditional"
@@ -466,7 +404,6 @@
             android:imeSubtypeLocale="ne"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=nepali_traditional,EmojiCapable"
-            android:isAsciiCapable="false"
     />
     -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
@@ -475,7 +412,6 @@
             android:imeSubtypeLocale="nl"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="AsciiCapable,SupportTouchPositionCorrection,EmojiCapable"
-            android:isAsciiCapable="true"
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
@@ -483,7 +419,6 @@
             android:imeSubtypeLocale="nl_BE"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=azerty,AsciiCapable,EmojiCapable"
-            android:isAsciiCapable="true"
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
@@ -491,7 +426,6 @@
             android:imeSubtypeLocale="pl"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="AsciiCapable,SupportTouchPositionCorrection,EmojiCapable"
-            android:isAsciiCapable="true"
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
@@ -499,7 +433,6 @@
             android:imeSubtypeLocale="pt_BR"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,AsciiCapable,EmojiCapable"
-            android:isAsciiCapable="true"
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
@@ -507,7 +440,6 @@
             android:imeSubtypeLocale="pt_PT"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,AsciiCapable,EmojiCapable"
-            android:isAsciiCapable="true"
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
@@ -515,7 +447,6 @@
             android:imeSubtypeLocale="ro"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,AsciiCapable,EmojiCapable"
-            android:isAsciiCapable="true"
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
@@ -523,7 +454,6 @@
             android:imeSubtypeLocale="ru"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="SupportTouchPositionCorrection,EmojiCapable"
-            android:isAsciiCapable="false"
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
@@ -531,7 +461,6 @@
             android:imeSubtypeLocale="sk"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,AsciiCapable,EmojiCapable"
-            android:isAsciiCapable="true"
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
@@ -539,7 +468,6 @@
             android:imeSubtypeLocale="sl"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,AsciiCapable,EmojiCapable"
-            android:isAsciiCapable="true"
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
@@ -547,7 +475,6 @@
             android:imeSubtypeLocale="sr"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="SupportTouchPositionCorrection,EmojiCapable"
-            android:isAsciiCapable="false"
     />
     <!-- TODO: Uncomment once we can handle IETF language tag with script name specified.
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
@@ -556,7 +483,6 @@
             android:imeSubtypeLocale="sr"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="SupportTouchPositionCorrection,EmojiCapable"
-            android:isAsciiCapable="false"
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_serbian_latin"
@@ -564,7 +490,6 @@
             android:imeSubtypeLocale="sr-Latn"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,AsciiCapable,EmojiCapable"
-            android:isAsciiCapable="true"
     />
     -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
@@ -573,7 +498,6 @@
             android:imeSubtypeLocale="sv"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="AsciiCapable,SupportTouchPositionCorrection,EmojiCapable"
-            android:isAsciiCapable="true"
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
@@ -581,7 +505,6 @@
             android:imeSubtypeLocale="sw"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,AsciiCapable,EmojiCapable"
-            android:isAsciiCapable="true"
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
@@ -589,7 +512,6 @@
             android:imeSubtypeLocale="th"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=thai,EmojiCapable"
-            android:isAsciiCapable="false"
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
@@ -597,7 +519,6 @@
             android:imeSubtypeLocale="tl"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=spanish,AsciiCapable,EmojiCapable"
-            android:isAsciiCapable="true"
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
@@ -605,7 +526,6 @@
             android:imeSubtypeLocale="tr"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="AsciiCapable,SupportTouchPositionCorrection,EmojiCapable"
-            android:isAsciiCapable="true"
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
@@ -613,7 +533,6 @@
             android:imeSubtypeLocale="uk"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=east_slavic,EmojiCapable"
-            android:isAsciiCapable="false"
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
@@ -621,7 +540,6 @@
             android:imeSubtypeLocale="vi"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,AsciiCapable,EmojiCapable"
-            android:isAsciiCapable="true"
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
@@ -629,7 +547,6 @@
             android:imeSubtypeLocale="zu"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,AsciiCapable,EmojiCapable"
-            android:isAsciiCapable="true"
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_no_language_qwerty"
@@ -637,7 +554,6 @@
             android:imeSubtypeLocale="zz"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,AsciiCapable,EnabledWhenDefaultIsNotAsciiCapable,EmojiCapable"
-            android:isAsciiCapable="true"
     />
     <!-- Emoji subtype has to be an addtional subtype added at boot time because ICS doesn't
          support Emoji. -->
@@ -648,7 +564,6 @@
             android:imeSubtypeLocale="zz"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=emoji,EmojiCapable"
-            android:isAsciiCapable="false"
     />
     -->
 </input-method>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+**
+** Copyright 2013, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+
+<merge
+    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
+>
+    <!-- U+2105: "℅" CARE OF
+         U+2122: "™" TRADE MARK SIGN
+         U+00AE: "®" REGISTERED SIGN
+         U+00A9: "©" COPYRIGHT SIGN
+         U+00A7: "§" SECTION SIGN
+         U+00B6: "¶" PILCROW SIGN
+         U+002C: "," COMMA
+         U+2022: "•" BULLET -->
+    <!-- U+00B0: "°" DEGREE SIGN
+         U+2032: "′" PRIME
+         U+2033: "″" DOUBLE PRIME
+         U+2191: "↑" UPWARDS ARROW
+         U+2193: "↓" DOWNWARDS ARROW
+         U+2190: "←" LEFTWARDS ARROW
+         U+2192: "→" RIGHTWARDS ARROW
+         U+2026: "…" HORIZONTAL ELLIPSIS -->
+    <!-- U+0394: "Δ" GREEK CAPITAL LETTER DELTA
+         U+03A0: "Π" GREEK CAPITAL LETTER PI
+         U+03C0: "π" GREEK SMALL LETTER PI -->
+    <Key
+        latin:keyLabel="."
+        latin:keyLabelFlags="hasPopupHint"
+        latin:moreKeys="!fixedColumnOrder!8,&#x2105;,&#x2122;,&#x00AE;,&#x00A9;,&#x00A7;,&#x00B6;,\\,,&#x2022;,&#x00B0;,&#x2032;,&#x2033;,&#x2191;,&#x2193;,&#x2190;,&#x2192;,&#x2026;,!text/more_keys_for_bullet,&#x0394;,&#x03A0;,&#x03C0;" />
+</merge>

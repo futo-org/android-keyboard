@@ -227,19 +227,19 @@ public final class ResourceUtils {
         final String keyboardHeightString = getDeviceOverrideValue(res, R.array.keyboard_heights);
         final float keyboardHeight;
         if (TextUtils.isEmpty(keyboardHeightString)) {
-            keyboardHeight = res.getDimension(R.dimen.config_default_keyboard_height);
+            keyboardHeight = res.getDimension(R.dimen.keyboardHeight);
         } else {
             keyboardHeight = Float.parseFloat(keyboardHeightString) * dm.density;
         }
         final float maxKeyboardHeight = res.getFraction(
-                R.fraction.config_max_keyboard_height, dm.heightPixels, dm.heightPixels);
+                R.fraction.maxKeyboardHeight, dm.heightPixels, dm.heightPixels);
         float minKeyboardHeight = res.getFraction(
-                R.fraction.config_min_keyboard_height, dm.heightPixels, dm.heightPixels);
+                R.fraction.minKeyboardHeight, dm.heightPixels, dm.heightPixels);
         if (minKeyboardHeight < 0.0f) {
             // Specified fraction was negative, so it should be calculated against display
             // width.
             minKeyboardHeight = -res.getFraction(
-                    R.fraction.config_min_keyboard_height, dm.widthPixels, dm.widthPixels);
+                    R.fraction.minKeyboardHeight, dm.widthPixels, dm.widthPixels);
         }
         // Keyboard height will not exceed maxKeyboardHeight and will not be less than
         // minKeyboardHeight.

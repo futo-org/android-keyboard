@@ -82,7 +82,7 @@ public final class AccessibleKeyboardViewProxy extends AccessibilityDelegateComp
     private void initInternal(final InputMethodService inputMethod) {
         mInputMethod = inputMethod;
         mEdgeSlop = inputMethod.getResources().getDimensionPixelSize(
-                R.dimen.config_accessibility_edge_slop);
+                R.dimen.accessibility_edge_slop);
     }
 
     /**

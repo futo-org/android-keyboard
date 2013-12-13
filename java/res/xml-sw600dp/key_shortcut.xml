@@ -23,7 +23,7 @@
 >
     <switch>
         <case
-            latin:supportsSwitchingToShortcutIme="true"
+            latin:shortcutKeyEnabled="true"
             latin:clobberSettingsKey="false"
         >
             <Key
@@ -32,20 +32,20 @@
                 latin:moreKeys="!text/settings_as_more_key" />
         </case>
         <case
-            latin:supportsSwitchingToShortcutIme="true"
+            latin:shortcutKeyEnabled="true"
             latin:clobberSettingsKey="true"
         >
             <Key
                 latin:keyStyle="shortcutKeyStyle" />
         </case>
         <case
-            latin:supportsSwitchingToShortcutIme="false"
+            latin:shortcutKeyEnabled="false"
             latin:clobberSettingsKey="false"
         >
             <Key
                 latin:keyStyle="settingsKeyStyle" />
         </case>
-        <!-- supportsSwitchingToShortcutIme="false" clobberSettingsKey="true" -->
+        <!-- shortcutKeyEnabled="false" clobberSettingsKey="true" -->
         <default>
             <Spacer />
         </default>

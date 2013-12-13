@@ -21,9 +21,9 @@
 <Keyboard
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
     latin:rowHeight="20%p"
-    latin:verticalGap="@fraction/config_key_vertical_gap_5row"
-    latin:keyLetterSize="@fraction/config_key_letter_ratio_5row"
-    latin:keyShiftedLetterHintRatio="@fraction/config_key_shifted_letter_hint_ratio_5row"
+    latin:verticalGap="@fraction/key_bottom_gap_5row"
+    latin:keyLetterSize="@fraction/key_letter_ratio_5row"
+    latin:keyShiftedLetterHintRatio="@fraction/key_uppercase_letter_ratio_5row"
     latin:touchPositionCorrectionData="@array/touch_position_correction_data_default"
 >
     <include

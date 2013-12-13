@@ -39,7 +39,6 @@ class ProximityInfo {
     float getNormalizedSquaredDistanceFromCenterFloatG(
             const int keyId, const int x, const int y, const bool isGeometric) const;
     int getCodePointOf(const int keyIndex) const;
-    int getOriginalCodePointOf(const int keyIndex) const;
     bool hasSweetSpotData(const int keyIndex) const {
         // When there are no calibration data for a key,
         // the radius of the key is assigned to zero.
@@ -77,11 +76,11 @@ class ProximityInfo {
         ProximityInfoUtils::initializeProximities(inputCodes, inputXCoordinates, inputYCoordinates,
                 inputSize, mKeyXCoordinates, mKeyYCoordinates, mKeyWidths, mKeyHeights,
                 mProximityCharsArray, CELL_HEIGHT, CELL_WIDTH, GRID_WIDTH, MOST_COMMON_KEY_WIDTH,
-                KEY_COUNT, mLocaleStr, &mLowerCodePointToKeyMap, allInputCodes);
+                KEY_COUNT, mLocaleStr, &mCodeToKeyMap, allInputCodes);
     }
 
     AK_FORCE_INLINE int getKeyIndexOf(const int c) const {
-        return ProximityInfoUtils::getKeyIndexOf(KEY_COUNT, c, &mLowerCodePointToKeyMap);
+        return ProximityInfoUtils::getKeyIndexOf(KEY_COUNT, c, &mCodeToKeyMap);
     }
 
     AK_FORCE_INLINE bool isCodePointOnKeyboard(const int codePoint) const {
@@ -118,9 +117,9 @@ class ProximityInfo {
     // Sweet spots for geometric input. Note that we have extra sweet spots only for Y coordinates.
     float mSweetSpotCenterYsG[MAX_KEY_COUNT_IN_A_KEYBOARD];
     float mSweetSpotRadii[MAX_KEY_COUNT_IN_A_KEYBOARD];
-    hash_map_compat<int, int> mLowerCodePointToKeyMap;
-    int mKeyIndexToOriginalCodePoint[MAX_KEY_COUNT_IN_A_KEYBOARD];
-    int mKeyIndexToLowerCodePointG[MAX_KEY_COUNT_IN_A_KEYBOARD];
+    hash_map_compat<int, int> mCodeToKeyMap;
+
+    int mKeyIndexToCodePointG[MAX_KEY_COUNT_IN_A_KEYBOARD];
     int mCenterXsG[MAX_KEY_COUNT_IN_A_KEYBOARD];
     int mCenterYsG[MAX_KEY_COUNT_IN_A_KEYBOARD];
     int mKeyKeyDistancesG[MAX_KEY_COUNT_IN_A_KEYBOARD][MAX_KEY_COUNT_IN_A_KEYBOARD];

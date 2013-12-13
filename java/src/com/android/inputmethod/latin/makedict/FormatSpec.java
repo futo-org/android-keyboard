@@ -40,8 +40,12 @@ public final class FormatSpec {
      * p | not used                                3 bits
      * t | each unigram and bigram entry has a time stamp?
      * i |                                         1 bit, 1 = yes, 0 = no : CONTAINS_TIMESTAMP_FLAG
-     * o |
-     * nflags
+     * o | has bigrams ?                           1 bit, 1 = yes, 0 = no : CONTAINS_BIGRAMS_FLAG
+     * n | FRENCH_LIGATURE_PROCESSING_FLAG
+     * f | supports dynamic updates ?              1 bit, 1 = yes, 0 = no : SUPPORTS_DYNAMIC_UPDATE
+     * l | GERMAN_UMLAUT_PROCESSING_FLAG
+     * a |
+     * gs
      *
      * h |
      * e | size of the file header, 4bytes
@@ -78,36 +82,45 @@ public final class FormatSpec {
      * s
      *
      * f |
-     * o | forward link address, 3byte
-     * r | 1 byte = bbbbbbbb match
-     * w |   case 1xxxxxxx => -((xxxxxxx << 16) + (next byte << 8) + next byte)
-     * a |   otherwise => (xxxxxxx << 16) + (next byte << 8) + next byte
-     * r |
-     * dlinkaddress
+     * o | IF SUPPORTS_DYNAMIC_UPDATE (defined in the file header)
+     * r |     forward link address, 3byte
+     * w | 1 byte = bbbbbbbb match
+     * a |   case 1xxxxxxx => -((xxxxxxx << 16) + (next byte << 8) + next byte)
+     * r |   otherwise => (xxxxxxx << 16) + (next byte << 8) + next byte
+     * d |
+     * linkaddress
      */
 
     /* Node (FusionDictionary.PtNode) layout is as follows:
-     *   | is moved ?             2 bits, 11 = no          : FLAG_IS_NOT_MOVED
-     *   |                          This must be the same as FLAG_CHILDREN_ADDRESS_TYPE_THREEBYTES
-     *   |                                01 = yes         : FLAG_IS_MOVED
-     * f |                      the new address is stored in the same place as the parent address
-     * l | is deleted?                    10 = yes         : FLAG_IS_DELETED
-     * a | has several chars ?         1 bit, 1 = yes, 0 = no   : FLAG_HAS_MULTIPLE_CHARS
-     * g | has a terminal ?            1 bit, 1 = yes, 0 = no   : FLAG_IS_TERMINAL
-     * s | has shortcut targets ?      1 bit, 1 = yes, 0 = no   : FLAG_HAS_SHORTCUT_TARGETS
+     *   | IF !SUPPORTS_DYNAMIC_UPDATE
+     *   |   addressType                    xx               : mask with MASK_CHILDREN_ADDRESS_TYPE
+     *   |                          2 bits, 00 = no children : FLAG_CHILDREN_ADDRESS_TYPE_NOADDRESS
+     * f |                                  01 = 1 byte      : FLAG_CHILDREN_ADDRESS_TYPE_ONEBYTE
+     * l |                                  10 = 2 bytes     : FLAG_CHILDREN_ADDRESS_TYPE_TWOBYTES
+     * a |                                  11 = 3 bytes     : FLAG_CHILDREN_ADDRESS_TYPE_THREEBYTES
+     * g | ELSE
+     * s |   is moved ?             2 bits, 11 = no          : FLAG_IS_NOT_MOVED
+     *   |                            This must be the same as FLAG_CHILDREN_ADDRESS_TYPE_THREEBYTES
+     *   |                                  01 = yes         : FLAG_IS_MOVED
+     *   |                        the new address is stored in the same place as the parent address
+     *   |   is deleted?                    10 = yes         : FLAG_IS_DELETED
+     *   | has several chars ?         1 bit, 1 = yes, 0 = no   : FLAG_HAS_MULTIPLE_CHARS
+     *   | has a terminal ?            1 bit, 1 = yes, 0 = no   : FLAG_IS_TERMINAL
+     *   | has shortcut targets ?      1 bit, 1 = yes, 0 = no   : FLAG_HAS_SHORTCUT_TARGETS
      *   | has bigrams ?               1 bit, 1 = yes, 0 = no   : FLAG_HAS_BIGRAMS
      *   | is not a word ?             1 bit, 1 = yes, 0 = no   : FLAG_IS_NOT_A_WORD
      *   | is blacklisted ?            1 bit, 1 = yes, 0 = no   : FLAG_IS_BLACKLISTED
      *
      * p |
-     * a | parent address, 3byte
-     * r | 1 byte = bbbbbbbb match
-     * e |   case 1xxxxxxx => -((0xxxxxxx << 16) + (next byte << 8) + next byte)
-     * n |   otherwise => (bbbbbbbb << 16) + (next byte << 8) + next byte
-     * t | This address is relative to the head of the PtNode.
-     * a | If the node doesn't have a parent, this field is set to 0.
+     * a | IF SUPPORTS_DYNAMIC_UPDATE (defined in the file header)
+     * r |     parent address, 3byte
+     * e | 1 byte = bbbbbbbb match
+     * n |   case 1xxxxxxx => -((0xxxxxxx << 16) + (next byte << 8) + next byte)
+     * t |   otherwise => (bbbbbbbb << 16) + (next byte << 8) + next byte
+     * a | This address is relative to the head of the PtNode.
+     * d | If the node doesn't have a parent, this field is set to 0.
      * d |
-     * dress
+     * ress
      *
      * c | IF FLAG_HAS_MULTIPLE_CHARS
      * h |   char, char, char, char    n * (1 or 3 bytes) : use PtNodeInfo for i/o helpers
@@ -121,16 +134,23 @@ public final class FormatSpec {
      * e |   frequency                 1 byte
      * q |
      *
-     * c |
-     * h | children address, 3 bytes
-     * i | 1 byte = bbbbbbbb match
-     * l |   case 1xxxxxxx => -((0xxxxxxx << 16) + (next byte << 8) + next byte)
-     * d |   otherwise => (bbbbbbbb<<16) + (next byte << 8) + next byte
-     * r | if this node doesn't have children, this field is set to 0.
-     * e |   (see BinaryDictEncoderUtils#writeVariableSignedAddress)
-     * n | This address is relative to the position of this field.
-     * a |
-     * ddress
+     * c | IF SUPPORTS_DYNAMIC_UPDATE
+     * h |   children address, 3 bytes
+     * i |   1 byte = bbbbbbbb match
+     * l |     case 1xxxxxxx => -((0xxxxxxx << 16) + (next byte << 8) + next byte)
+     * d |     otherwise => (bbbbbbbb<<16) + (next byte << 8) + next byte
+     * r |   if this node doesn't have children, this field is set to 0.
+     * e |     (see BinaryDictEncoderUtils#writeVariableSignedAddress)
+     * n | ELSIF 00 = FLAG_CHILDREN_ADDRESS_TYPE_NOADDRESS == addressType
+     * a |   // nothing
+     * d | ELSIF 01 = FLAG_CHILDREN_ADDRESS_TYPE_ONEBYTE == addressType
+     * d |   children address, 1 byte
+     * r | ELSIF 10 = FLAG_CHILDREN_ADDRESS_TYPE_TWOBYTES == addressType
+     * e |   children address, 2 bytes
+     * s | ELSE // 11 = FLAG_CHILDREN_ADDRESS_TYPE_THREEBYTES = addressType
+     * s |   children address, 3 bytes
+     *   | END
+     *   | This address is relative to the position of this field.
      *
      *   | IF FLAG_IS_TERMINAL && FLAG_HAS_SHORTCUT_TARGETS
      *   | shortcut string list
@@ -179,22 +199,20 @@ public final class FormatSpec {
      */
 
     public static final int MAGIC_NUMBER = 0x9BC13AFE;
+    static final int MINIMUM_SUPPORTED_VERSION = 2;
+    static final int MAXIMUM_SUPPORTED_VERSION = 4;
     static final int NOT_A_VERSION_NUMBER = -1;
     static final int FIRST_VERSION_WITH_DYNAMIC_UPDATE = 3;
     static final int FIRST_VERSION_WITH_TERMINAL_ID = 4;
-
-    // These MUST have the same values as the relevant constants in format_utils.h.
-    // From version 4 on, we use version * 100 + revision as a version number. That allows
-    // us to change the format during development while having testing devices remove
-    // older files with each upgrade, while still having a readable versioning scheme.
-    public static final int VERSION2 = 2;
-    public static final int VERSION3 = 3;
-    public static final int VERSION4 = 400;
-    static final int MINIMUM_SUPPORTED_VERSION = VERSION2;
-    static final int MAXIMUM_SUPPORTED_VERSION = VERSION4;
+    static final int VERSION3 = 3;
+    static final int VERSION4 = 4;
 
     // These options need to be the same numeric values as the one in the native reading code.
+    static final int GERMAN_UMLAUT_PROCESSING_FLAG = 0x1;
     // TODO: Make the native reading code read this variable.
+    static final int SUPPORTS_DYNAMIC_UPDATE = 0x2;
+    static final int FRENCH_LIGATURE_PROCESSING_FLAG = 0x4;
+    static final int CONTAINS_BIGRAMS_FLAG = 0x8;
     static final int CONTAINS_TIMESTAMP_FLAG = 0x10;
 
     // TODO: Make this value adaptative to content data, store it in the header, and
@@ -245,10 +263,8 @@ public final class FormatSpec {
     static final int PTNODE_ATTRIBUTE_MAX_ADDRESS_SIZE = 3;
     static final int PTNODE_SHORTCUT_LIST_SIZE_SIZE = 2;
 
-    // These values are used only by version 4 or later. They MUST match the definitions in
-    // ver4_dict_constants.cpp.
+    // These values are used only by version 4 or later.
     static final String TRIE_FILE_EXTENSION = ".trie";
-    public static final String HEADER_FILE_EXTENSION = ".header";
     static final String FREQ_FILE_EXTENSION = ".freq";
     static final String UNIGRAM_TIMESTAMP_FILE_EXTENSION = ".timestamp";
     // tat = Terminal Address Table
@@ -262,9 +278,9 @@ public final class FormatSpec {
     static final int UNIGRAM_TIMESTAMP_SIZE = 4;
 
     // With the English main dictionary as of October 2013, the size of bigram address table is
-    // is 345KB with the block size being 16.
-    // This is 54% of that of full address table.
-    static final int BIGRAM_ADDRESS_TABLE_BLOCK_SIZE = 16;
+    // is 584KB with the block size being 4.
+    // This is 91% of that of full address table.
+    static final int BIGRAM_ADDRESS_TABLE_BLOCK_SIZE = 4;
     static final int BIGRAM_CONTENT_COUNT = 2;
     static final int BIGRAM_FREQ_CONTENT_INDEX = 0;
     static final int BIGRAM_TIMESTAMP_CONTENT_INDEX = 1;
@@ -277,7 +293,7 @@ public final class FormatSpec {
     static final int SHORTCUT_CONTENT_COUNT = 1;
     static final int SHORTCUT_CONTENT_INDEX = 0;
     // With the English main dictionary as of October 2013, the size of shortcut address table is
-    // 26KB with the block size being 64.
+    // 29KB with the block size being 64.
     // This is only 4.4% of that of full address table.
     static final int SHORTCUT_ADDRESS_TABLE_BLOCK_SIZE = 64;
     static final String SHORTCUT_CONTENT_ID = "_shortcut";
@@ -315,22 +331,29 @@ public final class FormatSpec {
      */
     public static final class FormatOptions {
         public final int mVersion;
+        public final boolean mSupportsDynamicUpdate;
         public final boolean mHasTerminalId;
         public final boolean mHasTimestamp;
-
         @UsedForTesting
         public FormatOptions(final int version) {
-            this(version, false /* hasTimestamp */);
+            this(version, false);
         }
 
-        public FormatOptions(final int version, final boolean hasTimestamp) {
+        @UsedForTesting
+        public FormatOptions(final int version, final boolean supportsDynamicUpdate) {
+            this(version, supportsDynamicUpdate, false /* hasTimestamp */);
+        }
+
+        public FormatOptions(final int version, final boolean supportsDynamicUpdate,
+                final boolean hasTimestamp) {
             mVersion = version;
+            if (version < FIRST_VERSION_WITH_DYNAMIC_UPDATE && supportsDynamicUpdate) {
+                throw new RuntimeException("Dynamic updates are only supported with versions "
+                        + FIRST_VERSION_WITH_DYNAMIC_UPDATE + " and ulterior.");
+            }
+            mSupportsDynamicUpdate = supportsDynamicUpdate;
             mHasTerminalId = (version >= FIRST_VERSION_WITH_TERMINAL_ID);
             mHasTimestamp = hasTimestamp;
-        }
-
-        public boolean supportsDynamicUpdate() {
-            return mVersion >= FIRST_VERSION_WITH_DYNAMIC_UPDATE;
         }
     }
 
@@ -338,13 +361,13 @@ public final class FormatSpec {
      * Class representing file header.
      */
     public static final class FileHeader {
-        public final int mBodyOffset;
+        public final int mHeaderSize;
         public final DictionaryOptions mDictionaryOptions;
         public final FormatOptions mFormatOptions;
         // Note that these are corresponding definitions in native code in latinime::HeaderPolicy
         // and latinime::HeaderReadWriteUtils.
+        public static final String SUPPORTS_DYNAMIC_UPDATE_ATTRIBUTE = "SUPPORTS_DYNAMIC_UPDATE";
         public static final String USES_FORGETTING_CURVE_ATTRIBUTE = "USES_FORGETTING_CURVE";
-        public static final String HAS_HISTORICAL_INFO_ATTRIBUTE = "HAS_HISTORICAL_INFO";
         public static final String ATTRIBUTE_VALUE_TRUE = "1";
 
         public static final String DICTIONARY_VERSION_ATTRIBUTE = "version";
@@ -353,18 +376,9 @@ public final class FormatSpec {
         private static final String DICTIONARY_DESCRIPTION_ATTRIBUTE = "description";
         public FileHeader(final int headerSize, final DictionaryOptions dictionaryOptions,
                 final FormatOptions formatOptions) {
+            mHeaderSize = headerSize;
             mDictionaryOptions = dictionaryOptions;
             mFormatOptions = formatOptions;
-            mBodyOffset = formatOptions.mVersion < VERSION4 ? headerSize : 0;
-            if (null == getLocaleString()) {
-                throw new RuntimeException("Cannot create a FileHeader without a locale");
-            }
-            if (null == getVersion()) {
-                throw new RuntimeException("Cannot create a FileHeader without a version");
-            }
-            if (null == getId()) {
-                throw new RuntimeException("Cannot create a FileHeader without an ID");
-            }
         }
 
         // Helper method to get the locale as a String

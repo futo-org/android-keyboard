@@ -32,35 +32,36 @@ import java.util.TreeMap;
  * A base class of the binary dictionary decoder.
  */
 public abstract class AbstractDictDecoder implements DictDecoder {
-    private static final int SUCCESS = 0;
-    private static final int ERROR_CANNOT_READ = 1;
-    private static final int ERROR_WRONG_FORMAT = 2;
-
-    protected FileHeader readHeader(final DictBuffer headerBuffer)
+    protected FileHeader readHeader(final DictBuffer dictBuffer)
             throws IOException, UnsupportedFormatException {
-        if (headerBuffer == null) {
+        if (dictBuffer == null) {
             openDictBuffer();
         }
 
-        final int version = HeaderReader.readVersion(headerBuffer);
+        final int version = HeaderReader.readVersion(dictBuffer);
         if (version < FormatSpec.MINIMUM_SUPPORTED_VERSION
                 || version > FormatSpec.MAXIMUM_SUPPORTED_VERSION) {
           throw new UnsupportedFormatException("Unsupported version : " + version);
         }
         // TODO: Remove this field.
-        final int optionsFlags = HeaderReader.readOptionFlags(headerBuffer);
-        final int headerSize = HeaderReader.readHeaderSize(headerBuffer);
+        final int optionsFlags = HeaderReader.readOptionFlags(dictBuffer);
+
+        final int headerSize = HeaderReader.readHeaderSize(dictBuffer);
+
         if (headerSize < 0) {
             throw new UnsupportedFormatException("header size can't be negative.");
         }
 
-        final HashMap<String, String> attributes = HeaderReader.readAttributes(headerBuffer,
+        final HashMap<String, String> attributes = HeaderReader.readAttributes(dictBuffer,
                 headerSize);
 
         final FileHeader header = new FileHeader(headerSize,
-                new FusionDictionary.DictionaryOptions(attributes),
-                new FormatOptions(version,
-                        0 != (optionsFlags & FormatSpec.CONTAINS_TIMESTAMP_FLAG)));
+                new FusionDictionary.DictionaryOptions(attributes,
+                        0 != (optionsFlags & FormatSpec.GERMAN_UMLAUT_PROCESSING_FLAG),
+                        0 != (optionsFlags & FormatSpec.FRENCH_LIGATURE_PROCESSING_FLAG)),
+                        new FormatOptions(version,
+                                0 != (optionsFlags & FormatSpec.SUPPORTS_DYNAMIC_UPDATE),
+                                0 != (optionsFlags & FormatSpec.CONTAINS_TIMESTAMP_FLAG)));
         return header;
     }
 
@@ -202,26 +203,5 @@ public abstract class AbstractDictDecoder implements DictDecoder {
             }
             return readLength;
         }
-    }
-
-    /**
-     * Check whether the header contains the expected information. This is a no-error method,
-     * that will return an error code and never throw a checked exception.
-     * @return an error code, either ERROR_* or SUCCESS.
-     */
-    private int checkHeader() {
-        try {
-            readHeader();
-        } catch (IOException e) {
-            return ERROR_CANNOT_READ;
-        } catch (UnsupportedFormatException e) {
-            return ERROR_WRONG_FORMAT;
-        }
-        return SUCCESS;
-    }
-
-    @Override
-    public boolean hasValidRawBinaryDictionary() {
-        return checkHeader() == SUCCESS;
     }
 }

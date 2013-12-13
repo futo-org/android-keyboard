@@ -81,7 +81,7 @@ class TypingTraversal : public Traversal {
             return false;
         }
         const int point0Index = dicNode->getInputIndex(0);
-        return dicNode->isTerminalDicNode()
+        return dicNode->isTerminalWordNode()
                 && traverseSession->getProximityInfoState(0)->
                         hasSpaceProximity(point0Index);
     }
@@ -96,7 +96,7 @@ class TypingTraversal : public Traversal {
         if (dicNode->isCompletion(inputSize)) {
             return false;
         }
-        if (!dicNode->isTerminalDicNode()) {
+        if (!dicNode->isTerminalWordNode()) {
             return false;
         }
         const int16_t pointIndex = dicNode->getInputIndex(0);

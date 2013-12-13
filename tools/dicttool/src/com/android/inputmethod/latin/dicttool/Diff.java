@@ -85,6 +85,18 @@ public class Diff extends Dicttool.Command {
 
     private static void diffHeaders(final FusionDictionary dict0, final FusionDictionary dict1) {
         boolean hasDifferences = false;
+        if (dict0.mOptions.mFrenchLigatureProcessing != dict1.mOptions.mFrenchLigatureProcessing) {
+            System.out.println("  French ligature processing : "
+                    + dict0.mOptions.mFrenchLigatureProcessing + " <=> "
+                    + dict1.mOptions.mFrenchLigatureProcessing);
+            hasDifferences = true;
+        }
+        else if (dict0.mOptions.mGermanUmlautProcessing != dict1.mOptions.mGermanUmlautProcessing) {
+            System.out.println("  German umlaut processing : "
+                    + dict0.mOptions.mGermanUmlautProcessing + " <=> "
+                    + dict1.mOptions.mGermanUmlautProcessing);
+            hasDifferences = true;
+        }
         final HashMap<String, String> options1 =
                 new HashMap<String, String>(dict1.mOptions.mAttributes);
         for (final String optionKey : dict0.mOptions.mAttributes.keySet()) {

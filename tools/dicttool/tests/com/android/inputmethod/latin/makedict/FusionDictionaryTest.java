@@ -96,7 +96,8 @@ public class FusionDictionaryTest extends TestCase {
     // that it does not contain any duplicates.
     public void testFusion() {
         final FusionDictionary dict = new FusionDictionary(new PtNodeArray(),
-                new DictionaryOptions(new HashMap<String, String>()));
+                new DictionaryOptions(new HashMap<String, String>(),
+                        false /* germanUmlautProcessing */, false /* frenchLigatureProcessing */));
         final long time = System.currentTimeMillis();
         prepare(time);
         for (int i = 0; i < sWords.size(); ++i) {

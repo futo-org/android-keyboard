@@ -65,8 +65,6 @@ class ProximityInfoState {
         return getProximityCodePointsAt(index)[0];
     }
 
-    int getPrimaryOriginalCodePointAt(const int index) const;
-
     inline bool sameAsTyped(const int *word, int length) const {
         if (length != mSampledInputSize) {
             return false;

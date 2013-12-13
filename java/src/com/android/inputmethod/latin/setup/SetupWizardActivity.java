@@ -38,7 +38,7 @@ import com.android.inputmethod.compat.ViewCompatUtils;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.settings.SettingsActivity;
 import com.android.inputmethod.latin.utils.CollectionUtils;
-import com.android.inputmethod.latin.utils.LeakGuardHandlerWrapper;
+import com.android.inputmethod.latin.utils.StaticInnerHandlerWrapper;
 
 import java.util.ArrayList;
 
@@ -74,21 +74,21 @@ public final class SetupWizardActivity extends Activity implements View.OnClickL
     private SettingsPoolingHandler mHandler;
 
     private static final class SettingsPoolingHandler
-            extends LeakGuardHandlerWrapper<SetupWizardActivity> {
+            extends StaticInnerHandlerWrapper<SetupWizardActivity> {
         private static final int MSG_POLLING_IME_SETTINGS = 0;
         private static final long IME_SETTINGS_POLLING_INTERVAL = 200;
 
         private final InputMethodManager mImmInHandler;
 
-        public SettingsPoolingHandler(final SetupWizardActivity ownerInstance,
+        public SettingsPoolingHandler(final SetupWizardActivity outerInstance,
                 final InputMethodManager imm) {
-            super(ownerInstance);
+            super(outerInstance);
             mImmInHandler = imm;
         }
 
         @Override
         public void handleMessage(final Message msg) {
-            final SetupWizardActivity setupWizardActivity = getOwnerInstance();
+            final SetupWizardActivity setupWizardActivity = getOuterInstance();
             if (setupWizardActivity == null) {
                 return;
             }

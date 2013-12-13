@@ -37,7 +37,7 @@ import java.util.Arrays;
 @UsedForTesting
 public final class DynamicBinaryDictIOUtils {
     private static final boolean DBG = false;
-    static final int MAX_JUMPS = 10000;
+    private static final int MAX_JUMPS = 10000;
 
     private DynamicBinaryDictIOUtils() {
         // This utility class is not publicly instantiable.
@@ -61,7 +61,7 @@ public final class DynamicBinaryDictIOUtils {
         final DictBuffer dictBuffer = dictUpdater.getDictBuffer();
         final int originalPosition = dictBuffer.position();
         dictBuffer.position(ptNodeOriginAddress);
-        if (!formatOptions.supportsDynamicUpdate()) {
+        if (!formatOptions.mSupportsDynamicUpdate) {
             throw new RuntimeException("this file format does not support parent addresses");
         }
         final int flags = dictBuffer.readUnsignedByte();
@@ -102,7 +102,7 @@ public final class DynamicBinaryDictIOUtils {
             }
             if (!dictUpdater.readAndFollowForwardLink()) break;
             if (dictUpdater.getPosition() == FormatSpec.NO_FORWARD_LINK_ADDRESS) break;
-        } while (formatOptions.supportsDynamicUpdate());
+        } while (formatOptions.mSupportsDynamicUpdate);
         dictUpdater.setPosition(originalPosition);
     }
 

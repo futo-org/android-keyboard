@@ -21,12 +21,8 @@ import android.test.suitebuilder.annotation.LargeTest;
 import android.text.TextUtils;
 import android.util.Pair;
 
-import com.android.inputmethod.latin.BinaryDictionary.LanguageModelParam;
 import com.android.inputmethod.latin.makedict.CodePointUtils;
 import com.android.inputmethod.latin.makedict.FormatSpec;
-import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
-import com.android.inputmethod.latin.utils.FileUtils;
-import com.android.inputmethod.latin.utils.UnigramProperty;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,7 +33,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 
-// TODO Use the seed passed as an argument for makedict test.
 @LargeTest
 public class BinaryDictionaryTests extends AndroidTestCase {
     private static final String TEST_DICT_FILE_EXTENSION = ".testDict";
@@ -53,39 +48,24 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         super.tearDown();
     }
 
-    private File createEmptyDictionaryAndGetFile(final String dictId,
-            final int formatVersion) throws IOException {
-       if (formatVersion == FormatSpec.VERSION4) {
-            return createEmptyVer4DictionaryAndGetFile(dictId);
-        } else {
-            throw new IOException("Dictionary format version " + formatVersion
-                    + " is not supported.");
-        }
-    }
-
-    private File createEmptyVer4DictionaryAndGetFile(final String dictId) throws IOException {
-        final File file = File.createTempFile(dictId, TEST_DICT_FILE_EXTENSION,
+    private File createEmptyDictionaryAndGetFile(final String filename) throws IOException {
+        final File file = File.createTempFile(filename, TEST_DICT_FILE_EXTENSION,
                 getContext().getCacheDir());
-        file.delete();
-        file.mkdir();
         Map<String, String> attributeMap = new HashMap<String, String>();
+        attributeMap.put(FormatSpec.FileHeader.SUPPORTS_DYNAMIC_UPDATE_ATTRIBUTE,
+                FormatSpec.FileHeader.ATTRIBUTE_VALUE_TRUE);
         if (BinaryDictionary.createEmptyDictFile(file.getAbsolutePath(),
-                FormatSpec.VERSION4, attributeMap)) {
+                3 /* dictVersion */, attributeMap)) {
             return file;
         } else {
-            throw new IOException("Empty dictionary " + file.getAbsolutePath()
-                    + " cannot be created.");
+            throw new IOException("Empty dictionary cannot be created.");
         }
     }
 
     public void testIsValidDictionary() {
-        testIsValidDictionary(FormatSpec.VERSION4);
-    }
-
-    private void testIsValidDictionary(final int formatVersion) {
         File dictFile = null;
         try {
-            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary", formatVersion);
+            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary");
         } catch (IOException e) {
             fail("IOException while writing an initial dictionary : " + e);
         }
@@ -97,7 +77,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         binaryDictionary.close();
         assertFalse("binaryDictionary must be invalid after closing.",
                 binaryDictionary.isValidDictionary());
-        FileUtils.deleteRecursively(dictFile);
+        dictFile.delete();
         binaryDictionary = new BinaryDictionary(dictFile.getAbsolutePath(), 0 /* offset */,
                 dictFile.length(), true /* useFullEditDistance */, Locale.getDefault(),
                 TEST_LOCALE, true /* isUpdatable */);
@@ -106,28 +86,10 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         binaryDictionary.close();
     }
 
-    private void addUnigramWord(final BinaryDictionary binaryDictionary, final String word,
-            final int probability) {
-        binaryDictionary.addUnigramWord(word, probability, "" /* shortcutTarget */,
-                BinaryDictionary.NOT_A_PROBABILITY /* shortcutProbability */,
-                false /* isNotAWord */, false /* isBlacklisted */,
-                BinaryDictionary.NOT_A_VALID_TIMESTAMP /* timestamp */);
-    }
-
-    private void addBigramWords(final BinaryDictionary binaryDictionary, final String word0,
-            final String word1, final int probability) {
-        binaryDictionary.addBigramWords(word0, word1, probability,
-                BinaryDictionary.NOT_A_VALID_TIMESTAMP /* timestamp */);
-    }
-
     public void testAddUnigramWord() {
-        testAddUnigramWord(FormatSpec.VERSION4);
-    }
-
-    private void testAddUnigramWord(final int formatVersion) {
         File dictFile = null;
         try {
-            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary", formatVersion);
+            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary");
         } catch (IOException e) {
             fail("IOException while writing an initial dictionary : " + e);
         }
@@ -136,21 +98,21 @@ public class BinaryDictionaryTests extends AndroidTestCase {
                 Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
 
         final int probability = 100;
-        addUnigramWord(binaryDictionary, "aaa", probability);
+        binaryDictionary.addUnigramWord("aaa", probability);
         // Reallocate and create.
-        addUnigramWord(binaryDictionary, "aab", probability);
+        binaryDictionary.addUnigramWord("aab", probability);
         // Insert into children.
-        addUnigramWord(binaryDictionary, "aac", probability);
+        binaryDictionary.addUnigramWord("aac", probability);
         // Make terminal.
-        addUnigramWord(binaryDictionary, "aa", probability);
+        binaryDictionary.addUnigramWord("aa", probability);
         // Create children.
-        addUnigramWord(binaryDictionary, "aaaa", probability);
+        binaryDictionary.addUnigramWord("aaaa", probability);
         // Reallocate and make termianl.
-        addUnigramWord(binaryDictionary, "a", probability);
+        binaryDictionary.addUnigramWord("a", probability);
 
         final int updatedProbability = 200;
         // Update.
-        addUnigramWord(binaryDictionary, "aaa", updatedProbability);
+        binaryDictionary.addUnigramWord("aaa", updatedProbability);
 
         assertEquals(probability, binaryDictionary.getFrequency("aab"));
         assertEquals(probability, binaryDictionary.getFrequency("aac"));
@@ -163,17 +125,13 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     }
 
     public void testRandomlyAddUnigramWord() {
-        testRandomlyAddUnigramWord(FormatSpec.VERSION4);
-    }
-
-    private void testRandomlyAddUnigramWord(final int formatVersion) {
         final int wordCount = 1000;
         final int codePointSetSize = 50;
         final long seed = System.currentTimeMillis();
 
         File dictFile = null;
         try {
-            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary", formatVersion);
+            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary");
         } catch (IOException e) {
             fail("IOException while writing an initial dictionary : " + e);
         }
@@ -190,7 +148,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
             probabilityMap.put(word, random.nextInt(0xFF));
         }
         for (String word : probabilityMap.keySet()) {
-            addUnigramWord(binaryDictionary, word, probabilityMap.get(word));
+            binaryDictionary.addUnigramWord(word, probabilityMap.get(word));
         }
         for (String word : probabilityMap.keySet()) {
             assertEquals(word, (int)probabilityMap.get(word), binaryDictionary.getFrequency(word));
@@ -199,13 +157,9 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     }
 
     public void testAddBigramWords() {
-        testAddBigramWords(FormatSpec.VERSION4);
-    }
-
-    private void testAddBigramWords(final int formatVersion) {
         File dictFile = null;
         try {
-            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary", formatVersion);
+            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary");
         } catch (IOException e) {
             fail("IOException while writing an initial dictionary : " + e);
         }
@@ -216,13 +170,13 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         final int unigramProbability = 100;
         final int bigramProbability = 10;
         final int updatedBigramProbability = 15;
-        addUnigramWord(binaryDictionary, "aaa", unigramProbability);
-        addUnigramWord(binaryDictionary, "abb", unigramProbability);
-        addUnigramWord(binaryDictionary, "bcc", unigramProbability);
-        addBigramWords(binaryDictionary, "aaa", "abb", bigramProbability);
-        addBigramWords(binaryDictionary, "aaa", "bcc", bigramProbability);
-        addBigramWords(binaryDictionary, "abb", "aaa", bigramProbability);
-        addBigramWords(binaryDictionary, "abb", "bcc", bigramProbability);
+        binaryDictionary.addUnigramWord("aaa", unigramProbability);
+        binaryDictionary.addUnigramWord("abb", unigramProbability);
+        binaryDictionary.addUnigramWord("bcc", unigramProbability);
+        binaryDictionary.addBigramWords("aaa", "abb", bigramProbability);
+        binaryDictionary.addBigramWords("aaa", "bcc", bigramProbability);
+        binaryDictionary.addBigramWords("abb", "aaa", bigramProbability);
+        binaryDictionary.addBigramWords("abb", "bcc", bigramProbability);
 
         final int probability = binaryDictionary.calculateProbability(unigramProbability,
                 bigramProbability);
@@ -235,7 +189,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         assertEquals(probability, binaryDictionary.getBigramProbability("abb", "aaa"));
         assertEquals(probability, binaryDictionary.getBigramProbability("abb", "bcc"));
 
-        addBigramWords(binaryDictionary, "aaa", "abb", updatedBigramProbability);
+        binaryDictionary.addBigramWords("aaa", "abb", updatedBigramProbability);
         final int updatedProbability = binaryDictionary.calculateProbability(unigramProbability,
                 updatedBigramProbability);
         assertEquals(updatedProbability, binaryDictionary.getBigramProbability("aaa", "abb"));
@@ -251,26 +205,22 @@ public class BinaryDictionaryTests extends AndroidTestCase {
                 binaryDictionary.getBigramProbability("aaa", "aaa"));
 
         // Testing bigram link.
-        addUnigramWord(binaryDictionary, "abcde", unigramProbability);
-        addUnigramWord(binaryDictionary, "fghij", unigramProbability);
-        addBigramWords(binaryDictionary, "abcde", "fghij", bigramProbability);
-        addUnigramWord(binaryDictionary, "fgh", unigramProbability);
-        addUnigramWord(binaryDictionary, "abc", unigramProbability);
-        addUnigramWord(binaryDictionary, "f", unigramProbability);
+        binaryDictionary.addUnigramWord("abcde", unigramProbability);
+        binaryDictionary.addUnigramWord("fghij", unigramProbability);
+        binaryDictionary.addBigramWords("abcde", "fghij", bigramProbability);
+        binaryDictionary.addUnigramWord("fgh", unigramProbability);
+        binaryDictionary.addUnigramWord("abc", unigramProbability);
+        binaryDictionary.addUnigramWord("f", unigramProbability);
         assertEquals(probability, binaryDictionary.getBigramProbability("abcde", "fghij"));
         assertEquals(Dictionary.NOT_A_PROBABILITY,
                 binaryDictionary.getBigramProbability("abcde", "fgh"));
-        addBigramWords(binaryDictionary, "abcde", "fghij", updatedBigramProbability);
+        binaryDictionary.addBigramWords("abcde", "fghij", updatedBigramProbability);
         assertEquals(updatedProbability, binaryDictionary.getBigramProbability("abcde", "fghij"));
 
         dictFile.delete();
     }
 
     public void testRandomlyAddBigramWords() {
-        testRandomlyAddBigramWords(FormatSpec.VERSION4);
-    }
-
-    private void testRandomlyAddBigramWords(final int formatVersion) {
         final int wordCount = 100;
         final int bigramCount = 1000;
         final int codePointSetSize = 50;
@@ -279,7 +229,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
 
         File dictFile = null;
         try {
-            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary", formatVersion);
+            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary");
         } catch (IOException e) {
             fail("IOException while writing an initial dictionary : " + e);
         }
@@ -299,7 +249,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
             words.add(word);
             final int unigramProbability = random.nextInt(0xFF);
             unigramProbabilities.put(word, unigramProbability);
-            addUnigramWord(binaryDictionary, word, unigramProbability);
+            binaryDictionary.addUnigramWord(word, unigramProbability);
         }
 
         for (int i = 0; i < bigramCount; i++) {
@@ -312,7 +262,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
             bigramWords.add(bigram);
             final int bigramProbability = random.nextInt(0xF);
             bigramProbabilities.put(bigram, bigramProbability);
-            addBigramWords(binaryDictionary, word0, word1, bigramProbability);
+            binaryDictionary.addBigramWords(word0, word1, bigramProbability);
         }
 
         for (final Pair<String, String> bigram : bigramWords) {
@@ -328,13 +278,9 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     }
 
     public void testRemoveBigramWords() {
-        testRemoveBigramWords(FormatSpec.VERSION4);
-    }
-
-    private void testRemoveBigramWords(final int formatVersion) {
         File dictFile = null;
         try {
-            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary", formatVersion);
+            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary");
         } catch (IOException e) {
             fail("IOException while writing an initial dictionary : " + e);
         }
@@ -343,13 +289,13 @@ public class BinaryDictionaryTests extends AndroidTestCase {
                 Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
         final int unigramProbability = 100;
         final int bigramProbability = 10;
-        addUnigramWord(binaryDictionary, "aaa", unigramProbability);
-        addUnigramWord(binaryDictionary, "abb", unigramProbability);
-        addUnigramWord(binaryDictionary, "bcc", unigramProbability);
-        addBigramWords(binaryDictionary, "aaa", "abb", bigramProbability);
-        addBigramWords(binaryDictionary, "aaa", "bcc", bigramProbability);
-        addBigramWords(binaryDictionary, "abb", "aaa", bigramProbability);
-        addBigramWords(binaryDictionary, "abb", "bcc", bigramProbability);
+        binaryDictionary.addUnigramWord("aaa", unigramProbability);
+        binaryDictionary.addUnigramWord("abb", unigramProbability);
+        binaryDictionary.addUnigramWord("bcc", unigramProbability);
+        binaryDictionary.addBigramWords("aaa", "abb", bigramProbability);
+        binaryDictionary.addBigramWords("aaa", "bcc", bigramProbability);
+        binaryDictionary.addBigramWords("abb", "aaa", bigramProbability);
+        binaryDictionary.addBigramWords("abb", "bcc", bigramProbability);
 
         assertEquals(true, binaryDictionary.isValidBigram("aaa", "abb"));
         assertEquals(true, binaryDictionary.isValidBigram("aaa", "bcc"));
@@ -358,7 +304,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
 
         binaryDictionary.removeBigramWords("aaa", "abb");
         assertEquals(false, binaryDictionary.isValidBigram("aaa", "abb"));
-        addBigramWords(binaryDictionary, "aaa", "abb", bigramProbability);
+        binaryDictionary.addBigramWords("aaa", "abb", bigramProbability);
         assertEquals(true, binaryDictionary.isValidBigram("aaa", "abb"));
 
 
@@ -378,13 +324,9 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     }
 
     public void testFlushDictionary() {
-        testFlushDictionary(FormatSpec.VERSION4);
-    }
-
-    private void testFlushDictionary(final int formatVersion) {
         File dictFile = null;
         try {
-            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary", formatVersion);
+            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary");
         } catch (IOException e) {
             fail("IOException while writing an initial dictionary : " + e);
         }
@@ -393,8 +335,8 @@ public class BinaryDictionaryTests extends AndroidTestCase {
                 Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
 
         final int probability = 100;
-        addUnigramWord(binaryDictionary, "aaa", probability);
-        addUnigramWord(binaryDictionary, "abcd", probability);
+        binaryDictionary.addUnigramWord("aaa", probability);
+        binaryDictionary.addUnigramWord("abcd", probability);
         // Close without flushing.
         binaryDictionary.close();
 
@@ -405,8 +347,8 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         assertEquals(Dictionary.NOT_A_PROBABILITY, binaryDictionary.getFrequency("aaa"));
         assertEquals(Dictionary.NOT_A_PROBABILITY, binaryDictionary.getFrequency("abcd"));
 
-        addUnigramWord(binaryDictionary, "aaa", probability);
-        addUnigramWord(binaryDictionary, "abcd", probability);
+        binaryDictionary.addUnigramWord("aaa", probability);
+        binaryDictionary.addUnigramWord("abcd", probability);
         binaryDictionary.flush();
         binaryDictionary.close();
 
@@ -416,7 +358,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
 
         assertEquals(probability, binaryDictionary.getFrequency("aaa"));
         assertEquals(probability, binaryDictionary.getFrequency("abcd"));
-        addUnigramWord(binaryDictionary, "bcde", probability);
+        binaryDictionary.addUnigramWord("bcde", probability);
         binaryDictionary.flush();
         binaryDictionary.close();
 
@@ -430,13 +372,9 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     }
 
     public void testFlushWithGCDictionary() {
-        testFlushWithGCDictionary(FormatSpec.VERSION4);
-    }
-
-    private void testFlushWithGCDictionary(final int formatVersion) {
         File dictFile = null;
         try {
-            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary", formatVersion);
+            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary");
         } catch (IOException e) {
             fail("IOException while writing an initial dictionary : " + e);
         }
@@ -446,13 +384,13 @@ public class BinaryDictionaryTests extends AndroidTestCase {
 
         final int unigramProbability = 100;
         final int bigramProbability = 10;
-        addUnigramWord(binaryDictionary, "aaa", unigramProbability);
-        addUnigramWord(binaryDictionary, "abb", unigramProbability);
-        addUnigramWord(binaryDictionary, "bcc", unigramProbability);
-        addBigramWords(binaryDictionary, "aaa", "abb", bigramProbability);
-        addBigramWords(binaryDictionary, "aaa", "bcc", bigramProbability);
-        addBigramWords(binaryDictionary, "abb", "aaa", bigramProbability);
-        addBigramWords(binaryDictionary, "abb", "bcc", bigramProbability);
+        binaryDictionary.addUnigramWord("aaa", unigramProbability);
+        binaryDictionary.addUnigramWord("abb", unigramProbability);
+        binaryDictionary.addUnigramWord("bcc", unigramProbability);
+        binaryDictionary.addBigramWords("aaa", "abb", bigramProbability);
+        binaryDictionary.addBigramWords("aaa", "bcc", bigramProbability);
+        binaryDictionary.addBigramWords("abb", "aaa", bigramProbability);
+        binaryDictionary.addBigramWords("abb", "bcc", bigramProbability);
         binaryDictionary.flushWithGC();
         binaryDictionary.close();
 
@@ -477,12 +415,8 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         dictFile.delete();
     }
 
-    public void testAddBigramWordsAndFlashWithGC() {
-        testAddBigramWordsAndFlashWithGC(FormatSpec.VERSION4);
-    }
-
     // TODO: Evaluate performance of GC
-    private void testAddBigramWordsAndFlashWithGC(final int formatVersion) {
+    public void testAddBigramWordsAndFlashWithGC() {
         final int wordCount = 100;
         final int bigramCount = 1000;
         final int codePointSetSize = 30;
@@ -491,7 +425,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
 
         File dictFile = null;
         try {
-            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary", formatVersion);
+            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary");
         } catch (IOException e) {
             fail("IOException while writing an initial dictionary : " + e);
         }
@@ -512,7 +446,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
             words.add(word);
             final int unigramProbability = random.nextInt(0xFF);
             unigramProbabilities.put(word, unigramProbability);
-            addUnigramWord(binaryDictionary, word, unigramProbability);
+            binaryDictionary.addUnigramWord(word, unigramProbability);
         }
 
         for (int i = 0; i < bigramCount; i++) {
@@ -525,7 +459,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
             bigramWords.add(bigram);
             final int bigramProbability = random.nextInt(0xF);
             bigramProbabilities.put(bigram, bigramProbability);
-            addBigramWords(binaryDictionary, word0, word1, bigramProbability);
+            binaryDictionary.addBigramWords(word0, word1, bigramProbability);
         }
 
         binaryDictionary.flushWithGC();
@@ -546,11 +480,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         dictFile.delete();
     }
 
-    public void testRandomOperationsAndFlashWithGC() {
-        testRandomOperationsAndFlashWithGC(FormatSpec.VERSION4);
-    }
-
-    private void testRandomOperationsAndFlashWithGC(final int formatVersion) {
+    public void testRandomOperetionsAndFlashWithGC() {
         final int flashWithGCIterationCount = 50;
         final int operationCountInEachIteration = 200;
         final int initialUnigramCount = 100;
@@ -564,7 +494,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
 
         File dictFile = null;
         try {
-            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary", formatVersion);
+            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary");
         } catch (IOException e) {
             fail("IOException while writing an initial dictionary : " + e);
         }
@@ -583,7 +513,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
             words.add(word);
             final int unigramProbability = random.nextInt(0xFF);
             unigramProbabilities.put(word, unigramProbability);
-            addUnigramWord(binaryDictionary, word, unigramProbability);
+            binaryDictionary.addUnigramWord(word, unigramProbability);
         }
         binaryDictionary.flushWithGC();
         binaryDictionary.close();
@@ -599,7 +529,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
                     words.add(word);
                     final int unigramProbability = random.nextInt(0xFF);
                     unigramProbabilities.put(word, unigramProbability);
-                    addUnigramWord(binaryDictionary, word, unigramProbability);
+                    binaryDictionary.addUnigramWord(word, unigramProbability);
                 }
                 // Add bigram.
                 if (random.nextFloat() < addBigramProb && words.size() > 2) {
@@ -617,7 +547,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
                     final Pair<String, String> bigram = new Pair<String, String>(word0, word1);
                     bigramWords.add(bigram);
                     bigramProbabilities.put(bigram, bigramProbability);
-                    addBigramWords(binaryDictionary, word0, word1, bigramProbability);
+                    binaryDictionary.addBigramWords(word0, word1, bigramProbability);
                 }
                 // Remove bigram.
                 if (random.nextFloat() < removeBigramProb && !bigramWords.isEmpty()) {
@@ -658,10 +588,6 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     }
 
     public void testAddManyUnigramsAndFlushWithGC() {
-        testAddManyUnigramsAndFlushWithGC(FormatSpec.VERSION4);
-    }
-
-    private void testAddManyUnigramsAndFlushWithGC(final int formatVersion) {
         final int flashWithGCIterationCount = 3;
         final int codePointSetSize = 50;
 
@@ -670,7 +596,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
 
         File dictFile = null;
         try {
-            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary", formatVersion);
+            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary");
         } catch (IOException e) {
             fail("IOException while writing an initial dictionary : " + e);
         }
@@ -689,7 +615,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
                 words.add(word);
                 final int unigramProbability = random.nextInt(0xFF);
                 unigramProbabilities.put(word, unigramProbability);
-                addUnigramWord(binaryDictionary, word, unigramProbability);
+                binaryDictionary.addUnigramWord(word, unigramProbability);
             }
 
             for (int j = 0; j < words.size(); j++) {
@@ -706,10 +632,6 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     }
 
     public void testUnigramAndBigramCount() {
-        testUnigramAndBigramCount(FormatSpec.VERSION4);
-    }
-
-    private void testUnigramAndBigramCount(final int formatVersion) {
         final int flashWithGCIterationCount = 10;
         final int codePointSetSize = 50;
         final int unigramCountPerIteration = 1000;
@@ -719,7 +641,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
 
         File dictFile = null;
         try {
-            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary", formatVersion);
+            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary");
         } catch (IOException e) {
             fail("IOException while writing an initial dictionary : " + e);
         }
@@ -737,7 +659,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
                 final String word = CodePointUtils.generateWord(random, codePointSet);
                 words.add(word);
                 final int unigramProbability = random.nextInt(0xFF);
-                addUnigramWord(binaryDictionary, word, unigramProbability);
+                binaryDictionary.addUnigramWord(word, unigramProbability);
             }
             for (int j = 0; j < bigramCountPerIteration; j++) {
                 final String word0 = words.get(random.nextInt(words.size()));
@@ -747,7 +669,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
                 }
                 bigrams.add(new Pair<String, String>(word0, word1));
                 final int bigramProbability = random.nextInt(0xF);
-                addBigramWords(binaryDictionary, word0, word1, bigramProbability);
+                binaryDictionary.addBigramWords(word0, word1, bigramProbability);
             }
             assertEquals(new HashSet<String>(words).size(), Integer.parseInt(
                     binaryDictionary.getPropertyForTests(BinaryDictionary.UNIGRAM_COUNT_QUERY)));
@@ -762,243 +684,5 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         }
 
         dictFile.delete();
-    }
-
-    public void testAddMultipleDictionaryEntries() {
-        testAddMultipleDictionaryEntries(FormatSpec.VERSION4);
-    }
-
-    private void testAddMultipleDictionaryEntries(final int formatVersion) {
-        final int codePointSetSize = 20;
-        final int lmParamCount = 1000;
-        final double bigramContinueRate = 0.9;
-        final long seed = System.currentTimeMillis();
-        final Random random = new Random(seed);
-
-        File dictFile = null;
-        try {
-            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary", formatVersion);
-        } catch (IOException e) {
-            fail("IOException while writing an initial dictionary : " + e);
-        }
-
-        final int[] codePointSet = CodePointUtils.generateCodePointSet(codePointSetSize, random);
-        final HashMap<String, Integer> unigramProbabilities = new HashMap<String, Integer>();
-        final HashMap<Pair<String, String>, Integer> bigramProbabilities =
-                new HashMap<Pair<String, String>, Integer>();
-
-        final LanguageModelParam[] languageModelParams = new LanguageModelParam[lmParamCount];
-        String prevWord = null;
-        for (int i = 0; i < languageModelParams.length; i++) {
-            final String word = CodePointUtils.generateWord(random, codePointSet);
-            final int probability = random.nextInt(0xFF);
-            final int bigramProbability = random.nextInt(0xF);
-            unigramProbabilities.put(word, probability);
-            if (prevWord == null) {
-                languageModelParams[i] = new LanguageModelParam(word, probability,
-                        BinaryDictionary.NOT_A_VALID_TIMESTAMP);
-            } else {
-                languageModelParams[i] = new LanguageModelParam(prevWord, word, probability,
-                        bigramProbability, BinaryDictionary.NOT_A_VALID_TIMESTAMP);
-                bigramProbabilities.put(new Pair<String, String>(prevWord, word),
-                        bigramProbability);
-            }
-            prevWord = (random.nextDouble() < bigramContinueRate) ? word : null;
-        }
-
-        final BinaryDictionary binaryDictionary = new BinaryDictionary(dictFile.getAbsolutePath(),
-                0 /* offset */, dictFile.length(), true /* useFullEditDistance */,
-                Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
-        binaryDictionary.addMultipleDictionaryEntries(languageModelParams);
-
-        for (Map.Entry<String, Integer> entry : unigramProbabilities.entrySet()) {
-            assertEquals((int)entry.getValue(), binaryDictionary.getFrequency(entry.getKey()));
-        }
-
-        for (Map.Entry<Pair<String, String>, Integer> entry : bigramProbabilities.entrySet()) {
-            final String word0 = entry.getKey().first;
-            final String word1 = entry.getKey().second;
-            final int unigramProbability = unigramProbabilities.get(word1);
-            final int bigramProbability = entry.getValue();
-            final int probability = binaryDictionary.calculateProbability(
-                    unigramProbability, bigramProbability);
-            assertEquals(probability, binaryDictionary.getBigramProbability(word0, word1));
-        }
-    }
-
-    public void testGetUnigramProperties() {
-        testGetUnigramProperties(FormatSpec.VERSION4);
-    }
-
-    private void testGetUnigramProperties(final int formatVersion) {
-        final long seed = System.currentTimeMillis();
-        final Random random = new Random(seed);
-        final int ITERATION_COUNT = 1000;
-        final int codePointSetSize = 20;
-        final int[] codePointSet = CodePointUtils.generateCodePointSet(codePointSetSize, random);
-
-        File dictFile = null;
-        try {
-            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary", formatVersion);
-        } catch (IOException e) {
-            fail("IOException while writing an initial dictionary : " + e);
-        }
-        final BinaryDictionary binaryDictionary = new BinaryDictionary(dictFile.getAbsolutePath(),
-                0 /* offset */, dictFile.length(), true /* useFullEditDistance */,
-                Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
-
-        final UnigramProperty invalidUnigramProperty =
-                binaryDictionary.getUnigramProperty("dummyWord");
-        assertFalse(invalidUnigramProperty.isValid());
-
-        for (int i = 0; i < ITERATION_COUNT; i++) {
-            final String word = CodePointUtils.generateWord(random, codePointSet);
-            final int unigramProbability = random.nextInt(0xFF);
-            final boolean isNotAWord = random.nextBoolean();
-            final boolean isBlacklisted = random.nextBoolean();
-            // TODO: Add tests for historical info.
-            binaryDictionary.addUnigramWord(word, unigramProbability,
-                    null /* shortcutTarget */, BinaryDictionary.NOT_A_PROBABILITY,
-                    isNotAWord, isBlacklisted, BinaryDictionary.NOT_A_VALID_TIMESTAMP);
-            final UnigramProperty unigramProperty =
-                    binaryDictionary.getUnigramProperty(word);
-            assertEquals(word, unigramProperty.mCodePoints);
-            assertTrue(unigramProperty.isValid());
-            assertEquals(isNotAWord, unigramProperty.mIsNotAWord);
-            assertEquals(isBlacklisted, unigramProperty.mIsBlacklisted);
-            assertEquals(false, unigramProperty.mHasBigrams);
-            assertEquals(false, unigramProperty.mHasShortcuts);
-            assertEquals(unigramProbability, unigramProperty.mProbability);
-            assertTrue(unigramProperty.mShortcutTargets.isEmpty());
-        }
-    }
-
-    public void testAddShortcuts() {
-        testAddShortcuts(FormatSpec.VERSION4);
-    }
-
-    private void testAddShortcuts(final int formatVersion) {
-        File dictFile = null;
-        try {
-            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary", formatVersion);
-        } catch (IOException e) {
-            fail("IOException while writing an initial dictionary : " + e);
-        }
-        final BinaryDictionary binaryDictionary = new BinaryDictionary(dictFile.getAbsolutePath(),
-                0 /* offset */, dictFile.length(), true /* useFullEditDistance */,
-                Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
-
-        final int unigramProbability = 100;
-        final int shortcutProbability = 10;
-        binaryDictionary.addUnigramWord("aaa", unigramProbability, "zzz",
-                shortcutProbability, false /* isNotAWord */, false /* isBlacklisted */,
-                0 /* timestamp */);
-        UnigramProperty unigramProperty = binaryDictionary.getUnigramProperty("aaa");
-        assertEquals(1, unigramProperty.mShortcutTargets.size());
-        assertEquals("zzz", unigramProperty.mShortcutTargets.get(0).mWord);
-        assertEquals(shortcutProbability, unigramProperty.mShortcutTargets.get(0).mFrequency);
-        final int updatedShortcutProbability = 2;
-        binaryDictionary.addUnigramWord("aaa", unigramProbability, "zzz",
-                updatedShortcutProbability, false /* isNotAWord */, false /* isBlacklisted */,
-                0 /* timestamp */);
-        unigramProperty = binaryDictionary.getUnigramProperty("aaa");
-        assertEquals(1, unigramProperty.mShortcutTargets.size());
-        assertEquals("zzz", unigramProperty.mShortcutTargets.get(0).mWord);
-        assertEquals(updatedShortcutProbability,
-                unigramProperty.mShortcutTargets.get(0).mFrequency);
-        binaryDictionary.addUnigramWord("aaa", unigramProbability, "yyy",
-                shortcutProbability, false /* isNotAWord */, false /* isBlacklisted */,
-                0 /* timestamp */);
-        final HashMap<String, Integer> shortcutTargets = new HashMap<String, Integer>();
-        shortcutTargets.put("zzz", updatedShortcutProbability);
-        shortcutTargets.put("yyy", shortcutProbability);
-        unigramProperty = binaryDictionary.getUnigramProperty("aaa");
-        assertEquals(2, unigramProperty.mShortcutTargets.size());
-        for (WeightedString shortcutTarget : unigramProperty.mShortcutTargets) {
-            assertTrue(shortcutTargets.containsKey(shortcutTarget.mWord));
-            assertEquals((int)shortcutTargets.get(shortcutTarget.mWord), shortcutTarget.mFrequency);
-            shortcutTargets.remove(shortcutTarget.mWord);
-        }
-        shortcutTargets.put("zzz", updatedShortcutProbability);
-        shortcutTargets.put("yyy", shortcutProbability);
-        binaryDictionary.flushWithGC();
-        unigramProperty = binaryDictionary.getUnigramProperty("aaa");
-        assertEquals(2, unigramProperty.mShortcutTargets.size());
-        for (WeightedString shortcutTarget : unigramProperty.mShortcutTargets) {
-            assertTrue(shortcutTargets.containsKey(shortcutTarget.mWord));
-            assertEquals((int)shortcutTargets.get(shortcutTarget.mWord), shortcutTarget.mFrequency);
-            shortcutTargets.remove(shortcutTarget.mWord);
-        }
-    }
-
-    public void testAddManyShortcuts() {
-        testAddManyShortcuts(FormatSpec.VERSION4);
-    }
-
-    private void testAddManyShortcuts(final int formatVersion) {
-        final long seed = System.currentTimeMillis();
-        final Random random = new Random(seed);
-        final int UNIGRAM_COUNT = 1000;
-        final int SHORTCUT_COUNT = 10000;
-        final int codePointSetSize = 20;
-        final int[] codePointSet = CodePointUtils.generateCodePointSet(codePointSetSize, random);
-
-        final ArrayList<String> words = new ArrayList<String>();
-        final HashMap<String, Integer> unigramProbabilities = new HashMap<String, Integer>();
-        final HashMap<String, HashMap<String, Integer>> shortcutTargets =
-                new HashMap<String, HashMap<String, Integer>>();
-
-        File dictFile = null;
-        try {
-            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary", formatVersion);
-        } catch (IOException e) {
-            fail("IOException while writing an initial dictionary : " + e);
-        }
-        final BinaryDictionary binaryDictionary = new BinaryDictionary(dictFile.getAbsolutePath(),
-                0 /* offset */, dictFile.length(), true /* useFullEditDistance */,
-                Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
-
-        for (int i = 0; i < UNIGRAM_COUNT; i++) {
-            final String word = CodePointUtils.generateWord(random, codePointSet);
-            final int unigramProbability = random.nextInt(0xFF);
-            addUnigramWord(binaryDictionary, word, unigramProbability);
-            words.add(word);
-            unigramProbabilities.put(word, unigramProbability);
-            if (binaryDictionary.needsToRunGC(true /* mindsBlockByGC */)) {
-                binaryDictionary.flushWithGC();
-            }
-        }
-        for (int i = 0; i < SHORTCUT_COUNT; i++) {
-            final String shortcutTarget = CodePointUtils.generateWord(random, codePointSet);
-            final int shortcutProbability = random.nextInt(0xF);
-            final String word = words.get(random.nextInt(words.size()));
-            final int unigramProbability = unigramProbabilities.get(word);
-            binaryDictionary.addUnigramWord(word, unigramProbability, shortcutTarget,
-                    shortcutProbability, false /* isNotAWord */, false /* isBlacklisted */,
-                    0 /* timestamp */);
-            if (shortcutTargets.containsKey(word)) {
-                final HashMap<String, Integer> shortcutTargetsOfWord = shortcutTargets.get(word);
-                shortcutTargetsOfWord.put(shortcutTarget, shortcutProbability);
-            } else {
-                final HashMap<String, Integer> shortcutTargetsOfWord =
-                        new HashMap<String, Integer>();
-                shortcutTargetsOfWord.put(shortcutTarget, shortcutProbability);
-                shortcutTargets.put(word, shortcutTargetsOfWord);
-            }
-            if (binaryDictionary.needsToRunGC(true /* mindsBlockByGC */)) {
-                binaryDictionary.flushWithGC();
-            }
-        }
-
-        for (final String word : words) {
-            final UnigramProperty unigramProperty = binaryDictionary.getUnigramProperty(word);
-            assertEquals((int)unigramProbabilities.get(word), unigramProperty.mProbability);
-            assertEquals(shortcutTargets.get(word).size(), unigramProperty.mShortcutTargets.size());
-            for (final WeightedString shortcutTarget : unigramProperty.mShortcutTargets) {
-                final String targetCodePonts = shortcutTarget.mWord;
-                assertEquals((int)shortcutTargets.get(word).get(targetCodePonts),
-                        shortcutTarget.mFrequency);
-            }
-        }
     }
 }

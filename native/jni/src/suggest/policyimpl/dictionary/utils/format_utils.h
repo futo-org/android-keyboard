@@ -29,10 +29,9 @@ namespace latinime {
 class FormatUtils {
  public:
     enum FORMAT_VERSION {
-        // These MUST have the same values as the relevant constants in FormatSpec.java.
-        VERSION_2 = 2,
-        VERSION_4 = 400,
-        UNKNOWN_VERSION = -1
+        VERSION_2,
+        VERSION_3,
+        UNKNOWN_VERSION
     };
 
     // 32 bit magic number is stored at the beginning of the dictionary header to reject

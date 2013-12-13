@@ -117,6 +117,12 @@
     <string name="keyboard_mode_time" msgid="4381856885582143277">"เวลา"</string>
     <string name="keyboard_mode_url" msgid="1519819835514911218">"URL"</string>
     <string name="voice_input" msgid="3583258583521397548">"แป้นการป้อนข้อมูลด้วยเสียง"</string>
+    <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"บนแป้นพิมพ์หลัก"</string>
+    <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"บนแป้นพิมพ์สัญลักษณ์"</string>
+    <string name="voice_input_modes_off" msgid="3745699748218082014">"ปิด"</string>
+    <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"ไมค์บนแป้นพิมพ์หลัก"</string>
+    <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"ไมค์บนแป้นพิมพ์สัญลักษณ์"</string>
+    <string name="voice_input_modes_summary_off" msgid="63875609591897607">"ปิดใช้งานป้อนข้อมูลด้วยเสียง"</string>
     <string name="configure_input_method" msgid="373356270290742459">"กำหนดค่าวิธีการป้อนข้อมูล"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"ภาษาในการป้อนข้อมูล"</string>
     <string name="send_feedback" msgid="1780431884109392046">"ส่งข้อเสนอแนะ"</string>

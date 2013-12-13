@@ -27,13 +27,15 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
-abstract public class AbstractDictionaryWriter {
+// TODO: Quit extending Dictionary after implementing dynamic binary dictionary.
+abstract public class AbstractDictionaryWriter extends Dictionary {
     /** Used for Log actions from this class */
     private static final String TAG = AbstractDictionaryWriter.class.getSimpleName();
 
     private final Context mContext;
 
-    public AbstractDictionaryWriter(final Context context) {
+    public AbstractDictionaryWriter(final Context context, final String dictType) {
+        super(dictType);
         mContext = context;
     }
 
@@ -53,16 +55,18 @@ abstract public class AbstractDictionaryWriter {
 
     // TODO: Remove lastModifiedTime after making binary dictionary support forgetting curve.
     abstract public void addBigramWords(final String word0, final String word1,
-            final int frequency, final boolean isValid, final long lastModifiedTime);
+            final int frequency, final boolean isValid,
+            final long lastModifiedTime);
 
     abstract public void removeBigramWords(final String word0, final String word1);
 
     abstract protected void writeDictionary(final DictEncoder dictEncoder,
             final Map<String, String> attributeMap) throws IOException, UnsupportedFormatException;
 
-    public void write(final File file, final Map<String, String> attributeMap) {
-        final String tempFilePath = file.getAbsolutePath() + ".temp";
-        final File tempFile = new File(tempFilePath);
+    public void write(final String fileName, final Map<String, String> attributeMap) {
+        final String tempFileName = fileName + ".temp";
+        final File file = new File(mContext.getFilesDir(), fileName);
+        final File tempFile = new File(mContext.getFilesDir(), tempFileName);
         try {
             final DictEncoder dictEncoder = new Ver3DictEncoder(tempFile);
             writeDictionary(dictEncoder, attributeMap);

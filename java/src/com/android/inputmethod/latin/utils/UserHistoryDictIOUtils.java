@@ -70,11 +70,10 @@ public final class UserHistoryDictIOUtils {
     /**
      * Writes dictionary to file.
      */
-    @UsedForTesting
     public static void writeDictionary(final DictEncoder dictEncoder,
             final BigramDictionaryInterface dict, final UserHistoryDictionaryBigramList bigrams,
-            final FormatOptions formatOptions, final HashMap<String, String> options) {
-        final FusionDictionary fusionDict = constructFusionDictionary(dict, bigrams, options);
+            final FormatOptions formatOptions) {
+        final FusionDictionary fusionDict = constructFusionDictionary(dict, bigrams);
         fusionDict.addOptionAttribute(USES_FORGETTING_CURVE_KEY, USES_FORGETTING_CURVE_VALUE);
         fusionDict.addOptionAttribute(LAST_UPDATED_TIME_KEY,
                 String.valueOf(TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis())));
@@ -92,10 +91,11 @@ public final class UserHistoryDictIOUtils {
      * Constructs a new FusionDictionary from BigramDictionaryInterface.
      */
     @UsedForTesting
-    static FusionDictionary constructFusionDictionary(final BigramDictionaryInterface dict,
-            final UserHistoryDictionaryBigramList bigrams, final HashMap<String, String> options) {
+    static FusionDictionary constructFusionDictionary(
+            final BigramDictionaryInterface dict, final UserHistoryDictionaryBigramList bigrams) {
         final FusionDictionary fusionDict = new FusionDictionary(new PtNodeArray(),
-                new FusionDictionary.DictionaryOptions(options));
+                new FusionDictionary.DictionaryOptions(new HashMap<String, String>(), false,
+                        false));
         int profTotal = 0;
         for (final String word1 : bigrams.keySet()) {
             final HashMap<String, Byte> word1Bigrams = bigrams.getBigrams(word1);

@@ -35,7 +35,6 @@ import java.util.TreeMap;
 /**
  * An interface of binary dictionary decoders.
  */
-// TODO: Straighten out responsibility for the buffer's file pointer.
 public interface DictDecoder {
 
     /**
@@ -44,7 +43,7 @@ public interface DictDecoder {
     public FileHeader readHeader() throws IOException, UnsupportedFormatException;
 
     /**
-     * Reads PtNode from ptNodePos.
+     * Reads PtNode from nodeAddress.
      * @param ptNodePos the position of PtNode.
      * @param formatOptions the format options.
      * @return PtNodeInfo.
@@ -128,8 +127,7 @@ public interface DictDecoder {
      * Opens the dictionary file and makes DictBuffer.
      */
     @UsedForTesting
-    public void openDictBuffer() throws FileNotFoundException, IOException,
-            UnsupportedFormatException;
+    public void openDictBuffer() throws FileNotFoundException, IOException;
     @UsedForTesting
     public boolean isDictBufferOpen();
 
@@ -230,9 +228,4 @@ public interface DictDecoder {
     }
 
     public void skipPtNode(final FormatOptions formatOptions);
-
-    /**
-     * @return whether this decoder has a valid binary dictionary that it can decode.
-     */
-    public boolean hasValidRawBinaryDictionary();
 }

@@ -18,76 +18,28 @@
 */
 -->
 
-<!-- Configuration values for Large Tablet Portrait. -->
 <resources>
-    <!-- Preferable keyboard height in absolute scale: 48.0mm -->
-    <!-- This config_default_keyboard_height value should match with keyboard-heights.xml -->
-    <dimen name="config_default_keyboard_height">302.4dp</dimen>
-    <fraction name="config_max_keyboard_height">46%p</fraction>
-    <fraction name="config_min_keyboard_height">-35.0%p</fraction>
-
-    <fraction name="config_keyboard_top_padding_gb">2.291%p</fraction>
-    <fraction name="config_keyboard_bottom_padding_gb">0.0%p</fraction>
-    <fraction name="config_key_vertical_gap_gb">4.687%p</fraction>
-    <fraction name="config_key_horizontal_gap_gb">1.272%p</fraction>
-    <!-- config_more_keys_keyboard_key_height x -1.0 -->
-    <dimen name="config_more_keys_keyboard_vertical_correction_gb">-81.9dp</dimen>
-    <dimen name="config_key_preview_offset_gb">16.0dp</dimen>
-
-    <fraction name="config_keyboard_top_padding_holo">2.335%p</fraction>
-    <fraction name="config_keyboard_bottom_padding_holo">0.0%p</fraction>
-    <fraction name="config_key_vertical_gap_holo">3.312%p</fraction>
-    <fraction name="config_key_horizontal_gap_holo">1.066%p</fraction>
-    <!-- config_more_keys_keyboard_key_height x -0.5 -->
-    <dimen name="config_more_keys_keyboard_vertical_correction_holo">-31.5dp</dimen>
-    <dimen name="config_key_preview_offset_holo">8.0dp</dimen>
-
-    <dimen name="config_more_keys_keyboard_key_height">63.0dp</dimen>
-    <dimen name="config_more_keys_keyboard_key_horizontal_padding">12dp</dimen>
-    <!-- Amount of allowance for selecting keys in a mini popup keyboard by sliding finger. -->
-    <!-- config_more_keys_keyboard_key_height x 1.2 -->
-    <dimen name="config_more_keys_keyboard_slide_allowance">98.3dp</dimen>
-
-    <dimen name="config_key_preview_height">94.5dp</dimen>
-    <fraction name="config_key_preview_text_ratio">50%</fraction>
-    <fraction name="config_key_letter_ratio">40%</fraction>
-    <fraction name="config_key_large_letter_ratio">42%</fraction>
-    <fraction name="config_key_label_ratio">28%</fraction>
-    <fraction name="config_key_large_label_ratio">28%</fraction>
-    <fraction name="config_key_hint_letter_ratio">23%</fraction>
-    <fraction name="config_key_hint_label_ratio">28%</fraction>
-    <fraction name="config_key_shifted_letter_hint_ratio">26%</fraction>
-    <fraction name="config_language_on_spacebar_text_ratio">29.03%</fraction>
-    <!-- left or right padding of label alignment -->
-    <dimen name="config_key_label_horizontal_padding">6dp</dimen>
-    <dimen name="config_key_hint_letter_padding">3dp</dimen>
-    <dimen name="config_key_shifted_letter_hint_padding">3dp</dimen>
-
-    <!-- For 5-row keyboard -->
-    <fraction name="config_key_vertical_gap_5row">2.95%p</fraction>
-    <fraction name="config_key_letter_ratio_5row">51%</fraction>
-    <fraction name="config_key_shifted_letter_hint_ratio_5row">33%</fraction>
-
-    <dimen name="config_suggestions_strip_height">44dp</dimen>
-    <dimen name="config_more_suggestions_row_height">44dp</dimen>
-    <integer name="config_max_more_suggestions_row">6</integer>
-    <fraction name="config_min_more_suggestions_width">90%</fraction>
-    <dimen name="config_suggestions_strip_horizontal_padding">94.5dp</dimen>
-    <dimen name="config_suggestion_min_width">46dp</dimen>
-    <dimen name="config_suggestion_text_horizontal_padding">8dp</dimen>
-    <dimen name="config_suggestion_text_size">22dp</dimen>
-    <dimen name="config_more_suggestions_hint_text_size">33dp</dimen>
-
-    <!-- Gesture floating preview text parameters -->
-    <dimen name="config_gesture_floating_preview_text_size">26dp</dimen>
-    <dimen name="config_gesture_floating_preview_text_offset">86dp</dimen>
-    <dimen name="config_gesture_floating_preview_horizontal_padding">26dp</dimen>
-    <dimen name="config_gesture_floating_preview_vertical_padding">17dp</dimen>
-    <dimen name="config_gesture_floating_preview_round_radius">3dp</dimen>
-
-    <!-- Emoji keyboard -->
-    <fraction name="config_emoji_keyboard_key_width">10%p</fraction>
-    <fraction name="config_emoji_keyboard_row_height">33%p</fraction>
-    <fraction name="config_emoji_keyboard_key_letter_size">68%p</fraction>
-    <integer name="config_emoji_keyboard_max_page_key_count">30</integer>
+    <bool name="config_enable_show_voice_key_option">false</bool>
+    <bool name="config_enable_show_option_of_key_preview_popup">false</bool>
+    <bool name="config_enable_bigram_suggestions_option">false</bool>
+    <!-- Whether or not Popup on key press is enabled by default -->
+    <bool name="config_default_key_preview_popup">false</bool>
+    <bool name="config_default_sound_enabled">true</bool>
+    <bool name="config_auto_correction_spacebar_led_enabled">false</bool>
+    <integer name="config_max_more_keys_column">5</integer>
+    <!--
+        Configuration for MainKeyboardView
+    -->
+    <bool name="config_sliding_key_input_enabled">false</bool>
+    <!-- Showing more keys keyboard, just above the touched point if true, aligned to the key if
+         false -->
+    <bool name="config_show_more_keys_keyboard_at_touched_point">true</bool>
+    <!--  Screen metrics for logging.
+            0 = "mdpi phone screen"
+            1 = "hdpi phone screen"
+            2 = "mdpi 11 inch tablet screen"
+            3 = "xhdpi phone screen?"
+            4 = ?
+    -->
+    <integer name="log_screen_metrics">2</integer>
 </resources>

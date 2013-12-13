@@ -52,7 +52,8 @@ public final class InputAttributes {
             } else if (inputClass == 0) {
                 // TODO: is this check still necessary?
                 Log.w(TAG, String.format("Unexpected input class: inputType=0x%08x"
-                        + " imeOptions=0x%08x", inputType, editorInfo.imeOptions));
+                        + " imeOptions=0x%08x",
+                        inputType, editorInfo.imeOptions));
             }
             mIsSettingsSuggestionStripOn = false;
             mInputTypeNoAutoCorrect = false;
@@ -203,7 +204,8 @@ public final class InputAttributes {
     public static boolean inPrivateImeOptions(String packageName, String key,
             EditorInfo editorInfo) {
         if (editorInfo == null) return false;
-        final String findingKey = (packageName != null) ? packageName + "." + key : key;
+        final String findingKey = (packageName != null) ? packageName + "." + key
+                : key;
         return StringUtils.containsInCommaSplittableText(findingKey, editorInfo.privateImeOptions);
     }
 }

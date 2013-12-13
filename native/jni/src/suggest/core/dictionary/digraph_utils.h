@@ -34,6 +34,7 @@ class DigraphUtils {
     typedef enum {
         DIGRAPH_TYPE_NONE,
         DIGRAPH_TYPE_GERMAN_UMLAUT,
+        DIGRAPH_TYPE_FRENCH_LIGATURES
     } DigraphType;
 
     typedef struct { int first; int second; int compositeGlyph; } digraph_t;
@@ -54,6 +55,7 @@ class DigraphUtils {
             const DigraphType digraphType, const int compositeGlyphCodePoint);
 
     static const digraph_t GERMAN_UMLAUT_DIGRAPHS[];
+    static const digraph_t FRENCH_LIGATURES_DIGRAPHS[];
     static const DigraphType USED_DIGRAPH_TYPES[];
 };
 } // namespace latinime

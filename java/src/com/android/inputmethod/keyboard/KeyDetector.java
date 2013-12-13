@@ -81,7 +81,7 @@ public class KeyDetector {
         return mKeyboard;
     }
 
-    public boolean alwaysAllowsKeySelectionByDraggingFinger() {
+    public boolean alwaysAllowsSlidingInput() {
         return false;
     }
 

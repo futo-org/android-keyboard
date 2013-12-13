@@ -117,6 +117,12 @@
     <string name="keyboard_mode_time" msgid="4381856885582143277">"giờ"</string>
     <string name="keyboard_mode_url" msgid="1519819835514911218">"URL"</string>
     <string name="voice_input" msgid="3583258583521397548">"Khóa nhập giọng nói"</string>
+    <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"Trên bàn phím chính"</string>
+    <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"Trên bàn phím biểu tượng"</string>
+    <string name="voice_input_modes_off" msgid="3745699748218082014">"Tắt"</string>
+    <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Micrô trên bàn phím chính"</string>
+    <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Micrô trên bàn phím biểu tượng"</string>
+    <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Nhập liệu bằng giọng nói đã bị tắt"</string>
     <string name="configure_input_method" msgid="373356270290742459">"Định cấu hình phương thức nhập"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Ngôn ngữ nhập"</string>
     <string name="send_feedback" msgid="1780431884109392046">"Gửi phản hồi"</string>

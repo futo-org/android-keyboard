@@ -18,7 +18,6 @@
 #define LATINIME_WEIGHTING_H
 
 #include "defines.h"
-#include "suggest/core/dictionary/error_type_utils.h"
 
 namespace latinime {
 
@@ -85,7 +84,7 @@ class Weighting {
     virtual float getSpaceSubstitutionCost(const DicTraverseSession *const traverseSession,
             const DicNode *const dicNode) const = 0;
 
-    virtual ErrorTypeUtils::ErrorType getErrorType(const CorrectionType correctionType,
+    virtual ErrorType getErrorType(const CorrectionType correctionType,
             const DicTraverseSession *const traverseSession,
             const DicNode *const parentDicNode, const DicNode *const dicNode) const = 0;
 

@@ -21,7 +21,6 @@
 
 #include "defines.h"
 #include "suggest/core/dictionary/digraph_utils.h"
-#include "suggest/core/dictionary/error_type_utils.h"
 
 namespace latinime {
 
@@ -32,7 +31,7 @@ class DicNodeStateScoring {
               mDigraphIndex(DigraphUtils::NOT_A_DIGRAPH_INDEX),
               mEditCorrectionCount(0), mProximityCorrectionCount(0),
               mNormalizedCompoundDistance(0.0f), mSpatialDistance(0.0f), mLanguageDistance(0.0f),
-              mRawLength(0.0f), mContainingErrorTypes(ErrorTypeUtils::NOT_AN_ERROR),
+              mRawLength(0.0f), mExactMatch(true),
               mNormalizedCompoundDistanceAfterFirstWord(MAX_VALUE_FOR_WEIGHTING) {
     }
 
@@ -48,7 +47,7 @@ class DicNodeStateScoring {
         mDoubleLetterLevel = NOT_A_DOUBLE_LETTER;
         mDigraphIndex = DigraphUtils::NOT_A_DIGRAPH_INDEX;
         mNormalizedCompoundDistanceAfterFirstWord = MAX_VALUE_FOR_WEIGHTING;
-        mContainingErrorTypes = ErrorTypeUtils::NOT_AN_ERROR;
+        mExactMatch = true;
     }
 
     AK_FORCE_INLINE void init(const DicNodeStateScoring *const scoring) {
@@ -60,21 +59,34 @@ class DicNodeStateScoring {
         mRawLength = scoring->mRawLength;
         mDoubleLetterLevel = scoring->mDoubleLetterLevel;
         mDigraphIndex = scoring->mDigraphIndex;
-        mContainingErrorTypes = scoring->mContainingErrorTypes;
+        mExactMatch = scoring->mExactMatch;
         mNormalizedCompoundDistanceAfterFirstWord =
                 scoring->mNormalizedCompoundDistanceAfterFirstWord;
     }
 
     void addCost(const float spatialCost, const float languageCost, const bool doNormalization,
-            const int inputSize, const int totalInputIndex,
-            const ErrorTypeUtils::ErrorType errorType) {
+            const int inputSize, const int totalInputIndex, const ErrorType errorType) {
         addDistance(spatialCost, languageCost, doNormalization, inputSize, totalInputIndex);
-        mContainingErrorTypes = mContainingErrorTypes | errorType;
-        if (ErrorTypeUtils::isEditCorrectionError(errorType)) {
-            ++mEditCorrectionCount;
-        }
-        if (ErrorTypeUtils::isProximityCorrectionError(errorType)) {
-            ++mProximityCorrectionCount;
+        switch (errorType) {
+            case ET_EDIT_CORRECTION:
+                ++mEditCorrectionCount;
+                mExactMatch = false;
+                break;
+            case ET_PROXIMITY_CORRECTION:
+                ++mProximityCorrectionCount;
+                mExactMatch = false;
+                break;
+            case ET_COMPLETION:
+                mExactMatch = false;
+                break;
+            case ET_NEW_WORD:
+                mExactMatch = false;
+                break;
+            case ET_INTENTIONAL_OMISSION:
+                mExactMatch = false;
+                break;
+            case ET_NOT_AN_ERROR:
+                break;
         }
     }
 
@@ -170,7 +182,7 @@ class DicNodeStateScoring {
     }
 
     bool isExactMatch() const {
-        return ErrorTypeUtils::isExactMatch(mContainingErrorTypes);
+        return mExactMatch;
     }
 
  private:
@@ -187,8 +199,7 @@ class DicNodeStateScoring {
     float mSpatialDistance;
     float mLanguageDistance;
     float mRawLength;
-    // All accumulated error types so far
-    ErrorTypeUtils::ErrorType mContainingErrorTypes;
+    bool mExactMatch;
     float mNormalizedCompoundDistanceAfterFirstWord;
 
     AK_FORCE_INLINE void addDistance(float spatialDistance, float languageDistance,

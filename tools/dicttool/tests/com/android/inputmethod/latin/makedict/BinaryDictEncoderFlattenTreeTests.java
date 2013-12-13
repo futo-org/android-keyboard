@@ -32,7 +32,8 @@ public class BinaryDictEncoderFlattenTreeTests extends TestCase {
     // that it does not contain any duplicates.
     public void testFlattenNodes() {
         final FusionDictionary dict = new FusionDictionary(new PtNodeArray(),
-                new DictionaryOptions(new HashMap<String, String>()));
+                new DictionaryOptions(new HashMap<String, String>(),
+                        false /* germanUmlautProcessing */, false /* frenchLigatureProcessing */));
         dict.add("foo", 1, null, false /* isNotAWord */);
         dict.add("fta", 1, null, false /* isNotAWord */);
         dict.add("ftb", 1, null, false /* isNotAWord */);

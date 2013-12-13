@@ -32,17 +32,9 @@ namespace latinime {
 // raw pointer but provides several methods that handle boundary checking for writing data.
 class BufferWithExtendableBuffer {
  public:
-    static const size_t DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE;
-
     BufferWithExtendableBuffer(uint8_t *const originalBuffer, const int originalBufferSize,
-            const int maxAdditionalBufferSize)
+            const int maxAdditionalBufferSize = MAX_ADDITIONAL_BUFFER_SIZE)
             : mOriginalBuffer(originalBuffer), mOriginalBufferSize(originalBufferSize),
-              mAdditionalBuffer(EXTEND_ADDITIONAL_BUFFER_SIZE_STEP), mUsedAdditionalBufferSize(0),
-              mMaxAdditionalBufferSize(maxAdditionalBufferSize) {}
-
-    // Without original buffer.
-    BufferWithExtendableBuffer(const int maxAdditionalBufferSize)
-            : mOriginalBuffer(0), mOriginalBufferSize(0),
               mAdditionalBuffer(EXTEND_ADDITIONAL_BUFFER_SIZE_STEP), mUsedAdditionalBufferSize(0),
               mMaxAdditionalBufferSize(maxAdditionalBufferSize) {}
 
@@ -71,13 +63,6 @@ class BufferWithExtendableBuffer {
         }
     }
 
-    uint32_t readUint(const int size, const int pos) const;
-
-    uint32_t readUintAndAdvancePosition(const int size, int *const pos) const;
-
-    void readCodePointsAndAdvancePosition(const int maxCodePointCount,
-            int *const outCodePoints, int *outCodePointCount, int *const pos) const;
-
     AK_FORCE_INLINE int getOriginalBufferSize() const {
         return mOriginalBufferSize;
     }
@@ -93,18 +78,15 @@ class BufferWithExtendableBuffer {
      * Writing is allowed for original buffer, already written region of additional buffer and the
      * tail of additional buffer.
      */
-    bool writeUint(const uint32_t data, const int size, const int pos);
-
     bool writeUintAndAdvancePosition(const uint32_t data, const int size, int *const pos);
 
     bool writeCodePointsAndAdvancePosition(const int *const codePoints, const int codePointCount,
             const bool writesTerminator, int *const pos);
 
-    bool copy(const BufferWithExtendableBuffer *const sourceBuffer);
-
  private:
     DISALLOW_COPY_AND_ASSIGN(BufferWithExtendableBuffer);
 
+    static const size_t MAX_ADDITIONAL_BUFFER_SIZE;
     static const int NEAR_BUFFER_LIMIT_THRESHOLD_PERCENTILE;
     static const size_t EXTEND_ADDITIONAL_BUFFER_SIZE_STEP;
 

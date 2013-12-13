@@ -98,7 +98,7 @@ public final class BinaryDictionaryFileDumper {
      * This creates a URI builder able to build a URI pointing to the dictionary
      * pack content provider for a specific dictionary id.
      */
-    public static Uri.Builder getProviderUriBuilder(final String path) {
+    private static Uri.Builder getProviderUriBuilder(final String path) {
         return new Uri.Builder().scheme(ContentResolver.SCHEME_CONTENT)
                 .authority(DictionaryPackConstants.AUTHORITY).appendPath(path);
     }
@@ -339,25 +339,15 @@ public final class BinaryDictionaryFileDumper {
         Log.e(TAG, "Could not copy a word list. Will not be able to use it.");
         // If we can't copy it we should warn the dictionary provider so that it can mark it
         // as invalid.
-        reportBrokenFileToDictionaryProvider(providerClient, clientId, wordlistId);
-    }
-
-    public static boolean reportBrokenFileToDictionaryProvider(
-            final ContentProviderClient providerClient, final String clientId,
-            final String wordlistId) {
+        wordListUriBuilder.appendQueryParameter(QUERY_PARAMETER_DELETE_RESULT,
+                QUERY_PARAMETER_FAILURE);
         try {
-            final Uri.Builder wordListUriBuilder = getContentUriBuilderForType(clientId,
-                    providerClient, QUERY_PATH_DATAFILE, wordlistId /* extraPath */);
-            wordListUriBuilder.appendQueryParameter(QUERY_PARAMETER_DELETE_RESULT,
-                    QUERY_PARAMETER_FAILURE);
             if (0 >= providerClient.delete(wordListUriBuilder.build(), null, null)) {
-                Log.e(TAG, "Unable to delete a word list.");
+                Log.e(TAG, "In addition, we were unable to delete it.");
             }
         } catch (RemoteException e) {
-            Log.e(TAG, "Communication with the dictionary provider was cut", e);
-            return false;
+            Log.e(TAG, "In addition, communication with the dictionary provider was cut", e);
         }
-        return true;
     }
 
     // Ideally the two following methods should be merged, but AssetFileDescriptor does not
@@ -442,9 +432,8 @@ public final class BinaryDictionaryFileDumper {
 
         // Actually copy the file
         final byte[] buffer = new byte[FILE_READ_BUFFER_SIZE];
-        for (int readBytes = input.read(buffer); readBytes >= 0; readBytes = input.read(buffer)) {
+        for (int readBytes = input.read(buffer); readBytes >= 0; readBytes = input.read(buffer))
             output.write(buffer, 0, readBytes);
-        }
         input.close();
     }
 
@@ -489,7 +478,8 @@ public final class BinaryDictionaryFileDumper {
      * @param context the context for resources and providers.
      * @param clientId the client ID to use.
      */
-    public static void initializeClientRecordHelper(final Context context, final String clientId) {
+    public static void initializeClientRecordHelper(final Context context,
+            final String clientId) {
         try {
             final ContentProviderClient client = context.getContentResolver().
                     acquireContentProviderClient(getProviderUriBuilder("").build());

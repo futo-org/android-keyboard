@@ -159,9 +159,9 @@ public class DictionaryMaker {
                     if (OPTION_VERSION_2.equals(arg)) {
                         // Do nothing, this is the default
                     } else if (OPTION_VERSION_3.equals(arg)) {
-                        outputBinaryFormatVersion = FormatSpec.VERSION3;
+                        outputBinaryFormatVersion = 3;
                     } else if (OPTION_VERSION_4.equals(arg)) {
-                        outputBinaryFormatVersion = FormatSpec.VERSION4;
+                        outputBinaryFormatVersion = 4;
                     } else if (OPTION_HELP.equals(arg)) {
                         displayHelp();
                     } else {
@@ -358,7 +358,7 @@ public class DictionaryMaker {
         final File outputFile = new File(outputFilename);
         final FormatSpec.FormatOptions formatOptions = new FormatSpec.FormatOptions(version);
         final DictEncoder dictEncoder;
-        if (version == FormatSpec.VERSION4) {
+        if (version == 4) {
             dictEncoder = new Ver4DictEncoder(outputFile);
         } else {
             dictEncoder = new Ver3DictEncoder(outputFile);

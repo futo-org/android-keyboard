@@ -44,8 +44,7 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
     private static final String TAG = ContactsBinaryDictionary.class.getSimpleName();
     private static final String NAME = "contacts";
 
-    private static final boolean DEBUG = false;
-    private static final boolean DEBUG_DUMP = false;
+    private static boolean DEBUG = false;
 
     /**
      * Frequency for contacts information into the dictionary
@@ -72,8 +71,8 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
     private final boolean mUseFirstLastBigrams;
 
     public ContactsBinaryDictionary(final Context context, final Locale locale) {
-        super(context, getDictNameWithLocale(NAME, locale), locale,
-                Dictionary.TYPE_CONTACTS, false /* isUpdatable */);
+        super(context, getFilenameWithLocale(NAME, locale.toString()), Dictionary.TYPE_CONTACTS,
+                false /* isUpdatable */);
         mLocale = locale;
         mUseFirstLastBigrams = useFirstLastBigramsForLocale(locale);
         registerObserver(context);
@@ -169,10 +168,6 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
             if (isValidName(name)) {
                 addName(name);
                 ++count;
-            } else {
-                if (DEBUG_DUMP) {
-                    Log.d(TAG, "Invalid name: " + name);
-                }
             }
             cursor.moveToNext();
         }
@@ -209,9 +204,6 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
             if (Character.isLetter(name.codePointAt(i))) {
                 int end = getWordEndPosition(name, len, i);
                 String word = name.substring(i, end);
-                if (DEBUG_DUMP) {
-                    Log.d(TAG, "addName word = " + word);
-                }
                 i = end - 1;
                 // Don't add single letter words, possibly confuses
                 // capitalization of i.

@@ -31,17 +31,17 @@ public class EmojiCategoryPageIndicatorView extends LinearLayout {
     private int mCurrentCategoryPageId = 0;
     private float mOffset = 0.0f;
 
-    public EmojiCategoryPageIndicatorView(final Context context) {
+    public EmojiCategoryPageIndicatorView(Context context) {
         this(context, null /* attrs */);
     }
 
-    public EmojiCategoryPageIndicatorView(final Context context, final AttributeSet attrs) {
+    public EmojiCategoryPageIndicatorView(Context context, AttributeSet attrs) {
         super(context, attrs);
         mPaint.setColor(context.getResources().getColor(
                 R.color.emoji_category_page_id_view_foreground));
     }
 
-    public void setCategoryPageId(final int size, final int id, final float offset) {
+    public void setCategoryPageId(int size, int id, float offset) {
         mCategoryPageSize = size;
         mCurrentCategoryPageId = id;
         mOffset = offset;
@@ -49,7 +49,7 @@ public class EmojiCategoryPageIndicatorView extends LinearLayout {
     }
 
     @Override
-    protected void onDraw(final Canvas canvas) {
+    protected void onDraw(Canvas canvas) {
         if (mCategoryPageSize <= 1) {
             // If the category is not set yet or contains only one category,
             // just clear and return.

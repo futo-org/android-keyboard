@@ -34,7 +34,7 @@
             <Key
                 latin:keyLabel="/"
                 latin:additionalMoreKeys="\?"
-                latin:moreKeys="!text/more_keys_for_question" />
+                latin:moreKeys="!text/more_keys_for_symbols_question" />
         </case>
         <!-- keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted" -->
         <default>
@@ -52,7 +52,7 @@
                 latin:moreKeys="!fixedColumnOrder!3,&#x203A;,&#x2265;,&#x00BB;" />
             <Key
                 latin:keyLabel="\?"
-                latin:moreKeys="!text/more_keys_for_question" />
+                latin:moreKeys="!text/more_keys_for_symbols_question" />
         </default>
     </switch>
 </merge>

@@ -117,6 +117,12 @@
     <string name="keyboard_mode_time" msgid="4381856885582143277">"isikhathi"</string>
     <string name="keyboard_mode_url" msgid="1519819835514911218">"I-URL"</string>
     <string name="voice_input" msgid="3583258583521397548">"Inkinobho yokufaka izwi"</string>
+    <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"Kwikhibhodi eyisisekelo"</string>
+    <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"Ikhibhodi yezimpawu"</string>
+    <string name="voice_input_modes_off" msgid="3745699748218082014">"VALIWE"</string>
+    <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"I-mic kwikhibhodi eyisisekelo"</string>
+    <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Ikhibhodi yezimpawu ze-mic"</string>
+    <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Okufakwayo ngezwi kuvinjelwe"</string>
     <string name="configure_input_method" msgid="373356270290742459">"Misa izindlela zokufakwayo"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Izilimi zokufakwayo"</string>
     <string name="send_feedback" msgid="1780431884109392046">"Thumela impendulo"</string>

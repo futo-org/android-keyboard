@@ -16,8 +16,6 @@
 
 package com.android.inputmethod.latin;
 
-import com.android.inputmethod.latin.utils.FileUtils;
-
 import java.io.File;
 
 /**
@@ -53,13 +51,5 @@ public final class AssetFileAddress {
         final File f = new File(filename);
         if (!f.isFile()) return null;
         return new AssetFileAddress(filename, offset, length);
-    }
-
-    public boolean pointsToPhysicalFile() {
-        return 0 == mOffset;
-    }
-
-    public void deleteUnderlyingFile() {
-        FileUtils.deleteRecursively(new File(mFilename));
     }
 }

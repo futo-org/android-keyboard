@@ -48,6 +48,7 @@ public final class KeyboardIconsSet {
         "search_key",                   R.styleable.Keyboard_iconSearchKey,
         "tab_key",                      R.styleable.Keyboard_iconTabKey,
         "shortcut_key",                 R.styleable.Keyboard_iconShortcutKey,
+        "shortcut_for_label",           R.styleable.Keyboard_iconShortcutForLabel,
         "space_key_for_number_layout",  R.styleable.Keyboard_iconSpaceKeyForNumberLayout,
         "shift_key_shifted",            R.styleable.Keyboard_iconShiftKeyShifted,
         "shortcut_key_disabled",        R.styleable.Keyboard_iconShortcutKeyDisabled,

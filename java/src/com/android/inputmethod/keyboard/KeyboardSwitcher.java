@@ -154,8 +154,8 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         builder.setKeyboardGeometry(keyboardWidth, keyboardHeight);
         builder.setSubtype(mSubtypeSwitcher.getCurrentSubtype());
         builder.setOptions(
-                mSubtypeSwitcher.isShortcutImeEnabled(),
-                settingsValues.mShowsVoiceInputKey,
+                settingsValues.isVoiceKeyEnabled(editorInfo),
+                true /* always show a voice key on the main keyboard */,
                 settingsValues.isLanguageSwitchKeyEnabled());
         mKeyboardLayoutSet = builder.build();
         try {

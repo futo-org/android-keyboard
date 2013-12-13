@@ -17,9 +17,9 @@
 package com.android.inputmethod.latin.makedict;
 
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.CharEncoding;
-import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.DictBuffer;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNode;
+import com.android.inputmethod.latin.makedict.FusionDictionary.DictionaryOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
 
@@ -160,7 +160,7 @@ public class BinaryDictEncoderUtils {
             node.mCachedSize = nodeSize;
             size += nodeSize;
         }
-        if (options.supportsDynamicUpdate()) {
+        if (options.mSupportsDynamicUpdate) {
             size += FormatSpec.FORWARD_LINK_ADDRESS_SIZE;
         }
         ptNodeArray.mCachedSize = size;
@@ -239,26 +239,6 @@ public class BinaryDictEncoderUtils {
                 /* fall through */
             case 1:
                 stream.write(value & 0xFF);
-                break;
-            default:
-                /* nop */
-        }
-    }
-
-    static void writeUIntToDictBuffer(final DictBuffer dictBuffer, final int value,
-            final int size) {
-        switch(size) {
-            case 4:
-                dictBuffer.put((byte) ((value >> 24) & 0xFF));
-                /* fall through */
-            case 3:
-                dictBuffer.put((byte) ((value >> 16) & 0xFF));
-                /* fall through */
-            case 2:
-                dictBuffer.put((byte) ((value >> 8) & 0xFF));
-                /* fall through */
-            case 1:
-                dictBuffer.put((byte) (value & 0xFF));
                 break;
             default:
                 /* nop */
@@ -397,7 +377,7 @@ public class BinaryDictEncoderUtils {
                     nodeSize += FormatSpec.PTNODE_FREQUENCY_SIZE;
                 }
             }
-            if (formatOptions.supportsDynamicUpdate()) {
+            if (formatOptions.mSupportsDynamicUpdate) {
                 nodeSize += FormatSpec.SIGNED_CHILDREN_ADDRESS_SIZE;
             } else if (null != ptNode.mChildren) {
                 nodeSize += getByteSize(getOffsetToTargetNodeArrayDuringUpdate(ptNodeArray,
@@ -417,7 +397,7 @@ public class BinaryDictEncoderUtils {
             ptNode.mCachedSize = nodeSize;
             size += nodeSize;
         }
-        if (formatOptions.supportsDynamicUpdate()) {
+        if (formatOptions.mSupportsDynamicUpdate) {
             size += FormatSpec.FORWARD_LINK_ADDRESS_SIZE;
         }
         if (ptNodeArray.mCachedSize != size) {
@@ -533,7 +513,7 @@ public class BinaryDictEncoderUtils {
             if (passes > MAX_PASSES) throw new RuntimeException("Too many passes - probably a bug");
         } while (changesDone);
 
-        if (formatOptions.supportsDynamicUpdate()) {
+        if (formatOptions.mSupportsDynamicUpdate) {
             computeParentAddresses(flatNodes);
         }
         final PtNodeArray lastPtNodeArray = flatNodes.get(flatNodes.size() - 1);
@@ -642,7 +622,7 @@ public class BinaryDictEncoderUtils {
         byte flags = 0;
         if (hasMultipleChars) flags |= FormatSpec.FLAG_HAS_MULTIPLE_CHARS;
         if (isTerminal) flags |= FormatSpec.FLAG_IS_TERMINAL;
-        if (formatOptions.supportsDynamicUpdate()) {
+        if (formatOptions.mSupportsDynamicUpdate) {
             flags |= FormatSpec.FLAG_IS_NOT_MOVED;
         } else if (true) {
             switch (childrenAddressSize) {
@@ -710,13 +690,6 @@ public class BinaryDictEncoderUtils {
                     + word + " is " + unigramFrequency);
             bigramFrequency = unigramFrequency;
         }
-        bigramFlags += getBigramFrequencyDiff(unigramFrequency, bigramFrequency)
-                & FormatSpec.FLAG_BIGRAM_SHORTCUT_ATTR_FREQUENCY;
-        return bigramFlags;
-    }
-
-    public static int getBigramFrequencyDiff(final int unigramFrequency,
-            final int bigramFrequency) {
         // We compute the difference between 255 (which means probability = 1) and the
         // unigram score. We split this into a number of discrete steps.
         // Now, the steps are numbered 0~15; 0 represents an increase of 1 step while 15
@@ -750,15 +723,22 @@ public class BinaryDictEncoderUtils {
         // include this bigram in the dictionary. For now, register as 0, and live with the
         // small over-estimation that we get in this case. TODO: actually remove this bigram
         // if discretizedFrequency < 0.
-        return discretizedFrequency > 0 ? discretizedFrequency : 0;
+        final int finalBigramFrequency = discretizedFrequency > 0 ? discretizedFrequency : 0;
+        bigramFlags += finalBigramFrequency & FormatSpec.FLAG_BIGRAM_SHORTCUT_ATTR_FREQUENCY;
+        return bigramFlags;
     }
 
     /**
-     * Makes the 2-byte value for options flags. Unused at the moment, and always 0.
+     * Makes the 2-byte value for options flags.
      */
-    private static final int makeOptionsValue(final FormatOptions formatOptions) {
-        // TODO: why doesn't this handle CONTAINS_TIMESTAMP_FLAG?
-        return 0;
+    private static final int makeOptionsValue(final FusionDictionary dictionary,
+            final FormatOptions formatOptions) {
+        final DictionaryOptions options = dictionary.mOptions;
+        final boolean hasBigrams = dictionary.hasBigrams();
+        return (options.mFrenchLigatureProcessing ? FormatSpec.FRENCH_LIGATURE_PROCESSING_FLAG : 0)
+                + (options.mGermanUmlautProcessing ? FormatSpec.GERMAN_UMLAUT_PROCESSING_FLAG : 0)
+                + (hasBigrams ? FormatSpec.CONTAINS_BIGRAMS_FLAG : 0)
+                + (formatOptions.mSupportsDynamicUpdate ? FormatSpec.SUPPORTS_DYNAMIC_UPDATE : 0);
     }
 
     /**
@@ -846,7 +826,7 @@ public class BinaryDictEncoderUtils {
             }
             dictEncoder.writePtNode(ptNode, parentPosition, formatOptions, dict);
         }
-        if (formatOptions.supportsDynamicUpdate()) {
+        if (formatOptions.mSupportsDynamicUpdate) {
             dictEncoder.writeForwardLinkAddress(FormatSpec.NO_FORWARD_LINK_ADDRESS);
         }
         if (dictEncoder.getPosition() != ptNodeArray.mCachedAddressAfterUpdate
@@ -947,7 +927,7 @@ public class BinaryDictEncoderUtils {
         headerBuffer.write((byte) (0xFF & version));
 
         // Options flags
-        final int options = makeOptionsValue(formatOptions);
+        final int options = makeOptionsValue(dict, formatOptions);
         headerBuffer.write((byte) (0xFF & (options >> 8)));
         headerBuffer.write((byte) (0xFF & options));
         final int headerSizeOffset = headerBuffer.size();

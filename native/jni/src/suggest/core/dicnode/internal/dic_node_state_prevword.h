@@ -30,7 +30,7 @@ class DicNodeStatePrevWord {
  public:
     AK_FORCE_INLINE DicNodeStatePrevWord()
             : mPrevWordCount(0), mPrevWordLength(0), mPrevWordStart(0), mPrevWordProbability(0),
-              mPrevWordPtNodePos(NOT_A_DICT_POS), mSecondWordFirstInputIndex(NOT_AN_INDEX) {
+              mPrevWordNodePos(NOT_A_DICT_POS), mSecondWordFirstInputIndex(NOT_AN_INDEX) {
         memset(mPrevWord, 0, sizeof(mPrevWord));
     }
 
@@ -41,7 +41,7 @@ class DicNodeStatePrevWord {
         mPrevWordCount = 0;
         mPrevWordStart = 0;
         mPrevWordProbability = -1;
-        mPrevWordPtNodePos = NOT_A_DICT_POS;
+        mPrevWordNodePos = NOT_A_DICT_POS;
         mSecondWordFirstInputIndex = NOT_AN_INDEX;
     }
 
@@ -50,7 +50,7 @@ class DicNodeStatePrevWord {
         mPrevWordCount = 0;
         mPrevWordStart = 0;
         mPrevWordProbability = -1;
-        mPrevWordPtNodePos = prevWordNodePos;
+        mPrevWordNodePos = prevWordNodePos;
         mSecondWordFirstInputIndex = NOT_AN_INDEX;
     }
 
@@ -60,7 +60,7 @@ class DicNodeStatePrevWord {
         mPrevWordCount = prevWord->mPrevWordCount;
         mPrevWordStart = prevWord->mPrevWordStart;
         mPrevWordProbability = prevWord->mPrevWordProbability;
-        mPrevWordPtNodePos = prevWord->mPrevWordPtNodePos;
+        mPrevWordNodePos = prevWord->mPrevWordNodePos;
         mSecondWordFirstInputIndex = prevWord->mSecondWordFirstInputIndex;
         memcpy(mPrevWord, prevWord->mPrevWord, prevWord->mPrevWordLength * sizeof(mPrevWord[0]));
     }
@@ -71,7 +71,7 @@ class DicNodeStatePrevWord {
             const int prevWordSecondWordFirstInputIndex, const int lastInputIndex) {
         mPrevWordCount = min(prevWordCount, static_cast<int16_t>(MAX_RESULTS));
         mPrevWordProbability = prevWordProbability;
-        mPrevWordPtNodePos = prevWordNodePos;
+        mPrevWordNodePos = prevWordNodePos;
         int twoWordsLen =
                 DicNodeUtils::appendTwoWords(src0, length0, src1, length1, mPrevWord);
         if (twoWordsLen >= MAX_WORD_LENGTH) {
@@ -116,8 +116,8 @@ class DicNodeStatePrevWord {
         return mPrevWordStart;
     }
 
-    int getPrevWordPtNodePos() const {
-        return mPrevWordPtNodePos;
+    int getPrevWordNodePos() const {
+        return mPrevWordNodePos;
     }
 
     int getPrevWordCodePointAt(const int id) const {
@@ -147,7 +147,7 @@ class DicNodeStatePrevWord {
     int16_t mPrevWordLength;
     int16_t mPrevWordStart;
     int16_t mPrevWordProbability;
-    int mPrevWordPtNodePos;
+    int mPrevWordNodePos;
     int mSecondWordFirstInputIndex;
 };
 } // namespace latinime

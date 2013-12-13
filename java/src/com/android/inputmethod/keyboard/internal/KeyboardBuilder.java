@@ -459,7 +459,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
                 final int x = (int)row.getKeyX(null);
                 final int y = row.getKeyY();
                 final Key key = new Key(mParams, label, null /* hintLabel */, 0 /* iconId */,
-                        code, outputText, x, y, (int)keyWidth, row.getRowHeight(),
+                        code, outputText, x, y, (int)keyWidth, (int)row.getRowHeight(),
                         row.getDefaultKeyLabelFlags(), row.getDefaultBackgroundType());
                 endKey(key);
                 row.advanceXPos(keyWidth);
@@ -649,9 +649,10 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
                     R.styleable.Keyboard_Case_passwordInput, id.passwordInput());
             final boolean clobberSettingsKeyMatched = matchBoolean(caseAttr,
                     R.styleable.Keyboard_Case_clobberSettingsKey, id.mClobberSettingsKey);
-            final boolean supportsSwitchingToShortcutImeMatched = matchBoolean(caseAttr,
-                    R.styleable.Keyboard_Case_supportsSwitchingToShortcutIme,
-                    id.mSupportsSwitchingToShortcutIme);
+            final boolean shortcutKeyEnabledMatched = matchBoolean(caseAttr,
+                    R.styleable.Keyboard_Case_shortcutKeyEnabled, id.mShortcutKeyEnabled);
+            final boolean shortcutKeyOnSymbolsMatched = matchBoolean(caseAttr,
+                    R.styleable.Keyboard_Case_shortcutKeyOnSymbols, id.mShortcutKeyOnSymbols);
             final boolean hasShortcutKeyMatched = matchBoolean(caseAttr,
                     R.styleable.Keyboard_Case_hasShortcutKey, id.mHasShortcutKey);
             final boolean languageSwitchKeyEnabledMatched = matchBoolean(caseAttr,
@@ -670,12 +671,13 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
             final boolean selected = keyboardLayoutSetMatched && keyboardLayoutSetElementMatched
                     && modeMatched && navigateNextMatched && navigatePreviousMatched
                     && passwordInputMatched && clobberSettingsKeyMatched
-                    && supportsSwitchingToShortcutImeMatched && hasShortcutKeyMatched
-                    && languageSwitchKeyEnabledMatched && isMultiLineMatched && imeActionMatched
-                    && localeCodeMatched && languageCodeMatched && countryCodeMatched;
+                    && shortcutKeyEnabledMatched && shortcutKeyOnSymbolsMatched
+                    && hasShortcutKeyMatched && languageSwitchKeyEnabledMatched
+                    && isMultiLineMatched && imeActionMatched && localeCodeMatched
+                    && languageCodeMatched && countryCodeMatched;
 
             if (DEBUG) {
-                startTag("<%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s>%s", TAG_CASE,
+                startTag("<%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s>%s", TAG_CASE,
                         textAttr(caseAttr.getString(
                                 R.styleable.Keyboard_Case_keyboardLayoutSet), "keyboardLayoutSet"),
                         textAttr(caseAttr.getString(
@@ -692,9 +694,10 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
                                 "clobberSettingsKey"),
                         booleanAttr(caseAttr, R.styleable.Keyboard_Case_passwordInput,
                                 "passwordInput"),
-                        booleanAttr(
-                                caseAttr, R.styleable.Keyboard_Case_supportsSwitchingToShortcutIme,
-                                "supportsSwitchingToShortcutIme"),
+                        booleanAttr(caseAttr, R.styleable.Keyboard_Case_shortcutKeyEnabled,
+                                "shortcutKeyEnabled"),
+                        booleanAttr(caseAttr, R.styleable.Keyboard_Case_shortcutKeyOnSymbols,
+                                "shortcutKeyOnSymbols"),
                         booleanAttr(caseAttr, R.styleable.Keyboard_Case_hasShortcutKey,
                                 "hasShortcutKey"),
                         booleanAttr(caseAttr, R.styleable.Keyboard_Case_languageSwitchKeyEnabled,

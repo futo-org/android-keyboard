@@ -19,7 +19,6 @@
 
 #include "defines.h"
 #include "suggest/core/dicnode/dic_node_utils.h"
-#include "suggest/core/dictionary/error_type_utils.h"
 #include "suggest/core/layout/touch_position_correction_utils.h"
 #include "suggest/core/policy/weighting.h"
 #include "suggest/core/session/dic_traverse_session.h"
@@ -205,7 +204,7 @@ class TypingWeighting : public Weighting {
         return cost * traverseSession->getMultiWordCostMultiplier();
     }
 
-    ErrorTypeUtils::ErrorType getErrorType(const CorrectionType correctionType,
+    ErrorType getErrorType(const CorrectionType correctionType,
             const DicTraverseSession *const traverseSession,
             const DicNode *const parentDicNode, const DicNode *const dicNode) const;
 

@@ -23,7 +23,6 @@ import android.util.Log;
 
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.DictBuffer;
 import com.android.inputmethod.latin.makedict.FormatSpec.FileHeader;
-import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
 import com.android.inputmethod.latin.utils.CollectionUtils;
@@ -31,15 +30,23 @@ import com.android.inputmethod.latin.utils.CollectionUtils;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 
 @LargeTest
 public class BinaryDictIOUtilsTests extends AndroidTestCase {
     private static final String TAG = BinaryDictIOUtilsTests.class.getSimpleName();
+    private static final FormatSpec.FormatOptions FORMAT_OPTIONS =
+            new FormatSpec.FormatOptions(3, true);
 
     private static final ArrayList<String> sWords = CollectionUtils.newArrayList();
     public static final int DEFAULT_MAX_UNIGRAMS = 1500;
     private final int mMaxUnigrams;
+
+    private static final String TEST_DICT_FILE_EXTENSION = ".testDict";
+
+    private static final int VERSION3 = 3;
+    private static final int VERSION4 = 4;
 
     private static final String[] CHARACTERS = {
         "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m",
@@ -114,7 +121,7 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
                     formatOptions);
             printPtNode(currentInfo);
         }
-        if (formatOptions.supportsDynamicUpdate()) {
+        if (formatOptions.mSupportsDynamicUpdate) {
             final int forwardLinkAddress = dictBuffer.readUnsignedInt24();
             Log.d(TAG, "    forwardLinkAddress = " + forwardLinkAddress);
         }
@@ -134,7 +141,7 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
         int position = FormatSpec.NOT_VALID_WORD;
 
         try {
-            final DictDecoder dictDecoder = FormatSpec.getDictDecoder(file,
+            final Ver3DictDecoder dictDecoder = new Ver3DictDecoder(file,
                     DictDecoder.USE_READONLY_BYTEBUFFER);
             position = dictDecoder.getTerminalPosition(word);
         } catch (IOException e) {
@@ -152,7 +159,7 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
      * @throws IOException
      * @throws UnsupportedFormatException
      */
-    private static PtNodeInfo findWordByDictDecoder(final DictDecoder dictDecoder,
+    private static PtNodeInfo findWordByBinaryDictReader(final DictDecoder dictDecoder,
             final String word) throws IOException, UnsupportedFormatException {
         int position = dictDecoder.getTerminalPosition(word);
         if (position != FormatSpec.NOT_VALID_WORD) {
@@ -169,7 +176,7 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
         PtNodeInfo info = null;
         try {
             dictDecoder.openDictBuffer();
-            info = findWordByDictDecoder(dictDecoder, word);
+            info = findWordByBinaryDictReader(dictDecoder, word);
         } catch (IOException e) {
         } catch (UnsupportedFormatException e) {
         }
@@ -179,10 +186,16 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
     // return amount of time to insert a word
     private long insertAndCheckWord(final File file, final String word, final int frequency,
             final boolean exist, final ArrayList<WeightedString> bigrams,
-            final ArrayList<WeightedString> shortcuts, final FormatOptions formatOptions) {
+            final ArrayList<WeightedString> shortcuts, final int formatVersion) {
         long amountOfTime = -1;
         try {
-            final DictUpdater dictUpdater = BinaryDictUtils.getDictUpdater(file, formatOptions);
+            final DictUpdater dictUpdater;
+            if (formatVersion == VERSION3) {
+                dictUpdater = new Ver3DictUpdater(file, DictDecoder.USE_WRITABLE_BYTEBUFFER);
+            } else {
+                throw new RuntimeException("DictUpdater for version " + formatVersion + " doesn't"
+                        + " exist.");
+            }
 
             if (!exist) {
                 assertEquals(FormatSpec.NOT_VALID_WORD, getWordPosition(file, word));
@@ -199,14 +212,18 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
         return amountOfTime;
     }
 
-    private void deleteWord(final File file, final String word, final FormatOptions formatOptions) {
+    private void deleteWord(final File file, final String word, final int formatVersion) {
         try {
-            final DictUpdater dictUpdater = BinaryDictUtils.getDictUpdater(file, formatOptions);
+            final DictUpdater dictUpdater;
+            if (formatVersion == VERSION3) {
+                dictUpdater = new Ver3DictUpdater(file, DictDecoder.USE_WRITABLE_BYTEBUFFER);
+            } else {
+                throw new RuntimeException("DictUpdater for version " + formatVersion + " doesn't"
+                        + " exist.");
+            }
             dictUpdater.deleteWord(word);
         } catch (IOException e) {
-            Log.e(TAG, "Raised an IOException while deleting a word", e);
         } catch (UnsupportedFormatException e) {
-            Log.e(TAG, "Raised an UnsupportedFormatException while deleting a word", e);
         }
     }
 
@@ -216,7 +233,7 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
             final DictDecoder dictDecoder = FormatSpec.getDictDecoder(file);
             final FileHeader fileHeader = dictDecoder.readHeader();
             assertEquals(word,
-                    BinaryDictDecoderUtils.getWordAtPosition(dictDecoder, fileHeader.mBodyOffset,
+                    BinaryDictDecoderUtils.getWordAtPosition(dictDecoder, fileHeader.mHeaderSize,
                             position, fileHeader.mFormatOptions).mWord);
         } catch (IOException e) {
             Log.e(TAG, "Raised an IOException while looking up a word", e);
@@ -225,21 +242,23 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
         }
     }
 
-    private void runTestInsertWord(final FormatOptions formatOptions) {
-        final String testName = "testInsertWord";
-        final String version = Long.toString(System.currentTimeMillis());
-        final File file = BinaryDictUtils.getDictFile(testName, version, formatOptions,
-                getContext().getCacheDir());
+    private void runTestInsertWord(final int formatVersion) {
+        File file = null;
+        try {
+            file = File.createTempFile("testInsertWord", TEST_DICT_FILE_EXTENSION,
+                    getContext().getCacheDir());
+        } catch (IOException e) {
+            fail("IOException while creating temporary file: " + e);
+        }
 
         // set an initial dictionary.
         final FusionDictionary dict = new FusionDictionary(new PtNodeArray(),
-                BinaryDictUtils.makeDictionaryOptions(testName, version));
+                new FusionDictionary.DictionaryOptions(new HashMap<String,String>(), false, false));
         dict.add("abcd", 10, null, false);
 
         try {
-            final DictEncoder dictEncoder = BinaryDictUtils.getDictEncoder(file, formatOptions,
-                    getContext().getCacheDir());
-            dictEncoder.writeDictionary(dict, formatOptions);
+            final DictEncoder dictEncoder = new Ver3DictEncoder(file);
+            dictEncoder.writeDictionary(dict, FORMAT_OPTIONS);
         } catch (IOException e) {
             fail("IOException while writing an initial dictionary : " + e);
         } catch (UnsupportedFormatException e) {
@@ -247,69 +266,54 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
         }
 
         MoreAsserts.assertNotEqual(FormatSpec.NOT_VALID_WORD, getWordPosition(file, "abcd"));
-        insertAndCheckWord(file, "abcde", 10, false, null, null, formatOptions);
-        checkReverseLookup(file, "abcde", getWordPosition(file, "abcde"));
+        insertAndCheckWord(file, "abcde", 10, false, null, null, formatVersion);
 
-        insertAndCheckWord(file, "abcdefghijklmn", 10, false, null, null, formatOptions);
+        insertAndCheckWord(file, "abcdefghijklmn", 10, false, null, null, formatVersion);
         checkReverseLookup(file, "abcdefghijklmn", getWordPosition(file, "abcdefghijklmn"));
 
-        insertAndCheckWord(file, "abcdabcd", 10, false, null, null, formatOptions);
+        insertAndCheckWord(file, "abcdabcd", 10, false, null, null, formatVersion);
         checkReverseLookup(file, "abcdabcd", getWordPosition(file, "abcdabcd"));
 
         // update the existing word.
-        insertAndCheckWord(file, "abcdabcd", 15, true, null, null, formatOptions);
-        checkReverseLookup(file, "abcdabcd", getWordPosition(file, "abcdabcd"));
+        insertAndCheckWord(file, "abcdabcd", 15, true, null, null, formatVersion);
 
-        // Testing splitOnly
-        insertAndCheckWord(file, "ab", 20, false, null, null, formatOptions);
-        checkReverseLookup(file, "ab", getWordPosition(file, "ab"));
-        checkReverseLookup(file, "abcdabcd", getWordPosition(file, "abcdabcd"));
-        checkReverseLookup(file, "abcde", getWordPosition(file, "abcde"));
-        checkReverseLookup(file, "abcdefghijklmn", getWordPosition(file, "abcdefghijklmn"));
+        // split 1
+        insertAndCheckWord(file, "ab", 20, false, null, null, formatVersion);
 
-        // Testing splitAndBranch
-        insertAndCheckWord(file, "ami", 30, false, null, null, formatOptions);
-        checkReverseLookup(file, "ami", getWordPosition(file, "ami"));
-        checkReverseLookup(file, "ab", getWordPosition(file, "ab"));
-        checkReverseLookup(file, "abcdabcd", getWordPosition(file, "abcdabcd"));
-        checkReverseLookup(file, "abcde", getWordPosition(file, "abcde"));
-        checkReverseLookup(file, "abcdefghijklmn", getWordPosition(file, "abcdefghijklmn"));
-        checkReverseLookup(file, "ami", getWordPosition(file, "ami"));
+        // split 2
+        insertAndCheckWord(file, "ami", 30, false, null, null, formatVersion);
 
-        insertAndCheckWord(file, "abcdefzzzz", 40, false, null, null, formatOptions);
-        checkReverseLookup(file, "abcdefzzzz", getWordPosition(file, "abcdefzzzz"));
-
-        deleteWord(file, "ami", formatOptions);
+        deleteWord(file, "ami", formatVersion);
         assertEquals(FormatSpec.NOT_VALID_WORD, getWordPosition(file, "ami"));
 
-        insertAndCheckWord(file, "abcdabfg", 30, false, null, null, formatOptions);
+        insertAndCheckWord(file, "abcdabfg", 30, false, null, null, formatVersion);
 
-        deleteWord(file, "abcd", formatOptions);
+        deleteWord(file, "abcd", formatVersion);
         assertEquals(FormatSpec.NOT_VALID_WORD, getWordPosition(file, "abcd"));
     }
 
     public void testInsertWord() {
-        runTestInsertWord(BinaryDictUtils.VERSION3_OPTIONS);
-        runTestInsertWord(BinaryDictUtils.VERSION4_OPTIONS_WITHOUT_TIMESTAMP);
-        runTestInsertWord(BinaryDictUtils.VERSION4_OPTIONS_WITH_TIMESTAMP);
+        runTestInsertWord(VERSION3);
     }
 
-    private void runTestInsertWordWithBigrams(final FormatOptions formatOptions) {
-        final String testName = "testInsertWordWithBigrams";
-        final String version = Long.toString(System.currentTimeMillis());
-        File file = BinaryDictUtils.getDictFile(testName, version, formatOptions,
-                getContext().getCacheDir());
+    private void runTestInsertWordWithBigrams(final int formatVersion) {
+        File file = null;
+        try {
+            file = File.createTempFile("testInsertWordWithBigrams", TEST_DICT_FILE_EXTENSION,
+                    getContext().getCacheDir());
+        } catch (IOException e) {
+            fail("IOException while creating temporary file: " + e);
+        }
 
         // set an initial dictionary.
         final FusionDictionary dict = new FusionDictionary(new PtNodeArray(),
-                BinaryDictUtils.makeDictionaryOptions(testName, version));
+                new FusionDictionary.DictionaryOptions(new HashMap<String,String>(), false, false));
         dict.add("abcd", 10, null, false);
         dict.add("efgh", 15, null, false);
 
         try {
-            final DictEncoder dictEncoder = BinaryDictUtils.getDictEncoder(file, formatOptions,
-                    getContext().getCacheDir());
-            dictEncoder.writeDictionary(dict, formatOptions);
+            final DictEncoder dictEncoder = new Ver3DictEncoder(file); 
+            dictEncoder.writeDictionary(dict, FORMAT_OPTIONS);
         } catch (IOException e) {
             fail("IOException while writing an initial dictionary : " + e);
         } catch (UnsupportedFormatException e) {
@@ -319,8 +323,8 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
         final ArrayList<WeightedString> banana = new ArrayList<WeightedString>();
         banana.add(new WeightedString("banana", 10));
 
-        insertAndCheckWord(file, "banana", 0, false, null, null, formatOptions);
-        insertAndCheckWord(file, "recursive", 60, true, banana, null, formatOptions);
+        insertAndCheckWord(file, "banana", 0, false, null, null, formatVersion);
+        insertAndCheckWord(file, "recursive", 60, true, banana, null, formatVersion);
 
         final PtNodeInfo info = findWordFromFile(file, "recursive");
         int bananaPos = getWordPosition(file, "banana");
@@ -330,26 +334,27 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
     }
 
     public void testInsertWordWithBigrams() {
-        runTestInsertWordWithBigrams(BinaryDictUtils.VERSION3_OPTIONS);
-        runTestInsertWordWithBigrams(BinaryDictUtils.VERSION4_OPTIONS_WITHOUT_TIMESTAMP);
-        runTestInsertWordWithBigrams(BinaryDictUtils.VERSION4_OPTIONS_WITH_TIMESTAMP);
+        runTestInsertWordWithBigrams(VERSION3);
     }
 
-    private void runTestRandomWords(final FormatOptions formatOptions) {
-        final String testName = "testRandomWord";
-        final String version = Long.toString(System.currentTimeMillis());
-        final File file = BinaryDictUtils.getDictFile(testName, version, formatOptions,
-                getContext().getCacheDir());
+    private void runTestRandomWords(final int formatVersion) {
+        File file = null;
+        try {
+            file = File.createTempFile("testRandomWord", TEST_DICT_FILE_EXTENSION,
+                    getContext().getCacheDir());
+        } catch (IOException e) {
+        }
+        assertNotNull(file);
 
         // set an initial dictionary.
         final FusionDictionary dict = new FusionDictionary(new PtNodeArray(),
-                BinaryDictUtils.makeDictionaryOptions(testName, version));
+                new FusionDictionary.DictionaryOptions(new HashMap<String, String>(), false,
+                        false));
         dict.add("initial", 10, null, false);
 
         try {
-            final DictEncoder dictEncoder = BinaryDictUtils.getDictEncoder(file, formatOptions,
-                    getContext().getCacheDir());
-            dictEncoder.writeDictionary(dict, formatOptions);
+            final DictEncoder dictEncoder = new Ver3DictEncoder(file);
+            dictEncoder.writeDictionary(dict, FORMAT_OPTIONS);
         } catch (IOException e) {
             assertTrue(false);
         } catch (UnsupportedFormatException e) {
@@ -361,7 +366,7 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
         int cnt = 0;
         for (final String word : sWords) {
             final long diff = insertAndCheckWord(file, word,
-                    cnt % FormatSpec.MAX_TERMINAL_FREQUENCY, false, null, null, formatOptions);
+                    cnt % FormatSpec.MAX_TERMINAL_FREQUENCY, false, null, null, formatVersion);
             maxTimeToInsert = Math.max(maxTimeToInsert, diff);
             minTimeToInsert = Math.min(minTimeToInsert, diff);
             sum += diff;
@@ -372,15 +377,13 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
             MoreAsserts.assertNotEqual(FormatSpec.NOT_VALID_WORD, getWordPosition(file, word));
         }
 
-        Log.d(TAG, "Test version " + formatOptions.mVersion);
+        Log.d(TAG, "Test version " + formatVersion);
         Log.d(TAG, "max = " + ((double)maxTimeToInsert/1000000) + " ms.");
         Log.d(TAG, "min = " + ((double)minTimeToInsert/1000000) + " ms.");
         Log.d(TAG, "avg = " + ((double)sum/mMaxUnigrams/1000000) + " ms.");
     }
 
     public void testRandomWords() {
-        runTestRandomWords(BinaryDictUtils.VERSION3_OPTIONS);
-        runTestRandomWords(BinaryDictUtils.VERSION4_OPTIONS_WITHOUT_TIMESTAMP);
-        runTestRandomWords(BinaryDictUtils.VERSION4_OPTIONS_WITH_TIMESTAMP);
+        runTestRandomWords(VERSION3);
     }
 }

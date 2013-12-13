@@ -57,9 +57,7 @@ LATIN_IME_CORE_SRC_FILES := \
         bloom_filter.cpp \
         dictionary.cpp \
         digraph_utils.cpp \
-        error_type_utils.cpp \
-        multi_bigram_map.cpp \
-        unigram_property.cpp) \
+        multi_bigram_map.cpp) \
     $(addprefix suggest/core/layout/, \
         additional_proximity_chars.cpp \
         proximity_info.cpp \
@@ -69,45 +67,27 @@ LATIN_IME_CORE_SRC_FILES := \
     suggest/core/policy/weighting.cpp \
     suggest/core/session/dic_traverse_session.cpp \
     $(addprefix suggest/policyimpl/dictionary/, \
+        bigram/bigram_list_read_write_utils.cpp \
+        bigram/dynamic_bigram_list_policy.cpp \
         header/header_policy.cpp \
         header/header_read_write_utils.cpp \
         shortcut/shortcut_list_reading_utils.cpp \
-        structure/dictionary_structure_with_buffer_policy_factory.cpp) \
-    $(addprefix suggest/policyimpl/dictionary/bigram/, \
-        bigram_list_read_write_utils.cpp \
-        ver4_bigram_list_policy.cpp) \
-    $(addprefix suggest/policyimpl/dictionary/structure/pt_common/, \
-        dynamic_pt_gc_event_listeners.cpp \
-        dynamic_pt_reading_helper.cpp \
-        dynamic_pt_reading_utils.cpp \
-        dynamic_pt_updating_helper.cpp \
-        dynamic_pt_writing_utils.cpp) \
-    $(addprefix suggest/policyimpl/dictionary/structure/v2/, \
+        dictionary_structure_with_buffer_policy_factory.cpp \
+        dynamic_patricia_trie_gc_event_listeners.cpp \
+        dynamic_patricia_trie_node_reader.cpp \
+        dynamic_patricia_trie_policy.cpp \
+        dynamic_patricia_trie_reading_helper.cpp \
+        dynamic_patricia_trie_reading_utils.cpp \
+        dynamic_patricia_trie_writing_helper.cpp \
+        dynamic_patricia_trie_writing_utils.cpp \
         patricia_trie_policy.cpp \
         patricia_trie_reading_utils.cpp) \
-    $(addprefix suggest/policyimpl/dictionary/structure/v4/, \
-        ver4_dict_buffers.cpp \
-        ver4_dict_constants.cpp \
-        ver4_patricia_trie_node_reader.cpp \
-        ver4_patricia_trie_node_writer.cpp \
-        ver4_patricia_trie_policy.cpp \
-        ver4_patricia_trie_reading_utils.cpp \
-        ver4_patricia_trie_writing_helper.cpp) \
-    $(addprefix suggest/policyimpl/dictionary/structure/v4/content/, \
-        bigram_dict_content.cpp \
-        probability_dict_content.cpp \
-        shortcut_dict_content.cpp \
-        sparse_table_dict_content.cpp \
-        terminal_position_lookup_table.cpp) \
     $(addprefix suggest/policyimpl/dictionary/utils/, \
         buffer_with_extendable_buffer.cpp \
         byte_array_utils.cpp \
         dict_file_writing_utils.cpp \
-        file_utils.cpp \
         forgetting_curve_utils.cpp \
-        format_utils.cpp \
-        mmapped_buffer.cpp \
-        sparse_table.cpp) \
+        format_utils.cpp) \
     suggest/policyimpl/gesture/gesture_suggest_policy_factory.cpp \
     $(addprefix suggest/policyimpl/typing/, \
         scoring_params.cpp \
@@ -118,8 +98,7 @@ LATIN_IME_CORE_SRC_FILES := \
     $(addprefix utils/, \
         autocorrection_threshold_utils.cpp \
         char_utils.cpp \
-        log_utils.cpp \
-        time_keeper.cpp)
+        log_utils.cpp)
 
 LOCAL_SRC_FILES := \
     $(LATIN_IME_JNI_SRC_FILES) \

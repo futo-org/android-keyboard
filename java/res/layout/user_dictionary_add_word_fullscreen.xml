@@ -30,7 +30,7 @@
         android:hint="@string/user_dict_settings_add_word_hint"
         android:imeOptions="flagNoFullscreen"
         android:inputType="textNoSuggestions"
-        android:maxLength="@integer/config_user_dictionary_max_word_length" >
+        android:maxLength="@integer/user_dictionary_max_word_length" >
 
         <requestFocus />
     </EditText>
@@ -61,7 +61,7 @@
             android:hint="@string/user_dict_settings_add_shortcut_hint"
             android:imeOptions="flagNoFullscreen"
             android:inputType="textNoSuggestions"
-            android:maxLength="@integer/config_user_dictionary_max_word_length" />
+            android:maxLength="@integer/user_dictionary_max_word_length" />
 
         <TextView
             android:id="@+id/user_dictionary_add_locale_label"
