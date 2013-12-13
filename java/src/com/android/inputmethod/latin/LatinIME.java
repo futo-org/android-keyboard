@@ -1799,10 +1799,19 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final int codePointBeforeCursor = mConnection.getCodePointBeforeCursor();
         if (Character.isLetterOrDigit(codePointBeforeCursor)
                 || currentSettingsValues.isUsuallyFollowedBySpace(codePointBeforeCursor)) {
+            final boolean autoShiftHasBeenOverriden = mKeyboardSwitcher.getKeyboardShiftMode() !=
+                    getCurrentAutoCapsState();
             mSpaceState = SPACE_STATE_PHANTOM;
+            if (!autoShiftHasBeenOverriden) {
+                // When we change the space state, we need to update the shift state of the
+                // keyboard unless it has been overridden manually. This is happening for example
+                // after typing some letters and a period, then gesturing; the keyboard is not in
+                // caps mode yet, but since a gesture is starting, it should go in caps mode,
+                // unless the user explictly said it should not.
+                mKeyboardSwitcher.updateShiftState();
+            }
         }
         mConnection.endBatchEdit();
-        mKeyboardSwitcher.updateShiftState();
         mWordComposer.setCapitalizedModeAndPreviousWordAtStartComposingTime(getActualCapsMode(),
                 // Prev word is 1st word before cursor
                 getNthPreviousWordForSuggestion(currentSettingsValues, 1 /* nthPreviousWord */));
