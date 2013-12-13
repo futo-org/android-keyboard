@@ -100,7 +100,6 @@ import com.android.inputmethod.latin.utils.RecapitalizeStatus;
 import com.android.inputmethod.latin.utils.StringUtils;
 import com.android.inputmethod.latin.utils.TargetPackageInfoGetterTask;
 import com.android.inputmethod.latin.utils.TextRange;
-import com.android.inputmethod.latin.utils.UserHistoryForgettingCurveUtils;
 import com.android.inputmethod.research.ResearchLogger;
 
 import java.io.FileDescriptor;
@@ -1019,11 +1018,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             // Only for debug
             mBoostPersonalizationDictionaryForDebug =
                     currentSettingsValues.mBoostPersonalizationDictionaryForDebug;
-            if (mBoostPersonalizationDictionaryForDebug) {
-                UserHistoryForgettingCurveUtils.boostMaxFreqForDebug();
-            } else {
-                UserHistoryForgettingCurveUtils.resetMaxFreqForDebug();
-            }
         }
     }
 
