@@ -20,45 +20,33 @@
 #include <vector>
 
 #include "defines.h"
+#include "suggest/policyimpl/dictionary/utils/historical_info.h"
 
 namespace latinime {
 
 class DictionaryHeaderStructurePolicy;
 
-// TODO: Check the elapsed time and decrease the probability depending on the time. Time field is
-// required to introduced to each terminal PtNode and bigram entry.
 // TODO: Quit using bigram probability to indicate the delta.
 class ForgettingCurveUtils {
  public:
-    class TimeKeeper {
-     public:
-        TimeKeeper() : mCurrentTime(0) {}
-        void setCurrentTime();
-        int peekCurrentTime() const { return mCurrentTime; };
-
-     private:
-        DISALLOW_COPY_AND_ASSIGN(TimeKeeper);
-
-        int mCurrentTime;
-    };
-
     static const int MAX_UNIGRAM_COUNT;
     static const int MAX_UNIGRAM_COUNT_AFTER_GC;
     static const int MAX_BIGRAM_COUNT;
     static const int MAX_BIGRAM_COUNT_AFTER_GC;
 
-    static TimeKeeper sTimeKeeper;
+    static const HistoricalInfo createUpdatedHistoricalInfo(
+            const HistoricalInfo *const originalHistoricalInfo, const int newProbability,
+            const int timestamp);
+
+    static const HistoricalInfo createHistoricalInfoToSave(
+            const HistoricalInfo *const originalHistoricalInfo);
+
+    static int decodeProbability(const HistoricalInfo *const historicalInfo);
 
     static int getProbability(const int encodedUnigramProbability,
             const int encodedBigramProbability);
 
-    static int getUpdatedEncodedProbability(const int originalEncodedProbability,
-            const int newProbability);
-
-    static int isValidEncodedProbability(const int encodedProbability);
-
-    static int getEncodedProbabilityToSave(const int encodedProbability,
-            const DictionaryHeaderStructurePolicy *const headerPolicy);
+    static bool needsToKeep(const HistoricalInfo *const historicalInfo);
 
     static bool needsToDecay(const bool mindsBlockByDecay, const int unigramCount,
             const int bigramCount, const DictionaryHeaderStructurePolicy *const headerPolicy);
@@ -70,31 +58,32 @@ class ForgettingCurveUtils {
      public:
         ProbabilityTable();
 
-        int getProbability(const int encodedProbability) const {
-            if (encodedProbability < 0 || encodedProbability > static_cast<int>(mTable.size())) {
-                return NOT_A_PROBABILITY;
-            }
-            return mTable[encodedProbability];
+        int getProbability(const int level, const int elapsedTimeStepCount) const {
+            return mTable[level][elapsedTimeStepCount];
         }
 
      private:
         DISALLOW_COPY_AND_ASSIGN(ProbabilityTable);
 
-        std::vector<int> mTable;
+        std::vector<std::vector<int> > mTable;
     };
 
     static const int MAX_COMPUTED_PROBABILITY;
-    static const int MAX_ENCODED_PROBABILITY;
-    static const int MIN_VALID_ENCODED_PROBABILITY;
-    static const int ENCODED_PROBABILITY_STEP;
-    static const float MIN_PROBABILITY_TO_DECAY;
     static const int DECAY_INTERVAL_SECONDS;
+
+    static const int MAX_LEVEL;
+    static const int MAX_COUNT;
+    static const int MIN_VALID_LEVEL;
+    static const int TIME_STEP_DURATION_IN_SECONDS;
+    static const int MAX_ELAPSED_TIME_STEP_COUNT;
+    static const int DISCARD_LEVEL_ZERO_ENTRY_TIME_STEP_COUNT_THRESHOLD;
+    static const int HALF_LIFE_TIME_IN_SECONDS;
 
     static const ProbabilityTable sProbabilityTable;
 
-    static int decodeProbability(const int encodedProbability);
-
     static int backoff(const int unigramProbability);
+
+    static int getElapsedTimeStepCount(const int timestamp);
 };
 } // namespace latinime
 #endif /* LATINIME_FORGETTING_CURVE_UTILS_H */

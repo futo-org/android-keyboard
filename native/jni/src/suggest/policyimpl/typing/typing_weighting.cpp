@@ -23,39 +23,64 @@ namespace latinime {
 
 const TypingWeighting TypingWeighting::sInstance;
 
-ErrorType TypingWeighting::getErrorType(const CorrectionType correctionType,
+ErrorTypeUtils::ErrorType TypingWeighting::getErrorType(const CorrectionType correctionType,
         const DicTraverseSession *const traverseSession, const DicNode *const parentDicNode,
         const DicNode *const dicNode) const {
     switch (correctionType) {
         case CT_MATCH:
             if (isProximityDicNode(traverseSession, dicNode)) {
-                return ET_PROXIMITY_CORRECTION;
+                return ErrorTypeUtils::PROXIMITY_CORRECTION;
+            } else if (dicNode->isInDigraph()) {
+                return ErrorTypeUtils::MATCH_WITH_DIGRAPH;
             } else {
-                return ET_NOT_AN_ERROR;
+                // Compare the node code point with original primary code point on the keyboard.
+                const ProximityInfoState *const pInfoState =
+                        traverseSession->getProximityInfoState(0);
+                const int primaryOriginalCodePoint = pInfoState->getPrimaryOriginalCodePointAt(
+                        dicNode->getInputIndex(0));
+                const int nodeCodePoint = dicNode->getNodeCodePoint();
+                if (primaryOriginalCodePoint == nodeCodePoint) {
+                    // Node code point is same as original code point on the keyboard.
+                    return ErrorTypeUtils::NOT_AN_ERROR;
+                } else if (CharUtils::toLowerCase(primaryOriginalCodePoint) ==
+                        CharUtils::toLowerCase(nodeCodePoint)) {
+                    // Only cases of the code points are different.
+                    return ErrorTypeUtils::MATCH_WITH_CASE_ERROR;
+                } else if (CharUtils::toBaseCodePoint(primaryOriginalCodePoint) ==
+                        CharUtils::toBaseCodePoint(nodeCodePoint)) {
+                    // Node code point is a variant of original code point.
+                    return ErrorTypeUtils::MATCH_WITH_ACCENT_ERROR;
+                } else {
+                    // Node code point is a variant of original code point and the cases are also
+                    // different.
+                    return ErrorTypeUtils::MATCH_WITH_ACCENT_ERROR
+                            | ErrorTypeUtils::MATCH_WITH_CASE_ERROR;
+                }
             }
+            break;
         case CT_ADDITIONAL_PROXIMITY:
-            return ET_PROXIMITY_CORRECTION;
+            return  ErrorTypeUtils::PROXIMITY_CORRECTION;
         case CT_OMISSION:
             if (parentDicNode->canBeIntentionalOmission()) {
-                return ET_INTENTIONAL_OMISSION;
+                return ErrorTypeUtils::INTENTIONAL_OMISSION;
             } else {
-                return ET_EDIT_CORRECTION;
+                return ErrorTypeUtils::EDIT_CORRECTION;
             }
             break;
         case CT_SUBSTITUTION:
         case CT_INSERTION:
         case CT_TERMINAL_INSERTION:
         case CT_TRANSPOSITION:
-            return ET_EDIT_CORRECTION;
+            return ErrorTypeUtils::EDIT_CORRECTION;
         case CT_NEW_WORD_SPACE_OMISSION:
         case CT_NEW_WORD_SPACE_SUBSTITUTION:
-            return ET_NEW_WORD;
+            return ErrorTypeUtils::NEW_WORD;
         case CT_TERMINAL:
-            return ET_NOT_AN_ERROR;
+            return ErrorTypeUtils::NOT_AN_ERROR;
         case CT_COMPLETION:
-            return ET_COMPLETION;
+            return ErrorTypeUtils::COMPLETION;
         default:
-            return ET_NOT_AN_ERROR;
+            return ErrorTypeUtils::NOT_AN_ERROR;
     }
 }
 }  // namespace latinime

@@ -40,7 +40,7 @@
             <!-- U+17C1/U+17C7: "េះ" KHMER VOWEL SIGN E/KHMER SIGN REAHMUK -->
             <Key
                 latin:keyLabel="&#x17C1;&#x17C7;"
-                latin:keyLabelFlags="fontNormal" />
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio|autoScale" />
             <!-- U+1796: "ព" KHMER LETTER PO
                  U+179E: "ឞ" KHMER LETTER SSO -->
             <Key
@@ -51,7 +51,7 @@
             <!-- U+178E: "ណ" KHMER LETTER NNO -->
             <Key
                 latin:keyLabel="&#x178E;"
-                latin:keyLabelFlags="fontNormal" />
+                latin:keyLabelFlags="fontNormal|autoScale" />
             <!-- U+17C6: "ំ" KHMER SIGN NIKAHIT -->
             <Key
                 latin:keyLabel="&#x17C6;"

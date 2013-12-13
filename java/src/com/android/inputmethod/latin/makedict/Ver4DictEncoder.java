@@ -25,6 +25,8 @@ import com.android.inputmethod.latin.makedict.FusionDictionary.DictionaryOptions
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNode;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
+import com.android.inputmethod.latin.utils.CollectionUtils;
+import com.android.inputmethod.latin.utils.FileUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -32,6 +34,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 
 /**
@@ -42,8 +46,8 @@ public class Ver4DictEncoder implements DictEncoder {
     private final File mDictPlacedDir;
     private byte[] mTrieBuf;
     private int mTriePos;
-    private int mHeaderSize;
     private OutputStream mTrieOutStream;
+    private OutputStream mHeaderOutStream;
     private OutputStream mFreqOutStream;
     private OutputStream mUnigramTimestampOutStream;
     private OutputStream mTerminalAddressTableOutStream;
@@ -55,62 +59,6 @@ public class Ver4DictEncoder implements DictEncoder {
     @UsedForTesting
     public Ver4DictEncoder(final File dictPlacedDir) {
         mDictPlacedDir = dictPlacedDir;
-    }
-
-    private interface SparseTableContentWriterInterface {
-        public void write(final OutputStream outStream) throws IOException;
-    }
-
-    private static class SparseTableContentWriter {
-        private final int mContentCount;
-        private final SparseTable mSparseTable;
-        private final File mLookupTableFile;
-        protected final File mBaseDir;
-        private final File[] mAddressTableFiles;
-        private final File[] mContentFiles;
-        protected final OutputStream[] mContentOutStreams;
-
-        public SparseTableContentWriter(final String name, final int initialCapacity,
-                final int blockSize, final File baseDir, final String[] contentFilenames,
-                final String[] contentIds) {
-            if (contentFilenames.length != contentIds.length) {
-                throw new RuntimeException("The length of contentFilenames and the length of"
-                        + " contentIds are different " + contentFilenames.length + ", "
-                        + contentIds.length);
-            }
-            mContentCount = contentFilenames.length;
-            mSparseTable = new SparseTable(initialCapacity, blockSize, mContentCount);
-            mLookupTableFile = new File(baseDir, name + FormatSpec.LOOKUP_TABLE_FILE_SUFFIX);
-            mAddressTableFiles = new File[mContentCount];
-            mContentFiles = new File[mContentCount];
-            mBaseDir = baseDir;
-            for (int i = 0; i < mContentCount; ++i) {
-                mAddressTableFiles[i] = new File(mBaseDir,
-                        name + FormatSpec.CONTENT_TABLE_FILE_SUFFIX + contentIds[i]);
-                mContentFiles[i] = new File(mBaseDir, contentFilenames[i] + contentIds[i]);
-            }
-            mContentOutStreams = new OutputStream[mContentCount];
-        }
-
-        public void openStreams() throws FileNotFoundException {
-            for (int i = 0; i < mContentCount; ++i) {
-                mContentOutStreams[i] = new FileOutputStream(mContentFiles[i]);
-            }
-        }
-
-        protected void write(final int contentIndex, final int index,
-                final SparseTableContentWriterInterface writer) throws IOException {
-            mSparseTable.set(contentIndex, index, (int) mContentFiles[contentIndex].length());
-            writer.write(mContentOutStreams[contentIndex]);
-            mContentOutStreams[contentIndex].flush();
-        }
-
-        public void closeStreams() throws IOException {
-            mSparseTable.writeToFiles(mLookupTableFile, mAddressTableFiles);
-            for (int i = 0; i < mContentCount; ++i) {
-                mContentOutStreams[i].close();
-            }
-        }
     }
 
     private static class BigramContentWriter extends SparseTableContentWriter {
@@ -238,16 +186,21 @@ public class Ver4DictEncoder implements DictEncoder {
         mBaseFilename = header.getId() + "." + header.getVersion();
         mDictDir = new File(mDictPlacedDir, mBaseFilename);
         final File trieFile = new File(mDictDir, mBaseFilename + FormatSpec.TRIE_FILE_EXTENSION);
+        final File headerFile = new File(mDictDir,
+                mBaseFilename + FormatSpec.HEADER_FILE_EXTENSION);
         final File freqFile = new File(mDictDir, mBaseFilename + FormatSpec.FREQ_FILE_EXTENSION);
         final File timestampFile = new File(mDictDir,
                 mBaseFilename + FormatSpec.UNIGRAM_TIMESTAMP_FILE_EXTENSION);
         final File terminalAddressTableFile = new File(mDictDir,
                 mBaseFilename + FormatSpec.TERMINAL_ADDRESS_TABLE_FILE_EXTENSION);
         if (!mDictDir.isDirectory()) {
-            if (mDictDir.exists()) mDictDir.delete();
+            if (mDictDir.exists()) {
+                FileUtils.deleteRecursively(mDictDir);
+            }
             mDictDir.mkdirs();
         }
         mTrieOutStream = new FileOutputStream(trieFile);
+        mHeaderOutStream = new FileOutputStream(headerFile);
         mFreqOutStream = new FileOutputStream(freqFile);
         mTerminalAddressTableOutStream = new FileOutputStream(terminalAddressTableFile);
         if (formatOptions.mHasTimestamp) {
@@ -260,6 +213,9 @@ public class Ver4DictEncoder implements DictEncoder {
             if (mTrieOutStream != null) {
                 mTrieOutStream.close();
             }
+            if (mHeaderOutStream != null) {
+                mHeaderOutStream.close();
+            }
             if (mFreqOutStream != null) {
                 mFreqOutStream.close();
             }
@@ -271,6 +227,7 @@ public class Ver4DictEncoder implements DictEncoder {
             }
         } finally {
             mTrieOutStream = null;
+            mHeaderOutStream = null;
             mFreqOutStream = null;
             mTerminalAddressTableOutStream = null;
         }
@@ -291,16 +248,34 @@ public class Ver4DictEncoder implements DictEncoder {
             openStreams(formatOptions, dict.mOptions);
         }
 
-        mHeaderSize = BinaryDictEncoderUtils.writeDictionaryHeader(mTrieOutStream, dict,
-                formatOptions);
+        BinaryDictEncoderUtils.writeDictionaryHeader(mHeaderOutStream, dict, formatOptions);
 
         MakedictLog.i("Flattening the tree...");
         ArrayList<PtNodeArray> flatNodes = BinaryDictEncoderUtils.flattenTree(dict.mRootNodeArray);
         int terminalCount = 0;
+        final ArrayList<PtNode> nodes = CollectionUtils.newArrayList();
         for (final PtNodeArray array : flatNodes) {
             for (final PtNode node : array.mData) {
-                if (node.isTerminal()) node.mTerminalId = terminalCount++;
+                if (node.isTerminal()) {
+                    nodes.add(node);
+                    node.mTerminalId = terminalCount++;
+                }
             }
+        }
+        Collections.sort(nodes, new Comparator<PtNode>() {
+            @Override
+            public int compare(final PtNode lhs, final PtNode rhs) {
+                if (lhs.mFrequency != rhs.mFrequency) {
+                    return lhs.mFrequency < rhs.mFrequency ? -1 : 1;
+                }
+                if (lhs.mTerminalId < rhs.mTerminalId) return -1;
+                if (lhs.mTerminalId > rhs.mTerminalId) return 1;
+                return 0;
+            }
+        });
+        int count = 0;
+        for (final PtNode node : nodes) {
+            node.mTerminalId = count++;
         }
 
         MakedictLog.i("Computing addresses...");
@@ -337,7 +312,7 @@ public class Ver4DictEncoder implements DictEncoder {
 
     @Override
     public void setPosition(int position) {
-        if (mTrieBuf == null || position < 0 || position >- mTrieBuf.length) return;
+        if (mTrieBuf == null || position < 0 || position > mTrieBuf.length) return;
         mTriePos = position;
     }
 
@@ -457,7 +432,7 @@ public class Ver4DictEncoder implements DictEncoder {
                             ptNode.mFrequency, FormatSpec.FREQUENCY_AND_FLAGS_SIZE);
                     BinaryDictEncoderUtils.writeUIntToBuffer(terminalAddressTableBuf,
                             ptNode.mTerminalId * FormatSpec.TERMINAL_ADDRESS_TABLE_ADDRESS_SIZE,
-                            ptNode.mCachedAddressAfterUpdate + mHeaderSize,
+                            ptNode.mCachedAddressAfterUpdate,
                             FormatSpec.TERMINAL_ADDRESS_TABLE_ADDRESS_SIZE);
                 }
             }

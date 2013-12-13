@@ -22,7 +22,6 @@
 #include "suggest/core/dicnode/dic_node_vector.h"
 #include "suggest/core/dictionary/multi_bigram_map.h"
 #include "suggest/core/policy/dictionary_structure_with_buffer_policy.h"
-#include "utils/char_utils.h"
 
 namespace latinime {
 
@@ -32,19 +31,20 @@ namespace latinime {
 
 /* static */ void DicNodeUtils::initAsRoot(
         const DictionaryStructureWithBufferPolicy *const dictionaryStructurePolicy,
-        const int prevWordNodePos, DicNode *const newRootNode) {
-    newRootNode->initAsRoot(dictionaryStructurePolicy->getRootPosition(), prevWordNodePos);
+        const int prevWordPtNodePos, DicNode *const newRootDicNode) {
+    newRootDicNode->initAsRoot(dictionaryStructurePolicy->getRootPosition(), prevWordPtNodePos);
 }
 
 /*static */ void DicNodeUtils::initAsRootWithPreviousWord(
         const DictionaryStructureWithBufferPolicy *const dictionaryStructurePolicy,
-        DicNode *const prevWordLastNode, DicNode *const newRootNode) {
-    newRootNode->initAsRootWithPreviousWord(
-            prevWordLastNode, dictionaryStructurePolicy->getRootPosition());
+        const DicNode *const prevWordLastDicNode, DicNode *const newRootDicNode) {
+    newRootDicNode->initAsRootWithPreviousWord(
+            prevWordLastDicNode, dictionaryStructurePolicy->getRootPosition());
 }
 
-/* static */ void DicNodeUtils::initByCopy(DicNode *srcNode, DicNode *destNode) {
-    destNode->initByCopy(srcNode);
+/* static */ void DicNodeUtils::initByCopy(const DicNode *const srcDicNode,
+        DicNode *const destDicNode) {
+    destDicNode->initByCopy(srcDicNode);
 }
 
 ///////////////////////////////////
@@ -52,14 +52,14 @@ namespace latinime {
 ///////////////////////////////////
 /* static */ void DicNodeUtils::getAllChildDicNodes(DicNode *dicNode,
         const DictionaryStructureWithBufferPolicy *const dictionaryStructurePolicy,
-        DicNodeVector *childDicNodes) {
+        DicNodeVector *const childDicNodes) {
     if (dicNode->isTotalInputSizeExceedingLimit()) {
         return;
     }
     if (!dicNode->isLeavingNode()) {
         childDicNodes->pushPassingChild(dicNode);
     } else {
-        dictionaryStructurePolicy->createAndGetAllChildNodes(dicNode, childDicNodes);
+        dictionaryStructurePolicy->createAndGetAllChildDicNodes(dicNode, childDicNodes);
     }
 }
 
@@ -71,11 +71,11 @@ namespace latinime {
  */
 /* static */ float DicNodeUtils::getBigramNodeImprobability(
         const DictionaryStructureWithBufferPolicy *const dictionaryStructurePolicy,
-        const DicNode *const node, MultiBigramMap *multiBigramMap) {
-    if (node->hasMultipleWords() && !node->isValidMultipleWordSuggestion()) {
+        const DicNode *const dicNode, MultiBigramMap *const multiBigramMap) {
+    if (dicNode->hasMultipleWords() && !dicNode->isValidMultipleWordSuggestion()) {
         return static_cast<float>(MAX_VALUE_FOR_WEIGHTING);
     }
-    const int probability = getBigramNodeProbability(dictionaryStructurePolicy, node,
+    const int probability = getBigramNodeProbability(dictionaryStructurePolicy, dicNode,
             multiBigramMap);
     // TODO: This equation to calculate the improbability looks unreasonable.  Investigate this.
     const float cost = static_cast<float>(MAX_PROBABILITY - probability)
@@ -85,19 +85,19 @@ namespace latinime {
 
 /* static */ int DicNodeUtils::getBigramNodeProbability(
         const DictionaryStructureWithBufferPolicy *const dictionaryStructurePolicy,
-        const DicNode *const node, MultiBigramMap *multiBigramMap) {
-    const int unigramProbability = node->getProbability();
-    const int wordPos = node->getPos();
-    const int prevWordPos = node->getPrevWordPos();
-    if (NOT_A_DICT_POS == wordPos || NOT_A_DICT_POS == prevWordPos) {
+        const DicNode *const dicNode, MultiBigramMap *const multiBigramMap) {
+    const int unigramProbability = dicNode->getProbability();
+    const int ptNodePos = dicNode->getPtNodePos();
+    const int prevWordTerminalPtNodePos = dicNode->getPrevWordTerminalPtNodePos();
+    if (NOT_A_DICT_POS == ptNodePos || NOT_A_DICT_POS == prevWordTerminalPtNodePos) {
         // Note: Normally wordPos comes from the dictionary and should never equal
         // NOT_A_VALID_WORD_POS.
         return dictionaryStructurePolicy->getProbability(unigramProbability,
                 NOT_A_PROBABILITY);
     }
     if (multiBigramMap) {
-        return multiBigramMap->getBigramProbability(dictionaryStructurePolicy, prevWordPos,
-                wordPos, unigramProbability);
+        return multiBigramMap->getBigramProbability(dictionaryStructurePolicy,
+                prevWordTerminalPtNodePos, ptNodePos, unigramProbability);
     }
     return dictionaryStructurePolicy->getProbability(unigramProbability,
             NOT_A_PROBABILITY);
@@ -109,7 +109,7 @@ namespace latinime {
 
 // TODO: Move to char_utils?
 /* static */ int DicNodeUtils::appendTwoWords(const int *const src0, const int16_t length0,
-        const int *const src1, const int16_t length1, int *dest) {
+        const int *const src1, const int16_t length1, int *const dest) {
     int actualLength0 = 0;
     for (int i = 0; i < length0; ++i) {
         if (src0[i] == 0) {

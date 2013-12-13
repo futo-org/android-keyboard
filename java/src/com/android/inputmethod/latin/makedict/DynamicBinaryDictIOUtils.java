@@ -37,7 +37,7 @@ import java.util.Arrays;
 @UsedForTesting
 public final class DynamicBinaryDictIOUtils {
     private static final boolean DBG = false;
-    private static final int MAX_JUMPS = 10000;
+    static final int MAX_JUMPS = 10000;
 
     private DynamicBinaryDictIOUtils() {
         // This utility class is not publicly instantiable.

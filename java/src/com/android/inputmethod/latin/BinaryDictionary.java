@@ -26,6 +26,7 @@ import com.android.inputmethod.latin.settings.NativeSuggestOptions;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.JniUtils;
 import com.android.inputmethod.latin.utils.StringUtils;
+import com.android.inputmethod.latin.utils.UnigramProperty;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -56,6 +57,21 @@ public final class BinaryDictionary extends Dictionary {
     public static final String MAX_UNIGRAM_COUNT_QUERY = "MAX_UNIGRAM_COUNT";
     @UsedForTesting
     public static final String MAX_BIGRAM_COUNT_QUERY = "MAX_BIGRAM_COUNT";
+
+    public static final int NOT_A_VALID_TIMESTAMP = -1;
+
+    // Format to get unigram flags from native side via getUnigramPropertyNative().
+    private static final int FORMAT_UNIGRAM_PROPERTY_OUTPUT_FLAG_COUNT = 4;
+    private static final int FORMAT_UNIGRAM_PROPERTY_IS_NOT_A_WORD_INDEX = 0;
+    private static final int FORMAT_UNIGRAM_PROPERTY_IS_BLACKLISTED_INDEX = 1;
+    private static final int FORMAT_UNIGRAM_PROPERTY_HAS_BIGRAMS_INDEX = 2;
+    private static final int FORMAT_UNIGRAM_PROPERTY_HAS_SHORTCUTS_INDEX = 3;
+
+    // Format to get unigram historical info from native side via getUnigramPropertyNative().
+    private static final int FORMAT_UNIGRAM_PROPERTY_OUTPUT_HISTORICAL_INFO_COUNT = 3;
+    private static final int FORMAT_UNIGRAM_PROPERTY_TIMESTAMP_INDEX = 0;
+    private static final int FORMAT_UNIGRAM_PROPERTY_LEVEL_INDEX = 1;
+    private static final int FORMAT_UNIGRAM_PROPERTY_COUNT_INDEX = 2;
 
     private long mNativeDict;
     private final Locale mLocale;
@@ -123,8 +139,13 @@ public final class BinaryDictionary extends Dictionary {
     private static native boolean needsToRunGCNative(long dict, boolean mindsBlockByGC);
     private static native void flushWithGCNative(long dict, String filePath);
     private static native void closeNative(long dict);
+    private static native int getFormatVersionNative(long dict);
     private static native int getProbabilityNative(long dict, int[] word);
     private static native int getBigramProbabilityNative(long dict, int[] word0, int[] word1);
+    private static native void getUnigramPropertyNative(long dict, int[] word,
+            int[] outCodePoints, boolean[] outFlags, int[] outProbability,
+            int[] outHistoricalInfo, ArrayList<int[]> outShortcutTargets,
+            ArrayList<Integer> outShortcutProbabilities);
     private static native int getSuggestionsNative(long dict, long proximityInfo,
             long traverseSession, int[] xCoordinates, int[] yCoordinates, int[] times,
             int[] pointerIds, int[] inputCodePoints, int inputSize, int commitPoint,
@@ -133,10 +154,14 @@ public final class BinaryDictionary extends Dictionary {
             int[] outputAutoCommitFirstWordConfidence);
     private static native float calcNormalizedScoreNative(int[] before, int[] after, int score);
     private static native int editDistanceNative(int[] before, int[] after);
-    private static native void addUnigramWordNative(long dict, int[] word, int probability);
+    private static native void addUnigramWordNative(long dict, int[] word, int probability,
+            int[] shortcutTarget, int shortcutProbability, boolean isNotAWord,
+            boolean isBlacklisted, int timestamp);
     private static native void addBigramWordsNative(long dict, int[] word0, int[] word1,
-            int probability);
+            int probability, int timestamp);
     private static native void removeBigramWordsNative(long dict, int[] word0, int[] word1);
+    private static native int addMultipleDictionaryEntriesNative(long dict,
+            LanguageModelParam[] languageModelParams, int startIndex);
     private static native int calculateProbabilityNative(long dict, int unigramProbability,
             int bigramProbability);
     private static native String getPropertyNative(long dict, String query);
@@ -235,6 +260,10 @@ public final class BinaryDictionary extends Dictionary {
         return mNativeDict != 0;
     }
 
+    public int getFormatVersion() {
+        return getFormatVersionNative(mNativeDict);
+    }
+
     public static float calcNormalizedScore(final String before, final String after,
             final int score) {
         return calcNormalizedScoreNative(StringUtils.toCodePointArray(before),
@@ -274,23 +303,55 @@ public final class BinaryDictionary extends Dictionary {
         return getBigramProbabilityNative(mNativeDict, codePoints0, codePoints1);
     }
 
-    // Add a unigram entry to binary dictionary in native code.
-    public void addUnigramWord(final String word, final int probability) {
+    @UsedForTesting
+    public UnigramProperty getUnigramProperty(final String word) {
+        if (TextUtils.isEmpty(word)) {
+            return null;
+        }
+        final int[] codePoints = StringUtils.toCodePointArray(word);
+        final int[] outCodePoints = new int[MAX_WORD_LENGTH];
+        final boolean[] outFlags = new boolean[FORMAT_UNIGRAM_PROPERTY_OUTPUT_FLAG_COUNT];
+        final int[] outProbability = new int[1];
+        final int[] outHistoricalInfo =
+                new int[FORMAT_UNIGRAM_PROPERTY_OUTPUT_HISTORICAL_INFO_COUNT];
+        final ArrayList<int[]> outShortcutTargets = CollectionUtils.newArrayList();
+        final ArrayList<Integer> outShortcutProbabilities = CollectionUtils.newArrayList();
+        getUnigramPropertyNative(mNativeDict, codePoints, outCodePoints, outFlags, outProbability,
+                outHistoricalInfo, outShortcutTargets, outShortcutProbabilities);
+        return new UnigramProperty(codePoints,
+                outFlags[FORMAT_UNIGRAM_PROPERTY_IS_NOT_A_WORD_INDEX],
+                outFlags[FORMAT_UNIGRAM_PROPERTY_IS_BLACKLISTED_INDEX],
+                outFlags[FORMAT_UNIGRAM_PROPERTY_HAS_BIGRAMS_INDEX],
+                outFlags[FORMAT_UNIGRAM_PROPERTY_HAS_SHORTCUTS_INDEX], outProbability[0],
+                outHistoricalInfo[FORMAT_UNIGRAM_PROPERTY_TIMESTAMP_INDEX],
+                outHistoricalInfo[FORMAT_UNIGRAM_PROPERTY_LEVEL_INDEX],
+                outHistoricalInfo[FORMAT_UNIGRAM_PROPERTY_COUNT_INDEX],
+                outShortcutTargets, outShortcutProbabilities);
+    }
+
+    // Add a unigram entry to binary dictionary with unigram attributes in native code.
+    public void addUnigramWord(final String word, final int probability,
+            final String shortcutTarget, final int shortcutProbability, final boolean isNotAWord,
+            final boolean isBlacklisted, final int timestamp) {
         if (TextUtils.isEmpty(word)) {
             return;
         }
         final int[] codePoints = StringUtils.toCodePointArray(word);
-        addUnigramWordNative(mNativeDict, codePoints, probability);
+        final int[] shortcutTargetCodePoints = (shortcutTarget != null) ?
+                StringUtils.toCodePointArray(shortcutTarget) : null;
+        addUnigramWordNative(mNativeDict, codePoints, probability, shortcutTargetCodePoints,
+                shortcutProbability, isNotAWord, isBlacklisted, timestamp);
     }
 
-    // Add a bigram entry to binary dictionary in native code.
-    public void addBigramWords(final String word0, final String word1, final int probability) {
+    // Add a bigram entry to binary dictionary with timestamp in native code.
+    public void addBigramWords(final String word0, final String word1, final int probability,
+            final int timestamp) {
         if (TextUtils.isEmpty(word0) || TextUtils.isEmpty(word1)) {
             return;
         }
         final int[] codePoints0 = StringUtils.toCodePointArray(word0);
         final int[] codePoints1 = StringUtils.toCodePointArray(word1);
-        addBigramWordsNative(mNativeDict, codePoints0, codePoints1, probability);
+        addBigramWordsNative(mNativeDict, codePoints0, codePoints1, probability, timestamp);
     }
 
     // Remove a bigram entry form binary dictionary in native code.
@@ -303,10 +364,70 @@ public final class BinaryDictionary extends Dictionary {
         removeBigramWordsNative(mNativeDict, codePoints0, codePoints1);
     }
 
+    public static class LanguageModelParam {
+        public final int[] mWord0;
+        public final int[] mWord1;
+        public final int[] mShortcutTarget;
+        public final int mUnigramProbability;
+        public final int mBigramProbability;
+        public final int mShortcutProbability;
+        public final boolean mIsNotAWord;
+        public final boolean mIsBlacklisted;
+        public final int mTimestamp;
+
+        // Constructor for unigram.
+        public LanguageModelParam(final String word, final int unigramProbability,
+                final int timestamp) {
+            mWord0 = null;
+            mWord1 = StringUtils.toCodePointArray(word);
+            mShortcutTarget = null;
+            mUnigramProbability = unigramProbability;
+            mBigramProbability = NOT_A_PROBABILITY;
+            mShortcutProbability = NOT_A_PROBABILITY;
+            mIsNotAWord = false;
+            mIsBlacklisted = false;
+            mTimestamp = timestamp;
+        }
+
+        // Constructor for unigram and bigram.
+        public LanguageModelParam(final String word0, final String word1,
+                final int unigramProbability, final int bigramProbability,
+                final int timestamp) {
+            mWord0 = StringUtils.toCodePointArray(word0);
+            mWord1 = StringUtils.toCodePointArray(word1);
+            mShortcutTarget = null;
+            mUnigramProbability = unigramProbability;
+            mBigramProbability = bigramProbability;
+            mShortcutProbability = NOT_A_PROBABILITY;
+            mIsNotAWord = false;
+            mIsBlacklisted = false;
+            mTimestamp = timestamp;
+        }
+    }
+
+    public void addMultipleDictionaryEntries(final LanguageModelParam[] languageModelParams) {
+        if (!isValidDictionary()) return;
+        int processedParamCount = 0;
+        while (processedParamCount < languageModelParams.length) {
+            if (needsToRunGC(true /* mindsBlockByGC */)) {
+                flushWithGC();
+            }
+            processedParamCount = addMultipleDictionaryEntriesNative(mNativeDict,
+                    languageModelParams, processedParamCount);
+            if (processedParamCount <= 0) {
+                return;
+            }
+        }
+
+    }
+
     private void reopen() {
         close();
         final File dictFile = new File(mDictFilePath);
-        mNativeDict = openNative(dictFile.getAbsolutePath(), 0 /* startOffset */,
+        // WARNING: Because we pass 0 as the offset and file.length() as the length, this can
+        // only be called for actual files. Right now it's only called by the flush() family of
+        // functions, which require an updatable dictionary, so it's okay. But beware.
+        loadDictionary(dictFile.getAbsolutePath(), 0 /* startOffset */,
                 dictFile.length(), true /* isUpdatable */);
     }
 

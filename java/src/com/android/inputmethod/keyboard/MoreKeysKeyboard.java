@@ -223,7 +223,7 @@ public final class MoreKeysKeyboard extends Keyboard {
         }
 
         public int getDefaultKeyCoordX() {
-            return mLeftKeys * mColumnWidth;
+            return mLeftKeys * mColumnWidth + mLeftPadding;
         }
 
         public int getX(final int n, final int row) {
@@ -298,7 +298,7 @@ public final class MoreKeysKeyboard extends Keyboard {
                 height = keyPreviewDrawParams.mPreviewVisibleHeight + mParams.mVerticalGap;
             } else {
                 final float padding = context.getResources().getDimension(
-                        R.dimen.more_keys_keyboard_key_horizontal_padding)
+                        R.dimen.config_more_keys_keyboard_key_horizontal_padding)
                         + (parentKey.hasLabelsInMoreKeys()
                                 ? mParams.mDefaultKeyWidth * LABEL_PADDING_RATIO : 0.0f);
                 width = getMaxKeyWidth(parentKey, mParams.mDefaultKeyWidth, padding,
@@ -327,7 +327,7 @@ public final class MoreKeysKeyboard extends Keyboard {
                 // If the label is single letter, minKeyWidth is enough to hold the label.
                 if (label != null && StringUtils.codePointCount(label) > 1) {
                     maxWidth = Math.max(maxWidth,
-                            (int)(TypefaceUtils.getLabelWidth(label, paint) + padding));
+                            (int)(TypefaceUtils.getStringWidth(label, paint) + padding));
                 }
             }
             return maxWidth;

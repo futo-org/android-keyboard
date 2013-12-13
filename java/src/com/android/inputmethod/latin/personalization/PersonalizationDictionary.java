@@ -16,53 +16,37 @@
 
 package com.android.inputmethod.latin.personalization;
 
+import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.Dictionary;
-import com.android.inputmethod.latin.ExpandableBinaryDictionary;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Locale;
 
-/**
- * This class is a dictionary for the personalized language model that uses binary dictionary.
- */
-public class PersonalizationDictionary extends ExpandableBinaryDictionary {
-    private static final String NAME = "personalization";
+import android.content.Context;
+
+public class PersonalizationDictionary extends DecayingExpandableBinaryDictionaryBase {
+    private static final String NAME = PersonalizationDictionary.class.getSimpleName();
+
     private final ArrayList<PersonalizationDictionaryUpdateSession> mSessions =
             CollectionUtils.newArrayList();
 
-    /** Locale for which this user history dictionary is storing words */
-    private final String mLocale;
-
-    public PersonalizationDictionary(final Context context, final String locale,
-            final SharedPreferences prefs) {
-        // TODO: Make isUpdatable true.
-        super(context, getFilenameWithLocale(NAME, locale), Dictionary.TYPE_PERSONALIZATION,
-                false /* isUpdatable */);
-        mLocale = locale;
-        // TODO: Restore last updated time
-        loadDictionary();
+    /* package */ PersonalizationDictionary(final Context context, final Locale locale) {
+        super(context, locale, Dictionary.TYPE_PERSONALIZATION,
+                getDictNameWithLocale(NAME, locale));
     }
 
-    @Override
-    protected void loadDictionaryAsync() {
-        // TODO: Implement
-    }
-
-    @Override
-    protected boolean hasContentChanged() {
-        return false;
-    }
-
-    @Override
-    protected boolean needsToReloadBeforeWriting() {
-        return false;
+    // Creates an instance that uses a given dictionary file for testing.
+    @UsedForTesting
+    public PersonalizationDictionary(final Context context, final Locale locale,
+            final File dictFile) {
+        super(context, locale, Dictionary.TYPE_PERSONALIZATION, getDictNameWithLocale(NAME, locale),
+                dictFile);
     }
 
     public void registerUpdateSession(PersonalizationDictionaryUpdateSession session) {
-        session.setDictionary(this);
+        session.setPredictionDictionary(this);
         mSessions.add(session);
         session.onDictionaryReady();
     }

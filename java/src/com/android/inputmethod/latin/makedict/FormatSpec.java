@@ -199,13 +199,19 @@ public final class FormatSpec {
      */
 
     public static final int MAGIC_NUMBER = 0x9BC13AFE;
-    static final int MINIMUM_SUPPORTED_VERSION = 2;
-    static final int MAXIMUM_SUPPORTED_VERSION = 4;
     static final int NOT_A_VERSION_NUMBER = -1;
     static final int FIRST_VERSION_WITH_DYNAMIC_UPDATE = 3;
     static final int FIRST_VERSION_WITH_TERMINAL_ID = 4;
-    static final int VERSION3 = 3;
-    static final int VERSION4 = 4;
+
+    // These MUST have the same values as the relevant constants in format_utils.h.
+    // From version 4 on, we use version * 100 + revision as a version number. That allows
+    // us to change the format during development while having testing devices remove
+    // older files with each upgrade, while still having a readable versioning scheme.
+    public static final int VERSION2 = 2;
+    public static final int VERSION3 = 3;
+    public static final int VERSION4 = 400;
+    static final int MINIMUM_SUPPORTED_VERSION = VERSION2;
+    static final int MAXIMUM_SUPPORTED_VERSION = VERSION4;
 
     // These options need to be the same numeric values as the one in the native reading code.
     static final int GERMAN_UMLAUT_PROCESSING_FLAG = 0x1;
@@ -263,8 +269,10 @@ public final class FormatSpec {
     static final int PTNODE_ATTRIBUTE_MAX_ADDRESS_SIZE = 3;
     static final int PTNODE_SHORTCUT_LIST_SIZE_SIZE = 2;
 
-    // These values are used only by version 4 or later.
+    // These values are used only by version 4 or later. They MUST match the definitions in
+    // ver4_dict_constants.cpp.
     static final String TRIE_FILE_EXTENSION = ".trie";
+    public static final String HEADER_FILE_EXTENSION = ".header";
     static final String FREQ_FILE_EXTENSION = ".freq";
     static final String UNIGRAM_TIMESTAMP_FILE_EXTENSION = ".timestamp";
     // tat = Terminal Address Table
@@ -278,9 +286,9 @@ public final class FormatSpec {
     static final int UNIGRAM_TIMESTAMP_SIZE = 4;
 
     // With the English main dictionary as of October 2013, the size of bigram address table is
-    // is 584KB with the block size being 4.
-    // This is 91% of that of full address table.
-    static final int BIGRAM_ADDRESS_TABLE_BLOCK_SIZE = 4;
+    // is 345KB with the block size being 16.
+    // This is 54% of that of full address table.
+    static final int BIGRAM_ADDRESS_TABLE_BLOCK_SIZE = 16;
     static final int BIGRAM_CONTENT_COUNT = 2;
     static final int BIGRAM_FREQ_CONTENT_INDEX = 0;
     static final int BIGRAM_TIMESTAMP_CONTENT_INDEX = 1;
@@ -293,7 +301,7 @@ public final class FormatSpec {
     static final int SHORTCUT_CONTENT_COUNT = 1;
     static final int SHORTCUT_CONTENT_INDEX = 0;
     // With the English main dictionary as of October 2013, the size of shortcut address table is
-    // 29KB with the block size being 64.
+    // 26KB with the block size being 64.
     // This is only 4.4% of that of full address table.
     static final int SHORTCUT_ADDRESS_TABLE_BLOCK_SIZE = 64;
     static final String SHORTCUT_CONTENT_ID = "_shortcut";
@@ -361,13 +369,14 @@ public final class FormatSpec {
      * Class representing file header.
      */
     public static final class FileHeader {
-        public final int mHeaderSize;
+        public final int mBodyOffset;
         public final DictionaryOptions mDictionaryOptions;
         public final FormatOptions mFormatOptions;
         // Note that these are corresponding definitions in native code in latinime::HeaderPolicy
         // and latinime::HeaderReadWriteUtils.
         public static final String SUPPORTS_DYNAMIC_UPDATE_ATTRIBUTE = "SUPPORTS_DYNAMIC_UPDATE";
         public static final String USES_FORGETTING_CURVE_ATTRIBUTE = "USES_FORGETTING_CURVE";
+        public static final String HAS_HISTORICAL_INFO_ATTRIBUTE = "HAS_HISTORICAL_INFO";
         public static final String ATTRIBUTE_VALUE_TRUE = "1";
 
         public static final String DICTIONARY_VERSION_ATTRIBUTE = "version";
@@ -376,9 +385,18 @@ public final class FormatSpec {
         private static final String DICTIONARY_DESCRIPTION_ATTRIBUTE = "description";
         public FileHeader(final int headerSize, final DictionaryOptions dictionaryOptions,
                 final FormatOptions formatOptions) {
-            mHeaderSize = headerSize;
             mDictionaryOptions = dictionaryOptions;
             mFormatOptions = formatOptions;
+            mBodyOffset = formatOptions.mVersion < VERSION4 ? headerSize : 0;
+            if (null == getLocaleString()) {
+                throw new RuntimeException("Cannot create a FileHeader without a locale");
+            }
+            if (null == getVersion()) {
+                throw new RuntimeException("Cannot create a FileHeader without a version");
+            }
+            if (null == getId()) {
+                throw new RuntimeException("Cannot create a FileHeader without an ID");
+            }
         }
 
         // Helper method to get the locale as a String

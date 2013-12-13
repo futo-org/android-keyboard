@@ -22,5 +22,5 @@
     <include latin:keyboardLayout="@xml/keys_less_greater" />
     <include
         latin:keyboardLayout="@xml/key_space_symbols" />
-    <include latin:keyboardLayout="@xml/keys_comma_period" />
+    <include latin:keyboardLayout="@xml/keys_comma_period_symbols" />
 </merge>

@@ -21,15 +21,20 @@
 
 #include "defines.h"
 #include "jni.h"
+#include "suggest/core/dictionary/bigram_dictionary.h"
+#include "suggest/core/dictionary/unigram_property.h"
+#include "suggest/core/policy/dictionary_header_structure_policy.h"
+#include "suggest/core/policy/dictionary_structure_with_buffer_policy.h"
+#include "suggest/core/suggest_interface.h"
+#include "utils/exclusive_ownership_pointer.h"
 
 namespace latinime {
 
-class BigramDictionary;
 class DictionaryStructureWithBufferPolicy;
 class DicTraverseSession;
 class ProximityInfo;
-class SuggestInterface;
 class SuggestOptions;
+class UnigramProperty;
 
 class Dictionary {
  public:
@@ -53,8 +58,8 @@ class Dictionary {
     static const int KIND_FLAG_POSSIBLY_OFFENSIVE = 0x80000000;
     static const int KIND_FLAG_EXACT_MATCH = 0x40000000;
 
-    Dictionary(JNIEnv *env,
-            DictionaryStructureWithBufferPolicy *const dictionaryStructureWithBufferPoilcy);
+    Dictionary(JNIEnv *env, const DictionaryStructureWithBufferPolicy::StructurePolicyPtr
+            &dictionaryStructureWithBufferPolicy);
 
     int getSuggestions(ProximityInfo *proximityInfo, DicTraverseSession *traverseSession,
             int *xcoordinates, int *ycoordinates, int *times, int *pointerIds, int *inputCodePoints,
@@ -69,10 +74,13 @@ class Dictionary {
 
     int getBigramProbability(const int *word0, int length0, const int *word1, int length1) const;
 
-    void addUnigramWord(const int *const word, const int length, const int probability);
+    void addUnigramWord(const int *const word, const int length, const int probability,
+            const int *const shortcutTargetCodePoints, const int shortcutLength,
+            const int shortcutProbability, const bool isNotAWord, const bool isBlacklisted,
+            const int timestamp);
 
     void addBigramWords(const int *const word0, const int length0, const int *const word1,
-            const int length1, const int probability);
+            const int length1, const int probability, const int timestamp);
 
     void removeBigramWords(const int *const word0, const int length0, const int *const word1,
             const int length1);
@@ -83,24 +91,33 @@ class Dictionary {
 
     bool needsToRunGC(const bool mindsBlockByGC);
 
-    void getProperty(const char *const query, char *const outResult,
+    void getProperty(const char *const query, const int queryLength, char *const outResult,
             const int maxResultLength);
 
+    const UnigramProperty getUnigramProperty(const int *const codePoints, const int codePointCount);
+
     const DictionaryStructureWithBufferPolicy *getDictionaryStructurePolicy() const {
-        return mDictionaryStructureWithBufferPolicy;
+        return mDictionaryStructureWithBufferPolicy.get();
     }
 
-    virtual ~Dictionary();
+    int getFormatVersionNumber() const {
+        return mDictionaryStructureWithBufferPolicy.get()->getHeaderStructurePolicy()
+                ->getFormatVersionNumber();
+    }
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(Dictionary);
 
+    typedef ExclusiveOwnershipPointer<BigramDictionary> BigramDictionaryPtr;
+    typedef ExclusiveOwnershipPointer<SuggestInterface> SuggestInterfacePtr;
+
     static const int HEADER_ATTRIBUTE_BUFFER_SIZE;
 
-    DictionaryStructureWithBufferPolicy *const mDictionaryStructureWithBufferPolicy;
-    const BigramDictionary *const mBigramDictionary;
-    const SuggestInterface *const mGestureSuggest;
-    const SuggestInterface *const mTypingSuggest;
+    const DictionaryStructureWithBufferPolicy::StructurePolicyPtr
+            mDictionaryStructureWithBufferPolicy;
+    const BigramDictionaryPtr mBigramDictionary;
+    const SuggestInterfacePtr mGestureSuggest;
+    const SuggestInterfacePtr mTypingSuggest;
 
     void logDictionaryInfo(JNIEnv *const env) const;
 };

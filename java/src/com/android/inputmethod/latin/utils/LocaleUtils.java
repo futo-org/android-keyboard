@@ -30,9 +30,6 @@ import java.util.Locale;
  * dictionary pack.
  */
 public final class LocaleUtils {
-    private static final HashMap<String, Long> EMPTY_LT_HASH_MAP = CollectionUtils.newHashMap();
-    private static final String LOCALE_AND_TIME_STR_SEPARATER = ",";
-
     private LocaleUtils() {
         // Intentional empty constructor for utility class.
     }
@@ -168,12 +165,14 @@ public final class LocaleUtils {
      * Creates a locale from a string specification.
      */
     public static Locale constructLocaleFromString(final String localeStr) {
-        if (localeStr == null)
+        if (localeStr == null) {
             return null;
+        }
         synchronized (sLocaleCache) {
-            if (sLocaleCache.containsKey(localeStr))
-                return sLocaleCache.get(localeStr);
-            Locale retval = null;
+            Locale retval = sLocaleCache.get(localeStr);
+            if (retval != null) {
+                return retval;
+            }
             String[] localeParams = localeStr.split("_", 3);
             if (localeParams.length == 1) {
                 retval = new Locale(localeParams[0]);
@@ -187,39 +186,5 @@ public final class LocaleUtils {
             }
             return retval;
         }
-    }
-
-    public static HashMap<String, Long> localeAndTimeStrToHashMap(String str) {
-        if (TextUtils.isEmpty(str)) {
-            return EMPTY_LT_HASH_MAP;
-        }
-        final String[] ss = str.split(LOCALE_AND_TIME_STR_SEPARATER);
-        final int N = ss.length;
-        if (N < 2 || N % 2 != 0) {
-            return EMPTY_LT_HASH_MAP;
-        }
-        final HashMap<String, Long> retval = CollectionUtils.newHashMap();
-        for (int i = 0; i < N / 2; ++i) {
-            final String localeStr = ss[i * 2];
-            final long time = Long.valueOf(ss[i * 2 + 1]);
-            retval.put(localeStr, time);
-        }
-        return retval;
-    }
-
-    public static String localeAndTimeHashMapToStr(HashMap<String, Long> map) {
-        if (map == null || map.isEmpty()) {
-            return "";
-        }
-        final StringBuilder builder = new StringBuilder();
-        for (String localeStr : map.keySet()) {
-            if (builder.length() > 0) {
-                builder.append(LOCALE_AND_TIME_STR_SEPARATER);
-            }
-            final Long time = map.get(localeStr);
-            builder.append(localeStr).append(LOCALE_AND_TIME_STR_SEPARATER);
-            builder.append(String.valueOf(time));
-        }
-        return builder.toString();
     }
 }

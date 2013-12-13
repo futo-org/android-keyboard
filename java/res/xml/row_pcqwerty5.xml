@@ -28,7 +28,7 @@
             latin:keyWidth="11.538%p" />
         <switch>
             <case
-                latin:shortcutKeyEnabled="true"
+                latin:supportsSwitchingToShortcutIme="true"
             >
                 <Key
                     latin:keyStyle="shortcutKeyStyle"

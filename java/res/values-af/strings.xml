@@ -117,12 +117,6 @@
     <string name="keyboard_mode_time" msgid="4381856885582143277">"tyd"</string>
     <string name="keyboard_mode_url" msgid="1519819835514911218">"URL"</string>
     <string name="voice_input" msgid="3583258583521397548">"Steminvoerinstellings"</string>
-    <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"Op hoofsleutelbord"</string>
-    <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"Op simbolesleutelbord"</string>
-    <string name="voice_input_modes_off" msgid="3745699748218082014">"Af"</string>
-    <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Mikrofoon op hoofsleutelbord"</string>
-    <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Mikrofoon op simbolesleutelbord"</string>
-    <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Steminvoer is gedeaktiveer"</string>
     <string name="configure_input_method" msgid="373356270290742459">"Stel invoermetodes op"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Invoertale"</string>
     <string name="send_feedback" msgid="1780431884109392046">"Stuur terugvoer"</string>

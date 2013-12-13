@@ -17,18 +17,16 @@
 package com.android.inputmethod.latin.personalization;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.android.inputmethod.annotations.UsedForTesting;
+import com.android.inputmethod.latin.BinaryDictionary.LanguageModelParam;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.ExpandableBinaryDictionary;
-import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.makedict.DictDecoder;
 import com.android.inputmethod.latin.makedict.FormatSpec;
-import com.android.inputmethod.latin.settings.Settings;
-import com.android.inputmethod.latin.utils.CollectionUtils;
+import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
 import com.android.inputmethod.latin.utils.UserHistoryDictIOUtils;
 import com.android.inputmethod.latin.utils.UserHistoryDictIOUtils.OnAddWordListener;
 
@@ -36,7 +34,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This class is a base class of a dictionary that supports decaying for the personalized language
@@ -45,8 +45,7 @@ import java.util.Map;
 public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableBinaryDictionary {
     private static final String TAG = DecayingExpandableBinaryDictionaryBase.class.getSimpleName();
     public static final boolean DBG_SAVE_RESTORE = false;
-    private static final boolean DBG_STRESS_TEST = false;
-    private static final boolean PROFILE_SAVE_RESTORE = LatinImeLogger.sDBG;
+    private static final boolean DBG_DUMP_ON_CLOSE = false;
 
     /** Any pair being typed or picked */
     public static final int FREQUENCY_FOR_TYPED = 2;
@@ -54,41 +53,43 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
     public static final int FREQUENCY_FOR_WORDS_IN_DICTS = FREQUENCY_FOR_TYPED;
     public static final int FREQUENCY_FOR_WORDS_NOT_IN_DICTS = Dictionary.NOT_A_PROBABILITY;
 
+    public static final int REQUIRED_BINARY_DICTIONARY_VERSION = 4;
+
     /** Locale for which this user history dictionary is storing words */
-    private final String mLocale;
+    private final Locale mLocale;
 
-    private final String mFileName;
-
-    private final SharedPreferences mPrefs;
-
-    private final ArrayList<PersonalizationDictionaryUpdateSession> mSessions =
-            CollectionUtils.newArrayList();
-
-    // Should always be false except when we use this class for test
-    @UsedForTesting boolean mIsTest = false;
+    private final String mDictName;
 
     /* package */ DecayingExpandableBinaryDictionaryBase(final Context context,
-            final String locale, final SharedPreferences sp, final String dictionaryType,
-            final String fileName) {
-        super(context, fileName, dictionaryType, true);
+            final Locale locale, final String dictionaryType, final String dictName) {
+        super(context, dictName, locale, dictionaryType, true);
         mLocale = locale;
-        mFileName = fileName;
-        mPrefs = sp;
-        if (mLocale != null && mLocale.length() > 1) {
-            asyncLoadDictionaryToMemory();
+        mDictName = dictName;
+        if (mLocale != null && mLocale.toString().length() > 1) {
+            reloadDictionaryIfRequired();
+        }
+    }
+
+    // Creates an instance that uses a given dictionary file for testing.
+    @UsedForTesting
+    /* package */ DecayingExpandableBinaryDictionaryBase(final Context context,
+            final Locale locale, final String dictionaryType, final String dictName,
+            final File dictFile) {
+        super(context, dictName, locale, dictionaryType, true, dictFile);
+        mLocale = locale;
+        mDictName = dictName;
+        if (mLocale != null && mLocale.toString().length() > 1) {
             reloadDictionaryIfRequired();
         }
     }
 
     @Override
     public void close() {
-        if (!ExpandableBinaryDictionary.ENABLE_BINARY_DICTIONARY_DYNAMIC_UPDATE) {
-            closeBinaryDictionary();
+        if (DBG_DUMP_ON_CLOSE) {
+            dumpAllWordsForDebug();
         }
         // Flush pending writes.
-        // TODO: Remove after this class become to use a dynamic binary dictionary.
-        asyncFlashAllBinaryDictionary();
-        Settings.writeLastUserHistoryWriteTime(mPrefs, mLocale);
+        asyncFlushBinaryDictionary();
     }
 
     @Override
@@ -98,8 +99,12 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
                 FormatSpec.FileHeader.ATTRIBUTE_VALUE_TRUE);
         attributeMap.put(FormatSpec.FileHeader.USES_FORGETTING_CURVE_ATTRIBUTE,
                 FormatSpec.FileHeader.ATTRIBUTE_VALUE_TRUE);
-        attributeMap.put(FormatSpec.FileHeader.DICTIONARY_ID_ATTRIBUTE, mFileName);
-        attributeMap.put(FormatSpec.FileHeader.DICTIONARY_LOCALE_ATTRIBUTE, mLocale);
+        attributeMap.put(FormatSpec.FileHeader.HAS_HISTORICAL_INFO_ATTRIBUTE,
+                FormatSpec.FileHeader.ATTRIBUTE_VALUE_TRUE);
+        attributeMap.put(FormatSpec.FileHeader.DICTIONARY_ID_ATTRIBUTE, mDictName);
+        attributeMap.put(FormatSpec.FileHeader.DICTIONARY_LOCALE_ATTRIBUTE, mLocale.toString());
+        attributeMap.put(FormatSpec.FileHeader.DICTIONARY_VERSION_ATTRIBUTE,
+                String.valueOf(TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis())));
         return attributeMap;
     }
 
@@ -113,6 +118,25 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
         return false;
     }
 
+    @Override
+    protected boolean matchesExpectedBinaryDictFormatVersionForThisType(final int formatVersion) {
+        // This class is using format 4 because it's used by all version 4 dictionaries.
+        // TODO: remove this when all dynamically generated dicts use version 4.
+        return formatVersion == REQUIRED_BINARY_DICTIONARY_VERSION;
+    }
+
+    public void addMultipleDictionaryEntriesToDictionary(
+            final ArrayList<LanguageModelParam> languageModelParams,
+            final ExpandableBinaryDictionary.AddMultipleDictionaryEntriesCallback callback) {
+        if (languageModelParams == null || languageModelParams.isEmpty()) {
+            if (callback != null) {
+                callback.onFinished();
+            }
+            return;
+        }
+        addMultipleDictionaryEntriesDynamically(languageModelParams, callback);
+    }
+
     /**
      * Pair will be added to the decaying dictionary.
      *
@@ -121,70 +145,63 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
      * context, as in beginning of a sentence for example.
      * The second word may not be null (a NullPointerException would be thrown).
      */
-    public void addToDictionary(final String word0, final String word1, final boolean isValid) {
+    public void addToDictionary(final String word0, final String word1, final boolean isValid,
+            final int timestamp) {
         if (word1.length() >= Constants.DICTIONARY_MAX_WORD_LENGTH ||
                 (word0 != null && word0.length() >= Constants.DICTIONARY_MAX_WORD_LENGTH)) {
             return;
         }
-        final int frequency = ENABLE_BINARY_DICTIONARY_DYNAMIC_UPDATE ?
-                (isValid ? FREQUENCY_FOR_WORDS_IN_DICTS : FREQUENCY_FOR_WORDS_NOT_IN_DICTS) :
-                        FREQUENCY_FOR_TYPED;
-        addWordDynamically(word1, null /* shortcutTarget */, frequency, 0 /* shortcutFreq */,
-                false /* isNotAWord */);
+        final int frequency = isValid ?
+                FREQUENCY_FOR_WORDS_IN_DICTS : FREQUENCY_FOR_WORDS_NOT_IN_DICTS;
+        addWordDynamically(word1, frequency, null /* shortcutTarget */, 0 /* shortcutFreq */,
+                false /* isNotAWord */, false /* isBlacklisted */, timestamp);
         // Do not insert a word as a bigram of itself
         if (word1.equals(word0)) {
             return;
         }
         if (null != word0) {
-            addBigramDynamically(word0, word1, frequency, isValid);
+            addBigramDynamically(word0, word1, frequency, timestamp);
         }
-    }
-
-    public void cancelAddingUserHistory(final String word0, final String word1) {
-        removeBigramDynamically(word0, word1);
     }
 
     @Override
     protected void loadDictionaryAsync() {
-        final int[] profTotalCount = { 0 };
-        final String locale = getLocale();
-        if (DBG_STRESS_TEST) {
-            try {
-                Log.w(TAG, "Start stress in loading: " + locale);
-                Thread.sleep(15000);
-                Log.w(TAG, "End stress in loading");
-            } catch (InterruptedException e) {
+        // Never loaded to memory in Java side.
+    }
+
+    @UsedForTesting
+    public void dumpAllWordsForDebug() {
+        runAfterGcForDebug(new Runnable() {
+            @Override
+            public void run() {
+                dumpAllWordsForDebugLocked();
             }
-        }
-        final long last = Settings.readLastUserHistoryWriteTime(mPrefs, locale);
-        final long now = System.currentTimeMillis();
-        final ExpandableBinaryDictionary dictionary = this;
+        });
+    }
+
+    private void dumpAllWordsForDebugLocked() {
+        Log.d(TAG, "dumpAllWordsForDebug started.");
         final OnAddWordListener listener = new OnAddWordListener() {
             @Override
             public void setUnigram(final String word, final String shortcutTarget,
                     final int frequency, final int shortcutFreq) {
-                if (DBG_SAVE_RESTORE) {
-                    Log.d(TAG, "load unigram: " + word + "," + frequency);
-                }
-                addWord(word, shortcutTarget, frequency, shortcutFreq, false /* isNotAWord */);
-                ++profTotalCount[0];
+                Log.d(TAG, "load unigram: " + word + "," + frequency);
             }
 
             @Override
             public void setBigram(final String word0, final String word1, final int frequency) {
                 if (word0.length() < Constants.DICTIONARY_MAX_WORD_LENGTH
                         && word1.length() < Constants.DICTIONARY_MAX_WORD_LENGTH) {
-                    if (DBG_SAVE_RESTORE) {
-                        Log.d(TAG, "load bigram: " + word0 + "," + word1 + "," + frequency);
-                    }
-                    ++profTotalCount[0];
-                    addBigram(word0, word1, frequency, last);
+                    Log.d(TAG, "load bigram: " + word0 + "," + word1 + "," + frequency);
+                } else {
+                    Log.d(TAG, "Skip inserting a too long bigram: " + word0 + "," + word1 + ","
+                            + frequency);
                 }
             }
         };
 
         // Load the dictionary from binary file
-        final File dictFile = new File(mContext.getFilesDir(), mFileName);
+        final File dictFile = new File(mContext.getFilesDir(), mDictName);
         final DictDecoder dictDecoder = FormatSpec.getDictDecoder(dictFile,
                 DictDecoder.USE_BYTEARRAY);
         if (dictDecoder == null) {
@@ -198,27 +215,9 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
             UserHistoryDictIOUtils.readDictionaryBinary(dictDecoder, listener);
         } catch (IOException e) {
             Log.d(TAG, "IOException on opening a bytebuffer", e);
-        } finally {
-            if (PROFILE_SAVE_RESTORE) {
-                final long diff = System.currentTimeMillis() - now;
-                Log.d(TAG, "PROF: Load UserHistoryDictionary: "
-                        + locale + ", " + diff + "ms. load " + profTotalCount[0] + "entries.");
-            }
+        } catch (UnsupportedFormatException e) {
+            Log.d(TAG, "Unsupported format, can't read the dictionary", e);
         }
-    }
-
-    protected String getLocale() {
-        return mLocale;
-    }
-
-    public void registerUpdateSession(PersonalizationDictionaryUpdateSession session) {
-        session.setPredictionDictionary(this);
-        mSessions.add(session);
-        session.onDictionaryReady();
-    }
-
-    public void unRegisterUpdateSession(PersonalizationDictionaryUpdateSession session) {
-        mSessions.remove(session);
     }
 
     @UsedForTesting
@@ -226,7 +225,7 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
         // Clear the node structure on memory
         clear();
         // Then flush the cleared state of the dictionary on disk.
-        asyncFlashAllBinaryDictionary();
+        asyncFlushBinaryDictionary();
     }
 
     /* package */ void decayIfNeeded() {

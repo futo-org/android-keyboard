@@ -32,27 +32,29 @@ import java.util.TreeMap;
  * A base class of the binary dictionary decoder.
  */
 public abstract class AbstractDictDecoder implements DictDecoder {
-    protected FileHeader readHeader(final DictBuffer dictBuffer)
+    private static final int SUCCESS = 0;
+    private static final int ERROR_CANNOT_READ = 1;
+    private static final int ERROR_WRONG_FORMAT = 2;
+
+    protected FileHeader readHeader(final DictBuffer headerBuffer)
             throws IOException, UnsupportedFormatException {
-        if (dictBuffer == null) {
+        if (headerBuffer == null) {
             openDictBuffer();
         }
 
-        final int version = HeaderReader.readVersion(dictBuffer);
+        final int version = HeaderReader.readVersion(headerBuffer);
         if (version < FormatSpec.MINIMUM_SUPPORTED_VERSION
                 || version > FormatSpec.MAXIMUM_SUPPORTED_VERSION) {
           throw new UnsupportedFormatException("Unsupported version : " + version);
         }
         // TODO: Remove this field.
-        final int optionsFlags = HeaderReader.readOptionFlags(dictBuffer);
-
-        final int headerSize = HeaderReader.readHeaderSize(dictBuffer);
-
+        final int optionsFlags = HeaderReader.readOptionFlags(headerBuffer);
+        final int headerSize = HeaderReader.readHeaderSize(headerBuffer);
         if (headerSize < 0) {
             throw new UnsupportedFormatException("header size can't be negative.");
         }
 
-        final HashMap<String, String> attributes = HeaderReader.readAttributes(dictBuffer,
+        final HashMap<String, String> attributes = HeaderReader.readAttributes(headerBuffer,
                 headerSize);
 
         final FileHeader header = new FileHeader(headerSize,
@@ -203,5 +205,26 @@ public abstract class AbstractDictDecoder implements DictDecoder {
             }
             return readLength;
         }
+    }
+
+    /**
+     * Check whether the header contains the expected information. This is a no-error method,
+     * that will return an error code and never throw a checked exception.
+     * @return an error code, either ERROR_* or SUCCESS.
+     */
+    private int checkHeader() {
+        try {
+            readHeader();
+        } catch (IOException e) {
+            return ERROR_CANNOT_READ;
+        } catch (UnsupportedFormatException e) {
+            return ERROR_WRONG_FORMAT;
+        }
+        return SUCCESS;
+    }
+
+    @Override
+    public boolean hasValidRawBinaryDictionary() {
+        return checkHeader() == SUCCESS;
     }
 }

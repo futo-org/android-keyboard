@@ -20,18 +20,24 @@ import android.util.Log;
 import android.view.MotionEvent;
 
 import com.android.inputmethod.keyboard.Key;
+import com.android.inputmethod.keyboard.KeyDetector;
 import com.android.inputmethod.keyboard.PointerTracker;
-import com.android.inputmethod.keyboard.PointerTracker.KeyEventHandler;
 import com.android.inputmethod.latin.utils.CoordinateUtils;
 
 public final class NonDistinctMultitouchHelper {
     private static final String TAG = NonDistinctMultitouchHelper.class.getSimpleName();
 
+    // Use only main (id=0) pointer tracker.
+    private final PointerTracker mMainTracker;
     private int mOldPointerCount = 1;
     private Key mOldKey;
     private int[] mLastCoords = CoordinateUtils.newInstance();
 
-    public void processMotionEvent(final MotionEvent me, final KeyEventHandler keyEventHandler) {
+    public NonDistinctMultitouchHelper(final PointerTracker mainTracker) {
+        mMainTracker = mainTracker;
+    }
+
+    public void processMotionEvent(final MotionEvent me, final KeyDetector keyDetector) {
         final int pointerCount = me.getPointerCount();
         final int oldPointerCount = mOldPointerCount;
         mOldPointerCount = pointerCount;
@@ -41,8 +47,7 @@ public final class NonDistinctMultitouchHelper {
             return;
         }
 
-        // Use only main (id=0) pointer tracker.
-        final PointerTracker mainTracker = PointerTracker.getPointerTracker(0, keyEventHandler);
+        final PointerTracker mainTracker = mMainTracker;
         final int action = me.getActionMasked();
         final int index = me.getActionIndex();
         final long eventTime = me.getEventTime();
@@ -51,12 +56,12 @@ public final class NonDistinctMultitouchHelper {
         // In single-touch.
         if (oldPointerCount == 1 && pointerCount == 1) {
             if (me.getPointerId(index) == mainTracker.mPointerId) {
-                mainTracker.processMotionEvent(me, keyEventHandler);
+                mainTracker.processMotionEvent(me, keyDetector);
                 return;
             }
             // Inject a copied event.
             injectMotionEvent(action, me.getX(index), me.getY(index), downTime, eventTime,
-                    mainTracker, keyEventHandler);
+                    mainTracker, keyDetector);
             return;
         }
 
@@ -70,7 +75,7 @@ public final class NonDistinctMultitouchHelper {
             mOldKey = mainTracker.getKeyOn(x, y);
             // Inject an artifact up event for the old key.
             injectMotionEvent(MotionEvent.ACTION_UP, x, y, downTime, eventTime,
-                    mainTracker, keyEventHandler);
+                    mainTracker, keyDetector);
             return;
         }
 
@@ -85,11 +90,11 @@ public final class NonDistinctMultitouchHelper {
                 // Inject an artifact down event for the new key.
                 // An artifact up event for the new key will usually be injected as a single-touch.
                 injectMotionEvent(MotionEvent.ACTION_DOWN, x, y, downTime, eventTime,
-                        mainTracker, keyEventHandler);
+                        mainTracker, keyDetector);
                 if (action == MotionEvent.ACTION_UP) {
                     // Inject an artifact up event for the new key also.
                     injectMotionEvent(MotionEvent.ACTION_UP, x, y, downTime, eventTime,
-                            mainTracker, keyEventHandler);
+                            mainTracker, keyDetector);
                 }
             }
             return;
@@ -101,11 +106,11 @@ public final class NonDistinctMultitouchHelper {
 
     private static void injectMotionEvent(final int action, final float x, final float y,
             final long downTime, final long eventTime, final PointerTracker tracker,
-            final KeyEventHandler handler) {
+            final KeyDetector keyDetector) {
         final MotionEvent me = MotionEvent.obtain(
                 downTime, eventTime, action, x, y, 0 /* metaState */);
         try {
-            tracker.processMotionEvent(me, handler);
+            tracker.processMotionEvent(me, keyDetector);
         } finally {
             me.recycle();
         }

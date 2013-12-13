@@ -20,6 +20,8 @@ namespace latinime {
 
 // Note that these are corresponding definitions in Java side in FormatSpec.FileHeader.
 const char *const HeaderPolicy::MULTIPLE_WORDS_DEMOTION_RATE_KEY = "MULTIPLE_WORDS_DEMOTION_RATE";
+const char *const HeaderPolicy::REQUIRES_GERMAN_UMLAUT_PROCESSING_KEY =
+        "REQUIRES_GERMAN_UMLAUT_PROCESSING";
 // TODO: Change attribute string to "IS_DECAYING_DICT".
 const char *const HeaderPolicy::IS_DECAYING_DICT_KEY = "USES_FORGETTING_CURVE";
 const char *const HeaderPolicy::LAST_UPDATED_TIME_KEY = "date";
@@ -27,6 +29,9 @@ const char *const HeaderPolicy::LAST_DECAYED_TIME_KEY = "LAST_DECAYED_TIME";
 const char *const HeaderPolicy::UNIGRAM_COUNT_KEY = "UNIGRAM_COUNT";
 const char *const HeaderPolicy::BIGRAM_COUNT_KEY = "BIGRAM_COUNT";
 const char *const HeaderPolicy::EXTENDED_REGION_SIZE_KEY = "EXTENDED_REGION_SIZE";
+// Historical info is information that is needed to support decaying such as timestamp, level and
+// count.
+const char *const HeaderPolicy::HAS_HISTORICAL_INFO_KEY = "HAS_HISTORICAL_INFO";
 const int HeaderPolicy::DEFAULT_MULTIPLE_WORDS_DEMOTION_RATE = 100;
 const float HeaderPolicy::MULTIPLE_WORD_COST_MULTIPLIER_SCALE = 100.0f;
 
@@ -63,6 +68,11 @@ float HeaderPolicy::readMultipleWordCostMultiplier() const {
     return MULTIPLE_WORD_COST_MULTIPLIER_SCALE / static_cast<float>(demotionRate);
 }
 
+bool HeaderPolicy::readRequiresGermanUmlautProcessing() const {
+    return HeaderReadWriteUtils::readBoolAttributeValue(&mAttributeMap,
+            REQUIRES_GERMAN_UMLAUT_PROCESSING_KEY, false);
+}
+
 bool HeaderPolicy::writeHeaderToBuffer(BufferWithExtendableBuffer *const bufferToWrite,
         const bool updatesLastUpdatedTime, const bool updatesLastDecayedTime,
         const int unigramCount, const int bigramCount, const int extendedRegionSize) const {
@@ -89,12 +99,12 @@ bool HeaderPolicy::writeHeaderToBuffer(BufferWithExtendableBuffer *const bufferT
     if (updatesLastUpdatedTime) {
         // Set current time as a last updated time.
         HeaderReadWriteUtils::setIntAttribute(&attributeMapTowrite, LAST_UPDATED_TIME_KEY,
-                time(0));
+                TimeKeeper::peekCurrentTime());
     }
     if (updatesLastDecayedTime) {
         // Set current time as a last updated time.
         HeaderReadWriteUtils::setIntAttribute(&attributeMapTowrite, LAST_DECAYED_TIME_KEY,
-                time(0));
+                TimeKeeper::peekCurrentTime());
     }
     if (!HeaderReadWriteUtils::writeHeaderAttributes(bufferToWrite, &attributeMapTowrite,
             &writingPos)) {

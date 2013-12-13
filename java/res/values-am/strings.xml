@@ -117,12 +117,6 @@
     <string name="keyboard_mode_time" msgid="4381856885582143277">"ጊዜ"</string>
     <string name="keyboard_mode_url" msgid="1519819835514911218">"ዩ አር ኤል"</string>
     <string name="voice_input" msgid="3583258583521397548">"የድምፅ ግቤት ቁልፍ"</string>
-    <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"በዋናቁልፍ ሰሌዳ ላይ"</string>
-    <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"በምልክቶች ቁልፍ ሰሌዳ ላይ"</string>
-    <string name="voice_input_modes_off" msgid="3745699748218082014">"ውጪ"</string>
-    <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"ድምፅ ማጉያ በዋናው ቁልፍሰሌዳው ላይ"</string>
-    <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"የድምፅ ማጉያ ምልክትበቁልፍ ሰሌዳላይ"</string>
-    <string name="voice_input_modes_summary_off" msgid="63875609591897607">"የድምፅ ግቤት ቦዝኗል"</string>
     <string name="configure_input_method" msgid="373356270290742459">"ግቤት ሜተዶችን አዋቀር"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"ቋንቋዎች አግቤት"</string>
     <string name="send_feedback" msgid="1780431884109392046">"ግብረ-መልስ ላክ"</string>

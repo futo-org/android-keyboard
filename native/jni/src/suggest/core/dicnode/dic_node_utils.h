@@ -31,20 +31,20 @@ class MultiBigramMap;
 class DicNodeUtils {
  public:
     static int appendTwoWords(const int *src0, const int16_t length0, const int *src1,
-            const int16_t length1, int *dest);
+            const int16_t length1, int *const dest);
     static void initAsRoot(
             const DictionaryStructureWithBufferPolicy *const dictionaryStructurePolicy,
-            const int prevWordNodePos, DicNode *newRootNode);
+            const int prevWordPtNodePos, DicNode *const newRootDicNode);
     static void initAsRootWithPreviousWord(
             const DictionaryStructureWithBufferPolicy *const dictionaryStructurePolicy,
-            DicNode *prevWordLastNode, DicNode *newRootNode);
-    static void initByCopy(DicNode *srcNode, DicNode *destNode);
+            const DicNode *const prevWordLastDicNode, DicNode *const newRootDicNode);
+    static void initByCopy(const DicNode *const srcDicNode, DicNode *const destDicNode);
     static void getAllChildDicNodes(DicNode *dicNode,
             const DictionaryStructureWithBufferPolicy *const dictionaryStructurePolicy,
             DicNodeVector *childDicNodes);
     static float getBigramNodeImprobability(
             const DictionaryStructureWithBufferPolicy *const dictionaryStructurePolicy,
-            const DicNode *const node, MultiBigramMap *const multiBigramMap);
+            const DicNode *const dicNode, MultiBigramMap *const multiBigramMap);
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(DicNodeUtils);
@@ -53,7 +53,7 @@ class DicNodeUtils {
 
     static int getBigramNodeProbability(
             const DictionaryStructureWithBufferPolicy *const dictionaryStructurePolicy,
-            const DicNode *const node, MultiBigramMap *multiBigramMap);
+            const DicNode *const dicNode, MultiBigramMap *const multiBigramMap);
 };
 } // namespace latinime
 #endif // LATINIME_DIC_NODE_UTILS_H

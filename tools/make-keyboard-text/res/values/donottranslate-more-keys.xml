@@ -63,6 +63,12 @@
     <string name="keylabel_for_south_slavic_row3_8"></string>
     <string name="more_keys_for_cyrillic_ie"></string>
     <string name="more_keys_for_cyrillic_i"></string>
+    <string name="keylabel_for_swiss_row1_11"></string>
+    <string name="keylabel_for_swiss_row2_10"></string>
+    <string name="keylabel_for_swiss_row2_11"></string>
+    <string name="more_keys_for_swiss_row1_11"></string>
+    <string name="more_keys_for_swiss_row2_10"></string>
+    <string name="more_keys_for_swiss_row2_11"></string>
     <!-- Label for "switch to alphabetic" key. -->
     <string name="label_to_alpha_key">ABC</string>
     <string name="single_quotes">!text/single_lqm_rqm</string>
@@ -78,6 +84,7 @@
     <string name="keylabel_for_currency">$</string>
     <string name="more_keys_for_currency">$,&#x00A2;,&#x20AC;,&#x00A3;,&#x00A5;,&#x20B1;</string>
     <string name="more_keys_for_punctuation">"!fixedColumnOrder!8,;,/,(,),#,!,\\,,\?,&amp;,\\%,+,\",-,:,',\@"</string>
+    <string name="more_keys_for_tablet_punctuation">"!fixedColumnOrder!7,;,/,(,),#,',\\,,&amp;,\\%,+,\",-,:,\@"</string>
     <!-- U+2020: "†" DAGGER
          U+2021: "‡" DOUBLE DAGGER
          U+2605: "★" BLACK STAR -->
@@ -103,7 +110,6 @@
     <string name="more_keys_for_less_than">!fixedColumnOrder!3,&#x2039;,&#x2264;,&#x00AB;</string>
     <string name="more_keys_for_greater_than">!fixedColumnOrder!3,&#x203A;,&#x2265;,&#x00BB;</string>
     <string name="more_keys_for_arabic_diacritics"></string>
-    <string name="keyhintlabel_for_arabic_diacritics"></string>
     <string name="keylabel_for_symbols_1">1</string>
     <string name="keylabel_for_symbols_2">2</string>
     <string name="keylabel_for_symbols_3">3</string>
@@ -154,34 +160,37 @@
     <!-- U+207F: "ⁿ" SUPERSCRIPT LATIN SMALL LETTER N
          U+2205: "∅" EMPTY SET -->
     <string name="more_keys_for_symbols_0">&#x207F;,&#x2205;</string>
+    <!-- Comma key -->
     <string name="keylabel_for_comma">,</string>
     <string name="more_keys_for_comma"></string>
+    <string name="keylabel_for_tablet_comma">,</string>
+    <string name="keyhintlabel_for_tablet_comma"></string>
+    <string name="more_keys_for_tablet_comma"></string>
+    <!-- Period key -->
+    <string name="keylabel_for_period">.</string>
+    <string name="keyhintlabel_for_period"></string>
+    <string name="more_keys_for_period">!text/more_keys_for_punctuation</string>
+    <string name="keylabel_for_tablet_period">.</string>
+    <string name="keyhintlabel_for_tablet_period"></string>
+    <string name="more_keys_for_tablet_period">!text/more_keys_for_tablet_punctuation</string>
     <string name="keylabel_for_symbols_question">\?</string>
     <string name="keylabel_for_symbols_semicolon">;</string>
     <string name="keylabel_for_symbols_percent">%</string>
     <!-- U+00A1: "¡" INVERTED EXCLAMATION MARK -->
-    <string name="more_keys_for_symbols_exclamation">&#x00A1;</string>
+    <string name="more_keys_for_exclamation">&#x00A1;</string>
     <!-- U+00BF: "¿" INVERTED QUESTION MARK -->
-    <string name="more_keys_for_symbols_question">&#x00BF;</string>
+    <string name="more_keys_for_question">&#x00BF;</string>
     <string name="more_keys_for_symbols_semicolon"></string>
     <!-- U+2030: "‰" PER MILLE SIGN -->
     <string name="more_keys_for_symbols_percent">&#x2030;</string>
-    <string name="keylabel_for_tablet_comma">,</string>
-    <string name="keyhintlabel_for_tablet_comma"></string>
-    <string name="more_keys_for_tablet_comma"></string>
-    <string name="keyhintlabel_for_period"></string>
-    <!-- U+2026: "…" HORIZONTAL ELLIPSIS -->
-    <string name="more_keys_for_period">&#x2026;</string>
-    <string name="keylabel_for_apostrophe">\'</string>
-    <string name="keyhintlabel_for_apostrophe">\"</string>
-    <string name="more_keys_for_apostrophe">\"</string>
     <string name="more_keys_for_q"></string>
     <string name="more_keys_for_x"></string>
     <string name="keylabel_for_q">q</string>
     <string name="keylabel_for_w">w</string>
     <string name="keylabel_for_y">y</string>
     <string name="keylabel_for_x">x</string>
-    <string name="keylabel_for_spanish_row2_10"></string>
+    <!-- U+00F1: "ñ" LATIN SMALL LETTER N WITH TILDE -->
+    <string name="keylabel_for_spanish_row2_10">&#x00F1;</string>
     <string name="more_keys_for_am_pm">!fixedColumnOrder!2,!hasLabels!,\@string/label_time_am,\@string/label_time_pm</string>
     <string name="settings_as_more_key">!icon/settings_key|!code/key_settings</string>
     <string name="shortcut_as_more_key">!icon/shortcut_key|!code/key_shortcut</string>

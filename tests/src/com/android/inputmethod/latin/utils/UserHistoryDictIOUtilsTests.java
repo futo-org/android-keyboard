@@ -24,8 +24,10 @@ import android.util.Log;
 import com.android.inputmethod.latin.makedict.DictDecoder;
 import com.android.inputmethod.latin.makedict.DictEncoder;
 import com.android.inputmethod.latin.makedict.FormatSpec;
+import com.android.inputmethod.latin.makedict.FormatSpec.FileHeader;
 import com.android.inputmethod.latin.makedict.FusionDictionary;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNode;
+import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
 import com.android.inputmethod.latin.makedict.Ver3DictDecoder;
 import com.android.inputmethod.latin.makedict.Ver3DictEncoder;
 import com.android.inputmethod.latin.personalization.UserHistoryDictionaryBigramList;
@@ -52,6 +54,12 @@ public class UserHistoryDictIOUtilsTests extends AndroidTestCase
     private static final ArrayList<String> NOT_HAVE_BIGRAM = new ArrayList<String>();
     private static final FormatSpec.FormatOptions FORMAT_OPTIONS = new FormatSpec.FormatOptions(2);
     private static final String TEST_DICT_FILE_EXTENSION = ".testDict";
+    private static final HashMap<String, String> HEADER_OPTIONS = new HashMap<String, String>();
+    static {
+        HEADER_OPTIONS.put(FileHeader.DICTIONARY_LOCALE_ATTRIBUTE, "en_US");
+        HEADER_OPTIONS.put(FileHeader.DICTIONARY_ID_ATTRIBUTE, "test");
+        HEADER_OPTIONS.put(FileHeader.DICTIONARY_VERSION_ATTRIBUTE, "1000");
+    }
 
     /**
      * Return same frequency for all words and bigrams
@@ -139,18 +147,14 @@ public class UserHistoryDictIOUtilsTests extends AndroidTestCase
     private void writeDictToFile(final File file,
             final UserHistoryDictionaryBigramList bigramList) {
         final DictEncoder dictEncoder = new Ver3DictEncoder(file);
-        UserHistoryDictIOUtils.writeDictionary(dictEncoder, this, bigramList, FORMAT_OPTIONS);
+        UserHistoryDictIOUtils.writeDictionary(dictEncoder, this, bigramList, FORMAT_OPTIONS,
+                HEADER_OPTIONS);
     }
 
-    private void readDictFromFile(final File file, final OnAddWordListener listener) {
+    private void readDictFromFile(final File file, final OnAddWordListener listener)
+            throws IOException, FileNotFoundException, UnsupportedFormatException {
         final DictDecoder dictDecoder = FormatSpec.getDictDecoder(file, DictDecoder.USE_BYTEARRAY);
-        try {
-            dictDecoder.openDictBuffer();
-        } catch (FileNotFoundException e) {
-            Log.e(TAG, "file not found", e);
-        } catch (IOException e) {
-            Log.e(TAG, "IOException", e);
-        }
+        dictDecoder.openDictBuffer();
         UserHistoryDictIOUtils.readDictionaryBinary(dictDecoder, listener);
     }
 
@@ -163,13 +167,14 @@ public class UserHistoryDictIOUtilsTests extends AndroidTestCase
         addBigramToBigramList("this", "was", addedWords, originalList);
         addBigramToBigramList("hello", "world", addedWords, originalList);
 
-        final FusionDictionary fusionDict =
-                UserHistoryDictIOUtils.constructFusionDictionary(this, originalList);
+        final FusionDictionary fusionDict = UserHistoryDictIOUtils.constructFusionDictionary(
+                this, originalList, HEADER_OPTIONS);
 
         checkWordsInFusionDict(fusionDict, addedWords);
     }
 
-    public void testReadAndWrite() {
+    public void testReadAndWrite() throws IOException, FileNotFoundException,
+            UnsupportedFormatException {
         final Context context = getContext();
 
         File file = null;

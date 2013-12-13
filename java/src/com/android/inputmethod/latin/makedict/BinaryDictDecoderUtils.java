@@ -24,12 +24,9 @@ import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.TreeMap;
@@ -169,6 +166,14 @@ public final class BinaryDictDecoderUtils {
             return size;
         }
 
+        static int getCharArraySize(final int[] chars, final int start, final int end) {
+            int size = 0;
+            for (int i = start; i < end; ++i) {
+                size += getCharSize(chars[i]);
+            }
+            return size;
+        }
+
         /**
          * Writes a char array to a byte buffer.
          *
@@ -200,8 +205,7 @@ public final class BinaryDictDecoderUtils {
          * @param word the string to write.
          * @return the size written, in bytes.
          */
-        static int writeString(final byte[] buffer, final int origin,
-                final String word) {
+        static int writeString(final byte[] buffer, final int origin, final String word) {
             final int length = word.length();
             int index = origin;
             for (int i = 0; i < length; i = word.offsetByCodePoints(i, 1)) {
@@ -223,22 +227,62 @@ public final class BinaryDictDecoderUtils {
          *
          * This will also write the terminator byte.
          *
-         * @param buffer the OutputStream to write to.
+         * @param stream the OutputStream to write to.
          * @param word the string to write.
+         * @return the size written, in bytes.
          */
-        static void writeString(final OutputStream buffer, final String word) throws IOException {
+        static int writeString(final OutputStream stream, final String word) throws IOException {
             final int length = word.length();
+            int written = 0;
             for (int i = 0; i < length; i = word.offsetByCodePoints(i, 1)) {
                 final int codePoint = word.codePointAt(i);
-                if (1 == getCharSize(codePoint)) {
-                    buffer.write((byte) codePoint);
+                final int charSize = getCharSize(codePoint);
+                if (1 == charSize) {
+                    stream.write((byte) codePoint);
                 } else {
-                    buffer.write((byte) (0xFF & (codePoint >> 16)));
-                    buffer.write((byte) (0xFF & (codePoint >> 8)));
-                    buffer.write((byte) (0xFF & codePoint));
+                    stream.write((byte) (0xFF & (codePoint >> 16)));
+                    stream.write((byte) (0xFF & (codePoint >> 8)));
+                    stream.write((byte) (0xFF & codePoint));
                 }
+                written += charSize;
             }
-            buffer.write(FormatSpec.PTNODE_CHARACTERS_TERMINATOR);
+            stream.write(FormatSpec.PTNODE_CHARACTERS_TERMINATOR);
+            written += FormatSpec.PTNODE_TERMINATOR_SIZE;
+            return written;
+        }
+
+        /**
+         * Writes an array of code points with our character format to an OutputStream.
+         *
+         * This will also write the terminator byte.
+         *
+         * @param stream the OutputStream to write to.
+         * @param codePoints the array of code points
+         * @return the size written, in bytes.
+         */
+        // TODO: Merge this method with writeCharArray and rename the various write* methods to
+        // make the difference clear.
+        static int writeCodePoints(final OutputStream stream, final int[] codePoints,
+                final int startIndex, final int endIndex)
+                throws IOException {
+            int written = 0;
+            for (int i = startIndex; i < endIndex; ++i) {
+                final int codePoint = codePoints[i];
+                final int charSize = getCharSize(codePoint);
+                if (1 == charSize) {
+                    stream.write((byte) codePoint);
+                } else {
+                    stream.write((byte) (0xFF & (codePoint >> 16)));
+                    stream.write((byte) (0xFF & (codePoint >> 8)));
+                    stream.write((byte) (0xFF & codePoint));
+                }
+                written += charSize;
+            }
+            if (endIndex - startIndex > 1) {
+                stream.write(FormatSpec.PTNODE_CHARACTERS_TERMINATOR);
+                written += FormatSpec.PTNODE_TERMINATOR_SIZE;
+            }
+            return written;
         }
 
         /**
@@ -556,7 +600,7 @@ public final class BinaryDictDecoderUtils {
 
         Map<Integer, PtNodeArray> reverseNodeArrayMapping = new TreeMap<Integer, PtNodeArray>();
         Map<Integer, PtNode> reversePtNodeMapping = new TreeMap<Integer, PtNode>();
-        final PtNodeArray root = readNodeArray(dictDecoder, fileHeader.mHeaderSize,
+        final PtNodeArray root = readNodeArray(dictDecoder, fileHeader.mBodyOffset,
                 reverseNodeArrayMapping, reversePtNodeMapping, fileHeader.mFormatOptions);
 
         FusionDictionary newDict = new FusionDictionary(root, fileHeader.mDictionaryOptions);
@@ -592,32 +636,10 @@ public final class BinaryDictDecoderUtils {
     /**
      * Basic test to find out whether the file is a binary dictionary or not.
      *
-     * Concretely this only tests the magic number.
-     *
      * @param file The file to test.
      * @return true if it's a binary dictionary, false otherwise
      */
     public static boolean isBinaryDictionary(final File file) {
-        FileInputStream inStream = null;
-        try {
-            inStream = new FileInputStream(file);
-            final ByteBuffer buffer = inStream.getChannel().map(
-                    FileChannel.MapMode.READ_ONLY, 0, file.length());
-            final int version = getFormatVersion(new ByteBufferDictBuffer(buffer));
-            return (version >= FormatSpec.MINIMUM_SUPPORTED_VERSION
-                    && version <= FormatSpec.MAXIMUM_SUPPORTED_VERSION);
-        } catch (FileNotFoundException e) {
-            return false;
-        } catch (IOException e) {
-            return false;
-        } finally {
-            if (inStream != null) {
-                try {
-                    inStream.close();
-                } catch (IOException e) {
-                    // do nothing
-                }
-            }
-        }
+        return FormatSpec.getDictDecoder(file).hasValidRawBinaryDictionary();
     }
 }

@@ -17,6 +17,7 @@
 package com.android.inputmethod.latin.makedict;
 
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.CharEncoding;
+import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.DictBuffer;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNode;
 import com.android.inputmethod.latin.makedict.FusionDictionary.DictionaryOptions;
@@ -239,6 +240,26 @@ public class BinaryDictEncoderUtils {
                 /* fall through */
             case 1:
                 stream.write(value & 0xFF);
+                break;
+            default:
+                /* nop */
+        }
+    }
+
+    static void writeUIntToDictBuffer(final DictBuffer dictBuffer, final int value,
+            final int size) {
+        switch(size) {
+            case 4:
+                dictBuffer.put((byte) ((value >> 24) & 0xFF));
+                /* fall through */
+            case 3:
+                dictBuffer.put((byte) ((value >> 16) & 0xFF));
+                /* fall through */
+            case 2:
+                dictBuffer.put((byte) ((value >> 8) & 0xFF));
+                /* fall through */
+            case 1:
+                dictBuffer.put((byte) (value & 0xFF));
                 break;
             default:
                 /* nop */
@@ -690,6 +711,13 @@ public class BinaryDictEncoderUtils {
                     + word + " is " + unigramFrequency);
             bigramFrequency = unigramFrequency;
         }
+        bigramFlags += getBigramFrequencyDiff(unigramFrequency, bigramFrequency)
+                & FormatSpec.FLAG_BIGRAM_SHORTCUT_ATTR_FREQUENCY;
+        return bigramFlags;
+    }
+
+    public static int getBigramFrequencyDiff(final int unigramFrequency,
+            final int bigramFrequency) {
         // We compute the difference between 255 (which means probability = 1) and the
         // unigram score. We split this into a number of discrete steps.
         // Now, the steps are numbered 0~15; 0 represents an increase of 1 step while 15
@@ -723,9 +751,7 @@ public class BinaryDictEncoderUtils {
         // include this bigram in the dictionary. For now, register as 0, and live with the
         // small over-estimation that we get in this case. TODO: actually remove this bigram
         // if discretizedFrequency < 0.
-        final int finalBigramFrequency = discretizedFrequency > 0 ? discretizedFrequency : 0;
-        bigramFlags += finalBigramFrequency & FormatSpec.FLAG_BIGRAM_SHORTCUT_ATTR_FREQUENCY;
-        return bigramFlags;
+        return discretizedFrequency > 0 ? discretizedFrequency : 0;
     }
 
     /**

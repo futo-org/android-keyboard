@@ -116,6 +116,16 @@ public class KeySpecParserSplitTests extends InstrumentationTestCase {
     private static final String SURROGATE1 = PAIR1 + PAIR2;
     private static final String SURROGATE2 = PAIR1 + PAIR2 + PAIR3;
 
+    public void testResolveNullText() {
+        assertNull("resolve null", KeySpecParser.resolveTextReference(
+                null, mTextsSet));
+    }
+
+    public void testResolveEmptyText() {
+        assertNull("resolve empty text", KeySpecParser.resolveTextReference(
+                "!text/empty_string", mTextsSet));
+    }
+
     public void testSplitZero() {
         assertTextArray("Empty string", "");
         assertTextArray("Empty entry", ",");

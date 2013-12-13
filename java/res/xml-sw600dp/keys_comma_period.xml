@@ -21,83 +21,18 @@
 <merge
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
-    <switch>
-        <case
-            latin:mode="email|url"
-        >
-            <Key
-                latin:keyLabel=","
-                latin:keyHintLabel="-"
-                latin:moreKeys="-"
-                latin:backgroundType="functional"
-                latin:keyStyle="hasShiftedLetterHintStyle" />
-            <Key
-                latin:keyLabel="."
-                latin:keyHintLabel="_"
-                latin:moreKeys="_"
-                latin:backgroundType="functional"
-                latin:keyStyle="hasShiftedLetterHintStyle" />
-        </case>
-        <case
-            latin:languageCode="ar"
-        >
-            <Key
-                latin:keyLabel="!text/keylabel_for_apostrophe"
-                latin:keyHintLabel="!text/keyhintlabel_for_apostrophe"
-                latin:moreKeys="!text/more_keys_for_apostrophe"
-                latin:backgroundType="functional"
-                latin:keyStyle="hasShiftedLetterHintStyle" />
-            <Key
-                latin:keyLabel="."
-                latin:keyHintLabel="!text/keyhintlabel_for_arabic_diacritics"
-                latin:keyLabelFlags="hasPopupHint"
-                latin:moreKeys="!text/more_keys_for_arabic_diacritics"
-                latin:backgroundType="functional"
-                latin:keyStyle="hasShiftedLetterHintStyle" />
-        </case>
-        <case
-            latin:languageCode="fa"
-        >
-            <Key
-                latin:keyLabel="!text/keylabel_for_apostrophe"
-                latin:keyHintLabel="!text/keyhintlabel_for_apostrophe"
-                latin:keyLabelFlags="hasPopupHint"
-                latin:moreKeys="!text/more_keys_for_apostrophe"
-                latin:backgroundType="functional"
-                latin:keyStyle="hasShiftedLetterHintStyle" />
-            <Key
-                latin:keyLabel="."
-                latin:keyHintLabel="!text/keyhintlabel_for_arabic_diacritics"
-                latin:keyLabelFlags="hasPopupHint"
-                latin:moreKeys="!text/more_keys_for_arabic_diacritics"
-                latin:backgroundType="functional"
-                latin:keyStyle="hasShiftedLetterHintStyle" />
-        </case>
-        <case
-            latin:languageCode="hy"
-        >
-            <!-- U+055D: "՝" ARMENIAN COMMA -->
-            <Key
-                latin:keyLabel="&#x055D;"
-                latin:backgroundType="functional" />
-            <!-- U+0589: "։" ARMENIAN FULL STOP -->
-            <Key
-                latin:keyLabel="&#x0589;"
-                latin:keyLabelFlags="hasPopupHint"
-                latin:backgroundType="functional"
-                latin:moreKeys="!text/more_keys_for_punctuation" />
-        </case>
-        <default>
-            <Key
-                latin:keyLabel="!text/keylabel_for_tablet_comma"
-                latin:keyHintLabel="!text/keyhintlabel_for_tablet_comma"
-                latin:backgroundType="functional"
-                latin:moreKeys="!text/more_keys_for_tablet_comma" />
-            <Key
-                latin:keyLabel="."
-                latin:keyHintLabel="!text/keyhintlabel_for_period"
-                latin:backgroundType="functional"
-                latin:moreKeys="!text/more_keys_for_period" />
-        </default>
-    </switch>
+    <Key
+        latin:keyLabel="!text/keylabel_for_tablet_comma"
+        latin:keyHintLabel="!text/keyhintlabel_for_tablet_comma"
+        latin:keyLabelFlags="hasPopupHint"
+        latin:moreKeys="!text/more_keys_for_tablet_comma"
+        latin:backgroundType="functional"
+        latin:keyStyle="hasShiftedLetterHintStyle" />
+    <Key
+        latin:keyLabel="!text/keylabel_for_tablet_period"
+        latin:keyHintLabel="!text/keyhintlabel_for_tablet_period"
+        latin:keyLabelFlags="hasPopupHint"
+        latin:moreKeys="!text/more_keys_for_tablet_period"
+        latin:backgroundType="functional"
+        latin:keyStyle="hasShiftedLetterHintStyle" />
 </merge>

@@ -26,14 +26,14 @@
         <attr name="keyboardViewStyle" format="reference" />
         <!-- MainKeyboardView style -->
         <attr name="mainKeyboardViewStyle" format="reference" />
+        <!-- Key preview text view style -->
+        <attr name="keyPreviewTextViewStyle" format="reference"/>
         <!-- EmojiPalettesView style -->
         <attr name="emojiPalettesViewStyle" format="reference" />
         <!-- MoreKeysKeyboard style -->
         <attr name="moreKeysKeyboardStyle" format="reference" />
         <!-- MoreKeysKeyboardView style -->
         <attr name="moreKeysKeyboardViewStyle" format="reference" />
-        <!-- MoreKeysKeyboardView container style -->
-        <attr name="moreKeysKeyboardContainerStyle" format="reference" />
         <!-- Suggestions strip style -->
         <attr name="suggestionStripViewStyle" format="reference" />
         <!-- Suggestion word style -->
@@ -41,9 +41,9 @@
     </declare-styleable>
 
     <declare-styleable name="KeyboardView">
-        <!-- Image for the key. This image needs to be a StateListDrawable, with the following
-             possible states: normal, pressed, checkable, checkable+pressed, checkable+checked,
-             checkable+checked+pressed. -->
+        <!-- Image for the key. This image needs to be a {@link StateListDrawable}, with the
+             following possible states: normal, pressed, checkable, checkable+pressed,
+             checkable+checked, checkable+checked+pressed. -->
         <attr name="keyBackground" format="reference" />
         <!-- Image for the functional key used in Emoji layout. -->
         <attr name="keyBackgroundEmojiFunctional" format="reference" />
@@ -72,9 +72,11 @@
         <attr name="autoCorrectionSpacebarLedEnabled" format="boolean" />
         <attr name="autoCorrectionSpacebarLedIcon" format="reference" />
         <!-- Size of the text for spacebar language label, in the proportion of key height. -->
-        <attr name="spacebarTextRatio" format="fraction" />
-        <attr name="spacebarTextColor" format="color" />
-        <attr name="spacebarTextShadowColor" format="color" />
+        <attr name="languageOnSpacebarTextRatio" format="fraction" />
+        <attr name="languageOnSpacebarTextColor" format="color" />
+        <attr name="languageOnSpacebarTextShadowColor" format="color" />
+        <!-- Background image for the spacebar. -->
+        <attr name="spacebarBackground" format="reference" />
         <!-- Fadeout animator for spacebar language label. -->
         <attr name="languageOnSpacebarFinalAlpha" format="integer" />
         <attr name="languageOnSpacebarFadeoutAnimator" format="reference" />
@@ -89,8 +91,8 @@
         <attr name="touchNoiseThresholdTime" format="integer" />
         <!-- Touch noise threshold distance in millimeter -->
         <attr name="touchNoiseThresholdDistance" format="dimension" />
-        <!-- Sliding key input enable -->
-        <attr name="slidingKeyInputEnable" format="boolean" />
+        <!-- Enable key selection by dragging finger -->
+        <attr name="keySelectionByDraggingFinger" format="boolean" />
         <attr name="slidingKeyInputPreviewColor" format="color" />
         <attr name="slidingKeyInputPreviewWidth" format="dimension" />
         <attr name="slidingKeyInputPreviewBodyRatio" format="integer" />
@@ -109,6 +111,10 @@
         <attr name="keyPreviewOffset" format="dimension" />
         <!-- Height of the key press feedback popup. -->
         <attr name="keyPreviewHeight" format="dimension" />
+        <!-- Duration of key preview popup zoom in animation in millisecond -->
+        <attr name="keyPreviewZoomInDuration" format="integer" />
+        <!-- Duration of key preview popup zoom out animation in millisecond -->
+        <attr name="keyPreviewZoomOutDuration" format="integer" />
         <!-- Delay after key releasing and key press feedback dismissing in millisecond -->
         <attr name="keyPreviewLingerTimeout" format="integer" />
         <!-- Layout resource for more keys keyboard -->
@@ -217,7 +223,6 @@
         <attr name="iconSearchKey" format="reference" />
         <attr name="iconTabKey" format="reference" />
         <attr name="iconShortcutKey" format="reference" />
-        <attr name="iconShortcutForLabel" format="reference" />
         <attr name="iconSpaceKeyForNumberLayout" format="reference" />
         <attr name="iconShiftKeyShifted" format="reference" />
         <attr name="iconShortcutKeyDisabled" format="reference" />
@@ -276,6 +281,8 @@
         <attr name="keyLabel" format="string" />
         <!-- The hint label to display on the key in conjunction with the label. -->
         <attr name="keyHintLabel" format="string" />
+        <!-- The vertical adjustment of key hint label in proportion to its height. -->
+        <attr name="keyHintLabelVerticalAdjustment" format="fraction" />
         <!-- The key label flags. -->
         <attr name="keyLabelFlags" format="integer">
             <!-- This should be aligned with Key.LABEL_FLAGS__* -->
@@ -292,17 +299,20 @@
             <flag name="hasPopupHint" value="0x200" />
             <flag name="hasShiftedLetterHint" value="0x400" />
             <flag name="hasHintLabel" value="0x800" />
+            <!-- These two flags are currently unused. Leave these for possible future use. -->
             <flag name="withIconLeft" value="0x1000" />
             <flag name="withIconRight" value="0x2000" />
             <flag name="autoXScale" value="0x4000" />
+            <!-- The autoScale value implies autoXScale bit on to optimize scaling code path. -->
+            <flag name="autoScale" value="0xc000" />
             <!-- If true, character case of code, altCode, moreKeys, keyOutputText, keyLabel,
                  or keyHintLabel will never be subject to change. -->
-            <flag name="preserveCase" value="0x8000" />
+            <flag name="preserveCase" value="0x10000" />
             <!-- If true, use keyShiftedLetterHintActivatedColor for the shifted letter hint and
                  keyTextInactivatedColor for the primary key top label. -->
-            <flag name="shiftedLetterActivated" value="0x10000" />
+            <flag name="shiftedLetterActivated" value="0x20000" />
             <!-- If true, use EditorInfo.actionLabel for the key label. -->
-            <flag name="fromCustomActionLabel" value="0x20000" />
+            <flag name="fromCustomActionLabel" value="0x40000" />
             <!-- If true, disable keyHintLabel. -->
             <flag name="disableKeyHintLabel" value="0x40000000" />
             <!-- If true, disable additionalMoreKeys. -->
@@ -415,8 +425,7 @@
         <attr name="navigatePrevious" format="boolean" />
         <attr name="passwordInput" format="boolean" />
         <attr name="clobberSettingsKey" format="boolean" />
-        <attr name="shortcutKeyEnabled" format="boolean" />
-        <attr name="shortcutKeyOnSymbols" format="boolean" />
+        <attr name="supportsSwitchingToShortcutIme" format="boolean" />
         <attr name="hasShortcutKey" format="boolean" />
         <attr name="languageSwitchKeyEnabled" format="boolean" />
         <attr name="isMultiLine" format="boolean" />

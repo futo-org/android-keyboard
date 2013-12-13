@@ -70,7 +70,7 @@
             <!-- U+17C4/U+17C7: "ោះ" KHMER VOWEL SIGN OO/KHMER SIGN REAHMUK -->
             <Key
                 latin:keyLabel="&#x17C4;&#x17C7;"
-                latin:keyLabelFlags="fontNormal" />
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio|autoScale" />
             <!-- U+17C9: "៉" KHMER SIGN MUUSIKATOAN -->
             <Key
                 latin:keyLabel="&#x17C9;"

@@ -18,6 +18,8 @@
 #define LATINIME_DICTIONARY_STRUCTURE_POLICY_H
 
 #include "defines.h"
+#include "suggest/core/dictionary/unigram_property.h"
+#include "utils/exclusive_ownership_pointer.h"
 
 namespace latinime {
 
@@ -28,23 +30,25 @@ class DictionaryHeaderStructurePolicy;
 class DictionaryShortcutsStructurePolicy;
 
 /*
- * This class abstracts structure of dictionaries.
+ * This class abstracts the structure of dictionaries.
  * Implement this policy to support additional dictionaries.
  */
 class DictionaryStructureWithBufferPolicy {
  public:
+    typedef ExclusiveOwnershipPointer<DictionaryStructureWithBufferPolicy> StructurePolicyPtr;
+
     virtual ~DictionaryStructureWithBufferPolicy() {}
 
     virtual int getRootPosition() const = 0;
 
-    virtual void createAndGetAllChildNodes(const DicNode *const dicNode,
+    virtual void createAndGetAllChildDicNodes(const DicNode *const dicNode,
             DicNodeVector *const childDicNodes) const = 0;
 
     virtual int getCodePointsAndProbabilityAndReturnCodePointCount(
             const int nodePos, const int maxCodePointCount, int *const outCodePoints,
             int *const outUnigramProbability) const = 0;
 
-    virtual int getTerminalNodePositionOfWord(const int *const inWord,
+    virtual int getTerminalPtNodePositionOfWord(const int *const inWord,
             const int length, const bool forceLowerCaseSearch) const = 0;
 
     virtual int getProbability(const int unigramProbability,
@@ -64,11 +68,13 @@ class DictionaryStructureWithBufferPolicy {
 
     // Returns whether the update was success or not.
     virtual bool addUnigramWord(const int *const word, const int length,
-            const int probability) = 0;
+            const int probability, const int *const shortcutTargetCodePoints,
+            const int shortcutLength, const int shortcutProbability, const bool isNotAWord,
+            const bool isBlacklisted,const int timestamp) = 0;
 
     // Returns whether the update was success or not.
     virtual bool addBigramWords(const int *const word0, const int length0, const int *const word1,
-            const int length1, const int probability) = 0;
+            const int length1, const int probability, const int timestamp) = 0;
 
     // Returns whether the update was success or not.
     virtual bool removeBigramWords(const int *const word0, const int length0,
@@ -82,8 +88,12 @@ class DictionaryStructureWithBufferPolicy {
 
     // Currently, this method is used only for testing. You may want to consider creating new
     // dedicated method instead of this if you want to use this in the production.
-    virtual void getProperty(const char *const query, char *const outResult,
+    virtual void getProperty(const char *const query, const int queryLength, char *const outResult,
             const int maxResultLength) = 0;
+
+    // Used for testing.
+    virtual const UnigramProperty getUnigramProperty(const int *const codePonts,
+            const int codePointCount) const = 0;
 
  protected:
     DictionaryStructureWithBufferPolicy() {}

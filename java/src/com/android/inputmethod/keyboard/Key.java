@@ -28,7 +28,6 @@ import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.Xml;
 
 import com.android.inputmethod.keyboard.internal.KeyDrawParams;
@@ -53,8 +52,6 @@ import java.util.Locale;
  * Class for describing the position and characteristics of a single key in the keyboard.
  */
 public class Key implements Comparable<Key> {
-    private static final String TAG = Key.class.getSimpleName();
-
     /**
      * The key code (unicode or custom code) that this key generates.
      */
@@ -84,10 +81,16 @@ public class Key implements Comparable<Key> {
     private static final int LABEL_FLAGS_HAS_HINT_LABEL = 0x800;
     private static final int LABEL_FLAGS_WITH_ICON_LEFT = 0x1000;
     private static final int LABEL_FLAGS_WITH_ICON_RIGHT = 0x2000;
+    // The bit to calculate the ratio of key label width against key width. If autoXScale bit is on
+    // and autoYScale bit is off, the key label may be shrunk only for X-direction.
+    // If both autoXScale and autoYScale bits are on, the key label text size may be auto scaled.
     private static final int LABEL_FLAGS_AUTO_X_SCALE = 0x4000;
-    private static final int LABEL_FLAGS_PRESERVE_CASE = 0x8000;
-    private static final int LABEL_FLAGS_SHIFTED_LETTER_ACTIVATED = 0x10000;
-    private static final int LABEL_FLAGS_FROM_CUSTOM_ACTION_LABEL = 0x20000;
+    private static final int LABEL_FLAGS_AUTO_Y_SCALE = 0x8000;
+    private static final int LABEL_FLAGS_AUTO_SCALE = LABEL_FLAGS_AUTO_X_SCALE
+            | LABEL_FLAGS_AUTO_Y_SCALE;
+    private static final int LABEL_FLAGS_PRESERVE_CASE = 0x10000;
+    private static final int LABEL_FLAGS_SHIFTED_LETTER_ACTIVATED = 0x20000;
+    private static final int LABEL_FLAGS_FROM_CUSTOM_ACTION_LABEL = 0x40000;
     private static final int LABEL_FLAGS_DISABLE_HINT_LABEL = 0x40000000;
     private static final int LABEL_FLAGS_DISABLE_ADDITIONAL_MORE_KEYS = 0x80000000;
 
@@ -376,9 +379,6 @@ public class Key implements Comparable<Key> {
         mKeyVisualAttributes = KeyVisualAttributes.newInstance(keyAttr);
         keyAttr.recycle();
         mHashCode = computeHashCode(this);
-        if (hasShiftedLetterHint() && TextUtils.isEmpty(mHintLabel)) {
-            Log.w(TAG, "hasShiftedLetterHint specified without keyHintLabel: " + this);
-        }
     }
 
     /**
@@ -702,8 +702,12 @@ public class Key implements Comparable<Key> {
         return (mLabelFlags & LABEL_FLAGS_WITH_ICON_RIGHT) != 0;
     }
 
-    public final boolean needsXScale() {
+    public final boolean needsAutoXScale() {
         return (mLabelFlags & LABEL_FLAGS_AUTO_X_SCALE) != 0;
+    }
+
+    public final boolean needsAutoScale() {
+        return (mLabelFlags & LABEL_FLAGS_AUTO_SCALE) == LABEL_FLAGS_AUTO_SCALE;
     }
 
     public final boolean isShiftedLetterActivated() {

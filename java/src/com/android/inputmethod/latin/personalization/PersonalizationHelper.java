@@ -19,11 +19,10 @@ package com.android.inputmethod.latin.personalization;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
 import java.lang.ref.SoftReference;
+import java.util.Locale;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class PersonalizationHelper {
@@ -31,21 +30,16 @@ public class PersonalizationHelper {
     private static final boolean DEBUG = false;
     private static final ConcurrentHashMap<String, SoftReference<UserHistoryDictionary>>
             sLangUserHistoryDictCache = CollectionUtils.newConcurrentHashMap();
-
     private static final ConcurrentHashMap<String, SoftReference<PersonalizationDictionary>>
             sLangPersonalizationDictCache = CollectionUtils.newConcurrentHashMap();
 
-    private static final ConcurrentHashMap<String,
-            SoftReference<PersonalizationPredictionDictionary>>
-                    sLangPersonalizationPredictionDictCache =
-                            CollectionUtils.newConcurrentHashMap();
-
     public static UserHistoryDictionary getUserHistoryDictionary(
-            final Context context, final String locale, final SharedPreferences sp) {
+            final Context context, final Locale locale) {
+        final String localeStr = locale.toString();
         synchronized (sLangUserHistoryDictCache) {
-            if (sLangUserHistoryDictCache.containsKey(locale)) {
+            if (sLangUserHistoryDictCache.containsKey(localeStr)) {
                 final SoftReference<UserHistoryDictionary> ref =
-                        sLangUserHistoryDictCache.get(locale);
+                        sLangUserHistoryDictCache.get(localeStr);
                 final UserHistoryDictionary dict = ref == null ? null : ref.get();
                 if (dict != null) {
                     if (DEBUG) {
@@ -55,8 +49,9 @@ public class PersonalizationHelper {
                     return dict;
                 }
             }
-            final UserHistoryDictionary dict = new UserHistoryDictionary(context, locale, sp);
-            sLangUserHistoryDictCache.put(locale, new SoftReference<UserHistoryDictionary>(dict));
+            final UserHistoryDictionary dict = new UserHistoryDictionary(context, locale);
+            sLangUserHistoryDictCache.put(localeStr,
+                    new SoftReference<UserHistoryDictionary>(dict));
             return dict;
         }
     }
@@ -74,57 +69,30 @@ public class PersonalizationHelper {
     }
 
     public static void registerPersonalizationDictionaryUpdateSession(final Context context,
-            final PersonalizationDictionaryUpdateSession session, String locale) {
-        final PersonalizationPredictionDictionary predictionDictionary =
-                getPersonalizationPredictionDictionary(context, locale,
-                        PreferenceManager.getDefaultSharedPreferences(context));
-        predictionDictionary.registerUpdateSession(session);
-        final PersonalizationDictionary dictionary =
-                getPersonalizationDictionary(context, locale,
-                        PreferenceManager.getDefaultSharedPreferences(context));
-        dictionary.registerUpdateSession(session);
+            final PersonalizationDictionaryUpdateSession session, final Locale locale) {
+        final PersonalizationDictionary personalizationDictionary =
+                getPersonalizationDictionary(context, locale);
+        personalizationDictionary.registerUpdateSession(session);
     }
 
     public static PersonalizationDictionary getPersonalizationDictionary(
-            final Context context, final String locale, final SharedPreferences sp) {
+            final Context context, final Locale locale) {
+        final String localeStr = locale.toString();
         synchronized (sLangPersonalizationDictCache) {
-            if (sLangPersonalizationDictCache.containsKey(locale)) {
+            if (sLangPersonalizationDictCache.containsKey(localeStr)) {
                 final SoftReference<PersonalizationDictionary> ref =
-                        sLangPersonalizationDictCache.get(locale);
+                        sLangPersonalizationDictCache.get(localeStr);
                 final PersonalizationDictionary dict = ref == null ? null : ref.get();
                 if (dict != null) {
                     if (DEBUG) {
-                        Log.w(TAG, "Use cached PersonalizationDictCache for " + locale);
+                        Log.w(TAG, "Use cached PersonalizationDictionary for " + locale);
                     }
                     return dict;
                 }
             }
-            final PersonalizationDictionary dict =
-                    new PersonalizationDictionary(context, locale, sp);
+            final PersonalizationDictionary dict = new PersonalizationDictionary(context, locale);
             sLangPersonalizationDictCache.put(
-                    locale, new SoftReference<PersonalizationDictionary>(dict));
-            return dict;
-        }
-    }
-
-    public static PersonalizationPredictionDictionary getPersonalizationPredictionDictionary(
-            final Context context, final String locale, final SharedPreferences sp) {
-        synchronized (sLangPersonalizationPredictionDictCache) {
-            if (sLangPersonalizationPredictionDictCache.containsKey(locale)) {
-                final SoftReference<PersonalizationPredictionDictionary> ref =
-                        sLangPersonalizationPredictionDictCache.get(locale);
-                final PersonalizationPredictionDictionary dict = ref == null ? null : ref.get();
-                if (dict != null) {
-                    if (DEBUG) {
-                        Log.w(TAG, "Use cached PersonalizationPredictionDictionary for " + locale);
-                    }
-                    return dict;
-                }
-            }
-            final PersonalizationPredictionDictionary dict =
-                    new PersonalizationPredictionDictionary(context, locale, sp);
-            sLangPersonalizationPredictionDictCache.put(
-                    locale, new SoftReference<PersonalizationPredictionDictionary>(dict));
+                    localeStr, new SoftReference<PersonalizationDictionary>(dict));
             return dict;
         }
     }

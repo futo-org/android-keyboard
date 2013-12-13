@@ -18,7 +18,6 @@ package com.android.inputmethod.latin;
 
 import android.content.ContentProviderClient;
 import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.content.Context;
 import android.database.ContentObserver;
 import android.database.Cursor;
@@ -75,20 +74,21 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
     final private String mLocale;
     final private boolean mAlsoUseMoreRestrictiveLocales;
 
-    public UserBinaryDictionary(final Context context, final String locale) {
+    public UserBinaryDictionary(final Context context, final Locale locale) {
         this(context, locale, false);
     }
 
-    public UserBinaryDictionary(final Context context, final String locale,
+    public UserBinaryDictionary(final Context context, final Locale locale,
             final boolean alsoUseMoreRestrictiveLocales) {
-        super(context, getFilenameWithLocale(NAME, locale), Dictionary.TYPE_USER,
+        super(context, getDictNameWithLocale(NAME, locale), locale, Dictionary.TYPE_USER,
                 false /* isUpdatable */);
         if (null == locale) throw new NullPointerException(); // Catch the error earlier
-        if (SubtypeLocaleUtils.NO_LANGUAGE.equals(locale)) {
+        final String localeStr = locale.toString();
+        if (SubtypeLocaleUtils.NO_LANGUAGE.equals(localeStr)) {
             // If we don't have a locale, insert into the "all locales" user dictionary.
             mLocale = USER_DICTIONARY_ALL_LANGUAGES;
         } else {
-            mLocale = locale;
+            mLocale = localeStr;
         }
         mAlsoUseMoreRestrictiveLocales = alsoUseMoreRestrictiveLocales;
         // Perform a managed query. The Activity will handle closing and re-querying the cursor

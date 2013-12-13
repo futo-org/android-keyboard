@@ -29,7 +29,7 @@
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/suggestions_strip_height"
+        android:layout_height="@dimen/config_suggestions_strip_height"
     >
         <TabHost
             android:id="@+id/emoji_category_tabhost"
@@ -73,7 +73,7 @@
             android:background="@color/emoji_key_background_color"
             android:src="@drawable/sym_keyboard_delete_holo_dark" />
     </LinearLayout>
-    <android.support.v4.view.ViewPager
+    <com.android.inputmethod.keyboard.internal.CustomViewPager
         android:id="@+id/emoji_keyboard_pager"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

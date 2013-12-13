@@ -160,27 +160,10 @@
         latin:keyLabelFlags="preserveCase"
         latin:keyActionFlags="noKeyPreview"
         latin:backgroundType="functional" />
-    <switch>
-        <!-- When this qwerty keyboard has no shortcut keys but shortcut key is enabled, then symbol
-             keyboard will have a shortcut key. That means we should use label_to_symbol_key label
-             and shortcut_for_label icon. -->
-        <case
-            latin:shortcutKeyOnSymbols="true"
-        >
-            <key-style
-                latin:styleName="baseForToSymbolKeyStyle"
-                latin:keyIcon="!icon/shortcut_for_label"
-                latin:keyLabel="!text/label_to_symbol_with_microphone_key"
-                latin:keyLabelFlags="withIconRight|preserveCase"
-                latin:parentStyle="baseForLayoutSwitchKeyStyle" />
-        </case>
-        <default>
-            <key-style
-                latin:styleName="baseForToSymbolKeyStyle"
-                latin:keyLabel="!text/label_to_symbol_key"
-                latin:parentStyle="baseForLayoutSwitchKeyStyle" />
-        </default>
-    </switch>
+    <key-style
+        latin:styleName="baseForToSymbolKeyStyle"
+        latin:keyLabel="!text/label_to_symbol_key"
+        latin:parentStyle="baseForLayoutSwitchKeyStyle" />
     <key-style
         latin:styleName="toSymbolKeyStyle"
         latin:code="!code/key_switch_alpha_symbol"
@@ -199,12 +182,6 @@
         latin:styleName="backFromMoreSymbolKeyStyle"
         latin:code="!code/key_shift"
         latin:parentStyle="baseForToSymbolKeyStyle" />
-    <key-style
-        latin:styleName="punctuationKeyStyle"
-        latin:keyLabel="."
-        latin:keyLabelFlags="hasPopupHint"
-        latin:moreKeys="!text/more_keys_for_punctuation"
-        latin:backgroundType="functional" />
     <key-style
         latin:styleName="comKeyStyle"
         latin:keyLabel="!text/keylabel_for_popular_domain"

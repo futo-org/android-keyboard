@@ -29,6 +29,7 @@
          U+FB29: "﬩" HEBREW LETTER ALTERNATIVE PLUS SIGN -->
     <string name="more_keys_for_plus">&#x00B1;,&#xFB29;</string>
     <string name="more_keys_for_punctuation">"!fixedColumnOrder!8,;,/,(|),)|(,#,!,\\,,\?,&amp;,\\%,+,\",-,:,',\@"</string>
+    <string name="more_keys_for_tablet_punctuation">"!fixedColumnOrder!7,;,/,(|),)|(,#,',\\,,&amp;,\\%,+,\",-,:,\@"</string>
     <!-- The all letters need to be mirrored are found at
          http://www.unicode.org/Public/6.1.0/ucd/BidiMirroring.txt -->
     <string name="more_keys_for_left_parenthesis">!fixedColumnOrder!3,&lt;|&gt;,{|},[|]</string>
@@ -54,8 +55,4 @@
     <string name="double_angle_quotes">!text/double_laqm_raqm_rtl</string>
     <!-- U+20AA: "₪" NEW SHEQEL SIGN -->
     <string name="keylabel_for_currency">&#x20AA;</string>
-    <string name="keyhintlabel_for_tablet_comma">!</string>
-    <string name="more_keys_for_tablet_comma">!</string>
-    <string name="keyhintlabel_for_period">\?</string>
-    <string name="more_keys_for_period">\?</string>
 </resources>

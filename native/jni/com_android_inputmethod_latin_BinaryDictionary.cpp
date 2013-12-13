@@ -24,8 +24,9 @@
 #include "jni.h"
 #include "jni_common.h"
 #include "suggest/core/dictionary/dictionary.h"
+#include "suggest/core/dictionary/unigram_property.h"
 #include "suggest/core/suggest_options.h"
-#include "suggest/policyimpl/dictionary/dictionary_structure_with_buffer_policy_factory.h"
+#include "suggest/policyimpl/dictionary/structure/dictionary_structure_with_buffer_policy_factory.h"
 #include "suggest/policyimpl/dictionary/utils/dict_file_writing_utils.h"
 #include "utils/autocorrection_threshold_utils.h"
 
@@ -86,11 +87,11 @@ static jlong latinime_BinaryDictionary_open(JNIEnv *env, jclass clazz, jstring s
     char sourceDirChars[sourceDirUtf8Length + 1];
     env->GetStringUTFRegion(sourceDir, 0, env->GetStringLength(sourceDir), sourceDirChars);
     sourceDirChars[sourceDirUtf8Length] = '\0';
-    DictionaryStructureWithBufferPolicy *const dictionaryStructureWithBufferPolicy =
+    DictionaryStructureWithBufferPolicy::StructurePolicyPtr dictionaryStructureWithBufferPolicy =
             DictionaryStructureWithBufferPolicyFactory::newDictionaryStructureWithBufferPolicy(
                     sourceDirChars, static_cast<int>(dictOffset), static_cast<int>(dictSize),
                     isUpdatable == JNI_TRUE);
-    if (!dictionaryStructureWithBufferPolicy) {
+    if (!dictionaryStructureWithBufferPolicy.get()) {
         return 0;
     }
 
@@ -133,6 +134,12 @@ static void latinime_BinaryDictionary_close(JNIEnv *env, jclass clazz, jlong dic
     Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
     if (!dictionary) return;
     delete dictionary;
+}
+
+static int latinime_BinaryDictionary_getFormatVersion(JNIEnv *env, jclass clazz, jlong dict) {
+    Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
+    if (!dictionary) return 0;
+    return dictionary->getFormatVersionNumber();
 }
 
 static int latinime_BinaryDictionary_getSuggestions(JNIEnv *env, jclass clazz, jlong dict,
@@ -252,6 +259,21 @@ static jint latinime_BinaryDictionary_getBigramProbability(JNIEnv *env, jclass c
             word1Length);
 }
 
+static void latinime_BinaryDictionary_getUnigramProperty(JNIEnv *env, jclass clazz,
+        jlong dict, jintArray word, jintArray outCodePoints, jbooleanArray outFlags,
+        jintArray outProbability, jintArray outHistoricalInfo, jobject outShortcutTargets,
+        jobject outShortcutProbabilities) {
+    Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
+    if (!dictionary) return;
+    const jsize wordLength = env->GetArrayLength(word);
+    int wordCodePoints[wordLength];
+    env->GetIntArrayRegion(word, 0, wordLength, wordCodePoints);
+    const UnigramProperty unigramProperty = dictionary->getUnigramProperty(
+            wordCodePoints, wordLength);
+    unigramProperty.outputProperties(env, outCodePoints, outFlags, outProbability,
+            outHistoricalInfo, outShortcutTargets, outShortcutProbabilities);
+}
+
 static jfloat latinime_BinaryDictionary_calcNormalizedScore(JNIEnv *env, jclass clazz,
         jintArray before, jintArray after, jint score) {
     jsize beforeLength = env->GetArrayLength(before);
@@ -277,7 +299,8 @@ static jint latinime_BinaryDictionary_editDistance(JNIEnv *env, jclass clazz, ji
 }
 
 static void latinime_BinaryDictionary_addUnigramWord(JNIEnv *env, jclass clazz, jlong dict,
-        jintArray word, jint probability) {
+        jintArray word, jint probability, jintArray shortcutTarget, jint shortuctProbability,
+        jboolean isNotAWord, jboolean isBlacklisted, jint timestamp) {
     Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
     if (!dictionary) {
         return;
@@ -285,11 +308,17 @@ static void latinime_BinaryDictionary_addUnigramWord(JNIEnv *env, jclass clazz, 
     jsize wordLength = env->GetArrayLength(word);
     int codePoints[wordLength];
     env->GetIntArrayRegion(word, 0, wordLength, codePoints);
-    dictionary->addUnigramWord(codePoints, wordLength, probability);
+    jsize shortcutLength = shortcutTarget ? env->GetArrayLength(shortcutTarget) : 0;
+    int shortcutTargetCodePoints[shortcutLength];
+    if (shortcutTarget) {
+        env->GetIntArrayRegion(shortcutTarget, 0, shortcutLength, shortcutTargetCodePoints);
+    }
+    dictionary->addUnigramWord(codePoints, wordLength, probability, shortcutTargetCodePoints,
+            shortcutLength, shortuctProbability, isNotAWord, isBlacklisted, timestamp);
 }
 
 static void latinime_BinaryDictionary_addBigramWords(JNIEnv *env, jclass clazz, jlong dict,
-        jintArray word0, jintArray word1, jint probability) {
+        jintArray word0, jintArray word1, jint probability, jint timestamp) {
     Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
     if (!dictionary) {
         return;
@@ -301,7 +330,7 @@ static void latinime_BinaryDictionary_addBigramWords(JNIEnv *env, jclass clazz, 
     int word1CodePoints[word1Length];
     env->GetIntArrayRegion(word1, 0, word1Length, word1CodePoints);
     dictionary->addBigramWords(word0CodePoints, word0Length, word1CodePoints,
-            word1Length, probability);
+            word1Length, probability, timestamp);
 }
 
 static void latinime_BinaryDictionary_removeBigramWords(JNIEnv *env, jclass clazz, jlong dict,
@@ -318,6 +347,87 @@ static void latinime_BinaryDictionary_removeBigramWords(JNIEnv *env, jclass claz
     env->GetIntArrayRegion(word1, 0, word1Length, word1CodePoints);
     dictionary->removeBigramWords(word0CodePoints, word0Length, word1CodePoints,
             word1Length);
+}
+
+// Returns how many language model params are processed.
+static int latinime_BinaryDictionary_addMultipleDictionaryEntries(JNIEnv *env, jclass clazz,
+        jlong dict, jobjectArray languageModelParams, jint startIndex) {
+    Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
+    if (!dictionary) {
+        return 0;
+    }
+    jsize languageModelParamCount = env->GetArrayLength(languageModelParams);
+    if (languageModelParamCount == 0 || startIndex >= languageModelParamCount) {
+        return 0;
+    }
+    jobject languageModelParam = env->GetObjectArrayElement(languageModelParams, 0);
+    jclass languageModelParamClass = env->GetObjectClass(languageModelParam);
+    env->DeleteLocalRef(languageModelParam);
+
+    jfieldID word0FieldId = env->GetFieldID(languageModelParamClass, "mWord0", "[I");
+    jfieldID word1FieldId = env->GetFieldID(languageModelParamClass, "mWord1", "[I");
+    jfieldID unigramProbabilityFieldId =
+            env->GetFieldID(languageModelParamClass, "mUnigramProbability", "I");
+    jfieldID bigramProbabilityFieldId =
+            env->GetFieldID(languageModelParamClass, "mBigramProbability", "I");
+    jfieldID timestampFieldId =
+            env->GetFieldID(languageModelParamClass, "mTimestamp", "I");
+    jfieldID shortcutTargetFieldId =
+            env->GetFieldID(languageModelParamClass, "mShortcutTarget", "[I");
+    jfieldID shortcutProbabilityFieldId =
+            env->GetFieldID(languageModelParamClass, "mShortcutProbability", "I");
+    jfieldID isNotAWordFieldId =
+            env->GetFieldID(languageModelParamClass, "mIsNotAWord", "Z");
+    jfieldID isBlacklistedFieldId =
+            env->GetFieldID(languageModelParamClass, "mIsBlacklisted", "Z");
+    env->DeleteLocalRef(languageModelParamClass);
+
+    for (int i = startIndex; i < languageModelParamCount; ++i) {
+        jobject languageModelParam = env->GetObjectArrayElement(languageModelParams, i);
+        // languageModelParam is a set of params for word1; thus, word1 cannot be null. On the
+        // other hand, word0 can be null and then it means the set of params doesn't contain bigram
+        // information.
+        jintArray word0 = static_cast<jintArray>(
+                env->GetObjectField(languageModelParam, word0FieldId));
+        jsize word0Length = word0 ? env->GetArrayLength(word0) : 0;
+        int word0CodePoints[word0Length];
+        if (word0) {
+            env->GetIntArrayRegion(word0, 0, word0Length, word0CodePoints);
+        }
+        jintArray word1 = static_cast<jintArray>(
+                env->GetObjectField(languageModelParam, word1FieldId));
+        jsize word1Length = env->GetArrayLength(word1);
+        int word1CodePoints[word1Length];
+        env->GetIntArrayRegion(word1, 0, word1Length, word1CodePoints);
+        jint unigramProbability = env->GetIntField(languageModelParam, unigramProbabilityFieldId);
+        jint timestamp = env->GetIntField(languageModelParam, timestampFieldId);
+        jboolean isNotAWord = env->GetBooleanField(languageModelParam, isNotAWordFieldId);
+        jboolean isBlacklisted = env->GetBooleanField(languageModelParam, isBlacklistedFieldId);
+        jintArray shortcutTarget = static_cast<jintArray>(
+                env->GetObjectField(languageModelParam, shortcutTargetFieldId));
+        jsize shortcutLength = shortcutTarget ? env->GetArrayLength(shortcutTarget) : 0;
+        int shortcutTargetCodePoints[shortcutLength];
+        if (shortcutTarget) {
+            env->GetIntArrayRegion(shortcutTarget, 0, shortcutLength, shortcutTargetCodePoints);
+        }
+        jint shortcutProbability = env->GetIntField(languageModelParam, shortcutProbabilityFieldId);
+        dictionary->addUnigramWord(word1CodePoints, word1Length, unigramProbability,
+                shortcutTargetCodePoints, shortcutLength, shortcutProbability,
+                isNotAWord, isBlacklisted, timestamp);
+        if (word0) {
+            jint bigramProbability = env->GetIntField(languageModelParam, bigramProbabilityFieldId);
+            dictionary->addBigramWords(word0CodePoints, word0Length, word1CodePoints, word1Length,
+                    bigramProbability, timestamp);
+        }
+        if (dictionary->needsToRunGC(true /* mindsBlockByGC */)) {
+            return i + 1;
+        }
+        env->DeleteLocalRef(word0);
+        env->DeleteLocalRef(word1);
+        env->DeleteLocalRef(shortcutTarget);
+        env->DeleteLocalRef(languageModelParam);
+    }
+    return languageModelParamCount;
 }
 
 static int latinime_BinaryDictionary_calculateProbabilityNative(JNIEnv *env, jclass clazz,
@@ -343,7 +453,7 @@ static jstring latinime_BinaryDictionary_getProperty(JNIEnv *env, jclass clazz, 
     static const int GET_PROPERTY_RESULT_LENGTH = 100;
     char resultChars[GET_PROPERTY_RESULT_LENGTH];
     resultChars[0] = '\0';
-    dictionary->getProperty(queryChars, resultChars, GET_PROPERTY_RESULT_LENGTH);
+    dictionary->getProperty(queryChars, queryUtf8Length, resultChars, GET_PROPERTY_RESULT_LENGTH);
     return env->NewStringUTF(resultChars);
 }
 
@@ -362,6 +472,11 @@ static const JNINativeMethod sMethods[] = {
         const_cast<char *>("closeNative"),
         const_cast<char *>("(J)V"),
         reinterpret_cast<void *>(latinime_BinaryDictionary_close)
+    },
+    {
+        const_cast<char *>("getFormatVersionNative"),
+        const_cast<char *>("(J)I"),
+        reinterpret_cast<void *>(latinime_BinaryDictionary_getFormatVersion)
     },
     {
         const_cast<char *>("flushNative"),
@@ -394,6 +509,11 @@ static const JNINativeMethod sMethods[] = {
         reinterpret_cast<void *>(latinime_BinaryDictionary_getBigramProbability)
     },
     {
+        const_cast<char *>("getUnigramPropertyNative"),
+        const_cast<char *>("(J[I[I[Z[I[ILjava/util/ArrayList;Ljava/util/ArrayList;)V"),
+        reinterpret_cast<void *>(latinime_BinaryDictionary_getUnigramProperty)
+    },
+    {
         const_cast<char *>("calcNormalizedScoreNative"),
         const_cast<char *>("([I[II)F"),
         reinterpret_cast<void *>(latinime_BinaryDictionary_calcNormalizedScore)
@@ -405,18 +525,24 @@ static const JNINativeMethod sMethods[] = {
     },
     {
         const_cast<char *>("addUnigramWordNative"),
-        const_cast<char *>("(J[II)V"),
+        const_cast<char *>("(J[II[IIZZI)V"),
         reinterpret_cast<void *>(latinime_BinaryDictionary_addUnigramWord)
     },
     {
         const_cast<char *>("addBigramWordsNative"),
-        const_cast<char *>("(J[I[II)V"),
+        const_cast<char *>("(J[I[III)V"),
         reinterpret_cast<void *>(latinime_BinaryDictionary_addBigramWords)
     },
     {
         const_cast<char *>("removeBigramWordsNative"),
         const_cast<char *>("(J[I[I)V"),
         reinterpret_cast<void *>(latinime_BinaryDictionary_removeBigramWords)
+    },
+    {
+        const_cast<char *>("addMultipleDictionaryEntriesNative"),
+        const_cast<char *>(
+                "(J[Lcom/android/inputmethod/latin/BinaryDictionary$LanguageModelParam;I)I"),
+        reinterpret_cast<void *>(latinime_BinaryDictionary_addMultipleDictionaryEntries)
     },
     {
         const_cast<char *>("calculateProbabilityNative"),

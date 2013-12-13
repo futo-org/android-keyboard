@@ -37,6 +37,16 @@
                 latin:keyStyle="f1MoreKeysStyle" />
         </case>
         <case
+            latin:supportsSwitchingToShortcutIme="false"
+        >
+            <Key
+                latin:keyLabel="!text/keylabel_for_comma"
+                latin:keyLabelFlags="hasPopupHint"
+                latin:additionalMoreKeys="!text/more_keys_for_comma"
+                latin:keyStyle="f1MoreKeysStyle" />
+        </case>
+        <!-- latin:supportsSwitchingToShortcutIme="true" -->
+        <case
             latin:hasShortcutKey="true"
         >
             <Key

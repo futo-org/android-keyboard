@@ -117,12 +117,6 @@
     <string name="keyboard_mode_time" msgid="4381856885582143277">"시간"</string>
     <string name="keyboard_mode_url" msgid="1519819835514911218">"URL"</string>
     <string name="voice_input" msgid="3583258583521397548">"음성 입력 키"</string>
-    <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"기본 키보드"</string>
-    <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"기호 키보드"</string>
-    <string name="voice_input_modes_off" msgid="3745699748218082014">"사용 안함"</string>
-    <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"기본 키보드의 마이크"</string>
-    <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"기호 키보드의 마이크"</string>
-    <string name="voice_input_modes_summary_off" msgid="63875609591897607">"음성 입력이 사용 중지됨"</string>
     <string name="configure_input_method" msgid="373356270290742459">"입력 방법 설정"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"입력 언어"</string>
     <string name="send_feedback" msgid="1780431884109392046">"의견 보내기"</string>

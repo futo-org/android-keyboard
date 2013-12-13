@@ -78,10 +78,10 @@ public final class KeySpecParser {
      * or has no key specifications.
      */
     public static String[] splitKeySpecs(final String text) {
-        final int size = text.length();
-        if (size == 0) {
+        if (TextUtils.isEmpty(text)) {
             return null;
         }
+        final int size = text.length();
         // Optimization for one-letter key specification.
         if (size == 1) {
             return text.charAt(0) == COMMA ? null : new String[] { text };
@@ -380,6 +380,9 @@ public final class KeySpecParser {
 
     public static String resolveTextReference(final String rawText,
             final KeyboardTextsSet textsSet) {
+        if (TextUtils.isEmpty(rawText)) {
+            return null;
+        }
         int level = 0;
         String text = rawText;
         StringBuilder sb;
@@ -392,7 +395,7 @@ public final class KeySpecParser {
             final int prefixLen = PREFIX_TEXT.length();
             final int size = text.length();
             if (size < prefixLen) {
-                return text;
+                return TextUtils.isEmpty(text) ? null : text;
             }
 
             sb = null;
@@ -421,7 +424,7 @@ public final class KeySpecParser {
                 text = sb.toString();
             }
         } while (sb != null);
-        return text;
+        return TextUtils.isEmpty(text) ? null : text;
     }
 
     private static int searchTextNameEnd(final String text, final int start) {
@@ -483,7 +486,7 @@ public final class KeySpecParser {
     public static int toUpperCaseOfCodeForLocale(final int code, final boolean needsToUpperCase,
             final Locale locale) {
         if (!Constants.isLetterCode(code) || !needsToUpperCase) return code;
-        final String text = new String(new int[] { code } , 0, 1);
+        final String text = StringUtils.newSingleCodePointString(code);
         final String casedText = KeySpecParser.toUpperCaseOfStringForLocale(
                 text, needsToUpperCase, locale);
         return StringUtils.codePointCount(casedText) == 1

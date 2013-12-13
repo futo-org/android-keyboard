@@ -298,6 +298,7 @@ static inline void prof_out(void) {
 #define NOT_AN_INDEX (-1)
 #define NOT_A_PROBABILITY (-1)
 #define NOT_A_DICT_POS (S_INT_MIN)
+#define NOT_A_TIMESTAMP (-1)
 
 // A special value to mean the first word confidence makes no sense in this case,
 // e.g. this is not a multi-word suggestion.
@@ -341,12 +342,21 @@ template<typename T> AK_FORCE_INLINE const T &max(const T &a, const T &b) { retu
 #define INPUTLENGTH_FOR_DEBUG (-1)
 #define MIN_OUTPUT_INDEX_FOR_DEBUG (-1)
 
-#define DISALLOW_COPY_AND_ASSIGN(TypeName) \
-  TypeName(const TypeName&);               \
+#define DISALLOW_DEFAULT_CONSTRUCTOR(TypeName) \
+  TypeName()
+
+#define DISALLOW_COPY_CONSTRUCTOR(TypeName) \
+  TypeName(const TypeName&)
+
+#define DISALLOW_ASSIGNMENT_OPERATOR(TypeName) \
   void operator=(const TypeName&)
 
+#define DISALLOW_COPY_AND_ASSIGN(TypeName) \
+  DISALLOW_COPY_CONSTRUCTOR(TypeName);     \
+  DISALLOW_ASSIGNMENT_OPERATOR(TypeName)
+
 #define DISALLOW_IMPLICIT_CONSTRUCTORS(TypeName) \
-  TypeName();                                    \
+  DISALLOW_DEFAULT_CONSTRUCTOR(TypeName);        \
   DISALLOW_COPY_AND_ASSIGN(TypeName)
 
 // Used as a return value for character comparison
@@ -392,24 +402,4 @@ typedef enum {
     // Create new word with space substitution
     CT_NEW_WORD_SPACE_SUBSTITUTION,
 } CorrectionType;
-
-// ErrorType is mainly decided by CorrectionType but it is also depending on if
-// the correction has really been performed or not.
-typedef enum {
-    // Substitution, omission and transposition
-    ET_EDIT_CORRECTION,
-    // Proximity error
-    ET_PROXIMITY_CORRECTION,
-    // Completion
-    ET_COMPLETION,
-    // New word
-    // TODO: Remove.
-    // A new word error should be an edit correction error or a proximity correction error.
-    ET_NEW_WORD,
-    // Treat error as an intentional omission when the CorrectionType is omission and the node can
-    // be intentional omission.
-    ET_INTENTIONAL_OMISSION,
-    // Not treated as an error. Tracked for checking exact match
-    ET_NOT_AN_ERROR
-} ErrorType;
 #endif // LATINIME_DEFINES_H
