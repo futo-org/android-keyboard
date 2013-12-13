@@ -40,6 +40,7 @@ import java.util.Iterator;
 @UsedForTesting
 public class Ver4DictUpdater extends Ver4DictDecoder implements DictUpdater {
     private static final String TAG = Ver4DictUpdater.class.getSimpleName();
+    private static final int MAX_JUMPS = 10000;
 
     private OutputStream mDictStream;
     private final File mFrequencyFile;
@@ -146,7 +147,7 @@ public class Ver4DictUpdater extends Ver4DictDecoder implements DictUpdater {
             mDictBuffer.position(wordPos);
             final int flags = PtNodeReader.readPtNodeOptionFlags(mDictBuffer);
             mDictBuffer.position(wordPos);
-            mDictBuffer.put((byte) DynamicBinaryDictIOUtils.markAsDeleted(flags));
+            mDictBuffer.put((byte)markAsDeleted(flags));
         }
     }
 
@@ -183,7 +184,7 @@ public class Ver4DictUpdater extends Ver4DictDecoder implements DictUpdater {
                 skipPtNode(formatOptions);
             }
             if (!readAndFollowForwardLink()) break;
-        } while (jumpCount++ < DynamicBinaryDictIOUtils.MAX_JUMPS);
+        } while (jumpCount++ < MAX_JUMPS);
         setPosition(originalPos);
     }
 
@@ -216,7 +217,7 @@ public class Ver4DictUpdater extends Ver4DictDecoder implements DictUpdater {
         final int originalPos = getPosition();
         setPosition(nodeArrayPos);
         int jumpCount = 0;
-        while (jumpCount++ < DynamicBinaryDictIOUtils.MAX_JUMPS) {
+        while (jumpCount++ < MAX_JUMPS) {
             final int ptNodeCount = readPtNodeCount();
             for (int i = 0; i < ptNodeCount; ++i) {
                 skipPtNode(formatOptions);
@@ -735,8 +736,7 @@ public class Ver4DictUpdater extends Ver4DictDecoder implements DictUpdater {
         mDictBuffer.put((byte) newFlags);
 
         updateFrequency(terminalId, frequency);
-        insertBigrams(terminalId, frequency,
-                DynamicBinaryDictIOUtils.resolveBigramPositions(this, bigramStrings));
+        insertBigrams(terminalId, frequency, resolveBigramPositions(this, bigramStrings));
         insertShortcuts(terminalId, shortcuts);
     }
 
@@ -765,8 +765,30 @@ public class Ver4DictUpdater extends Ver4DictDecoder implements DictUpdater {
         insertTerminalPosition(posOfTerminal);
         close();
 
-        insertBigrams(newTerminalId, frequency,
-                DynamicBinaryDictIOUtils.resolveBigramPositions(this, bigramStrings));
+        insertBigrams(newTerminalId, frequency, resolveBigramPositions(this, bigramStrings));
         insertShortcuts(newTerminalId, shortcuts);
+    }
+
+    /**
+     * Converts a list of WeightedString to a list of PendingAttribute.
+     */
+    private static ArrayList<PendingAttribute> resolveBigramPositions(final DictUpdater dictUpdater,
+            final ArrayList<WeightedString> bigramStrings)
+                    throws IOException, UnsupportedFormatException {
+        if (bigramStrings == null) return CollectionUtils.newArrayList();
+        final ArrayList<PendingAttribute> bigrams = CollectionUtils.newArrayList();
+        for (final WeightedString bigram : bigramStrings) {
+            final int pos = dictUpdater.getTerminalPosition(bigram.mWord);
+            if (pos == FormatSpec.NOT_VALID_WORD) {
+                // TODO: figure out what is the correct thing to do here.
+            } else {
+                bigrams.add(new PendingAttribute(bigram.mFrequency, pos));
+            }
+        }
+        return bigrams;
+    }
+
+    private static int markAsDeleted(final int flags) {
+        return (flags & (~FormatSpec.MASK_CHILDREN_ADDRESS_TYPE)) | FormatSpec.FLAG_IS_DELETED;
     }
 }

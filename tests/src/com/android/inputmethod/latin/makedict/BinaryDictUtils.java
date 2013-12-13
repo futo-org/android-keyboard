@@ -76,8 +76,6 @@ public class BinaryDictUtils {
             throws UnsupportedFormatException {
         if (formatOptions.mVersion == FormatSpec.VERSION4) {
             return new Ver4DictUpdater(file, DictDecoder.USE_WRITABLE_BYTEBUFFER);
-        } else if (formatOptions.mVersion == FormatSpec.VERSION3) {
-            return new Ver2DictUpdater(file, DictDecoder.USE_WRITABLE_BYTEBUFFER);
         } else {
             throw new UnsupportedFormatException("The format option has a wrong version : "
                     + formatOptions.mVersion);
