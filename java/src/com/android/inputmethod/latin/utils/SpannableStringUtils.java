@@ -40,12 +40,17 @@ public final class SpannableStringUtils {
      * are out of range in <code>dest</code>.
      */
     public static void copyNonParagraphSuggestionSpansFrom(Spanned source, int start, int end,
-                                     Spannable dest, int destoff) {
+            Spannable dest, int destoff) {
         Object[] spans = source.getSpans(start, end, SuggestionSpan.class);
 
         for (int i = 0; i < spans.length; i++) {
             int fl = source.getSpanFlags(spans[i]);
-            if (0 != (fl & Spannable.SPAN_PARAGRAPH)) continue;
+            // We don't care about the PARAGRAPH flag in LatinIME code. However, if this flag
+            // is set, Spannable#setSpan will throw an exception unless the span is on the edge
+            // of a word. But the spans have been split into two by the getText{Before,After}Cursor
+            // methods, so after concatenation they may end in the middle of a word.
+            // Since we don't use them, we can just remove them and avoid crashing.
+            fl &= ~Spannable.SPAN_PARAGRAPH;
 
             int st = source.getSpanStart(spans[i]);
             int en = source.getSpanEnd(spans[i]);
