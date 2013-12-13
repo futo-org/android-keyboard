@@ -2342,7 +2342,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             if (!mRecapitalizeStatus.isSetAt(mLastSelectionStart, mLastSelectionEnd)) {
                 mLastSelectionStart = mRecapitalizeStatus.getNewCursorStart();
                 mLastSelectionEnd = mRecapitalizeStatus.getNewCursorEnd();
-                mConnection.setSelection(mLastSelectionStart, mLastSelectionEnd);
             }
         }
         mRecapitalizeStatus.rotate();
