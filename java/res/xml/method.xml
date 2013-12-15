@@ -24,54 +24,54 @@
     keyboard_locale: script_name/keyboard_layout_set
     af: Afrikaans/qwerty
     ar: Arabic/arabic
-    (az: Azerbaijani/qwerty)  # disabled temporarily. waiting for string resources.
-    be_BY: Belarusian/east_slavic
+    (az_AZ: Azerbaijani (Azerbaijan)/qwerty)  # disabled temporarily. waiting for string resources.
+    be_BY: Belarusian (Belarus)/east_slavic
     bg: Bulgarian/bulgarian
     bg: Bulgarian/bulgarian_bds
     ca: Catalan/spanish
     cs: Czech/qwertz
     da: Danish/nordic
     de: German/qwertz
-    de_CH: German Switzerland/swiss
+    de_CH: German (Switzerland)/swiss
     el: Greek/greek
-    en_US: English United States/qwerty
-    en_GB: English Great Britain/qwerty
+    en_US: English (United States)/qwerty
+    en_GB: English (Great Britain)/qwerty
     eo: Esperanto/spanish
     es: Spanish/spanish
-    es_US: Spanish United States/spanish
-    (es_419: Spanish Latin America/qwerty)
-    et_EE: Estonian/nordic
+    es_US: Spanish (United States)/spanish
+    (es_419: Spanish (Latin America)/qwerty)
+    et_EE: Estonian (Estonia)/nordic
     fa: Persian/arabic
     fi: Finnish/nordic
     fr: French/azerty
-    fr_CA: French Canada/qwerty
-    fr_CH: French Switzerland/swiss
+    fr_CA: French (Canada)/qwerty
+    fr_CH: French (Switzerland)/swiss
     hi: Hindi/hindi
     hr: Croatian/qwertz
     hu: Hungarian/qwertz
-    hy_AM: Armenian Phonetic/armenian_phonetic
+    hy_AM: Armenian (Armenia) Phonetic/armenian_phonetic
     in: Indonesian/qwerty    # "id" is official language code of Indonesian.
     is: Icelandic/qwerty
     it: Italian/qwerty
     iw: Hebrew/hebrew        # "he" is official language code of Hebrew.
-    ka_GE: Georgian/georgian
+    ka_GE: Georgian (Georgia)/georgian
     (kk: Kazakh/east_slavic) # disabled temporarily. waiting for string resources.
-    km_KH: Khmer/khmer
+    km_KH: Khmer (Cambodia)/khmer
     ky: Kyrgyz/east_slavic
-    lo_LA: Lao/lao
+    lo_LA: Lao (Laos)/lao
     lt: Lithuanian/qwerty
     lv: Latvian/qwerty
     mk: Macedonian/south_slavic
-    mn_MN: Mongolian/mongolian
-    ms_MY: Malay/qwerty
+    mn_MN: Mongolian (Mongolia)/mongolian
+    ms_MY: Malay (Malaysia)/qwerty
     nb: Norwegian Bokmål/nordic
-    (ne: Nepali Romanized/nepali_romanized)  # disabled temporarily
-    (ne: Nepali Traditional/nepali_traditional)  # disabled temporarily
+    (ne_NP: Nepali (Nepal) Romanized/nepali_romanized)  # disabled temporarily
+    (ne_NP: Nepali (Nepal) Traditional/nepali_traditional)  # disabled temporarily
     nl: Dutch/qwerty
-    nl_BE: Dutch Belgium/azerty
+    nl_BE: Dutch (Belgium)/azerty
     pl: Polish/qwerty
-    pt_BR: Portuguese Brazil/qwerty
-    pt_PT: Portuguese Portugal/qwerty
+    pt_BR: Portuguese (Brazil)/qwerty
+    pt_PT: Portuguese (Portugal)/qwerty
     ro: Romanian/qwerty
     ru: Russian/east_slavic
     sk: Slovak/qwerty
@@ -135,7 +135,7 @@
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
             android:subtypeId="0x70b0f974"
-            android:imeSubtypeLocale="az"
+            android:imeSubtypeLocale="az_AZ"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,AsciiCapable,EmojiCapable"
             android:isAsciiCapable="true"
@@ -455,7 +455,7 @@
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
             android:subtypeId="0xd80a4cee"
-            android:imeSubtypeLocale="ne"
+            android:imeSubtypeLocale="ne_NP"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=nepali_romanized,EmojiCapable"
             android:isAsciiCapable="false"
@@ -463,7 +463,7 @@
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_nepali_traditional"
             android:subtypeId="0x5fafea88"
-            android:imeSubtypeLocale="ne"
+            android:imeSubtypeLocale="ne_NP"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=nepali_traditional,EmojiCapable"
             android:isAsciiCapable="false"

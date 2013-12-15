@@ -635,8 +635,8 @@ public final class KeyboardTextsSet {
         /* 118 */ "\\%,\u2030",
     };
 
-    /* Language az: Azerbaijani */
-    private static final String[] LANGUAGE_az = {
+    /* Language az_AZ: Azerbaijani (Azerbaijan) */
+    private static final String[] LANGUAGE_az_AZ = {
         // U+00E2: "â" LATIN SMALL LETTER A WITH CIRCUMFLEX
         /* 0 */ "\u00E2",
         // U+0259: "ə" LATIN SMALL LETTER SCHWA
@@ -2454,8 +2454,8 @@ public final class KeyboardTextsSet {
         /* 53 */ "!text/double_9qm_rqm",
     };
 
-    /* Language ne: Nepali */
-    private static final String[] LANGUAGE_ne = {
+    /* Language ne_NP: Nepali (Nepal) */
+    private static final String[] LANGUAGE_ne_NP = {
         /* 0~ */
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
@@ -3519,7 +3519,7 @@ public final class KeyboardTextsSet {
         "DEFAULT", LANGUAGE_DEFAULT, /* default */
         "af", LANGUAGE_af, /* Afrikaans */
         "ar", LANGUAGE_ar, /* Arabic */
-        "az", LANGUAGE_az, /* Azerbaijani */
+        "az" /* "az_AZ" */, LANGUAGE_az_AZ, /* Azerbaijani (Azerbaijan) */
         "be" /* "be_BY" */, LANGUAGE_be_BY, /* Belarusian (Belarus) */
         "bg", LANGUAGE_bg, /* Bulgarian */
         "ca", LANGUAGE_ca, /* Catalan */
@@ -3551,7 +3551,7 @@ public final class KeyboardTextsSet {
         "mk", LANGUAGE_mk, /* Macedonian */
         "mn" /* "mn_MN" */, LANGUAGE_mn_MN, /* Mongolian (Mongolia) */
         "nb", LANGUAGE_nb, /* Norwegian Bokmål */
-        "ne", LANGUAGE_ne, /* Nepali */
+        "ne" /* "ne_NP" */, LANGUAGE_ne_NP, /* Nepali (Nepal) */
         "nl", LANGUAGE_nl, /* Dutch */
         "pl", LANGUAGE_pl, /* Polish */
         "pt", LANGUAGE_pt, /* Portuguese */
