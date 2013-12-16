@@ -70,6 +70,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         public void startKeyRepeatTimerOf(PointerTracker tracker, int repeatCount, int delay);
         public void startLongPressTimerOf(PointerTracker tracker, int delay);
         public void cancelLongPressTimerOf(PointerTracker tracker);
+        public void cancelLongPressShiftKeyTimers();
         public void cancelKeyTimersOf(PointerTracker tracker);
         public void startDoubleTapShiftKeyTimer();
         public void cancelDoubleTapShiftKeyTimer();
@@ -89,6 +90,8 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
             public void startLongPressTimerOf(PointerTracker tracker, int delay) {}
             @Override
             public void cancelLongPressTimerOf(PointerTracker tracker) {}
+            @Override
+            public void cancelLongPressShiftKeyTimers() {}
             @Override
             public void cancelKeyTimersOf(PointerTracker tracker) {}
             @Override
@@ -1338,6 +1341,9 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
     }
 
     private void startLongPressTimer(final Key key) {
+        // Note that we need to cancel all active long press shift key timers if any whenever we
+        // start a new long press timer for both non-shift and shift keys.
+        sTimerProxy.cancelLongPressShiftKeyTimers();
         if (sInGesture) return;
         if (key == null) return;
         if (!key.isLongPressEnabled()) return;
@@ -1349,6 +1355,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         if (mIsInDraggingFinger && key.getMoreKeys() == null) return;
 
         final int delay = getLongPressTimeout(key.getCode());
+        if (delay <= 0) return;
         sTimerProxy.startLongPressTimerOf(this, delay);
     }
 

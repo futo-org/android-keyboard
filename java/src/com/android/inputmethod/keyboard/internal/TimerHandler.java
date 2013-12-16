@@ -38,8 +38,9 @@ public final class TimerHandler extends LeakGuardHandlerWrapper<Callbacks> imple
     private static final int MSG_TYPING_STATE_EXPIRED = 0;
     private static final int MSG_REPEAT_KEY = 1;
     private static final int MSG_LONGPRESS_KEY = 2;
-    private static final int MSG_DOUBLE_TAP_SHIFT_KEY = 3;
-    private static final int MSG_UPDATE_BATCH_INPUT = 4;
+    private static final int MSG_LONGPRESS_SHIFT_KEY = 3;
+    private static final int MSG_DOUBLE_TAP_SHIFT_KEY = 4;
+    private static final int MSG_UPDATE_BATCH_INPUT = 5;
 
     private final int mIgnoreAltCodeKeyTimeout;
     private final int mGestureRecognitionUpdateTime;
@@ -66,6 +67,7 @@ public final class TimerHandler extends LeakGuardHandlerWrapper<Callbacks> imple
             tracker.onKeyRepeat(msg.arg1 /* code */, msg.arg2 /* repeatCount */);
             break;
         case MSG_LONGPRESS_KEY:
+        case MSG_LONGPRESS_SHIFT_KEY:
             cancelLongPressTimers();
             callbacks.onLongPress(tracker);
             break;
@@ -102,19 +104,31 @@ public final class TimerHandler extends LeakGuardHandlerWrapper<Callbacks> imple
 
     @Override
     public void startLongPressTimerOf(final PointerTracker tracker, final int delay) {
-        if (delay <= 0) {
+        final Key key = tracker.getKey();
+        if (key == null) {
             return;
         }
-        sendMessageDelayed(obtainMessage(MSG_LONGPRESS_KEY, tracker), delay);
+        // Use a separate message id for long pressing shift key, because long press shift key
+        // timers should be canceled when other key is pressed.
+        final int messageId = (key.getCode() == Constants.CODE_SHIFT)
+                ? MSG_LONGPRESS_SHIFT_KEY : MSG_LONGPRESS_KEY;
+        sendMessageDelayed(obtainMessage(messageId, tracker), delay);
     }
 
     @Override
     public void cancelLongPressTimerOf(final PointerTracker tracker) {
         removeMessages(MSG_LONGPRESS_KEY, tracker);
+        removeMessages(MSG_LONGPRESS_SHIFT_KEY, tracker);
+    }
+
+    @Override
+    public void cancelLongPressShiftKeyTimers() {
+        removeMessages(MSG_LONGPRESS_SHIFT_KEY);
     }
 
     private void cancelLongPressTimers() {
         removeMessages(MSG_LONGPRESS_KEY);
+        removeMessages(MSG_LONGPRESS_SHIFT_KEY);
     }
 
     @Override
