@@ -140,7 +140,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         // only, which right now use format 2 (dicts using format 4 use Decaying*, which overrides
         // this method).
         // TODO: Migrate these dicts to ver4 format, and remove this function.
-        return formatVersion == 2;
+        return formatVersion == FormatSpec.VERSION2;
     }
 
     public boolean isValidDictionary() {
