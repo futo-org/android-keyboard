@@ -2565,26 +2565,20 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final SettingsValues currentSettings = mSettings.getCurrent();
         final int[] additionalFeaturesOptions = currentSettings.mAdditionalFeaturesSettingValues;
 
-        final String previousWord;
-        if (mWordComposer.isComposingWord() || mWordComposer.isBatchMode()) {
-            previousWord = mWordComposer.getPreviousWord();
-        } else {
-            // Not composing: this is for prediction.
-            // TODO: read the previous word earlier for prediction, like we are doing for
-            // normal suggestions.
-            previousWord = getNthPreviousWordForSuggestion(currentSettings, 1 /* nthPreviousWord*/);
-        }
         if (DEBUG) {
-            // TODO: this is for checking consistency with older versions. Remove this when
-            // we are confident this is stable.
-            // We're checking the previous word in the text field against the memorized previous
-            // word. If we are composing a word we should have the second word before the cursor
-            // memorized, otherwise we should have the first.
-            final String rereadPrevWord = getNthPreviousWordForSuggestion(currentSettings,
-                    mWordComposer.isComposingWord() ? 2 : 1);
-            if (!TextUtils.equals(previousWord, rereadPrevWord)) {
-                throw new RuntimeException("Unexpected previous word: "
-                        + previousWord + " <> " + rereadPrevWord);
+            if (mWordComposer.isComposingWord() || mWordComposer.isBatchMode()) {
+                final String previousWord = mWordComposer.getPreviousWord();
+                // TODO: this is for checking consistency with older versions. Remove this when
+                // we are confident this is stable.
+                // We're checking the previous word in the text field against the memorized previous
+                // word. If we are composing a word we should have the second word before the cursor
+                // memorized, otherwise we should have the first.
+                final String rereadPrevWord = getNthPreviousWordForSuggestion(currentSettings,
+                        mWordComposer.isComposingWord() ? 2 : 1);
+                if (!TextUtils.equals(previousWord, rereadPrevWord)) {
+                    throw new RuntimeException("Unexpected previous word: "
+                            + previousWord + " <> " + rereadPrevWord);
+                }
             }
         }
         suggest.getSuggestedWords(mWordComposer, mWordComposer.getPreviousWord(),
