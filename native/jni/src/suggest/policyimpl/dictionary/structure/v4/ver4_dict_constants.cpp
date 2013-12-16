@@ -49,8 +49,8 @@ const int Ver4DictConstants::WORD_LEVEL_FIELD_SIZE = 1;
 const int Ver4DictConstants::WORD_COUNT_FIELD_SIZE = 1;
 
 const int Ver4DictConstants::BIGRAM_ADDRESS_TABLE_BLOCK_SIZE = 4;
-const int Ver4DictConstants::BIGRAM_ADDRESS_TABLE_DATA_SIZE = 4;
-const int Ver4DictConstants::SHORTCUT_ADDRESS_TABLE_BLOCK_SIZE = 16;
+const int Ver4DictConstants::BIGRAM_ADDRESS_TABLE_DATA_SIZE = 16;
+const int Ver4DictConstants::SHORTCUT_ADDRESS_TABLE_BLOCK_SIZE = 64;
 const int Ver4DictConstants::SHORTCUT_ADDRESS_TABLE_DATA_SIZE = 4;
 
 const int Ver4DictConstants::BIGRAM_TARGET_TERMINAL_ID_FIELD_SIZE = 3;
