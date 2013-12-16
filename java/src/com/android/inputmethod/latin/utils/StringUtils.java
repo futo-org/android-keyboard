@@ -250,6 +250,24 @@ public final class StringUtils {
         return true;
     }
 
+    /**
+     * Returns true if all code points in text are whitespace, false otherwise. Empty is true.
+     */
+    // Interestingly enough, U+00A0 NO-BREAK SPACE and U+200B ZERO-WIDTH SPACE are not considered
+    // whitespace, while EN SPACE, EM SPACE and IDEOGRAPHIC SPACES are.
+    public static boolean containsOnlyWhitespace(final String text) {
+        final int length = text.length();
+        int i = 0;
+        while (i < length) {
+            final int codePoint = text.codePointAt(i);
+            if (!Character.isWhitespace(codePoint)) {
+                return false;
+            }
+            i += Character.charCount(codePoint);
+        }
+        return true;
+    }
+
     @UsedForTesting
     public static boolean looksValidForDictionaryInsertion(final CharSequence text,
             final SettingsValues settings) {

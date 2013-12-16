@@ -1469,7 +1469,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 ResearchLogger.latinIME_maybeDoubleSpacePeriod(textToInsert,
                         false /* isBatchMode */);
             }
-            mWordComposer.doubleSpacePeriod();
+            mWordComposer.discardPreviousWordForSuggestion();
             mKeyboardSwitcher.updateShiftState();
             return true;
         }
@@ -2567,7 +2567,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         if (DEBUG) {
             if (mWordComposer.isComposingWord() || mWordComposer.isBatchMode()) {
-                final String previousWord = mWordComposer.getPreviousWord();
+                final String previousWord = mWordComposer.getPreviousWordForSuggestion();
                 // TODO: this is for checking consistency with older versions. Remove this when
                 // we are confident this is stable.
                 // We're checking the previous word in the text field against the memorized previous
@@ -2581,7 +2581,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 }
             }
         }
-        suggest.getSuggestedWords(mWordComposer, mWordComposer.getPreviousWord(),
+        suggest.getSuggestedWords(mWordComposer, mWordComposer.getPreviousWordForSuggestion(),
                 keyboard.getProximityInfo(),
                 currentSettings.mBlockPotentiallyOffensive, currentSettings.mCorrectionEnabled,
                 additionalFeaturesOptions, sessionId, sequenceNumber, callback);
@@ -2824,6 +2824,19 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // strings.
         mLastComposedWord = mWordComposer.commitWord(commitType, chosenWord, separatorString,
                 prevWord);
+        final boolean shouldDiscardPreviousWordForSuggestion;
+        if (0 == StringUtils.codePointCount(separatorString)) {
+            // Separator is 0-length. Discard the word only if the current language has spaces.
+            shouldDiscardPreviousWordForSuggestion =
+                    mSettings.getCurrent().mCurrentLanguageHasSpaces;
+        } else {
+            // Otherwise, we discard if the separator contains any non-whitespace.
+            shouldDiscardPreviousWordForSuggestion =
+                    !StringUtils.containsOnlyWhitespace(separatorString);
+        }
+        if (shouldDiscardPreviousWordForSuggestion) {
+            mWordComposer.discardPreviousWordForSuggestion();
+        }
     }
 
     private void setPunctuationSuggestions() {

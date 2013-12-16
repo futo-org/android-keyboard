@@ -50,8 +50,9 @@ public final class WordComposer {
     private final StringBuilder mTypedWord;
     // The previous word (before the composing word). Used as context for suggestions. May be null
     // after resetting and before starting a new composing word, or when there is no context like
-    // at the start of text for example.
-    private String mPreviousWord;
+    // at the start of text for example. It can also be set to null externally when the user
+    // enters a separator that does not let bigrams across, like a period or a comma.
+    private String mPreviousWordForSuggestion;
     private String mAutoCorrection;
     private boolean mIsResumed;
     private boolean mIsBatchMode;
@@ -89,7 +90,7 @@ public final class WordComposer {
         mIsBatchMode = false;
         mCursorPositionWithinWord = 0;
         mRejectedBatchModeSuggestion = null;
-        mPreviousWord = null;
+        mPreviousWordForSuggestion = null;
         refreshSize();
     }
 
@@ -106,7 +107,7 @@ public final class WordComposer {
         mIsBatchMode = source.mIsBatchMode;
         mCursorPositionWithinWord = source.mCursorPositionWithinWord;
         mRejectedBatchModeSuggestion = source.mRejectedBatchModeSuggestion;
-        mPreviousWord = source.mPreviousWord;
+        mPreviousWordForSuggestion = source.mPreviousWordForSuggestion;
         refreshSize();
     }
 
@@ -124,7 +125,7 @@ public final class WordComposer {
         mIsBatchMode = false;
         mCursorPositionWithinWord = 0;
         mRejectedBatchModeSuggestion = null;
-        mPreviousWord = null;
+        mPreviousWordForSuggestion = null;
         refreshSize();
     }
 
@@ -305,7 +306,7 @@ public final class WordComposer {
             addKeyInfo(codePoint, keyboard);
         }
         mIsResumed = true;
-        mPreviousWord = previousWord;
+        mPreviousWordForSuggestion = previousWord;
     }
 
     /**
@@ -356,8 +357,8 @@ public final class WordComposer {
         return mTypedWord.toString();
     }
 
-    public String getPreviousWord() {
-        return mPreviousWord;
+    public String getPreviousWordForSuggestion() {
+        return mPreviousWordForSuggestion;
     }
 
     /**
@@ -419,7 +420,7 @@ public final class WordComposer {
     public void setCapitalizedModeAndPreviousWordAtStartComposingTime(final int mode,
             final String previousWord) {
         mCapitalizedMode = mode;
-        mPreviousWord = previousWord;
+        mPreviousWordForSuggestion = previousWord;
     }
 
     /**
@@ -471,12 +472,7 @@ public final class WordComposer {
         mCapsCount = 0;
         mDigitsCount = 0;
         mIsBatchMode = false;
-        final boolean isWhitespace = 1 == StringUtils.codePointCount(separatorString)
-                && Character.isWhitespace(separatorString.codePointAt(0));
-        // If not whitespace, we don't use the previous word for suggestion. This is consistent
-        // with how we get the previous word for suggestion: see RichInputConnection#spaceRegex and
-        // LatinIME#getNthPreviousWordForSuggestion.
-        mPreviousWord = isWhitespace ? mTypedWord.toString() : null;
+        mPreviousWordForSuggestion = mTypedWord.toString();
         mTypedWord.setLength(0);
         mCodePointSize = 0;
         mTrailingSingleQuotesCount = 0;
@@ -490,11 +486,11 @@ public final class WordComposer {
         return lastComposedWord;
     }
 
-    public void doubleSpacePeriod() {
-        // When a period was entered with a double space, the separator we got has been
-        // changed by a period (see #commitWord). We should not use the previous word for
-        // suggestion.
-        mPreviousWord = null;
+    // Call this when the recorded previous word should be discarded. This is typically called
+    // when the user inputs a separator that's not whitespace (including the case of the
+    // double-space-to-period feature).
+    public void discardPreviousWordForSuggestion() {
+        mPreviousWordForSuggestion = null;
     }
 
     public void resumeSuggestionOnLastComposedWord(final LastComposedWord lastComposedWord,
@@ -509,7 +505,7 @@ public final class WordComposer {
         mCursorPositionWithinWord = mCodePointSize;
         mRejectedBatchModeSuggestion = null;
         mIsResumed = true;
-        mPreviousWord = previousWord;
+        mPreviousWordForSuggestion = previousWord;
     }
 
     public boolean isBatchMode() {

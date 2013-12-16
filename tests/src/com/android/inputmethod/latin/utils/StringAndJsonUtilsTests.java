@@ -292,6 +292,20 @@ public class StringAndJsonUtilsTests extends AndroidTestCase {
         assertTrue(bytesStr.equals(bytesStr2));
     }
 
+    public void testContainsOnlyWhitespace() {
+        assertTrue(StringUtils.containsOnlyWhitespace("   "));
+        assertTrue(StringUtils.containsOnlyWhitespace(""));
+        assertTrue(StringUtils.containsOnlyWhitespace("  \n\t\t"));
+        // U+2002 : EN SPACE
+        // U+2003 : EM SPACE
+        // U+3000 : IDEOGRAPHIC SPACE (commonly "double-width space")
+        assertTrue(StringUtils.containsOnlyWhitespace("\u2002\u2003\u3000"));
+        assertFalse(StringUtils.containsOnlyWhitespace("  a "));
+        assertFalse(StringUtils.containsOnlyWhitespace(". "));
+        assertFalse(StringUtils.containsOnlyWhitespace("."));
+        assertTrue(StringUtils.containsOnlyWhitespace(""));
+    }
+
     public void testJsonUtils() {
         final Object[] objs = new Object[] { 1, "aaa", "bbb", 3 };
         final List<Object> objArray = Arrays.asList(objs);
