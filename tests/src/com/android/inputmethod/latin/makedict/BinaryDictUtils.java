@@ -31,8 +31,6 @@ public class BinaryDictUtils {
 
     public static final FormatSpec.FormatOptions VERSION2_OPTIONS =
             new FormatSpec.FormatOptions(FormatSpec.VERSION2);
-    public static final FormatSpec.FormatOptions VERSION3_OPTIONS =
-            new FormatSpec.FormatOptions(FormatSpec.VERSION3);
     public static final FormatSpec.FormatOptions VERSION4_OPTIONS_WITHOUT_TIMESTAMP =
             new FormatSpec.FormatOptions(FormatSpec.VERSION4, false /* hasTimestamp */);
     public static final FormatSpec.FormatOptions VERSION4_OPTIONS_WITH_TIMESTAMP =
@@ -48,8 +46,7 @@ public class BinaryDictUtils {
 
     public static File getDictFile(final String name, final String version,
             final FormatOptions formatOptions, final File directory) {
-        if (formatOptions.mVersion == FormatSpec.VERSION2
-                || formatOptions.mVersion == FormatSpec.VERSION3) {
+        if (formatOptions.mVersion == FormatSpec.VERSION2) {
             return new File(directory, name + "." + version + TEST_DICT_FILE_EXTENSION);
         } else if (formatOptions.mVersion == FormatSpec.VERSION4) {
             return new File(directory, name + "." + version);
@@ -59,12 +56,13 @@ public class BinaryDictUtils {
         }
     }
 
-    public static DictEncoder getDictEncoder(final File file, final FormatOptions formatOptions,
-            final File cacheDir) {
+    public static DictEncoder getDictEncoder(final File file, final FormatOptions formatOptions) {
         if (formatOptions.mVersion == FormatSpec.VERSION4) {
-            return new Ver4DictEncoder(cacheDir);
-        } else if (formatOptions.mVersion == FormatSpec.VERSION3
-                || formatOptions.mVersion == FormatSpec.VERSION2) {
+            if (!file.isDirectory()) {
+                file.mkdir();
+            }
+            return new Ver4DictEncoder(file);
+        } else if (formatOptions.mVersion == FormatSpec.VERSION2) {
             return new Ver2DictEncoder(file);
         } else {
             throw new RuntimeException("The format option has a wrong version : "
