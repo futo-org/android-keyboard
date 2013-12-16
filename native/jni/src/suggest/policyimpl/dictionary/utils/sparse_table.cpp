@@ -34,7 +34,8 @@ uint32_t SparseTable::get(const int id) const {
     const int indexTableReadingPos = getPosInIndexTable(id);
     const int index = mIndexTableBuffer->readUint(INDEX_SIZE, indexTableReadingPos);
     const int contentTableReadingPos = getPosInContentTable(id, index);
-    return mContentTableBuffer->readUint(mDataSize, contentTableReadingPos);
+    const int contentValue = mContentTableBuffer->readUint(mDataSize, contentTableReadingPos);
+    return contentValue == NOT_EXIST ? NOT_A_DICT_POS : contentValue;
 }
 
 bool SparseTable::set(const int id, const uint32_t value) {
@@ -70,7 +71,7 @@ bool SparseTable::set(const int id, const uint32_t value) {
     // Write a new block that containing the entry to be set.
     int writingPos = getPosInContentTable(0 /* id */, index);
     for (int i = 0; i < mBlockSize; ++i) {
-        if (!mContentTableBuffer->writeUintAndAdvancePosition(NOT_A_DICT_POS, mDataSize,
+        if (!mContentTableBuffer->writeUintAndAdvancePosition(NOT_EXIST, mDataSize,
                 &writingPos)) {
             AKLOGE("cannot write content table to extend. writingPos: %d, tailPos: %d, "
                     "mDataSize: %d", writingPos, mContentTableBuffer->getTailPosition(), mDataSize);
