@@ -87,6 +87,11 @@
     <!-- Description for option enabling or disabling the use of names of people in Contacts for suggestion and correction [CHAR LIMIT=65] -->
     <string name="use_contacts_dict_summary">Use names from Contacts for suggestions and corrections</string>
 
+    <!-- Option name for enabling the use by the keyboards of sent/received messages, e-mail and typing history to improve suggestion accuracy [CHAR LIMIT=25] -->
+    <string name="use_personalized_dicts">Personalized suggestions</string>
+    <!-- Description for option enabling the use by the keyboards of sent/received messages, e-mail and typing history to improve suggestion accuracy [CHAR LIMIT=65] -->
+    <string name="use_personalized_dicts_summary">Learn from your communications and typed data to improve suggestions</string>
+
     <!-- Option name for enabling or disabling the double-space period feature that lets double tap on spacebar insert a period followed by a space [CHAR LIMIT=30] -->
     <string name="use_double_space_period">Double-space period</string>
     <!-- Description for option enabling or disabling the double-space period feature that lets double tap on spacebar insert a period followed by a space [CHAR LIMIT=65] -->
