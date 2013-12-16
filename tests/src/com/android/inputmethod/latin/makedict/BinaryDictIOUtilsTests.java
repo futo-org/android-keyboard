@@ -237,8 +237,7 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
         dict.add("abcd", 10, null, false);
 
         try {
-            final DictEncoder dictEncoder = BinaryDictUtils.getDictEncoder(file, formatOptions,
-                    getContext().getCacheDir());
+            final DictEncoder dictEncoder = BinaryDictUtils.getDictEncoder(file, formatOptions);
             dictEncoder.writeDictionary(dict, formatOptions);
         } catch (IOException e) {
             fail("IOException while writing an initial dictionary : " + e);
@@ -289,7 +288,6 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
     }
 
     public void testInsertWord() {
-        runTestInsertWord(BinaryDictUtils.VERSION3_OPTIONS);
         runTestInsertWord(BinaryDictUtils.VERSION4_OPTIONS_WITHOUT_TIMESTAMP);
         runTestInsertWord(BinaryDictUtils.VERSION4_OPTIONS_WITH_TIMESTAMP);
     }
@@ -307,8 +305,7 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
         dict.add("efgh", 15, null, false);
 
         try {
-            final DictEncoder dictEncoder = BinaryDictUtils.getDictEncoder(file, formatOptions,
-                    getContext().getCacheDir());
+            final DictEncoder dictEncoder = BinaryDictUtils.getDictEncoder(file, formatOptions);
             dictEncoder.writeDictionary(dict, formatOptions);
         } catch (IOException e) {
             fail("IOException while writing an initial dictionary : " + e);
@@ -330,7 +327,6 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
     }
 
     public void testInsertWordWithBigrams() {
-        runTestInsertWordWithBigrams(BinaryDictUtils.VERSION3_OPTIONS);
         runTestInsertWordWithBigrams(BinaryDictUtils.VERSION4_OPTIONS_WITHOUT_TIMESTAMP);
         runTestInsertWordWithBigrams(BinaryDictUtils.VERSION4_OPTIONS_WITH_TIMESTAMP);
     }
@@ -347,8 +343,7 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
         dict.add("initial", 10, null, false);
 
         try {
-            final DictEncoder dictEncoder = BinaryDictUtils.getDictEncoder(file, formatOptions,
-                    getContext().getCacheDir());
+            final DictEncoder dictEncoder = BinaryDictUtils.getDictEncoder(file, formatOptions);
             dictEncoder.writeDictionary(dict, formatOptions);
         } catch (IOException e) {
             assertTrue(false);
@@ -379,7 +374,6 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
     }
 
     public void testRandomWords() {
-        runTestRandomWords(BinaryDictUtils.VERSION3_OPTIONS);
         runTestRandomWords(BinaryDictUtils.VERSION4_OPTIONS_WITHOUT_TIMESTAMP);
         runTestRandomWords(BinaryDictUtils.VERSION4_OPTIONS_WITH_TIMESTAMP);
     }

@@ -169,8 +169,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         long now = -1, diff = -1;
 
         try {
-            final DictEncoder dictEncoder = BinaryDictUtils.getDictEncoder(file, formatOptions,
-                    getContext().getCacheDir());
+            final DictEncoder dictEncoder = BinaryDictUtils.getDictEncoder(file, formatOptions);
 
             now = System.currentTimeMillis();
             // If you need to dump the dict to a textual file, uncomment the line below and the
@@ -316,7 +315,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         runReadAndWriteTests(results, BinaryDictUtils.USE_BYTE_BUFFER,
                 BinaryDictUtils.VERSION2_OPTIONS);
         runReadAndWriteTests(results, BinaryDictUtils.USE_BYTE_BUFFER,
-                BinaryDictUtils.VERSION3_OPTIONS);
+                BinaryDictUtils.VERSION4_OPTIONS_WITHOUT_TIMESTAMP);
         runReadAndWriteTests(results, BinaryDictUtils.USE_BYTE_BUFFER,
                 BinaryDictUtils.VERSION4_OPTIONS_WITH_TIMESTAMP);
 
@@ -331,7 +330,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         runReadAndWriteTests(results, BinaryDictUtils.USE_BYTE_ARRAY,
                 BinaryDictUtils.VERSION2_OPTIONS);
         runReadAndWriteTests(results, BinaryDictUtils.USE_BYTE_ARRAY,
-                BinaryDictUtils.VERSION3_OPTIONS);
+                BinaryDictUtils.VERSION4_OPTIONS_WITHOUT_TIMESTAMP);
         runReadAndWriteTests(results, BinaryDictUtils.USE_BYTE_ARRAY,
                 BinaryDictUtils.VERSION4_OPTIONS_WITH_TIMESTAMP);
 
@@ -390,8 +389,6 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
 
     private long timeAndCheckReadUnigramsAndBigramsBinary(final File file, final List<String> words,
             final SparseArray<List<Integer>> bigrams, final int bufferType) {
-        FileInputStream inStream = null;
-
         final TreeMap<Integer, String> resultWords = CollectionUtils.newTreeMap();
         final TreeMap<Integer, ArrayList<PendingAttribute>> resultBigrams =
                 CollectionUtils.newTreeMap();
@@ -407,14 +404,6 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
             Log.e(TAG, "IOException", e);
         } catch (UnsupportedFormatException e) {
             Log.e(TAG, "UnsupportedFormatException", e);
-        } finally {
-            if (inStream != null) {
-                try {
-                    inStream.close();
-                } catch (IOException e) {
-                    // do nothing
-                }
-            }
         }
 
         checkWordMap(words, bigrams, resultWords, resultFreqs, resultBigrams);
@@ -461,7 +450,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         runReadUnigramsAndBigramsTests(results, BinaryDictUtils.USE_BYTE_BUFFER,
                 BinaryDictUtils.VERSION2_OPTIONS);
         runReadUnigramsAndBigramsTests(results, BinaryDictUtils.USE_BYTE_BUFFER,
-                BinaryDictUtils.VERSION3_OPTIONS);
+                BinaryDictUtils.VERSION4_OPTIONS_WITHOUT_TIMESTAMP);
         runReadUnigramsAndBigramsTests(results, BinaryDictUtils.USE_BYTE_BUFFER,
                 BinaryDictUtils.VERSION4_OPTIONS_WITH_TIMESTAMP);
 
@@ -476,7 +465,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         runReadUnigramsAndBigramsTests(results, BinaryDictUtils.USE_BYTE_ARRAY,
                 BinaryDictUtils.VERSION2_OPTIONS);
         runReadUnigramsAndBigramsTests(results, BinaryDictUtils.USE_BYTE_ARRAY,
-                BinaryDictUtils.VERSION3_OPTIONS);
+                BinaryDictUtils.VERSION4_OPTIONS_WITHOUT_TIMESTAMP);
         runReadUnigramsAndBigramsTests(results, BinaryDictUtils.USE_BYTE_ARRAY,
                 BinaryDictUtils.VERSION4_OPTIONS_WITH_TIMESTAMP);
 
@@ -590,14 +579,14 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         runGetTerminalPositionTests(BinaryDictUtils.USE_BYTE_ARRAY,
                 BinaryDictUtils.VERSION2_OPTIONS);
         runGetTerminalPositionTests(BinaryDictUtils.USE_BYTE_ARRAY,
-                BinaryDictUtils.VERSION3_OPTIONS);
+                BinaryDictUtils.VERSION4_OPTIONS_WITHOUT_TIMESTAMP);
         runGetTerminalPositionTests(BinaryDictUtils.USE_BYTE_ARRAY,
                 BinaryDictUtils.VERSION4_OPTIONS_WITH_TIMESTAMP);
 
         runGetTerminalPositionTests(BinaryDictUtils.USE_BYTE_BUFFER,
                 BinaryDictUtils.VERSION2_OPTIONS);
         runGetTerminalPositionTests(BinaryDictUtils.USE_BYTE_BUFFER,
-                BinaryDictUtils.VERSION3_OPTIONS);
+                BinaryDictUtils.VERSION4_OPTIONS_WITHOUT_TIMESTAMP);
         runGetTerminalPositionTests(BinaryDictUtils.USE_BYTE_BUFFER,
                 BinaryDictUtils.VERSION4_OPTIONS_WITH_TIMESTAMP);
 
@@ -633,6 +622,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
     }
 
     public void testDeleteWord() throws IOException, UnsupportedFormatException {
-        runTestDeleteWord(BinaryDictUtils.VERSION3_OPTIONS);
+        runTestDeleteWord(BinaryDictUtils.VERSION4_OPTIONS_WITHOUT_TIMESTAMP);
+        runTestDeleteWord(BinaryDictUtils.VERSION4_OPTIONS_WITH_TIMESTAMP);
     }
 }

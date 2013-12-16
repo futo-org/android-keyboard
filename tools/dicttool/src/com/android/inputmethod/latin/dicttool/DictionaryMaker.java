@@ -46,7 +46,6 @@ public class DictionaryMaker {
 
     static class Arguments {
         private static final String OPTION_VERSION_2 = "-2";
-        private static final String OPTION_VERSION_3 = "-3";
         private static final String OPTION_VERSION_4 = "-4";
         private static final String OPTION_INPUT_SOURCE = "-s";
         private static final String OPTION_INPUT_BIGRAM_XML = "-b";
@@ -158,8 +157,6 @@ public class DictionaryMaker {
                 if (arg.charAt(0) == '-') {
                     if (OPTION_VERSION_2.equals(arg)) {
                         // Do nothing, this is the default
-                    } else if (OPTION_VERSION_3.equals(arg)) {
-                        outputBinaryFormatVersion = FormatSpec.VERSION3;
                     } else if (OPTION_VERSION_4.equals(arg)) {
                         outputBinaryFormatVersion = FormatSpec.VERSION4;
                     } else if (OPTION_HELP.equals(arg)) {

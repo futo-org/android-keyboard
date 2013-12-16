@@ -68,7 +68,7 @@ public class Ver2DictEncoder implements DictEncoder {
     @Override
     public void writeDictionary(final FusionDictionary dict, final FormatOptions formatOptions)
             throws IOException, UnsupportedFormatException {
-        if (formatOptions.mVersion > FormatSpec.VERSION3) {
+        if (formatOptions.mVersion > FormatSpec.VERSION2) {
             throw new UnsupportedFormatException(
                     "The given format options has wrong version number : "
                     + formatOptions.mVersion);

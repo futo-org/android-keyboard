@@ -56,7 +56,8 @@ public class Ver4DictEncoder implements DictEncoder {
         }
         if (!BinaryDictionary.createEmptyDictFile(mDictPlacedDir.getAbsolutePath(),
                 FormatSpec.VERSION4, dict.mOptions.mAttributes)) {
-            throw new IOException("Cannot create dictionary file");
+            throw new IOException("Cannot create dictionary file : "
+                + mDictPlacedDir.getAbsolutePath());
         }
         final BinaryDictionary binaryDict = new BinaryDictionary(mDictPlacedDir.getAbsolutePath(),
                 0l, mDictPlacedDir.length(), true /* useFullEditDistance */,
