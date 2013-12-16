@@ -18,10 +18,8 @@
 */
 -->
 
-<!-- Configuration values for Large Phone and Small Tablet Landscape. -->
+<!-- Configuration values for Small Tablet Landscape. -->
 <resources>
-    <bool name="config_use_fullscreen_mode">false</bool>
-
     <!-- Preferable keyboard height in absolute scale: 45.0mm -->
     <!-- This config_default_keyboard_height value should match with keyboard-heights.xml -->
     <dimen name="config_default_keyboard_height">283.5dp</dimen>
