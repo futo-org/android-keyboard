@@ -42,9 +42,16 @@ public class BinaryDictOffdeviceUtilsTests extends TestCase {
     private static final int TEST_FREQ = 37; // Some arbitrary value unlikely to happen by chance
 
     public void testGetRawDictWorks() throws IOException, UnsupportedFormatException {
+        final String VERSION = "1";
+        final String LOCALE = "test";
+        final String ID = "main:test";
+
         // Create a thrice-compressed dictionary file.
-        final FusionDictionary dict = new FusionDictionary(new PtNodeArray(),
-                new DictionaryOptions(new HashMap<String, String>()));
+        final DictionaryOptions testOptions = new DictionaryOptions(new HashMap<String, String>());
+        testOptions.mAttributes.put(FormatSpec.FileHeader.DICTIONARY_VERSION_ATTRIBUTE, VERSION);
+        testOptions.mAttributes.put(FormatSpec.FileHeader.DICTIONARY_LOCALE_ATTRIBUTE, LOCALE);
+        testOptions.mAttributes.put(FormatSpec.FileHeader.DICTIONARY_ID_ATTRIBUTE, ID);
+        final FusionDictionary dict = new FusionDictionary(new PtNodeArray(), testOptions);
         dict.add("foo", TEST_FREQ, null, false /* isNotAWord */);
         dict.add("fta", 1, null, false /* isNotAWord */);
         dict.add("ftb", 1, null, false /* isNotAWord */);
@@ -72,6 +79,12 @@ public class BinaryDictOffdeviceUtilsTests extends TestCase {
         final FusionDictionary resultDict = dictDecoder.readDictionaryBinary(
                 null /* dict : an optional dictionary to add words to, or null */,
                 false /* deleteDictIfBroken */);
+        assertEquals("Wrong version attribute", VERSION, resultDict.mOptions.mAttributes.get(
+                FormatSpec.FileHeader.DICTIONARY_VERSION_ATTRIBUTE));
+        assertEquals("Wrong locale attribute", LOCALE, resultDict.mOptions.mAttributes.get(
+                FormatSpec.FileHeader.DICTIONARY_LOCALE_ATTRIBUTE));
+        assertEquals("Wrong id attribute", ID, resultDict.mOptions.mAttributes.get(
+                FormatSpec.FileHeader.DICTIONARY_ID_ATTRIBUTE));
         assertEquals("Dictionary can't be read back correctly",
                 FusionDictionary.findWordInTree(resultDict.mRootNodeArray, "foo").getFrequency(),
                 TEST_FREQ);
