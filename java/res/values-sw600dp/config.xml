@@ -18,7 +18,7 @@
 */
 -->
 
-<!-- Configuration values for Large Phone and Small Tablet Portrait. -->
+<!-- Configuration values for Small Tablet Portrait. -->
 <resources>
     <dimen name="config_key_hysteresis_distance">40.0dp</dimen>
 
