@@ -24,11 +24,13 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import com.android.inputmethod.keyboard.MainKeyboardView;
+import com.android.inputmethod.latin.suggestions.MoreSuggestionsView;
 import com.android.inputmethod.latin.suggestions.SuggestionStripView;
 
 public final class InputView extends LinearLayout {
     private final Rect mInputViewRect = new Rect();
     private KeyboardTopPaddingForwarder mKeyboardTopPaddingForwarder;
+    private MoreSuggestionsViewCanceler mMoreSuggestionsViewCanceler;
 
     public InputView(final Context context, final AttributeSet attrs) {
         super(context, attrs, 0);
@@ -41,6 +43,8 @@ public final class InputView extends LinearLayout {
         final MainKeyboardView mainKeyboardView =
                 (MainKeyboardView)findViewById(R.id.keyboard_view);
         mKeyboardTopPaddingForwarder = new KeyboardTopPaddingForwarder(
+                mainKeyboardView, suggestionStripView);
+        mMoreSuggestionsViewCanceler = new MoreSuggestionsViewCanceler(
                 mainKeyboardView, suggestionStripView);
     }
 
@@ -58,6 +62,11 @@ public final class InputView extends LinearLayout {
         // The touch events that hit the top padding of keyboard should be
         // forwarded to {@link SuggestionStripView}.
         if (mKeyboardTopPaddingForwarder.dispatchTouchEvent(x, y, me)) {
+            return true;
+        }
+        // To cancel {@link MoreSuggestionsView}, we should intercept a touch event to
+        // {@link MainKeyboardView} and dismiss the {@link MoreSuggestionsView}.
+        if (mMoreSuggestionsViewCanceler.dispatchTouchEvent(x, y, me)) {
             return true;
         }
         return super.dispatchTouchEvent(me);
@@ -96,6 +105,9 @@ public final class InputView extends LinearLayout {
         protected int translateY(final int y) {
             return y - mEventReceivingRect.top;
         }
+
+        // Callback when a {@link MotionEvent} is forwarded.
+        protected void onForwardingEvent(final MotionEvent me) {}
 
         // Dispatches a {@link MotioneEvent} to <code>Receiver</code> if needed and returns true.
         // Otherwise returns false.
@@ -142,6 +154,7 @@ public final class InputView extends LinearLayout {
             // Translate global coordinates to <code>Receiver</code> local coordinates.
             me.setLocation(translateX(x), translateY(y));
             mReceiverView.dispatchTouchEvent(me);
+            onForwardingEvent(me);
             return true;
         }
     }
@@ -181,6 +194,32 @@ public final class InputView extends LinearLayout {
                 return Math.min(translatedY, mEventReceivingRect.height() - 1);
             }
             return translatedY;
+        }
+    }
+
+    /**
+     * This class forwards {@link MotionEvent}s happened in the {@link MainKeyboardView} to
+     * {@link SuggestionStripView} when the {@link MoreSuggestionsView} is showing.
+     * {@link SuggestionStripView} dismisses {@link MoreSuggestionsView} when it receives those
+     * events.
+     */
+    private static class MoreSuggestionsViewCanceler
+            extends MotionEventForwarder<MainKeyboardView, SuggestionStripView> {
+        public MoreSuggestionsViewCanceler(final MainKeyboardView mainKeyboardView,
+                final SuggestionStripView suggestionStripView) {
+            super(mainKeyboardView, suggestionStripView);
+        }
+
+        @Override
+        protected boolean needsToForward(final int x, final int y) {
+            return mReceiverView.isShowingMoreSuggestionPanel() && mEventSendingRect.contains(x, y);
+        }
+
+        @Override
+        protected void onForwardingEvent(final MotionEvent me) {
+            if (me.getActionMasked() == MotionEvent.ACTION_DOWN) {
+                mReceiverView.dismissMoreSuggestionsPanel();
+            }
         }
     }
 }
