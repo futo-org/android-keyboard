@@ -87,7 +87,7 @@ public final class BinaryDictIOUtils {
 
             if (p.mNumOfPtNode == Position.NOT_READ_PTNODE_COUNT) {
                 p.mNumOfPtNode = dictDecoder.readPtNodeCount();
-                p.mAddress += getPtNodeCountSize(p.mNumOfPtNode);
+                p.mAddress = dictDecoder.getPosition();
                 p.mPosition = 0;
             }
             if (p.mNumOfPtNode == 0) {
