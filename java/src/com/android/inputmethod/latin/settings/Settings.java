@@ -53,6 +53,7 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     public static final String PREF_MISC_SETTINGS = "misc_settings";
     public static final String PREF_ADVANCED_SETTINGS = "pref_advanced_settings";
     public static final String PREF_KEY_USE_CONTACTS_DICT = "pref_key_use_contacts_dict";
+    public static final String PREF_KEY_USE_PERSONALIZED_DICTS = "pref_key_use_personalized_dicts";
     public static final String PREF_KEY_USE_DOUBLE_SPACE_PERIOD =
             "pref_key_use_double_space_period";
     public static final String PREF_BLOCK_POTENTIALLY_OFFENSIVE =

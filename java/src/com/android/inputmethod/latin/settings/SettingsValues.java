@@ -29,11 +29,9 @@ import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.InputAttributes;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.RichInputMethodManager;
-import com.android.inputmethod.latin.SubtypeSwitcher;
 import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.utils.CollectionUtils;
-import com.android.inputmethod.latin.utils.InputTypeUtils;
 import com.android.inputmethod.latin.utils.StringUtils;
 
 import java.util.ArrayList;
@@ -71,6 +69,7 @@ public final class SettingsValues {
     public final boolean mIncludesOtherImesInLanguageSwitchList;
     public final boolean mShowsLanguageSwitchKey;
     public final boolean mUseContactsDict;
+    public final boolean mUsePersonalizedDicts;
     public final boolean mUseDoubleSpacePeriod;
     public final boolean mBlockPotentiallyOffensive;
     // Use bigrams to predict the next word when there is no input for it yet
@@ -148,6 +147,7 @@ public final class SettingsValues {
                 Settings.PREF_INCLUDE_OTHER_IMES_IN_LANGUAGE_SWITCH_LIST, false);
         mShowsLanguageSwitchKey = Settings.readShowsLanguageSwitchKey(prefs);
         mUseContactsDict = prefs.getBoolean(Settings.PREF_KEY_USE_CONTACTS_DICT, true);
+        mUsePersonalizedDicts = prefs.getBoolean(Settings.PREF_KEY_USE_PERSONALIZED_DICTS, true);
         mUseDoubleSpacePeriod = prefs.getBoolean(Settings.PREF_KEY_USE_DOUBLE_SPACE_PERIOD, true);
         mBlockPotentiallyOffensive = Settings.readBlockPotentiallyOffensive(prefs, res);
         mAutoCorrectEnabled = Settings.readAutoCorrectEnabled(autoCorrectionThresholdRawValue, res);
@@ -206,6 +206,7 @@ public final class SettingsValues {
         mIncludesOtherImesInLanguageSwitchList = false;
         mShowsLanguageSwitchKey = true;
         mUseContactsDict = true;
+        mUsePersonalizedDicts = true;
         mUseDoubleSpacePeriod = true;
         mBlockPotentiallyOffensive = true;
         mAutoCorrectEnabled = true;
