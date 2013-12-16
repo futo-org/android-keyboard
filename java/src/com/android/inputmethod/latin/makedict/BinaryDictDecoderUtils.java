@@ -436,7 +436,7 @@ public final class BinaryDictDecoderUtils {
             final FormatOptions options) {
         dictDecoder.setPosition(headerSize);
         final int count = dictDecoder.readPtNodeCount();
-        int groupPos = headerSize + BinaryDictIOUtils.getPtNodeCountSize(count);
+        int groupPos = dictDecoder.getPosition();
         final StringBuilder builder = new StringBuilder();
         WeightedString result = null;
 
@@ -498,9 +498,9 @@ public final class BinaryDictDecoderUtils {
         do { // Scan the linked-list node.
             final int nodeArrayHeadPos = dictDecoder.getPosition();
             final int count = dictDecoder.readPtNodeCount();
-            int groupOffsetPos = nodeArrayHeadPos + BinaryDictIOUtils.getPtNodeCountSize(count);
+            int groupPos = dictDecoder.getPosition();
             for (int i = count; i > 0; --i) { // Scan the array of PtNode.
-                PtNodeInfo info = dictDecoder.readPtNode(groupOffsetPos, options);
+                PtNodeInfo info = dictDecoder.readPtNode(groupPos, options);
                 if (BinaryDictIOUtils.isMovedPtNode(info.mFlags, options)) continue;
                 ArrayList<WeightedString> shortcutTargets = info.mShortcutTargets;
                 ArrayList<WeightedString> bigrams = null;
@@ -536,7 +536,7 @@ public final class BinaryDictDecoderUtils {
                                     0 != (info.mFlags & FormatSpec.FLAG_IS_NOT_A_WORD),
                                     0 != (info.mFlags & FormatSpec.FLAG_IS_BLACKLISTED)));
                 }
-                groupOffsetPos = info.mEndAddress;
+                groupPos = info.mEndAddress;
             }
 
             // reach the end of the array.
