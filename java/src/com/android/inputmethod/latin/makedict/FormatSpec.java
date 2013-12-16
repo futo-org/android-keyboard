@@ -188,7 +188,7 @@ public final class FormatSpec {
     // us to change the format during development while having testing devices remove
     // older files with each upgrade, while still having a readable versioning scheme.
     public static final int VERSION2 = 2;
-    public static final int VERSION4 = 400;
+    public static final int VERSION4 = 401;
     static final int MINIMUM_SUPPORTED_VERSION = VERSION2;
     static final int MAXIMUM_SUPPORTED_VERSION = VERSION4;
 
