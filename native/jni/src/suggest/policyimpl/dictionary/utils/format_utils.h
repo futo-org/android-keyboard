@@ -31,7 +31,7 @@ class FormatUtils {
     enum FORMAT_VERSION {
         // These MUST have the same values as the relevant constants in FormatSpec.java.
         VERSION_2 = 2,
-        VERSION_4 = 400,
+        VERSION_4 = 401,
         UNKNOWN_VERSION = -1
     };
 
