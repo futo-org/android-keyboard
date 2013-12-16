@@ -21,6 +21,7 @@ import android.content.res.Resources;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.R;
@@ -216,9 +217,23 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
         return true;
     }
 
-    @Override
-    public View getContainerView() {
+    private View getContainerView() {
         return (View)getParent();
+    }
+
+    @Override
+    public void showInParent(final ViewGroup parentView) {
+        removeFromParent();
+        parentView.addView(getContainerView());
+    }
+
+    @Override
+    public void removeFromParent() {
+        final View containerView = getContainerView();
+        final ViewGroup currentParent = (ViewGroup)containerView.getParent();
+        if (currentParent != null) {
+            currentParent.removeView(containerView);
+        }
     }
 
     @Override
