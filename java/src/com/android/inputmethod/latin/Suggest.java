@@ -25,8 +25,10 @@ import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.personalization.PersonalizationDictionary;
+import com.android.inputmethod.latin.personalization.PersonalizationHelper;
 import com.android.inputmethod.latin.personalization.UserHistoryDictionary;
 import com.android.inputmethod.latin.settings.Settings;
+import com.android.inputmethod.latin.settings.SettingsValues;
 import com.android.inputmethod.latin.utils.AutoCorrectionUtils;
 import com.android.inputmethod.latin.utils.BoundedTreeSet;
 import com.android.inputmethod.latin.utils.CollectionUtils;
@@ -71,7 +73,9 @@ public final class Suggest {
             CollectionUtils.newConcurrentHashMap();
     private HashSet<String> mOnlyDictionarySetForDebug = null;
     private Dictionary mMainDictionary;
-    private ContactsBinaryDictionary mContactsDict;
+    private ContactsBinaryDictionary mContactsDictionary;
+    private UserHistoryDictionary mUserHistoryDictionary;
+    private PersonalizationDictionary mPersonalizationDictionary;
     @UsedForTesting
     private boolean mIsCurrentlyWaitingForMainDictionary = false;
 
@@ -80,10 +84,14 @@ public final class Suggest {
     // Locale used for upper- and title-casing words
     public final Locale mLocale;
 
+    private final Context mContext;
+
     public Suggest(final Context context, final Locale locale,
             final SuggestInitializationListener listener) {
         initAsynchronously(context, locale, listener);
         mLocale = locale;
+        mContext = context;
+        // TODO: Use SettingsValues instead of Settings.
         // initialize a debug flag for the personalization
         if (Settings.readUseOnlyPersonalizationDictionaryForDebug(
                 PreferenceManager.getDefaultSharedPreferences(context))) {
@@ -93,10 +101,11 @@ public final class Suggest {
     }
 
     @UsedForTesting
-    Suggest(final AssetFileAddress[] dictionaryList, final Locale locale) {
+    Suggest(final Context context, final AssetFileAddress[] dictionaryList, final Locale locale) {
         final Dictionary mainDict = DictionaryFactory.createDictionaryForTest(dictionaryList,
                 false /* useFullEditDistance */, locale);
         mLocale = locale;
+        mContext = context;
         mMainDictionary = mainDict;
         addOrReplaceDictionaryInternal(Dictionary.TYPE_MAIN, mainDict);
     }
@@ -163,7 +172,15 @@ public final class Suggest {
     }
 
     public ContactsBinaryDictionary getContactsDictionary() {
-        return mContactsDict;
+        return mContactsDictionary;
+    }
+
+    public UserHistoryDictionary getUserHistoryDictionary() {
+        return mUserHistoryDictionary;
+    }
+
+    public PersonalizationDictionary getPersonalizationDictionary() {
+        return mPersonalizationDictionary;
     }
 
     public ConcurrentHashMap<String, Dictionary> getUnigramDictionaries() {
@@ -184,18 +201,120 @@ public final class Suggest {
      * won't be used.
      */
     public void setContactsDictionary(final ContactsBinaryDictionary contactsDictionary) {
-        mContactsDict = contactsDictionary;
+        mContactsDictionary = contactsDictionary;
         addOrReplaceDictionaryInternal(Dictionary.TYPE_CONTACTS, contactsDictionary);
     }
 
     public void setUserHistoryDictionary(final UserHistoryDictionary userHistoryDictionary) {
+        mUserHistoryDictionary = userHistoryDictionary;
         addOrReplaceDictionaryInternal(Dictionary.TYPE_USER_HISTORY, userHistoryDictionary);
     }
 
     public void setPersonalizationDictionary(
             final PersonalizationDictionary personalizationDictionary) {
-        addOrReplaceDictionaryInternal(Dictionary.TYPE_PERSONALIZATION,
-                personalizationDictionary);
+        mPersonalizationDictionary = personalizationDictionary;
+        addOrReplaceDictionaryInternal(Dictionary.TYPE_PERSONALIZATION, personalizationDictionary);
+    }
+
+    /**
+     * Set dictionaries that can be turned off according to the user settings.
+     *
+     * @param oldSuggest the instance having old dictionaries
+     * @param settingsValues current SettingsValues
+     */
+    public void setAdditionalDictionaries(final Suggest oldSuggest,
+            final SettingsValues settingsValues) {
+        // Contacts dictionary
+        resetContactsDictionary(null != oldSuggest ? oldSuggest.getContactsDictionary() : null,
+                settingsValues);
+        // User history dictionary & Personalization dictionary
+        resetPersonalizedDictionaries(oldSuggest, settingsValues);
+    }
+
+    /**
+     * Set the user history dictionary and personalization dictionary according to the user
+     * settings.
+     *
+     * @param oldSuggest the instance that has been used
+     * @param settingsValues current settingsValues
+     */
+    // TODO: Consolidate resetPersonalizedDictionaries() and resetContactsDictionary(). Call up the
+    // new method for each dictionary.
+    private void resetPersonalizedDictionaries(final Suggest oldSuggest,
+            final SettingsValues settingsValues) {
+        final boolean shouldSetDictionaries = settingsValues.mUsePersonalizedDicts;
+
+        final UserHistoryDictionary oldUserHistoryDictionary = (null == oldSuggest) ? null :
+                oldSuggest.getUserHistoryDictionary();
+        final PersonalizationDictionary oldPersonalizationDictionary = (null == oldSuggest) ? null :
+                oldSuggest.getPersonalizationDictionary();
+        final UserHistoryDictionary userHistoryDictionaryToUse;
+        final PersonalizationDictionary personalizationDictionaryToUse;
+        if (!shouldSetDictionaries) {
+            userHistoryDictionaryToUse = null;
+            personalizationDictionaryToUse = null;
+        } else {
+            if (null != oldUserHistoryDictionary
+                    && oldUserHistoryDictionary.mLocale.equals(mLocale)) {
+                userHistoryDictionaryToUse = oldUserHistoryDictionary;
+            } else {
+                userHistoryDictionaryToUse =
+                        PersonalizationHelper.getUserHistoryDictionary(mContext, mLocale);
+            }
+            if (null != oldPersonalizationDictionary
+                    && oldPersonalizationDictionary.mLocale.equals(mLocale)) {
+                personalizationDictionaryToUse = oldPersonalizationDictionary;
+            } else {
+                personalizationDictionaryToUse =
+                        PersonalizationHelper.getPersonalizationDictionary(mContext, mLocale);
+            }
+        }
+        setUserHistoryDictionary(userHistoryDictionaryToUse);
+        setPersonalizationDictionary(personalizationDictionaryToUse);
+    }
+
+    /**
+     * Set the contacts dictionary according to the user settings.
+     *
+     * This method takes an optional contacts dictionary to use when the locale hasn't changed
+     * since the contacts dictionary can be opened or closed as necessary depending on the settings.
+     *
+     * @param oldContactsDictionary an optional dictionary to use, or null
+     * @param settingsValues current settingsValues
+     */
+    private void resetContactsDictionary(final ContactsBinaryDictionary oldContactsDictionary,
+            final SettingsValues settingsValues) {
+        final boolean shouldSetDictionary = settingsValues.mUseContactsDict;
+        final ContactsBinaryDictionary dictionaryToUse;
+        if (!shouldSetDictionary) {
+            // Make sure the dictionary is closed. If it is already closed, this is a no-op,
+            // so it's safe to call it anyways.
+            if (null != oldContactsDictionary) oldContactsDictionary.close();
+            dictionaryToUse = null;
+        } else {
+            if (null != oldContactsDictionary) {
+                if (!oldContactsDictionary.mLocale.equals(mLocale)) {
+                    // If the locale has changed then recreate the contacts dictionary. This
+                    // allows locale dependent rules for handling bigram name predictions.
+                    oldContactsDictionary.close();
+                    dictionaryToUse = new ContactsBinaryDictionary(mContext, mLocale);
+                } else {
+                    // Make sure the old contacts dictionary is opened. If it is already open,
+                    // this is a no-op, so it's safe to call it anyways.
+                    oldContactsDictionary.reopen(mContext);
+                    dictionaryToUse = oldContactsDictionary;
+                }
+            } else {
+                dictionaryToUse = new ContactsBinaryDictionary(mContext, mLocale);
+            }
+        }
+        setContactsDictionary(dictionaryToUse);
+    }
+
+    public void cancelAddingUserHistory(final String previousWord, final String committedWord) {
+        if (mUserHistoryDictionary != null) {
+            mUserHistoryDictionary.cancelAddingUserHistory(previousWord, committedWord);
+        }
     }
 
     public void setAutoCorrectionThreshold(float threshold) {

@@ -55,8 +55,8 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
 
     public static final int REQUIRED_BINARY_DICTIONARY_VERSION = FormatSpec.VERSION4;
 
-    /** Locale for which this user history dictionary is storing words */
-    private final Locale mLocale;
+    /** The locale for this dictionary. */
+    public final Locale mLocale;
 
     private final String mDictName;
 
