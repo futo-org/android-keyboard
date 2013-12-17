@@ -58,17 +58,17 @@ public class SparseTableContentReader {
      * @param blockSize the block size of the content table.
      * @param baseDir the directory which contains the files of the content table.
      * @param contentFilenames the file names of content files.
-     * @param contentIds the ids of contents. These ids are used for a suffix of a name of
+     * @param contentSuffixes the ids of contents. These ids are used for a suffix of a name of
      * address files and content files.
      * @param factory the DictionaryBufferFactory which is used for opening the files.
      */
     public SparseTableContentReader(final String name, final int blockSize, final File baseDir,
-            final String[] contentFilenames, final String[] contentIds,
+            final String[] contentFilenames, final String[] contentSuffixes,
             final DictionaryBufferFactory factory) {
-        if (contentFilenames.length != contentIds.length) {
+        if (contentFilenames.length != contentSuffixes.length) {
             throw new RuntimeException("The length of contentFilenames and the length of"
-                    + " contentIds are different " + contentFilenames.length + ", "
-                    + contentIds.length);
+                    + " contentSuffixes are different " + contentFilenames.length + ", "
+                    + contentSuffixes.length);
         }
         mBlockSize = blockSize;
         mBaseDir = baseDir;
@@ -79,8 +79,8 @@ public class SparseTableContentReader {
         mContentFiles = new File[mContentCount];
         for (int i = 0; i < mContentCount; ++i) {
             mAddressTableFiles[i] = new File(mBaseDir,
-                    name + FormatSpec.CONTENT_TABLE_FILE_SUFFIX + contentIds[i]);
-            mContentFiles[i] = new File(mBaseDir, contentFilenames[i] + contentIds[i]);
+                    name + FormatSpec.CONTENT_TABLE_FILE_SUFFIX + contentSuffixes[i]);
+            mContentFiles[i] = new File(mBaseDir, contentFilenames[i] + contentSuffixes[i]);
         }
         mAddressTableBuffers = new DictBuffer[mContentCount];
         mContentBuffers = new DictBuffer[mContentCount];
@@ -94,27 +94,33 @@ public class SparseTableContentReader {
         }
     }
 
-    protected void read(final int contentIndex, final int index,
+    /**
+     * Calls the read() callback of the reader with the appropriate buffer appropriately positioned.
+     * @param contentNumber the index in the original contentFilenames[] array.
+     * @param terminalId the terminal ID to read.
+     * @param reader the reader on which to call the callback.
+     */
+    protected void read(final int contentNumber, final int terminalId,
             final SparseTableContentReaderInterface reader) {
-        if (index < 0 || (index / mBlockSize) * SparseTable.SIZE_OF_INT_IN_BYTES
+        if (terminalId < 0 || (terminalId / mBlockSize) * SparseTable.SIZE_OF_INT_IN_BYTES
                 >= mLookupTableBuffer.limit()) {
             return;
         }
 
-        mLookupTableBuffer.position((index / mBlockSize) * SparseTable.SIZE_OF_INT_IN_BYTES);
-        final int posInAddressTable = mLookupTableBuffer.readInt();
-        if (posInAddressTable == SparseTable.NOT_EXIST) {
+        mLookupTableBuffer.position((terminalId / mBlockSize) * SparseTable.SIZE_OF_INT_IN_BYTES);
+        final int indexInAddressTable = mLookupTableBuffer.readInt();
+        if (indexInAddressTable == SparseTable.NOT_EXIST) {
             return;
         }
 
-        mAddressTableBuffers[contentIndex].position(
-                (posInAddressTable + index % mBlockSize) * SparseTable.SIZE_OF_INT_IN_BYTES);
-        final int address = mAddressTableBuffers[contentIndex].readInt();
+        mAddressTableBuffers[contentNumber].position(SparseTable.SIZE_OF_INT_IN_BYTES
+                * ((indexInAddressTable * mBlockSize) + (terminalId % mBlockSize)));
+        final int address = mAddressTableBuffers[contentNumber].readInt();
         if (address == SparseTable.NOT_EXIST) {
             return;
         }
 
-        mContentBuffers[contentIndex].position(address);
-        reader.read(mContentBuffers[contentIndex]);
+        mContentBuffers[contentNumber].position(address);
+        reader.read(mContentBuffers[contentNumber]);
     }
 }
