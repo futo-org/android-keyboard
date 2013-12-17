@@ -39,25 +39,25 @@
     <string name="show_language_switch_key_summary" msgid="7343403647474265713">"Mostrar quando vários idiomas de entrada estiverem ativados"</string>
     <string name="sliding_key_input_preview" msgid="6604262359510068370">"Mostrar indicador de deslize"</string>
     <string name="sliding_key_input_preview_summary" msgid="6340524345729093886">"Mostrar indicação visual ao deslizar teclas Shift ou de símbolos"</string>
-    <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Dispens. atraso chave princ."</string>
+    <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Duração de popup da tecla"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Sem atraso"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Padrão"</string>
     <string name="abbreviation_unit_milliseconds" msgid="8700286094028323363">"<xliff:g id="MILLISECONDS">%s</xliff:g> ms"</string>
     <string name="settings_system_default" msgid="6268225104743331821">"Padrão do sistema"</string>
     <string name="use_contacts_dict" msgid="4435317977804180815">"Sugerir nomes de contato"</string>
     <string name="use_contacts_dict_summary" msgid="6599983334507879959">"Usar nomes dos Contatos para sugestões e correções"</string>
-    <string name="use_double_space_period" msgid="8781529969425082860">"Duplo espaço p/ ponto"</string>
+    <string name="use_double_space_period" msgid="8781529969425082860">"Duplo espaço para ponto"</string>
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"Toque duplo na barra de espaço insere um ponto seguido de espaço"</string>
-    <string name="auto_cap" msgid="1719746674854628252">"Capitaliz. automática"</string>
+    <string name="auto_cap" msgid="1719746674854628252">"Capitalização automática"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"Iniciar a primeira palavra de cada frase com letra maiúscula"</string>
     <string name="edit_personal_dictionary" msgid="3996910038952940420">"Dicionário pessoal"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Dicionários complementares"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"Dicionário principal"</string>
-    <string name="prefs_show_suggestions" msgid="8026799663445531637">"Exibir sugestões de correção"</string>
+    <string name="prefs_show_suggestions" msgid="8026799663445531637">"Mostrar sugestões de correção"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Exibir sugestões de palavras durante a digitação"</string>
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Mostrar sempre"</string>
     <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3859783767435239118">"Mostrar em modo retrato"</string>
-    <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"Sempre ocultar"</string>
+    <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"Não mostrar"</string>
     <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"Bloquear palavras ofensivas"</string>
     <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"Não sugerir palavras potencialmente ofensivas"</string>
     <string name="auto_correction" msgid="7630720885194996950">"Correção automática"</string>
@@ -71,7 +71,7 @@
     <string name="gesture_input" msgid="826951152254563827">"Ativar a escrita com gestos"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"Inserir uma palavra deslizando os dedos pelas letras"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"Mostrar percurso do gesto"</string>
-    <string name="gesture_floating_preview_text" msgid="4443240334739381053">"Visualizaç. dinâmica flutuante"</string>
+    <string name="gesture_floating_preview_text" msgid="4443240334739381053">"Previsão dinâmica flutuante"</string>
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"Ver a palavra sugerida ao usar gestos"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : Salvo"</string>
     <string name="spoken_use_headphones" msgid="896961781287283493">"Conecte um fone de ouvido para ouvir as chaves de senha em voz alta."</string>
