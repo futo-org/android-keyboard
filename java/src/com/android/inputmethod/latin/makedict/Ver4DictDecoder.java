@@ -440,6 +440,7 @@ public class Ver4DictDecoder extends AbstractDictDecoder {
     }
 
     @Override
+    @UsedForTesting
     public void skipPtNode(final FormatOptions formatOptions) {
         final int flags = PtNodeReader.readPtNodeOptionFlags(mDictBuffer);
         PtNodeReader.readParentAddress(mDictBuffer, formatOptions);
