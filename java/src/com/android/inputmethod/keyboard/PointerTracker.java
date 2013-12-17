@@ -167,10 +167,10 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
     private static boolean sInGesture = false;
     private static long sGestureFirstDownTime;
     private static TimeRecorder sTimeRecorder;
-    private static final InputPointers sAggregratedPointers = new InputPointers(
+    private static final InputPointers sAggregatedPointers = new InputPointers(
             GestureStroke.DEFAULT_CAPACITY);
-    private static int sLastRecognitionPointSize = 0; // synchronized using sAggregratedPointers
-    private static long sLastRecognitionTime = 0; // synchronized using sAggregratedPointers
+    private static int sLastRecognitionPointSize = 0; // synchronized using sAggregatedPointers
+    private static long sLastRecognitionTime = 0; // synchronized using sAggregatedPointers
 
     static final class BogusMoveEventDetector {
         // Move these thresholds to resource.
@@ -737,8 +737,8 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
             Log.d(TAG, String.format("[%d] onStartBatchInput", mPointerId));
         }
         sInGesture = true;
-        synchronized (sAggregratedPointers) {
-            sAggregratedPointers.reset();
+        synchronized (sAggregatedPointers) {
+            sAggregatedPointers.reset();
             sLastRecognitionPointSize = 0;
             sLastRecognitionTime = 0;
             sListener.onStartBatchInput();
@@ -769,10 +769,10 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
     }
 
     private void updateBatchInput(final long eventTime) {
-        synchronized (sAggregratedPointers) {
+        synchronized (sAggregatedPointers) {
             final GestureStroke stroke = mGestureStrokeWithPreviewPoints;
-            stroke.appendIncrementalBatchPoints(sAggregratedPointers);
-            final int size = sAggregratedPointers.getPointerSize();
+            stroke.appendIncrementalBatchPoints(sAggregatedPointers);
+            final int size = sAggregatedPointers.getPointerSize();
             if (size > sLastRecognitionPointSize
                     && stroke.hasRecognitionTimePast(eventTime, sLastRecognitionTime)) {
                 if (DEBUG_LISTENER) {
@@ -780,18 +780,18 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
                             size));
                 }
                 sTimerProxy.startUpdateBatchInputTimer(this);
-                sListener.onUpdateBatchInput(sAggregratedPointers);
+                sListener.onUpdateBatchInput(sAggregatedPointers);
                 // The listener may change the size of the pointers (when auto-committing
                 // for example), so we need to get the size from the pointers again.
-                sLastRecognitionPointSize = sAggregratedPointers.getPointerSize();
+                sLastRecognitionPointSize = sAggregatedPointers.getPointerSize();
                 sLastRecognitionTime = eventTime;
             }
         }
     }
 
     private void mayEndBatchInput(final long eventTime) {
-        synchronized (sAggregratedPointers) {
-            mGestureStrokeWithPreviewPoints.appendAllBatchPoints(sAggregratedPointers);
+        synchronized (sAggregatedPointers) {
+            mGestureStrokeWithPreviewPoints.appendAllBatchPoints(sAggregatedPointers);
             if (getActivePointerTrackerCount() == 1) {
                 sInGesture = false;
                 sTimeRecorder.onEndBatchInput(eventTime);
@@ -799,9 +799,9 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
                 if (!mIsTrackingForActionDisabled) {
                     if (DEBUG_LISTENER) {
                         Log.d(TAG, String.format("[%d] onEndBatchInput   : batchPoints=%d",
-                                mPointerId, sAggregratedPointers.getPointerSize()));
+                                mPointerId, sAggregatedPointers.getPointerSize()));
                     }
-                    sListener.onEndBatchInput(sAggregratedPointers);
+                    sListener.onEndBatchInput(sAggregatedPointers);
                 }
             }
         }
