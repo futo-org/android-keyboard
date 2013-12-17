@@ -23,87 +23,164 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
 
-public final class InputView extends LinearLayout {
-    private View mSuggestionStripView;
-    private View mKeyboardView;
-    private int mKeyboardTopPadding;
+import com.android.inputmethod.keyboard.MainKeyboardView;
+import com.android.inputmethod.latin.suggestions.SuggestionStripView;
 
-    private boolean mIsForwardingEvent;
+public final class InputView extends LinearLayout {
     private final Rect mInputViewRect = new Rect();
-    private final Rect mEventForwardingRect = new Rect();
-    private final Rect mEventReceivingRect = new Rect();
+    private KeyboardTopPaddingForwarder mKeyboardTopPaddingForwarder;
 
     public InputView(final Context context, final AttributeSet attrs) {
         super(context, attrs, 0);
     }
 
-    public void setKeyboardGeometry(final int keyboardTopPadding) {
-        mKeyboardTopPadding = keyboardTopPadding;
-    }
-
     @Override
     protected void onFinishInflate() {
-        mSuggestionStripView = findViewById(R.id.suggestion_strip_view);
-        mKeyboardView = findViewById(R.id.keyboard_view);
+        final SuggestionStripView suggestionStripView =
+                (SuggestionStripView)findViewById(R.id.suggestion_strip_view);
+        final MainKeyboardView mainKeyboardView =
+                (MainKeyboardView)findViewById(R.id.keyboard_view);
+        mKeyboardTopPaddingForwarder = new KeyboardTopPaddingForwarder(
+                mainKeyboardView, suggestionStripView);
+    }
+
+    public void setKeyboardTopPadding(final int keyboardTopPadding) {
+        mKeyboardTopPaddingForwarder.setKeyboardTopPadding(keyboardTopPadding);
     }
 
     @Override
     public boolean dispatchTouchEvent(final MotionEvent me) {
-        if (mSuggestionStripView.getVisibility() != VISIBLE
-                || mKeyboardView.getVisibility() != VISIBLE) {
-            return super.dispatchTouchEvent(me);
-        }
-
-        // The touch events that hit the top padding of keyboard should be forwarded to
-        // {@link SuggestionStripView}.
         final Rect rect = mInputViewRect;
-        this.getGlobalVisibleRect(rect);
+        getGlobalVisibleRect(rect);
         final int x = (int)me.getX() + rect.left;
         final int y = (int)me.getY() + rect.top;
 
-        final Rect forwardingRect = mEventForwardingRect;
-        mKeyboardView.getGlobalVisibleRect(forwardingRect);
-        if (!mIsForwardingEvent && !forwardingRect.contains(x, y)) {
-            return super.dispatchTouchEvent(me);
+        // The touch events that hit the top padding of keyboard should be
+        // forwarded to {@link SuggestionStripView}.
+        if (mKeyboardTopPaddingForwarder.dispatchTouchEvent(x, y, me)) {
+            return true;
+        }
+        return super.dispatchTouchEvent(me);
+    }
+
+    /**
+     * This class forwards series of {@link MotionEvent}s from <code>Forwarder</code> view to
+     * <code>Receiver</code> view.
+     *
+     * @param <Sender> a {@link View} that may send a {@link MotionEvent} to <Receiver>.
+     * @param <Receiver> a {@link View} that receives forwarded {@link MotionEvent} from
+     *     <Forwarder>.
+     */
+    private static abstract class MotionEventForwarder<Sender extends View, Receiver extends View> {
+        protected final Sender mSenderView;
+        protected final Receiver mReceiverView;
+
+        private boolean mIsForwardingEvent;
+        protected final Rect mEventSendingRect = new Rect();
+        protected final Rect mEventReceivingRect = new Rect();
+
+        public MotionEventForwarder(final Sender senderView, final Receiver receiverView) {
+            mSenderView = senderView;
+            mReceiverView = receiverView;
         }
 
-        final int forwardingLimitY = forwardingRect.top + mKeyboardTopPadding;
-        boolean sendToTarget = false;
+        // Return true if a touch event of global coordinate x, y needs to be forwarded.
+        protected abstract boolean needsToForward(final int x, final int y);
 
-        switch (me.getAction()) {
-        case MotionEvent.ACTION_DOWN:
-            if (y < forwardingLimitY) {
-                // This down event and further move and up events should be forwarded to the target.
-                mIsForwardingEvent = true;
-                sendToTarget = true;
+        // Translate global x-coordinate to <code>Receiver</code> local coordinate.
+        protected int translateX(final int x) {
+            return x - mEventReceivingRect.left;
+        }
+
+        // Translate global y-coordinate to <code>Receiver</code> local coordinate.
+        protected int translateY(final int y) {
+            return y - mEventReceivingRect.top;
+        }
+
+        // Dispatches a {@link MotioneEvent} to <code>Receiver</code> if needed and returns true.
+        // Otherwise returns false.
+        public boolean dispatchTouchEvent(final int x, final int y, final MotionEvent me) {
+            // Forwards a {link MotionEvent} only if both <code>Sender</code> and
+            // <code>Receiver</code> are visible.
+            if (mSenderView.getVisibility() != View.VISIBLE ||
+                    mReceiverView.getVisibility() != View.VISIBLE) {
+                return false;
             }
-            break;
-        case MotionEvent.ACTION_MOVE:
-            sendToTarget = mIsForwardingEvent;
-            break;
-        case MotionEvent.ACTION_UP:
-        case MotionEvent.ACTION_CANCEL:
-            sendToTarget = mIsForwardingEvent;
-            mIsForwardingEvent = false;
-            break;
+            final Rect sendingRect = mEventSendingRect;
+            mSenderView.getGlobalVisibleRect(sendingRect);
+            if (!mIsForwardingEvent && !sendingRect.contains(x, y)) {
+                return false;
+            }
+
+            boolean shouldForwardToReceiver = false;
+
+            switch (me.getActionMasked()) {
+            case MotionEvent.ACTION_DOWN:
+                // If the down event happens in the forwarding area, successive {@link MotionEvent}s
+                // should be forwarded.
+                if (needsToForward(x, y)) {
+                    mIsForwardingEvent = true;
+                    shouldForwardToReceiver = true;
+                }
+                break;
+            case MotionEvent.ACTION_MOVE:
+                shouldForwardToReceiver = mIsForwardingEvent;
+                break;
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_CANCEL:
+                shouldForwardToReceiver = mIsForwardingEvent;
+                mIsForwardingEvent = false;
+                break;
+            }
+
+            if (!shouldForwardToReceiver) {
+                return false;
+            }
+
+            final Rect receivingRect = mEventReceivingRect;
+            mReceiverView.getGlobalVisibleRect(receivingRect);
+            // Translate global coordinates to <code>Receiver</code> local coordinates.
+            me.setLocation(translateX(x), translateY(y));
+            mReceiverView.dispatchTouchEvent(me);
+            return true;
+        }
+    }
+
+    /**
+     * This class forwards {@link MotionEvent}s happened in the top padding of
+     * {@link MainKeyboardView} to {@link SuggestionStripView}.
+     */
+    private static class KeyboardTopPaddingForwarder
+            extends MotionEventForwarder<MainKeyboardView, SuggestionStripView> {
+        private int mKeyboardTopPadding;
+
+        public KeyboardTopPaddingForwarder(final MainKeyboardView mainKeyboardView,
+                final SuggestionStripView suggestionStripView) {
+            super(mainKeyboardView, suggestionStripView);
         }
 
-        if (!sendToTarget) {
-            return super.dispatchTouchEvent(me);
+        public void setKeyboardTopPadding(final int keyboardTopPadding) {
+            mKeyboardTopPadding = keyboardTopPadding;
         }
 
-        final Rect receivingRect = mEventReceivingRect;
-        mSuggestionStripView.getGlobalVisibleRect(receivingRect);
-        final int translatedX = x - receivingRect.left;
-        final int translatedY;
-        if (y < forwardingLimitY) {
-            // The forwarded event should have coordinates that are inside of the target.
-            translatedY = Math.min(y - receivingRect.top, receivingRect.height() - 1);
-        } else {
-            translatedY = y - receivingRect.top;
+        private boolean isInKeyboardTopPadding(final int y) {
+            return y < mEventSendingRect.top + mKeyboardTopPadding;
         }
-        me.setLocation(translatedX, translatedY);
-        mSuggestionStripView.dispatchTouchEvent(me);
-        return true;
+
+        @Override
+        protected boolean needsToForward(final int x, final int y) {
+            return isInKeyboardTopPadding(y);
+        }
+
+        @Override
+        protected int translateY(final int y) {
+            final int translatedY = super.translateY(y);
+            if (isInKeyboardTopPadding(y)) {
+                // The forwarded event should have coordinates that are inside of
+                // the target.
+                return Math.min(translatedY, mEventReceivingRect.height() - 1);
+            }
+            return translatedY;
+        }
     }
 }
