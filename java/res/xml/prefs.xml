@@ -89,6 +89,12 @@
             android:entryValues="@array/prefs_suggestion_visibility_values"
             android:entries="@array/prefs_suggestion_visibilities"
             android:defaultValue="@string/prefs_suggestion_visibility_default_value" />
+        <CheckBoxPreference
+            android:key="pref_key_use_personalized_dicts"
+            android:title="@string/use_personalized_dicts"
+            android:summary="@string/use_personalized_dicts_summary"
+            android:persistent="true"
+            android:defaultValue="true" />
     </PreferenceCategory>
     <PreferenceCategory
         android:title="@string/gesture_typing_category"
@@ -131,12 +137,6 @@
                 android:key="pref_key_use_contacts_dict"
                 android:title="@string/use_contacts_dict"
                 android:summary="@string/use_contacts_dict_summary"
-                android:persistent="true"
-                android:defaultValue="true" />
-            <CheckBoxPreference
-                android:key="pref_key_use_personalized_dicts"
-                android:title="@string/use_personalized_dicts"
-                android:summary="@string/use_personalized_dicts_summary"
                 android:persistent="true"
                 android:defaultValue="true" />
             <CheckBoxPreference
