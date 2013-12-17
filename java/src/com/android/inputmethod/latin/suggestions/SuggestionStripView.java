@@ -162,19 +162,19 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         mSuggestionsStrip.removeAllViews();
         removeAllViews();
         addView(mSuggestionsStrip);
-        mMoreSuggestionsView.dismissMoreKeysPanel();
+        dismissMoreSuggestionsPanel();
     }
 
     private final MoreSuggestionsListener mMoreSuggestionsListener = new MoreSuggestionsListener() {
         @Override
         public void onSuggestionSelected(final int index, final SuggestedWordInfo wordInfo) {
             mListener.pickSuggestionManually(index, wordInfo);
-            mMoreSuggestionsView.dismissMoreKeysPanel();
+            dismissMoreSuggestionsPanel();
         }
 
         @Override
         public void onCancelInput() {
-            mMoreSuggestionsView.dismissMoreKeysPanel();
+            dismissMoreSuggestionsPanel();
         }
     };
 
@@ -192,9 +192,17 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
 
         @Override
         public void onCancelMoreKeysPanel(final MoreKeysPanel panel) {
-            mMoreSuggestionsView.dismissMoreKeysPanel();
+            dismissMoreSuggestionsPanel();
         }
     };
+
+    public boolean isShowingMoreSuggestionPanel() {
+        return mMoreSuggestionsView.isShowingInParent();
+    }
+
+    public void dismissMoreSuggestionsPanel() {
+        mMoreSuggestionsView.dismissMoreKeysPanel();
+    }
 
     @Override
     public boolean onLongClick(final View view) {
@@ -322,6 +330,6 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        mMoreSuggestionsView.dismissMoreKeysPanel();
+        dismissMoreSuggestionsPanel();
     }
 }
