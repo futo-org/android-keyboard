@@ -1811,7 +1811,7 @@ public final class KeyboardTextsSet {
         // U+055A: "՚" ARMENIAN APOSTROPHE
         // U+055B: "՛" ARMENIAN EMPHASIS MARK
         // U+055F: "՟" ARMENIAN ABBREVIATION MARK
-        /* 59 */ "!fixedColumnOrder!8,!,?,\\,,.,\u058A,\u055C,\u055D,\u055E,:,;,@,\u0559,\u055A,\u055B,\u055F",
+        /* 59 */ "!fixedColumnOrder!8,!,?,\u0559,\u055A,.,\u055C,\\,,\u055E,:,;,\u055F,\u00AB,\u00BB,\u058A,\u055D,\u055B",
         /* 60~ */
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
