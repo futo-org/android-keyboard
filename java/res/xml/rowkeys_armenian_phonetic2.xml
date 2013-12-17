@@ -34,6 +34,7 @@
     <Key
         latin:keyLabel="&#x0565;"
         latin:moreKeys="&#x0587;"
+        latin:keyHintLabel="&#x0587;"
         latin:keyLabelFlags="fontNormal" />
     <!-- U+057C: "ռ" ARMENIAN SMALL LETTER RA -->
     <Key
