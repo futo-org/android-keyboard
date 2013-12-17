@@ -46,6 +46,10 @@
     <string name="settings_system_default" msgid="6268225104743331821">"پیش‌فرض سیستم"</string>
     <string name="use_contacts_dict" msgid="4435317977804180815">"پیشنهاد نام‌های مخاطب"</string>
     <string name="use_contacts_dict_summary" msgid="6599983334507879959">"برای پیشنهاد و تصحیح از نام مخاطبین استفاده شود"</string>
+    <!-- no translation found for use_personalized_dicts (5167396352105467626) -->
+    <skip />
+    <!-- no translation found for use_personalized_dicts_summary (4331467814162666438) -->
+    <skip />
     <string name="use_double_space_period" msgid="8781529969425082860">"نقطه با دو فاصله"</string>
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"با دوبار ضربه روی دکمه فاصله نقطه با یک فاصله بعد آن درج می‌شود"</string>
     <string name="auto_cap" msgid="1719746674854628252">"بزرگ‌کردن خودکار حروف"</string>
