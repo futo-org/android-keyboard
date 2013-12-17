@@ -91,9 +91,9 @@ public class Ver4DictEncoder implements DictEncoder {
             for (final WeightedString word1 : word0.mBigrams) {
                 binaryDict.addBigramWords(word0.mWord, word1.mWord, word1.mFrequency,
                         0 /* timestamp */);
-            }
-            if (binaryDict.needsToRunGC(true /* mindsBlockByGC */)) {
-                binaryDict.flushWithGC();
+                if (binaryDict.needsToRunGC(true /* mindsBlockByGC */)) {
+                    binaryDict.flushWithGC();
+                }
             }
         }
         binaryDict.flushWithGC();
