@@ -355,25 +355,25 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         }
 
         // check bigrams
-        final HashMap<String, List<String>> expBigrams = new HashMap<String, List<String>>();
+        final HashMap<String, Set<String>> expBigrams = new HashMap<String, Set<String>>();
         for (int i = 0; i < expectedBigrams.size(); ++i) {
             final String word1 = expectedWords.get(expectedBigrams.keyAt(i));
             for (int w2 : expectedBigrams.valueAt(i)) {
                 if (expBigrams.get(word1) == null) {
-                    expBigrams.put(word1, new ArrayList<String>());
+                    expBigrams.put(word1, new HashSet<String>());
                 }
                 expBigrams.get(word1).add(expectedWords.get(w2));
             }
         }
 
-        final HashMap<String, List<String>> actBigrams = new HashMap<String, List<String>>();
+        final HashMap<String, Set<String>> actBigrams = new HashMap<String, Set<String>>();
         for (Entry<Integer, ArrayList<PendingAttribute>> entry : resultBigrams.entrySet()) {
             final String word1 = resultWords.get(entry.getKey());
             final int unigramFreq = resultFrequencies.get(entry.getKey());
             for (PendingAttribute attr : entry.getValue()) {
                 final String word2 = resultWords.get(attr.mAddress);
                 if (actBigrams.get(word1) == null) {
-                    actBigrams.put(word1, new ArrayList<String>());
+                    actBigrams.put(word1, new HashSet<String>());
                 }
                 actBigrams.get(word1).add(word2);
 
@@ -382,7 +382,6 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
                 assertTrue(Math.abs(bigramFreq - BIGRAM_FREQ) < TOLERANCE_OF_BIGRAM_FREQ);
             }
         }
-
         assertEquals(actBigrams, expBigrams);
     }
 
