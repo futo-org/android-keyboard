@@ -77,9 +77,7 @@ import com.android.inputmethod.latin.Suggest.OnGetSuggestedWordsCallback;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.latin.personalization.DictionaryDecayBroadcastReciever;
-import com.android.inputmethod.latin.personalization.PersonalizationDictionary;
 import com.android.inputmethod.latin.personalization.PersonalizationDictionarySessionRegister;
-import com.android.inputmethod.latin.personalization.PersonalizationHelper;
 import com.android.inputmethod.latin.personalization.UserHistoryDictionary;
 import com.android.inputmethod.latin.settings.Settings;
 import com.android.inputmethod.latin.settings.SettingsActivity;
@@ -179,8 +177,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     private boolean mIsMainDictionaryAvailable;
     private UserBinaryDictionary mUserDictionary;
-    private UserHistoryDictionary mUserHistoryDictionary;
-    private PersonalizationDictionary mPersonalizationDictionary;
     private boolean mIsUserDictionaryAvailable;
 
     private LastComposedWord mLastComposedWord = LastComposedWord.NOT_A_COMPOSED_WORD;
@@ -592,9 +588,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // the layout; at this time, we need to skip resetting the contacts dictionary. It will
         // be done later inside {@see #initSuggest()} when the reopenDictionaries message is
         // processed.
-        if (!mHandler.hasPendingReopenDictionaries()) {
-            // May need to reset the contacts dictionary depending on the user settings.
-            resetContactsDictionary(null == mSuggest ? null : mSuggest.getContactsDictionary());
+        if (!mHandler.hasPendingReopenDictionaries() && mSuggest != null) {
+            // May need to reset dictionaries depending on the user settings.
+            mSuggest.setAdditionalDictionaries(mSuggest /* oldSuggest */, mSettings.getCurrent());
         }
     }
 
@@ -640,61 +636,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mUserDictionary = new UserBinaryDictionary(this, subtypeLocale);
         mIsUserDictionaryAvailable = mUserDictionary.isEnabled();
         newSuggest.setUserDictionary(mUserDictionary);
-
-        mUserHistoryDictionary = PersonalizationHelper.getUserHistoryDictionary(
-                this, subtypeLocale);
-        newSuggest.setUserHistoryDictionary(mUserHistoryDictionary);
-        mPersonalizationDictionary =
-                PersonalizationHelper.getPersonalizationDictionary(this, subtypeLocale);
-        newSuggest.setPersonalizationDictionary(mPersonalizationDictionary);
-
+        newSuggest.setAdditionalDictionaries(mSuggest /* oldSuggest */, mSettings.getCurrent());
         final Suggest oldSuggest = mSuggest;
-        resetContactsDictionary(null != oldSuggest ? oldSuggest.getContactsDictionary() : null);
         mSuggest = newSuggest;
         if (oldSuggest != null) oldSuggest.close();
-    }
-
-    /**
-     * Resets the contacts dictionary in mSuggest according to the user settings.
-     *
-     * This method takes an optional contacts dictionary to use when the locale hasn't changed
-     * since the contacts dictionary can be opened or closed as necessary depending on the settings.
-     *
-     * @param oldContactsDictionary an optional dictionary to use, or null
-     */
-    private void resetContactsDictionary(final ContactsBinaryDictionary oldContactsDictionary) {
-        final Suggest suggest = mSuggest;
-        final boolean shouldSetDictionary =
-                (null != suggest && mSettings.getCurrent().mUseContactsDict);
-
-        final ContactsBinaryDictionary dictionaryToUse;
-        if (!shouldSetDictionary) {
-            // Make sure the dictionary is closed. If it is already closed, this is a no-op,
-            // so it's safe to call it anyways.
-            if (null != oldContactsDictionary) oldContactsDictionary.close();
-            dictionaryToUse = null;
-        } else {
-            final Locale locale = mSubtypeSwitcher.getCurrentSubtypeLocale();
-            if (null != oldContactsDictionary) {
-                if (!oldContactsDictionary.mLocale.equals(locale)) {
-                    // If the locale has changed then recreate the contacts dictionary. This
-                    // allows locale dependent rules for handling bigram name predictions.
-                    oldContactsDictionary.close();
-                    dictionaryToUse = new ContactsBinaryDictionary(this, locale);
-                } else {
-                    // Make sure the old contacts dictionary is opened. If it is already open,
-                    // this is a no-op, so it's safe to call it anyways.
-                    oldContactsDictionary.reopen(this);
-                    dictionaryToUse = oldContactsDictionary;
-                }
-            } else {
-                dictionaryToUse = new ContactsBinaryDictionary(this, locale);
-            }
-        }
-
-        if (null != suggest) {
-            suggest.setContactsDictionary(dictionaryToUse);
-        }
     }
 
     /* package private */ void resetSuggestMainDict() {
@@ -2854,7 +2799,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final SettingsValues currentSettings = mSettings.getCurrent();
         if (!currentSettings.mCorrectionEnabled) return null;
 
-        final UserHistoryDictionary userHistoryDictionary = mUserHistoryDictionary;
+        final UserHistoryDictionary userHistoryDictionary = suggest.getUserHistoryDictionary();
         if (userHistoryDictionary == null) return null;
 
         final String prevWord = mConnection.getNthPreviousWord(currentSettings, 2);
@@ -3069,7 +3014,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
         mConnection.deleteSurroundingText(deleteLength, 0);
         if (!TextUtils.isEmpty(previousWord) && !TextUtils.isEmpty(committedWord)) {
-            mUserHistoryDictionary.cancelAddingUserHistory(previousWord, committedWord);
+            if (mSuggest != null) {
+                mSuggest.cancelAddingUserHistory(previousWord, committedWord);
+            }
         }
         final String stringToCommit = originallyTypedWord + mLastComposedWord.mSeparatorString;
         if (mSettings.getCurrent().mCurrentLanguageHasSpaces) {
