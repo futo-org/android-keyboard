@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.latin.makedict;
 
+import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.CharEncoding;
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.DictBuffer;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
@@ -245,6 +246,7 @@ public class BinaryDictEncoderUtils {
         }
     }
 
+    @UsedForTesting
     static void writeUIntToDictBuffer(final DictBuffer dictBuffer, final int value,
             final int size) {
         switch(size) {

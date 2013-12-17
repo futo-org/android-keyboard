@@ -16,7 +16,6 @@
 
 package com.android.inputmethod.latin.makedict;
 
-import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
 
 import java.io.IOException;
@@ -25,7 +24,6 @@ import java.util.ArrayList;
 /**
  * An interface of a binary dictionary updater.
  */
-@UsedForTesting
 public interface DictUpdater extends DictDecoder {
 
     /**
@@ -33,7 +31,6 @@ public interface DictUpdater extends DictDecoder {
      *
      * @param word the word to be deleted.
      */
-    @UsedForTesting
     public void deleteWord(final String word) throws IOException, UnsupportedFormatException;
 
     /**
@@ -46,7 +43,6 @@ public interface DictUpdater extends DictDecoder {
      * @param isBlackListEntry whether this should be a blacklist entry.
      */
     // TODO: Support batch insertion.
-    @UsedForTesting
     public void insertWord(final String word, final int frequency,
             final ArrayList<WeightedString> bigramStrings,
             final ArrayList<WeightedString> shortcuts, final boolean isNotAWord,

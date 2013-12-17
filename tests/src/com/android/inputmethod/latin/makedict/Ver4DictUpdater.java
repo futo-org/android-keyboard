@@ -16,7 +16,6 @@
 
 package com.android.inputmethod.latin.makedict;
 
-import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.CharEncoding;
 import com.android.inputmethod.latin.makedict.FormatSpec.FileHeader;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
@@ -37,7 +36,6 @@ import java.util.Iterator;
 /**
  * An implementation of DictUpdater for version 4 binary dictionary.
  */
-@UsedForTesting
 public class Ver4DictUpdater extends Ver4DictDecoder implements DictUpdater {
     private static final String TAG = Ver4DictUpdater.class.getSimpleName();
     private static final int MAX_JUMPS = 10000;
@@ -45,7 +43,6 @@ public class Ver4DictUpdater extends Ver4DictDecoder implements DictUpdater {
     private OutputStream mDictStream;
     private final File mFrequencyFile;
 
-    @UsedForTesting
     public Ver4DictUpdater(final File dictDirectory, final int factoryType)
             throws UnsupportedFormatException {
         // DictUpdater must have an updatable DictBuffer.
@@ -540,7 +537,6 @@ public class Ver4DictUpdater extends Ver4DictDecoder implements DictUpdater {
      * Inserts a word into the trie file and returns the position of inserted terminal node.
      * If the insertion is failed, returns FormatSpec.NOT_VALID_WORD.
      */
-    @UsedForTesting
     private int insertWordToTrie(final String word, final int newTerminalId,
             final boolean isNotAWord, final boolean isBlackListEntry, final boolean hasBigrams,
             final boolean hasShortcuts) throws IOException, UnsupportedFormatException {
@@ -740,7 +736,7 @@ public class Ver4DictUpdater extends Ver4DictDecoder implements DictUpdater {
         insertShortcuts(terminalId, shortcuts);
     }
 
-    @Override @UsedForTesting
+    @Override
     public void insertWord(final String word, final int frequency,
         final ArrayList<WeightedString> bigramStrings, final ArrayList<WeightedString> shortcuts,
         final boolean isNotAWord, final boolean isBlackListEntry)

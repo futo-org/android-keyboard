@@ -23,7 +23,6 @@ import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.DictBuffer;
 import com.android.inputmethod.latin.makedict.FormatSpec.FileHeader;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNode;
-import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
 import com.android.inputmethod.latin.utils.ByteArrayDictBuffer;
 
 import java.io.File;
@@ -32,7 +31,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Stack;
 
@@ -245,6 +243,7 @@ public final class BinaryDictIOUtils {
     /**
      * @return the size written, in bytes. Always 3 bytes.
      */
+    @UsedForTesting
     static int writeSInt24ToBuffer(final DictBuffer dictBuffer, final int value) {
         final int absValue = Math.abs(value);
         dictBuffer.put((byte)(((value < 0 ? 0x80 : 0) | (absValue >> 16)) & 0xFF));
@@ -256,6 +255,7 @@ public final class BinaryDictIOUtils {
     /**
      * @return the size written, in bytes. Always 3 bytes.
      */
+    @UsedForTesting
     static int writeSInt24ToStream(final OutputStream destination, final int value)
             throws IOException {
         final int absValue = Math.abs(value);
@@ -265,28 +265,7 @@ public final class BinaryDictIOUtils {
         return 3;
     }
 
-    /**
-     * @return the size written, in bytes. 1, 2, or 3 bytes.
-     */
-    private static int writeVariableAddress(final OutputStream destination, final int value)
-            throws IOException {
-        switch (BinaryDictEncoderUtils.getByteSize(value)) {
-        case 1:
-            destination.write((byte)value);
-            break;
-        case 2:
-            destination.write((byte)(0xFF & (value >> 8)));
-            destination.write((byte)(0xFF & value));
-            break;
-        case 3:
-            destination.write((byte)(0xFF & (value >> 16)));
-            destination.write((byte)(0xFF & (value >> 8)));
-            destination.write((byte)(0xFF & value));
-            break;
-        }
-        return BinaryDictEncoderUtils.getByteSize(value);
-    }
-
+    @UsedForTesting
     static void skipString(final DictBuffer dictBuffer,
             final boolean hasMultipleChars) {
         if (hasMultipleChars) {
@@ -300,127 +279,13 @@ public final class BinaryDictIOUtils {
     }
 
     /**
-     * Write a PtNode to an output stream from a PtNodeInfo.
-     * A PtNode is an in-memory representation of a node in the patricia trie.
-     * A PtNode info is a container for low-level information about how the
-     * PtNode is stored in the binary format.
-     *
-     * @param destination the stream to write.
-     * @param info the PtNode info to be written.
-     * @return the size written, in bytes.
-     */
-    private static int writePtNode(final OutputStream destination, final PtNodeInfo info)
-            throws IOException {
-        int size = FormatSpec.PTNODE_FLAGS_SIZE;
-        destination.write((byte)info.mFlags);
-        final int parentOffset = info.mParentAddress == FormatSpec.NO_PARENT_ADDRESS ?
-                FormatSpec.NO_PARENT_ADDRESS : info.mParentAddress - info.mOriginalAddress;
-        size += writeSInt24ToStream(destination, parentOffset);
-
-        for (int i = 0; i < info.mCharacters.length; ++i) {
-            if (CharEncoding.getCharSize(info.mCharacters[i]) == 1) {
-                destination.write((byte)info.mCharacters[i]);
-                size++;
-            } else {
-                size += writeSInt24ToStream(destination, info.mCharacters[i]);
-            }
-        }
-        if (info.mCharacters.length > 1) {
-            destination.write((byte)FormatSpec.PTNODE_CHARACTERS_TERMINATOR);
-            size++;
-        }
-
-        if ((info.mFlags & FormatSpec.FLAG_IS_TERMINAL) != 0) {
-            destination.write((byte)info.mFrequency);
-            size++;
-        }
-
-        if (DBG) {
-            MakedictLog.d("writePtNode origin=" + info.mOriginalAddress + ", size=" + size
-                    + ", child=" + info.mChildrenAddress + ", characters ="
-                    + new String(info.mCharacters, 0, info.mCharacters.length));
-        }
-        final int childrenOffset = info.mChildrenAddress == FormatSpec.NO_CHILDREN_ADDRESS ?
-                0 : info.mChildrenAddress - (info.mOriginalAddress + size);
-        writeSInt24ToStream(destination, childrenOffset);
-        size += FormatSpec.SIGNED_CHILDREN_ADDRESS_SIZE;
-
-        if (info.mShortcutTargets != null && info.mShortcutTargets.size() > 0) {
-            final int shortcutListSize =
-                    BinaryDictEncoderUtils.getShortcutListSize(info.mShortcutTargets);
-            destination.write((byte)(shortcutListSize >> 8));
-            destination.write((byte)(shortcutListSize & 0xFF));
-            size += 2;
-            final Iterator<WeightedString> shortcutIterator = info.mShortcutTargets.iterator();
-            while (shortcutIterator.hasNext()) {
-                final WeightedString target = shortcutIterator.next();
-                destination.write((byte)BinaryDictEncoderUtils.makeShortcutFlags(
-                        shortcutIterator.hasNext(), target.mFrequency));
-                size++;
-                size += CharEncoding.writeString(destination, target.mWord);
-            }
-        }
-
-        if (info.mBigrams != null) {
-            // TODO: Consolidate this code with the code that computes the size of the bigram list
-            //        in BinaryDictEncoderUtils#computeActualNodeArraySize
-            for (int i = 0; i < info.mBigrams.size(); ++i) {
-
-                final int bigramFrequency = info.mBigrams.get(i).mFrequency;
-                int bigramFlags = (i < info.mBigrams.size() - 1)
-                        ? FormatSpec.FLAG_BIGRAM_SHORTCUT_ATTR_HAS_NEXT : 0;
-                size++;
-                final int bigramOffset = info.mBigrams.get(i).mAddress - (info.mOriginalAddress
-                        + size);
-                bigramFlags |= (bigramOffset < 0) ? FormatSpec.FLAG_BIGRAM_ATTR_OFFSET_NEGATIVE : 0;
-                switch (BinaryDictEncoderUtils.getByteSize(bigramOffset)) {
-                case 1:
-                    bigramFlags |= FormatSpec.FLAG_BIGRAM_ATTR_ADDRESS_TYPE_ONEBYTE;
-                    break;
-                case 2:
-                    bigramFlags |= FormatSpec.FLAG_BIGRAM_ATTR_ADDRESS_TYPE_TWOBYTES;
-                    break;
-                case 3:
-                    bigramFlags |= FormatSpec.FLAG_BIGRAM_ATTR_ADDRESS_TYPE_THREEBYTES;
-                    break;
-                }
-                bigramFlags |= bigramFrequency & FormatSpec.FLAG_BIGRAM_SHORTCUT_ATTR_FREQUENCY;
-                destination.write((byte)bigramFlags);
-                size += writeVariableAddress(destination, Math.abs(bigramOffset));
-            }
-        }
-        return size;
-    }
-
-    /**
-     * Compute the size of the PtNode.
-     */
-    static int computePtNodeSize(final PtNodeInfo info, final FormatOptions formatOptions) {
-        int size = FormatSpec.PTNODE_FLAGS_SIZE + FormatSpec.PARENT_ADDRESS_SIZE
-                + BinaryDictEncoderUtils.getPtNodeCharactersSize(info.mCharacters)
-                + getChildrenAddressSize(info.mFlags, formatOptions);
-        if ((info.mFlags & FormatSpec.FLAG_IS_TERMINAL) != 0) {
-            size += FormatSpec.PTNODE_FREQUENCY_SIZE;
-        }
-        if (info.mShortcutTargets != null && !info.mShortcutTargets.isEmpty()) {
-            size += BinaryDictEncoderUtils.getShortcutListSize(info.mShortcutTargets);
-        }
-        if (info.mBigrams != null) {
-            for (final PendingAttribute attr : info.mBigrams) {
-                size += FormatSpec.PTNODE_FLAGS_SIZE;
-                size += BinaryDictEncoderUtils.getByteSize(attr.mAddress);
-            }
-        }
-        return size;
-    }
-
-    /**
      * Writes a PtNodeCount to the stream.
      *
      * @param destination the stream to write.
      * @param ptNodeCount the count.
      * @return the size written in bytes.
      */
+    @UsedForTesting
     static int writePtNodeCount(final OutputStream destination, final int ptNodeCount)
             throws IOException {
         final int countSize = BinaryDictIOUtils.getPtNodeCountSize(ptNodeCount);
@@ -433,22 +298,6 @@ public final class BinaryDictIOUtils {
                 (ptNodeCount | FormatSpec.LARGE_PTNODE_ARRAY_SIZE_FIELD_SIZE_FLAG) : ptNodeCount;
         BinaryDictEncoderUtils.writeUIntToStream(destination, encodedPtNodeCount, countSize);
         return countSize;
-    }
-
-    /**
-     * Write a node array to the stream.
-     *
-     * @param destination the stream to write.
-     * @param infos an array of PtNodeInfo to be written.
-     * @return the size written, in bytes.
-     * @throws IOException
-     */
-    static int writeNodes(final OutputStream destination, final PtNodeInfo[] infos)
-            throws IOException {
-        int size = writePtNodeCount(destination, infos.length);
-        for (final PtNodeInfo info : infos) size += writePtNode(destination, info);
-        writeSInt24ToStream(destination, FormatSpec.NO_FORWARD_LINK_ADDRESS);
-        return size + FormatSpec.FORWARD_LINK_ADDRESS_SIZE;
     }
 
     private static final int HEADER_READING_BUFFER_SIZE = 16384;

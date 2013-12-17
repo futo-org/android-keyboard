@@ -58,6 +58,7 @@ public final class BinaryDictDecoderUtils {
         public int readInt();
         public int position();
         public void position(int newPosition);
+        @UsedForTesting
         public void put(final byte b);
         public int limit();
         @UsedForTesting
@@ -166,6 +167,7 @@ public final class BinaryDictDecoderUtils {
             return size;
         }
 
+        @UsedForTesting
         static int getCharArraySize(final int[] chars, final int start, final int end) {
             int size = 0;
             for (int i = start; i < end; ++i) {
@@ -262,6 +264,7 @@ public final class BinaryDictDecoderUtils {
          */
         // TODO: Merge this method with writeCharArray and rename the various write* methods to
         // make the difference clear.
+        @UsedForTesting
         static int writeCodePoints(final OutputStream stream, final int[] codePoints,
                 final int startIndex, final int endIndex)
                 throws IOException {
