@@ -18,7 +18,6 @@ package com.android.inputmethod.latin.dicttool;
 
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderEncoderTests;
 import com.android.inputmethod.latin.makedict.BinaryDictEncoderFlattenTreeTests;
-import com.android.inputmethod.latin.makedict.BinaryDictIOUtilsTests;
 import com.android.inputmethod.latin.makedict.FusionDictionaryTest;
 
 import java.lang.reflect.Constructor;
@@ -31,15 +30,15 @@ import java.util.ArrayList;
  */
 public class Test extends Dicttool.Command {
     public static final String COMMAND = "test";
+    private static final int DEFAULT_MAX_UNIGRAMS = 1500;
     private long mSeed = System.currentTimeMillis();
-    private int mMaxUnigrams = BinaryDictIOUtilsTests.DEFAULT_MAX_UNIGRAMS;
+    private int mMaxUnigrams = DEFAULT_MAX_UNIGRAMS;
 
     private static final Class<?>[] sClassesToTest = {
         BinaryDictOffdeviceUtilsTests.class,
         FusionDictionaryTest.class,
         BinaryDictDecoderEncoderTests.class,
         BinaryDictEncoderFlattenTreeTests.class,
-        BinaryDictIOUtilsTests.class
     };
     private ArrayList<Method> mAllTestMethods = new ArrayList<Method>();
     private ArrayList<String> mUsedTestMethods = new ArrayList<String>();

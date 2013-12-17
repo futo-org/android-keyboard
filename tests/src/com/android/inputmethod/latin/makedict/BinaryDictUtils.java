@@ -69,14 +69,4 @@ public class BinaryDictUtils {
                     + formatOptions.mVersion);
         }
     }
-
-    public static DictUpdater getDictUpdater(final File file, final FormatOptions formatOptions)
-            throws UnsupportedFormatException {
-        if (formatOptions.mVersion == FormatSpec.VERSION4) {
-            return new Ver4DictUpdater(file, DictDecoder.USE_WRITABLE_BYTEBUFFER);
-        } else {
-            throw new UnsupportedFormatException("The format option has a wrong version : "
-                    + formatOptions.mVersion);
-        }
-    }
 }

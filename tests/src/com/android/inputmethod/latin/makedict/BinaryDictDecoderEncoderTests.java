@@ -592,35 +592,4 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
             Log.d(TAG, result);
         }
     }
-
-    private void runTestDeleteWord(final FormatOptions formatOptions)
-            throws IOException, UnsupportedFormatException {
-        final String dictName = "testDeleteWord";
-        final String dictVersion = Long.toString(System.currentTimeMillis());
-        final File file = BinaryDictUtils.getDictFile(dictName, dictVersion, formatOptions,
-                getContext().getCacheDir());
-
-        final FusionDictionary dict = new FusionDictionary(new PtNodeArray(),
-                BinaryDictUtils.makeDictionaryOptions(dictName, dictVersion));
-        addUnigrams(sWords.size(), dict, sWords, null /* shortcutMap */);
-        timeWritingDictToFile(file, dict, formatOptions);
-
-        final DictUpdater dictUpdater = BinaryDictUtils.getDictUpdater(file, formatOptions);
-        MoreAsserts.assertNotEqual(FormatSpec.NOT_VALID_WORD,
-                dictUpdater.getTerminalPosition(sWords.get(0)));
-        dictUpdater.deleteWord(sWords.get(0));
-        assertEquals(FormatSpec.NOT_VALID_WORD,
-                dictUpdater.getTerminalPosition(sWords.get(0)));
-
-        MoreAsserts.assertNotEqual(FormatSpec.NOT_VALID_WORD,
-                dictUpdater.getTerminalPosition(sWords.get(5)));
-        dictUpdater.deleteWord(sWords.get(5));
-        assertEquals(FormatSpec.NOT_VALID_WORD,
-                dictUpdater.getTerminalPosition(sWords.get(5)));
-    }
-
-    public void testDeleteWord() throws IOException, UnsupportedFormatException {
-        runTestDeleteWord(BinaryDictUtils.VERSION4_OPTIONS_WITHOUT_TIMESTAMP);
-        runTestDeleteWord(BinaryDictUtils.VERSION4_OPTIONS_WITH_TIMESTAMP);
-    }
 }
