@@ -19,6 +19,7 @@
 
 #include "defines.h"
 #include "suggest/core/policy/scoring.h"
+#include "suggest/core/session/dic_traverse_session.h"
 #include "suggest/policyimpl/typing/scoring_params.h"
 
 namespace latinime {
@@ -69,6 +70,16 @@ class TypingScoring : public Scoring {
 
     AK_FORCE_INLINE bool doesAutoCorrectValidWord() const {
         return false;
+    }
+
+    AK_FORCE_INLINE bool autoCorrectsToMultiWordSuggestionIfTop() const {
+        return true;
+    }
+
+    AK_FORCE_INLINE bool sameAsTyped(
+            const DicTraverseSession *const traverseSession, const DicNode *const dicNode) const {
+        return traverseSession->getProximityInfoState(0)->sameAsTyped(
+                dicNode->getOutputWordBuf(), dicNode->getNodeCodePointCount());
     }
 
  private:
