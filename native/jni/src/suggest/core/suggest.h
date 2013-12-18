@@ -55,18 +55,11 @@ class Suggest : public SuggestInterface {
     DISALLOW_IMPLICIT_CONSTRUCTORS(Suggest);
     void createNextWordDicNode(DicTraverseSession *traverseSession, DicNode *dicNode,
             const bool spaceSubstitution) const;
-    int outputSuggestions(DicTraverseSession *traverseSession, int *frequencies,
-            int *outputCodePoints, int *outputIndicesToPartialCommit, int *outputTypes,
-            int *outputAutoCommitFirstWordConfidence) const;
-    int computeFirstWordConfidence(const DicNode *const terminalDicNode) const;
     void initializeSearch(DicTraverseSession *traverseSession, int commitPoint) const;
     void expandCurrentDicNodes(DicTraverseSession *traverseSession) const;
     void processTerminalDicNode(DicTraverseSession *traverseSession, DicNode *dicNode) const;
     void processExpandedDicNode(DicTraverseSession *traverseSession, DicNode *dicNode) const;
     void weightChildNode(DicTraverseSession *traverseSession, DicNode *dicNode) const;
-    float getAutocorrectScore(DicTraverseSession *traverseSession, DicNode *dicNode) const;
-    void generateFeatures(
-            DicTraverseSession *traverseSession, DicNode *dicNode, float *features) const;
     void processDicNodeAsOmission(DicTraverseSession *traverseSession, DicNode *dicNode) const;
     void processDicNodeAsDigraph(DicTraverseSession *traverseSession, DicNode *dicNode) const;
     void processDicNodeAsTransposition(DicTraverseSession *traverseSession,
@@ -79,12 +72,7 @@ class Suggest : public SuggestInterface {
     void processDicNodeAsMatch(DicTraverseSession *traverseSession,
             DicNode *childDicNode) const;
 
-    // Inputs longer than this will autocorrect if the suggestion is multi-word
-    static const int MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT;
     static const int MIN_CONTINUOUS_SUGGESTION_INPUT_SIZE;
-
-    // Threshold for autocorrection classifier
-    static const float AUTOCORRECT_CLASSIFICATION_THRESHOLD;
 
     const Traversal *const TRAVERSAL;
     const Scoring *const SCORING;
