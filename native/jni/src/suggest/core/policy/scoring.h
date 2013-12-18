@@ -43,6 +43,9 @@ class Scoring {
             const int doubleLetterTerminalIndex,
             const DoubleLetterLevel doubleLetterLevel) const = 0;
     virtual bool doesAutoCorrectValidWord() const = 0;
+    virtual bool autoCorrectsToMultiWordSuggestionIfTop() const = 0;
+    virtual bool sameAsTyped(const DicTraverseSession *const traverseSession,
+            const DicNode *const dicNode) const = 0;
 
  protected:
     Scoring() {}

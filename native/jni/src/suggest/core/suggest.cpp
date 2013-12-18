@@ -158,7 +158,7 @@ int Suggest::outputSuggestions(DicTraverseSession *traverseSession, int *frequen
     // traverseSession->isPartiallyCommited() always returns false because we never auto partial
     // commit for now.
     const bool forceCommitMultiWords = (terminalSize > 0) ?
-            TRAVERSAL->autoCorrectsToMultiWordSuggestionIfTop()
+            SCORING->autoCorrectsToMultiWordSuggestionIfTop()
                     && (traverseSession->isPartiallyCommited()
                             || (traverseSession->getInputSize()
                                     >= MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT
@@ -234,7 +234,7 @@ int Suggest::outputSuggestions(DicTraverseSession *traverseSession, int *frequen
                             ->getShortcutPositionOfPtNode(terminalDicNode->getPtNodePos()));
             // Shortcut is not supported for multiple words suggestions.
             // TODO: Check shortcuts during traversal for multiple words suggestions.
-            const bool sameAsTyped = TRAVERSAL->sameAsTyped(traverseSession, terminalDicNode);
+            const bool sameAsTyped = SCORING->sameAsTyped(traverseSession, terminalDicNode);
             const int shortcutBaseScore = SCORING->doesAutoCorrectValidWord() ?
                      SCORING->calculateFinalScore(compoundDistance, traverseSession->getInputSize(),
                              true /* forceCommit */) : finalScore;

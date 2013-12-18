@@ -137,18 +137,8 @@ class TypingTraversal : public Traversal {
         return ScoringParams::MAX_SPATIAL_DISTANCE;
     }
 
-    AK_FORCE_INLINE bool autoCorrectsToMultiWordSuggestionIfTop() const {
-        return true;
-    }
-
     AK_FORCE_INLINE int getDefaultExpandDicNodeSize() const {
         return DicNodeVector::DEFAULT_NODES_SIZE_FOR_OPTIMIZATION;
-    }
-
-    AK_FORCE_INLINE bool sameAsTyped(
-            const DicTraverseSession *const traverseSession, const DicNode *const dicNode) const {
-        return traverseSession->getProximityInfoState(0)->sameAsTyped(
-                dicNode->getOutputWordBuf(), dicNode->getNodeCodePointCount());
     }
 
     AK_FORCE_INLINE int getMaxCacheSize(const int inputSize) const {
