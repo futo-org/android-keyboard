@@ -28,7 +28,8 @@ LATIN_IME_SRC_DIR := src
 LOCAL_C_INCLUDES += $(LOCAL_PATH)/$(LATIN_IME_SRC_DIR)
 
 LOCAL_CFLAGS += -Werror -Wall -Wextra -Weffc++ -Wformat=2 -Wcast-qual -Wcast-align \
-    -Wwrite-strings -Wfloat-equal -Wpointer-arith -Winit-self -Wredundant-decls -Wno-system-headers
+    -Wwrite-strings -Wfloat-equal -Wpointer-arith -Winit-self -Wredundant-decls \
+    -Woverloaded-virtual -Wstrict-null-sentinel -Wsign-promo -Wno-system-headers
 
 ifeq ($(TARGET_ARCH), arm)
 ifeq ($(TARGET_GCC_VERSION), 4.6)
