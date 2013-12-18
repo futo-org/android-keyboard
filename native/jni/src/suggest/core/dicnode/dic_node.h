@@ -280,6 +280,13 @@ class DicNode {
         return !(currentDepth > 0 && (currentDepth != 1 || prevWordLen != 1));
     }
 
+    bool hasMatchedOrProximityCodePoints() const {
+        // This DicNode does not have matched or proximity code points when all code points have
+        // been handled as edit corrections so far.
+        return mDicNodeState.mDicNodeStateScoring.getEditCorrectionCount()
+                < getNodeCodePointCount();
+    }
+
     bool isTotalInputSizeExceedingLimit() const {
         const int prevWordsLen = mDicNodeState.mDicNodeStatePrevWord.getPrevWordLength();
         const int currentWordDepth = getNodeCodePointCount();
