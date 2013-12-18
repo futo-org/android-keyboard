@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.latin;
 
+import android.provider.Settings.Secure;
 import android.test.suitebuilder.annotation.LargeTest;
 
 import com.android.inputmethod.latin.R;
@@ -153,7 +154,9 @@ public class PunctuationTests extends InputTestsBase {
         final String WORD_TO_TYPE = "you'f ";
         final String EXPECTED_RESULT = "you'd ";
         type(WORD_TO_TYPE);
-        assertEquals("auto-correction with single quote inside",
+        assertEquals("auto-correction with single quote inside. ID = "
+                + Secure.getString(getContext().getContentResolver(), Secure.ANDROID_ID)
+                + " ; Suggestions = " + mLatinIME.getSuggestedWords(),
                 EXPECTED_RESULT, mEditText.getText().toString());
     }
 
@@ -161,7 +164,9 @@ public class PunctuationTests extends InputTestsBase {
         final String WORD_TO_TYPE = "'tgis' ";
         final String EXPECTED_RESULT = "'this' ";
         type(WORD_TO_TYPE);
-        assertEquals("auto-correction with single quotes around",
+        assertEquals("auto-correction with single quotes around. ID = "
+                + Secure.getString(getContext().getContentResolver(), Secure.ANDROID_ID)
+                + " ; Suggestions = " + mLatinIME.getSuggestedWords(),
                 EXPECTED_RESULT, mEditText.getText().toString());
     }
 }
