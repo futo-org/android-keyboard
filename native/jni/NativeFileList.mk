@@ -31,6 +31,7 @@ LATIN_IME_CORE_SRC_FILES := \
         digraph_utils.cpp \
         error_type_utils.cpp \
         multi_bigram_map.cpp \
+        suggestions_output_utils.cpp \
         unigram_property.cpp) \
     $(addprefix suggest/core/layout/, \
         additional_proximity_chars.cpp \
