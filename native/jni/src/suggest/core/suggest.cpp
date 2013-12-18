@@ -459,6 +459,9 @@ void Suggest::processTerminalDicNode(
         Weighting::addCostAndForwardInputIndex(WEIGHTING, CT_TERMINAL_INSERTION, traverseSession, 0,
                 &terminalDicNode, traverseSession->getMultiBigramMap());
     }
+    if (!dicNode->hasMatchedOrProximityCodePoints()) {
+        return;
+    }
     Weighting::addCostAndForwardInputIndex(WEIGHTING, CT_TERMINAL, traverseSession, 0,
             &terminalDicNode, traverseSession->getMultiBigramMap());
     traverseSession->getDicTraverseCache()->copyPushTerminal(&terminalDicNode);
