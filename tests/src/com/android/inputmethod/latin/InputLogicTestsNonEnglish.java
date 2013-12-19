@@ -84,8 +84,9 @@ public class InputLogicTestsNonEnglish extends InputTestsBase {
             type(WORD_TO_TYPE);
             sleep(DELAY_TO_WAIT_FOR_UNDERLINE);
             runMessages();
+            final SuggestedWords suggestedWords = mLatinIME.getSuggestedWords();
             assertEquals("type word then type space yields predictions for French",
-                    EXPECTED_RESULT, mLatinIME.getFirstSuggestedWord());
+                    EXPECTED_RESULT, suggestedWords.size() > 0 ? suggestedWords.getWord(0) : null);
         } finally {
             setBooleanPreference(NEXT_WORD_PREDICTION_OPTION, previousNextWordPredictionOption,
                     defaultNextWordPredictionOption);

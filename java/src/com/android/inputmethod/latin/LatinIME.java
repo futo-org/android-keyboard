@@ -3253,20 +3253,15 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     // TODO: can this be removed somehow without breaking the tests?
     @UsedForTesting
-    /* package for test */ String getFirstSuggestedWord() {
-        return mSuggestedWords.size() > 0 ? mSuggestedWords.getWord(0) : null;
+    /* package for test */ SuggestedWords getSuggestedWords() {
+        // You may not use this method for anything else than debug
+        return DEBUG ? mSuggestedWords : null;
     }
 
     // DO NOT USE THIS for any other purpose than testing. This is information private to LatinIME.
     @UsedForTesting
     /* package for test */ boolean isCurrentlyWaitingForMainDictionary() {
         return mSuggest.isCurrentlyWaitingForMainDictionary();
-    }
-
-    // DO NOT USE THIS for any other purpose than testing. This is information private to LatinIME.
-    @UsedForTesting
-    /* package for test */ boolean hasMainDictionary() {
-        return mSuggest.hasMainDictionary();
     }
 
     // DO NOT USE THIS for any other purpose than testing. This can break the keyboard badly.
