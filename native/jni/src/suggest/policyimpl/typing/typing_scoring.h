@@ -18,6 +18,7 @@
 #define LATINIME_TYPING_SCORING_H
 
 #include "defines.h"
+#include "suggest/core/dictionary/error_type_utils.h"
 #include "suggest/core/policy/scoring.h"
 #include "suggest/core/session/dic_traverse_session.h"
 #include "suggest/policyimpl/typing/scoring_params.h"
@@ -53,12 +54,26 @@ class TypingScoring : public Scoring {
     }
 
     AK_FORCE_INLINE int calculateFinalScore(const float compoundDistance,
-            const int inputSize, const bool forceCommit) const {
+            const int inputSize, const ErrorTypeUtils::ErrorType containedErrorTypes,
+            const bool forceCommit) const {
         const float maxDistance = ScoringParams::DISTANCE_WEIGHT_LANGUAGE
                 + static_cast<float>(inputSize) * ScoringParams::TYPING_MAX_OUTPUT_SCORE_PER_INPUT;
-        const float score = ScoringParams::TYPING_BASE_OUTPUT_SCORE
-                - compoundDistance / maxDistance
-                + (forceCommit ? ScoringParams::AUTOCORRECT_OUTPUT_THRESHOLD : 0.0f);
+        float score = ScoringParams::TYPING_BASE_OUTPUT_SCORE - compoundDistance / maxDistance;
+        if (forceCommit) {
+            score += ScoringParams::AUTOCORRECT_OUTPUT_THRESHOLD;
+        }
+        if (ErrorTypeUtils::isExactMatch(containedErrorTypes)) {
+            score += ScoringParams::EXACT_MATCH_PROMOTION;
+            if ((ErrorTypeUtils::MATCH_WITH_CASE_ERROR & containedErrorTypes) != 0) {
+                score -= ScoringParams::CASE_ERROR_PENALTY_FOR_EXACT_MATCH;
+            }
+            if ((ErrorTypeUtils::MATCH_WITH_ACCENT_ERROR & containedErrorTypes) != 0) {
+                score -= ScoringParams::ACCENT_ERROR_PENALTY_FOR_EXACT_MATCH;
+            }
+            if ((ErrorTypeUtils::MATCH_WITH_DIGRAPH & containedErrorTypes) != 0) {
+                score -= ScoringParams::DIGRAPH_PENALTY_FOR_EXACT_MATCH;
+            }
+        }
         return static_cast<int>(score * SUGGEST_INTERFACE_OUTPUT_SCALE);
     }
 
