@@ -1306,71 +1306,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         return WordComposer.CAPS_MODE_OFF;
     }
 
-    private void swapSwapperAndSpace() {
-        final CharSequence lastTwo = mInputLogic.mConnection.getTextBeforeCursor(2, 0);
-        // It is guaranteed lastTwo.charAt(1) is a swapper - else this method is not called.
-        if (lastTwo != null && lastTwo.length() == 2 && lastTwo.charAt(0) == Constants.CODE_SPACE) {
-            mInputLogic.mConnection.deleteSurroundingText(2, 0);
-            final String text = lastTwo.charAt(1) + " ";
-            mInputLogic.mConnection.commitText(text, 1);
-            if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-                ResearchLogger.latinIME_swapSwapperAndSpace(lastTwo, text);
-            }
-            mKeyboardSwitcher.updateShiftState();
-        }
-    }
-
-    private boolean maybeDoubleSpacePeriod() {
-        final SettingsValues currentSettingsValues = mSettings.getCurrent();
-        if (!currentSettingsValues.mUseDoubleSpacePeriod) return false;
-        if (!mHandler.isAcceptingDoubleSpacePeriod()) return false;
-        // We only do this when we see two spaces and an accepted code point before the cursor.
-        // The code point may be a surrogate pair but the two spaces may not, so we need 4 chars.
-        final CharSequence lastThree = mInputLogic.mConnection.getTextBeforeCursor(4, 0);
-        if (null == lastThree) return false;
-        final int length = lastThree.length();
-        if (length < 3) return false;
-        if (lastThree.charAt(length - 1) != Constants.CODE_SPACE) return false;
-        if (lastThree.charAt(length - 2) != Constants.CODE_SPACE) return false;
-        // We know there are spaces in pos -1 and -2, and we have at least three chars.
-        // If we have only three chars, isSurrogatePairs can't return true as charAt(1) is a space,
-        // so this is fine.
-        final int firstCodePoint =
-                Character.isSurrogatePair(lastThree.charAt(0), lastThree.charAt(1)) ?
-                        Character.codePointAt(lastThree, 0) : lastThree.charAt(length - 3);
-        if (canBeFollowedByDoubleSpacePeriod(firstCodePoint)) {
-            mHandler.cancelDoubleSpacePeriodTimer();
-            mInputLogic.mConnection.deleteSurroundingText(2, 0);
-            final String textToInsert = new String(
-                    new int[] { currentSettingsValues.mSentenceSeparator, Constants.CODE_SPACE },
-                    0, 2);
-            mInputLogic.mConnection.commitText(textToInsert, 1);
-            if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-                ResearchLogger.latinIME_maybeDoubleSpacePeriod(textToInsert,
-                        false /* isBatchMode */);
-            }
-            mInputLogic.mWordComposer.discardPreviousWordForSuggestion();
-            mKeyboardSwitcher.updateShiftState();
-            return true;
-        }
-        return false;
-    }
-
-    private static boolean canBeFollowedByDoubleSpacePeriod(final int codePoint) {
-        // TODO: Check again whether there really ain't a better way to check this.
-        // TODO: This should probably be language-dependant...
-        return Character.isLetterOrDigit(codePoint)
-                || codePoint == Constants.CODE_SINGLE_QUOTE
-                || codePoint == Constants.CODE_DOUBLE_QUOTE
-                || codePoint == Constants.CODE_CLOSING_PARENTHESIS
-                || codePoint == Constants.CODE_CLOSING_SQUARE_BRACKET
-                || codePoint == Constants.CODE_CLOSING_CURLY_BRACKET
-                || codePoint == Constants.CODE_CLOSING_ANGLE_BRACKET
-                || codePoint == Constants.CODE_PLUS
-                || codePoint == Constants.CODE_PERCENT
-                || Character.getType(codePoint) == Character.OTHER_SYMBOL;
-    }
-
     // Callback for the {@link SuggestionStripView}, to call when the "add to dictionary" hint is
     // pressed.
     @Override
@@ -1430,6 +1365,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     // Called from PointerTracker through the KeyboardActionListener interface
+    // TODO[IL]: Move this to InputLogic
     @Override
     public void onTextInput(final String rawText) {
         mInputLogic.mConnection.beginBatchEdit();
@@ -1446,7 +1382,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
         final String text = specificTldProcessingOnTextInput(rawText);
         if (SpaceState.PHANTOM == mInputLogic.mSpaceState) {
-            promotePhantomSpace();
+            mInputLogic.promotePhantomSpace(mSettings.getCurrent());
         }
         mInputLogic.mConnection.commitText(text, 1);
         if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
@@ -1684,7 +1620,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 if (candidate.mSourceDict.shouldAutoCommit(candidate)) {
                     final String[] commitParts = candidate.mWord.split(" ", 2);
                     batchPointers.shift(candidate.mIndexOfTouchPointOfSecondWord);
-                    promotePhantomSpace();
+                    mInputLogic.promotePhantomSpace(mSettings.getCurrent());
                     mInputLogic.mConnection.commitText(commitParts[0], 0);
                     mInputLogic.mSpaceState = SpaceState.PHANTOM;
                     mKeyboardSwitcher.updateShiftState();
@@ -1706,7 +1642,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
         mInputLogic.mConnection.beginBatchEdit();
         if (SpaceState.PHANTOM == mInputLogic.mSpaceState) {
-            promotePhantomSpace();
+            mInputLogic.promotePhantomSpace(mSettings.getCurrent());
         }
         if (mSettings.getCurrent().mPhraseGestureEnabled) {
             // Find the last space
@@ -1775,25 +1711,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mInputUpdater.onCancelBatchInput();
     }
 
-    /*
-     * Strip a trailing space if necessary and returns whether it's a swap weak space situation.
-     */
-    private boolean maybeStripSpace(final int code, final int spaceState,
-            final boolean isFromSuggestionStrip) {
-        if (Constants.CODE_ENTER == code && SpaceState.SWAP_PUNCTUATION == spaceState) {
-            mInputLogic.mConnection.removeTrailingSpace();
-            return false;
-        }
-        if ((SpaceState.WEAK == spaceState || SpaceState.SWAP_PUNCTUATION == spaceState)
-                && isFromSuggestionStrip) {
-            final SettingsValues currentSettings = mSettings.getCurrent();
-            if (currentSettings.isUsuallyPrecededBySpace(code)) return false;
-            if (currentSettings.isUsuallyFollowedBySpace(code)) return true;
-            mInputLogic.mConnection.removeTrailingSpace();
-        }
-        return false;
-    }
-
     // TODO[IL]: Move to InputLogic and make private again.
     public void handleCharacter(final int primaryCode, final int x, final int y,
             final int spaceState) {
@@ -1810,7 +1727,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 // Sanity check
                 throw new RuntimeException("Should not be composing here");
             }
-            promotePhantomSpace();
+            mInputLogic.promotePhantomSpace(currentSettings);
         }
 
         if (mInputLogic.mWordComposer.isCursorFrontOrMiddleOfComposingWord()) {
@@ -1864,13 +1781,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mInputLogic.mConnection.setComposingText(mInputLogic.getTextWithUnderline(
                     mInputLogic.mWordComposer.getTypedWord()), 1);
         } else {
-            final boolean swapWeakSpace = maybeStripSpace(primaryCode, spaceState,
-                    Constants.SUGGESTION_STRIP_COORDINATE == x);
+            final boolean swapWeakSpace = mInputLogic.maybeStripSpace(currentSettings,
+                    primaryCode, spaceState, Constants.SUGGESTION_STRIP_COORDINATE == x);
 
             mInputLogic.sendKeyCodePoint(primaryCode);
 
             if (swapWeakSpace) {
-                swapSwapperAndSpace();
+                mInputLogic.swapSwapperAndSpace(mKeyboardSwitcher);
                 mInputLogic.mSpaceState = SpaceState.WEAK;
             }
             // In case the "add to dictionary" hint was still displayed.
@@ -1929,92 +1846,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mKeyboardSwitcher.updateShiftState();
     }
 
-    // Returns true if we do an autocorrection, false otherwise.
-    // TODO[IL]: Move to InputLogic and make private again
-    public boolean handleSeparator(final int primaryCode, final int x, final int y,
-            final int spaceState) {
-        boolean didAutoCorrect = false;
-        final SettingsValues currentSettings = mSettings.getCurrent();
-        // We avoid sending spaces in languages without spaces if we were composing.
-        final boolean shouldAvoidSendingCode = Constants.CODE_SPACE == primaryCode
-                && !currentSettings.mCurrentLanguageHasSpaces
-                && mInputLogic.mWordComposer.isComposingWord();
-        if (mInputLogic.mWordComposer.isCursorFrontOrMiddleOfComposingWord()) {
-            // If we are in the middle of a recorrection, we need to commit the recorrection
-            // first so that we can insert the separator at the current cursor position.
-            mInputLogic.resetEntireInputState(currentSettings, mInputLogic.mLastSelectionStart,
-                    mInputLogic.mLastSelectionEnd);
-        }
-        // isComposingWord() may have changed since we stored wasComposing
-        if (mInputLogic.mWordComposer.isComposingWord()) {
-            if (currentSettings.mCorrectionEnabled) {
-                final String separator = shouldAvoidSendingCode ? LastComposedWord.NOT_A_SEPARATOR
-                        : StringUtils.newSingleCodePointString(primaryCode);
-                commitCurrentAutoCorrection(separator);
-                didAutoCorrect = true;
-            } else {
-                mInputLogic.commitTyped(StringUtils.newSingleCodePointString(primaryCode));
-            }
-        }
-
-        final boolean swapWeakSpace = maybeStripSpace(primaryCode, spaceState,
-                Constants.SUGGESTION_STRIP_COORDINATE == x);
-
-        if (SpaceState.PHANTOM == spaceState &&
-                currentSettings.isUsuallyPrecededBySpace(primaryCode)) {
-            promotePhantomSpace();
-        }
-        if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-            ResearchLogger.latinIME_handleSeparator(primaryCode,
-                    mInputLogic.mWordComposer.isComposingWord());
-        }
-
-        if (!shouldAvoidSendingCode) {
-            mInputLogic.sendKeyCodePoint(primaryCode);
-        }
-
-        if (Constants.CODE_SPACE == primaryCode) {
-            if (currentSettings.isSuggestionsRequested(mDisplayOrientation)) {
-                if (maybeDoubleSpacePeriod()) {
-                    mInputLogic.mSpaceState = SpaceState.DOUBLE;
-                } else if (!isShowingPunctuationList()) {
-                    mInputLogic.mSpaceState = SpaceState.WEAK;
-                }
-            }
-
-            mHandler.startDoubleSpacePeriodTimer();
-            mHandler.postUpdateSuggestionStrip();
-        } else {
-            if (swapWeakSpace) {
-                swapSwapperAndSpace();
-                mInputLogic.mSpaceState = SpaceState.SWAP_PUNCTUATION;
-            } else if (SpaceState.PHANTOM == spaceState
-                    && currentSettings.isUsuallyFollowedBySpace(primaryCode)) {
-                // If we are in phantom space state, and the user presses a separator, we want to
-                // stay in phantom space state so that the next keypress has a chance to add the
-                // space. For example, if I type "Good dat", pick "day" from the suggestion strip
-                // then insert a comma and go on to typing the next word, I want the space to be
-                // inserted automatically before the next word, the same way it is when I don't
-                // input the comma.
-                // The case is a little different if the separator is a space stripper. Such a
-                // separator does not normally need a space on the right (that's the difference
-                // between swappers and strippers), so we should not stay in phantom space state if
-                // the separator is a stripper. Hence the additional test above.
-                mInputLogic.mSpaceState = SpaceState.PHANTOM;
-            }
-
-            // Set punctuation right away. onUpdateSelection will fire but tests whether it is
-            // already displayed or not, so it's okay.
-            setPunctuationSuggestions();
-        }
-        if (currentSettings.mIsInternal) {
-            LatinImeLoggerUtils.onSeparator((char)primaryCode, x, y);
-        }
-
-        mKeyboardSwitcher.updateShiftState();
-        return didAutoCorrect;
-    }
-
+    // TODO[IL]: Rename this to avoid using handle*
     private void handleClose() {
         // TODO: Verify that words are logged properly when IME is closed.
         mInputLogic.commitTyped(LastComposedWord.NOT_A_SEPARATOR);
@@ -2025,10 +1857,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
     }
 
-    // TODO: make this private
+    // TODO[IL]: Move this to InputLogic and make it private
     // Outside LatinIME, only used by the test suite.
     @UsedForTesting
-    boolean isShowingPunctuationList() {
+    public boolean isShowingPunctuationList() {
         if (mInputLogic.mSuggestedWords == null) return false;
         return mSettings.getCurrent().mSuggestPuncList == mInputLogic.mSuggestedWords;
     }
@@ -2261,7 +2093,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             suggestedWords.getWord(SuggestedWords.INDEX_OF_TYPED_WORD));
     }
 
-    private void commitCurrentAutoCorrection(final String separator) {
+    // TODO[IL]: Move this to InputLogic and make private again
+    public void commitCurrentAutoCorrection(final String separator) {
         // Complete any pending suggestions query first
         if (mHandler.hasPendingUpdateSuggestions()) {
             updateSuggestionStrip();
@@ -2331,7 +2164,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             final int firstChar = Character.codePointAt(suggestion, 0);
             if (!currentSettings.isWordSeparator(firstChar)
                     || currentSettings.isUsuallyPrecededBySpace(firstChar)) {
-                promotePhantomSpace();
+                mInputLogic.promotePhantomSpace(currentSettings);
             }
         }
 
@@ -2425,7 +2258,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
     }
 
-    private void setPunctuationSuggestions() {
+    // TODO[IL]: Define a clean interface for this
+    public void setPunctuationSuggestions() {
         final SettingsValues currentSettings = mSettings.getCurrent();
         if (currentSettings.mBigramPredictionEnabled) {
             clearSuggestionStrip();
@@ -2698,19 +2532,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mInputLogic.mLastComposedWord = LastComposedWord.NOT_A_COMPOSED_WORD;
         // We have a separator between the word and the cursor: we should show predictions.
         mHandler.postUpdateSuggestionStrip();
-    }
-
-    // This essentially inserts a space, and that's it.
-    public void promotePhantomSpace() {
-        final SettingsValues currentSettings = mSettings.getCurrent();
-        if (currentSettings.shouldInsertSpacesAutomatically()
-                && currentSettings.mCurrentLanguageHasSpaces
-                && !mInputLogic.mConnection.textBeforeCursorLooksLikeURL()) {
-            if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-                ResearchLogger.latinIME_promotePhantomSpace();
-            }
-            mInputLogic.sendKeyCodePoint(Constants.CODE_SPACE);
-        }
     }
 
     // TODO: Make this private
