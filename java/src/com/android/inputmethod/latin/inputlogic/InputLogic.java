@@ -39,8 +39,10 @@ import com.android.inputmethod.latin.Suggest;
 import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.WordComposer;
 import com.android.inputmethod.latin.define.ProductionFlag;
+import com.android.inputmethod.latin.personalization.UserHistoryDictionary;
 import com.android.inputmethod.latin.settings.Settings;
 import com.android.inputmethod.latin.settings.SettingsValues;
+import com.android.inputmethod.latin.utils.AutoCorrectionUtils;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.InputTypeUtils;
 import com.android.inputmethod.latin.utils.LatinImeLoggerUtils;
@@ -48,7 +50,9 @@ import com.android.inputmethod.latin.utils.RecapitalizeStatus;
 import com.android.inputmethod.latin.utils.StringUtils;
 import com.android.inputmethod.research.ResearchLogger;
 
+import java.util.Locale;
 import java.util.TreeSet;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This class manages the input logic.
@@ -284,7 +288,7 @@ public final class InputLogic {
                     // first so that we can insert the character at the current cursor position.
                     resetEntireInputState(settingsValues, mLastSelectionStart, mLastSelectionEnd);
                 } else {
-                    commitTyped(LastComposedWord.NOT_A_SEPARATOR);
+                    commitTyped(settingsValues, LastComposedWord.NOT_A_SEPARATOR);
                 }
             }
             final int keyX, keyY;
@@ -428,7 +432,7 @@ public final class InputLogic {
                 commitCurrentAutoCorrection(settingsValues, separator, handler);
                 didAutoCorrect = true;
             } else {
-                commitTyped(StringUtils.newSingleCodePointString(codePoint));
+                commitTyped(settingsValues, StringUtils.newSingleCodePointString(codePoint));
             }
         }
 
@@ -811,6 +815,38 @@ public final class InputLogic {
         keyboardSwitcher.updateShiftState();
     }
 
+    private String performAdditionToUserHistoryDictionary(final SettingsValues settingsValues,
+            final String suggestion) {
+        // If correction is not enabled, we don't add words to the user history dictionary.
+        // That's to avoid unintended additions in some sensitive fields, or fields that
+        // expect to receive non-words.
+        if (!settingsValues.mCorrectionEnabled) return null;
+
+        if (TextUtils.isEmpty(suggestion)) return null;
+        final Suggest suggest = mSuggest;
+        if (suggest == null) return null;
+
+        final UserHistoryDictionary userHistoryDictionary = suggest.getUserHistoryDictionary();
+        if (userHistoryDictionary == null) return null;
+
+        final String prevWord = mConnection.getNthPreviousWord(settingsValues, 2);
+        final String secondWord;
+        if (mWordComposer.wasAutoCapitalized() && !mWordComposer.isMostlyCaps()) {
+            secondWord = suggestion.toLowerCase(settingsValues.mLocale);
+        } else {
+            secondWord = suggestion;
+        }
+        // We demote unrecognized words (frequency < 0, below) by specifying them as "invalid".
+        // We don't add words with 0-frequency (assuming they would be profanity etc.).
+        final int maxFreq = AutoCorrectionUtils.getMaxFrequency(
+                suggest.getUnigramDictionaries(), suggestion);
+        if (maxFreq == 0) return null;
+        userHistoryDictionary.addToDictionary(prevWord, secondWord, maxFreq > 0,
+                (int)TimeUnit.MILLISECONDS.toSeconds((System.currentTimeMillis())));
+        return prevWord;
+    }
+
+
     /**
      * Check if the cursor is actually at the end of a word. If so, restart suggestions on this
      * word, otherwise do nothing.
@@ -1151,19 +1187,19 @@ public final class InputLogic {
      * user presses the Send button for an SMS, we don't auto-correct as that would be unexpected.
      * In this case, `separatorString' is set to NOT_A_SEPARATOR.
      *
-     * @param separatorString the separator string that's causing the commit, or NOT_A_SEPARATOR if
-     *   none.
+     * @param settingsValues the current values of the settings.
+     * @param separatorString the separator that's causing the commit, or NOT_A_SEPARATOR if none.
      */
     // TODO: Make this private
-    public void commitTyped(final String separatorString) {
+    public void commitTyped(final SettingsValues settingsValues, final String separatorString) {
         if (!mWordComposer.isComposingWord()) return;
         final String typedWord = mWordComposer.getTypedWord();
         if (typedWord.length() > 0) {
             if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
                 ResearchLogger.getInstance().onWordFinished(typedWord, mWordComposer.isBatchMode());
             }
-            mLatinIME.commitChosenWord(typedWord, LastComposedWord.COMMIT_TYPE_USER_TYPED_WORD,
-                    separatorString);
+            commitChosenWord(settingsValues, typedWord,
+                    LastComposedWord.COMMIT_TYPE_USER_TYPED_WORD, separatorString);
         }
     }
 
@@ -1210,8 +1246,8 @@ public final class InputLogic {
                 ResearchLogger.latinIme_commitCurrentAutoCorrection(typedWord, autoCorrection,
                         separator, mWordComposer.isBatchMode(), suggestedWords);
             }
-            mLatinIME.commitChosenWord(autoCorrection, LastComposedWord.COMMIT_TYPE_DECIDED_WORD,
-                    separator);
+            commitChosenWord(settingsValues, autoCorrection,
+                    LastComposedWord.COMMIT_TYPE_DECIDED_WORD, separator);
             if (!typedWord.equals(autoCorrection)) {
                 // This will make the correction flash for a short while as a visual clue
                 // to the user that auto-correction happened. It has no other effect; in particular
@@ -1223,6 +1259,42 @@ public final class InputLogic {
                         new CorrectionInfo(mLastSelectionEnd - typedWord.length(),
                         typedWord, autoCorrection));
             }
+        }
+    }
+
+    /**
+     * Commits the chosen word to the text field and saves it for later retrieval.
+     *
+     * @param settingsValues the current values of the settings.
+     * @param chosenWord the word we want to commit.
+     * @param commitType the type of the commit, as one of LastComposedWord.COMMIT_TYPE_*
+     * @param separatorString the separator that's causing the commit, or NOT_A_SEPARATOR if none.
+     */
+    // TODO: Make this private
+    public void commitChosenWord(final SettingsValues settingsValues, final String chosenWord,
+            final int commitType, final String separatorString) {
+        final SuggestedWords suggestedWords = mSuggestedWords;
+        mConnection.commitText(SuggestionSpanUtils.getTextWithSuggestionSpan(mLatinIME, chosenWord,
+                suggestedWords), 1);
+        // Add the word to the user history dictionary
+        final String prevWord = performAdditionToUserHistoryDictionary(settingsValues, chosenWord);
+        // TODO: figure out here if this is an auto-correct or if the best word is actually
+        // what user typed. Note: currently this is done much later in
+        // LastComposedWord#didCommitTypedWord by string equality of the remembered
+        // strings.
+        mLastComposedWord = mWordComposer.commitWord(commitType,
+                chosenWord, separatorString, prevWord);
+        final boolean shouldDiscardPreviousWordForSuggestion;
+        if (0 == StringUtils.codePointCount(separatorString)) {
+            // Separator is 0-length. Discard the word only if the current language has spaces.
+            shouldDiscardPreviousWordForSuggestion = settingsValues.mCurrentLanguageHasSpaces;
+        } else {
+            // Otherwise, we discard if the separator contains any non-whitespace.
+            shouldDiscardPreviousWordForSuggestion =
+                    !StringUtils.containsOnlyWhitespace(separatorString);
+        }
+        if (shouldDiscardPreviousWordForSuggestion) {
+            mWordComposer.discardPreviousWordForSuggestion();
         }
     }
 }

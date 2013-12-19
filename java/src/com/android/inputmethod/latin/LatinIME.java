@@ -151,7 +151,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private final SubtypeSwitcher mSubtypeSwitcher;
     private final SubtypeState mSubtypeState = new SubtypeState();
 
-    private boolean mIsMainDictionaryAvailable;
     private UserBinaryDictionary mUserDictionary;
     private boolean mIsUserDictionaryAvailable;
 
@@ -555,7 +554,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // Note that this method is called from a non-UI thread.
     @Override
     public void onUpdateMainDictionaryAvailability(final boolean isMainDictionaryAvailable) {
-        mIsMainDictionaryAvailable = isMainDictionaryAvailable;
         final MainKeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
         if (mainKeyboardView != null) {
             mainKeyboardView.setMainDictionaryAvailability(isMainDictionaryAvailable);
@@ -586,7 +584,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             newSuggest.setAutoCorrectionThreshold(settingsValues.mAutoCorrectionThreshold);
         }
 
-        mIsMainDictionaryAvailable = DictionaryFactory.isDictionaryAvailable(this, subtypeLocale);
         if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
             ResearchLogger.getInstance().initSuggest(newSuggest);
         }
@@ -605,7 +602,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final Locale subtypeLocale = mSubtypeSwitcher.getCurrentSubtypeLocale();
         mInputLogic.mSuggest.resetMainDict(this, subtypeLocale,
                 this /* SuggestInitializationListener */);
-        mIsMainDictionaryAvailable = DictionaryFactory.isDictionaryAvailable(this, subtypeLocale);
     }
 
     @Override
@@ -637,7 +633,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mDisplayOrientation = conf.orientation;
             mHandler.startOrientationChanging();
             mInputLogic.mConnection.beginBatchEdit();
-            mInputLogic.commitTyped(LastComposedWord.NOT_A_SEPARATOR);
+            mInputLogic.commitTyped(mSettings.getCurrent(), LastComposedWord.NOT_A_SEPARATOR);
             mInputLogic.mConnection.finishComposingText();
             mInputLogic.mConnection.endBatchEdit();
             if (isShowingOptionDialog()) {
@@ -858,7 +854,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mHandler.cancelUpdateSuggestionStrip();
         mHandler.cancelDoubleSpacePeriodTimer();
 
-        mainKeyboardView.setMainDictionaryAvailability(mIsMainDictionaryAvailable);
+        mainKeyboardView.setMainDictionaryAvailability(null != suggest
+                ? suggest.hasMainDictionary() : false);
         mainKeyboardView.setKeyPreviewPopupEnabled(currentSettingsValues.mKeyPreviewPopupOn,
                 currentSettingsValues.mKeyPreviewPopupDismissDelay);
         mainKeyboardView.setSlidingKeyInputPreviewEnabled(
@@ -1402,7 +1399,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 mInputLogic.commitCurrentAutoCorrection(currentSettingsValues,
                         LastComposedWord.NOT_A_SEPARATOR, mHandler);
             } else {
-                mInputLogic.commitTyped(LastComposedWord.NOT_A_SEPARATOR);
+                mInputLogic.commitTyped(currentSettingsValues, LastComposedWord.NOT_A_SEPARATOR);
             }
         }
         final int codePointBeforeCursor = mInputLogic.mConnection.getCodePointBeforeCursor();
@@ -1692,7 +1689,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // TODO[IL]: Rename this to avoid using handle*
     private void handleClose() {
         // TODO: Verify that words are logged properly when IME is closed.
-        mInputLogic.commitTyped(LastComposedWord.NOT_A_SEPARATOR);
+        mInputLogic.commitTyped(mSettings.getCurrent(), LastComposedWord.NOT_A_SEPARATOR);
         requestHideSelf(0);
         final MainKeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
         if (mainKeyboardView != null) {
@@ -1979,8 +1976,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // typed word.
         final String replacedWord = mInputLogic.mWordComposer.getTypedWord();
         LatinImeLogger.logOnManualSuggestion(replacedWord, suggestion, index, suggestedWords);
-        commitChosenWord(suggestion, LastComposedWord.COMMIT_TYPE_MANUAL_PICK,
-                LastComposedWord.NOT_A_SEPARATOR);
+        mInputLogic.commitChosenWord(currentSettings, suggestion,
+                LastComposedWord.COMMIT_TYPE_MANUAL_PICK, LastComposedWord.NOT_A_SEPARATOR);
         if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
             ResearchLogger.latinIME_pickSuggestionManually(replacedWord, index, suggestion,
                     mInputLogic.mWordComposer.isBatchMode(), suggestionInfo.mScore,
@@ -2018,38 +2015,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
     }
 
-    /**
-     * Commits the chosen word to the text field and saves it for later retrieval.
-     */
-    // TODO[IL]: Move to InputLogic and make public again
-    public void commitChosenWord(final String chosenWord, final int commitType,
-            final String separatorString) {
-        final SuggestedWords suggestedWords = mInputLogic.mSuggestedWords;
-        mInputLogic.mConnection.commitText(SuggestionSpanUtils.getTextWithSuggestionSpan(
-                this, chosenWord, suggestedWords), 1);
-        // Add the word to the user history dictionary
-        final String prevWord = addToUserHistoryDictionary(chosenWord);
-        // TODO: figure out here if this is an auto-correct or if the best word is actually
-        // what user typed. Note: currently this is done much later in
-        // LastComposedWord#didCommitTypedWord by string equality of the remembered
-        // strings.
-        mInputLogic.mLastComposedWord = mInputLogic.mWordComposer.commitWord(commitType,
-                chosenWord, separatorString, prevWord);
-        final boolean shouldDiscardPreviousWordForSuggestion;
-        if (0 == StringUtils.codePointCount(separatorString)) {
-            // Separator is 0-length. Discard the word only if the current language has spaces.
-            shouldDiscardPreviousWordForSuggestion =
-                    mSettings.getCurrent().mCurrentLanguageHasSpaces;
-        } else {
-            // Otherwise, we discard if the separator contains any non-whitespace.
-            shouldDiscardPreviousWordForSuggestion =
-                    !StringUtils.containsOnlyWhitespace(separatorString);
-        }
-        if (shouldDiscardPreviousWordForSuggestion) {
-            mInputLogic.mWordComposer.discardPreviousWordForSuggestion();
-        }
-    }
-
     // TODO[IL]: Define a clean interface for this
     public void setPunctuationSuggestions() {
         final SettingsValues currentSettings = mSettings.getCurrent();
@@ -2060,38 +2025,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
         setAutoCorrectionIndicator(false);
         setSuggestionStripShown(isSuggestionsStripVisible());
-    }
-
-    private String addToUserHistoryDictionary(final String suggestion) {
-        if (TextUtils.isEmpty(suggestion)) return null;
-        final Suggest suggest = mInputLogic.mSuggest;
-        if (suggest == null) return null;
-
-        // If correction is not enabled, we don't add words to the user history dictionary.
-        // That's to avoid unintended additions in some sensitive fields, or fields that
-        // expect to receive non-words.
-        final SettingsValues currentSettings = mSettings.getCurrent();
-        if (!currentSettings.mCorrectionEnabled) return null;
-
-        final UserHistoryDictionary userHistoryDictionary = suggest.getUserHistoryDictionary();
-        if (userHistoryDictionary == null) return null;
-
-        final String prevWord = mInputLogic.mConnection.getNthPreviousWord(currentSettings, 2);
-        final String secondWord;
-        if (mInputLogic.mWordComposer.wasAutoCapitalized()
-                && !mInputLogic.mWordComposer.isMostlyCaps()) {
-            secondWord = suggestion.toLowerCase(mSubtypeSwitcher.getCurrentSubtypeLocale());
-        } else {
-            secondWord = suggestion;
-        }
-        // We demote unrecognized words (frequency < 0, below) by specifying them as "invalid".
-        // We don't add words with 0-frequency (assuming they would be profanity etc.).
-        final int maxFreq = AutoCorrectionUtils.getMaxFrequency(
-                suggest.getUnigramDictionaries(), suggestion);
-        if (maxFreq == 0) return null;
-        userHistoryDictionary.addToDictionary(prevWord, secondWord, maxFreq > 0,
-                (int)TimeUnit.MILLISECONDS.toSeconds((System.currentTimeMillis())));
-        return prevWord;
     }
 
     private boolean isResumableWord(final String word, final SettingsValues settings) {
@@ -2356,7 +2289,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     public void launchKeyboardedDialogActivity(final Class<? extends Activity> activityClass) {
         // Put the text in the attached EditText into a safe, saved state before switching to a
         // new activity that will also use the soft keyboard.
-        mInputLogic.commitTyped(LastComposedWord.NOT_A_SEPARATOR);
+        mInputLogic.commitTyped(mSettings.getCurrent(), LastComposedWord.NOT_A_SEPARATOR);
         launchSubActivity(activityClass);
     }
 
