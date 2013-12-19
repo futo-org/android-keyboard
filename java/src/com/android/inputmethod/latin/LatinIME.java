@@ -117,7 +117,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         Suggest.SuggestInitializationListener {
     private static final String TAG = LatinIME.class.getSimpleName();
     private static final boolean TRACE = false;
-    private static boolean DEBUG;
+    // TODO[IL]: Make this private
+    public static boolean DEBUG;
 
     private static final int EXTENDED_TOUCHABLE_REGION_HEIGHT = 100;
 
@@ -2278,65 +2279,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         tryFixLyingCursorPosition();
         mKeyboardSwitcher.loadKeyboard(getCurrentInputEditorInfo(), mSettings.getCurrent());
         if (tryResumeSuggestions) mHandler.postResumeSuggestions();
-    }
-
-    // TODO[IL]: Move this to InputLogic and make it private again.
-    public void revertCommit() {
-        final String previousWord = mInputLogic.mLastComposedWord.mPrevWord;
-        final String originallyTypedWord = mInputLogic.mLastComposedWord.mTypedWord;
-        final String committedWord = mInputLogic.mLastComposedWord.mCommittedWord;
-        final int cancelLength = committedWord.length();
-        // We want java chars, not codepoints for the following.
-        final int separatorLength = mInputLogic.mLastComposedWord.mSeparatorString.length();
-        // TODO: should we check our saved separator against the actual contents of the text view?
-        final int deleteLength = cancelLength + separatorLength;
-        if (DEBUG) {
-            if (mInputLogic.mWordComposer.isComposingWord()) {
-                throw new RuntimeException("revertCommit, but we are composing a word");
-            }
-            final CharSequence wordBeforeCursor =
-                    mInputLogic.mConnection.getTextBeforeCursor(deleteLength, 0).subSequence(0,
-                            cancelLength);
-            if (!TextUtils.equals(committedWord, wordBeforeCursor)) {
-                throw new RuntimeException("revertCommit check failed: we thought we were "
-                        + "reverting \"" + committedWord
-                        + "\", but before the cursor we found \"" + wordBeforeCursor + "\"");
-            }
-        }
-        mInputLogic.mConnection.deleteSurroundingText(deleteLength, 0);
-        if (!TextUtils.isEmpty(previousWord) && !TextUtils.isEmpty(committedWord)) {
-            if (mInputLogic.mSuggest != null) {
-                mInputLogic.mSuggest.cancelAddingUserHistory(previousWord, committedWord);
-            }
-        }
-        final String stringToCommit =
-                originallyTypedWord + mInputLogic.mLastComposedWord.mSeparatorString;
-        if (mSettings.getCurrent().mCurrentLanguageHasSpaces) {
-            // For languages with spaces, we revert to the typed string, but the cursor is still
-            // after the separator so we don't resume suggestions. If the user wants to correct
-            // the word, they have to press backspace again.
-            mInputLogic.mConnection.commitText(stringToCommit, 1);
-        } else {
-            // For languages without spaces, we revert the typed string but the cursor is flush
-            // with the typed word, so we need to resume suggestions right away.
-            mInputLogic.mWordComposer.setComposingWord(stringToCommit, previousWord,
-                    mKeyboardSwitcher.getKeyboard());
-            mInputLogic.mConnection.setComposingText(stringToCommit, 1);
-        }
-        if (mSettings.isInternal()) {
-            LatinImeLoggerUtils.onSeparator(mInputLogic.mLastComposedWord.mSeparatorString,
-                    Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
-        }
-        if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-            ResearchLogger.latinIME_revertCommit(committedWord, originallyTypedWord,
-                    mInputLogic.mWordComposer.isBatchMode(),
-                    mInputLogic.mLastComposedWord.mSeparatorString);
-        }
-        // Don't restart suggestion yet. We'll restart if the user deletes the
-        // separator.
-        mInputLogic.mLastComposedWord = LastComposedWord.NOT_A_COMPOSED_WORD;
-        // We have a separator between the word and the cursor: we should show predictions.
-        mHandler.postUpdateSuggestionStrip();
     }
 
     // TODO: Make this private
