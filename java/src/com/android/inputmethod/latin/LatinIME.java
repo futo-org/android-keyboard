@@ -887,7 +887,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 Constants.EDITOR_CONTENTS_CACHE_SIZE, 0);
         if (null == textBeforeCursor) {
             mInputLogic.mLastSelectionStart = mInputLogic.mLastSelectionEnd =
-                    mInputLogic.NOT_A_CURSOR_POSITION;
+                    Constants.NOT_A_CURSOR_POSITION;
         } else {
             final int textLength = textBeforeCursor.length();
             if (textLength > mInputLogic.mLastSelectionStart
