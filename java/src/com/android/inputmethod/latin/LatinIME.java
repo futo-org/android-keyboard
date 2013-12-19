@@ -1270,28 +1270,16 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     // Called from the KeyboardSwitcher which needs to know auto caps state to display
     // the right layout.
-    // TODO[IL]: Move this to InputLogic.
+    // TODO[IL]: Remove this, pass the input logic to the keyboard switcher instead?
     public int getCurrentAutoCapsState() {
-        final SettingsValues currentSettingsValues = mSettings.getCurrent();
-        if (!currentSettingsValues.mAutoCap) return Constants.TextUtils.CAP_MODE_OFF;
-
-        final EditorInfo ei = getCurrentInputEditorInfo();
-        if (ei == null) return Constants.TextUtils.CAP_MODE_OFF;
-        final int inputType = ei.inputType;
-        // Warning: this depends on mSpaceState, which may not be the most current value. If
-        // mSpaceState gets updated later, whoever called this may need to be told about it.
-        return mInputLogic.mConnection.getCursorCapsMode(inputType, currentSettingsValues,
-                SpaceState.PHANTOM == mInputLogic.mSpaceState);
+        return mInputLogic.getCurrentAutoCapsState(null /* optionalSettingsValues */);
     }
 
+    // Called from the KeyboardSwitcher which needs to know recaps state to display
+    // the right layout.
+    // TODO[IL]: Remove this, pass the input logic to the keyboard switcher instead?
     public int getCurrentRecapitalizeState() {
-        if (!mInputLogic.mRecapitalizeStatus.isActive()
-                || !mInputLogic.mRecapitalizeStatus.isSetAt(mInputLogic.mLastSelectionStart,
-                        mInputLogic.mLastSelectionEnd)) {
-            // Not recapitalizing at the moment
-            return RecapitalizeStatus.NOT_A_RECAPITALIZE_MODE;
-        }
-        return mInputLogic.mRecapitalizeStatus.getCurrentMode();
+        return mInputLogic.getCurrentRecapitalizeState();
     }
 
     // Callback for the {@link SuggestionStripView}, to call when the "add to dictionary" hint is
@@ -1336,8 +1324,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     // TODO: Revise the language switch key behavior to make it much smarter and more reasonable.
-    // TODO[IL]: Move a part of this to InputLogic and straighten out the interface for this.
-    public void handleLanguageSwitchKey() {
+    public void switchToNextSubtype() {
         final IBinder token = getWindow().getWindow().getAttributes().token;
         if (mSettings.getCurrent().mIncludesOtherImesInLanguageSwitchList) {
             mRichImm.switchToNextInputMethod(token, false /* onlyCurrentIme */);
@@ -1436,7 +1423,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
         mInputLogic.mConnection.endBatchEdit();
         mInputLogic.mWordComposer.setCapitalizedModeAndPreviousWordAtStartComposingTime(
-                mInputLogic.getActualCapsMode(mKeyboardSwitcher),
+                mInputLogic.getActualCapsMode(currentSettingsValues, mKeyboardSwitcher),
                 // Prev word is 1st word before cursor
                 mInputLogic.getNthPreviousWordForSuggestion(currentSettingsValues,
                         1 /* nthPreviousWord */));
@@ -1600,7 +1587,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private int mAutoCommitSequenceNumber = 1;
     @Override
     public void onUpdateBatchInput(final InputPointers batchPointers) {
-        if (mSettings.getCurrent().mPhraseGestureEnabled) {
+        final SettingsValues settingsValues = mSettings.getCurrent();
+        if (settingsValues.mPhraseGestureEnabled) {
             final SuggestedWordInfo candidate =
                     mInputLogic.mSuggestedWords.getAutoCommitCandidate();
             // If these suggested words have been generated with out of date input pointers, then
@@ -1616,7 +1604,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     mKeyboardSwitcher.updateShiftState();
                     mInputLogic.mWordComposer.
                             setCapitalizedModeAndPreviousWordAtStartComposingTime(
-                            mInputLogic.getActualCapsMode(mKeyboardSwitcher), commitParts[0]);
+                            mInputLogic.getActualCapsMode(settingsValues, mKeyboardSwitcher),
+                            commitParts[0]);
                     ++mAutoCommitSequenceNumber;
                 }
             }

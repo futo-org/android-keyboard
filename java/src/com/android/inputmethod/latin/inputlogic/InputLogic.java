@@ -373,7 +373,7 @@ public final class InputLogic {
                 // We pass 1 to getPreviousWordForSuggestion because we were not composing a word
                 // yet, so the word we want is the 1st word before the cursor.
                 mWordComposer.setCapitalizedModeAndPreviousWordAtStartComposingTime(
-                        getActualCapsMode(keyboardSwitcher),
+                        getActualCapsMode(settingsValues, keyboardSwitcher),
                         getNthPreviousWordForSuggestion(settingsValues, 1 /* nthPreviousWord */));
             }
             mConnection.setComposingText(getTextWithUnderline(
@@ -644,7 +644,7 @@ public final class InputLogic {
      * Handle a press on the language switch key (the "globe key")
      */
     private void handleLanguageSwitchKey() {
-        mLatinIME.handleLanguageSwitchKey();
+        mLatinIME.switchToNextSubtype();
     }
 
     /**
@@ -907,14 +907,15 @@ public final class InputLogic {
 
     /**
      * Factor in auto-caps and manual caps and compute the current caps mode.
+     * @param settingsValues the current settings values.
      * @param keyboardSwitcher the keyboard switcher. Caps mode depends on its mode.
      * @return the actual caps mode the keyboard is in right now.
      */
-    // TODO: Make this private
-    public int getActualCapsMode(final KeyboardSwitcher keyboardSwitcher) {
+    public int getActualCapsMode(final SettingsValues settingsValues,
+            final KeyboardSwitcher keyboardSwitcher) {
         final int keyboardShiftMode = keyboardSwitcher.getKeyboardShiftMode();
         if (keyboardShiftMode != WordComposer.CAPS_MODE_AUTO_SHIFTED) return keyboardShiftMode;
-        final int auto = mLatinIME.getCurrentAutoCapsState();
+        final int auto = getCurrentAutoCapsState(settingsValues);
         if (0 != (auto & TextUtils.CAP_MODE_CHARACTERS)) {
             return WordComposer.CAPS_MODE_AUTO_SHIFT_LOCKED;
         }
@@ -922,6 +923,43 @@ public final class InputLogic {
             return WordComposer.CAPS_MODE_AUTO_SHIFTED;
         }
         return WordComposer.CAPS_MODE_OFF;
+    }
+
+    /**
+     * Gets the current auto-caps state, factoring in the space state.
+     *
+     * This method tries its best to do this in the most efficient possible manner. It avoids
+     * getting text from the editor if possible at all.
+     * This is called from the KeyboardSwitcher (through a trampoline in LatinIME) because it
+     * needs to know auto caps state to display the right layout.
+     *
+     * @param optionalSettingsValues settings values, or null if we should just get the current ones
+     *   from the singleton.
+     * @return a caps mode from TextUtils.CAP_MODE_* or Constants.TextUtils.CAP_MODE_OFF.
+     */
+    public int getCurrentAutoCapsState(final SettingsValues optionalSettingsValues) {
+        // If we are in a batch edit, we need to use the same settings values as the outside
+        // code, that will pass it to us. Otherwise, we can just take the current values.
+        final SettingsValues settingsValues = null != optionalSettingsValues
+                ? optionalSettingsValues : Settings.getInstance().getCurrent();
+        if (!settingsValues.mAutoCap) return Constants.TextUtils.CAP_MODE_OFF;
+
+        final EditorInfo ei = getCurrentInputEditorInfo();
+        if (ei == null) return Constants.TextUtils.CAP_MODE_OFF;
+        final int inputType = ei.inputType;
+        // Warning: this depends on mSpaceState, which may not be the most current value. If
+        // mSpaceState gets updated later, whoever called this may need to be told about it.
+        return mConnection.getCursorCapsMode(inputType, settingsValues,
+                SpaceState.PHANTOM == mSpaceState);
+    }
+
+    public int getCurrentRecapitalizeState() {
+        if (!mRecapitalizeStatus.isActive()
+                || !mRecapitalizeStatus.isSetAt(mLastSelectionStart, mLastSelectionEnd)) {
+            // Not recapitalizing at the moment
+            return RecapitalizeStatus.NOT_A_RECAPITALIZE_MODE;
+        }
+        return mRecapitalizeStatus.getCurrentMode();
     }
 
     /**
