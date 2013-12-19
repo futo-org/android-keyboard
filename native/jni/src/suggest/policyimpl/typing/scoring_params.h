@@ -32,6 +32,11 @@ class ScoringParams {
     static const int MAX_CACHE_DIC_NODE_SIZE_FOR_SINGLE_POINT;
     static const int THRESHOLD_SHORT_WORD_LENGTH;
 
+    static const float EXACT_MATCH_PROMOTION;
+    static const float CASE_ERROR_PENALTY_FOR_EXACT_MATCH;
+    static const float ACCENT_ERROR_PENALTY_FOR_EXACT_MATCH;
+    static const float DIGRAPH_PENALTY_FOR_EXACT_MATCH;
+
     // Numerically optimized parameters (currently for tap typing only).
     // TODO: add ability to modify these constants programmatically.
     // TODO: explore optimization of gesture parameters.

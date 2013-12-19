@@ -23,6 +23,7 @@
 #include "suggest/core/dicnode/internal/dic_node_state.h"
 #include "suggest/core/dicnode/internal/dic_node_properties.h"
 #include "suggest/core/dictionary/digraph_utils.h"
+#include "suggest/core/dictionary/error_type_utils.h"
 #include "utils/char_utils.h"
 
 #if DEBUG_DICT
@@ -493,8 +494,8 @@ class DicNode {
         mDicNodeState.mDicNodeStateScoring.advanceDigraphIndex();
     }
 
-    bool isExactMatch() const {
-        return mDicNodeState.mDicNodeStateScoring.isExactMatch();
+    ErrorTypeUtils::ErrorType getContainedErrorTypes() const {
+        return mDicNodeState.mDicNodeStateScoring.getContainedErrorTypes();
     }
 
     bool isBlacklistedOrNotAWord() const {
@@ -535,8 +536,8 @@ class DicNode {
             return false;
         }
         // Promote exact matches to prevent them from being pruned.
-        const bool leftExactMatch = isExactMatch();
-        const bool rightExactMatch = right->isExactMatch();
+        const bool leftExactMatch = ErrorTypeUtils::isExactMatch(getContainedErrorTypes());
+        const bool rightExactMatch = ErrorTypeUtils::isExactMatch(right->getContainedErrorTypes());
         if (leftExactMatch != rightExactMatch) {
             return leftExactMatch;
         }
