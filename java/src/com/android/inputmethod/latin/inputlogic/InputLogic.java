@@ -74,12 +74,11 @@ public final class InputLogic {
     public final RecapitalizeStatus mRecapitalizeStatus = new RecapitalizeStatus();
 
     // Keep track of the last selection range to decide if we need to show word alternatives
-    public static final int NOT_A_CURSOR_POSITION = -1;
-    public int mLastSelectionStart = NOT_A_CURSOR_POSITION;
-    public int mLastSelectionEnd = NOT_A_CURSOR_POSITION;
+    public int mLastSelectionStart = Constants.NOT_A_CURSOR_POSITION;
+    public int mLastSelectionEnd = Constants.NOT_A_CURSOR_POSITION;
 
     public int mDeleteCount;
-    public long mLastKeyTime;
+    private long mLastKeyTime;
     public final TreeSet<Long> mCurrentlyPressedHardwareKeys = CollectionUtils.newTreeSet();
 
     // Keeps track of most recently inserted text (multi-character key) for reverting
@@ -96,22 +95,47 @@ public final class InputLogic {
         mConnection = new RichInputConnection(latinIME);
     }
 
+    /**
+     * Initializes the input logic for input in an editor.
+     *
+     * Call this when input starts or restarts in some editor (typically, in onStartInputView).
+     * If the input is starting in the same field as before, set `restarting' to true. This allows
+     * the input logic to reset only necessary stuff and save performance. Also, when restarting
+     * some things must not be done (for example, the keyboard should not be reset to the
+     * alphabetic layout), so do not send false to this just in case.
+     *
+     * @param restarting whether input is starting in the same field as before.
+     */
     public void startInput(final boolean restarting) {
     }
 
+    /**
+     * Clean up the input logic after input is finished.
+     */
     public void finishInput() {
     }
 
-    public void onCodeInput(final int codePoint, final int x, final int y,
+    /**
+     * React to a code input. It may be a code point to insert, or a symbolic value that influences
+     * the keyboard behavior.
+     *
+     * Typically, this is called whenever a key is pressed on the software keyboard. This is not
+     * the entry point for gesture input; see the onBatchInput* family of functions for this.
+     *
+     * @param code the code to handle. It may be a code point, or an internal key code.
+     * @param x the x-coordinate where the user pressed the key, or NOT_A_COORDINATE.
+     * @param y the y-coordinate where the user pressed the key, or NOT_A_COORDINATE.
+     */
+    public void onCodeInput(final int code, final int x, final int y,
             // TODO: remove these three arguments
             final LatinIME.UIHandler handler, final KeyboardSwitcher keyboardSwitcher,
             final SubtypeSwitcher subtypeSwitcher) {
         if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-            ResearchLogger.latinIME_onCodeInput(codePoint, x, y);
+            ResearchLogger.latinIME_onCodeInput(code, x, y);
         }
         final SettingsValues settingsValues = Settings.getInstance().getCurrent();
         final long when = SystemClock.uptimeMillis();
-        if (codePoint != Constants.CODE_DELETE
+        if (code != Constants.CODE_DELETE
                 || when > mLastKeyTime + Constants.LONG_PRESS_MILLISECONDS) {
             mDeleteCount = 0;
         }
@@ -129,14 +153,13 @@ public final class InputLogic {
         }
 
         // TODO: Consolidate the double-space period timer, mLastKeyTime, and the space state.
-        if (codePoint != Constants.CODE_SPACE) {
+        if (code != Constants.CODE_SPACE) {
             handler.cancelDoubleSpacePeriodTimer();
         }
 
         boolean didAutoCorrect = false;
-        switch (codePoint) {
+        switch (code) {
         case Constants.CODE_DELETE:
-            mSpaceState = SpaceState.NONE;
             handleBackspace(settingsValues, spaceState, handler, keyboardSwitcher);
             LatinImeLogger.logOnDelete(x, y);
             break;
@@ -207,16 +230,16 @@ public final class InputLogic {
             break;
         default:
             didAutoCorrect = handleNonSpecialCharacter(settingsValues,
-                    codePoint, x, y, spaceState, keyboardSwitcher, handler);
+                    code, x, y, spaceState, keyboardSwitcher, handler);
             break;
         }
-        switcher.onCodeInput(codePoint);
+        switcher.onCodeInput(code);
         // Reset after any single keystroke, except shift, capslock, and symbol-shift
-        if (!didAutoCorrect && codePoint != Constants.CODE_SHIFT
-                && codePoint != Constants.CODE_CAPSLOCK
-                && codePoint != Constants.CODE_SWITCH_ALPHA_SYMBOL)
+        if (!didAutoCorrect && code != Constants.CODE_SHIFT
+                && code != Constants.CODE_CAPSLOCK
+                && code != Constants.CODE_SWITCH_ALPHA_SYMBOL)
             mLastComposedWord.deactivate();
-        if (Constants.CODE_DELETE != codePoint) {
+        if (Constants.CODE_DELETE != code) {
             mEnteredText = null;
         }
         mConnection.endBatchEdit();
@@ -474,6 +497,7 @@ public final class InputLogic {
     private void handleBackspace(final SettingsValues settingsValues, final int spaceState,
             // TODO: remove these arguments
             final LatinIME.UIHandler handler, final KeyboardSwitcher keyboardSwitcher) {
+        mSpaceState = SpaceState.NONE;
         mDeleteCount++;
 
         // In many cases, we may have to put the keyboard in auto-shift state again. However
@@ -560,7 +584,7 @@ public final class InputLogic {
                 }
             } else {
                 // There is no selection, just delete one character.
-                if (NOT_A_CURSOR_POSITION == mLastSelectionEnd) {
+                if (Constants.NOT_A_CURSOR_POSITION == mLastSelectionEnd) {
                     // This should never happen.
                     Log.e(TAG, "Backspace when we don't know the selection position");
                 }
@@ -622,9 +646,14 @@ public final class InputLogic {
         mLatinIME.handleLanguageSwitchKey();
     }
 
-    // TODO: Make this private
+    /**
+     * Swap a space with a space-swapping punctuation sign.
+     *
+     * This method will check that there are two characters before the cursor and that the first
+     * one is a space before it does the actual swapping.
+     */
     // TODO: Remove this argument
-    public void swapSwapperAndSpace(final KeyboardSwitcher keyboardSwitcher) {
+    private void swapSwapperAndSpace(final KeyboardSwitcher keyboardSwitcher) {
         final CharSequence lastTwo = mConnection.getTextBeforeCursor(2, 0);
         // It is guaranteed lastTwo.charAt(1) is a swapper - else this method is not called.
         if (lastTwo != null && lastTwo.length() == 2 && lastTwo.charAt(0) == Constants.CODE_SPACE) {
@@ -646,8 +675,7 @@ public final class InputLogic {
      * @param isFromSuggestionStrip Whether this code point is coming from the suggestion strip.
      * @return whether we should swap the space instead of removing it.
      */
-    // TODO: Make this private
-    public boolean maybeStripSpace(final SettingsValues settingsValues,
+    private boolean maybeStripSpace(final SettingsValues settingsValues,
             final int code, final int spaceState, final boolean isFromSuggestionStrip) {
         if (Constants.CODE_ENTER == code && SpaceState.SWAP_PUNCTUATION == spaceState) {
             mConnection.removeTrailingSpace();
@@ -662,6 +690,21 @@ public final class InputLogic {
         return false;
     }
 
+    /**
+     * Apply the double-space-to-period transformation if applicable.
+     *
+     * The double-space-to-period transformation means that we replace two spaces with a
+     * period-space sequence of characters. This typically happens when the user presses space
+     * twice in a row quickly.
+     * This method will check that the double-space-to-period is active in settings, that the
+     * two spaces have been input close enough together, and that the previous character allows
+     * for the transformation to take place. If all of these conditions are fulfilled, this
+     * method applies the transformation and returns true. Otherwise, it does nothing and
+     * returns false.
+     *
+     * @param settingsValues the current values of the settings.
+     * @return true if we applied the double-space-to-period transformation, false otherwise.
+     */
     private boolean maybeDoubleSpacePeriod(final SettingsValues settingsValues,
             // TODO: remove these arguments
             final KeyboardSwitcher keyboardSwitcher, final LatinIME.UIHandler handler) {
@@ -698,8 +741,19 @@ public final class InputLogic {
         return false;
     }
 
+    /**
+     * Returns whether this code point can be followed by the double-space-to-period transformation.
+     *
+     * See #maybeDoubleSpaceToPeriod for details.
+     * Generally, most word characters can be followed by the double-space-to-period transformation,
+     * while most punctuation can't. Some punctuation however does allow for this to take place
+     * after them, like the closing parenthesis for example.
+     *
+     * @param codePoint the code point after which we may want to apply the transformation
+     * @return whether it's fine to apply the transformation after this code point.
+     */
     private static boolean canBeFollowedByDoubleSpacePeriod(final int codePoint) {
-        // TODO: Check again whether there really ain't a better way to check this.
+        // TODO: This should probably be a blacklist rather than a whitelist.
         // TODO: This should probably be language-dependant...
         return Character.isLetterOrDigit(codePoint)
                 || codePoint == Constants.CODE_SINGLE_QUOTE
@@ -717,7 +771,7 @@ public final class InputLogic {
      * Performs a recapitalization event.
      * @param settingsValues The current settings values.
      */
-    public void performRecapitalization(final SettingsValues settingsValues,
+    private void performRecapitalization(final SettingsValues settingsValues,
             // TODO: remove this argument.
             final KeyboardSwitcher keyboardSwitcher) {
         if (mLastSelectionStart == mLastSelectionEnd) {
@@ -879,8 +933,17 @@ public final class InputLogic {
         mLatinIME.onSettingsKeyPressed();
     }
 
-    // This will reset the whole input state to the starting state. It will clear
-    // the composing word, reset the last composed word, tell the inputconnection about it.
+    /**
+     * Resets the whole input state to the starting state.
+     *
+     * This will clear the composing word, reset the last composed word, clear the suggestion
+     * strip and tell the input connection about it so that it can refresh its caches.
+     *
+     * @param settingsValues the current values of the settings.
+     * @param newSelStart the new selection start, in java characters.
+     * @param newSelEnd the new selection end, in java characters.
+     */
+    // TODO: how is this different from startInput ?!
     // TODO: remove all references to this in LatinIME and make this private
     public void resetEntireInputState(final SettingsValues settingsValues,
             final int newSelStart, final int newSelEnd) {
@@ -895,6 +958,14 @@ public final class InputLogic {
                 shouldFinishComposition);
     }
 
+    /**
+     * Resets only the composing state.
+     *
+     * Compare #resetEntireInputState, which also clears the suggestion strip and resets the
+     * input connection caches. This only deals with the composing state.
+     *
+     * @param alsoResetLastComposedWord whether to also reset the last composed word.
+     */
     // TODO: remove all references to this in LatinIME and make this private.
     public void resetComposingState(final boolean alsoResetLastComposedWord) {
         mWordComposer.reset();
@@ -903,6 +974,23 @@ public final class InputLogic {
         }
     }
 
+    /**
+     * Gets a chunk of text with or the auto-correction indicator underline span as appropriate.
+     *
+     * This method looks at the old state of the auto-correction indicator to put or not put
+     * the underline span as appropriate. It is important to note that this does not correspond
+     * exactly to whether this word will be auto-corrected to or not: what's important here is
+     * to keep the same indication as before.
+     * When we add a new code point to a composing word, we don't know yet if we are going to
+     * auto-correct it until the suggestions are computed. But in the mean time, we still need
+     * to display the character and to extend the previous underline. To avoid any flickering,
+     * the underline should keep the same color it used to have, even if that's not ultimately
+     * the correct color for this new word. When the suggestions are finished evaluating, we
+     * will call this method again to fix the color of the underline.
+     *
+     * @param text the text on which to maybe apply the span.
+     * @return the same text, with the auto-correction underline span if that's appropriate.
+     */
     // TODO: remove all references to this in LatinIME and make this private. Also, shouldn't
     // this go in some *Utils class instead?
     public CharSequence getTextWithUnderline(final String text) {
@@ -911,40 +999,65 @@ public final class InputLogic {
                 : text;
     }
 
-    private void sendDownUpKeyEvent(final int code) {
+    /**
+     * Sends a DOWN key event followed by an UP key event to the editor.
+     *
+     * If possible at all, avoid using this method. It causes all sorts of race conditions with
+     * the text view because it goes through a different, asynchronous binder. Also, batch edits
+     * are ignored for key events. Use the normal software input methods instead.
+     *
+     * @param keyCode the key code to send inside the key event.
+     */
+    private void sendDownUpKeyEvent(final int keyCode) {
         final long eventTime = SystemClock.uptimeMillis();
         mConnection.sendKeyEvent(new KeyEvent(eventTime, eventTime,
-                KeyEvent.ACTION_DOWN, code, 0, 0, KeyCharacterMap.VIRTUAL_KEYBOARD, 0,
+                KeyEvent.ACTION_DOWN, keyCode, 0, 0, KeyCharacterMap.VIRTUAL_KEYBOARD, 0,
                 KeyEvent.FLAG_SOFT_KEYBOARD | KeyEvent.FLAG_KEEP_TOUCH_MODE));
         mConnection.sendKeyEvent(new KeyEvent(SystemClock.uptimeMillis(), eventTime,
-                KeyEvent.ACTION_UP, code, 0, 0, KeyCharacterMap.VIRTUAL_KEYBOARD, 0,
+                KeyEvent.ACTION_UP, keyCode, 0, 0, KeyCharacterMap.VIRTUAL_KEYBOARD, 0,
                 KeyEvent.FLAG_SOFT_KEYBOARD | KeyEvent.FLAG_KEEP_TOUCH_MODE));
     }
 
-    // TODO: remove all references to this in LatinIME and make this private
-    public void sendKeyCodePoint(final int code) {
+    /**
+     * Sends a code point to the editor, using the most appropriate method.
+     *
+     * Normally we send code points with commitText, but there are some cases (where backward
+     * compatibility is a concern for example) where we want to use deprecated methods.
+     *
+     * @param codePoint the code point to send.
+     */
+    private void sendKeyCodePoint(final int codePoint) {
         if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-            ResearchLogger.latinIME_sendKeyCodePoint(code);
+            ResearchLogger.latinIME_sendKeyCodePoint(codePoint);
         }
         // TODO: Remove this special handling of digit letters.
         // For backward compatibility. See {@link InputMethodService#sendKeyChar(char)}.
-        if (code >= '0' && code <= '9') {
-            sendDownUpKeyEvent(code - '0' + KeyEvent.KEYCODE_0);
+        if (codePoint >= '0' && codePoint <= '9') {
+            sendDownUpKeyEvent(codePoint - '0' + KeyEvent.KEYCODE_0);
             return;
         }
 
-        if (Constants.CODE_ENTER == code && mLatinIME.mAppWorkAroundsUtils.isBeforeJellyBean()) {
+        // TODO: we should do this also when the editor has TYPE_NULL
+        if (Constants.CODE_ENTER == codePoint
+                && mLatinIME.mAppWorkAroundsUtils.isBeforeJellyBean()) {
             // Backward compatibility mode. Before Jelly bean, the keyboard would simulate
             // a hardware keyboard event on pressing enter or delete. This is bad for many
             // reasons (there are race conditions with commits) but some applications are
             // relying on this behavior so we continue to support it for older apps.
             sendDownUpKeyEvent(KeyEvent.KEYCODE_ENTER);
         } else {
-            mConnection.commitText(StringUtils.newSingleCodePointString(code), 1);
+            mConnection.commitText(StringUtils.newSingleCodePointString(codePoint), 1);
         }
     }
 
-    // This essentially inserts a space, and that's it.
+    /**
+     * Promote a phantom space to an actual space.
+     *
+     * This essentially inserts a space, and that's it. It just checks the options and the text
+     * before the cursor are appropriate before doing it.
+     *
+     * @param settingsValues the current values of the settings.
+     */
     // TODO: Make this private.
     public void promotePhantomSpace(final SettingsValues settingsValues) {
         if (settingsValues.shouldInsertSpacesAutomatically()
@@ -957,6 +1070,21 @@ public final class InputLogic {
         }
     }
 
+    /**
+     * Commit the typed string to the editor.
+     *
+     * This is typically called when we should commit the currently composing word without applying
+     * auto-correction to it. Typically, we come here upon pressing a separator when the keyboard
+     * is configured to not do auto-correction at all (because of the settings or the properties of
+     * the editor). In this case, `separatorString' is set to the separator that was pressed.
+     * We also come here in a variety of cases with external user action. For example, when the
+     * cursor is moved while there is a composition, or when the keyboard is closed, or when the
+     * user presses the Send button for an SMS, we don't auto-correct as that would be unexpected.
+     * In this case, `separatorString' is set to NOT_A_SEPARATOR.
+     *
+     * @param separatorString the separator string that's causing the commit, or NOT_A_SEPARATOR if
+     *   none.
+     */
     // TODO: Make this private
     public void commitTyped(final String separatorString) {
         if (!mWordComposer.isComposingWord()) return;
@@ -970,6 +1098,22 @@ public final class InputLogic {
         }
     }
 
+    /**
+     * Commit the current auto-correction.
+     *
+     * This will commit the best guess of the keyboard regarding what the user meant by typing
+     * the currently composing word. The IME computes suggestions and assigns a confidence score
+     * to each of them; when it's confident enough in one suggestion, it replaces the typed string
+     * by this suggestion at commit time. When it's not confident enough, or when it has no
+     * suggestions, or when the settings or environment does not allow for auto-correction, then
+     * this method just commits the typed string.
+     * Note that if suggestions are currently being computed in the background, this method will
+     * block until the computation returns. This is necessary for consistency (it would be very
+     * strange if pressing space would commit a different word depending on how fast you press).
+     *
+     * @param settingsValues the current value of the settings.
+     * @param separator the separator that's causing the commit to happen.
+     */
     // TODO: Make this private
     public void commitCurrentAutoCorrection(final SettingsValues settingsValues,
             final String separator,
