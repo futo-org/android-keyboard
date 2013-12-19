@@ -17,6 +17,7 @@
 package com.android.inputmethod.latin.inputlogic;
 
 import android.os.SystemClock;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
@@ -144,7 +145,7 @@ public final class InputLogic {
             if (null != currentKeyboard && currentKeyboard.mId.isAlphabetKeyboard()) {
                 // TODO: Instead of checking for alphabetic keyboard here, separate keycodes for
                 // alphabetic shift and shift while in symbol layout.
-                performRecapitalization();
+                performRecapitalization(settingsValues, keyboardSwitcher);
             }
             break;
         case Constants.CODE_CAPSLOCK:
@@ -614,10 +615,46 @@ public final class InputLogic {
     }
 
     /**
-     * Processes a recapitalize event.
+     * Performs a recapitalization event.
+     * @param settingsValues The current settings values.
      */
-    private void performRecapitalization() {
-        mLatinIME.performRecapitalization();
+    public void performRecapitalization(final SettingsValues settingsValues,
+            // TODO: remove this argument.
+            final KeyboardSwitcher keyboardSwitcher) {
+        if (mLastSelectionStart == mLastSelectionEnd) {
+            return; // No selection
+        }
+        // If we have a recapitalize in progress, use it; otherwise, create a new one.
+        if (!mRecapitalizeStatus.isActive()
+                || !mRecapitalizeStatus.isSetAt(mLastSelectionStart, mLastSelectionEnd)) {
+            final CharSequence selectedText =
+                    mConnection.getSelectedText(0 /* flags, 0 for no styles */);
+            if (TextUtils.isEmpty(selectedText)) return; // Race condition with the input connection
+            mRecapitalizeStatus.initialize(mLastSelectionStart, mLastSelectionEnd,
+                    selectedText.toString(),
+                    settingsValues.mLocale, settingsValues.mWordSeparators);
+            // We trim leading and trailing whitespace.
+            mRecapitalizeStatus.trim();
+            // Trimming the object may have changed the length of the string, and we need to
+            // reposition the selection handles accordingly. As this result in an IPC call,
+            // only do it if it's actually necessary, in other words if the recapitalize status
+            // is not set at the same place as before.
+            if (!mRecapitalizeStatus.isSetAt(mLastSelectionStart, mLastSelectionEnd)) {
+                mLastSelectionStart = mRecapitalizeStatus.getNewCursorStart();
+                mLastSelectionEnd = mRecapitalizeStatus.getNewCursorEnd();
+            }
+        }
+        mConnection.finishComposingText();
+        mRecapitalizeStatus.rotate();
+        final int numCharsDeleted = mLastSelectionEnd - mLastSelectionStart;
+        mConnection.setSelection(mLastSelectionEnd, mLastSelectionEnd);
+        mConnection.deleteSurroundingText(numCharsDeleted, 0);
+        mConnection.commitText(mRecapitalizeStatus.getRecapitalizedString(), 0);
+        mLastSelectionStart = mRecapitalizeStatus.getNewCursorStart();
+        mLastSelectionEnd = mRecapitalizeStatus.getNewCursorEnd();
+        mConnection.setSelection(mLastSelectionStart, mLastSelectionEnd);
+        // Match the keyboard to the new state.
+        keyboardSwitcher.updateShiftState();
     }
 
     /**
