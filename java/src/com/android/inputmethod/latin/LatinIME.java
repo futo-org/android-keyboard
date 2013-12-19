@@ -2223,40 +2223,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     /**
-     * Check if the cursor is actually at the end of a word. If so, restart suggestions on this
-     * word, else do nothing.
-     */
-    // TODO[IL]: Move this to InputLogic and make it private.
-    public void restartSuggestionsOnWordBeforeCursorIfAtEndOfWord() {
-        final CharSequence word =
-                mInputLogic.mConnection.getWordBeforeCursorIfAtEndOfWord(mSettings.getCurrent());
-        if (null != word) {
-            final String wordString = word.toString();
-            restartSuggestionsOnWordBeforeCursor(wordString);
-            // TODO: Handle the case where the user manually moves the cursor and then backs up over
-            // a separator.  In that case, the current log unit should not be uncommitted.
-            if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-                ResearchLogger.getInstance().uncommitCurrentLogUnit(wordString,
-                        true /* dumpCurrentLogUnit */);
-            }
-        }
-    }
-
-    // TODO[IL]: Move this to InputLogic
-    private void restartSuggestionsOnWordBeforeCursor(final String word) {
-        mInputLogic.mWordComposer.setComposingWord(word,
-                // Previous word is the 2nd word before cursor because we are restarting on the
-                // 1st word before cursor.
-                mInputLogic.getNthPreviousWordForSuggestion(mSettings.getCurrent(),
-                        2 /* nthPreviousWord */),
-                mKeyboardSwitcher.getKeyboard());
-        final int length = word.length();
-        mInputLogic.mConnection.deleteSurroundingText(length, 0);
-        mInputLogic.mConnection.setComposingText(word, 1);
-        mHandler.postUpdateSuggestionStrip();
-    }
-
-    /**
      * Retry resetting caches in the rich input connection.
      *
      * When the editor can't be accessed we can't reset the caches, so we schedule a retry.
