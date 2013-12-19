@@ -632,7 +632,8 @@ public final class InputLogic {
             // TODO: move mDisplayOrientation to CurrentSettings.
             if (settingsValues.isSuggestionsRequested(mLatinIME.mDisplayOrientation)
                     && settingsValues.mCurrentLanguageHasSpaces) {
-                mLatinIME.restartSuggestionsOnWordBeforeCursorIfAtEndOfWord();
+                restartSuggestionsOnWordBeforeCursorIfAtEndOfWord(settingsValues, keyboardSwitcher,
+                        handler);
             }
             // We just removed a character. We need to update the auto-caps state.
             keyboardSwitcher.updateShiftState();
@@ -808,6 +809,48 @@ public final class InputLogic {
         mConnection.setSelection(mLastSelectionStart, mLastSelectionEnd);
         // Match the keyboard to the new state.
         keyboardSwitcher.updateShiftState();
+    }
+
+    /**
+     * Check if the cursor is actually at the end of a word. If so, restart suggestions on this
+     * word, otherwise do nothing.
+     * @param settingsValues the current values of the settings.
+     */
+    private void restartSuggestionsOnWordBeforeCursorIfAtEndOfWord(
+            final SettingsValues settingsValues,
+            // TODO: remove these two arguments
+            final KeyboardSwitcher keyboardSwitcher, final LatinIME.UIHandler handler) {
+        final CharSequence word = mConnection.getWordBeforeCursorIfAtEndOfWord(settingsValues);
+        if (null != word) {
+            final String wordString = word.toString();
+            restartSuggestionsOnWordBeforeCursor(settingsValues, wordString, keyboardSwitcher,
+                    handler);
+            // TODO: Handle the case where the user manually moves the cursor and then backs up over
+            // a separator.  In that case, the current log unit should not be uncommitted.
+            if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
+                ResearchLogger.getInstance().uncommitCurrentLogUnit(wordString,
+                        true /* dumpCurrentLogUnit */);
+            }
+        }
+    }
+
+    /**
+     * Restart suggestions on the word passed as an argument, assuming it is before the cursor.
+     * @param settingsValues the current settings values.
+     */
+    private void restartSuggestionsOnWordBeforeCursor(final SettingsValues settingsValues,
+            final String word,
+            // TODO: remove these two arguments
+            final KeyboardSwitcher keyboardSwitcher, final LatinIME.UIHandler handler) {
+        mWordComposer.setComposingWord(word,
+                // Previous word is the 2nd word before cursor because we are restarting on the
+                // 1st word before cursor.
+                getNthPreviousWordForSuggestion(settingsValues, 2 /* nthPreviousWord */),
+                keyboardSwitcher.getKeyboard());
+        final int length = word.length();
+        mConnection.deleteSurroundingText(length, 0);
+        mConnection.setComposingText(word, 1);
+        handler.postUpdateSuggestionStrip();
     }
 
     /**
