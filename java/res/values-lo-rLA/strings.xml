@@ -46,10 +46,8 @@
     <string name="settings_system_default" msgid="6268225104743331821">"ຄ່າເລີ່ມຕົ້ນຂອງລະບົບ"</string>
     <string name="use_contacts_dict" msgid="4435317977804180815">"ແນະນຳລາຍຊື່ຜູ່ຕິດຕໍ່"</string>
     <string name="use_contacts_dict_summary" msgid="6599983334507879959">"ໃຊ້ຊື່ຈາກລາຍຊື່ຜູ່ຕິດຕໍ່ສຳລັບການແນະນຳ ແລະ ການຊ່ວຍແກ້ຄຳ"</string>
-    <!-- no translation found for use_personalized_dicts (5167396352105467626) -->
-    <skip />
-    <!-- no translation found for use_personalized_dicts_summary (4331467814162666438) -->
-    <skip />
+    <string name="use_personalized_dicts" msgid="5167396352105467626">"ຄຳແນະນຳຕາມການນຳໃຊ້ຂອງທ່ານ"</string>
+    <string name="use_personalized_dicts_summary" msgid="4331467814162666438">"ຮຽນຮູ້ຈາກການສື່ສານ ແລະຂໍ້ມູນທີ່ເຄີຍພິມຂອງທ່ານເພື່ອປັບປຸງຄຳແນະນຳ"</string>
     <string name="use_double_space_period" msgid="8781529969425082860">"ຍະຫວ່າງສອງເທື່ອເພື່ອໃສ່ຈ້ຳເມັດ"</string>
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"ກົດທີ່ປຸ່ມຍະຫວ່າງສອງເທື່ອເພື່ອໃສ່ຈ້ຳເມັດແລ້ວຕາມດ້ວຍການຍະຫວ່າງ"</string>
     <string name="auto_cap" msgid="1719746674854628252">"ເຮັດໂຕພິມໃຫຍ່ອັດຕະໂນມັດ"</string>
