@@ -39,7 +39,7 @@ public final class SpellCheckerSettingsFragment extends PreferenceFragment {
         addPreferencesFromResource(R.xml.spell_checker_settings);
         final PreferenceScreen preferenceScreen = getPreferenceScreen();
         if (preferenceScreen != null) {
-            preferenceScreen.setTitle(ApplicationUtils.getAcitivityTitleResId(
+            preferenceScreen.setTitle(ApplicationUtils.getActivityTitleResId(
                     getActivity(), SpellCheckerSettingsActivity.class));
         }
     }

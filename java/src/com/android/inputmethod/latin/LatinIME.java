@@ -1299,8 +1299,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mUserDictionary.addWordToUserDictionary(wordToEdit);
     }
 
-    // TODO[IL]: Rework the route through which this is called.
-    public void onSettingsKeyPressed() {
+    public void displaySettingsDialog() {
         if (isShowingOptionDialog()) return;
         showSubtypeSelectorAndSettings();
     }
@@ -2375,7 +2374,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final CharSequence[] items = new CharSequence[] {
                 // TODO: Should use new string "Select active input modes".
                 getString(R.string.language_selection_title),
-                getString(ApplicationUtils.getAcitivityTitleResId(this, SettingsActivity.class)),
+                getString(ApplicationUtils.getActivityTitleResId(this, SettingsActivity.class)),
         };
         final DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
             @Override
