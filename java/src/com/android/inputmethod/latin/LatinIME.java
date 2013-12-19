@@ -1269,6 +1269,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     // Called from the KeyboardSwitcher which needs to know auto caps state to display
     // the right layout.
+    // TODO[IL]: Move this to InputLogic.
     public int getCurrentAutoCapsState() {
         final SettingsValues currentSettingsValues = mSettings.getCurrent();
         if (!currentSettingsValues.mAutoCap) return Constants.TextUtils.CAP_MODE_OFF;
@@ -1290,20 +1291,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             return RecapitalizeStatus.NOT_A_RECAPITALIZE_MODE;
         }
         return mInputLogic.mRecapitalizeStatus.getCurrentMode();
-    }
-
-    // Factor in auto-caps and manual caps and compute the current caps mode.
-    private int getActualCapsMode() {
-        final int keyboardShiftMode = mKeyboardSwitcher.getKeyboardShiftMode();
-        if (keyboardShiftMode != WordComposer.CAPS_MODE_AUTO_SHIFTED) return keyboardShiftMode;
-        final int auto = getCurrentAutoCapsState();
-        if (0 != (auto & TextUtils.CAP_MODE_CHARACTERS)) {
-            return WordComposer.CAPS_MODE_AUTO_SHIFT_LOCKED;
-        }
-        if (0 != auto) {
-            return WordComposer.CAPS_MODE_AUTO_SHIFTED;
-        }
-        return WordComposer.CAPS_MODE_OFF;
     }
 
     // Callback for the {@link SuggestionStripView}, to call when the "add to dictionary" hint is
@@ -1447,9 +1434,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
         mInputLogic.mConnection.endBatchEdit();
         mInputLogic.mWordComposer.setCapitalizedModeAndPreviousWordAtStartComposingTime(
-                getActualCapsMode(),
+                mInputLogic.getActualCapsMode(mKeyboardSwitcher),
                 // Prev word is 1st word before cursor
-                getNthPreviousWordForSuggestion(currentSettingsValues, 1 /* nthPreviousWord */));
+                mInputLogic.getNthPreviousWordForSuggestion(currentSettingsValues,
+                        1 /* nthPreviousWord */));
     }
 
     static final class InputUpdater implements Handler.Callback {
@@ -1626,7 +1614,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     mKeyboardSwitcher.updateShiftState();
                     mInputLogic.mWordComposer.
                             setCapitalizedModeAndPreviousWordAtStartComposingTime(
-                            getActualCapsMode(), commitParts[0]);
+                            mInputLogic.getActualCapsMode(mKeyboardSwitcher), commitParts[0]);
                     ++mAutoCommitSequenceNumber;
                 }
             }
@@ -1711,94 +1699,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mInputUpdater.onCancelBatchInput();
     }
 
-    // TODO[IL]: Move to InputLogic and make private again.
-    public void handleCharacter(final int primaryCode, final int x, final int y,
-            final int spaceState) {
-        // TODO: refactor this method to stop flipping isComposingWord around all the time, and
-        // make it shorter (possibly cut into several pieces). Also factor handleNonSpecialCharacter
-        // which has the same name as other handle* methods but is not the same.
-        boolean isComposingWord = mInputLogic.mWordComposer.isComposingWord();
-
-        // TODO: remove isWordConnector() and use isUsuallyFollowedBySpace() instead.
-        // See onStartBatchInput() to see how to do it.
-        final SettingsValues currentSettings = mSettings.getCurrent();
-        if (SpaceState.PHANTOM == spaceState && !currentSettings.isWordConnector(primaryCode)) {
-            if (isComposingWord) {
-                // Sanity check
-                throw new RuntimeException("Should not be composing here");
-            }
-            mInputLogic.promotePhantomSpace(currentSettings);
-        }
-
-        if (mInputLogic.mWordComposer.isCursorFrontOrMiddleOfComposingWord()) {
-            // If we are in the middle of a recorrection, we need to commit the recorrection
-            // first so that we can insert the character at the current cursor position.
-            mInputLogic.resetEntireInputState(currentSettings, mInputLogic.mLastSelectionStart,
-                    mInputLogic.mLastSelectionEnd);
-            isComposingWord = false;
-        }
-        // We want to find out whether to start composing a new word with this character. If so,
-        // we need to reset the composing state and switch isComposingWord. The order of the
-        // tests is important for good performance.
-        // We only start composing if we're not already composing.
-        if (!isComposingWord
-        // We only start composing if this is a word code point. Essentially that means it's a
-        // a letter or a word connector.
-                && currentSettings.isWordCodePoint(primaryCode)
-        // We never go into composing state if suggestions are not requested.
-                && currentSettings.isSuggestionsRequested(mDisplayOrientation) &&
-        // In languages with spaces, we only start composing a word when we are not already
-        // touching a word. In languages without spaces, the above conditions are sufficient.
-                (!mInputLogic.mConnection.isCursorTouchingWord(currentSettings)
-                        || !currentSettings.mCurrentLanguageHasSpaces)) {
-            // Reset entirely the composing state anyway, then start composing a new word unless
-            // the character is a single quote or a dash. The idea here is, single quote and dash
-            // are not separators and they should be treated as normal characters, except in the
-            // first position where they should not start composing a word.
-            isComposingWord = (Constants.CODE_SINGLE_QUOTE != primaryCode
-                    && Constants.CODE_DASH != primaryCode);
-            // Here we don't need to reset the last composed word. It will be reset
-            // when we commit this one, if we ever do; if on the other hand we backspace
-            // it entirely and resume suggestions on the previous word, we'd like to still
-            // have touch coordinates for it.
-            mInputLogic.resetComposingState(false /* alsoResetLastComposedWord */);
-        }
-        if (isComposingWord) {
-            final MainKeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
-            // TODO: We should reconsider which coordinate system should be used to represent
-            // keyboard event.
-            final int keyX = mainKeyboardView.getKeyX(x);
-            final int keyY = mainKeyboardView.getKeyY(y);
-            mInputLogic.mWordComposer.add(primaryCode, keyX, keyY);
-            // If it's the first letter, make note of auto-caps state
-            if (mInputLogic.mWordComposer.size() == 1) {
-                // We pass 1 to getPreviousWordForSuggestion because we were not composing a word
-                // yet, so the word we want is the 1st word before the cursor.
-                mInputLogic.mWordComposer.setCapitalizedModeAndPreviousWordAtStartComposingTime(
-                        getActualCapsMode(),
-                        getNthPreviousWordForSuggestion(currentSettings, 1 /* nthPreviousWord */));
-            }
-            mInputLogic.mConnection.setComposingText(mInputLogic.getTextWithUnderline(
-                    mInputLogic.mWordComposer.getTypedWord()), 1);
-        } else {
-            final boolean swapWeakSpace = mInputLogic.maybeStripSpace(currentSettings,
-                    primaryCode, spaceState, Constants.SUGGESTION_STRIP_COORDINATE == x);
-
-            mInputLogic.sendKeyCodePoint(primaryCode);
-
-            if (swapWeakSpace) {
-                mInputLogic.swapSwapperAndSpace(mKeyboardSwitcher);
-                mInputLogic.mSpaceState = SpaceState.WEAK;
-            }
-            // In case the "add to dictionary" hint was still displayed.
-            if (null != mSuggestionStripView) mSuggestionStripView.dismissAddToDictionaryHint();
-        }
-        mHandler.postUpdateSuggestionStrip();
-        if (currentSettings.mIsInternal) {
-            LatinImeLoggerUtils.onNonSeparator((char)primaryCode, x, y);
-        }
-    }
-
     // TODO[IL]: Rename this to avoid using handle*
     private void handleClose() {
         // TODO: Verify that words are logged properly when IME is closed.
@@ -1831,6 +1731,12 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (currentSettings.isApplicationSpecifiedCompletionsOn())
             return true;
         return currentSettings.isSuggestionsRequested(mDisplayOrientation);
+    }
+
+    public void dismissAddToDictionaryHint() {
+        if (null != mSuggestionStripView) {
+            mSuggestionStripView.dismissAddToDictionaryHint();
+        }
     }
 
     // TODO[IL]: Define a clear interface for this
@@ -1900,24 +1806,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
     }
 
-    /**
-     * Get the nth previous word before the cursor as context for the suggestion process.
-     * @param currentSettings the current settings values.
-     * @param nthPreviousWord reverse index of the word to get (1-indexed)
-     * @return the nth previous word before the cursor.
-     */
-    private String getNthPreviousWordForSuggestion(final SettingsValues currentSettings,
-            final int nthPreviousWord) {
-        if (currentSettings.mCurrentLanguageHasSpaces) {
-            // If we are typing in a language with spaces we can just look up the previous
-            // word from textview.
-            return mInputLogic.mConnection.getNthPreviousWord(currentSettings, nthPreviousWord);
-        } else {
-            return LastComposedWord.NOT_A_COMPOSED_WORD == mInputLogic.mLastComposedWord ? null
-                    : mInputLogic.mLastComposedWord.mCommittedWord;
-        }
-    }
-
     private void getSuggestedWords(final int sessionId, final int sequenceNumber,
             final OnGetSuggestedWordsCallback callback) {
         final Keyboard keyboard = mKeyboardSwitcher.getKeyboard();
@@ -1942,8 +1830,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 // We're checking the previous word in the text field against the memorized previous
                 // word. If we are composing a word we should have the second word before the cursor
                 // memorized, otherwise we should have the first.
-                final String rereadPrevWord = getNthPreviousWordForSuggestion(currentSettings,
-                        mInputLogic.mWordComposer.isComposingWord() ? 2 : 1);
+                final String rereadPrevWord = mInputLogic.getNthPreviousWordForSuggestion(
+                        currentSettings, mInputLogic.mWordComposer.isComposingWord() ? 2 : 1);
                 if (!TextUtils.equals(previousWord, rereadPrevWord)) {
                     throw new RuntimeException("Unexpected previous word: "
                             + previousWord + " <> " + rereadPrevWord);
@@ -2308,7 +2196,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             }
         }
         mInputLogic.mWordComposer.setComposingWord(typedWord,
-                getNthPreviousWordForSuggestion(currentSettings,
+                mInputLogic.getNthPreviousWordForSuggestion(currentSettings,
                         // We want the previous word for suggestion. If we have chars in the word
                         // before the cursor, then we want the word before that, hence 2; otherwise,
                         // we want the word immediately before the cursor, hence 1.
@@ -2391,11 +2279,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
     }
 
+    // TODO[IL]: Move this to InputLogic
     private void restartSuggestionsOnWordBeforeCursor(final String word) {
         mInputLogic.mWordComposer.setComposingWord(word,
                 // Previous word is the 2nd word before cursor because we are restarting on the
                 // 1st word before cursor.
-                getNthPreviousWordForSuggestion(mSettings.getCurrent(), 2 /* nthPreviousWord */),
+                mInputLogic.getNthPreviousWordForSuggestion(mSettings.getCurrent(),
+                        2 /* nthPreviousWord */),
                 mKeyboardSwitcher.getKeyboard());
         final int length = word.length();
         mInputLogic.mConnection.deleteSurroundingText(length, 0);

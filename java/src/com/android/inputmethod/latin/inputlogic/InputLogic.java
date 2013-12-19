@@ -27,6 +27,7 @@ import com.android.inputmethod.compat.SuggestionSpanUtils;
 import com.android.inputmethod.event.EventInterpreter;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
+import com.android.inputmethod.keyboard.MainKeyboardView;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.LastComposedWord;
 import com.android.inputmethod.latin.LatinIME;
@@ -228,6 +229,7 @@ public final class InputLogic {
      * manage keyboard-related stuff like shift, language switch, settings, layout switch, or
      * any key that results in multiple code points like the ".com" key.
      *
+     * @param settingsValues The current settings values.
      * @param codePoint the code point associated with the key.
      * @param x the x-coordinate of the key press, or Contants.NOT_A_COORDINATE if not applicable.
      * @param y the y-coordinate of the key press, or Contants.NOT_A_COORDINATE if not applicable.
@@ -270,9 +272,105 @@ public final class InputLogic {
                 keyX = Constants.NOT_A_COORDINATE;
                 keyY = Constants.NOT_A_COORDINATE;
             }
-            mLatinIME.handleCharacter(codePoint, keyX, keyY, spaceState);
+            handleNonSeparator(settingsValues, codePoint, keyX, keyY, spaceState,
+                    keyboardSwitcher, handler);
         }
         return didAutoCorrect;
+    }
+
+    /**
+     * Handle a non-separator.
+     * @param settingsValues The current settings values.
+     * @param codePoint the code point associated with the key.
+     * @param x the x-coordinate of the key press, or Contants.NOT_A_COORDINATE if not applicable.
+     * @param y the y-coordinate of the key press, or Contants.NOT_A_COORDINATE if not applicable.
+     * @param spaceState the space state at start of the batch input.
+     */
+    private void handleNonSeparator(final SettingsValues settingsValues,
+            final int codePoint, final int x, final int y, final int spaceState,
+            // TODO: Remove these arguments
+            final KeyboardSwitcher keyboardSwitcher, final LatinIME.UIHandler handler) {
+        // TODO: refactor this method to stop flipping isComposingWord around all the time, and
+        // make it shorter (possibly cut into several pieces). Also factor handleNonSpecialCharacter
+        // which has the same name as other handle* methods but is not the same.
+        boolean isComposingWord = mWordComposer.isComposingWord();
+
+        // TODO: remove isWordConnector() and use isUsuallyFollowedBySpace() instead.
+        // See onStartBatchInput() to see how to do it.
+        if (SpaceState.PHANTOM == spaceState && !settingsValues.isWordConnector(codePoint)) {
+            if (isComposingWord) {
+                // Sanity check
+                throw new RuntimeException("Should not be composing here");
+            }
+            promotePhantomSpace(settingsValues);
+        }
+
+        if (mWordComposer.isCursorFrontOrMiddleOfComposingWord()) {
+            // If we are in the middle of a recorrection, we need to commit the recorrection
+            // first so that we can insert the character at the current cursor position.
+            resetEntireInputState(settingsValues, mLastSelectionStart, mLastSelectionEnd);
+            isComposingWord = false;
+        }
+        // We want to find out whether to start composing a new word with this character. If so,
+        // we need to reset the composing state and switch isComposingWord. The order of the
+        // tests is important for good performance.
+        // We only start composing if we're not already composing.
+        if (!isComposingWord
+        // We only start composing if this is a word code point. Essentially that means it's a
+        // a letter or a word connector.
+                && settingsValues.isWordCodePoint(codePoint)
+        // We never go into composing state if suggestions are not requested.
+                && settingsValues.isSuggestionsRequested(mLatinIME.mDisplayOrientation) &&
+        // In languages with spaces, we only start composing a word when we are not already
+        // touching a word. In languages without spaces, the above conditions are sufficient.
+                (!mConnection.isCursorTouchingWord(settingsValues)
+                        || !settingsValues.mCurrentLanguageHasSpaces)) {
+            // Reset entirely the composing state anyway, then start composing a new word unless
+            // the character is a single quote or a dash. The idea here is, single quote and dash
+            // are not separators and they should be treated as normal characters, except in the
+            // first position where they should not start composing a word.
+            isComposingWord = (Constants.CODE_SINGLE_QUOTE != codePoint
+                    && Constants.CODE_DASH != codePoint);
+            // Here we don't need to reset the last composed word. It will be reset
+            // when we commit this one, if we ever do; if on the other hand we backspace
+            // it entirely and resume suggestions on the previous word, we'd like to still
+            // have touch coordinates for it.
+            resetComposingState(false /* alsoResetLastComposedWord */);
+        }
+        if (isComposingWord) {
+            final MainKeyboardView mainKeyboardView = keyboardSwitcher.getMainKeyboardView();
+            // TODO: We should reconsider which coordinate system should be used to represent
+            // keyboard event.
+            final int keyX = mainKeyboardView.getKeyX(x);
+            final int keyY = mainKeyboardView.getKeyY(y);
+            mWordComposer.add(codePoint, keyX, keyY);
+            // If it's the first letter, make note of auto-caps state
+            if (mWordComposer.size() == 1) {
+                // We pass 1 to getPreviousWordForSuggestion because we were not composing a word
+                // yet, so the word we want is the 1st word before the cursor.
+                mWordComposer.setCapitalizedModeAndPreviousWordAtStartComposingTime(
+                        getActualCapsMode(keyboardSwitcher),
+                        getNthPreviousWordForSuggestion(settingsValues, 1 /* nthPreviousWord */));
+            }
+            mConnection.setComposingText(getTextWithUnderline(
+                    mWordComposer.getTypedWord()), 1);
+        } else {
+            final boolean swapWeakSpace = maybeStripSpace(settingsValues,
+                    codePoint, spaceState, Constants.SUGGESTION_STRIP_COORDINATE == x);
+
+            sendKeyCodePoint(codePoint);
+
+            if (swapWeakSpace) {
+                swapSwapperAndSpace(keyboardSwitcher);
+                mSpaceState = SpaceState.WEAK;
+            }
+            // In case the "add to dictionary" hint was still displayed.
+            mLatinIME.dismissAddToDictionaryHint();
+        }
+        handler.postUpdateSuggestionStrip();
+        if (settingsValues.mIsInternal) {
+            LatinImeLoggerUtils.onNonSeparator((char)codePoint, x, y);
+        }
     }
 
     /**
@@ -658,10 +756,48 @@ public final class InputLogic {
     }
 
     /**
+     * Factor in auto-caps and manual caps and compute the current caps mode.
+     * @param keyboardSwitcher the keyboard switcher. Caps mode depends on its mode.
+     * @return the actual caps mode the keyboard is in right now.
+     */
+    // TODO: Make this private
+    public int getActualCapsMode(final KeyboardSwitcher keyboardSwitcher) {
+        final int keyboardShiftMode = keyboardSwitcher.getKeyboardShiftMode();
+        if (keyboardShiftMode != WordComposer.CAPS_MODE_AUTO_SHIFTED) return keyboardShiftMode;
+        final int auto = mLatinIME.getCurrentAutoCapsState();
+        if (0 != (auto & TextUtils.CAP_MODE_CHARACTERS)) {
+            return WordComposer.CAPS_MODE_AUTO_SHIFT_LOCKED;
+        }
+        if (0 != auto) {
+            return WordComposer.CAPS_MODE_AUTO_SHIFTED;
+        }
+        return WordComposer.CAPS_MODE_OFF;
+    }
+
+    /**
      * @return the editor info for the current editor
      */
     private EditorInfo getCurrentInputEditorInfo() {
         return mLatinIME.getCurrentInputEditorInfo();
+    }
+
+    /**
+     * Get the nth previous word before the cursor as context for the suggestion process.
+     * @param currentSettings the current settings values.
+     * @param nthPreviousWord reverse index of the word to get (1-indexed)
+     * @return the nth previous word before the cursor.
+     */
+    // TODO: Make this private
+    public String getNthPreviousWordForSuggestion(final SettingsValues currentSettings,
+            final int nthPreviousWord) {
+        if (currentSettings.mCurrentLanguageHasSpaces) {
+            // If we are typing in a language with spaces we can just look up the previous
+            // word from textview.
+            return mConnection.getNthPreviousWord(currentSettings, nthPreviousWord);
+        } else {
+            return LastComposedWord.NOT_A_COMPOSED_WORD == mLastComposedWord ? null
+                    : mLastComposedWord.mCommittedWord;
+        }
     }
 
     /**
