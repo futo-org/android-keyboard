@@ -1357,7 +1357,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     public void onTextInput(final String rawText) {
         mInputLogic.mConnection.beginBatchEdit();
         if (mInputLogic.mWordComposer.isComposingWord()) {
-            commitCurrentAutoCorrection(rawText);
+            mInputLogic.commitCurrentAutoCorrection(mSettings.getCurrent(), rawText, mHandler);
         } else {
             mInputLogic.resetComposingState(true /* alsoResetLastComposedWord */);
         }
@@ -1412,7 +1412,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 // tapping probably is that the word you intend to type is not in the dictionary,
                 // so we do not attempt to correct, on the assumption that if that was a dictionary
                 // word, the user would probably have gestured instead.
-                commitCurrentAutoCorrection(LastComposedWord.NOT_A_SEPARATOR);
+                mInputLogic.commitCurrentAutoCorrection(currentSettingsValues,
+                        LastComposedWord.NOT_A_SEPARATOR, mHandler);
             } else {
                 mInputLogic.commitTyped(LastComposedWord.NOT_A_SEPARATOR);
             }
@@ -1769,7 +1770,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
     }
 
-    private void updateSuggestionStrip() {
+    // TODO[IL]: Move this to InputLogic and make private again
+    public void updateSuggestionStrip() {
         mHandler.cancelUpdateSuggestionStrip();
         final SettingsValues currentSettings = mSettings.getCurrent();
 
@@ -1932,46 +1934,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
         showSuggestionStripWithTypedWord(suggestedWords,
             suggestedWords.getWord(SuggestedWords.INDEX_OF_TYPED_WORD));
-    }
-
-    // TODO[IL]: Move this to InputLogic and make private again
-    public void commitCurrentAutoCorrection(final String separator) {
-        // Complete any pending suggestions query first
-        if (mHandler.hasPendingUpdateSuggestions()) {
-            updateSuggestionStrip();
-        }
-        final String typedAutoCorrection = mInputLogic.mWordComposer.getAutoCorrectionOrNull();
-        final String typedWord = mInputLogic.mWordComposer.getTypedWord();
-        final String autoCorrection = (typedAutoCorrection != null)
-                ? typedAutoCorrection : typedWord;
-        if (autoCorrection != null) {
-            if (TextUtils.isEmpty(typedWord)) {
-                throw new RuntimeException("We have an auto-correction but the typed word "
-                        + "is empty? Impossible! I must commit suicide.");
-            }
-            if (mSettings.isInternal()) {
-                LatinImeLoggerUtils.onAutoCorrection(
-                        typedWord, autoCorrection, separator, mInputLogic.mWordComposer);
-            }
-            if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-                final SuggestedWords suggestedWords = mInputLogic.mSuggestedWords;
-                ResearchLogger.latinIme_commitCurrentAutoCorrection(typedWord, autoCorrection,
-                        separator, mInputLogic.mWordComposer.isBatchMode(), suggestedWords);
-            }
-            commitChosenWord(autoCorrection, LastComposedWord.COMMIT_TYPE_DECIDED_WORD,
-                    separator);
-            if (!typedWord.equals(autoCorrection)) {
-                // This will make the correction flash for a short while as a visual clue
-                // to the user that auto-correction happened. It has no other effect; in particular
-                // note that this won't affect the text inside the text field AT ALL: it only makes
-                // the segment of text starting at the supplied index and running for the length
-                // of the auto-correction flash. At this moment, the "typedWord" argument is
-                // ignored by TextView.
-                mInputLogic.mConnection.commitCorrection(
-                        new CorrectionInfo(mInputLogic.mLastSelectionEnd - typedWord.length(),
-                        typedWord, autoCorrection));
-            }
-        }
     }
 
     // Called from {@link SuggestionStripView} through the {@link SuggestionStripView#Listener}
