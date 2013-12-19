@@ -36,12 +36,14 @@ import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.RichInputConnection;
 import com.android.inputmethod.latin.SubtypeSwitcher;
 import com.android.inputmethod.latin.Suggest;
+import com.android.inputmethod.latin.Suggest.OnGetSuggestedWordsCallback;
 import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.WordComposer;
 import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.latin.personalization.UserHistoryDictionary;
 import com.android.inputmethod.latin.settings.Settings;
 import com.android.inputmethod.latin.settings.SettingsValues;
+import com.android.inputmethod.latin.utils.AsyncResultHolder;
 import com.android.inputmethod.latin.utils.AutoCorrectionUtils;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.InputTypeUtils;
@@ -50,7 +52,6 @@ import com.android.inputmethod.latin.utils.RecapitalizeStatus;
 import com.android.inputmethod.latin.utils.StringUtils;
 import com.android.inputmethod.research.ResearchLogger;
 
-import java.util.Locale;
 import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 
@@ -846,6 +847,43 @@ public final class InputLogic {
         return prevWord;
     }
 
+    public void performUpdateSuggestionStripSync(final SettingsValues settingsValues,
+            // TODO: Remove this variable
+            final LatinIME.UIHandler handler) {
+        handler.cancelUpdateSuggestionStrip();
+
+        // Check if we have a suggestion engine attached.
+        if (mSuggest == null
+                || !settingsValues.isSuggestionsRequested(mLatinIME.mDisplayOrientation)) {
+            if (mWordComposer.isComposingWord()) {
+                Log.w(TAG, "Called updateSuggestionsOrPredictions but suggestions were not "
+                        + "requested!");
+            }
+            return;
+        }
+
+        if (!mWordComposer.isComposingWord() && !settingsValues.mBigramPredictionEnabled) {
+            mLatinIME.setPunctuationSuggestions();
+            return;
+        }
+
+        final AsyncResultHolder<SuggestedWords> holder = new AsyncResultHolder<SuggestedWords>();
+        mLatinIME.getSuggestedWordsOrOlderSuggestionsAsync(Suggest.SESSION_TYPING,
+                SuggestedWords.NOT_A_SEQUENCE_NUMBER, new OnGetSuggestedWordsCallback() {
+                    @Override
+                    public void onGetSuggestedWords(final SuggestedWords suggestedWords) {
+                        holder.set(suggestedWords);
+                    }
+                }
+        );
+
+        // This line may cause the current thread to wait.
+        final SuggestedWords suggestedWords = holder.get(null,
+                Constants.GET_SUGGESTED_WORDS_TIMEOUT);
+        if (suggestedWords != null) {
+            mLatinIME.showSuggestionStrip(suggestedWords);
+        }
+    }
 
     /**
      * Check if the cursor is actually at the end of a word. If so, restart suggestions on this
@@ -1226,7 +1264,7 @@ public final class InputLogic {
             final LatinIME.UIHandler handler) {
         // Complete any pending suggestions query first
         if (handler.hasPendingUpdateSuggestions()) {
-            mLatinIME.updateSuggestionStrip();
+            performUpdateSuggestionStripSync(settingsValues, handler);
         }
         final String typedAutoCorrection = mWordComposer.getAutoCorrectionOrNull();
         final String typedWord = mWordComposer.getTypedWord();
