@@ -77,6 +77,7 @@ import com.android.inputmethod.latin.Suggest.OnGetSuggestedWordsCallback;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.latin.inputlogic.InputLogic;
+import com.android.inputmethod.latin.inputlogic.SpaceState;
 import com.android.inputmethod.latin.personalization.DictionaryDecayBroadcastReciever;
 import com.android.inputmethod.latin.personalization.PersonalizationDictionarySessionRegister;
 import com.android.inputmethod.latin.personalization.UserHistoryDictionary;
@@ -122,8 +123,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     // How many continuous deletes at which to start deleting at a higher speed.
     private static final int DELETE_ACCELERATE_AT = 20;
-    // Key events coming any faster than this are long-presses.
-    private static final int QUICK_PRESS = 200;
 
     private static final int PENDING_IMS_CALLBACK_DURATION = 800;
 
@@ -137,22 +136,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
      * replacement or removal.
      */
     private static final String SCHEME_PACKAGE = "package";
-
-    private static final int SPACE_STATE_NONE = 0;
-    // Double space: the state where the user pressed space twice quickly, which LatinIME
-    // resolved as period-space. Undoing this converts the period to a space.
-    private static final int SPACE_STATE_DOUBLE = 1;
-    // Swap punctuation: the state where a weak space and a punctuation from the suggestion strip
-    // have just been swapped. Undoing this swaps them back; the space is still considered weak.
-    private static final int SPACE_STATE_SWAP_PUNCTUATION = 2;
-    // Weak space: a space that should be swapped only by suggestion strip punctuation. Weak
-    // spaces happen when the user presses space, accepting the current suggestion (whether
-    // it's an auto-correction or not).
-    private static final int SPACE_STATE_WEAK = 3;
-    // Phantom space: a not-yet-inserted space that should get inserted on the next input,
-    // character provided it's not a separator. If it's a separator, the phantom space is dropped.
-    // Phantom spaces happen when a user chooses a word from the suggestion strip.
-    private static final int SPACE_STATE_PHANTOM = 4;
 
     private final Settings mSettings;
     private final InputLogic mInputLogic = new InputLogic(this);
@@ -803,7 +786,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mInputLogic.mEnteredText = null;
         resetComposingState(true /* alsoResetLastComposedWord */);
         mInputLogic.mDeleteCount = 0;
-        mInputLogic.mSpaceState = SPACE_STATE_NONE;
+        mInputLogic.mSpaceState = SpaceState.NONE;
         mInputLogic.mRecapitalizeStatus.deactivate();
         mInputLogic.mCurrentlyPressedHardwareKeys.clear();
 
@@ -1038,7 +1021,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             // the call to updateShiftState.
             // We set this to NONE because after a cursor move, we don't want the space
             // state-related special processing to kick in.
-            mInputLogic.mSpaceState = SPACE_STATE_NONE;
+            mInputLogic.mSpaceState = SpaceState.NONE;
 
             // TODO: is it still necessary to test for composingSpan related stuff?
             final boolean selectionChangedOrSafeToReset = selectionChanged
@@ -1332,7 +1315,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // Warning: this depends on mSpaceState, which may not be the most current value. If
         // mSpaceState gets updated later, whoever called this may need to be told about it.
         return mInputLogic.mConnection.getCursorCapsMode(inputType, currentSettingsValues,
-                SPACE_STATE_PHANTOM == mInputLogic.mSpaceState);
+                SpaceState.PHANTOM == mInputLogic.mSpaceState);
     }
 
     public int getCurrentRecapitalizeState() {
@@ -1441,7 +1424,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mUserDictionary.addWordToUserDictionary(wordToEdit);
     }
 
-    private void onSettingsKeyPressed() {
+    // TODO[IL]: Rework the route through which this is called.
+    public void onSettingsKeyPressed() {
         if (isShowingOptionDialog()) return;
         showSubtypeSelectorAndSettings();
     }
@@ -1464,12 +1448,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         return mOptionsDialog != null && mOptionsDialog.isShowing();
     }
 
-    private void performEditorAction(final int actionId) {
-        mInputLogic.mConnection.performEditorAction(actionId);
-    }
-
     // TODO: Revise the language switch key behavior to make it much smarter and more reasonable.
-    private void handleLanguageSwitchKey() {
+    // TODO[IL]: Move a part of this to InputLogic and straighten out the interface for this.
+    public void handleLanguageSwitchKey() {
         final IBinder token = getWindow().getWindow().getAttributes().token;
         if (mSettings.getCurrent().mIncludesOtherImesInLanguageSwitchList) {
             mRichImm.switchToNextInputMethod(token, false /* onlyCurrentIme */);
@@ -1513,121 +1494,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // Implementation of {@link KeyboardActionListener}.
     @Override
     public void onCodeInput(final int primaryCode, final int x, final int y) {
-        if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-            ResearchLogger.latinIME_onCodeInput(primaryCode, x, y);
-        }
-        final long when = SystemClock.uptimeMillis();
-        if (primaryCode != Constants.CODE_DELETE
-                || when > mInputLogic.mLastKeyTime + QUICK_PRESS) {
-            mInputLogic.mDeleteCount = 0;
-        }
-        mInputLogic.mLastKeyTime = when;
-        mInputLogic.mConnection.beginBatchEdit();
-        final KeyboardSwitcher switcher = mKeyboardSwitcher;
-        // The space state depends only on the last character pressed and its own previous
-        // state. Here, we revert the space state to neutral if the key is actually modifying
-        // the input contents (any non-shift key), which is what we should do for
-        // all inputs that do not result in a special state. Each character handling is then
-        // free to override the state as they see fit.
-        final int spaceState = mInputLogic.mSpaceState;
-        if (!mInputLogic.mWordComposer.isComposingWord()) {
-            mInputLogic.mIsAutoCorrectionIndicatorOn = false;
-        }
-
-        // TODO: Consolidate the double-space period timer, mLastKeyTime, and the space state.
-        if (primaryCode != Constants.CODE_SPACE) {
-            mHandler.cancelDoubleSpacePeriodTimer();
-        }
-
-        boolean didAutoCorrect = false;
-        switch (primaryCode) {
-        case Constants.CODE_DELETE:
-            mInputLogic.mSpaceState = SPACE_STATE_NONE;
-            handleBackspace(spaceState);
-            LatinImeLogger.logOnDelete(x, y);
-            break;
-        case Constants.CODE_SHIFT:
-            // Note: Calling back to the keyboard on Shift key is handled in
-            // {@link #onPressKey(int,int,boolean)} and {@link #onReleaseKey(int,boolean)}.
-            final Keyboard currentKeyboard = switcher.getKeyboard();
-            if (null != currentKeyboard && currentKeyboard.mId.isAlphabetKeyboard()) {
-                // TODO: Instead of checking for alphabetic keyboard here, separate keycodes for
-                // alphabetic shift and shift while in symbol layout.
-                handleRecapitalize();
-            }
-            break;
-        case Constants.CODE_CAPSLOCK:
-            // Note: Changing keyboard to shift lock state is handled in
-            // {@link KeyboardSwitcher#onCodeInput(int)}.
-            break;
-        case Constants.CODE_SWITCH_ALPHA_SYMBOL:
-            // Note: Calling back to the keyboard on symbol key is handled in
-            // {@link #onPressKey(int,int,boolean)} and {@link #onReleaseKey(int,boolean)}.
-            break;
-        case Constants.CODE_SETTINGS:
-            onSettingsKeyPressed();
-            break;
-        case Constants.CODE_SHORTCUT:
-            mSubtypeSwitcher.switchToShortcutIME(this);
-            break;
-        case Constants.CODE_ACTION_NEXT:
-            performEditorAction(EditorInfo.IME_ACTION_NEXT);
-            break;
-        case Constants.CODE_ACTION_PREVIOUS:
-            performEditorAction(EditorInfo.IME_ACTION_PREVIOUS);
-            break;
-        case Constants.CODE_LANGUAGE_SWITCH:
-            handleLanguageSwitchKey();
-            break;
-        case Constants.CODE_EMOJI:
-            // Note: Switching emoji keyboard is being handled in
-            // {@link KeyboardState#onCodeInput(int,int)}.
-            break;
-        case Constants.CODE_ENTER:
-            final EditorInfo editorInfo = getCurrentInputEditorInfo();
-            final int imeOptionsActionId =
-                    InputTypeUtils.getImeOptionsActionIdFromEditorInfo(editorInfo);
-            if (InputTypeUtils.IME_ACTION_CUSTOM_LABEL == imeOptionsActionId) {
-                // Either we have an actionLabel and we should performEditorAction with actionId
-                // regardless of its value.
-                performEditorAction(editorInfo.actionId);
-            } else if (EditorInfo.IME_ACTION_NONE != imeOptionsActionId) {
-                // We didn't have an actionLabel, but we had another action to execute.
-                // EditorInfo.IME_ACTION_NONE explicitly means no action. In contrast,
-                // EditorInfo.IME_ACTION_UNSPECIFIED is the default value for an action, so it
-                // means there should be an action and the app didn't bother to set a specific
-                // code for it - presumably it only handles one. It does not have to be treated
-                // in any specific way: anything that is not IME_ACTION_NONE should be sent to
-                // performEditorAction.
-                performEditorAction(imeOptionsActionId);
-            } else {
-                // No action label, and the action from imeOptions is NONE: this is a regular
-                // enter key that should input a carriage return.
-                didAutoCorrect = handleNonSpecialCharacter(Constants.CODE_ENTER, x, y, spaceState);
-            }
-            break;
-        case Constants.CODE_SHIFT_ENTER:
-            didAutoCorrect = handleNonSpecialCharacter(Constants.CODE_ENTER, x, y, spaceState);
-            break;
-        default:
-            didAutoCorrect = handleNonSpecialCharacter(primaryCode, x, y, spaceState);
-            break;
-        }
-        switcher.onCodeInput(primaryCode);
-        // Reset after any single keystroke, except shift, capslock, and symbol-shift
-        if (!didAutoCorrect && primaryCode != Constants.CODE_SHIFT
-                && primaryCode != Constants.CODE_CAPSLOCK
-                && primaryCode != Constants.CODE_SWITCH_ALPHA_SYMBOL)
-            mInputLogic.mLastComposedWord.deactivate();
-        if (Constants.CODE_DELETE != primaryCode) {
-            mInputLogic.mEnteredText = null;
-        }
-        mInputLogic.mConnection.endBatchEdit();
+        mInputLogic.onCodeInput(primaryCode, x, y, mHandler, mKeyboardSwitcher, mSubtypeSwitcher);
     }
 
-    private boolean handleNonSpecialCharacter(final int primaryCode, final int x, final int y,
+    // TODO[IL]: Move this to InputLogic and make it private again.
+    public boolean handleNonSpecialCharacter(final int primaryCode, final int x, final int y,
             final int spaceState) {
-        mInputLogic.mSpaceState = SPACE_STATE_NONE;
+        mInputLogic.mSpaceState = SpaceState.NONE;
         final boolean didAutoCorrect;
         final SettingsValues settingsValues = mSettings.getCurrent();
         if (settingsValues.isWordSeparator(primaryCode)
@@ -1635,7 +1508,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             didAutoCorrect = handleSeparator(primaryCode, x, y, spaceState);
         } else {
             didAutoCorrect = false;
-            if (SPACE_STATE_PHANTOM == spaceState) {
+            if (SpaceState.PHANTOM == spaceState) {
                 if (settingsValues.mIsInternal) {
                     if (mInputLogic.mWordComposer.isComposingWord()
                             && mInputLogic.mWordComposer.isBatchMode()) {
@@ -1683,7 +1556,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             return;
         }
         final String text = specificTldProcessingOnTextInput(rawText);
-        if (SPACE_STATE_PHANTOM == mInputLogic.mSpaceState) {
+        if (SpaceState.PHANTOM == mInputLogic.mSpaceState) {
             promotePhantomSpace();
         }
         mInputLogic.mConnection.commitText(text, 1);
@@ -1692,7 +1565,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
         mInputLogic.mConnection.endBatchEdit();
         // Space state must be updated before calling updateShiftState
-        mInputLogic.mSpaceState = SPACE_STATE_NONE;
+        mInputLogic.mSpaceState = SpaceState.NONE;
         mKeyboardSwitcher.updateShiftState();
         mKeyboardSwitcher.onCodeInput(Constants.CODE_OUTPUT_TEXT);
         mInputLogic.mEnteredText = text;
@@ -1737,7 +1610,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 || currentSettingsValues.isUsuallyFollowedBySpace(codePointBeforeCursor)) {
             final boolean autoShiftHasBeenOverriden = mKeyboardSwitcher.getKeyboardShiftMode() !=
                     getCurrentAutoCapsState();
-            mInputLogic.mSpaceState = SPACE_STATE_PHANTOM;
+            mInputLogic.mSpaceState = SpaceState.PHANTOM;
             if (!autoShiftHasBeenOverriden) {
                 // When we change the space state, we need to update the shift state of the
                 // keyboard unless it has been overridden manually. This is happening for example
@@ -1924,7 +1797,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     batchPointers.shift(candidate.mIndexOfTouchPointOfSecondWord);
                     promotePhantomSpace();
                     mInputLogic.mConnection.commitText(commitParts[0], 0);
-                    mInputLogic.mSpaceState = SPACE_STATE_PHANTOM;
+                    mInputLogic.mSpaceState = SpaceState.PHANTOM;
                     mKeyboardSwitcher.updateShiftState();
                     mInputLogic.mWordComposer.
                             setCapitalizedModeAndPreviousWordAtStartComposingTime(
@@ -1943,7 +1816,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             return;
         }
         mInputLogic.mConnection.beginBatchEdit();
-        if (SPACE_STATE_PHANTOM == mInputLogic.mSpaceState) {
+        if (SpaceState.PHANTOM == mInputLogic.mSpaceState) {
             promotePhantomSpace();
         }
         if (mSettings.getCurrent().mPhraseGestureEnabled) {
@@ -1966,7 +1839,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             ResearchLogger.latinIME_onEndBatchInput(batchInputText, 0, suggestedWords);
         }
         // Space state must be updated before calling updateShiftState
-        mInputLogic.mSpaceState = SPACE_STATE_PHANTOM;
+        mInputLogic.mSpaceState = SpaceState.PHANTOM;
         mKeyboardSwitcher.updateShiftState();
     }
 
@@ -1983,7 +1856,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
         // We have a TLD (or something that looks like this): make sure we don't add
         // a space even if currently in phantom mode.
-        mInputLogic.mSpaceState = SPACE_STATE_NONE;
+        mInputLogic.mSpaceState = SpaceState.NONE;
         // TODO: use getCodePointBeforeCursor instead to improve performance and simplify the code
         final CharSequence lastOne = mInputLogic.mConnection.getTextBeforeCursor(1, 0);
         if (lastOne != null && lastOne.length() == 1
@@ -2013,7 +1886,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mInputUpdater.onCancelBatchInput();
     }
 
-    private void handleBackspace(final int spaceState) {
+    // TODO[IL]: Move this to InputLogic and make private again.
+    public void handleBackspace(final int spaceState) {
         mInputLogic.mDeleteCount++;
 
         // In many cases, we may have to put the keyboard in auto-shift state again. However
@@ -2073,14 +1947,14 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 // reverting any autocorrect at this point. So we can safely return.
                 return;
             }
-            if (SPACE_STATE_DOUBLE == spaceState) {
+            if (SpaceState.DOUBLE == spaceState) {
                 mHandler.cancelDoubleSpacePeriodTimer();
                 if (mInputLogic.mConnection.revertDoubleSpacePeriod()) {
                     // No need to reset mSpaceState, it has already be done (that's why we
                     // receive it as a parameter)
                     return;
                 }
-            } else if (SPACE_STATE_SWAP_PUNCTUATION == spaceState) {
+            } else if (SpaceState.SWAP_PUNCTUATION == spaceState) {
                 if (mInputLogic.mConnection.revertSwapPunctuation()) {
                     // Likewise
                     return;
@@ -2167,11 +2041,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
      */
     private boolean maybeStripSpace(final int code, final int spaceState,
             final boolean isFromSuggestionStrip) {
-        if (Constants.CODE_ENTER == code && SPACE_STATE_SWAP_PUNCTUATION == spaceState) {
+        if (Constants.CODE_ENTER == code && SpaceState.SWAP_PUNCTUATION == spaceState) {
             mInputLogic.mConnection.removeTrailingSpace();
             return false;
         }
-        if ((SPACE_STATE_WEAK == spaceState || SPACE_STATE_SWAP_PUNCTUATION == spaceState)
+        if ((SpaceState.WEAK == spaceState || SpaceState.SWAP_PUNCTUATION == spaceState)
                 && isFromSuggestionStrip) {
             final SettingsValues currentSettings = mSettings.getCurrent();
             if (currentSettings.isUsuallyPrecededBySpace(code)) return false;
@@ -2191,7 +2065,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // TODO: remove isWordConnector() and use isUsuallyFollowedBySpace() instead.
         // See onStartBatchInput() to see how to do it.
         final SettingsValues currentSettings = mSettings.getCurrent();
-        if (SPACE_STATE_PHANTOM == spaceState && !currentSettings.isWordConnector(primaryCode)) {
+        if (SpaceState.PHANTOM == spaceState && !currentSettings.isWordConnector(primaryCode)) {
             if (isComposingWord) {
                 // Sanity check
                 throw new RuntimeException("Should not be composing here");
@@ -2256,7 +2130,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
             if (swapWeakSpace) {
                 swapSwapperAndSpace();
-                mInputLogic.mSpaceState = SPACE_STATE_WEAK;
+                mInputLogic.mSpaceState = SpaceState.WEAK;
             }
             // In case the "add to dictionary" hint was still displayed.
             if (null != mSuggestionStripView) mSuggestionStripView.dismissAddToDictionaryHint();
@@ -2267,7 +2141,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
     }
 
-    private void handleRecapitalize() {
+    // TODO[IL]: Move this to InputLogic and rename to processRecapitalize.
+    public void handleRecapitalize() {
         if (mInputLogic.mLastSelectionStart == mInputLogic.mLastSelectionEnd) {
             return; // No selection
         }
@@ -2342,7 +2217,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final boolean swapWeakSpace = maybeStripSpace(primaryCode, spaceState,
                 Constants.SUGGESTION_STRIP_COORDINATE == x);
 
-        if (SPACE_STATE_PHANTOM == spaceState &&
+        if (SpaceState.PHANTOM == spaceState &&
                 currentSettings.isUsuallyPrecededBySpace(primaryCode)) {
             promotePhantomSpace();
         }
@@ -2358,9 +2233,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (Constants.CODE_SPACE == primaryCode) {
             if (currentSettings.isSuggestionsRequested(mDisplayOrientation)) {
                 if (maybeDoubleSpacePeriod()) {
-                    mInputLogic.mSpaceState = SPACE_STATE_DOUBLE;
+                    mInputLogic.mSpaceState = SpaceState.DOUBLE;
                 } else if (!isShowingPunctuationList()) {
-                    mInputLogic.mSpaceState = SPACE_STATE_WEAK;
+                    mInputLogic.mSpaceState = SpaceState.WEAK;
                 }
             }
 
@@ -2369,8 +2244,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         } else {
             if (swapWeakSpace) {
                 swapSwapperAndSpace();
-                mInputLogic.mSpaceState = SPACE_STATE_SWAP_PUNCTUATION;
-            } else if (SPACE_STATE_PHANTOM == spaceState
+                mInputLogic.mSpaceState = SpaceState.SWAP_PUNCTUATION;
+            } else if (SpaceState.PHANTOM == spaceState
                     && currentSettings.isUsuallyFollowedBySpace(primaryCode)) {
                 // If we are in phantom space state, and the user presses a separator, we want to
                 // stay in phantom space state so that the next keypress has a chance to add the
@@ -2382,7 +2257,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 // separator does not normally need a space on the right (that's the difference
                 // between swappers and strippers), so we should not stay in phantom space state if
                 // the separator is a stripper. Hence the additional test above.
-                mInputLogic.mSpaceState = SPACE_STATE_PHANTOM;
+                mInputLogic.mSpaceState = SpaceState.PHANTOM;
             }
 
             // Set punctuation right away. onUpdateSelection will fire but tests whether it is
@@ -2710,7 +2585,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         mInputLogic.mConnection.beginBatchEdit();
         final SettingsValues currentSettings = mSettings.getCurrent();
-        if (SPACE_STATE_PHANTOM == mInputLogic.mSpaceState && suggestion.length() > 0
+        if (SpaceState.PHANTOM == mInputLogic.mSpaceState && suggestion.length() > 0
                 // In the batch input mode, a manually picked suggested word should just replace
                 // the current batch input text and there is no need for a phantom space.
                 && !mInputLogic.mWordComposer.isBatchMode()) {
@@ -2751,7 +2626,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // Don't allow cancellation of manual pick
         mInputLogic.mLastComposedWord.deactivate();
         // Space state must be updated before calling updateShiftState
-        mInputLogic.mSpaceState = SPACE_STATE_PHANTOM;
+        mInputLogic.mSpaceState = SpaceState.PHANTOM;
         mKeyboardSwitcher.updateShiftState();
 
         // We should show the "Touch again to save" hint if the user pressed the first entry

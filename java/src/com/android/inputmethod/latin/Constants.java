@@ -154,6 +154,9 @@ public final class Constants {
     // Must be equal to MAX_WORD_LENGTH in native/jni/src/defines.h
     public static final int DICTIONARY_MAX_WORD_LENGTH = 48;
 
+    // Key events coming any faster than this are long-presses.
+    public static final int LONG_PRESS_MILLISECONDS = 200;
+
     public static boolean isValidCoordinate(final int coordinate) {
         // Detect {@link NOT_A_COORDINATE}, {@link SUGGESTION_STRIP_COORDINATE},
         // and {@link SPELL_CHECKER_COORDINATE}.
@@ -242,5 +245,4 @@ public final class Constants {
     private Constants() {
         // This utility class is not publicly instantiable.
     }
-
 }
