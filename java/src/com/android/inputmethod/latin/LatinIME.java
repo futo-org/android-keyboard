@@ -1882,8 +1882,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
     }
 
-    // TODO[IL]: Move this to InputLogic and rename to processRecapitalize.
-    public void handleRecapitalize() {
+    // TODO[IL]: Move this to InputLogic
+    public void performRecapitalization() {
         if (mInputLogic.mLastSelectionStart == mInputLogic.mLastSelectionEnd) {
             return; // No selection
         }

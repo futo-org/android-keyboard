@@ -99,16 +99,16 @@ public final class InputLogic {
     public void finishInput() {
     }
 
-    public void onCodeInput(final int primaryCode, final int x, final int y,
+    public void onCodeInput(final int codePoint, final int x, final int y,
             // TODO: remove these three arguments
             final LatinIME.UIHandler handler, final KeyboardSwitcher keyboardSwitcher,
             final SubtypeSwitcher subtypeSwitcher) {
         if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-            ResearchLogger.latinIME_onCodeInput(primaryCode, x, y);
+            ResearchLogger.latinIME_onCodeInput(codePoint, x, y);
         }
         final SettingsValues settingsValues = Settings.getInstance().getCurrent();
         final long when = SystemClock.uptimeMillis();
-        if (primaryCode != Constants.CODE_DELETE
+        if (codePoint != Constants.CODE_DELETE
                 || when > mLastKeyTime + Constants.LONG_PRESS_MILLISECONDS) {
             mDeleteCount = 0;
         }
@@ -126,12 +126,12 @@ public final class InputLogic {
         }
 
         // TODO: Consolidate the double-space period timer, mLastKeyTime, and the space state.
-        if (primaryCode != Constants.CODE_SPACE) {
+        if (codePoint != Constants.CODE_SPACE) {
             handler.cancelDoubleSpacePeriodTimer();
         }
 
         boolean didAutoCorrect = false;
-        switch (primaryCode) {
+        switch (codePoint) {
         case Constants.CODE_DELETE:
             mSpaceState = SpaceState.NONE;
             handleBackspace(settingsValues, spaceState, handler, keyboardSwitcher);
@@ -144,7 +144,7 @@ public final class InputLogic {
             if (null != currentKeyboard && currentKeyboard.mId.isAlphabetKeyboard()) {
                 // TODO: Instead of checking for alphabetic keyboard here, separate keycodes for
                 // alphabetic shift and shift while in symbol layout.
-                handleRecapitalize();
+                performRecapitalization();
             }
             break;
         case Constants.CODE_CAPSLOCK:
@@ -204,16 +204,16 @@ public final class InputLogic {
             break;
         default:
             didAutoCorrect = handleNonSpecialCharacter(settingsValues,
-                    primaryCode, x, y, spaceState, keyboardSwitcher);
+                    codePoint, x, y, spaceState, keyboardSwitcher);
             break;
         }
-        switcher.onCodeInput(primaryCode);
+        switcher.onCodeInput(codePoint);
         // Reset after any single keystroke, except shift, capslock, and symbol-shift
-        if (!didAutoCorrect && primaryCode != Constants.CODE_SHIFT
-                && primaryCode != Constants.CODE_CAPSLOCK
-                && primaryCode != Constants.CODE_SWITCH_ALPHA_SYMBOL)
+        if (!didAutoCorrect && codePoint != Constants.CODE_SHIFT
+                && codePoint != Constants.CODE_CAPSLOCK
+                && codePoint != Constants.CODE_SWITCH_ALPHA_SYMBOL)
             mLastComposedWord.deactivate();
-        if (Constants.CODE_DELETE != primaryCode) {
+        if (Constants.CODE_DELETE != codePoint) {
             mEnteredText = null;
         }
         mConnection.endBatchEdit();
@@ -432,8 +432,8 @@ public final class InputLogic {
     /**
      * Processes a recapitalize event.
      */
-    private void handleRecapitalize() {
-        mLatinIME.handleRecapitalize();
+    private void performRecapitalization() {
+        mLatinIME.performRecapitalization();
     }
 
     /**
