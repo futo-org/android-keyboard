@@ -21,6 +21,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
+import android.view.inputmethod.CorrectionInfo;
 import android.view.inputmethod.EditorInfo;
 
 import com.android.inputmethod.compat.SuggestionSpanUtils;
@@ -401,7 +402,7 @@ public final class InputLogic {
             if (settingsValues.mCorrectionEnabled) {
                 final String separator = shouldAvoidSendingCode ? LastComposedWord.NOT_A_SEPARATOR
                         : StringUtils.newSingleCodePointString(codePoint);
-                mLatinIME.commitCurrentAutoCorrection(separator);
+                commitCurrentAutoCorrection(settingsValues, separator, handler);
                 didAutoCorrect = true;
             } else {
                 commitTyped(StringUtils.newSingleCodePointString(codePoint));
@@ -902,6 +903,49 @@ public final class InputLogic {
             }
             mLatinIME.commitChosenWord(typedWord, LastComposedWord.COMMIT_TYPE_USER_TYPED_WORD,
                     separatorString);
+        }
+    }
+
+    // TODO: Make this private
+    public void commitCurrentAutoCorrection(final SettingsValues settingsValues,
+            final String separator,
+            // TODO: Remove this argument.
+            final LatinIME.UIHandler handler) {
+        // Complete any pending suggestions query first
+        if (handler.hasPendingUpdateSuggestions()) {
+            mLatinIME.updateSuggestionStrip();
+        }
+        final String typedAutoCorrection = mWordComposer.getAutoCorrectionOrNull();
+        final String typedWord = mWordComposer.getTypedWord();
+        final String autoCorrection = (typedAutoCorrection != null)
+                ? typedAutoCorrection : typedWord;
+        if (autoCorrection != null) {
+            if (TextUtils.isEmpty(typedWord)) {
+                throw new RuntimeException("We have an auto-correction but the typed word "
+                        + "is empty? Impossible! I must commit suicide.");
+            }
+            if (settingsValues.mIsInternal) {
+                LatinImeLoggerUtils.onAutoCorrection(
+                        typedWord, autoCorrection, separator, mWordComposer);
+            }
+            if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
+                final SuggestedWords suggestedWords = mSuggestedWords;
+                ResearchLogger.latinIme_commitCurrentAutoCorrection(typedWord, autoCorrection,
+                        separator, mWordComposer.isBatchMode(), suggestedWords);
+            }
+            mLatinIME.commitChosenWord(autoCorrection, LastComposedWord.COMMIT_TYPE_DECIDED_WORD,
+                    separator);
+            if (!typedWord.equals(autoCorrection)) {
+                // This will make the correction flash for a short while as a visual clue
+                // to the user that auto-correction happened. It has no other effect; in particular
+                // note that this won't affect the text inside the text field AT ALL: it only makes
+                // the segment of text starting at the supplied index and running for the length
+                // of the auto-correction flash. At this moment, the "typedWord" argument is
+                // ignored by TextView.
+                mConnection.commitCorrection(
+                        new CorrectionInfo(mLastSelectionEnd - typedWord.length(),
+                        typedWord, autoCorrection));
+            }
         }
     }
 }
