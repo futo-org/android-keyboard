@@ -156,6 +156,8 @@ public final class Constants {
 
     // Key events coming any faster than this are long-presses.
     public static final int LONG_PRESS_MILLISECONDS = 200;
+    // How many continuous deletes at which to start deleting at a higher speed.
+    public static final int DELETE_ACCELERATE_AT = 20;
 
     public static boolean isValidCoordinate(final int coordinate) {
         // Detect {@link NOT_A_COORDINATE}, {@link SUGGESTION_STRIP_COORDINATE},
