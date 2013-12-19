@@ -1799,53 +1799,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
     }
 
-    // TODO[IL]: Move this to InputLogic
-    public void performRecapitalization() {
-        if (mInputLogic.mLastSelectionStart == mInputLogic.mLastSelectionEnd) {
-            return; // No selection
-        }
-        // If we have a recapitalize in progress, use it; otherwise, create a new one.
-        if (!mInputLogic.mRecapitalizeStatus.isActive()
-                || !mInputLogic.mRecapitalizeStatus.isSetAt(mInputLogic.mLastSelectionStart,
-                        mInputLogic.mLastSelectionEnd)) {
-            final CharSequence selectedText =
-                    mInputLogic.mConnection.getSelectedText(0 /* flags, 0 for no styles */);
-            if (TextUtils.isEmpty(selectedText)) return; // Race condition with the input connection
-            final SettingsValues currentSettings = mSettings.getCurrent();
-            mInputLogic.mRecapitalizeStatus.initialize(mInputLogic.mLastSelectionStart,
-                    mInputLogic.mLastSelectionEnd,
-                    selectedText.toString(), currentSettings.mLocale,
-                    currentSettings.mWordSeparators);
-            // We trim leading and trailing whitespace.
-            mInputLogic.mRecapitalizeStatus.trim();
-            // Trimming the object may have changed the length of the string, and we need to
-            // reposition the selection handles accordingly. As this result in an IPC call,
-            // only do it if it's actually necessary, in other words if the recapitalize status
-            // is not set at the same place as before.
-            if (!mInputLogic.mRecapitalizeStatus.isSetAt(mInputLogic.mLastSelectionStart,
-                    mInputLogic.mLastSelectionEnd)) {
-                mInputLogic.mLastSelectionStart =
-                        mInputLogic.mRecapitalizeStatus.getNewCursorStart();
-                mInputLogic.mLastSelectionEnd = mInputLogic.mRecapitalizeStatus.getNewCursorEnd();
-            }
-        }
-        mInputLogic.mConnection.finishComposingText();
-        mInputLogic.mRecapitalizeStatus.rotate();
-        final int numCharsDeleted =
-                mInputLogic.mLastSelectionEnd - mInputLogic.mLastSelectionStart;
-        mInputLogic.mConnection.setSelection(mInputLogic.mLastSelectionEnd,
-                mInputLogic.mLastSelectionEnd);
-        mInputLogic.mConnection.deleteSurroundingText(numCharsDeleted, 0);
-        mInputLogic.mConnection.commitText(
-                mInputLogic.mRecapitalizeStatus.getRecapitalizedString(), 0);
-        mInputLogic.mLastSelectionStart = mInputLogic.mRecapitalizeStatus.getNewCursorStart();
-        mInputLogic.mLastSelectionEnd = mInputLogic.mRecapitalizeStatus.getNewCursorEnd();
-        mInputLogic.mConnection.setSelection(mInputLogic.mLastSelectionStart,
-                mInputLogic.mLastSelectionEnd);
-        // Match the keyboard to the new state.
-        mKeyboardSwitcher.updateShiftState();
-    }
-
     // TODO[IL]: Rename this to avoid using handle*
     private void handleClose() {
         // TODO: Verify that words are logged properly when IME is closed.
