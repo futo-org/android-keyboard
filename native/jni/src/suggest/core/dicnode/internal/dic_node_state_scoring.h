@@ -32,7 +32,7 @@ class DicNodeStateScoring {
               mDigraphIndex(DigraphUtils::NOT_A_DIGRAPH_INDEX),
               mEditCorrectionCount(0), mProximityCorrectionCount(0),
               mNormalizedCompoundDistance(0.0f), mSpatialDistance(0.0f), mLanguageDistance(0.0f),
-              mRawLength(0.0f), mContainingErrorTypes(ErrorTypeUtils::NOT_AN_ERROR),
+              mRawLength(0.0f), mContainedErrorTypes(ErrorTypeUtils::NOT_AN_ERROR),
               mNormalizedCompoundDistanceAfterFirstWord(MAX_VALUE_FOR_WEIGHTING) {
     }
 
@@ -48,7 +48,7 @@ class DicNodeStateScoring {
         mDoubleLetterLevel = NOT_A_DOUBLE_LETTER;
         mDigraphIndex = DigraphUtils::NOT_A_DIGRAPH_INDEX;
         mNormalizedCompoundDistanceAfterFirstWord = MAX_VALUE_FOR_WEIGHTING;
-        mContainingErrorTypes = ErrorTypeUtils::NOT_AN_ERROR;
+        mContainedErrorTypes = ErrorTypeUtils::NOT_AN_ERROR;
     }
 
     AK_FORCE_INLINE void init(const DicNodeStateScoring *const scoring) {
@@ -60,7 +60,7 @@ class DicNodeStateScoring {
         mRawLength = scoring->mRawLength;
         mDoubleLetterLevel = scoring->mDoubleLetterLevel;
         mDigraphIndex = scoring->mDigraphIndex;
-        mContainingErrorTypes = scoring->mContainingErrorTypes;
+        mContainedErrorTypes = scoring->mContainedErrorTypes;
         mNormalizedCompoundDistanceAfterFirstWord =
                 scoring->mNormalizedCompoundDistanceAfterFirstWord;
     }
@@ -69,7 +69,7 @@ class DicNodeStateScoring {
             const int inputSize, const int totalInputIndex,
             const ErrorTypeUtils::ErrorType errorType) {
         addDistance(spatialCost, languageCost, doNormalization, inputSize, totalInputIndex);
-        mContainingErrorTypes = mContainingErrorTypes | errorType;
+        mContainedErrorTypes = mContainedErrorTypes | errorType;
         if (ErrorTypeUtils::isEditCorrectionError(errorType)) {
             ++mEditCorrectionCount;
         }
@@ -169,8 +169,8 @@ class DicNodeStateScoring {
         }
     }
 
-    bool isExactMatch() const {
-        return ErrorTypeUtils::isExactMatch(mContainingErrorTypes);
+    ErrorTypeUtils::ErrorType getContainedErrorTypes() const {
+        return mContainedErrorTypes;
     }
 
  private:
@@ -188,7 +188,7 @@ class DicNodeStateScoring {
     float mLanguageDistance;
     float mRawLength;
     // All accumulated error types so far
-    ErrorTypeUtils::ErrorType mContainingErrorTypes;
+    ErrorTypeUtils::ErrorType mContainedErrorTypes;
     float mNormalizedCompoundDistanceAfterFirstWord;
 
     AK_FORCE_INLINE void addDistance(float spatialDistance, float languageDistance,

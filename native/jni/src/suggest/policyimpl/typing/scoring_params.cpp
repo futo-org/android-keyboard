@@ -22,6 +22,12 @@ const float ScoringParams::MAX_SPATIAL_DISTANCE = 1.0f;
 const int ScoringParams::THRESHOLD_NEXT_WORD_PROBABILITY = 40;
 const int ScoringParams::THRESHOLD_NEXT_WORD_PROBABILITY_FOR_CAPPED = 120;
 const float ScoringParams::AUTOCORRECT_OUTPUT_THRESHOLD = 1.0f;
+
+const float ScoringParams::EXACT_MATCH_PROMOTION = 1.1f;
+const float ScoringParams::CASE_ERROR_PENALTY_FOR_EXACT_MATCH = 0.01f;
+const float ScoringParams::ACCENT_ERROR_PENALTY_FOR_EXACT_MATCH = 0.02f;
+const float ScoringParams::DIGRAPH_PENALTY_FOR_EXACT_MATCH = 0.03f;
+
 // TODO: Unlimit max cache dic node size
 const int ScoringParams::MAX_CACHE_DIC_NODE_SIZE = 170;
 const int ScoringParams::MAX_CACHE_DIC_NODE_SIZE_FOR_SINGLE_POINT = 310;

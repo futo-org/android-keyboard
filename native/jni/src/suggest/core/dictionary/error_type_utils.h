@@ -47,9 +47,8 @@ class ErrorTypeUtils {
     // A new word error should be an edit correction error or a proximity correction error.
     static const ErrorType NEW_WORD;
 
-    // TODO: Differentiate errors.
-    static bool isExactMatch(const ErrorType containingErrors) {
-        return (containingErrors & ~ERRORS_TREATED_AS_AN_EXACT_MATCH) == 0;
+    static bool isExactMatch(const ErrorType containedErrorTypes) {
+        return (containedErrorTypes & ~ERRORS_TREATED_AS_AN_EXACT_MATCH) == 0;
     }
 
     static bool isEditCorrectionError(const ErrorType errorType) {

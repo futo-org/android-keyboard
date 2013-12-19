@@ -18,8 +18,9 @@
 
 #include "suggest/core/dicnode/dic_node.h"
 #include "suggest/core/dicnode/dic_node_utils.h"
-#include "suggest/core/dictionary/dictionary.h"
 #include "suggest/core/dictionary/binary_dictionary_shortcut_iterator.h"
+#include "suggest/core/dictionary/dictionary.h"
+#include "suggest/core/dictionary/error_type_utils.h"
 #include "suggest/core/policy/scoring.h"
 #include "suggest/core/session/dic_traverse_session.h"
 
@@ -98,7 +99,8 @@ const int SuggestionsOutputUtils::MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT = 16;
         const bool isPossiblyOffensiveWord =
                 traverseSession->getDictionaryStructurePolicy()->getProbability(
                         terminalDicNode->getProbability(), NOT_A_PROBABILITY) <= 0;
-        const bool isExactMatch = terminalDicNode->isExactMatch();
+        const bool isExactMatch =
+                ErrorTypeUtils::isExactMatch(terminalDicNode->getContainedErrorTypes());
         const bool isFirstCharUppercase = terminalDicNode->isFirstCharUppercase();
         // Heuristic: We exclude freq=0 first-char-uppercase words from exact match.
         // (e.g. "AMD" and "and")
@@ -115,9 +117,9 @@ const int SuggestionsOutputUtils::MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT = 16;
         // TODO: Better integration with java side autocorrection logic.
         const int finalScore = scoringPolicy->calculateFinalScore(
                 compoundDistance, traverseSession->getInputSize(),
-                terminalDicNode->isExactMatch()
-                        || (forceCommitMultiWords && terminalDicNode->hasMultipleWords())
-                                || (isValidWord && scoringPolicy->doesAutoCorrectValidWord()));
+                terminalDicNode->getContainedErrorTypes(),
+                (forceCommitMultiWords && terminalDicNode->hasMultipleWords())
+                         || (isValidWord && scoringPolicy->doesAutoCorrectValidWord()));
         if (maxScore < finalScore && isValidWord) {
             maxScore = finalScore;
         }
@@ -149,7 +151,9 @@ const int SuggestionsOutputUtils::MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT = 16;
             const bool sameAsTyped = scoringPolicy->sameAsTyped(traverseSession, terminalDicNode);
             const int shortcutBaseScore = scoringPolicy->doesAutoCorrectValidWord() ?
                      scoringPolicy->calculateFinalScore(compoundDistance,
-                             traverseSession->getInputSize(), true /* forceCommit */) : finalScore;
+                             traverseSession->getInputSize(),
+                             terminalDicNode->getContainedErrorTypes(),
+                             true /* forceCommit */) : finalScore;
             const int updatedOutputWordIndex = outputShortcuts(&shortcutIt,
                     outputWordIndex, shortcutBaseScore, outputCodePoints, frequencies, outputTypes,
                     sameAsTyped);
