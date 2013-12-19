@@ -636,7 +636,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mDisplayOrientation = conf.orientation;
             mHandler.startOrientationChanging();
             mInputLogic.mConnection.beginBatchEdit();
-            commitTyped(LastComposedWord.NOT_A_SEPARATOR);
+            mInputLogic.commitTyped(LastComposedWord.NOT_A_SEPARATOR);
             mInputLogic.mConnection.finishComposingText();
             mInputLogic.mConnection.endBatchEdit();
             if (isShowingOptionDialog()) {
@@ -1267,19 +1267,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mKeyPreviewBackingView.setVisibility(isFullscreenMode() ? View.GONE : View.VISIBLE);
     }
 
-    private void commitTyped(final String separatorString) {
-        if (!mInputLogic.mWordComposer.isComposingWord()) return;
-        final String typedWord = mInputLogic.mWordComposer.getTypedWord();
-        if (typedWord.length() > 0) {
-            if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-                ResearchLogger.getInstance().onWordFinished(typedWord,
-                        mInputLogic.mWordComposer.isBatchMode());
-            }
-            commitChosenWord(typedWord, LastComposedWord.COMMIT_TYPE_USER_TYPED_WORD,
-                    separatorString);
-        }
-    }
-
     // Called from the KeyboardSwitcher which needs to know auto caps state to display
     // the right layout.
     public int getCurrentAutoCapsState() {
@@ -1442,49 +1429,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mInputLogic.onCodeInput(primaryCode, x, y, mHandler, mKeyboardSwitcher, mSubtypeSwitcher);
     }
 
-    // TODO[IL]: Move this to InputLogic and make it private again.
-    public boolean handleNonSpecialCharacter(final int primaryCode, final int x, final int y,
-            final int spaceState) {
-        mInputLogic.mSpaceState = SpaceState.NONE;
-        final boolean didAutoCorrect;
-        final SettingsValues settingsValues = mSettings.getCurrent();
-        if (settingsValues.isWordSeparator(primaryCode)
-                || Character.getType(primaryCode) == Character.OTHER_SYMBOL) {
-            didAutoCorrect = handleSeparator(primaryCode, x, y, spaceState);
-        } else {
-            didAutoCorrect = false;
-            if (SpaceState.PHANTOM == spaceState) {
-                if (settingsValues.mIsInternal) {
-                    if (mInputLogic.mWordComposer.isComposingWord()
-                            && mInputLogic.mWordComposer.isBatchMode()) {
-                        LatinImeLoggerUtils.onAutoCorrection("",
-                                mInputLogic.mWordComposer.getTypedWord(), " ",
-                                mInputLogic.mWordComposer);
-                    }
-                }
-                if (mInputLogic.mWordComposer.isCursorFrontOrMiddleOfComposingWord()) {
-                    // If we are in the middle of a recorrection, we need to commit the recorrection
-                    // first so that we can insert the character at the current cursor position.
-                    mInputLogic.resetEntireInputState(settingsValues,
-                            mInputLogic.mLastSelectionStart, mInputLogic.mLastSelectionEnd);
-                } else {
-                    commitTyped(LastComposedWord.NOT_A_SEPARATOR);
-                }
-            }
-            final int keyX, keyY;
-            final Keyboard keyboard = mKeyboardSwitcher.getKeyboard();
-            if (keyboard != null && keyboard.hasProximityCharsCorrection(primaryCode)) {
-                keyX = x;
-                keyY = y;
-            } else {
-                keyX = Constants.NOT_A_COORDINATE;
-                keyY = Constants.NOT_A_COORDINATE;
-            }
-            handleCharacter(primaryCode, keyX, keyY, spaceState);
-        }
-        return didAutoCorrect;
-    }
-
     // Called from PointerTracker through the KeyboardActionListener interface
     @Override
     public void onTextInput(final String rawText) {
@@ -1547,7 +1491,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 // word, the user would probably have gestured instead.
                 commitCurrentAutoCorrection(LastComposedWord.NOT_A_SEPARATOR);
             } else {
-                commitTyped(LastComposedWord.NOT_A_SEPARATOR);
+                mInputLogic.commitTyped(LastComposedWord.NOT_A_SEPARATOR);
             }
         }
         final int codePointBeforeCursor = mInputLogic.mConnection.getCodePointBeforeCursor();
@@ -1850,7 +1794,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         return false;
     }
 
-    private void handleCharacter(final int primaryCode, final int x, final int y,
+    // TODO[IL]: Move to InputLogic and make private again.
+    public void handleCharacter(final int primaryCode, final int x, final int y,
             final int spaceState) {
         // TODO: refactor this method to stop flipping isComposingWord around all the time, and
         // make it shorter (possibly cut into several pieces). Also factor handleNonSpecialCharacter
@@ -1985,7 +1930,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     // Returns true if we do an autocorrection, false otherwise.
-    private boolean handleSeparator(final int primaryCode, final int x, final int y,
+    // TODO[IL]: Move to InputLogic and make private again
+    public boolean handleSeparator(final int primaryCode, final int x, final int y,
             final int spaceState) {
         boolean didAutoCorrect = false;
         final SettingsValues currentSettings = mSettings.getCurrent();
@@ -2007,7 +1953,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 commitCurrentAutoCorrection(separator);
                 didAutoCorrect = true;
             } else {
-                commitTyped(StringUtils.newSingleCodePointString(primaryCode));
+                mInputLogic.commitTyped(StringUtils.newSingleCodePointString(primaryCode));
             }
         }
 
@@ -2071,7 +2017,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     private void handleClose() {
         // TODO: Verify that words are logged properly when IME is closed.
-        commitTyped(LastComposedWord.NOT_A_SEPARATOR);
+        mInputLogic.commitTyped(LastComposedWord.NOT_A_SEPARATOR);
         requestHideSelf(0);
         final MainKeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
         if (mainKeyboardView != null) {
@@ -2450,7 +2396,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     /**
      * Commits the chosen word to the text field and saves it for later retrieval.
      */
-    private void commitChosenWord(final String chosenWord, final int commitType,
+    // TODO[IL]: Move to InputLogic and make public again
+    public void commitChosenWord(final String chosenWord, final int commitType,
             final String separatorString) {
         final SuggestedWords suggestedWords = mInputLogic.mSuggestedWords;
         mInputLogic.mConnection.commitText(SuggestionSpanUtils.getTextWithSuggestionSpan(
@@ -2887,7 +2834,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     public void launchKeyboardedDialogActivity(final Class<? extends Activity> activityClass) {
         // Put the text in the attached EditText into a safe, saved state before switching to a
         // new activity that will also use the soft keyboard.
-        commitTyped(LastComposedWord.NOT_A_SEPARATOR);
+        mInputLogic.commitTyped(LastComposedWord.NOT_A_SEPARATOR);
         launchSubActivity(activityClass);
     }
 

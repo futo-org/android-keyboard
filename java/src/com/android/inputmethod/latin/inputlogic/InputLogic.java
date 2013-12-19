@@ -194,14 +194,17 @@ public final class InputLogic {
             } else {
                 // No action label, and the action from imeOptions is NONE: this is a regular
                 // enter key that should input a carriage return.
-                didAutoCorrect = handleNonSpecialCharacter(Constants.CODE_ENTER, x, y, spaceState);
+                didAutoCorrect = handleNonSpecialCharacter(settingsValues,
+                        Constants.CODE_ENTER, x, y, spaceState, keyboardSwitcher);
             }
             break;
         case Constants.CODE_SHIFT_ENTER:
-            didAutoCorrect = handleNonSpecialCharacter(Constants.CODE_ENTER, x, y, spaceState);
+            didAutoCorrect = handleNonSpecialCharacter(settingsValues,
+                    Constants.CODE_ENTER, x, y, spaceState, keyboardSwitcher);
             break;
         default:
-            didAutoCorrect = handleNonSpecialCharacter(primaryCode, x, y, spaceState);
+            didAutoCorrect = handleNonSpecialCharacter(settingsValues,
+                    primaryCode, x, y, spaceState, keyboardSwitcher);
             break;
         }
         switcher.onCodeInput(primaryCode);
@@ -224,15 +227,50 @@ public final class InputLogic {
      * manage keyboard-related stuff like shift, language switch, settings, layout switch, or
      * any key that results in multiple code points like the ".com" key.
      *
-     * @param code the code point associated with the key.
+     * @param codePoint the code point associated with the key.
      * @param x the x-coordinate of the key press, or Contants.NOT_A_COORDINATE if not applicable.
      * @param y the y-coordinate of the key press, or Contants.NOT_A_COORDINATE if not applicable.
      * @param spaceState the space state at start of the batch input.
      * @return whether this caused an auto-correction to happen.
      */
-    private boolean handleNonSpecialCharacter(final int code, final int x, final int y,
-            final int spaceState) {
-        return mLatinIME.handleNonSpecialCharacter(code, x, y, spaceState);
+    private boolean handleNonSpecialCharacter(final SettingsValues settingsValues,
+            final int codePoint, final int x, final int y, final int spaceState,
+            // TODO: remove this argument.
+            final KeyboardSwitcher keyboardSwitcher) {
+        mSpaceState = SpaceState.NONE;
+        final boolean didAutoCorrect;
+        if (settingsValues.isWordSeparator(codePoint)
+                || Character.getType(codePoint) == Character.OTHER_SYMBOL) {
+            didAutoCorrect = mLatinIME.handleSeparator(codePoint, x, y, spaceState);
+        } else {
+            didAutoCorrect = false;
+            if (SpaceState.PHANTOM == spaceState) {
+                if (settingsValues.mIsInternal) {
+                    if (mWordComposer.isComposingWord() && mWordComposer.isBatchMode()) {
+                        LatinImeLoggerUtils.onAutoCorrection("", mWordComposer.getTypedWord(), " ",
+                                mWordComposer);
+                    }
+                }
+                if (mWordComposer.isCursorFrontOrMiddleOfComposingWord()) {
+                    // If we are in the middle of a recorrection, we need to commit the recorrection
+                    // first so that we can insert the character at the current cursor position.
+                    resetEntireInputState(settingsValues, mLastSelectionStart, mLastSelectionEnd);
+                } else {
+                    commitTyped(LastComposedWord.NOT_A_SEPARATOR);
+                }
+            }
+            final int keyX, keyY;
+            final Keyboard keyboard = keyboardSwitcher.getKeyboard();
+            if (keyboard != null && keyboard.hasProximityCharsCorrection(codePoint)) {
+                keyX = x;
+                keyY = y;
+            } else {
+                keyX = Constants.NOT_A_COORDINATE;
+                keyY = Constants.NOT_A_COORDINATE;
+            }
+            mLatinIME.handleCharacter(codePoint, keyX, keyY, spaceState);
+        }
+        return didAutoCorrect;
     }
 
     /**
@@ -481,6 +519,19 @@ public final class InputLogic {
             sendDownUpKeyEvent(KeyEvent.KEYCODE_ENTER);
         } else {
             mConnection.commitText(StringUtils.newSingleCodePointString(code), 1);
+        }
+    }
+
+    // TODO: Make this private
+    public void commitTyped(final String separatorString) {
+        if (!mWordComposer.isComposingWord()) return;
+        final String typedWord = mWordComposer.getTypedWord();
+        if (typedWord.length() > 0) {
+            if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
+                ResearchLogger.getInstance().onWordFinished(typedWord, mWordComposer.isBatchMode());
+            }
+            mLatinIME.commitChosenWord(typedWord, LastComposedWord.COMMIT_TYPE_USER_TYPED_WORD,
+                    separatorString);
         }
     }
 }
