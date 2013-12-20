@@ -101,6 +101,7 @@ public final class SettingsValues {
     public final int mSuggestionVisibility;
     public final boolean mBoostPersonalizationDictionaryForDebug;
     public final boolean mUseOnlyPersonalizationDictionaryForDebug;
+    public final int mDisplayOrientation;
     private final AsyncResultHolder<AppWorkaroundsUtils> mAppWorkarounds;
 
     // Setting values for additional features
@@ -184,6 +185,7 @@ public final class SettingsValues {
                 Settings.readBoostPersonalizationDictionaryForDebug(prefs);
         mUseOnlyPersonalizationDictionaryForDebug =
                 Settings.readUseOnlyPersonalizationDictionaryForDebug(prefs);
+        mDisplayOrientation = res.getConfiguration().orientation;
         mAppWorkarounds = new AsyncResultHolder<AppWorkaroundsUtils>();
         final PackageInfo packageInfo = TargetPackageInfoGetterTask.getCachedPackageInfo(
                 mInputAttributes.mTargetApplicationPackageName);
@@ -241,6 +243,7 @@ public final class SettingsValues {
         mIsInternal = false;
         mBoostPersonalizationDictionaryForDebug = false;
         mUseOnlyPersonalizationDictionaryForDebug = false;
+        mDisplayOrientation = Configuration.ORIENTATION_PORTRAIT;
         mAppWorkarounds = new AsyncResultHolder<AppWorkaroundsUtils>();
         mAppWorkarounds.set(null);
     }
@@ -254,16 +257,15 @@ public final class SettingsValues {
         return mInputAttributes.mApplicationSpecifiedCompletionOn;
     }
 
-    public boolean isSuggestionsRequested(final int displayOrientation) {
+    public boolean isSuggestionsRequested() {
         return mInputAttributes.mIsSettingsSuggestionStripOn
-                && (mCorrectionEnabled
-                        || isSuggestionStripVisibleInOrientation(displayOrientation));
+                && (mCorrectionEnabled || isSuggestionStripVisible());
     }
 
-    public boolean isSuggestionStripVisibleInOrientation(final int orientation) {
+    public boolean isSuggestionStripVisible() {
         return (mSuggestionVisibility == SUGGESTION_VISIBILITY_SHOW_VALUE)
                 || (mSuggestionVisibility == SUGGESTION_VISIBILITY_SHOW_ONLY_PORTRAIT_VALUE
-                        && orientation == Configuration.ORIENTATION_PORTRAIT);
+                        && mDisplayOrientation == Configuration.ORIENTATION_PORTRAIT);
     }
 
     public boolean isWordSeparator(final int code) {
@@ -304,6 +306,10 @@ public final class SettingsValues {
 
     public boolean isSameInputType(final EditorInfo editorInfo) {
         return mInputAttributes.isSameInputType(editorInfo);
+    }
+
+    public boolean hasSameOrientation(final Configuration configuration) {
+        return mDisplayOrientation == configuration.orientation;
     }
 
     public boolean isBeforeJellyBean() {
