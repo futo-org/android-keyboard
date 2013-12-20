@@ -19,11 +19,11 @@ package com.android.inputmethod.keyboard;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.os.SystemClock;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 
 import com.android.inputmethod.accessibility.AccessibilityUtils;
+import com.android.inputmethod.keyboard.internal.BogusMoveEventDetector;
 import com.android.inputmethod.keyboard.internal.GestureStroke;
 import com.android.inputmethod.keyboard.internal.GestureStroke.GestureStrokeParams;
 import com.android.inputmethod.keyboard.internal.GestureStrokeWithPreviewPoints;
@@ -145,9 +145,6 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
     // Move this threshold to resource.
     // TODO: Device specific parameter would be better for device specific hack?
     private static final float PHANTOM_SUDDEN_MOVE_THRESHOLD = 0.25f; // in keyWidth
-    // This hack is applied to certain classes of tablets.
-    // See {@link #needsProximateBogusDownMoveUpEventHack(Resources)}.
-    private static boolean sNeedsProximateBogusDownMoveUpEventHack;
 
     private static final ArrayList<PointerTracker> sTrackers = CollectionUtils.newArrayList();
     private static final PointerTrackerQueue sPointerTrackerQueue = new PointerTrackerQueue();
@@ -173,57 +170,6 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
             GestureStroke.DEFAULT_CAPACITY);
     private static int sLastRecognitionPointSize = 0; // synchronized using sAggregatedPointers
     private static long sLastRecognitionTime = 0; // synchronized using sAggregatedPointers
-
-    static final class BogusMoveEventDetector {
-        // Move these thresholds to resource.
-        // These thresholds' unit is a diagonal length of a key.
-        private static final float BOGUS_MOVE_ACCUMULATED_DISTANCE_THRESHOLD = 0.53f;
-        private static final float BOGUS_MOVE_RADIUS_THRESHOLD = 1.14f;
-
-        private int mAccumulatedDistanceThreshold;
-        private int mRadiusThreshold;
-
-        // Accumulated distance from actual and artificial down keys.
-        /* package */ int mAccumulatedDistanceFromDownKey;
-        private int mActualDownX;
-        private int mActualDownY;
-
-        public void setKeyboardGeometry(final int keyWidth, final int keyHeight) {
-            final float keyDiagonal = (float)Math.hypot(keyWidth, keyHeight);
-            mAccumulatedDistanceThreshold = (int)(
-                    keyDiagonal * BOGUS_MOVE_ACCUMULATED_DISTANCE_THRESHOLD);
-            mRadiusThreshold = (int)(keyDiagonal * BOGUS_MOVE_RADIUS_THRESHOLD);
-        }
-
-        public void onActualDownEvent(final int x, final int y) {
-            mActualDownX = x;
-            mActualDownY = y;
-        }
-
-        public void onDownKey() {
-            mAccumulatedDistanceFromDownKey = 0;
-        }
-
-        public void onMoveKey(final int distance) {
-            mAccumulatedDistanceFromDownKey += distance;
-        }
-
-        public boolean hasTraveledLongDistance(final int x, final int y) {
-            final int dx = Math.abs(x - mActualDownX);
-            final int dy = Math.abs(y - mActualDownY);
-            // A bogus move event should be a horizontal movement. A vertical movement might be
-            // a sloppy typing and should be ignored.
-            return dx >= dy && mAccumulatedDistanceFromDownKey >= mAccumulatedDistanceThreshold;
-        }
-
-        /* package */ int getDistanceFromDownEvent(final int x, final int y) {
-            return getDistance(x, y, mActualDownX, mActualDownY);
-        }
-
-        public boolean isCloseToActualDownEvent(final int x, final int y) {
-            return getDistanceFromDownEvent(x, y) < mRadiusThreshold;
-        }
-    }
 
     // The position and time at which first down event occurred.
     private long mDownTime;
@@ -263,29 +209,6 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
 
     private final GestureStrokeWithPreviewPoints mGestureStrokeWithPreviewPoints;
 
-    private static final int SMALL_TABLET_SMALLEST_WIDTH = 600; // dp
-    private static final int LARGE_TABLET_SMALLEST_WIDTH = 768; // dp
-
-    private static boolean needsProximateBogusDownMoveUpEventHack(final Resources res) {
-        // The proximate bogus down move up event hack is needed for a device such like,
-        // 1) is large tablet, or 2) is small tablet and the screen density is less than hdpi.
-        // Though it seems odd to use screen density as criteria of the quality of the touch
-        // screen, the small table that has a less density screen than hdpi most likely has been
-        // made with the touch screen that needs the hack.
-        final int sw = res.getConfiguration().smallestScreenWidthDp;
-        final boolean isLargeTablet = (sw >= LARGE_TABLET_SMALLEST_WIDTH);
-        final boolean isSmallTablet =
-                (sw >= SMALL_TABLET_SMALLEST_WIDTH && sw < LARGE_TABLET_SMALLEST_WIDTH);
-        final int densityDpi = res.getDisplayMetrics().densityDpi;
-        final boolean hasLowDensityScreen = (densityDpi < DisplayMetrics.DENSITY_HIGH);
-        final boolean needsTheHack = isLargeTablet || (isSmallTablet && hasLowDensityScreen);
-        if (DEBUG_MODE) {
-            Log.d(TAG, "needsProximateBogusDownMoveUpEventHack=" + needsTheHack
-                    + " smallestScreenWidthDp=" + sw + " densityDpi=" + densityDpi);
-        }
-        return needsTheHack;
-    }
-
     // TODO: Add PointerTrackerFactory singleton and move some class static methods into it.
     public static void init(final TypedArray mainKeyboardViewAttr, final TimerProxy timerProxy,
             final DrawingProxy drawingProxy) {
@@ -300,7 +223,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         sNeedsPhantomSuddenMoveEventHack = Boolean.parseBoolean(
                 ResourceUtils.getDeviceOverrideValue(
                         res, R.array.phantom_sudden_move_event_device_list));
-        sNeedsProximateBogusDownMoveUpEventHack = needsProximateBogusDownMoveUpEventHack(res);
+        BogusMoveEventDetector.init(res);
 
         sTimerProxy = timerProxy;
         sDrawingProxy = drawingProxy;
@@ -637,7 +560,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         return onMoveToNewKey(onMoveKeyInternal(x, y), x, y);
     }
 
-    static int getDistance(final int x1, final int y1, final int x2, final int y2) {
+    private static int getDistance(final int x1, final int y1, final int x2, final int y2) {
         return (int)Math.hypot(x1 - x2, y1 - y2);
     }
 
@@ -1047,8 +970,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         // HACK: On some devices, quick successive proximate touches may be reported as a bogus
         // down-move-up event by touch panel firmware. This hack detects such cases and breaks
         // these events into separate up and down events.
-        else if (sNeedsProximateBogusDownMoveUpEventHack
-                && sTypingTimeRecorder.isInFastTyping(eventTime)
+        else if (sTypingTimeRecorder.isInFastTyping(eventTime)
                 && mBogusMoveEventDetector.isCloseToActualDownEvent(x, y)) {
             processProximateBogusDownMoveUpEventHack(key, x, y, eventTime, oldKey, lastX, lastY);
         }
@@ -1265,14 +1187,13 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
             }
             return true;
         }
-        if (sNeedsProximateBogusDownMoveUpEventHack && !mIsAllowedDraggingFinger
-                && sTypingTimeRecorder.isInFastTyping(eventTime)
+        if (!mIsAllowedDraggingFinger && sTypingTimeRecorder.isInFastTyping(eventTime)
                 && mBogusMoveEventDetector.hasTraveledLongDistance(x, y)) {
             if (DEBUG_MODE) {
                 final float keyDiagonal = (float)Math.hypot(
                         mKeyboard.mMostCommonKeyWidth, mKeyboard.mMostCommonKeyHeight);
                 final float lengthFromDownRatio =
-                        mBogusMoveEventDetector.mAccumulatedDistanceFromDownKey / keyDiagonal;
+                        mBogusMoveEventDetector.getAccumulatedDistanceFromDownKey() / keyDiagonal;
                 Log.d(TAG, String.format("[%d] isMajorEnoughMoveToBeOnNewKey:"
                         + " %.2f key diagonal from virtual down point",
                         mPointerId, lengthFromDownRatio));
