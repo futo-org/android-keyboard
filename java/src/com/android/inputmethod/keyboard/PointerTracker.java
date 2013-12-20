@@ -22,8 +22,8 @@ import android.os.SystemClock;
 import android.util.Log;
 import android.view.MotionEvent;
 
-import com.android.inputmethod.accessibility.AccessibilityUtils;
 import com.android.inputmethod.keyboard.internal.BogusMoveEventDetector;
+import com.android.inputmethod.keyboard.internal.GestureEnabler;
 import com.android.inputmethod.keyboard.internal.GestureStroke;
 import com.android.inputmethod.keyboard.internal.GestureStroke.GestureStrokeParams;
 import com.android.inputmethod.keyboard.internal.GestureStrokeWithPreviewPoints;
@@ -49,12 +49,6 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
     private static final boolean DEBUG_MOVE_EVENT = false;
     private static final boolean DEBUG_LISTENER = false;
     private static boolean DEBUG_MODE = LatinImeLogger.sDBG || DEBUG_EVENT;
-
-    /** True if {@link PointerTracker}s should handle gesture events. */
-    private static boolean sShouldHandleGesture = false;
-    private static boolean sMainDictionaryAvailable = false;
-    private static boolean sGestureHandlingEnabledByInputField = false;
-    private static boolean sGestureHandlingEnabledByUser = false;
 
     public interface DrawingProxy {
         public void invalidateKey(Key key);
@@ -136,6 +130,8 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
                     R.styleable.MainKeyboardView_longPressShiftLockTimeout, 0);
         }
     }
+
+    private static GestureEnabler sGestureEnabler = new GestureEnabler();
 
     // Parameters for pointer handling.
     private static PointerTrackerParams sParams;
@@ -229,22 +225,13 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         sDrawingProxy = drawingProxy;
     }
 
-    private static void updateGestureHandlingMode() {
-        sShouldHandleGesture = sMainDictionaryAvailable
-                && sGestureHandlingEnabledByInputField
-                && sGestureHandlingEnabledByUser
-                && !AccessibilityUtils.getInstance().isTouchExplorationEnabled();
-    }
-
     // Note that this method is called from a non-UI thread.
     public static void setMainDictionaryAvailability(final boolean mainDictionaryAvailable) {
-        sMainDictionaryAvailable = mainDictionaryAvailable;
-        updateGestureHandlingMode();
+        sGestureEnabler.setMainDictionaryAvailability(mainDictionaryAvailable);
     }
 
     public static void setGestureHandlingEnabledByUser(final boolean gestureHandlingEnabledByUser) {
-        sGestureHandlingEnabledByUser = gestureHandlingEnabledByUser;
-        updateGestureHandlingMode();
+        sGestureEnabler.setGestureHandlingEnabledByUser(gestureHandlingEnabledByUser);
     }
 
     public static PointerTracker getPointerTracker(final int id) {
@@ -278,8 +265,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
             tracker.setKeyDetectorInner(keyDetector);
         }
         final Keyboard keyboard = keyDetector.getKeyboard();
-        sGestureHandlingEnabledByInputField = !keyboard.mId.passwordInput();
-        updateGestureHandlingMode();
+        sGestureEnabler.setPasswordMode(keyboard.mId.passwordInput());
     }
 
     public static void setReleasedKeyGraphicsToAllKeys() {
@@ -484,7 +470,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
     }
 
     private static boolean needsToSuppressKeyPreviewPopup(final long eventTime) {
-        if (!sShouldHandleGesture) return false;
+        if (!sGestureEnabler.shouldHandleGesture()) return false;
         return sTypingTimeRecorder.needsToSuppressKeyPreviewPopup(eventTime);
     }
 
@@ -761,7 +747,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         }
         sPointerTrackerQueue.add(this);
         onDownEventInternal(x, y, eventTime);
-        if (!sShouldHandleGesture) {
+        if (!sGestureEnabler.shouldHandleGesture()) {
             return;
         }
         // A gesture should start only from a non-modifier key. Note that the gesture detection is
@@ -862,7 +848,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
             return;
         }
 
-        if (sShouldHandleGesture && me != null) {
+        if (sGestureEnabler.shouldHandleGesture() && me != null) {
             // Add historical points to gesture path.
             final int pointerIndex = me.findPointerIndex(mPointerId);
             final int historicalSize = me.getHistorySize();
@@ -1014,7 +1000,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         final Key oldKey = mCurrentKey;
         final Key newKey = onMoveKey(x, y);
 
-        if (sShouldHandleGesture) {
+        if (sGestureEnabler.shouldHandleGesture()) {
             // Register move event on gesture tracker.
             onGestureMoveEvent(x, y, eventTime, true /* isMajorEvent */, newKey);
             if (sInGesture) {
