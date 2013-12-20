@@ -29,10 +29,10 @@ import android.view.ViewParent;
 import android.view.accessibility.AccessibilityEvent;
 
 import com.android.inputmethod.keyboard.Key;
+import com.android.inputmethod.keyboard.KeyDetector;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardId;
 import com.android.inputmethod.keyboard.MainKeyboardView;
-import com.android.inputmethod.keyboard.PointerTracker;
 import com.android.inputmethod.latin.R;
 
 public final class AccessibleKeyboardViewProxy extends AccessibilityDelegateCompat {
@@ -220,9 +220,11 @@ public final class AccessibleKeyboardViewProxy extends AccessibilityDelegateComp
      * Receives hover events when touch exploration is turned on in SDK versions ICS and higher.
      *
      * @param event The hover event.
+     * @param keyDetector The {@link KeyDetector} to determine on which key the <code>event</code>
+     *     is hovering.
      * @return {@code true} if the event is handled
      */
-    public boolean dispatchHoverEvent(final MotionEvent event, final PointerTracker tracker) {
+    public boolean dispatchHoverEvent(final MotionEvent event, final KeyDetector keyDetector) {
         if (mView == null) {
             return false;
         }
@@ -233,7 +235,7 @@ public final class AccessibleKeyboardViewProxy extends AccessibilityDelegateComp
         final Key key;
 
         if (pointInView(x, y)) {
-            key = tracker.getKeyOn(x, y);
+            key = keyDetector.detectHitKey(x, y);
         } else {
             key = null;
         }
