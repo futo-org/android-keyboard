@@ -1528,4 +1528,72 @@ public final class InputLogic {
             mWordComposer.discardPreviousWordForSuggestion();
         }
     }
+
+    /**
+     * Try to get the text from the editor to expose lies the framework may have been
+     * telling us. Concretely, when the device rotates, the frameworks tells us about where the
+     * cursor used to be initially in the editor at the time it first received the focus; this
+     * may be completely different from the place it is upon rotation. Since we don't have any
+     * means to get the real value, try at least to ask the text view for some characters and
+     * detect the most damaging cases: when the cursor position is declared to be much smaller
+     * than it really is.
+     */
+    // TODO: make this private
+    public void tryFixLyingCursorPosition() {
+        final CharSequence textBeforeCursor = mConnection.getTextBeforeCursor(
+                Constants.EDITOR_CONTENTS_CACHE_SIZE, 0);
+        if (null == textBeforeCursor) {
+            mLastSelectionStart = mLastSelectionEnd = Constants.NOT_A_CURSOR_POSITION;
+        } else {
+            final int textLength = textBeforeCursor.length();
+            if (textLength > mLastSelectionStart
+                    || (textLength < Constants.EDITOR_CONTENTS_CACHE_SIZE
+                            && mLastSelectionStart < Constants.EDITOR_CONTENTS_CACHE_SIZE)) {
+                // It should not be possible to have only one of those variables be
+                // NOT_A_CURSOR_POSITION, so if they are equal, either the selection is zero-sized
+                // (simple cursor, no selection) or there is no cursor/we don't know its pos
+                final boolean wasEqual = mLastSelectionStart == mLastSelectionEnd;
+                mLastSelectionStart = textLength;
+                // We can't figure out the value of mLastSelectionEnd :(
+                // But at least if it's smaller than mLastSelectionStart something is wrong,
+                // and if they used to be equal we also don't want to make it look like there is a
+                // selection.
+                if (wasEqual || mLastSelectionStart > mLastSelectionEnd) {
+                    mLastSelectionEnd = mLastSelectionStart;
+                }
+            }
+        }
+    }
+
+    /**
+     * Retry resetting caches in the rich input connection.
+     *
+     * When the editor can't be accessed we can't reset the caches, so we schedule a retry.
+     * This method handles the retry, and re-schedules a new retry if we still can't access.
+     * We only retry up to 5 times before giving up.
+     *
+     * @param settingsValues the current values of the settings.
+     * @param tryResumeSuggestions Whether we should resume suggestions or not.
+     * @param remainingTries How many times we may try again before giving up.
+     */
+    // TODO: make this private
+    public void retryResetCaches(final SettingsValues settingsValues,
+            final boolean tryResumeSuggestions, final int remainingTries,
+            // TODO: remove these arguments
+            final KeyboardSwitcher keyboardSwitcher, final LatinIME.UIHandler handler) {
+        if (!mConnection.resetCachesUponCursorMoveAndReturnSuccess(
+                mLastSelectionStart, mLastSelectionEnd, false)) {
+            if (0 < remainingTries) {
+                handler.postResetCaches(tryResumeSuggestions, remainingTries - 1);
+                return;
+            }
+            // If remainingTries is 0, we should stop waiting for new tries, but it's still
+            // better to load the keyboard (less things will be broken).
+        }
+        tryFixLyingCursorPosition();
+        keyboardSwitcher.loadKeyboard(getCurrentInputEditorInfo(), settingsValues);
+        if (tryResumeSuggestions) {
+            handler.postResumeSuggestions();
+        }
+    }
 }
