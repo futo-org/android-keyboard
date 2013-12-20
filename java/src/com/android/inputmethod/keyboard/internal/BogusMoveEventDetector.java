@@ -20,7 +20,9 @@ import android.content.res.Resources;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
+import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.LatinImeLogger;
+import com.android.inputmethod.latin.R;
 
 // This hack is applied to certain classes of tablets.
 public final class BogusMoveEventDetector {
@@ -32,9 +34,6 @@ public final class BogusMoveEventDetector {
     private static final float BOGUS_MOVE_ACCUMULATED_DISTANCE_THRESHOLD = 0.53f;
     private static final float BOGUS_MOVE_RADIUS_THRESHOLD = 1.14f;
 
-    private static final int SMALL_TABLET_SMALLEST_WIDTH = 600; // dp
-    private static final int LARGE_TABLET_SMALLEST_WIDTH = 768; // dp
-
     private static boolean sNeedsProximateBogusDownMoveUpEventHack;
 
     public static void init(final Resources res) {
@@ -43,16 +42,17 @@ public final class BogusMoveEventDetector {
         // Though it seems odd to use screen density as criteria of the quality of the touch
         // screen, the small table that has a less density screen than hdpi most likely has been
         // made with the touch screen that needs the hack.
-        final int sw = res.getConfiguration().smallestScreenWidthDp;
-        final boolean isLargeTablet = (sw >= LARGE_TABLET_SMALLEST_WIDTH);
-        final boolean isSmallTablet =
-                (sw >= SMALL_TABLET_SMALLEST_WIDTH && sw < LARGE_TABLET_SMALLEST_WIDTH);
+        final int screenMetrics = res.getInteger(R.integer.config_screen_metrics);
+        final boolean isLargeTablet = (screenMetrics == Constants.SCREEN_METRICS_LARGE_TABLET);
+        final boolean isSmallTablet = (screenMetrics == Constants.SCREEN_METRICS_SMALL_TABLET);
         final int densityDpi = res.getDisplayMetrics().densityDpi;
         final boolean hasLowDensityScreen = (densityDpi < DisplayMetrics.DENSITY_HIGH);
         final boolean needsTheHack = isLargeTablet || (isSmallTablet && hasLowDensityScreen);
         if (DEBUG_MODE) {
+            final int sw = res.getConfiguration().smallestScreenWidthDp;
             Log.d(TAG, "needsProximateBogusDownMoveUpEventHack=" + needsTheHack
-                    + " smallestScreenWidthDp=" + sw + " densityDpi=" + densityDpi);
+                    + " smallestScreenWidthDp=" + sw + " densityDpi=" + densityDpi
+                    + " screenMetrics=" + screenMetrics);
         }
         sNeedsProximateBogusDownMoveUpEventHack = needsTheHack;
     }
