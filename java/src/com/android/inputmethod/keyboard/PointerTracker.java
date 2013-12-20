@@ -355,9 +355,6 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
                 ResourceUtils.getDeviceOverrideValue(
                         res, R.array.phantom_sudden_move_event_device_list));
         sNeedsProximateBogusDownMoveUpEventHack = needsProximateBogusDownMoveUpEventHack(res);
-        sGestureStrokeParams = GestureStrokeParams.DEFAULT;
-        sGesturePreviewParams = GestureStrokePreviewParams.DEFAULT;
-        sTimeRecorder = new TimeRecorder(sParams, sGestureStrokeParams);
 
         sTimerProxy = timerProxy;
         sDrawingProxy = drawingProxy;
