@@ -732,14 +732,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             Log.w(TAG, "Use EditorInfo.IME_FLAG_FORCE_ASCII flag instead");
         }
 
-        final PackageInfo packageInfo =
-                TargetPackageInfoGetterTask.getCachedPackageInfo(editorInfo.packageName);
-        mAppWorkAroundsUtils.setPackageInfo(packageInfo);
-        if (null == packageInfo) {
-            new TargetPackageInfoGetterTask(this /* context */, this /* listener */)
-                    .execute(editorInfo.packageName);
-        }
-
         LatinImeLogger.onStartInputView(editorInfo);
         // In landscape mode, this method gets called without the input view being created.
         if (mainKeyboardView == null) {
@@ -806,6 +798,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (isDifferentTextField) {
             mainKeyboardView.closing();
             loadSettings();
+            final PackageInfo packageInfo =
+                    TargetPackageInfoGetterTask.getCachedPackageInfo(editorInfo.packageName);
+            mAppWorkAroundsUtils.setPackageInfo(packageInfo);
+            if (null == packageInfo) {
+                new TargetPackageInfoGetterTask(this /* context */, this /* listener */)
+                        .execute(editorInfo.packageName);
+            }
             currentSettingsValues = mSettings.getCurrent();
 
             if (suggest != null && currentSettingsValues.mCorrectionEnabled) {
