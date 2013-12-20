@@ -87,7 +87,7 @@ public final class EmojiPageKeyboardView extends KeyboardView implements
         return true;
     }
 
-    // {@link GestureDetector#OnGestureListener} methods.
+    // {@link GestureEnabler#OnGestureListener} methods.
     private Key mCurrentKey;
 
     private Key getKey(final MotionEvent e) {
