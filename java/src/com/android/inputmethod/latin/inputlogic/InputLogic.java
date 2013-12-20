@@ -137,8 +137,8 @@ public final class InputLogic {
      * @param rawText the text to input.
      */
     public void onTextInput(final SettingsValues settingsValues, final String rawText,
-            // TODO: remove these arguments
-            final KeyboardSwitcher keyboardSwitcher, final LatinIME.UIHandler handler) {
+            // TODO: remove this argument
+            final LatinIME.UIHandler handler) {
         mConnection.beginBatchEdit();
         if (mWordComposer.isComposingWord()) {
             commitCurrentAutoCorrection(settingsValues, rawText, handler);
@@ -162,8 +162,6 @@ public final class InputLogic {
         mConnection.endBatchEdit();
         // Space state must be updated before calling updateShiftState
         mSpaceState = SpaceState.NONE;
-        keyboardSwitcher.updateShiftState();
-        keyboardSwitcher.onCodeInput(Constants.CODE_OUTPUT_TEXT);
         mEnteredText = text;
     }
 
@@ -221,7 +219,8 @@ public final class InputLogic {
             if (null != currentKeyboard && currentKeyboard.mId.isAlphabetKeyboard()) {
                 // TODO: Instead of checking for alphabetic keyboard here, separate keycodes for
                 // alphabetic shift and shift while in symbol layout.
-                performRecapitalization(settingsValues, keyboardSwitcher);
+                performRecapitalization(settingsValues);
+                keyboardSwitcher.updateShiftState();
             }
             break;
         case Constants.CODE_CAPSLOCK:
@@ -347,7 +346,7 @@ public final class InputLogic {
         }
         mConnection.endBatchEdit();
         mWordComposer.setCapitalizedModeAndPreviousWordAtStartComposingTime(
-                getActualCapsMode(settingsValues, keyboardSwitcher),
+                getActualCapsMode(settingsValues, keyboardSwitcher.getKeyboardShiftMode()),
                 // Prev word is 1st word before cursor
                 getNthPreviousWordForSuggestion(settingsValues, 1 /* nthPreviousWord */));
     }
@@ -385,7 +384,8 @@ public final class InputLogic {
                     mSpaceState = SpaceState.PHANTOM;
                     keyboardSwitcher.updateShiftState();
                     mWordComposer.setCapitalizedModeAndPreviousWordAtStartComposingTime(
-                            getActualCapsMode(settingsValues, keyboardSwitcher), commitParts[0]);
+                            getActualCapsMode(settingsValues,
+                                    keyboardSwitcher.getKeyboardShiftMode()), commitParts[0]);
                     ++mAutoCommitSequenceNumber;
                 }
             }
@@ -533,7 +533,7 @@ public final class InputLogic {
                 // We pass 1 to getPreviousWordForSuggestion because we were not composing a word
                 // yet, so the word we want is the 1st word before the cursor.
                 mWordComposer.setCapitalizedModeAndPreviousWordAtStartComposingTime(
-                        getActualCapsMode(settingsValues, keyboardSwitcher),
+                        getActualCapsMode(settingsValues, keyboardSwitcher.getKeyboardShiftMode()),
                         getNthPreviousWordForSuggestion(settingsValues, 1 /* nthPreviousWord */));
             }
             mConnection.setComposingText(getTextWithUnderline(
@@ -609,7 +609,8 @@ public final class InputLogic {
 
         if (Constants.CODE_SPACE == codePoint) {
             if (settingsValues.isSuggestionsRequested()) {
-                if (maybeDoubleSpacePeriod(settingsValues, keyboardSwitcher, handler)) {
+                if (maybeDoubleSpacePeriod(settingsValues, handler)) {
+                    keyboardSwitcher.updateShiftState();
                     mSpaceState = SpaceState.DOUBLE;
                 } else if (!mLatinIME.isShowingPunctuationList()) {
                     mSpaceState = SpaceState.WEAK;
@@ -866,8 +867,8 @@ public final class InputLogic {
      * @return true if we applied the double-space-to-period transformation, false otherwise.
      */
     private boolean maybeDoubleSpacePeriod(final SettingsValues settingsValues,
-            // TODO: remove these arguments
-            final KeyboardSwitcher keyboardSwitcher, final LatinIME.UIHandler handler) {
+            // TODO: remove this argument
+            final LatinIME.UIHandler handler) {
         if (!settingsValues.mUseDoubleSpacePeriod) return false;
         if (!handler.isAcceptingDoubleSpacePeriod()) return false;
         // We only do this when we see two spaces and an accepted code point before the cursor.
@@ -895,7 +896,6 @@ public final class InputLogic {
                         false /* isBatchMode */);
             }
             mWordComposer.discardPreviousWordForSuggestion();
-            keyboardSwitcher.updateShiftState();
             return true;
         }
         return false;
@@ -931,9 +931,7 @@ public final class InputLogic {
      * Performs a recapitalization event.
      * @param settingsValues The current settings values.
      */
-    private void performRecapitalization(final SettingsValues settingsValues,
-            // TODO: remove this argument.
-            final KeyboardSwitcher keyboardSwitcher) {
+    private void performRecapitalization(final SettingsValues settingsValues) {
         if (mLastSelectionStart == mLastSelectionEnd) {
             return; // No selection
         }
@@ -966,8 +964,6 @@ public final class InputLogic {
         mLastSelectionStart = mRecapitalizeStatus.getNewCursorStart();
         mLastSelectionEnd = mRecapitalizeStatus.getNewCursorEnd();
         mConnection.setSelection(mLastSelectionStart, mLastSelectionEnd);
-        // Match the keyboard to the new state.
-        keyboardSwitcher.updateShiftState();
     }
 
     private String performAdditionToUserHistoryDictionary(final SettingsValues settingsValues,
@@ -1236,12 +1232,12 @@ public final class InputLogic {
     /**
      * Factor in auto-caps and manual caps and compute the current caps mode.
      * @param settingsValues the current settings values.
-     * @param keyboardSwitcher the keyboard switcher. Caps mode depends on its mode.
+     * @param keyboardShiftMode the current shift mode of the keyboard. See
+     *   KeyboardSwitcher#getKeyboardShiftMode() for possible values.
      * @return the actual caps mode the keyboard is in right now.
      */
-    public int getActualCapsMode(final SettingsValues settingsValues,
-            final KeyboardSwitcher keyboardSwitcher) {
-        final int keyboardShiftMode = keyboardSwitcher.getKeyboardShiftMode();
+    private int getActualCapsMode(final SettingsValues settingsValues,
+            final int keyboardShiftMode) {
         if (keyboardShiftMode != WordComposer.CAPS_MODE_AUTO_SHIFTED) return keyboardShiftMode;
         final int auto = getCurrentAutoCapsState(settingsValues);
         if (0 != (auto & TextUtils.CAP_MODE_CHARACTERS)) {
