@@ -158,6 +158,8 @@ public final class Constants {
 
     // Key events coming any faster than this are long-presses.
     public static final int LONG_PRESS_MILLISECONDS = 200;
+    // TODO: Set this value appropriately.
+    public static final int GET_SUGGESTED_WORDS_TIMEOUT = 200;
     // How many continuous deletes at which to start deleting at a higher speed.
     public static final int DELETE_ACCELERATE_AT = 20;
 
