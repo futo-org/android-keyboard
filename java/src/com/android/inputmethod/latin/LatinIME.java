@@ -1302,35 +1302,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     // Called from PointerTracker through the KeyboardActionListener interface
-    // TODO[IL]: Move this to InputLogic
     @Override
     public void onTextInput(final String rawText) {
-        mInputLogic.mConnection.beginBatchEdit();
-        if (mInputLogic.mWordComposer.isComposingWord()) {
-            mInputLogic.commitCurrentAutoCorrection(mSettings.getCurrent(), rawText, mHandler);
-        } else {
-            mInputLogic.resetComposingState(true /* alsoResetLastComposedWord */);
-        }
-        mHandler.postUpdateSuggestionStrip();
-        if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS
-                && ResearchLogger.RESEARCH_KEY_OUTPUT_TEXT.equals(rawText)) {
-            ResearchLogger.getInstance().onResearchKeySelected(this);
-            return;
-        }
-        final String text = specificTldProcessingOnTextInput(rawText);
-        if (SpaceState.PHANTOM == mInputLogic.mSpaceState) {
-            mInputLogic.promotePhantomSpace(mSettings.getCurrent());
-        }
-        mInputLogic.mConnection.commitText(text, 1);
-        if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-            ResearchLogger.latinIME_onTextInput(text, false /* isBatchMode */);
-        }
-        mInputLogic.mConnection.endBatchEdit();
-        // Space state must be updated before calling updateShiftState
-        mInputLogic.mSpaceState = SpaceState.NONE;
-        mKeyboardSwitcher.updateShiftState();
-        mKeyboardSwitcher.onCodeInput(Constants.CODE_OUTPUT_TEXT);
-        mInputLogic.mEnteredText = text;
+        mInputLogic.onTextInput(mSettings.getCurrent(), rawText, mKeyboardSwitcher, mHandler);
     }
 
     @Override
@@ -1612,25 +1586,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     @Override
     public void onEndBatchInput(final InputPointers batchPointers) {
         mInputUpdater.onEndBatchInput(batchPointers);
-    }
-
-    private String specificTldProcessingOnTextInput(final String text) {
-        if (text.length() <= 1 || text.charAt(0) != Constants.CODE_PERIOD
-                || !Character.isLetter(text.charAt(1))) {
-            // Not a tld: do nothing.
-            return text;
-        }
-        // We have a TLD (or something that looks like this): make sure we don't add
-        // a space even if currently in phantom mode.
-        mInputLogic.mSpaceState = SpaceState.NONE;
-        // TODO: use getCodePointBeforeCursor instead to improve performance and simplify the code
-        final CharSequence lastOne = mInputLogic.mConnection.getTextBeforeCursor(1, 0);
-        if (lastOne != null && lastOne.length() == 1
-                && lastOne.charAt(0) == Constants.CODE_PERIOD) {
-            return text.substring(1);
-        } else {
-            return text;
-        }
     }
 
     // Called from PointerTracker through the KeyboardActionListener interface
