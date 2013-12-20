@@ -129,10 +129,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     private UserBinaryDictionary mUserDictionary;
 
-    // Personalization debugging params
-    private boolean mUseOnlyPersonalizationDictionaryForDebug = false;
-    private boolean mBoostPersonalizationDictionaryForDebug = false;
-
     // Object for reacting to adding/removing a dictionary pack.
     private BroadcastReceiver mDictionaryPackInstallReceiver =
             new DictionaryPackInstallBroadcastReceiver(this);
@@ -832,8 +828,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 currentSettingsValues.mGestureTrailEnabled,
                 currentSettingsValues.mGestureFloatingPreviewTextEnabled);
 
-        initPersonalizationDebugSettings(currentSettingsValues);
-
         if (TRACE) Debug.startMethodTracing("/data/trace/latinime");
     }
 
@@ -872,25 +866,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     mInputLogic.mLastSelectionEnd = mInputLogic.mLastSelectionStart;
                 }
             }
-        }
-    }
-
-    // Initialization of personalization debug settings. This must be called inside
-    // onStartInputView.
-    private void initPersonalizationDebugSettings(SettingsValues currentSettingsValues) {
-        if (mUseOnlyPersonalizationDictionaryForDebug
-                != currentSettingsValues.mUseOnlyPersonalizationDictionaryForDebug) {
-            // Only for debug
-            initSuggest();
-            mUseOnlyPersonalizationDictionaryForDebug =
-                    currentSettingsValues.mUseOnlyPersonalizationDictionaryForDebug;
-        }
-
-        if (mBoostPersonalizationDictionaryForDebug !=
-                currentSettingsValues.mBoostPersonalizationDictionaryForDebug) {
-            // Only for debug
-            mBoostPersonalizationDictionaryForDebug =
-                    currentSettingsValues.mBoostPersonalizationDictionaryForDebug;
         }
     }
 
