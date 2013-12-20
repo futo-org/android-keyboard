@@ -32,6 +32,7 @@ import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.keyboard.MainKeyboardView;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.Dictionary;
+import com.android.inputmethod.latin.InputPointers;
 import com.android.inputmethod.latin.LastComposedWord;
 import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.LatinImeLogger;
@@ -294,6 +295,115 @@ public final class InputLogic {
             mEnteredText = null;
         }
         mConnection.endBatchEdit();
+    }
+
+    public void onStartBatchInput(final SettingsValues settingsValues,
+            // TODO: remove these arguments
+            final KeyboardSwitcher keyboardSwitcher, final LatinIME.UIHandler handler,
+            final LatinIME.InputUpdater inputUpdater) {
+        inputUpdater.onStartBatchInput();
+        handler.cancelUpdateSuggestionStrip();
+        mConnection.beginBatchEdit();
+        if (mWordComposer.isComposingWord()) {
+            if (settingsValues.mIsInternal) {
+                if (mWordComposer.isBatchMode()) {
+                    LatinImeLoggerUtils.onAutoCorrection("", mWordComposer.getTypedWord(), " ",
+                            mWordComposer);
+                }
+            }
+            final int wordComposerSize = mWordComposer.size();
+            // Since isComposingWord() is true, the size is at least 1.
+            if (mWordComposer.isCursorFrontOrMiddleOfComposingWord()) {
+                // If we are in the middle of a recorrection, we need to commit the recorrection
+                // first so that we can insert the batch input at the current cursor position.
+                resetEntireInputState(settingsValues, mLastSelectionStart, mLastSelectionEnd);
+            } else if (wordComposerSize <= 1) {
+                // We auto-correct the previous (typed, not gestured) string iff it's one character
+                // long. The reason for this is, even in the middle of gesture typing, you'll still
+                // tap one-letter words and you want them auto-corrected (typically, "i" in English
+                // should become "I"). However for any longer word, we assume that the reason for
+                // tapping probably is that the word you intend to type is not in the dictionary,
+                // so we do not attempt to correct, on the assumption that if that was a dictionary
+                // word, the user would probably have gestured instead.
+                commitCurrentAutoCorrection(settingsValues, LastComposedWord.NOT_A_SEPARATOR,
+                        handler);
+            } else {
+                commitTyped(settingsValues, LastComposedWord.NOT_A_SEPARATOR);
+            }
+        }
+        final int codePointBeforeCursor = mConnection.getCodePointBeforeCursor();
+        if (Character.isLetterOrDigit(codePointBeforeCursor)
+                || settingsValues.isUsuallyFollowedBySpace(codePointBeforeCursor)) {
+            final boolean autoShiftHasBeenOverriden = keyboardSwitcher.getKeyboardShiftMode() !=
+                    getCurrentAutoCapsState(settingsValues);
+            mSpaceState = SpaceState.PHANTOM;
+            if (!autoShiftHasBeenOverriden) {
+                // When we change the space state, we need to update the shift state of the
+                // keyboard unless it has been overridden manually. This is happening for example
+                // after typing some letters and a period, then gesturing; the keyboard is not in
+                // caps mode yet, but since a gesture is starting, it should go in caps mode,
+                // unless the user explictly said it should not.
+                keyboardSwitcher.updateShiftState();
+            }
+        }
+        mConnection.endBatchEdit();
+        mWordComposer.setCapitalizedModeAndPreviousWordAtStartComposingTime(
+                getActualCapsMode(settingsValues, keyboardSwitcher),
+                // Prev word is 1st word before cursor
+                getNthPreviousWordForSuggestion(settingsValues, 1 /* nthPreviousWord */));
+    }
+
+    /* The sequence number member is only used in onUpdateBatchInput. It is increased each time
+     * auto-commit happens. The reason we need this is, when auto-commit happens we trim the
+     * input pointers that are held in a singleton, and to know how much to trim we rely on the
+     * results of the suggestion process that is held in mSuggestedWords.
+     * However, the suggestion process is asynchronous, and sometimes we may enter the
+     * onUpdateBatchInput method twice without having recomputed suggestions yet, or having
+     * received new suggestions generated from not-yet-trimmed input pointers. In this case, the
+     * mIndexOfTouchPointOfSecondWords member will be out of date, and we must not use it lest we
+     * remove an unrelated number of pointers (possibly even more than are left in the input
+     * pointers, leading to a crash).
+     * To avoid that, we increase the sequence number each time we auto-commit and trim the
+     * input pointers, and we do not use any suggested words that have been generated with an
+     * earlier sequence number.
+     */
+    private int mAutoCommitSequenceNumber = 1;
+    public void onUpdateBatchInput(final SettingsValues settingsValues,
+            final InputPointers batchPointers,
+            // TODO: remove these arguments
+            final KeyboardSwitcher keyboardSwitcher, final LatinIME.InputUpdater inputUpdater) {
+        if (settingsValues.mPhraseGestureEnabled) {
+            final SuggestedWordInfo candidate = mSuggestedWords.getAutoCommitCandidate();
+            // If these suggested words have been generated with out of date input pointers, then
+            // we skip auto-commit (see comments above on the mSequenceNumber member).
+            if (null != candidate
+                    && mSuggestedWords.mSequenceNumber >= mAutoCommitSequenceNumber) {
+                if (candidate.mSourceDict.shouldAutoCommit(candidate)) {
+                    final String[] commitParts = candidate.mWord.split(" ", 2);
+                    batchPointers.shift(candidate.mIndexOfTouchPointOfSecondWord);
+                    promotePhantomSpace(settingsValues);
+                    mConnection.commitText(commitParts[0], 0);
+                    mSpaceState = SpaceState.PHANTOM;
+                    keyboardSwitcher.updateShiftState();
+                    mWordComposer.setCapitalizedModeAndPreviousWordAtStartComposingTime(
+                            getActualCapsMode(settingsValues, keyboardSwitcher), commitParts[0]);
+                    ++mAutoCommitSequenceNumber;
+                }
+            }
+        }
+        inputUpdater.onUpdateBatchInput(batchPointers, mAutoCommitSequenceNumber);
+    }
+
+    public void onEndBatchInput(final SettingsValues settingValues,
+            final InputPointers batchPointers,
+            // TODO: remove these arguments
+            final LatinIME.InputUpdater inputUpdater) {
+        inputUpdater.onEndBatchInput(batchPointers);
+    }
+
+    // TODO: remove this argument
+    public void onCancelBatchInput(final LatinIME.InputUpdater inputUpdater) {
+        inputUpdater.onCancelBatchInput();
     }
 
     /**

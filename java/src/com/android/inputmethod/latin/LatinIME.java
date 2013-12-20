@@ -1251,60 +1251,24 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public void onStartBatchInput() {
-        mInputUpdater.onStartBatchInput();
-        mHandler.cancelUpdateSuggestionStrip();
-        mInputLogic.mConnection.beginBatchEdit();
-        final SettingsValues currentSettingsValues = mSettings.getCurrent();
-        if (mInputLogic.mWordComposer.isComposingWord()) {
-            if (currentSettingsValues.mIsInternal) {
-                if (mInputLogic.mWordComposer.isBatchMode()) {
-                    LatinImeLoggerUtils.onAutoCorrection("",
-                            mInputLogic.mWordComposer.getTypedWord(), " ",
-                            mInputLogic.mWordComposer);
-                }
-            }
-            final int wordComposerSize = mInputLogic.mWordComposer.size();
-            // Since isComposingWord() is true, the size is at least 1.
-            if (mInputLogic.mWordComposer.isCursorFrontOrMiddleOfComposingWord()) {
-                // If we are in the middle of a recorrection, we need to commit the recorrection
-                // first so that we can insert the batch input at the current cursor position.
-                mInputLogic.resetEntireInputState(currentSettingsValues,
-                        mInputLogic.mLastSelectionStart, mInputLogic.mLastSelectionEnd);
-            } else if (wordComposerSize <= 1) {
-                // We auto-correct the previous (typed, not gestured) string iff it's one character
-                // long. The reason for this is, even in the middle of gesture typing, you'll still
-                // tap one-letter words and you want them auto-corrected (typically, "i" in English
-                // should become "I"). However for any longer word, we assume that the reason for
-                // tapping probably is that the word you intend to type is not in the dictionary,
-                // so we do not attempt to correct, on the assumption that if that was a dictionary
-                // word, the user would probably have gestured instead.
-                mInputLogic.commitCurrentAutoCorrection(currentSettingsValues,
-                        LastComposedWord.NOT_A_SEPARATOR, mHandler);
-            } else {
-                mInputLogic.commitTyped(currentSettingsValues, LastComposedWord.NOT_A_SEPARATOR);
-            }
-        }
-        final int codePointBeforeCursor = mInputLogic.mConnection.getCodePointBeforeCursor();
-        if (Character.isLetterOrDigit(codePointBeforeCursor)
-                || currentSettingsValues.isUsuallyFollowedBySpace(codePointBeforeCursor)) {
-            final boolean autoShiftHasBeenOverriden = mKeyboardSwitcher.getKeyboardShiftMode() !=
-                    getCurrentAutoCapsState();
-            mInputLogic.mSpaceState = SpaceState.PHANTOM;
-            if (!autoShiftHasBeenOverriden) {
-                // When we change the space state, we need to update the shift state of the
-                // keyboard unless it has been overridden manually. This is happening for example
-                // after typing some letters and a period, then gesturing; the keyboard is not in
-                // caps mode yet, but since a gesture is starting, it should go in caps mode,
-                // unless the user explictly said it should not.
-                mKeyboardSwitcher.updateShiftState();
-            }
-        }
-        mInputLogic.mConnection.endBatchEdit();
-        mInputLogic.mWordComposer.setCapitalizedModeAndPreviousWordAtStartComposingTime(
-                mInputLogic.getActualCapsMode(currentSettingsValues, mKeyboardSwitcher),
-                // Prev word is 1st word before cursor
-                mInputLogic.getNthPreviousWordForSuggestion(currentSettingsValues,
-                        1 /* nthPreviousWord */));
+        mInputLogic.onStartBatchInput(mSettings.getCurrent(),  mKeyboardSwitcher, mHandler,
+                mInputUpdater);
+    }
+
+    @Override
+    public void onUpdateBatchInput(final InputPointers batchPointers) {
+        mInputLogic.onUpdateBatchInput(mSettings.getCurrent(), batchPointers, mKeyboardSwitcher,
+                mInputUpdater);
+    }
+
+    @Override
+    public void onEndBatchInput(final InputPointers batchPointers) {
+        mInputLogic.onEndBatchInput(mSettings.getCurrent(), batchPointers, mInputUpdater);
+    }
+
+    @Override
+    public void onCancelBatchInput() {
+        mInputLogic.onCancelBatchInput(mInputUpdater);
     }
 
     // TODO[IL]: Make this a package-private standalone class in inputlogic/ and remove all
@@ -1450,49 +1414,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
     }
 
-    /* The sequence number member is only used in onUpdateBatchInput. It is increased each time
-     * auto-commit happens. The reason we need this is, when auto-commit happens we trim the
-     * input pointers that are held in a singleton, and to know how much to trim we rely on the
-     * results of the suggestion process that is held in mSuggestedWords.
-     * However, the suggestion process is asynchronous, and sometimes we may enter the
-     * onUpdateBatchInput method twice without having recomputed suggestions yet, or having
-     * received new suggestions generated from not-yet-trimmed input pointers. In this case, the
-     * mIndexOfTouchPointOfSecondWords member will be out of date, and we must not use it lest we
-     * remove an unrelated number of pointers (possibly even more than are left in the input
-     * pointers, leading to a crash).
-     * To avoid that, we increase the sequence number each time we auto-commit and trim the
-     * input pointers, and we do not use any suggested words that have been generated with an
-     * earlier sequence number.
-     */
-    private int mAutoCommitSequenceNumber = 1;
-    @Override
-    public void onUpdateBatchInput(final InputPointers batchPointers) {
-        final SettingsValues settingsValues = mSettings.getCurrent();
-        if (settingsValues.mPhraseGestureEnabled) {
-            final SuggestedWordInfo candidate =
-                    mInputLogic.mSuggestedWords.getAutoCommitCandidate();
-            // If these suggested words have been generated with out of date input pointers, then
-            // we skip auto-commit (see comments above on the mSequenceNumber member).
-            if (null != candidate
-                    && mInputLogic.mSuggestedWords.mSequenceNumber >= mAutoCommitSequenceNumber) {
-                if (candidate.mSourceDict.shouldAutoCommit(candidate)) {
-                    final String[] commitParts = candidate.mWord.split(" ", 2);
-                    batchPointers.shift(candidate.mIndexOfTouchPointOfSecondWord);
-                    mInputLogic.promotePhantomSpace(mSettings.getCurrent());
-                    mInputLogic.mConnection.commitText(commitParts[0], 0);
-                    mInputLogic.mSpaceState = SpaceState.PHANTOM;
-                    mKeyboardSwitcher.updateShiftState();
-                    mInputLogic.mWordComposer.
-                            setCapitalizedModeAndPreviousWordAtStartComposingTime(
-                            mInputLogic.getActualCapsMode(settingsValues, mKeyboardSwitcher),
-                            commitParts[0]);
-                    ++mAutoCommitSequenceNumber;
-                }
-            }
-        }
-        mInputUpdater.onUpdateBatchInput(batchPointers, mAutoCommitSequenceNumber);
-    }
-
     // This method must run in UI Thread.
     public void onEndBatchInputAsyncInternal(final SuggestedWords suggestedWords) {
         final String batchInputText = suggestedWords.isEmpty() ? null : suggestedWords.getWord(0);
@@ -1527,11 +1448,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mKeyboardSwitcher.updateShiftState();
     }
 
-    @Override
-    public void onEndBatchInput(final InputPointers batchPointers) {
-        mInputUpdater.onEndBatchInput(batchPointers);
-    }
-
     // Called from PointerTracker through the KeyboardActionListener interface
     @Override
     public void onFinishSlidingInput() {
@@ -1544,11 +1460,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     public void onCancelInput() {
         // User released a finger outside any key
         // Nothing to do so far.
-    }
-
-    @Override
-    public void onCancelBatchInput() {
-        mInputUpdater.onCancelBatchInput();
     }
 
     // TODO[IL]: Move this to InputLogic and make it private
