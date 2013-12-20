@@ -1609,17 +1609,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mInputUpdater.onCancelBatchInput();
     }
 
-    // TODO[IL]: Rename this to avoid using handle*
-    private void handleClose() {
-        // TODO: Verify that words are logged properly when IME is closed.
-        mInputLogic.commitTyped(mSettings.getCurrent(), LastComposedWord.NOT_A_SEPARATOR);
-        requestHideSelf(0);
-        final MainKeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
-        if (mainKeyboardView != null) {
-            mainKeyboardView.closing();
-        }
-    }
-
     // TODO[IL]: Move this to InputLogic and make it private
     // Outside LatinIME, only used by the test suite.
     @UsedForTesting
@@ -2170,7 +2159,12 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     };
 
     private void launchSettings() {
-        handleClose();
+        mInputLogic.commitTyped(mSettings.getCurrent(), LastComposedWord.NOT_A_SEPARATOR);
+        requestHideSelf(0);
+        final MainKeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
+        if (mainKeyboardView != null) {
+            mainKeyboardView.closing();
+        }
         launchSubActivity(SettingsActivity.class);
     }
 
