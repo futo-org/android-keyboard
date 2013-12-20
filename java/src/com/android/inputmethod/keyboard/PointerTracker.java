@@ -155,10 +155,11 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
 
     private static DrawingProxy sDrawingProxy;
     private static TimerProxy sTimerProxy;
-    private static KeyDetector sDefaultKeyDetector;
-    private KeyDetector mKeyDetector;
     private static KeyboardActionListener sListener = KeyboardActionListener.EMPTY_LISTENER;
 
+    // The {@link KeyDetector} is set whenever the down event is processed. Also this is updated
+    // when new {@link Keyboard} is set by {@link #setKeyDetector(KeyDetector)}.
+    private KeyDetector mKeyDetector;
     private Keyboard mKeyboard;
     private int mPhantomSuddenMoveThreshold;
     private final BogusMoveEventDetector mBogusMoveEventDetector = new BogusMoveEventDetector();
@@ -344,7 +345,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
 
     // TODO: Add PointerTrackerFactory singleton and move some class static methods into it.
     public static void init(final TypedArray mainKeyboardViewAttr, final TimerProxy timerProxy,
-            final DrawingProxy drawingProxy, final KeyDetector defaultKeyDetector) {
+            final DrawingProxy drawingProxy) {
         sParams = new PointerTrackerParams(mainKeyboardViewAttr);
         sGestureStrokeParams = new GestureStrokeParams(mainKeyboardViewAttr);
         sGesturePreviewParams = new GestureStrokePreviewParams(mainKeyboardViewAttr);
@@ -358,7 +359,6 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
 
         sTimerProxy = timerProxy;
         sDrawingProxy = drawingProxy;
-        sDefaultKeyDetector = defaultKeyDetector;
     }
 
     private static void updateGestureHandlingMode() {
@@ -434,7 +434,6 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         mPointerId = id;
         mGestureStrokeWithPreviewPoints = new GestureStrokeWithPreviewPoints(
                 id, sGestureStrokeParams, sGesturePreviewParams);
-        setKeyDetectorInner(sDefaultKeyDetector);
     }
 
     // Returns true if keyboard has been changed by this callback.

@@ -27,15 +27,10 @@ import com.android.inputmethod.latin.utils.CoordinateUtils;
 public final class NonDistinctMultitouchHelper {
     private static final String TAG = NonDistinctMultitouchHelper.class.getSimpleName();
 
-    // Use only main (id=0) pointer tracker.
-    private final PointerTracker mMainTracker;
+    private static final int MAIN_POINTER_TRACKER_ID = 0;
     private int mOldPointerCount = 1;
     private Key mOldKey;
     private int[] mLastCoords = CoordinateUtils.newInstance();
-
-    public NonDistinctMultitouchHelper(final PointerTracker mainTracker) {
-        mMainTracker = mainTracker;
-    }
 
     public void processMotionEvent(final MotionEvent me, final KeyDetector keyDetector) {
         final int pointerCount = me.getPointerCount();
@@ -47,7 +42,9 @@ public final class NonDistinctMultitouchHelper {
             return;
         }
 
-        final PointerTracker mainTracker = mMainTracker;
+        // Use only main pointer tracker.
+        final PointerTracker mainTracker = PointerTracker.getPointerTracker(
+                MAIN_POINTER_TRACKER_ID);
         final int action = me.getActionMasked();
         final int index = me.getActionIndex();
         final long eventTime = me.getEventTime();

@@ -230,8 +230,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         mKeyDetector = new KeyDetector(
                 keyHysteresisDistance, keyHysteresisDistanceForSlidingModifier);
 
-        PointerTracker.init(mainKeyboardViewAttr, mKeyTimerHandler, this /* DrawingProxy */,
-                mKeyDetector);
+        PointerTracker.init(mainKeyboardViewAttr, mKeyTimerHandler, this /* DrawingProxy */);
 
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         final boolean forceNonDistinctMultitouch = prefs.getBoolean(
@@ -240,7 +239,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
                 .hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN_MULTITOUCH_DISTINCT)
                 && !forceNonDistinctMultitouch;
         mNonDistinctMultitouchHelper = hasDistinctMultitouch ? null
-                : new NonDistinctMultitouchHelper(PointerTracker.getPointerTracker(0));
+                : new NonDistinctMultitouchHelper();
 
         final int backgroundDimAlpha = mainKeyboardViewAttr.getInt(
                 R.styleable.MainKeyboardView_backgroundDimAlpha, 0);
@@ -431,7 +430,6 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         mKeyDetector.setKeyboard(
                 keyboard, -getPaddingLeft(), -getPaddingTop() + getVerticalCorrection());
         PointerTracker.setKeyDetector(mKeyDetector);
-        PointerTracker.setKeyboardActionListener(mKeyboardActionListener);
         mMoreKeysKeyboardCache.clear();
 
         mSpaceKey = keyboard.getKey(Constants.CODE_SPACE);
