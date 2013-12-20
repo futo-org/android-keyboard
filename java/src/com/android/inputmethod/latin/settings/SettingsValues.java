@@ -16,13 +16,16 @@
 
 package com.android.inputmethod.latin.settings;
 
+import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.util.Log;
 import android.view.inputmethod.EditorInfo;
 
 import com.android.inputmethod.annotations.UsedForTesting;
+import com.android.inputmethod.compat.AppWorkaroundsUtils;
 import com.android.inputmethod.keyboard.internal.KeySpecParser;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.Dictionary;
@@ -31,8 +34,10 @@ import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.RichInputMethodManager;
 import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
+import com.android.inputmethod.latin.utils.AsyncResultHolder;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.StringUtils;
+import com.android.inputmethod.latin.utils.TargetPackageInfoGetterTask;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,6 +53,7 @@ public final class SettingsValues {
     // Float.NEGATIVE_INFINITE and Float.MAX_VALUE. Currently used for auto-correction settings.
     private static final String FLOAT_MAX_VALUE_MARKER_STRING = "floatMaxValue";
     private static final String FLOAT_NEGATIVE_INFINITY_MARKER_STRING = "floatNegativeInfinity";
+    private static final int TIMEOUT_TO_GET_TARGET_PACKAGE = 5; // seconds
 
     // From resources:
     public final int mDelayUpdateOldSuggestions;
@@ -95,6 +101,7 @@ public final class SettingsValues {
     public final int mSuggestionVisibility;
     public final boolean mBoostPersonalizationDictionaryForDebug;
     public final boolean mUseOnlyPersonalizationDictionaryForDebug;
+    private final AsyncResultHolder<AppWorkaroundsUtils> mAppWorkarounds;
 
     // Setting values for additional features
     public final int[] mAdditionalFeaturesSettingValues =
@@ -103,8 +110,8 @@ public final class SettingsValues {
     // Debug settings
     public final boolean mIsInternal;
 
-    public SettingsValues(final SharedPreferences prefs, final Locale locale, final Resources res,
-            final InputAttributes inputAttributes) {
+    public SettingsValues(final Context context, final SharedPreferences prefs, final Locale locale,
+            final Resources res, final InputAttributes inputAttributes) {
         mLocale = locale;
         // Get the resources
         mDelayUpdateOldSuggestions = res.getInteger(R.integer.config_delay_update_old_suggestions);
@@ -177,6 +184,15 @@ public final class SettingsValues {
                 Settings.readBoostPersonalizationDictionaryForDebug(prefs);
         mUseOnlyPersonalizationDictionaryForDebug =
                 Settings.readUseOnlyPersonalizationDictionaryForDebug(prefs);
+        mAppWorkarounds = new AsyncResultHolder<AppWorkaroundsUtils>();
+        final PackageInfo packageInfo = TargetPackageInfoGetterTask.getCachedPackageInfo(
+                mInputAttributes.mTargetApplicationPackageName);
+        if (null != packageInfo) {
+            mAppWorkarounds.set(new AppWorkaroundsUtils(packageInfo));
+        } else {
+            new TargetPackageInfoGetterTask(context, mAppWorkarounds)
+                    .execute(mInputAttributes.mTargetApplicationPackageName);
+        }
     }
 
     // Only for tests
@@ -225,6 +241,8 @@ public final class SettingsValues {
         mIsInternal = false;
         mBoostPersonalizationDictionaryForDebug = false;
         mUseOnlyPersonalizationDictionaryForDebug = false;
+        mAppWorkarounds = new AsyncResultHolder<AppWorkaroundsUtils>();
+        mAppWorkarounds.set(null);
     }
 
     @UsedForTesting
@@ -286,6 +304,14 @@ public final class SettingsValues {
 
     public boolean isSameInputType(final EditorInfo editorInfo) {
         return mInputAttributes.isSameInputType(editorInfo);
+    }
+
+    public boolean isBeforeJellyBean() {
+        return mAppWorkarounds.get(null, TIMEOUT_TO_GET_TARGET_PACKAGE).isBeforeJellyBean();
+    }
+
+    public boolean isBrokenByRecorrection() {
+        return mAppWorkarounds.get(null, TIMEOUT_TO_GET_TARGET_PACKAGE).isBrokenByRecorrection();
     }
 
     // Helper functions to create member values.
