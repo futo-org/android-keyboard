@@ -933,7 +933,7 @@ public final class InputLogic {
         final int separatorLength = mLastComposedWord.mSeparatorString.length();
         // TODO: should we check our saved separator against the actual contents of the text view?
         final int deleteLength = cancelLength + separatorLength;
-        if (LatinIME.DEBUG) {
+        if (LatinImeLogger.sDBG) {
             if (mWordComposer.isComposingWord()) {
                 throw new RuntimeException("revertCommit, but we are composing a word");
             }
