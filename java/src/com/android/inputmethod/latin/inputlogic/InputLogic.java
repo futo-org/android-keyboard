@@ -1131,10 +1131,9 @@ public final class InputLogic {
         // We have a TLD (or something that looks like this): make sure we don't add
         // a space even if currently in phantom mode.
         mSpaceState = SpaceState.NONE;
-        // TODO: use getCodePointBeforeCursor instead to improve performance and simplify the code
-        final CharSequence lastOne = mConnection.getTextBeforeCursor(1, 0);
-        if (lastOne != null && lastOne.length() == 1
-                && lastOne.charAt(0) == Constants.CODE_PERIOD) {
+        final int codePointBeforeCursor = mConnection.getCodePointBeforeCursor();
+        // If no code point, #getCodePointBeforeCursor returns NOT_A_CODE_POINT.
+        if (Constants.CODE_PERIOD == codePointBeforeCursor) {
             return text.substring(1);
         } else {
             return text;
