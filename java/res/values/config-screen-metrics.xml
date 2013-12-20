@@ -19,11 +19,6 @@
 -->
 
 <resources>
-    <!--  Screen metrics for logging.
-            0 = "small phone screen"
-            1 = "large phone screen"
-            2 = "large tablet screen"
-            3 = "small tablet screen"
-    -->
-    <integer name="log_screen_metrics">0</integer>
+    <!-- Must be aligned with {@link Constants#SCREEN_METRICS_SMALL_PHONE}. -->
+    <integer name="config_screen_metrics">0</integer>
 </resources>

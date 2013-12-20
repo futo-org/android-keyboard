@@ -248,6 +248,15 @@ public final class Constants {
 
     public static final int MAX_INT_BIT_COUNT = 32;
 
+    /**
+     * Screen metrics (a.k.a. Device form factor) constants of
+     * {@link R.integer#config_screen_metrics}.
+     */
+    public static final int SCREEN_METRICS_SMALL_PHONE = 0;
+    public static final int SCREEN_METRICS_LARGE_PHONE = 1;
+    public static final int SCREEN_METRICS_LARGE_TABLET = 2;
+    public static final int SCREEN_METRICS_SMALL_TABLET = 3;
+
     private Constants() {
         // This utility class is not publicly instantiable.
     }
