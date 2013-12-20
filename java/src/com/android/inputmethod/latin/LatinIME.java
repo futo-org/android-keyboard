@@ -106,8 +106,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         Suggest.SuggestInitializationListener {
     private static final String TAG = LatinIME.class.getSimpleName();
     private static final boolean TRACE = false;
-    // TODO[IL]: Make this private
-    public static boolean DEBUG;
+    private static boolean DEBUG = false;
 
     private static final int EXTENDED_TOUCHABLE_REGION_HEIGHT = 100;
 
