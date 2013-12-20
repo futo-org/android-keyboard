@@ -133,6 +133,8 @@ public final class Constants {
          * {@link android.text.TextUtils#CAP_MODE_WORDS}, and
          * {@link android.text.TextUtils#CAP_MODE_SENTENCES}.
          */
+        // TODO: Straighten this out. It's bizarre to have to use android.text.TextUtils.CAP_MODE_*
+        // except for OFF that is in Constants.TextUtils.
         public static final int CAP_MODE_OFF = 0;
 
         private TextUtils() {
