@@ -18,14 +18,15 @@ package com.android.inputmethod.keyboard.internal;
 
 import android.util.Log;
 
+import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.InputPointers;
 import com.android.inputmethod.latin.utils.ResizableIntArray;
 
 /**
  * This class holds event points to recognize a gesture stroke.
- * TODO: Should be final and package private class.
+ * TODO: Should be package private class.
  */
-public class GestureStrokeRecognitionPoints {
+public final class GestureStrokeRecognitionPoints {
     private static final String TAG = GestureStrokeRecognitionPoints.class.getSimpleName();
     private static final boolean DEBUG = false;
     private static final boolean DEBUG_SPEED = false;
@@ -34,12 +35,13 @@ public class GestureStrokeRecognitionPoints {
     // Proportional to the keyboard height.
     public static final float EXTRA_GESTURE_TRAIL_AREA_ABOVE_KEYBOARD_RATIO = 0.25f;
 
-    public static final int DEFAULT_CAPACITY = 128;
-
     private final int mPointerId;
-    private final ResizableIntArray mEventTimes = new ResizableIntArray(DEFAULT_CAPACITY);
-    private final ResizableIntArray mXCoordinates = new ResizableIntArray(DEFAULT_CAPACITY);
-    private final ResizableIntArray mYCoordinates = new ResizableIntArray(DEFAULT_CAPACITY);
+    private final ResizableIntArray mEventTimes = new ResizableIntArray(
+            Constants.DEFAULT_GESTURE_POINTS_CAPACITY);
+    private final ResizableIntArray mXCoordinates = new ResizableIntArray(
+            Constants.DEFAULT_GESTURE_POINTS_CAPACITY);
+    private final ResizableIntArray mYCoordinates = new ResizableIntArray(
+            Constants.DEFAULT_GESTURE_POINTS_CAPACITY);
 
     private final GestureStrokeRecognitionParams mRecognitionParams;
 
@@ -67,12 +69,14 @@ public class GestureStrokeRecognitionPoints {
 
     private static final int MSEC_PER_SEC = 1000;
 
+    // TODO: Make this package private
     public GestureStrokeRecognitionPoints(final int pointerId,
             final GestureStrokeRecognitionParams recognitionParams) {
         mPointerId = pointerId;
         mRecognitionParams = recognitionParams;
     }
 
+    // TODO: Make this package private
     public void setKeyboardGeometry(final int keyWidth, final int keyboardHeight) {
         mKeyWidth = keyWidth;
         mMinYCoordinate = -(int)(keyboardHeight * EXTRA_GESTURE_TRAIL_AREA_ABOVE_KEYBOARD_RATIO);
@@ -99,11 +103,13 @@ public class GestureStrokeRecognitionPoints {
         }
     }
 
+    // TODO: Make this package private
     public int getLength() {
         return mEventTimes.getLength();
     }
 
-    public void onDownEvent(final int x, final int y, final int elapsedTimeSinceFirstDown,
+    // TODO: Make this package private
+    public void addDownEventPoint(final int x, final int y, final int elapsedTimeSinceFirstDown,
             final int elapsedTimeSinceLastTyping) {
         reset();
         if (elapsedTimeSinceLastTyping < mRecognitionParams.mStaticTimeThresholdAfterFastTyping) {
@@ -113,7 +119,9 @@ public class GestureStrokeRecognitionPoints {
             Log.d(TAG, String.format("[%d] onDownEvent: dT=%3d%s", mPointerId,
                     elapsedTimeSinceLastTyping, mAfterFastTyping ? " afterFastTyping" : ""));
         }
-        addPointOnKeyboard(x, y, elapsedTimeSinceFirstDown, true /* isMajorEvent */);
+        // Call {@link #addEventPoint(int,int,int,boolean)} to record this down event point as a
+        // major event point.
+        addEventPoint(x, y, elapsedTimeSinceFirstDown, true /* isMajorEvent */);
     }
 
     private int getGestureDynamicDistanceThreshold(final int deltaTime) {
@@ -137,6 +145,7 @@ public class GestureStrokeRecognitionPoints {
         return mRecognitionParams.mDynamicTimeThresholdFrom - decayedThreshold;
     }
 
+    // TODO: Make this package private
     public final boolean isStartOfAGesture() {
         if (!hasDetectedFastMove()) {
             return false;
@@ -167,6 +176,7 @@ public class GestureStrokeRecognitionPoints {
         return isStartOfAGesture;
     }
 
+    // TODO: Make this package private
     public void duplicateLastPointWith(final int time) {
         final int lastIndex = getLength() - 1;
         if (lastIndex >= 0) {
@@ -250,19 +260,20 @@ public class GestureStrokeRecognitionPoints {
     }
 
     /**
-     * Add a touch event as a gesture point. Returns true if the touch event is on the valid
-     * gesture area.
-     * @param x the x-coordinate of the touch event
-     * @param y the y-coordinate of the touch event
+     * Add an event point to this gesture stroke recognition points. Returns true if the event
+     * point is on the valid gesture area.
+     * @param x the x-coordinate of the event point
+     * @param y the y-coordinate of the event point
      * @param time the elapsed time in millisecond from the first gesture down
      * @param isMajorEvent false if this is a historical move event
-     * @return true if the touch event is on the valid gesture area
+     * @return true if the event point is on the valid gesture area
      */
-    public boolean addPointOnKeyboard(final int x, final int y, final int time,
+    // TODO: Make this package private
+    public boolean addEventPoint(final int x, final int y, final int time,
             final boolean isMajorEvent) {
         final int size = getLength();
         if (size <= 0) {
-            // Down event
+            // The first event of this stroke (a.k.a. down event).
             appendPoint(x, y, time);
             updateMajorEvent(x, y, time);
         } else {
@@ -291,15 +302,18 @@ public class GestureStrokeRecognitionPoints {
         }
     }
 
+    // TODO: Make this package private
     public final boolean hasRecognitionTimePast(
             final long currentTime, final long lastRecognitionTime) {
         return currentTime > lastRecognitionTime + mRecognitionParams.mRecognitionMinimumTime;
     }
 
+    // TODO: Make this package private
     public final void appendAllBatchPoints(final InputPointers out) {
         appendBatchPoints(out, getLength());
     }
 
+    // TODO: Make this package private
     public final void appendIncrementalBatchPoints(final InputPointers out) {
         appendBatchPoints(out, mIncrementalRecognitionSize);
     }
