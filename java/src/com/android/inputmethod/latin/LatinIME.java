@@ -581,6 +581,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             suggest.close();
             mInputLogic.mSuggest = null;
         }
+        if (mInputUpdater != null) {
+            mInputUpdater.quitLooper();
+        }
         mSettings.onDestroy();
         unregisterReceiver(mReceiver);
         if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
@@ -590,9 +593,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         PersonalizationDictionarySessionRegister.onDestroy(this);
         LatinImeLogger.commit();
         LatinImeLogger.onDestroy();
-        if (mInputUpdater != null) {
-            mInputUpdater.quitLooper();
-        }
         super.onDestroy();
     }
 
