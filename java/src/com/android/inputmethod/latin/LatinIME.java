@@ -28,7 +28,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Rect;
@@ -61,7 +60,6 @@ import android.view.inputmethod.InputMethodSubtype;
 import com.android.inputmethod.accessibility.AccessibilityUtils;
 import com.android.inputmethod.accessibility.AccessibleKeyboardViewProxy;
 import com.android.inputmethod.annotations.UsedForTesting;
-import com.android.inputmethod.compat.AppWorkaroundsUtils;
 import com.android.inputmethod.compat.InputMethodServiceCompatUtils;
 import com.android.inputmethod.dictionarypack.DictionaryPackConstants;
 import com.android.inputmethod.keyboard.Keyboard;
@@ -89,7 +87,6 @@ import com.android.inputmethod.latin.utils.IntentUtils;
 import com.android.inputmethod.latin.utils.JniUtils;
 import com.android.inputmethod.latin.utils.LatinImeLoggerUtils;
 import com.android.inputmethod.latin.utils.LeakGuardHandlerWrapper;
-import com.android.inputmethod.latin.utils.TargetPackageInfoGetterTask;
 import com.android.inputmethod.latin.utils.TextRange;
 import com.android.inputmethod.research.ResearchLogger;
 
@@ -102,8 +99,7 @@ import java.util.Locale;
  * Input method implementation for Qwerty'ish keyboard.
  */
 public class LatinIME extends InputMethodService implements KeyboardActionListener,
-        SuggestionStripView.Listener, TargetPackageInfoGetterTask.OnTargetPackageInfoKnownListener,
-        Suggest.SuggestInitializationListener {
+        SuggestionStripView.Listener, Suggest.SuggestInitializationListener {
     private static final String TAG = LatinIME.class.getSimpleName();
     private static final boolean TRACE = false;
     private static boolean DEBUG = false;
@@ -128,8 +124,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private SuggestionStripView mSuggestionStripView;
 
     private CompletionInfo[] mApplicationSpecifiedCompletions;
-    // TODO[IL]: Make this an AsyncResultHolder or a Future in SettingsValues
-    public AppWorkaroundsUtils mAppWorkAroundsUtils = new AppWorkaroundsUtils();
 
     private RichInputMethodManager mRichImm;
     @UsedForTesting final KeyboardSwitcher mKeyboardSwitcher;
@@ -519,9 +513,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     @UsedForTesting
     void loadSettings() {
         final Locale locale = mSubtypeSwitcher.getCurrentSubtypeLocale();
-        final InputAttributes inputAttributes =
-                new InputAttributes(getCurrentInputEditorInfo(), isFullscreenMode());
-        mSettings.loadSettings(locale, inputAttributes);
+        final EditorInfo editorInfo = getCurrentInputEditorInfo();
+        final InputAttributes inputAttributes = new InputAttributes(editorInfo, isFullscreenMode());
+        mSettings.loadSettings(this, locale, inputAttributes);
         AudioAndHapticFeedbackManager.getInstance().onSettingsChanged(mSettings.getCurrent());
         // To load the keyboard we need to load all the settings once, but resetting the
         // contacts dictionary should be deferred until after the new layout has been displayed
@@ -798,13 +792,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (isDifferentTextField) {
             mainKeyboardView.closing();
             loadSettings();
-            final PackageInfo packageInfo =
-                    TargetPackageInfoGetterTask.getCachedPackageInfo(editorInfo.packageName);
-            mAppWorkAroundsUtils.setPackageInfo(packageInfo);
-            if (null == packageInfo) {
-                new TargetPackageInfoGetterTask(this /* context */, this /* listener */)
-                        .execute(editorInfo.packageName);
-            }
             currentSettingsValues = mSettings.getCurrent();
 
             if (suggest != null && currentSettingsValues.mCorrectionEnabled) {
@@ -910,12 +897,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mBoostPersonalizationDictionaryForDebug =
                     currentSettingsValues.mBoostPersonalizationDictionaryForDebug;
         }
-    }
-
-    // Callback for the TargetPackageInfoGetterTask
-    @Override
-    public void onTargetPackageInfoKnown(final PackageInfo info) {
-        mAppWorkAroundsUtils.setPackageInfo(info);
     }
 
     @Override
@@ -1991,12 +1972,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // HACK: We may want to special-case some apps that exhibit bad behavior in case of
         // recorrection. This is a temporary, stopgap measure that will be removed later.
         // TODO: remove this.
-        if (mAppWorkAroundsUtils.isBrokenByRecorrection()) return;
+        final SettingsValues settingsValues = mSettings.getCurrent();
+        if (settingsValues.isBrokenByRecorrection()) return;
         // A simple way to test for support from the TextView.
         if (!isSuggestionsStripVisible()) return;
         // Recorrection is not supported in languages without spaces because we don't know
         // how to segment them yet.
-        if (!mSettings.getCurrent().mCurrentLanguageHasSpaces) return;
+        if (!settingsValues.mCurrentLanguageHasSpaces) return;
         // If the cursor is not touching a word, or if there is a selection, return right away.
         if (mInputLogic.mLastSelectionStart != mInputLogic.mLastSelectionEnd) return;
         // If we don't know the cursor location, return.
@@ -2322,8 +2304,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     public void debugDumpStateAndCrashWithException(final String context) {
-        final StringBuilder s = new StringBuilder(mAppWorkAroundsUtils.toString());
-        s.append("\nAttributes : ").append(mSettings.getCurrent().mInputAttributes)
+        final SettingsValues settingsValues = mSettings.getCurrent();
+        final StringBuilder s = new StringBuilder(settingsValues.toString());
+        s.append("\nAttributes : ").append(settingsValues.mInputAttributes)
                 .append("\nContext : ").append(context);
         throw new RuntimeException(s.toString());
     }
@@ -2348,5 +2331,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         p.println("  mVibrateOn=" + settingsValues.mVibrateOn);
         p.println("  mKeyPreviewPopupOn=" + settingsValues.mKeyPreviewPopupOn);
         p.println("  inputAttributes=" + settingsValues.mInputAttributes);
+        // TODO: Dump all settings values
     }
 }

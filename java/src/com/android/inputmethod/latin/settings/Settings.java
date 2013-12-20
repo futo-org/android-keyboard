@@ -101,6 +101,7 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     public static final String PREF_EMOJI_CATEGORY_LAST_TYPED_ID = "emoji_category_last_typed_id";
     public static final String PREF_LAST_SHOWN_EMOJI_CATEGORY_ID = "last_shown_emoji_category_id";
 
+    private Context mContext;
     private Resources mRes;
     private SharedPreferences mPrefs;
     private SettingsValues mSettingsValues;
@@ -121,6 +122,7 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     }
 
     private void onCreate(final Context context) {
+        mContext = context;
         mRes = context.getResources();
         mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
         mPrefs.registerOnSharedPreferenceChangeListener(this);
@@ -140,20 +142,22 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
                 Log.w(TAG, "onSharedPreferenceChanged called before loadSettings.");
                 return;
             }
-            loadSettings(mSettingsValues.mLocale, mSettingsValues.mInputAttributes);
+            loadSettings(mContext, mSettingsValues.mLocale, mSettingsValues.mInputAttributes);
         } finally {
             mSettingsValuesLock.unlock();
         }
     }
 
-    public void loadSettings(final Locale locale, final InputAttributes inputAttributes) {
+    public void loadSettings(final Context context, final Locale locale,
+            final InputAttributes inputAttributes) {
         mSettingsValuesLock.lock();
+        mContext = context;
         try {
             final SharedPreferences prefs = mPrefs;
             final RunInLocale<SettingsValues> job = new RunInLocale<SettingsValues>() {
                 @Override
                 protected SettingsValues job(final Resources res) {
-                    return new SettingsValues(prefs, locale, res, inputAttributes);
+                    return new SettingsValues(context, prefs, locale, res, inputAttributes);
                 }
             };
             mSettingsValues = job.runInLocale(mRes, locale);

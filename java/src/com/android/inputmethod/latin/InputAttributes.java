@@ -29,6 +29,7 @@ import com.android.inputmethod.latin.utils.StringUtils;
 public final class InputAttributes {
     private final String TAG = InputAttributes.class.getSimpleName();
 
+    final public String mTargetApplicationPackageName;
     final public boolean mInputTypeNoAutoCorrect;
     final public boolean mIsSettingsSuggestionStripOn;
     final public boolean mApplicationSpecifiedCompletionOn;
@@ -36,6 +37,7 @@ public final class InputAttributes {
     final private int mInputType;
 
     public InputAttributes(final EditorInfo editorInfo, final boolean isFullscreenMode) {
+        mTargetApplicationPackageName = null != editorInfo ? editorInfo.packageName : null;
         final int inputType = null != editorInfo ? editorInfo.inputType : 0;
         final int inputClass = inputType & InputType.TYPE_MASK_CLASS;
         mInputType = inputType;
