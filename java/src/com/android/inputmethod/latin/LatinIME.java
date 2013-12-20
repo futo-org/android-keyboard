@@ -49,14 +49,12 @@ import android.util.Log;
 import android.util.Pair;
 import android.util.PrintWriterPrinter;
 import android.util.Printer;
-import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.CompletionInfo;
-import android.view.inputmethod.CorrectionInfo;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodSubtype;
 
@@ -65,9 +63,7 @@ import com.android.inputmethod.accessibility.AccessibleKeyboardViewProxy;
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.compat.AppWorkaroundsUtils;
 import com.android.inputmethod.compat.InputMethodServiceCompatUtils;
-import com.android.inputmethod.compat.SuggestionSpanUtils;
 import com.android.inputmethod.dictionarypack.DictionaryPackConstants;
-import com.android.inputmethod.event.EventInterpreter;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardActionListener;
 import com.android.inputmethod.keyboard.KeyboardId;
@@ -80,24 +76,19 @@ import com.android.inputmethod.latin.inputlogic.InputLogic;
 import com.android.inputmethod.latin.inputlogic.SpaceState;
 import com.android.inputmethod.latin.personalization.DictionaryDecayBroadcastReciever;
 import com.android.inputmethod.latin.personalization.PersonalizationDictionarySessionRegister;
-import com.android.inputmethod.latin.personalization.UserHistoryDictionary;
 import com.android.inputmethod.latin.settings.Settings;
 import com.android.inputmethod.latin.settings.SettingsActivity;
 import com.android.inputmethod.latin.settings.SettingsValues;
 import com.android.inputmethod.latin.suggestions.SuggestionStripView;
 import com.android.inputmethod.latin.utils.ApplicationUtils;
-import com.android.inputmethod.latin.utils.AsyncResultHolder;
 import com.android.inputmethod.latin.utils.AutoCorrectionUtils;
 import com.android.inputmethod.latin.utils.CapsModeUtils;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.CompletionInfoUtils;
-import com.android.inputmethod.latin.utils.InputTypeUtils;
 import com.android.inputmethod.latin.utils.IntentUtils;
 import com.android.inputmethod.latin.utils.JniUtils;
 import com.android.inputmethod.latin.utils.LatinImeLoggerUtils;
 import com.android.inputmethod.latin.utils.LeakGuardHandlerWrapper;
-import com.android.inputmethod.latin.utils.RecapitalizeStatus;
-import com.android.inputmethod.latin.utils.StringUtils;
 import com.android.inputmethod.latin.utils.TargetPackageInfoGetterTask;
 import com.android.inputmethod.latin.utils.TextRange;
 import com.android.inputmethod.research.ResearchLogger;
@@ -106,8 +97,6 @@ import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Locale;
-import java.util.TreeSet;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Input method implementation for Qwerty'ish keyboard.
@@ -125,9 +114,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private static final int PENDING_IMS_CALLBACK_DURATION = 800;
 
     private static final int PERIOD_FOR_AUDIO_AND_HAPTIC_FEEDBACK_IN_KEY_REPEAT = 2;
-
-    // TODO: Set this value appropriately.
-    private static final int GET_SUGGESTED_WORDS_TIMEOUT = 200;
 
     /**
      * The name of the scheme used by the Package Manager to warn of a new package installation,
@@ -216,7 +202,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             final KeyboardSwitcher switcher = latinIme.mKeyboardSwitcher;
             switch (msg.what) {
             case MSG_UPDATE_SUGGESTION_STRIP:
-                latinIme.updateSuggestionStrip();
+                latinIme.mInputLogic.performUpdateSuggestionStripSync(
+                        latinIme.mSettings.getCurrent(), this);
                 break;
             case MSG_UPDATE_SHIFT_STATE:
                 switcher.updateShiftState();
@@ -1756,44 +1743,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
     }
 
-    // TODO[IL]: Move this to InputLogic and make private again
-    public void updateSuggestionStrip() {
-        mHandler.cancelUpdateSuggestionStrip();
-        final SettingsValues currentSettings = mSettings.getCurrent();
-
-        // Check if we have a suggestion engine attached.
-        if (mInputLogic.mSuggest == null
-                || !currentSettings.isSuggestionsRequested(mDisplayOrientation)) {
-            if (mInputLogic.mWordComposer.isComposingWord()) {
-                Log.w(TAG, "Called updateSuggestionsOrPredictions but suggestions were not "
-                        + "requested!");
-            }
-            return;
-        }
-
-        if (!mInputLogic.mWordComposer.isComposingWord()
-                && !currentSettings.mBigramPredictionEnabled) {
-            setPunctuationSuggestions();
-            return;
-        }
-
-        final AsyncResultHolder<SuggestedWords> holder = new AsyncResultHolder<SuggestedWords>();
-        getSuggestedWordsOrOlderSuggestionsAsync(Suggest.SESSION_TYPING,
-                SuggestedWords.NOT_A_SEQUENCE_NUMBER, new OnGetSuggestedWordsCallback() {
-                    @Override
-                    public void onGetSuggestedWords(final SuggestedWords suggestedWords) {
-                        holder.set(suggestedWords);
-                    }
-                }
-        );
-
-        // This line may cause the current thread to wait.
-        final SuggestedWords suggestedWords = holder.get(null, GET_SUGGESTED_WORDS_TIMEOUT);
-        if (suggestedWords != null) {
-            showSuggestionStrip(suggestedWords);
-        }
-    }
-
     private void getSuggestedWords(final int sessionId, final int sequenceNumber,
             final OnGetSuggestedWordsCallback callback) {
         final Keyboard keyboard = mKeyboardSwitcher.getKeyboard();
@@ -1833,7 +1782,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 additionalFeaturesOptions, sessionId, sequenceNumber, callback);
     }
 
-    private void getSuggestedWordsOrOlderSuggestionsAsync(final int sessionId,
+    // TODO[IL]: Move this to InputLogic?
+    public void getSuggestedWordsOrOlderSuggestionsAsync(final int sessionId,
             final int sequenceNumber, final OnGetSuggestedWordsCallback callback) {
         mInputUpdater.getSuggestedWords(sessionId, sequenceNumber,
                 new OnGetSuggestedWordsCallback() {
@@ -1913,7 +1863,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
       AccessibilityUtils.getInstance().setAutoCorrection(suggestedWords, typedWord);
     }
 
-    private void showSuggestionStrip(final SuggestedWords suggestedWords) {
+    // TODO[IL]: Define a clean interface for this
+    public void showSuggestionStrip(final SuggestedWords suggestedWords) {
         if (suggestedWords.isEmpty()) {
             clearSuggestionStrip();
             return;
