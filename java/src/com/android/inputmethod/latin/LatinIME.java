@@ -43,7 +43,6 @@ import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.text.InputType;
 import android.text.TextUtils;
-import android.text.style.SuggestionSpan;
 import android.util.Log;
 import android.util.Pair;
 import android.util.PrintWriterPrinter;
@@ -81,13 +80,11 @@ import com.android.inputmethod.latin.suggestions.SuggestionStripView;
 import com.android.inputmethod.latin.utils.ApplicationUtils;
 import com.android.inputmethod.latin.utils.AutoCorrectionUtils;
 import com.android.inputmethod.latin.utils.CapsModeUtils;
-import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.CompletionInfoUtils;
 import com.android.inputmethod.latin.utils.IntentUtils;
 import com.android.inputmethod.latin.utils.JniUtils;
 import com.android.inputmethod.latin.utils.LatinImeLoggerUtils;
 import com.android.inputmethod.latin.utils.LeakGuardHandlerWrapper;
-import com.android.inputmethod.latin.utils.TextRange;
 import com.android.inputmethod.research.ResearchLogger;
 
 import java.io.FileDescriptor;
@@ -212,7 +209,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 }
                 break;
             case MSG_RESUME_SUGGESTIONS:
-                latinIme.restartSuggestionsOnWordTouchedByCursor();
+                latinIme.mInputLogic.restartSuggestionsOnWordTouchedByCursor(
+                        latinIme.mSettings.getCurrent(), latinIme.mKeyboardSwitcher,
+                        latinIme.mInputUpdater);
                 break;
             case MSG_REOPEN_DICTIONARIES:
                 latinIme.initSuggest();
@@ -1367,7 +1366,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                         1 /* nthPreviousWord */));
     }
 
-    static final class InputUpdater implements Handler.Callback {
+    // TODO[IL]: Make this a package-private standalone class in inputlogic/ and remove all
+    // references to it in LatinIME
+    public static final class InputUpdater implements Handler.Callback {
         private final Handler mHandler;
         private final LatinIME mLatinIme;
         private final Object mLock = new Object();
@@ -1617,7 +1618,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         return mSettings.getCurrent().mSuggestPuncList == mInputLogic.mSuggestedWords;
     }
 
-    private boolean isSuggestionsStripVisible() {
+    // TODO[IL]: Define a clear interface for this
+    public boolean isSuggestionsStripVisible() {
         final SettingsValues currentSettings = mSettings.getCurrent();
         if (mSuggestionStripView == null)
             return false;
@@ -1901,111 +1903,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
         setAutoCorrectionIndicator(false);
         setSuggestionStripShown(isSuggestionsStripVisible());
-    }
-
-    private boolean isResumableWord(final String word, final SettingsValues settings) {
-        final int firstCodePoint = word.codePointAt(0);
-        return settings.isWordCodePoint(firstCodePoint)
-                && Constants.CODE_SINGLE_QUOTE != firstCodePoint
-                && Constants.CODE_DASH != firstCodePoint;
-    }
-
-    /**
-     * Check if the cursor is touching a word. If so, restart suggestions on this word, else
-     * do nothing.
-     */
-    private void restartSuggestionsOnWordTouchedByCursor() {
-        // HACK: We may want to special-case some apps that exhibit bad behavior in case of
-        // recorrection. This is a temporary, stopgap measure that will be removed later.
-        // TODO: remove this.
-        final SettingsValues settingsValues = mSettings.getCurrent();
-        if (settingsValues.isBrokenByRecorrection()) return;
-        // A simple way to test for support from the TextView.
-        if (!isSuggestionsStripVisible()) return;
-        // Recorrection is not supported in languages without spaces because we don't know
-        // how to segment them yet.
-        if (!settingsValues.mCurrentLanguageHasSpaces) return;
-        // If the cursor is not touching a word, or if there is a selection, return right away.
-        if (mInputLogic.mLastSelectionStart != mInputLogic.mLastSelectionEnd) return;
-        // If we don't know the cursor location, return.
-        if (mInputLogic.mLastSelectionStart < 0) return;
-        final SettingsValues currentSettings = mSettings.getCurrent();
-        if (!mInputLogic.mConnection.isCursorTouchingWord(currentSettings)) return;
-        final TextRange range = mInputLogic.mConnection.getWordRangeAtCursor(
-                currentSettings.mWordSeparators, 0 /* additionalPrecedingWordsCount */);
-        if (null == range) return; // Happens if we don't have an input connection at all
-        if (range.length() <= 0) return; // Race condition. No text to resume on, so bail out.
-        // If for some strange reason (editor bug or so) we measure the text before the cursor as
-        // longer than what the entire text is supposed to be, the safe thing to do is bail out.
-        final int numberOfCharsInWordBeforeCursor = range.getNumberOfCharsInWordBeforeCursor();
-        if (numberOfCharsInWordBeforeCursor > mInputLogic.mLastSelectionStart) return;
-        final ArrayList<SuggestedWordInfo> suggestions = CollectionUtils.newArrayList();
-        final String typedWord = range.mWord.toString();
-        if (!isResumableWord(typedWord, currentSettings)) return;
-        int i = 0;
-        for (final SuggestionSpan span : range.getSuggestionSpansAtWord()) {
-            for (final String s : span.getSuggestions()) {
-                ++i;
-                if (!TextUtils.equals(s, typedWord)) {
-                    suggestions.add(new SuggestedWordInfo(s,
-                            SuggestionStripView.MAX_SUGGESTIONS - i,
-                            SuggestedWordInfo.KIND_RESUMED, Dictionary.DICTIONARY_RESUMED,
-                            SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
-                            SuggestedWordInfo.NOT_A_CONFIDENCE
-                                    /* autoCommitFirstWordConfidence */));
-                }
-            }
-        }
-        mInputLogic.mWordComposer.setComposingWord(typedWord,
-                mInputLogic.getNthPreviousWordForSuggestion(currentSettings,
-                        // We want the previous word for suggestion. If we have chars in the word
-                        // before the cursor, then we want the word before that, hence 2; otherwise,
-                        // we want the word immediately before the cursor, hence 1.
-                        0 == numberOfCharsInWordBeforeCursor ? 1 : 2),
-                mKeyboardSwitcher.getKeyboard());
-        mInputLogic.mWordComposer.setCursorPositionWithinWord(
-                typedWord.codePointCount(0, numberOfCharsInWordBeforeCursor));
-        mInputLogic.mConnection.setComposingRegion(
-                mInputLogic.mLastSelectionStart - numberOfCharsInWordBeforeCursor,
-                mInputLogic.mLastSelectionEnd + range.getNumberOfCharsInWordAfterCursor());
-        if (suggestions.isEmpty()) {
-            // We come here if there weren't any suggestion spans on this word. We will try to
-            // compute suggestions for it instead.
-            mInputUpdater.getSuggestedWords(Suggest.SESSION_TYPING,
-                    SuggestedWords.NOT_A_SEQUENCE_NUMBER, new OnGetSuggestedWordsCallback() {
-                        @Override
-                        public void onGetSuggestedWords(
-                                final SuggestedWords suggestedWordsIncludingTypedWord) {
-                            final SuggestedWords suggestedWords;
-                            if (suggestedWordsIncludingTypedWord.size() > 1) {
-                                // We were able to compute new suggestions for this word.
-                                // Remove the typed word, since we don't want to display it in this
-                                // case. The #getSuggestedWordsExcludingTypedWord() method sets
-                                // willAutoCorrect to false.
-                                suggestedWords = suggestedWordsIncludingTypedWord
-                                        .getSuggestedWordsExcludingTypedWord();
-                            } else {
-                                // No saved suggestions, and we were unable to compute any good one
-                                // either. Rather than displaying an empty suggestion strip, we'll
-                                // display the original word alone in the middle.
-                                // Since there is only one word, willAutoCorrect is false.
-                                suggestedWords = suggestedWordsIncludingTypedWord;
-                            }
-                            // We need to pass typedWord because mWordComposer.mTypedWord may
-                            // differ from typedWord.
-                            unsetIsAutoCorrectionIndicatorOnAndCallShowSuggestionStrip(
-                                    suggestedWords, typedWord);
-                        }});
-        } else {
-            // We found suggestion spans in the word. We'll create the SuggestedWords out of
-            // them, and make willAutoCorrect false.
-            final SuggestedWords suggestedWords = new SuggestedWords(suggestions,
-                    true /* typedWordValid */, false /* willAutoCorrect */,
-                    false /* isPunctuationSuggestions */, false /* isObsoleteSuggestions */,
-                    false /* isPrediction */);
-            // We need to pass typedWord because mWordComposer.mTypedWord may differ from typedWord.
-            unsetIsAutoCorrectionIndicatorOnAndCallShowSuggestionStrip(suggestedWords, typedWord);
-        }
     }
 
     public void unsetIsAutoCorrectionIndicatorOnAndCallShowSuggestionStrip(
