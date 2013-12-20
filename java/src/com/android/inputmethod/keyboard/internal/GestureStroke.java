@@ -84,12 +84,12 @@ public class GestureStroke {
         public final float mRecognitionSpeedThreshold; // keyWidth/sec
 
         // Default GestureStroke parameters.
-        private static final GestureStrokeParams DEFAULT = new GestureStrokeParams();
+        public static final GestureStrokeParams DEFAULT = new GestureStrokeParams();
 
         private GestureStrokeParams() {
             // These parameter values are default and intended for testing.
             mStaticTimeThresholdAfterFastTyping = 350; // msec
-            mDetectFastMoveSpeedThreshold = 1.5f; // keyWidth / sec
+            mDetectFastMoveSpeedThreshold = 1.5f; // keyWidth/sec
             mDynamicThresholdDecayDuration = 450; // msec
             mDynamicTimeThresholdFrom = 300; // msec
             mDynamicTimeThresholdTo = 20; // msec
@@ -98,7 +98,7 @@ public class GestureStroke {
             // The following parameters' change will affect the result of regression test.
             mSamplingMinimumDistance = 1.0f / 6.0f; // keyWidth
             mRecognitionMinimumTime = 100; // msec
-            mRecognitionSpeedThreshold = 5.5f; // keyWidth / sec
+            mRecognitionSpeedThreshold = 5.5f; // keyWidth/sec
         }
 
         public GestureStrokeParams(final TypedArray mainKeyboardViewAttr) {
