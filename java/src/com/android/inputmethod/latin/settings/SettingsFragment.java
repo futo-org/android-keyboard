@@ -98,7 +98,7 @@ public final class SettingsFragment extends InputMethodSettingsFragment
         final PreferenceScreen preferenceScreen = getPreferenceScreen();
         if (preferenceScreen != null) {
             preferenceScreen.setTitle(
-                    ApplicationUtils.getAcitivityTitleResId(getActivity(), SettingsActivity.class));
+                    ApplicationUtils.getActivityTitleResId(getActivity(), SettingsActivity.class));
         }
 
         final Resources res = getResources();

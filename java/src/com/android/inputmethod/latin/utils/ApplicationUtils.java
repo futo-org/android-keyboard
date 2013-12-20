@@ -31,7 +31,7 @@ public final class ApplicationUtils {
         // This utility class is not publicly instantiable.
     }
 
-    public static int getAcitivityTitleResId(final Context context,
+    public static int getActivityTitleResId(final Context context,
             final Class<? extends Activity> cls) {
         final ComponentName cn = new ComponentName(context, cls);
         try {
