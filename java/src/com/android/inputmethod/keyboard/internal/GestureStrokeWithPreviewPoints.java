@@ -45,17 +45,10 @@ public final class GestureStrokeWithPreviewPoints extends GestureStroke {
         public final double mMaxInterpolationDistanceThreshold; // in pixel
         public final int mMaxInterpolationSegments;
 
-        private static final GestureStrokePreviewParams DEFAULT = new GestureStrokePreviewParams();
-
+        private static final float DEFAULT_MIN_SAMPLING_DISTANCE = 0.0f; // dp
         private static final int DEFAULT_MAX_INTERPOLATION_ANGULAR_THRESHOLD = 15; // in degree
-
-        private GestureStrokePreviewParams() {
-            mMinSamplingDistance = 0.0d;
-            mMaxInterpolationAngularThreshold =
-                    degreeToRadian(DEFAULT_MAX_INTERPOLATION_ANGULAR_THRESHOLD);
-            mMaxInterpolationDistanceThreshold = mMinSamplingDistance;
-            mMaxInterpolationSegments = 4;
-        }
+        private static final float DEFAULT_MAX_INTERPOLATION_DISTANCE_THRESHOLD = 0.0f; // dp
+        private static final int DEFAULT_MAX_INTERPOLATION_SEGMENTS = 4;
 
         private static double degreeToRadian(final int degree) {
             return degree / 180.0d * Math.PI;
@@ -64,18 +57,18 @@ public final class GestureStrokeWithPreviewPoints extends GestureStroke {
         public GestureStrokePreviewParams(final TypedArray mainKeyboardViewAttr) {
             mMinSamplingDistance = mainKeyboardViewAttr.getDimension(
                     R.styleable.MainKeyboardView_gestureTrailMinSamplingDistance,
-                    (float)DEFAULT.mMinSamplingDistance);
+                    DEFAULT_MIN_SAMPLING_DISTANCE);
             final int interpolationAngularDegree = mainKeyboardViewAttr.getInteger(R.styleable
                     .MainKeyboardView_gestureTrailMaxInterpolationAngularThreshold, 0);
             mMaxInterpolationAngularThreshold = (interpolationAngularDegree <= 0)
-                    ? DEFAULT.mMaxInterpolationAngularThreshold
+                    ? degreeToRadian(DEFAULT_MAX_INTERPOLATION_ANGULAR_THRESHOLD)
                     : degreeToRadian(interpolationAngularDegree);
             mMaxInterpolationDistanceThreshold = mainKeyboardViewAttr.getDimension(R.styleable
                     .MainKeyboardView_gestureTrailMaxInterpolationDistanceThreshold,
-                    (float)DEFAULT.mMaxInterpolationDistanceThreshold);
+                    DEFAULT_MAX_INTERPOLATION_DISTANCE_THRESHOLD);
             mMaxInterpolationSegments = mainKeyboardViewAttr.getInteger(
                     R.styleable.MainKeyboardView_gestureTrailMaxInterpolationSegments,
-                    DEFAULT.mMaxInterpolationSegments);
+                    DEFAULT_MAX_INTERPOLATION_SEGMENTS);
         }
     }
 
