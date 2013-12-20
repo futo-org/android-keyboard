@@ -1039,8 +1039,8 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     @Override
     public boolean dispatchHoverEvent(final MotionEvent event) {
         if (AccessibilityUtils.getInstance().isTouchExplorationEnabled()) {
-            final PointerTracker tracker = PointerTracker.getPointerTracker(0);
-            return AccessibleKeyboardViewProxy.getInstance().dispatchHoverEvent(event, tracker);
+            return AccessibleKeyboardViewProxy.getInstance().dispatchHoverEvent(
+                    event, mKeyDetector);
         }
 
         // Reflection doesn't support calling superclass methods.
