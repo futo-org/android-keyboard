@@ -23,8 +23,10 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.SuggestionSpan;
 
+import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.SuggestedWords;
+import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.SuggestionSpanPickedNotificationReceiver;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 
@@ -66,30 +68,42 @@ public final class SuggestionSpanUtils {
     }
 
     public static CharSequence getTextWithSuggestionSpan(final Context context,
-            final String pickedWord, final SuggestedWords suggestedWords,
-            final boolean dictionaryAvailable) {
-        if (!dictionaryAvailable || TextUtils.isEmpty(pickedWord) || suggestedWords.isEmpty()
+            final String pickedWord, final SuggestedWords suggestedWords) {
+        if (TextUtils.isEmpty(pickedWord) || suggestedWords.isEmpty()
                 || suggestedWords.mIsPrediction || suggestedWords.mIsPunctuationSuggestions) {
             return pickedWord;
         }
 
-        final Spannable spannable = new SpannableString(pickedWord);
+        boolean hasSuggestionFromMainDictionary = false;
         final ArrayList<String> suggestionsList = CollectionUtils.newArrayList();
         for (int i = 0; i < suggestedWords.size(); ++i) {
             if (suggestionsList.size() >= SuggestionSpan.SUGGESTIONS_MAX_SIZE) {
                 break;
+            }
+            final SuggestedWordInfo info = suggestedWords.getInfo(i);
+            if (info.mKind == SuggestedWordInfo.KIND_PREDICTION) {
+                continue;
+            }
+            if (info.mSourceDict.mDictType == Dictionary.TYPE_MAIN) {
+                hasSuggestionFromMainDictionary = true;
             }
             final String word = suggestedWords.getWord(i);
             if (!TextUtils.equals(pickedWord, word)) {
                 suggestionsList.add(word.toString());
             }
         }
+        if (!hasSuggestionFromMainDictionary) {
+            // If we don't have any suggestions from the dictionary, it probably looks bad
+            // enough as it is already because suggestions come pretty much only from contacts.
+            // Let's not embed these bad suggestions in the text view so as to avoid using
+            // them with recorrection.
+            return pickedWord;
+        }
 
-        // TODO: We should avoid adding suggestion span candidates that came from the bigram
-        // prediction.
         final SuggestionSpan suggestionSpan = new SuggestionSpan(context, null /* locale */,
                 suggestionsList.toArray(new String[suggestionsList.size()]), 0 /* flags */,
                 SuggestionSpanPickedNotificationReceiver.class);
+        final Spannable spannable = new SpannableString(pickedWord);
         spannable.setSpan(suggestionSpan, 0, pickedWord.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         return spannable;
     }

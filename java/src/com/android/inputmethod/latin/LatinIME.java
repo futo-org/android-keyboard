@@ -2026,7 +2026,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             final String separatorString) {
         final SuggestedWords suggestedWords = mInputLogic.mSuggestedWords;
         mInputLogic.mConnection.commitText(SuggestionSpanUtils.getTextWithSuggestionSpan(
-                this, chosenWord, suggestedWords, mIsMainDictionaryAvailable), 1);
+                this, chosenWord, suggestedWords), 1);
         // Add the word to the user history dictionary
         final String prevWord = addToUserHistoryDictionary(chosenWord);
         // TODO: figure out here if this is an auto-correct or if the best word is actually
