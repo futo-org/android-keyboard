@@ -137,10 +137,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private boolean mUseOnlyPersonalizationDictionaryForDebug = false;
     private boolean mBoostPersonalizationDictionaryForDebug = false;
 
-    // Member variable for remembering the current device orientation.
-    // TODO[IL]: Move this to SettingsValues.
-    public int mDisplayOrientation;
-
     // Object for reacting to adding/removing a dictionary pack.
     private BroadcastReceiver mDictionaryPackInstallReceiver =
             new DictionaryPackInstallBroadcastReceiver(this);
@@ -485,7 +481,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
             ResearchLogger.getInstance().init(this, mKeyboardSwitcher, mInputLogic.mSuggest);
         }
-        mDisplayOrientation = getResources().getConfiguration().orientation;
 
         // Register to receive ringer mode change and network state change.
         // Also receive installation and removal of a dictionary pack.
@@ -609,8 +604,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     @Override
     public void onConfigurationChanged(final Configuration conf) {
         // If orientation changed while predicting, commit the change
-        if (mDisplayOrientation != conf.orientation) {
-            mDisplayOrientation = conf.orientation;
+        final SettingsValues settingsValues = mSettings.getCurrent();
+        if (settingsValues.mDisplayOrientation != conf.orientation) {
             mHandler.startOrientationChanging();
             mInputLogic.mConnection.beginBatchEdit();
             mInputLogic.commitTyped(mSettings.getCurrent(), LastComposedWord.NOT_A_SEPARATOR);
@@ -789,9 +784,12 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             canReachInputConnection = true;
         }
 
+        if (isDifferentTextField ||
+                !currentSettingsValues.hasSameOrientation(getResources().getConfiguration())) {
+            loadSettings();
+        }
         if (isDifferentTextField) {
             mainKeyboardView.closing();
-            loadSettings();
             currentSettingsValues = mSettings.getCurrent();
 
             if (suggest != null && currentSettingsValues.mCorrectionEnabled) {
@@ -1040,7 +1038,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
      */
     @Override
     public void onExtractedTextClicked() {
-        if (mSettings.getCurrent().isSuggestionsRequested(mDisplayOrientation)) return;
+        if (mSettings.getCurrent().isSuggestionsRequested()) {
+            return;
+        }
 
         super.onExtractedTextClicked();
     }
@@ -1056,7 +1056,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
      */
     @Override
     public void onExtractedCursorMovement(final int dx, final int dy) {
-        if (mSettings.getCurrent().isSuggestionsRequested(mDisplayOrientation)) return;
+        if (mSettings.getCurrent().isSuggestionsRequested()) {
+            return;
+        }
 
         super.onExtractedCursorMovement(dx, dy);
     }
@@ -1634,11 +1636,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             return true;
         if (null == currentSettings)
             return false;
-        if (!currentSettings.isSuggestionStripVisibleInOrientation(mDisplayOrientation))
+        if (!currentSettings.isSuggestionStripVisible())
             return false;
         if (currentSettings.isApplicationSpecifiedCompletionsOn())
             return true;
-        return currentSettings.isSuggestionsRequested(mDisplayOrientation);
+        return currentSettings.isSuggestionsRequested();
     }
 
     public void dismissAddToDictionaryHint() {
@@ -2278,8 +2280,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final int keyboardMode = keyboard != null ? keyboard.mId.mMode : -1;
         p.println("  Keyboard mode = " + keyboardMode);
         final SettingsValues settingsValues = mSettings.getCurrent();
-        p.println("  mIsSuggestionsRequested = "
-                + settingsValues.isSuggestionsRequested(mDisplayOrientation));
+        p.println("  mIsSuggestionsRequested = " + settingsValues.isSuggestionsRequested());
         p.println("  mCorrectionEnabled=" + settingsValues.mCorrectionEnabled);
         p.println("  isComposingWord=" + mInputLogic.mWordComposer.isComposingWord());
         p.println("  mSoundOn=" + settingsValues.mSoundOn);

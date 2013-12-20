@@ -389,7 +389,7 @@ public final class InputLogic {
         // a letter or a word connector.
                 && settingsValues.isWordCodePoint(codePoint)
         // We never go into composing state if suggestions are not requested.
-                && settingsValues.isSuggestionsRequested(mLatinIME.mDisplayOrientation) &&
+                && settingsValues.isSuggestionsRequested() &&
         // In languages with spaces, we only start composing a word when we are not already
         // touching a word. In languages without spaces, the above conditions are sufficient.
                 (!mConnection.isCursorTouchingWord(settingsValues)
@@ -493,7 +493,7 @@ public final class InputLogic {
         }
 
         if (Constants.CODE_SPACE == codePoint) {
-            if (settingsValues.isSuggestionsRequested(mLatinIME.mDisplayOrientation)) {
+            if (settingsValues.isSuggestionsRequested()) {
                 if (maybeDoubleSpacePeriod(settingsValues, keyboardSwitcher, handler)) {
                     mSpaceState = SpaceState.DOUBLE;
                 } else if (!mLatinIME.isShowingPunctuationList()) {
@@ -674,8 +674,7 @@ public final class InputLogic {
                     }
                 }
             }
-            // TODO: move mDisplayOrientation to CurrentSettings.
-            if (settingsValues.isSuggestionsRequested(mLatinIME.mDisplayOrientation)
+            if (settingsValues.isSuggestionsRequested()
                     && settingsValues.mCurrentLanguageHasSpaces) {
                 restartSuggestionsOnWordBeforeCursorIfAtEndOfWord(settingsValues, keyboardSwitcher,
                         handler);
@@ -893,8 +892,7 @@ public final class InputLogic {
         handler.cancelUpdateSuggestionStrip();
 
         // Check if we have a suggestion engine attached.
-        if (mSuggest == null
-                || !settingsValues.isSuggestionsRequested(mLatinIME.mDisplayOrientation)) {
+        if (mSuggest == null || !settingsValues.isSuggestionsRequested()) {
             if (mWordComposer.isComposingWord()) {
                 Log.w(TAG, "Called updateSuggestionsOrPredictions but suggestions were not "
                         + "requested!");
