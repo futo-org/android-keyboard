@@ -23,10 +23,10 @@ import android.os.Build.VERSION_CODES;
  * A class to encapsulate work-arounds specific to particular apps.
  */
 public class AppWorkaroundsUtils {
-    private PackageInfo mPackageInfo; // May be null
-    private boolean mIsBrokenByRecorrection = false;
+    private final PackageInfo mPackageInfo; // May be null
+    private final boolean mIsBrokenByRecorrection;
 
-    public void setPackageInfo(final PackageInfo packageInfo) {
+    public AppWorkaroundsUtils(final PackageInfo packageInfo) {
         mPackageInfo = packageInfo;
         mIsBrokenByRecorrection = AppWorkaroundsHelper.evaluateIsBrokenByRecorrection(
                 packageInfo);

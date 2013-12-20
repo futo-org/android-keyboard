@@ -162,6 +162,13 @@ public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
         return setBooleanPreference(PREF_DEBUG_MODE, value, false);
     }
 
+    protected EditorInfo enrichEditorInfo(final EditorInfo ei) {
+        // Some tests that inherit from us need to add some data in the EditorInfo (see
+        // AppWorkaroundsTests#enrichEditorInfo() for a concrete example of this). Since we
+        // control the EditorInfo, we supply a hook here for children to override.
+        return ei;
+    }
+
     @Override
     protected void setUp() throws Exception {
         super.setUp();
@@ -176,12 +183,13 @@ public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
         mPreviousAutoCorrectSetting = setStringPreference(PREF_AUTO_CORRECTION_THRESHOLD,
                 DEFAULT_AUTO_CORRECTION_THRESHOLD, DEFAULT_AUTO_CORRECTION_THRESHOLD);
         mLatinIME.onCreate();
-        final EditorInfo ei = new EditorInfo();
+        EditorInfo ei = new EditorInfo();
         final InputConnection ic = mEditText.onCreateInputConnection(ei);
         final LayoutInflater inflater =
                 (LayoutInflater)getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final ViewGroup vg = new FrameLayout(getContext());
         mInputView = inflater.inflate(R.layout.input_view, vg);
+        ei = enrichEditorInfo(ei);
         mLatinIME.onCreateInputMethodInterface().startInput(ic, ei);
         mLatinIME.setInputView(mInputView);
         mLatinIME.onBindInput();

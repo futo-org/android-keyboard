@@ -387,7 +387,7 @@ public final class InputLogic {
             final boolean swapWeakSpace = maybeStripSpace(settingsValues,
                     codePoint, spaceState, Constants.SUGGESTION_STRIP_COORDINATE == x);
 
-            sendKeyCodePoint(codePoint);
+            sendKeyCodePoint(settingsValues, codePoint);
 
             if (swapWeakSpace) {
                 swapSwapperAndSpace(keyboardSwitcher);
@@ -449,7 +449,7 @@ public final class InputLogic {
         }
 
         if (!shouldAvoidSendingCode) {
-            sendKeyCodePoint(codePoint);
+            sendKeyCodePoint(settingsValues, codePoint);
         }
 
         if (Constants.CODE_SPACE == codePoint) {
@@ -593,7 +593,7 @@ public final class InputLogic {
                     // This should never happen.
                     Log.e(TAG, "Backspace when we don't know the selection position");
                 }
-                if (mLatinIME.mAppWorkAroundsUtils.isBeforeJellyBean() ||
+                if (settingsValues.isBeforeJellyBean() ||
                         settingsValues.mInputAttributes.isTypeNull()) {
                     // There are two possible reasons to send a key event: either the field has
                     // type TYPE_NULL, in which case the keyboard should send events, or we are
@@ -1167,9 +1167,10 @@ public final class InputLogic {
      * Normally we send code points with commitText, but there are some cases (where backward
      * compatibility is a concern for example) where we want to use deprecated methods.
      *
+     * @param settingsValues the current values of the settings.
      * @param codePoint the code point to send.
      */
-    private void sendKeyCodePoint(final int codePoint) {
+    private void sendKeyCodePoint(final SettingsValues settingsValues, final int codePoint) {
         if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
             ResearchLogger.latinIME_sendKeyCodePoint(codePoint);
         }
@@ -1181,8 +1182,7 @@ public final class InputLogic {
         }
 
         // TODO: we should do this also when the editor has TYPE_NULL
-        if (Constants.CODE_ENTER == codePoint
-                && mLatinIME.mAppWorkAroundsUtils.isBeforeJellyBean()) {
+        if (Constants.CODE_ENTER == codePoint && settingsValues.isBeforeJellyBean()) {
             // Backward compatibility mode. Before Jelly bean, the keyboard would simulate
             // a hardware keyboard event on pressing enter or delete. This is bad for many
             // reasons (there are race conditions with commits) but some applications are
@@ -1209,7 +1209,7 @@ public final class InputLogic {
             if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
                 ResearchLogger.latinIME_promotePhantomSpace();
             }
-            sendKeyCodePoint(Constants.CODE_SPACE);
+            sendKeyCodePoint(settingsValues, Constants.CODE_SPACE);
         }
     }
 
