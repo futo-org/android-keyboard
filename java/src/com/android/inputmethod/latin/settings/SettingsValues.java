@@ -307,11 +307,15 @@ public final class SettingsValues {
     }
 
     public boolean isBeforeJellyBean() {
-        return mAppWorkarounds.get(null, TIMEOUT_TO_GET_TARGET_PACKAGE).isBeforeJellyBean();
+        final AppWorkaroundsUtils appWorkaroundUtils
+                = mAppWorkarounds.get(null, TIMEOUT_TO_GET_TARGET_PACKAGE);
+        return null == appWorkaroundUtils ? false : appWorkaroundUtils.isBeforeJellyBean();
     }
 
     public boolean isBrokenByRecorrection() {
-        return mAppWorkarounds.get(null, TIMEOUT_TO_GET_TARGET_PACKAGE).isBrokenByRecorrection();
+        final AppWorkaroundsUtils appWorkaroundUtils
+                = mAppWorkarounds.get(null, TIMEOUT_TO_GET_TARGET_PACKAGE);
+        return null == appWorkaroundUtils ? null : appWorkaroundUtils.isBrokenByRecorrection();
     }
 
     // Helper functions to create member values.
