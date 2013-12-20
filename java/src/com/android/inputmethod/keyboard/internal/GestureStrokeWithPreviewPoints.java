@@ -45,7 +45,7 @@ public final class GestureStrokeWithPreviewPoints extends GestureStroke {
         public final double mMaxInterpolationDistanceThreshold; // in pixel
         public final int mMaxInterpolationSegments;
 
-        public static final GestureStrokePreviewParams DEFAULT = new GestureStrokePreviewParams();
+        private static final GestureStrokePreviewParams DEFAULT = new GestureStrokePreviewParams();
 
         private static final int DEFAULT_MAX_INTERPOLATION_ANGULAR_THRESHOLD = 15; // in degree
 
