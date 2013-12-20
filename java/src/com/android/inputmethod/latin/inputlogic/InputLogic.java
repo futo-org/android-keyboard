@@ -193,7 +193,6 @@ public final class InputLogic {
         }
         mLastKeyTime = when;
         mConnection.beginBatchEdit();
-        final KeyboardSwitcher switcher = keyboardSwitcher;
         // The space state depends only on the last character pressed and its own previous
         // state. Here, we revert the space state to neutral if the key is actually modifying
         // the input contents (any non-shift key), which is what we should do for
@@ -218,7 +217,7 @@ public final class InputLogic {
         case Constants.CODE_SHIFT:
             // Note: Calling back to the keyboard on Shift key is handled in
             // {@link #onPressKey(int,int,boolean)} and {@link #onReleaseKey(int,boolean)}.
-            final Keyboard currentKeyboard = switcher.getKeyboard();
+            final Keyboard currentKeyboard = keyboardSwitcher.getKeyboard();
             if (null != currentKeyboard && currentKeyboard.mId.isAlphabetKeyboard()) {
                 // TODO: Instead of checking for alphabetic keyboard here, separate keycodes for
                 // alphabetic shift and shift while in symbol layout.
@@ -285,7 +284,7 @@ public final class InputLogic {
                     code, x, y, spaceState, keyboardSwitcher, handler);
             break;
         }
-        switcher.onCodeInput(code);
+        keyboardSwitcher.onCodeInput(code);
         // Reset after any single keystroke, except shift, capslock, and symbol-shift
         if (!didAutoCorrect && code != Constants.CODE_SHIFT
                 && code != Constants.CODE_CAPSLOCK
