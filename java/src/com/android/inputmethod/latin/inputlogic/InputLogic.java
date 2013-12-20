@@ -121,6 +121,46 @@ public final class InputLogic {
     }
 
     /**
+     * React to a string input.
+     *
+     * This is triggered by keys that input many characters at once, like the ".com" key or
+     * some additional keys for example.
+     *
+     * @param settingsValues the current values of the settings.
+     * @param rawText the text to input.
+     */
+    public void onTextInput(final SettingsValues settingsValues, final String rawText,
+            // TODO: remove these arguments
+            final KeyboardSwitcher keyboardSwitcher, final LatinIME.UIHandler handler) {
+        mConnection.beginBatchEdit();
+        if (mWordComposer.isComposingWord()) {
+            commitCurrentAutoCorrection(settingsValues, rawText, handler);
+        } else {
+            resetComposingState(true /* alsoResetLastComposedWord */);
+        }
+        handler.postUpdateSuggestionStrip();
+        if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS
+                && ResearchLogger.RESEARCH_KEY_OUTPUT_TEXT.equals(rawText)) {
+            ResearchLogger.getInstance().onResearchKeySelected(mLatinIME);
+            return;
+        }
+        final String text = performSpecificTldProcessingOnTextInput(rawText);
+        if (SpaceState.PHANTOM == mSpaceState) {
+            promotePhantomSpace(settingsValues);
+        }
+        mConnection.commitText(text, 1);
+        if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
+            ResearchLogger.latinIME_onTextInput(text, false /* isBatchMode */);
+        }
+        mConnection.endBatchEdit();
+        // Space state must be updated before calling updateShiftState
+        mSpaceState = SpaceState.NONE;
+        keyboardSwitcher.updateShiftState();
+        keyboardSwitcher.onCodeInput(Constants.CODE_OUTPUT_TEXT);
+        mEnteredText = text;
+    }
+
+    /**
      * React to a code input. It may be a code point to insert, or a symbolic value that influences
      * the keyboard behavior.
      *
@@ -1067,6 +1107,38 @@ public final class InputLogic {
      */
     private void performEditorAction(final int actionId) {
         mConnection.performEditorAction(actionId);
+    }
+
+    /**
+     * Perform the processing specific to inputting TLDs.
+     *
+     * Some keys input a TLD (specifically, the ".com" key) and this warrants some specific
+     * processing. First, if this is a TLD, we ignore PHANTOM spaces -- this is done by type
+     * of character in onCodeInput, but since this gets inputted as a whole string we need to
+     * do it here specifically. Then, if the last character before the cursor is a period, then
+     * we cut the dot at the start of ".com". This is because humans tend to type "www.google."
+     * and then press the ".com" key and instinctively don't expect to get "www.google..com".
+     *
+     * @param text the raw text supplied to onTextInput
+     * @return the text to actually send to the editor
+     */
+    private String performSpecificTldProcessingOnTextInput(final String text) {
+        if (text.length() <= 1 || text.charAt(0) != Constants.CODE_PERIOD
+                || !Character.isLetter(text.charAt(1))) {
+            // Not a tld: do nothing.
+            return text;
+        }
+        // We have a TLD (or something that looks like this): make sure we don't add
+        // a space even if currently in phantom mode.
+        mSpaceState = SpaceState.NONE;
+        // TODO: use getCodePointBeforeCursor instead to improve performance and simplify the code
+        final CharSequence lastOne = mConnection.getTextBeforeCursor(1, 0);
+        if (lastOne != null && lastOne.length() == 1
+                && lastOne.charAt(0) == Constants.CODE_PERIOD) {
+            return text.substring(1);
+        } else {
+            return text;
+        }
     }
 
     /**
