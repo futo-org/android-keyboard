@@ -74,6 +74,7 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
     private ContentObserver mObserver;
     final private String mLocale;
     final private boolean mAlsoUseMoreRestrictiveLocales;
+    final public boolean mEnabled;
 
     public UserBinaryDictionary(final Context context, final Locale locale) {
         this(context, locale, false);
@@ -118,7 +119,7 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
             }
         };
         cres.registerContentObserver(Words.CONTENT_URI, true, mObserver);
-
+        mEnabled = readIsEnabled();
         loadDictionary();
     }
 
@@ -196,7 +197,7 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
         }
     }
 
-    public boolean isEnabled() {
+    private boolean readIsEnabled() {
         final ContentResolver cr = mContext.getContentResolver();
         final ContentProviderClient client = cr.acquireContentProviderClient(Words.CONTENT_URI);
         if (client != null) {

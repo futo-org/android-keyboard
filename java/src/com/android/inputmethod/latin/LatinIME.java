@@ -128,7 +128,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private final SubtypeState mSubtypeState = new SubtypeState();
 
     private UserBinaryDictionary mUserDictionary;
-    private boolean mIsUserDictionaryAvailable;
 
     // Personalization debugging params
     private boolean mUseOnlyPersonalizationDictionaryForDebug = false;
@@ -563,7 +562,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
 
         mUserDictionary = new UserBinaryDictionary(this, subtypeLocale);
-        mIsUserDictionaryAvailable = mUserDictionary.isEnabled();
         newSuggest.setUserDictionary(mUserDictionary);
         newSuggest.setAdditionalDictionaries(mInputLogic.mSuggest /* oldSuggest */,
                 mSettings.getCurrent());
@@ -1246,6 +1244,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         return mInputLogic.getCurrentRecapitalizeState();
     }
 
+    public Locale getCurrentSubtypeLocale() {
+        return mSubtypeSwitcher.getCurrentSubtypeLocale();
+    }
+
     // Callback for the {@link SuggestionStripView}, to call when the "add to dictionary" hint is
     // pressed.
     @Override
@@ -1256,7 +1258,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
         final String wordToEdit;
         if (CapsModeUtils.isAutoCapsMode(mInputLogic.mLastComposedWord.mCapitalizedMode)) {
-            wordToEdit = word.toLowerCase(mSubtypeSwitcher.getCurrentSubtypeLocale());
+            wordToEdit = word.toLowerCase(getCurrentSubtypeLocale());
         } else {
             wordToEdit = word;
         }
@@ -1884,7 +1886,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             LatinImeLoggerUtils.onSeparator((char)Constants.CODE_SPACE,
                     Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
         }
-        if (showingAddToDictionaryHint && mIsUserDictionaryAvailable) {
+        if (showingAddToDictionaryHint && mUserDictionary.mEnabled) {
             mSuggestionStripView.showAddToDictionaryHint(
                     suggestion, currentSettings.mHintToSaveText);
         } else {
