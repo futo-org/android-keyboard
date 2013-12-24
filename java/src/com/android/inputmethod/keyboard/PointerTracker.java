@@ -499,7 +499,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
             }
         }
 
-        if (key.altCodeWhileTyping() && sTimerProxy.isTypingState()) {
+        if (altersCode) {
             final int altCode = key.getAltCode();
             final Key altKey = mKeyboard.getKey(altCode);
             if (altKey != null) {
