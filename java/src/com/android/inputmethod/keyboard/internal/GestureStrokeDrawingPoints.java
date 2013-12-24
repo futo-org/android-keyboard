@@ -20,11 +20,8 @@ import com.android.inputmethod.latin.utils.ResizableIntArray;
 
 /**
  * This class holds drawing points to represent a gesture stroke on the screen.
- * TODO: Currently this class extends {@link GestureStrokeRecognitionPoints} that holds recognition
- * points of a gesture stroke. This class should be independent from
- * {@link GestureStrokeRecognitionPoints}.
  */
-public final class GestureStrokeDrawingPoints extends GestureStrokeRecognitionPoints {
+public final class GestureStrokeDrawingPoints {
     public static final int PREVIEW_CAPACITY = 256;
 
     private final ResizableIntArray mPreviewEventTimes = new ResizableIntArray(PREVIEW_CAPACITY);
@@ -42,16 +39,11 @@ public final class GestureStrokeDrawingPoints extends GestureStrokeRecognitionPo
     private int mLastY;
     private double mDistanceFromLastSample;
 
-    public GestureStrokeDrawingPoints(final int pointerId,
-            final GestureStrokeRecognitionParams recognitionParams,
-            final GestureStrokeDrawingParams drawingParams) {
-        super(pointerId, recognitionParams);
+    public GestureStrokeDrawingPoints(final GestureStrokeDrawingParams drawingParams) {
         mDrawingParams = drawingParams;
     }
 
-    @Override
-    protected void reset() {
-        super.reset();
+    private void reset() {
         mStrokeId++;
         mLastPreviewSize = 0;
         mLastInterpolatedPreviewIndex = 0;
@@ -62,6 +54,11 @@ public final class GestureStrokeDrawingPoints extends GestureStrokeRecognitionPo
 
     public int getGestureStrokeId() {
         return mStrokeId;
+    }
+
+    public void onDownEvent(final int x, final int y, final int elapsedTimeSinceFirstDown) {
+        reset();
+        onMoveEvent(x, y, elapsedTimeSinceFirstDown);
     }
 
     private boolean needsSampling(final int x, final int y) {
@@ -76,16 +73,12 @@ public final class GestureStrokeDrawingPoints extends GestureStrokeRecognitionPo
         return false;
     }
 
-    @Override
-    public boolean addPointOnKeyboard(final int x, final int y, final int time,
-            final boolean isMajorEvent) {
+    public void onMoveEvent(final int x, final int y, final int elapsedTimeSinceFirstDown) {
         if (needsSampling(x, y)) {
-            mPreviewEventTimes.add(time);
+            mPreviewEventTimes.add(elapsedTimeSinceFirstDown);
             mPreviewXCoordinates.add(x);
             mPreviewYCoordinates.add(y);
         }
-        return super.addPointOnKeyboard(x, y, time, isMajorEvent);
-
     }
 
     /**
