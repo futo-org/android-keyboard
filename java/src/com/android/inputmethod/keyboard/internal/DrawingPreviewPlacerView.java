@@ -29,12 +29,12 @@ import com.android.inputmethod.latin.utils.CoordinateUtils;
 
 import java.util.ArrayList;
 
-public final class PreviewPlacerView extends RelativeLayout {
+public final class DrawingPreviewPlacerView extends RelativeLayout {
     private final int[] mKeyboardViewOrigin = CoordinateUtils.newInstance();
 
     private final ArrayList<AbstractDrawingPreview> mPreviews = CollectionUtils.newArrayList();
 
-    public PreviewPlacerView(final Context context, final AttributeSet attrs) {
+    public DrawingPreviewPlacerView(final Context context, final AttributeSet attrs) {
         super(context, attrs);
         setWillNotDraw(false);
     }

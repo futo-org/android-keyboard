@@ -42,7 +42,7 @@ import com.android.inputmethod.latin.utils.CoordinateUtils;
  * @attr ref R.styleable#KeyboardView_gestureFloatingPreviewVerticalPadding
  * @attr ref R.styleable#KeyboardView_gestureFloatingPreviewRoundRadius
  */
-public class GestureFloatingPreviewText extends AbstractDrawingPreview {
+public class GestureFloatingTextDrawingPreview extends AbstractDrawingPreview {
     protected static final class GesturePreviewTextParams {
         public final int mGesturePreviewTextOffset;
         public final int mGesturePreviewTextHeight;
@@ -100,7 +100,7 @@ public class GestureFloatingPreviewText extends AbstractDrawingPreview {
     private SuggestedWords mSuggestedWords = SuggestedWords.EMPTY;
     private final int[] mLastPointerCoords = CoordinateUtils.newInstance();
 
-    public GestureFloatingPreviewText(final View drawingView, final TypedArray typedArray) {
+    public GestureFloatingTextDrawingPreview(final View drawingView, final TypedArray typedArray) {
         super(drawingView);
         mParams = new GesturePreviewTextParams(typedArray);
     }

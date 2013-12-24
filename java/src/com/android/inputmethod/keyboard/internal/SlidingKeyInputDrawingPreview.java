@@ -29,7 +29,7 @@ import com.android.inputmethod.latin.utils.CoordinateUtils;
 /**
  * Draw rubber band preview graphics during sliding key input.
  */
-public final class SlidingKeyInputPreview extends AbstractDrawingPreview {
+public final class SlidingKeyInputDrawingPreview extends AbstractDrawingPreview {
     private final float mPreviewBodyRadius;
 
     private boolean mShowsSlidingKeyInputPreview;
@@ -40,7 +40,8 @@ public final class SlidingKeyInputPreview extends AbstractDrawingPreview {
     private final RoundedLine mRoundedLine = new RoundedLine();
     private final Paint mPaint = new Paint();
 
-    public SlidingKeyInputPreview(final View drawingView, final TypedArray mainKeyboardViewAttr) {
+    public SlidingKeyInputDrawingPreview(final View drawingView,
+            final TypedArray mainKeyboardViewAttr) {
         super(drawingView);
         final int previewColor = mainKeyboardViewAttr.getColor(
                 R.styleable.MainKeyboardView_slidingKeyInputPreviewColor, 0);

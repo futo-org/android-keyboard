@@ -36,7 +36,7 @@ import com.android.inputmethod.latin.utils.LeakGuardHandlerWrapper;
 /**
  * Draw gesture trail preview graphics during gesture.
  */
-public final class GestureTrailsPreview extends AbstractDrawingPreview {
+public final class GestureTrailsDrawingPreview extends AbstractDrawingPreview {
     private final SparseArray<GestureTrail> mGestureTrails = CollectionUtils.newSparseArray();
     private final Params mGestureTrailParams;
     private final Paint mGesturePaint;
@@ -52,12 +52,12 @@ public final class GestureTrailsPreview extends AbstractDrawingPreview {
     private final DrawingHandler mDrawingHandler;
 
     private static final class DrawingHandler
-            extends LeakGuardHandlerWrapper<GestureTrailsPreview> {
+            extends LeakGuardHandlerWrapper<GestureTrailsDrawingPreview> {
         private static final int MSG_UPDATE_GESTURE_TRAIL = 0;
 
         private final Params mGestureTrailParams;
 
-        public DrawingHandler(final GestureTrailsPreview ownerInstance,
+        public DrawingHandler(final GestureTrailsDrawingPreview ownerInstance,
                 final Params gestureTrailParams) {
             super(ownerInstance);
             mGestureTrailParams = gestureTrailParams;
@@ -65,7 +65,7 @@ public final class GestureTrailsPreview extends AbstractDrawingPreview {
 
         @Override
         public void handleMessage(final Message msg) {
-            final GestureTrailsPreview preview = getOwnerInstance();
+            final GestureTrailsDrawingPreview preview = getOwnerInstance();
             if (preview == null) {
                 return;
             }
@@ -83,7 +83,8 @@ public final class GestureTrailsPreview extends AbstractDrawingPreview {
         }
     }
 
-    public GestureTrailsPreview(final View drawingView, final TypedArray mainKeyboardViewAttr) {
+    public GestureTrailsDrawingPreview(final View drawingView,
+            final TypedArray mainKeyboardViewAttr) {
         super(drawingView);
         mGestureTrailParams = new Params(mainKeyboardViewAttr);
         mDrawingHandler = new DrawingHandler(this, mGestureTrailParams);

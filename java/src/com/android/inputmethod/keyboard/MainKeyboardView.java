@@ -49,13 +49,13 @@ import com.android.inputmethod.accessibility.AccessibilityUtils;
 import com.android.inputmethod.accessibility.AccessibleKeyboardViewProxy;
 import com.android.inputmethod.annotations.ExternallyReferenced;
 import com.android.inputmethod.keyboard.internal.DrawingHandler;
-import com.android.inputmethod.keyboard.internal.GestureFloatingPreviewText;
-import com.android.inputmethod.keyboard.internal.GestureTrailsPreview;
+import com.android.inputmethod.keyboard.internal.DrawingPreviewPlacerView;
+import com.android.inputmethod.keyboard.internal.GestureFloatingTextDrawingPreview;
+import com.android.inputmethod.keyboard.internal.GestureTrailsDrawingPreview;
 import com.android.inputmethod.keyboard.internal.KeyDrawParams;
 import com.android.inputmethod.keyboard.internal.KeyPreviewDrawParams;
 import com.android.inputmethod.keyboard.internal.NonDistinctMultitouchHelper;
-import com.android.inputmethod.keyboard.internal.PreviewPlacerView;
-import com.android.inputmethod.keyboard.internal.SlidingKeyInputPreview;
+import com.android.inputmethod.keyboard.internal.SlidingKeyInputDrawingPreview;
 import com.android.inputmethod.keyboard.internal.TimerHandler;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.LatinImeLogger;
@@ -152,12 +152,12 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     private final ObjectAnimator mAltCodeKeyWhileTypingFadeinAnimator;
     private int mAltCodeKeyWhileTypingAnimAlpha = Constants.Color.ALPHA_OPAQUE;
 
-    // Preview placer view
-    private final PreviewPlacerView mPreviewPlacerView;
+    // Drawing preview placer view
+    private final DrawingPreviewPlacerView mDrawingPreviewPlacerView;
     private final int[] mOriginCoords = CoordinateUtils.newInstance();
-    private final GestureFloatingPreviewText mGestureFloatingPreviewText;
-    private final GestureTrailsPreview mGestureTrailsPreview;
-    private final SlidingKeyInputPreview mSlidingKeyInputPreview;
+    private final GestureFloatingTextDrawingPreview mGestureFloatingTextDrawingPreview;
+    private final GestureTrailsDrawingPreview mGestureTrailsDrawingPreview;
+    private final SlidingKeyInputDrawingPreview mSlidingKeyInputDrawingPreview;
 
     // Key preview
     private static final boolean FADE_OUT_KEY_TOP_LETTER_WHEN_KEY_IS_PRESSED = false;
@@ -212,7 +212,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     public MainKeyboardView(final Context context, final AttributeSet attrs, final int defStyle) {
         super(context, attrs, defStyle);
 
-        mPreviewPlacerView = new PreviewPlacerView(context, attrs);
+        mDrawingPreviewPlacerView = new DrawingPreviewPlacerView(context, attrs);
 
         final TypedArray mainKeyboardViewAttr = context.obtainStyledAttributes(
                 attrs, R.styleable.MainKeyboardView, defStyle, R.style.MainKeyboardView);
@@ -290,17 +290,17 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         mGestureFloatingPreviewTextLingerTimeout = mainKeyboardViewAttr.getInt(
                 R.styleable.MainKeyboardView_gestureFloatingPreviewTextLingerTimeout, 0);
 
-        mGestureFloatingPreviewText = new GestureFloatingPreviewText(
-                mPreviewPlacerView, mainKeyboardViewAttr);
-        mPreviewPlacerView.addPreview(mGestureFloatingPreviewText);
+        mGestureFloatingTextDrawingPreview = new GestureFloatingTextDrawingPreview(
+                mDrawingPreviewPlacerView, mainKeyboardViewAttr);
+        mDrawingPreviewPlacerView.addPreview(mGestureFloatingTextDrawingPreview);
 
-        mGestureTrailsPreview = new GestureTrailsPreview(
-                mPreviewPlacerView, mainKeyboardViewAttr);
-        mPreviewPlacerView.addPreview(mGestureTrailsPreview);
+        mGestureTrailsDrawingPreview = new GestureTrailsDrawingPreview(
+                mDrawingPreviewPlacerView, mainKeyboardViewAttr);
+        mDrawingPreviewPlacerView.addPreview(mGestureTrailsDrawingPreview);
 
-        mSlidingKeyInputPreview = new SlidingKeyInputPreview(
-                mPreviewPlacerView, mainKeyboardViewAttr);
-        mPreviewPlacerView.addPreview(mSlidingKeyInputPreview);
+        mSlidingKeyInputDrawingPreview = new SlidingKeyInputDrawingPreview(
+                mDrawingPreviewPlacerView, mainKeyboardViewAttr);
+        mDrawingPreviewPlacerView.addPreview(mSlidingKeyInputDrawingPreview);
         mainKeyboardViewAttr.recycle();
 
         mMoreKeysKeyboardContainer = LayoutInflater.from(getContext())
@@ -321,7 +321,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     @Override
     public void setHardwareAcceleratedDrawingEnabled(final boolean enabled) {
         super.setHardwareAcceleratedDrawingEnabled(enabled);
-        mPreviewPlacerView.setHardwareAcceleratedDrawingEnabled(enabled);
+        mDrawingPreviewPlacerView.setHardwareAcceleratedDrawingEnabled(enabled);
     }
 
     private ObjectAnimator loadObjectAnimator(final int resId, final Object target) {
@@ -460,7 +460,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     }
 
     private void locatePreviewPlacerView() {
-        if (mPreviewPlacerView.getParent() != null) {
+        if (mDrawingPreviewPlacerView.getParent() != null) {
             return;
         }
         final int width = getWidth();
@@ -483,10 +483,10 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         final ViewGroup windowContentView = (ViewGroup)rootView.findViewById(android.R.id.content);
         // Note: It'd be very weird if we get null by android.R.id.content.
         if (windowContentView == null) {
-            Log.w(TAG, "Cannot find android.R.id.content view to add PreviewPlacerView");
+            Log.w(TAG, "Cannot find android.R.id.content view to add DrawingPreviewPlacerView");
         } else {
-            windowContentView.addView(mPreviewPlacerView);
-            mPreviewPlacerView.setKeyboardViewGeometry(mOriginCoords, width, height);
+            windowContentView.addView(mDrawingPreviewPlacerView);
+            mDrawingPreviewPlacerView.setKeyboardViewGeometry(mOriginCoords, width, height);
         }
     }
 
@@ -516,8 +516,8 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
             previewTextView = new TextView(context);
         }
         locatePreviewPlacerView();
-        mPreviewPlacerView.addView(
-                previewTextView, ViewLayoutUtils.newLayoutParam(mPreviewPlacerView, 0, 0));
+        mDrawingPreviewPlacerView.addView(
+                previewTextView, ViewLayoutUtils.newLayoutParam(mDrawingPreviewPlacerView, 0, 0));
         return previewTextView;
     }
 
@@ -757,31 +757,31 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     }
 
     public void setSlidingKeyInputPreviewEnabled(final boolean enabled) {
-        mSlidingKeyInputPreview.setPreviewEnabled(enabled);
+        mSlidingKeyInputDrawingPreview.setPreviewEnabled(enabled);
     }
 
     @Override
     public void showSlidingKeyInputPreview(final PointerTracker tracker) {
         locatePreviewPlacerView();
-        mSlidingKeyInputPreview.setPreviewPosition(tracker);
+        mSlidingKeyInputDrawingPreview.setPreviewPosition(tracker);
     }
 
     @Override
     public void dismissSlidingKeyInputPreview() {
-        mSlidingKeyInputPreview.dismissSlidingKeyInputPreview();
+        mSlidingKeyInputDrawingPreview.dismissSlidingKeyInputPreview();
     }
 
     private void setGesturePreviewMode(final boolean isGestureTrailEnabled,
             final boolean isGestureFloatingPreviewTextEnabled) {
-        mGestureFloatingPreviewText.setPreviewEnabled(isGestureFloatingPreviewTextEnabled);
-        mGestureTrailsPreview.setPreviewEnabled(isGestureTrailEnabled);
+        mGestureFloatingTextDrawingPreview.setPreviewEnabled(isGestureFloatingPreviewTextEnabled);
+        mGestureTrailsDrawingPreview.setPreviewEnabled(isGestureTrailEnabled);
     }
 
     // Implements {@link DrawingHandler.Callbacks} method.
     @Override
     public void showGestureFloatingPreviewText(final SuggestedWords suggestedWords) {
         locatePreviewPlacerView();
-        mGestureFloatingPreviewText.setSuggetedWords(suggestedWords);
+        mGestureFloatingTextDrawingPreview.setSuggetedWords(suggestedWords);
     }
 
     public void dismissGestureFloatingPreviewText() {
@@ -794,9 +794,9 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
             final boolean showsFloatingPreviewText) {
         locatePreviewPlacerView();
         if (showsFloatingPreviewText) {
-            mGestureFloatingPreviewText.setPreviewPosition(tracker);
+            mGestureFloatingTextDrawingPreview.setPreviewPosition(tracker);
         }
-        mGestureTrailsPreview.setPreviewPosition(tracker);
+        mGestureTrailsDrawingPreview.setPreviewPosition(tracker);
     }
 
     // Note that this method is called from a non-UI thread.
@@ -826,7 +826,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        mPreviewPlacerView.removeAllViews();
+        mDrawingPreviewPlacerView.removeAllViews();
         // Notify the ResearchLogger (development only diagnostics) that the keyboard view has
         // been detached.  This is needed to invalidate the reference of {@link MainKeyboardView}
         // to null.
@@ -930,7 +930,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     @Override
     public void onShowMoreKeysPanel(final MoreKeysPanel panel) {
         locatePreviewPlacerView();
-        panel.showInParent(mPreviewPlacerView);
+        panel.showInParent(mDrawingPreviewPlacerView);
         mMoreKeysPanel = panel;
         dimEntireKeyboard(true /* dimmed */);
     }
@@ -1228,6 +1228,6 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     @Override
     public void deallocateMemory() {
         super.deallocateMemory();
-        mGestureTrailsPreview.deallocateMemory();
+        mGestureTrailsDrawingPreview.deallocateMemory();
     }
 }

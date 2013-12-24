@@ -22,8 +22,9 @@ import android.view.View;
 import com.android.inputmethod.keyboard.PointerTracker;
 
 /**
- * Abstract base class for previews that are drawn on PreviewPlacerView, e.g.,
- * GestureFloatingPrevewText, GestureTrail, and SlidingKeyInputPreview.
+ * Abstract base class for previews that are drawn on DrawingPreviewPlacerView, e.g.,
+ * GestureFloatingTextDrawingPreview, GestureTrailsDrawingPreview, and
+ * SlidingKeyInputDrawingPreview.
  */
 public abstract class AbstractDrawingPreview {
     private final View mDrawingView;
