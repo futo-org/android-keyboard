@@ -140,11 +140,11 @@ public final class InputLogic {
      * @param rawText the text to input.
      */
     public void onTextInput(final SettingsValues settingsValues, final String rawText,
-            // TODO: remove this argument
-            final LatinIME.UIHandler handler) {
+            // TODO: remove these arguments
+            final LatinIME.UIHandler handler, final LatinIME.InputUpdater inputUpdater) {
         mConnection.beginBatchEdit();
         if (mWordComposer.isComposingWord()) {
-            commitCurrentAutoCorrection(settingsValues, rawText, handler);
+            commitCurrentAutoCorrection(settingsValues, rawText, handler, inputUpdater);
         } else {
             resetComposingState(true /* alsoResetLastComposedWord */);
         }
@@ -180,9 +180,9 @@ public final class InputLogic {
      * @param y the y-coordinate where the user pressed the key, or NOT_A_COORDINATE.
      */
     public void onCodeInput(final int code, final int x, final int y,
-            // TODO: remove these three arguments
-            final LatinIME.UIHandler handler, final KeyboardSwitcher keyboardSwitcher,
-            final SubtypeSwitcher subtypeSwitcher) {
+            // TODO: remove these four arguments
+            final LatinIME.UIHandler handler, final LatinIME.InputUpdater inputUpdater,
+            final KeyboardSwitcher keyboardSwitcher, final SubtypeSwitcher subtypeSwitcher) {
         if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
             ResearchLogger.latinIME_onCodeInput(code, x, y);
         }
@@ -273,17 +273,17 @@ public final class InputLogic {
             } else {
                 // No action label, and the action from imeOptions is NONE: this is a regular
                 // enter key that should input a carriage return.
-                didAutoCorrect = handleNonSpecialCharacter(settingsValues,
-                        Constants.CODE_ENTER, x, y, spaceState, keyboardSwitcher, handler);
+                didAutoCorrect = handleNonSpecialCharacter(settingsValues, Constants.CODE_ENTER,
+                        x, y, spaceState, keyboardSwitcher, handler, inputUpdater);
             }
             break;
         case Constants.CODE_SHIFT_ENTER:
-            didAutoCorrect = handleNonSpecialCharacter(settingsValues,
-                    Constants.CODE_ENTER, x, y, spaceState, keyboardSwitcher, handler);
+            didAutoCorrect = handleNonSpecialCharacter(settingsValues, Constants.CODE_ENTER,
+                    x, y, spaceState, keyboardSwitcher, handler, inputUpdater);
             break;
         default:
             didAutoCorrect = handleNonSpecialCharacter(settingsValues,
-                    code, x, y, spaceState, keyboardSwitcher, handler);
+                    code, x, y, spaceState, keyboardSwitcher, handler, inputUpdater);
             break;
         }
         keyboardSwitcher.onCodeInput(code);
@@ -329,7 +329,7 @@ public final class InputLogic {
                 // so we do not attempt to correct, on the assumption that if that was a dictionary
                 // word, the user would probably have gestured instead.
                 commitCurrentAutoCorrection(settingsValues, LastComposedWord.NOT_A_SEPARATOR,
-                        handler);
+                        handler, inputUpdater);
             } else {
                 commitTyped(settingsValues, LastComposedWord.NOT_A_SEPARATOR);
             }
@@ -431,13 +431,14 @@ public final class InputLogic {
     private boolean handleNonSpecialCharacter(final SettingsValues settingsValues,
             final int codePoint, final int x, final int y, final int spaceState,
             // TODO: remove these arguments
-            final KeyboardSwitcher keyboardSwitcher, final LatinIME.UIHandler handler) {
+            final KeyboardSwitcher keyboardSwitcher, final LatinIME.UIHandler handler,
+            final LatinIME.InputUpdater inputUpdater) {
         mSpaceState = SpaceState.NONE;
         final boolean didAutoCorrect;
         if (settingsValues.isWordSeparator(codePoint)
                 || Character.getType(codePoint) == Character.OTHER_SYMBOL) {
             didAutoCorrect = handleSeparator(settingsValues, codePoint, x, y, spaceState,
-                    keyboardSwitcher, handler);
+                    keyboardSwitcher, handler, inputUpdater);
         } else {
             didAutoCorrect = false;
             if (SpaceState.PHANTOM == spaceState) {
@@ -577,7 +578,8 @@ public final class InputLogic {
     private boolean handleSeparator(final SettingsValues settingsValues,
             final int codePoint, final int x, final int y, final int spaceState,
             // TODO: remove these arguments
-            final KeyboardSwitcher keyboardSwitcher, final LatinIME.UIHandler handler) {
+            final KeyboardSwitcher keyboardSwitcher, final LatinIME.UIHandler handler,
+            final LatinIME.InputUpdater inputUpdater) {
         boolean didAutoCorrect = false;
         // We avoid sending spaces in languages without spaces if we were composing.
         final boolean shouldAvoidSendingCode = Constants.CODE_SPACE == codePoint
@@ -593,7 +595,7 @@ public final class InputLogic {
             if (settingsValues.mCorrectionEnabled) {
                 final String separator = shouldAvoidSendingCode ? LastComposedWord.NOT_A_SEPARATOR
                         : StringUtils.newSingleCodePointString(codePoint);
-                commitCurrentAutoCorrection(settingsValues, separator, handler);
+                commitCurrentAutoCorrection(settingsValues, separator, handler, inputUpdater);
                 didAutoCorrect = true;
             } else {
                 commitTyped(settingsValues, StringUtils.newSingleCodePointString(codePoint));
@@ -991,7 +993,7 @@ public final class InputLogic {
 
     public void performUpdateSuggestionStripSync(final SettingsValues settingsValues,
             // TODO: Remove this variable
-            final LatinIME.UIHandler handler) {
+            final LatinIME.UIHandler handler, final LatinIME.InputUpdater inputUpdater) {
         handler.cancelUpdateSuggestionStrip();
 
         // Check if we have a suggestion engine attached.
@@ -1009,11 +1011,14 @@ public final class InputLogic {
         }
 
         final AsyncResultHolder<SuggestedWords> holder = new AsyncResultHolder<SuggestedWords>();
-        mLatinIME.getSuggestedWordsOrOlderSuggestionsAsync(Suggest.SESSION_TYPING,
+        inputUpdater.getSuggestedWords(Suggest.SESSION_TYPING,
                 SuggestedWords.NOT_A_SEQUENCE_NUMBER, new OnGetSuggestedWordsCallback() {
                     @Override
                     public void onGetSuggestedWords(final SuggestedWords suggestedWords) {
-                        holder.set(suggestedWords);
+                        final SuggestedWords suggestedWordsWithMaybeOlderSuggestions =
+                                mLatinIME.maybeRetrieveOlderSuggestions(
+                                        mWordComposer.getTypedWord(), suggestedWords);
+                        holder.set(suggestedWordsWithMaybeOlderSuggestions);
                     }
                 }
         );
@@ -1551,11 +1556,11 @@ public final class InputLogic {
     // TODO: Make this private
     public void commitCurrentAutoCorrection(final SettingsValues settingsValues,
             final String separator,
-            // TODO: Remove this argument.
-            final LatinIME.UIHandler handler) {
+            // TODO: Remove these arguments.
+            final LatinIME.UIHandler handler, final LatinIME.InputUpdater inputUpdater) {
         // Complete any pending suggestions query first
         if (handler.hasPendingUpdateSuggestions()) {
-            performUpdateSuggestionStripSync(settingsValues, handler);
+            performUpdateSuggestionStripSync(settingsValues, handler, inputUpdater);
         }
         final String typedAutoCorrection = mWordComposer.getAutoCorrectionOrNull();
         final String typedWord = mWordComposer.getTypedWord();

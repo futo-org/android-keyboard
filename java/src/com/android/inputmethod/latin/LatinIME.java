@@ -182,7 +182,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             switch (msg.what) {
             case MSG_UPDATE_SUGGESTION_STRIP:
                 latinIme.mInputLogic.performUpdateSuggestionStripSync(
-                        latinIme.mSettings.getCurrent(), this);
+                        latinIme.mSettings.getCurrent(), this /* handler */,
+                        latinIme.mInputUpdater);
                 break;
             case MSG_UPDATE_SHIFT_STATE:
                 switcher.updateShiftState();
@@ -1245,13 +1246,14 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // Implementation of {@link KeyboardActionListener}.
     @Override
     public void onCodeInput(final int primaryCode, final int x, final int y) {
-        mInputLogic.onCodeInput(primaryCode, x, y, mHandler, mKeyboardSwitcher, mSubtypeSwitcher);
+        mInputLogic.onCodeInput(primaryCode, x, y, mHandler, mInputUpdater,
+                mKeyboardSwitcher, mSubtypeSwitcher);
     }
 
     // Called from PointerTracker through the KeyboardActionListener interface
     @Override
     public void onTextInput(final String rawText) {
-        mInputLogic.onTextInput(mSettings.getCurrent(), rawText, mHandler);
+        mInputLogic.onTextInput(mSettings.getCurrent(), rawText, mHandler, mInputUpdater);
         mKeyboardSwitcher.updateShiftState();
         mKeyboardSwitcher.onCodeInput(Constants.CODE_OUTPUT_TEXT);
     }
@@ -1564,20 +1566,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 additionalFeaturesOptions, sessionId, sequenceNumber, callback);
     }
 
-    // TODO[IL]: Move this to InputLogic?
-    public void getSuggestedWordsOrOlderSuggestionsAsync(final int sessionId,
-            final int sequenceNumber, final OnGetSuggestedWordsCallback callback) {
-        mInputUpdater.getSuggestedWords(sessionId, sequenceNumber,
-                new OnGetSuggestedWordsCallback() {
-                    @Override
-                    public void onGetSuggestedWords(SuggestedWords suggestedWords) {
-                        callback.onGetSuggestedWords(maybeRetrieveOlderSuggestions(
-                                mInputLogic.mWordComposer.getTypedWord(), suggestedWords));
-                    }
-                });
-    }
-
-    private SuggestedWords maybeRetrieveOlderSuggestions(final String typedWord,
+    // TODO[IL]: Move this to InputLogic
+    public SuggestedWords maybeRetrieveOlderSuggestions(final String typedWord,
             final SuggestedWords suggestedWords) {
         // TODO: consolidate this into getSuggestedWords
         // We update the suggestion strip only when we have some suggestions to show, i.e. when
