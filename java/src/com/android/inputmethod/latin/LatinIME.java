@@ -1377,20 +1377,20 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         private void getSuggestedWordsGestureLocked(final InputPointers batchPointers,
                 final int sequenceNumber, final OnGetSuggestedWordsCallback callback) {
             mLatinIme.mInputLogic.mWordComposer.setBatchInputPointers(batchPointers);
-            mLatinIme.getSuggestedWordsOrOlderSuggestionsAsync(Suggest.SESSION_GESTURE,
-                    sequenceNumber, new OnGetSuggestedWordsCallback() {
-                @Override
-                public void onGetSuggestedWords(SuggestedWords suggestedWords) {
-                    if (suggestedWords.isEmpty()) {
-                        // Previous suggestions are found in InputLogic#mSuggestedWords. Since
-                        // these are the most recent suggestions and we just recomputed new
-                        // ones to update them, it means the previous ones are there.
-                        callback.onGetSuggestedWords(mLatinIme.mInputLogic.mSuggestedWords);
-                    } else {
-                        callback.onGetSuggestedWords(suggestedWords);
-                    }
-                }
-            });
+            getSuggestedWords(Suggest.SESSION_GESTURE, sequenceNumber,
+                    new OnGetSuggestedWordsCallback() {
+                        @Override
+                        public void onGetSuggestedWords(SuggestedWords suggestedWords) {
+                            if (suggestedWords.isEmpty()) {
+                                // Previous suggestions are found in InputLogic#mSuggestedWords.
+                                // Since these are the most recent ones and we just recomputed new
+                                // ones to update them, it means the previous ones are there.
+                                callback.onGetSuggestedWords(mLatinIme.mInputLogic.mSuggestedWords);
+                            } else {
+                                callback.onGetSuggestedWords(suggestedWords);
+                            }
+                        }
+                    });
         }
 
         public void getSuggestedWords(final int sessionId, final int sequenceNumber,
