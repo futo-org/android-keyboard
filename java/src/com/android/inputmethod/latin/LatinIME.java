@@ -1611,19 +1611,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 false /* isPrediction */);
     }
 
-    private void setAutoCorrection(final SuggestedWords suggestedWords, final String typedWord) {
-        if (suggestedWords.isEmpty()) return;
-        final String autoCorrection;
-        if (suggestedWords.mWillAutoCorrect) {
-            autoCorrection = suggestedWords.getWord(SuggestedWords.INDEX_OF_AUTO_CORRECTION);
-        } else {
-            // We can't use suggestedWords.getWord(SuggestedWords.INDEX_OF_TYPED_WORD)
-            // because it may differ from mWordComposer.mTypedWord.
-            autoCorrection = typedWord;
-        }
-        mInputLogic.mWordComposer.setAutoCorrection(autoCorrection);
-    }
-
     private void showSuggestionStripWithTypedWord(final SuggestedWords suggestedWords,
             final String typedWord) {
       if (suggestedWords.isEmpty()) {
@@ -1632,7 +1619,15 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
           clearSuggestionStrip();
           return;
       }
-      setAutoCorrection(suggestedWords, typedWord);
+      final String autoCorrection;
+      if (suggestedWords.mWillAutoCorrect) {
+          autoCorrection = suggestedWords.getWord(SuggestedWords.INDEX_OF_AUTO_CORRECTION);
+      } else {
+          // We can't use suggestedWords.getWord(SuggestedWords.INDEX_OF_TYPED_WORD)
+          // because it may differ from mWordComposer.mTypedWord.
+          autoCorrection = typedWord;
+      }
+      mInputLogic.mWordComposer.setAutoCorrection(autoCorrection);
       final boolean isAutoCorrection = suggestedWords.willAutoCorrect();
       setSuggestedWords(suggestedWords, isAutoCorrection);
       setAutoCorrectionIndicator(isAutoCorrection);
