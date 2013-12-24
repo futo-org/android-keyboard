@@ -20,7 +20,15 @@ import android.content.res.TypedArray;
 
 import com.android.inputmethod.latin.R;
 
-public final class GestureStrokePreviewParams {
+/**
+ * This class holds parameters to control how a gesture stroke is sampled and drawn on the screen.
+ *
+ * @attr ref R.styleable#MainKeyboardView_gestureTrailMinSamplingDistance
+ * @attr ref R.styleable#MainKeyboardView_gestureTrailMaxInterpolationAngularThreshold
+ * @attr ref R.styleable#MainKeyboardView_gestureTrailMaxInterpolationDistanceThreshold
+ * @attr ref R.styleable#MainKeyboardView_gestureTrailMaxInterpolationSegments
+ */
+public final class GestureStrokeDrawingParams {
     public final double mMinSamplingDistance; // in pixel
     public final double mMaxInterpolationAngularThreshold; // in radian
     public final double mMaxInterpolationDistanceThreshold; // in pixel
@@ -31,7 +39,7 @@ public final class GestureStrokePreviewParams {
     private static final float DEFAULT_MAX_INTERPOLATION_DISTANCE_THRESHOLD = 0.0f; // dp
     private static final int DEFAULT_MAX_INTERPOLATION_SEGMENTS = 4;
 
-    public GestureStrokePreviewParams(final TypedArray mainKeyboardViewAttr) {
+    public GestureStrokeDrawingParams(final TypedArray mainKeyboardViewAttr) {
         mMinSamplingDistance = mainKeyboardViewAttr.getDimension(
                 R.styleable.MainKeyboardView_gestureTrailMinSamplingDistance,
                 DEFAULT_MIN_SAMPLING_DISTANCE);
