@@ -576,40 +576,29 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         return sPointerTrackerQueue.getOldestElement() == this;
     }
 
-    private void mayStartBatchInput(final Key key) {
-        if (sInGesture || !mGestureStrokeWithPreviewPoints.isStartOfAGesture()) {
-            return;
-        }
-        if (key == null || !Character.isLetter(key.getCode())) {
-            return;
+    /**
+     * Determines whether the batch input has started or not.
+     * @return true if the batch input has started successfully.
+     */
+    private boolean mayStartBatchInput() {
+        if (!mGestureStrokeWithPreviewPoints.isStartOfAGesture()) {
+            return false;
         }
         if (DEBUG_LISTENER) {
             Log.d(TAG, String.format("[%d] onStartBatchInput", mPointerId));
         }
-        sInGesture = true;
         synchronized (sAggregatedPointers) {
             sAggregatedPointers.reset();
             sLastRecognitionPointSize = 0;
             sLastRecognitionTime = 0;
             sListener.onStartBatchInput();
             dismissAllMoreKeysPanels();
+            sTimerProxy.cancelLongPressTimerOf(this);
         }
-        sTimerProxy.cancelLongPressTimerOf(this);
-        // A gesture floating preview text will be shown at the oldest pointer/finger on the screen.
-        sDrawingProxy.showGestureTrail(
-                this, isOldestTrackerInQueue() /* showsFloatingPreviewText */);
+        return true;
     }
 
-    public void updateBatchInputByTimer(final long eventTime) {
-        final int gestureTime = (int)(eventTime - sGestureFirstDownTime);
-        mGestureStrokeWithPreviewPoints.duplicateLastPointWith(gestureTime);
-        updateBatchInput(eventTime);
-    }
-
-    private void mayUpdateBatchInput(final long eventTime, final Key key) {
-        if (key != null) {
-            updateBatchInput(eventTime);
-        }
+    private void showGestureTrail() {
         if (mIsTrackingForActionDisabled) {
             return;
         }
@@ -618,13 +607,19 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
                 this, isOldestTrackerInQueue() /* showsFloatingPreviewText */);
     }
 
-    private void updateBatchInput(final long eventTime) {
+    public void updateBatchInputByTimer(final long syntheticMoveEventTime) {
+        final int gestureTime = (int)(syntheticMoveEventTime - sGestureFirstDownTime);
+        mGestureStrokeWithPreviewPoints.duplicateLastPointWith(gestureTime);
+        updateBatchInput(syntheticMoveEventTime);
+    }
+
+    private void updateBatchInput(final long moveEventTime) {
         synchronized (sAggregatedPointers) {
             final GestureStroke stroke = mGestureStrokeWithPreviewPoints;
             stroke.appendIncrementalBatchPoints(sAggregatedPointers);
             final int size = sAggregatedPointers.getPointerSize();
             if (size > sLastRecognitionPointSize
-                    && stroke.hasRecognitionTimePast(eventTime, sLastRecognitionTime)) {
+                    && stroke.hasRecognitionTimePast(moveEventTime, sLastRecognitionTime)) {
                 if (DEBUG_LISTENER) {
                     Log.d(TAG, String.format("[%d] onUpdateBatchInput: batchPoints=%d", mPointerId,
                             size));
@@ -634,17 +629,23 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
                 // The listener may change the size of the pointers (when auto-committing
                 // for example), so we need to get the size from the pointers again.
                 sLastRecognitionPointSize = sAggregatedPointers.getPointerSize();
-                sLastRecognitionTime = eventTime;
+                sLastRecognitionTime = moveEventTime;
             }
         }
     }
 
-    private void mayEndBatchInput(final long eventTime) {
+    /**
+     * Determines whether the batch input has ended successfully or continues.
+     * @param upEventTime the event time of this pointer up.
+     * @return true if the batch input has ended successfully, false if it continues.
+     */
+    private boolean mayEndBatchInput(final long upEventTime) {
+        boolean hasEndBatchInputSuccessfully = false;
         synchronized (sAggregatedPointers) {
             mGestureStrokeWithPreviewPoints.appendAllBatchPoints(sAggregatedPointers);
             if (getActivePointerTrackerCount() == 1) {
-                sInGesture = false;
-                sTypingTimeRecorder.onEndBatchInput(eventTime);
+                hasEndBatchInputSuccessfully = true;
+                sTypingTimeRecorder.onEndBatchInput(upEventTime);
                 sTimerProxy.cancelAllUpdateBatchInputTimers();
                 if (!mIsTrackingForActionDisabled) {
                     if (DEBUG_LISTENER) {
@@ -655,12 +656,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
                 }
             }
         }
-        if (mIsTrackingForActionDisabled) {
-            return;
-        }
-        // A gesture floating preview text will be shown at the oldest pointer/finger on the screen.
-        sDrawingProxy.showGestureTrail(
-                this, isOldestTrackerInQueue() /* showsFloatingPreviewText */);
+        return hasEndBatchInputSuccessfully;
     }
 
     private void cancelBatchInput() {
@@ -815,28 +811,35 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
 
     private void onGestureMoveEvent(final int x, final int y, final long eventTime,
             final boolean isMajorEvent, final Key key) {
+        if (!mIsDetectingGesture) {
+            return;
+        }
+        final int beforeLength = mGestureStrokeWithPreviewPoints.getLength();
         final int gestureTime = (int)(eventTime - sGestureFirstDownTime);
-        if (mIsDetectingGesture) {
-            final int beforeLength = mGestureStrokeWithPreviewPoints.getLength();
-            final boolean onValidArea = mGestureStrokeWithPreviewPoints.addPointOnKeyboard(
-                    x, y, gestureTime, isMajorEvent);
-            if (mGestureStrokeWithPreviewPoints.getLength() > beforeLength) {
-                sTimerProxy.startUpdateBatchInputTimer(this);
+        final boolean onValidArea = mGestureStrokeWithPreviewPoints.addPointOnKeyboard(
+                x, y, gestureTime, isMajorEvent);
+        if (mGestureStrokeWithPreviewPoints.getLength() > beforeLength) {
+            sTimerProxy.startUpdateBatchInputTimer(this);
+        }
+        // If the move event goes out from valid batch input area, cancel batch input.
+        if (!onValidArea) {
+            cancelBatchInput();
+            return;
+        }
+        // If the MoreKeysPanel is showing then do not attempt to enter gesture mode. However,
+        // the gestured touch points are still being recorded in case the panel is dismissed.
+        if (isShowingMoreKeysPanel()) {
+            return;
+        }
+        if (!sInGesture && key != null && Character.isLetter(key.getCode())
+                && mayStartBatchInput()) {
+            sInGesture = true;
+        }
+        if (sInGesture) {
+            if (key != null) {
+                updateBatchInput(eventTime);
             }
-            // If the move event goes out from valid batch input area, cancel batch input.
-            if (!onValidArea) {
-                cancelBatchInput();
-                return;
-            }
-            // If the MoreKeysPanel is showing then do not attempt to enter gesture mode. However,
-            // the gestured touch points are still being recorded in case the panel is dismissed.
-            if (isShowingMoreKeysPanel()) {
-                return;
-            }
-            mayStartBatchInput(key);
-            if (sInGesture) {
-                mayUpdateBatchInput(eventTime, key);
-            }
+            showGestureTrail();
         }
     }
 
@@ -1087,7 +1090,10 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
             if (currentKey != null) {
                 callListenerOnRelease(currentKey, currentKey.getCode(), true /* withSliding */);
             }
-            mayEndBatchInput(eventTime);
+            if (mayEndBatchInput(eventTime)) {
+                sInGesture = false;
+            }
+            showGestureTrail();
             return;
         }
 
