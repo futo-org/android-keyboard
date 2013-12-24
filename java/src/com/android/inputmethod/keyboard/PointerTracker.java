@@ -25,7 +25,7 @@ import android.view.MotionEvent;
 import com.android.inputmethod.keyboard.internal.BogusMoveEventDetector;
 import com.android.inputmethod.keyboard.internal.GestureEnabler;
 import com.android.inputmethod.keyboard.internal.GestureStroke;
-import com.android.inputmethod.keyboard.internal.GestureStroke.GestureStrokeParams;
+import com.android.inputmethod.keyboard.internal.GestureStrokeParams;
 import com.android.inputmethod.keyboard.internal.GestureStrokeWithPreviewPoints;
 import com.android.inputmethod.keyboard.internal.GestureStrokeWithPreviewPoints.GestureStrokePreviewParams;
 import com.android.inputmethod.keyboard.internal.PointerTrackerQueue;
