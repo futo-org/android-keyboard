@@ -50,9 +50,7 @@ public abstract class AbstractDrawingPreview {
         // Default implementation is empty.
     }
 
-    public void onDetachFromWindow() {
-        // Default implementation is empty.
-    }
+    public abstract void onDeallocateMemory();
 
     /**
      * Draws the preview

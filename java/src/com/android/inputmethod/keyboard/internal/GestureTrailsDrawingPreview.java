@@ -103,11 +103,7 @@ public final class GestureTrailsDrawingPreview extends AbstractDrawingPreview {
     }
 
     @Override
-    public void onDetachFromWindow() {
-        freeOffscreenBuffer();
-    }
-
-    public void deallocateMemory() {
+    public void onDeallocateMemory() {
         freeOffscreenBuffer();
     }
 
