@@ -71,6 +71,8 @@ public final class InputLogic {
     // TODO : Remove this member when we can.
     private final LatinIME mLatinIME;
 
+    private InputLogicHandler mInputLogicHandler;
+
     // TODO : make all these fields private as soon as possible.
     // Current space state of the input method. This can be any of the above constants.
     public int mSpaceState;
@@ -105,6 +107,7 @@ public final class InputLogic {
         mWordComposer = new WordComposer();
         mEventInterpreter = new EventInterpreter(latinIME);
         mConnection = new RichInputConnection(latinIME);
+        mInputLogicHandler = null;
     }
 
     /**
@@ -119,12 +122,15 @@ public final class InputLogic {
      * @param restarting whether input is starting in the same field as before.
      */
     public void startInput(final boolean restarting) {
+        mInputLogicHandler = new InputLogicHandler();
     }
 
     /**
      * Clean up the input logic after input is finished.
      */
     public void finishInput() {
+        mInputLogicHandler.destroy();
+        mInputLogicHandler = null;
     }
 
     /**
