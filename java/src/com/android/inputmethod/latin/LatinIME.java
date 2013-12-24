@@ -1272,7 +1272,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public void onCancelBatchInput() {
-        mInputLogic.onCancelBatchInput(mInputUpdater);
+        mInputLogic.onCancelBatchInput(mHandler, mInputUpdater);
     }
 
     // TODO[IL]: Make this a package-private standalone class in inputlogic/ and remove all
@@ -1310,17 +1310,15 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             return true;
         }
 
-        // Run in the UI thread.
+        // Run on the UI thread.
         public void onStartBatchInput() {
             synchronized (mLock) {
                 mHandler.removeMessages(MSG_UPDATE_GESTURE_PREVIEW_AND_SUGGESTION_STRIP);
                 mInBatchInput = true;
-                mLatinIme.mHandler.showGesturePreviewAndSuggestionStrip(
-                        SuggestedWords.EMPTY, false /* dismissGestureFloatingPreviewText */);
             }
         }
 
-        // Run in the Handler thread.
+        // Run on the Handler thread.
         private void updateBatchInput(final InputPointers batchPointers, final int sequenceNumber) {
             synchronized (mLock) {
                 if (!mInBatchInput) {
@@ -1339,7 +1337,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             }
         }
 
-        // Run in the UI thread.
+        // Run on the UI thread.
         public void onUpdateBatchInput(final InputPointers batchPointers,
                 final int sequenceNumber) {
             if (mHandler.hasMessages(MSG_UPDATE_GESTURE_PREVIEW_AND_SUGGESTION_STRIP)) {
@@ -1352,12 +1350,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         public void onCancelBatchInput() {
             synchronized (mLock) {
                 mInBatchInput = false;
-                mLatinIme.mHandler.showGesturePreviewAndSuggestionStrip(
-                        SuggestedWords.EMPTY, true /* dismissGestureFloatingPreviewText */);
             }
         }
 
-        // Run in the UI thread.
+        // Run on the UI thread.
         public void onEndBatchInput(final InputPointers batchPointers) {
             synchronized(mLock) {
                 getSuggestedWordsGestureLocked(batchPointers, SuggestedWords.NOT_A_SEQUENCE_NUMBER,
@@ -1407,7 +1403,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
     }
 
-    // This method must run in UI Thread.
+    // This method must run on the UI Thread.
     private void showGesturePreviewAndSuggestionStrip(final SuggestedWords suggestedWords,
             final boolean dismissGestureFloatingPreviewText) {
         showSuggestionStrip(suggestedWords);
@@ -1418,7 +1414,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
     }
 
-    // This method must run in UI Thread.
+    // This method must run on the UI Thread.
     public void onEndBatchInputAsyncInternal(final SuggestedWords suggestedWords) {
         final String batchInputText = suggestedWords.isEmpty() ? null : suggestedWords.getWord(0);
         if (TextUtils.isEmpty(batchInputText)) {

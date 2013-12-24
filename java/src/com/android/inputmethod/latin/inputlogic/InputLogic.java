@@ -303,6 +303,8 @@ public final class InputLogic {
             final KeyboardSwitcher keyboardSwitcher, final LatinIME.UIHandler handler,
             final LatinIME.InputUpdater inputUpdater) {
         inputUpdater.onStartBatchInput();
+        handler.showGesturePreviewAndSuggestionStrip(
+                SuggestedWords.EMPTY, false /* dismissGestureFloatingPreviewText */);
         handler.cancelUpdateSuggestionStrip();
         mConnection.beginBatchEdit();
         if (mWordComposer.isComposingWord()) {
@@ -403,9 +405,12 @@ public final class InputLogic {
         inputUpdater.onEndBatchInput(batchPointers);
     }
 
-    // TODO: remove this argument
-    public void onCancelBatchInput(final LatinIME.InputUpdater inputUpdater) {
+    // TODO: remove these arguments
+    public void onCancelBatchInput(final LatinIME.UIHandler handler,
+            final LatinIME.InputUpdater inputUpdater) {
         inputUpdater.onCancelBatchInput();
+        handler.showGesturePreviewAndSuggestionStrip(
+                SuggestedWords.EMPTY, true /* dismissGestureFloatingPreviewText */);
     }
 
     /**
