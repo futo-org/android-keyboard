@@ -1579,12 +1579,12 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // TODO: consolidate this into getSuggestedWords
         // We update the suggestion strip only when we have some suggestions to show, i.e. when
         // the suggestion count is > 1; else, we leave the old suggestions, with the typed word
-        // replaced with the new one. However, when the word is a dictionary word, or when the
-        // length of the typed word is 1 or 0 (after a deletion typically), we do want to remove the
-        // old suggestions. Also, if we are showing the "add to dictionary" hint, we need to
-        // revert to suggestions - although it is unclear how we can come here if it's displayed.
+        // replaced with the new one. However, when the length of the typed word is 1 or 0 (after
+        // a deletion typically), we do want to remove the old suggestions. Also, if we are showing
+        // the "add to dictionary" hint, we need to revert to suggestions - although it is unclear
+        // how we can come here if it's displayed.
         if (suggestedWords.size() > 1 || typedWord.length() <= 1
-                || suggestedWords.mTypedWordValid || null == mSuggestionStripView
+                || null == mSuggestionStripView
                 || mSuggestionStripView.isShowingAddToDictionaryHint()) {
             return suggestedWords;
         } else {
