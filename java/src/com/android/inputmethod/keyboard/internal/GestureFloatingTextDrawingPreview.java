@@ -105,6 +105,11 @@ public class GestureFloatingTextDrawingPreview extends AbstractDrawingPreview {
         mParams = new GesturePreviewTextParams(typedArray);
     }
 
+    @Override
+    public void onDeallocateMemory() {
+        // Nothing to do here.
+    }
+
     public void setSuggetedWords(final SuggestedWords suggestedWords) {
         if (!isPreviewEnabled()) {
             return;

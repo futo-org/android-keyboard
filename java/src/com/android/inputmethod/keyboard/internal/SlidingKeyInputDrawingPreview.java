@@ -62,6 +62,11 @@ public final class SlidingKeyInputDrawingPreview extends AbstractDrawingPreview 
         mPaint.setColor(previewColor);
     }
 
+    @Override
+    public void onDeallocateMemory() {
+        // Nothing to do here.
+    }
+
     public void dismissSlidingKeyInputPreview() {
         mShowsSlidingKeyInputPreview = false;
         getDrawingView().invalidate();

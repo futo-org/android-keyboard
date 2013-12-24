@@ -59,13 +59,17 @@ public final class DrawingPreviewPlacerView extends RelativeLayout {
         }
     }
 
+    public void deallocateMemory() {
+        final int count = mPreviews.size();
+        for (int i = 0; i < count; i++) {
+            mPreviews.get(i).onDeallocateMemory();
+        }
+    }
+
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        final int count = mPreviews.size();
-        for (int i = 0; i < count; i++) {
-            mPreviews.get(i).onDetachFromWindow();
-        }
+        deallocateMemory();
     }
 
     @Override
