@@ -1338,6 +1338,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         private void updateBatchInput(final InputPointers batchPointers,
                 final int sequenceNumber, final boolean forEnd) {
             synchronized (mLock) {
+                mHandler.removeMessages(MSG_UPDATE_GESTURE_PREVIEW_AND_SUGGESTION_STRIP);
                 if (!mInBatchInput) {
                     // Batch input has ended or canceled while the message was being delivered.
                     return;
@@ -1374,11 +1375,14 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // Called on the UI thread by LatinIME.
         public void onUpdateBatchInput(final InputPointers batchPointers,
                 final int sequenceNumber) {
-            if (mHandler.hasMessages(MSG_UPDATE_GESTURE_PREVIEW_AND_SUGGESTION_STRIP)) {
-                return;
+            synchronized (mLock) {
+                if (mHandler.hasMessages(MSG_UPDATE_GESTURE_PREVIEW_AND_SUGGESTION_STRIP)) {
+                    return;
+                }
+                mHandler.obtainMessage(MSG_UPDATE_GESTURE_PREVIEW_AND_SUGGESTION_STRIP,
+                        0 /* arg1 */,sequenceNumber /* arg2 */,
+                        batchPointers /* obj */).sendToTarget();
             }
-            mHandler.obtainMessage(MSG_UPDATE_GESTURE_PREVIEW_AND_SUGGESTION_STRIP, 0 /* arg1 */,
-                    sequenceNumber /* arg2 */, batchPointers /* obj */).sendToTarget();
         }
 
         /**
@@ -1391,6 +1395,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // Called on the UI thread by LatinIME.
         public void onCancelBatchInput() {
             synchronized (mLock) {
+                mHandler.removeMessages(MSG_UPDATE_GESTURE_PREVIEW_AND_SUGGESTION_STRIP);
                 mInBatchInput = false;
             }
         }
