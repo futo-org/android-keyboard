@@ -21,7 +21,22 @@ import android.content.res.TypedArray;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.utils.ResourceUtils;
 
-public final class GestureStrokeParams {
+/**
+ * This class holds parameters to control how a gesture stroke is sampled and recognized.
+ * This class also has parameters to distinguish gesture input events from fast typing events.
+ *
+ * @attr ref R.styleable#MainKeyboardView_gestureStaticTimeThresholdAfterFastTyping
+ * @attr ref R.styleable#MainKeyboardView_gestureDetectFastMoveSpeedThreshold
+ * @attr ref R.styleable#MainKeyboardView_gestureDynamicThresholdDecayDuration
+ * @attr ref R.styleable#MainKeyboardView_gestureDynamicTimeThresholdFrom
+ * @attr ref R.styleable#MainKeyboardView_gestureDynamicTimeThresholdTo
+ * @attr ref R.styleable#MainKeyboardView_gestureDynamicDistanceThresholdFrom
+ * @attr ref R.styleable#MainKeyboardView_gestureDynamicDistanceThresholdTo
+ * @attr ref R.styleable#MainKeyboardView_gestureSamplingMinimumDistance
+ * @attr ref R.styleable#MainKeyboardView_gestureRecognitionMinimumTime
+ * @attr ref R.styleable#MainKeyboardView_gestureRecognitionSpeedThreshold
+ */
+public final class GestureStrokeRecognitionParams {
     // Static threshold for gesture after fast typing
     public final int mStaticTimeThresholdAfterFastTyping; // msec
     // Static threshold for starting gesture detection
@@ -40,10 +55,11 @@ public final class GestureStrokeParams {
     public final int mRecognitionMinimumTime; // msec
     public final float mRecognitionSpeedThreshold; // keyWidth/sec
 
-    // Default GestureStroke parameters.
-    public static final GestureStrokeParams DEFAULT = new GestureStrokeParams();
+    // Default GestureStrokeRecognitionPoints parameters.
+    public static final GestureStrokeRecognitionParams DEFAULT =
+            new GestureStrokeRecognitionParams();
 
-    private GestureStrokeParams() {
+    private GestureStrokeRecognitionParams() {
         // These parameter values are default and intended for testing.
         mStaticTimeThresholdAfterFastTyping = 350; // msec
         mDetectFastMoveSpeedThreshold = 1.5f; // keyWidth/sec
@@ -58,7 +74,7 @@ public final class GestureStrokeParams {
         mRecognitionSpeedThreshold = 5.5f; // keyWidth/sec
     }
 
-    public GestureStrokeParams(final TypedArray mainKeyboardViewAttr) {
+    public GestureStrokeRecognitionParams(final TypedArray mainKeyboardViewAttr) {
         mStaticTimeThresholdAfterFastTyping = mainKeyboardViewAttr.getInt(
                 R.styleable.MainKeyboardView_gestureStaticTimeThresholdAfterFastTyping,
                 DEFAULT.mStaticTimeThresholdAfterFastTyping);

@@ -29,16 +29,16 @@ import android.util.SparseArray;
 import android.view.View;
 
 import com.android.inputmethod.keyboard.PointerTracker;
-import com.android.inputmethod.keyboard.internal.GestureTrail.Params;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.LeakGuardHandlerWrapper;
 
 /**
- * Draw gesture trail preview graphics during gesture.
+ * Draw preview graphics of multiple gesture trails during gesture input.
  */
 public final class GestureTrailsDrawingPreview extends AbstractDrawingPreview {
-    private final SparseArray<GestureTrail> mGestureTrails = CollectionUtils.newSparseArray();
-    private final Params mGestureTrailParams;
+    private final SparseArray<GestureTrailDrawingPoints> mGestureTrails =
+            CollectionUtils.newSparseArray();
+    private final GestureTrailDrawingParams mDrawingParams;
     private final Paint mGesturePaint;
     private int mOffscreenWidth;
     private int mOffscreenHeight;
@@ -55,12 +55,12 @@ public final class GestureTrailsDrawingPreview extends AbstractDrawingPreview {
             extends LeakGuardHandlerWrapper<GestureTrailsDrawingPreview> {
         private static final int MSG_UPDATE_GESTURE_TRAIL = 0;
 
-        private final Params mGestureTrailParams;
+        private final GestureTrailDrawingParams mDrawingParams;
 
         public DrawingHandler(final GestureTrailsDrawingPreview ownerInstance,
-                final Params gestureTrailParams) {
+                final GestureTrailDrawingParams drawingParams) {
             super(ownerInstance);
-            mGestureTrailParams = gestureTrailParams;
+            mDrawingParams = drawingParams;
         }
 
         @Override
@@ -79,15 +79,15 @@ public final class GestureTrailsDrawingPreview extends AbstractDrawingPreview {
         public void postUpdateGestureTrailPreview() {
             removeMessages(MSG_UPDATE_GESTURE_TRAIL);
             sendMessageDelayed(obtainMessage(MSG_UPDATE_GESTURE_TRAIL),
-                    mGestureTrailParams.mUpdateInterval);
+                    mDrawingParams.mUpdateInterval);
         }
     }
 
     public GestureTrailsDrawingPreview(final View drawingView,
             final TypedArray mainKeyboardViewAttr) {
         super(drawingView);
-        mGestureTrailParams = new Params(mainKeyboardViewAttr);
-        mDrawingHandler = new DrawingHandler(this, mGestureTrailParams);
+        mDrawingParams = new GestureTrailDrawingParams(mainKeyboardViewAttr);
+        mDrawingHandler = new DrawingHandler(this, mDrawingParams);
         final Paint gesturePaint = new Paint();
         gesturePaint.setAntiAlias(true);
         gesturePaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC));
@@ -96,8 +96,8 @@ public final class GestureTrailsDrawingPreview extends AbstractDrawingPreview {
 
     @Override
     public void setKeyboardGeometry(final int[] originCoords, final int width, final int height) {
-        mOffscreenOffsetY = (int)(
-                height * GestureStroke.EXTRA_GESTURE_TRAIL_AREA_ABOVE_KEYBOARD_RATIO);
+        mOffscreenOffsetY = (int)(height
+                * GestureStrokeRecognitionPoints.EXTRA_GESTURE_TRAIL_AREA_ABOVE_KEYBOARD_RATIO);
         mOffscreenWidth = width;
         mOffscreenHeight = mOffscreenOffsetY + height;
     }
@@ -143,9 +143,9 @@ public final class GestureTrailsDrawingPreview extends AbstractDrawingPreview {
             // Trails count == fingers count that have ever been active.
             final int trailsCount = mGestureTrails.size();
             for (int index = 0; index < trailsCount; index++) {
-                final GestureTrail trail = mGestureTrails.valueAt(index);
+                final GestureTrailDrawingPoints trail = mGestureTrails.valueAt(index);
                 needsUpdatingGestureTrail |= trail.drawGestureTrail(offscreenCanvas, paint,
-                        mGestureTrailBoundsRect, mGestureTrailParams);
+                        mGestureTrailBoundsRect, mDrawingParams);
                 // {@link #mGestureTrailBoundsRect} has bounding box of the trail.
                 dirtyRect.union(mGestureTrailBoundsRect);
             }
@@ -188,15 +188,15 @@ public final class GestureTrailsDrawingPreview extends AbstractDrawingPreview {
         if (!isPreviewEnabled()) {
             return;
         }
-        GestureTrail trail;
+        GestureTrailDrawingPoints trail;
         synchronized (mGestureTrails) {
             trail = mGestureTrails.get(tracker.mPointerId);
             if (trail == null) {
-                trail = new GestureTrail();
+                trail = new GestureTrailDrawingPoints();
                 mGestureTrails.put(tracker.mPointerId, trail);
             }
         }
-        trail.addStroke(tracker.getGestureStrokeWithPreviewPoints(), tracker.getDownTime());
+        trail.addStroke(tracker.getGestureStrokeDrawingPoints(), tracker.getDownTime());
 
         // TODO: Should narrow the invalidate region.
         getDrawingView().invalidate();

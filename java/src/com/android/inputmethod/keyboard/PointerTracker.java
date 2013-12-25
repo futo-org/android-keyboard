@@ -24,10 +24,10 @@ import android.view.MotionEvent;
 
 import com.android.inputmethod.keyboard.internal.BogusMoveEventDetector;
 import com.android.inputmethod.keyboard.internal.GestureEnabler;
-import com.android.inputmethod.keyboard.internal.GestureStroke;
-import com.android.inputmethod.keyboard.internal.GestureStrokeParams;
-import com.android.inputmethod.keyboard.internal.GestureStrokePreviewParams;
-import com.android.inputmethod.keyboard.internal.GestureStrokeWithPreviewPoints;
+import com.android.inputmethod.keyboard.internal.GestureStrokeDrawingParams;
+import com.android.inputmethod.keyboard.internal.GestureStrokeDrawingPoints;
+import com.android.inputmethod.keyboard.internal.GestureStrokeRecognitionParams;
+import com.android.inputmethod.keyboard.internal.GestureStrokeRecognitionPoints;
 import com.android.inputmethod.keyboard.internal.PointerTrackerQueue;
 import com.android.inputmethod.keyboard.internal.TypingTimeRecorder;
 import com.android.inputmethod.latin.Constants;
@@ -135,8 +135,8 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
 
     // Parameters for pointer handling.
     private static PointerTrackerParams sParams;
-    private static GestureStrokeParams sGestureStrokeParams;
-    private static GestureStrokePreviewParams sGesturePreviewParams;
+    private static GestureStrokeRecognitionParams sGestureStrokeRecognitionParams;
+    private static GestureStrokeDrawingParams sGestureStrokeDrawingParams;
     private static boolean sNeedsPhantomSuddenMoveEventHack;
     // Move this threshold to resource.
     // TODO: Device specific parameter would be better for device specific hack?
@@ -163,7 +163,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
     private static long sGestureFirstDownTime;
     private static TypingTimeRecorder sTypingTimeRecorder;
     private static final InputPointers sAggregatedPointers = new InputPointers(
-            GestureStroke.DEFAULT_CAPACITY);
+            GestureStrokeRecognitionPoints.DEFAULT_CAPACITY);
     private static int sLastRecognitionPointSize = 0; // synchronized using sAggregatedPointers
     private static long sLastRecognitionTime = 0; // synchronized using sAggregatedPointers
 
@@ -203,16 +203,16 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
     // true if dragging finger is allowed.
     private boolean mIsAllowedDraggingFinger;
 
-    private final GestureStrokeWithPreviewPoints mGestureStrokeWithPreviewPoints;
+    private final GestureStrokeDrawingPoints mGestureStrokeDrawingPoints;
 
     // TODO: Add PointerTrackerFactory singleton and move some class static methods into it.
     public static void init(final TypedArray mainKeyboardViewAttr, final TimerProxy timerProxy,
             final DrawingProxy drawingProxy) {
         sParams = new PointerTrackerParams(mainKeyboardViewAttr);
-        sGestureStrokeParams = new GestureStrokeParams(mainKeyboardViewAttr);
-        sGesturePreviewParams = new GestureStrokePreviewParams(mainKeyboardViewAttr);
+        sGestureStrokeRecognitionParams = new GestureStrokeRecognitionParams(mainKeyboardViewAttr);
+        sGestureStrokeDrawingParams = new GestureStrokeDrawingParams(mainKeyboardViewAttr);
         sTypingTimeRecorder = new TypingTimeRecorder(
-                sGestureStrokeParams.mStaticTimeThresholdAfterFastTyping,
+                sGestureStrokeRecognitionParams.mStaticTimeThresholdAfterFastTyping,
                 sParams.mSuppressKeyPreviewAfterBatchInputDuration);
 
         final Resources res = mainKeyboardViewAttr.getResources();
@@ -286,8 +286,8 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
 
     private PointerTracker(final int id) {
         mPointerId = id;
-        mGestureStrokeWithPreviewPoints = new GestureStrokeWithPreviewPoints(
-                id, sGestureStrokeParams, sGesturePreviewParams);
+        mGestureStrokeDrawingPoints = new GestureStrokeDrawingPoints(
+                id, sGestureStrokeRecognitionParams, sGestureStrokeDrawingParams);
     }
 
     // Returns true if keyboard has been changed by this callback.
@@ -408,7 +408,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         mKeyboardLayoutHasBeenChanged = true;
         final int keyWidth = mKeyboard.mMostCommonKeyWidth;
         final int keyHeight = mKeyboard.mMostCommonKeyHeight;
-        mGestureStrokeWithPreviewPoints.setKeyboardGeometry(keyWidth, mKeyboard.mOccupiedHeight);
+        mGestureStrokeDrawingPoints.setKeyboardGeometry(keyWidth, mKeyboard.mOccupiedHeight);
         final Key newKey = mKeyDetector.detectHitKey(mKeyX, mKeyY);
         if (newKey != mCurrentKey) {
             if (sDrawingProxy != null) {
@@ -523,8 +523,8 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         sDrawingProxy.invalidateKey(key);
     }
 
-    public GestureStrokeWithPreviewPoints getGestureStrokeWithPreviewPoints() {
-        return mGestureStrokeWithPreviewPoints;
+    public GestureStrokeDrawingPoints getGestureStrokeDrawingPoints() {
+        return mGestureStrokeDrawingPoints;
     }
 
     public void getLastCoordinates(final int[] outCoords) {
@@ -581,7 +581,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
      * @return true if the batch input has started successfully.
      */
     private boolean mayStartBatchInput() {
-        if (!mGestureStrokeWithPreviewPoints.isStartOfAGesture()) {
+        if (!mGestureStrokeDrawingPoints.isStartOfAGesture()) {
             return false;
         }
         if (DEBUG_LISTENER) {
@@ -609,13 +609,13 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
 
     public void updateBatchInputByTimer(final long syntheticMoveEventTime) {
         final int gestureTime = (int)(syntheticMoveEventTime - sGestureFirstDownTime);
-        mGestureStrokeWithPreviewPoints.duplicateLastPointWith(gestureTime);
+        mGestureStrokeDrawingPoints.duplicateLastPointWith(gestureTime);
         updateBatchInput(syntheticMoveEventTime);
     }
 
     private void updateBatchInput(final long moveEventTime) {
         synchronized (sAggregatedPointers) {
-            final GestureStroke stroke = mGestureStrokeWithPreviewPoints;
+            final GestureStrokeRecognitionPoints stroke = mGestureStrokeDrawingPoints;
             stroke.appendIncrementalBatchPoints(sAggregatedPointers);
             final int size = sAggregatedPointers.getPointerSize();
             if (size > sLastRecognitionPointSize
@@ -642,7 +642,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
     private boolean mayEndBatchInput(final long upEventTime) {
         boolean hasEndBatchInputSuccessfully = false;
         synchronized (sAggregatedPointers) {
-            mGestureStrokeWithPreviewPoints.appendAllBatchPoints(sAggregatedPointers);
+            mGestureStrokeDrawingPoints.appendAllBatchPoints(sAggregatedPointers);
             if (getActivePointerTrackerCount() == 1) {
                 hasEndBatchInputSuccessfully = true;
                 sTypingTimeRecorder.onEndBatchInput(upEventTime);
@@ -754,7 +754,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
             if (getActivePointerTrackerCount() == 1) {
                 sGestureFirstDownTime = eventTime;
             }
-            mGestureStrokeWithPreviewPoints.onDownEvent(x, y, eventTime, sGestureFirstDownTime,
+            mGestureStrokeDrawingPoints.onDownEvent(x, y, eventTime, sGestureFirstDownTime,
                     sTypingTimeRecorder.getLastLetterTypingTime());
         }
     }
@@ -814,11 +814,11 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         if (!mIsDetectingGesture) {
             return;
         }
-        final int beforeLength = mGestureStrokeWithPreviewPoints.getLength();
+        final int beforeLength = mGestureStrokeDrawingPoints.getLength();
         final int gestureTime = (int)(eventTime - sGestureFirstDownTime);
-        final boolean onValidArea = mGestureStrokeWithPreviewPoints.addPointOnKeyboard(
+        final boolean onValidArea = mGestureStrokeDrawingPoints.addPointOnKeyboard(
                 x, y, gestureTime, isMajorEvent);
-        if (mGestureStrokeWithPreviewPoints.getLength() > beforeLength) {
+        if (mGestureStrokeDrawingPoints.getLength() > beforeLength) {
             sTimerProxy.startUpdateBatchInputTimer(this);
         }
         // If the move event goes out from valid batch input area, cancel batch input.

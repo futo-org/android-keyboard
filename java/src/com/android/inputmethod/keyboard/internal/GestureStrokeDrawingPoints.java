@@ -18,14 +18,20 @@ package com.android.inputmethod.keyboard.internal;
 
 import com.android.inputmethod.latin.utils.ResizableIntArray;
 
-public final class GestureStrokeWithPreviewPoints extends GestureStroke {
+/**
+ * This class holds drawing points to represent a gesture stroke on the screen.
+ * TODO: Currently this class extends {@link GestureStrokeRecognitionPoints} that holds recognition
+ * points of a gesture stroke. This class should be independent from
+ * {@link GestureStrokeRecognitionPoints}.
+ */
+public final class GestureStrokeDrawingPoints extends GestureStrokeRecognitionPoints {
     public static final int PREVIEW_CAPACITY = 256;
 
     private final ResizableIntArray mPreviewEventTimes = new ResizableIntArray(PREVIEW_CAPACITY);
     private final ResizableIntArray mPreviewXCoordinates = new ResizableIntArray(PREVIEW_CAPACITY);
     private final ResizableIntArray mPreviewYCoordinates = new ResizableIntArray(PREVIEW_CAPACITY);
 
-    private final GestureStrokePreviewParams mPreviewParams;
+    private final GestureStrokeDrawingParams mDrawingParams;
 
     private int mStrokeId;
     private int mLastPreviewSize;
@@ -36,11 +42,11 @@ public final class GestureStrokeWithPreviewPoints extends GestureStroke {
     private int mLastY;
     private double mDistanceFromLastSample;
 
-    public GestureStrokeWithPreviewPoints(final int pointerId,
-            final GestureStrokeParams strokeParams,
-            final GestureStrokePreviewParams previewParams) {
-        super(pointerId, strokeParams);
-        mPreviewParams = previewParams;
+    public GestureStrokeDrawingPoints(final int pointerId,
+            final GestureStrokeRecognitionParams recognitionParams,
+            final GestureStrokeDrawingParams drawingParams) {
+        super(pointerId, recognitionParams);
+        mDrawingParams = drawingParams;
     }
 
     @Override
@@ -63,7 +69,7 @@ public final class GestureStrokeWithPreviewPoints extends GestureStroke {
         mLastX = x;
         mLastY = y;
         final boolean isDownEvent = (mPreviewEventTimes.getLength() == 0);
-        if (mDistanceFromLastSample >= mPreviewParams.mMinSamplingDistance || isDownEvent) {
+        if (mDistanceFromLastSample >= mDrawingParams.mMinSamplingDistance || isDownEvent) {
             mDistanceFromLastSample = 0.0d;
             return true;
         }
@@ -89,7 +95,7 @@ public final class GestureStrokeWithPreviewPoints extends GestureStroke {
      * @param xCoords the x-coordinates array of gesture trail to be drawn.
      * @param yCoords the y-coordinates array of gesture trail to be drawn.
      * @param types the point types array of gesture trail. This is valid only when
-     * {@link GestureTrail#DEBUG_SHOW_POINTS} is true.
+     * {@link GestureTrailDrawingPoints#DEBUG_SHOW_POINTS} is true.
      */
     public void appendPreviewStroke(final ResizableIntArray eventTimes,
             final ResizableIntArray xCoords, final ResizableIntArray yCoords,
@@ -101,8 +107,8 @@ public final class GestureStrokeWithPreviewPoints extends GestureStroke {
         eventTimes.append(mPreviewEventTimes, mLastPreviewSize, length);
         xCoords.append(mPreviewXCoordinates, mLastPreviewSize, length);
         yCoords.append(mPreviewYCoordinates, mLastPreviewSize, length);
-        if (GestureTrail.DEBUG_SHOW_POINTS) {
-            types.fill(GestureTrail.POINT_TYPE_SAMPLED, types.getLength(), length);
+        if (GestureTrailDrawingPoints.DEBUG_SHOW_POINTS) {
+            types.fill(GestureTrailDrawingPoints.POINT_TYPE_SAMPLED, types.getLength(), length);
         }
         mLastPreviewSize = mPreviewEventTimes.getLength();
     }
@@ -119,7 +125,7 @@ public final class GestureStrokeWithPreviewPoints extends GestureStroke {
      * @param xCoords the x-coordinates array of gesture trail to be drawn.
      * @param yCoords the y-coordinates array of gesture trail to be drawn.
      * @param types the point types array of gesture trail. This is valid only when
-     * {@link GestureTrail#DEBUG_SHOW_POINTS} is true.
+     * {@link GestureTrailDrawingPoints#DEBUG_SHOW_POINTS} is true.
      * @return the start index of the last interpolated segment of input arrays.
      */
     public int interpolateStrokeAndReturnStartIndexOfLastSegment(final int lastInterpolatedIndex,
@@ -145,12 +151,12 @@ public final class GestureStrokeWithPreviewPoints extends GestureStroke {
             final double m2 = Math.atan2(mInterpolator.mSlope2Y, mInterpolator.mSlope2X);
             final double deltaAngle = Math.abs(angularDiff(m2, m1));
             final int segmentsByAngle = (int)Math.ceil(
-                    deltaAngle / mPreviewParams.mMaxInterpolationAngularThreshold);
+                    deltaAngle / mDrawingParams.mMaxInterpolationAngularThreshold);
             final double deltaDistance = Math.hypot(mInterpolator.mP1X - mInterpolator.mP2X,
                     mInterpolator.mP1Y - mInterpolator.mP2Y);
             final int segmentsByDistance = (int)Math.ceil(deltaDistance
-                    / mPreviewParams.mMaxInterpolationDistanceThreshold);
-            final int segments = Math.min(mPreviewParams.mMaxInterpolationSegments,
+                    / mDrawingParams.mMaxInterpolationDistanceThreshold);
+            final int segments = Math.min(mDrawingParams.mMaxInterpolationSegments,
                     Math.max(segmentsByAngle, segmentsByDistance));
             final int t1 = eventTimes.get(d1);
             final int dt = pt[p2] - pt[p1];
@@ -161,16 +167,16 @@ public final class GestureStrokeWithPreviewPoints extends GestureStroke {
                 eventTimes.add(d1, (int)(dt * t) + t1);
                 xCoords.add(d1, (int)mInterpolator.mInterpolatedX);
                 yCoords.add(d1, (int)mInterpolator.mInterpolatedY);
-                if (GestureTrail.DEBUG_SHOW_POINTS) {
-                    types.add(d1, GestureTrail.POINT_TYPE_INTERPOLATED);
+                if (GestureTrailDrawingPoints.DEBUG_SHOW_POINTS) {
+                    types.add(d1, GestureTrailDrawingPoints.POINT_TYPE_INTERPOLATED);
                 }
                 d1++;
             }
             eventTimes.add(d1, pt[p2]);
             xCoords.add(d1, px[p2]);
             yCoords.add(d1, py[p2]);
-            if (GestureTrail.DEBUG_SHOW_POINTS) {
-                types.add(d1, GestureTrail.POINT_TYPE_SAMPLED);
+            if (GestureTrailDrawingPoints.DEBUG_SHOW_POINTS) {
+                types.add(d1, GestureTrailDrawingPoints.POINT_TYPE_SAMPLED);
             }
         }
         return lastInterpolatedDrawIndex;
