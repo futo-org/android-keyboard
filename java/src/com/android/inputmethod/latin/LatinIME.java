@@ -128,8 +128,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private final SubtypeSwitcher mSubtypeSwitcher;
     private final SubtypeState mSubtypeState = new SubtypeState();
 
-    private UserBinaryDictionary mUserDictionary;
-
     // Object for reacting to adding/removing a dictionary pack.
     private BroadcastReceiver mDictionaryPackInstallReceiver =
             new DictionaryPackInstallBroadcastReceiver(this);
@@ -518,6 +516,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final SettingsValues currentSettingsValues = mSettings.getCurrent();
         if (!mHandler.hasPendingReopenDictionaries() && mInputLogic.mSuggest != null) {
             // May need to reset dictionaries depending on the user settings.
+            // TODO: Quit setting dictionaries from LatinIME.
             mInputLogic.mSuggest.setAdditionalDictionaries(mInputLogic.mSuggest /* oldSuggest */,
                    currentSettingsValues);
         }
@@ -565,9 +564,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
             ResearchLogger.getInstance().initSuggest(newSuggest);
         }
-
-        mUserDictionary = new UserBinaryDictionary(this, subtypeLocale);
-        newSuggest.setUserDictionary(mUserDictionary);
+        // TODO: Quit setting dictionaries from LatinIME.
         newSuggest.setAdditionalDictionaries(mInputLogic.mSuggest /* oldSuggest */,
                 mSettings.getCurrent());
         final Suggest oldSuggest = mInputLogic.mSuggest;
@@ -1208,7 +1205,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         } else {
             wordToEdit = word;
         }
-        mUserDictionary.addWordToUserDictionary(wordToEdit);
+        mInputLogic.mSuggest.addWordToUserDictionary(wordToEdit);
     }
 
     public void displaySettingsDialog() {
@@ -1739,13 +1736,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                         || SuggestedWordInfo.KIND_OOV_CORRECTION == suggestionInfo.mKind)
                         && suggest != null
                         // If the suggestion is not in the dictionary, the hint should be shown.
-                        && !AutoCorrectionUtils.isValidWord(suggest, suggestion, true);
+                        && !suggest.isValidWord(suggestion, true);
 
         if (currentSettings.mIsInternal) {
             LatinImeLoggerUtils.onSeparator((char)Constants.CODE_SPACE,
                     Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
         }
-        if (showingAddToDictionaryHint && mUserDictionary.mEnabled) {
+        if (showingAddToDictionaryHint && suggest.isUserDictionaryEnabled()) {
             mSuggestionStripView.showAddToDictionaryHint(
                     suggestion, currentSettings.mHintToSaveText);
         } else {

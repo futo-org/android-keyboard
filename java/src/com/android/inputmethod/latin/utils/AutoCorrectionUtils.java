@@ -17,15 +17,10 @@
 package com.android.inputmethod.latin.utils;
 
 import com.android.inputmethod.latin.BinaryDictionary;
-import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.LatinImeLogger;
-import com.android.inputmethod.latin.Suggest;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 
-import android.text.TextUtils;
 import android.util.Log;
-
-import java.util.concurrent.ConcurrentHashMap;
 
 public final class AutoCorrectionUtils {
     private static final boolean DBG = LatinImeLogger.sDBG;
@@ -34,48 +29,6 @@ public final class AutoCorrectionUtils {
 
     private AutoCorrectionUtils() {
         // Purely static class: can't instantiate.
-    }
-
-    public static boolean isValidWord(final Suggest suggest, final String word,
-            final boolean ignoreCase) {
-        if (TextUtils.isEmpty(word)) {
-            return false;
-        }
-        final ConcurrentHashMap<String, Dictionary> dictionaries = suggest.getUnigramDictionaries();
-        final String lowerCasedWord = word.toLowerCase(suggest.mLocale);
-        for (final String key : dictionaries.keySet()) {
-            final Dictionary dictionary = dictionaries.get(key);
-            // It's unclear how realistically 'dictionary' can be null, but the monkey is somehow
-            // managing to get null in here. Presumably the language is changing to a language with
-            // no main dictionary and the monkey manages to type a whole word before the thread
-            // that reads the dictionary is started or something?
-            // Ideally the passed map would come out of a {@link java.util.concurrent.Future} and
-            // would be immutable once it's finished initializing, but concretely a null test is
-            // probably good enough for the time being.
-            if (null == dictionary) continue;
-            if (dictionary.isValidWord(word)
-                    || (ignoreCase && dictionary.isValidWord(lowerCasedWord))) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public static int getMaxFrequency(final ConcurrentHashMap<String, Dictionary> dictionaries,
-            final String word) {
-        if (TextUtils.isEmpty(word)) {
-            return Dictionary.NOT_A_PROBABILITY;
-        }
-        int maxFreq = -1;
-        for (final String key : dictionaries.keySet()) {
-            final Dictionary dictionary = dictionaries.get(key);
-            if (null == dictionary) continue;
-            final int tempFreq = dictionary.getFrequency(word);
-            if (tempFreq >= maxFreq) {
-                maxFreq = tempFreq;
-            }
-        }
-        return maxFreq;
     }
 
     public static boolean suggestionExceedsAutoCorrectionThreshold(
