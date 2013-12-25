@@ -321,7 +321,7 @@ public final class SettingsValues {
     public boolean isBrokenByRecorrection() {
         final AppWorkaroundsUtils appWorkaroundUtils
                 = mAppWorkarounds.get(null, TIMEOUT_TO_GET_TARGET_PACKAGE);
-        return null == appWorkaroundUtils ? null : appWorkaroundUtils.isBrokenByRecorrection();
+        return null == appWorkaroundUtils ? false : appWorkaroundUtils.isBrokenByRecorrection();
     }
 
     // Helper functions to create member values.
