@@ -88,12 +88,12 @@ public final class InputLogic {
     public int mLastSelectionStart = Constants.NOT_A_CURSOR_POSITION;
     public int mLastSelectionEnd = Constants.NOT_A_CURSOR_POSITION;
 
-    public int mDeleteCount;
+    private int mDeleteCount;
     private long mLastKeyTime;
     public final TreeSet<Long> mCurrentlyPressedHardwareKeys = CollectionUtils.newTreeSet();
 
     // Keeps track of most recently inserted text (multi-character key) for reverting
-    public String mEnteredText;
+    private String mEnteredText;
 
     // TODO: This boolean is persistent state and causes large side effects at unexpected times.
     // Find a way to remove it for readability.
@@ -1604,8 +1604,7 @@ public final class InputLogic {
      * @param settingsValues the current value of the settings.
      * @param separator the separator that's causing the commit to happen.
      */
-    // TODO: Make this private
-    public void commitCurrentAutoCorrection(final SettingsValues settingsValues,
+    private void commitCurrentAutoCorrection(final SettingsValues settingsValues,
             final String separator,
             // TODO: Remove this argument.
             final LatinIME.UIHandler handler) {
@@ -1697,8 +1696,7 @@ public final class InputLogic {
      * detect the most damaging cases: when the cursor position is declared to be much smaller
      * than it really is.
      */
-    // TODO: make this private
-    public void tryFixLyingCursorPosition() {
+    private void tryFixLyingCursorPosition() {
         final CharSequence textBeforeCursor = mConnection.getTextBeforeCursor(
                 Constants.EDITOR_CONTENTS_CACHE_SIZE, 0);
         if (null == textBeforeCursor) {
