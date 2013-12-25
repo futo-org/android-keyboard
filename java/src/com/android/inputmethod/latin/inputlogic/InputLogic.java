@@ -402,7 +402,7 @@ public final class InputLogic {
             final InputPointers batchPointers,
             // TODO: remove these arguments
             final LatinIME.InputUpdater inputUpdater) {
-        inputUpdater.onEndBatchInput(batchPointers);
+        inputUpdater.onEndBatchInput(batchPointers, mAutoCommitSequenceNumber);
     }
 
     // TODO: remove these arguments
