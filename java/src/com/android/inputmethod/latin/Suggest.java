@@ -17,7 +17,6 @@
 package com.android.inputmethod.latin;
 
 import android.content.Context;
-import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -27,7 +26,6 @@ import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.personalization.PersonalizationDictionary;
 import com.android.inputmethod.latin.personalization.PersonalizationHelper;
 import com.android.inputmethod.latin.personalization.UserHistoryDictionary;
-import com.android.inputmethod.latin.settings.Settings;
 import com.android.inputmethod.latin.settings.SettingsValues;
 import com.android.inputmethod.latin.utils.AutoCorrectionUtils;
 import com.android.inputmethod.latin.utils.BoundedTreeSet;
@@ -89,15 +87,13 @@ public final class Suggest {
 
     private final Context mContext;
 
-    public Suggest(final Context context, final Locale locale,
+    public Suggest(final Context context, final Locale locale, final SettingsValues settingsValues,
             final SuggestInitializationListener listener) {
         initAsynchronously(context, locale, listener);
         mLocale = locale;
         mContext = context;
-        // TODO: Use SettingsValues instead of Settings.
         // initialize a debug flag for the personalization
-        if (Settings.readUseOnlyPersonalizationDictionaryForDebug(
-                PreferenceManager.getDefaultSharedPreferences(context))) {
+        if (settingsValues.mUseOnlyPersonalizationDictionaryForDebug) {
             mOnlyDictionarySetForDebug = new HashSet<String>();
             mOnlyDictionarySetForDebug.add(Dictionary.TYPE_PERSONALIZATION);
         }

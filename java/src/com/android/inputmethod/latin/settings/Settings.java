@@ -358,18 +358,6 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
         return prefs.getBoolean(Settings.PREF_KEY_IS_INTERNAL, false);
     }
 
-    public static boolean readUseOnlyPersonalizationDictionaryForDebug(
-            final SharedPreferences prefs) {
-        return prefs.getBoolean(
-                DebugSettings.PREF_USE_ONLY_PERSONALIZATION_DICTIONARY_FOR_DEBUG, false);
-    }
-
-    public static boolean readBoostPersonalizationDictionaryForDebug(
-            final SharedPreferences prefs) {
-        return prefs.getBoolean(
-                DebugSettings.PREF_BOOST_PERSONALIZATION_DICTIONARY_FOR_DEBUG, false);
-    }
-
     public void writeLastUsedPersonalizationToken(byte[] token) {
         if (token == null) {
             mPrefs.edit().remove(PREF_LAST_USED_PERSONALIZATION_TOKEN).apply();
