@@ -39,8 +39,6 @@ public final class DebugSettings extends PreferenceFragment
     public static final String PREF_STATISTICS_LOGGING = "enable_logging";
     public static final String PREF_USE_ONLY_PERSONALIZATION_DICTIONARY_FOR_DEBUG =
             "use_only_personalization_dictionary_for_debug";
-    public static final String PREF_BOOST_PERSONALIZATION_DICTIONARY_FOR_DEBUG =
-            "boost_personalization_dictionary_for_debug";
     private static final String PREF_READ_EXTERNAL_DICTIONARY = "read_external_dictionary";
     private static final boolean SHOW_STATISTICS_LOGGING = false;
 
