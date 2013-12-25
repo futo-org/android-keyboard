@@ -41,7 +41,7 @@ public class LatinImeStressTests extends InputTestsBase {
             }
         }
     }
-    public void testSwitchLanguagesAndInputRandamCodePoints() {
+    public void testSwitchLanguagesAndInputRandomCodePoints() {
         final String[] locales = {"en_US", "de", "el", "es", "fi", "it", "nl", "pt", "ru"};
         final int switchCount = 50;
         final int maxWordCountToTypeInEachIteration = 20;
