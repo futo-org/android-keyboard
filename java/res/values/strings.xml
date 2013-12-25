@@ -484,8 +484,6 @@ mobile devices. [CHAR LIMIT=25] -->
     <string name="prefs_read_external_dictionary">Read external dictionary file</string>
     <!-- Title of the settings for using only personalization dictionary -->
     <string name="prefs_use_only_personalization_dictionary" translatable="false">Use only personalization dictionary</string>
-    <!-- Title of the settings for boosting personalization dictionary -->
-    <string name="prefs_boost_personalization_dictionary" translatable="false">Boost personalization dictionary</string>
     <!-- Message to show when there are no files to install as an external dictionary [CHAR LIMIT=100] -->
     <string name="read_external_dictionary_no_files_message">No dictionary files in the Downloads folder</string>
     <!-- Title of the dialog that selects a file to install as an external dictionary [CHAR LIMIT=50] -->
