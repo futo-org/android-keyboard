@@ -1334,13 +1334,21 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     // Batch input has ended or canceled while the message was being delivered.
                     return;
                 }
-                getSuggestedWordsGestureLocked(batchPointers, sequenceNumber,
+                mLatinIme.mInputLogic.mWordComposer.setBatchInputPointers(batchPointers);
+                getSuggestedWords(Suggest.SESSION_GESTURE, sequenceNumber,
                         new OnGetSuggestedWordsCallback() {
                             @Override
-                            public void onGetSuggestedWords(final SuggestedWords suggestedWords) {
+                            public void onGetSuggestedWords(SuggestedWords suggestedWords) {
                                 // We're now inside the callback. This always runs on the
                                 // InputUpdater thread, no matter what thread updateBatchInput
                                 // was called on.
+                                if (suggestedWords.isEmpty()) {
+                                    // Use old suggestions if we don't have any new ones.
+                                    // Previous suggestions are found in InputLogic#mSuggestedWords.
+                                    // Since these are the most recent ones and we just recomputed
+                                    // new ones to update them, then the previous ones are there.
+                                    suggestedWords = mLatinIme.mInputLogic.mSuggestedWords;
+                                }
                                 mLatinIme.mHandler.showGesturePreviewAndSuggestionStrip(
                                         suggestedWords,
                                         forEnd /* dismissGestureFloatingPreviewText */);
@@ -1395,27 +1403,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // Called on the UI thread by LatinIME.
         public void onEndBatchInput(final InputPointers batchPointers, final int sequenceNumber) {
             updateBatchInput(batchPointers, sequenceNumber, true /* forEnd */);
-        }
-
-        // {@link LatinIME#getSuggestedWords(int)} method calls with same session id have to
-        // be synchronized.
-        private void getSuggestedWordsGestureLocked(final InputPointers batchPointers,
-                final int sequenceNumber, final OnGetSuggestedWordsCallback callback) {
-            mLatinIme.mInputLogic.mWordComposer.setBatchInputPointers(batchPointers);
-            getSuggestedWords(Suggest.SESSION_GESTURE, sequenceNumber,
-                    new OnGetSuggestedWordsCallback() {
-                        @Override
-                        public void onGetSuggestedWords(SuggestedWords suggestedWords) {
-                            if (suggestedWords.isEmpty()) {
-                                // Previous suggestions are found in InputLogic#mSuggestedWords.
-                                // Since these are the most recent ones and we just recomputed new
-                                // ones to update them, it means the previous ones are there.
-                                callback.onGetSuggestedWords(mLatinIme.mInputLogic.mSuggestedWords);
-                            } else {
-                                callback.onGetSuggestedWords(suggestedWords);
-                            }
-                        }
-                    });
         }
 
         public void getSuggestedWords(final int sessionId, final int sequenceNumber,
