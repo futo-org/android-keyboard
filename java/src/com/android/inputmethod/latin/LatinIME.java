@@ -79,7 +79,6 @@ import com.android.inputmethod.latin.settings.SettingsActivity;
 import com.android.inputmethod.latin.settings.SettingsValues;
 import com.android.inputmethod.latin.suggestions.SuggestionStripView;
 import com.android.inputmethod.latin.utils.ApplicationUtils;
-import com.android.inputmethod.latin.utils.AutoCorrectionUtils;
 import com.android.inputmethod.latin.utils.CapsModeUtils;
 import com.android.inputmethod.latin.utils.CompletionInfoUtils;
 import com.android.inputmethod.latin.utils.IntentUtils;
@@ -554,9 +553,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             subtypeLocale = switcherSubtypeLocale;
         }
 
-        final Suggest newSuggest = new Suggest(this /* Context */, subtypeLocale,
-                this /* SuggestInitializationListener */);
         final SettingsValues settingsValues = mSettings.getCurrent();
+        final Suggest newSuggest = new Suggest(this /* Context */, subtypeLocale, settingsValues,
+                this /* SuggestInitializationListener */);
         if (settingsValues.mCorrectionEnabled) {
             newSuggest.setAutoCorrectionThreshold(settingsValues.mAutoCorrectionThreshold);
         }
@@ -565,8 +564,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             ResearchLogger.getInstance().initSuggest(newSuggest);
         }
         // TODO: Quit setting dictionaries from LatinIME.
-        newSuggest.setAdditionalDictionaries(mInputLogic.mSuggest /* oldSuggest */,
-                mSettings.getCurrent());
+        newSuggest.setAdditionalDictionaries(mInputLogic.mSuggest /* oldSuggest */, settingsValues);
         final Suggest oldSuggest = mInputLogic.mSuggest;
         mInputLogic.mSuggest = newSuggest;
         if (oldSuggest != null) oldSuggest.close();

@@ -99,7 +99,6 @@ public final class SettingsValues {
     public final float mAutoCorrectionThreshold;
     public final boolean mCorrectionEnabled;
     public final int mSuggestionVisibility;
-    public final boolean mBoostPersonalizationDictionaryForDebug;
     public final boolean mUseOnlyPersonalizationDictionaryForDebug;
     public final int mDisplayOrientation;
     private final AsyncResultHolder<AppWorkaroundsUtils> mAppWorkarounds;
@@ -181,10 +180,8 @@ public final class SettingsValues {
         AdditionalFeaturesSettingUtils.readAdditionalFeaturesPreferencesIntoArray(
                 prefs, mAdditionalFeaturesSettingValues);
         mIsInternal = Settings.isInternal(prefs);
-        mBoostPersonalizationDictionaryForDebug =
-                Settings.readBoostPersonalizationDictionaryForDebug(prefs);
-        mUseOnlyPersonalizationDictionaryForDebug =
-                Settings.readUseOnlyPersonalizationDictionaryForDebug(prefs);
+        mUseOnlyPersonalizationDictionaryForDebug = prefs.getBoolean(
+                DebugSettings.PREF_USE_ONLY_PERSONALIZATION_DICTIONARY_FOR_DEBUG, false);
         mDisplayOrientation = res.getConfiguration().orientation;
         mAppWorkarounds = new AsyncResultHolder<AppWorkaroundsUtils>();
         final PackageInfo packageInfo = TargetPackageInfoGetterTask.getCachedPackageInfo(
@@ -241,7 +238,6 @@ public final class SettingsValues {
         mCorrectionEnabled = mAutoCorrectEnabled && !mInputAttributes.mInputTypeNoAutoCorrect;
         mSuggestionVisibility = 0;
         mIsInternal = false;
-        mBoostPersonalizationDictionaryForDebug = false;
         mUseOnlyPersonalizationDictionaryForDebug = false;
         mDisplayOrientation = Configuration.ORIENTATION_PORTRAIT;
         mAppWorkarounds = new AsyncResultHolder<AppWorkaroundsUtils>();
