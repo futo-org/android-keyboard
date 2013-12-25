@@ -371,8 +371,12 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     }
 
     public void writeLastUsedPersonalizationToken(byte[] token) {
-        final String tokenStr = StringUtils.byteArrayToHexString(token);
-        mPrefs.edit().putString(PREF_LAST_USED_PERSONALIZATION_TOKEN, tokenStr).apply();
+        if (token == null) {
+            mPrefs.edit().remove(PREF_LAST_USED_PERSONALIZATION_TOKEN).apply();
+        } else {
+            final String tokenStr = StringUtils.byteArrayToHexString(token);
+            mPrefs.edit().putString(PREF_LAST_USED_PERSONALIZATION_TOKEN, tokenStr).apply();
+        }
     }
 
     public byte[] readLastUsedPersonalizationToken() {

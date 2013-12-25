@@ -27,7 +27,7 @@ import java.util.Locale;
 import android.content.Context;
 
 public class PersonalizationDictionary extends DecayingExpandableBinaryDictionaryBase {
-    private static final String NAME = PersonalizationDictionary.class.getSimpleName();
+    /* package */ static final String NAME = PersonalizationDictionary.class.getSimpleName();
 
     private final ArrayList<PersonalizationDictionaryUpdateSession> mSessions =
             CollectionUtils.newArrayList();

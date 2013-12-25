@@ -19,7 +19,7 @@ package com.android.inputmethod.latin.personalization;
 import android.content.Context;
 import android.content.res.Configuration;
 
-public class PersonalizationDictionarySessionRegister {
+public class PersonalizationDictionarySessionRegistrar {
     public static void init(final Context context) {
     }
 
@@ -30,6 +30,9 @@ public class PersonalizationDictionarySessionRegister {
     }
 
     public static void onRemoveData(final Context context, final String type) {
+    }
+
+    public static void resetAll(final Context context) {
     }
 
     public static void onDestroy(final Context context) {

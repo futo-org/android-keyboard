@@ -17,6 +17,7 @@
 package com.android.inputmethod.latin.utils;
 
 import java.io.File;
+import java.io.FilenameFilter;
 
 /**
  * A simple class to help with removing directories recursively.
@@ -29,5 +30,19 @@ public class FileUtils {
             }
         }
         return path.delete();
+    }
+
+    public static boolean deleteFilteredFiles(final File dir, final FilenameFilter fileNameFilter) {
+        if (!dir.isDirectory()) {
+            return false;
+        }
+        final File[] files = dir.listFiles(fileNameFilter);
+        boolean hasDeletedAllFiles = true;
+        for (final File file : files) {
+            if (!deleteRecursively(file)) {
+                hasDeletedAllFiles = false;
+            }
+        }
+        return hasDeletedAllFiles;
     }
 }
