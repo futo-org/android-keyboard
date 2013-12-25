@@ -203,6 +203,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
     // true if dragging finger is allowed.
     private boolean mIsAllowedDraggingFinger;
 
+    private final GestureStrokeRecognitionPoints mGestureStrokeRecognitionPoints;
     private final GestureStrokeDrawingPoints mGestureStrokeDrawingPoints;
 
     // TODO: Add PointerTrackerFactory singleton and move some class static methods into it.
@@ -286,8 +287,9 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
 
     private PointerTracker(final int id) {
         mPointerId = id;
-        mGestureStrokeDrawingPoints = new GestureStrokeDrawingPoints(
-                id, sGestureStrokeRecognitionParams, sGestureStrokeDrawingParams);
+        mGestureStrokeRecognitionPoints = new GestureStrokeRecognitionPoints(
+                id, sGestureStrokeRecognitionParams);
+        mGestureStrokeDrawingPoints = new GestureStrokeDrawingPoints(sGestureStrokeDrawingParams);
     }
 
     // Returns true if keyboard has been changed by this callback.
@@ -408,7 +410,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         mKeyboardLayoutHasBeenChanged = true;
         final int keyWidth = mKeyboard.mMostCommonKeyWidth;
         final int keyHeight = mKeyboard.mMostCommonKeyHeight;
-        mGestureStrokeDrawingPoints.setKeyboardGeometry(keyWidth, mKeyboard.mOccupiedHeight);
+        mGestureStrokeRecognitionPoints.setKeyboardGeometry(keyWidth, mKeyboard.mOccupiedHeight);
         final Key newKey = mKeyDetector.detectHitKey(mKeyX, mKeyY);
         if (newKey != mCurrentKey) {
             if (sDrawingProxy != null) {
@@ -581,7 +583,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
      * @return true if the batch input has started successfully.
      */
     private boolean mayStartBatchInput() {
-        if (!mGestureStrokeDrawingPoints.isStartOfAGesture()) {
+        if (!mGestureStrokeRecognitionPoints.isStartOfAGesture()) {
             return false;
         }
         if (DEBUG_LISTENER) {
@@ -609,13 +611,13 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
 
     public void updateBatchInputByTimer(final long syntheticMoveEventTime) {
         final int gestureTime = (int)(syntheticMoveEventTime - sGestureFirstDownTime);
-        mGestureStrokeDrawingPoints.duplicateLastPointWith(gestureTime);
+        mGestureStrokeRecognitionPoints.duplicateLastPointWith(gestureTime);
         updateBatchInput(syntheticMoveEventTime);
     }
 
     private void updateBatchInput(final long moveEventTime) {
         synchronized (sAggregatedPointers) {
-            final GestureStrokeRecognitionPoints stroke = mGestureStrokeDrawingPoints;
+            final GestureStrokeRecognitionPoints stroke = mGestureStrokeRecognitionPoints;
             stroke.appendIncrementalBatchPoints(sAggregatedPointers);
             final int size = sAggregatedPointers.getPointerSize();
             if (size > sLastRecognitionPointSize
@@ -642,7 +644,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
     private boolean mayEndBatchInput(final long upEventTime) {
         boolean hasEndBatchInputSuccessfully = false;
         synchronized (sAggregatedPointers) {
-            mGestureStrokeDrawingPoints.appendAllBatchPoints(sAggregatedPointers);
+            mGestureStrokeRecognitionPoints.appendAllBatchPoints(sAggregatedPointers);
             if (getActivePointerTrackerCount() == 1) {
                 hasEndBatchInputSuccessfully = true;
                 sTypingTimeRecorder.onEndBatchInput(upEventTime);
@@ -754,8 +756,12 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
             if (getActivePointerTrackerCount() == 1) {
                 sGestureFirstDownTime = eventTime;
             }
-            mGestureStrokeDrawingPoints.onDownEvent(x, y, eventTime, sGestureFirstDownTime,
-                    sTypingTimeRecorder.getLastLetterTypingTime());
+            final int elapsedTimeSinceFirstDown = (int)(eventTime - sGestureFirstDownTime);
+            final int elapsedTimeSinceLastTyping = (int)(
+                    eventTime - sTypingTimeRecorder.getLastLetterTypingTime());
+            mGestureStrokeRecognitionPoints.onDownEvent(x, y, elapsedTimeSinceFirstDown,
+                    elapsedTimeSinceLastTyping);
+            mGestureStrokeDrawingPoints.onDownEvent(x, y, elapsedTimeSinceFirstDown);
         }
     }
 
@@ -814,11 +820,11 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         if (!mIsDetectingGesture) {
             return;
         }
-        final int beforeLength = mGestureStrokeDrawingPoints.getLength();
-        final int gestureTime = (int)(eventTime - sGestureFirstDownTime);
-        final boolean onValidArea = mGestureStrokeDrawingPoints.addPointOnKeyboard(
-                x, y, gestureTime, isMajorEvent);
-        if (mGestureStrokeDrawingPoints.getLength() > beforeLength) {
+        final int beforeLength = mGestureStrokeRecognitionPoints.getLength();
+        final int elapsedTimeSinceFirstDown = (int)(eventTime - sGestureFirstDownTime);
+        final boolean onValidArea = mGestureStrokeRecognitionPoints.addPointOnKeyboard(
+                x, y, elapsedTimeSinceFirstDown, isMajorEvent);
+        if (mGestureStrokeRecognitionPoints.getLength() > beforeLength) {
             sTimerProxy.startUpdateBatchInputTimer(this);
         }
         // If the move event goes out from valid batch input area, cancel batch input.
@@ -826,6 +832,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
             cancelBatchInput();
             return;
         }
+        mGestureStrokeDrawingPoints.onMoveEvent(x, y, elapsedTimeSinceFirstDown);
         // If the MoreKeysPanel is showing then do not attempt to enter gesture mode. However,
         // the gestured touch points are still being recorded in case the panel is dismissed.
         if (isShowingMoreKeysPanel()) {

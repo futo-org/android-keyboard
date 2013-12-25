@@ -103,19 +103,17 @@ public class GestureStrokeRecognitionPoints {
         return mEventTimes.getLength();
     }
 
-    public void onDownEvent(final int x, final int y, final long downTime,
-            final long gestureFirstDownTime, final long lastTypingTime) {
+    public void onDownEvent(final int x, final int y, final int elapsedTimeSinceFirstDown,
+            final int elapsedTimeSinceLastTyping) {
         reset();
-        final long elapsedTimeAfterTyping = downTime - lastTypingTime;
-        if (elapsedTimeAfterTyping < mRecognitionParams.mStaticTimeThresholdAfterFastTyping) {
+        if (elapsedTimeSinceLastTyping < mRecognitionParams.mStaticTimeThresholdAfterFastTyping) {
             mAfterFastTyping = true;
         }
         if (DEBUG) {
             Log.d(TAG, String.format("[%d] onDownEvent: dT=%3d%s", mPointerId,
-                    elapsedTimeAfterTyping, mAfterFastTyping ? " afterFastTyping" : ""));
+                    elapsedTimeSinceLastTyping, mAfterFastTyping ? " afterFastTyping" : ""));
         }
-        final int elapsedTimeFromFirstDown = (int)(downTime - gestureFirstDownTime);
-        addPointOnKeyboard(x, y, elapsedTimeFromFirstDown, true /* isMajorEvent */);
+        addPointOnKeyboard(x, y, elapsedTimeSinceFirstDown, true /* isMajorEvent */);
     }
 
     private int getGestureDynamicDistanceThreshold(final int deltaTime) {
@@ -184,7 +182,7 @@ public class GestureStrokeRecognitionPoints {
         }
     }
 
-    protected void reset() {
+    private void reset() {
         mIncrementalRecognitionSize = 0;
         mLastIncrementalBatchSize = 0;
         mEventTimes.setLength(0);
