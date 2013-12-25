@@ -16,7 +16,6 @@
 
 package com.android.inputmethod.keyboard.internal;
 
-import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -25,24 +24,22 @@ import android.graphics.Rect;
 import android.os.SystemClock;
 
 import com.android.inputmethod.latin.Constants;
-import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.utils.ResizableIntArray;
 
-/*
- * @attr ref R.styleable#MainKeyboardView_gestureTrailFadeoutStartDelay
- * @attr ref R.styleable#MainKeyboardView_gestureTrailFadeoutDuration
- * @attr ref R.styleable#MainKeyboardView_gestureTrailUpdateInterval
- * @attr ref R.styleable#MainKeyboardView_gestureTrailColor
- * @attr ref R.styleable#MainKeyboardView_gestureTrailWidth
+/**
+ * This class holds drawing points to represent a gesture trail. The gesture trail may contain
+ * multiple non-contiguous gesture strokes and will be animated asynchronously from gesture input.
+ *
+ * On the other hand, {@link GestureStrokeDrawingPoints} class holds drawing points of each gesture
+ * stroke. This class holds drawing points of those gesture strokes to draw as a gesture trail.
+ * Drawing points in this class will be asynchronously removed when fading out animation goes.
  */
-final class GestureTrail {
+final class GestureTrailDrawingPoints {
     public static final boolean DEBUG_SHOW_POINTS = false;
     public static final int POINT_TYPE_SAMPLED = 1;
     public static final int POINT_TYPE_INTERPOLATED = 2;
-    private static final int FADEOUT_START_DELAY_FOR_DEBUG = 2000; // millisecond
-    private static final int FADEOUT_DURATION_FOR_DEBUG = 200; // millisecond
 
-    private static final int DEFAULT_CAPACITY = GestureStrokeWithPreviewPoints.PREVIEW_CAPACITY;
+    private static final int DEFAULT_CAPACITY = GestureStrokeDrawingPoints.PREVIEW_CAPACITY;
 
     // These three {@link ResizableIntArray}s should be synchronized by {@link #mEventTimes}.
     private final ResizableIntArray mXCoordinates = new ResizableIntArray(DEFAULT_CAPACITY);
@@ -55,46 +52,6 @@ final class GestureTrail {
     private long mCurrentTimeBase;
     private int mTrailStartIndex;
     private int mLastInterpolatedDrawIndex;
-
-    static final class Params {
-        public final int mTrailColor;
-        public final float mTrailStartWidth;
-        public final float mTrailEndWidth;
-        public final float mTrailBodyRatio;
-        public boolean mTrailShadowEnabled;
-        public final float mTrailShadowRatio;
-        public final int mFadeoutStartDelay;
-        public final int mFadeoutDuration;
-        public final int mUpdateInterval;
-
-        public final int mTrailLingerDuration;
-
-        public Params(final TypedArray mainKeyboardViewAttr) {
-            mTrailColor = mainKeyboardViewAttr.getColor(
-                    R.styleable.MainKeyboardView_gestureTrailColor, 0);
-            mTrailStartWidth = mainKeyboardViewAttr.getDimension(
-                    R.styleable.MainKeyboardView_gestureTrailStartWidth, 0.0f);
-            mTrailEndWidth = mainKeyboardViewAttr.getDimension(
-                    R.styleable.MainKeyboardView_gestureTrailEndWidth, 0.0f);
-            final int PERCENTAGE_INT = 100;
-            mTrailBodyRatio = (float)mainKeyboardViewAttr.getInt(
-                    R.styleable.MainKeyboardView_gestureTrailBodyRatio, PERCENTAGE_INT)
-                    / (float)PERCENTAGE_INT;
-            final int trailShadowRatioInt = mainKeyboardViewAttr.getInt(
-                    R.styleable.MainKeyboardView_gestureTrailShadowRatio, 0);
-            mTrailShadowEnabled = (trailShadowRatioInt > 0);
-            mTrailShadowRatio = (float)trailShadowRatioInt / (float)PERCENTAGE_INT;
-            mFadeoutStartDelay = DEBUG_SHOW_POINTS ? FADEOUT_START_DELAY_FOR_DEBUG
-                    : mainKeyboardViewAttr.getInt(
-                            R.styleable.MainKeyboardView_gestureTrailFadeoutStartDelay, 0);
-            mFadeoutDuration = DEBUG_SHOW_POINTS ? FADEOUT_DURATION_FOR_DEBUG
-                    : mainKeyboardViewAttr.getInt(
-                            R.styleable.MainKeyboardView_gestureTrailFadeoutDuration, 0);
-            mTrailLingerDuration = mFadeoutStartDelay + mFadeoutDuration;
-            mUpdateInterval = mainKeyboardViewAttr.getInt(
-                    R.styleable.MainKeyboardView_gestureTrailUpdateInterval, 0);
-        }
-    }
 
     // Use this value as imaginary zero because x-coordinates may be zero.
     private static final int DOWN_EVENT_MARKER = -128;
@@ -112,13 +69,13 @@ final class GestureTrail {
                 ? DOWN_EVENT_MARKER - xCoordOrMark : xCoordOrMark;
     }
 
-    public void addStroke(final GestureStrokeWithPreviewPoints stroke, final long downTime) {
+    public void addStroke(final GestureStrokeDrawingPoints stroke, final long downTime) {
         synchronized (mEventTimes) {
             addStrokeLocked(stroke, downTime);
         }
     }
 
-    private void addStrokeLocked(final GestureStrokeWithPreviewPoints stroke, final long downTime) {
+    private void addStrokeLocked(final GestureStrokeDrawingPoints stroke, final long downTime) {
         final int trailSize = mEventTimes.getLength();
         stroke.appendPreviewStroke(mEventTimes, mXCoordinates, mYCoordinates, mPointTypes);
         if (mEventTimes.getLength() == trailSize) {
@@ -126,13 +83,14 @@ final class GestureTrail {
         }
         final int[] eventTimes = mEventTimes.getPrimitiveArray();
         final int strokeId = stroke.getGestureStrokeId();
-        // Because interpolation algorithm in {@link GestureStrokeWithPreviewPoints} can't determine
+        // Because interpolation algorithm in {@link GestureStrokeDrawingPoints} can't determine
         // the interpolated points in the last segment of gesture stroke, it may need recalculation
         // of interpolation when new segments are added to the stroke.
         // {@link #mLastInterpolatedDrawIndex} holds the start index of the last segment. It may
         // be updated by the interpolation
-        // {@link GestureStrokeWithPreviewPoints#interpolatePreviewStroke}
-        // or by animation {@link #drawGestureTrail(Canvas,Paint,Rect,Params)} below.
+        // {@link GestureStrokeDrawingPoints#interpolatePreviewStroke}
+        // or by animation {@link #drawGestureTrail(Canvas,Paint,Rect,GestureTrailDrawingParams)}
+        // below.
         final int lastInterpolatedIndex = (strokeId == mCurrentStrokeId)
                 ? mLastInterpolatedDrawIndex : trailSize;
         mLastInterpolatedDrawIndex = stroke.interpolateStrokeAndReturnStartIndexOfLastSegment(
@@ -161,7 +119,7 @@ final class GestureTrail {
      * @param params gesture trail display parameters
      * @return the width of a gesture trail
      */
-    private static int getAlpha(final int elapsedTime, final Params params) {
+    private static int getAlpha(final int elapsedTime, final GestureTrailDrawingParams params) {
         if (elapsedTime < params.mFadeoutStartDelay) {
             return Constants.Color.ALPHA_OPAQUE;
         }
@@ -180,7 +138,7 @@ final class GestureTrail {
      * @param params gesture trail display parameters
      * @return the width of a gesture trail
      */
-    private static float getWidth(final int elapsedTime, final Params params) {
+    private static float getWidth(final int elapsedTime, final GestureTrailDrawingParams params) {
         final float deltaWidth = params.mTrailStartWidth - params.mTrailEndWidth;
         return params.mTrailStartWidth - (deltaWidth * elapsedTime) / params.mTrailLingerDuration;
     }
@@ -197,14 +155,14 @@ final class GestureTrail {
      * @return true if some gesture trails remain to be drawn
      */
     public boolean drawGestureTrail(final Canvas canvas, final Paint paint,
-            final Rect outBoundsRect, final Params params) {
+            final Rect outBoundsRect, final GestureTrailDrawingParams params) {
         synchronized (mEventTimes) {
             return drawGestureTrailLocked(canvas, paint, outBoundsRect, params);
         }
     }
 
     private boolean drawGestureTrailLocked(final Canvas canvas, final Paint paint,
-            final Rect outBoundsRect, final Params params) {
+            final Rect outBoundsRect, final GestureTrailDrawingParams params) {
         // Initialize bounds rectangle.
         outBoundsRect.setEmpty();
         final int trailSize = mEventTimes.getLength();

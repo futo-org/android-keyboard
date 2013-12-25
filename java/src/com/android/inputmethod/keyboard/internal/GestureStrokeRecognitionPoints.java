@@ -21,8 +21,12 @@ import android.util.Log;
 import com.android.inputmethod.latin.InputPointers;
 import com.android.inputmethod.latin.utils.ResizableIntArray;
 
-public class GestureStroke {
-    private static final String TAG = GestureStroke.class.getSimpleName();
+/**
+ * This class holds event points to recognize a gesture stroke.
+ * TODO: Should be final and package private class.
+ */
+public class GestureStrokeRecognitionPoints {
+    private static final String TAG = GestureStrokeRecognitionPoints.class.getSimpleName();
     private static final boolean DEBUG = false;
     private static final boolean DEBUG_SPEED = false;
 
@@ -37,7 +41,7 @@ public class GestureStroke {
     private final ResizableIntArray mXCoordinates = new ResizableIntArray(DEFAULT_CAPACITY);
     private final ResizableIntArray mYCoordinates = new ResizableIntArray(DEFAULT_CAPACITY);
 
-    private final GestureStrokeParams mParams;
+    private final GestureStrokeRecognitionParams mRecognitionParams;
 
     private int mKeyWidth; // pixel
     private int mMinYCoordinate; // pixel
@@ -63,9 +67,10 @@ public class GestureStroke {
 
     private static final int MSEC_PER_SEC = 1000;
 
-    public GestureStroke(final int pointerId, final GestureStrokeParams params) {
+    public GestureStrokeRecognitionPoints(final int pointerId,
+            final GestureStrokeRecognitionParams recognitionParams) {
         mPointerId = pointerId;
-        mParams = params;
+        mRecognitionParams = recognitionParams;
     }
 
     public void setKeyboardGeometry(final int keyWidth, final int keyboardHeight) {
@@ -73,18 +78,22 @@ public class GestureStroke {
         mMinYCoordinate = -(int)(keyboardHeight * EXTRA_GESTURE_TRAIL_AREA_ABOVE_KEYBOARD_RATIO);
         mMaxYCoordinate = keyboardHeight;
         // TODO: Find an appropriate base metric for these length. Maybe diagonal length of the key?
-        mDetectFastMoveSpeedThreshold = (int)(keyWidth * mParams.mDetectFastMoveSpeedThreshold);
-        mGestureDynamicDistanceThresholdFrom =
-                (int)(keyWidth * mParams.mDynamicDistanceThresholdFrom);
-        mGestureDynamicDistanceThresholdTo = (int)(keyWidth * mParams.mDynamicDistanceThresholdTo);
-        mGestureSamplingMinimumDistance = (int)(keyWidth * mParams.mSamplingMinimumDistance);
-        mGestureRecognitionSpeedThreshold = (int)(keyWidth * mParams.mRecognitionSpeedThreshold);
+        mDetectFastMoveSpeedThreshold = (int)(
+                keyWidth * mRecognitionParams.mDetectFastMoveSpeedThreshold);
+        mGestureDynamicDistanceThresholdFrom = (int)(
+                keyWidth * mRecognitionParams.mDynamicDistanceThresholdFrom);
+        mGestureDynamicDistanceThresholdTo = (int)(
+                keyWidth * mRecognitionParams.mDynamicDistanceThresholdTo);
+        mGestureSamplingMinimumDistance = (int)(
+                keyWidth * mRecognitionParams.mSamplingMinimumDistance);
+        mGestureRecognitionSpeedThreshold = (int)(
+                keyWidth * mRecognitionParams.mRecognitionSpeedThreshold);
         if (DEBUG) {
             Log.d(TAG, String.format(
                     "[%d] setKeyboardGeometry: keyWidth=%3d tT=%3d >> %3d tD=%3d >> %3d",
                     mPointerId, keyWidth,
-                    mParams.mDynamicTimeThresholdFrom,
-                    mParams.mDynamicTimeThresholdTo,
+                    mRecognitionParams.mDynamicTimeThresholdFrom,
+                    mRecognitionParams.mDynamicTimeThresholdTo,
                     mGestureDynamicDistanceThresholdFrom,
                     mGestureDynamicDistanceThresholdTo));
         }
@@ -98,7 +107,7 @@ public class GestureStroke {
             final long gestureFirstDownTime, final long lastTypingTime) {
         reset();
         final long elapsedTimeAfterTyping = downTime - lastTypingTime;
-        if (elapsedTimeAfterTyping < mParams.mStaticTimeThresholdAfterFastTyping) {
+        if (elapsedTimeAfterTyping < mRecognitionParams.mStaticTimeThresholdAfterFastTyping) {
             mAfterFastTyping = true;
         }
         if (DEBUG) {
@@ -110,23 +119,24 @@ public class GestureStroke {
     }
 
     private int getGestureDynamicDistanceThreshold(final int deltaTime) {
-        if (!mAfterFastTyping || deltaTime >= mParams.mDynamicThresholdDecayDuration) {
+        if (!mAfterFastTyping || deltaTime >= mRecognitionParams.mDynamicThresholdDecayDuration) {
             return mGestureDynamicDistanceThresholdTo;
         }
         final int decayedThreshold =
                 (mGestureDynamicDistanceThresholdFrom - mGestureDynamicDistanceThresholdTo)
-                * deltaTime / mParams.mDynamicThresholdDecayDuration;
+                * deltaTime / mRecognitionParams.mDynamicThresholdDecayDuration;
         return mGestureDynamicDistanceThresholdFrom - decayedThreshold;
     }
 
     private int getGestureDynamicTimeThreshold(final int deltaTime) {
-        if (!mAfterFastTyping || deltaTime >= mParams.mDynamicThresholdDecayDuration) {
-            return mParams.mDynamicTimeThresholdTo;
+        if (!mAfterFastTyping || deltaTime >= mRecognitionParams.mDynamicThresholdDecayDuration) {
+            return mRecognitionParams.mDynamicTimeThresholdTo;
         }
         final int decayedThreshold =
-                (mParams.mDynamicTimeThresholdFrom - mParams.mDynamicTimeThresholdTo)
-                * deltaTime / mParams.mDynamicThresholdDecayDuration;
-        return mParams.mDynamicTimeThresholdFrom - decayedThreshold;
+                (mRecognitionParams.mDynamicTimeThresholdFrom
+                        - mRecognitionParams.mDynamicTimeThresholdTo)
+                * deltaTime / mRecognitionParams.mDynamicThresholdDecayDuration;
+        return mRecognitionParams.mDynamicTimeThresholdFrom - decayedThreshold;
     }
 
     public final boolean isStartOfAGesture() {
@@ -285,7 +295,7 @@ public class GestureStroke {
 
     public final boolean hasRecognitionTimePast(
             final long currentTime, final long lastRecognitionTime) {
-        return currentTime > lastRecognitionTime + mParams.mRecognitionMinimumTime;
+        return currentTime > lastRecognitionTime + mRecognitionParams.mRecognitionMinimumTime;
     }
 
     public final void appendAllBatchPoints(final InputPointers out) {
@@ -307,10 +317,6 @@ public class GestureStroke {
     }
 
     private static int getDistance(final int x1, final int y1, final int x2, final int y2) {
-        final int dx = x1 - x2;
-        final int dy = y1 - y2;
-        // Note that, in recent versions of Android, FloatMath is actually slower than
-        // java.lang.Math due to the way the JIT optimizes java.lang.Math.
-        return (int)Math.sqrt(dx * dx + dy * dy);
+        return (int)Math.hypot(x1 - x2, y1 - y2);
     }
 }
