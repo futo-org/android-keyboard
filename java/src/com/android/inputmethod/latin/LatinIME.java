@@ -72,7 +72,8 @@ import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.latin.inputlogic.InputLogic;
 import com.android.inputmethod.latin.inputlogic.SpaceState;
 import com.android.inputmethod.latin.personalization.DictionaryDecayBroadcastReciever;
-import com.android.inputmethod.latin.personalization.PersonalizationDictionarySessionRegister;
+import com.android.inputmethod.latin.personalization.PersonalizationDictionarySessionRegistrar;
+import com.android.inputmethod.latin.personalization.PersonalizationHelper;
 import com.android.inputmethod.latin.settings.Settings;
 import com.android.inputmethod.latin.settings.SettingsActivity;
 import com.android.inputmethod.latin.settings.SettingsValues;
@@ -463,7 +464,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         KeyboardSwitcher.init(this);
         AudioAndHapticFeedbackManager.init(this);
         AccessibilityUtils.init(this);
-        PersonalizationDictionarySessionRegister.init(this);
 
         super.onCreate();
 
@@ -515,10 +515,17 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // the layout; at this time, we need to skip resetting the contacts dictionary. It will
         // be done later inside {@see #initSuggest()} when the reopenDictionaries message is
         // processed.
+        final SettingsValues currentSettingsValues = mSettings.getCurrent();
         if (!mHandler.hasPendingReopenDictionaries() && mInputLogic.mSuggest != null) {
             // May need to reset dictionaries depending on the user settings.
             mInputLogic.mSuggest.setAdditionalDictionaries(mInputLogic.mSuggest /* oldSuggest */,
-                    mSettings.getCurrent());
+                   currentSettingsValues);
+        }
+        if (currentSettingsValues.mUsePersonalizedDicts) {
+            PersonalizationDictionarySessionRegistrar.init(this);
+        } else {
+            PersonalizationHelper.removeAllPersonalizedDictionaries(this);
+            PersonalizationDictionarySessionRegistrar.resetAll(this);
         }
     }
 
@@ -590,7 +597,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             ResearchLogger.getInstance().onDestroy();
         }
         unregisterReceiver(mDictionaryPackInstallReceiver);
-        PersonalizationDictionarySessionRegister.onDestroy(this);
+        PersonalizationDictionarySessionRegistrar.onDestroy(this);
         LatinImeLogger.commit();
         LatinImeLogger.onDestroy();
         super.onDestroy();
@@ -610,7 +617,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 mOptionsDialog.dismiss();
             }
         }
-        PersonalizationDictionarySessionRegister.onConfigurationChanged(this, conf);
+        PersonalizationDictionarySessionRegistrar.onConfigurationChanged(this, conf);
         super.onConfigurationChanged(conf);
     }
 

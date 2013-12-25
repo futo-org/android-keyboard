@@ -29,8 +29,7 @@ import android.content.Context;
  * cancellation or manual picks. This allows the keyboard to adapt to the typist over time.
  */
 public class UserHistoryDictionary extends DecayingExpandableBinaryDictionaryBase {
-    /* package for tests */ static final String NAME =
-            UserHistoryDictionary.class.getSimpleName();
+    /* package */ static final String NAME = UserHistoryDictionary.class.getSimpleName();
     /* package */ UserHistoryDictionary(final Context context, final Locale locale) {
         super(context, locale, Dictionary.TYPE_USER_HISTORY, getDictNameWithLocale(NAME, locale));
     }
