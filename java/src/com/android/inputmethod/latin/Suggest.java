@@ -39,11 +39,13 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This class loads a dictionary and provides a list of suggestions for a given sequence of
  * characters. This includes corrections and completions.
  */
+// TODO: Separate dictionary operations from suggestions handling logic.
 public final class Suggest {
     public static final String TAG = Suggest.class.getSimpleName();
 
@@ -74,6 +76,7 @@ public final class Suggest {
     private HashSet<String> mOnlyDictionarySetForDebug = null;
     private Dictionary mMainDictionary;
     private ContactsBinaryDictionary mContactsDictionary;
+    private UserBinaryDictionary mUserDictionary;
     private UserHistoryDictionary mUserHistoryDictionary;
     private PersonalizationDictionary mPersonalizationDictionary;
     @UsedForTesting
@@ -98,6 +101,7 @@ public final class Suggest {
             mOnlyDictionarySetForDebug = new HashSet<String>();
             mOnlyDictionarySetForDebug.add(Dictionary.TYPE_PERSONALIZATION);
         }
+        setUserDictionary(new UserBinaryDictionary(context, locale));
     }
 
     @UsedForTesting
@@ -171,27 +175,13 @@ public final class Suggest {
         return mMainDictionary;
     }
 
-    public ContactsBinaryDictionary getContactsDictionary() {
-        return mContactsDictionary;
-    }
-
-    public UserHistoryDictionary getUserHistoryDictionary() {
-        return mUserHistoryDictionary;
-    }
-
-    public PersonalizationDictionary getPersonalizationDictionary() {
-        return mPersonalizationDictionary;
-    }
-
-    public ConcurrentHashMap<String, Dictionary> getUnigramDictionaries() {
-        return mDictionaries;
-    }
-
     /**
      * Sets an optional user dictionary resource to be loaded. The user dictionary is consulted
      * before the main dictionary, if set. This refers to the system-managed user dictionary.
      */
+    @UsedForTesting
     public void setUserDictionary(final UserBinaryDictionary userDictionary) {
+        mUserDictionary = userDictionary;
         addOrReplaceDictionaryInternal(Dictionary.TYPE_USER, userDictionary);
     }
 
@@ -200,17 +190,18 @@ public final class Suggest {
      * the contacts dictionary by passing null to this method. In this case no contacts dictionary
      * won't be used.
      */
+    @UsedForTesting
     public void setContactsDictionary(final ContactsBinaryDictionary contactsDictionary) {
         mContactsDictionary = contactsDictionary;
         addOrReplaceDictionaryInternal(Dictionary.TYPE_CONTACTS, contactsDictionary);
     }
 
-    public void setUserHistoryDictionary(final UserHistoryDictionary userHistoryDictionary) {
+    private void setUserHistoryDictionary(final UserHistoryDictionary userHistoryDictionary) {
         mUserHistoryDictionary = userHistoryDictionary;
         addOrReplaceDictionaryInternal(Dictionary.TYPE_USER_HISTORY, userHistoryDictionary);
     }
 
-    public void setPersonalizationDictionary(
+    private void setPersonalizationDictionary(
             final PersonalizationDictionary personalizationDictionary) {
         mPersonalizationDictionary = personalizationDictionary;
         addOrReplaceDictionaryInternal(Dictionary.TYPE_PERSONALIZATION, personalizationDictionary);
@@ -225,7 +216,7 @@ public final class Suggest {
     public void setAdditionalDictionaries(final Suggest oldSuggest,
             final SettingsValues settingsValues) {
         // Contacts dictionary
-        resetContactsDictionary(null != oldSuggest ? oldSuggest.getContactsDictionary() : null,
+        resetContactsDictionary(null != oldSuggest ? oldSuggest.mContactsDictionary : null,
                 settingsValues);
         // User history dictionary & Personalization dictionary
         resetPersonalizedDictionaries(oldSuggest, settingsValues);
@@ -245,9 +236,9 @@ public final class Suggest {
         final boolean shouldSetDictionaries = settingsValues.mUsePersonalizedDicts;
 
         final UserHistoryDictionary oldUserHistoryDictionary = (null == oldSuggest) ? null :
-                oldSuggest.getUserHistoryDictionary();
+                oldSuggest.mUserHistoryDictionary;
         final PersonalizationDictionary oldPersonalizationDictionary = (null == oldSuggest) ? null :
-                oldSuggest.getPersonalizationDictionary();
+                oldSuggest.mPersonalizationDictionary;
         final UserHistoryDictionary userHistoryDictionaryToUse;
         final PersonalizationDictionary personalizationDictionaryToUse;
         if (!shouldSetDictionaries) {
@@ -309,6 +300,43 @@ public final class Suggest {
             }
         }
         setContactsDictionary(dictionaryToUse);
+    }
+
+    public boolean isUserDictionaryEnabled() {
+        if (mUserDictionary == null) {
+            return false;
+        }
+        return mUserDictionary.mEnabled;
+    }
+
+    public void addWordToUserDictionary(String word) {
+        if (mUserDictionary == null) {
+            return;
+        }
+        mUserDictionary.addWordToUserDictionary(word);
+    }
+
+    public String addToUserHistory(final WordComposer wordComposer, final String previousWord,
+            final String suggestion) {
+        if (mUserHistoryDictionary == null) {
+            return null;
+        }
+        final String secondWord;
+        if (wordComposer.wasAutoCapitalized() && !wordComposer.isMostlyCaps()) {
+            secondWord = suggestion.toLowerCase(mLocale);
+        } else {
+            secondWord = suggestion;
+        }
+        // We demote unrecognized words (frequency < 0, below) by specifying them as "invalid".
+        // We don't add words with 0-frequency (assuming they would be profanity etc.).
+        final int maxFreq = getMaxFrequency(suggestion);
+        if (maxFreq == 0) {
+            return null;
+        }
+        final boolean isValid = maxFreq > 0;
+        final int timeStamp = (int)TimeUnit.MILLISECONDS.toSeconds((System.currentTimeMillis()));
+        mUserHistoryDictionary.addToDictionary(previousWord, secondWord, isValid, timeStamp);
+        return previousWord;
     }
 
     public void cancelAddingUserHistory(final String previousWord, final String committedWord) {
@@ -389,8 +417,8 @@ public final class Suggest {
         // or if it's a 2+ characters non-word (i.e. it's not in the dictionary).
         final boolean allowsToBeAutoCorrected = (null != whitelistedWord
                 && !whitelistedWord.equals(consideredWord))
-                || (consideredWord.length() > 1 && !AutoCorrectionUtils.isValidWord(this,
-                        consideredWord, wordComposer.isFirstCharCapitalized()));
+                || (consideredWord.length() > 1
+                        && !isValidWord(consideredWord, wordComposer.isFirstCharCapitalized()));
 
         final boolean hasAutoCorrection;
         // TODO: using isCorrectionEnabled here is not very good. It's probably useless, because
@@ -592,6 +620,45 @@ public final class Suggest {
         return new SuggestedWordInfo(sb.toString(), wordInfo.mScore, wordInfo.mKind,
                 wordInfo.mSourceDict, wordInfo.mIndexOfTouchPointOfSecondWord,
                 wordInfo.mAutoCommitFirstWordConfidence);
+    }
+
+    public boolean isValidWord(final String word, final boolean ignoreCase) {
+        if (TextUtils.isEmpty(word)) {
+            return false;
+        }
+        final String lowerCasedWord = word.toLowerCase(mLocale);
+        for (final String key : mDictionaries.keySet()) {
+            final Dictionary dictionary = mDictionaries.get(key);
+            // It's unclear how realistically 'dictionary' can be null, but the monkey is somehow
+            // managing to get null in here. Presumably the language is changing to a language with
+            // no main dictionary and the monkey manages to type a whole word before the thread
+            // that reads the dictionary is started or something?
+            // Ideally the passed map would come out of a {@link java.util.concurrent.Future} and
+            // would be immutable once it's finished initializing, but concretely a null test is
+            // probably good enough for the time being.
+            if (null == dictionary) continue;
+            if (dictionary.isValidWord(word)
+                    || (ignoreCase && dictionary.isValidWord(lowerCasedWord))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private int getMaxFrequency(final String word) {
+        if (TextUtils.isEmpty(word)) {
+            return Dictionary.NOT_A_PROBABILITY;
+        }
+        int maxFreq = -1;
+        for (final String key : mDictionaries.keySet()) {
+            final Dictionary dictionary = mDictionaries.get(key);
+            if (null == dictionary) continue;
+            final int tempFreq = dictionary.getFrequency(word);
+            if (tempFreq >= maxFreq) {
+                maxFreq = tempFreq;
+            }
+        }
+        return maxFreq;
     }
 
     public void close() {

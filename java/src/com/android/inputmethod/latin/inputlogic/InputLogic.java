@@ -44,12 +44,10 @@ import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.WordComposer;
 import com.android.inputmethod.latin.define.ProductionFlag;
-import com.android.inputmethod.latin.personalization.UserHistoryDictionary;
 import com.android.inputmethod.latin.settings.Settings;
 import com.android.inputmethod.latin.settings.SettingsValues;
 import com.android.inputmethod.latin.suggestions.SuggestionStripView;
 import com.android.inputmethod.latin.utils.AsyncResultHolder;
-import com.android.inputmethod.latin.utils.AutoCorrectionUtils;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.InputTypeUtils;
 import com.android.inputmethod.latin.utils.LatinImeLoggerUtils;
@@ -60,7 +58,6 @@ import com.android.inputmethod.research.ResearchLogger;
 
 import java.util.ArrayList;
 import java.util.TreeSet;
-import java.util.concurrent.TimeUnit;
 
 /**
  * This class manages the input logic.
@@ -977,24 +974,8 @@ public final class InputLogic {
         final Suggest suggest = mSuggest;
         if (suggest == null) return null;
 
-        final UserHistoryDictionary userHistoryDictionary = suggest.getUserHistoryDictionary();
-        if (userHistoryDictionary == null) return null;
-
         final String prevWord = mConnection.getNthPreviousWord(settingsValues, 2);
-        final String secondWord;
-        if (mWordComposer.wasAutoCapitalized() && !mWordComposer.isMostlyCaps()) {
-            secondWord = suggestion.toLowerCase(settingsValues.mLocale);
-        } else {
-            secondWord = suggestion;
-        }
-        // We demote unrecognized words (frequency < 0, below) by specifying them as "invalid".
-        // We don't add words with 0-frequency (assuming they would be profanity etc.).
-        final int maxFreq = AutoCorrectionUtils.getMaxFrequency(
-                suggest.getUnigramDictionaries(), suggestion);
-        if (maxFreq == 0) return null;
-        userHistoryDictionary.addToDictionary(prevWord, secondWord, maxFreq > 0,
-                (int)TimeUnit.MILLISECONDS.toSeconds((System.currentTimeMillis())));
-        return prevWord;
+        return suggest.addToUserHistory(mWordComposer, prevWord, suggestion);
     }
 
     public void performUpdateSuggestionStripSync(final SettingsValues settingsValues,
