@@ -307,12 +307,14 @@ public class InputLogicTests extends InputTestsBase {
     }
 
     public void testResumeSuggestionOnBackspace() {
-        final String WORD_TO_TYPE = "and this ";
-        type(WORD_TO_TYPE);
+        final String STRING_TO_TYPE = "and this ";
+        final int typedLength = STRING_TO_TYPE.length();
+        type(STRING_TO_TYPE);
         assertEquals("resume suggestion on backspace", -1,
                 BaseInputConnection.getComposingSpanStart(mEditText.getText()));
         assertEquals("resume suggestion on backspace", -1,
                 BaseInputConnection.getComposingSpanEnd(mEditText.getText()));
+        mLatinIME.onUpdateSelection(0, 0, typedLength, typedLength, -1, -1);
         type(Constants.CODE_DELETE);
         assertEquals("resume suggestion on backspace", 4,
                 BaseInputConnection.getComposingSpanStart(mEditText.getText()));
