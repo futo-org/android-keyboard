@@ -993,6 +993,10 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         for (final String word : words) {
             final UnigramProperty unigramProperty = binaryDictionary.getUnigramProperty(word);
             assertEquals((int)unigramProbabilities.get(word), unigramProperty.mProbability);
+            if (!shortcutTargets.containsKey(word)) {
+                // The word does not have shortcut targets.
+                continue;
+            }
             assertEquals(shortcutTargets.get(word).size(), unigramProperty.mShortcutTargets.size());
             for (final WeightedString shortcutTarget : unigramProperty.mShortcutTargets) {
                 final String targetCodePonts = shortcutTarget.mWord;
