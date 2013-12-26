@@ -52,7 +52,6 @@ import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.keyboard.KeyboardView;
 import com.android.inputmethod.keyboard.MainKeyboardView;
 import com.android.inputmethod.latin.Constants;
-import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.DictionaryFacilitatorForSuggest;
 import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.R;
@@ -254,10 +253,10 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                                 + ", cipd: " + canIncludePrivateData);
                     }
                     for (final String word : logUnit.getWordsAsStringArray()) {
-                        final Dictionary dictionary = getDictionary();
+                        final boolean isDictionaryWord = mDictionaryFacilitator != null
+                                && mDictionaryFacilitator.isValidMainDictWord(word);
                         mStatistics.recordWordEntered(
-                                dictionary != null && dictionary.isValidWord(word),
-                                logUnit.containsUserDeletions());
+                                isDictionaryWord, logUnit.containsUserDeletions());
                     }
                 }
                 publishLogUnits(logUnits, mMainResearchLog, canIncludePrivateData);
@@ -664,13 +663,6 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         }
     }
 
-    private Dictionary getDictionary() {
-        if (mDictionaryFacilitator == null) {
-            return null;
-        }
-        return mDictionaryFacilitator.getMainDictionary();
-    }
-
     private void setIsPasswordView(boolean isPasswordView) {
         mIsPasswordView = isPasswordView;
     }
@@ -964,11 +956,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     private String scrubWord(String word) {
-        final Dictionary dictionary = getDictionary();
-        if (dictionary == null) {
-            return WORD_REPLACEMENT_STRING;
-        }
-        if (dictionary.isValidWord(word)) {
+        if (mDictionaryFacilitator != null && mDictionaryFacilitator.isValidMainDictWord(word)) {
             return word;
         }
         return WORD_REPLACEMENT_STRING;

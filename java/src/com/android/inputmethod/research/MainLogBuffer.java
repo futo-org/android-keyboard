@@ -99,14 +99,14 @@ public abstract class MainLogBuffer extends FixedLogBuffer {
         mDictionaryForTesting = dictionary;
     }
 
-    private Dictionary getDictionary() {
+    private boolean isValidDictWord(final String word) {
         if (mDictionaryForTesting != null) {
-            return mDictionaryForTesting;
+            return mDictionaryForTesting.isValidWord(word);
         }
-        if (mDictionaryFacilitator == null || !mDictionaryFacilitator.hasMainDictionary()) {
-            return null;
+        if (mDictionaryFacilitator != null) {
+            return mDictionaryFacilitator.isValidMainDictWord(word);
         }
-        return mDictionaryFacilitator.getMainDictionary();
+        return false;
     }
 
     public void setIsStopping() {
@@ -155,8 +155,8 @@ public abstract class MainLogBuffer extends FixedLogBuffer {
         }
         // Reload the dictionary in case it has changed (e.g., because the user has changed
         // languages).
-        final Dictionary dictionary = getDictionary();
-        if (dictionary == null) {
+        if ((mDictionaryFacilitator == null || !mDictionaryFacilitator.hasMainDictionary())
+                && mDictionaryForTesting == null) {
             // Main dictionary is unavailable.  Since we cannot check it, we cannot tell if a
             // word is out-of-vocabulary or not.  Therefore, we must judge the entire buffer
             // contents to potentially pose a privacy risk.
@@ -166,7 +166,6 @@ public abstract class MainLogBuffer extends FixedLogBuffer {
         // Check each word in the buffer.  If any word poses a privacy threat, we cannot upload
         // the complete buffer contents in detail.
         int numWordsInLogUnitList = 0;
-        final int length = logUnits.size();
         for (final LogUnit logUnit : logUnits) {
             if (!logUnit.hasOneOrMoreWords()) {
                 // Digits outside words are a privacy threat.
@@ -178,11 +177,11 @@ public abstract class MainLogBuffer extends FixedLogBuffer {
                 final String[] words = logUnit.getWordsAsStringArray();
                 for (final String word : words) {
                     // Words not in the dictionary are a privacy threat.
-                    if (ResearchLogger.hasLetters(word) && !(dictionary.isValidWord(word))) {
+                    if (ResearchLogger.hasLetters(word) && !isValidDictWord(word)) {
                         if (DEBUG) {
                             Log.d(TAG, "\"" + word + "\" NOT SAFE!: hasLetters: "
                                     + ResearchLogger.hasLetters(word)
-                                    + ", isValid: " + (dictionary.isValidWord(word)));
+                                    + ", isValid: " + isValidDictWord(word));
                         }
                         return PUBLISHABILITY_UNPUBLISHABLE_NOT_IN_DICTIONARY;
                     }

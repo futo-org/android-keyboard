@@ -125,10 +125,6 @@ public class DictionaryFacilitatorForSuggest {
         return mIsCurrentlyWaitingForMainDictionary;
     }
 
-    public Dictionary getMainDictionary() {
-        return mMainDictionary;
-    }
-
     private void setMainDictionary(final Dictionary mainDictionary) {
         mMainDictionary = mainDictionary;
         addOrReplaceDictionary(Dictionary.TYPE_MAIN, mainDictionary);
@@ -317,6 +313,13 @@ public class DictionaryFacilitatorForSuggest {
             suggestionSet.addAll(dictionary.getSuggestionsWithSessionId(composer, prevWord,
                     proximityInfo, blockOffensiveWords, additionalFeaturesOptions, sessionId));
         }
+    }
+
+    public boolean isValidMainDictWord(final String word) {
+        if (TextUtils.isEmpty(word) || !hasMainDictionary()) {
+            return false;
+        }
+        return mMainDictionary.isValidWord(word);
     }
 
     public boolean isValidWord(final String word, final boolean ignoreCase) {
