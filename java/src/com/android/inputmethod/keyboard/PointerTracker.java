@@ -22,12 +22,13 @@ import android.os.SystemClock;
 import android.util.Log;
 import android.view.MotionEvent;
 
+import com.android.inputmethod.keyboard.internal.BatchInputArbiter;
+import com.android.inputmethod.keyboard.internal.BatchInputArbiter.BatchInputArbiterListener;
 import com.android.inputmethod.keyboard.internal.BogusMoveEventDetector;
 import com.android.inputmethod.keyboard.internal.GestureEnabler;
 import com.android.inputmethod.keyboard.internal.GestureStrokeDrawingParams;
 import com.android.inputmethod.keyboard.internal.GestureStrokeDrawingPoints;
 import com.android.inputmethod.keyboard.internal.GestureStrokeRecognitionParams;
-import com.android.inputmethod.keyboard.internal.GestureStrokeRecognitionPoints;
 import com.android.inputmethod.keyboard.internal.PointerTrackerQueue;
 import com.android.inputmethod.keyboard.internal.TypingTimeRecorder;
 import com.android.inputmethod.latin.Constants;
@@ -43,7 +44,8 @@ import com.android.inputmethod.research.ResearchLogger;
 
 import java.util.ArrayList;
 
-public final class PointerTracker implements PointerTrackerQueue.Element {
+public final class PointerTracker implements PointerTrackerQueue.Element,
+        BatchInputArbiterListener {
     private static final String TAG = PointerTracker.class.getSimpleName();
     private static final boolean DEBUG_EVENT = false;
     private static final boolean DEBUG_MOVE_EVENT = false;
@@ -160,12 +162,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
 
     private boolean mIsDetectingGesture = false; // per PointerTracker.
     private static boolean sInGesture = false;
-    private static long sGestureFirstDownTime;
     private static TypingTimeRecorder sTypingTimeRecorder;
-    private static final InputPointers sAggregatedPointers = new InputPointers(
-            GestureStrokeRecognitionPoints.DEFAULT_CAPACITY);
-    private static int sLastRecognitionPointSize = 0; // synchronized using sAggregatedPointers
-    private static long sLastRecognitionTime = 0; // synchronized using sAggregatedPointers
 
     // The position and time at which first down event occurred.
     private long mDownTime;
@@ -203,7 +200,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
     // true if dragging finger is allowed.
     private boolean mIsAllowedDraggingFinger;
 
-    private final GestureStrokeRecognitionPoints mGestureStrokeRecognitionPoints;
+    private final BatchInputArbiter mBatchInputArbiter;
     private final GestureStrokeDrawingPoints mGestureStrokeDrawingPoints;
 
     // TODO: Add PointerTrackerFactory singleton and move some class static methods into it.
@@ -287,8 +284,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
 
     private PointerTracker(final int id) {
         mPointerId = id;
-        mGestureStrokeRecognitionPoints = new GestureStrokeRecognitionPoints(
-                id, sGestureStrokeRecognitionParams);
+        mBatchInputArbiter = new BatchInputArbiter(id, sGestureStrokeRecognitionParams);
         mGestureStrokeDrawingPoints = new GestureStrokeDrawingPoints(sGestureStrokeDrawingParams);
     }
 
@@ -410,7 +406,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         mKeyboardLayoutHasBeenChanged = true;
         final int keyWidth = mKeyboard.mMostCommonKeyWidth;
         final int keyHeight = mKeyboard.mMostCommonKeyHeight;
-        mGestureStrokeRecognitionPoints.setKeyboardGeometry(keyWidth, mKeyboard.mOccupiedHeight);
+        mBatchInputArbiter.setKeyboardGeometry(keyWidth, mKeyboard.mOccupiedHeight);
         final Key newKey = mKeyDetector.detectHitKey(mKeyX, mKeyY);
         if (newKey != mCurrentKey) {
             if (sDrawingProxy != null) {
@@ -578,26 +574,15 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         return sPointerTrackerQueue.getOldestElement() == this;
     }
 
-    /**
-     * Determines whether the batch input has started or not.
-     * @return true if the batch input has started successfully.
-     */
-    private boolean mayStartBatchInput() {
-        if (!mGestureStrokeRecognitionPoints.isStartOfAGesture()) {
-            return false;
-        }
+    // Implements {@link BatchInputArbiterListener}.
+    @Override
+    public void onStartBatchInput() {
         if (DEBUG_LISTENER) {
             Log.d(TAG, String.format("[%d] onStartBatchInput", mPointerId));
         }
-        synchronized (sAggregatedPointers) {
-            sAggregatedPointers.reset();
-            sLastRecognitionPointSize = 0;
-            sLastRecognitionTime = 0;
-            sListener.onStartBatchInput();
-            dismissAllMoreKeysPanels();
-            sTimerProxy.cancelLongPressTimerOf(this);
-        }
-        return true;
+        sListener.onStartBatchInput();
+        dismissAllMoreKeysPanels();
+        sTimerProxy.cancelLongPressTimerOf(this);
     }
 
     private void showGestureTrail() {
@@ -610,55 +595,38 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
     }
 
     public void updateBatchInputByTimer(final long syntheticMoveEventTime) {
-        final int gestureTime = (int)(syntheticMoveEventTime - sGestureFirstDownTime);
-        mGestureStrokeRecognitionPoints.duplicateLastPointWith(gestureTime);
-        updateBatchInput(syntheticMoveEventTime);
+        mBatchInputArbiter.updateBatchInputByTimer(syntheticMoveEventTime, this);
     }
 
-    private void updateBatchInput(final long moveEventTime) {
-        synchronized (sAggregatedPointers) {
-            final GestureStrokeRecognitionPoints stroke = mGestureStrokeRecognitionPoints;
-            stroke.appendIncrementalBatchPoints(sAggregatedPointers);
-            final int size = sAggregatedPointers.getPointerSize();
-            if (size > sLastRecognitionPointSize
-                    && stroke.hasRecognitionTimePast(moveEventTime, sLastRecognitionTime)) {
-                if (DEBUG_LISTENER) {
-                    Log.d(TAG, String.format("[%d] onUpdateBatchInput: batchPoints=%d", mPointerId,
-                            size));
-                }
-                sTimerProxy.startUpdateBatchInputTimer(this);
-                sListener.onUpdateBatchInput(sAggregatedPointers);
-                // The listener may change the size of the pointers (when auto-committing
-                // for example), so we need to get the size from the pointers again.
-                sLastRecognitionPointSize = sAggregatedPointers.getPointerSize();
-                sLastRecognitionTime = moveEventTime;
-            }
+    // Implements {@link BatchInputArbiterListener}.
+    @Override
+    public void onUpdateBatchInput(final InputPointers aggregatedPointers, final long eventTime) {
+        if (DEBUG_LISTENER) {
+            Log.d(TAG, String.format("[%d] onUpdateBatchInput: batchPoints=%d", mPointerId,
+                    aggregatedPointers.getPointerSize()));
         }
+        sListener.onUpdateBatchInput(aggregatedPointers);
     }
 
-    /**
-     * Determines whether the batch input has ended successfully or continues.
-     * @param upEventTime the event time of this pointer up.
-     * @return true if the batch input has ended successfully, false if it continues.
-     */
-    private boolean mayEndBatchInput(final long upEventTime) {
-        boolean hasEndBatchInputSuccessfully = false;
-        synchronized (sAggregatedPointers) {
-            mGestureStrokeRecognitionPoints.appendAllBatchPoints(sAggregatedPointers);
-            if (getActivePointerTrackerCount() == 1) {
-                hasEndBatchInputSuccessfully = true;
-                sTypingTimeRecorder.onEndBatchInput(upEventTime);
-                sTimerProxy.cancelAllUpdateBatchInputTimers();
-                if (!mIsTrackingForActionDisabled) {
-                    if (DEBUG_LISTENER) {
-                        Log.d(TAG, String.format("[%d] onEndBatchInput   : batchPoints=%d",
-                                mPointerId, sAggregatedPointers.getPointerSize()));
-                    }
-                    sListener.onEndBatchInput(sAggregatedPointers);
-                }
-            }
+    // Implements {@link BatchInputArbiterListener}.
+    @Override
+    public void onStartUpdateBatchInputTimer() {
+        sTimerProxy.startUpdateBatchInputTimer(this);
+    }
+
+    // Implements {@link BatchInputArbiterListener}.
+    @Override
+    public void onEndBatchInput(final InputPointers aggregatedPointers, final long eventTime) {
+        sTypingTimeRecorder.onEndBatchInput(eventTime);
+        sTimerProxy.cancelAllUpdateBatchInputTimers();
+        if (mIsTrackingForActionDisabled) {
+            return;
         }
-        return hasEndBatchInputSuccessfully;
+        if (DEBUG_LISTENER) {
+            Log.d(TAG, String.format("[%d] onEndBatchInput   : batchPoints=%d",
+                    mPointerId, aggregatedPointers.getPointerSize()));
+        }
+        sListener.onEndBatchInput(aggregatedPointers);
     }
 
     private void cancelBatchInput() {
@@ -753,15 +721,10 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         mIsDetectingGesture = (mKeyboard != null) && mKeyboard.mId.isAlphabetKeyboard()
                 && key != null && !key.isModifier();
         if (mIsDetectingGesture) {
-            if (getActivePointerTrackerCount() == 1) {
-                sGestureFirstDownTime = eventTime;
-            }
-            final int elapsedTimeSinceFirstDown = (int)(eventTime - sGestureFirstDownTime);
-            final int elapsedTimeSinceLastTyping = (int)(
-                    eventTime - sTypingTimeRecorder.getLastLetterTypingTime());
-            mGestureStrokeRecognitionPoints.onDownEvent(x, y, elapsedTimeSinceFirstDown,
-                    elapsedTimeSinceLastTyping);
-            mGestureStrokeDrawingPoints.onDownEvent(x, y, elapsedTimeSinceFirstDown);
+            mBatchInputArbiter.addDownEventPoint(x, y, eventTime,
+                    sTypingTimeRecorder.getLastLetterTypingTime(), getActivePointerTrackerCount());
+            mGestureStrokeDrawingPoints.onDownEvent(
+                    x, y, mBatchInputArbiter.getElapsedTimeSinceFirstDown(eventTime));
         }
     }
 
@@ -820,31 +783,27 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         if (!mIsDetectingGesture) {
             return;
         }
-        final int beforeLength = mGestureStrokeRecognitionPoints.getLength();
-        final int elapsedTimeSinceFirstDown = (int)(eventTime - sGestureFirstDownTime);
-        final boolean onValidArea = mGestureStrokeRecognitionPoints.addPointOnKeyboard(
-                x, y, elapsedTimeSinceFirstDown, isMajorEvent);
-        if (mGestureStrokeRecognitionPoints.getLength() > beforeLength) {
-            sTimerProxy.startUpdateBatchInputTimer(this);
-        }
+        final boolean onValidArea = mBatchInputArbiter.addMoveEventPoint(
+                x, y, eventTime, isMajorEvent, this);
         // If the move event goes out from valid batch input area, cancel batch input.
         if (!onValidArea) {
             cancelBatchInput();
             return;
         }
-        mGestureStrokeDrawingPoints.onMoveEvent(x, y, elapsedTimeSinceFirstDown);
+        mGestureStrokeDrawingPoints.onMoveEvent(
+                x, y, mBatchInputArbiter.getElapsedTimeSinceFirstDown(eventTime));
         // If the MoreKeysPanel is showing then do not attempt to enter gesture mode. However,
         // the gestured touch points are still being recorded in case the panel is dismissed.
         if (isShowingMoreKeysPanel()) {
             return;
         }
         if (!sInGesture && key != null && Character.isLetter(key.getCode())
-                && mayStartBatchInput()) {
+                && mBatchInputArbiter.mayStartBatchInput(this)) {
             sInGesture = true;
         }
         if (sInGesture) {
             if (key != null) {
-                updateBatchInput(eventTime);
+                mBatchInputArbiter.updateBatchInput(eventTime, this);
             }
             showGestureTrail();
         }
@@ -1097,7 +1056,8 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
             if (currentKey != null) {
                 callListenerOnRelease(currentKey, currentKey.getCode(), true /* withSliding */);
             }
-            if (mayEndBatchInput(eventTime)) {
+            if (mBatchInputArbiter.mayEndBatchInput(
+                    eventTime, getActivePointerTrackerCount(), this)) {
                 sInGesture = false;
             }
             showGestureTrail();

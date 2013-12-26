@@ -257,6 +257,13 @@ public final class Constants {
     public static final int SCREEN_METRICS_LARGE_TABLET = 2;
     public static final int SCREEN_METRICS_SMALL_TABLET = 3;
 
+    /**
+     * Default capacity of gesture points container.
+     * This constant is used by {@link BatchInputArbiter} and etc. to preallocate regions that
+     * contain gesture event points.
+     */
+    public static final int DEFAULT_GESTURE_POINTS_CAPACITY = 128;
+
     private Constants() {
         // This utility class is not publicly instantiable.
     }
