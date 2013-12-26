@@ -213,7 +213,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 postUpdateSuggestionStrip();
                 break;
             case MSG_ON_END_BATCH_INPUT:
-                latinIme.mInputLogic.endBatchInputAsyncInternal(latinIme.mSettings.getCurrent(),
+                latinIme.mInputLogic.endBatchInputInternal(latinIme.mSettings.getCurrent(),
                         (SuggestedWords) msg.obj, latinIme.mKeyboardSwitcher);
                 break;
             case MSG_RESET_CACHES:
