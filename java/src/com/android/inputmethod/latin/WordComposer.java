@@ -472,7 +472,7 @@ public final class WordComposer {
         mCapsCount = 0;
         mDigitsCount = 0;
         mIsBatchMode = false;
-        mPreviousWordForSuggestion = mTypedWord.toString();
+        mPreviousWordForSuggestion = committedWord;
         mTypedWord.setLength(0);
         mCodePointSize = 0;
         mTrailingSingleQuotesCount = 0;

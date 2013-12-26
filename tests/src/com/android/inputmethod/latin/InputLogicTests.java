@@ -348,4 +348,39 @@ public class InputLogicTests extends InputTestsBase {
         helperTestComposing("a'", true);
     }
     // TODO: Add some tests for non-BMP characters
+
+    public void testPredictionsAfterSpace() {
+        final String WORD_TO_TYPE = "Barack ";
+        type(WORD_TO_TYPE);
+        sleep(DELAY_TO_WAIT_FOR_PREDICTIONS);
+        runMessages();
+        // Test the first prediction is displayed
+        final SuggestedWords suggestedWords = mLatinIME.getSuggestedWords();
+        assertEquals("predictions after space", "Obama",
+                suggestedWords.size() > 0 ? suggestedWords.getWord(0) : null);
+    }
+
+    public void testPredictionsAfterManualPick() {
+        final String WORD_TO_TYPE = "Barack";
+        type(WORD_TO_TYPE);
+        // Choose the auto-correction, which is always in position 0. For "Barack", the
+        // auto-correction should be "Barack".
+        pickSuggestionManually(0, WORD_TO_TYPE);
+        runMessages();
+        sleep(DELAY_TO_WAIT_FOR_PREDICTIONS);
+        // Test the first prediction is displayed
+        final SuggestedWords suggestedWords = mLatinIME.getSuggestedWords();
+        assertEquals("predictions after manual pick", "Obama",
+                suggestedWords.size() > 0 ? suggestedWords.getWord(0) : null);
+    }
+
+    public void testNoPredictionsAfterPeriod() {
+        final String WORD_TO_TYPE = "Barack. ";
+        type(WORD_TO_TYPE);
+        sleep(DELAY_TO_WAIT_FOR_PREDICTIONS);
+        runMessages();
+        // Test the first prediction is displayed
+        final SuggestedWords suggestedWords = mLatinIME.getSuggestedWords();
+        assertEquals("no prediction after period", 0, suggestedWords.size());
+    }
 }
