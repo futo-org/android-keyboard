@@ -1378,14 +1378,14 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     sequenceNumber, new OnGetSuggestedWordsCallback() {
                 @Override
                 public void onGetSuggestedWords(SuggestedWords suggestedWords) {
-                    final int suggestionCount = suggestedWords.size();
-                    if (suggestionCount <= 1) {
-                        final String mostProbableSuggestion = (suggestionCount == 0) ? null
-                                : suggestedWords.getWord(0);
-                        callback.onGetSuggestedWords(
-                                mLatinIme.getOlderSuggestions(mostProbableSuggestion));
+                    if (suggestedWords.isEmpty()) {
+                        // Previous suggestions are found in InputLogic#mSuggestedWords. Since
+                        // these are the most recent suggestions and we just recomputed new
+                        // ones to update them, it means the previous ones are there.
+                        callback.onGetSuggestedWords(mLatinIme.mInputLogic.mSuggestedWords);
+                    } else {
+                        callback.onGetSuggestedWords(suggestedWords);
                     }
-                    callback.onGetSuggestedWords(suggestedWords);
                 }
             });
         }
