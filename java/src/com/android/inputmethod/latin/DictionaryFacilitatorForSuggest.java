@@ -274,10 +274,10 @@ public class DictionaryFacilitatorForSuggest {
         mUserDictionary.addWordToUserDictionary(word);
     }
 
-    public String addToUserHistory(final WordComposer wordComposer, final String previousWord,
+    public void addToUserHistory(final WordComposer wordComposer, final String previousWord,
             final String suggestion) {
         if (mUserHistoryDictionary == null) {
-            return null;
+            return;
         }
         final String secondWord;
         if (wordComposer.wasAutoCapitalized() && !wordComposer.isMostlyCaps()) {
@@ -289,12 +289,11 @@ public class DictionaryFacilitatorForSuggest {
         // We don't add words with 0-frequency (assuming they would be profanity etc.).
         final int maxFreq = getMaxFrequency(suggestion);
         if (maxFreq == 0) {
-            return null;
+            return;
         }
         final boolean isValid = maxFreq > 0;
         final int timeStamp = (int)TimeUnit.MILLISECONDS.toSeconds((System.currentTimeMillis()));
         mUserHistoryDictionary.addToDictionary(previousWord, secondWord, isValid, timeStamp);
-        return previousWord;
     }
 
     public void cancelAddingUserHistory(final String previousWord, final String committedWord) {
