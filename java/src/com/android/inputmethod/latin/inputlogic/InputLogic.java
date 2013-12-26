@@ -974,19 +974,18 @@ public final class InputLogic {
         mConnection.setSelection(mLastSelectionStart, mLastSelectionEnd);
     }
 
-    private String performAdditionToUserHistoryDictionary(final SettingsValues settingsValues,
-            final String suggestion) {
+    private void performAdditionToUserHistoryDictionary(final SettingsValues settingsValues,
+            final String suggestion, final String prevWord) {
         // If correction is not enabled, we don't add words to the user history dictionary.
         // That's to avoid unintended additions in some sensitive fields, or fields that
         // expect to receive non-words.
-        if (!settingsValues.mCorrectionEnabled) return null;
+        if (!settingsValues.mCorrectionEnabled) return;
 
-        if (TextUtils.isEmpty(suggestion)) return null;
+        if (TextUtils.isEmpty(suggestion)) return;
         final Suggest suggest = mSuggest;
-        if (suggest == null) return null;
+        if (suggest == null) return;
 
-        final String prevWord = mConnection.getNthPreviousWord(settingsValues, 2);
-        return suggest.mDictionaryFacilitator.addToUserHistory(mWordComposer, prevWord, suggestion);
+        suggest.mDictionaryFacilitator.addToUserHistory(mWordComposer, prevWord, suggestion);
     }
 
     public void performUpdateSuggestionStripSync(final SettingsValues settingsValues,
@@ -1605,8 +1604,10 @@ public final class InputLogic {
         final SuggestedWords suggestedWords = mSuggestedWords;
         mConnection.commitText(SuggestionSpanUtils.getTextWithSuggestionSpan(mLatinIME, chosenWord,
                 suggestedWords), 1);
+        // TODO: we pass 2 here, but would it be better to move this above and pass 1 instead?
+        final String prevWord = mConnection.getNthPreviousWord(settingsValues, 2);
         // Add the word to the user history dictionary
-        final String prevWord = performAdditionToUserHistoryDictionary(settingsValues, chosenWord);
+        performAdditionToUserHistoryDictionary(settingsValues, chosenWord, prevWord);
         // TODO: figure out here if this is an auto-correct or if the best word is actually
         // what user typed. Note: currently this is done much later in
         // LastComposedWord#didCommitTypedWord by string equality of the remembered
