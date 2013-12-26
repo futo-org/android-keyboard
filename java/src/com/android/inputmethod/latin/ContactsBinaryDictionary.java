@@ -16,8 +16,6 @@
 
 package com.android.inputmethod.latin;
 
-import com.android.inputmethod.latin.personalization.AccountUtils;
-
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.ContentObserver;
@@ -31,6 +29,8 @@ import android.provider.ContactsContract.Contacts;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.android.inputmethod.annotations.UsedForTesting;
+import com.android.inputmethod.latin.personalization.AccountUtils;
 import com.android.inputmethod.latin.utils.StringUtils;
 
 import java.io.File;
@@ -85,6 +85,7 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
     }
 
     // Dummy constructor for tests.
+    @UsedForTesting
     public ContactsBinaryDictionary(final Context context, final Locale locale, final File file) {
         this(context, locale);
     }
