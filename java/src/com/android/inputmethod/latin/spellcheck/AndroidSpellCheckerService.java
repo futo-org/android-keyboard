@@ -383,6 +383,8 @@ public final class AndroidSpellCheckerService extends SpellCheckerService
         new Thread("spellchecker_close_dicts") {
             @Override
             public void run() {
+                // Contacts dictionary can be closed multiple times here. If the dictionary is
+                // already closed, extra closings are no-ops, so it's safe.
                 for (DictionaryPool pool : oldPools.values()) {
                     pool.close();
                 }
