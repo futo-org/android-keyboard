@@ -104,10 +104,6 @@ public final class SuggestedWords {
         return debugString;
     }
 
-    public boolean willAutoCorrect() {
-        return mWillAutoCorrect;
-    }
-
     @Override
     public String toString() {
         // Pretty-print method to help debug
@@ -150,7 +146,7 @@ public final class SuggestedWords {
         for (int index = 1; index < previousSize; index++) {
             final SuggestedWordInfo prevWordInfo = previousSuggestions.getInfo(index);
             final String prevWord = prevWordInfo.mWord;
-            // Filter out duplicate suggestion.
+            // Filter out duplicate suggestions.
             if (!alreadySeen.contains(prevWord)) {
                 suggestionsList.add(prevWordInfo);
                 alreadySeen.add(prevWord);

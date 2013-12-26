@@ -208,7 +208,7 @@ final class SuggestionStripLayoutHelper {
         }
         final String word = suggestedWords.getWord(indexInSuggestedWords);
         final boolean isAutoCorrect = indexInSuggestedWords == 1
-                && suggestedWords.willAutoCorrect();
+                && suggestedWords.mWillAutoCorrect;
         final boolean isTypedWordValid = indexInSuggestedWords == 0
                 && suggestedWords.mTypedWordValid;
         if (!isAutoCorrect && !isTypedWordValid) {
@@ -232,7 +232,7 @@ final class SuggestionStripLayoutHelper {
             final SuggestedWords suggestedWords) {
         final int indexToDisplayMostImportantSuggestion;
         final int indexToDisplaySecondMostImportantSuggestion;
-        if (suggestedWords.willAutoCorrect()) {
+        if (suggestedWords.mWillAutoCorrect) {
             indexToDisplayMostImportantSuggestion = SuggestedWords.INDEX_OF_AUTO_CORRECTION;
             indexToDisplaySecondMostImportantSuggestion = SuggestedWords.INDEX_OF_TYPED_WORD;
         } else {
@@ -257,7 +257,7 @@ final class SuggestionStripLayoutHelper {
         final boolean isSuggested = (indexInSuggestedWords != SuggestedWords.INDEX_OF_TYPED_WORD);
 
         final int color;
-        if (positionInStrip == mCenterPositionInStrip && suggestedWords.willAutoCorrect()) {
+        if (positionInStrip == mCenterPositionInStrip && suggestedWords.mWillAutoCorrect) {
             color = mColorAutoCorrect;
         } else if (positionInStrip == mCenterPositionInStrip && suggestedWords.mTypedWordValid) {
             color = mColorValidTypedWord;

@@ -1147,7 +1147,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public boolean onEvaluateFullscreenMode() {
-        // Reread resource value here, because this method is called by framework anytime as needed.
+        // Reread resource value here, because this method is called by the framework as needed.
         final boolean isFullscreenModeAllowed = Settings.readUseFullscreenMode(getResources());
         if (super.onEvaluateFullscreenMode() && isFullscreenModeAllowed) {
             // TODO: Remove this hack. Actually we should not really assume NO_EXTRACT_UI
@@ -1628,9 +1628,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
           autoCorrection = typedWord;
       }
       mInputLogic.mWordComposer.setAutoCorrection(autoCorrection);
-      final boolean isAutoCorrection = suggestedWords.willAutoCorrect();
-      setSuggestedWords(suggestedWords, isAutoCorrection);
-      setAutoCorrectionIndicator(isAutoCorrection);
+      setSuggestedWords(suggestedWords, suggestedWords.mWillAutoCorrect);
+      setAutoCorrectionIndicator(suggestedWords.mWillAutoCorrect);
       setSuggestionStripShown(isSuggestionsStripVisible());
       // An auto-correction is available, cache it in accessibility code so
       // we can be speak it if the user touches a key that will insert it.
