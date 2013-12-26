@@ -1621,8 +1621,11 @@ public final class InputLogic {
                 chosenWord, separatorString, prevWord);
         final boolean shouldDiscardPreviousWordForSuggestion;
         if (0 == StringUtils.codePointCount(separatorString)) {
-            // Separator is 0-length. Discard the word only if the current language has spaces.
-            shouldDiscardPreviousWordForSuggestion = settingsValues.mCurrentLanguageHasSpaces;
+            // Separator is 0-length, we can keep the previous word for suggestion. Either this
+            // was a manual pick or the language has no spaces in which case we want to keep the
+            // previous word, or it was the keyboard closing or the cursor moving in which case it
+            // will be reset anyway.
+            shouldDiscardPreviousWordForSuggestion = false;
         } else {
             // Otherwise, we discard if the separator contains any non-whitespace.
             shouldDiscardPreviousWordForSuggestion =
