@@ -53,10 +53,10 @@ import com.android.inputmethod.keyboard.KeyboardView;
 import com.android.inputmethod.keyboard.MainKeyboardView;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.Dictionary;
+import com.android.inputmethod.latin.DictionaryFacilitatorForSuggest;
 import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.RichInputConnection;
-import com.android.inputmethod.latin.Suggest;
 import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.latin.utils.InputTypeUtils;
@@ -166,7 +166,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     protected static final int SUSPEND_DURATION_IN_MINUTES = 1;
 
     // used to check whether words are not unique
-    private Suggest mSuggest;
+    private DictionaryFacilitatorForSuggest mDictionaryFacilitator;
     private MainKeyboardView mMainKeyboardView;
     // TODO: Check whether a superclass can be used instead of LatinIME.
     /* package for test */ LatinIME mLatinIME;
@@ -205,8 +205,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         return sInstance;
     }
 
-    public void init(final LatinIME latinIME, final KeyboardSwitcher keyboardSwitcher,
-            final Suggest suggest) {
+    public void init(final LatinIME latinIME, final KeyboardSwitcher keyboardSwitcher) {
         assert latinIME != null;
         mLatinIME = latinIME;
         mPrefs = PreferenceManager.getDefaultSharedPreferences(latinIME);
@@ -242,7 +241,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                 System.currentTimeMillis(), System.nanoTime()), mLatinIME);
         final int numWordsToIgnore = new Random().nextInt(NUMBER_OF_WORDS_BETWEEN_SAMPLES + 1);
         mMainLogBuffer = new MainLogBuffer(NUMBER_OF_WORDS_BETWEEN_SAMPLES, numWordsToIgnore,
-                mSuggest) {
+                mDictionaryFacilitator) {
             @Override
             protected void publish(final ArrayList<LogUnit> logUnits,
                     boolean canIncludePrivateData) {
@@ -656,8 +655,8 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         mInFeedbackDialog = false;
     }
 
-    public void initSuggest(final Suggest suggest) {
-        mSuggest = suggest;
+    public void initDictionary(final DictionaryFacilitatorForSuggest dictionaryFacilitator) {
+        mDictionaryFacilitator = dictionaryFacilitator;
         // MainLogBuffer now has an out-of-date Suggest object.  Close down MainLogBuffer and create
         // a new one.
         if (mMainLogBuffer != null) {
@@ -666,10 +665,10 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     private Dictionary getDictionary() {
-        if (mSuggest == null) {
+        if (mDictionaryFacilitator == null) {
             return null;
         }
-        return mSuggest.getMainDictionary();
+        return mDictionaryFacilitator.getMainDictionary();
     }
 
     private void setIsPasswordView(boolean isPasswordView) {

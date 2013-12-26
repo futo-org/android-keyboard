@@ -472,7 +472,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         initSuggest();
 
         if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-            ResearchLogger.getInstance().init(this, mKeyboardSwitcher, mInputLogic.mSuggest);
+            ResearchLogger.getInstance().init(this, mKeyboardSwitcher);
         }
 
         // Register to receive ringer mode change and network state change.
@@ -516,8 +516,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (!mHandler.hasPendingReopenDictionaries() && mInputLogic.mSuggest != null) {
             // May need to reset dictionaries depending on the user settings.
             // TODO: Quit setting dictionaries from LatinIME.
-            mInputLogic.mSuggest.setAdditionalDictionaries(mInputLogic.mSuggest /* oldSuggest */,
-                   currentSettingsValues);
+            mInputLogic.mSuggest.mDictionaryFacilitator.setAdditionalDictionaries(
+                    mInputLogic.mSuggest.mDictionaryFacilitator /* oldDictionaryFacilitator */,
+                    currentSettingsValues);
         }
         if (currentSettingsValues.mUsePersonalizedDicts) {
             PersonalizationDictionarySessionRegistrar.init(this);
@@ -561,10 +562,12 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
 
         if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-            ResearchLogger.getInstance().initSuggest(newSuggest);
+            ResearchLogger.getInstance().initDictionary(newSuggest.mDictionaryFacilitator);
         }
         // TODO: Quit setting dictionaries from LatinIME.
-        newSuggest.setAdditionalDictionaries(mInputLogic.mSuggest /* oldSuggest */, settingsValues);
+        newSuggest.mDictionaryFacilitator.setAdditionalDictionaries(
+                (mInputLogic.mSuggest == null) ? null : mInputLogic.mSuggest.mDictionaryFacilitator
+                        /* oldDictionaryFacilitator */, settingsValues);
         final Suggest oldSuggest = mInputLogic.mSuggest;
         mInputLogic.mSuggest = newSuggest;
         if (oldSuggest != null) oldSuggest.close();
@@ -572,7 +575,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     /* package private */ void resetSuggestMainDict() {
         final Locale subtypeLocale = mSubtypeSwitcher.getCurrentSubtypeLocale();
-        mInputLogic.mSuggest.resetMainDict(this, subtypeLocale,
+        mInputLogic.mSuggest.mDictionaryFacilitator.resetMainDict(this, subtypeLocale,
                 this /* SuggestInitializationListener */);
     }
 
@@ -822,7 +825,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mHandler.cancelDoubleSpacePeriodTimer();
 
         mainKeyboardView.setMainDictionaryAvailability(null != suggest
-                ? suggest.hasMainDictionary() : false);
+                ? suggest.mDictionaryFacilitator.hasMainDictionary() : false);
         mainKeyboardView.setKeyPreviewPopupEnabled(currentSettingsValues.mKeyPreviewPopupOn,
                 currentSettingsValues.mKeyPreviewPopupDismissDelay);
         mainKeyboardView.setSlidingKeyInputPreviewEnabled(
@@ -1203,7 +1206,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         } else {
             wordToEdit = word;
         }
-        mInputLogic.mSuggest.addWordToUserDictionary(wordToEdit);
+        mInputLogic.mSuggest.mDictionaryFacilitator.addWordToUserDictionary(wordToEdit);
     }
 
     public void displaySettingsDialog() {
@@ -1724,13 +1727,15 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                         || SuggestedWordInfo.KIND_OOV_CORRECTION == suggestionInfo.mKind)
                         && suggest != null
                         // If the suggestion is not in the dictionary, the hint should be shown.
-                        && !suggest.isValidWord(suggestion, true);
+                        && !suggest.mDictionaryFacilitator.isValidWord(suggestion,
+                                true /* ignoreCase */);
 
         if (currentSettings.mIsInternal) {
             LatinImeLoggerUtils.onSeparator((char)Constants.CODE_SPACE,
                     Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
         }
-        if (showingAddToDictionaryHint && suggest.isUserDictionaryEnabled()) {
+        if (showingAddToDictionaryHint
+                && suggest.mDictionaryFacilitator.isUserDictionaryEnabled()) {
             mSuggestionStripView.showAddToDictionaryHint(
                     suggestion, currentSettings.mHintToSaveText);
         } else {
@@ -1963,13 +1968,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // DO NOT USE THIS for any other purpose than testing. This is information private to LatinIME.
     @UsedForTesting
     /* package for test */ boolean isCurrentlyWaitingForMainDictionary() {
-        return mInputLogic.mSuggest.isCurrentlyWaitingForMainDictionary();
+        return mInputLogic.mSuggest.mDictionaryFacilitator.isCurrentlyWaitingForMainDictionary();
     }
 
     // DO NOT USE THIS for any other purpose than testing. This can break the keyboard badly.
     @UsedForTesting
     /* package for test */ void replaceMainDictionaryForTest(final Locale locale) {
-        mInputLogic.mSuggest.resetMainDict(this, locale, null);
+        mInputLogic.mSuggest.mDictionaryFacilitator.resetMainDict(this, locale, null);
     }
 
     public void debugDumpStateAndCrashWithException(final String context) {

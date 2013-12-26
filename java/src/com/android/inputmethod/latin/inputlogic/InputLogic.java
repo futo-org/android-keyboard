@@ -986,7 +986,7 @@ public final class InputLogic {
         if (suggest == null) return null;
 
         final String prevWord = mConnection.getNthPreviousWord(settingsValues, 2);
-        return suggest.addToUserHistory(mWordComposer, prevWord, suggestion);
+        return suggest.mDictionaryFacilitator.addToUserHistory(mWordComposer, prevWord, suggestion);
     }
 
     public void performUpdateSuggestionStripSync(final SettingsValues settingsValues,
@@ -1190,7 +1190,8 @@ public final class InputLogic {
         mConnection.deleteSurroundingText(deleteLength, 0);
         if (!TextUtils.isEmpty(previousWord) && !TextUtils.isEmpty(committedWord)) {
             if (mSuggest != null) {
-                mSuggest.cancelAddingUserHistory(previousWord, committedWord);
+                mSuggest.mDictionaryFacilitator.cancelAddingUserHistory(
+                        previousWord, committedWord);
             }
         }
         final String stringToCommit = originallyTypedWord + mLastComposedWord.mSeparatorString;

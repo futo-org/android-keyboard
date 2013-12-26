@@ -20,7 +20,7 @@ import android.util.Log;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.Dictionary;
-import com.android.inputmethod.latin.Suggest;
+import com.android.inputmethod.latin.DictionaryFacilitatorForSuggest;
 import com.android.inputmethod.latin.define.ProductionFlag;
 
 import java.io.IOException;
@@ -75,9 +75,7 @@ public abstract class MainLogBuffer extends FixedLogBuffer {
     // The size of the n-grams logged.  E.g. N_GRAM_SIZE = 2 means to sample bigrams.
     public static final int N_GRAM_SIZE = 2;
 
-    // TODO: Remove dependence on Suggest, and pass in Dictionary as a parameter to an appropriate
-    // method.
-    private final Suggest mSuggest;
+    private final DictionaryFacilitatorForSuggest mDictionaryFacilitator;
     @UsedForTesting
     private Dictionary mDictionaryForTesting;
     private boolean mIsStopping = false;
@@ -89,11 +87,11 @@ public abstract class MainLogBuffer extends FixedLogBuffer {
     /* package for test */ int mNumWordsUntilSafeToSample;
 
     public MainLogBuffer(final int wordsBetweenSamples, final int numInitialWordsToIgnore,
-            final Suggest suggest) {
+            final DictionaryFacilitatorForSuggest dictionaryFacilitator) {
         super(N_GRAM_SIZE + wordsBetweenSamples);
         mNumWordsBetweenNGrams = wordsBetweenSamples;
         mNumWordsUntilSafeToSample = DEBUG ? 0 : numInitialWordsToIgnore;
-        mSuggest = suggest;
+        mDictionaryFacilitator = dictionaryFacilitator;
     }
 
     @UsedForTesting
@@ -105,8 +103,10 @@ public abstract class MainLogBuffer extends FixedLogBuffer {
         if (mDictionaryForTesting != null) {
             return mDictionaryForTesting;
         }
-        if (mSuggest == null || !mSuggest.hasMainDictionary()) return null;
-        return mSuggest.getMainDictionary();
+        if (mDictionaryFacilitator == null || !mDictionaryFacilitator.hasMainDictionary()) {
+            return null;
+        }
+        return mDictionaryFacilitator.getMainDictionary();
     }
 
     public void setIsStopping() {
