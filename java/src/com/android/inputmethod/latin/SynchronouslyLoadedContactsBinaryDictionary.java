@@ -25,34 +25,26 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 public final class SynchronouslyLoadedContactsBinaryDictionary extends ContactsBinaryDictionary {
-    private boolean mClosed;
+    private final Object mLock = new Object();
 
     public SynchronouslyLoadedContactsBinaryDictionary(final Context context, final Locale locale) {
         super(context, locale);
     }
 
     @Override
-    public synchronized ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer codes,
+    public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer codes,
             final String prevWordForBigrams, final ProximityInfo proximityInfo,
             final boolean blockOffensiveWords, final int[] additionalFeaturesOptions) {
-        reloadDictionaryIfRequired();
-        return super.getSuggestions(codes, prevWordForBigrams, proximityInfo, blockOffensiveWords,
-                additionalFeaturesOptions);
+        synchronized (mLock) {
+            return super.getSuggestions(codes, prevWordForBigrams, proximityInfo,
+                    blockOffensiveWords, additionalFeaturesOptions);
+        }
     }
 
     @Override
-    public synchronized boolean isValidWord(final String word) {
-        reloadDictionaryIfRequired();
-        return isValidWordInner(word);
-    }
-
-    // Protect against multiple closing
-    @Override
-    public synchronized void close() {
-        // Actually with the current implementation of ContactsDictionary it's safe to close
-        // several times, so the following protection is really only for foolproofing
-        if (mClosed) return;
-        mClosed = true;
-        super.close();
+    public boolean isValidWord(final String word) {
+        synchronized (mLock) {
+            return super.isValidWord(word);
+        }
     }
 }

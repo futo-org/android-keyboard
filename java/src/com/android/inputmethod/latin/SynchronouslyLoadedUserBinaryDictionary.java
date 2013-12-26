@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 public final class SynchronouslyLoadedUserBinaryDictionary extends UserBinaryDictionary {
+    private final Object mLock = new Object();
 
     public SynchronouslyLoadedUserBinaryDictionary(final Context context, final Locale locale) {
         this(context, locale, false);
@@ -36,17 +37,19 @@ public final class SynchronouslyLoadedUserBinaryDictionary extends UserBinaryDic
     }
 
     @Override
-    public synchronized ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer codes,
+    public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer codes,
             final String prevWordForBigrams, final ProximityInfo proximityInfo,
             final boolean blockOffensiveWords, final int[] additionalFeaturesOptions) {
-        reloadDictionaryIfRequired();
-        return super.getSuggestions(codes, prevWordForBigrams, proximityInfo, blockOffensiveWords,
-                additionalFeaturesOptions);
+        synchronized (mLock) {
+            return super.getSuggestions(codes, prevWordForBigrams, proximityInfo,
+                    blockOffensiveWords, additionalFeaturesOptions);
+        }
     }
 
     @Override
-    public synchronized boolean isValidWord(final String word) {
-        reloadDictionaryIfRequired();
-        return isValidWordInner(word);
+    public boolean isValidWord(final String word) {
+        synchronized (mLock) {
+            return super.isValidWord(word);
+        }
     }
 }
