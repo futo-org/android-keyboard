@@ -1391,7 +1391,7 @@ public final class InputLogic {
         if (settingsValues.mBigramPredictionEnabled) {
             mLatinIME.clearSuggestionStrip();
         } else {
-            mLatinIME.setSuggestedWords(settingsValues.mSuggestPuncList, false);
+            mLatinIME.setSuggestedWords(settingsValues.mSuggestPuncList);
         }
         mConnection.resetCachesUponCursorMoveAndReturnSuccess(newSelStart, newSelEnd,
                 shouldFinishComposition);
