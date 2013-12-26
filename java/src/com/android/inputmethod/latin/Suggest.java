@@ -18,14 +18,10 @@ package com.android.inputmethod.latin;
 
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
-import com.android.inputmethod.latin.personalization.PersonalizationDictionary;
-import com.android.inputmethod.latin.personalization.PersonalizationHelper;
-import com.android.inputmethod.latin.personalization.UserHistoryDictionary;
 import com.android.inputmethod.latin.settings.SettingsValues;
 import com.android.inputmethod.latin.utils.AutoCorrectionUtils;
 import com.android.inputmethod.latin.utils.BoundedTreeSet;
@@ -34,16 +30,12 @@ import com.android.inputmethod.latin.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.Locale;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
 
 /**
  * This class loads a dictionary and provides a list of suggestions for a given sequence of
  * characters. This includes corrections and completions.
  */
-// TODO: Separate dictionary operations from suggestions handling logic.
 public final class Suggest {
     public static final String TAG = Suggest.class.getSimpleName();
 
@@ -69,276 +61,25 @@ public final class Suggest {
 
     private static final boolean DBG = LatinImeLogger.sDBG;
 
-    private final ConcurrentHashMap<String, Dictionary> mDictionaries =
-            CollectionUtils.newConcurrentHashMap();
-    private HashSet<String> mOnlyDictionarySetForDebug = null;
-    private Dictionary mMainDictionary;
-    private ContactsBinaryDictionary mContactsDictionary;
-    private UserBinaryDictionary mUserDictionary;
-    private UserHistoryDictionary mUserHistoryDictionary;
-    private PersonalizationDictionary mPersonalizationDictionary;
-    @UsedForTesting
-    private boolean mIsCurrentlyWaitingForMainDictionary = false;
+    public final DictionaryFacilitatorForSuggest mDictionaryFacilitator;
 
     private float mAutoCorrectionThreshold;
 
     // Locale used for upper- and title-casing words
     public final Locale mLocale;
 
-    private final Context mContext;
-
     public Suggest(final Context context, final Locale locale, final SettingsValues settingsValues,
             final SuggestInitializationListener listener) {
-        initAsynchronously(context, locale, listener);
         mLocale = locale;
-        mContext = context;
-        // initialize a debug flag for the personalization
-        if (settingsValues.mUseOnlyPersonalizationDictionaryForDebug) {
-            mOnlyDictionarySetForDebug = new HashSet<String>();
-            mOnlyDictionarySetForDebug.add(Dictionary.TYPE_PERSONALIZATION);
-        }
-        setUserDictionary(new UserBinaryDictionary(context, locale));
+        mDictionaryFacilitator = new DictionaryFacilitatorForSuggest(context, locale,
+                settingsValues, listener);
     }
 
     @UsedForTesting
     Suggest(final Context context, final AssetFileAddress[] dictionaryList, final Locale locale) {
-        final Dictionary mainDict = DictionaryFactory.createDictionaryForTest(dictionaryList,
-                false /* useFullEditDistance */, locale);
         mLocale = locale;
-        mContext = context;
-        mMainDictionary = mainDict;
-        addOrReplaceDictionaryInternal(Dictionary.TYPE_MAIN, mainDict);
-    }
-
-    private void initAsynchronously(final Context context, final Locale locale,
-            final SuggestInitializationListener listener) {
-        resetMainDict(context, locale, listener);
-    }
-
-    private void addOrReplaceDictionaryInternal(final String key, final Dictionary dict) {
-        if (mOnlyDictionarySetForDebug != null && !mOnlyDictionarySetForDebug.contains(key)) {
-            Log.w(TAG, "Ignore add " + key + " dictionary for debug.");
-            return;
-        }
-        addOrReplaceDictionary(mDictionaries, key, dict);
-    }
-
-    private static void addOrReplaceDictionary(
-            final ConcurrentHashMap<String, Dictionary> dictionaries,
-            final String key, final Dictionary dict) {
-        final Dictionary oldDict = (dict == null)
-                ? dictionaries.remove(key)
-                : dictionaries.put(key, dict);
-        if (oldDict != null && dict != oldDict) {
-            oldDict.close();
-        }
-    }
-
-    public void resetMainDict(final Context context, final Locale locale,
-            final SuggestInitializationListener listener) {
-        mIsCurrentlyWaitingForMainDictionary = true;
-        mMainDictionary = null;
-        if (listener != null) {
-            listener.onUpdateMainDictionaryAvailability(hasMainDictionary());
-        }
-        new Thread("InitializeBinaryDictionary") {
-            @Override
-            public void run() {
-                final DictionaryCollection newMainDict =
-                        DictionaryFactory.createMainDictionaryFromManager(context, locale);
-                addOrReplaceDictionaryInternal(Dictionary.TYPE_MAIN, newMainDict);
-                mMainDictionary = newMainDict;
-                if (listener != null) {
-                    listener.onUpdateMainDictionaryAvailability(hasMainDictionary());
-                }
-                mIsCurrentlyWaitingForMainDictionary = false;
-            }
-        }.start();
-    }
-
-    // The main dictionary could have been loaded asynchronously.  Don't cache the return value
-    // of this method.
-    public boolean hasMainDictionary() {
-        return null != mMainDictionary && mMainDictionary.isInitialized();
-    }
-
-    @UsedForTesting
-    public boolean isCurrentlyWaitingForMainDictionary() {
-        return mIsCurrentlyWaitingForMainDictionary;
-    }
-
-    public Dictionary getMainDictionary() {
-        return mMainDictionary;
-    }
-
-    /**
-     * Sets an optional user dictionary resource to be loaded. The user dictionary is consulted
-     * before the main dictionary, if set. This refers to the system-managed user dictionary.
-     */
-    @UsedForTesting
-    public void setUserDictionary(final UserBinaryDictionary userDictionary) {
-        mUserDictionary = userDictionary;
-        addOrReplaceDictionaryInternal(Dictionary.TYPE_USER, userDictionary);
-    }
-
-    /**
-     * Sets an optional contacts dictionary resource to be loaded. It is also possible to remove
-     * the contacts dictionary by passing null to this method. In this case no contacts dictionary
-     * won't be used.
-     */
-    @UsedForTesting
-    public void setContactsDictionary(final ContactsBinaryDictionary contactsDictionary) {
-        mContactsDictionary = contactsDictionary;
-        addOrReplaceDictionaryInternal(Dictionary.TYPE_CONTACTS, contactsDictionary);
-    }
-
-    private void setUserHistoryDictionary(final UserHistoryDictionary userHistoryDictionary) {
-        mUserHistoryDictionary = userHistoryDictionary;
-        addOrReplaceDictionaryInternal(Dictionary.TYPE_USER_HISTORY, userHistoryDictionary);
-    }
-
-    private void setPersonalizationDictionary(
-            final PersonalizationDictionary personalizationDictionary) {
-        mPersonalizationDictionary = personalizationDictionary;
-        addOrReplaceDictionaryInternal(Dictionary.TYPE_PERSONALIZATION, personalizationDictionary);
-    }
-
-    /**
-     * Set dictionaries that can be turned off according to the user settings.
-     *
-     * @param oldSuggest the instance having old dictionaries
-     * @param settingsValues current SettingsValues
-     */
-    public void setAdditionalDictionaries(final Suggest oldSuggest,
-            final SettingsValues settingsValues) {
-        // Contacts dictionary
-        resetContactsDictionary(null != oldSuggest ? oldSuggest.mContactsDictionary : null,
-                settingsValues);
-        // User history dictionary & Personalization dictionary
-        resetPersonalizedDictionaries(oldSuggest, settingsValues);
-    }
-
-    /**
-     * Set the user history dictionary and personalization dictionary according to the user
-     * settings.
-     *
-     * @param oldSuggest the instance that has been used
-     * @param settingsValues current settingsValues
-     */
-    // TODO: Consolidate resetPersonalizedDictionaries() and resetContactsDictionary(). Call up the
-    // new method for each dictionary.
-    private void resetPersonalizedDictionaries(final Suggest oldSuggest,
-            final SettingsValues settingsValues) {
-        final boolean shouldSetDictionaries = settingsValues.mUsePersonalizedDicts;
-
-        final UserHistoryDictionary oldUserHistoryDictionary = (null == oldSuggest) ? null :
-                oldSuggest.mUserHistoryDictionary;
-        final PersonalizationDictionary oldPersonalizationDictionary = (null == oldSuggest) ? null :
-                oldSuggest.mPersonalizationDictionary;
-        final UserHistoryDictionary userHistoryDictionaryToUse;
-        final PersonalizationDictionary personalizationDictionaryToUse;
-        if (!shouldSetDictionaries) {
-            userHistoryDictionaryToUse = null;
-            personalizationDictionaryToUse = null;
-        } else {
-            if (null != oldUserHistoryDictionary
-                    && oldUserHistoryDictionary.mLocale.equals(mLocale)) {
-                userHistoryDictionaryToUse = oldUserHistoryDictionary;
-            } else {
-                userHistoryDictionaryToUse =
-                        PersonalizationHelper.getUserHistoryDictionary(mContext, mLocale);
-            }
-            if (null != oldPersonalizationDictionary
-                    && oldPersonalizationDictionary.mLocale.equals(mLocale)) {
-                personalizationDictionaryToUse = oldPersonalizationDictionary;
-            } else {
-                personalizationDictionaryToUse =
-                        PersonalizationHelper.getPersonalizationDictionary(mContext, mLocale);
-            }
-        }
-        setUserHistoryDictionary(userHistoryDictionaryToUse);
-        setPersonalizationDictionary(personalizationDictionaryToUse);
-    }
-
-    /**
-     * Set the contacts dictionary according to the user settings.
-     *
-     * This method takes an optional contacts dictionary to use when the locale hasn't changed
-     * since the contacts dictionary can be opened or closed as necessary depending on the settings.
-     *
-     * @param oldContactsDictionary an optional dictionary to use, or null
-     * @param settingsValues current settingsValues
-     */
-    private void resetContactsDictionary(final ContactsBinaryDictionary oldContactsDictionary,
-            final SettingsValues settingsValues) {
-        final boolean shouldSetDictionary = settingsValues.mUseContactsDict;
-        final ContactsBinaryDictionary dictionaryToUse;
-        if (!shouldSetDictionary) {
-            // Make sure the dictionary is closed. If it is already closed, this is a no-op,
-            // so it's safe to call it anyways.
-            if (null != oldContactsDictionary) oldContactsDictionary.close();
-            dictionaryToUse = null;
-        } else {
-            if (null != oldContactsDictionary) {
-                if (!oldContactsDictionary.mLocale.equals(mLocale)) {
-                    // If the locale has changed then recreate the contacts dictionary. This
-                    // allows locale dependent rules for handling bigram name predictions.
-                    oldContactsDictionary.close();
-                    dictionaryToUse = new ContactsBinaryDictionary(mContext, mLocale);
-                } else {
-                    // Make sure the old contacts dictionary is opened. If it is already open,
-                    // this is a no-op, so it's safe to call it anyways.
-                    oldContactsDictionary.reopen(mContext);
-                    dictionaryToUse = oldContactsDictionary;
-                }
-            } else {
-                dictionaryToUse = new ContactsBinaryDictionary(mContext, mLocale);
-            }
-        }
-        setContactsDictionary(dictionaryToUse);
-    }
-
-    public boolean isUserDictionaryEnabled() {
-        if (mUserDictionary == null) {
-            return false;
-        }
-        return mUserDictionary.mEnabled;
-    }
-
-    public void addWordToUserDictionary(String word) {
-        if (mUserDictionary == null) {
-            return;
-        }
-        mUserDictionary.addWordToUserDictionary(word);
-    }
-
-    public String addToUserHistory(final WordComposer wordComposer, final String previousWord,
-            final String suggestion) {
-        if (mUserHistoryDictionary == null) {
-            return null;
-        }
-        final String secondWord;
-        if (wordComposer.wasAutoCapitalized() && !wordComposer.isMostlyCaps()) {
-            secondWord = suggestion.toLowerCase(mLocale);
-        } else {
-            secondWord = suggestion;
-        }
-        // We demote unrecognized words (frequency < 0, below) by specifying them as "invalid".
-        // We don't add words with 0-frequency (assuming they would be profanity etc.).
-        final int maxFreq = getMaxFrequency(suggestion);
-        if (maxFreq == 0) {
-            return null;
-        }
-        final boolean isValid = maxFreq > 0;
-        final int timeStamp = (int)TimeUnit.MILLISECONDS.toSeconds((System.currentTimeMillis()));
-        mUserHistoryDictionary.addToDictionary(previousWord, secondWord, isValid, timeStamp);
-        return previousWord;
-    }
-
-    public void cancelAddingUserHistory(final String previousWord, final String committedWord) {
-        if (mUserHistoryDictionary != null) {
-            mUserHistoryDictionary.cancelAddingUserHistory(previousWord, committedWord);
-        }
+        mDictionaryFacilitator = new DictionaryFacilitatorForSuggest(context, dictionaryList,
+                locale);
     }
 
     public void setAutoCorrectionThreshold(float threshold) {
@@ -392,14 +133,8 @@ public final class Suggest {
         } else {
             wordComposerForLookup = wordComposer;
         }
-
-        for (final String key : mDictionaries.keySet()) {
-            final Dictionary dictionary = mDictionaries.get(key);
-            suggestionsSet.addAll(dictionary.getSuggestions(wordComposerForLookup,
-                    prevWordForBigram, proximityInfo, blockOffensiveWords,
-                    additionalFeaturesOptions));
-        }
-
+        mDictionaryFacilitator.getSuggestions(wordComposer, prevWordForBigram, proximityInfo,
+                blockOffensiveWords, additionalFeaturesOptions, SESSION_TYPING, suggestionsSet);
         final String whitelistedWord;
         if (suggestionsSet.isEmpty()) {
             whitelistedWord = null;
@@ -413,8 +148,8 @@ public final class Suggest {
         // or if it's a 2+ characters non-word (i.e. it's not in the dictionary).
         final boolean allowsToBeAutoCorrected = (null != whitelistedWord
                 && !whitelistedWord.equals(consideredWord))
-                || (consideredWord.length() > 1
-                        && !isValidWord(consideredWord, wordComposer.isFirstCharCapitalized()));
+                || (consideredWord.length() > 1 && !mDictionaryFacilitator.isValidWord(
+                        consideredWord, wordComposer.isFirstCharCapitalized()));
 
         final boolean hasAutoCorrection;
         // TODO: using isCorrectionEnabled here is not very good. It's probably useless, because
@@ -424,7 +159,8 @@ public final class Suggest {
         // the word *would* have been auto-corrected.
         if (!isCorrectionEnabled || !allowsToBeAutoCorrected || !wordComposer.isComposingWord()
                 || suggestionsSet.isEmpty() || wordComposer.hasDigits()
-                || wordComposer.isMostlyCaps() || wordComposer.isResumed() || !hasMainDictionary()
+                || wordComposer.isMostlyCaps() || wordComposer.isResumed()
+                || !mDictionaryFacilitator.hasMainDictionary()
                 || SuggestedWordInfo.KIND_SHORTCUT == suggestionsSet.first().mKind) {
             // If we don't have a main dictionary, we never want to auto-correct. The reason for
             // this is, the user may have a contact whose name happens to match a valid word in
@@ -497,15 +233,8 @@ public final class Suggest {
             final OnGetSuggestedWordsCallback callback) {
         final BoundedTreeSet suggestionsSet = new BoundedTreeSet(sSuggestedWordInfoComparator,
                 MAX_SUGGESTIONS);
-
-        // At second character typed, search the unigrams (scores being affected by bigrams)
-        for (final String key : mDictionaries.keySet()) {
-            final Dictionary dictionary = mDictionaries.get(key);
-            suggestionsSet.addAll(dictionary.getSuggestionsWithSessionId(wordComposer,
-                    prevWordForBigram, proximityInfo, blockOffensiveWords,
-                    additionalFeaturesOptions, sessionId));
-        }
-
+        mDictionaryFacilitator.getSuggestions(wordComposer, prevWordForBigram, proximityInfo,
+                blockOffensiveWords, additionalFeaturesOptions, sessionId, suggestionsSet);
         for (SuggestedWordInfo wordInfo : suggestionsSet) {
             LatinImeLogger.onAddSuggestedWord(wordInfo.mWord, wordInfo.mSourceDict.mDictType);
         }
@@ -618,51 +347,7 @@ public final class Suggest {
                 wordInfo.mAutoCommitFirstWordConfidence);
     }
 
-    public boolean isValidWord(final String word, final boolean ignoreCase) {
-        if (TextUtils.isEmpty(word)) {
-            return false;
-        }
-        final String lowerCasedWord = word.toLowerCase(mLocale);
-        for (final String key : mDictionaries.keySet()) {
-            final Dictionary dictionary = mDictionaries.get(key);
-            // It's unclear how realistically 'dictionary' can be null, but the monkey is somehow
-            // managing to get null in here. Presumably the language is changing to a language with
-            // no main dictionary and the monkey manages to type a whole word before the thread
-            // that reads the dictionary is started or something?
-            // Ideally the passed map would come out of a {@link java.util.concurrent.Future} and
-            // would be immutable once it's finished initializing, but concretely a null test is
-            // probably good enough for the time being.
-            if (null == dictionary) continue;
-            if (dictionary.isValidWord(word)
-                    || (ignoreCase && dictionary.isValidWord(lowerCasedWord))) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private int getMaxFrequency(final String word) {
-        if (TextUtils.isEmpty(word)) {
-            return Dictionary.NOT_A_PROBABILITY;
-        }
-        int maxFreq = -1;
-        for (final String key : mDictionaries.keySet()) {
-            final Dictionary dictionary = mDictionaries.get(key);
-            if (null == dictionary) continue;
-            final int tempFreq = dictionary.getFrequency(word);
-            if (tempFreq >= maxFreq) {
-                maxFreq = tempFreq;
-            }
-        }
-        return maxFreq;
-    }
-
     public void close() {
-        final HashSet<Dictionary> dictionaries = CollectionUtils.newHashSet();
-        dictionaries.addAll(mDictionaries.values());
-        for (final Dictionary dictionary : dictionaries) {
-            dictionary.close();
-        }
-        mMainDictionary = null;
+        mDictionaryFacilitator.close();
     }
 }
