@@ -19,6 +19,7 @@ package com.android.inputmethod.latin;
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
+import com.android.inputmethod.latin.utils.CoordinateUtils;
 import com.android.inputmethod.latin.utils.StringUtils;
 
 import java.util.Arrays;
@@ -295,18 +296,20 @@ public final class WordComposer {
     /**
      * Set the currently composing word to the one passed as an argument.
      * This will register NOT_A_COORDINATE for X and Ys, and use the passed keyboard for proximity.
-     * @param word the char sequence to set as the composing word.
+     * @param codePoints the code points to set as the composing word.
+     * @param coordinates the x, y coordinates of the key in the CoordinateUtils format
      * @param previousWord the previous word, to use as context for suggestions. Can be null if
      *   the context is nil (typically, at start of text).
      * @param keyboard the keyboard this is typed on, for coordinate info/proximity.
      */
-    public void setComposingWord(final CharSequence word, final CharSequence previousWord,
-            final Keyboard keyboard) {
+     // TODO[IL]: the Keyboard argument is now unused. Remove it.
+    public void setComposingWord(final int[] codePoints, final int[] coordinates,
+            final CharSequence previousWord, final Keyboard keyboard) {
         reset();
-        final int length = word.length();
-        for (int i = 0; i < length; i = Character.offsetByCodePoints(word, i, 1)) {
-            final int codePoint = Character.codePointAt(word, i);
-            addKeyInfo(codePoint, keyboard);
+        final int length = codePoints.length;
+        for (int i = 0; i < length; ++i) {
+            add(codePoints[i], CoordinateUtils.xFromArray(coordinates, i),
+                    CoordinateUtils.yFromArray(coordinates, i));
         }
         mIsResumed = true;
         mPreviousWordForSuggestion = null == previousWord ? null : previousWord.toString();

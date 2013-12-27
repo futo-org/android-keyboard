@@ -19,6 +19,8 @@ package com.android.inputmethod.latin;
 import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
 
+import com.android.inputmethod.latin.utils.StringUtils;
+
 /**
  * Unit tests for WordComposer.
  */
@@ -33,8 +35,12 @@ public class WordComposerTests extends AndroidTestCase {
         // in UTF-16, whereas those outside the BMP need 4 bytes.
         // http://en.wikipedia.org/wiki/Plane_(Unicode)#Basic_Multilingual_Plane
         final String STR_WITHIN_BMP = "abcdef";
+        final int[] CODEPOINTS_WITHIN_BMP = StringUtils.toCodePointArray(STR_WITHIN_BMP);
+        final int[] COORDINATES_WITHIN_BMP =
+                LatinIME.getCoordinatesForKeyboard(CODEPOINTS_WITHIN_BMP, null);
         final String PREVWORD = "prevword";
-        wc.setComposingWord(STR_WITHIN_BMP, PREVWORD, null /* keyboard */);
+        wc.setComposingWord(CODEPOINTS_WITHIN_BMP, COORDINATES_WITHIN_BMP,
+                PREVWORD, null /* keyboard */);
         assertEquals(wc.size(),
                 STR_WITHIN_BMP.codePointCount(0, STR_WITHIN_BMP.length()));
         assertFalse(wc.isCursorFrontOrMiddleOfComposingWord());
@@ -62,10 +68,13 @@ public class WordComposerTests extends AndroidTestCase {
 
         // \uD861\uDED7 is 𨛗, a character outside the BMP
         final String STR_WITH_SUPPLEMENTARY_CHAR = "abcde\uD861\uDED7fgh";
-        wc.setComposingWord(STR_WITH_SUPPLEMENTARY_CHAR, null /* previousWord */,
-                null /* keyboard */);
-        assertEquals(wc.size(), STR_WITH_SUPPLEMENTARY_CHAR.codePointCount(0,
-                        STR_WITH_SUPPLEMENTARY_CHAR.length()));
+        final int[] CODEPOINTS_WITH_SUPPLEMENTARY_CHAR =
+                StringUtils.toCodePointArray(STR_WITH_SUPPLEMENTARY_CHAR);
+        final int[] COORDINATES_WITH_SUPPLEMENTARY_CHAR = LatinIME.getCoordinatesForKeyboard(
+                CODEPOINTS_WITH_SUPPLEMENTARY_CHAR, null);
+        wc.setComposingWord(CODEPOINTS_WITH_SUPPLEMENTARY_CHAR, COORDINATES_WITH_SUPPLEMENTARY_CHAR,
+                null /* previousWord */, null /* keyboard */);
+        assertEquals(wc.size(), CODEPOINTS_WITH_SUPPLEMENTARY_CHAR.length);
         assertFalse(wc.isCursorFrontOrMiddleOfComposingWord());
         wc.setCursorPositionWithinWord(3);
         assertTrue(wc.isCursorFrontOrMiddleOfComposingWord());
@@ -75,44 +84,46 @@ public class WordComposerTests extends AndroidTestCase {
         assertFalse(wc.isCursorFrontOrMiddleOfComposingWord());
         assertNull(wc.getPreviousWordForSuggestion());
 
-        wc.setComposingWord(STR_WITH_SUPPLEMENTARY_CHAR, STR_WITHIN_BMP, null /* keyboard */);
+        wc.setComposingWord(CODEPOINTS_WITH_SUPPLEMENTARY_CHAR, COORDINATES_WITH_SUPPLEMENTARY_CHAR,
+                STR_WITHIN_BMP, null /* keyboard */);
         wc.setCursorPositionWithinWord(3);
         assertTrue(wc.moveCursorByAndReturnIfInsideComposingWord(7));
         assertEquals(STR_WITHIN_BMP, wc.getPreviousWordForSuggestion());
 
-        wc.setComposingWord(STR_WITH_SUPPLEMENTARY_CHAR, STR_WITH_SUPPLEMENTARY_CHAR,
-                null /* keyboard */);
+        wc.setComposingWord(CODEPOINTS_WITH_SUPPLEMENTARY_CHAR, COORDINATES_WITH_SUPPLEMENTARY_CHAR,
+                STR_WITH_SUPPLEMENTARY_CHAR, null /* keyboard */);
         wc.setCursorPositionWithinWord(3);
         assertTrue(wc.moveCursorByAndReturnIfInsideComposingWord(7));
         assertEquals(STR_WITH_SUPPLEMENTARY_CHAR, wc.getPreviousWordForSuggestion());
 
-        wc.setComposingWord(STR_WITH_SUPPLEMENTARY_CHAR, STR_WITHIN_BMP, null /* keyboard */);
+        wc.setComposingWord(CODEPOINTS_WITH_SUPPLEMENTARY_CHAR, COORDINATES_WITH_SUPPLEMENTARY_CHAR,
+                STR_WITHIN_BMP, null /* keyboard */);
         wc.setCursorPositionWithinWord(3);
         assertTrue(wc.moveCursorByAndReturnIfInsideComposingWord(-3));
         assertFalse(wc.moveCursorByAndReturnIfInsideComposingWord(-1));
         assertEquals(STR_WITHIN_BMP, wc.getPreviousWordForSuggestion());
 
-        wc.setComposingWord(STR_WITH_SUPPLEMENTARY_CHAR, null /* previousWord */,
-                null /* keyboard */);
+        wc.setComposingWord(CODEPOINTS_WITH_SUPPLEMENTARY_CHAR, COORDINATES_WITH_SUPPLEMENTARY_CHAR,
+                null /* previousWord */, null /* keyboard */);
         wc.setCursorPositionWithinWord(3);
         assertFalse(wc.moveCursorByAndReturnIfInsideComposingWord(-9));
         assertNull(wc.getPreviousWordForSuggestion());
 
-        wc.setComposingWord(STR_WITH_SUPPLEMENTARY_CHAR, STR_WITH_SUPPLEMENTARY_CHAR,
-                null /* keyboard */);
+        wc.setComposingWord(CODEPOINTS_WITH_SUPPLEMENTARY_CHAR, COORDINATES_WITH_SUPPLEMENTARY_CHAR,
+                STR_WITH_SUPPLEMENTARY_CHAR, null /* keyboard */);
         assertTrue(wc.moveCursorByAndReturnIfInsideComposingWord(-10));
         assertEquals(STR_WITH_SUPPLEMENTARY_CHAR, wc.getPreviousWordForSuggestion());
 
-        wc.setComposingWord(STR_WITH_SUPPLEMENTARY_CHAR, null /* previousWord */,
-                null /* keyboard */);
+        wc.setComposingWord(CODEPOINTS_WITH_SUPPLEMENTARY_CHAR, COORDINATES_WITH_SUPPLEMENTARY_CHAR,
+                null /* previousWord */, null /* keyboard */);
         assertFalse(wc.moveCursorByAndReturnIfInsideComposingWord(-11));
 
-        wc.setComposingWord(STR_WITH_SUPPLEMENTARY_CHAR, null /* previousWord */,
-                null /* keyboard */);
+        wc.setComposingWord(CODEPOINTS_WITH_SUPPLEMENTARY_CHAR, COORDINATES_WITH_SUPPLEMENTARY_CHAR,
+                null /* previousWord */, null /* keyboard */);
         assertTrue(wc.moveCursorByAndReturnIfInsideComposingWord(0));
 
-        wc.setComposingWord(STR_WITH_SUPPLEMENTARY_CHAR, null /* previousWord */,
-                null /* keyboard */);
+        wc.setComposingWord(CODEPOINTS_WITH_SUPPLEMENTARY_CHAR, COORDINATES_WITH_SUPPLEMENTARY_CHAR,
+                null /* previousWord */, null /* keyboard */);
         wc.setCursorPositionWithinWord(2);
         assertTrue(wc.moveCursorByAndReturnIfInsideComposingWord(0));
     }

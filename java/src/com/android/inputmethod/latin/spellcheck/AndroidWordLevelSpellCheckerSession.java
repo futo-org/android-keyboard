@@ -30,6 +30,7 @@ import android.view.textservice.TextInfo;
 import com.android.inputmethod.compat.SuggestionsInfoCompatUtils;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.Dictionary;
+import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.WordComposer;
 import com.android.inputmethod.latin.spellcheck.AndroidSpellCheckerService.SuggestionsGatherer;
@@ -312,7 +313,10 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
                             false /* reportAsTypo */);
                 }
                 final WordComposer composer = new WordComposer();
-                composer.setComposingWord(text, null /* previousWord */, dictInfo.mKeyboard);
+                final int[] codePoints = StringUtils.toCodePointArray(text);
+                composer.setComposingWord(codePoints,
+                        LatinIME.getCoordinatesForKeyboard(codePoints, dictInfo.mKeyboard),
+                        null /* previousWord */, dictInfo.mKeyboard);
                 // TODO: make a spell checker option to block offensive words or not
                 final ArrayList<SuggestedWordInfo> suggestions =
                         dictInfo.mDictionary.getSuggestions(composer, prevWord,
