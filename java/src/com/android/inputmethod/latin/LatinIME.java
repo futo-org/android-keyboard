@@ -1305,13 +1305,15 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         private static final int MSG_UPDATE_GESTURE_PREVIEW_AND_SUGGESTION_STRIP = 1;
         private static final int MSG_GET_SUGGESTED_WORDS = 2;
 
+        // Called on the InputUpdater thread by the Handler code.
         @Override
         public boolean handleMessage(final Message msg) {
             // TODO: straighten message passing - we don't need two kinds of messages calling
             // each other.
             switch (msg.what) {
                 case MSG_UPDATE_GESTURE_PREVIEW_AND_SUGGESTION_STRIP:
-                    updateBatchInput((InputPointers)msg.obj, msg.arg2 /* sequenceNumber */);
+                    updateBatchInput((InputPointers)msg.obj, msg.arg2 /* sequenceNumber */,
+                            false /* forEnd */);
                     break;
                 case MSG_GET_SUGGESTED_WORDS:
                     mLatinIme.getSuggestedWords(msg.arg1 /* sessionId */,
@@ -1321,7 +1323,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             return true;
         }
 
-        // Run on the UI thread.
+        // Called on the UI thread by LatinIME.
         public void onStartBatchInput() {
             synchronized (mLock) {
                 mHandler.removeMessages(MSG_UPDATE_GESTURE_PREVIEW_AND_SUGGESTION_STRIP);
@@ -1329,26 +1331,54 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             }
         }
 
-        // Run on the Handler thread.
-        private void updateBatchInput(final InputPointers batchPointers, final int sequenceNumber) {
+        /**
+         * Fetch suggestions corresponding to an update of a batch input.
+         * @param batchPointers the updated pointers, including the part that was passed last time.
+         * @param sequenceNumber the sequence number associated with this batch input.
+         * @param forEnd true if this is the end of a batch input, false if it's an update.
+         */
+        // This method can be called from any thread and will see to it that the correct threads
+        // are used for parts that require it. This method will send a message to the
+        // InputUpdater thread to pull suggestions, and get the inlined callback to get called
+        // on the InputUpdater thread. The callback will then proceed to send a message to the
+        // UI handler in LatinIME so that showing suggestions can be done on the UI thread.
+        private void updateBatchInput(final InputPointers batchPointers,
+                final int sequenceNumber, final boolean forEnd) {
             synchronized (mLock) {
                 if (!mInBatchInput) {
                     // Batch input has ended or canceled while the message was being delivered.
                     return;
                 }
-
                 getSuggestedWordsGestureLocked(batchPointers, sequenceNumber,
                         new OnGetSuggestedWordsCallback() {
-                    @Override
-                    public void onGetSuggestedWords(final SuggestedWords suggestedWords) {
-                        mLatinIme.mHandler.showGesturePreviewAndSuggestionStrip(
-                                suggestedWords, false /* dismissGestureFloatingPreviewText */);
-                    }
-                });
+                            @Override
+                            public void onGetSuggestedWords(final SuggestedWords suggestedWords) {
+                                // We're now inside the callback. This always runs on the
+                                // InputUpdater thread, no matter what thread updateBatchInput
+                                // was called on.
+                                mLatinIme.mHandler.showGesturePreviewAndSuggestionStrip(
+                                        suggestedWords,
+                                        forEnd /* dismissGestureFloatingPreviewText */);
+                                if (forEnd) {
+                                    mInBatchInput = false;
+                                    // The following call schedules onEndBatchInputAsyncInternal
+                                    // to be called on the UI thread.
+                                    mLatinIme.mHandler.onEndBatchInput(suggestedWords);
+                                }
+                            }
+                        });
             }
         }
 
-        // Run on the UI thread.
+        /**
+         * Update a batch input.
+         *
+         * This fetches suggestions and updates the suggestion strip and the floating text preview.
+         *
+         * @param batchPointers the updated batch pointers.
+         * @param sequenceNumber the sequence number associated with this batch input.
+         */
+        // Called on the UI thread by LatinIME.
         public void onUpdateBatchInput(final InputPointers batchPointers,
                 final int sequenceNumber) {
             if (mHandler.hasMessages(MSG_UPDATE_GESTURE_PREVIEW_AND_SUGGESTION_STRIP)) {
@@ -1358,26 +1388,32 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     sequenceNumber /* arg2 */, batchPointers /* obj */).sendToTarget();
         }
 
+        /**
+         * Cancel a batch input.
+         *
+         * Note that as opposed to onEndBatchInput, we do the UI side of this immediately on the
+         * same thread, rather than get this to call a method in LatinIME. This is because
+         * cancelling a batch input does not necessitate the long operation of pulling suggestions.
+         */
+        // Called on the UI thread by LatinIME.
         public void onCancelBatchInput() {
             synchronized (mLock) {
                 mInBatchInput = false;
             }
         }
 
-        // Run on the UI thread.
-        public void onEndBatchInput(final InputPointers batchPointers) {
-            synchronized(mLock) {
-                getSuggestedWordsGestureLocked(batchPointers, SuggestedWords.NOT_A_SEQUENCE_NUMBER,
-                        new OnGetSuggestedWordsCallback() {
-                    @Override
-                    public void onGetSuggestedWords(final SuggestedWords suggestedWords) {
-                        mInBatchInput = false;
-                        mLatinIme.mHandler.showGesturePreviewAndSuggestionStrip(suggestedWords,
-                                true /* dismissGestureFloatingPreviewText */);
-                        mLatinIme.mHandler.onEndBatchInput(suggestedWords);
-                    }
-                });
-            }
+        /**
+         * Finish a batch input.
+         *
+         * This fetches suggestions, updates the suggestion strip and commits the first suggestion.
+         * It also dismisses the floating text preview.
+         *
+         * @param batchPointers the updated batch pointers.
+         * @param sequenceNumber the sequence number associated with this batch input.
+         */
+        // Called on the UI thread by LatinIME.
+        public void onEndBatchInput(final InputPointers batchPointers, final int sequenceNumber) {
+            updateBatchInput(batchPointers, sequenceNumber, true /* forEnd */);
         }
 
         // {@link LatinIME#getSuggestedWords(int)} method calls with same session id have to
