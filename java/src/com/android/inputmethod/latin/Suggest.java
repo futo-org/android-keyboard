@@ -126,8 +126,9 @@ public final class Suggest {
         } else {
             wordComposerForLookup = wordComposer;
         }
-        mDictionaryFacilitator.getSuggestions(wordComposer, prevWordForBigram, proximityInfo,
-                blockOffensiveWords, additionalFeaturesOptions, SESSION_TYPING, suggestionsSet);
+        mDictionaryFacilitator.getSuggestions(wordComposerForLookup, prevWordForBigram,
+                proximityInfo, blockOffensiveWords, additionalFeaturesOptions, SESSION_TYPING,
+                suggestionsSet);
         final String whitelistedWord;
         if (suggestionsSet.isEmpty()) {
             whitelistedWord = null;
