@@ -346,7 +346,12 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
             if (code == Constants.CODE_OUTPUT_TEXT) {
                 sListener.onTextInput(key.getOutputText());
             } else if (code != Constants.CODE_UNSPECIFIED) {
-                sListener.onCodeInput(code, x, y);
+                if (mKeyboard.hasProximityCharsCorrection(code)) {
+                    sListener.onCodeInput(code, x, y);
+                } else {
+                    sListener.onCodeInput(code,
+                            Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
+                }
             }
         }
     }
