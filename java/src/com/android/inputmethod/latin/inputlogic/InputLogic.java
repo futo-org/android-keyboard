@@ -116,9 +116,22 @@ public final class InputLogic {
      * some things must not be done (for example, the keyboard should not be reset to the
      * alphabetic layout), so do not send false to this just in case.
      *
-     * @param restarting whether input is starting in the same field as before.
+     * @param restarting whether input is starting in the same field as before. Unused for now.
+     * @param editorInfo the editorInfo associated with the editor.
      */
-    public void startInput(final boolean restarting) {
+    public void startInput(final boolean restarting, final EditorInfo editorInfo) {
+        mEnteredText = null;
+        resetComposingState(true /* alsoResetLastComposedWord */);
+        mDeleteCount = 0;
+        mSpaceState = SpaceState.NONE;
+        mRecapitalizeStatus.deactivate();
+        mCurrentlyPressedHardwareKeys.clear();
+        mSuggestedWords = SuggestedWords.EMPTY;
+        mLastSelectionStart = editorInfo.initialSelStart;
+        mLastSelectionEnd = editorInfo.initialSelEnd;
+        // In some cases (namely, after rotation of the device) editorInfo.initialSelStart is lying
+        // so we try using some heuristics to find out about these and fix them.
+        tryFixLyingCursorPosition();
         mInputLogicHandler = new InputLogicHandler();
     }
 
@@ -126,6 +139,10 @@ public final class InputLogic {
      * Clean up the input logic after input is finished.
      */
     public void finishInput() {
+        if (mWordComposer.isComposingWord()) {
+            mConnection.finishComposingText();
+        }
+        resetComposingState(true /* alsoResetLastComposedWord */);
         mInputLogicHandler.destroy();
         mInputLogicHandler = null;
     }

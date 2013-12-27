@@ -755,12 +755,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         // The app calling setText() has the effect of clearing the composing
         // span, so we should reset our state unconditionally, even if restarting is true.
-        mInputLogic.mEnteredText = null;
-        mInputLogic.resetComposingState(true /* alsoResetLastComposedWord */);
-        mInputLogic.mDeleteCount = 0;
-        mInputLogic.mSpaceState = SpaceState.NONE;
-        mInputLogic.mRecapitalizeStatus.deactivate();
-        mInputLogic.mCurrentlyPressedHardwareKeys.clear();
+        mInputLogic.startInput(restarting, editorInfo);
 
         // Note: the following does a round-trip IPC on the main thread: be careful
         final Locale currentLocale = mSubtypeSwitcher.getCurrentSubtypeLocale();
@@ -773,11 +768,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             // otherwise it will clear the suggestion strip.
             setPunctuationSuggestions();
         }
-        mInputLogic.mSuggestedWords = SuggestedWords.EMPTY;
 
         // Sometimes, while rotating, for some reason the framework tells the app we are not
         // connected to it and that means we can't refresh the cache. In this case, schedule a
         // refresh later.
+        // TODO[IL]: Can the following be moved to InputLogic#startInput?
         final boolean canReachInputConnection;
         if (!mInputLogic.mConnection.resetCachesUponCursorMoveAndReturnSuccess(
                 editorInfo.initialSelStart, editorInfo.initialSelEnd,
@@ -824,12 +819,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         setSuggestionStripShownInternal(
                 isSuggestionsStripVisible(), /* needsInputViewShown */ false);
 
-        mInputLogic.mLastSelectionStart = editorInfo.initialSelStart;
-        mInputLogic.mLastSelectionEnd = editorInfo.initialSelEnd;
-        // In some cases (namely, after rotation of the device) editorInfo.initialSelStart is lying
-        // so we try using some heuristics to find out about these and fix them.
-        mInputLogic.tryFixLyingCursorPosition();
-
         mHandler.cancelUpdateSuggestionStrip();
         mHandler.cancelDoubleSpacePeriodTimer();
 
@@ -873,10 +862,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // Remove pending messages related to update suggestions
         mHandler.cancelUpdateSuggestionStrip();
         // Should do the following in onFinishInputInternal but until JB MR2 it's not called :(
-        if (mInputLogic.mWordComposer.isComposingWord()) {
-            mInputLogic.mConnection.finishComposingText();
-        }
-        mInputLogic.resetComposingState(true /* alsoResetLastComposedWord */);
+        mInputLogic.finishInput();
         // Notify ResearchLogger
         if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
             ResearchLogger.latinIME_onFinishInputViewInternal(finishingInput,
