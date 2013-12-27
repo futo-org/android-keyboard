@@ -22,7 +22,6 @@ import android.util.Log;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.ProximityInfo;
-import com.android.inputmethod.latin.Suggest.SuggestInitializationListener;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.personalization.PersonalizationDictionary;
 import com.android.inputmethod.latin.personalization.PersonalizationHelper;
@@ -45,7 +44,7 @@ public class DictionaryFacilitatorForSuggest {
 
     private final ConcurrentHashMap<String, Dictionary> mDictionaries =
             CollectionUtils.newConcurrentHashMap();
-    private HashSet<String> mOnlyDictionarySetForDebug = null;
+    private HashSet<String> mDictionarySubsetForDebug = null;
 
     private Dictionary mMainDictionary;
     private ContactsBinaryDictionary mContactsDictionary;
@@ -56,17 +55,51 @@ public class DictionaryFacilitatorForSuggest {
     @UsedForTesting
     private boolean mIsCurrentlyWaitingForMainDictionary = false;
 
+    public interface DictionaryInitializationListener {
+        public void onUpdateMainDictionaryAvailability(boolean isMainDictionaryAvailable);
+    }
+
+    /**
+     * Creates instance for initialization or when the locale is changed.
+     *
+     * @param context the context
+     * @param locale the locale
+     * @param settingsValues current settings values to control what dictionaries should be used
+     * @param listener the listener
+     * @param oldDictionaryFacilitator the instance having old dictionaries. This is null when the
+     * instance is initially created.
+     */
     public DictionaryFacilitatorForSuggest(final Context context, final Locale locale,
-            final SettingsValues settingsValues, final SuggestInitializationListener listener) {
-        resetMainDict(context, locale, listener);
+            final SettingsValues settingsValues, final DictionaryInitializationListener listener,
+            final DictionaryFacilitatorForSuggest oldDictionaryFacilitator) {
         mContext = context;
         mLocale = locale;
-        // initialize a debug flag for the personalization
-        if (settingsValues.mUseOnlyPersonalizationDictionaryForDebug) {
-            mOnlyDictionarySetForDebug = new HashSet<String>();
-            mOnlyDictionarySetForDebug.add(Dictionary.TYPE_PERSONALIZATION);
-        }
+        initForDebug(settingsValues);
+        reloadMainDict(context, locale, listener);
         setUserDictionary(new UserBinaryDictionary(context, locale));
+        resetAdditionalDictionaries(oldDictionaryFacilitator, settingsValues);
+    }
+
+    /**
+     * Creates instance for when the settings values have been changed.
+     *
+     * @param settingsValues the new settings values
+     * @param oldDictionaryFacilitator the instance having old dictionaries. This must not be null.
+     */
+    //
+    public DictionaryFacilitatorForSuggest(final SettingsValues settingsValues,
+            final DictionaryFacilitatorForSuggest oldDictionaryFacilitator) {
+        mContext = oldDictionaryFacilitator.mContext;
+        mLocale = oldDictionaryFacilitator.mLocale;
+        initForDebug(settingsValues);
+        // Transfer main dictionary.
+        setMainDictionary(oldDictionaryFacilitator.mMainDictionary);
+        oldDictionaryFacilitator.removeDictionary(Dictionary.TYPE_MAIN);
+        // Transfer user dictionary.
+        setUserDictionary(oldDictionaryFacilitator.mUserDictionary);
+        oldDictionaryFacilitator.removeDictionary(Dictionary.TYPE_USER);
+        // Transfer or create additional dictionaries depending on the settings values.
+        resetAdditionalDictionaries(oldDictionaryFacilitator, settingsValues);
     }
 
     @UsedForTesting
@@ -76,8 +109,15 @@ public class DictionaryFacilitatorForSuggest {
                 false /* useFullEditDistance */, locale);
         mContext = context;
         mLocale = locale;
-        mMainDictionary = mainDict;
-        addOrReplaceDictionary(Dictionary.TYPE_MAIN, mainDict);
+        setMainDictionary(mainDict);
+    }
+
+    // initialize a debug flag for the personalization
+    private void initForDebug(final SettingsValues settingsValues) {
+        if (settingsValues.mUseOnlyPersonalizationDictionaryForDebug) {
+            mDictionarySubsetForDebug = new HashSet<String>();
+            mDictionarySubsetForDebug.add(Dictionary.TYPE_PERSONALIZATION);
+        }
     }
 
     public void close() {
@@ -86,15 +126,10 @@ public class DictionaryFacilitatorForSuggest {
         for (final Dictionary dictionary : dictionaries) {
             dictionary.close();
         }
-        mMainDictionary = null;
-        mContactsDictionary = null;
-        mUserDictionary = null;
-        mUserHistoryDictionary = null;
-        mPersonalizationDictionary = null;
     }
 
-    public void resetMainDict(final Context context, final Locale locale,
-            final SuggestInitializationListener listener) {
+    public void reloadMainDict(final Context context, final Locale locale,
+            final DictionaryInitializationListener listener) {
         mIsCurrentlyWaitingForMainDictionary = true;
         mMainDictionary = null;
         if (listener != null) {
@@ -163,12 +198,12 @@ public class DictionaryFacilitatorForSuggest {
     }
 
     /**
-     * Set dictionaries that can be turned off according to the user settings.
+     * Reset dictionaries that can be turned off according to the user settings.
      *
      * @param oldDictionaryFacilitator the instance having old dictionaries
      * @param settingsValues current SettingsValues
      */
-    public void setAdditionalDictionaries(
+    private void resetAdditionalDictionaries(
             final DictionaryFacilitatorForSuggest oldDictionaryFacilitator,
             final SettingsValues settingsValues) {
         // Contacts dictionary
@@ -360,8 +395,12 @@ public class DictionaryFacilitatorForSuggest {
         return maxFreq;
     }
 
+    private void removeDictionary(final String key) {
+        mDictionaries.remove(key);
+    }
+
     private void addOrReplaceDictionary(final String key, final Dictionary dict) {
-        if (mOnlyDictionarySetForDebug != null && !mOnlyDictionarySetForDebug.contains(key)) {
+        if (mDictionarySubsetForDebug != null && !mDictionarySubsetForDebug.contains(key)) {
             Log.w(TAG, "Ignore add " + key + " dictionary for debug.");
             return;
         }

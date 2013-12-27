@@ -16,13 +16,10 @@
 
 package com.android.inputmethod.latin;
 
-import android.content.Context;
 import android.text.TextUtils;
 
-import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
-import com.android.inputmethod.latin.settings.SettingsValues;
 import com.android.inputmethod.latin.utils.AutoCorrectionUtils;
 import com.android.inputmethod.latin.utils.BoundedTreeSet;
 import com.android.inputmethod.latin.utils.CollectionUtils;
@@ -55,10 +52,6 @@ public final class Suggest {
 
     public static final int MAX_SUGGESTIONS = 18;
 
-    public interface SuggestInitializationListener {
-        public void onUpdateMainDictionaryAvailability(boolean isMainDictionaryAvailable);
-    }
-
     private static final boolean DBG = LatinImeLogger.sDBG;
 
     public final DictionaryFacilitatorForSuggest mDictionaryFacilitator;
@@ -68,18 +61,18 @@ public final class Suggest {
     // Locale used for upper- and title-casing words
     public final Locale mLocale;
 
-    public Suggest(final Context context, final Locale locale, final SettingsValues settingsValues,
-            final SuggestInitializationListener listener) {
+    public Suggest(final Locale locale,
+            final DictionaryFacilitatorForSuggest dictionaryFacilitator) {
         mLocale = locale;
-        mDictionaryFacilitator = new DictionaryFacilitatorForSuggest(context, locale,
-                settingsValues, listener);
+        mDictionaryFacilitator = dictionaryFacilitator;
     }
 
-    @UsedForTesting
-    Suggest(final Context context, final AssetFileAddress[] dictionaryList, final Locale locale) {
-        mLocale = locale;
-        mDictionaryFacilitator = new DictionaryFacilitatorForSuggest(context, dictionaryList,
-                locale);
+    // Creates instance with new dictionary facilitator.
+    public Suggest(final Suggest oldSuggst,
+            final DictionaryFacilitatorForSuggest dictionaryFacilitator) {
+        mLocale = oldSuggst.mLocale;
+        mAutoCorrectionThreshold = oldSuggst.mAutoCorrectionThreshold;
+        mDictionaryFacilitator = dictionaryFacilitator;
     }
 
     public void setAutoCorrectionThreshold(float threshold) {
