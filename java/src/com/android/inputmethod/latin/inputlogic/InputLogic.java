@@ -30,7 +30,6 @@ import com.android.inputmethod.compat.SuggestionSpanUtils;
 import com.android.inputmethod.event.EventInterpreter;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
-import com.android.inputmethod.keyboard.MainKeyboardView;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.InputPointers;
@@ -225,25 +224,10 @@ public final class InputLogic {
         }
 
         boolean didAutoCorrect = false;
-        final int keyX, keyY;
-        final Keyboard keyboard = keyboardSwitcher.getKeyboard();
-        final MainKeyboardView mainKeyboardView = keyboardSwitcher.getMainKeyboardView();
-        // TODO: We should reconsider which coordinate system should be used to represent
-        // keyboard event.
-        if (keyboard != null && keyboard.hasProximityCharsCorrection(code)) {
-            // x and y include some padding, but everything down the line (especially native
-            // code) needs the coordinates in the keyboard frame.
-            // TODO: move this frame change up
-            keyX = mainKeyboardView.getKeyX(x);
-            keyY = mainKeyboardView.getKeyY(y);
-        } else {
-            keyX = Constants.NOT_A_COORDINATE;
-            keyY = Constants.NOT_A_COORDINATE;
-        }
         switch (code) {
         case Constants.CODE_DELETE:
             handleBackspace(settingsValues, spaceState, handler, keyboardSwitcher);
-            LatinImeLogger.logOnDelete(keyX, keyY);
+            LatinImeLogger.logOnDelete(x, y);
             break;
         case Constants.CODE_SHIFT:
             // Note: Calling back to the keyboard on Shift key is handled in
@@ -304,16 +288,16 @@ public final class InputLogic {
                 // No action label, and the action from imeOptions is NONE: this is a regular
                 // enter key that should input a carriage return.
                 didAutoCorrect = handleNonSpecialCharacter(settingsValues, Constants.CODE_ENTER,
-                        keyX, keyY, spaceState, keyboardSwitcher, handler);
+                        x, y, spaceState, keyboardSwitcher, handler);
             }
             break;
         case Constants.CODE_SHIFT_ENTER:
             didAutoCorrect = handleNonSpecialCharacter(settingsValues, Constants.CODE_ENTER,
-                    keyX, keyY, spaceState, keyboardSwitcher, handler);
+                    x, y, spaceState, keyboardSwitcher, handler);
             break;
         default:
             didAutoCorrect = handleNonSpecialCharacter(settingsValues,
-                    code, keyX, keyY, spaceState, keyboardSwitcher, handler);
+                    code, x, y, spaceState, keyboardSwitcher, handler);
             break;
         }
         keyboardSwitcher.onCodeInput(code);

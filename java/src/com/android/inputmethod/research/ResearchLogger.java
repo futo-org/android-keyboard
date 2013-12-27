@@ -109,7 +109,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     // feedback mechanism to generate multiple tests.
     private static final boolean FEEDBACK_DIALOG_SHOULD_PRESERVE_TEXT_FIELD = false;
     /* package */ static boolean sIsLogging = false;
-    private static final int OUTPUT_FORMAT_VERSION = 5;
+    private static final int OUTPUT_FORMAT_VERSION = 6;
     // Whether all words should be recorded, leaving unsampled word between bigrams.  Useful for
     // testing.
     /* package for test */ static final boolean IS_LOGGING_EVERYTHING = false
