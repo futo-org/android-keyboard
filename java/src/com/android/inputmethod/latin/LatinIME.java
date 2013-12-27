@@ -35,8 +35,6 @@ import android.inputmethodservice.InputMethodService;
 import android.media.AudioManager;
 import android.net.ConnectivityManager;
 import android.os.Debug;
-import android.os.Handler;
-import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.SystemClock;
@@ -137,7 +135,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private final boolean mIsHardwareAcceleratedDrawingEnabled;
 
     public final UIHandler mHandler = new UIHandler(this);
-    private InputUpdater mInputUpdater;
 
     public static final class UIHandler extends LeakGuardHandlerWrapper<LatinIME> {
         private static final int MSG_UPDATE_SHIFT_STATE = 0;
@@ -183,8 +180,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             switch (msg.what) {
             case MSG_UPDATE_SUGGESTION_STRIP:
                 latinIme.mInputLogic.performUpdateSuggestionStripSync(
-                        latinIme.mSettings.getCurrent(), this /* handler */,
-                        latinIme.mInputUpdater);
+                        latinIme.mSettings.getCurrent(), this /* handler */);
                 break;
             case MSG_UPDATE_SHIFT_STATE:
                 switcher.updateShiftState();
@@ -205,8 +201,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 break;
             case MSG_RESUME_SUGGESTIONS:
                 latinIme.mInputLogic.restartSuggestionsOnWordTouchedByCursor(
-                        latinIme.mSettings.getCurrent(), latinIme.mKeyboardSwitcher,
-                        latinIme.mInputUpdater);
+                        latinIme.mSettings.getCurrent(), latinIme.mKeyboardSwitcher);
                 break;
             case MSG_REOPEN_DICTIONARIES:
                 latinIme.initSuggest();
@@ -216,7 +211,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 postUpdateSuggestionStrip();
                 break;
             case MSG_ON_END_BATCH_INPUT:
-                latinIme.mInputLogic.onEndBatchInputAsyncInternal(latinIme.mSettings.getCurrent(),
+                latinIme.mInputLogic.endBatchInputAsyncInternal(latinIme.mSettings.getCurrent(),
                         (SuggestedWords) msg.obj, latinIme.mKeyboardSwitcher);
                 break;
             case MSG_RESET_CACHES:
@@ -496,8 +491,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         registerReceiver(mDictionaryPackInstallReceiver, newDictFilter);
 
         DictionaryDecayBroadcastReciever.setUpIntervalAlarmForDictionaryDecaying(this);
-
-        mInputUpdater = new InputUpdater(this);
     }
 
     // Has to be package-visible for unit tests
@@ -594,9 +587,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (suggest != null) {
             suggest.close();
             mInputLogic.mSuggest = null;
-        }
-        if (mInputUpdater != null) {
-            mInputUpdater.quitLooper();
         }
         mSettings.onDestroy();
         unregisterReceiver(mReceiver);
@@ -1239,176 +1229,35 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // Implementation of {@link KeyboardActionListener}.
     @Override
     public void onCodeInput(final int primaryCode, final int x, final int y) {
-        mInputLogic.onCodeInput(primaryCode, x, y, mHandler, mInputUpdater,
-                mKeyboardSwitcher, mSubtypeSwitcher);
+        mInputLogic.onCodeInput(primaryCode, x, y, mHandler, mKeyboardSwitcher, mSubtypeSwitcher);
     }
 
     // Called from PointerTracker through the KeyboardActionListener interface
     @Override
     public void onTextInput(final String rawText) {
-        mInputLogic.onTextInput(mSettings.getCurrent(), rawText, mHandler, mInputUpdater);
+        mInputLogic.onTextInput(mSettings.getCurrent(), rawText, mHandler);
         mKeyboardSwitcher.updateShiftState();
         mKeyboardSwitcher.onCodeInput(Constants.CODE_OUTPUT_TEXT);
     }
 
     @Override
     public void onStartBatchInput() {
-        mInputLogic.onStartBatchInput(mSettings.getCurrent(),  mKeyboardSwitcher, mHandler,
-                mInputUpdater);
+        mInputLogic.onStartBatchInput(mSettings.getCurrent(),  mKeyboardSwitcher, mHandler);
     }
 
     @Override
     public void onUpdateBatchInput(final InputPointers batchPointers) {
-        mInputLogic.onUpdateBatchInput(mSettings.getCurrent(), batchPointers, mKeyboardSwitcher,
-                mInputUpdater);
+        mInputLogic.onUpdateBatchInput(mSettings.getCurrent(), batchPointers, mKeyboardSwitcher);
     }
 
     @Override
     public void onEndBatchInput(final InputPointers batchPointers) {
-        mInputLogic.onEndBatchInput(mSettings.getCurrent(), batchPointers, mInputUpdater);
+        mInputLogic.onEndBatchInput(mSettings.getCurrent(), batchPointers);
     }
 
     @Override
     public void onCancelBatchInput() {
-        mInputLogic.onCancelBatchInput(mHandler, mInputUpdater);
-    }
-
-    // TODO[IL]: Make this a package-private standalone class in inputlogic/ and remove all
-    // references to it in LatinIME
-    public static final class InputUpdater implements Handler.Callback {
-        private final Handler mHandler;
-        private final LatinIME mLatinIme;
-        private final Object mLock = new Object();
-        private boolean mInBatchInput; // synchronized using {@link #mLock}.
-
-        InputUpdater(final LatinIME latinIme) {
-            final HandlerThread handlerThread = new HandlerThread(
-                    InputUpdater.class.getSimpleName());
-            handlerThread.start();
-            mHandler = new Handler(handlerThread.getLooper(), this);
-            mLatinIme = latinIme;
-        }
-
-        private static final int MSG_GET_SUGGESTED_WORDS = 1;
-
-        // Called on the InputUpdater thread by the Handler code.
-        @Override
-        public boolean handleMessage(final Message msg) {
-            switch (msg.what) {
-                case MSG_GET_SUGGESTED_WORDS:
-                    mLatinIme.getSuggestedWords(msg.arg1 /* sessionId */,
-                            msg.arg2 /* sequenceNumber */, (OnGetSuggestedWordsCallback) msg.obj);
-                    break;
-            }
-            return true;
-        }
-
-        // Called on the UI thread by LatinIME.
-        public void onStartBatchInput() {
-            synchronized (mLock) {
-                mInBatchInput = true;
-            }
-        }
-
-        /**
-         * Fetch suggestions corresponding to an update of a batch input.
-         * @param batchPointers the updated pointers, including the part that was passed last time.
-         * @param sequenceNumber the sequence number associated with this batch input.
-         * @param forEnd true if this is the end of a batch input, false if it's an update.
-         */
-        // This method can be called from any thread and will see to it that the correct threads
-        // are used for parts that require it. This method will send a message to the
-        // InputUpdater thread to pull suggestions, and get the inlined callback to get called
-        // on the InputUpdater thread. The callback will then proceed to send a message to the
-        // UI handler in LatinIME so that showing suggestions can be done on the UI thread.
-        private void updateBatchInput(final InputPointers batchPointers,
-                final int sequenceNumber, final boolean forEnd) {
-            synchronized (mLock) {
-                if (!mInBatchInput) {
-                    // Batch input has ended or canceled while the message was being delivered.
-                    return;
-                }
-                mLatinIme.mInputLogic.mWordComposer.setBatchInputPointers(batchPointers);
-                getSuggestedWords(Suggest.SESSION_GESTURE, sequenceNumber,
-                        new OnGetSuggestedWordsCallback() {
-                            @Override
-                            public void onGetSuggestedWords(SuggestedWords suggestedWords) {
-                                // We're now inside the callback. This always runs on the
-                                // InputUpdater thread, no matter what thread updateBatchInput
-                                // was called on.
-                                if (suggestedWords.isEmpty()) {
-                                    // Use old suggestions if we don't have any new ones.
-                                    // Previous suggestions are found in InputLogic#mSuggestedWords.
-                                    // Since these are the most recent ones and we just recomputed
-                                    // new ones to update them, then the previous ones are there.
-                                    suggestedWords = mLatinIme.mInputLogic.mSuggestedWords;
-                                }
-                                mLatinIme.mHandler.showGesturePreviewAndSuggestionStrip(
-                                        suggestedWords,
-                                        forEnd /* dismissGestureFloatingPreviewText */);
-                                if (forEnd) {
-                                    mInBatchInput = false;
-                                    // The following call schedules onEndBatchInputAsyncInternal
-                                    // to be called on the UI thread.
-                                    mLatinIme.mHandler.onEndBatchInput(suggestedWords);
-                                }
-                            }
-                        });
-            }
-        }
-
-        /**
-         * Update a batch input.
-         *
-         * This fetches suggestions and updates the suggestion strip and the floating text preview.
-         *
-         * @param batchPointers the updated batch pointers.
-         * @param sequenceNumber the sequence number associated with this batch input.
-         */
-        // Called on the UI thread by LatinIME.
-        public void onUpdateBatchInput(final InputPointers batchPointers,
-                final int sequenceNumber) {
-            updateBatchInput(batchPointers, sequenceNumber, false /* forEnd */);
-        }
-
-        /**
-         * Cancel a batch input.
-         *
-         * Note that as opposed to onEndBatchInput, we do the UI side of this immediately on the
-         * same thread, rather than get this to call a method in LatinIME. This is because
-         * cancelling a batch input does not necessitate the long operation of pulling suggestions.
-         */
-        // Called on the UI thread by LatinIME.
-        public void onCancelBatchInput() {
-            synchronized (mLock) {
-                mInBatchInput = false;
-            }
-        }
-
-        /**
-         * Finish a batch input.
-         *
-         * This fetches suggestions, updates the suggestion strip and commits the first suggestion.
-         * It also dismisses the floating text preview.
-         *
-         * @param batchPointers the updated batch pointers.
-         * @param sequenceNumber the sequence number associated with this batch input.
-         */
-        // Called on the UI thread by LatinIME.
-        public void onEndBatchInput(final InputPointers batchPointers, final int sequenceNumber) {
-            updateBatchInput(batchPointers, sequenceNumber, true /* forEnd */);
-        }
-
-        public void getSuggestedWords(final int sessionId, final int sequenceNumber,
-                final OnGetSuggestedWordsCallback callback) {
-            mHandler.obtainMessage(MSG_GET_SUGGESTED_WORDS, sessionId, sequenceNumber, callback)
-                    .sendToTarget();
-        }
-
-        void quitLooper() {
-            mHandler.removeMessages(MSG_GET_SUGGESTED_WORDS);
-            mHandler.getLooper().quit();
-        }
+        mInputLogic.onCancelBatchInput(mHandler);
     }
 
     // This method must run on the UI Thread.
@@ -1496,7 +1345,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
     }
 
-    private void getSuggestedWords(final int sessionId, final int sequenceNumber,
+    // TODO[IL]: Move this out of LatinIME.
+    public void getSuggestedWords(final int sessionId, final int sequenceNumber,
             final OnGetSuggestedWordsCallback callback) {
         final Keyboard keyboard = mKeyboardSwitcher.getKeyboard();
         final Suggest suggest = mInputLogic.mSuggest;
