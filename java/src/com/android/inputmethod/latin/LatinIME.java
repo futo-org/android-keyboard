@@ -216,7 +216,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 postUpdateSuggestionStrip();
                 break;
             case MSG_ON_END_BATCH_INPUT:
-                latinIme.onEndBatchInputAsyncInternal((SuggestedWords) msg.obj);
+                latinIme.mInputLogic.onEndBatchInputAsyncInternal(latinIme.mSettings.getCurrent(),
+                        (SuggestedWords) msg.obj, latinIme.mKeyboardSwitcher);
                 break;
             case MSG_RESET_CACHES:
                 latinIme.mInputLogic.retryResetCaches(latinIme.mSettings.getCurrent(),
@@ -1433,40 +1434,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (dismissGestureFloatingPreviewText) {
             mainKeyboardView.dismissGestureFloatingPreviewText();
         }
-    }
-
-    // This method must run on the UI Thread.
-    public void onEndBatchInputAsyncInternal(final SuggestedWords suggestedWords) {
-        final String batchInputText = suggestedWords.isEmpty() ? null : suggestedWords.getWord(0);
-        if (TextUtils.isEmpty(batchInputText)) {
-            return;
-        }
-        mInputLogic.mConnection.beginBatchEdit();
-        if (SpaceState.PHANTOM == mInputLogic.mSpaceState) {
-            mInputLogic.promotePhantomSpace(mSettings.getCurrent());
-        }
-        if (mSettings.getCurrent().mPhraseGestureEnabled) {
-            // Find the last space
-            final int indexOfLastSpace = batchInputText.lastIndexOf(Constants.CODE_SPACE) + 1;
-            if (0 != indexOfLastSpace) {
-                mInputLogic.mConnection.commitText(batchInputText.substring(0, indexOfLastSpace),
-                        1);
-                showSuggestionStrip(suggestedWords.getSuggestedWordsForLastWordOfPhraseGesture());
-            }
-            final String lastWord = batchInputText.substring(indexOfLastSpace);
-            mInputLogic.mWordComposer.setBatchInputWord(lastWord);
-            mInputLogic.mConnection.setComposingText(lastWord, 1);
-        } else {
-            mInputLogic.mWordComposer.setBatchInputWord(batchInputText);
-            mInputLogic.mConnection.setComposingText(batchInputText, 1);
-        }
-        mInputLogic.mConnection.endBatchEdit();
-        if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-            ResearchLogger.latinIME_onEndBatchInput(batchInputText, 0, suggestedWords);
-        }
-        // Space state must be updated before calling updateShiftState
-        mInputLogic.mSpaceState = SpaceState.PHANTOM;
-        mKeyboardSwitcher.updateShiftState();
     }
 
     // Called from PointerTracker through the KeyboardActionListener interface
