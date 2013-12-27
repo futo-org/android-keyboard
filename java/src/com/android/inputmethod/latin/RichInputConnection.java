@@ -706,45 +706,6 @@ public final class RichInputConnection {
         return TextUtils.equals(text, beforeText);
     }
 
-    /* (non-javadoc)
-     * Returns the word before the cursor if the cursor is at the end of a word, null otherwise
-     */
-    public CharSequence getWordBeforeCursorIfAtEndOfWord(final SettingsValues settings) {
-        // Bail out if the cursor is in the middle of a word (cursor must be followed by whitespace,
-        // separator or end of line/text)
-        // Example: "test|"<EOL> "te|st" get rejected here
-        final CharSequence textAfterCursor = getTextAfterCursor(1, 0);
-        if (!TextUtils.isEmpty(textAfterCursor)
-                && !settings.isWordSeparator(textAfterCursor.charAt(0))) return null;
-
-        // Bail out if word before cursor is 0-length or a single non letter (like an apostrophe)
-        // Example: " -|" gets rejected here but "e-|" and "e|" are okay
-        CharSequence word = getWordAtCursor(settings.mWordSeparators);
-        // We don't suggest on leading single quotes, so we have to remove them from the word if
-        // it starts with single quotes.
-        while (!TextUtils.isEmpty(word) && Constants.CODE_SINGLE_QUOTE == word.charAt(0)) {
-            word = word.subSequence(1, word.length());
-        }
-        if (TextUtils.isEmpty(word)) return null;
-        // Find the last code point of the string
-        final int lastCodePoint = Character.codePointBefore(word, word.length());
-        // If for some reason the text field contains non-unicode binary data, or if the
-        // charsequence is exactly one char long and the contents is a low surrogate, return null.
-        if (!Character.isDefined(lastCodePoint)) return null;
-        // Bail out if the cursor is not at the end of a word (cursor must be preceded by
-        // non-whitespace, non-separator, non-start-of-text)
-        // Example ("|" is the cursor here) : <SOL>"|a" " |a" " | " all get rejected here.
-        if (settings.isWordSeparator(lastCodePoint)) return null;
-        final char firstChar = word.charAt(0); // we just tested that word is not empty
-        if (word.length() == 1 && !Character.isLetter(firstChar)) return null;
-
-        // We don't restart suggestion if the first character is not a letter, because we don't
-        // start composing when the first character is not a letter.
-        if (!Character.isLetter(firstChar)) return null;
-
-        return word;
-    }
-
     public boolean revertDoubleSpacePeriod() {
         if (DEBUG_BATCH_NESTING) checkBatchEdit();
         // Here we test whether we indeed have a period and a space before us. This should not

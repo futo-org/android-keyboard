@@ -61,6 +61,7 @@ public class BlueUnderlineTests extends InputTestsBase {
 
     public void testBlueUnderlineOnBackspace() {
         final String STRING_TO_TYPE = "tgis";
+        final int typedLength = STRING_TO_TYPE.length();
         final int EXPECTED_SUGGESTION_SPAN_START = -1;
         final int EXPECTED_UNDERLINE_SPAN_START = 0;
         final int EXPECTED_UNDERLINE_SPAN_END = 4;
@@ -68,6 +69,8 @@ public class BlueUnderlineTests extends InputTestsBase {
         sleep(DELAY_TO_WAIT_FOR_UNDERLINE);
         runMessages();
         type(Constants.CODE_SPACE);
+        // typedLength + 1 because we also typed a space
+        mLatinIME.onUpdateSelection(0, 0, typedLength + 1, typedLength + 1, -1, -1);
         sleep(DELAY_TO_WAIT_FOR_UNDERLINE);
         runMessages();
         type(Constants.CODE_DELETE);

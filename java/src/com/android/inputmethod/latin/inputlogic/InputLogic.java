@@ -680,6 +680,7 @@ public final class InputLogic {
             // TODO: remove these arguments
             final LatinIME.UIHandler handler, final KeyboardSwitcher keyboardSwitcher) {
         mSpaceState = SpaceState.NONE;
+        final int deleteCountAtStart = mDeleteCount;
         mDeleteCount++;
 
         // In many cases, we may have to put the keyboard in auto-shift state again. However
@@ -811,12 +812,13 @@ public final class InputLogic {
                     }
                 }
             }
-            if (settingsValues.isSuggestionsRequested()
+            if (settingsValues.isSuggestionStripVisible()
                     && settingsValues.mCurrentLanguageHasSpaces) {
-                restartSuggestionsOnWordBeforeCursorIfAtEndOfWord(settingsValues, keyboardSwitcher,
-                        handler);
+                restartSuggestionsOnWordTouchedByCursor(settingsValues,
+                        deleteCountAtStart - mDeleteCount /* offset */,
+                        true /* includeResumedWordInSuggestions */, keyboardSwitcher);
             }
-            // We just removed a character. We need to update the auto-caps state.
+            // We just removed at least one character. We need to update the auto-caps state.
             keyboardSwitcher.updateShiftState();
         }
     }
@@ -1042,43 +1044,17 @@ public final class InputLogic {
     }
 
     /**
-     * Check if the cursor is actually at the end of a word. If so, restart suggestions on this
-     * word, otherwise do nothing.
-     * @param settingsValues the current values of the settings.
-     */
-    private void restartSuggestionsOnWordBeforeCursorIfAtEndOfWord(
-            final SettingsValues settingsValues,
-            // TODO: remove these two arguments
-            final KeyboardSwitcher keyboardSwitcher, final LatinIME.UIHandler handler) {
-        final CharSequence word = mConnection.getWordBeforeCursorIfAtEndOfWord(settingsValues);
-        if (null != word) {
-            final String wordString = word.toString();
-            mWordComposer.setComposingWord(word,
-                    // Previous word is the 2nd word before cursor because we are restarting on the
-                    // 1st word before cursor.
-                    getNthPreviousWordForSuggestion(settingsValues, 2 /* nthPreviousWord */),
-                    keyboardSwitcher.getKeyboard());
-            final int length = word.length();
-            mConnection.deleteSurroundingText(length, 0);
-            mConnection.setComposingText(word, 1);
-            handler.postUpdateSuggestionStrip();
-            // TODO: Handle the case where the user manually moves the cursor and then backs up over
-            // a separator. In that case, the current log unit should not be uncommitted.
-            if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-                ResearchLogger.getInstance().uncommitCurrentLogUnit(wordString,
-                        true /* dumpCurrentLogUnit */);
-            }
-        }
-    }
-
-    /**
      * Check if the cursor is touching a word. If so, restart suggestions on this word, else
      * do nothing.
      *
      * @param settingsValues the current values of the settings.
+     * @param offset how much the cursor is expected to have moved since the last updateSelection.
+     * @param includeResumedWordInSuggestions whether to include the word on which we resume
+     *   suggestions in the suggestion list.
      */
     // TODO: make this private.
     public void restartSuggestionsOnWordTouchedByCursor(final SettingsValues settingsValues,
+            final int offset, final boolean includeResumedWordInSuggestions,
             // TODO: Remove this argument.
             final KeyboardSwitcher keyboardSwitcher) {
         // HACK: We may want to special-case some apps that exhibit bad behavior in case of
@@ -1094,6 +1070,7 @@ public final class InputLogic {
         if (mLastSelectionStart != mLastSelectionEnd) return;
         // If we don't know the cursor location, return.
         if (mLastSelectionStart < 0) return;
+        final int expectedCursorPosition = mLastSelectionStart + offset; // We know Start == End
         if (!mConnection.isCursorTouchingWord(settingsValues)) return;
         final TextRange range = mConnection.getWordRangeAtCursor(
                 settingsValues.mWordSeparators, 0 /* additionalPrecedingWordsCount */);
@@ -1102,9 +1079,16 @@ public final class InputLogic {
         // If for some strange reason (editor bug or so) we measure the text before the cursor as
         // longer than what the entire text is supposed to be, the safe thing to do is bail out.
         final int numberOfCharsInWordBeforeCursor = range.getNumberOfCharsInWordBeforeCursor();
-        if (numberOfCharsInWordBeforeCursor > mLastSelectionStart) return;
+        if (numberOfCharsInWordBeforeCursor > expectedCursorPosition) return;
         final ArrayList<SuggestedWordInfo> suggestions = CollectionUtils.newArrayList();
         final String typedWord = range.mWord.toString();
+        if (includeResumedWordInSuggestions) {
+            suggestions.add(new SuggestedWordInfo(typedWord,
+                    SuggestionStripView.MAX_SUGGESTIONS + 1,
+                    SuggestedWordInfo.KIND_TYPED, Dictionary.DICTIONARY_USER_TYPED,
+                    SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
+                    SuggestedWordInfo.NOT_A_CONFIDENCE /* autoCommitFirstWordConfidence */));
+        }
         if (!isResumableWord(settingsValues, typedWord)) return;
         int i = 0;
         for (final SuggestionSpan span : range.getSuggestionSpansAtWord()) {
@@ -1129,8 +1113,8 @@ public final class InputLogic {
                 keyboardSwitcher.getKeyboard());
         mWordComposer.setCursorPositionWithinWord(
                 typedWord.codePointCount(0, numberOfCharsInWordBeforeCursor));
-        mConnection.setComposingRegion(mLastSelectionStart - numberOfCharsInWordBeforeCursor,
-                mLastSelectionEnd + range.getNumberOfCharsInWordAfterCursor());
+        mConnection.setComposingRegion(expectedCursorPosition - numberOfCharsInWordBeforeCursor,
+                expectedCursorPosition + range.getNumberOfCharsInWordAfterCursor());
         if (suggestions.isEmpty()) {
             // We come here if there weren't any suggestion spans on this word. We will try to
             // compute suggestions for it instead.
@@ -1140,7 +1124,8 @@ public final class InputLogic {
                         public void onGetSuggestedWords(
                                 final SuggestedWords suggestedWordsIncludingTypedWord) {
                             final SuggestedWords suggestedWords;
-                            if (suggestedWordsIncludingTypedWord.size() > 1) {
+                            if (suggestedWordsIncludingTypedWord.size() > 1
+                                    && !includeResumedWordInSuggestions) {
                                 // We were able to compute new suggestions for this word.
                                 // Remove the typed word, since we don't want to display it in this
                                 // case. The #getSuggestedWordsExcludingTypedWord() method sets
