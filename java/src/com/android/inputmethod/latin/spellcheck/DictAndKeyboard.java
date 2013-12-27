@@ -27,7 +27,7 @@ import com.android.inputmethod.keyboard.ProximityInfo;
  */
 public final class DictAndKeyboard {
     public final Dictionary mDictionary;
-    private final Keyboard mKeyboard;
+    public final Keyboard mKeyboard;
     private final Keyboard mManualShiftedKeyboard;
 
     public DictAndKeyboard(
@@ -41,13 +41,6 @@ public final class DictAndKeyboard {
         mKeyboard = keyboardLayoutSet.getKeyboard(KeyboardId.ELEMENT_ALPHABET);
         mManualShiftedKeyboard =
                 keyboardLayoutSet.getKeyboard(KeyboardId.ELEMENT_ALPHABET_MANUAL_SHIFTED);
-    }
-
-    public Keyboard getKeyboard(final int codePoint) {
-        if (mKeyboard == null) {
-            return null;
-        }
-        return mKeyboard.getKey(codePoint) != null ? mKeyboard : mManualShiftedKeyboard;
     }
 
     public ProximityInfo getProximityInfo() {

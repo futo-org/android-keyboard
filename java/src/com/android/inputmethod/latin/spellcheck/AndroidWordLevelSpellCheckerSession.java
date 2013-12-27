@@ -312,11 +312,7 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
                             false /* reportAsTypo */);
                 }
                 final WordComposer composer = new WordComposer();
-                final int length = text.length();
-                for (int i = 0; i < length; i = text.offsetByCodePoints(i, 1)) {
-                    final int codePoint = text.codePointAt(i);
-                    composer.addKeyInfo(codePoint, dictInfo.getKeyboard(codePoint));
-                }
+                composer.setComposingWord(text, null /* previousWord */, dictInfo.mKeyboard);
                 // TODO: make a spell checker option to block offensive words or not
                 final ArrayList<SuggestedWordInfo> suggestions =
                         dictInfo.mDictionary.getSuggestions(composer, prevWord,
