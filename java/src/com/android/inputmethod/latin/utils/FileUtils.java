@@ -25,8 +25,11 @@ import java.io.FilenameFilter;
 public class FileUtils {
     public static boolean deleteRecursively(final File path) {
         if (path.isDirectory()) {
-            for (final File child : path.listFiles()) {
-                deleteRecursively(child);
+            final File[] files = path.listFiles();
+            if (files != null) {
+                for (final File child : files) {
+                    deleteRecursively(child);
+                }
             }
         }
         return path.delete();
@@ -37,6 +40,9 @@ public class FileUtils {
             return false;
         }
         final File[] files = dir.listFiles(fileNameFilter);
+        if (files == null) {
+            return false;
+        }
         boolean hasDeletedAllFiles = true;
         for (final File file : files) {
             if (!deleteRecursively(file)) {
