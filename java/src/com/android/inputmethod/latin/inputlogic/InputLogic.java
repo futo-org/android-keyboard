@@ -703,7 +703,7 @@ public final class InputLogic {
                 if (settingsValues.mIsInternal) {
                     LatinImeLoggerUtils.onAutoCorrectionCancellation();
                 }
-                revertCommit(settingsValues, keyboardSwitcher, handler);
+                revertCommit(settingsValues, handler);
                 return;
             }
             if (mEnteredText != null && mConnection.sameAsTextBeforeCursor(mEnteredText)) {
@@ -799,7 +799,7 @@ public final class InputLogic {
                     && !mConnection.isCursorFollowedByWordCharacter(
                             settingsValues.mSpacingAndPunctuations)) {
                 restartSuggestionsOnWordTouchedByCursor(settingsValues,
-                        true /* includeResumedWordInSuggestions */, keyboardSwitcher);
+                        true /* includeResumedWordInSuggestions */);
             }
             // We just removed at least one character. We need to update the auto-caps state.
             keyboardSwitcher.updateShiftState();
@@ -1037,9 +1037,7 @@ public final class InputLogic {
      */
     // TODO: make this private.
     public void restartSuggestionsOnWordTouchedByCursor(final SettingsValues settingsValues,
-            final boolean includeResumedWordInSuggestions,
-            // TODO: Remove this argument.
-            final KeyboardSwitcher keyboardSwitcher) {
+            final boolean includeResumedWordInSuggestions) {
         // HACK: We may want to special-case some apps that exhibit bad behavior in case of
         // recorrection. This is a temporary, stopgap measure that will be removed later.
         // TODO: remove this.
@@ -1093,8 +1091,7 @@ public final class InputLogic {
                         // We want the previous word for suggestion. If we have chars in the word
                         // before the cursor, then we want the word before that, hence 2; otherwise,
                         // we want the word immediately before the cursor, hence 1.
-                        0 == numberOfCharsInWordBeforeCursor ? 1 : 2),
-                keyboardSwitcher.getKeyboard());
+                        0 == numberOfCharsInWordBeforeCursor ? 1 : 2));
         mWordComposer.setCursorPositionWithinWord(
                 typedWord.codePointCount(0, numberOfCharsInWordBeforeCursor));
         mConnection.setComposingRegion(expectedCursorPosition - numberOfCharsInWordBeforeCursor,
@@ -1149,8 +1146,8 @@ public final class InputLogic {
      * @param settingsValues the current settings values.
      */
     private void revertCommit(final SettingsValues settingsValues,
-            // TODO: remove these arguments
-            final KeyboardSwitcher keyboardSwitcher, final LatinIME.UIHandler handler) {
+            // TODO: remove this argument
+            final LatinIME.UIHandler handler) {
         final String previousWord = mLastComposedWord.mPrevWord;
         final CharSequence originallyTypedWord = mLastComposedWord.mTypedWord;
         final CharSequence committedWord = mLastComposedWord.mCommittedWord;
@@ -1213,8 +1210,7 @@ public final class InputLogic {
             // with the typed word, so we need to resume suggestions right away.
             final int[] codePoints = StringUtils.toCodePointArray(stringToCommit);
             mWordComposer.setComposingWord(codePoints,
-                    mLatinIME.getCoordinatesForCurrentKeyboard(codePoints),
-                    previousWord, keyboardSwitcher.getKeyboard());
+                    mLatinIME.getCoordinatesForCurrentKeyboard(codePoints), previousWord);
             mConnection.setComposingText(textToCommit, 1);
         }
         if (settingsValues.mIsInternal) {

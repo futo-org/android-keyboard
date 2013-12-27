@@ -316,7 +316,7 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
                 final int[] codePoints = StringUtils.toCodePointArray(text);
                 composer.setComposingWord(codePoints,
                         LatinIME.getCoordinatesForKeyboard(codePoints, dictInfo.mKeyboard),
-                        null /* previousWord */, dictInfo.mKeyboard);
+                        null /* previousWord */);
                 // TODO: make a spell checker option to block offensive words or not
                 final ArrayList<SuggestedWordInfo> suggestions =
                         dictInfo.mDictionary.getSuggestions(composer, prevWord,

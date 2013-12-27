@@ -205,7 +205,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             case MSG_RESUME_SUGGESTIONS:
                 latinIme.mInputLogic.restartSuggestionsOnWordTouchedByCursor(
                         latinIme.mSettings.getCurrent(),
-                        false /* includeResumedWordInSuggestions */, latinIme.mKeyboardSwitcher);
+                        false /* includeResumedWordInSuggestions */);
                 break;
             case MSG_REOPEN_DICTIONARIES:
                 latinIme.initSuggest();

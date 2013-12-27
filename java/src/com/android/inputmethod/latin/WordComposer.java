@@ -300,11 +300,9 @@ public final class WordComposer {
      * @param coordinates the x, y coordinates of the key in the CoordinateUtils format
      * @param previousWord the previous word, to use as context for suggestions. Can be null if
      *   the context is nil (typically, at start of text).
-     * @param keyboard the keyboard this is typed on, for coordinate info/proximity.
      */
-     // TODO[IL]: the Keyboard argument is now unused. Remove it.
     public void setComposingWord(final int[] codePoints, final int[] coordinates,
-            final CharSequence previousWord, final Keyboard keyboard) {
+            final CharSequence previousWord) {
         reset();
         final int length = codePoints.length;
         for (int i = 0; i < length; ++i) {
