@@ -449,8 +449,12 @@ public final class InputLogic {
         final boolean didAutoCorrect;
         if (settingsValues.isWordSeparator(codePoint)
                 || Character.getType(codePoint) == Character.OTHER_SYMBOL) {
-            didAutoCorrect = handleSeparator(settingsValues, codePoint, x, y, spaceState,
-                    keyboardSwitcher, handler);
+            didAutoCorrect = handleSeparator(settingsValues, codePoint,
+                    Constants.SUGGESTION_STRIP_COORDINATE == x, spaceState, keyboardSwitcher,
+                    handler);
+            if (settingsValues.mIsInternal) {
+                LatinImeLoggerUtils.onSeparator((char)codePoint, x, y);
+            }
         } else {
             didAutoCorrect = false;
             if (SpaceState.PHANTOM == spaceState) {
@@ -585,13 +589,12 @@ public final class InputLogic {
      * Handle input of a separator code point.
      * @param settingsValues The current settings values.
      * @param codePoint the code point associated with the key.
-     * @param x the x-coordinate of the key press, or Contants.NOT_A_COORDINATE if not applicable.
-     * @param y the y-coordinate of the key press, or Contants.NOT_A_COORDINATE if not applicable.
+     * @param isFromSuggestionStrip whether this code point comes from the suggestion strip.
      * @param spaceState the space state at start of the batch input.
      * @return whether this caused an auto-correction to happen.
      */
     private boolean handleSeparator(final SettingsValues settingsValues,
-            final int codePoint, final int x, final int y, final int spaceState,
+            final int codePoint, final boolean isFromSuggestionStrip, final int spaceState,
             // TODO: remove these arguments
             final KeyboardSwitcher keyboardSwitcher, final LatinIME.UIHandler handler) {
         boolean didAutoCorrect = false;
@@ -618,7 +621,7 @@ public final class InputLogic {
         }
 
         final boolean swapWeakSpace = maybeStripSpace(settingsValues, codePoint, spaceState,
-                Constants.SUGGESTION_STRIP_COORDINATE == x);
+                isFromSuggestionStrip);
 
         if (SpaceState.PHANTOM == spaceState &&
                 settingsValues.isUsuallyPrecededBySpace(codePoint)) {
@@ -666,9 +669,6 @@ public final class InputLogic {
             // Set punctuation right away. onUpdateSelection will fire but tests whether it is
             // already displayed or not, so it's okay.
             mLatinIME.setPunctuationSuggestions();
-        }
-        if (settingsValues.mIsInternal) {
-            LatinImeLoggerUtils.onSeparator((char)codePoint, x, y);
         }
 
         keyboardSwitcher.updateShiftState();
