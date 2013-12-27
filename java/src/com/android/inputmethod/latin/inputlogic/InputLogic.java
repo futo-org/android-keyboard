@@ -1509,6 +1509,47 @@ public final class InputLogic {
     }
 
     /**
+     * Do the final processing after a batch input has ended. This commits the word to the editor.
+     * @param settingsValues the current values of the settings.
+     * @param suggestedWords suggestedWords to use.
+     */
+    public void onEndBatchInputAsyncInternal(final SettingsValues settingsValues,
+            final SuggestedWords suggestedWords,
+            // TODO: remove this argument
+            final KeyboardSwitcher keyboardSwitcher) {
+        final String batchInputText = suggestedWords.isEmpty() ? null : suggestedWords.getWord(0);
+        if (TextUtils.isEmpty(batchInputText)) {
+            return;
+        }
+        mConnection.beginBatchEdit();
+        if (SpaceState.PHANTOM == mSpaceState) {
+            promotePhantomSpace(settingsValues);
+        }
+        if (settingsValues.mPhraseGestureEnabled) {
+            // Find the last space
+            final int indexOfLastSpace = batchInputText.lastIndexOf(Constants.CODE_SPACE) + 1;
+            if (0 != indexOfLastSpace) {
+                mConnection.commitText(batchInputText.substring(0, indexOfLastSpace), 1);
+                mLatinIME.showSuggestionStrip(
+                        suggestedWords.getSuggestedWordsForLastWordOfPhraseGesture());
+            }
+            final String lastWord = batchInputText.substring(indexOfLastSpace);
+            mWordComposer.setBatchInputWord(lastWord);
+            mConnection.setComposingText(lastWord, 1);
+        } else {
+            mWordComposer.setBatchInputWord(batchInputText);
+            mConnection.setComposingText(batchInputText, 1);
+        }
+        mConnection.endBatchEdit();
+        if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
+            ResearchLogger.latinIME_onEndBatchInput(batchInputText, 0, suggestedWords);
+        }
+        // Space state must be updated before calling updateShiftState
+        mSpaceState = SpaceState.PHANTOM;
+        keyboardSwitcher.updateShiftState();
+    }
+
+    /**
      * Commit the typed string to the editor.
      *
      * This is typically called when we should commit the currently composing word without applying
