@@ -21,6 +21,8 @@
 <merge
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
-    <include
-        latin:keyboardLayout="@xml/key_space_3kw" />
+    <Key
+        latin:backgroundType="normal"
+        latin:keyStyle="spaceKeyStyle"
+        latin:keyWidth="30%p" />
 </merge>
