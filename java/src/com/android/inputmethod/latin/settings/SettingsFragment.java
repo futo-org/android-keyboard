@@ -238,8 +238,14 @@ public final class SettingsFragment extends InputMethodSettingsFragment
         super.onResume();
         final SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
         final Resources res = getResources();
-        final boolean isShortcutImeEnabled = SubtypeSwitcher.getInstance().isShortcutImeEnabled();
-        setPreferenceEnabled(Settings.PREF_VOICE_INPUT_KEY, isShortcutImeEnabled);
+        final Preference voiceInputKeyOption = findPreference(Settings.PREF_VOICE_INPUT_KEY);
+        if (voiceInputKeyOption != null) {
+            final boolean isShortcutImeEnabled = SubtypeSwitcher.getInstance()
+                    .isShortcutImeEnabled();
+            voiceInputKeyOption.setEnabled(isShortcutImeEnabled);
+            voiceInputKeyOption.setSummary(isShortcutImeEnabled ? null
+                    : res.getText(R.string.voice_input_disabled_summary));
+        }
         final CheckBoxPreference showSetupWizardIcon =
                 (CheckBoxPreference)findPreference(Settings.PREF_SHOW_SETUP_WIZARD_ICON);
         if (showSetupWizardIcon != null) {
