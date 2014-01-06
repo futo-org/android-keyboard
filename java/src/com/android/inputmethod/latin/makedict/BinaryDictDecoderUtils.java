@@ -643,6 +643,10 @@ public final class BinaryDictDecoderUtils {
      * @return true if it's a binary dictionary, false otherwise
      */
     public static boolean isBinaryDictionary(final File file) {
-        return FormatSpec.getDictDecoder(file).hasValidRawBinaryDictionary();
+        final DictDecoder dictDecoder = FormatSpec.getDictDecoder(file);
+        if (dictDecoder == null) {
+            return false;
+        }
+        return dictDecoder.hasValidRawBinaryDictionary();
     }
 }

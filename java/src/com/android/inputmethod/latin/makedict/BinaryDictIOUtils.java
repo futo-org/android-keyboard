@@ -309,6 +309,7 @@ public final class BinaryDictIOUtils {
      * @param file The file to read.
      * @param offset The offset in the file where to start reading the data.
      * @param length The length of the data file.
+     * @return the header of the specified dictionary file.
      */
     private static FileHeader getDictionaryFileHeader(
             final File file, final long offset, final long length)
@@ -330,6 +331,9 @@ public final class BinaryDictIOUtils {
                     }
                 }
         );
+        if (dictDecoder == null) {
+            return null;
+        }
         return dictDecoder.readHeader();
     }
 
