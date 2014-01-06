@@ -226,6 +226,7 @@ public final class SubtypeSwitcher {
     }
 
     public boolean isShortcutImeEnabled() {
+        updateShortcutIME();
         if (mShortcutInputMethodInfo == null) {
             return false;
         }
@@ -237,10 +238,13 @@ public final class SubtypeSwitcher {
     }
 
     public boolean isShortcutImeReady() {
-        if (mShortcutInputMethodInfo == null)
+        updateShortcutIME();
+        if (mShortcutInputMethodInfo == null) {
             return false;
-        if (mShortcutSubtype == null)
+        }
+        if (mShortcutSubtype == null) {
             return true;
+        }
         if (mShortcutSubtype.containsExtraValueKey(REQ_NETWORK_CONNECTIVITY)) {
             return mIsNetworkConnected;
         }
