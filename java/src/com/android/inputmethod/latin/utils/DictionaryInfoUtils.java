@@ -282,10 +282,19 @@ public class DictionaryInfoUtils {
         return BinaryDictIOUtils.getDictionaryFileHeaderOrNull(file, 0, file.length());
     }
 
+    /**
+     * Returns information of the dictionary.
+     *
+     * @param fileAddress the asset dictionary file address.
+     * @return information of the specified dictionary.
+     */
     private static DictionaryInfo createDictionaryInfoFromFileAddress(
             final AssetFileAddress fileAddress) {
         final FileHeader header = BinaryDictIOUtils.getDictionaryFileHeaderOrNull(
                 new File(fileAddress.mFilename), fileAddress.mOffset, fileAddress.mLength);
+        if (header == null) {
+            return null;
+        }
         final String id = header.getId();
         final Locale locale = LocaleUtils.constructLocaleFromString(header.getLocaleString());
         final String description = header.getDescription();
@@ -328,7 +337,7 @@ public class DictionaryInfoUtils {
                     // Protect against cases of a less-specific dictionary being found, like an
                     // en dictionary being used for an en_US locale. In this case, the en dictionary
                     // should be used for en_US but discounted for listing purposes.
-                    if (!dictionaryInfo.mLocale.equals(locale)) continue;
+                    if (dictionaryInfo == null || !dictionaryInfo.mLocale.equals(locale)) continue;
                     addOrUpdateDictInfo(dictList, dictionaryInfo);
                 }
             }
