@@ -29,6 +29,9 @@ import com.android.inputmethod.latin.personalization.UserHistoryDictionary;
 import com.android.inputmethod.latin.settings.SettingsValues;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
@@ -103,13 +106,49 @@ public class DictionaryFacilitatorForSuggest {
     }
 
     @UsedForTesting
-    DictionaryFacilitatorForSuggest(final Context context, final AssetFileAddress[] dictionaryList,
-            final Locale locale) {
-        final Dictionary mainDict = DictionaryFactory.createDictionaryForTest(dictionaryList,
-                false /* useFullEditDistance */, locale);
+    public DictionaryFacilitatorForSuggest(final Context context, final Locale locale,
+            final ArrayList<String> dictionaryTypes, final HashMap<String, File> dictionaryFiles) {
         mContext = context;
         mLocale = locale;
-        setMainDictionary(mainDict);
+        for (final String dictType : dictionaryTypes) {
+            if (dictType.equals(Dictionary.TYPE_MAIN)) {
+                final DictionaryCollection mainDictionary =
+                        DictionaryFactory.createMainDictionaryFromManager(context, locale);
+                setMainDictionary(mainDictionary);
+            } else if (dictType.equals(Dictionary.TYPE_USER_HISTORY)) {
+                final UserHistoryDictionary userHistoryDictionary =
+                        PersonalizationHelper.getUserHistoryDictionary(context, locale);
+                // Staring with an empty user history dictionary for testing.
+                // Testing program may populate this dictionary before actual testing.
+                userHistoryDictionary.reloadDictionaryIfRequired();
+                userHistoryDictionary.waitAllTasksForTests();
+                setUserHistoryDictionary(userHistoryDictionary);
+            } else if (dictType.equals(Dictionary.TYPE_PERSONALIZATION)) {
+                final PersonalizationDictionary personalizationDictionary =
+                        PersonalizationHelper.getPersonalizationDictionary(context, locale);
+                // Staring with an empty personalization dictionary for testing.
+                // Testing program may populate this dictionary before actual testing.
+                personalizationDictionary.reloadDictionaryIfRequired();
+                personalizationDictionary.waitAllTasksForTests();
+                setPersonalizationDictionary(personalizationDictionary);
+            } else if (dictType.equals(Dictionary.TYPE_USER)) {
+                final File file = dictionaryFiles.get(dictType);
+                final UserBinaryDictionary userDictionary = new UserBinaryDictionary(
+                        context, locale, file);
+                userDictionary.reloadDictionaryIfRequired();
+                userDictionary.waitAllTasksForTests();
+                setUserDictionary(userDictionary);
+            } else if (dictType.equals(Dictionary.TYPE_CONTACTS)) {
+                final File file = dictionaryFiles.get(dictType);
+                final ContactsBinaryDictionary contactsDictionary = new ContactsBinaryDictionary(
+                        context, locale, file);
+                contactsDictionary.reloadDictionaryIfRequired();
+                contactsDictionary.waitAllTasksForTests();
+                setContactsDictionary(contactsDictionary);
+            } else {
+                throw new RuntimeException("Unknown dictionary type: " + dictType);
+            }
+        }
     }
 
     // initialize a debug flag for the personalization
@@ -169,8 +208,7 @@ public class DictionaryFacilitatorForSuggest {
      * Sets an optional user dictionary resource to be loaded. The user dictionary is consulted
      * before the main dictionary, if set. This refers to the system-managed user dictionary.
      */
-    @UsedForTesting
-    public void setUserDictionary(final UserBinaryDictionary userDictionary) {
+    private void setUserDictionary(final UserBinaryDictionary userDictionary) {
         mUserDictionary = userDictionary;
         addOrReplaceDictionary(Dictionary.TYPE_USER, userDictionary);
     }
@@ -180,8 +218,7 @@ public class DictionaryFacilitatorForSuggest {
      * the contacts dictionary by passing null to this method. In this case no contacts dictionary
      * won't be used.
      */
-    @UsedForTesting
-    public void setContactsDictionary(final ContactsBinaryDictionary contactsDictionary) {
+    private void setContactsDictionary(final ContactsBinaryDictionary contactsDictionary) {
         mContactsDictionary = contactsDictionary;
         addOrReplaceDictionary(Dictionary.TYPE_CONTACTS, contactsDictionary);
     }
