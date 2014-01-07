@@ -1113,8 +1113,11 @@ public final class InputLogic {
                 keyboardSwitcher.getKeyboard());
         mWordComposer.setCursorPositionWithinWord(
                 typedWord.codePointCount(0, numberOfCharsInWordBeforeCursor));
-        mConnection.setComposingRegion(expectedCursorPosition - numberOfCharsInWordBeforeCursor,
-                expectedCursorPosition + range.getNumberOfCharsInWordAfterCursor());
+        // TODO: Change these two lines to setComposingRegion(cursorPosition,
+        //         cursorPosition + range.getNumberOfCharsInWordAfterCursor());
+        mConnection.deleteSurroundingText(numberOfCharsInWordBeforeCursor,
+              typedWord.length() - numberOfCharsInWordBeforeCursor);
+        mConnection.setComposingText(typedWord, 1);
         if (suggestions.isEmpty()) {
             // We come here if there weren't any suggestion spans on this word. We will try to
             // compute suggestions for it instead.
