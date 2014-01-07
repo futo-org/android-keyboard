@@ -273,6 +273,18 @@ public final class SubtypeSwitcher {
         return mNeedsToDisplayLanguage.getValue();
     }
 
+    public boolean isSystemLocaleSameAsLocaleOfAllEnabledSubtypes() {
+        final Locale systemLocale = mResources.getConfiguration().locale;
+        final List<InputMethodSubtype> enabledSubtypesOfThisIme =
+                mRichImm.getMyEnabledInputMethodSubtypeList(true);
+        for (final InputMethodSubtype subtype : enabledSubtypesOfThisIme) {
+            if (!systemLocale.equals(SubtypeLocaleUtils.getSubtypeLocale(subtype))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     private static InputMethodSubtype sForcedSubtypeForTesting = null;
     @UsedForTesting
     void forceSubtype(final InputMethodSubtype subtype) {
