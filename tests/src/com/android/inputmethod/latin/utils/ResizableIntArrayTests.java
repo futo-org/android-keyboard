@@ -39,7 +39,8 @@ public class ResizableIntArrayTests extends AndroidTestCase {
         int[] array2 = null, array3 = null;
         final int limit = DEFAULT_CAPACITY * 2 + 10;
         for (int i = 0; i < limit; i++) {
-            src.add(i);
+            final int value = i;
+            src.add(value);
             assertEquals("length after add " + i, i + 1, src.getLength());
             if (i == DEFAULT_CAPACITY) {
                 array2 = src.getPrimitiveArray();
@@ -56,7 +57,8 @@ public class ResizableIntArrayTests extends AndroidTestCase {
             }
         }
         for (int i = 0; i < limit; i++) {
-            assertEquals("value at " + i, i, src.get(i));
+            final int value = i;
+            assertEquals("value at " + i, value, src.get(i));
         }
     }
 
@@ -64,11 +66,13 @@ public class ResizableIntArrayTests extends AndroidTestCase {
         final ResizableIntArray src = new ResizableIntArray(DEFAULT_CAPACITY);
         final int limit = DEFAULT_CAPACITY * 10, step = DEFAULT_CAPACITY * 2;
         for (int i = 0; i < limit; i += step) {
-            src.add(i, i);
+            final int value = i;
+            src.add(i, value);
             assertEquals("length after add at " + i, i + 1, src.getLength());
         }
         for (int i = 0; i < limit; i += step) {
-            assertEquals("value at " + i, i, src.get(i));
+            final int value = i;
+            assertEquals("value at " + i, value, src.get(i));
         }
     }
 
@@ -88,9 +92,10 @@ public class ResizableIntArrayTests extends AndroidTestCase {
         }
 
         final int index = DEFAULT_CAPACITY / 2;
-        src.add(index, 100);
+        final int valueAddAt = 100;
+        src.add(index, valueAddAt);
         assertEquals("legth after add at " + index, index + 1, src.getLength());
-        assertEquals("value after add at " + index, 100, src.get(index));
+        assertEquals("value after add at " + index, valueAddAt, src.get(index));
         assertEquals("value after add at 0", 0, src.get(0));
         try {
             final int value = src.get(src.getLength());
@@ -104,7 +109,8 @@ public class ResizableIntArrayTests extends AndroidTestCase {
         final ResizableIntArray src = new ResizableIntArray(DEFAULT_CAPACITY);
         final int[] array = src.getPrimitiveArray();
         for (int i = 0; i < DEFAULT_CAPACITY; i++) {
-            src.add(i);
+            final int value = i;
+            src.add(value);
             assertEquals("length after add " + i, i + 1, src.getLength());
         }
 
@@ -116,7 +122,8 @@ public class ResizableIntArrayTests extends AndroidTestCase {
 
         int[] array3 = null;
         for (int i = 0; i < DEFAULT_CAPACITY; i++) {
-            src.add(i);
+            final int value = i;
+            src.add(value);
             assertEquals("length after add " + i, i + 1, src.getLength());
             if (i == smallerLength) {
                 array3 = src.getPrimitiveArray();
@@ -133,7 +140,8 @@ public class ResizableIntArrayTests extends AndroidTestCase {
         final ResizableIntArray src = new ResizableIntArray(DEFAULT_CAPACITY);
         final int[] array = src.getPrimitiveArray();
         for (int i = 0; i < DEFAULT_CAPACITY; i++) {
-            src.add(i);
+            final int value = i;
+            src.add(value);
             assertEquals("length after add " + i, i + 1, src.getLength());
         }
 
@@ -144,11 +152,11 @@ public class ResizableIntArrayTests extends AndroidTestCase {
         assertNotSame("array after larger setLength", array, array2);
         assertEquals("array length after larger setLength", largerLength, array2.length);
         for (int i = 0; i < largerLength; i++) {
-            final int v = src.get(i);
+            final int value = i;
             if (i < DEFAULT_CAPACITY) {
-                assertEquals("value at " + i, i, v);
+                assertEquals("value at " + i, value, src.get(i));
             } else {
-                assertEquals("value at " + i, 0, v);
+                assertEquals("value at " + i, 0, src.get(i));
             }
         }
 
@@ -159,7 +167,8 @@ public class ResizableIntArrayTests extends AndroidTestCase {
         assertSame("array after smaller setLength", array2, array3);
         assertEquals("array length after smaller setLength", largerLength, array3.length);
         for (int i = 0; i < smallerLength; i++) {
-            assertEquals("value at " + i, i, src.get(i));
+            final int value = i;
+            assertEquals("value at " + i, value, src.get(i));
         }
     }
 
@@ -167,7 +176,8 @@ public class ResizableIntArrayTests extends AndroidTestCase {
         final ResizableIntArray src = new ResizableIntArray(DEFAULT_CAPACITY);
         final int limit = DEFAULT_CAPACITY * 2 + 10;
         for (int i = 0; i < limit; i++) {
-            src.add(i);
+            final int value = i;
+            src.add(value);
         }
 
         final ResizableIntArray dst = new ResizableIntArray(DEFAULT_CAPACITY);
@@ -179,7 +189,8 @@ public class ResizableIntArrayTests extends AndroidTestCase {
     public void testCopy() {
         final ResizableIntArray src = new ResizableIntArray(DEFAULT_CAPACITY);
         for (int i = 0; i < DEFAULT_CAPACITY; i++) {
-            src.add(i);
+            final int value =  i;
+            src.add(value);
         }
 
         final ResizableIntArray dst = new ResizableIntArray(DEFAULT_CAPACITY);
@@ -204,119 +215,126 @@ public class ResizableIntArrayTests extends AndroidTestCase {
     }
 
     public void testAppend() {
-        final int srcLen = DEFAULT_CAPACITY;
-        final ResizableIntArray src = new ResizableIntArray(srcLen);
-        for (int i = 0; i < srcLen; i++) {
-            src.add(i);
+        final int srcLength = DEFAULT_CAPACITY;
+        final ResizableIntArray src = new ResizableIntArray(srcLength);
+        for (int i = 0; i < srcLength; i++) {
+            final int value = i;
+            src.add(value);
         }
         final ResizableIntArray dst = new ResizableIntArray(DEFAULT_CAPACITY * 2);
         final int[] array = dst.getPrimitiveArray();
-        final int dstLen = DEFAULT_CAPACITY / 2;
-        for (int i = 0; i < dstLen; i++) {
+        final int dstLength = DEFAULT_CAPACITY / 2;
+        for (int i = 0; i < dstLength; i++) {
             final int value = -i - 1;
             dst.add(value);
         }
         final ResizableIntArray dstCopy = new ResizableIntArray(dst.getLength());
         dstCopy.copy(dst);
 
-        dst.append(src, 0, 0);
-        assertEquals("length after append zero", dstLen, dst.getLength());
+        final int startPos = 0;
+        dst.append(src, startPos, 0 /* length */);
+        assertEquals("length after append zero", dstLength, dst.getLength());
         assertSame("array after append zero", array, dst.getPrimitiveArray());
-        assertIntArrayEquals("values after append zero",
-                dstCopy.getPrimitiveArray(), 0, dst.getPrimitiveArray(), 0, dstLen);
+        assertIntArrayEquals("values after append zero", dstCopy.getPrimitiveArray(), startPos,
+                dst.getPrimitiveArray(), startPos, dstLength);
 
-        dst.append(src, 0, srcLen);
-        assertEquals("length after append", dstLen + srcLen, dst.getLength());
+        dst.append(src, startPos, srcLength);
+        assertEquals("length after append", dstLength + srcLength, dst.getLength());
         assertSame("array after append", array, dst.getPrimitiveArray());
         assertTrue("primitive length after append",
-                dst.getPrimitiveArray().length >= dstLen + srcLen);
-        assertIntArrayEquals("original values after append",
-                dstCopy.getPrimitiveArray(), 0, dst.getPrimitiveArray(), 0, dstLen);
-        assertIntArrayEquals("appended values after append",
-                src.getPrimitiveArray(), 0, dst.getPrimitiveArray(), dstLen, srcLen);
+                dst.getPrimitiveArray().length >= dstLength + srcLength);
+        assertIntArrayEquals("original values after append", dstCopy.getPrimitiveArray(), startPos,
+                dst.getPrimitiveArray(), startPos, dstLength);
+        assertIntArrayEquals("appended values after append", src.getPrimitiveArray(), startPos,
+                dst.getPrimitiveArray(), dstLength, srcLength);
 
-        dst.append(src, 0, srcLen);
-        assertEquals("length after 2nd append", dstLen + srcLen * 2, dst.getLength());
+        dst.append(src, startPos, srcLength);
+        assertEquals("length after 2nd append", dstLength + srcLength * 2, dst.getLength());
         assertNotSame("array after 2nd append", array, dst.getPrimitiveArray());
         assertTrue("primitive length after 2nd append",
-                dst.getPrimitiveArray().length >= dstLen + srcLen * 2);
+                dst.getPrimitiveArray().length >= dstLength + srcLength * 2);
         assertIntArrayEquals("original values after 2nd append",
-                dstCopy.getPrimitiveArray(), 0, dst.getPrimitiveArray(), 0, dstLen);
+                dstCopy.getPrimitiveArray(), startPos, dst.getPrimitiveArray(), startPos,
+                dstLength);
         assertIntArrayEquals("appended values after 2nd append",
-                src.getPrimitiveArray(), 0, dst.getPrimitiveArray(), dstLen, srcLen);
+                src.getPrimitiveArray(), startPos, dst.getPrimitiveArray(), dstLength,
+                srcLength);
         assertIntArrayEquals("appended values after 2nd append",
-                src.getPrimitiveArray(), 0, dst.getPrimitiveArray(), dstLen + srcLen, srcLen);
+                src.getPrimitiveArray(), startPos, dst.getPrimitiveArray(), dstLength + srcLength,
+                srcLength);
     }
 
     public void testFill() {
-        final int srcLen = DEFAULT_CAPACITY;
-        final ResizableIntArray src = new ResizableIntArray(srcLen);
-        for (int i = 0; i < srcLen; i++) {
-            src.add(i);
+        final int srcLength = DEFAULT_CAPACITY;
+        final ResizableIntArray src = new ResizableIntArray(srcLength);
+        for (int i = 0; i < srcLength; i++) {
+            final int value = i;
+            src.add(value);
         }
         final int[] array = src.getPrimitiveArray();
 
-        final int startPos = srcLen / 3;
-        final int length = srcLen / 3;
+        final int startPos = srcLength / 3;
+        final int length = srcLength / 3;
         final int endPos = startPos + length;
         assertTrue(startPos >= 1);
-        final int value = 123;
+        final int fillValue = 123;
         try {
-            src.fill(value, -1, length);
+            src.fill(fillValue, -1 /* startPos */, length);
             fail("fill from -1 shouldn't succeed");
         } catch (IllegalArgumentException e) {
             // success
         }
         try {
-            src.fill(value, startPos, -1);
+            src.fill(fillValue, startPos, -1 /* length */);
             fail("fill negative length shouldn't succeed");
         } catch (IllegalArgumentException e) {
             // success
         }
 
-        src.fill(value, startPos, length);
-        assertEquals("length after fill", srcLen, src.getLength());
+        src.fill(fillValue, startPos, length);
+        assertEquals("length after fill", srcLength, src.getLength());
         assertSame("array after fill", array, src.getPrimitiveArray());
-        for (int i = 0; i < srcLen; i++) {
-            final int v = src.get(i);
+        for (int i = 0; i < srcLength; i++) {
+            final int value = i;
             if (i >= startPos && i < endPos) {
-                assertEquals("new values after fill at " + i, value, v);
+                assertEquals("new values after fill at " + i, fillValue, src.get(i));
             } else {
-                assertEquals("unmodified values after fill at " + i, i, v);
+                assertEquals("unmodified values after fill at " + i, value, src.get(i));
             }
         }
 
-        final int length2 = srcLen * 2 - startPos;
+        final int length2 = srcLength * 2 - startPos;
         final int largeEnd = startPos + length2;
-        assertTrue(largeEnd > srcLen);
-        final int value2 = 456;
-        src.fill(value2, startPos, length2);
+        assertTrue(largeEnd > srcLength);
+        final int fillValue2 = 456;
+        src.fill(fillValue2, startPos, length2);
         assertEquals("length after large fill", largeEnd, src.getLength());
         assertNotSame("array after large fill", array, src.getPrimitiveArray());
         for (int i = 0; i < largeEnd; i++) {
-            final int v = src.get(i);
+            final int value = i;
             if (i >= startPos && i < largeEnd) {
-                assertEquals("new values after large fill at " + i, value2, v);
+                assertEquals("new values after large fill at " + i, fillValue2, src.get(i));
             } else {
-                assertEquals("unmodified values after large fill at " + i, i, v);
+                assertEquals("unmodified values after large fill at " + i, value, src.get(i));
             }
         }
 
         final int startPos2 = largeEnd + length2;
         final int endPos2 = startPos2 + length2;
-        final int value3 = 789;
-        src.fill(value3, startPos2, length2);
+        final int fillValue3 = 789;
+        src.fill(fillValue3, startPos2, length2);
         assertEquals("length after disjoint fill", endPos2, src.getLength());
         for (int i = 0; i < endPos2; i++) {
-            final int v = src.get(i);
+            final int value = i;
             if (i >= startPos2 && i < endPos2) {
-                assertEquals("new values after disjoint fill at " + i, value3, v);
+                assertEquals("new values after disjoint fill at " + i, fillValue3, src.get(i));
             } else if (i >= startPos && i < largeEnd) {
-                assertEquals("unmodified values after disjoint fill at " + i, value2, v);
+                assertEquals("unmodified values after disjoint fill at " + i,
+                        fillValue2, src.get(i));
             } else if (i < startPos) {
-                assertEquals("unmodified values after disjoint fill at " + i, i, v);
+                assertEquals("unmodified values after disjoint fill at " + i, value, src.get(i));
             } else {
-                assertEquals("gap values after disjoint fill at " + i, 0, v);
+                assertEquals("gap values after disjoint fill at " + i, 0, src.get(i));
             }
         }
     }
@@ -346,12 +364,14 @@ public class ResizableIntArrayTests extends AndroidTestCase {
         final int limit = DEFAULT_CAPACITY * 10;
         final int shiftAmount = 20;
         for (int i = 0; i < limit; ++i) {
-            src.add(i, i);
+            final int value = i;
+            src.add(i, value);
             assertEquals("length after add at " + i, i + 1, src.getLength());
         }
         src.shift(shiftAmount);
         for (int i = 0; i < limit - shiftAmount; ++i) {
-            assertEquals("value at " + i, i + shiftAmount, src.get(i));
+            final int oldValue = i + shiftAmount;
+            assertEquals("value at " + i, oldValue, src.get(i));
         }
     }
 }
