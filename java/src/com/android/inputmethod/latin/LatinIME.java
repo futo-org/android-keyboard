@@ -524,7 +524,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
         if (currentSettingsValues.mUsePersonalizedDicts) {
             if (mSubtypeSwitcher.isSystemLocaleSameAsLocaleOfAllEnabledSubtypes()) {
-                PersonalizationDictionarySessionRegistrar.init(this);
+                PersonalizationDictionarySessionRegistrar.init(this,
+                        mInputLogic.mSuggest.mDictionaryFacilitator);
             } else {
                 PersonalizationDictionarySessionRegistrar.close(this);
             }
@@ -568,6 +569,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 new DictionaryFacilitatorForSuggest(this /* context */, subtypeLocale,
                         settingsValues, this /* DictionaryInitializationListener */,
                         oldDictionaryFacilitator);
+        PersonalizationDictionarySessionRegistrar.onConfigurationChanged(
+                this, getResources().getConfiguration(), dictionaryFacilitator);
         final Suggest newSuggest = new Suggest(subtypeLocale, dictionaryFacilitator);
         if (settingsValues.mCorrectionEnabled) {
             newSuggest.setAutoCorrectionThreshold(settingsValues.mAutoCorrectionThreshold);
@@ -619,7 +622,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 mOptionsDialog.dismiss();
             }
         }
-        PersonalizationDictionarySessionRegistrar.onConfigurationChanged(this, conf);
+        PersonalizationDictionarySessionRegistrar.onConfigurationChanged(this, conf,
+                mInputLogic.mSuggest.mDictionaryFacilitator);
         super.onConfigurationChanged(conf);
     }
 
