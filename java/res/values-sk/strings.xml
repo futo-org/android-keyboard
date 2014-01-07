@@ -166,7 +166,7 @@
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Trvanie vibrov. pri stlač. kl."</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Hlasitosť pri stlačení klávesu"</string>
     <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"Čítať súbor externého slovníka"</string>
-    <string name="read_external_dictionary_no_files_message" msgid="4947420942224623792">"V priečinku Preberanie nie sú žiadne súbory slovníka"</string>
+    <string name="read_external_dictionary_no_files_message" msgid="4947420942224623792">"V priečinku Sťahovanie nie sú žiadne súbory slovníka"</string>
     <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"Vyberte súbor slovníka, ktorý chcete nainštalovať"</string>
     <string name="read_external_dictionary_confirm_install_message" msgid="6898610163768980870">"Chcete nainštalovať tento súbor pre jazyk <xliff:g id="LOCALE_NAME">%s</xliff:g>?"</string>
     <string name="error" msgid="8940763624668513648">"Vyskytla sa chyba"</string>
@@ -199,7 +199,7 @@
     <string name="user_dictionaries" msgid="3582332055892252845">"Používateľské slovníky"</string>
     <string name="default_user_dict_pref_name" msgid="1625055720489280530">"Používateľský slovník"</string>
     <string name="dictionary_available" msgid="4728975345815214218">"K dispozícii je slovník"</string>
-    <string name="dictionary_downloading" msgid="2982650524622620983">"Aktuálne sa preberá"</string>
+    <string name="dictionary_downloading" msgid="2982650524622620983">"Aktuálne sa sťahuje"</string>
     <string name="dictionary_installed" msgid="8081558343559342962">"Nainštalované"</string>
     <string name="dictionary_disabled" msgid="8950383219564621762">"Nainštalovaný, zakázaný"</string>
     <string name="cannot_connect_to_dict_service" msgid="9216933695765732398">"Probl. s prip. k sl."</string>
@@ -213,12 +213,12 @@
     <string name="install_dict" msgid="180852772562189365">"Inštalovať"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Zrušiť"</string>
     <string name="delete_dict" msgid="756853268088330054">"Odstrániť"</string>
-    <string name="should_download_over_metered_prompt" msgid="2878629598667658845">"Pre vybratý jazyk mobilného zariadenia je k dispozícii slovník.&lt;br/&gt; Slovník jazyka <xliff:g id="LANGUAGE">%1$s</xliff:g> vám odporúčame &lt;b&gt;prevziať&lt;/b&gt;. Pomôže vám pri zadávaní textu.&lt;br/&gt; &lt;br/&gt; V sieti 3G môže preberanie chvíľu trvať. Ak nemáte &lt;b&gt;neobmedzený dátový program&lt;/b&gt;, môžu sa účtovať poplatky.&lt;br/&gt; Ak s určitosťou neviete aký dátový program používate, vyhľadajte pripojenie k sieti Wi-Fi a preberanie sa spustí automaticky.&lt;br/&gt; &lt;br/&gt; Tip: Slovníky môžete v mobilnom zariadení preberať a odstraňovať v časti &lt;b&gt;Jazyk a vstup&lt;/b&gt; ponuky &lt;b&gt;Nastavenia&lt;/b&gt;."</string>
-    <string name="download_over_metered" msgid="1643065851159409546">"Prevziať (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> MB)"</string>
-    <string name="do_not_download_over_metered" msgid="2176209579313941583">"Prevziať cez sieť Wi-Fi"</string>
+    <string name="should_download_over_metered_prompt" msgid="2878629598667658845">"Pre vybratý jazyk mobilného zariadenia je k dispozícii slovník.&lt;br/&gt; Slovník jazyka <xliff:g id="LANGUAGE">%1$s</xliff:g> vám odporúčame &lt;b&gt;stiahnuť&lt;/b&gt;. Pomôže vám pri zadávaní textu.&lt;br/&gt; &lt;br/&gt; V sieti 3G môže sťahovanie chvíľu trvať. Ak nemáte &lt;b&gt;neobmedzený dátový program&lt;/b&gt;, môžu sa účtovať poplatky.&lt;br/&gt; Ak s určitosťou neviete aký dátový program používate, vyhľadajte pripojenie k sieti Wi-Fi a sťahovanie sa spustí automaticky.&lt;br/&gt; &lt;br/&gt; Tip: Slovníky môžete v mobilnom zariadení sťahovať a odstraňovať v časti &lt;b&gt;Jazyk a vstup&lt;/b&gt; ponuky &lt;b&gt;Nastavenia&lt;/b&gt;."</string>
+    <string name="download_over_metered" msgid="1643065851159409546">"Stiahnuť (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> MB)"</string>
+    <string name="do_not_download_over_metered" msgid="2176209579313941583">"Stiahnuť cez sieť Wi-Fi"</string>
     <string name="dict_available_notification_title" msgid="6514288591959117288">"K dispozícii je slovník pre jazyk <xliff:g id="LANGUAGE">%1$s</xliff:g>"</string>
     <string name="dict_available_notification_description" msgid="1075194169443163487">"Stlačením skontrolujete a prevezmete"</string>
-    <string name="toast_downloading_suggestions" msgid="1313027353588566660">"Preberanie: návrhy pre jazyk <xliff:g id="LANGUAGE">%1$s</xliff:g> budú čoskoro k dispozícii."</string>
+    <string name="toast_downloading_suggestions" msgid="1313027353588566660">"Sťahovanie: návrhy pre jazyk <xliff:g id="LANGUAGE">%1$s</xliff:g> budú čoskoro k dispozícii."</string>
     <string name="version_text" msgid="2715354215568469385">"Verzia <xliff:g id="VERSION_NUMBER">%1$s</xliff:g>"</string>
     <string name="user_dict_settings_add_menu_title" msgid="1254195365689387076">"Pridať"</string>
     <string name="user_dict_settings_add_dialog_title" msgid="4096700390211748168">"Pridať do slovníka"</string>

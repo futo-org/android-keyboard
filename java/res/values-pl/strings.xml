@@ -33,7 +33,7 @@
     <string name="misc_category" msgid="6894192814868233453">"Inne opcje"</string>
     <string name="advanced_settings" msgid="362895144495591463">"Ustawienia zaawansowane"</string>
     <string name="advanced_settings_summary" msgid="4487980456152830271">"Opcje dla ekspertów"</string>
-    <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Włącz inne metody wprowadzania"</string>
+    <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Inne metody wprowadzania"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Klawisz zmiany języka obejmuje też inne metody wprowadzania"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Klawisz zmiany języka"</string>
     <string name="show_language_switch_key_summary" msgid="7343403647474265713">"Pokaż, gdy włączonych jest kilka języków wprowadzania"</string>
@@ -162,9 +162,9 @@
     <string name="not_now" msgid="6172462888202790482">"Nie teraz"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Taki styl wprowadzania już istnieje: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Tryb badania przydatności"</string>
-    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Opóźn. przy przytrzym. przycisku"</string>
-    <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Czas wibr. przy naciśn. przycisku"</string>
-    <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Głośność przy naciśn. przycisku"</string>
+    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Opóźnienie przy długim naciśnięciu"</string>
+    <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Wibracja przy naciśniętym klawiszu"</string>
+    <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Głośność przy naciśniętym klawiszu"</string>
     <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"Odczyt zewnętrznego pliku słownika"</string>
     <string name="read_external_dictionary_no_files_message" msgid="4947420942224623792">"Brak plików słownika w folderze Pobrane pliki"</string>
     <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"Wybierz plik słownika do zainstalowania"</string>
