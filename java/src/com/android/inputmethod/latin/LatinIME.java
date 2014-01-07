@@ -523,7 +523,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             suggest.close();
         }
         if (currentSettingsValues.mUsePersonalizedDicts) {
-            PersonalizationDictionarySessionRegistrar.init(this);
+            if (mSubtypeSwitcher.isSystemLocaleSameAsLocaleOfAllEnabledSubtypes()) {
+                PersonalizationDictionarySessionRegistrar.init(this);
+            } else {
+                PersonalizationDictionarySessionRegistrar.close(this);
+            }
         } else {
             PersonalizationHelper.removeAllPersonalizedDictionaries(this);
             PersonalizationDictionarySessionRegistrar.resetAll(this);
@@ -595,7 +599,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             ResearchLogger.getInstance().onDestroy();
         }
         unregisterReceiver(mDictionaryPackInstallReceiver);
-        PersonalizationDictionarySessionRegistrar.onDestroy(this);
+        PersonalizationDictionarySessionRegistrar.close(this);
         LatinImeLogger.commit();
         LatinImeLogger.onDestroy();
         super.onDestroy();

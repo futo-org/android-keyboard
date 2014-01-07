@@ -35,6 +35,6 @@ public class PersonalizationDictionarySessionRegistrar {
     public static void resetAll(final Context context) {
     }
 
-    public static void onDestroy(final Context context) {
+    public static void close(final Context context) {
     }
 }
