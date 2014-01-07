@@ -1291,7 +1291,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     @UsedForTesting
     public boolean isShowingPunctuationList() {
         if (mInputLogic.mSuggestedWords == null) return false;
-        return mSettings.getCurrent().mSuggestPuncList == mInputLogic.mSuggestedWords;
+        return mSettings.getCurrent().mSpacingAndPunctuations.mSuggestPuncList
+                == mInputLogic.mSuggestedWords;
     }
 
     // TODO[IL]: Define a clear interface for this
@@ -1407,7 +1408,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     private SuggestedWords getOlderSuggestions(final String typedWord) {
         SuggestedWords previousSuggestedWords = mInputLogic.mSuggestedWords;
-        if (previousSuggestedWords == mSettings.getCurrent().mSuggestPuncList) {
+        if (previousSuggestedWords
+                == mSettings.getCurrent().mSpacingAndPunctuations.mSuggestPuncList) {
             previousSuggestedWords = SuggestedWords.EMPTY;
         }
         if (typedWord == null) {
@@ -1560,7 +1562,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (currentSettings.mBigramPredictionEnabled) {
             clearSuggestionStrip();
         } else {
-            setSuggestedWords(currentSettings.mSuggestPuncList);
+            setSuggestedWords(currentSettings.mSpacingAndPunctuations.mSuggestPuncList);
         }
         setAutoCorrectionIndicator(false);
         setSuggestionStripShown(isSuggestionsStripVisible());

@@ -26,20 +26,12 @@ import android.view.inputmethod.EditorInfo;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.compat.AppWorkaroundsUtils;
-import com.android.inputmethod.keyboard.internal.KeySpecParser;
-import com.android.inputmethod.latin.Constants;
-import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.InputAttributes;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.RichInputMethodManager;
-import com.android.inputmethod.latin.SuggestedWords;
-import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.utils.AsyncResultHolder;
-import com.android.inputmethod.latin.utils.CollectionUtils;
-import com.android.inputmethod.latin.utils.StringUtils;
 import com.android.inputmethod.latin.utils.TargetPackageInfoGetterTask;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
 
@@ -56,15 +48,9 @@ public final class SettingsValues {
     private static final int TIMEOUT_TO_GET_TARGET_PACKAGE = 5; // seconds
 
     // From resources:
+    public final SpacingAndPunctuations mSpacingAndPunctuations;
     public final int mDelayUpdateOldSuggestions;
-    public final int[] mSymbolsPrecededBySpace;
-    public final int[] mSymbolsFollowedBySpace;
-    public final int[] mWordConnectors;
-    public final SuggestedWords mSuggestPuncList;
-    public final String mWordSeparators;
-    public final int mSentenceSeparator;
     public final CharSequence mHintToSaveText;
-    public final boolean mCurrentLanguageHasSpaces;
 
     // From preferences, in the same order as xml/prefs.xml:
     public final boolean mAutoCap;
@@ -115,22 +101,8 @@ public final class SettingsValues {
         mLocale = locale;
         // Get the resources
         mDelayUpdateOldSuggestions = res.getInteger(R.integer.config_delay_update_old_suggestions);
-        mSymbolsPrecededBySpace =
-                StringUtils.toCodePointArray(res.getString(R.string.symbols_preceded_by_space));
-        Arrays.sort(mSymbolsPrecededBySpace);
-        mSymbolsFollowedBySpace =
-                StringUtils.toCodePointArray(res.getString(R.string.symbols_followed_by_space));
-        Arrays.sort(mSymbolsFollowedBySpace);
-        mWordConnectors =
-                StringUtils.toCodePointArray(res.getString(R.string.symbols_word_connectors));
-        Arrays.sort(mWordConnectors);
-        final String[] suggestPuncsSpec = KeySpecParser.splitKeySpecs(res.getString(
-                R.string.suggested_punctuations));
-        mSuggestPuncList = createSuggestPuncList(suggestPuncsSpec);
-        mWordSeparators = res.getString(R.string.symbols_word_separators);
-        mSentenceSeparator = res.getInteger(R.integer.sentence_separator);
+        mSpacingAndPunctuations = new SpacingAndPunctuations(res);
         mHintToSaveText = res.getText(R.string.hint_add_to_dictionary);
-        mCurrentLanguageHasSpaces = res.getBoolean(R.bool.current_language_has_spaces);
 
         // Store the input attributes
         if (null == inputAttributes) {
@@ -199,18 +171,8 @@ public final class SettingsValues {
         // TODO: locale is saved, but not used yet. May have to change this if tests require.
         mLocale = locale;
         mDelayUpdateOldSuggestions = 0;
-        mSymbolsPrecededBySpace = new int[] { '(', '[', '{', '&' };
-        Arrays.sort(mSymbolsPrecededBySpace);
-        mSymbolsFollowedBySpace = new int[] { '.', ',', ';', ':', '!', '?', ')', ']', '}', '&' };
-        Arrays.sort(mSymbolsFollowedBySpace);
-        mWordConnectors = new int[] { '\'', '-' };
-        Arrays.sort(mWordConnectors);
-        mSentenceSeparator = Constants.CODE_PERIOD;
-        final String[] suggestPuncsSpec = new String[] { "!", "?", ",", ":", ";" };
-        mSuggestPuncList = createSuggestPuncList(suggestPuncsSpec);
-        mWordSeparators = "&\t \n()[]{}*&<>+=|.,;:!?/_\"";
+        mSpacingAndPunctuations = SpacingAndPunctuations.DEFAULT;
         mHintToSaveText = "Touch again to save";
-        mCurrentLanguageHasSpaces = true;
         mInputAttributes = new InputAttributes(null, false /* isFullscreenMode */);
         mAutoCap = true;
         mVibrateOn = true;
@@ -265,11 +227,11 @@ public final class SettingsValues {
     }
 
     public boolean isWordSeparator(final int code) {
-        return mWordSeparators.contains(String.valueOf((char)code));
+        return mSpacingAndPunctuations.isWordSeparator(code);
     }
 
     public boolean isWordConnector(final int code) {
-        return Arrays.binarySearch(mWordConnectors, code) >= 0;
+        return mSpacingAndPunctuations.isWordConnector(code);
     }
 
     public boolean isWordCodePoint(final int code) {
@@ -277,11 +239,11 @@ public final class SettingsValues {
     }
 
     public boolean isUsuallyPrecededBySpace(final int code) {
-        return Arrays.binarySearch(mSymbolsPrecededBySpace, code) >= 0;
+        return mSpacingAndPunctuations.isUsuallyPrecededBySpace(code);
     }
 
     public boolean isUsuallyFollowedBySpace(final int code) {
-        return Arrays.binarySearch(mSymbolsFollowedBySpace, code) >= 0;
+        return mSpacingAndPunctuations.isUsuallyFollowedBySpace(code);
     }
 
     public boolean shouldInsertSpacesAutomatically() {
@@ -318,27 +280,6 @@ public final class SettingsValues {
         final AppWorkaroundsUtils appWorkaroundUtils
                 = mAppWorkarounds.get(null, TIMEOUT_TO_GET_TARGET_PACKAGE);
         return null == appWorkaroundUtils ? false : appWorkaroundUtils.isBrokenByRecorrection();
-    }
-
-    // Helper functions to create member values.
-    private static SuggestedWords createSuggestPuncList(final String[] puncs) {
-        final ArrayList<SuggestedWordInfo> puncList = CollectionUtils.newArrayList();
-        if (puncs != null) {
-            for (final String puncSpec : puncs) {
-                // TODO: Stop using KeySpceParser.getLabel().
-                puncList.add(new SuggestedWordInfo(KeySpecParser.getLabel(puncSpec),
-                        SuggestedWordInfo.MAX_SCORE, SuggestedWordInfo.KIND_HARDCODED,
-                        Dictionary.DICTIONARY_HARDCODED,
-                        SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
-                        SuggestedWordInfo.NOT_A_CONFIDENCE /* autoCommitFirstWordConfidence */));
-            }
-        }
-        return new SuggestedWords(puncList,
-                false /* typedWordValid */,
-                false /* hasAutoCorrectionCandidate */,
-                true /* isPunctuationSuggestions */,
-                false /* isObsoleteSuggestions */,
-                false /* isPrediction */);
     }
 
     private static final int SUGGESTION_VISIBILITY_SHOW_VALUE =
