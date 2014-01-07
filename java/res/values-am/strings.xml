@@ -119,6 +119,8 @@
     <string name="keyboard_mode_time" msgid="4381856885582143277">"ጊዜ"</string>
     <string name="keyboard_mode_url" msgid="1519819835514911218">"ዩ አር ኤል"</string>
     <string name="voice_input" msgid="3583258583521397548">"የድምፅ ግቤት ቁልፍ"</string>
+    <!-- no translation found for voice_input_disabled_summary (8141750303464726129) -->
+    <skip />
     <string name="configure_input_method" msgid="373356270290742459">"ግቤት ሜተዶችን አዋቀር"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"ቋንቋዎች አግቤት"</string>
     <string name="send_feedback" msgid="1780431884109392046">"ግብረ-መልስ ላክ"</string>
