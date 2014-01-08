@@ -529,7 +529,7 @@ public final class InputLogic {
         // In languages with spaces, we only start composing a word when we are not already
         // touching a word. In languages without spaces, the above conditions are sufficient.
                 (!mConnection.isCursorTouchingWord(settingsValues)
-                        || !settingsValues.mCurrentLanguageHasSpaces)) {
+                        || !settingsValues.mSpacingAndPunctuations.mCurrentLanguageHasSpaces)) {
             // Reset entirely the composing state anyway, then start composing a new word unless
             // the character is a single quote or a dash. The idea here is, single quote and dash
             // are not separators and they should be treated as normal characters, except in the
@@ -594,7 +594,7 @@ public final class InputLogic {
         boolean didAutoCorrect = false;
         // We avoid sending spaces in languages without spaces if we were composing.
         final boolean shouldAvoidSendingCode = Constants.CODE_SPACE == codePoint
-                && !settingsValues.mCurrentLanguageHasSpaces
+                && !settingsValues.mSpacingAndPunctuations.mCurrentLanguageHasSpaces
                 && mWordComposer.isComposingWord();
         if (mWordComposer.isCursorFrontOrMiddleOfComposingWord()) {
             // If we are in the middle of a recorrection, we need to commit the recorrection
@@ -813,7 +813,7 @@ public final class InputLogic {
                 }
             }
             if (settingsValues.isSuggestionStripVisible()
-                    && settingsValues.mCurrentLanguageHasSpaces) {
+                    && settingsValues.mSpacingAndPunctuations.mCurrentLanguageHasSpaces) {
                 restartSuggestionsOnWordTouchedByCursor(settingsValues,
                         deleteCountAtStart - mDeleteCount /* offset */,
                         true /* includeResumedWordInSuggestions */, keyboardSwitcher);
@@ -911,8 +911,8 @@ public final class InputLogic {
         if (canBeFollowedByDoubleSpacePeriod(firstCodePoint)) {
             handler.cancelDoubleSpacePeriodTimer();
             mConnection.deleteSurroundingText(2, 0);
-            final String textToInsert = new String(
-                    new int[] { settingsValues.mSentenceSeparator, Constants.CODE_SPACE }, 0, 2);
+            final String textToInsert =
+                    settingsValues.mSpacingAndPunctuations.mSentenceSeparatorAndSpace;
             mConnection.commitText(textToInsert, 1);
             if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
                 ResearchLogger.latinIME_maybeDoubleSpacePeriod(textToInsert,
@@ -966,7 +966,7 @@ public final class InputLogic {
             if (TextUtils.isEmpty(selectedText)) return; // Race condition with the input connection
             mRecapitalizeStatus.initialize(mLastSelectionStart, mLastSelectionEnd,
                     selectedText.toString(),
-                    settingsValues.mLocale, settingsValues.mWordSeparators);
+                    settingsValues.mLocale, settingsValues.mSpacingAndPunctuations.mWordSeparators);
             // We trim leading and trailing whitespace.
             mRecapitalizeStatus.trim();
             // Trimming the object may have changed the length of the string, and we need to
@@ -1065,7 +1065,7 @@ public final class InputLogic {
         if (!mLatinIME.isSuggestionsStripVisible()) return;
         // Recorrection is not supported in languages without spaces because we don't know
         // how to segment them yet.
-        if (!settingsValues.mCurrentLanguageHasSpaces) return;
+        if (!settingsValues.mSpacingAndPunctuations.mCurrentLanguageHasSpaces) return;
         // If the cursor is not touching a word, or if there is a selection, return right away.
         if (mLastSelectionStart != mLastSelectionEnd) return;
         // If we don't know the cursor location, return.
@@ -1073,7 +1073,8 @@ public final class InputLogic {
         final int expectedCursorPosition = mLastSelectionStart + offset; // We know Start == End
         if (!mConnection.isCursorTouchingWord(settingsValues)) return;
         final TextRange range = mConnection.getWordRangeAtCursor(
-                settingsValues.mWordSeparators, 0 /* additionalPrecedingWordsCount */);
+                settingsValues.mSpacingAndPunctuations.mWordSeparators,
+                0 /* additionalPrecedingWordsCount */);
         if (null == range) return; // Happens if we don't have an input connection at all
         if (range.length() <= 0) return; // Race condition. No text to resume on, so bail out.
         // If for some strange reason (editor bug or so) we measure the text before the cursor as
@@ -1195,7 +1196,7 @@ public final class InputLogic {
             }
         }
         final String stringToCommit = originallyTypedWord + mLastComposedWord.mSeparatorString;
-        if (settingsValues.mCurrentLanguageHasSpaces) {
+        if (settingsValues.mSpacingAndPunctuations.mCurrentLanguageHasSpaces) {
             // For languages with spaces, we revert to the typed string, but the cursor is still
             // after the separator so we don't resume suggestions. If the user wants to correct
             // the word, they have to press backspace again.
@@ -1295,7 +1296,7 @@ public final class InputLogic {
     // TODO: Make this private
     public String getNthPreviousWordForSuggestion(final SettingsValues currentSettings,
             final int nthPreviousWord) {
-        if (currentSettings.mCurrentLanguageHasSpaces) {
+        if (currentSettings.mSpacingAndPunctuations.mCurrentLanguageHasSpaces) {
             // If we are typing in a language with spaces we can just look up the previous
             // word from textview.
             return mConnection.getNthPreviousWord(currentSettings, nthPreviousWord);
@@ -1386,7 +1387,7 @@ public final class InputLogic {
         if (settingsValues.mBigramPredictionEnabled) {
             mLatinIME.clearSuggestionStrip();
         } else {
-            mLatinIME.setSuggestedWords(settingsValues.mSuggestPuncList);
+            mLatinIME.setSuggestedWords(settingsValues.mSpacingAndPunctuations.mSuggestPuncList);
         }
         mConnection.resetCachesUponCursorMoveAndReturnSuccess(newSelStart, newSelEnd,
                 shouldFinishComposition);
@@ -1495,7 +1496,7 @@ public final class InputLogic {
     // TODO: Make this private.
     public void promotePhantomSpace(final SettingsValues settingsValues) {
         if (settingsValues.shouldInsertSpacesAutomatically()
-                && settingsValues.mCurrentLanguageHasSpaces
+                && settingsValues.mSpacingAndPunctuations.mCurrentLanguageHasSpaces
                 && !mConnection.textBeforeCursorLooksLikeURL()) {
             if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
                 ResearchLogger.latinIME_promotePhantomSpace();
