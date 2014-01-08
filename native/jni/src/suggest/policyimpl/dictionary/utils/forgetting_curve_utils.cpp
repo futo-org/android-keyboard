@@ -42,6 +42,7 @@ const int ForgettingCurveUtils::DISCARD_LEVEL_ZERO_ENTRY_TIME_STEP_COUNT_THRESHO
 
 const ForgettingCurveUtils::ProbabilityTable ForgettingCurveUtils::sProbabilityTable;
 
+// TODO: Revise the logic to decide the initial probability depending on the given probability.
 /* static */ const HistoricalInfo ForgettingCurveUtils::createUpdatedHistoricalInfo(
         const HistoricalInfo *const originalHistoricalInfo,
         const int newProbability, const int timestamp) {

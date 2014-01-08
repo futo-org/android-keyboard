@@ -23,6 +23,7 @@
 
 namespace latinime {
 
+// TODO: Quit using bigram probability to indicate the delta.
 class ProbabilityUtils {
  public:
     static AK_FORCE_INLINE int backoff(const int unigramProbability) {
