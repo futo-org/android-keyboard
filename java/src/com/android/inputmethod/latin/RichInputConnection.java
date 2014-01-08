@@ -685,6 +685,10 @@ public final class RichInputConnection {
                 && !settingsValues.isWordConnector(codePointBeforeCursor)) {
             return true;
         }
+        return isCursorFollowedByWordCharacter(settingsValues);
+    }
+
+    public boolean isCursorFollowedByWordCharacter(final SettingsValues settingsValues) {
         final CharSequence after = getTextAfterCursor(1, 0);
         if (!TextUtils.isEmpty(after) && !settingsValues.isWordSeparator(after.charAt(0))
                 && !settingsValues.isWordConnector(after.charAt(0))) {
