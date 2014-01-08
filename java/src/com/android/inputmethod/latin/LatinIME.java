@@ -524,8 +524,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
         if (currentSettingsValues.mUsePersonalizedDicts) {
             if (mSubtypeSwitcher.isSystemLocaleSameAsLocaleOfAllEnabledSubtypes()) {
-                PersonalizationDictionarySessionRegistrar.init(this,
-                        mInputLogic.mSuggest.mDictionaryFacilitator);
+                final DictionaryFacilitatorForSuggest dictionaryFacilitator =
+                        (mInputLogic.mSuggest == null) ?
+                                null : mInputLogic.mSuggest.mDictionaryFacilitator;
+                PersonalizationDictionarySessionRegistrar.init(this, dictionaryFacilitator);
             } else {
                 PersonalizationDictionarySessionRegistrar.close(this);
             }
