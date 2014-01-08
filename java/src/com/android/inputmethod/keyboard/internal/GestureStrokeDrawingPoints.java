@@ -157,19 +157,19 @@ public final class GestureStrokeDrawingPoints {
             for (int i = 1; i < segments; i++) {
                 final float t = i / (float)segments;
                 mInterpolator.interpolate(t);
-                eventTimes.add(d1, (int)(dt * t) + t1);
-                xCoords.add(d1, (int)mInterpolator.mInterpolatedX);
-                yCoords.add(d1, (int)mInterpolator.mInterpolatedY);
+                eventTimes.addAt(d1, (int)(dt * t) + t1);
+                xCoords.addAt(d1, (int)mInterpolator.mInterpolatedX);
+                yCoords.addAt(d1, (int)mInterpolator.mInterpolatedY);
                 if (GestureTrailDrawingPoints.DEBUG_SHOW_POINTS) {
-                    types.add(d1, GestureTrailDrawingPoints.POINT_TYPE_INTERPOLATED);
+                    types.addAt(d1, GestureTrailDrawingPoints.POINT_TYPE_INTERPOLATED);
                 }
                 d1++;
             }
-            eventTimes.add(d1, pt[p2]);
-            xCoords.add(d1, px[p2]);
-            yCoords.add(d1, py[p2]);
+            eventTimes.addAt(d1, pt[p2]);
+            xCoords.addAt(d1, px[p2]);
+            yCoords.addAt(d1, py[p2]);
             if (GestureTrailDrawingPoints.DEBUG_SHOW_POINTS) {
-                types.add(d1, GestureTrailDrawingPoints.POINT_TYPE_SAMPLED);
+                types.addAt(d1, GestureTrailDrawingPoints.POINT_TYPE_SAMPLED);
             }
         }
         return lastInterpolatedDrawIndex;

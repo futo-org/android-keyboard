@@ -67,7 +67,7 @@ public class ResizableIntArrayTests extends AndroidTestCase {
         final int limit = DEFAULT_CAPACITY * 10, step = DEFAULT_CAPACITY * 2;
         for (int i = 0; i < limit; i += step) {
             final int value = i;
-            src.add(i, value);
+            src.addAt(i, value);
             assertEquals("length after add at " + i, i + 1, src.getLength());
         }
         for (int i = 0; i < limit; i += step) {
@@ -93,7 +93,7 @@ public class ResizableIntArrayTests extends AndroidTestCase {
 
         final int index = DEFAULT_CAPACITY / 2;
         final int valueAddAt = 100;
-        src.add(index, valueAddAt);
+        src.addAt(index, valueAddAt);
         assertEquals("legth after add at " + index, index + 1, src.getLength());
         assertEquals("value after add at " + index, valueAddAt, src.get(index));
         assertEquals("value after add at 0", 0, src.get(0));
@@ -365,7 +365,7 @@ public class ResizableIntArrayTests extends AndroidTestCase {
         final int shiftAmount = 20;
         for (int i = 0; i < limit; ++i) {
             final int value = i;
-            src.add(i, value);
+            src.addAt(i, value);
             assertEquals("length after add at " + i, i + 1, src.getLength());
         }
         src.shift(shiftAmount);

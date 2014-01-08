@@ -82,7 +82,7 @@ public class InputPointersTests extends AndroidTestCase {
             final int y = i * 2;
             final int pointerId = i * 3;
             final int time = i * 4;
-            src.addPointer(i, x, y, pointerId, time);
+            src.addPointerAt(i, x, y, pointerId, time);
             assertEquals("size after add at " + i, i + 1, src.getPointerSize());
         }
         for (int i = 0; i < limit; i += step) {

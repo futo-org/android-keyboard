@@ -186,7 +186,7 @@ public final class WordComposer {
             // (See {@link #setBatchInputWord}).
             if (!mIsBatchMode) {
                 // TODO: Set correct pointer id and time
-                mInputPointers.addPointer(newIndex, keyX, keyY, 0, 0);
+                mInputPointers.addPointerAt(newIndex, keyX, keyY, 0, 0);
             }
         }
         mIsFirstCharCapitalized = isFirstCharCapitalized(

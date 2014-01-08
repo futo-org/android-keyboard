@@ -34,8 +34,7 @@ public final class ResizableIntArray {
         throw new ArrayIndexOutOfBoundsException("length=" + mLength + "; index=" + index);
     }
 
-    // TODO: Rename this method to addAt.
-    public void add(final int index, final int val) {
+    public void addAt(final int index, final int val) {
         if (index < mLength) {
             mArray[index] = val;
         } else {
