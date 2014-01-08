@@ -55,15 +55,14 @@ public final class InputPointers {
         mTimes.fill(lastTime, fromIndex, fillLength);
     }
 
-    // TODO: Rename this method to addPointerAt
-    public void addPointer(int index, int x, int y, int pointerId, int time) {
-        mXCoordinates.add(index, x);
-        mYCoordinates.add(index, y);
-        mPointerIds.add(index, pointerId);
+    public void addPointerAt(int index, int x, int y, int pointerId, int time) {
+        mXCoordinates.addAt(index, x);
+        mYCoordinates.addAt(index, y);
+        mPointerIds.addAt(index, pointerId);
         if (LatinImeLogger.sDBG || DEBUG_TIME) {
             fillWithLastTimeUntil(index);
         }
-        mTimes.add(index, time);
+        mTimes.addAt(index, time);
     }
 
     @UsedForTesting
