@@ -25,6 +25,7 @@ import android.text.InputType;
 import android.text.SpannableStringBuilder;
 import android.text.style.CharacterStyle;
 import android.text.style.SuggestionSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,8 +42,10 @@ import com.android.inputmethod.latin.utils.LocaleUtils;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
+    private static final String TAG = InputTestsBase.class.getSimpleName();
 
     private static final String PREF_DEBUG_MODE = "debug_mode";
     private static final String PREF_AUTO_CORRECTION_THRESHOLD = "auto_correction_threshold";
@@ -54,6 +57,7 @@ public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
     protected static final int DELAY_TO_WAIT_FOR_UNDERLINE = 500;
     // The message that sets predictions is posted with a 200 ms delay
     protected static final int DELAY_TO_WAIT_FOR_PREDICTIONS = 200;
+    private final int TIMEOUT_TO_WAIT_FOR_LOADING_MAIN_DICTIONARY_IN_SECONDS = 60;
 
     protected LatinIME mLatinIME;
     protected Keyboard mKeyboard;
@@ -260,15 +264,11 @@ public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
     }
 
     protected void waitForDictionaryToBeLoaded() {
-        int remainingAttempts = 300;
-        while (remainingAttempts > 0 && mLatinIME.isCurrentlyWaitingForMainDictionary()) {
-            try {
-                Thread.sleep(200);
-            } catch (InterruptedException e) {
-                // Don't do much
-            } finally {
-                --remainingAttempts;
-            }
+        try {
+            mLatinIME.waitForMainDictionary(
+                    TIMEOUT_TO_WAIT_FOR_LOADING_MAIN_DICTIONARY_IN_SECONDS, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            Log.e(TAG, "Interrupted during waiting for loading main dictionary.", e);
         }
     }
 
@@ -300,8 +300,7 @@ public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
             final String dictLocale) {
         changeLanguage(keyboardLocale);
         if (!keyboardLocale.equals(dictLocale)) {
-            mLatinIME.replaceMainDictionaryForTest(
-                    LocaleUtils.constructLocaleFromString(dictLocale));
+            mLatinIME.replaceDictionariesForTest(LocaleUtils.constructLocaleFromString(dictLocale));
         }
         waitForDictionaryToBeLoaded();
     }

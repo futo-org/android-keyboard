@@ -36,6 +36,7 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 // TODO: Consolidate dictionaries in native code.
@@ -55,8 +56,7 @@ public class DictionaryFacilitatorForSuggest {
     private UserHistoryDictionary mUserHistoryDictionary;
     private PersonalizationDictionary mPersonalizationDictionary;
 
-    @UsedForTesting
-    private boolean mIsCurrentlyWaitingForMainDictionary = false;
+    private final CountDownLatch mLatchForWaitingLoadingMainDictionary;
 
     public interface DictionaryInitializationListener {
         public void onUpdateMainDictionaryAvailability(boolean isMainDictionaryAvailable);
@@ -77,10 +77,38 @@ public class DictionaryFacilitatorForSuggest {
             final DictionaryFacilitatorForSuggest oldDictionaryFacilitator) {
         mContext = context;
         mLocale = locale;
+        mLatchForWaitingLoadingMainDictionary = new CountDownLatch(1);
         initForDebug(settingsValues);
-        reloadMainDict(context, locale, listener);
+        loadMainDict(context, locale, listener);
         setUserDictionary(new UserBinaryDictionary(context, locale));
         resetAdditionalDictionaries(oldDictionaryFacilitator, settingsValues);
+    }
+
+    /**
+     * Creates instance for reloading the main dict.
+     *
+     * @param listener the listener
+     * @param oldDictionaryFacilitator the instance having old dictionaries. This must not be null.
+     */
+    public DictionaryFacilitatorForSuggest(final DictionaryInitializationListener listener,
+            final DictionaryFacilitatorForSuggest oldDictionaryFacilitator) {
+        mContext = oldDictionaryFacilitator.mContext;
+        mLocale = oldDictionaryFacilitator.mLocale;
+        mDictionarySubsetForDebug = oldDictionaryFacilitator.mDictionarySubsetForDebug;
+        mLatchForWaitingLoadingMainDictionary = new CountDownLatch(1);
+        loadMainDict(mContext, mLocale, listener);
+        // Transfer user dictionary.
+        setUserDictionary(oldDictionaryFacilitator.mUserDictionary);
+        oldDictionaryFacilitator.removeDictionary(Dictionary.TYPE_USER);
+        // Transfer contacts dictionary.
+        setContactsDictionary(oldDictionaryFacilitator.mContactsDictionary);
+        oldDictionaryFacilitator.removeDictionary(Dictionary.TYPE_CONTACTS);
+        // Transfer user history dictionary.
+        setUserHistoryDictionary(oldDictionaryFacilitator.mUserHistoryDictionary);
+        oldDictionaryFacilitator.removeDictionary(Dictionary.TYPE_USER_HISTORY);
+        // Transfer personalization dictionary.
+        setPersonalizationDictionary(oldDictionaryFacilitator.mPersonalizationDictionary);
+        oldDictionaryFacilitator.removeDictionary(Dictionary.TYPE_PERSONALIZATION);
     }
 
     /**
@@ -94,6 +122,7 @@ public class DictionaryFacilitatorForSuggest {
             final DictionaryFacilitatorForSuggest oldDictionaryFacilitator) {
         mContext = oldDictionaryFacilitator.mContext;
         mLocale = oldDictionaryFacilitator.mLocale;
+        mLatchForWaitingLoadingMainDictionary = new CountDownLatch(0);
         initForDebug(settingsValues);
         // Transfer main dictionary.
         setMainDictionary(oldDictionaryFacilitator.mMainDictionary);
@@ -110,6 +139,7 @@ public class DictionaryFacilitatorForSuggest {
             final ArrayList<String> dictionaryTypes, final HashMap<String, File> dictionaryFiles) {
         mContext = context;
         mLocale = locale;
+        mLatchForWaitingLoadingMainDictionary = new CountDownLatch(0);
         for (final String dictType : dictionaryTypes) {
             if (dictType.equals(Dictionary.TYPE_MAIN)) {
                 final DictionaryCollection mainDictionary =
@@ -167,9 +197,8 @@ public class DictionaryFacilitatorForSuggest {
         }
     }
 
-    public void reloadMainDict(final Context context, final Locale locale,
+    private void loadMainDict(final Context context, final Locale locale,
             final DictionaryInitializationListener listener) {
-        mIsCurrentlyWaitingForMainDictionary = true;
         mMainDictionary = null;
         if (listener != null) {
             listener.onUpdateMainDictionaryAvailability(hasMainDictionary());
@@ -183,7 +212,7 @@ public class DictionaryFacilitatorForSuggest {
                 if (listener != null) {
                     listener.onUpdateMainDictionaryAvailability(hasMainDictionary());
                 }
-                mIsCurrentlyWaitingForMainDictionary = false;
+                mLatchForWaitingLoadingMainDictionary.countDown();
             }
         }.start();
     }
@@ -194,9 +223,9 @@ public class DictionaryFacilitatorForSuggest {
         return null != mMainDictionary && mMainDictionary.isInitialized();
     }
 
-    @UsedForTesting
-    public boolean isCurrentlyWaitingForMainDictionary() {
-        return mIsCurrentlyWaitingForMainDictionary;
+    public void waitForLoadingMainDictionary(final long timeout, final TimeUnit unit)
+            throws InterruptedException {
+        mLatchForWaitingLoadingMainDictionary.await(timeout, unit);
     }
 
     private void setMainDictionary(final Dictionary mainDictionary) {
