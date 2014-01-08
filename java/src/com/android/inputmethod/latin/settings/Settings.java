@@ -176,7 +176,7 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     }
 
     public String getWordSeparators() {
-        return mSettingsValues.mSpacingAndPunctuations.mWordSeparators;
+        return mSettingsValues.mWordSeparators;
     }
 
     public boolean isWordSeparator(final int code) {
