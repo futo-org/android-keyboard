@@ -112,7 +112,7 @@ final public class BinaryDictionaryGetter {
         public DictPackSettings(final Context context) {
             mDictPreferences = null == context ? null
                     : context.getSharedPreferences(COMMON_PREFERENCES_NAME,
-                            Context.MODE_WORLD_READABLE | Context.MODE_MULTI_PROCESS);
+                            Context.MODE_MULTI_PROCESS);
         }
         public boolean isWordListActive(final String dictId) {
             if (null == mDictPreferences) {

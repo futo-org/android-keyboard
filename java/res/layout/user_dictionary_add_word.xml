@@ -58,42 +58,33 @@
     </EditText>
 
     <LinearLayout
+        style="?android:attr/buttonBarStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:divider="?android:attr/dividerHorizontal"
-        android:dividerPadding="0dip"
-        android:orientation="vertical"
-        android:showDividers="beginning" >
+        android:measureWithLargestChild="true"
+        android:orientation="horizontal" >
 
-        <LinearLayout
-            style="?android:attr/buttonBarStyle"
-            android:layout_width="match_parent"
+        <Button
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dip"
             android:layout_height="wrap_content"
-            android:measureWithLargestChild="true"
-            android:orientation="horizontal" >
+            android:layout_gravity="start"
+            android:layout_weight="1"
+            android:maxLines="2"
+            android:onClick="onClickCancel"
+            android:text="@string/cancel"
+            android:textSize="14sp" />
 
-            <Button
-                style="?android:attr/buttonBarButtonStyle"
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:layout_weight="1"
-                android:maxLines="2"
-                android:onClick="onClickCancel"
-                android:text="@string/cancel"
-                android:textSize="14sp" />
-
-            <Button
-                style="?android:attr/buttonBarButtonStyle"
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:layout_weight="1"
-                android:maxLines="2"
-                android:onClick="onClickConfirm"
-                android:text="@string/user_dict_settings_add_dialog_confirm"
-                android:textSize="14sp" />
-        </LinearLayout>
+        <Button
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_weight="1"
+            android:maxLines="2"
+            android:onClick="onClickConfirm"
+            android:text="@string/user_dict_settings_add_dialog_confirm"
+            android:textSize="14sp" />
     </LinearLayout>
 
 </LinearLayout>

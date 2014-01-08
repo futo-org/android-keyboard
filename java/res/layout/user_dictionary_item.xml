@@ -19,10 +19,11 @@
     android:background="?android:attr/selectableItemBackground"
     android:gravity="center_vertical"
     android:minHeight="?android:attr/listPreferredItemHeight"
-    android:paddingEnd="?android:attr/scrollbarSize" >
+    android:paddingEnd="?android:attr/scrollbarSize"
+    android:baselineAligned="false" >
 
     <RelativeLayout
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:padding="6dip"
         android:layout_weight="1" >

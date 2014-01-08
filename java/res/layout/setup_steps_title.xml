@@ -21,7 +21,5 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
     <TextView
         android:id="@+id/setup_title"
-        style="@style/setupTitleStyle"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true" />
+        style="@style/setupTitleStyle" />
 </merge>
