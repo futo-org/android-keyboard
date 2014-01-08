@@ -191,7 +191,7 @@ public final class CapsModeUtils {
         if (c == Constants.CODE_QUESTION_MARK || c == Constants.CODE_EXCLAMATION_MARK) {
             return (TextUtils.CAP_MODE_CHARACTERS | TextUtils.CAP_MODE_SENTENCES) & reqModes;
         }
-        if (settingsValues.mSentenceSeparator != c || j <= 0) {
+        if (!settingsValues.mSpacingAndPunctuations.isSentenceSeparator(c) || j <= 0) {
             return (TextUtils.CAP_MODE_CHARACTERS | TextUtils.CAP_MODE_WORDS) & reqModes;
         }
 
@@ -241,7 +241,7 @@ public final class CapsModeUtils {
             case WORD:
                 if (Character.isLetter(c)) {
                     state = WORD;
-                } else if (settingsValues.mSentenceSeparator == c) {
+                } else if (settingsValues.mSpacingAndPunctuations.isSentenceSeparator(c)) {
                     state = PERIOD;
                 } else {
                     return caps;
@@ -257,7 +257,7 @@ public final class CapsModeUtils {
             case LETTER:
                 if (Character.isLetter(c)) {
                     state = LETTER;
-                } else if (settingsValues.mSentenceSeparator == c) {
+                } else if (settingsValues.mSpacingAndPunctuations.isSentenceSeparator(c)) {
                     state = PERIOD;
                 } else {
                     return noCaps;
