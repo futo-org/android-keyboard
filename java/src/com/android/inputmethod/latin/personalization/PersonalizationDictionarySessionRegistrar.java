@@ -19,11 +19,15 @@ package com.android.inputmethod.latin.personalization;
 import android.content.Context;
 import android.content.res.Configuration;
 
+import com.android.inputmethod.latin.DictionaryFacilitatorForSuggest;
+
 public class PersonalizationDictionarySessionRegistrar {
-    public static void init(final Context context) {
+    public static void init(final Context context,
+            final DictionaryFacilitatorForSuggest dictionaryFacilitator) {
     }
 
-    public static void onConfigurationChanged(final Context context, final Configuration conf) {
+    public static void onConfigurationChanged(final Context context, final Configuration conf,
+            final DictionaryFacilitatorForSuggest dictionaryFacilitator) {
     }
 
     public static void onUpdateData(final Context context, final String type) {
