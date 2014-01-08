@@ -89,6 +89,7 @@ import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Input method implementation for Qwerty'ish keyboard.
@@ -519,10 +520,14 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     new DictionaryFacilitatorForSuggest(currentSettingsValues,
                             oldDictionaryFacilitator);
             // Create Suggest instance with the new dictionary facilitator.
-            mInputLogic.mSuggest = new Suggest(suggest /* oldSuggest */, dictionaryFacilitator);
-            suggest.close();
+            resetSuggest(new Suggest(suggest /* oldSuggest */, dictionaryFacilitator));
+        } else if (suggest == null) {
+            initSuggestForLocale(locale);
         }
-        if (currentSettingsValues.mUsePersonalizedDicts) {
+    }
+
+    private void refreshPersonalizationDictionarySession() {
+        if (mSettings.getCurrent().mUsePersonalizedDicts) {
             if (mSubtypeSwitcher.isSystemLocaleSameAsLocaleOfAllEnabledSubtypes()) {
                 final DictionaryFacilitatorForSuggest dictionaryFacilitator =
                         (mInputLogic.mSuggest == null) ?
@@ -562,33 +567,41 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         } else {
             subtypeLocale = switcherSubtypeLocale;
         }
+        initSuggestForLocale(subtypeLocale);
+    }
 
+    private void initSuggestForLocale(final Locale locale) {
         final SettingsValues settingsValues = mSettings.getCurrent();
         final DictionaryFacilitatorForSuggest oldDictionaryFacilitator =
                 (mInputLogic.mSuggest == null) ? null : mInputLogic.mSuggest.mDictionaryFacilitator;
         // Creates new dictionary facilitator for the new locale.
         final DictionaryFacilitatorForSuggest dictionaryFacilitator =
-                new DictionaryFacilitatorForSuggest(this /* context */, subtypeLocale,
+                new DictionaryFacilitatorForSuggest(this /* context */, locale,
                         settingsValues, this /* DictionaryInitializationListener */,
                         oldDictionaryFacilitator);
-        PersonalizationDictionarySessionRegistrar.onConfigurationChanged(
-                this, getResources().getConfiguration(), dictionaryFacilitator);
-        final Suggest newSuggest = new Suggest(subtypeLocale, dictionaryFacilitator);
+        final Suggest newSuggest = new Suggest(locale, dictionaryFacilitator);
         if (settingsValues.mCorrectionEnabled) {
             newSuggest.setAutoCorrectionThreshold(settingsValues.mAutoCorrectionThreshold);
         }
+        resetSuggest(newSuggest);
+    }
+
+    /* package private */ void resetSuggestMainDict() {
+        final DictionaryFacilitatorForSuggest oldDictionaryFacilitator =
+                mInputLogic.mSuggest.mDictionaryFacilitator;
+        final DictionaryFacilitatorForSuggest dictionaryFacilitator =
+                new DictionaryFacilitatorForSuggest(this /* listener */, oldDictionaryFacilitator);
+        resetSuggest(new Suggest(mInputLogic.mSuggest /* oldSuggest */, dictionaryFacilitator));
+    }
+
+    private void resetSuggest(final Suggest newSuggest) {
         if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
             ResearchLogger.getInstance().initDictionary(newSuggest.mDictionaryFacilitator);
         }
         final Suggest oldSuggest = mInputLogic.mSuggest;
         mInputLogic.mSuggest = newSuggest;
         if (oldSuggest != null) oldSuggest.close();
-    }
-
-    /* package private */ void resetSuggestMainDict() {
-        final Locale subtypeLocale = mSubtypeSwitcher.getCurrentSubtypeLocale();
-        mInputLogic.mSuggest.mDictionaryFacilitator.reloadMainDict(this, subtypeLocale,
-                this /* SuggestInitializationListener */);
+        refreshPersonalizationDictionarySession();
     }
 
     @Override
@@ -1789,14 +1802,20 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     // DO NOT USE THIS for any other purpose than testing. This is information private to LatinIME.
     @UsedForTesting
-    /* package for test */ boolean isCurrentlyWaitingForMainDictionary() {
-        return mInputLogic.mSuggest.mDictionaryFacilitator.isCurrentlyWaitingForMainDictionary();
+    /* package for test */ void waitForMainDictionary(final long timeout, final TimeUnit unit)
+            throws InterruptedException {
+        mInputLogic.mSuggest.mDictionaryFacilitator.waitForLoadingMainDictionary(timeout, unit);
     }
 
     // DO NOT USE THIS for any other purpose than testing. This can break the keyboard badly.
     @UsedForTesting
-    /* package for test */ void replaceMainDictionaryForTest(final Locale locale) {
-        mInputLogic.mSuggest.mDictionaryFacilitator.reloadMainDict(this, locale, null);
+    /* package for test */ void replaceDictionariesForTest(final Locale locale) {
+        final DictionaryFacilitatorForSuggest oldDictionaryFacilitator =
+                mInputLogic.mSuggest.mDictionaryFacilitator;
+        final DictionaryFacilitatorForSuggest dictionaryFacilitator =
+                new DictionaryFacilitatorForSuggest(this, locale, mSettings.getCurrent(),
+                        this /* listener */, oldDictionaryFacilitator);
+        resetSuggest(new Suggest(locale, dictionaryFacilitator));
     }
 
     public void debugDumpStateAndCrashWithException(final String context) {
