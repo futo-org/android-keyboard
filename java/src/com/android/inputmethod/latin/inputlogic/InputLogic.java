@@ -813,8 +813,7 @@ public final class InputLogic {
                 }
             }
             if (settingsValues.isSuggestionStripVisible()
-                    && settingsValues.mSpacingAndPunctuations.mCurrentLanguageHasSpaces
-                    && !mConnection.isCursorFollowedByWordCharacter(settingsValues)) {
+                    && settingsValues.mSpacingAndPunctuations.mCurrentLanguageHasSpaces) {
                 restartSuggestionsOnWordTouchedByCursor(settingsValues,
                         deleteCountAtStart - mDeleteCount /* offset */,
                         true /* includeResumedWordInSuggestions */, keyboardSwitcher);
@@ -1115,19 +1114,11 @@ public final class InputLogic {
                 keyboardSwitcher.getKeyboard());
         mWordComposer.setCursorPositionWithinWord(
                 typedWord.codePointCount(0, numberOfCharsInWordBeforeCursor));
-        // TODO: Change these lines to setComposingRegion(cursorPosition,
+        // TODO: Change these two lines to setComposingRegion(cursorPosition,
         //         cursorPosition + range.getNumberOfCharsInWordAfterCursor());
-        if (0 != offset) {
-            // Backspace was pressed. We are at the end of a word, and we don't know the cursor
-            // position for sure, so use relative methods.
-            mConnection.deleteSurroundingText(numberOfCharsInWordBeforeCursor, 0);
-            mConnection.setComposingText(typedWord, 1);
-        } else {
-            // This is recorrection. The cursor position is reasonably reliable, and the cursor
-            // may be in the middle of a word so use setComposingRegion.
-            mConnection.setComposingRegion(expectedCursorPosition - numberOfCharsInWordBeforeCursor,
-                expectedCursorPosition + range.getNumberOfCharsInWordAfterCursor());
-        }
+        mConnection.deleteSurroundingText(numberOfCharsInWordBeforeCursor,
+              typedWord.length() - numberOfCharsInWordBeforeCursor);
+        mConnection.setComposingText(typedWord, 1);
         if (suggestions.isEmpty()) {
             // We come here if there weren't any suggestion spans on this word. We will try to
             // compute suggestions for it instead.
