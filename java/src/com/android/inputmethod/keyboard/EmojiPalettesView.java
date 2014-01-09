@@ -552,7 +552,7 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
             return false;
         }
         final int code = (Integer) tag;
-        switch(event.getAction()) {
+        switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 mKeyboardActionListener.onPressKey(
                         code, 0 /* repeatCount */, true /* isSinglePointer */);
