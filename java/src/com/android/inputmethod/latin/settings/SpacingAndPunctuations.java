@@ -18,6 +18,7 @@ package com.android.inputmethod.latin.settings;
 
 import android.content.res.Resources;
 
+import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.internal.KeySpecParser;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.Dictionary;
@@ -29,6 +30,7 @@ import com.android.inputmethod.latin.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Locale;
 
 public final class SpacingAndPunctuations {
     private final int[] mSymbolsPrecededBySpace;
@@ -39,10 +41,11 @@ public final class SpacingAndPunctuations {
     private final int mSentenceSeparator;
     public final String mSentenceSeparatorAndSpace;
     public final boolean mCurrentLanguageHasSpaces;
+    public final boolean mUsesAmericanTypography;
 
-    public static final SpacingAndPunctuations DEFAULT = new SpacingAndPunctuations();
-
-    private SpacingAndPunctuations() {
+    // TODO: Remove this constructor.
+    @UsedForTesting
+    SpacingAndPunctuations(final Locale locale) {
         mSymbolsPrecededBySpace = new int[] { '(', '[', '{', '&' };
         Arrays.sort(mSymbolsPrecededBySpace);
         mSymbolsFollowedBySpace = new int[] { '.', ',', ';', ':', '!', '?', ')', ']', '}', '&' };
@@ -55,6 +58,7 @@ public final class SpacingAndPunctuations {
         mSuggestPuncList = createSuggestPuncList(suggestPuncsSpec);
         mWordSeparators = "&\t \n()[]{}*&<>+=|.,;:!?/_\"";
         mCurrentLanguageHasSpaces = true;
+        mUsesAmericanTypography = Locale.ENGLISH.getLanguage().equals(locale.getLanguage());
     }
 
     public SpacingAndPunctuations(final Resources res) {
@@ -75,6 +79,10 @@ public final class SpacingAndPunctuations {
         mSentenceSeparatorAndSpace = new String(new int[] {
                 mSentenceSeparator, Constants.CODE_SPACE }, 0, 2);
         mCurrentLanguageHasSpaces = res.getBoolean(R.bool.current_language_has_spaces);
+        final Locale locale = res.getConfiguration().locale;
+        // Heuristic: we use American Typography rules because it's the most common rules for all
+        // English variants.
+        mUsesAmericanTypography = Locale.ENGLISH.getLanguage().equals(locale.getLanguage());
     }
 
     // Helper functions to create member values.

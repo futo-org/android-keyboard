@@ -167,8 +167,7 @@ public final class CapsModeUtils {
         // No other language has such a rule as far as I know, instead putting inside the quotation
         // mark as the exact thing quoted and handling the surrounding punctuation independently,
         // e.g. <<Did he say, "let's go home"?>>
-        // Hence, specifically for English, we treat this special case here.
-        if (Locale.ENGLISH.getLanguage().equals(settingsValues.mLocale.getLanguage())) {
+        if (settingsValues.mSpacingAndPunctuations.mUsesAmericanTypography) {
             for (; j > 0; j--) {
                 // Here we look to go over any closing punctuation. This is because in dominant
                 // variants of English, the final period is placed within double quotes and maybe
