@@ -368,8 +368,8 @@ public class InputLogicTests extends InputTestsBase {
         // Choose the auto-correction, which is always in position 0. For "Barack", the
         // auto-correction should be "Barack".
         pickSuggestionManually(0, WORD_TO_TYPE);
-        runMessages();
         sleep(DELAY_TO_WAIT_FOR_PREDICTIONS);
+        runMessages();
         // Test the first prediction is displayed
         final SuggestedWords suggestedWords = mLatinIME.getSuggestedWords();
         assertEquals("predictions after manual pick", "Obama",
