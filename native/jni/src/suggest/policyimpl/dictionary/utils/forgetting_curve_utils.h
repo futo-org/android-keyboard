@@ -26,7 +26,6 @@ namespace latinime {
 
 class DictionaryHeaderStructurePolicy;
 
-// TODO: Quit using bigram probability to indicate the delta.
 class ForgettingCurveUtils {
  public:
     static const int MAX_UNIGRAM_COUNT;
