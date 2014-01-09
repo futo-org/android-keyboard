@@ -35,7 +35,6 @@ import com.android.inputmethod.latin.utils.StringUtils;
 import com.android.inputmethod.latin.utils.TextRange;
 import com.android.inputmethod.research.ResearchLogger;
 
-import java.util.Locale;
 import java.util.regex.Pattern;
 
 /**
@@ -302,7 +301,7 @@ public final class RichInputConnection {
         // This never calls InputConnection#getCapsMode - in fact, it's a static method that
         // never blocks or initiates IPC.
         return CapsModeUtils.getCapsMode(mCommittedTextBeforeComposingText, inputType,
-                settingsValues, hasSpaceBefore);
+                settingsValues.mSpacingAndPunctuations, hasSpaceBefore);
     }
 
     public int getCodePointBeforeCursor() {
