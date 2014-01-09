@@ -34,7 +34,8 @@
     <application android:label="@string/english_ime_name"
             android:icon="@drawable/ic_launcher_keyboard"
             android:killAfterRestore="false"
-            android:supportsRtl="true">
+            android:supportsRtl="true"
+            android:allowBackup="true">
 
         <service android:name="LatinIME"
                 android:label="@string/english_ime_name"
@@ -110,13 +111,14 @@
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".personalization.DictionaryDecayBroadcastReciever">
+        <receiver android:name=".personalization.DictionaryDecayBroadcastReciever"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.android.inputmethod.latin.personalization.DICT_DECAY" />
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".DictionaryPackInstallBroadcastReceiver">
+        <receiver android:name=".DictionaryPackInstallBroadcastReceiver" android:exported="false">
             <intent-filter>
                 <action android:name="com.android.inputmethod.dictionarypack.aosp.UNKNOWN_CLIENT" />
             </intent-filter>
