@@ -21,7 +21,7 @@ import android.text.TextUtils;
 
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.WordComposer;
-import com.android.inputmethod.latin.settings.SettingsValues;
+import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
 
 import java.util.Locale;
 
@@ -74,7 +74,7 @@ public final class CapsModeUtils {
      * @param reqModes The modes to be checked: may be any combination of
      * {@link TextUtils#CAP_MODE_CHARACTERS}, {@link TextUtils#CAP_MODE_WORDS}, and
      * {@link TextUtils#CAP_MODE_SENTENCES}.
-     * @param settingsValues The current settings values.
+     * @param spacingAndPunctuations The current spacing and punctuations settings.
      * @param hasSpaceBefore Whether we should consider there is a space inserted at the end of cs
      *
      * @return Returns the actual capitalization modes that can be in effect
@@ -83,7 +83,7 @@ public final class CapsModeUtils {
      * {@link TextUtils#CAP_MODE_SENTENCES}.
      */
     public static int getCapsMode(final CharSequence cs, final int reqModes,
-            final SettingsValues settingsValues, final boolean hasSpaceBefore) {
+            final SpacingAndPunctuations spacingAndPunctuations, final boolean hasSpaceBefore) {
         // Quick description of what we want to do:
         // CAP_MODE_CHARACTERS is always on.
         // CAP_MODE_WORDS is on if there is some whitespace before the cursor.
@@ -167,7 +167,7 @@ public final class CapsModeUtils {
         // No other language has such a rule as far as I know, instead putting inside the quotation
         // mark as the exact thing quoted and handling the surrounding punctuation independently,
         // e.g. <<Did he say, "let's go home"?>>
-        if (settingsValues.mSpacingAndPunctuations.mUsesAmericanTypography) {
+        if (spacingAndPunctuations.mUsesAmericanTypography) {
             for (; j > 0; j--) {
                 // Here we look to go over any closing punctuation. This is because in dominant
                 // variants of English, the final period is placed within double quotes and maybe
@@ -190,7 +190,7 @@ public final class CapsModeUtils {
         if (c == Constants.CODE_QUESTION_MARK || c == Constants.CODE_EXCLAMATION_MARK) {
             return (TextUtils.CAP_MODE_CHARACTERS | TextUtils.CAP_MODE_SENTENCES) & reqModes;
         }
-        if (!settingsValues.mSpacingAndPunctuations.isSentenceSeparator(c) || j <= 0) {
+        if (!spacingAndPunctuations.isSentenceSeparator(c) || j <= 0) {
             return (TextUtils.CAP_MODE_CHARACTERS | TextUtils.CAP_MODE_WORDS) & reqModes;
         }
 
@@ -240,7 +240,7 @@ public final class CapsModeUtils {
             case WORD:
                 if (Character.isLetter(c)) {
                     state = WORD;
-                } else if (settingsValues.mSpacingAndPunctuations.isSentenceSeparator(c)) {
+                } else if (spacingAndPunctuations.isSentenceSeparator(c)) {
                     state = PERIOD;
                 } else {
                     return caps;
@@ -256,7 +256,7 @@ public final class CapsModeUtils {
             case LETTER:
                 if (Character.isLetter(c)) {
                     state = LETTER;
-                } else if (settingsValues.mSpacingAndPunctuations.isSentenceSeparator(c)) {
+                } else if (spacingAndPunctuations.isSentenceSeparator(c)) {
                     state = PERIOD;
                 } else {
                     return noCaps;
