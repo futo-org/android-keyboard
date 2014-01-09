@@ -365,6 +365,7 @@ public final class BinaryDictionary extends Dictionary {
     }
 
     public static class LanguageModelParam {
+        public final String mTargetWord;
         public final int[] mWord0;
         public final int[] mWord1;
         // TODO: this needs to be a list of shortcuts
@@ -379,6 +380,7 @@ public final class BinaryDictionary extends Dictionary {
         // Constructor for unigram. TODO: support shortcuts
         public LanguageModelParam(final String word, final int unigramProbability,
                 final int timestamp) {
+            mTargetWord = word;
             mWord0 = null;
             mWord1 = StringUtils.toCodePointArray(word);
             mShortcutTarget = null;
@@ -394,6 +396,7 @@ public final class BinaryDictionary extends Dictionary {
         public LanguageModelParam(final String word0, final String word1,
                 final int unigramProbability, final int bigramProbability,
                 final int timestamp) {
+            mTargetWord = word1;
             mWord0 = StringUtils.toCodePointArray(word0);
             mWord1 = StringUtils.toCodePointArray(word1);
             mShortcutTarget = null;
