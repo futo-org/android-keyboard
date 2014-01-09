@@ -126,7 +126,7 @@ public final class TimerHandler extends LeakGuardHandlerWrapper<Callbacks> imple
         removeMessages(MSG_LONGPRESS_SHIFT_KEY);
     }
 
-    private void cancelLongPressTimers() {
+    public void cancelLongPressTimers() {
         removeMessages(MSG_LONGPRESS_KEY);
         removeMessages(MSG_LONGPRESS_SHIFT_KEY);
     }
