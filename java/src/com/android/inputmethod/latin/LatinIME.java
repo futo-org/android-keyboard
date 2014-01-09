@@ -880,8 +880,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // Notify ResearchLogger
         if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
             ResearchLogger.latinIME_onFinishInputViewInternal(finishingInput,
-                    mInputLogic.mLastSelectionStart,
-                    mInputLogic.mLastSelectionEnd, getCurrentInputConnection());
+                    // TODO[IL]: mInputLogic.mConnection should be private
+                    mInputLogic.mConnection.getExpectedSelectionStart(),
+                    mInputLogic.mConnection.getExpectedSelectionEnd(), getCurrentInputConnection());
         }
     }
 
@@ -894,22 +895,18 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (DEBUG) {
             Log.i(TAG, "onUpdateSelection: oss=" + oldSelStart
                     + ", ose=" + oldSelEnd
-                    + ", lss=" + mInputLogic.mLastSelectionStart
-                    + ", lse=" + mInputLogic.mLastSelectionEnd
                     + ", nss=" + newSelStart
                     + ", nse=" + newSelEnd
                     + ", cs=" + composingSpanStart
                     + ", ce=" + composingSpanEnd);
         }
         if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-            ResearchLogger.latinIME_onUpdateSelection(mInputLogic.mLastSelectionStart,
-                    mInputLogic.mLastSelectionEnd,
+            ResearchLogger.latinIME_onUpdateSelection(oldSelStart, oldSelEnd,
                     oldSelStart, oldSelEnd, newSelStart, newSelEnd, composingSpanStart,
                     composingSpanEnd, mInputLogic.mConnection);
         }
 
-        final boolean selectionChanged = mInputLogic.mLastSelectionStart != newSelStart
-                || mInputLogic.mLastSelectionEnd != newSelEnd;
+        final boolean selectionChanged = oldSelStart != newSelStart || oldSelEnd != newSelEnd;
 
         // if composingSpanStart and composingSpanEnd are -1, it means there is no composing
         // span in the view - we can use that to narrow down whether the cursor was moved
@@ -972,9 +969,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mKeyboardSwitcher.updateShiftState();
         }
 
-        // Make a note of the cursor position
-        mInputLogic.mLastSelectionStart = newSelStart;
-        mInputLogic.mLastSelectionEnd = newSelEnd;
         mSubtypeState.currentSubtypeUsed();
     }
 
