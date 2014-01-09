@@ -35,16 +35,19 @@ import com.android.inputmethod.latin.R;
 // TODO: Implement key popup preview.
 public final class EmojiPageKeyboardView extends KeyboardView implements
         GestureDetector.OnGestureListener {
-    public interface OnKeyClickListener {
-        public void onKeyClick(Key key);
+    public interface OnKeyEventListener {
+        public void onPressKey(Key key);
+        public void onReleaseKey(Key key);
     }
 
-    private static final OnKeyClickListener EMPTY_LISTENER = new OnKeyClickListener() {
-        @Override
-        public void onKeyClick(final Key key) {}
+    private static final OnKeyEventListener EMPTY_LISTENER = new OnKeyEventListener() {
+      @Override
+      public void onPressKey(final Key key) {}
+      @Override
+      public void onReleaseKey(final Key key) {}
     };
 
-    private OnKeyClickListener mListener = EMPTY_LISTENER;
+    private OnKeyEventListener mListener = EMPTY_LISTENER;
     private final KeyDetector mKeyDetector = new KeyDetector(0.0f /*keyHysteresisDistance */);
     private final GestureDetector mGestureDetector;
 
@@ -59,7 +62,7 @@ public final class EmojiPageKeyboardView extends KeyboardView implements
         mGestureDetector.setIsLongpressEnabled(false /* isLongpressEnabled */);
     }
 
-    public void setOnKeyClickListener(final OnKeyClickListener listener) {
+    public void setOnKeyEventListener(final OnKeyEventListener listener) {
         mListener = listener;
     }
 
@@ -115,9 +118,9 @@ public final class EmojiPageKeyboardView extends KeyboardView implements
         if (key == null) {
             return false;
         }
-        // TODO: May call {@link KeyboardActionListener#onPressKey(int,int,boolean)}.
         key.onPressed();
         invalidateKey(key);
+        mListener.onPressKey(key);
         return false;
     }
 
@@ -133,10 +136,9 @@ public final class EmojiPageKeyboardView extends KeyboardView implements
         if (key == null) {
             return false;
         }
-        // TODO: May call {@link KeyboardActionListener#onReleaseKey(int,boolean)}.
         key.onReleased();
         invalidateKey(key);
-        mListener.onKeyClick(key);
+        mListener.onReleaseKey(key);
         return true;
     }
 
