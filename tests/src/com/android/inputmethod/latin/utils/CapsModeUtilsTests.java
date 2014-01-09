@@ -16,75 +16,83 @@
 
 package com.android.inputmethod.latin.utils;
 
-import com.android.inputmethod.latin.settings.SettingsValues;
-
+import android.content.res.Resources;
 import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
 import android.text.TextUtils;
+
+import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
 
 import java.util.Locale;
 
 @SmallTest
 public class CapsModeUtilsTests extends AndroidTestCase {
     private static void onePathForCaps(final CharSequence cs, final int expectedResult,
-            final int mask, final SettingsValues sv, final boolean hasSpaceBefore) {
-        int oneTimeResult = expectedResult & mask;
+            final int mask, final SpacingAndPunctuations sp, final boolean hasSpaceBefore) {
+        final int oneTimeResult = expectedResult & mask;
         assertEquals("After >" + cs + "<", oneTimeResult,
-                CapsModeUtils.getCapsMode(cs, mask, sv, hasSpaceBefore));
+                CapsModeUtils.getCapsMode(cs, mask, sp, hasSpaceBefore));
     }
 
     private static void allPathsForCaps(final CharSequence cs, final int expectedResult,
-            final SettingsValues sv, final boolean hasSpaceBefore) {
+            final SpacingAndPunctuations sp, final boolean hasSpaceBefore) {
         final int c = TextUtils.CAP_MODE_CHARACTERS;
         final int w = TextUtils.CAP_MODE_WORDS;
         final int s = TextUtils.CAP_MODE_SENTENCES;
-        onePathForCaps(cs, expectedResult, c | w | s, sv, hasSpaceBefore);
-        onePathForCaps(cs, expectedResult, w | s, sv, hasSpaceBefore);
-        onePathForCaps(cs, expectedResult, c | s, sv, hasSpaceBefore);
-        onePathForCaps(cs, expectedResult, c | w, sv, hasSpaceBefore);
-        onePathForCaps(cs, expectedResult, c, sv, hasSpaceBefore);
-        onePathForCaps(cs, expectedResult, w, sv, hasSpaceBefore);
-        onePathForCaps(cs, expectedResult, s, sv, hasSpaceBefore);
+        onePathForCaps(cs, expectedResult, c | w | s, sp, hasSpaceBefore);
+        onePathForCaps(cs, expectedResult, w | s, sp, hasSpaceBefore);
+        onePathForCaps(cs, expectedResult, c | s, sp, hasSpaceBefore);
+        onePathForCaps(cs, expectedResult, c | w, sp, hasSpaceBefore);
+        onePathForCaps(cs, expectedResult, c, sp, hasSpaceBefore);
+        onePathForCaps(cs, expectedResult, w, sp, hasSpaceBefore);
+        onePathForCaps(cs, expectedResult, s, sp, hasSpaceBefore);
     }
 
     public void testGetCapsMode() {
         final int c = TextUtils.CAP_MODE_CHARACTERS;
         final int w = TextUtils.CAP_MODE_WORDS;
         final int s = TextUtils.CAP_MODE_SENTENCES;
-        SettingsValues sv = SettingsValues.makeDummySettingsValuesForTest(Locale.ENGLISH);
-        allPathsForCaps("", c | w | s, sv, false);
-        allPathsForCaps("Word", c, sv, false);
-        allPathsForCaps("Word.", c, sv, false);
-        allPathsForCaps("Word ", c | w, sv, false);
-        allPathsForCaps("Word. ", c | w | s, sv, false);
-        allPathsForCaps("Word..", c, sv, false);
-        allPathsForCaps("Word.. ", c | w | s, sv, false);
-        allPathsForCaps("Word... ", c | w | s, sv, false);
-        allPathsForCaps("Word ... ", c | w | s, sv, false);
-        allPathsForCaps("Word . ", c | w, sv, false);
-        allPathsForCaps("In the U.S ", c | w, sv, false);
-        allPathsForCaps("In the U.S. ", c | w, sv, false);
-        allPathsForCaps("Some stuff (e.g. ", c | w, sv, false);
-        allPathsForCaps("In the U.S.. ", c | w | s, sv, false);
-        allPathsForCaps("\"Word.\" ", c | w | s, sv, false);
-        allPathsForCaps("\"Word\". ", c | w | s, sv, false);
-        allPathsForCaps("\"Word\" ", c | w, sv, false);
+        final RunInLocale<SpacingAndPunctuations> job = new RunInLocale<SpacingAndPunctuations>() {
+            @Override
+            protected SpacingAndPunctuations job(final Resources res) {
+                return new SpacingAndPunctuations(res);
+            }
+        };
+        final Resources res = getContext().getResources();
+        SpacingAndPunctuations sp = job.runInLocale(res, Locale.ENGLISH);
+        allPathsForCaps("", c | w | s, sp, false);
+        allPathsForCaps("Word", c, sp, false);
+        allPathsForCaps("Word.", c, sp, false);
+        allPathsForCaps("Word ", c | w, sp, false);
+        allPathsForCaps("Word. ", c | w | s, sp, false);
+        allPathsForCaps("Word..", c, sp, false);
+        allPathsForCaps("Word.. ", c | w | s, sp, false);
+        allPathsForCaps("Word... ", c | w | s, sp, false);
+        allPathsForCaps("Word ... ", c | w | s, sp, false);
+        allPathsForCaps("Word . ", c | w, sp, false);
+        allPathsForCaps("In the U.S ", c | w, sp, false);
+        allPathsForCaps("In the U.S. ", c | w, sp, false);
+        allPathsForCaps("Some stuff (e.g. ", c | w, sp, false);
+        allPathsForCaps("In the U.S.. ", c | w | s, sp, false);
+        allPathsForCaps("\"Word.\" ", c | w | s, sp, false);
+        allPathsForCaps("\"Word\". ", c | w | s, sp, false);
+        allPathsForCaps("\"Word\" ", c | w, sp, false);
 
         // Test for phantom space
-        allPathsForCaps("Word", c | w, sv, true);
-        allPathsForCaps("Word.", c | w | s, sv, true);
+        allPathsForCaps("Word", c | w, sp, true);
+        allPathsForCaps("Word.", c | w | s, sp, true);
 
         // Tests after some whitespace
-        allPathsForCaps("Word\n", c | w | s, sv, false);
-        allPathsForCaps("Word\n", c | w | s, sv, true);
-        allPathsForCaps("Word\n ", c | w | s, sv, true);
-        allPathsForCaps("Word.\n", c | w | s, sv, false);
-        allPathsForCaps("Word.\n", c | w | s, sv, true);
-        allPathsForCaps("Word.\n ", c | w | s, sv, true);
+        allPathsForCaps("Word\n", c | w | s, sp, false);
+        allPathsForCaps("Word\n", c | w | s, sp, true);
+        allPathsForCaps("Word\n ", c | w | s, sp, true);
+        allPathsForCaps("Word.\n", c | w | s, sp, false);
+        allPathsForCaps("Word.\n", c | w | s, sp, true);
+        allPathsForCaps("Word.\n ", c | w | s, sp, true);
 
-        sv = SettingsValues.makeDummySettingsValuesForTest(Locale.FRENCH);
-        allPathsForCaps("\"Word.\" ", c | w, sv, false);
-        allPathsForCaps("\"Word\". ", c | w | s, sv, false);
-        allPathsForCaps("\"Word\" ", c | w, sv, false);
+        sp = job.runInLocale(res, Locale.FRENCH);
+        allPathsForCaps("\"Word.\" ", c | w, sp, false);
+        allPathsForCaps("\"Word\". ", c | w | s, sp, false);
+        allPathsForCaps("\"Word\" ", c | w, sp, false);
     }
 }
