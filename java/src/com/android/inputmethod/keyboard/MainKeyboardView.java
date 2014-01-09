@@ -424,8 +424,8 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
      */
     @Override
     public void setKeyboard(final Keyboard keyboard) {
-        // Remove any pending messages.
-        mKeyTimerHandler.cancelAllKeyTimers();
+        // Remove any pending messages, except dismissing preview and key repeat.
+        mKeyTimerHandler.cancelLongPressTimers();
         super.setKeyboard(keyboard);
         mKeyDetector.setKeyboard(
                 keyboard, -getPaddingLeft(), -getPaddingTop() + getVerticalCorrection());
