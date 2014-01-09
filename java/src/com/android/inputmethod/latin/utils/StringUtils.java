@@ -17,15 +17,12 @@
 package com.android.inputmethod.latin.utils;
 
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.Constants;
-import com.android.inputmethod.latin.settings.SettingsValues;
+import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 public final class StringUtils {
@@ -270,7 +267,7 @@ public final class StringUtils {
 
     @UsedForTesting
     public static boolean looksValidForDictionaryInsertion(final CharSequence text,
-            final SettingsValues settings) {
+            final SpacingAndPunctuations spacingAndPunctuations) {
         if (TextUtils.isEmpty(text)) return false;
         final int length = text.length();
         int i = 0;
@@ -284,7 +281,7 @@ public final class StringUtils {
                 digitCount += charCount;
                 continue;
             }
-            if (!settings.isWordCodePoint(codePoint)) return false;
+            if (!spacingAndPunctuations.isWordCodePoint(codePoint)) return false;
         }
         // We reject strings entirely comprised of digits to avoid using PIN codes or credit
         // card numbers. It would come in handy for word prediction though; a good example is
