@@ -23,7 +23,7 @@ public final class CommonPreferences {
     private static final String COMMON_PREFERENCES_NAME = "LatinImeDictPrefs";
 
     public static SharedPreferences getCommonPreferences(final Context context) {
-        return context.getSharedPreferences(COMMON_PREFERENCES_NAME, Context.MODE_WORLD_READABLE);
+        return context.getSharedPreferences(COMMON_PREFERENCES_NAME, 0);
     }
 
     public static void enable(final SharedPreferences pref, final String id) {

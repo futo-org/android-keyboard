@@ -35,7 +35,6 @@ import com.android.inputmethod.latin.utils.StringUtils;
 import com.android.inputmethod.latin.utils.TextRange;
 import com.android.inputmethod.research.ResearchLogger;
 
-import java.util.Locale;
 import java.util.regex.Pattern;
 
 /**
