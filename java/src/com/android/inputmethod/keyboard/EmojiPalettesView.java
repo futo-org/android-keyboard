@@ -71,8 +71,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * Because of the above reasons, this class doesn't extend {@link KeyboardView}.
  */
 public final class EmojiPalettesView extends LinearLayout implements OnTabChangeListener,
-        ViewPager.OnPageChangeListener, View.OnClickListener,
-        EmojiPageKeyboardView.OnKeyClickListener {
+        ViewPager.OnPageChangeListener, View.OnTouchListener,
+        EmojiPageKeyboardView.OnKeyEventListener {
     static final String TAG = EmojiPalettesView.class.getSimpleName();
     private static final boolean DEBUG_PAGER = false;
     private final int mKeyBackgroundId;
@@ -486,16 +486,16 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
         final ImageView alphabetKey = (ImageView)findViewById(R.id.emoji_keyboard_alphabet);
         alphabetKey.setBackgroundResource(mEmojiFunctionalKeyBackgroundId);
         alphabetKey.setTag(Constants.CODE_SWITCH_ALPHA_SYMBOL);
-        alphabetKey.setOnClickListener(this);
+        alphabetKey.setOnTouchListener(this);
         final ImageView spaceKey = (ImageView)findViewById(R.id.emoji_keyboard_space);
         spaceKey.setBackgroundResource(mKeyBackgroundId);
         spaceKey.setTag(Constants.CODE_SPACE);
-        spaceKey.setOnClickListener(this);
+        spaceKey.setOnTouchListener(this);
         mEmojiLayoutParams.setKeyProperties(spaceKey);
         final ImageView alphabetKey2 = (ImageView)findViewById(R.id.emoji_keyboard_alphabet2);
         alphabetKey2.setBackgroundResource(mEmojiFunctionalKeyBackgroundId);
         alphabetKey2.setTag(Constants.CODE_SWITCH_ALPHA_SYMBOL);
-        alphabetKey2.setOnClickListener(this);
+        alphabetKey2.setOnTouchListener(this);
     }
 
     @Override
@@ -543,31 +543,51 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
         }
     }
 
+    // Called from {@link EmojiPageKeyboardView} through {@link View.OnTouchListener} interface to
+    // handle touch events from View-based elements such as the space bar.
     @Override
-    public void onClick(final View v) {
-        if (v.getTag() instanceof Integer) {
-            final int code = (Integer)v.getTag();
-            registerCode(code);
-            return;
+    public boolean onTouch(final View v, final MotionEvent event) {
+        final Object tag = v.getTag();
+        if (!(tag instanceof Integer)) {
+            return false;
         }
+        final int code = (Integer) tag;
+        switch(event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                mKeyboardActionListener.onPressKey(
+                        code, 0 /* repeatCount */, true /* isSinglePointer */);
+                break;
+            case MotionEvent.ACTION_UP:
+                mKeyboardActionListener.onCodeInput(code, NOT_A_COORDINATE, NOT_A_COORDINATE);
+                mKeyboardActionListener.onReleaseKey(code, false /* withSliding */);
+                break;
+        }
+        return false;
     }
 
-    private void registerCode(final int code) {
-        mKeyboardActionListener.onPressKey(code, 0 /* repeatCount */, true /* isSinglePointer */);
-        mKeyboardActionListener.onCodeInput(code, NOT_A_COORDINATE, NOT_A_COORDINATE);
-        mKeyboardActionListener.onReleaseKey(code, false /* withSliding */);
-    }
-
+    // Called from {@link EmojiPageKeyboardView} through
+    // {@link EmojiPageKeyboardView.OnKeyEventListener} interface to handle touch events from
+    // non-View-based elements like typical Emoji characters.
     @Override
-    public void onKeyClick(final Key key) {
+    public void onPressKey(final Key key) {
+        final int code = key.getCode();
+        mKeyboardActionListener.onPressKey(code, 0 /* repeatCount */, true /* isSinglePointer */);
+    }
+
+    // Called from {@link EmojiPageKeyboardView} through
+    // {@link EmojiPageKeyboardView.OnKeyEventListener} interface to handle touch events from
+    // non-View-based elements like typical Emoji characters.
+    @Override
+    public void onReleaseKey(final Key key) {
         mEmojiPalettesAdapter.addRecentKey(key);
         mEmojiCategory.saveLastTypedCategoryPage();
         final int code = key.getCode();
         if (code == Constants.CODE_OUTPUT_TEXT) {
             mKeyboardActionListener.onTextInput(key.getOutputText());
-            return;
+        } else {
+            mKeyboardActionListener.onCodeInput(code, NOT_A_COORDINATE, NOT_A_COORDINATE);
         }
-        registerCode(code);
+        mKeyboardActionListener.onReleaseKey(code, false /* withSliding */);
     }
 
     public void setHardwareAcceleratedDrawingEnabled(final boolean enabled) {
@@ -630,7 +650,7 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
     }
 
     private static class EmojiPalettesAdapter extends PagerAdapter {
-        private final EmojiPageKeyboardView.OnKeyClickListener mListener;
+        private final EmojiPageKeyboardView.OnKeyEventListener mListener;
         private final DynamicGridKeyboard mRecentsKeyboard;
         private final SparseArray<EmojiPageKeyboardView> mActiveKeyboardViews =
                 CollectionUtils.newSparseArray();
@@ -638,7 +658,7 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
         private int mActivePosition = 0;
 
         public EmojiPalettesAdapter(final EmojiCategory emojiCategory,
-                final EmojiPageKeyboardView.OnKeyClickListener listener) {
+                final EmojiPageKeyboardView.OnKeyEventListener listener) {
             mEmojiCategory = emojiCategory;
             mListener = listener;
             mRecentsKeyboard = mEmojiCategory.getKeyboard(CATEGORY_ID_RECENTS, 0);
@@ -702,7 +722,7 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
             final EmojiPageKeyboardView keyboardView = (EmojiPageKeyboardView)inflater.inflate(
                     R.layout.emoji_keyboard_page, container, false /* attachToRoot */);
             keyboardView.setKeyboard(keyboard);
-            keyboardView.setOnKeyClickListener(mListener);
+            keyboardView.setOnKeyEventListener(mListener);
             container.addView(keyboardView);
             mActiveKeyboardViews.put(position, keyboardView);
             return keyboardView;
