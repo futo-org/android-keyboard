@@ -28,6 +28,7 @@ import android.view.inputmethod.InputConnection;
 
 import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.latin.settings.SettingsValues;
+import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
 import com.android.inputmethod.latin.utils.CapsModeUtils;
 import com.android.inputmethod.latin.utils.DebugLogUtils;
 import com.android.inputmethod.latin.utils.SpannableStringUtils;
@@ -537,7 +538,8 @@ public final class RichInputConnection {
     }
 
     @SuppressWarnings("unused")
-    public String getNthPreviousWord(final SettingsValues currentSettingsValues, final int n) {
+    public String getNthPreviousWord(final SpacingAndPunctuations spacingAndPunctuations,
+            final int n) {
         mIC = mParent.getCurrentInputConnection();
         if (null == mIC) return null;
         final CharSequence prev = getTextBeforeCursor(LOOKBACK_CHARACTER_NUM, 0);
@@ -556,7 +558,7 @@ public final class RichInputConnection {
                 }
             }
         }
-        return getNthPreviousWord(prev, currentSettingsValues, n);
+        return getNthPreviousWord(prev, spacingAndPunctuations, n);
     }
 
     private static boolean isSeparator(int code, String sep) {
@@ -580,7 +582,7 @@ public final class RichInputConnection {
     // (n = 2) "abc |" -> null
     // (n = 2) "abc. def|" -> null
     public static String getNthPreviousWord(final CharSequence prev,
-            final SettingsValues currentSettingsValues, final int n) {
+            final SpacingAndPunctuations spacingAndPunctuations, final int n) {
         if (prev == null) return null;
         final String[] w = spaceRegex.split(prev);
 
@@ -592,8 +594,8 @@ public final class RichInputConnection {
 
         // If ends in a separator, return null
         final char lastChar = nthPrevWord.charAt(length - 1);
-        if (currentSettingsValues.isWordSeparator(lastChar)
-                || currentSettingsValues.isWordConnector(lastChar)) return null;
+        if (spacingAndPunctuations.isWordSeparator(lastChar)
+                || spacingAndPunctuations.isWordConnector(lastChar)) return null;
 
         return nthPrevWord;
     }

@@ -16,22 +16,23 @@
 
 package com.android.inputmethod.latin;
 
-import com.android.inputmethod.latin.settings.SettingsValues;
-import com.android.inputmethod.latin.utils.TextRange;
-
+import android.content.res.Resources;
 import android.inputmethodservice.InputMethodService;
 import android.os.Parcel;
 import android.test.AndroidTestCase;
 import android.test.MoreAsserts;
 import android.test.suitebuilder.annotation.SmallTest;
 import android.text.SpannableString;
-import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.SuggestionSpan;
 import android.view.inputmethod.ExtractedText;
 import android.view.inputmethod.ExtractedTextRequest;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputConnectionWrapper;
+
+import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
+import com.android.inputmethod.latin.utils.RunInLocale;
+import com.android.inputmethod.latin.utils.TextRange;
 
 import java.util.Locale;
 
@@ -40,12 +41,19 @@ public class RichInputConnectionAndTextRangeTests extends AndroidTestCase {
 
     // The following is meant to be a reasonable default for
     // the "word_separators" resource.
-    private static final SettingsValues sSettings =
-            SettingsValues.makeDummySettingsValuesForTest(Locale.ENGLISH);
+    private SpacingAndPunctuations mSpacingAndPunctuations;
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
+        final RunInLocale<SpacingAndPunctuations> job = new RunInLocale<SpacingAndPunctuations>() {
+            @Override
+            protected SpacingAndPunctuations job(final Resources res) {
+                return new SpacingAndPunctuations(res);
+            }
+        };
+        final Resources res = getContext().getResources();
+        mSpacingAndPunctuations = job.runInLocale(res, Locale.ENGLISH);
     }
 
     private class MockConnection extends InputConnectionWrapper {
@@ -139,9 +147,12 @@ public class RichInputConnectionAndTextRangeTests extends AndroidTestCase {
      */
     public void testGetPreviousWord() {
         // If one of the following cases breaks, the bigram suggestions won't work.
-        assertEquals(RichInputConnection.getNthPreviousWord("abc def", sSettings, 2), "abc");
-        assertNull(RichInputConnection.getNthPreviousWord("abc", sSettings, 2));
-        assertNull(RichInputConnection.getNthPreviousWord("abc. def", sSettings, 2));
+        assertEquals(RichInputConnection.getNthPreviousWord(
+                "abc def", mSpacingAndPunctuations, 2), "abc");
+        assertNull(RichInputConnection.getNthPreviousWord(
+                "abc", mSpacingAndPunctuations, 2));
+        assertNull(RichInputConnection.getNthPreviousWord(
+                "abc. def", mSpacingAndPunctuations, 2));
 
         // The following tests reflect the current behavior of the function
         // RichInputConnection#getNthPreviousWord.
@@ -150,15 +161,23 @@ public class RichInputConnectionAndTextRangeTests extends AndroidTestCase {
         // this function if needed - especially since it does not seem very
         // logical. These tests are just there to catch any unintentional
         // changes in the behavior of the RichInputConnection#getPreviousWord method.
-        assertEquals(RichInputConnection.getNthPreviousWord("abc def ", sSettings, 2), "abc");
-        assertEquals(RichInputConnection.getNthPreviousWord("abc def.", sSettings, 2), "abc");
-        assertEquals(RichInputConnection.getNthPreviousWord("abc def .", sSettings, 2), "def");
-        assertNull(RichInputConnection.getNthPreviousWord("abc ", sSettings, 2));
+        assertEquals(RichInputConnection.getNthPreviousWord(
+                "abc def ", mSpacingAndPunctuations, 2), "abc");
+        assertEquals(RichInputConnection.getNthPreviousWord(
+                "abc def.", mSpacingAndPunctuations, 2), "abc");
+        assertEquals(RichInputConnection.getNthPreviousWord(
+                "abc def .", mSpacingAndPunctuations, 2), "def");
+        assertNull(RichInputConnection.getNthPreviousWord(
+                "abc ", mSpacingAndPunctuations, 2));
 
-        assertEquals(RichInputConnection.getNthPreviousWord("abc def", sSettings, 1), "def");
-        assertEquals(RichInputConnection.getNthPreviousWord("abc def ", sSettings, 1), "def");
-        assertNull(RichInputConnection.getNthPreviousWord("abc def.", sSettings, 1));
-        assertNull(RichInputConnection.getNthPreviousWord("abc def .", sSettings, 1));
+        assertEquals(RichInputConnection.getNthPreviousWord(
+                "abc def", mSpacingAndPunctuations, 1), "def");
+        assertEquals(RichInputConnection.getNthPreviousWord(
+                "abc def ", mSpacingAndPunctuations, 1), "def");
+        assertNull(RichInputConnection.getNthPreviousWord(
+                "abc def.", mSpacingAndPunctuations, 1));
+        assertNull(RichInputConnection.getNthPreviousWord(
+                "abc def .", mSpacingAndPunctuations, 1));
     }
 
     /**
