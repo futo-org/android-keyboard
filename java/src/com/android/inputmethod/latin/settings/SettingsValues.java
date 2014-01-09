@@ -96,9 +96,9 @@ public final class SettingsValues {
     // Debug settings
     public final boolean mIsInternal;
 
-    public SettingsValues(final Context context, final SharedPreferences prefs, final Locale locale,
-            final Resources res, final InputAttributes inputAttributes) {
-        mLocale = locale;
+    public SettingsValues(final Context context, final SharedPreferences prefs, final Resources res,
+            final InputAttributes inputAttributes) {
+        mLocale = res.getConfiguration().locale;
         // Get the resources
         mDelayUpdateOldSuggestions = res.getInteger(R.integer.config_delay_update_old_suggestions);
         mSpacingAndPunctuations = new SpacingAndPunctuations(res);
@@ -166,12 +166,13 @@ public final class SettingsValues {
         }
     }
 
+    // TODO: Remove this constructor.
     // Only for tests
     private SettingsValues(final Locale locale) {
         // TODO: locale is saved, but not used yet. May have to change this if tests require.
         mLocale = locale;
         mDelayUpdateOldSuggestions = 0;
-        mSpacingAndPunctuations = SpacingAndPunctuations.DEFAULT;
+        mSpacingAndPunctuations = new SpacingAndPunctuations(locale);
         mHintToSaveText = "Touch again to save";
         mInputAttributes = new InputAttributes(null, false /* isFullscreenMode */);
         mAutoCap = true;
@@ -206,6 +207,7 @@ public final class SettingsValues {
         mAppWorkarounds.set(null);
     }
 
+    // TODO: Remove this method.
     @UsedForTesting
     public static SettingsValues makeDummySettingsValuesForTest(final Locale locale) {
         return new SettingsValues(locale);
