@@ -46,6 +46,7 @@ import com.android.inputmethod.latin.WordComposer;
 import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.latin.settings.Settings;
 import com.android.inputmethod.latin.settings.SettingsValues;
+import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
 import com.android.inputmethod.latin.suggestions.SuggestionStripView;
 import com.android.inputmethod.latin.utils.AsyncResultHolder;
 import com.android.inputmethod.latin.utils.CollectionUtils;
@@ -369,7 +370,8 @@ public final class InputLogic {
         mWordComposer.setCapitalizedModeAndPreviousWordAtStartComposingTime(
                 getActualCapsMode(settingsValues, keyboardSwitcher.getKeyboardShiftMode()),
                 // Prev word is 1st word before cursor
-                getNthPreviousWordForSuggestion(settingsValues, 1 /* nthPreviousWord */));
+                getNthPreviousWordForSuggestion(
+                        settingsValues.mSpacingAndPunctuations, 1 /* nthPreviousWord */));
     }
 
     /* The sequence number member is only used in onUpdateBatchInput. It is increased each time
@@ -555,7 +557,8 @@ public final class InputLogic {
                 // yet, so the word we want is the 1st word before the cursor.
                 mWordComposer.setCapitalizedModeAndPreviousWordAtStartComposingTime(
                         getActualCapsMode(settingsValues, keyboardSwitcher.getKeyboardShiftMode()),
-                        getNthPreviousWordForSuggestion(settingsValues, 1 /* nthPreviousWord */));
+                        getNthPreviousWordForSuggestion(
+                                settingsValues.mSpacingAndPunctuations, 1 /* nthPreviousWord */));
             }
             mConnection.setComposingText(getTextWithUnderline(
                     mWordComposer.getTypedWord()), 1);
@@ -1107,7 +1110,7 @@ public final class InputLogic {
             }
         }
         mWordComposer.setComposingWord(typedWord,
-                getNthPreviousWordForSuggestion(settingsValues,
+                getNthPreviousWordForSuggestion(settingsValues.mSpacingAndPunctuations,
                         // We want the previous word for suggestion. If we have chars in the word
                         // before the cursor, then we want the word before that, hence 2; otherwise,
                         // we want the word immediately before the cursor, hence 1.
@@ -1301,17 +1304,17 @@ public final class InputLogic {
 
     /**
      * Get the nth previous word before the cursor as context for the suggestion process.
-     * @param currentSettings the current settings values.
+     * @param spacingAndPunctuations the current spacing and punctuations settings.
      * @param nthPreviousWord reverse index of the word to get (1-indexed)
      * @return the nth previous word before the cursor.
      */
     // TODO: Make this private
-    public String getNthPreviousWordForSuggestion(final SettingsValues currentSettings,
-            final int nthPreviousWord) {
-        if (currentSettings.mSpacingAndPunctuations.mCurrentLanguageHasSpaces) {
+    public String getNthPreviousWordForSuggestion(
+            final SpacingAndPunctuations spacingAndPunctuations, final int nthPreviousWord) {
+        if (spacingAndPunctuations.mCurrentLanguageHasSpaces) {
             // If we are typing in a language with spaces we can just look up the previous
             // word from textview.
-            return mConnection.getNthPreviousWord(currentSettings, nthPreviousWord);
+            return mConnection.getNthPreviousWord(spacingAndPunctuations, nthPreviousWord);
         } else {
             return LastComposedWord.NOT_A_COMPOSED_WORD == mLastComposedWord ? null
                     : mLastComposedWord.mCommittedWord;
@@ -1659,7 +1662,8 @@ public final class InputLogic {
         mConnection.commitText(SuggestionSpanUtils.getTextWithSuggestionSpan(mLatinIME, chosenWord,
                 suggestedWords), 1);
         // TODO: we pass 2 here, but would it be better to move this above and pass 1 instead?
-        final String prevWord = mConnection.getNthPreviousWord(settingsValues, 2);
+        final String prevWord = mConnection.getNthPreviousWord(
+                settingsValues.mSpacingAndPunctuations, 2);
         // Add the word to the user history dictionary
         performAdditionToUserHistoryDictionary(settingsValues, chosenWord, prevWord);
         // TODO: figure out here if this is an auto-correct or if the best word is actually
