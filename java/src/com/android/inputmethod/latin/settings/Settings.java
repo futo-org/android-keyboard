@@ -157,7 +157,7 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
             final RunInLocale<SettingsValues> job = new RunInLocale<SettingsValues>() {
                 @Override
                 protected SettingsValues job(final Resources res) {
-                    return new SettingsValues(context, prefs, locale, res, inputAttributes);
+                    return new SettingsValues(context, prefs, res, inputAttributes);
                 }
             };
             mSettingsValues = job.runInLocale(mRes, locale);
