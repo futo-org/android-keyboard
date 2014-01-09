@@ -16,10 +16,11 @@
 
 package com.android.inputmethod.latin.utils;
 
-import com.android.inputmethod.latin.settings.SettingsValues;
-
+import android.content.res.Resources;
 import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
+
+import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
 
 import java.util.Arrays;
 import java.util.List;
@@ -209,15 +210,21 @@ public class StringAndJsonUtilsTests extends AndroidTestCase {
     }
 
     public void testLooksValidForDictionaryInsertion() {
-        final SettingsValues settings =
-                SettingsValues.makeDummySettingsValuesForTest(Locale.ENGLISH);
-        assertTrue(StringUtils.looksValidForDictionaryInsertion("aochaueo", settings));
-        assertFalse(StringUtils.looksValidForDictionaryInsertion("", settings));
-        assertTrue(StringUtils.looksValidForDictionaryInsertion("ao-ch'aueo", settings));
-        assertFalse(StringUtils.looksValidForDictionaryInsertion("2908743256", settings));
-        assertTrue(StringUtils.looksValidForDictionaryInsertion("31aochaueo", settings));
-        assertFalse(StringUtils.looksValidForDictionaryInsertion("akeo  raeoch oerch .", settings));
-        assertFalse(StringUtils.looksValidForDictionaryInsertion("!!!", settings));
+        final RunInLocale<SpacingAndPunctuations> job = new RunInLocale<SpacingAndPunctuations>() {
+            @Override
+            protected SpacingAndPunctuations job(final Resources res) {
+                return new SpacingAndPunctuations(res);
+            }
+        };
+        final Resources res = getContext().getResources();
+        final SpacingAndPunctuations sp = job.runInLocale(res, Locale.ENGLISH);
+        assertTrue(StringUtils.looksValidForDictionaryInsertion("aochaueo", sp));
+        assertFalse(StringUtils.looksValidForDictionaryInsertion("", sp));
+        assertTrue(StringUtils.looksValidForDictionaryInsertion("ao-ch'aueo", sp));
+        assertFalse(StringUtils.looksValidForDictionaryInsertion("2908743256", sp));
+        assertTrue(StringUtils.looksValidForDictionaryInsertion("31aochaueo", sp));
+        assertFalse(StringUtils.looksValidForDictionaryInsertion("akeo  raeoch oerch .", sp));
+        assertFalse(StringUtils.looksValidForDictionaryInsertion("!!!", sp));
     }
 
     private static void checkCapitalize(final String src, final String dst, final String separators,

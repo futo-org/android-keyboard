@@ -24,7 +24,6 @@ import android.content.res.Resources;
 import android.util.Log;
 import android.view.inputmethod.EditorInfo;
 
-import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.compat.AppWorkaroundsUtils;
 import com.android.inputmethod.latin.InputAttributes;
 import com.android.inputmethod.latin.R;
@@ -164,53 +163,6 @@ public final class SettingsValues {
             new TargetPackageInfoGetterTask(context, mAppWorkarounds)
                     .execute(mInputAttributes.mTargetApplicationPackageName);
         }
-    }
-
-    // TODO: Remove this constructor.
-    // Only for tests
-    private SettingsValues(final Locale locale) {
-        // TODO: locale is saved, but not used yet. May have to change this if tests require.
-        mLocale = locale;
-        mDelayUpdateOldSuggestions = 0;
-        mSpacingAndPunctuations = new SpacingAndPunctuations(locale);
-        mHintToSaveText = "Touch again to save";
-        mInputAttributes = new InputAttributes(null, false /* isFullscreenMode */);
-        mAutoCap = true;
-        mVibrateOn = true;
-        mSoundOn = true;
-        mKeyPreviewPopupOn = true;
-        mSlidingKeyInputPreviewEnabled = true;
-        mShowsVoiceInputKey = true;
-        mIncludesOtherImesInLanguageSwitchList = false;
-        mShowsLanguageSwitchKey = true;
-        mUseContactsDict = true;
-        mUsePersonalizedDicts = true;
-        mUseDoubleSpacePeriod = true;
-        mBlockPotentiallyOffensive = true;
-        mAutoCorrectEnabled = true;
-        mBigramPredictionEnabled = true;
-        mKeyLongpressTimeout = 300;
-        mKeypressVibrationDuration = 5;
-        mKeypressSoundVolume = 1;
-        mKeyPreviewPopupDismissDelay = 70;
-        mAutoCorrectionThreshold = 1;
-        mGestureInputEnabled = true;
-        mGestureTrailEnabled = true;
-        mGestureFloatingPreviewTextEnabled = true;
-        mPhraseGestureEnabled = true;
-        mCorrectionEnabled = mAutoCorrectEnabled && !mInputAttributes.mInputTypeNoAutoCorrect;
-        mSuggestionVisibility = 0;
-        mIsInternal = false;
-        mUseOnlyPersonalizationDictionaryForDebug = false;
-        mDisplayOrientation = Configuration.ORIENTATION_PORTRAIT;
-        mAppWorkarounds = new AsyncResultHolder<AppWorkaroundsUtils>();
-        mAppWorkarounds.set(null);
-    }
-
-    // TODO: Remove this method.
-    @UsedForTesting
-    public static SettingsValues makeDummySettingsValuesForTest(final Locale locale) {
-        return new SettingsValues(locale);
     }
 
     public boolean isApplicationSpecifiedCompletionsOn() {

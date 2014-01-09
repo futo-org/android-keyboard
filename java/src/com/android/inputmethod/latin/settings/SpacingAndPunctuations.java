@@ -18,7 +18,6 @@ package com.android.inputmethod.latin.settings;
 
 import android.content.res.Resources;
 
-import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.internal.KeySpecParser;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.Dictionary;
@@ -42,24 +41,6 @@ public final class SpacingAndPunctuations {
     public final String mSentenceSeparatorAndSpace;
     public final boolean mCurrentLanguageHasSpaces;
     public final boolean mUsesAmericanTypography;
-
-    // TODO: Remove this constructor.
-    @UsedForTesting
-    SpacingAndPunctuations(final Locale locale) {
-        mSymbolsPrecededBySpace = new int[] { '(', '[', '{', '&' };
-        Arrays.sort(mSymbolsPrecededBySpace);
-        mSymbolsFollowedBySpace = new int[] { '.', ',', ';', ':', '!', '?', ')', ']', '}', '&' };
-        Arrays.sort(mSymbolsFollowedBySpace);
-        mWordConnectors = new int[] { '\'', '-' };
-        Arrays.sort(mWordConnectors);
-        mSentenceSeparator = Constants.CODE_PERIOD;
-        mSentenceSeparatorAndSpace = ". ";
-        final String[] suggestPuncsSpec = new String[] { "!", "?", ",", ":", ";" };
-        mSuggestPuncList = createSuggestPuncList(suggestPuncsSpec);
-        mWordSeparators = "&\t \n()[]{}*&<>+=|.,;:!?/_\"";
-        mCurrentLanguageHasSpaces = true;
-        mUsesAmericanTypography = Locale.ENGLISH.getLanguage().equals(locale.getLanguage());
-    }
 
     public SpacingAndPunctuations(final Resources res) {
         mSymbolsPrecededBySpace =
