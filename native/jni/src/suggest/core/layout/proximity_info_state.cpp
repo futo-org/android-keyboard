@@ -255,6 +255,14 @@ ProximityType ProximityInfoState::getProximityTypeG(const int index, const int c
     if (!isUsed()) {
         return UNRELATED_CHAR;
     }
+    const int sampledSearchKeyVectorsSize = static_cast<int>(mSampledSearchKeyVectors.size());
+    if (index < 0 || index >= sampledSearchKeyVectorsSize) {
+        AKLOGE("getProximityTypeG() is called with an invalid index(%d). "
+                "mSampledSearchKeyVectors.size() = %d, codePoint = %x.", index,
+                sampledSearchKeyVectorsSize, codePoint);
+        ASSERT(false);
+        return UNRELATED_CHAR;
+    }
     const int lowerCodePoint = CharUtils::toLowerCase(codePoint);
     const int baseLowerCodePoint = CharUtils::toBaseCodePoint(lowerCodePoint);
     for (int i = 0; i < static_cast<int>(mSampledSearchKeyVectors[index].size()); ++i) {
