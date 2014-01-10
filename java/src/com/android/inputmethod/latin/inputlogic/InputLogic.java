@@ -69,7 +69,8 @@ public final class InputLogic {
     // TODO : Remove this member when we can.
     private final LatinIME mLatinIME;
 
-    private InputLogicHandler mInputLogicHandler;
+    // Never null.
+    private InputLogicHandler mInputLogicHandler = InputLogicHandler.NULL_HANDLER;
 
     // TODO : make all these fields private as soon as possible.
     // Current space state of the input method. This can be any of the above constants.
@@ -105,7 +106,7 @@ public final class InputLogic {
         mWordComposer = new WordComposer();
         mEventInterpreter = new EventInterpreter(latinIME);
         mConnection = new RichInputConnection(latinIME);
-        mInputLogicHandler = null;
+        mInputLogicHandler = InputLogicHandler.NULL_HANDLER;
     }
 
     /**
@@ -145,7 +146,7 @@ public final class InputLogic {
         }
         resetComposingState(true /* alsoResetLastComposedWord */);
         mInputLogicHandler.destroy();
-        mInputLogicHandler = null;
+        mInputLogicHandler = InputLogicHandler.NULL_HANDLER;
     }
 
     /**
