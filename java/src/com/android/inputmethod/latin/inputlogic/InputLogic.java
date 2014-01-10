@@ -816,7 +816,6 @@ public final class InputLogic {
                     && settingsValues.mSpacingAndPunctuations.mCurrentLanguageHasSpaces
                     && !mConnection.isCursorFollowedByWordCharacter(settingsValues)) {
                 restartSuggestionsOnWordTouchedByCursor(settingsValues,
-                        deleteCountAtStart - mDeleteCount /* offset */,
                         true /* includeResumedWordInSuggestions */, keyboardSwitcher);
             }
             // We just removed at least one character. We need to update the auto-caps state.
@@ -1043,13 +1042,12 @@ public final class InputLogic {
      * do nothing.
      *
      * @param settingsValues the current values of the settings.
-     * @param offset how much the cursor is expected to have moved since the last updateSelection.
      * @param includeResumedWordInSuggestions whether to include the word on which we resume
      *   suggestions in the suggestion list.
      */
     // TODO: make this private.
     public void restartSuggestionsOnWordTouchedByCursor(final SettingsValues settingsValues,
-            final int offset, final boolean includeResumedWordInSuggestions,
+            final boolean includeResumedWordInSuggestions,
             // TODO: Remove this argument.
             final KeyboardSwitcher keyboardSwitcher) {
         // HACK: We may want to special-case some apps that exhibit bad behavior in case of
@@ -1109,19 +1107,8 @@ public final class InputLogic {
                 keyboardSwitcher.getKeyboard());
         mWordComposer.setCursorPositionWithinWord(
                 typedWord.codePointCount(0, numberOfCharsInWordBeforeCursor));
-        // TODO: Change these lines to setComposingRegion(cursorPosition,
-        //         cursorPosition + range.getNumberOfCharsInWordAfterCursor());
-        if (0 != offset) {
-            // Backspace was pressed. We are at the end of a word, and we don't know the cursor
-            // position for sure, so use relative methods.
-            mConnection.deleteSurroundingText(numberOfCharsInWordBeforeCursor, 0);
-            mConnection.setComposingText(typedWord, 1);
-        } else {
-            // This is recorrection. The cursor position is reasonably reliable, and the cursor
-            // may be in the middle of a word so use setComposingRegion.
-            mConnection.setComposingRegion(expectedCursorPosition - numberOfCharsInWordBeforeCursor,
+        mConnection.setComposingRegion(expectedCursorPosition - numberOfCharsInWordBeforeCursor,
                 expectedCursorPosition + range.getNumberOfCharsInWordAfterCursor());
-        }
         if (suggestions.isEmpty()) {
             // We come here if there weren't any suggestion spans on this word. We will try to
             // compute suggestions for it instead.
