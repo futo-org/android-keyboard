@@ -40,6 +40,33 @@ public class InputLogicHandler implements Handler.Callback {
 
     private static final int MSG_GET_SUGGESTED_WORDS = 1;
 
+    // A handler that never does anything. This is used for cases where events come before anything
+    // is initialized, though probably only the monkey can actually do this.
+    public static final InputLogicHandler NULL_HANDLER = new InputLogicHandler() {
+        @Override
+        public void destroy() {}
+        @Override
+        public boolean handleMessage(final Message msg) { return true; }
+        @Override
+        public void onStartBatchInput() {}
+        @Override
+        public void onUpdateBatchInput(final InputPointers batchPointers,
+                final int sequenceNumber) {}
+        @Override
+        public void onCancelBatchInput() {}
+        @Override
+        public void onEndBatchInput(final InputPointers batchPointers, final int sequenceNumber) {}
+        @Override
+        public void getSuggestedWords(final int sessionId, final int sequenceNumber,
+                final OnGetSuggestedWordsCallback callback) {}
+    };
+
+    private InputLogicHandler() {
+        mNonUIThreadHandler = null;
+        mLatinIME = null;
+        mInputLogic = null;
+    }
+
     public InputLogicHandler(final LatinIME latinIME, final InputLogic inputLogic) {
         final HandlerThread handlerThread = new HandlerThread(
                 InputLogicHandler.class.getSimpleName());
