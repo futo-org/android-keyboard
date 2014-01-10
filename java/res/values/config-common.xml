@@ -139,4 +139,8 @@
     <dimen name="config_accessibility_edge_slop">8dp</dimen>
 
     <integer name="config_user_dictionary_max_word_length">48</integer>
+
+    <!-- Personalization configuration -->
+    <!-- -1 means periocical wipe of the personalization dict is disabled. -->
+    <integer name="config_personalization_dict_wipe_interval_in_days">-1</integer>
 </resources>
