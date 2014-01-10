@@ -93,6 +93,8 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
 
     private static final String PREF_LAST_USED_PERSONALIZATION_TOKEN =
             "pref_last_used_personalization_token";
+    private static final String PREF_LAST_PERSONALIZATION_DICT_WIPED_TIME =
+            "pref_last_used_personalization_dict_wiped_time";
     public static final String PREF_SEND_FEEDBACK = "send_feedback";
     public static final String PREF_ABOUT_KEYBOARD = "about_keyboard";
 
@@ -370,6 +372,14 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     public byte[] readLastUsedPersonalizationToken() {
         final String tokenStr = mPrefs.getString(PREF_LAST_USED_PERSONALIZATION_TOKEN, null);
         return StringUtils.hexStringToByteArray(tokenStr);
+    }
+
+    public void writeLastPersonalizationDictWipedTime(final long timestamp) {
+        mPrefs.edit().putLong(PREF_LAST_PERSONALIZATION_DICT_WIPED_TIME, timestamp).apply();
+    }
+
+    public long readLastPersonalizationDictGeneratedTime() {
+        return mPrefs.getLong(PREF_LAST_PERSONALIZATION_DICT_WIPED_TIME, 0);
     }
 
     public static void writeEmojiRecentKeys(final SharedPreferences prefs, String str) {
