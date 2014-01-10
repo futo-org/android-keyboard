@@ -20,13 +20,16 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
+import android.text.TextUtils;
 import android.util.Log;
 
+import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.AssetFileAddress;
 import com.android.inputmethod.latin.BinaryDictionaryGetter;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.makedict.BinaryDictIOUtils;
 import com.android.inputmethod.latin.makedict.FormatSpec.FileHeader;
+import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -363,5 +366,30 @@ public class DictionaryInfoUtils {
         }
 
         return dictList;
+    }
+
+    @UsedForTesting
+    public static boolean looksValidForDictionaryInsertion(final CharSequence text,
+            final SpacingAndPunctuations spacingAndPunctuations) {
+        if (TextUtils.isEmpty(text)) return false;
+        final int length = text.length();
+        int i = 0;
+        int digitCount = 0;
+        while (i < length) {
+            final int codePoint = Character.codePointAt(text, i);
+            final int charCount = Character.charCount(codePoint);
+            i += charCount;
+            if (Character.isDigit(codePoint)) {
+                // Count digits: see below
+                digitCount += charCount;
+                continue;
+            }
+            if (!spacingAndPunctuations.isWordCodePoint(codePoint)) return false;
+        }
+        // We reject strings entirely comprised of digits to avoid using PIN codes or credit
+        // card numbers. It would come in handy for word prediction though; a good example is
+        // when writing one's address where the street number is usually quite discriminative,
+        // as well as the postal code.
+        return digitCount < length;
     }
 }
