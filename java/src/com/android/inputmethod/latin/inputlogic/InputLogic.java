@@ -86,10 +86,6 @@ public final class InputLogic {
     public final RichInputConnection mConnection;
     public final RecapitalizeStatus mRecapitalizeStatus = new RecapitalizeStatus();
 
-    // Keep track of the last selection range to decide if we need to show word alternatives
-    public int mLastSelectionStart = Constants.NOT_A_CURSOR_POSITION;
-    public int mLastSelectionEnd = Constants.NOT_A_CURSOR_POSITION;
-
     private int mDeleteCount;
     private long mLastKeyTime;
     public final TreeSet<Long> mCurrentlyPressedHardwareKeys = CollectionUtils.newTreeSet();
@@ -129,12 +125,9 @@ public final class InputLogic {
         mRecapitalizeStatus.deactivate();
         mCurrentlyPressedHardwareKeys.clear();
         mSuggestedWords = SuggestedWords.EMPTY;
-        mLastSelectionStart = editorInfo.initialSelStart;
-        mLastSelectionEnd = editorInfo.initialSelEnd;
         // In some cases (namely, after rotation of the device) editorInfo.initialSelStart is lying
         // so we try using some heuristics to find out about these and fix them.
         mConnection.tryFixLyingCursorPosition();
-        tryFixLyingCursorPosition();
         mInputLogicHandler = new InputLogicHandler(mLatinIME, this);
     }
 
@@ -338,7 +331,8 @@ public final class InputLogic {
             if (mWordComposer.isCursorFrontOrMiddleOfComposingWord()) {
                 // If we are in the middle of a recorrection, we need to commit the recorrection
                 // first so that we can insert the batch input at the current cursor position.
-                resetEntireInputState(settingsValues, mLastSelectionStart, mLastSelectionEnd);
+                resetEntireInputState(settingsValues, mConnection.getExpectedSelectionStart(),
+                        mConnection.getExpectedSelectionEnd());
             } else if (wordComposerSize <= 1) {
                 // We auto-correct the previous (typed, not gestured) string iff it's one character
                 // long. The reason for this is, even in the middle of gesture typing, you'll still
@@ -467,7 +461,8 @@ public final class InputLogic {
                 if (mWordComposer.isCursorFrontOrMiddleOfComposingWord()) {
                     // If we are in the middle of a recorrection, we need to commit the recorrection
                     // first so that we can insert the character at the current cursor position.
-                    resetEntireInputState(settingsValues, mLastSelectionStart, mLastSelectionEnd);
+                    resetEntireInputState(settingsValues, mConnection.getExpectedSelectionStart(),
+                            mConnection.getExpectedSelectionEnd());
                 } else {
                     commitTyped(settingsValues, LastComposedWord.NOT_A_SEPARATOR);
                 }
@@ -517,7 +512,8 @@ public final class InputLogic {
         if (mWordComposer.isCursorFrontOrMiddleOfComposingWord()) {
             // If we are in the middle of a recorrection, we need to commit the recorrection
             // first so that we can insert the character at the current cursor position.
-            resetEntireInputState(settingsValues, mLastSelectionStart, mLastSelectionEnd);
+            resetEntireInputState(settingsValues, mConnection.getExpectedSelectionStart(),
+                    mConnection.getExpectedSelectionEnd());
             isComposingWord = false;
         }
         // We want to find out whether to start composing a new word with this character. If so,
@@ -604,7 +600,8 @@ public final class InputLogic {
         if (mWordComposer.isCursorFrontOrMiddleOfComposingWord()) {
             // If we are in the middle of a recorrection, we need to commit the recorrection
             // first so that we can insert the separator at the current cursor position.
-            resetEntireInputState(settingsValues, mLastSelectionStart, mLastSelectionEnd);
+            resetEntireInputState(settingsValues, mConnection.getExpectedSelectionStart(),
+                    mConnection.getExpectedSelectionEnd());
         }
         // isComposingWord() may have changed since we stored wasComposing
         if (mWordComposer.isComposingWord()) {
@@ -696,7 +693,8 @@ public final class InputLogic {
         if (mWordComposer.isCursorFrontOrMiddleOfComposingWord()) {
             // If we are in the middle of a recorrection, we need to commit the recorrection
             // first so that we can remove the character at the current cursor position.
-            resetEntireInputState(settingsValues, mLastSelectionStart, mLastSelectionEnd);
+            resetEntireInputState(settingsValues, mConnection.getExpectedSelectionStart(),
+                    mConnection.getExpectedSelectionEnd());
             // When we exit this if-clause, mWordComposer.isComposingWord() will return false.
         }
         if (mWordComposer.isComposingWord()) {
@@ -756,15 +754,12 @@ public final class InputLogic {
 
             // No cancelling of commit/double space/swap: we have a regular backspace.
             // We should backspace one char and restart suggestion if at the end of a word.
-            if (mLastSelectionStart != mLastSelectionEnd) {
+            if (mConnection.hasSelection()) {
                 // If there is a selection, remove it.
-                final int numCharsDeleted = mLastSelectionEnd - mLastSelectionStart;
-                mConnection.setSelection(mLastSelectionEnd, mLastSelectionEnd);
-                // Reset mLastSelectionEnd to mLastSelectionStart. This is what is supposed to
-                // happen, and if it's wrong, the next call to onUpdateSelection will correct it,
-                // but we want to set it right away to avoid it being used with the wrong values
-                // later (typically, in a subsequent press on backspace).
-                mLastSelectionEnd = mLastSelectionStart;
+                final int numCharsDeleted = mConnection.getExpectedSelectionEnd()
+                        - mConnection.getExpectedSelectionStart();
+                mConnection.setSelection(mConnection.getExpectedSelectionEnd(),
+                        mConnection.getExpectedSelectionEnd());
                 mConnection.deleteSurroundingText(numCharsDeleted, 0);
                 if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
                     ResearchLogger.latinIME_handleBackspace(numCharsDeleted,
@@ -772,7 +767,7 @@ public final class InputLogic {
                 }
             } else {
                 // There is no selection, just delete one character.
-                if (Constants.NOT_A_CURSOR_POSITION == mLastSelectionEnd) {
+                if (Constants.NOT_A_CURSOR_POSITION == mConnection.getExpectedSelectionEnd()) {
                     // This should never happen.
                     Log.e(TAG, "Backspace when we don't know the selection position");
                 }
@@ -961,38 +956,32 @@ public final class InputLogic {
      * @param settingsValues The current settings values.
      */
     private void performRecapitalization(final SettingsValues settingsValues) {
-        if (mLastSelectionStart == mLastSelectionEnd) {
+        if (!mConnection.hasSelection()) {
             return; // No selection
         }
         // If we have a recapitalize in progress, use it; otherwise, create a new one.
         if (!mRecapitalizeStatus.isActive()
-                || !mRecapitalizeStatus.isSetAt(mLastSelectionStart, mLastSelectionEnd)) {
+                || !mRecapitalizeStatus.isSetAt(mConnection.getExpectedSelectionStart(),
+                        mConnection.getExpectedSelectionEnd())) {
             final CharSequence selectedText =
                     mConnection.getSelectedText(0 /* flags, 0 for no styles */);
             if (TextUtils.isEmpty(selectedText)) return; // Race condition with the input connection
-            mRecapitalizeStatus.initialize(mLastSelectionStart, mLastSelectionEnd,
-                    selectedText.toString(),
+            mRecapitalizeStatus.initialize(mConnection.getExpectedSelectionStart(),
+                    mConnection.getExpectedSelectionEnd(), selectedText.toString(),
                     settingsValues.mLocale, settingsValues.mSpacingAndPunctuations.mWordSeparators);
             // We trim leading and trailing whitespace.
             mRecapitalizeStatus.trim();
-            // Trimming the object may have changed the length of the string, and we need to
-            // reposition the selection handles accordingly. As this result in an IPC call,
-            // only do it if it's actually necessary, in other words if the recapitalize status
-            // is not set at the same place as before.
-            if (!mRecapitalizeStatus.isSetAt(mLastSelectionStart, mLastSelectionEnd)) {
-                mLastSelectionStart = mRecapitalizeStatus.getNewCursorStart();
-                mLastSelectionEnd = mRecapitalizeStatus.getNewCursorEnd();
-            }
         }
         mConnection.finishComposingText();
         mRecapitalizeStatus.rotate();
-        final int numCharsDeleted = mLastSelectionEnd - mLastSelectionStart;
-        mConnection.setSelection(mLastSelectionEnd, mLastSelectionEnd);
+        final int numCharsDeleted = mConnection.getExpectedSelectionEnd()
+                - mConnection.getExpectedSelectionStart();
+        mConnection.setSelection(mConnection.getExpectedSelectionEnd(),
+                mConnection.getExpectedSelectionEnd());
         mConnection.deleteSurroundingText(numCharsDeleted, 0);
         mConnection.commitText(mRecapitalizeStatus.getRecapitalizedString(), 0);
-        mLastSelectionStart = mRecapitalizeStatus.getNewCursorStart();
-        mLastSelectionEnd = mRecapitalizeStatus.getNewCursorEnd();
-        mConnection.setSelection(mLastSelectionStart, mLastSelectionEnd);
+        mConnection.setSelection(mRecapitalizeStatus.getNewCursorStart(),
+                mRecapitalizeStatus.getNewCursorEnd());
     }
 
     private void performAdditionToUserHistoryDictionary(final SettingsValues settingsValues,
@@ -1073,10 +1062,10 @@ public final class InputLogic {
         // how to segment them yet.
         if (!settingsValues.mSpacingAndPunctuations.mCurrentLanguageHasSpaces) return;
         // If the cursor is not touching a word, or if there is a selection, return right away.
-        if (mLastSelectionStart != mLastSelectionEnd) return;
+        if (mConnection.hasSelection()) return;
         // If we don't know the cursor location, return.
-        if (mLastSelectionStart < 0) return;
-        final int expectedCursorPosition = mLastSelectionStart + offset; // We know Start == End
+        if (mConnection.getExpectedSelectionStart() < 0) return;
+        final int expectedCursorPosition = mConnection.getExpectedSelectionStart();
         if (!mConnection.isCursorTouchingWord(settingsValues)) return;
         final TextRange range = mConnection.getWordRangeAtCursor(
                 settingsValues.mSpacingAndPunctuations.mWordSeparators,
@@ -1290,7 +1279,8 @@ public final class InputLogic {
 
     public int getCurrentRecapitalizeState() {
         if (!mRecapitalizeStatus.isActive()
-                || !mRecapitalizeStatus.isSetAt(mLastSelectionStart, mLastSelectionEnd)) {
+                || !mRecapitalizeStatus.isSetAt(mConnection.getExpectedSelectionStart(),
+                        mConnection.getExpectedSelectionEnd())) {
             // Not recapitalizing at the moment
             return RecapitalizeStatus.NOT_A_RECAPITALIZE_MODE;
         }
@@ -1643,7 +1633,8 @@ public final class InputLogic {
                 // of the auto-correction flash. At this moment, the "typedWord" argument is
                 // ignored by TextView.
                 mConnection.commitCorrection(
-                        new CorrectionInfo(mLastSelectionEnd - typedWord.length(),
+                        new CorrectionInfo(
+                        mConnection.getExpectedSelectionEnd() - typedWord.length(),
                         typedWord, autoCorrection));
             }
         }
@@ -1692,41 +1683,6 @@ public final class InputLogic {
     }
 
     /**
-     * Try to get the text from the editor to expose lies the framework may have been
-     * telling us. Concretely, when the device rotates, the frameworks tells us about where the
-     * cursor used to be initially in the editor at the time it first received the focus; this
-     * may be completely different from the place it is upon rotation. Since we don't have any
-     * means to get the real value, try at least to ask the text view for some characters and
-     * detect the most damaging cases: when the cursor position is declared to be much smaller
-     * than it really is.
-     */
-    private void tryFixLyingCursorPosition() {
-        final CharSequence textBeforeCursor = mConnection.getTextBeforeCursor(
-                Constants.EDITOR_CONTENTS_CACHE_SIZE, 0);
-        if (null == textBeforeCursor) {
-            mLastSelectionStart = mLastSelectionEnd = Constants.NOT_A_CURSOR_POSITION;
-        } else {
-            final int textLength = textBeforeCursor.length();
-            if (textLength > mLastSelectionStart
-                    || (textLength < Constants.EDITOR_CONTENTS_CACHE_SIZE
-                            && mLastSelectionStart < Constants.EDITOR_CONTENTS_CACHE_SIZE)) {
-                // It should not be possible to have only one of those variables be
-                // NOT_A_CURSOR_POSITION, so if they are equal, either the selection is zero-sized
-                // (simple cursor, no selection) or there is no cursor/we don't know its pos
-                final boolean wasEqual = mLastSelectionStart == mLastSelectionEnd;
-                mLastSelectionStart = textLength;
-                // We can't figure out the value of mLastSelectionEnd :(
-                // But at least if it's smaller than mLastSelectionStart something is wrong,
-                // and if they used to be equal we also don't want to make it look like there is a
-                // selection.
-                if (wasEqual || mLastSelectionStart > mLastSelectionEnd) {
-                    mLastSelectionEnd = mLastSelectionStart;
-                }
-            }
-        }
-    }
-
-    /**
      * Retry resetting caches in the rich input connection.
      *
      * When the editor can't be accessed we can't reset the caches, so we schedule a retry.
@@ -1743,7 +1699,8 @@ public final class InputLogic {
             // TODO: remove these arguments
             final KeyboardSwitcher keyboardSwitcher, final LatinIME.UIHandler handler) {
         if (!mConnection.resetCachesUponCursorMoveAndReturnSuccess(
-                mLastSelectionStart, mLastSelectionEnd, false)) {
+                mConnection.getExpectedSelectionStart(), mConnection.getExpectedSelectionEnd(),
+                false)) {
             if (0 < remainingTries) {
                 handler.postResetCaches(tryResumeSuggestions, remainingTries - 1);
                 return;
@@ -1752,7 +1709,6 @@ public final class InputLogic {
             // better to load the keyboard (less things will be broken).
         }
         mConnection.tryFixLyingCursorPosition();
-        tryFixLyingCursorPosition();
         keyboardSwitcher.loadKeyboard(getCurrentInputEditorInfo(), settingsValues);
         if (tryResumeSuggestions) {
             handler.postResumeSuggestions();
