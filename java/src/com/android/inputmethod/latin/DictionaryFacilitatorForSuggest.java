@@ -410,6 +410,7 @@ public class DictionaryFacilitatorForSuggest {
             final int sessionId, final Set<SuggestedWordInfo> suggestionSet) {
         for (final String key : mDictionaries.keySet()) {
             final Dictionary dictionary = mDictionaries.get(key);
+            if (null == dictionary) continue;
             suggestionSet.addAll(dictionary.getSuggestionsWithSessionId(composer, prevWord,
                     proximityInfo, blockOffensiveWords, additionalFeaturesOptions, sessionId));
         }
