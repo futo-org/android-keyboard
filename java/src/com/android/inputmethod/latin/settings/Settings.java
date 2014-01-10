@@ -31,7 +31,9 @@ import com.android.inputmethod.latin.utils.ResourceUtils;
 import com.android.inputmethod.latin.utils.RunInLocale;
 import com.android.inputmethod.latin.utils.StringUtils;
 
+import java.util.Collections;
 import java.util.Locale;
+import java.util.Set;
 import java.util.concurrent.locks.ReentrantLock;
 
 public final class Settings implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -95,6 +97,8 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
             "pref_last_used_personalization_token";
     private static final String PREF_LAST_PERSONALIZATION_DICT_WIPED_TIME =
             "pref_last_used_personalization_dict_wiped_time";
+    private static final String PREF_CORPUS_HANDLES_FOR_PERSONALIZATION =
+            "pref_corpus_handles_for_personalization";
     public static final String PREF_SEND_FEEDBACK = "send_feedback";
     public static final String PREF_ABOUT_KEYBOARD = "about_keyboard";
 
@@ -380,6 +384,15 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
 
     public long readLastPersonalizationDictGeneratedTime() {
         return mPrefs.getLong(PREF_LAST_PERSONALIZATION_DICT_WIPED_TIME, 0);
+    }
+
+    public void writeCorpusHandlesForPersonalization(final Set<String> corpusHandles) {
+        mPrefs.edit().putStringSet(PREF_CORPUS_HANDLES_FOR_PERSONALIZATION, corpusHandles).apply();
+    }
+
+    public Set<String> readCorpusHandlesForPersonalization() {
+        final Set<String> emptySet = Collections.emptySet();
+        return mPrefs.getStringSet(PREF_CORPUS_HANDLES_FOR_PERSONALIZATION, emptySet);
     }
 
     public static void writeEmojiRecentKeys(final SharedPreferences prefs, String str) {

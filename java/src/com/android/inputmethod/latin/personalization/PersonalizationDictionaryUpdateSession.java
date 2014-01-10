@@ -57,7 +57,7 @@ public abstract class PersonalizationDictionaryUpdateSession {
         dictionary.unRegisterUpdateSession(this);
     }
 
-    public void clearAndFlushDictionary(final Context context) {
+    public void clearAndFlushDictionary() {
         final PersonalizationDictionary dictionary = getDictionary();
         if (dictionary == null) {
             return;
