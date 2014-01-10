@@ -16,11 +16,8 @@
 
 package com.android.inputmethod.latin.utils;
 
-import android.content.res.Resources;
 import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
-
-import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
 
 import java.util.Arrays;
 import java.util.List;
@@ -207,24 +204,6 @@ public class StringAndJsonUtilsTests extends AndroidTestCase {
         assertFalse(StringUtils.isIdenticalAfterDowncase("  PI26LIE"));
         assertTrue(StringUtils.isIdenticalAfterUpcase(""));
         assertTrue(StringUtils.isIdenticalAfterDowncase(""));
-    }
-
-    public void testLooksValidForDictionaryInsertion() {
-        final RunInLocale<SpacingAndPunctuations> job = new RunInLocale<SpacingAndPunctuations>() {
-            @Override
-            protected SpacingAndPunctuations job(final Resources res) {
-                return new SpacingAndPunctuations(res);
-            }
-        };
-        final Resources res = getContext().getResources();
-        final SpacingAndPunctuations sp = job.runInLocale(res, Locale.ENGLISH);
-        assertTrue(StringUtils.looksValidForDictionaryInsertion("aochaueo", sp));
-        assertFalse(StringUtils.looksValidForDictionaryInsertion("", sp));
-        assertTrue(StringUtils.looksValidForDictionaryInsertion("ao-ch'aueo", sp));
-        assertFalse(StringUtils.looksValidForDictionaryInsertion("2908743256", sp));
-        assertTrue(StringUtils.looksValidForDictionaryInsertion("31aochaueo", sp));
-        assertFalse(StringUtils.looksValidForDictionaryInsertion("akeo  raeoch oerch .", sp));
-        assertFalse(StringUtils.looksValidForDictionaryInsertion("!!!", sp));
     }
 
     private static void checkCapitalize(final String src, final String dst, final String separators,

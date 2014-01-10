@@ -20,7 +20,6 @@ import android.text.TextUtils;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.Constants;
-import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -263,31 +262,6 @@ public final class StringUtils {
             i += Character.charCount(codePoint);
         }
         return true;
-    }
-
-    @UsedForTesting
-    public static boolean looksValidForDictionaryInsertion(final CharSequence text,
-            final SpacingAndPunctuations spacingAndPunctuations) {
-        if (TextUtils.isEmpty(text)) return false;
-        final int length = text.length();
-        int i = 0;
-        int digitCount = 0;
-        while (i < length) {
-            final int codePoint = Character.codePointAt(text, i);
-            final int charCount = Character.charCount(codePoint);
-            i += charCount;
-            if (Character.isDigit(codePoint)) {
-                // Count digits: see below
-                digitCount += charCount;
-                continue;
-            }
-            if (!spacingAndPunctuations.isWordCodePoint(codePoint)) return false;
-        }
-        // We reject strings entirely comprised of digits to avoid using PIN codes or credit
-        // card numbers. It would come in handy for word prediction though; a good example is
-        // when writing one's address where the street number is usually quite discriminative,
-        // as well as the postal code.
-        return digitCount < length;
     }
 
     public static boolean isIdenticalAfterCapitalizeEachWord(final String text,
