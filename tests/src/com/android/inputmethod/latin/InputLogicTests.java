@@ -381,7 +381,7 @@ public class InputLogicTests extends InputTestsBase {
         type(WORD_TO_TYPE);
         sleep(DELAY_TO_WAIT_FOR_PREDICTIONS);
         runMessages();
-        // Test the first prediction is displayed
+        // Test the first prediction is not displayed
         final SuggestedWords suggestedWords = mLatinIME.getSuggestedWords();
         assertEquals("no prediction after period", 0, suggestedWords.size());
     }

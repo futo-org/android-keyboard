@@ -201,6 +201,9 @@ public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
         mLatinIME.onStartInputView(ei, false);
         mInputConnection = ic;
         changeLanguage("en_US");
+        // Run messages to avoid the messages enqueued by startInputView() and its friends
+        // to run on a later call and ruin things.
+        runMessages();
     }
 
     @Override
