@@ -282,7 +282,9 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
             @Override
             public void run() {
                 if (mDictionaryWriter == null) {
-                    mBinaryDictionary.close();
+                    if (mBinaryDictionary != null) {
+                        mBinaryDictionary.close();
+                    }
                     final File file = getDictFile();
                     if (file.exists() && !FileUtils.deleteRecursively(file)) {
                         Log.e(TAG, "Can't remove a file: " + file.getName());
