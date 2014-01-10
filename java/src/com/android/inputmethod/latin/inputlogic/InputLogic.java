@@ -133,6 +133,7 @@ public final class InputLogic {
         mLastSelectionEnd = editorInfo.initialSelEnd;
         // In some cases (namely, after rotation of the device) editorInfo.initialSelStart is lying
         // so we try using some heuristics to find out about these and fix them.
+        mConnection.tryFixLyingCursorPosition();
         tryFixLyingCursorPosition();
         mInputLogicHandler = new InputLogicHandler(mLatinIME, this);
     }
@@ -1750,6 +1751,7 @@ public final class InputLogic {
             // If remainingTries is 0, we should stop waiting for new tries, but it's still
             // better to load the keyboard (less things will be broken).
         }
+        mConnection.tryFixLyingCursorPosition();
         tryFixLyingCursorPosition();
         keyboardSwitcher.loadKeyboard(getCurrentInputEditorInfo(), settingsValues);
         if (tryResumeSuggestions) {

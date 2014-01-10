@@ -785,17 +785,17 @@ public final class RichInputConnection {
      */
     public boolean isBelatedExpectedUpdate(final int oldSelStart, final int newSelStart,
             final int oldSelEnd, final int newSelEnd) {
-        // This update is "belated" if we are expecting it.  That is, mExpectedSelStart and
+        // This update is "belated" if we are expecting it. That is, mExpectedSelStart and
         // mExpectedSelEnd match the new values that the TextView is updating TO.
         if (mExpectedSelStart == newSelStart && mExpectedSelEnd == newSelEnd) return true;
-        // This update is not belated if mExpectedSelStart and mExpeectedSelend match the old
-        // values, and one of newSelStart or newSelEnd is updated to a different value.  In this
-        // case, there is likely something other than the IME that has moved the selection endpoint
+        // This update is not belated if mExpectedSelStart and mExpectedSelEnd match the old
+        // values, and one of newSelStart or newSelEnd is updated to a different value. In this
+        // case, there is likely something other than the IME has moved the selection endpoint
         // to the new value.
         if (mExpectedSelStart == oldSelStart && mExpectedSelEnd == oldSelEnd
                 && (oldSelStart != newSelStart || oldSelEnd != newSelEnd)) return false;
         // If nether of the above two cases holds, then the system may be having trouble keeping up
-        // with updates.  If 1) the selection is a cursor, 2) newSelStart is between oldSelStart
+        // with updates. If 1) the selection is a cursor, 2) newSelStart is between oldSelStart
         // and mExpectedSelStart, and 3) newSelEnd is between oldSelEnd and mExpectedSelEnd, then
         // assume a belated update.
         return (newSelStart == newSelEnd)
@@ -812,5 +812,55 @@ public final class RichInputConnection {
      */
     public boolean textBeforeCursorLooksLikeURL() {
         return StringUtils.lastPartLooksLikeURL(mCommittedTextBeforeComposingText);
+    }
+
+    /**
+     * Try to get the text from the editor to expose lies the framework may have been
+     * telling us. Concretely, when the device rotates, the frameworks tells us about where the
+     * cursor used to be initially in the editor at the time it first received the focus; this
+     * may be completely different from the place it is upon rotation. Since we don't have any
+     * means to get the real value, try at least to ask the text view for some characters and
+     * detect the most damaging cases: when the cursor position is declared to be much smaller
+     * than it really is.
+     */
+    public void tryFixLyingCursorPosition() {
+        final CharSequence textBeforeCursor = getTextBeforeCursor(
+                Constants.EDITOR_CONTENTS_CACHE_SIZE, 0);
+        if (null == textBeforeCursor) {
+            mExpectedSelStart = mExpectedSelEnd = Constants.NOT_A_CURSOR_POSITION;
+        } else {
+            final int textLength = textBeforeCursor.length();
+            if (textLength > mExpectedSelStart
+                    || (textLength < Constants.EDITOR_CONTENTS_CACHE_SIZE
+                            && mExpectedSelStart < Constants.EDITOR_CONTENTS_CACHE_SIZE)) {
+                // It should not be possible to have only one of those variables be
+                // NOT_A_CURSOR_POSITION, so if they are equal, either the selection is zero-sized
+                // (simple cursor, no selection) or there is no cursor/we don't know its pos
+                final boolean wasEqual = mExpectedSelStart == mExpectedSelEnd;
+                mExpectedSelStart = textLength;
+                // We can't figure out the value of mLastSelectionEnd :(
+                // But at least if it's smaller than mLastSelectionStart something is wrong,
+                // and if they used to be equal we also don't want to make it look like there is a
+                // selection.
+                if (wasEqual || mExpectedSelStart > mExpectedSelEnd) {
+                    mExpectedSelEnd = mExpectedSelStart;
+                }
+            }
+        }
+    }
+
+    public int getExpectedSelectionStart() {
+        return mExpectedSelStart;
+    }
+
+    public int getExpectedSelectionEnd() {
+        return mExpectedSelEnd;
+    }
+
+    /**
+     * @return whether there is a selection currently active.
+     */
+    public boolean hasSelection() {
+        return mExpectedSelEnd != mExpectedSelStart;
     }
 }
