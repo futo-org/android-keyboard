@@ -75,6 +75,8 @@
     <string name="gesture_preview_trail" msgid="3802333369335722221">"Tunjukkan jejak gerak isyarat"</string>
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"Pratonton terapung dinamik"</string>
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"Lihat perkataan yang dicadangkan semasa membuat gerak isyarat"</string>
+    <string name="gesture_space_aware" msgid="8244483979855138643">"Gerak isyarat frasa"</string>
+    <string name="gesture_space_aware_summary" msgid="3226298212755100667">"Masukkan ruang semasa gerak isyarat dengan meluncur ke kekunci ruang"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : Disimpan"</string>
     <string name="spoken_use_headphones" msgid="896961781287283493">"Pasangkan set kepala untuk mendengar kekunci kata laluan disebut dengan kuat."</string>
     <string name="spoken_current_text_is" msgid="2485723011272583845">"Teks semasa adalah %s"</string>
