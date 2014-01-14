@@ -152,6 +152,10 @@
     <string name="gesture_floating_preview_text">Dynamic floating preview</string>
     <!-- Description for "gesture_floating_preview_text" option. The user can see a suggested word floating under the moving finger during a gesture input. [CHAR LIMIT=65]-->
     <string name="gesture_floating_preview_text_summary">See the suggested word while gesturing</string>
+    <!-- Option to enable space aware gesture input. The user can input multiple words by gliding through the space key during a gesture input. [CHAR LIMIT=30]-->
+    <string name="gesture_space_aware">Phrase gesture</string>
+    <!-- Description for "gesture_space_aware" option. The user can input multiple words by gliding through the space key during a gesture input.[CHAR LIMIT=65]-->
+    <string name="gesture_space_aware_summary">Input spaces during gestures by gliding to the space key</string>
 
     <!-- Indicates that a word has been added to the dictionary -->
     <string name="added_word"><xliff:g id="word">%s</xliff:g> : Saved</string>
