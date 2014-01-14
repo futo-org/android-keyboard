@@ -65,8 +65,8 @@
     mn_MN: Mongolian (Mongolia)/mongolian
     ms_MY: Malay (Malaysia)/qwerty
     nb: Norwegian Bokmål/nordic
-    ne_NP: Nepali (Nepal) Romanized/nepali_romanized)
-    ne_NP: Nepali (Nepal) Traditional/nepali_traditional)
+    (ne_NP: Nepali (Nepal) Romanized/nepali_romanized)  # disabled temporarily
+    (ne_NP: Nepali (Nepal) Traditional/nepali_traditional)  # disabled temporarily
     nl: Dutch/qwerty
     nl_BE: Dutch (Belgium)/azerty
     pl: Polish/qwerty
@@ -451,6 +451,7 @@
             android:imeSubtypeExtraValue="AsciiCapable,SupportTouchPositionCorrection,EmojiCapable"
             android:isAsciiCapable="true"
     />
+    <!--
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
             android:subtypeId="0xd80a4cee"
@@ -467,6 +468,7 @@
             android:imeSubtypeExtraValue="KeyboardLayoutSet=nepali_traditional,EmojiCapable"
             android:isAsciiCapable="false"
     />
+    -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
             android:subtypeId="0x3f9fd91e"
