@@ -375,26 +375,21 @@ public class DictionaryFacilitatorForSuggest {
         mUserDictionary.addWordToUserDictionary(word);
     }
 
-    public void addToUserHistory(final WordComposer wordComposer, final String previousWord,
-            final String suggestion) {
+    public void addToUserHistory(final String suggestion, final boolean wasAutoCapitalized,
+            final String previousWord, final int timeStampInSeconds) {
         if (mUserHistoryDictionary == null) {
             return;
         }
-        final String secondWord;
-        if (wordComposer.wasAutoCapitalized() && !wordComposer.isMostlyCaps()) {
-            secondWord = suggestion.toLowerCase(mLocale);
-        } else {
-            secondWord = suggestion;
-        }
-        // We demote unrecognized words (frequency < 0, below) by specifying them as "invalid".
-        // We don't add words with 0-frequency (assuming they would be profanity etc.).
         final int maxFreq = getMaxFrequency(suggestion);
         if (maxFreq == 0) {
             return;
         }
+        final String secondWord = wasAutoCapitalized ? suggestion.toLowerCase(mLocale) : suggestion;
+        // We demote unrecognized words (frequency < 0, below) by specifying them as "invalid".
+        // We don't add words with 0-frequency (assuming they would be profanity etc.).
         final boolean isValid = maxFreq > 0;
-        final int timeStamp = (int)TimeUnit.MILLISECONDS.toSeconds((System.currentTimeMillis()));
-        mUserHistoryDictionary.addToDictionary(previousWord, secondWord, isValid, timeStamp);
+        mUserHistoryDictionary.addToDictionary(
+                previousWord, secondWord, isValid, timeStampInSeconds);
     }
 
     public void cancelAddingUserHistory(final String previousWord, final String committedWord) {

@@ -59,6 +59,7 @@ import com.android.inputmethod.research.ResearchLogger;
 
 import java.util.ArrayList;
 import java.util.TreeSet;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This class manages the input logic.
@@ -994,7 +995,12 @@ public final class InputLogic {
         final Suggest suggest = mSuggest;
         if (suggest == null) return;
 
-        suggest.mDictionaryFacilitator.addToUserHistory(mWordComposer, prevWord, suggestion);
+        final boolean wasAutoCapitalized =
+                mWordComposer.wasAutoCapitalized() && !mWordComposer.isMostlyCaps();
+        final int timeStampInSeconds = (int)TimeUnit.MILLISECONDS.toSeconds(
+                System.currentTimeMillis());
+        suggest.mDictionaryFacilitator.addToUserHistory(suggestion, wasAutoCapitalized, prevWord,
+                timeStampInSeconds);
     }
 
     public void performUpdateSuggestionStripSync(final SettingsValues settingsValues,
