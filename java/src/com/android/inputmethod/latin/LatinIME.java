@@ -1285,8 +1285,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         } else {
             codeToSend = codePoint;
         }
-        mInputLogic.onCodeInput(codeToSend, keyX, keyY, mHandler, mKeyboardSwitcher,
-                mSubtypeSwitcher);
+        if (Constants.CODE_SHORTCUT == codePoint) {
+            mSubtypeSwitcher.switchToShortcutIME(this);
+            // Still call the *#onCodeInput methods for readability.
+        }
+        mInputLogic.onCodeInput(codeToSend, keyX, keyY, mHandler, mKeyboardSwitcher);
         mKeyboardSwitcher.onCodeInput(codePoint);
     }
 

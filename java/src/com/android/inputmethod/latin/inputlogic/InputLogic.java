@@ -36,7 +36,6 @@ import com.android.inputmethod.latin.LastComposedWord;
 import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.RichInputConnection;
-import com.android.inputmethod.latin.SubtypeSwitcher;
 import com.android.inputmethod.latin.Suggest;
 import com.android.inputmethod.latin.Suggest.OnGetSuggestedWordsCallback;
 import com.android.inputmethod.latin.SuggestedWords;
@@ -192,9 +191,8 @@ public final class InputLogic {
      * @param y the y-coordinate where the user pressed the key, or NOT_A_COORDINATE.
      */
     public void onCodeInput(final int code, final int x, final int y,
-            // TODO: remove these three arguments
-            final LatinIME.UIHandler handler,
-            final KeyboardSwitcher keyboardSwitcher, final SubtypeSwitcher subtypeSwitcher) {
+            // TODO: remove these two arguments
+            final LatinIME.UIHandler handler, final KeyboardSwitcher keyboardSwitcher) {
         if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
             ResearchLogger.latinIME_onCodeInput(code, x, y);
         }
@@ -247,7 +245,8 @@ public final class InputLogic {
             onSettingsKeyPressed();
             break;
         case Constants.CODE_SHORTCUT:
-            subtypeSwitcher.switchToShortcutIME(mLatinIME);
+            // We need to switch to the shortcut IME. This is handled by LatinIME since the
+            // input logic has no business with IME switching.
             break;
         case Constants.CODE_ACTION_NEXT:
             performEditorAction(EditorInfo.IME_ACTION_NEXT);
