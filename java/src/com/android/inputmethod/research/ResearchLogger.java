@@ -1117,14 +1117,13 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     private static final LogStatement LOGSTATEMENT_LATINIME_ONFINISHINPUTVIEWINTERNAL =
             new LogStatement("LatinIMEOnFinishInputViewInternal", false, false, "isTextTruncated",
                     "text");
-    public static void latinIME_onFinishInputViewInternal(final boolean finishingInput,
-            final int savedSelectionStart, final int savedSelectionEnd, final InputConnection ic) {
+    public static void latinIME_onFinishInputViewInternal(final boolean finishingInput) {
         // The finishingInput flag is set in InputMethodService.  It is true if called from
         // doFinishInput(), which can be called as part of doStartInput().  This can happen at times
         // when the IME is not closing, such as when powering up.  The finishinInput flag is false
         // if called from finishViews(), which is called from hideWindow() and onDestroy().  These
         // are the situations in which we want to finish up the researchLog.
-        if (ic != null && !finishingInput) {
+        if (!finishingInput) {
             final ResearchLogger researchLogger = getInstance();
             // Assume that OUTPUT_ENTIRE_BUFFER is only true when we don't care about privacy (e.g.
             // during a live user test), so the normal isPotentiallyPrivate and
