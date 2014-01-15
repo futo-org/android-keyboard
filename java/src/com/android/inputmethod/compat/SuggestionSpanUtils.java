@@ -74,7 +74,6 @@ public final class SuggestionSpanUtils {
             return pickedWord;
         }
 
-        boolean hasSuggestionFromMainDictionary = false;
         final ArrayList<String> suggestionsList = CollectionUtils.newArrayList();
         for (int i = 0; i < suggestedWords.size(); ++i) {
             if (suggestionsList.size() >= SuggestionSpan.SUGGESTIONS_MAX_SIZE) {
@@ -84,22 +83,11 @@ public final class SuggestionSpanUtils {
             if (info.mKind == SuggestedWordInfo.KIND_PREDICTION) {
                 continue;
             }
-            if (info.mSourceDict.mDictType == Dictionary.TYPE_MAIN) {
-                hasSuggestionFromMainDictionary = true;
-            }
             final String word = suggestedWords.getWord(i);
             if (!TextUtils.equals(pickedWord, word)) {
                 suggestionsList.add(word.toString());
             }
         }
-        if (!hasSuggestionFromMainDictionary) {
-            // If we don't have any suggestions from the dictionary, it probably looks bad
-            // enough as it is already because suggestions come pretty much only from contacts.
-            // Let's not embed these bad suggestions in the text view so as to avoid using
-            // them with recorrection.
-            return pickedWord;
-        }
-
         final SuggestionSpan suggestionSpan = new SuggestionSpan(context, null /* locale */,
                 suggestionsList.toArray(new String[suggestionsList.size()]), 0 /* flags */,
                 SuggestionSpanPickedNotificationReceiver.class);
