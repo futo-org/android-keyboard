@@ -25,6 +25,7 @@ import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.settings.NativeSuggestOptions;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.JniUtils;
+import com.android.inputmethod.latin.utils.LanguageModelParam;
 import com.android.inputmethod.latin.utils.StringUtils;
 import com.android.inputmethod.latin.utils.UnigramProperty;
 
@@ -362,51 +363,6 @@ public final class BinaryDictionary extends Dictionary {
         final int[] codePoints0 = StringUtils.toCodePointArray(word0);
         final int[] codePoints1 = StringUtils.toCodePointArray(word1);
         removeBigramWordsNative(mNativeDict, codePoints0, codePoints1);
-    }
-
-    public static class LanguageModelParam {
-        public final String mTargetWord;
-        public final int[] mWord0;
-        public final int[] mWord1;
-        // TODO: this needs to be a list of shortcuts
-        public final int[] mShortcutTarget;
-        public final int mUnigramProbability;
-        public final int mBigramProbability;
-        public final int mShortcutProbability;
-        public final boolean mIsNotAWord;
-        public final boolean mIsBlacklisted;
-        public final int mTimestamp;
-
-        // Constructor for unigram. TODO: support shortcuts
-        public LanguageModelParam(final String word, final int unigramProbability,
-                final int timestamp) {
-            mTargetWord = word;
-            mWord0 = null;
-            mWord1 = StringUtils.toCodePointArray(word);
-            mShortcutTarget = null;
-            mUnigramProbability = unigramProbability;
-            mBigramProbability = NOT_A_PROBABILITY;
-            mShortcutProbability = NOT_A_PROBABILITY;
-            mIsNotAWord = false;
-            mIsBlacklisted = false;
-            mTimestamp = timestamp;
-        }
-
-        // Constructor for unigram and bigram.
-        public LanguageModelParam(final String word0, final String word1,
-                final int unigramProbability, final int bigramProbability,
-                final int timestamp) {
-            mTargetWord = word1;
-            mWord0 = StringUtils.toCodePointArray(word0);
-            mWord1 = StringUtils.toCodePointArray(word1);
-            mShortcutTarget = null;
-            mUnigramProbability = unigramProbability;
-            mBigramProbability = bigramProbability;
-            mShortcutProbability = NOT_A_PROBABILITY;
-            mIsNotAWord = false;
-            mIsBlacklisted = false;
-            mTimestamp = timestamp;
-        }
     }
 
     public void addMultipleDictionaryEntries(final LanguageModelParam[] languageModelParams) {
