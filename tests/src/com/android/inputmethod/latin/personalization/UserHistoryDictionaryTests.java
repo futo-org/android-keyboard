@@ -105,8 +105,10 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
         final UserHistoryDictionary dict =
                 PersonalizationHelper.getUserHistoryDictionary(getContext(),
                         new Locale(testFilenameSuffix));
+        dict.waitAllTasksForTests();
         dict.clearAndFlushDictionary();
         dict.close();
+        dict.waitAllTasksForTests();
     }
 
     /**
