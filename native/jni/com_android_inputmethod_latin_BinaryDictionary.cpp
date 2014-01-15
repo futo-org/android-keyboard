@@ -541,7 +541,7 @@ static const JNINativeMethod sMethods[] = {
     {
         const_cast<char *>("addMultipleDictionaryEntriesNative"),
         const_cast<char *>(
-                "(J[Lcom/android/inputmethod/latin/BinaryDictionary$LanguageModelParam;I)I"),
+                "(J[Lcom/android/inputmethod/latin/utils/LanguageModelParam;I)I"),
         reinterpret_cast<void *>(latinime_BinaryDictionary_addMultipleDictionaryEntries)
     },
     {
