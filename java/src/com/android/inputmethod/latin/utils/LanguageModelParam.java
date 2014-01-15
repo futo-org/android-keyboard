@@ -25,7 +25,9 @@ import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class LanguageModelParam {
+// Note: this class is used as a parameter type of a native method. You should be careful when you
+// rename this class or field name. See BinaryDictionary#addMultipleDictionaryEntriesNative().
+public final class LanguageModelParam {
     private static final String TAG = LanguageModelParam.class.getSimpleName();
     private static final boolean DEBUG = false;
     private static final boolean DEBUG_TOKEN = false;
