@@ -58,6 +58,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     private static final boolean DBG_STRESS_TEST = false;
 
     private static final int TIMEOUT_FOR_READ_OPS_IN_MILLISECONDS = 100;
+    private static final int TIMEOUT_FOR_READ_OPS_FOR_TESTS_IN_MILLISECONDS = 1000;
 
     /**
      * The maximum length of a word in this dictionary.
@@ -761,7 +762,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                 }
             }
         });
-        return holder.get(false, TIMEOUT_FOR_READ_OPS_IN_MILLISECONDS);
+        return holder.get(false, TIMEOUT_FOR_READ_OPS_FOR_TESTS_IN_MILLISECONDS);
     }
 
     @UsedForTesting
