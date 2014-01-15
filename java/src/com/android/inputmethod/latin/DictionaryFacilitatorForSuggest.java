@@ -44,7 +44,7 @@ public class DictionaryFacilitatorForSuggest {
     public static final String TAG = DictionaryFacilitatorForSuggest.class.getSimpleName();
 
     private final Context mContext;
-    private final Locale mLocale;
+    public final Locale mLocale;
 
     private final ConcurrentHashMap<String, Dictionary> mDictionaries =
             CollectionUtils.newConcurrentHashMap();
