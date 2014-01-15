@@ -42,7 +42,7 @@ public final class LastComposedWord {
 
     public final int[] mPrimaryKeyCodes;
     public final String mTypedWord;
-    public final String mCommittedWord;
+    public final CharSequence mCommittedWord;
     public final String mSeparatorString;
     public final String mPrevWord;
     public final int mCapitalizedMode;
@@ -58,7 +58,7 @@ public final class LastComposedWord {
     // Warning: this is using the passed objects as is and fully expects them to be
     // immutable. Do not fiddle with their contents after you passed them to this constructor.
     public LastComposedWord(final int[] primaryKeyCodes, final InputPointers inputPointers,
-            final String typedWord, final String committedWord, final String separatorString,
+            final String typedWord, final CharSequence committedWord, final String separatorString,
             final String prevWord, final int capitalizedMode) {
         mPrimaryKeyCodes = primaryKeyCodes;
         if (inputPointers != null) {

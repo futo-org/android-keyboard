@@ -17,6 +17,7 @@
 package com.android.inputmethod.latin.inputlogic;
 
 import android.os.SystemClock;
+import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.SuggestionSpan;
 import android.util.Log;
@@ -1168,8 +1169,8 @@ public final class InputLogic {
             // TODO: remove these arguments
             final KeyboardSwitcher keyboardSwitcher, final LatinIME.UIHandler handler) {
         final String previousWord = mLastComposedWord.mPrevWord;
-        final String originallyTypedWord = mLastComposedWord.mTypedWord;
-        final String committedWord = mLastComposedWord.mCommittedWord;
+        final CharSequence originallyTypedWord = mLastComposedWord.mTypedWord;
+        final CharSequence committedWord = mLastComposedWord.mCommittedWord;
         final int cancelLength = committedWord.length();
         // We want java chars, not codepoints for the following.
         final int separatorLength = mLastComposedWord.mSeparatorString.length();
@@ -1191,28 +1192,53 @@ public final class InputLogic {
         if (!TextUtils.isEmpty(previousWord) && !TextUtils.isEmpty(committedWord)) {
             if (mSuggest != null) {
                 mSuggest.mDictionaryFacilitator.cancelAddingUserHistory(
-                        previousWord, committedWord);
+                        previousWord, committedWord.toString());
             }
         }
-        final String stringToCommit = originallyTypedWord + mLastComposedWord.mSeparatorString;
+        final SpannableString textToCommit =
+                new SpannableString(originallyTypedWord + mLastComposedWord.mSeparatorString);
+        if (committedWord instanceof SpannableString) {
+            final int lastCharIndex = textToCommit.length() - 1;
+            // Add the auto-correction to the list of suggestions.
+            textToCommit.setSpan(new SuggestionSpan(settingsValues.mLocale,
+                    new String[] { committedWord.toString() }, 0 /* flags */),
+                    0 /* start */, lastCharIndex /* end */, 0 /* flags */);
+            final SpannableString committedWordWithSuggestionSpans = (SpannableString)committedWord;
+            final Object[] spans = committedWordWithSuggestionSpans.getSpans(0,
+                    committedWord.length(), Object.class);
+            for (final Object span : spans) {
+                // Put all the spans in the original text on this new text. We could remove the
+                // typed word from the suggestions, but we'd have to make more dynamic instanceof
+                // checks, to copy the span, copy all suggestions and attributes... And there is
+                // the risk to drop the originally typed string if there is a subtle bug. There is
+                // still the committed auto-correction that we reverted from, which is not included
+                // in the suggestions, that's why we added it with another call to setSpan a few
+                // lines above.
+                // The code that re-reads these spans already knows to do the right thing whether
+                // the typed word is included or not. That should be enough.
+                textToCommit.setSpan(span, 0 /* start */, lastCharIndex /* end */,
+                        committedWordWithSuggestionSpans.getSpanFlags(span));
+            }
+        }
         if (settingsValues.mSpacingAndPunctuations.mCurrentLanguageHasSpaces) {
             // For languages with spaces, we revert to the typed string, but the cursor is still
             // after the separator so we don't resume suggestions. If the user wants to correct
             // the word, they have to press backspace again.
-            mConnection.commitText(stringToCommit, 1);
+            mConnection.commitText(textToCommit, 1);
         } else {
             // For languages without spaces, we revert the typed string but the cursor is flush
             // with the typed word, so we need to resume suggestions right away.
-            mWordComposer.setComposingWord(stringToCommit, previousWord,
+            mWordComposer.setComposingWord(textToCommit, previousWord,
                     keyboardSwitcher.getKeyboard());
-            mConnection.setComposingText(stringToCommit, 1);
+            mConnection.setComposingText(textToCommit, 1);
         }
         if (settingsValues.mIsInternal) {
             LatinImeLoggerUtils.onSeparator(mLastComposedWord.mSeparatorString,
                     Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
         }
         if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-            ResearchLogger.latinIME_revertCommit(committedWord, originallyTypedWord,
+            ResearchLogger.latinIME_revertCommit(committedWord.toString(),
+                    originallyTypedWord.toString(),
                     mWordComposer.isBatchMode(), mLastComposedWord.mSeparatorString);
         }
         // Don't restart suggestion yet. We'll restart if the user deletes the
@@ -1294,7 +1320,7 @@ public final class InputLogic {
      * @return the nth previous word before the cursor.
      */
     // TODO: Make this private
-    public String getNthPreviousWordForSuggestion(
+    public CharSequence getNthPreviousWordForSuggestion(
             final SpacingAndPunctuations spacingAndPunctuations, final int nthPreviousWord) {
         if (spacingAndPunctuations.mCurrentLanguageHasSpaces) {
             // If we are typing in a language with spaces we can just look up the previous
@@ -1645,8 +1671,10 @@ public final class InputLogic {
     public void commitChosenWord(final SettingsValues settingsValues, final String chosenWord,
             final int commitType, final String separatorString) {
         final SuggestedWords suggestedWords = mSuggestedWords;
-        mConnection.commitText(SuggestionSpanUtils.getTextWithSuggestionSpan(mLatinIME, chosenWord,
-                suggestedWords), 1);
+        final CharSequence chosenWordWithSuggestions =
+                SuggestionSpanUtils.getTextWithSuggestionSpan(mLatinIME, chosenWord,
+                        suggestedWords);
+        mConnection.commitText(chosenWordWithSuggestions, 1);
         // TODO: we pass 2 here, but would it be better to move this above and pass 1 instead?
         final String prevWord = mConnection.getNthPreviousWord(
                 settingsValues.mSpacingAndPunctuations, 2);
@@ -1657,7 +1685,7 @@ public final class InputLogic {
         // LastComposedWord#didCommitTypedWord by string equality of the remembered
         // strings.
         mLastComposedWord = mWordComposer.commitWord(commitType,
-                chosenWord, separatorString, prevWord);
+                chosenWordWithSuggestions, separatorString, prevWord);
         final boolean shouldDiscardPreviousWordForSuggestion;
         if (0 == StringUtils.codePointCount(separatorString)) {
             // Separator is 0-length, we can keep the previous word for suggestion. Either this

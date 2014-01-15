@@ -297,7 +297,7 @@ public final class WordComposer {
      *   the context is nil (typically, at start of text).
      * @param keyboard the keyboard this is typed on, for coordinate info/proximity.
      */
-    public void setComposingWord(final CharSequence word, final String previousWord,
+    public void setComposingWord(final CharSequence word, final CharSequence previousWord,
             final Keyboard keyboard) {
         reset();
         final int length = word.length();
@@ -306,7 +306,7 @@ public final class WordComposer {
             addKeyInfo(codePoint, keyboard);
         }
         mIsResumed = true;
-        mPreviousWordForSuggestion = previousWord;
+        mPreviousWordForSuggestion = null == previousWord ? null : previousWord.toString();
     }
 
     /**
@@ -418,9 +418,9 @@ public final class WordComposer {
      * @param previousWord the previous word as context for suggestions. May be null if none.
      */
     public void setCapitalizedModeAndPreviousWordAtStartComposingTime(final int mode,
-            final String previousWord) {
+            final CharSequence previousWord) {
         mCapitalizedMode = mode;
-        mPreviousWordForSuggestion = previousWord;
+        mPreviousWordForSuggestion = null == previousWord ? null : previousWord.toString();
     }
 
     /**
@@ -454,7 +454,8 @@ public final class WordComposer {
     }
 
     // `type' should be one of the LastComposedWord.COMMIT_TYPE_* constants above.
-    public LastComposedWord commitWord(final int type, final String committedWord,
+    // committedWord should contain suggestion spans if applicable.
+    public LastComposedWord commitWord(final int type, final CharSequence committedWord,
             final String separatorString, final String prevWord) {
         // Note: currently, we come here whenever we commit a word. If it's a MANUAL_PICK
         // or a DECIDED_WORD we may cancel the commit later; otherwise, we should deactivate
@@ -472,7 +473,7 @@ public final class WordComposer {
         mCapsCount = 0;
         mDigitsCount = 0;
         mIsBatchMode = false;
-        mPreviousWordForSuggestion = committedWord;
+        mPreviousWordForSuggestion = committedWord.toString();
         mTypedWord.setLength(0);
         mCodePointSize = 0;
         mTrailingSingleQuotesCount = 0;
