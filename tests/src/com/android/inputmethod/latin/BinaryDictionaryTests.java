@@ -21,11 +21,11 @@ import android.test.suitebuilder.annotation.LargeTest;
 import android.text.TextUtils;
 import android.util.Pair;
 
-import com.android.inputmethod.latin.BinaryDictionary.LanguageModelParam;
 import com.android.inputmethod.latin.makedict.CodePointUtils;
 import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
 import com.android.inputmethod.latin.utils.FileUtils;
+import com.android.inputmethod.latin.utils.LanguageModelParam;
 import com.android.inputmethod.latin.utils.UnigramProperty;
 
 import java.io.File;

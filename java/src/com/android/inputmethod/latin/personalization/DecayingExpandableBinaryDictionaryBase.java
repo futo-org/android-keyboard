@@ -20,13 +20,13 @@ import android.content.Context;
 import android.util.Log;
 
 import com.android.inputmethod.annotations.UsedForTesting;
-import com.android.inputmethod.latin.BinaryDictionary.LanguageModelParam;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.ExpandableBinaryDictionary;
 import com.android.inputmethod.latin.makedict.DictDecoder;
 import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
+import com.android.inputmethod.latin.utils.LanguageModelParam;
 import com.android.inputmethod.latin.utils.UserHistoryDictIOUtils;
 import com.android.inputmethod.latin.utils.UserHistoryDictIOUtils.OnAddWordListener;
 

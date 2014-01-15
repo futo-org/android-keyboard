@@ -18,8 +18,8 @@ package com.android.inputmethod.latin.personalization;
 
 import android.content.Context;
 
-import com.android.inputmethod.latin.BinaryDictionary.LanguageModelParam;
 import com.android.inputmethod.latin.ExpandableBinaryDictionary;
+import com.android.inputmethod.latin.utils.LanguageModelParam;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
