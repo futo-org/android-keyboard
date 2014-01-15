@@ -139,6 +139,20 @@ public final class CapsModeUtils {
             j--;
         }
         if (j <= 0 || Character.isWhitespace(prevChar)) {
+            if (spacingAndPunctuations.mUsesGermanRules) {
+                // In German typography rules, there is a specific case that the first character
+                // of a new line should not be capitalized if the previous line ends in a comma.
+                boolean hasNewLine = false;
+                while (--j >= 0 && Character.isWhitespace(prevChar)) {
+                    if (Constants.CODE_ENTER == prevChar) {
+                        hasNewLine = true;
+                    }
+                    prevChar = cs.charAt(j);
+                }
+                if (Constants.CODE_COMMA == prevChar && hasNewLine) {
+                    return (TextUtils.CAP_MODE_CHARACTERS | TextUtils.CAP_MODE_WORDS) & reqModes;
+                }
+            }
             // There are only spacing chars between the start of the paragraph and the cursor,
             // defined as a isWhitespace() char that is neither a isSpaceChar() nor a tab. Both
             // MODE_WORDS and MODE_SENTENCES should be active.

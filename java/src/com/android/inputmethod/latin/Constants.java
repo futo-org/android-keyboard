@@ -183,6 +183,7 @@ public final class Constants {
     public static final int CODE_TAB = '\t';
     public static final int CODE_SPACE = ' ';
     public static final int CODE_PERIOD = '.';
+    public static final int CODE_COMMA = ',';
     public static final int CODE_ARMENIAN_PERIOD = 0x0589;
     public static final int CODE_DASH = '-';
     public static final int CODE_SINGLE_QUOTE = '\'';

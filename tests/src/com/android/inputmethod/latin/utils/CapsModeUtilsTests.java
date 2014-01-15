@@ -94,5 +94,20 @@ public class CapsModeUtilsTests extends AndroidTestCase {
         allPathsForCaps("\"Word.\" ", c | w, sp, false);
         allPathsForCaps("\"Word\". ", c | w | s, sp, false);
         allPathsForCaps("\"Word\" ", c | w, sp, false);
+
+        // Test special case for German. German does not capitalize at the start of a
+        // line when the previous line starts with a comma. It does in other cases.
+        sp = job.runInLocale(res, Locale.GERMAN);
+        allPathsForCaps("Liebe Sara,\n", c | w, sp, false);
+        allPathsForCaps("Liebe Sara,\n", c | w, sp, true);
+        allPathsForCaps("Liebe Sara,  \n  ", c | w, sp, false);
+        allPathsForCaps("Liebe Sara  \n  ", c | w | s, sp, false);
+        allPathsForCaps("Liebe Sara.\n  ", c | w | s, sp, false);
+        sp = job.runInLocale(res, Locale.ENGLISH);
+        allPathsForCaps("Liebe Sara,\n", c | w | s, sp, false);
+        allPathsForCaps("Liebe Sara,\n", c | w | s, sp, true);
+        allPathsForCaps("Liebe Sara,  \n  ", c | w | s, sp, false);
+        allPathsForCaps("Liebe Sara  \n  ", c | w | s, sp, false);
+        allPathsForCaps("Liebe Sara.\n  ", c | w | s, sp, false);
     }
 }
