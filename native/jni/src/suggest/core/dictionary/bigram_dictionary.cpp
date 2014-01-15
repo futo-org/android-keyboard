@@ -41,6 +41,9 @@ BigramDictionary::~BigramDictionary() {
 
 void BigramDictionary::addWordBigram(int *word, int length, int probability, int *bigramProbability,
         int *bigramCodePoints, int *outputTypes) const {
+    if (length >= MAX_WORD_LENGTH) {
+        length = MAX_WORD_LENGTH - 1;
+    }
     word[length] = 0;
     if (DEBUG_DICT_FULL) {
 #ifdef FLAG_DBG
@@ -66,14 +69,17 @@ void BigramDictionary::addWordBigram(int *word, int length, int probability, int
     if (insertAt >= MAX_RESULTS) {
         return;
     }
-    memmove(bigramProbability + (insertAt + 1),
-            bigramProbability + insertAt,
+    // Shift result buffers to insert the new entry.
+    memmove(bigramProbability + (insertAt + 1), bigramProbability + insertAt,
             (MAX_RESULTS - insertAt - 1) * sizeof(bigramProbability[0]));
-    bigramProbability[insertAt] = probability;
-    outputTypes[insertAt] = Dictionary::KIND_PREDICTION;
+    memmove(outputTypes + (insertAt + 1), outputTypes + insertAt,
+            (MAX_RESULTS - insertAt - 1) * sizeof(outputTypes[0]));
     memmove(bigramCodePoints + (insertAt + 1) * MAX_WORD_LENGTH,
             bigramCodePoints + insertAt * MAX_WORD_LENGTH,
             (MAX_RESULTS - insertAt - 1) * sizeof(bigramCodePoints[0]) * MAX_WORD_LENGTH);
+    // Put the result.
+    bigramProbability[insertAt] = probability;
+    outputTypes[insertAt] = Dictionary::KIND_PREDICTION;
     int *dest = bigramCodePoints + insertAt * MAX_WORD_LENGTH;
     while (length--) {
         *dest++ = *word++;
