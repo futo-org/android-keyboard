@@ -37,14 +37,6 @@ import java.util.concurrent.TimeUnit;
 public class BinaryDictionaryDecayingTests extends AndroidTestCase {
     private static final String TEST_DICT_FILE_EXTENSION = ".testDict";
     private static final String TEST_LOCALE = "test";
-
-    // Note that these are corresponding definitions in native code in
-    // latinime::Ver4PatriciaTriePolicy.
-    private static final String SET_CURRENT_TIME_FOR_TESTING_QUERY =
-            "SET_CURRENT_TIME_FOR_TESTING";
-    private static final String GET_CURRENT_TIME_QUERY = "GET_CURRENT_TIME";
-    private static final String QUIT_TIMEKEEPER_TEST_MODE_QUERY = "QUIT_TIMEKEEPER_TEST_MODE";
-
     private static final int DUMMY_PROBABILITY = 0;
 
     private int mCurrentTime = 0;
@@ -58,17 +50,7 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
     @Override
     protected void tearDown() throws Exception {
         super.tearDown();
-        try {
-            final File dictFile =
-                    createEmptyDictionaryAndGetFile("TestBinaryDictionary", FormatSpec.VERSION4);
-            final BinaryDictionary binaryDictionary =
-                    new BinaryDictionary(dictFile.getAbsolutePath(), 0 /* offset */,
-                            dictFile.length(), true /* useFullEditDistance */, Locale.getDefault(),
-                            TEST_LOCALE, true /* isUpdatable */);
-            binaryDictionary.getPropertyForTests(QUIT_TIMEKEEPER_TEST_MODE_QUERY);
-        } catch (IOException e) {
-            fail("IOException while writing an initial dictionary : " + e);
-        }
+        stopTestModeInNativeCode();
     }
 
     private void addUnigramWord(final BinaryDictionary binaryDictionary, final String word,
@@ -89,7 +71,7 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
         // 4 days.
         final int timeToElapse = (int)TimeUnit.SECONDS.convert(4, TimeUnit.DAYS);
         mCurrentTime += timeToElapse;
-        setCurrentTime(binaryDictionary, mCurrentTime);
+        setCurrentTimeForTestMode(mCurrentTime);
         binaryDictionary.flushWithGC();
     }
 
@@ -97,7 +79,7 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
         // 60 days.
         final int timeToElapse = (int)TimeUnit.SECONDS.convert(60, TimeUnit.DAYS);
         mCurrentTime += timeToElapse;
-        setCurrentTime(binaryDictionary, mCurrentTime);
+        setCurrentTimeForTestMode(mCurrentTime);
         binaryDictionary.flushWithGC();
     }
 
@@ -110,6 +92,7 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
                     + " is not supported.");
         }
     }
+
     private File createEmptyVer4DictionaryAndGetFile(final String dictId) throws IOException {
         final File file = File.createTempFile(dictId, TEST_DICT_FILE_EXTENSION,
                 getContext().getCacheDir());
@@ -128,14 +111,12 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
         }
     }
 
-    private static int getCurrentTime(final BinaryDictionary binaryDictionary) {
-        return Integer.parseInt(binaryDictionary.getPropertyForTests(GET_CURRENT_TIME_QUERY));
+    private static int setCurrentTimeForTestMode(final int currentTime) {
+        return BinaryDictionary.setCurrentTimeForTest(currentTime);
     }
 
-    private static void setCurrentTime(final BinaryDictionary binaryDictionary,
-            final int currentTime) {
-        final String query = SET_CURRENT_TIME_FOR_TESTING_QUERY + ":" + currentTime;
-        binaryDictionary.getPropertyForTests(query);
+    private static int stopTestModeInNativeCode() {
+        return BinaryDictionary.setCurrentTimeForTest(-1);
     }
 
     public void testControlCurrentTime() {
@@ -146,24 +127,13 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
         final int TEST_COUNT = 1000;
         final long seed = System.currentTimeMillis();
         final Random random = new Random(seed);
-        File dictFile = null;
-        try {
-            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary", formatVersion);
-        } catch (IOException e) {
-            fail("IOException while writing an initial dictionary : " + e);
-        }
-        BinaryDictionary binaryDictionary = new BinaryDictionary(dictFile.getAbsolutePath(),
-                0 /* offset */, dictFile.length(), true /* useFullEditDistance */,
-                Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
-        binaryDictionary.getPropertyForTests(QUIT_TIMEKEEPER_TEST_MODE_QUERY);
-        final int startTime = getCurrentTime(binaryDictionary);
+        final int startTime = stopTestModeInNativeCode();
         for (int i = 0; i < TEST_COUNT; i++) {
             final int currentTime = random.nextInt(Integer.MAX_VALUE);
-            setCurrentTime(binaryDictionary, currentTime);
-            assertEquals(currentTime, getCurrentTime(binaryDictionary));
+            final int currentTimeInNativeCode = setCurrentTimeForTestMode(currentTime);
+            assertEquals(currentTime, currentTimeInNativeCode);
         }
-        binaryDictionary.getPropertyForTests(QUIT_TIMEKEEPER_TEST_MODE_QUERY);
-        final int endTime = getCurrentTime(binaryDictionary);
+        final int endTime = stopTestModeInNativeCode();
         final int MAX_ALLOWED_ELAPSED_TIME = 10;
         assertTrue(startTime <= endTime && endTime <= startTime + MAX_ALLOWED_ELAPSED_TIME);
     }
@@ -301,7 +271,7 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
         BinaryDictionary binaryDictionary = new BinaryDictionary(dictFile.getAbsolutePath(),
                 0 /* offset */, dictFile.length(), true /* useFullEditDistance */,
                 Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
-        setCurrentTime(binaryDictionary, mCurrentTime);
+        setCurrentTimeForTestMode(mCurrentTime);
 
         final int[] codePointSet = CodePointUtils.generateCodePointSet(codePointSetSize, random);
         final ArrayList<String> words = new ArrayList<String>();
@@ -312,31 +282,31 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
         }
 
         final int maxUnigramCount = Integer.parseInt(
-                binaryDictionary.getPropertyForTests(BinaryDictionary.MAX_UNIGRAM_COUNT_QUERY));
+                binaryDictionary.getPropertyForTest(BinaryDictionary.MAX_UNIGRAM_COUNT_QUERY));
         for (int i = 0; i < unigramTypedCount; i++) {
             final String word = words.get(random.nextInt(words.size()));
             addUnigramWord(binaryDictionary, word, DUMMY_PROBABILITY);
 
             if (binaryDictionary.needsToRunGC(true /* mindsBlockByGC */)) {
                 final int unigramCountBeforeGC =
-                        Integer.parseInt(binaryDictionary.getPropertyForTests(
+                        Integer.parseInt(binaryDictionary.getPropertyForTest(
                                 BinaryDictionary.UNIGRAM_COUNT_QUERY));
                 while (binaryDictionary.needsToRunGC(true /* mindsBlockByGC */)) {
                     forcePassingShortTime(binaryDictionary);
                 }
                 final int unigramCountAfterGC =
-                        Integer.parseInt(binaryDictionary.getPropertyForTests(
+                        Integer.parseInt(binaryDictionary.getPropertyForTest(
                                 BinaryDictionary.UNIGRAM_COUNT_QUERY));
                 assertTrue(unigramCountBeforeGC > unigramCountAfterGC);
             }
         }
 
-        assertTrue(Integer.parseInt(binaryDictionary.getPropertyForTests(
+        assertTrue(Integer.parseInt(binaryDictionary.getPropertyForTest(
                 BinaryDictionary.UNIGRAM_COUNT_QUERY)) > 0);
-        assertTrue(Integer.parseInt(binaryDictionary.getPropertyForTests(
+        assertTrue(Integer.parseInt(binaryDictionary.getPropertyForTest(
                 BinaryDictionary.UNIGRAM_COUNT_QUERY)) <= maxUnigramCount);
         forcePassingLongTime(binaryDictionary);
-        assertEquals(0, Integer.parseInt(binaryDictionary.getPropertyForTests(
+        assertEquals(0, Integer.parseInt(binaryDictionary.getPropertyForTest(
                 BinaryDictionary.UNIGRAM_COUNT_QUERY)));
     }
 
@@ -362,7 +332,7 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
         BinaryDictionary binaryDictionary = new BinaryDictionary(dictFile.getAbsolutePath(),
                 0 /* offset */, dictFile.length(), true /* useFullEditDistance */,
                 Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
-        setCurrentTime(binaryDictionary, mCurrentTime);
+        setCurrentTimeForTestMode(mCurrentTime);
         final int[] codePointSet = CodePointUtils.generateCodePointSet(codePointSetSize, random);
 
         final String strong = "strong";
@@ -383,13 +353,13 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
             }
             if (binaryDictionary.needsToRunGC(true /* mindsBlockByGC */)) {
                 final int unigramCountBeforeGC =
-                        Integer.parseInt(binaryDictionary.getPropertyForTests(
+                        Integer.parseInt(binaryDictionary.getPropertyForTest(
                                 BinaryDictionary.UNIGRAM_COUNT_QUERY));
                 assertTrue(binaryDictionary.isValidWord(strong));
                 assertTrue(binaryDictionary.isValidWord(weak));
                 binaryDictionary.flushWithGC();
                 final int unigramCountAfterGC =
-                        Integer.parseInt(binaryDictionary.getPropertyForTests(
+                        Integer.parseInt(binaryDictionary.getPropertyForTest(
                                 BinaryDictionary.UNIGRAM_COUNT_QUERY));
                 assertTrue(unigramCountBeforeGC > unigramCountAfterGC);
                 assertFalse(binaryDictionary.isValidWord(weak));
@@ -420,7 +390,7 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
         BinaryDictionary binaryDictionary = new BinaryDictionary(dictFile.getAbsolutePath(),
                 0 /* offset */, dictFile.length(), true /* useFullEditDistance */,
                 Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
-        setCurrentTime(binaryDictionary, mCurrentTime);
+        setCurrentTimeForTestMode(mCurrentTime);
 
         final int[] codePointSet = CodePointUtils.generateCodePointSet(codePointSetSize, random);
         final ArrayList<String> words = new ArrayList<String>();
@@ -443,7 +413,7 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
         }
 
         final int maxBigramCount = Integer.parseInt(
-                binaryDictionary.getPropertyForTests(BinaryDictionary.MAX_BIGRAM_COUNT_QUERY));
+                binaryDictionary.getPropertyForTest(BinaryDictionary.MAX_BIGRAM_COUNT_QUERY));
         for (int i = 0; i < bigramTypedCount; ++i) {
             final Pair<String, String> bigram = bigrams.get(random.nextInt(bigrams.size()));
             addUnigramWord(binaryDictionary, bigram.first, DUMMY_PROBABILITY);
@@ -452,24 +422,24 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
 
             if (binaryDictionary.needsToRunGC(true /* mindsBlockByGC */)) {
                 final int bigramCountBeforeGC =
-                        Integer.parseInt(binaryDictionary.getPropertyForTests(
+                        Integer.parseInt(binaryDictionary.getPropertyForTest(
                                 BinaryDictionary.BIGRAM_COUNT_QUERY));
                 while (binaryDictionary.needsToRunGC(true /* mindsBlockByGC */)) {
                     forcePassingShortTime(binaryDictionary);
                 }
                 final int bigramCountAfterGC =
-                        Integer.parseInt(binaryDictionary.getPropertyForTests(
+                        Integer.parseInt(binaryDictionary.getPropertyForTest(
                                 BinaryDictionary.BIGRAM_COUNT_QUERY));
                 assertTrue(bigramCountBeforeGC > bigramCountAfterGC);
             }
         }
 
-        assertTrue(Integer.parseInt(binaryDictionary.getPropertyForTests(
+        assertTrue(Integer.parseInt(binaryDictionary.getPropertyForTest(
                 BinaryDictionary.BIGRAM_COUNT_QUERY)) > 0);
-        assertTrue(Integer.parseInt(binaryDictionary.getPropertyForTests(
+        assertTrue(Integer.parseInt(binaryDictionary.getPropertyForTest(
                 BinaryDictionary.BIGRAM_COUNT_QUERY)) <= maxBigramCount);
         forcePassingLongTime(binaryDictionary);
-        assertEquals(0, Integer.parseInt(binaryDictionary.getPropertyForTests(
+        assertEquals(0, Integer.parseInt(binaryDictionary.getPropertyForTest(
                 BinaryDictionary.BIGRAM_COUNT_QUERY)));
     }
 
@@ -497,7 +467,7 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
         BinaryDictionary binaryDictionary = new BinaryDictionary(dictFile.getAbsolutePath(),
                 0 /* offset */, dictFile.length(), true /* useFullEditDistance */,
                 Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
-        setCurrentTime(binaryDictionary, mCurrentTime);
+        setCurrentTimeForTestMode(mCurrentTime);
         final int[] codePointSet = CodePointUtils.generateCodePointSet(codePointSetSize, random);
 
         final ArrayList<String> words = new ArrayList<String>();
@@ -538,11 +508,11 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
             }
             if (binaryDictionary.needsToRunGC(true /* mindsBlockByGC */)) {
                 final int bigramCountBeforeGC =
-                        Integer.parseInt(binaryDictionary.getPropertyForTests(
+                        Integer.parseInt(binaryDictionary.getPropertyForTest(
                                 BinaryDictionary.BIGRAM_COUNT_QUERY));
                 binaryDictionary.flushWithGC();
                 final int bigramCountAfterGC =
-                        Integer.parseInt(binaryDictionary.getPropertyForTests(
+                        Integer.parseInt(binaryDictionary.getPropertyForTest(
                                 BinaryDictionary.BIGRAM_COUNT_QUERY));
                 assertTrue(bigramCountBeforeGC > bigramCountAfterGC);
                 assertTrue(binaryDictionary.isValidBigram(strong, target));

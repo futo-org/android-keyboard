@@ -750,14 +750,14 @@ public class BinaryDictionaryTests extends AndroidTestCase {
                 addBigramWords(binaryDictionary, word0, word1, bigramProbability);
             }
             assertEquals(new HashSet<String>(words).size(), Integer.parseInt(
-                    binaryDictionary.getPropertyForTests(BinaryDictionary.UNIGRAM_COUNT_QUERY)));
+                    binaryDictionary.getPropertyForTest(BinaryDictionary.UNIGRAM_COUNT_QUERY)));
             assertEquals(new HashSet<Pair<String, String>>(bigrams).size(), Integer.parseInt(
-                    binaryDictionary.getPropertyForTests(BinaryDictionary.BIGRAM_COUNT_QUERY)));
+                    binaryDictionary.getPropertyForTest(BinaryDictionary.BIGRAM_COUNT_QUERY)));
             binaryDictionary.flushWithGC();
             assertEquals(new HashSet<String>(words).size(), Integer.parseInt(
-                    binaryDictionary.getPropertyForTests(BinaryDictionary.UNIGRAM_COUNT_QUERY)));
+                    binaryDictionary.getPropertyForTest(BinaryDictionary.UNIGRAM_COUNT_QUERY)));
             assertEquals(new HashSet<Pair<String, String>>(bigrams).size(), Integer.parseInt(
-                    binaryDictionary.getPropertyForTests(BinaryDictionary.BIGRAM_COUNT_QUERY)));
+                    binaryDictionary.getPropertyForTest(BinaryDictionary.BIGRAM_COUNT_QUERY)));
             binaryDictionary.close();
         }
 
