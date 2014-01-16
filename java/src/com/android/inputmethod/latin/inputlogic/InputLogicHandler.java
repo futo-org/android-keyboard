@@ -29,8 +29,7 @@ import com.android.inputmethod.latin.Suggest.OnGetSuggestedWordsCallback;
 /**
  * A helper to manage deferred tasks for the input logic.
  */
-// TODO: Make this package private
-public class InputLogicHandler implements Handler.Callback {
+class InputLogicHandler implements Handler.Callback {
     final Handler mNonUIThreadHandler;
     // TODO: remove this reference.
     final LatinIME mLatinIME;
