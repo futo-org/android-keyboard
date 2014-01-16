@@ -165,6 +165,7 @@ public final class BinaryDictionary extends Dictionary {
             LanguageModelParam[] languageModelParams, int startIndex);
     private static native int calculateProbabilityNative(long dict, int unigramProbability,
             int bigramProbability);
+    private static native int setCurrentTimeForTestNative(int currentTime);
     private static native String getPropertyNative(long dict, String query);
 
     @UsedForTesting
@@ -420,8 +421,22 @@ public final class BinaryDictionary extends Dictionary {
         return calculateProbabilityNative(mNativeDict, unigramProbability, bigramProbability);
     }
 
+    /**
+     * Control the current time to be used in the native code. If currentTime >= 0, this method sets
+     * the current time and gets into test mode.
+     * In test mode, set timestamp is used as the current time in the native code.
+     * If currentTime < 0, quit the test mode and returns to using time() to get the current time.
+     *
+     * @param currentTime seconds since the unix epoch
+     * @return current time got in the native code.
+     */
     @UsedForTesting
-    public String getPropertyForTests(String query) {
+    public static int setCurrentTimeForTest(final int currentTime) {
+        return setCurrentTimeForTestNative(currentTime);
+    }
+
+    @UsedForTesting
+    public String getPropertyForTest(final String query) {
         if (!isValidDictionary()) return "";
         return getPropertyNative(mNativeDict, query);
     }

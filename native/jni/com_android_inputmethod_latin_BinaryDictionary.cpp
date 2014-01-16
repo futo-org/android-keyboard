@@ -29,6 +29,7 @@
 #include "suggest/policyimpl/dictionary/structure/dictionary_structure_with_buffer_policy_factory.h"
 #include "suggest/policyimpl/dictionary/utils/dict_file_writing_utils.h"
 #include "utils/autocorrection_threshold_utils.h"
+#include "utils/time_keeper.h"
 
 namespace latinime {
 
@@ -457,6 +458,17 @@ static jstring latinime_BinaryDictionary_getProperty(JNIEnv *env, jclass clazz, 
     return env->NewStringUTF(resultChars);
 }
 
+static int latinime_BinaryDictionary_setCurrentTimeForTest(JNIEnv *env, jclass clazz,
+        jint currentTime) {
+    if (currentTime >= 0) {
+        TimeKeeper::startTestModeWithForceCurrentTime(currentTime);
+    } else {
+        TimeKeeper::stopTestMode();
+    }
+    TimeKeeper::setCurrentTime();
+    return TimeKeeper::peekCurrentTime();
+}
+
 static const JNINativeMethod sMethods[] = {
     {
         const_cast<char *>("createEmptyDictFileNative"),
@@ -548,6 +560,11 @@ static const JNINativeMethod sMethods[] = {
         const_cast<char *>("calculateProbabilityNative"),
         const_cast<char *>("(JII)I"),
         reinterpret_cast<void *>(latinime_BinaryDictionary_calculateProbabilityNative)
+    },
+    {
+        const_cast<char *>("setCurrentTimeForTestNative"),
+        const_cast<char *>("(I)I"),
+        reinterpret_cast<void *>(latinime_BinaryDictionary_setCurrentTimeForTest)
     },
     {
         const_cast<char *>("getPropertyNative"),
