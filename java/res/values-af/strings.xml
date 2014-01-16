@@ -75,8 +75,8 @@
     <string name="gesture_preview_trail" msgid="3802333369335722221">"Wys gebaarspoor"</string>
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"Dinamiese sweefvoorskou"</string>
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"Sien die voorgestelde woord tydens gebare"</string>
-    <string name="gesture_space_aware" msgid="8244483979855138643">"Frasegebaar"</string>
-    <string name="gesture_space_aware_summary" msgid="3226298212755100667">"Voer spasies gedurende gebare in deur na die spasiebalk te sweef"</string>
+    <string name="gesture_space_aware" msgid="2078291600664682496">"Frasegebaar"</string>
+    <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Voer spasies tydens gebare in deur na die spasiesleutel te sweef"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : Gestoor"</string>
     <string name="spoken_use_headphones" msgid="896961781287283493">"Koppel \'n kopstuk om te hoor hoe wagwoordsleutels hardop gesê word."</string>
     <string name="spoken_current_text_is" msgid="2485723011272583845">"Huidige teks is %s"</string>
