@@ -1534,7 +1534,7 @@ public final class InputLogic {
      * @param settingsValues the current values of the settings.
      * @param suggestedWords suggestedWords to use.
      */
-    public void endBatchInputAsyncInternal(final SettingsValues settingsValues,
+    public void endBatchInputInternal(final SettingsValues settingsValues,
             final SuggestedWords suggestedWords,
             // TODO: remove this argument
             final KeyboardSwitcher keyboardSwitcher) {
