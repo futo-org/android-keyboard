@@ -75,8 +75,10 @@
     <string name="gesture_preview_trail" msgid="3802333369335722221">"ສະແດງຫາງຂອງ Gesture"</string>
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"ມີຄຳຕົວຢ່າງລອຍຂຶ້ນມາ"</string>
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"ເບິ່ງຄຳທີ່ຖືກແນະນຳໃນເວລາທີ່ກຳລັງຊີ້"</string>
-    <string name="gesture_space_aware" msgid="8244483979855138643">"ປັດເປັນປະໂຫຍກ"</string>
-    <string name="gesture_space_aware_summary" msgid="3226298212755100667">"ເວັ້ນໄລຍະຫ່າງລະຫວ່າງທ່າທາງນິ້ວມື ໂດຍການເລື່ອນໄປຫາປຸ່ມຍະຫວ່າງ"</string>
+    <!-- no translation found for gesture_space_aware (2078291600664682496) -->
+    <skip />
+    <!-- no translation found for gesture_space_aware_summary (4371385818348528538) -->
+    <skip />
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : ບັນທຶກແລ້ວ"</string>
     <string name="spoken_use_headphones" msgid="896961781287283493">"ສຽບສາຍຫູຟັງເພື່ອຟັງລະຫັດຜ່ານ."</string>
     <string name="spoken_current_text_is" msgid="2485723011272583845">"ຂໍ້ຄວາມປະຈຸບັນແມ່ນ %s"</string>
