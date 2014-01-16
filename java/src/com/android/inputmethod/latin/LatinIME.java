@@ -234,6 +234,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
 
         public void postResumeSuggestions() {
+            if (!getOwnerInstance().mSettings.getCurrent().isSuggestionStripVisible()) {
+                return;
+            }
             removeMessages(MSG_RESUME_SUGGESTIONS);
             sendMessageDelayed(obtainMessage(MSG_RESUME_SUGGESTIONS), mDelayUpdateSuggestions);
         }
@@ -959,11 +962,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                         newSelStart, newSelEnd, false /* shouldFinishComposition */);
             }
 
-            // We moved the cursor. If we are touching a word, we need to resume suggestion,
-            // unless suggestions are off.
-            if (isSuggestionsStripVisible()) {
-                mHandler.postResumeSuggestions();
-            }
+            // We moved the cursor. If we are touching a word, we need to resume suggestion.
+            mHandler.postResumeSuggestions();
             // Reset the last recapitalization.
             mInputLogic.mRecapitalizeStatus.deactivate();
             mKeyboardSwitcher.updateShiftState();
