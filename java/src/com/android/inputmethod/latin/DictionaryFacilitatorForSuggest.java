@@ -28,6 +28,7 @@ import com.android.inputmethod.latin.personalization.PersonalizationHelper;
 import com.android.inputmethod.latin.personalization.UserHistoryDictionary;
 import com.android.inputmethod.latin.settings.SettingsValues;
 import com.android.inputmethod.latin.utils.CollectionUtils;
+import com.android.inputmethod.latin.utils.LanguageModelParam;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -221,6 +222,10 @@ public class DictionaryFacilitatorForSuggest {
     // of this method.
     public boolean hasMainDictionary() {
         return null != mMainDictionary && mMainDictionary.isInitialized();
+    }
+
+    public boolean hasPersonalizationDictionary() {
+        return null != mPersonalizationDictionary;
     }
 
     public void waitForLoadingMainDictionary(final long timeout, final TimeUnit unit)
@@ -475,5 +480,27 @@ public class DictionaryFacilitatorForSuggest {
         if (oldDict != null && dict != oldDict) {
             oldDict.close();
         }
+    }
+
+    // This method gets called only when the IME receives a notification to remove the
+    // personalization dictionary.
+    public void clearPersonalizationDictionary() {
+        if (!hasPersonalizationDictionary()) {
+            return;
+        }
+        mPersonalizationDictionary.clearAndFlushDictionary();
+    }
+
+    public void addMultipleDictionaryEntriesToPersonalizationDictionary(
+            final ArrayList<LanguageModelParam> languageModelParams,
+            final ExpandableBinaryDictionary.AddMultipleDictionaryEntriesCallback callback) {
+        if (!hasPersonalizationDictionary()) {
+            if (callback != null) {
+                callback.onFinished();
+            }
+            return;
+        }
+        mPersonalizationDictionary.addMultipleDictionaryEntriesToDictionary(languageModelParams,
+                callback);
     }
 }

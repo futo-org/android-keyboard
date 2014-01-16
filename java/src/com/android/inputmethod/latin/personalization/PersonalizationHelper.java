@@ -71,13 +71,6 @@ public class PersonalizationHelper {
         }
     }
 
-    public static void registerPersonalizationDictionaryUpdateSession(final Context context,
-            final PersonalizationDictionaryUpdateSession session, final Locale locale) {
-        final PersonalizationDictionary personalizationDictionary =
-                getPersonalizationDictionary(context, locale);
-        personalizationDictionary.registerUpdateSession(session);
-    }
-
     public static PersonalizationDictionary getPersonalizationDictionary(
             final Context context, final Locale locale) {
         final String localeStr = locale.toString();
