@@ -1061,8 +1061,6 @@ public final class InputLogic {
         // recorrection. This is a temporary, stopgap measure that will be removed later.
         // TODO: remove this.
         if (settingsValues.isBrokenByRecorrection()) return;
-        // A simple way to test for support from the TextView.
-        if (!mLatinIME.isSuggestionsStripVisible()) return;
         // Recorrection is not supported in languages without spaces because we don't know
         // how to segment them yet.
         if (!settingsValues.mSpacingAndPunctuations.mCurrentLanguageHasSpaces) return;
