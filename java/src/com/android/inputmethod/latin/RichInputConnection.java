@@ -27,7 +27,6 @@ import android.view.inputmethod.ExtractedTextRequest;
 import android.view.inputmethod.InputConnection;
 
 import com.android.inputmethod.latin.define.ProductionFlag;
-import com.android.inputmethod.latin.settings.SettingsValues;
 import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
 import com.android.inputmethod.latin.utils.CapsModeUtils;
 import com.android.inputmethod.latin.utils.DebugLogUtils;
@@ -98,7 +97,7 @@ public final class RichInputConnection {
         final ExtractedText et = mIC.getExtractedText(r, 0);
         final CharSequence beforeCursor = getTextBeforeCursor(Constants.EDITOR_CONTENTS_CACHE_SIZE,
                 0);
-        final StringBuilder internal = new StringBuilder().append(mCommittedTextBeforeComposingText)
+        final StringBuilder internal = new StringBuilder(mCommittedTextBeforeComposingText)
                 .append(mComposingText);
         if (null == et || null == beforeCursor) return;
         final int actualLength = Math.min(beforeCursor.length(), internal.length());
@@ -253,8 +252,7 @@ public final class RichInputConnection {
     }
 
     public CharSequence getSelectedText(final int flags) {
-        if (null == mIC) return null;
-        return mIC.getSelectedText(flags);
+        return (null == mIC) ? null : mIC.getSelectedText(flags);
     }
 
     public boolean canDeleteCharacters() {
@@ -272,12 +270,12 @@ public final class RichInputConnection {
      * American English, it's just the most common set of rules for English).
      *
      * @param inputType a mask of the caps modes to test for.
-     * @param settingsValues the values of the settings to use for locale and separators.
+     * @param spacingAndPunctuations the values of the settings to use for locale and separators.
      * @param hasSpaceBefore if we should consider there should be a space after the string.
      * @return the caps modes that should be on as a set of bits
      */
-    public int getCursorCapsMode(final int inputType, final SettingsValues settingsValues,
-            final boolean hasSpaceBefore) {
+    public int getCursorCapsMode(final int inputType,
+            final SpacingAndPunctuations spacingAndPunctuations, final boolean hasSpaceBefore) {
         mIC = mParent.getCurrentInputConnection();
         if (null == mIC) return Constants.TextUtils.CAP_MODE_OFF;
         if (!TextUtils.isEmpty(mComposingText)) {
@@ -304,13 +302,13 @@ public final class RichInputConnection {
         // This never calls InputConnection#getCapsMode - in fact, it's a static method that
         // never blocks or initiates IPC.
         return CapsModeUtils.getCapsMode(mCommittedTextBeforeComposingText, inputType,
-                settingsValues.mSpacingAndPunctuations, hasSpaceBefore);
+                spacingAndPunctuations, hasSpaceBefore);
     }
 
     public int getCodePointBeforeCursor() {
-        if (mCommittedTextBeforeComposingText.length() < 1) return Constants.NOT_A_CODE;
-        return Character.codePointBefore(mCommittedTextBeforeComposingText,
-                mCommittedTextBeforeComposingText.length());
+        final int length = mCommittedTextBeforeComposingText.length();
+        if (length < 1) return Constants.NOT_A_CODE;
+        return Character.codePointBefore(mCommittedTextBeforeComposingText, length);
     }
 
     public CharSequence getTextBeforeCursor(final int n, final int flags) {
@@ -338,16 +336,12 @@ public final class RichInputConnection {
             return s;
         }
         mIC = mParent.getCurrentInputConnection();
-        if (null != mIC) {
-            return mIC.getTextBeforeCursor(n, flags);
-        }
-        return null;
+        return (null == mIC) ? null : mIC.getTextBeforeCursor(n, flags);
     }
 
     public CharSequence getTextAfterCursor(final int n, final int flags) {
         mIC = mParent.getCurrentInputConnection();
-        if (null != mIC) return mIC.getTextAfterCursor(n, flags);
-        return null;
+        return (null == mIC) ? null : mIC.getTextAfterCursor(n, flags);
     }
 
     public void deleteSurroundingText(final int beforeLength, final int afterLength) {
@@ -681,23 +675,28 @@ public final class RichInputConnection {
                         startIndexInBefore, before.length() + endIndexInAfter, before.length());
     }
 
-    public boolean isCursorTouchingWord(final SettingsValues settingsValues) {
+    public boolean isCursorTouchingWord(final SpacingAndPunctuations spacingAndPunctuations) {
         final int codePointBeforeCursor = getCodePointBeforeCursor();
-        if (Constants.NOT_A_CODE != codePointBeforeCursor
-                && !settingsValues.isWordSeparator(codePointBeforeCursor)
-                && !settingsValues.isWordConnector(codePointBeforeCursor)) {
-            return true;
+        if (Constants.NOT_A_CODE == codePointBeforeCursor
+                || spacingAndPunctuations.isWordSeparator(codePointBeforeCursor)
+                || spacingAndPunctuations.isWordConnector(codePointBeforeCursor)) {
+            return isCursorFollowedByWordCharacter(spacingAndPunctuations);
         }
-        return isCursorFollowedByWordCharacter(settingsValues);
+        return true;
     }
 
-    public boolean isCursorFollowedByWordCharacter(final SettingsValues settingsValues) {
+    public boolean isCursorFollowedByWordCharacter(
+            final SpacingAndPunctuations spacingAndPunctuations) {
         final CharSequence after = getTextAfterCursor(1, 0);
-        if (!TextUtils.isEmpty(after) && !settingsValues.isWordSeparator(after.charAt(0))
-                && !settingsValues.isWordConnector(after.charAt(0))) {
-            return true;
+        if (TextUtils.isEmpty(after)) {
+            return false;
         }
-        return false;
+        final int codePointAfterCursor = Character.codePointAt(after, 0);
+        if (spacingAndPunctuations.isWordSeparator(codePointAfterCursor)
+                || spacingAndPunctuations.isWordConnector(codePointAfterCursor)) {
+            return false;
+        }
+        return true;
     }
 
     public void removeTrailingSpace() {

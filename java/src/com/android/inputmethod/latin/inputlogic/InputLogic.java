@@ -530,7 +530,7 @@ public final class InputLogic {
                 && settingsValues.isSuggestionsRequested() &&
         // In languages with spaces, we only start composing a word when we are not already
         // touching a word. In languages without spaces, the above conditions are sufficient.
-                (!mConnection.isCursorTouchingWord(settingsValues)
+                (!mConnection.isCursorTouchingWord(settingsValues.mSpacingAndPunctuations)
                         || !settingsValues.mSpacingAndPunctuations.mCurrentLanguageHasSpaces)) {
             // Reset entirely the composing state anyway, then start composing a new word unless
             // the character is a single quote or a dash. The idea here is, single quote and dash
@@ -816,7 +816,8 @@ public final class InputLogic {
             }
             if (settingsValues.isSuggestionStripVisible()
                     && settingsValues.mSpacingAndPunctuations.mCurrentLanguageHasSpaces
-                    && !mConnection.isCursorFollowedByWordCharacter(settingsValues)) {
+                    && !mConnection.isCursorFollowedByWordCharacter(
+                            settingsValues.mSpacingAndPunctuations)) {
                 restartSuggestionsOnWordTouchedByCursor(settingsValues,
                         true /* includeResumedWordInSuggestions */, keyboardSwitcher);
             }
@@ -1069,7 +1070,7 @@ public final class InputLogic {
         // If we don't know the cursor location, return.
         if (mConnection.getExpectedSelectionStart() < 0) return;
         final int expectedCursorPosition = mConnection.getExpectedSelectionStart();
-        if (!mConnection.isCursorTouchingWord(settingsValues)) return;
+        if (!mConnection.isCursorTouchingWord(settingsValues.mSpacingAndPunctuations)) return;
         final TextRange range = mConnection.getWordRangeAtCursor(
                 settingsValues.mSpacingAndPunctuations.mWordSeparators,
                 0 /* additionalPrecedingWordsCount */);
@@ -1290,7 +1291,7 @@ public final class InputLogic {
         final int inputType = ei.inputType;
         // Warning: this depends on mSpaceState, which may not be the most current value. If
         // mSpaceState gets updated later, whoever called this may need to be told about it.
-        return mConnection.getCursorCapsMode(inputType, settingsValues,
+        return mConnection.getCursorCapsMode(inputType, settingsValues.mSpacingAndPunctuations,
                 SpaceState.PHANTOM == mSpaceState);
     }
 
