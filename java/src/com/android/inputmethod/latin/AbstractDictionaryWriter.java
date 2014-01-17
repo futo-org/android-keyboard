@@ -16,12 +16,12 @@
 
 package com.android.inputmethod.latin;
 
-import android.content.Context;
 import android.util.Log;
 
 import com.android.inputmethod.latin.makedict.DictEncoder;
 import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
-import com.android.inputmethod.latin.makedict.Ver2DictEncoder;
+import com.android.inputmethod.latin.makedict.Ver4DictEncoder;
+import com.android.inputmethod.latin.utils.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,10 +31,7 @@ abstract public class AbstractDictionaryWriter {
     /** Used for Log actions from this class */
     private static final String TAG = AbstractDictionaryWriter.class.getSimpleName();
 
-    private final Context mContext;
-
-    public AbstractDictionaryWriter(final Context context) {
-        mContext = context;
+    public AbstractDictionaryWriter() {
     }
 
     abstract public void clear();
@@ -61,12 +58,11 @@ abstract public class AbstractDictionaryWriter {
             final Map<String, String> attributeMap) throws IOException, UnsupportedFormatException;
 
     public void write(final File file, final Map<String, String> attributeMap) {
-        final String tempFilePath = file.getAbsolutePath() + ".temp";
-        final File tempFile = new File(tempFilePath);
         try {
-            final DictEncoder dictEncoder = new Ver2DictEncoder(tempFile);
+            FileUtils.deleteRecursively(file);
+            file.mkdir();
+            final DictEncoder dictEncoder = new Ver4DictEncoder(file);
             writeDictionary(dictEncoder, attributeMap);
-            tempFile.renameTo(file);
         } catch (IOException e) {
             Log.e(TAG, "IO exception while writing file", e);
         } catch (UnsupportedFormatException e) {
