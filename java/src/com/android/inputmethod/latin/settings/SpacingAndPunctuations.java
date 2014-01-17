@@ -41,6 +41,7 @@ public final class SpacingAndPunctuations {
     public final String mSentenceSeparatorAndSpace;
     public final boolean mCurrentLanguageHasSpaces;
     public final boolean mUsesAmericanTypography;
+    public final boolean mUsesGermanRules;
 
     public SpacingAndPunctuations(final Resources res) {
         mSymbolsPrecededBySpace =
@@ -62,8 +63,9 @@ public final class SpacingAndPunctuations {
         mCurrentLanguageHasSpaces = res.getBoolean(R.bool.current_language_has_spaces);
         final Locale locale = res.getConfiguration().locale;
         // Heuristic: we use American Typography rules because it's the most common rules for all
-        // English variants.
+        // English variants. German rules (not "German typography") also have small gotchas.
         mUsesAmericanTypography = Locale.ENGLISH.getLanguage().equals(locale.getLanguage());
+        mUsesGermanRules = Locale.GERMAN.getLanguage().equals(locale.getLanguage());
     }
 
     // Helper functions to create member values.
