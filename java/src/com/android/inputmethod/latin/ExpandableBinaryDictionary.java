@@ -136,12 +136,8 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
      */
     protected abstract boolean hasContentChanged();
 
-    protected boolean matchesExpectedBinaryDictFormatVersionForThisType(final int formatVersion) {
-        // This class is using format 2 because it's used by the User and Contacts dictionary
-        // only, which right now use format 2 (dicts using format 4 use Decaying*, which overrides
-        // this method).
-        // TODO: Migrate these dicts to ver4 format, and remove this function.
-        return formatVersion == FormatSpec.VERSION2;
+    private boolean matchesExpectedBinaryDictFormatVersionForThisType(final int formatVersion) {
+        return formatVersion == FormatSpec.VERSION4;
     }
 
     public boolean isValidDictionary() {
@@ -194,12 +190,12 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         }
     }
 
-    private static AbstractDictionaryWriter getDictionaryWriter(final Context context,
+    private static AbstractDictionaryWriter getDictionaryWriter(
             final boolean isDynamicPersonalizationDictionary) {
         if (isDynamicPersonalizationDictionary) {
              return null;
         } else {
-            return new DictionaryWriter(context);
+            return new DictionaryWriter();
         }
     }
 
@@ -233,7 +229,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         mBinaryDictionary = null;
         mDictNameDictionaryUpdateController = getDictionaryUpdateController(dictName);
         // Currently, only dynamic personalization dictionary is updatable.
-        mDictionaryWriter = getDictionaryWriter(context, isUpdatable);
+        mDictionaryWriter = getDictionaryWriter(isUpdatable);
     }
 
     protected static String getDictNameWithLocale(final String name, final Locale locale) {

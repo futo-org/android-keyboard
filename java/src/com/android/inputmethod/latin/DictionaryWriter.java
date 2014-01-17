@@ -16,8 +16,6 @@
 
 package com.android.inputmethod.latin;
 
-import android.content.Context;
-
 import com.android.inputmethod.latin.makedict.DictEncoder;
 import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.makedict.FusionDictionary;
@@ -35,14 +33,13 @@ import java.util.Map;
  * An in memory dictionary for memorizing entries and writing a binary dictionary.
  */
 public class DictionaryWriter extends AbstractDictionaryWriter {
-    private static final int BINARY_DICT_VERSION = 2;
+    private static final int BINARY_DICT_VERSION = FormatSpec.VERSION4;
     private static final FormatSpec.FormatOptions FORMAT_OPTIONS =
-            new FormatSpec.FormatOptions(BINARY_DICT_VERSION, false /* supportsDynamicUpdate */);
+            new FormatSpec.FormatOptions(BINARY_DICT_VERSION, false /* hasTimestamp */);
 
     private FusionDictionary mFusionDictionary;
 
-    public DictionaryWriter(final Context context) {
-        super(context);
+    public DictionaryWriter() {
         clear();
     }
 
