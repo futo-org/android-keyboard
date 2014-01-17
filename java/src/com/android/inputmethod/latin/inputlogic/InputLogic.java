@@ -602,8 +602,21 @@ public final class InputLogic {
         final boolean swapWeakSpace = maybeStripSpace(settingsValues, codePoint, spaceState,
                 isFromSuggestionStrip);
 
-        if (SpaceState.PHANTOM == spaceState &&
-                settingsValues.isUsuallyPrecededBySpace(codePoint)) {
+        final boolean isInsideDoubleQuoteOrAfterDigit = Constants.CODE_DOUBLE_QUOTE == codePoint
+                && mConnection.isInsideDoubleQuoteOrAfterDigit();
+
+        final boolean needsPrecedingSpace;
+        if (SpaceState.PHANTOM != spaceState) {
+            needsPrecedingSpace = false;
+        } else if (Constants.CODE_DOUBLE_QUOTE == codePoint) {
+            // Double quotes behave like they are usually preceded by space iff we are
+            // not inside a double quote or after a digit.
+            needsPrecedingSpace = !isInsideDoubleQuoteOrAfterDigit;
+        } else {
+            needsPrecedingSpace = settingsValues.isUsuallyPrecededBySpace(codePoint);
+        }
+
+        if (needsPrecedingSpace) {
             promotePhantomSpace(settingsValues);
         }
         if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
@@ -630,14 +643,17 @@ public final class InputLogic {
             if (swapWeakSpace) {
                 swapSwapperAndSpace(keyboardSwitcher);
                 mSpaceState = SpaceState.SWAP_PUNCTUATION;
-            } else if (SpaceState.PHANTOM == spaceState
-                    && settingsValues.isUsuallyFollowedBySpace(codePoint)) {
+            } else if ((SpaceState.PHANTOM == spaceState
+                    && settingsValues.isUsuallyFollowedBySpace(codePoint))
+                    || (Constants.CODE_DOUBLE_QUOTE == codePoint
+                            && isInsideDoubleQuoteOrAfterDigit)) {
                 // If we are in phantom space state, and the user presses a separator, we want to
                 // stay in phantom space state so that the next keypress has a chance to add the
                 // space. For example, if I type "Good dat", pick "day" from the suggestion strip
                 // then insert a comma and go on to typing the next word, I want the space to be
                 // inserted automatically before the next word, the same way it is when I don't
-                // input the comma.
+                // input the comma. A double quote behaves like it's usually followed by space if
+                // we're inside a double quote.
                 // The case is a little different if the separator is a space stripper. Such a
                 // separator does not normally need a space on the right (that's the difference
                 // between swappers and strippers), so we should not stay in phantom space state if
