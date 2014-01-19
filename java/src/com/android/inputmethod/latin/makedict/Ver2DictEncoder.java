@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.latin.makedict;
 
+import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.CharEncoding;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNode;
@@ -33,6 +34,7 @@ import java.util.Iterator;
 /**
  * An implementation of DictEncoder for version 2 binary dictionary.
  */
+@UsedForTesting
 public class Ver2DictEncoder implements DictEncoder {
 
     private final File mDictFile;
@@ -40,6 +42,7 @@ public class Ver2DictEncoder implements DictEncoder {
     private byte[] mBuffer;
     private int mPosition;
 
+    @UsedForTesting
     public Ver2DictEncoder(final File dictFile) {
         mDictFile = dictFile;
         mOutStream = null;
@@ -49,6 +52,7 @@ public class Ver2DictEncoder implements DictEncoder {
     // This constructor is used only by BinaryDictOffdeviceUtilsTests.
     // If you want to use this in the production code, you should consider keeping consistency of
     // the interface of Ver3DictDecoder by using factory.
+    @UsedForTesting
     public Ver2DictEncoder(final OutputStream outStream) {
         mDictFile = null;
         mOutStream = outStream;
