@@ -22,6 +22,7 @@ import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.Constants;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Locale;
 
 public final class StringUtils {
@@ -180,6 +181,12 @@ public final class StringUtils {
             codePoints[destIndex] = string.codePointAt(index);
             destIndex++;
         }
+        return codePoints;
+    }
+
+    public static int[] toSortedCodePointArray(final String string) {
+        final int[] codePoints = toCodePointArray(string);
+        Arrays.sort(codePoints);
         return codePoints;
     }
 
