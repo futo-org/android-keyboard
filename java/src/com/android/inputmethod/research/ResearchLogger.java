@@ -59,6 +59,7 @@ import com.android.inputmethod.latin.RichInputConnection;
 import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.latin.utils.InputTypeUtils;
+import com.android.inputmethod.latin.utils.StringUtils;
 import com.android.inputmethod.latin.utils.TextRange;
 import com.android.inputmethod.research.MotionEventReader.ReplayData;
 import com.android.inputmethod.research.ui.SplashScreen;
@@ -131,7 +132,8 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     public static final String RESEARCH_KEY_OUTPUT_TEXT = ".research.";
 
     // constants related to specific log points
-    private static final String WHITESPACE_SEPARATORS = " \t\n\r";
+    private static final int[] WHITESPACE_SEPARATORS =
+            StringUtils.toSortedCodePointArray(" \t\n\r");
     private static final int MAX_INPUTVIEW_LENGTH_TO_CAPTURE = 8192; // must be >=1
     private static final String PREF_RESEARCH_SAVED_CHANNEL = "pref_research_saved_channel";
 
