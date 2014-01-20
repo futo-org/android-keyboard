@@ -32,9 +32,9 @@ import java.util.Arrays;
 import java.util.Locale;
 
 public final class SpacingAndPunctuations {
-    private final int[] mSymbolsPrecededBySpace;
-    private final int[] mSymbolsFollowedBySpace;
-    private final int[] mWordConnectors;
+    private final int[] mSortedSymbolsPrecededBySpace;
+    private final int[] mSortedSymbolsFollowedBySpace;
+    private final int[] mSortedWordConnectors;
     public final SuggestedWords mSuggestPuncList;
     public final String mWordSeparators;
     private final int mSentenceSeparator;
@@ -44,15 +44,15 @@ public final class SpacingAndPunctuations {
     public final boolean mUsesGermanRules;
 
     public SpacingAndPunctuations(final Resources res) {
-        mSymbolsPrecededBySpace =
-                StringUtils.toCodePointArray(res.getString(R.string.symbols_preceded_by_space));
-        Arrays.sort(mSymbolsPrecededBySpace);
-        mSymbolsFollowedBySpace =
-                StringUtils.toCodePointArray(res.getString(R.string.symbols_followed_by_space));
-        Arrays.sort(mSymbolsFollowedBySpace);
-        mWordConnectors =
-                StringUtils.toCodePointArray(res.getString(R.string.symbols_word_connectors));
-        Arrays.sort(mWordConnectors);
+        // To be able to binary search the code point. See {@link #isUsuallyPrecededBySpace(int)}.
+        mSortedSymbolsPrecededBySpace = StringUtils.toSortedCodePointArray(
+                res.getString(R.string.symbols_preceded_by_space));
+        // To be able to binary search the code point. See {@link #isUsuallyFollowedBySpace(int)}.
+        mSortedSymbolsFollowedBySpace = StringUtils.toSortedCodePointArray(
+                res.getString(R.string.symbols_followed_by_space));
+        // To be able to binary search the code point. See {@link #isWordConnector(int)}.
+        mSortedWordConnectors = StringUtils.toSortedCodePointArray(
+                res.getString(R.string.symbols_word_connectors));
         final String[] suggestPuncsSpec = KeySpecParser.splitKeySpecs(res.getString(
                 R.string.suggested_punctuations));
         mSuggestPuncList = createSuggestPuncList(suggestPuncsSpec);
@@ -74,6 +74,7 @@ public final class SpacingAndPunctuations {
         if (puncs != null) {
             for (final String puncSpec : puncs) {
                 // TODO: Stop using KeySpceParser.getLabel().
+                // TODO: Punctuation suggestions should honor RTL languages.
                 puncList.add(new SuggestedWordInfo(KeySpecParser.getLabel(puncSpec),
                         SuggestedWordInfo.MAX_SCORE, SuggestedWordInfo.KIND_HARDCODED,
                         Dictionary.DICTIONARY_HARDCODED,
@@ -94,7 +95,7 @@ public final class SpacingAndPunctuations {
     }
 
     public boolean isWordConnector(final int code) {
-        return Arrays.binarySearch(mWordConnectors, code) >= 0;
+        return Arrays.binarySearch(mSortedWordConnectors, code) >= 0;
     }
 
     public boolean isWordCodePoint(final int code) {
@@ -102,11 +103,11 @@ public final class SpacingAndPunctuations {
     }
 
     public boolean isUsuallyPrecededBySpace(final int code) {
-        return Arrays.binarySearch(mSymbolsPrecededBySpace, code) >= 0;
+        return Arrays.binarySearch(mSortedSymbolsPrecededBySpace, code) >= 0;
     }
 
     public boolean isUsuallyFollowedBySpace(final int code) {
-        return Arrays.binarySearch(mSymbolsFollowedBySpace, code) >= 0;
+        return Arrays.binarySearch(mSortedSymbolsFollowedBySpace, code) >= 0;
     }
 
     public boolean isSentenceSeparator(final int code) {
