@@ -1407,7 +1407,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     // TODO[IL]: Move this to InputLogic
     public SuggestedWords maybeRetrieveOlderSuggestions(final String typedWord,
-            final SuggestedWords suggestedWords) {
+            final SuggestedWords suggestedWords, final SuggestedWords previousSuggestedWords) {
         // TODO: consolidate this into getSuggestedWords
         // We update the suggestion strip only when we have some suggestions to show, i.e. when
         // the suggestion count is > 1; else, we leave the old suggestions, with the typed word
@@ -1420,28 +1420,22 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 || mSuggestionStripView.isShowingAddToDictionaryHint()) {
             return suggestedWords;
         } else {
-            return getOlderSuggestions(typedWord);
+            final SuggestedWords punctuationList =
+                    mSettings.getCurrent().mSpacingAndPunctuations.mSuggestPuncList;
+            final SuggestedWords oldSuggestedWords = previousSuggestedWords == punctuationList
+                            ? SuggestedWords.EMPTY : previousSuggestedWords;
+            if (TextUtils.isEmpty(typedWord)) {
+                return oldSuggestedWords;
+            }
+            final ArrayList<SuggestedWords.SuggestedWordInfo> typedWordAndPreviousSuggestions =
+                    SuggestedWords.getTypedWordAndPreviousSuggestions(typedWord, oldSuggestedWords);
+            return new SuggestedWords(typedWordAndPreviousSuggestions,
+                    false /* typedWordValid */,
+                    false /* hasAutoCorrectionCandidate */,
+                    false /* isPunctuationSuggestions */,
+                    true /* isObsoleteSuggestions */,
+                    false /* isPrediction */);
         }
-    }
-
-    private SuggestedWords getOlderSuggestions(final String typedWord) {
-        SuggestedWords previousSuggestedWords = mInputLogic.mSuggestedWords;
-        if (previousSuggestedWords
-                == mSettings.getCurrent().mSpacingAndPunctuations.mSuggestPuncList) {
-            previousSuggestedWords = SuggestedWords.EMPTY;
-        }
-        if (typedWord == null) {
-            return previousSuggestedWords;
-        }
-        final ArrayList<SuggestedWords.SuggestedWordInfo> typedWordAndPreviousSuggestions =
-                SuggestedWords.getTypedWordAndPreviousSuggestions(typedWord,
-                        previousSuggestedWords);
-        return new SuggestedWords(typedWordAndPreviousSuggestions,
-                false /* typedWordValid */,
-                false /* hasAutoCorrectionCandidate */,
-                false /* isPunctuationSuggestions */,
-                true /* isObsoleteSuggestions */,
-                false /* isPrediction */);
     }
 
     private void showSuggestionStripWithTypedWord(final SuggestedWords suggestedWords,
