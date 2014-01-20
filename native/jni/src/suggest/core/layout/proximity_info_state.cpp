@@ -18,7 +18,7 @@
 
 #include "suggest/core/layout/proximity_info_state.h"
 
-#include <cstring> // for memset() and memcpy()
+#include <cstring> // for memset() and memmove()
 #include <sstream> // for debug prints
 #include <vector>
 
@@ -285,7 +285,7 @@ float ProximityInfoState::getDirection(const int index0, const int index1) const
 }
 
 float ProximityInfoState::getMostProbableString(int *const codePointBuf) const {
-    memcpy(codePointBuf, mMostProbableString, sizeof(mMostProbableString));
+    memmove(codePointBuf, mMostProbableString, sizeof(mMostProbableString));
     return mMostProbableStringProbability;
 }
 
