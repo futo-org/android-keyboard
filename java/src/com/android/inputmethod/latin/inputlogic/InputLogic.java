@@ -1031,7 +1031,8 @@ public final class InputLogic {
                     public void onGetSuggestedWords(final SuggestedWords suggestedWords) {
                         final SuggestedWords suggestedWordsWithMaybeOlderSuggestions =
                                 mLatinIME.maybeRetrieveOlderSuggestions(
-                                        mWordComposer.getTypedWord(), suggestedWords);
+                                        mWordComposer.getTypedWord(), suggestedWords,
+                                        mSuggestedWords);
                         holder.set(suggestedWordsWithMaybeOlderSuggestions);
                     }
                 }
