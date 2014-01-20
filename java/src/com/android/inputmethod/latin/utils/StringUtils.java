@@ -272,39 +272,39 @@ public final class StringUtils {
     }
 
     public static boolean isIdenticalAfterCapitalizeEachWord(final String text,
-            final String separators) {
-        boolean needCapsNext = true;
+            final int[] sortedSeparators) {
+        boolean needsCapsNext = true;
         final int len = text.length();
         for (int i = 0; i < len; i = text.offsetByCodePoints(i, 1)) {
             final int codePoint = text.codePointAt(i);
             if (Character.isLetter(codePoint)) {
-                if ((needCapsNext && !Character.isUpperCase(codePoint))
-                        || (!needCapsNext && !Character.isLowerCase(codePoint))) {
+                if ((needsCapsNext && !Character.isUpperCase(codePoint))
+                        || (!needsCapsNext && !Character.isLowerCase(codePoint))) {
                     return false;
                 }
             }
             // We need a capital letter next if this is a separator.
-            needCapsNext = (-1 != separators.indexOf(codePoint));
+            needsCapsNext = (Arrays.binarySearch(sortedSeparators, codePoint) >= 0);
         }
         return true;
     }
 
     // TODO: like capitalizeFirst*, this does not work perfectly for Dutch because of the IJ digraph
     // which should be capitalized together in *some* cases.
-    public static String capitalizeEachWord(final String text, final String separators,
+    public static String capitalizeEachWord(final String text, final int[] sortedSeparators,
             final Locale locale) {
         final StringBuilder builder = new StringBuilder();
-        boolean needCapsNext = true;
+        boolean needsCapsNext = true;
         final int len = text.length();
         for (int i = 0; i < len; i = text.offsetByCodePoints(i, 1)) {
             final String nextChar = text.substring(i, text.offsetByCodePoints(i, 1));
-            if (needCapsNext) {
+            if (needsCapsNext) {
                 builder.append(nextChar.toUpperCase(locale));
             } else {
                 builder.append(nextChar.toLowerCase(locale));
             }
             // We need a capital letter next if this is a separator.
-            needCapsNext = (-1 != separators.indexOf(nextChar.codePointAt(0)));
+            needsCapsNext = (Arrays.binarySearch(sortedSeparators, nextChar.codePointAt(0)) >= 0);
         }
         return builder.toString();
     }

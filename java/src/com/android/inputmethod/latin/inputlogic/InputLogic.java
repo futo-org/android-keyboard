@@ -970,7 +970,8 @@ public final class InputLogic {
             if (TextUtils.isEmpty(selectedText)) return; // Race condition with the input connection
             mRecapitalizeStatus.initialize(mConnection.getExpectedSelectionStart(),
                     mConnection.getExpectedSelectionEnd(), selectedText.toString(),
-                    settingsValues.mLocale, settingsValues.mSpacingAndPunctuations.mWordSeparators);
+                    settingsValues.mLocale,
+                    settingsValues.mSpacingAndPunctuations.mSortedWordSeparators);
             // We trim leading and trailing whitespace.
             mRecapitalizeStatus.trim();
         }
@@ -1073,7 +1074,7 @@ public final class InputLogic {
         final int expectedCursorPosition = mConnection.getExpectedSelectionStart();
         if (!mConnection.isCursorTouchingWord(settingsValues.mSpacingAndPunctuations)) return;
         final TextRange range = mConnection.getWordRangeAtCursor(
-                settingsValues.mSpacingAndPunctuations.mWordSeparators,
+                settingsValues.mSpacingAndPunctuations.mSortedWordSeparators,
                 0 /* additionalPrecedingWordsCount */);
         if (null == range) return; // Happens if we don't have an input connection at all
         if (range.length() <= 0) return; // Race condition. No text to resume on, so bail out.

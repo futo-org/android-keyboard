@@ -35,8 +35,8 @@ public final class SpacingAndPunctuations {
     private final int[] mSortedSymbolsPrecededBySpace;
     private final int[] mSortedSymbolsFollowedBySpace;
     private final int[] mSortedWordConnectors;
+    public final int[] mSortedWordSeparators;
     public final SuggestedWords mSuggestPuncList;
-    public final String mWordSeparators;
     private final int mSentenceSeparator;
     public final String mSentenceSeparatorAndSpace;
     public final boolean mCurrentLanguageHasSpaces;
@@ -53,10 +53,11 @@ public final class SpacingAndPunctuations {
         // To be able to binary search the code point. See {@link #isWordConnector(int)}.
         mSortedWordConnectors = StringUtils.toSortedCodePointArray(
                 res.getString(R.string.symbols_word_connectors));
+        mSortedWordSeparators = StringUtils.toSortedCodePointArray(
+                res.getString(R.string.symbols_word_separators));
         final String[] suggestPuncsSpec = KeySpecParser.splitKeySpecs(res.getString(
                 R.string.suggested_punctuations));
         mSuggestPuncList = createSuggestPuncList(suggestPuncsSpec);
-        mWordSeparators = res.getString(R.string.symbols_word_separators);
         mSentenceSeparator = res.getInteger(R.integer.sentence_separator);
         mSentenceSeparatorAndSpace = new String(new int[] {
                 mSentenceSeparator, Constants.CODE_SPACE }, 0, 2);
@@ -91,7 +92,7 @@ public final class SpacingAndPunctuations {
     }
 
     public boolean isWordSeparator(final int code) {
-        return mWordSeparators.contains(String.valueOf((char)code));
+        return Arrays.binarySearch(mSortedWordSeparators, code) >= 0;
     }
 
     public boolean isWordConnector(final int code) {

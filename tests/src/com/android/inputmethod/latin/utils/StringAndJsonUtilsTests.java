@@ -19,6 +19,8 @@ package com.android.inputmethod.latin.utils;
 import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
 
+import com.android.inputmethod.latin.Constants;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -206,42 +208,47 @@ public class StringAndJsonUtilsTests extends AndroidTestCase {
         assertTrue(StringUtils.isIdenticalAfterDowncase(""));
     }
 
-    private static void checkCapitalize(final String src, final String dst, final String separators,
-            final Locale locale) {
-        assertEquals(dst, StringUtils.capitalizeEachWord(src, separators, locale));
+    private static void checkCapitalize(final String src, final String dst,
+            final int[] sortedSeparators, final Locale locale) {
+        assertEquals(dst, StringUtils.capitalizeEachWord(src, sortedSeparators, locale));
         assert(src.equals(dst)
-                == StringUtils.isIdenticalAfterCapitalizeEachWord(src, separators));
+                == StringUtils.isIdenticalAfterCapitalizeEachWord(src, sortedSeparators));
     }
 
+    private static final int[] SPACE = { Constants.CODE_SPACE };
+    private static final int[] SPACE_PERIOD = StringUtils.toSortedCodePointArray(" .");
+    private static final int[] SENTENCE_SEPARATORS =
+            StringUtils.toSortedCodePointArray(" \n.!?*()&");
+    private static final int[] WORD_SEPARATORS = StringUtils.toSortedCodePointArray(" \n.!?*,();&");
+
     public void testCapitalizeEachWord() {
-        checkCapitalize("", "", " ", Locale.ENGLISH);
-        checkCapitalize("test", "Test", " ", Locale.ENGLISH);
-        checkCapitalize("    test", "    Test", " ", Locale.ENGLISH);
-        checkCapitalize("Test", "Test", " ", Locale.ENGLISH);
-        checkCapitalize("    Test", "    Test", " ", Locale.ENGLISH);
-        checkCapitalize(".Test", ".test", " ", Locale.ENGLISH);
-        checkCapitalize(".Test", ".Test", " .", Locale.ENGLISH);
-        checkCapitalize(".Test", ".Test", ". ", Locale.ENGLISH);
-        checkCapitalize("test and retest", "Test And Retest", " .", Locale.ENGLISH);
-        checkCapitalize("Test and retest", "Test And Retest", " .", Locale.ENGLISH);
-        checkCapitalize("Test And Retest", "Test And Retest", " .", Locale.ENGLISH);
-        checkCapitalize("Test And.Retest  ", "Test And.Retest  ", " .", Locale.ENGLISH);
-        checkCapitalize("Test And.retest  ", "Test And.Retest  ", " .", Locale.ENGLISH);
-        checkCapitalize("Test And.retest  ", "Test And.retest  ", " ", Locale.ENGLISH);
-        checkCapitalize("Test And.Retest  ", "Test And.retest  ", " ", Locale.ENGLISH);
-        checkCapitalize("test and ietest", "Test And İetest", " .", new Locale("tr"));
-        checkCapitalize("test and ietest", "Test And Ietest", " .", Locale.ENGLISH);
-        checkCapitalize("Test&Retest", "Test&Retest", " \n.!?*()&", Locale.ENGLISH);
-        checkCapitalize("Test&retest", "Test&Retest", " \n.!?*()&", Locale.ENGLISH);
-        checkCapitalize("test&Retest", "Test&Retest", " \n.!?*()&", Locale.ENGLISH);
+        checkCapitalize("", "", SPACE, Locale.ENGLISH);
+        checkCapitalize("test", "Test", SPACE, Locale.ENGLISH);
+        checkCapitalize("    test", "    Test", SPACE, Locale.ENGLISH);
+        checkCapitalize("Test", "Test", SPACE, Locale.ENGLISH);
+        checkCapitalize("    Test", "    Test", SPACE, Locale.ENGLISH);
+        checkCapitalize(".Test", ".test", SPACE, Locale.ENGLISH);
+        checkCapitalize(".Test", ".Test", SPACE_PERIOD, Locale.ENGLISH);
+        checkCapitalize("test and retest", "Test And Retest", SPACE_PERIOD, Locale.ENGLISH);
+        checkCapitalize("Test and retest", "Test And Retest", SPACE_PERIOD, Locale.ENGLISH);
+        checkCapitalize("Test And Retest", "Test And Retest", SPACE_PERIOD, Locale.ENGLISH);
+        checkCapitalize("Test And.Retest  ", "Test And.Retest  ", SPACE_PERIOD, Locale.ENGLISH);
+        checkCapitalize("Test And.retest  ", "Test And.Retest  ", SPACE_PERIOD, Locale.ENGLISH);
+        checkCapitalize("Test And.retest  ", "Test And.retest  ", SPACE, Locale.ENGLISH);
+        checkCapitalize("Test And.Retest  ", "Test And.retest  ", SPACE, Locale.ENGLISH);
+        checkCapitalize("test and ietest", "Test And İetest", SPACE_PERIOD, new Locale("tr"));
+        checkCapitalize("test and ietest", "Test And Ietest", SPACE_PERIOD, Locale.ENGLISH);
+        checkCapitalize("Test&Retest", "Test&Retest", SENTENCE_SEPARATORS, Locale.ENGLISH);
+        checkCapitalize("Test&retest", "Test&Retest", SENTENCE_SEPARATORS, Locale.ENGLISH);
+        checkCapitalize("test&Retest", "Test&Retest", SENTENCE_SEPARATORS, Locale.ENGLISH);
         checkCapitalize("rest\nrecreation! And in the end...",
-                "Rest\nRecreation! And In The End...", " \n.!?*,();&", Locale.ENGLISH);
+                "Rest\nRecreation! And In The End...", WORD_SEPARATORS, Locale.ENGLISH);
         checkCapitalize("lorem ipsum dolor sit amet", "Lorem Ipsum Dolor Sit Amet",
-                " \n.,!?*()&;", Locale.ENGLISH);
+                WORD_SEPARATORS, Locale.ENGLISH);
         checkCapitalize("Lorem!Ipsum (Dolor) Sit * Amet", "Lorem!Ipsum (Dolor) Sit * Amet",
-                " \n,.;!?*()&", Locale.ENGLISH);
+                WORD_SEPARATORS, Locale.ENGLISH);
         checkCapitalize("Lorem!Ipsum (dolor) Sit * Amet", "Lorem!Ipsum (Dolor) Sit * Amet",
-                " \n,.;!?*()&", Locale.ENGLISH);
+                WORD_SEPARATORS, Locale.ENGLISH);
     }
 
     public void testLooksLikeURL() {

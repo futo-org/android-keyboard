@@ -35,6 +35,7 @@ import com.android.inputmethod.latin.utils.StringUtils;
 import com.android.inputmethod.latin.utils.TextRange;
 import com.android.inputmethod.research.ResearchLogger;
 
+import java.util.Arrays;
 import java.util.regex.Pattern;
 
 /**
@@ -557,8 +558,8 @@ public final class RichInputConnection {
         return getNthPreviousWord(prev, spacingAndPunctuations, n);
     }
 
-    private static boolean isSeparator(int code, String sep) {
-        return sep.indexOf(code) != -1;
+    private static boolean isSeparator(final int code, final int[] sortedSeparators) {
+        return Arrays.binarySearch(sortedSeparators, code) >= 0;
     }
 
     // Get the nth word before cursor. n = 1 retrieves the word immediately before the cursor,
@@ -597,29 +598,29 @@ public final class RichInputConnection {
     }
 
     /**
-     * @param separators characters which may separate words
+     * @param sortedSeparators a sorted array of code points which may separate words
      * @return the word that surrounds the cursor, including up to one trailing
      *   separator. For example, if the field contains "he|llo world", where |
      *   represents the cursor, then "hello " will be returned.
      */
-    public CharSequence getWordAtCursor(String separators) {
+    public CharSequence getWordAtCursor(final int[] sortedSeparators) {
         // getWordRangeAtCursor returns null if the connection is null
-        TextRange r = getWordRangeAtCursor(separators, 0);
+        final TextRange r = getWordRangeAtCursor(sortedSeparators, 0);
         return (r == null) ? null : r.mWord;
     }
 
     /**
      * Returns the text surrounding the cursor.
      *
-     * @param sep a string of characters that split words.
+     * @param sortedSeparators a sorted array of code points that split words.
      * @param additionalPrecedingWordsCount the number of words before the current word that should
      *   be included in the returned range
      * @return a range containing the text surrounding the cursor
      */
-    public TextRange getWordRangeAtCursor(final String sep,
+    public TextRange getWordRangeAtCursor(final int[] sortedSeparators,
             final int additionalPrecedingWordsCount) {
         mIC = mParent.getCurrentInputConnection();
-        if (mIC == null || sep == null) {
+        if (mIC == null) {
             return null;
         }
         final CharSequence before = mIC.getTextBeforeCursor(Constants.EDITOR_CONTENTS_CACHE_SIZE,
@@ -638,7 +639,7 @@ public final class RichInputConnection {
         while (true) { // see comments below for why this is guaranteed to halt
             while (startIndexInBefore > 0) {
                 final int codePoint = Character.codePointBefore(before, startIndexInBefore);
-                if (isStoppingAtWhitespace == isSeparator(codePoint, sep)) {
+                if (isStoppingAtWhitespace == isSeparator(codePoint, sortedSeparators)) {
                     break;  // inner loop
                 }
                 --startIndexInBefore;
@@ -659,7 +660,7 @@ public final class RichInputConnection {
         int endIndexInAfter = -1;
         while (++endIndexInAfter < after.length()) {
             final int codePoint = Character.codePointAt(after, endIndexInAfter);
-            if (isSeparator(codePoint, sep)) {
+            if (isSeparator(codePoint, sortedSeparators)) {
                 break;
             }
             if (Character.isSupplementaryCodePoint(codePoint)) {
