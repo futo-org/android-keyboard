@@ -17,7 +17,7 @@
 #ifndef LATINIME_DIC_NODE_STATE_OUTPUT_H
 #define LATINIME_DIC_NODE_STATE_OUTPUT_H
 
-#include <cstring> // for memcpy()
+#include <cstring> // for memmove()
 #include <stdint.h>
 
 #include "defines.h"
@@ -38,7 +38,7 @@ class DicNodeStateOutput {
     }
 
     void init(const DicNodeStateOutput *const stateOutput) {
-        memcpy(mCodePointsBuf, stateOutput->mCodePointsBuf,
+        memmove(mCodePointsBuf, stateOutput->mCodePointsBuf,
                 stateOutput->mOutputtedCodePointCount * sizeof(mCodePointsBuf[0]));
         mOutputtedCodePointCount = stateOutput->mOutputtedCodePointCount;
         if (mOutputtedCodePointCount < MAX_WORD_LENGTH) {
@@ -51,7 +51,7 @@ class DicNodeStateOutput {
         if (mergedNodeCodePoints) {
             const int additionalCodePointCount = min(static_cast<int>(mergedNodeCodePointCount),
                     MAX_WORD_LENGTH - mOutputtedCodePointCount);
-            memcpy(&mCodePointsBuf[mOutputtedCodePointCount], mergedNodeCodePoints,
+            memmove(&mCodePointsBuf[mOutputtedCodePointCount], mergedNodeCodePoints,
                     additionalCodePointCount * sizeof(mCodePointsBuf[0]));
             mOutputtedCodePointCount = static_cast<uint16_t>(
                     mOutputtedCodePointCount + mergedNodeCodePointCount);

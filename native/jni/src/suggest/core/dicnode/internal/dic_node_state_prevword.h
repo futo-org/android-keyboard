@@ -17,7 +17,7 @@
 #ifndef LATINIME_DIC_NODE_STATE_PREVWORD_H
 #define LATINIME_DIC_NODE_STATE_PREVWORD_H
 
-#include <cstring> // for memset()
+#include <cstring> // for memset() and memmove()
 #include <stdint.h>
 
 #include "defines.h"
@@ -62,7 +62,7 @@ class DicNodeStatePrevWord {
         mPrevWordProbability = prevWord->mPrevWordProbability;
         mPrevWordPtNodePos = prevWord->mPrevWordPtNodePos;
         mSecondWordFirstInputIndex = prevWord->mSecondWordFirstInputIndex;
-        memcpy(mPrevWord, prevWord->mPrevWord, prevWord->mPrevWordLength * sizeof(mPrevWord[0]));
+        memmove(mPrevWord, prevWord->mPrevWord, prevWord->mPrevWordLength * sizeof(mPrevWord[0]));
     }
 
     void init(const int16_t prevWordCount, const int16_t prevWordProbability,
