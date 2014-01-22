@@ -475,9 +475,15 @@ public final class InputLogic {
             }
             final int keyX, keyY;
             final Keyboard keyboard = keyboardSwitcher.getKeyboard();
+            final MainKeyboardView mainKeyboardView = keyboardSwitcher.getMainKeyboardView();
+            // TODO: We should reconsider which coordinate system should be used to represent
+            // keyboard event.
             if (keyboard != null && keyboard.hasProximityCharsCorrection(codePoint)) {
-                keyX = x;
-                keyY = y;
+                // x and y include some padding, but everything down the line (especially native
+                // code) needs the coordinates in the keyboard frame.
+                // TODO: move this frame change up
+                keyX = mainKeyboardView.getKeyX(x);
+                keyY = mainKeyboardView.getKeyY(y);
             } else {
                 keyX = Constants.NOT_A_COORDINATE;
                 keyY = Constants.NOT_A_COORDINATE;
@@ -549,12 +555,7 @@ public final class InputLogic {
             resetComposingState(false /* alsoResetLastComposedWord */);
         }
         if (isComposingWord) {
-            final MainKeyboardView mainKeyboardView = keyboardSwitcher.getMainKeyboardView();
-            // TODO: We should reconsider which coordinate system should be used to represent
-            // keyboard event.
-            final int keyX = mainKeyboardView.getKeyX(x);
-            final int keyY = mainKeyboardView.getKeyY(y);
-            mWordComposer.add(codePoint, keyX, keyY);
+            mWordComposer.add(codePoint, x, y);
             // If it's the first letter, make note of auto-caps state
             if (mWordComposer.size() == 1) {
                 // We pass 1 to getPreviousWordForSuggestion because we were not composing a word
