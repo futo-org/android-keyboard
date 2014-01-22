@@ -225,10 +225,25 @@ public final class InputLogic {
         }
 
         boolean didAutoCorrect = false;
+        final int keyX, keyY;
+        final Keyboard keyboard = keyboardSwitcher.getKeyboard();
+        final MainKeyboardView mainKeyboardView = keyboardSwitcher.getMainKeyboardView();
+        // TODO: We should reconsider which coordinate system should be used to represent
+        // keyboard event.
+        if (keyboard != null && keyboard.hasProximityCharsCorrection(code)) {
+            // x and y include some padding, but everything down the line (especially native
+            // code) needs the coordinates in the keyboard frame.
+            // TODO: move this frame change up
+            keyX = mainKeyboardView.getKeyX(x);
+            keyY = mainKeyboardView.getKeyY(y);
+        } else {
+            keyX = Constants.NOT_A_COORDINATE;
+            keyY = Constants.NOT_A_COORDINATE;
+        }
         switch (code) {
         case Constants.CODE_DELETE:
             handleBackspace(settingsValues, spaceState, handler, keyboardSwitcher);
-            LatinImeLogger.logOnDelete(x, y);
+            LatinImeLogger.logOnDelete(keyX, keyY);
             break;
         case Constants.CODE_SHIFT:
             // Note: Calling back to the keyboard on Shift key is handled in
@@ -289,16 +304,16 @@ public final class InputLogic {
                 // No action label, and the action from imeOptions is NONE: this is a regular
                 // enter key that should input a carriage return.
                 didAutoCorrect = handleNonSpecialCharacter(settingsValues, Constants.CODE_ENTER,
-                        x, y, spaceState, keyboardSwitcher, handler);
+                        keyX, keyY, spaceState, keyboardSwitcher, handler);
             }
             break;
         case Constants.CODE_SHIFT_ENTER:
             didAutoCorrect = handleNonSpecialCharacter(settingsValues, Constants.CODE_ENTER,
-                    x, y, spaceState, keyboardSwitcher, handler);
+                    keyX, keyY, spaceState, keyboardSwitcher, handler);
             break;
         default:
             didAutoCorrect = handleNonSpecialCharacter(settingsValues,
-                    code, x, y, spaceState, keyboardSwitcher, handler);
+                    code, keyX, keyY, spaceState, keyboardSwitcher, handler);
             break;
         }
         keyboardSwitcher.onCodeInput(code);
@@ -473,22 +488,7 @@ public final class InputLogic {
                     commitTyped(settingsValues, LastComposedWord.NOT_A_SEPARATOR);
                 }
             }
-            final int keyX, keyY;
-            final Keyboard keyboard = keyboardSwitcher.getKeyboard();
-            final MainKeyboardView mainKeyboardView = keyboardSwitcher.getMainKeyboardView();
-            // TODO: We should reconsider which coordinate system should be used to represent
-            // keyboard event.
-            if (keyboard != null && keyboard.hasProximityCharsCorrection(codePoint)) {
-                // x and y include some padding, but everything down the line (especially native
-                // code) needs the coordinates in the keyboard frame.
-                // TODO: move this frame change up
-                keyX = mainKeyboardView.getKeyX(x);
-                keyY = mainKeyboardView.getKeyY(y);
-            } else {
-                keyX = Constants.NOT_A_COORDINATE;
-                keyY = Constants.NOT_A_COORDINATE;
-            }
-            handleNonSeparator(settingsValues, codePoint, keyX, keyY, spaceState,
+            handleNonSeparator(settingsValues, codePoint, x, y, spaceState,
                     keyboardSwitcher, handler);
         }
         return didAutoCorrect;
