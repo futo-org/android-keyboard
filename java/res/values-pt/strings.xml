@@ -68,17 +68,15 @@
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Moderado"</string>
     <string name="auto_correction_threshold_mode_aggressive" msgid="7319007299148899623">"Agressivo"</string>
     <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"Muito agressivo"</string>
-    <string name="bigram_prediction" msgid="1084449187723948550">"Sugestões para a palavra seguinte"</string>
+    <string name="bigram_prediction" msgid="1084449187723948550">"Sugerir palavra seguinte"</string>
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"Usar a palavra anterior ao fazer sugestões"</string>
     <string name="gesture_input" msgid="826951152254563827">"Ativar a escrita com gestos"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"Inserir uma palavra deslizando os dedos pelas letras"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"Mostrar percurso do gesto"</string>
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"Previsão dinâmica flutuante"</string>
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"Ver a palavra sugerida ao usar gestos"</string>
-    <!-- no translation found for gesture_space_aware (2078291600664682496) -->
-    <skip />
-    <!-- no translation found for gesture_space_aware_summary (4371385818348528538) -->
-    <skip />
+    <string name="gesture_space_aware" msgid="2078291600664682496">"Gesto de frase"</string>
+    <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Inserir espaços durante gestos deslizando até a tecla de espaço"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : Salvo"</string>
     <string name="spoken_use_headphones" msgid="896961781287283493">"Conecte um fone de ouvido para ouvir as chaves de senha em voz alta."</string>
     <string name="spoken_current_text_is" msgid="2485723011272583845">"O texto atual é %s"</string>
@@ -122,7 +120,7 @@
     <string name="keyboard_mode_text" msgid="6479436687899701619">"texto"</string>
     <string name="keyboard_mode_time" msgid="4381856885582143277">"hora"</string>
     <string name="keyboard_mode_url" msgid="1519819835514911218">"URL"</string>
-    <string name="voice_input" msgid="3583258583521397548">"Chave de entrada de texto por voz"</string>
+    <string name="voice_input" msgid="3583258583521397548">"Tecla p/ inserir texto por voz"</string>
     <string name="voice_input_disabled_summary" msgid="8141750303464726129">"Nenhum método de entrada de texto por voz ativado. Verifique as configurações \"Idioma e entrada\"."</string>
     <string name="configure_input_method" msgid="373356270290742459">"Configurar métodos de entrada"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Idiomas de entrada"</string>
