@@ -39,8 +39,7 @@ public class WordComposerTests extends AndroidTestCase {
         final int[] COORDINATES_WITHIN_BMP =
                 LatinIME.getCoordinatesForKeyboard(CODEPOINTS_WITHIN_BMP, null);
         final String PREVWORD = "prevword";
-        wc.setComposingWord(CODEPOINTS_WITHIN_BMP, COORDINATES_WITHIN_BMP,
-                PREVWORD, null /* keyboard */);
+        wc.setComposingWord(CODEPOINTS_WITHIN_BMP, COORDINATES_WITHIN_BMP, PREVWORD);
         assertEquals(wc.size(),
                 STR_WITHIN_BMP.codePointCount(0, STR_WITHIN_BMP.length()));
         assertFalse(wc.isCursorFrontOrMiddleOfComposingWord());
@@ -73,7 +72,7 @@ public class WordComposerTests extends AndroidTestCase {
         final int[] COORDINATES_WITH_SUPPLEMENTARY_CHAR = LatinIME.getCoordinatesForKeyboard(
                 CODEPOINTS_WITH_SUPPLEMENTARY_CHAR, null);
         wc.setComposingWord(CODEPOINTS_WITH_SUPPLEMENTARY_CHAR, COORDINATES_WITH_SUPPLEMENTARY_CHAR,
-                null /* previousWord */, null /* keyboard */);
+                null /* previousWord */);
         assertEquals(wc.size(), CODEPOINTS_WITH_SUPPLEMENTARY_CHAR.length);
         assertFalse(wc.isCursorFrontOrMiddleOfComposingWord());
         wc.setCursorPositionWithinWord(3);
@@ -85,45 +84,45 @@ public class WordComposerTests extends AndroidTestCase {
         assertNull(wc.getPreviousWordForSuggestion());
 
         wc.setComposingWord(CODEPOINTS_WITH_SUPPLEMENTARY_CHAR, COORDINATES_WITH_SUPPLEMENTARY_CHAR,
-                STR_WITHIN_BMP, null /* keyboard */);
+                STR_WITHIN_BMP);
         wc.setCursorPositionWithinWord(3);
         assertTrue(wc.moveCursorByAndReturnIfInsideComposingWord(7));
         assertEquals(STR_WITHIN_BMP, wc.getPreviousWordForSuggestion());
 
         wc.setComposingWord(CODEPOINTS_WITH_SUPPLEMENTARY_CHAR, COORDINATES_WITH_SUPPLEMENTARY_CHAR,
-                STR_WITH_SUPPLEMENTARY_CHAR, null /* keyboard */);
+                STR_WITH_SUPPLEMENTARY_CHAR);
         wc.setCursorPositionWithinWord(3);
         assertTrue(wc.moveCursorByAndReturnIfInsideComposingWord(7));
         assertEquals(STR_WITH_SUPPLEMENTARY_CHAR, wc.getPreviousWordForSuggestion());
 
         wc.setComposingWord(CODEPOINTS_WITH_SUPPLEMENTARY_CHAR, COORDINATES_WITH_SUPPLEMENTARY_CHAR,
-                STR_WITHIN_BMP, null /* keyboard */);
+                STR_WITHIN_BMP);
         wc.setCursorPositionWithinWord(3);
         assertTrue(wc.moveCursorByAndReturnIfInsideComposingWord(-3));
         assertFalse(wc.moveCursorByAndReturnIfInsideComposingWord(-1));
         assertEquals(STR_WITHIN_BMP, wc.getPreviousWordForSuggestion());
 
         wc.setComposingWord(CODEPOINTS_WITH_SUPPLEMENTARY_CHAR, COORDINATES_WITH_SUPPLEMENTARY_CHAR,
-                null /* previousWord */, null /* keyboard */);
+                null /* previousWord */);
         wc.setCursorPositionWithinWord(3);
         assertFalse(wc.moveCursorByAndReturnIfInsideComposingWord(-9));
         assertNull(wc.getPreviousWordForSuggestion());
 
         wc.setComposingWord(CODEPOINTS_WITH_SUPPLEMENTARY_CHAR, COORDINATES_WITH_SUPPLEMENTARY_CHAR,
-                STR_WITH_SUPPLEMENTARY_CHAR, null /* keyboard */);
+                STR_WITH_SUPPLEMENTARY_CHAR);
         assertTrue(wc.moveCursorByAndReturnIfInsideComposingWord(-10));
         assertEquals(STR_WITH_SUPPLEMENTARY_CHAR, wc.getPreviousWordForSuggestion());
 
         wc.setComposingWord(CODEPOINTS_WITH_SUPPLEMENTARY_CHAR, COORDINATES_WITH_SUPPLEMENTARY_CHAR,
-                null /* previousWord */, null /* keyboard */);
+                null /* previousWord */);
         assertFalse(wc.moveCursorByAndReturnIfInsideComposingWord(-11));
 
         wc.setComposingWord(CODEPOINTS_WITH_SUPPLEMENTARY_CHAR, COORDINATES_WITH_SUPPLEMENTARY_CHAR,
-                null /* previousWord */, null /* keyboard */);
+                null /* previousWord */);
         assertTrue(wc.moveCursorByAndReturnIfInsideComposingWord(0));
 
         wc.setComposingWord(CODEPOINTS_WITH_SUPPLEMENTARY_CHAR, COORDINATES_WITH_SUPPLEMENTARY_CHAR,
-                null /* previousWord */, null /* keyboard */);
+                null /* previousWord */);
         wc.setCursorPositionWithinWord(2);
         assertTrue(wc.moveCursorByAndReturnIfInsideComposingWord(0));
     }
