@@ -217,10 +217,15 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                         (SuggestedWords) msg.obj, latinIme.mKeyboardSwitcher);
                 break;
             case MSG_RESET_CACHES:
-                latinIme.mInputLogic.retryResetCaches(latinIme.mSettings.getCurrent(),
+                final SettingsValues settingsValues = latinIme.mSettings.getCurrent();
+                if (latinIme.mInputLogic.retryResetCachesAndReturnSuccess(settingsValues,
                         msg.arg1 == 1 /* tryResumeSuggestions */,
-                        msg.arg2 /* remainingTries */,
-                        latinIme.mKeyboardSwitcher, this);
+                        msg.arg2 /* remainingTries */, this /* handler */)) {
+                    // If we were able to reset the caches, then we can reload the keyboard.
+                    // Otherwise, we'll do it when we can.
+                    latinIme.mKeyboardSwitcher.loadKeyboard(latinIme.getCurrentInputEditorInfo(),
+                            settingsValues);
+                }
                 break;
             }
         }
@@ -1257,6 +1262,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final int keyY = mainKeyboardView.getKeyY(y);
         mInputLogic.onCodeInput(codePoint, keyX, keyY, mHandler, mKeyboardSwitcher,
                 mSubtypeSwitcher);
+        mKeyboardSwitcher.onCodeInput(codePoint);
     }
 
     // Called from PointerTracker through the KeyboardActionListener interface

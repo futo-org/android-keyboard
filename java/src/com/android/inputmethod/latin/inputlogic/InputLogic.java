@@ -300,7 +300,6 @@ public final class InputLogic {
                     code, x, y, spaceState, keyboardSwitcher, handler);
             break;
         }
-        keyboardSwitcher.onCodeInput(code);
         // Reset after any single keystroke, except shift, capslock, and symbol-shift
         if (!didAutoCorrect && code != Constants.CODE_SHIFT
                 && code != Constants.CODE_CAPSLOCK
@@ -1699,26 +1698,27 @@ public final class InputLogic {
      * @param settingsValues the current values of the settings.
      * @param tryResumeSuggestions Whether we should resume suggestions or not.
      * @param remainingTries How many times we may try again before giving up.
+     * @return whether true if the caches were successfully reset, false otherwise.
      */
     // TODO: make this private
-    public void retryResetCaches(final SettingsValues settingsValues,
+    public boolean retryResetCachesAndReturnSuccess(final SettingsValues settingsValues,
             final boolean tryResumeSuggestions, final int remainingTries,
             // TODO: remove these arguments
-            final KeyboardSwitcher keyboardSwitcher, final LatinIME.UIHandler handler) {
+            final LatinIME.UIHandler handler) {
         if (!mConnection.resetCachesUponCursorMoveAndReturnSuccess(
                 mConnection.getExpectedSelectionStart(), mConnection.getExpectedSelectionEnd(),
                 false)) {
             if (0 < remainingTries) {
                 handler.postResetCaches(tryResumeSuggestions, remainingTries - 1);
-                return;
+                return false;
             }
-            // If remainingTries is 0, we should stop waiting for new tries, but it's still
-            // better to load the keyboard (less things will be broken).
+            // If remainingTries is 0, we should stop waiting for new tries, however we'll still
+            // return true as we need to perform other tasks (for example, loading the keyboard).
         }
         mConnection.tryFixLyingCursorPosition();
-        keyboardSwitcher.loadKeyboard(getCurrentInputEditorInfo(), settingsValues);
         if (tryResumeSuggestions) {
             handler.postResumeSuggestions();
         }
+        return true;
     }
 }
