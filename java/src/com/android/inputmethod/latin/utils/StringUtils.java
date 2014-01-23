@@ -171,13 +171,19 @@ public final class StringUtils {
     private static final int[] EMPTY_CODEPOINTS = {};
 
     public static int[] toCodePointArray(final String string) {
+        return toCodePointArray(string, 0, string.length());
+    }
+
+    public static int[] toCodePointArray(final String string,
+            final int startIndex, final int endIndex) {
         final int length = string.length();
         if (length <= 0) {
             return EMPTY_CODEPOINTS;
         }
-        final int[] codePoints = new int[string.codePointCount(0, length)];
+        final int[] codePoints = new int[string.codePointCount(startIndex, endIndex)];
         int destIndex = 0;
-        for (int index = 0; index < length; index = string.offsetByCodePoints(index, 1)) {
+        for (int index = startIndex; index < endIndex;
+                index = string.offsetByCodePoints(index, 1)) {
             codePoints[destIndex] = string.codePointAt(index);
             destIndex++;
         }
