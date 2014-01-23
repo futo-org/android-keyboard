@@ -174,6 +174,13 @@ public final class StringUtils {
         return toCodePointArray(string, 0, string.length());
     }
 
+    /**
+     * Converts a range of a string to an array of code points.
+     * @param string the source string.
+     * @param startIndex the start index inside the string in java chars, inclusive.
+     * @param endIndex the end index inside the string in java chars, exclusive.
+     * @return a new array of code points. At most endIndex - startIndex, but possibly less.
+     */
     public static int[] toCodePointArray(final String string,
             final int startIndex, final int endIndex) {
         final int length = string.length();
