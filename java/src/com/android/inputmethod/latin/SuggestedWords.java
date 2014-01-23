@@ -31,6 +31,9 @@ public final class SuggestedWords {
     public static final int INDEX_OF_AUTO_CORRECTION = 1;
     public static final int NOT_A_SEQUENCE_NUMBER = -1;
 
+    // The maximum number of suggestions available.
+    public static final int MAX_SUGGESTIONS = 18;
+
     private static final ArrayList<SuggestedWordInfo> EMPTY_WORD_INFO_LIST =
             CollectionUtils.newArrayList(0);
     public static final SuggestedWords EMPTY = new SuggestedWords(

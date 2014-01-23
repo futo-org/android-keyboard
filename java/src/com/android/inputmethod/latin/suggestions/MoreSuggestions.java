@@ -47,10 +47,10 @@ public final class MoreSuggestions extends Keyboard {
     }
 
     private static final class MoreSuggestionsParam extends KeyboardParams {
-        private final int[] mWidths = new int[SuggestionStripView.MAX_SUGGESTIONS];
-        private final int[] mRowNumbers = new int[SuggestionStripView.MAX_SUGGESTIONS];
-        private final int[] mColumnOrders = new int[SuggestionStripView.MAX_SUGGESTIONS];
-        private final int[] mNumColumnsInRow = new int[SuggestionStripView.MAX_SUGGESTIONS];
+        private final int[] mWidths = new int[SuggestedWords.MAX_SUGGESTIONS];
+        private final int[] mRowNumbers = new int[SuggestedWords.MAX_SUGGESTIONS];
+        private final int[] mColumnOrders = new int[SuggestedWords.MAX_SUGGESTIONS];
+        private final int[] mNumColumnsInRow = new int[SuggestedWords.MAX_SUGGESTIONS];
         private static final int MAX_COLUMNS_IN_ROW = 3;
         private int mNumRows;
         public Drawable mDivider;
@@ -72,7 +72,7 @@ public final class MoreSuggestions extends Keyboard {
             int row = 0;
             int index = fromIndex;
             int rowStartIndex = fromIndex;
-            final int size = Math.min(suggestedWords.size(), SuggestionStripView.MAX_SUGGESTIONS);
+            final int size = Math.min(suggestedWords.size(), SuggestedWords.MAX_SUGGESTIONS);
             while (index < size) {
                 final String word = suggestedWords.getWord(index);
                 // TODO: Should take care of text x-scaling.
