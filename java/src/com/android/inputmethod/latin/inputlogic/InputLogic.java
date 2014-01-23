@@ -1703,7 +1703,7 @@ public final class InputLogic {
             final LatinIME.UIHandler handler) {
         if (!mConnection.resetCachesUponCursorMoveAndReturnSuccess(
                 mConnection.getExpectedSelectionStart(), mConnection.getExpectedSelectionEnd(),
-                false)) {
+                false /* shouldFinishComposition */)) {
             if (0 < remainingTries) {
                 handler.postResetCaches(tryResumeSuggestions, remainingTries - 1);
                 return false;
