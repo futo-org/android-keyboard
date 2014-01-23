@@ -53,9 +53,6 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         public void pickSuggestionManually(int index, SuggestedWordInfo word);
     }
 
-    // The maximum number of suggestions available. See {@link Suggest#mPrefMaxSuggestions}.
-    public static final int MAX_SUGGESTIONS = 18;
-
     static final boolean DBG = LatinImeLogger.sDBG;
 
     private final ViewGroup mSuggestionsStrip;
@@ -91,7 +88,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         inflater.inflate(R.layout.suggestions_strip, this);
 
         mSuggestionsStrip = (ViewGroup)findViewById(R.id.suggestions_strip);
-        for (int pos = 0; pos < MAX_SUGGESTIONS; pos++) {
+        for (int pos = 0; pos < SuggestedWords.MAX_SUGGESTIONS; pos++) {
             final TextView word = (TextView)inflater.inflate(R.layout.suggestion_word, null);
             word.setOnClickListener(this);
             word.setOnLongClickListener(this);
