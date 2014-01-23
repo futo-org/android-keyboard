@@ -75,10 +75,8 @@
     <string name="gesture_preview_trail" msgid="3802333369335722221">"Visa spår efter rörelse"</string>
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"Visa ordförslag vid svepskrivning"</string>
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"Ordförslaget visas i rörelsen medan du skriver"</string>
-    <!-- no translation found for gesture_space_aware (2078291600664682496) -->
-    <skip />
-    <!-- no translation found for gesture_space_aware_summary (4371385818348528538) -->
-    <skip />
+    <string name="gesture_space_aware" msgid="2078291600664682496">"Frasrörelse"</string>
+    <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Infoga blanksteg genom att dra fingret över blankstegstangenten"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g>: sparat"</string>
     <string name="spoken_use_headphones" msgid="896961781287283493">"Anslut hörlurar om du vill att lösenordet ska läsas upp."</string>
     <string name="spoken_current_text_is" msgid="2485723011272583845">"Nuvarande text är %s"</string>
