@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.latin;
 
+import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.latin.utils.StringUtils;
@@ -276,6 +277,8 @@ public final class WordComposer {
     /**
      * Add a dummy key by retrieving reasonable coordinates
      */
+    // TODO: make this private or remove it entirely. Right now it's used in the tests
+    @UsedForTesting
     public void addKeyInfo(final int codePoint, final Keyboard keyboard) {
         final int x, y;
         final Key key;
