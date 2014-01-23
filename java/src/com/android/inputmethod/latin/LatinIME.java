@@ -1246,8 +1246,24 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     // Implementation of {@link KeyboardActionListener}.
     @Override
-    public void onCodeInput(final int primaryCode, final int x, final int y) {
-        mInputLogic.onCodeInput(primaryCode, x, y, mHandler, mKeyboardSwitcher, mSubtypeSwitcher);
+    public void onCodeInput(final int codePoint, final int x, final int y) {
+        final int keyX, keyY;
+        final Keyboard keyboard = mKeyboardSwitcher.getKeyboard();
+        final MainKeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
+        // x and y include some padding, but everything down the line (especially native
+        // code) needs the coordinates in the keyboard frame.
+        // TODO: We should reconsider which coordinate system should be used to represent
+        // keyboard event. Also we should pull this up -- LatinIME has no business doing
+        // this transformation, it should be done already before calling onCodeInput.
+        if (keyboard != null && keyboard.hasProximityCharsCorrection(codePoint)) {
+            keyX = mainKeyboardView.getKeyX(x);
+            keyY = mainKeyboardView.getKeyY(y);
+        } else {
+            keyX = Constants.NOT_A_COORDINATE;
+            keyY = Constants.NOT_A_COORDINATE;
+        }
+        mInputLogic.onCodeInput(codePoint, keyX, keyY, mHandler, mKeyboardSwitcher,
+                mSubtypeSwitcher);
     }
 
     // Called from PointerTracker through the KeyboardActionListener interface
