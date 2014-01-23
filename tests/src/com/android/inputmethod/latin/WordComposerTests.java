@@ -19,6 +19,7 @@ package com.android.inputmethod.latin;
 import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
 
+import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.latin.utils.StringUtils;
 
 /**
@@ -37,7 +38,7 @@ public class WordComposerTests extends AndroidTestCase {
         final String STR_WITHIN_BMP = "abcdef";
         final int[] CODEPOINTS_WITHIN_BMP = StringUtils.toCodePointArray(STR_WITHIN_BMP);
         final int[] COORDINATES_WITHIN_BMP =
-                LatinIME.getCoordinatesForKeyboard(CODEPOINTS_WITHIN_BMP, null);
+                Keyboard.getCoordinatesWithoutKeyboard(CODEPOINTS_WITHIN_BMP);
         final String PREVWORD = "prevword";
         wc.setComposingWord(CODEPOINTS_WITHIN_BMP, COORDINATES_WITHIN_BMP, PREVWORD);
         assertEquals(wc.size(),
@@ -69,8 +70,8 @@ public class WordComposerTests extends AndroidTestCase {
         final String STR_WITH_SUPPLEMENTARY_CHAR = "abcde\uD861\uDED7fgh";
         final int[] CODEPOINTS_WITH_SUPPLEMENTARY_CHAR =
                 StringUtils.toCodePointArray(STR_WITH_SUPPLEMENTARY_CHAR);
-        final int[] COORDINATES_WITH_SUPPLEMENTARY_CHAR = LatinIME.getCoordinatesForKeyboard(
-                CODEPOINTS_WITH_SUPPLEMENTARY_CHAR, null);
+        final int[] COORDINATES_WITH_SUPPLEMENTARY_CHAR = Keyboard.getCoordinatesWithoutKeyboard(
+                CODEPOINTS_WITH_SUPPLEMENTARY_CHAR);
         wc.setComposingWord(CODEPOINTS_WITH_SUPPLEMENTARY_CHAR, COORDINATES_WITH_SUPPLEMENTARY_CHAR,
                 null /* previousWord */);
         assertEquals(wc.size(), CODEPOINTS_WITH_SUPPLEMENTARY_CHAR.length);

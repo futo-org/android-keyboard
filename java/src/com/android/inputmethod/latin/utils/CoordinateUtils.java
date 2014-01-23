@@ -50,7 +50,16 @@ public final class CoordinateUtils {
     }
 
     public static int[] newCoordinateArray(final int arraySize) {
-        return new int[ELEMENT_SIZE * arraySize];
+      return new int[ELEMENT_SIZE * arraySize];
+    }
+
+    public static int[] newCoordinateArray(final int arraySize,
+        final int defaultX, final int defaultY) {
+      final int[] result = new int[ELEMENT_SIZE * arraySize];
+      for (int i = 0; i < arraySize; ++i) {
+        setXYInArray(result, i, defaultX, defaultY);
+      }
+      return result;
     }
 
     public static int xFromArray(final int[] coordsArray, final int index) {
