@@ -28,7 +28,6 @@ import android.view.inputmethod.EditorInfo;
 
 import com.android.inputmethod.compat.SuggestionSpanUtils;
 import com.android.inputmethod.event.EventInterpreter;
-import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.Dictionary;
@@ -1087,7 +1086,9 @@ public final class InputLogic {
                 }
             }
         }
-        mWordComposer.setComposingWord(typedWord,
+        final int[] codePoints = StringUtils.toCodePointArray(typedWord);
+        mWordComposer.setComposingWord(codePoints,
+                mLatinIME.getCoordinatesForCurrentKeyboard(codePoints),
                 getNthPreviousWordForSuggestion(settingsValues.mSpacingAndPunctuations,
                         // We want the previous word for suggestion. If we have chars in the word
                         // before the cursor, then we want the word before that, hence 2; otherwise,
@@ -1177,8 +1178,8 @@ public final class InputLogic {
                         previousWord, committedWord.toString());
             }
         }
-        final SpannableString textToCommit =
-                new SpannableString(originallyTypedWord + mLastComposedWord.mSeparatorString);
+        final String stringToCommit = originallyTypedWord + mLastComposedWord.mSeparatorString;
+        final SpannableString textToCommit = new SpannableString(stringToCommit);
         if (committedWord instanceof SpannableString) {
             final int lastCharIndex = textToCommit.length() - 1;
             // Add the auto-correction to the list of suggestions.
@@ -1210,8 +1211,10 @@ public final class InputLogic {
         } else {
             // For languages without spaces, we revert the typed string but the cursor is flush
             // with the typed word, so we need to resume suggestions right away.
-            mWordComposer.setComposingWord(textToCommit, previousWord,
-                    keyboardSwitcher.getKeyboard());
+            final int[] codePoints = StringUtils.toCodePointArray(stringToCommit);
+            mWordComposer.setComposingWord(codePoints,
+                    mLatinIME.getCoordinatesForCurrentKeyboard(codePoints),
+                    previousWord, keyboardSwitcher.getKeyboard());
             mConnection.setComposingText(textToCommit, 1);
         }
         if (settingsValues.mIsInternal) {

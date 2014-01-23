@@ -43,6 +43,7 @@ USED_TARGETTED_UTILS := \
         $(LATINIME_CORE_SOURCE_DIRECTORY)/settings/NativeSuggestOptions.java \
         $(LATINIME_CORE_SOURCE_DIRECTORY)/utils/ByteArrayDictBuffer.java \
         $(LATINIME_CORE_SOURCE_DIRECTORY)/utils/CollectionUtils.java \
+        $(LATINIME_CORE_SOURCE_DIRECTORY)/utils/CoordinateUtils.java \
         $(LATINIME_CORE_SOURCE_DIRECTORY)/utils/FileUtils.java \
         $(LATINIME_CORE_SOURCE_DIRECTORY)/utils/JniUtils.java \
         $(LATINIME_CORE_SOURCE_DIRECTORY)/utils/LocaleUtils.java \

@@ -59,6 +59,7 @@ import com.android.inputmethod.accessibility.AccessibleKeyboardViewProxy;
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.compat.InputMethodServiceCompatUtils;
 import com.android.inputmethod.dictionarypack.DictionaryPackConstants;
+import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardActionListener;
 import com.android.inputmethod.keyboard.KeyboardId;
@@ -79,6 +80,7 @@ import com.android.inputmethod.latin.suggestions.SuggestionStripView;
 import com.android.inputmethod.latin.utils.ApplicationUtils;
 import com.android.inputmethod.latin.utils.CapsModeUtils;
 import com.android.inputmethod.latin.utils.CompletionInfoUtils;
+import com.android.inputmethod.latin.utils.CoordinateUtils;
 import com.android.inputmethod.latin.utils.IntentUtils;
 import com.android.inputmethod.latin.utils.JniUtils;
 import com.android.inputmethod.latin.utils.LatinImeLoggerUtils;
@@ -1197,6 +1199,30 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     public Locale getCurrentSubtypeLocale() {
         return mSubtypeSwitcher.getCurrentSubtypeLocale();
+    }
+
+    /**
+     * @param codePoints code points to get coordinates for.
+     * @return x,y coordinates for this keyboard, as a flattened array.
+     */
+    public int[] getCoordinatesForCurrentKeyboard(final int[] codePoints) {
+        return getCoordinatesForKeyboard(codePoints, mKeyboardSwitcher.getKeyboard());
+    }
+
+    public static int[] getCoordinatesForKeyboard(final int[] codePoints, final Keyboard keyboard) {
+        final int length = codePoints.length;
+        final int[] coordinates = CoordinateUtils.newCoordinateArray(length);
+        Key key;
+        for (int i = 0; i < length; ++i) {
+            if (keyboard != null && (key = keyboard.getKey(codePoints[i])) != null) {
+                CoordinateUtils.setXYInArray(coordinates, i,
+                        key.getX() + key.getWidth() / 2, key.getY() + key.getHeight() / 2);
+            } else {
+                CoordinateUtils.setXYInArray(coordinates, i,
+                        Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
+            }
+        }
+        return coordinates;
     }
 
     // Callback for the {@link SuggestionStripView}, to call when the "add to dictionary" hint is
