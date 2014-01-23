@@ -230,19 +230,16 @@ public final class InputLogic {
             LatinImeLogger.logOnDelete(x, y);
             break;
         case Constants.CODE_SHIFT:
-            // Note: Calling back to the keyboard on Shift key is handled in
-            // {@link #onPressKey(int,int,boolean)} and {@link #onReleaseKey(int,boolean)}.
-            final Keyboard currentKeyboard = keyboardSwitcher.getKeyboard();
-            if (null != currentKeyboard && currentKeyboard.mId.isAlphabetKeyboard()) {
-                // TODO: Instead of checking for alphabetic keyboard here, separate keycodes for
-                // alphabetic shift and shift while in symbol layout.
-                performRecapitalization(settingsValues);
-                keyboardSwitcher.updateShiftState();
-            }
+            performRecapitalization(settingsValues);
+            keyboardSwitcher.updateShiftState();
             break;
         case Constants.CODE_CAPSLOCK:
             // Note: Changing keyboard to shift lock state is handled in
             // {@link KeyboardSwitcher#onCodeInput(int)}.
+            break;
+        case Constants.CODE_SYMBOL_SHIFT:
+            // Note: Calling back to the keyboard on the symbol Shift key is handled in
+            // {@link #onPressKey(int,int,boolean)} and {@link #onReleaseKey(int,boolean)}.
             break;
         case Constants.CODE_SWITCH_ALPHA_SYMBOL:
             // Note: Calling back to the keyboard on symbol key is handled in

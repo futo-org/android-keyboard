@@ -1260,7 +1260,20 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // this transformation, it should be done already before calling onCodeInput.
         final int keyX = mainKeyboardView.getKeyX(x);
         final int keyY = mainKeyboardView.getKeyY(y);
-        mInputLogic.onCodeInput(codePoint, keyX, keyY, mHandler, mKeyboardSwitcher,
+        final int codeToSend;
+        if (Constants.CODE_SHIFT == codePoint) {
+            // TODO: Instead of checking for alphabetic keyboard here, separate keycodes for
+            // alphabetic shift and shift while in symbol layout.
+            final Keyboard currentKeyboard = mKeyboardSwitcher.getKeyboard();
+            if (null != currentKeyboard && currentKeyboard.mId.isAlphabetKeyboard()) {
+                codeToSend = codePoint;
+            } else {
+                codeToSend = Constants.CODE_SYMBOL_SHIFT;
+            }
+        } else {
+            codeToSend = codePoint;
+        }
+        mInputLogic.onCodeInput(codeToSend, keyX, keyY, mHandler, mKeyboardSwitcher,
                 mSubtypeSwitcher);
         mKeyboardSwitcher.onCodeInput(codePoint);
     }
