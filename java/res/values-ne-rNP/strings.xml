@@ -46,6 +46,8 @@
     <string name="settings_system_default" msgid="6268225104743331821">"प्रणाली पूर्वनिर्धारित"</string>
     <string name="use_contacts_dict" msgid="4435317977804180815">"सम्पर्क नामहरू सुझाव गर्नुहोस्"</string>
     <string name="use_contacts_dict_summary" msgid="6599983334507879959">"सुझाव र सुधारका लागि सम्पर्कबाट नामहरू प्रयोग गर्नुहोस्"</string>
+    <string name="use_personalized_dicts" msgid="5167396352105467626">"निजीकृत सुझावहरू"</string>
+    <string name="use_personalized_dicts_summary" msgid="4331467814162666438">"सुझावहरू सुधार गर्न तपाईँको सञ्‍चारहरू र टाइप गरिएको डेटाबाट जान्नुहोस्"</string>
     <string name="use_double_space_period" msgid="8781529969425082860">"डबल-स्पेस पूर्णविराम"</string>
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"स्पेसबारमा डबल ट्याप गर्नाले पूर्णविरामपछि स्पेस राख्दछ"</string>
     <string name="auto_cap" msgid="1719746674854628252">"स्वतः पूँजिकरण"</string>
@@ -73,10 +75,14 @@
     <string name="gesture_preview_trail" msgid="3802333369335722221">"इशारा ट्रेल देखाउनुहोस्"</string>
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"गतिशील फ्लोटिङ पूर्वावलोकन"</string>
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"इशारा गर्दा सुझाव दिइएको शब्द हेर्नुहोस्"</string>
+    <string name="gesture_space_aware" msgid="2078291600664682496">"वाक्यांश इशारा"</string>
+    <string name="gesture_space_aware_summary" msgid="4371385818348528538">"इशारा सत्र दैरान space दिखिल गर्न space key मा ग्लाइडि गर्नुहोस्"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : बचत गरियो"</string>
     <string name="spoken_use_headphones" msgid="896961781287283493">"हेडसेट प्लग इन गर्नुहोस्"</string>
     <string name="spoken_current_text_is" msgid="2485723011272583845">"वर्तमान पाठ %s हो"</string>
     <string name="spoken_no_text_entered" msgid="7479685225597344496">"कुनै पाठ प्रविष्टि गरिएको छैन"</string>
+    <string name="spoken_auto_correct" msgid="8005997889020109763">"<xliff:g id="KEY">%1$s</xliff:g> लाई <xliff:g id="ORIGINAL_WORD">%2$s</xliff:g> मा <xliff:g id="CORRECTED">%3$s</xliff:g> ले सच्याईयो"</string>
+    <string name="spoken_auto_correct_obscured" msgid="6276420476908833791">"<xliff:g id="KEY">%1$s</xliff:g> स्वतः सुधार गर्छ"</string>
     <string name="spoken_description_unknown" msgid="3197434010402179157">"कुञ्जी कोड %d"</string>
     <string name="spoken_description_shift" msgid="244197883292549308">"सिफ्ट"</string>
     <string name="spoken_description_shift_shifted" msgid="1681877323344195035">"सिप्ट सक्रिय (असक्षम पार्न ट्याप गर्नुहोस्)"</string>
@@ -115,6 +121,7 @@
     <string name="keyboard_mode_time" msgid="4381856885582143277">"समय"</string>
     <string name="keyboard_mode_url" msgid="1519819835514911218">"URL"</string>
     <string name="voice_input" msgid="3583258583521397548">"आवाज इनपुट कुञ्जी"</string>
+    <string name="voice_input_disabled_summary" msgid="8141750303464726129">"कुनै आवाज इनपुट विधिहरू सक्षम गरिएका छैनन्। भाषा र इनपुट सेटिङहरूको जाँच गर्नुहोस्।"</string>
     <string name="configure_input_method" msgid="373356270290742459">"इनपुट विधिहरू कन्फिगर गर्नुहोस्"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"इनपुट भाषाहरू"</string>
     <string name="send_feedback" msgid="1780431884109392046">"प्रतिक्रिया पठाउनुहोस्"</string>
@@ -139,6 +146,9 @@
     <string name="subtype_no_language_colemak" msgid="5837418400010302623">"वर्णमाला (Colemak)"</string>
     <string name="subtype_no_language_pcqwerty" msgid="5354918232046200018">"वर्णमाला (PC)"</string>
     <string name="subtype_emoji" msgid="7483586578074549196">"इमोजी"</string>
+    <string name="keyboard_color_scheme" msgid="9192934113872818070">"रङ योजना"</string>
+    <string name="keyboard_color_scheme_white" msgid="6684064723850265438">"सेतो"</string>
+    <string name="keyboard_color_scheme_blue" msgid="2488527224758177593">"नीलो"</string>
     <string name="custom_input_styles_title" msgid="8429952441821251512">"अनुकूलन इनपुट शैली"</string>
     <string name="add_style" msgid="6163126614514489951">"शैली थप्नुहोस्"</string>
     <string name="add" msgid="8299699805688017798">"थप्नुहोस्"</string>
@@ -202,7 +212,7 @@
     <string name="install_dict" msgid="180852772562189365">"स्थापना गर्नुहोस्"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"रद्द गर्नुहोस्"</string>
     <string name="delete_dict" msgid="756853268088330054">"मेट्नुहोस्"</string>
-    <string name="should_download_over_metered_prompt" msgid="2878629598667658845">"तपाईँको मोबाइल उपकरणमा चयन गरिएको भाषामा शब्दकोश उपलब्ध छ। हामी सिफारिश गर्छौं <xliff:g id="LANGUAGE">%1$s</xliff:g> शब्दकोश डाउनलोड गर्नका लागि तपाईँको टाइपिङ अनुभव सुधार्न। यस डाउनलोड 3G मा एक वा दुई मिनेट लाग्छ। शुल्कहरू लाग्न सक्छ यदि तपाईँसँग असीमित डेटा योजना छैन भने। यदि आफूसँग कुन डेटा योजना छ तपाईँ यकिन हुनुहुन्न भने हामी स्वचालित रूपमा डाउनलोड सुरु गर्न वाइ-फाइ जडान खोज्न सिफारिस गर्छौं। सल्लाह: तपाईँको मोबाइल उपकरणको भाषा र इनपुट सेटिङ मेनुमा गई तपाईँ शब्दकोशलाई डाउनलोड वा हटाउन सक्नुहुन्छ।"</string>
+    <string name="should_download_over_metered_prompt" msgid="2878629598667658845">"तपाईँको मोबाइल उपकरणमा चयन गरिएको भाषामा शब्दकोश उपलब्ध छ। हामी सिफारिश गर्छौं <xliff:g id="LANGUAGE">%1$s</xliff:g> शब्दकोश डाउनलोड गर्नका लागि तपाईँको टाइपिङ अनुभव सुधार्न। यस डाउनलोड 3G मा एक वा दुई मिनेट लाग्छ। शुल्कहरू लाग्न सक्छ यदि तपाईँसँग असीमित डेटा योजना छैन भने। यदि आफूसँग कुन डेटा योजना छ तपाईँ यकिन हुनुहुन्न भने हामी स्वचालित रूपमा डाउनलोड सुरु गर्न वाइफाइ जडान खोज्न सिफारिस गर्छौं। सल्लाह: तपाईँको मोबाइल उपकरणको भाषा र इनपुट सेटिङ मेनुमा गई तपाईँ शब्दकोशलाई डाउनलोड वा हटाउन सक्नुहुन्छ।"</string>
     <string name="download_over_metered" msgid="1643065851159409546">"(अब डाउनलोड गर्नुहोस्<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"वाइ-फाइको माध्ययमद्वार डाउनलोड गर्नुहोस्"</string>
     <string name="dict_available_notification_title" msgid="6514288591959117288">"एक शब्दकोश  <xliff:g id="LANGUAGE">%1$s</xliff:g> का लागि उपलब्ध छ"</string>
