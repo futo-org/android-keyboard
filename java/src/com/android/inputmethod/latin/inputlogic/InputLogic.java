@@ -46,7 +46,6 @@ import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.latin.settings.Settings;
 import com.android.inputmethod.latin.settings.SettingsValues;
 import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
-import com.android.inputmethod.latin.suggestions.SuggestionStripView;
 import com.android.inputmethod.latin.utils.AsyncResultHolder;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.InputTypeUtils;
@@ -1064,7 +1063,7 @@ public final class InputLogic {
         final String typedWord = range.mWord.toString();
         if (includeResumedWordInSuggestions) {
             suggestions.add(new SuggestedWordInfo(typedWord,
-                    SuggestionStripView.MAX_SUGGESTIONS + 1,
+                    SuggestedWords.MAX_SUGGESTIONS + 1,
                     SuggestedWordInfo.KIND_TYPED, Dictionary.DICTIONARY_USER_TYPED,
                     SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
                     SuggestedWordInfo.NOT_A_CONFIDENCE /* autoCommitFirstWordConfidence */));
@@ -1076,7 +1075,7 @@ public final class InputLogic {
                 ++i;
                 if (!TextUtils.equals(s, typedWord)) {
                     suggestions.add(new SuggestedWordInfo(s,
-                            SuggestionStripView.MAX_SUGGESTIONS - i,
+                            SuggestedWords.MAX_SUGGESTIONS - i,
                             SuggestedWordInfo.KIND_RESUMED, Dictionary.DICTIONARY_RESUMED,
                             SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
                             SuggestedWordInfo.NOT_A_CONFIDENCE

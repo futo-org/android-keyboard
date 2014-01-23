@@ -50,8 +50,6 @@ public final class Suggest {
     // Close to -2**31
     private static final int SUPPRESS_SUGGEST_THRESHOLD = -2000000000;
 
-    public static final int MAX_SUGGESTIONS = 18;
-
     private static final boolean DBG = LatinImeLogger.sDBG;
 
     public final DictionaryFacilitatorForSuggest mDictionaryFacilitator;
@@ -109,7 +107,7 @@ public final class Suggest {
             final OnGetSuggestedWordsCallback callback) {
         final int trailingSingleQuotesCount = wordComposer.trailingSingleQuotesCount();
         final BoundedTreeSet suggestionsSet = new BoundedTreeSet(sSuggestedWordInfoComparator,
-                MAX_SUGGESTIONS);
+                SuggestedWords.MAX_SUGGESTIONS);
 
         final String typedWord = wordComposer.getTypedWord();
         final String consideredWord = trailingSingleQuotesCount > 0
@@ -226,7 +224,7 @@ public final class Suggest {
             final int sessionId, final int sequenceNumber,
             final OnGetSuggestedWordsCallback callback) {
         final BoundedTreeSet suggestionsSet = new BoundedTreeSet(sSuggestedWordInfoComparator,
-                MAX_SUGGESTIONS);
+                SuggestedWords.MAX_SUGGESTIONS);
         mDictionaryFacilitator.getSuggestions(wordComposer, prevWordForBigram, proximityInfo,
                 blockOffensiveWords, additionalFeaturesOptions, sessionId, suggestionsSet);
         for (SuggestedWordInfo wordInfo : suggestionsSet) {
