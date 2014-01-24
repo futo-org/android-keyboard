@@ -1020,17 +1020,16 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private void setSuggestionStripShownInternal(final boolean shown,
             final boolean needsInputViewShown) {
         // TODO: Modify this if we support suggestions with hard keyboard
-        if (onEvaluateInputViewShown() && mSuggestionStripView != null) {
-            final boolean inputViewShown = mKeyboardSwitcher.isShowingMainKeyboardOrEmojiPalettes();
-            final boolean shouldShowSuggestions = shown
-                    && (needsInputViewShown ? inputViewShown : true);
-            if (isFullscreenMode()) {
-                mSuggestionStripView.setVisibility(
-                        shouldShowSuggestions ? View.VISIBLE : View.GONE);
-            } else {
-                mSuggestionStripView.setVisibility(
-                        shouldShowSuggestions ? View.VISIBLE : View.INVISIBLE);
-            }
+        if (!onEvaluateInputViewShown() || null == mSuggestionStripView) {
+            return;
+        }
+        final boolean inputViewShown = mKeyboardSwitcher.isShowingMainKeyboardOrEmojiPalettes();
+        final boolean shouldShowSuggestions = shown
+                && (needsInputViewShown ? inputViewShown : true);
+        if (shouldShowSuggestions) {
+            mSuggestionStripView.setVisibility(View.VISIBLE);
+        } else {
+            mSuggestionStripView.setVisibility(isFullscreenMode() ? View.GONE : View.INVISIBLE);
         }
     }
 
