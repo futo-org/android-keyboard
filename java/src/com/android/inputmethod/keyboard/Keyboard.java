@@ -23,6 +23,7 @@ import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
 import com.android.inputmethod.keyboard.internal.KeyboardParams;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.utils.CollectionUtils;
+import com.android.inputmethod.latin.utils.CoordinateUtils;
 
 /**
  * Loads an XML description of a keyboard and stores the attributes of the keys. A keyboard
@@ -216,5 +217,21 @@ public class Keyboard {
         final int adjustedX = Math.max(0, Math.min(x, mOccupiedWidth - 1));
         final int adjustedY = Math.max(0, Math.min(y, mOccupiedHeight - 1));
         return mProximityInfo.getNearestKeys(adjustedX, adjustedY);
+    }
+
+    public int[] getCoordinates(final int[] codePoints) {
+        final int length = codePoints.length;
+        final int[] coordinates = CoordinateUtils.newCoordinateArray(length);
+        for (int i = 0; i < length; ++i) {
+            final Key key = getKey(codePoints[i]);
+            if (null != key) {
+                CoordinateUtils.setXYInArray(coordinates, i,
+                        key.getX() + key.getWidth() / 2, key.getY() + key.getHeight() / 2);
+            } else {
+                CoordinateUtils.setXYInArray(coordinates, i,
+                        Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
+            }
+        }
+        return coordinates;
     }
 }

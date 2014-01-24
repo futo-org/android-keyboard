@@ -59,7 +59,6 @@ import com.android.inputmethod.accessibility.AccessibleKeyboardViewProxy;
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.compat.InputMethodServiceCompatUtils;
 import com.android.inputmethod.dictionarypack.DictionaryPackConstants;
-import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardActionListener;
 import com.android.inputmethod.keyboard.KeyboardId;
@@ -1206,23 +1205,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
      * @return x,y coordinates for this keyboard, as a flattened array.
      */
     public int[] getCoordinatesForCurrentKeyboard(final int[] codePoints) {
-        return getCoordinatesForKeyboard(codePoints, mKeyboardSwitcher.getKeyboard());
-    }
-
-    public static int[] getCoordinatesForKeyboard(final int[] codePoints, final Keyboard keyboard) {
-        final int length = codePoints.length;
-        final int[] coordinates = CoordinateUtils.newCoordinateArray(length);
-        Key key;
-        for (int i = 0; i < length; ++i) {
-            if (keyboard != null && (key = keyboard.getKey(codePoints[i])) != null) {
-                CoordinateUtils.setXYInArray(coordinates, i,
-                        key.getX() + key.getWidth() / 2, key.getY() + key.getHeight() / 2);
-            } else {
-                CoordinateUtils.setXYInArray(coordinates, i,
-                        Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
-            }
+        final Keyboard keyboard = mKeyboardSwitcher.getKeyboard();
+        if (null == keyboard) {
+            return CoordinateUtils.newCoordinateArray(codePoints.length,
+                    Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
+        } else {
+            return keyboard.getCoordinates(codePoints);
         }
-        return coordinates;
     }
 
     // Callback for the {@link SuggestionStripView}, to call when the "add to dictionary" hint is
