@@ -50,16 +50,16 @@ public final class CoordinateUtils {
     }
 
     public static int[] newCoordinateArray(final int arraySize) {
-      return new int[ELEMENT_SIZE * arraySize];
+        return new int[ELEMENT_SIZE * arraySize];
     }
 
     public static int[] newCoordinateArray(final int arraySize,
-        final int defaultX, final int defaultY) {
-      final int[] result = new int[ELEMENT_SIZE * arraySize];
-      for (int i = 0; i < arraySize; ++i) {
-        setXYInArray(result, i, defaultX, defaultY);
-      }
-      return result;
+            final int defaultX, final int defaultY) {
+        final int[] result = new int[ELEMENT_SIZE * arraySize];
+        for (int i = 0; i < arraySize; ++i) {
+            setXYInArray(result, i, defaultX, defaultY);
+        }
+        return result;
     }
 
     public static int xFromArray(final int[] coordsArray, final int index) {
@@ -87,9 +87,5 @@ public final class CoordinateUtils {
         final int baseIndex = ELEMENT_SIZE * index;
         coordsArray[baseIndex + INDEX_X] = coords[INDEX_X];
         coordsArray[baseIndex + INDEX_Y] = coords[INDEX_Y];
-    }
-
-    public static void copyArray(final int[] destination, final int[] source) {
-        System.arraycopy(source, 0, destination, 0, source.length);
     }
 }
