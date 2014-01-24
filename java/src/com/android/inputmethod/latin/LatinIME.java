@@ -195,11 +195,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                                 (Pair<SuggestedWords, String>) msg.obj;
                         // [IL]: this is the only place where the second arg is not
                         // suggestedWords.mTypedWord.
-                        latinIme.showSuggestionStripWithTypedWord(p.first, p.second);
+                        latinIme.showSuggestionStrip(p.first, p.second);
                     } else {
                         final SuggestedWords suggestedWords = (SuggestedWords) msg.obj;
-                        latinIme.showSuggestionStripWithTypedWord(suggestedWords,
-                                suggestedWords.mTypedWord);
+                        latinIme.showSuggestionStrip(suggestedWords, suggestedWords.mTypedWord);
                     }
                 } else {
                     latinIme.showGesturePreviewAndSuggestionStrip((SuggestedWords) msg.obj,
@@ -1274,7 +1273,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // This method must run on the UI Thread.
     private void showGesturePreviewAndSuggestionStrip(final SuggestedWords suggestedWords,
             final boolean dismissGestureFloatingPreviewText) {
-        showSuggestionStripWithTypedWord(suggestedWords, suggestedWords.mTypedWord);
+        showSuggestionStrip(suggestedWords, suggestedWords.mTypedWord);
         final MainKeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
         mainKeyboardView.showGestureFloatingPreviewText(suggestedWords);
         if (dismissGestureFloatingPreviewText) {
@@ -1410,7 +1409,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     // TODO[IL]: Define a clean interface for this
-    public void showSuggestionStripWithTypedWord(final SuggestedWords sourceSuggestedWords,
+    public void showSuggestionStrip(final SuggestedWords sourceSuggestedWords,
             final String typedWord) {
         final SuggestedWords suggestedWords =
                 sourceSuggestedWords.isEmpty() ? SuggestedWords.EMPTY : sourceSuggestedWords;
