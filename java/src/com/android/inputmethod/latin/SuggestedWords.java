@@ -39,6 +39,7 @@ public final class SuggestedWords {
     public static final SuggestedWords EMPTY = new SuggestedWords(
             EMPTY_WORD_INFO_LIST, false, false, false, false, false);
 
+    public final String mTypedWord;
     public final boolean mTypedWordValid;
     // Note: this INCLUDES cases where the word will auto-correct to itself. A good definition
     // of what this flag means would be "the top suggestion is strong enough to auto-correct",
@@ -74,6 +75,7 @@ public final class SuggestedWords {
         mIsObsoleteSuggestions = isObsoleteSuggestions;
         mIsPrediction = isPrediction;
         mSequenceNumber = sequenceNumber;
+        mTypedWord = suggestedWordInfoList.isEmpty() ? null : getWord(INDEX_OF_TYPED_WORD);
     }
 
     public boolean isEmpty() {
