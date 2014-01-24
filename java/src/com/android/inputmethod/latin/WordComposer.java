@@ -16,9 +16,6 @@
 
 package com.android.inputmethod.latin;
 
-import com.android.inputmethod.annotations.UsedForTesting;
-import com.android.inputmethod.keyboard.Key;
-import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.latin.utils.CoordinateUtils;
 import com.android.inputmethod.latin.utils.StringUtils;
 
@@ -273,24 +270,6 @@ public final class WordComposer {
             // (See {@link #add(int,int,int)}).
             add(codePoint, Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
         }
-    }
-
-    /**
-     * Add a dummy key by retrieving reasonable coordinates
-     */
-    // TODO: make this private or remove it entirely. Right now it's used in the tests
-    @UsedForTesting
-    public void addKeyInfo(final int codePoint, final Keyboard keyboard) {
-        final int x, y;
-        final Key key;
-        if (keyboard != null && (key = keyboard.getKey(codePoint)) != null) {
-            x = key.getX() + key.getWidth() / 2;
-            y = key.getY() + key.getHeight() / 2;
-        } else {
-            x = Constants.NOT_A_COORDINATE;
-            y = Constants.NOT_A_COORDINATE;
-        }
-        add(codePoint, x, y);
     }
 
     /**
