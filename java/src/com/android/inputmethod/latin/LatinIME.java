@@ -1183,7 +1183,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // the right layout.
     // TODO[IL]: Remove this, pass the input logic to the keyboard switcher instead?
     public int getCurrentAutoCapsState() {
-        return mInputLogic.getCurrentAutoCapsState(null /* optionalSettingsValues */);
+        return mInputLogic.getCurrentAutoCapsState(Settings.getInstance().getCurrent());
     }
 
     // Called from the KeyboardSwitcher which needs to know recaps state to display
@@ -1289,7 +1289,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mSubtypeSwitcher.switchToShortcutIME(this);
             // Still call the *#onCodeInput methods for readability.
         }
-        mInputLogic.onCodeInput(codeToSend, keyX, keyY, mHandler, mKeyboardSwitcher);
+        mInputLogic.onCodeInput(codeToSend, keyX, keyY, Settings.getInstance().getCurrent(),
+                mHandler, mKeyboardSwitcher);
         mKeyboardSwitcher.onCodeInput(codePoint);
     }
 
