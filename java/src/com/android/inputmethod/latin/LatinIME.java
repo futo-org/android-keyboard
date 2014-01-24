@@ -1426,7 +1426,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     private void showSuggestionStripWithTypedWord(final SuggestedWords sourceSuggestedWords,
             final String typedWord) {
-        // TODO: refactor this
         final SuggestedWords suggestedWords =
                 sourceSuggestedWords.isEmpty() ? SuggestedWords.EMPTY : sourceSuggestedWords;
         final String autoCorrection;
@@ -1437,13 +1436,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             // because it may differ from mWordComposer.mTypedWord.
             autoCorrection = typedWord;
         }
-        if (suggestedWords.isEmpty()) {
-            AccessibilityUtils.getInstance().setAutoCorrection(suggestedWords, typedWord);
-            setSuggestedWords(suggestedWords);
-            setAutoCorrectionIndicator(false);
-            return;
+        if (SuggestedWords.EMPTY != suggestedWords) {
+            mInputLogic.mWordComposer.setAutoCorrection(autoCorrection);
         }
-        mInputLogic.mWordComposer.setAutoCorrection(autoCorrection);
         setSuggestedWords(suggestedWords);
         setAutoCorrectionIndicator(suggestedWords.mWillAutoCorrect);
         setSuggestionStripShown(isSuggestionsStripVisible());
