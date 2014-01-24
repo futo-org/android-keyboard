@@ -1116,7 +1116,7 @@ public final class InputLogic {
         final SuggestedWords suggestedWords = holder.get(null,
                 Constants.GET_SUGGESTED_WORDS_TIMEOUT);
         if (suggestedWords != null) {
-            mLatinIME.showSuggestionStrip(suggestedWords);
+            mLatinIME.showSuggestionStripWithTypedWord(suggestedWords, suggestedWords.mTypedWord);
         }
     }
 
@@ -1618,8 +1618,11 @@ public final class InputLogic {
             final int indexOfLastSpace = batchInputText.lastIndexOf(Constants.CODE_SPACE) + 1;
             if (0 != indexOfLastSpace) {
                 mConnection.commitText(batchInputText.substring(0, indexOfLastSpace), 1);
-                mLatinIME.showSuggestionStrip(
-                        suggestedWords.getSuggestedWordsForLastWordOfPhraseGesture());
+                final SuggestedWords suggestedWordsForLastWordOfPhraseGesture =
+                        suggestedWords.getSuggestedWordsForLastWordOfPhraseGesture();
+                mLatinIME.showSuggestionStripWithTypedWord(
+                        suggestedWordsForLastWordOfPhraseGesture,
+                        suggestedWordsForLastWordOfPhraseGesture.mTypedWord);
             }
             final String lastWord = batchInputText.substring(indexOfLastSpace);
             mWordComposer.setBatchInputWord(lastWord);
