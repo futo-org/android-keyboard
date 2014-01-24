@@ -68,6 +68,21 @@ public final class SuggestedWords {
             final boolean isObsoleteSuggestions,
             final boolean isPrediction,
             final int sequenceNumber) {
+        this(suggestedWordInfoList,
+                suggestedWordInfoList.isEmpty() ? null
+                        : suggestedWordInfoList.get(INDEX_OF_TYPED_WORD).mWord,
+                typedWordValid, willAutoCorrect, isPunctuationSuggestions,
+                isObsoleteSuggestions, isPrediction, sequenceNumber);
+    }
+
+    public SuggestedWords(final ArrayList<SuggestedWordInfo> suggestedWordInfoList,
+            final String typedWord,
+            final boolean typedWordValid,
+            final boolean willAutoCorrect,
+            final boolean isPunctuationSuggestions,
+            final boolean isObsoleteSuggestions,
+            final boolean isPrediction,
+            final int sequenceNumber) {
         mSuggestedWordInfoList = suggestedWordInfoList;
         mTypedWordValid = typedWordValid;
         mWillAutoCorrect = willAutoCorrect;
@@ -75,7 +90,7 @@ public final class SuggestedWords {
         mIsObsoleteSuggestions = isObsoleteSuggestions;
         mIsPrediction = isPrediction;
         mSequenceNumber = sequenceNumber;
-        mTypedWord = suggestedWordInfoList.isEmpty() ? null : getWord(INDEX_OF_TYPED_WORD);
+        mTypedWord = typedWord;
     }
 
     public boolean isEmpty() {
@@ -279,17 +294,21 @@ public final class SuggestedWords {
     // words from the member ArrayList as some other parties may expect the object to never change.
     public SuggestedWords getSuggestedWordsExcludingTypedWord() {
         final ArrayList<SuggestedWordInfo> newSuggestions = CollectionUtils.newArrayList();
+        String typedWord = null;
         for (int i = 0; i < mSuggestedWordInfoList.size(); ++i) {
             final SuggestedWordInfo info = mSuggestedWordInfoList.get(i);
             if (SuggestedWordInfo.KIND_TYPED != info.mKind) {
                 newSuggestions.add(info);
+            } else {
+                assert(null == typedWord);
+                typedWord = info.mWord;
             }
         }
         // We should never autocorrect, so we say the typed word is valid. Also, in this case,
         // no auto-correction should take place hence willAutoCorrect = false.
-        return new SuggestedWords(newSuggestions, true /* typedWordValid */,
+        return new SuggestedWords(newSuggestions, typedWord, true /* typedWordValid */,
                 false /* willAutoCorrect */, mIsPunctuationSuggestions, mIsObsoleteSuggestions,
-                mIsPrediction);
+                mIsPrediction, NOT_A_SEQUENCE_NUMBER);
     }
 
     // Creates a new SuggestedWordInfo from the currently suggested words that removes all but the
