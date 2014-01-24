@@ -195,24 +195,7 @@ public final class InputLogic {
             final int oldSelStart, final int oldSelEnd,
             final int newSelStart, final int newSelEnd,
             final int composingSpanStart, final int composingSpanEnd) {
-        final boolean selectionChanged = oldSelStart != newSelStart || oldSelEnd != newSelEnd;
-
-        // if composingSpanStart and composingSpanEnd are -1, it means there is no composing
-        // span in the view - we can use that to narrow down whether the cursor was moved
-        // by us or not. If we are composing a word but there is no composing span, then
-        // we know for sure the cursor moved while we were composing and we should reset
-        // the state. TODO: rescind this policy: the framework never removes the composing
-        // span on its own accord while editing. This test is useless.
-        final boolean noComposingSpan = composingSpanStart == -1 && composingSpanEnd == -1;
-
-        // If the keyboard is not visible, we don't need to do all the housekeeping work, as it
-        // will be reset when the keyboard shows up anyway.
-        // TODO: revisit this when LatinIME supports hardware keyboards.
-        // NOTE: the test harness subclasses LatinIME and overrides isInputViewShown().
-        // TODO: find a better way to simulate actual execution.
-        // TODO: remove the #isInputViewShown() call from here.
-        if (mLatinIME.isInputViewShown() && !mConnection.isBelatedExpectedUpdate(oldSelStart,
-                newSelStart, oldSelEnd, newSelEnd)) {
+        if (!mConnection.isBelatedExpectedUpdate(oldSelStart, newSelStart, oldSelEnd, newSelEnd)) {
             // TODO: the following is probably better done in resetEntireInputState().
             // it should only happen when the cursor moved, and the very purpose of the
             // test below is to narrow down whether this happened or not. Likewise with
@@ -220,6 +203,15 @@ public final class InputLogic {
             // We set this to NONE because after a cursor move, we don't want the space
             // state-related special processing to kick in.
             mSpaceState = SpaceState.NONE;
+
+            // if composingSpanStart and composingSpanEnd are -1, it means there is no composing
+            // span in the view - we can use that to narrow down whether the cursor was moved
+            // by us or not. If we are composing a word but there is no composing span, then
+            // we know for sure the cursor moved while we were composing and we should reset
+            // the state. TODO: rescind this policy: the framework never removes the composing
+            // span on its own accord while editing. This test is useless.
+            final boolean noComposingSpan = composingSpanStart == -1 && composingSpanEnd == -1;
+            final boolean selectionChanged = oldSelStart != newSelStart || oldSelEnd != newSelEnd;
 
             // TODO: is it still necessary to test for composingSpan related stuff?
             final boolean selectionChangedOrSafeToReset = selectionChanged
