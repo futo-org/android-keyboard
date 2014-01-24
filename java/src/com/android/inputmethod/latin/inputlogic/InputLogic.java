@@ -195,58 +195,57 @@ public final class InputLogic {
             final int oldSelStart, final int oldSelEnd,
             final int newSelStart, final int newSelEnd,
             final int composingSpanStart, final int composingSpanEnd) {
-        if (!mConnection.isBelatedExpectedUpdate(oldSelStart, newSelStart, oldSelEnd, newSelEnd)) {
-            // TODO: the following is probably better done in resetEntireInputState().
-            // it should only happen when the cursor moved, and the very purpose of the
-            // test below is to narrow down whether this happened or not. Likewise with
-            // the call to updateShiftState.
-            // We set this to NONE because after a cursor move, we don't want the space
-            // state-related special processing to kick in.
-            mSpaceState = SpaceState.NONE;
-
-            // if composingSpanStart and composingSpanEnd are -1, it means there is no composing
-            // span in the view - we can use that to narrow down whether the cursor was moved
-            // by us or not. If we are composing a word but there is no composing span, then
-            // we know for sure the cursor moved while we were composing and we should reset
-            // the state. TODO: rescind this policy: the framework never removes the composing
-            // span on its own accord while editing. This test is useless.
-            final boolean noComposingSpan = composingSpanStart == -1 && composingSpanEnd == -1;
-            final boolean selectionChanged = oldSelStart != newSelStart || oldSelEnd != newSelEnd;
-
-            // TODO: is it still necessary to test for composingSpan related stuff?
-            final boolean selectionChangedOrSafeToReset = selectionChanged
-                    || (!mWordComposer.isComposingWord()) || noComposingSpan;
-            final boolean hasOrHadSelection = (oldSelStart != oldSelEnd
-                    || newSelStart != newSelEnd);
-            final int moveAmount = newSelStart - oldSelStart;
-            if (selectionChangedOrSafeToReset && (hasOrHadSelection
-                    || !mWordComposer.moveCursorByAndReturnIfInsideComposingWord(moveAmount))) {
-                // If we are composing a word and moving the cursor, we would want to set a
-                // suggestion span for recorrection to work correctly. Unfortunately, that
-                // would involve the keyboard committing some new text, which would move the
-                // cursor back to where it was. Latin IME could then fix the position of the cursor
-                // again, but the asynchronous nature of the calls results in this wreaking havoc
-                // with selection on double tap and the like.
-                // Another option would be to send suggestions each time we set the composing
-                // text, but that is probably too expensive to do, so we decided to leave things
-                // as is.
-                resetEntireInputState(settingsValues, newSelStart, newSelEnd);
-            } else {
-                // resetEntireInputState calls resetCachesUponCursorMove, but forcing the
-                // composition to end. But in all cases where we don't reset the entire input
-                // state, we still want to tell the rich input connection about the new cursor
-                // position so that it can update its caches.
-                mConnection.resetCachesUponCursorMoveAndReturnSuccess(
-                        newSelStart, newSelEnd, false /* shouldFinishComposition */);
-            }
-
-            // We moved the cursor. If we are touching a word, we need to resume suggestion.
-            mLatinIME.mHandler.postResumeSuggestions();
-            // Reset the last recapitalization.
-            mRecapitalizeStatus.deactivate();
-            return true;
+        if (mConnection.isBelatedExpectedUpdate(oldSelStart, newSelStart, oldSelEnd, newSelEnd)) {
+            return false;
         }
-        return false;
+        // TODO: the following is probably better done in resetEntireInputState().
+        // it should only happen when the cursor moved, and the very purpose of the
+        // test below is to narrow down whether this happened or not. Likewise with
+        // the call to updateShiftState.
+        // We set this to NONE because after a cursor move, we don't want the space
+        // state-related special processing to kick in.
+        mSpaceState = SpaceState.NONE;
+
+        // if composingSpanStart and composingSpanEnd are -1, it means there is no composing
+        // span in the view - we can use that to narrow down whether the cursor was moved
+        // by us or not. If we are composing a word but there is no composing span, then
+        // we know for sure the cursor moved while we were composing and we should reset
+        // the state. TODO: rescind this policy: the framework never removes the composing
+        // span on its own accord while editing. This test is useless.
+        final boolean noComposingSpan = composingSpanStart == -1 && composingSpanEnd == -1;
+        final boolean selectionChanged = oldSelStart != newSelStart || oldSelEnd != newSelEnd;
+
+        // TODO: is it still necessary to test for composingSpan related stuff?
+        final boolean selectionChangedOrSafeToReset = selectionChanged
+                || (!mWordComposer.isComposingWord()) || noComposingSpan;
+        final boolean hasOrHadSelection = (oldSelStart != oldSelEnd || newSelStart != newSelEnd);
+        final int moveAmount = newSelStart - oldSelStart;
+        if (selectionChangedOrSafeToReset && (hasOrHadSelection
+                || !mWordComposer.moveCursorByAndReturnIfInsideComposingWord(moveAmount))) {
+            // If we are composing a word and moving the cursor, we would want to set a
+            // suggestion span for recorrection to work correctly. Unfortunately, that
+            // would involve the keyboard committing some new text, which would move the
+            // cursor back to where it was. Latin IME could then fix the position of the cursor
+            // again, but the asynchronous nature of the calls results in this wreaking havoc
+            // with selection on double tap and the like.
+            // Another option would be to send suggestions each time we set the composing
+            // text, but that is probably too expensive to do, so we decided to leave things
+            // as is.
+            resetEntireInputState(settingsValues, newSelStart, newSelEnd);
+        } else {
+            // resetEntireInputState calls resetCachesUponCursorMove, but forcing the
+            // composition to end. But in all cases where we don't reset the entire input
+            // state, we still want to tell the rich input connection about the new cursor
+            // position so that it can update its caches.
+            mConnection.resetCachesUponCursorMoveAndReturnSuccess(
+                    newSelStart, newSelEnd, false /* shouldFinishComposition */);
+        }
+
+        // We moved the cursor. If we are touching a word, we need to resume suggestion.
+        mLatinIME.mHandler.postResumeSuggestions();
+        // Reset the last recapitalization.
+        mRecapitalizeStatus.deactivate();
+        return true;
     }
 
     /**
