@@ -28,12 +28,13 @@ import android.view.textservice.SuggestionsInfo;
 import android.view.textservice.TextInfo;
 
 import com.android.inputmethod.compat.SuggestionsInfoCompatUtils;
+import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.Dictionary;
-import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.WordComposer;
 import com.android.inputmethod.latin.spellcheck.AndroidSpellCheckerService.SuggestionsGatherer;
+import com.android.inputmethod.latin.utils.CoordinateUtils;
 import com.android.inputmethod.latin.utils.LocaleUtils;
 import com.android.inputmethod.latin.utils.StringUtils;
 
@@ -314,9 +315,14 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
                 }
                 final WordComposer composer = new WordComposer();
                 final int[] codePoints = StringUtils.toCodePointArray(text);
-                composer.setComposingWord(codePoints,
-                        LatinIME.getCoordinatesForKeyboard(codePoints, dictInfo.mKeyboard),
-                        null /* previousWord */);
+                final int[] coordinates;
+                if (null == dictInfo.mKeyboard) {
+                    coordinates = CoordinateUtils.newCoordinateArray(codePoints.length,
+                            Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
+                } else {
+                    coordinates = dictInfo.mKeyboard.getCoordinates(codePoints);
+                }
+                composer.setComposingWord(codePoints, coordinates, null /* previousWord */);
                 // TODO: make a spell checker option to block offensive words or not
                 final ArrayList<SuggestedWordInfo> suggestions =
                         dictInfo.mDictionary.getSuggestions(composer, prevWord,
