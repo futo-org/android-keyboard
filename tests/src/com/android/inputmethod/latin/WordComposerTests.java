@@ -39,11 +39,10 @@ public class WordComposerTests extends AndroidTestCase {
         final int[] CODEPOINTS_WITHIN_BMP = StringUtils.toCodePointArray(STR_WITHIN_BMP);
         final int[] COORDINATES_WITHIN_BMP =
                 CoordinateUtils.newCoordinateArray(CODEPOINTS_WITHIN_BMP.length,
-                    Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
+                        Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
         final String PREVWORD = "prevword";
         wc.setComposingWord(CODEPOINTS_WITHIN_BMP, COORDINATES_WITHIN_BMP, PREVWORD);
-        assertEquals(wc.size(),
-                STR_WITHIN_BMP.codePointCount(0, STR_WITHIN_BMP.length()));
+        assertEquals(wc.size(), STR_WITHIN_BMP.codePointCount(0, STR_WITHIN_BMP.length()));
         assertFalse(wc.isCursorFrontOrMiddleOfComposingWord());
         wc.setCursorPositionWithinWord(2);
         assertTrue(wc.isCursorFrontOrMiddleOfComposingWord());
