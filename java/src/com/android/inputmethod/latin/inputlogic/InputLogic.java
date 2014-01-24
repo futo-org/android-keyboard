@@ -44,6 +44,7 @@ import com.android.inputmethod.latin.WordComposer;
 import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.latin.settings.SettingsValues;
 import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
+import com.android.inputmethod.latin.suggestions.SuggestionStripViewAccessor;
 import com.android.inputmethod.latin.utils.AsyncResultHolder;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.InputTypeUtils;
@@ -65,6 +66,7 @@ public final class InputLogic {
 
     // TODO : Remove this member when we can.
     private final LatinIME mLatinIME;
+    private final SuggestionStripViewAccessor mSuggestionStripViewAccessor;
 
     // Never null.
     private InputLogicHandler mInputLogicHandler = InputLogicHandler.NULL_HANDLER;
@@ -94,8 +96,10 @@ public final class InputLogic {
     // Find a way to remove it for readability.
     public boolean mIsAutoCorrectionIndicatorOn;
 
-    public InputLogic(final LatinIME latinIME) {
+    public InputLogic(final LatinIME latinIME,
+            final SuggestionStripViewAccessor suggestionStripViewAccessor) {
         mLatinIME = latinIME;
+        mSuggestionStripViewAccessor = suggestionStripViewAccessor;
         mWordComposer = new WordComposer();
         mEventInterpreter = new EventInterpreter(latinIME);
         mConnection = new RichInputConnection(latinIME);
@@ -638,7 +642,7 @@ public final class InputLogic {
                 mSpaceState = SpaceState.WEAK;
             }
             // In case the "add to dictionary" hint was still displayed.
-            mLatinIME.dismissAddToDictionaryHint();
+            mSuggestionStripViewAccessor.dismissAddToDictionaryHint();
         }
         handler.postUpdateSuggestionStrip();
         if (settingsValues.mIsInternal) {
@@ -714,7 +718,7 @@ public final class InputLogic {
                 if (maybeDoubleSpacePeriod(settingsValues, handler)) {
                     keyboardSwitcher.updateShiftState();
                     mSpaceState = SpaceState.DOUBLE;
-                } else if (!mLatinIME.isShowingPunctuationList()) {
+                } else if (!mSuggestionStripViewAccessor.isShowingPunctuationList()) {
                     mSpaceState = SpaceState.WEAK;
                 }
             }
@@ -745,7 +749,7 @@ public final class InputLogic {
 
             // Set punctuation right away. onUpdateSelection will fire but tests whether it is
             // already displayed or not, so it's okay.
-            mLatinIME.setNeutralSuggestionStrip();
+            mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
         }
 
         keyboardSwitcher.updateShiftState();
@@ -1098,7 +1102,7 @@ public final class InputLogic {
         }
 
         if (!mWordComposer.isComposingWord() && !settingsValues.mBigramPredictionEnabled) {
-            mLatinIME.setNeutralSuggestionStrip();
+            mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
             return;
         }
 
@@ -1120,7 +1124,7 @@ public final class InputLogic {
         final SuggestedWords suggestedWords = holder.get(null,
                 Constants.GET_SUGGESTED_WORDS_TIMEOUT);
         if (suggestedWords != null) {
-            mLatinIME.showSuggestionStrip(suggestedWords);
+            mSuggestionStripViewAccessor.showSuggestionStrip(suggestedWords);
         }
     }
 
@@ -1482,7 +1486,7 @@ public final class InputLogic {
             final int newSelStart, final int newSelEnd) {
         final boolean shouldFinishComposition = mWordComposer.isComposingWord();
         resetComposingState(true /* alsoResetLastComposedWord */);
-        mLatinIME.setNeutralSuggestionStrip();
+        mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
         mConnection.resetCachesUponCursorMoveAndReturnSuccess(newSelStart, newSelEnd,
                 shouldFinishComposition);
     }
