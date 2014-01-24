@@ -75,6 +75,7 @@ import com.android.inputmethod.latin.settings.Settings;
 import com.android.inputmethod.latin.settings.SettingsActivity;
 import com.android.inputmethod.latin.settings.SettingsValues;
 import com.android.inputmethod.latin.suggestions.SuggestionStripView;
+import com.android.inputmethod.latin.suggestions.SuggestionStripViewAccessor;
 import com.android.inputmethod.latin.utils.ApplicationUtils;
 import com.android.inputmethod.latin.utils.CapsModeUtils;
 import com.android.inputmethod.latin.utils.CompletionInfoUtils;
@@ -97,7 +98,7 @@ import java.util.concurrent.TimeUnit;
  * Input method implementation for Qwerty'ish keyboard.
  */
 public class LatinIME extends InputMethodService implements KeyboardActionListener,
-        SuggestionStripView.Listener,
+        SuggestionStripView.Listener, SuggestionStripViewAccessor,
         DictionaryFacilitatorForSuggest.DictionaryInitializationListener {
     private static final String TAG = LatinIME.class.getSimpleName();
     private static final boolean TRACE = false;
@@ -1306,8 +1307,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     // TODO[IL]: Move this to InputLogic and make it private
-    // Outside LatinIME, only used by the test suite.
-    @UsedForTesting
+    @Override
     public boolean isShowingPunctuationList() {
         if (mInputLogic.mSuggestedWords == null) return false;
         return mSettings.getCurrent().mSpacingAndPunctuations.mSuggestPuncList
@@ -1330,6 +1330,17 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         return currentSettings.isSuggestionsRequested();
     }
 
+    @Override
+    public boolean hasSuggestionStripView() {
+        return null != mSuggestionStripView;
+    }
+
+    @Override
+    public boolean isShowingAddToDictionaryHint() {
+        return hasSuggestionStripView() && mSuggestionStripView.isShowingAddToDictionaryHint();
+    }
+
+    @Override
     public void dismissAddToDictionaryHint() {
         if (null != mSuggestionStripView) {
             mSuggestionStripView.dismissAddToDictionaryHint();
@@ -1399,8 +1410,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // the "add to dictionary" hint, we need to revert to suggestions - although it is unclear
         // how we can come here if it's displayed.
         if (suggestedWords.size() > 1 || typedWord.length() <= 1
-                || null == mSuggestionStripView
-                || mSuggestionStripView.isShowingAddToDictionaryHint()) {
+                || null == mSuggestionStripView || isShowingAddToDictionaryHint()) {
             return suggestedWords;
         } else {
             final SuggestedWords punctuationList =
@@ -1418,7 +1428,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
     }
 
-    // TODO[IL]: Define a clean interface for this
+    @Override
     public void showSuggestionStrip(final SuggestedWords sourceSuggestedWords) {
         final SuggestedWords suggestedWords =
                 sourceSuggestedWords.isEmpty() ? SuggestedWords.EMPTY : sourceSuggestedWords;
@@ -1539,6 +1549,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // TODO[IL]: Define a clean interface for this
     // This will show either an empty suggestion strip (if prediction is enabled) or
     // punctuation suggestions (if it's disabled).
+    @Override
     public void setNeutralSuggestionStrip() {
         final SettingsValues currentSettings = mSettings.getCurrent();
         if (currentSettings.mBigramPredictionEnabled) {
