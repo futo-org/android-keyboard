@@ -26,6 +26,7 @@ import android.util.Log;
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.AssetFileAddress;
 import com.android.inputmethod.latin.BinaryDictionaryGetter;
+import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.makedict.BinaryDictIOUtils;
 import com.android.inputmethod.latin.makedict.FormatSpec.FileHeader;
@@ -368,11 +369,14 @@ public class DictionaryInfoUtils {
         return dictList;
     }
 
-    @UsedForTesting
     public static boolean looksValidForDictionaryInsertion(final CharSequence text,
             final SpacingAndPunctuations spacingAndPunctuations) {
         if (TextUtils.isEmpty(text)) return false;
         final int length = text.length();
+        // TODO: Make this test "length > Constants.DICTIONARY_MAX_WORD_LENGTH".
+        if (length >= Constants.DICTIONARY_MAX_WORD_LENGTH) {
+            return false;
+        }
         int i = 0;
         int digitCount = 0;
         while (i < length) {
