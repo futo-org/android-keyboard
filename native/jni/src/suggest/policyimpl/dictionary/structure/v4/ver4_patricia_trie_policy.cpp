@@ -149,6 +149,15 @@ bool Ver4PatriciaTriePolicy::addUnigramWord(const int *const word, const int len
                 mDictBuffer->getTailPosition());
         return false;
     }
+    if (length > MAX_WORD_LENGTH) {
+        AKLOGE("The word is too long to insert to the dictionary, length: %d", length);
+        return false;
+    }
+    if (shortcutLength > MAX_WORD_LENGTH) {
+        AKLOGE("The shortcutTarget is too long to insert to the dictionary, length: %d",
+                shortcutLength);
+        return false;
+    }
     DynamicPtReadingHelper readingHelper(mDictBuffer, &mNodeReader);
     readingHelper.initWithPtNodeArrayPos(getRootPosition());
     bool addedNewUnigram = false;
@@ -190,6 +199,11 @@ bool Ver4PatriciaTriePolicy::addBigramWords(const int *const word0, const int le
                 mDictBuffer->getTailPosition());
         return false;
     }
+    if (length0 > MAX_WORD_LENGTH || length1 > MAX_WORD_LENGTH) {
+        AKLOGE("Either src word or target word is too long to insert the bigram to the dictionary. "
+                "length0: %d, length1: %d", length0, length1);
+        return false;
+    }
     const int word0Pos = getTerminalPtNodePositionOfWord(word0, length0,
             false /* forceLowerCaseSearch */);
     if (word0Pos == NOT_A_DICT_POS) {
@@ -221,6 +235,11 @@ bool Ver4PatriciaTriePolicy::removeBigramWords(const int *const word0, const int
     if (mDictBuffer->getTailPosition() >= MIN_DICT_SIZE_TO_REFUSE_DYNAMIC_OPERATIONS) {
         AKLOGE("The dictionary is too large to dynamically update. Dictionary size: %d",
                 mDictBuffer->getTailPosition());
+        return false;
+    }
+    if (length0 > MAX_WORD_LENGTH || length1 > MAX_WORD_LENGTH) {
+        AKLOGE("Either src word or target word is too long to remove the bigram to from the "
+                "dictionary. length0: %d, length1: %d", length0, length1);
         return false;
     }
     const int word0Pos = getTerminalPtNodePositionOfWord(word0, length0,
