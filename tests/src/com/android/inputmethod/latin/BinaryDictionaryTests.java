@@ -106,6 +106,51 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         binaryDictionary.close();
     }
 
+    public void testAddTooLongWord() {
+        testAddTooLongWord(FormatSpec.VERSION4);
+    }
+
+    private void testAddTooLongWord(final int formatVersion) {
+        File dictFile = null;
+        try {
+            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary", formatVersion);
+        } catch (IOException e) {
+            fail("IOException while writing an initial dictionary : " + e);
+        }
+        final BinaryDictionary binaryDictionary = new BinaryDictionary(dictFile.getAbsolutePath(),
+                0 /* offset */, dictFile.length(), true /* useFullEditDistance */,
+                Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
+
+        final StringBuffer stringBuilder = new StringBuffer();
+        for (int i = 0; i < Constants.DICTIONARY_MAX_WORD_LENGTH; i++) {
+            stringBuilder.append('a');
+        }
+        final String validLongWord = stringBuilder.toString();
+        stringBuilder.append('a');
+        final String invalidLongWord = stringBuilder.toString();
+        final int probability = 100;
+        addUnigramWord(binaryDictionary, "aaa", probability);
+        addUnigramWord(binaryDictionary, validLongWord, probability);
+        addUnigramWord(binaryDictionary, invalidLongWord, probability);
+        // Too long short cut.
+        binaryDictionary.addUnigramWord("a", probability, invalidLongWord,
+                10 /* shortcutProbability */, false /* isNotAWord */, false /* isBlacklisted */,
+                BinaryDictionary.NOT_A_VALID_TIMESTAMP);
+        addUnigramWord(binaryDictionary, "abc", probability);
+        final int updatedProbability = 200;
+        // Update.
+        addUnigramWord(binaryDictionary, validLongWord, updatedProbability);
+        addUnigramWord(binaryDictionary, invalidLongWord, updatedProbability);
+        addUnigramWord(binaryDictionary, "abc", updatedProbability);
+
+        assertEquals(probability, binaryDictionary.getFrequency("aaa"));
+        assertEquals(updatedProbability, binaryDictionary.getFrequency(validLongWord));
+        assertEquals(BinaryDictionary.NOT_A_PROBABILITY,
+                binaryDictionary.getFrequency(invalidLongWord));
+        assertEquals(updatedProbability, binaryDictionary.getFrequency("abc"));
+        dictFile.delete();
+    }
+
     private void addUnigramWord(final BinaryDictionary binaryDictionary, final String word,
             final int probability) {
         binaryDictionary.addUnigramWord(word, probability, "" /* shortcutTarget */,
