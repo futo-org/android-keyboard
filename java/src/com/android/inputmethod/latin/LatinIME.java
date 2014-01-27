@@ -912,8 +912,14 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     composingSpanEnd, mInputLogic.mConnection);
         }
 
-        if (mInputLogic.onUpdateSelection(mSettings.getCurrent(), oldSelStart, oldSelEnd,
-                newSelStart, newSelEnd, composingSpanStart, composingSpanEnd)) {
+        // If the keyboard is not visible, we don't need to do all the housekeeping work, as it
+        // will be reset when the keyboard shows up anyway.
+        // TODO: revisit this when LatinIME supports hardware keyboards.
+        // NOTE: the test harness subclasses LatinIME and overrides isInputViewShown().
+        // TODO: find a better way to simulate actual execution.
+        if (isInputViewShown() &&
+                mInputLogic.onUpdateSelection(mSettings.getCurrent(), oldSelStart, oldSelEnd,
+                        newSelStart, newSelEnd, composingSpanStart, composingSpanEnd)) {
             mKeyboardSwitcher.updateShiftState();
         }
 
