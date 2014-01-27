@@ -815,6 +815,17 @@ public final class RichInputConnection {
     }
 
     /**
+     * Looks at the text just before the cursor to find out if we are inside a double quote.
+     *
+     * As with #textBeforeCursorLooksLikeURL, this is dependent on how much text we have cached.
+     * However this won't be a concrete problem in most situations, as the cache is almost always
+     * long enough for this use.
+     */
+    public boolean isInsideDoubleQuoteOrAfterDigit() {
+        return StringUtils.isInsideDoubleQuoteOrAfterDigit(mCommittedTextBeforeComposingText);
+    }
+
+    /**
      * Try to get the text from the editor to expose lies the framework may have been
      * telling us. Concretely, when the device rotates, the frameworks tells us about where the
      * cursor used to be initially in the editor at the time it first received the focus; this

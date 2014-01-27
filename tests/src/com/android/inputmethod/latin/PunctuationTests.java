@@ -169,4 +169,32 @@ public class PunctuationTests extends InputTestsBase {
                 + " ; Suggestions = " + mLatinIME.getSuggestedWords(),
                 EXPECTED_RESULT, mEditText.getText().toString());
     }
+
+    public void testAutoSpaceWithDoubleQuotes() {
+        final String STRING_TO_TYPE = "He said\"hello\"to me. I replied,\"hi\"."
+                + "Then, 5\"passed. He said\"bye\"and left.";
+        final String EXPECTED_RESULT = "He said \"hello\" to me. I replied, \"hi\". "
+                + "Then, 5\" passed. He said \"bye\" and left. \"";
+        // Split by double quote, so that we can type the double quotes individually.
+        for (final String partToType : STRING_TO_TYPE.split("\"")) {
+            // Split at word boundaries. This regexp means "anywhere that is preceded
+            // by a word character but not followed by a word character, OR that is not
+            // preceded by a word character but followed by a word character".
+            // We need to input word by word because auto-spaces are only active when
+            // manually picking or gesturing (which we can't simulate yet), but only words
+            // can be picked.
+            final String[] wordsToType = partToType.split("(?<=\\w)(?!\\w)|(?<!\\w)(?=\\w)");
+            for (final String wordToType : wordsToType) {
+                type(wordToType);
+                if (wordToType.matches("^\\w+$")) {
+                    // Only pick selection if that was a word, because if that was not a word,
+                    // then we don't have a composition.
+                    pickSuggestionManually(0, wordToType);
+                }
+            }
+            type("\"");
+        }
+        assertEquals("auto-space with double quotes",
+                EXPECTED_RESULT, mEditText.getText().toString());
+    }
 }
