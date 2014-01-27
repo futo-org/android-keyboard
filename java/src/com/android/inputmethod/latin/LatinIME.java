@@ -1466,10 +1466,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             final SuggestedWords punctuationList =
                     mSettings.getCurrent().mSpacingAndPunctuations.mSuggestPuncList;
             final SuggestedWords oldSuggestedWords = previousSuggestedWords == punctuationList
-                            ? SuggestedWords.EMPTY : previousSuggestedWords;
-            if (TextUtils.isEmpty(typedWord)) {
-                return oldSuggestedWords;
-            }
+                    ? SuggestedWords.EMPTY : previousSuggestedWords;
             final ArrayList<SuggestedWords.SuggestedWordInfo> typedWordAndPreviousSuggestions =
                     SuggestedWords.getTypedWordAndPreviousSuggestions(typedWord, oldSuggestedWords);
             return new SuggestedWords(typedWordAndPreviousSuggestions,
@@ -1483,27 +1480,27 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     private void showSuggestionStripWithTypedWord(final SuggestedWords suggestedWords,
             final String typedWord) {
-      if (suggestedWords.isEmpty()) {
-          // No auto-correction is available, clear the cached values.
-          AccessibilityUtils.getInstance().setAutoCorrection(null, null);
-          clearSuggestionStrip();
-          return;
-      }
-      final String autoCorrection;
-      if (suggestedWords.mWillAutoCorrect) {
-          autoCorrection = suggestedWords.getWord(SuggestedWords.INDEX_OF_AUTO_CORRECTION);
-      } else {
-          // We can't use suggestedWords.getWord(SuggestedWords.INDEX_OF_TYPED_WORD)
-          // because it may differ from mWordComposer.mTypedWord.
-          autoCorrection = typedWord;
-      }
-      mInputLogic.mWordComposer.setAutoCorrection(autoCorrection);
-      setSuggestedWords(suggestedWords);
-      setAutoCorrectionIndicator(suggestedWords.mWillAutoCorrect);
-      setSuggestionStripShown(isSuggestionsStripVisible());
-      // An auto-correction is available, cache it in accessibility code so
-      // we can be speak it if the user touches a key that will insert it.
-      AccessibilityUtils.getInstance().setAutoCorrection(suggestedWords, typedWord);
+        if (suggestedWords.isEmpty()) {
+            // No auto-correction is available, clear the cached values.
+            AccessibilityUtils.getInstance().setAutoCorrection(null, null);
+            clearSuggestionStrip();
+            return;
+        }
+        final String autoCorrection;
+        if (suggestedWords.mWillAutoCorrect) {
+            autoCorrection = suggestedWords.getWord(SuggestedWords.INDEX_OF_AUTO_CORRECTION);
+        } else {
+            // We can't use suggestedWords.getWord(SuggestedWords.INDEX_OF_TYPED_WORD)
+            // because it may differ from mWordComposer.mTypedWord.
+            autoCorrection = typedWord;
+        }
+        mInputLogic.mWordComposer.setAutoCorrection(autoCorrection);
+        setSuggestedWords(suggestedWords);
+        setAutoCorrectionIndicator(suggestedWords.mWillAutoCorrect);
+        setSuggestionStripShown(isSuggestionsStripVisible());
+        // An auto-correction is available, cache it in accessibility code so
+        // we can be speak it if the user touches a key that will insert it.
+        AccessibilityUtils.getInstance().setAutoCorrection(suggestedWords, typedWord);
     }
 
     // TODO[IL]: Define a clean interface for this
@@ -1513,7 +1510,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             return;
         }
         showSuggestionStripWithTypedWord(suggestedWords,
-            suggestedWords.getWord(SuggestedWords.INDEX_OF_TYPED_WORD));
+                suggestedWords.getWord(SuggestedWords.INDEX_OF_TYPED_WORD));
     }
 
     // Called from {@link SuggestionStripView} through the {@link SuggestionStripView#Listener}
