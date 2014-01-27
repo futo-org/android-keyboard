@@ -1564,7 +1564,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     public void setPunctuationSuggestions() {
         final SettingsValues currentSettings = mSettings.getCurrent();
         if (currentSettings.mBigramPredictionEnabled) {
-            clearSuggestionStrip();
+            setSuggestedWords(SuggestedWords.EMPTY);
+            setAutoCorrectionIndicator(false);
         } else {
             setSuggestedWords(currentSettings.mSpacingAndPunctuations.mSuggestPuncList);
         }
