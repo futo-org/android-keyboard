@@ -789,7 +789,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (mSuggestionStripView != null) {
             // This will set the punctuation suggestions if next word suggestion is off;
             // otherwise it will clear the suggestion strip.
-            setPunctuationSuggestions();
+            setNeutralSuggestionStrip();
         }
 
         // Sometimes, while rotating, for some reason the framework tells the app we are not
@@ -1561,11 +1561,12 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     // TODO[IL]: Define a clean interface for this
-    public void setPunctuationSuggestions() {
+    // This will show either an empty suggestion strip (if prediction is enabled) or
+    // punctuation suggestions (if it's disabled).
+    public void setNeutralSuggestionStrip() {
         final SettingsValues currentSettings = mSettings.getCurrent();
         if (currentSettings.mBigramPredictionEnabled) {
             setSuggestedWords(SuggestedWords.EMPTY);
-            setAutoCorrectionIndicator(false);
         } else {
             setSuggestedWords(currentSettings.mSpacingAndPunctuations.mSuggestPuncList);
         }

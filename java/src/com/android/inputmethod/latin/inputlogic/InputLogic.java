@@ -722,7 +722,7 @@ public final class InputLogic {
 
             // Set punctuation right away. onUpdateSelection will fire but tests whether it is
             // already displayed or not, so it's okay.
-            mLatinIME.setPunctuationSuggestions();
+            mLatinIME.setNeutralSuggestionStrip();
         }
 
         keyboardSwitcher.updateShiftState();
@@ -1075,7 +1075,7 @@ public final class InputLogic {
         }
 
         if (!mWordComposer.isComposingWord() && !settingsValues.mBigramPredictionEnabled) {
-            mLatinIME.setPunctuationSuggestions();
+            mLatinIME.setNeutralSuggestionStrip();
             return;
         }
 
