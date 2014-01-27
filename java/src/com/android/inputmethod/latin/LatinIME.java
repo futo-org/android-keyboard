@@ -1457,12 +1457,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     // TODO[IL]: Define a clean interface for this
     public void showSuggestionStrip(final SuggestedWords suggestedWords) {
-        if (suggestedWords.isEmpty()) {
-            clearSuggestionStrip();
-            return;
-        }
-        showSuggestionStripWithTypedWord(suggestedWords,
-                suggestedWords.getWord(SuggestedWords.INDEX_OF_TYPED_WORD));
+        showSuggestionStripWithTypedWord(suggestedWords, suggestedWords.isEmpty() ? null
+                : suggestedWords.getWord(SuggestedWords.INDEX_OF_TYPED_WORD));
     }
 
     // Called from {@link SuggestionStripView} through the {@link SuggestionStripView#Listener}
