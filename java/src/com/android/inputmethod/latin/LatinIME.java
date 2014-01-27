@@ -1424,13 +1424,15 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
     }
 
-    private void showSuggestionStripWithTypedWord(final SuggestedWords suggestedWords,
+    private void showSuggestionStripWithTypedWord(final SuggestedWords sourceSuggestedWords,
             final String typedWord) {
         // TODO: refactor this
+        final SuggestedWords suggestedWords =
+                sourceSuggestedWords.isEmpty() ? SuggestedWords.EMPTY : sourceSuggestedWords;
         if (suggestedWords.isEmpty()) {
             // No auto-correction is available, clear the cached values.
-            AccessibilityUtils.getInstance().setAutoCorrection(SuggestedWords.EMPTY, typedWord);
-            setSuggestedWords(SuggestedWords.EMPTY);
+            AccessibilityUtils.getInstance().setAutoCorrection(suggestedWords, typedWord);
+            setSuggestedWords(suggestedWords);
             setAutoCorrectionIndicator(false);
             return;
         }
