@@ -179,6 +179,85 @@ public final class InputLogic {
     }
 
     /**
+     * Consider an update to the cursor position. Evaluate whether this update has happened as
+     * part of normal typing or whether it was an explicit cursor move by the user. In any case,
+     * do the necessary adjustments.
+     * @param settingsValues the current settings
+     * @param oldSelStart old selection start
+     * @param oldSelEnd old selection end
+     * @param newSelStart new selection start
+     * @param newSelEnd new selection end
+     * @param composingSpanStart composing span start
+     * @param composingSpanEnd composing span end
+     * @return whether the cursor has moved as a result of user interaction.
+     */
+    public boolean onUpdateSelection(final SettingsValues settingsValues,
+            final int oldSelStart, final int oldSelEnd,
+            final int newSelStart, final int newSelEnd,
+            final int composingSpanStart, final int composingSpanEnd) {
+        final boolean selectionChanged = oldSelStart != newSelStart || oldSelEnd != newSelEnd;
+
+        // if composingSpanStart and composingSpanEnd are -1, it means there is no composing
+        // span in the view - we can use that to narrow down whether the cursor was moved
+        // by us or not. If we are composing a word but there is no composing span, then
+        // we know for sure the cursor moved while we were composing and we should reset
+        // the state. TODO: rescind this policy: the framework never removes the composing
+        // span on its own accord while editing. This test is useless.
+        final boolean noComposingSpan = composingSpanStart == -1 && composingSpanEnd == -1;
+
+        // If the keyboard is not visible, we don't need to do all the housekeeping work, as it
+        // will be reset when the keyboard shows up anyway.
+        // TODO: revisit this when LatinIME supports hardware keyboards.
+        // NOTE: the test harness subclasses LatinIME and overrides isInputViewShown().
+        // TODO: find a better way to simulate actual execution.
+        // TODO: remove the #isInputViewShown() call from here.
+        if (mLatinIME.isInputViewShown() && !mConnection.isBelatedExpectedUpdate(oldSelStart,
+                newSelStart, oldSelEnd, newSelEnd)) {
+            // TODO: the following is probably better done in resetEntireInputState().
+            // it should only happen when the cursor moved, and the very purpose of the
+            // test below is to narrow down whether this happened or not. Likewise with
+            // the call to updateShiftState.
+            // We set this to NONE because after a cursor move, we don't want the space
+            // state-related special processing to kick in.
+            mSpaceState = SpaceState.NONE;
+
+            // TODO: is it still necessary to test for composingSpan related stuff?
+            final boolean selectionChangedOrSafeToReset = selectionChanged
+                    || (!mWordComposer.isComposingWord()) || noComposingSpan;
+            final boolean hasOrHadSelection = (oldSelStart != oldSelEnd
+                    || newSelStart != newSelEnd);
+            final int moveAmount = newSelStart - oldSelStart;
+            if (selectionChangedOrSafeToReset && (hasOrHadSelection
+                    || !mWordComposer.moveCursorByAndReturnIfInsideComposingWord(moveAmount))) {
+                // If we are composing a word and moving the cursor, we would want to set a
+                // suggestion span for recorrection to work correctly. Unfortunately, that
+                // would involve the keyboard committing some new text, which would move the
+                // cursor back to where it was. Latin IME could then fix the position of the cursor
+                // again, but the asynchronous nature of the calls results in this wreaking havoc
+                // with selection on double tap and the like.
+                // Another option would be to send suggestions each time we set the composing
+                // text, but that is probably too expensive to do, so we decided to leave things
+                // as is.
+                resetEntireInputState(settingsValues, newSelStart, newSelEnd);
+            } else {
+                // resetEntireInputState calls resetCachesUponCursorMove, but forcing the
+                // composition to end. But in all cases where we don't reset the entire input
+                // state, we still want to tell the rich input connection about the new cursor
+                // position so that it can update its caches.
+                mConnection.resetCachesUponCursorMoveAndReturnSuccess(
+                        newSelStart, newSelEnd, false /* shouldFinishComposition */);
+            }
+
+            // We moved the cursor. If we are touching a word, we need to resume suggestion.
+            mLatinIME.mHandler.postResumeSuggestions();
+            // Reset the last recapitalization.
+            mRecapitalizeStatus.deactivate();
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * React to a code input. It may be a code point to insert, or a symbolic value that influences
      * the keyboard behavior.
      *
