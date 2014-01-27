@@ -38,7 +38,6 @@ import android.text.style.StyleSpan;
 import android.text.style.UnderlineSpan;
 import android.util.AttributeSet;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -100,10 +99,6 @@ final class SuggestionStripLayoutHelper {
     private static final int AUTO_CORRECT_UNDERLINE = 0x02;
     private static final int VALID_TYPED_WORD_BOLD = 0x04;
 
-    private final TextView mWordToSaveView;
-    private final TextView mLeftwardsArrowView;
-    private final TextView mHintToSaveView;
-
     public SuggestionStripLayoutHelper(final Context context, final AttributeSet attrs,
             final int defStyle, final ArrayList<TextView> wordViews,
             final ArrayList<View> dividerViews, final ArrayList<TextView> debugInfoViews) {
@@ -157,11 +152,6 @@ final class SuggestionStripLayoutHelper {
                 R.dimen.config_more_suggestions_bottom_gap);
         mMoreSuggestionsRowHeight = res.getDimensionPixelSize(
                 R.dimen.config_more_suggestions_row_height);
-
-        final LayoutInflater inflater = LayoutInflater.from(context);
-        mWordToSaveView = (TextView)inflater.inflate(R.layout.suggestion_word, null);
-        mLeftwardsArrowView = (TextView)inflater.inflate(R.layout.hint_add_to_dictionary, null);
-        mHintToSaveView = (TextView)inflater.inflate(R.layout.hint_add_to_dictionary, null);
     }
 
     public int getMaxMoreSuggestionsRow() {
@@ -466,54 +456,30 @@ final class SuggestionStripLayoutHelper {
         mMoreSuggestionsAvailable = (suggestedWords.size() > countInStrip);
     }
 
-    public void layoutAddToDictionaryHint(final String word, final ViewGroup stripView,
-            final int stripWidth, final CharSequence hintText, final OnClickListener listener) {
+    public void layoutAddToDictionaryHint(final String word, final ViewGroup addToDictionaryStrip,
+            final int stripWidth, final CharSequence hintText) {
         final int width = stripWidth - mDividerWidth - mPadding * 2;
 
-        final TextView wordView = mWordToSaveView;
+        final TextView wordView = (TextView)addToDictionaryStrip.findViewById(R.id.word_to_save);
         wordView.setTextColor(mColorTypedWord);
         final int wordWidth = (int)(width * mCenterSuggestionWeight);
-        final CharSequence text = getEllipsizedText(word, wordWidth, wordView.getPaint());
+        final CharSequence wordToSave = getEllipsizedText(word, wordWidth, wordView.getPaint());
         final float wordScaleX = wordView.getTextScaleX();
-        // {@link TextView#setTag()} is used to hold the word to be added to dictionary. The word
-        // will be extracted at {@link #getAddToDictionaryWord()}.
-        wordView.setTag(word);
-        wordView.setText(text);
+        wordView.setText(wordToSave);
         wordView.setTextScaleX(wordScaleX);
-        stripView.addView(wordView);
         setLayoutWeight(wordView, mCenterSuggestionWeight, ViewGroup.LayoutParams.MATCH_PARENT);
 
-        stripView.addView(mDividerViews.get(0));
-
-        final TextView leftArrowView = mLeftwardsArrowView;
-        leftArrowView.setTextColor(mColorAutoCorrect);
-        leftArrowView.setText(LEFTWARDS_ARROW);
-        stripView.addView(leftArrowView);
-
-        final TextView hintView = mHintToSaveView;
+        final TextView hintView = (TextView)addToDictionaryStrip.findViewById(
+                R.id.hint_add_to_dictionary);
         hintView.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
         hintView.setTextColor(mColorAutoCorrect);
-        final int hintWidth = width - wordWidth - leftArrowView.getWidth();
-        final float hintScaleX = getTextScaleX(hintText, hintWidth, hintView.getPaint());
-        hintView.setText(hintText);
+        final int hintWidth = width - wordWidth;
+        final String hintWithArrow = LEFTWARDS_ARROW + hintText;
+        final float hintScaleX = getTextScaleX(hintWithArrow, hintWidth, hintView.getPaint());
+        hintView.setText(hintWithArrow);
         hintView.setTextScaleX(hintScaleX);
-        stripView.addView(hintView);
         setLayoutWeight(
                 hintView, 1.0f - mCenterSuggestionWeight, ViewGroup.LayoutParams.MATCH_PARENT);
-
-        wordView.setOnClickListener(listener);
-        leftArrowView.setOnClickListener(listener);
-        hintView.setOnClickListener(listener);
-    }
-
-    public String getAddToDictionaryWord() {
-        // String tag is set at
-        // {@link #layoutAddToDictionaryHint(String,ViewGroup,int,CharSequence,OnClickListener}.
-        return (String)mWordToSaveView.getTag();
-    }
-
-    public boolean isAddToDictionaryShowing(final View v) {
-        return v == mWordToSaveView || v == mHintToSaveView || v == mLeftwardsArrowView;
     }
 
     private static void setLayoutWeight(final View v, final float weight, final int height) {

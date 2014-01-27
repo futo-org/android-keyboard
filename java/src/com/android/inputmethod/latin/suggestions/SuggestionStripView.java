@@ -56,6 +56,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
     static final boolean DBG = LatinImeLogger.sDBG;
 
     private final ViewGroup mSuggestionsStrip;
+    private final ViewGroup mAddToDictionaryStrip;
     MainKeyboardView mMainKeyboardView;
 
     private final View mMoreSuggestionsContainer;
@@ -70,6 +71,32 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
     private SuggestedWords mSuggestedWords = SuggestedWords.EMPTY;
 
     private final SuggestionStripLayoutHelper mLayoutHelper;
+    private final StripVisibilityGroup mStripVisibilityGroup;
+
+    private static class StripVisibilityGroup {
+        private final View mSuggestionsStrip;
+        private final View mAddToDictionaryStrip;
+
+        public StripVisibilityGroup(final View suggestionsStrip, final View addToDictionaryStrip) {
+            mSuggestionsStrip = suggestionsStrip;
+            mAddToDictionaryStrip = addToDictionaryStrip;
+            showSuggestionsStrip();
+        }
+
+        public void showSuggestionsStrip() {
+            mSuggestionsStrip.setVisibility(VISIBLE);
+            mAddToDictionaryStrip.setVisibility(INVISIBLE);
+        }
+
+        public void showAddToDictionaryStrip() {
+            mSuggestionsStrip.setVisibility(INVISIBLE);
+            mAddToDictionaryStrip.setVisibility(VISIBLE);
+        }
+
+        public boolean isShowingAddToDictionaryStrip() {
+            return mAddToDictionaryStrip.getVisibility() == VISIBLE;
+        }
+    }
 
     /**
      * Construct a {@link SuggestionStripView} for showing suggestions to be picked by the user.
@@ -88,6 +115,9 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         inflater.inflate(R.layout.suggestions_strip, this);
 
         mSuggestionsStrip = (ViewGroup)findViewById(R.id.suggestions_strip);
+        mAddToDictionaryStrip = (ViewGroup)findViewById(R.id.add_to_dictionary_strip);
+        mStripVisibilityGroup = new StripVisibilityGroup(mSuggestionsStrip, mAddToDictionaryStrip);
+
         for (int pos = 0; pos < SuggestedWords.MAX_SUGGESTIONS; pos++) {
             final TextView word = (TextView)inflater.inflate(R.layout.suggestion_word, null);
             word.setOnClickListener(this);
@@ -137,14 +167,16 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
     }
 
     public boolean isShowingAddToDictionaryHint() {
-        return mSuggestionsStrip.getChildCount() > 0
-                && mLayoutHelper.isAddToDictionaryShowing(mSuggestionsStrip.getChildAt(0));
+        return mStripVisibilityGroup.isShowingAddToDictionaryStrip();
     }
 
     public void showAddToDictionaryHint(final String word, final CharSequence hintText) {
-        clear();
-        mLayoutHelper.layoutAddToDictionaryHint(
-                word, mSuggestionsStrip, getWidth(), hintText, this);
+        mLayoutHelper.layoutAddToDictionaryHint(word, mAddToDictionaryStrip, getWidth(), hintText);
+        // {@link TextView#setTag()} is used to hold the word to be added to dictionary. The word
+        // will be extracted at {@link #onClick(View)}.
+        mAddToDictionaryStrip.setTag(word);
+        mAddToDictionaryStrip.setOnClickListener(this);
+        mStripVisibilityGroup.showAddToDictionaryStrip();
     }
 
     public boolean dismissAddToDictionaryHint() {
@@ -157,8 +189,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
 
     public void clear() {
         mSuggestionsStrip.removeAllViews();
-        removeAllViews();
-        addView(mSuggestionsStrip);
+        mStripVisibilityGroup.showSuggestionsStrip();
         dismissMoreSuggestionsPanel();
     }
 
@@ -302,26 +333,26 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
 
     @Override
     public void onClick(final View view) {
-        if (mLayoutHelper.isAddToDictionaryShowing(view)) {
-            mListener.addWordToUserDictionary(mLayoutHelper.getAddToDictionaryWord());
+        final Object tag = view.getTag();
+        // {@link String} tag is set at {@link #showAddToDictionaryHint(String,CharSequence)}.
+        if (tag instanceof String) {
+            final String wordToSave = (String)tag;
+            mListener.addWordToUserDictionary(wordToSave);
             clear();
             return;
         }
 
-        final Object tag = view.getTag();
-        // Integer tag is set at
+        // {@link Integer} tag is set at
         // {@link SuggestionStripLayoutHelper#setupWordViewsTextAndColor(SuggestedWords,int)} and
         // {@link SuggestionStripLayoutHelper#layoutPunctuationSuggestions(SuggestedWords,ViewGroup}
-        if (!(tag instanceof Integer)) {
-            return;
+        if (tag instanceof Integer) {
+            final int index = (Integer) tag;
+            if (index >= mSuggestedWords.size()) {
+                return;
+            }
+            final SuggestedWordInfo wordInfo = mSuggestedWords.getInfo(index);
+            mListener.pickSuggestionManually(index, wordInfo);
         }
-        final int index = (Integer) tag;
-        if (index >= mSuggestedWords.size()) {
-            return;
-        }
-
-        final SuggestedWordInfo wordInfo = mSuggestedWords.getInfo(index);
-        mListener.pickSuggestionManually(index, wordInfo);
     }
 
     @Override
