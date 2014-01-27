@@ -1460,11 +1460,7 @@ public final class InputLogic {
             final int newSelStart, final int newSelEnd) {
         final boolean shouldFinishComposition = mWordComposer.isComposingWord();
         resetComposingState(true /* alsoResetLastComposedWord */);
-        if (settingsValues.mBigramPredictionEnabled) {
-            mLatinIME.clearSuggestionStrip();
-        } else {
-            mLatinIME.setSuggestedWords(settingsValues.mSpacingAndPunctuations.mSuggestPuncList);
-        }
+        mLatinIME.setNeutralSuggestionStrip();
         mConnection.resetCachesUponCursorMoveAndReturnSuccess(newSelStart, newSelEnd,
                 shouldFinishComposition);
     }
