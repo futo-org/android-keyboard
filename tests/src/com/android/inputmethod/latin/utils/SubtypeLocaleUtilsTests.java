@@ -20,9 +20,9 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
+import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodSubtype;
 
-import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.RichInputMethodManager;
 
 import java.util.ArrayList;
@@ -30,7 +30,7 @@ import java.util.Locale;
 
 @SmallTest
 public class SubtypeLocaleUtilsTests extends AndroidTestCase {
-    // Locale to subtypes list.
+    // All input method subtypes of LatinIME.
     private final ArrayList<InputMethodSubtype> mSubtypesList = CollectionUtils.newArrayList();
 
     private RichInputMethodManager mRichImm;
@@ -61,6 +61,13 @@ public class SubtypeLocaleUtilsTests extends AndroidTestCase {
         mRichImm = RichInputMethodManager.getInstance();
         mRes = context.getResources();
         SubtypeLocaleUtils.init(context);
+
+        final InputMethodInfo imi = mRichImm.getInputMethodInfoOfThisIme();
+        final int subtypeCount = imi.getSubtypeCount();
+        for (int index = 0; index < subtypeCount; index++) {
+            final InputMethodSubtype subtype = imi.getSubtypeAt(index);
+            mSubtypesList.add(subtype);
+        }
 
         EN_US = mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
                 Locale.US.toString(), "qwerty");
@@ -99,14 +106,15 @@ public class SubtypeLocaleUtilsTests extends AndroidTestCase {
 
     public void testAllFullDisplayName() {
         for (final InputMethodSubtype subtype : mSubtypesList) {
-            final String subtypeName =
-                    SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(subtype);
+            final String subtypeName = SubtypeLocaleUtils
+                    .getSubtypeDisplayNameInSystemLocale(subtype);
             if (SubtypeLocaleUtils.isNoLanguage(subtype)) {
-                final String noLanguage = mRes.getString(R.string.subtype_no_language);
-                assertTrue(subtypeName, subtypeName.contains(noLanguage));
+                final String layoutName = SubtypeLocaleUtils
+                        .getKeyboardLayoutSetDisplayName(subtype);
+                assertTrue(subtypeName, subtypeName.contains(layoutName));
             } else {
-                final String languageName =
-                        SubtypeLocaleUtils.getSubtypeLocaleDisplayName(subtype.getLocale());
+                final String languageName = SubtypeLocaleUtils
+                        .getSubtypeLocaleDisplayNameInSystemLocale(subtype.getLocale());
                 assertTrue(subtypeName, subtypeName.contains(languageName));
             }
         }
@@ -266,11 +274,11 @@ public class SubtypeLocaleUtilsTests extends AndroidTestCase {
 
     public void testAllFullDisplayNameForSpacebar() {
         for (final InputMethodSubtype subtype : mSubtypesList) {
-            final String subtypeName =
-                    SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(subtype);
+            final String subtypeName = SubtypeLocaleUtils
+                    .getSubtypeDisplayNameInSystemLocale(subtype);
             final String spacebarText = SubtypeLocaleUtils.getFullDisplayName(subtype);
-            final String languageName =
-                    SubtypeLocaleUtils.getSubtypeLocaleDisplayName(subtype.getLocale());
+            final String languageName = SubtypeLocaleUtils
+                    .getSubtypeLocaleDisplayName(subtype.getLocale());
             if (SubtypeLocaleUtils.isNoLanguage(subtype)) {
                 assertFalse(subtypeName, spacebarText.contains(languageName));
             } else {
@@ -281,15 +289,16 @@ public class SubtypeLocaleUtilsTests extends AndroidTestCase {
 
    public void testAllMiddleDisplayNameForSpacebar() {
         for (final InputMethodSubtype subtype : mSubtypesList) {
-            final String subtypeName =
-                    SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(subtype);
+            final String subtypeName = SubtypeLocaleUtils
+                    .getSubtypeDisplayNameInSystemLocale(subtype);
             final String spacebarText = SubtypeLocaleUtils.getMiddleDisplayName(subtype);
             if (SubtypeLocaleUtils.isNoLanguage(subtype)) {
                 assertEquals(subtypeName,
-                        SubtypeLocaleUtils.getKeyboardLayoutSetName(subtype), spacebarText);
+                        SubtypeLocaleUtils.getKeyboardLayoutSetDisplayName(subtype), spacebarText);
             } else {
+                final Locale locale = SubtypeLocaleUtils.getSubtypeLocale(subtype);
                 assertEquals(subtypeName,
-                        SubtypeLocaleUtils.getSubtypeLocaleDisplayName(subtype.getLocale()),
+                        SubtypeLocaleUtils.getSubtypeLocaleDisplayName(locale.getLanguage()),
                         spacebarText);
             }
         }
@@ -297,8 +306,8 @@ public class SubtypeLocaleUtilsTests extends AndroidTestCase {
 
     public void testAllShortDisplayNameForSpacebar() {
         for (final InputMethodSubtype subtype : mSubtypesList) {
-            final String subtypeName =
-                    SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(subtype);
+            final String subtypeName = SubtypeLocaleUtils
+                    .getSubtypeDisplayNameInSystemLocale(subtype);
             final Locale locale = SubtypeLocaleUtils.getSubtypeLocale(subtype);
             final String spacebarText = SubtypeLocaleUtils.getShortDisplayName(subtype);
             final String languageCode = StringUtils.capitalizeFirstCodePoint(
