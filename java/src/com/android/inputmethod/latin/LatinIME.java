@@ -912,63 +912,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     composingSpanEnd, mInputLogic.mConnection);
         }
 
-        final boolean selectionChanged = oldSelStart != newSelStart || oldSelEnd != newSelEnd;
-
-        // if composingSpanStart and composingSpanEnd are -1, it means there is no composing
-        // span in the view - we can use that to narrow down whether the cursor was moved
-        // by us or not. If we are composing a word but there is no composing span, then
-        // we know for sure the cursor moved while we were composing and we should reset
-        // the state. TODO: rescind this policy: the framework never removes the composing
-        // span on its own accord while editing. This test is useless.
-        final boolean noComposingSpan = composingSpanStart == -1 && composingSpanEnd == -1;
-
-        // If the keyboard is not visible, we don't need to do all the housekeeping work, as it
-        // will be reset when the keyboard shows up anyway.
-        // TODO: revisit this when LatinIME supports hardware keyboards.
-        // NOTE: the test harness subclasses LatinIME and overrides isInputViewShown().
-        // TODO: find a better way to simulate actual execution.
-        if (isInputViewShown() && !mInputLogic.mConnection.isBelatedExpectedUpdate(oldSelStart,
-                newSelStart, oldSelEnd, newSelEnd)) {
-            // TODO: the following is probably better done in resetEntireInputState().
-            // it should only happen when the cursor moved, and the very purpose of the
-            // test below is to narrow down whether this happened or not. Likewise with
-            // the call to updateShiftState.
-            // We set this to NONE because after a cursor move, we don't want the space
-            // state-related special processing to kick in.
-            mInputLogic.mSpaceState = SpaceState.NONE;
-
-            // TODO: is it still necessary to test for composingSpan related stuff?
-            final boolean selectionChangedOrSafeToReset = selectionChanged
-                    || (!mInputLogic.mWordComposer.isComposingWord()) || noComposingSpan;
-            final boolean hasOrHadSelection = (oldSelStart != oldSelEnd
-                    || newSelStart != newSelEnd);
-            final int moveAmount = newSelStart - oldSelStart;
-            if (selectionChangedOrSafeToReset && (hasOrHadSelection
-                    || !mInputLogic.mWordComposer.moveCursorByAndReturnIfInsideComposingWord(
-                            moveAmount))) {
-                // If we are composing a word and moving the cursor, we would want to set a
-                // suggestion span for recorrection to work correctly. Unfortunately, that
-                // would involve the keyboard committing some new text, which would move the
-                // cursor back to where it was. Latin IME could then fix the position of the cursor
-                // again, but the asynchronous nature of the calls results in this wreaking havoc
-                // with selection on double tap and the like.
-                // Another option would be to send suggestions each time we set the composing
-                // text, but that is probably too expensive to do, so we decided to leave things
-                // as is.
-                mInputLogic.resetEntireInputState(mSettings.getCurrent(), newSelStart, newSelEnd);
-            } else {
-                // resetEntireInputState calls resetCachesUponCursorMove, but forcing the
-                // composition to end.  But in all cases where we don't reset the entire input
-                // state, we still want to tell the rich input connection about the new cursor
-                // position so that it can update its caches.
-                mInputLogic.mConnection.resetCachesUponCursorMoveAndReturnSuccess(
-                        newSelStart, newSelEnd, false /* shouldFinishComposition */);
-            }
-
-            // We moved the cursor. If we are touching a word, we need to resume suggestion.
-            mHandler.postResumeSuggestions();
-            // Reset the last recapitalization.
-            mInputLogic.mRecapitalizeStatus.deactivate();
+        if (mInputLogic.onUpdateSelection(mSettings.getCurrent(), oldSelStart, oldSelEnd,
+                newSelStart, newSelEnd, composingSpanStart, composingSpanEnd)) {
             mKeyboardSwitcher.updateShiftState();
         }
 
@@ -1183,7 +1128,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // the right layout.
     // TODO[IL]: Remove this, pass the input logic to the keyboard switcher instead?
     public int getCurrentAutoCapsState() {
-        return mInputLogic.getCurrentAutoCapsState(Settings.getInstance().getCurrent());
+        return mInputLogic.getCurrentAutoCapsState(mSettings.getCurrent());
     }
 
     // Called from the KeyboardSwitcher which needs to know recaps state to display
@@ -1289,7 +1234,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mSubtypeSwitcher.switchToShortcutIME(this);
             // Still call the *#onCodeInput methods for readability.
         }
-        mInputLogic.onCodeInput(codeToSend, keyX, keyY, Settings.getInstance().getCurrent(),
+        mInputLogic.onCodeInput(codeToSend, keyX, keyY, mSettings.getCurrent(),
                 mHandler, mKeyboardSwitcher);
         mKeyboardSwitcher.onCodeInput(codePoint);
     }
