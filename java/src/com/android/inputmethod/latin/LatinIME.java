@@ -888,10 +888,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mInputLogic.finishInput();
         // Notify ResearchLogger
         if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-            ResearchLogger.latinIME_onFinishInputViewInternal(finishingInput,
-                    // TODO[IL]: mInputLogic.mConnection should be private
-                    mInputLogic.mConnection.getExpectedSelectionStart(),
-                    mInputLogic.mConnection.getExpectedSelectionEnd(), getCurrentInputConnection());
+            ResearchLogger.latinIME_onFinishInputViewInternal(finishingInput);
         }
     }
 
