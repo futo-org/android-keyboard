@@ -206,18 +206,9 @@ public final class InputLogic {
         // state-related special processing to kick in.
         mSpaceState = SpaceState.NONE;
 
-        // if composingSpanStart and composingSpanEnd are -1, it means there is no composing
-        // span in the view - we can use that to narrow down whether the cursor was moved
-        // by us or not. If we are composing a word but there is no composing span, then
-        // we know for sure the cursor moved while we were composing and we should reset
-        // the state. TODO: rescind this policy: the framework never removes the composing
-        // span on its own accord while editing. This test is useless.
-        final boolean noComposingSpan = composingSpanStart == -1 && composingSpanEnd == -1;
-        final boolean selectionChanged = oldSelStart != newSelStart || oldSelEnd != newSelEnd;
-
-        // TODO: is it still necessary to test for composingSpan related stuff?
-        final boolean selectionChangedOrSafeToReset = selectionChanged
-                || (!mWordComposer.isComposingWord()) || noComposingSpan;
+        final boolean selectionChangedOrSafeToReset =
+                oldSelStart != newSelStart || oldSelEnd != newSelEnd // selection changed
+                || !mWordComposer.isComposingWord(); // safe to reset
         final boolean hasOrHadSelection = (oldSelStart != oldSelEnd || newSelStart != newSelEnd);
         final int moveAmount = newSelStart - oldSelStart;
         if (selectionChangedOrSafeToReset && (hasOrHadSelection
