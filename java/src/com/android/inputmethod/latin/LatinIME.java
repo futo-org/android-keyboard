@@ -990,7 +990,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
         if (!mSettings.getCurrent().isApplicationSpecifiedCompletionsOn()) return;
         if (applicationSpecifiedCompletions == null) {
-            clearSuggestionStrip();
+            setNeutralSuggestionStrip();
             if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
                 ResearchLogger.latinIME_onDisplayCompletions(null);
             }
