@@ -25,4 +25,19 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+    <LinearLayout
+        android:id="@+id/add_to_dictionary_strip"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="invisible">
+        <include
+            layout="@layout/suggestion_word"
+            android:id="@+id/word_to_save" />
+        <include
+            layout="@layout/suggestion_divider" />
+        <include
+            layout="@layout/hint_add_to_dictionary"
+            android:id="@+id/hint_add_to_dictionary" />
+    </LinearLayout>
 </merge>
