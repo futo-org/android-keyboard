@@ -42,7 +42,6 @@ import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.WordComposer;
 import com.android.inputmethod.latin.define.ProductionFlag;
-import com.android.inputmethod.latin.settings.Settings;
 import com.android.inputmethod.latin.settings.SettingsValues;
 import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
 import com.android.inputmethod.latin.utils.AsyncResultHolder;
@@ -191,12 +190,12 @@ public final class InputLogic {
      * @param y the y-coordinate where the user pressed the key, or NOT_A_COORDINATE.
      */
     public void onCodeInput(final int code, final int x, final int y,
+            final SettingsValues settingsValues,
             // TODO: remove these two arguments
             final LatinIME.UIHandler handler, final KeyboardSwitcher keyboardSwitcher) {
         if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
             ResearchLogger.latinIME_onCodeInput(code, x, y);
         }
-        final SettingsValues settingsValues = Settings.getInstance().getCurrent();
         final long when = SystemClock.uptimeMillis();
         if (code != Constants.CODE_DELETE
                 || when > mLastKeyTime + Constants.LONG_PRESS_MILLISECONDS) {
@@ -1255,15 +1254,10 @@ public final class InputLogic {
      * This is called from the KeyboardSwitcher (through a trampoline in LatinIME) because it
      * needs to know auto caps state to display the right layout.
      *
-     * @param optionalSettingsValues settings values, or null if we should just get the current ones
-     *   from the singleton.
+     * @param settingsValues the relevant settings values
      * @return a caps mode from TextUtils.CAP_MODE_* or Constants.TextUtils.CAP_MODE_OFF.
      */
-    public int getCurrentAutoCapsState(final SettingsValues optionalSettingsValues) {
-        // If we are in a batch edit, we need to use the same settings values as the outside
-        // code, that will pass it to us. Otherwise, we can just take the current values.
-        final SettingsValues settingsValues = null != optionalSettingsValues
-                ? optionalSettingsValues : Settings.getInstance().getCurrent();
+    public int getCurrentAutoCapsState(final SettingsValues settingsValues) {
         if (!settingsValues.mAutoCap) return Constants.TextUtils.CAP_MODE_OFF;
 
         final EditorInfo ei = getCurrentInputEditorInfo();
