@@ -23,12 +23,13 @@ import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Build;
+import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.text.format.DateUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Pair;
@@ -58,6 +59,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 /**
  * View class to implement Emoji palettes.
@@ -752,9 +754,8 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
         }
     }
 
-    // TODO: Do the same things done in PointerTracker
     private static class DeleteKeyOnTouchListener implements OnTouchListener {
-        private static final long MAX_REPEAT_COUNT_TIME = 30 * DateUtils.SECOND_IN_MILLIS;
+        private static final long MAX_REPEAT_COUNT_TIME = TimeUnit.SECONDS.toMillis(30);
         private final int mDeleteKeyPressedBackgroundColor;
         private final long mKeyRepeatStartTimeout;
         private final long mKeyRepeatInterval;
@@ -765,61 +766,36 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
                     res.getColor(R.color.emoji_key_pressed_background_color);
             mKeyRepeatStartTimeout = res.getInteger(R.integer.config_key_repeat_start_timeout);
             mKeyRepeatInterval = res.getInteger(R.integer.config_key_repeat_interval);
+            mTimer = new CountDownTimer(MAX_REPEAT_COUNT_TIME, mKeyRepeatInterval) {
+                @Override
+                public void onTick(long millisUntilFinished) {
+                    final long elapsed = MAX_REPEAT_COUNT_TIME - millisUntilFinished;
+                    if (elapsed < mKeyRepeatStartTimeout) {
+                        return;
+                    }
+                    onKeyRepeat();
+                }
+                @Override
+                public void onFinish() {
+                    onKeyRepeat();
+                }
+            };
         }
+
+        /** Key-repeat state. */
+        private static final int KEY_REPEAT_STATE_INITIALIZED = 0;
+        // The key is touched but auto key-repeat is not started yet.
+        private static final int KEY_REPEAT_STATE_KEY_DOWN = 1;
+        // At least one key-repeat event has already been triggered and the key is not released.
+        private static final int KEY_REPEAT_STATE_KEY_REPEAT = 2;
 
         private KeyboardActionListener mKeyboardActionListener =
                 KeyboardActionListener.EMPTY_LISTENER;
-        private DummyRepeatKeyRepeatTimer mTimer;
 
-        private synchronized void startRepeat() {
-            if (mTimer != null) {
-                abortRepeat();
-            }
-            mTimer = new DummyRepeatKeyRepeatTimer();
-            mTimer.start();
-        }
-
-        private synchronized void abortRepeat() {
-            mTimer.abort();
-            mTimer = null;
-        }
-
-        // TODO: Remove
-        // This function is mimicking the repeat code in PointerTracker.
-        // Specifically referring to PointerTracker#startRepeatKey and PointerTracker#onKeyRepeat.
-        private class DummyRepeatKeyRepeatTimer extends Thread {
-            public boolean mAborted = false;
-
-            @Override
-            public void run() {
-                int repeatCount = 1;
-                int timeCount = 0;
-                while (timeCount < MAX_REPEAT_COUNT_TIME && !mAborted) {
-                    if (timeCount > mKeyRepeatStartTimeout) {
-                        pressDelete(repeatCount);
-                    }
-                    timeCount += mKeyRepeatInterval;
-                    ++repeatCount;
-                    try {
-                        Thread.sleep(mKeyRepeatInterval);
-                    } catch (InterruptedException e) {
-                    }
-                }
-            }
-
-            public void abort() {
-                mAborted = true;
-            }
-        }
-
-        public void pressDelete(final int repeatCount) {
-            mKeyboardActionListener.onPressKey(
-                    Constants.CODE_DELETE, repeatCount, true /* isSinglePointer */);
-            mKeyboardActionListener.onCodeInput(
-                    Constants.CODE_DELETE, NOT_A_COORDINATE, NOT_A_COORDINATE);
-            mKeyboardActionListener.onReleaseKey(
-                    Constants.CODE_DELETE, false /* withSliding */);
-        }
+        // TODO: Do the same things done in PointerTracker
+        private final CountDownTimer mTimer;
+        private int mState = KEY_REPEAT_STATE_INITIALIZED;
+        private int mRepeatCount = 0;
 
         public void setKeyboardActionListener(final KeyboardActionListener listener) {
             mKeyboardActionListener = listener;
@@ -827,18 +803,80 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
 
         @Override
         public boolean onTouch(final View v, final MotionEvent event) {
-            switch(event.getAction()) {
+            switch (event.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
-                v.setBackgroundColor(mDeleteKeyPressedBackgroundColor);
-                pressDelete(0 /* repeatCount */);
-                startRepeat();
+                onTouchDown(v);
                 return true;
+            case MotionEvent.ACTION_MOVE:
+                final float x = event.getX();
+                final float y = event.getY();
+                if (x < 0.0f || v.getWidth() < x || y < 0.0f || v.getHeight() < y) {
+                    // Stop generating key events once the finger moves away from the view area.
+                    onTouchCanceled(v);
+                }
+                return true;
+            case MotionEvent.ACTION_CANCEL:
             case MotionEvent.ACTION_UP:
-                v.setBackgroundColor(0);
-                abortRepeat();
+                onTouchUp(v);
                 return true;
             }
             return false;
+        }
+
+        private void handleKeyDown() {
+            mKeyboardActionListener.onPressKey(
+                    Constants.CODE_DELETE, mRepeatCount, true /* isSinglePointer */);
+        }
+
+        private void handleKeyUp() {
+            mKeyboardActionListener.onCodeInput(
+                    Constants.CODE_DELETE, NOT_A_COORDINATE, NOT_A_COORDINATE);
+            mKeyboardActionListener.onReleaseKey(
+                    Constants.CODE_DELETE, false /* withSliding */);
+            ++mRepeatCount;
+        }
+
+        private void onTouchDown(final View v) {
+            mTimer.cancel();
+            mRepeatCount = 0;
+            handleKeyDown();
+            v.setBackgroundColor(mDeleteKeyPressedBackgroundColor);
+            mState = KEY_REPEAT_STATE_KEY_DOWN;
+            mTimer.start();
+        }
+
+        private void onTouchUp(final View v) {
+            mTimer.cancel();
+            if (mState == KEY_REPEAT_STATE_KEY_DOWN) {
+                handleKeyUp();
+            }
+            v.setBackgroundColor(Color.TRANSPARENT);
+            mState = KEY_REPEAT_STATE_INITIALIZED;
+        }
+
+        private void onTouchCanceled(final View v) {
+            mTimer.cancel();
+            v.setBackgroundColor(Color.TRANSPARENT);
+            mState = KEY_REPEAT_STATE_INITIALIZED;
+        }
+
+        // Called by {@link #mTimer} in the UI thread as an auto key-repeat signal.
+        private void onKeyRepeat() {
+            switch (mState) {
+            case KEY_REPEAT_STATE_INITIALIZED:
+                // Basically this should not happen.
+                break;
+            case KEY_REPEAT_STATE_KEY_DOWN:
+                // Do not call {@link #handleKeyDown} here because it has already been called
+                // in {@link #onTouchDown}.
+                handleKeyUp();
+                mState = KEY_REPEAT_STATE_KEY_REPEAT;
+                break;
+            case KEY_REPEAT_STATE_KEY_REPEAT:
+                handleKeyDown();
+                handleKeyUp();
+                break;
+            }
         }
     }
 }
