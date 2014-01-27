@@ -348,7 +348,7 @@ public final class StringUtils {
         boolean hasPeriod = false;
         int codePoint = 0;
         while (i > 0) {
-            codePoint =  Character.codePointBefore(text, i);
+            codePoint = Character.codePointBefore(text, i);
             if (codePoint < Constants.CODE_PERIOD || codePoint > 'z') {
                 // Handwavy heuristic to see if that's a URL character. Anything between period
                 // and z. This includes all lower- and upper-case ascii letters, period,
@@ -385,6 +385,48 @@ public final class StringUtils {
         if (hasPeriod && hasSlash) return true;
         // Otherwise, it doesn't look like an URL.
         return false;
+    }
+
+    /**
+     * Examines the string and returns whether we're inside a double quote.
+     *
+     * This is used to decide whether we should put an automatic space before or after a double
+     * quote character. If we're inside a quotation, then we want to close it, so we want a space
+     * after and not before. Otherwise, we want to open the quotation, so we want a space before
+     * and not after. Exception: after a digit, we never want a space because the "inch" or
+     * "minutes" use cases is dominant after digits.
+     * In the practice, we determine whether we are in a quotation or not by finding the previous
+     * double quote character, and looking at whether it's followed by whitespace. If so, that
+     * was a closing quotation mark, so we're not inside a double quote. If it's not followed
+     * by whitespace, then it was an opening quotation mark, and we're inside a quotation.
+     *
+     * @param text the text to examine.
+     * @return whether we're inside a double quote.
+     */
+    public static boolean isInsideDoubleQuoteOrAfterDigit(final CharSequence text) {
+        int i = text.length();
+        if (0 == i) return false;
+        int codePoint = Character.codePointBefore(text, i);
+        if (Character.isDigit(codePoint)) return true;
+        int prevCodePoint = 0;
+        while (i > 0) {
+            codePoint = Character.codePointBefore(text, i);
+            if (Constants.CODE_DOUBLE_QUOTE == codePoint) {
+                // If we see a double quote followed by whitespace, then that
+                // was a closing quote.
+                if (Character.isWhitespace(prevCodePoint)) return false;
+            }
+            if (Character.isWhitespace(codePoint) && Constants.CODE_DOUBLE_QUOTE == prevCodePoint) {
+                // If we see a double quote preceded by whitespace, then that
+                // was an opening quote. No need to continue seeking.
+                return true;
+            }
+            i -= Character.charCount(codePoint);
+            prevCodePoint = codePoint;
+        }
+        // We reached the start of text. If the first char is a double quote, then we're inside
+        // a double quote. Otherwise we're not.
+        return Constants.CODE_DOUBLE_QUOTE == codePoint;
     }
 
     public static boolean isEmptyStringOrWhiteSpaces(final String s) {
