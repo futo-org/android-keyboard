@@ -1005,7 +1005,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final SuggestedWords suggestedWords = new SuggestedWords(
                 applicationSuggestedWords,
                 false /* typedWordValid */,
-                false /* hasAutoCorrectionCandidate */,
+                false /* willAutoCorrect */,
                 false /* isPunctuationSuggestions */,
                 false /* isObsoleteSuggestions */,
                 false /* isPrediction */);
