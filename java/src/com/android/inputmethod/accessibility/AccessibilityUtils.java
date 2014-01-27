@@ -158,7 +158,7 @@ public final class AccessibilityUtils {
      * @param typedWord the currently typed word
      */
     public void setAutoCorrection(final SuggestedWords suggestedWords, final String typedWord) {
-        if (suggestedWords != null && suggestedWords.mWillAutoCorrect) {
+        if (suggestedWords.mWillAutoCorrect) {
             mAutoCorrectionWord = suggestedWords.getWord(SuggestedWords.INDEX_OF_AUTO_CORRECTION);
             mTypedWord = typedWord;
         } else {
