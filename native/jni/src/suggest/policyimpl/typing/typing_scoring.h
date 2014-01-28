@@ -43,11 +43,6 @@ class TypingScoring : public Scoring {
             const int maxScore, int *const outputCodePoints, int *const frequencies) const {
     }
 
-    AK_FORCE_INLINE void searchWordWithDoubleLetter(DicNode *terminals,
-            const int terminalSize, int *doubleLetterTerminalIndex,
-            DoubleLetterLevel *doubleLetterLevel) const {
-    }
-
     AK_FORCE_INLINE float getAdjustedLanguageWeight(DicTraverseSession *const traverseSession,
              DicNode *const terminals, const int size) const {
         return 1.0f;
@@ -77,9 +72,8 @@ class TypingScoring : public Scoring {
         return static_cast<int>(score * SUGGEST_INTERFACE_OUTPUT_SCALE);
     }
 
-    AK_FORCE_INLINE float getDoubleLetterDemotionDistanceCost(const int terminalIndex,
-            const int doubleLetterTerminalIndex,
-            const DoubleLetterLevel doubleLetterLevel) const {
+    AK_FORCE_INLINE float getDoubleLetterDemotionDistanceCost(
+            const DicNode *const terminalDicNode) const {
         return 0.0f;
     }
 
