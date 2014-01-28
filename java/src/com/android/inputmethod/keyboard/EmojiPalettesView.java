@@ -73,7 +73,7 @@ import java.util.concurrent.TimeUnit;
  * Because of the above reasons, this class doesn't extend {@link KeyboardView}.
  */
 public final class EmojiPalettesView extends LinearLayout implements OnTabChangeListener,
-        ViewPager.OnPageChangeListener, View.OnTouchListener,
+        ViewPager.OnPageChangeListener, View.OnClickListener, View.OnTouchListener,
         EmojiPageKeyboardView.OnKeyEventListener {
     static final String TAG = EmojiPalettesView.class.getSimpleName();
     private static final boolean DEBUG_PAGER = false;
@@ -482,22 +482,35 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
         final LinearLayout actionBar = (LinearLayout)findViewById(R.id.emoji_action_bar);
         mEmojiLayoutParams.setActionBarProperties(actionBar);
 
+        // deleteKey depends only on OnTouchListener.
         final ImageView deleteKey = (ImageView)findViewById(R.id.emoji_keyboard_delete);
         deleteKey.setTag(Constants.CODE_DELETE);
         deleteKey.setOnTouchListener(mDeleteKeyOnTouchListener);
+
+        // alphabetKey depends only on OnTouchListener as it does everything in key-press in
+        // ACTION_DOWN.
         final ImageView alphabetKey = (ImageView)findViewById(R.id.emoji_keyboard_alphabet);
         alphabetKey.setBackgroundResource(mEmojiFunctionalKeyBackgroundId);
         alphabetKey.setTag(Constants.CODE_SWITCH_ALPHA_SYMBOL);
         alphabetKey.setOnTouchListener(this);
-        final ImageView spaceKey = (ImageView)findViewById(R.id.emoji_keyboard_space);
-        spaceKey.setBackgroundResource(mKeyBackgroundId);
-        spaceKey.setTag(Constants.CODE_SPACE);
-        spaceKey.setOnTouchListener(this);
-        mEmojiLayoutParams.setKeyProperties(spaceKey);
+
+        // alphabetKey2 depends only on OnTouchListener as it does everything in key-press in
+        // ACTION_DOWN.
         final ImageView alphabetKey2 = (ImageView)findViewById(R.id.emoji_keyboard_alphabet2);
         alphabetKey2.setBackgroundResource(mEmojiFunctionalKeyBackgroundId);
         alphabetKey2.setTag(Constants.CODE_SWITCH_ALPHA_SYMBOL);
         alphabetKey2.setOnTouchListener(this);
+
+        // spaceKey depends on {@link View.OnClickListener} as well as {@link View.OnTouchListener}.
+        // {@link View.OnTouchListener} is used as the trigger of key-press while
+        // {@link View.OnClickListener} is used as the trigger of key-release which may not occur
+        // if the event is canceled by moving off the finger from the view.
+        final ImageView spaceKey = (ImageView)findViewById(R.id.emoji_keyboard_space);
+        spaceKey.setBackgroundResource(mKeyBackgroundId);
+        spaceKey.setTag(Constants.CODE_SPACE);
+        spaceKey.setOnTouchListener(this);
+        spaceKey.setOnClickListener(this);
+        mEmojiLayoutParams.setKeyProperties(spaceKey);
     }
 
     @Override
@@ -506,7 +519,6 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
         setCurrentCategoryId(categoryId, false /* force */);
         updateEmojiCategoryPageIdView();
     }
-
 
     @Override
     public void onPageSelected(final int position) {
@@ -545,40 +557,62 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
         }
     }
 
-    // Called from {@link EmojiPageKeyboardView} through {@link View.OnTouchListener} interface to
-    // handle touch events from View-based elements such as the space bar.
+    /**
+     * Called from {@link EmojiPageKeyboardView} through {@link android.view.View.OnTouchListener}
+     * interface to handle touch events from View-based elements such as the space bar.
+     * Note that this method is used only for observing {@link MotionEvent#ACTION_DOWN} to trigger
+     * {@link KeyboardActionListener#onPressKey}. {@link KeyboardActionListener#onReleaseKey} will
+     * be covered by {@link #onClick} as long as the event is not canceled.
+     */
     @Override
     public boolean onTouch(final View v, final MotionEvent event) {
+        if (event.getActionMasked() != MotionEvent.ACTION_DOWN) {
+            return false;
+        }
         final Object tag = v.getTag();
         if (!(tag instanceof Integer)) {
             return false;
         }
         final int code = (Integer) tag;
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                mKeyboardActionListener.onPressKey(
-                        code, 0 /* repeatCount */, true /* isSinglePointer */);
-                break;
-            case MotionEvent.ACTION_UP:
-                mKeyboardActionListener.onCodeInput(code, NOT_A_COORDINATE, NOT_A_COORDINATE);
-                mKeyboardActionListener.onReleaseKey(code, false /* withSliding */);
-                break;
-        }
+        mKeyboardActionListener.onPressKey(
+                code, 0 /* repeatCount */, true /* isSinglePointer */);
+        // It's important to return false here. Otherwise, {@link #onClick} and touch-down visual
+        // feedback stop working.
         return false;
     }
 
-    // Called from {@link EmojiPageKeyboardView} through
-    // {@link EmojiPageKeyboardView.OnKeyEventListener} interface to handle touch events from
-    // non-View-based elements like typical Emoji characters.
+    /**
+     * Called from {@link EmojiPageKeyboardView} through {@link android.view.View.OnClickListener}
+     * interface to handle non-canceled touch-up events from View-based elements such as the space
+     * bar.
+     */
+    @Override
+    public void onClick(View v) {
+        final Object tag = v.getTag();
+        if (!(tag instanceof Integer)) {
+            return;
+        }
+        final int code = (Integer) tag;
+        mKeyboardActionListener.onCodeInput(code, NOT_A_COORDINATE, NOT_A_COORDINATE);
+        mKeyboardActionListener.onReleaseKey(code, false /* withSliding */);
+    }
+
+    /**
+     * Called from {@link EmojiPageKeyboardView} through
+     * {@link com.android.inputmethod.keyboard.internal.EmojiPageKeyboardView.OnKeyEventListener}
+     * interface to handle touch events from non-View-based elements such as Emoji buttons.
+     */
     @Override
     public void onPressKey(final Key key) {
         final int code = key.getCode();
         mKeyboardActionListener.onPressKey(code, 0 /* repeatCount */, true /* isSinglePointer */);
     }
 
-    // Called from {@link EmojiPageKeyboardView} through
-    // {@link EmojiPageKeyboardView.OnKeyEventListener} interface to handle touch events from
-    // non-View-based elements like typical Emoji characters.
+    /**
+     * Called from {@link EmojiPageKeyboardView} through
+     * {@link com.android.inputmethod.keyboard.internal.EmojiPageKeyboardView.OnKeyEventListener}
+     * interface to handle touch events from non-View-based elements such as Emoji buttons.
+     */
     @Override
     public void onReleaseKey(final Key key) {
         mEmojiPalettesAdapter.addRecentKey(key);
