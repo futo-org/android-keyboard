@@ -1157,6 +1157,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mInputLogic.mSuggest.mDictionaryFacilitator.addWordToUserDictionary(wordToEdit);
     }
 
+    // Callback for the {@link SuggestionStripView}, to call when the important notice strip is
+    // pressed.
+    @Override
+    public void showImportantNoticeContents() {
+        // TODO: Show dialog to display important notice contents.
+    }
+
     public void displaySettingsDialog() {
         if (isShowingOptionDialog()) return;
         showSubtypeSelectorAndSettings();

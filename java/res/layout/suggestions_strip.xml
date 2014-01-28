@@ -45,4 +45,17 @@
             android:textAlignment="viewStart"
             style="?attr/suggestionWordStyle" />
     </LinearLayout>
+    <LinearLayout
+        android:id="@+id/important_notice_strip"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/important_notice_title"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.0"
+            android:textSize="14sp"
+            style="?attr/suggestionWordStyle" />
+    </LinearLayout>
 </merge>
