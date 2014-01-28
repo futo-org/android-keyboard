@@ -28,6 +28,8 @@ import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewCompat;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -39,7 +41,6 @@ import android.text.style.UnderlineSpan;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -88,6 +89,7 @@ final class SuggestionStripLayoutHelper {
     private final Drawable mMoreSuggestionsHint;
     private static final String MORE_SUGGESTIONS_HINT = "\u2026";
     private static final String LEFTWARDS_ARROW = "\u2190";
+    private static final String RIGHTWARDS_ARROW = "\u2192";
 
     private static final CharacterStyle BOLD_SPAN = new StyleSpan(Typeface.BOLD);
     private static final CharacterStyle UNDERLINE_SPAN = new UnderlineSpan();
@@ -471,10 +473,13 @@ final class SuggestionStripLayoutHelper {
 
         final TextView hintView = (TextView)addToDictionaryStrip.findViewById(
                 R.id.hint_add_to_dictionary);
-        hintView.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
+        hintView.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL | GravityCompat.START);
         hintView.setTextColor(mColorAutoCorrect);
+        final boolean isRtlLanguage = (ViewCompat.getLayoutDirection(addToDictionaryStrip)
+                == ViewCompat.LAYOUT_DIRECTION_RTL);
+        final String hintWithArrow = (isRtlLanguage ? RIGHTWARDS_ARROW : LEFTWARDS_ARROW)
+                + hintText;
         final int hintWidth = width - wordWidth;
-        final String hintWithArrow = LEFTWARDS_ARROW + hintText;
         final float hintScaleX = getTextScaleX(hintWithArrow, hintWidth, hintView.getPaint());
         hintView.setText(hintWithArrow);
         hintView.setTextScaleX(hintScaleX);

@@ -84,6 +84,7 @@ import com.android.inputmethod.latin.utils.IntentUtils;
 import com.android.inputmethod.latin.utils.JniUtils;
 import com.android.inputmethod.latin.utils.LatinImeLoggerUtils;
 import com.android.inputmethod.latin.utils.LeakGuardHandlerWrapper;
+import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 import com.android.inputmethod.research.ResearchLogger;
 
 import java.io.FileDescriptor;
@@ -1326,7 +1327,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // TODO[IL]: Define a clear interface for this
     public void setSuggestedWords(final SuggestedWords words, final boolean shouldShow) {
         if (mSuggestionStripView != null) {
-            mSuggestionStripView.setSuggestions(words);
+            mSuggestionStripView.setSuggestions(
+                    words, SubtypeLocaleUtils.isRtlLanguage(mSubtypeSwitcher.getCurrentSubtype()));
             mKeyboardSwitcher.onAutoCorrectionStateChanged(words.mWillAutoCorrect);
         }
         mInputLogic.mSuggestedWords = words;
