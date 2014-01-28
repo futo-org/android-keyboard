@@ -1033,10 +1033,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
     }
 
-    private void setSuggestionStripShown(final boolean shown) {
-        setSuggestionStripShownInternal(shown, /* needsInputViewShown */true);
-    }
-
     private int getAdjustedBackingViewHeight() {
         final int currentHeight = mKeyPreviewBackingView.getHeight();
         if (currentHeight > 0) {
@@ -1347,7 +1343,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             // the practice.
             mInputLogic.mConnection.setComposingText(textWithUnderline, 1);
         }
-        setSuggestionStripShown(shouldShow);
+        setSuggestionStripShownInternal(shouldShow, true /* needsInputViewShown */);
     }
 
     // TODO[IL]: Move this out of LatinIME.
