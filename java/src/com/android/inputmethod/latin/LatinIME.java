@@ -1324,25 +1324,12 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     // TODO[IL]: Define a clear interface for this
-    public void setSuggestedWords(final SuggestedWords words, final boolean shouldShow) {
-        mInputLogic.mSuggestedWords = words;
-        final boolean newAutoCorrectionIndicator = words.mWillAutoCorrect;
-        // Put a blue underline to a word in TextView which will be auto-corrected.
-        if (mInputLogic.mIsAutoCorrectionIndicatorOn != newAutoCorrectionIndicator
-                && mInputLogic.mWordComposer.isComposingWord()) {
-            mInputLogic.mIsAutoCorrectionIndicatorOn = newAutoCorrectionIndicator;
-            final CharSequence textWithUnderline =
-                    mInputLogic.getTextWithUnderline(mInputLogic.mWordComposer.getTypedWord());
-            // TODO: when called from an updateSuggestionStrip() call that results from a posted
-            // message, this is called outside any batch edit. Potentially, this may result in some
-            // janky flickering of the screen, although the display speed makes it unlikely in
-            // the practice.
-            mInputLogic.mConnection.setComposingText(textWithUnderline, 1);
-        }
+    public void setSuggestedWords(final SuggestedWords suggestedWords, final boolean shouldShow) {
+        mInputLogic.setSuggestedWords(suggestedWords);
         if (mSuggestionStripView != null) {
-            mSuggestionStripView.setSuggestions(
-                    words, SubtypeLocaleUtils.isRtlLanguage(mSubtypeSwitcher.getCurrentSubtype()));
-            mKeyboardSwitcher.onAutoCorrectionStateChanged(words.mWillAutoCorrect);
+            mSuggestionStripView.setSuggestions(suggestedWords,
+                    SubtypeLocaleUtils.isRtlLanguage(mSubtypeSwitcher.getCurrentSubtype()));
+            mKeyboardSwitcher.onAutoCorrectionStateChanged(suggestedWords.mWillAutoCorrect);
             setSuggestionStripShownInternal(shouldShow, true /* needsInputViewShown */);
         }
     }
