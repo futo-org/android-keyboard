@@ -26,6 +26,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -189,8 +190,19 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
 
     public void clear() {
         mSuggestionsStrip.removeAllViews();
+        removeAllDebugInfoViews();
         mStripVisibilityGroup.showSuggestionsStrip();
         dismissMoreSuggestionsPanel();
+    }
+
+    private void removeAllDebugInfoViews() {
+        // The debug info views may be placed as children views of this {@link SuggestionStripView}.
+        for (final View debugInfoView : mDebugInfoViews) {
+            final ViewParent parent = debugInfoView.getParent();
+            if (parent instanceof ViewGroup) {
+                ((ViewGroup)parent).removeView(debugInfoView);
+            }
+        }
     }
 
     private final MoreSuggestionsListener mMoreSuggestionsListener = new MoreSuggestionsListener() {
