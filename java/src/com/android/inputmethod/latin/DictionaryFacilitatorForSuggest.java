@@ -44,6 +44,10 @@ import java.util.concurrent.TimeUnit;
 public class DictionaryFacilitatorForSuggest {
     public static final String TAG = DictionaryFacilitatorForSuggest.class.getSimpleName();
 
+    // HACK: This threshold is being used when adding a capitalized entry in the User History
+    // dictionary.
+    private static final int CAPITALIZED_FORM_MAX_PROBABILITY_FOR_INSERT = 140;
+
     private final Context mContext;
     public final Locale mLocale;
 
@@ -389,7 +393,26 @@ public class DictionaryFacilitatorForSuggest {
         if (maxFreq == 0) {
             return;
         }
-        final String secondWord = wasAutoCapitalized ? suggestion.toLowerCase(mLocale) : suggestion;
+        final String suggestionLowerCase = suggestion.toLowerCase(mLocale);
+        final String secondWord;
+        if (wasAutoCapitalized) {
+            secondWord = suggestionLowerCase;
+        } else {
+            // HACK: We'd like to avoid adding the capitalized form of common words to the User
+            // History dictionary in order to avoid suggesting them until the dictionary
+            // consolidation is done.
+            // TODO: Remove this hack when ready.
+            final int lowerCasefreqInMainDict = mMainDictionary != null ?
+                    mMainDictionary.getFrequency(suggestionLowerCase) :
+                            Dictionary.NOT_A_PROBABILITY;
+            if (maxFreq < lowerCasefreqInMainDict
+                    && lowerCasefreqInMainDict >= CAPITALIZED_FORM_MAX_PROBABILITY_FOR_INSERT) {
+                // Use lower cased word as the word can be a distracter of the popular word.
+                secondWord = suggestionLowerCase;
+            } else {
+                secondWord = suggestion;
+            }
+        }
         // We demote unrecognized words (frequency < 0, below) by specifying them as "invalid".
         // We don't add words with 0-frequency (assuming they would be profanity etc.).
         final boolean isValid = maxFreq > 0;
