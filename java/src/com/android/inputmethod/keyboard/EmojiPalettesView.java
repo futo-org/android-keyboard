@@ -487,24 +487,20 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
         deleteKey.setTag(Constants.CODE_DELETE);
         deleteKey.setOnTouchListener(mDeleteKeyOnTouchListener);
 
-        // alphabetKey depends only on OnTouchListener as it does everything in key-press in
-        // ACTION_DOWN.
+        // alphabetKey, alphabetKey2, and spaceKey depend on {@link View.OnClickListener} as well as
+        // {@link View.OnTouchListener}. {@link View.OnTouchListener} is used as the trigger of
+        // key-press, while {@link View.OnClickListener} is used as the trigger of key-release which
+        // does not occur if the event is canceled by moving off the finger from the view.
         final ImageView alphabetKey = (ImageView)findViewById(R.id.emoji_keyboard_alphabet);
         alphabetKey.setBackgroundResource(mEmojiFunctionalKeyBackgroundId);
-        alphabetKey.setTag(Constants.CODE_SWITCH_ALPHA_SYMBOL);
+        alphabetKey.setTag(Constants.CODE_ALPHA_FROM_EMOJI);
         alphabetKey.setOnTouchListener(this);
-
-        // alphabetKey2 depends only on OnTouchListener as it does everything in key-press in
-        // ACTION_DOWN.
+        alphabetKey.setOnClickListener(this);
         final ImageView alphabetKey2 = (ImageView)findViewById(R.id.emoji_keyboard_alphabet2);
         alphabetKey2.setBackgroundResource(mEmojiFunctionalKeyBackgroundId);
-        alphabetKey2.setTag(Constants.CODE_SWITCH_ALPHA_SYMBOL);
+        alphabetKey2.setTag(Constants.CODE_ALPHA_FROM_EMOJI);
         alphabetKey2.setOnTouchListener(this);
-
-        // spaceKey depends on {@link View.OnClickListener} as well as {@link View.OnTouchListener}.
-        // {@link View.OnTouchListener} is used as the trigger of key-press while
-        // {@link View.OnClickListener} is used as the trigger of key-release which may not occur
-        // if the event is canceled by moving off the finger from the view.
+        alphabetKey2.setOnClickListener(this);
         final ImageView spaceKey = (ImageView)findViewById(R.id.emoji_keyboard_space);
         spaceKey.setBackgroundResource(mKeyBackgroundId);
         spaceKey.setTag(Constants.CODE_SPACE);

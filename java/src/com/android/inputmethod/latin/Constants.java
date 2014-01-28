@@ -217,8 +217,9 @@ public final class Constants {
     public static final int CODE_EMOJI = -11;
     public static final int CODE_SHIFT_ENTER = -12;
     public static final int CODE_SYMBOL_SHIFT = -13;
+    public static final int CODE_ALPHA_FROM_EMOJI = -14;
     // Code value representing the code is not specified.
-    public static final int CODE_UNSPECIFIED = -14;
+    public static final int CODE_UNSPECIFIED = -15;
 
     public static boolean isLetterCode(final int code) {
         return code >= CODE_SPACE;
@@ -241,6 +242,7 @@ public final class Constants {
         case CODE_UNSPECIFIED: return "unspec";
         case CODE_TAB: return "tab";
         case CODE_ENTER: return "enter";
+        case CODE_ALPHA_FROM_EMOJI: return "alpha";
         default:
             if (code < CODE_SPACE) return String.format("'\\u%02x'", code);
             if (code < 0x100) return String.format("'%c'", code);
