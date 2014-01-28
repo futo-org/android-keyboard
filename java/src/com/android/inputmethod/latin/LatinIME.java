@@ -1325,11 +1325,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     // TODO[IL]: Define a clear interface for this
     public void setSuggestedWords(final SuggestedWords words, final boolean shouldShow) {
-        if (mSuggestionStripView != null) {
-            mSuggestionStripView.setSuggestions(
-                    words, SubtypeLocaleUtils.isRtlLanguage(mSubtypeSwitcher.getCurrentSubtype()));
-            mKeyboardSwitcher.onAutoCorrectionStateChanged(words.mWillAutoCorrect);
-        }
         mInputLogic.mSuggestedWords = words;
         final boolean newAutoCorrectionIndicator = words.mWillAutoCorrect;
         // Put a blue underline to a word in TextView which will be auto-corrected.
@@ -1344,7 +1339,12 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             // the practice.
             mInputLogic.mConnection.setComposingText(textWithUnderline, 1);
         }
-        setSuggestionStripShownInternal(shouldShow, true /* needsInputViewShown */);
+        if (mSuggestionStripView != null) {
+            mSuggestionStripView.setSuggestions(
+                    words, SubtypeLocaleUtils.isRtlLanguage(mSubtypeSwitcher.getCurrentSubtype()));
+            mKeyboardSwitcher.onAutoCorrectionStateChanged(words.mWillAutoCorrect);
+            setSuggestionStripShownInternal(shouldShow, true /* needsInputViewShown */);
+        }
     }
 
     // TODO[IL]: Move this out of LatinIME.
