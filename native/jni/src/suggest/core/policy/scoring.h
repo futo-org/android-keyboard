@@ -34,14 +34,10 @@ class Scoring {
             int *const type, int *const freq) const = 0;
     virtual void safetyNetForMostProbableString(const int terminalSize,
             const int maxScore, int *const outputCodePoints, int *const frequencies) const = 0;
-    // TODO: Make more generic
-    virtual void searchWordWithDoubleLetter(DicNode *terminals, const int terminalSize,
-            int *doubleLetterTerminalIndex, DoubleLetterLevel *doubleLetterLevel) const = 0;
     virtual float getAdjustedLanguageWeight(DicTraverseSession *const traverseSession,
             DicNode *const terminals, const int size) const = 0;
-    virtual float getDoubleLetterDemotionDistanceCost(const int terminalIndex,
-            const int doubleLetterTerminalIndex,
-            const DoubleLetterLevel doubleLetterLevel) const = 0;
+    virtual float getDoubleLetterDemotionDistanceCost(
+            const DicNode *const terminalDicNode) const = 0;
     virtual bool doesAutoCorrectValidWord() const = 0;
     virtual bool autoCorrectsToMultiWordSuggestionIfTop() const = 0;
     virtual bool sameAsTyped(const DicTraverseSession *const traverseSession,
