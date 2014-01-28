@@ -193,9 +193,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     if (msg.arg2 == ARG2_WITH_TYPED_WORD) {
                         final Pair<SuggestedWords, String> p =
                                 (Pair<SuggestedWords, String>) msg.obj;
+                        // [IL]: this is the only place where the second arg is not
+                        // suggestedWords.mTypedWord.
                         latinIme.showSuggestionStripWithTypedWord(p.first, p.second);
                     } else {
-                        latinIme.showSuggestionStrip((SuggestedWords) msg.obj);
+                        final SuggestedWords suggestedWords = (SuggestedWords) msg.obj;
+                        latinIme.showSuggestionStripWithTypedWord(suggestedWords,
+                                suggestedWords.mTypedWord);
                     }
                 } else {
                     latinIme.showGesturePreviewAndSuggestionStrip((SuggestedWords) msg.obj,
@@ -1270,7 +1274,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // This method must run on the UI Thread.
     private void showGesturePreviewAndSuggestionStrip(final SuggestedWords suggestedWords,
             final boolean dismissGestureFloatingPreviewText) {
-        showSuggestionStrip(suggestedWords);
+        showSuggestionStripWithTypedWord(suggestedWords, suggestedWords.mTypedWord);
         final MainKeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
         mainKeyboardView.showGestureFloatingPreviewText(suggestedWords);
         if (dismissGestureFloatingPreviewText) {
@@ -1405,7 +1409,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
     }
 
-    private void showSuggestionStripWithTypedWord(final SuggestedWords sourceSuggestedWords,
+    // TODO[IL]: Define a clean interface for this
+    public void showSuggestionStripWithTypedWord(final SuggestedWords sourceSuggestedWords,
             final String typedWord) {
         final SuggestedWords suggestedWords =
                 sourceSuggestedWords.isEmpty() ? SuggestedWords.EMPTY : sourceSuggestedWords;
@@ -1424,11 +1429,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // Cache the auto-correction in accessibility code so we can speak it if the user
         // touches a key that will insert it.
         AccessibilityUtils.getInstance().setAutoCorrection(suggestedWords, typedWord);
-    }
-
-    // TODO[IL]: Define a clean interface for this
-    public void showSuggestionStrip(final SuggestedWords suggestedWords) {
-        showSuggestionStripWithTypedWord(suggestedWords, suggestedWords.mTypedWord);
     }
 
     // Called from {@link SuggestionStripView} through the {@link SuggestionStripView#Listener}
