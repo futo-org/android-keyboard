@@ -18,6 +18,7 @@ package com.android.inputmethod.latin.suggestions;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
@@ -82,6 +83,13 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
             mSuggestionsStrip = suggestionsStrip;
             mAddToDictionaryStrip = addToDictionaryStrip;
             showSuggestionsStrip();
+        }
+
+        public void setLayoutDirection(final boolean isRtlLanguage) {
+            final int layoutDirection = isRtlLanguage ? ViewCompat.LAYOUT_DIRECTION_RTL
+                    : ViewCompat.LAYOUT_DIRECTION_LTR;
+            ViewCompat.setLayoutDirection(mSuggestionsStrip, layoutDirection);
+            ViewCompat.setLayoutDirection(mAddToDictionaryStrip, layoutDirection);
         }
 
         public void showSuggestionsStrip() {
@@ -154,8 +162,9 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         mMainKeyboardView = (MainKeyboardView)inputView.findViewById(R.id.keyboard_view);
     }
 
-    public void setSuggestions(final SuggestedWords suggestedWords) {
+    public void setSuggestions(final SuggestedWords suggestedWords, final boolean isRtlLanguage) {
         clear();
+        mStripVisibilityGroup.setLayoutDirection(isRtlLanguage);
         mSuggestedWords = suggestedWords;
         mLayoutHelper.layout(mSuggestedWords, mSuggestionsStrip, this);
         if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {

@@ -37,7 +37,7 @@
         <include
             layout="@layout/suggestion_divider" />
         <include
-            layout="@layout/hint_add_to_dictionary"
+            layout="@layout/suggestion_word"
             android:id="@+id/hint_add_to_dictionary" />
     </LinearLayout>
 </merge>

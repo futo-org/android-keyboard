@@ -25,7 +25,6 @@ import android.os.Build;
 import android.util.Log;
 import android.view.inputmethod.InputMethodSubtype;
 
-import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.DictionaryFactory;
 import com.android.inputmethod.latin.R;
 
@@ -348,8 +347,6 @@ public final class SubtypeLocaleUtils {
         Arrays.sort(SORTED_RTL_LANGUAGES);
     }
 
-    // TODO: Remove @UsedForTesting annotation.
-    @UsedForTesting
     public static boolean isRtlLanguage(final InputMethodSubtype subtype) {
         final Locale locale = getSubtypeLocale(subtype);
         final String language = locale.getLanguage();
