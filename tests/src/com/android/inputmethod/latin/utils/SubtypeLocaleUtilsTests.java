@@ -101,7 +101,6 @@ public class SubtypeLocaleUtilsTests extends AndroidTestCase {
                 SubtypeLocaleUtils.NO_LANGUAGE, "azerty", null);
         ZZ_PC = AdditionalSubtypeUtils.createAdditionalSubtype(
                 SubtypeLocaleUtils.NO_LANGUAGE, "pcqwerty", null);
-
     }
 
     public void testAllFullDisplayName() {
@@ -422,5 +421,28 @@ public class SubtypeLocaleUtilsTests extends AndroidTestCase {
 
     public void testAdditionalSubtypeForSpacebarInFrench() {
         testsAdditionalSubtypesForSpacebar.runInLocale(mRes, Locale.FRENCH);
+    }
+
+    public void testIsRtlLanguage() {
+        // Known Right-to-Left language subtypes.
+        final InputMethodSubtype ARABIC = mRichImm
+                .findSubtypeByLocaleAndKeyboardLayoutSet("ar", "arabic");
+        assertNotNull("Arabic", ARABIC);
+        final InputMethodSubtype FARSI = mRichImm
+                .findSubtypeByLocaleAndKeyboardLayoutSet("fa", "farsi");
+        assertNotNull("Farsi", FARSI);
+        final InputMethodSubtype HEBREW = mRichImm
+                .findSubtypeByLocaleAndKeyboardLayoutSet("iw", "hebrew");
+        assertNotNull("Hebrew", HEBREW);
+
+        for (final InputMethodSubtype subtype : mSubtypesList) {
+            final String subtypeName = SubtypeLocaleUtils
+                    .getSubtypeDisplayNameInSystemLocale(subtype);
+            if (subtype.equals(ARABIC) || subtype.equals(FARSI) || subtype.equals(HEBREW)) {
+                assertTrue(subtypeName, SubtypeLocaleUtils.isRtlLanguage(subtype));
+            } else {
+                assertFalse(subtypeName, SubtypeLocaleUtils.isRtlLanguage(subtype));
+            }
+        }
     }
 }

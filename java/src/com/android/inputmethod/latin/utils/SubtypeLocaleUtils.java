@@ -25,9 +25,11 @@ import android.os.Build;
 import android.util.Log;
 import android.view.inputmethod.InputMethodSubtype;
 
+import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.DictionaryFactory;
 import com.android.inputmethod.latin.R;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -333,5 +335,24 @@ public final class SubtypeLocaleUtils {
         }
         final Locale locale = getSubtypeLocale(subtype);
         return StringUtils.capitalizeFirstCodePoint(locale.getLanguage(), locale);
+    }
+
+    // TODO: Get this information from the framework instead of maintaining here by ourselves.
+    // Sorted list of known Right-To-Left language codes.
+    private static final String[] SORTED_RTL_LANGUAGES = {
+        "ar", // Arabic
+        "fa", // Persian
+        "iw", // Hebrew
+    };
+    static {
+        Arrays.sort(SORTED_RTL_LANGUAGES);
+    }
+
+    // TODO: Remove @UsedForTesting annotation.
+    @UsedForTesting
+    public static boolean isRtlLanguage(final InputMethodSubtype subtype) {
+        final Locale locale = getSubtypeLocale(subtype);
+        final String language = locale.getLanguage();
+        return Arrays.binarySearch(SORTED_RTL_LANGUAGES, language) >= 0;
     }
 }
