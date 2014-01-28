@@ -1330,15 +1330,12 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     // TODO[IL]: Define a clear interface for this
     public void setSuggestedWords(final SuggestedWords words) {
-        mInputLogic.mSuggestedWords = words;
         if (mSuggestionStripView != null) {
             mSuggestionStripView.setSuggestions(words);
             mKeyboardSwitcher.onAutoCorrectionStateChanged(words.mWillAutoCorrect);
         }
-        setAutoCorrectionIndicator(words.mWillAutoCorrect);
-    }
-
-    private void setAutoCorrectionIndicator(final boolean newAutoCorrectionIndicator) {
+        mInputLogic.mSuggestedWords = words;
+        final boolean newAutoCorrectionIndicator = words.mWillAutoCorrect;
         // Put a blue underline to a word in TextView which will be auto-corrected.
         if (mInputLogic.mIsAutoCorrectionIndicatorOn != newAutoCorrectionIndicator
                 && mInputLogic.mWordComposer.isComposingWord()) {
