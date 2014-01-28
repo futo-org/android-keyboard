@@ -478,6 +478,25 @@ public final class InputLogic {
                 SuggestedWords.EMPTY, true /* dismissGestureFloatingPreviewText */);
     }
 
+    // TODO: on the long term, this method should become private, but it will be difficult.
+    // Especially, how do we deal with InputMethodService.onDisplayCompletions?
+    public void setSuggestedWords(final SuggestedWords suggestedWords) {
+        mSuggestedWords = suggestedWords;
+        final boolean newAutoCorrectionIndicator = suggestedWords.mWillAutoCorrect;
+        // Put a blue underline to a word in TextView which will be auto-corrected.
+        if (mIsAutoCorrectionIndicatorOn != newAutoCorrectionIndicator
+                && mWordComposer.isComposingWord()) {
+            mIsAutoCorrectionIndicatorOn = newAutoCorrectionIndicator;
+            final CharSequence textWithUnderline =
+                    getTextWithUnderline(mWordComposer.getTypedWord());
+            // TODO: when called from an updateSuggestionStrip() call that results from a posted
+            // message, this is called outside any batch edit. Potentially, this may result in some
+            // janky flickering of the screen, although the display speed makes it unlikely in
+            // the practice.
+            mConnection.setComposingText(textWithUnderline, 1);
+        }
+    }
+
     /**
      * Handle inputting a code point to the editor.
      *
