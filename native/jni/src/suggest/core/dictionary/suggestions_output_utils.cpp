@@ -58,12 +58,6 @@ const int SuggestionsOutputUtils::MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT = 16;
         ++outputWordIndex;
     }
 
-    // Initial value of the loop index for terminal nodes (words)
-    int doubleLetterTerminalIndex = -1;
-    DoubleLetterLevel doubleLetterLevel = NOT_A_DOUBLE_LETTER;
-    scoringPolicy->searchWordWithDoubleLetter(terminals, terminalSize,
-            &doubleLetterTerminalIndex, &doubleLetterLevel);
-
     int maxScore = S_INT_MIN;
     // Force autocorrection for obvious long multi-word suggestions when the top suggestion is
     // a long multiple words suggestion.
@@ -92,8 +86,8 @@ const int SuggestionsOutputUtils::MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT = 16;
         if (DEBUG_GEO_FULL) {
             terminalDicNode->dump("OUT:");
         }
-        const float doubleLetterCost = scoringPolicy->getDoubleLetterDemotionDistanceCost(
-                terminalIndex, doubleLetterTerminalIndex, doubleLetterLevel);
+        const float doubleLetterCost =
+                scoringPolicy->getDoubleLetterDemotionDistanceCost(terminalDicNode);
         const float compoundDistance = terminalDicNode->getCompoundDistance(languageWeight)
                 + doubleLetterCost;
         const bool isPossiblyOffensiveWord =
