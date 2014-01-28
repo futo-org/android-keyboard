@@ -349,6 +349,10 @@ public final class InputLogic {
             didAutoCorrect = handleNonSpecialCharacter(settingsValues, Constants.CODE_ENTER,
                     x, y, spaceState, keyboardSwitcher, handler);
             break;
+        case Constants.CODE_ALPHA_FROM_EMOJI:
+            // Note: Switching back from Emoji keyboard to the main keyboard is being handled in
+            // {@link KeyboardState#onCodeInput(int,int)}.
+            break;
         default:
             didAutoCorrect = handleNonSpecialCharacter(settingsValues,
                     code, x, y, spaceState, keyboardSwitcher, handler);
