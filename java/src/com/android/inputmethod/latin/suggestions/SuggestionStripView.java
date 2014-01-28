@@ -18,8 +18,10 @@ package com.android.inputmethod.latin.suggestions;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -56,6 +58,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
     }
 
     static final boolean DBG = LatinImeLogger.sDBG;
+    private static final float DEBUG_INFO_TEXT_SIZE_IN_DIP = 6.0f;
 
     private final ViewGroup mSuggestionsStrip;
     private final ViewGroup mAddToDictionaryStrip;
@@ -128,14 +131,17 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         mStripVisibilityGroup = new StripVisibilityGroup(mSuggestionsStrip, mAddToDictionaryStrip);
 
         for (int pos = 0; pos < SuggestedWords.MAX_SUGGESTIONS; pos++) {
-            final TextView word = (TextView)inflater.inflate(R.layout.suggestion_word, null);
+            final TextView word = new TextView(context, null, R.attr.suggestionWordStyle);
             word.setOnClickListener(this);
             word.setOnLongClickListener(this);
             mWordViews.add(word);
             final View divider = inflater.inflate(R.layout.suggestion_divider, null);
             divider.setOnClickListener(this);
             mDividerViews.add(divider);
-            mDebugInfoViews.add((TextView)inflater.inflate(R.layout.suggestion_info, null));
+            final TextView info = new TextView(context, null, R.attr.suggestionWordStyle);
+            info.setTextColor(Color.WHITE);
+            info.setTextSize(TypedValue.COMPLEX_UNIT_DIP, DEBUG_INFO_TEXT_SIZE_IN_DIP);
+            mDebugInfoViews.add(info);
         }
 
         mLayoutHelper = new SuggestionStripLayoutHelper(

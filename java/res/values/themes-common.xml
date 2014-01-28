@@ -127,7 +127,22 @@
         <item name="maxMoreSuggestionsRow">@integer/config_max_more_suggestions_row</item>
         <item name="minMoreSuggestionsWidth">@fraction/config_min_more_suggestions_width</item>
     </style>
-    <style name="SuggestionWord" />
+    <style name="SuggestionWord">
+        <item name="android:minWidth">@dimen/config_suggestion_min_width</item>
+        <item name="android:textSize">@dimen/config_suggestion_text_size</item>
+        <item name="android:gravity">center</item>
+        <item name="android:paddingLeft">@dimen/config_suggestion_text_horizontal_padding</item>
+        <item name="android:paddingTop">0dp</item>
+        <item name="android:paddingRight">@dimen/config_suggestion_text_horizontal_padding</item>
+        <item name="android:paddingBottom">0dp</item>
+        <!-- Provide a haptic feedback by ourselves based on the keyboard settings.
+             We just need to ignore the system's haptic feedback settings. -->
+        <item name="android:hapticFeedbackEnabled">false</item>
+        <item name="android:focusable">false</item>
+        <item name="android:clickable">false</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:ellipsize">none</item>
+    </style>
     <style name="MoreKeysKeyboardAnimation">
         <item name="android:windowEnterAnimation">@anim/more_keys_keyboard_fadein</item>
         <item name="android:windowExitAnimation">@anim/more_keys_keyboard_fadeout</item>
