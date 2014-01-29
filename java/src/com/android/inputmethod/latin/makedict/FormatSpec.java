@@ -192,10 +192,6 @@ public final class FormatSpec {
     static final int MINIMUM_SUPPORTED_VERSION = VERSION2;
     static final int MAXIMUM_SUPPORTED_VERSION = VERSION4;
 
-    // These options need to be the same numeric values as the one in the native reading code.
-    // TODO: Make the native reading code read this variable.
-    static final int CONTAINS_TIMESTAMP_FLAG = 0x10;
-
     // TODO: Make this value adaptative to content data, store it in the header, and
     // use it in the reading code.
     static final int MAX_WORD_LENGTH = Constants.DICTIONARY_MAX_WORD_LENGTH;
@@ -249,26 +245,26 @@ public final class FormatSpec {
     static final String TRIE_FILE_EXTENSION = ".trie";
     public static final String HEADER_FILE_EXTENSION = ".header";
     static final String FREQ_FILE_EXTENSION = ".freq";
-    static final String UNIGRAM_TIMESTAMP_FILE_EXTENSION = ".timestamp";
     // tat = Terminal Address Table
     static final String TERMINAL_ADDRESS_TABLE_FILE_EXTENSION = ".tat";
     static final String BIGRAM_FILE_EXTENSION = ".bigram";
     static final String SHORTCUT_FILE_EXTENSION = ".shortcut";
     static final String LOOKUP_TABLE_FILE_SUFFIX = "_lookup";
     static final String CONTENT_TABLE_FILE_SUFFIX = "_index";
+    static final int FLAGS_IN_FREQ_FILE_SIZE = 1;
     static final int FREQUENCY_AND_FLAGS_SIZE = 2;
     static final int TERMINAL_ADDRESS_TABLE_ADDRESS_SIZE = 3;
     static final int UNIGRAM_TIMESTAMP_SIZE = 4;
+    static final int UNIGRAM_COUNTER_SIZE = 1;
+    static final int UNIGRAM_LEVEL_SIZE = 1;
 
     // With the English main dictionary as of October 2013, the size of bigram address table is
     // is 345KB with the block size being 16.
     // This is 54% of that of full address table.
     static final int BIGRAM_ADDRESS_TABLE_BLOCK_SIZE = 16;
-    static final int BIGRAM_CONTENT_COUNT = 2;
+    static final int BIGRAM_CONTENT_COUNT = 1;
     static final int BIGRAM_FREQ_CONTENT_INDEX = 0;
-    static final int BIGRAM_TIMESTAMP_CONTENT_INDEX = 1;
     static final String BIGRAM_FREQ_CONTENT_ID = "_freq";
-    static final String BIGRAM_TIMESTAMP_CONTENT_ID = "_timestamp";
     static final int BIGRAM_TIMESTAMP_SIZE = 4;
     static final int BIGRAM_COUNTER_SIZE = 1;
     static final int BIGRAM_LEVEL_SIZE = 1;

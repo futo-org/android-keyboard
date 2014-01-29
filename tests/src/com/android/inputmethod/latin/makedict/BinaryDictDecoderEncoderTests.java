@@ -17,11 +17,11 @@
 package com.android.inputmethod.latin.makedict;
 
 import android.test.AndroidTestCase;
-import android.test.MoreAsserts;
 import android.test.suitebuilder.annotation.LargeTest;
 import android.util.Log;
 import android.util.SparseArray;
 
+import com.android.inputmethod.latin.BinaryDictionary;
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.CharEncoding;
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.DictBuffer;
 import com.android.inputmethod.latin.makedict.FormatSpec.FileHeader;
@@ -76,6 +76,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
 
     public BinaryDictDecoderEncoderTests(final long seed, final int maxUnigrams) {
         super();
+        BinaryDictionary.setCurrentTimeForTest(0);
         Log.e(TAG, "Testing dictionary: seed is " + seed);
         final Random random = new Random(seed);
         sWords.clear();
@@ -262,7 +263,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
                 getContext().getCacheDir());
 
         final FusionDictionary dict = new FusionDictionary(new PtNodeArray(),
-                BinaryDictUtils.makeDictionaryOptions(dictName, dictVersion));
+                BinaryDictUtils.makeDictionaryOptions(dictName, dictVersion, formatOptions));
         addUnigrams(words.size(), dict, words, shortcuts);
         addBigrams(dict, words, bigrams);
         checkDictionary(dict, words, bigrams, shortcuts);
@@ -317,7 +318,6 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
                 BinaryDictUtils.VERSION4_OPTIONS_WITHOUT_TIMESTAMP);
         runReadAndWriteTests(results, BinaryDictUtils.USE_BYTE_BUFFER,
                 BinaryDictUtils.VERSION4_OPTIONS_WITH_TIMESTAMP);
-
         for (final String result : results) {
             Log.d(TAG, result);
         }
@@ -344,14 +344,16 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
             final SparseArray<List<Integer>> expectedBigrams,
             final TreeMap<Integer, String> resultWords,
             final TreeMap<Integer, Integer> resultFrequencies,
-            final TreeMap<Integer, ArrayList<PendingAttribute>> resultBigrams) {
+            final TreeMap<Integer, ArrayList<PendingAttribute>> resultBigrams,
+            final boolean checkProbability) {
         // check unigrams
         final Set<String> actualWordsSet = new HashSet<String>(resultWords.values());
         final Set<String> expectedWordsSet = new HashSet<String>(expectedWords);
         assertEquals(actualWordsSet, expectedWordsSet);
-
-        for (int freq : resultFrequencies.values()) {
-            assertEquals(freq, UNIGRAM_FREQ);
+        if (checkProbability) {
+            for (int freq : resultFrequencies.values()) {
+                assertEquals(freq, UNIGRAM_FREQ);
+            }
         }
 
         // check bigrams
@@ -377,16 +379,19 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
                 }
                 actBigrams.get(word1).add(word2);
 
-                final int bigramFreq = BinaryDictIOUtils.reconstructBigramFrequency(
-                        unigramFreq, attr.mFrequency);
-                assertTrue(Math.abs(bigramFreq - BIGRAM_FREQ) < TOLERANCE_OF_BIGRAM_FREQ);
+                if (checkProbability) {
+                    final int bigramFreq = BinaryDictIOUtils.reconstructBigramFrequency(
+                            unigramFreq, attr.mFrequency);
+                    assertTrue(Math.abs(bigramFreq - BIGRAM_FREQ) < TOLERANCE_OF_BIGRAM_FREQ);
+                }
             }
         }
         assertEquals(actBigrams, expBigrams);
     }
 
     private long timeAndCheckReadUnigramsAndBigramsBinary(final File file, final List<String> words,
-            final SparseArray<List<Integer>> bigrams, final int bufferType) {
+            final SparseArray<List<Integer>> bigrams, final int bufferType,
+            final boolean checkProbability) {
         final TreeMap<Integer, String> resultWords = CollectionUtils.newTreeMap();
         final TreeMap<Integer, ArrayList<PendingAttribute>> resultBigrams =
                 CollectionUtils.newTreeMap();
@@ -404,7 +409,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
             Log.e(TAG, "UnsupportedFormatException", e);
         }
 
-        checkWordMap(words, bigrams, resultWords, resultFreqs, resultBigrams);
+        checkWordMap(words, bigrams, resultWords, resultFreqs, resultBigrams, checkProbability);
         return diff;
     }
 
@@ -418,13 +423,17 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
 
         // making the dictionary from lists of words.
         final FusionDictionary dict = new FusionDictionary(new PtNodeArray(),
-                BinaryDictUtils.makeDictionaryOptions(dictName, dictVersion));
+                BinaryDictUtils.makeDictionaryOptions(dictName, dictVersion, formatOptions));
         addUnigrams(words.size(), dict, words, null /* shortcutMap */);
         addBigrams(dict, words, bigrams);
 
         timeWritingDictToFile(file, dict, formatOptions);
 
-        long wordMap = timeAndCheckReadUnigramsAndBigramsBinary(file, words, bigrams, bufferType);
+        // Caveat: Currently, the Java code to read a v4 dictionary doesn't calculate the
+        // probability when there's a timestamp for the entry.
+        // TODO: Abandon the Java code, and implement the v4 dictionary reading code in native.
+        long wordMap = timeAndCheckReadUnigramsAndBigramsBinary(file, words, bigrams, bufferType,
+                !formatOptions.mHasTimestamp /* checkProbability */);
         long fullReading = timeReadingAndCheckDict(file, words, bigrams, null /* shortcutMap */,
                 bufferType);
 
@@ -517,7 +526,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
                 getContext().getCacheDir());
 
         final FusionDictionary dict = new FusionDictionary(new PtNodeArray(),
-                BinaryDictUtils.makeDictionaryOptions(dictName, dictVersion));
+                BinaryDictUtils.makeDictionaryOptions(dictName, dictVersion, formatOptions));
         addUnigrams(sWords.size(), dict, sWords, null /* shortcutMap */);
         addBigrams(dict, words, bigrams);
         timeWritingDictToFile(file, dict, formatOptions);

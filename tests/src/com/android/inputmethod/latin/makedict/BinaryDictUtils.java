@@ -36,11 +36,18 @@ public class BinaryDictUtils {
     public static final FormatSpec.FormatOptions VERSION4_OPTIONS_WITH_TIMESTAMP =
             new FormatSpec.FormatOptions(FormatSpec.VERSION4, true /* hasTimestamp */);
 
-    public static DictionaryOptions makeDictionaryOptions(final String id, final String version) {
+    public static DictionaryOptions makeDictionaryOptions(final String id, final String version,
+            final FormatSpec.FormatOptions formatOptions) {
         final DictionaryOptions options = new DictionaryOptions(new HashMap<String, String>());
         options.mAttributes.put(FileHeader.DICTIONARY_LOCALE_ATTRIBUTE, "en_US");
         options.mAttributes.put(FileHeader.DICTIONARY_ID_ATTRIBUTE, id);
         options.mAttributes.put(FileHeader.DICTIONARY_VERSION_ATTRIBUTE, version);
+        if (formatOptions.mHasTimestamp) {
+            options.mAttributes.put(FileHeader.HAS_HISTORICAL_INFO_ATTRIBUTE,
+                    FileHeader.ATTRIBUTE_VALUE_TRUE);
+            options.mAttributes.put(FileHeader.USES_FORGETTING_CURVE_ATTRIBUTE,
+                    FileHeader.ATTRIBUTE_VALUE_TRUE);
+        }
         return options;
     }
 

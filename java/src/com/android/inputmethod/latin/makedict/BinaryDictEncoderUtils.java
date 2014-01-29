@@ -756,14 +756,6 @@ public class BinaryDictEncoderUtils {
     }
 
     /**
-     * Makes the 2-byte value for options flags. Unused at the moment, and always 0.
-     */
-    private static final int makeOptionsValue(final FormatOptions formatOptions) {
-        // TODO: why doesn't this handle CONTAINS_TIMESTAMP_FLAG?
-        return 0;
-    }
-
-    /**
      * Makes the flag value for a shortcut.
      *
      * @param more whether there are more attributes after this one.
@@ -949,7 +941,8 @@ public class BinaryDictEncoderUtils {
         headerBuffer.write((byte) (0xFF & version));
 
         // Options flags
-        final int options = makeOptionsValue(formatOptions);
+        // TODO: Remove this field.
+        final int options = 0;
         headerBuffer.write((byte) (0xFF & (options >> 8)));
         headerBuffer.write((byte) (0xFF & options));
         final int headerSizeOffset = headerBuffer.size();

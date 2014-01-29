@@ -143,7 +143,7 @@ public class Ver4DictDecoder extends AbstractDictDecoder {
         mTerminalAddressTableBuffer = mBufferFactory.getDictionaryBuffer(
                 getFile(FILETYPE_TERMINAL_ADDRESS_TABLE));
         mBigramReader = new BigramContentReader(mDictDirectory.getName(),
-                mDictDirectory, mBufferFactory, false);
+                mDictDirectory, mBufferFactory);
         mBigramReader.openBuffers();
         mShortcutReader = new ShortcutContentReader(mDictDirectory.getName(), mDictDirectory,
                 mBufferFactory);
@@ -184,39 +184,24 @@ public class Ver4DictDecoder extends AbstractDictDecoder {
      */
     protected static class BigramContentReader extends SparseTableContentReader {
         public BigramContentReader(final String name, final File baseDir,
-                final DictionaryBufferFactory factory, final boolean hasTimestamp) {
+                final DictionaryBufferFactory factory) {
             super(name + FormatSpec.BIGRAM_FILE_EXTENSION,
                     FormatSpec.BIGRAM_ADDRESS_TABLE_BLOCK_SIZE, baseDir,
-                    getContentFilenames(name, hasTimestamp), getContentIds(hasTimestamp), factory);
+                    getContentFilenames(name), getContentIds(), factory);
         }
 
         // TODO: Consolidate this method and BigramContentWriter.getContentFilenames.
-        protected static String[] getContentFilenames(final String name,
-                final boolean hasTimestamp) {
-            final String[] contentFilenames;
-            if (hasTimestamp) {
-                contentFilenames = new String[] { name + FormatSpec.BIGRAM_FILE_EXTENSION,
-                        name + FormatSpec.BIGRAM_FILE_EXTENSION };
-            } else {
-                contentFilenames = new String[] { name + FormatSpec.BIGRAM_FILE_EXTENSION };
-            }
-            return contentFilenames;
+        protected static String[] getContentFilenames(final String name) {
+            return new String[] { name + FormatSpec.BIGRAM_FILE_EXTENSION };
         }
 
         // TODO: Consolidate this method and BigramContentWriter.getContentIds.
-        protected static String[] getContentIds(final boolean hasTimestamp) {
-            final String[] contentIds;
-            if (hasTimestamp) {
-                contentIds = new String[] { FormatSpec.BIGRAM_FREQ_CONTENT_ID,
-                        FormatSpec.BIGRAM_TIMESTAMP_CONTENT_ID };
-            } else {
-                contentIds = new String[] { FormatSpec.BIGRAM_FREQ_CONTENT_ID };
-            }
-            return contentIds;
+        protected static String[] getContentIds() {
+            return new String[] { FormatSpec.BIGRAM_FREQ_CONTENT_ID };
         }
 
         public ArrayList<PendingAttribute> readTargetsAndFrequencies(final int terminalId,
-                final DictBuffer terminalAddressTableBuffer) {
+                final DictBuffer terminalAddressTableBuffer, final FormatOptions options) {
             final ArrayList<PendingAttribute> bigrams = CollectionUtils.newArrayList();
             read(FormatSpec.BIGRAM_FREQ_CONTENT_INDEX, terminalId,
                     new SparseTableContentReaderInterface() {
@@ -226,14 +211,25 @@ public class Ver4DictDecoder extends AbstractDictDecoder {
                                 // If bigrams.size() reaches FormatSpec.MAX_BIGRAMS_IN_A_PTNODE,
                                 // remaining bigram entries are ignored.
                                 final int bigramFlags = buffer.readUnsignedByte();
+                                final int probability;
+
+                                if (options.mHasTimestamp) {
+                                    probability = buffer.readUnsignedByte();
+                                    final int pos = buffer.position();
+                                    // Skip historical info.
+                                    buffer.position(pos + FormatSpec.BIGRAM_TIMESTAMP_SIZE
+                                            + FormatSpec.BIGRAM_LEVEL_SIZE
+                                            + FormatSpec.BIGRAM_COUNTER_SIZE);
+                                } else {
+                                    probability = bigramFlags
+                                            & FormatSpec.FLAG_BIGRAM_SHORTCUT_ATTR_FREQUENCY;
+                                }
                                 final int targetTerminalId = buffer.readUnsignedInt24();
                                 terminalAddressTableBuffer.position(targetTerminalId
                                         * FormatSpec.TERMINAL_ADDRESS_TABLE_ADDRESS_SIZE);
                                 final int targetAddress =
                                         terminalAddressTableBuffer.readUnsignedInt24();
-                                bigrams.add(new PendingAttribute(bigramFlags
-                                        & FormatSpec.FLAG_BIGRAM_SHORTCUT_ATTR_FREQUENCY,
-                                        targetAddress));
+                                bigrams.add(new PendingAttribute(probability, targetAddress));
                                 if (0 == (bigramFlags
                                         & FormatSpec.FLAG_BIGRAM_SHORTCUT_ATTR_HAS_NEXT)) {
                                     break;
@@ -286,8 +282,19 @@ public class Ver4DictDecoder extends AbstractDictDecoder {
     }
 
     protected static class PtNodeReader extends AbstractDictDecoder.PtNodeReader {
-        protected static int readFrequency(final DictBuffer frequencyBuffer, final int terminalId) {
-            frequencyBuffer.position(terminalId * FormatSpec.FREQUENCY_AND_FLAGS_SIZE + 1);
+        protected static int readFrequency(final DictBuffer frequencyBuffer, final int terminalId,
+                final FormatOptions formatOptions) {
+            final int readingPos;
+            if (formatOptions.mHasTimestamp) {
+                final int entrySize = FormatSpec.FREQUENCY_AND_FLAGS_SIZE
+                        + FormatSpec.UNIGRAM_TIMESTAMP_SIZE + FormatSpec.UNIGRAM_LEVEL_SIZE
+                        + FormatSpec.UNIGRAM_COUNTER_SIZE;
+                readingPos = terminalId * entrySize + FormatSpec.FLAGS_IN_FREQ_FILE_SIZE;
+            } else {
+                readingPos = terminalId * FormatSpec.FREQUENCY_AND_FLAGS_SIZE
+                        + FormatSpec.FLAGS_IN_FREQ_FILE_SIZE;
+            }
+            frequencyBuffer.position(readingPos);
             return frequencyBuffer.readUnsignedByte();
         }
 
@@ -354,12 +361,12 @@ public class Ver4DictDecoder extends AbstractDictDecoder {
     }
 
     @Override
-    public PtNodeInfo readPtNode(int ptNodePos, FormatOptions options) {
+    public PtNodeInfo readPtNode(final int ptNodePos, final FormatOptions options) {
         final Ver4PtNodeInfo nodeInfo = readVer4PtNodeInfo(ptNodePos, options);
 
         final int frequency;
         if (0 != (FormatSpec.FLAG_IS_TERMINAL & nodeInfo.mFlags)) {
-            frequency = PtNodeReader.readFrequency(mFrequencyBuffer, nodeInfo.mTerminalId);
+            frequency = PtNodeReader.readFrequency(mFrequencyBuffer, nodeInfo.mTerminalId, options);
         } else {
             frequency = PtNode.NOT_A_TERMINAL;
         }
@@ -367,7 +374,7 @@ public class Ver4DictDecoder extends AbstractDictDecoder {
         final ArrayList<WeightedString> shortcutTargets = mShortcutReader.readShortcuts(
                 nodeInfo.mTerminalId);
         final ArrayList<PendingAttribute> bigrams = mBigramReader.readTargetsAndFrequencies(
-                nodeInfo.mTerminalId, mTerminalAddressTableBuffer);
+                nodeInfo.mTerminalId, mTerminalAddressTableBuffer, options);
 
         return new PtNodeInfo(ptNodePos, ptNodePos + nodeInfo.mNodeSize, nodeInfo.mFlags,
                 nodeInfo.mCharacters, frequency, nodeInfo.mParentPos, nodeInfo.mChildrenPos,

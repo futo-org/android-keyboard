@@ -61,6 +61,7 @@ public final class FusionDictionary implements Iterable<Word> {
             mData = new ArrayList<PtNode>();
         }
         public PtNodeArray(ArrayList<PtNode> data) {
+            Collections.sort(data, PTNODE_COMPARATOR);
             mData = data;
         }
     }
