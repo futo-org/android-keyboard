@@ -505,6 +505,14 @@ public class DictionaryFacilitatorForSuggest {
         }
     }
 
+    @UsedForTesting
+    public void clearUserHistoryDictionary() {
+        if (mUserHistoryDictionary == null) {
+            return;
+        }
+        mUserHistoryDictionary.clearAndFlushDictionary();
+    }
+
     // This method gets called only when the IME receives a notification to remove the
     // personalization dictionary.
     public void clearPersonalizationDictionary() {
