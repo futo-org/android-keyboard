@@ -31,13 +31,17 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="invisible">
-        <include
-            layout="@layout/suggestion_word"
-            android:id="@+id/word_to_save" />
+        <TextView
+            android:id="@+id/word_to_save"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            style="?attr/suggestionWordStyle" />
         <include
             layout="@layout/suggestion_divider" />
-        <include
-            layout="@layout/suggestion_word"
-            android:id="@+id/hint_add_to_dictionary" />
+        <TextView
+            android:id="@+id/hint_add_to_dictionary"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            style="?attr/suggestionWordStyle" />
     </LinearLayout>
 </merge>
