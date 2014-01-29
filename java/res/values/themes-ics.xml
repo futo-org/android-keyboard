@@ -119,7 +119,11 @@
         <item name="colorSuggested">@color/suggested_word_color_ics</item>
         <item name="alphaObsoleted">70%</item>
     </style>
-    <style name="SuggestionWord.ICS">
+    <style
+        name="SuggestionWord.ICS"
+        parent="SuggestionWord"
+    >
         <item name="android:background">@drawable/btn_suggestion_ics</item>
+        <item name="android:textColor">@color/highlight_color_ics</item>
     </style>
 </resources>

@@ -140,7 +140,11 @@
         <item name="colorSuggested">@color/highlight_color_gb</item>
         <item name="alphaObsoleted">50%</item>
     </style>
-    <style name="SuggestionWord.GB">
+    <style
+        name="SuggestionWord.GB"
+        parent="SuggestionWord"
+    >
         <item name="android:background">@drawable/btn_suggestion_gb</item>
+        <item name="android:textColor">@color/highlight_color_gb</item>
     </style>
 </resources>
