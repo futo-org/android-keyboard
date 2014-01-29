@@ -21,7 +21,11 @@ import android.test.suitebuilder.annotation.LargeTest;
 import android.util.Pair;
 
 import com.android.inputmethod.latin.makedict.CodePointUtils;
+import com.android.inputmethod.latin.makedict.DictDecoder;
 import com.android.inputmethod.latin.makedict.FormatSpec;
+import com.android.inputmethod.latin.makedict.FusionDictionary;
+import com.android.inputmethod.latin.makedict.FusionDictionary.PtNode;
+import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
 import com.android.inputmethod.latin.utils.FileUtils;
 
 import java.io.File;
@@ -98,6 +102,10 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
                 getContext().getCacheDir());
         FileUtils.deleteRecursively(file);
         Map<String, String> attributeMap = new HashMap<String, String>();
+        attributeMap.put(FormatSpec.FileHeader.DICTIONARY_ID_ATTRIBUTE, dictId);
+        attributeMap.put(FormatSpec.FileHeader.DICTIONARY_LOCALE_ATTRIBUTE, dictId);
+        attributeMap.put(FormatSpec.FileHeader.DICTIONARY_VERSION_ATTRIBUTE,
+                String.valueOf(TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis())));
         attributeMap.put(FormatSpec.FileHeader.USES_FORGETTING_CURVE_ATTRIBUTE,
                 FormatSpec.FileHeader.ATTRIBUTE_VALUE_TRUE);
         attributeMap.put(FormatSpec.FileHeader.HAS_HISTORICAL_INFO_ATTRIBUTE,
@@ -117,6 +125,50 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
 
     private static int stopTestModeInNativeCode() {
         return BinaryDictionary.setCurrentTimeForTest(-1);
+    }
+
+    public void testReadDictInJavaSide() {
+        testReadDictInJavaSide(FormatSpec.VERSION4);
+    }
+
+    private void testReadDictInJavaSide(final int formatVersion) {
+        setCurrentTimeForTestMode(mCurrentTime);
+        File dictFile = null;
+        try {
+            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary", formatVersion);
+        } catch (IOException e) {
+            fail("IOException while writing an initial dictionary : " + e);
+        }
+        BinaryDictionary binaryDictionary = new BinaryDictionary(dictFile.getAbsolutePath(),
+                0 /* offset */, dictFile.length(), true /* useFullEditDistance */,
+                Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
+        addUnigramWord(binaryDictionary, "a", DUMMY_PROBABILITY);
+        addUnigramWord(binaryDictionary, "ab", DUMMY_PROBABILITY);
+        addUnigramWord(binaryDictionary, "aaa", DUMMY_PROBABILITY);
+        addBigramWords(binaryDictionary, "a", "aaa", DUMMY_PROBABILITY);
+        binaryDictionary.flushWithGC();
+        binaryDictionary.close();
+
+        final DictDecoder dictDecoder = FormatSpec.getDictDecoder(dictFile);
+        try {
+            final FusionDictionary dict = dictDecoder.readDictionaryBinary(null,
+                    false /* deleteDictIfBroken */);
+            PtNode ptNode = FusionDictionary.findWordInTree(dict.mRootNodeArray, "a");
+            assertNotNull(ptNode);
+            assertTrue(ptNode.isTerminal());
+            assertNotNull(ptNode.getBigram("aaa"));
+            ptNode = FusionDictionary.findWordInTree(dict.mRootNodeArray, "ab");
+            assertNotNull(ptNode);
+            assertTrue(ptNode.isTerminal());
+            ptNode = FusionDictionary.findWordInTree(dict.mRootNodeArray, "aaa");
+            assertNotNull(ptNode);
+            assertTrue(ptNode.isTerminal());
+        } catch (IOException e) {
+            fail("IOException while reading dictionary: " + e);
+        } catch (UnsupportedFormatException e) {
+            fail("Unsupported format: " + e);
+        }
+        dictFile.delete();
     }
 
     public void testControlCurrentTime() {

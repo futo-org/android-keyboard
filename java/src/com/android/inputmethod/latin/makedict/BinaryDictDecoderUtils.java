@@ -499,7 +499,6 @@ public final class BinaryDictDecoderUtils {
         final int nodeArrayOriginPos = dictDecoder.getPosition();
 
         do { // Scan the linked-list node.
-            final int nodeArrayHeadPos = dictDecoder.getPosition();
             final int count = dictDecoder.readPtNodeCount();
             int groupPos = dictDecoder.getPosition();
             for (int i = count; i > 0; --i) { // Scan the array of PtNode.

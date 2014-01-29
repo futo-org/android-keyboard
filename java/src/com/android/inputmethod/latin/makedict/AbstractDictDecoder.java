@@ -48,7 +48,7 @@ public abstract class AbstractDictDecoder implements DictDecoder {
           throw new UnsupportedFormatException("Unsupported version : " + version);
         }
         // TODO: Remove this field.
-        final int optionsFlags = HeaderReader.readOptionFlags(headerBuffer);
+        HeaderReader.readOptionFlags(headerBuffer);
         final int headerSize = HeaderReader.readHeaderSize(headerBuffer);
         if (headerSize < 0) {
             throw new UnsupportedFormatException("header size can't be negative.");
@@ -59,8 +59,8 @@ public abstract class AbstractDictDecoder implements DictDecoder {
 
         final FileHeader header = new FileHeader(headerSize,
                 new FusionDictionary.DictionaryOptions(attributes),
-                new FormatOptions(version,
-                        0 != (optionsFlags & FormatSpec.CONTAINS_TIMESTAMP_FLAG)));
+                new FormatOptions(version, FileHeader.ATTRIBUTE_VALUE_TRUE.equals(
+                        attributes.get(FileHeader.HAS_HISTORICAL_INFO_ATTRIBUTE))));
         return header;
     }
 
