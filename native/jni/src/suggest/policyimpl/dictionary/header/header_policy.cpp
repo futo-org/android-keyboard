@@ -24,7 +24,7 @@ const char *const HeaderPolicy::REQUIRES_GERMAN_UMLAUT_PROCESSING_KEY =
         "REQUIRES_GERMAN_UMLAUT_PROCESSING";
 // TODO: Change attribute string to "IS_DECAYING_DICT".
 const char *const HeaderPolicy::IS_DECAYING_DICT_KEY = "USES_FORGETTING_CURVE";
-const char *const HeaderPolicy::LAST_UPDATED_TIME_KEY = "date";
+const char *const HeaderPolicy::DATE_KEY = "date";
 const char *const HeaderPolicy::LAST_DECAYED_TIME_KEY = "LAST_DECAYED_TIME";
 const char *const HeaderPolicy::UNIGRAM_COUNT_KEY = "UNIGRAM_COUNT";
 const char *const HeaderPolicy::BIGRAM_COUNT_KEY = "BIGRAM_COUNT";
@@ -73,13 +73,13 @@ bool HeaderPolicy::readRequiresGermanUmlautProcessing() const {
             REQUIRES_GERMAN_UMLAUT_PROCESSING_KEY, false);
 }
 
-bool HeaderPolicy::fillInAndWriteHeaderToBuffer(const bool updatesLastUpdatedTime,
-        const bool updatesLastDecayedTime, const int unigramCount, const int bigramCount,
+bool HeaderPolicy::fillInAndWriteHeaderToBuffer(const bool updatesLastDecayedTime,
+        const int unigramCount, const int bigramCount,
         const int extendedRegionSize, BufferWithExtendableBuffer *const outBuffer) const {
     int writingPos = 0;
     HeaderReadWriteUtils::AttributeMap attributeMapToWrite(mAttributeMap);
-    fillInHeader(updatesLastDecayedTime, updatesLastDecayedTime,
-            unigramCount, bigramCount, extendedRegionSize, &attributeMapToWrite);
+    fillInHeader(updatesLastDecayedTime, unigramCount, bigramCount,
+            extendedRegionSize, &attributeMapToWrite);
     if (!HeaderReadWriteUtils::writeDictionaryVersion(outBuffer, mDictFormatVersion,
             &writingPos)) {
         return false;
@@ -106,18 +106,16 @@ bool HeaderPolicy::fillInAndWriteHeaderToBuffer(const bool updatesLastUpdatedTim
     return true;
 }
 
-void HeaderPolicy::fillInHeader(const bool updatesLastUpdatedTime,
-        const bool updatesLastDecayedTime, const int unigramCount, const int bigramCount,
-        const int extendedRegionSize, HeaderReadWriteUtils::AttributeMap *outAttributeMap) const {
+void HeaderPolicy::fillInHeader(const bool updatesLastDecayedTime, const int unigramCount,
+        const int bigramCount, const int extendedRegionSize,
+        HeaderReadWriteUtils::AttributeMap *outAttributeMap) const {
     HeaderReadWriteUtils::setIntAttribute(outAttributeMap, UNIGRAM_COUNT_KEY, unigramCount);
     HeaderReadWriteUtils::setIntAttribute(outAttributeMap, BIGRAM_COUNT_KEY, bigramCount);
     HeaderReadWriteUtils::setIntAttribute(outAttributeMap, EXTENDED_REGION_SIZE_KEY,
             extendedRegionSize);
-    if (updatesLastUpdatedTime) {
-        // Set current time as the last updated time.
-        HeaderReadWriteUtils::setIntAttribute(outAttributeMap, LAST_UPDATED_TIME_KEY,
-                TimeKeeper::peekCurrentTime());
-    }
+    // Set the current time as the generation time.
+    HeaderReadWriteUtils::setIntAttribute(outAttributeMap, DATE_KEY,
+            TimeKeeper::peekCurrentTime());
     if (updatesLastDecayedTime) {
         // Set current time as the last updated time.
         HeaderReadWriteUtils::setIntAttribute(outAttributeMap, LAST_DECAYED_TIME_KEY,

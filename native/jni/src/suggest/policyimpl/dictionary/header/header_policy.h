@@ -39,8 +39,8 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
               mRequiresGermanUmlautProcessing(readRequiresGermanUmlautProcessing()),
               mIsDecayingDict(HeaderReadWriteUtils::readBoolAttributeValue(&mAttributeMap,
                       IS_DECAYING_DICT_KEY, false /* defaultValue */)),
-              mLastUpdatedTime(HeaderReadWriteUtils::readIntAttributeValue(&mAttributeMap,
-                      LAST_UPDATED_TIME_KEY, TimeKeeper::peekCurrentTime() /* defaultValue */)),
+              mDate(HeaderReadWriteUtils::readIntAttributeValue(&mAttributeMap,
+                      DATE_KEY, TimeKeeper::peekCurrentTime() /* defaultValue */)),
               mLastDecayedTime(HeaderReadWriteUtils::readIntAttributeValue(&mAttributeMap,
                       LAST_DECAYED_TIME_KEY, TimeKeeper::peekCurrentTime() /* defaultValue */)),
               mUnigramCount(HeaderReadWriteUtils::readIntAttributeValue(&mAttributeMap,
@@ -62,10 +62,10 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
               mRequiresGermanUmlautProcessing(readRequiresGermanUmlautProcessing()),
               mIsDecayingDict(HeaderReadWriteUtils::readBoolAttributeValue(&mAttributeMap,
                       IS_DECAYING_DICT_KEY, false /* defaultValue */)),
-              mLastUpdatedTime(HeaderReadWriteUtils::readIntAttributeValue(&mAttributeMap,
-                      LAST_UPDATED_TIME_KEY, TimeKeeper::peekCurrentTime() /* defaultValue */)),
+              mDate(HeaderReadWriteUtils::readIntAttributeValue(&mAttributeMap,
+                      DATE_KEY, TimeKeeper::peekCurrentTime() /* defaultValue */)),
               mLastDecayedTime(HeaderReadWriteUtils::readIntAttributeValue(&mAttributeMap,
-                      LAST_UPDATED_TIME_KEY, TimeKeeper::peekCurrentTime() /* defaultValue */)),
+                      DATE_KEY, TimeKeeper::peekCurrentTime() /* defaultValue */)),
               mUnigramCount(0), mBigramCount(0), mExtendedRegionSize(0),
               mHasHistoricalInfoOfWords(HeaderReadWriteUtils::readBoolAttributeValue(
                       &mAttributeMap, HAS_HISTORICAL_INFO_KEY, false /* defaultValue */)) {}
@@ -75,7 +75,7 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
             : mDictFormatVersion(FormatUtils::UNKNOWN_VERSION), mDictionaryFlags(0), mSize(0),
               mAttributeMap(), mMultiWordCostMultiplier(0.0f),
               mRequiresGermanUmlautProcessing(false), mIsDecayingDict(false),
-              mLastUpdatedTime(0), mLastDecayedTime(0), mUnigramCount(0), mBigramCount(0),
+              mDate(0), mLastDecayedTime(0), mUnigramCount(0), mBigramCount(0),
               mExtendedRegionSize(0), mHasHistoricalInfoOfWords(false) {}
 
     ~HeaderPolicy() {}
@@ -122,8 +122,8 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
         return mRequiresGermanUmlautProcessing;
     }
 
-    AK_FORCE_INLINE int getLastUpdatedTime() const {
-        return mLastUpdatedTime;
+    AK_FORCE_INLINE int getDate() const {
+        return mDate;
     }
 
     AK_FORCE_INLINE int getLastDecayedTime() const {
@@ -149,11 +149,11 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
     void readHeaderValueOrQuestionMark(const char *const key,
             int *outValue, int outValueSize) const;
 
-    bool fillInAndWriteHeaderToBuffer(const bool updatesLastUpdatedTime,
-            const bool updatesLastDecayedTime, const int unigramCount, const int bigramCount,
+    bool fillInAndWriteHeaderToBuffer(const bool updatesLastDecayedTime,
+            const int unigramCount, const int bigramCount,
             const int extendedRegionSize, BufferWithExtendableBuffer *const outBuffer) const;
 
-    void fillInHeader(const bool updatesLastUpdatedTime, const bool updatesLastDecayedTime,
+    void fillInHeader(const bool updatesLastDecayedTime,
             const int unigramCount, const int bigramCount, const int extendedRegionSize,
             HeaderReadWriteUtils::AttributeMap *outAttributeMap) const;
 
@@ -163,7 +163,7 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
     static const char *const MULTIPLE_WORDS_DEMOTION_RATE_KEY;
     static const char *const REQUIRES_GERMAN_UMLAUT_PROCESSING_KEY;
     static const char *const IS_DECAYING_DICT_KEY;
-    static const char *const LAST_UPDATED_TIME_KEY;
+    static const char *const DATE_KEY;
     static const char *const LAST_DECAYED_TIME_KEY;
     static const char *const UNIGRAM_COUNT_KEY;
     static const char *const BIGRAM_COUNT_KEY;
@@ -179,7 +179,7 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
     const float mMultiWordCostMultiplier;
     const bool mRequiresGermanUmlautProcessing;
     const bool mIsDecayingDict;
-    const int mLastUpdatedTime;
+    const int mDate;
     const int mLastDecayedTime;
     const int mUnigramCount;
     const int mBigramCount;
