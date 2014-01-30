@@ -42,6 +42,7 @@
             android:id="@+id/hint_add_to_dictionary"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:textAlignment="viewStart"
             style="?attr/suggestionWordStyle" />
     </LinearLayout>
 </merge>

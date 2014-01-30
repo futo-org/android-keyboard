@@ -186,8 +186,8 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         return mStripVisibilityGroup.isShowingAddToDictionaryStrip();
     }
 
-    public void showAddToDictionaryHint(final String word, final CharSequence hintText) {
-        mLayoutHelper.layoutAddToDictionaryHint(word, mAddToDictionaryStrip, getWidth(), hintText);
+    public void showAddToDictionaryHint(final String word) {
+        mLayoutHelper.layoutAddToDictionaryHint(word, mAddToDictionaryStrip, getWidth());
         // {@link TextView#setTag()} is used to hold the word to be added to dictionary. The word
         // will be extracted at {@link #onClick(View)}.
         mAddToDictionaryStrip.setTag(word);

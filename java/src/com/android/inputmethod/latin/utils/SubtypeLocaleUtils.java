@@ -347,9 +347,12 @@ public final class SubtypeLocaleUtils {
         Arrays.sort(SORTED_RTL_LANGUAGES);
     }
 
-    public static boolean isRtlLanguage(final InputMethodSubtype subtype) {
-        final Locale locale = getSubtypeLocale(subtype);
+    public static boolean isRtlLanguage(final Locale locale) {
         final String language = locale.getLanguage();
         return Arrays.binarySearch(SORTED_RTL_LANGUAGES, language) >= 0;
+    }
+
+    public static boolean isRtlLanguage(final InputMethodSubtype subtype) {
+        return isRtlLanguage(getSubtypeLocale(subtype));
     }
 }
