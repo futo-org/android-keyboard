@@ -21,7 +21,7 @@ namespace latinime {
 void UnigramProperty::outputProperties(JNIEnv *const env, jintArray outCodePoints,
         jbooleanArray outFlags, jintArray outProbability, jintArray outHistoricalInfo,
         jobject outShortcutTargets, jobject outShortcutProbabilities) const {
-    env->SetIntArrayRegion(outCodePoints, 0 /* start */, mCodePointCount, mCodePoints);
+    env->SetIntArrayRegion(outCodePoints, 0 /* start */, mCodePoints.size(), &mCodePoints[0]);
     jboolean flags[] = {mIsNotAWord, mIsBlacklisted, mHasBigrams, mHasShortcuts};
     env->SetBooleanArrayRegion(outFlags, 0 /* start */, NELEMS(flags), flags);
     env->SetIntArrayRegion(outProbability, 0 /* start */, 1 /* len */, &mProbability);

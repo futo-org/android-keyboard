@@ -326,6 +326,8 @@ const UnigramProperty Ver4PatriciaTriePolicy::getUnigramProperty(const int *cons
         return UnigramProperty();
     }
     const PtNodeParams ptNodeParams = mNodeReader.fetchNodeInfoInBufferFromPtNodePos(ptNodePos);
+    std::vector<int> codePointVector(ptNodeParams.getCodePoints(),
+            ptNodeParams.getCodePoints() + ptNodeParams.getCodePointCount());
     const ProbabilityEntry probabilityEntry =
             mBuffers.get()->getProbabilityDictContent()->getProbabilityEntry(
                     ptNodeParams.getTerminalId());
@@ -349,8 +351,8 @@ const UnigramProperty Ver4PatriciaTriePolicy::getUnigramProperty(const int *cons
             shortcutProbabilities.push_back(shortcutProbability);
         }
     }
-    return UnigramProperty(ptNodeParams.getCodePoints(), ptNodeParams.getCodePointCount(),
-            ptNodeParams.isNotAWord(), ptNodeParams.isBlacklisted(), ptNodeParams.hasBigrams(),
+    return UnigramProperty(&codePointVector, ptNodeParams.isNotAWord(),
+            ptNodeParams.isBlacklisted(), ptNodeParams.hasBigrams(),
             ptNodeParams.hasShortcutTargets(), ptNodeParams.getProbability(),
             historicalInfo->getTimeStamp(), historicalInfo->getLevel(),
             historicalInfo->getCount(), &shortcutTargets, &shortcutProbabilities);
