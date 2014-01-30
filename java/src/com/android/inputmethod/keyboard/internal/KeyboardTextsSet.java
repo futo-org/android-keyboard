@@ -1512,7 +1512,8 @@ public final class KeyboardTextsSet {
         /* 104 */ "\u061F",
         /* 105 */ "!fixedColumnOrder!4,:,!,\u061F,\u061B,-,/,\u00AB|\u00BB,\u00BB|\u00AB",
         /* 106 */ null,
-        /* 107 */ "\u061F",
+        // U+064B: "ً" ARABIC FATHATAN
+        /* 107 */ "\u064B",
         /* 108 */ "!text/more_keys_for_arabic_diacritics",
         /* 109 */ null,
         /* 110 */ "\u064B",
