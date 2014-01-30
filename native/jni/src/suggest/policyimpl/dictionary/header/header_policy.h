@@ -149,9 +149,13 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
     void readHeaderValueOrQuestionMark(const char *const key,
             int *outValue, int outValueSize) const;
 
-    bool writeHeaderToBuffer(BufferWithExtendableBuffer *const bufferToWrite,
-            const bool updatesLastUpdatedTime, const bool updatesLastDecayedTime,
-            const int unigramCount, const int bigramCount, const int extendedRegionSize) const;
+    bool fillInAndWriteHeaderToBuffer(const bool updatesLastUpdatedTime,
+            const bool updatesLastDecayedTime, const int unigramCount, const int bigramCount,
+            const int extendedRegionSize, BufferWithExtendableBuffer *const outBuffer) const;
+
+    void fillInHeader(const bool updatesLastUpdatedTime, const bool updatesLastDecayedTime,
+            const int unigramCount, const int bigramCount, const int extendedRegionSize,
+            HeaderReadWriteUtils::AttributeMap *outAttributeMap) const;
 
  private:
     DISALLOW_COPY_AND_ASSIGN(HeaderPolicy);
