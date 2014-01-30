@@ -1519,18 +1519,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
     }
 
-    public void unsetIsAutoCorrectionIndicatorOnAndCallShowSuggestionStrip(
-            final SuggestedWords suggestedWords) {
-        // Note that it's very important here that suggestedWords.mWillAutoCorrect is false.
-        // We never want to auto-correct on a resumed suggestion. Please refer to the three places
-        // above in restartSuggestionsOnWordTouchedByCursor() where suggestedWords is affected.
-        // We also need to unset mIsAutoCorrectionIndicatorOn to avoid showSuggestionStrip touching
-        // the text to adapt it.
-        // TODO: remove mIsAutoCorrectionIndicatorOn (see comment on definition)
-        mInputLogic.mIsAutoCorrectionIndicatorOn = false;
-        mHandler.showSuggestionStrip(suggestedWords);
-    }
-
     // TODO: Make this private
     // Outside LatinIME, only used by the {@link InputTestsBase} test suite.
     @UsedForTesting

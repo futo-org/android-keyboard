@@ -1217,8 +1217,8 @@ public final class InputLogic {
                                 // Since there is only one word, willAutoCorrect is false.
                                 suggestedWords = suggestedWordsIncludingTypedWord;
                             }
-                            mLatinIME.unsetIsAutoCorrectionIndicatorOnAndCallShowSuggestionStrip(
-                                    suggestedWords);
+                            mIsAutoCorrectionIndicatorOn = false;
+                            mLatinIME.mHandler.showSuggestionStrip(suggestedWords);
                         }});
         } else {
             // We found suggestion spans in the word. We'll create the SuggestedWords out of
@@ -1227,7 +1227,8 @@ public final class InputLogic {
                     true /* typedWordValid */, false /* willAutoCorrect */,
                     false /* isPunctuationSuggestions */, false /* isObsoleteSuggestions */,
                     false /* isPrediction */, SuggestedWords.NOT_A_SEQUENCE_NUMBER);
-            mLatinIME.unsetIsAutoCorrectionIndicatorOnAndCallShowSuggestionStrip(suggestedWords);
+            mIsAutoCorrectionIndicatorOn = false;
+            mLatinIME.mHandler.showSuggestionStrip(suggestedWords);
         }
     }
 
