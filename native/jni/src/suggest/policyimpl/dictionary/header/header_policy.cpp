@@ -73,49 +73,56 @@ bool HeaderPolicy::readRequiresGermanUmlautProcessing() const {
             REQUIRES_GERMAN_UMLAUT_PROCESSING_KEY, false);
 }
 
-bool HeaderPolicy::writeHeaderToBuffer(BufferWithExtendableBuffer *const bufferToWrite,
-        const bool updatesLastUpdatedTime, const bool updatesLastDecayedTime,
-        const int unigramCount, const int bigramCount, const int extendedRegionSize) const {
+bool HeaderPolicy::fillInAndWriteHeaderToBuffer(const bool updatesLastUpdatedTime,
+        const bool updatesLastDecayedTime, const int unigramCount, const int bigramCount,
+        const int extendedRegionSize, BufferWithExtendableBuffer *const outBuffer) const {
     int writingPos = 0;
-    if (!HeaderReadWriteUtils::writeDictionaryVersion(bufferToWrite, mDictFormatVersion,
+    HeaderReadWriteUtils::AttributeMap attributeMapToWrite(mAttributeMap);
+    fillInHeader(updatesLastDecayedTime, updatesLastDecayedTime,
+            unigramCount, bigramCount, extendedRegionSize, &attributeMapToWrite);
+    if (!HeaderReadWriteUtils::writeDictionaryVersion(outBuffer, mDictFormatVersion,
             &writingPos)) {
         return false;
     }
-    if (!HeaderReadWriteUtils::writeDictionaryFlags(bufferToWrite, mDictionaryFlags,
+    if (!HeaderReadWriteUtils::writeDictionaryFlags(outBuffer, mDictionaryFlags,
             &writingPos)) {
         return false;
     }
     // Temporarily writes a dummy header size.
     int headerSizeFieldPos = writingPos;
-    if (!HeaderReadWriteUtils::writeDictionaryHeaderSize(bufferToWrite, 0 /* size */,
+    if (!HeaderReadWriteUtils::writeDictionaryHeaderSize(outBuffer, 0 /* size */,
             &writingPos)) {
         return false;
     }
-    HeaderReadWriteUtils::AttributeMap attributeMapTowrite(mAttributeMap);
-    HeaderReadWriteUtils::setIntAttribute(&attributeMapTowrite, UNIGRAM_COUNT_KEY, unigramCount);
-    HeaderReadWriteUtils::setIntAttribute(&attributeMapTowrite, BIGRAM_COUNT_KEY, bigramCount);
-    HeaderReadWriteUtils::setIntAttribute(&attributeMapTowrite, EXTENDED_REGION_SIZE_KEY,
-            extendedRegionSize);
-    if (updatesLastUpdatedTime) {
-        // Set current time as a last updated time.
-        HeaderReadWriteUtils::setIntAttribute(&attributeMapTowrite, LAST_UPDATED_TIME_KEY,
-                TimeKeeper::peekCurrentTime());
-    }
-    if (updatesLastDecayedTime) {
-        // Set current time as a last updated time.
-        HeaderReadWriteUtils::setIntAttribute(&attributeMapTowrite, LAST_DECAYED_TIME_KEY,
-                TimeKeeper::peekCurrentTime());
-    }
-    if (!HeaderReadWriteUtils::writeHeaderAttributes(bufferToWrite, &attributeMapTowrite,
+    if (!HeaderReadWriteUtils::writeHeaderAttributes(outBuffer, &attributeMapToWrite,
             &writingPos)) {
         return false;
     }
-    // Writes an actual header size.
-    if (!HeaderReadWriteUtils::writeDictionaryHeaderSize(bufferToWrite, writingPos,
+    // Writes the actual header size.
+    if (!HeaderReadWriteUtils::writeDictionaryHeaderSize(outBuffer, writingPos,
             &headerSizeFieldPos)) {
         return false;
     }
     return true;
+}
+
+void HeaderPolicy::fillInHeader(const bool updatesLastUpdatedTime,
+        const bool updatesLastDecayedTime, const int unigramCount, const int bigramCount,
+        const int extendedRegionSize, HeaderReadWriteUtils::AttributeMap *outAttributeMap) const {
+    HeaderReadWriteUtils::setIntAttribute(outAttributeMap, UNIGRAM_COUNT_KEY, unigramCount);
+    HeaderReadWriteUtils::setIntAttribute(outAttributeMap, BIGRAM_COUNT_KEY, bigramCount);
+    HeaderReadWriteUtils::setIntAttribute(outAttributeMap, EXTENDED_REGION_SIZE_KEY,
+            extendedRegionSize);
+    if (updatesLastUpdatedTime) {
+        // Set current time as the last updated time.
+        HeaderReadWriteUtils::setIntAttribute(outAttributeMap, LAST_UPDATED_TIME_KEY,
+                TimeKeeper::peekCurrentTime());
+    }
+    if (updatesLastDecayedTime) {
+        // Set current time as the last updated time.
+        HeaderReadWriteUtils::setIntAttribute(outAttributeMap, LAST_DECAYED_TIME_KEY,
+                TimeKeeper::peekCurrentTime());
+    }
 }
 
 /* static */ HeaderReadWriteUtils::AttributeMap

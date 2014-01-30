@@ -48,9 +48,9 @@ const char *const DictFileWritingUtils::TEMP_FILE_SUFFIX_FOR_WRITING_DICT_FILE =
     HeaderPolicy headerPolicy(FormatUtils::VERSION_4, attributeMap);
     Ver4DictBuffers::Ver4DictBuffersPtr dictBuffers =
             Ver4DictBuffers::createVer4DictBuffers(&headerPolicy);
-    headerPolicy.writeHeaderToBuffer(dictBuffers.get()->getWritableHeaderBuffer(),
-            true /* updatesLastUpdatedTime */, true /* updatesLastDecayedTime */,
-            0 /* unigramCount */, 0 /* bigramCount */, 0 /* extendedRegionSize */);
+    headerPolicy.fillInAndWriteHeaderToBuffer(true /* updatesLastUpdatedTime */,
+            true /* updatesLastDecayedTime */, 0 /* unigramCount */, 0 /* bigramCount */,
+            0 /* extendedRegionSize */, dictBuffers.get()->getWritableHeaderBuffer());
     if (!DynamicPtWritingUtils::writeEmptyDictionary(
             dictBuffers.get()->getWritableTrieBuffer(), 0 /* rootPos */)) {
         AKLOGE("Empty ver4 dictionary structure cannot be created on memory.");
