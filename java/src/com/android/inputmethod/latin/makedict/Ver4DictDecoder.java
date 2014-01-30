@@ -215,11 +215,12 @@ public class Ver4DictDecoder extends AbstractDictDecoder {
 
                                 if (options.mHasTimestamp) {
                                     probability = buffer.readUnsignedByte();
-                                    final int pos = buffer.position();
-                                    // Skip historical info.
-                                    buffer.position(pos + FormatSpec.BIGRAM_TIMESTAMP_SIZE
-                                            + FormatSpec.BIGRAM_LEVEL_SIZE
-                                            + FormatSpec.BIGRAM_COUNTER_SIZE);
+                                    // Skip timestamp
+                                    buffer.readInt();
+                                    // Skip level
+                                    buffer.readUnsignedByte();
+                                    // Skip count
+                                    buffer.readUnsignedByte();
                                 } else {
                                     probability = bigramFlags
                                             & FormatSpec.FLAG_BIGRAM_SHORTCUT_ATTR_FREQUENCY;
