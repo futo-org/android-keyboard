@@ -189,7 +189,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             case MSG_SHOW_GESTURE_PREVIEW_AND_SUGGESTION_STRIP:
                 if (msg.arg1 == ARG1_NOT_GESTURE_INPUT) {
                     final SuggestedWords suggestedWords = (SuggestedWords) msg.obj;
-                    latinIme.showSuggestionStrip(suggestedWords, suggestedWords.mTypedWord);
+                    latinIme.showSuggestionStrip(suggestedWords);
                 } else {
                     latinIme.showGesturePreviewAndSuggestionStrip((SuggestedWords) msg.obj,
                             msg.arg1 == ARG1_DISMISS_GESTURE_FLOATING_PREVIEW_TEXT);
@@ -1254,7 +1254,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // This method must run on the UI Thread.
     private void showGesturePreviewAndSuggestionStrip(final SuggestedWords suggestedWords,
             final boolean dismissGestureFloatingPreviewText) {
-        showSuggestionStrip(suggestedWords, suggestedWords.mTypedWord);
+        showSuggestionStrip(suggestedWords);
         final MainKeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
         mainKeyboardView.showGestureFloatingPreviewText(suggestedWords);
         if (dismissGestureFloatingPreviewText) {
@@ -1390,8 +1390,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     // TODO[IL]: Define a clean interface for this
-    public void showSuggestionStrip(final SuggestedWords sourceSuggestedWords,
-            final String typedWord) {
+    public void showSuggestionStrip(final SuggestedWords sourceSuggestedWords) {
         final SuggestedWords suggestedWords =
                 sourceSuggestedWords.isEmpty() ? SuggestedWords.EMPTY : sourceSuggestedWords;
         final String autoCorrection;
@@ -1400,7 +1399,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         } else {
             // We can't use suggestedWords.getWord(SuggestedWords.INDEX_OF_TYPED_WORD)
             // because it may differ from mWordComposer.mTypedWord.
-            autoCorrection = typedWord;
+            autoCorrection = sourceSuggestedWords.mTypedWord;
         }
         if (SuggestedWords.EMPTY != suggestedWords) {
             mInputLogic.mWordComposer.setAutoCorrection(autoCorrection);
@@ -1408,7 +1407,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         setSuggestedWords(suggestedWords, isSuggestionsStripVisible());
         // Cache the auto-correction in accessibility code so we can speak it if the user
         // touches a key that will insert it.
-        AccessibilityUtils.getInstance().setAutoCorrection(suggestedWords, typedWord);
+        AccessibilityUtils.getInstance().setAutoCorrection(suggestedWords,
+                sourceSuggestedWords.mTypedWord);
     }
 
     // Called from {@link SuggestionStripView} through the {@link SuggestionStripView#Listener}

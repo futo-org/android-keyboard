@@ -1120,7 +1120,7 @@ public final class InputLogic {
         final SuggestedWords suggestedWords = holder.get(null,
                 Constants.GET_SUGGESTED_WORDS_TIMEOUT);
         if (suggestedWords != null) {
-            mLatinIME.showSuggestionStrip(suggestedWords, suggestedWords.mTypedWord);
+            mLatinIME.showSuggestionStrip(suggestedWords);
         }
     }
 
@@ -1620,8 +1620,7 @@ public final class InputLogic {
                 mConnection.commitText(batchInputText.substring(0, indexOfLastSpace), 1);
                 final SuggestedWords suggestedWordsForLastWordOfPhraseGesture =
                         suggestedWords.getSuggestedWordsForLastWordOfPhraseGesture();
-                mLatinIME.showSuggestionStrip(suggestedWordsForLastWordOfPhraseGesture,
-                        suggestedWordsForLastWordOfPhraseGesture.mTypedWord);
+                mLatinIME.showSuggestionStrip(suggestedWordsForLastWordOfPhraseGesture);
             }
             final String lastWord = batchInputText.substring(indexOfLastSpace);
             mWordComposer.setBatchInputWord(lastWord);
