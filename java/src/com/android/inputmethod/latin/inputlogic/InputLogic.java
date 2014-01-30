@@ -1225,11 +1225,10 @@ public final class InputLogic {
         } else {
             // We found suggestion spans in the word. We'll create the SuggestedWords out of
             // them, and make willAutoCorrect false.
-            final SuggestedWords suggestedWords = new SuggestedWords(suggestions,
+            final SuggestedWords suggestedWords = new SuggestedWords(suggestions, typedWord,
                     true /* typedWordValid */, false /* willAutoCorrect */,
                     false /* isPunctuationSuggestions */, false /* isObsoleteSuggestions */,
-                    false /* isPrediction */);
-            // We need to pass typedWord because mWordComposer.mTypedWord may differ from typedWord.
+                    false /* isPrediction */, SuggestedWords.NOT_A_SEQUENCE_NUMBER);
             mLatinIME.unsetIsAutoCorrectionIndicatorOnAndCallShowSuggestionStrip(suggestedWords,
                     typedWord);
         }

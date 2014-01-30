@@ -1538,6 +1538,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
     }
 
+    // [IL] TODO: remove the second argument
     public void unsetIsAutoCorrectionIndicatorOnAndCallShowSuggestionStrip(
             final SuggestedWords suggestedWords, final String typedWord) {
         // Note that it's very important here that suggestedWords.mWillAutoCorrect is false.
@@ -1547,7 +1548,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // the text to adapt it.
         // TODO: remove mIsAutoCorrectionIndicatorOn (see comment on definition)
         mInputLogic.mIsAutoCorrectionIndicatorOn = false;
-        mHandler.showSuggestionStripWithTypedWord(suggestedWords, typedWord);
+        mHandler.showSuggestionStripWithTypedWord(suggestedWords, suggestedWords.mTypedWord);
     }
 
     // TODO: Make this private
