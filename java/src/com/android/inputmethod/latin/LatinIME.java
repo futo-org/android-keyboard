@@ -1498,8 +1498,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
         if (showingAddToDictionaryHint
                 && suggest.mDictionaryFacilitator.isUserDictionaryEnabled()) {
-            mSuggestionStripView.showAddToDictionaryHint(
-                    suggestion, currentSettings.mHintToSaveText);
+            mSuggestionStripView.showAddToDictionaryHint(suggestion);
         } else {
             // If we're not showing the "Touch again to save", then update the suggestion strip.
             mHandler.postUpdateSuggestionStrip();
