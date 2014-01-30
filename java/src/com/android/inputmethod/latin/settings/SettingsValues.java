@@ -49,7 +49,6 @@ public final class SettingsValues {
     // From resources:
     public final SpacingAndPunctuations mSpacingAndPunctuations;
     public final int mDelayUpdateOldSuggestions;
-    public final CharSequence mHintToSaveText;
 
     // From preferences, in the same order as xml/prefs.xml:
     public final boolean mAutoCap;
@@ -101,7 +100,6 @@ public final class SettingsValues {
         // Get the resources
         mDelayUpdateOldSuggestions = res.getInteger(R.integer.config_delay_update_old_suggestions);
         mSpacingAndPunctuations = new SpacingAndPunctuations(res);
-        mHintToSaveText = res.getText(R.string.hint_add_to_dictionary);
 
         // Store the input attributes
         if (null == inputAttributes) {

@@ -50,6 +50,7 @@ import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.utils.AutoCorrectionUtils;
 import com.android.inputmethod.latin.utils.ResourceUtils;
+import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 import com.android.inputmethod.latin.utils.ViewLayoutUtils;
 
 import java.util.ArrayList;
@@ -459,7 +460,7 @@ final class SuggestionStripLayoutHelper {
     }
 
     public void layoutAddToDictionaryHint(final String word, final ViewGroup addToDictionaryStrip,
-            final int stripWidth, final CharSequence hintText) {
+            final int stripWidth) {
         final int width = stripWidth - mDividerWidth - mPadding * 2;
 
         final TextView wordView = (TextView)addToDictionaryStrip.findViewById(R.id.word_to_save);
@@ -473,13 +474,17 @@ final class SuggestionStripLayoutHelper {
 
         final TextView hintView = (TextView)addToDictionaryStrip.findViewById(
                 R.id.hint_add_to_dictionary);
-        hintView.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL | GravityCompat.START);
         hintView.setTextColor(mColorAutoCorrect);
         final boolean isRtlLanguage = (ViewCompat.getLayoutDirection(addToDictionaryStrip)
                 == ViewCompat.LAYOUT_DIRECTION_RTL);
-        final String hintWithArrow = (isRtlLanguage ? RIGHTWARDS_ARROW : LEFTWARDS_ARROW)
-                + hintText;
+        final String arrow = isRtlLanguage ? RIGHTWARDS_ARROW : LEFTWARDS_ARROW;
+        final Resources res = addToDictionaryStrip.getResources();
+        final boolean isRtlSystem = SubtypeLocaleUtils.isRtlLanguage(res.getConfiguration().locale);
+        final CharSequence hintText = res.getText(R.string.hint_add_to_dictionary);
+        final String hintWithArrow = (isRtlLanguage == isRtlSystem)
+                ? (arrow + hintText) : (hintText + arrow);
         final int hintWidth = width - wordWidth;
+        hintView.setTextScaleX(1.0f); // Reset textScaleX.
         final float hintScaleX = getTextScaleX(hintWithArrow, hintWidth, hintView.getPaint());
         hintView.setText(hintWithArrow);
         hintView.setTextScaleX(hintScaleX);
