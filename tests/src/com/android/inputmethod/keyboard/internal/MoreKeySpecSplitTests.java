@@ -31,7 +31,7 @@ import java.util.Arrays;
 import java.util.Locale;
 
 @MediumTest
-public class KeySpecParserSplitTests extends InstrumentationTestCase {
+public class MoreKeySpecSplitTests extends InstrumentationTestCase {
     private static final Locale TEST_LOCALE = Locale.ENGLISH;
     final KeyboardTextsSet mTextsSet = new KeyboardTextsSet();
 
@@ -93,7 +93,7 @@ public class KeySpecParserSplitTests extends InstrumentationTestCase {
     private void assertTextArray(final String message, final String value,
             final String ... expectedArray) {
         final String resolvedActual = mTextsSet.resolveTextReference(value);
-        final String[] actual = KeySpecParser.splitKeySpecs(resolvedActual);
+        final String[] actual = MoreKeySpec.splitKeySpecs(resolvedActual);
         final String[] expected = (expectedArray.length == 0) ? null : expectedArray;
         assertArrayEquals(message, expected, actual);
     }

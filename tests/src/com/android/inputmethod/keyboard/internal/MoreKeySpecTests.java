@@ -32,7 +32,7 @@ import java.util.Arrays;
 import java.util.Locale;
 
 @SmallTest
-public class KeySpecParserTests extends AndroidTestCase {
+public class MoreKeySpecTests extends AndroidTestCase {
     private final static Locale TEST_LOCALE = Locale.ENGLISH;
     final KeyboardCodesSet mCodesSet = new KeyboardCodesSet();
     final KeyboardTextsSet mTextsSet = new KeyboardTextsSet();
@@ -71,8 +71,9 @@ public class KeySpecParserTests extends AndroidTestCase {
         mSettingsIconId = KeySpecParser.getIconId(ICON_SETTINGS);
     }
 
-    private void assertParser(String message, String moreKeySpec, String expectedLabel,
-            String expectedOutputText, int expectedIcon, int expectedCode) {
+    private void assertParser(final String message, final String moreKeySpec,
+            final String expectedLabel, final String expectedOutputText, final int expectedIcon,
+            final int expectedCode) {
         final String labelResolved = mTextsSet.resolveTextReference(moreKeySpec);
         final MoreKeySpec spec = new MoreKeySpec(labelResolved, false /* needsToUpperCase */,
                 Locale.US, mCodesSet);
@@ -86,8 +87,9 @@ public class KeySpecParserTests extends AndroidTestCase {
                 Constants.printableCode(spec.mCode));
     }
 
-    private void assertParserError(String message, String moreKeySpec, String expectedLabel,
-            String expectedOutputText, int expectedIcon, int expectedCode) {
+    private void assertParserError(final String message, final String moreKeySpec,
+            final String expectedLabel, final String expectedOutputText, final int expectedIcon,
+            final int expectedCode) {
         try {
             assertParser(message, moreKeySpec, expectedLabel, expectedOutputText, expectedIcon,
                     expectedCode);
@@ -339,7 +341,8 @@ public class KeySpecParserTests extends AndroidTestCase {
                 null, null, mSettingsIconId, mCodeSettings);
     }
 
-    private static void assertArrayEquals(String message, Object[] expected, Object[] actual) {
+    private static void assertArrayEquals(final String message, final Object[] expected,
+            final Object[] actual) {
         if (expected == actual) {
             return;
         }
@@ -357,10 +360,9 @@ public class KeySpecParserTests extends AndroidTestCase {
         }
     }
 
-    private static void assertInsertAdditionalMoreKeys(String message, String[] moreKeys,
-            String[] additionalMoreKeys, String[] expected) {
-        final String[] actual =
-                KeySpecParser.insertAdditionalMoreKeys( moreKeys, additionalMoreKeys);
+    private static void assertInsertAdditionalMoreKeys(final String message,
+            final String[] moreKeys, final String[] additionalMoreKeys, final String[] expected) {
+        final String[] actual = MoreKeySpec.insertAdditionalMoreKeys(moreKeys, additionalMoreKeys);
         assertArrayEquals(message, expected, actual);
     }
 
@@ -584,10 +586,10 @@ public class KeySpecParserTests extends AndroidTestCase {
     private static final String AUTO_COLUMN_ORDER = "!autoColumnOrder!";
     private static final String FIXED_COLUMN_ORDER = "!fixedColumnOrder!";
 
-    private static void assertGetBooleanValue(String message, String key, String[] moreKeys,
-            String[] expected, boolean expectedValue) {
+    private static void assertGetBooleanValue(final String message, final String key,
+            final String[] moreKeys, final String[] expected, final boolean expectedValue) {
         final String[] actual = Arrays.copyOf(moreKeys, moreKeys.length);
-        final boolean actualValue = KeySpecParser.getBooleanValue(actual, key);
+        final boolean actualValue = MoreKeySpec.getBooleanValue(actual, key);
         assertEquals(message + " [value]", expectedValue, actualValue);
         assertArrayEquals(message, expected, actual);
     }
@@ -622,10 +624,11 @@ public class KeySpecParserTests extends AndroidTestCase {
                     "a", null, "b", NEEDS_DIVIDER, "!HASLABEL!", "d" }, true);
     }
 
-    private static void assertGetIntValue(String message, String key, int defaultValue,
-            String[] moreKeys, String[] expected, int expectedValue) {
+    private static void assertGetIntValue(final String message, final String key,
+            final int defaultValue, final String[] moreKeys, final String[] expected,
+            final int expectedValue) {
         final String[] actual = Arrays.copyOf(moreKeys, moreKeys.length);
-        final int actualValue = KeySpecParser.getIntValue(actual, key, defaultValue);
+        final int actualValue = MoreKeySpec.getIntValue(actual, key, defaultValue);
         assertEquals(message + " [value]", expectedValue, actualValue);
         assertArrayEquals(message, expected, actual);
     }
