@@ -33,15 +33,16 @@ void WordProperty::outputProperties(JNIEnv *const env, jintArray outCodePoints,
     jmethodID intToIntegerConstructorId = env->GetMethodID(integerClass, "<init>", "(I)V");
     jclass arrayListClass = env->FindClass("java/util/ArrayList");
     jmethodID addMethodId = env->GetMethodID(arrayListClass, "add", "(Ljava/lang/Object;)Z");
-    const int shortcutTargetCount = mShortcutTargets.size();
+    const int shortcutTargetCount = mShortcuts.size();
     for (int i = 0; i < shortcutTargetCount; ++i) {
-        jintArray shortcutTargetCodePointArray = env->NewIntArray(mShortcutTargets[i].size());
+        const std::vector<int> *const targetCodePoints = mShortcuts[i].getTargetCodePoints();
+        jintArray shortcutTargetCodePointArray = env->NewIntArray(targetCodePoints->size());
         env->SetIntArrayRegion(shortcutTargetCodePointArray, 0 /* start */,
-                mShortcutTargets[i].size(), &mShortcutTargets[i][0]);
+                targetCodePoints->size(), &targetCodePoints->at(0));
         env->CallVoidMethod(outShortcutTargets, addMethodId, shortcutTargetCodePointArray);
         env->DeleteLocalRef(shortcutTargetCodePointArray);
         jobject integerProbability = env->NewObject(integerClass, intToIntegerConstructorId,
-                mShortcutProbabilities[i]);
+                mShortcuts[i].getProbability());
         env->CallVoidMethod(outShortcutProbabilities, addMethodId, integerProbability);
         env->DeleteLocalRef(integerProbability);
     }
