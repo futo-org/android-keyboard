@@ -26,7 +26,7 @@ import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
 import com.android.inputmethod.latin.utils.FileUtils;
 import com.android.inputmethod.latin.utils.LanguageModelParam;
-import com.android.inputmethod.latin.utils.UnigramProperty;
+import com.android.inputmethod.latin.utils.WordProperty;
 
 import java.io.File;
 import java.io.IOException;
@@ -892,8 +892,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
                 0 /* offset */, dictFile.length(), true /* useFullEditDistance */,
                 Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
 
-        final UnigramProperty invalidUnigramProperty =
-                binaryDictionary.getUnigramProperty("dummyWord");
+        final WordProperty invalidUnigramProperty = binaryDictionary.getWordProperty("dummyWord");
         assertFalse(invalidUnigramProperty.isValid());
 
         for (int i = 0; i < ITERATION_COUNT; i++) {
@@ -905,8 +904,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
             binaryDictionary.addUnigramWord(word, unigramProbability,
                     null /* shortcutTarget */, BinaryDictionary.NOT_A_PROBABILITY,
                     isNotAWord, isBlacklisted, BinaryDictionary.NOT_A_VALID_TIMESTAMP);
-            final UnigramProperty unigramProperty =
-                    binaryDictionary.getUnigramProperty(word);
+            final WordProperty unigramProperty = binaryDictionary.getWordProperty(word);
             assertEquals(word, unigramProperty.mCodePoints);
             assertTrue(unigramProperty.isValid());
             assertEquals(isNotAWord, unigramProperty.mIsNotAWord);
@@ -938,7 +936,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         binaryDictionary.addUnigramWord("aaa", unigramProbability, "zzz",
                 shortcutProbability, false /* isNotAWord */, false /* isBlacklisted */,
                 0 /* timestamp */);
-        UnigramProperty unigramProperty = binaryDictionary.getUnigramProperty("aaa");
+        WordProperty unigramProperty = binaryDictionary.getWordProperty("aaa");
         assertEquals(1, unigramProperty.mShortcutTargets.size());
         assertEquals("zzz", unigramProperty.mShortcutTargets.get(0).mWord);
         assertEquals(shortcutProbability, unigramProperty.mShortcutTargets.get(0).mFrequency);
@@ -946,7 +944,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         binaryDictionary.addUnigramWord("aaa", unigramProbability, "zzz",
                 updatedShortcutProbability, false /* isNotAWord */, false /* isBlacklisted */,
                 0 /* timestamp */);
-        unigramProperty = binaryDictionary.getUnigramProperty("aaa");
+        unigramProperty = binaryDictionary.getWordProperty("aaa");
         assertEquals(1, unigramProperty.mShortcutTargets.size());
         assertEquals("zzz", unigramProperty.mShortcutTargets.get(0).mWord);
         assertEquals(updatedShortcutProbability,
@@ -957,7 +955,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         final HashMap<String, Integer> shortcutTargets = new HashMap<String, Integer>();
         shortcutTargets.put("zzz", updatedShortcutProbability);
         shortcutTargets.put("yyy", shortcutProbability);
-        unigramProperty = binaryDictionary.getUnigramProperty("aaa");
+        unigramProperty = binaryDictionary.getWordProperty("aaa");
         assertEquals(2, unigramProperty.mShortcutTargets.size());
         for (WeightedString shortcutTarget : unigramProperty.mShortcutTargets) {
             assertTrue(shortcutTargets.containsKey(shortcutTarget.mWord));
@@ -967,7 +965,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         shortcutTargets.put("zzz", updatedShortcutProbability);
         shortcutTargets.put("yyy", shortcutProbability);
         binaryDictionary.flushWithGC();
-        unigramProperty = binaryDictionary.getUnigramProperty("aaa");
+        unigramProperty = binaryDictionary.getWordProperty("aaa");
         assertEquals(2, unigramProperty.mShortcutTargets.size());
         for (WeightedString shortcutTarget : unigramProperty.mShortcutTargets) {
             assertTrue(shortcutTargets.containsKey(shortcutTarget.mWord));
@@ -1036,7 +1034,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         }
 
         for (final String word : words) {
-            final UnigramProperty unigramProperty = binaryDictionary.getUnigramProperty(word);
+            final WordProperty unigramProperty = binaryDictionary.getWordProperty(word);
             assertEquals((int)unigramProbabilities.get(word), unigramProperty.mProbability);
             if (!shortcutTargets.containsKey(word)) {
                 // The word does not have shortcut targets.

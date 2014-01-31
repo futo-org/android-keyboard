@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef LATINIME_UNIGRAM_PROPERTY_H
-#define LATINIME_UNIGRAM_PROPERTY_H
+#ifndef LATINIME_WORD_PROPERTY_H
+#define LATINIME_WORD_PROPERTY_H
 
 #include <cstring>
 #include <vector>
@@ -25,16 +25,17 @@
 
 namespace latinime {
 
-// This class is used for returning information belonging to a unigram to java side.
-class UnigramProperty {
+// This class is used for returning information belonging to a word to java side.
+class WordProperty {
  public:
-    // Invalid unigram.
-    UnigramProperty()
+    // TODO: Add bigram information.
+    // Invalid word.
+    WordProperty()
             : mCodePoints(), mIsNotAWord(false), mIsBlacklisted(false),
               mHasBigrams(false), mHasShortcuts(false), mProbability(NOT_A_PROBABILITY),
               mTimestamp(0), mLevel(0), mCount(0), mShortcutTargets(), mShortcutProbabilities() {}
 
-    UnigramProperty(const std::vector<int> *const codePoints,
+    WordProperty(const std::vector<int> *const codePoints,
             const bool isNotAWord, const bool isBlacklisted, const bool hasBigrams,
             const bool hasShortcuts, const int probability, const int timestamp,
             const int level, const int count,
@@ -50,7 +51,7 @@ class UnigramProperty {
             jobject outShortcutProbabilities) const;
 
  private:
-    DISALLOW_ASSIGNMENT_OPERATOR(UnigramProperty);
+    DISALLOW_ASSIGNMENT_OPERATOR(WordProperty);
 
     std::vector<int> mCodePoints;
     bool mIsNotAWord;
@@ -67,4 +68,4 @@ class UnigramProperty {
     std::vector<int> mShortcutProbabilities;
 };
 } // namespace latinime
-#endif // LATINIME_UNIGRAM_PROPERTY_H
+#endif // LATINIME_WORD_PROPERTY_H
