@@ -73,7 +73,7 @@ public class KeySpecParserTests extends AndroidTestCase {
 
     private void assertParser(String message, String moreKeySpec, String expectedLabel,
             String expectedOutputText, int expectedIcon, int expectedCode) {
-        final String labelResolved = KeySpecParser.resolveTextReference(moreKeySpec, mTextsSet);
+        final String labelResolved = mTextsSet.resolveTextReference(moreKeySpec);
         final MoreKeySpec spec = new MoreKeySpec(labelResolved, false /* needsToUpperCase */,
                 Locale.US, mCodesSet);
         assertEquals(message + " [label]", expectedLabel, spec.mLabel);

@@ -18,6 +18,7 @@ package com.android.inputmethod.keyboard.internal;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.text.TextUtils;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.utils.CollectionUtils;
@@ -45,6 +46,10 @@ import java.util.HashMap;
  *   KeyboardTextsSet.java
  */
 public final class KeyboardTextsSet {
+    private static final String PREFIX_TEXT = "!text/";
+    private static final char BACKSLASH = '\\';
+    private static final int MAX_STRING_REFERENCE_INDIRECTION = 10;
+
     // Language to texts map.
     private static final HashMap<String, String[]> sLocaleToTextsMap = CollectionUtils.newHashMap();
     private static final HashMap<String, Integer> sNameToIdsMap = CollectionUtils.newHashMap();
@@ -85,6 +90,67 @@ public final class KeyboardTextsSet {
         if (id == null) throw new RuntimeException("Unknown label: " + name);
         text = (id < mTexts.length) ? mTexts[id] : null;
         return (text == null) ? LANGUAGE_DEFAULT[id] : text;
+    }
+
+    private static int searchTextNameEnd(final String text, final int start) {
+        final int size = text.length();
+        for (int pos = start; pos < size; pos++) {
+            final char c = text.charAt(pos);
+            // Label name should be consisted of [a-zA-Z_0-9].
+            if ((c >= 'a' && c <= 'z') || c == '_' || (c >= '0' && c <= '9')) {
+                continue;
+            }
+            return pos;
+        }
+        return size;
+    }
+
+    public String resolveTextReference(final String rawText) {
+        if (TextUtils.isEmpty(rawText)) {
+            return null;
+        }
+        int level = 0;
+        String text = rawText;
+        StringBuilder sb;
+        do {
+            level++;
+            if (level >= MAX_STRING_REFERENCE_INDIRECTION) {
+                throw new RuntimeException("too many @string/resource indirection: " + text);
+            }
+
+            final int prefixLen = PREFIX_TEXT.length();
+            final int size = text.length();
+            if (size < prefixLen) {
+                return TextUtils.isEmpty(text) ? null : text;
+            }
+
+            sb = null;
+            for (int pos = 0; pos < size; pos++) {
+                final char c = text.charAt(pos);
+                if (text.startsWith(PREFIX_TEXT, pos)) {
+                    if (sb == null) {
+                        sb = new StringBuilder(text.substring(0, pos));
+                    }
+                    final int end = searchTextNameEnd(text, pos + prefixLen);
+                    final String name = text.substring(pos + prefixLen, end);
+                    sb.append(getText(name));
+                    pos = end - 1;
+                } else if (c == BACKSLASH) {
+                    if (sb != null) {
+                        // Append both escape character and escaped character.
+                        sb.append(text.substring(pos, Math.min(pos + 2, size)));
+                    }
+                    pos++;
+                } else if (sb != null) {
+                    sb.append(c);
+                }
+            }
+
+            if (sb != null) {
+                text = sb.toString();
+            }
+        } while (sb != null);
+        return TextUtils.isEmpty(text) ? null : text;
     }
 
     // These texts' name should be aligned with the @string/<name> in
