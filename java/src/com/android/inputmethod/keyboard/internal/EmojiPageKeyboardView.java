@@ -17,6 +17,7 @@
 package com.android.inputmethod.keyboard.internal;
 
 import android.content.Context;
+import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -35,16 +36,19 @@ import com.android.inputmethod.latin.R;
 // TODO: Implement key popup preview.
 public final class EmojiPageKeyboardView extends KeyboardView implements
         GestureDetector.OnGestureListener {
+    private static final long KEY_PRESS_DELAY_TIME = 250;  // msec
+    private static final long KEY_RELEASE_DELAY_TIME = 30;  // msec
+
     public interface OnKeyEventListener {
         public void onPressKey(Key key);
         public void onReleaseKey(Key key);
     }
 
     private static final OnKeyEventListener EMPTY_LISTENER = new OnKeyEventListener() {
-      @Override
-      public void onPressKey(final Key key) {}
-      @Override
-      public void onReleaseKey(final Key key) {}
+        @Override
+        public void onPressKey(final Key key) {}
+        @Override
+        public void onReleaseKey(final Key key) {}
     };
 
     private OnKeyEventListener mListener = EMPTY_LISTENER;
@@ -60,6 +64,7 @@ public final class EmojiPageKeyboardView extends KeyboardView implements
         super(context, attrs, defStyle);
         mGestureDetector = new GestureDetector(context, this);
         mGestureDetector.setIsLongpressEnabled(false /* isLongpressEnabled */);
+        mHandler = new Handler();
     }
 
     public void setOnKeyEventListener(final OnKeyEventListener listener) {
@@ -92,6 +97,8 @@ public final class EmojiPageKeyboardView extends KeyboardView implements
 
     // {@link GestureEnabler#OnGestureListener} methods.
     private Key mCurrentKey;
+    private Runnable mPendingKeyDown;
+    private final Handler mHandler;
 
     private Key getKey(final MotionEvent e) {
         final int index = e.getActionIndex();
@@ -101,6 +108,8 @@ public final class EmojiPageKeyboardView extends KeyboardView implements
     }
 
     public void releaseCurrentKey() {
+        mHandler.removeCallbacks(mPendingKeyDown);
+        mPendingKeyDown = null;
         final Key currentKey = mCurrentKey;
         if (currentKey == null) {
             return;
@@ -118,9 +127,17 @@ public final class EmojiPageKeyboardView extends KeyboardView implements
         if (key == null) {
             return false;
         }
-        key.onPressed();
-        invalidateKey(key);
-        mListener.onPressKey(key);
+        // Do not trigger key-down effect right now in case this is actually a fling action.
+        mPendingKeyDown = new Runnable() {
+            @Override
+            public void run() {
+                mPendingKeyDown = null;
+                key.onPressed();
+                invalidateKey(key);
+                mListener.onPressKey(key);
+            }
+        };
+        mHandler.postDelayed(mPendingKeyDown, KEY_PRESS_DELAY_TIME);
         return false;
     }
 
@@ -132,13 +149,28 @@ public final class EmojiPageKeyboardView extends KeyboardView implements
     @Override
     public boolean onSingleTapUp(final MotionEvent e) {
         final Key key = getKey(e);
+        final Runnable pendingKeyDown = mPendingKeyDown;
+        final Key currentKey = mCurrentKey;
         releaseCurrentKey();
         if (key == null) {
             return false;
         }
-        key.onReleased();
-        invalidateKey(key);
-        mListener.onReleaseKey(key);
+        if (key == currentKey && pendingKeyDown != null) {
+            pendingKeyDown.run();
+            // Trigger key-release event a little later so that a user can see visual feedback.
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    key.onReleased();
+                    invalidateKey(key);
+                    mListener.onReleaseKey(key);
+                }
+            }, KEY_RELEASE_DELAY_TIME);
+        } else {
+            key.onReleased();
+            invalidateKey(key);
+            mListener.onReleaseKey(key);
+        }
         return true;
     }
 
