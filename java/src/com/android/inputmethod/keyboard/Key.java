@@ -331,16 +331,16 @@ public class Key implements Comparable<Key> {
             // code point nor as a surrogate pair.
             mLabel = new StringBuilder().appendCodePoint(code).toString();
         } else {
-            mLabel = KeySpecParser.toUpperCaseOfStringForLocale(style.getString(keyAttr,
+            mLabel = StringUtils.toUpperCaseOfStringForLocale(style.getString(keyAttr,
                     R.styleable.Keyboard_Key_keyLabel), needsToUpperCase, locale);
         }
         if ((mLabelFlags & LABEL_FLAGS_DISABLE_HINT_LABEL) != 0) {
             mHintLabel = null;
         } else {
-            mHintLabel = KeySpecParser.toUpperCaseOfStringForLocale(style.getString(keyAttr,
+            mHintLabel = StringUtils.toUpperCaseOfStringForLocale(style.getString(keyAttr,
                     R.styleable.Keyboard_Key_keyHintLabel), needsToUpperCase, locale);
         }
-        String outputText = KeySpecParser.toUpperCaseOfStringForLocale(style.getString(keyAttr,
+        String outputText = StringUtils.toUpperCaseOfStringForLocale(style.getString(keyAttr,
                 R.styleable.Keyboard_Key_keyOutputText), needsToUpperCase, locale);
         // Choose the first letter of the label as primary code if not specified.
         if (code == CODE_UNSPECIFIED && TextUtils.isEmpty(outputText)
@@ -367,9 +367,9 @@ public class Key implements Comparable<Key> {
                 mCode = CODE_OUTPUT_TEXT;
             }
         } else {
-            mCode = KeySpecParser.toUpperCaseOfCodeForLocale(code, needsToUpperCase, locale);
+            mCode = StringUtils.toUpperCaseOfCodeForLocale(code, needsToUpperCase, locale);
         }
-        final int altCode = KeySpecParser.toUpperCaseOfCodeForLocale(
+        final int altCode = StringUtils.toUpperCaseOfCodeForLocale(
                 KeySpecParser.parseCode(style.getString(keyAttr,
                 R.styleable.Keyboard_Key_altCode), params.mCodesSet, CODE_UNSPECIFIED),
                 needsToUpperCase, locale);
