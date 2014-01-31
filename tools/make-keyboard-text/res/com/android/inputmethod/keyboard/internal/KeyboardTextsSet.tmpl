@@ -46,7 +46,7 @@ import java.util.HashMap;
  *   KeyboardTextsSet.java
  */
 public final class KeyboardTextsSet {
-    private static final String PREFIX_TEXT = "!text/";
+    public static final String PREFIX_TEXT = "!text/";
     private static final char BACKSLASH = '\\';
     private static final int MAX_STRING_REFERENCE_INDIRECTION = 10;
 
