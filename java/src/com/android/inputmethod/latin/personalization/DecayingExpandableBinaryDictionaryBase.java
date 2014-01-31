@@ -95,13 +95,13 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
     @Override
     protected Map<String, String> getHeaderAttributeMap() {
         HashMap<String, String> attributeMap = new HashMap<String, String>();
-        attributeMap.put(FormatSpec.FileHeader.USES_FORGETTING_CURVE_ATTRIBUTE,
+        attributeMap.put(FormatSpec.FileHeader.USES_FORGETTING_CURVE_KEY,
                 FormatSpec.FileHeader.ATTRIBUTE_VALUE_TRUE);
-        attributeMap.put(FormatSpec.FileHeader.HAS_HISTORICAL_INFO_ATTRIBUTE,
+        attributeMap.put(FormatSpec.FileHeader.HAS_HISTORICAL_INFO_KEY,
                 FormatSpec.FileHeader.ATTRIBUTE_VALUE_TRUE);
-        attributeMap.put(FormatSpec.FileHeader.DICTIONARY_ID_ATTRIBUTE, mDictName);
-        attributeMap.put(FormatSpec.FileHeader.DICTIONARY_LOCALE_ATTRIBUTE, mLocale.toString());
-        attributeMap.put(FormatSpec.FileHeader.DICTIONARY_VERSION_ATTRIBUTE,
+        attributeMap.put(FormatSpec.FileHeader.DICTIONARY_ID_KEY, mDictName);
+        attributeMap.put(FormatSpec.FileHeader.DICTIONARY_LOCALE_KEY, mLocale.toString());
+        attributeMap.put(FormatSpec.FileHeader.DICTIONARY_VERSION_KEY,
                 String.valueOf(TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis())));
         return attributeMap;
     }

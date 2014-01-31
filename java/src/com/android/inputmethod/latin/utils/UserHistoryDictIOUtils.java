@@ -22,6 +22,7 @@ import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.makedict.BinaryDictIOUtils;
 import com.android.inputmethod.latin.makedict.DictDecoder;
 import com.android.inputmethod.latin.makedict.DictEncoder;
+import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
@@ -44,9 +45,6 @@ import java.util.concurrent.TimeUnit;
 public final class UserHistoryDictIOUtils {
     private static final String TAG = UserHistoryDictIOUtils.class.getSimpleName();
     private static final boolean DEBUG = false;
-    private static final String USES_FORGETTING_CURVE_KEY = "USES_FORGETTING_CURVE";
-    private static final String USES_FORGETTING_CURVE_VALUE = "1";
-    private static final String DATE_KEY = "date";
 
     public interface OnAddWordListener {
         /**
@@ -75,8 +73,9 @@ public final class UserHistoryDictIOUtils {
             final BigramDictionaryInterface dict, final UserHistoryDictionaryBigramList bigrams,
             final FormatOptions formatOptions, final HashMap<String, String> options) {
         final FusionDictionary fusionDict = constructFusionDictionary(dict, bigrams, options);
-        fusionDict.addOptionAttribute(USES_FORGETTING_CURVE_KEY, USES_FORGETTING_CURVE_VALUE);
-        fusionDict.addOptionAttribute(DATE_KEY,
+        fusionDict.addOptionAttribute(FormatSpec.FileHeader.USES_FORGETTING_CURVE_KEY,
+            FormatSpec.FileHeader.ATTRIBUTE_VALUE_TRUE);
+        fusionDict.addOptionAttribute(FormatSpec.FileHeader.DICTIONARY_DATE_KEY,
                 String.valueOf(TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis())));
         try {
             dictEncoder.writeDictionary(fusionDict, formatOptions);
