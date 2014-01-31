@@ -332,9 +332,10 @@ const WordProperty Ver4PatriciaTriePolicy::getWordProperty(const int *const code
             mBuffers.get()->getProbabilityDictContent()->getProbabilityEntry(
                     ptNodeParams.getTerminalId());
     const HistoricalInfo *const historicalInfo = probabilityEntry.getHistoricalInfo();
+    // TODO: Fetch bigram information.
+    std::vector<WordProperty::BigramProperty> bigrams;
     // Fetch shortcut information.
-    std::vector<std::vector<int> > shortcutTargets;
-    std::vector<int> shortcutProbabilities;
+    std::vector<WordProperty::ShortcutProperty> shortcuts;
     int shortcutPos = getShortcutPositionOfPtNode(ptNodePos);
     if (shortcutPos != NOT_A_DICT_POS) {
         int shortcutTarget[MAX_WORD_LENGTH];
@@ -347,15 +348,14 @@ const WordProperty Ver4PatriciaTriePolicy::getWordProperty(const int *const code
             shortcutDictContent->getShortcutEntryAndAdvancePosition(MAX_WORD_LENGTH, shortcutTarget,
                     &shortcutTargetLength, &shortcutProbability, &hasNext, &shortcutPos);
             std::vector<int> target(shortcutTarget, shortcutTarget + shortcutTargetLength);
-            shortcutTargets.push_back(target);
-            shortcutProbabilities.push_back(shortcutProbability);
+            shortcuts.push_back(WordProperty::ShortcutProperty(&target, shortcutProbability));
         }
     }
     return WordProperty(&codePointVector, ptNodeParams.isNotAWord(),
             ptNodeParams.isBlacklisted(), ptNodeParams.hasBigrams(),
             ptNodeParams.hasShortcutTargets(), ptNodeParams.getProbability(),
             historicalInfo->getTimeStamp(), historicalInfo->getLevel(),
-            historicalInfo->getCount(), &shortcutTargets, &shortcutProbabilities);
+            historicalInfo->getCount(), &bigrams, &shortcuts);
 }
 
 } // namespace latinime

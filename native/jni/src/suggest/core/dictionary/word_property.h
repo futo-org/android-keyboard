@@ -28,23 +28,54 @@ namespace latinime {
 // This class is used for returning information belonging to a word to java side.
 class WordProperty {
  public:
-    // TODO: Add bigram information.
+    class BigramProperty {
+     public:
+        BigramProperty(const std::vector<int> *const targetCodePoints,
+                const int probability, const int timestamp, const int level, const int count)
+                : mTargetCodePoints(*targetCodePoints), mProbability(probability),
+                  mTimestamp(timestamp), mLevel(level), mCount(count) {}
+
+     private:
+        std::vector<int> mTargetCodePoints;
+        int mProbability;
+        int mTimestamp;
+        int mLevel;
+        int mCount;
+    };
+
+    class ShortcutProperty {
+     public:
+        ShortcutProperty(const std::vector<int> *const targetCodePoints, const int probability)
+                : mTargetCodePoints(*targetCodePoints), mProbability(probability) {}
+
+        const std::vector<int> *getTargetCodePoints() const {
+            return &mTargetCodePoints;
+        }
+
+        int getProbability() const {
+            return mProbability;
+        }
+
+     private:
+        std::vector<int> mTargetCodePoints;
+        int mProbability;
+    };
+
     // Invalid word.
     WordProperty()
             : mCodePoints(), mIsNotAWord(false), mIsBlacklisted(false),
               mHasBigrams(false), mHasShortcuts(false), mProbability(NOT_A_PROBABILITY),
-              mTimestamp(0), mLevel(0), mCount(0), mShortcutTargets(), mShortcutProbabilities() {}
+              mTimestamp(0), mLevel(0), mCount(0), mBigrams(), mShortcuts() {}
 
     WordProperty(const std::vector<int> *const codePoints,
             const bool isNotAWord, const bool isBlacklisted, const bool hasBigrams,
             const bool hasShortcuts, const int probability, const int timestamp,
-            const int level, const int count,
-            const std::vector<std::vector<int> > *const shortcutTargets,
-            const std::vector<int> *const shortcutProbabilities)
+            const int level, const int count, const std::vector<BigramProperty> *const bigrams,
+            const std::vector<ShortcutProperty> *const shortcuts)
             : mCodePoints(*codePoints), mIsNotAWord(isNotAWord), mIsBlacklisted(isBlacklisted),
               mHasBigrams(hasBigrams), mHasShortcuts(hasShortcuts), mProbability(probability),
-              mTimestamp(timestamp), mLevel(level), mCount(count),
-              mShortcutTargets(*shortcutTargets), mShortcutProbabilities(*shortcutProbabilities) {}
+              mTimestamp(timestamp), mLevel(level), mCount(count), mBigrams(*bigrams),
+              mShortcuts(*shortcuts) {}
 
     void outputProperties(JNIEnv *const env, jintArray outCodePoints, jbooleanArray outFlags,
             jintArray outProbability, jintArray outHistoricalInfo, jobject outShortcutTargets,
@@ -63,9 +94,8 @@ class WordProperty {
     int mTimestamp;
     int mLevel;
     int mCount;
-    // Shortcut
-    std::vector<std::vector<int> > mShortcutTargets;
-    std::vector<int> mShortcutProbabilities;
+    std::vector<BigramProperty> mBigrams;
+    std::vector<ShortcutProperty> mShortcuts;
 };
 } // namespace latinime
 #endif // LATINIME_WORD_PROPERTY_H
