@@ -28,7 +28,6 @@ import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewCompat;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -45,6 +44,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.android.inputmethod.compat.TextViewCompatUtils;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SuggestedWords;
@@ -492,7 +492,24 @@ final class SuggestionStripLayoutHelper {
                 hintView, 1.0f - mCenterSuggestionWeight, ViewGroup.LayoutParams.MATCH_PARENT);
     }
 
-    private static void setLayoutWeight(final View v, final float weight, final int height) {
+    public void layoutImportantNotice(final View importantNoticeStrip, final int stripWidth) {
+        final Resources res = importantNoticeStrip.getResources();
+        final Drawable infoIcon = res.getDrawable(R.drawable.sym_keyboard_info_holo_dark);
+        final Drawable moreIcon = res.getDrawable(R.drawable.sym_keyboard_more_holo_dark);
+        final int width = stripWidth - infoIcon.getIntrinsicWidth() - moreIcon.getIntrinsicWidth();
+        final TextView titleView = (TextView)importantNoticeStrip.findViewById(
+                R.id.important_notice_title);
+        titleView.setTextColor(mColorAutoCorrect);
+        TextViewCompatUtils.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                titleView, infoIcon, null, moreIcon, null);
+        final CharSequence importantNoticeTitle = res.getText(R.string.important_notice_title);
+        titleView.setTextScaleX(1.0f); // Reset textScaleX.
+        final float titleScaleX = getTextScaleX(importantNoticeTitle, width, titleView.getPaint());
+        titleView.setText(importantNoticeTitle);
+        titleView.setTextScaleX(titleScaleX);
+    }
+
+    static void setLayoutWeight(final View v, final float weight, final int height) {
         final ViewGroup.LayoutParams lp = v.getLayoutParams();
         if (lp instanceof LinearLayout.LayoutParams) {
             final LinearLayout.LayoutParams llp = (LinearLayout.LayoutParams)lp;
