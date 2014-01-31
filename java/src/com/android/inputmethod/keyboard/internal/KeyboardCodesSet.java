@@ -22,6 +22,8 @@ import com.android.inputmethod.latin.utils.CollectionUtils;
 import java.util.HashMap;
 
 public final class KeyboardCodesSet {
+    public static final String PREFIX_CODE = "!code/";
+
     private static final HashMap<String, int[]> sLanguageToCodesMap = CollectionUtils.newHashMap();
     private static final HashMap<String, Integer> sNameToIdMap = CollectionUtils.newHashMap();
 

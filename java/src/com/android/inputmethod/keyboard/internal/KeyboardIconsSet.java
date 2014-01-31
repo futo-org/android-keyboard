@@ -30,6 +30,7 @@ import java.util.HashMap;
 public final class KeyboardIconsSet {
     private static final String TAG = KeyboardIconsSet.class.getSimpleName();
 
+    public static final String PREFIX_ICON = "!icon/";
     public static final int ICON_UNDEFINED = 0;
     private static final int ATTR_UNDEFINED = 0;
 
