@@ -39,12 +39,11 @@ void Ver4PatriciaTrieWritingHelper::writeToDictFile(const char *const dictDirPat
             BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE);
     const int extendedRegionSize = headerPolicy->getExtendedRegionSize()
             + mBuffers->getTrieBuffer()->getUsedAdditionalBufferSize();
-    if (!headerPolicy->fillInAndWriteHeaderToBuffer(false /* updatesLastUpdatedTime */,
-            false /* updatesLastDecayedTime */, unigramCount, bigramCount, extendedRegionSize,
-            &headerBuffer)) {
-        AKLOGE("Cannot write header structure to buffer. updatesLastUpdatedTime: %d, "
+    if (!headerPolicy->fillInAndWriteHeaderToBuffer(false /* updatesLastDecayedTime */,
+            unigramCount, bigramCount, extendedRegionSize, &headerBuffer)) {
+        AKLOGE("Cannot write header structure to buffer. "
                 "updatesLastDecayedTime: %d, unigramCount: %d, bigramCount: %d, "
-                "extendedRegionSize: %d", false, false, unigramCount, bigramCount,
+                "extendedRegionSize: %d", false, unigramCount, bigramCount,
                 extendedRegionSize);
         return;
     }
@@ -63,9 +62,8 @@ void Ver4PatriciaTrieWritingHelper::writeToDictFileWithGC(const int rootPtNodeAr
     }
     BufferWithExtendableBuffer headerBuffer(
             BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE);
-    if (!headerPolicy->fillInAndWriteHeaderToBuffer(true /* updatesLastUpdatedTime */,
-            true /* updatesLastDecayedTime */, unigramCount, bigramCount,
-            0 /* extendedRegionSize */, &headerBuffer)) {
+    if (!headerPolicy->fillInAndWriteHeaderToBuffer(true /* updatesLastDecayedTime */,
+            unigramCount, bigramCount, 0 /* extendedRegionSize */, &headerBuffer)) {
         return;
     }
     dictBuffers.get()->flushHeaderAndDictBuffers(dictDirPath, &headerBuffer);
