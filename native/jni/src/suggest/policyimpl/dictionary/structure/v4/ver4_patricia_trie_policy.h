@@ -106,7 +106,7 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     void getProperty(const char *const query, const int queryLength, char *const outResult,
             const int maxResultLength);
 
-    const UnigramProperty getUnigramProperty(const int *const codePoints,
+    const WordProperty getWordProperty(const int *const codePoints,
             const int codePointCount) const;
 
  private:

@@ -26,7 +26,7 @@ import java.util.ArrayList;
 // This has information that belong to a unigram. This class has some detailed attributes such as
 // historical information but they have to be checked only for testing purpose.
 @UsedForTesting
-public class UnigramProperty {
+public class WordProperty {
     public final String mCodePoints;
     public final boolean mIsNotAWord;
     public final boolean mIsBlacklisted;
@@ -50,8 +50,8 @@ public class UnigramProperty {
         return codePoints.length;
     }
 
-    // This represents invalid unigram when the probability is BinaryDictionary.NOT_A_PROBABILITY.
-    public UnigramProperty(final int[] codePoints, final boolean isNotAWord,
+    // This represents invalid word when the probability is BinaryDictionary.NOT_A_PROBABILITY.
+    public WordProperty(final int[] codePoints, final boolean isNotAWord,
             final boolean isBlacklisted, final boolean hasBigram,
             final boolean hasShortcuts, final int probability, final int timestamp,
             final int level, final int count, final ArrayList<int[]> shortcutTargets,

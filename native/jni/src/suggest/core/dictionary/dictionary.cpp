@@ -143,10 +143,10 @@ void Dictionary::getProperty(const char *const query, const int queryLength, cha
             maxResultLength);
 }
 
-const UnigramProperty Dictionary::getUnigramProperty(const int *const codePoints,
+const WordProperty Dictionary::getWordProperty(const int *const codePoints,
         const int codePointCount) {
     TimeKeeper::setCurrentTime();
-    return mDictionaryStructureWithBufferPolicy.get()->getUnigramProperty(
+    return mDictionaryStructureWithBufferPolicy.get()->getWordProperty(
             codePoints, codePointCount);
 }
 

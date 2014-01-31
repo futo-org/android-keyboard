@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-#include "suggest/core/dictionary/unigram_property.h"
+#include "suggest/core/dictionary/word_property.h"
 
 namespace latinime {
 
-void UnigramProperty::outputProperties(JNIEnv *const env, jintArray outCodePoints,
+void WordProperty::outputProperties(JNIEnv *const env, jintArray outCodePoints,
         jbooleanArray outFlags, jintArray outProbability, jintArray outHistoricalInfo,
         jobject outShortcutTargets, jobject outShortcutProbabilities) const {
     env->SetIntArrayRegion(outCodePoints, 0 /* start */, mCodePoints.size(), &mCodePoints[0]);
