@@ -48,9 +48,9 @@ public class BinaryDictOffdeviceUtilsTests extends TestCase {
 
         // Create a thrice-compressed dictionary file.
         final DictionaryOptions testOptions = new DictionaryOptions(new HashMap<String, String>());
-        testOptions.mAttributes.put(FormatSpec.FileHeader.DICTIONARY_VERSION_ATTRIBUTE, VERSION);
-        testOptions.mAttributes.put(FormatSpec.FileHeader.DICTIONARY_LOCALE_ATTRIBUTE, LOCALE);
-        testOptions.mAttributes.put(FormatSpec.FileHeader.DICTIONARY_ID_ATTRIBUTE, ID);
+        testOptions.mAttributes.put(FormatSpec.FileHeader.DICTIONARY_VERSION_KEY, VERSION);
+        testOptions.mAttributes.put(FormatSpec.FileHeader.DICTIONARY_LOCALE_KEY, LOCALE);
+        testOptions.mAttributes.put(FormatSpec.FileHeader.DICTIONARY_ID_KEY, ID);
         final FusionDictionary dict = new FusionDictionary(new PtNodeArray(), testOptions);
         dict.add("foo", TEST_FREQ, null, false /* isNotAWord */);
         dict.add("fta", 1, null, false /* isNotAWord */);
@@ -80,11 +80,11 @@ public class BinaryDictOffdeviceUtilsTests extends TestCase {
                 null /* dict : an optional dictionary to add words to, or null */,
                 false /* deleteDictIfBroken */);
         assertEquals("Wrong version attribute", VERSION, resultDict.mOptions.mAttributes.get(
-                FormatSpec.FileHeader.DICTIONARY_VERSION_ATTRIBUTE));
+                FormatSpec.FileHeader.DICTIONARY_VERSION_KEY));
         assertEquals("Wrong locale attribute", LOCALE, resultDict.mOptions.mAttributes.get(
-                FormatSpec.FileHeader.DICTIONARY_LOCALE_ATTRIBUTE));
+                FormatSpec.FileHeader.DICTIONARY_LOCALE_KEY));
         assertEquals("Wrong id attribute", ID, resultDict.mOptions.mAttributes.get(
-                FormatSpec.FileHeader.DICTIONARY_ID_ATTRIBUTE));
+                FormatSpec.FileHeader.DICTIONARY_ID_KEY));
         assertEquals("Dictionary can't be read back correctly",
                 FusionDictionary.findWordInTree(resultDict.mRootNodeArray, "foo").getFrequency(),
                 TEST_FREQ);

@@ -336,16 +336,19 @@ public final class FormatSpec {
         public final int mBodyOffset;
         public final DictionaryOptions mDictionaryOptions;
         public final FormatOptions mFormatOptions;
+
         // Note that these are corresponding definitions in native code in latinime::HeaderPolicy
         // and latinime::HeaderReadWriteUtils.
-        public static final String USES_FORGETTING_CURVE_ATTRIBUTE = "USES_FORGETTING_CURVE";
-        public static final String HAS_HISTORICAL_INFO_ATTRIBUTE = "HAS_HISTORICAL_INFO";
+        // TODO: Standardize the key names and bump up the format version, taking care not to
+        // break format version 2 dictionaries.
+        public static final String DICTIONARY_VERSION_KEY = "version";
+        public static final String DICTIONARY_LOCALE_KEY = "locale";
+        public static final String DICTIONARY_ID_KEY = "dictionary";
+        public static final String DICTIONARY_DESCRIPTION_KEY = "description";
+        public static final String DICTIONARY_DATE_KEY = "date";
+        public static final String HAS_HISTORICAL_INFO_KEY = "HAS_HISTORICAL_INFO";
+        public static final String USES_FORGETTING_CURVE_KEY = "USES_FORGETTING_CURVE";
         public static final String ATTRIBUTE_VALUE_TRUE = "1";
-
-        public static final String DICTIONARY_VERSION_ATTRIBUTE = "version";
-        public static final String DICTIONARY_LOCALE_ATTRIBUTE = "locale";
-        public static final String DICTIONARY_ID_ATTRIBUTE = "dictionary";
-        private static final String DICTIONARY_DESCRIPTION_ATTRIBUTE = "description";
         public FileHeader(final int headerSize, final DictionaryOptions dictionaryOptions,
                 final FormatOptions formatOptions) throws UnsupportedFormatException {
             mDictionaryOptions = dictionaryOptions;
@@ -365,24 +368,24 @@ public final class FormatSpec {
 
         // Helper method to get the locale as a String
         public String getLocaleString() {
-            return mDictionaryOptions.mAttributes.get(FileHeader.DICTIONARY_LOCALE_ATTRIBUTE);
+            return mDictionaryOptions.mAttributes.get(FileHeader.DICTIONARY_LOCALE_KEY);
         }
 
         // Helper method to get the version String
         public String getVersion() {
-            return mDictionaryOptions.mAttributes.get(FileHeader.DICTIONARY_VERSION_ATTRIBUTE);
+            return mDictionaryOptions.mAttributes.get(FileHeader.DICTIONARY_VERSION_KEY);
         }
 
         // Helper method to get the dictionary ID as a String
         public String getId() {
-            return mDictionaryOptions.mAttributes.get(FileHeader.DICTIONARY_ID_ATTRIBUTE);
+            return mDictionaryOptions.mAttributes.get(FileHeader.DICTIONARY_ID_KEY);
         }
 
         // Helper method to get the description
         public String getDescription() {
             // TODO: Right now each dictionary file comes with a description in its own language.
             // It will display as is no matter the device's locale. It should be internationalized.
-            return mDictionaryOptions.mAttributes.get(FileHeader.DICTIONARY_DESCRIPTION_ATTRIBUTE);
+            return mDictionaryOptions.mAttributes.get(FileHeader.DICTIONARY_DESCRIPTION_KEY);
         }
     }
 

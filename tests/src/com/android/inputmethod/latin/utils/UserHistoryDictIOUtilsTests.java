@@ -56,9 +56,9 @@ public class UserHistoryDictIOUtilsTests extends AndroidTestCase
     private static final String TEST_DICT_FILE_EXTENSION = ".testDict";
     private static final HashMap<String, String> HEADER_OPTIONS = new HashMap<String, String>();
     static {
-        HEADER_OPTIONS.put(FileHeader.DICTIONARY_LOCALE_ATTRIBUTE, "en_US");
-        HEADER_OPTIONS.put(FileHeader.DICTIONARY_ID_ATTRIBUTE, "test");
-        HEADER_OPTIONS.put(FileHeader.DICTIONARY_VERSION_ATTRIBUTE, "1000");
+        HEADER_OPTIONS.put(FileHeader.DICTIONARY_LOCALE_KEY, "en_US");
+        HEADER_OPTIONS.put(FileHeader.DICTIONARY_ID_KEY, "test");
+        HEADER_OPTIONS.put(FileHeader.DICTIONARY_VERSION_KEY, "1000");
     }
 
     /**
