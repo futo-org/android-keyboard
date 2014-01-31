@@ -17,6 +17,7 @@
 package com.android.inputmethod.latin.utils;
 
 import com.android.inputmethod.annotations.UsedForTesting;
+import com.android.inputmethod.latin.Constants;
 
 import java.util.ArrayList;
 
@@ -57,9 +58,9 @@ public final class CsvUtils {
 
     // Note that none of these characters match high or low surrogate characters, so we need not
     // take care of matching by code point.
-    private static final char COMMA = ',';
-    private static final char SPACE = ' ';
-    private static final char QUOTE = '"';
+    private static final char COMMA = Constants.CODE_COMMA;
+    private static final char SPACE = Constants.CODE_SPACE;
+    private static final char QUOTE = Constants.CODE_DOUBLE_QUOTE;
 
     @SuppressWarnings("serial")
     public static class CsvParseException extends RuntimeException {

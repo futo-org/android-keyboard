@@ -191,6 +191,8 @@ public final class Constants {
     public static final int CODE_QUESTION_MARK = '?';
     public static final int CODE_EXCLAMATION_MARK = '!';
     public static final int CODE_SLASH = '/';
+    public static final int CODE_BACKSLASH = '\\';
+    public static final int CODE_VERTICAL_BAR = '|';
     public static final int CODE_COMMERCIAL_AT = '@';
     public static final int CODE_PLUS = '+';
     public static final int CODE_PERCENT = '%';

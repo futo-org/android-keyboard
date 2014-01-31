@@ -19,6 +19,7 @@ package com.android.inputmethod.latin.settings;
 import android.content.res.Resources;
 
 import com.android.inputmethod.keyboard.internal.KeySpecParser;
+import com.android.inputmethod.keyboard.internal.MoreKeySpec;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.R;
@@ -55,7 +56,7 @@ public final class SpacingAndPunctuations {
                 res.getString(R.string.symbols_word_connectors));
         mSortedWordSeparators = StringUtils.toSortedCodePointArray(
                 res.getString(R.string.symbols_word_separators));
-        final String[] suggestPuncsSpec = KeySpecParser.splitKeySpecs(res.getString(
+        final String[] suggestPuncsSpec = MoreKeySpec.splitKeySpecs(res.getString(
                 R.string.suggested_punctuations));
         mSuggestPuncList = createSuggestPuncList(suggestPuncsSpec);
         mSentenceSeparator = res.getInteger(R.integer.sentence_separator);

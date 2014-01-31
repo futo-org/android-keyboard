@@ -21,6 +21,7 @@ import android.content.res.Resources;
 import android.text.TextUtils;
 
 import com.android.inputmethod.annotations.UsedForTesting;
+import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 
 import java.util.HashMap;
@@ -47,7 +48,7 @@ import java.util.HashMap;
  */
 public final class KeyboardTextsSet {
     public static final String PREFIX_TEXT = "!text/";
-    private static final char BACKSLASH = '\\';
+    private static final char BACKSLASH = Constants.CODE_BACKSLASH;
     private static final int MAX_STRING_REFERENCE_INDIRECTION = 10;
 
     // Language to texts map.

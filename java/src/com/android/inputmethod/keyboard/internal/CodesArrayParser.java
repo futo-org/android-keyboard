@@ -17,6 +17,7 @@
 package com.android.inputmethod.keyboard.internal;
 
 import com.android.inputmethod.latin.Constants;
+import com.android.inputmethod.latin.utils.StringUtils;
 
 import android.text.TextUtils;
 
@@ -29,15 +30,16 @@ import android.text.TextUtils;
  * marker. An output text may consist of multiple code points separated by comma.
  * The format of the codesArray element should be:
  * <pre>
- *   codePointInHex[,codePoint2InHex]*(|outputTextCodePointInHex[,outputTextCodePoint2InHex]*)?
+ *   label1[,label2]*(|outputText1[,outputText2]*(|minSupportSdkVersion)?)?
  * </pre>
  */
 // TODO: Write unit tests for this class.
 public final class CodesArrayParser {
     // Constants for parsing.
-    private static final char COMMA = ',';
-    private static final String VERTICAL_BAR_STRING = "\\|";
-    private static final String COMMA_STRING = ",";
+    private static final char COMMA = Constants.CODE_COMMA;
+    private static final String COMMA_REGEX = StringUtils.newSingleCodePointString(COMMA);
+    private static final String VERTICAL_BAR_REGEX = // "\\|"
+            new String(new char[] { Constants.CODE_BACKSLASH, Constants.CODE_VERTICAL_BAR });
     private static final int BASE_HEX = 16;
 
     private CodesArrayParser() {
@@ -45,7 +47,7 @@ public final class CodesArrayParser {
     }
 
     private static String getLabelSpec(final String codesArraySpec) {
-        final String[] strs = codesArraySpec.split(VERTICAL_BAR_STRING, -1);
+        final String[] strs = codesArraySpec.split(VERTICAL_BAR_REGEX, -1);
         if (strs.length <= 1) {
             return codesArraySpec;
         }
@@ -55,7 +57,7 @@ public final class CodesArrayParser {
     public static String parseLabel(final String codesArraySpec) {
         final String labelSpec = getLabelSpec(codesArraySpec);
         final StringBuilder sb = new StringBuilder();
-        for (final String codeInHex : labelSpec.split(COMMA_STRING)) {
+        for (final String codeInHex : labelSpec.split(COMMA_REGEX)) {
             final int codePoint = Integer.parseInt(codeInHex, BASE_HEX);
             sb.appendCodePoint(codePoint);
         }
@@ -63,17 +65,15 @@ public final class CodesArrayParser {
     }
 
     private static String getCodeSpec(final String codesArraySpec) {
-        final String[] strs = codesArraySpec.split(VERTICAL_BAR_STRING, -1);
+        final String[] strs = codesArraySpec.split(VERTICAL_BAR_REGEX, -1);
         if (strs.length <= 1) {
             return codesArraySpec;
         }
         return TextUtils.isEmpty(strs[1]) ? strs[0] : strs[1];
     }
 
-    // codesArraySpec consists of:
-    // <label>|<code0>,<code1>,...|<minSupportSdkVersion>
     public static int getMinSupportSdkVersion(final String codesArraySpec) {
-        final String[] strs = codesArraySpec.split(VERTICAL_BAR_STRING, -1);
+        final String[] strs = codesArraySpec.split(VERTICAL_BAR_REGEX, -1);
         if (strs.length <= 2) {
             return 0;
         }
@@ -98,7 +98,7 @@ public final class CodesArrayParser {
             return null;
         }
         final StringBuilder sb = new StringBuilder();
-        for (final String codeInHex : codeSpec.split(COMMA_STRING)) {
+        for (final String codeInHex : codeSpec.split(COMMA_REGEX)) {
             final int codePoint = Integer.parseInt(codeInHex, BASE_HEX);
             sb.appendCodePoint(codePoint);
         }

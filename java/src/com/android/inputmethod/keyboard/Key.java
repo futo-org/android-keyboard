@@ -284,19 +284,19 @@ public class Key implements Comparable<Key> {
         int moreKeysColumn = style.getInt(keyAttr,
                 R.styleable.Keyboard_Key_maxMoreKeysColumn, params.mMaxMoreKeysKeyboardColumn);
         int value;
-        if ((value = KeySpecParser.getIntValue(moreKeys, MORE_KEYS_AUTO_COLUMN_ORDER, -1)) > 0) {
+        if ((value = MoreKeySpec.getIntValue(moreKeys, MORE_KEYS_AUTO_COLUMN_ORDER, -1)) > 0) {
             moreKeysColumn = value & MORE_KEYS_COLUMN_MASK;
         }
-        if ((value = KeySpecParser.getIntValue(moreKeys, MORE_KEYS_FIXED_COLUMN_ORDER, -1)) > 0) {
+        if ((value = MoreKeySpec.getIntValue(moreKeys, MORE_KEYS_FIXED_COLUMN_ORDER, -1)) > 0) {
             moreKeysColumn = MORE_KEYS_FLAGS_FIXED_COLUMN_ORDER | (value & MORE_KEYS_COLUMN_MASK);
         }
-        if (KeySpecParser.getBooleanValue(moreKeys, MORE_KEYS_HAS_LABELS)) {
+        if (MoreKeySpec.getBooleanValue(moreKeys, MORE_KEYS_HAS_LABELS)) {
             moreKeysColumn |= MORE_KEYS_FLAGS_HAS_LABELS;
         }
-        if (KeySpecParser.getBooleanValue(moreKeys, MORE_KEYS_NEEDS_DIVIDERS)) {
+        if (MoreKeySpec.getBooleanValue(moreKeys, MORE_KEYS_NEEDS_DIVIDERS)) {
             moreKeysColumn |= MORE_KEYS_FLAGS_NEEDS_DIVIDERS;
         }
-        if (KeySpecParser.getBooleanValue(moreKeys, MORE_KEYS_NO_PANEL_AUTO_MORE_KEY)) {
+        if (MoreKeySpec.getBooleanValue(moreKeys, MORE_KEYS_NO_PANEL_AUTO_MORE_KEY)) {
             moreKeysColumn |= MORE_KEYS_FLAGS_NO_PANEL_AUTO_MORE_KEY;
         }
         mMoreKeysColumnAndFlags = moreKeysColumn;
@@ -308,7 +308,7 @@ public class Key implements Comparable<Key> {
             additionalMoreKeys = style.getStringArray(keyAttr,
                     R.styleable.Keyboard_Key_additionalMoreKeys);
         }
-        moreKeys = KeySpecParser.insertAdditionalMoreKeys(moreKeys, additionalMoreKeys);
+        moreKeys = MoreKeySpec.insertAdditionalMoreKeys(moreKeys, additionalMoreKeys);
         if (moreKeys != null) {
             actionFlags |= ACTION_FLAGS_ENABLE_LONG_PRESS;
             mMoreKeys = new MoreKeySpec[moreKeys.length];
