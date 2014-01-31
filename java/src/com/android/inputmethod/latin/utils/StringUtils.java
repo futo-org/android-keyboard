@@ -16,6 +16,8 @@
 
 package com.android.inputmethod.latin.utils;
 
+import static com.android.inputmethod.latin.Constants.CODE_UNSPECIFIED;
+
 import android.text.TextUtils;
 
 import com.android.inputmethod.annotations.UsedForTesting;
@@ -470,5 +472,21 @@ public final class StringUtils {
                     + Character.digit(hexString.charAt(i + 1), 16));
         }
         return bytes;
+    }
+
+    public static String toUpperCaseOfStringForLocale(final String text,
+            final boolean needsToUpperCase, final Locale locale) {
+        if (text == null || !needsToUpperCase) return text;
+        return text.toUpperCase(locale);
+    }
+
+    public static int toUpperCaseOfCodeForLocale(final int code, final boolean needsToUpperCase,
+            final Locale locale) {
+        if (!Constants.isLetterCode(code) || !needsToUpperCase) return code;
+        final String text = newSingleCodePointString(code);
+        final String casedText = toUpperCaseOfStringForLocale(
+                text, needsToUpperCase, locale);
+        return codePointCount(casedText) == 1
+                ? casedText.codePointAt(0) : CODE_UNSPECIFIED;
     }
 }

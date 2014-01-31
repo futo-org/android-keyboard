@@ -21,14 +21,12 @@ import static com.android.inputmethod.latin.Constants.CODE_UNSPECIFIED;
 
 import android.text.TextUtils;
 
-import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Locale;
 
 /**
  * The string parser of more keys specification.
@@ -481,21 +479,5 @@ public final class KeySpecParser {
             value = true;
         }
         return value;
-    }
-
-    public static int toUpperCaseOfCodeForLocale(final int code, final boolean needsToUpperCase,
-            final Locale locale) {
-        if (!Constants.isLetterCode(code) || !needsToUpperCase) return code;
-        final String text = StringUtils.newSingleCodePointString(code);
-        final String casedText = KeySpecParser.toUpperCaseOfStringForLocale(
-                text, needsToUpperCase, locale);
-        return StringUtils.codePointCount(casedText) == 1
-                ? casedText.codePointAt(0) : CODE_UNSPECIFIED;
-    }
-
-    public static String toUpperCaseOfStringForLocale(final String text,
-            final boolean needsToUpperCase, final Locale locale) {
-        if (text == null || !needsToUpperCase) return text;
-        return text.toUpperCase(locale);
     }
 }
