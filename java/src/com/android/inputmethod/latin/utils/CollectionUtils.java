@@ -102,4 +102,19 @@ public final class CollectionUtils {
     public static <E> SparseArray<E> newSparseArray() {
         return new SparseArray<E>();
     }
+
+    public static <E> ArrayList<E> arrayAsList(final E[] array, final int start, final int end) {
+        if (array == null) {
+            throw new NullPointerException();
+        }
+        if (start < 0 || start > end || end > array.length) {
+            throw new IllegalArgumentException();
+        }
+
+        final ArrayList<E> list = newArrayList(end - start);
+        for (int i = start; i < end; i++) {
+            list.add(array[i]);
+        }
+        return list;
+    }
 }

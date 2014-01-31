@@ -265,21 +265,6 @@ public final class KeySpecParser {
         return KeyboardIconsSet.ICON_UNDEFINED;
     }
 
-    private static <T> ArrayList<T> arrayAsList(final T[] array, final int start, final int end) {
-        if (array == null) {
-            throw new NullPointerException();
-        }
-        if (start < 0 || start > end || end > array.length) {
-            throw new IllegalArgumentException();
-        }
-
-        final ArrayList<T> list = CollectionUtils.newArrayList(end - start);
-        for (int i = start; i < end; i++) {
-            list.add(array[i]);
-        }
-        return list;
-    }
-
     private static final String[] EMPTY_STRING_ARRAY = new String[0];
 
     private static String[] filterOutEmptyString(final String[] array) {
@@ -291,7 +276,7 @@ public final class KeySpecParser {
             final String entry = array[i];
             if (TextUtils.isEmpty(entry)) {
                 if (out == null) {
-                    out = arrayAsList(array, 0, i);
+                    out = CollectionUtils.arrayAsList(array, 0, i);
                 }
             } else if (out != null) {
                 out.add(entry);
@@ -326,7 +311,7 @@ public final class KeySpecParser {
                 } else {
                     // Filter out excessive '%' marker.
                     if (out == null) {
-                        out = arrayAsList(moreKeys, 0, moreKeyIndex);
+                        out = CollectionUtils.arrayAsList(moreKeys, 0, moreKeyIndex);
                     }
                 }
             } else {
@@ -343,7 +328,7 @@ public final class KeySpecParser {
                         + " moreKeys=" + Arrays.toString(moreKeys)
                         + " additionalMoreKeys=" + Arrays.toString(additionalMoreKeys));
             }
-            out = arrayAsList(additionalMoreKeys, additionalIndex, additionalCount);
+            out = CollectionUtils.arrayAsList(additionalMoreKeys, additionalIndex, additionalCount);
             for (int i = 0; i < moreKeysCount; i++) {
                 out.add(moreKeys[i]);
             }
@@ -355,7 +340,7 @@ public final class KeySpecParser {
                         + " moreKeys=" + Arrays.toString(moreKeys)
                         + " additionalMoreKeys=" + Arrays.toString(additionalMoreKeys));
             }
-            out = arrayAsList(moreKeys, 0, moreKeysCount);
+            out = CollectionUtils.arrayAsList(moreKeys, 0, moreKeysCount);
             for (int i = additionalIndex; i < additionalCount; i++) {
                 out.add(additionalMoreKeys[additionalIndex]);
             }
