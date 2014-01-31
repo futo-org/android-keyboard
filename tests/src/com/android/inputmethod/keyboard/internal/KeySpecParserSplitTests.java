@@ -92,7 +92,7 @@ public class KeySpecParserSplitTests extends InstrumentationTestCase {
 
     private void assertTextArray(final String message, final String value,
             final String ... expectedArray) {
-        final String resolvedActual = KeySpecParser.resolveTextReference(value, mTextsSet);
+        final String resolvedActual = mTextsSet.resolveTextReference(value);
         final String[] actual = KeySpecParser.splitKeySpecs(resolvedActual);
         final String[] expected = (expectedArray.length == 0) ? null : expectedArray;
         assertArrayEquals(message, expected, actual);
@@ -117,13 +117,11 @@ public class KeySpecParserSplitTests extends InstrumentationTestCase {
     private static final String SURROGATE2 = PAIR1 + PAIR2 + PAIR3;
 
     public void testResolveNullText() {
-        assertNull("resolve null", KeySpecParser.resolveTextReference(
-                null, mTextsSet));
+        assertNull("resolve null", mTextsSet.resolveTextReference(null));
     }
 
     public void testResolveEmptyText() {
-        assertNull("resolve empty text", KeySpecParser.resolveTextReference(
-                "!text/empty_string", mTextsSet));
+        assertNull("resolve empty text", mTextsSet.resolveTextReference("!text/empty_string"));
     }
 
     public void testSplitZero() {
