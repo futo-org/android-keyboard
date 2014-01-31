@@ -31,9 +31,9 @@ public final class MoreKeySpec {
 
     public MoreKeySpec(final String moreKeySpec, boolean needsToUpperCase, final Locale locale,
             final KeyboardCodesSet codesSet) {
-        mLabel = KeySpecParser.toUpperCaseOfStringForLocale(
+        mLabel = StringUtils.toUpperCaseOfStringForLocale(
                 KeySpecParser.getLabel(moreKeySpec), needsToUpperCase, locale);
-        final int code = KeySpecParser.toUpperCaseOfCodeForLocale(
+        final int code = StringUtils.toUpperCaseOfCodeForLocale(
                 KeySpecParser.getCode(moreKeySpec, codesSet), needsToUpperCase, locale);
         if (code == Constants.CODE_UNSPECIFIED) {
             // Some letter, for example German Eszett (U+00DF: "ß"), has multiple characters
@@ -42,7 +42,7 @@ public final class MoreKeySpec {
             mOutputText = mLabel;
         } else {
             mCode = code;
-            mOutputText = KeySpecParser.toUpperCaseOfStringForLocale(
+            mOutputText = StringUtils.toUpperCaseOfStringForLocale(
                     KeySpecParser.getOutputText(moreKeySpec), needsToUpperCase, locale);
         }
         mIconId = KeySpecParser.getIconId(moreKeySpec);
