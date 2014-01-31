@@ -108,6 +108,19 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         }
     }
 
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        BinaryDictionary.setCurrentTimeForTest(0);
+    }
+
+    @Override
+    protected void tearDown() throws Exception {
+        super.tearDown();
+        // Quit test mode.
+        BinaryDictionary.setCurrentTimeForTest(-1);
+    }
+
     private void generateWords(final int number, final Random random) {
         final int[] codePointSet = CodePointUtils.generateCodePointSet(DEFAULT_CODE_POINT_SET_SIZE,
                 random);
