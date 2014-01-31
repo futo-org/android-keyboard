@@ -32,14 +32,29 @@ public class WordProperty {
     public final boolean mIsBlacklisted;
     public final boolean mHasBigrams;
     public final boolean mHasShortcuts;
-    public final int mProbability;
-    // mTimestamp, mLevel and mCount are historical info. These values are depend on the
-    // implementation in native code; thus, we must not use them and have any assumptions about
-    // them except for tests.
-    public final int mTimestamp;
-    public final int mLevel;
-    public final int mCount;
+    public final ProbabilityInfo mProbabilityInfo;
+    public final ArrayList<WeightedString> mBigramTargets = CollectionUtils.newArrayList();
+    public final ArrayList<ProbabilityInfo> mBigramProbabilityInfo = CollectionUtils.newArrayList();
     public final ArrayList<WeightedString> mShortcutTargets = CollectionUtils.newArrayList();
+
+    // TODO: Use this kind of Probability class for dictionary read/write code under the makedict
+    // package.
+    public static final class ProbabilityInfo {
+        public final int mProbability;
+        // wTimestamp, mLevel and mCount are historical info. These values are depend on the
+        // implementation in native code; thus, we must not use them and have any assumptions about
+        // them except for tests.
+        public final int mTimestamp;
+        public final int mLevel;
+        public final int mCount;
+
+        public ProbabilityInfo(final int[] probabilityInfo) {
+            mProbability = probabilityInfo[BinaryDictionary.FORMAT_WORD_PROPERTY_PROBABILITY_INDEX];
+            mTimestamp = probabilityInfo[BinaryDictionary.FORMAT_WORD_PROPERTY_TIMESTAMP_INDEX];
+            mLevel = probabilityInfo[BinaryDictionary.FORMAT_WORD_PROPERTY_LEVEL_INDEX];
+            mCount = probabilityInfo[BinaryDictionary.FORMAT_WORD_PROPERTY_COUNT_INDEX];
+        }
+    }
 
     private static int getCodePointCount(final int[] codePoints) {
         for (int i = 0; i < codePoints.length; i++) {
@@ -53,18 +68,29 @@ public class WordProperty {
     // This represents invalid word when the probability is BinaryDictionary.NOT_A_PROBABILITY.
     public WordProperty(final int[] codePoints, final boolean isNotAWord,
             final boolean isBlacklisted, final boolean hasBigram,
-            final boolean hasShortcuts, final int probability, final int timestamp,
-            final int level, final int count, final ArrayList<int[]> shortcutTargets,
+            final boolean hasShortcuts, final int[] probabilityInfo,
+            final ArrayList<int[]> bigramTargets, final ArrayList<int[]> bigramProbabilityInfo,
+            final ArrayList<int[]> shortcutTargets,
             final ArrayList<Integer> shortcutProbabilities) {
         mCodePoints = new String(codePoints, 0 /* offset */, getCodePointCount(codePoints));
         mIsNotAWord = isNotAWord;
         mIsBlacklisted = isBlacklisted;
         mHasBigrams = hasBigram;
         mHasShortcuts = hasShortcuts;
-        mProbability = probability;
-        mTimestamp = timestamp;
-        mLevel = level;
-        mCount = count;
+        mProbabilityInfo = new ProbabilityInfo(probabilityInfo);
+
+        final int bigramTargetCount = bigramTargets.size();
+        for (int i = 0; i < bigramTargetCount; i++) {
+            final int[] bigramTargetCodePointArray = bigramTargets.get(i);
+            final String bigramTargetString = new String(bigramTargetCodePointArray,
+                    0 /* offset */, getCodePointCount(bigramTargetCodePointArray));
+            final ProbabilityInfo bigramProbability =
+                    new ProbabilityInfo(bigramProbabilityInfo.get(i));
+            mBigramTargets.add(
+                    new WeightedString(bigramTargetString, bigramProbability.mProbability));
+            mBigramProbabilityInfo.add(bigramProbability);
+        }
+
         final int shortcutTargetCount = shortcutTargets.size();
         for (int i = 0; i < shortcutTargetCount; i++) {
             final int[] shortcutTargetCodePointArray = shortcutTargets.get(i);
@@ -77,6 +103,6 @@ public class WordProperty {
 
     @UsedForTesting
     public boolean isValid() {
-        return mProbability != BinaryDictionary.NOT_A_PROBABILITY;
+        return mProbabilityInfo.mProbability != BinaryDictionary.NOT_A_PROBABILITY;
     }
 }
