@@ -102,13 +102,13 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
                 getContext().getCacheDir());
         FileUtils.deleteRecursively(file);
         Map<String, String> attributeMap = new HashMap<String, String>();
-        attributeMap.put(FormatSpec.FileHeader.DICTIONARY_ID_ATTRIBUTE, dictId);
-        attributeMap.put(FormatSpec.FileHeader.DICTIONARY_LOCALE_ATTRIBUTE, dictId);
-        attributeMap.put(FormatSpec.FileHeader.DICTIONARY_VERSION_ATTRIBUTE,
+        attributeMap.put(FormatSpec.FileHeader.DICTIONARY_ID_KEY, dictId);
+        attributeMap.put(FormatSpec.FileHeader.DICTIONARY_LOCALE_KEY, dictId);
+        attributeMap.put(FormatSpec.FileHeader.DICTIONARY_VERSION_KEY,
                 String.valueOf(TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis())));
-        attributeMap.put(FormatSpec.FileHeader.USES_FORGETTING_CURVE_ATTRIBUTE,
+        attributeMap.put(FormatSpec.FileHeader.USES_FORGETTING_CURVE_KEY,
                 FormatSpec.FileHeader.ATTRIBUTE_VALUE_TRUE);
-        attributeMap.put(FormatSpec.FileHeader.HAS_HISTORICAL_INFO_ATTRIBUTE,
+        attributeMap.put(FormatSpec.FileHeader.HAS_HISTORICAL_INFO_KEY,
                 FormatSpec.FileHeader.ATTRIBUTE_VALUE_TRUE);
         if (BinaryDictionary.createEmptyDictFile(file.getAbsolutePath(),
                 FormatSpec.VERSION4, attributeMap)) {

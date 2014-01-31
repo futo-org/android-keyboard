@@ -62,7 +62,7 @@ public class Ver4DictEncoder implements DictEncoder {
         final BinaryDictionary binaryDict = new BinaryDictionary(mDictPlacedDir.getAbsolutePath(),
                 0l, mDictPlacedDir.length(), true /* useFullEditDistance */,
                 LocaleUtils.constructLocaleFromString(dict.mOptions.mAttributes.get(
-                        FormatSpec.FileHeader.DICTIONARY_LOCALE_ATTRIBUTE)),
+                        FormatSpec.FileHeader.DICTIONARY_LOCALE_KEY)),
                 Dictionary.TYPE_USER /* Dictionary type. Does not matter for us */,
                 true /* isUpdatable */);
         if (!binaryDict.isValidDictionary()) {

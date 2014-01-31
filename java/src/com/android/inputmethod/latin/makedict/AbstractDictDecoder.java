@@ -60,7 +60,7 @@ public abstract class AbstractDictDecoder implements DictDecoder {
         final FileHeader header = new FileHeader(headerSize,
                 new FusionDictionary.DictionaryOptions(attributes),
                 new FormatOptions(version, FileHeader.ATTRIBUTE_VALUE_TRUE.equals(
-                        attributes.get(FileHeader.HAS_HISTORICAL_INFO_ATTRIBUTE))));
+                        attributes.get(FileHeader.HAS_HISTORICAL_INFO_KEY))));
         return header;
     }
 
