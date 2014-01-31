@@ -22,12 +22,10 @@ import android.provider.Settings;
 import android.provider.Settings.SettingNotFoundException;
 import android.util.Log;
 
+import com.android.inputmethod.latin.R;
+
 public final class ImportantNoticeUtils {
     private static final String TAG = ImportantNoticeUtils.class.getSimpleName();
-
-    // The current version number of an important notice.
-    // This number must be incremented whenever users should see a new important notice.
-    private static final int CURRENT_IMPORTANT_NOTICE_VERSION = 0;
 
     // {@link SharedPreferences} name to save the last important notice version that has been
     // displayed to users.
@@ -60,16 +58,20 @@ public final class ImportantNoticeUtils {
         return context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
     }
 
+    private static int getCurrentImportantNoticeVersion(final Context context) {
+        return context.getResources().getInteger(R.integer.config_important_notice_version);
+    }
+
     public static boolean hasNewImportantNotice(final Context context) {
         final SharedPreferences prefs = getImportantNoticePreferences(context);
         final int lastVersion = prefs.getInt(KEY_IMPORTANT_NOTICE_VERSION, 0);
-        return CURRENT_IMPORTANT_NOTICE_VERSION > lastVersion;
+        return getCurrentImportantNoticeVersion(context) > lastVersion;
     }
 
     public static void updateLastImportantNoticeVersion(final Context context) {
         final SharedPreferences prefs = getImportantNoticePreferences(context);
         prefs.edit()
-                .putInt(KEY_IMPORTANT_NOTICE_VERSION, CURRENT_IMPORTANT_NOTICE_VERSION)
+                .putInt(KEY_IMPORTANT_NOTICE_VERSION, getCurrentImportantNoticeVersion(context))
                 .apply();
     }
 }
