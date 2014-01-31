@@ -52,8 +52,6 @@ public final class KeySpecParser {
     private static final char COMMA = ',';
     private static final char BACKSLASH = '\\';
     private static final char VERTICAL_BAR = '|';
-    static final String PREFIX_ICON = "!icon/";
-    private static final String PREFIX_CODE = "!code/";
     private static final String PREFIX_HEX = "0x";
     private static final String ADDITIONAL_MORE_KEY_MARKER = "%";
 
@@ -115,13 +113,13 @@ public final class KeySpecParser {
     }
 
     private static boolean hasIcon(final String moreKeySpec) {
-        return moreKeySpec.startsWith(PREFIX_ICON);
+        return moreKeySpec.startsWith(KeyboardIconsSet.PREFIX_ICON);
     }
 
     private static boolean hasCode(final String moreKeySpec) {
         final int end = indexOfLabelEnd(moreKeySpec, 0);
         if (end > 0 && end + 1 < moreKeySpec.length() && moreKeySpec.startsWith(
-                PREFIX_CODE, end + 1)) {
+                KeyboardCodesSet.PREFIX_CODE, end + 1)) {
             return true;
         }
         return false;
@@ -243,8 +241,8 @@ public final class KeySpecParser {
     public static int parseCode(final String text, final KeyboardCodesSet codesSet,
             final int defCode) {
         if (text == null) return defCode;
-        if (text.startsWith(PREFIX_CODE)) {
-            return codesSet.getCode(text.substring(PREFIX_CODE.length()));
+        if (text.startsWith(KeyboardCodesSet.PREFIX_CODE)) {
+            return codesSet.getCode(text.substring(KeyboardCodesSet.PREFIX_CODE.length()));
         } else if (text.startsWith(PREFIX_HEX)) {
             return Integer.parseInt(text.substring(PREFIX_HEX.length()), 16);
         } else {
@@ -254,9 +252,11 @@ public final class KeySpecParser {
 
     public static int getIconId(final String moreKeySpec) {
         if (moreKeySpec != null && hasIcon(moreKeySpec)) {
-            final int end = moreKeySpec.indexOf(VERTICAL_BAR, PREFIX_ICON.length());
-            final String name = (end < 0) ? moreKeySpec.substring(PREFIX_ICON.length())
-                    : moreKeySpec.substring(PREFIX_ICON.length(), end);
+            final int end = moreKeySpec.indexOf(
+                    VERTICAL_BAR, KeyboardIconsSet.PREFIX_ICON.length());
+            final String name = (end < 0)
+                    ? moreKeySpec.substring(KeyboardIconsSet.PREFIX_ICON.length())
+                    : moreKeySpec.substring(KeyboardIconsSet.PREFIX_ICON.length(), end);
             return KeyboardIconsSet.getIconId(name);
         }
         return KeyboardIconsSet.ICON_UNDEFINED;
