@@ -40,7 +40,7 @@ public abstract class KeyStyle {
     protected String[] parseStringArray(final TypedArray a, final int index) {
         if (a.hasValue(index)) {
             final String text = mTextsSet.resolveTextReference(a.getString(index));
-            return KeySpecParser.splitKeySpecs(text);
+            return MoreKeySpec.splitKeySpecs(text);
         }
         return null;
     }

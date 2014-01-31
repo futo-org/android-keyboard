@@ -19,106 +19,46 @@ package com.android.inputmethod.keyboard.internal;
 import static com.android.inputmethod.latin.Constants.CODE_OUTPUT_TEXT;
 import static com.android.inputmethod.latin.Constants.CODE_UNSPECIFIED;
 
-import android.text.TextUtils;
-
-import com.android.inputmethod.latin.LatinImeLogger;
-import com.android.inputmethod.latin.utils.CollectionUtils;
+import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.utils.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 /**
- * The string parser of more keys specification.
- * The specification is comma separated texts each of which represents one "more key".
- * The specification might have label or string resource reference in it. These references are
- * expanded before parsing comma.
- * - Label reference should be a string representation of label (!text/label_name)
- * - String resource reference should be a string representation of resource (!text/resource_name)
- * Each "more key" specification is one of the following:
- * - Label optionally followed by keyOutputText or code (keyLabel|keyOutputText).
- * - Icon followed by keyOutputText or code (!icon/icon_name|!code/code_name)
- *   - Icon should be a string representation of icon (!icon/icon_name).
- *   - Code should be a code point presented by hexadecimal string prefixed with "0x", or a string
- *     representation of code (!code/code_name).
+ * The string parser of the key specification.
+ *
+ * Each key specification is one of the following:
+ * - Label optionally followed by keyOutputText (keyLabel|keyOutputText).
+ * - Label optionally followed by code point (keyLabel|!code/code_name).
+ * - Icon followed by keyOutputText (!icon/icon_name|keyOutputText).
+ * - Icon followed by code point (!icon/icon_name|!code/code_name).
+ * Label and keyOutputText are one of the following:
+ * - Literal string.
+ * - Label reference represented by (!text/label_name), see {@link KeyboardTextsSet}.
+ * - String resource reference represented by (!text/resource_name), see {@link KeyboardTextsSet}.
+ * Icon is represented by (!icon/icon_name), see {@link KeyboardIconsSet}.
+ * Code is one of the following:
+ * - Code point presented by hexadecimal string prefixed with "0x"
+ * - Code reference represented by (!code/code_name), see {@link KeyboardCodesSet}.
  * Special character, comma ',' backslash '\', and bar '|' can be escaped by '\' character.
- * Note that the '\' is also parsed by XML parser and CSV parser as well.
- * See {@link KeyboardIconsSet} about icon_name.
+ * Note that the '\' is also parsed by XML parser and {@link MoreKeySpec#splitKeySpecs(String)}
+ * as well.
  */
 public final class KeySpecParser {
-    private static final boolean DEBUG = LatinImeLogger.sDBG;
-
     // Constants for parsing.
-    private static final char COMMA = ',';
-    private static final char BACKSLASH = '\\';
-    private static final char VERTICAL_BAR = '|';
+    private static final char BACKSLASH = Constants.CODE_BACKSLASH;
+    private static final char VERTICAL_BAR = Constants.CODE_VERTICAL_BAR;
     private static final String PREFIX_HEX = "0x";
-    private static final String ADDITIONAL_MORE_KEY_MARKER = "%";
 
     private KeySpecParser() {
         // Intentional empty constructor for utility class.
     }
 
-    /**
-     * Split the text containing multiple key specifications separated by commas into an array of
-     * key specifications.
-     * A key specification can contain a character escaped by the backslash character, including a
-     * comma character.
-     * Note that an empty key specification will be eliminated from the result array.
-     *
-     * @param text the text containing multiple key specifications.
-     * @return an array of key specification text. Null if the specified <code>text</code> is empty
-     * or has no key specifications.
-     */
-    public static String[] splitKeySpecs(final String text) {
-        if (TextUtils.isEmpty(text)) {
-            return null;
-        }
-        final int size = text.length();
-        // Optimization for one-letter key specification.
-        if (size == 1) {
-            return text.charAt(0) == COMMA ? null : new String[] { text };
-        }
-
-        ArrayList<String> list = null;
-        int start = 0;
-        // The characters in question in this loop are COMMA and BACKSLASH. These characters never
-        // match any high or low surrogate character. So it is OK to iterate through with char
-        // index.
-        for (int pos = 0; pos < size; pos++) {
-            final char c = text.charAt(pos);
-            if (c == COMMA) {
-                // Skip empty entry.
-                if (pos - start > 0) {
-                    if (list == null) {
-                        list = CollectionUtils.newArrayList();
-                    }
-                    list.add(text.substring(start, pos));
-                }
-                // Skip comma
-                start = pos + 1;
-            } else if (c == BACKSLASH) {
-                // Skip escape character and escaped character.
-                pos++;
-            }
-        }
-        final String remain = (size - start > 0) ? text.substring(start) : null;
-        if (list == null) {
-            return remain != null ? new String[] { remain } : null;
-        }
-        if (remain != null) {
-            list.add(remain);
-        }
-        return list.toArray(new String[list.size()]);
+    private static boolean hasIcon(final String keySpec) {
+        return keySpec.startsWith(KeyboardIconsSet.PREFIX_ICON);
     }
 
-    private static boolean hasIcon(final String moreKeySpec) {
-        return moreKeySpec.startsWith(KeyboardIconsSet.PREFIX_ICON);
-    }
-
-    private static boolean hasCode(final String moreKeySpec) {
-        final int end = indexOfLabelEnd(moreKeySpec, 0);
-        if (end > 0 && end + 1 < moreKeySpec.length() && moreKeySpec.startsWith(
+    private static boolean hasCode(final String keySpec) {
+        final int end = indexOfLabelEnd(keySpec, 0);
+        if (end > 0 && end + 1 < keySpec.length() && keySpec.startsWith(
                 KeyboardCodesSet.PREFIX_CODE, end + 1)) {
             return true;
         }
@@ -144,17 +84,17 @@ public final class KeySpecParser {
         return sb.toString();
     }
 
-    private static int indexOfLabelEnd(final String moreKeySpec, final int start) {
-        if (moreKeySpec.indexOf(BACKSLASH, start) < 0) {
-            final int end = moreKeySpec.indexOf(VERTICAL_BAR, start);
+    private static int indexOfLabelEnd(final String keySpec, final int start) {
+        if (keySpec.indexOf(BACKSLASH, start) < 0) {
+            final int end = keySpec.indexOf(VERTICAL_BAR, start);
             if (end == 0) {
-                throw new KeySpecParserError(VERTICAL_BAR + " at " + start + ": " + moreKeySpec);
+                throw new KeySpecParserError(VERTICAL_BAR + " at " + start + ": " + keySpec);
             }
             return end;
         }
-        final int length = moreKeySpec.length();
+        final int length = keySpec.length();
         for (int pos = start; pos < length; pos++) {
-            final char c = moreKeySpec.charAt(pos);
+            final char c = keySpec.charAt(pos);
             if (c == BACKSLASH && pos + 1 < length) {
                 // Skip escape char
                 pos++;
@@ -165,63 +105,63 @@ public final class KeySpecParser {
         return -1;
     }
 
-    public static String getLabel(final String moreKeySpec) {
-        if (hasIcon(moreKeySpec)) {
+    public static String getLabel(final String keySpec) {
+        if (hasIcon(keySpec)) {
             return null;
         }
-        final int end = indexOfLabelEnd(moreKeySpec, 0);
-        final String label = (end > 0) ? parseEscape(moreKeySpec.substring(0, end))
-                : parseEscape(moreKeySpec);
-        if (TextUtils.isEmpty(label)) {
-            throw new KeySpecParserError("Empty label: " + moreKeySpec);
+        final int end = indexOfLabelEnd(keySpec, 0);
+        final String label = (end > 0) ? parseEscape(keySpec.substring(0, end))
+                : parseEscape(keySpec);
+        if (label.isEmpty()) {
+            throw new KeySpecParserError("Empty label: " + keySpec);
         }
         return label;
     }
 
-    private static String getOutputTextInternal(final String moreKeySpec) {
-        final int end = indexOfLabelEnd(moreKeySpec, 0);
+    private static String getOutputTextInternal(final String keySpec) {
+        final int end = indexOfLabelEnd(keySpec, 0);
         if (end <= 0) {
             return null;
         }
-        if (indexOfLabelEnd(moreKeySpec, end + 1) >= 0) {
-            throw new KeySpecParserError("Multiple " + VERTICAL_BAR + ": " + moreKeySpec);
+        if (indexOfLabelEnd(keySpec, end + 1) >= 0) {
+            throw new KeySpecParserError("Multiple " + VERTICAL_BAR + ": " + keySpec);
         }
-        return parseEscape(moreKeySpec.substring(end + /* VERTICAL_BAR */1));
+        return parseEscape(keySpec.substring(end + /* VERTICAL_BAR */1));
     }
 
-    static String getOutputText(final String moreKeySpec) {
-        if (hasCode(moreKeySpec)) {
+    public static String getOutputText(final String keySpec) {
+        if (hasCode(keySpec)) {
             return null;
         }
-        final String outputText = getOutputTextInternal(moreKeySpec);
+        final String outputText = getOutputTextInternal(keySpec);
         if (outputText != null) {
             if (StringUtils.codePointCount(outputText) == 1) {
                 // If output text is one code point, it should be treated as a code.
                 // See {@link #getCode(Resources, String)}.
                 return null;
             }
-            if (!TextUtils.isEmpty(outputText)) {
-                return outputText;
+            if (outputText.isEmpty()) {
+                throw new KeySpecParserError("Empty outputText: " + keySpec);
             }
-            throw new KeySpecParserError("Empty outputText: " + moreKeySpec);
+            return outputText;
         }
-        final String label = getLabel(moreKeySpec);
+        final String label = getLabel(keySpec);
         if (label == null) {
-            throw new KeySpecParserError("Empty label: " + moreKeySpec);
+            throw new KeySpecParserError("Empty label: " + keySpec);
         }
         // Code is automatically generated for one letter label. See {@link getCode()}.
         return (StringUtils.codePointCount(label) == 1) ? null : label;
     }
 
-    static int getCode(final String moreKeySpec, final KeyboardCodesSet codesSet) {
-        if (hasCode(moreKeySpec)) {
-            final int end = indexOfLabelEnd(moreKeySpec, 0);
-            if (indexOfLabelEnd(moreKeySpec, end + 1) >= 0) {
-                throw new KeySpecParserError("Multiple " + VERTICAL_BAR + ": " + moreKeySpec);
+    public static int getCode(final String keySpec, final KeyboardCodesSet codesSet) {
+        if (hasCode(keySpec)) {
+            final int end = indexOfLabelEnd(keySpec, 0);
+            if (indexOfLabelEnd(keySpec, end + 1) >= 0) {
+                throw new KeySpecParserError("Multiple " + VERTICAL_BAR + ": " + keySpec);
             }
-            return parseCode(moreKeySpec.substring(end + 1), codesSet, CODE_UNSPECIFIED);
+            return parseCode(keySpec.substring(end + 1), codesSet, CODE_UNSPECIFIED);
         }
-        final String outputText = getOutputTextInternal(moreKeySpec);
+        final String outputText = getOutputTextInternal(keySpec);
         if (outputText != null) {
             // If output text is one code point, it should be treated as a code.
             // See {@link #getOutputText(String)}.
@@ -230,7 +170,7 @@ public final class KeySpecParser {
             }
             return CODE_OUTPUT_TEXT;
         }
-        final String label = getLabel(moreKeySpec);
+        final String label = getLabel(keySpec);
         // Code is automatically generated for one letter label.
         if (StringUtils.codePointCount(label) == 1) {
             return label.codePointAt(0);
@@ -250,105 +190,16 @@ public final class KeySpecParser {
         }
     }
 
-    public static int getIconId(final String moreKeySpec) {
-        if (moreKeySpec != null && hasIcon(moreKeySpec)) {
-            final int end = moreKeySpec.indexOf(
+    public static int getIconId(final String keySpec) {
+        if (keySpec != null && hasIcon(keySpec)) {
+            final int end = keySpec.indexOf(
                     VERTICAL_BAR, KeyboardIconsSet.PREFIX_ICON.length());
             final String name = (end < 0)
-                    ? moreKeySpec.substring(KeyboardIconsSet.PREFIX_ICON.length())
-                    : moreKeySpec.substring(KeyboardIconsSet.PREFIX_ICON.length(), end);
+                    ? keySpec.substring(KeyboardIconsSet.PREFIX_ICON.length())
+                    : keySpec.substring(KeyboardIconsSet.PREFIX_ICON.length(), end);
             return KeyboardIconsSet.getIconId(name);
         }
         return KeyboardIconsSet.ICON_UNDEFINED;
-    }
-
-    private static final String[] EMPTY_STRING_ARRAY = new String[0];
-
-    private static String[] filterOutEmptyString(final String[] array) {
-        if (array == null) {
-            return EMPTY_STRING_ARRAY;
-        }
-        ArrayList<String> out = null;
-        for (int i = 0; i < array.length; i++) {
-            final String entry = array[i];
-            if (TextUtils.isEmpty(entry)) {
-                if (out == null) {
-                    out = CollectionUtils.arrayAsList(array, 0, i);
-                }
-            } else if (out != null) {
-                out.add(entry);
-            }
-        }
-        if (out == null) {
-            return array;
-        }
-        return out.toArray(new String[out.size()]);
-    }
-
-    public static String[] insertAdditionalMoreKeys(final String[] moreKeySpecs,
-            final String[] additionalMoreKeySpecs) {
-        final String[] moreKeys = filterOutEmptyString(moreKeySpecs);
-        final String[] additionalMoreKeys = filterOutEmptyString(additionalMoreKeySpecs);
-        final int moreKeysCount = moreKeys.length;
-        final int additionalCount = additionalMoreKeys.length;
-        ArrayList<String> out = null;
-        int additionalIndex = 0;
-        for (int moreKeyIndex = 0; moreKeyIndex < moreKeysCount; moreKeyIndex++) {
-            final String moreKeySpec = moreKeys[moreKeyIndex];
-            if (moreKeySpec.equals(ADDITIONAL_MORE_KEY_MARKER)) {
-                if (additionalIndex < additionalCount) {
-                    // Replace '%' marker with additional more key specification.
-                    final String additionalMoreKey = additionalMoreKeys[additionalIndex];
-                    if (out != null) {
-                        out.add(additionalMoreKey);
-                    } else {
-                        moreKeys[moreKeyIndex] = additionalMoreKey;
-                    }
-                    additionalIndex++;
-                } else {
-                    // Filter out excessive '%' marker.
-                    if (out == null) {
-                        out = CollectionUtils.arrayAsList(moreKeys, 0, moreKeyIndex);
-                    }
-                }
-            } else {
-                if (out != null) {
-                    out.add(moreKeySpec);
-                }
-            }
-        }
-        if (additionalCount > 0 && additionalIndex == 0) {
-            // No '%' marker is found in more keys.
-            // Insert all additional more keys to the head of more keys.
-            if (DEBUG && out != null) {
-                throw new RuntimeException("Internal logic error:"
-                        + " moreKeys=" + Arrays.toString(moreKeys)
-                        + " additionalMoreKeys=" + Arrays.toString(additionalMoreKeys));
-            }
-            out = CollectionUtils.arrayAsList(additionalMoreKeys, additionalIndex, additionalCount);
-            for (int i = 0; i < moreKeysCount; i++) {
-                out.add(moreKeys[i]);
-            }
-        } else if (additionalIndex < additionalCount) {
-            // The number of '%' markers are less than additional more keys.
-            // Append remained additional more keys to the tail of more keys.
-            if (DEBUG && out != null) {
-                throw new RuntimeException("Internal logic error:"
-                        + " moreKeys=" + Arrays.toString(moreKeys)
-                        + " additionalMoreKeys=" + Arrays.toString(additionalMoreKeys));
-            }
-            out = CollectionUtils.arrayAsList(moreKeys, 0, moreKeysCount);
-            for (int i = additionalIndex; i < additionalCount; i++) {
-                out.add(additionalMoreKeys[additionalIndex]);
-            }
-        }
-        if (out == null && moreKeysCount > 0) {
-            return moreKeys;
-        } else if (out != null && out.size() > 0) {
-            return out.toArray(new String[out.size()]);
-        } else {
-            return null;
-        }
     }
 
     @SuppressWarnings("serial")
@@ -356,48 +207,5 @@ public final class KeySpecParser {
         public KeySpecParserError(final String message) {
             super(message);
         }
-    }
-
-    public static int getIntValue(final String[] moreKeys, final String key,
-            final int defaultValue) {
-        if (moreKeys == null) {
-            return defaultValue;
-        }
-        final int keyLen = key.length();
-        boolean foundValue = false;
-        int value = defaultValue;
-        for (int i = 0; i < moreKeys.length; i++) {
-            final String moreKeySpec = moreKeys[i];
-            if (moreKeySpec == null || !moreKeySpec.startsWith(key)) {
-                continue;
-            }
-            moreKeys[i] = null;
-            try {
-                if (!foundValue) {
-                    value = Integer.parseInt(moreKeySpec.substring(keyLen));
-                    foundValue = true;
-                }
-            } catch (NumberFormatException e) {
-                throw new RuntimeException(
-                        "integer should follow after " + key + ": " + moreKeySpec);
-            }
-        }
-        return value;
-    }
-
-    public static boolean getBooleanValue(final String[] moreKeys, final String key) {
-        if (moreKeys == null) {
-            return false;
-        }
-        boolean value = false;
-        for (int i = 0; i < moreKeys.length; i++) {
-            final String moreKeySpec = moreKeys[i];
-            if (moreKeySpec == null || !moreKeySpec.equals(key)) {
-                continue;
-            }
-            moreKeys[i] = null;
-            value = true;
-        }
-        return value;
     }
 }
