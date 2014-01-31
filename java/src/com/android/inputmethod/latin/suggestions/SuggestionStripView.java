@@ -54,6 +54,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         OnLongClickListener {
     public interface Listener {
         public void addWordToUserDictionary(String word);
+        public void showImportantNoticeContents();
         public void pickSuggestionManually(int index, SuggestedWordInfo word);
     }
 
@@ -62,6 +63,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
 
     private final ViewGroup mSuggestionsStrip;
     private final ViewGroup mAddToDictionaryStrip;
+    private final View mImportantNoticeStrip;
     MainKeyboardView mMainKeyboardView;
 
     private final View mMoreSuggestionsContainer;
@@ -81,10 +83,13 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
     private static class StripVisibilityGroup {
         private final View mSuggestionsStrip;
         private final View mAddToDictionaryStrip;
+        private final View mImportantNoticeStrip;
 
-        public StripVisibilityGroup(final View suggestionsStrip, final View addToDictionaryStrip) {
+        public StripVisibilityGroup(final View suggestionsStrip, final View addToDictionaryStrip,
+                final View importantNoticeStrip) {
             mSuggestionsStrip = suggestionsStrip;
             mAddToDictionaryStrip = addToDictionaryStrip;
+            mImportantNoticeStrip = importantNoticeStrip;
             showSuggestionsStrip();
         }
 
@@ -93,16 +98,25 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
                     : ViewCompat.LAYOUT_DIRECTION_LTR;
             ViewCompat.setLayoutDirection(mSuggestionsStrip, layoutDirection);
             ViewCompat.setLayoutDirection(mAddToDictionaryStrip, layoutDirection);
+            ViewCompat.setLayoutDirection(mImportantNoticeStrip, layoutDirection);
         }
 
         public void showSuggestionsStrip() {
             mSuggestionsStrip.setVisibility(VISIBLE);
             mAddToDictionaryStrip.setVisibility(INVISIBLE);
+            mImportantNoticeStrip.setVisibility(INVISIBLE);
         }
 
         public void showAddToDictionaryStrip() {
             mSuggestionsStrip.setVisibility(INVISIBLE);
             mAddToDictionaryStrip.setVisibility(VISIBLE);
+            mImportantNoticeStrip.setVisibility(INVISIBLE);
+        }
+
+        public void showImportantNoticeStrip() {
+            mSuggestionsStrip.setVisibility(INVISIBLE);
+            mAddToDictionaryStrip.setVisibility(INVISIBLE);
+            mImportantNoticeStrip.setVisibility(VISIBLE);
         }
 
         public boolean isShowingAddToDictionaryStrip() {
@@ -128,7 +142,9 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
 
         mSuggestionsStrip = (ViewGroup)findViewById(R.id.suggestions_strip);
         mAddToDictionaryStrip = (ViewGroup)findViewById(R.id.add_to_dictionary_strip);
-        mStripVisibilityGroup = new StripVisibilityGroup(mSuggestionsStrip, mAddToDictionaryStrip);
+        mImportantNoticeStrip = findViewById(R.id.important_notice_strip);
+        mStripVisibilityGroup = new StripVisibilityGroup(mSuggestionsStrip, mAddToDictionaryStrip,
+                mImportantNoticeStrip);
 
         for (int pos = 0; pos < SuggestedWords.MAX_SUGGESTIONS; pos++) {
             final TextView word = new TextView(context, null, R.attr.suggestionWordStyle);
@@ -176,6 +192,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
             ResearchLogger.suggestionStripView_setSuggestions(mSuggestedWords);
         }
+        mStripVisibilityGroup.showSuggestionsStrip();
     }
 
     public int setMoreSuggestionsHeight(final int remainingHeight) {
@@ -201,6 +218,12 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
             return true;
         }
         return false;
+    }
+
+    public void showImportantNoticeTitle() {
+        mLayoutHelper.layoutImportantNotice(mImportantNoticeStrip, getWidth());
+        mStripVisibilityGroup.showImportantNoticeStrip();
+        mImportantNoticeStrip.setOnClickListener(this);
     }
 
     public void clear() {
@@ -360,6 +383,10 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
 
     @Override
     public void onClick(final View view) {
+        if (view == mImportantNoticeStrip) {
+            mListener.showImportantNoticeContents();
+            return;
+        }
         final Object tag = view.getTag();
         // {@link String} tag is set at {@link #showAddToDictionaryHint(String,CharSequence)}.
         if (tag instanceof String) {
