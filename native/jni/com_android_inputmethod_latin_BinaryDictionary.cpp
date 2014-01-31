@@ -24,7 +24,7 @@
 #include "jni.h"
 #include "jni_common.h"
 #include "suggest/core/dictionary/dictionary.h"
-#include "suggest/core/dictionary/unigram_property.h"
+#include "suggest/core/dictionary/word_property.h"
 #include "suggest/core/suggest_options.h"
 #include "suggest/policyimpl/dictionary/structure/dictionary_structure_with_buffer_policy_factory.h"
 #include "suggest/policyimpl/dictionary/utils/dict_file_writing_utils.h"
@@ -260,7 +260,7 @@ static jint latinime_BinaryDictionary_getBigramProbability(JNIEnv *env, jclass c
             word1Length);
 }
 
-static void latinime_BinaryDictionary_getUnigramProperty(JNIEnv *env, jclass clazz,
+static void latinime_BinaryDictionary_getWordProperty(JNIEnv *env, jclass clazz,
         jlong dict, jintArray word, jintArray outCodePoints, jbooleanArray outFlags,
         jintArray outProbability, jintArray outHistoricalInfo, jobject outShortcutTargets,
         jobject outShortcutProbabilities) {
@@ -269,9 +269,8 @@ static void latinime_BinaryDictionary_getUnigramProperty(JNIEnv *env, jclass cla
     const jsize wordLength = env->GetArrayLength(word);
     int wordCodePoints[wordLength];
     env->GetIntArrayRegion(word, 0, wordLength, wordCodePoints);
-    const UnigramProperty unigramProperty = dictionary->getUnigramProperty(
-            wordCodePoints, wordLength);
-    unigramProperty.outputProperties(env, outCodePoints, outFlags, outProbability,
+    const WordProperty wordProperty = dictionary->getWordProperty(wordCodePoints, wordLength);
+    wordProperty.outputProperties(env, outCodePoints, outFlags, outProbability,
             outHistoricalInfo, outShortcutTargets, outShortcutProbabilities);
 }
 
@@ -521,9 +520,9 @@ static const JNINativeMethod sMethods[] = {
         reinterpret_cast<void *>(latinime_BinaryDictionary_getBigramProbability)
     },
     {
-        const_cast<char *>("getUnigramPropertyNative"),
+        const_cast<char *>("getWordPropertyNative"),
         const_cast<char *>("(J[I[I[Z[I[ILjava/util/ArrayList;Ljava/util/ArrayList;)V"),
-        reinterpret_cast<void *>(latinime_BinaryDictionary_getUnigramProperty)
+        reinterpret_cast<void *>(latinime_BinaryDictionary_getWordProperty)
     },
     {
         const_cast<char *>("calcNormalizedScoreNative"),

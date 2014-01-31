@@ -18,7 +18,7 @@
 #define LATINIME_DICTIONARY_STRUCTURE_POLICY_H
 
 #include "defines.h"
-#include "suggest/core/dictionary/unigram_property.h"
+#include "suggest/core/dictionary/word_property.h"
 #include "utils/exclusive_ownership_pointer.h"
 
 namespace latinime {
@@ -92,7 +92,7 @@ class DictionaryStructureWithBufferPolicy {
             const int maxResultLength) = 0;
 
     // Used for testing.
-    virtual const UnigramProperty getUnigramProperty(const int *const codePonts,
+    virtual const WordProperty getWordProperty(const int *const codePonts,
             const int codePointCount) const = 0;
 
  protected:

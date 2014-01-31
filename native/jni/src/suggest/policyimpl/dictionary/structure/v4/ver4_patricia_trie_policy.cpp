@@ -20,7 +20,7 @@
 
 #include "suggest/core/dicnode/dic_node.h"
 #include "suggest/core/dicnode/dic_node_vector.h"
-#include "suggest/core/dictionary/unigram_property.h"
+#include "suggest/core/dictionary/word_property.h"
 #include "suggest/policyimpl/dictionary/structure/pt_common/dynamic_pt_reading_helper.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_patricia_trie_node_reader.h"
 #include "suggest/policyimpl/dictionary/utils/forgetting_curve_utils.h"
@@ -317,13 +317,13 @@ void Ver4PatriciaTriePolicy::getProperty(const char *const query, const int quer
     }
 }
 
-const UnigramProperty Ver4PatriciaTriePolicy::getUnigramProperty(const int *const codePoints,
+const WordProperty Ver4PatriciaTriePolicy::getWordProperty(const int *const codePoints,
         const int codePointCount) const {
     const int ptNodePos = getTerminalPtNodePositionOfWord(codePoints, codePointCount,
             false /* forceLowerCaseSearch */);
     if (ptNodePos == NOT_A_DICT_POS) {
-        AKLOGE("fetchUnigramProperty is called for invalid word.");
-        return UnigramProperty();
+        AKLOGE("getWordProperty is called for invalid word.");
+        return WordProperty();
     }
     const PtNodeParams ptNodeParams = mNodeReader.fetchNodeInfoInBufferFromPtNodePos(ptNodePos);
     std::vector<int> codePointVector(ptNodeParams.getCodePoints(),
@@ -351,7 +351,7 @@ const UnigramProperty Ver4PatriciaTriePolicy::getUnigramProperty(const int *cons
             shortcutProbabilities.push_back(shortcutProbability);
         }
     }
-    return UnigramProperty(&codePointVector, ptNodeParams.isNotAWord(),
+    return WordProperty(&codePointVector, ptNodeParams.isNotAWord(),
             ptNodeParams.isBlacklisted(), ptNodeParams.hasBigrams(),
             ptNodeParams.hasShortcutTargets(), ptNodeParams.getProbability(),
             historicalInfo->getTimeStamp(), historicalInfo->getLevel(),

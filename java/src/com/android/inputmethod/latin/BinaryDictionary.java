@@ -27,7 +27,7 @@ import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.JniUtils;
 import com.android.inputmethod.latin.utils.LanguageModelParam;
 import com.android.inputmethod.latin.utils.StringUtils;
-import com.android.inputmethod.latin.utils.UnigramProperty;
+import com.android.inputmethod.latin.utils.WordProperty;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -61,18 +61,18 @@ public final class BinaryDictionary extends Dictionary {
 
     public static final int NOT_A_VALID_TIMESTAMP = -1;
 
-    // Format to get unigram flags from native side via getUnigramPropertyNative().
-    private static final int FORMAT_UNIGRAM_PROPERTY_OUTPUT_FLAG_COUNT = 4;
-    private static final int FORMAT_UNIGRAM_PROPERTY_IS_NOT_A_WORD_INDEX = 0;
-    private static final int FORMAT_UNIGRAM_PROPERTY_IS_BLACKLISTED_INDEX = 1;
-    private static final int FORMAT_UNIGRAM_PROPERTY_HAS_BIGRAMS_INDEX = 2;
-    private static final int FORMAT_UNIGRAM_PROPERTY_HAS_SHORTCUTS_INDEX = 3;
+    // Format to get unigram flags from native side via getWordPropertyNative().
+    private static final int FORMAT_WORD_PROPERTY_OUTPUT_FLAG_COUNT = 4;
+    private static final int FORMAT_WORD_PROPERTY_IS_NOT_A_WORD_INDEX = 0;
+    private static final int FORMAT_WORD_PROPERTY_IS_BLACKLISTED_INDEX = 1;
+    private static final int FORMAT_WORD_PROPERTY_HAS_BIGRAMS_INDEX = 2;
+    private static final int FORMAT_WORD_PROPERTY_HAS_SHORTCUTS_INDEX = 3;
 
-    // Format to get unigram historical info from native side via getUnigramPropertyNative().
-    private static final int FORMAT_UNIGRAM_PROPERTY_OUTPUT_HISTORICAL_INFO_COUNT = 3;
-    private static final int FORMAT_UNIGRAM_PROPERTY_TIMESTAMP_INDEX = 0;
-    private static final int FORMAT_UNIGRAM_PROPERTY_LEVEL_INDEX = 1;
-    private static final int FORMAT_UNIGRAM_PROPERTY_COUNT_INDEX = 2;
+    // Format to get unigram historical info from native side via getWordPropertyNative().
+    private static final int FORMAT_WORD_PROPERTY_OUTPUT_HISTORICAL_INFO_COUNT = 3;
+    private static final int FORMAT_WORD_PROPERTY_TIMESTAMP_INDEX = 0;
+    private static final int FORMAT_WORD_PROPERTY_LEVEL_INDEX = 1;
+    private static final int FORMAT_WORD_PROPERTY_COUNT_INDEX = 2;
 
     private long mNativeDict;
     private final Locale mLocale;
@@ -143,7 +143,7 @@ public final class BinaryDictionary extends Dictionary {
     private static native int getFormatVersionNative(long dict);
     private static native int getProbabilityNative(long dict, int[] word);
     private static native int getBigramProbabilityNative(long dict, int[] word0, int[] word1);
-    private static native void getUnigramPropertyNative(long dict, int[] word,
+    private static native void getWordPropertyNative(long dict, int[] word,
             int[] outCodePoints, boolean[] outFlags, int[] outProbability,
             int[] outHistoricalInfo, ArrayList<int[]> outShortcutTargets,
             ArrayList<Integer> outShortcutProbabilities);
@@ -306,28 +306,28 @@ public final class BinaryDictionary extends Dictionary {
     }
 
     @UsedForTesting
-    public UnigramProperty getUnigramProperty(final String word) {
+    public WordProperty getWordProperty(final String word) {
         if (TextUtils.isEmpty(word)) {
             return null;
         }
         final int[] codePoints = StringUtils.toCodePointArray(word);
         final int[] outCodePoints = new int[MAX_WORD_LENGTH];
-        final boolean[] outFlags = new boolean[FORMAT_UNIGRAM_PROPERTY_OUTPUT_FLAG_COUNT];
+        final boolean[] outFlags = new boolean[FORMAT_WORD_PROPERTY_OUTPUT_FLAG_COUNT];
         final int[] outProbability = new int[1];
         final int[] outHistoricalInfo =
-                new int[FORMAT_UNIGRAM_PROPERTY_OUTPUT_HISTORICAL_INFO_COUNT];
+                new int[FORMAT_WORD_PROPERTY_OUTPUT_HISTORICAL_INFO_COUNT];
         final ArrayList<int[]> outShortcutTargets = CollectionUtils.newArrayList();
         final ArrayList<Integer> outShortcutProbabilities = CollectionUtils.newArrayList();
-        getUnigramPropertyNative(mNativeDict, codePoints, outCodePoints, outFlags, outProbability,
+        getWordPropertyNative(mNativeDict, codePoints, outCodePoints, outFlags, outProbability,
                 outHistoricalInfo, outShortcutTargets, outShortcutProbabilities);
-        return new UnigramProperty(codePoints,
-                outFlags[FORMAT_UNIGRAM_PROPERTY_IS_NOT_A_WORD_INDEX],
-                outFlags[FORMAT_UNIGRAM_PROPERTY_IS_BLACKLISTED_INDEX],
-                outFlags[FORMAT_UNIGRAM_PROPERTY_HAS_BIGRAMS_INDEX],
-                outFlags[FORMAT_UNIGRAM_PROPERTY_HAS_SHORTCUTS_INDEX], outProbability[0],
-                outHistoricalInfo[FORMAT_UNIGRAM_PROPERTY_TIMESTAMP_INDEX],
-                outHistoricalInfo[FORMAT_UNIGRAM_PROPERTY_LEVEL_INDEX],
-                outHistoricalInfo[FORMAT_UNIGRAM_PROPERTY_COUNT_INDEX],
+        return new WordProperty(codePoints,
+                outFlags[FORMAT_WORD_PROPERTY_IS_NOT_A_WORD_INDEX],
+                outFlags[FORMAT_WORD_PROPERTY_IS_BLACKLISTED_INDEX],
+                outFlags[FORMAT_WORD_PROPERTY_HAS_BIGRAMS_INDEX],
+                outFlags[FORMAT_WORD_PROPERTY_HAS_SHORTCUTS_INDEX], outProbability[0],
+                outHistoricalInfo[FORMAT_WORD_PROPERTY_TIMESTAMP_INDEX],
+                outHistoricalInfo[FORMAT_WORD_PROPERTY_LEVEL_INDEX],
+                outHistoricalInfo[FORMAT_WORD_PROPERTY_COUNT_INDEX],
                 outShortcutTargets, outShortcutProbabilities);
     }
 
