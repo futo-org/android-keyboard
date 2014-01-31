@@ -19,20 +19,23 @@
 namespace latinime {
 
 void WordProperty::outputProperties(JNIEnv *const env, jintArray outCodePoints,
-        jbooleanArray outFlags, jintArray outProbability, jintArray outHistoricalInfo,
-        jobject outShortcutTargets, jobject outShortcutProbabilities) const {
+        jbooleanArray outFlags, jintArray outProbabilityInfo, jobject outBigramTargets,
+        jobject outBigramProbabilities, jobject outShortcutTargets,
+        jobject outShortcutProbabilities) const {
     env->SetIntArrayRegion(outCodePoints, 0 /* start */, mCodePoints.size(), &mCodePoints[0]);
     jboolean flags[] = {mIsNotAWord, mIsBlacklisted, mHasBigrams, mHasShortcuts};
     env->SetBooleanArrayRegion(outFlags, 0 /* start */, NELEMS(flags), flags);
-    env->SetIntArrayRegion(outProbability, 0 /* start */, 1 /* len */, &mProbability);
-    int historicalInfo[] = {mTimestamp, mLevel, mCount};
-    env->SetIntArrayRegion(outHistoricalInfo, 0 /* start */, NELEMS(historicalInfo),
-            historicalInfo);
+    int probabilityInfo[] = {mProbability, mTimestamp, mLevel, mCount};
+    env->SetIntArrayRegion(outProbabilityInfo, 0 /* start */, NELEMS(probabilityInfo),
+            probabilityInfo);
 
     jclass integerClass = env->FindClass("java/lang/Integer");
     jmethodID intToIntegerConstructorId = env->GetMethodID(integerClass, "<init>", "(I)V");
     jclass arrayListClass = env->FindClass("java/util/ArrayList");
     jmethodID addMethodId = env->GetMethodID(arrayListClass, "add", "(Ljava/lang/Object;)Z");
+
+    // TODO: Output bigrams.
+    // Output shortcuts.
     const int shortcutTargetCount = mShortcuts.size();
     for (int i = 0; i < shortcutTargetCount; ++i) {
         const std::vector<int> *const targetCodePoints = mShortcuts[i].getTargetCodePoints();

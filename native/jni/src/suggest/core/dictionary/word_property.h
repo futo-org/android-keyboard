@@ -78,8 +78,8 @@ class WordProperty {
               mShortcuts(*shortcuts) {}
 
     void outputProperties(JNIEnv *const env, jintArray outCodePoints, jbooleanArray outFlags,
-            jintArray outProbability, jintArray outHistoricalInfo, jobject outShortcutTargets,
-            jobject outShortcutProbabilities) const;
+            jintArray outProbabilityInfo, jobject outBigramTargets, jobject outBigramProbabilities,
+            jobject outShortcutTargets, jobject outShortcutProbabilities) const;
 
  private:
     DISALLOW_ASSIGNMENT_OPERATOR(WordProperty);
