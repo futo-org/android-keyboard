@@ -332,8 +332,42 @@ const WordProperty Ver4PatriciaTriePolicy::getWordProperty(const int *const code
             mBuffers.get()->getProbabilityDictContent()->getProbabilityEntry(
                     ptNodeParams.getTerminalId());
     const HistoricalInfo *const historicalInfo = probabilityEntry.getHistoricalInfo();
-    // TODO: Fetch bigram information.
+    // Fetch bigram information.
     std::vector<WordProperty::BigramProperty> bigrams;
+    const int bigramListPos = getBigramsPositionOfPtNode(ptNodePos);
+    if (bigramListPos != NOT_A_DICT_POS) {
+        int bigramWord1CodePoints[MAX_WORD_LENGTH];
+        const BigramDictContent *const bigramDictContent = mBuffers.get()->getBigramDictContent();
+        const TerminalPositionLookupTable *const terminalPositionLookupTable =
+                mBuffers.get()->getTerminalPositionLookupTable();
+        bool hasNext = true;
+        int readingPos = bigramListPos;
+        while (hasNext) {
+            const BigramEntry bigramEntry =
+                    bigramDictContent->getBigramEntryAndAdvancePosition(&readingPos);
+            hasNext = bigramEntry.hasNext();
+            const int word1TerminalId = bigramEntry.getTargetTerminalId();
+            const int word1TerminalPtNodePos =
+                    terminalPositionLookupTable->getTerminalPtNodePosition(word1TerminalId);
+            if (word1TerminalPtNodePos == NOT_A_DICT_POS) {
+                continue;
+            }
+            // Word (unigram) probability
+            int word1Probability = NOT_A_PROBABILITY;
+            const int codePointCount = getCodePointsAndProbabilityAndReturnCodePointCount(
+                    word1TerminalPtNodePos, MAX_WORD_LENGTH, bigramWord1CodePoints,
+                    &word1Probability);
+            std::vector<int> word1(bigramWord1CodePoints,
+                    bigramWord1CodePoints + codePointCount);
+            const HistoricalInfo *const historicalInfo = bigramEntry.getHistoricalInfo();
+            const int probability = bigramEntry.hasHistoricalInfo() ?
+                    ForgettingCurveUtils::decodeProbability(bigramEntry.getHistoricalInfo()) :
+                    bigramEntry.getProbability();
+            bigrams.push_back(WordProperty::BigramProperty(&word1, probability,
+                    historicalInfo->getTimeStamp(), historicalInfo->getLevel(),
+                    historicalInfo->getCount()));
+        }
+    }
     // Fetch shortcut information.
     std::vector<WordProperty::ShortcutProperty> shortcuts;
     int shortcutPos = getShortcutPositionOfPtNode(ptNodePos);
