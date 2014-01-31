@@ -16,6 +16,9 @@
 
 package com.android.inputmethod.keyboard.internal;
 
+import static com.android.inputmethod.keyboard.internal.KeyboardIconsSet.ICON_UNDEFINED;
+import static com.android.inputmethod.latin.Constants.CODE_UNSPECIFIED;
+
 import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.inputmethod.latin.Constants;
@@ -40,6 +43,14 @@ public final class MoreKeySpecTests extends KeySpecParserTestsBase {
         assertEquals(message + " [code]",
                 Constants.printableCode(expectedCode),
                 Constants.printableCode(spec.mCode));
+    }
+
+    // TODO: Move this method to {@link KeySpecParserBase}.
+    public void testEmptySpec() {
+        assertParserError("Null spec", null,
+                null, null, ICON_UNDEFINED, CODE_UNSPECIFIED);
+        assertParserError("Empty spec", "",
+                null, null, ICON_UNDEFINED, CODE_UNSPECIFIED);
     }
 
     private static void assertArrayEquals(final String message, final Object[] expected,
