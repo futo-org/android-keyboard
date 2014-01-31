@@ -262,16 +262,17 @@ static jint latinime_BinaryDictionary_getBigramProbability(JNIEnv *env, jclass c
 
 static void latinime_BinaryDictionary_getWordProperty(JNIEnv *env, jclass clazz,
         jlong dict, jintArray word, jintArray outCodePoints, jbooleanArray outFlags,
-        jintArray outProbability, jintArray outHistoricalInfo, jobject outShortcutTargets,
-        jobject outShortcutProbabilities) {
+        jintArray outProbabilityInfo, jobject outBigramTargets, jobject outBigramProbabilityInfo,
+        jobject outShortcutTargets, jobject outShortcutProbabilities) {
     Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
     if (!dictionary) return;
     const jsize wordLength = env->GetArrayLength(word);
     int wordCodePoints[wordLength];
     env->GetIntArrayRegion(word, 0, wordLength, wordCodePoints);
     const WordProperty wordProperty = dictionary->getWordProperty(wordCodePoints, wordLength);
-    wordProperty.outputProperties(env, outCodePoints, outFlags, outProbability,
-            outHistoricalInfo, outShortcutTargets, outShortcutProbabilities);
+    wordProperty.outputProperties(env, outCodePoints, outFlags, outProbabilityInfo,
+            outBigramTargets, outBigramProbabilityInfo, outShortcutTargets,
+            outShortcutProbabilities);
 }
 
 static jfloat latinime_BinaryDictionary_calcNormalizedScore(JNIEnv *env, jclass clazz,
@@ -521,7 +522,8 @@ static const JNINativeMethod sMethods[] = {
     },
     {
         const_cast<char *>("getWordPropertyNative"),
-        const_cast<char *>("(J[I[I[Z[I[ILjava/util/ArrayList;Ljava/util/ArrayList;)V"),
+        const_cast<char *>("(J[I[I[Z[ILjava/util/ArrayList;Ljava/util/ArrayList;"
+                "Ljava/util/ArrayList;Ljava/util/ArrayList;)V"),
         reinterpret_cast<void *>(latinime_BinaryDictionary_getWordProperty)
     },
     {

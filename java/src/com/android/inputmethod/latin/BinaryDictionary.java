@@ -68,11 +68,12 @@ public final class BinaryDictionary extends Dictionary {
     private static final int FORMAT_WORD_PROPERTY_HAS_BIGRAMS_INDEX = 2;
     private static final int FORMAT_WORD_PROPERTY_HAS_SHORTCUTS_INDEX = 3;
 
-    // Format to get unigram historical info from native side via getWordPropertyNative().
-    private static final int FORMAT_WORD_PROPERTY_OUTPUT_HISTORICAL_INFO_COUNT = 3;
-    private static final int FORMAT_WORD_PROPERTY_TIMESTAMP_INDEX = 0;
-    private static final int FORMAT_WORD_PROPERTY_LEVEL_INDEX = 1;
-    private static final int FORMAT_WORD_PROPERTY_COUNT_INDEX = 2;
+    // Format to get probability and historical info from native side via getWordPropertyNative().
+    public static final int FORMAT_WORD_PROPERTY_OUTPUT_PROBABILITY_INFO_COUNT = 4;
+    public static final int FORMAT_WORD_PROPERTY_PROBABILITY_INDEX = 0;
+    public static final int FORMAT_WORD_PROPERTY_TIMESTAMP_INDEX = 1;
+    public static final int FORMAT_WORD_PROPERTY_LEVEL_INDEX = 2;
+    public static final int FORMAT_WORD_PROPERTY_COUNT_INDEX = 3;
 
     private long mNativeDict;
     private final Locale mLocale;
@@ -144,9 +145,9 @@ public final class BinaryDictionary extends Dictionary {
     private static native int getProbabilityNative(long dict, int[] word);
     private static native int getBigramProbabilityNative(long dict, int[] word0, int[] word1);
     private static native void getWordPropertyNative(long dict, int[] word,
-            int[] outCodePoints, boolean[] outFlags, int[] outProbability,
-            int[] outHistoricalInfo, ArrayList<int[]> outShortcutTargets,
-            ArrayList<Integer> outShortcutProbabilities);
+            int[] outCodePoints, boolean[] outFlags, int[] outProbabilityInfo,
+            ArrayList<int[]> outBigramTargets, ArrayList<int[]> outBigramProbabilityInfo,
+            ArrayList<int[]> outShortcutTargets, ArrayList<Integer> outShortcutProbabilities);
     private static native int getSuggestionsNative(long dict, long proximityInfo,
             long traverseSession, int[] xCoordinates, int[] yCoordinates, int[] times,
             int[] pointerIds, int[] inputCodePoints, int inputSize, int commitPoint,
@@ -313,22 +314,22 @@ public final class BinaryDictionary extends Dictionary {
         final int[] codePoints = StringUtils.toCodePointArray(word);
         final int[] outCodePoints = new int[MAX_WORD_LENGTH];
         final boolean[] outFlags = new boolean[FORMAT_WORD_PROPERTY_OUTPUT_FLAG_COUNT];
-        final int[] outProbability = new int[1];
-        final int[] outHistoricalInfo =
-                new int[FORMAT_WORD_PROPERTY_OUTPUT_HISTORICAL_INFO_COUNT];
+        final int[] outProbabilityInfo =
+                new int[FORMAT_WORD_PROPERTY_OUTPUT_PROBABILITY_INFO_COUNT];
+        final ArrayList<int[]> outBigramTargets = CollectionUtils.newArrayList();
+        final ArrayList<int[]> outBigramProbabilityInfo = CollectionUtils.newArrayList();
         final ArrayList<int[]> outShortcutTargets = CollectionUtils.newArrayList();
         final ArrayList<Integer> outShortcutProbabilities = CollectionUtils.newArrayList();
-        getWordPropertyNative(mNativeDict, codePoints, outCodePoints, outFlags, outProbability,
-                outHistoricalInfo, outShortcutTargets, outShortcutProbabilities);
+        getWordPropertyNative(mNativeDict, codePoints, outCodePoints, outFlags, outProbabilityInfo,
+                outBigramTargets, outBigramProbabilityInfo, outShortcutTargets,
+                outShortcutProbabilities);
         return new WordProperty(codePoints,
                 outFlags[FORMAT_WORD_PROPERTY_IS_NOT_A_WORD_INDEX],
                 outFlags[FORMAT_WORD_PROPERTY_IS_BLACKLISTED_INDEX],
                 outFlags[FORMAT_WORD_PROPERTY_HAS_BIGRAMS_INDEX],
-                outFlags[FORMAT_WORD_PROPERTY_HAS_SHORTCUTS_INDEX], outProbability[0],
-                outHistoricalInfo[FORMAT_WORD_PROPERTY_TIMESTAMP_INDEX],
-                outHistoricalInfo[FORMAT_WORD_PROPERTY_LEVEL_INDEX],
-                outHistoricalInfo[FORMAT_WORD_PROPERTY_COUNT_INDEX],
-                outShortcutTargets, outShortcutProbabilities);
+                outFlags[FORMAT_WORD_PROPERTY_HAS_SHORTCUTS_INDEX], outProbabilityInfo,
+                outBigramTargets, outBigramProbabilityInfo, outShortcutTargets,
+                outShortcutProbabilities);
     }
 
     // Add a unigram entry to binary dictionary with unigram attributes in native code.
