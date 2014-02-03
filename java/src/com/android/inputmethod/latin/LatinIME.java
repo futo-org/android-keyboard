@@ -79,6 +79,7 @@ import com.android.inputmethod.latin.utils.ApplicationUtils;
 import com.android.inputmethod.latin.utils.CapsModeUtils;
 import com.android.inputmethod.latin.utils.CompletionInfoUtils;
 import com.android.inputmethod.latin.utils.CoordinateUtils;
+import com.android.inputmethod.latin.utils.ImportantNoticeUtils;
 import com.android.inputmethod.latin.utils.IntentUtils;
 import com.android.inputmethod.latin.utils.JniUtils;
 import com.android.inputmethod.latin.utils.LatinImeLoggerUtils;
@@ -1157,11 +1158,24 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mInputLogic.mSuggest.mDictionaryFacilitator.addWordToUserDictionary(wordToEdit);
     }
 
+    // TODO: Move this method out of {@link LatinIME}.
     // Callback for the {@link SuggestionStripView}, to call when the important notice strip is
     // pressed.
     @Override
     public void showImportantNoticeContents() {
-        // TODO: Show dialog to display important notice contents.
+        final Context context = this;
+        final DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(final DialogInterface di, final int position) {
+                di.dismiss();
+                ImportantNoticeUtils.updateLastImportantNoticeVersion(context);
+            }
+        };
+        final AlertDialog.Builder builder =
+                new AlertDialog.Builder(context, AlertDialog.THEME_HOLO_DARK);
+        builder.setMessage(R.string.important_notice_contents)
+                .setPositiveButton(android.R.string.ok, listener);
+        showOptionDialog(builder.create(), false /* cancelable */);
     }
 
     public void displaySettingsDialog() {
@@ -1694,17 +1708,18 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         };
         final AlertDialog.Builder builder =
                 new AlertDialog.Builder(this).setItems(items, listener).setTitle(title);
-        showOptionDialog(builder.create());
+        showOptionDialog(builder.create(), true /*cancelable */);
     }
 
-    public void showOptionDialog(final AlertDialog dialog) {
+    // TODO: Move this method out of {@link LatinIME}.
+    private void showOptionDialog(final AlertDialog dialog, final boolean cancelable) {
         final IBinder windowToken = mKeyboardSwitcher.getMainKeyboardView().getWindowToken();
         if (windowToken == null) {
             return;
         }
 
-        dialog.setCancelable(true);
-        dialog.setCanceledOnTouchOutside(true);
+        dialog.setCancelable(cancelable);
+        dialog.setCanceledOnTouchOutside(cancelable);
 
         final Window window = dialog.getWindow();
         final WindowManager.LayoutParams lp = window.getAttributes();
