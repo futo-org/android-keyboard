@@ -878,7 +878,8 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     private void testGetWordProperties(final int formatVersion) {
         final long seed = System.currentTimeMillis();
         final Random random = new Random(seed);
-        final int ITERATION_COUNT = 1000;
+        final int UNIGRAM_COUNT = 1000;
+        final int BIGRAM_COUNT = 1000;
         final int codePointSetSize = 20;
         final int[] codePointSet = CodePointUtils.generateCodePointSet(codePointSetSize, random);
 
@@ -895,7 +896,13 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         final WordProperty invalidWordProperty = binaryDictionary.getWordProperty("dummyWord");
         assertFalse(invalidWordProperty.isValid());
 
-        for (int i = 0; i < ITERATION_COUNT; i++) {
+        final ArrayList<String> words = new ArrayList<String>();
+        final HashMap<String, Integer> wordProbabilities = new HashMap<String, Integer>();
+        final HashMap<String, HashSet<String>> bigrams = new HashMap<String, HashSet<String>>();
+        final HashMap<Pair<String, String>, Integer> bigramProbabilities =
+                new HashMap<Pair<String, String>, Integer>();
+
+        for (int i = 0; i < UNIGRAM_COUNT; i++) {
             final String word = CodePointUtils.generateWord(random, codePointSet);
             final int unigramProbability = random.nextInt(0xFF);
             final boolean isNotAWord = random.nextBoolean();
@@ -904,15 +911,63 @@ public class BinaryDictionaryTests extends AndroidTestCase {
             binaryDictionary.addUnigramWord(word, unigramProbability,
                     null /* shortcutTarget */, BinaryDictionary.NOT_A_PROBABILITY,
                     isNotAWord, isBlacklisted, BinaryDictionary.NOT_A_VALID_TIMESTAMP);
-            final WordProperty wordProperty = binaryDictionary.getWordProperty(word);
-            assertEquals(word, wordProperty.mCodePoints);
-            assertTrue(wordProperty.isValid());
-            assertEquals(isNotAWord, wordProperty.mIsNotAWord);
-            assertEquals(isBlacklisted, wordProperty.mIsBlacklisted);
-            assertEquals(false, wordProperty.mHasBigrams);
-            assertEquals(false, wordProperty.mHasShortcuts);
-            assertEquals(unigramProbability, wordProperty.mProbabilityInfo.mProbability);
-            assertTrue(wordProperty.mShortcutTargets.isEmpty());
+            if (binaryDictionary.needsToRunGC(false /* mindsBlockByGC */)) {
+                binaryDictionary.flushWithGC();
+            }
+            words.add(word);
+            wordProbabilities.put(word, unigramProbability);
+            final WordProperty unigramProperty = binaryDictionary.getWordProperty(word);
+            assertEquals(word, unigramProperty.mCodePoints);
+            assertTrue(unigramProperty.isValid());
+            assertEquals(isNotAWord, unigramProperty.mIsNotAWord);
+            assertEquals(isBlacklisted, unigramProperty.mIsBlacklisted);
+            assertEquals(false, unigramProperty.mHasBigrams);
+            assertEquals(false, unigramProperty.mHasShortcuts);
+            assertEquals(unigramProbability, unigramProperty.mProbabilityInfo.mProbability);
+            assertTrue(unigramProperty.mShortcutTargets.isEmpty());
+        }
+
+        for (int i = 0; i < BIGRAM_COUNT; i++) {
+            final int word0Index = random.nextInt(wordProbabilities.size());
+            final int word1Index = random.nextInt(wordProbabilities.size());
+            if (word0Index == word1Index) {
+                continue;
+            }
+            final String word0 = words.get(word0Index);
+            final String word1 = words.get(word1Index);
+            final int bigramProbability = random.nextInt(0xF);
+            binaryDictionary.addBigramWords(word0, word1, bigramProbability,
+                    BinaryDictionary.NOT_A_VALID_TIMESTAMP);
+            if (binaryDictionary.needsToRunGC(false /* mindsBlockByGC */)) {
+                binaryDictionary.flushWithGC();
+            }
+            if (!bigrams.containsKey(word0)) {
+                final HashSet<String> bigramWord1s = new HashSet<String>();
+                bigrams.put(word0, bigramWord1s);
+            }
+            bigrams.get(word0).add(word1);
+            bigramProbabilities.put(new Pair<String, String>(word0, word1), bigramProbability);
+        }
+
+        for (int i = 0; i < words.size(); i++) {
+            final String word0 = words.get(i);
+            if (!bigrams.containsKey(word0)) {
+                continue;
+            }
+            final HashSet<String> bigramWord1s = bigrams.get(word0);
+            final WordProperty unigramProperty = binaryDictionary.getWordProperty(word0);
+            assertEquals(bigramWord1s.size(), unigramProperty.mBigramTargets.size());
+            assertEquals(unigramProperty.mBigramTargets.size(),
+                    unigramProperty.mBigramProbabilityInfo.size());
+            for (int j = 0; j < unigramProperty.mBigramTargets.size(); j++) {
+                final String word1 = unigramProperty.mBigramTargets.get(j).mWord;
+                assertTrue(bigramWord1s.contains(word1));
+                final int probability = unigramProperty.mBigramTargets.get(j).mFrequency;
+                assertEquals((int)bigramProbabilities.get(new Pair<String, String>(word0, word1)),
+                        probability);
+                assertEquals(unigramProperty.mBigramProbabilityInfo.get(j).mProbability,
+                        probability);
+            }
         }
     }
 

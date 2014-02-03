@@ -35,6 +35,26 @@ class WordProperty {
                 : mTargetCodePoints(*targetCodePoints), mProbability(probability),
                   mTimestamp(timestamp), mLevel(level), mCount(count) {}
 
+        const std::vector<int> *getTargetCodePoints() const {
+            return &mTargetCodePoints;
+        }
+
+        int getProbability() const {
+            return mProbability;
+        }
+
+        int getTimestamp() const {
+            return mTimestamp;
+        }
+
+        int getLevel() const {
+            return mLevel;
+        }
+
+        int getCount() const {
+            return mCount;
+        }
+
      private:
         std::vector<int> mTargetCodePoints;
         int mProbability;
