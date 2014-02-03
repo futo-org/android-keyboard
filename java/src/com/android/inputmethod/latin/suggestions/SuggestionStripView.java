@@ -220,6 +220,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         return false;
     }
 
+    // TODO: This method should be called after this View has been attached and displayed.
     public void showImportantNoticeTitle() {
         mLayoutHelper.layoutImportantNotice(mImportantNoticeStrip, getWidth());
         mStripVisibilityGroup.showImportantNoticeStrip();
