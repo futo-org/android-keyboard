@@ -46,6 +46,7 @@ import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.latin.suggestions.MoreSuggestions.MoreSuggestionsListener;
 import com.android.inputmethod.latin.utils.CollectionUtils;
+import com.android.inputmethod.latin.utils.ImportantNoticeUtils;
 import com.android.inputmethod.research.ResearchLogger;
 
 import java.util.ArrayList;
@@ -220,11 +221,20 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         return false;
     }
 
-    // TODO: This method should be called after this View has been attached and displayed.
-    public void showImportantNoticeTitle() {
-        mLayoutHelper.layoutImportantNotice(mImportantNoticeStrip, getWidth());
+    // This method checks if we should show the important notice (checks on permanent storage if
+    // it has been shown once already or not, and if in the setup wizard). If applicable, it shows
+    // the notice. In all cases, it returns true if it was shown, false otherwise.
+    public boolean maybeShowImportantNoticeTitle() {
+        if (!ImportantNoticeUtils.hasNewImportantNotice(getContext())
+                || ImportantNoticeUtils.isInSystemSetupWizard(getContext())) {
+            return false;
+        }
+        final int width = getWidth();
+        if (width <= 0) return false;
+        mLayoutHelper.layoutImportantNotice(mImportantNoticeStrip, width);
         mStripVisibilityGroup.showImportantNoticeStrip();
         mImportantNoticeStrip.setOnClickListener(this);
+        return true;
     }
 
     public void clear() {
@@ -414,5 +424,12 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         dismissMoreSuggestionsPanel();
+    }
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        // Called by the framework when the size is known. Show the important notice if applicable.
+        // This may be overriden by showing suggestions later, if applicable.
+        maybeShowImportantNoticeTitle();
     }
 }
