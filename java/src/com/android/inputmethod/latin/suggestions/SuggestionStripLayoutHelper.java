@@ -502,11 +502,17 @@ final class SuggestionStripLayoutHelper {
         titleView.setTextColor(mColorAutoCorrect);
         TextViewCompatUtils.setCompoundDrawablesRelativeWithIntrinsicBounds(
                 titleView, infoIcon, null, moreIcon, null);
-        final CharSequence importantNoticeTitle = res.getText(R.string.important_notice_title);
+        final CharSequence importantNoticeTitle = titleView.getText();
         titleView.setTextScaleX(1.0f); // Reset textScaleX.
-        final float titleScaleX = getTextScaleX(importantNoticeTitle, width, titleView.getPaint());
-        titleView.setText(importantNoticeTitle);
-        titleView.setTextScaleX(titleScaleX);
+        // When the suggestions strip is displayed first time, stripWidth may be zero.
+        // Then importantNoticeTitle will be displayed as is without auto text scaleX.
+        // TODO: Fix the logic to always have a correct value of stripWidth.
+        if (width > 0) {
+            // Auto text scaleX to show entire important notice title should be on the strip.
+            final float titleScaleX = getTextScaleX(
+                    importantNoticeTitle, width, titleView.getPaint());
+            titleView.setTextScaleX(titleScaleX);
+        }
     }
 
     static void setLayoutWeight(final View v, final float weight, final int height) {
