@@ -34,7 +34,27 @@ void WordProperty::outputProperties(JNIEnv *const env, jintArray outCodePoints,
     jclass arrayListClass = env->FindClass("java/util/ArrayList");
     jmethodID addMethodId = env->GetMethodID(arrayListClass, "add", "(Ljava/lang/Object;)Z");
 
-    // TODO: Output bigrams.
+    // Output bigrams.
+    const int bigramCount = mBigrams.size();
+    for (int i = 0; i < bigramCount; ++i) {
+        const BigramProperty *const bigramProperty = &mBigrams[i];
+        const std::vector<int> *const word1CodePoints = bigramProperty->getTargetCodePoints();
+        jintArray bigramWord1CodePointArray = env->NewIntArray(word1CodePoints->size());
+        env->SetIntArrayRegion(bigramWord1CodePointArray, 0 /* start */,
+                word1CodePoints->size(), &word1CodePoints->at(0));
+        env->CallVoidMethod(outBigramTargets, addMethodId, bigramWord1CodePointArray);
+        env->DeleteLocalRef(bigramWord1CodePointArray);
+
+        int bigramProbabilityInfo[] = {bigramProperty->getProbability(),
+                bigramProperty->getTimestamp(), bigramProperty->getLevel(),
+                bigramProperty->getCount()};
+        jintArray bigramProbabilityInfoArray = env->NewIntArray(NELEMS(bigramProbabilityInfo));
+        env->SetIntArrayRegion(bigramProbabilityInfoArray, 0 /* start */,
+                NELEMS(bigramProbabilityInfo), bigramProbabilityInfo);
+        env->CallVoidMethod(outBigramProbabilities, addMethodId, bigramProbabilityInfoArray);
+        env->DeleteLocalRef(bigramProbabilityInfoArray);
+    }
+
     // Output shortcuts.
     const int shortcutTargetCount = mShortcuts.size();
     for (int i = 0; i < shortcutTargetCount; ++i) {
