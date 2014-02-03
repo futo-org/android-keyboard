@@ -1142,6 +1142,8 @@ public final class InputLogic {
         // Recorrection is not supported in languages without spaces because we don't know
         // how to segment them yet.
         if (!settingsValues.mSpacingAndPunctuations.mCurrentLanguageHasSpaces) return;
+        // If no suggestions are requested, don't try restarting suggestions.
+        if (!settingsValues.isSuggestionsRequested()) return;
         // If the cursor is not touching a word, or if there is a selection, return right away.
         if (mConnection.hasSelection()) return;
         // If we don't know the cursor location, return.
