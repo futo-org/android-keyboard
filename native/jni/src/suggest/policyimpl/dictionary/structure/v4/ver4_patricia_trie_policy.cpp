@@ -392,4 +392,10 @@ const WordProperty Ver4PatriciaTriePolicy::getWordProperty(const int *const code
             historicalInfo->getCount(), &bigrams, &shortcuts);
 }
 
+int Ver4PatriciaTriePolicy::getNextWordAndNextToken(const int token,
+        int *const outCodePoints) {
+    // TODO: Implement.
+    return 0;
+}
+
 } // namespace latinime

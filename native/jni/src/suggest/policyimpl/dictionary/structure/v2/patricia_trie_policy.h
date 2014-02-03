@@ -129,6 +129,11 @@ class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
         return WordProperty();
     }
 
+    int getNextWordAndNextToken(const int token, int *const outCodePoints) {
+        // getNextWordAndNextToken is not supported.
+        return 0;
+    }
+
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(PatriciaTriePolicy);
 
