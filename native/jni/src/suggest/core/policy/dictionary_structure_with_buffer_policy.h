@@ -95,6 +95,11 @@ class DictionaryStructureWithBufferPolicy {
     virtual const WordProperty getWordProperty(const int *const codePonts,
             const int codePointCount) const = 0;
 
+    // Method to iterate all words in the dictionary.
+    // The returned token has to be used to get the next word. If token is 0, this method newly
+    // starts iterating the dictionary.
+    virtual int getNextWordAndNextToken(const int token, int *const outCodePoints) = 0;
+
  protected:
     DictionaryStructureWithBufferPolicy() {}
 

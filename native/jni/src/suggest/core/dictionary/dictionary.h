@@ -96,6 +96,11 @@ class Dictionary {
 
     const WordProperty getWordProperty(const int *const codePoints, const int codePointCount);
 
+    // Method to iterate all words in the dictionary.
+    // The returned token has to be used to get the next word. If token is 0, this method newly
+    // starts iterating the dictionary.
+    int getNextWordAndNextToken(const int token, int *const outCodePoints);
+
     const DictionaryStructureWithBufferPolicy *getDictionaryStructurePolicy() const {
         return mDictionaryStructureWithBufferPolicy.get();
     }

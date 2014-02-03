@@ -22,6 +22,7 @@ import android.util.SparseArray;
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
+import com.android.inputmethod.latin.makedict.Word;
 import com.android.inputmethod.latin.settings.NativeSuggestOptions;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.JniUtils;
@@ -148,6 +149,7 @@ public final class BinaryDictionary extends Dictionary {
             int[] outCodePoints, boolean[] outFlags, int[] outProbabilityInfo,
             ArrayList<int[]> outBigramTargets, ArrayList<int[]> outBigramProbabilityInfo,
             ArrayList<int[]> outShortcutTargets, ArrayList<Integer> outShortcutProbabilities);
+    private static native int getNextWordNative(long dict, int token, int[] outCodePoints);
     private static native int getSuggestionsNative(long dict, long proximityInfo,
             long traverseSession, int[] xCoordinates, int[] yCoordinates, int[] times,
             int[] pointerIds, int[] inputCodePoints, int inputSize, int commitPoint,
@@ -332,6 +334,33 @@ public final class BinaryDictionary extends Dictionary {
                 outShortcutProbabilities);
     }
 
+    public static class GetNextWordPropertyResult {
+        public WordProperty mWordProperty;
+        public int mNextToken;
+
+        public GetNextWordPropertyResult(final WordProperty wordPreperty, final int nextToken) {
+            mWordProperty = wordPreperty;
+            mNextToken = nextToken;
+        }
+    }
+
+    /**
+     * Method to iterate all words in the dictionary for makedict.
+     * If token is 0, this method newly starts iterating the dictionary.
+     */
+    @UsedForTesting
+    public GetNextWordPropertyResult getNextWordProperty(final int token) {
+        final int[] codePoints = new int[MAX_WORD_LENGTH];
+        final int nextToken = getNextWordNative(mNativeDict, token, codePoints);
+        int len = 0;
+        // codePoints is null-terminated if its length is shorter than the array length.
+        while (len < MAX_WORD_LENGTH && codePoints[len] != 0) {
+            ++len;
+        }
+        final String word = new String(mOutputCodePoints, 0, len);
+        return new GetNextWordPropertyResult(getWordProperty(word), nextToken);
+    }
+
     // Add a unigram entry to binary dictionary with unigram attributes in native code.
     public void addUnigramWord(final String word, final int probability,
             final String shortcutTarget, final int shortcutProbability, final boolean isNotAWord,
@@ -380,7 +409,6 @@ public final class BinaryDictionary extends Dictionary {
                 return;
             }
         }
-
     }
 
     private void reopen() {

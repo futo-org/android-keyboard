@@ -260,6 +260,26 @@ static jint latinime_BinaryDictionary_getBigramProbability(JNIEnv *env, jclass c
             word1Length);
 }
 
+// Method to iterate all words in the dictionary for makedict.
+// If token is 0, this method newly starts iterating the dictionary. This method returns 0 when
+// the dictionary does not have a next word.
+static jint latinime_BinaryDictionary_getNextWord(JNIEnv *env, jclass clazz,
+        jlong dict, jint token, jintArray outCodePoints) {
+    Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
+    if (!dictionary) return 0;
+    const jsize outCodePointsLength = env->GetArrayLength(outCodePoints);
+    if (outCodePointsLength != MAX_WORD_LENGTH) {
+        AKLOGE("Invalid outCodePointsLength: %d", outCodePointsLength);
+        ASSERT(false);
+        return 0;
+    }
+    int wordCodePoints[outCodePointsLength];
+    memset(wordCodePoints, 0, sizeof(wordCodePoints));
+    const int nextToken = dictionary->getNextWordAndNextToken(token, wordCodePoints);
+    env->SetIntArrayRegion(outCodePoints, 0, outCodePointsLength, wordCodePoints);
+    return nextToken;
+}
+
 static void latinime_BinaryDictionary_getWordProperty(JNIEnv *env, jclass clazz,
         jlong dict, jintArray word, jintArray outCodePoints, jbooleanArray outFlags,
         jintArray outProbabilityInfo, jobject outBigramTargets, jobject outBigramProbabilityInfo,
@@ -525,6 +545,11 @@ static const JNINativeMethod sMethods[] = {
         const_cast<char *>("(J[I[I[Z[ILjava/util/ArrayList;Ljava/util/ArrayList;"
                 "Ljava/util/ArrayList;Ljava/util/ArrayList;)V"),
         reinterpret_cast<void *>(latinime_BinaryDictionary_getWordProperty)
+    },
+    {
+        const_cast<char *>("getNextWordNative"),
+        const_cast<char *>("(JI[I)I"),
+        reinterpret_cast<void *>(latinime_BinaryDictionary_getNextWord)
     },
     {
         const_cast<char *>("calcNormalizedScoreNative"),

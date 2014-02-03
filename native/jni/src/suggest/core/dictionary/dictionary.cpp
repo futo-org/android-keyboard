@@ -150,6 +150,12 @@ const WordProperty Dictionary::getWordProperty(const int *const codePoints,
             codePoints, codePointCount);
 }
 
+int Dictionary::getNextWordAndNextToken(const int token, int *const outCodePoints) {
+    TimeKeeper::setCurrentTime();
+    return mDictionaryStructureWithBufferPolicy.get()->getNextWordAndNextToken(
+            token, outCodePoints);
+}
+
 void Dictionary::logDictionaryInfo(JNIEnv *const env) const {
     int dictionaryIdCodePointBuffer[HEADER_ATTRIBUTE_BUFFER_SIZE];
     int versionStringCodePointBuffer[HEADER_ATTRIBUTE_BUFFER_SIZE];
