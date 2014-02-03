@@ -1169,6 +1169,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             public void onClick(final DialogInterface di, final int position) {
                 di.dismiss();
                 ImportantNoticeUtils.updateLastImportantNoticeVersion(context);
+                setNeutralSuggestionStrip();
             }
         };
         final AlertDialog.Builder builder =
