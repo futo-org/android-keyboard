@@ -1401,10 +1401,12 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             // because it may differ from mWordComposer.mTypedWord.
             autoCorrection = sourceSuggestedWords.mTypedWord;
         }
-        if (SuggestedWords.EMPTY != suggestedWords) {
+        if (SuggestedWords.EMPTY == suggestedWords) {
+            setNeutralSuggestionStrip();
+        } else {
             mInputLogic.mWordComposer.setAutoCorrection(autoCorrection);
+            setSuggestedWords(suggestedWords, isSuggestionsStripVisible());
         }
-        setSuggestedWords(suggestedWords, isSuggestionsStripVisible());
         // Cache the auto-correction in accessibility code so we can speak it if the user
         // touches a key that will insert it.
         AccessibilityUtils.getInstance().setAutoCorrection(suggestedWords,
