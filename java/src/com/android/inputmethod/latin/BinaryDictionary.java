@@ -22,7 +22,6 @@ import android.util.SparseArray;
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
-import com.android.inputmethod.latin.makedict.Word;
 import com.android.inputmethod.latin.settings.NativeSuggestOptions;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.JniUtils;
@@ -352,12 +351,7 @@ public final class BinaryDictionary extends Dictionary {
     public GetNextWordPropertyResult getNextWordProperty(final int token) {
         final int[] codePoints = new int[MAX_WORD_LENGTH];
         final int nextToken = getNextWordNative(mNativeDict, token, codePoints);
-        int len = 0;
-        // codePoints is null-terminated if its length is shorter than the array length.
-        while (len < MAX_WORD_LENGTH && codePoints[len] != 0) {
-            ++len;
-        }
-        final String word = new String(codePoints, 0, len);
+        final String word = StringUtils.getStringFromNullTerminatedCodePointArray(codePoints);
         return new GetNextWordPropertyResult(getWordProperty(word), nextToken);
     }
 
