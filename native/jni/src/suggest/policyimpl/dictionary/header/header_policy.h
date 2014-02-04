@@ -146,6 +146,11 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
         return mHasHistoricalInfoOfWords;
     }
 
+    AK_FORCE_INLINE bool shouldBoostExactMatches() const {
+        // TODO: Investigate better ways to handle exact matches for personalized dictionaries.
+        return !isDecayingDict();
+    }
+
     void readHeaderValueOrQuestionMark(const char *const key,
             int *outValue, int outValueSize) const;
 

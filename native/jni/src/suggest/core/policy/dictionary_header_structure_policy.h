@@ -40,6 +40,8 @@ class DictionaryHeaderStructurePolicy {
     virtual void readHeaderValueOrQuestionMark(const char *const key, int *outValue,
             int outValueSize) const = 0;
 
+    virtual bool shouldBoostExactMatches() const = 0;
+
  protected:
     DictionaryHeaderStructurePolicy() {}
 

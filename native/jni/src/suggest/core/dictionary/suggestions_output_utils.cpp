@@ -78,7 +78,8 @@ const int SuggestionsOutputUtils::MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT = 16;
         outputAutoCommitFirstWordConfidence[0] =
                 computeFirstWordConfidence(&terminals[0]);
     }
-
+    const bool boostExactMatches = traverseSession->getDictionaryStructurePolicy()->
+            getHeaderStructurePolicy()->shouldBoostExactMatches();
     // Output suggestion results here
     for (int terminalIndex = 0; terminalIndex < terminalSize && outputWordIndex < MAX_RESULTS;
             ++terminalIndex) {
@@ -102,7 +103,7 @@ const int SuggestionsOutputUtils::MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT = 16;
                 && !(isPossiblyOffensiveWord && isFirstCharUppercase);
         const int outputTypeFlags =
                 (isPossiblyOffensiveWord ? Dictionary::KIND_FLAG_POSSIBLY_OFFENSIVE : 0)
-                | (isSafeExactMatch ? Dictionary::KIND_FLAG_EXACT_MATCH : 0);
+                | ((isSafeExactMatch && boostExactMatches) ? Dictionary::KIND_FLAG_EXACT_MATCH : 0);
 
         // Entries that are blacklisted or do not represent a word should not be output.
         const bool isValidWord = !terminalDicNode->isBlacklistedOrNotAWord();
@@ -113,7 +114,8 @@ const int SuggestionsOutputUtils::MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT = 16;
                 compoundDistance, traverseSession->getInputSize(),
                 terminalDicNode->getContainedErrorTypes(),
                 (forceCommitMultiWords && terminalDicNode->hasMultipleWords())
-                         || (isValidWord && scoringPolicy->doesAutoCorrectValidWord()));
+                         || (isValidWord && scoringPolicy->doesAutoCorrectValidWord()),
+                boostExactMatches);
         if (maxScore < finalScore && isValidWord) {
             maxScore = finalScore;
         }
@@ -147,7 +149,7 @@ const int SuggestionsOutputUtils::MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT = 16;
                      scoringPolicy->calculateFinalScore(compoundDistance,
                              traverseSession->getInputSize(),
                              terminalDicNode->getContainedErrorTypes(),
-                             true /* forceCommit */) : finalScore;
+                             true /* forceCommit */, boostExactMatches) : finalScore;
             const int updatedOutputWordIndex = outputShortcuts(&shortcutIt,
                     outputWordIndex, shortcutBaseScore, outputCodePoints, frequencies, outputTypes,
                     sameAsTyped);
