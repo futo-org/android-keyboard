@@ -16,7 +16,6 @@
 
 package com.android.inputmethod.latin.makedict;
 
-import com.android.inputmethod.latin.makedict.FormatSpec.FileHeader;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary.DictionaryOptions;
 
@@ -39,14 +38,14 @@ public class BinaryDictUtils {
     public static DictionaryOptions makeDictionaryOptions(final String id, final String version,
             final FormatSpec.FormatOptions formatOptions) {
         final DictionaryOptions options = new DictionaryOptions(new HashMap<String, String>());
-        options.mAttributes.put(FileHeader.DICTIONARY_LOCALE_KEY, "en_US");
-        options.mAttributes.put(FileHeader.DICTIONARY_ID_KEY, id);
-        options.mAttributes.put(FileHeader.DICTIONARY_VERSION_KEY, version);
+        options.mAttributes.put(DictionaryHeader.DICTIONARY_LOCALE_KEY, "en_US");
+        options.mAttributes.put(DictionaryHeader.DICTIONARY_ID_KEY, id);
+        options.mAttributes.put(DictionaryHeader.DICTIONARY_VERSION_KEY, version);
         if (formatOptions.mHasTimestamp) {
-            options.mAttributes.put(FileHeader.HAS_HISTORICAL_INFO_KEY,
-                    FileHeader.ATTRIBUTE_VALUE_TRUE);
-            options.mAttributes.put(FileHeader.USES_FORGETTING_CURVE_KEY,
-                    FileHeader.ATTRIBUTE_VALUE_TRUE);
+            options.mAttributes.put(DictionaryHeader.HAS_HISTORICAL_INFO_KEY,
+                    DictionaryHeader.ATTRIBUTE_VALUE_TRUE);
+            options.mAttributes.put(DictionaryHeader.USES_FORGETTING_CURVE_KEY,
+                    DictionaryHeader.ATTRIBUTE_VALUE_TRUE);
         }
         return options;
     }

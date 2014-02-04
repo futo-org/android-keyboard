@@ -18,6 +18,7 @@ package com.android.inputmethod.latin.dicttool;
 
 import com.android.inputmethod.latin.makedict.DictDecoder;
 import com.android.inputmethod.latin.makedict.DictEncoder;
+import com.android.inputmethod.latin.makedict.DictionaryHeader;
 import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary;
@@ -48,9 +49,9 @@ public class BinaryDictOffdeviceUtilsTests extends TestCase {
 
         // Create a thrice-compressed dictionary file.
         final DictionaryOptions testOptions = new DictionaryOptions(new HashMap<String, String>());
-        testOptions.mAttributes.put(FormatSpec.FileHeader.DICTIONARY_VERSION_KEY, VERSION);
-        testOptions.mAttributes.put(FormatSpec.FileHeader.DICTIONARY_LOCALE_KEY, LOCALE);
-        testOptions.mAttributes.put(FormatSpec.FileHeader.DICTIONARY_ID_KEY, ID);
+        testOptions.mAttributes.put(DictionaryHeader.DICTIONARY_VERSION_KEY, VERSION);
+        testOptions.mAttributes.put(DictionaryHeader.DICTIONARY_LOCALE_KEY, LOCALE);
+        testOptions.mAttributes.put(DictionaryHeader.DICTIONARY_ID_KEY, ID);
         final FusionDictionary dict = new FusionDictionary(new PtNodeArray(), testOptions);
         dict.add("foo", TEST_FREQ, null, false /* isNotAWord */);
         dict.add("fta", 1, null, false /* isNotAWord */);
@@ -80,11 +81,11 @@ public class BinaryDictOffdeviceUtilsTests extends TestCase {
                 null /* dict : an optional dictionary to add words to, or null */,
                 false /* deleteDictIfBroken */);
         assertEquals("Wrong version attribute", VERSION, resultDict.mOptions.mAttributes.get(
-                FormatSpec.FileHeader.DICTIONARY_VERSION_KEY));
+                DictionaryHeader.DICTIONARY_VERSION_KEY));
         assertEquals("Wrong locale attribute", LOCALE, resultDict.mOptions.mAttributes.get(
-                FormatSpec.FileHeader.DICTIONARY_LOCALE_KEY));
+                DictionaryHeader.DICTIONARY_LOCALE_KEY));
         assertEquals("Wrong id attribute", ID, resultDict.mOptions.mAttributes.get(
-                FormatSpec.FileHeader.DICTIONARY_ID_KEY));
+                DictionaryHeader.DICTIONARY_ID_KEY));
         assertEquals("Dictionary can't be read back correctly",
                 FusionDictionary.findWordInTree(resultDict.mRootNodeArray, "foo").getFrequency(),
                 TEST_FREQ);

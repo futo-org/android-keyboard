@@ -17,7 +17,6 @@
 package com.android.inputmethod.latin.makedict;
 
 import com.android.inputmethod.annotations.UsedForTesting;
-import com.android.inputmethod.latin.makedict.FormatSpec.FileHeader;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNode;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
@@ -598,7 +597,7 @@ public final class BinaryDictDecoderUtils {
     /* package */ static FusionDictionary readDictionaryBinary(final DictDecoder dictDecoder,
             final FusionDictionary dict) throws IOException, UnsupportedFormatException {
         // Read header
-        final FileHeader fileHeader = dictDecoder.readHeader();
+        final DictionaryHeader fileHeader = dictDecoder.readHeader();
 
         Map<Integer, PtNodeArray> reverseNodeArrayMapping = new TreeMap<Integer, PtNodeArray>();
         Map<Integer, PtNode> reversePtNodeMapping = new TreeMap<Integer, PtNode>();

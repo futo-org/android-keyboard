@@ -26,7 +26,7 @@ import android.os.Environment;
 import com.android.inputmethod.latin.BinaryDictionaryFileDumper;
 import com.android.inputmethod.latin.BinaryDictionaryGetter;
 import com.android.inputmethod.latin.R;
-import com.android.inputmethod.latin.makedict.FormatSpec.FileHeader;
+import com.android.inputmethod.latin.makedict.DictionaryHeader;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.DictionaryInfoUtils;
 import com.android.inputmethod.latin.utils.LocaleUtils;
@@ -51,7 +51,7 @@ public class ExternalDictionaryGetterForDebug {
         final File[] files = new File(SOURCE_FOLDER).listFiles();
         final ArrayList<String> eligibleList = CollectionUtils.newArrayList();
         for (File f : files) {
-            final FileHeader header = DictionaryInfoUtils.getDictionaryFileHeaderOrNull(f);
+            final DictionaryHeader header = DictionaryInfoUtils.getDictionaryFileHeaderOrNull(f);
             if (null == header) continue;
             eligibleList.add(f.getName());
         }
@@ -99,7 +99,7 @@ public class ExternalDictionaryGetterForDebug {
     public static void askInstallFile(final Context context, final String dirPath,
             final String fileName, final Runnable completeRunnable) {
         final File file = new File(dirPath, fileName.toString());
-        final FileHeader header = DictionaryInfoUtils.getDictionaryFileHeaderOrNull(file);
+        final DictionaryHeader header = DictionaryInfoUtils.getDictionaryFileHeaderOrNull(file);
         final StringBuilder message = new StringBuilder();
         final String locale = header.getLocaleString();
         for (String key : header.mDictionaryOptions.mAttributes.keySet()) {
@@ -143,7 +143,7 @@ public class ExternalDictionaryGetterForDebug {
     }
 
     private static void installFile(final Context context, final File file,
-            final FileHeader header) {
+            final DictionaryHeader header) {
         BufferedOutputStream outputStream = null;
         File tempFile = null;
         try {
