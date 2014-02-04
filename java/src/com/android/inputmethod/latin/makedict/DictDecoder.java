@@ -18,7 +18,6 @@ package com.android.inputmethod.latin.makedict;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.DictBuffer;
-import com.android.inputmethod.latin.makedict.FormatSpec.FileHeader;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.utils.ByteArrayDictBuffer;
 
@@ -41,7 +40,7 @@ public interface DictDecoder {
     /**
      * Reads and returns the file header.
      */
-    public FileHeader readHeader() throws IOException, UnsupportedFormatException;
+    public DictionaryHeader readHeader() throws IOException, UnsupportedFormatException;
 
     /**
      * Reads PtNode from ptNodePos.

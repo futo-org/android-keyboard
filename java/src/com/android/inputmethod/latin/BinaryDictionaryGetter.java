@@ -22,8 +22,8 @@ import android.content.res.AssetFileDescriptor;
 import android.util.Log;
 
 import com.android.inputmethod.latin.makedict.DictDecoder;
+import com.android.inputmethod.latin.makedict.DictionaryHeader;
 import com.android.inputmethod.latin.makedict.FormatSpec;
-import com.android.inputmethod.latin.makedict.FormatSpec.FileHeader;
 import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.DictionaryInfoUtils;
@@ -230,7 +230,7 @@ final public class BinaryDictionaryGetter {
         try {
             // Read the version of the file
             final DictDecoder dictDecoder = FormatSpec.getDictDecoder(f);
-            final FileHeader header = dictDecoder.readHeader();
+            final DictionaryHeader header = dictDecoder.readHeader();
 
             final String version = header.mDictionaryOptions.mAttributes.get(VERSION_KEY);
             if (null == version) {

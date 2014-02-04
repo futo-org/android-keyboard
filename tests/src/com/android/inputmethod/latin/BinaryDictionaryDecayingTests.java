@@ -22,6 +22,7 @@ import android.util.Pair;
 
 import com.android.inputmethod.latin.makedict.CodePointUtils;
 import com.android.inputmethod.latin.makedict.DictDecoder;
+import com.android.inputmethod.latin.makedict.DictionaryHeader;
 import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.makedict.FusionDictionary;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNode;
@@ -102,14 +103,14 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
                 getContext().getCacheDir());
         FileUtils.deleteRecursively(file);
         Map<String, String> attributeMap = new HashMap<String, String>();
-        attributeMap.put(FormatSpec.FileHeader.DICTIONARY_ID_KEY, dictId);
-        attributeMap.put(FormatSpec.FileHeader.DICTIONARY_LOCALE_KEY, dictId);
-        attributeMap.put(FormatSpec.FileHeader.DICTIONARY_VERSION_KEY,
+        attributeMap.put(DictionaryHeader.DICTIONARY_ID_KEY, dictId);
+        attributeMap.put(DictionaryHeader.DICTIONARY_LOCALE_KEY, dictId);
+        attributeMap.put(DictionaryHeader.DICTIONARY_VERSION_KEY,
                 String.valueOf(TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis())));
-        attributeMap.put(FormatSpec.FileHeader.USES_FORGETTING_CURVE_KEY,
-                FormatSpec.FileHeader.ATTRIBUTE_VALUE_TRUE);
-        attributeMap.put(FormatSpec.FileHeader.HAS_HISTORICAL_INFO_KEY,
-                FormatSpec.FileHeader.ATTRIBUTE_VALUE_TRUE);
+        attributeMap.put(DictionaryHeader.USES_FORGETTING_CURVE_KEY,
+                DictionaryHeader.ATTRIBUTE_VALUE_TRUE);
+        attributeMap.put(DictionaryHeader.HAS_HISTORICAL_INFO_KEY,
+                DictionaryHeader.ATTRIBUTE_VALUE_TRUE);
         if (BinaryDictionary.createEmptyDictFile(file.getAbsolutePath(),
                 FormatSpec.VERSION4, attributeMap)) {
             return file;

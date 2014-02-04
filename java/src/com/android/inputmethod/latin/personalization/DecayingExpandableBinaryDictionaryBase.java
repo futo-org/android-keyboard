@@ -22,7 +22,7 @@ import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.ExpandableBinaryDictionary;
-import com.android.inputmethod.latin.makedict.FormatSpec;
+import com.android.inputmethod.latin.makedict.DictionaryHeader;
 import com.android.inputmethod.latin.utils.LanguageModelParam;
 
 import java.io.File;
@@ -86,13 +86,13 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
     @Override
     protected Map<String, String> getHeaderAttributeMap() {
         HashMap<String, String> attributeMap = new HashMap<String, String>();
-        attributeMap.put(FormatSpec.FileHeader.USES_FORGETTING_CURVE_KEY,
-                FormatSpec.FileHeader.ATTRIBUTE_VALUE_TRUE);
-        attributeMap.put(FormatSpec.FileHeader.HAS_HISTORICAL_INFO_KEY,
-                FormatSpec.FileHeader.ATTRIBUTE_VALUE_TRUE);
-        attributeMap.put(FormatSpec.FileHeader.DICTIONARY_ID_KEY, mDictName);
-        attributeMap.put(FormatSpec.FileHeader.DICTIONARY_LOCALE_KEY, mLocale.toString());
-        attributeMap.put(FormatSpec.FileHeader.DICTIONARY_VERSION_KEY,
+        attributeMap.put(DictionaryHeader.USES_FORGETTING_CURVE_KEY,
+                DictionaryHeader.ATTRIBUTE_VALUE_TRUE);
+        attributeMap.put(DictionaryHeader.HAS_HISTORICAL_INFO_KEY,
+                DictionaryHeader.ATTRIBUTE_VALUE_TRUE);
+        attributeMap.put(DictionaryHeader.DICTIONARY_ID_KEY, mDictName);
+        attributeMap.put(DictionaryHeader.DICTIONARY_LOCALE_KEY, mLocale.toString());
+        attributeMap.put(DictionaryHeader.DICTIONARY_VERSION_KEY,
                 String.valueOf(TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis())));
         return attributeMap;
     }

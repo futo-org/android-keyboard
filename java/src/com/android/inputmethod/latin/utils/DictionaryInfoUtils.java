@@ -29,7 +29,7 @@ import com.android.inputmethod.latin.BinaryDictionaryGetter;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.makedict.BinaryDictIOUtils;
-import com.android.inputmethod.latin.makedict.FormatSpec.FileHeader;
+import com.android.inputmethod.latin.makedict.DictionaryHeader;
 import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
 
 import java.io.File;
@@ -282,7 +282,7 @@ public class DictionaryInfoUtils {
                 BinaryDictionaryGetter.ID_CATEGORY_SEPARATOR + locale.getLanguage().toString();
     }
 
-    public static FileHeader getDictionaryFileHeaderOrNull(final File file) {
+    public static DictionaryHeader getDictionaryFileHeaderOrNull(final File file) {
         return BinaryDictIOUtils.getDictionaryFileHeaderOrNull(file, 0, file.length());
     }
 
@@ -294,7 +294,7 @@ public class DictionaryInfoUtils {
      */
     private static DictionaryInfo createDictionaryInfoFromFileAddress(
             final AssetFileAddress fileAddress) {
-        final FileHeader header = BinaryDictIOUtils.getDictionaryFileHeaderOrNull(
+        final DictionaryHeader header = BinaryDictIOUtils.getDictionaryFileHeaderOrNull(
                 new File(fileAddress.mFilename), fileAddress.mOffset, fileAddress.mLength);
         if (header == null) {
             return null;

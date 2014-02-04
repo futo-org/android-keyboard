@@ -19,7 +19,6 @@ package com.android.inputmethod.latin.makedict;
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.CharEncoding;
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.DictBuffer;
-import com.android.inputmethod.latin.makedict.FormatSpec.FileHeader;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNode;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
@@ -166,12 +165,12 @@ public class Ver4DictDecoder extends AbstractDictDecoder {
     }
 
     @Override
-    public FileHeader readHeader() throws IOException, UnsupportedFormatException {
+    public DictionaryHeader readHeader() throws IOException, UnsupportedFormatException {
         if (mHeaderBuffer == null) {
             openDictBuffer();
         }
         mHeaderBuffer.position(0);
-        final FileHeader header = super.readHeader(mHeaderBuffer);
+        final DictionaryHeader header = super.readHeader(mHeaderBuffer);
         final int version = header.mFormatOptions.mVersion;
         if (version != FormatSpec.VERSION4) {
             throw new UnsupportedFormatException("File header has a wrong version : " + version);
