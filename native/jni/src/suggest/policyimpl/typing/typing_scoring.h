@@ -50,14 +50,14 @@ class TypingScoring : public Scoring {
 
     AK_FORCE_INLINE int calculateFinalScore(const float compoundDistance,
             const int inputSize, const ErrorTypeUtils::ErrorType containedErrorTypes,
-            const bool forceCommit) const {
+            const bool forceCommit, const bool boostExactMatches) const {
         const float maxDistance = ScoringParams::DISTANCE_WEIGHT_LANGUAGE
                 + static_cast<float>(inputSize) * ScoringParams::TYPING_MAX_OUTPUT_SCORE_PER_INPUT;
         float score = ScoringParams::TYPING_BASE_OUTPUT_SCORE - compoundDistance / maxDistance;
         if (forceCommit) {
             score += ScoringParams::AUTOCORRECT_OUTPUT_THRESHOLD;
         }
-        if (ErrorTypeUtils::isExactMatch(containedErrorTypes)) {
+        if (boostExactMatches && ErrorTypeUtils::isExactMatch(containedErrorTypes)) {
             score += ScoringParams::EXACT_MATCH_PROMOTION;
             if ((ErrorTypeUtils::MATCH_WITH_CASE_ERROR & containedErrorTypes) != 0) {
                 score -= ScoringParams::CASE_ERROR_PENALTY_FOR_EXACT_MATCH;
