@@ -1273,4 +1273,6 @@ static int compare_pair_capital(const void *a, const void *b) {
     /* U+04F0 */ 0x0423, 0x0443, 0x0423, 0x0443, 0x0427, 0x0447, 0x04F6, 0x04F7,
     /* U+04F8 */ 0x042B, 0x044B, 0x04FA, 0x04FB, 0x04FC, 0x04FD, 0x04FE, 0x04FF,
 };
+
+/* static */ const std::vector<int> CharUtils::EMPTY_STRING(1 /* size */, '\0' /* value */);
 } // namespace latinime

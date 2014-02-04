@@ -139,7 +139,7 @@ public final class BinaryDictionary extends Dictionary {
     }
 
     private static native boolean createEmptyDictFileNative(String filePath, long dictVersion,
-            String[] attributeKeyStringArray, String[] attributeValueStringArray);
+            String locale, String[] attributeKeyStringArray, String[] attributeValueStringArray);
     private static native long openNative(String sourceDir, long dictOffset, long dictSize,
             boolean isUpdatable);
     private static native void getHeaderInfoNative(long dict, int[] outHeaderSize,
@@ -179,7 +179,7 @@ public final class BinaryDictionary extends Dictionary {
     private static native String getPropertyNative(long dict, String query);
 
     public static boolean createEmptyDictFile(final String filePath, final long dictVersion,
-            final Map<String, String> attributeMap) {
+            final Locale locale, final Map<String, String> attributeMap) {
         final String[] keyArray = new String[attributeMap.size()];
         final String[] valueArray = new String[attributeMap.size()];
         int index = 0;
@@ -188,7 +188,8 @@ public final class BinaryDictionary extends Dictionary {
             valueArray[index] = attributeMap.get(key);
             index++;
         }
-        return createEmptyDictFileNative(filePath, dictVersion, keyArray, valueArray);
+        return createEmptyDictFileNative(filePath, dictVersion, locale.toString(), keyArray,
+                valueArray);
     }
 
     // TODO: Move native dict into session
