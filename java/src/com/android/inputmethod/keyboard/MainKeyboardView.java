@@ -705,7 +705,8 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         final AnimatorSet zoomOutAnimation = new AnimatorSet();
         zoomOutAnimation.play(scaleXAnimation).with(scaleYAnimation);
         // TODO: Implement preference option to control key preview animation duration.
-        zoomOutAnimation.setDuration(mKeyPreviewZoomOutDuration);
+        final int zoomOutDuration = Math.min(mKeyPreviewZoomOutDuration, mKeyPreviewLingerTimeout);
+        zoomOutAnimation.setDuration(zoomOutDuration);
         zoomOutAnimation.setInterpolator(ACCELERATE_INTERPOLATOR);
         zoomOutAnimation.addListener(new AnimatorListenerAdapter() {
             @Override
