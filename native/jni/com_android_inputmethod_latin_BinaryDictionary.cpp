@@ -137,6 +137,17 @@ static void latinime_BinaryDictionary_close(JNIEnv *env, jclass clazz, jlong dic
     delete dictionary;
 }
 
+static void latinime_BinaryDictionary_getHeaderInfo(JNIEnv *env, jclass clazz, jlong dict,
+        jintArray outHeaderSize, jintArray outFormatVersion, jobject outAttributeKeys,
+        jobject outAttributeValues) {
+    Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
+    if (!dictionary) return;
+    const int formatVersion = dictionary->getFormatVersionNumber();
+    env->SetIntArrayRegion(outFormatVersion, 0 /* start */, 1 /* len */, &formatVersion);
+    // TODO: Implement
+    return;
+}
+
 static int latinime_BinaryDictionary_getFormatVersion(JNIEnv *env, jclass clazz, jlong dict) {
     Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
     if (!dictionary) return 0;
@@ -509,6 +520,11 @@ static const JNINativeMethod sMethods[] = {
         const_cast<char *>("getFormatVersionNative"),
         const_cast<char *>("(J)I"),
         reinterpret_cast<void *>(latinime_BinaryDictionary_getFormatVersion)
+    },
+    {
+        const_cast<char *>("getHeaderInfoNative"),
+        const_cast<char *>("(J[I[ILjava/util/ArrayList;Ljava/util/ArrayList;)V"),
+        reinterpret_cast<void *>(latinime_BinaryDictionary_getHeaderInfo)
     },
     {
         const_cast<char *>("flushNative"),
