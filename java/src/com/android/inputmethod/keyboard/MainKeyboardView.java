@@ -161,16 +161,11 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
 
     // Key preview
     private static final boolean FADE_OUT_KEY_TOP_LETTER_WHEN_KEY_IS_PRESSED = false;
-    private final int mKeyPreviewLayoutId;
     // Free {@link TextView} pool that can be used for key preview.
     private final ArrayDeque<TextView> mFreeKeyPreviewTextViews = CollectionUtils.newArrayDeque();
     // Map from {@link Key} to {@link TextView} that is currently being displayed as key preview.
     private final HashMap<Key,TextView> mShowingKeyPreviewTextViews = CollectionUtils.newHashMap();
     private final KeyPreviewDrawParams mKeyPreviewDrawParams;
-    private boolean mShowKeyPreviewPopup = true;
-    private int mKeyPreviewLingerTimeout;
-    private int mKeyPreviewZoomInDuration;
-    private int mKeyPreviewZoomOutDuration;
     private static final float KEY_PREVIEW_START_ZOOM_IN_SCALE = 0.7f;
     private static final float KEY_PREVIEW_END_ZOOM_IN_SCALE = 1.0f;
     private static final float KEY_PREVIEW_END_ZOOM_OUT_SCALE = 0.7f;
@@ -266,17 +261,6 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
                 R.styleable.MainKeyboardView_altCodeKeyWhileTypingFadeinAnimator, 0);
 
         mKeyPreviewDrawParams = new KeyPreviewDrawParams(mainKeyboardViewAttr);
-        mKeyPreviewLingerTimeout = mainKeyboardViewAttr.getInt(
-                R.styleable.MainKeyboardView_keyPreviewLingerTimeout, 0);
-        mKeyPreviewLayoutId = mainKeyboardViewAttr.getResourceId(
-                R.styleable.MainKeyboardView_keyPreviewLayout, 0);
-        if (mKeyPreviewLayoutId == 0) {
-            mShowKeyPreviewPopup = false;
-        }
-        mKeyPreviewZoomInDuration = mainKeyboardViewAttr.getInt(
-                R.styleable.MainKeyboardView_keyPreviewZoomInDuration, 0);
-        mKeyPreviewZoomOutDuration = mainKeyboardViewAttr.getInt(
-                R.styleable.MainKeyboardView_keyPreviewZoomOutDuration, 0);
         final int moreKeysKeyboardLayoutId = mainKeyboardViewAttr.getResourceId(
                 R.styleable.MainKeyboardView_moreKeysKeyboardLayout, 0);
         mConfigShowMoreKeysKeyboardAtTouchedPoint = mainKeyboardViewAttr.getBoolean(
@@ -450,8 +434,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
      * @see #isKeyPreviewPopupEnabled()
      */
     public void setKeyPreviewPopupEnabled(final boolean previewEnabled, final int delay) {
-        mShowKeyPreviewPopup = previewEnabled;
-        mKeyPreviewLingerTimeout = delay;
+        mKeyPreviewDrawParams.setPopupEnabled(previewEnabled, delay);
     }
 
     private void locatePreviewPlacerView() {
@@ -491,7 +474,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
      * @see #setKeyPreviewPopupEnabled(boolean, int)
      */
     public boolean isKeyPreviewPopupEnabled() {
-        return mShowKeyPreviewPopup;
+        return mKeyPreviewDrawParams.isPopupEnabled();
     }
 
     private TextView getKeyPreviewTextView(final Key key) {
@@ -504,9 +487,10 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
             return previewTextView;
         }
         final Context context = getContext();
-        if (mKeyPreviewLayoutId != 0) {
+        final int previewLayoutId = mKeyPreviewDrawParams.mLayoutId;
+        if (previewLayoutId != 0) {
             previewTextView = (TextView)LayoutInflater.from(context)
-                    .inflate(mKeyPreviewLayoutId, null);
+                    .inflate(previewLayoutId, null);
         } else {
             previewTextView = new TextView(context);
         }
@@ -558,7 +542,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
 
         final KeyPreviewDrawParams previewParams = mKeyPreviewDrawParams;
         final Keyboard keyboard = getKeyboard();
-        if (!mShowKeyPreviewPopup) {
+        if (!previewParams.isPopupEnabled()) {
             previewParams.setVisibleOffset(-keyboard.mVerticalGap);
             return;
         }
@@ -586,7 +570,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         final int keyDrawWidth = key.getDrawWidth();
         final int previewWidth = previewTextView.getMeasuredWidth();
-        final int previewHeight = previewParams.mKeyPreviewHeight;
+        final int previewHeight = previewParams.mPreviewHeight;
         previewParams.setGeometry(previewTextView);
         getLocationInWindow(mOriginCoords);
         // The key preview is horizontally aligned with the center of the visible part of the
@@ -606,7 +590,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         }
         // The key preview is placed vertically above the top edge of the parent key with an
         // arbitrary offset.
-        final int previewY = key.getY() - previewHeight + previewParams.mKeyPreviewOffset
+        final int previewY = key.getY() - previewHeight + previewParams.mPreviewOffset
                 + CoordinateUtils.y(mOriginCoords);
 
         if (background != null) {
@@ -670,7 +654,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         final AnimatorSet zoomInAnimation = new AnimatorSet();
         zoomInAnimation.play(scaleXAnimation).with(scaleYAnimation);
         // TODO: Implement preference option to control key preview animation duration.
-        zoomInAnimation.setDuration(mKeyPreviewZoomInDuration);
+        zoomInAnimation.setDuration(mKeyPreviewDrawParams.mZoomInDuration);
         zoomInAnimation.setInterpolator(DECELERATE_INTERPOLATOR);
         zoomInAnimation.addListener(new AnimatorListenerAdapter() {
             @Override
@@ -691,7 +675,8 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         final AnimatorSet zoomOutAnimation = new AnimatorSet();
         zoomOutAnimation.play(scaleXAnimation).with(scaleYAnimation);
         // TODO: Implement preference option to control key preview animation duration.
-        final int zoomOutDuration = Math.min(mKeyPreviewZoomOutDuration, mKeyPreviewLingerTimeout);
+        final int zoomOutDuration = Math.min(mKeyPreviewDrawParams.mZoomOutDuration,
+                mKeyPreviewDrawParams.getLingerTimeout());
         zoomOutAnimation.setDuration(zoomOutDuration);
         zoomOutAnimation.setInterpolator(ACCELERATE_INTERPOLATOR);
         zoomOutAnimation.addListener(new AnimatorListenerAdapter() {
@@ -733,7 +718,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         }
         if (!isHardwareAccelerated()) {
             // TODO: Implement preference option to control key preview method and duration.
-            mDrawingHandler.dismissKeyPreview(mKeyPreviewLingerTimeout, key);
+            mDrawingHandler.dismissKeyPreview(mKeyPreviewDrawParams.getLingerTimeout(), key);
             return;
         }
         final Object tag = previewTextView.getTag();
