@@ -534,4 +534,25 @@ public class DictionaryFacilitatorForSuggest {
         mPersonalizationDictionary.addMultipleDictionaryEntriesToDictionary(languageModelParams,
                 callback);
     }
+
+    public void dumpDictionaryForDebug(final String dictName) {
+        final ExpandableBinaryDictionary dictToDump;
+        if (dictName.equals(Dictionary.TYPE_CONTACTS)) {
+            dictToDump = mContactsDictionary;
+        } else if (dictName.equals(Dictionary.TYPE_USER)) {
+            dictToDump = mUserDictionary;
+        } else if (dictName.equals(Dictionary.TYPE_USER_HISTORY)) {
+            dictToDump = mUserHistoryDictionary;
+        } else if (dictName.equals(Dictionary.TYPE_PERSONALIZATION)) {
+            dictToDump = mPersonalizationDictionary;
+        } else {
+            dictToDump = null;
+        }
+        if (dictToDump == null) {
+            Log.e(TAG, "Cannot dump " + dictName + ". "
+                    + "The dictionary is not being used for suggestion or cannot be dumped.");
+            return;
+        }
+        dictToDump.dumpAllWordsForDebug();
+    }
 }

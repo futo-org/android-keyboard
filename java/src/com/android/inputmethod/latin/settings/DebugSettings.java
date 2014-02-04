@@ -16,15 +16,18 @@
 
 package com.android.inputmethod.latin.settings;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Process;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
+import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
 
-import com.android.inputmethod.keyboard.KeyboardSwitcher;
+import com.android.inputmethod.latin.Dictionary;
+import com.android.inputmethod.latin.DictionaryDumpBroadcastReceiver;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.debug.ExternalDictionaryGetterForDebug;
@@ -40,6 +43,11 @@ public final class DebugSettings extends PreferenceFragment
     public static final String PREF_USE_ONLY_PERSONALIZATION_DICTIONARY_FOR_DEBUG =
             "use_only_personalization_dictionary_for_debug";
     private static final String PREF_READ_EXTERNAL_DICTIONARY = "read_external_dictionary";
+    private static final String PREF_DUMP_CONTACTS_DICT = "dump_contacts_dict";
+    private static final String PREF_DUMP_USER_DICT = "dump_user_dict";
+    private static final String PREF_DUMP_USER_HISTORY_DICT = "dump_user_history_dict";
+    private static final String PREF_DUMP_PERSONALIZATION_DICT = "dump_personalization_dict";
+
     private static final boolean SHOW_STATISTICS_LOGGING = false;
 
     private boolean mServiceNeedsRestart = false;
@@ -83,9 +91,51 @@ public final class DebugSettings extends PreferenceFragment
                     });
         }
 
+        final OnPreferenceClickListener dictDumpPrefClickListener =
+                new DictDumpPrefClickListener(this);
+        findPreference(PREF_DUMP_CONTACTS_DICT).setOnPreferenceClickListener(
+                dictDumpPrefClickListener);
+        findPreference(PREF_DUMP_USER_DICT).setOnPreferenceClickListener(
+                dictDumpPrefClickListener);
+        findPreference(PREF_DUMP_USER_HISTORY_DICT).setOnPreferenceClickListener(
+                dictDumpPrefClickListener);
+        findPreference(PREF_DUMP_PERSONALIZATION_DICT).setOnPreferenceClickListener(
+                dictDumpPrefClickListener);
+
         mServiceNeedsRestart = false;
         mDebugMode = (CheckBoxPreference) findPreference(PREF_DEBUG_MODE);
         updateDebugMode();
+    }
+
+    private static class DictDumpPrefClickListener implements OnPreferenceClickListener {
+        final PreferenceFragment mPreferenceFragment;
+
+        public DictDumpPrefClickListener(final PreferenceFragment preferenceFragment) {
+            mPreferenceFragment = preferenceFragment;
+        }
+
+        @Override
+        public boolean onPreferenceClick(final Preference arg0) {
+            final String dictName;
+            if (arg0.getKey().equals(PREF_DUMP_CONTACTS_DICT)) {
+                dictName = Dictionary.TYPE_CONTACTS;
+            } else if (arg0.getKey().equals(PREF_DUMP_USER_DICT)) {
+                dictName = Dictionary.TYPE_USER;
+            } else if (arg0.getKey().equals(PREF_DUMP_USER_HISTORY_DICT)) {
+                dictName = Dictionary.TYPE_USER_HISTORY;
+            } else if (arg0.getKey().equals(PREF_DUMP_PERSONALIZATION_DICT)) {
+                dictName = Dictionary.TYPE_PERSONALIZATION;
+            } else {
+                dictName = null;
+            }
+            if (dictName != null) {
+                final Intent intent =
+                        new Intent(DictionaryDumpBroadcastReceiver.DICTIONARY_DUMP_INTENT_ACTION);
+                intent.putExtra(DictionaryDumpBroadcastReceiver.DICTIONARY_NAME_KEY, dictName);
+                mPreferenceFragment.getActivity().sendBroadcast(intent);
+            }
+            return true;
+        }
     }
 
     @Override
