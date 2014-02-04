@@ -28,6 +28,14 @@ const int DynamicPtReadingHelper::MAX_CHILD_COUNT_TO_AVOID_INFINITE_LOOP = 10000
 const int DynamicPtReadingHelper::MAX_PT_NODE_ARRAY_COUNT_TO_AVOID_INFINITE_LOOP = 100000;
 const size_t DynamicPtReadingHelper::MAX_READING_STATE_STACK_SIZE = MAX_WORD_LENGTH;
 
+bool DynamicPtReadingHelper::TraversePolicyToGetAllTerminalPtNodePositions::onVisitingPtNode(
+        const PtNodeParams *const ptNodeParams) {
+    if (ptNodeParams->isTerminal() && !ptNodeParams->isDeleted()) {
+        mTerminalPositions->push_back(ptNodeParams->getHeadPos());
+    }
+    return true;
+}
+
 // Visits all PtNodes in post-order depth first manner.
 // For example, visits c -> b -> y -> x -> a for the following dictionary:
 // a _ b _ c

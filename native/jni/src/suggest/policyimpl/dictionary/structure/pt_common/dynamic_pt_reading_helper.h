@@ -59,6 +59,21 @@ class DynamicPtReadingHelper {
         DISALLOW_COPY_AND_ASSIGN(TraversingEventListener);
     };
 
+    class TraversePolicyToGetAllTerminalPtNodePositions : public TraversingEventListener {
+     public:
+        TraversePolicyToGetAllTerminalPtNodePositions(std::vector<int> *const terminalPositions)
+                : mTerminalPositions(terminalPositions) {}
+        bool onAscend() { return true; }
+        bool onDescend(const int ptNodeArrayPos) { return true; }
+        bool onReadingPtNodeArrayTail() { return true; }
+        bool onVisitingPtNode(const PtNodeParams *const ptNodeParams);
+
+     private:
+        DISALLOW_IMPLICIT_CONSTRUCTORS(TraversePolicyToGetAllTerminalPtNodePositions);
+
+        std::vector<int> *const mTerminalPositions;
+    };
+
     DynamicPtReadingHelper(const BufferWithExtendableBuffer *const buffer,
             const PtNodeReader *const ptNodeReader)
             : mIsError(false), mReadingState(), mBuffer(buffer),
