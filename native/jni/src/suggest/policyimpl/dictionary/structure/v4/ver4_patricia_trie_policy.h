@@ -17,6 +17,8 @@
 #ifndef LATINIME_VER4_PATRICIA_TRIE_POLICY_H
 #define LATINIME_VER4_PATRICIA_TRIE_POLICY_H
 
+#include <vector>
+
 #include "defines.h"
 #include "suggest/core/policy/dictionary_structure_with_buffer_policy.h"
 #include "suggest/policyimpl/dictionary/bigram/ver4_bigram_list_policy.h"
@@ -50,7 +52,8 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
               mUpdatingHelper(mDictBuffer, &mNodeReader, &mNodeWriter),
               mWritingHelper(mBuffers.get()),
               mUnigramCount(mHeaderPolicy->getUnigramCount()),
-              mBigramCount(mHeaderPolicy->getBigramCount()) {};
+              mBigramCount(mHeaderPolicy->getBigramCount()),
+              mTerminalPtNodePositionsForIteratingWords() {};
 
     AK_FORCE_INLINE int getRootPosition() const {
         return 0;
@@ -134,6 +137,7 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     Ver4PatriciaTrieWritingHelper mWritingHelper;
     int mUnigramCount;
     int mBigramCount;
+    std::vector<int> mTerminalPtNodePositionsForIteratingWords;
 };
 } // namespace latinime
 #endif // LATINIME_VER4_PATRICIA_TRIE_POLICY_H

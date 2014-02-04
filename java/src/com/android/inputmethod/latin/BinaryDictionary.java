@@ -357,7 +357,7 @@ public final class BinaryDictionary extends Dictionary {
         while (len < MAX_WORD_LENGTH && codePoints[len] != 0) {
             ++len;
         }
-        final String word = new String(mOutputCodePoints, 0, len);
+        final String word = new String(codePoints, 0, len);
         return new GetNextWordPropertyResult(getWordProperty(word), nextToken);
     }
 

@@ -392,10 +392,32 @@ const WordProperty Ver4PatriciaTriePolicy::getWordProperty(const int *const code
             historicalInfo->getCount(), &bigrams, &shortcuts);
 }
 
-int Ver4PatriciaTriePolicy::getNextWordAndNextToken(const int token,
-        int *const outCodePoints) {
-    // TODO: Implement.
-    return 0;
+int Ver4PatriciaTriePolicy::getNextWordAndNextToken(const int token, int *const outCodePoints) {
+    if (token == 0) {
+        mTerminalPtNodePositionsForIteratingWords.clear();
+        DynamicPtReadingHelper::TraversePolicyToGetAllTerminalPtNodePositions traversePolicy(
+                &mTerminalPtNodePositionsForIteratingWords);
+        DynamicPtReadingHelper readingHelper(mDictBuffer, &mNodeReader);
+        readingHelper.initWithPtNodeArrayPos(getRootPosition());
+        readingHelper.traverseAllPtNodesInPostorderDepthFirstManner(&traversePolicy);
+    }
+    const int terminalPtNodePositionsVectorSize =
+            static_cast<int>(mTerminalPtNodePositionsForIteratingWords.size());
+    if (token < 0 || token >= terminalPtNodePositionsVectorSize) {
+        AKLOGE("Given token %d is invalid.", token);
+        return 0;
+    }
+    const int terminalPtNodePos = mTerminalPtNodePositionsForIteratingWords[token];
+    int unigramProbability = NOT_A_PROBABILITY;
+    getCodePointsAndProbabilityAndReturnCodePointCount(terminalPtNodePos, MAX_WORD_LENGTH,
+            outCodePoints, &unigramProbability);
+    const int nextToken = token + 1;
+    if (nextToken >= terminalPtNodePositionsVectorSize) {
+        // All words have been iterated.
+        mTerminalPtNodePositionsForIteratingWords.clear();
+        return 0;
+    }
+    return nextToken;
 }
 
 } // namespace latinime
