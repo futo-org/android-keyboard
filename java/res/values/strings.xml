@@ -498,6 +498,14 @@ mobile devices. [CHAR LIMIT=25] -->
     <string name="read_external_dictionary_confirm_install_message">Really install this file for <xliff:g id="locale_name">%s</xliff:g>?</string>
     <!-- Title for an error dialog that contains the details of the error in the body [CHAR LIMIT=80] -->
     <string name="error">There was an error</string>
+    <!-- Title of the settings for dumpping contacts dictionary file [CHAR LIMIT=35] -->
+    <string name="prefs_dump_contacts_dict">Dump contacts dictionary</string>
+    <!-- Title of the settings for dumpping personal dictionary file [CHAR LIMIT=35] -->
+    <string name="prefs_dump_user_dict">Dump personal dictionary</string>
+    <!-- Title of the settings for dumpping user history dictionary file [CHAR LIMIT=35] -->
+    <string name="prefs_dump_user_history_dict">Dump user history dictionary</string>
+    <!-- Title of the settings for dumpping personalization dictionary file [CHAR LIMIT=35] -->
+    <string name="prefs_dump_personalization_dict">Dump personalization dictionary</string>
 
     <!-- Title of the button to revert to the default value of the device in the settings dialog [CHAR LIMIT=15] -->
     <string name="button_default">Default</string>

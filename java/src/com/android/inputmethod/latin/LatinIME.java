@@ -133,6 +133,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private BroadcastReceiver mDictionaryPackInstallReceiver =
             new DictionaryPackInstallBroadcastReceiver(this);
 
+    private BroadcastReceiver mDictionaryDumpBroadcastReceiver =
+            new DictionaryDumpBroadcastReceiver(this);
+
     private AlertDialog mOptionsDialog;
 
     private final boolean mIsHardwareAcceleratedDrawingEnabled;
@@ -486,6 +489,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final IntentFilter newDictFilter = new IntentFilter();
         newDictFilter.addAction(DictionaryPackConstants.NEW_DICTIONARY_INTENT_ACTION);
         registerReceiver(mDictionaryPackInstallReceiver, newDictFilter);
+
+        final IntentFilter dictDumpFilter = new IntentFilter();
+        dictDumpFilter.addAction(DictionaryDumpBroadcastReceiver.DICTIONARY_DUMP_INTENT_ACTION);
+        registerReceiver(mDictionaryDumpBroadcastReceiver, dictDumpFilter);
 
         DictionaryDecayBroadcastReciever.setUpIntervalAlarmForDictionaryDecaying(this);
     }
@@ -1756,6 +1763,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 new DictionaryFacilitatorForSuggest(this, locale, mSettings.getCurrent(),
                         this /* listener */, oldDictionaryFacilitator);
         resetSuggest(new Suggest(locale, dictionaryFacilitator));
+    }
+
+    public void dumpDictionaryForDebug(final String dictName) {
+        if (mInputLogic.mSuggest == null) {
+            initSuggest();
+        }
+        mInputLogic.mSuggest.mDictionaryFacilitator.dumpDictionaryForDebug(dictName);
     }
 
     public void debugDumpStateAndCrashWithException(final String context) {
