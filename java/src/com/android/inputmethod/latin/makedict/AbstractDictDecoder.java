@@ -19,7 +19,6 @@ package com.android.inputmethod.latin.makedict;
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.CharEncoding;
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.DictBuffer;
-import com.android.inputmethod.latin.makedict.FormatSpec.FileHeader;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
 
@@ -36,7 +35,7 @@ public abstract class AbstractDictDecoder implements DictDecoder {
     private static final int ERROR_CANNOT_READ = 1;
     private static final int ERROR_WRONG_FORMAT = 2;
 
-    protected FileHeader readHeader(final DictBuffer headerBuffer)
+    protected DictionaryHeader readHeader(final DictBuffer headerBuffer)
             throws IOException, UnsupportedFormatException {
         if (headerBuffer == null) {
             openDictBuffer();
@@ -57,10 +56,10 @@ public abstract class AbstractDictDecoder implements DictDecoder {
         final HashMap<String, String> attributes = HeaderReader.readAttributes(headerBuffer,
                 headerSize);
 
-        final FileHeader header = new FileHeader(headerSize,
+        final DictionaryHeader header = new DictionaryHeader(headerSize,
                 new FusionDictionary.DictionaryOptions(attributes),
-                new FormatOptions(version, FileHeader.ATTRIBUTE_VALUE_TRUE.equals(
-                        attributes.get(FileHeader.HAS_HISTORICAL_INFO_KEY))));
+                new FormatOptions(version, DictionaryHeader.ATTRIBUTE_VALUE_TRUE.equals(
+                        attributes.get(DictionaryHeader.HAS_HISTORICAL_INFO_KEY))));
         return header;
     }
 

@@ -21,6 +21,7 @@ import android.util.Log;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.ProximityInfo;
+import com.android.inputmethod.latin.makedict.DictionaryHeader;
 import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.utils.AsyncResultHolder;
@@ -268,9 +269,9 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
 
     protected Map<String, String> getHeaderAttributeMap() {
         HashMap<String, String> attributeMap = new HashMap<String, String>();
-        attributeMap.put(FormatSpec.FileHeader.DICTIONARY_ID_KEY, mDictName);
-        attributeMap.put(FormatSpec.FileHeader.DICTIONARY_LOCALE_KEY, mLocale.toString());
-        attributeMap.put(FormatSpec.FileHeader.DICTIONARY_VERSION_KEY,
+        attributeMap.put(DictionaryHeader.DICTIONARY_ID_KEY, mDictName);
+        attributeMap.put(DictionaryHeader.DICTIONARY_LOCALE_KEY, mLocale.toString());
+        attributeMap.put(DictionaryHeader.DICTIONARY_VERSION_KEY,
                 String.valueOf(TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis())));
         return attributeMap;
     }

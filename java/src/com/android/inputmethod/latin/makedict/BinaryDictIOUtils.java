@@ -20,7 +20,6 @@ import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.CharEncoding;
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.DictBuffer;
-import com.android.inputmethod.latin.makedict.FormatSpec.FileHeader;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNode;
 import com.android.inputmethod.latin.utils.ByteArrayDictBuffer;
@@ -151,7 +150,7 @@ public final class BinaryDictIOUtils {
             final Map<Integer, ArrayList<PendingAttribute>> bigrams) throws IOException,
             UnsupportedFormatException {
         // Read header
-        final FileHeader header = dictDecoder.readHeader();
+        final DictionaryHeader header = dictDecoder.readHeader();
         readUnigramsAndBigramsBinaryInner(dictDecoder, header.mBodyOffset, words,
                 frequencies, bigrams, header.mFormatOptions);
     }
@@ -172,7 +171,7 @@ public final class BinaryDictIOUtils {
         if (word == null) return FormatSpec.NOT_VALID_WORD;
         dictDecoder.setPosition(0);
 
-        final FileHeader header = dictDecoder.readHeader();
+        final DictionaryHeader header = dictDecoder.readHeader();
         int wordPos = 0;
         final int wordLen = word.codePointCount(0, word.length());
         for (int depth = 0; depth < Constants.DICTIONARY_MAX_WORD_LENGTH; ++depth) {
@@ -311,7 +310,7 @@ public final class BinaryDictIOUtils {
      * @param length The length of the data file.
      * @return the header of the specified dictionary file.
      */
-    private static FileHeader getDictionaryFileHeader(
+    private static DictionaryHeader getDictionaryFileHeader(
             final File file, final long offset, final long length)
             throws FileNotFoundException, IOException, UnsupportedFormatException {
         final byte[] buffer = new byte[HEADER_READING_BUFFER_SIZE];
@@ -337,10 +336,10 @@ public final class BinaryDictIOUtils {
         return dictDecoder.readHeader();
     }
 
-    public static FileHeader getDictionaryFileHeaderOrNull(final File file, final long offset,
+    public static DictionaryHeader getDictionaryFileHeaderOrNull(final File file, final long offset,
             final long length) {
         try {
-            final FileHeader header = getDictionaryFileHeader(file, offset, length);
+            final DictionaryHeader header = getDictionaryFileHeader(file, offset, length);
             return header;
         } catch (UnsupportedFormatException e) {
             return null;

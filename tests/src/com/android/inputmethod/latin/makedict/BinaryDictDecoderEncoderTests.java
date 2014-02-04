@@ -24,7 +24,6 @@ import android.util.SparseArray;
 import com.android.inputmethod.latin.BinaryDictionary;
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.CharEncoding;
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.DictBuffer;
-import com.android.inputmethod.latin.makedict.FormatSpec.FileHeader;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNode;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
@@ -498,7 +497,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
     private String getWordFromBinary(final DictDecoder dictDecoder, final int address) {
         if (dictDecoder.getPosition() != 0) dictDecoder.setPosition(0);
 
-        FileHeader fileHeader = null;
+        DictionaryHeader fileHeader = null;
         try {
             fileHeader = dictDecoder.readHeader();
         } catch (IOException e) {
