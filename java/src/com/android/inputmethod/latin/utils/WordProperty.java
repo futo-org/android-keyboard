@@ -61,15 +61,6 @@ public class WordProperty {
         }
     }
 
-    private static int getCodePointCount(final int[] codePoints) {
-        for (int i = 0; i < codePoints.length; i++) {
-            if (codePoints[i] == 0) {
-                return i;
-            }
-        }
-        return codePoints.length;
-    }
-
     // This represents invalid word when the probability is BinaryDictionary.NOT_A_PROBABILITY.
     public WordProperty(final int[] codePoints, final boolean isNotAWord,
             final boolean isBlacklisted, final boolean hasBigram,
@@ -77,7 +68,7 @@ public class WordProperty {
             final ArrayList<int[]> bigramTargets, final ArrayList<int[]> bigramProbabilityInfo,
             final ArrayList<int[]> shortcutTargets,
             final ArrayList<Integer> shortcutProbabilities) {
-        mCodePoints = new String(codePoints, 0 /* offset */, getCodePointCount(codePoints));
+        mCodePoints = StringUtils.getStringFromNullTerminatedCodePointArray(codePoints);
         mIsNotAWord = isNotAWord;
         mIsBlacklisted = isBlacklisted;
         mHasBigrams = hasBigram;
@@ -86,9 +77,8 @@ public class WordProperty {
 
         final int bigramTargetCount = bigramTargets.size();
         for (int i = 0; i < bigramTargetCount; i++) {
-            final int[] bigramTargetCodePointArray = bigramTargets.get(i);
-            final String bigramTargetString = new String(bigramTargetCodePointArray,
-                    0 /* offset */, getCodePointCount(bigramTargetCodePointArray));
+            final String bigramTargetString =
+                    StringUtils.getStringFromNullTerminatedCodePointArray(bigramTargets.get(i));
             final ProbabilityInfo bigramProbability =
                     new ProbabilityInfo(bigramProbabilityInfo.get(i));
             mBigramTargets.add(
@@ -98,9 +88,8 @@ public class WordProperty {
 
         final int shortcutTargetCount = shortcutTargets.size();
         for (int i = 0; i < shortcutTargetCount; i++) {
-            final int[] shortcutTargetCodePointArray = shortcutTargets.get(i);
-            final String shortcutTargetString = new String(shortcutTargetCodePointArray,
-                    0 /* offset */, getCodePointCount(shortcutTargetCodePointArray));
+            final String shortcutTargetString =
+                    StringUtils.getStringFromNullTerminatedCodePointArray(shortcutTargets.get(i));
             mShortcutTargets.add(
                     new WeightedString(shortcutTargetString, shortcutProbabilities.get(i)));
         }

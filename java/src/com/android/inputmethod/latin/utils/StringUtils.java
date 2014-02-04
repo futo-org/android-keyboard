@@ -46,7 +46,7 @@ public final class StringUtils {
 
     public static String newSingleCodePointString(int codePoint) {
         if (Character.charCount(codePoint) == 1) {
-            // Optimization: avoid creating an temporary array for characters that are
+            // Optimization: avoid creating a temporary array for characters that are
             // represented by a single char value
             return String.valueOf((char) codePoint);
         }
@@ -203,6 +203,24 @@ public final class StringUtils {
         final int[] codePoints = toCodePointArray(string);
         Arrays.sort(codePoints);
         return codePoints;
+    }
+
+    /**
+     * Construct a String from a code point array
+     *
+     * @param codePoints a code point array that is null terminated when its logical length is
+     * shorter than the array length.
+     * @return a string constructed from the code point array.
+     */
+    public static String getStringFromNullTerminatedCodePointArray(final int[] codePoints) {
+        int stringLength = codePoints.length;
+        for (int i = 0; i < codePoints.length; i++) {
+            if (codePoints[i] == 0) {
+                stringLength = i;
+                break;
+            }
+        }
+        return new String(codePoints, 0 /* offset */, stringLength);
     }
 
     // This method assumes the text is not null. For the empty string, it returns CAPITALIZE_NONE.
