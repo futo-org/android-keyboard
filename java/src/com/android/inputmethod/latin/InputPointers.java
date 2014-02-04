@@ -17,6 +17,7 @@
 package com.android.inputmethod.latin;
 
 import android.util.Log;
+import android.util.SparseIntArray;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.utils.ResizableIntArray;
@@ -160,15 +161,21 @@ public final class InputPointers {
 
     private boolean isValidTimeStamps() {
         final int[] times = mTimes.getPrimitiveArray();
+        final int[] pointerIds = mPointerIds.getPrimitiveArray();
+        final SparseIntArray lastTimeOfPointers = new SparseIntArray();
         final int size = getPointerSize();
-        for (int i = 1; i < size; ++i) {
-            if (times[i] < times[i - 1]) {
+        for (int i = 0; i < size; ++i) {
+            final int pointerId = pointerIds[i];
+            final int time = times[i];
+            final int lastTime = lastTimeOfPointers.get(pointerId, time);
+            if (time < lastTime) {
                 // dump
                 for (int j = 0; j < size; ++j) {
                     Log.d(TAG, "--- (" + j + ") " + times[j]);
                 }
                 return false;
             }
+            lastTimeOfPointers.put(pointerId, time);
         }
         return true;
     }
