@@ -162,13 +162,11 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     // Key preview
     private static final boolean FADE_OUT_KEY_TOP_LETTER_WHEN_KEY_IS_PRESSED = false;
     private final int mKeyPreviewLayoutId;
-    private final int mKeyPreviewOffset;
-    private final int mKeyPreviewHeight;
     // Free {@link TextView} pool that can be used for key preview.
     private final ArrayDeque<TextView> mFreeKeyPreviewTextViews = CollectionUtils.newArrayDeque();
     // Map from {@link Key} to {@link TextView} that is currently being displayed as key preview.
     private final HashMap<Key,TextView> mShowingKeyPreviewTextViews = CollectionUtils.newHashMap();
-    private final KeyPreviewDrawParams mKeyPreviewDrawParams = new KeyPreviewDrawParams();
+    private final KeyPreviewDrawParams mKeyPreviewDrawParams;
     private boolean mShowKeyPreviewPopup = true;
     private int mKeyPreviewLingerTimeout;
     private int mKeyPreviewZoomInDuration;
@@ -267,10 +265,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         final int altCodeKeyWhileTypingFadeinAnimatorResId = mainKeyboardViewAttr.getResourceId(
                 R.styleable.MainKeyboardView_altCodeKeyWhileTypingFadeinAnimator, 0);
 
-        mKeyPreviewOffset = mainKeyboardViewAttr.getDimensionPixelOffset(
-                R.styleable.MainKeyboardView_keyPreviewOffset, 0);
-        mKeyPreviewHeight = mainKeyboardViewAttr.getDimensionPixelSize(
-                R.styleable.MainKeyboardView_keyPreviewHeight, 0);
+        mKeyPreviewDrawParams = new KeyPreviewDrawParams(mainKeyboardViewAttr);
         mKeyPreviewLingerTimeout = mainKeyboardViewAttr.getInt(
                 R.styleable.MainKeyboardView_keyPreviewLingerTimeout, 0);
         mKeyPreviewLayoutId = mainKeyboardViewAttr.getResourceId(
@@ -564,7 +559,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         final KeyPreviewDrawParams previewParams = mKeyPreviewDrawParams;
         final Keyboard keyboard = getKeyboard();
         if (!mShowKeyPreviewPopup) {
-            previewParams.mPreviewVisibleOffset = -keyboard.mVerticalGap;
+            previewParams.setVisibleOffset(-keyboard.mVerticalGap);
             return;
         }
 
@@ -591,17 +586,8 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         final int keyDrawWidth = key.getDrawWidth();
         final int previewWidth = previewTextView.getMeasuredWidth();
-        final int previewHeight = mKeyPreviewHeight;
-        // The width and height of visible part of the key preview background. The content marker
-        // of the background 9-patch have to cover the visible part of the background.
-        previewParams.mPreviewVisibleWidth = previewWidth - previewTextView.getPaddingLeft()
-                - previewTextView.getPaddingRight();
-        previewParams.mPreviewVisibleHeight = previewHeight - previewTextView.getPaddingTop()
-                - previewTextView.getPaddingBottom();
-        // The distance between the top edge of the parent key and the bottom of the visible part
-        // of the key preview background.
-        previewParams.mPreviewVisibleOffset =
-                mKeyPreviewOffset - previewTextView.getPaddingBottom();
+        final int previewHeight = previewParams.mKeyPreviewHeight;
+        previewParams.setGeometry(previewTextView);
         getLocationInWindow(mOriginCoords);
         // The key preview is horizontally aligned with the center of the visible part of the
         // parent key. If it doesn't fit in this {@link KeyboardView}, it is moved inward to fit and
@@ -620,7 +606,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         }
         // The key preview is placed vertically above the top edge of the parent key with an
         // arbitrary offset.
-        final int previewY = key.getY() - previewHeight + mKeyPreviewOffset
+        final int previewY = key.getY() - previewHeight + previewParams.mKeyPreviewOffset
                 + CoordinateUtils.y(mOriginCoords);
 
         if (background != null) {
@@ -914,7 +900,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         // aligned with the bottom edge of the visible part of the key preview.
         // {@code mPreviewVisibleOffset} has been set appropriately in
         // {@link KeyboardView#showKeyPreview(PointerTracker)}.
-        final int pointY = key.getY() + mKeyPreviewDrawParams.mPreviewVisibleOffset;
+        final int pointY = key.getY() + mKeyPreviewDrawParams.getVisibleOffset();
         moreKeysPanel.showMoreKeysPanel(this, this, pointX, pointY, mKeyboardActionListener);
         tracker.onShowMoreKeysPanel(moreKeysPanel);
         // TODO: Implement zoom in animation of more keys panel.

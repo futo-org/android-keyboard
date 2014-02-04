@@ -285,7 +285,7 @@ public final class MoreKeysKeyboard extends Keyboard {
             // {@link MoreKeysKeyboardParams#setParameters(int,int,int,int,int,int,boolean,int)}.
             final boolean singleMoreKeyWithPreview = parentKeyboardView.isKeyPreviewPopupEnabled()
                     && !parentKey.noKeyPreview() && moreKeys.length == 1
-                    && keyPreviewDrawParams.mPreviewVisibleWidth > 0;
+                    && keyPreviewDrawParams.getVisibleWidth() > 0;
             if (singleMoreKeyWithPreview) {
                 // Use pre-computed width and height if this more keys keyboard has only one key to
                 // mitigate visual flicker between key preview and more keys keyboard.
@@ -294,8 +294,8 @@ public final class MoreKeysKeyboard extends Keyboard {
                 // left/right/top paddings. The bottom paddings of both backgrounds don't need to
                 // be considered because the vertical positions of both backgrounds were already
                 // adjusted with their bottom paddings deducted.
-                width = keyPreviewDrawParams.mPreviewVisibleWidth;
-                height = keyPreviewDrawParams.mPreviewVisibleHeight + mParams.mVerticalGap;
+                width = keyPreviewDrawParams.getVisibleWidth();
+                height = keyPreviewDrawParams.getVisibleHeight() + mParams.mVerticalGap;
             } else {
                 final float padding = context.getResources().getDimension(
                         R.dimen.config_more_keys_keyboard_key_horizontal_padding)

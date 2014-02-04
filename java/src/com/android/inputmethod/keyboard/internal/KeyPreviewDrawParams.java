@@ -16,7 +16,16 @@
 
 package com.android.inputmethod.keyboard.internal;
 
+import android.content.res.TypedArray;
+import android.view.View;
+
+import com.android.inputmethod.latin.R;
+
 public final class KeyPreviewDrawParams {
+    // XML attributes of {@link MainKeyboardView}.
+    public final int mKeyPreviewOffset;
+    public final int mKeyPreviewHeight;
+
     // The graphical geometry of the key preview.
     // <-width->
     // +-------+   ^
@@ -34,11 +43,48 @@ public final class KeyPreviewDrawParams {
     // paddings. To align the more keys keyboard panel's visible part with the visible part of
     // the background, we need to record the width and height of key preview that don't include
     // invisible paddings.
-    public int mPreviewVisibleWidth;
-    public int mPreviewVisibleHeight;
+    private int mVisibleWidth;
+    private int mVisibleHeight;
     // The key preview may have an arbitrary offset and its background that may have a bottom
     // padding. To align the more keys keyboard and the key preview we also need to record the
     // offset between the top edge of parent key and the bottom of the visible part of key
     // preview background.
-    public int mPreviewVisibleOffset;
+    private int mVisibleOffset;
+
+    public KeyPreviewDrawParams(final TypedArray mainKeyboardViewAttr) {
+        mKeyPreviewOffset = mainKeyboardViewAttr.getDimensionPixelOffset(
+                R.styleable.MainKeyboardView_keyPreviewOffset, 0);
+        mKeyPreviewHeight = mainKeyboardViewAttr.getDimensionPixelSize(
+                R.styleable.MainKeyboardView_keyPreviewHeight, 0);
+    }
+
+    public void setVisibleOffset(final int previewVisibleOffset) {
+        mVisibleOffset = previewVisibleOffset;
+    }
+
+    public int getVisibleOffset() {
+        return mVisibleOffset;
+    }
+
+    public void setGeometry(final View previewTextView) {
+        final int previewWidth = previewTextView.getMeasuredWidth();
+        final int previewHeight = mKeyPreviewHeight;
+        // The width and height of visible part of the key preview background. The content marker
+        // of the background 9-patch have to cover the visible part of the background.
+        mVisibleWidth = previewWidth - previewTextView.getPaddingLeft()
+                - previewTextView.getPaddingRight();
+        mVisibleHeight = previewHeight - previewTextView.getPaddingTop()
+                - previewTextView.getPaddingBottom();
+        // The distance between the top edge of the parent key and the bottom of the visible part
+        // of the key preview background.
+        setVisibleOffset(mKeyPreviewOffset - previewTextView.getPaddingBottom());
+    }
+
+    public int getVisibleWidth() {
+        return mVisibleWidth;
+    }
+
+    public int getVisibleHeight() {
+        return mVisibleHeight;
+    }
 }
