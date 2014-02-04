@@ -22,6 +22,10 @@ import android.util.SparseArray;
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
+import com.android.inputmethod.latin.makedict.DictionaryHeader;
+import com.android.inputmethod.latin.makedict.FormatSpec;
+import com.android.inputmethod.latin.makedict.FusionDictionary.DictionaryOptions;
+import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
 import com.android.inputmethod.latin.settings.NativeSuggestOptions;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.JniUtils;
@@ -32,6 +36,7 @@ import com.android.inputmethod.latin.utils.WordProperty;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
@@ -137,6 +142,9 @@ public final class BinaryDictionary extends Dictionary {
             String[] attributeKeyStringArray, String[] attributeValueStringArray);
     private static native long openNative(String sourceDir, long dictOffset, long dictSize,
             boolean isUpdatable);
+    private static native void getHeaderInfoNative(long dict, int[] outHeaderSize,
+            int[] outFormatVersion, ArrayList<int[]> outAttributeKeys,
+            ArrayList<int[]> outAttributeValues);
     private static native void flushNative(long dict, String filePath);
     private static native boolean needsToRunGCNative(long dict, boolean mindsBlockByGC);
     private static native void flushWithGCNative(long dict, String filePath);
@@ -170,7 +178,6 @@ public final class BinaryDictionary extends Dictionary {
     private static native int setCurrentTimeForTestNative(int currentTime);
     private static native String getPropertyNative(long dict, String query);
 
-    @UsedForTesting
     public static boolean createEmptyDictFile(final String filePath, final long dictVersion,
             final Map<String, String> attributeMap) {
         final String[] keyArray = new String[attributeMap.size()];
@@ -189,6 +196,33 @@ public final class BinaryDictionary extends Dictionary {
             final long length, final boolean isUpdatable) {
         mNativeDict = openNative(path, startOffset, length, isUpdatable);
     }
+
+    @UsedForTesting
+    public DictionaryHeader getHeader() throws UnsupportedFormatException {
+        if (mNativeDict == 0) {
+            return null;
+        }
+        final int[] outHeaderSize = new int[1];
+        final int[] outFormatVersion = new int[1];
+        final ArrayList<int[]> outAttributeKeys = CollectionUtils.newArrayList();
+        final ArrayList<int[]> outAttributeValues = CollectionUtils.newArrayList();
+        getHeaderInfoNative(mNativeDict, outHeaderSize, outFormatVersion, outAttributeKeys,
+                outAttributeValues);
+        final HashMap<String, String> attributes = new HashMap<String, String>();
+        for (int i = 0; i < outAttributeKeys.size(); i++) {
+            final String attributeKey = StringUtils.getStringFromNullTerminatedCodePointArray(
+                    outAttributeKeys.get(i));
+            final String attributeValue = StringUtils.getStringFromNullTerminatedCodePointArray(
+                    outAttributeValues.get(i));
+            attributes.put(attributeKey, attributeValue);
+        }
+        final boolean hasHistoricalInfo =
+                attributes.get(DictionaryHeader.HAS_HISTORICAL_INFO_KEY).equals(
+                        DictionaryHeader.ATTRIBUTE_VALUE_TRUE);
+        return new DictionaryHeader(outHeaderSize[0], new DictionaryOptions(attributes),
+                new FormatSpec.FormatOptions(outFormatVersion[0], hasHistoricalInfo));
+    }
+
 
     @Override
     public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
@@ -307,7 +341,6 @@ public final class BinaryDictionary extends Dictionary {
         return getBigramProbabilityNative(mNativeDict, codePoints0, codePoints1);
     }
 
-    @UsedForTesting
     public WordProperty getWordProperty(final String word) {
         if (TextUtils.isEmpty(word)) {
             return null;
@@ -347,7 +380,6 @@ public final class BinaryDictionary extends Dictionary {
      * Method to iterate all words in the dictionary for makedict.
      * If token is 0, this method newly starts iterating the dictionary.
      */
-    @UsedForTesting
     public GetNextWordPropertyResult getNextWordProperty(final int token) {
         final int[] codePoints = new int[MAX_WORD_LENGTH];
         final int nextToken = getNextWordNative(mNativeDict, token, codePoints);
