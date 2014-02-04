@@ -28,6 +28,7 @@ import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.FileUtils;
 import com.android.inputmethod.latin.utils.LanguageModelParam;
 import com.android.inputmethod.latin.utils.PrioritizedSerialExecutor;
+import com.android.inputmethod.latin.utils.WordProperty;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -778,16 +779,24 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     }
 
     @UsedForTesting
-    protected void runAfterGcForDebug(final Runnable r) {
-        getExecutor(mDictName).executePrioritized(new Runnable() {
+    public void dumpAllWordsForDebug() {
+        reloadDictionaryIfRequired();
+        getExecutor(mDictName).execute(new Runnable() {
             @Override
             public void run() {
-                try {
-                    mBinaryDictionary.flushWithGC();
-                    r.run();
-                } finally {
-                    mDictNameDictionaryUpdateController.mProcessingLargeTask.set(false);
-                }
+                Log.d(TAG, "dictionary=" + mDictName);
+                int token = 0;
+                do {
+                    final BinaryDictionary.GetNextWordPropertyResult result =
+                            mBinaryDictionary.getNextWordProperty(token);
+                    final WordProperty wordProperty = result.mWordProperty;
+                    if (wordProperty == null) {
+                        Log.d(TAG, " dictionary is empty.");
+                        break;
+                    }
+                    Log.d(TAG, wordProperty.toString());
+                    token = result.mNextToken;
+                } while (token != 0);
             }
         });
     }

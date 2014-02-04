@@ -41,7 +41,7 @@ public class WordProperty {
     // package.
     public static final class ProbabilityInfo {
         public final int mProbability;
-        // wTimestamp, mLevel and mCount are historical info. These values are depend on the
+        // mTimestamp, mLevel and mCount are historical info. These values are depend on the
         // implementation in native code; thus, we must not use them and have any assumptions about
         // them except for tests.
         public final int mTimestamp;
@@ -53,6 +53,11 @@ public class WordProperty {
             mTimestamp = probabilityInfo[BinaryDictionary.FORMAT_WORD_PROPERTY_TIMESTAMP_INDEX];
             mLevel = probabilityInfo[BinaryDictionary.FORMAT_WORD_PROPERTY_LEVEL_INDEX];
             mCount = probabilityInfo[BinaryDictionary.FORMAT_WORD_PROPERTY_COUNT_INDEX];
+        }
+
+        @Override
+        public String toString() {
+            return mTimestamp + ":" + mLevel + ":" + mCount;
         }
     }
 
@@ -104,5 +109,45 @@ public class WordProperty {
     @UsedForTesting
     public boolean isValid() {
         return mProbabilityInfo.mProbability != BinaryDictionary.NOT_A_PROBABILITY;
+    }
+
+    @Override
+    public String toString() {
+        // TODO: Move this logic to CombinedInputOutput.
+        final StringBuffer builder = new StringBuffer();
+        builder.append(" word=" + mCodePoints);
+        builder.append(",");
+        builder.append("f=" + mProbabilityInfo.mProbability);
+        if (mIsNotAWord) {
+            builder.append(",");
+            builder.append("not_a_word=true");
+        }
+        if (mIsBlacklisted) {
+            builder.append(",");
+            builder.append("blacklisted=true");
+        }
+        if (mProbabilityInfo.mTimestamp != BinaryDictionary.NOT_A_VALID_TIMESTAMP) {
+            builder.append(",");
+            builder.append("historicalInfo=" + mProbabilityInfo);
+        }
+        builder.append("\n");
+        for (int i = 0; i < mBigramTargets.size(); i++) {
+            builder.append("  bigram=" + mBigramTargets.get(i).mWord);
+            builder.append(",");
+            builder.append("f=" + mBigramTargets.get(i).mFrequency);
+            if (mBigramProbabilityInfo.get(i).mTimestamp
+                    != BinaryDictionary.NOT_A_VALID_TIMESTAMP) {
+                builder.append(",");
+                builder.append("historicalInfo=" + mBigramProbabilityInfo.get(i));
+            }
+            builder.append("\n");
+        }
+        for (int i = 0; i < mShortcutTargets.size(); i++) {
+            builder.append("  shortcut=" + mShortcutTargets.get(i).mWord);
+            builder.append(",");
+            builder.append("f=" + mShortcutTargets.get(i).mFrequency);
+            builder.append("\n");
+        }
+        return builder.toString();
     }
 }
