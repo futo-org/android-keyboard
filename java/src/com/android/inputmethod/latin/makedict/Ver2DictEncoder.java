@@ -197,7 +197,7 @@ public class Ver2DictEncoder implements DictEncoder {
             final WeightedString target = shortcutIterator.next();
             final int shortcutFlags = BinaryDictEncoderUtils.makeShortcutFlags(
                     shortcutIterator.hasNext(),
-                    target.mFrequency);
+                    target.getProbability());
             mPosition = BinaryDictEncoderUtils.writeUIntToBuffer(mBuffer, mPosition, shortcutFlags,
                     FormatSpec.PTNODE_ATTRIBUTE_FLAGS_SIZE);
             final int shortcutShift = CharEncoding.writeString(mBuffer, mPosition, target.mWord);
@@ -231,7 +231,7 @@ public class Ver2DictEncoder implements DictEncoder {
             final int offset = addressOfBigram
                     - (mPosition + FormatSpec.PTNODE_ATTRIBUTE_FLAGS_SIZE);
             final int bigramFlags = BinaryDictEncoderUtils.makeBigramFlags(bigramIterator.hasNext(),
-                    offset, bigram.mFrequency, unigramFrequencyForThisWord, bigram.mWord);
+                    offset, bigram.getProbability(), unigramFrequencyForThisWord, bigram.mWord);
             mPosition = BinaryDictEncoderUtils.writeUIntToBuffer(mBuffer, mPosition, bigramFlags,
                     FormatSpec.PTNODE_ATTRIBUTE_FLAGS_SIZE);
             mPosition += BinaryDictEncoderUtils.writeChildrenPosition(mBuffer, mPosition,

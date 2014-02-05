@@ -127,7 +127,7 @@ public class CombinedInputOutput {
                 if (null != word) {
                     dict.add(word, freq, shortcuts.isEmpty() ? null : shortcuts, isNotAWord);
                     for (WeightedString s : bigrams) {
-                        dict.setBigram(word, s.mWord, s.mFrequency);
+                        dict.setBigram(word, s.mWord, s.getProbability());
                     }
                 }
                 if (!shortcuts.isEmpty()) shortcuts = new ArrayList<WeightedString>();
@@ -185,7 +185,7 @@ public class CombinedInputOutput {
         if (null != word) {
             dict.add(word, freq, shortcuts.isEmpty() ? null : shortcuts, isNotAWord);
             for (WeightedString s : bigrams) {
-                dict.setBigram(word, s.mWord, s.mFrequency);
+                dict.setBigram(word, s.mWord, s.getProbability());
             }
         }
 
@@ -222,13 +222,13 @@ public class CombinedInputOutput {
             if (null != word.mShortcutTargets) {
                 for (WeightedString target : word.mShortcutTargets) {
                     destination.write("  " + SHORTCUT_TAG + "=" + target.mWord + ","
-                            + FREQUENCY_TAG + "=" + target.mFrequency + "\n");
+                            + FREQUENCY_TAG + "=" + target.getProbability() + "\n");
                 }
             }
             if (null != word.mBigrams) {
                 for (WeightedString bigram : word.mBigrams) {
                     destination.write("  " + BIGRAM_TAG + "=" + bigram.mWord + ","
-                            + FREQUENCY_TAG + "=" + bigram.mFrequency + "\n");
+                            + FREQUENCY_TAG + "=" + bigram.getProbability() + "\n");
                 }
             }
         }

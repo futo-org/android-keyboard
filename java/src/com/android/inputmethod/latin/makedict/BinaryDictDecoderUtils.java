@@ -511,7 +511,7 @@ public final class BinaryDictDecoderUtils {
                         final WeightedString word = getWordAtPosition(dictDecoder, headerSize,
                                 bigram.mAddress, options);
                         final int reconstructedFrequency =
-                                BinaryDictIOUtils.reconstructBigramFrequency(word.mFrequency,
+                                BinaryDictIOUtils.reconstructBigramFrequency(word.getProbability(),
                                         bigram.mFrequency);
                         bigrams.add(new WeightedString(word.mWord, reconstructedFrequency));
                     }
@@ -618,7 +618,7 @@ public final class BinaryDictDecoderUtils {
                 // words that are not also registered as unigrams so we don't have to avoid
                 // them explicitly here.
                 for (final WeightedString bigram : w.mBigrams) {
-                    newDict.setBigram(w.mWord, bigram.mWord, bigram.mFrequency);
+                    newDict.setBigram(w.mWord, bigram.mWord, bigram.getProbability());
                 }
             }
         }
