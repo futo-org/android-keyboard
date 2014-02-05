@@ -23,9 +23,9 @@ import com.android.inputmethod.latin.SuggestedWords;
  */
 public interface SuggestionStripViewAccessor {
     public boolean hasSuggestionStripView();
+    public void showAddToDictionaryHint(final String word);
     public boolean isShowingAddToDictionaryHint();
     public void dismissAddToDictionaryHint();
-    public boolean isShowingPunctuationList();
     public void setNeutralSuggestionStrip();
     public void showSuggestionStrip(final SuggestedWords suggestedWords);
 }

@@ -67,7 +67,6 @@ import com.android.inputmethod.latin.Suggest.OnGetSuggestedWordsCallback;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.latin.inputlogic.InputLogic;
-import com.android.inputmethod.latin.inputlogic.SpaceState;
 import com.android.inputmethod.latin.personalization.DictionaryDecayBroadcastReciever;
 import com.android.inputmethod.latin.personalization.PersonalizationDictionarySessionRegistrar;
 import com.android.inputmethod.latin.personalization.PersonalizationHelper;
@@ -83,7 +82,6 @@ import com.android.inputmethod.latin.utils.CoordinateUtils;
 import com.android.inputmethod.latin.utils.ImportantNoticeUtils;
 import com.android.inputmethod.latin.utils.IntentUtils;
 import com.android.inputmethod.latin.utils.JniUtils;
-import com.android.inputmethod.latin.utils.LatinImeLoggerUtils;
 import com.android.inputmethod.latin.utils.LeakGuardHandlerWrapper;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 import com.android.inputmethod.research.ResearchLogger;
@@ -124,7 +122,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private View mKeyPreviewBackingView;
     private SuggestionStripView mSuggestionStripView;
 
-    private CompletionInfo[] mApplicationSpecifiedCompletions;
+    // TODO[IL]: remove this member completely.
+    public CompletionInfo[] mApplicationSpecifiedCompletions;
 
     private RichInputMethodManager mRichImm;
     @UsedForTesting final KeyboardSwitcher mKeyboardSwitcher;
@@ -1307,12 +1306,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // Nothing to do so far.
     }
 
-    // TODO[IL]: Move this to InputLogic and make it private
-    @Override
+    // TODO: remove this, read this directly from mInputLogic or something in the tests
+    @UsedForTesting
     public boolean isShowingPunctuationList() {
-        if (mInputLogic.mSuggestedWords == null) return false;
-        return mSettings.getCurrent().mSpacingAndPunctuations.mSuggestPuncList
-                == mInputLogic.mSuggestedWords;
+        return mInputLogic.isShowingPunctuationList(mSettings.getCurrent());
     }
 
     // TODO[IL]: Define a clear interface for this
@@ -1457,94 +1454,14 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // interface
     @Override
     public void pickSuggestionManually(final int index, final SuggestedWordInfo suggestionInfo) {
-        final SuggestedWords suggestedWords = mInputLogic.mSuggestedWords;
-        final String suggestion = suggestionInfo.mWord;
-        // If this is a punctuation picked from the suggestion strip, pass it to onCodeInput
-        if (suggestion.length() == 1 && isShowingPunctuationList()) {
-            // Word separators are suggested before the user inputs something.
-            // So, LatinImeLogger logs "" as a user's input.
-            LatinImeLogger.logOnManualSuggestion("", suggestion, index, suggestedWords);
-            // Rely on onCodeInput to do the complicated swapping/stripping logic consistently.
-            final int primaryCode = suggestion.charAt(0);
-            onCodeInput(primaryCode,
-                    Constants.SUGGESTION_STRIP_COORDINATE, Constants.SUGGESTION_STRIP_COORDINATE);
-            if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-                ResearchLogger.latinIME_punctuationSuggestion(index, suggestion,
-                        false /* isBatchMode */, suggestedWords.mIsPrediction);
-            }
-            return;
-        }
+        mInputLogic.onPickSuggestionManually(mSettings.getCurrent(), index, suggestionInfo,
+                mHandler, mKeyboardSwitcher);
+    }
 
-        mInputLogic.mConnection.beginBatchEdit();
-        final SettingsValues currentSettings = mSettings.getCurrent();
-        if (SpaceState.PHANTOM == mInputLogic.mSpaceState && suggestion.length() > 0
-                // In the batch input mode, a manually picked suggested word should just replace
-                // the current batch input text and there is no need for a phantom space.
-                && !mInputLogic.mWordComposer.isBatchMode()) {
-            final int firstChar = Character.codePointAt(suggestion, 0);
-            if (!currentSettings.isWordSeparator(firstChar)
-                    || currentSettings.isUsuallyPrecededBySpace(firstChar)) {
-                mInputLogic.promotePhantomSpace(currentSettings);
-            }
-        }
-
-        if (currentSettings.isApplicationSpecifiedCompletionsOn()
-                && mApplicationSpecifiedCompletions != null
-                && index >= 0 && index < mApplicationSpecifiedCompletions.length) {
-            mInputLogic.mSuggestedWords = SuggestedWords.EMPTY;
-            if (mSuggestionStripView != null) {
-                mSuggestionStripView.clear();
-            }
-            mKeyboardSwitcher.updateShiftState();
-            mInputLogic.resetComposingState(true /* alsoResetLastComposedWord */);
-            final CompletionInfo completionInfo = mApplicationSpecifiedCompletions[index];
-            mInputLogic.mConnection.commitCompletion(completionInfo);
-            mInputLogic.mConnection.endBatchEdit();
-            return;
-        }
-
-        // We need to log before we commit, because the word composer will store away the user
-        // typed word.
-        final String replacedWord = mInputLogic.mWordComposer.getTypedWord();
-        LatinImeLogger.logOnManualSuggestion(replacedWord, suggestion, index, suggestedWords);
-        mInputLogic.commitChosenWord(currentSettings, suggestion,
-                LastComposedWord.COMMIT_TYPE_MANUAL_PICK, LastComposedWord.NOT_A_SEPARATOR);
-        if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-            ResearchLogger.latinIME_pickSuggestionManually(replacedWord, index, suggestion,
-                    mInputLogic.mWordComposer.isBatchMode(), suggestionInfo.mScore,
-                    suggestionInfo.mKind, suggestionInfo.mSourceDict.mDictType);
-        }
-        mInputLogic.mConnection.endBatchEdit();
-        // Don't allow cancellation of manual pick
-        mInputLogic.mLastComposedWord.deactivate();
-        // Space state must be updated before calling updateShiftState
-        mInputLogic.mSpaceState = SpaceState.PHANTOM;
-        mKeyboardSwitcher.updateShiftState();
-
-        // We should show the "Touch again to save" hint if the user pressed the first entry
-        // AND it's in none of our current dictionaries (main, user or otherwise).
-        // Please note that if mSuggest is null, it means that everything is off: suggestion
-        // and correction, so we shouldn't try to show the hint
-        final Suggest suggest = mInputLogic.mSuggest;
-        final boolean showingAddToDictionaryHint =
-                (SuggestedWordInfo.KIND_TYPED == suggestionInfo.mKind
-                        || SuggestedWordInfo.KIND_OOV_CORRECTION == suggestionInfo.mKind)
-                        && suggest != null
-                        // If the suggestion is not in the dictionary, the hint should be shown.
-                        && !suggest.mDictionaryFacilitator.isValidWord(suggestion,
-                                true /* ignoreCase */);
-
-        if (currentSettings.mIsInternal) {
-            LatinImeLoggerUtils.onSeparator((char)Constants.CODE_SPACE,
-                    Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
-        }
-        if (showingAddToDictionaryHint
-                && suggest.mDictionaryFacilitator.isUserDictionaryEnabled()) {
-            mSuggestionStripView.showAddToDictionaryHint(suggestion);
-        } else {
-            // If we're not showing the "Touch again to save", then update the suggestion strip.
-            mHandler.postUpdateSuggestionStrip();
-        }
+    @Override
+    public void showAddToDictionaryHint(final String word) {
+        if (null == mSuggestionStripView) return;
+        mSuggestionStripView.showAddToDictionaryHint(word);
     }
 
     // TODO[IL]: Define a clean interface for this
