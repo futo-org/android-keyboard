@@ -23,8 +23,13 @@ import com.android.inputmethod.latin.R;
 
 public final class KeyPreviewDrawParams {
     // XML attributes of {@link MainKeyboardView}.
-    public final int mKeyPreviewOffset;
-    public final int mKeyPreviewHeight;
+    public final int mLayoutId;
+    public final int mPreviewOffset;
+    public final int mPreviewHeight;
+    public final int mZoomInDuration;
+    public final int mZoomOutDuration;
+    private int mLingerTimeout;
+    private boolean mShowPopup = true;
 
     // The graphical geometry of the key preview.
     // <-width->
@@ -52,10 +57,21 @@ public final class KeyPreviewDrawParams {
     private int mVisibleOffset;
 
     public KeyPreviewDrawParams(final TypedArray mainKeyboardViewAttr) {
-        mKeyPreviewOffset = mainKeyboardViewAttr.getDimensionPixelOffset(
+        mPreviewOffset = mainKeyboardViewAttr.getDimensionPixelOffset(
                 R.styleable.MainKeyboardView_keyPreviewOffset, 0);
-        mKeyPreviewHeight = mainKeyboardViewAttr.getDimensionPixelSize(
+        mPreviewHeight = mainKeyboardViewAttr.getDimensionPixelSize(
                 R.styleable.MainKeyboardView_keyPreviewHeight, 0);
+        mLingerTimeout = mainKeyboardViewAttr.getInt(
+                R.styleable.MainKeyboardView_keyPreviewLingerTimeout, 0);
+        mLayoutId = mainKeyboardViewAttr.getResourceId(
+                R.styleable.MainKeyboardView_keyPreviewLayout, 0);
+        if (mLayoutId == 0) {
+            mShowPopup = false;
+        }
+        mZoomInDuration = mainKeyboardViewAttr.getInt(
+                R.styleable.MainKeyboardView_keyPreviewZoomInDuration, 0);
+        mZoomOutDuration = mainKeyboardViewAttr.getInt(
+                R.styleable.MainKeyboardView_keyPreviewZoomOutDuration, 0);
     }
 
     public void setVisibleOffset(final int previewVisibleOffset) {
@@ -68,7 +84,7 @@ public final class KeyPreviewDrawParams {
 
     public void setGeometry(final View previewTextView) {
         final int previewWidth = previewTextView.getMeasuredWidth();
-        final int previewHeight = mKeyPreviewHeight;
+        final int previewHeight = mPreviewHeight;
         // The width and height of visible part of the key preview background. The content marker
         // of the background 9-patch have to cover the visible part of the background.
         mVisibleWidth = previewWidth - previewTextView.getPaddingLeft()
@@ -77,7 +93,7 @@ public final class KeyPreviewDrawParams {
                 - previewTextView.getPaddingBottom();
         // The distance between the top edge of the parent key and the bottom of the visible part
         // of the key preview background.
-        setVisibleOffset(mKeyPreviewOffset - previewTextView.getPaddingBottom());
+        setVisibleOffset(mPreviewOffset - previewTextView.getPaddingBottom());
     }
 
     public int getVisibleWidth() {
@@ -86,5 +102,18 @@ public final class KeyPreviewDrawParams {
 
     public int getVisibleHeight() {
         return mVisibleHeight;
+    }
+
+    public void setPopupEnabled(final boolean enabled, final int lingerTimeout) {
+        mShowPopup = enabled;
+        mLingerTimeout = lingerTimeout;
+    }
+
+    public boolean isPopupEnabled() {
+        return mShowPopup;
+    }
+
+    public int getLingerTimeout() {
+        return mLingerTimeout;
     }
 }
