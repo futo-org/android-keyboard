@@ -21,7 +21,7 @@ import android.test.suitebuilder.annotation.SmallTest;
 import com.android.inputmethod.latin.Constants;
 
 @SmallTest
-public final class KeySpecParserTests extends KeySpecParserBase {
+public final class KeySpecParserTests extends KeySpecParserTestsBase {
     @Override
     protected void assertParser(final String message, final String keySpec,
             final String expectedLabel, final String expectedOutputText, final int expectedIcon,
