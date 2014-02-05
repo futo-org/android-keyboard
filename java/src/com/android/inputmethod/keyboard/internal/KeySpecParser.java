@@ -84,14 +84,18 @@ public final class KeySpecParser {
     }
 
     private static int indexOfLabelEnd(final String keySpec) {
+        final int length = keySpec.length();
         if (keySpec.indexOf(BACKSLASH) < 0) {
             final int labelEnd = keySpec.indexOf(VERTICAL_BAR);
             if (labelEnd == 0) {
+                if (length == 1) {
+                    // Treat a sole vertical bar as a special case of key label.
+                    return -1;
+                }
                 throw new KeySpecParserError("Empty label");
             }
             return labelEnd;
         }
-        final int length = keySpec.length();
         for (int pos = 0; pos < length; pos++) {
             final char c = keySpec.charAt(pos);
             if (c == BACKSLASH && pos + 1 < length) {
