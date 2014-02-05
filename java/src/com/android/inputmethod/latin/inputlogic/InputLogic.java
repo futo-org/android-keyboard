@@ -23,6 +23,7 @@ import android.text.style.SuggestionSpan;
 import android.util.Log;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
+import android.view.inputmethod.CompletionInfo;
 import android.view.inputmethod.CorrectionInfo;
 import android.view.inputmethod.EditorInfo;
 
@@ -180,6 +181,108 @@ public final class InputLogic {
         // Space state must be updated before calling updateShiftState
         mSpaceState = SpaceState.NONE;
         mEnteredText = text;
+    }
+
+    /**
+     * A suggestion was picked from the suggestion strip.
+     * @param settingsValues the current values of the settings.
+     * @param index the index of the suggestion.
+     * @param suggestionInfo the suggestion info.
+     */
+    // Called from {@link SuggestionStripView} through the {@link SuggestionStripView#Listener}
+    // interface
+    public void onPickSuggestionManually(final SettingsValues settingsValues,
+            final int index, final SuggestedWordInfo suggestionInfo,
+            // TODO: remove these two arguments
+            final LatinIME.UIHandler handler, final KeyboardSwitcher keyboardSwitcher) {
+        final SuggestedWords suggestedWords = mSuggestedWords;
+        final String suggestion = suggestionInfo.mWord;
+        // If this is a punctuation picked from the suggestion strip, pass it to onCodeInput
+        if (suggestion.length() == 1 && isShowingPunctuationList(settingsValues)) {
+            // Word separators are suggested before the user inputs something.
+            // So, LatinImeLogger logs "" as a user's input.
+            LatinImeLogger.logOnManualSuggestion("", suggestion, index, suggestedWords);
+            // Rely on onCodeInput to do the complicated swapping/stripping logic consistently.
+            final int primaryCode = suggestion.charAt(0);
+            onCodeInput(primaryCode,
+                    Constants.SUGGESTION_STRIP_COORDINATE, Constants.SUGGESTION_STRIP_COORDINATE,
+                    settingsValues, handler, keyboardSwitcher);
+            if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
+                ResearchLogger.latinIME_punctuationSuggestion(index, suggestion,
+                        false /* isBatchMode */, suggestedWords.mIsPrediction);
+            }
+            return;
+        }
+
+        mConnection.beginBatchEdit();
+        if (SpaceState.PHANTOM == mSpaceState && suggestion.length() > 0
+                // In the batch input mode, a manually picked suggested word should just replace
+                // the current batch input text and there is no need for a phantom space.
+                && !mWordComposer.isBatchMode()) {
+            final int firstChar = Character.codePointAt(suggestion, 0);
+            if (!settingsValues.isWordSeparator(firstChar)
+                    || settingsValues.isUsuallyPrecededBySpace(firstChar)) {
+                promotePhantomSpace(settingsValues);
+            }
+        }
+
+        // TODO: stop relying on mApplicationSpecifiedCompletions. The SuggestionInfo object
+        // should contain a reference to the CompletionInfo instead.
+        if (settingsValues.isApplicationSpecifiedCompletionsOn()
+                && mLatinIME.mApplicationSpecifiedCompletions != null
+                && index >= 0 && index < mLatinIME.mApplicationSpecifiedCompletions.length) {
+            mSuggestedWords = SuggestedWords.EMPTY;
+            mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
+            keyboardSwitcher.updateShiftState();
+            resetComposingState(true /* alsoResetLastComposedWord */);
+            final CompletionInfo completionInfo = mLatinIME.mApplicationSpecifiedCompletions[index];
+            mConnection.commitCompletion(completionInfo);
+            mConnection.endBatchEdit();
+            return;
+        }
+
+        // We need to log before we commit, because the word composer will store away the user
+        // typed word.
+        final String replacedWord = mWordComposer.getTypedWord();
+        LatinImeLogger.logOnManualSuggestion(replacedWord, suggestion, index, suggestedWords);
+        commitChosenWord(settingsValues, suggestion,
+                LastComposedWord.COMMIT_TYPE_MANUAL_PICK, LastComposedWord.NOT_A_SEPARATOR);
+        if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
+            ResearchLogger.latinIME_pickSuggestionManually(replacedWord, index, suggestion,
+                    mWordComposer.isBatchMode(), suggestionInfo.mScore,
+                    suggestionInfo.mKind, suggestionInfo.mSourceDict.mDictType);
+        }
+        mConnection.endBatchEdit();
+        // Don't allow cancellation of manual pick
+        mLastComposedWord.deactivate();
+        // Space state must be updated before calling updateShiftState
+        mSpaceState = SpaceState.PHANTOM;
+        keyboardSwitcher.updateShiftState();
+
+        // We should show the "Touch again to save" hint if the user pressed the first entry
+        // AND it's in none of our current dictionaries (main, user or otherwise).
+        // Please note that if mSuggest is null, it means that everything is off: suggestion
+        // and correction, so we shouldn't try to show the hint
+        final Suggest suggest = mSuggest;
+        final boolean showingAddToDictionaryHint =
+                (SuggestedWordInfo.KIND_TYPED == suggestionInfo.mKind
+                        || SuggestedWordInfo.KIND_OOV_CORRECTION == suggestionInfo.mKind)
+                        && suggest != null
+                        // If the suggestion is not in the dictionary, the hint should be shown.
+                        && !suggest.mDictionaryFacilitator.isValidWord(suggestion,
+                                true /* ignoreCase */);
+
+        if (settingsValues.mIsInternal) {
+            LatinImeLoggerUtils.onSeparator((char)Constants.CODE_SPACE,
+                    Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
+        }
+        if (showingAddToDictionaryHint
+                && suggest.mDictionaryFacilitator.isUserDictionaryEnabled()) {
+            mSuggestionStripViewAccessor.showAddToDictionaryHint(suggestion);
+        } else {
+            // If we're not showing the "Touch again to save", then update the suggestion strip.
+            handler.postUpdateSuggestionStrip();
+        }
     }
 
     /**
@@ -718,7 +821,7 @@ public final class InputLogic {
                 if (maybeDoubleSpacePeriod(settingsValues, handler)) {
                     keyboardSwitcher.updateShiftState();
                     mSpaceState = SpaceState.DOUBLE;
-                } else if (!mSuggestionStripViewAccessor.isShowingPunctuationList()) {
+                } else if (!isShowingPunctuationList(settingsValues)) {
                     mSpaceState = SpaceState.WEAK;
                 }
             }
@@ -1327,6 +1430,15 @@ public final class InputLogic {
         mLastComposedWord = LastComposedWord.NOT_A_COMPOSED_WORD;
         // We have a separator between the word and the cursor: we should show predictions.
         handler.postUpdateSuggestionStrip();
+    }
+
+    /**
+     * Find out if the punctuation list is shown in the suggestion strip.
+     * @return whether the current suggestions are the punctuation list.
+     */
+    // TODO: make this private. It's used through LatinIME for tests.
+    public boolean isShowingPunctuationList(final SettingsValues settingsValues) {
+        return settingsValues.mSpacingAndPunctuations.mSuggestPuncList == mSuggestedWords;
     }
 
     /**
