@@ -117,7 +117,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private static final String SCHEME_PACKAGE = "package";
 
     private final Settings mSettings;
-    private final InputLogic mInputLogic = new InputLogic(this);
+    private final InputLogic mInputLogic = new InputLogic(this /* LatinIME */,
+            this /* SuggestionStripViewAccessor */);
 
     private View mExtractArea;
     private View mKeyPreviewBackingView;
