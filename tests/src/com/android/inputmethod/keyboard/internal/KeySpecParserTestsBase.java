@@ -101,7 +101,9 @@ abstract class KeySpecParserTestsBase extends AndroidTestCase {
                 "a", null, ICON_UNDEFINED, 'a');
         assertParser("Single surrogate", SURROGATE_PAIR1,
                 SURROGATE_PAIR1, null, ICON_UNDEFINED, SURROGATE_CODE1);
-        assertParser("Single escaped bar", "\\|",
+        assertParser("Sole vertical bar", "|",
+                "|", null, ICON_UNDEFINED, '|');
+        assertParser("Single escaped vertical bar", "\\|",
                 "|", null, ICON_UNDEFINED, '|');
         assertParser("Single escaped escape", "\\\\",
                 "\\", null, ICON_UNDEFINED, '\\');
@@ -251,8 +253,6 @@ abstract class KeySpecParserTestsBase extends AndroidTestCase {
     }
 
     public void testFormatError() {
-        assertParserError("Single bar", "|",
-                "|", null, ICON_UNDEFINED, '|');
         assertParserError("Empty label with outputText", "|a",
                 null, "a", ICON_UNDEFINED, CODE_UNSPECIFIED);
         assertParserError("Empty label with code", "|" + CODE_SETTINGS,
@@ -261,8 +261,6 @@ abstract class KeySpecParserTestsBase extends AndroidTestCase {
                 "a", null, ICON_UNDEFINED, CODE_UNSPECIFIED);
         assertParserError("Empty outputText with icon", ICON_SETTINGS + "|",
                 null, null, mSettingsIconId, CODE_UNSPECIFIED);
-        assertParserError("Empty icon and code", "|",
-                null, null, ICON_UNDEFINED, CODE_UNSPECIFIED);
         assertParserError("Icon without code", ICON_SETTINGS,
                 null, null, mSettingsIconId, CODE_UNSPECIFIED);
         assertParserError("Non existing icon", ICON_NON_EXISTING + "|abc",
