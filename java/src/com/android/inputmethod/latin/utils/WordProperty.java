@@ -108,7 +108,7 @@ public class WordProperty {
         for (int i = 0; i < mBigramTargets.size(); i++) {
             builder.append("  bigram=" + mBigramTargets.get(i).mWord);
             builder.append(",");
-            builder.append("f=" + mBigramTargets.get(i).mFrequency);
+            builder.append("f=" + mBigramTargets.get(i).getProbability());
             if (mBigramProbabilityInfo.get(i).mTimestamp
                     != BinaryDictionary.NOT_A_VALID_TIMESTAMP) {
                 builder.append(",");
@@ -119,7 +119,7 @@ public class WordProperty {
         for (int i = 0; i < mShortcutTargets.size(); i++) {
             builder.append("  shortcut=" + mShortcutTargets.get(i).mWord);
             builder.append(",");
-            builder.append("f=" + mShortcutTargets.get(i).mFrequency);
+            builder.append("f=" + mShortcutTargets.get(i).getProbability());
             builder.append("\n");
         }
         return builder.toString();

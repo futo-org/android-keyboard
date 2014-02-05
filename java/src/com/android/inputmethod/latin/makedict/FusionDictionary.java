@@ -67,29 +67,40 @@ public final class FusionDictionary implements Iterable<Word> {
     }
 
     /**
-     * A string with a frequency.
+     * A string with a probability.
      *
      * This represents an "attribute", that is either a bigram or a shortcut.
      */
     public static final class WeightedString {
         public final String mWord;
-        public int mFrequency;
-        public WeightedString(String word, int frequency) {
+        public ProbabilityInfo mProbabilityInfo;
+
+        public WeightedString(final String word, final int probability) {
             mWord = word;
-            mFrequency = frequency;
+            mProbabilityInfo = new ProbabilityInfo(probability);
+        }
+
+        public int getProbability() {
+            return mProbabilityInfo.mProbability;
+        }
+
+        public void setProbability(final int probability) {
+            mProbabilityInfo = new ProbabilityInfo(probability);
         }
 
         @Override
         public int hashCode() {
-            return Arrays.hashCode(new Object[] { mWord, mFrequency });
+            return Arrays.hashCode(new Object[] { mWord, mProbabilityInfo.mProbability,
+                    mProbabilityInfo.mTimestamp, mProbabilityInfo.mLevel,
+                    mProbabilityInfo.mCount });
         }
 
         @Override
         public boolean equals(Object o) {
             if (o == this) return true;
             if (!(o instanceof WeightedString)) return false;
-            WeightedString w = (WeightedString)o;
-            return mWord.equals(w.mWord) && mFrequency == w.mFrequency;
+            final WeightedString w = (WeightedString)o;
+            return mWord.equals(w.mWord) && mProbabilityInfo.equals(w.mProbabilityInfo);
         }
     }
 
@@ -200,18 +211,18 @@ public final class FusionDictionary implements Iterable<Word> {
         }
 
         /**
-         * Adds a word to the bigram list. Updates the frequency if the word already
+         * Adds a word to the bigram list. Updates the probability if the word already
          * exists.
          */
-        public void addBigram(final String word, final int frequency) {
+        public void addBigram(final String word, final int probability) {
             if (mBigrams == null) {
                 mBigrams = new ArrayList<WeightedString>();
             }
             WeightedString bigram = getBigram(word);
             if (bigram != null) {
-                bigram.mFrequency = frequency;
+                bigram.setProbability(probability);
             } else {
-                bigram = new WeightedString(word, frequency);
+                bigram = new WeightedString(word, probability);
                 mBigrams.add(bigram);
             }
         }
@@ -273,8 +284,8 @@ public final class FusionDictionary implements Iterable<Word> {
                         final WeightedString existingShortcut = getShortcut(shortcut.mWord);
                         if (existingShortcut == null) {
                             mShortcutTargets.add(shortcut);
-                        } else if (existingShortcut.mFrequency < shortcut.mFrequency) {
-                            existingShortcut.mFrequency = shortcut.mFrequency;
+                        } else if (existingShortcut.getProbability() < shortcut.getProbability()) {
+                            existingShortcut.setProbability(shortcut.getProbability());
                         }
                     }
                 }
@@ -289,8 +300,8 @@ public final class FusionDictionary implements Iterable<Word> {
                         final WeightedString existingBigram = getBigram(bigram.mWord);
                         if (existingBigram == null) {
                             mBigrams.add(bigram);
-                        } else if (existingBigram.mFrequency < bigram.mFrequency) {
-                            existingBigram.mFrequency = bigram.mFrequency;
+                        } else if (existingBigram.getProbability() < bigram.getProbability()) {
+                            existingBigram.setProbability(bigram.getProbability());
                         }
                     }
                 }

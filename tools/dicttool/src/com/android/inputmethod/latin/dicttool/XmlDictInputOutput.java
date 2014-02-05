@@ -319,7 +319,7 @@ public class XmlDictInputOutput {
             final ArrayList<WeightedString> bigramList = bigramMap.get(firstWord);
             for (final WeightedString bigram : bigramList) {
                 if (!dict.hasWord(bigram.mWord)) continue;
-                dict.setBigram(firstWord, bigram.mWord, bigram.mFrequency);
+                dict.setBigram(firstWord, bigram.mWord, bigram.getProbability());
             }
         }
         return dict;
@@ -369,7 +369,7 @@ public class XmlDictInputOutput {
                 destination.write("\n");
                 for (WeightedString target : word.mShortcutTargets) {
                     destination.write("    <" + SHORTCUT_TAG + " " + FREQUENCY_ATTR + "=\""
-                            + target.mFrequency + "\">" + target.mWord + "</" + SHORTCUT_TAG
+                            + target.getProbability() + "\">" + target.mWord + "</" + SHORTCUT_TAG
                             + ">\n");
                 }
                 destination.write("  ");
@@ -378,7 +378,8 @@ public class XmlDictInputOutput {
                 destination.write("\n");
                 for (WeightedString bigram : word.mBigrams) {
                     destination.write("    <" + BIGRAM_TAG + " " + FREQUENCY_ATTR + "=\""
-                            + bigram.mFrequency + "\">" + bigram.mWord + "</" + BIGRAM_TAG + ">\n");
+                            + bigram.getProbability() + "\">" + bigram.mWord
+                            + "</" + BIGRAM_TAG + ">\n");
                 }
                 destination.write("  ");
             }
