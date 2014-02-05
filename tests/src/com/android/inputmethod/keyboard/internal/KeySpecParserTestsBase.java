@@ -30,7 +30,7 @@ import com.android.inputmethod.latin.utils.RunInLocale;
 
 import java.util.Locale;
 
-abstract class KeySpecParserBase extends AndroidTestCase {
+abstract class KeySpecParserTestsBase extends AndroidTestCase {
     private final static Locale TEST_LOCALE = Locale.ENGLISH;
     protected final KeyboardCodesSet mCodesSet = new KeyboardCodesSet();
     protected final KeyboardTextsSet mTextsSet = new KeyboardTextsSet();
@@ -251,8 +251,12 @@ abstract class KeySpecParserBase extends AndroidTestCase {
     }
 
     public void testFormatError() {
+        assertParserError("Null spec", null, null,
+                null, ICON_UNDEFINED, CODE_UNSPECIFIED);
         assertParserError("Empty spec", "", null,
                 null, ICON_UNDEFINED, CODE_UNSPECIFIED);
+        assertParserError("Single bar", "|",
+                "|", null, ICON_UNDEFINED, '|');
         assertParserError("Empty label with outputText", "|a",
                 null, "a", ICON_UNDEFINED, CODE_UNSPECIFIED);
         assertParserError("Empty label with code", "|" + CODE_SETTINGS,

@@ -24,7 +24,7 @@ import java.util.Arrays;
 import java.util.Locale;
 
 @SmallTest
-public final class MoreKeySpecTests extends KeySpecParserBase {
+public final class MoreKeySpecTests extends KeySpecParserTestsBase {
     @Override
     protected void assertParser(final String message, final String moreKeySpec,
             final String expectedLabel, final String expectedOutputText, final int expectedIconId,
