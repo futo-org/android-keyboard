@@ -16,10 +16,7 @@
 
 package com.android.inputmethod.keyboard;
 
-import android.animation.Animator;
 import android.animation.AnimatorInflater;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -35,13 +32,10 @@ import android.preference.PreferenceManager;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.InputMethodSubtype;
 import android.widget.TextView;
 
@@ -53,6 +47,7 @@ import com.android.inputmethod.keyboard.internal.DrawingPreviewPlacerView;
 import com.android.inputmethod.keyboard.internal.GestureFloatingTextDrawingPreview;
 import com.android.inputmethod.keyboard.internal.GestureTrailsDrawingPreview;
 import com.android.inputmethod.keyboard.internal.KeyDrawParams;
+import com.android.inputmethod.keyboard.internal.KeyPreviewChoreographer;
 import com.android.inputmethod.keyboard.internal.KeyPreviewDrawParams;
 import com.android.inputmethod.keyboard.internal.NonDistinctMultitouchHelper;
 import com.android.inputmethod.keyboard.internal.SlidingKeyInputDrawingPreview;
@@ -71,9 +66,6 @@ import com.android.inputmethod.latin.utils.UsabilityStudyLogUtils;
 import com.android.inputmethod.latin.utils.ViewLayoutUtils;
 import com.android.inputmethod.research.ResearchLogger;
 
-import java.util.ArrayDeque;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.WeakHashMap;
 
 /**
@@ -161,18 +153,8 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
 
     // Key preview
     private static final boolean FADE_OUT_KEY_TOP_LETTER_WHEN_KEY_IS_PRESSED = false;
-    // Free {@link TextView} pool that can be used for key preview.
-    private final ArrayDeque<TextView> mFreeKeyPreviewTextViews = CollectionUtils.newArrayDeque();
-    // Map from {@link Key} to {@link TextView} that is currently being displayed as key preview.
-    private final HashMap<Key,TextView> mShowingKeyPreviewTextViews = CollectionUtils.newHashMap();
     private final KeyPreviewDrawParams mKeyPreviewDrawParams;
-    private static final float KEY_PREVIEW_START_ZOOM_IN_SCALE = 0.7f;
-    private static final float KEY_PREVIEW_END_ZOOM_IN_SCALE = 1.0f;
-    private static final float KEY_PREVIEW_END_ZOOM_OUT_SCALE = 0.7f;
-    private static final AccelerateInterpolator ACCELERATE_INTERPOLATOR =
-            new AccelerateInterpolator();
-    private static final DecelerateInterpolator DECELERATE_INTERPOLATOR =
-            new DecelerateInterpolator();
+    private final KeyPreviewChoreographer mKeyPreviewChoreographer;
 
     // More keys keyboard
     private final Paint mBackgroundDimAlphaPaint = new Paint();
@@ -261,6 +243,8 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
                 R.styleable.MainKeyboardView_altCodeKeyWhileTypingFadeinAnimator, 0);
 
         mKeyPreviewDrawParams = new KeyPreviewDrawParams(mainKeyboardViewAttr);
+        mKeyPreviewChoreographer = new KeyPreviewChoreographer(mKeyPreviewDrawParams);
+
         final int moreKeysKeyboardLayoutId = mainKeyboardViewAttr.getResourceId(
                 R.styleable.MainKeyboardView_moreKeysKeyboardLayout, 0);
         mConfigShowMoreKeysKeyboardAtTouchedPoint = mainKeyboardViewAttr.getBoolean(
@@ -477,60 +461,13 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         return mKeyPreviewDrawParams.isPopupEnabled();
     }
 
-    private TextView getKeyPreviewTextView(final Key key) {
-        TextView previewTextView = mShowingKeyPreviewTextViews.remove(key);
-        if (previewTextView != null) {
-            return previewTextView;
-        }
-        previewTextView = mFreeKeyPreviewTextViews.poll();
-        if (previewTextView != null) {
-            return previewTextView;
-        }
-        final Context context = getContext();
-        final int previewLayoutId = mKeyPreviewDrawParams.mLayoutId;
-        if (previewLayoutId != 0) {
-            previewTextView = (TextView)LayoutInflater.from(context)
-                    .inflate(previewLayoutId, null);
-        } else {
-            previewTextView = new TextView(context);
-        }
-        locatePreviewPlacerView();
-        mDrawingPreviewPlacerView.addView(
-                previewTextView, ViewLayoutUtils.newLayoutParam(mDrawingPreviewPlacerView, 0, 0));
-        return previewTextView;
-    }
-
     // Implements {@link DrawingHandler.Callbacks} method.
     @Override
     public void dismissAllKeyPreviews() {
-        for (final Key key : new HashSet<Key>(mShowingKeyPreviewTextViews.keySet())) {
-            dismissKeyPreviewWithoutDelay(key);
-        }
+        mKeyPreviewChoreographer.dismissAllKeyPreviews();
         PointerTracker.setReleasedKeyGraphicsToAllKeys();
     }
 
-    // Background state set
-    private static final int[][][] KEY_PREVIEW_BACKGROUND_STATE_TABLE = {
-        { // STATE_MIDDLE
-            EMPTY_STATE_SET,
-            { R.attr.state_has_morekeys }
-        },
-        { // STATE_LEFT
-            { R.attr.state_left_edge },
-            { R.attr.state_left_edge, R.attr.state_has_morekeys }
-        },
-        { // STATE_RIGHT
-            { R.attr.state_right_edge },
-            { R.attr.state_right_edge, R.attr.state_has_morekeys }
-        }
-    };
-    private static final int STATE_MIDDLE = 0;
-    private static final int STATE_LEFT = 1;
-    private static final int STATE_RIGHT = 2;
-    private static final int STATE_NORMAL = 0;
-    private static final int STATE_HAS_MOREKEYS = 1;
-
-    // TODO: Take this method out of this class.
     @Override
     public void showKeyPreview(final Key key) {
         // If key is invalid or IME is already closed, we must not show key preview.
@@ -547,185 +484,31 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
             return;
         }
 
-        final TextView previewTextView = getKeyPreviewTextView(key);
-        final KeyDrawParams drawParams = mKeyDrawParams;
-        previewTextView.setTextColor(drawParams.mPreviewTextColor);
-        final Drawable background = previewTextView.getBackground();
-        final String label = key.getPreviewLabel();
-        // What we show as preview should match what we show on a key top in onDraw().
-        if (label != null) {
-            // TODO Should take care of temporaryShiftLabel here.
-            previewTextView.setCompoundDrawables(null, null, null, null);
-            previewTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX,
-                    key.selectPreviewTextSize(drawParams));
-            previewTextView.setTypeface(key.selectPreviewTypeface(drawParams));
-            previewTextView.setText(label);
-        } else {
-            previewTextView.setCompoundDrawables(null, null, null,
-                    key.getPreviewIcon(keyboard.mIconsSet));
-            previewTextView.setText(null);
-        }
-
-        previewTextView.measure(
-                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        final int keyDrawWidth = key.getDrawWidth();
-        final int previewWidth = previewTextView.getMeasuredWidth();
-        final int previewHeight = previewParams.mPreviewHeight;
-        previewParams.setGeometry(previewTextView);
+        locatePreviewPlacerView();
+        final TextView previewTextView = mKeyPreviewChoreographer.getKeyPreviewTextView(
+                key, mDrawingPreviewPlacerView);
         getLocationInWindow(mOriginCoords);
-        // The key preview is horizontally aligned with the center of the visible part of the
-        // parent key. If it doesn't fit in this {@link KeyboardView}, it is moved inward to fit and
-        // the left/right background is used if such background is specified.
-        final int statePosition;
-        int previewX = key.getDrawX() - (previewWidth - keyDrawWidth) / 2
-                + CoordinateUtils.x(mOriginCoords);
-        if (previewX < 0) {
-            previewX = 0;
-            statePosition = STATE_LEFT;
-        } else if (previewX > getWidth() - previewWidth) {
-            previewX = getWidth() - previewWidth;
-            statePosition = STATE_RIGHT;
-        } else {
-            statePosition = STATE_MIDDLE;
-        }
-        // The key preview is placed vertically above the top edge of the parent key with an
-        // arbitrary offset.
-        final int previewY = key.getY() - previewHeight + previewParams.mPreviewOffset
-                + CoordinateUtils.y(mOriginCoords);
-
-        if (background != null) {
-            final int hasMoreKeys = (key.getMoreKeys() != null) ? STATE_HAS_MOREKEYS : STATE_NORMAL;
-            background.setState(KEY_PREVIEW_BACKGROUND_STATE_TABLE[statePosition][hasMoreKeys]);
-        }
-        ViewLayoutUtils.placeViewAt(
-                previewTextView, previewX, previewY, previewWidth, previewHeight);
-
-        if (!isHardwareAccelerated()) {
-            previewTextView.setVisibility(VISIBLE);
-            mShowingKeyPreviewTextViews.put(key, previewTextView);
-            return;
-        }
-        previewTextView.setPivotX(previewWidth / 2.0f);
-        previewTextView.setPivotY(previewHeight);
-
-        final Animator zoomIn = createZoomInAniation(key, previewTextView);
-        final Animator zoomOut = createZoomOutAnimation(key, previewTextView);
-        final KeyPreviewAnimations animation = new KeyPreviewAnimations(zoomIn, zoomOut);
-        previewTextView.setTag(animation);
-        animation.startZoomIn();
-    }
-
-    // TODO: Move this internal class out to a separate external class.
-    private static class KeyPreviewAnimations extends AnimatorListenerAdapter {
-        private final Animator mZoomIn;
-        private final Animator mZoomOut;
-
-        public KeyPreviewAnimations(final Animator zoomIn, final Animator zoomOut) {
-            mZoomIn = zoomIn;
-            mZoomOut = zoomOut;
-        }
-
-        public void startZoomIn() {
-            mZoomIn.start();
-        }
-
-        public void startZoomOut() {
-            if (mZoomIn.isRunning()) {
-                mZoomIn.addListener(this);
-                return;
-            }
-            mZoomOut.start();
-        }
-
-        @Override
-        public void onAnimationEnd(final Animator animation) {
-            mZoomOut.start();
-        }
-    }
-
-    // TODO: Take this method out of this class.
-    private Animator createZoomInAniation(final Key key, final TextView previewTextView) {
-        final ObjectAnimator scaleXAnimation = ObjectAnimator.ofFloat(
-                previewTextView, SCALE_X, KEY_PREVIEW_START_ZOOM_IN_SCALE,
-                KEY_PREVIEW_END_ZOOM_IN_SCALE);
-        final ObjectAnimator scaleYAnimation = ObjectAnimator.ofFloat(
-                previewTextView, SCALE_Y, KEY_PREVIEW_START_ZOOM_IN_SCALE,
-                KEY_PREVIEW_END_ZOOM_IN_SCALE);
-        final AnimatorSet zoomInAnimation = new AnimatorSet();
-        zoomInAnimation.play(scaleXAnimation).with(scaleYAnimation);
-        // TODO: Implement preference option to control key preview animation duration.
-        zoomInAnimation.setDuration(mKeyPreviewDrawParams.mZoomInDuration);
-        zoomInAnimation.setInterpolator(DECELERATE_INTERPOLATOR);
-        zoomInAnimation.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationStart(final Animator animation) {
-                previewTextView.setVisibility(VISIBLE);
-                mShowingKeyPreviewTextViews.put(key, previewTextView);
-            }
-        });
-        return zoomInAnimation;
-    }
-
-    // TODO: Take this method out of this class.
-    private Animator createZoomOutAnimation(final Key key, final TextView previewTextView) {
-        final ObjectAnimator scaleXAnimation = ObjectAnimator.ofFloat(
-                previewTextView, SCALE_X, KEY_PREVIEW_END_ZOOM_OUT_SCALE);
-        final ObjectAnimator scaleYAnimation = ObjectAnimator.ofFloat(
-                previewTextView, SCALE_Y, KEY_PREVIEW_END_ZOOM_OUT_SCALE);
-        final AnimatorSet zoomOutAnimation = new AnimatorSet();
-        zoomOutAnimation.play(scaleXAnimation).with(scaleYAnimation);
-        // TODO: Implement preference option to control key preview animation duration.
-        final int zoomOutDuration = Math.min(mKeyPreviewDrawParams.mZoomOutDuration,
-                mKeyPreviewDrawParams.getLingerTimeout());
-        zoomOutAnimation.setDuration(zoomOutDuration);
-        zoomOutAnimation.setInterpolator(ACCELERATE_INTERPOLATOR);
-        zoomOutAnimation.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(final Animator animation) {
-                dismissKeyPreviewWithoutDelay(key);
-            }
-        });
-        return zoomOutAnimation;
+        mKeyPreviewChoreographer.placeKeyPreview(key, previewTextView, keyboard.mIconsSet,
+                mKeyDrawParams, getWidth(), mOriginCoords);
+        mKeyPreviewChoreographer.showKeyPreview(key, previewTextView, isHardwareAccelerated());
     }
 
     // Implements {@link TimerHandler.Callbacks} method.
-    // TODO: Take this method out of this class.
     @Override
     public void dismissKeyPreviewWithoutDelay(final Key key) {
-        if (key == null) {
-            return;
-        }
-        final TextView previewTextView = mShowingKeyPreviewTextViews.remove(key);
-        if (previewTextView != null) {
-            final Object tag = previewTextView.getTag();
-            if (tag instanceof Animator) {
-                ((Animator)tag).cancel();
-            }
-            previewTextView.setTag(null);
-            previewTextView.setVisibility(INVISIBLE);
-            mFreeKeyPreviewTextViews.add(previewTextView);
-        }
+        mKeyPreviewChoreographer.dismissKeyPreview(key, false /* withAnimation */);
         // To redraw key top letter.
         invalidateKey(key);
     }
 
-    // TODO: Take this method out of this class.
     @Override
     public void dismissKeyPreview(final Key key) {
-        final TextView previewTextView = mShowingKeyPreviewTextViews.get(key);
-        if (previewTextView == null) {
-            return;
-        }
         if (!isHardwareAccelerated()) {
             // TODO: Implement preference option to control key preview method and duration.
             mDrawingHandler.dismissKeyPreview(mKeyPreviewDrawParams.getLingerTimeout(), key);
             return;
         }
-        final Object tag = previewTextView.getTag();
-        if (tag instanceof KeyPreviewAnimations) {
-            final KeyPreviewAnimations animation = (KeyPreviewAnimations)tag;
-            animation.startZoomOut();
-        }
+        mKeyPreviewChoreographer.dismissKeyPreview(key, true /* withAnimation */);
     }
 
     public void setSlidingKeyInputPreviewEnabled(final boolean enabled) {
@@ -1098,7 +881,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         }
         // Don't draw key top letter when key preview is showing.
         if (FADE_OUT_KEY_TOP_LETTER_WHEN_KEY_IS_PRESSED
-                && mShowingKeyPreviewTextViews.containsKey(key)) {
+                && mKeyPreviewChoreographer.isShowingKeyPreview(key)) {
             // TODO: Fade out animation for the key top letter, and fade in animation for the key
             // background color when the user presses the key.
             return;
