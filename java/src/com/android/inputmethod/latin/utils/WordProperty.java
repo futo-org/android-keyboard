@@ -20,6 +20,7 @@ package com.android.inputmethod.latin.utils;
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.BinaryDictionary;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
+import com.android.inputmethod.latin.makedict.ProbabilityInfo;
 
 import java.util.ArrayList;
 
@@ -37,28 +38,12 @@ public class WordProperty {
     public final ArrayList<ProbabilityInfo> mBigramProbabilityInfo = CollectionUtils.newArrayList();
     public final ArrayList<WeightedString> mShortcutTargets = CollectionUtils.newArrayList();
 
-    // TODO: Use this kind of Probability class for dictionary read/write code under the makedict
-    // package.
-    public static final class ProbabilityInfo {
-        public final int mProbability;
-        // mTimestamp, mLevel and mCount are historical info. These values are depend on the
-        // implementation in native code; thus, we must not use them and have any assumptions about
-        // them except for tests.
-        public final int mTimestamp;
-        public final int mLevel;
-        public final int mCount;
-
-        public ProbabilityInfo(final int[] probabilityInfo) {
-            mProbability = probabilityInfo[BinaryDictionary.FORMAT_WORD_PROPERTY_PROBABILITY_INDEX];
-            mTimestamp = probabilityInfo[BinaryDictionary.FORMAT_WORD_PROPERTY_TIMESTAMP_INDEX];
-            mLevel = probabilityInfo[BinaryDictionary.FORMAT_WORD_PROPERTY_LEVEL_INDEX];
-            mCount = probabilityInfo[BinaryDictionary.FORMAT_WORD_PROPERTY_COUNT_INDEX];
-        }
-
-        @Override
-        public String toString() {
-            return mTimestamp + ":" + mLevel + ":" + mCount;
-        }
+    private static ProbabilityInfo createProbabilityInfoFromArray(final int[] probabilityInfo) {
+        return new ProbabilityInfo(
+                probabilityInfo[BinaryDictionary.FORMAT_WORD_PROPERTY_PROBABILITY_INDEX],
+                probabilityInfo[BinaryDictionary.FORMAT_WORD_PROPERTY_TIMESTAMP_INDEX],
+                probabilityInfo[BinaryDictionary.FORMAT_WORD_PROPERTY_LEVEL_INDEX],
+                probabilityInfo[BinaryDictionary.FORMAT_WORD_PROPERTY_COUNT_INDEX]);
     }
 
     // This represents invalid word when the probability is BinaryDictionary.NOT_A_PROBABILITY.
@@ -73,14 +58,14 @@ public class WordProperty {
         mIsBlacklisted = isBlacklisted;
         mHasBigrams = hasBigram;
         mHasShortcuts = hasShortcuts;
-        mProbabilityInfo = new ProbabilityInfo(probabilityInfo);
+        mProbabilityInfo = createProbabilityInfoFromArray(probabilityInfo);
 
         final int bigramTargetCount = bigramTargets.size();
         for (int i = 0; i < bigramTargetCount; i++) {
             final String bigramTargetString =
                     StringUtils.getStringFromNullTerminatedCodePointArray(bigramTargets.get(i));
             final ProbabilityInfo bigramProbability =
-                    new ProbabilityInfo(bigramProbabilityInfo.get(i));
+                    createProbabilityInfoFromArray(bigramProbabilityInfo.get(i));
             mBigramTargets.add(
                     new WeightedString(bigramTargetString, bigramProbability.mProbability));
             mBigramProbabilityInfo.add(bigramProbability);
