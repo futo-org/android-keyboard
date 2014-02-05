@@ -289,10 +289,10 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                         Log.e(TAG, "Can't remove a file: " + file.getName());
                     }
                     BinaryDictionary.createEmptyDictFile(file.getAbsolutePath(),
-                            DICTIONARY_FORMAT_VERSION, getHeaderAttributeMap());
+                            DICTIONARY_FORMAT_VERSION, mLocale, getHeaderAttributeMap());
                     mBinaryDictionary = new BinaryDictionary(
                             file.getAbsolutePath(), 0 /* offset */, file.length(),
-                            true /* useFullEditDistance */, null, mDictType, mIsUpdatable);
+                            true /* useFullEditDistance */, mLocale, mDictType, mIsUpdatable);
                 } else {
                     mDictionaryWriter.clear();
                 }
@@ -594,7 +594,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                     Log.e(TAG, "Can't remove a file: " + file.getName());
                 }
                 BinaryDictionary.createEmptyDictFile(file.getAbsolutePath(),
-                        DICTIONARY_FORMAT_VERSION, getHeaderAttributeMap());
+                        DICTIONARY_FORMAT_VERSION, mLocale, getHeaderAttributeMap());
             } else {
                 if (mBinaryDictionary.needsToRunGC(false /* mindsBlockByGC */)) {
                     mBinaryDictionary.flushWithGC();

@@ -28,6 +28,7 @@ import com.android.inputmethod.latin.makedict.FusionDictionary;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNode;
 import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
 import com.android.inputmethod.latin.utils.FileUtils;
+import com.android.inputmethod.latin.utils.LocaleUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -104,15 +105,14 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
         FileUtils.deleteRecursively(file);
         Map<String, String> attributeMap = new HashMap<String, String>();
         attributeMap.put(DictionaryHeader.DICTIONARY_ID_KEY, dictId);
-        attributeMap.put(DictionaryHeader.DICTIONARY_LOCALE_KEY, dictId);
         attributeMap.put(DictionaryHeader.DICTIONARY_VERSION_KEY,
                 String.valueOf(TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis())));
         attributeMap.put(DictionaryHeader.USES_FORGETTING_CURVE_KEY,
                 DictionaryHeader.ATTRIBUTE_VALUE_TRUE);
         attributeMap.put(DictionaryHeader.HAS_HISTORICAL_INFO_KEY,
                 DictionaryHeader.ATTRIBUTE_VALUE_TRUE);
-        if (BinaryDictionary.createEmptyDictFile(file.getAbsolutePath(),
-                FormatSpec.VERSION4, attributeMap)) {
+        if (BinaryDictionary.createEmptyDictFile(file.getAbsolutePath(), FormatSpec.VERSION4,
+                LocaleUtils.constructLocaleFromString(TEST_LOCALE), attributeMap)) {
             return file;
         } else {
             throw new IOException("Empty dictionary " + file.getAbsolutePath()

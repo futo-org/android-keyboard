@@ -18,6 +18,7 @@
 #define LATINIME_CHAR_UTILS_H
 
 #include <cctype>
+#include <vector>
 
 #include "defines.h"
 
@@ -85,7 +86,15 @@ class CharUtils {
         return spaceCount;
     }
 
+    static AK_FORCE_INLINE std::vector<int> convertShortArrayToIntVector(
+            const unsigned short *const source, const int length) {
+        std::vector<int> destination;
+        destination.insert(destination.end(), source, source + length);
+        return destination; // Copies the vector
+    }
+
     static unsigned short latin_tolower(const unsigned short c);
+    static const std::vector<int> EMPTY_STRING;
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(CharUtils);

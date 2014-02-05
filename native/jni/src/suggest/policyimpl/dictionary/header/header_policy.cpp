@@ -32,6 +32,7 @@ const char *const HeaderPolicy::EXTENDED_REGION_SIZE_KEY = "EXTENDED_REGION_SIZE
 // Historical info is information that is needed to support decaying such as timestamp, level and
 // count.
 const char *const HeaderPolicy::HAS_HISTORICAL_INFO_KEY = "HAS_HISTORICAL_INFO";
+const char *const HeaderPolicy::LOCALE_KEY = "locale"; // match Java declaration
 const int HeaderPolicy::DEFAULT_MULTIPLE_WORDS_DEMOTION_RATE = 100;
 const float HeaderPolicy::MULTIPLE_WORD_COST_MULTIPLIER_SCALE = 100.0f;
 
@@ -57,6 +58,10 @@ void HeaderPolicy::readHeaderValueOrQuestionMark(const char *const key, int *out
         outValue[i] = it->second[i];
     }
     outValue[terminalIndex] = '\0';
+}
+
+const std::vector<int> HeaderPolicy::readLocale() const {
+    return HeaderReadWriteUtils::readCodePointVectorAttributeValue(&mAttributeMap, LOCALE_KEY);
 }
 
 float HeaderPolicy::readMultipleWordCostMultiplier() const {
@@ -116,6 +121,7 @@ void HeaderPolicy::fillInHeader(const bool updatesLastDecayedTime, const int uni
     // Set the current time as the generation time.
     HeaderReadWriteUtils::setIntAttribute(outAttributeMap, DATE_KEY,
             TimeKeeper::peekCurrentTime());
+    HeaderReadWriteUtils::setCodePointVectorAttribute(outAttributeMap, LOCALE_KEY, mLocale);
     if (updatesLastDecayedTime) {
         // Set current time as the last updated time.
         HeaderReadWriteUtils::setIntAttribute(outAttributeMap, LAST_DECAYED_TIME_KEY,

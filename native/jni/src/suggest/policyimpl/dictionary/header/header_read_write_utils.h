@@ -63,11 +63,17 @@ class HeaderReadWriteUtils {
     /**
      * Methods for header attributes.
      */
+    static void setCodePointVectorAttribute(AttributeMap *const headerAttributes,
+            const char *const key, const std::vector<int> value);
+
     static void setBoolAttribute(AttributeMap *const headerAttributes,
             const char *const key, const bool value);
 
     static void setIntAttribute(AttributeMap *const headerAttributes,
             const char *const key, const int value);
+
+    static const std::vector<int> readCodePointVectorAttributeValue(
+            const AttributeMap *const headerAttributes, const char *const key);
 
     static bool readBoolAttributeValue(const AttributeMap *const headerAttributes,
             const char *const key, const bool defaultValue);

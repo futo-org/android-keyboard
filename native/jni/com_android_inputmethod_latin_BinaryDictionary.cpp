@@ -29,6 +29,7 @@
 #include "suggest/policyimpl/dictionary/structure/dictionary_structure_with_buffer_policy_factory.h"
 #include "suggest/policyimpl/dictionary/utils/dict_file_writing_utils.h"
 #include "utils/autocorrection_threshold_utils.h"
+#include "utils/char_utils.h"
 #include "utils/time_keeper.h"
 
 namespace latinime {
@@ -37,13 +38,15 @@ class ProximityInfo;
 
 // TODO: Move to makedict.
 static jboolean latinime_BinaryDictionary_createEmptyDictFile(JNIEnv *env, jclass clazz,
-        jstring filePath, jlong dictVersion, jobjectArray attributeKeyStringArray,
+        jstring filePath, jlong dictVersion, jstring locale, jobjectArray attributeKeyStringArray,
         jobjectArray attributeValueStringArray) {
     const jsize filePathUtf8Length = env->GetStringUTFLength(filePath);
     char filePathChars[filePathUtf8Length + 1];
     env->GetStringUTFRegion(filePath, 0, env->GetStringLength(filePath), filePathChars);
     filePathChars[filePathUtf8Length] = '\0';
-
+    jsize localeLength = env->GetStringLength(locale);
+    jchar localeCodePoints[localeLength];
+    env->GetStringRegion(locale, 0, localeLength, localeCodePoints);
     const int keyCount = env->GetArrayLength(attributeKeyStringArray);
     const int valueCount = env->GetArrayLength(attributeValueStringArray);
     if (keyCount != valueCount) {
@@ -73,7 +76,7 @@ static jboolean latinime_BinaryDictionary_createEmptyDictFile(JNIEnv *env, jclas
     }
 
     return DictFileWritingUtils::createEmptyDictFile(filePathChars, static_cast<int>(dictVersion),
-            &attributeMap);
+            CharUtils::convertShortArrayToIntVector(localeCodePoints, localeLength), &attributeMap);
 }
 
 static jlong latinime_BinaryDictionary_open(JNIEnv *env, jclass clazz, jstring sourceDir,
@@ -503,7 +506,8 @@ static int latinime_BinaryDictionary_setCurrentTimeForTest(JNIEnv *env, jclass c
 static const JNINativeMethod sMethods[] = {
     {
         const_cast<char *>("createEmptyDictFileNative"),
-        const_cast<char *>("(Ljava/lang/String;J[Ljava/lang/String;[Ljava/lang/String;)Z"),
+        const_cast<char *>(
+                "(Ljava/lang/String;JLjava/lang/String;[Ljava/lang/String;[Ljava/lang/String;)Z"),
         reinterpret_cast<void *>(latinime_BinaryDictionary_createEmptyDictFile)
     },
     {

@@ -69,8 +69,8 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         file.delete();
         file.mkdir();
         Map<String, String> attributeMap = new HashMap<String, String>();
-        if (BinaryDictionary.createEmptyDictFile(file.getAbsolutePath(),
-                FormatSpec.VERSION4, attributeMap)) {
+        if (BinaryDictionary.createEmptyDictFile(file.getAbsolutePath(), FormatSpec.VERSION4,
+                Locale.ENGLISH, attributeMap)) {
             return file;
         } else {
             throw new IOException("Empty dictionary " + file.getAbsolutePath()

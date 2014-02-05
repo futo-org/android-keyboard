@@ -55,7 +55,9 @@ public class Ver4DictEncoder implements DictEncoder {
             throw new UnsupportedFormatException("Given path is not a directory.");
         }
         if (!BinaryDictionary.createEmptyDictFile(mDictPlacedDir.getAbsolutePath(),
-                FormatSpec.VERSION4, dict.mOptions.mAttributes)) {
+                FormatSpec.VERSION4, LocaleUtils.constructLocaleFromString(
+                dict.mOptions.mAttributes.get(DictionaryHeader.DICTIONARY_LOCALE_KEY)),
+                dict.mOptions.mAttributes)) {
             throw new IOException("Cannot create dictionary file : "
                 + mDictPlacedDir.getAbsolutePath());
         }
