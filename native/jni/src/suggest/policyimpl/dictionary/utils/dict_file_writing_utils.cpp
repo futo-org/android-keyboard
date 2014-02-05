@@ -31,11 +31,12 @@ namespace latinime {
 const char *const DictFileWritingUtils::TEMP_FILE_SUFFIX_FOR_WRITING_DICT_FILE = ".tmp";
 
 /* static */ bool DictFileWritingUtils::createEmptyDictFile(const char *const filePath,
-        const int dictVersion, const HeaderReadWriteUtils::AttributeMap *const attributeMap) {
+        const int dictVersion, const std::vector<int> localeAsCodePointVector,
+        const HeaderReadWriteUtils::AttributeMap *const attributeMap) {
     TimeKeeper::setCurrentTime();
     switch (dictVersion) {
         case FormatUtils::VERSION_4:
-            return createEmptyV4DictFile(filePath, attributeMap);
+            return createEmptyV4DictFile(filePath, localeAsCodePointVector, attributeMap);
         default:
             AKLOGE("Cannot create dictionary %s because format version %d is not supported.",
                     filePath, dictVersion);
@@ -44,8 +45,9 @@ const char *const DictFileWritingUtils::TEMP_FILE_SUFFIX_FOR_WRITING_DICT_FILE =
 }
 
 /* static */ bool DictFileWritingUtils::createEmptyV4DictFile(const char *const dirPath,
+        const std::vector<int> localeAsCodePointVector,
         const HeaderReadWriteUtils::AttributeMap *const attributeMap) {
-    HeaderPolicy headerPolicy(FormatUtils::VERSION_4, attributeMap);
+    HeaderPolicy headerPolicy(FormatUtils::VERSION_4, localeAsCodePointVector, attributeMap);
     Ver4DictBuffers::Ver4DictBuffersPtr dictBuffers =
             Ver4DictBuffers::createVer4DictBuffers(&headerPolicy);
     headerPolicy.fillInAndWriteHeaderToBuffer(true /* updatesLastDecayedTime */,

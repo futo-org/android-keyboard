@@ -23,6 +23,7 @@
 #include "suggest/core/policy/dictionary_header_structure_policy.h"
 #include "suggest/policyimpl/dictionary/header/header_read_write_utils.h"
 #include "suggest/policyimpl/dictionary/utils/format_utils.h"
+#include "utils/char_utils.h"
 #include "utils/time_keeper.h"
 
 namespace latinime {
@@ -35,6 +36,7 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
               mDictionaryFlags(HeaderReadWriteUtils::getFlags(dictBuf)),
               mSize(HeaderReadWriteUtils::getHeaderSize(dictBuf)),
               mAttributeMap(createAttributeMapAndReadAllAttributes(dictBuf)),
+              mLocale(readLocale()),
               mMultiWordCostMultiplier(readMultipleWordCostMultiplier()),
               mRequiresGermanUmlautProcessing(readRequiresGermanUmlautProcessing()),
               mIsDecayingDict(HeaderReadWriteUtils::readBoolAttributeValue(&mAttributeMap,
@@ -54,10 +56,11 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
 
     // Constructs header information using an attribute map.
     HeaderPolicy(const FormatUtils::FORMAT_VERSION dictFormatVersion,
+            const std::vector<int> locale,
             const HeaderReadWriteUtils::AttributeMap *const attributeMap)
             : mDictFormatVersion(dictFormatVersion),
               mDictionaryFlags(HeaderReadWriteUtils::createAndGetDictionaryFlagsUsingAttributeMap(
-                      attributeMap)), mSize(0), mAttributeMap(*attributeMap),
+                      attributeMap)), mSize(0), mAttributeMap(*attributeMap), mLocale(locale),
               mMultiWordCostMultiplier(readMultipleWordCostMultiplier()),
               mRequiresGermanUmlautProcessing(readRequiresGermanUmlautProcessing()),
               mIsDecayingDict(HeaderReadWriteUtils::readBoolAttributeValue(&mAttributeMap,
@@ -68,12 +71,13 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
                       DATE_KEY, TimeKeeper::peekCurrentTime() /* defaultValue */)),
               mUnigramCount(0), mBigramCount(0), mExtendedRegionSize(0),
               mHasHistoricalInfoOfWords(HeaderReadWriteUtils::readBoolAttributeValue(
-                      &mAttributeMap, HAS_HISTORICAL_INFO_KEY, false /* defaultValue */)) {}
+                      &mAttributeMap, HAS_HISTORICAL_INFO_KEY, false /* defaultValue */)) {
+        }
 
     // Temporary dummy header.
     HeaderPolicy()
             : mDictFormatVersion(FormatUtils::UNKNOWN_VERSION), mDictionaryFlags(0), mSize(0),
-              mAttributeMap(), mMultiWordCostMultiplier(0.0f),
+              mAttributeMap(), mLocale(CharUtils::EMPTY_STRING), mMultiWordCostMultiplier(0.0f),
               mRequiresGermanUmlautProcessing(false), mIsDecayingDict(false),
               mDate(0), mLastDecayedTime(0), mUnigramCount(0), mBigramCount(0),
               mExtendedRegionSize(0), mHasHistoricalInfoOfWords(false) {}
@@ -174,6 +178,7 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
     static const char *const BIGRAM_COUNT_KEY;
     static const char *const EXTENDED_REGION_SIZE_KEY;
     static const char *const HAS_HISTORICAL_INFO_KEY;
+    static const char *const LOCALE_KEY;
     static const int DEFAULT_MULTIPLE_WORDS_DEMOTION_RATE;
     static const float MULTIPLE_WORD_COST_MULTIPLIER_SCALE;
 
@@ -181,6 +186,7 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
     const HeaderReadWriteUtils::DictionaryFlags mDictionaryFlags;
     const int mSize;
     HeaderReadWriteUtils::AttributeMap mAttributeMap;
+    const std::vector<int> mLocale;
     const float mMultiWordCostMultiplier;
     const bool mRequiresGermanUmlautProcessing;
     const bool mIsDecayingDict;
@@ -191,6 +197,7 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
     const int mExtendedRegionSize;
     const bool mHasHistoricalInfoOfWords;
 
+    const std::vector<int> readLocale() const;
     float readMultipleWordCostMultiplier() const;
     bool readRequiresGermanUmlautProcessing() const;
 

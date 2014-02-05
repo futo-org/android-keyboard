@@ -31,6 +31,7 @@ class DictFileWritingUtils {
     static const char *const TEMP_FILE_SUFFIX_FOR_WRITING_DICT_FILE;
 
     static bool createEmptyDictFile(const char *const filePath, const int dictVersion,
+            const std::vector<int> localeAsCodePointVector,
             const HeaderReadWriteUtils::AttributeMap *const attributeMap);
 
     static bool flushAllHeaderAndBodyToFile(const char *const filePath,
@@ -44,6 +45,7 @@ class DictFileWritingUtils {
     DISALLOW_IMPLICIT_CONSTRUCTORS(DictFileWritingUtils);
 
     static bool createEmptyV4DictFile(const char *const filePath,
+            const std::vector<int> localeAsCodePointVector,
             const HeaderReadWriteUtils::AttributeMap *const attributeMap);
 
     static bool flushBufferToFile(const char *const filePath,

@@ -130,6 +130,13 @@ const HeaderReadWriteUtils::DictionaryFlags HeaderReadWriteUtils::NO_FLAGS = 0;
     return true;
 }
 
+/* static */ void HeaderReadWriteUtils::setCodePointVectorAttribute(
+        AttributeMap *const headerAttributes, const char *const key, const std::vector<int> value) {
+    AttributeMap::key_type keyVector;
+    insertCharactersIntoVector(key, &keyVector);
+    (*headerAttributes)[keyVector] = value;
+}
+
 /* static */ void HeaderReadWriteUtils::setBoolAttribute(AttributeMap *const headerAttributes,
         const char *const key, const bool value) {
     setIntAttribute(headerAttributes, key, value ? 1 : 0);
@@ -149,6 +156,18 @@ const HeaderReadWriteUtils::DictionaryFlags HeaderReadWriteUtils::NO_FLAGS = 0;
     snprintf(charBuf, LARGEST_INT_DIGIT_COUNT + 1, "%d", value);
     insertCharactersIntoVector(charBuf, &valueVector);
     (*headerAttributes)[*key] = valueVector;
+}
+
+/* static */ const std::vector<int> HeaderReadWriteUtils::readCodePointVectorAttributeValue(
+        const AttributeMap *const headerAttributes, const char *const key) {
+    AttributeMap::key_type keyVector;
+    insertCharactersIntoVector(key, &keyVector);
+    AttributeMap::const_iterator it = headerAttributes->find(keyVector);
+    if (it == headerAttributes->end()) {
+        return std::vector<int>();
+    } else {
+        return it->second;
+    }
 }
 
 /* static */ bool HeaderReadWriteUtils::readBoolAttributeValue(
