@@ -56,10 +56,9 @@ public final class KeySpecParser {
         return keySpec.startsWith(KeyboardIconsSet.PREFIX_ICON);
     }
 
-    private static boolean hasCode(final String keySpec) {
-        final int end = indexOfLabelEnd(keySpec, 0);
-        if (end > 0 && end + 1 < keySpec.length() && keySpec.startsWith(
-                KeyboardCodesSet.PREFIX_CODE, end + 1)) {
+    private static boolean hasCode(final String keySpec, final int labelEnd) {
+        if (labelEnd > 0 && labelEnd + 1 < keySpec.length()
+                && keySpec.startsWith(KeyboardCodesSet.PREFIX_CODE, labelEnd + 1)) {
             return true;
         }
         return false;
@@ -84,16 +83,16 @@ public final class KeySpecParser {
         return sb.toString();
     }
 
-    private static int indexOfLabelEnd(final String keySpec, final int start) {
-        if (keySpec.indexOf(BACKSLASH, start) < 0) {
-            final int end = keySpec.indexOf(VERTICAL_BAR, start);
-            if (end == 0) {
-                throw new KeySpecParserError(VERTICAL_BAR + " at " + start + ": " + keySpec);
+    private static int indexOfLabelEnd(final String keySpec) {
+        if (keySpec.indexOf(BACKSLASH) < 0) {
+            final int labelEnd = keySpec.indexOf(VERTICAL_BAR);
+            if (labelEnd == 0) {
+                throw new KeySpecParserError("Empty label");
             }
-            return end;
+            return labelEnd;
         }
         final int length = keySpec.length();
-        for (int pos = start; pos < length; pos++) {
+        for (int pos = 0; pos < length; pos++) {
             final char c = keySpec.charAt(pos);
             if (c == BACKSLASH && pos + 1 < length) {
                 // Skip escape char
@@ -105,35 +104,47 @@ public final class KeySpecParser {
         return -1;
     }
 
+    private static String getBeforeLabelEnd(final String keySpec, final int labelEnd) {
+        return (labelEnd < 0) ? keySpec : keySpec.substring(0, labelEnd);
+    }
+
+    private static String getAfterLabelEnd(final String keySpec, final int labelEnd) {
+        return keySpec.substring(labelEnd + /* VERTICAL_BAR */1);
+    }
+
+    private static void checkDoubleLabelEnd(final String keySpec, final int labelEnd) {
+        if (indexOfLabelEnd(getAfterLabelEnd(keySpec, labelEnd)) < 0) {
+            return;
+        }
+        throw new KeySpecParserError("Multiple " + VERTICAL_BAR + ": " + keySpec);
+    }
+
     public static String getLabel(final String keySpec) {
         if (hasIcon(keySpec)) {
             return null;
         }
-        final int end = indexOfLabelEnd(keySpec, 0);
-        final String label = (end > 0) ? parseEscape(keySpec.substring(0, end))
-                : parseEscape(keySpec);
+        final int labelEnd = indexOfLabelEnd(keySpec);
+        final String label = parseEscape(getBeforeLabelEnd(keySpec, labelEnd));
         if (label.isEmpty()) {
             throw new KeySpecParserError("Empty label: " + keySpec);
         }
         return label;
     }
 
-    private static String getOutputTextInternal(final String keySpec) {
-        final int end = indexOfLabelEnd(keySpec, 0);
-        if (end <= 0) {
+    private static String getOutputTextInternal(final String keySpec, final int labelEnd) {
+        if (labelEnd <= 0) {
             return null;
         }
-        if (indexOfLabelEnd(keySpec, end + 1) >= 0) {
-            throw new KeySpecParserError("Multiple " + VERTICAL_BAR + ": " + keySpec);
-        }
-        return parseEscape(keySpec.substring(end + /* VERTICAL_BAR */1));
+        checkDoubleLabelEnd(keySpec, labelEnd);
+        return parseEscape(getAfterLabelEnd(keySpec, labelEnd));
     }
 
     public static String getOutputText(final String keySpec) {
-        if (hasCode(keySpec)) {
+        final int labelEnd = indexOfLabelEnd(keySpec);
+        if (hasCode(keySpec, labelEnd)) {
             return null;
         }
-        final String outputText = getOutputTextInternal(keySpec);
+        final String outputText = getOutputTextInternal(keySpec, labelEnd);
         if (outputText != null) {
             if (StringUtils.codePointCount(outputText) == 1) {
                 // If output text is one code point, it should be treated as a code.
@@ -154,14 +165,12 @@ public final class KeySpecParser {
     }
 
     public static int getCode(final String keySpec, final KeyboardCodesSet codesSet) {
-        if (hasCode(keySpec)) {
-            final int end = indexOfLabelEnd(keySpec, 0);
-            if (indexOfLabelEnd(keySpec, end + 1) >= 0) {
-                throw new KeySpecParserError("Multiple " + VERTICAL_BAR + ": " + keySpec);
-            }
-            return parseCode(keySpec.substring(end + 1), codesSet, CODE_UNSPECIFIED);
+        final int labelEnd = indexOfLabelEnd(keySpec);
+        if (hasCode(keySpec, labelEnd)) {
+            checkDoubleLabelEnd(keySpec, labelEnd);
+            return parseCode(getAfterLabelEnd(keySpec, labelEnd), codesSet, CODE_UNSPECIFIED);
         }
-        final String outputText = getOutputTextInternal(keySpec);
+        final String outputText = getOutputTextInternal(keySpec, labelEnd);
         if (outputText != null) {
             // If output text is one code point, it should be treated as a code.
             // See {@link #getOutputText(String)}.
@@ -171,35 +180,35 @@ public final class KeySpecParser {
             return CODE_OUTPUT_TEXT;
         }
         final String label = getLabel(keySpec);
-        // Code is automatically generated for one letter label.
-        if (StringUtils.codePointCount(label) == 1) {
-            return label.codePointAt(0);
+        if (label == null) {
+            throw new KeySpecParserError("Empty label: " + keySpec);
         }
-        return CODE_OUTPUT_TEXT;
+        // Code is automatically generated for one letter label.
+        return (StringUtils.codePointCount(label) == 1) ? label.codePointAt(0) : CODE_OUTPUT_TEXT;
     }
 
     public static int parseCode(final String text, final KeyboardCodesSet codesSet,
             final int defCode) {
-        if (text == null) return defCode;
+        if (text == null) {
+            return defCode;
+        }
         if (text.startsWith(KeyboardCodesSet.PREFIX_CODE)) {
             return codesSet.getCode(text.substring(KeyboardCodesSet.PREFIX_CODE.length()));
-        } else if (text.startsWith(PREFIX_HEX)) {
-            return Integer.parseInt(text.substring(PREFIX_HEX.length()), 16);
-        } else {
-            return Integer.parseInt(text);
         }
+        if (text.startsWith(PREFIX_HEX)) {
+            return Integer.parseInt(text.substring(PREFIX_HEX.length()), 16);
+        }
+        return Integer.parseInt(text);
     }
 
     public static int getIconId(final String keySpec) {
-        if (keySpec != null && hasIcon(keySpec)) {
-            final int end = keySpec.indexOf(
-                    VERTICAL_BAR, KeyboardIconsSet.PREFIX_ICON.length());
-            final String name = (end < 0)
-                    ? keySpec.substring(KeyboardIconsSet.PREFIX_ICON.length())
-                    : keySpec.substring(KeyboardIconsSet.PREFIX_ICON.length(), end);
-            return KeyboardIconsSet.getIconId(name);
+        if (!hasIcon(keySpec)) {
+            return KeyboardIconsSet.ICON_UNDEFINED;
         }
-        return KeyboardIconsSet.ICON_UNDEFINED;
+        final int labelEnd = indexOfLabelEnd(keySpec);
+        final String iconName = getBeforeLabelEnd(keySpec, labelEnd)
+                .substring(KeyboardIconsSet.PREFIX_ICON.length());
+        return KeyboardIconsSet.getIconId(iconName);
     }
 
     @SuppressWarnings("serial")
