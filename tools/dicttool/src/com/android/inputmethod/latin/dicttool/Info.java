@@ -51,7 +51,8 @@ public class Info extends Dicttool.Command {
             if (null != w.mShortcutTargets) {
                 shortcutCount += w.mShortcutTargets.size();
                 for (WeightedString shortcutTarget : w.mShortcutTargets) {
-                    if (FormatSpec.SHORTCUT_WHITELIST_FREQUENCY == shortcutTarget.mFrequency) {
+                    if (FormatSpec.SHORTCUT_WHITELIST_FREQUENCY
+                            == shortcutTarget.getProbability()) {
                         ++whitelistCount;
                     }
                 }
@@ -84,8 +85,9 @@ public class Info extends Dicttool.Command {
         } else {
             for (final WeightedString shortcutTarget : shortcutTargets) {
                 System.out.println("  Shortcut target: " + shortcutTarget.mWord + " ("
-                        + (FormatSpec.SHORTCUT_WHITELIST_FREQUENCY == shortcutTarget.mFrequency
-                                ? "whitelist" : shortcutTarget.mFrequency) + ")");
+                        + (FormatSpec.SHORTCUT_WHITELIST_FREQUENCY
+                                == shortcutTarget.getProbability() ?
+                                        "whitelist" : shortcutTarget.getProbability()) + ")");
             }
         }
         final ArrayList<WeightedString> bigrams = ptNode.getBigrams();
@@ -93,7 +95,8 @@ public class Info extends Dicttool.Command {
             System.out.println("  No bigrams");
         } else {
             for (final WeightedString bigram : bigrams) {
-                System.out.println("  Bigram: " + bigram.mWord + " (" + bigram.mFrequency + ")");
+                System.out.println(
+                        "  Bigram: " + bigram.mWord + " (" + bigram.getProbability() + ")");
             }
         }
     }

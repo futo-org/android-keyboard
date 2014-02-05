@@ -78,7 +78,7 @@ public class Ver4DictEncoder implements DictEncoder {
             } else {
                 for (final WeightedString shortcutTarget : word.mShortcutTargets) {
                     binaryDict.addUnigramWord(word.mWord, word.mFrequency,
-                            shortcutTarget.mWord, shortcutTarget.mFrequency,
+                            shortcutTarget.mWord, shortcutTarget.getProbability(),
                             word.mIsNotAWord, word.mIsBlacklistEntry, 0 /* timestamp */);
                 }
             }
@@ -89,7 +89,7 @@ public class Ver4DictEncoder implements DictEncoder {
         for (final Word word0 : dict) {
             if (null == word0.mBigrams) continue;
             for (final WeightedString word1 : word0.mBigrams) {
-                binaryDict.addBigramWords(word0.mWord, word1.mWord, word1.mFrequency,
+                binaryDict.addBigramWords(word0.mWord, word1.mWord, word1.getProbability(),
                         0 /* timestamp */);
                 if (binaryDict.needsToRunGC(true /* mindsBlockByGC */)) {
                     binaryDict.flushWithGC();

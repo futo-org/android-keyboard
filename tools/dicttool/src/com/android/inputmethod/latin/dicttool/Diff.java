@@ -159,7 +159,7 @@ public class Diff extends Dicttool.Command {
             if (null == list0) return false;
             for (final WeightedString attribute0 : list0) {
                 System.out.println(type + " removed: " + word + " " + attribute0.mWord + " "
-                        + attribute0.mFrequency);
+                        + attribute0.getProbability());
             }
             return true;
         }
@@ -175,8 +175,8 @@ public class Diff extends Dicttool.Command {
                     for (final WeightedString attribute1 : list1) {
                         if (attribute0.mWord.equals(attribute1.mWord)) {
                             System.out.println(type + " freq changed: " + word + " "
-                                    + attribute0.mWord + " " + attribute0.mFrequency + " -> "
-                                    + attribute1.mFrequency);
+                                    + attribute0.mWord + " " + attribute0.getProbability() + " -> "
+                                    + attribute1.getProbability());
                             list1.remove(attribute1);
                             foundString = true;
                             break;
@@ -185,7 +185,7 @@ public class Diff extends Dicttool.Command {
                     if (!foundString) {
                         // We come here if we haven't found any matching string.
                         System.out.println(type + " removed: " + word + " " + attribute0.mWord + " "
-                                + attribute0.mFrequency);
+                                + attribute0.getProbability());
                     }
                 } else {
                     list1.remove(attribute0);
@@ -197,7 +197,7 @@ public class Diff extends Dicttool.Command {
         for (final WeightedString attribute1 : list1) {
             hasDifferences = true;
             System.out.println(type + " added: " + word + " " + attribute1.mWord + " "
-                    + attribute1.mFrequency);
+                    + attribute1.getProbability());
         }
         return hasDifferences;
     }
