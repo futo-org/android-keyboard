@@ -39,4 +39,10 @@ public class PersonalizationDictionary extends DecayingExpandableBinaryDictionar
         super(context, locale, Dictionary.TYPE_PERSONALIZATION, getDictNameWithLocale(NAME, locale),
                 dictFile);
     }
+
+    @Override
+    public boolean isValidWord(final String word) {
+        // Strings out of this dictionary should not be considered existing words.
+        return false;
+    }
 }
