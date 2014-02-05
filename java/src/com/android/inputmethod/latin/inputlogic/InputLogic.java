@@ -1723,9 +1723,8 @@ public final class InputLogic {
                 // the segment of text starting at the supplied index and running for the length
                 // of the auto-correction flash. At this moment, the "typedWord" argument is
                 // ignored by TextView.
-                mConnection.commitCorrection(
-                        new CorrectionInfo(
-                        mConnection.getExpectedSelectionEnd() - typedWord.length(),
+                mConnection.commitCorrection(new CorrectionInfo(
+                        mConnection.getExpectedSelectionEnd() - autoCorrection.length(),
                         typedWord, autoCorrection));
             }
         }
