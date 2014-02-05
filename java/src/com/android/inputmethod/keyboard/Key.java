@@ -267,12 +267,6 @@ public class Key implements Comparable<Key> {
                 R.styleable.Keyboard_Key_visualInsetsLeft, baseWidth, baseWidth, 0));
         final int visualInsetsRight = Math.round(keyAttr.getFraction(
                 R.styleable.Keyboard_Key_visualInsetsRight, baseWidth, baseWidth, 0));
-        mIconId = KeySpecParser.getIconId(style.getString(keyAttr,
-                R.styleable.Keyboard_Key_keyIcon));
-        final int disabledIconId = KeySpecParser.getIconId(style.getString(keyAttr,
-                R.styleable.Keyboard_Key_keyIconDisabled));
-        final int previewIconId = KeySpecParser.getIconId(style.getString(keyAttr,
-                R.styleable.Keyboard_Key_keyIconPreview));
 
         mLabelFlags = style.getFlags(keyAttr, R.styleable.Keyboard_Key_keyLabelFlags)
                 | row.getDefaultKeyLabelFlags();
@@ -321,8 +315,21 @@ public class Key implements Comparable<Key> {
         }
         mActionFlags = actionFlags;
 
-        final int code = KeySpecParser.parseCode(style.getString(keyAttr,
+        final String keySpec = style.getString(keyAttr, R.styleable.Keyboard_Key_keyLabel);
+
+        final int iconIdInAttr = KeySpecParser.getIconId(style.getString(keyAttr,
+                R.styleable.Keyboard_Key_keyIcon));
+        mIconId = (iconIdInAttr != ICON_UNDEFINED) ? iconIdInAttr
+                : KeySpecParser.getIconId(keySpec);
+        final int disabledIconId = KeySpecParser.getIconId(style.getString(keyAttr,
+                R.styleable.Keyboard_Key_keyIconDisabled));
+        final int previewIconId = KeySpecParser.getIconId(style.getString(keyAttr,
+                R.styleable.Keyboard_Key_keyIconPreview));
+
+        final int codeInAttr = KeySpecParser.parseCode(style.getString(keyAttr,
                 R.styleable.Keyboard_Key_code), params.mCodesSet, CODE_UNSPECIFIED);
+        final int code = (codeInAttr != CODE_UNSPECIFIED) ? codeInAttr
+                : KeySpecParser.getCode(keySpec, params.mCodesSet);
         if ((mLabelFlags & LABEL_FLAGS_FROM_CUSTOM_ACTION_LABEL) != 0) {
             mLabel = params.mId.mCustomActionLabel;
         } else if (code >= Character.MIN_SUPPLEMENTARY_CODE_POINT) {
@@ -331,8 +338,8 @@ public class Key implements Comparable<Key> {
             // code point nor as a surrogate pair.
             mLabel = new StringBuilder().appendCodePoint(code).toString();
         } else {
-            mLabel = StringUtils.toUpperCaseOfStringForLocale(style.getString(keyAttr,
-                    R.styleable.Keyboard_Key_keyLabel), needsToUpperCase, locale);
+            mLabel = StringUtils.toUpperCaseOfStringForLocale(
+                    KeySpecParser.getLabel(keySpec), needsToUpperCase, locale);
         }
         if ((mLabelFlags & LABEL_FLAGS_DISABLE_HINT_LABEL) != 0) {
             mHintLabel = null;
@@ -340,8 +347,12 @@ public class Key implements Comparable<Key> {
             mHintLabel = StringUtils.toUpperCaseOfStringForLocale(style.getString(keyAttr,
                     R.styleable.Keyboard_Key_keyHintLabel), needsToUpperCase, locale);
         }
-        String outputText = StringUtils.toUpperCaseOfStringForLocale(style.getString(keyAttr,
-                R.styleable.Keyboard_Key_keyOutputText), needsToUpperCase, locale);
+        final String outputTextInAttr = style.getString(
+                keyAttr, R.styleable.Keyboard_Key_keyOutputText);
+        final String rawOutputText = (outputTextInAttr != null) ? outputTextInAttr
+                : KeySpecParser.getOutputText(keySpec);
+        String outputText = StringUtils.toUpperCaseOfStringForLocale(
+                rawOutputText, needsToUpperCase, locale);
         // Choose the first letter of the label as primary code if not specified.
         if (code == CODE_UNSPECIFIED && TextUtils.isEmpty(outputText)
                 && !TextUtils.isEmpty(mLabel)) {
