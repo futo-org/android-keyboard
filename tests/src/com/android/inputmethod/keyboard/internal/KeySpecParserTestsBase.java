@@ -251,10 +251,6 @@ abstract class KeySpecParserTestsBase extends AndroidTestCase {
     }
 
     public void testFormatError() {
-        assertParserError("Null spec", null, null,
-                null, ICON_UNDEFINED, CODE_UNSPECIFIED);
-        assertParserError("Empty spec", "", null,
-                null, ICON_UNDEFINED, CODE_UNSPECIFIED);
         assertParserError("Single bar", "|",
                 "|", null, ICON_UNDEFINED, '|');
         assertParserError("Empty label with outputText", "|a",
