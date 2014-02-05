@@ -750,7 +750,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
 
     // TODO: Implement BinaryDictionary.isInDictionary().
     @UsedForTesting
-    public boolean isInDictionaryForTests(final String word) {
+    public boolean isInUnderlyingBinaryDictionaryForTests(final String word) {
         final AsyncResultHolder<Boolean> holder = new AsyncResultHolder<Boolean>();
         getExecutor(mDictName).executePrioritized(new Runnable() {
             @Override

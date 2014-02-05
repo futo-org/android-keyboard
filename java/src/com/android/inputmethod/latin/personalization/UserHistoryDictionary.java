@@ -45,4 +45,10 @@ public class UserHistoryDictionary extends DecayingExpandableBinaryDictionaryBas
     public void cancelAddingUserHistory(final String word0, final String word1) {
         removeBigramDynamically(word0, word1);
     }
+
+    @Override
+    public boolean isValidWord(final String word) {
+        // Strings out of this dictionary should not be considered existing words.
+        return false;
+    }
 }

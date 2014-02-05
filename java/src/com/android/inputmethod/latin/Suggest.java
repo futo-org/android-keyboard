@@ -127,21 +127,33 @@ public final class Suggest {
         mDictionaryFacilitator.getSuggestions(wordComposerForLookup, prevWordForBigram,
                 proximityInfo, blockOffensiveWords, additionalFeaturesOptions, SESSION_TYPING,
                 suggestionsSet);
+        final String firstSuggestion;
         final String whitelistedWord;
         if (suggestionsSet.isEmpty()) {
-            whitelistedWord = null;
-        } else if (SuggestedWordInfo.KIND_WHITELIST != suggestionsSet.first().mKind) {
-            whitelistedWord = null;
+            whitelistedWord = firstSuggestion = null;
         } else {
-            whitelistedWord = suggestionsSet.first().mWord;
+            final SuggestedWordInfo firstSuggestedWordInfo = suggestionsSet.first();
+            firstSuggestion = firstSuggestedWordInfo.mWord;
+            if (SuggestedWordInfo.KIND_WHITELIST != firstSuggestedWordInfo.mKind) {
+                whitelistedWord = null;
+            } else {
+                whitelistedWord = firstSuggestion;
+            }
         }
 
         // The word can be auto-corrected if it has a whitelist entry that is not itself,
         // or if it's a 2+ characters non-word (i.e. it's not in the dictionary).
+        // We allow auto-correction if we have a whitelisted word, or if the word is not a valid
+        // word of more than 1 char, except if the first suggestion is the same as the typed string
+        // because in this case if it's strong enough to auto-correct that will mistakenly designate
+        // the second candidate for auto-correction.
+        // TODO: stop relying on indices to find where is the auto-correction in the suggested
+        // words, and correct this test.
         final boolean allowsToBeAutoCorrected = (null != whitelistedWord
                 && !whitelistedWord.equals(consideredWord))
                 || (consideredWord.length() > 1 && !mDictionaryFacilitator.isValidWord(
-                        consideredWord, wordComposer.isFirstCharCapitalized()));
+                        consideredWord, wordComposer.isFirstCharCapitalized())
+                        && !consideredWord.equals(firstSuggestion));
 
         final boolean hasAutoCorrection;
         // TODO: using isCorrectionEnabled here is not very good. It's probably useless, because
