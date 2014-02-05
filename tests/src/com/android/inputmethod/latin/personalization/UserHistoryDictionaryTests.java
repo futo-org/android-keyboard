@@ -90,7 +90,7 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
             dict.waitAllTasksForTests();
             for (int i = 0; i < numberOfWords; ++i) {
                 final String word = words.get(i);
-                assertTrue(dict.isInDictionaryForTests(word));
+                assertTrue(dict.isInUnderlyingBinaryDictionaryForTests(word));
             }
         }
         // write to file.
