@@ -1616,7 +1616,10 @@ public final class InputLogic {
         if (SpaceState.PHANTOM == mSpaceState) {
             promotePhantomSpace(settingsValues);
         }
-        if (settingsValues.mPhraseGestureEnabled) {
+        final SuggestedWordInfo autoCommitCandidate = mSuggestedWords.getAutoCommitCandidate();
+        // Commit except the last word for phrase gesture if the top suggestion is eligible for auto
+        // commit.
+        if (settingsValues.mPhraseGestureEnabled && null != autoCommitCandidate) {
             // Find the last space
             final int indexOfLastSpace = batchInputText.lastIndexOf(Constants.CODE_SPACE) + 1;
             if (0 != indexOfLastSpace) {
