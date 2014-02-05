@@ -46,6 +46,9 @@ public final class MoreKeySpec {
 
     public MoreKeySpec(final String moreKeySpec, boolean needsToUpperCase, final Locale locale,
             final KeyboardCodesSet codesSet) {
+        if (TextUtils.isEmpty(moreKeySpec)) {
+            throw new KeySpecParser.KeySpecParserError("Empty more key spec");
+        }
         mLabel = StringUtils.toUpperCaseOfStringForLocale(
                 KeySpecParser.getLabel(moreKeySpec), needsToUpperCase, locale);
         final int code = StringUtils.toUpperCaseOfCodeForLocale(

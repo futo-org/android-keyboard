@@ -120,6 +120,10 @@ public final class KeySpecParser {
     }
 
     public static String getLabel(final String keySpec) {
+        if (keySpec == null) {
+            // TODO: Throw {@link KeySpecParserError} once Key.keyLabel attribute becomes mandatory.
+            return null;
+        }
         if (hasIcon(keySpec)) {
             return null;
         }
@@ -140,6 +144,10 @@ public final class KeySpecParser {
     }
 
     public static String getOutputText(final String keySpec) {
+        if (keySpec == null) {
+            // TODO: Throw {@link KeySpecParserError} once Key.keyLabel attribute becomes mandatory.
+            return null;
+        }
         final int labelEnd = indexOfLabelEnd(keySpec);
         if (hasCode(keySpec, labelEnd)) {
             return null;
@@ -165,6 +173,10 @@ public final class KeySpecParser {
     }
 
     public static int getCode(final String keySpec, final KeyboardCodesSet codesSet) {
+        if (keySpec == null) {
+            // TODO: Throw {@link KeySpecParserError} once Key.keyLabel attribute becomes mandatory.
+            return CODE_UNSPECIFIED;
+        }
         final int labelEnd = indexOfLabelEnd(keySpec);
         if (hasCode(keySpec, labelEnd)) {
             checkDoubleLabelEnd(keySpec, labelEnd);
@@ -187,6 +199,7 @@ public final class KeySpecParser {
         return (StringUtils.codePointCount(label) == 1) ? label.codePointAt(0) : CODE_OUTPUT_TEXT;
     }
 
+    // TODO: Make this method private once Key.code attribute is removed.
     public static int parseCode(final String text, final KeyboardCodesSet codesSet,
             final int defCode) {
         if (text == null) {
@@ -202,6 +215,10 @@ public final class KeySpecParser {
     }
 
     public static int getIconId(final String keySpec) {
+        if (keySpec == null) {
+            // TODO: Throw {@link KeySpecParserError} once Key.keyLabel attribute becomes mandatory.
+            return KeyboardIconsSet.ICON_UNDEFINED;
+        }
         if (!hasIcon(keySpec)) {
             return KeyboardIconsSet.ICON_UNDEFINED;
         }

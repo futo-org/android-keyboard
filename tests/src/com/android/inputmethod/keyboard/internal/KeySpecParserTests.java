@@ -16,6 +16,9 @@
 
 package com.android.inputmethod.keyboard.internal;
 
+import static com.android.inputmethod.keyboard.internal.KeyboardIconsSet.ICON_UNDEFINED;
+import static com.android.inputmethod.latin.Constants.CODE_UNSPECIFIED;
+
 import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.inputmethod.latin.Constants;
@@ -39,5 +42,14 @@ public final class KeySpecParserTests extends KeySpecParserTestsBase {
         assertEquals(message + " [code]",
                 Constants.printableCode(expectedCode),
                 Constants.printableCode(actualCode));
+    }
+
+    // TODO: Remove this method.
+    // These should throw {@link KeySpecParserError} when Key.keyLabel attribute become mandatory.
+    public void testEmptySpec() {
+        assertParser("Null spec", null,
+                null, null, ICON_UNDEFINED, CODE_UNSPECIFIED);
+        assertParser("Empty spec", "",
+                null, null, ICON_UNDEFINED, CODE_UNSPECIFIED);
     }
 }
