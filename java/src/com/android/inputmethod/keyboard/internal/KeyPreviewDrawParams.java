@@ -26,7 +26,6 @@ public final class KeyPreviewDrawParams {
     public final int mLayoutId;
     public final int mPreviewOffset;
     public final int mPreviewHeight;
-    // TODO: Move those parameters to preferences.
     public final int mZoomInDuration;
     public final int mZoomOutDuration;
     private int mLingerTimeout;
