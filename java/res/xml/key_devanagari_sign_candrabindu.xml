@@ -44,7 +44,6 @@
          U+0901: "ँ" DEVANAGARI SIGN CANDRABINDU -->
     <Key
         latin:keyStyle="moreKeysDevanagariSignCandrabindu"
-        latin:keyLabel="&#x25CC;&#x0901;"
-        latin:code="0x0901"
+        latin:keyLabel="&#x25CC;&#x0901;|&#x0901;"
         latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 </merge>

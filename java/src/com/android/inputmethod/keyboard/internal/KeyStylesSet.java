@@ -135,14 +135,12 @@ public final class KeyStylesSet {
 
         public void readKeyAttributes(final TypedArray keyAttr) {
             // TODO: Currently not all Key attributes can be declared as style.
-            readString(keyAttr, R.styleable.Keyboard_Key_code);
             readString(keyAttr, R.styleable.Keyboard_Key_altCode);
             readString(keyAttr, R.styleable.Keyboard_Key_keyLabel);
             readString(keyAttr, R.styleable.Keyboard_Key_keyHintLabel);
             readStringArray(keyAttr, R.styleable.Keyboard_Key_moreKeys);
             readStringArray(keyAttr, R.styleable.Keyboard_Key_additionalMoreKeys);
             readFlags(keyAttr, R.styleable.Keyboard_Key_keyLabelFlags);
-            readString(keyAttr, R.styleable.Keyboard_Key_keyIcon);
             readString(keyAttr, R.styleable.Keyboard_Key_keyIconDisabled);
             readString(keyAttr, R.styleable.Keyboard_Key_keyIconPreview);
             readInt(keyAttr, R.styleable.Keyboard_Key_maxMoreKeysColumn);

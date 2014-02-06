@@ -255,21 +255,13 @@
     <!-- Enter key style -->
     <key-style
         latin:styleName="defaultEnterKeyStyle"
-        latin:code="!code/key_enter"
-        latin:keyIcon="!icon/enter_key"
         latin:keyLabelFlags="preserveCase|autoXScale|followKeyLabelRatio"
         latin:keyActionFlags="noKeyPreview"
         latin:backgroundType="functional"
         latin:parentStyle="navigateMoreKeysStyle" />
     <key-style
         latin:styleName="shiftEnterKeyStyle"
-        latin:code="!code/key_shift_enter"
-        latin:parentStyle="defaultEnterKeyStyle" />
-    <key-style
-        latin:styleName="defaultActionEnterKeyStyle"
-        latin:code="!code/key_enter"
-        latin:keyIcon="!icon/undefined"
-        latin:backgroundType="action"
+        latin:keyLabel="!icon/enter_key|!code/key_shift_enter"
         latin:parentStyle="defaultEnterKeyStyle" />
     <switch>
         <!-- Shift + Enter in textMultiLine field. -->
@@ -281,66 +273,84 @@
                 latin:styleName="enterKeyStyle"
                 latin:parentStyle="shiftEnterKeyStyle" />
         </case>
+        <!-- Smiley in textShortMessage field.
+             This <case> should be after Shift + Enter <case> and before any of action <case>. -->
+        <case
+            latin:mode="im"
+        >
+            <key-style
+                latin:styleName="enterKeyStyle"
+                latin:parentStyle="emojiKeyStyle" />
+        </case>
         <case
             latin:imeAction="actionGo"
         >
             <key-style
                 latin:styleName="enterKeyStyle"
-                latin:keyLabel="!text/label_go_key"
-                latin:parentStyle="defaultActionEnterKeyStyle" />
+                latin:keyLabel="!text/label_go_key|!code/key_enter"
+                latin:backgroundType="action"
+                latin:parentStyle="defaultEnterKeyStyle" />
         </case>
         <case
             latin:imeAction="actionNext"
         >
             <key-style
                 latin:styleName="enterKeyStyle"
-                latin:keyLabel="!text/label_next_key"
-                latin:parentStyle="defaultActionEnterKeyStyle" />
+                latin:keyLabel="!text/label_next_key|!code/key_enter"
+                latin:backgroundType="action"
+                latin:parentStyle="defaultEnterKeyStyle" />
         </case>
         <case
             latin:imeAction="actionPrevious"
         >
             <key-style
                 latin:styleName="enterKeyStyle"
-                latin:keyLabel="!text/label_previous_key"
-                latin:parentStyle="defaultActionEnterKeyStyle" />
+                latin:keyLabel="!text/label_previous_key|!code/key_enter"
+                latin:backgroundType="action"
+                latin:parentStyle="defaultEnterKeyStyle" />
         </case>
         <case
             latin:imeAction="actionDone"
         >
             <key-style
                 latin:styleName="enterKeyStyle"
-                latin:keyLabel="!text/label_done_key"
-                latin:parentStyle="defaultActionEnterKeyStyle" />
+                latin:keyLabel="!text/label_done_key|!code/key_enter"
+                latin:backgroundType="action"
+                latin:parentStyle="defaultEnterKeyStyle" />
         </case>
         <case
             latin:imeAction="actionSend"
         >
             <key-style
                 latin:styleName="enterKeyStyle"
-                latin:keyLabel="!text/label_send_key"
-                latin:parentStyle="defaultActionEnterKeyStyle" />
+                latin:keyLabel="!text/label_send_key|!code/key_enter"
+                latin:backgroundType="action"
+                latin:parentStyle="defaultEnterKeyStyle" />
         </case>
         <case
             latin:imeAction="actionSearch"
         >
             <key-style
                 latin:styleName="enterKeyStyle"
-                latin:keyIcon="!icon/search_key"
-                latin:parentStyle="defaultActionEnterKeyStyle" />
+                latin:keyLabel="!icon/search_key|!code/key_enter"
+                latin:backgroundType="action"
+                latin:parentStyle="defaultEnterKeyStyle" />
         </case>
         <case
             latin:imeAction="actionCustomLabel"
         >
             <key-style
                 latin:styleName="enterKeyStyle"
+                latin:keyLabel="dummy_label|!code/key_enter"
                 latin:keyLabelFlags="fromCustomActionLabel"
-                latin:parentStyle="defaultActionEnterKeyStyle" />
+                latin:backgroundType="action"
+                latin:parentStyle="defaultEnterKeyStyle" />
         </case>
         <!-- imeAction is either actionNone or actionUnspecified. -->
         <default>
             <key-style
                 latin:styleName="enterKeyStyle"
+                latin:keyLabel="!icon/enter_key|!code/key_enter"
                 latin:parentStyle="defaultEnterKeyStyle" />
         </default>
     </switch>
