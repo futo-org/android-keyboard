@@ -1332,7 +1332,8 @@ public final class InputLogic {
         } else {
             // We found suggestion spans in the word. We'll create the SuggestedWords out of
             // them, and make willAutoCorrect false.
-            final SuggestedWords suggestedWords = new SuggestedWords(suggestions, typedWord,
+            final SuggestedWords suggestedWords = new SuggestedWords(suggestions,
+                    null /* rawSuggestions */, typedWord,
                     true /* typedWordValid */, false /* willAutoCorrect */,
                     false /* isPunctuationSuggestions */, false /* isObsoleteSuggestions */,
                     false /* isPrediction */, SuggestedWords.NOT_A_SEQUENCE_NUMBER);
