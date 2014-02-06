@@ -46,7 +46,8 @@ void HeaderPolicy::readHeaderValueOrQuestionMark(const char *const key, int *out
     }
     std::vector<int> keyCodePointVector;
     HeaderReadWriteUtils::insertCharactersIntoVector(key, &keyCodePointVector);
-    HeaderReadWriteUtils::AttributeMap::const_iterator it = mAttributeMap.find(keyCodePointVector);
+    DictionaryHeaderStructurePolicy::AttributeMap::const_iterator it =
+            mAttributeMap.find(keyCodePointVector);
     if (it == mAttributeMap.end()) {
         // The key was not found.
         outValue[0] = '?';
@@ -82,7 +83,7 @@ bool HeaderPolicy::fillInAndWriteHeaderToBuffer(const bool updatesLastDecayedTim
         const int unigramCount, const int bigramCount,
         const int extendedRegionSize, BufferWithExtendableBuffer *const outBuffer) const {
     int writingPos = 0;
-    HeaderReadWriteUtils::AttributeMap attributeMapToWrite(mAttributeMap);
+    DictionaryHeaderStructurePolicy::AttributeMap attributeMapToWrite(mAttributeMap);
     fillInHeader(updatesLastDecayedTime, unigramCount, bigramCount,
             extendedRegionSize, &attributeMapToWrite);
     if (!HeaderReadWriteUtils::writeDictionaryVersion(outBuffer, mDictFormatVersion,
@@ -113,7 +114,7 @@ bool HeaderPolicy::fillInAndWriteHeaderToBuffer(const bool updatesLastDecayedTim
 
 void HeaderPolicy::fillInHeader(const bool updatesLastDecayedTime, const int unigramCount,
         const int bigramCount, const int extendedRegionSize,
-        HeaderReadWriteUtils::AttributeMap *outAttributeMap) const {
+        DictionaryHeaderStructurePolicy::AttributeMap *outAttributeMap) const {
     HeaderReadWriteUtils::setIntAttribute(outAttributeMap, UNIGRAM_COUNT_KEY, unigramCount);
     HeaderReadWriteUtils::setIntAttribute(outAttributeMap, BIGRAM_COUNT_KEY, bigramCount);
     HeaderReadWriteUtils::setIntAttribute(outAttributeMap, EXTENDED_REGION_SIZE_KEY,
@@ -129,9 +130,9 @@ void HeaderPolicy::fillInHeader(const bool updatesLastDecayedTime, const int uni
     }
 }
 
-/* static */ HeaderReadWriteUtils::AttributeMap
+/* static */ DictionaryHeaderStructurePolicy::AttributeMap
         HeaderPolicy::createAttributeMapAndReadAllAttributes(const uint8_t *const dictBuf) {
-    HeaderReadWriteUtils::AttributeMap attributeMap;
+    DictionaryHeaderStructurePolicy::AttributeMap attributeMap;
     HeaderReadWriteUtils::fetchAllHeaderAttributes(dictBuf, &attributeMap);
     return attributeMap;
 }

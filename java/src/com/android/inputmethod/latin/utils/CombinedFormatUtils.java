@@ -37,11 +37,11 @@ public class CombinedFormatUtils {
     public static String formatAttributeMap(final HashMap<String, String> attributeMap) {
         final StringBuilder builder = new StringBuilder();
         builder.append(DICTIONARY_TAG + "=");
-        if (attributeMap.containsKey(DictionaryHeader.DICTIONARY_DESCRIPTION_KEY)) {
-            builder.append(attributeMap.get(DictionaryHeader.DICTIONARY_DESCRIPTION_KEY));
+        if (attributeMap.containsKey(DictionaryHeader.DICTIONARY_ID_KEY)) {
+            builder.append(attributeMap.get(DictionaryHeader.DICTIONARY_ID_KEY));
         }
         for (final String key : attributeMap.keySet()) {
-            if (key == DictionaryHeader.DICTIONARY_DESCRIPTION_KEY) {
+            if (key.equals(DictionaryHeader.DICTIONARY_ID_KEY)) {
                 continue;
             }
             final String value = attributeMap.get(key);

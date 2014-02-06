@@ -105,11 +105,6 @@ class Dictionary {
         return mDictionaryStructureWithBufferPolicy.get();
     }
 
-    int getFormatVersionNumber() const {
-        return mDictionaryStructureWithBufferPolicy.get()->getHeaderStructurePolicy()
-                ->getFormatVersionNumber();
-    }
-
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(Dictionary);
 

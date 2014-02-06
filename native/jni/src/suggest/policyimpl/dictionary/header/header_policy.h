@@ -57,7 +57,7 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
     // Constructs header information using an attribute map.
     HeaderPolicy(const FormatUtils::FORMAT_VERSION dictFormatVersion,
             const std::vector<int> locale,
-            const HeaderReadWriteUtils::AttributeMap *const attributeMap)
+            const DictionaryHeaderStructurePolicy::AttributeMap *const attributeMap)
             : mDictFormatVersion(dictFormatVersion),
               mDictionaryFlags(HeaderReadWriteUtils::createAndGetDictionaryFlagsUsingAttributeMap(
                       attributeMap)), mSize(0), mAttributeMap(*attributeMap), mLocale(locale),
@@ -155,6 +155,10 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
         return !isDecayingDict();
     }
 
+    const DictionaryHeaderStructurePolicy::AttributeMap *getAttributeMap() const {
+        return &mAttributeMap;
+    }
+
     void readHeaderValueOrQuestionMark(const char *const key,
             int *outValue, int outValueSize) const;
 
@@ -164,7 +168,7 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
 
     void fillInHeader(const bool updatesLastDecayedTime,
             const int unigramCount, const int bigramCount, const int extendedRegionSize,
-            HeaderReadWriteUtils::AttributeMap *outAttributeMap) const;
+            DictionaryHeaderStructurePolicy::AttributeMap *outAttributeMap) const;
 
  private:
     DISALLOW_COPY_AND_ASSIGN(HeaderPolicy);
@@ -185,7 +189,7 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
     const FormatUtils::FORMAT_VERSION mDictFormatVersion;
     const HeaderReadWriteUtils::DictionaryFlags mDictionaryFlags;
     const int mSize;
-    HeaderReadWriteUtils::AttributeMap mAttributeMap;
+    DictionaryHeaderStructurePolicy::AttributeMap mAttributeMap;
     const std::vector<int> mLocale;
     const float mMultiWordCostMultiplier;
     const bool mRequiresGermanUmlautProcessing;
@@ -201,7 +205,7 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
     float readMultipleWordCostMultiplier() const;
     bool readRequiresGermanUmlautProcessing() const;
 
-    static HeaderReadWriteUtils::AttributeMap createAttributeMapAndReadAllAttributes(
+    static DictionaryHeaderStructurePolicy::AttributeMap createAttributeMapAndReadAllAttributes(
             const uint8_t *const dictBuf);
 };
 } // namespace latinime

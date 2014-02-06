@@ -36,6 +36,8 @@ const int HeaderReadWriteUtils::HEADER_SIZE_FIELD_SIZE = 4;
 
 const HeaderReadWriteUtils::DictionaryFlags HeaderReadWriteUtils::NO_FLAGS = 0;
 
+typedef DictionaryHeaderStructurePolicy::AttributeMap AttributeMap;
+
 /* static */ int HeaderReadWriteUtils::getHeaderSize(const uint8_t *const dictBuf) {
     // See the format of the header in the comment in
     // BinaryDictionaryFormatUtils::detectFormatVersion()
@@ -51,7 +53,7 @@ const HeaderReadWriteUtils::DictionaryFlags HeaderReadWriteUtils::NO_FLAGS = 0;
 
 /* static */ HeaderReadWriteUtils::DictionaryFlags
         HeaderReadWriteUtils::createAndGetDictionaryFlagsUsingAttributeMap(
-                const HeaderReadWriteUtils::AttributeMap *const attributeMap) {
+                const AttributeMap *const attributeMap) {
     return NO_FLAGS;
 }
 

@@ -17,11 +17,10 @@
 #ifndef LATINIME_HEADER_READ_WRITE_UTILS_H
 #define LATINIME_HEADER_READ_WRITE_UTILS_H
 
-#include <map>
 #include <stdint.h>
-#include <vector>
 
 #include "defines.h"
+#include "suggest/core/policy/dictionary_header_structure_policy.h"
 #include "suggest/policyimpl/dictionary/utils/format_utils.h"
 
 namespace latinime {
@@ -31,7 +30,6 @@ class BufferWithExtendableBuffer;
 class HeaderReadWriteUtils {
  public:
     typedef uint16_t DictionaryFlags;
-    typedef std::map<std::vector<int>, std::vector<int> > AttributeMap;
 
     static int getHeaderSize(const uint8_t *const dictBuf);
 
@@ -43,10 +41,10 @@ class HeaderReadWriteUtils {
     }
 
     static DictionaryFlags createAndGetDictionaryFlagsUsingAttributeMap(
-            const HeaderReadWriteUtils::AttributeMap *const attributeMap);
+            const DictionaryHeaderStructurePolicy::AttributeMap *const attributeMap);
 
     static void fetchAllHeaderAttributes(const uint8_t *const dictBuf,
-            AttributeMap *const headerAttributes);
+            DictionaryHeaderStructurePolicy::AttributeMap *const headerAttributes);
 
     static bool writeDictionaryVersion(BufferWithExtendableBuffer *const buffer,
             const FormatUtils::FORMAT_VERSION version, int *const writingPos);
@@ -58,31 +56,38 @@ class HeaderReadWriteUtils {
             const int size, int *const writingPos);
 
     static bool writeHeaderAttributes(BufferWithExtendableBuffer *const buffer,
-            const AttributeMap *const headerAttributes, int *const writingPos);
+            const DictionaryHeaderStructurePolicy::AttributeMap *const headerAttributes,
+            int *const writingPos);
 
     /**
      * Methods for header attributes.
      */
-    static void setCodePointVectorAttribute(AttributeMap *const headerAttributes,
+    static void setCodePointVectorAttribute(
+            DictionaryHeaderStructurePolicy::AttributeMap *const headerAttributes,
             const char *const key, const std::vector<int> value);
 
-    static void setBoolAttribute(AttributeMap *const headerAttributes,
+    static void setBoolAttribute(
+            DictionaryHeaderStructurePolicy::AttributeMap *const headerAttributes,
             const char *const key, const bool value);
 
-    static void setIntAttribute(AttributeMap *const headerAttributes,
+    static void setIntAttribute(
+            DictionaryHeaderStructurePolicy::AttributeMap *const headerAttributes,
             const char *const key, const int value);
 
     static const std::vector<int> readCodePointVectorAttributeValue(
-            const AttributeMap *const headerAttributes, const char *const key);
+            const DictionaryHeaderStructurePolicy::AttributeMap *const headerAttributes,
+            const char *const key);
 
-    static bool readBoolAttributeValue(const AttributeMap *const headerAttributes,
+    static bool readBoolAttributeValue(
+            const DictionaryHeaderStructurePolicy::AttributeMap *const headerAttributes,
             const char *const key, const bool defaultValue);
 
-    static int readIntAttributeValue(const AttributeMap *const headerAttributes,
+    static int readIntAttributeValue(
+            const DictionaryHeaderStructurePolicy::AttributeMap *const headerAttributes,
             const char *const key, const int defaultValue);
 
     static void insertCharactersIntoVector(const char *const characters,
-            AttributeMap::key_type *const key);
+            DictionaryHeaderStructurePolicy::AttributeMap::key_type *const key);
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(HeaderReadWriteUtils);
@@ -98,11 +103,15 @@ class HeaderReadWriteUtils {
     // Value for the "flags" field. It's unused at the moment.
     static const DictionaryFlags NO_FLAGS;
 
-    static void setIntAttributeInner(AttributeMap *const headerAttributes,
-            const AttributeMap::key_type *const key, const int value);
+    static void setIntAttributeInner(
+            DictionaryHeaderStructurePolicy::AttributeMap *const headerAttributes,
+            const DictionaryHeaderStructurePolicy::AttributeMap::key_type *const key,
+            const int value);
 
-    static int readIntAttributeValueInner(const AttributeMap *const headerAttributes,
-            const AttributeMap::key_type *const key, const int defaultValue);
+    static int readIntAttributeValueInner(
+            const DictionaryHeaderStructurePolicy::AttributeMap *const headerAttributes,
+            const DictionaryHeaderStructurePolicy::AttributeMap::key_type *const key,
+            const int defaultValue);
 };
 }
 #endif /* LATINIME_HEADER_READ_WRITE_UTILS_H */

@@ -23,10 +23,12 @@ import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.makedict.DictionaryHeader;
 import com.android.inputmethod.latin.makedict.FormatSpec;
+import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
 import com.android.inputmethod.latin.makedict.WordProperty;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.utils.AsyncResultHolder;
 import com.android.inputmethod.latin.utils.CollectionUtils;
+import com.android.inputmethod.latin.utils.CombinedFormatUtils;
 import com.android.inputmethod.latin.utils.FileUtils;
 import com.android.inputmethod.latin.utils.LanguageModelParam;
 import com.android.inputmethod.latin.utils.PrioritizedSerialExecutor;
@@ -785,7 +787,14 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         getExecutor(mDictName).execute(new Runnable() {
             @Override
             public void run() {
-                Log.d(TAG, "dictionary=" + mDictName);
+                Log.d(TAG, "Dump dictionary: " + mDictName);
+                try {
+                    final DictionaryHeader header = mBinaryDictionary.getHeader();
+                    Log.d(TAG, CombinedFormatUtils.formatAttributeMap(
+                            header.mDictionaryOptions.mAttributes));
+                } catch (final UnsupportedFormatException e) {
+                    Log.d(TAG, "Cannot fetch header information.", e);
+                }
                 int token = 0;
                 do {
                     final BinaryDictionary.GetNextWordPropertyResult result =

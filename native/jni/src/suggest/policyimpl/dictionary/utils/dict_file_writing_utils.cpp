@@ -32,7 +32,7 @@ const char *const DictFileWritingUtils::TEMP_FILE_SUFFIX_FOR_WRITING_DICT_FILE =
 
 /* static */ bool DictFileWritingUtils::createEmptyDictFile(const char *const filePath,
         const int dictVersion, const std::vector<int> localeAsCodePointVector,
-        const HeaderReadWriteUtils::AttributeMap *const attributeMap) {
+        const DictionaryHeaderStructurePolicy::AttributeMap *const attributeMap) {
     TimeKeeper::setCurrentTime();
     switch (dictVersion) {
         case FormatUtils::VERSION_4:
@@ -46,7 +46,7 @@ const char *const DictFileWritingUtils::TEMP_FILE_SUFFIX_FOR_WRITING_DICT_FILE =
 
 /* static */ bool DictFileWritingUtils::createEmptyV4DictFile(const char *const dirPath,
         const std::vector<int> localeAsCodePointVector,
-        const HeaderReadWriteUtils::AttributeMap *const attributeMap) {
+        const DictionaryHeaderStructurePolicy::AttributeMap *const attributeMap) {
     HeaderPolicy headerPolicy(FormatUtils::VERSION_4, localeAsCodePointVector, attributeMap);
     Ver4DictBuffers::Ver4DictBuffersPtr dictBuffers =
             Ver4DictBuffers::createVer4DictBuffers(&headerPolicy);
