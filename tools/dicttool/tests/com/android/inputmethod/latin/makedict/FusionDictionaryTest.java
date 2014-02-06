@@ -20,7 +20,7 @@ import com.android.inputmethod.latin.makedict.FusionDictionary;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNode;
 import com.android.inputmethod.latin.makedict.FusionDictionary.DictionaryOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
-import com.android.inputmethod.latin.makedict.Word;
+import com.android.inputmethod.latin.makedict.WordProperty;
 
 import junit.framework.TestCase;
 
@@ -87,8 +87,8 @@ public class FusionDictionaryTest extends TestCase {
     }
 
     private void dumpDict(final FusionDictionary dict) {
-        for (Word w : dict) {
-            System.out.println("Word " + dumpWord(w.mWord));
+        for (WordProperty wordProperty : dict) {
+            System.out.println("Word " + dumpWord(wordProperty.mWord));
         }
     }
 

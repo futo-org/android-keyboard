@@ -19,6 +19,8 @@ package com.android.inputmethod.latin.makedict;
 import com.android.inputmethod.latin.BinaryDictionary;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
 
+import java.util.Arrays;
+
 public final class ProbabilityInfo {
     public final int mProbability;
     // mTimestamp, mLevel and mCount are historical info. These values are depend on the
@@ -45,19 +47,29 @@ public final class ProbabilityInfo {
     }
 
     @Override
+    public int hashCode() {
+        if (hasHistoricalInfo()) {
+            return Arrays.hashCode(new Object[] { mProbability, mTimestamp, mLevel, mCount });
+        } else {
+            return Arrays.hashCode(new Object[] { mProbability });
+        }
+    }
+
+    @Override
     public String toString() {
-        return mTimestamp + ":" + mLevel + ":" + mCount;
+        return "f=" + mProbability + (hasHistoricalInfo() ?
+                ",historicalInfo=" + mTimestamp + ":" + mLevel + ":" + mCount : "");
     }
 
     @Override
     public boolean equals(Object o) {
-      if (o == this) return true;
-      if (!(o instanceof ProbabilityInfo)) return false;
-      final ProbabilityInfo p = (ProbabilityInfo)o;
-      if (!hasHistoricalInfo() && !p.hasHistoricalInfo()) {
-          return mProbability == p.mProbability;
-      }
-      return mProbability == p.mProbability && mTimestamp == p.mTimestamp && mLevel == p.mLevel
-              && mCount == p.mCount;
-  }
+        if (o == this) return true;
+        if (!(o instanceof ProbabilityInfo)) return false;
+        final ProbabilityInfo p = (ProbabilityInfo)o;
+        if (!hasHistoricalInfo() && !p.hasHistoricalInfo()) {
+            return mProbability == p.mProbability;
+        }
+        return mProbability == p.mProbability && mTimestamp == p.mTimestamp && mLevel == p.mLevel
+                && mCount == p.mCount;
+    }
 }

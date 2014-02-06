@@ -19,7 +19,7 @@ package com.android.inputmethod.latin.dicttool;
 import com.android.inputmethod.latin.makedict.FusionDictionary;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNode;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
-import com.android.inputmethod.latin.makedict.Word;
+import com.android.inputmethod.latin.makedict.WordProperty;
 
 import java.util.Arrays;
 import java.util.ArrayList;
@@ -108,42 +108,46 @@ public class Diff extends Dicttool.Command {
 
     private static void diffWords(final FusionDictionary dict0, final FusionDictionary dict1) {
         boolean hasDifferences = false;
-        for (final Word word0 : dict0) {
-            final PtNode word1 = FusionDictionary.findWordInTree(dict1.mRootNodeArray,
-                    word0.mWord);
-            if (null == word1) {
+        for (final WordProperty word0Property : dict0) {
+            final PtNode word1PtNode = FusionDictionary.findWordInTree(dict1.mRootNodeArray,
+                    word0Property.mWord);
+            if (null == word1PtNode) {
                 // This word is not in dict1
-                System.out.println("Deleted: " + word0.mWord + " " + word0.mFrequency);
+                System.out.println("Deleted: " + word0Property.mWord + " "
+                        + word0Property.getProbability());
                 hasDifferences = true;
             } else {
                 // We found the word. Compare frequencies, shortcuts, bigrams
-                if (word0.mFrequency != word1.getFrequency()) {
-                    System.out.println("Freq changed: " + word0.mWord + " " + word0.mFrequency
-                            + " -> " + word1.getFrequency());
+                if (word0Property.getProbability() != word1PtNode.getFrequency()) {
+                    System.out.println("Probability changed: " + word0Property.mWord + " "
+                            + word0Property.getProbability() + " -> " + word1PtNode.getFrequency());
                     hasDifferences = true;
                 }
-                if (word0.mIsNotAWord != word1.getIsNotAWord()) {
-                    System.out.println("Not a word: " + word0.mWord + " " + word0.mIsNotAWord
-                            + " -> " + word1.getIsNotAWord());
+                if (word0Property.mIsNotAWord != word1PtNode.getIsNotAWord()) {
+                    System.out.println("Not a word: " + word0Property.mWord + " "
+                            + word0Property.mIsNotAWord + " -> " + word1PtNode.getIsNotAWord());
                     hasDifferences = true;
                 }
-                if (word0.mIsBlacklistEntry != word1.getIsBlacklistEntry()) {
-                    System.out.println("Blacklist: " + word0.mWord + " " + word0.mIsBlacklistEntry
-                            + " -> " + word1.getIsBlacklistEntry());
+                if (word0Property.mIsBlacklistEntry != word1PtNode.getIsBlacklistEntry()) {
+                    System.out.println("Blacklist: " + word0Property.mWord + " "
+                            + word0Property.mIsBlacklistEntry + " -> "
+                            + word1PtNode.getIsBlacklistEntry());
                     hasDifferences = true;
                 }
-                hasDifferences |= hasAttributesDifferencesAndPrintThemIfAny(word0.mWord,
-                        "Bigram", word0.mBigrams, word1.getBigrams());
-                hasDifferences |= hasAttributesDifferencesAndPrintThemIfAny(word0.mWord,
-                        "Shortcut", word0.mShortcutTargets, word1.getShortcutTargets());
+                hasDifferences |= hasAttributesDifferencesAndPrintThemIfAny(word0Property.mWord,
+                        "Bigram", word0Property.mBigrams, word1PtNode.getBigrams());
+                hasDifferences |= hasAttributesDifferencesAndPrintThemIfAny(word0Property.mWord,
+                        "Shortcut", word0Property.mShortcutTargets,
+                        word1PtNode.getShortcutTargets());
             }
         }
-        for (final Word word1 : dict1) {
-            final PtNode word0 = FusionDictionary.findWordInTree(dict0.mRootNodeArray,
-                    word1.mWord);
-            if (null == word0) {
+        for (final WordProperty word1Property : dict1) {
+            final PtNode word0PtNode = FusionDictionary.findWordInTree(dict0.mRootNodeArray,
+                    word1Property.mWord);
+            if (null == word0PtNode) {
                 // This word is not in dict0
-                System.out.println("Added: " + word1.mWord + " " + word1.mFrequency);
+                System.out.println("Added: " + word1Property.mWord + " "
+                        + word1Property.getProbability());
                 hasDifferences = true;
             }
         }
