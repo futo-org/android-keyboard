@@ -101,12 +101,6 @@
         latin:keyLabelFlags="hasPopupHint"
         latin:keyActionFlags="noKeyPreview" />
     <key-style
-        latin:styleName="smileyKeyStyle"
-        latin:keyLabel=":-)"
-        latin:keyOutputText=":-) "
-        latin:keyLabelFlags="hasPopupHint|preserveCase"
-        latin:moreKeys="!text/more_keys_for_smiley" />
-    <key-style
         latin:styleName="shortcutKeyStyle"
         latin:code="!code/key_shortcut"
         latin:keyIcon="!icon/shortcut_key"

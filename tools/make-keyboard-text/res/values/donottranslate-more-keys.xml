@@ -215,7 +215,6 @@
     <string name="keylabel_for_popular_domain">".com"</string>
     <!-- popular web domains for the locale - most popular, displayed on the keyboard -->
     <string name="more_keys_for_popular_domain">"!hasLabels!,.net,.org,.gov,.edu"</string>
-    <string name="more_keys_for_smiley">"!fixedColumnOrder!5,!hasLabels!,=-O|=-O ,:-P|:-P ,;-)|;-) ,:-(|:-( ,:-)|:-) ,:-!|:-! ,:-$|:-$ ,B-)|B-) ,:O|:O ,:-*|:-* ,:-D|:-D ,:\'(|:\'( ,:-\\\\|:-\\\\ ,O:-)|O:-) ,:-[|:-[ "</string>
     <!-- U+2039: "‹" SINGLE LEFT-POINTING ANGLE QUOTATION MARK
          U+203A: "›" SINGLE RIGHT-POINTING ANGLE QUOTATION MARK
          U+00AB: "«" LEFT-POINTING DOUBLE ANGLE QUOTATION MARK
