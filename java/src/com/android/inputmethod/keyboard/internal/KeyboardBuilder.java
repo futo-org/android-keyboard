@@ -276,9 +276,9 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
 
             params.mThemeId = keyboardAttr.getInt(R.styleable.Keyboard_themeId, 0);
             params.mIconsSet.loadIcons(keyboardAttr);
-            final String language = params.mId.mLocale.getLanguage();
-            params.mCodesSet.setLanguage(language);
-            params.mTextsSet.setLanguage(language);
+            final Locale locale = params.mId.mLocale;
+            params.mCodesSet.setLocale(locale);
+            params.mTextsSet.setLocale(locale);
             final RunInLocale<Void> job = new RunInLocale<Void>() {
                 @Override
                 protected Void job(final Resources res) {
@@ -287,9 +287,8 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
                 }
             };
             // Null means the current system locale.
-            final Locale locale = SubtypeLocaleUtils.isNoLanguage(params.mId.mSubtype)
-                    ? null : params.mId.mLocale;
-            job.runInLocale(mResources, locale);
+            job.runInLocale(mResources,
+                    SubtypeLocaleUtils.isNoLanguage(params.mId.mSubtype) ? null : locale);
 
             final int resourceId = keyboardAttr.getResourceId(
                     R.styleable.Keyboard_touchPositionCorrectionData, 0);
