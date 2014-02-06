@@ -29,4 +29,7 @@ public final class ProductionFlag {
     public static final boolean USES_DEVELOPMENT_ONLY_DIAGNOSTICS_DEBUG = false;
 
     public static final boolean IS_HARDWARE_KEYBOARD_SUPPORTED = false;
+
+    // Include all suggestions from all dictionaries in {@link SuggestedWords#mRawSuggestions}.
+    public static final boolean INCLUDE_RAW_SUGGESTIONS = false;
 }
