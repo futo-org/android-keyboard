@@ -17,6 +17,9 @@
 #ifndef LATINIME_DICTIONARY_HEADER_STRUCTURE_POLICY_H
 #define LATINIME_DICTIONARY_HEADER_STRUCTURE_POLICY_H
 
+#include <map>
+#include <vector>
+
 #include "defines.h"
 
 namespace latinime {
@@ -27,9 +30,15 @@ namespace latinime {
  */
 class DictionaryHeaderStructurePolicy {
  public:
+    typedef std::map<std::vector<int>, std::vector<int> > AttributeMap;
+
     virtual ~DictionaryHeaderStructurePolicy() {}
 
     virtual int getFormatVersionNumber() const = 0;
+
+    virtual int getSize() const = 0;
+
+    virtual const AttributeMap *getAttributeMap() const = 0;
 
     virtual bool requiresGermanUmlautProcessing() const = 0;
 
