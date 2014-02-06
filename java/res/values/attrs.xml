@@ -276,9 +276,6 @@
             <flag name="altCodeWhileTyping" value="0x04" />
             <flag name="enableLongPress" value="0x08" />
         </attr>
-        <!-- TODO: Remove keyOutputText attribute and consolidate with keySpec. -->
-        <!-- The string of characters to output when this key is pressed. -->
-        <attr name="keyOutputText" format="string" />
         <!-- TODO: Rename keyLabel to keySpec. -->
         <!-- The label to display on the key. -->
         <attr name="keyLabel" format="string" />

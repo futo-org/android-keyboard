@@ -347,12 +347,8 @@ public class Key implements Comparable<Key> {
             mHintLabel = StringUtils.toUpperCaseOfStringForLocale(style.getString(keyAttr,
                     R.styleable.Keyboard_Key_keyHintLabel), needsToUpperCase, locale);
         }
-        final String outputTextInAttr = style.getString(
-                keyAttr, R.styleable.Keyboard_Key_keyOutputText);
-        final String rawOutputText = (outputTextInAttr != null) ? outputTextInAttr
-                : KeySpecParser.getOutputText(keySpec);
         String outputText = StringUtils.toUpperCaseOfStringForLocale(
-                rawOutputText, needsToUpperCase, locale);
+                KeySpecParser.getOutputText(keySpec), needsToUpperCase, locale);
         // Choose the first letter of the label as primary code if not specified.
         if (code == CODE_UNSPECIFIED && TextUtils.isEmpty(outputText)
                 && !TextUtils.isEmpty(mLabel)) {
