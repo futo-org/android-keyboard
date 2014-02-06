@@ -169,6 +169,14 @@
     <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"เลือกไฟล์พจนานุกรมที่จะติดตั้ง"</string>
     <string name="read_external_dictionary_confirm_install_message" msgid="6898610163768980870">"ติดตั้งไฟล์นี้สำหรับ <xliff:g id="LOCALE_NAME">%s</xliff:g> จริงๆ หรือ"</string>
     <string name="error" msgid="8940763624668513648">"เกิดข้อผิดพลาด"</string>
+    <!-- no translation found for prefs_dump_contacts_dict (7227327764402323097) -->
+    <skip />
+    <!-- no translation found for prefs_dump_user_dict (294870685041741951) -->
+    <skip />
+    <!-- no translation found for prefs_dump_user_history_dict (6821075152449554628) -->
+    <skip />
+    <!-- no translation found for prefs_dump_personalization_dict (7558387996151745284) -->
+    <skip />
     <string name="button_default" msgid="3988017840431881491">"ค่าเริ่มต้น"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"ยินดีต้อนรับสู่ <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"พร้อมการป้อนข้อมูลด้วยท่าทาง"</string>
