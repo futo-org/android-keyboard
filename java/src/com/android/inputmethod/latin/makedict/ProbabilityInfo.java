@@ -17,7 +17,7 @@
 package com.android.inputmethod.latin.makedict;
 
 import com.android.inputmethod.latin.BinaryDictionary;
-import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
+import com.android.inputmethod.latin.utils.CombinedFormatUtils;
 
 import java.util.Arrays;
 
@@ -57,8 +57,7 @@ public final class ProbabilityInfo {
 
     @Override
     public String toString() {
-        return "f=" + mProbability + (hasHistoricalInfo() ?
-                ",historicalInfo=" + mTimestamp + ":" + mLevel + ":" + mCount : "");
+        return CombinedFormatUtils.formatProbabilityInfo(this);
     }
 
     @Override
