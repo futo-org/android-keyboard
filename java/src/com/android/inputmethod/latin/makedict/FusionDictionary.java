@@ -436,25 +436,25 @@ public final class FusionDictionary implements Iterable<WordProperty> {
     /**
      * Helper method to add a new bigram to the dictionary.
      *
-     * @param word1 the previous word of the context
-     * @param word2 the next word of the context
+     * @param word0 the previous word of the context
+     * @param word1 the next word of the context
      * @param frequency the bigram frequency
      */
-    public void setBigram(final String word1, final String word2, final int frequency) {
-        PtNode ptNode = findWordInTree(mRootNodeArray, word1);
-        if (ptNode != null) {
-            final PtNode ptNode2 = findWordInTree(mRootNodeArray, word2);
-            if (ptNode2 == null) {
-                add(getCodePoints(word2), 0, null, false /* isNotAWord */,
+    public void setBigram(final String word0, final String word1, final int frequency) {
+        PtNode ptNode0 = findWordInTree(mRootNodeArray, word0);
+        if (ptNode0 != null) {
+            final PtNode ptNode1 = findWordInTree(mRootNodeArray, word1);
+            if (ptNode1 == null) {
+                add(getCodePoints(word1), 0, null, false /* isNotAWord */,
                         false /* isBlacklistEntry */);
                 // The PtNode for the first word may have moved by the above insertion,
                 // if word1 and word2 share a common stem that happens not to have been
                 // a cutting point until now. In this case, we need to refresh ptNode.
-                ptNode = findWordInTree(mRootNodeArray, word1);
+                ptNode0 = findWordInTree(mRootNodeArray, word0);
             }
-            ptNode.addBigram(word2, frequency);
+            ptNode0.addBigram(word1, frequency);
         } else {
-            throw new RuntimeException("First word of bigram not found");
+            throw new RuntimeException("First word of bigram not found " + word0);
         }
     }
 
