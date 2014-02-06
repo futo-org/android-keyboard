@@ -32,7 +32,7 @@ import java.util.jar.JarFile;
 public class MoreKeysResources {
     private static final String TEXT_RESOURCE_NAME = "donottranslate-more-keys.xml";
 
-    private static final String JAVA_TEMPLATE = "KeyboardTextsSet.tmpl";
+    private static final String JAVA_TEMPLATE = "KeyboardTextsTable.tmpl";
     private static final String MARK_NAMES = "@NAMES@";
     private static final String MARK_DEFAULT_TEXTS = "@DEFAULT_TEXTS@";
     private static final String MARK_TEXTS = "@TEXTS@";
