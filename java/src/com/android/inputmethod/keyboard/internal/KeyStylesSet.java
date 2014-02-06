@@ -138,7 +138,6 @@ public final class KeyStylesSet {
             readString(keyAttr, R.styleable.Keyboard_Key_code);
             readString(keyAttr, R.styleable.Keyboard_Key_altCode);
             readString(keyAttr, R.styleable.Keyboard_Key_keyLabel);
-            readString(keyAttr, R.styleable.Keyboard_Key_keyOutputText);
             readString(keyAttr, R.styleable.Keyboard_Key_keyHintLabel);
             readStringArray(keyAttr, R.styleable.Keyboard_Key_moreKeys);
             readStringArray(keyAttr, R.styleable.Keyboard_Key_additionalMoreKeys);
