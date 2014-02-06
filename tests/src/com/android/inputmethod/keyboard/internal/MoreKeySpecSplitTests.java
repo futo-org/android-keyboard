@@ -41,7 +41,7 @@ public class MoreKeySpecSplitTests extends InstrumentationTestCase {
 
         final Instrumentation instrumentation = getInstrumentation();
         final Context targetContext = instrumentation.getTargetContext();
-        mTextsSet.setLanguage(TEST_LOCALE.getLanguage());
+        mTextsSet.setLocale(TEST_LOCALE);
         new RunInLocale<Void>() {
             @Override
             protected Void job(final Resources res) {

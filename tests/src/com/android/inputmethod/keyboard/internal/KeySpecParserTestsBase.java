@@ -52,9 +52,8 @@ abstract class KeySpecParserTestsBase extends AndroidTestCase {
     protected void setUp() throws Exception {
         super.setUp();
 
-        final String language = TEST_LOCALE.getLanguage();
-        mCodesSet.setLanguage(language);
-        mTextsSet.setLanguage(language);
+        mCodesSet.setLocale(TEST_LOCALE);
+        mTextsSet.setLocale(TEST_LOCALE);
         final Context context = getContext();
         new RunInLocale<Void>() {
             @Override

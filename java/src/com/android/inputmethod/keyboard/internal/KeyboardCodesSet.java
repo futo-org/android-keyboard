@@ -18,20 +18,20 @@ package com.android.inputmethod.keyboard.internal;
 
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.utils.CollectionUtils;
+import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 
 import java.util.HashMap;
+import java.util.Locale;
 
 public final class KeyboardCodesSet {
     public static final String PREFIX_CODE = "!code/";
 
-    private static final HashMap<String, int[]> sLanguageToCodesMap = CollectionUtils.newHashMap();
     private static final HashMap<String, Integer> sNameToIdMap = CollectionUtils.newHashMap();
 
     private int[] mCodes = DEFAULT;
 
-    public void setLanguage(final String language) {
-        final int[] codes = sLanguageToCodesMap.get(language);
-        mCodes = (codes != null) ? codes : DEFAULT;
+    public void setLocale(final Locale locale) {
+        mCodes = SubtypeLocaleUtils.isRtlLanguage(locale) ? RTL : DEFAULT;
     }
 
     public int getCode(final String name) {
@@ -134,30 +134,12 @@ public final class KeyboardCodesSet {
         CODE_LEFT_CURLY_BRACKET,
     };
 
-    private static final String LANGUAGE_DEFAULT = "DEFAULT";
-    private static final String LANGUAGE_ARABIC = "ar";
-    private static final String LANGUAGE_PERSIAN = "fa";
-    private static final String LANGUAGE_HEBREW = "iw";
-
-    private static final Object[] LANGUAGE_AND_CODES = {
-        LANGUAGE_DEFAULT, DEFAULT,
-        LANGUAGE_ARABIC, RTL,
-        LANGUAGE_PERSIAN, RTL,
-        LANGUAGE_HEBREW, RTL,
-    };
-
     static {
         if (DEFAULT.length != RTL.length || DEFAULT.length != ID_TO_NAME.length) {
             throw new RuntimeException("Internal inconsistency");
         }
         for (int i = 0; i < ID_TO_NAME.length; i++) {
             sNameToIdMap.put(ID_TO_NAME[i], i);
-        }
-
-        for (int i = 0; i < LANGUAGE_AND_CODES.length; i += 2) {
-            final String language = (String)LANGUAGE_AND_CODES[i];
-            final int[] codes = (int[])LANGUAGE_AND_CODES[i + 1];
-            sLanguageToCodesMap.put(language, codes);
         }
     }
 }
