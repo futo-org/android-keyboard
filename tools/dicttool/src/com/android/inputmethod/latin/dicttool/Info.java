@@ -20,7 +20,7 @@ import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.makedict.FusionDictionary;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNode;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
-import com.android.inputmethod.latin.makedict.Word;
+import com.android.inputmethod.latin.makedict.WordProperty;
 
 import java.util.Arrays;
 import java.util.ArrayList;
@@ -43,14 +43,14 @@ public class Info extends Dicttool.Command {
         int bigramCount = 0;
         int shortcutCount = 0;
         int whitelistCount = 0;
-        for (final Word w : dict) {
+        for (final WordProperty wordProperty : dict) {
             ++wordCount;
-            if (null != w.mBigrams) {
-                bigramCount += w.mBigrams.size();
+            if (null != wordProperty.mBigrams) {
+                bigramCount += wordProperty.mBigrams.size();
             }
-            if (null != w.mShortcutTargets) {
-                shortcutCount += w.mShortcutTargets.size();
-                for (WeightedString shortcutTarget : w.mShortcutTargets) {
+            if (null != wordProperty.mShortcutTargets) {
+                shortcutCount += wordProperty.mShortcutTargets.size();
+                for (WeightedString shortcutTarget : wordProperty.mShortcutTargets) {
                     if (FormatSpec.SHORTCUT_WHITELIST_FREQUENCY
                             == shortcutTarget.getProbability()) {
                         ++whitelistCount;

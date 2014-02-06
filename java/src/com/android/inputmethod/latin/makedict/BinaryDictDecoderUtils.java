@@ -606,19 +606,21 @@ public final class BinaryDictDecoderUtils {
 
         FusionDictionary newDict = new FusionDictionary(root, fileHeader.mDictionaryOptions);
         if (null != dict) {
-            for (final Word w : dict) {
-                if (w.mIsBlacklistEntry) {
-                    newDict.addBlacklistEntry(w.mWord, w.mShortcutTargets, w.mIsNotAWord);
+            for (final WordProperty wordProperty : dict) {
+                if (wordProperty.mIsBlacklistEntry) {
+                    newDict.addBlacklistEntry(wordProperty.mWord, wordProperty.mShortcutTargets,
+                            wordProperty.mIsNotAWord);
                 } else {
-                    newDict.add(w.mWord, w.mFrequency, w.mShortcutTargets, w.mIsNotAWord);
+                    newDict.add(wordProperty.mWord, wordProperty.getProbability(),
+                            wordProperty.mShortcutTargets, wordProperty.mIsNotAWord);
                 }
             }
-            for (final Word w : dict) {
+            for (final WordProperty wordProperty : dict) {
                 // By construction a binary dictionary may not have bigrams pointing to
                 // words that are not also registered as unigrams so we don't have to avoid
                 // them explicitly here.
-                for (final WeightedString bigram : w.mBigrams) {
-                    newDict.setBigram(w.mWord, bigram.mWord, bigram.getProbability());
+                for (final WeightedString bigram : wordProperty.mBigrams) {
+                    newDict.setBigram(wordProperty.mWord, bigram.mWord, bigram.getProbability());
                 }
             }
         }

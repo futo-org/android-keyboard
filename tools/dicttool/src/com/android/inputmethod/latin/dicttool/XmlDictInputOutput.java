@@ -20,7 +20,7 @@ import com.android.inputmethod.latin.makedict.FusionDictionary;
 import com.android.inputmethod.latin.makedict.FusionDictionary.DictionaryOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
-import com.android.inputmethod.latin.makedict.Word;
+import com.android.inputmethod.latin.makedict.WordProperty;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -52,7 +52,7 @@ public class XmlDictInputOutput {
     private static final String WORD_TAG = "w";
     private static final String BIGRAM_TAG = "bigram";
     private static final String SHORTCUT_TAG = "shortcut";
-    private static final String FREQUENCY_ATTR = "f";
+    private static final String PROBABILITY_ATTR = "f";
     private static final String WORD_ATTR = "word";
     private static final String NOT_A_WORD_ATTR = "not_a_word";
 
@@ -107,7 +107,7 @@ public class XmlDictInputOutput {
                 mWord = "";
                 for (int attrIndex = 0; attrIndex < attrs.getLength(); ++attrIndex) {
                     final String attrName = attrs.getLocalName(attrIndex);
-                    if (FREQUENCY_ATTR.equals(attrName)) {
+                    if (PROBABILITY_ATTR.equals(attrName)) {
                         mFreq = Integer.parseInt(attrs.getValue(attrIndex));
                     }
                 }
@@ -348,9 +348,9 @@ public class XmlDictInputOutput {
      */
     public static void writeDictionaryXml(Writer destination, FusionDictionary dict)
             throws IOException {
-        final TreeSet<Word> set = new TreeSet<Word>();
-        for (Word word : dict) {
-            set.add(word);
+        final TreeSet<WordProperty> wordPropertiesInDict = new TreeSet<WordProperty>();
+        for (WordProperty wordProperty : dict) {
+            wordPropertiesInDict.add(wordProperty);
         }
         // TODO: use an XMLSerializer if this gets big
         destination.write("<wordlist format=\"2\"");
@@ -361,23 +361,24 @@ public class XmlDictInputOutput {
         }
         destination.write(">\n");
         destination.write("<!-- Warning: there is no code to read this format yet. -->\n");
-        for (Word word : set) {
-            destination.write("  <" + WORD_TAG + " " + WORD_ATTR + "=\"" + word.mWord + "\" "
-                    + FREQUENCY_ATTR + "=\"" + word.mFrequency
-                    + (word.mIsNotAWord ? "\" " + NOT_A_WORD_ATTR + "=\"true" : "") + "\">");
-            if (null != word.mShortcutTargets) {
+        for (WordProperty wordProperty : wordPropertiesInDict) {
+            destination.write("  <" + WORD_TAG + " " + WORD_ATTR + "=\"" + wordProperty.mWord
+                    + "\" " + PROBABILITY_ATTR + "=\"" + wordProperty.getProbability()
+                    + (wordProperty.mIsNotAWord ? "\" " + NOT_A_WORD_ATTR + "=\"true" : "")
+                    + "\">");
+            if (null != wordProperty.mShortcutTargets) {
                 destination.write("\n");
-                for (WeightedString target : word.mShortcutTargets) {
-                    destination.write("    <" + SHORTCUT_TAG + " " + FREQUENCY_ATTR + "=\""
+                for (WeightedString target : wordProperty.mShortcutTargets) {
+                    destination.write("    <" + SHORTCUT_TAG + " " + PROBABILITY_ATTR + "=\""
                             + target.getProbability() + "\">" + target.mWord + "</" + SHORTCUT_TAG
                             + ">\n");
                 }
                 destination.write("  ");
             }
-            if (null != word.mBigrams) {
+            if (null != wordProperty.mBigrams) {
                 destination.write("\n");
-                for (WeightedString bigram : word.mBigrams) {
-                    destination.write("    <" + BIGRAM_TAG + " " + FREQUENCY_ATTR + "=\""
+                for (WeightedString bigram : wordProperty.mBigrams) {
+                    destination.write("    <" + BIGRAM_TAG + " " + PROBABILITY_ATTR + "=\""
                             + bigram.getProbability() + "\">" + bigram.mWord
                             + "</" + BIGRAM_TAG + ">\n");
                 }

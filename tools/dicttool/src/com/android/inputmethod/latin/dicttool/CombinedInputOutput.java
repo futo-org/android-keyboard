@@ -21,7 +21,7 @@ import com.android.inputmethod.latin.makedict.FusionDictionary;
 import com.android.inputmethod.latin.makedict.FusionDictionary.DictionaryOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
-import com.android.inputmethod.latin.makedict.Word;
+import com.android.inputmethod.latin.makedict.WordProperty;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -45,7 +45,7 @@ public class CombinedInputOutput {
     private static final String DICTIONARY_TAG = "dictionary";
     private static final String BIGRAM_TAG = "bigram";
     private static final String SHORTCUT_TAG = "shortcut";
-    private static final String FREQUENCY_TAG = "f";
+    private static final String PROBABILITY_TAG = "f";
     private static final String WORD_TAG = "word";
     private static final String NOT_A_WORD_TAG = "not_a_word";
     private static final String WHITELIST_TAG = "whitelist";
@@ -138,7 +138,7 @@ public class CombinedInputOutput {
                     if (2 != params.length) throw new RuntimeException("Wrong format : " + line);
                     if (WORD_TAG.equals(params[0])) {
                         word = params[1];
-                    } else if (FREQUENCY_TAG.equals(params[0])) {
+                    } else if (PROBABILITY_TAG.equals(params[0])) {
                         freq = Integer.parseInt(params[1]);
                     } else if (NOT_A_WORD_TAG.equals(params[0])) {
                         isNotAWord = "true".equals(params[1]);
@@ -152,7 +152,7 @@ public class CombinedInputOutput {
                     if (2 != params.length) throw new RuntimeException("Wrong format : " + line);
                     if (SHORTCUT_TAG.equals(params[0])) {
                         shortcut = params[1];
-                    } else if (FREQUENCY_TAG.equals(params[0])) {
+                    } else if (PROBABILITY_TAG.equals(params[0])) {
                         shortcutFreq = WHITELIST_TAG.equals(params[1])
                                 ? FormatSpec.SHORTCUT_WHITELIST_FREQUENCY
                                 : Integer.parseInt(params[1]);
@@ -171,7 +171,7 @@ public class CombinedInputOutput {
                     if (2 != params.length) throw new RuntimeException("Wrong format : " + line);
                     if (BIGRAM_TAG.equals(params[0])) {
                         secondWordOfBigram = params[1];
-                    } else if (FREQUENCY_TAG.equals(params[0])) {
+                    } else if (PROBABILITY_TAG.equals(params[0])) {
                         bigramFreq = Integer.parseInt(params[1]);
                     }
                 }
@@ -200,9 +200,10 @@ public class CombinedInputOutput {
      */
     public static void writeDictionaryCombined(Writer destination, FusionDictionary dict)
             throws IOException {
-        final TreeSet<Word> set = new TreeSet<Word>();
-        for (Word word : dict) {
-            set.add(word); // This for ordering by frequency, then by asciibetic order
+        final TreeSet<WordProperty> wordPropertiesInDict = new TreeSet<WordProperty>();
+        for (WordProperty wordProperty: dict) {
+            // This for ordering by frequency, then by asciibetic order
+            wordPropertiesInDict.add(wordProperty);
         }
         final HashMap<String, String> options = dict.mOptions.mAttributes;
         destination.write(DICTIONARY_TAG + "=");
@@ -215,20 +216,20 @@ public class CombinedInputOutput {
             destination.write("," + key + "=" + value);
         }
         destination.write("\n");
-        for (Word word : set) {
-            destination.write(" " + WORD_TAG + "=" + word.mWord + ","
-                    + FREQUENCY_TAG + "=" + word.mFrequency
-                    + (word.mIsNotAWord ? "," + NOT_A_WORD_TAG + "=true\n" : "\n"));
-            if (null != word.mShortcutTargets) {
-                for (WeightedString target : word.mShortcutTargets) {
+        for (WordProperty wordProperty : wordPropertiesInDict) {
+            destination.write(" " + WORD_TAG + "=" + wordProperty.mWord + ","
+                    + PROBABILITY_TAG + "=" + wordProperty.getProbability()
+                    + (wordProperty.mIsNotAWord ? "," + NOT_A_WORD_TAG + "=true\n" : "\n"));
+            if (null != wordProperty.mShortcutTargets) {
+                for (WeightedString target : wordProperty.mShortcutTargets) {
                     destination.write("  " + SHORTCUT_TAG + "=" + target.mWord + ","
-                            + FREQUENCY_TAG + "=" + target.getProbability() + "\n");
+                            + PROBABILITY_TAG + "=" + target.getProbability() + "\n");
                 }
             }
-            if (null != word.mBigrams) {
-                for (WeightedString bigram : word.mBigrams) {
+            if (null != wordProperty.mBigrams) {
+                for (WeightedString bigram : wordProperty.mBigrams) {
                     destination.write("  " + BIGRAM_TAG + "=" + bigram.mWord + ","
-                            + FREQUENCY_TAG + "=" + bigram.getProbability() + "\n");
+                            + PROBABILITY_TAG + "=" + bigram.getProbability() + "\n");
                 }
             }
         }
