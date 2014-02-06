@@ -468,10 +468,6 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
 
         runReadUnigramsAndBigramsTests(results, BinaryDictUtils.USE_BYTE_BUFFER,
                 BinaryDictUtils.VERSION2_OPTIONS);
-        runReadUnigramsAndBigramsTests(results, BinaryDictUtils.USE_BYTE_BUFFER,
-                BinaryDictUtils.VERSION4_OPTIONS_WITHOUT_TIMESTAMP);
-        runReadUnigramsAndBigramsTests(results, BinaryDictUtils.USE_BYTE_BUFFER,
-                BinaryDictUtils.VERSION4_OPTIONS_WITH_TIMESTAMP);
 
         for (final String result : results) {
             Log.d(TAG, result);
@@ -483,10 +479,6 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
 
         runReadUnigramsAndBigramsTests(results, BinaryDictUtils.USE_BYTE_ARRAY,
                 BinaryDictUtils.VERSION2_OPTIONS);
-        runReadUnigramsAndBigramsTests(results, BinaryDictUtils.USE_BYTE_ARRAY,
-                BinaryDictUtils.VERSION4_OPTIONS_WITHOUT_TIMESTAMP);
-        runReadUnigramsAndBigramsTests(results, BinaryDictUtils.USE_BYTE_ARRAY,
-                BinaryDictUtils.VERSION4_OPTIONS_WITH_TIMESTAMP);
 
         for (final String result : results) {
             Log.d(TAG, result);
@@ -597,17 +589,8 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
 
         runGetTerminalPositionTests(BinaryDictUtils.USE_BYTE_ARRAY,
                 BinaryDictUtils.VERSION2_OPTIONS);
-        runGetTerminalPositionTests(BinaryDictUtils.USE_BYTE_ARRAY,
-                BinaryDictUtils.VERSION4_OPTIONS_WITHOUT_TIMESTAMP);
-        runGetTerminalPositionTests(BinaryDictUtils.USE_BYTE_ARRAY,
-                BinaryDictUtils.VERSION4_OPTIONS_WITH_TIMESTAMP);
-
         runGetTerminalPositionTests(BinaryDictUtils.USE_BYTE_BUFFER,
                 BinaryDictUtils.VERSION2_OPTIONS);
-        runGetTerminalPositionTests(BinaryDictUtils.USE_BYTE_BUFFER,
-                BinaryDictUtils.VERSION4_OPTIONS_WITHOUT_TIMESTAMP);
-        runGetTerminalPositionTests(BinaryDictUtils.USE_BYTE_BUFFER,
-                BinaryDictUtils.VERSION4_OPTIONS_WITH_TIMESTAMP);
 
         for (final String result : results) {
             Log.d(TAG, result);

@@ -22,6 +22,7 @@ import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.DictBuffer;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -222,5 +223,50 @@ public abstract class AbstractDictDecoder implements DictDecoder {
     @Override
     public boolean hasValidRawBinaryDictionary() {
         return checkHeader() == SUCCESS;
+    }
+
+    // Placeholder implementations below. These are actually unused.
+    @Override
+    public void openDictBuffer() throws FileNotFoundException, IOException,
+            UnsupportedFormatException {
+    }
+
+    @Override
+    public boolean isDictBufferOpen() {
+        return false;
+    }
+
+    @Override
+    public PtNodeInfo readPtNode(final int ptNodePos, final FormatOptions options) {
+        return null;
+    }
+
+    @Override
+    public void setPosition(int newPos) {
+    }
+
+    @Override
+    public int getPosition() {
+        return 0;
+    }
+
+    @Override
+    public int readPtNodeCount() {
+        return 0;
+    }
+
+    @Override
+    public boolean readAndFollowForwardLink() {
+        return false;
+    }
+
+    @Override
+    public boolean hasNextPtNodeArray() {
+        return false;
+    }
+
+    @Override
+    @UsedForTesting
+    public void skipPtNode(final FormatOptions formatOptions) {
     }
 }
