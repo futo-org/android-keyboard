@@ -34,19 +34,19 @@
          U+2190: "←" LEFTWARDS ARROW
          U+2192: "→" RIGHTWARDS ARROW -->
     <Key
-        latin:keyLabel="^"
+        latin:keySpec="^"
         latin:moreKeys="&#x2191;,&#x2193;,&#x2190;,&#x2192;" />
     <!-- U+00B0: "°" DEGREE SIGN
          U+2032: "′" PRIME
          U+2033: "″" DOUBLE PRIME -->
     <Key
-        latin:keyLabel="&#x00B0;"
+        latin:keySpec="&#x00B0;"
         latin:moreKeys="&#x2032;,&#x2033;" />
     <!-- U+2260: "≠" NOT EQUAL TO
          U+2248: "≈" ALMOST EQUAL TO
          U+221E: "∞" INFINITY -->
     <Key
-        latin:keyLabel="="
+        latin:keySpec="="
         latin:moreKeys="&#x2260;,&#x2248;,&#x221E;" />
     <include
         latin:keyboardLayout="@xml/keys_curly_brackets" />

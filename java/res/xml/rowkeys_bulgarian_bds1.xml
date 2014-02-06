@@ -23,57 +23,57 @@
 >
     <!-- U+0443: "у" CYRILLIC SMALL LETTER U -->
     <Key
-        latin:keyLabel="&#x0443;"
+        latin:keySpec="&#x0443;"
         latin:keyHintLabel="1"
         latin:additionalMoreKeys="1" />
     <!-- U+0435: "е" CYRILLIC SMALL LETTER IE -->
     <Key
-        latin:keyLabel="&#x0435;"
+        latin:keySpec="&#x0435;"
         latin:keyHintLabel="2"
         latin:additionalMoreKeys="2" />
     <!-- U+0438: "и" CYRILLIC SMALL LETTER I
          U+045D: "ѝ" CYRILLIC SMALL LETTER I WITH GRAVE -->
     <Key
-        latin:keyLabel="&#x0438;"
+        latin:keySpec="&#x0438;"
         latin:keyHintLabel="3"
         latin:additionalMoreKeys="3"
         latin:moreKeys="&#x045D;" />
     <!-- U+0448: "ш" CYRILLIC SMALL LETTER SHA -->
     <Key
-        latin:keyLabel="&#x0448;"
+        latin:keySpec="&#x0448;"
         latin:keyHintLabel="4"
         latin:additionalMoreKeys="4" />
     <!-- U+0449: "щ" CYRILLIC SMALL LETTER SHCHA -->
     <Key
-        latin:keyLabel="&#x0449;"
+        latin:keySpec="&#x0449;"
         latin:keyHintLabel="5"
         latin:additionalMoreKeys="5" />
     <!-- U+043A: "к" CYRILLIC SMALL LETTER KA -->
     <Key
-        latin:keyLabel="&#x043A;"
+        latin:keySpec="&#x043A;"
         latin:keyHintLabel="6"
         latin:additionalMoreKeys="6" />
     <!-- U+0441: "с" CYRILLIC SMALL LETTER ES -->
     <Key
-        latin:keyLabel="&#x0441;"
+        latin:keySpec="&#x0441;"
         latin:keyHintLabel="7"
         latin:additionalMoreKeys="7" />
     <!-- U+0434: "д" CYRILLIC SMALL LETTER DE -->
     <Key
-        latin:keyLabel="&#x0434;"
+        latin:keySpec="&#x0434;"
         latin:keyHintLabel="8"
         latin:additionalMoreKeys="8" />
     <!-- U+0437: "з" CYRILLIC SMALL LETTER ZE -->
     <Key
-        latin:keyLabel="&#x0437;"
+        latin:keySpec="&#x0437;"
         latin:keyHintLabel="9"
         latin:additionalMoreKeys="9" />
     <!-- U+0446: "ц" CYRILLIC SMALL LETTER TSE -->
     <Key
-        latin:keyLabel="&#x0446;"
+        latin:keySpec="&#x0446;"
         latin:keyHintLabel="0"
         latin:additionalMoreKeys="0" />
     <!-- U+0431: "б" CYRILLIC SMALL LETTER BE -->
     <Key
-        latin:keyLabel="&#x0431;" />
+        latin:keySpec="&#x0431;" />
 </merge>

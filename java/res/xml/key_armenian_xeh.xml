@@ -23,6 +23,6 @@
 >
     <!-- U+056D: "խ" ARMENIAN SMALL LETTER XEH -->
     <Key
-        latin:keyLabel="&#x056D;"
+        latin:keySpec="&#x056D;"
         latin:keyLabelFlags="fontNormal" />
 </merge>

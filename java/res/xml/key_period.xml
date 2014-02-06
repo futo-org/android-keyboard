@@ -39,7 +39,7 @@
         </case>
         <default>
             <Key
-                latin:keyLabel="!text/keylabel_for_period"
+                latin:keySpec="!text/keylabel_for_period"
                 latin:keyHintLabel="!text/keyhintlabel_for_period"
                 latin:keyLabelFlags="hasPopupHint|hasShiftedLetterHint"
                 latin:moreKeys="!text/more_keys_for_period"

@@ -27,109 +27,109 @@
         >
             <!-- U+17B6/U+17C6: "ាំ" KHMER VOWEL SIGN AA/KHMER SIGN NIKAHIT -->
             <Key
-                latin:keyLabel="&#x17B6;&#x17C6;"
+                latin:keySpec="&#x17B6;&#x17C6;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <!-- U+17C3: "ៃ" KHMER VOWEL SIGN AI -->
             <Key
-                latin:keyLabel="&#x17C3;"
+                latin:keySpec="&#x17C3;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+178C: "ឌ" KHMER LETTER DO -->
             <Key
-                latin:keyLabel="&#x178C;"
+                latin:keySpec="&#x178C;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+1792: "ធ" KHMER LETTER THO -->
             <Key
-                latin:keyLabel="&#x1792;"
+                latin:keySpec="&#x1792;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+17A2: "អ" KHMER LETTER QA -->
             <Key
-                latin:keyLabel="&#x17A2;"
+                latin:keySpec="&#x17A2;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+17C7: "ះ" KHMER SIGN REAHMUK
                  U+17C8: "ៈ" KHMER SIGN YUUKALEAPINTU;-->
             <Key
-                latin:keyLabel="&#x17C7;"
+                latin:keySpec="&#x17C7;"
                 latin:keyHintLabel="&#x17C8;"
                 latin:moreKeys="&#x17C8;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+1789: "ញ" KHMER LETTER NYO -->
             <Key
-                latin:keyLabel="&#x1789;"
+                latin:keySpec="&#x1789;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+1782: "គ" KHMER LETTER KO
                  U+179D: "ឝ" KHMER LETTER SHA -->
             <Key
-                latin:keyLabel="&#x1782;"
+                latin:keySpec="&#x1782;"
                 latin:keyHintLabel="&#x179D;"
                 latin:moreKeys="&#x179D;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+17A1: "ឡ" KHMER LETTER LA -->
             <Key
-                latin:keyLabel="&#x17A1;"
+                latin:keySpec="&#x17A1;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+17C4/U+17C7: "ោះ" KHMER VOWEL SIGN OO/KHMER SIGN REAHMUK -->
             <Key
-                latin:keyLabel="&#x17C4;&#x17C7;"
+                latin:keySpec="&#x17C4;&#x17C7;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio|autoScale" />
             <!-- U+17C9: "៉" KHMER SIGN MUUSIKATOAN -->
             <Key
-                latin:keyLabel="&#x17C9;"
+                latin:keySpec="&#x17C9;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+17AF: "ឯ" KHMER INDEPENDENT VOWEL QE -->
             <Key
-                latin:keyLabel="&#x17AF;"
+                latin:keySpec="&#x17AF;"
                 latin:keyLabelFlags="fontNormal" />
         </case>
         <default>
             <!-- U+17B6: "ា" KHMER VOWEL SIGN AA -->
             <Key
-                latin:keyLabel="&#x17B6;"
+                latin:keySpec="&#x17B6;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+179F: "ស" KHMER LETTER SA -->
             <Key
-                latin:keyLabel="&#x179F;"
+                latin:keySpec="&#x179F;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+178A: "ដ" KHMER LETTER DA -->
             <Key
-                latin:keyLabel="&#x178A;"
+                latin:keySpec="&#x178A;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+1790: "ថ" KHMER LETTER THA -->
             <Key
-                latin:keyLabel="&#x1790;"
+                latin:keySpec="&#x1790;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+1784: "ង" KHMER LETTER NGO -->
             <Key
-                latin:keyLabel="&#x1784;"
+                latin:keySpec="&#x1784;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+17A0: "ហ" KHMER LETTER HA -->
             <Key
-                latin:keyLabel="&#x17A0;"
+                latin:keySpec="&#x17A0;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+17D2: "្" KHMER SIGN COENG -->
             <Key
-                latin:keyLabel="&#x17D2;"
+                latin:keySpec="&#x17D2;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+1780: "ក" KHMER LETTER KA -->
             <Key
-                latin:keyLabel="&#x1780;"
+                latin:keySpec="&#x1780;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+179B: "ល" KHMER LETTER LO -->
             <Key
-                latin:keyLabel="&#x179B;"
+                latin:keySpec="&#x179B;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+17BE: "ើ" KHMER VOWEL SIGN OE -->
             <Key
-                latin:keyLabel="&#x17BE;"
+                latin:keySpec="&#x17BE;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+17CB: "់" KHMER SIGN BANTOC -->
             <Key
-                latin:keyLabel="&#x17CB;"
+                latin:keySpec="&#x17CB;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+17AE: "ឮ" KHMER INDEPENDENT VOWEL LYY
                  U+17AD: "ឭ" KHMER INDEPENDENT VOWEL LY
                  U+17B0: "ឰ" KHMER INDEPENDENT VOWEL QAI -->
             <Key
-                latin:keyLabel="&#x17AE;"
+                latin:keySpec="&#x17AE;"
                 latin:keyHintLabel="&#x17AD;"
                 latin:moreKeys="&#x17AD;,&#x17B0;"
                 latin:keyLabelFlags="fontNormal" />

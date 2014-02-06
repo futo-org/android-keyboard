@@ -458,8 +458,8 @@ public final class KeyboardTextsSet {
         /* 128 */ "!icon/shortcut_key|!code/key_shortcut",
         /* 129 */ "!hasLabels!,!text/label_next_key|!code/key_action_next",
         /* 130 */ "!hasLabels!,!text/label_previous_key|!code/key_action_previous",
-        // Label for "switch to more symbol" modifier key.  Must be short to fit on key!
-        /* 131 */ "= \\ <",
+        // Label for "switch to more symbol" modifier key ("= \ <"). Must be short to fit on key!
+        /* 131 */ "= \\\\ <",
         // Label for "switch to more symbol" modifier key on tablets.  Must be short to fit on key!
         /* 132 */ "~ [ <",
         // Label for "Tab" key.  Must be short to fit on key!

@@ -271,9 +271,8 @@
             <flag name="altCodeWhileTyping" value="0x04" />
             <flag name="enableLongPress" value="0x08" />
         </attr>
-        <!-- TODO: Rename keyLabel to keySpec. -->
-        <!-- The label to display on the key. -->
-        <attr name="keyLabel" format="string" />
+        <!-- The label, icon to display on the key. And code, outputText of the key. -->
+        <attr name="keySpec" format="string" />
         <!-- The hint label to display on the key in conjunction with the label. -->
         <attr name="keyHintLabel" format="string" />
         <!-- The vertical adjustment of key hint label in proportion to its height. -->

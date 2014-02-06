@@ -27,13 +27,13 @@
         >
             <!-- U+0E05: "ฅ" THAI CHARACTER KHO KHON -->
             <Key
-                latin:keyLabel="&#x0E05;"
+                latin:keySpec="&#x0E05;"
                 latin:keyLabelFlags="fontNormal" />
         </case>
         <default>
             <!-- U+0E03: "ฃ" THAI CHARACTER KHO KHUAT -->
             <Key
-                latin:keyLabel="&#x0E03;"
+                latin:keySpec="&#x0E03;"
                 latin:keyLabelFlags="fontNormal" />
         </default>
     </switch>

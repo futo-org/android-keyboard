@@ -23,29 +23,29 @@
 >
     <Row>
         <Key
-            latin:keyLabel="-"
+            latin:keySpec="-"
             latin:keyStyle="numKeyStyle"
             latin:keyWidth="10%p"
             latin:backgroundType="functional" />
         <Key
-            latin:keyLabel="+"
+            latin:keySpec="+"
             latin:keyStyle="numKeyStyle"
             latin:keyWidth="10%p"
             latin:backgroundType="functional" />
         <Key
-            latin:keyLabel="."
+            latin:keySpec="."
             latin:keyStyle="numKeyStyle"
             latin:keyWidth="10%p"
             latin:backgroundType="functional" />
         <Key
-            latin:keyLabel="1"
+            latin:keySpec="1"
             latin:keyStyle="numKeyStyle"
             latin:keyXPos="31%p" />
         <Key
-            latin:keyLabel="2"
+            latin:keySpec="2"
             latin:keyStyle="numKeyStyle" />
         <Key
-            latin:keyLabel="3"
+            latin:keySpec="3"
             latin:keyStyle="numKeyStyle" />
         <Key
             latin:keyStyle="deleteKeyStyle"
@@ -58,7 +58,7 @@
             latin:keyWidth="10%p"
             latin:backgroundType="functional" />
         <Key
-            latin:keyLabel="/"
+            latin:keySpec="/"
             latin:keyStyle="numKeyStyle"
             latin:keyWidth="10%p"
             latin:backgroundType="functional" />
@@ -67,7 +67,7 @@
                 latin:mode="time|datetime"
             >
                 <Key
-                    latin:keyLabel=","
+                    latin:keySpec=","
                     latin:keyLabelFlags="hasPopupHint"
                     latin:moreKeys="!text/more_keys_for_am_pm"
                     latin:keyStyle="numKeyStyle"
@@ -76,21 +76,21 @@
             </case>
             <default>
                 <Key
-                    latin:keyLabel=","
+                    latin:keySpec=","
                     latin:keyStyle="numKeyStyle"
                     latin:keyWidth="10%p"
                     latin:backgroundType="functional" />
             </default>
         </switch>
         <Key
-            latin:keyLabel="4"
+            latin:keySpec="4"
             latin:keyStyle="numKeyStyle"
             latin:keyXPos="31%p" />
         <Key
-            latin:keyLabel="5"
+            latin:keySpec="5"
             latin:keyStyle="numKeyStyle" />
         <Key
-            latin:keyLabel="6"
+            latin:keySpec="6"
             latin:keyStyle="numKeyStyle" />
         <Key
             latin:keyStyle="enterKeyStyle"
@@ -99,12 +99,12 @@
     </Row>
     <Row>
         <Key
-            latin:keyLabel="("
+            latin:keySpec="("
             latin:keyStyle="numKeyStyle"
             latin:keyWidth="10%p"
             latin:backgroundType="functional" />
         <Key
-            latin:keyLabel=")"
+            latin:keySpec=")"
             latin:keyStyle="numKeyStyle"
             latin:keyWidth="10%p"
             latin:backgroundType="functional" />
@@ -113,28 +113,28 @@
                 latin:mode="time|datetime"
             >
                 <Key
-                    latin:keyLabel=":"
+                    latin:keySpec=":"
                     latin:keyStyle="numKeyStyle"
                     latin:keyWidth="10%p"
                     latin:backgroundType="functional" />
             </case>
             <default>
                 <Key
-                    latin:keyLabel="="
+                    latin:keySpec="="
                     latin:keyStyle="numKeyStyle"
                     latin:keyWidth="10%p"
                     latin:backgroundType="functional" />
             </default>
         </switch>
         <Key
-            latin:keyLabel="7"
+            latin:keySpec="7"
             latin:keyStyle="numKeyStyle"
             latin:keyXPos="31%p" />
         <Key
-            latin:keyLabel="8"
+            latin:keySpec="8"
             latin:keyStyle="numKeyStyle" />
         <Key
-            latin:keyLabel="9"
+            latin:keySpec="9"
             latin:keyStyle="numKeyStyle" />
         <!-- Note: This Spacer prevents the above key from being marked as a right edge key. -->
         <Spacer />
@@ -148,10 +148,10 @@
             latin:keyStyle="numStarKeyStyle"
             latin:keyXPos="31%p" />
         <Key
-            latin:keyLabel="0"
+            latin:keySpec="0"
             latin:keyStyle="numKeyStyle" />
         <Key
-            latin:keyLabel="\#"
+            latin:keySpec="\#"
             latin:keyStyle="numKeyStyle" />
         <!-- Note: This Spacer prevents the above key from being marked as a right edge key. -->
         <Spacer

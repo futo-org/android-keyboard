@@ -28,7 +28,7 @@
             latin:keyStyle="toSymbolKeyStyle"
             latin:keyWidth="15%p" />
         <Key
-            latin:keyLabel="q"
+            latin:keySpec="q"
             latin:backgroundType="normal"
             latin:additionalMoreKeys="!text/shortcut_as_more_key"
             latin:keyStyle="f1MoreKeysStyle" />
@@ -36,7 +36,7 @@
             latin:keyXPos="25%p"
             latin:keyboardLayout="@xml/key_space_5kw" />
         <Key
-            latin:keyLabel="z"
+            latin:keySpec="z"
             latin:keyLabelFlags="hasPopupHint"
             latin:moreKeys="!text/more_keys_for_punctuation,!text/more_keys_for_z" />
         <Key

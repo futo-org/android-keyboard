@@ -22,14 +22,14 @@
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
     <Key
-        latin:keyLabel="!text/keylabel_for_tablet_comma"
+        latin:keySpec="!text/keylabel_for_tablet_comma"
         latin:keyHintLabel="!text/keyhintlabel_for_tablet_comma"
         latin:keyLabelFlags="hasPopupHint"
         latin:moreKeys="!text/more_keys_for_tablet_comma"
         latin:backgroundType="functional"
         latin:keyStyle="hasShiftedLetterHintStyle" />
     <Key
-        latin:keyLabel="!text/keylabel_for_tablet_period"
+        latin:keySpec="!text/keylabel_for_tablet_period"
         latin:keyHintLabel="!text/keyhintlabel_for_tablet_period"
         latin:keyLabelFlags="hasPopupHint"
         latin:moreKeys="!text/more_keys_for_tablet_period"

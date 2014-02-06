@@ -261,7 +261,7 @@
         latin:parentStyle="navigateMoreKeysStyle" />
     <key-style
         latin:styleName="shiftEnterKeyStyle"
-        latin:keyLabel="!icon/enter_key|!code/key_shift_enter"
+        latin:keySpec="!icon/enter_key|!code/key_shift_enter"
         latin:parentStyle="defaultEnterKeyStyle" />
     <switch>
         <!-- Shift + Enter in textMultiLine field. -->
@@ -287,7 +287,7 @@
         >
             <key-style
                 latin:styleName="enterKeyStyle"
-                latin:keyLabel="!text/label_go_key|!code/key_enter"
+                latin:keySpec="!text/label_go_key|!code/key_enter"
                 latin:backgroundType="action"
                 latin:parentStyle="defaultEnterKeyStyle" />
         </case>
@@ -296,7 +296,7 @@
         >
             <key-style
                 latin:styleName="enterKeyStyle"
-                latin:keyLabel="!text/label_next_key|!code/key_enter"
+                latin:keySpec="!text/label_next_key|!code/key_enter"
                 latin:backgroundType="action"
                 latin:parentStyle="defaultEnterKeyStyle" />
         </case>
@@ -305,7 +305,7 @@
         >
             <key-style
                 latin:styleName="enterKeyStyle"
-                latin:keyLabel="!text/label_previous_key|!code/key_enter"
+                latin:keySpec="!text/label_previous_key|!code/key_enter"
                 latin:backgroundType="action"
                 latin:parentStyle="defaultEnterKeyStyle" />
         </case>
@@ -314,7 +314,7 @@
         >
             <key-style
                 latin:styleName="enterKeyStyle"
-                latin:keyLabel="!text/label_done_key|!code/key_enter"
+                latin:keySpec="!text/label_done_key|!code/key_enter"
                 latin:backgroundType="action"
                 latin:parentStyle="defaultEnterKeyStyle" />
         </case>
@@ -323,7 +323,7 @@
         >
             <key-style
                 latin:styleName="enterKeyStyle"
-                latin:keyLabel="!text/label_send_key|!code/key_enter"
+                latin:keySpec="!text/label_send_key|!code/key_enter"
                 latin:backgroundType="action"
                 latin:parentStyle="defaultEnterKeyStyle" />
         </case>
@@ -332,7 +332,7 @@
         >
             <key-style
                 latin:styleName="enterKeyStyle"
-                latin:keyLabel="!icon/search_key|!code/key_enter"
+                latin:keySpec="!icon/search_key|!code/key_enter"
                 latin:backgroundType="action"
                 latin:parentStyle="defaultEnterKeyStyle" />
         </case>
@@ -341,7 +341,7 @@
         >
             <key-style
                 latin:styleName="enterKeyStyle"
-                latin:keyLabel="dummy_label|!code/key_enter"
+                latin:keySpec="dummy_label|!code/key_enter"
                 latin:keyLabelFlags="fromCustomActionLabel"
                 latin:backgroundType="action"
                 latin:parentStyle="defaultEnterKeyStyle" />
@@ -350,7 +350,7 @@
         <default>
             <key-style
                 latin:styleName="enterKeyStyle"
-                latin:keyLabel="!icon/enter_key|!code/key_enter"
+                latin:keySpec="!icon/enter_key|!code/key_enter"
                 latin:parentStyle="defaultEnterKeyStyle" />
         </default>
     </switch>

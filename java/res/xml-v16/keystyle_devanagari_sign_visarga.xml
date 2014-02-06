@@ -28,6 +28,6 @@
     <!-- U+0903: "ः" DEVANAGARI SIGN VISARGA -->
     <key-style
         latin:styleName="baseKeyDevanagariSignVisarga"
-        latin:keyLabel="&#x0903;"
+        latin:keySpec="&#x0903;"
         latin:keyLabelFlags="fontNormal" />
 </merge>

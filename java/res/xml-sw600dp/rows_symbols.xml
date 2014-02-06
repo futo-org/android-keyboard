@@ -51,9 +51,9 @@
             latin:keyStyle="toMoreSymbolKeyStyle"
             latin:keyWidth="10.0%p" />
         <Key
-            latin:keyLabel="\\" />
+            latin:keySpec="\\" />
         <Key
-            latin:keyLabel="=" />
+            latin:keySpec="=" />
         <include
             latin:keyboardLayout="@xml/rowkeys_symbols3" />
         <Key

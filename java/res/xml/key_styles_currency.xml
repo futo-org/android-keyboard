@@ -113,21 +113,21 @@
                  U+00A2: "¢" CENT SIGN -->
             <key-style
                 latin:styleName="currencyKeyStyle"
-                latin:keyLabel="!text/keylabel_for_currency"
+                latin:keySpec="!text/keylabel_for_currency"
                 latin:moreKeys="!text/more_keys_for_currency" />
             <key-style
                 latin:styleName="moreCurrency1KeyStyle"
-                latin:keyLabel="&#x00A3;" />
+                latin:keySpec="&#x00A3;" />
             <key-style
                 latin:styleName="moreCurrency2KeyStyle"
-                latin:keyLabel="&#x20AC;" />
+                latin:keySpec="&#x20AC;" />
             <key-style
                 latin:styleName="moreCurrency3KeyStyle"
-                latin:keyLabel="$"
+                latin:keySpec="$"
                 latin:moreKeys="&#x00A2;" />
             <key-style
                 latin:styleName="moreCurrency4KeyStyle"
-                latin:keyLabel="&#x00A2;" />
+                latin:keySpec="&#x00A2;" />
         </case>
         <!-- GB: United Kingdom (Pound) -->
         <case
@@ -140,21 +140,21 @@
                  U+20B1: "₱" PESO SIGN -->
             <key-style
                 latin:styleName="currencyKeyStyle"
-                latin:keyLabel="&#x00A3;"
+                latin:keySpec="&#x00A3;"
                 latin:moreKeys="&#x00A2;,$,&#x20AC;,&#x00A5;,&#x20B1;" />
             <key-style
                 latin:styleName="moreCurrency1KeyStyle"
-                latin:keyLabel="&#x20AC;" />
+                latin:keySpec="&#x20AC;" />
             <key-style
                 latin:styleName="moreCurrency2KeyStyle"
-                latin:keyLabel="&#x00A5;" />
+                latin:keySpec="&#x00A5;" />
             <key-style
                 latin:styleName="moreCurrency3KeyStyle"
-                latin:keyLabel="$"
+                latin:keySpec="$"
                 latin:moreKeys="&#x00A2;" />
             <key-style
                 latin:styleName="moreCurrency4KeyStyle"
-                latin:keyLabel="&#x00A2;" />
+                latin:keySpec="&#x00A2;" />
         </case>
         <!-- ar: Arabic (Dollar and Rial) -->
         <default>

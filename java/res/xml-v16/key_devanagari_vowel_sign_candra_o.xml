@@ -27,6 +27,6 @@
 >
     <!-- U+0949: "ॉ" DEVANAGARI VOWEL SIGN CANDRA O -->
     <Key
-        latin:keyLabel="&#x0949;"
+        latin:keySpec="&#x0949;"
         latin:keyLabelFlags="fontNormal" />
 </merge>

@@ -54,10 +54,10 @@
             latin:keyboardLayout="@xml/rowkeys_symbols_shift3" />
         <!-- U+00A1: "¡" INVERTED EXCLAMATION MARK -->
         <Key
-            latin:keyLabel="&#x00A1;" />
+            latin:keySpec="&#x00A1;" />
         <!-- U+00BF: "¿" INVERTED QUESTION MARK -->
         <Key
-            latin:keyLabel="&#x00BF;" />
+            latin:keySpec="&#x00BF;" />
         <Key
             latin:keyStyle="backFromMoreSymbolKeyStyle"
             latin:keyWidth="fillRight" />
