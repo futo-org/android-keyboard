@@ -31,7 +31,7 @@ import java.util.LinkedList;
  * A dictionary that can fusion heads and tails of words for more compression.
  */
 @UsedForTesting
-public final class FusionDictionary implements Iterable<Word> {
+public final class FusionDictionary implements Iterable<WordProperty> {
     private static final boolean DBG = MakedictLog.DBG;
 
     private static int CHARACTER_NOT_FOUND_INDEX = -1;
@@ -76,8 +76,12 @@ public final class FusionDictionary implements Iterable<Word> {
         public ProbabilityInfo mProbabilityInfo;
 
         public WeightedString(final String word, final int probability) {
+            this(word, new ProbabilityInfo(probability));
+        }
+
+        public WeightedString(final String word, final ProbabilityInfo probabilityInfo) {
             mWord = word;
-            mProbabilityInfo = new ProbabilityInfo(probability);
+            mProbabilityInfo = probabilityInfo;
         }
 
         public int getProbability() {
@@ -90,9 +94,7 @@ public final class FusionDictionary implements Iterable<Word> {
 
         @Override
         public int hashCode() {
-            return Arrays.hashCode(new Object[] { mWord, mProbabilityInfo.mProbability,
-                    mProbabilityInfo.mTimestamp, mProbabilityInfo.mLevel,
-                    mProbabilityInfo.mCount });
+            return Arrays.hashCode(new Object[] { mWord, mProbabilityInfo});
         }
 
         @Override
@@ -704,7 +706,7 @@ public final class FusionDictionary implements Iterable<Word> {
      *
      * This is purely for convenience.
      */
-    public static final class DictionaryIterator implements Iterator<Word> {
+    public static final class DictionaryIterator implements Iterator<WordProperty> {
         private static final class Position {
             public Iterator<PtNode> pos;
             public int length;
@@ -734,7 +736,7 @@ public final class FusionDictionary implements Iterable<Word> {
         }
 
         @Override
-        public Word next() {
+        public WordProperty next() {
             Position currentPos = mPositions.getLast();
             mCurrentString.setLength(currentPos.length);
 
@@ -751,7 +753,7 @@ public final class FusionDictionary implements Iterable<Word> {
                         mPositions.addLast(currentPos);
                     }
                     if (currentPtNode.mFrequency >= 0) {
-                        return new Word(mCurrentString.toString(), currentPtNode.mFrequency,
+                        return new WordProperty(mCurrentString.toString(), currentPtNode.mFrequency,
                                 currentPtNode.mShortcutTargets, currentPtNode.mBigrams,
                                 currentPtNode.mIsNotAWord, currentPtNode.mIsBlacklistEntry);
                     }
@@ -777,7 +779,7 @@ public final class FusionDictionary implements Iterable<Word> {
      * and say : for (Word w : x) {}
      */
     @Override
-    public Iterator<Word> iterator() {
+    public Iterator<WordProperty> iterator() {
         return new DictionaryIterator(mRootNodeArray.mData);
     }
 }

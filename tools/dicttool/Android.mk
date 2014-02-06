@@ -48,8 +48,7 @@ USED_TARGETTED_UTILS := \
         $(LATINIME_CORE_SOURCE_DIRECTORY)/utils/JniUtils.java \
         $(LATINIME_CORE_SOURCE_DIRECTORY)/utils/LocaleUtils.java \
         $(LATINIME_CORE_SOURCE_DIRECTORY)/utils/ResizableIntArray.java \
-        $(LATINIME_CORE_SOURCE_DIRECTORY)/utils/StringUtils.java \
-        $(LATINIME_CORE_SOURCE_DIRECTORY)/utils/WordProperty.java
+        $(LATINIME_CORE_SOURCE_DIRECTORY)/utils/StringUtils.java
 
 DICTTOOL_ONDEVICE_TESTS_DIRECTORY := \
         $(LATINIME_LOCAL_DIR)/tests/src/com/android/inputmethod/latin/makedict/

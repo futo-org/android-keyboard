@@ -69,27 +69,29 @@ public class Ver4DictEncoder implements DictEncoder {
             // Somehow createEmptyDictFile returned true, but the file was not created correctly
             throw new IOException("Cannot create dictionary file");
         }
-        for (final Word word : dict) {
+        for (final WordProperty wordProperty : dict) {
             // TODO: switch to addMultipleDictionaryEntries when they support shortcuts
-            if (null == word.mShortcutTargets || word.mShortcutTargets.isEmpty()) {
-                binaryDict.addUnigramWord(word.mWord, word.mFrequency,
+            if (null == wordProperty.mShortcutTargets || wordProperty.mShortcutTargets.isEmpty()) {
+                binaryDict.addUnigramWord(wordProperty.mWord, wordProperty.getProbability(),
                         null /* shortcutTarget */, 0 /* shortcutProbability */,
-                        word.mIsNotAWord, word.mIsBlacklistEntry, 0 /* timestamp */);
+                        wordProperty.mIsNotAWord, wordProperty.mIsBlacklistEntry,
+                        0 /* timestamp */);
             } else {
-                for (final WeightedString shortcutTarget : word.mShortcutTargets) {
-                    binaryDict.addUnigramWord(word.mWord, word.mFrequency,
+                for (final WeightedString shortcutTarget : wordProperty.mShortcutTargets) {
+                    binaryDict.addUnigramWord(wordProperty.mWord, wordProperty.getProbability(),
                             shortcutTarget.mWord, shortcutTarget.getProbability(),
-                            word.mIsNotAWord, word.mIsBlacklistEntry, 0 /* timestamp */);
+                            wordProperty.mIsNotAWord, wordProperty.mIsBlacklistEntry,
+                            0 /* timestamp */);
                 }
             }
             if (binaryDict.needsToRunGC(true /* mindsBlockByGC */)) {
                 binaryDict.flushWithGC();
             }
         }
-        for (final Word word0 : dict) {
-            if (null == word0.mBigrams) continue;
-            for (final WeightedString word1 : word0.mBigrams) {
-                binaryDict.addBigramWords(word0.mWord, word1.mWord, word1.getProbability(),
+        for (final WordProperty word0Property : dict) {
+            if (null == word0Property.mBigrams) continue;
+            for (final WeightedString word1 : word0Property.mBigrams) {
+                binaryDict.addBigramWords(word0Property.mWord, word1.mWord, word1.getProbability(),
                         0 /* timestamp */);
                 if (binaryDict.needsToRunGC(true /* mindsBlockByGC */)) {
                     binaryDict.flushWithGC();
