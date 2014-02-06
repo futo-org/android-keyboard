@@ -169,6 +169,10 @@
     <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"Selecteer een woordenboekbestand om te installeren"</string>
     <string name="read_external_dictionary_confirm_install_message" msgid="6898610163768980870">"Wilt u dit bestand voor <xliff:g id="LOCALE_NAME">%s</xliff:g> echt installeren?"</string>
     <string name="error" msgid="8940763624668513648">"Er is een fout opgetreden"</string>
+    <string name="prefs_dump_contacts_dict" msgid="7227327764402323097">"Contactenwoordenboek dumpen"</string>
+    <string name="prefs_dump_user_dict" msgid="294870685041741951">"Persoonlijk woordenboek dumpen"</string>
+    <string name="prefs_dump_user_history_dict" msgid="6821075152449554628">"Woordenb. gebruikersgesch. dumpen"</string>
+    <string name="prefs_dump_personalization_dict" msgid="7558387996151745284">"Personalisatiewoordenboek dumpen"</string>
     <string name="button_default" msgid="3988017840431881491">"Standaard"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"Welkom bij <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"met Invoer met bewegingen"</string>

@@ -169,6 +169,14 @@
     <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"इंस्टॉल करने के लिए कोई शब्दकोश फ़ाइल चुनें"</string>
     <string name="read_external_dictionary_confirm_install_message" msgid="6898610163768980870">"<xliff:g id="LOCALE_NAME">%s</xliff:g> के लिए वास्तव में यह फ़ाइल इंस्टॉल करें?"</string>
     <string name="error" msgid="8940763624668513648">"कोई त्रुटि हुई थी"</string>
+    <!-- no translation found for prefs_dump_contacts_dict (7227327764402323097) -->
+    <skip />
+    <!-- no translation found for prefs_dump_user_dict (294870685041741951) -->
+    <skip />
+    <!-- no translation found for prefs_dump_user_history_dict (6821075152449554628) -->
+    <skip />
+    <!-- no translation found for prefs_dump_personalization_dict (7558387996151745284) -->
+    <skip />
     <string name="button_default" msgid="3988017840431881491">"सामान्य"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> में आपका स्वागत है"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"हावभाव लेखन के साथ"</string>
