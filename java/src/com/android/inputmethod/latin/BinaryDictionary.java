@@ -217,9 +217,8 @@ public final class BinaryDictionary extends Dictionary {
                     outAttributeValues.get(i));
             attributes.put(attributeKey, attributeValue);
         }
-        final boolean hasHistoricalInfo =
-                attributes.get(DictionaryHeader.HAS_HISTORICAL_INFO_KEY).equals(
-                        DictionaryHeader.ATTRIBUTE_VALUE_TRUE);
+        final boolean hasHistoricalInfo = DictionaryHeader.ATTRIBUTE_VALUE_TRUE.equals(
+                attributes.get(DictionaryHeader.HAS_HISTORICAL_INFO_KEY));
         return new DictionaryHeader(outHeaderSize[0], new DictionaryOptions(attributes),
                 new FormatSpec.FormatOptions(outFormatVersion[0], hasHistoricalInfo));
     }

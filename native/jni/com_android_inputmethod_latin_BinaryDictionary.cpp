@@ -53,7 +53,7 @@ static jboolean latinime_BinaryDictionary_createEmptyDictFile(JNIEnv *env, jclas
         return false;
     }
 
-    HeaderReadWriteUtils::AttributeMap attributeMap;
+    DictionaryHeaderStructurePolicy::AttributeMap attributeMap;
     for (int i = 0; i < keyCount; i++) {
         jstring keyString = static_cast<jstring>(
                 env->GetObjectArrayElement(attributeKeyStringArray, i));
@@ -61,7 +61,7 @@ static jboolean latinime_BinaryDictionary_createEmptyDictFile(JNIEnv *env, jclas
         char keyChars[keyUtf8Length + 1];
         env->GetStringUTFRegion(keyString, 0, env->GetStringLength(keyString), keyChars);
         keyChars[keyUtf8Length] = '\0';
-        HeaderReadWriteUtils::AttributeMap::key_type key;
+        DictionaryHeaderStructurePolicy::AttributeMap::key_type key;
         HeaderReadWriteUtils::insertCharactersIntoVector(keyChars, &key);
 
         jstring valueString = static_cast<jstring>(
@@ -70,7 +70,7 @@ static jboolean latinime_BinaryDictionary_createEmptyDictFile(JNIEnv *env, jclas
         char valueChars[valueUtf8Length + 1];
         env->GetStringUTFRegion(valueString, 0, env->GetStringLength(valueString), valueChars);
         valueChars[valueUtf8Length] = '\0';
-        HeaderReadWriteUtils::AttributeMap::mapped_type value;
+        DictionaryHeaderStructurePolicy::AttributeMap::mapped_type value;
         HeaderReadWriteUtils::insertCharactersIntoVector(valueChars, &value);
         attributeMap[key] = value;
     }
@@ -145,16 +145,42 @@ static void latinime_BinaryDictionary_getHeaderInfo(JNIEnv *env, jclass clazz, j
         jobject outAttributeValues) {
     Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
     if (!dictionary) return;
-    const int formatVersion = dictionary->getFormatVersionNumber();
+    const DictionaryHeaderStructurePolicy *const headerPolicy =
+            dictionary->getDictionaryStructurePolicy()->getHeaderStructurePolicy();
+    const int headerSize = headerPolicy->getSize();
+    env->SetIntArrayRegion(outHeaderSize, 0 /* start */, 1 /* len */, &headerSize);
+    const int formatVersion = headerPolicy->getFormatVersionNumber();
     env->SetIntArrayRegion(outFormatVersion, 0 /* start */, 1 /* len */, &formatVersion);
-    // TODO: Implement
+    // Output attribute map
+    jclass arrayListClass = env->FindClass("java/util/ArrayList");
+    jmethodID addMethodId = env->GetMethodID(arrayListClass, "add", "(Ljava/lang/Object;)Z");
+    const DictionaryHeaderStructurePolicy::AttributeMap *const attributeMap =
+            headerPolicy->getAttributeMap();
+    for (DictionaryHeaderStructurePolicy::AttributeMap::const_iterator it = attributeMap->begin();
+            it != attributeMap->end(); ++it) {
+        // Output key
+        jintArray keyCodePointArray = env->NewIntArray(it->first.size());
+        env->SetIntArrayRegion(
+                keyCodePointArray, 0 /* start */, it->first.size(), &it->first.at(0));
+        env->CallVoidMethod(outAttributeKeys, addMethodId, keyCodePointArray);
+        env->DeleteLocalRef(keyCodePointArray);
+        // Output value
+        jintArray valueCodePointArray = env->NewIntArray(it->second.size());
+        env->SetIntArrayRegion(
+                valueCodePointArray, 0 /* start */, it->second.size(), &it->second.at(0));
+        env->CallVoidMethod(outAttributeValues, addMethodId, valueCodePointArray);
+        env->DeleteLocalRef(valueCodePointArray);
+    }
+    env->DeleteLocalRef(arrayListClass);
     return;
 }
 
 static int latinime_BinaryDictionary_getFormatVersion(JNIEnv *env, jclass clazz, jlong dict) {
     Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
     if (!dictionary) return 0;
-    return dictionary->getFormatVersionNumber();
+    const DictionaryHeaderStructurePolicy *const headerPolicy =
+            dictionary->getDictionaryStructurePolicy()->getHeaderStructurePolicy();
+    return headerPolicy->getFormatVersionNumber();
 }
 
 static int latinime_BinaryDictionary_getSuggestions(JNIEnv *env, jclass clazz, jlong dict,

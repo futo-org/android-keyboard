@@ -32,7 +32,7 @@ class DictFileWritingUtils {
 
     static bool createEmptyDictFile(const char *const filePath, const int dictVersion,
             const std::vector<int> localeAsCodePointVector,
-            const HeaderReadWriteUtils::AttributeMap *const attributeMap);
+            const DictionaryHeaderStructurePolicy::AttributeMap *const attributeMap);
 
     static bool flushAllHeaderAndBodyToFile(const char *const filePath,
             BufferWithExtendableBuffer *const dictHeader,
@@ -46,7 +46,7 @@ class DictFileWritingUtils {
 
     static bool createEmptyV4DictFile(const char *const filePath,
             const std::vector<int> localeAsCodePointVector,
-            const HeaderReadWriteUtils::AttributeMap *const attributeMap);
+            const DictionaryHeaderStructurePolicy::AttributeMap *const attributeMap);
 
     static bool flushBufferToFile(const char *const filePath,
             const BufferWithExtendableBuffer *const buffer);
