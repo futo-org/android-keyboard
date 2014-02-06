@@ -51,6 +51,7 @@ public final class Suggest {
     private static final int SUPPRESS_SUGGEST_THRESHOLD = -2000000000;
 
     private static final boolean DBG = LatinImeLogger.sDBG;
+    private static final boolean INCLUDE_RAW_SUGGESTIONS = false;
 
     public final DictionaryFacilitatorForSuggest mDictionaryFacilitator;
 
@@ -124,9 +125,15 @@ public final class Suggest {
         } else {
             wordComposerForLookup = wordComposer;
         }
+        final ArrayList<SuggestedWordInfo> rawSuggestions;
+        if (INCLUDE_RAW_SUGGESTIONS) {
+            rawSuggestions = CollectionUtils.newArrayList();
+        } else {
+            rawSuggestions = null;
+        }
         mDictionaryFacilitator.getSuggestions(wordComposerForLookup, prevWordForBigram,
                 proximityInfo, blockOffensiveWords, additionalFeaturesOptions, SESSION_TYPING,
-                suggestionsSet);
+                suggestionsSet, rawSuggestions);
         final String firstSuggestion;
         final String whitelistedWord;
         if (suggestionsSet.isEmpty()) {
@@ -217,7 +224,7 @@ public final class Suggest {
             suggestionsList = suggestionsContainer;
         }
 
-        callback.onGetSuggestedWords(new SuggestedWords(suggestionsList,
+        callback.onGetSuggestedWords(new SuggestedWords(suggestionsList, rawSuggestions,
                 // TODO: this first argument is lying. If this is a whitelisted word which is an
                 // actual word, it says typedWordValid = false, which looks wrong. We should either
                 // rename the attribute or change the value.
@@ -237,8 +244,15 @@ public final class Suggest {
             final OnGetSuggestedWordsCallback callback) {
         final BoundedTreeSet suggestionsSet = new BoundedTreeSet(sSuggestedWordInfoComparator,
                 SuggestedWords.MAX_SUGGESTIONS);
+        final ArrayList<SuggestedWordInfo> rawSuggestions;
+        if (INCLUDE_RAW_SUGGESTIONS) {
+            rawSuggestions = CollectionUtils.newArrayList();
+        } else {
+            rawSuggestions = null;
+        }
         mDictionaryFacilitator.getSuggestions(wordComposer, prevWordForBigram, proximityInfo,
-                blockOffensiveWords, additionalFeaturesOptions, sessionId, suggestionsSet);
+                blockOffensiveWords, additionalFeaturesOptions, sessionId, suggestionsSet,
+                rawSuggestions);
         for (SuggestedWordInfo wordInfo : suggestionsSet) {
             LatinImeLogger.onAddSuggestedWord(wordInfo.mWord, wordInfo.mSourceDict.mDictType);
         }
@@ -275,7 +289,7 @@ public final class Suggest {
 
         // In the batch input mode, the most relevant suggested word should act as a "typed word"
         // (typedWordValid=true), not as an "auto correct word" (willAutoCorrect=false).
-        callback.onGetSuggestedWords(new SuggestedWords(suggestionsContainer,
+        callback.onGetSuggestedWords(new SuggestedWords(suggestionsContainer, rawSuggestions,
                 true /* typedWordValid */,
                 false /* willAutoCorrect */,
                 false /* isPunctuationSuggestions */,

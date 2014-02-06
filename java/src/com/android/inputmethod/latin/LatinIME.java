@@ -997,7 +997,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 SuggestedWords.getFromApplicationSpecifiedCompletions(
                         applicationSpecifiedCompletions);
         final SuggestedWords suggestedWords = new SuggestedWords(
-                applicationSuggestedWords,
+                applicationSuggestedWords, null /* rawSuggestions */,
                 false /* typedWordValid */,
                 false /* willAutoCorrect */,
                 false /* isPunctuationSuggestions */,
@@ -1417,7 +1417,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     ? SuggestedWords.EMPTY : previousSuggestedWords;
             final ArrayList<SuggestedWords.SuggestedWordInfo> typedWordAndPreviousSuggestions =
                     SuggestedWords.getTypedWordAndPreviousSuggestions(typedWord, oldSuggestedWords);
-            return new SuggestedWords(typedWordAndPreviousSuggestions,
+            return new SuggestedWords(typedWordAndPreviousSuggestions, null /* rawSuggestions */,
                     false /* typedWordValid */,
                     false /* hasAutoCorrectionCandidate */,
                     false /* isPunctuationSuggestions */,
