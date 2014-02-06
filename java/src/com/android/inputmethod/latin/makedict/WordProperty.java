@@ -20,6 +20,7 @@ import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.BinaryDictionary;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
 import com.android.inputmethod.latin.utils.CollectionUtils;
+import com.android.inputmethod.latin.utils.CombinedFormatUtils;
 import com.android.inputmethod.latin.utils.StringUtils;
 
 import java.util.ArrayList;
@@ -52,8 +53,8 @@ public final class WordProperty implements Comparable<WordProperty> {
         mBigrams = bigrams;
         mIsNotAWord = isNotAWord;
         mIsBlacklistEntry = isBlacklistEntry;
-        mHasBigrams = !bigrams.isEmpty();
-        mHasShortcuts = !shortcutTargets.isEmpty();
+        mHasBigrams = bigrams != null && !bigrams.isEmpty();
+        mHasShortcuts = shortcutTargets != null && !shortcutTargets.isEmpty();
     }
 
     private static ProbabilityInfo createProbabilityInfoFromArray(final int[] probabilityInfo) {
@@ -158,32 +159,6 @@ public final class WordProperty implements Comparable<WordProperty> {
 
     @Override
     public String toString() {
-        // TODO: Move this logic to CombinedInputOutput.
-        final StringBuffer builder = new StringBuffer();
-        builder.append(" word=" + mWord);
-        builder.append(",");
-        builder.append(mProbabilityInfo.toString());
-        if (mIsNotAWord) {
-            builder.append(",");
-            builder.append("not_a_word=true");
-        }
-        if (mIsBlacklistEntry) {
-            builder.append(",");
-            builder.append("blacklisted=true");
-        }
-        builder.append("\n");
-        for (int i = 0; i < mBigrams.size(); i++) {
-            builder.append("  bigram=" + mBigrams.get(i).mWord);
-            builder.append(",");
-            builder.append(mBigrams.get(i).mProbabilityInfo.toString());
-            builder.append("\n");
-        }
-        for (int i = 0; i < mShortcutTargets.size(); i++) {
-            builder.append("  shortcut=" + mShortcutTargets.get(i).mWord);
-            builder.append(",");
-            builder.append(mShortcutTargets.get(i).mProbabilityInfo.toString());
-            builder.append("\n");
-        }
-        return builder.toString();
+        return CombinedFormatUtils.formatWordProperty(this);
     }
 }

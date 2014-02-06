@@ -22,6 +22,7 @@ import com.android.inputmethod.latin.makedict.FusionDictionary.DictionaryOptions
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
 import com.android.inputmethod.latin.makedict.WordProperty;
+import com.android.inputmethod.latin.utils.CombinedFormatUtils;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -41,16 +42,10 @@ import java.util.TreeSet;
  * All functions in this class are static.
  */
 public class CombinedInputOutput {
-
-    private static final String DICTIONARY_TAG = "dictionary";
-    private static final String BIGRAM_TAG = "bigram";
-    private static final String SHORTCUT_TAG = "shortcut";
-    private static final String PROBABILITY_TAG = "f";
-    private static final String WORD_TAG = "word";
-    private static final String NOT_A_WORD_TAG = "not_a_word";
     private static final String WHITELIST_TAG = "whitelist";
     private static final String OPTIONS_TAG = "options";
     private static final String COMMENT_LINE_STARTER = "#";
+    private static final int HISTORICAL_INFO_ELEMENT_COUNT = 3;
 
     /**
      * Basic test to find out whether the file is in the combined format or not.
@@ -68,7 +63,8 @@ public class CombinedInputOutput {
             while (firstLine.startsWith(COMMENT_LINE_STARTER)) {
                 firstLine = reader.readLine();
             }
-            return firstLine.matches("^" + DICTIONARY_TAG + "=[^:]+(:[^=]+=[^:]+)*");
+            return firstLine.matches(
+                    "^" + CombinedFormatUtils.DICTIONARY_TAG + "=[^:]+(:[^=]+=[^:]+)*");
         } catch (FileNotFoundException e) {
             return false;
         } catch (IOException e) {
@@ -123,7 +119,7 @@ public class CombinedInputOutput {
         while (null != (line = reader.readLine())) {
             if (line.startsWith(COMMENT_LINE_STARTER)) continue;
             final String args[] = line.trim().split(",");
-            if (args[0].matches(WORD_TAG + "=.*")) {
+            if (args[0].matches(CombinedFormatUtils.WORD_TAG + "=.*")) {
                 if (null != word) {
                     dict.add(word, freq, shortcuts.isEmpty() ? null : shortcuts, isNotAWord);
                     for (WeightedString s : bigrams) {
@@ -136,23 +132,30 @@ public class CombinedInputOutput {
                 for (String param : args) {
                     final String params[] = param.split("=", 2);
                     if (2 != params.length) throw new RuntimeException("Wrong format : " + line);
-                    if (WORD_TAG.equals(params[0])) {
+                    if (CombinedFormatUtils.WORD_TAG.equals(params[0])) {
                         word = params[1];
-                    } else if (PROBABILITY_TAG.equals(params[0])) {
+                    } else if (CombinedFormatUtils.PROBABILITY_TAG.equals(params[0])) {
                         freq = Integer.parseInt(params[1]);
-                    } else if (NOT_A_WORD_TAG.equals(params[0])) {
+                    } else if (CombinedFormatUtils.HISTORICAL_INFO_TAG.equals(params[0])) {
+                        final String[] historicalInfoParams =
+                                params[1].split(CombinedFormatUtils.HISTORICAL_INFO_SEPARATOR);
+                        if (historicalInfoParams.length != HISTORICAL_INFO_ELEMENT_COUNT) {
+                            throw new RuntimeException("Wrong format (historical info) : " + line);
+                        }
+                        // TODO: Use parsed historical info.
+                    } else if (CombinedFormatUtils.NOT_A_WORD_TAG.equals(params[0])) {
                         isNotAWord = "true".equals(params[1]);
                     }
                 }
-            } else if (args[0].matches(SHORTCUT_TAG + "=.*")) {
+            } else if (args[0].matches(CombinedFormatUtils.SHORTCUT_TAG + "=.*")) {
                 String shortcut = null;
                 int shortcutFreq = 0;
                 for (String param : args) {
                     final String params[] = param.split("=", 2);
                     if (2 != params.length) throw new RuntimeException("Wrong format : " + line);
-                    if (SHORTCUT_TAG.equals(params[0])) {
+                    if (CombinedFormatUtils.SHORTCUT_TAG.equals(params[0])) {
                         shortcut = params[1];
-                    } else if (PROBABILITY_TAG.equals(params[0])) {
+                    } else if (CombinedFormatUtils.PROBABILITY_TAG.equals(params[0])) {
                         shortcutFreq = WHITELIST_TAG.equals(params[1])
                                 ? FormatSpec.SHORTCUT_WHITELIST_FREQUENCY
                                 : Integer.parseInt(params[1]);
@@ -163,16 +166,23 @@ public class CombinedInputOutput {
                 } else {
                     throw new RuntimeException("Wrong format : " + line);
                 }
-            } else if (args[0].matches(BIGRAM_TAG + "=.*")) {
+            } else if (args[0].matches(CombinedFormatUtils.BIGRAM_TAG + "=.*")) {
                 String secondWordOfBigram = null;
                 int bigramFreq = 0;
                 for (String param : args) {
                     final String params[] = param.split("=", 2);
                     if (2 != params.length) throw new RuntimeException("Wrong format : " + line);
-                    if (BIGRAM_TAG.equals(params[0])) {
+                    if (CombinedFormatUtils.BIGRAM_TAG.equals(params[0])) {
                         secondWordOfBigram = params[1];
-                    } else if (PROBABILITY_TAG.equals(params[0])) {
+                    } else if (CombinedFormatUtils.PROBABILITY_TAG.equals(params[0])) {
                         bigramFreq = Integer.parseInt(params[1]);
+                    }  else if (CombinedFormatUtils.HISTORICAL_INFO_TAG.equals(params[0])) {
+                        final String[] historicalInfoParams =
+                                params[1].split(CombinedFormatUtils.HISTORICAL_INFO_SEPARATOR);
+                        if (historicalInfoParams.length != HISTORICAL_INFO_ELEMENT_COUNT) {
+                            throw new RuntimeException("Wrong format (historical info) : " + line);
+                        }
+                        // TODO: Use parsed historical info.
                     }
                 }
                 if (null != secondWordOfBigram) {
@@ -198,40 +208,16 @@ public class CombinedInputOutput {
      * @param destination a destination stream to write to.
      * @param dict the dictionary to write.
      */
-    public static void writeDictionaryCombined(Writer destination, FusionDictionary dict)
-            throws IOException {
+    public static void writeDictionaryCombined(
+            final Writer destination, final FusionDictionary dict) throws IOException {
         final TreeSet<WordProperty> wordPropertiesInDict = new TreeSet<WordProperty>();
-        for (WordProperty wordProperty: dict) {
+        for (final WordProperty wordProperty : dict) {
             // This for ordering by frequency, then by asciibetic order
             wordPropertiesInDict.add(wordProperty);
         }
-        final HashMap<String, String> options = dict.mOptions.mAttributes;
-        destination.write(DICTIONARY_TAG + "=");
-        if (options.containsKey(DICTIONARY_TAG)) {
-            destination.write(options.get(DICTIONARY_TAG));
-            options.remove(DICTIONARY_TAG);
-        }
-        for (final String key : dict.mOptions.mAttributes.keySet()) {
-            final String value = dict.mOptions.mAttributes.get(key);
-            destination.write("," + key + "=" + value);
-        }
-        destination.write("\n");
-        for (WordProperty wordProperty : wordPropertiesInDict) {
-            destination.write(" " + WORD_TAG + "=" + wordProperty.mWord + ","
-                    + PROBABILITY_TAG + "=" + wordProperty.getProbability()
-                    + (wordProperty.mIsNotAWord ? "," + NOT_A_WORD_TAG + "=true\n" : "\n"));
-            if (null != wordProperty.mShortcutTargets) {
-                for (WeightedString target : wordProperty.mShortcutTargets) {
-                    destination.write("  " + SHORTCUT_TAG + "=" + target.mWord + ","
-                            + PROBABILITY_TAG + "=" + target.getProbability() + "\n");
-                }
-            }
-            if (null != wordProperty.mBigrams) {
-                for (WeightedString bigram : wordProperty.mBigrams) {
-                    destination.write("  " + BIGRAM_TAG + "=" + bigram.mWord + ","
-                            + PROBABILITY_TAG + "=" + bigram.getProbability() + "\n");
-                }
-            }
+        destination.write(CombinedFormatUtils.formatAttributeMap(dict.mOptions.mAttributes));
+        for (final WordProperty wordProperty : wordPropertiesInDict) {
+            destination.write(CombinedFormatUtils.formatWordProperty(wordProperty));
         }
         destination.close();
     }
