@@ -141,8 +141,6 @@ public final class Suggest {
             }
         }
 
-        // The word can be auto-corrected if it has a whitelist entry that is not itself,
-        // or if it's a 2+ characters non-word (i.e. it's not in the dictionary).
         // We allow auto-correction if we have a whitelisted word, or if the word is not a valid
         // word of more than 1 char, except if the first suggestion is the same as the typed string
         // because in this case if it's strong enough to auto-correct that will mistakenly designate
