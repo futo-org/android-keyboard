@@ -20,6 +20,7 @@ import android.text.TextUtils;
 
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
+import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.latin.utils.AutoCorrectionUtils;
 import com.android.inputmethod.latin.utils.BoundedTreeSet;
 import com.android.inputmethod.latin.utils.CollectionUtils;
@@ -51,8 +52,6 @@ public final class Suggest {
     private static final int SUPPRESS_SUGGEST_THRESHOLD = -2000000000;
 
     private static final boolean DBG = LatinImeLogger.sDBG;
-    private static final boolean INCLUDE_RAW_SUGGESTIONS = false;
-
     public final DictionaryFacilitatorForSuggest mDictionaryFacilitator;
 
     private float mAutoCorrectionThreshold;
@@ -126,7 +125,7 @@ public final class Suggest {
             wordComposerForLookup = wordComposer;
         }
         final ArrayList<SuggestedWordInfo> rawSuggestions;
-        if (INCLUDE_RAW_SUGGESTIONS) {
+        if (ProductionFlag.INCLUDE_RAW_SUGGESTIONS) {
             rawSuggestions = CollectionUtils.newArrayList();
         } else {
             rawSuggestions = null;
@@ -243,7 +242,7 @@ public final class Suggest {
         final BoundedTreeSet suggestionsSet = new BoundedTreeSet(sSuggestedWordInfoComparator,
                 SuggestedWords.MAX_SUGGESTIONS);
         final ArrayList<SuggestedWordInfo> rawSuggestions;
-        if (INCLUDE_RAW_SUGGESTIONS) {
+        if (ProductionFlag.INCLUDE_RAW_SUGGESTIONS) {
             rawSuggestions = CollectionUtils.newArrayList();
         } else {
             rawSuggestions = null;
