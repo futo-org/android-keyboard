@@ -430,12 +430,19 @@ public class DictionaryFacilitatorForSuggest {
     public void getSuggestions(final WordComposer composer,
             final String prevWord, final ProximityInfo proximityInfo,
             final boolean blockOffensiveWords, final int[] additionalFeaturesOptions,
-            final int sessionId, final Set<SuggestedWordInfo> suggestionSet) {
+            final int sessionId, final Set<SuggestedWordInfo> suggestionSet,
+            final ArrayList<SuggestedWordInfo> rawSuggestions) {
         for (final String key : mDictionaries.keySet()) {
             final Dictionary dictionary = mDictionaries.get(key);
             if (null == dictionary) continue;
-            suggestionSet.addAll(dictionary.getSuggestionsWithSessionId(composer, prevWord,
-                    proximityInfo, blockOffensiveWords, additionalFeaturesOptions, sessionId));
+            final ArrayList<SuggestedWordInfo> dictionarySuggestions =
+                    dictionary.getSuggestionsWithSessionId(composer, prevWord, proximityInfo,
+                            blockOffensiveWords, additionalFeaturesOptions, sessionId);
+            if (null == dictionarySuggestions) continue;
+            suggestionSet.addAll(dictionarySuggestions);
+            if (null != rawSuggestions) {
+                rawSuggestions.addAll(dictionarySuggestions);
+            }
         }
     }
 

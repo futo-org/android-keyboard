@@ -37,7 +37,7 @@ public final class SuggestedWords {
     private static final ArrayList<SuggestedWordInfo> EMPTY_WORD_INFO_LIST =
             CollectionUtils.newArrayList(0);
     public static final SuggestedWords EMPTY = new SuggestedWords(
-            EMPTY_WORD_INFO_LIST, false, false, false, false, false);
+            EMPTY_WORD_INFO_LIST, null /* rawSuggestions */, false, false, false, false, false);
 
     public final String mTypedWord;
     public final boolean mTypedWordValid;
@@ -50,25 +50,29 @@ public final class SuggestedWords {
     public final boolean mIsPrediction;
     public final int mSequenceNumber; // Sequence number for auto-commit.
     private final ArrayList<SuggestedWordInfo> mSuggestedWordInfoList;
+    public final ArrayList<SuggestedWordInfo> mRawSuggestions;
 
     public SuggestedWords(final ArrayList<SuggestedWordInfo> suggestedWordInfoList,
+            final ArrayList<SuggestedWordInfo> rawSuggestions,
             final boolean typedWordValid,
             final boolean willAutoCorrect,
             final boolean isPunctuationSuggestions,
             final boolean isObsoleteSuggestions,
             final boolean isPrediction) {
-        this(suggestedWordInfoList, typedWordValid, willAutoCorrect, isPunctuationSuggestions,
-                isObsoleteSuggestions, isPrediction, NOT_A_SEQUENCE_NUMBER);
+        this(suggestedWordInfoList, rawSuggestions, typedWordValid, willAutoCorrect,
+                isPunctuationSuggestions, isObsoleteSuggestions, isPrediction,
+                NOT_A_SEQUENCE_NUMBER);
     }
 
     public SuggestedWords(final ArrayList<SuggestedWordInfo> suggestedWordInfoList,
+            final ArrayList<SuggestedWordInfo> rawSuggestions,
             final boolean typedWordValid,
             final boolean willAutoCorrect,
             final boolean isPunctuationSuggestions,
             final boolean isObsoleteSuggestions,
             final boolean isPrediction,
             final int sequenceNumber) {
-        this(suggestedWordInfoList,
+        this(suggestedWordInfoList, rawSuggestions,
                 suggestedWordInfoList.isEmpty() ? null
                         : suggestedWordInfoList.get(INDEX_OF_TYPED_WORD).mWord,
                 typedWordValid, willAutoCorrect, isPunctuationSuggestions,
@@ -76,6 +80,7 @@ public final class SuggestedWords {
     }
 
     public SuggestedWords(final ArrayList<SuggestedWordInfo> suggestedWordInfoList,
+            final ArrayList<SuggestedWordInfo> rawSuggestions,
             final String typedWord,
             final boolean typedWordValid,
             final boolean willAutoCorrect,
@@ -84,6 +89,7 @@ public final class SuggestedWords {
             final boolean isPrediction,
             final int sequenceNumber) {
         mSuggestedWordInfoList = suggestedWordInfoList;
+        mRawSuggestions = rawSuggestions;
         mTypedWordValid = typedWordValid;
         mWillAutoCorrect = willAutoCorrect;
         mIsPunctuationSuggestions = isPunctuationSuggestions;
@@ -306,9 +312,9 @@ public final class SuggestedWords {
         }
         // We should never autocorrect, so we say the typed word is valid. Also, in this case,
         // no auto-correction should take place hence willAutoCorrect = false.
-        return new SuggestedWords(newSuggestions, typedWord, true /* typedWordValid */,
-                false /* willAutoCorrect */, mIsPunctuationSuggestions, mIsObsoleteSuggestions,
-                mIsPrediction, NOT_A_SEQUENCE_NUMBER);
+        return new SuggestedWords(newSuggestions, null /* rawSuggestions */, typedWord,
+                true /* typedWordValid */, false /* willAutoCorrect */, mIsPunctuationSuggestions,
+                mIsObsoleteSuggestions, mIsPrediction, NOT_A_SEQUENCE_NUMBER);
     }
 
     // Creates a new SuggestedWordInfo from the currently suggested words that removes all but the
@@ -326,7 +332,7 @@ public final class SuggestedWords {
                     info.mSourceDict, SuggestedWordInfo.NOT_AN_INDEX,
                     SuggestedWordInfo.NOT_A_CONFIDENCE));
         }
-        return new SuggestedWords(newSuggestions, mTypedWordValid,
+        return new SuggestedWords(newSuggestions, null /* rawSuggestions */, mTypedWordValid,
                 mWillAutoCorrect, mIsPunctuationSuggestions, mIsObsoleteSuggestions,
                 mIsPrediction);
     }

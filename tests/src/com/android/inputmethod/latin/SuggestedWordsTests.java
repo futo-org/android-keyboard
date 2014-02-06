@@ -46,7 +46,7 @@ public class SuggestedWordsTests extends AndroidTestCase {
         }
 
         final SuggestedWords words = new SuggestedWords(
-                list,
+                list, null /* rawSuggestions */,
                 false /* typedWordValid */,
                 false /* willAutoCorrect */,
                 false /* isPunctuationSuggestions */,

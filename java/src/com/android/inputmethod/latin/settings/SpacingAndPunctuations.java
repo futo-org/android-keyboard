@@ -75,7 +75,7 @@ public final class SpacingAndPunctuations {
         final ArrayList<SuggestedWordInfo> puncList = CollectionUtils.newArrayList();
         if (puncs != null) {
             for (final String puncSpec : puncs) {
-                // TODO: Stop using KeySpceParser.getLabel().
+                // TODO: Stop using KeySpecParser.getLabel().
                 // TODO: Punctuation suggestions should honor RTL languages.
                 puncList.add(new SuggestedWordInfo(KeySpecParser.getLabel(puncSpec),
                         SuggestedWordInfo.MAX_SCORE, SuggestedWordInfo.KIND_HARDCODED,
@@ -84,7 +84,7 @@ public final class SpacingAndPunctuations {
                         SuggestedWordInfo.NOT_A_CONFIDENCE /* autoCommitFirstWordConfidence */));
             }
         }
-        return new SuggestedWords(puncList,
+        return new SuggestedWords(puncList, null /* rawSuggestions */,
                 false /* typedWordValid */,
                 false /* hasAutoCorrectionCandidate */,
                 true /* isPunctuationSuggestions */,
