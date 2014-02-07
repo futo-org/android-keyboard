@@ -77,6 +77,12 @@
         latin:keySpec="!icon/delete_key|!code/key_delete"
         latin:keyActionFlags="isRepeatable|noKeyPreview"
         latin:backgroundType="functional" />
+    <!-- emojiKeyStyle must be defined before including @xml/key_syles_enter. -->
+    <key-style
+        latin:styleName="emojiKeyStyle"
+        latin:keySpec="!icon/emoji_key|!code/key_emoji"
+        latin:keyActionFlags="noKeyPreview"
+        latin:backgroundType="functional" />
     <include
         latin:keyboardLayout="@xml/key_styles_enter" />
     <key-style
@@ -109,11 +115,6 @@
         latin:keySpec="!icon/language_switch_key|!code/key_language_switch"
         latin:keyActionFlags="noKeyPreview|altCodeWhileTyping|enableLongPress"
         latin:altCode="!code/key_space" />
-    <key-style
-        latin:styleName="emojiKeyStyle"
-        latin:keySpec="!icon/emoji_key|!code/key_emoji"
-        latin:keyActionFlags="noKeyPreview"
-        latin:backgroundType="functional" />
     <key-style
         latin:styleName="tabKeyStyle"
         latin:keySpec="!icon/tab_key|!code/key_tab"
