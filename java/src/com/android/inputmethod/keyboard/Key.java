@@ -316,20 +316,17 @@ public class Key implements Comparable<Key> {
         mActionFlags = actionFlags;
 
         final String keySpec = style.getString(keyAttr, R.styleable.Keyboard_Key_keyLabel);
+        if (TextUtils.isEmpty(keySpec)) {
+            throw new RuntimeException("Empty keySpec");
+        }
 
-        final int iconIdInAttr = KeySpecParser.getIconId(style.getString(keyAttr,
-                R.styleable.Keyboard_Key_keyIcon));
-        mIconId = (iconIdInAttr != ICON_UNDEFINED) ? iconIdInAttr
-                : KeySpecParser.getIconId(keySpec);
+        mIconId = KeySpecParser.getIconId(keySpec);
         final int disabledIconId = KeySpecParser.getIconId(style.getString(keyAttr,
                 R.styleable.Keyboard_Key_keyIconDisabled));
         final int previewIconId = KeySpecParser.getIconId(style.getString(keyAttr,
                 R.styleable.Keyboard_Key_keyIconPreview));
 
-        final int codeInAttr = KeySpecParser.parseCode(style.getString(keyAttr,
-                R.styleable.Keyboard_Key_code), params.mCodesSet, CODE_UNSPECIFIED);
-        final int code = (codeInAttr != CODE_UNSPECIFIED) ? codeInAttr
-                : KeySpecParser.getCode(keySpec, params.mCodesSet);
+        final int code = KeySpecParser.getCode(keySpec, params.mCodesSet);
         if ((mLabelFlags & LABEL_FLAGS_FROM_CUSTOM_ACTION_LABEL) != 0) {
             mLabel = params.mId.mCustomActionLabel;
         } else if (code >= Character.MIN_SUPPLEMENTARY_CODE_POINT) {
@@ -376,10 +373,10 @@ public class Key implements Comparable<Key> {
         } else {
             mCode = StringUtils.toUpperCaseOfCodeForLocale(code, needsToUpperCase, locale);
         }
+        final int altCodeInAttr = KeySpecParser.parseCode(style.getString(keyAttr,
+                R.styleable.Keyboard_Key_altCode), params.mCodesSet, CODE_UNSPECIFIED);
         final int altCode = StringUtils.toUpperCaseOfCodeForLocale(
-                KeySpecParser.parseCode(style.getString(keyAttr,
-                R.styleable.Keyboard_Key_altCode), params.mCodesSet, CODE_UNSPECIFIED),
-                needsToUpperCase, locale);
+                altCodeInAttr, needsToUpperCase, locale);
         mOptionalAttributes = OptionalAttributes.newInstance(outputText, altCode,
                 disabledIconId, previewIconId, visualInsetsLeft, visualInsetsRight);
         mKeyVisualAttributes = KeyVisualAttributes.newInstance(keyAttr);

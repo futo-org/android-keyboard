@@ -28,15 +28,14 @@
         <case
             latin:languageCode="fa"
         >
+            <!-- TODO: Introduce !code/key_{left,right}_angle_quotation. -->
             <!-- U+00AB: "«" LEFT-POINTING DOUBLE ANGLE QUOTATION MARK
                  U+00BB: "»" RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK -->
             <Key
-                latin:keyLabel="&#x00AB;"
-                latin:code="0x00BB"
+                latin:keyLabel="&#x00AB;|&#x00BB;"
                 latin:moreKeys="!text/more_keys_for_double_quote" />
             <Key
-                latin:keyLabel="&#x00BB;"
-                latin:code="0x00AB"
+                latin:keyLabel="&#x00BB;|&#x00AB;"
                 latin:moreKeys="!text/more_keys_for_single_quote" />
         </case>
         <default>

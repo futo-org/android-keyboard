@@ -48,8 +48,7 @@
             <!-- Note: The space character is needed as a preceding letter to draw some Thai
                  composing characters correctly. -->
             <Key
-                latin:keyLabel="&#x20;&#x0E39;"
-                latin:code="0x0E39"
+                latin:keyLabel="&#x20;&#x0E39;|&#x0E39;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <!-- U+0E3F: "฿" THAI CURRENCY SYMBOL BAHT -->
             <Key
@@ -114,16 +113,14 @@
             <!-- Note: The space character is needed as a preceding letter to draw some Thai
                  composing characters correctly. -->
             <Key
-                latin:keyLabel="&#x20;&#x0E38;"
-                latin:code="0x0E38"
+                latin:keyLabel="&#x20;&#x0E38;|&#x0E38;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <!-- U+0020: " " SPACE
                  U+0E36: " ึ" THAI CHARACTER SARA UE -->
             <!-- Note: The space character is needed as a preceding letter to draw some Thai
                  composing characters correctly. -->
             <Key
-                latin:keyLabel="&#x20;&#x0E36;"
-                latin:code="0x0E36"
+                latin:keyLabel="&#x20;&#x0E36;|&#x0E36;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <!-- U+0E04: "ค" THAI CHARACTER KHO KHWAI
                  U+0E55: "๕" THAI DIGIT FIVE -->
