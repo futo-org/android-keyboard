@@ -107,6 +107,9 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     public static final String PREF_EMOJI_CATEGORY_LAST_TYPED_ID = "emoji_category_last_typed_id";
     public static final String PREF_LAST_SHOWN_EMOJI_CATEGORY_ID = "last_shown_emoji_category_id";
 
+    private static final float UNDEFINED_PREFERENCE_VALUE_FLOAT = -1.0f;
+    private static final int UNDEFINED_PREFERENCE_VALUE_INT = -1;
+
     private Context mContext;
     private Resources mRes;
     private SharedPreferences mPrefs;
@@ -301,8 +304,10 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
 
     public static float readKeypressSoundVolume(final SharedPreferences prefs,
             final Resources res) {
-        final float volume = prefs.getFloat(PREF_KEYPRESS_SOUND_VOLUME, -1.0f);
-        return (volume >= 0) ? volume : readDefaultKeypressSoundVolume(res);
+        final float volume = prefs.getFloat(
+                PREF_KEYPRESS_SOUND_VOLUME, UNDEFINED_PREFERENCE_VALUE_FLOAT);
+        return (volume != UNDEFINED_PREFERENCE_VALUE_FLOAT) ? volume
+                : readDefaultKeypressSoundVolume(res);
     }
 
     public static float readDefaultKeypressSoundVolume(final Resources res) {
@@ -312,8 +317,10 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
 
     public static int readKeyLongpressTimeout(final SharedPreferences prefs,
             final Resources res) {
-        final int ms = prefs.getInt(PREF_KEY_LONGPRESS_TIMEOUT, -1);
-        return (ms >= 0) ? ms : readDefaultKeyLongpressTimeout(res);
+        final int milliseconds = prefs.getInt(
+                PREF_KEY_LONGPRESS_TIMEOUT, UNDEFINED_PREFERENCE_VALUE_INT);
+        return (milliseconds != UNDEFINED_PREFERENCE_VALUE_INT) ? milliseconds
+                : readDefaultKeyLongpressTimeout(res);
     }
 
     public static int readDefaultKeyLongpressTimeout(final Resources res) {
@@ -322,8 +329,10 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
 
     public static int readKeypressVibrationDuration(final SharedPreferences prefs,
             final Resources res) {
-        final int ms = prefs.getInt(PREF_VIBRATION_DURATION_SETTINGS, -1);
-        return (ms >= 0) ? ms : readDefaultKeypressVibrationDuration(res);
+        final int milliseconds = prefs.getInt(
+                PREF_VIBRATION_DURATION_SETTINGS, UNDEFINED_PREFERENCE_VALUE_INT);
+        return (milliseconds != UNDEFINED_PREFERENCE_VALUE_INT) ? milliseconds
+                : readDefaultKeypressVibrationDuration(res);
     }
 
     public static int readDefaultKeypressVibrationDuration(final Resources res) {
@@ -333,6 +342,18 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
 
     public static boolean readUsabilityStudyMode(final SharedPreferences prefs) {
         return prefs.getBoolean(DebugSettings.PREF_USABILITY_STUDY_MODE, true);
+    }
+
+    public static float readKeyPreviewAnimationScale(final SharedPreferences prefs,
+            final String prefKey, final float defaultValue) {
+        final float fraction = prefs.getFloat(prefKey, UNDEFINED_PREFERENCE_VALUE_FLOAT);
+        return (fraction != UNDEFINED_PREFERENCE_VALUE_FLOAT) ? fraction : defaultValue;
+    }
+
+    public static int readKeyPreviewAnimationDuration(final SharedPreferences prefs,
+            final String prefKey, final int defaultValue) {
+        final int milliseconds = prefs.getInt(prefKey, UNDEFINED_PREFERENCE_VALUE_INT);
+        return (milliseconds != UNDEFINED_PREFERENCE_VALUE_INT) ? milliseconds : defaultValue;
     }
 
     public static boolean readUseFullscreenMode(final Resources res) {

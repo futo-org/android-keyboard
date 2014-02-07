@@ -100,7 +100,7 @@ public final class KeyPreviewChoreographer {
         if (withAnimation) {
             if (tag instanceof KeyPreviewAnimations) {
                 final KeyPreviewAnimations animation = (KeyPreviewAnimations)tag;
-                animation.startZoomOut();
+                animation.startDismiss();
             }
             return;
         }
@@ -198,87 +198,87 @@ public final class KeyPreviewChoreographer {
         }
 
         // Show preview with animation.
-        final Animator zoomIn = createZoomInAniation(key, previewTextView);
-        final Animator zoomOut = createZoomOutAnimation(key, previewTextView);
-        final KeyPreviewAnimations animation = new KeyPreviewAnimations(zoomIn, zoomOut);
+        final Animator showUpAnimation = createShowUpAniation(key, previewTextView);
+        final Animator dismissAnimation = createDismissAnimation(key, previewTextView);
+        final KeyPreviewAnimations animation = new KeyPreviewAnimations(
+                showUpAnimation, dismissAnimation);
         previewTextView.setTag(animation);
-        animation.startZoomIn();
+        animation.startShowUp();
     }
 
-    // TODO: Move these parameters to resources or preferences.
-    private static final float KEY_PREVIEW_START_ZOOM_IN_SCALE = 0.7f;
-    private static final float KEY_PREVIEW_END_ZOOM_IN_SCALE = 1.0f;
-    private static final float KEY_PREVIEW_END_ZOOM_OUT_SCALE = 0.7f;
+    private static final float KEY_PREVIEW_SHOW_UP_END_SCALE = 1.0f;
     private static final AccelerateInterpolator ACCELERATE_INTERPOLATOR =
             new AccelerateInterpolator();
     private static final DecelerateInterpolator DECELERATE_INTERPOLATOR =
             new DecelerateInterpolator();
 
-    private Animator createZoomInAniation(final Key key, final TextView previewTextView) {
+    private Animator createShowUpAniation(final Key key, final TextView previewTextView) {
+        // TODO: Optimization for no scale animation and no duration.
         final ObjectAnimator scaleXAnimation = ObjectAnimator.ofFloat(
-                previewTextView, View.SCALE_X, KEY_PREVIEW_START_ZOOM_IN_SCALE,
-                KEY_PREVIEW_END_ZOOM_IN_SCALE);
+                previewTextView, View.SCALE_X, mParams.getShowUpStartScale(),
+                KEY_PREVIEW_SHOW_UP_END_SCALE);
         final ObjectAnimator scaleYAnimation = ObjectAnimator.ofFloat(
-                previewTextView, View.SCALE_Y, KEY_PREVIEW_START_ZOOM_IN_SCALE,
-                KEY_PREVIEW_END_ZOOM_IN_SCALE);
-        final AnimatorSet zoomInAnimation = new AnimatorSet();
-        zoomInAnimation.play(scaleXAnimation).with(scaleYAnimation);
-        // TODO: Implement preference option to control key preview animation duration.
-        zoomInAnimation.setDuration(mParams.mZoomInDuration);
-        zoomInAnimation.setInterpolator(DECELERATE_INTERPOLATOR);
-        zoomInAnimation.addListener(new AnimatorListenerAdapter() {
+                previewTextView, View.SCALE_Y, mParams.getShowUpStartScale(),
+                KEY_PREVIEW_SHOW_UP_END_SCALE);
+        final AnimatorSet showUpAnimation = new AnimatorSet();
+        showUpAnimation.play(scaleXAnimation).with(scaleYAnimation);
+        showUpAnimation.setDuration(mParams.getShowUpDuration());
+        showUpAnimation.setInterpolator(DECELERATE_INTERPOLATOR);
+        showUpAnimation.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationStart(final Animator animation) {
                 showKeyPreview(key, previewTextView, false /* withAnimation */);
             }
         });
-        return zoomInAnimation;
+        return showUpAnimation;
     }
 
-    private Animator createZoomOutAnimation(final Key key, final TextView previewTextView) {
+    private Animator createDismissAnimation(final Key key, final TextView previewTextView) {
+        // TODO: Optimization for no scale animation and no duration.
         final ObjectAnimator scaleXAnimation = ObjectAnimator.ofFloat(
-                previewTextView, View.SCALE_X, KEY_PREVIEW_END_ZOOM_OUT_SCALE);
+                previewTextView, View.SCALE_X, mParams.getDismissEndScale());
         final ObjectAnimator scaleYAnimation = ObjectAnimator.ofFloat(
-                previewTextView, View.SCALE_Y, KEY_PREVIEW_END_ZOOM_OUT_SCALE);
-        final AnimatorSet zoomOutAnimation = new AnimatorSet();
-        zoomOutAnimation.play(scaleXAnimation).with(scaleYAnimation);
-        // TODO: Implement preference option to control key preview animation duration.
-        final int zoomOutDuration = Math.min(mParams.mZoomOutDuration, mParams.getLingerTimeout());
-        zoomOutAnimation.setDuration(zoomOutDuration);
-        zoomOutAnimation.setInterpolator(ACCELERATE_INTERPOLATOR);
-        zoomOutAnimation.addListener(new AnimatorListenerAdapter() {
+                previewTextView, View.SCALE_Y, mParams.getDismissEndScale());
+        final AnimatorSet dismissAnimation = new AnimatorSet();
+        dismissAnimation.play(scaleXAnimation).with(scaleYAnimation);
+        final int dismissDuration = Math.min(
+                mParams.getDismissDuration(), mParams.getLingerTimeout());
+        dismissAnimation.setDuration(dismissDuration);
+        dismissAnimation.setInterpolator(ACCELERATE_INTERPOLATOR);
+        dismissAnimation.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(final Animator animation) {
                 dismissKeyPreview(key, false /* withAnimation */);
             }
         });
-        return zoomOutAnimation;
+        return dismissAnimation;
     }
 
     private static class KeyPreviewAnimations extends AnimatorListenerAdapter {
-        private final Animator mZoomIn;
-        private final Animator mZoomOut;
+        private final Animator mShowUpAnimation;
+        private final Animator mDismissAnimation;
 
-        public KeyPreviewAnimations(final Animator zoomIn, final Animator zoomOut) {
-            mZoomIn = zoomIn;
-            mZoomOut = zoomOut;
+        public KeyPreviewAnimations(final Animator showUpAnimation,
+                final Animator dismissAnimation) {
+            mShowUpAnimation = showUpAnimation;
+            mDismissAnimation = dismissAnimation;
         }
 
-        public void startZoomIn() {
-            mZoomIn.start();
+        public void startShowUp() {
+            mShowUpAnimation.start();
         }
 
-        public void startZoomOut() {
-            if (mZoomIn.isRunning()) {
-                mZoomIn.addListener(this);
+        public void startDismiss() {
+            if (mShowUpAnimation.isRunning()) {
+                mShowUpAnimation.addListener(this);
                 return;
             }
-            mZoomOut.start();
+            mDismissAnimation.start();
         }
 
         @Override
         public void onAnimationEnd(final Animator animation) {
-            mZoomOut.start();
+            mDismissAnimation.start();
         }
     }
 }

@@ -37,6 +37,7 @@ import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.RichInputMethodManager;
 import com.android.inputmethod.latin.SubtypeSwitcher;
 import com.android.inputmethod.latin.WordComposer;
+import com.android.inputmethod.latin.settings.DebugSettings;
 import com.android.inputmethod.latin.settings.Settings;
 import com.android.inputmethod.latin.settings.SettingsValues;
 import com.android.inputmethod.latin.utils.ResourceUtils;
@@ -80,6 +81,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     private KeyboardState mState;
 
     private KeyboardLayoutSet mKeyboardLayoutSet;
+    private SettingsValues mCurrentSettingsValues;
 
     /** mIsAutoCorrectionActive indicates that auto corrected word will be input instead of
      * what user actually typed. */
@@ -158,6 +160,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
                 settingsValues.mShowsVoiceInputKey,
                 settingsValues.isLanguageSwitchKeyEnabled());
         mKeyboardLayoutSet = builder.build();
+        mCurrentSettingsValues = settingsValues;
         try {
             mState.onLoadKeyboard();
         } catch (KeyboardLayoutSetException e) {
@@ -189,8 +192,13 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         keyboardView.setKeyboard(keyboard);
         mCurrentInputView.setKeyboardTopPadding(keyboard.mTopPadding);
         keyboardView.setKeyPreviewPopupEnabled(
-                Settings.readKeyPreviewPopupEnabled(mPrefs, mResources),
-                Settings.readKeyPreviewPopupDismissDelay(mPrefs, mResources));
+                mCurrentSettingsValues.mKeyPreviewPopupOn,
+                mCurrentSettingsValues.mKeyPreviewPopupDismissDelay);
+        keyboardView.setKeyPreviewAnimationParams(
+                mCurrentSettingsValues.mKeyPreviewShowUpStartScale,
+                mCurrentSettingsValues.mKeyPreviewShowUpDuration,
+                mCurrentSettingsValues.mKeyPreviewDismissEndScale,
+                mCurrentSettingsValues.mKeyPreviewDismissDuration);
         keyboardView.updateAutoCorrectionState(mIsAutoCorrectionActive);
         keyboardView.updateShortcutKey(mSubtypeSwitcher.isShortcutImeReady());
         final boolean subtypeChanged = (oldKeyboard == null)

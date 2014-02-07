@@ -29,6 +29,7 @@ import com.android.inputmethod.latin.InputAttributes;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.RichInputMethodManager;
 import com.android.inputmethod.latin.utils.AsyncResultHolder;
+import com.android.inputmethod.latin.utils.ResourceUtils;
 import com.android.inputmethod.latin.utils.TargetPackageInfoGetterTask;
 
 import java.util.Arrays;
@@ -93,6 +94,10 @@ public final class SettingsValues {
 
     // Debug settings
     public final boolean mIsInternal;
+    public final int mKeyPreviewShowUpDuration;
+    public final int mKeyPreviewDismissDuration;
+    public final float mKeyPreviewShowUpStartScale;
+    public final float mKeyPreviewDismissEndScale;
 
     public SettingsValues(final Context context, final SharedPreferences prefs, final Resources res,
             final InputAttributes inputAttributes) {
@@ -149,6 +154,20 @@ public final class SettingsValues {
         AdditionalFeaturesSettingUtils.readAdditionalFeaturesPreferencesIntoArray(
                 prefs, mAdditionalFeaturesSettingValues);
         mIsInternal = Settings.isInternal(prefs);
+        mKeyPreviewShowUpDuration = Settings.readKeyPreviewAnimationDuration(
+                prefs, DebugSettings.PREF_KEY_PREVIEW_SHOW_UP_DURATION,
+                res.getInteger(R.integer.config_key_preview_show_up_duration));
+        mKeyPreviewDismissDuration = Settings.readKeyPreviewAnimationDuration(
+                prefs, DebugSettings.PREF_KEY_PREVIEW_DISMISS_DURATION,
+                res.getInteger(R.integer.config_key_preview_dismiss_duration));
+        mKeyPreviewShowUpStartScale = Settings.readKeyPreviewAnimationScale(
+                prefs, DebugSettings.PREF_KEY_PREVIEW_SHOW_UP_START_SCALE,
+                ResourceUtils.getFloatFromFraction(
+                        res, R.fraction.config_key_preview_show_up_start_scale));
+        mKeyPreviewDismissEndScale = Settings.readKeyPreviewAnimationScale(
+                prefs, DebugSettings.PREF_KEY_PREVIEW_DISMISS_END_SCALE,
+                ResourceUtils.getFloatFromFraction(
+                        res, R.fraction.config_key_preview_dismiss_end_scale));
         mUseOnlyPersonalizationDictionaryForDebug = prefs.getBoolean(
                 DebugSettings.PREF_USE_ONLY_PERSONALIZATION_DICTIONARY_FOR_DEBUG, false);
         mDisplayOrientation = res.getConfiguration().orientation;

@@ -26,9 +26,10 @@ public final class KeyPreviewDrawParams {
     public final int mLayoutId;
     public final int mPreviewOffset;
     public final int mPreviewHeight;
-    // TODO: Move those parameters to preferences.
-    public final int mZoomInDuration;
-    public final int mZoomOutDuration;
+    private int mShowUpDuration;
+    private int mDismissDuration;
+    private float mShowUpStartScale;
+    private float mDismissEndScale;
     private int mLingerTimeout;
     private boolean mShowPopup = true;
 
@@ -69,10 +70,6 @@ public final class KeyPreviewDrawParams {
         if (mLayoutId == 0) {
             mShowPopup = false;
         }
-        mZoomInDuration = mainKeyboardViewAttr.getInt(
-                R.styleable.MainKeyboardView_keyPreviewZoomInDuration, 0);
-        mZoomOutDuration = mainKeyboardViewAttr.getInt(
-                R.styleable.MainKeyboardView_keyPreviewZoomOutDuration, 0);
     }
 
     public void setVisibleOffset(final int previewVisibleOffset) {
@@ -116,5 +113,29 @@ public final class KeyPreviewDrawParams {
 
     public int getLingerTimeout() {
         return mLingerTimeout;
+    }
+
+    public void setAnimationParams(final float showUpStartScale, final int showUpDuration,
+            final float dismissEndScale, final int dismissDuration) {
+        mShowUpStartScale = showUpStartScale;
+        mShowUpDuration = showUpDuration;
+        mDismissEndScale = dismissEndScale;
+        mDismissDuration = dismissDuration;
+    }
+
+    public float getShowUpStartScale() {
+        return mShowUpStartScale;
+    }
+
+    public int getShowUpDuration() {
+        return mShowUpDuration;
+    }
+
+    public float getDismissEndScale() {
+        return mDismissEndScale;
+    }
+
+    public int getDismissDuration() {
+        return mDismissDuration;
     }
 }

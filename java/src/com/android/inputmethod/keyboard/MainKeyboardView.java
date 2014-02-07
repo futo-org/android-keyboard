@@ -421,6 +421,12 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         mKeyPreviewDrawParams.setPopupEnabled(previewEnabled, delay);
     }
 
+    public void setKeyPreviewAnimationParams(final float showUpStartScale, final int showUpDuration,
+            final float dismissEndScale, final int dismissDuration) {
+        mKeyPreviewDrawParams.setAnimationParams(
+                showUpStartScale, showUpDuration, dismissEndScale, dismissDuration);
+    }
+
     private void locatePreviewPlacerView() {
         if (mDrawingPreviewPlacerView.getParent() != null) {
             return;
