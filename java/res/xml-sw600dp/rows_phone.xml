@@ -27,12 +27,12 @@
         latin:keyboardLayout="@xml/key_styles_number" />
     <Row>
         <Key
-            latin:keyLabel="-"
+            latin:keySpec="-"
             latin:keyStyle="numKeyStyle"
             latin:keyWidth="10%p"
             latin:backgroundType="functional" />
         <Key
-            latin:keyLabel="+"
+            latin:keySpec="+"
             latin:keyStyle="numKeyStyle"
             latin:keyWidth="10%p"
             latin:backgroundType="functional" />
@@ -54,12 +54,12 @@
     </Row>
     <Row>
         <Key
-            latin:keyLabel=","
+            latin:keySpec=","
             latin:keyStyle="numKeyStyle"
             latin:keyWidth="10%p"
             latin:backgroundType="functional" />
         <Key
-            latin:keyLabel="."
+            latin:keySpec="."
             latin:keyStyle="numKeyStyle"
             latin:keyWidth="10%p"
             latin:backgroundType="functional" />
@@ -81,17 +81,17 @@
     </Row>
     <Row>
         <Key
-            latin:keyLabel="("
+            latin:keySpec="("
             latin:keyStyle="numKeyStyle"
             latin:keyWidth="10%p"
             latin:backgroundType="functional" />
         <Key
-            latin:keyLabel=")"
+            latin:keySpec=")"
             latin:keyStyle="numKeyStyle"
             latin:keyWidth="10%p"
             latin:backgroundType="functional" />
         <Key
-            latin:keyLabel="N"
+            latin:keySpec="N"
             latin:keyStyle="numKeyStyle"
             latin:keyWidth="10%p"
             latin:backgroundType="functional" />
@@ -116,7 +116,7 @@
         <Key
             latin:keyStyle="num0KeyStyle" />
         <Key
-            latin:keyLabel="\#"
+            latin:keySpec="\#"
             latin:keyStyle="numKeyStyle" />
     </Row>
 </merge>

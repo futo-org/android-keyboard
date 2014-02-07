@@ -26,12 +26,12 @@
             latin:keyboardLayoutSetElement="alphabet|alphabetAutomaticShifted"
         >
             <Key
-                latin:keyLabel=";"
+                latin:keySpec=";"
                 latin:keyHintLabel=":"
                 latin:additionalMoreKeys=":"
                 latin:keyStyle="hasShiftedLetterHintStyle" />
             <Key
-                latin:keyLabel="\'"
+                latin:keySpec="\'"
                 latin:keyHintLabel="&quot;"
                 latin:additionalMoreKeys="&quot;"
                 latin:keyStyle="hasShiftedLetterHintStyle"
@@ -40,9 +40,9 @@
         <!-- keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted" -->
         <default>
             <Key
-                latin:keyLabel=":" />
+                latin:keySpec=":" />
             <Key
-                latin:keyLabel="&quot;"
+                latin:keySpec="&quot;"
                 latin:moreKeys="!fixedColumnOrder!3,!text/double_quotes,!text/single_quotes" />
         </default>
     </switch>

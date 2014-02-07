@@ -23,10 +23,10 @@
 >
     <!-- U+0622: "آ" ARABIC LETTER ALEF WITH MADDA ABOVE -->
     <Key
-        latin:keyLabel="&#x0622;"
+        latin:keySpec="&#x0622;"
         latin:keyLabelFlags="fontNormal" />
     <!-- U+0686: "چ" ARABIC LETTER TCHEH -->
     <Key
-        latin:keyLabel="&#x0686;"
+        latin:keySpec="&#x0686;"
         latin:keyLabelFlags="fontNormal" />
 </merge>

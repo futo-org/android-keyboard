@@ -22,39 +22,39 @@
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
     <Key
-        latin:keyLabel="~" />
+        latin:keySpec="~" />
     <Key
-        latin:keyLabel="!"
+        latin:keySpec="!"
         latin:additionalMoreKeys="!text/more_keys_for_exclamation" />
     <Key
-        latin:keyLabel="\@" />
+        latin:keySpec="\@" />
     <Key
-        latin:keyLabel="\#" />
+        latin:keySpec="\#" />
     <Key
-        latin:keyLabel="$"
+        latin:keySpec="$"
         latin:additionalMoreKeys="!text/more_keys_for_currency_dollar" />
     <Key
-        latin:keyLabel="%"
+        latin:keySpec="%"
         latin:additionalMoreKeys="!text/more_keys_for_symbols_percent" />
     <Key
-        latin:keyLabel="^" />
+        latin:keySpec="^" />
     <Key
-        latin:keyLabel="&amp;" />
+        latin:keySpec="&amp;" />
     <Key
-        latin:keyLabel="*"
+        latin:keySpec="*"
         latin:additionalMoreKeys="!text/more_keys_for_star" />
     <Key
-        latin:keyLabel="(" />
+        latin:keySpec="(" />
     <Key
-        latin:keyLabel=")" />
+        latin:keySpec=")" />
     <Key
-        latin:keyLabel="_" />
+        latin:keySpec="_" />
     <!-- U+00B1: "±" PLUS-MINUS SIGN
          U+00D7: "×" MULTIPLICATION SIGN
          U+00F7: "÷" DIVISION SIGN
          U+221A: "√" SQUARE ROOT -->
     <Key
-        latin:keyLabel="+"
+        latin:keySpec="+"
         latin:additionalMoreKeys="!text/more_keys_for_plus"
         latin:moreKeys="&#x00B1;,&#x00D7;,&#x00F7;,&#x221A;" />
 </merge>

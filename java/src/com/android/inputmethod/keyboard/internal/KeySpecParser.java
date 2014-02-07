@@ -42,6 +42,7 @@ import com.android.inputmethod.latin.utils.StringUtils;
  * Note that the '\' is also parsed by XML parser and {@link MoreKeySpec#splitKeySpecs(String)}
  * as well.
  */
+// TODO: Rename to KeySpec and make this class to the key specification object.
 public final class KeySpecParser {
     // Constants for parsing.
     private static final char BACKSLASH = Constants.CODE_BACKSLASH;

@@ -26,11 +26,11 @@
             latin:mode="email"
         >
             <Key
-                latin:keyLabel="\@" />
+                latin:keySpec="\@" />
         </case>
         <default>
             <Key
-                latin:keyLabel="/" />
+                latin:keySpec="/" />
         </default>
     </switch>
 </merge>

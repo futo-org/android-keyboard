@@ -27,58 +27,58 @@
         >
             <!-- U+0ED1: "໑" LAO DIGIT ONE -->
             <Key
-                latin:keyLabel="&#x0ED1;"
+                latin:keySpec="&#x0ED1;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+0ED2: "໒" LAO DIGIT TWO -->
             <Key
-                latin:keyLabel="&#x0ED2;"
+                latin:keySpec="&#x0ED2;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+0ED3: "໓" LAO DIGIT THREE -->
             <Key
-                latin:keyLabel="&#x0ED3;"
+                latin:keySpec="&#x0ED3;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+0ED4: "໔" LAO DIGIT FOUR -->
             <Key
-                latin:keyLabel="&#x0ED4;"
+                latin:keySpec="&#x0ED4;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+0ECC: "໌" LAO CANCELLATION MARK -->
             <Key
-                latin:keyLabel="&#x0ECC;"
+                latin:keySpec="&#x0ECC;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+0EBC: "ຼ" LAO SEMIVOWEL SIGN LO -->
             <Key
-                latin:keyLabel="&#x0EBC;"
+                latin:keySpec="&#x0EBC;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+0ED5: "໕" LAO DIGIT FIVE -->
             <Key
-                latin:keyLabel="&#x0ED5;"
+                latin:keySpec="&#x0ED5;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+0ED6: "໖" LAO DIGIT SIX -->
             <Key
-                latin:keyLabel="&#x0ED6;"
+                latin:keySpec="&#x0ED6;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+0ED7: "໗" LAO DIGIT SEVEN -->
             <Key
-                latin:keyLabel="&#x0ED7;"
+                latin:keySpec="&#x0ED7;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+0ED8: "໘" LAO DIGIT EIGHT -->
             <Key
-                latin:keyLabel="&#x0ED8;"
+                latin:keySpec="&#x0ED8;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+0ED9: "໙" LAO DIGIT NINE -->
             <Key
-                latin:keyLabel="&#x0ED9;"
+                latin:keySpec="&#x0ED9;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+0ECD/U+0EC8: "ໍ່" LAO NIGGAHITA/LAO TONE MAI EK -->
             <Key
-                latin:keyLabel="&#x0ECD;&#x0EC8;"
+                latin:keySpec="&#x0ECD;&#x0EC8;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
         </case>
         <default>
             <!-- U+0EA2: "ຢ" LAO LETTER YO
                  U+0ED1: "໑" LAO DIGIT ONE -->
             <Key
-                latin:keyLabel="&#x0EA2;"
+                latin:keySpec="&#x0EA2;"
                 latin:keyHintLabel="1"
                 latin:additionalMoreKeys="1"
                 latin:moreKeys="&#x0ED1;"
@@ -86,7 +86,7 @@
             <!-- U+0E9F: "ຟ" LAO LETTER FO SUNG
                  U+0ED2: "໒" LAO DIGIT TWO -->
             <Key
-                latin:keyLabel="&#x0E9F;"
+                latin:keySpec="&#x0E9F;"
                 latin:keyHintLabel="2"
                 latin:additionalMoreKeys="2"
                 latin:moreKeys="&#x0ED2;"
@@ -94,7 +94,7 @@
             <!-- U+0EC2: "ໂ" LAO VOWEL SIGN O
                  U+0ED3: "໓" LAO DIGIT THREE -->
             <Key
-                latin:keyLabel="&#x0EC2;"
+                latin:keySpec="&#x0EC2;"
                 latin:keyHintLabel="3"
                 latin:additionalMoreKeys="3"
                 latin:moreKeys="&#x0ED3;"
@@ -102,23 +102,23 @@
             <!-- U+0E96: "ຖ" LAO LETTER THO SUNG
                  U+0ED4: "໔" LAO DIGIT FOUR -->
             <Key
-                latin:keyLabel="&#x0E96;"
+                latin:keySpec="&#x0E96;"
                 latin:keyHintLabel="4"
                 latin:additionalMoreKeys="4"
                 latin:moreKeys="&#x0ED4;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+0EB8: "ຸ" LAO VOWEL SIGN U -->
             <Key
-                latin:keyLabel="&#x0EB8;"
+                latin:keySpec="&#x0EB8;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+0EB9: "ູ" LAO VOWEL SIGN UU -->
             <Key
-                latin:keyLabel="&#x0EB9;"
+                latin:keySpec="&#x0EB9;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+0E84: "ຄ" LAO LETTER KHO TAM
                  U+0ED5: "໕" LAO DIGIT FIVE -->
             <Key
-                latin:keyLabel="&#x0E84;"
+                latin:keySpec="&#x0E84;"
                 latin:keyHintLabel="5"
                 latin:additionalMoreKeys="5"
                 latin:moreKeys="&#x0ED5;"
@@ -126,7 +126,7 @@
             <!-- U+0E95: "ຕ" LAO LETTER TO
                  U+0ED6: "໖" LAO DIGIT SIX -->
             <Key
-                latin:keyLabel="&#x0E95;"
+                latin:keySpec="&#x0E95;"
                 latin:keyHintLabel="6"
                 latin:additionalMoreKeys="6"
                 latin:moreKeys="&#x0ED6;"
@@ -134,7 +134,7 @@
             <!-- U+0E88: "ຈ" LAO LETTER CO
                  U+0ED7: "໗" LAO DIGIT SEVEN -->
             <Key
-                latin:keyLabel="&#x0E88;"
+                latin:keySpec="&#x0E88;"
                 latin:keyHintLabel="7"
                 latin:additionalMoreKeys="7"
                 latin:moreKeys="&#x0ED7;"
@@ -142,7 +142,7 @@
             <!-- U+0E82: "ຂ" LAO LETTER KHO SUNG
                  U+0ED8: "໘" LAO DIGIT EIGHT -->
             <Key
-                latin:keyLabel="&#x0E82;"
+                latin:keySpec="&#x0E82;"
                 latin:keyHintLabel="8"
                 latin:additionalMoreKeys="8"
                 latin:moreKeys="&#x0ED8;"
@@ -150,14 +150,14 @@
             <!-- U+0E8A: "ຊ" LAO LETTER SO TAM
                  U+0ED9: "໙" LAO DIGIT NINE -->
             <Key
-                latin:keyLabel="&#x0E8A;"
+                latin:keySpec="&#x0E8A;"
                 latin:keyHintLabel="9"
                 latin:additionalMoreKeys="9"
                 latin:moreKeys="&#x0ED9;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+0ECD: "ໍ" LAO NIGGAHITA -->
             <Key
-                latin:keyLabel="&#x0ECD;"
+                latin:keySpec="&#x0ECD;"
                 latin:keyLabelFlags="fontNormal" />
         </default>
     </switch>

@@ -43,74 +43,74 @@
         latin:parentStyle="numKeyStyle" />
     <key-style
         latin:styleName="num0KeyStyle"
-        latin:keyLabel="0"
+        latin:keySpec="0"
         latin:parentStyle="numberKeyStyle" />
     <key-style
         latin:styleName="num1KeyStyle"
-        latin:keyLabel="1"
+        latin:keySpec="1"
         latin:parentStyle="numberKeyStyle" />
     <key-style
         latin:styleName="num2KeyStyle"
-        latin:keyLabel="2"
+        latin:keySpec="2"
         latin:keyHintLabel="ABC"
         latin:parentStyle="numberKeyStyle" />
     <key-style
         latin:styleName="num3KeyStyle"
-        latin:keyLabel="3"
+        latin:keySpec="3"
         latin:keyHintLabel="DEF"
         latin:parentStyle="numberKeyStyle" />
     <key-style
         latin:styleName="num4KeyStyle"
-        latin:keyLabel="4"
+        latin:keySpec="4"
         latin:keyHintLabel="GHI"
         latin:parentStyle="numberKeyStyle" />
     <key-style
         latin:styleName="num5KeyStyle"
-        latin:keyLabel="5"
+        latin:keySpec="5"
         latin:keyHintLabel="JKL"
         latin:parentStyle="numberKeyStyle" />
     <key-style
         latin:styleName="num6KeyStyle"
-        latin:keyLabel="6"
+        latin:keySpec="6"
         latin:keyHintLabel="MNO"
         latin:parentStyle="numberKeyStyle" />
     <key-style
         latin:styleName="num7KeyStyle"
-        latin:keyLabel="7"
+        latin:keySpec="7"
         latin:keyHintLabel="PQRS"
         latin:parentStyle="numberKeyStyle" />
     <key-style
         latin:styleName="num8KeyStyle"
-        latin:keyLabel="8"
+        latin:keySpec="8"
         latin:keyHintLabel="TUV"
         latin:parentStyle="numberKeyStyle" />
     <key-style
         latin:styleName="num9KeyStyle"
-        latin:keyLabel="9"
+        latin:keySpec="9"
         latin:keyHintLabel="WXYZ"
         latin:parentStyle="numberKeyStyle" />
     <!-- U+FF0A: "＊" FULLWIDTH ASTERISK -->
     <key-style
         latin:styleName="numStarKeyStyle"
-        latin:keyLabel="&#xFF0A;|*"
+        latin:keySpec="&#xFF0A;|*"
         latin:parentStyle="numKeyStyle" />
     <!-- Only for non-tablet device -->
     <key-style
         latin:styleName="numPhoneToSymbolKeyStyle"
-        latin:keyLabel="!text/label_to_phone_symbols_key|!code/key_switch_alpha_symbol"
+        latin:keySpec="!text/label_to_phone_symbols_key|!code/key_switch_alpha_symbol"
         latin:parentStyle="numModeKeyStyle" />
     <key-style
         latin:styleName="numPhoneToNumericKeyStyle"
-        latin:keyLabel="!text/label_to_phone_numeric_key|!code/key_switch_alpha_symbol"
+        latin:keySpec="!text/label_to_phone_numeric_key|!code/key_switch_alpha_symbol"
         latin:parentStyle="numModeKeyStyle" />
     <key-style
         latin:styleName="numPauseKeyStyle"
-        latin:keyLabel="!text/label_pause_key|,"
+        latin:keySpec="!text/label_pause_key|,"
         latin:keyLabelFlags="followKeyHintLabelRatio|autoXScale"
         latin:parentStyle="numKeyBaseStyle" />
     <key-style
         latin:styleName="numWaitKeyStyle"
-        latin:keyLabel="!text/label_wait_key|;"
+        latin:keySpec="!text/label_wait_key|;"
         latin:keyLabelFlags="followKeyHintLabelRatio|autoXScale"
         latin:parentStyle="numKeyBaseStyle" />
     <key-style
@@ -119,13 +119,13 @@
         latin:parentStyle="tabKeyStyle" />
     <key-style
         latin:styleName="numSpaceKeyStyle"
-        latin:keyLabel="!icon/space_key_for_number_layout|!code/key_space"
+        latin:keySpec="!icon/space_key_for_number_layout|!code/key_space"
         latin:keyActionFlags="enableLongPress"
         latin:parentStyle="numKeyBaseStyle" />
     <!-- Override defaultEnterKeyStyle in key_styles_enter.xml -->
     <key-style
         latin:styleName="defaultEnterKeyStyle"
-        latin:keyLabel="!icon/enter_key|!code/key_enter"
+        latin:keySpec="!icon/enter_key|!code/key_enter"
         latin:keyLabelFlags="preserveCase|autoXScale|followKeyLargeLabelRatio"
         latin:keyActionFlags="noKeyPreview"
         latin:backgroundType="functional"

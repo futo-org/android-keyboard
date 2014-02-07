@@ -27,84 +27,84 @@
         >
             <!-- U+0EB1/U+0EC9: "ັ້" LAO VOWEL SIGN MAI KAN/LAO TONE MAI THO -->
             <Key
-                latin:keyLabel="&#x0EB1;&#x0EC9;"
+                latin:keySpec="&#x0EB1;&#x0EC9;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
-                latin:keyLabel=";" />
+                latin:keySpec=";" />
             <Key
-                latin:keyLabel="." />
+                latin:keySpec="." />
             <Key
-                latin:keyLabel="," />
+                latin:keySpec="," />
             <Key
-                latin:keyLabel=":" />
+                latin:keySpec=":" />
             <!-- U+0ECA: "໊" LAO TONE MAI TI -->
             <Key
-                latin:keyLabel="&#x0ECA;"
+                latin:keySpec="&#x0ECA;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+0ECB: "໋" LAO TONE MAI CATAWA -->
             <Key
-                latin:keyLabel="&#x0ECB;"
+                latin:keySpec="&#x0ECB;"
                 latin:keyLabelFlags="fontNormal" />
             <Key
-                latin:keyLabel="!" />
+                latin:keySpec="!" />
             <Key
-                latin:keyLabel="\?" />
+                latin:keySpec="\?" />
             <Key
-                latin:keyLabel="%" />
+                latin:keySpec="%" />
             <Key
-                latin:keyLabel="=" />
+                latin:keySpec="=" />
             <!-- U+201C: "“" LEFT DOUBLE QUOTATION MARK -->
             <Key
-                latin:keyLabel="&#x201C;" />
+                latin:keySpec="&#x201C;" />
         </case>
         <default>
             <!-- U+0EB1: "ັ" LAO VOWEL SIGN MAI KAN -->
             <Key
-                latin:keyLabel="&#x0EB1;"
+                latin:keySpec="&#x0EB1;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+0EAB: "ຫ" LAO LETTER HO SUNG -->
             <Key
-                latin:keyLabel="&#x0EAB;"
+                latin:keySpec="&#x0EAB;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+0E81: "ກ" LAO LETTER KO -->
             <Key
-                latin:keyLabel="&#x0E81;"
+                latin:keySpec="&#x0E81;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+0E94: "ດ" LAO LETTER DO -->
             <Key
-                latin:keyLabel="&#x0E94;"
+                latin:keySpec="&#x0E94;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+0EC0: "ເ" LAO VOWEL SIGN E -->
             <Key
-                latin:keyLabel="&#x0EC0;"
+                latin:keySpec="&#x0EC0;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+0EC9: "້" LAO TONE MAI THO -->
             <Key
-                latin:keyLabel="&#x0EC9;"
+                latin:keySpec="&#x0EC9;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+0EC8: "່" LAO TONE MAI EK -->
             <Key
-                latin:keyLabel="&#x0EC8;"
+                latin:keySpec="&#x0EC8;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+0EB2: "າ" LAO VOWEL SIGN AA -->
             <Key
-                latin:keyLabel="&#x0EB2;"
+                latin:keySpec="&#x0EB2;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+0EAA: "ສ" LAO LETTER SO SUNG -->
             <Key
-                latin:keyLabel="&#x0EAA;"
+                latin:keySpec="&#x0EAA;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+0EA7: "ວ" LAO LETTER WO -->
             <Key
-                latin:keyLabel="&#x0EA7;"
+                latin:keySpec="&#x0EA7;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+0E87: "ງ" LAO LETTER NGO -->
             <Key
-                latin:keyLabel="&#x0E87;"
+                latin:keySpec="&#x0E87;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+201C: "“" LEFT DOUBLE QUOTATION MARK -->
             <Key
-                latin:keyLabel="&#x201C;" />
+                latin:keySpec="&#x201C;" />
         </default>
     </switch>
 </merge>

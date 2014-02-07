@@ -22,7 +22,7 @@
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
     <Key
-        latin:keyLabel=":"
+        latin:keySpec=":"
         latin:keyHintLabel=";"
         latin:moreKeys=";"
         latin:keyStyle="hasShiftedLetterHintStyle" />

@@ -33,7 +33,7 @@
         <Key
             latin:keyStyle="num3KeyStyle" />
         <Key
-            latin:keyLabel="-"
+            latin:keySpec="-"
             latin:moreKeys="+"
             latin:keyLabelFlags="hasPopupHint"
             latin:keyStyle="numFunctionalKeyStyle"
@@ -47,7 +47,7 @@
         <Key
             latin:keyStyle="num6KeyStyle" />
         <Key
-            latin:keyLabel="."
+            latin:keySpec="."
             latin:keyStyle="numFunctionalKeyStyle"
             latin:keyWidth="fillRight" />
     </Row>
@@ -68,7 +68,7 @@
         <!-- U+0030: "0" DIGIT ZERO -->
         <Key
             latin:keyStyle="num0KeyStyle"
-            latin:keyLabel="0 +|0"
+            latin:keySpec="0 +|0"
             latin:moreKeys="!noPanelAutoMoreKey!,+" />
         <Key
             latin:keyStyle="numSpaceKeyStyle" />

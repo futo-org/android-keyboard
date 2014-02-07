@@ -26,23 +26,23 @@
             latin:keyboardLayoutSetElement="alphabet|alphabetAutomaticShifted"
         >
             <Key
-                latin:keyLabel="["
+                latin:keySpec="["
                 latin:additionalMoreKeys="{" />
             <Key
-                latin:keyLabel="]"
+                latin:keySpec="]"
                 latin:additionalMoreKeys="}" />
             <Key
-                latin:keyLabel="\\"
+                latin:keySpec="\\"
                 latin:additionalMoreKeys="\\|" />
         </case>
         <!-- keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted" -->
         <default>
             <Key
-                latin:keyLabel="{" />
+                latin:keySpec="{" />
             <Key
-                latin:keyLabel="}" />
+                latin:keySpec="}" />
             <Key
-                latin:keyLabel="|" />
+                latin:keySpec="|" />
         </default>
     </switch>
 </merge>

@@ -28,38 +28,38 @@
             <!-- U+0914: "औ" DEVANAGARI LETTER AU
                  U+0912/U+0902: "ऒं" DEVANAGARI LETTER SHORT O//DEVANAGARI SIGN ANUSVARA -->
             <Key
-                latin:keyLabel="&#x0914;"
+                latin:keySpec="&#x0914;"
                 latin:moreKeys="&#x0912;&#x0902;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+0910: "ऐ" DEVANAGARI LETTER AI
                  U+0910/U+0902: "ऐं" DEVANAGARI LETTER AI/DEVANAGARI SIGN ANUSVARA -->
             <Key
-                latin:keyLabel="&#x0910;"
+                latin:keySpec="&#x0910;"
                 latin:moreKeys="&#x0910;&#x0902;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+0906: "आ" DEVANAGARI LETTER AA
                  U+0906/U+0902: "आं" DEVANAGARI LETTER AA/DEVANAGARI SIGN ANUSVARA
                  U+0906/U+0901: "आँ" DEVANAGARI LETTER AA/DEVANAGARI SIGN CANDRABINDU -->
             <Key
-                latin:keyLabel="&#x0906;"
+                latin:keySpec="&#x0906;"
                 latin:moreKeys="&#x0906;&#x0902;,&#x0906;&#x0901;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+0908: "ई" DEVANAGARI LETTER II
                  U+0908/U+0902: "ईं" DEVANAGARI LETTER II/DEVANAGARI SIGN ANUSVARA -->
             <Key
-                latin:keyLabel="&#x0908;"
+                latin:keySpec="&#x0908;"
                 latin:moreKeys="&#x0908;&#x0902;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+090A: "ऊ" DEVANAGARI LETTER UU
                  U+090A/U+0902: "ऊं" DEVANAGARI LETTER UU/DEVANAGARI SIGN ANUSVARA
                  U+090A/U+0901: "ऊँ" DEVANAGARI LETTER UU/DEVANAGARI SIGN CANDRABINDU -->
             <Key
-                latin:keyLabel="&#x090A;"
+                latin:keySpec="&#x090A;"
                 latin:moreKeys="&#x090A;&#x0902;,&#x090A;&#x0901;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+092D: "भ" DEVANAGARI LETTER BHA -->
             <Key
-                latin:keyLabel="&#x092D;"
+                latin:keySpec="&#x092D;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- Because the font rendering system prior to API version 16 can't automatically
                  render dotted circle for incomplete combining letter of some scripts, different
@@ -70,22 +70,22 @@
                 latin:keyStyle="baseKeyDevanagariSignVisarga" />
             <!-- U+0918: "घ" DEVANAGARI LETTER GHA -->
             <Key
-                latin:keyLabel="&#x0918;"
+                latin:keySpec="&#x0918;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+0927: "ध" DEVANAGARI LETTER DHA
                  U+0915/U+094D/U+0937: "क्ष" DEVANAGARI LETTER KA/DEVANAGARI SIGN VIRAMA/DEVANAGARI LETTER SSA
                  U+0936/U+094D/U+0930: "श्र" DEVANAGARI LETTER SHA/DEVANAGARI SIGN VIRAMA/DEVANAGARI LETTER RA -->
             <Key
-                latin:keyLabel="&#x0927;"
+                latin:keySpec="&#x0927;"
                 latin:moreKeys="&#x0915;&#x094D;&#x0937;,&#x0936;&#x094D;&#x0930;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+091D: "झ" DEVANAGARI LETTER JHA -->
             <Key
-                latin:keyLabel="&#x091D;"
+                latin:keySpec="&#x091D;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+0922: "ढ" DEVANAGARI LETTER DDHA -->
             <Key
-                latin:keyLabel="&#x0922;"
+                latin:keySpec="&#x0922;"
                 latin:keyLabelFlags="fontNormal" />
         </case>
         <default>
@@ -143,7 +143,7 @@
                  U+096C: "६" DEVANAGARI DIGIT SIX
                  U+092C/U+0952: "ब॒" DEVANAGARI LETTER BA/DEVANAGARI STRESS SIGN ANUDATTA -->
             <Key
-                latin:keyLabel="&#x092C;"
+                latin:keySpec="&#x092C;"
                 latin:moreKeys="&#x092C;&#x0952;,%"
                 latin:keyHintLabel="6"
                 latin:additionalMoreKeys="&#x096C;,6"
@@ -151,7 +151,7 @@
             <!-- U+0939: "ह" DEVANAGARI LETTER HA
                  U+096D: "७" DEVANAGARI DIGIT SEVEN -->
             <Key
-                latin:keyLabel="&#x0939;"
+                latin:keySpec="&#x0939;"
                 latin:keyHintLabel="7"
                 latin:additionalMoreKeys="&#x096D;,7"
                 latin:keyLabelFlags="fontNormal" />
@@ -161,7 +161,7 @@
                  U+0917/U+0952: "ग॒" DEVANAGARI LETTER GA/DEVANAGARI STRESS SIGN ANUDATTA
                  U+096E: "८" DEVANAGARI DIGIT EIGHT -->
             <Key
-                latin:keyLabel="&#x0917;"
+                latin:keySpec="&#x0917;"
                 latin:moreKeys="&#x091C;&#x094D;&#x091E;,&#x0917;&#x093C;,&#x0917;&#x0952;,%"
                 latin:keyHintLabel="8"
                 latin:additionalMoreKeys="&#x096E;,8"
@@ -169,7 +169,7 @@
             <!-- U+0926: "द" DEVANAGARI LETTER DA
                  U+096F: "९" DEVANAGARI DIGIT NINE -->
             <Key
-                latin:keyLabel="&#x0926;"
+                latin:keySpec="&#x0926;"
                 latin:keyHintLabel="9"
                 latin:additionalMoreKeys="&#x096F;,9"
                 latin:keyLabelFlags="fontNormal" />
@@ -179,7 +179,7 @@
                  U+091C/U+093C: "ज़" DEVANAGARI LETTER JA/DEVANAGARI SIGN NUKTA
                  U+0966: "०" DEVANAGARI DIGIT ZERO -->
             <Key
-                latin:keyLabel="&#x091C;"
+                latin:keySpec="&#x091C;"
                 latin:moreKeys="&#x091C;&#x0952;,&#x091C;&#x094D;&#x091E;,&#x091C;&#x093C;,%"
                 latin:keyHintLabel="0"
                 latin:additionalMoreKeys="&#x0966;,0"
@@ -188,7 +188,7 @@
                  U+0921/U+0952: "ड॒" DEVANAGARI LETTER DDA/DEVANAGARI STRESS SIGN ANUDATTA
                  U+0921/U+093C: "ड़" DEVANAGARI LETTER DDA/DEVANAGARI SIGN NUKTA -->
             <Key
-                latin:keyLabel="&#x0921;"
+                latin:keySpec="&#x0921;"
                 latin:moreKeys="&#x0921;&#x0952;,&#x0921;&#x093C;"
                 latin:keyLabelFlags="fontNormal" />
          </default>

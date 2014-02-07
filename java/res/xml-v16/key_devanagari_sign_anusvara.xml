@@ -27,6 +27,6 @@
 >
     <!-- U+0902: "ं" DEVANAGARI SIGN ANUSVARA -->
     <Key
-        latin:keyLabel="&#x0902;"
+        latin:keySpec="&#x0902;"
         latin:keyLabelFlags="fontNormal" />
 </merge>
