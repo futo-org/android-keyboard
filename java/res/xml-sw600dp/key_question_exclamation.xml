@@ -26,11 +26,11 @@
             latin:mode="email|url"
         >
             <Key
-                latin:keyLabel="-" />
+                latin:keySpec="-" />
         </case>
         <default>
             <Key
-                latin:keyLabel="\?"
+                latin:keySpec="\?"
                 latin:keyHintLabel="!"
                 latin:moreKeys="!"
                 latin:keyStyle="hasShiftedLetterHintStyle" />

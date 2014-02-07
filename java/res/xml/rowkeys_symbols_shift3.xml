@@ -22,19 +22,19 @@
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
     <Key
-        latin:keyLabel="\\" />
+        latin:keySpec="\\" />
     <!-- U+00A9: "©" COPYRIGHT SIGN -->
     <Key
-        latin:keyLabel="&#x00A9;" />
+        latin:keySpec="&#x00A9;" />
     <!-- U+00AE: "®" REGISTERED SIGN -->
     <Key
-        latin:keyLabel="&#x00AE;" />
+        latin:keySpec="&#x00AE;" />
     <!-- U+2122: "™" TRADE MARK SIGN -->
     <Key
-        latin:keyLabel="&#x2122;" />
+        latin:keySpec="&#x2122;" />
     <!-- U+2105: "℅" CARE OF -->
     <Key
-        latin:keyLabel="&#x2105;" />
+        latin:keySpec="&#x2105;" />
     <include
         latin:keyboardLayout="@xml/keys_square_brackets" />
 </merge>

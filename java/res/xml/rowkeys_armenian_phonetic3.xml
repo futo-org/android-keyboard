@@ -23,38 +23,38 @@
 >
     <!-- U+0561: "ա" ARMENIAN SMALL LETTER AYB -->
     <Key
-        latin:keyLabel="&#x0561;"
+        latin:keySpec="&#x0561;"
         latin:keyLabelFlags="fontNormal" />
     <!-- U+057D: "ս" ARMENIAN SMALL LETTER SEH -->
     <Key
-        latin:keyLabel="&#x057D;"
+        latin:keySpec="&#x057D;"
         latin:keyLabelFlags="fontNormal" />
     <!-- U+0564: "դ" ARMENIAN SMALL LETTER DA -->
     <Key
-        latin:keyLabel="&#x0564;"
+        latin:keySpec="&#x0564;"
         latin:keyLabelFlags="fontNormal" />
     <!-- U+0586: "ֆ" ARMENIAN SMALL LETTER FEH -->
     <Key
-        latin:keyLabel="&#x0586;"
+        latin:keySpec="&#x0586;"
         latin:keyLabelFlags="fontNormal" />
     <!-- U+0563: "գ" ARMENIAN SMALL LETTER GIM -->
     <Key
-        latin:keyLabel="&#x0563;"
+        latin:keySpec="&#x0563;"
         latin:keyLabelFlags="fontNormal" />
     <!-- U+0570: "հ" ARMENIAN SMALL LETTER HO -->
     <Key
-        latin:keyLabel="&#x0570;"
+        latin:keySpec="&#x0570;"
         latin:keyLabelFlags="fontNormal" />
     <!-- U+0575: "յ" ARMENIAN SMALL LETTER YI -->
     <Key
-        latin:keyLabel="&#x0575;"
+        latin:keySpec="&#x0575;"
         latin:keyLabelFlags="fontNormal" />
     <!-- U+056F: "կ" ARMENIAN SMALL LETTER KEN -->
     <Key
-        latin:keyLabel="&#x056F;"
+        latin:keySpec="&#x056F;"
         latin:keyLabelFlags="fontNormal" />
     <!-- U+056C: "լ" ARMENIAN SMALL LETTER LIWN -->
     <Key
-        latin:keyLabel="&#x056C;"
+        latin:keySpec="&#x056C;"
         latin:keyLabelFlags="fontNormal" />
 </merge>

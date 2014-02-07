@@ -23,37 +23,37 @@
 >
     <!-- U+0444: "ф" CYRILLIC SMALL LETTER EF -->
     <Key
-        latin:keyLabel="&#x0444;" />
+        latin:keySpec="&#x0444;" />
     <Key
-        latin:keyLabel="!text/keylabel_for_east_slavic_row2_1"
+        latin:keySpec="!text/keylabel_for_east_slavic_row2_1"
         latin:moreKeys="!text/more_keys_for_east_slavic_row2_1" />
     <!-- U+0432: "в" CYRILLIC SMALL LETTER VE -->
     <Key
-        latin:keyLabel="&#x0432;" />
+        latin:keySpec="&#x0432;" />
     <!-- U+0430: "а" CYRILLIC SMALL LETTER A -->
     <Key
-        latin:keyLabel="&#x0430;"
+        latin:keySpec="&#x0430;"
         latin:moreKeys="!text/more_keys_for_cyrillic_a" />
     <!-- U+043F: "п" CYRILLIC SMALL LETTER PE -->
     <Key
-        latin:keyLabel="&#x043F;" />
+        latin:keySpec="&#x043F;" />
     <!-- U+0440: "р" CYRILLIC SMALL LETTER ER -->
     <Key
-        latin:keyLabel="&#x0440;" />
+        latin:keySpec="&#x0440;" />
     <!-- U+043E: "о" CYRILLIC SMALL LETTER O -->
     <Key
-        latin:keyLabel="&#x043E;"
+        latin:keySpec="&#x043E;"
         latin:moreKeys="!text/more_keys_for_cyrillic_o" />
     <!-- U+043B: "л" CYRILLIC SMALL LETTER EL -->
     <Key
-        latin:keyLabel="&#x043B;" />
+        latin:keySpec="&#x043B;" />
     <!-- U+0434: "д" CYRILLIC SMALL LETTER DE -->
     <Key
-        latin:keyLabel="&#x0434;" />
+        latin:keySpec="&#x0434;" />
     <!-- U+0436: "ж" CYRILLIC SMALL LETTER ZHE -->
     <Key
-        latin:keyLabel="&#x0436;" />
+        latin:keySpec="&#x0436;" />
     <Key
-        latin:keyLabel="!text/keylabel_for_east_slavic_row2_11"
+        latin:keySpec="!text/keylabel_for_east_slavic_row2_11"
         latin:moreKeys="!text/more_keys_for_east_slavic_row2_11" />
 </merge>

@@ -44,6 +44,6 @@
     <!-- U+093C: "़" DEVANAGARI SIGN NUKTA -->
     <Key
         latin:keyStyle="moreKeysDevanagariSignNukta"
-        latin:keyLabel="&#x093C;"
+        latin:keySpec="&#x093C;"
         latin:keyLabelFlags="fontNormal" />
 </merge>

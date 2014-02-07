@@ -22,7 +22,7 @@
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
     <Key
-        latin:keyLabel="*"
+        latin:keySpec="*"
         latin:moreKeys="!text/more_keys_for_star" />
     <switch>
         <case
@@ -32,30 +32,30 @@
             <!-- U+00AB: "«" LEFT-POINTING DOUBLE ANGLE QUOTATION MARK
                  U+00BB: "»" RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK -->
             <Key
-                latin:keyLabel="&#x00AB;|&#x00BB;"
+                latin:keySpec="&#x00AB;|&#x00BB;"
                 latin:moreKeys="!text/more_keys_for_double_quote" />
             <Key
-                latin:keyLabel="&#x00BB;|&#x00AB;"
+                latin:keySpec="&#x00BB;|&#x00AB;"
                 latin:moreKeys="!text/more_keys_for_single_quote" />
         </case>
         <default>
             <Key
-                latin:keyLabel="&quot;"
+                latin:keySpec="&quot;"
                 latin:moreKeys="!text/more_keys_for_double_quote" />
             <Key
-                latin:keyLabel="\'"
+                latin:keySpec="\'"
                 latin:moreKeys="!text/more_keys_for_single_quote" />
         </default>
     </switch>
     <Key
-        latin:keyLabel=":" />
+        latin:keySpec=":" />
     <Key
-        latin:keyLabel="!text/keylabel_for_symbols_semicolon"
+        latin:keySpec="!text/keylabel_for_symbols_semicolon"
         latin:moreKeys="!text/more_keys_for_symbols_semicolon" />
     <Key
-        latin:keyLabel="!"
+        latin:keySpec="!"
         latin:moreKeys="!text/more_keys_for_exclamation" />
     <Key
-        latin:keyLabel="!text/keylabel_for_symbols_question"
+        latin:keySpec="!text/keylabel_for_symbols_question"
         latin:moreKeys="!text/more_keys_for_question" />
 </merge>

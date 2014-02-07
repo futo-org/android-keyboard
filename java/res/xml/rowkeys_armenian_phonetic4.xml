@@ -23,30 +23,30 @@
 >
     <!-- U+0566: "զ" ARMENIAN SMALL LETTER ZA -->
     <Key
-        latin:keyLabel="&#x0566;"
+        latin:keySpec="&#x0566;"
         latin:keyLabelFlags="fontNormal" />
     <!-- U+0572: "ղ" ARMENIAN SMALL LETTER GHAD -->
     <Key
-        latin:keyLabel="&#x0572;"
+        latin:keySpec="&#x0572;"
         latin:keyLabelFlags="fontNormal" />
     <!-- U+0581: "ց" ARMENIAN SMALL LETTER CO -->
     <Key
-        latin:keyLabel="&#x0581;"
+        latin:keySpec="&#x0581;"
         latin:keyLabelFlags="fontNormal" />
     <!-- U+057E: "վ" ARMENIAN SMALL LETTER VEW -->
     <Key
-        latin:keyLabel="&#x057E;"
+        latin:keySpec="&#x057E;"
         latin:keyLabelFlags="fontNormal" />
     <!-- U+0562: "բ" ARMENIAN SMALL LETTER BEN -->
     <Key
-        latin:keyLabel="&#x0562;"
+        latin:keySpec="&#x0562;"
         latin:keyLabelFlags="fontNormal" />
     <!-- U+0576: "ն" ARMENIAN SMALL LETTER NOW -->
     <Key
-        latin:keyLabel="&#x0576;"
+        latin:keySpec="&#x0576;"
         latin:keyLabelFlags="fontNormal" />
     <!-- U+0574: "մ" ARMENIAN SMALL LETTER MEN -->
     <Key
-        latin:keyLabel="&#x0574;"
+        latin:keySpec="&#x0574;"
         latin:keyLabelFlags="fontNormal" />
 </merge>

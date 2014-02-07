@@ -23,45 +23,45 @@
 >
     <!-- U+0584: "ք" ARMENIAN SMALL LETTER KEH -->
     <Key
-        latin:keyLabel="&#x0584;"
+        latin:keySpec="&#x0584;"
         latin:keyLabelFlags="fontNormal" />
     <!-- U+0578: "ո" ARMENIAN SMALL LETTER VO -->
     <Key
-        latin:keyLabel="&#x0578;"
+        latin:keySpec="&#x0578;"
         latin:keyLabelFlags="fontNormal" />
     <!-- U+0565: "ե" ARMENIAN SMALL LETTER ECH
          U+0587: "և" ARMENIAN SMALL LIGATURE ECH YIWN -->
     <Key
-        latin:keyLabel="&#x0565;"
+        latin:keySpec="&#x0565;"
         latin:moreKeys="&#x0587;"
         latin:keyHintLabel="&#x0587;"
         latin:keyLabelFlags="fontNormal" />
     <!-- U+057C: "ռ" ARMENIAN SMALL LETTER RA -->
     <Key
-        latin:keyLabel="&#x057C;"
+        latin:keySpec="&#x057C;"
         latin:keyLabelFlags="fontNormal" />
     <!-- U+057F: "տ" ARMENIAN SMALL LETTER TIWN -->
     <Key
-        latin:keyLabel="&#x057F;"
+        latin:keySpec="&#x057F;"
         latin:keyLabelFlags="fontNormal" />
     <!-- U+0568: "ը" ARMENIAN SMALL LETTER ET -->
     <Key
-        latin:keyLabel="&#x0568;"
+        latin:keySpec="&#x0568;"
         latin:keyLabelFlags="fontNormal" />
     <!-- U+0582: "ւ" ARMENIAN SMALL LETTER YIWN -->
     <Key
-        latin:keyLabel="&#x0582;"
+        latin:keySpec="&#x0582;"
         latin:keyLabelFlags="fontNormal" />
     <!-- U+056B: "ի" ARMENIAN SMALL LETTER INI -->
     <Key
-        latin:keyLabel="&#x056B;"
+        latin:keySpec="&#x056B;"
         latin:keyLabelFlags="fontNormal" />
     <!-- U+0585: "օ" ARMENIAN SMALL LETTER OH -->
     <Key
-        latin:keyLabel="&#x0585;"
+        latin:keySpec="&#x0585;"
         latin:keyLabelFlags="fontNormal" />
     <!-- U+057A: "պ" ARMENIAN SMALL LETTER PEH -->
     <Key
-        latin:keyLabel="&#x057A;"
+        latin:keySpec="&#x057A;"
         latin:keyLabelFlags="fontNormal" />
 </merge>

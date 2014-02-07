@@ -48,7 +48,7 @@
         >
             <key-style
                 latin:styleName="shiftKeyStyle"
-                latin:keyLabel="!icon/shift_key_shifted|!code/key_shift"
+                latin:keySpec="!icon/shift_key_shifted|!code/key_shift"
                 latin:backgroundType="stickyOff"
                 latin:parentStyle="baseForShiftKeyStyle" />
         </case>
@@ -57,56 +57,56 @@
         >
             <key-style
                 latin:styleName="shiftKeyStyle"
-                latin:keyLabel="!icon/shift_key_shifted|!code/key_shift"
+                latin:keySpec="!icon/shift_key_shifted|!code/key_shift"
                 latin:backgroundType="stickyOn"
                 latin:parentStyle="baseForShiftKeyStyle" />
         </case>
         <default>
             <key-style
                 latin:styleName="shiftKeyStyle"
-                latin:keyLabel="!icon/shift_key|!code/key_shift"
+                latin:keySpec="!icon/shift_key|!code/key_shift"
                 latin:backgroundType="stickyOff"
                 latin:parentStyle="baseForShiftKeyStyle" />
         </default>
     </switch>
     <key-style
         latin:styleName="deleteKeyStyle"
-        latin:keyLabel="!icon/delete_key|!code/key_delete"
+        latin:keySpec="!icon/delete_key|!code/key_delete"
         latin:keyActionFlags="isRepeatable|noKeyPreview"
         latin:backgroundType="functional" />
     <include
         latin:keyboardLayout="@xml/key_styles_enter" />
     <key-style
         latin:styleName="spaceKeyStyle"
-        latin:keyLabel=" |!code/key_space"
+        latin:keySpec=" |!code/key_space"
         latin:keyActionFlags="noKeyPreview|enableLongPress" />
     <!-- U+200C: ZERO WIDTH NON-JOINER
          U+200D: ZERO WIDTH JOINER -->
     <key-style
         latin:styleName="zwnjKeyStyle"
-        latin:keyLabel="!icon/zwnj_key|&#x200C;"
+        latin:keySpec="!icon/zwnj_key|&#x200C;"
         latin:moreKeys="!icon/zwj_key|&#x200D;"
         latin:keyLabelFlags="hasPopupHint"
         latin:keyActionFlags="noKeyPreview" />
     <key-style
         latin:styleName="shortcutKeyStyle"
-        latin:keyLabel="!icon/shortcut_key|!code/key_shortcut"
+        latin:keySpec="!icon/shortcut_key|!code/key_shortcut"
         latin:keyIconDisabled="!icon/shortcut_key_disabled"
         latin:keyActionFlags="noKeyPreview"
         latin:backgroundType="functional" />
     <key-style
         latin:styleName="languageSwitchKeyStyle"
-        latin:keyLabel="!icon/language_switch_key|!code/key_language_switch"
+        latin:keySpec="!icon/language_switch_key|!code/key_language_switch"
         latin:keyActionFlags="noKeyPreview|altCodeWhileTyping|enableLongPress"
         latin:altCode="!code/key_space" />
     <key-style
         latin:styleName="emojiKeyStyle"
-        latin:keyLabel="!icon/emoji_key|!code/key_emoji"
+        latin:keySpec="!icon/emoji_key|!code/key_emoji"
         latin:keyActionFlags="noKeyPreview"
         latin:backgroundType="functional" />
     <key-style
         latin:styleName="settingsKeyStyle"
-        latin:keyLabel="!icon/settings_key|!code/key_settings"
+        latin:keySpec="!icon/settings_key|!code/key_settings"
         latin:keyActionFlags="noKeyPreview"
         latin:backgroundType="functional" />
     <switch>
@@ -116,7 +116,7 @@
         >
             <key-style
                 latin:styleName="tabKeyStyle"
-                latin:keyLabel="!icon/tab_key|!code/key_action_previous"
+                latin:keySpec="!icon/tab_key|!code/key_action_previous"
                 latin:keyIconPreview="!icon/tab_key_preview"
                 latin:backgroundType="functional" />
         </case>
@@ -126,14 +126,14 @@
         >
             <key-style
                 latin:styleName="tabKeyStyle"
-                latin:keyLabel="!icon/tab_key|!code/key_action_next"
+                latin:keySpec="!icon/tab_key|!code/key_action_next"
                 latin:keyIconPreview="!icon/tab_key_preview"
                 latin:backgroundType="functional" />
         </case>
         <default>
             <key-style
                 latin:styleName="tabKeyStyle"
-                latin:keyLabel="!icon/tab_key|!code/key_tab"
+                latin:keySpec="!icon/tab_key|!code/key_tab"
                 latin:keyIconPreview="!icon/tab_key_preview"
                 latin:backgroundType="functional" />
         </default>
@@ -145,23 +145,23 @@
         latin:backgroundType="functional" />
     <key-style
         latin:styleName="toSymbolKeyStyle"
-        latin:keyLabel="!text/label_to_symbol_key|!code/key_switch_alpha_symbol"
+        latin:keySpec="!text/label_to_symbol_key|!code/key_switch_alpha_symbol"
         latin:parentStyle="baseForLayoutSwitchKeyStyle" />
     <key-style
         latin:styleName="toAlphaKeyStyle"
-        latin:keyLabel="!text/label_to_alpha_key|!code/key_switch_alpha_symbol"
+        latin:keySpec="!text/label_to_alpha_key|!code/key_switch_alpha_symbol"
         latin:parentStyle="baseForLayoutSwitchKeyStyle" />
     <key-style
         latin:styleName="toMoreSymbolKeyStyle"
-        latin:keyLabel="!text/label_to_more_symbol_for_tablet_key|!code/key_shift"
+        latin:keySpec="!text/label_to_more_symbol_for_tablet_key|!code/key_shift"
         latin:parentStyle="baseForLayoutSwitchKeyStyle" />
     <key-style
         latin:styleName="backFromMoreSymbolKeyStyle"
-        latin:keyLabel="!text/label_to_symbol_key|!code/key_shift"
+        latin:keySpec="!text/label_to_symbol_key|!code/key_shift"
         latin:parentStyle="baseForLayoutSwitchKeyStyle" />
     <key-style
         latin:styleName="comKeyStyle"
-        latin:keyLabel="!text/keylabel_for_popular_domain|!text/keylabel_for_popular_domain"
+        latin:keySpec="!text/keylabel_for_popular_domain|!text/keylabel_for_popular_domain"
         latin:keyLabelFlags="autoXScale|fontNormal|hasPopupHint|preserveCase"
         latin:moreKeys="!text/more_keys_for_popular_domain" />
 </merge>

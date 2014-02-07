@@ -26,31 +26,31 @@
             latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted"
         >
             <Key
-                latin:keyLabel="&quot;"
+                latin:keySpec="&quot;"
                 latin:keyHintLabel="1"
                 latin:additionalMoreKeys="1" />
             <Key
-                latin:keyLabel="&lt;"
+                latin:keySpec="&lt;"
                 latin:keyHintLabel="2"
                 latin:additionalMoreKeys="2" />
             <Key
-                latin:keyLabel="&gt;"
+                latin:keySpec="&gt;"
                 latin:keyHintLabel="3"
                 latin:additionalMoreKeys="3" />
         </case>
         <default>
             <Key
-                latin:keyLabel="\'"
+                latin:keySpec="\'"
                 latin:keyHintLabel="1"
                 latin:additionalMoreKeys="1"
                 latin:moreKeys="!,&quot;" />
             <Key
-                latin:keyLabel=","
+                latin:keySpec=","
                 latin:keyHintLabel="2"
                 latin:additionalMoreKeys="2"
                 latin:moreKeys="\?,&lt;" />
             <Key
-                latin:keyLabel="."
+                latin:keySpec="."
                 latin:keyHintLabel="3"
                 latin:additionalMoreKeys="3"
                 latin:moreKeys="&gt;" />

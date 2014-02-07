@@ -27,100 +27,100 @@
         >
             <!-- U+0EBB/U+0EC9: "" LAO VOWEL SIGN MAI KON/LAO TONE MAI THO -->
             <Key
-                latin:keyLabel="&#x0EBB;&#x0EC9;"
+                latin:keySpec="&#x0EBB;&#x0EC9;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <!-- U+0ED0: "໐" LAO DIGIT ZERO -->
             <Key
-                latin:keyLabel="&#x0ED0;"
+                latin:keySpec="&#x0ED0;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+0EB3/U+0EC9: "ຳ້" LAO VOWEL SIGN AM/LAO TONE MAI THO -->
             <Key
-                latin:keyLabel="&#x0EB3;&#x0EC9;"
+                latin:keySpec="&#x0EB3;&#x0EC9;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
-                latin:keyLabel="_" />
+                latin:keySpec="_" />
             <Key
-                latin:keyLabel="+" />
+                latin:keySpec="+" />
             <!-- U+0EB4/U+0EC9: "ິ້" LAO VOWEL SIGN I/LAO TONE MAI THO -->
             <Key
-                latin:keyLabel="&#x0EB4;&#x0EC9;"
+                latin:keySpec="&#x0EB4;&#x0EC9;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <!-- U+0EB5/U+0EC9: "ີ້" LAO VOWEL SIGN II/LAO TONE MAI THO -->
             <Key
-                latin:keyLabel="&#x0EB5;&#x0EC9;"
+                latin:keySpec="&#x0EB5;&#x0EC9;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <!-- U+0EA3: "ຣ" LAO LETTER LO LING -->
             <Key
-                latin:keyLabel="&#x0EA3;"
+                latin:keySpec="&#x0EA3;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+0EDC: "ໜ" LAO HO NO -->
             <Key
-                latin:keyLabel="&#x0EDC;"
+                latin:keySpec="&#x0EDC;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+0EBD: "ຽ" LAO SEMIVOWEL SIGN NYO -->
             <Key
-                latin:keyLabel="&#x0EBD;"
+                latin:keySpec="&#x0EBD;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+0EAB/U+0EBC: "" LAO LETTER HO SUNG/LAO SEMIVOWEL SIGN LO -->
             <Key
-                latin:keyLabel="&#x0EAB;&#x0EBC;"
+                latin:keySpec="&#x0EAB;&#x0EBC;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <!-- U+201D: "”" RIGHT DOUBLE QUOTATION MARK -->
             <Key
-                latin:keyLabel="&#x201D;" />
+                latin:keySpec="&#x201D;" />
         </case>
         <default>
             <!-- U+0EBB: "ົ" LAO VOWEL SIGN MAI KON -->
             <Key
-                latin:keyLabel="&#x0EBB;"
+                latin:keySpec="&#x0EBB;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+0EC4: "ໄ" LAO VOWEL SIGN AI
                  U+0ED0: "໐" LAO DIGIT ZERO -->
             <Key
-                latin:keyLabel="&#x0EC4;"
+                latin:keySpec="&#x0EC4;"
                 latin:keyHintLabel="0"
                 latin:additionalMoreKeys="0"
                 latin:moreKeys="&#x0ED0;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+0EB3: "ຳ" LAO VOWEL SIGN AM -->
             <Key
-                latin:keyLabel="&#x0EB3;"
+                latin:keySpec="&#x0EB3;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+0E9E: "ພ" LAO LETTER PHO TAM -->
             <Key
-                latin:keyLabel="&#x0E9E;"
+                latin:keySpec="&#x0E9E;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+0EB0: "ະ" LAO VOWEL SIGN A -->
             <Key
-                latin:keyLabel="&#x0EB0;"
+                latin:keySpec="&#x0EB0;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+0EB4: "ິ" LAO VOWEL SIGN I -->
             <Key
-                latin:keyLabel="&#x0EB4;"
+                latin:keySpec="&#x0EB4;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+0EB5: "ີ" LAO VOWEL SIGN II -->
             <Key
-                latin:keyLabel="&#x0EB5;"
+                latin:keySpec="&#x0EB5;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+0EAE: "ຮ" LAO LETTER HO TAM -->
             <Key
-                latin:keyLabel="&#x0EAE;"
+                latin:keySpec="&#x0EAE;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+0E99: "ນ" LAO LETTER NO -->
             <Key
-                latin:keyLabel="&#x0E99;"
+                latin:keySpec="&#x0E99;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+0E8D: "ຍ" LAO LETTER NYO -->
             <Key
-                latin:keyLabel="&#x0E8D;"
+                latin:keySpec="&#x0E8D;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+0E9A: "ບ" LAO LETTER BO -->
             <Key
-                latin:keyLabel="&#x0E9A;"
+                latin:keySpec="&#x0E9A;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+0EA5: "ລ" LAO LETTER LO LOOT -->
             <Key
-                latin:keyLabel="&#x0EA5;"
+                latin:keySpec="&#x0EA5;"
                 latin:keyLabelFlags="fontNormal" />
         </default>
     </switch>

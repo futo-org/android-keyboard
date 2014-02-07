@@ -22,44 +22,44 @@
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
     <Key
-        latin:keyLabel="q"
+        latin:keySpec="q"
         latin:keyHintLabel="1"
         latin:additionalMoreKeys="1" />
     <Key
-        latin:keyLabel="w"
+        latin:keySpec="w"
         latin:keyHintLabel="2"
         latin:additionalMoreKeys="2"
         latin:moreKeys="!text/more_keys_for_w" />
     <Key
-        latin:keyLabel="f"
+        latin:keySpec="f"
         latin:keyHintLabel="3"
         latin:additionalMoreKeys="3" />
     <Key
-        latin:keyLabel="p"
+        latin:keySpec="p"
         latin:keyHintLabel="4"
         latin:additionalMoreKeys="4" />
     <Key
-        latin:keyLabel="g"
+        latin:keySpec="g"
         latin:keyHintLabel="5"
         latin:additionalMoreKeys="5"
         latin:moreKeys="!text/more_keys_for_g" />
     <Key
-        latin:keyLabel="j"
+        latin:keySpec="j"
         latin:keyHintLabel="6"
         latin:additionalMoreKeys="6"
         latin:moreKeys="!text/more_keys_for_j" />
     <Key
-        latin:keyLabel="l"
+        latin:keySpec="l"
         latin:keyHintLabel="7"
         latin:additionalMoreKeys="7"
         latin:moreKeys="!text/more_keys_for_l" />
     <Key
-        latin:keyLabel="u"
+        latin:keySpec="u"
         latin:keyHintLabel="8"
         latin:additionalMoreKeys="8"
         latin:moreKeys="!text/more_keys_for_u" />
     <Key
-        latin:keyLabel="y"
+        latin:keySpec="y"
         latin:keyHintLabel="9"
         latin:additionalMoreKeys="9"
         latin:moreKeys="!text/more_keys_for_y" />

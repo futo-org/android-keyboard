@@ -38,6 +38,7 @@ import java.util.Locale;
  * Note that the '\' is also parsed by XML parser and {@link MoreKeySpec#splitKeySpecs(String)}
  * as well.
  */
+// TODO: Should extend the key specification object.
 public final class MoreKeySpec {
     public final int mCode;
     public final String mLabel;

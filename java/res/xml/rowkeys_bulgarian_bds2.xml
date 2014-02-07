@@ -23,35 +23,35 @@
 >
     <!-- U+044C: "ь" CYRILLIC SMALL LETTER SOFT SIGN -->
     <Key
-        latin:keyLabel="&#x044C;" />
+        latin:keySpec="&#x044C;" />
     <!-- U+044F: "я" CYRILLIC SMALL LETTER YA -->
     <Key
-        latin:keyLabel="&#x044F;" />
+        latin:keySpec="&#x044F;" />
     <!-- U+0430: "а" CYRILLIC SMALL LETTER A -->
     <Key
-        latin:keyLabel="&#x0430;" />
+        latin:keySpec="&#x0430;" />
     <!-- U+043E: "о" CYRILLIC SMALL LETTER O -->
     <Key
-        latin:keyLabel="&#x043E;" />
+        latin:keySpec="&#x043E;" />
     <!-- U+0436: "ж" CYRILLIC SMALL LETTER ZHE -->
     <Key
-        latin:keyLabel="&#x0436;" />
+        latin:keySpec="&#x0436;" />
     <!-- U+0433: "г" CYRILLIC SMALL LETTER GHE -->
     <Key
-        latin:keyLabel="&#x0433;" />
+        latin:keySpec="&#x0433;" />
     <!-- U+0442: "т" CYRILLIC SMALL LETTER TE -->
     <Key
-        latin:keyLabel="&#x0442;" />
+        latin:keySpec="&#x0442;" />
     <!-- U+043D: "н" CYRILLIC SMALL LETTER EN -->
     <Key
-        latin:keyLabel="&#x043D;" />
+        latin:keySpec="&#x043D;" />
     <!-- U+0432: "в" CYRILLIC SMALL LETTER VE -->
     <Key
-        latin:keyLabel="&#x0432;" />
+        latin:keySpec="&#x0432;" />
     <!-- U+043C: "м" CYRILLIC SMALL LETTER EM -->
     <Key
-        latin:keyLabel="&#x043C;" />
+        latin:keySpec="&#x043C;" />
     <!-- U+0447: "ч" CYRILLIC SMALL LETTER CHE -->
     <Key
-        latin:keyLabel="&#x0447;" />
+        latin:keySpec="&#x0447;" />
 </merge>

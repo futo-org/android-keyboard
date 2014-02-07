@@ -315,7 +315,7 @@ public class Key implements Comparable<Key> {
         }
         mActionFlags = actionFlags;
 
-        final String keySpec = style.getString(keyAttr, R.styleable.Keyboard_Key_keyLabel);
+        final String keySpec = style.getString(keyAttr, R.styleable.Keyboard_Key_keySpec);
         if (TextUtils.isEmpty(keySpec)) {
             throw new RuntimeException("Empty keySpec");
         }

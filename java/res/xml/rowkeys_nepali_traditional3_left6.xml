@@ -27,19 +27,19 @@
         >
             <!-- U+0915/U+094D: "क्" DEVANAGARI LETTER KA/DEVANAGARI SIGN VIRAMA -->
             <Key
-                latin:keyLabel="&#x0915;&#x094D;"
+                latin:keySpec="&#x0915;&#x094D;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <!-- U+0939/U+094D/U+092E: "ह्म" DEVANAGARI LETTER HA/DEVANAGARI SIGN VIRAMA/DEVANAGARI LETTER MA -->
             <Key
-                latin:keyLabel="&#x0939;&#x094D;&#x092E;"
+                latin:keySpec="&#x0939;&#x094D;&#x092E;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <!-- U+090B: "ऋ" DEVANAGARI LETTER VOCALIC R -->
             <Key
-                latin:keyLabel="&#x090B;"
+                latin:keySpec="&#x090B;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+0950: "ॐ" DEVANAGARI OM -->
             <Key
-                latin:keyLabel="&#x0950;"
+                latin:keySpec="&#x0950;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- Because the font rendering system prior to API version 16 can't automatically
                  render dotted circle for incomplete combining letter of some scripts, different
@@ -50,33 +50,33 @@
                 latin:keyStyle="baseKeyDevanagariVowelSignAu" />
             <!-- U+0926/U+094D/U+092F: "द्य" DEVANAGARI LETTER DA/DEVANAGARI SIGN VIRAMA/DEVANAGARI LETTER YA -->
             <Key
-                latin:keyLabel="&#x0926;&#x094D;&#x092F;"
+                latin:keySpec="&#x0926;&#x094D;&#x092F;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
         </case>
         <default>
             <!-- U+0936: "श" DEVANAGARI LETTER SHA -->
             <Key
-                latin:keyLabel="&#x0936;"
+                latin:keySpec="&#x0936;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+0939: "ह" DEVANAGARI LETTER HA -->
             <Key
-                latin:keyLabel="&#x0939;"
+                latin:keySpec="&#x0939;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+0905: "अ" DEVANAGARI LETTER A -->
             <Key
-                latin:keyLabel="&#x0905;"
+                latin:keySpec="&#x0905;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+0916: "ख" DEVANAGARI LETTER KHA -->
             <Key
-                latin:keyLabel="&#x0916;"
+                latin:keySpec="&#x0916;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+0926: "द" DEVANAGARI LETTER DA -->
             <Key
-                latin:keyLabel="&#x0926;"
+                latin:keySpec="&#x0926;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+0932: "ल" DEVANAGARI LETTER LA -->
             <Key
-                latin:keyLabel="&#x0932;"
+                latin:keySpec="&#x0932;"
                 latin:keyLabelFlags="fontNormal" />
         </default>
     </switch>

@@ -26,11 +26,11 @@
             latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLockShifted"
         >
             <Key
-                latin:keyLabel="\?" />
+                latin:keySpec="\?" />
         </case>
         <default>
             <Key
-                latin:keyLabel="\'"
+                latin:keySpec="\'"
                 latin:moreKeys="!text/more_keys_for_single_quote" />
         </default>
     </switch>

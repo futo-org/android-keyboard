@@ -23,56 +23,56 @@
 >
     <!-- U+0459: "љ" CYRILLIC SMALL LETTER LJE -->
     <Key
-        latin:keyLabel="&#x0459;"
+        latin:keySpec="&#x0459;"
         latin:keyHintLabel="1"
         latin:additionalMoreKeys="1" />
     <!-- U+045A: "њ" CYRILLIC SMALL LETTER NJE -->
     <Key
-        latin:keyLabel="&#x045A;"
+        latin:keySpec="&#x045A;"
         latin:keyHintLabel="2"
         latin:additionalMoreKeys="2" />
     <!-- U+0435: "е" CYRILLIC SMALL LETTER IE -->
     <Key
-        latin:keyLabel="&#x0435;"
+        latin:keySpec="&#x0435;"
         latin:keyHintLabel="3"
         latin:additionalMoreKeys="3"
         latin:moreKeys="!text/more_keys_for_cyrillic_ie" />
     <!-- U+0440: "р" CYRILLIC SMALL LETTER ER -->
     <Key
-        latin:keyLabel="&#x0440;"
+        latin:keySpec="&#x0440;"
         latin:keyHintLabel="4"
         latin:additionalMoreKeys="4" />
     <!-- U+0442: "т" CYRILLIC SMALL LETTER TE -->
     <Key
-        latin:keyLabel="&#x0442;"
+        latin:keySpec="&#x0442;"
         latin:keyHintLabel="5"
         latin:additionalMoreKeys="5" />
     <Key
-        latin:keyLabel="!text/keylabel_for_south_slavic_row1_6"
+        latin:keySpec="!text/keylabel_for_south_slavic_row1_6"
         latin:keyHintLabel="6"
         latin:additionalMoreKeys="6" />
     <!-- U+0443: "у" CYRILLIC SMALL LETTER U -->
     <Key
-        latin:keyLabel="&#x0443;"
+        latin:keySpec="&#x0443;"
         latin:keyHintLabel="7"
         latin:additionalMoreKeys="7" />
     <!-- U+0438: "и" CYRILLIC SMALL LETTER I -->
     <Key
-        latin:keyLabel="&#x0438;"
+        latin:keySpec="&#x0438;"
         latin:keyHintLabel="8"
         latin:additionalMoreKeys="8"
         latin:moreKeys="!text/more_keys_for_cyrillic_i" />
     <!-- U+043E: "о" CYRILLIC SMALL LETTER O -->
     <Key
-        latin:keyLabel="&#x043E;"
+        latin:keySpec="&#x043E;"
         latin:keyHintLabel="9"
         latin:additionalMoreKeys="9" />
     <!-- U+043F: "п" CYRILLIC SMALL LETTER PE -->
     <Key
-        latin:keyLabel="&#x043F;"
+        latin:keySpec="&#x043F;"
         latin:keyHintLabel="0"
         latin:additionalMoreKeys="0" />
     <!-- U+0448: "ш" CYRILLIC SMALL LETTER SHA -->
     <Key
-        latin:keyLabel="&#x0448;" />
+        latin:keySpec="&#x0448;" />
 </merge>

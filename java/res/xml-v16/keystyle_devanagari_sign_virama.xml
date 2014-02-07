@@ -28,6 +28,6 @@
     <!-- U+094D: "्" DEVANAGARI SIGN VIRAMA -->
     <key-style
         latin:styleName="baseKeyDevanagariSignVirama"
-        latin:keyLabel="&#x094D;"
+        latin:keySpec="&#x094D;"
         latin:keyLabelFlags="fontNormal" />
 </merge>

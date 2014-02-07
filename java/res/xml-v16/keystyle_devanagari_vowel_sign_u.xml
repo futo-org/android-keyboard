@@ -44,6 +44,6 @@
     <key-style
         latin:styleName="baseKeyDevanagariVowelSignU"
         latin:parentStyle="moreKeysDevanagariVowelSignU"
-        latin:keyLabel="&#x0941;"
+        latin:keySpec="&#x0941;"
         latin:keyLabelFlags="fontNormal" />
 </merge>

@@ -26,13 +26,13 @@
             latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLockShifted"
         >
             <Key
-                latin:keyLabel=";"
+                latin:keySpec=";"
                 latin:keyHintLabel="0"
                 latin:additionalMoreKeys="0" />
         </case>
         <default>
             <Key
-                latin:keyLabel=":"
+                latin:keySpec=":"
                 latin:keyHintLabel="0"
                 latin:additionalMoreKeys="0"
                 latin:moreKeys=";" />

@@ -26,19 +26,19 @@
          U+20B1: "₱" PESO SIGN -->
     <key-style
         latin:styleName="currencyKeyStyle"
-        latin:keyLabel="&#x20AC;"
+        latin:keySpec="&#x20AC;"
         latin:moreKeys="&#x00A2;,&#x00A3;,$,&#x00A5;,&#x20B1;" />
     <key-style
         latin:styleName="moreCurrency1KeyStyle"
-        latin:keyLabel="&#x00A3;" />
+        latin:keySpec="&#x00A3;" />
     <key-style
         latin:styleName="moreCurrency2KeyStyle"
-        latin:keyLabel="&#x00A5;" />
+        latin:keySpec="&#x00A5;" />
     <key-style
         latin:styleName="moreCurrency3KeyStyle"
-        latin:keyLabel="$"
+        latin:keySpec="$"
         latin:moreKeys="&#x00A2;" />
     <key-style
         latin:styleName="moreCurrency4KeyStyle"
-        latin:keyLabel="&#x00A2;" />
+        latin:keySpec="&#x00A2;" />
 </merge>

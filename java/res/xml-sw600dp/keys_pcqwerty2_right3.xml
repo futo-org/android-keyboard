@@ -26,17 +26,17 @@
             latin:keyboardLayoutSetElement="alphabet|alphabetAutomaticShifted"
         >
             <Key
-                latin:keyLabel="["
+                latin:keySpec="["
                 latin:keyHintLabel="{"
                 latin:additionalMoreKeys="{"
                 latin:keyStyle="hasShiftedLetterHintStyle" />
             <Key
-                latin:keyLabel="]"
+                latin:keySpec="]"
                 latin:keyHintLabel="}"
                 latin:additionalMoreKeys="}"
                 latin:keyStyle="hasShiftedLetterHintStyle" />
             <Key
-                latin:keyLabel="\\"
+                latin:keySpec="\\"
                 latin:keyHintLabel="|"
                 latin:additionalMoreKeys="\\|"
                 latin:keyStyle="hasShiftedLetterHintStyle" />
@@ -44,11 +44,11 @@
         <!-- keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted" -->
         <default>
             <Key
-                latin:keyLabel="{" />
+                latin:keySpec="{" />
             <Key
-                latin:keyLabel="}" />
+                latin:keySpec="}" />
             <Key
-                latin:keyLabel="|" />
+                latin:keySpec="|" />
         </default>
     </switch>
 </merge>

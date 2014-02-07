@@ -23,61 +23,61 @@
 >
     <!-- U+0567: "է" ARMENIAN SMALL LETTER EH -->
     <Key
-        latin:keyLabel="&#x0567;"
+        latin:keySpec="&#x0567;"
         latin:keyHintLabel="1"
         latin:additionalMoreKeys="1"
         latin:keyLabelFlags="fontNormal" />
     <!-- U+0569: "թ" ARMENIAN SMALL LETTER TO -->
     <Key
-        latin:keyLabel="&#x0569;"
+        latin:keySpec="&#x0569;"
         latin:keyHintLabel="2"
         latin:additionalMoreKeys="2"
         latin:keyLabelFlags="fontNormal" />
     <!-- U+0583: "փ" ARMENIAN SMALL LETTER PIWR -->
     <Key
-        latin:keyLabel="&#x0583;"
+        latin:keySpec="&#x0583;"
         latin:keyHintLabel="3"
         latin:additionalMoreKeys="3"
         latin:keyLabelFlags="fontNormal" />
     <!-- U+0571: "ձ" ARMENIAN SMALL LETTER JA -->
     <Key
-        latin:keyLabel="&#x0571;"
+        latin:keySpec="&#x0571;"
         latin:keyHintLabel="4"
         latin:additionalMoreKeys="4"
         latin:keyLabelFlags="fontNormal" />
     <!-- U+057B: "ջ" ARMENIAN SMALL LETTER JHEH -->
     <Key
-        latin:keyLabel="&#x057B;"
+        latin:keySpec="&#x057B;"
         latin:keyHintLabel="5"
         latin:additionalMoreKeys="5"
         latin:keyLabelFlags="fontNormal" />
     <!-- U+0580: "ր" ARMENIAN SMALL LETTER REH -->
     <Key
-        latin:keyLabel="&#x0580;"
+        latin:keySpec="&#x0580;"
         latin:keyHintLabel="6"
         latin:additionalMoreKeys="6"
         latin:keyLabelFlags="fontNormal" />
     <!-- U+0579: "չ" ARMENIAN SMALL LETTER CHA -->
     <Key
-        latin:keyLabel="&#x0579;"
+        latin:keySpec="&#x0579;"
         latin:keyHintLabel="7"
         latin:additionalMoreKeys="7"
         latin:keyLabelFlags="fontNormal" />
     <!-- U+0573: "ճ" ARMENIAN SMALL LETTER CHEH -->
     <Key
-        latin:keyLabel="&#x0573;"
+        latin:keySpec="&#x0573;"
         latin:keyHintLabel="8"
         latin:additionalMoreKeys="8"
         latin:keyLabelFlags="fontNormal" />
     <!-- U+056A: "ժ" ARMENIAN SMALL LETTER ZHE -->
     <Key
-        latin:keyLabel="&#x056A;"
+        latin:keySpec="&#x056A;"
         latin:keyHintLabel="9"
         latin:additionalMoreKeys="9"
         latin:keyLabelFlags="fontNormal" />
     <!-- U+056E: "ծ" ARMENIAN SMALL LETTER CA -->
     <Key
-        latin:keyLabel="&#x056E;"
+        latin:keySpec="&#x056E;"
         latin:keyHintLabel="0"
         latin:additionalMoreKeys="0"
         latin:keyLabelFlags="fontNormal" />

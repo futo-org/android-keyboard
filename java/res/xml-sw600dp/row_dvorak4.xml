@@ -39,7 +39,7 @@
         <include
             latin:keyboardLayout="@xml/key_question_exclamation" />
         <Key
-            latin:keyLabel="-"
+            latin:keySpec="-"
             latin:keyHintLabel="_"
             latin:moreKeys="_"
             latin:keyStyle="hasShiftedLetterHintStyle" />

@@ -24,35 +24,35 @@
     <include
         latin:keyboardLayout="@xml/keys_dvorak_123" />
     <Key
-        latin:keyLabel="p"
+        latin:keySpec="p"
         latin:keyHintLabel="4"
         latin:additionalMoreKeys="4" />
     <Key
-        latin:keyLabel="y"
+        latin:keySpec="y"
         latin:keyHintLabel="5"
         latin:additionalMoreKeys="5"
         latin:moreKeys="!text/more_keys_for_y" />
     <Key
-        latin:keyLabel="f"
+        latin:keySpec="f"
         latin:keyHintLabel="6"
         latin:additionalMoreKeys="6" />
     <Key
-        latin:keyLabel="g"
+        latin:keySpec="g"
         latin:keyHintLabel="7"
         latin:additionalMoreKeys="7"
         latin:moreKeys="!text/more_keys_for_g" />
     <Key
-        latin:keyLabel="c"
+        latin:keySpec="c"
         latin:keyHintLabel="8"
         latin:additionalMoreKeys="8"
         latin:moreKeys="!text/more_keys_for_c" />
     <Key
-        latin:keyLabel="r"
+        latin:keySpec="r"
         latin:keyHintLabel="9"
         latin:additionalMoreKeys="9"
         latin:moreKeys="!text/more_keys_for_r" />
     <Key
-        latin:keyLabel="l"
+        latin:keySpec="l"
         latin:keyHintLabel="0"
         latin:additionalMoreKeys="0"
         latin:moreKeys="!text/more_keys_for_l" />

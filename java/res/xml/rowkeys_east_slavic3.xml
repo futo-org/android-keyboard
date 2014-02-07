@@ -23,29 +23,29 @@
 >
     <!-- U+044F: "я" CYRILLIC SMALL LETTER YA -->
     <Key
-        latin:keyLabel="&#x044F;" />
+        latin:keySpec="&#x044F;" />
     <!-- U+0447: "ч" CYRILLIC SMALL LETTER CHE -->
     <Key
-        latin:keyLabel="&#x0447;" />
+        latin:keySpec="&#x0447;" />
     <!-- U+0441: "с" CYRILLIC SMALL LETTER ES -->
     <Key
-        latin:keyLabel="&#x0441;" />
+        latin:keySpec="&#x0441;" />
     <!-- U+043C: "м" CYRILLIC SMALL LETTER EM -->
     <Key
-        latin:keyLabel="&#x043C;" />
+        latin:keySpec="&#x043C;" />
     <Key
-        latin:keyLabel="!text/keylabel_for_east_slavic_row3_5" />
+        latin:keySpec="!text/keylabel_for_east_slavic_row3_5" />
     <!-- U+0442: "т" CYRILLIC SMALL LETTER TE -->
     <Key
-        latin:keyLabel="&#x0442;" />
+        latin:keySpec="&#x0442;" />
     <!-- U+044C: "ь" CYRILLIC SMALL LETTER SOFT SIGN -->
     <Key
-        latin:keyLabel="&#x044C;"
+        latin:keySpec="&#x044C;"
         latin:moreKeys="!text/more_keys_for_cyrillic_soft_sign" />
     <!-- U+0431: "б" CYRILLIC SMALL LETTER BE -->
     <Key
-        latin:keyLabel="&#x0431;" />
+        latin:keySpec="&#x0431;" />
     <!-- U+044E: "ю" CYRILLIC SMALL LETTER YU -->
     <Key
-        latin:keyLabel="&#x044E;" />
+        latin:keySpec="&#x044E;" />
 </merge>

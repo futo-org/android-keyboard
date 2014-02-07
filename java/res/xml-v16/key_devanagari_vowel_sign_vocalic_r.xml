@@ -50,6 +50,6 @@
     <!-- U+0943: "ृ" DEVANAGARI VOWEL SIGN VOCALIC R -->
     <Key
         latin:keyStyle="moreKeysDevanagariVowelSignVocalicR"
-        latin:keyLabel="&#x0943;"
+        latin:keySpec="&#x0943;"
         latin:keyLabelFlags="fontNormal" />
 </merge>

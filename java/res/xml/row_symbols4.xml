@@ -20,9 +20,9 @@
 
 <merge xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin" >
     <Key
-        latin:keyLabel="_" />
+        latin:keySpec="_" />
     <Key
-        latin:keyLabel="/" />
+        latin:keySpec="/" />
     <include
         latin:keyboardLayout="@xml/key_space_symbols" />
     <include
