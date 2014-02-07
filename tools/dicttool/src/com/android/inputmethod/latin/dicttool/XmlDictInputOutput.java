@@ -358,7 +358,6 @@ public class XmlDictInputOutput {
         }
         // TODO: use an XMLSerializer if this gets big
         destination.write("<wordlist format=\"2\"");
-        final HashMap<String, String> options = dict.mOptions.mAttributes;
         for (final String key : dict.mOptions.mAttributes.keySet()) {
             final String value = dict.mOptions.mAttributes.get(key);
             destination.write(" " + key + "=\"" + value + "\"");

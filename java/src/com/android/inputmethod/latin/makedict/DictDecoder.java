@@ -228,8 +228,6 @@ public interface DictDecoder {
         }
     }
 
-    public void skipPtNode(final FormatOptions formatOptions);
-
     /**
      * @return whether this decoder has a valid binary dictionary that it can decode.
      */
