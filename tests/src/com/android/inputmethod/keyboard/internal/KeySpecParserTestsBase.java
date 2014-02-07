@@ -218,6 +218,32 @@ abstract class KeySpecParserTestsBase extends AndroidTestCase {
                 "a|c", null, ICON_UNDEFINED, mCodeSettings);
     }
 
+    public void testCodes() {
+        assertParser("Hexadecimal code", "a|0x1000",
+                "a", null, ICON_UNDEFINED, 0x1000);
+        assertParserError("Illegal hexadecimal code", "a|0x100X",
+                "a", null, ICON_UNDEFINED, CODE_UNSPECIFIED);
+        assertParser("Escaped hexadecimal code 1", "a|\\0x1000",
+                "a", "0x1000", ICON_UNDEFINED, CODE_OUTPUT_TEXT);
+        assertParser("Escaped hexadecimal code 2", "a|0\\x1000",
+                "a", "0x1000", ICON_UNDEFINED, CODE_OUTPUT_TEXT);
+        assertParser("Escaped hexadecimal code 2", "a|0\\x1000",
+                "a", "0x1000", ICON_UNDEFINED, CODE_OUTPUT_TEXT);
+        assertParserError("Illegally escaped hexadecimal code", "a|0x1\\000",
+                "a", null, ICON_UNDEFINED, CODE_UNSPECIFIED);
+        // This is a workaround to have a key that has a supplementary code point. We can't put a
+        // string in resource as a XML entity of a supplementary code point or a surrogate pair.
+        // TODO: Should pass this test.
+//        assertParser("Hexadecimal supplementary code", String.format("a|0x%06x", SURROGATE_CODE2),
+//                SURROGATE_PAIR2, null, ICON_UNDEFINED, SURROGATE_CODE2);
+        assertParser("Zero is treated as output text", "a|0",
+                "a", null, ICON_UNDEFINED, '0');
+        assertParser("Digit is treated as output text", "a|3",
+                "a", null, ICON_UNDEFINED, '3');
+        assertParser("Decimal number is treated as an output text", "a|2014",
+                "a", "2014", ICON_UNDEFINED, CODE_OUTPUT_TEXT);
+    }
+
     public void testIcons() {
         assertParser("Icon with single letter", ICON_SETTINGS + "|a",
                 null, null, mSettingsIconId, 'a');
