@@ -57,8 +57,15 @@ public final class KeySpecParser {
     }
 
     private static boolean hasCode(final String keySpec, final int labelEnd) {
-        if (labelEnd > 0 && labelEnd + 1 < keySpec.length()
-                && keySpec.startsWith(KeyboardCodesSet.PREFIX_CODE, labelEnd + 1)) {
+        if (labelEnd <= 0 || labelEnd + 1 >= keySpec.length()) {
+            return false;
+        }
+        if (keySpec.startsWith(KeyboardCodesSet.PREFIX_CODE, labelEnd + 1)) {
+            return true;
+        }
+        // This is a workaround to have a key that has a supplementary code point. We can't put a
+        // string in resource as a XML entity of a supplementary code point or a surrogate pair.
+        if (keySpec.startsWith(PREFIX_HEX, labelEnd + 1)) {
             return true;
         }
         return false;
@@ -203,19 +210,20 @@ public final class KeySpecParser {
         return (StringUtils.codePointCount(label) == 1) ? label.codePointAt(0) : CODE_OUTPUT_TEXT;
     }
 
-    // TODO: Make this method private once Key.code attribute is removed.
     public static int parseCode(final String text, final KeyboardCodesSet codesSet,
-            final int defCode) {
+            final int defaultCode) {
         if (text == null) {
-            return defCode;
+            return defaultCode;
         }
         if (text.startsWith(KeyboardCodesSet.PREFIX_CODE)) {
             return codesSet.getCode(text.substring(KeyboardCodesSet.PREFIX_CODE.length()));
         }
+        // This is a workaround to have a key that has a supplementary code point. We can't put a
+        // string in resource as a XML entity of a supplementary code point or a surrogate pair.
         if (text.startsWith(PREFIX_HEX)) {
             return Integer.parseInt(text.substring(PREFIX_HEX.length()), 16);
         }
-        return Integer.parseInt(text);
+        return defaultCode;
     }
 
     public static int getIconId(final String keySpec) {
