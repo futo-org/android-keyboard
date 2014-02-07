@@ -28,7 +28,6 @@
     <!-- U+25CC: "◌" DOTTED CIRCLE
          U+0902: "ं" DEVANAGARI SIGN ANUSVARA -->
     <Key
-        latin:keyLabel="&#x25CC;&#x0902;"
-        latin:code="0x0902"
+        latin:keyLabel="&#x25CC;&#x0902;|&#x0902;"
         latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 </merge>

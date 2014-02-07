@@ -50,16 +50,14 @@
             <!-- Note: The space character is needed as a preceding letter to draw some Thai
                  composing characters correctly. -->
             <Key
-                latin:keyLabel="&#x20;&#x0E47;"
-                latin:code="0x0E47"
+                latin:keyLabel="&#x20;&#x0E47;|&#x0E47;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <!-- U+0020: " " SPACE
                  U+0E4B: " ๋" THAI CHARACTER MAI CHATTAWA -->
             <!-- Note: The space character is needed as a preceding letter to draw some Thai
                  composing characters correctly. -->
             <Key
-                latin:keyLabel="&#x20;&#x0E4B;"
-                latin:code="0x0E4B"
+                latin:keyLabel="&#x20;&#x0E4B;|&#x0E4B;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <!-- U+0E29: "ษ" THAI CHARACTER SO RUSI -->
             <Key
@@ -102,16 +100,14 @@
             <!-- Note: The space character is needed as a preceding letter to draw some Thai
                  composing characters correctly. -->
             <Key
-                latin:keyLabel="&#x20;&#x0E49;"
-                latin:code="0x0E49"
+                latin:keyLabel="&#x20;&#x0E49;|&#x0E49;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <!-- U+0020: " " SPACE
                  U+0E48: " ่" THAI CHARACTER MAI EK -->
             <!-- Note: The space character is needed as a preceding letter to draw some Thai
                  composing characters correctly. -->
             <Key
-                latin:keyLabel="&#x20;&#x0E48;"
-                latin:code="0x0E48"
+                latin:keyLabel="&#x20;&#x0E48;|&#x0E48;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <!-- U+0E32: "า" THAI CHARACTER SARA AA -->
             <Key

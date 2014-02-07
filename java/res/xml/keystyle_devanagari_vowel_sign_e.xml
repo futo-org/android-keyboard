@@ -53,7 +53,6 @@
     <key-style
         latin:styleName="baseKeyDevanagariVowelSignE"
         latin:parentStyle="moreKeysDevanagariVowelSignE"
-        latin:keyLabel="&#x25CC;&#x0947;"
-        latin:code="0x0947"
+        latin:keyLabel="&#x25CC;&#x0947;|&#x0947;"
         latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 </merge>

@@ -113,10 +113,8 @@
             <case
                 latin:mode="datetime"
             >
-                <!-- U+002F: "/" SOLIDUS -->
                 <Key
-                    latin:code="0x002F"
-                    latin:keyLabel="/ :"
+                    latin:keyLabel="/ :|/"
                     latin:moreKeys="!noPanelAutoMoreKey!,:"
                     latin:keyStyle="numKeyStyle" />
             </case>

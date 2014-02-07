@@ -28,7 +28,6 @@
     <!-- U+25CC: "◌" DOTTED CIRCLE
          U+0949: "ॉ" DEVANAGARI VOWEL SIGN CANDRA O -->
     <Key
-        latin:keyLabel="&#x25CC;&#x0949;"
-        latin:code="0x0949"
+        latin:keyLabel="&#x25CC;&#x0949;|&#x0949;"
         latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 </merge>
