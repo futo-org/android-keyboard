@@ -35,8 +35,10 @@
 
     <integer name="config_ignore_alt_code_key_timeout">350</integer>
 
-    <integer name="config_key_preview_zoom_in_duration">35</integer>
-    <integer name="config_key_preview_zoom_out_duration">40</integer>
+    <integer name="config_key_preview_show_up_duration">35</integer>
+    <integer name="config_key_preview_dismiss_duration">40</integer>
+    <fraction name="config_key_preview_show_up_start_scale">70%</fraction>
+    <fraction name="config_key_preview_dismiss_end_scale">70%</fraction>
     <integer name="config_key_preview_linger_timeout">70</integer>
     <!-- Suppress showing key preview duration after batch input in millisecond -->
     <integer name="config_suppress_key_preview_after_batch_input_duration">1000</integer>

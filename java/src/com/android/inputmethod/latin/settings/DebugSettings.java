@@ -18,6 +18,7 @@ package com.android.inputmethod.latin.settings;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Process;
 import android.preference.CheckBoxPreference;
@@ -32,6 +33,7 @@ import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.debug.ExternalDictionaryGetterForDebug;
 import com.android.inputmethod.latin.utils.ApplicationUtils;
+import com.android.inputmethod.latin.utils.ResourceUtils;
 
 public final class DebugSettings extends PreferenceFragment
         implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -42,6 +44,14 @@ public final class DebugSettings extends PreferenceFragment
     public static final String PREF_STATISTICS_LOGGING = "enable_logging";
     public static final String PREF_USE_ONLY_PERSONALIZATION_DICTIONARY_FOR_DEBUG =
             "use_only_personalization_dictionary_for_debug";
+    public static final String PREF_KEY_PREVIEW_SHOW_UP_START_SCALE =
+            "pref_key_preview_show_up_start_scale";
+    public static final String PREF_KEY_PREVIEW_DISMISS_END_SCALE =
+            "pref_key_preview_dismiss_end_scale";
+    public static final String PREF_KEY_PREVIEW_SHOW_UP_DURATION =
+            "pref_key_preview_show_up_duration";
+    public static final String PREF_KEY_PREVIEW_DISMISS_DURATION =
+            "pref_key_preview_dismiss_duration";
     private static final String PREF_READ_EXTERNAL_DICTIONARY = "read_external_dictionary";
     private static final String PREF_DUMP_CONTACTS_DICT = "dump_contacts_dict";
     private static final String PREF_DUMP_USER_DICT = "dump_user_dict";
@@ -101,6 +111,17 @@ public final class DebugSettings extends PreferenceFragment
                 dictDumpPrefClickListener);
         findPreference(PREF_DUMP_PERSONALIZATION_DICT).setOnPreferenceClickListener(
                 dictDumpPrefClickListener);
+        final Resources res = getResources();
+        setupKeyPreviewAnimationDuration(prefs, res, PREF_KEY_PREVIEW_SHOW_UP_DURATION,
+                res.getInteger(R.integer.config_key_preview_show_up_duration));
+        setupKeyPreviewAnimationDuration(prefs, res, PREF_KEY_PREVIEW_DISMISS_DURATION,
+                res.getInteger(R.integer.config_key_preview_dismiss_duration));
+        setupKeyPreviewAnimationScale(prefs, res, PREF_KEY_PREVIEW_SHOW_UP_START_SCALE,
+                ResourceUtils.getFloatFromFraction(
+                        res, R.fraction.config_key_preview_show_up_start_scale));
+        setupKeyPreviewAnimationScale(prefs, res, PREF_KEY_PREVIEW_DISMISS_END_SCALE,
+                ResourceUtils.getFloatFromFraction(
+                        res, R.fraction.config_key_preview_dismiss_end_scale));
 
         mServiceNeedsRestart = false;
         mDebugMode = (CheckBoxPreference) findPreference(PREF_DEBUG_MODE);
@@ -179,5 +200,93 @@ public final class DebugSettings extends PreferenceFragment
             mDebugMode.setTitle(getResources().getString(R.string.prefs_debug_mode));
             mDebugMode.setSummary(version);
         }
+    }
+
+    private void setupKeyPreviewAnimationScale(final SharedPreferences sp, final Resources res,
+            final String prefKey, final float defaultValue) {
+        final SeekBarDialogPreference pref = (SeekBarDialogPreference)findPreference(prefKey);
+        if (pref == null) {
+            return;
+        }
+        pref.setInterface(new SeekBarDialogPreference.ValueProxy() {
+            private static final float PERCENTAGE_FLOAT = 100.0f;
+
+            private float getValueFromPercentage(final int percentage) {
+                return percentage / PERCENTAGE_FLOAT;
+            }
+
+            private int getPercentageFromValue(final float floatValue) {
+                return (int)(floatValue * PERCENTAGE_FLOAT);
+            }
+
+            @Override
+            public void writeValue(final int value, final String key) {
+                sp.edit().putFloat(key, getValueFromPercentage(value)).apply();
+            }
+
+            @Override
+            public void writeDefaultValue(final String key) {
+                sp.edit().remove(key).apply();
+            }
+
+            @Override
+            public int readValue(final String key) {
+                return getPercentageFromValue(
+                        Settings.readKeyPreviewAnimationScale(sp, key, defaultValue));
+            }
+
+            @Override
+            public int readDefaultValue(final String key) {
+                return getPercentageFromValue(defaultValue);
+            }
+
+            @Override
+            public String getValueText(final int value) {
+                if (value < 0) {
+                    return res.getString(R.string.settings_system_default);
+                }
+                return String.format("%d%%", value);
+            }
+
+            @Override
+            public void feedbackValue(final int value) {}
+        });
+    }
+
+    private void setupKeyPreviewAnimationDuration(final SharedPreferences sp, final Resources res,
+            final String prefKey, final int defaultValue) {
+        final SeekBarDialogPreference pref = (SeekBarDialogPreference)findPreference(prefKey);
+        if (pref == null) {
+            return;
+        }
+        pref.setInterface(new SeekBarDialogPreference.ValueProxy() {
+            @Override
+            public void writeValue(final int value, final String key) {
+                sp.edit().putInt(key, value).apply();
+            }
+
+            @Override
+            public void writeDefaultValue(final String key) {
+                sp.edit().remove(key).apply();
+            }
+
+            @Override
+            public int readValue(final String key) {
+                return Settings.readKeyPreviewAnimationDuration(sp, key, defaultValue);
+            }
+
+            @Override
+            public int readDefaultValue(final String key) {
+                return defaultValue;
+            }
+
+            @Override
+            public String getValueText(final int value) {
+                return res.getString(R.string.abbreviation_unit_milliseconds, value);
+            }
+
+            @Override
+            public void feedbackValue(final int value) {}
+        });
     }
 }

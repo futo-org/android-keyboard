@@ -260,6 +260,10 @@ public final class ResourceUtils {
         return dimension >= 0;
     }
 
+    public static float getFloatFromFraction(final Resources res, final int fractionResId) {
+        return res.getFraction(fractionResId, 1, 1);
+    }
+
     public static float getFraction(final TypedArray a, final int index, final float defValue) {
         final TypedValue value = a.peekValue(index);
         if (value == null || !isFractionValue(value)) {

@@ -486,6 +486,14 @@ mobile devices. [CHAR LIMIT=25] -->
     <string name="prefs_keypress_vibration_duration_settings">Keypress vibration duration</string>
     <!-- Title of the settings for keypress sound volume [CHAR LIMIT=35] -->
     <string name="prefs_keypress_sound_volume_settings">Keypress sound volume</string>
+    <!-- Title of the settings for key popup show up animation duration (in milliseconds) [CHAR LIMIT=35] -->
+    <string name="prefs_key_popup_show_up_duration_settings" translatable="false">Key popup show up duration</string>
+    <!-- Title of the settings for key popup dismiss animation duration (in milliseconds) [CHAR LIMIT=35] -->
+    <string name="prefs_key_popup_dismiss_duration_settings" translatable="false">Key popup dismiss duration</string>
+    <!-- Title of the settings for key popup show up animation start scale (in percentile) [CHAR LIMIT=35] -->
+    <string name="prefs_key_popup_show_up_start_scale_settings" translatable="false">Key popup show up start scale</string>
+    <!-- Title of the settings for key popup dismiss animation end scale (in percentile) [CHAR LIMIT=35] -->
+    <string name="prefs_key_popup_dismiss_end_scale_settings" translatable="false">Key popup dismiss end scale</string>
     <!-- Title of the settings for reading an external dictionary file -->
     <string name="prefs_read_external_dictionary">Read external dictionary file</string>
     <!-- Title of the settings for using only personalization dictionary -->
