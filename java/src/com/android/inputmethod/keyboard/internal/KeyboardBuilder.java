@@ -21,6 +21,7 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
 import android.os.Build;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
@@ -37,6 +38,7 @@ import com.android.inputmethod.latin.utils.RunInLocale;
 import com.android.inputmethod.latin.utils.StringUtils;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 import com.android.inputmethod.latin.utils.XmlParseUtils;
+import com.android.inputmethod.latin.utils.XmlParseUtils.ParseException;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -455,11 +457,15 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
                 if (Build.VERSION.SDK_INT < supportedMinSdkVersion) {
                     continue;
                 }
+                final int labelFlags = row.getDefaultKeyLabelFlags();
+                final int backgroundType = row.getDefaultBackgroundType();
                 final int x = (int)row.getKeyX(null);
                 final int y = row.getKeyY();
-                final Key key = new Key(mParams, label, null /* hintLabel */, 0 /* iconId */,
-                        code, outputText, x, y, (int)keyWidth, row.getRowHeight(),
-                        row.getDefaultKeyLabelFlags(), row.getDefaultBackgroundType());
+                final int width = (int)keyWidth;
+                final int height = row.getRowHeight();
+                final Key key = new Key(label, KeyboardIconsSet.ICON_UNDEFINED, code, outputText,
+                        null /* hintLabel */, labelFlags, backgroundType, x, y, width, height,
+                        mParams.mHorizontalGap, mParams.mVerticalGap);
                 endKey(key);
                 row.advanceXPos(keyWidth);
             }
@@ -476,7 +482,15 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
             if (DEBUG) startEndTag("<%s /> skipped", TAG_KEY);
             return;
         }
-        final Key key = new Key(mResources, mParams, row, parser);
+        final TypedArray keyAttr = mResources.obtainAttributes(
+                Xml.asAttributeSet(parser), R.styleable.Keyboard_Key);
+        final KeyStyle keyStyle = mParams.mKeyStyles.getKeyStyle(keyAttr, parser);
+        final String keySpec = keyStyle.getString(keyAttr, R.styleable.Keyboard_Key_keySpec);
+        if (TextUtils.isEmpty(keySpec)) {
+            throw new ParseException("Empty keySpec", parser);
+        }
+        final Key key = new Key(keySpec, keyAttr, keyStyle, mParams, row);
+        keyAttr.recycle();
         if (DEBUG) {
             startEndTag("<%s%s %s moreKeys=%s />", TAG_KEY, (key.isEnabled() ? "" : " disabled"),
                     key, Arrays.toString(key.getMoreKeys()));
@@ -492,7 +506,11 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
             if (DEBUG) startEndTag("<%s /> skipped", TAG_SPACER);
             return;
         }
-        final Key.Spacer spacer = new Key.Spacer(mResources, mParams, row, parser);
+        final TypedArray keyAttr = mResources.obtainAttributes(
+                Xml.asAttributeSet(parser), R.styleable.Keyboard_Key);
+        final KeyStyle keyStyle = mParams.mKeyStyles.getKeyStyle(keyAttr, parser);
+        final Key spacer = new Key.Spacer(keyAttr, keyStyle, mParams, row);
+        keyAttr.recycle();
         if (DEBUG) startEndTag("<%s />", TAG_SPACER);
         XmlParseUtils.checkEndTag(TAG_SPACER, parser);
         endKey(spacer);

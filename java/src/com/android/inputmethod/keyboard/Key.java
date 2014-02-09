@@ -22,13 +22,11 @@ import static com.android.inputmethod.latin.Constants.CODE_SHIFT;
 import static com.android.inputmethod.latin.Constants.CODE_SWITCH_ALPHA_SYMBOL;
 import static com.android.inputmethod.latin.Constants.CODE_UNSPECIFIED;
 
-import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
-import android.util.Xml;
 
 import com.android.inputmethod.keyboard.internal.KeyDrawParams;
 import com.android.inputmethod.keyboard.internal.KeySpecParser;
@@ -41,9 +39,6 @@ import com.android.inputmethod.keyboard.internal.MoreKeySpec;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.utils.StringUtils;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 import java.util.Arrays;
 import java.util.Locale;
@@ -188,22 +183,15 @@ public class Key implements Comparable<Key> {
     private boolean mEnabled = true;
 
     /**
-     * This constructor is being used only for keys in more keys keyboard.
+     * Constructor for a key on <code>MoreKeyKeyboard</code>, on <code>MoreSuggestions</code>,
+     * and in a <GridRows/>.
      */
-    public Key(final KeyboardParams params, final MoreKeySpec moreKeySpec, final int x, final int y,
-            final int width, final int height, final int labelFlags) {
-        this(params, moreKeySpec.mLabel, null, moreKeySpec.mIconId, moreKeySpec.mCode,
-                moreKeySpec.mOutputText, x, y, width, height, labelFlags, BACKGROUND_TYPE_NORMAL);
-    }
-
-    /**
-     * This constructor is being used only for key in popup suggestions pane.
-     */
-    public Key(final KeyboardParams params, final String label, final String hintLabel,
-            final int iconId, final int code, final String outputText, final int x, final int y,
-            final int width, final int height, final int labelFlags, final int backgroundType) {
-        mHeight = height - params.mVerticalGap;
-        mWidth = width - params.mHorizontalGap;
+    public Key(final String label, final int iconId, final int code, final String outputText,
+            final String hintLabel, final int labelFlags, final int backgroundType, final int x,
+            final int y, final int width, final int height, final int horizontalGap,
+            final int verticalGap) {
+        mHeight = height - verticalGap;
+        mWidth = width - horizontalGap;
         mHintLabel = hintLabel;
         mLabelFlags = labelFlags;
         mBackgroundType = backgroundType;
@@ -218,7 +206,7 @@ public class Key implements Comparable<Key> {
         mEnabled = (code != CODE_UNSPECIFIED);
         mIconId = iconId;
         // Horizontal gap is divided equally to both sides of the key.
-        mX = x + params.mHorizontalGap / 2;
+        mX = x + horizontalGap / 2;
         mY = y;
         mHitBox.set(x, y, x + width + 1, y + height);
         mKeyVisualAttributes = null;
@@ -227,25 +215,22 @@ public class Key implements Comparable<Key> {
     }
 
     /**
-     * Create a key with the given top-left coordinate and extract its attributes from the XML
-     * parser.
-     * @param res resources associated with the caller's context
+     * Create a key with the given top-left coordinate and extract its attributes from a key
+     * specification string, Key attribute array, key style, and etc.
+     *
+     * @param keySpec the key specification.
+     * @param keyAttr the Key XML attributes array.
+     * @param keyStyle the {@link KeyStyle} of this key.
      * @param params the keyboard building parameters.
      * @param row the row that this key belongs to. row's x-coordinate will be the right edge of
      *        this key.
-     * @param parser the XML parser containing the attributes for this key
-     * @throws XmlPullParserException
      */
-    public Key(final Resources res, final KeyboardParams params, final KeyboardRow row,
-            final XmlPullParser parser) throws XmlPullParserException {
+    public Key(final String keySpec, final TypedArray keyAttr, final KeyStyle style,
+            final KeyboardParams params, final KeyboardRow row) {
         final float horizontalGap = isSpacer() ? 0 : params.mHorizontalGap;
         final int rowHeight = row.getRowHeight();
         mHeight = rowHeight - params.mVerticalGap;
 
-        final TypedArray keyAttr = res.obtainAttributes(Xml.asAttributeSet(parser),
-                R.styleable.Keyboard_Key);
-
-        final KeyStyle style = params.mKeyStyles.getKeyStyle(keyAttr, parser);
         final float keyXPos = row.getKeyX(keyAttr);
         final float keyWidth = row.getKeyWidth(keyAttr, keyXPos);
         final int keyYPos = row.getKeyY();
@@ -315,13 +300,6 @@ public class Key implements Comparable<Key> {
         }
         mActionFlags = actionFlags;
 
-        final String keySpec = style.getString(keyAttr, R.styleable.Keyboard_Key_keySpec);
-        // Note: {@link Spacer} has an empty keySpec.
-        // TODO: Create a Key constructor that parses only key geometries and share it with Spacer.
-        if (TextUtils.isEmpty(keySpec) && !(this instanceof Spacer)) {
-            throw new RuntimeException("Empty keySpec found in " + getClass().getName());
-        }
-
         mIconId = KeySpecParser.getIconId(keySpec);
         final int disabledIconId = KeySpecParser.getIconId(style.getString(keyAttr,
                 R.styleable.Keyboard_Key_keyIconDisabled));
@@ -382,12 +360,11 @@ public class Key implements Comparable<Key> {
         mOptionalAttributes = OptionalAttributes.newInstance(outputText, altCode,
                 disabledIconId, previewIconId, visualInsetsLeft, visualInsetsRight);
         mKeyVisualAttributes = KeyVisualAttributes.newInstance(keyAttr);
-        keyAttr.recycle();
         mHashCode = computeHashCode(this);
     }
 
     /**
-     * Copy constructor.
+     * Copy constructor for DynamicGridKeyboard.GridKey.
      *
      * @param key the original key.
      */
@@ -939,9 +916,9 @@ public class Key implements Comparable<Key> {
     }
 
     public static class Spacer extends Key {
-        public Spacer(final Resources res, final KeyboardParams params, final KeyboardRow row,
-                final XmlPullParser parser) throws XmlPullParserException {
-            super(res, params, row, parser);
+        public Spacer(final TypedArray keyAttr, final KeyStyle keyStyle,
+                final KeyboardParams params, final KeyboardRow row) {
+            super(null /* keySpec */, keyAttr, keyStyle, params, row);
         }
 
         /**
@@ -949,8 +926,9 @@ public class Key implements Comparable<Key> {
          */
         protected Spacer(final KeyboardParams params, final int x, final int y, final int width,
                 final int height) {
-            super(params, null, null, ICON_UNDEFINED, CODE_UNSPECIFIED,
-                    null, x, y, width, height, 0, BACKGROUND_TYPE_EMPTY);
+            super(null /* label */, ICON_UNDEFINED, CODE_UNSPECIFIED, null /* outputText */,
+                    null /* hintLabel */, 0 /* labelFlags */, BACKGROUND_TYPE_EMPTY, x, y, width,
+                    height, params.mHorizontalGap, params.mVerticalGap);
         }
     }
 }

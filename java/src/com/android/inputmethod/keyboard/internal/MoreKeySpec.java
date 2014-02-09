@@ -18,6 +18,7 @@ package com.android.inputmethod.keyboard.internal;
 
 import android.text.TextUtils;
 
+import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.utils.CollectionUtils;
@@ -65,6 +66,13 @@ public final class MoreKeySpec {
                     KeySpecParser.getOutputText(moreKeySpec), needsToUpperCase, locale);
         }
         mIconId = KeySpecParser.getIconId(moreKeySpec);
+    }
+
+    public Key buildKey(final int x, final int y, final int labelFlags,
+            final KeyboardParams params) {
+        return new Key(mLabel, mIconId, mCode, mOutputText, null /* hintLabel */, labelFlags,
+                Key.BACKGROUND_TYPE_NORMAL, x, y, params.mDefaultKeyWidth, params.mDefaultRowHeight,
+                params.mHorizontalGap, params.mVerticalGap);
     }
 
     @Override
