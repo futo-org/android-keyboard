@@ -316,8 +316,10 @@ public class Key implements Comparable<Key> {
         mActionFlags = actionFlags;
 
         final String keySpec = style.getString(keyAttr, R.styleable.Keyboard_Key_keySpec);
-        if (TextUtils.isEmpty(keySpec)) {
-            throw new RuntimeException("Empty keySpec");
+        // Note: {@link Spacer} has an empty keySpec.
+        // TODO: Create a Key constructor that parses only key geometries and share it with Spacer.
+        if (TextUtils.isEmpty(keySpec) && !(this instanceof Spacer)) {
+            throw new RuntimeException("Empty keySpec found in " + getClass().getName());
         }
 
         mIconId = KeySpecParser.getIconId(keySpec);
