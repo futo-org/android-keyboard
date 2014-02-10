@@ -23,7 +23,5 @@
              See {@link com.android.inputmethod.keyboard.PointerTracker}. -->
         <!-- Xoom -->
         <item>HARDWARE=stingray,true</item>
-        <!-- Default value for unknown device -->
-        <item>,false</item>
     </string-array>
 </resources>

@@ -310,9 +310,13 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
                 : readDefaultKeypressSoundVolume(res);
     }
 
+    // Default keypress sound volume for unknown devices.
+    // The negative value means system default.
+    private static final String DEFAULT_KEYPRESS_SOUND_VOLUME = Float.toString(-1.0f);
+
     public static float readDefaultKeypressSoundVolume(final Resources res) {
-        return Float.parseFloat(
-                ResourceUtils.getDeviceOverrideValue(res, R.array.keypress_volumes));
+        return Float.parseFloat(ResourceUtils.getDeviceOverrideValue(res,
+                R.array.keypress_volumes, DEFAULT_KEYPRESS_SOUND_VOLUME));
     }
 
     public static int readKeyLongpressTimeout(final SharedPreferences prefs,
@@ -335,9 +339,13 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
                 : readDefaultKeypressVibrationDuration(res);
     }
 
+    // Default keypress vibration duration for unknown devices.
+    // The negative value means system default.
+    private static final String DEFAULT_KEYPRESS_VIBRATION_DURATION = Integer.toString(-1);
+
     public static int readDefaultKeypressVibrationDuration(final Resources res) {
-        return Integer.parseInt(
-                ResourceUtils.getDeviceOverrideValue(res, R.array.keypress_vibration_durations));
+        return Integer.parseInt(ResourceUtils.getDeviceOverrideValue(res,
+                R.array.keypress_vibration_durations, DEFAULT_KEYPRESS_VIBRATION_DURATION));
     }
 
     public static boolean readUsabilityStudyMode(final SharedPreferences prefs) {
