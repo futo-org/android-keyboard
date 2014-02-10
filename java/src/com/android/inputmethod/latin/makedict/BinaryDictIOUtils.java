@@ -91,21 +91,23 @@ public final class BinaryDictIOUtils {
                 stack.pop();
                 continue;
             }
-            PtNodeInfo info = dictDecoder.readPtNode(p.mAddress, formatOptions);
-            for (int i = 0; i < info.mCharacters.length; ++i) {
-                pushedChars[index++] = info.mCharacters[i];
+            final PtNodeInfo ptNodeInfo = dictDecoder.readPtNode(p.mAddress, formatOptions);
+            for (int i = 0; i < ptNodeInfo.mCharacters.length; ++i) {
+                pushedChars[index++] = ptNodeInfo.mCharacters[i];
             }
             p.mPosition++;
 
-            final boolean isMovedPtNode = isMovedPtNode(info.mFlags,
+            final boolean isMovedPtNode = isMovedPtNode(ptNodeInfo.mFlags,
                     formatOptions);
-            final boolean isDeletedPtNode = isDeletedPtNode(info.mFlags,
+            final boolean isDeletedPtNode = isDeletedPtNode(ptNodeInfo.mFlags,
                     formatOptions);
-            if (!isMovedPtNode && !isDeletedPtNode
-                    && info.mFrequency != FusionDictionary.PtNode.NOT_A_TERMINAL) {// found word
-                words.put(info.mOriginalAddress, new String(pushedChars, 0, index));
-                frequencies.put(info.mOriginalAddress, info.mFrequency);
-                if (info.mBigrams != null) bigrams.put(info.mOriginalAddress, info.mBigrams);
+            if (!isMovedPtNode && !isDeletedPtNode && ptNodeInfo.isTerminal()) {// found word
+                words.put(ptNodeInfo.mOriginalAddress, new String(pushedChars, 0, index));
+                frequencies.put(
+                        ptNodeInfo.mOriginalAddress, ptNodeInfo.mProbabilityInfo.mProbability);
+                if (ptNodeInfo.mBigrams != null) {
+                    bigrams.put(ptNodeInfo.mOriginalAddress, ptNodeInfo.mBigrams);
+                }
             }
 
             if (p.mPosition == p.mNumOfPtNode) {
@@ -127,8 +129,8 @@ public final class BinaryDictIOUtils {
                 p.mAddress = dictDecoder.getPosition();
             }
 
-            if (!isMovedPtNode && hasChildrenAddress(info.mChildrenAddress)) {
-                final Position childrenPos = new Position(info.mChildrenAddress, index);
+            if (!isMovedPtNode && hasChildrenAddress(ptNodeInfo.mChildrenAddress)) {
+                final Position childrenPos = new Position(ptNodeInfo.mChildrenAddress, index);
                 stack.push(childrenPos);
             }
         }
@@ -203,8 +205,7 @@ public final class BinaryDictIOUtils {
                     if (same) {
                         // found the PtNode matches the word.
                         if (wordPos + currentInfo.mCharacters.length == wordLen) {
-                            if (currentInfo.mFrequency == PtNode.NOT_A_TERMINAL
-                                    || isDeletedNode) {
+                            if (!currentInfo.isTerminal() || isDeletedNode) {
                                 return FormatSpec.NOT_VALID_WORD;
                             } else {
                                 return ptNodePos;

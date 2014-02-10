@@ -408,7 +408,7 @@ public final class BinaryDictDecoderUtils {
     private static WeightedString getWordAtPositionWithParentAddress(final DictDecoder dictDecoder,
             final int pos, final FormatOptions options) {
         int currentPos = pos;
-        int frequency = Integer.MIN_VALUE;
+        ProbabilityInfo probabilityInfo = null;
         final StringBuilder builder = new StringBuilder();
         // the length of the path from the root to the leaf is limited by MAX_WORD_LENGTH
         for (int count = 0; count < FormatSpec.MAX_WORD_LENGTH; ++count) {
@@ -424,13 +424,15 @@ public final class BinaryDictDecoderUtils {
                     MakedictLog.d("Too many jumps - probably a bug");
                 }
             } while (BinaryDictIOUtils.isMovedPtNode(currentInfo.mFlags, options));
-            if (Integer.MIN_VALUE == frequency) frequency = currentInfo.mFrequency;
+            if (probabilityInfo == null) {
+                probabilityInfo = currentInfo.mProbabilityInfo;
+            }
             builder.insert(0,
                     new String(currentInfo.mCharacters, 0, currentInfo.mCharacters.length));
             if (currentInfo.mParentAddress == FormatSpec.NO_PARENT_ADDRESS) break;
             currentPos = currentInfo.mParentAddress + currentInfo.mOriginalAddress;
         }
-        return new WeightedString(builder.toString(), frequency);
+        return new WeightedString(builder.toString(), probabilityInfo);
     }
 
     private static WeightedString getWordAtPositionWithoutParentAddress(
@@ -448,7 +450,7 @@ public final class BinaryDictDecoderUtils {
             groupPos = info.mEndAddress;
             if (info.mOriginalAddress == pos) {
                 builder.append(new String(info.mCharacters, 0, info.mCharacters.length));
-                result = new WeightedString(builder.toString(), info.mFrequency);
+                result = new WeightedString(builder.toString(), info.mProbabilityInfo);
                 break; // and return
             }
             if (BinaryDictIOUtils.hasChildrenAddress(info.mChildrenAddress)) {
@@ -527,13 +529,13 @@ public final class BinaryDictDecoderUtils {
                     }
                     nodeArrayContents.add(
                             new PtNode(info.mCharacters, shortcutTargets, bigrams,
-                                    info.mFrequency,
+                                    info.mProbabilityInfo,
                                     0 != (info.mFlags & FormatSpec.FLAG_IS_NOT_A_WORD),
                                     0 != (info.mFlags & FormatSpec.FLAG_IS_BLACKLISTED), children));
                 } else {
                     nodeArrayContents.add(
                             new PtNode(info.mCharacters, shortcutTargets, bigrams,
-                                    info.mFrequency,
+                                    info.mProbabilityInfo,
                                     0 != (info.mFlags & FormatSpec.FLAG_IS_NOT_A_WORD),
                                     0 != (info.mFlags & FormatSpec.FLAG_IS_BLACKLISTED)));
                 }
@@ -611,7 +613,7 @@ public final class BinaryDictDecoderUtils {
                     newDict.addBlacklistEntry(wordProperty.mWord, wordProperty.mShortcutTargets,
                             wordProperty.mIsNotAWord);
                 } else {
-                    newDict.add(wordProperty.mWord, wordProperty.getProbability(),
+                    newDict.add(wordProperty.mWord, wordProperty.mProbabilityInfo,
                             wordProperty.mShortcutTargets, wordProperty.mIsNotAWord);
                 }
             }
@@ -620,7 +622,7 @@ public final class BinaryDictDecoderUtils {
                 // words that are not also registered as unigrams so we don't have to avoid
                 // them explicitly here.
                 for (final WeightedString bigram : wordProperty.mBigrams) {
-                    newDict.setBigram(wordProperty.mWord, bigram.mWord, bigram.getProbability());
+                    newDict.setBigram(wordProperty.mWord, bigram.mWord, bigram.mProbabilityInfo);
                 }
             }
         }

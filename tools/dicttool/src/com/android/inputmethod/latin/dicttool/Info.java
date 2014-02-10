@@ -72,7 +72,7 @@ public class Info extends Dicttool.Command {
             return;
         }
         System.out.println("Word: " + word);
-        System.out.println("  Freq: " + ptNode.getFrequency());
+        System.out.println("  Freq: " + ptNode.getProbability());
         if (ptNode.getIsNotAWord()) {
             System.out.println("  Is not a word");
         }

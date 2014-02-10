@@ -118,9 +118,10 @@ public class Diff extends Dicttool.Command {
                 hasDifferences = true;
             } else {
                 // We found the word. Compare frequencies, shortcuts, bigrams
-                if (word0Property.getProbability() != word1PtNode.getFrequency()) {
+                if (word0Property.getProbability() != word1PtNode.getProbability()) {
                     System.out.println("Probability changed: " + word0Property.mWord + " "
-                            + word0Property.getProbability() + " -> " + word1PtNode.getFrequency());
+                            + word0Property.getProbability() + " -> "
+                            + word1PtNode.getProbability());
                     hasDifferences = true;
                 }
                 if (word0Property.mIsNotAWord != word1PtNode.getIsNotAWord()) {

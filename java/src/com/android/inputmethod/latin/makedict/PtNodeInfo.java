@@ -29,24 +29,28 @@ public final class PtNodeInfo {
     public final int mEndAddress;
     public final int mFlags;
     public final int[] mCharacters;
-    public final int mFrequency;
+    public final ProbabilityInfo mProbabilityInfo;
     public final int mChildrenAddress;
     public final int mParentAddress;
     public final ArrayList<WeightedString> mShortcutTargets;
     public final ArrayList<PendingAttribute> mBigrams;
 
     public PtNodeInfo(final int originalAddress, final int endAddress, final int flags,
-            final int[] characters, final int frequency, final int parentAddress,
+            final int[] characters, final ProbabilityInfo probabilityInfo, final int parentAddress,
             final int childrenAddress, final ArrayList<WeightedString> shortcutTargets,
             final ArrayList<PendingAttribute> bigrams) {
         mOriginalAddress = originalAddress;
         mEndAddress = endAddress;
         mFlags = flags;
         mCharacters = characters;
-        mFrequency = frequency;
+        mProbabilityInfo = probabilityInfo;
         mParentAddress = parentAddress;
         mChildrenAddress = childrenAddress;
         mShortcutTargets = shortcutTargets;
         mBigrams = bigrams;
+    }
+
+    public boolean isTerminal() {
+        return mProbabilityInfo != null;
     }
 }

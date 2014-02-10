@@ -39,8 +39,9 @@ public class Ver2DictDecoder extends AbstractDictDecoder {
     private static final String TAG = Ver2DictDecoder.class.getSimpleName();
 
     protected static class PtNodeReader extends AbstractDictDecoder.PtNodeReader {
-        private static int readFrequency(final DictBuffer dictBuffer) {
-            return dictBuffer.readUnsignedByte();
+        private static ProbabilityInfo readProbabilityInfo(final DictBuffer dictBuffer) {
+            // Ver2 dicts don't contain historical information.
+            return new ProbabilityInfo(dictBuffer.readUnsignedByte());
         }
     }
 
@@ -133,12 +134,12 @@ public class Ver2DictDecoder extends AbstractDictDecoder {
             addressPointer += CharEncoding.getCharSize(character);
             characters = new int[] { character };
         }
-        final int frequency;
+        final ProbabilityInfo probabilityInfo;
         if (0 != (FormatSpec.FLAG_IS_TERMINAL & flags)) {
-            frequency = PtNodeReader.readFrequency(mDictBuffer);
+            probabilityInfo = PtNodeReader.readProbabilityInfo(mDictBuffer);
             addressPointer += FormatSpec.PTNODE_FREQUENCY_SIZE;
         } else {
-            frequency = PtNode.NOT_A_TERMINAL;
+            probabilityInfo = null;
         }
         int childrenAddress = PtNodeReader.readChildrenAddress(mDictBuffer, flags, options);
         if (childrenAddress != FormatSpec.NO_CHILDREN_ADDRESS) {
@@ -166,7 +167,7 @@ public class Ver2DictDecoder extends AbstractDictDecoder {
         } else {
             bigrams = null;
         }
-        return new PtNodeInfo(ptNodePos, addressPointer, flags, characters, frequency,
+        return new PtNodeInfo(ptNodePos, addressPointer, flags, characters, probabilityInfo,
                 parentAddress, childrenAddress, shortcutTargets, bigrams);
     }
 
@@ -231,7 +232,9 @@ public class Ver2DictDecoder extends AbstractDictDecoder {
         BinaryDictIOUtils.skipString(mDictBuffer,
                 (flags & FormatSpec.FLAG_HAS_MULTIPLE_CHARS) != 0);
         PtNodeReader.readChildrenAddress(mDictBuffer, flags, formatOptions);
-        if ((flags & FormatSpec.FLAG_IS_TERMINAL) != 0) PtNodeReader.readFrequency(mDictBuffer);
+        if ((flags & FormatSpec.FLAG_IS_TERMINAL) != 0) {
+            PtNodeReader.readProbabilityInfo(mDictBuffer);
+        }
         if ((flags & FormatSpec.FLAG_HAS_SHORTCUT_TARGETS) != 0) {
             final int shortcutsSize = mDictBuffer.readUnsignedShort();
             mDictBuffer.position(mDictBuffer.position() + shortcutsSize

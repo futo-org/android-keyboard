@@ -24,6 +24,7 @@ import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary;
 import com.android.inputmethod.latin.makedict.FusionDictionary.DictionaryOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
+import com.android.inputmethod.latin.makedict.ProbabilityInfo;
 import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
 import com.android.inputmethod.latin.makedict.Ver2DictEncoder;
 
@@ -53,11 +54,11 @@ public class BinaryDictOffdeviceUtilsTests extends TestCase {
         testOptions.mAttributes.put(DictionaryHeader.DICTIONARY_LOCALE_KEY, LOCALE);
         testOptions.mAttributes.put(DictionaryHeader.DICTIONARY_ID_KEY, ID);
         final FusionDictionary dict = new FusionDictionary(new PtNodeArray(), testOptions);
-        dict.add("foo", TEST_FREQ, null, false /* isNotAWord */);
-        dict.add("fta", 1, null, false /* isNotAWord */);
-        dict.add("ftb", 1, null, false /* isNotAWord */);
-        dict.add("bar", 1, null, false /* isNotAWord */);
-        dict.add("fool", 1, null, false /* isNotAWord */);
+        dict.add("foo", new ProbabilityInfo(TEST_FREQ), null, false /* isNotAWord */);
+        dict.add("fta", new ProbabilityInfo(1), null, false /* isNotAWord */);
+        dict.add("ftb", new ProbabilityInfo(1), null, false /* isNotAWord */);
+        dict.add("bar", new ProbabilityInfo(1), null, false /* isNotAWord */);
+        dict.add("fool", new ProbabilityInfo(1), null, false /* isNotAWord */);
 
         final File dst = File.createTempFile("testGetRawDict", ".tmp");
         dst.deleteOnExit();
@@ -87,7 +88,7 @@ public class BinaryDictOffdeviceUtilsTests extends TestCase {
         assertEquals("Wrong id attribute", ID, resultDict.mOptions.mAttributes.get(
                 DictionaryHeader.DICTIONARY_ID_KEY));
         assertEquals("Dictionary can't be read back correctly",
-                FusionDictionary.findWordInTree(resultDict.mRootNodeArray, "foo").getFrequency(),
+                FusionDictionary.findWordInTree(resultDict.mRootNodeArray, "foo").getProbability(),
                 TEST_FREQ);
     }
 
