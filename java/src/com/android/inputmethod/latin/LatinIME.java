@@ -1350,8 +1350,17 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     public void setSuggestedWords(final SuggestedWords suggestedWords, final boolean shouldShow) {
         mInputLogic.setSuggestedWords(suggestedWords);
         if (mSuggestionStripView != null) {
-            mSuggestionStripView.setSuggestions(suggestedWords,
-                    SubtypeLocaleUtils.isRtlLanguage(mSubtypeSwitcher.getCurrentSubtype()));
+            final boolean showSuggestions;
+            if (SuggestedWords.EMPTY == suggestedWords
+                    || suggestedWords.mIsPunctuationSuggestions) {
+                showSuggestions = !mSuggestionStripView.maybeShowImportantNoticeTitle();
+            } else {
+                showSuggestions = true;
+            }
+            if (showSuggestions) {
+                mSuggestionStripView.setSuggestions(suggestedWords,
+                        SubtypeLocaleUtils.isRtlLanguage(mSubtypeSwitcher.getCurrentSubtype()));
+            }
             mKeyboardSwitcher.onAutoCorrectionStateChanged(suggestedWords.mWillAutoCorrect);
             setSuggestionStripShownInternal(shouldShow, true /* needsInputViewShown */);
         }

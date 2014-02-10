@@ -504,15 +504,9 @@ final class SuggestionStripLayoutHelper {
                 titleView, infoIcon, null, moreIcon, null);
         final CharSequence importantNoticeTitle = titleView.getText();
         titleView.setTextScaleX(1.0f); // Reset textScaleX.
-        // When the suggestions strip is displayed first time, stripWidth may be zero.
-        // Then importantNoticeTitle will be displayed as is without auto text scaleX.
-        // TODO: Fix the logic to always have a correct value of stripWidth.
-        if (width > 0) {
-            // Auto text scaleX to show entire important notice title should be on the strip.
-            final float titleScaleX = getTextScaleX(
-                    importantNoticeTitle, width, titleView.getPaint());
-            titleView.setTextScaleX(titleScaleX);
-        }
+        final float titleScaleX = getTextScaleX(
+                importantNoticeTitle, width, titleView.getPaint());
+        titleView.setTextScaleX(titleScaleX);
     }
 
     static void setLayoutWeight(final View v, final float weight, final int height) {
@@ -529,7 +523,7 @@ final class SuggestionStripLayoutHelper {
             final TextPaint paint) {
         paint.setTextScaleX(1.0f);
         final int width = getTextWidth(text, paint);
-        if (width <= maxWidth) {
+        if (width <= maxWidth || maxWidth <= 0) {
             return 1.0f;
         }
         return maxWidth / (float)width;
