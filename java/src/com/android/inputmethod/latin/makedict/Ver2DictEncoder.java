@@ -227,7 +227,7 @@ public class Ver2DictEncoder implements DictEncoder {
             final PtNode target =
                     FusionDictionary.findWordInTree(dict.mRootNodeArray, bigram.mWord);
             final int addressOfBigram = target.mCachedAddressAfterUpdate;
-            final int unigramFrequencyForThisWord = target.mFrequency;
+            final int unigramFrequencyForThisWord = target.getProbability();
             final int offset = addressOfBigram
                     - (mPosition + FormatSpec.PTNODE_ATTRIBUTE_FLAGS_SIZE);
             final int bigramFlags = BinaryDictEncoderUtils.makeBigramFlags(bigramIterator.hasNext(),
@@ -251,7 +251,7 @@ public class Ver2DictEncoder implements DictEncoder {
         writePtNodeFlags(ptNode, formatOptions);
         writeParentPosition(parentPosition, ptNode, formatOptions);
         writeCharacters(ptNode.mChars, ptNode.hasSeveralChars());
-        writeFrequency(ptNode.mFrequency);
+        writeFrequency(ptNode.getProbability());
         writeChildrenPosition(ptNode, formatOptions);
         writeShortcuts(ptNode.mShortcutTargets);
         writeBigrams(ptNode.mBigrams, dict);

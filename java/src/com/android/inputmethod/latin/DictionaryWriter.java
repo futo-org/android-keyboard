@@ -21,6 +21,7 @@ import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.makedict.FusionDictionary;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
+import com.android.inputmethod.latin.makedict.ProbabilityInfo;
 import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 
@@ -56,22 +57,23 @@ public class DictionaryWriter extends AbstractDictionaryWriter {
     // TODO: Create "cache dictionary" to cache fresh words for frequently updated dictionaries,
     // considering performance regression.
     @Override
-    public void addUnigramWord(final String word, final String shortcutTarget, final int frequency,
-            final int shortcutFreq, final boolean isNotAWord) {
+    public void addUnigramWord(final String word, final String shortcutTarget,
+            final int probability, final int shortcutProbability, final boolean isNotAWord) {
         if (shortcutTarget == null) {
-            mFusionDictionary.add(word, frequency, null, isNotAWord);
+            mFusionDictionary.add(word, new ProbabilityInfo(probability), null, isNotAWord);
         } else {
             // TODO: Do this in the subclass, with this class taking an arraylist.
             final ArrayList<WeightedString> shortcutTargets = CollectionUtils.newArrayList();
-            shortcutTargets.add(new WeightedString(shortcutTarget, shortcutFreq));
-            mFusionDictionary.add(word, frequency, shortcutTargets, isNotAWord);
+            shortcutTargets.add(new WeightedString(shortcutTarget, shortcutProbability));
+            mFusionDictionary.add(word, new ProbabilityInfo(probability), shortcutTargets,
+                    isNotAWord);
         }
     }
 
     @Override
-    public void addBigramWords(final String word0, final String word1, final int frequency,
+    public void addBigramWords(final String word0, final String word1, final int probability,
             final boolean isValid, final long lastModifiedTime) {
-        mFusionDictionary.setBigram(word0, word1, frequency);
+        mFusionDictionary.setBigram(word0, word1, new ProbabilityInfo(probability));
     }
 
     @Override

@@ -107,24 +107,26 @@ public final class FusionDictionary implements Iterable<WordProperty> {
     }
 
     /**
-     * PtNode is a group of characters, with a frequency, shortcut targets, bigrams, and children
-     * (Pt means Patricia Trie).
+     * PtNode is a group of characters, with probability information, shortcut targets, bigrams,
+     * and children (Pt means Patricia Trie).
      *
      * This is the central class of the in-memory representation. A PtNode is what can
      * be seen as a traditional "trie node", except it can hold several characters at the
      * same time. A PtNode essentially represents one or several characters in the middle
      * of the trie tree; as such, it can be a terminal, and it can have children.
      * In this in-memory representation, whether the PtNode is a terminal or not is represented
-     * in the frequency, where NOT_A_TERMINAL (= -1) means this is not a terminal and any other
-     * value is the frequency of this terminal. A terminal may have non-null shortcuts and/or
-     * bigrams, but a non-terminal may not. Moreover, children, if present, are null.
+     * by mProbabilityInfo. The PtNode is a terminal when the mProbabilityInfo is not null and the
+     * PtNode is not a terminal when the mProbabilityInfo is null. A terminal may have non-null
+     * shortcuts and/or bigrams, but a non-terminal may not. Moreover, children, if present,
+     * are non-null.
      */
     public static final class PtNode {
-        public static final int NOT_A_TERMINAL = -1;
+        private static final int NOT_A_TERMINAL = -1;
         final int mChars[];
         ArrayList<WeightedString> mShortcutTargets;
         ArrayList<WeightedString> mBigrams;
-        int mFrequency; // NOT_A_TERMINAL == mFrequency indicates this is not a terminal.
+        // null == mProbabilityInfo indicates this is not a terminal.
+        ProbabilityInfo mProbabilityInfo;
         int mTerminalId; // NOT_A_TERMINAL == mTerminalId indicates this is not a terminal.
         PtNodeArray mChildren;
         boolean mIsNotAWord; // Only a shortcut
@@ -140,11 +142,11 @@ public final class FusionDictionary implements Iterable<WordProperty> {
         int mCachedAddressAfterUpdate; // The address of this PtNode (after update)
 
         public PtNode(final int[] chars, final ArrayList<WeightedString> shortcutTargets,
-                final ArrayList<WeightedString> bigrams, final int frequency,
+                final ArrayList<WeightedString> bigrams, final ProbabilityInfo probabilityInfo,
                 final boolean isNotAWord, final boolean isBlacklistEntry) {
             mChars = chars;
-            mFrequency = frequency;
-            mTerminalId = frequency;
+            mProbabilityInfo = probabilityInfo;
+            mTerminalId = probabilityInfo == null ? NOT_A_TERMINAL : probabilityInfo.mProbability;
             mShortcutTargets = shortcutTargets;
             mBigrams = bigrams;
             mChildren = null;
@@ -153,11 +155,11 @@ public final class FusionDictionary implements Iterable<WordProperty> {
         }
 
         public PtNode(final int[] chars, final ArrayList<WeightedString> shortcutTargets,
-                final ArrayList<WeightedString> bigrams, final int frequency,
+                final ArrayList<WeightedString> bigrams, final ProbabilityInfo probabilityInfo,
                 final boolean isNotAWord, final boolean isBlacklistEntry,
                 final PtNodeArray children) {
             mChars = chars;
-            mFrequency = frequency;
+            mProbabilityInfo = probabilityInfo;
             mShortcutTargets = shortcutTargets;
             mBigrams = bigrams;
             mChildren = children;
@@ -177,11 +179,15 @@ public final class FusionDictionary implements Iterable<WordProperty> {
         }
 
         public boolean isTerminal() {
-            return NOT_A_TERMINAL != mFrequency;
+            return mProbabilityInfo != null;
         }
 
-        public int getFrequency() {
-            return mFrequency;
+        public int getProbability() {
+            if (isTerminal()) {
+                return mProbabilityInfo.mProbability;
+            } else {
+                return NOT_A_TERMINAL;
+            }
         }
 
         public boolean getIsNotAWord() {
@@ -213,18 +219,18 @@ public final class FusionDictionary implements Iterable<WordProperty> {
         }
 
         /**
-         * Adds a word to the bigram list. Updates the probability if the word already
+         * Adds a word to the bigram list. Updates the probability information if the word already
          * exists.
          */
-        public void addBigram(final String word, final int probability) {
+        public void addBigram(final String word, final ProbabilityInfo probabilityInfo) {
             if (mBigrams == null) {
                 mBigrams = new ArrayList<WeightedString>();
             }
             WeightedString bigram = getBigram(word);
             if (bigram != null) {
-                bigram.setProbability(probability);
+                bigram.mProbabilityInfo = probabilityInfo;
             } else {
-                bigram = new WeightedString(word, probability);
+                bigram = new WeightedString(word, probabilityInfo);
                 mBigrams.add(bigram);
             }
         }
@@ -270,12 +276,11 @@ public final class FusionDictionary implements Iterable<WordProperty> {
          * the existing ones if any. Note: unigram, bigram, and shortcut frequencies are only
          * updated if they are higher than the existing ones.
          */
-        public void update(final int frequency, final ArrayList<WeightedString> shortcutTargets,
+        private void update(final ProbabilityInfo probabilityInfo,
+                final ArrayList<WeightedString> shortcutTargets,
                 final ArrayList<WeightedString> bigrams,
                 final boolean isNotAWord, final boolean isBlacklistEntry) {
-            if (frequency > mFrequency) {
-                mFrequency = frequency;
-            }
+            mProbabilityInfo = ProbabilityInfo.max(mProbabilityInfo, probabilityInfo);
             if (shortcutTargets != null) {
                 if (mShortcutTargets == null) {
                     mShortcutTargets = shortcutTargets;
@@ -286,8 +291,9 @@ public final class FusionDictionary implements Iterable<WordProperty> {
                         final WeightedString existingShortcut = getShortcut(shortcut.mWord);
                         if (existingShortcut == null) {
                             mShortcutTargets.add(shortcut);
-                        } else if (existingShortcut.getProbability() < shortcut.getProbability()) {
-                            existingShortcut.setProbability(shortcut.getProbability());
+                        } else {
+                            existingShortcut.mProbabilityInfo = ProbabilityInfo.max(
+                                    existingShortcut.mProbabilityInfo, shortcut.mProbabilityInfo);
                         }
                     }
                 }
@@ -302,8 +308,9 @@ public final class FusionDictionary implements Iterable<WordProperty> {
                         final WeightedString existingBigram = getBigram(bigram.mWord);
                         if (existingBigram == null) {
                             mBigrams.add(bigram);
-                        } else if (existingBigram.getProbability() < bigram.getProbability()) {
-                            existingBigram.setProbability(bigram.getProbability());
+                        } else {
+                            existingBigram.mProbabilityInfo = ProbabilityInfo.max(
+                                    existingBigram.mProbabilityInfo, bigram.mProbabilityInfo);
                         }
                     }
                 }
@@ -393,13 +400,13 @@ public final class FusionDictionary implements Iterable<WordProperty> {
      * they will be added to the dictionary as necessary.
      *
      * @param word the word to add.
-     * @param frequency the frequency of the word, in the range [0..255].
+     * @param probabilityInfo probability information of the word.
      * @param shortcutTargets a list of shortcut targets for this word, or null.
      * @param isNotAWord true if this should not be considered a word (e.g. shortcut only)
      */
-    public void add(final String word, final int frequency,
+    public void add(final String word, final ProbabilityInfo probabilityInfo,
             final ArrayList<WeightedString> shortcutTargets, final boolean isNotAWord) {
-        add(getCodePoints(word), frequency, shortcutTargets, isNotAWord,
+        add(getCodePoints(word), probabilityInfo, shortcutTargets, isNotAWord,
                 false /* isBlacklistEntry */);
     }
 
@@ -412,7 +419,8 @@ public final class FusionDictionary implements Iterable<WordProperty> {
      */
     public void addBlacklistEntry(final String word,
             final ArrayList<WeightedString> shortcutTargets, final boolean isNotAWord) {
-        add(getCodePoints(word), 0, shortcutTargets, isNotAWord, true /* isBlacklistEntry */);
+        add(getCodePoints(word), new ProbabilityInfo(0), shortcutTargets, isNotAWord,
+                true /* isBlacklistEntry */);
     }
 
     /**
@@ -438,21 +446,22 @@ public final class FusionDictionary implements Iterable<WordProperty> {
      *
      * @param word0 the previous word of the context
      * @param word1 the next word of the context
-     * @param frequency the bigram frequency
+     * @param probabilityInfo the bigram probability info
      */
-    public void setBigram(final String word0, final String word1, final int frequency) {
+    public void setBigram(final String word0, final String word1,
+            final ProbabilityInfo probabilityInfo) {
         PtNode ptNode0 = findWordInTree(mRootNodeArray, word0);
         if (ptNode0 != null) {
             final PtNode ptNode1 = findWordInTree(mRootNodeArray, word1);
             if (ptNode1 == null) {
-                add(getCodePoints(word1), 0, null, false /* isNotAWord */,
+                add(getCodePoints(word1), new ProbabilityInfo(0), null, false /* isNotAWord */,
                         false /* isBlacklistEntry */);
                 // The PtNode for the first word may have moved by the above insertion,
                 // if word1 and word2 share a common stem that happens not to have been
                 // a cutting point until now. In this case, we need to refresh ptNode.
                 ptNode0 = findWordInTree(mRootNodeArray, word0);
             }
-            ptNode0.addBigram(word1, frequency);
+            ptNode0.addBigram(word1, probabilityInfo);
         } else {
             throw new RuntimeException("First word of bigram not found " + word0);
         }
@@ -465,15 +474,15 @@ public final class FusionDictionary implements Iterable<WordProperty> {
      * an exception is thrown.
      *
      * @param word the word, as an int array.
-     * @param frequency the frequency of the word, in the range [0..255].
+     * @param probabilityInfo the probability information of the word.
      * @param shortcutTargets an optional list of shortcut targets for this word (null if none).
      * @param isNotAWord true if this is not a word for spellcheking purposes (shortcut only or so)
      * @param isBlacklistEntry true if this is a blacklisted word, false otherwise
      */
-    private void add(final int[] word, final int frequency,
+    private void add(final int[] word, final ProbabilityInfo probabilityInfo,
             final ArrayList<WeightedString> shortcutTargets,
             final boolean isNotAWord, final boolean isBlacklistEntry) {
-        assert(frequency >= 0 && frequency <= 255);
+        assert(probabilityInfo.mProbability <= FormatSpec.MAX_TERMINAL_FREQUENCY);
         if (word.length >= Constants.DICTIONARY_MAX_WORD_LENGTH) {
             MakedictLog.w("Ignoring a word that is too long: word.length = " + word.length);
             return;
@@ -501,7 +510,8 @@ public final class FusionDictionary implements Iterable<WordProperty> {
             // No node at this point to accept the word. Create one.
             final int insertionIndex = findInsertionIndex(currentNodeArray, word[charIndex]);
             final PtNode newPtNode = new PtNode(Arrays.copyOfRange(word, charIndex, word.length),
-                    shortcutTargets, null /* bigrams */, frequency, isNotAWord, isBlacklistEntry);
+                    shortcutTargets, null /* bigrams */, probabilityInfo, isNotAWord,
+                    isBlacklistEntry);
             currentNodeArray.mData.add(insertionIndex, newPtNode);
             if (DBG) checkStack(currentNodeArray);
         } else {
@@ -511,15 +521,15 @@ public final class FusionDictionary implements Iterable<WordProperty> {
                     // The new word is a prefix of an existing word, but the node on which it
                     // should end already exists as is. Since the old PtNode was not a terminal,
                     // make it one by filling in its frequency and other attributes
-                    currentPtNode.update(frequency, shortcutTargets, null, isNotAWord,
+                    currentPtNode.update(probabilityInfo, shortcutTargets, null, isNotAWord,
                             isBlacklistEntry);
                 } else {
                     // The new word matches the full old word and extends past it.
                     // We only have to create a new node and add it to the end of this.
                     final PtNode newNode = new PtNode(
                             Arrays.copyOfRange(word, charIndex + differentCharIndex, word.length),
-                                    shortcutTargets, null /* bigrams */, frequency, isNotAWord,
-                                    isBlacklistEntry);
+                                    shortcutTargets, null /* bigrams */, probabilityInfo,
+                                    isNotAWord, isBlacklistEntry);
                     currentPtNode.mChildren = new PtNodeArray();
                     currentPtNode.mChildren.mData.add(newNode);
                 }
@@ -527,7 +537,7 @@ public final class FusionDictionary implements Iterable<WordProperty> {
                 if (0 == differentCharIndex) {
                     // Exact same word. Update the frequency if higher. This will also add the
                     // new shortcuts to the existing shortcut list if it already exists.
-                    currentPtNode.update(frequency, shortcutTargets, null,
+                    currentPtNode.update(probabilityInfo, shortcutTargets, null,
                             currentPtNode.mIsNotAWord && isNotAWord,
                             currentPtNode.mIsBlacklistEntry || isBlacklistEntry);
                 } else {
@@ -537,7 +547,7 @@ public final class FusionDictionary implements Iterable<WordProperty> {
                     final PtNode newOldWord = new PtNode(
                             Arrays.copyOfRange(currentPtNode.mChars, differentCharIndex,
                                     currentPtNode.mChars.length), currentPtNode.mShortcutTargets,
-                            currentPtNode.mBigrams, currentPtNode.mFrequency,
+                            currentPtNode.mBigrams, currentPtNode.mProbabilityInfo,
                             currentPtNode.mIsNotAWord, currentPtNode.mIsBlacklistEntry,
                             currentPtNode.mChildren);
                     newChildren.mData.add(newOldWord);
@@ -546,16 +556,17 @@ public final class FusionDictionary implements Iterable<WordProperty> {
                     if (charIndex + differentCharIndex >= word.length) {
                         newParent = new PtNode(
                                 Arrays.copyOfRange(currentPtNode.mChars, 0, differentCharIndex),
-                                shortcutTargets, null /* bigrams */, frequency,
+                                shortcutTargets, null /* bigrams */, probabilityInfo,
                                 isNotAWord, isBlacklistEntry, newChildren);
                     } else {
                         newParent = new PtNode(
                                 Arrays.copyOfRange(currentPtNode.mChars, 0, differentCharIndex),
-                                null /* shortcutTargets */, null /* bigrams */, -1,
-                                false /* isNotAWord */, false /* isBlacklistEntry */, newChildren);
+                                null /* shortcutTargets */, null /* bigrams */,
+                                null /* probabilityInfo */, false /* isNotAWord */,
+                                false /* isBlacklistEntry */, newChildren);
                         final PtNode newWord = new PtNode(Arrays.copyOfRange(word,
                                 charIndex + differentCharIndex, word.length),
-                                shortcutTargets, null /* bigrams */, frequency,
+                                shortcutTargets, null /* bigrams */, probabilityInfo,
                                 isNotAWord, isBlacklistEntry);
                         final int addIndex = word[charIndex + differentCharIndex]
                                 > currentPtNode.mChars[differentCharIndex] ? 1 : 0;
@@ -617,8 +628,8 @@ public final class FusionDictionary implements Iterable<WordProperty> {
     private static int findInsertionIndex(final PtNodeArray nodeArray, int character) {
         final ArrayList<PtNode> data = nodeArray.mData;
         final PtNode reference = new PtNode(new int[] { character },
-                null /* shortcutTargets */, null /* bigrams */, 0, false /* isNotAWord */,
-                false /* isBlacklistEntry */);
+                null /* shortcutTargets */, null /* bigrams */, null /* probabilityInfo */,
+                false /* isNotAWord */, false /* isBlacklistEntry */);
         int result = Collections.binarySearch(data, reference, PTNODE_COMPARATOR);
         return result >= 0 ? result : -result - 1;
     }
@@ -752,8 +763,9 @@ public final class FusionDictionary implements Iterable<WordProperty> {
                         currentPos.length = mCurrentString.length();
                         mPositions.addLast(currentPos);
                     }
-                    if (currentPtNode.mFrequency >= 0) {
-                        return new WordProperty(mCurrentString.toString(), currentPtNode.mFrequency,
+                    if (currentPtNode.isTerminal()) {
+                        return new WordProperty(mCurrentString.toString(),
+                                currentPtNode.mProbabilityInfo,
                                 currentPtNode.mShortcutTargets, currentPtNode.mBigrams,
                                 currentPtNode.mIsNotAWord, currentPtNode.mIsBlacklistEntry);
                     }

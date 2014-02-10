@@ -30,6 +30,21 @@ public final class ProbabilityInfo {
     public final int mLevel;
     public final int mCount;
 
+    public static ProbabilityInfo max(final ProbabilityInfo probabilityInfo1,
+            final ProbabilityInfo probabilityInfo2) {
+        if (probabilityInfo1 == null) {
+            return probabilityInfo2;
+        }
+        if (probabilityInfo2 == null) {
+            return probabilityInfo1;
+        }
+        if (probabilityInfo1.mProbability > probabilityInfo2.mProbability) {
+            return probabilityInfo1;
+        } else {
+            return probabilityInfo2;
+        }
+    }
+
     public ProbabilityInfo(final int probability) {
         this(probability, BinaryDictionary.NOT_A_VALID_TIMESTAMP, 0, 0);
     }

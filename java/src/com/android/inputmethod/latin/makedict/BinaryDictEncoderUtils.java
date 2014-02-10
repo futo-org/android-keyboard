@@ -673,7 +673,7 @@ public class BinaryDictEncoderUtils {
 
     /* package */ static byte makePtNodeFlags(final PtNode node, final int childrenOffset,
             final FormatOptions formatOptions) {
-        return (byte) makePtNodeFlags(node.mChars.length > 1, node.mFrequency >= 0,
+        return (byte) makePtNodeFlags(node.mChars.length > 1, node.isTerminal(),
                 getByteSize(childrenOffset),
                 node.mShortcutTargets != null && !node.mShortcutTargets.isEmpty(),
                 node.mBigrams != null, node.mIsNotAWord, node.mIsBlacklistEntry, formatOptions);
@@ -833,10 +833,10 @@ public class BinaryDictEncoderUtils {
                         + ptNode.mCachedAddressAfterUpdate);
             }
             // Sanity checks.
-            if (DBG && ptNode.mFrequency > FormatSpec.MAX_TERMINAL_FREQUENCY) {
+            if (DBG && ptNode.getProbability() > FormatSpec.MAX_TERMINAL_FREQUENCY) {
                 throw new RuntimeException("A node has a frequency > "
                         + FormatSpec.MAX_TERMINAL_FREQUENCY
-                        + " : " + ptNode.mFrequency);
+                        + " : " + ptNode.mProbabilityInfo.toString());
             }
             dictEncoder.writePtNode(ptNode, parentPosition, formatOptions, dict);
         }
@@ -871,7 +871,7 @@ public class BinaryDictEncoderUtils {
             for (final PtNode ptNode : ptNodeArray.mData) {
                 ++ptNodes;
                 if (ptNode.mChars.length > maxRuns) maxRuns = ptNode.mChars.length;
-                if (ptNode.mFrequency >= 0) {
+                if (ptNode.isTerminal()) {
                     if (ptNodeArray.mCachedAddressAfterUpdate < firstTerminalAddress)
                         firstTerminalAddress = ptNodeArray.mCachedAddressAfterUpdate;
                     if (ptNodeArray.mCachedAddressAfterUpdate > lastTerminalAddress)

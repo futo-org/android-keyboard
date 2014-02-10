@@ -81,14 +81,11 @@ public class Ver4DictDecoder extends AbstractDictDecoder {
 
         // Insert unigrams to the fusion dictionary.
         for (final WordProperty wordProperty : wordProperties) {
-            // TODO: Support probability that is -1.
-            final int probability = wordProperty.getProbability() < 0 ?
-                    0 : wordProperty.getProbability();
             if (wordProperty.mIsBlacklistEntry) {
                 fusionDict.addBlacklistEntry(wordProperty.mWord, wordProperty.mShortcutTargets,
                         wordProperty.mIsNotAWord);
             } else {
-                fusionDict.add(wordProperty.mWord, probability,
+                fusionDict.add(wordProperty.mWord, wordProperty.mProbabilityInfo,
                         wordProperty.mShortcutTargets, wordProperty.mIsNotAWord);
             }
         }
@@ -99,7 +96,7 @@ public class Ver4DictDecoder extends AbstractDictDecoder {
             }
             final String word0 = wordProperty.mWord;
             for (final WeightedString bigram : wordProperty.mBigrams) {
-                fusionDict.setBigram(word0, bigram.mWord, bigram.getProbability());
+                fusionDict.setBigram(word0, bigram.mWord, bigram.mProbabilityInfo);
             }
         }
         return fusionDict;
