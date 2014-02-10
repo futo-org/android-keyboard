@@ -43,7 +43,7 @@ void Ver4PatriciaTriePolicy::createAndGetAllChildDicNodes(const DicNode *const d
     if (!dicNode->hasChildren()) {
         return;
     }
-    DynamicPtReadingHelper readingHelper(mDictBuffer, &mNodeReader);
+    DynamicPtReadingHelper readingHelper(mDictBuffer, &mNodeReader, &mPtNodeArrayReader);
     readingHelper.initWithPtNodeArrayPos(dicNode->getChildrenPtNodeArrayPos());
     while (!readingHelper.isEnd()) {
         const PtNodeParams ptNodeParams = readingHelper.getPtNodeParams();
@@ -70,7 +70,7 @@ void Ver4PatriciaTriePolicy::createAndGetAllChildDicNodes(const DicNode *const d
 int Ver4PatriciaTriePolicy::getCodePointsAndProbabilityAndReturnCodePointCount(
         const int ptNodePos, const int maxCodePointCount, int *const outCodePoints,
         int *const outUnigramProbability) const {
-    DynamicPtReadingHelper readingHelper(mDictBuffer, &mNodeReader);
+    DynamicPtReadingHelper readingHelper(mDictBuffer, &mNodeReader, &mPtNodeArrayReader);
     readingHelper.initWithPtNodePos(ptNodePos);
     return readingHelper.getCodePointsAndProbabilityAndReturnCodePointCount(
             maxCodePointCount, outCodePoints, outUnigramProbability);
@@ -78,7 +78,7 @@ int Ver4PatriciaTriePolicy::getCodePointsAndProbabilityAndReturnCodePointCount(
 
 int Ver4PatriciaTriePolicy::getTerminalPtNodePositionOfWord(const int *const inWord,
         const int length, const bool forceLowerCaseSearch) const {
-    DynamicPtReadingHelper readingHelper(mDictBuffer, &mNodeReader);
+    DynamicPtReadingHelper readingHelper(mDictBuffer, &mNodeReader, &mPtNodeArrayReader);
     readingHelper.initWithPtNodeArrayPos(getRootPosition());
     return readingHelper.getTerminalPtNodePositionOfWord(inWord, length, forceLowerCaseSearch);
 }
@@ -158,7 +158,7 @@ bool Ver4PatriciaTriePolicy::addUnigramWord(const int *const word, const int len
                 shortcutLength);
         return false;
     }
-    DynamicPtReadingHelper readingHelper(mDictBuffer, &mNodeReader);
+    DynamicPtReadingHelper readingHelper(mDictBuffer, &mNodeReader, &mPtNodeArrayReader);
     readingHelper.initWithPtNodeArrayPos(getRootPosition());
     bool addedNewUnigram = false;
     if (mUpdatingHelper.addUnigramWord(&readingHelper, word, length, probability, isNotAWord,
@@ -397,7 +397,7 @@ int Ver4PatriciaTriePolicy::getNextWordAndNextToken(const int token, int *const 
         mTerminalPtNodePositionsForIteratingWords.clear();
         DynamicPtReadingHelper::TraversePolicyToGetAllTerminalPtNodePositions traversePolicy(
                 &mTerminalPtNodePositionsForIteratingWords);
-        DynamicPtReadingHelper readingHelper(mDictBuffer, &mNodeReader);
+        DynamicPtReadingHelper readingHelper(mDictBuffer, &mNodeReader, &mPtNodeArrayReader);
         readingHelper.initWithPtNodeArrayPos(getRootPosition());
         readingHelper.traverseAllPtNodesInPostorderDepthFirstManner(&traversePolicy);
     }

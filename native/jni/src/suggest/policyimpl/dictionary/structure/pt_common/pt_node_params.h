@@ -205,9 +205,7 @@ class PtNodeParams {
 
  private:
     // This class have a public copy constructor to be used as a return value.
-
-    // Disallowing the assignment operator.
-    PtNodeParams &operator=(PtNodeParams &ptNodeParams);
+    DISALLOW_ASSIGNMENT_OPERATOR(PtNodeParams);
 
     const int mHeadPos;
     const PatriciaTrieReadingUtils::NodeFlags mFlags;

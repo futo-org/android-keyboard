@@ -29,6 +29,7 @@
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_patricia_trie_node_reader.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_patricia_trie_node_writer.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_patricia_trie_writing_helper.h"
+#include "suggest/policyimpl/dictionary/structure/v4/ver4_pt_node_array_reader.h"
 #include "suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer.h"
 
 namespace latinime {
@@ -47,8 +48,9 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
               mShortcutPolicy(mBuffers.get()->getMutableShortcutDictContent(),
                       mBuffers.get()->getTerminalPositionLookupTable()),
               mNodeReader(mDictBuffer, mBuffers.get()->getProbabilityDictContent()),
-              mNodeWriter(mDictBuffer, mBuffers.get(), &mNodeReader, &mBigramPolicy,
-                      &mShortcutPolicy),
+              mPtNodeArrayReader(mDictBuffer),
+              mNodeWriter(mDictBuffer, mBuffers.get(), &mNodeReader, &mPtNodeArrayReader,
+                      &mBigramPolicy, &mShortcutPolicy),
               mUpdatingHelper(mDictBuffer, &mNodeReader, &mNodeWriter),
               mWritingHelper(mBuffers.get()),
               mUnigramCount(mHeaderPolicy->getUnigramCount()),
@@ -132,6 +134,7 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     Ver4BigramListPolicy mBigramPolicy;
     Ver4ShortcutListPolicy mShortcutPolicy;
     Ver4PatriciaTrieNodeReader mNodeReader;
+    Ver4PtNodeArrayReader mPtNodeArrayReader;
     Ver4PatriciaTrieNodeWriter mNodeWriter;
     DynamicPtUpdatingHelper mUpdatingHelper;
     Ver4PatriciaTrieWritingHelper mWritingHelper;
