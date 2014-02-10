@@ -67,7 +67,8 @@ public final class ResourceUtils {
         sBuildKeyValuesDebugString = "[" + TextUtils.join(" ", keyValuePairs) + "]";
     }
 
-    public static String getDeviceOverrideValue(final Resources res, final int overrideResId) {
+    public static String getDeviceOverrideValue(final Resources res, final int overrideResId,
+            final String defaultValue) {
         final int orientation = res.getConfiguration().orientation;
         final String key = overrideResId + "-" + orientation;
         if (sDeviceOverrideValueMap.containsKey(key)) {
@@ -86,23 +87,6 @@ public final class ResourceUtils {
             return overrideValue;
         }
 
-        String defaultValue = null;
-        try {
-            defaultValue = findDefaultConstant(overrideArray);
-            // The defaultValue might be an empty string.
-            if (defaultValue == null) {
-                Log.w(TAG, "Couldn't find override value nor default value:"
-                        + " resource="+ res.getResourceEntryName(overrideResId)
-                        + " build=" + sBuildKeyValuesDebugString);
-            } else {
-                Log.i(TAG, "Found default value:"
-                        + " resource="+ res.getResourceEntryName(overrideResId)
-                        + " build=" + sBuildKeyValuesDebugString
-                        + " default=" + defaultValue);
-            }
-        } catch (final DeviceOverridePatternSyntaxError e) {
-            Log.w(TAG, "Syntax error, ignored", e);
-        }
         sDeviceOverrideValueMap.put(key, defaultValue);
         return defaultValue;
     }
@@ -152,8 +136,7 @@ public final class ResourceUtils {
             }
             final String condition = conditionConstant.substring(0, posComma);
             if (condition.isEmpty()) {
-                // Default condition. The default condition should be searched by
-                // {@link #findConstantForDefault(String[])}.
+                Log.w(TAG, "Array element has no condition: " + conditionConstant);
                 continue;
             }
             try {
@@ -199,24 +182,6 @@ public final class ResourceUtils {
         return matchedAll;
     }
 
-    @UsedForTesting
-    static String findDefaultConstant(final String[] conditionConstantArray)
-            throws DeviceOverridePatternSyntaxError {
-        if (conditionConstantArray == null) {
-            return null;
-        }
-        for (final String condition : conditionConstantArray) {
-            final int posComma = condition.indexOf(',');
-            if (posComma < 0) {
-                throw new DeviceOverridePatternSyntaxError("Array element has no comma", condition);
-            }
-            if (posComma == 0) { // condition is empty.
-                return condition.substring(posComma + 1);
-            }
-        }
-        return null;
-    }
-
     public static int getDefaultKeyboardWidth(final Resources res) {
         final DisplayMetrics dm = res.getDisplayMetrics();
         return dm.widthPixels;
@@ -224,12 +189,13 @@ public final class ResourceUtils {
 
     public static int getDefaultKeyboardHeight(final Resources res) {
         final DisplayMetrics dm = res.getDisplayMetrics();
-        final String keyboardHeightString = getDeviceOverrideValue(res, R.array.keyboard_heights);
+        final String keyboardHeightInDp = getDeviceOverrideValue(
+                res, R.array.keyboard_heights, null /* defaultValue */);
         final float keyboardHeight;
-        if (TextUtils.isEmpty(keyboardHeightString)) {
+        if (TextUtils.isEmpty(keyboardHeightInDp)) {
             keyboardHeight = res.getDimension(R.dimen.config_default_keyboard_height);
         } else {
-            keyboardHeight = Float.parseFloat(keyboardHeightString) * dm.density;
+            keyboardHeight = Float.parseFloat(keyboardHeightInDp) * dm.density;
         }
         final float maxKeyboardHeight = res.getFraction(
                 R.fraction.config_max_keyboard_height, dm.heightPixels, dm.heightPixels);

@@ -215,8 +215,8 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
 
         final Resources res = mainKeyboardViewAttr.getResources();
         sNeedsPhantomSuddenMoveEventHack = Boolean.parseBoolean(
-                ResourceUtils.getDeviceOverrideValue(
-                        res, R.array.phantom_sudden_move_event_device_list));
+                ResourceUtils.getDeviceOverrideValue(res,
+                        R.array.phantom_sudden_move_event_device_list, Boolean.FALSE.toString()));
         BogusMoveEventDetector.init(res);
 
         sTimerProxy = timerProxy;
