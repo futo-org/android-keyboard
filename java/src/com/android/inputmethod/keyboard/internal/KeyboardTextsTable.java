@@ -78,11 +78,11 @@ public final class KeyboardTextsTable {
         /*  11:15 */ "more_keys_for_y",
         /*  12:13 */ "more_keys_for_d",
         /*  13:12 */ "more_keys_for_z",
-        /*  14:12 */ "single_angle_quotes",
-        /*  15:12 */ "double_angle_quotes",
-        /*  16:10 */ "more_keys_for_t",
-        /*  17:10 */ "more_keys_for_l",
-        /*  18: 9 */ "more_keys_for_g",
+        /*  14:10 */ "more_keys_for_t",
+        /*  15:10 */ "more_keys_for_l",
+        /*  16: 9 */ "more_keys_for_g",
+        /*  17: 9 */ "single_angle_quotes",
+        /*  18: 9 */ "double_angle_quotes",
         /*  19: 9 */ "keylabel_for_currency",
         /*  20: 8 */ "more_keys_for_r",
         /*  21: 6 */ "more_keys_for_k",
@@ -90,14 +90,14 @@ public final class KeyboardTextsTable {
         /*  23: 6 */ "keylabel_for_nordic_row2_10",
         /*  24: 6 */ "keylabel_for_nordic_row2_11",
         /*  25: 6 */ "more_keys_for_cyrillic_ie",
-        /*  26: 6 */ "more_keys_for_punctuation",
-        /*  27: 5 */ "more_keys_for_nordic_row2_10",
-        /*  28: 5 */ "keylabel_for_east_slavic_row1_9",
-        /*  29: 5 */ "keylabel_for_east_slavic_row1_12",
-        /*  30: 5 */ "keylabel_for_east_slavic_row2_1",
-        /*  31: 5 */ "keylabel_for_east_slavic_row2_11",
-        /*  32: 5 */ "keylabel_for_east_slavic_row3_5",
-        /*  33: 5 */ "more_keys_for_cyrillic_soft_sign",
+        /*  26: 5 */ "more_keys_for_nordic_row2_10",
+        /*  27: 5 */ "keylabel_for_east_slavic_row1_9",
+        /*  28: 5 */ "keylabel_for_east_slavic_row1_12",
+        /*  29: 5 */ "keylabel_for_east_slavic_row2_1",
+        /*  30: 5 */ "keylabel_for_east_slavic_row2_11",
+        /*  31: 5 */ "keylabel_for_east_slavic_row3_5",
+        /*  32: 5 */ "more_keys_for_cyrillic_soft_sign",
+        /*  33: 5 */ "more_keys_for_punctuation",
         /*  34: 4 */ "more_keys_for_nordic_row2_11",
         /*  35: 4 */ "keylabel_for_symbols_1",
         /*  36: 4 */ "keylabel_for_symbols_2",
@@ -122,104 +122,120 @@ public final class KeyboardTextsTable {
         /*  55: 4 */ "additional_more_keys_for_symbols_9",
         /*  56: 4 */ "additional_more_keys_for_symbols_0",
         /*  57: 3 */ "more_keys_for_star",
-        /*  58: 3 */ "more_keys_for_left_parenthesis",
-        /*  59: 3 */ "more_keys_for_right_parenthesis",
-        /*  60: 3 */ "more_keys_for_less_than",
-        /*  61: 3 */ "more_keys_for_greater_than",
-        /*  62: 3 */ "keylabel_for_tablet_comma",
-        /*  63: 3 */ "more_keys_for_tablet_period",
-        /*  64: 3 */ "more_keys_for_question",
-        /*  65: 2 */ "more_keys_for_h",
-        /*  66: 2 */ "more_keys_for_w",
-        /*  67: 2 */ "more_keys_for_cyrillic_u",
-        /*  68: 2 */ "more_keys_for_cyrillic_en",
-        /*  69: 2 */ "more_keys_for_cyrillic_ghe",
-        /*  70: 2 */ "more_keys_for_east_slavic_row2_1",
-        /*  71: 2 */ "more_keys_for_cyrillic_o",
-        /*  72: 2 */ "keylabel_for_south_slavic_row1_6",
-        /*  73: 2 */ "keylabel_for_south_slavic_row2_11",
-        /*  74: 2 */ "keylabel_for_south_slavic_row3_1",
-        /*  75: 2 */ "keylabel_for_south_slavic_row3_8",
-        /*  76: 2 */ "more_keys_for_cyrillic_i",
-        /*  77: 2 */ "keylabel_for_swiss_row1_11",
-        /*  78: 2 */ "keylabel_for_swiss_row2_10",
-        /*  79: 2 */ "keylabel_for_swiss_row2_11",
-        /*  80: 2 */ "more_keys_for_swiss_row1_11",
-        /*  81: 2 */ "more_keys_for_swiss_row2_10",
-        /*  82: 2 */ "more_keys_for_swiss_row2_11",
-        /*  83: 2 */ "more_keys_for_tablet_punctuation",
-        /*  84: 2 */ "keylabel_for_spanish_row2_10",
-        /*  85: 2 */ "more_keys_for_bullet",
-        /*  86: 2 */ "more_keys_for_arabic_diacritics",
-        /*  87: 2 */ "keylabel_for_comma",
-        /*  88: 2 */ "more_keys_for_comma",
-        /*  89: 2 */ "keyhintlabel_for_tablet_comma",
-        /*  90: 2 */ "more_keys_for_tablet_comma",
-        /*  91: 2 */ "keyhintlabel_for_period",
-        /*  92: 2 */ "more_keys_for_period",
-        /*  93: 2 */ "keyhintlabel_for_tablet_period",
-        /*  94: 2 */ "keylabel_for_symbols_question",
-        /*  95: 2 */ "keylabel_for_symbols_semicolon",
-        /*  96: 2 */ "keylabel_for_symbols_percent",
-        /*  97: 2 */ "more_keys_for_symbols_semicolon",
-        /*  98: 2 */ "more_keys_for_symbols_percent",
-        /*  99: 1 */ "more_keys_for_v",
-        /* 100: 1 */ "more_keys_for_j",
-        /* 101: 1 */ "more_keys_for_cyrillic_ka",
-        /* 102: 1 */ "more_keys_for_cyrillic_a",
-        /* 103: 1 */ "more_keys_for_east_slavic_row2_11",
-        /* 104: 1 */ "more_keys_for_currency_dollar",
-        /* 105: 1 */ "more_keys_for_plus",
-        /* 106: 1 */ "keylabel_for_period",
-        /* 107: 1 */ "keylabel_for_tablet_period",
-        /* 108: 1 */ "more_keys_for_exclamation",
-        /* 109: 1 */ "more_keys_for_q",
-        /* 110: 1 */ "more_keys_for_x",
-        /* 111: 1 */ "keylabel_for_q",
-        /* 112: 1 */ "keylabel_for_w",
-        /* 113: 1 */ "keylabel_for_y",
-        /* 114: 1 */ "keylabel_for_x",
-        /* 115: 0 */ "more_keys_for_currency",
-        /* 116: 0 */ "more_keys_for_symbols_1",
-        /* 117: 0 */ "more_keys_for_symbols_2",
-        /* 118: 0 */ "more_keys_for_symbols_3",
-        /* 119: 0 */ "more_keys_for_symbols_4",
-        /* 120: 0 */ "more_keys_for_symbols_5",
-        /* 121: 0 */ "more_keys_for_symbols_6",
-        /* 122: 0 */ "more_keys_for_symbols_7",
-        /* 123: 0 */ "more_keys_for_symbols_8",
-        /* 124: 0 */ "more_keys_for_symbols_9",
-        /* 125: 0 */ "more_keys_for_symbols_0",
-        /* 126: 0 */ "more_keys_for_am_pm",
-        /* 127: 0 */ "settings_as_more_key",
-        /* 128: 0 */ "shortcut_as_more_key",
-        /* 129: 0 */ "action_next_as_more_key",
-        /* 130: 0 */ "action_previous_as_more_key",
-        /* 131: 0 */ "label_to_more_symbol_key",
-        /* 132: 0 */ "label_to_more_symbol_for_tablet_key",
-        /* 133: 0 */ "label_tab_key",
-        /* 134: 0 */ "label_to_phone_numeric_key",
-        /* 135: 0 */ "label_to_phone_symbols_key",
-        /* 136: 0 */ "label_time_am",
-        /* 137: 0 */ "label_time_pm",
-        /* 138: 0 */ "keylabel_for_popular_domain",
-        /* 139: 0 */ "more_keys_for_popular_domain",
-        /* 140: 0 */ "single_laqm_raqm",
-        /* 141: 0 */ "single_laqm_raqm_rtl",
-        /* 142: 0 */ "single_raqm_laqm",
-        /* 143: 0 */ "double_laqm_raqm",
-        /* 144: 0 */ "double_laqm_raqm_rtl",
-        /* 145: 0 */ "double_raqm_laqm",
-        /* 146: 0 */ "single_lqm_rqm",
-        /* 147: 0 */ "single_9qm_lqm",
-        /* 148: 0 */ "single_9qm_rqm",
-        /* 149: 0 */ "double_lqm_rqm",
-        /* 150: 0 */ "double_9qm_lqm",
-        /* 151: 0 */ "double_9qm_rqm",
-        /* 152: 0 */ "more_keys_for_single_quote",
-        /* 153: 0 */ "more_keys_for_double_quote",
-        /* 154: 0 */ "more_keys_for_tablet_double_quote",
-        /* 155: 0 */ "emoji_key_as_more_key",
+        /*  58: 3 */ "keyspec_left_parenthesis",
+        /*  59: 3 */ "keyspec_right_parenthesis",
+        /*  60: 3 */ "keyspec_left_square_bracket",
+        /*  61: 3 */ "keyspec_right_square_bracket",
+        /*  62: 3 */ "keyspec_left_curly_bracket",
+        /*  63: 3 */ "keyspec_right_curly_bracket",
+        /*  64: 3 */ "keyspec_less_than",
+        /*  65: 3 */ "keyspec_greater_than",
+        /*  66: 3 */ "keyspec_less_than_equal",
+        /*  67: 3 */ "keyspec_greater_than_equal",
+        /*  68: 3 */ "keyspec_left_double_angle_quote",
+        /*  69: 3 */ "keyspec_right_double_angle_quote",
+        /*  70: 3 */ "keyspec_left_single_angle_quote",
+        /*  71: 3 */ "keyspec_right_single_angle_quote",
+        /*  72: 3 */ "keylabel_for_tablet_comma",
+        /*  73: 3 */ "more_keys_for_tablet_period",
+        /*  74: 3 */ "more_keys_for_question",
+        /*  75: 2 */ "more_keys_for_h",
+        /*  76: 2 */ "more_keys_for_w",
+        /*  77: 2 */ "more_keys_for_cyrillic_u",
+        /*  78: 2 */ "more_keys_for_cyrillic_en",
+        /*  79: 2 */ "more_keys_for_cyrillic_ghe",
+        /*  80: 2 */ "more_keys_for_east_slavic_row2_1",
+        /*  81: 2 */ "more_keys_for_cyrillic_o",
+        /*  82: 2 */ "keylabel_for_south_slavic_row1_6",
+        /*  83: 2 */ "keylabel_for_south_slavic_row2_11",
+        /*  84: 2 */ "keylabel_for_south_slavic_row3_1",
+        /*  85: 2 */ "keylabel_for_south_slavic_row3_8",
+        /*  86: 2 */ "more_keys_for_cyrillic_i",
+        /*  87: 2 */ "keylabel_for_swiss_row1_11",
+        /*  88: 2 */ "keylabel_for_swiss_row2_10",
+        /*  89: 2 */ "keylabel_for_swiss_row2_11",
+        /*  90: 2 */ "more_keys_for_swiss_row1_11",
+        /*  91: 2 */ "more_keys_for_swiss_row2_10",
+        /*  92: 2 */ "more_keys_for_swiss_row2_11",
+        /*  93: 2 */ "keylabel_for_spanish_row2_10",
+        /*  94: 2 */ "more_keys_for_bullet",
+        /*  95: 2 */ "more_keys_for_left_parenthesis",
+        /*  96: 2 */ "more_keys_for_right_parenthesis",
+        /*  97: 2 */ "more_keys_for_arabic_diacritics",
+        /*  98: 2 */ "keylabel_for_comma",
+        /*  99: 2 */ "more_keys_for_comma",
+        /* 100: 2 */ "keyhintlabel_for_tablet_comma",
+        /* 101: 2 */ "more_keys_for_tablet_comma",
+        /* 102: 2 */ "keyhintlabel_for_period",
+        /* 103: 2 */ "more_keys_for_period",
+        /* 104: 2 */ "keyhintlabel_for_tablet_period",
+        /* 105: 2 */ "keylabel_for_symbols_question",
+        /* 106: 2 */ "keylabel_for_symbols_semicolon",
+        /* 107: 2 */ "keylabel_for_symbols_percent",
+        /* 108: 2 */ "more_keys_for_symbols_semicolon",
+        /* 109: 2 */ "more_keys_for_symbols_percent",
+        /* 110: 1 */ "more_keys_for_v",
+        /* 111: 1 */ "more_keys_for_j",
+        /* 112: 1 */ "more_keys_for_cyrillic_ka",
+        /* 113: 1 */ "more_keys_for_cyrillic_a",
+        /* 114: 1 */ "more_keys_for_east_slavic_row2_11",
+        /* 115: 1 */ "more_keys_for_currency_dollar",
+        /* 116: 1 */ "more_keys_for_tablet_punctuation",
+        /* 117: 1 */ "more_keys_for_plus",
+        /* 118: 1 */ "more_keys_for_less_than",
+        /* 119: 1 */ "more_keys_for_greater_than",
+        /* 120: 1 */ "keylabel_for_period",
+        /* 121: 1 */ "keylabel_for_tablet_period",
+        /* 122: 1 */ "more_keys_for_exclamation",
+        /* 123: 1 */ "more_keys_for_q",
+        /* 124: 1 */ "more_keys_for_x",
+        /* 125: 1 */ "keylabel_for_q",
+        /* 126: 1 */ "keylabel_for_w",
+        /* 127: 1 */ "keylabel_for_y",
+        /* 128: 1 */ "keylabel_for_x",
+        /* 129: 0 */ "more_keys_for_currency",
+        /* 130: 0 */ "more_keys_for_symbols_1",
+        /* 131: 0 */ "more_keys_for_symbols_2",
+        /* 132: 0 */ "more_keys_for_symbols_3",
+        /* 133: 0 */ "more_keys_for_symbols_4",
+        /* 134: 0 */ "more_keys_for_symbols_5",
+        /* 135: 0 */ "more_keys_for_symbols_6",
+        /* 136: 0 */ "more_keys_for_symbols_7",
+        /* 137: 0 */ "more_keys_for_symbols_8",
+        /* 138: 0 */ "more_keys_for_symbols_9",
+        /* 139: 0 */ "more_keys_for_symbols_0",
+        /* 140: 0 */ "more_keys_for_am_pm",
+        /* 141: 0 */ "settings_as_more_key",
+        /* 142: 0 */ "shortcut_as_more_key",
+        /* 143: 0 */ "action_next_as_more_key",
+        /* 144: 0 */ "action_previous_as_more_key",
+        /* 145: 0 */ "label_to_more_symbol_key",
+        /* 146: 0 */ "label_to_more_symbol_for_tablet_key",
+        /* 147: 0 */ "label_tab_key",
+        /* 148: 0 */ "label_to_phone_numeric_key",
+        /* 149: 0 */ "label_to_phone_symbols_key",
+        /* 150: 0 */ "label_time_am",
+        /* 151: 0 */ "label_time_pm",
+        /* 152: 0 */ "keylabel_for_popular_domain",
+        /* 153: 0 */ "more_keys_for_popular_domain",
+        /* 154: 0 */ "keyspecs_for_left_parenthesis_more_keys",
+        /* 155: 0 */ "keyspecs_for_right_parenthesis_more_keys",
+        /* 156: 0 */ "single_laqm_raqm",
+        /* 157: 0 */ "single_raqm_laqm",
+        /* 158: 0 */ "double_laqm_raqm",
+        /* 159: 0 */ "double_raqm_laqm",
+        /* 160: 0 */ "single_lqm_rqm",
+        /* 161: 0 */ "single_9qm_lqm",
+        /* 162: 0 */ "single_9qm_rqm",
+        /* 163: 0 */ "single_rqm_9qm",
+        /* 164: 0 */ "double_lqm_rqm",
+        /* 165: 0 */ "double_9qm_lqm",
+        /* 166: 0 */ "double_9qm_rqm",
+        /* 167: 0 */ "double_rqm_9qm",
+        /* 168: 0 */ "more_keys_for_single_quote",
+        /* 169: 0 */ "more_keys_for_double_quote",
+        /* 170: 0 */ "more_keys_for_tablet_double_quote",
+        /* 171: 0 */ "emoji_key_as_more_key",
     };
 
     private static final String EMPTY = "";
@@ -237,21 +253,16 @@ public final class KeyboardTextsTable {
         // Label for "switch to alphabetic" key.
         /* label_to_alpha_key */ "ABC",
         /* more_keys_for_y ~ */
-        EMPTY, EMPTY, EMPTY,
-        /* ~ more_keys_for_z */
+        EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY,
+        /* ~ more_keys_for_g */
         /* single_angle_quotes */ "!text/single_laqm_raqm",
         /* double_angle_quotes */ "!text/double_laqm_raqm",
-        /* more_keys_for_t ~ */
-        EMPTY, EMPTY, EMPTY,
-        /* ~ more_keys_for_g */
         /* keylabel_for_currency */ "$",
         /* more_keys_for_r ~ */
-        EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY,
-        /* ~ more_keys_for_cyrillic_ie */
-        /* more_keys_for_punctuation */ "!fixedColumnOrder!8,;,/,(,),#,!,\\,,?,&,\\%,+,\",-,:,',@",
-        /* more_keys_for_nordic_row2_10 ~ */
-        EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY,
-        /* ~ more_keys_for_nordic_row2_11 */
+        EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY,
+        /* ~ more_keys_for_cyrillic_soft_sign */
+        /* more_keys_for_punctuation */ "!fixedColumnOrder!8,;,/,!text/keyspec_left_parenthesis,!text/keyspec_right_parenthesis,#,!,\\,,?,&,\\%,+,\",-,:,',@",
+        /* more_keys_for_nordic_row2_11 */ EMPTY,
         /* keylabel_for_symbols_1 */ "1",
         /* keylabel_for_symbols_2 */ "2",
         /* keylabel_for_symbols_3 */ "3",
@@ -276,16 +287,26 @@ public final class KeyboardTextsTable {
         /* more_keys_for_star */ "\u2020,\u2021,\u2605",
         // The all letters need to be mirrored are found at
         // http://www.unicode.org/Public/6.1.0/ucd/BidiMirroring.txt
-        /* more_keys_for_left_parenthesis */ "!fixedColumnOrder!3,<,{,[",
-        /* more_keys_for_right_parenthesis */ "!fixedColumnOrder!3,>,},]",
         // U+2039: "‹" SINGLE LEFT-POINTING ANGLE QUOTATION MARK
         // U+203A: "›" SINGLE RIGHT-POINTING ANGLE QUOTATION MARK
         // U+2264: "≤" LESS-THAN OR EQUAL TO
         // U+2265: "≥" GREATER-THAN EQUAL TO
         // U+00AB: "«" LEFT-POINTING DOUBLE ANGLE QUOTATION MARK
         // U+00BB: "»" RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK
-        /* more_keys_for_less_than */ "!fixedColumnOrder!3,\u2039,\u2264,\u00AB",
-        /* more_keys_for_greater_than */ "!fixedColumnOrder!3,\u203A,\u2265,\u00BB",
+        /* keyspec_left_parenthesis */ "(",
+        /* keyspec_right_parenthesis */ ")",
+        /* keyspec_left_square_bracket */ "[",
+        /* keyspec_right_square_bracket */ "]",
+        /* keyspec_left_curly_bracket */ "{",
+        /* keyspec_right_curly_bracket */ "}",
+        /* keyspec_less_than */ "<",
+        /* keyspec_greater_than */ ">",
+        /* keyspec_less_than_equal */ "\u2264",
+        /* keyspec_greater_than_equal */ "\u2265",
+        /* keyspec_left_double_angle_quote */ "\u00AB",
+        /* keyspec_right_double_angle_quote */ "\u00BB",
+        /* keyspec_left_single_angle_quote */ "\u2039",
+        /* keyspec_right_single_angle_quote */ "\u203A",
         /* keylabel_for_tablet_comma */ ",",
         /* more_keys_for_tablet_period */ "!text/more_keys_for_tablet_punctuation",
         // U+00BF: "¿" INVERTED QUESTION MARK
@@ -294,7 +315,6 @@ public final class KeyboardTextsTable {
         EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY,
         EMPTY, EMPTY, EMPTY, EMPTY, EMPTY,
         /* ~ more_keys_for_swiss_row2_11 */
-        /* more_keys_for_tablet_punctuation */ "!fixedColumnOrder!7,;,/,(,),#,',\\,,&,\\%,+,\",-,:,@",
         // U+00F1: "ñ" LATIN SMALL LETTER N WITH TILDE
         /* keylabel_for_spanish_row2_10 */ "\u00F1",
         // U+266A: "♪" EIGHTH NOTE
@@ -303,6 +323,8 @@ public final class KeyboardTextsTable {
         // U+2666: "♦" BLACK DIAMOND SUIT
         // U+2663: "♣" BLACK CLUB SUIT
         /* more_keys_for_bullet */ "\u266A,\u2665,\u2660,\u2666,\u2663",
+        /* more_keys_for_left_parenthesis */ "!fixedColumnOrder!3,!text/keyspecs_for_left_parenthesis_more_keys",
+        /* more_keys_for_right_parenthesis */ "!fixedColumnOrder!3,!text/keyspecs_for_right_parenthesis_more_keys",
         /* more_keys_for_arabic_diacritics */ EMPTY,
         // Comma key
         /* keylabel_for_comma */ ",",
@@ -326,8 +348,11 @@ public final class KeyboardTextsTable {
         // U+00A5: "¥" YEN SIGN
         // U+20B1: "₱" PESO SIGN
         /* more_keys_for_currency_dollar */ "\u00A2,\u00A3,\u20AC,\u00A5,\u20B1",
+        /* more_keys_for_tablet_punctuation */ "!fixedColumnOrder!7,;,/,!text/keyspec_left_parenthesis,!text/keyspec_right_parenthesis,#,',\\,,&,\\%,+,\",-,:,@",
         // U+00B1: "±" PLUS-MINUS SIGN
         /* more_keys_for_plus */ "\u00B1",
+        /* more_keys_for_less_than */ "!fixedColumnOrder!3,!text/keyspec_left_single_angle_quote,!text/keyspec_less_than_equal,!text/keyspec_left_double_angle_quote",
+        /* more_keys_for_greater_than */ "!fixedColumnOrder!3,!text/keyspec_right_single_angle_quote,!text/keyspec_greater_than_equal,!text/keyspec_right_double_angle_quote",
         // Period key
         /* keylabel_for_period */ ".",
         /* keylabel_for_tablet_period */ ".",
@@ -389,10 +414,8 @@ public final class KeyboardTextsTable {
         /* keylabel_for_popular_domain */ ".com",
         // popular web domains for the locale - most popular, displayed on the keyboard
         /* more_keys_for_popular_domain */ "!hasLabels!,.net,.org,.gov,.edu",
-        // U+2039: "‹" SINGLE LEFT-POINTING ANGLE QUOTATION MARK
-        // U+203A: "›" SINGLE RIGHT-POINTING ANGLE QUOTATION MARK
-        // U+00AB: "«" LEFT-POINTING DOUBLE ANGLE QUOTATION MARK
-        // U+00BB: "»" RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK
+        /* keyspecs_for_left_parenthesis_more_keys */ "!text/keyspec_less_than,!text/keyspec_left_curly_bracket,!text/keyspec_left_square_bracket",
+        /* keyspecs_for_right_parenthesis_more_keys */ "!text/keyspec_greater_than,!text/keyspec_right_curly_bracket,!text/keyspec_right_square_bracket",
         // The following characters don't need BIDI mirroring.
         // U+2018: "‘" LEFT SINGLE QUOTATION MARK
         // U+2019: "’" RIGHT SINGLE QUOTATION MARK
@@ -403,28 +426,27 @@ public final class KeyboardTextsTable {
         // Abbreviations are:
         // laqm: LEFT-POINTING ANGLE QUOTATION MARK
         // raqm: RIGHT-POINTING ANGLE QUOTATION MARK
-        // rtl: Right-To-Left script order
         // lqm: LEFT QUOTATION MARK
         // rqm: RIGHT QUOTATION MARK
         // 9qm: LOW-9 QUOTATION MARK
         // The following each quotation mark pair consist of
         // <opening quotation mark>, <closing quotation mark>
         // and is named after (single|double)_<opening quotation mark>_<closing quotation mark>.
-        /* single_laqm_raqm */ "\u2039,\u203A",
-        /* single_laqm_raqm_rtl */ "\u2039|\u203A,\u203A|\u2039",
-        /* single_raqm_laqm */ "\u203A,\u2039",
-        /* double_laqm_raqm */ "\u00AB,\u00BB",
-        /* double_laqm_raqm_rtl */ "\u00AB|\u00BB,\u00BB|\u00AB",
-        /* double_raqm_laqm */ "\u00BB,\u00AB",
+        /* single_laqm_raqm */ "!text/keyspec_left_single_angle_quote,!text/keyspec_right_single_angle_quote",
+        /* single_raqm_laqm */ "!text/keyspec_right_single_angle_quote,!text/keyspec_left_single_angle_quote",
+        /* double_laqm_raqm */ "!text/keyspec_left_double_angle_quote,!text/keyspec_right_double_angle_quote",
+        /* double_raqm_laqm */ "!text/keyspec_right_double_angle_quote,!text/keyspec_left_double_angle_quote",
         // The following each quotation mark triplet consists of
         // <another quotation mark>, <opening quotation mark>, <closing quotation mark>
         // and is named after (single|double)_<opening quotation mark>_<closing quotation mark>.
         /* single_lqm_rqm */ "\u201A,\u2018,\u2019",
         /* single_9qm_lqm */ "\u2019,\u201A,\u2018",
         /* single_9qm_rqm */ "\u2018,\u201A,\u2019",
+        /* single_rqm_9qm */ "\u2018,\u2019,\u201A",
         /* double_lqm_rqm */ "\u201E,\u201C,\u201D",
         /* double_9qm_lqm */ "\u201D,\u201E,\u201C",
         /* double_9qm_rqm */ "\u201C,\u201E,\u201D",
+        /* double_rqm_9qm */ "\u201C,\u201D,\u201E",
         /* more_keys_for_single_quote */ "!fixedColumnOrder!5,!text/single_quotes,!text/single_angle_quotes",
         /* more_keys_for_double_quote */ "!fixedColumnOrder!5,!text/double_quotes,!text/double_angle_quotes",
         /* more_keys_for_tablet_double_quote */ "!fixedColumnOrder!6,!text/double_quotes,!text/single_quotes,!text/double_angle_quotes,!text/single_angle_quotes",
@@ -498,17 +520,11 @@ public final class KeyboardTextsTable {
         // U+062C: "پ" ARABIC LETTER PEH
         /* label_to_alpha_key */ "\u0623\u200C\u0628\u200C\u062C",
         /* more_keys_for_y ~ */
-        null, null, null,
-        /* ~ more_keys_for_z */
-        /* single_angle_quotes */ "!text/single_laqm_raqm_rtl",
-        /* double_angle_quotes */ "!text/double_laqm_raqm_rtl",
-        /* more_keys_for_t ~ */
-        null, null, null, null, null, null, null, null, null, null,
-        /* ~ more_keys_for_cyrillic_ie */
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null,
+        /* ~ more_keys_for_cyrillic_soft_sign */
         /* more_keys_for_punctuation */ "!fixedColumnOrder!8,\",\',#,-,:,!,\u060C,\u061F,@,&,\\%,+,\u061B,/,(|),)|(",
-        /* more_keys_for_nordic_row2_10 ~ */
-        null, null, null, null, null, null, null, null,
-        /* ~ more_keys_for_nordic_row2_11 */
+        /* more_keys_for_nordic_row2_11 */ null,
         // U+0661: "١" ARABIC-INDIC DIGIT ONE
         /* keylabel_for_symbols_1 */ "\u0661",
         // U+0662: "٢" ARABIC-INDIC DIGIT TWO
@@ -550,20 +566,26 @@ public final class KeyboardTextsTable {
         // U+2605: "★" BLACK STAR
         // U+066D: "٭" ARABIC FIVE POINTED STAR
         /* more_keys_for_star */ "\u2605,\u066D",
-        // The all letters need to be mirrored are found at
-        // http://www.unicode.org/Public/6.1.0/ucd/BidiMirroring.txt
-        // U+FD3E: "﴾" ORNATE LEFT PARENTHESIS
-        // U+FD3F: "﴿" ORNATE RIGHT PARENTHESIS
-        /* more_keys_for_left_parenthesis */ "!fixedColumnOrder!4,\uFD3E|\uFD3F,<|>,{|},[|]",
-        /* more_keys_for_right_parenthesis */ "!fixedColumnOrder!4,\uFD3F|\uFD3E,>|<,}|{,]|[",
         // U+2264: "≤" LESS-THAN OR EQUAL TO
         // U+2265: "≥" GREATER-THAN EQUAL TO
         // U+00AB: "«" LEFT-POINTING DOUBLE ANGLE QUOTATION MARK
         // U+00BB: "»" RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK
         // U+2039: "‹" SINGLE LEFT-POINTING ANGLE QUOTATION MARK
         // U+203A: "›" SINGLE RIGHT-POINTING ANGLE QUOTATION MARK
-        /* more_keys_for_less_than */ "!fixedColumnOrder!3,\u2039|\u203A,\u2264|\u2265,\u00AB|\u00BB",
-        /* more_keys_for_greater_than */ "!fixedColumnOrder!3,\u203A|\u2039,\u2265|\u2264,\u00BB|\u00AB",
+        /* keyspec_left_parenthesis */ "(|)",
+        /* keyspec_right_parenthesis */ ")|(",
+        /* keyspec_left_square_bracket */ "[|]",
+        /* keyspec_right_square_bracket */ "]|[",
+        /* keyspec_left_curly_bracket */ "{|}",
+        /* keyspec_right_curly_bracket */ "}|{",
+        /* keyspec_less_than */ "<|>",
+        /* keyspec_greater_than */ ">|<",
+        /* keyspec_less_than_equal */ "\u2264|\u2265",
+        /* keyspec_greater_than_equal */ "\u2265|\u2264",
+        /* keyspec_left_double_angle_quote */ "\u00AB|\u00BB",
+        /* keyspec_right_double_angle_quote */ "\u00BB|\u00AB",
+        /* keyspec_left_single_angle_quote */ "\u2039|\u203A",
+        /* keyspec_right_single_angle_quote */ "\u203A|\u2039",
         // U+061F: "؟" ARABIC QUESTION MARK
         // U+060C: "،" ARABIC COMMA
         // U+061B: "؛" ARABIC SEMICOLON
@@ -573,10 +595,16 @@ public final class KeyboardTextsTable {
         /* more_keys_for_question */ "?,\u00BF",
         /* more_keys_for_h ~ */
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-        null, null, null, null, null,
+        null, null, null, null,
         /* ~ keylabel_for_spanish_row2_10 */
         // U+266A: "♪" EIGHTH NOTE
         /* more_keys_for_bullet */ "\u266A",
+        // The all letters need to be mirrored are found at
+        // http://www.unicode.org/Public/6.1.0/ucd/BidiMirroring.txt
+        // U+FD3E: "﴾" ORNATE LEFT PARENTHESIS
+        // U+FD3F: "﴿" ORNATE RIGHT PARENTHESIS
+        /* more_keys_for_left_parenthesis */ "!fixedColumnOrder!4,\uFD3E|\uFD3F,!text/keyspecs_for_left_parenthesis_more_keys",
+        /* more_keys_for_right_parenthesis */ "!fixedColumnOrder!4,\uFD3F|\uFD3E,!text/keyspecs_for_right_parenthesis_more_keys",
         // U+0655: "ٕ" ARABIC HAMZA BELOW
         // U+0654: "ٔ" ARABIC HAMZA ABOVE
         // U+0652: "ْ" ARABIC SUKUN
@@ -653,7 +681,7 @@ public final class KeyboardTextsTable {
         // U+0161: "š" LATIN SMALL LETTER S WITH CARON
         /* more_keys_for_s */ "\u015F,\u00DF,\u015B,\u0161",
         /* more_keys_for_n ~ */
-        null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null,
         /* ~ more_keys_for_l */
         // U+011F: "ğ" LATIN SMALL LETTER G WITH BREVE
         /* more_keys_for_g */ "\u011F",
@@ -679,7 +707,6 @@ public final class KeyboardTextsTable {
         /* ~ keylabel_for_nordic_row2_11 */
         // U+0451: "ё" CYRILLIC SMALL LETTER IO
         /* more_keys_for_cyrillic_ie */ "\u0451",
-        /* more_keys_for_punctuation */ null,
         /* more_keys_for_nordic_row2_10 */ null,
         // U+045E: "ў" CYRILLIC SMALL LETTER SHORT U
         /* keylabel_for_east_slavic_row1_9 */ "\u045E",
@@ -767,25 +794,30 @@ public final class KeyboardTextsTable {
         // U+0144: "ń" LATIN SMALL LETTER N WITH ACUTE
         /* more_keys_for_n */ "\u00F1,\u0144",
         /* label_to_alpha_key ~ */
-        null, null, null, null, null, null, null,
+        null, null, null, null, null,
         /* ~ more_keys_for_t */
         // U+00B7: "·" MIDDLE DOT
         // U+0142: "ł" LATIN SMALL LETTER L WITH STROKE
         /* more_keys_for_l */ "l\u00B7l,\u0142",
         /* more_keys_for_g ~ */
-        null, null, null, null, null, null, null, null,
-        /* ~ more_keys_for_cyrillic_ie */
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null,
+        /* ~ more_keys_for_cyrillic_soft_sign */
         // U+00B7: "·" MIDDLE DOT
         /* more_keys_for_punctuation */ "!fixedColumnOrder!9,;,/,(,),#,\u00B7,!,\\,,?,&,\\%,+,\",-,:,',@",
-        /* more_keys_for_nordic_row2_10 ~ */
+        /* more_keys_for_nordic_row2_11 ~ */
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-        null, null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         /* ~ more_keys_for_swiss_row2_11 */
-        /* more_keys_for_tablet_punctuation */ "!fixedColumnOrder!8,;,/,(,),#,\u00B7,',\\,,&,\\%,+,\",-,:,@",
         // U+00E7: "ç" LATIN SMALL LETTER C WITH CEDILLA
         /* keylabel_for_spanish_row2_10 */ "\u00E7",
+        /* more_keys_for_bullet ~ */
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null,
+        /* ~ more_keys_for_currency_dollar */
+        /* more_keys_for_tablet_punctuation */ "!fixedColumnOrder!8,;,/,(,),#,\u00B7,',\\,,&,\\%,+,\",-,:,@",
     };
 
     /* Language cs: Czech */
@@ -855,13 +887,13 @@ public final class KeyboardTextsTable {
         // U+017A: "ź" LATIN SMALL LETTER Z WITH ACUTE
         // U+017C: "ż" LATIN SMALL LETTER Z WITH DOT ABOVE
         /* more_keys_for_z */ "\u017E,\u017A,\u017C",
-        /* single_angle_quotes */ "!text/single_raqm_laqm",
-        /* double_angle_quotes */ "!text/double_raqm_laqm",
         // U+0165: "ť" LATIN SMALL LETTER T WITH CARON
         /* more_keys_for_t */ "\u0165",
-        /* more_keys_for_l ~ */
-        null, null, null,
-        /* ~ keylabel_for_currency */
+        /* more_keys_for_l */ null,
+        /* more_keys_for_g */ null,
+        /* single_angle_quotes */ "!text/single_raqm_laqm",
+        /* double_angle_quotes */ "!text/double_raqm_laqm",
+        /* keylabel_for_currency */ null,
         // U+0159: "ř" LATIN SMALL LETTER R WITH CARON
         /* more_keys_for_r */ "\u0159",
     };
@@ -911,13 +943,14 @@ public final class KeyboardTextsTable {
         // U+00F0: "ð" LATIN SMALL LETTER ETH
         /* more_keys_for_d */ "\u00F0",
         /* more_keys_for_z */ null,
-        /* single_angle_quotes */ "!text/single_raqm_laqm",
-        /* double_angle_quotes */ "!text/double_raqm_laqm",
         /* more_keys_for_t */ null,
         // U+0142: "ł" LATIN SMALL LETTER L WITH STROKE
         /* more_keys_for_l */ "\u0142",
-        /* more_keys_for_g ~ */
-        null, null, null, null,
+        /* more_keys_for_g */ null,
+        /* single_angle_quotes */ "!text/single_raqm_laqm",
+        /* double_angle_quotes */ "!text/double_raqm_laqm",
+        /* keylabel_for_currency ~ */
+        null, null, null,
         /* ~ more_keys_for_k */
         // U+00E5: "å" LATIN SMALL LETTER A WITH RING ABOVE
         /* keylabel_for_nordic_row1_11 */ "\u00E5",
@@ -926,12 +959,11 @@ public final class KeyboardTextsTable {
         // U+00F8: "ø" LATIN SMALL LETTER O WITH STROKE
         /* keylabel_for_nordic_row2_11 */ "\u00F8",
         /* more_keys_for_cyrillic_ie */ null,
-        /* more_keys_for_punctuation */ null,
         // U+00E4: "ä" LATIN SMALL LETTER A WITH DIAERESIS
         /* more_keys_for_nordic_row2_10 */ "\u00E4",
         /* keylabel_for_east_slavic_row1_9 ~ */
-        null, null, null, null, null, null,
-        /* ~ more_keys_for_cyrillic_soft_sign */
+        null, null, null, null, null, null, null,
+        /* ~ more_keys_for_punctuation */
         // U+00F6: "ö" LATIN SMALL LETTER O WITH DIAERESIS
         /* more_keys_for_nordic_row2_11 */ "\u00F6",
     };
@@ -980,16 +1012,16 @@ public final class KeyboardTextsTable {
         // U+0144: "ń" LATIN SMALL LETTER N WITH ACUTE
         /* more_keys_for_n */ "\u00F1,\u0144",
         /* label_to_alpha_key ~ */
-        null, null, null, null,
-        /* ~ more_keys_for_z */
+        null, null, null, null, null, null, null,
+        /* ~ more_keys_for_g */
         /* single_angle_quotes */ "!text/single_raqm_laqm",
         /* double_angle_quotes */ "!text/double_raqm_laqm",
-        /* more_keys_for_t ~ */
+        /* keylabel_for_currency ~ */
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-        null,
+        null, null, null, null, null, null, null, null,
         /* ~ more_keys_for_cyrillic_i */
         // U+00FC: "ü" LATIN SMALL LETTER U WITH DIAERESIS
         /* keylabel_for_swiss_row1_11 */ "\u00FC",
@@ -1154,8 +1186,6 @@ public final class KeyboardTextsTable {
         // U+017C: "ż" LATIN SMALL LETTER Z WITH DOT ABOVE
         // U+017E: "ž" LATIN SMALL LETTER Z WITH CARON
         /* more_keys_for_z */ "\u017A,\u017C,\u017E",
-        /* single_angle_quotes */ null,
-        /* double_angle_quotes */ null,
         // U+0165: "ť" LATIN SMALL LETTER T WITH CARON
         // U+021B: "ț" LATIN SMALL LETTER T WITH COMMA BELOW
         // U+0163: "ţ" LATIN SMALL LETTER T WITH CEDILLA
@@ -1171,7 +1201,9 @@ public final class KeyboardTextsTable {
         // U+0121: "ġ" LATIN SMALL LETTER G WITH DOT ABOVE
         // U+0123: "ģ" LATIN SMALL LETTER G WITH CEDILLA
         /* more_keys_for_g */ "\u011F,\u0121,\u0123",
-        /* keylabel_for_currency */ null,
+        /* single_angle_quotes ~ */
+        null, null, null,
+        /* ~ keylabel_for_currency */
         // U+0159: "ř" LATIN SMALL LETTER R WITH CARON
         // U+0155: "ŕ" LATIN SMALL LETTER R WITH ACUTE
         // U+0157: "ŗ" LATIN SMALL LETTER R WITH CEDILLA
@@ -1182,7 +1214,8 @@ public final class KeyboardTextsTable {
         /* keylabel_for_nordic_row1_11 ~ */
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-        null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null,
         /* ~ more_keys_for_question */
         // U+0125: "ĥ" LATIN SMALL LETTER H WITH CIRCUMFLEX
         // U+0127: "ħ" LATIN SMALL LETTER H WITH STROKE
@@ -1191,17 +1224,18 @@ public final class KeyboardTextsTable {
         /* more_keys_for_w */ "w,\u0175",
         /* more_keys_for_cyrillic_u ~ */
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-        null, null,
-        /* ~ more_keys_for_tablet_punctuation */
+        null,
+        /* ~ more_keys_for_swiss_row2_11 */
         // U+0135: "ĵ" LATIN SMALL LETTER J WITH CIRCUMFLEX
         /* keylabel_for_spanish_row2_10 */ "\u0135",
         /* more_keys_for_bullet ~ */
-        null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null,
         /* ~ more_keys_for_symbols_percent */
         // U+0175: "ŵ" LATIN SMALL LETTER W WITH CIRCUMFLEX
         /* more_keys_for_v */ "w,\u0175",
         /* more_keys_for_j ~ */
-        null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null, null, null, null,
         /* ~ more_keys_for_exclamation */
         /* more_keys_for_q */ "q",
         /* more_keys_for_x */ "x",
@@ -1271,8 +1305,8 @@ public final class KeyboardTextsTable {
         /* more_keys_for_n */ "\u00F1,\u0144",
         /* label_to_alpha_key ~ */
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-        null,
-        /* ~ more_keys_for_cyrillic_ie */
+        null, null, null, null, null, null, null, null,
+        /* ~ more_keys_for_cyrillic_soft_sign */
         // U+00A1: "¡" INVERTED EXCLAMATION MARK
         // U+00BF: "¿" INVERTED QUESTION MARK
         /* more_keys_for_punctuation */ "!fixedColumnOrder!9,\u00A1,;,/,(,),#,!,\\,,?,\u00BF,&,\\%,+,\",-,:,',@",
@@ -1351,8 +1385,6 @@ public final class KeyboardTextsTable {
         // U+017C: "ż" LATIN SMALL LETTER Z WITH DOT ABOVE
         // U+017A: "ź" LATIN SMALL LETTER Z WITH ACUTE
         /* more_keys_for_z */ "\u017E,\u017C,\u017A",
-        /* single_angle_quotes */ null,
-        /* double_angle_quotes */ null,
         // U+0163: "ţ" LATIN SMALL LETTER T WITH CEDILLA
         // U+0165: "ť" LATIN SMALL LETTER T WITH CARON
         /* more_keys_for_t */ "\u0163,\u0165",
@@ -1364,7 +1396,9 @@ public final class KeyboardTextsTable {
         // U+0123: "ģ" LATIN SMALL LETTER G WITH CEDILLA
         // U+011F: "ğ" LATIN SMALL LETTER G WITH BREVE
         /* more_keys_for_g */ "\u0123,\u011F",
-        /* keylabel_for_currency */ null,
+        /* single_angle_quotes ~ */
+        null, null, null,
+        /* ~ keylabel_for_currency */
         // U+0157: "ŗ" LATIN SMALL LETTER R WITH CEDILLA
         // U+0159: "ř" LATIN SMALL LETTER R WITH CARON
         // U+0155: "ŕ" LATIN SMALL LETTER R WITH ACUTE
@@ -1378,7 +1412,6 @@ public final class KeyboardTextsTable {
         // U+00E4: "ä" LATIN SMALL LETTER A WITH DIAERESIS
         /* keylabel_for_nordic_row2_11 */ "\u00E4",
         /* more_keys_for_cyrillic_ie */ null,
-        /* more_keys_for_punctuation */ null,
         // U+00F5: "õ" LATIN SMALL LETTER O WITH TILDE
         /* more_keys_for_nordic_row2_10 */ "\u00F5",
     };
@@ -1395,25 +1428,18 @@ public final class KeyboardTextsTable {
         // U+067E: "پ" ARABIC LETTER PEH
         /* label_to_alpha_key */ "\u0627\u200C\u0628\u200C\u067E",
         /* more_keys_for_y ~ */
-        null, null, null,
-        /* ~ more_keys_for_z */
-        /* single_angle_quotes */ "!text/single_laqm_raqm_rtl",
-        /* double_angle_quotes */ "!text/double_laqm_raqm_rtl",
-        /* more_keys_for_t ~ */
-        null, null, null,
-        /* ~ more_keys_for_g */
+        null, null, null, null, null, null, null, null,
+        /* ~ double_angle_quotes */
         // U+FDFC: "﷼" RIAL SIGN
         /* keylabel_for_currency */ "\uFDFC",
         /* more_keys_for_r ~ */
-        null, null, null, null, null, null,
-        /* ~ more_keys_for_cyrillic_ie */
+        null, null, null, null, null, null, null, null, null, null, null, null, null,
+        /* ~ more_keys_for_cyrillic_soft_sign */
         // U+061F: "؟" ARABIC QUESTION MARK
         // U+060C: "،" ARABIC COMMA
         // U+061B: "؛" ARABIC SEMICOLON
-        /* more_keys_for_punctuation */ "!fixedColumnOrder!8,\",\',#,-,:,!,\u060C,\u061F,@,&,\\%,+,\u061B,/,(|),)|(",
-        /* more_keys_for_nordic_row2_10 ~ */
-        null, null, null, null, null, null, null, null,
-        /* ~ more_keys_for_nordic_row2_11 */
+        /* more_keys_for_punctuation */ "!fixedColumnOrder!8,\",\',#,-,:,!,\u060C,\u061F,@,&,\\%,+,\u061B,/,!text/keyspec_left_parenthesis,!text/keyspec_right_parenthesis",
+        /* more_keys_for_nordic_row2_11 */ null,
         // U+06F1: "۱" EXTENDED ARABIC-INDIC DIGIT ONE
         /* keylabel_for_symbols_1 */ "\u06F1",
         // U+06F2: "۲" EXTENDED ARABIC-INDIC DIGIT TWO
@@ -1455,20 +1481,20 @@ public final class KeyboardTextsTable {
         // U+2605: "★" BLACK STAR
         // U+066D: "٭" ARABIC FIVE POINTED STAR
         /* more_keys_for_star */ "\u2605,\u066D",
-        // The all letters need to be mirrored are found at
-        // http://www.unicode.org/Public/6.1.0/ucd/BidiMirroring.txt
-        // U+FD3E: "﴾" ORNATE LEFT PARENTHESIS
-        // U+FD3F: "﴿" ORNATE RIGHT PARENTHESIS
-        /* more_keys_for_left_parenthesis */ "!fixedColumnOrder!4,\uFD3E|\uFD3F,<|>,{|},[|]",
-        /* more_keys_for_right_parenthesis */ "!fixedColumnOrder!4,\uFD3F|\uFD3E,>|<,}|{,]|[",
-        // U+2264: "≤" LESS-THAN OR EQUAL TO
-        // U+2265: "≥" GREATER-THAN EQUAL TO
-        // U+00AB: "«" LEFT-POINTING DOUBLE ANGLE QUOTATION MARK
-        // U+00BB: "»" RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK
-        // U+2039: "‹" SINGLE LEFT-POINTING ANGLE QUOTATION MARK
-        // U+203A: "›" SINGLE RIGHT-POINTING ANGLE QUOTATION MARK
-        /* more_keys_for_less_than */ "!fixedColumnOrder!3,\u2039|\u203A,\u2264|\u2265,<|>",
-        /* more_keys_for_greater_than */ "!fixedColumnOrder!3,\u203A|\u2039,\u2265|\u2264,>|<",
+        /* keyspec_left_parenthesis */ "(|)",
+        /* keyspec_right_parenthesis */ ")|(",
+        /* keyspec_left_square_bracket */ "[|]",
+        /* keyspec_right_square_bracket */ "]|[",
+        /* keyspec_left_curly_bracket */ "{|}",
+        /* keyspec_right_curly_bracket */ "}|{",
+        /* keyspec_less_than */ "<|>",
+        /* keyspec_greater_than */ ">|<",
+        /* keyspec_less_than_equal */ "\u2264|\u2265",
+        /* keyspec_greater_than_equal */ "\u2265|\u2264",
+        /* keyspec_left_double_angle_quote */ "\u00AB|\u00BB",
+        /* keyspec_right_double_angle_quote */ "\u00BB|\u00AB",
+        /* keyspec_left_single_angle_quote */ "\u2039|\u203A",
+        /* keyspec_right_single_angle_quote */ "\u203A|\u2039",
         // U+060C: "،" ARABIC COMMA
         // U+061B: "؛" ARABIC SEMICOLON
         // U+061F: "؟" ARABIC QUESTION MARK
@@ -1480,10 +1506,16 @@ public final class KeyboardTextsTable {
         /* more_keys_for_question */ "?,\u00BF",
         /* more_keys_for_h ~ */
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-        null, null, null, null, null,
+        null, null, null, null,
         /* ~ keylabel_for_spanish_row2_10 */
         // U+266A: "♪" EIGHTH NOTE
         /* more_keys_for_bullet */ "\u266A",
+        // The all letters need to be mirrored are found at
+        // http://www.unicode.org/Public/6.1.0/ucd/BidiMirroring.txt
+        // U+FD3E: "﴾" ORNATE LEFT PARENTHESIS
+        // U+FD3F: "﴿" ORNATE RIGHT PARENTHESIS
+        /* more_keys_for_left_parenthesis */ "!fixedColumnOrder!4,\uFD3E|\uFD3F,!text/keyspecs_for_left_parenthesis_more_keys",
+        /* more_keys_for_right_parenthesis */ "!fixedColumnOrder!4,\uFD3F|\uFD3E,!text/keyspecs_for_right_parenthesis_more_keys",
         // U+0655: "ٕ" ARABIC HAMZA BELOW
         // U+0652: "ْ" ARABIC SUKUN
         // U+0651: "ّ" ARABIC SHADDA
@@ -1505,7 +1537,7 @@ public final class KeyboardTextsTable {
         /* keylabel_for_comma */ "\u060C",
         /* more_keys_for_comma */ "\\,",
         /* keyhintlabel_for_tablet_comma */ "\u061F",
-        /* more_keys_for_tablet_comma */ "!fixedColumnOrder!4,:,!,\u061F,\u061B,-,/,\u00AB|\u00BB,\u00BB|\u00AB",
+        /* more_keys_for_tablet_comma */ "!fixedColumnOrder!4,:,!,\u061F,\u061B,-,/,!text/keyspec_left_double_angle_quote,!text/keyspec_right_double_angle_quote",
         // U+064B: "ً" ARABIC FATHATAN
         /* keyhintlabel_for_period */ "\u064B",
         /* more_keys_for_period */ "!text/more_keys_for_arabic_diacritics",
@@ -1517,6 +1549,17 @@ public final class KeyboardTextsTable {
         /* more_keys_for_symbols_semicolon */ ";",
         // U+2030: "‰" PER MILLE SIGN
         /* more_keys_for_symbols_percent */ "\\%,\u2030",
+        /* more_keys_for_v ~ */
+        null, null, null, null, null, null, null, null,
+        /* ~ more_keys_for_plus */
+        // U+2264: "≤" LESS-THAN OR EQUAL TO
+        // U+2265: "≥" GREATER-THAN EQUAL TO
+        // U+00AB: "«" LEFT-POINTING DOUBLE ANGLE QUOTATION MARK
+        // U+00BB: "»" RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK
+        // U+2039: "‹" SINGLE LEFT-POINTING ANGLE QUOTATION MARK
+        // U+203A: "›" SINGLE RIGHT-POINTING ANGLE QUOTATION MARK
+        /* more_keys_for_less_than */ "!fixedColumnOrder!3,!text/keyspec_left_single_angle_quote;,!text/keyspec_less_than_equal;,!text/keyspec_less_than",
+        /* more_keys_for_greater_than */ "!fixedColumnOrder!3,!text/keyspec_right_single_angle_quote;,!text/keyspec_greater_than_equal;,!text/keyspec_greater_than",
     };
 
     /* Language fi: Finnish */
@@ -1552,7 +1595,7 @@ public final class KeyboardTextsTable {
         // U+017A: "ź" LATIN SMALL LETTER Z WITH ACUTE
         // U+017C: "ż" LATIN SMALL LETTER Z WITH DOT ABOVE
         /* more_keys_for_z */ "\u017E,\u017A,\u017C",
-        /* single_angle_quotes ~ */
+        /* more_keys_for_t ~ */
         null, null, null, null, null, null, null, null,
         /* ~ more_keys_for_k */
         // U+00E5: "å" LATIN SMALL LETTER A WITH RING ABOVE
@@ -1562,12 +1605,11 @@ public final class KeyboardTextsTable {
         // U+00E4: "ä" LATIN SMALL LETTER A WITH DIAERESIS
         /* keylabel_for_nordic_row2_11 */ "\u00E4",
         /* more_keys_for_cyrillic_ie */ null,
-        /* more_keys_for_punctuation */ null,
         // U+00F8: "ø" LATIN SMALL LETTER O WITH STROKE
         /* more_keys_for_nordic_row2_10 */ "\u00F8",
         /* keylabel_for_east_slavic_row1_9 ~ */
-        null, null, null, null, null, null,
-        /* ~ more_keys_for_cyrillic_soft_sign */
+        null, null, null, null, null, null, null,
+        /* ~ more_keys_for_punctuation */
         // U+00E6: "æ" LATIN SMALL LETTER AE
         /* more_keys_for_nordic_row2_11 */ "\u00E6",
     };
@@ -1631,7 +1673,7 @@ public final class KeyboardTextsTable {
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-        null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         /* ~ more_keys_for_cyrillic_i */
         // U+00E8: "è" LATIN SMALL LETTER E WITH GRAVE
         /* keylabel_for_swiss_row1_11 */ "\u00E8",
@@ -1659,7 +1701,7 @@ public final class KeyboardTextsTable {
         /* label_to_alpha_key */ "\u0915\u0916\u0917",
         /* more_keys_for_y ~ */
         null, null, null, null, null, null, null, null,
-        /* ~ more_keys_for_g */
+        /* ~ double_angle_quotes */
         // U+20B9: "₹" INDIAN RUPEE SIGN
         /* keylabel_for_currency */ "\u20B9",
         /* more_keys_for_r ~ */
@@ -1728,6 +1770,9 @@ public final class KeyboardTextsTable {
         // U+017A: "ź" LATIN SMALL LETTER Z WITH ACUTE
         // U+017C: "ż" LATIN SMALL LETTER Z WITH DOT ABOVE
         /* more_keys_for_z */ "\u017E,\u017A,\u017C",
+        /* more_keys_for_t ~ */
+        null, null, null,
+        /* ~ more_keys_for_g */
         /* single_angle_quotes */ "!text/single_raqm_laqm",
         /* double_angle_quotes */ "!text/double_raqm_laqm",
     };
@@ -1778,8 +1823,8 @@ public final class KeyboardTextsTable {
         /* double_quotes */ "!text/double_9qm_rqm",
         /* single_quotes */ "!text/single_9qm_rqm",
         /* more_keys_for_c ~ */
-        null, null, null, null, null, null, null,
-        /* ~ more_keys_for_z */
+        null, null, null, null, null, null, null, null, null, null,
+        /* ~ more_keys_for_g */
         /* single_angle_quotes */ "!text/single_raqm_laqm",
         /* double_angle_quotes */ "!text/double_raqm_laqm",
     };
@@ -1796,7 +1841,8 @@ public final class KeyboardTextsTable {
         /* label_to_alpha_key */ "\u0531\u0532\u0533",
         /* more_keys_for_y ~ */
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-        /* ~ more_keys_for_cyrillic_ie */
+        null, null, null, null, null, null, null,
+        /* ~ more_keys_for_cyrillic_soft_sign */
         // U+058A: "֊" ARMENIAN HYPHEN
         // U+055C: "՜" ARMENIAN EXCLAMATION MARK
         // U+055D: "՝" ARMENIAN COMMA
@@ -1806,11 +1852,11 @@ public final class KeyboardTextsTable {
         // U+055B: "՛" ARMENIAN EMPHASIS MARK
         // U+055F: "՟" ARMENIAN ABBREVIATION MARK
         /* more_keys_for_punctuation */ "!fixedColumnOrder!8,!,?,\u0559,\u055A,.,\u055C,\\,,\u055E,:,;,\u055F,\u00AB,\u00BB,\u058A,\u055D,\u055B",
-        /* more_keys_for_nordic_row2_10 ~ */
+        /* more_keys_for_nordic_row2_11 ~ */
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-        null, null, null, null, null,
-        /* ~ more_keys_for_greater_than */
+        null, null, null, null, null, null, null, null,
+        /* ~ keyspec_right_single_angle_quote */
         // U+058F: "֏" ARMENIAN DRAM SIGN
         // TODO: Enable this when we have glyph for the following letter
         // <string name="keylabel_for_currency">&#x058F;</string>
@@ -1824,8 +1870,8 @@ public final class KeyboardTextsTable {
         /* more_keys_for_h ~ */
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-        null, null, null, null, null, null, null, null, null, null, null,
-        /* ~ more_keys_for_plus */
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        /* ~ more_keys_for_greater_than */
         // U+0589: "։" ARMENIAN FULL STOP
         /* keylabel_for_period */ "\u0589",
         /* keylabel_for_tablet_period */ "\u0589",
@@ -1885,13 +1931,11 @@ public final class KeyboardTextsTable {
         /* more_keys_for_y */ "\u00FD,\u00FF",
         // U+00F0: "ð" LATIN SMALL LETTER ETH
         /* more_keys_for_d */ "\u00F0",
-        /* more_keys_for_z ~ */
-        null, null, null,
-        /* ~ double_angle_quotes */
+        /* more_keys_for_z */ null,
         // U+00FE: "þ" LATIN SMALL LETTER THORN
         /* more_keys_for_t */ "\u00FE",
         /* more_keys_for_l ~ */
-        null, null, null, null, null,
+        null, null, null, null, null, null, null,
         /* ~ more_keys_for_k */
         // U+00F0: "ð" LATIN SMALL LETTER ETH
         /* keylabel_for_nordic_row1_11 */ "\u00F0",
@@ -1951,15 +1995,8 @@ public final class KeyboardTextsTable {
         /* more_keys_for_a ~ */
         null, null, null, null, null,
         /* ~ more_keys_for_i */
-        /* double_quotes */ "\u201C,\u201D,\u201E",
-        // The following characters don't need BIDI mirroring.
-        // U+2018: "‘" LEFT SINGLE QUOTATION MARK
-        // U+2019: "’" RIGHT SINGLE QUOTATION MARK
-        // U+201A: "‚" SINGLE LOW-9 QUOTATION MARK
-        // U+201C: "“" LEFT DOUBLE QUOTATION MARK
-        // U+201D: "”" RIGHT DOUBLE QUOTATION MARK
-        // U+201E: "„" DOUBLE LOW-9 QUOTATION MARK
-        /* single_quotes */ "\u2018,\u2019,\u201A",
+        /* double_quotes */ "!text/double_rqm_9qm",
+        /* single_quotes */ "!text/single_rqm_9qm",
         /* more_keys_for_c ~ */
         null, null, null,
         /* ~ more_keys_for_n */
@@ -1969,46 +2006,44 @@ public final class KeyboardTextsTable {
         // U+05D2: "ג" HEBREW LETTER GIMEL
         /* label_to_alpha_key */ "\u05D0\u05D1\u05D2",
         /* more_keys_for_y ~ */
-        null, null, null,
-        /* ~ more_keys_for_z */
-        /* single_angle_quotes */ "!text/single_laqm_raqm_rtl",
-        /* double_angle_quotes */ "!text/double_laqm_raqm_rtl",
-        /* more_keys_for_t ~ */
-        null, null, null,
-        /* ~ more_keys_for_g */
+        null, null, null, null, null, null, null, null,
+        /* ~ double_angle_quotes */
         // U+20AA: "₪" NEW SHEQEL SIGN
         /* keylabel_for_currency */ "\u20AA",
         /* more_keys_for_r ~ */
-        null, null, null, null, null, null,
-        /* ~ more_keys_for_cyrillic_ie */
-        /* more_keys_for_punctuation */ "!fixedColumnOrder!8,;,/,(|),)|(,#,!,\\,,?,&,\\%,+,\",-,:,',@",
-        /* more_keys_for_nordic_row2_10 ~ */
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null,
         /* ~ additional_more_keys_for_symbols_0 */
         // U+2605: "★" BLACK STAR
         /* more_keys_for_star */ "\u2605",
         // The all letters need to be mirrored are found at
         // http://www.unicode.org/Public/6.1.0/ucd/BidiMirroring.txt
-        /* more_keys_for_left_parenthesis */ "!fixedColumnOrder!3,<|>,{|},[|]",
-        /* more_keys_for_right_parenthesis */ "!fixedColumnOrder!3,>|<,}|{,]|[",
         // U+2264: "≤" LESS-THAN OR EQUAL TO
         // U+2265: "≥" GREATER-THAN EQUAL TO
         // U+00AB: "«" LEFT-POINTING DOUBLE ANGLE QUOTATION MARK
         // U+00BB: "»" RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK
         // U+2039: "‹" SINGLE LEFT-POINTING ANGLE QUOTATION MARK
         // U+203A: "›" SINGLE RIGHT-POINTING ANGLE QUOTATION MARK
-        /* more_keys_for_less_than */ "!fixedColumnOrder!3,\u2039|\u203A,\u2264|\u2265,\u00AB|\u00BB",
-        /* more_keys_for_greater_than */ "!fixedColumnOrder!3,\u203A|\u2039,\u2265|\u2264,\u00BB|\u00AB",
+        /* keyspec_left_parenthesis */ "(|)",
+        /* keyspec_right_parenthesis */ ")|(",
+        /* keyspec_left_square_bracket */ "[|]",
+        /* keyspec_right_square_bracket */ "]|[",
+        /* keyspec_left_curly_bracket */ "{|}",
+        /* keyspec_right_curly_bracket */ "}|{",
+        /* keyspec_less_than */ "<|>",
+        /* keyspec_greater_than */ ">|<",
+        /* keyspec_less_than_equal */ "\u2264|\u2265",
+        /* keyspec_greater_than_equal */ "\u2265|\u2264",
+        /* keyspec_left_double_angle_quote */ "\u00AB|\u00BB",
+        /* keyspec_right_double_angle_quote */ "\u00BB|\u00AB",
+        /* keyspec_left_single_angle_quote */ "\u2039|\u203A",
+        /* keyspec_right_single_angle_quote */ "\u203A|\u2039",
         /* keylabel_for_tablet_comma ~ */
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-        null, null, null, null, null, null,
-        /* ~ more_keys_for_swiss_row2_11 */
-        /* more_keys_for_tablet_punctuation */ "!fixedColumnOrder!7,;,/,(|),)|(,#,',\\,,&,\\%,+,\",-,:,@",
-        /* keylabel_for_spanish_row2_10 ~ */
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-        null, null, null, null, null, null,
-        /* ~ more_keys_for_currency_dollar */
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        /* ~ more_keys_for_tablet_punctuation */
         // U+00B1: "±" PLUS-MINUS SIGN
         // U+FB29: "﬩" HEBREW LETTER ALTERNATIVE PLUS SIGN
         /* more_keys_for_plus */ "\u00B1,\uFB29",
@@ -2046,7 +2081,6 @@ public final class KeyboardTextsTable {
         /* ~ keylabel_for_nordic_row2_11 */
         // U+0451: "ё" CYRILLIC SMALL LETTER IO
         /* more_keys_for_cyrillic_ie */ "\u0451",
-        /* more_keys_for_punctuation */ null,
         /* more_keys_for_nordic_row2_10 */ null,
         // U+0449: "щ" CYRILLIC SMALL LETTER SHCHA
         /* keylabel_for_east_slavic_row1_9 */ "\u0449",
@@ -2060,10 +2094,10 @@ public final class KeyboardTextsTable {
         /* keylabel_for_east_slavic_row3_5 */ "\u0438",
         // U+044A: "ъ" CYRILLIC SMALL LETTER HARD SIGN
         /* more_keys_for_cyrillic_soft_sign */ "\u044A",
-        /* more_keys_for_nordic_row2_11 ~ */
+        /* more_keys_for_punctuation ~ */
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-        null, null, null,
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         /* ~ more_keys_for_w */
         // U+04AF: "ү" CYRILLIC SMALL LETTER STRAIGHT U
         // U+04B1: "ұ" CYRILLIC SMALL LETTER STRAIGHT U WITH STROKE
@@ -2078,7 +2112,7 @@ public final class KeyboardTextsTable {
         /* more_keys_for_cyrillic_o */ "\u04E9",
         /* keylabel_for_south_slavic_row1_6 ~ */
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-        null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         /* ~ more_keys_for_j */
         // U+049B: "қ" CYRILLIC SMALL LETTER KA WITH DESCENDER
         /* more_keys_for_cyrillic_ka */ "\u049B",
@@ -2105,7 +2139,7 @@ public final class KeyboardTextsTable {
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-        null, null, null,
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         /* ~ more_keys_for_east_slavic_row2_11 */
         // U+17DB: "៛" KHMER CURRENCY SYMBOL RIEL
         /* more_keys_for_currency_dollar */ "\u17DB,\u00A2,\u00A3,\u20AC,\u00A5,\u20B1",
@@ -2126,7 +2160,6 @@ public final class KeyboardTextsTable {
         /* ~ keylabel_for_nordic_row2_11 */
         // U+0451: "ё" CYRILLIC SMALL LETTER IO
         /* more_keys_for_cyrillic_ie */ "\u0451",
-        /* more_keys_for_punctuation */ null,
         /* more_keys_for_nordic_row2_10 */ null,
         // U+0449: "щ" CYRILLIC SMALL LETTER SHCHA
         /* keylabel_for_east_slavic_row1_9 */ "\u0449",
@@ -2140,10 +2173,10 @@ public final class KeyboardTextsTable {
         /* keylabel_for_east_slavic_row3_5 */ "\u0438",
         // U+044A: "ъ" CYRILLIC SMALL LETTER HARD SIGN
         /* more_keys_for_cyrillic_soft_sign */ "\u044A",
-        /* more_keys_for_nordic_row2_11 ~ */
+        /* more_keys_for_punctuation ~ */
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-        null, null, null,
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         /* ~ more_keys_for_w */
         // U+04AF: "ү" CYRILLIC SMALL LETTER STRAIGHT U
         /* more_keys_for_cyrillic_u */ "\u04AF",
@@ -2167,7 +2200,7 @@ public final class KeyboardTextsTable {
         /* label_to_alpha_key */ "\u0E81\u0E82\u0E84",
         /* more_keys_for_y ~ */
         null, null, null, null, null, null, null, null,
-        /* ~ more_keys_for_g */
+        /* ~ double_angle_quotes */
         // U+20AD: "₭" KIP SIGN
         /* keylabel_for_currency */ "\u20AD",
     };
@@ -2246,8 +2279,6 @@ public final class KeyboardTextsTable {
         // U+017C: "ż" LATIN SMALL LETTER Z WITH DOT ABOVE
         // U+017A: "ź" LATIN SMALL LETTER Z WITH ACUTE
         /* more_keys_for_z */ "\u017E,\u017C,\u017A",
-        /* single_angle_quotes */ null,
-        /* double_angle_quotes */ null,
         // U+0163: "ţ" LATIN SMALL LETTER T WITH CEDILLA
         // U+0165: "ť" LATIN SMALL LETTER T WITH CARON
         /* more_keys_for_t */ "\u0163,\u0165",
@@ -2259,7 +2290,9 @@ public final class KeyboardTextsTable {
         // U+0123: "ģ" LATIN SMALL LETTER G WITH CEDILLA
         // U+011F: "ğ" LATIN SMALL LETTER G WITH BREVE
         /* more_keys_for_g */ "\u0123,\u011F",
-        /* keylabel_for_currency */ null,
+        /* single_angle_quotes ~ */
+        null, null, null,
+        /* ~ keylabel_for_currency */
         // U+0157: "ŗ" LATIN SMALL LETTER R WITH CEDILLA
         // U+0159: "ř" LATIN SMALL LETTER R WITH CARON
         // U+0155: "ŕ" LATIN SMALL LETTER R WITH ACUTE
@@ -2341,8 +2374,6 @@ public final class KeyboardTextsTable {
         // U+017C: "ż" LATIN SMALL LETTER Z WITH DOT ABOVE
         // U+017A: "ź" LATIN SMALL LETTER Z WITH ACUTE
         /* more_keys_for_z */ "\u017E,\u017C,\u017A",
-        /* single_angle_quotes */ null,
-        /* double_angle_quotes */ null,
         // U+0163: "ţ" LATIN SMALL LETTER T WITH CEDILLA
         // U+0165: "ť" LATIN SMALL LETTER T WITH CARON
         /* more_keys_for_t */ "\u0163,\u0165",
@@ -2354,7 +2385,9 @@ public final class KeyboardTextsTable {
         // U+0123: "ģ" LATIN SMALL LETTER G WITH CEDILLA
         // U+011F: "ğ" LATIN SMALL LETTER G WITH BREVE
         /* more_keys_for_g */ "\u0123,\u011F",
-        /* keylabel_for_currency */ null,
+        /* single_angle_quotes ~ */
+        null, null, null,
+        /* ~ keylabel_for_currency */
         // U+0157: "ŗ" LATIN SMALL LETTER R WITH CEDILLA
         // U+0159: "ř" LATIN SMALL LETTER R WITH CARON
         // U+0155: "ŕ" LATIN SMALL LETTER R WITH ACUTE
@@ -2383,11 +2416,11 @@ public final class KeyboardTextsTable {
         /* ~ keylabel_for_nordic_row2_11 */
         // U+0450: "ѐ" CYRILLIC SMALL LETTER IE WITH GRAVE
         /* more_keys_for_cyrillic_ie */ "\u0450",
-        /* more_keys_for_punctuation ~ */
+        /* more_keys_for_nordic_row2_10 ~ */
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-        null,
+        null, null, null, null, null, null, null, null, null, null, null,
         /* ~ more_keys_for_cyrillic_o */
         // U+0455: "ѕ" CYRILLIC SMALL LETTER DZE
         /* keylabel_for_south_slavic_row1_6 */ "\u0455",
@@ -2413,7 +2446,7 @@ public final class KeyboardTextsTable {
         /* label_to_alpha_key */ "\u0410\u0411\u0412",
         /* more_keys_for_y ~ */
         null, null, null, null, null, null, null, null,
-        /* ~ more_keys_for_g */
+        /* ~ double_angle_quotes */
         // U+20AE: "₮" TUGRIK SIGN
         /* keylabel_for_currency */ "\u20AE",
     };
@@ -2462,12 +2495,11 @@ public final class KeyboardTextsTable {
         // U+00E6: "æ" LATIN SMALL LETTER AE
         /* keylabel_for_nordic_row2_11 */ "\u00E6",
         /* more_keys_for_cyrillic_ie */ null,
-        /* more_keys_for_punctuation */ null,
         // U+00F6: "ö" LATIN SMALL LETTER O WITH DIAERESIS
         /* more_keys_for_nordic_row2_10 */ "\u00F6",
         /* keylabel_for_east_slavic_row1_9 ~ */
-        null, null, null, null, null, null,
-        /* ~ more_keys_for_cyrillic_soft_sign */
+        null, null, null, null, null, null, null,
+        /* ~ more_keys_for_punctuation */
         // U+00E4: "ä" LATIN SMALL LETTER A WITH DIAERESIS
         /* more_keys_for_nordic_row2_11 */ "\u00E4",
     };
@@ -2484,7 +2516,7 @@ public final class KeyboardTextsTable {
         /* label_to_alpha_key */ "\u0915\u0916\u0917",
         /* more_keys_for_y ~ */
         null, null, null, null, null, null, null, null,
-        /* ~ more_keys_for_g */
+        /* ~ double_angle_quotes */
         // U+0930/U+0941/U+002E "रु." NEPALESE RUPEE SIGN
         /* keylabel_for_currency */ "\u0930\u0941.",
         /* more_keys_for_r ~ */
@@ -2632,9 +2664,7 @@ public final class KeyboardTextsTable {
         // U+017A: "ź" LATIN SMALL LETTER Z WITH ACUTE
         // U+017E: "ž" LATIN SMALL LETTER Z WITH CARON
         /* more_keys_for_z */ "\u017C,\u017A,\u017E",
-        /* single_angle_quotes ~ */
-        null, null, null,
-        /* ~ more_keys_for_t */
+        /* more_keys_for_t */ null,
         // U+0142: "ł" LATIN SMALL LETTER L WITH STROKE
         /* more_keys_for_l */ "\u0142",
     };
@@ -2733,8 +2763,8 @@ public final class KeyboardTextsTable {
         // U+0161: "š" LATIN SMALL LETTER S WITH CARON
         /* more_keys_for_s */ "\u0219,\u00DF,\u015B,\u0161",
         /* more_keys_for_n ~ */
-        null, null, null, null, null, null, null,
-        /* ~ double_angle_quotes */
+        null, null, null, null, null,
+        /* ~ more_keys_for_z */
         // U+021B: "ț" LATIN SMALL LETTER T WITH COMMA BELOW
         /* more_keys_for_t */ "\u021B",
     };
@@ -2759,7 +2789,6 @@ public final class KeyboardTextsTable {
         /* ~ keylabel_for_nordic_row2_11 */
         // U+0451: "ё" CYRILLIC SMALL LETTER IO
         /* more_keys_for_cyrillic_ie */ "\u0451",
-        /* more_keys_for_punctuation */ null,
         /* more_keys_for_nordic_row2_10 */ null,
         // U+0449: "щ" CYRILLIC SMALL LETTER SHCHA
         /* keylabel_for_east_slavic_row1_9 */ "\u0449",
@@ -2849,8 +2878,6 @@ public final class KeyboardTextsTable {
         // U+017C: "ż" LATIN SMALL LETTER Z WITH DOT ABOVE
         // U+017A: "ź" LATIN SMALL LETTER Z WITH ACUTE
         /* more_keys_for_z */ "\u017E,\u017C,\u017A",
-        /* single_angle_quotes */ "!text/single_raqm_laqm",
-        /* double_angle_quotes */ "!text/double_raqm_laqm",
         // U+0165: "ť" LATIN SMALL LETTER T WITH CARON
         // U+0163: "ţ" LATIN SMALL LETTER T WITH CEDILLA
         /* more_keys_for_t */ "\u0165,\u0163",
@@ -2862,6 +2889,8 @@ public final class KeyboardTextsTable {
         // U+0123: "ģ" LATIN SMALL LETTER G WITH CEDILLA
         // U+011F: "ğ" LATIN SMALL LETTER G WITH BREVE
         /* more_keys_for_g */ "\u0123,\u011F",
+        /* single_angle_quotes */ "!text/single_raqm_laqm",
+        /* double_angle_quotes */ "!text/double_raqm_laqm",
         /* keylabel_for_currency */ null,
         // U+0155: "ŕ" LATIN SMALL LETTER R WITH ACUTE
         // U+0159: "ř" LATIN SMALL LETTER R WITH CARON
@@ -2890,6 +2919,9 @@ public final class KeyboardTextsTable {
         /* more_keys_for_d */ "\u0111",
         // U+017E: "ž" LATIN SMALL LETTER Z WITH CARON
         /* more_keys_for_z */ "\u017E",
+        /* more_keys_for_t ~ */
+        null, null, null,
+        /* ~ more_keys_for_g */
         /* single_angle_quotes */ "!text/single_raqm_laqm",
         /* double_angle_quotes */ "!text/double_raqm_laqm",
     };
@@ -2911,20 +2943,20 @@ public final class KeyboardTextsTable {
         // U+0412: "В" CYRILLIC CAPITAL LETTER VE
         /* label_to_alpha_key */ "\u0410\u0411\u0412",
         /* more_keys_for_y ~ */
-        null, null, null,
-        /* ~ more_keys_for_z */
+        null, null, null, null, null, null,
+        /* ~ more_keys_for_g */
         /* single_angle_quotes */ "!text/single_raqm_laqm",
         /* double_angle_quotes */ "!text/double_raqm_laqm",
-        /* more_keys_for_t ~ */
-        null, null, null, null, null, null, null, null, null,
+        /* keylabel_for_currency ~ */
+        null, null, null, null, null, null,
         /* ~ keylabel_for_nordic_row2_11 */
         // U+0450: "ѐ" CYRILLIC SMALL LETTER IE WITH GRAVE
         /* more_keys_for_cyrillic_ie */ "\u0450",
-        /* more_keys_for_punctuation ~ */
+        /* more_keys_for_nordic_row2_10 ~ */
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-        null,
+        null, null, null, null, null, null, null, null, null, null, null,
         /* ~ more_keys_for_cyrillic_o */
         // TODO: Move these to sr-Latn once we can handle IETF language tag with script name specified.
         // BEGIN: More keys definitions for Serbian (Latin)
@@ -3014,14 +3046,14 @@ public final class KeyboardTextsTable {
         // U+017E: "ž" LATIN SMALL LETTER Z WITH CARON
         // U+017C: "ż" LATIN SMALL LETTER Z WITH DOT ABOVE
         /* more_keys_for_z */ "\u017A,\u017E,\u017C",
-        /* single_angle_quotes */ "!text/single_raqm_laqm",
-        /* double_angle_quotes */ "!text/double_raqm_laqm",
         // U+0165: "ť" LATIN SMALL LETTER T WITH CARON
         // U+00FE: "þ" LATIN SMALL LETTER THORN
         /* more_keys_for_t */ "\u0165,\u00FE",
         // U+0142: "ł" LATIN SMALL LETTER L WITH STROKE
         /* more_keys_for_l */ "\u0142",
         /* more_keys_for_g */ null,
+        /* single_angle_quotes */ "!text/single_raqm_laqm",
+        /* double_angle_quotes */ "!text/double_raqm_laqm",
         /* keylabel_for_currency */ null,
         // U+0159: "ř" LATIN SMALL LETTER R WITH CARON
         /* more_keys_for_r */ "\u0159",
@@ -3033,13 +3065,12 @@ public final class KeyboardTextsTable {
         // U+00E4: "ä" LATIN SMALL LETTER A WITH DIAERESIS
         /* keylabel_for_nordic_row2_11 */ "\u00E4",
         /* more_keys_for_cyrillic_ie */ null,
-        /* more_keys_for_punctuation */ null,
         // U+00F8: "ø" LATIN SMALL LETTER O WITH STROKE
         // U+0153: "œ" LATIN SMALL LIGATURE OE
         /* more_keys_for_nordic_row2_10 */ "\u00F8,\u0153",
         /* keylabel_for_east_slavic_row1_9 ~ */
-        null, null, null, null, null, null,
-        /* ~ more_keys_for_cyrillic_soft_sign */
+        null, null, null, null, null, null, null,
+        /* ~ more_keys_for_punctuation */
         // U+00E6: "æ" LATIN SMALL LETTER AE
         /* more_keys_for_nordic_row2_11 */ "\u00E6",
     };
@@ -3092,7 +3123,7 @@ public final class KeyboardTextsTable {
         // U+00F1: "ñ" LATIN SMALL LETTER N WITH TILDE
         /* more_keys_for_n */ "\u00F1",
         /* label_to_alpha_key ~ */
-        null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null,
         /* ~ more_keys_for_l */
         /* more_keys_for_g */ "g\'",
     };
@@ -3109,7 +3140,7 @@ public final class KeyboardTextsTable {
         /* label_to_alpha_key */ "\u0E01\u0E02\u0E04",
         /* more_keys_for_y ~ */
         null, null, null, null, null, null, null, null,
-        /* ~ more_keys_for_g */
+        /* ~ double_angle_quotes */
         // U+0E3F: "฿" THAI CURRENCY SYMBOL BAHT
         /* keylabel_for_currency */ "\u0E3F",
     };
@@ -3210,7 +3241,7 @@ public final class KeyboardTextsTable {
         // U+0161: "š" LATIN SMALL LETTER S WITH CARON
         /* more_keys_for_s */ "\u015F,\u00DF,\u015B,\u0161",
         /* more_keys_for_n ~ */
-        null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null,
         /* ~ more_keys_for_l */
         // U+011F: "ğ" LATIN SMALL LETTER G WITH BREVE
         /* more_keys_for_g */ "\u011F",
@@ -3233,11 +3264,11 @@ public final class KeyboardTextsTable {
         /* label_to_alpha_key */ "\u0410\u0411\u0412",
         /* more_keys_for_y ~ */
         null, null, null, null, null, null, null, null,
-        /* ~ more_keys_for_g */
+        /* ~ double_angle_quotes */
         // U+20B4: "₴" HRYVNIA SIGN
         /* keylabel_for_currency */ "\u20B4",
         /* more_keys_for_r ~ */
-        null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null,
         /* ~ more_keys_for_nordic_row2_10 */
         // U+0449: "щ" CYRILLIC SMALL LETTER SHCHA
         /* keylabel_for_east_slavic_row1_9 */ "\u0449",
@@ -3251,10 +3282,11 @@ public final class KeyboardTextsTable {
         /* keylabel_for_east_slavic_row3_5 */ "\u0438",
         // U+044A: "ъ" CYRILLIC SMALL LETTER HARD SIGN
         /* more_keys_for_cyrillic_soft_sign */ "\u044A",
-        /* more_keys_for_nordic_row2_11 ~ */
+        /* more_keys_for_punctuation ~ */
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-        null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null,
         /* ~ more_keys_for_cyrillic_en */
         // U+0491: "ґ" CYRILLIC SMALL LETTER GHE WITH UPTURN
         /* more_keys_for_cyrillic_ghe */ "\u0491",
@@ -3343,7 +3375,7 @@ public final class KeyboardTextsTable {
         /* more_keys_for_d */ "\u0111",
         /* more_keys_for_z ~ */
         null, null, null, null, null, null,
-        /* ~ more_keys_for_g */
+        /* ~ double_angle_quotes */
         // U+20AB: "₫" DONG SIGN
         /* keylabel_for_currency */ "\u20AB",
     };
@@ -3491,8 +3523,6 @@ public final class KeyboardTextsTable {
         // U+017C: "ż" LATIN SMALL LETTER Z WITH DOT ABOVE
         // U+017E: "ž" LATIN SMALL LETTER Z WITH CARON
         /* more_keys_for_z */ "\u017A,\u017C,\u017E",
-        /* single_angle_quotes */ null,
-        /* double_angle_quotes */ null,
         // U+00FE: "þ" LATIN SMALL LETTER THORN
         // U+0163: "ţ" LATIN SMALL LETTER T WITH CEDILLA
         // U+0165: "ť" LATIN SMALL LETTER T WITH CARON
@@ -3509,7 +3539,9 @@ public final class KeyboardTextsTable {
         // U+0121: "ġ" LATIN SMALL LETTER G WITH DOT ABOVE
         // U+0123: "ģ" LATIN SMALL LETTER G WITH CEDILLA
         /* more_keys_for_g */ "\u011D,\u011F,\u0121,\u0123",
-        /* keylabel_for_currency */ null,
+        /* single_angle_quotes ~ */
+        null, null, null,
+        /* ~ keylabel_for_currency */
         // U+0155: "ŕ" LATIN SMALL LETTER R WITH ACUTE
         // U+0157: "ŗ" LATIN SMALL LETTER R WITH CEDILLA
         // U+0159: "ř" LATIN SMALL LETTER R WITH CARON
@@ -3520,7 +3552,8 @@ public final class KeyboardTextsTable {
         /* keylabel_for_nordic_row1_11 ~ */
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-        null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null,
         /* ~ more_keys_for_question */
         // U+0125: "ĥ" LATIN SMALL LETTER H WITH CIRCUMFLEX
         /* more_keys_for_h */ "\u0125",
@@ -3529,7 +3562,7 @@ public final class KeyboardTextsTable {
         /* more_keys_for_cyrillic_u ~ */
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-        null, null, null,
+        null, null, null, null,
         /* ~ more_keys_for_v */
         // U+0135: "ĵ" LATIN SMALL LETTER J WITH CIRCUMFLEX
         /* more_keys_for_j */ "\u0135",
@@ -3539,60 +3572,60 @@ public final class KeyboardTextsTable {
     // Currently we are dropping the region from the key.
     private static final Object[] LANGUAGES_AND_TEXTS = {
     // "locale", TEXT_ARRAY,  /* numberOfNonNullText/lengthOf_TEXT_ARRAY localeName */
-        "DEFAULT", LANGUAGE_DEFAULT, /* 156/156 default */
+        "DEFAULT", LANGUAGE_DEFAULT, /* 172/172 default */
         "af", LANGUAGE_af,    /*   8/ 12 Afrikaans */
-        "ar", LANGUAGE_ar,    /*  48/ 99 Arabic */
-        "az", LANGUAGE_az_AZ, /*   8/ 19 Azerbaijani (Azerbaijan) */
-        "be", LANGUAGE_be_BY, /*  10/ 34 Belarusian (Belarus) */
+        "ar", LANGUAGE_ar,    /*  58/110 Arabic */
+        "az", LANGUAGE_az_AZ, /*   8/ 17 Azerbaijani (Azerbaijan) */
+        "be", LANGUAGE_be_BY, /*  10/ 33 Belarusian (Belarus) */
         "bg", LANGUAGE_bg,    /*   2/ 11 Bulgarian */
-        "ca", LANGUAGE_ca,    /*  11/ 85 Catalan */
+        "ca", LANGUAGE_ca,    /*  11/117 Catalan */
         "cs", LANGUAGE_cs,    /*  17/ 21 Czech */
         "da", LANGUAGE_da,    /*  19/ 35 Danish */
-        "de", LANGUAGE_de,    /*  16/ 83 German */
+        "de", LANGUAGE_de,    /*  16/ 93 German */
         "el", LANGUAGE_el,    /*   1/ 11 Greek */
         "en", LANGUAGE_en,    /*   8/ 10 English */
-        "eo", LANGUAGE_eo,    /*  26/115 Esperanto */
-        "es", LANGUAGE_es,    /*   8/ 27 Spanish */
-        "et", LANGUAGE_et_EE, /*  22/ 28 Estonian (Estonia) */
-        "fa", LANGUAGE_fa,    /*  49/ 99 Persian */
+        "eo", LANGUAGE_eo,    /*  26/129 Esperanto */
+        "es", LANGUAGE_es,    /*   8/ 34 Spanish */
+        "et", LANGUAGE_et_EE, /*  22/ 27 Estonian (Estonia) */
+        "fa", LANGUAGE_fa,    /*  61/120 Persian */
         "fi", LANGUAGE_fi,    /*  10/ 35 Finnish */
-        "fr", LANGUAGE_fr,    /*  13/ 83 French */
+        "fr", LANGUAGE_fr,    /*  13/ 93 French */
         "hi", LANGUAGE_hi,    /*  24/ 57 Hindi */
-        "hr", LANGUAGE_hr,    /*   9/ 16 Croatian */
-        "hu", LANGUAGE_hu,    /*   9/ 16 Hungarian */
-        "hy", LANGUAGE_hy_AM, /*   8/109 Armenian (Armenia) */
+        "hr", LANGUAGE_hr,    /*   9/ 19 Croatian */
+        "hu", LANGUAGE_hu,    /*   9/ 19 Hungarian */
+        "hy", LANGUAGE_hy_AM, /*   8/123 Armenian (Armenia) */
         "is", LANGUAGE_is,    /*  13/ 25 Icelandic */
         "it", LANGUAGE_it,    /*   5/  5 Italian */
-        "iw", LANGUAGE_iw,    /*  14/106 Hebrew */
+        "iw", LANGUAGE_iw,    /*  20/118 Hebrew */
         "ka", LANGUAGE_ka_GE, /*   3/ 11 Georgian (Georgia) */
-        "kk", LANGUAGE_kk,    /*  16/104 Kazakh */
-        "km", LANGUAGE_km_KH, /*   2/105 Khmer (Cambodia) */
-        "ky", LANGUAGE_ky,    /*  11/ 72 Kirghiz */
+        "kk", LANGUAGE_kk,    /*  16/115 Kazakh */
+        "km", LANGUAGE_km_KH, /*   2/116 Khmer (Cambodia) */
+        "ky", LANGUAGE_ky,    /*  11/ 82 Kirghiz */
         "lo", LANGUAGE_lo_LA, /*   2/ 20 Lao (Laos) */
         "lt", LANGUAGE_lt,    /*  18/ 22 Lithuanian */
         "lv", LANGUAGE_lv,    /*  18/ 22 Latvian */
-        "mk", LANGUAGE_mk,    /*   9/ 77 Macedonian */
+        "mk", LANGUAGE_mk,    /*   9/ 87 Macedonian */
         "mn", LANGUAGE_mn_MN, /*   2/ 20 Mongolian (Mongolia) */
         "nb", LANGUAGE_nb,    /*  11/ 35 Norwegian Bokmål */
         "ne", LANGUAGE_ne_NP, /*  24/ 57 Nepali (Nepal) */
         "nl", LANGUAGE_nl,    /*   9/ 12 Dutch */
-        "pl", LANGUAGE_pl,    /*  10/ 18 Polish */
+        "pl", LANGUAGE_pl,    /*  10/ 16 Polish */
         "pt", LANGUAGE_pt,    /*   6/  8 Portuguese */
         "rm", LANGUAGE_rm,    /*   1/  2 Raeto-Romance */
-        "ro", LANGUAGE_ro,    /*   6/ 17 Romanian */
-        "ru", LANGUAGE_ru,    /*  10/ 34 Russian */
+        "ro", LANGUAGE_ro,    /*   6/ 15 Romanian */
+        "ru", LANGUAGE_ru,    /*  10/ 33 Russian */
         "sk", LANGUAGE_sk,    /*  20/ 22 Slovak */
-        "sl", LANGUAGE_sl,    /*   8/ 16 Slovenian */
-        "sr", LANGUAGE_sr,    /*  11/ 77 Serbian */
+        "sl", LANGUAGE_sl,    /*   8/ 19 Slovenian */
+        "sr", LANGUAGE_sr,    /*  11/ 87 Serbian */
         "sv", LANGUAGE_sv,    /*  21/ 35 Swedish */
-        "sw", LANGUAGE_sw,    /*   9/ 19 Swahili */
+        "sw", LANGUAGE_sw,    /*   9/ 17 Swahili */
         "th", LANGUAGE_th,    /*   2/ 20 Thai */
         "tl", LANGUAGE_tl,    /*   7/ 10 Tagalog */
-        "tr", LANGUAGE_tr,    /*   7/ 19 Turkish */
-        "uk", LANGUAGE_uk,    /*  12/ 71 Ukrainian */
+        "tr", LANGUAGE_tr,    /*   7/ 17 Turkish */
+        "uk", LANGUAGE_uk,    /*  12/ 81 Ukrainian */
         "vi", LANGUAGE_vi,    /*   8/ 20 Vietnamese */
         "zu", LANGUAGE_zu,    /*   8/ 10 Zulu */
-        "zz", LANGUAGE_zz,    /*  19/101 Alphabet */
+        "zz", LANGUAGE_zz,    /*  19/112 Alphabet */
     };
 
     static {

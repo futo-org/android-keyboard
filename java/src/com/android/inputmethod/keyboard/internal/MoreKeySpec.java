@@ -46,15 +46,14 @@ public final class MoreKeySpec {
     public final String mOutputText;
     public final int mIconId;
 
-    public MoreKeySpec(final String moreKeySpec, boolean needsToUpperCase, final Locale locale,
-            final KeyboardCodesSet codesSet) {
+    public MoreKeySpec(final String moreKeySpec, boolean needsToUpperCase, final Locale locale) {
         if (TextUtils.isEmpty(moreKeySpec)) {
             throw new KeySpecParser.KeySpecParserError("Empty more key spec");
         }
         mLabel = StringUtils.toUpperCaseOfStringForLocale(
                 KeySpecParser.getLabel(moreKeySpec), needsToUpperCase, locale);
         final int code = StringUtils.toUpperCaseOfCodeForLocale(
-                KeySpecParser.getCode(moreKeySpec, codesSet), needsToUpperCase, locale);
+                KeySpecParser.getCode(moreKeySpec), needsToUpperCase, locale);
         if (code == Constants.CODE_UNSPECIFIED) {
             // Some letter, for example German Eszett (U+00DF: "ß"), has multiple characters
             // upper case representation ("SS").

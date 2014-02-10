@@ -33,8 +33,8 @@ public final class MoreKeySpecTests extends KeySpecParserTestsBase {
             final String expectedLabel, final String expectedOutputText, final int expectedIconId,
             final int expectedCode) {
         final String labelResolved = mTextsSet.resolveTextReference(moreKeySpec);
-        final MoreKeySpec spec = new MoreKeySpec(labelResolved, false /* needsToUpperCase */,
-                Locale.US, mCodesSet);
+        final MoreKeySpec spec = new MoreKeySpec(
+                labelResolved, false /* needsToUpperCase */, Locale.US);
         assertEquals(message + " [label]", expectedLabel, spec.mLabel);
         assertEquals(message + " [ouptputText]", expectedOutputText, spec.mOutputText);
         assertEquals(message + " [icon]",

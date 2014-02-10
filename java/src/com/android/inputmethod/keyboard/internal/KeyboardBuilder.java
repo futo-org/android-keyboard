@@ -279,7 +279,6 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
             params.mThemeId = keyboardAttr.getInt(R.styleable.Keyboard_themeId, 0);
             params.mIconsSet.loadIcons(keyboardAttr);
             final Locale locale = params.mId.mLocale;
-            params.mCodesSet.setLocale(locale);
             params.mTextsSet.setLocale(locale);
             final RunInLocale<Void> job = new RunInLocale<Void>() {
                 @Override

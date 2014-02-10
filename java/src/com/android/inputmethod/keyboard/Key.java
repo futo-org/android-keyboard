@@ -292,8 +292,7 @@ public class Key implements Comparable<Key> {
             actionFlags |= ACTION_FLAGS_ENABLE_LONG_PRESS;
             mMoreKeys = new MoreKeySpec[moreKeys.length];
             for (int i = 0; i < moreKeys.length; i++) {
-                mMoreKeys[i] = new MoreKeySpec(
-                        moreKeys[i], needsToUpperCase, locale, params.mCodesSet);
+                mMoreKeys[i] = new MoreKeySpec(moreKeys[i], needsToUpperCase, locale);
             }
         } else {
             mMoreKeys = null;
@@ -306,7 +305,7 @@ public class Key implements Comparable<Key> {
         final int previewIconId = KeySpecParser.getIconId(style.getString(keyAttr,
                 R.styleable.Keyboard_Key_keyIconPreview));
 
-        final int code = KeySpecParser.getCode(keySpec, params.mCodesSet);
+        final int code = KeySpecParser.getCode(keySpec);
         if ((mLabelFlags & LABEL_FLAGS_FROM_CUSTOM_ACTION_LABEL) != 0) {
             mLabel = params.mId.mCustomActionLabel;
         } else if (code >= Character.MIN_SUPPLEMENTARY_CODE_POINT) {
@@ -353,8 +352,8 @@ public class Key implements Comparable<Key> {
         } else {
             mCode = StringUtils.toUpperCaseOfCodeForLocale(code, needsToUpperCase, locale);
         }
-        final int altCodeInAttr = KeySpecParser.parseCode(style.getString(keyAttr,
-                R.styleable.Keyboard_Key_altCode), params.mCodesSet, CODE_UNSPECIFIED);
+        final int altCodeInAttr = KeySpecParser.parseCode(
+                style.getString(keyAttr, R.styleable.Keyboard_Key_altCode), CODE_UNSPECIFIED);
         final int altCode = StringUtils.toUpperCaseOfCodeForLocale(
                 altCodeInAttr, needsToUpperCase, locale);
         mOptionalAttributes = OptionalAttributes.newInstance(outputText, altCode,

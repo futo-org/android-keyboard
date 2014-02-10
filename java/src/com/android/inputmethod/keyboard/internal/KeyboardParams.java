@@ -62,7 +62,6 @@ public class KeyboardParams {
     public final ArrayList<Key> mShiftKeys = CollectionUtils.newArrayList();
     public final ArrayList<Key> mAltCodeKeysWhileTyping = CollectionUtils.newArrayList();
     public final KeyboardIconsSet mIconsSet = new KeyboardIconsSet();
-    public final KeyboardCodesSet mCodesSet = new KeyboardCodesSet();
     public final KeyboardTextsSet mTextsSet = new KeyboardTextsSet();
     public final KeyStylesSet mKeyStyles = new KeyStylesSet(mTextsSet);
 

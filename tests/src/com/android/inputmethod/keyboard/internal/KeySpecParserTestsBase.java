@@ -32,7 +32,6 @@ import java.util.Locale;
 
 abstract class KeySpecParserTestsBase extends AndroidTestCase {
     private final static Locale TEST_LOCALE = Locale.ENGLISH;
-    protected final KeyboardCodesSet mCodesSet = new KeyboardCodesSet();
     protected final KeyboardTextsSet mTextsSet = new KeyboardTextsSet();
 
     private static final String CODE_SETTINGS_NAME = "key_settings";
@@ -52,7 +51,6 @@ abstract class KeySpecParserTestsBase extends AndroidTestCase {
     protected void setUp() throws Exception {
         super.setUp();
 
-        mCodesSet.setLocale(TEST_LOCALE);
         mTextsSet.setLocale(TEST_LOCALE);
         final Context context = getContext();
         new RunInLocale<Void>() {
@@ -63,8 +61,8 @@ abstract class KeySpecParserTestsBase extends AndroidTestCase {
             }
         }.runInLocale(context.getResources(), TEST_LOCALE);
 
-        mCodeSettings = mCodesSet.getCode(CODE_SETTINGS_NAME);
-        mCodeActionNext = mCodesSet.getCode("key_action_next");
+        mCodeSettings = KeyboardCodesSet.getCode(CODE_SETTINGS_NAME);
+        mCodeActionNext = KeyboardCodesSet.getCode("key_action_next");
         mSettingsIconId = KeyboardIconsSet.getIconId(ICON_SETTINGS_NAME);
     }
 

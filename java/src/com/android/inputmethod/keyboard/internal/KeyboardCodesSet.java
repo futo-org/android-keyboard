@@ -18,26 +18,22 @@ package com.android.inputmethod.keyboard.internal;
 
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.utils.CollectionUtils;
-import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 
 import java.util.HashMap;
-import java.util.Locale;
 
 public final class KeyboardCodesSet {
     public static final String PREFIX_CODE = "!code/";
 
     private static final HashMap<String, Integer> sNameToIdMap = CollectionUtils.newHashMap();
 
-    private int[] mCodes = DEFAULT;
-
-    public void setLocale(final Locale locale) {
-        mCodes = SubtypeLocaleUtils.isRtlLanguage(locale) ? RTL : DEFAULT;
+    private KeyboardCodesSet() {
+        // This utility class is not publicly instantiable.
     }
 
-    public int getCode(final String name) {
+    public static int getCode(final String name) {
         Integer id = sNameToIdMap.get(name);
         if (id == null) throw new RuntimeException("Unknown key code: " + name);
-        return mCodes[id];
+        return DEFAULT[id];
     }
 
     private static final String[] ID_TO_NAME = {
@@ -58,26 +54,8 @@ public final class KeyboardCodesSet {
         "key_emoji",
         "key_alpha_from_emoji",
         "key_unspecified",
-        "key_left_parenthesis",
-        "key_right_parenthesis",
-        "key_less_than",
-        "key_greater_than",
-        "key_left_square_bracket",
-        "key_right_square_bracket",
-        "key_left_curly_bracket",
-        "key_right_curly_bracket",
     };
 
-    private static final int CODE_LEFT_PARENTHESIS = '(';
-    private static final int CODE_RIGHT_PARENTHESIS = ')';
-    private static final int CODE_LESS_THAN_SIGN = '<';
-    private static final int CODE_GREATER_THAN_SIGN = '>';
-    private static final int CODE_LEFT_SQUARE_BRACKET = '[';
-    private static final int CODE_RIGHT_SQUARE_BRACKET = ']';
-    private static final int CODE_LEFT_CURLY_BRACKET = '{';
-    private static final int CODE_RIGHT_CURLY_BRACKET = '}';
-
-    // This array should be aligned with the array RTL below.
     private static final int[] DEFAULT = {
         Constants.CODE_TAB,
         Constants.CODE_ENTER,
@@ -96,48 +74,9 @@ public final class KeyboardCodesSet {
         Constants.CODE_EMOJI,
         Constants.CODE_ALPHA_FROM_EMOJI,
         Constants.CODE_UNSPECIFIED,
-        CODE_LEFT_PARENTHESIS,
-        CODE_RIGHT_PARENTHESIS,
-        CODE_LESS_THAN_SIGN,
-        CODE_GREATER_THAN_SIGN,
-        CODE_LEFT_SQUARE_BRACKET,
-        CODE_RIGHT_SQUARE_BRACKET,
-        CODE_LEFT_CURLY_BRACKET,
-        CODE_RIGHT_CURLY_BRACKET,
-    };
-
-    private static final int[] RTL = {
-        DEFAULT[0],
-        DEFAULT[1],
-        DEFAULT[2],
-        DEFAULT[3],
-        DEFAULT[4],
-        DEFAULT[5],
-        DEFAULT[6],
-        DEFAULT[7],
-        DEFAULT[8],
-        DEFAULT[9],
-        DEFAULT[10],
-        DEFAULT[11],
-        DEFAULT[12],
-        DEFAULT[13],
-        DEFAULT[14],
-        DEFAULT[15],
-        DEFAULT[16],
-        CODE_RIGHT_PARENTHESIS,
-        CODE_LEFT_PARENTHESIS,
-        CODE_GREATER_THAN_SIGN,
-        CODE_LESS_THAN_SIGN,
-        CODE_RIGHT_SQUARE_BRACKET,
-        CODE_LEFT_SQUARE_BRACKET,
-        CODE_RIGHT_CURLY_BRACKET,
-        CODE_LEFT_CURLY_BRACKET,
     };
 
     static {
-        if (DEFAULT.length != RTL.length || DEFAULT.length != ID_TO_NAME.length) {
-            throw new RuntimeException("Internal inconsistency");
-        }
         for (int i = 0; i < ID_TO_NAME.length; i++) {
             sNameToIdMap.put(ID_TO_NAME[i], i);
         }
