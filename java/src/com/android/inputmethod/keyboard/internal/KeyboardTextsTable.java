@@ -3476,60 +3476,61 @@ public final class KeyboardTextsTable {
     // TODO: Use the language + "_" + region representation for the locale string key.
     // Currently we are dropping the region from the key.
     private static final Object[] LANGUAGES_AND_TEXTS = {
-        "DEFAULT", LANGUAGE_DEFAULT, /* default */
-        "af", LANGUAGE_af, /* Afrikaans */
-        "ar", LANGUAGE_ar, /* Arabic */
-        "az" /* "az_AZ" */, LANGUAGE_az_AZ, /* Azerbaijani (Azerbaijan) */
-        "be" /* "be_BY" */, LANGUAGE_be_BY, /* Belarusian (Belarus) */
-        "bg", LANGUAGE_bg, /* Bulgarian */
-        "ca", LANGUAGE_ca, /* Catalan */
-        "cs", LANGUAGE_cs, /* Czech */
-        "da", LANGUAGE_da, /* Danish */
-        "de", LANGUAGE_de, /* German */
-        "el", LANGUAGE_el, /* Greek */
-        "en", LANGUAGE_en, /* English */
-        "eo", LANGUAGE_eo, /* Esperanto */
-        "es", LANGUAGE_es, /* Spanish */
-        "et" /* "et_EE" */, LANGUAGE_et_EE, /* Estonian (Estonia) */
-        "fa", LANGUAGE_fa, /* Persian */
-        "fi", LANGUAGE_fi, /* Finnish */
-        "fr", LANGUAGE_fr, /* French */
-        "hi", LANGUAGE_hi, /* Hindi */
-        "hr", LANGUAGE_hr, /* Croatian */
-        "hu", LANGUAGE_hu, /* Hungarian */
-        "hy" /* "hy_AM" */, LANGUAGE_hy_AM, /* Armenian (Armenia) */
-        "is", LANGUAGE_is, /* Icelandic */
-        "it", LANGUAGE_it, /* Italian */
-        "iw", LANGUAGE_iw, /* Hebrew */
-        "ka" /* "ka_GE" */, LANGUAGE_ka_GE, /* Georgian (Georgia) */
-        "kk", LANGUAGE_kk, /* Kazakh */
-        "km" /* "km_KH" */, LANGUAGE_km_KH, /* Khmer (Cambodia) */
-        "ky", LANGUAGE_ky, /* Kirghiz */
-        "lo" /* "lo_LA" */, LANGUAGE_lo_LA, /* Lao (Laos) */
-        "lt", LANGUAGE_lt, /* Lithuanian */
-        "lv", LANGUAGE_lv, /* Latvian */
-        "mk", LANGUAGE_mk, /* Macedonian */
-        "mn" /* "mn_MN" */, LANGUAGE_mn_MN, /* Mongolian (Mongolia) */
-        "nb", LANGUAGE_nb, /* Norwegian Bokmål */
-        "ne" /* "ne_NP" */, LANGUAGE_ne_NP, /* Nepali (Nepal) */
-        "nl", LANGUAGE_nl, /* Dutch */
-        "pl", LANGUAGE_pl, /* Polish */
-        "pt", LANGUAGE_pt, /* Portuguese */
-        "rm", LANGUAGE_rm, /* Raeto-Romance */
-        "ro", LANGUAGE_ro, /* Romanian */
-        "ru", LANGUAGE_ru, /* Russian */
-        "sk", LANGUAGE_sk, /* Slovak */
-        "sl", LANGUAGE_sl, /* Slovenian */
-        "sr", LANGUAGE_sr, /* Serbian */
-        "sv", LANGUAGE_sv, /* Swedish */
-        "sw", LANGUAGE_sw, /* Swahili */
-        "th", LANGUAGE_th, /* Thai */
-        "tl", LANGUAGE_tl, /* Tagalog */
-        "tr", LANGUAGE_tr, /* Turkish */
-        "uk", LANGUAGE_uk, /* Ukrainian */
-        "vi", LANGUAGE_vi, /* Vietnamese */
-        "zu", LANGUAGE_zu, /* Zulu */
-        "zz", LANGUAGE_zz, /* Alphabet */
+    // "locale", TEXT_ARRAY,  /* numberOfNonNullText/lengthOf_TEXT_ARRAY localeName */
+        "DEFAULT", LANGUAGE_DEFAULT, /* 156/156 default */
+        "af", LANGUAGE_af,    /*   8/  9 Afrikaans */
+        "ar", LANGUAGE_ar,    /*  48/119 Arabic */
+        "az", LANGUAGE_az_AZ, /*   8/ 16 Azerbaijani (Azerbaijan) */
+        "be", LANGUAGE_be_BY, /*  10/ 54 Belarusian (Belarus) */
+        "bg", LANGUAGE_bg,    /*   2/ 54 Bulgarian */
+        "ca", LANGUAGE_ca,    /*  11/126 Catalan */
+        "cs", LANGUAGE_cs,    /*  17/ 56 Czech */
+        "da", LANGUAGE_da,    /*  19/ 56 Danish */
+        "de", LANGUAGE_de,    /*  16/ 56 German */
+        "el", LANGUAGE_el,    /*   1/ 52 Greek */
+        "en", LANGUAGE_en,    /*   8/  8 English */
+        "eo", LANGUAGE_eo,    /*  26/126 Esperanto */
+        "es", LANGUAGE_es,    /*   8/ 60 Spanish */
+        "et", LANGUAGE_et_EE, /*  22/ 54 Estonian (Estonia) */
+        "fa", LANGUAGE_fa,    /*  49/119 Persian */
+        "fi", LANGUAGE_fi,    /*  10/ 25 Finnish */
+        "fr", LANGUAGE_fr,    /*  13/ 51 French */
+        "hi", LANGUAGE_hi,    /*  24/ 91 Hindi */
+        "hr", LANGUAGE_hr,    /*   9/ 56 Croatian */
+        "hu", LANGUAGE_hu,    /*   9/ 56 Hungarian */
+        "hy", LANGUAGE_hy_AM, /*   7/117 Armenian (Armenia) */
+        "is", LANGUAGE_is,    /*  13/ 54 Icelandic */
+        "it", LANGUAGE_it,    /*   5/  5 Italian */
+        "iw", LANGUAGE_iw,    /*  14/ 68 Hebrew */
+        "ka", LANGUAGE_ka_GE, /*   3/ 54 Georgian (Georgia) */
+        "kk", LANGUAGE_kk,    /*  16/ 52 Kazakh */
+        "km", LANGUAGE_km_KH, /*   2/ 57 Khmer (Cambodia) */
+        "ky", LANGUAGE_ky,    /*  11/ 52 Kirghiz */
+        "lo", LANGUAGE_lo_LA, /*   2/ 58 Lao (Laos) */
+        "lt", LANGUAGE_lt,    /*  18/ 54 Lithuanian */
+        "lv", LANGUAGE_lv,    /*  18/ 54 Latvian */
+        "mk", LANGUAGE_mk,    /*   9/ 54 Macedonian */
+        "mn", LANGUAGE_mn_MN, /*   2/ 58 Mongolian (Mongolia) */
+        "nb", LANGUAGE_nb,    /*  11/ 54 Norwegian Bokmål */
+        "ne", LANGUAGE_ne_NP, /*  24/ 91 Nepali (Nepal) */
+        "nl", LANGUAGE_nl,    /*   9/ 54 Dutch */
+        "pl", LANGUAGE_pl,    /*  10/ 54 Polish */
+        "pt", LANGUAGE_pt,    /*   6/  8 Portuguese */
+        "rm", LANGUAGE_rm,    /*   1/  4 Raeto-Romance */
+        "ro", LANGUAGE_ro,    /*   6/ 54 Romanian */
+        "ru", LANGUAGE_ru,    /*  10/ 54 Russian */
+        "sk", LANGUAGE_sk,    /*  20/ 56 Slovak */
+        "sl", LANGUAGE_sl,    /*   8/ 56 Slovenian */
+        "sr", LANGUAGE_sr,    /*  11/ 56 Serbian */
+        "sv", LANGUAGE_sv,    /*  21/ 56 Swedish */
+        "sw", LANGUAGE_sw,    /*   9/ 16 Swahili */
+        "th", LANGUAGE_th,    /*   2/ 58 Thai */
+        "tl", LANGUAGE_tl,    /*   7/  8 Tagalog */
+        "tr", LANGUAGE_tr,    /*   7/ 16 Turkish */
+        "uk", LANGUAGE_uk,    /*  12/ 58 Ukrainian */
+        "vi", LANGUAGE_vi,    /*   8/ 58 Vietnamese */
+        "zu", LANGUAGE_zu,    /*   8/  8 Zulu */
+        "zz", LANGUAGE_zz,    /*  19/ 20 Alphabet */
     };
 
     static {
