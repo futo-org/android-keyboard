@@ -20,6 +20,7 @@
 #include "defines.h"
 #include "suggest/core/dicnode/dic_node.h"
 #include "suggest/core/dicnode/dic_node_vector.h"
+#include "suggest/policyimpl/dictionary/structure/pt_common/dynamic_pt_reading_helper.h"
 #include "suggest/policyimpl/dictionary/structure/v2/patricia_trie_reading_utils.h"
 #include "suggest/policyimpl/dictionary/utils/probability_utils.h"
 
@@ -235,89 +236,9 @@ int PatriciaTriePolicy::getCodePointsAndProbabilityAndReturnCodePointCount(
 // dictionary. If no match is found, it returns NOT_A_DICT_POS.
 int PatriciaTriePolicy::getTerminalPtNodePositionOfWord(const int *const inWord,
         const int length, const bool forceLowerCaseSearch) const {
-    int pos = getRootPosition();
-    int wordPos = 0;
-
-    while (true) {
-        // If we already traversed the tree further than the word is long, there means
-        // there was no match (or we would have found it).
-        if (wordPos >= length) return NOT_A_DICT_POS;
-        int ptNodeCount = PatriciaTrieReadingUtils::getPtNodeArraySizeAndAdvancePosition(mDictRoot,
-                &pos);
-        const int wChar = forceLowerCaseSearch
-                ? CharUtils::toLowerCase(inWord[wordPos]) : inWord[wordPos];
-        while (true) {
-            // If there are no more PtNodes in this array, it means we could not
-            // find a matching character for this depth, therefore there is no match.
-            if (0 >= ptNodeCount) return NOT_A_DICT_POS;
-            const int ptNodePos = pos;
-            const PatriciaTrieReadingUtils::NodeFlags flags =
-                    PatriciaTrieReadingUtils::getFlagsAndAdvancePosition(mDictRoot, &pos);
-            int character = PatriciaTrieReadingUtils::getCodePointAndAdvancePosition(mDictRoot,
-                    &pos);
-            if (character == wChar) {
-                // This is the correct PtNode. Only one PtNode may start with the same char within
-                // a PtNode array, so either we found our match in this array, or there is
-                // no match and we can return NOT_A_DICT_POS. So we will check all the
-                // characters in this PtNode indeed does match.
-                if (PatriciaTrieReadingUtils::hasMultipleChars(flags)) {
-                    character = PatriciaTrieReadingUtils::getCodePointAndAdvancePosition(mDictRoot,
-                            &pos);
-                    while (NOT_A_CODE_POINT != character) {
-                        ++wordPos;
-                        // If we shoot the length of the word we search for, or if we find a single
-                        // character that does not match, as explained above, it means the word is
-                        // not in the dictionary (by virtue of this PtNode being the only one to
-                        // match the word on the first character, but not matching the whole word).
-                        if (wordPos >= length) return NOT_A_DICT_POS;
-                        if (inWord[wordPos] != character) return NOT_A_DICT_POS;
-                        character = PatriciaTrieReadingUtils::getCodePointAndAdvancePosition(
-                                mDictRoot, &pos);
-                    }
-                }
-                // If we come here we know that so far, we do match. Either we are on a terminal
-                // and we match the length, in which case we found it, or we traverse children.
-                // If we don't match the length AND don't have children, then a word in the
-                // dictionary fully matches a prefix of the searched word but not the full word.
-                ++wordPos;
-                if (PatriciaTrieReadingUtils::isTerminal(flags)) {
-                    if (wordPos == length) {
-                        return ptNodePos;
-                    }
-                    PatriciaTrieReadingUtils::readProbabilityAndAdvancePosition(mDictRoot, &pos);
-                }
-                if (!PatriciaTrieReadingUtils::hasChildrenInFlags(flags)) {
-                    return NOT_A_DICT_POS;
-                }
-                // We have children and we are still shorter than the word we are searching for, so
-                // we need to traverse children. Put the pointer on the children position, and
-                // break
-                pos = PatriciaTrieReadingUtils::readChildrenPositionAndAdvancePosition(mDictRoot,
-                        flags, &pos);
-                break;
-            } else {
-                // This PtNode does not match, so skip the remaining part and go to the next.
-                if (PatriciaTrieReadingUtils::hasMultipleChars(flags)) {
-                    PatriciaTrieReadingUtils::skipCharacters(mDictRoot, flags, MAX_WORD_LENGTH,
-                            &pos);
-                }
-                if (PatriciaTrieReadingUtils::isTerminal(flags)) {
-                    PatriciaTrieReadingUtils::readProbabilityAndAdvancePosition(mDictRoot, &pos);
-                }
-                if (PatriciaTrieReadingUtils::hasChildrenInFlags(flags)) {
-                    PatriciaTrieReadingUtils::readChildrenPositionAndAdvancePosition(mDictRoot,
-                            flags, &pos);
-                }
-                if (PatriciaTrieReadingUtils::hasShortcutTargets(flags)) {
-                    mShortcutListPolicy.skipAllShortcuts(&pos);
-                }
-                if (PatriciaTrieReadingUtils::hasBigrams(flags)) {
-                    mBigramListPolicy.skipAllBigrams(&pos);
-                }
-            }
-            --ptNodeCount;
-        }
-    }
+    DynamicPtReadingHelper readingHelper(&mPtNodeReader, &mPtNodeArrayReader);
+    readingHelper.initWithPtNodeArrayPos(getRootPosition());
+    return readingHelper.getTerminalPtNodePositionOfWord(inWord, length, forceLowerCaseSearch);
 }
 
 int PatriciaTriePolicy::getProbability(const int unigramProbability,

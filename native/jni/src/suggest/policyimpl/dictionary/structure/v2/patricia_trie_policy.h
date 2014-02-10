@@ -25,6 +25,7 @@
 #include "suggest/policyimpl/dictionary/header/header_policy.h"
 #include "suggest/policyimpl/dictionary/shortcut/shortcut_list_policy.h"
 #include "suggest/policyimpl/dictionary/structure/v2/ver2_patricia_trie_node_reader.h"
+#include "suggest/policyimpl/dictionary/structure/v2/ver2_pt_node_array_reader.h"
 #include "suggest/policyimpl/dictionary/utils/format_utils.h"
 #include "suggest/policyimpl/dictionary/utils/mmapped_buffer.h"
 
@@ -42,7 +43,8 @@ class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
               mDictBufferSize(mMmappedBuffer.get()->getBufferSize()
                       - mHeaderPolicy.getSize()),
               mBigramListPolicy(mDictRoot), mShortcutListPolicy(mDictRoot),
-              mPtNodeReader(mDictRoot, mDictBufferSize, &mBigramListPolicy, &mShortcutListPolicy) {}
+              mPtNodeReader(mDictRoot, mDictBufferSize, &mBigramListPolicy, &mShortcutListPolicy),
+              mPtNodeArrayReader(mDictRoot, mDictBufferSize) {}
 
     AK_FORCE_INLINE int getRootPosition() const {
         return 0;
@@ -146,6 +148,7 @@ class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     const BigramListPolicy mBigramListPolicy;
     const ShortcutListPolicy mShortcutListPolicy;
     const Ver2ParticiaTrieNodeReader mPtNodeReader;
+    const Ver2PtNodeArrayReader mPtNodeArrayReader;
 
     int createAndGetLeavingChildNode(const DicNode *const dicNode, const int ptNodePos,
             DicNodeVector *const childDicNodes) const;
