@@ -1256,7 +1256,14 @@ public final class InputLogic {
         // If we don't know the cursor location, return.
         if (mConnection.getExpectedSelectionStart() < 0) return;
         final int expectedCursorPosition = mConnection.getExpectedSelectionStart();
-        if (!mConnection.isCursorTouchingWord(settingsValues.mSpacingAndPunctuations)) return;
+        if (!mConnection.isCursorTouchingWord(settingsValues.mSpacingAndPunctuations)) {
+            // Show predictions.
+            mWordComposer.setCapitalizedModeAndPreviousWordAtStartComposingTime(
+                    WordComposer.CAPS_MODE_OFF,
+                    getNthPreviousWordForSuggestion(settingsValues.mSpacingAndPunctuations, 1));
+            mLatinIME.mHandler.postUpdateSuggestionStrip();
+            return;
+        }
         final TextRange range = mConnection.getWordRangeAtCursor(
                 settingsValues.mSpacingAndPunctuations.mSortedWordSeparators,
                 0 /* additionalPrecedingWordsCount */);
