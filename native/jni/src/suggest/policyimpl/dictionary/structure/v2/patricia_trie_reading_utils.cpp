@@ -17,6 +17,8 @@
 #include "suggest/policyimpl/dictionary/structure/v2/patricia_trie_reading_utils.h"
 
 #include "defines.h"
+#include "suggest/core/policy/dictionary_bigrams_structure_policy.h"
+#include "suggest/core/policy/dictionary_shortcuts_structure_policy.h"
 #include "suggest/policyimpl/dictionary/utils/byte_array_utils.h"
 
 namespace latinime {
@@ -128,6 +130,34 @@ const PtReadingUtils::NodeFlags PtReadingUtils::FLAG_IS_BLACKLISTED = 0x01;
             return NOT_A_DICT_POS;
     }
     return base + offset;
+}
+
+/* static */ void PtReadingUtils::readPtNodeInfo(const uint8_t *const dictBuf, const int ptNodePos,
+        const DictionaryShortcutsStructurePolicy *const shortcutPolicy,
+        const DictionaryBigramsStructurePolicy *const bigramPolicy,
+        NodeFlags *const outFlags, int *const outCodePointCount, int *const outCodePoint,
+        int *const outProbability, int *const outChildrenPos, int *const outShortcutPos,
+        int *const outBigramPos, int *const outSiblingPos) {
+    int readingPos = ptNodePos;
+    const NodeFlags flags = getFlagsAndAdvancePosition(dictBuf, &readingPos);
+    *outFlags = flags;
+    *outCodePointCount = getCharsAndAdvancePosition(
+            dictBuf, flags, MAX_WORD_LENGTH, outCodePoint, &readingPos);
+    *outProbability = isTerminal(flags) ?
+            readProbabilityAndAdvancePosition(dictBuf, &readingPos) : NOT_A_PROBABILITY;
+    *outChildrenPos = hasChildrenInFlags(flags) ?
+            readChildrenPositionAndAdvancePosition(dictBuf, flags, &readingPos) : NOT_A_DICT_POS;
+    *outShortcutPos = NOT_A_DICT_POS;
+    if (hasShortcutTargets(flags)) {
+        *outShortcutPos = readingPos;
+        shortcutPolicy->skipAllShortcuts(&readingPos);
+    }
+    *outBigramPos = NOT_A_DICT_POS;
+    if (hasBigrams(flags)) {
+        *outBigramPos = readingPos;
+        bigramPolicy->skipAllBigrams(&readingPos);
+    }
+    *outSiblingPos = readingPos;
 }
 
 } // namespace latinime
