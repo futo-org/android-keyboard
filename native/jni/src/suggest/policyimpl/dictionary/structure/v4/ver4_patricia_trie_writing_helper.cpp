@@ -26,6 +26,7 @@
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_dict_constants.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_patricia_trie_node_reader.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_patricia_trie_node_writer.h"
+#include "suggest/policyimpl/dictionary/structure/v4/ver4_pt_node_array_reader.h"
 #include "suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer.h"
 #include "suggest/policyimpl/dictionary/utils/file_utils.h"
 #include "suggest/policyimpl/dictionary/utils/forgetting_curve_utils.h"
@@ -74,14 +75,16 @@ bool Ver4PatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
         int *const outUnigramCount, int *const outBigramCount) {
     Ver4PatriciaTrieNodeReader ptNodeReader(mBuffers->getTrieBuffer(),
             mBuffers->getProbabilityDictContent());
+    Ver4PtNodeArrayReader ptNodeArrayReader(mBuffers->getTrieBuffer());
     Ver4BigramListPolicy bigramPolicy(mBuffers->getMutableBigramDictContent(),
             mBuffers->getTerminalPositionLookupTable(), headerPolicy);
     Ver4ShortcutListPolicy shortcutPolicy(mBuffers->getMutableShortcutDictContent(),
             mBuffers->getTerminalPositionLookupTable());
     Ver4PatriciaTrieNodeWriter ptNodeWriter(mBuffers->getWritableTrieBuffer(),
-            mBuffers, &ptNodeReader, &bigramPolicy, &shortcutPolicy);
+            mBuffers, &ptNodeReader, &ptNodeArrayReader, &bigramPolicy, &shortcutPolicy);
 
-    DynamicPtReadingHelper readingHelper(mBuffers->getTrieBuffer(), &ptNodeReader);
+    DynamicPtReadingHelper readingHelper(mBuffers->getTrieBuffer(), &ptNodeReader,
+            &ptNodeArrayReader);
     readingHelper.initWithPtNodeArrayPos(rootPtNodeArrayPos);
     DynamicPtGcEventListeners
             ::TraversePolicyToUpdateUnigramProbabilityAndMarkUselessPtNodesAsDeleted
@@ -124,7 +127,7 @@ bool Ver4PatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
     PtNodeWriter::DictPositionRelocationMap dictPositionRelocationMap;
     readingHelper.initWithPtNodeArrayPos(rootPtNodeArrayPos);
     Ver4PatriciaTrieNodeWriter ptNodeWriterForNewBuffers(buffersToWrite->getWritableTrieBuffer(),
-            buffersToWrite, &ptNodeReader, &bigramPolicy, &shortcutPolicy);
+            buffersToWrite, &ptNodeReader, &ptNodeArrayReader, &bigramPolicy, &shortcutPolicy);
     DynamicPtGcEventListeners::TraversePolicyToPlaceAndWriteValidPtNodesToBuffer
             traversePolicyToPlaceAndWriteValidPtNodesToBuffer(&ptNodeWriterForNewBuffers,
                     buffersToWrite->getWritableTrieBuffer(), &dictPositionRelocationMap);
@@ -136,12 +139,14 @@ bool Ver4PatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
     // Create policy instances for the GCed dictionary.
     Ver4PatriciaTrieNodeReader newPtNodeReader(buffersToWrite->getTrieBuffer(),
             buffersToWrite->getProbabilityDictContent());
+    Ver4PtNodeArrayReader newPtNodeArrayreader(buffersToWrite->getTrieBuffer());
     Ver4BigramListPolicy newBigramPolicy(buffersToWrite->getMutableBigramDictContent(),
             buffersToWrite->getTerminalPositionLookupTable(), headerPolicy);
     Ver4ShortcutListPolicy newShortcutPolicy(buffersToWrite->getMutableShortcutDictContent(),
             buffersToWrite->getTerminalPositionLookupTable());
     Ver4PatriciaTrieNodeWriter newPtNodeWriter(buffersToWrite->getWritableTrieBuffer(),
-            buffersToWrite, &newPtNodeReader, &newBigramPolicy, &newShortcutPolicy);
+            buffersToWrite, &newPtNodeReader, &newPtNodeArrayreader, &newBigramPolicy,
+            &newShortcutPolicy);
     // Re-assign terminal IDs for valid terminal PtNodes.
     TerminalPositionLookupTable::TerminalIdMap terminalIdMap;
     if(!buffersToWrite->getMutableTerminalPositionLookupTable()->runGCTerminalIds(
@@ -164,7 +169,7 @@ bool Ver4PatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
         return false;
     }
     DynamicPtReadingHelper newDictReadingHelper(buffersToWrite->getTrieBuffer(),
-            &newPtNodeReader);
+            &newPtNodeReader, &newPtNodeArrayreader);
     newDictReadingHelper.initWithPtNodeArrayPos(rootPtNodeArrayPos);
     DynamicPtGcEventListeners::TraversePolicyToUpdateAllPositionFields
             traversePolicyToUpdateAllPositionFields(&newPtNodeWriter, &dictPositionRelocationMap);

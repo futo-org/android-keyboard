@@ -65,7 +65,8 @@ LATIN_IME_CORE_SRC_FILES := \
         ver4_patricia_trie_node_writer.cpp \
         ver4_patricia_trie_policy.cpp \
         ver4_patricia_trie_reading_utils.cpp \
-        ver4_patricia_trie_writing_helper.cpp) \
+        ver4_patricia_trie_writing_helper.cpp \
+        ver4_pt_node_array_reader.cpp) \
     $(addprefix suggest/policyimpl/dictionary/structure/v4/content/, \
         bigram_dict_content.cpp \
         probability_dict_content.cpp \

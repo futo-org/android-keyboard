@@ -29,6 +29,7 @@ namespace latinime {
 class BufferWithExtendableBuffer;
 class DictionaryBigramsStructurePolicy;
 class DictionaryShortcutsStructurePolicy;
+class PtNodeArrayReader;
 
 /*
  * This class is used for traversing dynamic patricia trie. This class supports iterating nodes and
@@ -75,9 +76,11 @@ class DynamicPtReadingHelper {
     };
 
     DynamicPtReadingHelper(const BufferWithExtendableBuffer *const buffer,
-            const PtNodeReader *const ptNodeReader)
+            const PtNodeReader *const ptNodeReader,
+            const PtNodeArrayReader *const ptNodeArrayReader)
             : mIsError(false), mReadingState(), mBuffer(buffer),
-              mPtNodeReader(ptNodeReader), mReadingStateStack() {}
+              mPtNodeReader(ptNodeReader), mPtNodeArrayReader(ptNodeArrayReader),
+              mReadingStateStack() {}
 
     ~DynamicPtReadingHelper() {}
 
@@ -254,6 +257,7 @@ class DynamicPtReadingHelper {
     PtNodeReadingState mReadingState;
     const BufferWithExtendableBuffer *const mBuffer;
     const PtNodeReader *const mPtNodeReader;
+    const PtNodeArrayReader *const mPtNodeArrayReader;
     std::vector<PtNodeReadingState> mReadingStateStack;
 
     void nextPtNodeArray();
