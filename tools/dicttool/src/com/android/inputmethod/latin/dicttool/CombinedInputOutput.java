@@ -21,6 +21,7 @@ import com.android.inputmethod.latin.makedict.FusionDictionary;
 import com.android.inputmethod.latin.makedict.FusionDictionary.DictionaryOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
+import com.android.inputmethod.latin.makedict.ProbabilityInfo;
 import com.android.inputmethod.latin.makedict.WordProperty;
 import com.android.inputmethod.latin.utils.CombinedFormatUtils;
 
@@ -112,7 +113,7 @@ public class CombinedInputOutput {
 
         String line;
         String word = null;
-        int freq = 0;
+        ProbabilityInfo probabilityInfo = new ProbabilityInfo(0);
         boolean isNotAWord = false;
         ArrayList<WeightedString> bigrams = new ArrayList<WeightedString>();
         ArrayList<WeightedString> shortcuts = new ArrayList<WeightedString>();
@@ -121,9 +122,10 @@ public class CombinedInputOutput {
             final String args[] = line.trim().split(",");
             if (args[0].matches(CombinedFormatUtils.WORD_TAG + "=.*")) {
                 if (null != word) {
-                    dict.add(word, freq, shortcuts.isEmpty() ? null : shortcuts, isNotAWord);
+                    dict.add(word, probabilityInfo, shortcuts.isEmpty() ? null : shortcuts,
+                            isNotAWord);
                     for (WeightedString s : bigrams) {
-                        dict.setBigram(word, s.mWord, s.getProbability());
+                        dict.setBigram(word, s.mWord, s.mProbabilityInfo);
                     }
                 }
                 if (!shortcuts.isEmpty()) shortcuts = new ArrayList<WeightedString>();
@@ -135,14 +137,19 @@ public class CombinedInputOutput {
                     if (CombinedFormatUtils.WORD_TAG.equals(params[0])) {
                         word = params[1];
                     } else if (CombinedFormatUtils.PROBABILITY_TAG.equals(params[0])) {
-                        freq = Integer.parseInt(params[1]);
+                        probabilityInfo = new ProbabilityInfo(Integer.parseInt(params[1]),
+                                probabilityInfo.mTimestamp, probabilityInfo.mLevel,
+                                probabilityInfo.mCount);
                     } else if (CombinedFormatUtils.HISTORICAL_INFO_TAG.equals(params[0])) {
                         final String[] historicalInfoParams =
                                 params[1].split(CombinedFormatUtils.HISTORICAL_INFO_SEPARATOR);
                         if (historicalInfoParams.length != HISTORICAL_INFO_ELEMENT_COUNT) {
                             throw new RuntimeException("Wrong format (historical info) : " + line);
                         }
-                        // TODO: Use parsed historical info.
+                        probabilityInfo = new ProbabilityInfo(probabilityInfo.mProbability,
+                                Integer.parseInt(historicalInfoParams[0]),
+                                Integer.parseInt(historicalInfoParams[1]),
+                                Integer.parseInt(historicalInfoParams[2]));
                     } else if (CombinedFormatUtils.NOT_A_WORD_TAG.equals(params[0])) {
                         isNotAWord = "true".equals(params[1]);
                     }
@@ -168,34 +175,40 @@ public class CombinedInputOutput {
                 }
             } else if (args[0].matches(CombinedFormatUtils.BIGRAM_TAG + "=.*")) {
                 String secondWordOfBigram = null;
-                int bigramFreq = 0;
+                ProbabilityInfo bigramProbabilityInfo = new ProbabilityInfo(0);
                 for (String param : args) {
                     final String params[] = param.split("=", 2);
                     if (2 != params.length) throw new RuntimeException("Wrong format : " + line);
                     if (CombinedFormatUtils.BIGRAM_TAG.equals(params[0])) {
                         secondWordOfBigram = params[1];
                     } else if (CombinedFormatUtils.PROBABILITY_TAG.equals(params[0])) {
-                        bigramFreq = Integer.parseInt(params[1]);
+                        bigramProbabilityInfo = new ProbabilityInfo(Integer.parseInt(params[1]),
+                                bigramProbabilityInfo.mTimestamp, bigramProbabilityInfo.mLevel,
+                                bigramProbabilityInfo.mCount);
                     }  else if (CombinedFormatUtils.HISTORICAL_INFO_TAG.equals(params[0])) {
                         final String[] historicalInfoParams =
                                 params[1].split(CombinedFormatUtils.HISTORICAL_INFO_SEPARATOR);
                         if (historicalInfoParams.length != HISTORICAL_INFO_ELEMENT_COUNT) {
                             throw new RuntimeException("Wrong format (historical info) : " + line);
                         }
-                        // TODO: Use parsed historical info.
+                        bigramProbabilityInfo = new ProbabilityInfo(
+                                bigramProbabilityInfo.mProbability,
+                                Integer.parseInt(historicalInfoParams[0]),
+                                Integer.parseInt(historicalInfoParams[1]),
+                                Integer.parseInt(historicalInfoParams[2]));
                     }
                 }
                 if (null != secondWordOfBigram) {
-                    bigrams.add(new WeightedString(secondWordOfBigram, bigramFreq));
+                    bigrams.add(new WeightedString(secondWordOfBigram, bigramProbabilityInfo));
                 } else {
                     throw new RuntimeException("Wrong format : " + line);
                 }
             }
         }
         if (null != word) {
-            dict.add(word, freq, shortcuts.isEmpty() ? null : shortcuts, isNotAWord);
+            dict.add(word, probabilityInfo, shortcuts.isEmpty() ? null : shortcuts, isNotAWord);
             for (WeightedString s : bigrams) {
-                dict.setBigram(word, s.mWord, s.getProbability());
+                dict.setBigram(word, s.mWord, s.mProbabilityInfo);
             }
         }
 

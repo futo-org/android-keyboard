@@ -151,8 +151,8 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
                     shortcuts.add(new WeightedString(shortcut, UNIGRAM_FREQ));
                 }
             }
-            dict.add(word, UNIGRAM_FREQ, (shortcutMap == null) ? null : shortcuts,
-                    false /* isNotAWord */);
+            dict.add(word, new ProbabilityInfo(UNIGRAM_FREQ),
+                    (shortcutMap == null) ? null : shortcuts, false /* isNotAWord */);
         }
     }
 
@@ -162,7 +162,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         for (int i = 0; i < bigrams.size(); ++i) {
             final int w1 = bigrams.keyAt(i);
             for (int w2 : bigrams.valueAt(i)) {
-                dict.setBigram(words.get(w1), words.get(w2), BIGRAM_FREQ);
+                dict.setBigram(words.get(w1), words.get(w2), new ProbabilityInfo(BIGRAM_FREQ));
             }
         }
     }

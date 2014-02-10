@@ -43,12 +43,12 @@ public final class WordProperty implements Comparable<WordProperty> {
 
     private int mHashCode = 0;
 
-    public WordProperty(final String word, final int probability,
+    public WordProperty(final String word, final ProbabilityInfo probabilityInfo,
             final ArrayList<WeightedString> shortcutTargets,
             final ArrayList<WeightedString> bigrams,
             final boolean isNotAWord, final boolean isBlacklistEntry) {
         mWord = word;
-        mProbabilityInfo = new ProbabilityInfo(probability);
+        mProbabilityInfo = probabilityInfo;
         mShortcutTargets = shortcutTargets;
         mBigrams = bigrams;
         mIsNotAWord = isNotAWord;

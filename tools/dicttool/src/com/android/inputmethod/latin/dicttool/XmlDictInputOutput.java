@@ -20,6 +20,7 @@ import com.android.inputmethod.latin.makedict.FusionDictionary;
 import com.android.inputmethod.latin.makedict.FusionDictionary.DictionaryOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
+import com.android.inputmethod.latin.makedict.ProbabilityInfo;
 import com.android.inputmethod.latin.makedict.WordProperty;
 
 import java.io.BufferedReader;
@@ -66,6 +67,7 @@ public class XmlDictInputOutput {
         private static final int START = 1;
         private static final int WORD = 2;
         private static final int UNKNOWN = 3;
+        private static final int SHORTCUT_ONLY_WORD_PROBABILITY = 1;
 
         FusionDictionary mDictionary;
         int mState; // the state of the parser
@@ -90,7 +92,8 @@ public class XmlDictInputOutput {
             final FusionDictionary dict = mDictionary;
             for (final String shortcutOnly : mShortcutsMap.keySet()) {
                 if (dict.hasWord(shortcutOnly)) continue;
-                dict.add(shortcutOnly, 1, mShortcutsMap.get(shortcutOnly), true /* isNotAWord */);
+                dict.add(shortcutOnly, new ProbabilityInfo(SHORTCUT_ONLY_WORD_PROBABILITY),
+                        mShortcutsMap.get(shortcutOnly), true /* isNotAWord */);
             }
             mDictionary = null;
             mShortcutsMap.clear();
@@ -138,7 +141,8 @@ public class XmlDictInputOutput {
         @Override
         public void endElement(String uri, String localName, String qName) {
             if (WORD == mState) {
-                mDictionary.add(mWord, mFreq, mShortcutsMap.get(mWord), false /* isNotAWord */);
+                mDictionary.add(mWord, new ProbabilityInfo(mFreq), mShortcutsMap.get(mWord),
+                        false /* isNotAWord */);
                 mState = START;
             }
         }
@@ -319,7 +323,7 @@ public class XmlDictInputOutput {
             final ArrayList<WeightedString> bigramList = bigramMap.get(firstWord);
             for (final WeightedString bigram : bigramList) {
                 if (!dict.hasWord(bigram.mWord)) continue;
-                dict.setBigram(firstWord, bigram.mWord, bigram.getProbability());
+                dict.setBigram(firstWord, bigram.mWord, bigram.mProbabilityInfo);
             }
         }
         return dict;
