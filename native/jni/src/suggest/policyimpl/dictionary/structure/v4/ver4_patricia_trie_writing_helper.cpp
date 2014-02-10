@@ -83,8 +83,7 @@ bool Ver4PatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
     Ver4PatriciaTrieNodeWriter ptNodeWriter(mBuffers->getWritableTrieBuffer(),
             mBuffers, &ptNodeReader, &ptNodeArrayReader, &bigramPolicy, &shortcutPolicy);
 
-    DynamicPtReadingHelper readingHelper(mBuffers->getTrieBuffer(), &ptNodeReader,
-            &ptNodeArrayReader);
+    DynamicPtReadingHelper readingHelper(&ptNodeReader, &ptNodeArrayReader);
     readingHelper.initWithPtNodeArrayPos(rootPtNodeArrayPos);
     DynamicPtGcEventListeners
             ::TraversePolicyToUpdateUnigramProbabilityAndMarkUselessPtNodesAsDeleted
@@ -168,8 +167,7 @@ bool Ver4PatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
             mBuffers->getShortcutDictContent())) {
         return false;
     }
-    DynamicPtReadingHelper newDictReadingHelper(buffersToWrite->getTrieBuffer(),
-            &newPtNodeReader, &newPtNodeArrayreader);
+    DynamicPtReadingHelper newDictReadingHelper(&newPtNodeReader, &newPtNodeArrayreader);
     newDictReadingHelper.initWithPtNodeArrayPos(rootPtNodeArrayPos);
     DynamicPtGcEventListeners::TraversePolicyToUpdateAllPositionFields
             traversePolicyToUpdateAllPositionFields(&newPtNodeWriter, &dictPositionRelocationMap);
