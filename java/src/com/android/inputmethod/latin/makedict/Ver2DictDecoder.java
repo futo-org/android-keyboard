@@ -20,7 +20,6 @@ import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.CharEncoding;
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.DictBuffer;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
-import com.android.inputmethod.latin.makedict.FusionDictionary.PtNode;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
 
 import android.util.Log;
@@ -38,10 +37,81 @@ import java.util.Arrays;
 public class Ver2DictDecoder extends AbstractDictDecoder {
     private static final String TAG = Ver2DictDecoder.class.getSimpleName();
 
-    protected static class PtNodeReader extends AbstractDictDecoder.PtNodeReader {
+    /**
+     * A utility class for reading a PtNode.
+     */
+    protected static class PtNodeReader {
         private static ProbabilityInfo readProbabilityInfo(final DictBuffer dictBuffer) {
             // Ver2 dicts don't contain historical information.
             return new ProbabilityInfo(dictBuffer.readUnsignedByte());
+        }
+
+        protected static int readPtNodeOptionFlags(final DictBuffer dictBuffer) {
+            return dictBuffer.readUnsignedByte();
+        }
+
+        protected static int readChildrenAddress(final DictBuffer dictBuffer,
+                final int ptNodeFlags) {
+            switch (ptNodeFlags & FormatSpec.MASK_CHILDREN_ADDRESS_TYPE) {
+                case FormatSpec.FLAG_CHILDREN_ADDRESS_TYPE_ONEBYTE:
+                    return dictBuffer.readUnsignedByte();
+                case FormatSpec.FLAG_CHILDREN_ADDRESS_TYPE_TWOBYTES:
+                    return dictBuffer.readUnsignedShort();
+                case FormatSpec.FLAG_CHILDREN_ADDRESS_TYPE_THREEBYTES:
+                    return dictBuffer.readUnsignedInt24();
+                case FormatSpec.FLAG_CHILDREN_ADDRESS_TYPE_NOADDRESS:
+                default:
+                    return FormatSpec.NO_CHILDREN_ADDRESS;
+            }
+        }
+
+        // Reads shortcuts and returns the read length.
+        protected static int readShortcut(final DictBuffer dictBuffer,
+                final ArrayList<WeightedString> shortcutTargets) {
+            final int pointerBefore = dictBuffer.position();
+            dictBuffer.readUnsignedShort(); // skip the size
+            while (true) {
+                final int targetFlags = dictBuffer.readUnsignedByte();
+                final String word = CharEncoding.readString(dictBuffer);
+                shortcutTargets.add(new WeightedString(word,
+                        targetFlags & FormatSpec.FLAG_BIGRAM_SHORTCUT_ATTR_FREQUENCY));
+                if (0 == (targetFlags & FormatSpec.FLAG_BIGRAM_SHORTCUT_ATTR_HAS_NEXT)) break;
+            }
+            return dictBuffer.position() - pointerBefore;
+        }
+
+        protected static int readBigramAddresses(final DictBuffer dictBuffer,
+                final ArrayList<PendingAttribute> bigrams, final int baseAddress) {
+            int readLength = 0;
+            int bigramCount = 0;
+            while (bigramCount++ < FormatSpec.MAX_BIGRAMS_IN_A_PTNODE) {
+                final int bigramFlags = dictBuffer.readUnsignedByte();
+                ++readLength;
+                final int sign = 0 == (bigramFlags & FormatSpec.FLAG_BIGRAM_ATTR_OFFSET_NEGATIVE)
+                        ? 1 : -1;
+                int bigramAddress = baseAddress + readLength;
+                switch (bigramFlags & FormatSpec.MASK_BIGRAM_ATTR_ADDRESS_TYPE) {
+                    case FormatSpec.FLAG_BIGRAM_ATTR_ADDRESS_TYPE_ONEBYTE:
+                        bigramAddress += sign * dictBuffer.readUnsignedByte();
+                        readLength += 1;
+                        break;
+                    case FormatSpec.FLAG_BIGRAM_ATTR_ADDRESS_TYPE_TWOBYTES:
+                        bigramAddress += sign * dictBuffer.readUnsignedShort();
+                        readLength += 2;
+                        break;
+                    case FormatSpec.FLAG_BIGRAM_ATTR_ADDRESS_TYPE_THREEBYTES:
+                        bigramAddress += sign * dictBuffer.readUnsignedInt24();
+                        readLength += 3;
+                        break;
+                    default:
+                        throw new RuntimeException("Has bigrams with no address");
+                }
+                bigrams.add(new PendingAttribute(
+                        bigramFlags & FormatSpec.FLAG_BIGRAM_SHORTCUT_ATTR_FREQUENCY,
+                        bigramAddress));
+                if (0 == (bigramFlags & FormatSpec.FLAG_BIGRAM_SHORTCUT_ATTR_HAS_NEXT)) break;
+            }
+            return readLength;
         }
     }
 
@@ -96,8 +166,8 @@ public class Ver2DictDecoder extends AbstractDictDecoder {
         }
         final DictionaryHeader header = super.readHeader(mDictBuffer);
         final int version = header.mFormatOptions.mVersion;
-        if (!(version >= 2 && version <= 3)) {
-          throw new UnsupportedFormatException("File header has a wrong version : " + version);
+        if (version != FormatSpec.VERSION2) {
+            throw new UnsupportedFormatException("File header has a wrong version : " + version);
         }
         return header;
     }
@@ -109,12 +179,6 @@ public class Ver2DictDecoder extends AbstractDictDecoder {
         int addressPointer = ptNodePos;
         final int flags = PtNodeReader.readPtNodeOptionFlags(mDictBuffer);
         addressPointer += FormatSpec.PTNODE_FLAGS_SIZE;
-
-        final int parentAddress = PtNodeReader.readParentAddress(mDictBuffer, options);
-        if (BinaryDictIOUtils.supportsDynamicUpdate(options)) {
-            addressPointer += FormatSpec.PARENT_ADDRESS_SIZE;
-        }
-
         final int characters[];
         if (0 != (flags & FormatSpec.FLAG_HAS_MULTIPLE_CHARS)) {
             int index = 0;
@@ -141,7 +205,7 @@ public class Ver2DictDecoder extends AbstractDictDecoder {
         } else {
             probabilityInfo = null;
         }
-        int childrenAddress = PtNodeReader.readChildrenAddress(mDictBuffer, flags, options);
+        int childrenAddress = PtNodeReader.readChildrenAddress(mDictBuffer, flags);
         if (childrenAddress != FormatSpec.NO_CHILDREN_ADDRESS) {
             childrenAddress += addressPointer;
         }
@@ -168,7 +232,7 @@ public class Ver2DictDecoder extends AbstractDictDecoder {
             bigrams = null;
         }
         return new PtNodeInfo(ptNodePos, addressPointer, flags, characters, probabilityInfo,
-                parentAddress, childrenAddress, shortcutTargets, bigrams);
+                FormatSpec.NO_PARENT_ADDRESS, childrenAddress, shortcutTargets, bigrams);
     }
 
     @Override
@@ -223,43 +287,5 @@ public class Ver2DictDecoder extends AbstractDictDecoder {
     @Override
     public boolean hasNextPtNodeArray() {
         return mDictBuffer.position() != FormatSpec.NO_FORWARD_LINK_ADDRESS;
-    }
-
-    @Override
-    public void skipPtNode(final FormatOptions formatOptions) {
-        final int flags = PtNodeReader.readPtNodeOptionFlags(mDictBuffer);
-        PtNodeReader.readParentAddress(mDictBuffer, formatOptions);
-        BinaryDictIOUtils.skipString(mDictBuffer,
-                (flags & FormatSpec.FLAG_HAS_MULTIPLE_CHARS) != 0);
-        PtNodeReader.readChildrenAddress(mDictBuffer, flags, formatOptions);
-        if ((flags & FormatSpec.FLAG_IS_TERMINAL) != 0) {
-            PtNodeReader.readProbabilityInfo(mDictBuffer);
-        }
-        if ((flags & FormatSpec.FLAG_HAS_SHORTCUT_TARGETS) != 0) {
-            final int shortcutsSize = mDictBuffer.readUnsignedShort();
-            mDictBuffer.position(mDictBuffer.position() + shortcutsSize
-                    - FormatSpec.PTNODE_SHORTCUT_LIST_SIZE_SIZE);
-        }
-        if ((flags & FormatSpec.FLAG_HAS_BIGRAMS) != 0) {
-            int bigramCount = 0;
-            while (bigramCount++ < FormatSpec.MAX_BIGRAMS_IN_A_PTNODE) {
-                final int bigramFlags = mDictBuffer.readUnsignedByte();
-                switch (bigramFlags & FormatSpec.MASK_BIGRAM_ATTR_ADDRESS_TYPE) {
-                    case FormatSpec.FLAG_BIGRAM_ATTR_ADDRESS_TYPE_ONEBYTE:
-                        mDictBuffer.readUnsignedByte();
-                        break;
-                    case FormatSpec.FLAG_BIGRAM_ATTR_ADDRESS_TYPE_TWOBYTES:
-                        mDictBuffer.readUnsignedShort();
-                        break;
-                    case FormatSpec.FLAG_BIGRAM_ATTR_ADDRESS_TYPE_THREEBYTES:
-                        mDictBuffer.readUnsignedInt24();
-                        break;
-                }
-                if ((bigramFlags & FormatSpec.FLAG_BIGRAM_SHORTCUT_ATTR_HAS_NEXT) == 0) break;
-            }
-            if (bigramCount >= FormatSpec.MAX_BIGRAMS_IN_A_PTNODE) {
-                throw new RuntimeException("Too many bigrams in a PtNode.");
-            }
-        }
     }
 }

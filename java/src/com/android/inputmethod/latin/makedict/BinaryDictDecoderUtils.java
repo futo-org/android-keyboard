@@ -166,15 +166,6 @@ public final class BinaryDictDecoderUtils {
             return size;
         }
 
-        @UsedForTesting
-        static int getCharArraySize(final int[] chars, final int start, final int end) {
-            int size = 0;
-            for (int i = start; i < end; ++i) {
-                size += getCharSize(chars[i]);
-            }
-            return size;
-        }
-
         /**
          * Writes a char array to a byte buffer.
          *
@@ -253,41 +244,6 @@ public final class BinaryDictDecoderUtils {
         }
 
         /**
-         * Writes an array of code points with our character format to an OutputStream.
-         *
-         * This will also write the terminator byte.
-         *
-         * @param stream the OutputStream to write to.
-         * @param codePoints the array of code points
-         * @return the size written, in bytes.
-         */
-        // TODO: Merge this method with writeCharArray and rename the various write* methods to
-        // make the difference clear.
-        @UsedForTesting
-        static int writeCodePoints(final OutputStream stream, final int[] codePoints,
-                final int startIndex, final int endIndex)
-                throws IOException {
-            int written = 0;
-            for (int i = startIndex; i < endIndex; ++i) {
-                final int codePoint = codePoints[i];
-                final int charSize = getCharSize(codePoint);
-                if (1 == charSize) {
-                    stream.write((byte) codePoint);
-                } else {
-                    stream.write((byte) (0xFF & (codePoint >> 16)));
-                    stream.write((byte) (0xFF & (codePoint >> 8)));
-                    stream.write((byte) (0xFF & codePoint));
-                }
-                written += charSize;
-            }
-            if (endIndex - startIndex > 1) {
-                stream.write(FormatSpec.PTNODE_CHARACTERS_TERMINATOR);
-                written += FormatSpec.PTNODE_TERMINATOR_SIZE;
-            }
-            return written;
-        }
-
-        /**
          * Reads a string from a DictBuffer. This is the converse of the above method.
          */
         static String readString(final DictBuffer dictBuffer) {
@@ -318,50 +274,6 @@ public final class BinaryDictDecoderUtils {
                 character += dictBuffer.readUnsignedShort();
             }
             return character;
-        }
-    }
-
-    // Input methods: Read a binary dictionary to memory.
-    // readDictionaryBinary is the public entry point for them.
-
-    static int readSInt24(final DictBuffer dictBuffer) {
-        final int retval = dictBuffer.readUnsignedInt24();
-        final int sign = ((retval & FormatSpec.MSB24) != 0) ? -1 : 1;
-        return sign * (retval & FormatSpec.SINT24_MAX);
-    }
-
-    static int readChildrenAddress(final DictBuffer dictBuffer,
-            final int optionFlags, final FormatOptions options) {
-        if (options.supportsDynamicUpdate()) {
-            final int address = dictBuffer.readUnsignedInt24();
-            if (address == 0) return FormatSpec.NO_CHILDREN_ADDRESS;
-            if ((address & FormatSpec.MSB24) != 0) {
-                return -(address & FormatSpec.SINT24_MAX);
-            } else {
-                return address;
-            }
-        }
-        switch (optionFlags & FormatSpec.MASK_CHILDREN_ADDRESS_TYPE) {
-            case FormatSpec.FLAG_CHILDREN_ADDRESS_TYPE_ONEBYTE:
-                return dictBuffer.readUnsignedByte();
-            case FormatSpec.FLAG_CHILDREN_ADDRESS_TYPE_TWOBYTES:
-                return dictBuffer.readUnsignedShort();
-            case FormatSpec.FLAG_CHILDREN_ADDRESS_TYPE_THREEBYTES:
-                return dictBuffer.readUnsignedInt24();
-            case FormatSpec.FLAG_CHILDREN_ADDRESS_TYPE_NOADDRESS:
-            default:
-                return FormatSpec.NO_CHILDREN_ADDRESS;
-        }
-    }
-
-    static int readParentAddress(final DictBuffer dictBuffer,
-            final FormatOptions formatOptions) {
-        if (BinaryDictIOUtils.supportsDynamicUpdate(formatOptions)) {
-            final int parentAddress = dictBuffer.readUnsignedInt24();
-            final int sign = ((parentAddress & FormatSpec.MSB24) != 0) ? -1 : 1;
-            return sign * (parentAddress & FormatSpec.SINT24_MAX);
-        } else {
-            return FormatSpec.NO_PARENT_ADDRESS;
         }
     }
 
