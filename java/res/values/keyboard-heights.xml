@@ -33,7 +33,5 @@
     <!-- Preferable keyboard height in absolute scale: 48.0mm -->
         <!-- Xoom -->
         <item>HARDWARE=stingray,283.1337</item>
-    <!-- Default value for unknown device: empty string -->
-        <item>,</item>
     </string-array>
 </resources>
