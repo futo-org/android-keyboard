@@ -57,7 +57,8 @@ LATIN_IME_CORE_SRC_FILES := \
         dynamic_pt_writing_utils.cpp) \
     $(addprefix suggest/policyimpl/dictionary/structure/v2/, \
         patricia_trie_policy.cpp \
-        patricia_trie_reading_utils.cpp) \
+        patricia_trie_reading_utils.cpp \
+        ver2_patricia_trie_node_reader.cpp) \
     $(addprefix suggest/policyimpl/dictionary/structure/v4/, \
         ver4_dict_buffers.cpp \
         ver4_dict_constants.cpp \

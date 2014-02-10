@@ -336,99 +336,50 @@ int PatriciaTriePolicy::getUnigramProbabilityOfPtNode(const int ptNodePos) const
     if (ptNodePos == NOT_A_DICT_POS) {
         return NOT_A_PROBABILITY;
     }
-    int pos = ptNodePos;
-    const PatriciaTrieReadingUtils::NodeFlags flags =
-            PatriciaTrieReadingUtils::getFlagsAndAdvancePosition(mDictRoot, &pos);
-    if (!PatriciaTrieReadingUtils::isTerminal(flags)) {
-        return NOT_A_PROBABILITY;
-    }
-    if (PatriciaTrieReadingUtils::isNotAWord(flags)
-            || PatriciaTrieReadingUtils::isBlacklisted(flags)) {
+    const PtNodeParams ptNodeParams = mPtNodeReader.fetchNodeInfoInBufferFromPtNodePos(ptNodePos);
+    if (ptNodeParams.isNotAWord() || ptNodeParams.isBlacklisted()) {
         // If this is not a word, or if it's a blacklisted entry, it should behave as
         // having no probability outside of the suggestion process (where it should be used
         // for shortcuts).
         return NOT_A_PROBABILITY;
     }
-    PatriciaTrieReadingUtils::skipCharacters(mDictRoot, flags, MAX_WORD_LENGTH, &pos);
-    return getProbability(PatriciaTrieReadingUtils::readProbabilityAndAdvancePosition(
-            mDictRoot, &pos), NOT_A_PROBABILITY);
+    return getProbability(ptNodeParams.getProbability(), NOT_A_PROBABILITY);
 }
 
 int PatriciaTriePolicy::getShortcutPositionOfPtNode(const int ptNodePos) const {
     if (ptNodePos == NOT_A_DICT_POS) {
         return NOT_A_DICT_POS;
     }
-    int pos = ptNodePos;
-    const PatriciaTrieReadingUtils::NodeFlags flags =
-            PatriciaTrieReadingUtils::getFlagsAndAdvancePosition(mDictRoot, &pos);
-    if (!PatriciaTrieReadingUtils::hasShortcutTargets(flags)) {
-        return NOT_A_DICT_POS;
-    }
-    PatriciaTrieReadingUtils::skipCharacters(mDictRoot, flags, MAX_WORD_LENGTH, &pos);
-    if (PatriciaTrieReadingUtils::isTerminal(flags)) {
-        PatriciaTrieReadingUtils::readProbabilityAndAdvancePosition(mDictRoot, &pos);
-    }
-    if (PatriciaTrieReadingUtils::hasChildrenInFlags(flags)) {
-        PatriciaTrieReadingUtils::readChildrenPositionAndAdvancePosition(mDictRoot, flags, &pos);
-    }
-    return pos;
+    return mPtNodeReader.fetchNodeInfoInBufferFromPtNodePos(ptNodePos).getShortcutPos();
 }
 
 int PatriciaTriePolicy::getBigramsPositionOfPtNode(const int ptNodePos) const {
     if (ptNodePos == NOT_A_DICT_POS) {
         return NOT_A_DICT_POS;
     }
-    int pos = ptNodePos;
-    const PatriciaTrieReadingUtils::NodeFlags flags =
-            PatriciaTrieReadingUtils::getFlagsAndAdvancePosition(mDictRoot, &pos);
-    if (!PatriciaTrieReadingUtils::hasBigrams(flags)) {
-        return NOT_A_DICT_POS;
-    }
-    PatriciaTrieReadingUtils::skipCharacters(mDictRoot, flags, MAX_WORD_LENGTH, &pos);
-    if (PatriciaTrieReadingUtils::isTerminal(flags)) {
-        PatriciaTrieReadingUtils::readProbabilityAndAdvancePosition(mDictRoot, &pos);
-    }
-    if (PatriciaTrieReadingUtils::hasChildrenInFlags(flags)) {
-        PatriciaTrieReadingUtils::readChildrenPositionAndAdvancePosition(mDictRoot, flags, &pos);
-    }
-    if (PatriciaTrieReadingUtils::hasShortcutTargets(flags)) {
-        mShortcutListPolicy.skipAllShortcuts(&pos);;
-    }
-    return pos;
+    return mPtNodeReader.fetchNodeInfoInBufferFromPtNodePos(ptNodePos).getBigramsPos();
 }
 
 int PatriciaTriePolicy::createAndGetLeavingChildNode(const DicNode *const dicNode,
         const int ptNodePos, DicNodeVector *childDicNodes) const {
-    int pos = ptNodePos;
-    const PatriciaTrieReadingUtils::NodeFlags flags =
-            PatriciaTrieReadingUtils::getFlagsAndAdvancePosition(mDictRoot, &pos);
+    PatriciaTrieReadingUtils::NodeFlags flags;
+    int mergedNodeCodePointCount = 0;
     int mergedNodeCodePoints[MAX_WORD_LENGTH];
-    const int mergedNodeCodePointCount = PatriciaTrieReadingUtils::getCharsAndAdvancePosition(
-            mDictRoot, flags, MAX_WORD_LENGTH, mergedNodeCodePoints, &pos);
-    const int probability = (PatriciaTrieReadingUtils::isTerminal(flags))?
-            PatriciaTrieReadingUtils::readProbabilityAndAdvancePosition(mDictRoot, &pos)
-                    : NOT_A_PROBABILITY;
-    const int childrenPos = PatriciaTrieReadingUtils::hasChildrenInFlags(flags) ?
-            PatriciaTrieReadingUtils::readChildrenPositionAndAdvancePosition(
-                    mDictRoot, flags, &pos) : NOT_A_DICT_POS;
-    if (PatriciaTrieReadingUtils::hasShortcutTargets(flags)) {
-        getShortcutsStructurePolicy()->skipAllShortcuts(&pos);
-    }
-    if (PatriciaTrieReadingUtils::hasBigrams(flags)) {
-        getBigramsStructurePolicy()->skipAllBigrams(&pos);
-    }
-    if (mergedNodeCodePointCount <= 0) {
-        AKLOGE("Empty PtNode is not allowed. Code point count: %d", mergedNodeCodePointCount);
-        ASSERT(false);
-        return pos;
-    }
+    int probability = NOT_A_PROBABILITY;
+    int childrenPos = NOT_A_DICT_POS;
+    int shortcutPos = NOT_A_DICT_POS;
+    int bigramPos = NOT_A_DICT_POS;
+    int siblingPos = NOT_A_DICT_POS;
+    PatriciaTrieReadingUtils::readPtNodeInfo(mDictRoot, ptNodePos, getShortcutsStructurePolicy(),
+            getBigramsStructurePolicy(), &flags, &mergedNodeCodePointCount, mergedNodeCodePoints,
+            &probability, &childrenPos, &shortcutPos, &bigramPos, &siblingPos);
     childDicNodes->pushLeavingChild(dicNode, ptNodePos, childrenPos, probability,
             PatriciaTrieReadingUtils::isTerminal(flags),
             PatriciaTrieReadingUtils::hasChildrenInFlags(flags),
-            PatriciaTrieReadingUtils::isBlacklisted(flags) ||
-                    PatriciaTrieReadingUtils::isNotAWord(flags),
+            PatriciaTrieReadingUtils::isBlacklisted(flags)
+                    || PatriciaTrieReadingUtils::isNotAWord(flags),
             mergedNodeCodePointCount, mergedNodeCodePoints);
-    return pos;
+    return siblingPos;
 }
 
 } // namespace latinime
