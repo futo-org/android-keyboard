@@ -209,10 +209,10 @@ public final class MoreSuggestions extends Keyboard {
                 final String word = mSuggestedWords.getWord(index);
                 final String info = mSuggestedWords.getDebugString(index);
                 final int indexInMoreSuggestions = index + SUGGESTION_CODE_BASE;
-                final Key key = new Key(
-                        params, word, info, KeyboardIconsSet.ICON_UNDEFINED, indexInMoreSuggestions,
-                        null /* outputText */, x, y, width, params.mDefaultRowHeight,
-                        0 /* labelFlags */, Key.BACKGROUND_TYPE_NORMAL);
+                final Key key = new Key(word, KeyboardIconsSet.ICON_UNDEFINED,
+                        indexInMoreSuggestions, null /* outputText */, info, 0 /* labelFlags */,
+                        Key.BACKGROUND_TYPE_NORMAL, x, y, width, params.mDefaultRowHeight,
+                        params.mHorizontalGap, params.mVerticalGap);
                 params.markAsEdgeKey(key, index);
                 params.onAddKey(key);
                 final int columnNumber = params.getColumnNumber(index);
