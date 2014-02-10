@@ -85,6 +85,8 @@
     <string name="more_keys_for_currency">$,&#x00A2;,&#x20AC;,&#x00A3;,&#x00A5;,&#x20B1;</string>
     <string name="more_keys_for_punctuation">"!fixedColumnOrder!8,;,/,(,),#,!,\\,,\?,&amp;,\\%,+,\",-,:,',\@"</string>
     <string name="more_keys_for_tablet_punctuation">"!fixedColumnOrder!7,;,/,(,),#,',\\,,&amp;,\\%,+,\",-,:,\@"</string>
+    <!-- U+00F1: "ñ" LATIN SMALL LETTER N WITH TILDE -->
+    <string name="keylabel_for_spanish_row2_10">&#x00F1;</string>
     <!-- U+2020: "†" DAGGER
          U+2021: "‡" DOUBLE DAGGER
          U+2605: "★" BLACK STAR -->
@@ -189,8 +191,6 @@
     <string name="keylabel_for_w">w</string>
     <string name="keylabel_for_y">y</string>
     <string name="keylabel_for_x">x</string>
-    <!-- U+00F1: "ñ" LATIN SMALL LETTER N WITH TILDE -->
-    <string name="keylabel_for_spanish_row2_10">&#x00F1;</string>
     <string name="more_keys_for_am_pm">!fixedColumnOrder!2,!hasLabels!,\@string/label_time_am,\@string/label_time_pm</string>
     <string name="settings_as_more_key">!icon/settings_key|!code/key_settings</string>
     <string name="shortcut_as_more_key">!icon/shortcut_key|!code/key_shortcut</string>
