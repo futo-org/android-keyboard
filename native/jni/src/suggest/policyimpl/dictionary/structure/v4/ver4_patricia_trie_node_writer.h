@@ -44,8 +44,8 @@ class Ver4PatriciaTrieNodeWriter : public PtNodeWriter {
             const PtNodeArrayReader *const ptNodeArrayReader,
             Ver4BigramListPolicy *const bigramPolicy, Ver4ShortcutListPolicy *const shortcutPolicy)
             : mTrieBuffer(trieBuffer), mBuffers(buffers),
-              mReadingHelper(mTrieBuffer, ptNodeReader, ptNodeArrayReader),
-              mBigramPolicy(bigramPolicy), mShortcutPolicy(shortcutPolicy) {}
+              mReadingHelper(ptNodeReader, ptNodeArrayReader), mBigramPolicy(bigramPolicy),
+              mShortcutPolicy(shortcutPolicy) {}
 
     virtual ~Ver4PatriciaTrieNodeWriter() {}
 

@@ -26,7 +26,6 @@
 
 namespace latinime {
 
-class BufferWithExtendableBuffer;
 class DictionaryBigramsStructurePolicy;
 class DictionaryShortcutsStructurePolicy;
 class PtNodeArrayReader;
@@ -75,12 +74,10 @@ class DynamicPtReadingHelper {
         std::vector<int> *const mTerminalPositions;
     };
 
-    DynamicPtReadingHelper(const BufferWithExtendableBuffer *const buffer,
-            const PtNodeReader *const ptNodeReader,
+    DynamicPtReadingHelper(const PtNodeReader *const ptNodeReader,
             const PtNodeArrayReader *const ptNodeArrayReader)
-            : mIsError(false), mReadingState(), mBuffer(buffer),
-              mPtNodeReader(ptNodeReader), mPtNodeArrayReader(ptNodeArrayReader),
-              mReadingStateStack() {}
+            : mIsError(false), mReadingState(), mPtNodeReader(ptNodeReader),
+              mPtNodeArrayReader(ptNodeArrayReader), mReadingStateStack() {}
 
     ~DynamicPtReadingHelper() {}
 
@@ -255,7 +252,6 @@ class DynamicPtReadingHelper {
     // TODO: Introduce error code to track what caused the error.
     bool mIsError;
     PtNodeReadingState mReadingState;
-    const BufferWithExtendableBuffer *const mBuffer;
     const PtNodeReader *const mPtNodeReader;
     const PtNodeArrayReader *const mPtNodeArrayReader;
     std::vector<PtNodeReadingState> mReadingStateStack;
