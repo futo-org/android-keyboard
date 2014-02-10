@@ -16,9 +16,7 @@
 
 #include "suggest/policyimpl/dictionary/structure/pt_common/dynamic_pt_reading_helper.h"
 
-#include "suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer.h"
-#include "suggest/policyimpl/dictionary/structure/v2/patricia_trie_reading_utils.h"
-#include "suggest/policyimpl/dictionary/structure/pt_common/dynamic_pt_reading_utils.h"
+#include "suggest/policyimpl/dictionary/structure/pt_common/pt_node_array_reader.h"
 #include "utils/char_utils.h"
 
 namespace latinime {
@@ -266,27 +264,17 @@ int DynamicPtReadingHelper::getTerminalPtNodePositionOfWord(const int *const inW
 // Read node array size and process empty node arrays. Nodes and arrays are counted up in this
 // method to avoid an infinite loop.
 void DynamicPtReadingHelper::nextPtNodeArray() {
-    if (mReadingState.mPos < 0 || mReadingState.mPos >= mBuffer->getTailPosition()) {
-        // Reading invalid position because of a bug or a broken dictionary.
-        AKLOGE("Reading PtNode array info from invalid dictionary position: %d, dict size: %d",
-                mReadingState.mPos, mBuffer->getTailPosition());
-        ASSERT(false);
+    int ptNodeCountInArray = 0;
+    int firstPtNodePos = NOT_A_DICT_POS;
+    if (!mPtNodeArrayReader->readPtNodeArrayInfoAndReturnIfValid(
+            mReadingState.mPos, &ptNodeCountInArray, &firstPtNodePos)) {
         mIsError = true;
         mReadingState.mPos = NOT_A_DICT_POS;
         return;
     }
     mReadingState.mPosOfThisPtNodeArrayHead = mReadingState.mPos;
-    const bool usesAdditionalBuffer = mBuffer->isInAdditionalBuffer(mReadingState.mPos);
-    const uint8_t *const dictBuf = mBuffer->getBuffer(usesAdditionalBuffer);
-    if (usesAdditionalBuffer) {
-        mReadingState.mPos -= mBuffer->getOriginalBufferSize();
-    }
-    mReadingState.mRemainingPtNodeCountInThisArray =
-            PatriciaTrieReadingUtils::getPtNodeArraySizeAndAdvancePosition(dictBuf,
-                    &mReadingState.mPos);
-    if (usesAdditionalBuffer) {
-        mReadingState.mPos += mBuffer->getOriginalBufferSize();
-    }
+    mReadingState.mRemainingPtNodeCountInThisArray = ptNodeCountInArray;
+    mReadingState.mPos = firstPtNodePos;
     // Count up nodes and node arrays to avoid infinite loop.
     mReadingState.mTotalPtNodeIndexInThisArrayChain +=
             mReadingState.mRemainingPtNodeCountInThisArray;
@@ -317,29 +305,17 @@ void DynamicPtReadingHelper::nextPtNodeArray() {
 
 // Follow the forward link and read the next node array if exists.
 void DynamicPtReadingHelper::followForwardLink() {
-    if (mReadingState.mPos < 0 || mReadingState.mPos >= mBuffer->getTailPosition()) {
-        // Reading invalid position because of bug or broken dictionary.
-        AKLOGE("Reading forward link from invalid dictionary position: %d, dict size: %d",
-                mReadingState.mPos, mBuffer->getTailPosition());
-        ASSERT(false);
+    int nextPtNodeArrayPos = NOT_A_DICT_POS;
+    if (!mPtNodeArrayReader->readForwardLinkAndReturnIfValid(
+            mReadingState.mPos, &nextPtNodeArrayPos)) {
         mIsError = true;
         mReadingState.mPos = NOT_A_DICT_POS;
         return;
     }
-    const bool usesAdditionalBuffer = mBuffer->isInAdditionalBuffer(mReadingState.mPos);
-    const uint8_t *const dictBuf = mBuffer->getBuffer(usesAdditionalBuffer);
-    if (usesAdditionalBuffer) {
-        mReadingState.mPos -= mBuffer->getOriginalBufferSize();
-    }
-    const int forwardLinkPosition =
-            DynamicPtReadingUtils::getForwardLinkPosition(dictBuf, mReadingState.mPos);
-    if (usesAdditionalBuffer) {
-        mReadingState.mPos += mBuffer->getOriginalBufferSize();
-    }
     mReadingState.mPosOfLastForwardLinkField = mReadingState.mPos;
-    if (DynamicPtReadingUtils::isValidForwardLinkPosition(forwardLinkPosition)) {
+    if (nextPtNodeArrayPos != NOT_A_DICT_POS) {
         // Follow the forward link.
-        mReadingState.mPos += forwardLinkPosition;
+        mReadingState.mPos = nextPtNodeArrayPos;
         nextPtNodeArray();
     } else {
         // All node arrays have been read.

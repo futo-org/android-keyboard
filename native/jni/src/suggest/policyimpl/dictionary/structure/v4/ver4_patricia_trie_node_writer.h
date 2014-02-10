@@ -24,13 +24,14 @@
 #include "suggest/policyimpl/dictionary/structure/pt_common/pt_node_params.h"
 #include "suggest/policyimpl/dictionary/structure/pt_common/pt_node_writer.h"
 #include "suggest/policyimpl/dictionary/structure/v4/content/probability_entry.h"
-#include "suggest/policyimpl/dictionary/structure/v4/ver4_patricia_trie_node_reader.h"
 
 namespace latinime {
 
 class BufferWithExtendableBuffer;
 class Ver4BigramListPolicy;
 class Ver4DictBuffers;
+class Ver4PatriciaTrieNodeReader;
+class Ver4PtNodeArrayReader;
 class Ver4ShortcutListPolicy;
 
 /*
@@ -39,10 +40,11 @@ class Ver4ShortcutListPolicy;
 class Ver4PatriciaTrieNodeWriter : public PtNodeWriter {
  public:
     Ver4PatriciaTrieNodeWriter(BufferWithExtendableBuffer *const trieBuffer,
-            Ver4DictBuffers *const buffers, const Ver4PatriciaTrieNodeReader *const ptNodeReader,
+            Ver4DictBuffers *const buffers, const PtNodeReader *const ptNodeReader,
+            const PtNodeArrayReader *const ptNodeArrayReader,
             Ver4BigramListPolicy *const bigramPolicy, Ver4ShortcutListPolicy *const shortcutPolicy)
-            : mTrieBuffer(trieBuffer), mBuffers(buffers), mPtNodeReader(ptNodeReader),
-              mReadingHelper(mTrieBuffer, mPtNodeReader),
+            : mTrieBuffer(trieBuffer), mBuffers(buffers),
+              mReadingHelper(mTrieBuffer, ptNodeReader, ptNodeArrayReader),
               mBigramPolicy(bigramPolicy), mShortcutPolicy(shortcutPolicy) {}
 
     virtual ~Ver4PatriciaTrieNodeWriter() {}
@@ -114,7 +116,6 @@ class Ver4PatriciaTrieNodeWriter : public PtNodeWriter {
 
     BufferWithExtendableBuffer *const mTrieBuffer;
     Ver4DictBuffers *const mBuffers;
-    const Ver4PatriciaTrieNodeReader *const mPtNodeReader;
     DynamicPtReadingHelper mReadingHelper;
     Ver4BigramListPolicy *const mBigramPolicy;
     Ver4ShortcutListPolicy *const mShortcutPolicy;
