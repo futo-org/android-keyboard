@@ -23,6 +23,9 @@
 
 namespace latinime {
 
+class DictionaryShortcutsStructurePolicy;
+class DictionaryBigramsStructurePolicy;
+
 // TODO: Move to pt_common
 class PatriciaTrieReadingUtils {
  public:
@@ -100,6 +103,13 @@ class PatriciaTrieReadingUtils {
         }
         return nodeFlags;
     }
+
+    static void readPtNodeInfo(const uint8_t *const dictBuf, const int ptNodePos,
+            const DictionaryShortcutsStructurePolicy *const shortcutPolicy,
+            const DictionaryBigramsStructurePolicy *const bigramPolicy,
+            NodeFlags *const outFlags, int *const outCodePointCount, int *const outCodePoint,
+            int *const outProbability, int *const outChildrenPos, int *const outShortcutPos,
+            int *const outBigramPos, int *const outSiblingPos);
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(PatriciaTrieReadingUtils);
