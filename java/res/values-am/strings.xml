@@ -77,12 +77,13 @@
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"ምልክት እየሰጡ ሳሉ በአስተያየት የተጠቆመው ቃል ይመልከቱ"</string>
     <string name="gesture_space_aware" msgid="2078291600664682496">"የሐረግ ምልክት"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"ምልክት በሚሰጡበት ጊዜ ወደ ክፍተት ቁልፉ በማንሸራተት ክፍተቶችን ያስገቡ"</string>
-    <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : ተቀምጧል"</string>
     <string name="spoken_use_headphones" msgid="896961781287283493">"የይለፍቃል ቁልፎች ጮክ በለው ሲነገሩ ለመስማት የጆሮ ማዳመጫ ሰካ::"</string>
     <string name="spoken_current_text_is" msgid="2485723011272583845">"የአሁኑ ፅሁፍ %s ነው"</string>
     <string name="spoken_no_text_entered" msgid="7479685225597344496">"ምንም ፅሁፍ አልገባም"</string>
-    <string name="spoken_auto_correct" msgid="8005997889020109763">"<xliff:g id="KEY">%1$s</xliff:g> <xliff:g id="ORIGINAL_WORD">%2$s</xliff:g>ን ወደ <xliff:g id="CORRECTED">%3$s</xliff:g> ያርመዋል"</string>
-    <string name="spoken_auto_correct_obscured" msgid="6276420476908833791">"<xliff:g id="KEY">%1$s</xliff:g> ራስ-ሰር እርማትን ያከናውናል"</string>
+    <!-- no translation found for spoken_auto_correct (5150455215290003221) -->
+    <skip />
+    <!-- no translation found for spoken_auto_correct_obscured (2309828861778711939) -->
+    <skip />
     <string name="spoken_description_unknown" msgid="3197434010402179157">"የቁልፍ ኮድ%d"</string>
     <string name="spoken_description_shift" msgid="244197883292549308">"ቀይር"</string>
     <string name="spoken_description_shift_shifted" msgid="1681877323344195035">"ቅያር በርቷል (ለማሰናክል ንካ)"</string>
@@ -110,7 +111,8 @@
     <string name="spoken_description_mode_phone" msgid="6520207943132026264">"የስልክ ሁኔታ ላይ"</string>
     <string name="spoken_description_mode_phone_shift" msgid="5499629753962641227">"የስልክ ምልክቶች ሁኔታ ላይ"</string>
     <string name="announce_keyboard_hidden" msgid="8718927835531429807">"የቁልፍ ሰሌዳ ተደብቋል"</string>
-    <string name="announce_keyboard_mode" msgid="4729081055438508321">"የ<xliff:g id="MODE">%s</xliff:g> ቁልፍ ሰሌዳን በማሳየት ላይ"</string>
+    <!-- no translation found for announce_keyboard_mode (7486740369324538848) -->
+    <skip />
     <string name="keyboard_mode_date" msgid="3137520166817128102">"ቀን"</string>
     <string name="keyboard_mode_date_time" msgid="339593358488851072">"ቀን እና ሰዓት"</string>
     <string name="keyboard_mode_email" msgid="6216248078128294262">"ኢሜይል"</string>
@@ -134,10 +136,14 @@
     <string name="subtype_en_GB" msgid="88170601942311355">"እንግሊዘኛ (የታላቋ ብሪታንያ)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"እንግሊዘኛ (ዩ.ኤስ)"</string>
     <string name="subtype_es_US" msgid="5583145191430180200">"ስፓኒሽኛ (ዩኤስ)"</string>
-    <string name="subtype_with_layout_en_GB" msgid="2179097748724725906">"እንግሊዘኛ (ዩናይትድ ኪንግደም) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
-    <string name="subtype_with_layout_en_US" msgid="1362581347576714579">"እንግሊዘኛ (አሜሪካ) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
-    <string name="subtype_with_layout_es_US" msgid="6261791057007890189">"ስፓኒሽኛ (ዩኤስ) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
-    <string name="subtype_nepali_traditional" msgid="9032247506728040447">"<xliff:g id="LANGUAGE">%s</xliff:g> (ተለምዷዊ)"</string>
+    <!-- no translation found for subtype_with_layout_en_GB (1931018968641592304) -->
+    <skip />
+    <!-- no translation found for subtype_with_layout_en_US (8809311287529805422) -->
+    <skip />
+    <!-- no translation found for subtype_with_layout_es_US (510930471167541338) -->
+    <skip />
+    <!-- no translation found for subtype_nepali_traditional (1994571919751163596) -->
+    <skip />
     <string name="subtype_no_language" msgid="7137390094240139495">"ምንም ቋንቋ (ፊደላት)"</string>
     <string name="subtype_no_language_qwerty" msgid="244337630616742604">"ፊደላት (QWERTY)"</string>
     <string name="subtype_no_language_qwertz" msgid="443066912507547976">"ፊደላት (QWERTZ)"</string>
@@ -167,7 +173,8 @@
     <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"ውጫዊ የመዝገበቃላት ፋይል አንብብ"</string>
     <string name="read_external_dictionary_no_files_message" msgid="4947420942224623792">"በውርዶች አቃፊው ውስጥ ምንም የመዝገበ-ፋይሎች የሉም"</string>
     <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"የሚጭኑት የመዝገበ-ቃላት ፋይል ይምረጡ"</string>
-    <string name="read_external_dictionary_confirm_install_message" msgid="6898610163768980870">"እውን ይሄ ፋይል ለ<xliff:g id="LOCALE_NAME">%s</xliff:g> ይጫን?"</string>
+    <!-- no translation found for read_external_dictionary_confirm_install_message (4782116251651288054) -->
+    <skip />
     <string name="error" msgid="8940763624668513648">"ስህተት ተከስቶ ነበር"</string>
     <string name="prefs_dump_contacts_dict" msgid="7227327764402323097">"የእውቂያዎች መዝገበ-ቃላትን ያራግፉ"</string>
     <string name="prefs_dump_user_dict" msgid="294870685041741951">"የግል መዝገበ-ቃላትን ያራግፉ"</string>
@@ -210,18 +217,22 @@
     <string name="check_for_updates_now" msgid="8087688440916388581">"አድስ"</string>
     <string name="last_update" msgid="730467549913588780">"ለመጨረሻ ጊዜ የተዘመነው"</string>
     <string name="message_updating" msgid="4457761393932375219">"ዝማኔዎችን በመፈለግ ላይ"</string>
-    <string name="message_loading" msgid="8689096636874758814">"በመጫን ላይ..."</string>
+    <!-- no translation found for message_loading (5638680861387748936) -->
+    <skip />
     <string name="main_dict_description" msgid="3072821352793492143">"ዋና መዝገበ-ቃላት"</string>
     <string name="cancel" msgid="6830980399865683324">"ሰርዝ"</string>
     <string name="install_dict" msgid="180852772562189365">"ጫን"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"ሰርዝ"</string>
     <string name="delete_dict" msgid="756853268088330054">"ሰርዝ"</string>
-    <string name="should_download_over_metered_prompt" msgid="2878629598667658845">"ተንቀሳቃሽ መሣሪያዎ ላይ ለተመረጠው ቋንቋ የሚሆን መዝገበ-ቃላት ይገኛል።&lt;br/&gt; የትየባ ተሞክሮዎን ለማሻሻል የ<xliff:g id="LANGUAGE">%1$s</xliff:g> መዝገበ-ቃላቱን &lt;b&gt;እንዲያወርዱ&lt;/b&gt; እንመክራለን።&lt;br/&gt; &lt;br/&gt; ውርዱ በ3ጂ ላይ አንድ ወይም ሁለት ደቂቃ ሊወስድ ይችላል። &lt;b&gt;ያልተገደበ የውሂብ ዕቅድ&lt;/b&gt; ከሌለዎት ክፍያዎች መከፈል ሊኖርባቸው ይችላል።&lt;br/&gt; የትኛው የውሂብ ዕቅድ እንዳለዎት እርግጠኛ ካልሆኑ ውርዱን በራስ-ሰር ለመጀመር የWi-Fi ግንኙነት እንዲፈልጉ እንመክራለን።&lt;br/&gt; &lt;br/&gt; ጠቃሚ ምክር፦ የተንቀሳቃሽ መሣሪያዎ &lt;b&gt;ቅንብሮች&lt;/b&gt; ምናሌ ውስጥ ወዳለው &lt;b&gt;ቋንቋ እና ግብዓት&lt;/b&gt; በመሄድ መዝገበ-ቃላትን ማውረድና ማስወገድ ይችላሉ።"</string>
+    <!-- no translation found for should_download_over_metered_prompt (1583881200688185508) -->
+    <skip />
     <string name="download_over_metered" msgid="1643065851159409546">"አሁን አውርድ (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> ሜባ)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"በWi-Fi አውርድ"</string>
-    <string name="dict_available_notification_title" msgid="6514288591959117288">"መዝገበ-ቃላት ለ<xliff:g id="LANGUAGE">%1$s</xliff:g> ይገኛል"</string>
+    <!-- no translation found for dict_available_notification_title (4583842811218581658) -->
+    <skip />
     <string name="dict_available_notification_description" msgid="1075194169443163487">"ለመገምገምና ለማውረድ ይጫኑ"</string>
-    <string name="toast_downloading_suggestions" msgid="1313027353588566660">"በማውረድ ላይ፦ የ<xliff:g id="LANGUAGE">%1$s</xliff:g> ጥቆማ አስተያየቶች በቅርቡ ዝግጁ ይሆናሉ።"</string>
+    <!-- no translation found for toast_downloading_suggestions (6128155879830851739) -->
+    <skip />
     <string name="version_text" msgid="2715354215568469385">"ሥሪት <xliff:g id="VERSION_NUMBER">%1$s</xliff:g>"</string>
     <string name="user_dict_settings_add_menu_title" msgid="1254195365689387076">"አክል"</string>
     <string name="user_dict_settings_add_dialog_title" msgid="4096700390211748168">"ወደ መዝገበ-ቃላት አክል"</string>

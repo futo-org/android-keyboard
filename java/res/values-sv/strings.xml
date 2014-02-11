@@ -77,12 +77,13 @@
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"Ordförslaget visas i rörelsen medan du skriver"</string>
     <string name="gesture_space_aware" msgid="2078291600664682496">"Frasrörelse"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Infoga blanksteg genom att dra fingret över blankstegstangenten"</string>
-    <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g>: sparat"</string>
     <string name="spoken_use_headphones" msgid="896961781287283493">"Anslut hörlurar om du vill att lösenordet ska läsas upp."</string>
     <string name="spoken_current_text_is" msgid="2485723011272583845">"Nuvarande text är %s"</string>
     <string name="spoken_no_text_entered" msgid="7479685225597344496">"Ingen text har angetts"</string>
-    <string name="spoken_auto_correct" msgid="8005997889020109763">"Om du trycker på <xliff:g id="KEY">%1$s</xliff:g> rättas <xliff:g id="ORIGINAL_WORD">%2$s</xliff:g> till <xliff:g id="CORRECTED">%3$s</xliff:g>"</string>
-    <string name="spoken_auto_correct_obscured" msgid="6276420476908833791">"Om du trycker på <xliff:g id="KEY">%1$s</xliff:g> utförs autokorrigering"</string>
+    <!-- no translation found for spoken_auto_correct (5150455215290003221) -->
+    <skip />
+    <!-- no translation found for spoken_auto_correct_obscured (2309828861778711939) -->
+    <skip />
     <string name="spoken_description_unknown" msgid="3197434010402179157">"Nyckelkod %d"</string>
     <string name="spoken_description_shift" msgid="244197883292549308">"Skift"</string>
     <string name="spoken_description_shift_shifted" msgid="1681877323344195035">"Skift på (knacka lätt för att inaktivera)"</string>
@@ -110,7 +111,8 @@
     <string name="spoken_description_mode_phone" msgid="6520207943132026264">"Telefonläge"</string>
     <string name="spoken_description_mode_phone_shift" msgid="5499629753962641227">"Telefonsymbolläge"</string>
     <string name="announce_keyboard_hidden" msgid="8718927835531429807">"Tangentbordet är dolt"</string>
-    <string name="announce_keyboard_mode" msgid="4729081055438508321">"Tangentbord för <xliff:g id="MODE">%s</xliff:g> visas"</string>
+    <!-- no translation found for announce_keyboard_mode (7486740369324538848) -->
+    <skip />
     <string name="keyboard_mode_date" msgid="3137520166817128102">"datum"</string>
     <string name="keyboard_mode_date_time" msgid="339593358488851072">"datum och tid"</string>
     <string name="keyboard_mode_email" msgid="6216248078128294262">"e-post"</string>
@@ -134,10 +136,14 @@
     <string name="subtype_en_GB" msgid="88170601942311355">"Engelskt (brittiskt)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"Engelskt (amerikanskt)"</string>
     <string name="subtype_es_US" msgid="5583145191430180200">"spanska (USA)"</string>
-    <string name="subtype_with_layout_en_GB" msgid="2179097748724725906">"Engelskt (brittiskt) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
-    <string name="subtype_with_layout_en_US" msgid="1362581347576714579">"Engelskt (amerikanskt) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
-    <string name="subtype_with_layout_es_US" msgid="6261791057007890189">"spanska (USA (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
-    <string name="subtype_nepali_traditional" msgid="9032247506728040447">"<xliff:g id="LANGUAGE">%s</xliff:g> (traditionell)"</string>
+    <!-- no translation found for subtype_with_layout_en_GB (1931018968641592304) -->
+    <skip />
+    <!-- no translation found for subtype_with_layout_en_US (8809311287529805422) -->
+    <skip />
+    <!-- no translation found for subtype_with_layout_es_US (510930471167541338) -->
+    <skip />
+    <!-- no translation found for subtype_nepali_traditional (1994571919751163596) -->
+    <skip />
     <string name="subtype_no_language" msgid="7137390094240139495">"Inget språk (alfabet)"</string>
     <string name="subtype_no_language_qwerty" msgid="244337630616742604">"Alfabet (QWERTY)"</string>
     <string name="subtype_no_language_qwertz" msgid="443066912507547976">"Alfabet (QWERTZ)"</string>
@@ -167,7 +173,8 @@
     <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"Läs extern ordboksfil"</string>
     <string name="read_external_dictionary_no_files_message" msgid="4947420942224623792">"Inga ordboksfiler i mappen Hämtningar"</string>
     <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"Välj en ordboksfil att installera"</string>
-    <string name="read_external_dictionary_confirm_install_message" msgid="6898610163768980870">"Vill du verkligen installera filen för <xliff:g id="LOCALE_NAME">%s</xliff:g>?"</string>
+    <!-- no translation found for read_external_dictionary_confirm_install_message (4782116251651288054) -->
+    <skip />
     <string name="error" msgid="8940763624668513648">"Ett fel uppstod"</string>
     <string name="prefs_dump_contacts_dict" msgid="7227327764402323097">"Dumpa ordlista för kontakter"</string>
     <string name="prefs_dump_user_dict" msgid="294870685041741951">"Dumpa personlig ordlista"</string>
@@ -210,18 +217,22 @@
     <string name="check_for_updates_now" msgid="8087688440916388581">"Uppdatera"</string>
     <string name="last_update" msgid="730467549913588780">"Informationen uppdaterades senast"</string>
     <string name="message_updating" msgid="4457761393932375219">"Söker efter uppdateringar"</string>
-    <string name="message_loading" msgid="8689096636874758814">"Läser in ..."</string>
+    <!-- no translation found for message_loading (5638680861387748936) -->
+    <skip />
     <string name="main_dict_description" msgid="3072821352793492143">"Huvudordlista"</string>
     <string name="cancel" msgid="6830980399865683324">"Avbryt"</string>
     <string name="install_dict" msgid="180852772562189365">"Installera"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Avbryt"</string>
     <string name="delete_dict" msgid="756853268088330054">"Ta bort"</string>
-    <string name="should_download_over_metered_prompt" msgid="2878629598667658845">"Det finns en ordlista för språket du har valt i din mobila enhet.&lt;br/&gt; Vi rekommenderar att du &lt;b&gt;hämtar&lt;/b&gt; ordlistan för <xliff:g id="LANGUAGE">%1$s</xliff:g> så att det blir enklare att skriva.&lt;br/&gt; &lt;br/&gt; Det kan ta någon minut att hämta den via 3G. Avgifter kan tillkomma om du inte har ett abonnemang med &lt;b&gt;obegränsad datatrafik&lt;/b&gt;.&lt;br/&gt; Om du är osäker på vilket abonnemang du har rekommenderar vi att du ansluter till ett Wi-Fi-nätverk och hämtar ordlistan automatiskt.&lt;br/&gt; &lt;br/&gt; Tips! Du kan hämta och ta bort ordlistor under &lt;b&gt;Språk och inmatning&lt;/b&gt; i menyn &lt;b&gt;Inställningar&lt;/b&gt; på den mobila enheten."</string>
+    <!-- no translation found for should_download_over_metered_prompt (1583881200688185508) -->
+    <skip />
     <string name="download_over_metered" msgid="1643065851159409546">"Hämta nu (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Hämta via Wi-Fi"</string>
-    <string name="dict_available_notification_title" msgid="6514288591959117288">"En ordlista är tillgänglig för <xliff:g id="LANGUAGE">%1$s</xliff:g>"</string>
+    <!-- no translation found for dict_available_notification_title (4583842811218581658) -->
+    <skip />
     <string name="dict_available_notification_description" msgid="1075194169443163487">"Tryck om du vill granska och hämta"</string>
-    <string name="toast_downloading_suggestions" msgid="1313027353588566660">"Hämtar: förslag för <xliff:g id="LANGUAGE">%1$s</xliff:g> är snart klara."</string>
+    <!-- no translation found for toast_downloading_suggestions (6128155879830851739) -->
+    <skip />
     <string name="version_text" msgid="2715354215568469385">"Version <xliff:g id="VERSION_NUMBER">%1$s</xliff:g>"</string>
     <string name="user_dict_settings_add_menu_title" msgid="1254195365689387076">"Lägg till"</string>
     <string name="user_dict_settings_add_dialog_title" msgid="4096700390211748168">"Lägg till i ordlista"</string>
