@@ -77,12 +77,13 @@
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"Consulta la paraula suggerida mentre fas el gest"</string>
     <string name="gesture_space_aware" msgid="2078291600664682496">"Formula el gest"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Per afegir espais als gestos, apropa el dit a la tecla d\'espai."</string>
-    <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g>: desada"</string>
     <string name="spoken_use_headphones" msgid="896961781287283493">"Connecta un auricular per escoltar les claus de la contrasenya en veu alta."</string>
     <string name="spoken_current_text_is" msgid="2485723011272583845">"El text actual és %s"</string>
     <string name="spoken_no_text_entered" msgid="7479685225597344496">"No s\'ha introduït cap text"</string>
-    <string name="spoken_auto_correct" msgid="8005997889020109763">"<xliff:g id="KEY">%1$s</xliff:g> corregeix <xliff:g id="ORIGINAL_WORD">%2$s</xliff:g> per <xliff:g id="CORRECTED">%3$s</xliff:g>"</string>
-    <string name="spoken_auto_correct_obscured" msgid="6276420476908833791">"<xliff:g id="KEY">%1$s</xliff:g> aplica correccions automàtiques"</string>
+    <!-- no translation found for spoken_auto_correct (5150455215290003221) -->
+    <skip />
+    <!-- no translation found for spoken_auto_correct_obscured (2309828861778711939) -->
+    <skip />
     <string name="spoken_description_unknown" msgid="3197434010402179157">"Clau de codi %d"</string>
     <string name="spoken_description_shift" msgid="244197883292549308">"Maj"</string>
     <string name="spoken_description_shift_shifted" msgid="1681877323344195035">"Maj activat (pica per desactivar)"</string>
@@ -110,7 +111,8 @@
     <string name="spoken_description_mode_phone" msgid="6520207943132026264">"Mode de telèfon"</string>
     <string name="spoken_description_mode_phone_shift" msgid="5499629753962641227">"Mode de símbols de telèfon"</string>
     <string name="announce_keyboard_hidden" msgid="8718927835531429807">"Teclat amagat"</string>
-    <string name="announce_keyboard_mode" msgid="4729081055438508321">"Es mostra el teclat <xliff:g id="MODE">%s</xliff:g>"</string>
+    <!-- no translation found for announce_keyboard_mode (7486740369324538848) -->
+    <skip />
     <string name="keyboard_mode_date" msgid="3137520166817128102">"data"</string>
     <string name="keyboard_mode_date_time" msgid="339593358488851072">"data i hora"</string>
     <string name="keyboard_mode_email" msgid="6216248078128294262">"correu electrònic"</string>
@@ -134,10 +136,14 @@
     <string name="subtype_en_GB" msgid="88170601942311355">"Anglès (Regne Unit)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"Anglès (EUA)"</string>
     <string name="subtype_es_US" msgid="5583145191430180200">"Espanyol (EUA)"</string>
-    <string name="subtype_with_layout_en_GB" msgid="2179097748724725906">"Anglès (Regne Unit) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
-    <string name="subtype_with_layout_en_US" msgid="1362581347576714579">"Anglès (Estats Units) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
-    <string name="subtype_with_layout_es_US" msgid="6261791057007890189">"Espanyol (EUA) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
-    <string name="subtype_nepali_traditional" msgid="9032247506728040447">"<xliff:g id="LANGUAGE">%s</xliff:g> (tradicional)"</string>
+    <!-- no translation found for subtype_with_layout_en_GB (1931018968641592304) -->
+    <skip />
+    <!-- no translation found for subtype_with_layout_en_US (8809311287529805422) -->
+    <skip />
+    <!-- no translation found for subtype_with_layout_es_US (510930471167541338) -->
+    <skip />
+    <!-- no translation found for subtype_nepali_traditional (1994571919751163596) -->
+    <skip />
     <string name="subtype_no_language" msgid="7137390094240139495">"Cap idioma (alfabet)"</string>
     <string name="subtype_no_language_qwerty" msgid="244337630616742604">"Alfabet (QWERTY)"</string>
     <string name="subtype_no_language_qwertz" msgid="443066912507547976">"Alfabet (QWERTZ)"</string>
@@ -167,7 +173,8 @@
     <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"Lectura d\'un fitxer de diccionari extern"</string>
     <string name="read_external_dictionary_no_files_message" msgid="4947420942224623792">"No hi ha cap fitxer de diccionari a la carpeta Baixades"</string>
     <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"Selecció d\'un fitxer de diccionari per instal·lar"</string>
-    <string name="read_external_dictionary_confirm_install_message" msgid="6898610163768980870">"Realment vols instal·lar aquest fitxer per a <xliff:g id="LOCALE_NAME">%s</xliff:g>?"</string>
+    <!-- no translation found for read_external_dictionary_confirm_install_message (4782116251651288054) -->
+    <skip />
     <string name="error" msgid="8940763624668513648">"S\'ha produït un error"</string>
     <string name="prefs_dump_contacts_dict" msgid="7227327764402323097">"Esborrar el diccionari de contactes"</string>
     <string name="prefs_dump_user_dict" msgid="294870685041741951">"Esborrar el diccionari personal"</string>
@@ -210,18 +217,22 @@
     <string name="check_for_updates_now" msgid="8087688440916388581">"Actualitza"</string>
     <string name="last_update" msgid="730467549913588780">"Última actualització"</string>
     <string name="message_updating" msgid="4457761393932375219">"S\'està comprovant si hi ha actualitzacions"</string>
-    <string name="message_loading" msgid="8689096636874758814">"S\'està carregant..."</string>
+    <!-- no translation found for message_loading (5638680861387748936) -->
+    <skip />
     <string name="main_dict_description" msgid="3072821352793492143">"Diccionari principal"</string>
     <string name="cancel" msgid="6830980399865683324">"Cancel·la"</string>
     <string name="install_dict" msgid="180852772562189365">"Instal·la"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Cancel·la"</string>
     <string name="delete_dict" msgid="756853268088330054">"Suprimeix"</string>
-    <string name="should_download_over_metered_prompt" msgid="2878629598667658845">"Hi ha un diccionari disponible per a l\'idioma seleccionat al teu dispositiu mòbil.&lt;br/&gt; Et recomanem que &lt;b&gt;baixis&lt;/b&gt; el diccionari de <xliff:g id="LANGUAGE">%1$s</xliff:g> per millorar la teva experiència d\'escriptura.&lt;br/&gt; &lt;br/&gt; La baixada pot trigar un parell de minuts en xarxes 3G. Si no tens un &lt;b&gt;pla de dades il·limitat&lt;/b&gt;.&lt;br/&amp;gt, és possible que s\'apliquin càrrecs. Si no estàs segur de les característiques del teu pla de dades, et recomanem que cerquis una connexió Wi-Fi per iniciar la baixada automàticament.&lt;br/&gt; &lt;br/&gt; Consell: Pots baixar i suprimir diccionaris a la secció &lt;b&gt;Idioma i introducció de text&lt;/b&gt; del menú &lt;b&gt;Configuració&lt;/b&gt; del dispositiu mòbil."</string>
+    <!-- no translation found for should_download_over_metered_prompt (1583881200688185508) -->
+    <skip />
     <string name="download_over_metered" msgid="1643065851159409546">"Baixa ara (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Baixa mitjançant Wi-Fi"</string>
-    <string name="dict_available_notification_title" msgid="6514288591959117288">"Hi ha un diccionari disponible per a l\'idioma: <xliff:g id="LANGUAGE">%1$s</xliff:g>"</string>
+    <!-- no translation found for dict_available_notification_title (4583842811218581658) -->
+    <skip />
     <string name="dict_available_notification_description" msgid="1075194169443163487">"Prem per revisar-lo i per baixar-lo"</string>
-    <string name="toast_downloading_suggestions" msgid="1313027353588566660">"Baixada: els suggeriments per a <xliff:g id="LANGUAGE">%1$s</xliff:g> estaran disponibles ben aviat."</string>
+    <!-- no translation found for toast_downloading_suggestions (6128155879830851739) -->
+    <skip />
     <string name="version_text" msgid="2715354215568469385">"Versió <xliff:g id="VERSION_NUMBER">%1$s</xliff:g>"</string>
     <string name="user_dict_settings_add_menu_title" msgid="1254195365689387076">"Afegeix"</string>
     <string name="user_dict_settings_add_dialog_title" msgid="4096700390211748168">"Afegeix al diccionari"</string>

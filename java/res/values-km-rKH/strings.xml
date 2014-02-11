@@ -77,12 +77,13 @@
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"​មើល​ពាក្យ​​​ដែល​បាន​ស្នើ​​​ខណៈ​ពេល​កំពុង​ធ្វើ​កាយ​វិការ"</string>
     <string name="gesture_space_aware" msgid="2078291600664682496">"កាយវិការ​​ឃ្លា"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"បញ្ចូល​​ដកឃ្លា​​​អំឡុង​​​កាយវិការ​ ដោយ​រំកិល​ទៅ​គ្រាប់​ចុច​ដកឃ្លា"</string>
-    <string name="added_word" msgid="8993883354622484372">"បាន​រក្សាទុក <xliff:g id="WORD">%s</xliff:g> ៖"</string>
     <string name="spoken_use_headphones" msgid="896961781287283493">"ដោត​កាស ដើម្បី​ស្ដាប់​ពាក្យ​សម្ងាត់។"</string>
     <string name="spoken_current_text_is" msgid="2485723011272583845">"អត្ថបទ​បច្ចុប្បន្ន​គឺ %s"</string>
     <string name="spoken_no_text_entered" msgid="7479685225597344496">"គ្មាន​អត្ថបទ​​​បាន​បញ្ចូល"</string>
-    <string name="spoken_auto_correct" msgid="8005997889020109763">"<xliff:g id="KEY">%1$s</xliff:g> កែ <xliff:g id="ORIGINAL_WORD">%2$s</xliff:g> ទៅ <xliff:g id="CORRECTED">%3$s</xliff:g>"</string>
-    <string name="spoken_auto_correct_obscured" msgid="6276420476908833791">"<xliff:g id="KEY">%1$s</xliff:g> អនុវត្ត​ការ​កែ​ដោយស្វ័យប្រវត្តិ"</string>
+    <!-- no translation found for spoken_auto_correct (5150455215290003221) -->
+    <skip />
+    <!-- no translation found for spoken_auto_correct_obscured (2309828861778711939) -->
+    <skip />
     <string name="spoken_description_unknown" msgid="3197434010402179157">"កូដ​គ្រាប់​ចុច %d"</string>
     <string name="spoken_description_shift" msgid="244197883292549308">"Shift"</string>
     <string name="spoken_description_shift_shifted" msgid="1681877323344195035">"បើក Shift (​ប៉ះ​ដើម្បី​បិទ)"</string>
@@ -110,7 +111,8 @@
     <string name="spoken_description_mode_phone" msgid="6520207943132026264">"របៀប​ទូរស័ព្ទ"</string>
     <string name="spoken_description_mode_phone_shift" msgid="5499629753962641227">"​របៀប​និមិត្ត​សញ្ញា​ទូរស័ព្ទ"</string>
     <string name="announce_keyboard_hidden" msgid="8718927835531429807">"បាន​លាក់​ក្ដារចុច"</string>
-    <string name="announce_keyboard_mode" msgid="4729081055438508321">"បង្ហាញ​ក្ដារ​ចុច <xliff:g id="MODE">%s</xliff:g>"</string>
+    <!-- no translation found for announce_keyboard_mode (7486740369324538848) -->
+    <skip />
     <string name="keyboard_mode_date" msgid="3137520166817128102">"កាលបរិច្ឆេទ"</string>
     <string name="keyboard_mode_date_time" msgid="339593358488851072">"កាល​បរិច្ឆេទ​ និង​ពេល​វេលា"</string>
     <string name="keyboard_mode_email" msgid="6216248078128294262">"អ៊ីមែល"</string>
@@ -134,10 +136,14 @@
     <string name="subtype_en_GB" msgid="88170601942311355">"អង់គ្លេស (​អង់គ្លេស)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"អង់គ្លេស (សហរដ្ឋ​អាមេរិក)"</string>
     <string name="subtype_es_US" msgid="5583145191430180200">"អេស្ប៉ាញ (សហរដ្ឋ​អាមេរិក​)"</string>
-    <string name="subtype_with_layout_en_GB" msgid="2179097748724725906">"អង់គ្លេស (ចក្រភព​អង់គ្លេស) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
-    <string name="subtype_with_layout_en_US" msgid="1362581347576714579">"អង់គ្លេស (អាមេរិក) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
-    <string name="subtype_with_layout_es_US" msgid="6261791057007890189">"អេស្ប៉ាញ (អាមេរិក​) ( <xliff:g id="LAYOUT">%s</xliff:g> )"</string>
-    <string name="subtype_nepali_traditional" msgid="9032247506728040447">"<xliff:g id="LANGUAGE">%s</xliff:g> (អក្សរ​ពេញ​)"</string>
+    <!-- no translation found for subtype_with_layout_en_GB (1931018968641592304) -->
+    <skip />
+    <!-- no translation found for subtype_with_layout_en_US (8809311287529805422) -->
+    <skip />
+    <!-- no translation found for subtype_with_layout_es_US (510930471167541338) -->
+    <skip />
+    <!-- no translation found for subtype_nepali_traditional (1994571919751163596) -->
+    <skip />
     <string name="subtype_no_language" msgid="7137390094240139495">"គ្មាន​ភាសា (អក្សរ​ក្រម)"</string>
     <string name="subtype_no_language_qwerty" msgid="244337630616742604">"តាម​លំដាប់​អក្សរក្រម (QWERTY)"</string>
     <string name="subtype_no_language_qwertz" msgid="443066912507547976">"តាម​លំដាប់​អក្សរក្រម (QWERTZ)"</string>
@@ -167,16 +173,13 @@
     <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"អាន​ឯកសារ​វចនានុក្រម​ខាង​ក្រៅ"</string>
     <string name="read_external_dictionary_no_files_message" msgid="4947420942224623792">"គ្មាន​ឯកសារ​វចនានុក្រម​នៅ​ក្នុង​ថត​ទាញ​យក"</string>
     <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"ជ្រើស​ឯកសារ​វចនានុក្រម​ ដើម្បី​ដំឡើង"</string>
-    <string name="read_external_dictionary_confirm_install_message" msgid="6898610163768980870">"ពិត​ជា​ដំឡើង​ឯកសារ​នេះ​សម្រាប់ <xliff:g id="LOCALE_NAME">%s</xliff:g> ឬ?"</string>
+    <!-- no translation found for read_external_dictionary_confirm_install_message (4782116251651288054) -->
+    <skip />
     <string name="error" msgid="8940763624668513648">"មាន​កំហុស"</string>
-    <!-- no translation found for prefs_dump_contacts_dict (7227327764402323097) -->
-    <skip />
-    <!-- no translation found for prefs_dump_user_dict (294870685041741951) -->
-    <skip />
-    <!-- no translation found for prefs_dump_user_history_dict (6821075152449554628) -->
-    <skip />
-    <!-- no translation found for prefs_dump_personalization_dict (7558387996151745284) -->
-    <skip />
+    <string name="prefs_dump_contacts_dict" msgid="7227327764402323097">"បោះបង់​វចនានុក្រម​ទំនាក់ទំនង"</string>
+    <string name="prefs_dump_user_dict" msgid="294870685041741951">"បោះបង់​វចនានុក្រម​ផ្ទាល់ខ្លួន"</string>
+    <string name="prefs_dump_user_history_dict" msgid="6821075152449554628">"បោះបង់​វចនានុក្រម​​ប្រវត្តិ​អ្នកប្រើ"</string>
+    <string name="prefs_dump_personalization_dict" msgid="7558387996151745284">"បោះបង់​វចនានុក្រម​ផ្ទាល់ខ្លួន"</string>
     <string name="button_default" msgid="3988017840431881491">"លំនាំដើម"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"សូម​ស្វាគមន៍​មក​កាន់ <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"ជាមួយ​​​ការ​វាយ​បញ្ចូល​ដោយ​ប្រើ​​​កាយវិការ"</string>
@@ -214,18 +217,22 @@
     <string name="check_for_updates_now" msgid="8087688440916388581">"ផ្ទុក​ឡើងវិញ"</string>
     <string name="last_update" msgid="730467549913588780">"បាន​ធ្វើ​បច្ចុប្បន្នភាព​ចុងក្រោយ"</string>
     <string name="message_updating" msgid="4457761393932375219">"ពិនិត្យមើល​បច្ចុប្បន្នភាព"</string>
-    <string name="message_loading" msgid="8689096636874758814">"កំពុង​ផ្ទុក..."</string>
+    <!-- no translation found for message_loading (5638680861387748936) -->
+    <skip />
     <string name="main_dict_description" msgid="3072821352793492143">"វចនានុក្រម​ចម្បង"</string>
     <string name="cancel" msgid="6830980399865683324">"បោះ​បង់"</string>
     <string name="install_dict" msgid="180852772562189365">"ដំឡើង"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"បោះ​បង់"</string>
     <string name="delete_dict" msgid="756853268088330054">"លុប"</string>
-    <string name="should_download_over_metered_prompt" msgid="2878629598667658845">"ភាសា​ដែល​បាន​ជ្រើស​នៅ​លើ​ឧបករណ៍​របស់​អ្នក​មាន​វចនានុក្រម។ &lt;br/&gt; យើង​បាន​ផ្ដល់​អនុសាសន៍ &lt;b&gt;ទាញ​យក​&lt;/b&gt;  <xliff:g id="LANGUAGE">%1$s</xliff:g> វចនានុក្រម ដើម្បី​ធ្វើ​ឲ្យ​ការ​វាយ​បញ្ចូល​របស់​អ្នក​ប្រសើរ​ឡើង។ &lt;br/&gt; &lt;br/&gt; ការ​ទាញ​យក​អាច​ចំណាយ​ពេល​​មួយ ឬ​ពីរ​នាទី​​​តាម 3G ។ ការ​​កាត់​លុយ​អាច​អនុវត្ត​ ប្រសិន​​​បើ​អ្នក​​បាន​​ &lt;b&gt;កំណត់​ទិន្នន័យ​គ្មាន​ដែន​កំណត់ &lt;/b&gt;.&lt;br/&gt; ប្រសិនបើ​​អ្នក​មិន​ប្រាកដ​​ថា​ទិន្នន័យ​អ្នក​​មិន​បាន​​កំណត់ យើង​បាន​ផ្ដល់​អនុសាសន៍​ដោយ​ស្វែងរក​ការ​ភ្ជាប់​​វ៉ាយហ្វាយ ដើម្បី​ចាប់ផ្ដើម​ទាញ​យក​ដោយ​ស្វ័យប្រវត្តិ។&lt;br/&gt; &lt;br/&gt; ព័ត៌មាន​ជំនួយ៖ អ្នក​អាច​ទាញ​យក និង​លុប​​វចនានុក្រម​​ដោយ​ចូល​ទៅ​ &lt;b&gt;ភាសា&amp; បញ្ចូល&lt;/b&gt;​នៅ​ក្នុង​ម៉ឺនុយ &lt;b&gt;ការ​កំណត់ &lt;/b&gt; របស់​ឧបករណ៍​ចល័ត។"</string>
+    <!-- no translation found for should_download_over_metered_prompt (1583881200688185508) -->
+    <skip />
     <string name="download_over_metered" msgid="1643065851159409546">"ទាញ​យក​ឥឡូវ​នេះ (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> មេកាបៃ)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"ទាញ​យក​តាម​វ៉ាយហ្វាយ"</string>
-    <string name="dict_available_notification_title" msgid="6514288591959117288">"វចនានុក្រម​​អាច​ប្រើ​បាន​​សម្រាប់ <xliff:g id="LANGUAGE">%1$s</xliff:g>"</string>
+    <!-- no translation found for dict_available_notification_title (4583842811218581658) -->
+    <skip />
     <string name="dict_available_notification_description" msgid="1075194169443163487">"ចុច​ ដើម្បី​ពិនិត្យ​មើល​ឡើង​​វិញ​ និង​ទាញ​យក"</string>
-    <string name="toast_downloading_suggestions" msgid="1313027353588566660">"ទាញ​យក៖ ការ​​ស្នើ​សម្រាប់ <xliff:g id="LANGUAGE">%1$s</xliff:g> នឹង​បញ្ចប់​ឆាប់ៗ។"</string>
+    <!-- no translation found for toast_downloading_suggestions (6128155879830851739) -->
+    <skip />
     <string name="version_text" msgid="2715354215568469385">"កំណែ <xliff:g id="VERSION_NUMBER">%1$s</xliff:g>"</string>
     <string name="user_dict_settings_add_menu_title" msgid="1254195365689387076">"បន្ថែម"</string>
     <string name="user_dict_settings_add_dialog_title" msgid="4096700390211748168">"បន្ថែម​ទៅ​វចនានុក្រម"</string>
