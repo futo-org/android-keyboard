@@ -38,7 +38,6 @@ public class MoreKeysResources {
     private static final String MARK_TEXTS = "@TEXTS@";
     private static final String MARK_LANGUAGES_AND_TEXTS = "@LANGUAGES_AND_TEXTS@";
     private static final String DEFAULT_LANGUAGE_NAME = "DEFAULT";
-    private static final String ARRAY_NAME_FOR_LANGUAGE = "LANGUAGE_%s";
     private static final String EMPTY_STRING_VAR = "EMPTY";
 
     private static final String NO_LANGUAGE_CODE = "zz";
@@ -144,7 +143,12 @@ public class MoreKeysResources {
 
     private void dumpDefaultTexts(final PrintStream out) {
         final StringResourceMap defaultResMap = mResourcesMap.get(DEFAULT_LANGUAGE_NAME);
-        dumpTextsInternal(out, defaultResMap, defaultResMap);
+        final int outputArraySize = dumpTextsInternal(out, defaultResMap, defaultResMap);
+        defaultResMap.setOutputArraySize(outputArraySize);
+    }
+
+    private static String getArrayNameForLanguage(final String language) {
+        return "LANGUAGE_" + language;
     }
 
     private void dumpTexts(final PrintStream out) {
@@ -157,8 +161,8 @@ public class MoreKeysResources {
                 continue;
             }
             out.format("    /* Language %s: %s */\n", language, getLanguageDisplayName(language));
-            out.format("    private static final String[] " + ARRAY_NAME_FOR_LANGUAGE + " = {\n",
-                    language);
+            out.format("    private static final String[] " + getArrayNameForLanguage(language)
+                    + " = {\n");
             final StringResourceMap resMap = mResourcesMap.get(language);
             for (final StringResource res : resMap.getResources()) {
                 if (!defaultResMap.contains(res.mName)) {
@@ -166,7 +170,8 @@ public class MoreKeysResources {
                             + " doesn't have default resource");
                 }
             }
-            dumpTextsInternal(out, resMap, defaultResMap);
+            final int outputArraySize = dumpTextsInternal(out, resMap, defaultResMap);
+            resMap.setOutputArraySize(outputArraySize);
             out.format("    };\n\n");
         }
     }
@@ -176,13 +181,15 @@ public class MoreKeysResources {
         allLanguages.addAll(mResourcesMap.keySet());
         Collections.sort(allLanguages);
         for (final String language : allLanguages) {
+            final StringResourceMap resMap = mResourcesMap.get(language);
             final Locale locale = LocaleUtils.constructLocaleFromString(language);
-            // If we use a different key, dump the original as comment for now.
             final String languageKeyToDump = locale.getCountry().isEmpty()
                     ? String.format("\"%s\"", language)
-                    : String.format("\"%s\" /* \"%s\" */", locale.getLanguage(), language);
-            out.format("        %s, " + ARRAY_NAME_FOR_LANGUAGE + ", /* %s */\n",
-                    languageKeyToDump, language, getLanguageDisplayName(language));
+                    : String.format("\"%s\"", locale.getLanguage());
+            out.format("        %s, %-15s /* %3d/%3d %s */\n",
+                    languageKeyToDump, getArrayNameForLanguage(language) + ",",
+                    resMap.getResources().size(), resMap.getOutputArraySize(),
+                    getLanguageDisplayName(language));
         }
     }
 
@@ -194,10 +201,11 @@ public class MoreKeysResources {
         return locale.getDisplayName(Locale.ENGLISH);
     }
 
-    private static void dumpTextsInternal(final PrintStream out, final StringResourceMap resMap,
+    private static int dumpTextsInternal(final PrintStream out, final StringResourceMap resMap,
             final StringResourceMap defaultResMap) {
         final ArrayInitializerFormatter formatter =
                 new ArrayInitializerFormatter(out, 100, "        ");
+        int outputArraySize = 0;
         boolean successiveNull = false;
         for (final StringResource defaultRes : defaultResMap.getResources()) {
             if (resMap.contains(defaultRes.mName)) {
@@ -212,6 +220,7 @@ public class MoreKeysResources {
                     formatter.outElement(String.format("\"%s\",", escaped));
                 }
                 successiveNull = false;
+                outputArraySize = formatter.getCurrentIndex();
             } else {
                 formatter.outElement("null,");
                 successiveNull = true;
@@ -220,6 +229,7 @@ public class MoreKeysResources {
         if (!successiveNull) {
             formatter.flush();
         }
+        return outputArraySize;
     }
 
     private static String addPrefix(final String prefix, final String lines) {

@@ -39,6 +39,12 @@ public class StringResourceMap {
     // Name to string resource map.
     private final Map<String, StringResource> mResourcesMap;
 
+    // The length of String[] that is created from this {@link StringResourceMap}. The length is
+    // calculated in {@link MoreKeysResources#dumpTexts(OutputStream)} and recorded by
+    // {@link #setOutputArraySize(int)}. The recorded length is used as a part of comment by
+    // {@link MoreKeysResources#dumpLanguageMap(OutputStream)} via {@link #getOutputArraySize()}.
+    private int mOutputArraySize;
+
     public StringResourceMap(final InputStream is) {
         final StringResourceHandler handler = new StringResourceHandler();
         final SAXParserFactory factory = SAXParserFactory.newInstance();
@@ -75,6 +81,14 @@ public class StringResourceMap {
 
     public StringResource get(final String name) {
         return mResourcesMap.get(name);
+    }
+
+    public void setOutputArraySize(final int arraySize) {
+        mOutputArraySize = arraySize;
+    }
+
+    public int getOutputArraySize() {
+        return mOutputArraySize;
     }
 
     static class StringResourceHandler extends DefaultHandler2 {
