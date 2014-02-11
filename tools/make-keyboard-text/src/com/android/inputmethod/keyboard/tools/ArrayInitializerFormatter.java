@@ -29,10 +29,14 @@ public class ArrayInitializerFormatter {
     private int mBufferedLen;
     private int mBufferedIndex = Integer.MIN_VALUE;
 
-    public ArrayInitializerFormatter(PrintStream out, int width, String indent) {
+    public ArrayInitializerFormatter(final PrintStream out, final int width, final String indent) {
         mOut = out;
         mMaxWidth = width - indent.length();
         mIndent = indent;
+    }
+
+    public int getCurrentIndex() {
+        return mCurrentIndex;
     }
 
     public void flush() {
@@ -59,13 +63,13 @@ public class ArrayInitializerFormatter {
         mBufferedLen = 0;
     }
 
-    public void outCommentLines(String lines) {
+    public void outCommentLines(final String lines) {
         flush();
         mOut.print(lines);
         mFixedElement = null;
     }
 
-    public void outElement(String element) {
+    public void outElement(final String element) {
         if (!element.equals(mFixedElement)) {
             flush();
             mBufferedIndex = mCurrentIndex;
