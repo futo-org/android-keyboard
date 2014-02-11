@@ -77,12 +77,13 @@
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"Xem từ được đề xuất trong khi dùng cử chỉ"</string>
     <string name="gesture_space_aware" msgid="2078291600664682496">"Cử chỉ nhập cụm từ"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Nhập dấu cách khi thực hiện cử chỉ bằng cách trượt tới phím cách"</string>
-    <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : Đã lưu"</string>
     <string name="spoken_use_headphones" msgid="896961781287283493">"Cắm tai nghe để nghe mật khẩu."</string>
     <string name="spoken_current_text_is" msgid="2485723011272583845">"Ký tự hiện tại là %s"</string>
     <string name="spoken_no_text_entered" msgid="7479685225597344496">"Không có ký tự nào được nhập"</string>
-    <string name="spoken_auto_correct" msgid="8005997889020109763">"<xliff:g id="KEY">%1$s</xliff:g> sửa <xliff:g id="ORIGINAL_WORD">%2$s</xliff:g> thành <xliff:g id="CORRECTED">%3$s</xliff:g>"</string>
-    <string name="spoken_auto_correct_obscured" msgid="6276420476908833791">"<xliff:g id="KEY">%1$s</xliff:g> thực hiện tự động sửa"</string>
+    <!-- no translation found for spoken_auto_correct (5150455215290003221) -->
+    <skip />
+    <!-- no translation found for spoken_auto_correct_obscured (2309828861778711939) -->
+    <skip />
     <string name="spoken_description_unknown" msgid="3197434010402179157">"Mã phím %d"</string>
     <string name="spoken_description_shift" msgid="244197883292549308">"Shift"</string>
     <string name="spoken_description_shift_shifted" msgid="1681877323344195035">"Shift đang bật (bấm để tắt)"</string>
@@ -110,7 +111,8 @@
     <string name="spoken_description_mode_phone" msgid="6520207943132026264">"Chế độ điện thoại"</string>
     <string name="spoken_description_mode_phone_shift" msgid="5499629753962641227">"Chế độ biểu tượng điện thoại"</string>
     <string name="announce_keyboard_hidden" msgid="8718927835531429807">"Bàn phím bị ẩn"</string>
-    <string name="announce_keyboard_mode" msgid="4729081055438508321">"Hiển thị bàn phím <xliff:g id="MODE">%s</xliff:g>"</string>
+    <!-- no translation found for announce_keyboard_mode (7486740369324538848) -->
+    <skip />
     <string name="keyboard_mode_date" msgid="3137520166817128102">"ngày"</string>
     <string name="keyboard_mode_date_time" msgid="339593358488851072">"ngày và giờ"</string>
     <string name="keyboard_mode_email" msgid="6216248078128294262">"email"</string>
@@ -134,10 +136,14 @@
     <string name="subtype_en_GB" msgid="88170601942311355">"Tiếng Anh (Anh)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"Tiếng Anh (Mỹ)"</string>
     <string name="subtype_es_US" msgid="5583145191430180200">"Tiếng Tây Ban Nha (Mỹ)"</string>
-    <string name="subtype_with_layout_en_GB" msgid="2179097748724725906">"Tiếng Anh (Anh) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
-    <string name="subtype_with_layout_en_US" msgid="1362581347576714579">"Tiếng Anh (Mỹ) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
-    <string name="subtype_with_layout_es_US" msgid="6261791057007890189">"Tiếng Tây Ban Nha (Mỹ) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
-    <string name="subtype_nepali_traditional" msgid="9032247506728040447">"<xliff:g id="LANGUAGE">%s</xliff:g> (Truyền thống)"</string>
+    <!-- no translation found for subtype_with_layout_en_GB (1931018968641592304) -->
+    <skip />
+    <!-- no translation found for subtype_with_layout_en_US (8809311287529805422) -->
+    <skip />
+    <!-- no translation found for subtype_with_layout_es_US (510930471167541338) -->
+    <skip />
+    <!-- no translation found for subtype_nepali_traditional (1994571919751163596) -->
+    <skip />
     <string name="subtype_no_language" msgid="7137390094240139495">"Không ngôn ngữ nào (Bảng chữ cái)"</string>
     <string name="subtype_no_language_qwerty" msgid="244337630616742604">"Bảng chữ cái (QWERTY)"</string>
     <string name="subtype_no_language_qwertz" msgid="443066912507547976">"Bảng chữ cái (QWERTZ)"</string>
@@ -167,16 +173,13 @@
     <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"Đọc tệp từ điển bên ngoài"</string>
     <string name="read_external_dictionary_no_files_message" msgid="4947420942224623792">"Không có tệp từ điển nào trong thư mục Nội dung tải xuống"</string>
     <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"Chọn tệp từ điển để cài đặt"</string>
-    <string name="read_external_dictionary_confirm_install_message" msgid="6898610163768980870">"Thực sự cài đặt tệp này cho <xliff:g id="LOCALE_NAME">%s</xliff:g>?"</string>
+    <!-- no translation found for read_external_dictionary_confirm_install_message (4782116251651288054) -->
+    <skip />
     <string name="error" msgid="8940763624668513648">"Đã xảy ra lỗi"</string>
-    <!-- no translation found for prefs_dump_contacts_dict (7227327764402323097) -->
-    <skip />
-    <!-- no translation found for prefs_dump_user_dict (294870685041741951) -->
-    <skip />
-    <!-- no translation found for prefs_dump_user_history_dict (6821075152449554628) -->
-    <skip />
-    <!-- no translation found for prefs_dump_personalization_dict (7558387996151745284) -->
-    <skip />
+    <string name="prefs_dump_contacts_dict" msgid="7227327764402323097">"Kết xuất từ điển danh bạ"</string>
+    <string name="prefs_dump_user_dict" msgid="294870685041741951">"Kết xuất từ điển cá nhân"</string>
+    <string name="prefs_dump_user_history_dict" msgid="6821075152449554628">"Kết xuất từ điển lịch sử người dùng"</string>
+    <string name="prefs_dump_personalization_dict" msgid="7558387996151745284">"Kết xuất từ điển cá nhân hóa"</string>
     <string name="button_default" msgid="3988017840431881491">"Mặc định"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"Chào mừng bạn đến với <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"với Nhập bằng cử chỉ"</string>
@@ -214,18 +217,22 @@
     <string name="check_for_updates_now" msgid="8087688440916388581">"Làm mới"</string>
     <string name="last_update" msgid="730467549913588780">"Cập nhật lần cuối"</string>
     <string name="message_updating" msgid="4457761393932375219">"Đang kiểm tra cập nhật"</string>
-    <string name="message_loading" msgid="8689096636874758814">"Đang tải..."</string>
+    <!-- no translation found for message_loading (5638680861387748936) -->
+    <skip />
     <string name="main_dict_description" msgid="3072821352793492143">"Từ điển chính"</string>
     <string name="cancel" msgid="6830980399865683324">"Hủy"</string>
     <string name="install_dict" msgid="180852772562189365">"Cài đặt"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Hủy"</string>
     <string name="delete_dict" msgid="756853268088330054">"Xóa"</string>
-    <string name="should_download_over_metered_prompt" msgid="2878629598667658845">"Ngôn ngữ đã chọn trên thiết bị di động của bạn hiện có từ điển.&lt;br/&gt; Bạn nên &lt;b&gt;tải xuống&lt;/b&gt; từ điển <xliff:g id="LANGUAGE">%1$s</xliff:g> để cải thiện trải nghiệm nhập của mình.&lt;br/&gt; &lt;br/&gt; Quá trình tải xuống có thể mất vài phút qua 3G. Có thể mất phí nếu bạn không có &lt;b&gt;gói dữ liệu không giới hạn&lt;/b&gt;.&lt;br/&gt; Nếu bạn không chắc mình có gói dữ liệu nào, bạn nên tìm kết nối Wi-Fi để bắt đầu tải xuống tự động.&lt;br/&gt; &lt;br/&gt; Mẹo: Bạn có thể tải xuống và xóa từ điển bằng cách đi tới &lt;b&gt;Ngôn ngữ và nhập&lt;/b&gt; trong trình đơn &lt;b&gt;Cài đặt&lt;/b&gt; trên thiết bị di động của mình."</string>
+    <!-- no translation found for should_download_over_metered_prompt (1583881200688185508) -->
+    <skip />
     <string name="download_over_metered" msgid="1643065851159409546">"Tải xuống bây giờ (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Tải xuống qua Wi-Fi"</string>
-    <string name="dict_available_notification_title" msgid="6514288591959117288">"Có sẵn từ điển cho <xliff:g id="LANGUAGE">%1$s</xliff:g>"</string>
+    <!-- no translation found for dict_available_notification_title (4583842811218581658) -->
+    <skip />
     <string name="dict_available_notification_description" msgid="1075194169443163487">"Nhấn để xem lại và tải xuống"</string>
-    <string name="toast_downloading_suggestions" msgid="1313027353588566660">"Tải xuống: đề xuất đối với <xliff:g id="LANGUAGE">%1$s</xliff:g> sẽ sớm sẵn sàng."</string>
+    <!-- no translation found for toast_downloading_suggestions (6128155879830851739) -->
+    <skip />
     <string name="version_text" msgid="2715354215568469385">"Phiên bản <xliff:g id="VERSION_NUMBER">%1$s</xliff:g>"</string>
     <string name="user_dict_settings_add_menu_title" msgid="1254195365689387076">"Thêm"</string>
     <string name="user_dict_settings_add_dialog_title" msgid="4096700390211748168">"Thêm vào từ điển"</string>
