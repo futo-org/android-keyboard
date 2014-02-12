@@ -101,10 +101,11 @@ public final class KeyPreviewChoreographer {
             if (tag instanceof KeyPreviewAnimations) {
                 final KeyPreviewAnimations animation = (KeyPreviewAnimations)tag;
                 animation.startDismiss();
+                return;
             }
-            return;
         }
         // Dismiss preview without animation.
+        mShowingKeyPreviewTextViews.remove(key);
         if (tag instanceof Animator) {
             ((Animator)tag).cancel();
         }
