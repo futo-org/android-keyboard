@@ -74,7 +74,7 @@ public final class KeyboardTextsTable {
         /*   7:21 */ "more_keys_for_c",
         /*   8:20 */ "more_keys_for_s",
         /*   9:20 */ "more_keys_for_n",
-        /*  10:19 */ "label_to_alpha_key",
+        /*  10:20 */ "label_to_alpha_key",
         /*  11:15 */ "more_keys_for_y",
         /*  12:13 */ "more_keys_for_d",
         /*  13:12 */ "more_keys_for_z",
@@ -1787,8 +1787,15 @@ public final class KeyboardTextsTable {
     /* Language hy_AM: Armenian (Armenia) */
     private static final String[] LANGUAGE_hy_AM = {
         /* more_keys_for_a ~ */
+        null, null, null, null, null, null, null, null, null, null,
+        /* ~ more_keys_for_n */
+        // Label for "switch to alphabetic" key.
+        // U+0531: "Ա" ARMENIAN CAPITAL LETTER AYB
+        // U+0532: "Բ" ARMENIAN CAPITAL LETTER BEN
+        // U+0533: "Գ" ARMENIAN CAPITAL LETTER GIM
+        /* label_to_alpha_key */ "\u0531\u0532\u0533",
+        /* more_keys_for_y ~ */
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-        null, null, null, null, null, null, null, null, null, null, null,
         /* ~ more_keys_for_cyrillic_ie */
         // U+058A: "֊" ARMENIAN HYPHEN
         // U+055C: "՜" ARMENIAN EXCLAMATION MARK
@@ -3553,7 +3560,7 @@ public final class KeyboardTextsTable {
         "hi", LANGUAGE_hi,    /*  24/ 57 Hindi */
         "hr", LANGUAGE_hr,    /*   9/ 16 Croatian */
         "hu", LANGUAGE_hu,    /*   9/ 16 Hungarian */
-        "hy", LANGUAGE_hy_AM, /*   7/109 Armenian (Armenia) */
+        "hy", LANGUAGE_hy_AM, /*   8/109 Armenian (Armenia) */
         "is", LANGUAGE_is,    /*  13/ 25 Icelandic */
         "it", LANGUAGE_it,    /*   5/  5 Italian */
         "iw", LANGUAGE_iw,    /*  14/106 Hebrew */
