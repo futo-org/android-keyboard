@@ -1355,6 +1355,7 @@ public final class InputLogic {
         final String previousWord = mLastComposedWord.mPrevWord;
         final CharSequence originallyTypedWord = mLastComposedWord.mTypedWord;
         final CharSequence committedWord = mLastComposedWord.mCommittedWord;
+        final String committedWordString = committedWord.toString();
         final int cancelLength = committedWord.length();
         // We want java chars, not codepoints for the following.
         final int separatorLength = mLastComposedWord.mSeparatorString.length();
@@ -1376,33 +1377,44 @@ public final class InputLogic {
         if (!TextUtils.isEmpty(previousWord) && !TextUtils.isEmpty(committedWord)) {
             if (mSuggest != null) {
                 mSuggest.mDictionaryFacilitator.cancelAddingUserHistory(
-                        previousWord, committedWord.toString());
+                        previousWord, committedWordString);
             }
         }
         final String stringToCommit = originallyTypedWord + mLastComposedWord.mSeparatorString;
         final SpannableString textToCommit = new SpannableString(stringToCommit);
         if (committedWord instanceof SpannableString) {
-            final int lastCharIndex = textToCommit.length() - 1;
-            // Add the auto-correction to the list of suggestions.
-            textToCommit.setSpan(new SuggestionSpan(settingsValues.mLocale,
-                    new String[] { committedWord.toString() }, 0 /* flags */),
-                    0 /* start */, lastCharIndex /* end */, 0 /* flags */);
             final SpannableString committedWordWithSuggestionSpans = (SpannableString)committedWord;
             final Object[] spans = committedWordWithSuggestionSpans.getSpans(0,
                     committedWord.length(), Object.class);
+            final int lastCharIndex = textToCommit.length() - 1;
+            // We will collect all suggestions in the following array.
+            final ArrayList<String> suggestions = CollectionUtils.newArrayList();
+            // First, add the committed word to the list of suggestions.
+            suggestions.add(committedWordString);
             for (final Object span : spans) {
-                // Put all the spans in the original text on this new text. We could remove the
-                // typed word from the suggestions, but we'd have to make more dynamic instanceof
-                // checks, to copy the span, copy all suggestions and attributes... And there is
-                // the risk to drop the originally typed string if there is a subtle bug. There is
-                // still the committed auto-correction that we reverted from, which is not included
-                // in the suggestions, that's why we added it with another call to setSpan a few
-                // lines above.
-                // The code that re-reads these spans already knows to do the right thing whether
-                // the typed word is included or not. That should be enough.
-                textToCommit.setSpan(span, 0 /* start */, lastCharIndex /* end */,
-                        committedWordWithSuggestionSpans.getSpanFlags(span));
+                // If this is a suggestion span, we check that the locale is the right one, and
+                // that the word is not the committed word. That should mostly be the case.
+                // Given this, we add it to the list of suggestions, otherwise we discard it.
+                if (span instanceof SuggestionSpan) {
+                    final SuggestionSpan suggestionSpan = (SuggestionSpan)span;
+                    if (!suggestionSpan.getLocale().equals(settingsValues.mLocale.toString())) {
+                        continue;
+                    }
+                    for (final String suggestion : suggestionSpan.getSuggestions()) {
+                        if (!suggestion.equals(committedWordString)) {
+                            suggestions.add(suggestion);
+                        }
+                    }
+                } else {
+                    // If this is not a suggestion span, we just add it as is.
+                    textToCommit.setSpan(span, 0 /* start */, lastCharIndex /* end */,
+                            committedWordWithSuggestionSpans.getSpanFlags(span));
+                }
             }
+            // Add the suggestion list to the list of suggestions.
+            textToCommit.setSpan(new SuggestionSpan(settingsValues.mLocale,
+                    suggestions.toArray(new String[suggestions.size()]), 0 /* flags */),
+                    0 /* start */, lastCharIndex /* end */, 0 /* flags */);
         }
         if (settingsValues.mSpacingAndPunctuations.mCurrentLanguageHasSpaces) {
             // For languages with spaces, we revert to the typed string, but the cursor is still
