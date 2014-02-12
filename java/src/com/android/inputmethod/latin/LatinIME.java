@@ -1185,7 +1185,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 new AlertDialog.Builder(context, AlertDialog.THEME_HOLO_DARK);
         builder.setMessage(R.string.important_notice_contents)
                 .setPositiveButton(android.R.string.ok, listener);
-        showOptionDialog(builder.create(), false /* cancelable */);
+        showOptionDialog(builder.create(), true /* cancelable */);
     }
 
     public void displaySettingsDialog() {
