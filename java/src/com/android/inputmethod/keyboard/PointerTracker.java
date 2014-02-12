@@ -412,13 +412,9 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
         final int keyWidth = mKeyboard.mMostCommonKeyWidth;
         final int keyHeight = mKeyboard.mMostCommonKeyHeight;
         mBatchInputArbiter.setKeyboardGeometry(keyWidth, mKeyboard.mOccupiedHeight);
-        final Key newKey = mKeyDetector.detectHitKey(mKeyX, mKeyY);
-        if (newKey != mCurrentKey) {
-            if (sDrawingProxy != null) {
-                setReleasedKeyGraphics(mCurrentKey);
-            }
-            // Keep {@link #mCurrentKey} that comes from previous keyboard.
-        }
+        // Keep {@link #mCurrentKey} that comes from previous keyboard. The key preview of
+        // {@link #mCurrentKey} will be dismissed by {@setReleasedKeyGraphics(Key)} via
+        // {@link onMoveEventInternal(int,int,long)} or {@link #onUpEventInternal(int,int,long)}.
         mPhantomSuddenMoveThreshold = (int)(keyWidth * PHANTOM_SUDDEN_MOVE_THRESHOLD);
         mBogusMoveEventDetector.setKeyboardGeometry(keyWidth, keyHeight);
     }
