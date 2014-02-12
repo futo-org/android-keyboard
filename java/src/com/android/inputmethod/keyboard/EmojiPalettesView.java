@@ -534,6 +534,7 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
     @Override
     public void onPageScrolled(final int position, final float positionOffset,
             final int positionOffsetPixels) {
+        mEmojiPalettesAdapter.onPageScrolled();
         final Pair<Integer, Integer> newPos =
                 mEmojiCategory.getCategoryIdAndPageIdFromPagePosition(position);
         final int newCategoryId = newPos.first;
@@ -716,6 +717,14 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
             if (recentKeyboardView != null) {
                 recentKeyboardView.invalidateAllKeys();
             }
+        }
+
+        public void onPageScrolled() {
+            // Make sure the delayed key-down event (highlight effect and haptic feedback) will be
+            // canceled.
+            final EmojiPageKeyboardView currentKeyboardView =
+                  mActiveKeyboardViews.get(mActivePosition);
+            currentKeyboardView.releaseCurrentKey();
         }
 
         @Override
