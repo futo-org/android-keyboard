@@ -77,6 +77,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
 
     Listener mListener;
     private SuggestedWords mSuggestedWords = SuggestedWords.EMPTY;
+    private int mSuggestionsCountInStrip;
 
     private final SuggestionStripLayoutHelper mLayoutHelper;
     private final StripVisibilityGroup mStripVisibilityGroup;
@@ -189,7 +190,8 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         clear();
         mStripVisibilityGroup.setLayoutDirection(isRtlLanguage);
         mSuggestedWords = suggestedWords;
-        mLayoutHelper.layout(mSuggestedWords, mSuggestionsStrip, this);
+        mSuggestionsCountInStrip = mLayoutHelper.layoutAndReturnSuggestionCountInStrip(
+                mSuggestedWords, mSuggestionsStrip, this);
         if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
             ResearchLogger.suggestionStripView_setSuggestions(mSuggestedWords);
         }
@@ -313,7 +315,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         final View container = mMoreSuggestionsContainer;
         final int maxWidth = stripWidth - container.getPaddingLeft() - container.getPaddingRight();
         final MoreSuggestions.Builder builder = mMoreSuggestionsBuilder;
-        builder.layout(mSuggestedWords, layoutHelper.mSuggestionsCountInStrip, maxWidth,
+        builder.layout(mSuggestedWords, mSuggestionsCountInStrip, maxWidth,
                 (int)(maxWidth * layoutHelper.mMinMoreSuggestionsWidth),
                 layoutHelper.getMaxMoreSuggestionsRow(), parentKeyboard);
         mMoreSuggestionsView.setKeyboard(builder.build());
@@ -327,7 +329,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         mMoreSuggestionsMode = MORE_SUGGESTIONS_CHECKING_MODAL_OR_SLIDING;
         mOriginX = mLastX;
         mOriginY = mLastY;
-        for (int i = 0; i < layoutHelper.mSuggestionsCountInStrip; i++) {
+        for (int i = 0; i < mSuggestionsCountInStrip; i++) {
             mWordViews.get(i).setPressed(false);
         }
         return true;
