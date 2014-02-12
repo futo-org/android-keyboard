@@ -42,7 +42,7 @@ public final class ImportantNoticeUtils {
         // This utility class is not publicly instantiable.
     }
 
-    public static boolean isInSystemSetupWizard(final Context context) {
+    private static boolean isInSystemSetupWizard(final Context context) {
         try {
             final int userSetupComplete = Settings.Secure.getInt(
                     context.getContentResolver(), Settings_Secure_USER_SETUP_COMPLETE);
@@ -62,10 +62,11 @@ public final class ImportantNoticeUtils {
         return context.getResources().getInteger(R.integer.config_important_notice_version);
     }
 
-    public static boolean hasNewImportantNotice(final Context context) {
+    public static boolean hasNewImportantNoticeAndNotInSetupWizard(final Context context) {
         final SharedPreferences prefs = getImportantNoticePreferences(context);
         final int lastVersion = prefs.getInt(KEY_IMPORTANT_NOTICE_VERSION, 0);
-        return getCurrentImportantNoticeVersion(context) > lastVersion;
+        return getCurrentImportantNoticeVersion(context) > lastVersion
+                && !isInSystemSetupWizard(context);
     }
 
     public static void updateLastImportantNoticeVersion(final Context context) {

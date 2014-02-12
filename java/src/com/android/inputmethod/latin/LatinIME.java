@@ -1320,6 +1320,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             return false;
         if (mSuggestionStripView.isShowingAddToDictionaryHint())
             return true;
+        if (ImportantNoticeUtils.hasNewImportantNoticeAndNotInSetupWizard(this))
+            return true;
         if (null == currentSettings)
             return false;
         if (!currentSettings.isSuggestionStripVisible())
@@ -1352,7 +1354,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (mSuggestionStripView != null) {
             final boolean showSuggestions;
             if (SuggestedWords.EMPTY == suggestedWords
-                    || suggestedWords.mIsPunctuationSuggestions) {
+                    || suggestedWords.mIsPunctuationSuggestions
+                    || !mSettings.getCurrent().isSuggestionsRequested()) {
                 showSuggestions = !mSuggestionStripView.maybeShowImportantNoticeTitle();
             } else {
                 showSuggestions = true;

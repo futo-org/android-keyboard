@@ -225,8 +225,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
     // it has been shown once already or not, and if in the setup wizard). If applicable, it shows
     // the notice. In all cases, it returns true if it was shown, false otherwise.
     public boolean maybeShowImportantNoticeTitle() {
-        if (!ImportantNoticeUtils.hasNewImportantNotice(getContext())
-                || ImportantNoticeUtils.isInSystemSetupWizard(getContext())) {
+        if (!ImportantNoticeUtils.hasNewImportantNoticeAndNotInSetupWizard(getContext())) {
             return false;
         }
         final int width = getWidth();
