@@ -202,7 +202,9 @@ public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
         mInputConnection = ic;
         changeLanguage("en_US");
         // Run messages to avoid the messages enqueued by startInputView() and its friends
-        // to run on a later call and ruin things.
+        // to run on a later call and ruin things. We need to wait first because some of them
+        // can be posted with a delay (notably,  MSG_RESUME_SUGGESTIONS)
+        sleep(DELAY_TO_WAIT_FOR_PREDICTIONS);
         runMessages();
     }
 
