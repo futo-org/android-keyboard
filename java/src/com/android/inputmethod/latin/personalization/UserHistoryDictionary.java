@@ -16,13 +16,12 @@
 
 package com.android.inputmethod.latin.personalization;
 
-import com.android.inputmethod.annotations.UsedForTesting;
+import android.content.Context;
+
 import com.android.inputmethod.latin.Dictionary;
 
 import java.io.File;
 import java.util.Locale;
-
-import android.content.Context;
 
 /**
  * Locally gathers stats about the words user types and various other signals like auto-correction
@@ -30,15 +29,14 @@ import android.content.Context;
  */
 public class UserHistoryDictionary extends DecayingExpandableBinaryDictionaryBase {
     /* package */ static final String NAME = UserHistoryDictionary.class.getSimpleName();
+
     /* package */ UserHistoryDictionary(final Context context, final Locale locale) {
-        super(context, locale, Dictionary.TYPE_USER_HISTORY, getDictNameWithLocale(NAME, locale));
+        this(context, locale, null /* dictFile */);
     }
 
-    // Creates an instance that uses a given dictionary file for testing.
-    @UsedForTesting
     public UserHistoryDictionary(final Context context, final Locale locale,
             final File dictFile) {
-        super(context, locale, Dictionary.TYPE_USER_HISTORY, getDictNameWithLocale(NAME, locale),
+        super(context, getDictName(NAME, locale, dictFile), locale, Dictionary.TYPE_USER_HISTORY,
                 dictFile);
     }
 
