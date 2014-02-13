@@ -80,10 +80,8 @@
     <string name="spoken_use_headphones" msgid="896961781287283493">"Priključite slušalke, če želite slišati izgovorjene tipke gesla."</string>
     <string name="spoken_current_text_is" msgid="2485723011272583845">"Trenutno besedilo je %s"</string>
     <string name="spoken_no_text_entered" msgid="7479685225597344496">"Ni vnesenega besedila"</string>
-    <!-- no translation found for spoken_auto_correct (5150455215290003221) -->
-    <skip />
-    <!-- no translation found for spoken_auto_correct_obscured (2309828861778711939) -->
-    <skip />
+    <string name="spoken_auto_correct" msgid="5150455215290003221">"Tipka <xliff:g id="KEY_NAME">%1$s</xliff:g> popravi <xliff:g id="ORIGINAL_WORD">%2$s</xliff:g> v <xliff:g id="CORRECTED_WORD">%3$s</xliff:g>"</string>
+    <string name="spoken_auto_correct_obscured" msgid="2309828861778711939">"<xliff:g id="KEY_NAME">%1$s</xliff:g> izvede samopopravek"</string>
     <string name="spoken_description_unknown" msgid="3197434010402179157">"Koda tipke %d"</string>
     <string name="spoken_description_shift" msgid="244197883292549308">"Shift"</string>
     <string name="spoken_description_shift_shifted" msgid="1681877323344195035">"Shift je vklopljen (dotaknite se, da onemogočite)"</string>
@@ -111,8 +109,7 @@
     <string name="spoken_description_mode_phone" msgid="6520207943132026264">"Način telefona"</string>
     <string name="spoken_description_mode_phone_shift" msgid="5499629753962641227">"Način simbolov telefona"</string>
     <string name="announce_keyboard_hidden" msgid="8718927835531429807">"Tipkovnica je skrita"</string>
-    <!-- no translation found for announce_keyboard_mode (7486740369324538848) -->
-    <skip />
+    <string name="announce_keyboard_mode" msgid="7486740369324538848">"Prikaz tipkovnice <xliff:g id="KEYBOARD_MODE">%s</xliff:g>"</string>
     <string name="keyboard_mode_date" msgid="3137520166817128102">"datum"</string>
     <string name="keyboard_mode_date_time" msgid="339593358488851072">"datum in ura"</string>
     <string name="keyboard_mode_email" msgid="6216248078128294262">"e-pošta"</string>
@@ -136,14 +133,10 @@
     <string name="subtype_en_GB" msgid="88170601942311355">"angleščina (Združeno kraljestvo)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"angleščina (ZDA)"</string>
     <string name="subtype_es_US" msgid="5583145191430180200">"španščina (ZDA)"</string>
-    <!-- no translation found for subtype_with_layout_en_GB (1931018968641592304) -->
-    <skip />
-    <!-- no translation found for subtype_with_layout_en_US (8809311287529805422) -->
-    <skip />
-    <!-- no translation found for subtype_with_layout_es_US (510930471167541338) -->
-    <skip />
-    <!-- no translation found for subtype_nepali_traditional (1994571919751163596) -->
-    <skip />
+    <string name="subtype_with_layout_en_GB" msgid="1931018968641592304">"angleščina (VB) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
+    <string name="subtype_with_layout_en_US" msgid="8809311287529805422">"angleščina (ZDA) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
+    <string name="subtype_with_layout_es_US" msgid="510930471167541338">"španščina (ZDA) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
+    <string name="subtype_nepali_traditional" msgid="1994571919751163596">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (tradicionalna)"</string>
     <string name="subtype_no_language" msgid="7137390094240139495">"Brez jezika (latinice)"</string>
     <string name="subtype_no_language_qwerty" msgid="244337630616742604">"Latinica (QWERTY)"</string>
     <string name="subtype_no_language_qwertz" msgid="443066912507547976">"Latinica (QWERTZ)"</string>
@@ -173,8 +166,7 @@
     <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"Branje zunanje datoteke slovarja"</string>
     <string name="read_external_dictionary_no_files_message" msgid="4947420942224623792">"V mapi »Prenosi« ni nobene datoteke slovarja"</string>
     <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"Izberite datoteko slovarja, ki jo želite namestiti"</string>
-    <!-- no translation found for read_external_dictionary_confirm_install_message (4782116251651288054) -->
-    <skip />
+    <string name="read_external_dictionary_confirm_install_message" msgid="4782116251651288054">"Zares želite namestiti to datoteko za ta jezik: <xliff:g id="LANGUAGE_NAME">%s</xliff:g>?"</string>
     <string name="error" msgid="8940763624668513648">"Prišlo je do napake"</string>
     <string name="prefs_dump_contacts_dict" msgid="7227327764402323097">"Izvoz slovarja stikov"</string>
     <string name="prefs_dump_user_dict" msgid="294870685041741951">"Izvoz osebnega slovarja"</string>
@@ -217,22 +209,18 @@
     <string name="check_for_updates_now" msgid="8087688440916388581">"Osveži"</string>
     <string name="last_update" msgid="730467549913588780">"Nazadnje posodobljeno"</string>
     <string name="message_updating" msgid="4457761393932375219">"Iskanje posodobitev"</string>
-    <!-- no translation found for message_loading (5638680861387748936) -->
-    <skip />
+    <string name="message_loading" msgid="5638680861387748936">"Nalaganje …"</string>
     <string name="main_dict_description" msgid="3072821352793492143">"Glavni slovar"</string>
     <string name="cancel" msgid="6830980399865683324">"Prekliči"</string>
     <string name="install_dict" msgid="180852772562189365">"Namesti"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Prekliči"</string>
     <string name="delete_dict" msgid="756853268088330054">"Izbriši"</string>
-    <!-- no translation found for should_download_over_metered_prompt (1583881200688185508) -->
-    <skip />
+    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"Za izbrani jezik v mobilni napravi je na voljo slovar.&lt;br/&gt; Za izboljšano izkušnjo tipkanja priporočamo, da &lt;b&gt;prenesete&lt;/b&gt; slovar za ta jezik: <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>.&lt;br/&gt; &lt;br/&gt; Prenos prek povezave 3G lahko traja minuto ali dve. Če nimate &lt;b&gt;neomejenega podatkovnega paketa&lt;/b&gt;.&lt;br/&gt;, boste morda morali plačati prenos podatkov. Če ne veste, kateri podatkovni paket imate, priporočamo, da poiščete omrežje Wi-Fi in prenos začnete samodejno.&lt;br/&gt; &lt;br/&gt; Nasvet: Slovarje lahko prenesete in odstranite tako, da v meniju &lt;b&gt;Nastavitve&lt;/b&gt; v mobilni napravi odprete &lt;b&gt;Jezik in vnos&lt;/b&gt;."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"Prenesi zdaj (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Prenos prek povezave Wi-Fi"</string>
-    <!-- no translation found for dict_available_notification_title (4583842811218581658) -->
-    <skip />
+    <string name="dict_available_notification_title" msgid="4583842811218581658">"Na voljo je slovar za ta jezik: <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>
     <string name="dict_available_notification_description" msgid="1075194169443163487">"Pritisnite za pregled in prenos"</string>
-    <!-- no translation found for toast_downloading_suggestions (6128155879830851739) -->
-    <skip />
+    <string name="toast_downloading_suggestions" msgid="6128155879830851739">"Prenos: predlogi za jezik <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> bodo kmalu na voljo."</string>
     <string name="version_text" msgid="2715354215568469385">"Različica <xliff:g id="VERSION_NUMBER">%1$s</xliff:g>"</string>
     <string name="user_dict_settings_add_menu_title" msgid="1254195365689387076">"Dodaj"</string>
     <string name="user_dict_settings_add_dialog_title" msgid="4096700390211748168">"Dodaj v slovar"</string>
