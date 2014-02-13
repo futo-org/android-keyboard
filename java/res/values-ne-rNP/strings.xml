@@ -80,10 +80,8 @@
     <string name="spoken_use_headphones" msgid="896961781287283493">"हेडसेट प्लग इन गर्नुहोस्"</string>
     <string name="spoken_current_text_is" msgid="2485723011272583845">"वर्तमान पाठ %s हो"</string>
     <string name="spoken_no_text_entered" msgid="7479685225597344496">"कुनै पाठ प्रविष्टि गरिएको छैन"</string>
-    <!-- no translation found for spoken_auto_correct (5150455215290003221) -->
-    <skip />
-    <!-- no translation found for spoken_auto_correct_obscured (2309828861778711939) -->
-    <skip />
+    <string name="spoken_auto_correct" msgid="5150455215290003221">"<xliff:g id="KEY_NAME">%1$s</xliff:g> सही <xliff:g id="ORIGINAL_WORD">%2$s</xliff:g> गर्न <xliff:g id="CORRECTED_WORD">%3$s</xliff:g>"</string>
+    <string name="spoken_auto_correct_obscured" msgid="2309828861778711939">"<xliff:g id="KEY_NAME">%1$s</xliff:g> स्वतः सच्याउने प्रदर्शन"</string>
     <string name="spoken_description_unknown" msgid="3197434010402179157">"कुञ्जी कोड %d"</string>
     <string name="spoken_description_shift" msgid="244197883292549308">"सिफ्ट"</string>
     <string name="spoken_description_shift_shifted" msgid="1681877323344195035">"सिप्ट सक्रिय (असक्षम पार्न ट्याप गर्नुहोस्)"</string>
@@ -111,8 +109,7 @@
     <string name="spoken_description_mode_phone" msgid="6520207943132026264">"फोन मोड"</string>
     <string name="spoken_description_mode_phone_shift" msgid="5499629753962641227">"फोन प्रतिक मोड"</string>
     <string name="announce_keyboard_hidden" msgid="8718927835531429807">"किबोर्ड लुकाइएको छ"</string>
-    <!-- no translation found for announce_keyboard_mode (7486740369324538848) -->
-    <skip />
+    <string name="announce_keyboard_mode" msgid="7486740369324538848">"Showing <xliff:g id="KEYBOARD_MODE">%s</xliff:g> कुञ्जीपाटी"</string>
     <string name="keyboard_mode_date" msgid="3137520166817128102">"मिति"</string>
     <string name="keyboard_mode_date_time" msgid="339593358488851072">"मिति र समय"</string>
     <string name="keyboard_mode_email" msgid="6216248078128294262">"इमेल"</string>
@@ -136,14 +133,10 @@
     <string name="subtype_en_GB" msgid="88170601942311355">"अंग्रेजी (युके)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"अंग्रेजी (युएस्)"</string>
     <string name="subtype_es_US" msgid="5583145191430180200">"स्पेनिस (युएस्)"</string>
-    <!-- no translation found for subtype_with_layout_en_GB (1931018968641592304) -->
-    <skip />
-    <!-- no translation found for subtype_with_layout_en_US (8809311287529805422) -->
-    <skip />
-    <!-- no translation found for subtype_with_layout_es_US (510930471167541338) -->
-    <skip />
-    <!-- no translation found for subtype_nepali_traditional (1994571919751163596) -->
-    <skip />
+    <string name="subtype_with_layout_en_GB" msgid="1931018968641592304">"अंग्रेजी (बेलायत) ( <xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g> )"</string>
+    <string name="subtype_with_layout_en_US" msgid="8809311287529805422">"अंग्रेजी (अमेरिका) ( <xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g> )"</string>
+    <string name="subtype_with_layout_es_US" msgid="510930471167541338">"स्पेनी (अमेरिका) ( <xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g> )"</string>
+    <string name="subtype_nepali_traditional" msgid="1994571919751163596">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (परम्परागत)"</string>
     <string name="subtype_no_language" msgid="7137390094240139495">"कुनै भाषा होइन (वर्णमाला)"</string>
     <string name="subtype_no_language_qwerty" msgid="244337630616742604">"वर्णमाला (QWERTY)"</string>
     <string name="subtype_no_language_qwertz" msgid="443066912507547976">"वर्णमाला (QWERTZ)"</string>
@@ -173,8 +166,7 @@
     <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"बाह्य शब्दकोश फाइल पढ्नुहोस्"</string>
     <string name="read_external_dictionary_no_files_message" msgid="4947420942224623792">"डाउनलोड फोल्डरमा कुनै शब्दकोश फाइलहरू छैनन्।"</string>
     <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"स्थापना गर्न कुनै शब्दकोश फाइल चयन गर्नुहोस्"</string>
-    <!-- no translation found for read_external_dictionary_confirm_install_message (4782116251651288054) -->
-    <skip />
+    <string name="read_external_dictionary_confirm_install_message" msgid="4782116251651288054">"वास्तवमा लागि यो फाइल स्थापना <xliff:g id="LANGUAGE_NAME">%s</xliff:g> ?"</string>
     <string name="error" msgid="8940763624668513648">"कुनै त्रुटि भयो"</string>
     <string name="prefs_dump_contacts_dict" msgid="7227327764402323097">"सम्पर्क शब्दकोश डम्प गर्नुहोस्"</string>
     <string name="prefs_dump_user_dict" msgid="294870685041741951">"व्यक्तिगत शब्दकोश डम्प गर्नुहोस्"</string>
@@ -217,22 +209,18 @@
     <string name="check_for_updates_now" msgid="8087688440916388581">"पुनः ताजा गर्नुहोस्"</string>
     <string name="last_update" msgid="730467549913588780">"पछिल्लो अद्यावधिक"</string>
     <string name="message_updating" msgid="4457761393932375219">"अद्यावधिकको लागि जाँच गर्दै"</string>
-    <!-- no translation found for message_loading (5638680861387748936) -->
-    <skip />
+    <string name="message_loading" msgid="5638680861387748936">"लोड हुँदै..."</string>
     <string name="main_dict_description" msgid="3072821352793492143">"मुख्य शब्दकोश"</string>
     <string name="cancel" msgid="6830980399865683324">"रद्द गर्नुहोस्"</string>
     <string name="install_dict" msgid="180852772562189365">"स्थापना गर्नुहोस्"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"रद्द गर्नुहोस्"</string>
     <string name="delete_dict" msgid="756853268088330054">"मेट्नुहोस्"</string>
-    <!-- no translation found for should_download_over_metered_prompt (1583881200688185508) -->
-    <skip />
+    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"आफ्नो मोबाइल उपकरणमा चयन गरिएको भाषामा शब्दकोश उपलब्ध छ। &lt;br/&gt; हामी डाउनलोड गर्न &lt;/ b&gt; ले सिफारिस गर्छन् <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> आफ्नो टाइपिङ अनुभव सुधार्न शब्दकोश। यो विचारको यस डाउनलोड 3G मा एक वा दुई मिनेट लिन सक्छ। तपाईं एक &lt;b&gt; असीमित डेटा योजना &lt;/ b&gt; छैन भने शुल्क लागू हुन सक्छ। तपाईं हामी सुरु गर्न वाइफाइ जडान खोज्न सिफारिस, जो तपाईं डेटा योजना छैन भने &lt;br/&gt; को स्वतः डाउनलोड सल्लाह:। तपाईं डाउनलोड र &lt;b&gt; सेटिङ &lt;/ b&gt; मेनु मा &lt;/ b&gt; भाषा र इनपुट &lt;b&gt; जाने शब्दकोशलाई हटाउन सक्नुहुन्छ आफ्नो मोबाइल उपकरणको।"</string>
     <string name="download_over_metered" msgid="1643065851159409546">"(अब डाउनलोड गर्नुहोस्<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"वाइ-फाइको माध्ययमद्वार डाउनलोड गर्नुहोस्"</string>
-    <!-- no translation found for dict_available_notification_title (4583842811218581658) -->
-    <skip />
+    <string name="dict_available_notification_title" msgid="4583842811218581658">"एक शब्दकोश लागि उपलब्ध छ <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>
     <string name="dict_available_notification_description" msgid="1075194169443163487">"समीक्षा गर्न थिच्नुहोस् र डाउनलोड गर्नुहोस्"</string>
-    <!-- no translation found for toast_downloading_suggestions (6128155879830851739) -->
-    <skip />
+    <string name="toast_downloading_suggestions" msgid="6128155879830851739">"Downloading: लागि सुझाव <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> चाँडै नै तयार हुनेछ।"</string>
     <string name="version_text" msgid="2715354215568469385">"संस्करण <xliff:g id="VERSION_NUMBER">%1$s</xliff:g>"</string>
     <string name="user_dict_settings_add_menu_title" msgid="1254195365689387076">"थप्नुहोस्"</string>
     <string name="user_dict_settings_add_dialog_title" msgid="4096700390211748168">"शब्दकोशमा थप्नुहोस्"</string>

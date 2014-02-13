@@ -176,10 +176,10 @@
     <!-- no translation found for read_external_dictionary_confirm_install_message (4782116251651288054) -->
     <skip />
     <string name="error" msgid="8940763624668513648">"Đã xảy ra lỗi"</string>
-    <string name="prefs_dump_contacts_dict" msgid="7227327764402323097">"Kết xuất từ điển danh bạ"</string>
-    <string name="prefs_dump_user_dict" msgid="294870685041741951">"Kết xuất từ điển cá nhân"</string>
-    <string name="prefs_dump_user_history_dict" msgid="6821075152449554628">"Kết xuất từ điển lịch sử người dùng"</string>
-    <string name="prefs_dump_personalization_dict" msgid="7558387996151745284">"Kết xuất từ điển cá nhân hóa"</string>
+    <string name="prefs_dump_contacts_dict" msgid="7227327764402323097">"Lưu vào từ điển danh bạ"</string>
+    <string name="prefs_dump_user_dict" msgid="294870685041741951">"Lưu vào từ điển cá nhân"</string>
+    <string name="prefs_dump_user_history_dict" msgid="6821075152449554628">"Lưu vào từ điển lịch sử người dùng"</string>
+    <string name="prefs_dump_personalization_dict" msgid="7558387996151745284">"Lưu vào từ điển cá nhân hóa"</string>
     <string name="button_default" msgid="3988017840431881491">"Mặc định"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"Chào mừng bạn đến với <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"với Nhập bằng cử chỉ"</string>
