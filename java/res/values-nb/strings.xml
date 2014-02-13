@@ -80,10 +80,8 @@
     <string name="spoken_use_headphones" msgid="896961781287283493">"Koble til hodetelefoner for å høre opplesing av bokstavene i passordet."</string>
     <string name="spoken_current_text_is" msgid="2485723011272583845">"Gjeldende tekst er %s"</string>
     <string name="spoken_no_text_entered" msgid="7479685225597344496">"Ingen tekst er skrevet inn"</string>
-    <!-- no translation found for spoken_auto_correct (5150455215290003221) -->
-    <skip />
-    <!-- no translation found for spoken_auto_correct_obscured (2309828861778711939) -->
-    <skip />
+    <string name="spoken_auto_correct" msgid="5150455215290003221">"<xliff:g id="KEY_NAME">%1$s</xliff:g> retter <xliff:g id="ORIGINAL_WORD">%2$s</xliff:g> til <xliff:g id="CORRECTED_WORD">%3$s</xliff:g>"</string>
+    <string name="spoken_auto_correct_obscured" msgid="2309828861778711939">"<xliff:g id="KEY_NAME">%1$s</xliff:g> utfører automatisk retting"</string>
     <string name="spoken_description_unknown" msgid="3197434010402179157">"Tastaturkode %d"</string>
     <string name="spoken_description_shift" msgid="244197883292549308">"Shift"</string>
     <string name="spoken_description_shift_shifted" msgid="1681877323344195035">"Shift er på (trykk for å deaktivere)"</string>
@@ -111,8 +109,7 @@
     <string name="spoken_description_mode_phone" msgid="6520207943132026264">"Ringemodus"</string>
     <string name="spoken_description_mode_phone_shift" msgid="5499629753962641227">"Ringemodus med symboler"</string>
     <string name="announce_keyboard_hidden" msgid="8718927835531429807">"Tastaturet er skjult"</string>
-    <!-- no translation found for announce_keyboard_mode (7486740369324538848) -->
-    <skip />
+    <string name="announce_keyboard_mode" msgid="7486740369324538848">"Viser <xliff:g id="KEYBOARD_MODE">%s</xliff:g>-tastatur"</string>
     <string name="keyboard_mode_date" msgid="3137520166817128102">"dato"</string>
     <string name="keyboard_mode_date_time" msgid="339593358488851072">"dato og klokkeslett"</string>
     <string name="keyboard_mode_email" msgid="6216248078128294262">"e-post"</string>
@@ -136,14 +133,10 @@
     <string name="subtype_en_GB" msgid="88170601942311355">"Engelsk (Storbritannia)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"Engelsk (USA)"</string>
     <string name="subtype_es_US" msgid="5583145191430180200">"Spansk (USA)"</string>
-    <!-- no translation found for subtype_with_layout_en_GB (1931018968641592304) -->
-    <skip />
-    <!-- no translation found for subtype_with_layout_en_US (8809311287529805422) -->
-    <skip />
-    <!-- no translation found for subtype_with_layout_es_US (510930471167541338) -->
-    <skip />
-    <!-- no translation found for subtype_nepali_traditional (1994571919751163596) -->
-    <skip />
+    <string name="subtype_with_layout_en_GB" msgid="1931018968641592304">"Engelsk (Storbritannia) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
+    <string name="subtype_with_layout_en_US" msgid="8809311287529805422">"Engelsk (USA) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
+    <string name="subtype_with_layout_es_US" msgid="510930471167541338">"Spansk (USA) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
+    <string name="subtype_nepali_traditional" msgid="1994571919751163596">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (tradisjonell)"</string>
     <string name="subtype_no_language" msgid="7137390094240139495">"Ingen språk (alfabet)"</string>
     <string name="subtype_no_language_qwerty" msgid="244337630616742604">"Alfabet (QWERTY)"</string>
     <string name="subtype_no_language_qwertz" msgid="443066912507547976">"Alfabet (QWERTZ)"</string>
@@ -173,13 +166,12 @@
     <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"Bruk en ekstern ordlistefil"</string>
     <string name="read_external_dictionary_no_files_message" msgid="4947420942224623792">"Det ligger ingen ordboksfiler i Nedlastinger-mappen"</string>
     <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"Velg ordboksfilen du vil installere"</string>
-    <!-- no translation found for read_external_dictionary_confirm_install_message (4782116251651288054) -->
-    <skip />
+    <string name="read_external_dictionary_confirm_install_message" msgid="4782116251651288054">"Vil du virkelig installere denne filen for <xliff:g id="LANGUAGE_NAME">%s</xliff:g>?"</string>
     <string name="error" msgid="8940763624668513648">"Det oppsto en feil"</string>
-    <string name="prefs_dump_contacts_dict" msgid="7227327764402323097">"Slett kontakter-ordlisten"</string>
-    <string name="prefs_dump_user_dict" msgid="294870685041741951">"Slett den personlige ordlisten"</string>
-    <string name="prefs_dump_user_history_dict" msgid="6821075152449554628">"Slett brukerlogg-ordlisten"</string>
-    <string name="prefs_dump_personalization_dict" msgid="7558387996151745284">"Slett tilpasningsordlisten"</string>
+    <string name="prefs_dump_contacts_dict" msgid="7227327764402323097">"Tøm kontakter-ordlisten"</string>
+    <string name="prefs_dump_user_dict" msgid="294870685041741951">"Tøm den personlige ordlisten"</string>
+    <string name="prefs_dump_user_history_dict" msgid="6821075152449554628">"Tøm brukerlogg-ordlisten"</string>
+    <string name="prefs_dump_personalization_dict" msgid="7558387996151745284">"Tøm tilpasningsordlisten"</string>
     <string name="button_default" msgid="3988017840431881491">"Standard"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"Velkommen til <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"med Ordføring"</string>
@@ -217,22 +209,18 @@
     <string name="check_for_updates_now" msgid="8087688440916388581">"Last inn på nytt"</string>
     <string name="last_update" msgid="730467549913588780">"Sist oppdatert"</string>
     <string name="message_updating" msgid="4457761393932375219">"Ser etter oppdateringer ..."</string>
-    <!-- no translation found for message_loading (5638680861387748936) -->
-    <skip />
+    <string name="message_loading" msgid="5638680861387748936">"Laster inn …"</string>
     <string name="main_dict_description" msgid="3072821352793492143">"Hovedordliste"</string>
     <string name="cancel" msgid="6830980399865683324">"Avbryt"</string>
     <string name="install_dict" msgid="180852772562189365">"Installer"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Avbryt"</string>
     <string name="delete_dict" msgid="756853268088330054">"Slett"</string>
-    <!-- no translation found for should_download_over_metered_prompt (1583881200688185508) -->
-    <skip />
+    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"Det valgte språket på mobilenheten din har en tilgjengelig ordliste.&lt;br/&gt; Vi anbefaler å &lt;b&gt;laste ned&lt;/b&gt; ordlisten for <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>. Dette forbedrer skriveopplevelsen din.&lt;br/&gt; &lt;br/&gt; Nedlastingen kan ta fra ett til to minutter via 3G. Belastninger kan påløpe hvis du ikke har et abonnement med &lt;b&gt;ubegrenset databruk&lt;/b&gt;.&lt;br/&gt; Hvis du er usikker på hvilken abonnementstype du har, anbefaler vi deg å finne en Wi-Fi-tilkobling for å starte nedlastingen automatisk.&lt;br/&gt; &lt;br/&gt; Tips: Du kan laste ned og fjerne ordlister ved å gå til &lt;b&gt;Språk og inndata&lt;/b&gt; i menyen for &lt;b&gt;Innstillinger&lt;/b&gt; på mobilenheten din."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"Last ned nå (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Last ned via Wi-Fi"</string>
-    <!-- no translation found for dict_available_notification_title (4583842811218581658) -->
-    <skip />
+    <string name="dict_available_notification_title" msgid="4583842811218581658">"En ordliste er tilgjengelig for <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>
     <string name="dict_available_notification_description" msgid="1075194169443163487">"Trykk for å se gjennom og laste ned"</string>
-    <!-- no translation found for toast_downloading_suggestions (6128155879830851739) -->
-    <skip />
+    <string name="toast_downloading_suggestions" msgid="6128155879830851739">"Laster ned: forslag til <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> er snart klare"</string>
     <string name="version_text" msgid="2715354215568469385">"Versjon <xliff:g id="VERSION_NUMBER">%1$s</xliff:g>"</string>
     <string name="user_dict_settings_add_menu_title" msgid="1254195365689387076">"Legg til"</string>
     <string name="user_dict_settings_add_dialog_title" msgid="4096700390211748168">"Legg til i ordlisten"</string>
