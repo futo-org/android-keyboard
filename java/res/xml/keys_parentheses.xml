@@ -22,9 +22,9 @@
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
     <Key
-        latin:keySpec="(|!code/key_left_parenthesis"
+        latin:keySpec="!text/keyspec_left_parenthesis"
         latin:moreKeys="!text/more_keys_for_left_parenthesis" />
     <Key
-        latin:keySpec=")|!code/key_right_parenthesis"
+        latin:keySpec="!text/keyspec_right_parenthesis"
         latin:moreKeys="!text/more_keys_for_right_parenthesis" />
 </merge>

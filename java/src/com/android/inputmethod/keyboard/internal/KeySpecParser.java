@@ -184,7 +184,7 @@ public final class KeySpecParser {
         return (StringUtils.codePointCount(label) == 1) ? null : label;
     }
 
-    public static int getCode(final String keySpec, final KeyboardCodesSet codesSet) {
+    public static int getCode(final String keySpec) {
         if (keySpec == null) {
             // TODO: Throw {@link KeySpecParserError} once Key.keyLabel attribute becomes mandatory.
             return CODE_UNSPECIFIED;
@@ -192,7 +192,7 @@ public final class KeySpecParser {
         final int labelEnd = indexOfLabelEnd(keySpec);
         if (hasCode(keySpec, labelEnd)) {
             checkDoubleLabelEnd(keySpec, labelEnd);
-            return parseCode(getAfterLabelEnd(keySpec, labelEnd), codesSet, CODE_UNSPECIFIED);
+            return parseCode(getAfterLabelEnd(keySpec, labelEnd), CODE_UNSPECIFIED);
         }
         final String outputText = getOutputTextInternal(keySpec, labelEnd);
         if (outputText != null) {
@@ -211,13 +211,12 @@ public final class KeySpecParser {
         return (StringUtils.codePointCount(label) == 1) ? label.codePointAt(0) : CODE_OUTPUT_TEXT;
     }
 
-    public static int parseCode(final String text, final KeyboardCodesSet codesSet,
-            final int defaultCode) {
+    public static int parseCode(final String text, final int defaultCode) {
         if (text == null) {
             return defaultCode;
         }
         if (text.startsWith(KeyboardCodesSet.PREFIX_CODE)) {
-            return codesSet.getCode(text.substring(KeyboardCodesSet.PREFIX_CODE.length()));
+            return KeyboardCodesSet.getCode(text.substring(KeyboardCodesSet.PREFIX_CODE.length()));
         }
         // This is a workaround to have a key that has a supplementary code point. We can't put a
         // string in resource as a XML entity of a supplementary code point or a surrogate pair.
