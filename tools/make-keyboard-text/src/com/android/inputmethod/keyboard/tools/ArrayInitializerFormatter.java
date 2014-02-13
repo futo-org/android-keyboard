@@ -22,17 +22,22 @@ public class ArrayInitializerFormatter {
     private final PrintStream mOut;
     private final int mMaxWidth;
     private final String mIndent;
+    // String resource names array; indexed by {@link #CurrentIndex} and
+    // {@link #mStartIndexOfBuffer}.
+    private final String[] mResourceNames;
 
     private int mCurrentIndex = 0;
-    private String mFixedElement;
+    private String mLastElement;
     private final StringBuilder mBuffer = new StringBuilder();
     private int mBufferedLen;
-    private int mBufferedIndex = Integer.MIN_VALUE;
+    private int mStartIndexOfBuffer = Integer.MIN_VALUE;
 
-    public ArrayInitializerFormatter(final PrintStream out, final int width, final String indent) {
+    public ArrayInitializerFormatter(final PrintStream out, final int width, final String indent,
+            final String[] resourceNames) {
         mOut = out;
         mMaxWidth = width - indent.length();
         mIndent = indent;
+        mResourceNames = resourceNames;
     }
 
     public int getCurrentIndex() {
@@ -44,20 +49,24 @@ public class ArrayInitializerFormatter {
             return;
         }
         final int lastIndex = mCurrentIndex - 1;
-        if (mBufferedIndex == lastIndex) {
-            mOut.format("%s/* %d */ %s\n", mIndent, mBufferedIndex, mBuffer);
-        } else if (mBufferedIndex == lastIndex - 1) {
-            final String[] elements = mBuffer.toString().split(" ");
-            mOut.format("%s/* %d */ %s\n"
-                    + "%s/* %d */ %s\n",
-                    mIndent, mBufferedIndex, elements[0],
-                    mIndent, lastIndex, elements[1]);
+        if (mStartIndexOfBuffer == lastIndex) {
+            mOut.format("%s/* %s */ %s\n",
+                    mIndent, mResourceNames[mStartIndexOfBuffer], mBuffer);
+        } else if (mStartIndexOfBuffer == lastIndex - 1) {
+            final String startElement = mBuffer.toString()
+                    .substring(0, mBuffer.length() - mLastElement.length())
+                    .trim();
+            mOut.format("%s/* %s */ %s\n"
+                    + "%s/* %s */ %s\n",
+                    mIndent, mResourceNames[mStartIndexOfBuffer], startElement,
+                    mIndent, mResourceNames[lastIndex], mLastElement);
         } else {
-            mOut.format("%s/* %d~ */\n"
+            mOut.format("%s/* %s ~ */\n"
                     + "%s%s\n"
-                    + "%s/* ~%d */\n", mIndent, mBufferedIndex,
+                    + "%s/* ~ %s */\n",
+                    mIndent, mResourceNames[mStartIndexOfBuffer],
                     mIndent, mBuffer,
-                    mIndent, lastIndex);
+                    mIndent, mResourceNames[lastIndex]);
         }
         mBuffer.setLength(0);
         mBufferedLen = 0;
@@ -66,20 +75,22 @@ public class ArrayInitializerFormatter {
     public void outCommentLines(final String lines) {
         flush();
         mOut.print(lines);
-        mFixedElement = null;
+        mLastElement = null;
     }
 
     public void outElement(final String element) {
-        if (!element.equals(mFixedElement)) {
+        if (!element.equals(mLastElement)) {
             flush();
-            mBufferedIndex = mCurrentIndex;
+            mStartIndexOfBuffer = mCurrentIndex;
         }
         final int nextLen = mBufferedLen + " ".length() + element.length();
         if (mBufferedLen != 0 && nextLen < mMaxWidth) {
+            // Element can fit in the current line.
             mBuffer.append(' ');
             mBuffer.append(element);
             mBufferedLen = nextLen;
         } else {
+            // Element should be on the next line.
             if (mBufferedLen != 0) {
                 mBuffer.append('\n');
                 mBuffer.append(mIndent);
@@ -88,6 +99,6 @@ public class ArrayInitializerFormatter {
             mBufferedLen = element.length();
         }
         mCurrentIndex++;
-        mFixedElement = element;
+        mLastElement = element;
     }
 }
