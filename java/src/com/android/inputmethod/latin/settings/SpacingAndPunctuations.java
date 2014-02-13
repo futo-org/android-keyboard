@@ -115,4 +115,29 @@ public final class SpacingAndPunctuations {
     public boolean isSentenceSeparator(final int code) {
         return code == mSentenceSeparator;
     }
+
+    public String dump() {
+        final StringBuilder sb = new StringBuilder();
+        sb.append("mSortedSymbolsPrecededBySpace = ");
+        sb.append("" + Arrays.toString(mSortedSymbolsPrecededBySpace));
+        sb.append("\n   mSortedSymbolsFollowedBySpace = ");
+        sb.append("" + Arrays.toString(mSortedSymbolsFollowedBySpace));
+        sb.append("\n   mSortedWordConnectors = ");
+        sb.append("" + Arrays.toString(mSortedWordConnectors));
+        sb.append("\n   mSortedWordSeparators = ");
+        sb.append("" + Arrays.toString(mSortedWordSeparators));
+        sb.append("\n   mSuggestPuncList = ");
+        sb.append("" + mSuggestPuncList);
+        sb.append("\n   mSentenceSeparator = ");
+        sb.append("" + mSentenceSeparator);
+        sb.append("\n   mSentenceSeparatorAndSpace = ");
+        sb.append("" + mSentenceSeparatorAndSpace);
+        sb.append("\n   mCurrentLanguageHasSpaces = ");
+        sb.append("" + mCurrentLanguageHasSpaces);
+        sb.append("\n   mUsesAmericanTypography = ");
+        sb.append("" + mUsesAmericanTypography);
+        sb.append("\n   mUsesGermanRules = ");
+        sb.append("" + mUsesGermanRules);
+        return sb.toString();
+    }
 }
