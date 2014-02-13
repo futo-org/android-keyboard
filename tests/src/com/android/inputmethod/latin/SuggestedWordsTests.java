@@ -49,7 +49,6 @@ public class SuggestedWordsTests extends AndroidTestCase {
                 list, null /* rawSuggestions */,
                 false /* typedWordValid */,
                 false /* willAutoCorrect */,
-                false /* isPunctuationSuggestions */,
                 false /* isObsoleteSuggestions */,
                 false /* isPrediction*/);
         assertEquals(NUMBER_OF_ADDED_SUGGESTIONS + 1, words.size());

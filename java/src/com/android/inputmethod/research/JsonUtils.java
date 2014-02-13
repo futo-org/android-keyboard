@@ -91,7 +91,7 @@ import java.util.Map;
         jsonWriter.name("willAutoCorrect")
                 .value(words.mWillAutoCorrect);
         jsonWriter.name("isPunctuationSuggestions")
-                .value(words.mIsPunctuationSuggestions);
+                .value(words.isPunctuationSuggestions());
         jsonWriter.name("isObsoleteSuggestions").value(words.mIsObsoleteSuggestions);
         jsonWriter.name("isPrediction").value(words.mIsPrediction);
         jsonWriter.name("suggestedWords");
