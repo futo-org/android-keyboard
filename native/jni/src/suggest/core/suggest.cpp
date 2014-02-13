@@ -44,7 +44,7 @@ const int Suggest::MIN_CONTINUOUS_SUGGESTION_INPUT_SIZE = 2;
  */
 int Suggest::getSuggestions(ProximityInfo *pInfo, void *traverseSession,
         int *inputXs, int *inputYs, int *times, int *pointerIds, int *inputCodePoints,
-        int inputSize, int commitPoint, int *outWords, int *frequencies, int *outputIndices,
+        int inputSize, int commitPoint, int *outWords, int *outputScores, int *outputIndices,
         int *outputTypes, int *outputAutoCommitFirstWordConfidence) const {
     PROF_OPEN;
     PROF_START(0);
@@ -66,7 +66,7 @@ int Suggest::getSuggestions(ProximityInfo *pInfo, void *traverseSession,
     }
     PROF_END(1);
     PROF_START(2);
-    const int size = SuggestionsOutputUtils::outputSuggestions(SCORING, tSession, frequencies,
+    const int size = SuggestionsOutputUtils::outputSuggestions(SCORING, tSession, outputScores,
             outWords, outputIndices, outputTypes, outputAutoCommitFirstWordConfidence);
     PROF_END(2);
     PROF_CLOSE;

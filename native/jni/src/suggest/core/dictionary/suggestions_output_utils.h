@@ -32,7 +32,7 @@ class SuggestionsOutputUtils {
      * Outputs the final list of suggestions (i.e., terminal nodes).
      */
     static int outputSuggestions(const Scoring *const scoringPolicy,
-            DicTraverseSession *traverseSession, int *frequencies, int *outputCodePoints,
+            DicTraverseSession *traverseSession, int *outputScores, int *outputCodePoints,
             int *outputIndicesToPartialCommit, int *outputTypes,
             int *outputAutoCommitFirstWordConfidence);
 
@@ -46,7 +46,7 @@ class SuggestionsOutputUtils {
 
     static int outputShortcuts(BinaryDictionaryShortcutIterator *const shortcutIt,
             int outputWordIndex, const int finalScore, int *const outputCodePoints,
-            int *const frequencies, int *const outputTypes, const bool sameAsTyped);
+            int *const outputScores, int *const outputTypes, const bool sameAsTyped);
 };
 } // namespace latinime
 #endif // LATINIME_SUGGESTIONS_OUTPUT_UTILS
