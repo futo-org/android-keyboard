@@ -80,8 +80,8 @@ public class BlueUnderlineTests extends InputTestsBase {
         sleep(DELAY_TO_WAIT_FOR_UNDERLINE);
         runMessages();
         final SpanGetter suggestionSpan = new SpanGetter(mEditText.getText(), SuggestionSpan.class);
-        assertEquals("show no blue underline after backspace, span start should be -1",
-                EXPECTED_SUGGESTION_SPAN_START, suggestionSpan.mStart);
+        assertFalse("show no blue underline after backspace, span start should be -1",
+                suggestionSpan.isAutoCorrectionIndicator());
         final SpanGetter underlineSpan = new SpanGetter(mEditText.getText(), UnderlineSpan.class);
         assertEquals("should be composing, so should have an underline span",
                 EXPECTED_UNDERLINE_SPAN_START, underlineSpan.mStart);
