@@ -65,7 +65,7 @@ final class SuggestionStripLayoutHelper {
     public final int mPadding;
     public final int mDividerWidth;
     public final int mSuggestionsStripHeight;
-    public final int mSuggestionsCountInStrip;
+    private final int mSuggestionsCountInStrip;
     public final int mMoreSuggestionsRowHeight;
     private int mMaxMoreSuggestionsRow;
     public final float mMinMoreSuggestionsWidth;
@@ -288,54 +288,65 @@ final class SuggestionStripLayoutHelper {
         params.gravity = Gravity.CENTER;
     }
 
-    public void layout(final SuggestedWords suggestedWords, final ViewGroup stripView,
-            final ViewGroup placerView) {
+    /**
+     * Layout suggestions to the suggestions strip. And returns the number of suggestions displayed
+     * in the suggestions strip.
+     *
+     * @param suggestedWords suggestions to be shown in the suggestions strip.
+     * @param stripView the suggestions strip view.
+     * @param placerView the view where the debug info will be placed.
+     * @return the number of suggestions displayed in the suggestions strip
+     */
+    public int layoutAndReturnSuggestionCountInStrip(final SuggestedWords suggestedWords,
+            final ViewGroup stripView, final ViewGroup placerView) {
         if (suggestedWords.mIsPunctuationSuggestions) {
-            layoutPunctuationSuggestions(suggestedWords, stripView);
-            return;
+            return layoutPunctuationSuggestionsAndReturnSuggestionCountInStrip(
+                    suggestedWords, stripView);
         }
 
-        final int countInStrip = mSuggestionsCountInStrip;
-        setupWordViewsTextAndColor(suggestedWords, countInStrip);
+        setupWordViewsTextAndColor(suggestedWords, mSuggestionsCountInStrip);
         final TextView centerWordView = mWordViews.get(mCenterPositionInStrip);
         final int availableStripWidth = placerView.getWidth()
                 - placerView.getPaddingRight() - placerView.getPaddingLeft();
         final int centerWidth = getSuggestionWidth(mCenterPositionInStrip, availableStripWidth);
-        if (getTextScaleX(centerWordView.getText(), centerWidth, centerWordView.getPaint())
-                < MIN_TEXT_XSCALE) {
+        final int countInStrip;
+        if (suggestedWords.size() == 1 || getTextScaleX(centerWordView.getText(), centerWidth,
+                centerWordView.getPaint()) < MIN_TEXT_XSCALE) {
             // Layout only the most relevant suggested word at the center of the suggestion strip
             // by consolidating all slots in the strip.
-            mMoreSuggestionsAvailable = (suggestedWords.size() > 1);
+            countInStrip = 1;
+            mMoreSuggestionsAvailable = (suggestedWords.size() > countInStrip);
             layoutWord(mCenterPositionInStrip, availableStripWidth - mPadding);
             stripView.addView(centerWordView);
             setLayoutWeight(centerWordView, 1.0f, ViewGroup.LayoutParams.MATCH_PARENT);
             if (SuggestionStripView.DBG) {
                 layoutDebugInfo(mCenterPositionInStrip, placerView, availableStripWidth);
             }
-            return;
-        }
+        } else {
+            countInStrip = mSuggestionsCountInStrip;
+            mMoreSuggestionsAvailable = (suggestedWords.size() > countInStrip);
+            int x = 0;
+            for (int positionInStrip = 0; positionInStrip < countInStrip; positionInStrip++) {
+                if (positionInStrip != 0) {
+                    final View divider = mDividerViews.get(positionInStrip);
+                    // Add divider if this isn't the left most suggestion in suggestions strip.
+                    addDivider(stripView, divider);
+                    x += divider.getMeasuredWidth();
+                }
 
-        mMoreSuggestionsAvailable = (suggestedWords.size() > countInStrip);
-        int x = 0;
-        for (int positionInStrip = 0; positionInStrip < countInStrip; positionInStrip++) {
-            if (positionInStrip != 0) {
-                final View divider = mDividerViews.get(positionInStrip);
-                // Add divider if this isn't the left most suggestion in suggestions strip.
-                addDivider(stripView, divider);
-                x += divider.getMeasuredWidth();
+                final int width = getSuggestionWidth(positionInStrip, availableStripWidth);
+                final TextView wordView = layoutWord(positionInStrip, width);
+                stripView.addView(wordView);
+                setLayoutWeight(wordView, getSuggestionWeight(positionInStrip),
+                        ViewGroup.LayoutParams.MATCH_PARENT);
+                x += wordView.getMeasuredWidth();
+
+                if (SuggestionStripView.DBG) {
+                    layoutDebugInfo(positionInStrip, placerView, x);
+                }
             }
-
-            final int width = getSuggestionWidth(positionInStrip, availableStripWidth);
-            final TextView wordView = layoutWord(positionInStrip, width);
-            stripView.addView(wordView);
-            setLayoutWeight(wordView, getSuggestionWeight(positionInStrip),
-                    ViewGroup.LayoutParams.MATCH_PARENT);
-            x += wordView.getMeasuredWidth();
-
-            if (SuggestionStripView.DBG) {
-                layoutDebugInfo(positionInStrip, placerView, x);
-            }
         }
+        return countInStrip;
     }
 
     /**
@@ -435,8 +446,8 @@ final class SuggestionStripLayoutHelper {
         }
     }
 
-    private void layoutPunctuationSuggestions(final SuggestedWords suggestedWords,
-            final ViewGroup stripView) {
+    private int layoutPunctuationSuggestionsAndReturnSuggestionCountInStrip(
+            final SuggestedWords suggestedWords, final ViewGroup stripView) {
         final int countInStrip = Math.min(suggestedWords.size(), PUNCTUATIONS_IN_STRIP);
         for (int positionInStrip = 0; positionInStrip < countInStrip; positionInStrip++) {
             if (positionInStrip != 0) {
@@ -457,6 +468,7 @@ final class SuggestionStripLayoutHelper {
             setLayoutWeight(wordView, 1.0f, mSuggestionsStripHeight);
         }
         mMoreSuggestionsAvailable = (suggestedWords.size() > countInStrip);
+        return countInStrip;
     }
 
     public void layoutAddToDictionaryHint(final String word, final ViewGroup addToDictionaryStrip,
