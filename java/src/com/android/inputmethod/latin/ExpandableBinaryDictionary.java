@@ -122,7 +122,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
             new DictionaryUpdateController();
 
     /* A extension for a binary dictionary file. */
-    public static final String DICT_FILE_EXTENSION = ".dict";
+    protected static final String DICT_FILE_EXTENSION = ".dict";
 
     private final AtomicReference<Runnable> mUnfinishedFlushingTask =
             new AtomicReference<Runnable>();
@@ -146,10 +146,6 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
 
     public boolean isValidDictionary() {
         return mBinaryDictionary.isValidDictionary();
-    }
-
-    private File getDictFile() {
-        return mDictFile;
     }
 
     /**
@@ -224,15 +220,20 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         mContext = context;
         mLocale = locale;
         mIsUpdatable = isUpdatable;
-        mDictFile = (dictFile != null) ? dictFile
-                : new File(context.getFilesDir(), dictName + DICT_FILE_EXTENSION);
+        mDictFile = getDictFile(context, dictName, dictFile);
         mBinaryDictionary = null;
         mDictNameDictionaryUpdateController = getDictionaryUpdateController(dictName);
         // Currently, only dynamic personalization dictionary is updatable.
         mDictionaryWriter = getDictionaryWriter(isUpdatable);
     }
 
-    protected static String getDictName(final String name, final Locale locale,
+    public static File getDictFile(final Context context, final String dictName,
+            final File dictFile) {
+        return (dictFile != null) ? dictFile
+                : new File(context.getFilesDir(), dictName + DICT_FILE_EXTENSION);
+    }
+
+    public static String getDictName(final String name, final Locale locale,
             final File dictFile) {
         return dictFile != null ? dictFile.getName() : name + "." + locale.toString();
     }
@@ -276,6 +277,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     }
 
     protected void clear() {
+        final File dictFile = mDictFile;
         getExecutor(mDictName).execute(new Runnable() {
             @Override
             public void run() {
@@ -283,14 +285,13 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                     if (mBinaryDictionary != null) {
                         mBinaryDictionary.close();
                     }
-                    final File file = getDictFile();
-                    if (file.exists() && !FileUtils.deleteRecursively(file)) {
-                        Log.e(TAG, "Can't remove a file: " + file.getName());
+                    if (dictFile.exists() && !FileUtils.deleteRecursively(dictFile)) {
+                        Log.e(TAG, "Can't remove a file: " + dictFile.getName());
                     }
-                    BinaryDictionary.createEmptyDictFile(file.getAbsolutePath(),
+                    BinaryDictionary.createEmptyDictFile(dictFile.getAbsolutePath(),
                             DICTIONARY_FORMAT_VERSION, mLocale, getHeaderAttributeMap());
                     mBinaryDictionary = new BinaryDictionary(
-                            file.getAbsolutePath(), 0 /* offset */, file.length(),
+                            dictFile.getAbsolutePath(), 0 /* offset */, dictFile.length(),
                             true /* useFullEditDistance */, mLocale, mDictType, mIsUpdatable);
                 } else {
                     mDictionaryWriter.clear();
@@ -541,9 +542,8 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
             }
         }
 
-        final File file = getDictFile();
-        final String filename = file.getAbsolutePath();
-        final long length = file.length();
+        final String filename = mDictFile.getAbsolutePath();
+        final long length = mDictFile.length();
 
         // Build the new binary dictionary
         final BinaryDictionary newBinaryDictionary = new BinaryDictionary(filename, 0 /* offset */,
@@ -582,17 +582,16 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         if (needsToReloadBeforeWriting()) {
             mDictionaryWriter.clear();
             loadDictionaryAsync();
-            mDictionaryWriter.write(getDictFile(), getHeaderAttributeMap());
+            mDictionaryWriter.write(mDictFile, getHeaderAttributeMap());
         } else {
             if (mBinaryDictionary == null || !isValidDictionary()
                     // TODO: remove the check below
                     || !matchesExpectedBinaryDictFormatVersionForThisType(
                             mBinaryDictionary.getFormatVersion())) {
-                final File file = getDictFile();
-                if (file.exists() && !FileUtils.deleteRecursively(file)) {
-                    Log.e(TAG, "Can't remove a file: " + file.getName());
+                if (mDictFile.exists() && !FileUtils.deleteRecursively(mDictFile)) {
+                    Log.e(TAG, "Can't remove a file: " + mDictFile.getName());
                 }
-                BinaryDictionary.createEmptyDictFile(file.getAbsolutePath(),
+                BinaryDictionary.createEmptyDictFile(mDictFile.getAbsolutePath(),
                         DICTIONARY_FORMAT_VERSION, mLocale, getHeaderAttributeMap());
             } else {
                 if (mBinaryDictionary.needsToRunGC(false /* mindsBlockByGC */)) {
@@ -716,7 +715,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
 
     // TODO: cache the file's existence so that we avoid doing a disk access each time.
     private boolean dictionaryFileExists() {
-        return getDictFile().exists();
+        return mDictFile.exists();
     }
 
     /**
