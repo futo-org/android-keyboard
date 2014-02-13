@@ -80,10 +80,8 @@
     <string name="spoken_use_headphones" msgid="896961781287283493">"Միացրեք ականջակալը՝ բարձրաձայն արտասանվող գաղտնաբառը լսելու համար:"</string>
     <string name="spoken_current_text_is" msgid="2485723011272583845">"Տվյալ տեքստը %s է"</string>
     <string name="spoken_no_text_entered" msgid="7479685225597344496">"Տեքստ չի մուտքագրվել"</string>
-    <!-- no translation found for spoken_auto_correct (5150455215290003221) -->
-    <skip />
-    <!-- no translation found for spoken_auto_correct_obscured (2309828861778711939) -->
-    <skip />
+    <string name="spoken_auto_correct" msgid="5150455215290003221">"<xliff:g id="KEY_NAME">%1$s</xliff:g>-ը շտկում է <xliff:g id="ORIGINAL_WORD">%2$s</xliff:g>-ը և դարձնում <xliff:g id="CORRECTED_WORD">%3$s</xliff:g>"</string>
+    <string name="spoken_auto_correct_obscured" msgid="2309828861778711939">"<xliff:g id="KEY_NAME">%1$s</xliff:g> ստեղնը ինքնաշտկում է կատարում"</string>
     <string name="spoken_description_unknown" msgid="3197434010402179157">"Բանալու կոդը՝ %d"</string>
     <string name="spoken_description_shift" msgid="244197883292549308">"Shift"</string>
     <string name="spoken_description_shift_shifted" msgid="1681877323344195035">"Shift-ը միացված է (հպել անջատելու համար)"</string>
@@ -111,8 +109,7 @@
     <string name="spoken_description_mode_phone" msgid="6520207943132026264">"Հեռախոսային ռեժիմ"</string>
     <string name="spoken_description_mode_phone_shift" msgid="5499629753962641227">"Հեռախոսի նշանների ռեժիմ"</string>
     <string name="announce_keyboard_hidden" msgid="8718927835531429807">"Ստեղնաշարը թաքցված է"</string>
-    <!-- no translation found for announce_keyboard_mode (7486740369324538848) -->
-    <skip />
+    <string name="announce_keyboard_mode" msgid="7486740369324538848">"Ցուցադրվում է <xliff:g id="KEYBOARD_MODE">%s</xliff:g> ստեղնաշարը"</string>
     <string name="keyboard_mode_date" msgid="3137520166817128102">"ամսաթիվ"</string>
     <string name="keyboard_mode_date_time" msgid="339593358488851072">"ամսաթիվ և ժամ"</string>
     <string name="keyboard_mode_email" msgid="6216248078128294262">"էլփոստ"</string>
@@ -136,14 +133,10 @@
     <string name="subtype_en_GB" msgid="88170601942311355">"Անգլերեն (ՄԹ)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"Անգլերեն (ԱՄՆ)"</string>
     <string name="subtype_es_US" msgid="5583145191430180200">"Իսպաներեն (ԱՄՆ)"</string>
-    <!-- no translation found for subtype_with_layout_en_GB (1931018968641592304) -->
-    <skip />
-    <!-- no translation found for subtype_with_layout_en_US (8809311287529805422) -->
-    <skip />
-    <!-- no translation found for subtype_with_layout_es_US (510930471167541338) -->
-    <skip />
-    <!-- no translation found for subtype_nepali_traditional (1994571919751163596) -->
-    <skip />
+    <string name="subtype_with_layout_en_GB" msgid="1931018968641592304">"Անգլերեն (ՄԹ) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
+    <string name="subtype_with_layout_en_US" msgid="8809311287529805422">"Անգլերեն (ԱՄՆ) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
+    <string name="subtype_with_layout_es_US" msgid="510930471167541338">"Իսպաներեն (ԱՄՆ) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
+    <string name="subtype_nepali_traditional" msgid="1994571919751163596">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (ավանդական)"</string>
     <string name="subtype_no_language" msgid="7137390094240139495">"Ոչ մի լեզվով (Այբուբեն)"</string>
     <string name="subtype_no_language_qwerty" msgid="244337630616742604">"Այբուբեն (QWERTY)"</string>
     <string name="subtype_no_language_qwertz" msgid="443066912507547976">"Այբուբեն (QWERTZ)"</string>
@@ -173,8 +166,7 @@
     <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"Կարդալ արտաքին բառարանի ֆայլը"</string>
     <string name="read_external_dictionary_no_files_message" msgid="4947420942224623792">"Ներբեռնումների թղթապանակում բառարանային ֆայլեր չկան"</string>
     <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"Ընտրեք բառարանային ֆայլը տեղադրման համար"</string>
-    <!-- no translation found for read_external_dictionary_confirm_install_message (4782116251651288054) -->
-    <skip />
+    <string name="read_external_dictionary_confirm_install_message" msgid="4782116251651288054">"Տեղադրե՞լ այս ֆայլը <xliff:g id="LANGUAGE_NAME">%s</xliff:g> լեզվի համար:"</string>
     <string name="error" msgid="8940763624668513648">"Տեղի է ունեցել սխալ"</string>
     <string name="prefs_dump_contacts_dict" msgid="7227327764402323097">"Բեռնել կոնտակտների բառարանը"</string>
     <string name="prefs_dump_user_dict" msgid="294870685041741951">"Բեռնել անձնական բառարանը"</string>
@@ -217,22 +209,18 @@
     <string name="check_for_updates_now" msgid="8087688440916388581">"Թարմացնել"</string>
     <string name="last_update" msgid="730467549913588780">"Վերջին անգամ թարմացվել է"</string>
     <string name="message_updating" msgid="4457761393932375219">"Ստուգվում է թարմացումների առկայությունը"</string>
-    <!-- no translation found for message_loading (5638680861387748936) -->
-    <skip />
+    <string name="message_loading" msgid="5638680861387748936">"Բեռնում..."</string>
     <string name="main_dict_description" msgid="3072821352793492143">"Հիմնական բառարան"</string>
     <string name="cancel" msgid="6830980399865683324">"Չեղարկել"</string>
     <string name="install_dict" msgid="180852772562189365">"Տեղադրել"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Չեղարկել"</string>
     <string name="delete_dict" msgid="756853268088330054">"Ջնջել"</string>
-    <!-- no translation found for should_download_over_metered_prompt (1583881200688185508) -->
-    <skip />
+    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"Ձեր բջջային սարքում ընտրված լեզվով առկա է բառարան:<br/> Խորհուրդ ենք տալիս &lt;b&gt;ներբեռնել&lt;/b&gt; <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> բառարանը՝ ձեր մուտքագրման հմտությունների բարելավման համար:&lt;br/&gt; &lt;br/&gt; Ներբեռնումը կարող է խլել մեկ կամ երկու րոպե 3G-ի դեպքում: Հնարավոր է գանձում կատարվի, եթե դուք չունեք &lt;b&gt;տվյալների անսահմանափակ փաթեթ&lt;/b&gt;.&lt;br/&gt; Եթե դուք վստահ չեք, թե տվյալների որ փաթեթն ունեք, խորհուրդ ենք տալիս գտնել Wi-Fi կապ՝ ներբեռնումն ավտոմատ սկսելու համար:&lt;br/&gt; &lt;br/&gt; Հուշում. դուք կարող եք ներբեռնել և հեռացնել բառարաններ՝ անցնելով ձեր բջջային սարքի &lt;b&gt;Կարգավորումներ ցանկի Լեզու և մուտքագրում&lt;/b&gt; բաժինը:"</string>
     <string name="download_over_metered" msgid="1643065851159409546">"Ներբեռնել հիմա (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>Մբ)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Ներբեռնել Wi-Fi-ով"</string>
-    <!-- no translation found for dict_available_notification_title (4583842811218581658) -->
-    <skip />
+    <string name="dict_available_notification_title" msgid="4583842811218581658">"<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> լեզվի համար առկա է բառարան"</string>
     <string name="dict_available_notification_description" msgid="1075194169443163487">"Սեղմեք՝ վերանայելու և ներբեռնելու համար"</string>
-    <!-- no translation found for toast_downloading_suggestions (6128155879830851739) -->
-    <skip />
+    <string name="toast_downloading_suggestions" msgid="6128155879830851739">"Ներբեռնում. <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> լեզվի համար առաջարկները պատրաստ կլինեն շուտով:"</string>
     <string name="version_text" msgid="2715354215568469385">"Տարբերակ <xliff:g id="VERSION_NUMBER">%1$s</xliff:g>"</string>
     <string name="user_dict_settings_add_menu_title" msgid="1254195365689387076">"Ավելացնել"</string>
     <string name="user_dict_settings_add_dialog_title" msgid="4096700390211748168">"Ավելացնել բառարանում"</string>

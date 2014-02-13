@@ -80,10 +80,8 @@
     <string name="spoken_use_headphones" msgid="896961781287283493">"ສຽບສາຍຫູຟັງເພື່ອຟັງລະຫັດຜ່ານ."</string>
     <string name="spoken_current_text_is" msgid="2485723011272583845">"ຂໍ້ຄວາມປະຈຸບັນແມ່ນ %s"</string>
     <string name="spoken_no_text_entered" msgid="7479685225597344496">"ບໍ່ມີການໃສ່ຂໍ້ຄວາມ"</string>
-    <!-- no translation found for spoken_auto_correct (5150455215290003221) -->
-    <skip />
-    <!-- no translation found for spoken_auto_correct_obscured (2309828861778711939) -->
-    <skip />
+    <string name="spoken_auto_correct" msgid="5150455215290003221">"<xliff:g id="KEY_NAME">%1$s</xliff:g> ແກ້​ໄຂ​ <xliff:g id="ORIGINAL_WORD">%2$s</xliff:g> ເປັນ <xliff:g id="CORRECTED_WORD">%3$s</xliff:g>"</string>
+    <string name="spoken_auto_correct_obscured" msgid="2309828861778711939">"<xliff:g id="KEY_NAME">%1$s</xliff:g> ດຳ​ເນີນ​ການ​ແກ້​ໄຂ​ອັດ​ຕະ​ໂນ​ມັດ"</string>
     <string name="spoken_description_unknown" msgid="3197434010402179157">"ລະຫັດກະແຈ %d"</string>
     <string name="spoken_description_shift" msgid="244197883292549308">"Shift"</string>
     <string name="spoken_description_shift_shifted" msgid="1681877323344195035">"Shift ເປີດນຳໃຊ້ຢູ່ (ກົດເພື່ອປິດນຳໃຊ້)"</string>
@@ -111,8 +109,7 @@
     <string name="spoken_description_mode_phone" msgid="6520207943132026264">"ໂຫມດໂທລະສັບ"</string>
     <string name="spoken_description_mode_phone_shift" msgid="5499629753962641227">"ໂຫມດສັນຍາລັກໂທລະສັບ"</string>
     <string name="announce_keyboard_hidden" msgid="8718927835531429807">"ແປ້ນ​ພິມ​ເຊື່ອງ​ໄວ້"</string>
-    <!-- no translation found for announce_keyboard_mode (7486740369324538848) -->
-    <skip />
+    <string name="announce_keyboard_mode" msgid="7486740369324538848">"ກຳ​ລັງ​ສະ​ແດງແປ້ນ​ພິມ <xliff:g id="KEYBOARD_MODE">%s</xliff:g>"</string>
     <string name="keyboard_mode_date" msgid="3137520166817128102">"ວັນທີ"</string>
     <string name="keyboard_mode_date_time" msgid="339593358488851072">"ວັນ​ທີ​ແລະ​ເວ​ລາ"</string>
     <string name="keyboard_mode_email" msgid="6216248078128294262">"email"</string>
@@ -136,14 +133,10 @@
     <string name="subtype_en_GB" msgid="88170601942311355">"ອັງກິດ (ສະຫະລາດຊະອານາຈັກ)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"ອັງກິດ (ສະຫະລັດຯ)"</string>
     <string name="subtype_es_US" msgid="5583145191430180200">"ສະເປນ (ອາເມລິກາ)"</string>
-    <!-- no translation found for subtype_with_layout_en_GB (1931018968641592304) -->
-    <skip />
-    <!-- no translation found for subtype_with_layout_en_US (8809311287529805422) -->
-    <skip />
-    <!-- no translation found for subtype_with_layout_es_US (510930471167541338) -->
-    <skip />
-    <!-- no translation found for subtype_nepali_traditional (1994571919751163596) -->
-    <skip />
+    <string name="subtype_with_layout_en_GB" msgid="1931018968641592304">"ອັງ​ກິດ (ສະ​ຫະ​ລາດ​ຊະ​ອາ​ນາ​ຈັກ) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
+    <string name="subtype_with_layout_en_US" msgid="8809311287529805422">"ອັງ​ກິດ (ສະ​ຫະ​ລັດຯ) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
+    <string name="subtype_with_layout_es_US" msgid="510930471167541338">"ສະ​ແປນ​ນິດ (ສະ​ຫະ​ລັດຯ) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
+    <string name="subtype_nepali_traditional" msgid="1994571919751163596">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (ດັ້ງ​ເດີມ)"</string>
     <string name="subtype_no_language" msgid="7137390094240139495">"ບໍ່ມີພາສາ (ໂຕອັກສອນ)"</string>
     <string name="subtype_no_language_qwerty" msgid="244337630616742604">"ໂຕອັກສອນ (QWERTY)"</string>
     <string name="subtype_no_language_qwertz" msgid="443066912507547976">"ໂຕອັກສອນ (QWERTZ)"</string>
@@ -173,8 +166,7 @@
     <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"ອ່ານໄຟລ໌ວັດຈະນານຸກົມພາຍນອກ"</string>
     <string name="read_external_dictionary_no_files_message" msgid="4947420942224623792">"ບໍ່ມີໄຟລ໌ວັດຈະນານຸກົມໃນໂຟນເດີຂອງການດາວໂຫລດ"</string>
     <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"ເລືອກໄຟລ໌ວັດຈະນານຸກົມເພື່ອຕິດຕັ້ງ"</string>
-    <!-- no translation found for read_external_dictionary_confirm_install_message (4782116251651288054) -->
-    <skip />
+    <string name="read_external_dictionary_confirm_install_message" msgid="4782116251651288054">"ຕິດ​ຕັ້ງ​ໄຟ​ລ໌​ນີ້​ສຳ​ລັບ <xliff:g id="LANGUAGE_NAME">%s</xliff:g> ແທ້ບໍ່??"</string>
     <string name="error" msgid="8940763624668513648">"ມີຂໍ້ຜິດພາດເກີດຂຶ້ນ"</string>
     <string name="prefs_dump_contacts_dict" msgid="7227327764402323097">"ເທຂໍ້ມູນວັດຈະນານຸກົມລາຍຊື່ຜູ່ຕິດຕໍ່"</string>
     <string name="prefs_dump_user_dict" msgid="294870685041741951">"ເທຂໍ້ມູນວັດຈະນານຸກົມສ່ວນໂຕ"</string>
@@ -217,22 +209,18 @@
     <string name="check_for_updates_now" msgid="8087688440916388581">"ດຶງຂໍ້ມູນໃຫມ່"</string>
     <string name="last_update" msgid="730467549913588780">"ອັບເດດຫຼ້າສຸດ"</string>
     <string name="message_updating" msgid="4457761393932375219">"ກຳລັງກວດການອັບເດດ"</string>
-    <!-- no translation found for message_loading (5638680861387748936) -->
-    <skip />
+    <string name="message_loading" msgid="5638680861387748936">"ກຳລັງໂຫຼດ..."</string>
     <string name="main_dict_description" msgid="3072821352793492143">"ວັດຈະນານຸກົມຫຼັກ"</string>
     <string name="cancel" msgid="6830980399865683324">"ຍົກເລີກ"</string>
     <string name="install_dict" msgid="180852772562189365">"ຕິດຕັ້ງ"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"ຍົກເລີກ"</string>
     <string name="delete_dict" msgid="756853268088330054">"ລຶບ"</string>
-    <!-- no translation found for should_download_over_metered_prompt (1583881200688185508) -->
-    <skip />
+    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"ພາ​ສາ​ທີ່​ເລືອກ​ໃນ​ອຸ​ປະ​ກອນ​ມື​ຖື​ຂອງ​ທ່າ​ນັ້ນ​ມີ​ວັດ​ຈະ​ນາ​ນຸ​ກົມ​ທີ່​ສາ​ມາດ​ໃຊ້​ໄດ້.&lt;br/&gt; ພວ​ກ​ເຮົາ​ຂໍ​ແນະ​ນຳ​ໃຫ້ &lt;b&gt;ດາວ​ໂຫລດ&lt;/b&gt; ວັດ​ຈ​ະ​ນາ​ນຸ​ກົມ <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> ເພື່ອ​ປັບ​ປຸງ​ປະ​ສົບ​ການ​ໃນ​ການ​ພິມ​ຂອງ​ທ່ານ.&lt;br/&gt; &lt;br/&gt; ການ​ດາວ​ໂຫລດ​ອາດ​ໃຊ້​ເວ​ລາ​ສອງ​ສາມ​ນາ​ທີ​ຜ່ານ​ເຄືອ​ຂ່າຍ 3G. ທ່ານ​ອາ​ດ​ຖືກ​ຮຽກ​ເກັບ​ຄ່າ​ຂໍ້​ມູນ​ໄດ້​ຫາກ​ທ່ານບໍ່​ໄດ້​ໃຊ້ &lt;b&gt;ແພັກ​ເກດ​ຂໍ້​ມູນ​ແບບບໍ່​ຈຳ​ກັດ&lt;/b&gt;.&lt;br/&gt; ຫາກ​ທ່ານບໍ່​ແນ່​ໃຈ​ວ່າ​ທ່ານ​ໃຊ້​ແພັກ​ເກດ​ແບບ​ໃດ​ຢູ່ ພວກ​ເຮົາ​ຂໍ​ແນະ​ນຳ​ໃຫ້​ທ່ານ​ເຊື່ອມ​ຕໍ່ເຄືອ​ຂ່າຍ Wi-Fi ໃດ​ນຶ່ງ​ແທນ​ເພື່ອ​ເລີ່ມ​ຕົ້ນ​ການ​ດາວ​ໂຫລດ​ໂດຍ​ອັດ​ຕະ​ໂນ​ມັດ.&lt;br/&gt; &lt;br/&gt; ເຄັດ​ລັບ: ທ່ານ​ສາ​ມາ​ດ​ດາວ​ໂຫລດ ແລະ​ລຶບ​ວັດ​ຈະ​ນາ​ນຸ​ກົມ​ອອກ​ໄດ້​ໂດຍ​ການ​ໄປ​ທີ່ &lt;b&gt;ພາ​ສາ &amp; ການ​ປ້ອນ​ຂໍ້​ມູນ&lt;/b&gt; ໃນ​ເມ​ນູ &lt;b&gt;ການ​ຕັ້ງ​ຄ່າ&lt;/b&gt; ຂອງ​ອຸ​ປະ​ກອນ​ມື​ຖື​ຂອງ​ທ່ານ."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"ດາວໂຫລດດຽວນີ້ (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"ດາວ​ໂຫລດຜ່ານ Wi-Fi"</string>
-    <!-- no translation found for dict_available_notification_title (4583842811218581658) -->
-    <skip />
+    <string name="dict_available_notification_title" msgid="4583842811218581658">"ມີ​ວັດ​ຈະ​ນາ​ນຸ​ກົມ​ທີ່​ສາ​ມາດ​ໃຊ້​ໄດ້​ກັບ <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>
     <string name="dict_available_notification_description" msgid="1075194169443163487">"ກົດທີ່ກວດຄືນ ແລະ ດາວໂຫລດ"</string>
-    <!-- no translation found for toast_downloading_suggestions (6128155879830851739) -->
-    <skip />
+    <string name="toast_downloading_suggestions" msgid="6128155879830851739">"ກຳ​ລັງ​ດາວ​ໂຫລດ: ການ​ແນະ​ນຳ​ສຳ​ລັບ <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> ຈະ​ພ້ອມ​ໃນ​ໄວໆ​ນີ້."</string>
     <string name="version_text" msgid="2715354215568469385">"ເວີຊັນ <xliff:g id="VERSION_NUMBER">%1$s</xliff:g>"</string>
     <string name="user_dict_settings_add_menu_title" msgid="1254195365689387076">"ເພີ່ມ"</string>
     <string name="user_dict_settings_add_dialog_title" msgid="4096700390211748168">"ເພີ່ມໄປທີ່ວັດຈະນານຸກົມ"</string>
