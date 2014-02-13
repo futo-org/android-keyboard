@@ -25,6 +25,7 @@ import java.io.LineNumberReader;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.jar.JarFile;
@@ -47,8 +48,19 @@ public class MoreKeysResources {
     // Language to string resources map.
     private final HashMap<String, StringResourceMap> mResourcesMap =
             new HashMap<String, StringResourceMap>();
-    // Name to id map.
-    private final HashMap<String, Integer> mNameToIdMap = new HashMap<String,Integer>();
+    // Sorted languages list. The language is taken from string resource directories
+    // (values-<language>/) or {@link #DEFAULT_LANGUAGE_NAME} for the default string resource
+    // directory (values/).
+    private final ArrayList<String> mSortedLanguagesList = new ArrayList<String>();
+    // Default string resources map.
+    private final StringResourceMap mDefaultResourceMap;
+    // Histogram of string resource names. This is used to sort {@link #mSortedResourceNames}.
+    private final HashMap<String, Integer> mNameHistogram = new HashMap<String, Integer>();
+    // Sorted string resource names array; Descending order of histogram count.
+    // The string resource name is specified as an attribute "name" in string resource files.
+    // The string resource can be accessed by specifying name "!text/<name>"
+    // via {@link KeyboardTextsSet#getText(String)}.
+    private final String[] mSortedResourceNames;
 
     public MoreKeysResources(final JarFile jar) {
         mJar = jar;
@@ -65,6 +77,45 @@ public class MoreKeysResources {
                 close(stream);
             }
         }
+        mDefaultResourceMap = mResourcesMap.get(DEFAULT_LANGUAGE_NAME);
+        mSortedLanguagesList.addAll(mResourcesMap.keySet());
+        Collections.sort(mSortedLanguagesList);
+
+        // Initialize name histogram and names list.
+        final HashMap<String, Integer> nameHistogram = mNameHistogram;
+        final ArrayList<String> resourceNamesList = new ArrayList<String>();
+        for (final StringResource res : mDefaultResourceMap.getResources()) {
+            nameHistogram.put(res.mName, 0); // Initialize histogram value.
+            resourceNamesList.add(res.mName);
+        }
+        // Make name histogram.
+        for (final String language : mResourcesMap.keySet()) {
+            final StringResourceMap resMap = mResourcesMap.get(language);
+            if (resMap == mDefaultResourceMap) continue;
+            for (final StringResource res : resMap.getResources()) {
+                if (!mDefaultResourceMap.contains(res.mName)) {
+                    throw new RuntimeException(res.mName + " in " + language
+                            + " doesn't have default resource");
+                }
+                final int histogramValue = nameHistogram.get(res.mName);
+                nameHistogram.put(res.mName, histogramValue + 1);
+            }
+        }
+        // Sort names list.
+        Collections.sort(resourceNamesList, new Comparator<String>() {
+            @Override
+            public int compare(final String leftName, final String rightName) {
+                final int leftCount = nameHistogram.get(leftName);
+                final int rightCount = nameHistogram.get(rightName);
+                // Descending order of histogram count.
+                if (leftCount > rightCount) return -1;
+                if (leftCount < rightCount) return 1;
+                // TODO: Add further criteria to order the same histogram value names to be able to
+                // minimize footprints of string resources arrays.
+                return 0;
+            }
+        });
+        mSortedResourceNames = resourceNamesList.toArray(new String[resourceNamesList.size()]);
     }
 
     private static String getLanguageFromResDir(final String dirName) {
@@ -132,19 +183,17 @@ public class MoreKeysResources {
     }
 
     private void dumpNames(final PrintStream out) {
-        final StringResourceMap defaultResMap = mResourcesMap.get(DEFAULT_LANGUAGE_NAME);
-        int id = 0;
-        for (final StringResource res : defaultResMap.getResources()) {
-            out.format("        /* %2d */ \"%s\",\n", id, res.mName);
-            mNameToIdMap.put(res.mName, id);
-            id++;
+        final int namesCount = mSortedResourceNames.length;
+        for (int index = 0; index < namesCount; index++) {
+            final String name = mSortedResourceNames[index];
+            final int histogramValue = mNameHistogram.get(name);
+            out.format("        /* %3d:%2d */ \"%s\",\n", index, histogramValue, name);
         }
     }
 
     private void dumpDefaultTexts(final PrintStream out) {
-        final StringResourceMap defaultResMap = mResourcesMap.get(DEFAULT_LANGUAGE_NAME);
-        final int outputArraySize = dumpTextsInternal(out, defaultResMap, defaultResMap);
-        defaultResMap.setOutputArraySize(outputArraySize);
+        final int outputArraySize = dumpTextsInternal(out, mDefaultResourceMap);
+        mDefaultResourceMap.setOutputArraySize(outputArraySize);
     }
 
     private static String getArrayNameForLanguage(final String language) {
@@ -152,35 +201,20 @@ public class MoreKeysResources {
     }
 
     private void dumpTexts(final PrintStream out) {
-        final StringResourceMap defaultResMap = mResourcesMap.get(DEFAULT_LANGUAGE_NAME);
-        final ArrayList<String> allLanguages = new ArrayList<String>();
-        allLanguages.addAll(mResourcesMap.keySet());
-        Collections.sort(allLanguages);
-        for (final String language : allLanguages) {
-            if (language.equals(DEFAULT_LANGUAGE_NAME)) {
-                continue;
-            }
+        for (final String language : mSortedLanguagesList) {
+            final StringResourceMap resMap = mResourcesMap.get(language);
+            if (resMap == mDefaultResourceMap) continue;
             out.format("    /* Language %s: %s */\n", language, getLanguageDisplayName(language));
             out.format("    private static final String[] " + getArrayNameForLanguage(language)
                     + " = {\n");
-            final StringResourceMap resMap = mResourcesMap.get(language);
-            for (final StringResource res : resMap.getResources()) {
-                if (!defaultResMap.contains(res.mName)) {
-                    throw new RuntimeException(res.mName + " in " + language
-                            + " doesn't have default resource");
-                }
-            }
-            final int outputArraySize = dumpTextsInternal(out, resMap, defaultResMap);
+            final int outputArraySize = dumpTextsInternal(out, resMap);
             resMap.setOutputArraySize(outputArraySize);
             out.format("    };\n\n");
         }
     }
 
     private void dumpLanguageMap(final PrintStream out) {
-        final ArrayList<String> allLanguages = new ArrayList<String>();
-        allLanguages.addAll(mResourcesMap.keySet());
-        Collections.sort(allLanguages);
-        for (final String language : allLanguages) {
+        for (final String language : mSortedLanguagesList) {
             final StringResourceMap resMap = mResourcesMap.get(language);
             final Locale locale = LocaleUtils.constructLocaleFromString(language);
             final String languageKeyToDump = locale.getCountry().isEmpty()
@@ -201,15 +235,17 @@ public class MoreKeysResources {
         return locale.getDisplayName(Locale.ENGLISH);
     }
 
-    private static int dumpTextsInternal(final PrintStream out, final StringResourceMap resMap,
-            final StringResourceMap defaultResMap) {
+    private int dumpTextsInternal(final PrintStream out, final StringResourceMap resMap) {
         final ArrayInitializerFormatter formatter =
-                new ArrayInitializerFormatter(out, 100, "        ");
+                new ArrayInitializerFormatter(out, 100, "        ", mSortedResourceNames);
         int outputArraySize = 0;
         boolean successiveNull = false;
-        for (final StringResource defaultRes : defaultResMap.getResources()) {
-            if (resMap.contains(defaultRes.mName)) {
-                final StringResource res = resMap.get(defaultRes.mName);
+        final int namesCount = mSortedResourceNames.length;
+        for (int index = 0; index < namesCount; index++) {
+            final String name = mSortedResourceNames[index];
+            final StringResource res = resMap.get(name);
+            if (res != null) {
+                // TODO: Check whether the resource value is equal to the default.
                 if (res.mComment != null) {
                     formatter.outCommentLines(addPrefix("        // ", res. mComment));
                 }
@@ -270,7 +306,7 @@ public class MoreKeysResources {
         return t;
     }
 
-    private static void close(Closeable stream) {
+    private static void close(final Closeable stream) {
         try {
             if (stream != null) {
                 stream.close();
