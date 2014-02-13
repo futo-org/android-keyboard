@@ -115,9 +115,9 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
 
     @Override
     protected void tearDown() throws Exception {
-        super.tearDown();
         // Quit test mode.
         BinaryDictionary.setCurrentTimeForTest(-1);
+        super.tearDown();
     }
 
     private void generateWords(final int number, final Random random) {
