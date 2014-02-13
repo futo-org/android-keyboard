@@ -43,16 +43,6 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     private static final String TEST_DICT_FILE_EXTENSION = ".testDict";
     private static final String TEST_LOCALE = "test";
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-
-    @Override
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
-
     private File createEmptyDictionaryAndGetFile(final String dictId,
             final int formatVersion) throws IOException {
        if (formatVersion == FormatSpec.VERSION4) {
