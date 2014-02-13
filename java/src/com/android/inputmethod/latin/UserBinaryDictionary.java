@@ -28,7 +28,6 @@ import android.provider.UserDictionary.Words;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.compat.UserDictionaryCompatUtils;
 import com.android.inputmethod.latin.utils.LocaleUtils;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
@@ -78,19 +77,17 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
     final public boolean mEnabled;
 
     public UserBinaryDictionary(final Context context, final Locale locale) {
-        this(context, locale, false);
+        this(context, locale, false /* alsoUseMoreRestrictiveLocales */, null /* dictFile */);
     }
 
-    // Dummy constructor for tests.
-    @UsedForTesting
-    public UserBinaryDictionary(final Context context, final Locale locale, final File file) {
-        this(context, locale);
+    public UserBinaryDictionary(final Context context, final Locale locale, final File dictFile) {
+        this(context, locale, false /* alsoUseMoreRestrictiveLocales */, dictFile);
     }
 
     public UserBinaryDictionary(final Context context, final Locale locale,
-            final boolean alsoUseMoreRestrictiveLocales) {
-        super(context, getDictNameWithLocale(NAME, locale), locale, Dictionary.TYPE_USER,
-                false /* isUpdatable */);
+            final boolean alsoUseMoreRestrictiveLocales, final File dictFile) {
+        super(context, getDictName(NAME, locale, dictFile), locale, Dictionary.TYPE_USER,
+                false /* isUpdatable */, dictFile);
         if (null == locale) throw new NullPointerException(); // Catch the error earlier
         final String localeStr = locale.toString();
         if (SubtypeLocaleUtils.NO_LANGUAGE.equals(localeStr)) {

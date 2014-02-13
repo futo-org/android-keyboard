@@ -16,27 +16,23 @@
 
 package com.android.inputmethod.latin.personalization;
 
-import com.android.inputmethod.annotations.UsedForTesting;
+import android.content.Context;
+
 import com.android.inputmethod.latin.Dictionary;
 
 import java.io.File;
 import java.util.Locale;
 
-import android.content.Context;
-
 public class PersonalizationDictionary extends DecayingExpandableBinaryDictionaryBase {
     /* package */ static final String NAME = PersonalizationDictionary.class.getSimpleName();
 
     /* package */ PersonalizationDictionary(final Context context, final Locale locale) {
-        super(context, locale, Dictionary.TYPE_PERSONALIZATION,
-                getDictNameWithLocale(NAME, locale));
+        this(context, locale, null /* dictFile */);
     }
 
-    // Creates an instance that uses a given dictionary file for testing.
-    @UsedForTesting
     public PersonalizationDictionary(final Context context, final Locale locale,
             final File dictFile) {
-        super(context, locale, Dictionary.TYPE_PERSONALIZATION, getDictNameWithLocale(NAME, locale),
+        super(context, getDictName(NAME, locale, dictFile), locale, Dictionary.TYPE_PERSONALIZATION,
                 dictFile);
     }
 
