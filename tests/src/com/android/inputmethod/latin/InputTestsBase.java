@@ -38,6 +38,8 @@ import android.widget.FrameLayout;
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
+import com.android.inputmethod.latin.settings.DebugSettings;
+import com.android.inputmethod.latin.settings.Settings;
 import com.android.inputmethod.latin.utils.LocaleUtils;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 
@@ -47,8 +49,6 @@ import java.util.concurrent.TimeUnit;
 public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
     private static final String TAG = InputTestsBase.class.getSimpleName();
 
-    private static final String PREF_DEBUG_MODE = "debug_mode";
-    private static final String PREF_AUTO_CORRECTION_THRESHOLD = "auto_correction_threshold";
     // Default value for auto-correction threshold. This is the string representation of the
     // index in the resources array of auto-correction threshold settings.
     private static final String DEFAULT_AUTO_CORRECTION_THRESHOLD = "1";
@@ -65,6 +65,7 @@ public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
     protected View mInputView;
     protected InputConnection mInputConnection;
     private boolean mPreviousDebugSetting;
+    private boolean mPreviousBigramPredictionSettings;
     private String mPreviousAutoCorrectSetting;
 
     // A helper class to ease span tests
@@ -163,7 +164,7 @@ public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
 
     // returns the previous setting value
     protected boolean setDebugMode(final boolean value) {
-        return setBooleanPreference(PREF_DEBUG_MODE, value, false);
+        return setBooleanPreference(DebugSettings.PREF_DEBUG_MODE, value, false);
     }
 
     protected EditorInfo enrichEditorInfo(final EditorInfo ei) {
@@ -184,7 +185,9 @@ public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
         setupService();
         mLatinIME = getService();
         mPreviousDebugSetting = setDebugMode(true);
-        mPreviousAutoCorrectSetting = setStringPreference(PREF_AUTO_CORRECTION_THRESHOLD,
+        mPreviousBigramPredictionSettings = setBooleanPreference(Settings.PREF_BIGRAM_PREDICTIONS,
+                true, true /* defaultValue */);
+        mPreviousAutoCorrectSetting = setStringPreference(Settings.PREF_AUTO_CORRECTION_THRESHOLD,
                 DEFAULT_AUTO_CORRECTION_THRESHOLD, DEFAULT_AUTO_CORRECTION_THRESHOLD);
         mLatinIME.onCreate();
         EditorInfo ei = new EditorInfo();
@@ -209,11 +212,14 @@ public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
     }
 
     @Override
-    protected void tearDown() {
+    protected void tearDown() throws Exception {
         mLatinIME.mHandler.removeAllMessages();
-        setStringPreference(PREF_AUTO_CORRECTION_THRESHOLD, mPreviousAutoCorrectSetting,
+        setBooleanPreference(Settings.PREF_BIGRAM_PREDICTIONS, mPreviousBigramPredictionSettings,
+                true /* defaultValue */);
+        setStringPreference(Settings.PREF_AUTO_CORRECTION_THRESHOLD, mPreviousAutoCorrectSetting,
                 DEFAULT_AUTO_CORRECTION_THRESHOLD);
         setDebugMode(mPreviousDebugSetting);
+        super.tearDown();
     }
 
     // We need to run the messages added to the handler from LatinIME. The only way to do

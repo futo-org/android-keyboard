@@ -55,8 +55,8 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
 
     @Override
     protected void tearDown() throws Exception {
-        super.tearDown();
         stopTestModeInNativeCode();
+        super.tearDown();
     }
 
     private void addUnigramWord(final BinaryDictionary binaryDictionary, final String word,
