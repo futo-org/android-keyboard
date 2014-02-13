@@ -51,11 +51,10 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
 
     private final String mDictName;
 
-    /* package */ DecayingExpandableBinaryDictionaryBase(final Context context,
+    protected DecayingExpandableBinaryDictionaryBase(final Context context,
             final String dictName, final Locale locale, final String dictionaryType,
             final File dictFile) {
-        super(context, getDictName(dictName, locale, dictFile), locale, dictionaryType,
-                true /* isUpdatable */, dictFile);
+        super(context, dictName, locale, dictionaryType, true /* isUpdatable */, dictFile);
         mLocale = locale;
         mDictName = dictName;
         if (mLocale != null && mLocale.toString().length() > 1) {
