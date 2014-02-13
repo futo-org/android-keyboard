@@ -973,7 +973,13 @@ public final class InputLogic {
                 } else {
                     final int codePointBeforeCursor = mConnection.getCodePointBeforeCursor();
                     if (codePointBeforeCursor == Constants.NOT_A_CODE) {
-                        // Nothing to delete before the cursor.
+                        // HACK for backward compatibility with broken apps that haven't realized
+                        // yet that hardware keyboards are not the only way of inputting text.
+                        // Nothing to delete before the cursor. We should not do anything, but many
+                        // broken apps expect something to happen in this case so that they can
+                        // catch it and have their broken interface react. If you need the keyboard
+                        // to do this, you're doing it wrong -- please fix your app.
+                        mConnection.deleteSurroundingText(1, 0);
                         return;
                     }
                     final int lengthToDelete =
