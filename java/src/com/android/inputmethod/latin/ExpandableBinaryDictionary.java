@@ -213,14 +213,9 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
      * @param dictType the dictionary type, as a human-readable string
      * @param isUpdatable whether to support dynamically updating the dictionary. Please note that
      *        dynamic dictionary has negative effects on memory space and computation time.
+     * @param dictFile dictionary file path. if null, use default dictionary path based on
+     *        dictionary type.
      */
-    public ExpandableBinaryDictionary(final Context context, final String dictName,
-            final Locale locale, final String dictType, final boolean isUpdatable) {
-        this(context, dictName, locale, dictType, isUpdatable,
-                new File(context.getFilesDir(), dictName + DICT_FILE_EXTENSION));
-    }
-
-    // Creates an instance that uses a given dictionary file.
     public ExpandableBinaryDictionary(final Context context, final String dictName,
             final Locale locale, final String dictType, final boolean isUpdatable,
             final File dictFile) {
@@ -229,15 +224,17 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         mContext = context;
         mLocale = locale;
         mIsUpdatable = isUpdatable;
-        mDictFile = dictFile;
+        mDictFile = (dictFile != null) ? dictFile
+                : new File(context.getFilesDir(), dictName + DICT_FILE_EXTENSION);
         mBinaryDictionary = null;
         mDictNameDictionaryUpdateController = getDictionaryUpdateController(dictName);
         // Currently, only dynamic personalization dictionary is updatable.
         mDictionaryWriter = getDictionaryWriter(isUpdatable);
     }
 
-    protected static String getDictNameWithLocale(final String name, final Locale locale) {
-        return name + "." + locale.toString();
+    protected static String getDictName(final String name, final Locale locale,
+            final File dictFile) {
+        return dictFile != null ? dictFile.getName() : name + "." + locale.toString();
     }
 
     /**

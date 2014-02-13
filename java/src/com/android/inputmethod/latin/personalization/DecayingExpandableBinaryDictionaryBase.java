@@ -52,21 +52,10 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
     private final String mDictName;
 
     /* package */ DecayingExpandableBinaryDictionaryBase(final Context context,
-            final Locale locale, final String dictionaryType, final String dictName) {
-        super(context, dictName, locale, dictionaryType, true);
-        mLocale = locale;
-        mDictName = dictName;
-        if (mLocale != null && mLocale.toString().length() > 1) {
-            reloadDictionaryIfRequired();
-        }
-    }
-
-    // Creates an instance that uses a given dictionary file for testing.
-    @UsedForTesting
-    /* package */ DecayingExpandableBinaryDictionaryBase(final Context context,
-            final Locale locale, final String dictionaryType, final String dictName,
+            final String dictName, final Locale locale, final String dictionaryType,
             final File dictFile) {
-        super(context, dictName, locale, dictionaryType, true, dictFile);
+        super(context, getDictName(dictName, locale, dictFile), locale, dictionaryType,
+                true /* isUpdatable */, dictFile);
         mLocale = locale;
         mDictName = dictName;
         if (mLocale != null && mLocale.toString().length() > 1) {

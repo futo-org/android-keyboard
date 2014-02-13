@@ -28,12 +28,12 @@ public final class SynchronouslyLoadedUserBinaryDictionary extends UserBinaryDic
     private final Object mLock = new Object();
 
     public SynchronouslyLoadedUserBinaryDictionary(final Context context, final Locale locale) {
-        this(context, locale, false);
+        this(context, locale, false /* alsoUseMoreRestrictiveLocales */);
     }
 
     public SynchronouslyLoadedUserBinaryDictionary(final Context context, final Locale locale,
             final boolean alsoUseMoreRestrictiveLocales) {
-        super(context, locale, alsoUseMoreRestrictiveLocales);
+        super(context, locale, alsoUseMoreRestrictiveLocales, null /* dictFile */);
     }
 
     @Override

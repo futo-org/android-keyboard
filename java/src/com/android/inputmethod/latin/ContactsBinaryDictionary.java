@@ -29,7 +29,6 @@ import android.provider.ContactsContract.Contacts;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.personalization.AccountUtils;
 import com.android.inputmethod.latin.utils.StringUtils;
 
@@ -73,8 +72,13 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
     private final boolean mUseFirstLastBigrams;
 
     public ContactsBinaryDictionary(final Context context, final Locale locale) {
-        super(context, getDictNameWithLocale(NAME, locale), locale,
-                Dictionary.TYPE_CONTACTS, false /* isUpdatable */);
+        this(context, locale, null /* dictFile */);
+    }
+
+    public ContactsBinaryDictionary(final Context context, final Locale locale,
+            final File dictFile) {
+        super(context, getDictName(NAME, locale, dictFile), locale, Dictionary.TYPE_CONTACTS,
+                false /* isUpdatable */, dictFile);
         mLocale = locale;
         mUseFirstLastBigrams = useFirstLastBigramsForLocale(locale);
         registerObserver(context);
@@ -82,12 +86,6 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
         // Load the current binary dictionary from internal storage. If no binary dictionary exists,
         // loadDictionary will start a new thread to generate one asynchronously.
         loadDictionary();
-    }
-
-    // Dummy constructor for tests.
-    @UsedForTesting
-    public ContactsBinaryDictionary(final Context context, final Locale locale, final File file) {
-        this(context, locale);
     }
 
     private synchronized void registerObserver(final Context context) {
