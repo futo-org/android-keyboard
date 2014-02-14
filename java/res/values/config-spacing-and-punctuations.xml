@@ -21,6 +21,8 @@
     <!-- TODO: these settings depend on the language. They should be put either in the dictionary
          header, or in the subtype maybe? -->
     <!-- Symbols that are suggested between words -->
+    <!-- TODO: Use !text resources to merge LTR and RTL punctuations. -->
+    <!-- TODO: We should have different punctuations list for tablet. -->
     <string name="suggested_punctuations" translatable="false">!,?,\\,,:,;,\",(,),\',-,/,@,_</string>
     <!-- Symbols that are normally preceded by a space (used to add an auto-space before these) -->
     <string name="symbols_preceded_by_space" translatable="false">([{&amp;</string>

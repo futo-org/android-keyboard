@@ -23,7 +23,6 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.SuggestionSpan;
 
-import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
@@ -70,7 +69,7 @@ public final class SuggestionSpanUtils {
     public static CharSequence getTextWithSuggestionSpan(final Context context,
             final String pickedWord, final SuggestedWords suggestedWords) {
         if (TextUtils.isEmpty(pickedWord) || suggestedWords.isEmpty()
-                || suggestedWords.mIsPrediction || suggestedWords.mIsPunctuationSuggestions) {
+                || suggestedWords.mIsPrediction || suggestedWords.isPunctuationSuggestions()) {
             return pickedWord;
         }
 
