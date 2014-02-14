@@ -75,7 +75,7 @@
     <!-- U+066A: "٪" ARABIC PERCENT SIGN -->
     <string name="keylabel_for_symbols_percent">&#x066A;</string>
     <!-- U+00BF: "¿" INVERTED QUESTION MARK -->
-    <string name="more_keys_for_question">\?,&#x00BF;</string>
+    <string name="more_keys_for_question">?,&#x00BF;</string>
     <string name="more_keys_for_symbols_semicolon">;</string>
     <!-- U+2030: "‰" PER MILLE SIGN -->
     <string name="more_keys_for_symbols_percent">\\%,&#x2030;</string>
@@ -92,7 +92,7 @@
     <!-- U+061F: "؟" ARABIC QUESTION MARK
          U+060C: "،" ARABIC COMMA
          U+061B: "؛" ARABIC SEMICOLON -->
-    <string name="more_keys_for_punctuation">"!fixedColumnOrder!8,\",\',#,-,:,!,&#x060C;,&#x061F;,\@,&amp;,\\%,+,&#x061B;,/,!text/keyspec_left_parenthesis,!text/keyspec_right_parenthesis"</string>
+    <string name="more_keys_for_punctuation">"!fixedColumnOrder!8,\",\',#,-,:,!,&#x060C;,&#x061F;,@,&amp;,\\%,+,&#x061B;,/,!text/keyspec_left_parenthesis,!text/keyspec_right_parenthesis"</string>
     <!-- U+266A: "♪" EIGHTH NOTE -->
     <string name="more_keys_for_bullet">&#x266A;</string>
     <!-- U+2605: "★" BLACK STAR

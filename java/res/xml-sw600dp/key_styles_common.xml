@@ -161,7 +161,7 @@
         latin:parentStyle="baseForLayoutSwitchKeyStyle" />
     <key-style
         latin:styleName="comKeyStyle"
-        latin:keySpec="!text/keylabel_for_popular_domain|!text/keylabel_for_popular_domain"
+        latin:keySpec="!text/keylabel_for_popular_domain"
         latin:keyLabelFlags="autoXScale|fontNormal|hasPopupHint|preserveCase"
         latin:moreKeys="!text/more_keys_for_popular_domain" />
 </merge>
