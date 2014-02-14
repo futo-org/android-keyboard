@@ -64,10 +64,10 @@ class Dictionary {
     int getSuggestions(ProximityInfo *proximityInfo, DicTraverseSession *traverseSession,
             int *xcoordinates, int *ycoordinates, int *times, int *pointerIds, int *inputCodePoints,
             int inputSize, int *prevWordCodePoints, int prevWordLength, int commitPoint,
-            const SuggestOptions *const suggestOptions, int *outWords, int *frequencies,
+            const SuggestOptions *const suggestOptions, int *outWords, int *outputScores,
             int *spaceIndices, int *outputTypes, int *outputAutoCommitFirstWordConfidence) const;
 
-    int getBigrams(const int *word, int length, int *outWords, int *frequencies,
+    int getBigrams(const int *word, int length, int *outWords, int *outputScores,
             int *outputTypes) const;
 
     int getProbability(const int *word, int length) const;

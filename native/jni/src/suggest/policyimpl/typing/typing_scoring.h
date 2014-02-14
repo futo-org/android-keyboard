@@ -39,8 +39,8 @@ class TypingScoring : public Scoring {
         return false;
     }
 
-    AK_FORCE_INLINE void safetyNetForMostProbableString(const int terminalSize,
-            const int maxScore, int *const outputCodePoints, int *const frequencies) const {
+    AK_FORCE_INLINE void safetyNetForMostProbableString(const int scoreCount,
+            const int maxScore, int *const outputCodePoints, int *const scores) const {
     }
 
     AK_FORCE_INLINE float getAdjustedLanguageWeight(DicTraverseSession *const traverseSession,

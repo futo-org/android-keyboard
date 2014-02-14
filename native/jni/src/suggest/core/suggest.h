@@ -48,7 +48,7 @@ class Suggest : public SuggestInterface {
     AK_FORCE_INLINE virtual ~Suggest() {}
     int getSuggestions(ProximityInfo *pInfo, void *traverseSession, int *inputXs, int *inputYs,
             int *times, int *pointerIds, int *inputCodePoints, int inputSize, int commitPoint,
-            int *outWords, int *frequencies, int *outputIndices, int *outputTypes,
+            int *outWords, int *outputScores, int *outputIndices, int *outputTypes,
             int *outputAutoCommitFirstWordConfidence) const;
 
  private:
