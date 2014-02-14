@@ -52,7 +52,7 @@ public final class EmojiPageKeyboardView extends KeyboardView implements
     };
 
     private OnKeyEventListener mListener = EMPTY_LISTENER;
-    private final KeyDetector mKeyDetector = new KeyDetector(0.0f /*keyHysteresisDistance */);
+    private final KeyDetector mKeyDetector = new KeyDetector();
     private final GestureDetector mGestureDetector;
 
     public EmojiPageKeyboardView(final Context context, final AttributeSet attrs) {

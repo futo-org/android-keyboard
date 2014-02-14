@@ -18,7 +18,9 @@ package com.android.inputmethod.keyboard;
 
 import com.android.inputmethod.latin.Constants;
 
-
+/**
+ * This class handles key detection.
+ */
 public class KeyDetector {
     private final int mKeyHysteresisDistanceSquared;
     private final int mKeyHysteresisDistanceForSlidingModifierSquared;
@@ -27,18 +29,12 @@ public class KeyDetector {
     private int mCorrectionX;
     private int mCorrectionY;
 
-    /**
-     * This class handles key detection.
-     *
-     * @param keyHysteresisDistance if the pointer movement distance is smaller than this, the
-     * movement will not be handled as meaningful movement. The unit is pixel.
-     */
-    public KeyDetector(float keyHysteresisDistance) {
-        this(keyHysteresisDistance, keyHysteresisDistance);
+    public KeyDetector() {
+        this(0.0f /* keyHysteresisDistance */, 0.0f /* keyHysteresisDistanceForSlidingModifier */);
     }
 
     /**
-     * This class handles key detection.
+     * Key detection object constructor with key hysteresis distances.
      *
      * @param keyHysteresisDistance if the pointer movement distance is smaller than this, the
      * movement will not be handled as meaningful movement. The unit is pixel.
