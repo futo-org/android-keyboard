@@ -723,7 +723,7 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
             // Make sure the delayed key-down event (highlight effect and haptic feedback) will be
             // canceled.
             final EmojiPageKeyboardView currentKeyboardView =
-                  mActiveKeyboardViews.get(mActivePosition);
+                    mActiveKeyboardViews.get(mActivePosition);
             currentKeyboardView.releaseCurrentKey();
         }
 
