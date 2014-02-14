@@ -155,7 +155,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
 
     // The {@link KeyDetector} is set whenever the down event is processed. Also this is updated
     // when new {@link Keyboard} is set by {@link #setKeyDetector(KeyDetector)}.
-    private KeyDetector mKeyDetector;
+    private KeyDetector mKeyDetector = new KeyDetector();
     private Keyboard mKeyboard;
     private int mPhantomSuddenMoveThreshold;
     private final BogusMoveEventDetector mBogusMoveEventDetector = new BogusMoveEventDetector();
@@ -1124,9 +1124,6 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
 
     private boolean isMajorEnoughMoveToBeOnNewKey(final int x, final int y, final long eventTime,
             final Key newKey) {
-        if (mKeyDetector == null) {
-            throw new NullPointerException("keyboard and/or key detector not set");
-        }
         final Key curKey = mCurrentKey;
         if (newKey == curKey) {
             return false;
