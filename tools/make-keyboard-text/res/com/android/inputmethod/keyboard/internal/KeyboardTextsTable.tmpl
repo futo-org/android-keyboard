@@ -43,22 +43,36 @@ import java.util.HashMap;
 public final class KeyboardTextsTable {
     // Name to index map.
     private static final HashMap<String, Integer> sNameToIndexesMap = CollectionUtils.newHashMap();
-    // Language to texts map.
-    private static final HashMap<String, String[]> sLanguageToTextsMap =
+    // Language to texts table map.
+    private static final HashMap<String, String[]> sLanguageToTextsTableMap =
+            CollectionUtils.newHashMap();
+    // TODO: Remove this variable after debugging.
+    // Texts table to language maps.
+    private static final HashMap<String[], String> sTextsTableToLanguageMap =
             CollectionUtils.newHashMap();
 
     public static String getText(final String name, final String[] textsTable) {
         final Integer indexObj = sNameToIndexesMap.get(name);
         if (indexObj == null) {
-            throw new RuntimeException("Unknown text name: " + name);
+            throw new RuntimeException("Unknown text name=" + name + " language="
+                    + sTextsTableToLanguageMap.get(textsTable));
         }
         final int index = indexObj;
         final String text = (index < textsTable.length) ? textsTable[index] : null;
-        return (text != null) ? text : LANGUAGE_DEFAULT[index];
+        if (text != null) {
+            return text;
+        }
+        // Sanity check.
+        if (index >= 0 && index < LANGUAGE_DEFAULT.length) {
+            return LANGUAGE_DEFAULT[index];
+        }
+        // Throw exception for debugging purpose.
+        throw new RuntimeException("Illegal index=" + index + " for name=" + name
+                + " language=" + sTextsTableToLanguageMap.get(textsTable));
     }
 
     public static String[] getTextsTable(final String language) {
-        final String[] textsTable = sLanguageToTextsMap.get(language);
+        final String[] textsTable = sLanguageToTextsTableMap.get(language);
         return textsTable != null ? textsTable : LANGUAGE_DEFAULT;
     }
 
@@ -89,8 +103,9 @@ public final class KeyboardTextsTable {
 
         for (int i = 0; i < LANGUAGES_AND_TEXTS.length; i += 2) {
             final String language = (String)LANGUAGES_AND_TEXTS[i];
-            final String[] texts = (String[])LANGUAGES_AND_TEXTS[i + 1];
-            sLanguageToTextsMap.put(language, texts);
+            final String[] textsTable = (String[])LANGUAGES_AND_TEXTS[i + 1];
+            sLanguageToTextsTableMap.put(language, textsTable);
+            sTextsTableToLanguageMap.put(textsTable, language);
         }
     }
 }

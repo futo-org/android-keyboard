@@ -85,13 +85,13 @@ public final class KeyboardTextsSet {
         do {
             level++;
             if (level >= MAX_STRING_REFERENCE_INDIRECTION) {
-                throw new RuntimeException("too many @string/resource indirection: " + text);
+                throw new RuntimeException("Too many " + PREFIX_TEXT + "name indirection: " + text);
             }
 
             final int prefixLen = PREFIX_TEXT.length();
             final int size = text.length();
             if (size < prefixLen) {
-                return TextUtils.isEmpty(text) ? null : text;
+                break;
             }
 
             sb = null;
