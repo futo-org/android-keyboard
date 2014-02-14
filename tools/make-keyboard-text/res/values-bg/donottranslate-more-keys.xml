@@ -22,7 +22,7 @@
          U+0410: "А" CYRILLIC CAPITAL LETTER A
          U+0411: "Б" CYRILLIC CAPITAL LETTER BE
          U+0412: "В" CYRILLIC CAPITAL LETTER VE -->
-    <string name="label_to_alpha_key">&#x0410;&#x0411;&#x0412;</string>
+    <string name="keylabel_to_alpha">&#x0410;&#x0411;&#x0412;</string>
     <!-- single_quotes of Bulgarian is default single_quotes_right_left. -->
     <string name="double_quotes">!text/double_9qm_lqm</string>
 </resources>

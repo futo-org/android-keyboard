@@ -25,5 +25,5 @@
          U+00F5: "õ" LATIN SMALL LETTER O WITH TILDE
          U+0153: "œ" LATIN SMALL LIGATURE OE
          U+00F8: "ø" LATIN SMALL LETTER O WITH STROKE -->
-    <string name="more_keys_for_o">&#x00F2;,&#x00F3;,&#x00F6;,&#x00F4;,&#x00F5;,&#x0153;,&#x00F8;</string>
+    <string name="morekeys_o">&#x00F2;,&#x00F3;,&#x00F6;,&#x00F4;,&#x00F5;,&#x0153;,&#x00F8;</string>
 </resources>

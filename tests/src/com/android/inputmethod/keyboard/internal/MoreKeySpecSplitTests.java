@@ -355,16 +355,16 @@ public class MoreKeySpecSplitTests extends InstrumentationTestCase {
     }
 
     public void testLabelReferece() {
-        assertTextArray("Label time am", "!text/label_time_am", "AM");
+        assertTextArray("Label time am", "!text/keylabel_time_am", "AM");
 
-        assertTextArray("More keys for am pm", "!text/more_keys_for_am_pm",
+        assertTextArray("More keys for am pm", "!text/morekeys_am_pm",
                 "!fixedColumnOrder!2", "!hasLabels!", "AM", "PM");
 
-        assertTextArray("Settings as more key", "!text/settings_as_more_key",
+        assertTextArray("Settings as more key", "!text/keyspec_settings",
                 "!icon/settings_key|!code/key_settings");
 
         assertTextArray("Indirect naviagte actions as more key",
-                "!text/indirect_navigate_actions_as_more_key",
+                "!text/keyspec_indirect_navigate_actions",
                 "!fixedColumnOrder!2",
                 "!hasLabels!", "Prev|!code/key_action_previous",
                 "!hasLabels!", "Next|!code/key_action_next");

@@ -23,8 +23,8 @@
 >
     <Key
         latin:keySpec="!text/keyspec_left_parenthesis"
-        latin:moreKeys="!text/more_keys_for_left_parenthesis" />
+        latin:moreKeys="!text/morekeys_left_parenthesis" />
     <Key
         latin:keySpec="!text/keyspec_right_parenthesis"
-        latin:moreKeys="!text/more_keys_for_right_parenthesis" />
+        latin:moreKeys="!text/morekeys_right_parenthesis" />
 </merge>

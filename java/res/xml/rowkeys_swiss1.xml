@@ -24,6 +24,6 @@
     <include
         latin:keyboardLayout="@xml/rowkeys_qwertz1" />
     <Key
-        latin:keySpec="!text/keylabel_for_swiss_row1_11"
-        latin:moreKeys="!text/more_keys_for_swiss_row1_11" />
+        latin:keySpec="!text/keyspec_swiss_row1_11"
+        latin:moreKeys="!text/morekeys_swiss_row1_11" />
 </merge>

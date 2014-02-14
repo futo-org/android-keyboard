@@ -22,5 +22,5 @@
          U+1000: "က" MYANMAR LETTER KA
          U+1001: "ခ" MYANMAR LETTER KHA
          U+1002: "ဂ" MYANMAR LETTER GA -->
-    <string name="label_to_alpha_key">&#x1000;&#x1001;&#x1002;</string>
+    <string name="keylabel_to_alpha">&#x1000;&#x1001;&#x1002;</string>
 </resources>

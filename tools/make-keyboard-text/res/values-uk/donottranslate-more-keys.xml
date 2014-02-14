@@ -19,26 +19,26 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- U+0449: "щ" CYRILLIC SMALL LETTER SHCHA -->
-    <string name="keylabel_for_east_slavic_row1_9">&#x0449;</string>
+    <string name="keyspec_east_slavic_row1_9">&#x0449;</string>
     <!-- U+0456: "і" CYRILLIC SMALL LETTER BYELORUSSIAN-UKRAINIAN I -->
-    <string name="keylabel_for_east_slavic_row2_2">&#x0456;</string>
+    <string name="keyspec_east_slavic_row2_2">&#x0456;</string>
     <!-- U+0454: "є" CYRILLIC SMALL LETTER UKRAINIAN IE -->
-    <string name="keylabel_for_east_slavic_row2_11">&#x0454;</string>
+    <string name="keyspec_east_slavic_row2_11">&#x0454;</string>
     <!-- U+0438: "и" CYRILLIC SMALL LETTER I -->
-    <string name="keylabel_for_east_slavic_row3_5">&#x0438;</string>
+    <string name="keyspec_east_slavic_row3_5">&#x0438;</string>
     <!-- U+0491: "ґ" CYRILLIC SMALL LETTER GHE WITH UPTURN -->
-    <string name="more_keys_for_cyrillic_ghe">&#x0491;</string>
+    <string name="morekeys_cyrillic_ghe">&#x0491;</string>
     <!-- U+0457: "ї" CYRILLIC SMALL LETTER YI -->
-    <string name="more_keys_for_east_slavic_row2_2">&#x0457;</string>
+    <string name="morekeys_east_slavic_row2_2">&#x0457;</string>
     <!-- U+044A: "ъ" CYRILLIC SMALL LETTER HARD SIGN -->
-    <string name="more_keys_for_cyrillic_soft_sign">&#x044A;</string>
+    <string name="morekeys_cyrillic_soft_sign">&#x044A;</string>
     <!-- U+20B4: "₴" HRYVNIA SIGN -->
-    <string name="keylabel_for_currency">&#x20B4;</string>
+    <string name="keyspec_currency">&#x20B4;</string>
     <!-- Label for "switch to alphabetic" key.
          U+0410: "А" CYRILLIC CAPITAL LETTER A
          U+0411: "Б" CYRILLIC CAPITAL LETTER BE
          U+0412: "В" CYRILLIC CAPITAL LETTER VE -->
-    <string name="label_to_alpha_key">&#x0410;&#x0411;&#x0412;</string>
+    <string name="keylabel_to_alpha">&#x0410;&#x0411;&#x0412;</string>
     <string name="single_quotes">!text/single_9qm_lqm</string>
     <string name="double_quotes">!text/double_9qm_lqm</string>
 </resources>

@@ -23,36 +23,36 @@
 >
     <Key
         latin:keySpec="*"
-        latin:moreKeys="!text/more_keys_for_star" />
+        latin:moreKeys="!text/morekeys_star" />
     <switch>
         <case
             latin:languageCode="fa"
         >
             <Key
                 latin:keySpec="!text/keyspec_left_double_angle_quote"
-                latin:moreKeys="!text/more_keys_for_double_quote" />
+                latin:moreKeys="!text/morekeys_double_quote" />
             <Key
                 latin:keySpec="!text/keyspec_right_double_angle_quote"
-                latin:moreKeys="!text/more_keys_for_single_quote" />
+                latin:moreKeys="!text/morekeys_single_quote" />
         </case>
         <default>
             <Key
                 latin:keySpec="&quot;"
-                latin:moreKeys="!text/more_keys_for_double_quote" />
+                latin:moreKeys="!text/morekeys_double_quote" />
             <Key
                 latin:keySpec="\'"
-                latin:moreKeys="!text/more_keys_for_single_quote" />
+                latin:moreKeys="!text/morekeys_single_quote" />
         </default>
     </switch>
     <Key
         latin:keySpec=":" />
     <Key
-        latin:keySpec="!text/keylabel_for_symbols_semicolon"
-        latin:moreKeys="!text/more_keys_for_symbols_semicolon" />
+        latin:keySpec="!text/keyspec_symbols_semicolon"
+        latin:moreKeys="!text/morekeys_symbols_semicolon" />
     <Key
         latin:keySpec="!"
-        latin:moreKeys="!text/more_keys_for_exclamation" />
+        latin:moreKeys="!text/morekeys_exclamation" />
     <Key
-        latin:keySpec="!text/keylabel_for_symbols_question"
-        latin:moreKeys="!text/more_keys_for_question" />
+        latin:keySpec="!text/keyspec_symbols_question"
+        latin:moreKeys="!text/morekeys_question" />
 </merge>

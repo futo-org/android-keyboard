@@ -22,12 +22,12 @@
          U+05D0: "א" HEBREW LETTER ALEF
          U+05D1: "ב" HEBREW LETTER BET
          U+05D2: "ג" HEBREW LETTER GIMEL -->
-    <string name="label_to_alpha_key">&#x05D0;&#x05D1;&#x05D2;</string>
+    <string name="keylabel_to_alpha">&#x05D0;&#x05D1;&#x05D2;</string>
     <!-- U+2605: "★" BLACK STAR -->
-    <string name="more_keys_for_star">&#x2605;</string>
+    <string name="morekeys_star">&#x2605;</string>
     <!-- U+00B1: "±" PLUS-MINUS SIGN
          U+FB29: "﬩" HEBREW LETTER ALTERNATIVE PLUS SIGN -->
-    <string name="more_keys_for_plus">&#x00B1;,&#xFB29;</string>
+    <string name="morekeys_plus">&#x00B1;,&#xFB29;</string>
     <!-- The all letters need to be mirrored are found at
          http://www.unicode.org/Public/6.1.0/ucd/BidiMirroring.txt -->
     <!-- U+2264: "≤" LESS-THAN OR EQUAL TO
@@ -53,5 +53,5 @@
     <string name="single_quotes">!text/single_rqm_9qm</string>
     <string name="double_quotes">!text/double_rqm_9qm</string>
     <!-- U+20AA: "₪" NEW SHEQEL SIGN -->
-    <string name="keylabel_for_currency">&#x20AA;</string>
+    <string name="keyspec_currency">&#x20AA;</string>
 </resources>

@@ -30,7 +30,7 @@
         <Key
             latin:keySpec="q"
             latin:backgroundType="normal"
-            latin:additionalMoreKeys="!text/shortcut_as_more_key"
+            latin:additionalMoreKeys="!text/keyspec_shortcut"
             latin:keyStyle="f1MoreKeysStyle" />
         <include
             latin:keyXPos="25%p"
@@ -38,7 +38,7 @@
         <Key
             latin:keySpec="z"
             latin:keyLabelFlags="hasPopupHint"
-            latin:moreKeys="!text/more_keys_for_punctuation,!text/more_keys_for_z" />
+            latin:moreKeys="!text/morekeys_punctuation,!text/morekeys_z" />
         <Key
             latin:keyStyle="enterKeyStyle"
             latin:keyWidth="fillRight" />

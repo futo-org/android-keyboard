@@ -46,8 +46,8 @@
     <Key
         latin:keyStyle="currencyKeyStyle" />
     <Key
-        latin:keySpec="!text/keylabel_for_symbols_percent"
-        latin:moreKeys="!text/more_keys_for_symbols_percent" />
+        latin:keySpec="!text/keyspec_symbols_percent"
+        latin:moreKeys="!text/morekeys_symbols_percent" />
     <Key
         latin:keySpec="&amp;" />
     <!-- U+2013: "–" EN DASH
@@ -58,7 +58,7 @@
         latin:moreKeys="_,&#x2013;,&#x2014;,&#x00B7;" />
     <Key
         latin:keySpec="+"
-        latin:moreKeys="!text/more_keys_for_plus" />
+        latin:moreKeys="!text/morekeys_plus" />
     <include
         latin:keyboardLayout="@xml/keys_parentheses" />
 </merge>

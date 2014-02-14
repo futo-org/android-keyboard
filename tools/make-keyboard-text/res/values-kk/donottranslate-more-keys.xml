@@ -19,37 +19,37 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- U+0449: "щ" CYRILLIC SMALL LETTER SHCHA -->
-    <string name="keylabel_for_east_slavic_row1_9">&#x0449;</string>
+    <string name="keyspec_east_slavic_row1_9">&#x0449;</string>
     <!-- U+044B: "ы" CYRILLIC SMALL LETTER YERU -->
-    <string name="keylabel_for_east_slavic_row2_2">&#x044B;</string>
+    <string name="keyspec_east_slavic_row2_2">&#x044B;</string>
     <!-- U+044D: "э" CYRILLIC SMALL LETTER E -->
-    <string name="keylabel_for_east_slavic_row2_11">&#x044D;</string>
+    <string name="keyspec_east_slavic_row2_11">&#x044D;</string>
     <!-- U+0438: "и" CYRILLIC SMALL LETTER I -->
-    <string name="keylabel_for_east_slavic_row3_5">&#x0438;</string>
+    <string name="keyspec_east_slavic_row3_5">&#x0438;</string>
     <!-- U+04AF: "ү" CYRILLIC SMALL LETTER STRAIGHT U
          U+04B1: "ұ" CYRILLIC SMALL LETTER STRAIGHT U WITH STROKE -->
-    <string name="more_keys_for_cyrillic_u">&#x04AF;,&#x04B1;</string>
+    <string name="morekeys_cyrillic_u">&#x04AF;,&#x04B1;</string>
     <!-- U+049B: "қ" CYRILLIC SMALL LETTER KA WITH DESCENDER -->
-    <string name="more_keys_for_cyrillic_ka">&#x049B;</string>
+    <string name="morekeys_cyrillic_ka">&#x049B;</string>
     <!-- U+0451: "ё" CYRILLIC SMALL LETTER IO -->
-    <string name="more_keys_for_cyrillic_ie">&#x0451;</string>
+    <string name="morekeys_cyrillic_ie">&#x0451;</string>
     <!-- U+04A3: "ң" CYRILLIC SMALL LETTER EN WITH DESCENDER -->
-    <string name="more_keys_for_cyrillic_en">&#x04A3;</string>
+    <string name="morekeys_cyrillic_en">&#x04A3;</string>
     <!-- U+0493: "ғ" CYRILLIC SMALL LETTER GHE WITH STROKE -->
-    <string name="more_keys_for_cyrillic_ghe">&#x0493;</string>
+    <string name="morekeys_cyrillic_ghe">&#x0493;</string>
     <!-- U+0456: "і" CYRILLIC SMALL LETTER BYELORUSSIAN-UKRAINIAN I -->
-    <string name="more_keys_for_east_slavic_row2_2">&#x0456;</string>
+    <string name="morekeys_east_slavic_row2_2">&#x0456;</string>
     <!-- U+04D9: "ә" CYRILLIC SMALL LETTER SCHWA -->
-    <string name="more_keys_for_cyrillic_a">&#x04D9;</string>
+    <string name="morekeys_cyrillic_a">&#x04D9;</string>
     <!-- U+04E9: "ө" CYRILLIC SMALL LETTER BARRED O -->
-    <string name="more_keys_for_cyrillic_o">&#x04E9;</string>
+    <string name="morekeys_cyrillic_o">&#x04E9;</string>
     <!-- U+04BB: "һ" CYRILLIC SMALL LETTER SHHA -->
-    <string name="more_keys_for_east_slavic_row2_11">&#x04BB;</string>
+    <string name="morekeys_east_slavic_row2_11">&#x04BB;</string>
     <!-- U+044A: "ъ" CYRILLIC SMALL LETTER HARD SIGN -->
-    <string name="more_keys_for_cyrillic_soft_sign">&#x044A;</string>
+    <string name="morekeys_cyrillic_soft_sign">&#x044A;</string>
     <!-- Label for "switch to alphabetic" key.
          U+0410: "А" CYRILLIC CAPITAL LETTER A
          U+0411: "Б" CYRILLIC CAPITAL LETTER BE
          U+0412: "В" CYRILLIC CAPITAL LETTER VE -->
-    <string name="label_to_alpha_key">&#x0410;&#x0411;&#x0412;</string>
+    <string name="keylabel_to_alpha">&#x0410;&#x0411;&#x0412;</string>
 </resources>

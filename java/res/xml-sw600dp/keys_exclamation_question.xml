@@ -23,8 +23,8 @@
 >
     <Key
         latin:keySpec="!"
-        latin:moreKeys="!text/more_keys_for_exclamation" />
+        latin:moreKeys="!text/morekeys_exclamation" />
     <Key
         latin:keySpec="\?"
-        latin:moreKeys="!text/more_keys_for_question" />
+        latin:moreKeys="!text/morekeys_question" />
 </merge>
