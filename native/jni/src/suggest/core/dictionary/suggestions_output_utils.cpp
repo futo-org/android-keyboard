@@ -31,7 +31,7 @@ const int SuggestionsOutputUtils::MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT = 16;
 // TODO: Split this method.
 /* static */ int SuggestionsOutputUtils::outputSuggestions(
         const Scoring *const scoringPolicy, DicTraverseSession *traverseSession,
-        int *frequencies, int *outputCodePoints, int *outputIndicesToPartialCommit,
+        int *outputScores, int *outputCodePoints, int *outputIndicesToPartialCommit,
         int *outputTypes, int *outputAutoCommitFirstWordConfidence) {
 #if DEBUG_EVALUATE_MOST_PROBABLE_STRING
     const int terminalSize = 0;
@@ -52,7 +52,7 @@ const int SuggestionsOutputUtils::MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT = 16;
     // Insert most probable word at index == 0 as long as there is one terminal at least
     const bool hasMostProbableString =
             scoringPolicy->getMostProbableString(traverseSession, terminalSize, languageWeight,
-                    &outputCodePoints[0], &outputTypes[0], &frequencies[0]);
+                    &outputCodePoints[0], &outputTypes[0], &outputScores[0]);
     if (hasMostProbableString) {
         outputIndicesToPartialCommit[outputWordIndex] = NOT_AN_INDEX;
         ++outputWordIndex;
@@ -97,7 +97,7 @@ const int SuggestionsOutputUtils::MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT = 16;
         const bool isExactMatch =
                 ErrorTypeUtils::isExactMatch(terminalDicNode->getContainedErrorTypes());
         const bool isFirstCharUppercase = terminalDicNode->isFirstCharUppercase();
-        // Heuristic: We exclude freq=0 first-char-uppercase words from exact match.
+        // Heuristic: We exclude probability=0 first-char-uppercase words from exact match.
         // (e.g. "AMD" and "and")
         const bool isSafeExactMatch = isExactMatch
                 && !(isPossiblyOffensiveWord && isFirstCharUppercase);
@@ -123,7 +123,7 @@ const int SuggestionsOutputUtils::MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT = 16;
         // Don't output invalid words. However, we still need to submit their shortcuts if any.
         if (isValidWord) {
             outputTypes[outputWordIndex] = Dictionary::KIND_CORRECTION | outputTypeFlags;
-            frequencies[outputWordIndex] = finalScore;
+            outputScores[outputWordIndex] = finalScore;
             if (outputSecondWordFirstLetterInputIndex) {
                 outputIndicesToPartialCommit[outputWordIndex] =
                         terminalDicNode->getSecondWordFirstInputIndex(
@@ -151,7 +151,7 @@ const int SuggestionsOutputUtils::MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT = 16;
                              terminalDicNode->getContainedErrorTypes(),
                              true /* forceCommit */, boostExactMatches) : finalScore;
             const int updatedOutputWordIndex = outputShortcuts(&shortcutIt,
-                    outputWordIndex, shortcutBaseScore, outputCodePoints, frequencies, outputTypes,
+                    outputWordIndex, shortcutBaseScore, outputCodePoints, outputScores, outputTypes,
                     sameAsTyped);
             const int secondWordFirstInputIndex = terminalDicNode->getSecondWordFirstInputIndex(
                     traverseSession->getProximityInfoState(0));
@@ -168,8 +168,8 @@ const int SuggestionsOutputUtils::MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT = 16;
     }
 
     if (hasMostProbableString) {
-        scoringPolicy->safetyNetForMostProbableString(terminalSize, maxScore,
-                &outputCodePoints[0], &frequencies[0]);
+        scoringPolicy->safetyNetForMostProbableString(outputWordIndex, maxScore,
+                &outputCodePoints[0], outputScores);
     }
     return outputWordIndex;
 }
@@ -229,7 +229,7 @@ const int SuggestionsOutputUtils::MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT = 16;
 /* static */ int SuggestionsOutputUtils::outputShortcuts(
         BinaryDictionaryShortcutIterator *const shortcutIt,
         int outputWordIndex, const int finalScore, int *const outputCodePoints,
-        int *const frequencies, int *const outputTypes, const bool sameAsTyped) {
+        int *const outputScores, int *const outputTypes, const bool sameAsTyped) {
     int shortcutTarget[MAX_WORD_LENGTH];
     while (shortcutIt->hasNextShortcutTarget() && outputWordIndex < MAX_RESULTS) {
         bool isWhilelist;
@@ -249,8 +249,8 @@ const int SuggestionsOutputUtils::MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT = 16;
             kind = Dictionary::KIND_SHORTCUT;
         }
         outputTypes[outputWordIndex] = kind;
-        frequencies[outputWordIndex] = shortcutScore;
-        frequencies[outputWordIndex] = max(S_INT_MIN + 1, shortcutScore) - 1;
+        outputScores[outputWordIndex] = shortcutScore;
+        outputScores[outputWordIndex] = max(S_INT_MIN + 1, shortcutScore) - 1;
         const int startIndex2 = outputWordIndex * MAX_WORD_LENGTH;
         DicNodeUtils::appendTwoWords(0, 0, shortcutTarget, shortcutTargetStringLength,
                 &outputCodePoints[startIndex2]);

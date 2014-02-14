@@ -46,7 +46,7 @@ Dictionary::Dictionary(JNIEnv *env, const DictionaryStructureWithBufferPolicy::S
 int Dictionary::getSuggestions(ProximityInfo *proximityInfo, DicTraverseSession *traverseSession,
         int *xcoordinates, int *ycoordinates, int *times, int *pointerIds, int *inputCodePoints,
         int inputSize, int *prevWordCodePoints, int prevWordLength, int commitPoint,
-        const SuggestOptions *const suggestOptions, int *outWords, int *frequencies,
+        const SuggestOptions *const suggestOptions, int *outWords, int *outputScores,
         int *spaceIndices, int *outputTypes, int *outputAutoCommitFirstWordConfidence) const {
     TimeKeeper::setCurrentTime();
     int result = 0;
@@ -55,9 +55,9 @@ int Dictionary::getSuggestions(ProximityInfo *proximityInfo, DicTraverseSession 
                 traverseSession, this, prevWordCodePoints, prevWordLength, suggestOptions);
         result = mGestureSuggest.get()->getSuggestions(proximityInfo, traverseSession, xcoordinates,
                 ycoordinates, times, pointerIds, inputCodePoints, inputSize, commitPoint, outWords,
-                frequencies, spaceIndices, outputTypes, outputAutoCommitFirstWordConfidence);
+                outputScores, spaceIndices, outputTypes, outputAutoCommitFirstWordConfidence);
         if (DEBUG_DICT) {
-            DUMP_RESULT(outWords, frequencies);
+            DUMP_RESULT(outWords, outputScores);
         }
         return result;
     } else {
@@ -65,20 +65,20 @@ int Dictionary::getSuggestions(ProximityInfo *proximityInfo, DicTraverseSession 
                 traverseSession, this, prevWordCodePoints, prevWordLength, suggestOptions);
         result = mTypingSuggest.get()->getSuggestions(proximityInfo, traverseSession, xcoordinates,
                 ycoordinates, times, pointerIds, inputCodePoints, inputSize, commitPoint,
-                outWords, frequencies, spaceIndices, outputTypes,
+                outWords, outputScores, spaceIndices, outputTypes,
                 outputAutoCommitFirstWordConfidence);
         if (DEBUG_DICT) {
-            DUMP_RESULT(outWords, frequencies);
+            DUMP_RESULT(outWords, outputScores);
         }
         return result;
     }
 }
 
-int Dictionary::getBigrams(const int *word, int length, int *outWords, int *frequencies,
+int Dictionary::getBigrams(const int *word, int length, int *outWords, int *outputScores,
         int *outputTypes) const {
     TimeKeeper::setCurrentTime();
     if (length <= 0) return 0;
-    return mBigramDictionary.get()->getPredictions(word, length, outWords, frequencies,
+    return mBigramDictionary.get()->getPredictions(word, length, outWords, outputScores,
             outputTypes);
 }
 
