@@ -18,17 +18,13 @@ package com.android.inputmethod.latin.settings;
 
 import android.content.res.Resources;
 
-import com.android.inputmethod.keyboard.internal.KeySpecParser;
+import com.android.inputmethod.keyboard.internal.KeyboardTextsSet;
 import com.android.inputmethod.keyboard.internal.MoreKeySpec;
 import com.android.inputmethod.latin.Constants;
-import com.android.inputmethod.latin.Dictionary;
+import com.android.inputmethod.latin.PunctuationSuggestions;
 import com.android.inputmethod.latin.R;
-import com.android.inputmethod.latin.SuggestedWords;
-import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
-import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.StringUtils;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
 
@@ -37,7 +33,7 @@ public final class SpacingAndPunctuations {
     private final int[] mSortedSymbolsFollowedBySpace;
     private final int[] mSortedWordConnectors;
     public final int[] mSortedWordSeparators;
-    public final SuggestedWords mSuggestPuncList;
+    public final PunctuationSuggestions mSuggestPuncList;
     private final int mSentenceSeparator;
     public final String mSentenceSeparatorAndSpace;
     public final boolean mCurrentLanguageHasSpaces;
@@ -56,9 +52,6 @@ public final class SpacingAndPunctuations {
                 res.getString(R.string.symbols_word_connectors));
         mSortedWordSeparators = StringUtils.toSortedCodePointArray(
                 res.getString(R.string.symbols_word_separators));
-        final String[] suggestPuncsSpec = MoreKeySpec.splitKeySpecs(res.getString(
-                R.string.suggested_punctuations));
-        mSuggestPuncList = createSuggestPuncList(suggestPuncsSpec);
         mSentenceSeparator = res.getInteger(R.integer.sentence_separator);
         mSentenceSeparatorAndSpace = new String(new int[] {
                 mSentenceSeparator, Constants.CODE_SPACE }, 0, 2);
@@ -68,28 +61,11 @@ public final class SpacingAndPunctuations {
         // English variants. German rules (not "German typography") also have small gotchas.
         mUsesAmericanTypography = Locale.ENGLISH.getLanguage().equals(locale.getLanguage());
         mUsesGermanRules = Locale.GERMAN.getLanguage().equals(locale.getLanguage());
-    }
-
-    // Helper functions to create member values.
-    private static SuggestedWords createSuggestPuncList(final String[] puncs) {
-        final ArrayList<SuggestedWordInfo> puncList = CollectionUtils.newArrayList();
-        if (puncs != null) {
-            for (final String puncSpec : puncs) {
-                // TODO: Stop using KeySpecParser.getLabel().
-                // TODO: Punctuation suggestions should honor RTL languages.
-                puncList.add(new SuggestedWordInfo(KeySpecParser.getLabel(puncSpec),
-                        SuggestedWordInfo.MAX_SCORE, SuggestedWordInfo.KIND_HARDCODED,
-                        Dictionary.DICTIONARY_HARDCODED,
-                        SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
-                        SuggestedWordInfo.NOT_A_CONFIDENCE /* autoCommitFirstWordConfidence */));
-            }
-        }
-        return new SuggestedWords(puncList, null /* rawSuggestions */,
-                false /* typedWordValid */,
-                false /* hasAutoCorrectionCandidate */,
-                true /* isPunctuationSuggestions */,
-                false /* isObsoleteSuggestions */,
-                false /* isPrediction */);
+        final KeyboardTextsSet textsSet = new KeyboardTextsSet();
+        textsSet.setLocale(locale);
+        final String[] suggestPuncsSpec = MoreKeySpec.splitKeySpecs(
+                textsSet.resolveTextReference(res.getString(R.string.suggested_punctuations)));
+        mSuggestPuncList = PunctuationSuggestions.newPunctuationSuggestions(suggestPuncsSpec);
     }
 
     public boolean isWordSeparator(final int code) {

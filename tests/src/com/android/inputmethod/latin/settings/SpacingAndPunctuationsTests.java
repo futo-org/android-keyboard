@@ -373,29 +373,37 @@ public class SpacingAndPunctuationsTests extends AndroidTestCase {
         assertTrue(SWISS_GERMAN.mUsesGermanRules);
     }
 
-    private static void testingStandardPunctuationSuggestions(final SpacingAndPunctuations sp) {
+    private static final String[] PUNCTUATION_LABELS = {
+        "!", "?", ",", ":", ";", "\"", "(", ")", "'", "-", "/", "@", "_"
+    };
+    private static final String[] PUNCTUATION_WORDS_LTR = PUNCTUATION_LABELS;
+    private static final String[] PUNCTUATION_WORDS_RTL = {
+        "!", "?", ",", ":", ";", "\"", ")", "(", "'", "-", "/", "@", "_"
+    };
+
+    private static void testingStandardPunctuationSuggestions(final SpacingAndPunctuations sp,
+            final String[] punctuationWords) {
         final SuggestedWords suggestedWords = sp.mSuggestPuncList;
         assertFalse("typedWordValid", suggestedWords.mTypedWordValid);
         assertFalse("willAutoCorrect", suggestedWords.mWillAutoCorrect);
-        assertTrue("isPunctuationSuggestions", suggestedWords.mIsPunctuationSuggestions);
+        assertTrue("isPunctuationSuggestions", suggestedWords.isPunctuationSuggestions());
         assertFalse("isObsoleteSuggestions", suggestedWords.mIsObsoleteSuggestions);
         assertFalse("isPrediction", suggestedWords.mIsPrediction);
-        final String[] punctuations = {
-            "!", "?", ",", ":", ";", "\"", "(", ")", "'", "-", "/", "@", "_"
-        };
-        assertEquals("size", punctuations.length, suggestedWords.size());
-        for (int index = 0; index < punctuations.length; index++) {
-            assertEquals("punctuation at " + index,
-                    punctuations[index], suggestedWords.getWord(index));
+        assertEquals("size", PUNCTUATION_LABELS.length, suggestedWords.size());
+        for (int index = 0; index < suggestedWords.size(); index++) {
+            assertEquals("punctuation label at " + index,
+                    PUNCTUATION_LABELS[index], suggestedWords.getLabel(index));
+            assertEquals("punctuation word at " + index,
+                    punctuationWords[index], suggestedWords.getWord(index));
         }
     }
+
     public void testPunctuationSuggestions() {
-        testingStandardPunctuationSuggestions(ENGLISH);
-        testingStandardPunctuationSuggestions(FRENCH);
-        testingStandardPunctuationSuggestions(GERMAN);
-        // TODO: Should fix these RTL languages
-        testingStandardPunctuationSuggestions(ARABIC);
-        testingStandardPunctuationSuggestions(PERSIAN);
-        testingStandardPunctuationSuggestions(HEBREW);
+        testingStandardPunctuationSuggestions(ENGLISH, PUNCTUATION_WORDS_LTR);
+        testingStandardPunctuationSuggestions(FRENCH, PUNCTUATION_WORDS_LTR);
+        testingStandardPunctuationSuggestions(GERMAN, PUNCTUATION_WORDS_LTR);
+        testingStandardPunctuationSuggestions(ARABIC, PUNCTUATION_WORDS_RTL);
+        testingStandardPunctuationSuggestions(PERSIAN, PUNCTUATION_WORDS_RTL);
+        testingStandardPunctuationSuggestions(HEBREW, PUNCTUATION_WORDS_RTL);
     }
 }

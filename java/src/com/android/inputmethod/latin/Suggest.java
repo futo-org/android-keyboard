@@ -227,7 +227,6 @@ public final class Suggest {
                 // rename the attribute or change the value.
                 !allowsToBeAutoCorrected /* typedWordValid */,
                 hasAutoCorrection, /* willAutoCorrect */
-                false /* isPunctuationSuggestions */,
                 false /* isObsoleteSuggestions */,
                 !wordComposer.isComposingWord() /* isPrediction */, sequenceNumber));
     }
@@ -289,7 +288,6 @@ public final class Suggest {
         callback.onGetSuggestedWords(new SuggestedWords(suggestionsContainer, rawSuggestions,
                 true /* typedWordValid */,
                 false /* willAutoCorrect */,
-                false /* isPunctuationSuggestions */,
                 false /* isObsoleteSuggestions */,
                 false /* isPrediction */, sequenceNumber));
     }

@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 
-public final class SuggestedWords {
+public class SuggestedWords {
     public static final int INDEX_OF_TYPED_WORD = 0;
     public static final int INDEX_OF_AUTO_CORRECTION = 1;
     public static final int NOT_A_SEQUENCE_NUMBER = -1;
@@ -37,7 +37,7 @@ public final class SuggestedWords {
     private static final ArrayList<SuggestedWordInfo> EMPTY_WORD_INFO_LIST =
             CollectionUtils.newArrayList(0);
     public static final SuggestedWords EMPTY = new SuggestedWords(
-            EMPTY_WORD_INFO_LIST, null /* rawSuggestions */, false, false, false, false, false);
+            EMPTY_WORD_INFO_LIST, null /* rawSuggestions */, false, false, false, false);
 
     public final String mTypedWord;
     public final boolean mTypedWordValid;
@@ -45,38 +45,34 @@ public final class SuggestedWords {
     // of what this flag means would be "the top suggestion is strong enough to auto-correct",
     // whether this exactly matches the user entry or not.
     public final boolean mWillAutoCorrect;
-    public final boolean mIsPunctuationSuggestions;
     public final boolean mIsObsoleteSuggestions;
     public final boolean mIsPrediction;
     public final int mSequenceNumber; // Sequence number for auto-commit.
-    private final ArrayList<SuggestedWordInfo> mSuggestedWordInfoList;
+    protected final ArrayList<SuggestedWordInfo> mSuggestedWordInfoList;
     public final ArrayList<SuggestedWordInfo> mRawSuggestions;
 
     public SuggestedWords(final ArrayList<SuggestedWordInfo> suggestedWordInfoList,
             final ArrayList<SuggestedWordInfo> rawSuggestions,
             final boolean typedWordValid,
             final boolean willAutoCorrect,
-            final boolean isPunctuationSuggestions,
             final boolean isObsoleteSuggestions,
             final boolean isPrediction) {
         this(suggestedWordInfoList, rawSuggestions, typedWordValid, willAutoCorrect,
-                isPunctuationSuggestions, isObsoleteSuggestions, isPrediction,
-                NOT_A_SEQUENCE_NUMBER);
+                isObsoleteSuggestions, isPrediction, NOT_A_SEQUENCE_NUMBER);
     }
 
     public SuggestedWords(final ArrayList<SuggestedWordInfo> suggestedWordInfoList,
             final ArrayList<SuggestedWordInfo> rawSuggestions,
             final boolean typedWordValid,
             final boolean willAutoCorrect,
-            final boolean isPunctuationSuggestions,
             final boolean isObsoleteSuggestions,
             final boolean isPrediction,
             final int sequenceNumber) {
         this(suggestedWordInfoList, rawSuggestions,
                 suggestedWordInfoList.isEmpty() ? null
                         : suggestedWordInfoList.get(INDEX_OF_TYPED_WORD).mWord,
-                typedWordValid, willAutoCorrect, isPunctuationSuggestions,
-                isObsoleteSuggestions, isPrediction, sequenceNumber);
+                typedWordValid, willAutoCorrect, isObsoleteSuggestions, isPrediction,
+                sequenceNumber);
     }
 
     public SuggestedWords(final ArrayList<SuggestedWordInfo> suggestedWordInfoList,
@@ -84,7 +80,6 @@ public final class SuggestedWords {
             final String typedWord,
             final boolean typedWordValid,
             final boolean willAutoCorrect,
-            final boolean isPunctuationSuggestions,
             final boolean isObsoleteSuggestions,
             final boolean isPrediction,
             final int sequenceNumber) {
@@ -92,7 +87,6 @@ public final class SuggestedWords {
         mRawSuggestions = rawSuggestions;
         mTypedWordValid = typedWordValid;
         mWillAutoCorrect = willAutoCorrect;
-        mIsPunctuationSuggestions = isPunctuationSuggestions;
         mIsObsoleteSuggestions = isObsoleteSuggestions;
         mIsPrediction = isPrediction;
         mSequenceNumber = sequenceNumber;
@@ -107,10 +101,32 @@ public final class SuggestedWords {
         return mSuggestedWordInfoList.size();
     }
 
+    /**
+     * Get suggested word at <code>index</code>.
+     * @param index The index of the suggested word.
+     * @return The suggested word.
+     */
     public String getWord(final int index) {
         return mSuggestedWordInfoList.get(index).mWord;
     }
 
+    /**
+     * Get displayed text at <code>index</code>.
+     * In RTL languages, the displayed text on the suggestion strip may be different from the
+     * suggested word that is returned from {@link #getWord(int)}. For example the displayed text
+     * of punctuation suggestion "(" should be ")".
+     * @param index The index of the text to display.
+     * @return The text to be displayed.
+     */
+    public String getLabel(final int index) {
+        return mSuggestedWordInfoList.get(index).mWord;
+    }
+
+    /**
+     * Get {@link SuggestedWordInfo} object at <code>index</code>.
+     * @param index The index of the {@link SuggestedWordInfo}.
+     * @return The {@link SuggestedWordInfo} object.
+     */
     public SuggestedWordInfo getInfo(final int index) {
         return mSuggestedWordInfoList.get(index);
     }
@@ -130,13 +146,20 @@ public final class SuggestedWords {
         return debugString;
     }
 
+    /**
+     * The predicator to tell whether this object represents punctuation suggestions.
+     * @return false if this object desn't represent punctuation suggestions.
+     */
+    public boolean isPunctuationSuggestions() {
+        return false;
+    }
+
     @Override
     public String toString() {
         // Pretty-print method to help debug
         return "SuggestedWords:"
                 + " mTypedWordValid=" + mTypedWordValid
                 + " mWillAutoCorrect=" + mWillAutoCorrect
-                + " mIsPunctuationSuggestions=" + mIsPunctuationSuggestions
                 + " words=" + Arrays.toString(mSuggestedWordInfoList.toArray());
     }
 
@@ -313,8 +336,8 @@ public final class SuggestedWords {
         // We should never autocorrect, so we say the typed word is valid. Also, in this case,
         // no auto-correction should take place hence willAutoCorrect = false.
         return new SuggestedWords(newSuggestions, null /* rawSuggestions */, typedWord,
-                true /* typedWordValid */, false /* willAutoCorrect */, mIsPunctuationSuggestions,
-                mIsObsoleteSuggestions, mIsPrediction, NOT_A_SEQUENCE_NUMBER);
+                true /* typedWordValid */, false /* willAutoCorrect */, mIsObsoleteSuggestions,
+                mIsPrediction, NOT_A_SEQUENCE_NUMBER);
     }
 
     // Creates a new SuggestedWordInfo from the currently suggested words that removes all but the
@@ -333,7 +356,6 @@ public final class SuggestedWords {
                     SuggestedWordInfo.NOT_A_CONFIDENCE));
         }
         return new SuggestedWords(newSuggestions, null /* rawSuggestions */, mTypedWordValid,
-                mWillAutoCorrect, mIsPunctuationSuggestions, mIsObsoleteSuggestions,
-                mIsPrediction);
+                mWillAutoCorrect, mIsObsoleteSuggestions, mIsPrediction);
     }
 }

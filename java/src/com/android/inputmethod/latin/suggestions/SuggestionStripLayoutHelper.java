@@ -46,6 +46,7 @@ import android.widget.TextView;
 
 import com.android.inputmethod.compat.TextViewCompatUtils;
 import com.android.inputmethod.latin.LatinImeLogger;
+import com.android.inputmethod.latin.PunctuationSuggestions;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.utils.AutoCorrectionUtils;
@@ -199,7 +200,7 @@ final class SuggestionStripLayoutHelper {
         if (indexInSuggestedWords >= suggestedWords.size()) {
             return null;
         }
-        final String word = suggestedWords.getWord(indexInSuggestedWords);
+        final String word = suggestedWords.getLabel(indexInSuggestedWords);
         final boolean isAutoCorrect = indexInSuggestedWords == 1
                 && suggestedWords.mWillAutoCorrect;
         final boolean isTypedWordValid = indexInSuggestedWords == 0
@@ -264,8 +265,8 @@ final class SuggestionStripLayoutHelper {
             // is in slot 1.
             if (positionInStrip == mCenterPositionInStrip
                     && AutoCorrectionUtils.shouldBlockAutoCorrectionBySafetyNet(
-                            suggestedWords.getWord(SuggestedWords.INDEX_OF_AUTO_CORRECTION),
-                            suggestedWords.getWord(SuggestedWords.INDEX_OF_TYPED_WORD))) {
+                            suggestedWords.getLabel(SuggestedWords.INDEX_OF_AUTO_CORRECTION),
+                            suggestedWords.getLabel(SuggestedWords.INDEX_OF_TYPED_WORD))) {
                 return 0xFFFF0000;
             }
         }
@@ -299,9 +300,9 @@ final class SuggestionStripLayoutHelper {
      */
     public int layoutAndReturnSuggestionCountInStrip(final SuggestedWords suggestedWords,
             final ViewGroup stripView, final ViewGroup placerView) {
-        if (suggestedWords.mIsPunctuationSuggestions) {
+        if (suggestedWords.isPunctuationSuggestions()) {
             return layoutPunctuationSuggestionsAndReturnSuggestionCountInStrip(
-                    suggestedWords, stripView);
+                    (PunctuationSuggestions)suggestedWords, stripView);
         }
 
         setupWordViewsTextAndColor(suggestedWords, mSuggestionsCountInStrip);
@@ -447,8 +448,8 @@ final class SuggestionStripLayoutHelper {
     }
 
     private int layoutPunctuationSuggestionsAndReturnSuggestionCountInStrip(
-            final SuggestedWords suggestedWords, final ViewGroup stripView) {
-        final int countInStrip = Math.min(suggestedWords.size(), PUNCTUATIONS_IN_STRIP);
+            final PunctuationSuggestions punctuationSuggestions, final ViewGroup stripView) {
+        final int countInStrip = Math.min(punctuationSuggestions.size(), PUNCTUATIONS_IN_STRIP);
         for (int positionInStrip = 0; positionInStrip < countInStrip; positionInStrip++) {
             if (positionInStrip != 0) {
                 // Add divider if this isn't the left most suggestion in suggestions strip.
@@ -461,13 +462,13 @@ final class SuggestionStripLayoutHelper {
             // {@link TextView#getTag()} is used to get the index in suggestedWords at
             // {@link SuggestionStripView#onClick(View)}.
             wordView.setTag(positionInStrip);
-            wordView.setText(suggestedWords.getWord(positionInStrip));
+            wordView.setText(punctuationSuggestions.getLabel(positionInStrip));
             wordView.setTextScaleX(1.0f);
             wordView.setCompoundDrawables(null, null, null, null);
             stripView.addView(wordView);
             setLayoutWeight(wordView, 1.0f, mSuggestionsStripHeight);
         }
-        mMoreSuggestionsAvailable = (suggestedWords.size() > countInStrip);
+        mMoreSuggestionsAvailable = (punctuationSuggestions.size() > countInStrip);
         return countInStrip;
     }
 

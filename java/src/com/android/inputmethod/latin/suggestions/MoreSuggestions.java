@@ -74,7 +74,7 @@ public final class MoreSuggestions extends Keyboard {
             int rowStartIndex = fromIndex;
             final int size = Math.min(suggestedWords.size(), SuggestedWords.MAX_SUGGESTIONS);
             while (index < size) {
-                final String word = suggestedWords.getWord(index);
+                final String word = suggestedWords.getLabel(index);
                 // TODO: Should take care of text x-scaling.
                 mWidths[index] = (int)(TypefaceUtils.getStringWidth(word, paint) + padding);
                 final int numColumn = index - rowStartIndex + 1;
@@ -206,7 +206,7 @@ public final class MoreSuggestions extends Keyboard {
                 final int x = params.getX(index);
                 final int y = params.getY(index);
                 final int width = params.getWidth(index);
-                final String word = mSuggestedWords.getWord(index);
+                final String word = mSuggestedWords.getLabel(index);
                 final String info = mSuggestedWords.getDebugString(index);
                 final int indexInMoreSuggestions = index + SUGGESTION_CODE_BASE;
                 final Key key = new Key(word, KeyboardIconsSet.ICON_UNDEFINED,

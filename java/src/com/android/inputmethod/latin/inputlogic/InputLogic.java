@@ -1341,8 +1341,8 @@ public final class InputLogic {
             final SuggestedWords suggestedWords = new SuggestedWords(suggestions,
                     null /* rawSuggestions */, typedWord,
                     true /* typedWordValid */, false /* willAutoCorrect */,
-                    false /* isPunctuationSuggestions */, false /* isObsoleteSuggestions */,
-                    false /* isPrediction */, SuggestedWords.NOT_A_SEQUENCE_NUMBER);
+                    false /* isObsoleteSuggestions */, false /* isPrediction */,
+                    SuggestedWords.NOT_A_SEQUENCE_NUMBER);
             mIsAutoCorrectionIndicatorOn = false;
             mLatinIME.mHandler.showSuggestionStrip(suggestedWords);
         }
