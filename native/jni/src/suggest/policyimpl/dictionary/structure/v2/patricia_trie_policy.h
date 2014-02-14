@@ -128,10 +128,7 @@ class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     }
 
     const WordProperty getWordProperty(const int *const codePoints,
-            const int codePointCount) const {
-        // getWordProperty is not supported.
-        return WordProperty();
-    }
+            const int codePointCount) const;
 
     int getNextWordAndNextToken(const int token, int *const outCodePoints) {
         // getNextWordAndNextToken is not supported.

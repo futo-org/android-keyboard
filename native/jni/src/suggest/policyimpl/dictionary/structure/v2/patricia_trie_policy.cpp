@@ -20,6 +20,7 @@
 #include "defines.h"
 #include "suggest/core/dicnode/dic_node.h"
 #include "suggest/core/dicnode/dic_node_vector.h"
+#include "suggest/core/dictionary/binary_dictionary_bigrams_iterator.h"
 #include "suggest/policyimpl/dictionary/structure/pt_common/dynamic_pt_reading_helper.h"
 #include "suggest/policyimpl/dictionary/structure/v2/patricia_trie_reading_utils.h"
 #include "suggest/policyimpl/dictionary/utils/probability_utils.h"
@@ -301,6 +302,65 @@ int PatriciaTriePolicy::createAndGetLeavingChildNode(const DicNode *const dicNod
                     || PatriciaTrieReadingUtils::isNotAWord(flags),
             mergedNodeCodePointCount, mergedNodeCodePoints);
     return siblingPos;
+}
+
+const WordProperty PatriciaTriePolicy::getWordProperty(const int *const codePoints,
+        const int codePointCount) const {
+    const int ptNodePos = getTerminalPtNodePositionOfWord(codePoints, codePointCount,
+            false /* forceLowerCaseSearch */);
+    if (ptNodePos == NOT_A_DICT_POS) {
+        AKLOGE("getWordProperty was called for invalid word.");
+        return WordProperty();
+    }
+    const PtNodeParams ptNodeParams = mPtNodeReader.fetchNodeInfoInBufferFromPtNodePos(ptNodePos);
+    std::vector<int> codePointVector(ptNodeParams.getCodePoints(),
+            ptNodeParams.getCodePoints() + ptNodeParams.getCodePointCount());
+    // Fetch bigram information.
+    std::vector<WordProperty::BigramProperty> bigrams;
+    const int bigramListPos = getBigramsPositionOfPtNode(ptNodePos);
+    int bigramWord1CodePoints[MAX_WORD_LENGTH];
+    BinaryDictionaryBigramsIterator bigramsIt(getBigramsStructurePolicy(), bigramListPos);
+    while (bigramsIt.hasNext()) {
+        // Fetch the next bigram information and forward the iterator.
+        bigramsIt.next();
+        // Skip the entry if the entry has been deleted. This never happens for ver2 dicts.
+        if (bigramsIt.getBigramPos() != NOT_A_DICT_POS) {
+            int word1Probability = NOT_A_PROBABILITY;
+            int word1CodePointCount = getCodePointsAndProbabilityAndReturnCodePointCount(
+                    bigramsIt.getBigramPos(), MAX_WORD_LENGTH, bigramWord1CodePoints,
+                    &word1Probability);
+            std::vector<int> word1(bigramWord1CodePoints,
+                    bigramWord1CodePoints + word1CodePointCount);
+            bigrams.push_back(WordProperty::BigramProperty(&word1, bigramsIt.getProbability(),
+                    NOT_A_TIMESTAMP /* timestamp */, 0 /* level */, 0 /* count */));
+        }
+    }
+    // Fetch shortcut information.
+    std::vector<WordProperty::ShortcutProperty> shortcuts;
+    int shortcutPos = getShortcutPositionOfPtNode(ptNodePos);
+    if (shortcutPos != NOT_A_DICT_POS) {
+        int shortcutTargetCodePoints[MAX_WORD_LENGTH];
+        ShortcutListReadingUtils::getShortcutListSizeAndForwardPointer(mDictRoot, &shortcutPos);
+        bool hasNext = true;
+        while (hasNext) {
+            const ShortcutListReadingUtils::ShortcutFlags shortcutFlags =
+                    ShortcutListReadingUtils::getFlagsAndForwardPointer(mDictRoot, &shortcutPos);
+            hasNext = ShortcutListReadingUtils::hasNext(shortcutFlags);
+            const int shortcutTargetLength = ShortcutListReadingUtils::readShortcutTarget(
+                    mDictRoot, MAX_WORD_LENGTH, shortcutTargetCodePoints, &shortcutPos);
+            std::vector<int> shortcutTarget(shortcutTargetCodePoints,
+                    shortcutTargetCodePoints + shortcutTargetLength);
+            const int shortcutProbability =
+                    ShortcutListReadingUtils::getProbabilityFromFlags(shortcutFlags);
+            shortcuts.push_back(
+                    WordProperty::ShortcutProperty(&shortcutTarget, shortcutProbability));
+        }
+    }
+    return WordProperty(&codePointVector, ptNodeParams.isNotAWord(),
+            ptNodeParams.isBlacklisted(), ptNodeParams.hasBigrams(),
+            ptNodeParams.hasShortcutTargets(), ptNodeParams.getProbability(),
+            NOT_A_TIMESTAMP /* timestamp */, 0 /* level */, 0 /* count */,
+            &bigrams, &shortcuts);
 }
 
 } // namespace latinime

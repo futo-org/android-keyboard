@@ -39,6 +39,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
@@ -594,6 +595,41 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
 
         for (final String result : results) {
             Log.d(TAG, result);
+        }
+    }
+
+    public void testVer2DictGetWordProperty() {
+        final FormatOptions formatOptions = BinaryDictUtils.VERSION2_OPTIONS;
+        final ArrayList<String> words = sWords;
+        final HashMap<String, List<String>> shortcuts = sShortcuts;
+        final String dictName = "testGetWordProperty";
+        final String dictVersion = Long.toString(System.currentTimeMillis());
+        final FusionDictionary dict = new FusionDictionary(new PtNodeArray(),
+                BinaryDictUtils.makeDictionaryOptions(dictName, dictVersion, formatOptions));
+        addUnigrams(words.size(), dict, words, shortcuts);
+        addBigrams(dict, words, sEmptyBigrams);
+        final File file = BinaryDictUtils.getDictFile(dictName, dictVersion, formatOptions,
+                getContext().getCacheDir());
+        file.delete();
+        timeWritingDictToFile(file, dict, formatOptions);
+        final BinaryDictionary binaryDictionary = new BinaryDictionary(file.getAbsolutePath(),
+                0 /* offset */, file.length(), true /* useFullEditDistance */,
+                Locale.ENGLISH, dictName, false /* isUpdatable */);
+        for (final String word : words) {
+            final WordProperty wordProperty = binaryDictionary.getWordProperty(word);
+            assertEquals(word, wordProperty.mWord);
+            assertEquals(UNIGRAM_FREQ, wordProperty.getProbability());
+            if (shortcuts.containsKey(word)) {
+                assertEquals(shortcuts.get(word).size(), wordProperty.mShortcutTargets.size());
+                final List<String> shortcutList = shortcuts.get(word);
+                assertTrue(wordProperty.mHasShortcuts);
+                for (final WeightedString shortcutTarget : wordProperty.mShortcutTargets) {
+                    assertTrue(shortcutList.contains(shortcutTarget.mWord));
+                    assertEquals(UNIGRAM_FREQ, shortcutTarget.getProbability());
+                    shortcutList.remove(shortcutTarget.mWord);
+                }
+                assertTrue(shortcutList.isEmpty());
+            }
         }
     }
 }
