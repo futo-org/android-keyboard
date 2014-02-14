@@ -373,37 +373,53 @@ public class SpacingAndPunctuationsTests extends AndroidTestCase {
         assertTrue(SWISS_GERMAN.mUsesGermanRules);
     }
 
-    private static final String[] PUNCTUATION_LABELS = {
+    private static final String[] PUNCTUATION_LABELS_LTR = {
         "!", "?", ",", ":", ";", "\"", "(", ")", "'", "-", "/", "@", "_"
     };
-    private static final String[] PUNCTUATION_WORDS_LTR = PUNCTUATION_LABELS;
-    private static final String[] PUNCTUATION_WORDS_RTL = {
+    private static final String[] PUNCTUATION_WORDS_LTR = PUNCTUATION_LABELS_LTR;
+    private static final String[] PUNCTUATION_WORDS_HEBREW = {
         "!", "?", ",", ":", ";", "\"", ")", "(", "'", "-", "/", "@", "_"
+    };
+    // U+061F: "؟" ARABIC QUESTION MARK
+    // U+060C: "،" ARABIC COMMA
+    // U+061B: "؛" ARABIC SEMICOLON
+    private static final String[] PUNCTUATION_LABELS_ARABIC_PERSIAN = {
+        "!", "\u061F", "\u060C", ":", "\u061B", "\"", "(", ")", "'", "-", "/", "@", "_"
+    };
+    private static final String[] PUNCTUATION_WORDS_ARABIC_PERSIAN = {
+        "!", "\u061F", "\u060C", ":", "\u061B", "\"", ")", "(", "'", "-", "/", "@", "_"
     };
 
     private static void testingStandardPunctuationSuggestions(final SpacingAndPunctuations sp,
-            final String[] punctuationWords) {
+            final String[] punctuationLabels, final String[] punctuationWords) {
         final SuggestedWords suggestedWords = sp.mSuggestPuncList;
         assertFalse("typedWordValid", suggestedWords.mTypedWordValid);
         assertFalse("willAutoCorrect", suggestedWords.mWillAutoCorrect);
         assertTrue("isPunctuationSuggestions", suggestedWords.isPunctuationSuggestions());
         assertFalse("isObsoleteSuggestions", suggestedWords.mIsObsoleteSuggestions);
         assertFalse("isPrediction", suggestedWords.mIsPrediction);
-        assertEquals("size", PUNCTUATION_LABELS.length, suggestedWords.size());
+        assertEquals("size", punctuationLabels.length, suggestedWords.size());
         for (int index = 0; index < suggestedWords.size(); index++) {
             assertEquals("punctuation label at " + index,
-                    PUNCTUATION_LABELS[index], suggestedWords.getLabel(index));
+                    punctuationLabels[index], suggestedWords.getLabel(index));
             assertEquals("punctuation word at " + index,
                     punctuationWords[index], suggestedWords.getWord(index));
         }
     }
 
+    // TODO: Add tests for tablet as well
     public void testPunctuationSuggestions() {
-        testingStandardPunctuationSuggestions(ENGLISH, PUNCTUATION_WORDS_LTR);
-        testingStandardPunctuationSuggestions(FRENCH, PUNCTUATION_WORDS_LTR);
-        testingStandardPunctuationSuggestions(GERMAN, PUNCTUATION_WORDS_LTR);
-        testingStandardPunctuationSuggestions(ARABIC, PUNCTUATION_WORDS_RTL);
-        testingStandardPunctuationSuggestions(PERSIAN, PUNCTUATION_WORDS_RTL);
-        testingStandardPunctuationSuggestions(HEBREW, PUNCTUATION_WORDS_RTL);
+        testingStandardPunctuationSuggestions(ENGLISH,
+                PUNCTUATION_LABELS_LTR, PUNCTUATION_WORDS_LTR);
+        testingStandardPunctuationSuggestions(FRENCH,
+                PUNCTUATION_LABELS_LTR, PUNCTUATION_WORDS_LTR);
+        testingStandardPunctuationSuggestions(GERMAN,
+                PUNCTUATION_LABELS_LTR, PUNCTUATION_WORDS_LTR);
+        testingStandardPunctuationSuggestions(ARABIC,
+                PUNCTUATION_LABELS_ARABIC_PERSIAN, PUNCTUATION_WORDS_ARABIC_PERSIAN);
+        testingStandardPunctuationSuggestions(PERSIAN,
+                PUNCTUATION_LABELS_ARABIC_PERSIAN, PUNCTUATION_WORDS_ARABIC_PERSIAN);
+        testingStandardPunctuationSuggestions(HEBREW,
+                PUNCTUATION_LABELS_LTR, PUNCTUATION_WORDS_HEBREW);
     }
 }
