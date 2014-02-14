@@ -211,31 +211,30 @@ public final class KeyboardTextsTable {
         /* 144: 0 */ "action_previous_as_more_key",
         /* 145: 0 */ "label_to_more_symbol_key",
         /* 146: 0 */ "label_to_more_symbol_for_tablet_key",
-        /* 147: 0 */ "label_tab_key",
-        /* 148: 0 */ "label_to_phone_numeric_key",
-        /* 149: 0 */ "label_to_phone_symbols_key",
-        /* 150: 0 */ "label_time_am",
-        /* 151: 0 */ "label_time_pm",
-        /* 152: 0 */ "keylabel_for_popular_domain",
-        /* 153: 0 */ "more_keys_for_popular_domain",
-        /* 154: 0 */ "keyspecs_for_left_parenthesis_more_keys",
-        /* 155: 0 */ "keyspecs_for_right_parenthesis_more_keys",
-        /* 156: 0 */ "single_laqm_raqm",
-        /* 157: 0 */ "single_raqm_laqm",
-        /* 158: 0 */ "double_laqm_raqm",
-        /* 159: 0 */ "double_raqm_laqm",
-        /* 160: 0 */ "single_lqm_rqm",
-        /* 161: 0 */ "single_9qm_lqm",
-        /* 162: 0 */ "single_9qm_rqm",
-        /* 163: 0 */ "single_rqm_9qm",
-        /* 164: 0 */ "double_lqm_rqm",
-        /* 165: 0 */ "double_9qm_lqm",
-        /* 166: 0 */ "double_9qm_rqm",
-        /* 167: 0 */ "double_rqm_9qm",
-        /* 168: 0 */ "more_keys_for_single_quote",
-        /* 169: 0 */ "more_keys_for_double_quote",
-        /* 170: 0 */ "more_keys_for_tablet_double_quote",
-        /* 171: 0 */ "emoji_key_as_more_key",
+        /* 147: 0 */ "label_to_phone_numeric_key",
+        /* 148: 0 */ "label_to_phone_symbols_key",
+        /* 149: 0 */ "label_time_am",
+        /* 150: 0 */ "label_time_pm",
+        /* 151: 0 */ "keylabel_for_popular_domain",
+        /* 152: 0 */ "more_keys_for_popular_domain",
+        /* 153: 0 */ "keyspecs_for_left_parenthesis_more_keys",
+        /* 154: 0 */ "keyspecs_for_right_parenthesis_more_keys",
+        /* 155: 0 */ "single_laqm_raqm",
+        /* 156: 0 */ "single_raqm_laqm",
+        /* 157: 0 */ "double_laqm_raqm",
+        /* 158: 0 */ "double_raqm_laqm",
+        /* 159: 0 */ "single_lqm_rqm",
+        /* 160: 0 */ "single_9qm_lqm",
+        /* 161: 0 */ "single_9qm_rqm",
+        /* 162: 0 */ "single_rqm_9qm",
+        /* 163: 0 */ "double_lqm_rqm",
+        /* 164: 0 */ "double_9qm_lqm",
+        /* 165: 0 */ "double_9qm_rqm",
+        /* 166: 0 */ "double_rqm_9qm",
+        /* 167: 0 */ "more_keys_for_single_quote",
+        /* 168: 0 */ "more_keys_for_double_quote",
+        /* 169: 0 */ "more_keys_for_tablet_double_quote",
+        /* 170: 0 */ "emoji_key_as_more_key",
     };
 
     private static final String EMPTY = "";
@@ -399,8 +398,6 @@ public final class KeyboardTextsTable {
         /* label_to_more_symbol_key */ "= \\\\ <",
         // Label for "switch to more symbol" modifier key on tablets.  Must be short to fit on key!
         /* label_to_more_symbol_for_tablet_key */ "~ [ <",
-        // Label for "Tab" key.  Must be short to fit on key!
-        /* label_tab_key */ "Tab",
         // Label for "switch to phone numeric" key.  Must be short to fit on key!
         /* label_to_phone_numeric_key */ "123",
         // Label for "switch to phone symbols" key.  Must be short to fit on key!
@@ -3572,7 +3569,7 @@ public final class KeyboardTextsTable {
     // Currently we are dropping the region from the key.
     private static final Object[] LANGUAGES_AND_TEXTS = {
     // "locale", TEXT_ARRAY,  /* numberOfNonNullText/lengthOf_TEXT_ARRAY localeName */
-        "DEFAULT", LANGUAGE_DEFAULT, /* 172/172 default */
+        "DEFAULT", LANGUAGE_DEFAULT, /* 171/171 default */
         "af", LANGUAGE_af,    /*   8/ 12 Afrikaans */
         "ar", LANGUAGE_ar,    /*  58/110 Arabic */
         "az", LANGUAGE_az_AZ, /*   8/ 17 Azerbaijani (Azerbaijan) */
