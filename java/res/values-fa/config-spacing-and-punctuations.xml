@@ -21,6 +21,8 @@
     <!-- The all letters need to be mirrored are found at
          http://www.unicode.org/Public/6.1.0/ucd/BidiMirroring.txt -->
     <!-- Symbols that are suggested between words -->
-    <!-- TODO: Use !text resources to merge LTR and RTL punctuations. -->
-    <string name="suggested_punctuations" translatable="false">!,?,\\,,:,;,\",(|),)|(,\',-,/,@,_</string>
+    <!-- U+061F: "؟" ARABIC QUESTION MARK
+         U+060C: "،" ARABIC COMMA
+         U+061B: "؛" ARABIC SEMICOLON -->
+    <string name="suggested_punctuations" translatable="false">!,&#x061F;,&#x060C;,:,&#x061B;,\",(|),)|(,\',-,/,@,_</string>
 </resources>
