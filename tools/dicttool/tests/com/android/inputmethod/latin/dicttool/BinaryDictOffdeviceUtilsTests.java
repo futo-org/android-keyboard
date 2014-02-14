@@ -78,9 +78,8 @@ public class BinaryDictOffdeviceUtilsTests extends TestCase {
         }
         assertEquals("Wrong decode spec", 3, decodeSpec.mDecoderSpec.size());
         final DictDecoder dictDecoder = FormatSpec.getDictDecoder(decodeSpec.mFile);
-        final FusionDictionary resultDict = dictDecoder.readDictionaryBinary(
-                null /* dict : an optional dictionary to add words to, or null */,
-                false /* deleteDictIfBroken */);
+        final FusionDictionary resultDict =
+                dictDecoder.readDictionaryBinary(false /* deleteDictIfBroken */);
         assertEquals("Wrong version attribute", VERSION, resultDict.mOptions.mAttributes.get(
                 DictionaryHeader.DICTIONARY_VERSION_KEY));
         assertEquals("Wrong locale attribute", LOCALE, resultDict.mOptions.mAttributes.get(
