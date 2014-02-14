@@ -500,16 +500,14 @@ public final class BinaryDictDecoderUtils {
      * Reads a buffer and returns the memory representation of the dictionary.
      *
      * This high-level method takes a buffer and reads its contents, populating a
-     * FusionDictionary structure. The optional dict argument is an existing dictionary to
-     * which words from the buffer should be added. If it is null, a new dictionary is created.
+     * FusionDictionary structure.
      *
      * @param dictDecoder the dict decoder.
-     * @param dict an optional dictionary to add words to, or null.
-     * @return the created (or merged) dictionary.
+     * @return the created dictionary.
      */
     @UsedForTesting
-    /* package */ static FusionDictionary readDictionaryBinary(final DictDecoder dictDecoder,
-            final FusionDictionary dict) throws IOException, UnsupportedFormatException {
+    /* package */ static FusionDictionary readDictionaryBinary(final DictDecoder dictDecoder)
+            throws IOException, UnsupportedFormatException {
         // Read header
         final DictionaryHeader fileHeader = dictDecoder.readHeader();
 
@@ -517,29 +515,7 @@ public final class BinaryDictDecoderUtils {
         Map<Integer, PtNode> reversePtNodeMapping = new TreeMap<Integer, PtNode>();
         final PtNodeArray root = readNodeArray(dictDecoder, fileHeader.mBodyOffset,
                 reverseNodeArrayMapping, reversePtNodeMapping, fileHeader.mFormatOptions);
-
-        FusionDictionary newDict = new FusionDictionary(root, fileHeader.mDictionaryOptions);
-        if (null != dict) {
-            for (final WordProperty wordProperty : dict) {
-                if (wordProperty.mIsBlacklistEntry) {
-                    newDict.addBlacklistEntry(wordProperty.mWord, wordProperty.mShortcutTargets,
-                            wordProperty.mIsNotAWord);
-                } else {
-                    newDict.add(wordProperty.mWord, wordProperty.mProbabilityInfo,
-                            wordProperty.mShortcutTargets, wordProperty.mIsNotAWord);
-                }
-            }
-            for (final WordProperty wordProperty : dict) {
-                // By construction a binary dictionary may not have bigrams pointing to
-                // words that are not also registered as unigrams so we don't have to avoid
-                // them explicitly here.
-                for (final WeightedString bigram : wordProperty.mBigrams) {
-                    newDict.setBigram(wordProperty.mWord, bigram.mWord, bigram.mProbabilityInfo);
-                }
-            }
-        }
-
-        return newDict;
+        return new FusionDictionary(root, fileHeader.mDictionaryOptions);
     }
 
     /**

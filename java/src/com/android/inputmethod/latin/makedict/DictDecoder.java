@@ -54,18 +54,15 @@ public interface DictDecoder {
      * Reads a buffer and returns the memory representation of the dictionary.
      *
      * This high-level method takes a buffer and reads its contents, populating a
-     * FusionDictionary structure. The optional dict argument is an existing dictionary to
-     * which words from the buffer should be added. If it is null, a new dictionary is created.
+     * FusionDictionary structure.
      *
-     * @param dict an optional dictionary to add words to, or null.
      * @param deleteDictIfBroken a flag indicating whether this method should remove the broken
      * dictionary or not.
-     * @return the created (or merged) dictionary.
+     * @return the created dictionary.
      */
     @UsedForTesting
-    public FusionDictionary readDictionaryBinary(final FusionDictionary dict,
-            final boolean deleteDictIfBroken)
-                    throws FileNotFoundException, IOException, UnsupportedFormatException;
+    public FusionDictionary readDictionaryBinary(final boolean deleteDictIfBroken)
+            throws FileNotFoundException, IOException, UnsupportedFormatException;
 
     /**
      * Gets the address of the last PtNode of the exact matching word in the dictionary.

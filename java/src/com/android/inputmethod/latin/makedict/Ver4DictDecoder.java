@@ -56,11 +56,10 @@ public class Ver4DictDecoder extends AbstractDictDecoder {
     }
 
     @Override
-    public FusionDictionary readDictionaryBinary(final FusionDictionary dict,
-            final boolean deleteDictIfBroken)
+    public FusionDictionary readDictionaryBinary(final boolean deleteDictIfBroken)
             throws FileNotFoundException, IOException, UnsupportedFormatException {
         final DictionaryHeader header = readHeader();
-        final FusionDictionary fusionDict = dict != null ? dict :
+        final FusionDictionary fusionDict =
                 new FusionDictionary(new FusionDictionary.PtNodeArray(), header.mDictionaryOptions);
         int token = 0;
         final ArrayList<WordProperty> wordProperties = CollectionUtils.newArrayList();
