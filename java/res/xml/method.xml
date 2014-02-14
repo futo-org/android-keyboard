@@ -55,7 +55,7 @@
     it: Italian/qwerty
     iw: Hebrew/hebrew        # "he" is official language code of Hebrew.
     ka_GE: Georgian (Georgia)/georgian
-    (kk: Kazakh/east_slavic) # disabled temporarily. waiting for string resources.
+    kk: Kazakh/east_slavic
     km_KH: Khmer (Cambodia)/khmer
     ky: Kyrgyz/east_slavic
     lo_LA: Lao (Laos)/lao
@@ -367,7 +367,6 @@
             android:imeSubtypeExtraValue="KeyboardLayoutSet=georgian,EmojiCapable"
             android:isAsciiCapable="false"
     />
-    <!--
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
             android:subtypeId="0x2d73d2f6"
@@ -376,7 +375,6 @@
             android:imeSubtypeExtraValue="KeyboardLayoutSet=east_slavic,EmojiCapable"
             android:isAsciiCapable="false"
     />
-    -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
             android:subtypeId="0x1365683a"
