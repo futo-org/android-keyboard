@@ -17,6 +17,7 @@
 #ifndef LATINIME_BLOOM_FILTER_H
 #define LATINIME_BLOOM_FILTER_H
 
+#include <cstring>
 #include <stdint.h>
 
 #include "defines.h"
@@ -35,6 +36,7 @@ class BloomFilter {
  public:
     BloomFilter() {
         ASSERT(BIGRAM_FILTER_BYTE_SIZE * 8 >= BIGRAM_FILTER_MODULO);
+        memset(mFilter, 0, sizeof(mFilter));
     }
 
     // TODO: uint32_t position
