@@ -152,8 +152,8 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
 
         final DictDecoder dictDecoder = FormatSpec.getDictDecoder(dictFile);
         try {
-            final FusionDictionary dict = dictDecoder.readDictionaryBinary(null,
-                    false /* deleteDictIfBroken */);
+            final FusionDictionary dict =
+                    dictDecoder.readDictionaryBinary(false /* deleteDictIfBroken */);
             PtNode ptNode = FusionDictionary.findWordInTree(dict.mRootNodeArray, "a");
             assertNotNull(ptNode);
             assertTrue(ptNode.isTerminal());

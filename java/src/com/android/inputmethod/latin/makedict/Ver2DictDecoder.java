@@ -236,14 +236,13 @@ public class Ver2DictDecoder extends AbstractDictDecoder {
     }
 
     @Override
-    public FusionDictionary readDictionaryBinary(final FusionDictionary dict,
-            final boolean deleteDictIfBroken)
+    public FusionDictionary readDictionaryBinary(final boolean deleteDictIfBroken)
             throws FileNotFoundException, IOException, UnsupportedFormatException {
         if (mDictBuffer == null) {
             openDictBuffer();
         }
         try {
-            return BinaryDictDecoderUtils.readDictionaryBinary(this, dict);
+            return BinaryDictDecoderUtils.readDictionaryBinary(this);
         } catch (IOException e) {
             Log.e(TAG, "The dictionary " + mDictionaryBinaryFile.getName() + " is broken.", e);
             if (deleteDictIfBroken && !mDictionaryBinaryFile.delete()) {
