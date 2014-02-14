@@ -724,7 +724,9 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
             // canceled.
             final EmojiPageKeyboardView currentKeyboardView =
                     mActiveKeyboardViews.get(mActivePosition);
-            currentKeyboardView.releaseCurrentKey();
+            if (currentKeyboardView != null) {
+                currentKeyboardView.releaseCurrentKey();
+            }
         }
 
         @Override
