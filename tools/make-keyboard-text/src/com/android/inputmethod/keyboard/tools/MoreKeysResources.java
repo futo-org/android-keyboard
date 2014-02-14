@@ -29,6 +29,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.jar.JarFile;
+import java.util.regex.Pattern;
 
 public class MoreKeysResources {
     private static final String TEXT_RESOURCE_NAME = "donottranslate-more-keys.xml";
@@ -287,23 +288,7 @@ public class MoreKeysResources {
                 sb.append(String.format("\\u%04X", (int)c));
             }
         }
-        return replaceIncompatibleEscape(sb.toString());
-    }
-
-    private static String replaceIncompatibleEscape(final String text) {
-        String t = text;
-        t = replaceAll(t, "\\?", "?");
-        t = replaceAll(t, "\\@", "@");
-        t = replaceAll(t, "@string/", "!text/");
-        return t;
-    }
-
-    private static String replaceAll(final String text, final String target, final String replace) {
-        String t = text;
-        while (t.indexOf(target) >= 0) {
-            t = t.replace(target, replace);
-        }
-        return t;
+        return sb.toString();
     }
 
     private static void close(final Closeable stream) {
