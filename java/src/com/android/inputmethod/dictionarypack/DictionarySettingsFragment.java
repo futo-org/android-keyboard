@@ -317,15 +317,19 @@ public final class DictionarySettingsFragment extends PreferenceFragment
                     final WordListPreference pref;
                     if (null != oldPreference
                             && oldPreference.mVersion == version
+                            && oldPreference.hasStatus(status)
                             && oldPreference.mLocale.equals(locale)) {
-                        // If the old preference has all the new attributes, reuse it. We test
-                        // for version and locale because although attributes other than status
-                        // need to be the same, others have been tested through the key of the
-                        // map. Also, status may differ so we don't want to use #equals() here.
+                        // If the old preference has all the new attributes, reuse it. Ideally, we
+                        // should reuse the old pref even if its status is different and call
+                        // setStatus here, but setStatus calls Preference#setSummary() which needs
+                        // to be done on the UI thread and we're not on the UI thread here. We
+                        // could do all this work on the UI thread, but in this case it's probably
+                        // lighter to stay on a background thread and throw this old preference out.
                         pref = oldPreference;
-                        pref.setStatus(status);
                     } else {
                         // Otherwise, discard it and create a new one instead.
+                        // TODO: when the status is different from the old one, we need to
+                        // animate the old one out before animating the new one in.
                         pref = new WordListPreference(activity, mDictionaryListInterfaceState,
                                 mClientId, wordlistId, version, locale, description, status,
                                 filesize);
