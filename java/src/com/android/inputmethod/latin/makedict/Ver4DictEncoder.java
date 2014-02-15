@@ -122,7 +122,6 @@ public class Ver4DictEncoder implements DictEncoder {
     }
 
     @Override
-    public void writePtNode(
-            PtNode ptNode, int parentPosition, FormatOptions formatOptions, FusionDictionary dict) {
+    public void writePtNode(PtNode ptNode, FusionDictionary dict) {
     }
 }

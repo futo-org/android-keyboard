@@ -309,7 +309,6 @@ public final class FormatSpec {
      */
     public static final class FormatOptions {
         public final int mVersion;
-        public final boolean mHasTerminalId;
         public final boolean mHasTimestamp;
 
         @UsedForTesting
@@ -319,12 +318,7 @@ public final class FormatSpec {
 
         public FormatOptions(final int version, final boolean hasTimestamp) {
             mVersion = version;
-            mHasTerminalId = (version >= FIRST_VERSION_WITH_TERMINAL_ID);
             mHasTimestamp = hasTimestamp;
-        }
-
-        public boolean supportsDynamicUpdate() {
-            return mVersion >= FIRST_VERSION_WITH_DYNAMIC_UPDATE;
         }
     }
 

@@ -122,18 +122,13 @@ public class BinaryDictEncoderUtils {
      * Compute the maximum size of a PtNode, assuming 3-byte addresses for everything.
      *
      * @param ptNode the PtNode to compute the size of.
-     * @param options file format options.
      * @return the maximum size of the PtNode.
      */
-    private static int getPtNodeMaximumSize(final PtNode ptNode, final FormatOptions options) {
-        int size = getNodeHeaderSize(ptNode, options);
+    private static int getPtNodeMaximumSize(final PtNode ptNode) {
+        int size = getNodeHeaderSize(ptNode);
         if (ptNode.isTerminal()) {
-            // If terminal, one byte for the frequency or four bytes for the terminal id.
-            if (options.mHasTerminalId) {
-                size += FormatSpec.PTNODE_TERMINAL_ID_SIZE;
-            } else {
-                size += FormatSpec.PTNODE_FREQUENCY_SIZE;
-            }
+            // If terminal, one byte for the frequency.
+            size += FormatSpec.PTNODE_FREQUENCY_SIZE;
         }
         size += FormatSpec.PTNODE_MAX_ADDRESS_SIZE; // For children address
         size += getShortcutListSize(ptNode.mShortcutTargets);
@@ -151,18 +146,13 @@ public class BinaryDictEncoderUtils {
      * the containing node array, and cache it it its 'mCachedSize' member.
      *
      * @param ptNodeArray the node array to compute the maximum size of.
-     * @param options file format options.
      */
-    private static void calculatePtNodeArrayMaximumSize(final PtNodeArray ptNodeArray,
-            final FormatOptions options) {
+    private static void calculatePtNodeArrayMaximumSize(final PtNodeArray ptNodeArray) {
         int size = getPtNodeCountSize(ptNodeArray);
         for (PtNode node : ptNodeArray.mData) {
-            final int nodeSize = getPtNodeMaximumSize(node, options);
+            final int nodeSize = getPtNodeMaximumSize(node);
             node.mCachedSize = nodeSize;
             size += nodeSize;
-        }
-        if (options.supportsDynamicUpdate()) {
-            size += FormatSpec.FORWARD_LINK_ADDRESS_SIZE;
         }
         ptNodeArray.mCachedSize = size;
     }
@@ -171,15 +161,9 @@ public class BinaryDictEncoderUtils {
      * Compute the size of the header (flag + [parent address] + characters size) of a PtNode.
      *
      * @param ptNode the PtNode of which to compute the size of the header
-     * @param options file format options.
      */
-    private static int getNodeHeaderSize(final PtNode ptNode, final FormatOptions options) {
-        if (BinaryDictIOUtils.supportsDynamicUpdate(options)) {
-            return FormatSpec.PTNODE_FLAGS_SIZE + FormatSpec.PARENT_ADDRESS_SIZE
-                    + getPtNodeCharactersSize(ptNode);
-        } else {
-            return FormatSpec.PTNODE_FLAGS_SIZE + getPtNodeCharactersSize(ptNode);
-        }
+    private static int getNodeHeaderSize(final PtNode ptNode) {
+        return FormatSpec.PTNODE_FLAGS_SIZE + getPtNodeCharactersSize(ptNode);
     }
 
     /**
@@ -379,11 +363,10 @@ public class BinaryDictEncoderUtils {
      *
      * @param ptNodeArray the node array to compute the size of.
      * @param dict the dictionary in which the word/attributes are to be found.
-     * @param formatOptions file format options.
      * @return false if none of the cached addresses inside the node array changed, true otherwise.
      */
     private static boolean computeActualPtNodeArraySize(final PtNodeArray ptNodeArray,
-            final FusionDictionary dict, final FormatOptions formatOptions) {
+            final FusionDictionary dict) {
         boolean changed = false;
         int size = getPtNodeCountSize(ptNodeArray);
         for (PtNode ptNode : ptNodeArray.mData) {
@@ -391,36 +374,25 @@ public class BinaryDictEncoderUtils {
             if (ptNode.mCachedAddressAfterUpdate != ptNode.mCachedAddressBeforeUpdate) {
                 changed = true;
             }
-            int nodeSize = getNodeHeaderSize(ptNode, formatOptions);
+            int nodeSize = getNodeHeaderSize(ptNode);
             if (ptNode.isTerminal()) {
-                if (formatOptions.mHasTerminalId) {
-                    nodeSize += FormatSpec.PTNODE_TERMINAL_ID_SIZE;
-                } else {
-                    nodeSize += FormatSpec.PTNODE_FREQUENCY_SIZE;
-                }
+                nodeSize += FormatSpec.PTNODE_FREQUENCY_SIZE;
             }
-            if (formatOptions.supportsDynamicUpdate()) {
-                nodeSize += FormatSpec.SIGNED_CHILDREN_ADDRESS_SIZE;
-            } else if (null != ptNode.mChildren) {
+            if (null != ptNode.mChildren) {
                 nodeSize += getByteSize(getOffsetToTargetNodeArrayDuringUpdate(ptNodeArray,
                         nodeSize + size, ptNode.mChildren));
             }
-            if (formatOptions.mVersion < FormatSpec.FIRST_VERSION_WITH_TERMINAL_ID) {
-                nodeSize += getShortcutListSize(ptNode.mShortcutTargets);
-                if (null != ptNode.mBigrams) {
-                    for (WeightedString bigram : ptNode.mBigrams) {
-                        final int offset = getOffsetToTargetPtNodeDuringUpdate(ptNodeArray,
-                                nodeSize + size + FormatSpec.PTNODE_ATTRIBUTE_FLAGS_SIZE,
-                                FusionDictionary.findWordInTree(dict.mRootNodeArray, bigram.mWord));
-                        nodeSize += getByteSize(offset) + FormatSpec.PTNODE_ATTRIBUTE_FLAGS_SIZE;
-                    }
+            nodeSize += getShortcutListSize(ptNode.mShortcutTargets);
+            if (null != ptNode.mBigrams) {
+                for (WeightedString bigram : ptNode.mBigrams) {
+                    final int offset = getOffsetToTargetPtNodeDuringUpdate(ptNodeArray,
+                            nodeSize + size + FormatSpec.PTNODE_ATTRIBUTE_FLAGS_SIZE,
+                            FusionDictionary.findWordInTree(dict.mRootNodeArray, bigram.mWord));
+                    nodeSize += getByteSize(offset) + FormatSpec.PTNODE_ATTRIBUTE_FLAGS_SIZE;
                 }
             }
             ptNode.mCachedSize = nodeSize;
             size += nodeSize;
-        }
-        if (formatOptions.supportsDynamicUpdate()) {
-            size += FormatSpec.FORWARD_LINK_ADDRESS_SIZE;
         }
         if (ptNodeArray.mCachedSize != size) {
             ptNodeArray.mCachedSize = size;
@@ -433,11 +405,10 @@ public class BinaryDictEncoderUtils {
      * Initializes the cached addresses of node arrays and their containing nodes from their size.
      *
      * @param flatNodes the list of node arrays.
-     * @param formatOptions file format options.
      * @return the byte size of the entire stack.
      */
-    private static int initializePtNodeArraysCachedAddresses(final ArrayList<PtNodeArray> flatNodes,
-            final FormatOptions formatOptions) {
+    private static int initializePtNodeArraysCachedAddresses(
+            final ArrayList<PtNodeArray> flatNodes) {
         int nodeArrayOffset = 0;
         for (final PtNodeArray nodeArray : flatNodes) {
             nodeArray.mCachedAddressBeforeUpdate = nodeArrayOffset;
@@ -468,28 +439,6 @@ public class BinaryDictEncoderUtils {
     }
 
     /**
-     * Compute the cached parent addresses after all has been updated.
-     *
-     * The parent addresses are used by some binary formats at write-to-disk time. Not all formats
-     * need them. In particular, version 2 does not need them, and version 3 does.
-     *
-     * @param flatNodes the flat array of node arrays to fill in
-     */
-    private static void computeParentAddresses(final ArrayList<PtNodeArray> flatNodes) {
-        for (final PtNodeArray nodeArray : flatNodes) {
-            for (final PtNode ptNode : nodeArray.mData) {
-                if (null != ptNode.mChildren) {
-                    // Assign my address to children's parent address
-                    // Here BeforeUpdate and AfterUpdate addresses have the same value, so it
-                    // does not matter which we use.
-                    ptNode.mChildren.mCachedParentAddress = ptNode.mCachedAddressAfterUpdate
-                            - ptNode.mChildren.mCachedAddressAfterUpdate;
-                }
-            }
-        }
-    }
-
-    /**
      * Compute the addresses and sizes of an ordered list of PtNode arrays.
      *
      * This method takes a list of PtNode arrays and will update their cached address and size
@@ -501,14 +450,15 @@ public class BinaryDictEncoderUtils {
      *
      * @param dict the dictionary
      * @param flatNodes the ordered list of PtNode arrays
-     * @param formatOptions file format options.
      * @return the same array it was passed. The nodes have been updated for address and size.
      */
     /* package */ static ArrayList<PtNodeArray> computeAddresses(final FusionDictionary dict,
-            final ArrayList<PtNodeArray> flatNodes, final FormatOptions formatOptions) {
+            final ArrayList<PtNodeArray> flatNodes) {
         // First get the worst possible sizes and offsets
-        for (final PtNodeArray n : flatNodes) calculatePtNodeArrayMaximumSize(n, formatOptions);
-        final int offset = initializePtNodeArraysCachedAddresses(flatNodes, formatOptions);
+        for (final PtNodeArray n : flatNodes) {
+            calculatePtNodeArrayMaximumSize(n);
+        }
+        final int offset = initializePtNodeArraysCachedAddresses(flatNodes);
 
         MakedictLog.i("Compressing the array addresses. Original size : " + offset);
         MakedictLog.i("(Recursively seen size : " + offset + ")");
@@ -521,8 +471,7 @@ public class BinaryDictEncoderUtils {
             for (final PtNodeArray ptNodeArray : flatNodes) {
                 ptNodeArray.mCachedAddressAfterUpdate = ptNodeArrayStartOffset;
                 final int oldNodeArraySize = ptNodeArray.mCachedSize;
-                final boolean changed =
-                        computeActualPtNodeArraySize(ptNodeArray, dict, formatOptions);
+                final boolean changed = computeActualPtNodeArraySize(ptNodeArray, dict);
                 final int newNodeArraySize = ptNodeArray.mCachedSize;
                 if (oldNodeArraySize < newNodeArraySize) {
                     throw new RuntimeException("Increased size ?!");
@@ -535,9 +484,6 @@ public class BinaryDictEncoderUtils {
             if (passes > MAX_PASSES) throw new RuntimeException("Too many passes - probably a bug");
         } while (changesDone);
 
-        if (formatOptions.supportsDynamicUpdate()) {
-            computeParentAddresses(flatNodes);
-        }
         final PtNodeArray lastPtNodeArray = flatNodes.get(flatNodes.size() - 1);
         MakedictLog.i("Compression complete in " + passes + " passes.");
         MakedictLog.i("After address compression : "
@@ -634,35 +580,29 @@ public class BinaryDictEncoderUtils {
      * @param hasBigrams whether the PtNode has bigrams.
      * @param isNotAWord whether the PtNode is not a word.
      * @param isBlackListEntry whether the PtNode is a blacklist entry.
-     * @param formatOptions file format options.
      * @return the flags
      */
     static int makePtNodeFlags(final boolean hasMultipleChars, final boolean isTerminal,
             final int childrenAddressSize, final boolean hasShortcuts, final boolean hasBigrams,
-            final boolean isNotAWord, final boolean isBlackListEntry,
-            final FormatOptions formatOptions) {
+            final boolean isNotAWord, final boolean isBlackListEntry) {
         byte flags = 0;
         if (hasMultipleChars) flags |= FormatSpec.FLAG_HAS_MULTIPLE_CHARS;
         if (isTerminal) flags |= FormatSpec.FLAG_IS_TERMINAL;
-        if (formatOptions.supportsDynamicUpdate()) {
-            flags |= FormatSpec.FLAG_IS_NOT_MOVED;
-        } else if (true) {
-            switch (childrenAddressSize) {
-                case 1:
-                    flags |= FormatSpec.FLAG_CHILDREN_ADDRESS_TYPE_ONEBYTE;
-                    break;
-                case 2:
-                    flags |= FormatSpec.FLAG_CHILDREN_ADDRESS_TYPE_TWOBYTES;
-                    break;
-                case 3:
-                    flags |= FormatSpec.FLAG_CHILDREN_ADDRESS_TYPE_THREEBYTES;
-                    break;
-                case 0:
-                    flags |= FormatSpec.FLAG_CHILDREN_ADDRESS_TYPE_NOADDRESS;
-                    break;
-                default:
-                    throw new RuntimeException("Node with a strange address");
-            }
+        switch (childrenAddressSize) {
+            case 1:
+                flags |= FormatSpec.FLAG_CHILDREN_ADDRESS_TYPE_ONEBYTE;
+                break;
+            case 2:
+                flags |= FormatSpec.FLAG_CHILDREN_ADDRESS_TYPE_TWOBYTES;
+                break;
+            case 3:
+                flags |= FormatSpec.FLAG_CHILDREN_ADDRESS_TYPE_THREEBYTES;
+                break;
+            case 0:
+                flags |= FormatSpec.FLAG_CHILDREN_ADDRESS_TYPE_NOADDRESS;
+                break;
+            default:
+                throw new RuntimeException("Node with a strange address");
         }
         if (hasShortcuts) flags |= FormatSpec.FLAG_HAS_SHORTCUT_TARGETS;
         if (hasBigrams) flags |= FormatSpec.FLAG_HAS_BIGRAMS;
@@ -671,12 +611,12 @@ public class BinaryDictEncoderUtils {
         return flags;
     }
 
-    /* package */ static byte makePtNodeFlags(final PtNode node, final int childrenOffset,
-            final FormatOptions formatOptions) {
+    /* package */ static byte makePtNodeFlags(final PtNode node, final int childrenOffset) {
         return (byte) makePtNodeFlags(node.mChars.length > 1, node.isTerminal(),
                 getByteSize(childrenOffset),
                 node.mShortcutTargets != null && !node.mShortcutTargets.isEmpty(),
-                node.mBigrams != null, node.mIsNotAWord, node.mIsBlacklistEntry, formatOptions);
+                node.mBigrams != null && !node.mBigrams.isEmpty(),
+                node.mIsNotAWord, node.mIsBlacklistEntry);
     }
 
     /**
@@ -767,38 +707,14 @@ public class BinaryDictEncoderUtils {
                 + (frequency & FormatSpec.FLAG_BIGRAM_SHORTCUT_ATTR_FREQUENCY);
     }
 
-    /* package */ static final int writeParentAddress(final byte[] buffer, final int index,
-            final int address, final FormatOptions formatOptions) {
-        if (BinaryDictIOUtils.supportsDynamicUpdate(formatOptions)) {
-            if (address == FormatSpec.NO_PARENT_ADDRESS) {
-                buffer[index] = buffer[index + 1] = buffer[index + 2] = 0;
-            } else {
-                final int absAddress = Math.abs(address);
-                assert(absAddress <= FormatSpec.SINT24_MAX);
-                buffer[index] = (byte)((address < 0 ? FormatSpec.MSB8 : 0)
-                        | ((absAddress >> 16) & 0xFF));
-                buffer[index + 1] = (byte)((absAddress >> 8) & 0xFF);
-                buffer[index + 2] = (byte)(absAddress & 0xFF);
-            }
-            return index + 3;
-        } else {
-            return index;
-        }
-    }
-
-    /* package */ static final int getChildrenPosition(final PtNode ptNode,
-            final FormatOptions formatOptions) {
+    /* package */ static final int getChildrenPosition(final PtNode ptNode) {
         int positionOfChildrenPosField = ptNode.mCachedAddressAfterUpdate
-                + getNodeHeaderSize(ptNode, formatOptions);
+                + getNodeHeaderSize(ptNode);
         if (ptNode.isTerminal()) {
-            // A terminal node has either the terminal id or the frequency.
+            // A terminal node has the frequency.
             // If positionOfChildrenPosField is incorrect, we may crash when jumping to the children
             // position.
-            if (formatOptions.mHasTerminalId) {
-                positionOfChildrenPosField += FormatSpec.PTNODE_TERMINAL_ID_SIZE;
-            } else {
-                positionOfChildrenPosField += FormatSpec.PTNODE_FREQUENCY_SIZE;
-            }
+            positionOfChildrenPosField += FormatSpec.PTNODE_FREQUENCY_SIZE;
         }
         return null == ptNode.mChildren ? FormatSpec.NO_CHILDREN_ADDRESS
                 : ptNode.mChildren.mCachedAddressAfterUpdate - positionOfChildrenPosField;
@@ -810,12 +726,10 @@ public class BinaryDictEncoderUtils {
      * @param dict the dictionary the node array is a part of (for relative offsets).
      * @param dictEncoder the dictionary encoder.
      * @param ptNodeArray the node array to write.
-     * @param formatOptions file format options.
      */
     @SuppressWarnings("unused")
     /* package */ static void writePlacedPtNodeArray(final FusionDictionary dict,
-            final DictEncoder dictEncoder, final PtNodeArray ptNodeArray,
-            final FormatOptions formatOptions) {
+            final DictEncoder dictEncoder, final PtNodeArray ptNodeArray) {
         // TODO: Make the code in common with BinaryDictIOUtils#writePtNode
         dictEncoder.setPosition(ptNodeArray.mCachedAddressAfterUpdate);
 
@@ -838,10 +752,7 @@ public class BinaryDictEncoderUtils {
                         + FormatSpec.MAX_TERMINAL_FREQUENCY
                         + " : " + ptNode.mProbabilityInfo.toString());
             }
-            dictEncoder.writePtNode(ptNode, parentPosition, formatOptions, dict);
-        }
-        if (formatOptions.supportsDynamicUpdate()) {
-            dictEncoder.writeForwardLinkAddress(FormatSpec.NO_FORWARD_LINK_ADDRESS);
+            dictEncoder.writePtNode(ptNode, dict);
         }
         if (dictEncoder.getPosition() != ptNodeArray.mCachedAddressAfterUpdate
                 + ptNodeArray.mCachedSize) {

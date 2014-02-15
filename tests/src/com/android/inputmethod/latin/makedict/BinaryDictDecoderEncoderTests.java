@@ -501,7 +501,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         }
         if (fileHeader == null) return null;
         return BinaryDictDecoderUtils.getWordAtPosition(dictDecoder, fileHeader.mBodyOffset,
-                address, fileHeader.mFormatOptions).mWord;
+                address).mWord;
     }
 
     private long checkGetTerminalPosition(final DictDecoder dictDecoder, final String word,
