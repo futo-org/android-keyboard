@@ -19,6 +19,7 @@ package com.android.inputmethod.latin.makedict;
 import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.LargeTest;
 import android.util.Log;
+import android.util.Pair;
 import android.util.SparseArray;
 
 import com.android.inputmethod.latin.BinaryDictionary;
@@ -631,5 +632,67 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
                 assertTrue(shortcutList.isEmpty());
             }
         }
+    }
+
+    public void testVer2DictIteration() {
+        final FormatOptions formatOptions = BinaryDictUtils.VERSION2_OPTIONS;
+        final ArrayList<String> words = sWords;
+        final HashMap<String, List<String>> shortcuts = sShortcuts;
+        final SparseArray<List<Integer>> bigrams = sEmptyBigrams;
+        final String dictName = "testGetWordProperty";
+        final String dictVersion = Long.toString(System.currentTimeMillis());
+        final FusionDictionary dict = new FusionDictionary(new PtNodeArray(),
+                BinaryDictUtils.makeDictionaryOptions(dictName, dictVersion, formatOptions));
+        addUnigrams(words.size(), dict, words, shortcuts);
+        addBigrams(dict, words, bigrams);
+        final File file = BinaryDictUtils.getDictFile(dictName, dictVersion, formatOptions,
+                getContext().getCacheDir());
+        timeWritingDictToFile(file, dict, formatOptions);
+        Log.d(TAG, file.getAbsolutePath());
+        final BinaryDictionary binaryDictionary = new BinaryDictionary(file.getAbsolutePath(),
+                0 /* offset */, file.length(), true /* useFullEditDistance */,
+                Locale.ENGLISH, dictName, false /* isUpdatable */);
+
+        final HashSet<String> wordSet = new HashSet<String>(words);
+        final HashSet<Pair<String, String>> bigramSet = new HashSet<Pair<String,String>>();
+
+        for (int i = 0; i < words.size(); i++) {
+            final List<Integer> bigramList = bigrams.get(i);
+            if (bigramList != null) {
+                for (final Integer word1Index : bigramList) {
+                    final String word1 = words.get(word1Index);
+                    bigramSet.add(new Pair<String, String>(words.get(i), word1));
+                }
+            }
+        }
+        int token = 0;
+        do {
+            final BinaryDictionary.GetNextWordPropertyResult result =
+                    binaryDictionary.getNextWordProperty(token);
+            final WordProperty wordProperty = result.mWordProperty;
+            final String word0 = wordProperty.mWord;
+            assertEquals(UNIGRAM_FREQ, wordProperty.mProbabilityInfo.mProbability);
+            wordSet.remove(word0);
+            if (shortcuts.containsKey(word0)) {
+                assertEquals(shortcuts.get(word0).size(), wordProperty.mShortcutTargets.size());
+                final List<String> shortcutList = shortcuts.get(word0);
+                assertNotNull(wordProperty.mShortcutTargets);
+                for (final WeightedString shortcutTarget : wordProperty.mShortcutTargets) {
+                    assertTrue(shortcutList.contains(shortcutTarget.mWord));
+                    assertEquals(UNIGRAM_FREQ, shortcutTarget.getProbability());
+                    shortcutList.remove(shortcutTarget.mWord);
+                }
+                assertTrue(shortcutList.isEmpty());
+            }
+            for (int j = 0; j < wordProperty.mBigrams.size(); j++) {
+                final String word1 = wordProperty.mBigrams.get(j).mWord;
+                final Pair<String, String> bigram = new Pair<String, String>(word0, word1);
+                assertTrue(bigramSet.contains(bigram));
+                bigramSet.remove(bigram);
+            }
+            token = result.mNextToken;
+        } while (token != 0);
+        assertTrue(wordSet.isEmpty());
+        assertTrue(bigramSet.isEmpty());
     }
 }

@@ -45,6 +45,7 @@ public class Ver4DictDecoder extends AbstractDictDecoder {
     @UsedForTesting
     /* package */ Ver4DictDecoder(final File dictDirectory, final DictionaryBufferFactory factory) {
         mDictDirectory = dictDirectory;
+        // dictType is not being used in dicttool. Passing an empty string.
         mBinaryDictionary = new BinaryDictionary(dictDirectory.getAbsolutePath(),
                 0 /* offset */, 0 /* length */, true /* useFullEditDistance */, null /* locale */,
                 "" /* dictType */, true /* isUpdatable */);
@@ -78,7 +79,7 @@ public class Ver4DictDecoder extends AbstractDictDecoder {
             token = result.mNextToken;
         } while (token != 0);
 
-        // Insert unigrams to the fusion dictionary.
+        // Insert unigrams into the fusion dictionary.
         for (final WordProperty wordProperty : wordProperties) {
             if (wordProperty.mIsBlacklistEntry) {
                 fusionDict.addBlacklistEntry(wordProperty.mWord, wordProperty.mShortcutTargets,
@@ -88,7 +89,7 @@ public class Ver4DictDecoder extends AbstractDictDecoder {
                         wordProperty.mShortcutTargets, wordProperty.mIsNotAWord);
             }
         }
-        // Insert bigrams to the fusion dictionary.
+        // Insert bigrams into the fusion dictionary.
         for (final WordProperty wordProperty : wordProperties) {
             if (wordProperty.mBigrams == null) {
                 continue;

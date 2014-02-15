@@ -17,12 +17,12 @@
 package com.android.inputmethod.latin.makedict;
 
 import com.android.inputmethod.annotations.UsedForTesting;
+import com.android.inputmethod.latin.BinaryDictionary;
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.CharEncoding;
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.DictBuffer;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
-
-import android.util.Log;
+import com.android.inputmethod.latin.utils.CollectionUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -33,6 +33,7 @@ import java.util.Arrays;
 /**
  * An implementation of DictDecoder for version 2 binary dictionary.
  */
+// TODO: Separate logics that are used only for testing.
 @UsedForTesting
 public class Ver2DictDecoder extends AbstractDictDecoder {
     private static final String TAG = Ver2DictDecoder.class.getSimpleName();
@@ -116,12 +117,19 @@ public class Ver2DictDecoder extends AbstractDictDecoder {
     }
 
     protected final File mDictionaryBinaryFile;
+    // TODO: Remove mBufferFactory and mDictBuffer from this class members because they are now
+    // used only for testing.
     private final DictionaryBufferFactory mBufferFactory;
     protected DictBuffer mDictBuffer;
+    private final BinaryDictionary mBinaryDictionary;
 
     /* package */ Ver2DictDecoder(final File file, final int factoryFlag) {
         mDictionaryBinaryFile = file;
         mDictBuffer = null;
+        // dictType is not being used in dicttool. Passing an empty string.
+        mBinaryDictionary = new BinaryDictionary(file.getAbsolutePath(),
+                0 /* offset */, file.length() /* length */, true /* useFullEditDistance */,
+                null /* locale */, "" /* dictType */, false /* isUpdatable */);
 
         if ((factoryFlag & MASK_DICTBUFFER) == USE_READONLY_BYTEBUFFER) {
             mBufferFactory = new DictionaryBufferFromReadOnlyByteBufferFactory();
@@ -137,6 +145,10 @@ public class Ver2DictDecoder extends AbstractDictDecoder {
     /* package */ Ver2DictDecoder(final File file, final DictionaryBufferFactory factory) {
         mDictionaryBinaryFile = file;
         mBufferFactory = factory;
+        // dictType is not being used in dicttool. Passing an empty string.
+        mBinaryDictionary = new BinaryDictionary(file.getAbsolutePath(),
+                0 /* offset */, file.length() /* length */, true /* useFullEditDistance */,
+                null /* locale */, "" /* dictType */, false /* isUpdatable */);
     }
 
     @Override
@@ -238,24 +250,47 @@ public class Ver2DictDecoder extends AbstractDictDecoder {
     @Override
     public FusionDictionary readDictionaryBinary(final boolean deleteDictIfBroken)
             throws FileNotFoundException, IOException, UnsupportedFormatException {
-        if (mDictBuffer == null) {
-            openDictBuffer();
-        }
-        try {
-            return BinaryDictDecoderUtils.readDictionaryBinary(this);
-        } catch (IOException e) {
-            Log.e(TAG, "The dictionary " + mDictionaryBinaryFile.getName() + " is broken.", e);
-            if (deleteDictIfBroken && !mDictionaryBinaryFile.delete()) {
-                Log.e(TAG, "Failed to delete the broken dictionary.");
+        final DictionaryHeader header = readHeader();
+        final FusionDictionary fusionDict =
+                new FusionDictionary(new FusionDictionary.PtNodeArray(), header.mDictionaryOptions);
+        int token = 0;
+        final ArrayList<WordProperty> wordProperties = CollectionUtils.newArrayList();
+        do {
+            final BinaryDictionary.GetNextWordPropertyResult result =
+                    mBinaryDictionary.getNextWordProperty(token);
+            final WordProperty wordProperty = result.mWordProperty;
+            if (wordProperty == null) {
+                if (deleteDictIfBroken) {
+                    mBinaryDictionary.close();
+                    mDictionaryBinaryFile.delete();
+                }
+                return null;
             }
-            throw e;
-        } catch (UnsupportedFormatException e) {
-            Log.e(TAG, "The dictionary " + mDictionaryBinaryFile.getName() + " is broken.", e);
-            if (deleteDictIfBroken && !mDictionaryBinaryFile.delete()) {
-                Log.e(TAG, "Failed to delete the broken dictionary.");
+            wordProperties.add(wordProperty);
+            token = result.mNextToken;
+        } while (token != 0);
+
+        // Insert unigrams into the fusion dictionary.
+        for (final WordProperty wordProperty : wordProperties) {
+            if (wordProperty.mIsBlacklistEntry) {
+                fusionDict.addBlacklistEntry(wordProperty.mWord, wordProperty.mShortcutTargets,
+                        wordProperty.mIsNotAWord);
+            } else {
+                fusionDict.add(wordProperty.mWord, wordProperty.mProbabilityInfo,
+                        wordProperty.mShortcutTargets, wordProperty.mIsNotAWord);
             }
-            throw e;
         }
+        // Insert bigrams into the fusion dictionary.
+        for (final WordProperty wordProperty : wordProperties) {
+            if (wordProperty.mBigrams == null) {
+                continue;
+            }
+            final String word0 = wordProperty.mWord;
+            for (final WeightedString bigram : wordProperty.mBigrams) {
+                fusionDict.setBigram(word0, bigram.mWord, bigram.mProbabilityInfo);
+            }
+        }
+        return fusionDict;
     }
 
     @Override
