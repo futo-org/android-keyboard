@@ -95,7 +95,7 @@ public class Ver2DictEncoder implements DictEncoder {
         ArrayList<PtNodeArray> flatNodes = BinaryDictEncoderUtils.flattenTree(dict.mRootNodeArray);
 
         MakedictLog.i("Computing addresses...");
-        BinaryDictEncoderUtils.computeAddresses(dict, flatNodes, formatOptions);
+        BinaryDictEncoderUtils.computeAddresses(dict, flatNodes);
         MakedictLog.i("Checking PtNode array...");
         if (MakedictLog.DBG) BinaryDictEncoderUtils.checkFlatPtNodeArrayList(flatNodes);
 
@@ -107,7 +107,7 @@ public class Ver2DictEncoder implements DictEncoder {
         MakedictLog.i("Writing file...");
 
         for (PtNodeArray nodeArray : flatNodes) {
-            BinaryDictEncoderUtils.writePlacedPtNodeArray(dict, this, nodeArray, formatOptions);
+            BinaryDictEncoderUtils.writePlacedPtNodeArray(dict, this, nodeArray);
         }
         if (MakedictLog.DBG) BinaryDictEncoderUtils.showStatistics(flatNodes);
         mOutStream.write(mBuffer, 0, mPosition);
@@ -139,22 +139,11 @@ public class Ver2DictEncoder implements DictEncoder {
                 countSize);
     }
 
-    private void writePtNodeFlags(final PtNode ptNode, final FormatOptions formatOptions) {
-        final int childrenPos = BinaryDictEncoderUtils.getChildrenPosition(ptNode, formatOptions);
+    private void writePtNodeFlags(final PtNode ptNode) {
+        final int childrenPos = BinaryDictEncoderUtils.getChildrenPosition(ptNode);
         mPosition = BinaryDictEncoderUtils.writeUIntToBuffer(mBuffer, mPosition,
-                BinaryDictEncoderUtils.makePtNodeFlags(ptNode, childrenPos, formatOptions),
+                BinaryDictEncoderUtils.makePtNodeFlags(ptNode, childrenPos),
                 FormatSpec.PTNODE_FLAGS_SIZE);
-    }
-
-    private void writeParentPosition(final int parentPosition, final PtNode ptNode,
-            final FormatOptions formatOptions) {
-        if (parentPosition == FormatSpec.NO_PARENT_ADDRESS) {
-            mPosition = BinaryDictEncoderUtils.writeParentAddress(mBuffer, mPosition,
-                    parentPosition, formatOptions);
-        } else {
-            mPosition = BinaryDictEncoderUtils.writeParentAddress(mBuffer, mPosition,
-                    parentPosition - ptNode.mCachedAddressAfterUpdate, formatOptions);
-        }
     }
 
     private void writeCharacters(final int[] codePoints, final boolean hasSeveralChars) {
@@ -171,15 +160,10 @@ public class Ver2DictEncoder implements DictEncoder {
         }
     }
 
-    private void writeChildrenPosition(final PtNode ptNode, final FormatOptions formatOptions) {
-        final int childrenPos = BinaryDictEncoderUtils.getChildrenPosition(ptNode, formatOptions);
-        if (formatOptions.supportsDynamicUpdate()) {
-            mPosition += BinaryDictEncoderUtils.writeSignedChildrenPosition(mBuffer, mPosition,
-                    childrenPos);
-        } else {
-            mPosition += BinaryDictEncoderUtils.writeChildrenPosition(mBuffer, mPosition,
-                    childrenPos);
-        }
+    private void writeChildrenPosition(final PtNode ptNode) {
+        final int childrenPos = BinaryDictEncoderUtils.getChildrenPosition(ptNode);
+        mPosition += BinaryDictEncoderUtils.writeChildrenPosition(mBuffer, mPosition,
+                childrenPos);
     }
 
     /**
@@ -246,13 +230,11 @@ public class Ver2DictEncoder implements DictEncoder {
     }
 
     @Override
-    public void writePtNode(final PtNode ptNode, final int parentPosition,
-            final FormatOptions formatOptions, final FusionDictionary dict) {
-        writePtNodeFlags(ptNode, formatOptions);
-        writeParentPosition(parentPosition, ptNode, formatOptions);
+    public void writePtNode(final PtNode ptNode, final FusionDictionary dict) {
+        writePtNodeFlags(ptNode);
         writeCharacters(ptNode.mChars, ptNode.hasSeveralChars());
         writeFrequency(ptNode.getProbability());
-        writeChildrenPosition(ptNode, formatOptions);
+        writeChildrenPosition(ptNode);
         writeShortcuts(ptNode.mShortcutTargets);
         writeBigrams(ptNode.mBigrams, dict);
     }

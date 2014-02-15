@@ -17,18 +17,12 @@
 package com.android.inputmethod.latin.makedict;
 
 import com.android.inputmethod.annotations.UsedForTesting;
-import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
-import com.android.inputmethod.latin.makedict.FusionDictionary.PtNode;
-import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * Decodes binary files for a FusionDictionary.
@@ -46,8 +40,6 @@ public final class BinaryDictDecoderUtils {
     private BinaryDictDecoderUtils() {
         // This utility class is not publicly instantiable.
     }
-
-    private static final int MAX_JUMPS = 12;
 
     @UsedForTesting
     public interface DictBuffer {
@@ -296,60 +288,21 @@ public final class BinaryDictDecoderUtils {
      * @param dictDecoder the dict decoder.
      * @param headerSize the size of the header.
      * @param pos the position to seek.
-     * @param formatOptions file format options.
      * @return the word with its frequency, as a weighted string.
      */
+    @UsedForTesting
     /* package for tests */ static WeightedString getWordAtPosition(final DictDecoder dictDecoder,
-            final int headerSize, final int pos, final FormatOptions formatOptions) {
+            final int headerSize, final int pos) {
         final WeightedString result;
         final int originalPos = dictDecoder.getPosition();
         dictDecoder.setPosition(pos);
-
-        if (BinaryDictIOUtils.supportsDynamicUpdate(formatOptions)) {
-            result = getWordAtPositionWithParentAddress(dictDecoder, pos, formatOptions);
-        } else {
-            result = getWordAtPositionWithoutParentAddress(dictDecoder, headerSize, pos,
-                    formatOptions);
-        }
-
+        result = getWordAtPositionWithoutParentAddress(dictDecoder, headerSize, pos);
         dictDecoder.setPosition(originalPos);
         return result;
     }
 
-    @SuppressWarnings("unused")
-    private static WeightedString getWordAtPositionWithParentAddress(final DictDecoder dictDecoder,
-            final int pos, final FormatOptions options) {
-        int currentPos = pos;
-        ProbabilityInfo probabilityInfo = null;
-        final StringBuilder builder = new StringBuilder();
-        // the length of the path from the root to the leaf is limited by MAX_WORD_LENGTH
-        for (int count = 0; count < FormatSpec.MAX_WORD_LENGTH; ++count) {
-            PtNodeInfo currentInfo;
-            int loopCounter = 0;
-            do {
-                dictDecoder.setPosition(currentPos);
-                currentInfo = dictDecoder.readPtNode(currentPos, options);
-                if (BinaryDictIOUtils.isMovedPtNode(currentInfo.mFlags, options)) {
-                    currentPos = currentInfo.mParentAddress + currentInfo.mOriginalAddress;
-                }
-                if (DBG && loopCounter++ > MAX_JUMPS) {
-                    MakedictLog.d("Too many jumps - probably a bug");
-                }
-            } while (BinaryDictIOUtils.isMovedPtNode(currentInfo.mFlags, options));
-            if (probabilityInfo == null) {
-                probabilityInfo = currentInfo.mProbabilityInfo;
-            }
-            builder.insert(0,
-                    new String(currentInfo.mCharacters, 0, currentInfo.mCharacters.length));
-            if (currentInfo.mParentAddress == FormatSpec.NO_PARENT_ADDRESS) break;
-            currentPos = currentInfo.mParentAddress + currentInfo.mOriginalAddress;
-        }
-        return new WeightedString(builder.toString(), probabilityInfo);
-    }
-
     private static WeightedString getWordAtPositionWithoutParentAddress(
-            final DictDecoder dictDecoder, final int headerSize, final int pos,
-            final FormatOptions options) {
+            final DictDecoder dictDecoder, final int headerSize, final int pos) {
         dictDecoder.setPosition(headerSize);
         final int count = dictDecoder.readPtNodeCount();
         int groupPos = dictDecoder.getPosition();
@@ -358,7 +311,7 @@ public final class BinaryDictDecoderUtils {
 
         PtNodeInfo last = null;
         for (int i = count - 1; i >= 0; --i) {
-            PtNodeInfo info = dictDecoder.readPtNode(groupPos, options);
+            PtNodeInfo info = dictDecoder.readPtNode(groupPos);
             groupPos = info.mEndAddress;
             if (info.mOriginalAddress == pos) {
                 builder.append(new String(info.mCharacters, 0, info.mCharacters.length));
@@ -387,135 +340,6 @@ public final class BinaryDictDecoderUtils {
             }
         }
         return result;
-    }
-
-    /**
-     * Reads a single node array from a buffer.
-     *
-     * This methods reads the file at the current position. A node array is fully expected to start
-     * at the current position.
-     * This will recursively read other node arrays into the structure, populating the reverse
-     * maps on the fly and using them to keep track of already read nodes.
-     *
-     * @param dictDecoder the dict decoder, correctly positioned at the start of a node array.
-     * @param headerSize the size, in bytes, of the file header.
-     * @param reverseNodeArrayMap a mapping from addresses to already read node arrays.
-     * @param reversePtNodeMap a mapping from addresses to already read PtNodes.
-     * @param options file format options.
-     * @return the read node array with all his children already read.
-     */
-    private static PtNodeArray readNodeArray(final DictDecoder dictDecoder,
-            final int headerSize, final Map<Integer, PtNodeArray> reverseNodeArrayMap,
-            final Map<Integer, PtNode> reversePtNodeMap, final FormatOptions options)
-            throws IOException {
-        final ArrayList<PtNode> nodeArrayContents = new ArrayList<PtNode>();
-        final int nodeArrayOriginPos = dictDecoder.getPosition();
-
-        do { // Scan the linked-list node.
-            final int count = dictDecoder.readPtNodeCount();
-            int groupPos = dictDecoder.getPosition();
-            for (int i = count; i > 0; --i) { // Scan the array of PtNode.
-                PtNodeInfo info = dictDecoder.readPtNode(groupPos, options);
-                if (BinaryDictIOUtils.isMovedPtNode(info.mFlags, options)) continue;
-                ArrayList<WeightedString> shortcutTargets = info.mShortcutTargets;
-                ArrayList<WeightedString> bigrams = null;
-                if (null != info.mBigrams) {
-                    bigrams = new ArrayList<WeightedString>();
-                    for (PendingAttribute bigram : info.mBigrams) {
-                        final WeightedString word = getWordAtPosition(dictDecoder, headerSize,
-                                bigram.mAddress, options);
-                        final int reconstructedFrequency =
-                                BinaryDictIOUtils.reconstructBigramFrequency(word.getProbability(),
-                                        bigram.mFrequency);
-                        bigrams.add(new WeightedString(word.mWord, reconstructedFrequency));
-                    }
-                }
-                if (BinaryDictIOUtils.hasChildrenAddress(info.mChildrenAddress)) {
-                    PtNodeArray children = reverseNodeArrayMap.get(info.mChildrenAddress);
-                    if (null == children) {
-                        final int currentPosition = dictDecoder.getPosition();
-                        dictDecoder.setPosition(info.mChildrenAddress);
-                        children = readNodeArray(dictDecoder, headerSize, reverseNodeArrayMap,
-                                reversePtNodeMap, options);
-                        dictDecoder.setPosition(currentPosition);
-                    }
-                    nodeArrayContents.add(
-                            new PtNode(info.mCharacters, shortcutTargets, bigrams,
-                                    info.mProbabilityInfo,
-                                    0 != (info.mFlags & FormatSpec.FLAG_IS_NOT_A_WORD),
-                                    0 != (info.mFlags & FormatSpec.FLAG_IS_BLACKLISTED), children));
-                } else {
-                    nodeArrayContents.add(
-                            new PtNode(info.mCharacters, shortcutTargets, bigrams,
-                                    info.mProbabilityInfo,
-                                    0 != (info.mFlags & FormatSpec.FLAG_IS_NOT_A_WORD),
-                                    0 != (info.mFlags & FormatSpec.FLAG_IS_BLACKLISTED)));
-                }
-                groupPos = info.mEndAddress;
-            }
-
-            // reach the end of the array.
-            if (options.supportsDynamicUpdate()) {
-                final boolean hasValidForwardLink = dictDecoder.readAndFollowForwardLink();
-                if (!hasValidForwardLink) break;
-            }
-        } while (options.supportsDynamicUpdate() && dictDecoder.hasNextPtNodeArray());
-
-        final PtNodeArray nodeArray = new PtNodeArray(nodeArrayContents);
-        nodeArray.mCachedAddressBeforeUpdate = nodeArrayOriginPos;
-        nodeArray.mCachedAddressAfterUpdate = nodeArrayOriginPos;
-        reverseNodeArrayMap.put(nodeArray.mCachedAddressAfterUpdate, nodeArray);
-        return nodeArray;
-    }
-
-    /**
-     * Helper function to get the binary format version from the header.
-     * @throws IOException
-     */
-    private static int getFormatVersion(final DictBuffer dictBuffer)
-            throws IOException {
-        final int magic = dictBuffer.readInt();
-        if (FormatSpec.MAGIC_NUMBER == magic) return dictBuffer.readUnsignedShort();
-        return FormatSpec.NOT_A_VERSION_NUMBER;
-    }
-
-    /**
-     * Helper function to get and validate the binary format version.
-     * @throws UnsupportedFormatException
-     * @throws IOException
-     */
-    static int checkFormatVersion(final DictBuffer dictBuffer)
-            throws IOException, UnsupportedFormatException {
-        final int version = getFormatVersion(dictBuffer);
-        if (version < FormatSpec.MINIMUM_SUPPORTED_VERSION
-                || version > FormatSpec.MAXIMUM_SUPPORTED_VERSION) {
-            throw new UnsupportedFormatException("This file has version " + version
-                    + ", but this implementation does not support versions above "
-                    + FormatSpec.MAXIMUM_SUPPORTED_VERSION);
-        }
-        return version;
-    }
-
-    /**
-     * Reads a buffer and returns the memory representation of the dictionary.
-     *
-     * This high-level method takes a buffer and reads its contents, populating a
-     * FusionDictionary structure.
-     *
-     * @param dictDecoder the dict decoder.
-     * @return the created dictionary.
-     */
-    @UsedForTesting
-    /* package */ static FusionDictionary readDictionaryBinary(final DictDecoder dictDecoder)
-            throws IOException, UnsupportedFormatException {
-        // Read header
-        final DictionaryHeader fileHeader = dictDecoder.readHeader();
-
-        Map<Integer, PtNodeArray> reverseNodeArrayMapping = new TreeMap<Integer, PtNodeArray>();
-        Map<Integer, PtNode> reversePtNodeMapping = new TreeMap<Integer, PtNode>();
-        final PtNodeArray root = readNodeArray(dictDecoder, fileHeader.mBodyOffset,
-                reverseNodeArrayMapping, reversePtNodeMapping, fileHeader.mFormatOptions);
-        return new FusionDictionary(root, fileHeader.mDictionaryOptions);
     }
 
     /**

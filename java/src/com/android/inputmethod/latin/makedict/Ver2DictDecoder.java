@@ -20,7 +20,6 @@ import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.BinaryDictionary;
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.CharEncoding;
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.DictBuffer;
-import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 
@@ -173,21 +172,23 @@ public class Ver2DictDecoder extends AbstractDictDecoder {
 
     @Override
     public DictionaryHeader readHeader() throws IOException, UnsupportedFormatException {
-        if (mDictBuffer == null) {
+        final DictionaryHeader header = mBinaryDictionary.getHeader();
+        if (header.mFormatOptions.mVersion != FormatSpec.VERSION2) {
+            throw new UnsupportedFormatException("File header has a wrong version : "
+                    + header.mFormatOptions.mVersion);
+        }
+        if (!isDictBufferOpen()) {
             openDictBuffer();
         }
-        final DictionaryHeader header = super.readHeader(mDictBuffer);
-        final int version = header.mFormatOptions.mVersion;
-        if (version != FormatSpec.VERSION2) {
-            throw new UnsupportedFormatException("File header has a wrong version : " + version);
-        }
+        // Advance buffer reading position to the head of dictionary body.
+        setPosition(header.mBodyOffset);
         return header;
     }
 
     // TODO: Make this buffer multi thread safe.
     private final int[] mCharacterBuffer = new int[FormatSpec.MAX_WORD_LENGTH];
     @Override
-    public PtNodeInfo readPtNode(final int ptNodePos, final FormatOptions options) {
+    public PtNodeInfo readPtNode(final int ptNodePos) {
         int addressPointer = ptNodePos;
         final int flags = PtNodeReader.readPtNodeOptionFlags(mDictBuffer);
         addressPointer += FormatSpec.PTNODE_FLAGS_SIZE;
@@ -221,7 +222,7 @@ public class Ver2DictDecoder extends AbstractDictDecoder {
         if (childrenAddress != FormatSpec.NO_CHILDREN_ADDRESS) {
             childrenAddress += addressPointer;
         }
-        addressPointer += BinaryDictIOUtils.getChildrenAddressSize(flags, options);
+        addressPointer += BinaryDictIOUtils.getChildrenAddressSize(flags);
         final ArrayList<WeightedString> shortcutTargets;
         if (0 != (flags & FormatSpec.FLAG_HAS_SHORTCUT_TARGETS)) {
             // readShortcut will add shortcuts to shortcutTargets.
@@ -244,7 +245,7 @@ public class Ver2DictDecoder extends AbstractDictDecoder {
             bigrams = null;
         }
         return new PtNodeInfo(ptNodePos, addressPointer, flags, characters, probabilityInfo,
-                FormatSpec.NO_PARENT_ADDRESS, childrenAddress, shortcutTargets, bigrams);
+                childrenAddress, shortcutTargets, bigrams);
     }
 
     @Override
@@ -306,20 +307,5 @@ public class Ver2DictDecoder extends AbstractDictDecoder {
     @Override
     public int readPtNodeCount() {
         return BinaryDictDecoderUtils.readPtNodeCount(mDictBuffer);
-    }
-
-    @Override
-    public boolean readAndFollowForwardLink() {
-        final int nextAddress = mDictBuffer.readUnsignedInt24();
-        if (nextAddress >= 0 && nextAddress < mDictBuffer.limit()) {
-            mDictBuffer.position(nextAddress);
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    public boolean hasNextPtNodeArray() {
-        return mDictBuffer.position() != FormatSpec.NO_FORWARD_LINK_ADDRESS;
     }
 }

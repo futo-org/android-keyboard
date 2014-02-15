@@ -18,7 +18,6 @@ package com.android.inputmethod.latin.makedict;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.Constants;
-import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.CharEncoding;
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.DictBuffer;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.utils.ByteArrayDictBuffer;
@@ -60,8 +59,7 @@ public final class BinaryDictIOUtils {
     private static void readUnigramsAndBigramsBinaryInner(final DictDecoder dictDecoder,
             final int bodyOffset, final Map<Integer, String> words,
             final Map<Integer, Integer> frequencies,
-            final Map<Integer, ArrayList<PendingAttribute>> bigrams,
-            final FormatOptions formatOptions) {
+            final Map<Integer, ArrayList<PendingAttribute>> bigrams) {
         int[] pushedChars = new int[FormatSpec.MAX_WORD_LENGTH + 1];
 
         Stack<Position> stack = new Stack<Position>();
@@ -90,17 +88,12 @@ public final class BinaryDictIOUtils {
                 stack.pop();
                 continue;
             }
-            final PtNodeInfo ptNodeInfo = dictDecoder.readPtNode(p.mAddress, formatOptions);
+            final PtNodeInfo ptNodeInfo = dictDecoder.readPtNode(p.mAddress);
             for (int i = 0; i < ptNodeInfo.mCharacters.length; ++i) {
                 pushedChars[index++] = ptNodeInfo.mCharacters[i];
             }
             p.mPosition++;
-
-            final boolean isMovedPtNode = isMovedPtNode(ptNodeInfo.mFlags,
-                    formatOptions);
-            final boolean isDeletedPtNode = isDeletedPtNode(ptNodeInfo.mFlags,
-                    formatOptions);
-            if (!isMovedPtNode && !isDeletedPtNode && ptNodeInfo.isTerminal()) {// found word
+            if (ptNodeInfo.isTerminal()) {// found word
                 words.put(ptNodeInfo.mOriginalAddress, new String(pushedChars, 0, index));
                 frequencies.put(
                         ptNodeInfo.mOriginalAddress, ptNodeInfo.mProbabilityInfo.mProbability);
@@ -110,25 +103,13 @@ public final class BinaryDictIOUtils {
             }
 
             if (p.mPosition == p.mNumOfPtNode) {
-                if (formatOptions.supportsDynamicUpdate()) {
-                    final boolean hasValidForwardLinkAddress =
-                            dictDecoder.readAndFollowForwardLink();
-                    if (hasValidForwardLinkAddress && dictDecoder.hasNextPtNodeArray()) {
-                        // The node array has a forward link.
-                        p.mNumOfPtNode = Position.NOT_READ_PTNODE_COUNT;
-                        p.mAddress = dictDecoder.getPosition();
-                    } else {
-                        stack.pop();
-                    }
-                } else {
-                    stack.pop();
-                }
+                stack.pop();
             } else {
-                // The Ptnode array has more PtNodes.
+                // The PtNode array has more PtNodes.
                 p.mAddress = dictDecoder.getPosition();
             }
 
-            if (!isMovedPtNode && hasChildrenAddress(ptNodeInfo.mChildrenAddress)) {
+            if (hasChildrenAddress(ptNodeInfo.mChildrenAddress)) {
                 final Position childrenPos = new Position(ptNodeInfo.mChildrenAddress, index);
                 stack.push(childrenPos);
             }
@@ -153,7 +134,7 @@ public final class BinaryDictIOUtils {
         // Read header
         final DictionaryHeader header = dictDecoder.readHeader();
         readUnigramsAndBigramsBinaryInner(dictDecoder, header.mBodyOffset, words,
-                frequencies, bigrams, header.mFormatOptions);
+            frequencies, bigrams);
     }
 
     /**
@@ -171,8 +152,7 @@ public final class BinaryDictIOUtils {
             final String word) throws IOException, UnsupportedFormatException {
         if (word == null) return FormatSpec.NOT_VALID_WORD;
         dictDecoder.setPosition(0);
-
-        final DictionaryHeader header = dictDecoder.readHeader();
+        dictDecoder.readHeader();
         int wordPos = 0;
         final int wordLen = word.codePointCount(0, word.length());
         for (int depth = 0; depth < Constants.DICTIONARY_MAX_WORD_LENGTH; ++depth) {
@@ -183,13 +163,7 @@ public final class BinaryDictIOUtils {
                 boolean foundNextPtNode = false;
                 for (int i = 0; i < ptNodeCount; ++i) {
                     final int ptNodePos = dictDecoder.getPosition();
-                    final PtNodeInfo currentInfo = dictDecoder.readPtNode(ptNodePos,
-                            header.mFormatOptions);
-                    final boolean isMovedNode = isMovedPtNode(currentInfo.mFlags,
-                            header.mFormatOptions);
-                    final boolean isDeletedNode = isDeletedPtNode(currentInfo.mFlags,
-                            header.mFormatOptions);
-                    if (isMovedNode) continue;
+                    final PtNodeInfo currentInfo = dictDecoder.readPtNode(ptNodePos);
                     boolean same = true;
                     for (int p = 0, j = word.offsetByCodePoints(0, wordPos);
                             p < currentInfo.mCharacters.length;
@@ -204,7 +178,7 @@ public final class BinaryDictIOUtils {
                     if (same) {
                         // found the PtNode matches the word.
                         if (wordPos + currentInfo.mCharacters.length == wordLen) {
-                            if (!currentInfo.isTerminal() || isDeletedNode) {
+                            if (!currentInfo.isTerminal()) {
                                 return FormatSpec.NOT_VALID_WORD;
                             } else {
                                 return ptNodePos;
@@ -219,62 +193,11 @@ public final class BinaryDictIOUtils {
                         break;
                     }
                 }
-
-                // If we found the next PtNode, it is under the file pointer.
-                // But if not, we are at the end of this node array so we expect to have
-                // a forward link address that we need to consult and possibly resume
-                // search on the next node array in the linked list.
                 if (foundNextPtNode) break;
-                if (!header.mFormatOptions.supportsDynamicUpdate()) {
-                    return FormatSpec.NOT_VALID_WORD;
-                }
-
-                final boolean hasValidForwardLinkAddress =
-                        dictDecoder.readAndFollowForwardLink();
-                if (!hasValidForwardLinkAddress || !dictDecoder.hasNextPtNodeArray()) {
-                    return FormatSpec.NOT_VALID_WORD;
-                }
+                return FormatSpec.NOT_VALID_WORD;
             } while(true);
         }
         return FormatSpec.NOT_VALID_WORD;
-    }
-
-    /**
-     * @return the size written, in bytes. Always 3 bytes.
-     */
-    @UsedForTesting
-    static int writeSInt24ToBuffer(final DictBuffer dictBuffer, final int value) {
-        final int absValue = Math.abs(value);
-        dictBuffer.put((byte)(((value < 0 ? 0x80 : 0) | (absValue >> 16)) & 0xFF));
-        dictBuffer.put((byte)((absValue >> 8) & 0xFF));
-        dictBuffer.put((byte)(absValue & 0xFF));
-        return 3;
-    }
-
-    /**
-     * @return the size written, in bytes. Always 3 bytes.
-     */
-    @UsedForTesting
-    static int writeSInt24ToStream(final OutputStream destination, final int value)
-            throws IOException {
-        final int absValue = Math.abs(value);
-        destination.write((byte)(((value < 0 ? 0x80 : 0) | (absValue >> 16)) & 0xFF));
-        destination.write((byte)((absValue >> 8) & 0xFF));
-        destination.write((byte)(absValue & 0xFF));
-        return 3;
-    }
-
-    @UsedForTesting
-    static void skipString(final DictBuffer dictBuffer,
-            final boolean hasMultipleChars) {
-        if (hasMultipleChars) {
-            int character = CharEncoding.readChar(dictBuffer);
-            while (character != FormatSpec.INVALID_CHARACTER) {
-                character = CharEncoding.readChar(dictBuffer);
-            }
-        } else {
-            CharEncoding.readChar(dictBuffer);
-        }
     }
 
     /**
@@ -356,30 +279,6 @@ public final class BinaryDictIOUtils {
     }
 
     /**
-     * Helper method to check whether the node is moved.
-     */
-    public static boolean isMovedPtNode(final int flags, final FormatOptions options) {
-        return options.supportsDynamicUpdate()
-                && ((flags & FormatSpec.MASK_CHILDREN_ADDRESS_TYPE) == FormatSpec.FLAG_IS_MOVED);
-    }
-
-    /**
-     * Helper method to check whether the dictionary can be updated dynamically.
-     */
-    public static boolean supportsDynamicUpdate(final FormatOptions options) {
-        return options.mVersion >= FormatSpec.FIRST_VERSION_WITH_DYNAMIC_UPDATE
-                && options.supportsDynamicUpdate();
-    }
-
-    /**
-     * Helper method to check whether the node is deleted.
-     */
-    public static boolean isDeletedPtNode(final int flags, final FormatOptions formatOptions) {
-        return formatOptions.supportsDynamicUpdate()
-                && ((flags & FormatSpec.MASK_CHILDREN_ADDRESS_TYPE) == FormatSpec.FLAG_IS_DELETED);
-    }
-
-    /**
      * Compute the binary size of the node count
      * @param count the node count
      * @return the size of the node count, either 1 or 2 bytes.
@@ -396,9 +295,7 @@ public final class BinaryDictIOUtils {
         }
     }
 
-    static int getChildrenAddressSize(final int optionFlags,
-            final FormatOptions formatOptions) {
-        if (formatOptions.supportsDynamicUpdate()) return FormatSpec.SIGNED_CHILDREN_ADDRESS_SIZE;
+    static int getChildrenAddressSize(final int optionFlags) {
         switch (optionFlags & FormatSpec.MASK_CHILDREN_ADDRESS_TYPE) {
             case FormatSpec.FLAG_CHILDREN_ADDRESS_TYPE_ONEBYTE:
                 return 1;
@@ -419,6 +316,7 @@ public final class BinaryDictIOUtils {
      * @param bigramFrequency compressed frequency
      * @return approximate bigram frequency
      */
+    @UsedForTesting
     public static int reconstructBigramFrequency(final int unigramFrequency,
             final int bigramFrequency) {
         final float stepSize = (FormatSpec.MAX_TERMINAL_FREQUENCY - unigramFrequency)

@@ -18,7 +18,6 @@ package com.android.inputmethod.latin.makedict;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.DictBuffer;
-import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.utils.ByteArrayDictBuffer;
 
 import java.io.File;
@@ -45,10 +44,9 @@ public interface DictDecoder {
     /**
      * Reads PtNode from ptNodePos.
      * @param ptNodePos the position of PtNode.
-     * @param formatOptions the format options.
      * @return PtNodeInfo.
      */
-    public PtNodeInfo readPtNode(final int ptNodePos, final FormatOptions formatOptions);
+    public PtNodeInfo readPtNode(final int ptNodePos);
 
     /**
      * Reads a buffer and returns the memory representation of the dictionary.
@@ -111,14 +109,6 @@ public interface DictDecoder {
      * Reads and returns the PtNode count out of a buffer and forwards the pointer.
      */
     public int readPtNodeCount();
-
-    /**
-     * Reads the forward link and advances the position.
-     *
-     * @return true if this method moves the file pointer, false otherwise.
-     */
-    public boolean readAndFollowForwardLink();
-    public boolean hasNextPtNodeArray();
 
     /**
      * Opens the dictionary file and makes DictBuffer.
