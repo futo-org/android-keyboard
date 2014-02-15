@@ -18,6 +18,7 @@
 #define LATINIME_PATRICIA_TRIE_POLICY_H
 
 #include <stdint.h>
+#include <vector>
 
 #include "defines.h"
 #include "suggest/core/policy/dictionary_structure_with_buffer_policy.h"
@@ -44,7 +45,8 @@ class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
                       - mHeaderPolicy.getSize()),
               mBigramListPolicy(mDictRoot), mShortcutListPolicy(mDictRoot),
               mPtNodeReader(mDictRoot, mDictBufferSize, &mBigramListPolicy, &mShortcutListPolicy),
-              mPtNodeArrayReader(mDictRoot, mDictBufferSize) {}
+              mPtNodeArrayReader(mDictRoot, mDictBufferSize),
+              mTerminalPtNodePositionsForIteratingWords() {}
 
     AK_FORCE_INLINE int getRootPosition() const {
         return 0;
@@ -130,10 +132,7 @@ class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     const WordProperty getWordProperty(const int *const codePoints,
             const int codePointCount) const;
 
-    int getNextWordAndNextToken(const int token, int *const outCodePoints) {
-        // getNextWordAndNextToken is not supported.
-        return 0;
-    }
+    int getNextWordAndNextToken(const int token, int *const outCodePoints);
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(PatriciaTriePolicy);
@@ -146,6 +145,7 @@ class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     const ShortcutListPolicy mShortcutListPolicy;
     const Ver2ParticiaTrieNodeReader mPtNodeReader;
     const Ver2PtNodeArrayReader mPtNodeArrayReader;
+    std::vector<int> mTerminalPtNodePositionsForIteratingWords;
 
     int createAndGetLeavingChildNode(const DicNode *const dicNode, const int ptNodePos,
             DicNodeVector *const childDicNodes) const;
