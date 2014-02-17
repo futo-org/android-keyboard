@@ -233,7 +233,9 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
             return false;
         }
         final int width = getWidth();
-        if (width <= 0) return false;
+        if (width <= 0) {
+            return false;
+        }
         mLayoutHelper.layoutImportantNotice(mImportantNoticeStrip, width);
         mStripVisibilityGroup.showImportantNoticeStrip();
         mImportantNoticeStrip.setOnClickListener(this);
@@ -429,9 +431,11 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
     }
 
     @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+    protected void onSizeChanged(final int w, final int h, final int oldw, final int oldh) {
         // Called by the framework when the size is known. Show the important notice if applicable.
         // This may be overriden by showing suggestions later, if applicable.
-        maybeShowImportantNoticeTitle(Settings.getInstance().getCurrent().mInputAttributes);
+        if (oldw <= 0 && w > 0) {
+            maybeShowImportantNoticeTitle(Settings.getInstance().getCurrent().mInputAttributes);
+        }
     }
 }
