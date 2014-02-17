@@ -668,12 +668,16 @@ public final class RichInputConnection {
             }
         }
 
+        final boolean hasUrlSpans =
+                SpannableStringUtils.hasUrlSpans(before, startIndexInBefore, before.length())
+                || SpannableStringUtils.hasUrlSpans(after, 0, endIndexInAfter);
         // We don't use TextUtils#concat because it copies all spans without respect to their
         // nature. If the text includes a PARAGRAPH span and it has been split, then
         // TextUtils#concat will crash when it tries to concat both sides of it.
         return new TextRange(
                 SpannableStringUtils.concatWithNonParagraphSuggestionSpansOnly(before, after),
-                        startIndexInBefore, before.length() + endIndexInAfter, before.length());
+                        startIndexInBefore, before.length() + endIndexInAfter, before.length(),
+                        hasUrlSpans);
     }
 
     public boolean isCursorTouchingWord(final SpacingAndPunctuations spacingAndPunctuations) {

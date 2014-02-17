@@ -31,6 +31,7 @@ public final class TextRange {
     private final int mCursorIndex;
 
     public final CharSequence mWord;
+    public final boolean mHasUrlSpans;
 
     public int getNumberOfCharsInWordBeforeCursor() {
         return mCursorIndex - mWordAtCursorStartIndex;
@@ -95,7 +96,7 @@ public final class TextRange {
                 }
             }
             if (spanStart == mWordAtCursorStartIndex && spanEnd == mWordAtCursorEndIndex) {
-                // If the span does not start and stop here, we ignore it. It probably extends
+                // If the span does not start and stop here, ignore it. It probably extends
                 // past the start or end of the word, as happens in missing space correction
                 // or EasyEditSpans put by voice input.
                 spans[writeIndex++] = spans[readIndex];
@@ -105,7 +106,7 @@ public final class TextRange {
     }
 
     public TextRange(final CharSequence textAtCursor, final int wordAtCursorStartIndex,
-            final int wordAtCursorEndIndex, final int cursorIndex) {
+            final int wordAtCursorEndIndex, final int cursorIndex, final boolean hasUrlSpans) {
         if (wordAtCursorStartIndex < 0 || cursorIndex < wordAtCursorStartIndex
                 || cursorIndex > wordAtCursorEndIndex
                 || wordAtCursorEndIndex > textAtCursor.length()) {
@@ -115,6 +116,7 @@ public final class TextRange {
         mWordAtCursorStartIndex = wordAtCursorStartIndex;
         mWordAtCursorEndIndex = wordAtCursorEndIndex;
         mCursorIndex = cursorIndex;
+        mHasUrlSpans = hasUrlSpans;
         mWord = mTextAtCursor.subSequence(mWordAtCursorStartIndex, mWordAtCursorEndIndex);
     }
 }
