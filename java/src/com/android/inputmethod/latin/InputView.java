@@ -31,6 +31,7 @@ public final class InputView extends LinearLayout {
     private final Rect mInputViewRect = new Rect();
     private KeyboardTopPaddingForwarder mKeyboardTopPaddingForwarder;
     private MoreSuggestionsViewCanceler mMoreSuggestionsViewCanceler;
+    private MotionEventForwarder<?, ?> mActiveForwarder;
 
     public InputView(final Context context, final AttributeSet attrs) {
         super(context, attrs, 0);
@@ -53,42 +54,62 @@ public final class InputView extends LinearLayout {
     }
 
     @Override
-    public boolean dispatchTouchEvent(final MotionEvent me) {
+    public boolean onInterceptTouchEvent(final MotionEvent me) {
         final Rect rect = mInputViewRect;
         getGlobalVisibleRect(rect);
-        final int x = (int)me.getX() + rect.left;
-        final int y = (int)me.getY() + rect.top;
+        final int index = me.getActionIndex();
+        final int x = (int)me.getX(index) + rect.left;
+        final int y = (int)me.getY(index) + rect.top;
 
-        // The touch events that hit the top padding of keyboard should be
-        // forwarded to {@link SuggestionStripView}.
-        if (mKeyboardTopPaddingForwarder.dispatchTouchEvent(x, y, me)) {
+        // The touch events that hit the top padding of keyboard should be forwarded to
+        // {@link SuggestionStripView}.
+        if (mKeyboardTopPaddingForwarder.onInterceptTouchEvent(x, y, me)) {
+            mActiveForwarder = mKeyboardTopPaddingForwarder;
             return true;
         }
+
         // To cancel {@link MoreSuggestionsView}, we should intercept a touch event to
         // {@link MainKeyboardView} and dismiss the {@link MoreSuggestionsView}.
-        if (mMoreSuggestionsViewCanceler.dispatchTouchEvent(x, y, me)) {
+        if (mMoreSuggestionsViewCanceler.onInterceptTouchEvent(x, y, me)) {
+            mActiveForwarder = mMoreSuggestionsViewCanceler;
             return true;
         }
-        return super.dispatchTouchEvent(me);
+
+        mActiveForwarder = null;
+        return false;
+    }
+
+    @Override
+    public boolean onTouchEvent(final MotionEvent me) {
+        if (mActiveForwarder == null) {
+            return super.onTouchEvent(me);
+        }
+
+        final Rect rect = mInputViewRect;
+        getGlobalVisibleRect(rect);
+        final int index = me.getActionIndex();
+        final int x = (int)me.getX(index) + rect.left;
+        final int y = (int)me.getY(index) + rect.top;
+        return mActiveForwarder.onTouchEvent(x, y, me);
     }
 
     /**
-     * This class forwards series of {@link MotionEvent}s from <code>Forwarder</code> view to
-     * <code>Receiver</code> view.
+     * This class forwards series of {@link MotionEvent}s from <code>SenderView</code> to
+     * <code>ReceiverView</code>.
      *
-     * @param <Sender> a {@link View} that may send a {@link MotionEvent} to <Receiver>.
-     * @param <Receiver> a {@link View} that receives forwarded {@link MotionEvent} from
-     *     <Forwarder>.
+     * @param <SenderView> a {@link View} that may send a {@link MotionEvent} to <ReceiverView>.
+     * @param <ReceiverView> a {@link View} that receives forwarded {@link MotionEvent} from
+     *     <SenderView>.
      */
-    private static abstract class MotionEventForwarder<Sender extends View, Receiver extends View> {
-        protected final Sender mSenderView;
-        protected final Receiver mReceiverView;
+    private static abstract class
+            MotionEventForwarder<SenderView extends View, ReceiverView extends View> {
+        protected final SenderView mSenderView;
+        protected final ReceiverView mReceiverView;
 
-        private boolean mIsForwardingEvent;
         protected final Rect mEventSendingRect = new Rect();
         protected final Rect mEventReceivingRect = new Rect();
 
-        public MotionEventForwarder(final Sender senderView, final Receiver receiverView) {
+        public MotionEventForwarder(final SenderView senderView, final ReceiverView receiverView) {
             mSenderView = senderView;
             mReceiverView = receiverView;
         }
@@ -96,12 +117,12 @@ public final class InputView extends LinearLayout {
         // Return true if a touch event of global coordinate x, y needs to be forwarded.
         protected abstract boolean needsToForward(final int x, final int y);
 
-        // Translate global x-coordinate to <code>Receiver</code> local coordinate.
+        // Translate global x-coordinate to <code>ReceiverView</code> local coordinate.
         protected int translateX(final int x) {
             return x - mEventReceivingRect.left;
         }
 
-        // Translate global y-coordinate to <code>Receiver</code> local coordinate.
+        // Translate global y-coordinate to <code>ReceiverView</code> local coordinate.
         protected int translateY(final int y) {
             return y - mEventReceivingRect.top;
         }
@@ -109,49 +130,36 @@ public final class InputView extends LinearLayout {
         // Callback when a {@link MotionEvent} is forwarded.
         protected void onForwardingEvent(final MotionEvent me) {}
 
-        // Dispatches a {@link MotioneEvent} to <code>Receiver</code> if needed and returns true.
-        // Otherwise returns false.
-        public boolean dispatchTouchEvent(final int x, final int y, final MotionEvent me) {
-            // Forwards a {link MotionEvent} only if both <code>Sender</code> and
-            // <code>Receiver</code> are visible.
+        // Returns true if a {@link MotionEvent} is needed to be forwarded to
+        // <code>ReceiverView</code>. Otherwise returns false.
+        public boolean onInterceptTouchEvent(final int x, final int y, final MotionEvent me) {
+            // Forwards a {link MotionEvent} only if both <code>SenderView</code> and
+            // <code>ReceiverView</code> are visible.
             if (mSenderView.getVisibility() != View.VISIBLE ||
                     mReceiverView.getVisibility() != View.VISIBLE) {
                 return false;
             }
-            final Rect sendingRect = mEventSendingRect;
-            mSenderView.getGlobalVisibleRect(sendingRect);
-            if (!mIsForwardingEvent && !sendingRect.contains(x, y)) {
+            mSenderView.getGlobalVisibleRect(mEventSendingRect);
+            if (!mEventSendingRect.contains(x, y)) {
                 return false;
             }
 
-            boolean shouldForwardToReceiver = false;
-
-            switch (me.getActionMasked()) {
-            case MotionEvent.ACTION_DOWN:
-                // If the down event happens in the forwarding area, successive {@link MotionEvent}s
-                // should be forwarded.
+            if (me.getActionMasked() == MotionEvent.ACTION_DOWN) {
+                // If the down event happens in the forwarding area, successive
+                // {@link MotionEvent}s should be forwarded to <code>ReceiverView</code>.
                 if (needsToForward(x, y)) {
-                    mIsForwardingEvent = true;
-                    shouldForwardToReceiver = true;
+                    return true;
                 }
-                break;
-            case MotionEvent.ACTION_MOVE:
-                shouldForwardToReceiver = mIsForwardingEvent;
-                break;
-            case MotionEvent.ACTION_UP:
-            case MotionEvent.ACTION_CANCEL:
-                shouldForwardToReceiver = mIsForwardingEvent;
-                mIsForwardingEvent = false;
-                break;
             }
 
-            if (!shouldForwardToReceiver) {
-                return false;
-            }
+            return false;
+        }
 
-            final Rect receivingRect = mEventReceivingRect;
-            mReceiverView.getGlobalVisibleRect(receivingRect);
-            // Translate global coordinates to <code>Receiver</code> local coordinates.
+        // Returns true if a {@link MotionEvent} is forwarded to <code>ReceiverView</code>.
+        // Otherwise returns false.
+        public boolean onTouchEvent(final int x, final int y, final MotionEvent me) {
+            mReceiverView.getGlobalVisibleRect(mEventReceivingRect);
+            // Translate global coordinates to <code>ReceiverView</code> local coordinates.
             me.setLocation(translateX(x), translateY(y));
             mReceiverView.dispatchTouchEvent(me);
             onForwardingEvent(me);
@@ -189,8 +197,7 @@ public final class InputView extends LinearLayout {
         protected int translateY(final int y) {
             final int translatedY = super.translateY(y);
             if (isInKeyboardTopPadding(y)) {
-                // The forwarded event should have coordinates that are inside of
-                // the target.
+                // The forwarded event should have coordinates that are inside of the target.
                 return Math.min(translatedY, mEventReceivingRect.height() - 1);
             }
             return translatedY;
@@ -200,8 +207,8 @@ public final class InputView extends LinearLayout {
     /**
      * This class forwards {@link MotionEvent}s happened in the {@link MainKeyboardView} to
      * {@link SuggestionStripView} when the {@link MoreSuggestionsView} is showing.
-     * {@link SuggestionStripView} dismisses {@link MoreSuggestionsView} when it receives those
-     * events.
+     * {@link SuggestionStripView} dismisses {@link MoreSuggestionsView} when it receives any event
+     * outside of it.
      */
     private static class MoreSuggestionsViewCanceler
             extends MotionEventForwarder<MainKeyboardView, SuggestionStripView> {
