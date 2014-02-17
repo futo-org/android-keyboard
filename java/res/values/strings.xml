@@ -89,8 +89,6 @@
 
     <!-- Option name for enabling the use by the keyboards of sent/received messages, e-mail and typing history to improve suggestion accuracy [CHAR LIMIT=25] -->
     <string name="use_personalized_dicts">Personalized suggestions</string>
-    <!-- Description for option enabling the use by the keyboards of sent/received messages, e-mail and typing history to improve suggestion accuracy [CHAR LIMIT=68] -->
-    <string name="use_personalized_dicts_summary">Learn from your communications and typed data to improve suggestions</string>
 
     <!-- Option name for enabling or disabling the double-space period feature that lets double tap on spacebar insert a period followed by a space [CHAR LIMIT=30] -->
     <string name="use_double_space_period">Double-space period</string>
@@ -606,6 +604,8 @@ mobile devices. [CHAR LIMIT=25] -->
 
     <!-- Standard message to dismiss a dialog box -->
     <string name="cancel">Cancel</string>
+    <!-- Title of the button in a dialog box. The button takes the user to the keyboard settings. [CHAR LIMIT=15] -->
+    <string name="go_to_settings">Settings</string>
 
     <!-- Action to download and install a dictionary [CHAR_LIMIT=15] -->
     <string name="install_dict">Install</string>

@@ -55,6 +55,7 @@
             android:text="@string/important_notice_title"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:padding="6sp"
             android:textSize="16sp"
             style="?attr/suggestionWordStyle" />
     </LinearLayout>
