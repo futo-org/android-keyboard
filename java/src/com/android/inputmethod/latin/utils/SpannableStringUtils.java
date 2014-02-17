@@ -22,6 +22,7 @@ import android.text.Spanned;
 import android.text.SpannedString;
 import android.text.TextUtils;
 import android.text.style.SuggestionSpan;
+import android.text.style.URLSpan;
 
 public final class SpannableStringUtils {
     /**
@@ -111,5 +112,17 @@ public final class SpannableStringUtils {
         }
 
         return new SpannedString(ss);
+    }
+
+    public static boolean hasUrlSpans(final CharSequence text,
+            final int startIndex, final int endIndex) {
+        if (!(text instanceof Spanned)) {
+            return false; // Not spanned, so no link
+        }
+        final Spanned spanned = (Spanned)text;
+        // getSpans(x, y) does not return spans that start on x or end on y. x-1, y+1 does the
+        // trick, and works in all cases even if startIndex <= 0 or endIndex >= text.length().
+        final URLSpan[] spans = spanned.getSpans(startIndex - 1, endIndex + 1, URLSpan.class);
+        return null != spans && spans.length > 0;
     }
 }
