@@ -325,7 +325,6 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         final int pointY = -layoutHelper.mMoreSuggestionsBottomGap;
         moreKeysPanel.showMoreKeysPanel(this, mMoreSuggestionsController, pointX, pointY,
                 mMoreSuggestionsListener);
-        mMoreSuggestionsMode = MORE_SUGGESTIONS_CHECKING_MODAL_OR_SLIDING;
         mOriginX = mLastX;
         mOriginY = mLastY;
         for (int i = 0; i < mSuggestionsCountInStrip; i++) {
@@ -334,11 +333,8 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         return true;
     }
 
-    // Working variables for onLongClick and dispatchTouchEvent.
-    private int mMoreSuggestionsMode = MORE_SUGGESTIONS_IN_MODAL_MODE;
-    private static final int MORE_SUGGESTIONS_IN_MODAL_MODE = 0;
-    private static final int MORE_SUGGESTIONS_CHECKING_MODAL_OR_SLIDING = 1;
-    private static final int MORE_SUGGESTIONS_IN_SLIDING_MODE = 2;
+    // Working variables for {@link #onLongClick(View)} and
+    // {@link onInterceptTouchEvent(MotionEvent)}.
     private int mLastX;
     private int mLastY;
     private int mOriginX;
@@ -358,36 +354,39 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
     };
 
     @Override
-    public boolean dispatchTouchEvent(final MotionEvent me) {
+    public boolean onInterceptTouchEvent(final MotionEvent me) {
         if (!mMoreSuggestionsView.isShowingInParent()) {
             mLastX = (int)me.getX();
             mLastY = (int)me.getY();
-            if (mMoreSuggestionsSlidingDetector.onTouchEvent(me)) {
-                return true;
-            }
-            return super.dispatchTouchEvent(me);
+            return mMoreSuggestionsSlidingDetector.onTouchEvent(me);
         }
 
         final int action = me.getAction();
         final int index = me.getActionIndex();
         final int x = (int)me.getX(index);
         final int y = (int)me.getY(index);
-
-        if (mMoreSuggestionsMode == MORE_SUGGESTIONS_CHECKING_MODAL_OR_SLIDING) {
-            if (Math.abs(x - mOriginX) >= mMoreSuggestionsModalTolerance
-                    || mOriginY - y >= mMoreSuggestionsModalTolerance) {
-                // Decided to be in the sliding input mode only when the touch point has been moved
-                // upward.
-                mMoreSuggestionsMode = MORE_SUGGESTIONS_IN_SLIDING_MODE;
-            } else if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_POINTER_UP) {
-                // Decided to be in the modal input mode
-                mMoreSuggestionsMode = MORE_SUGGESTIONS_IN_MODAL_MODE;
-                mMoreSuggestionsView.adjustVerticalCorrectionForModalMode();
-            }
+        if (Math.abs(x - mOriginX) >= mMoreSuggestionsModalTolerance
+                || mOriginY - y >= mMoreSuggestionsModalTolerance) {
+            // Decided to be in the sliding input mode only when the touch point has been moved
+            // upward. Further {@link MotionEvent}s will be delivered to
+            // {@link #onTouchEvent(MotionEvent)}.
             return true;
         }
 
-        // MORE_SUGGESTIONS_IN_SLIDING_MODE
+        if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_POINTER_UP) {
+            // Decided to be in the modal input mode.
+            mMoreSuggestionsView.adjustVerticalCorrectionForModalMode();
+        }
+        return false;
+    }
+
+    @Override
+    public boolean onTouchEvent(final MotionEvent me) {
+        // In the sliding input mode. {@link MotionEvent} should be forwarded to
+        // {@link MoreSuggestionsView}.
+        final int index = me.getActionIndex();
+        final int x = (int)me.getX(index);
+        final int y = (int)me.getY(index);
         me.setLocation(mMoreSuggestionsView.translateX(x), mMoreSuggestionsView.translateY(y));
         mMoreSuggestionsView.onTouchEvent(me);
         return true;
