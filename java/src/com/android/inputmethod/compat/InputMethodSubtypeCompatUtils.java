@@ -19,7 +19,10 @@ package com.android.inputmethod.compat;
 import android.os.Build;
 import android.view.inputmethod.InputMethodSubtype;
 
+import com.android.inputmethod.latin.Constants;
+
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 
 public final class InputMethodSubtypeCompatUtils {
     private static final String TAG = InputMethodSubtypeCompatUtils.class.getSimpleName();
@@ -37,6 +40,12 @@ public final class InputMethodSubtypeCompatUtils {
             }
         }
     }
+
+    // Note that {@link InputMethodSubtype#isAsciiCapable()} has been introduced in API level 19
+    // (Build.VERSION_CODE.KITKAT).
+    private static final Method METHOD_isAsciiCapable = CompatUtils.getMethod(
+            InputMethodSubtype.class, "isAsciiCapable");
+
     private InputMethodSubtypeCompatUtils() {
         // This utility class is not publicly instantiable.
     }
@@ -52,5 +61,10 @@ public final class InputMethodSubtypeCompatUtils {
         return (InputMethodSubtype) CompatUtils.newInstance(CONSTRUCTOR_INPUT_METHOD_SUBTYPE,
                 nameId, iconId, locale, mode, extraValue, isAuxiliary,
                 overridesImplicitlyEnabledSubtype, id);
+    }
+
+    public static boolean isAsciiCapable(final InputMethodSubtype subtype) {
+        return (Boolean)CompatUtils.invoke(subtype, false, METHOD_isAsciiCapable)
+                || subtype.containsExtraValueKey(Constants.Subtype.ExtraValue.ASCII_CAPABLE);
     }
 }
