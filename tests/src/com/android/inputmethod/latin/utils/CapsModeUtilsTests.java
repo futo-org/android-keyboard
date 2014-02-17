@@ -22,6 +22,7 @@ import android.test.suitebuilder.annotation.SmallTest;
 import android.text.TextUtils;
 
 import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
+import com.android.inputmethod.latin.utils.LocaleUtils;
 
 import java.util.Locale;
 
@@ -109,5 +110,19 @@ public class CapsModeUtilsTests extends AndroidTestCase {
         allPathsForCaps("Liebe Sara,  \n  ", c | w | s, sp, false);
         allPathsForCaps("Liebe Sara  \n  ", c | w | s, sp, false);
         allPathsForCaps("Liebe Sara.\n  ", c | w | s, sp, false);
+
+        // Test armenian period
+        sp = job.runInLocale(res, LocaleUtils.constructLocaleFromString("hy_AM"));
+        assertTrue("Period is not sentence separator in Armenian",
+                !sp.isSentenceSeparator('.'));
+        assertTrue("Sentence separator is Armenian period in Armenian",
+                sp.isSentenceSeparator(0x589));
+        // No space : capitalize only if MODE_CHARACTERS
+        allPathsForCaps("Word", c, sp, false);
+        allPathsForCaps("Word.", c, sp, false);
+        // Space, but no armenian period : capitalize if MODE_WORDS but not SENTENCES
+        allPathsForCaps("Word. ", c | w, sp, false);
+        // Armenian period : capitalize if MODE_SENTENCES
+        allPathsForCaps("Word\u0589 ", c | w | s, sp, false);
     }
 }
