@@ -35,6 +35,7 @@ import android.view.inputmethod.InputMethodSubtype;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 
+import com.android.inputmethod.compat.InputMethodSubtypeCompatUtils;
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
@@ -290,17 +291,25 @@ public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
 
     protected void changeLanguageWithoutWait(final String locale) {
         mEditText.mCurrentLocale = LocaleUtils.constructLocaleFromString(locale);
-        final InputMethodSubtype subtype = new InputMethodSubtype(
-            R.string.subtype_no_language_qwerty, R.drawable.ic_ime_switcher_dark,
-            locale, "keyboard", "KeyboardLayoutSet="
-                    // TODO: this is forcing a QWERTY keyboard for all locales, which is wrong.
-                    // It's still better than using whatever keyboard is the current one, but we
-                    // should actually use the default keyboard for this locale.
-                    + SubtypeLocaleUtils.QWERTY
-                    + "," + Constants.Subtype.ExtraValue.ASCII_CAPABLE
-                    + "," + Constants.Subtype.ExtraValue.ENABLED_WHEN_DEFAULT_IS_NOT_ASCII_CAPABLE
-                    + "," + Constants.Subtype.ExtraValue.EMOJI_CAPABLE,
-                    false /* isAuxiliary */, false /* overridesImplicitlyEnabledSubtype */);
+        // TODO: this is forcing a QWERTY keyboard for all locales, which is wrong.
+        // It's still better than using whatever keyboard is the current one, but we
+        // should actually use the default keyboard for this locale.
+        // TODO: Use {@link InputMethodSubtype.InputMethodSubtypeBuilder} directly or indirectly so
+        // that {@link InputMethodSubtype#isAsciiCapable} can return the correct value.
+        final String EXTRA_VALUE_FOR_TEST =
+                "KeyboardLayoutSet=" + SubtypeLocaleUtils.QWERTY
+                + "," + Constants.Subtype.ExtraValue.ASCII_CAPABLE
+                + "," + Constants.Subtype.ExtraValue.ENABLED_WHEN_DEFAULT_IS_NOT_ASCII_CAPABLE
+                + "," + Constants.Subtype.ExtraValue.EMOJI_CAPABLE;
+        final InputMethodSubtype subtype = InputMethodSubtypeCompatUtils.newInputMethodSubtype(
+                R.string.subtype_no_language_qwerty,
+                R.drawable.ic_ime_switcher_dark,
+                locale,
+                Constants.Subtype.KEYBOARD_MODE,
+                EXTRA_VALUE_FOR_TEST,
+                false /* isAuxiliary */,
+                false /* overridesImplicitlyEnabledSubtype */,
+                0 /* id */);
         SubtypeSwitcher.getInstance().forceSubtype(subtype);
         mLatinIME.loadKeyboard();
         runMessages();
