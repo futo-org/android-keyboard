@@ -66,6 +66,7 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
             "pref_include_other_imes_in_language_switch_list";
     public static final String PREF_KEYBOARD_LAYOUT = "pref_keyboard_layout_20110916";
     public static final String PREF_CUSTOM_INPUT_STYLES = "custom_input_styles";
+    // TODO: consolidate key preview dismiss delay with the key preview animation parameters.
     public static final String PREF_KEY_PREVIEW_POPUP_DISMISS_DELAY =
             "pref_key_preview_popup_dismiss_delay";
     public static final String PREF_BIGRAM_PREDICTIONS = "next_word_prediction";
