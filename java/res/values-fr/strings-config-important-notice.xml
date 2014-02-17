@@ -22,4 +22,5 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="important_notice_title" msgid="1836002733109536160"></string>
     <string name="important_notice_contents" msgid="897137043719116217"></string>
+    <string name="use_personalized_dicts_summary" msgid="4331467814162666438">"Améliorer suggestions en fonction des messages et données saisies"</string>
 </resources>

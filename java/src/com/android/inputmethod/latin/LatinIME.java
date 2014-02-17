@@ -1176,14 +1176,22 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             @Override
             public void onClick(final DialogInterface di, final int position) {
                 di.dismiss();
-                ImportantNoticeUtils.updateLastImportantNoticeVersion(context);
-                setNeutralSuggestionStrip();
+                if (position == DialogInterface.BUTTON_POSITIVE) {
+                    ImportantNoticeUtils.updateLastImportantNoticeVersion(context);
+                    setNeutralSuggestionStrip();
+                    return;
+                }
+                if (position == DialogInterface.BUTTON_NEGATIVE) {
+                    launchSettings();
+                    return;
+                }
             }
         };
         final AlertDialog.Builder builder =
                 new AlertDialog.Builder(context, AlertDialog.THEME_HOLO_DARK);
         builder.setMessage(R.string.important_notice_contents)
-                .setPositiveButton(android.R.string.ok, listener);
+                .setPositiveButton(android.R.string.ok, listener)
+                .setNegativeButton(R.string.go_to_settings, listener);
         showOptionDialog(builder.create(), true /* cancelable */);
     }
 
@@ -1610,13 +1618,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mainKeyboardView.closing();
         }
         launchSubActivity(SettingsActivity.class);
-    }
-
-    public void launchKeyboardedDialogActivity(final Class<? extends Activity> activityClass) {
-        // Put the text in the attached EditText into a safe, saved state before switching to a
-        // new activity that will also use the soft keyboard.
-        mInputLogic.commitTyped(mSettings.getCurrent(), LastComposedWord.NOT_A_SEPARATOR);
-        launchSubActivity(activityClass);
     }
 
     private void launchSubActivity(final Class<? extends Activity> activityClass) {
