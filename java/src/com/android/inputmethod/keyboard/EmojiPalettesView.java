@@ -25,6 +25,7 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
@@ -34,6 +35,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Pair;
 import android.util.SparseArray;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -84,6 +86,8 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
     private EmojiPalettesAdapter mEmojiPalettesAdapter;
     private final EmojiLayoutParams mEmojiLayoutParams;
 
+    private TextView mAlphabetKeyLeft;
+    private TextView mAlphabetKeyRight;
     private TabHost mTabHost;
     private ViewPager mEmojiPager;
     private int mCurrentPagerPosition = 0;
@@ -487,20 +491,23 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
         deleteKey.setTag(Constants.CODE_DELETE);
         deleteKey.setOnTouchListener(mDeleteKeyOnTouchListener);
 
-        // alphabetKey, alphabetKey2, and spaceKey depend on {@link View.OnClickListener} as well as
-        // {@link View.OnTouchListener}. {@link View.OnTouchListener} is used as the trigger of
-        // key-press, while {@link View.OnClickListener} is used as the trigger of key-release which
-        // does not occur if the event is canceled by moving off the finger from the view.
-        final ImageView alphabetKey = (ImageView)findViewById(R.id.emoji_keyboard_alphabet);
-        alphabetKey.setBackgroundResource(mEmojiFunctionalKeyBackgroundId);
-        alphabetKey.setTag(Constants.CODE_ALPHA_FROM_EMOJI);
-        alphabetKey.setOnTouchListener(this);
-        alphabetKey.setOnClickListener(this);
-        final ImageView alphabetKey2 = (ImageView)findViewById(R.id.emoji_keyboard_alphabet2);
-        alphabetKey2.setBackgroundResource(mEmojiFunctionalKeyBackgroundId);
-        alphabetKey2.setTag(Constants.CODE_ALPHA_FROM_EMOJI);
-        alphabetKey2.setOnTouchListener(this);
-        alphabetKey2.setOnClickListener(this);
+        // {@link #mAlphabetKeyLeft}, {@link #mAlphabetKeyRight, and spaceKey depend on
+        // {@link View.OnClickListener} as well as {@link View.OnTouchListener}.
+        // {@link View.OnTouchListener} is used as the trigger of key-press, while
+        // {@link View.OnClickListener} is used as the trigger of key-release which does not occur
+        // if the event is canceled by moving off the finger from the view.
+        // The text on alphabet keys are set at
+        // {@link #startEmojiPalettes(String,int,float,Typeface)}.
+        mAlphabetKeyLeft = (TextView)findViewById(R.id.emoji_keyboard_alphabet_left);
+        mAlphabetKeyLeft.setBackgroundResource(mEmojiFunctionalKeyBackgroundId);
+        mAlphabetKeyLeft.setTag(Constants.CODE_ALPHA_FROM_EMOJI);
+        mAlphabetKeyLeft.setOnTouchListener(this);
+        mAlphabetKeyLeft.setOnClickListener(this);
+        mAlphabetKeyRight = (TextView)findViewById(R.id.emoji_keyboard_alphabet_right);
+        mAlphabetKeyRight.setBackgroundResource(mEmojiFunctionalKeyBackgroundId);
+        mAlphabetKeyRight.setTag(Constants.CODE_ALPHA_FROM_EMOJI);
+        mAlphabetKeyRight.setOnTouchListener(this);
+        mAlphabetKeyRight.setOnClickListener(this);
         final ImageView spaceKey = (ImageView)findViewById(R.id.emoji_keyboard_space);
         spaceKey.setBackgroundResource(mKeyBackgroundId);
         spaceKey.setTag(Constants.CODE_SPACE);
@@ -627,10 +634,20 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
         // TODO:
     }
 
-    public void startEmojiPalettes() {
+    // Hack: These parameters are hacky.
+    public void startEmojiPalettes(final String switchToAlphaLabel, final int switchToAlphaColor,
+            final float switchToAlphaSize, final Typeface switchToAlphaTypeface) {
         if (DEBUG_PAGER) {
             Log.d(TAG, "allocate emoji palettes memory " + mCurrentPagerPosition);
         }
+        mAlphabetKeyLeft.setText(switchToAlphaLabel);
+        mAlphabetKeyLeft.setTextColor(switchToAlphaColor);
+        mAlphabetKeyLeft.setTextSize(TypedValue.COMPLEX_UNIT_PX, switchToAlphaSize);
+        mAlphabetKeyLeft.setTypeface(switchToAlphaTypeface);
+        mAlphabetKeyRight.setText(switchToAlphaLabel);
+        mAlphabetKeyRight.setTextColor(switchToAlphaColor);
+        mAlphabetKeyRight.setTextSize(TypedValue.COMPLEX_UNIT_PX, switchToAlphaSize);
+        mAlphabetKeyRight.setTypeface(switchToAlphaTypeface);
         mEmojiPager.setAdapter(mEmojiPalettesAdapter);
         mEmojiPager.setCurrentItem(mCurrentPagerPosition);
     }

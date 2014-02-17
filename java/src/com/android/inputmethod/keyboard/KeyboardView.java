@@ -582,6 +582,7 @@ public class KeyboardView extends View {
             paint.setTypeface(mKeyDrawParams.mTypeface);
             paint.setTextSize(mKeyDrawParams.mLabelSize);
         } else {
+            paint.setColor(key.selectTextColor(mKeyDrawParams));
             paint.setTypeface(key.selectTypeface(mKeyDrawParams));
             paint.setTextSize(key.selectTextSize(mKeyDrawParams));
         }
