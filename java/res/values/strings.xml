@@ -337,29 +337,39 @@
     <!-- Title of the item to change the keyboard theme [CHAR LIMIT=20]-->
     <string name="keyboard_layout">Keyboard theme</string>
 
-    <!-- Description for English (United Kingdom) keyboard subtype [CHAR LIMIT=25] -->
+    <!-- Description for English (UK) keyboard subtype [CHAR LIMIT=25]
+         (UK) should be an abbreviation of United Kingdom to fit in the CHAR LIMIT. -->
     <string name="subtype_en_GB">English (UK)</string>
-    <!-- Description for English (United States) keyboard subtype [CHAR LIMIT=25] -->
+    <!-- Description for English (US) keyboard subtype [CHAR LIMIT=25]
+         (US) should be an abbreviation of United States to fit in the CHAR LIMIT. -->
     <string name="subtype_en_US">English (US)</string>
-    <!-- Description for Spanish (United States) keyboard subtype [CHAR LIMIT=25] -->
+    <!-- Description for Spanish (US) keyboard subtype [CHAR LIMIT=25]
+         (US) should be an abbreviation of United States to fit in the CHAR LIMIT. -->
     <string name="subtype_es_US">Spanish (US)</string>
-    <!-- Description for English (United Kingdom) keyboard subtype with explicit keyboard layout [CHAR LIMIT=25]
+    <!-- Description for English (UK) keyboard subtype with explicit keyboard layout [CHAR LIMIT=25]
+         (UK) should be an abbreviation of United Kingdom to fit in the CHAR LIMIT.
          This should be identical to subtype_en_GB aside from the trailing (%s). -->
     <string name="subtype_with_layout_en_GB">English (UK) (<xliff:g id="KEYBOARD_LAYOUT" example="QWERTY">%s</xliff:g>)</string>
-    <!-- Description for English (United States) keyboard subtype with explicit keyboard layout [CHAR LIMIT=25]
+    <!-- Description for English (US) keyboard subtype with explicit keyboard layout [CHAR LIMIT=25]
+         (US) should be an abbreviation of United States to fit in the CHAR LIMIT.
          This should be identical to subtype_en_US aside from the trailing (%s). -->
     <string name="subtype_with_layout_en_US">English (US) (<xliff:g id="KEYBOARD_LAYOUT" example="QWERTY">%s</xliff:g>)</string>
-    <!-- Description for Spanish (United States) keyboard subtype with explicit keyboard layout [CHAR LIMIT=25]
+    <!-- Description for Spanish (US) keyboard subtype with explicit keyboard layout [CHAR LIMIT=25]
+         (US) should be an abbreviation of United Statesn to fit in the CHAR LIMIT.
          This should be identical to subtype_es_US aside from the trailing (%s). -->
     <string name="subtype_with_layout_es_US">Spanish (US) (<xliff:g id="KEYBOARD_LAYOUT" example="QWERTY">%s</xliff:g>)</string>
-    <!-- Description for Nepali (Traditional) keyboard subtype [CHAR LIMIT=25] -->
+    <!-- Description for Nepali (Traditional) keyboard subtype [CHAR LIMIT=25]
+         (Traditional) can be an abbreviation to fit in the CHAR LIMIT. -->
     <string name="subtype_nepali_traditional"><xliff:g id="LANGUAGE_NAME" example="Nepali">%s</xliff:g> (Traditional)</string>
     <!-- TODO: Uncomment once we can handle IETF language tag with script name specified.
          Description for Serbian Cyrillic keyboard subtype [CHAR LIMIT=25]
+         (Cyrillic) can be an abbreviation to fit in the CHAR LIMIT.
     <string name="subtype_serbian_cyrillic">Serbian (Cyrillic)</string>
          Description for Serbian Latin keyboard subtype [CHAR LIMIT=25]
+         (Latin) can be an abbreviation to fit in the CHAR LIMIT.
     <string name="subtype_serbian_latin">Serbian (Latin)</string>
          Description for Serbian Latin keyboard subtype with explicit keyboard layout [CHAR LIMIT=25]
+         (Latin) can be an abbreviation to fit in the CHAR LIMIT.
          This should be identical to subtype_serbian_latin aside from the trailing (%s).
     <string name="subtype_with_layout_sr-Latn">Serbian (Latin) (<xliff:g id="KEYBOARD_LAYOUT" example="QWERTY">%s</xliff:g>)</string>
     -->
