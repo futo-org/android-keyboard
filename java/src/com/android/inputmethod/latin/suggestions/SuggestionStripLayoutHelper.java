@@ -44,7 +44,6 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.android.inputmethod.compat.TextViewCompatUtils;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.PunctuationSuggestions;
 import com.android.inputmethod.latin.R;
@@ -506,15 +505,10 @@ final class SuggestionStripLayoutHelper {
     }
 
     public void layoutImportantNotice(final View importantNoticeStrip, final int stripWidth) {
-        final Resources res = importantNoticeStrip.getResources();
-        final Drawable infoIcon = res.getDrawable(R.drawable.sym_keyboard_info_holo_dark);
-        final Drawable moreIcon = res.getDrawable(R.drawable.sym_keyboard_more_holo_dark);
-        final int width = stripWidth - infoIcon.getIntrinsicWidth() - moreIcon.getIntrinsicWidth();
         final TextView titleView = (TextView)importantNoticeStrip.findViewById(
                 R.id.important_notice_title);
+        final int width = stripWidth - titleView.getPaddingLeft() - titleView.getPaddingRight();
         titleView.setTextColor(mColorAutoCorrect);
-        TextViewCompatUtils.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                titleView, infoIcon, null, moreIcon, null);
         final CharSequence importantNoticeTitle = titleView.getText();
         titleView.setTextScaleX(1.0f); // Reset textScaleX.
         final float titleScaleX = getTextScaleX(
