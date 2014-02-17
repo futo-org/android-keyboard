@@ -175,6 +175,7 @@
                 android:fragment="com.android.inputmethod.latin.settings.AdditionalSubtypeSettings"
                 android:key="custom_input_styles"
                 android:title="@string/custom_input_styles_title" />
+            <!-- TODO: consolidate key preview dismiss delay with the key preview animation parameters. -->
             <ListPreference
                 android:key="pref_key_preview_popup_dismiss_delay"
                 android:title="@string/key_preview_popup_dismiss_delay" />

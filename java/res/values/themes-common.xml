@@ -77,6 +77,7 @@
         <item name="ignoreAltCodeKeyTimeout">@integer/config_ignore_alt_code_key_timeout</item>
         <item name="keyPreviewLayout">@layout/key_preview</item>
         <item name="keyPreviewHeight">@dimen/config_key_preview_height</item>
+        <!-- TODO: consolidate key preview linger timeout with the key preview animation parameters. -->
         <item name="keyPreviewLingerTimeout">@integer/config_key_preview_linger_timeout</item>
         <item name="moreKeysKeyboardLayout">@layout/more_keys_keyboard</item>
         <item name="showMoreKeysKeyboardAtTouchedPoint">@bool/config_show_more_keys_keyboard_at_touched_point</item>

@@ -169,6 +169,7 @@ public final class SettingsFragment extends InputMethodSettingsFragment
             removePreference(Settings.PREF_VIBRATION_DURATION_SETTINGS, advancedSettings);
         }
 
+        // TODO: consolidate key preview dismiss delay with the key preview animation parameters.
         if (!Settings.readFromBuildConfigIfToShowKeyPreviewPopupOption(res)) {
             removePreference(Settings.PREF_POPUP_ON, generalSettings);
             removePreference(Settings.PREF_KEY_PREVIEW_POPUP_DISMISS_DELAY, advancedSettings);
