@@ -62,6 +62,7 @@
         </switch>
         <Key
             latin:keyStyle="defaultEnterKeyStyle"
+            latin:keySpec="!icon/enter_key|!code/key_enter"
             latin:keyWidth="15.384%p" />
         <switch>
             <case
