@@ -31,6 +31,7 @@ public final class InputAttributes {
 
     final public String mTargetApplicationPackageName;
     final public boolean mInputTypeNoAutoCorrect;
+    final public boolean mIsPasswordField;
     final public boolean mIsSettingsSuggestionStripOn;
     final public boolean mApplicationSpecifiedCompletionOn;
     final public boolean mShouldInsertSpacesAutomatically;
@@ -56,6 +57,7 @@ public final class InputAttributes {
                 Log.w(TAG, String.format("Unexpected input class: inputType=0x%08x"
                         + " imeOptions=0x%08x", inputType, editorInfo.imeOptions));
             }
+            mIsPasswordField = false;
             mIsSettingsSuggestionStripOn = false;
             mInputTypeNoAutoCorrect = false;
             mApplicationSpecifiedCompletionOn = false;
@@ -71,10 +73,11 @@ public final class InputAttributes {
             final boolean flagAutoComplete =
                     0 != (inputType & InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE);
 
+            mIsPasswordField = InputTypeUtils.isPasswordInputType(inputType)
+                    || InputTypeUtils.isVisiblePasswordInputType(inputType);
             // TODO: Have a helper method in InputTypeUtils
             // Make sure that passwords are not displayed in {@link SuggestionStripView}.
-            if (InputTypeUtils.isPasswordInputType(inputType)
-                    || InputTypeUtils.isVisiblePasswordInputType(inputType)
+            if (mIsPasswordField
                     || InputTypeUtils.isEmailVariation(variation)
                     || InputType.TYPE_TEXT_VARIATION_URI == variation
                     || InputType.TYPE_TEXT_VARIATION_FILTER == variation

@@ -1327,10 +1327,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             return false;
         if (mSuggestionStripView.isShowingAddToDictionaryHint())
             return true;
-        if (ImportantNoticeUtils.hasNewImportantNoticeAndNotInSetupWizard(this))
-            return true;
         if (null == currentSettings)
             return false;
+        if (ImportantNoticeUtils.shouldShowImportantNotice(this, currentSettings.mInputAttributes))
+            return true;
         if (!currentSettings.isSuggestionStripVisible())
             return false;
         if (currentSettings.isApplicationSpecifiedCompletionsOn())
@@ -1359,11 +1359,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     public void setSuggestedWords(final SuggestedWords suggestedWords, final boolean shouldShow) {
         mInputLogic.setSuggestedWords(suggestedWords);
         if (mSuggestionStripView != null) {
+            final SettingsValues currentSettings = mSettings.getCurrent();
             final boolean showSuggestions;
             if (SuggestedWords.EMPTY == suggestedWords
                     || suggestedWords.isPunctuationSuggestions()
-                    || !mSettings.getCurrent().isSuggestionsRequested()) {
-                showSuggestions = !mSuggestionStripView.maybeShowImportantNoticeTitle();
+                    || !currentSettings.isSuggestionsRequested()) {
+                showSuggestions = !mSuggestionStripView.maybeShowImportantNoticeTitle(
+                        currentSettings.mInputAttributes);
             } else {
                 showSuggestions = true;
             }

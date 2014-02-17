@@ -39,11 +39,13 @@ import com.android.inputmethod.keyboard.MainKeyboardView;
 import com.android.inputmethod.keyboard.MoreKeysPanel;
 import com.android.inputmethod.latin.AudioAndHapticFeedbackManager;
 import com.android.inputmethod.latin.Constants;
+import com.android.inputmethod.latin.InputAttributes;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.define.ProductionFlag;
+import com.android.inputmethod.latin.settings.Settings;
 import com.android.inputmethod.latin.suggestions.MoreSuggestions.MoreSuggestionsListener;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.ImportantNoticeUtils;
@@ -226,8 +228,8 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
     // This method checks if we should show the important notice (checks on permanent storage if
     // it has been shown once already or not, and if in the setup wizard). If applicable, it shows
     // the notice. In all cases, it returns true if it was shown, false otherwise.
-    public boolean maybeShowImportantNoticeTitle() {
-        if (!ImportantNoticeUtils.hasNewImportantNoticeAndNotInSetupWizard(getContext())) {
+    public boolean maybeShowImportantNoticeTitle(final InputAttributes inputAttributes) {
+        if (!ImportantNoticeUtils.shouldShowImportantNotice(getContext(), inputAttributes)) {
             return false;
         }
         final int width = getWidth();
@@ -431,6 +433,6 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         // Called by the framework when the size is known. Show the important notice if applicable.
         // This may be overriden by showing suggestions later, if applicable.
-        maybeShowImportantNoticeTitle();
+        maybeShowImportantNoticeTitle(Settings.getInstance().getCurrent().mInputAttributes);
     }
 }
