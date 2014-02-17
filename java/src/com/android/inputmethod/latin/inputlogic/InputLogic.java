@@ -1270,6 +1270,10 @@ public final class InputLogic {
         if (range.length() <= 0) return; // Race condition. No text to resume on, so bail out.
         // If for some strange reason (editor bug or so) we measure the text before the cursor as
         // longer than what the entire text is supposed to be, the safe thing to do is bail out.
+        if (range.mHasUrlSpans) return; // If there are links, we don't resume suggestions. Making
+        // edits to a linkified text through batch commands would ruin the URL spans, and unless
+        // we take very complicated steps to preserve the whole link, we can't do things right so
+        // we just do not resume because it's safer.
         final int numberOfCharsInWordBeforeCursor = range.getNumberOfCharsInWordBeforeCursor();
         if (numberOfCharsInWordBeforeCursor > expectedCursorPosition) return;
         final ArrayList<SuggestedWordInfo> suggestions = CollectionUtils.newArrayList();
