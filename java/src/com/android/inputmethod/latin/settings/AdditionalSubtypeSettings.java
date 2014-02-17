@@ -16,8 +16,6 @@
 
 package com.android.inputmethod.latin.settings;
 
-import static com.android.inputmethod.latin.Constants.Subtype.ExtraValue.ASCII_CAPABLE;
-
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -44,6 +42,8 @@ import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.Toast;
 
+import com.android.inputmethod.compat.InputMethodSubtypeCompatUtils;
+import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.RichInputMethodManager;
 import com.android.inputmethod.latin.utils.AdditionalSubtypeUtils;
@@ -111,7 +111,7 @@ public final class AdditionalSubtypeSettings extends PreferenceFragment {
                             subtype.getLocale(), subtype.hashCode(), subtype.hashCode(),
                             SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(subtype)));
                 }
-                if (subtype.containsExtraValueKey(ASCII_CAPABLE)) {
+                if (InputMethodSubtypeCompatUtils.isAsciiCapable(subtype)) {
                     items.add(createItem(context, subtype.getLocale()));
                 }
             }
@@ -287,7 +287,7 @@ public final class AdditionalSubtypeSettings extends PreferenceFragment {
                 final KeyboardLayoutSetItem layout =
                         (KeyboardLayoutSetItem) mKeyboardLayoutSetSpinner.getSelectedItem();
                 final InputMethodSubtype subtype = AdditionalSubtypeUtils.createAdditionalSubtype(
-                        locale.first, layout.first, ASCII_CAPABLE);
+                        locale.first, layout.first, Constants.Subtype.ExtraValue.ASCII_CAPABLE);
                 setSubtype(subtype);
                 notifyChanged();
                 if (isEditing) {
