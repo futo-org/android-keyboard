@@ -22,6 +22,7 @@ import android.provider.Settings;
 import android.provider.Settings.SettingNotFoundException;
 import android.util.Log;
 
+import com.android.inputmethod.latin.InputAttributes;
 import com.android.inputmethod.latin.R;
 
 public final class ImportantNoticeUtils {
@@ -62,11 +63,18 @@ public final class ImportantNoticeUtils {
         return context.getResources().getInteger(R.integer.config_important_notice_version);
     }
 
-    public static boolean hasNewImportantNoticeAndNotInSetupWizard(final Context context) {
+    private static boolean hasNewImportantNotice(final Context context) {
         final SharedPreferences prefs = getImportantNoticePreferences(context);
         final int lastVersion = prefs.getInt(KEY_IMPORTANT_NOTICE_VERSION, 0);
-        return getCurrentImportantNoticeVersion(context) > lastVersion
-                && !isInSystemSetupWizard(context);
+        return getCurrentImportantNoticeVersion(context) > lastVersion;
+    }
+
+    public static boolean shouldShowImportantNotice(final Context context,
+            final InputAttributes inputAttributes) {
+        if (inputAttributes == null || inputAttributes.mIsPasswordField) {
+            return false;
+        }
+        return hasNewImportantNotice(context) && !isInSystemSetupWizard(context);
     }
 
     public static void updateLastImportantNoticeVersion(final Context context) {
