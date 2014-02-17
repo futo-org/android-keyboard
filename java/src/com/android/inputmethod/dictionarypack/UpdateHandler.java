@@ -249,13 +249,7 @@ public final class UpdateHandler {
         metadataRequest.setVisibleInDownloadsUi(
                 res.getBoolean(R.bool.metadata_downloads_visible_in_download_UI));
 
-        final DownloadManager manager =
-                (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
-        if (null == manager) {
-            // Download manager is not installed or disabled.
-            // TODO: fall back to self-managed download?
-            return;
-        }
+        final DownloadManagerWrapper manager = new DownloadManagerWrapper(context);
         cancelUpdateWithDownloadManager(context, metadataUri, manager);
         final long downloadId;
         synchronized (sSharedIdProtector) {
@@ -278,10 +272,10 @@ public final class UpdateHandler {
      *
      * @param context the context to open the database on
      * @param metadataUri the URI to cancel
-     * @param manager an instance of DownloadManager
+     * @param manager an wrapped instance of DownloadManager
      */
     private static void cancelUpdateWithDownloadManager(final Context context,
-            final String metadataUri, final DownloadManager manager) {
+            final String metadataUri, final DownloadManagerWrapper manager) {
         synchronized (sSharedIdProtector) {
             final long metadataDownloadId =
                     MetadataDbHelper.getMetadataDownloadIdForURI(context, metadataUri);
@@ -306,10 +300,9 @@ public final class UpdateHandler {
      * @param clientId the ID of the client we want to cancel the update of
      */
     public static void cancelUpdate(final Context context, final String clientId) {
-        final DownloadManager manager =
-                    (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
+        final DownloadManagerWrapper manager = new DownloadManagerWrapper(context);
         final String metadataUri = MetadataDbHelper.getMetadataUriAsString(context, clientId);
-        if (null != manager) cancelUpdateWithDownloadManager(context, metadataUri, manager);
+        cancelUpdateWithDownloadManager(context, metadataUri, manager);
     }
 
     /**
@@ -323,15 +316,15 @@ public final class UpdateHandler {
      * download request id, which is not known before submitting the request to the download
      * manager. Hence, it only updates the relevant line.
      *
-     * @param manager the download manager service to register the request with.
+     * @param manager a wrapped download manager service to register the request with.
      * @param request the request to register.
      * @param db the metadata database.
      * @param id the id of the word list.
      * @param version the version of the word list.
      * @return the download id returned by the download manager.
      */
-    public static long registerDownloadRequest(final DownloadManager manager, final Request request,
-            final SQLiteDatabase db, final String id, final int version) {
+    public static long registerDownloadRequest(final DownloadManagerWrapper manager,
+            final Request request, final SQLiteDatabase db, final String id, final int version) {
         DebugLogUtils.l("RegisterDownloadRequest for word list id : ", id, ", version ", version);
         final long downloadId;
         synchronized (sSharedIdProtector) {
@@ -345,8 +338,8 @@ public final class UpdateHandler {
     /**
      * Retrieve information about a specific download from DownloadManager.
      */
-    private static CompletedDownloadInfo getCompletedDownloadInfo(final DownloadManager manager,
-            final long downloadId) {
+    private static CompletedDownloadInfo getCompletedDownloadInfo(
+            final DownloadManagerWrapper manager, final long downloadId) {
         final Query query = new Query().setFilterById(downloadId);
         final Cursor cursor = manager.query(query);
 
@@ -425,8 +418,7 @@ public final class UpdateHandler {
         DebugLogUtils.l("DownloadFinished with id", fileId);
         if (NOT_AN_ID == fileId) return; // Spurious wake-up: ignore
 
-        final DownloadManager manager =
-                (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
+        final DownloadManagerWrapper manager = new DownloadManagerWrapper(context);
         final CompletedDownloadInfo downloadInfo = getCompletedDownloadInfo(manager, fileId);
 
         final ArrayList<DownloadRecord> recordList =
@@ -517,7 +509,7 @@ public final class UpdateHandler {
     }
 
     private static boolean handleDownloadedFile(final Context context,
-            final DownloadRecord downloadRecord, final DownloadManager manager,
+            final DownloadRecord downloadRecord, final DownloadManagerWrapper manager,
             final long fileId) {
         try {
             // {@link handleWordList(Context,InputStream,ContentValues)}.

@@ -107,26 +107,22 @@ public class DictionaryDownloadProgressBar extends ProgressBar {
 
     private class UpdaterThread extends Thread {
         private final static int REPORT_PERIOD = 150; // how often to report progress, in ms
-        final DownloadManager mDownloadManager;
+        final DownloadManagerWrapper mDownloadManagerWrapper;
         final int mId;
         public UpdaterThread(final Context context, final int id) {
             super();
-            mDownloadManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
+            mDownloadManagerWrapper = new DownloadManagerWrapper(context);
             mId = id;
         }
         @Override
         public void run() {
             try {
-                // It's almost impossible that mDownloadManager is null (it would mean it has been
-                // disabled between pressing the 'install' button and displaying the progress
-                // bar), but just in case.
-                if (null == mDownloadManager) return;
                 final UpdateHelper updateHelper = new UpdateHelper();
                 final Query query = new Query().setFilterById(mId);
                 int lastProgress = 0;
                 setIndeterminate(true);
                 while (!isInterrupted()) {
-                    final Cursor cursor = mDownloadManager.query(query);
+                    final Cursor cursor = mDownloadManagerWrapper.query(query);
                     if (null == cursor) {
                         // Can't contact DownloadManager: this should never happen.
                         return;
