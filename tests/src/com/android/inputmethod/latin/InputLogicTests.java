@@ -385,4 +385,41 @@ public class InputLogicTests extends InputTestsBase {
         final SuggestedWords suggestedWords = mLatinIME.getSuggestedWords();
         assertEquals("no prediction after period", 0, suggestedWords.size());
     }
+
+    public void testPredictionsAfterRecorrection() {
+        final String PREFIX = "A ";
+        final String WORD_TO_TYPE = "Barack";
+        final String FIRST_NON_TYPED_SUGGESTION = "Barrack";
+        final int endOfPrefix = PREFIX.length();
+        final int endOfWord = endOfPrefix + WORD_TO_TYPE.length();
+        final int endOfSuggestion = endOfPrefix + FIRST_NON_TYPED_SUGGESTION.length();
+        final int indexForManualCursor = endOfPrefix + 3; // +3 because it's after "Bar" in "Barack"
+        type(PREFIX);
+        mLatinIME.onUpdateSelection(0, 0, endOfPrefix, endOfPrefix, -1, -1);
+        type(WORD_TO_TYPE);
+        pickSuggestionManually(1, FIRST_NON_TYPED_SUGGESTION);
+        mLatinIME.onUpdateSelection(endOfPrefix, endOfPrefix, endOfSuggestion, endOfSuggestion,
+                -1, -1);
+        runMessages();
+        type(" ");
+        mLatinIME.onUpdateSelection(endOfSuggestion, endOfSuggestion,
+                endOfSuggestion + 1, endOfSuggestion + 1, -1, -1);
+        sleep(DELAY_TO_WAIT_FOR_PREDICTIONS);
+        runMessages();
+        // Simulate a manual cursor move
+        mInputConnection.setSelection(indexForManualCursor, indexForManualCursor);
+        mLatinIME.onUpdateSelection(endOfSuggestion + 1, endOfSuggestion + 1,
+                indexForManualCursor, indexForManualCursor, -1, -1);
+        sleep(DELAY_TO_WAIT_FOR_PREDICTIONS);
+        runMessages();
+        pickSuggestionManually(0, WORD_TO_TYPE);
+        mLatinIME.onUpdateSelection(indexForManualCursor, indexForManualCursor,
+                endOfWord, endOfWord, -1, -1);
+        sleep(DELAY_TO_WAIT_FOR_PREDICTIONS);
+        runMessages();
+        // Test the first prediction is displayed
+        final SuggestedWords suggestedWords = mLatinIME.getSuggestedWords();
+        assertEquals("predictions after recorrection", "Obama",
+                suggestedWords.size() > 0 ? suggestedWords.getWord(0) : null);
+    }
 }
