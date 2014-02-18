@@ -211,10 +211,12 @@
     <string name="message_loading" msgid="5638680861387748936">"Betöltés…"</string>
     <string name="main_dict_description" msgid="3072821352793492143">"Fő szótár"</string>
     <string name="cancel" msgid="6830980399865683324">"Mégse"</string>
+    <!-- no translation found for go_to_settings (3876892339342569259) -->
+    <skip />
     <string name="install_dict" msgid="180852772562189365">"Telepítés"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Mégse"</string>
     <string name="delete_dict" msgid="756853268088330054">"Törlés"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"A mobileszközön kiválasztott nyelvhez szótár érhető el.&lt;br/&gt; A gépelési élmény javításához javasoljuk a(z) <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> szótár &lt;b&gt;letöltését.&lt;br/&gt; &lt;br/&gt; A letöltés 3G hálózaton keresztül néhány percig tart. Ha &lt;b&gt;előfizetése nem korlátlan&lt;/b&gt;, a letöltés költségekkel járhat.&lt;br/&gt; Ha nem biztos abban, hogy milyen adatcsomagot használ, javasoljuk, hogy keressen egy Wi-Fi-kapcsolatot a letöltés automatikus elindításához.&lt;br/&gt; &lt;br/&gt; Tipp: szótárakat a mobileszköz &lt;b&gt;Beállítások&lt;/b&gt; menüjében a &lt;b&gt;Nyelv és bevitel&lt;/b&gt; részben tölthet le és távolíthat el."</string>
+    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"A mobileszközön kiválasztott nyelvhez szótár érhető el.&lt;br/&gt; A gépelési élmény javításához javasoljuk a(z) <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> szótár &lt;b&gt;letöltését.&lt;br/&gt; &lt;br/&gt; A letöltés 3G hálózaton keresztül néhány percig tart. Ha &lt;b&gt;előfizetése nem korlátlan&lt;/b&gt;, a letöltés költségekkel járhat.&lt;br/&gt; Ha nem biztos abban, hogy milyen adatcsomagot használ, javasoljuk, hogy keressen egy Wi-Fi-kapcsolatot a letöltés automatikus elindításához.&lt;br/&gt; &lt;br/&gt; Tipp: szótárakat a mobileszköz a &lt;b&gt;Beállítások&lt;/b&gt; menü &lt;b&gt;Nyelv és bevitel&lt;/b&gt; részében tölthet le és távolíthat el."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"Töltse le most (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Letöltés Wi-Fivel"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> nyelvhez van rendelkezésre álló szótár"</string>
