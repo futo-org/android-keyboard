@@ -350,7 +350,8 @@ public final class DictionaryProvider extends ContentProvider {
                         clientId);
         if (null == results) {
             return Collections.<WordListInfo>emptyList();
-        } else {
+        }
+        try {
             final HashMap<String, WordListInfo> dicts = new HashMap<String, WordListInfo>();
             final int idIndex = results.getColumnIndex(MetadataDbHelper.WORDLISTID_COLUMN);
             final int localeIndex = results.getColumnIndex(MetadataDbHelper.LOCALE_COLUMN);
@@ -416,8 +417,9 @@ public final class DictionaryProvider extends ContentProvider {
                     }
                 } while (results.moveToNext());
             }
-            results.close();
             return Collections.unmodifiableCollection(dicts.values());
+        } finally {
+            results.close();
         }
     }
 

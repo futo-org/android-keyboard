@@ -533,12 +533,17 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
                 PENDINGID_COLUMN + "= ?",
                 new String[] { Long.toString(id) },
                 null, null, null);
-        // There should never be more than one result. If because of some bug there are, returning
-        // only one result is the right thing to do, because we couldn't handle several anyway
-        // and we should still handle one.
-        final ContentValues result = getFirstLineAsContentValues(cursor);
-        cursor.close();
-        return result;
+        if (null == cursor) {
+            return null;
+        }
+        try {
+            // There should never be more than one result. If because of some bug there are,
+            // returning only one result is the right thing to do, because we couldn't handle
+            // several anyway and we should still handle one.
+            return getFirstLineAsContentValues(cursor);
+        } finally {
+            cursor.close();
+        }
     }
 
     /**
@@ -559,11 +564,16 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
                 new String[] { id, Integer.toString(STATUS_INSTALLED),
                         Integer.toString(STATUS_DELETING) },
                 null, null, null);
-        // There should only be one result, but if there are several, we can't tell which
-        // is the best, so we just return the first one.
-        final ContentValues result = getFirstLineAsContentValues(cursor);
-        cursor.close();
-        return result;
+        if (null == cursor) {
+            return null;
+        }
+        try {
+            // There should only be one result, but if there are several, we can't tell which
+            // is the best, so we just return the first one.
+            return getFirstLineAsContentValues(cursor);
+        } finally {
+            cursor.close();
+        }
     }
 
     /**
@@ -622,10 +632,15 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
                 METADATA_TABLE_COLUMNS,
                 WORDLISTID_COLUMN + "= ? AND " + VERSION_COLUMN + "= ?",
                 new String[] { id, Integer.toString(version) }, null, null, null);
-        // This is a lookup by primary key, so there can't be more than one result.
-        final ContentValues result = getFirstLineAsContentValues(cursor);
-        cursor.close();
-        return result;
+        if (null == cursor) {
+            return null;
+        }
+        try {
+            // This is a lookup by primary key, so there can't be more than one result.
+            return getFirstLineAsContentValues(cursor);
+        } finally {
+            cursor.close();
+        }
     }
 
     /**
@@ -641,10 +656,15 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
                 METADATA_TABLE_COLUMNS,
                 WORDLISTID_COLUMN + "= ?",
                 new String[] { id }, null, null, VERSION_COLUMN + " DESC", "1");
-        // This is a lookup by primary key, so there can't be more than one result.
-        final ContentValues result = getFirstLineAsContentValues(cursor);
-        cursor.close();
-        return result;
+        if (null == cursor) {
+            return null;
+        }
+        try {
+            // This is a lookup by primary key, so there can't be more than one result.
+            return getFirstLineAsContentValues(cursor);
+        } finally {
+            cursor.close();
+        }
     }
 
     /**

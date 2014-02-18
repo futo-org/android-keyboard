@@ -283,63 +283,70 @@ public final class DictionarySettingsFragment extends PreferenceFragment
             final ArrayList<Preference> result = new ArrayList<Preference>();
             result.add(createErrorMessage(activity, R.string.cannot_connect_to_dict_service));
             return result;
-        } else if (!cursor.moveToFirst()) {
-            final ArrayList<Preference> result = new ArrayList<Preference>();
-            result.add(createErrorMessage(activity, R.string.no_dictionaries_available));
-            cursor.close();
-            return result;
-        } else {
-            final String systemLocaleString = Locale.getDefault().toString();
-            final TreeMap<String, WordListPreference> prefMap =
-                    new TreeMap<String, WordListPreference>();
-            final int idIndex = cursor.getColumnIndex(MetadataDbHelper.WORDLISTID_COLUMN);
-            final int versionIndex = cursor.getColumnIndex(MetadataDbHelper.VERSION_COLUMN);
-            final int localeIndex = cursor.getColumnIndex(MetadataDbHelper.LOCALE_COLUMN);
-            final int descriptionIndex = cursor.getColumnIndex(MetadataDbHelper.DESCRIPTION_COLUMN);
-            final int statusIndex = cursor.getColumnIndex(MetadataDbHelper.STATUS_COLUMN);
-            final int filesizeIndex = cursor.getColumnIndex(MetadataDbHelper.FILESIZE_COLUMN);
-            do {
-                final String wordlistId = cursor.getString(idIndex);
-                final int version = cursor.getInt(versionIndex);
-                final String localeString = cursor.getString(localeIndex);
-                final Locale locale = new Locale(localeString);
-                final String description = cursor.getString(descriptionIndex);
-                final int status = cursor.getInt(statusIndex);
-                final int matchLevel = LocaleUtils.getMatchLevel(systemLocaleString, localeString);
-                final String matchLevelString = LocaleUtils.getMatchLevelSortedString(matchLevel);
-                final int filesize = cursor.getInt(filesizeIndex);
-                // The key is sorted in lexicographic order, according to the match level, then
-                // the description.
-                final String key = matchLevelString + "." + description + "." + wordlistId;
-                final WordListPreference existingPref = prefMap.get(key);
-                if (null == existingPref || existingPref.hasPriorityOver(status)) {
-                    final WordListPreference oldPreference = mCurrentPreferenceMap.get(key);
-                    final WordListPreference pref;
-                    if (null != oldPreference
-                            && oldPreference.mVersion == version
-                            && oldPreference.hasStatus(status)
-                            && oldPreference.mLocale.equals(locale)) {
-                        // If the old preference has all the new attributes, reuse it. Ideally, we
-                        // should reuse the old pref even if its status is different and call
-                        // setStatus here, but setStatus calls Preference#setSummary() which needs
-                        // to be done on the UI thread and we're not on the UI thread here. We
-                        // could do all this work on the UI thread, but in this case it's probably
-                        // lighter to stay on a background thread and throw this old preference out.
-                        pref = oldPreference;
-                    } else {
-                        // Otherwise, discard it and create a new one instead.
-                        // TODO: when the status is different from the old one, we need to
-                        // animate the old one out before animating the new one in.
-                        pref = new WordListPreference(activity, mDictionaryListInterfaceState,
-                                mClientId, wordlistId, version, locale, description, status,
-                                filesize);
+        }
+        try {
+            if (!cursor.moveToFirst()) {
+                final ArrayList<Preference> result = new ArrayList<Preference>();
+                result.add(createErrorMessage(activity, R.string.no_dictionaries_available));
+                return result;
+            } else {
+                final String systemLocaleString = Locale.getDefault().toString();
+                final TreeMap<String, WordListPreference> prefMap =
+                        new TreeMap<String, WordListPreference>();
+                final int idIndex = cursor.getColumnIndex(MetadataDbHelper.WORDLISTID_COLUMN);
+                final int versionIndex = cursor.getColumnIndex(MetadataDbHelper.VERSION_COLUMN);
+                final int localeIndex = cursor.getColumnIndex(MetadataDbHelper.LOCALE_COLUMN);
+                final int descriptionIndex =
+                        cursor.getColumnIndex(MetadataDbHelper.DESCRIPTION_COLUMN);
+                final int statusIndex = cursor.getColumnIndex(MetadataDbHelper.STATUS_COLUMN);
+                final int filesizeIndex = cursor.getColumnIndex(MetadataDbHelper.FILESIZE_COLUMN);
+                do {
+                    final String wordlistId = cursor.getString(idIndex);
+                    final int version = cursor.getInt(versionIndex);
+                    final String localeString = cursor.getString(localeIndex);
+                    final Locale locale = new Locale(localeString);
+                    final String description = cursor.getString(descriptionIndex);
+                    final int status = cursor.getInt(statusIndex);
+                    final int matchLevel =
+                            LocaleUtils.getMatchLevel(systemLocaleString, localeString);
+                    final String matchLevelString =
+                            LocaleUtils.getMatchLevelSortedString(matchLevel);
+                    final int filesize = cursor.getInt(filesizeIndex);
+                    // The key is sorted in lexicographic order, according to the match level, then
+                    // the description.
+                    final String key = matchLevelString + "." + description + "." + wordlistId;
+                    final WordListPreference existingPref = prefMap.get(key);
+                    if (null == existingPref || existingPref.hasPriorityOver(status)) {
+                        final WordListPreference oldPreference = mCurrentPreferenceMap.get(key);
+                        final WordListPreference pref;
+                        if (null != oldPreference
+                                && oldPreference.mVersion == version
+                                && oldPreference.hasStatus(status)
+                                && oldPreference.mLocale.equals(locale)) {
+                            // If the old preference has all the new attributes, reuse it. Ideally,
+                            // we should reuse the old pref even if its status is different and call
+                            // setStatus here, but setStatus calls Preference#setSummary() which
+                            // needs to be done on the UI thread and we're not on the UI thread
+                            // here. We could do all this work on the UI thread, but in this case
+                            // it's probably lighter to stay on a background thread and throw this
+                            // old preference out.
+                            pref = oldPreference;
+                        } else {
+                            // Otherwise, discard it and create a new one instead.
+                            // TODO: when the status is different from the old one, we need to
+                            // animate the old one out before animating the new one in.
+                            pref = new WordListPreference(activity, mDictionaryListInterfaceState,
+                                    mClientId, wordlistId, version, locale, description, status,
+                                    filesize);
+                        }
+                        prefMap.put(key, pref);
                     }
-                    prefMap.put(key, pref);
-                }
-            } while (cursor.moveToNext());
+                } while (cursor.moveToNext());
+                mCurrentPreferenceMap = prefMap;
+                return prefMap.values();
+            }
+        } finally {
             cursor.close();
-            mCurrentPreferenceMap = prefMap;
-            return prefMap.values();
         }
     }
 

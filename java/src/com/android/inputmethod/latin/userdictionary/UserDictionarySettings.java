@@ -140,6 +140,8 @@ public class UserDictionarySettings extends ListFragment {
         }
 
         mLocale = locale;
+        // WARNING: The following cursor is never closed! TODO: don't put that in a member, and
+        // make sure all cursors are correctly closed.
         mCursor = createCursor(locale);
         TextView emptyView = (TextView) getView().findViewById(android.R.id.empty);
         emptyView.setText(R.string.user_dict_settings_empty_text);

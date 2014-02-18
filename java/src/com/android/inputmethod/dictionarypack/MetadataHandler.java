@@ -44,8 +44,7 @@ public class MetadataHandler {
      */
     private static List<WordListMetadata> makeMetadataObject(final Cursor results) {
         final ArrayList<WordListMetadata> buildingMetadata = new ArrayList<WordListMetadata>();
-
-        if (results.moveToFirst()) {
+        if (null != results && results.moveToFirst()) {
             final int localeColumn = results.getColumnIndex(MetadataDbHelper.LOCALE_COLUMN);
             final int typeColumn = results.getColumnIndex(MetadataDbHelper.TYPE_COLUMN);
             final int descriptionColumn =
@@ -61,7 +60,6 @@ public class MetadataHandler {
             final int versionIndex = results.getColumnIndex(MetadataDbHelper.VERSION_COLUMN);
             final int formatVersionIndex =
                     results.getColumnIndex(MetadataDbHelper.FORMATVERSION_COLUMN);
-
             do {
                 buildingMetadata.add(new WordListMetadata(results.getString(idIndex),
                         results.getInt(typeColumn),
@@ -75,8 +73,6 @@ public class MetadataHandler {
                         results.getInt(formatVersionIndex),
                         0, results.getString(localeColumn)));
             } while (results.moveToNext());
-
-            results.close();
         }
         return Collections.unmodifiableList(buildingMetadata);
     }
@@ -92,9 +88,14 @@ public class MetadataHandler {
         // If clientId is null, we get a cursor on the default database (see
         // MetadataDbHelper#getInstance() for more on this)
         final Cursor results = MetadataDbHelper.queryCurrentMetadata(context, clientId);
-        final List<WordListMetadata> resultList = makeMetadataObject(results);
-        results.close();
-        return resultList;
+        // If null, we should return makeMetadataObject(null), so we go through.
+        try {
+            return makeMetadataObject(results);
+        } finally {
+            if (null != results) {
+                results.close();
+            }
+        }
     }
 
     /**
