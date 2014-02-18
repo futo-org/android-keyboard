@@ -211,10 +211,12 @@
     <string name="message_loading" msgid="5638680861387748936">"Laden…"</string>
     <string name="main_dict_description" msgid="3072821352793492143">"Algemeen woordenboek"</string>
     <string name="cancel" msgid="6830980399865683324">"Annuleren"</string>
+    <!-- no translation found for go_to_settings (3876892339342569259) -->
+    <skip />
     <string name="install_dict" msgid="180852772562189365">"Installeren"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Annuleren"</string>
     <string name="delete_dict" msgid="756853268088330054">"Verwijderen"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"Er is een woordenboek voor de geselecteerde taal beschikbaar op uw mobiele apparaat.&lt;br/&gt; We raden u aan het woordenboek voor het <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> te &lt;b&gt;downloaden&lt;/b&gt; om uw typvaardigheid te verbeteren.&lt;br/&gt; &lt;br/&gt; De download kan één of twee minuten duren via 3G. Er kunnen kosten worden berekend als u geen &lt;b&gt;onbeperkt gegevensabonnement&lt;/b&gt; heeft.&lt;br/&gt; Als u niet zeker weet welk gegevensabonnement u heeft, raden we u aan een wifi-verbinding te zoeken om de download automatisch te starten.&lt;br/&gt; &lt;br/&gt; Tip: u kunt woordenboeken downloaden en verwijderen via &lt;b&gt;Taal en invoer&lt;/b&gt; in het menu &lt;b&gt;Instellingen&lt;/b&gt; van uw mobiele apparaat."</string>
+    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"Er is een woordenboek beschikbaar voor de geselecteerde taal op uw mobiele apparaat.&lt;br/&gt; We raden u aan het woordenboek voor het <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> te &lt;b&gt;downloaden&lt;/b&gt; om uw typvaardigheid te verbeteren.&lt;br/&gt; &lt;br/&gt; De download kan één of twee minuten duren via 3G. Er kunnen kosten worden berekend als u geen &lt;b&gt;onbeperkt gegevensabonnement&lt;/b&gt; heeft.&lt;br/&gt; Als u niet zeker weet welk gegevensabonnement u heeft, raden we u aan een wifi-verbinding te zoeken om de download automatisch te starten.&lt;br/&gt; &lt;br/&gt; Tip: u kunt woordenboeken downloaden en verwijderen via &lt;b&gt;Taal en invoer&lt;/b&gt; in het menu &lt;b&gt;Instellingen&lt;/b&gt; van uw mobiele apparaat."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"Nu downloaden (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Downloaden via wifi"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"Er is een woordenboek beschikbaar voor het <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>
