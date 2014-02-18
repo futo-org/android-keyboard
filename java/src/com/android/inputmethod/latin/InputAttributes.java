@@ -200,13 +200,19 @@ public final class InputAttributes {
     // Pretty print
     @Override
     public String toString() {
-        return "\n mInputTypeNoAutoCorrect = " + mInputTypeNoAutoCorrect
-                + "\n mIsSettingsSuggestionStripOn = " + mIsSettingsSuggestionStripOn
-                + "\n mApplicationSpecifiedCompletionOn = " + mApplicationSpecifiedCompletionOn;
+        return String.format(
+                "%s: inputType=0x%08x%s%s%s%s%s targetApp=%s\n", getClass().getSimpleName(),
+                mInputType,
+                (mInputTypeNoAutoCorrect ? " noAutoCorrect" : ""),
+                (mIsPasswordField ? " password" : ""),
+                (mIsSettingsSuggestionStripOn ? " suggestionStrip" : ""),
+                (mApplicationSpecifiedCompletionOn ? " appSpecified" : ""),
+                (mShouldInsertSpacesAutomatically ? " insertSpaces" : ""),
+                mTargetApplicationPackageName);
     }
 
-    public static boolean inPrivateImeOptions(String packageName, String key,
-            EditorInfo editorInfo) {
+    public static boolean inPrivateImeOptions(final String packageName, final String key,
+            final EditorInfo editorInfo) {
         if (editorInfo == null) return false;
         final String findingKey = (packageName != null) ? packageName + "." + key : key;
         return StringUtils.containsInCommaSplittableText(findingKey, editorInfo.privateImeOptions);
