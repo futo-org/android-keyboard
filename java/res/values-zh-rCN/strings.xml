@@ -79,10 +79,8 @@
     <string name="spoken_use_headphones" msgid="896961781287283493">"需要插入耳机才能听到密码的按键声。"</string>
     <string name="spoken_current_text_is" msgid="2485723011272583845">"当前文本为%s"</string>
     <string name="spoken_no_text_entered" msgid="7479685225597344496">"未输入文字"</string>
-    <!-- no translation found for spoken_auto_correct (5150455215290003221) -->
-    <skip />
-    <!-- no translation found for spoken_auto_correct_obscured (2309828861778711939) -->
-    <skip />
+    <string name="spoken_auto_correct" msgid="5150455215290003221">"按<xliff:g id="KEY_NAME">%1$s</xliff:g>可将<xliff:g id="ORIGINAL_WORD">%2$s</xliff:g>更正为<xliff:g id="CORRECTED_WORD">%3$s</xliff:g>"</string>
+    <string name="spoken_auto_correct_obscured" msgid="2309828861778711939">"按<xliff:g id="KEY_NAME">%1$s</xliff:g>可进行自动更正"</string>
     <string name="spoken_description_unknown" msgid="3197434010402179157">"键码为 %d"</string>
     <string name="spoken_description_shift" msgid="244197883292549308">"Shift"</string>
     <string name="spoken_description_shift_shifted" msgid="1681877323344195035">"Shift 模式已启用（点按即可停用）"</string>
@@ -110,8 +108,7 @@
     <string name="spoken_description_mode_phone" msgid="6520207943132026264">"电话模式"</string>
     <string name="spoken_description_mode_phone_shift" msgid="5499629753962641227">"电话符号模式"</string>
     <string name="announce_keyboard_hidden" msgid="8718927835531429807">"键盘已隐藏"</string>
-    <!-- no translation found for announce_keyboard_mode (7486740369324538848) -->
-    <skip />
+    <string name="announce_keyboard_mode" msgid="7486740369324538848">"当前显示的是<xliff:g id="KEYBOARD_MODE">%s</xliff:g>键盘"</string>
     <string name="keyboard_mode_date" msgid="3137520166817128102">"日期"</string>
     <string name="keyboard_mode_date_time" msgid="339593358488851072">"日期和时间"</string>
     <string name="keyboard_mode_email" msgid="6216248078128294262">"电子邮件"</string>
@@ -135,14 +132,10 @@
     <string name="subtype_en_GB" msgid="88170601942311355">"英语(英国)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"英语(美国)"</string>
     <string name="subtype_es_US" msgid="5583145191430180200">"西班牙语（美国）"</string>
-    <!-- no translation found for subtype_with_layout_en_GB (1931018968641592304) -->
-    <skip />
-    <!-- no translation found for subtype_with_layout_en_US (8809311287529805422) -->
-    <skip />
-    <!-- no translation found for subtype_with_layout_es_US (510930471167541338) -->
-    <skip />
-    <!-- no translation found for subtype_nepali_traditional (1994571919751163596) -->
-    <skip />
+    <string name="subtype_with_layout_en_GB" msgid="1931018968641592304">"英式英语（<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>）"</string>
+    <string name="subtype_with_layout_en_US" msgid="8809311287529805422">"美式英语（<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>）"</string>
+    <string name="subtype_with_layout_es_US" msgid="510930471167541338">"美式西班牙语（<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>）"</string>
+    <string name="subtype_nepali_traditional" msgid="1994571919751163596">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g>（传统）"</string>
     <string name="subtype_no_language" msgid="7137390094240139495">"无语言（字母）"</string>
     <string name="subtype_no_language_qwerty" msgid="244337630616742604">"字母 (QWERTY)"</string>
     <string name="subtype_no_language_qwertz" msgid="443066912507547976">"字母 (QWERTZ)"</string>
@@ -172,8 +165,7 @@
     <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"读取外部词典文件"</string>
     <string name="read_external_dictionary_no_files_message" msgid="4947420942224623792">"“下载内容”文件夹中没有词典文件"</string>
     <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"选择要安装的词典文件"</string>
-    <!-- no translation found for read_external_dictionary_confirm_install_message (4782116251651288054) -->
-    <skip />
+    <string name="read_external_dictionary_confirm_install_message" msgid="4782116251651288054">"确定要安装这个<xliff:g id="LANGUAGE_NAME">%s</xliff:g>词典文件吗？"</string>
     <string name="error" msgid="8940763624668513648">"出现错误"</string>
     <string name="prefs_dump_contacts_dict" msgid="7227327764402323097">"转储联系人词典"</string>
     <string name="prefs_dump_user_dict" msgid="294870685041741951">"转储个人词典"</string>
@@ -216,22 +208,20 @@
     <string name="check_for_updates_now" msgid="8087688440916388581">"刷新"</string>
     <string name="last_update" msgid="730467549913588780">"上次更新时间"</string>
     <string name="message_updating" msgid="4457761393932375219">"正在检查更新"</string>
-    <!-- no translation found for message_loading (5638680861387748936) -->
-    <skip />
+    <string name="message_loading" msgid="5638680861387748936">"正在加载…"</string>
     <string name="main_dict_description" msgid="3072821352793492143">"主词典"</string>
     <string name="cancel" msgid="6830980399865683324">"取消"</string>
+    <!-- no translation found for go_to_settings (3876892339342569259) -->
+    <skip />
     <string name="install_dict" msgid="180852772562189365">"安装"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"取消"</string>
     <string name="delete_dict" msgid="756853268088330054">"删除"</string>
-    <!-- no translation found for should_download_over_metered_prompt (1583881200688185508) -->
-    <skip />
+    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"对于您的移动设备上选择的语言，有一个适合您使用的词典可供下载。&lt;br/&gt;我们建议您&lt;b&gt;下载&lt;/b&gt;这个<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>词典，以便获得更好的输入体验。&lt;br/&gt;&lt;br/&gt;通过3G网络下载可能需要一两分钟的时间。如果您使用的不是&lt;b&gt;无流量限制的套餐&lt;/b&gt;，则可能需要支付一定的费用。&lt;br/&gt;如果您不确定自己使用的是哪种流量套餐，我们建议您使用WLAN网络连接自动开始下载。&lt;br/&gt;&lt;br/&gt;提示：您可以在移动设备上的&lt;b&gt;语言和输入法&lt;/b&gt;部分（位于&lt;b&gt;设置&lt;/b&gt;菜单中）下载和删除词典。"</string>
     <string name="download_over_metered" msgid="1643065851159409546">"立即下载 (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"通过 WLAN 下载"</string>
-    <!-- no translation found for dict_available_notification_title (4583842811218581658) -->
-    <skip />
+    <string name="dict_available_notification_title" msgid="4583842811218581658">"有一个<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>词典可供下载"</string>
     <string name="dict_available_notification_description" msgid="1075194169443163487">"按此通知即可查看和下载"</string>
-    <!-- no translation found for toast_downloading_suggestions (6128155879830851739) -->
-    <skip />
+    <string name="toast_downloading_suggestions" msgid="6128155879830851739">"正在下载：针对<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>的输入建议功能马上就可以使用了！"</string>
     <string name="version_text" msgid="2715354215568469385">"版本<xliff:g id="VERSION_NUMBER">%1$s</xliff:g>"</string>
     <string name="user_dict_settings_add_menu_title" msgid="1254195365689387076">"添加"</string>
     <string name="user_dict_settings_add_dialog_title" msgid="4096700390211748168">"添加到词典"</string>
