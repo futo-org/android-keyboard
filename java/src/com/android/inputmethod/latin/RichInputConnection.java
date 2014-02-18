@@ -230,6 +230,9 @@ public final class RichInputConnection {
     public void finishComposingText() {
         if (DEBUG_BATCH_NESTING) checkBatchEdit();
         if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
+        // TODO: this is not correct! The cursor is not necessarily after the composing text.
+        // In the practice right now this is only called when input ends so it will be reset so
+        // it works, but it's wrong and should be fixed.
         mCommittedTextBeforeComposingText.append(mComposingText);
         mComposingText.setLength(0);
         if (null != mIC) {
@@ -244,6 +247,9 @@ public final class RichInputConnection {
         if (DEBUG_BATCH_NESTING) checkBatchEdit();
         if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
         mCommittedTextBeforeComposingText.append(text);
+        // TODO: the following is exceedingly error-prone. Right now when the cursor is in the
+        // middle of the composing word mComposingText only holds the part of the composing text
+        // that is before the cursor, so this actually works, but it's terribly confusing. Fix this.
         mExpectedSelStart += text.length() - mComposingText.length();
         mExpectedSelEnd = mExpectedSelStart;
         mComposingText.setLength(0);
@@ -347,6 +353,9 @@ public final class RichInputConnection {
 
     public void deleteSurroundingText(final int beforeLength, final int afterLength) {
         if (DEBUG_BATCH_NESTING) checkBatchEdit();
+        // TODO: the following is incorrect if the cursor is not immediately after the composition.
+        // Right now we never come here in this case because we reset the composing state before we
+        // come here in this case, but we need to fix this.
         final int remainingChars = mComposingText.length() - beforeLength;
         if (remainingChars >= 0) {
             mComposingText.setLength(remainingChars);
@@ -447,8 +456,12 @@ public final class RichInputConnection {
                 getTextBeforeCursor(Constants.EDITOR_CONTENTS_CACHE_SIZE + (end - start), 0);
         mCommittedTextBeforeComposingText.setLength(0);
         if (!TextUtils.isEmpty(textBeforeCursor)) {
+            // The cursor is not necessarily at the end of the composing text, but we have its
+            // position in mExpectedSelStart and mExpectedSelEnd. In this case we want the start
+            // of the text, so we should use mExpectedSelStart. In other words, the composing
+            // text starts (mExpectedSelStart - start) characters before the end of textBeforeCursor
             final int indexOfStartOfComposingText =
-                    Math.max(textBeforeCursor.length() - (end - start), 0);
+                    Math.max(textBeforeCursor.length() - (mExpectedSelStart - start), 0);
             mComposingText.append(textBeforeCursor.subSequence(indexOfStartOfComposingText,
                     textBeforeCursor.length()));
             mCommittedTextBeforeComposingText.append(
@@ -544,6 +557,9 @@ public final class RichInputConnection {
             final int checkLength = LOOKBACK_CHARACTER_NUM - 1;
             final String reference = prev.length() <= checkLength ? prev.toString()
                     : prev.subSequence(prev.length() - checkLength, prev.length()).toString();
+            // TODO: right now the following works because mComposingText holds the part of the
+            // composing text that is before the cursor, but this is very confusing. We should
+            // fix it.
             final StringBuilder internal = new StringBuilder()
                     .append(mCommittedTextBeforeComposingText).append(mComposingText);
             if (internal.length() > checkLength) {
