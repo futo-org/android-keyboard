@@ -198,7 +198,7 @@ public final class InputLogic {
         final SuggestedWords suggestedWords = mSuggestedWords;
         final String suggestion = suggestionInfo.mWord;
         // If this is a punctuation picked from the suggestion strip, pass it to onCodeInput
-        if (suggestion.length() == 1 && isShowingPunctuationList(settingsValues)) {
+        if (suggestion.length() == 1 && suggestedWords.isPunctuationSuggestions()) {
             // Word separators are suggested before the user inputs something.
             // So, LatinImeLogger logs "" as a user's input.
             LatinImeLogger.logOnManualSuggestion("", suggestion, index, suggestedWords);
@@ -821,7 +821,7 @@ public final class InputLogic {
                 if (maybeDoubleSpacePeriod(settingsValues, handler)) {
                     keyboardSwitcher.updateShiftState();
                     mSpaceState = SpaceState.DOUBLE;
-                } else if (!isShowingPunctuationList(settingsValues)) {
+                } else if (!mSuggestedWords.isPunctuationSuggestions()) {
                     mSpaceState = SpaceState.WEAK;
                 }
             }
@@ -1453,15 +1453,6 @@ public final class InputLogic {
         mLastComposedWord = LastComposedWord.NOT_A_COMPOSED_WORD;
         // We have a separator between the word and the cursor: we should show predictions.
         handler.postUpdateSuggestionStrip();
-    }
-
-    /**
-     * Find out if the punctuation list is shown in the suggestion strip.
-     * @return whether the current suggestions are the punctuation list.
-     */
-    // TODO: make this private. It's used through LatinIME for tests.
-    public boolean isShowingPunctuationList(final SettingsValues settingsValues) {
-        return settingsValues.mSpacingAndPunctuations.mSuggestPuncList == mSuggestedWords;
     }
 
     /**

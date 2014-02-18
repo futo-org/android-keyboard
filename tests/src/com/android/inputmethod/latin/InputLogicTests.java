@@ -357,7 +357,7 @@ public class InputLogicTests extends InputTestsBase {
         sleep(DELAY_TO_WAIT_FOR_PREDICTIONS);
         runMessages();
         // Test the first prediction is displayed
-        final SuggestedWords suggestedWords = mLatinIME.getSuggestedWords();
+        final SuggestedWords suggestedWords = mLatinIME.getSuggestedWordsForTest();
         assertEquals("predictions after space", "Obama",
                 suggestedWords.size() > 0 ? suggestedWords.getWord(0) : null);
     }
@@ -371,7 +371,7 @@ public class InputLogicTests extends InputTestsBase {
         sleep(DELAY_TO_WAIT_FOR_PREDICTIONS);
         runMessages();
         // Test the first prediction is displayed
-        final SuggestedWords suggestedWords = mLatinIME.getSuggestedWords();
+        final SuggestedWords suggestedWords = mLatinIME.getSuggestedWordsForTest();
         assertEquals("predictions after manual pick", "Obama",
                 suggestedWords.size() > 0 ? suggestedWords.getWord(0) : null);
     }
@@ -382,7 +382,7 @@ public class InputLogicTests extends InputTestsBase {
         sleep(DELAY_TO_WAIT_FOR_PREDICTIONS);
         runMessages();
         // Test the first prediction is not displayed
-        final SuggestedWords suggestedWords = mLatinIME.getSuggestedWords();
+        final SuggestedWords suggestedWords = mLatinIME.getSuggestedWordsForTest();
         assertEquals("no prediction after period", 0, suggestedWords.size());
     }
 }
