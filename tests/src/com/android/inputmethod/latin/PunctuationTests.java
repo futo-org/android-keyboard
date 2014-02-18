@@ -41,7 +41,7 @@ public class PunctuationTests extends InputTestsBase {
             sleep(DELAY_TO_WAIT_FOR_UNDERLINE);
             runMessages();
             assertTrue("type word then type space should display punctuation strip",
-                    mLatinIME.isShowingPunctuationList());
+                    mLatinIME.getSuggestedWordsForTest().isPunctuationSuggestions());
             pickSuggestionManually(0, PUNCTUATION_FROM_STRIP);
             pickSuggestionManually(0, PUNCTUATION_FROM_STRIP);
             assertEquals("type word then type space then punctuation from strip twice",
@@ -156,7 +156,7 @@ public class PunctuationTests extends InputTestsBase {
         type(WORD_TO_TYPE);
         assertEquals("auto-correction with single quote inside. ID = "
                 + Secure.getString(getContext().getContentResolver(), Secure.ANDROID_ID)
-                + " ; Suggestions = " + mLatinIME.getSuggestedWords(),
+                + " ; Suggestions = " + mLatinIME.getSuggestedWordsForTest(),
                 EXPECTED_RESULT, mEditText.getText().toString());
     }
 
@@ -166,7 +166,7 @@ public class PunctuationTests extends InputTestsBase {
         type(WORD_TO_TYPE);
         assertEquals("auto-correction with single quotes around. ID = "
                 + Secure.getString(getContext().getContentResolver(), Secure.ANDROID_ID)
-                + " ; Suggestions = " + mLatinIME.getSuggestedWords(),
+                + " ; Suggestions = " + mLatinIME.getSuggestedWordsForTest(),
                 EXPECTED_RESULT, mEditText.getText().toString());
     }
 

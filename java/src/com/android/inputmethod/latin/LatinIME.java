@@ -1310,12 +1310,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // Nothing to do so far.
     }
 
-    // TODO: remove this, read this directly from mInputLogic or something in the tests
-    @UsedForTesting
-    public boolean isShowingPunctuationList() {
-        return mInputLogic.isShowingPunctuationList(mSettings.getCurrent());
-    }
-
     // TODO[IL]: Define a clear interface for this
     public boolean isSuggestionStripVisible() {
         final SettingsValues currentSettings = mSettings.getCurrent();
@@ -1692,7 +1686,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     // TODO: can this be removed somehow without breaking the tests?
     @UsedForTesting
-    /* package for test */ SuggestedWords getSuggestedWords() {
+    /* package for test */ SuggestedWords getSuggestedWordsForTest() {
         // You may not use this method for anything else than debug
         return DEBUG ? mInputLogic.mSuggestedWords : null;
     }
