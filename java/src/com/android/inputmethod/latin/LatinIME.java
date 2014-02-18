@@ -171,10 +171,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         public void onCreate() {
             final Resources res = getOwnerInstance().getResources();
-            mDelayUpdateSuggestions =
-                    res.getInteger(R.integer.config_delay_update_suggestions);
-            mDelayUpdateShiftState =
-                    res.getInteger(R.integer.config_delay_update_shift_state);
+            mDelayUpdateSuggestions = res.getInteger(R.integer.config_delay_update_suggestions);
+            mDelayUpdateShiftState = res.getInteger(R.integer.config_delay_update_shift_state);
             mDoubleSpacePeriodTimeout =
                     res.getInteger(R.integer.config_double_space_period_timeout);
         }
@@ -339,12 +337,15 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         private void executePendingImsCallback(final LatinIME latinIme, final EditorInfo editorInfo,
                 boolean restarting) {
-            if (mHasPendingFinishInputView)
+            if (mHasPendingFinishInputView) {
                 latinIme.onFinishInputViewInternal(mHasPendingFinishInput);
-            if (mHasPendingFinishInput)
+            }
+            if (mHasPendingFinishInput) {
                 latinIme.onFinishInputInternal();
-            if (mHasPendingStartInput)
+            }
+            if (mHasPendingStartInput) {
                 latinIme.onStartInputInternal(editorInfo, restarting);
+            }
             resetPendingImsCallback();
         }
 
@@ -579,9 +580,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 (mInputLogic.mSuggest == null) ? null : mInputLogic.mSuggest.mDictionaryFacilitator;
         // Creates new dictionary facilitator for the new locale.
         final DictionaryFacilitatorForSuggest dictionaryFacilitator =
-                new DictionaryFacilitatorForSuggest(this /* context */, locale,
-                        settingsValues, this /* DictionaryInitializationListener */,
-                        oldDictionaryFacilitator);
+                new DictionaryFacilitatorForSuggest(this /* context */, locale, settingsValues,
+                        this /* DictionaryInitializationListener */, oldDictionaryFacilitator);
         final Suggest newSuggest = new Suggest(locale, dictionaryFacilitator);
         if (settingsValues.mCorrectionEnabled) {
             newSuggest.setAutoCorrectionThreshold(settingsValues.mAutoCorrectionThreshold);
@@ -658,7 +658,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 .findViewById(android.R.id.extractArea);
         mKeyPreviewBackingView = view.findViewById(R.id.key_preview_backing);
         mSuggestionStripView = (SuggestionStripView)view.findViewById(R.id.suggestion_strip_view);
-        if (mSuggestionStripView != null) {
+        if (hasSuggestionStripView()) {
             mSuggestionStripView.setListener(this, view);
         }
         if (LatinImeLogger.sVISUALDEBUG) {
@@ -738,13 +738,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             ResearchLogger.latinIME_onStartInputViewInternal(editorInfo, prefs);
         }
         if (InputAttributes.inPrivateImeOptions(null, NO_MICROPHONE_COMPAT, editorInfo)) {
-            Log.w(TAG, "Deprecated private IME option specified: "
-                    + editorInfo.privateImeOptions);
+            Log.w(TAG, "Deprecated private IME option specified: " + editorInfo.privateImeOptions);
             Log.w(TAG, "Use " + getPackageName() + "." + NO_MICROPHONE + " instead");
         }
         if (InputAttributes.inPrivateImeOptions(getPackageName(), FORCE_ASCII, editorInfo)) {
-            Log.w(TAG, "Deprecated private IME option specified: "
-                    + editorInfo.privateImeOptions);
+            Log.w(TAG, "Deprecated private IME option specified: " + editorInfo.privateImeOptions);
             Log.w(TAG, "Use EditorInfo.IME_FLAG_FORCE_ASCII flag instead");
         }
 
@@ -890,12 +888,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         super.onUpdateSelection(oldSelStart, oldSelEnd, newSelStart, newSelEnd,
                 composingSpanStart, composingSpanEnd);
         if (DEBUG) {
-            Log.i(TAG, "onUpdateSelection: oss=" + oldSelStart
-                    + ", ose=" + oldSelEnd
-                    + ", nss=" + newSelStart
-                    + ", nse=" + newSelEnd
-                    + ", cs=" + composingSpanStart
-                    + ", ce=" + composingSpanEnd);
+            Log.i(TAG, "onUpdateSelection: oss=" + oldSelStart + ", ose=" + oldSelEnd
+                    + ", nss=" + newSelStart + ", nse=" + newSelEnd
+                    + ", cs=" + composingSpanStart + ", ce=" + composingSpanEnd);
         }
         if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
             ResearchLogger.latinIME_onUpdateSelection(oldSelStart, oldSelEnd,
@@ -1009,7 +1004,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private void setSuggestionStripShownInternal(final boolean isSuggestionStripVisible,
             final boolean needsInputViewShown) {
         // TODO: Modify this if we support suggestions with hard keyboard
-        if (!onEvaluateInputViewShown() || null == mSuggestionStripView) {
+        if (!onEvaluateInputViewShown() || !hasSuggestionStripView()) {
             return;
         }
         final boolean inputViewShown = mKeyboardSwitcher.isShowingMainKeyboardOrEmojiPalettes();
@@ -1053,7 +1048,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     public void onComputeInsets(final InputMethodService.Insets outInsets) {
         super.onComputeInsets(outInsets);
         final View visibleKeyboardView = mKeyboardSwitcher.getVisibleKeyboardView();
-        if (visibleKeyboardView == null || mSuggestionStripView == null) {
+        if (visibleKeyboardView == null || !hasSuggestionStripView()) {
             return;
         }
         final int adjustedBackingHeight = getAdjustedBackingViewHeight();
@@ -1192,7 +1187,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     public void displaySettingsDialog() {
-        if (isShowingOptionDialog()) return;
+        if (isShowingOptionDialog()) {
+            return;
+        }
         showSubtypeSelectorAndSettings();
     }
 
@@ -1252,8 +1249,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mSubtypeSwitcher.switchToShortcutIME(this);
             // Still call the *#onCodeInput methods for readability.
         }
-        mInputLogic.onCodeInput(codeToSend, keyX, keyY, mSettings.getCurrent(),
-                mHandler, mKeyboardSwitcher);
+        mInputLogic.onCodeInput(codeToSend, keyX, keyY, mSettings.getCurrent(), mHandler,
+                mKeyboardSwitcher);
         mKeyboardSwitcher.onCodeInput(codePoint);
     }
 
@@ -1318,13 +1315,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     // TODO[IL]: Define a clear interface for this
     public boolean isSuggestionStripVisible() {
-        final SettingsValues currentSettings = mSettings.getCurrent();
-        if (mSuggestionStripView == null) {
+        if (!hasSuggestionStripView()) {
             return false;
         }
         if (mSuggestionStripView.isShowingAddToDictionaryHint()) {
             return true;
         }
+        final SettingsValues currentSettings = mSettings.getCurrent();
         if (null == currentSettings) {
             return false;
         }
@@ -1353,16 +1350,17 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public void dismissAddToDictionaryHint() {
-        if (null != mSuggestionStripView) {
-            mSuggestionStripView.dismissAddToDictionaryHint();
+        if (!hasSuggestionStripView()) {
+            return;
         }
+        mSuggestionStripView.dismissAddToDictionaryHint();
     }
 
     // TODO[IL]: Define a clear interface for this
     public void setSuggestedWords(final SuggestedWords suggestedWords,
             final boolean isSuggestionStripVisible, final boolean needsInputViewShown) {
         mInputLogic.setSuggestedWords(suggestedWords);
-        if (mSuggestionStripView == null) {
+        if (!hasSuggestionStripView()) {
             return;
         }
         final SettingsValues currentSettings = mSettings.getCurrent();
@@ -1419,9 +1417,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
         suggest.getSuggestedWords(mInputLogic.mWordComposer,
                 mInputLogic.mWordComposer.getPreviousWordForSuggestion(),
-                keyboard.getProximityInfo(),
-                currentSettings.mBlockPotentiallyOffensive, currentSettings.mCorrectionEnabled,
-                additionalFeaturesOptions, sessionId, sequenceNumber, callback);
+                keyboard.getProximityInfo(), currentSettings.mBlockPotentiallyOffensive,
+                currentSettings.mCorrectionEnabled, additionalFeaturesOptions, sessionId,
+                sequenceNumber, callback);
     }
 
     // TODO[IL]: Move this to InputLogic
@@ -1435,7 +1433,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // the "add to dictionary" hint, we need to revert to suggestions - although it is unclear
         // how we can come here if it's displayed.
         if (suggestedWords.size() > 1 || typedWord.length() <= 1
-                || null == mSuggestionStripView || isShowingAddToDictionaryHint()) {
+                || !hasSuggestionStripView() || isShowingAddToDictionaryHint()) {
             return suggestedWords;
         } else {
             final SuggestedWords punctuationList =
@@ -1445,10 +1443,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             final ArrayList<SuggestedWords.SuggestedWordInfo> typedWordAndPreviousSuggestions =
                     SuggestedWords.getTypedWordAndPreviousSuggestions(typedWord, oldSuggestedWords);
             return new SuggestedWords(typedWordAndPreviousSuggestions, null /* rawSuggestions */,
-                    false /* typedWordValid */,
-                    false /* hasAutoCorrectionCandidate */,
-                    true /* isObsoleteSuggestions */,
-                    false /* isPrediction */);
+                    false /* typedWordValid */, false /* hasAutoCorrectionCandidate */,
+                    true /* isObsoleteSuggestions */, false /* isPrediction */);
         }
     }
 
@@ -1487,7 +1483,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public void showAddToDictionaryHint(final String word) {
-        if (null == mSuggestionStripView) return;
+        if (!hasSuggestionStripView()) {
+            return;
+        }
         mSuggestionStripView.showAddToDictionaryHint(word);
     }
 
