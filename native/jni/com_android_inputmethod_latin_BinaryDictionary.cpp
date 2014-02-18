@@ -162,13 +162,13 @@ static void latinime_BinaryDictionary_getHeaderInfo(JNIEnv *env, jclass clazz, j
         jintArray keyCodePointArray = env->NewIntArray(it->first.size());
         env->SetIntArrayRegion(
                 keyCodePointArray, 0 /* start */, it->first.size(), &it->first.at(0));
-        env->CallVoidMethod(outAttributeKeys, addMethodId, keyCodePointArray);
+        env->CallBooleanMethod(outAttributeKeys, addMethodId, keyCodePointArray);
         env->DeleteLocalRef(keyCodePointArray);
         // Output value
         jintArray valueCodePointArray = env->NewIntArray(it->second.size());
         env->SetIntArrayRegion(
                 valueCodePointArray, 0 /* start */, it->second.size(), &it->second.at(0));
-        env->CallVoidMethod(outAttributeValues, addMethodId, valueCodePointArray);
+        env->CallBooleanMethod(outAttributeValues, addMethodId, valueCodePointArray);
         env->DeleteLocalRef(valueCodePointArray);
     }
     env->DeleteLocalRef(arrayListClass);
