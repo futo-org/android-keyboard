@@ -418,7 +418,7 @@ public class InputLogicTests extends InputTestsBase {
         sleep(DELAY_TO_WAIT_FOR_PREDICTIONS);
         runMessages();
         // Test the first prediction is displayed
-        final SuggestedWords suggestedWords = mLatinIME.getSuggestedWords();
+        final SuggestedWords suggestedWords = mLatinIME.getSuggestedWordsForTest();
         assertEquals("predictions after recorrection", "Obama",
                 suggestedWords.size() > 0 ? suggestedWords.getWord(0) : null);
     }
