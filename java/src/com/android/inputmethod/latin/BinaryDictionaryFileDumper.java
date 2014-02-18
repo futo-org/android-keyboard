@@ -142,7 +142,7 @@ public final class BinaryDictionaryFileDumper {
         final ContentProviderClient client = context.getContentResolver().
                 acquireContentProviderClient(getProviderUriBuilder("").build());
         if (null == client) return Collections.<WordListInfo>emptyList();
-
+        Cursor cursor = null;
         try {
             final Uri.Builder builder = getContentUriBuilderForType(clientId, client,
                     QUERY_PATH_DICT_INFO, locale.toString());
@@ -154,24 +154,22 @@ public final class BinaryDictionaryFileDumper {
             final boolean isProtocolV2 = (QUERY_PARAMETER_PROTOCOL_VALUE.equals(
                     queryUri.getQueryParameter(QUERY_PARAMETER_PROTOCOL)));
 
-            Cursor c = client.query(queryUri, DICTIONARY_PROJECTION, null, null, null);
-            if (isProtocolV2 && null == c) {
+            cursor = client.query(queryUri, DICTIONARY_PROJECTION, null, null, null);
+            if (isProtocolV2 && null == cursor) {
                 reinitializeClientRecordInDictionaryContentProvider(context, client, clientId);
-                c = client.query(queryUri, DICTIONARY_PROJECTION, null, null, null);
+                cursor = client.query(queryUri, DICTIONARY_PROJECTION, null, null, null);
             }
-            if (null == c) return Collections.<WordListInfo>emptyList();
-            if (c.getCount() <= 0 || !c.moveToFirst()) {
-                c.close();
+            if (null == cursor) return Collections.<WordListInfo>emptyList();
+            if (cursor.getCount() <= 0 || !cursor.moveToFirst()) {
                 return Collections.<WordListInfo>emptyList();
             }
             final ArrayList<WordListInfo> list = CollectionUtils.newArrayList();
             do {
-                final String wordListId = c.getString(0);
-                final String wordListLocale = c.getString(1);
+                final String wordListId = cursor.getString(0);
+                final String wordListLocale = cursor.getString(1);
                 if (TextUtils.isEmpty(wordListId)) continue;
                 list.add(new WordListInfo(wordListId, wordListLocale));
-            } while (c.moveToNext());
-            c.close();
+            } while (cursor.moveToNext());
             return list;
         } catch (RemoteException e) {
             // The documentation is unclear as to in which cases this may happen, but it probably
@@ -186,6 +184,9 @@ public final class BinaryDictionaryFileDumper {
             Log.e(TAG, "Unexpected exception communicating with the dictionary pack", e);
             return Collections.<WordListInfo>emptyList();
         } finally {
+            if (null != cursor) {
+                cursor.close();
+            }
             client.release();
         }
     }

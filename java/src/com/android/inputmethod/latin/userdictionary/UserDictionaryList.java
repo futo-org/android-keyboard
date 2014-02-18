@@ -61,12 +61,17 @@ public class UserDictionaryList extends PreferenceFragment {
         if (null == cursor) {
             // The user dictionary service is not present or disabled. Return null.
             return null;
-        } else if (cursor.moveToFirst()) {
-            final int columnIndex = cursor.getColumnIndex(UserDictionary.Words.LOCALE);
-            do {
-                final String locale = cursor.getString(columnIndex);
-                localeSet.add(null != locale ? locale : "");
-            } while (cursor.moveToNext());
+        }
+        try {
+            if (cursor.moveToFirst()) {
+                final int columnIndex = cursor.getColumnIndex(UserDictionary.Words.LOCALE);
+                do {
+                    final String locale = cursor.getString(columnIndex);
+                    localeSet.add(null != locale ? locale : "");
+                } while (cursor.moveToNext());
+            }
+        } finally {
+            cursor.close();
         }
         if (!UserDictionarySettings.IS_SHORTCUT_API_SUPPORTED) {
             // For ICS, we need to show "For all languages" in case that the keyboard locale

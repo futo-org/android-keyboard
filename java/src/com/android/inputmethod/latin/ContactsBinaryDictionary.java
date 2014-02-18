@@ -139,23 +139,24 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
     }
 
     private void loadDictionaryAsyncForUri(final Uri uri) {
+        Cursor cursor = null;
         try {
-            Cursor cursor = mContext.getContentResolver()
-                    .query(uri, PROJECTION, null, null, null);
-            if (cursor != null) {
-                try {
-                    if (cursor.moveToFirst()) {
-                        sContactCountAtLastRebuild = getContactCount();
-                        addWords(cursor);
-                    }
-                } finally {
-                    cursor.close();
-                }
+            cursor = mContext.getContentResolver().query(uri, PROJECTION, null, null, null);
+            if (null == cursor) {
+                return;
+            }
+            if (cursor.moveToFirst()) {
+                sContactCountAtLastRebuild = getContactCount();
+                addWords(cursor);
             }
         } catch (final SQLiteException e) {
             Log.e(TAG, "SQLiteException in the remote Contacts process.", e);
         } catch (final IllegalStateException e) {
             Log.e(TAG, "Contacts DB is having problems", e);
+        } finally {
+            if (null != cursor) {
+                cursor.close();
+            }
         }
     }
 
@@ -186,18 +187,20 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
     private int getContactCount() {
         // TODO: consider switching to a rawQuery("select count(*)...") on the database if
         // performance is a bottleneck.
+        Cursor cursor = null;
         try {
-            final Cursor cursor = mContext.getContentResolver().query(
-                    Contacts.CONTENT_URI, PROJECTION_ID_ONLY, null, null, null);
-            if (cursor != null) {
-                try {
-                    return cursor.getCount();
-                } finally {
-                    cursor.close();
-                }
+            cursor = mContext.getContentResolver().query(Contacts.CONTENT_URI, PROJECTION_ID_ONLY,
+                    null, null, null);
+            if (null == cursor) {
+                return 0;
             }
+            return cursor.getCount();
         } catch (final SQLiteException e) {
             Log.e(TAG, "SQLiteException in the remote Contacts process.", e);
+        } finally {
+            if (null != cursor) {
+                cursor.close();
+            }
         }
         return 0;
     }
@@ -281,26 +284,27 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
         // Check all contacts since it's not possible to find out which names have changed.
         // This is needed because it's possible to receive extraneous onChange events even when no
         // name has changed.
-        Cursor cursor = mContext.getContentResolver().query(
-                Contacts.CONTENT_URI, PROJECTION, null, null, null);
-        if (cursor != null) {
-            try {
-                if (cursor.moveToFirst()) {
-                    while (!cursor.isAfterLast()) {
-                        String name = cursor.getString(INDEX_NAME);
-                        if (isValidName(name) && !isNameInDictionary(name)) {
-                            if (DEBUG) {
-                                Log.d(TAG, "Contact name missing: " + name + " (runtime = "
-                                        + (SystemClock.uptimeMillis() - startTime) + " ms)");
-                            }
-                            return true;
+        final Cursor cursor = mContext.getContentResolver().query(Contacts.CONTENT_URI, PROJECTION,
+                null, null, null);
+        if (null == cursor) {
+            return false;
+        }
+        try {
+            if (cursor.moveToFirst()) {
+                while (!cursor.isAfterLast()) {
+                    String name = cursor.getString(INDEX_NAME);
+                    if (isValidName(name) && !isNameInDictionary(name)) {
+                        if (DEBUG) {
+                            Log.d(TAG, "Contact name missing: " + name + " (runtime = "
+                                    + (SystemClock.uptimeMillis() - startTime) + " ms)");
                         }
-                        cursor.moveToNext();
+                        return true;
                     }
+                    cursor.moveToNext();
                 }
-            } finally {
-                cursor.close();
             }
+        } finally {
+            cursor.close();
         }
         if (DEBUG) {
             Log.d(TAG, "No contacts changed. (runtime = " + (SystemClock.uptimeMillis() - startTime)
