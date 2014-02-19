@@ -173,6 +173,9 @@ public class Ver2DictDecoder extends AbstractDictDecoder {
     @Override
     public DictionaryHeader readHeader() throws IOException, UnsupportedFormatException {
         final DictionaryHeader header = mBinaryDictionary.getHeader();
+        if (header == null) {
+            throw new IOException("Cannot read the dictionary header.");
+        }
         if (header.mFormatOptions.mVersion != FormatSpec.VERSION2) {
             throw new UnsupportedFormatException("File header has a wrong version : "
                     + header.mFormatOptions.mVersion);
