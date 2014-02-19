@@ -329,7 +329,13 @@ public final class InputLogic {
             // Another option would be to send suggestions each time we set the composing
             // text, but that is probably too expensive to do, so we decided to leave things
             // as is.
-            resetEntireInputState(settingsValues, newSelStart, newSelEnd);
+            // Also, we're posting a resume suggestions message, and this will update the
+            // suggestions strip in a few milliseconds, so if we cleared the suggestion strip here
+            // we'd have the suggestion strip noticeably janky. To avoid that, we don't clear
+            // it here, which means we'll keep outdated suggestions for a split second but the
+            // visual result is better.
+            resetEntireInputState(settingsValues, newSelStart, newSelEnd,
+                    false /* clearSuggestionStrip */);
         } else {
             // resetEntireInputState calls resetCachesUponCursorMove, but forcing the
             // composition to end. But in all cases where we don't reset the entire input
@@ -497,7 +503,7 @@ public final class InputLogic {
                 // If we are in the middle of a recorrection, we need to commit the recorrection
                 // first so that we can insert the batch input at the current cursor position.
                 resetEntireInputState(settingsValues, mConnection.getExpectedSelectionStart(),
-                        mConnection.getExpectedSelectionEnd());
+                        mConnection.getExpectedSelectionEnd(), true /* clearSuggestionStrip */);
             } else if (wordComposerSize <= 1) {
                 // We auto-correct the previous (typed, not gestured) string iff it's one character
                 // long. The reason for this is, even in the middle of gesture typing, you'll still
@@ -650,7 +656,7 @@ public final class InputLogic {
                     // If we are in the middle of a recorrection, we need to commit the recorrection
                     // first so that we can insert the character at the current cursor position.
                     resetEntireInputState(settingsValues, mConnection.getExpectedSelectionStart(),
-                            mConnection.getExpectedSelectionEnd());
+                            mConnection.getExpectedSelectionEnd(), true /* clearSuggestionStrip */);
                 } else {
                     commitTyped(settingsValues, LastComposedWord.NOT_A_SEPARATOR);
                 }
@@ -692,7 +698,7 @@ public final class InputLogic {
             // If we are in the middle of a recorrection, we need to commit the recorrection
             // first so that we can insert the character at the current cursor position.
             resetEntireInputState(settingsValues, mConnection.getExpectedSelectionStart(),
-                    mConnection.getExpectedSelectionEnd());
+                    mConnection.getExpectedSelectionEnd(), true /* clearSuggestionStrip */);
             isComposingWord = false;
         }
         // We want to find out whether to start composing a new word with this character. If so,
@@ -774,7 +780,7 @@ public final class InputLogic {
             // If we are in the middle of a recorrection, we need to commit the recorrection
             // first so that we can insert the separator at the current cursor position.
             resetEntireInputState(settingsValues, mConnection.getExpectedSelectionStart(),
-                    mConnection.getExpectedSelectionEnd());
+                    mConnection.getExpectedSelectionEnd(), true /* clearSuggestionStrip */);
         }
         // isComposingWord() may have changed since we stored wasComposing
         if (mWordComposer.isComposingWord()) {
@@ -880,7 +886,7 @@ public final class InputLogic {
             // If we are in the middle of a recorrection, we need to commit the recorrection
             // first so that we can remove the character at the current cursor position.
             resetEntireInputState(settingsValues, mConnection.getExpectedSelectionStart(),
-                    mConnection.getExpectedSelectionEnd());
+                    mConnection.getExpectedSelectionEnd(), true /* clearSuggestionStrip */);
             // When we exit this if-clause, mWordComposer.isComposingWord() will return false.
         }
         if (mWordComposer.isComposingWord()) {
@@ -1251,18 +1257,28 @@ public final class InputLogic {
         // HACK: We may want to special-case some apps that exhibit bad behavior in case of
         // recorrection. This is a temporary, stopgap measure that will be removed later.
         // TODO: remove this.
-        if (settingsValues.isBrokenByRecorrection()) return;
+        if (settingsValues.isBrokenByRecorrection()
         // Recorrection is not supported in languages without spaces because we don't know
         // how to segment them yet.
-        if (!settingsValues.mSpacingAndPunctuations.mCurrentLanguageHasSpaces) return;
+                || !settingsValues.mSpacingAndPunctuations.mCurrentLanguageHasSpaces
         // If no suggestions are requested, don't try restarting suggestions.
-        if (!settingsValues.isSuggestionsRequested()) return;
+                || !settingsValues.isSuggestionsRequested()
         // If the cursor is not touching a word, or if there is a selection, return right away.
-        if (mConnection.hasSelection()) return;
+                || mConnection.hasSelection()
         // If we don't know the cursor location, return.
-        if (mConnection.getExpectedSelectionStart() < 0) return;
+                || mConnection.getExpectedSelectionStart() < 0) {
+            mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
+            return;
+        }
         final int expectedCursorPosition = mConnection.getExpectedSelectionStart();
-        if (!mConnection.isCursorTouchingWord(settingsValues.mSpacingAndPunctuations)) return;
+        if (!mConnection.isCursorTouchingWord(settingsValues.mSpacingAndPunctuations)) {
+            // Show predictions.
+            mWordComposer.setCapitalizedModeAndPreviousWordAtStartComposingTime(
+                    WordComposer.CAPS_MODE_OFF,
+                    getNthPreviousWordForSuggestion(settingsValues.mSpacingAndPunctuations, 1));
+            mLatinIME.mHandler.postUpdateSuggestionStrip();
+            return;
+        }
         final TextRange range = mConnection.getWordRangeAtCursor(
                 settingsValues.mSpacingAndPunctuations.mSortedWordSeparators,
                 0 /* additionalPrecedingWordsCount */);
@@ -1605,14 +1621,17 @@ public final class InputLogic {
      * @param settingsValues the current values of the settings.
      * @param newSelStart the new selection start, in java characters.
      * @param newSelEnd the new selection end, in java characters.
+     * @param clearSuggestionStrip whether this method should clear the suggestion strip.
      */
     // TODO: how is this different from startInput ?!
     // TODO: remove all references to this in LatinIME and make this private
     public void resetEntireInputState(final SettingsValues settingsValues,
-            final int newSelStart, final int newSelEnd) {
+            final int newSelStart, final int newSelEnd, final boolean clearSuggestionStrip) {
         final boolean shouldFinishComposition = mWordComposer.isComposingWord();
         resetComposingState(true /* alsoResetLastComposedWord */);
-        mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
+        if (clearSuggestionStrip) {
+            mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
+        }
         mConnection.resetCachesUponCursorMoveAndReturnSuccess(newSelStart, newSelEnd,
                 shouldFinishComposition);
     }
