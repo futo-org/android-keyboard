@@ -1196,10 +1196,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 context, AlertDialog.THEME_HOLO_DARK);
         builder.setMessage(importantNoticeContents)
                 .setPositiveButton(android.R.string.ok, null /* listener */)
-                .setNegativeButton(R.string.go_to_settings, onClickListener)
-                .setOnDismissListener(onDismissListener);
+                .setNegativeButton(R.string.go_to_settings, onClickListener);
         final AlertDialog importantNoticeDialog = builder.create();
         importantNoticeDialog.setOnShowListener(onShowListener);
+        importantNoticeDialog.setOnDismissListener(onDismissListener);
         showOptionDialog(importantNoticeDialog);
     }
 
