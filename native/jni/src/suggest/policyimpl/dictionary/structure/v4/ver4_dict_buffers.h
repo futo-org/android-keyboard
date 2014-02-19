@@ -42,7 +42,7 @@ class Ver4DictBuffers {
     }
 
     AK_FORCE_INLINE bool isValid() const {
-        return mDictBuffer.get() != 0 && mHeaderPolicy.isValid()
+        return mHeaderBuffer.get() && mDictBuffer.get() && mHeaderPolicy.isValid()
                 && mProbabilityDictContent.isValid() && mTerminalPositionLookupTable.isValid()
                 && mBigramDictContent.isValid() && mShortcutDictContent.isValid();
     }
