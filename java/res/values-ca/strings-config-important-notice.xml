@@ -22,5 +22,6 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="important_notice_title" msgid="1836002733109536160"></string>
     <string name="important_notice_contents" msgid="897137043719116217"></string>
-    <string name="use_personalized_dicts_summary" msgid="4331467814162666438">"Considera comunicacions i dades introduïdes per millorar sugger."</string>
+    <!-- no translation found for use_personalized_dicts_summary (590432261305469627) -->
+    <skip />
 </resources>
