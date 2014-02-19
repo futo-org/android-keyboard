@@ -42,7 +42,7 @@ void WordProperty::outputProperties(JNIEnv *const env, jintArray outCodePoints,
         jintArray bigramWord1CodePointArray = env->NewIntArray(word1CodePoints->size());
         env->SetIntArrayRegion(bigramWord1CodePointArray, 0 /* start */,
                 word1CodePoints->size(), &word1CodePoints->at(0));
-        env->CallVoidMethod(outBigramTargets, addMethodId, bigramWord1CodePointArray);
+        env->CallBooleanMethod(outBigramTargets, addMethodId, bigramWord1CodePointArray);
         env->DeleteLocalRef(bigramWord1CodePointArray);
 
         int bigramProbabilityInfo[] = {bigramProperty->getProbability(),
@@ -51,7 +51,7 @@ void WordProperty::outputProperties(JNIEnv *const env, jintArray outCodePoints,
         jintArray bigramProbabilityInfoArray = env->NewIntArray(NELEMS(bigramProbabilityInfo));
         env->SetIntArrayRegion(bigramProbabilityInfoArray, 0 /* start */,
                 NELEMS(bigramProbabilityInfo), bigramProbabilityInfo);
-        env->CallVoidMethod(outBigramProbabilities, addMethodId, bigramProbabilityInfoArray);
+        env->CallBooleanMethod(outBigramProbabilities, addMethodId, bigramProbabilityInfoArray);
         env->DeleteLocalRef(bigramProbabilityInfoArray);
     }
 
@@ -62,11 +62,11 @@ void WordProperty::outputProperties(JNIEnv *const env, jintArray outCodePoints,
         jintArray shortcutTargetCodePointArray = env->NewIntArray(targetCodePoints->size());
         env->SetIntArrayRegion(shortcutTargetCodePointArray, 0 /* start */,
                 targetCodePoints->size(), &targetCodePoints->at(0));
-        env->CallVoidMethod(outShortcutTargets, addMethodId, shortcutTargetCodePointArray);
+        env->CallBooleanMethod(outShortcutTargets, addMethodId, shortcutTargetCodePointArray);
         env->DeleteLocalRef(shortcutTargetCodePointArray);
         jobject integerProbability = env->NewObject(integerClass, intToIntegerConstructorId,
                 mShortcuts[i].getProbability());
-        env->CallVoidMethod(outShortcutProbabilities, addMethodId, integerProbability);
+        env->CallBooleanMethod(outShortcutProbabilities, addMethodId, integerProbability);
         env->DeleteLocalRef(integerProbability);
     }
     env->DeleteLocalRef(integerClass);
