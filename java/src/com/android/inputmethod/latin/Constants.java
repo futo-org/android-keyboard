@@ -252,6 +252,18 @@ public final class Constants {
         }
     }
 
+    public static String printableCodes(final int[] codes) {
+        final StringBuilder sb = new StringBuilder();
+        boolean addDelimiter = false;
+        for (final int code : codes) {
+            if (code == NOT_A_CODE) break;
+            if (addDelimiter) sb.append(", ");
+            sb.append(printableCode(code));
+            addDelimiter = true;
+        }
+        return "[" + sb + "]";
+    }
+
     public static final int MAX_INT_BIT_COUNT = 32;
 
     /**
