@@ -534,17 +534,28 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     private void refreshPersonalizationDictionarySession() {
+        final Suggest suggest = mInputLogic.mSuggest;
+        final boolean shouldKeepUserHistoryDictionaries;
+        final boolean shouldKeepPersonalizationDictionaries;
         if (mSettings.getCurrent().mUsePersonalizedDicts) {
-            if (mSubtypeSwitcher.isSystemLocaleSameAsLocaleOfAllEnabledSubtypes()) {
-                final DictionaryFacilitatorForSuggest dictionaryFacilitator =
-                        (mInputLogic.mSuggest == null) ?
-                                null : mInputLogic.mSuggest.mDictionaryFacilitator;
-                PersonalizationDictionarySessionRegistrar.init(this, dictionaryFacilitator);
-            } else {
-                PersonalizationDictionarySessionRegistrar.close(this);
-            }
+            shouldKeepUserHistoryDictionaries = true;
+            // TODO: Eliminate this restriction
+            shouldKeepPersonalizationDictionaries =
+                    mSubtypeSwitcher.isSystemLocaleSameAsLocaleOfAllEnabledSubtypes();
         } else {
-            PersonalizationHelper.removeAllPersonalizedDictionaries(this);
+            shouldKeepUserHistoryDictionaries = false;
+            shouldKeepPersonalizationDictionaries = false;
+        }
+        if (!shouldKeepUserHistoryDictionaries) {
+            // Remove user history dictionaries.
+            PersonalizationHelper.removeAllUserHistoryDictionaries(this);
+            if (suggest != null) {
+                suggest.mDictionaryFacilitator.clearUserHistoryDictionary();
+            }
+        }
+        if (!shouldKeepPersonalizationDictionaries) {
+            // Remove personalization dictionaries.
+            PersonalizationHelper.removeAllPersonalizationDictionaries(this);
             PersonalizationDictionarySessionRegistrar.resetAll(this);
         }
     }
