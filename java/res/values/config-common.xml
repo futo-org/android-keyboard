@@ -35,10 +35,10 @@
 
     <integer name="config_ignore_alt_code_key_timeout">350</integer>
 
-    <integer name="config_key_preview_show_up_duration">0</integer>
-    <integer name="config_key_preview_dismiss_duration">70</integer>
-    <fraction name="config_key_preview_show_up_start_scale">100%</fraction>
-    <fraction name="config_key_preview_dismiss_end_scale">100%</fraction>
+    <integer name="config_key_preview_show_up_duration">17</integer>
+    <integer name="config_key_preview_dismiss_duration">53</integer>
+    <fraction name="config_key_preview_show_up_start_scale">98%</fraction>
+    <fraction name="config_key_preview_dismiss_end_scale">94%</fraction>
     <!-- TODO: consolidate key preview linger timeout with the above animation parameters. -->
     <integer name="config_key_preview_linger_timeout">70</integer>
     <!-- Suppress showing key preview duration after batch input in millisecond -->
