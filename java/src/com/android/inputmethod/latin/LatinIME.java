@@ -775,9 +775,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         // Note: the following does a round-trip IPC on the main thread: be careful
         final Locale currentLocale = mSubtypeSwitcher.getCurrentSubtypeLocale();
-        final Suggest suggest = mInputLogic.mSuggest;
+        Suggest suggest = mInputLogic.mSuggest;
         if (null != suggest && null != currentLocale && !currentLocale.equals(suggest.mLocale)) {
             initSuggest();
+            suggest = mInputLogic.mSuggest;
         }
 
         // Sometimes, while rotating, for some reason the framework tells the app we are not
@@ -802,6 +803,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (isDifferentTextField ||
                 !currentSettingsValues.hasSameOrientation(getResources().getConfiguration())) {
             loadSettings();
+            suggest = mInputLogic.mSuggest;
         }
         if (isDifferentTextField) {
             mainKeyboardView.closing();
