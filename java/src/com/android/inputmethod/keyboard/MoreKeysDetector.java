@@ -33,13 +33,17 @@ public final class MoreKeysDetector extends KeyDetector {
     }
 
     @Override
-    public Key detectHitKey(int x, int y) {
+    public Key detectHitKey(final int x, final int y) {
+        final Keyboard keyboard = getKeyboard();
+        if (keyboard == null) {
+            return null;
+        }
         final int touchX = getTouchX(x);
         final int touchY = getTouchY(y);
 
         Key nearestKey = null;
         int nearestDist = (y < 0) ? mSlideAllowanceSquareTop : mSlideAllowanceSquare;
-        for (final Key key : getKeyboard().getKeys()) {
+        for (final Key key : keyboard.getKeys()) {
             final int dist = key.squaredDistanceToEdge(touchX, touchY);
             if (dist < nearestDist) {
                 nearestKey = key;
