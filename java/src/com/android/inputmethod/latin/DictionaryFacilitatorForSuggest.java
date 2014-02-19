@@ -512,7 +512,6 @@ public class DictionaryFacilitatorForSuggest {
         }
     }
 
-    @UsedForTesting
     public void clearUserHistoryDictionary() {
         if (mUserHistoryDictionary == null) {
             return;

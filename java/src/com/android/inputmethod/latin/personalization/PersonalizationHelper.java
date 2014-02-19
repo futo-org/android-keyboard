@@ -93,11 +93,14 @@ public class PersonalizationHelper {
         }
     }
 
-    public static void removeAllPersonalizedDictionaries(final Context context) {
-        removeAllDictionaries(context, sLangUserHistoryDictCache,
-                UserHistoryDictionary.NAME);
+    public static void removeAllPersonalizationDictionaries(final Context context) {
         removeAllDictionaries(context, sLangPersonalizationDictCache,
                 PersonalizationDictionary.NAME);
+    }
+
+    public static void removeAllUserHistoryDictionaries(final Context context) {
+        removeAllDictionaries(context, sLangUserHistoryDictCache,
+                UserHistoryDictionary.NAME);
     }
 
     private static <T extends DecayingExpandableBinaryDictionaryBase> void removeAllDictionaries(
