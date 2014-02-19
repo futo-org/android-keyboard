@@ -32,6 +32,7 @@ public final class ImportantNoticeUtils {
     // displayed to users.
     private static final String PREFERENCE_NAME = "important_notice";
     private static final String KEY_IMPORTANT_NOTICE_VERSION = "important_notice_version";
+    public static final int VERSION_TO_ENABLE_PERSONALIZED_SUGGESTIONS = 2;
 
     // Copy of the hidden {@link Settings.Secure#USER_SETUP_COMPLETE} settings key.
     // The value is zero until each multiuser completes system setup wizard.
@@ -59,7 +60,7 @@ public final class ImportantNoticeUtils {
         return context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
     }
 
-    private static int getCurrentImportantNoticeVersion(final Context context) {
+    public static int getCurrentImportantNoticeVersion(final Context context) {
         return context.getResources().getInteger(R.integer.config_important_notice_version);
     }
 
@@ -82,5 +83,23 @@ public final class ImportantNoticeUtils {
         prefs.edit()
                 .putInt(KEY_IMPORTANT_NOTICE_VERSION, getCurrentImportantNoticeVersion(context))
                 .apply();
+    }
+
+    public static String getImportantNoticeTitle(final Context context) {
+        switch (getCurrentImportantNoticeVersion(context)) {
+        case VERSION_TO_ENABLE_PERSONALIZED_SUGGESTIONS:
+            return context.getString(R.string.important_notice_title);
+        default:
+            return null;
+        }
+    }
+
+    public static String getImportantNoticeContents(final Context context) {
+        switch (getCurrentImportantNoticeVersion(context)) {
+        case VERSION_TO_ENABLE_PERSONALIZED_SUGGESTIONS:
+            return context.getString(R.string.important_notice_contents);
+        default:
+            return null;
+        }
     }
 }

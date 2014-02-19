@@ -421,6 +421,10 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
         return mPrefs.getStringSet(PREF_CORPUS_HANDLES_FOR_PERSONALIZATION, emptySet);
     }
 
+    public void writeUsePersonalizationDictionary(final boolean enabled) {
+        mPrefs.edit().putBoolean(PREF_USE_PERSONALIZED_DICTS, enabled).apply();
+    }
+
     public static void writeEmojiRecentKeys(final SharedPreferences prefs, String str) {
         prefs.edit().putString(PREF_EMOJI_RECENT_KEYS, str).apply();
     }
