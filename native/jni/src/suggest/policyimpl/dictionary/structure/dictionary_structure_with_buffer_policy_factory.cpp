@@ -76,7 +76,7 @@ namespace latinime {
             }
             const Ver4DictBuffers::Ver4DictBuffersPtr dictBuffers =
                     Ver4DictBuffers::openVer4DictBuffers(dictPath, mmappedBuffer);
-            if (!dictBuffers.get()->isValid()) {
+            if (!dictBuffers.get() || !dictBuffers.get()->isValid()) {
                 AKLOGE("DICT: The dictionary doesn't satisfy ver4 format requirements. path: %s",
                         path);
                 ASSERT(false);

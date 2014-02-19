@@ -28,9 +28,14 @@ namespace latinime {
 
 /* static */ Ver4DictBuffers::Ver4DictBuffersPtr Ver4DictBuffers::openVer4DictBuffers(
         const char *const dictPath, const MmappedBuffer::MmappedBufferPtr &headerBuffer) {
-    const bool isUpdatable = headerBuffer.get() ? headerBuffer.get()->isUpdatable() : false;
+    if (!headerBuffer.get()) {
+        ASSERT(false);
+        AKLOGE("The header buffer must be valid to open ver4 dict buffers.");
+        return Ver4DictBuffersPtr(0);
+    }
     // TODO: take only dictDirPath, and open both header and trie files in the constructor below
-    return Ver4DictBuffersPtr(new Ver4DictBuffers(dictPath, headerBuffer, isUpdatable));
+    return Ver4DictBuffersPtr(new Ver4DictBuffers(
+            dictPath, headerBuffer, headerBuffer.get()->isUpdatable()));
 }
 
 bool Ver4DictBuffers::flushHeaderAndDictBuffers(const char *const dictDirPath,
@@ -113,10 +118,11 @@ Ver4DictBuffers::Ver4DictBuffers(const char *const dictPath,
           mDictBuffer(MmappedBuffer::openBuffer(dictPath,
                   Ver4DictConstants::TRIE_FILE_EXTENSION, isUpdatable)),
           mHeaderPolicy(headerBuffer.get()->getBuffer(), FormatUtils::VERSION_4),
-          mExpandableHeaderBuffer(headerBuffer.get()->getBuffer(), mHeaderPolicy.getSize(),
+          mExpandableHeaderBuffer(headerBuffer.get() ? headerBuffer.get()->getBuffer() : 0,
+                  mHeaderPolicy.getSize(),
                   BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE),
-          mExpandableTrieBuffer(mDictBuffer.get()->getBuffer(),
-                  mDictBuffer.get()->getBufferSize(),
+          mExpandableTrieBuffer(mDictBuffer.get() ? mDictBuffer.get()->getBuffer() : 0,
+                  mDictBuffer.get() ? mDictBuffer.get()->getBufferSize() : 0,
                   BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE),
           mTerminalPositionLookupTable(dictPath, isUpdatable),
           mProbabilityDictContent(dictPath, mHeaderPolicy.hasHistoricalInfoOfWords(),
