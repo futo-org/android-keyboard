@@ -52,7 +52,6 @@
         android:layout_height="match_parent">
         <TextView
             android:id="@+id/important_notice_title"
-            android:text="@string/important_notice_title"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:padding="6sp"

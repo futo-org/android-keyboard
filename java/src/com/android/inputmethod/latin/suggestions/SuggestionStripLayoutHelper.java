@@ -504,12 +504,13 @@ final class SuggestionStripLayoutHelper {
                 hintView, 1.0f - mCenterSuggestionWeight, ViewGroup.LayoutParams.MATCH_PARENT);
     }
 
-    public void layoutImportantNotice(final View importantNoticeStrip, final int stripWidth) {
+    public void layoutImportantNotice(final View importantNoticeStrip, final int stripWidth,
+            final String importantNoticeTitle) {
         final TextView titleView = (TextView)importantNoticeStrip.findViewById(
                 R.id.important_notice_title);
         final int width = stripWidth - titleView.getPaddingLeft() - titleView.getPaddingRight();
         titleView.setTextColor(mColorAutoCorrect);
-        final CharSequence importantNoticeTitle = titleView.getText();
+        titleView.setText(importantNoticeTitle);
         titleView.setTextScaleX(1.0f); // Reset textScaleX.
         final float titleScaleX = getTextScaleX(
                 importantNoticeTitle, width, titleView.getPaint());

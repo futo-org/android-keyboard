@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.support.v4.view.ViewCompat;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.GestureDetector;
@@ -236,7 +237,12 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         if (width <= 0) {
             return false;
         }
-        mLayoutHelper.layoutImportantNotice(mImportantNoticeStrip, width);
+        final String importantNoticeTitle = ImportantNoticeUtils.getImportantNoticeTitle(
+                getContext());
+        if (TextUtils.isEmpty(importantNoticeTitle)) {
+            return false;
+        }
+        mLayoutHelper.layoutImportantNotice(mImportantNoticeStrip, width, importantNoticeTitle);
         mStripVisibilityGroup.showImportantNoticeStrip();
         mImportantNoticeStrip.setOnClickListener(this);
         return true;

@@ -25,6 +25,9 @@ import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
+import android.content.DialogInterface.OnDismissListener;
+import android.content.DialogInterface.OnShowListener;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -1163,27 +1166,48 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     @Override
     public void showImportantNoticeContents() {
         final Context context = this;
-        final DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
+        final OnShowListener onShowListener = new OnShowListener() {
             @Override
-            public void onClick(final DialogInterface di, final int position) {
-                di.dismiss();
+            public void onShow(final DialogInterface dialog) {
                 ImportantNoticeUtils.updateLastImportantNoticeVersion(context);
-                if (position == DialogInterface.BUTTON_POSITIVE) {
-                    setNeutralSuggestionStrip();
-                    return;
-                }
+                onShowImportantNoticeDialog(
+                        ImportantNoticeUtils.getCurrentImportantNoticeVersion(context));
+            }
+        };
+        final OnClickListener onClickListener = new OnClickListener() {
+            @Override
+            public void onClick(final DialogInterface dialog, final int position) {
                 if (position == DialogInterface.BUTTON_NEGATIVE) {
                     launchSettings();
-                    return;
                 }
             }
         };
-        final AlertDialog.Builder builder =
-                new AlertDialog.Builder(context, AlertDialog.THEME_HOLO_DARK);
-        builder.setMessage(R.string.important_notice_contents)
-                .setPositiveButton(android.R.string.ok, listener)
-                .setNegativeButton(R.string.go_to_settings, listener);
-        showOptionDialog(builder.create(), true /* cancelable */);
+        final OnDismissListener onDismissListener = new OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                setNeutralSuggestionStrip();
+            }
+        };
+        final String importantNoticeContents = ImportantNoticeUtils.getImportantNoticeContents(
+                context);
+        final AlertDialog.Builder builder = new AlertDialog.Builder(
+                context, AlertDialog.THEME_HOLO_DARK);
+        builder.setMessage(importantNoticeContents)
+                .setPositiveButton(android.R.string.ok, null /* listener */)
+                .setNegativeButton(R.string.go_to_settings, onClickListener)
+                .setOnDismissListener(onDismissListener);
+        final AlertDialog importantNoticeDialog = builder.create();
+        importantNoticeDialog.setOnShowListener(onShowListener);
+        showOptionDialog(importantNoticeDialog);
+    }
+
+    private void onShowImportantNoticeDialog(final int importantNoticeVersion) {
+        if (importantNoticeVersion ==
+                ImportantNoticeUtils.VERSION_TO_ENABLE_PERSONALIZED_SUGGESTIONS) {
+            mSettings.writeUsePersonalizationDictionary(true /* enabled */);
+            loadSettings();
+            initSuggest();
+        }
     }
 
     public void displaySettingsDialog() {
@@ -1637,7 +1661,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 getString(R.string.language_selection_title),
                 getString(ApplicationUtils.getActivityTitleResId(this, SettingsActivity.class)),
         };
-        final DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
+        final OnClickListener listener = new OnClickListener() {
             @Override
             public void onClick(DialogInterface di, int position) {
                 di.dismiss();
@@ -1658,18 +1682,18 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         };
         final AlertDialog.Builder builder =
                 new AlertDialog.Builder(this).setItems(items, listener).setTitle(title);
-        showOptionDialog(builder.create(), true /*cancelable */);
+        showOptionDialog(builder.create());
     }
 
     // TODO: Move this method out of {@link LatinIME}.
-    private void showOptionDialog(final AlertDialog dialog, final boolean cancelable) {
+    private void showOptionDialog(final AlertDialog dialog) {
         final IBinder windowToken = mKeyboardSwitcher.getMainKeyboardView().getWindowToken();
         if (windowToken == null) {
             return;
         }
 
-        dialog.setCancelable(cancelable);
-        dialog.setCanceledOnTouchOutside(cancelable);
+        dialog.setCancelable(true /* cancelable */);
+        dialog.setCanceledOnTouchOutside(true /* cancelable */);
 
         final Window window = dialog.getWindow();
         final WindowManager.LayoutParams lp = window.getAttributes();
