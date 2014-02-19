@@ -16,8 +16,6 @@
 
 package com.android.inputmethod.keyboard;
 
-import com.android.inputmethod.latin.Constants;
-
 /**
  * This class handles key detection.
  */
@@ -41,13 +39,15 @@ public class KeyDetector {
      * @param keyHysteresisDistanceForSlidingModifier the same parameter for sliding input that
      * starts from a modifier key such as shift and symbols key.
      */
-    public KeyDetector(float keyHysteresisDistance, float keyHysteresisDistanceForSlidingModifier) {
+    public KeyDetector(final float keyHysteresisDistance,
+            final float keyHysteresisDistanceForSlidingModifier) {
         mKeyHysteresisDistanceSquared = (int)(keyHysteresisDistance * keyHysteresisDistance);
         mKeyHysteresisDistanceForSlidingModifierSquared = (int)(
                 keyHysteresisDistanceForSlidingModifier * keyHysteresisDistanceForSlidingModifier);
     }
 
-    public void setKeyboard(Keyboard keyboard, float correctionX, float correctionY) {
+    public void setKeyboard(final Keyboard keyboard, final float correctionX,
+            final float correctionY) {
         if (keyboard == null) {
             throw new NullPointerException();
         }
@@ -56,24 +56,21 @@ public class KeyDetector {
         mKeyboard = keyboard;
     }
 
-    public int getKeyHysteresisDistanceSquared(boolean isSlidingFromModifier) {
+    public int getKeyHysteresisDistanceSquared(final boolean isSlidingFromModifier) {
         return isSlidingFromModifier
                 ? mKeyHysteresisDistanceForSlidingModifierSquared : mKeyHysteresisDistanceSquared;
     }
 
-    public int getTouchX(int x) {
+    public int getTouchX(final int x) {
         return x + mCorrectionX;
     }
 
     // TODO: Remove vertical correction.
-    public int getTouchY(int y) {
+    public int getTouchY(final int y) {
         return y + mCorrectionY;
     }
 
     public Keyboard getKeyboard() {
-        if (mKeyboard == null) {
-            throw new IllegalStateException("keyboard isn't set");
-        }
         return mKeyboard;
     }
 
@@ -88,7 +85,7 @@ public class KeyDetector {
      * @param y The y-coordinate of a touch point
      * @return the key that the touch point hits.
      */
-    public Key detectHitKey(int x, int y) {
+    public Key detectHitKey(final int x, final int y) {
         final int touchX = getTouchX(x);
         final int touchY = getTouchY(y);
 
@@ -112,21 +109,5 @@ public class KeyDetector {
             }
         }
         return primaryKey;
-    }
-
-    public static String printableCode(Key key) {
-        return key != null ? Constants.printableCode(key.getCode()) : "none";
-    }
-
-    public static String printableCodes(int[] codes) {
-        final StringBuilder sb = new StringBuilder();
-        boolean addDelimiter = false;
-        for (final int code : codes) {
-            if (code == Constants.NOT_A_CODE) break;
-            if (addDelimiter) sb.append(", ");
-            sb.append(Constants.printableCode(code));
-            addDelimiter = true;
-        }
-        return "[" + sb + "]";
     }
 }

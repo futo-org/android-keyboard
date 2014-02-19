@@ -257,12 +257,15 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
     }
 
     public static void setKeyDetector(final KeyDetector keyDetector) {
+        final Keyboard keyboard = keyDetector.getKeyboard();
+        if (keyboard == null) {
+            return;
+        }
         final int trackersSize = sTrackers.size();
         for (int i = 0; i < trackersSize; ++i) {
             final PointerTracker tracker = sTrackers.get(i);
             tracker.setKeyDetectorInner(keyDetector);
         }
-        final Keyboard keyboard = keyDetector.getKeyboard();
         sGestureEnabler.setPasswordMode(keyboard.mId.passwordInput());
     }
 
@@ -301,7 +304,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
         final boolean ignoreModifierKey = mIsInDraggingFinger && key.isModifier();
         if (DEBUG_LISTENER) {
             Log.d(TAG, String.format("[%d] onPress    : %s%s%s%s", mPointerId,
-                    KeyDetector.printableCode(key),
+                    (key == null ? "none" : Constants.printableCode(key.getCode())),
                     ignoreModifierKey ? " ignoreModifier" : "",
                     key.isEnabled() ? "" : " disabled",
                     repeatCount > 0 ? " repeatCount=" + repeatCount : ""));
@@ -402,11 +405,14 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
 
     private void setKeyDetectorInner(final KeyDetector keyDetector) {
         final Keyboard keyboard = keyDetector.getKeyboard();
+        if (keyboard == null) {
+            return;
+        }
         if (keyDetector == mKeyDetector && keyboard == mKeyboard) {
             return;
         }
         mKeyDetector = keyDetector;
-        mKeyboard = keyDetector.getKeyboard();
+        mKeyboard = keyboard;
         // Mark that keyboard layout has been changed.
         mKeyboardLayoutHasBeenChanged = true;
         final int keyWidth = mKeyboard.mMostCommonKeyWidth;
@@ -1235,7 +1241,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
     private void printTouchEvent(final String title, final int x, final int y,
             final long eventTime) {
         final Key key = mKeyDetector.detectHitKey(x, y);
-        final String code = KeyDetector.printableCode(key);
+        final String code = (key == null ? "none" : Constants.printableCode(key.getCode()));
         Log.d(TAG, String.format("[%d]%s%s %4d %4d %5d %s", mPointerId,
                 (mIsTrackingForActionDisabled ? "-" : " "), title, x, y, eventTime, code));
     }
