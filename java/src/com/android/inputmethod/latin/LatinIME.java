@@ -541,7 +541,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             shouldKeepUserHistoryDictionaries = true;
             // TODO: Eliminate this restriction
             shouldKeepPersonalizationDictionaries =
-                    mSubtypeSwitcher.isSystemLocaleSameAsLocaleOfAllEnabledSubtypes();
+                    mSubtypeSwitcher.isSystemLocaleSameAsLocaleOfAllEnabledSubtypesOfEnabledImes();
         } else {
             shouldKeepUserHistoryDictionaries = false;
             shouldKeepPersonalizationDictionaries = false;
