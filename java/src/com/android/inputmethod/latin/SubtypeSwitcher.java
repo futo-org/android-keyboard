@@ -37,9 +37,11 @@ import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.latin.utils.LocaleUtils;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 public final class SubtypeSwitcher {
     private static boolean DBG = LatinImeLogger.sDBG;
@@ -273,12 +275,26 @@ public final class SubtypeSwitcher {
         return mNeedsToDisplayLanguage.getValue();
     }
 
-    public boolean isSystemLocaleSameAsLocaleOfAllEnabledSubtypes() {
+    public boolean isSystemLocaleSameAsLocaleOfAllEnabledSubtypesOfEnabledImes() {
         final Locale systemLocale = mResources.getConfiguration().locale;
-        final List<InputMethodSubtype> enabledSubtypesOfThisIme =
-                mRichImm.getMyEnabledInputMethodSubtypeList(true);
-        for (final InputMethodSubtype subtype : enabledSubtypesOfThisIme) {
-            if (!systemLocale.equals(SubtypeLocaleUtils.getSubtypeLocale(subtype))) {
+        final Set<InputMethodSubtype> enabledSubtypesOfEnabledImes =
+                new HashSet<InputMethodSubtype>();
+        final InputMethodManager inputMethodManager = mRichImm.getInputMethodManager();
+        final List<InputMethodInfo> enabledInputMethodInfoList =
+                inputMethodManager.getEnabledInputMethodList();
+        for (final InputMethodInfo info : enabledInputMethodInfoList) {
+            final List<InputMethodSubtype> enabledSubtypes =
+                    inputMethodManager.getEnabledInputMethodSubtypeList(
+                            info, true /* allowsImplicitlySelectedSubtypes */);
+            if (enabledSubtypes.isEmpty()) {
+                // An IME with no subtypes is found.
+                return false;
+            }
+            enabledSubtypesOfEnabledImes.addAll(enabledSubtypes);
+        }
+        for (final InputMethodSubtype subtype : enabledSubtypesOfEnabledImes) {
+            if (!subtype.isAuxiliary() && !subtype.getLocale().isEmpty()
+                    && !systemLocale.equals(SubtypeLocaleUtils.getSubtypeLocale(subtype))) {
                 return false;
             }
         }
