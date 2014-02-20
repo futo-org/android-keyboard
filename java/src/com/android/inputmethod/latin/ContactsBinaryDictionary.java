@@ -89,8 +89,6 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
     }
 
     private synchronized void registerObserver(final Context context) {
-        // Perform a managed query. The Activity will handle closing and requerying the cursor
-        // when needed.
         if (mObserver != null) return;
         ContentResolver cres = context.getContentResolver();
         cres.registerContentObserver(Contacts.CONTENT_URI, true, mObserver =

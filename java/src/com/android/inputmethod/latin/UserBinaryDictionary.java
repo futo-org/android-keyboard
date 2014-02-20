@@ -97,8 +97,6 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
             mLocale = localeStr;
         }
         mAlsoUseMoreRestrictiveLocales = alsoUseMoreRestrictiveLocales;
-        // Perform a managed query. The Activity will handle closing and re-querying the cursor
-        // when needed.
         ContentResolver cres = context.getContentResolver();
 
         mObserver = new ContentObserver(null) {
