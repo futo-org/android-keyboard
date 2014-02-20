@@ -810,11 +810,11 @@ public final class RichInputConnection {
         if (mExpectedSelStart == newSelStart && mExpectedSelEnd == newSelEnd) return true;
         // This update is not belated if mExpectedSelStart and mExpectedSelEnd match the old
         // values, and one of newSelStart or newSelEnd is updated to a different value. In this
-        // case, there is likely something other than the IME has moved the selection endpoint
+        // case, it is likely that something other than the IME has moved the selection endpoint
         // to the new value.
         if (mExpectedSelStart == oldSelStart && mExpectedSelEnd == oldSelEnd
                 && (oldSelStart != newSelStart || oldSelEnd != newSelEnd)) return false;
-        // If nether of the above two cases holds, then the system may be having trouble keeping up
+        // If neither of the above two cases hold, then the system may be having trouble keeping up
         // with updates. If 1) the selection is a cursor, 2) newSelStart is between oldSelStart
         // and mExpectedSelStart, and 3) newSelEnd is between oldSelEnd and mExpectedSelEnd, then
         // assume a belated update.
