@@ -30,9 +30,9 @@ public final class ImportantNoticeUtils {
 
     // {@link SharedPreferences} name to save the last important notice version that has been
     // displayed to users.
-    private static final String PREFERENCE_NAME = "important_notice";
+    private static final String PREFERENCE_NAME = "important_notice_pref";
     private static final String KEY_IMPORTANT_NOTICE_VERSION = "important_notice_version";
-    public static final int VERSION_TO_ENABLE_PERSONALIZED_SUGGESTIONS = 2;
+    public static final int VERSION_TO_ENABLE_PERSONALIZED_SUGGESTIONS = 1;
 
     // Copy of the hidden {@link Settings.Secure#USER_SETUP_COMPLETE} settings key.
     // The value is zero until each multiuser completes system setup wizard.
@@ -64,9 +64,16 @@ public final class ImportantNoticeUtils {
         return context.getResources().getInteger(R.integer.config_important_notice_version);
     }
 
+    private static int getLastImportantNoticeVersion(final Context context) {
+        return getImportantNoticePreferences(context).getInt(KEY_IMPORTANT_NOTICE_VERSION, 0);
+    }
+
+    private static int getNextImportantNoticeVersion(final Context context) {
+        return getLastImportantNoticeVersion(context) + 1;
+    }
+
     private static boolean hasNewImportantNotice(final Context context) {
-        final SharedPreferences prefs = getImportantNoticePreferences(context);
-        final int lastVersion = prefs.getInt(KEY_IMPORTANT_NOTICE_VERSION, 0);
+        final int lastVersion = getLastImportantNoticeVersion(context);
         return getCurrentImportantNoticeVersion(context) > lastVersion;
     }
 
@@ -79,14 +86,15 @@ public final class ImportantNoticeUtils {
     }
 
     public static void updateLastImportantNoticeVersion(final Context context) {
-        final SharedPreferences prefs = getImportantNoticePreferences(context);
-        prefs.edit()
-                .putInt(KEY_IMPORTANT_NOTICE_VERSION, getCurrentImportantNoticeVersion(context))
+        getImportantNoticePreferences(context)
+                .edit()
+                .putInt(KEY_IMPORTANT_NOTICE_VERSION, getNextImportantNoticeVersion(context))
                 .apply();
     }
 
-    public static String getImportantNoticeTitle(final Context context) {
-        switch (getCurrentImportantNoticeVersion(context)) {
+    // TODO: Make title resource to string array indexed by version.
+    public static String getNextImportantNoticeTitle(final Context context) {
+        switch (getNextImportantNoticeVersion(context)) {
         case VERSION_TO_ENABLE_PERSONALIZED_SUGGESTIONS:
             return context.getString(R.string.important_notice_title);
         default:
@@ -94,8 +102,9 @@ public final class ImportantNoticeUtils {
         }
     }
 
-    public static String getImportantNoticeContents(final Context context) {
-        switch (getCurrentImportantNoticeVersion(context)) {
+    // TODO: Make content resource to string array indexed by version.
+    public static String getNextImportantNoticeContents(final Context context) {
+        switch (getNextImportantNoticeVersion(context)) {
         case VERSION_TO_ENABLE_PERSONALIZED_SUGGESTIONS:
             return context.getString(R.string.important_notice_contents);
         default:

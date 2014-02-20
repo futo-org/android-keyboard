@@ -20,7 +20,8 @@
 
 <resources>
     <integer name="config_important_notice_version">0</integer>
-    <!-- The title of the important notice displayed on the suggestion strip. -->
+    <!-- TODO: Make title and contents resource to string array indexed by version. -->
+    <!-- The text of the important notice displayed on the suggestion strip. -->
     <string name="important_notice_title"></string>
     <!-- The contents of the important notice. -->
     <string name="important_notice_contents"></string>
