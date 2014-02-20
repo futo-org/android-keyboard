@@ -100,6 +100,8 @@ class DictionaryStructureWithBufferPolicy {
     // starts iterating the dictionary.
     virtual int getNextWordAndNextToken(const int token, int *const outCodePoints) = 0;
 
+    virtual bool isCorrupted() const = 0;
+
  protected:
     DictionaryStructureWithBufferPolicy() {}
 

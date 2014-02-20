@@ -33,7 +33,7 @@
 
 namespace latinime {
 
-void Ver4PatriciaTrieWritingHelper::writeToDictFile(const char *const dictDirPath,
+bool Ver4PatriciaTrieWritingHelper::writeToDictFile(const char *const dictDirPath,
         const int unigramCount, const int bigramCount) const {
     const HeaderPolicy *const headerPolicy = mBuffers->getHeaderPolicy();
     BufferWithExtendableBuffer headerBuffer(
@@ -46,12 +46,12 @@ void Ver4PatriciaTrieWritingHelper::writeToDictFile(const char *const dictDirPat
                 "updatesLastDecayedTime: %d, unigramCount: %d, bigramCount: %d, "
                 "extendedRegionSize: %d", false, unigramCount, bigramCount,
                 extendedRegionSize);
-        return;
+        return false;
     }
-    mBuffers->flushHeaderAndDictBuffers(dictDirPath, &headerBuffer);
+    return mBuffers->flushHeaderAndDictBuffers(dictDirPath, &headerBuffer);
 }
 
-void Ver4PatriciaTrieWritingHelper::writeToDictFileWithGC(const int rootPtNodeArrayPos,
+bool Ver4PatriciaTrieWritingHelper::writeToDictFileWithGC(const int rootPtNodeArrayPos,
         const char *const dictDirPath) {
     const HeaderPolicy *const headerPolicy = mBuffers->getHeaderPolicy();
     Ver4DictBuffers::Ver4DictBuffersPtr dictBuffers(
@@ -59,15 +59,15 @@ void Ver4PatriciaTrieWritingHelper::writeToDictFileWithGC(const int rootPtNodeAr
     int unigramCount = 0;
     int bigramCount = 0;
     if (!runGC(rootPtNodeArrayPos, headerPolicy, dictBuffers.get(), &unigramCount, &bigramCount)) {
-        return;
+        return false;
     }
     BufferWithExtendableBuffer headerBuffer(
             BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE);
     if (!headerPolicy->fillInAndWriteHeaderToBuffer(true /* updatesLastDecayedTime */,
             unigramCount, bigramCount, 0 /* extendedRegionSize */, &headerBuffer)) {
-        return;
+        return false;
     }
-    dictBuffers.get()->flushHeaderAndDictBuffers(dictDirPath, &headerBuffer);
+    return dictBuffers.get()->flushHeaderAndDictBuffers(dictDirPath, &headerBuffer);
 }
 
 bool Ver4PatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
