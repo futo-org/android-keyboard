@@ -62,7 +62,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     private static final boolean DBG_STRESS_TEST = false;
 
     private static final int TIMEOUT_FOR_READ_OPS_IN_MILLISECONDS = 100;
-    private static final int TIMEOUT_FOR_READ_OPS_FOR_TESTS_IN_MILLISECONDS = 1000;
+    private static final int TIMEOUT_FOR_READ_OPS_FOR_TESTS_IN_MILLISECONDS = 10000;
 
     /**
      * The maximum length of a word in this dictionary.
@@ -750,7 +750,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     @UsedForTesting
     public boolean isInUnderlyingBinaryDictionaryForTests(final String word) {
         final AsyncResultHolder<Boolean> holder = new AsyncResultHolder<Boolean>();
-        getExecutor(mDictName).executePrioritized(new Runnable() {
+        getExecutor(mDictName).execute(new Runnable() {
             @Override
             public void run() {
                 if (mDictType == Dictionary.TYPE_USER_HISTORY) {
