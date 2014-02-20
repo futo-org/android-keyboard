@@ -141,7 +141,10 @@ public class UserDictionarySettings extends ListFragment {
 
         mLocale = locale;
         // WARNING: The following cursor is never closed! TODO: don't put that in a member, and
-        // make sure all cursors are correctly closed.
+        // make sure all cursors are correctly closed. Also, this comes from a call to
+        // Activity#managedQuery, which has been deprecated for a long time (and which FORBIDS
+        // closing the cursor, so take care when resolving this TODO). We should either use a
+        // regular query and close the cursor, or switch to a LoaderManager and a CursorLoader.
         mCursor = createCursor(locale);
         TextView emptyView = (TextView) getView().findViewById(android.R.id.empty);
         emptyView.setText(R.string.user_dict_settings_empty_text);

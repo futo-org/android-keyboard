@@ -53,8 +53,7 @@ public class UserDictionaryList extends PreferenceFragment {
     }
 
     public static TreeSet<String> getUserDictionaryLocalesSet(Activity activity) {
-        @SuppressWarnings("deprecation")
-        final Cursor cursor = activity.managedQuery(UserDictionary.Words.CONTENT_URI,
+        final Cursor cursor = activity.getContentResolver().query(UserDictionary.Words.CONTENT_URI,
                 new String[] { UserDictionary.Words.LOCALE },
                 null, null, null);
         final TreeSet<String> localeSet = new TreeSet<String>();
