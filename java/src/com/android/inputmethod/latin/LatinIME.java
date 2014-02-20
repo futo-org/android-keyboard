@@ -26,8 +26,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
-import android.content.DialogInterface.OnDismissListener;
-import android.content.DialogInterface.OnShowListener;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -100,7 +98,8 @@ import java.util.concurrent.TimeUnit;
  */
 public class LatinIME extends InputMethodService implements KeyboardActionListener,
         SuggestionStripView.Listener, SuggestionStripViewAccessor,
-        DictionaryFacilitatorForSuggest.DictionaryInitializationListener {
+        DictionaryFacilitatorForSuggest.DictionaryInitializationListener,
+        ImportantNoticeDialog.ImportantNoticeDialogListener {
     private static final String TAG = LatinIME.class.getSimpleName();
     private static final boolean TRACE = false;
     private static boolean DEBUG = false;
@@ -1180,52 +1179,23 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mInputLogic.mSuggest.mDictionaryFacilitator.addWordToUserDictionary(wordToEdit);
     }
 
-    // TODO: Move this method out of {@link LatinIME}.
     // Callback for the {@link SuggestionStripView}, to call when the important notice strip is
     // pressed.
     @Override
     public void showImportantNoticeContents() {
-        final Context context = this;
-        final AlertDialog.Builder builder =
-                new AlertDialog.Builder(context, AlertDialog.THEME_HOLO_DARK);
-        builder.setMessage(ImportantNoticeUtils.getNextImportantNoticeContents(context));
-        builder.setPositiveButton(android.R.string.ok, null /* listener */);
-        final int nextVersion = ImportantNoticeUtils.getNextImportantNoticeVersion(context);
-        final OnClickListener onClickListener = new OnClickListener() {
-            @Override
-            public void onClick(final DialogInterface dialog, final int position) {
-                switch (nextVersion) {
-                case ImportantNoticeUtils.VERSION_TO_ENABLE_PERSONALIZED_SUGGESTIONS:
-                    if (position == DialogInterface.BUTTON_NEGATIVE) {
-                        launchSettings();
-                    }
-                    break;
-                default:
-                    break;
-                }
-            }
-        };
-        switch (nextVersion) {
-        case ImportantNoticeUtils.VERSION_TO_ENABLE_PERSONALIZED_SUGGESTIONS:
-            builder.setNegativeButton(R.string.go_to_settings, onClickListener);
-            break;
-        default:
-            break;
-        }
-        final AlertDialog importantNoticeDialog = builder.create();
-        importantNoticeDialog.setOnShowListener(new OnShowListener() {
-            @Override
-            public void onShow(final DialogInterface dialog) {
-                ImportantNoticeUtils.updateLastImportantNoticeVersion(context);
-            }
-        });
-        importantNoticeDialog.setOnDismissListener(new OnDismissListener() {
-            @Override
-            public void onDismiss(final DialogInterface dialog) {
-                setNeutralSuggestionStrip();
-            }
-        });
-        showOptionDialog(importantNoticeDialog);
+        showOptionDialog(new ImportantNoticeDialog(this /* context */, this /* listener */));
+    }
+
+    // Implement {@link ImportantNoticeDialog.ImportantNoticeDialogListener}
+    @Override
+    public void onClickSettingsOfImportantNoticeDialog(final int nextVersion) {
+        launchSettings();
+    }
+
+    // Implement {@link ImportantNoticeDialog.ImportantNoticeDialogListener}
+    @Override
+    public void onDismissImportantNoticeDialog(final int nextVersion) {
+        setNeutralSuggestionStrip();
     }
 
     public void displaySettingsDialog() {
