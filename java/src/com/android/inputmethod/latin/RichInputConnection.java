@@ -172,20 +172,6 @@ public final class RichInputConnection {
             Log.d(TAG, "Will try to retrieve text later.");
             return false;
         }
-        final int lengthOfTextBeforeCursor = mCommittedTextBeforeComposingText.length();
-        if (lengthOfTextBeforeCursor > newSelStart
-                || (newSelStart != lengthOfTextBeforeCursor
-                        && lengthOfTextBeforeCursor < Constants.EDITOR_CONTENTS_CACHE_SIZE
-                        && newSelStart < Constants.EDITOR_CONTENTS_CACHE_SIZE)) {
-            // newSelStart and newSelEnd may be lying -- when rotating the device (probably a
-            // framework bug). If the values don't agree and we have less chars than we asked
-            // for, then we know how many chars we have. If we got more than newSelStart says, then
-            // we also know it was lying. In both cases the length is more reliable. Note that we
-            // only have to check newSelStart (not newSelEnd) since if newSelEnd is wrong, then
-            // newSelStart will be wrong as well.
-            mExpectedSelStart = lengthOfTextBeforeCursor;
-            mExpectedSelEnd = lengthOfTextBeforeCursor;
-        }
         if (null != mIC && shouldFinishComposition) {
             mIC.finishComposingText();
             if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {

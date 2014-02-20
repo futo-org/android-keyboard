@@ -799,19 +799,22 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             suggest = mInputLogic.mSuggest;
         }
 
-        // Sometimes, while rotating, for some reason the framework tells the app we are not
-        // connected to it and that means we can't refresh the cache. In this case, schedule a
-        // refresh later.
         // TODO[IL]: Can the following be moved to InputLogic#startInput?
         final boolean canReachInputConnection;
         if (!mInputLogic.mConnection.resetCachesUponCursorMoveAndReturnSuccess(
                 editorInfo.initialSelStart, editorInfo.initialSelEnd,
                 false /* shouldFinishComposition */)) {
+            // Sometimes, while rotating, for some reason the framework tells the app we are not
+            // connected to it and that means we can't refresh the cache. In this case, schedule a
+            // refresh later.
             // We try resetting the caches up to 5 times before giving up.
             mHandler.postResetCaches(isDifferentTextField, 5 /* remainingTries */);
             // mLastSelection{Start,End} are reset later in this method, don't need to do it here
             canReachInputConnection = false;
         } else {
+            // When rotating, initialSelStart and initialSelEnd sometimes are lying. Make a best
+            // effort to work around this bug.
+            mInputLogic.mConnection.tryFixLyingCursorPosition();
             if (isDifferentTextField) {
                 mHandler.postResumeSuggestions();
             }
