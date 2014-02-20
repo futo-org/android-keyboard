@@ -20,6 +20,7 @@ import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.LargeTest;
 import android.util.Log;
 
+import com.android.inputmethod.latin.BinaryDictionary;
 import com.android.inputmethod.latin.ExpandableBinaryDictionary;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.FileUtils;
@@ -43,6 +44,43 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
         "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m",
         "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"
     };
+
+    private int mCurrentTime = 0;
+
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        mCurrentTime = 0;
+        setCurrentTimeForTestMode(mCurrentTime);
+    }
+
+    @Override
+    protected void tearDown() throws Exception {
+        stopTestModeInNativeCode();
+        super.tearDown();
+    }
+
+    private void forcePassingShortTime() {
+        // 4 days.
+        final int timeToElapse = (int)TimeUnit.DAYS.toSeconds(4);
+        mCurrentTime += timeToElapse;
+        setCurrentTimeForTestMode(mCurrentTime);
+    }
+
+    private void forcePassingLongTime() {
+        // 60 days.
+        final int timeToElapse = (int)TimeUnit.DAYS.toSeconds(60);
+        mCurrentTime += timeToElapse;
+        setCurrentTimeForTestMode(mCurrentTime);
+    }
+
+    private static int setCurrentTimeForTestMode(final int currentTime) {
+        return BinaryDictionary.setCurrentTimeForTest(currentTime);
+    }
+
+    private static int stopTestModeInNativeCode() {
+        return BinaryDictionary.setCurrentTimeForTest(-1);
+    }
 
     /**
      * Generates a random word.
@@ -205,6 +243,30 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
             waitForWriting(dummyLocale);
             assertTrue("check exisiting of " + dictFile, dictFile.exists());
             FileUtils.deleteRecursively(dictFile);
+        }
+    }
+
+    public void testDecaying() {
+        final Locale dummyLocale = new Locale("test_decaying" + System.currentTimeMillis());
+        final int numberOfWords = 5000;
+        final Random random = new Random(123456);
+        clearHistory(dummyLocale);
+        final List<String> words = generateWords(numberOfWords, random);
+        final UserHistoryDictionary dict =
+                PersonalizationHelper.getUserHistoryDictionary(getContext(), dummyLocale);
+        String prevWord = null;
+        for (final String word : words) {
+            dict.addToDictionary(prevWord, word, true, mCurrentTime);
+            prevWord = word;
+            assertTrue(dict.isInUnderlyingBinaryDictionaryForTests(word));
+        }
+        forcePassingShortTime();
+        for (final String word : words) {
+            assertTrue(dict.isInUnderlyingBinaryDictionaryForTests(word));
+        }
+        forcePassingLongTime();
+        for (final String word : words) {
+            assertFalse(dict.isInUnderlyingBinaryDictionaryForTests(word));
         }
     }
 }
