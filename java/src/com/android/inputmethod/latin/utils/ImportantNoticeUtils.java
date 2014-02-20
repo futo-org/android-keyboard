@@ -60,7 +60,7 @@ public final class ImportantNoticeUtils {
         return context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
     }
 
-    public static int getCurrentImportantNoticeVersion(final Context context) {
+    private static int getCurrentImportantNoticeVersion(final Context context) {
         return context.getResources().getInteger(R.integer.config_important_notice_version);
     }
 
@@ -68,7 +68,7 @@ public final class ImportantNoticeUtils {
         return getImportantNoticePreferences(context).getInt(KEY_IMPORTANT_NOTICE_VERSION, 0);
     }
 
-    private static int getNextImportantNoticeVersion(final Context context) {
+    public static int getNextImportantNoticeVersion(final Context context) {
         return getLastImportantNoticeVersion(context) + 1;
     }
 
@@ -92,23 +92,23 @@ public final class ImportantNoticeUtils {
                 .apply();
     }
 
-    // TODO: Make title resource to string array indexed by version.
     public static String getNextImportantNoticeTitle(final Context context) {
-        switch (getNextImportantNoticeVersion(context)) {
-        case VERSION_TO_ENABLE_PERSONALIZED_SUGGESTIONS:
-            return context.getString(R.string.important_notice_title);
-        default:
-            return null;
+        final int nextVersion = getCurrentImportantNoticeVersion(context);
+        final String[] importantNoticeTitleArray = context.getResources().getStringArray(
+                R.array.important_notice_title_array);
+        if (nextVersion > 0 && nextVersion < importantNoticeTitleArray.length) {
+            return importantNoticeTitleArray[nextVersion];
         }
+        return null;
     }
 
-    // TODO: Make content resource to string array indexed by version.
     public static String getNextImportantNoticeContents(final Context context) {
-        switch (getNextImportantNoticeVersion(context)) {
-        case VERSION_TO_ENABLE_PERSONALIZED_SUGGESTIONS:
-            return context.getString(R.string.important_notice_contents);
-        default:
-            return null;
+        final int nextVersion = getNextImportantNoticeVersion(context);
+        final String[] importantNoticeContentsArray = context.getResources().getStringArray(
+                R.array.important_notice_contents_array);
+        if (nextVersion > 0 && nextVersion < importantNoticeContentsArray.length) {
+            return importantNoticeContentsArray[nextVersion];
         }
+        return null;
     }
 }
