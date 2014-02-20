@@ -1717,9 +1717,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     // DO NOT USE THIS for any other purpose than testing. This is information private to LatinIME.
     @UsedForTesting
-    /* package for test */ void waitForMainDictionary(final long timeout, final TimeUnit unit)
+    /* package for test */ void waitForLoadingDictionaries(final long timeout, final TimeUnit unit)
             throws InterruptedException {
-        mInputLogic.mSuggest.mDictionaryFacilitator.waitForLoadingMainDictionary(timeout, unit);
+        mInputLogic.mSuggest.mDictionaryFacilitator.waitForLoadingDictionariesForTesting(
+                timeout, unit);
     }
 
     // DO NOT USE THIS for any other purpose than testing. This can break the keyboard badly.
@@ -1731,6 +1732,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 new DictionaryFacilitatorForSuggest(this, locale, mSettings.getCurrent(),
                         this /* listener */, oldDictionaryFacilitator);
         resetSuggest(new Suggest(locale, dictionaryFacilitator));
+    }
+
+    // DO NOT USE THIS for any other purpose than testing.
+    @UsedForTesting
+    /* package for test */ void clearPersonalizedDictionariesForTest() {
+        mInputLogic.mSuggest.mDictionaryFacilitator.clearUserHistoryDictionary();
+        mInputLogic.mSuggest.mDictionaryFacilitator.clearPersonalizationDictionary();
     }
 
     public void dumpDictionaryForDebug(final String dictName) {
