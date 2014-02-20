@@ -53,6 +53,10 @@ public class Ver4DictDecoder extends AbstractDictDecoder {
 
     @Override
     public DictionaryHeader readHeader() throws IOException, UnsupportedFormatException {
+        final DictionaryHeader header = mBinaryDictionary.getHeader();
+        if (header == null) {
+            throw new IOException("Cannot read the dictionary header.");
+        }
         return mBinaryDictionary.getHeader();
     }
 
