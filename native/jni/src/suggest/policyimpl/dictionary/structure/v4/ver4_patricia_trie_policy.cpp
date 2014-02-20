@@ -65,6 +65,10 @@ void Ver4PatriciaTriePolicy::createAndGetAllChildDicNodes(const DicNode *const d
                 ptNodeParams.getCodePointCount(), ptNodeParams.getCodePoints());
         readingHelper.readNextSiblingNode(ptNodeParams);
     }
+    if (readingHelper.isError()) {
+        mIsCorrupted = true;
+        AKLOGE("Dictionary reading error in createAndGetAllChildDicNodes().");
+    }
 }
 
 int Ver4PatriciaTriePolicy::getCodePointsAndProbabilityAndReturnCodePointCount(
@@ -72,15 +76,26 @@ int Ver4PatriciaTriePolicy::getCodePointsAndProbabilityAndReturnCodePointCount(
         int *const outUnigramProbability) const {
     DynamicPtReadingHelper readingHelper(&mNodeReader, &mPtNodeArrayReader);
     readingHelper.initWithPtNodePos(ptNodePos);
-    return readingHelper.getCodePointsAndProbabilityAndReturnCodePointCount(
+    const int codePointCount =  readingHelper.getCodePointsAndProbabilityAndReturnCodePointCount(
             maxCodePointCount, outCodePoints, outUnigramProbability);
+    if (readingHelper.isError()) {
+        mIsCorrupted = true;
+        AKLOGE("Dictionary reading error in getCodePointsAndProbabilityAndReturnCodePointCount().");
+    }
+    return codePointCount;
 }
 
 int Ver4PatriciaTriePolicy::getTerminalPtNodePositionOfWord(const int *const inWord,
         const int length, const bool forceLowerCaseSearch) const {
     DynamicPtReadingHelper readingHelper(&mNodeReader, &mPtNodeArrayReader);
     readingHelper.initWithPtNodeArrayPos(getRootPosition());
-    return readingHelper.getTerminalPtNodePositionOfWord(inWord, length, forceLowerCaseSearch);
+    const int ptNodePos =
+            readingHelper.getTerminalPtNodePositionOfWord(inWord, length, forceLowerCaseSearch);
+    if (readingHelper.isError()) {
+        mIsCorrupted = true;
+        AKLOGE("Dictionary reading error in createAndGetAllChildDicNodes().");
+    }
+    return ptNodePos;
 }
 
 int Ver4PatriciaTriePolicy::getProbability(const int unigramProbability,
@@ -265,7 +280,10 @@ void Ver4PatriciaTriePolicy::flush(const char *const filePath) {
         AKLOGI("Warning: flush() is called for non-updatable dictionary. filePath: %s", filePath);
         return;
     }
-    mWritingHelper.writeToDictFile(filePath, mUnigramCount, mBigramCount);
+    if (!mWritingHelper.writeToDictFile(filePath, mUnigramCount, mBigramCount)) {
+        AKLOGE("Cannot flush the dictionary to file.");
+        mIsCorrupted = true;
+    }
 }
 
 void Ver4PatriciaTriePolicy::flushWithGC(const char *const filePath) {
@@ -273,7 +291,10 @@ void Ver4PatriciaTriePolicy::flushWithGC(const char *const filePath) {
         AKLOGI("Warning: flushWithGC() is called for non-updatable dictionary.");
         return;
     }
-    mWritingHelper.writeToDictFileWithGC(getRootPosition(), filePath);
+    if (!mWritingHelper.writeToDictFileWithGC(getRootPosition(), filePath)) {
+        AKLOGE("Cannot flush the dictionary to file with GC.");
+        mIsCorrupted = true;
+    }
 }
 
 bool Ver4PatriciaTriePolicy::needsToRunGC(const bool mindsBlockByGC) const {
