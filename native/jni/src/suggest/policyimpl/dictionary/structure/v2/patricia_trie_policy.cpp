@@ -36,6 +36,7 @@ void PatriciaTriePolicy::createAndGetAllChildDicNodes(const DicNode *const dicNo
     if (nextPos < 0 || nextPos >= mDictBufferSize) {
         AKLOGE("Children PtNode array position is invalid. pos: %d, dict size: %d",
                 nextPos, mDictBufferSize);
+        mIsCorrupted = true;
         ASSERT(false);
         return;
     }
@@ -45,6 +46,7 @@ void PatriciaTriePolicy::createAndGetAllChildDicNodes(const DicNode *const dicNo
         if (nextPos < 0 || nextPos >= mDictBufferSize) {
             AKLOGE("Child PtNode position is invalid. pos: %d, dict size: %d, childCount: %d / %d",
                     nextPos, mDictBufferSize, i, childCount);
+            mIsCorrupted = true;
             ASSERT(false);
             return;
         }
@@ -239,7 +241,13 @@ int PatriciaTriePolicy::getTerminalPtNodePositionOfWord(const int *const inWord,
         const int length, const bool forceLowerCaseSearch) const {
     DynamicPtReadingHelper readingHelper(&mPtNodeReader, &mPtNodeArrayReader);
     readingHelper.initWithPtNodeArrayPos(getRootPosition());
-    return readingHelper.getTerminalPtNodePositionOfWord(inWord, length, forceLowerCaseSearch);
+    const int ptNodePos =
+            readingHelper.getTerminalPtNodePositionOfWord(inWord, length, forceLowerCaseSearch);
+    if (readingHelper.isError()) {
+        mIsCorrupted = true;
+        AKLOGE("Dictionary reading error in createAndGetAllChildDicNodes().");
+    }
+    return ptNodePos;
 }
 
 int PatriciaTriePolicy::getProbability(const int unigramProbability,

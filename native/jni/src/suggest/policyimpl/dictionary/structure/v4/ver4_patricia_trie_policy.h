@@ -55,7 +55,7 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
               mWritingHelper(mBuffers.get()),
               mUnigramCount(mHeaderPolicy->getUnigramCount()),
               mBigramCount(mHeaderPolicy->getBigramCount()),
-              mTerminalPtNodePositionsForIteratingWords() {};
+              mTerminalPtNodePositionsForIteratingWords(), mIsCorrupted(false) {};
 
     AK_FORCE_INLINE int getRootPosition() const {
         return 0;
@@ -116,6 +116,10 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
 
     int getNextWordAndNextToken(const int token, int *const outCodePoints);
 
+    bool isCorrupted() const {
+        return mIsCorrupted;
+    }
+
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(Ver4PatriciaTriePolicy);
 
@@ -141,6 +145,7 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     int mUnigramCount;
     int mBigramCount;
     std::vector<int> mTerminalPtNodePositionsForIteratingWords;
+    mutable bool mIsCorrupted;
 };
 } // namespace latinime
 #endif // LATINIME_VER4_PATRICIA_TRIE_POLICY_H

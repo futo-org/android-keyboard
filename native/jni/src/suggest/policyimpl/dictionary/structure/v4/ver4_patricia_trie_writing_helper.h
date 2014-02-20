@@ -33,10 +33,12 @@ class Ver4PatriciaTrieWritingHelper {
     Ver4PatriciaTrieWritingHelper(Ver4DictBuffers *const buffers)
             : mBuffers(buffers) {}
 
-    void writeToDictFile(const char *const dictDirPath, const int unigramCount,
+    bool writeToDictFile(const char *const dictDirPath, const int unigramCount,
             const int bigramCount) const;
 
-    void writeToDictFileWithGC(const int rootPtNodeArrayPos, const char *const dictDirPath);
+    // This method cannot be const because the original dictionary buffer will be updated to detect
+    // useless PtNodes during GC.
+    bool writeToDictFileWithGC(const int rootPtNodeArrayPos, const char *const dictDirPath);
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(Ver4PatriciaTrieWritingHelper);

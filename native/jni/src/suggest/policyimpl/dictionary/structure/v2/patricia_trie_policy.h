@@ -46,7 +46,7 @@ class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
               mBigramListPolicy(mDictRoot), mShortcutListPolicy(mDictRoot),
               mPtNodeReader(mDictRoot, mDictBufferSize, &mBigramListPolicy, &mShortcutListPolicy),
               mPtNodeArrayReader(mDictRoot, mDictBufferSize),
-              mTerminalPtNodePositionsForIteratingWords() {}
+              mTerminalPtNodePositionsForIteratingWords(), mIsCorrupted(false) {}
 
     AK_FORCE_INLINE int getRootPosition() const {
         return 0;
@@ -134,6 +134,10 @@ class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
 
     int getNextWordAndNextToken(const int token, int *const outCodePoints);
 
+    bool isCorrupted() const {
+        return mIsCorrupted;
+    }
+
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(PatriciaTriePolicy);
 
@@ -146,6 +150,7 @@ class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     const Ver2ParticiaTrieNodeReader mPtNodeReader;
     const Ver2PtNodeArrayReader mPtNodeArrayReader;
     std::vector<int> mTerminalPtNodePositionsForIteratingWords;
+    mutable bool mIsCorrupted;
 
     int createAndGetLeavingChildNode(const DicNode *const dicNode, const int ptNodePos,
             DicNodeVector *const childDicNodes) const;
