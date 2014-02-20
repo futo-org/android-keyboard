@@ -422,7 +422,7 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     }
 
     public void writeUsePersonalizationDictionary(final boolean enabled) {
-        mPrefs.edit().putBoolean(PREF_USE_PERSONALIZED_DICTS, enabled).apply();
+        mPrefs.edit().putBoolean(PREF_KEY_USE_PERSONALIZED_DICTS, enabled).apply();
     }
 
     public static void writeEmojiRecentKeys(final SharedPreferences prefs, String str) {
