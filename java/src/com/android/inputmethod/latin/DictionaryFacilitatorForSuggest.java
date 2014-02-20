@@ -237,6 +237,24 @@ public class DictionaryFacilitatorForSuggest {
         mLatchForWaitingLoadingMainDictionary.await(timeout, unit);
     }
 
+    @UsedForTesting
+    public void waitForLoadingDictionariesForTesting(final long timeout, final TimeUnit unit)
+            throws InterruptedException {
+        waitForLoadingMainDictionary(timeout, unit);
+        if (mContactsDictionary != null) {
+            mContactsDictionary.waitAllTasksForTests();
+        }
+        if (mUserDictionary != null) {
+            mUserDictionary.waitAllTasksForTests();
+        }
+        if (mUserHistoryDictionary != null) {
+            mUserHistoryDictionary.waitAllTasksForTests();
+        }
+        if (mPersonalizationDictionary != null) {
+            mPersonalizationDictionary.waitAllTasksForTests();
+        }
+    }
+
     private void setMainDictionary(final Dictionary mainDictionary) {
         mMainDictionary = mainDictionary;
         addOrReplaceDictionary(Dictionary.TYPE_MAIN, mainDictionary);

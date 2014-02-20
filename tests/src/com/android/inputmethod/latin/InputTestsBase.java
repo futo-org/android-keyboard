@@ -275,9 +275,9 @@ public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
         }
     }
 
-    protected void waitForDictionaryToBeLoaded() {
+    protected void waitForDictionariesToBeLoaded() {
         try {
-            mLatinIME.waitForMainDictionary(
+            mLatinIME.waitForLoadingDictionaries(
                     TIMEOUT_TO_WAIT_FOR_LOADING_MAIN_DICTIONARY_IN_SECONDS, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             Log.e(TAG, "Interrupted during waiting for loading main dictionary.", e);
@@ -286,7 +286,7 @@ public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
 
     protected void changeLanguage(final String locale) {
         changeLanguageWithoutWait(locale);
-        waitForDictionaryToBeLoaded();
+        waitForDictionariesToBeLoaded();
     }
 
     protected void changeLanguageWithoutWait(final String locale) {
@@ -314,6 +314,7 @@ public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
         mLatinIME.loadKeyboard();
         runMessages();
         mKeyboard = mLatinIME.mKeyboardSwitcher.getKeyboard();
+        mLatinIME.clearPersonalizedDictionariesForTest();
     }
 
     protected void changeKeyboardLocaleAndDictLocale(final String keyboardLocale,
@@ -322,7 +323,7 @@ public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
         if (!keyboardLocale.equals(dictLocale)) {
             mLatinIME.replaceDictionariesForTest(LocaleUtils.constructLocaleFromString(dictLocale));
         }
-        waitForDictionaryToBeLoaded();
+        waitForDictionariesToBeLoaded();
     }
 
     protected void pickSuggestionManually(final int index, final String suggestion) {
