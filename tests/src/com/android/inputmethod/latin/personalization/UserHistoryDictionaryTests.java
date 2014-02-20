@@ -50,8 +50,7 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        mCurrentTime = 0;
-        setCurrentTimeForTestMode(mCurrentTime);
+        resetCurrentTimeForTestMode();
     }
 
     @Override
@@ -60,9 +59,14 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
         super.tearDown();
     }
 
+    private void resetCurrentTimeForTestMode() {
+        mCurrentTime = 0;
+        setCurrentTimeForTestMode(mCurrentTime);
+    }
+
     private void forcePassingShortTime() {
-        // 4 days.
-        final int timeToElapse = (int)TimeUnit.DAYS.toSeconds(4);
+        // 3 days.
+        final int timeToElapse = (int)TimeUnit.DAYS.toSeconds(3);
         mCurrentTime += timeToElapse;
         setCurrentTimeForTestMode(mCurrentTime);
     }
@@ -250,10 +254,12 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
         final Locale dummyLocale = new Locale("test_decaying" + System.currentTimeMillis());
         final int numberOfWords = 5000;
         final Random random = new Random(123456);
+        resetCurrentTimeForTestMode();
         clearHistory(dummyLocale);
         final List<String> words = generateWords(numberOfWords, random);
         final UserHistoryDictionary dict =
                 PersonalizationHelper.getUserHistoryDictionary(getContext(), dummyLocale);
+        dict.waitAllTasksForTests();
         String prevWord = null;
         for (final String word : words) {
             dict.addToDictionary(prevWord, word, true, mCurrentTime);
@@ -261,10 +267,14 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
             assertTrue(dict.isInUnderlyingBinaryDictionaryForTests(word));
         }
         forcePassingShortTime();
+        dict.decayIfNeeded();
+        dict.waitAllTasksForTests();
         for (final String word : words) {
             assertTrue(dict.isInUnderlyingBinaryDictionaryForTests(word));
         }
         forcePassingLongTime();
+        dict.decayIfNeeded();
+        dict.waitAllTasksForTests();
         for (final String word : words) {
             assertFalse(dict.isInUnderlyingBinaryDictionaryForTests(word));
         }
