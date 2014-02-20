@@ -237,7 +237,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         if (width <= 0) {
             return false;
         }
-        final String importantNoticeTitle = ImportantNoticeUtils.getImportantNoticeTitle(
+        final String importantNoticeTitle = ImportantNoticeUtils.getNextImportantNoticeTitle(
                 getContext());
         if (TextUtils.isEmpty(importantNoticeTitle)) {
             return false;

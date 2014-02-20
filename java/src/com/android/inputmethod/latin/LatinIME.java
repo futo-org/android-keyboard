@@ -1183,14 +1183,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     @Override
     public void showImportantNoticeContents() {
         final Context context = this;
-        final OnShowListener onShowListener = new OnShowListener() {
-            @Override
-            public void onShow(final DialogInterface dialog) {
-                ImportantNoticeUtils.updateLastImportantNoticeVersion(context);
-                onShowImportantNoticeDialog(
-                        ImportantNoticeUtils.getCurrentImportantNoticeVersion(context));
-            }
-        };
+        final AlertDialog.Builder builder =
+                new AlertDialog.Builder(context, AlertDialog.THEME_HOLO_DARK);
+        builder.setMessage(ImportantNoticeUtils.getNextImportantNoticeContents(context));
+        builder.setPositiveButton(android.R.string.ok, null /* listener */);
         final OnClickListener onClickListener = new OnClickListener() {
             @Override
             public void onClick(final DialogInterface dialog, final int position) {
@@ -1199,32 +1195,21 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 }
             }
         };
-        final OnDismissListener onDismissListener = new OnDismissListener() {
+        builder.setNegativeButton(R.string.go_to_settings, onClickListener);
+        final AlertDialog importantNoticeDialog = builder.create();
+        importantNoticeDialog.setOnShowListener(new OnShowListener() {
             @Override
-            public void onDismiss(DialogInterface dialog) {
+            public void onShow(final DialogInterface dialog) {
+                ImportantNoticeUtils.updateLastImportantNoticeVersion(context);
+            }
+        });
+        importantNoticeDialog.setOnDismissListener(new OnDismissListener() {
+            @Override
+            public void onDismiss(final DialogInterface dialog) {
                 setNeutralSuggestionStrip();
             }
-        };
-        final String importantNoticeContents = ImportantNoticeUtils.getImportantNoticeContents(
-                context);
-        final AlertDialog.Builder builder = new AlertDialog.Builder(
-                context, AlertDialog.THEME_HOLO_DARK);
-        builder.setMessage(importantNoticeContents)
-                .setPositiveButton(android.R.string.ok, null /* listener */)
-                .setNegativeButton(R.string.go_to_settings, onClickListener);
-        final AlertDialog importantNoticeDialog = builder.create();
-        importantNoticeDialog.setOnShowListener(onShowListener);
-        importantNoticeDialog.setOnDismissListener(onDismissListener);
+        });
         showOptionDialog(importantNoticeDialog);
-    }
-
-    private void onShowImportantNoticeDialog(final int importantNoticeVersion) {
-        if (importantNoticeVersion ==
-                ImportantNoticeUtils.VERSION_TO_ENABLE_PERSONALIZED_SUGGESTIONS) {
-            mSettings.writeUsePersonalizationDictionary(true /* enabled */);
-            loadSettings();
-            initSuggest();
-        }
     }
 
     public void displaySettingsDialog() {
