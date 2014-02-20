@@ -77,9 +77,10 @@ public final class InputLogic {
     public int mSpaceState;
     // Never null
     public SuggestedWords mSuggestedWords = SuggestedWords.EMPTY;
-    public Suggest mSuggest;
+    // TODO: mSuggest should be touched by a single thread.
+    public volatile Suggest mSuggest;
     // The event interpreter should never be null.
-    public EventInterpreter mEventInterpreter;
+    public final EventInterpreter mEventInterpreter;
 
     public LastComposedWord mLastComposedWord = LastComposedWord.NOT_A_COMPOSED_WORD;
     public final WordComposer mWordComposer;
