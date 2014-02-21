@@ -35,7 +35,6 @@ public class Ver4DictDecoder extends AbstractDictDecoder {
     private static final String TAG = Ver4DictDecoder.class.getSimpleName();
 
     final File mDictDirectory;
-    final BinaryDictionary mBinaryDictionary;
 
     @UsedForTesting
     /* package */ Ver4DictDecoder(final File dictDirectory, final int factoryFlag) {
@@ -45,24 +44,32 @@ public class Ver4DictDecoder extends AbstractDictDecoder {
     @UsedForTesting
     /* package */ Ver4DictDecoder(final File dictDirectory, final DictionaryBufferFactory factory) {
         mDictDirectory = dictDirectory;
-        // dictType is not being used in dicttool. Passing an empty string.
-        mBinaryDictionary = new BinaryDictionary(dictDirectory.getAbsolutePath(),
-                0 /* offset */, 0 /* length */, true /* useFullEditDistance */, null /* locale */,
-                "" /* dictType */, true /* isUpdatable */);
+
     }
 
     @Override
     public DictionaryHeader readHeader() throws IOException, UnsupportedFormatException {
-        final DictionaryHeader header = mBinaryDictionary.getHeader();
+        // dictType is not being used in dicttool. Passing an empty string.
+        final BinaryDictionary binaryDictionary= new BinaryDictionary(
+              mDictDirectory.getAbsolutePath(), 0 /* offset */, 0 /* length */,
+              true /* useFullEditDistance */, null /* locale */,
+              "" /* dictType */, true /* isUpdatable */);
+        final DictionaryHeader header = binaryDictionary.getHeader();
+        binaryDictionary.close();
         if (header == null) {
             throw new IOException("Cannot read the dictionary header.");
         }
-        return mBinaryDictionary.getHeader();
+        return header;
     }
 
     @Override
     public FusionDictionary readDictionaryBinary(final boolean deleteDictIfBroken)
             throws FileNotFoundException, IOException, UnsupportedFormatException {
+        // dictType is not being used in dicttool. Passing an empty string.
+        final BinaryDictionary binaryDictionary = new BinaryDictionary(
+              mDictDirectory.getAbsolutePath(), 0 /* offset */, 0 /* length */,
+              true /* useFullEditDistance */, null /* locale */,
+              "" /* dictType */, true /* isUpdatable */);
         final DictionaryHeader header = readHeader();
         final FusionDictionary fusionDict =
                 new FusionDictionary(new FusionDictionary.PtNodeArray(), header.mDictionaryOptions);
@@ -70,11 +77,11 @@ public class Ver4DictDecoder extends AbstractDictDecoder {
         final ArrayList<WordProperty> wordProperties = CollectionUtils.newArrayList();
         do {
             final BinaryDictionary.GetNextWordPropertyResult result =
-                    mBinaryDictionary.getNextWordProperty(token);
+                    binaryDictionary.getNextWordProperty(token);
             final WordProperty wordProperty = result.mWordProperty;
             if (wordProperty == null) {
+                binaryDictionary.close();
                 if (deleteDictIfBroken) {
-                    mBinaryDictionary.close();
                     FileUtils.deleteRecursively(mDictDirectory);
                 }
                 return null;
@@ -103,6 +110,7 @@ public class Ver4DictDecoder extends AbstractDictDecoder {
                 fusionDict.setBigram(word0, bigram.mWord, bigram.mProbabilityInfo);
             }
         }
+        binaryDictionary.close();
         return fusionDict;
     }
 }
