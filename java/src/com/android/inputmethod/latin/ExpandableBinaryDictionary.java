@@ -276,22 +276,26 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         return attributeMap;
     }
 
+    private void removeBinaryDictionaryLocked() {
+        if (mBinaryDictionary != null) {
+            mBinaryDictionary.close();
+        }
+        if (mDictFile.exists() && !FileUtils.deleteRecursively(mDictFile)) {
+            Log.e(TAG, "Can't remove a file: " + mDictFile.getName());
+        }
+        mBinaryDictionary = null;
+    }
+
     protected void clear() {
-        final File dictFile = mDictFile;
         getExecutor(mDictName).execute(new Runnable() {
             @Override
             public void run() {
                 if (mDictionaryWriter == null) {
-                    if (mBinaryDictionary != null) {
-                        mBinaryDictionary.close();
-                    }
-                    if (dictFile.exists() && !FileUtils.deleteRecursively(dictFile)) {
-                        Log.e(TAG, "Can't remove a file: " + dictFile.getName());
-                    }
-                    BinaryDictionary.createEmptyDictFile(dictFile.getAbsolutePath(),
+                    removeBinaryDictionaryLocked();
+                    BinaryDictionary.createEmptyDictFile(mDictFile.getAbsolutePath(),
                             DICTIONARY_FORMAT_VERSION, mLocale, getHeaderAttributeMap());
                     mBinaryDictionary = new BinaryDictionary(
-                            dictFile.getAbsolutePath(), 0 /* offset */, dictFile.length(),
+                            mDictFile.getAbsolutePath(), 0 /* offset */, mDictFile.length(),
                             true /* useFullEditDistance */, mLocale, mDictType, mIsUpdatable);
                 } else {
                     mDictionaryWriter.clear();
@@ -469,6 +473,9 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                                 proximityInfo, blockOffensiveWords, additionalFeaturesOptions,
                                 sessionId);
                 holder.set(binarySuggestion);
+                if (mBinaryDictionary.isCorrupted()) {
+                    removeBinaryDictionaryLocked();
+                }
             }
         });
         return holder.get(null, TIMEOUT_FOR_READ_OPS_IN_MILLISECONDS);

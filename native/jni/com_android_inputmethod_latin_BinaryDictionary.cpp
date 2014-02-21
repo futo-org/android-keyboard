@@ -529,6 +529,14 @@ static int latinime_BinaryDictionary_setCurrentTimeForTest(JNIEnv *env, jclass c
     return TimeKeeper::peekCurrentTime();
 }
 
+static bool latinime_BinaryDictionary_isCorruptedNative(JNIEnv *env, jclass clazz, jlong dict) {
+    Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
+    if (!dictionary) {
+        return false;
+    }
+    return dictionary->getDictionaryStructurePolicy()->isCorrupted();
+}
+
 static const JNINativeMethod sMethods[] = {
     {
         const_cast<char *>("createEmptyDictFileNative"),
@@ -642,6 +650,11 @@ static const JNINativeMethod sMethods[] = {
         const_cast<char *>("getPropertyNative"),
         const_cast<char *>("(JLjava/lang/String;)Ljava/lang/String;"),
         reinterpret_cast<void *>(latinime_BinaryDictionary_getProperty)
+    },
+    {
+        const_cast<char *>("isCorruptedNative"),
+        const_cast<char *>("(J)Z"),
+        reinterpret_cast<void *>(latinime_BinaryDictionary_isCorruptedNative)
     }
 };
 
