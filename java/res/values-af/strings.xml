@@ -211,12 +211,11 @@
     <string name="message_loading" msgid="5638680861387748936">"Laai tans…"</string>
     <string name="main_dict_description" msgid="3072821352793492143">"Hoofwoordeboek"</string>
     <string name="cancel" msgid="6830980399865683324">"Kanselleer"</string>
-    <!-- no translation found for go_to_settings (3876892339342569259) -->
-    <skip />
+    <string name="go_to_settings" msgid="3876892339342569259">"Instellings"</string>
     <string name="install_dict" msgid="180852772562189365">"Installeer"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Kanselleer"</string>
     <string name="delete_dict" msgid="756853268088330054">"Vee uit"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"Die gekose taal op jou mobiele toestel het \'n beskikbare woordeboek.&lt;br/&gt; Ons beveel aan dat die <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>-woordeboek &lt;b&gt;afgelaai&lt;/b&gt; word om jou tikervaring te verbeter.&lt;br/&gt; &lt;br/&gt; Dit kan \'n minuut of twee duur om oor 3G af te laai. Heffings kan dalk geld as jy nie \'n &lt;b&gt;onbeperkte dataplan&lt;/b&gt;.&lt;br/&gt; het nie. As jy onseker is oor watter dataplan jy het, beveel ons aan dat jy \'n Wi-Fi-verbinding soek om outomaties te begin aflaai.&lt;br/&gt; &lt;br/&gt; Wenk: Jy kan woordeboeke aflaai en verwyder deur te gaan na &lt;b&gt;Taal en invoer&lt;/b&gt; in die &lt;b&gt;Instellings&lt;/b&gt;-kieslys van jou mobiele toestel."</string>
+    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"Die gekose taal op jou mobiele toestel het \'n beskikbare woordeboek.&lt;br/&gt; Ons beveel aan dat die <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>-woordeboek &lt;b&gt;afgelaai&lt;/b&gt; word om jou tikervaring te verbeter.&lt;br/&gt; &lt;br/&gt; Dit kan \'n minuut of twee duur om oor 3G af te laai. Heffings kan dalk geld as jy nie \'n &lt;b&gt;onbeperkte dataplan&lt;/b&gt; het nie.&lt;br/&gt; As jy onseker is oor watter dataplan jy het, beveel ons aan dat jy \'n Wi-Fi-verbinding soek om outomaties te begin aflaai.&lt;br/&gt; &lt;br/&gt; Wenk: Jy kan woordeboeke aflaai en verwyder deur te gaan na &lt;b&gt;Taal en invoer&lt;/b&gt; in die &lt;b&gt;Instellings&lt;/b&gt;-kieslys van jou mobiele toestel."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"Laai nou af (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Laai oor Wi-Fi af"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"\'n Woordeboek is beskikbaar vir <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>
