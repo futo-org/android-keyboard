@@ -20,6 +20,8 @@ import android.content.res.Resources;
 import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
 
+import com.android.inputmethod.latin.Constants;
+import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.utils.RunInLocale;
 
@@ -31,6 +33,18 @@ import java.util.Locale;
 public class SpacingAndPunctuationsTests extends AndroidTestCase {
     private static final int ARMENIAN_FULL_STOP = '\u0589';
     private static final int ARMENIAN_COMMA = '\u055D';
+
+    private int mScreenMetrics;
+
+    private boolean isPhone() {
+        return mScreenMetrics == Constants.SCREEN_METRICS_SMALL_PHONE
+                || mScreenMetrics == Constants.SCREEN_METRICS_LARGE_PHONE;
+    }
+
+    private boolean isTablet() {
+        return mScreenMetrics == Constants.SCREEN_METRICS_SMALL_TABLET
+                || mScreenMetrics == Constants.SCREEN_METRICS_LARGE_TABLET;
+    }
 
     private SpacingAndPunctuations ENGLISH;
     private SpacingAndPunctuations FRENCH;
@@ -55,6 +69,8 @@ public class SpacingAndPunctuationsTests extends AndroidTestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
+
+        mScreenMetrics = mContext.getResources().getInteger(R.integer.config_screen_metrics);
 
         // Language only
         ENGLISH = getSpacingAndPunctuations(Locale.ENGLISH);
@@ -373,21 +389,37 @@ public class SpacingAndPunctuationsTests extends AndroidTestCase {
         assertTrue(SWISS_GERMAN.mUsesGermanRules);
     }
 
-    private static final String[] PUNCTUATION_LABELS_LTR = {
+    // Punctuations for phone.
+    private static final String[] PUNCTUATION_LABELS_PHONE = {
         "!", "?", ",", ":", ";", "\"", "(", ")", "'", "-", "/", "@", "_"
     };
-    private static final String[] PUNCTUATION_WORDS_LTR = PUNCTUATION_LABELS_LTR;
-    private static final String[] PUNCTUATION_WORDS_HEBREW = {
+    private static final String[] PUNCTUATION_WORDS_PHONE_LTR = PUNCTUATION_LABELS_PHONE;
+    private static final String[] PUNCTUATION_WORDS_PHONE_HEBREW = {
         "!", "?", ",", ":", ";", "\"", ")", "(", "'", "-", "/", "@", "_"
     };
     // U+061F: "؟" ARABIC QUESTION MARK
     // U+060C: "،" ARABIC COMMA
     // U+061B: "؛" ARABIC SEMICOLON
-    private static final String[] PUNCTUATION_LABELS_ARABIC_PERSIAN = {
+    private static final String[] PUNCTUATION_LABELS_PHONE_ARABIC_PERSIAN = {
         "!", "\u061F", "\u060C", ":", "\u061B", "\"", "(", ")", "'", "-", "/", "@", "_"
     };
-    private static final String[] PUNCTUATION_WORDS_ARABIC_PERSIAN = {
+    private static final String[] PUNCTUATION_WORDS_PHONE_ARABIC_PERSIAN = {
         "!", "\u061F", "\u060C", ":", "\u061B", "\"", ")", "(", "'", "-", "/", "@", "_"
+    };
+
+    // Punctuations for tablet.
+    private static final String[] PUNCTUATION_LABELS_TABLET = {
+        ":", ";", "\"", "(", ")", "'", "-", "/", "@", "_"
+    };
+    private static final String[] PUNCTUATION_WORDS_TABLET_LTR = PUNCTUATION_LABELS_TABLET;
+    private static final String[] PUNCTUATION_WORDS_TABLET_HEBREW = {
+        ":", ";", "\"", ")", "(", "'", "-", "/", "@", "_"
+    };
+    private static final String[] PUNCTUATION_LABELS_TABLET_ARABIC_PERSIAN = {
+        "!", "\u061F", ":", "\u061B", "\"", "'", "(", ")",  "-", "/", "@", "_"
+    };
+    private static final String[] PUNCTUATION_WORDS_TABLET_ARABIC_PERSIAN = {
+        "!", "\u061F", ":", "\u061B", "\"", "'", ")", "(",  "-", "/", "@", "_"
     };
 
     private static void testingStandardPunctuationSuggestions(final SpacingAndPunctuations sp,
@@ -407,19 +439,39 @@ public class SpacingAndPunctuationsTests extends AndroidTestCase {
         }
     }
 
-    // TODO: Add tests for tablet as well
-    public void testPunctuationSuggestions() {
+    public void testPhonePunctuationSuggestions() {
+        if (!isPhone()) {
+            return;
+        }
         testingStandardPunctuationSuggestions(ENGLISH,
-                PUNCTUATION_LABELS_LTR, PUNCTUATION_WORDS_LTR);
+                PUNCTUATION_LABELS_PHONE, PUNCTUATION_WORDS_PHONE_LTR);
         testingStandardPunctuationSuggestions(FRENCH,
-                PUNCTUATION_LABELS_LTR, PUNCTUATION_WORDS_LTR);
+                PUNCTUATION_LABELS_PHONE, PUNCTUATION_WORDS_PHONE_LTR);
         testingStandardPunctuationSuggestions(GERMAN,
-                PUNCTUATION_LABELS_LTR, PUNCTUATION_WORDS_LTR);
+                PUNCTUATION_LABELS_PHONE, PUNCTUATION_WORDS_PHONE_LTR);
         testingStandardPunctuationSuggestions(ARABIC,
-                PUNCTUATION_LABELS_ARABIC_PERSIAN, PUNCTUATION_WORDS_ARABIC_PERSIAN);
+                PUNCTUATION_LABELS_PHONE_ARABIC_PERSIAN, PUNCTUATION_WORDS_PHONE_ARABIC_PERSIAN);
         testingStandardPunctuationSuggestions(PERSIAN,
-                PUNCTUATION_LABELS_ARABIC_PERSIAN, PUNCTUATION_WORDS_ARABIC_PERSIAN);
+                PUNCTUATION_LABELS_PHONE_ARABIC_PERSIAN, PUNCTUATION_WORDS_PHONE_ARABIC_PERSIAN);
         testingStandardPunctuationSuggestions(HEBREW,
-                PUNCTUATION_LABELS_LTR, PUNCTUATION_WORDS_HEBREW);
+                PUNCTUATION_LABELS_PHONE, PUNCTUATION_WORDS_PHONE_HEBREW);
+    }
+
+    public void testTabletPunctuationSuggestions() {
+        if (!isTablet()) {
+            return;
+        }
+        testingStandardPunctuationSuggestions(ENGLISH,
+                PUNCTUATION_LABELS_TABLET, PUNCTUATION_WORDS_TABLET_LTR);
+        testingStandardPunctuationSuggestions(FRENCH,
+                PUNCTUATION_LABELS_TABLET, PUNCTUATION_WORDS_TABLET_LTR);
+        testingStandardPunctuationSuggestions(GERMAN,
+                PUNCTUATION_LABELS_TABLET, PUNCTUATION_WORDS_TABLET_LTR);
+        testingStandardPunctuationSuggestions(ARABIC,
+                PUNCTUATION_LABELS_TABLET_ARABIC_PERSIAN, PUNCTUATION_WORDS_TABLET_ARABIC_PERSIAN);
+        testingStandardPunctuationSuggestions(PERSIAN,
+                PUNCTUATION_LABELS_TABLET_ARABIC_PERSIAN, PUNCTUATION_WORDS_TABLET_ARABIC_PERSIAN);
+        testingStandardPunctuationSuggestions(HEBREW,
+                PUNCTUATION_LABELS_TABLET, PUNCTUATION_WORDS_TABLET_HEBREW);
     }
 }
