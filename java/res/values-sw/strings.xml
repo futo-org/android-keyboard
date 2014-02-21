@@ -165,7 +165,7 @@
     <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"Soma faili ya kamusi ya nje"</string>
     <string name="read_external_dictionary_no_files_message" msgid="4947420942224623792">"Hakuna faili za kamusi katika folda ya Vilivyopakuliwa"</string>
     <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"Chagua faili ya kamusi ya kusakinisha"</string>
-    <string name="read_external_dictionary_confirm_install_message" msgid="4782116251651288054">"Ungependa kusakinisha faili hii kwa <xliff:g id="LANGUAGE_NAME">%s</xliff:g>?"</string>
+    <string name="read_external_dictionary_confirm_install_message" msgid="4782116251651288054">"Ungependa kusakinisha faili hii ya <xliff:g id="LANGUAGE_NAME">%s</xliff:g>?"</string>
     <string name="error" msgid="8940763624668513648">"Kulikuwa na hitilafu"</string>
     <string name="prefs_dump_contacts_dict" msgid="7227327764402323097">"Tupa kamusi ya anwani"</string>
     <string name="prefs_dump_user_dict" msgid="294870685041741951">"Tupa kamusi ya kibinafsi"</string>
@@ -211,15 +211,14 @@
     <string name="message_loading" msgid="5638680861387748936">"Inapakia…"</string>
     <string name="main_dict_description" msgid="3072821352793492143">"Kamusi kuu"</string>
     <string name="cancel" msgid="6830980399865683324">"Ghairi"</string>
-    <!-- no translation found for go_to_settings (3876892339342569259) -->
-    <skip />
+    <string name="go_to_settings" msgid="3876892339342569259">"Mipangilio"</string>
     <string name="install_dict" msgid="180852772562189365">"Sakinisha"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Ghairi"</string>
     <string name="delete_dict" msgid="756853268088330054">"Futa"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"Lugha iliyochaguliwa kwenye kifaa chako cha mkononi ina kamusi inayopatikana.&lt;br/&gt; Tunapendekeza&lt;b&gt;upakuaji wa kamusi ya&lt;/b&gt; <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> ili kuboresha hali yako ya kuchapa.&lt;br/&gt; &lt;br/&gt; Upakuaji unaweza kuchukua dakika moja au mbili kukamilika kwenye 3G. Unaweza kutozwa pesa ikiwa huna mpango wa data &lt;b&gt;usio na kipimo &lt;/b&gt;.&lt;br/&gt;Ikiwa huna uhakika una mpango gani wa data, tunapendekeza utafute muunganisho wa Wi-Fi ili uanze upakuaji kiotomatiki.&lt;br/&gt; &lt;br/&gt; Kidokezo: Unaweza kupakua na kuondoa kamusi kwa kuenda kwenye&lt;b&gt;Ingizo la &amp; Lugha&lt;/b&gt; katika &lt;b&gt;menyu ya Mipangilio&lt;/b&gt; ya kifaa chako cha mkononi."</string>
+    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"Lugha iliyochaguliwa kwenye kifaa chako cha mkononi ina kamusi inayopatikana.&lt;br/&gt; Tunapendekeza&lt;b&gt;upakuaji wa kamusi ya&lt;/b&gt; <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> ili kuboresha hali yako ya kuchapa.&lt;br/&gt; &lt;br/&gt; Upakuaji unaweza kuchukua dakika moja au mbili kukamilika kwenye mtandao wa 3G. Unaweza kutozwa ada ikiwa huna mpango wa data &lt;b&gt;usio na kipimo &lt;/b&gt;.&lt;br/&gt;Ikiwa huna uhakika una mpango gani wa data, tunapendekeza utafute muunganisho wa Wi-Fi ili uanze upakuaji kiotomatiki.&lt;br/&gt; &lt;br/&gt; Kidokezo: Unaweza kupakua na kuondoa kamusi kwa kuenda kwenye&lt;b&gt;Lugha na Zana za Kuingiza Datalt;/b&gt; katika &lt;b&gt;menyu ya Mipangilio&lt;/b&gt; ya kifaa chako cha mkononi."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"Pakua sasa (MB<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Pakua kwenye Wi-Fi"</string>
-    <string name="dict_available_notification_title" msgid="4583842811218581658">"Kamusi inapatikana kwa <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>
+    <string name="dict_available_notification_title" msgid="4583842811218581658">"Kamusi inapatikana ya <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>
     <string name="dict_available_notification_description" msgid="1075194169443163487">"Bonyeza ili kukagua na kupakua"</string>
     <string name="toast_downloading_suggestions" msgid="6128155879830851739">"Inapakua: mapendekezo ya <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> yatakuwa tayari hivi karibuni."</string>
     <string name="version_text" msgid="2715354215568469385">"Toleo la <xliff:g id="VERSION_NUMBER">%1$s</xliff:g>"</string>

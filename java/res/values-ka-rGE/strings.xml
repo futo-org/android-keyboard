@@ -211,12 +211,11 @@
     <string name="message_loading" msgid="5638680861387748936">"იტვირთება..."</string>
     <string name="main_dict_description" msgid="3072821352793492143">"მთავარი ლექსიკონი"</string>
     <string name="cancel" msgid="6830980399865683324">"გაუქმება"</string>
-    <!-- no translation found for go_to_settings (3876892339342569259) -->
-    <skip />
+    <string name="go_to_settings" msgid="3876892339342569259">"პარამეტრები"</string>
     <string name="install_dict" msgid="180852772562189365">"ინსტალაცია"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"გაუქმება"</string>
     <string name="delete_dict" msgid="756853268088330054">"წაშლა"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"თქვენ მიერ მობილურ მოწყობილობაზე არჩეული ენისთვის ხელმისაწვდომია ლექსიკონი.&lt;br/&gt; გირჩევთ, &lt;b&gt;ჩამოტვირთოთ&lt;/b&gt; <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> ლექსიკონი, რათა გაიმარტივოთ ტექსტის შეყვანა.&lt;br/&gt; &lt;br/&gt; ჩამოტვირთვას შესაძლოა დასჭირდეს ერთი ან ორი წუთი 3G სისწრაფეზე. თუ &lt;b&gt; მობილური ინტერნეტის ტარიფი&lt;/b&gt;.&lt;br/&amp;gt ულიმიტო არ გაქვთ, შესაძლოა გადახდა მოგიწიოთ; თუ არ ხართ დარწმუნებული მობილური ინტერნეტის აქტიური ტარიფის შესახებ, გირჩევთ, იპოვოთ Wi-Fi კავშირი და ავტომატურად დაიწყოთ ჩამოტვირთვა.&lt;br/&gt; &lt;br/&gt; რჩევა: ლექსიკონების ჩამოტვირთვა და ამოშლა შეიძლებასექციიდან &lt;b&gt;ენა და შეყვანა&lt;/b&gt; თქვენი მობილური მოწყობილობის &lt;b&gt;პარამეტრების&lt;/b&gt; მენიუში."</string>
+    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"თქვენ მიერ მობილურ მოწყობილობაზე არჩეული ენისთვის ხელმისაწვდომია ლექსიკონი.&lt;br/&gt; გირჩევთ, &lt;b&gt;ჩამოტვირთოთ&lt;/b&gt; <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> ლექსიკონი, რათა გაიმარტივოთ ტექსტის შეყვანა.&lt;br/&gt; &lt;br/&gt; ჩამოტვირთვას შესაძლოა დასჭირდეს ერთი ან ორი წუთი 3G სისწრაფეზე. თუ &lt;b&gt; მობილური ინტერნეტის ტარიფი&lt;/b&gt;.&lt;br/&amp;gt ულიმიტო არ გაქვთ, შესაძლოა გადახდა მოგიწიოთ; თუ არ ხართ დარწმუნებული მობილური ინტერნეტის აქტიური ტარიფის შესახებ, გირჩევთ, იპოვოთ Wi-Fi კავშირი და ავტომატურად დაიწყოთ ჩამოტვირთვა.&lt;br/&gt; &lt;br/&gt; რჩევა: ლექსიკონების ჩამოტვირთვა და ამოშლა შეიძლება სექციიდან &lt;b&gt;ენა და შეყვანა&lt;/b&gt; თქვენი მობილური მოწყობილობის &lt;b&gt;პარამეტრების&lt;/b&gt; მენიუში."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"ახლა ჩამოტვირთვა (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>მბაიტი)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Wi-Fi კავშირზე ჩამოტვირთვა"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>-სთვის ხელმისაწვდომია ლექსიკონი"</string>

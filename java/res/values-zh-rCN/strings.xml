@@ -165,7 +165,7 @@
     <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"读取外部词典文件"</string>
     <string name="read_external_dictionary_no_files_message" msgid="4947420942224623792">"“下载内容”文件夹中没有词典文件"</string>
     <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"选择要安装的词典文件"</string>
-    <string name="read_external_dictionary_confirm_install_message" msgid="4782116251651288054">"确定要安装这个<xliff:g id="LANGUAGE_NAME">%s</xliff:g>词典文件吗？"</string>
+    <string name="read_external_dictionary_confirm_install_message" msgid="4782116251651288054">"确定要安装这个<xliff:g id="LANGUAGE_NAME">%s</xliff:g>词典吗？"</string>
     <string name="error" msgid="8940763624668513648">"出现错误"</string>
     <string name="prefs_dump_contacts_dict" msgid="7227327764402323097">"转储联系人词典"</string>
     <string name="prefs_dump_user_dict" msgid="294870685041741951">"转储个人词典"</string>
@@ -211,17 +211,16 @@
     <string name="message_loading" msgid="5638680861387748936">"正在加载…"</string>
     <string name="main_dict_description" msgid="3072821352793492143">"主词典"</string>
     <string name="cancel" msgid="6830980399865683324">"取消"</string>
-    <!-- no translation found for go_to_settings (3876892339342569259) -->
-    <skip />
+    <string name="go_to_settings" msgid="3876892339342569259">"设置"</string>
     <string name="install_dict" msgid="180852772562189365">"安装"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"取消"</string>
     <string name="delete_dict" msgid="756853268088330054">"删除"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"对于您的移动设备上选择的语言，有一个适合您使用的词典可供下载。&lt;br/&gt;我们建议您&lt;b&gt;下载&lt;/b&gt;这个<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>词典，以便获得更好的输入体验。&lt;br/&gt;&lt;br/&gt;通过3G网络下载可能需要一两分钟的时间。如果您使用的不是&lt;b&gt;无流量限制的套餐&lt;/b&gt;，则可能需要支付一定的费用。&lt;br/&gt;如果您不确定自己使用的是哪种流量套餐，我们建议您使用WLAN网络连接自动开始下载。&lt;br/&gt;&lt;br/&gt;提示：您可以在移动设备上的&lt;b&gt;语言和输入法&lt;/b&gt;部分（位于&lt;b&gt;设置&lt;/b&gt;菜单中）下载和删除词典。"</string>
+    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"您的移动设备上选择的语言有一个词典可供下载。&lt;br/&gt;我们建议您&lt;b&gt;下载&lt;/b&gt;这个<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>词典，以便获得更好的输入体验。&lt;br/&gt;&lt;br/&gt;通过3G网络下载可能需要一两分钟的时间。如果您使用的不是&lt;b&gt;无流量限制的套餐&lt;/b&gt;，则可能产生一定的流量费。&lt;br/&gt;如果您不确定自己使用的是哪种流量套餐，我们建议您连接到WLAN网络以便自动开始下载。&lt;br/&gt;&lt;br/&gt;提示：您可以在移动设备上的&lt;b&gt;语言和输入法&lt;/b&gt;部分（位于&lt;b&gt;设置&lt;/b&gt;菜单中）下载和删除词典。"</string>
     <string name="download_over_metered" msgid="1643065851159409546">"立即下载 (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"通过 WLAN 下载"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"有一个<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>词典可供下载"</string>
     <string name="dict_available_notification_description" msgid="1075194169443163487">"按此通知即可查看和下载"</string>
-    <string name="toast_downloading_suggestions" msgid="6128155879830851739">"正在下载：针对<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>的输入建议功能马上就可以使用了！"</string>
+    <string name="toast_downloading_suggestions" msgid="6128155879830851739">"正在下载：<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>输入建议功能马上就可以使用了！"</string>
     <string name="version_text" msgid="2715354215568469385">"版本<xliff:g id="VERSION_NUMBER">%1$s</xliff:g>"</string>
     <string name="user_dict_settings_add_menu_title" msgid="1254195365689387076">"添加"</string>
     <string name="user_dict_settings_add_dialog_title" msgid="4096700390211748168">"添加到词典"</string>
