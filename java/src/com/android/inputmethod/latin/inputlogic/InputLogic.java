@@ -490,6 +490,7 @@ public final class InputLogic {
         handler.showGesturePreviewAndSuggestionStrip(
                 SuggestedWords.EMPTY, false /* dismissGestureFloatingPreviewText */);
         handler.cancelUpdateSuggestionStrip();
+        ++mAutoCommitSequenceNumber;
         mConnection.beginBatchEdit();
         if (mWordComposer.isComposingWord()) {
             if (settingsValues.mIsInternal) {
@@ -587,6 +588,7 @@ public final class InputLogic {
     public void onEndBatchInput(final SettingsValues settingValues,
             final InputPointers batchPointers) {
         mInputLogicHandler.onEndBatchInput(batchPointers, mAutoCommitSequenceNumber);
+        ++mAutoCommitSequenceNumber;
     }
 
     // TODO: remove this argument
