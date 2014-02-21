@@ -110,7 +110,7 @@
     <string name="keyboard_mode_date" msgid="3137520166817128102">"datum"</string>
     <string name="keyboard_mode_date_time" msgid="339593358488851072">"datum och tid"</string>
     <string name="keyboard_mode_email" msgid="6216248078128294262">"e-post"</string>
-    <string name="keyboard_mode_im" msgid="1137405089766557048">"sms"</string>
+    <string name="keyboard_mode_im" msgid="1137405089766557048">"SMS/MMS"</string>
     <string name="keyboard_mode_number" msgid="7991623440699957069">"siffror"</string>
     <string name="keyboard_mode_phone" msgid="6851627527401433229">"telefonnummer"</string>
     <string name="keyboard_mode_text" msgid="6479436687899701619">"text"</string>

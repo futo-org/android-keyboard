@@ -38,7 +38,7 @@
     <string name="show_language_switch_key" msgid="5915478828318774384">"Sprachwechsel"</string>
     <string name="show_language_switch_key_summary" msgid="7343403647474265713">"Anzeigen, wenn mehrere Eingabesprachen aktiviert sind"</string>
     <string name="sliding_key_input_preview" msgid="6604262359510068370">"Ziehbewegung anzeigen"</string>
-    <string name="sliding_key_input_preview_summary" msgid="6340524345729093886">"Ziehen mit gedrückter Shift- oder Symboltaste visuell darstellen"</string>
+    <string name="sliding_key_input_preview_summary" msgid="6340524345729093886">"Ziehen mit gedrückter Symboltaste oder Shift visuell darstellen"</string>
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Tasten-Pop-up"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Keine Verzögerung"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Standard"</string>
@@ -80,8 +80,8 @@
     <string name="spoken_auto_correct" msgid="8005997889020109763">"Mit <xliff:g id="KEY">%1$s</xliff:g> wird <xliff:g id="ORIGINAL_WORD">%2$s</xliff:g> zu <xliff:g id="CORRECTED">%3$s</xliff:g> korrigiert."</string>
     <string name="spoken_auto_correct_obscured" msgid="6276420476908833791">"Mit <xliff:g id="KEY">%1$s</xliff:g> erfolgt eine Autokorrektur."</string>
     <string name="spoken_description_unknown" msgid="3197434010402179157">"Tastencode %d"</string>
-    <string name="spoken_description_shift" msgid="244197883292549308">"Umschalttaste"</string>
-    <string name="spoken_description_shift_shifted" msgid="1681877323344195035">"Umschalttaste aktiviert (zum Deaktivieren berühren)"</string>
+    <string name="spoken_description_shift" msgid="244197883292549308">"Shift"</string>
+    <string name="spoken_description_shift_shifted" msgid="1681877323344195035">"Shift aktiviert (zum Deaktivieren berühren)"</string>
     <string name="spoken_description_caps_lock" msgid="3276478269526304432">"Feststelltaste aktiviert (zum Deaktivieren berühren)"</string>
     <string name="spoken_description_delete" msgid="8740376944276199801">"Entf"</string>
     <string name="spoken_description_to_symbol" msgid="5486340107500448969">"Symbole"</string>
@@ -98,9 +98,9 @@
     <string name="spoken_description_language_switch" msgid="5507091328222331316">"Sprache wechseln"</string>
     <string name="spoken_description_action_next" msgid="8636078276664150324">"Nächste"</string>
     <string name="spoken_description_action_previous" msgid="800872415009336208">"Vorherige"</string>
-    <string name="spoken_description_shiftmode_on" msgid="5700440798609574589">"Umschalttaste aktiviert"</string>
+    <string name="spoken_description_shiftmode_on" msgid="5700440798609574589">"Shift aktiviert"</string>
     <string name="spoken_description_shiftmode_locked" msgid="593175803181701830">"Feststelltaste aktiviert"</string>
-    <string name="spoken_description_shiftmode_off" msgid="657219998449174808">"Umschalttaste deaktiviert"</string>
+    <string name="spoken_description_shiftmode_off" msgid="657219998449174808">"Shift deaktiviert"</string>
     <string name="spoken_description_mode_symbol" msgid="7183343879909747642">"Symbolmodus"</string>
     <string name="spoken_description_mode_alpha" msgid="3528307674390156956">"Buchstabenmodus"</string>
     <string name="spoken_description_mode_phone" msgid="6520207943132026264">"Telefonmodus"</string>

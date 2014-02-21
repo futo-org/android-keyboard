@@ -88,7 +88,7 @@
     <string name="spoken_description_to_alpha" msgid="23129338819771807">"Lletres"</string>
     <string name="spoken_description_to_numeric" msgid="591752092685161732">"Números"</string>
     <string name="spoken_description_settings" msgid="4627462689603838099">"Configuració"</string>
-    <string name="spoken_description_tab" msgid="2667716002663482248">"Pestanya"</string>
+    <string name="spoken_description_tab" msgid="2667716002663482248">"Tabulador"</string>
     <string name="spoken_description_space" msgid="2582521050049860859">"Espai"</string>
     <string name="spoken_description_mic" msgid="615536748882611950">"Entrada de veu"</string>
     <string name="spoken_description_smiley" msgid="2256309826200113918">"Cara somrient"</string>
