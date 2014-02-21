@@ -2,7 +2,7 @@
 <!-- 
 /*
 **
-** Copyright 2014, The Android Open Source Project
+** Copyright 2013, The Android Open Source Project
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
 ** you may not use this file except in compliance with the License.
@@ -20,11 +20,11 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="label_go_key" msgid="4033615332628671065">"जानुहोस्"</string>
+    <string name="label_go_key" msgid="4033615332628671065">"जानु"</string>
     <string name="label_next_key" msgid="5586407279258592635">"अर्को"</string>
-    <string name="label_previous_key" msgid="1421141755779895275">"अघिल्लो"</string>
+    <string name="label_previous_key" msgid="1421141755779895275">"पहिलो"</string>
     <string name="label_done_key" msgid="7564866296502630852">"भयो"</string>
     <string name="label_send_key" msgid="482252074224462163">"पठाउनुहोस्"</string>
     <string name="label_pause_key" msgid="2225922926459730642">"रोक्नुहोस्"</string>
-    <string name="label_wait_key" msgid="5891247853595466039">"प्रतीक्षा गर्नुहोस्"</string>
+    <string name="label_wait_key" msgid="5891247853595466039">"पर्खनुहोस्"</string>
 </resources>
