@@ -847,9 +847,9 @@ public final class RichInputConnection {
             mExpectedSelStart = mExpectedSelEnd = Constants.NOT_A_CURSOR_POSITION;
         } else {
             final int textLength = textBeforeCursor.length();
-            if (textLength > mExpectedSelStart
-                    || (textLength < Constants.EDITOR_CONTENTS_CACHE_SIZE
-                            && mExpectedSelStart < Constants.EDITOR_CONTENTS_CACHE_SIZE)) {
+            if (textLength < Constants.EDITOR_CONTENTS_CACHE_SIZE
+                    && (textLength > mExpectedSelStart
+                            ||  mExpectedSelStart < Constants.EDITOR_CONTENTS_CACHE_SIZE)) {
                 // It should not be possible to have only one of those variables be
                 // NOT_A_CURSOR_POSITION, so if they are equal, either the selection is zero-sized
                 // (simple cursor, no selection) or there is no cursor/we don't know its pos
