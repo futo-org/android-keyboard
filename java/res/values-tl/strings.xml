@@ -215,8 +215,7 @@
     <string name="message_loading" msgid="5638680861387748936">"Naglo-load…"</string>
     <string name="main_dict_description" msgid="3072821352793492143">"Pangunahing diksyunaryo"</string>
     <string name="cancel" msgid="6830980399865683324">"Kanselahin"</string>
-    <!-- no translation found for go_to_settings (3876892339342569259) -->
-    <skip />
+    <string name="go_to_settings" msgid="3876892339342569259">"Mga Setting"</string>
     <string name="install_dict" msgid="180852772562189365">"I-install"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Kanselahin"</string>
     <string name="delete_dict" msgid="756853268088330054">"Tanggalin"</string>

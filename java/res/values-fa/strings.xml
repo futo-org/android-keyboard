@@ -136,7 +136,7 @@
     <string name="subtype_en_GB" msgid="88170601942311355">"انگلیسی (بریتانیا)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"انگلیسی (امریکا)"</string>
     <string name="subtype_es_US" msgid="5583145191430180200">"اسپانیایی (آمریکا)"</string>
-    <string name="subtype_with_layout_en_GB" msgid="1931018968641592304">"انگلیسی (انگلستان) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
+    <string name="subtype_with_layout_en_GB" msgid="1931018968641592304">"انگلیسی (بریتانیا) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_en_US" msgid="8809311287529805422">"انگلیسی (آمریکا) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_es_US" msgid="510930471167541338">"اسپانیایی (آمریکا) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_nepali_traditional" msgid="1994571919751163596">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (سنتی)"</string>
@@ -215,8 +215,7 @@
     <string name="message_loading" msgid="5638680861387748936">"در حال بارگیری…"</string>
     <string name="main_dict_description" msgid="3072821352793492143">"فرهنگ‌ لغت اصلی"</string>
     <string name="cancel" msgid="6830980399865683324">"لغو"</string>
-    <!-- no translation found for go_to_settings (3876892339342569259) -->
-    <skip />
+    <string name="go_to_settings" msgid="3876892339342569259">"تنظیمات"</string>
     <string name="install_dict" msgid="180852772562189365">"نصب"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"لغو"</string>
     <string name="delete_dict" msgid="756853268088330054">"حذف"</string>
@@ -225,7 +224,7 @@
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"‏دانلود ازطریق Wi-Fi"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"یک فرهنگ لغت برای <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> در دسترس است"</string>
     <string name="dict_available_notification_description" msgid="1075194169443163487">"برای مرور و دانلود فشار دهید"</string>
-    <string name="toast_downloading_suggestions" msgid="6128155879830851739">"در حال دانلود کردن: پیشنهادات برای <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> به زودی آماده خواهند شد."</string>
+    <string name="toast_downloading_suggestions" msgid="6128155879830851739">"دانلود کردن پیشنهادات برای <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> به زودی شروع می‌شود."</string>
     <string name="version_text" msgid="2715354215568469385">"نسخه <xliff:g id="VERSION_NUMBER">%1$s</xliff:g>"</string>
     <string name="user_dict_settings_add_menu_title" msgid="1254195365689387076">"افرودن"</string>
     <string name="user_dict_settings_add_dialog_title" msgid="4096700390211748168">"افزودن به فرهنگ‌ لغت"</string>

@@ -80,7 +80,7 @@
     <string name="spoken_current_text_is" msgid="2485723011272583845">"Ký tự hiện tại là %s"</string>
     <string name="spoken_no_text_entered" msgid="7479685225597344496">"Không có ký tự nào được nhập"</string>
     <string name="spoken_auto_correct" msgid="5150455215290003221">"<xliff:g id="KEY_NAME">%1$s</xliff:g> sửa <xliff:g id="ORIGINAL_WORD">%2$s</xliff:g> thành <xliff:g id="CORRECTED_WORD">%3$s</xliff:g>"</string>
-    <string name="spoken_auto_correct_obscured" msgid="2309828861778711939">"<xliff:g id="KEY_NAME">%1$s</xliff:g> thực hiện tự động sửa"</string>
+    <string name="spoken_auto_correct_obscured" msgid="2309828861778711939">"<xliff:g id="KEY_NAME">%1$s</xliff:g> tự động sửa"</string>
     <string name="spoken_description_unknown" msgid="3197434010402179157">"Mã phím %d"</string>
     <string name="spoken_description_shift" msgid="244197883292549308">"Shift"</string>
     <string name="spoken_description_shift_shifted" msgid="1681877323344195035">"Shift đang bật (bấm để tắt)"</string>
@@ -211,8 +211,7 @@
     <string name="message_loading" msgid="5638680861387748936">"Đang tải..."</string>
     <string name="main_dict_description" msgid="3072821352793492143">"Từ điển chính"</string>
     <string name="cancel" msgid="6830980399865683324">"Hủy"</string>
-    <!-- no translation found for go_to_settings (3876892339342569259) -->
-    <skip />
+    <string name="go_to_settings" msgid="3876892339342569259">"Cài đặt"</string>
     <string name="install_dict" msgid="180852772562189365">"Cài đặt"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Hủy"</string>
     <string name="delete_dict" msgid="756853268088330054">"Xóa"</string>
