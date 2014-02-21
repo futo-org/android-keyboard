@@ -87,9 +87,24 @@ int PatriciaTriePolicy::getCodePointsAndProbabilityAndReturnCodePointCount(
         int lastCandidatePtNodePos = 0;
         // Let's loop through PtNodes in this PtNode array searching for either the terminal
         // or one of its ascendants.
+        if (pos < 0 || pos >= mDictBufferSize) {
+            AKLOGE("PtNode array position is invalid. pos: %d, dict size: %d",
+                    pos, mDictBufferSize);
+            mIsCorrupted = true;
+            ASSERT(false);
+            *outUnigramProbability = NOT_A_PROBABILITY;
+            return 0;
+        }
         for (int ptNodeCount = PatriciaTrieReadingUtils::getPtNodeArraySizeAndAdvancePosition(
                 mDictRoot, &pos); ptNodeCount > 0; --ptNodeCount) {
             const int startPos = pos;
+            if (pos < 0 || pos >= mDictBufferSize) {
+                AKLOGE("PtNode position is invalid. pos: %d, dict size: %d", pos, mDictBufferSize);
+                mIsCorrupted = true;
+                ASSERT(false);
+                *outUnigramProbability = NOT_A_PROBABILITY;
+                return 0;
+            }
             const PatriciaTrieReadingUtils::NodeFlags flags =
                     PatriciaTrieReadingUtils::getFlagsAndAdvancePosition(mDictRoot, &pos);
             const int character = PatriciaTrieReadingUtils::getCodePointAndAdvancePosition(
