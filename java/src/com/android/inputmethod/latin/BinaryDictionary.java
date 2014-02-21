@@ -17,6 +17,7 @@
 package com.android.inputmethod.latin;
 
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.SparseArray;
 
 import com.android.inputmethod.annotations.UsedForTesting;
@@ -29,6 +30,7 @@ import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
 import com.android.inputmethod.latin.makedict.WordProperty;
 import com.android.inputmethod.latin.settings.NativeSuggestOptions;
 import com.android.inputmethod.latin.utils.CollectionUtils;
+import com.android.inputmethod.latin.utils.FileUtils;
 import com.android.inputmethod.latin.utils.JniUtils;
 import com.android.inputmethod.latin.utils.LanguageModelParam;
 import com.android.inputmethod.latin.utils.StringUtils;
@@ -84,6 +86,7 @@ public final class BinaryDictionary extends Dictionary {
     private final Locale mLocale;
     private final long mDictSize;
     private final String mDictFilePath;
+    private final boolean mIsUpdatable;
     private final int[] mInputCodePoints = new int[MAX_WORD_LENGTH];
     private final int[] mOutputCodePoints = new int[MAX_WORD_LENGTH * MAX_RESULTS];
     private final int[] mSpaceIndices = new int[MAX_RESULTS];
@@ -130,6 +133,7 @@ public final class BinaryDictionary extends Dictionary {
         mLocale = locale;
         mDictSize = length;
         mDictFilePath = filename;
+        mIsUpdatable = isUpdatable;
         mNativeSuggestOptions.setUseFullEditDistance(useFullEditDistance);
         loadDictionary(filename, offset, length, isUpdatable);
     }
@@ -177,6 +181,7 @@ public final class BinaryDictionary extends Dictionary {
             int bigramProbability);
     private static native int setCurrentTimeForTestNative(int currentTime);
     private static native String getPropertyNative(long dict, String query);
+    private static native boolean isCorruptedNative(long dict);
 
     public static boolean createEmptyDictFile(final String filePath, final long dictVersion,
             final Locale locale, final Map<String, String> attributeMap) {
@@ -196,6 +201,22 @@ public final class BinaryDictionary extends Dictionary {
     private final void loadDictionary(final String path, final long startOffset,
             final long length, final boolean isUpdatable) {
         mNativeDict = openNative(path, startOffset, length, isUpdatable);
+    }
+
+    // TODO: Check isCorrupted() for main dictionaries.
+    public boolean isCorrupted() {
+        if (!isValidDictionary()) {
+            return false;
+        }
+        if (!isCorruptedNative(mNativeDict)) {
+            return false;
+        }
+        // TODO: Record the corruption.
+        Log.e(TAG, "BinaryDictionary (" + mDictFilePath + ") is corrupted.");
+        Log.e(TAG, "locale: " + mLocale);
+        Log.e(TAG, "dict size: " + mDictSize);
+        Log.e(TAG, "updatable: " + mIsUpdatable);
+        return true;
     }
 
     @UsedForTesting
@@ -444,7 +465,7 @@ public final class BinaryDictionary extends Dictionary {
         // only be called for actual files. Right now it's only called by the flush() family of
         // functions, which require an updatable dictionary, so it's okay. But beware.
         loadDictionary(dictFile.getAbsolutePath(), 0 /* startOffset */,
-                dictFile.length(), true /* isUpdatable */);
+                dictFile.length(), mIsUpdatable);
     }
 
     public void flush() {
