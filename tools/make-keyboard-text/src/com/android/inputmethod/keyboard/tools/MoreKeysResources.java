@@ -29,7 +29,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.jar.JarFile;
-import java.util.regex.Pattern;
 
 public class MoreKeysResources {
     private static final String TEXT_RESOURCE_NAME = "donottranslate-more-keys.xml";
