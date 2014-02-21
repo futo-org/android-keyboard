@@ -351,6 +351,38 @@ public class InputLogicTests extends InputTestsBase {
     }
     // TODO: Add some tests for non-BMP characters
 
+    public void testAutoCorrectByUserHistory() {
+        final String WORD_TO_BE_CORRECTED = "qpmx";
+        final String NOT_CORRECTED_RESULT = "qpmx ";
+        final String DESIRED_WORD = "qpmz";
+        final String CORRECTED_RESULT = "qpmz ";
+        final int typeCountNotToAutocorrect = 3;
+        final int typeCountToAutoCorrect = 16;
+        int startIndex = 0;
+        int endIndex = 0;
+
+        for (int i = 0; i < typeCountNotToAutocorrect; i++) {
+            type(DESIRED_WORD);
+            type(Constants.CODE_SPACE);
+        }
+        startIndex = mEditText.getText().length();
+        type(WORD_TO_BE_CORRECTED);
+        type(Constants.CODE_SPACE);
+        endIndex = mEditText.getText().length();
+        assertEquals("not auto-corrected by user history", NOT_CORRECTED_RESULT,
+                mEditText.getText().subSequence(startIndex, endIndex).toString());
+        for (int i = typeCountNotToAutocorrect; i < typeCountToAutoCorrect; i++) {
+            type(DESIRED_WORD);
+            type(Constants.CODE_SPACE);
+        }
+        startIndex = mEditText.getText().length();
+        type(WORD_TO_BE_CORRECTED);
+        type(Constants.CODE_SPACE);
+        endIndex = mEditText.getText().length();
+        assertEquals("auto-corrected by user history",
+                CORRECTED_RESULT, mEditText.getText().subSequence(startIndex, endIndex).toString());
+    }
+
     public void testPredictionsAfterSpace() {
         final String WORD_TO_TYPE = "Barack ";
         type(WORD_TO_TYPE);
