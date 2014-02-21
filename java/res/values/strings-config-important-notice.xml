@@ -20,11 +20,14 @@
 
 <resources>
     <integer name="config_important_notice_version">0</integer>
-    <!-- TODO: Make title and contents resource to string array indexed by version. -->
-    <!-- The text of the important notice displayed on the suggestion strip. -->
-    <string name="important_notice_title"></string>
-    <!-- The contents of the important notice. -->
-    <string name="important_notice_contents"></string>
+    <!-- The array of the text of the important notices displayed on the suggestion strip. -->
+    <string-array name="important_notice_title_array">
+        <!-- empty -->
+    </string-array>
+    <!-- The array of the contents of the important notices. -->
+    <string-array name="important_notice_contents_array">
+        <!-- empty -->
+    </string-array>
     <!-- Description for option enabling the use by the keyboards of sent/received messages, e-mail and typing history to improve suggestion accuracy [CHAR LIMIT=68] -->
     <string name="use_personalized_dicts_summary">Learn from your communications and typed data to improve suggestions</string>
 </resources>
