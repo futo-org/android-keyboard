@@ -120,16 +120,10 @@ public class Ver2DictDecoder extends AbstractDictDecoder {
     // used only for testing.
     private final DictionaryBufferFactory mBufferFactory;
     protected DictBuffer mDictBuffer;
-    private final BinaryDictionary mBinaryDictionary;
 
     /* package */ Ver2DictDecoder(final File file, final int factoryFlag) {
         mDictionaryBinaryFile = file;
         mDictBuffer = null;
-        // dictType is not being used in dicttool. Passing an empty string.
-        mBinaryDictionary = new BinaryDictionary(file.getAbsolutePath(),
-                0 /* offset */, file.length() /* length */, true /* useFullEditDistance */,
-                null /* locale */, "" /* dictType */, false /* isUpdatable */);
-
         if ((factoryFlag & MASK_DICTBUFFER) == USE_READONLY_BYTEBUFFER) {
             mBufferFactory = new DictionaryBufferFromReadOnlyByteBufferFactory();
         } else if ((factoryFlag  & MASK_DICTBUFFER) == USE_BYTEARRAY) {
@@ -144,10 +138,6 @@ public class Ver2DictDecoder extends AbstractDictDecoder {
     /* package */ Ver2DictDecoder(final File file, final DictionaryBufferFactory factory) {
         mDictionaryBinaryFile = file;
         mBufferFactory = factory;
-        // dictType is not being used in dicttool. Passing an empty string.
-        mBinaryDictionary = new BinaryDictionary(file.getAbsolutePath(),
-                0 /* offset */, file.length() /* length */, true /* useFullEditDistance */,
-                null /* locale */, "" /* dictType */, false /* isUpdatable */);
     }
 
     @Override
@@ -172,7 +162,13 @@ public class Ver2DictDecoder extends AbstractDictDecoder {
 
     @Override
     public DictionaryHeader readHeader() throws IOException, UnsupportedFormatException {
-        final DictionaryHeader header = mBinaryDictionary.getHeader();
+        // dictType is not being used in dicttool. Passing an empty string.
+        final BinaryDictionary binaryDictionary = new BinaryDictionary(
+                mDictionaryBinaryFile.getAbsolutePath(), 0 /* offset */,
+                mDictionaryBinaryFile.length() /* length */, true /* useFullEditDistance */,
+                null /* locale */, "" /* dictType */, false /* isUpdatable */);
+        final DictionaryHeader header = binaryDictionary.getHeader();
+        binaryDictionary.close();
         if (header == null) {
             throw new IOException("Cannot read the dictionary header.");
         }
@@ -254,6 +250,11 @@ public class Ver2DictDecoder extends AbstractDictDecoder {
     @Override
     public FusionDictionary readDictionaryBinary(final boolean deleteDictIfBroken)
             throws FileNotFoundException, IOException, UnsupportedFormatException {
+        // dictType is not being used in dicttool. Passing an empty string.
+        final BinaryDictionary binaryDictionary = new BinaryDictionary(
+                mDictionaryBinaryFile.getAbsolutePath(), 0 /* offset */,
+                mDictionaryBinaryFile.length() /* length */, true /* useFullEditDistance */,
+                null /* locale */, "" /* dictType */, false /* isUpdatable */);
         final DictionaryHeader header = readHeader();
         final FusionDictionary fusionDict =
                 new FusionDictionary(new FusionDictionary.PtNodeArray(), header.mDictionaryOptions);
@@ -261,11 +262,11 @@ public class Ver2DictDecoder extends AbstractDictDecoder {
         final ArrayList<WordProperty> wordProperties = CollectionUtils.newArrayList();
         do {
             final BinaryDictionary.GetNextWordPropertyResult result =
-                    mBinaryDictionary.getNextWordProperty(token);
+                    binaryDictionary.getNextWordProperty(token);
             final WordProperty wordProperty = result.mWordProperty;
             if (wordProperty == null) {
+                binaryDictionary.close();
                 if (deleteDictIfBroken) {
-                    mBinaryDictionary.close();
                     mDictionaryBinaryFile.delete();
                 }
                 return null;
@@ -294,6 +295,7 @@ public class Ver2DictDecoder extends AbstractDictDecoder {
                 fusionDict.setBigram(word0, bigram.mWord, bigram.mProbabilityInfo);
             }
         }
+        binaryDictionary.close();
         return fusionDict;
     }
 
