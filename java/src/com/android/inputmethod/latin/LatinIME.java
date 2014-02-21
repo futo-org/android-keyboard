@@ -750,6 +750,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     + ", word caps = "
                     + ((editorInfo.inputType & InputType.TYPE_TEXT_FLAG_CAP_WORDS) != 0));
         }
+        Log.i(TAG, "Starting input. Cursor position = "
+                + editorInfo.initialSelStart + "," + editorInfo.initialSelEnd);
         if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
             final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
             ResearchLogger.latinIME_onStartInputViewInternal(editorInfo, prefs);
