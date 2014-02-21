@@ -211,12 +211,11 @@
     <string name="message_loading" msgid="5638680861387748936">"Načítání…"</string>
     <string name="main_dict_description" msgid="3072821352793492143">"Hlavní slovník"</string>
     <string name="cancel" msgid="6830980399865683324">"Zrušit"</string>
-    <!-- no translation found for go_to_settings (3876892339342569259) -->
-    <skip />
+    <string name="go_to_settings" msgid="3876892339342569259">"Nastavení"</string>
     <string name="install_dict" msgid="180852772562189365">"Instalovat"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Zrušit"</string>
     <string name="delete_dict" msgid="756853268088330054">"Smazat"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"Pro vybraný jazyk mobilního zařízení je k dispozici slovník.&lt;br/&gt; Doporučujeme slovník pro jazyk <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> &lt;b&gt;stáhnout&lt;/b&gt;. Usnadníte si tím zadávání textu. &lt;br/&gt; &lt;br/&gt; V síti 3G bude stahování trvat minutu až dvě. Pokud nemáte &lt;b&gt;neomezený datový tarif&lt;/b&gt;, mohou vám být účtovány poplatky.&lt;br/&gt; Jestliže si nejste jisti, jaký datový tarif máte, doporučujeme vám najít připojení Wi-Fi. Stahování se pak zahájí automaticky.&lt;br/&gt; &lt;br/&gt; Tip: Slovníky můžete stahovat a odstraňovat v nabídce mobilního zařízení &lt;b&gt;Jazyk a zadávání&lt;/b&gt; v &lt;b&gt;Nastavení&lt;/b&gt;."</string>
+    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"Pro jazyk vybraný na vašem mobilním zařízení je k dispozici slovník.&lt;br/&gt; Doporučujeme slovník pro jazyk <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> &lt;b&gt;stáhnout&lt;/b&gt;. Usnadníte si tím zadávání textu. &lt;br/&gt; &lt;br/&gt; V síti 3G bude stahování trvat minutu až dvě. Pokud nemáte &lt;b&gt;neomezený datový tarif&lt;/b&gt;, mohou vám být účtovány poplatky.&lt;br/&gt; Jestliže si nejste jisti, jaký datový tarif máte, doporučujeme vám najít připojení Wi-Fi. Stahování se pak zahájí automaticky.&lt;br/&gt; &lt;br/&gt; Tip: Slovníky můžete stahovat a odstraňovat v nabídce mobilního zařízení &lt;b&gt;Jazyk a zadávání&lt;/b&gt; v &lt;b&gt;Nastavení&lt;/b&gt;."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"Stáhnout ihned (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Stáhnout pouze přes Wi-Fi"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"Je k dispozici slovník pro jazyk <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>

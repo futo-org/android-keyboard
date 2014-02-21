@@ -132,7 +132,7 @@
     <string name="subtype_en_GB" msgid="88170601942311355">"Engelsk (Storbritannien)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"Engelsk (USA)"</string>
     <string name="subtype_es_US" msgid="5583145191430180200">"Spansk (USA)"</string>
-    <string name="subtype_with_layout_en_GB" msgid="1931018968641592304">"Engelsk (Storbritannien) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
+    <string name="subtype_with_layout_en_GB" msgid="1931018968641592304">"Engelsk (UK) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_en_US" msgid="8809311287529805422">"Engelsk (USA) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_es_US" msgid="510930471167541338">"Spansk (USA) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_nepali_traditional" msgid="1994571919751163596">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (traditionelt)"</string>
@@ -211,8 +211,7 @@
     <string name="message_loading" msgid="5638680861387748936">"Indlæser…"</string>
     <string name="main_dict_description" msgid="3072821352793492143">"Hovedordbog"</string>
     <string name="cancel" msgid="6830980399865683324">"Annuller"</string>
-    <!-- no translation found for go_to_settings (3876892339342569259) -->
-    <skip />
+    <string name="go_to_settings" msgid="3876892339342569259">"Indstillinger"</string>
     <string name="install_dict" msgid="180852772562189365">"Installer"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Annuller"</string>
     <string name="delete_dict" msgid="756853268088330054">"Slet"</string>

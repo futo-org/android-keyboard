@@ -211,12 +211,11 @@
     <string name="message_loading" msgid="5638680861387748936">"Nalaganje …"</string>
     <string name="main_dict_description" msgid="3072821352793492143">"Glavni slovar"</string>
     <string name="cancel" msgid="6830980399865683324">"Prekliči"</string>
-    <!-- no translation found for go_to_settings (3876892339342569259) -->
-    <skip />
+    <string name="go_to_settings" msgid="3876892339342569259">"Nastavitve"</string>
     <string name="install_dict" msgid="180852772562189365">"Namesti"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Prekliči"</string>
     <string name="delete_dict" msgid="756853268088330054">"Izbriši"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"Za izbrani jezik v mobilni napravi je na voljo slovar.&lt;br/&gt; Za izboljšano izkušnjo tipkanja priporočamo, da &lt;b&gt;prenesete&lt;/b&gt; slovar za ta jezik: <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>.&lt;br/&gt; &lt;br/&gt; Prenos prek povezave 3G lahko traja minuto ali dve. Če nimate &lt;b&gt;neomejenega podatkovnega paketa&lt;/b&gt;.&lt;br/&gt;, boste morda morali plačati prenos podatkov. Če ne veste, kateri podatkovni paket imate, priporočamo, da poiščete omrežje Wi-Fi in prenos začnete samodejno.&lt;br/&gt; &lt;br/&gt; Nasvet: Slovarje lahko prenesete in odstranite tako, da v meniju &lt;b&gt;Nastavitve&lt;/b&gt; v mobilni napravi odprete &lt;b&gt;Jezik in vnos&lt;/b&gt;."</string>
+    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"Za izbrani jezik v mobilni napravi je na voljo slovar.&lt;br/&gt; Za izboljšano izkušnjo tipkanja priporočamo, da &lt;b&gt;prenesete&lt;/b&gt; slovar za ta jezik: <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>.&lt;br/&gt; &lt;br/&gt; Prenos prek povezave 3G lahko traja minuto ali dve. Če nimate &lt;b&gt;neomejenega podatkovnega paketa&lt;/b&gt;.&lt;br/&gt;, boste morda morali plačati prenos podatkov. Če ne veste, kateri podatkovni paket imate, priporočamo, da poiščete omrežje Wi-Fi in prenos začnete samodejno.&lt;br/&gt; &lt;br/&gt; Nasvet: slovarje lahko prenesete in odstranite tako, da v meniju &lt;b&gt;Nastavitve&lt;/b&gt; v mobilni napravi odprete &lt;b&gt;Jezik in vnos&lt;/b&gt;."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"Prenesi zdaj (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Prenos prek povezave Wi-Fi"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"Na voljo je slovar za ta jezik: <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>

@@ -211,15 +211,14 @@
     <string name="message_loading" msgid="5638680861387748936">"Yükleniyor…"</string>
     <string name="main_dict_description" msgid="3072821352793492143">"Ana sözlük"</string>
     <string name="cancel" msgid="6830980399865683324">"İptal"</string>
-    <!-- no translation found for go_to_settings (3876892339342569259) -->
-    <skip />
+    <string name="go_to_settings" msgid="3876892339342569259">"Ayarlar"</string>
     <string name="install_dict" msgid="180852772562189365">"Yükle"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"İptal"</string>
     <string name="delete_dict" msgid="756853268088330054">"Sil"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"Mobil cihazınızda seçili dile ait kullanılabilir bir sözlük mevcut.&lt;br/&gt; Daha iyi yazabilmek için bu <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> sözlüğü &lt;b&gt;indirmenizi&lt;/b&gt; öneririz.&lt;br/&gt; &lt;br/&gt; İndirme işlemi 3G üzerinden bir veya iki dakika sürebilir. &lt;b&gt;Sınırsız veri planınız &lt;/b&gt;yoksa ücret alınabilir.&lt;br/&gt; Ne tür bir veri planına sahip olduğunuzdan emin değilseniz, otomatik olarak indirmeye başlamak için bir Kablosuz bağlantı bulmanızı öneririz.&lt;br/&gt; &lt;br/&gt; İpucu: Sözlükleri, mobil cihazınızın &lt;b&gt;Ayarlar&lt;/b&gt; menüsünde &lt;b&gt;Dil ve giriş&lt;/b&gt; seçeneğine giderek indirebilir ve silebilirsiniz."</string>
+    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"Mobil cihazınızda seçili dile ait kullanılabilir bir sözlük var.&lt;br/&gt; Daha iyi yazabilmek için bu <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> sözlüğü &lt;b&gt;indirmenizi&lt;/b&gt; öneririz.&lt;br/&gt; &lt;br/&gt; İndirme işlemi 3G üzerinden bir veya iki dakika sürebilir. &lt;b&gt;Sınırsız veri planınız &lt;/b&gt;yoksa ücret alınabilir.&lt;br/&gt; Ne tür bir veri planına sahip olduğunuzdan emin değilseniz, otomatik olarak indirmeye başlamak için bir Kablosuz bağlantı bulmanızı öneririz.&lt;br/&gt; &lt;br/&gt; İpucu: Sözlükleri, mobil cihazınızın &lt;b&gt;Ayarlar&lt;/b&gt; menüsünde &lt;b&gt;Dil ve giriş&lt;/b&gt; seçeneğine giderek indirebilir ve silebilirsiniz."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"Hemen indir (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Kablosuz üzerinden indir"</string>
-    <string name="dict_available_notification_title" msgid="4583842811218581658">"<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> için kullanılabilir bir sözlük mevcut"</string>
+    <string name="dict_available_notification_title" msgid="4583842811218581658">"<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> için kullanılabilir bir sözlük var"</string>
     <string name="dict_available_notification_description" msgid="1075194169443163487">"İncelemek ve indirmek için basın"</string>
     <string name="toast_downloading_suggestions" msgid="6128155879830851739">"<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> için önerilerin indirilmesine kısa süre içinde başlanacak."</string>
     <string name="version_text" msgid="2715354215568469385">"Sürüm <xliff:g id="VERSION_NUMBER">%1$s</xliff:g>"</string>

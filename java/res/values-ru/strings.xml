@@ -80,7 +80,7 @@
     <string name="spoken_current_text_is" msgid="2485723011272583845">"Введенный текст: %s."</string>
     <string name="spoken_no_text_entered" msgid="7479685225597344496">"Текст не введен"</string>
     <string name="spoken_auto_correct" msgid="5150455215290003221">"При нажатии клавиши <xliff:g id="KEY_NAME">%1$s</xliff:g> слово <xliff:g id="ORIGINAL_WORD">%2$s</xliff:g> будет исправлено на <xliff:g id="CORRECTED_WORD">%3$s</xliff:g>."</string>
-    <string name="spoken_auto_correct_obscured" msgid="2309828861778711939">"Для клавиши <xliff:g id="KEY_NAME">%1$s</xliff:g> назначена функция автоисправления."</string>
+    <string name="spoken_auto_correct_obscured" msgid="2309828861778711939">"Клавиша <xliff:g id="KEY_NAME">%1$s</xliff:g> выполняет автоисправление."</string>
     <string name="spoken_description_unknown" msgid="3197434010402179157">"Код клавиши:%d"</string>
     <string name="spoken_description_shift" msgid="244197883292549308">"Клавиша верхнего регистра"</string>
     <string name="spoken_description_shift_shifted" msgid="1681877323344195035">"Верхний регистр включен (нажмите, чтобы отключить)"</string>
@@ -211,12 +211,11 @@
     <string name="message_loading" msgid="5638680861387748936">"Загрузка…"</string>
     <string name="main_dict_description" msgid="3072821352793492143">"Основной словарь"</string>
     <string name="cancel" msgid="6830980399865683324">"Отмена"</string>
-    <!-- no translation found for go_to_settings (3876892339342569259) -->
-    <skip />
+    <string name="go_to_settings" msgid="3876892339342569259">"Настройки"</string>
     <string name="install_dict" msgid="180852772562189365">"Установить"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Отмена"</string>
     <string name="delete_dict" msgid="756853268088330054">"Удалить"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"Доступен словарь для проверки правописания (<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>).&lt;br/&gt;Рекомендуем &lt;b&gt;установить&lt;/b&gt; его, чтобы быстрее вводить текст.&lt;br/&gt;&lt;br/&gt;Если вашим тарифом предусмотрена &lt;b&gt;безлимитная передача данных&lt;/b&gt;, словарь можно загрузить через сеть 3G (это займет всего пару минут).&lt;br/&gt;Если вы не помните подробностей своего тарифного плана, лучше подключитесь к сети Wi-Fi (загрузка начнется автоматически).&lt;br/&gt;&lt;br/&gt;Совет. Чтобы добавить, удалить или настроить словарь, откройте раздел &lt;b&gt;Язык и ввод&lt;/b&gt; в настройках своего устройства."</string>
+    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"Доступен словарь для проверки правописания (<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>).&lt;br/&gt;Рекомендуем &lt;b&gt;установить&lt;/b&gt; его, чтобы быстрее вводить текст.&lt;br/&gt;&lt;br/&gt;Если вашим тарифом предусмотрена &lt;b&gt;безлимитная передача данных&lt;/b&gt;, словарь можно загрузить через сеть 3G (это займет всего пару минут).&lt;br/&gt;Если вы не помните подробностей своего тарифного плана, лучше подключитесь к сети Wi-Fi (загрузка начнется автоматически).&lt;br/&gt;&lt;br/&gt;Совет. Чтобы добавлять, удалять и настраивать словари, откройте раздел &lt;b&gt;Язык и ввод&lt;/b&gt; в настройках устройства."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"Загрузить (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> МБ)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Загрузить через Wi-Fi"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"Доступен словарь: <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>
