@@ -29,6 +29,7 @@ import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.utils.AsyncResultHolder;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.CombinedFormatUtils;
+import com.android.inputmethod.latin.utils.ExecutorUtils;
 import com.android.inputmethod.latin.utils.FileUtils;
 import com.android.inputmethod.latin.utils.LanguageModelParam;
 import com.android.inputmethod.latin.utils.PrioritizedSerialExecutor;
@@ -79,9 +80,6 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
      */
     private static final ConcurrentHashMap<String, DictionaryUpdateController>
             sDictNameDictionaryUpdateControllerMap = CollectionUtils.newConcurrentHashMap();
-
-    private static final ConcurrentHashMap<String, PrioritizedSerialExecutor>
-            sDictNameExecutorMap = CollectionUtils.newConcurrentHashMap();
 
     /** The application context. */
     protected final Context mContext;
@@ -163,33 +161,6 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         return recorder;
     }
 
-    /**
-     * Gets the executor for the given dictionary name.
-     */
-    private static PrioritizedSerialExecutor getExecutor(final String dictName) {
-        PrioritizedSerialExecutor executor = sDictNameExecutorMap.get(dictName);
-        if (executor == null) {
-            synchronized(sDictNameExecutorMap) {
-                executor = new PrioritizedSerialExecutor();
-                sDictNameExecutorMap.put(dictName, executor);
-            }
-        }
-        return executor;
-    }
-
-    /**
-     * Shutdowns all executors and removes all executors from the executor map for testing.
-     */
-    @UsedForTesting
-    public static void shutdownAllExecutors() {
-        synchronized(sDictNameExecutorMap) {
-            for (final PrioritizedSerialExecutor executor : sDictNameExecutorMap.values()) {
-                executor.shutdown();
-                sDictNameExecutorMap.remove(executor);
-            }
-        }
-    }
-
     private static AbstractDictionaryWriter getDictionaryWriter(
             final boolean isDynamicPersonalizationDictionary) {
         if (isDynamicPersonalizationDictionary) {
@@ -243,10 +214,10 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
      */
     @Override
     public void close() {
-        getExecutor(mDictName).execute(new Runnable() {
+        ExecutorUtils.getExecutor(mDictName).execute(new Runnable() {
             @Override
             public void run() {
-                if (mBinaryDictionary!= null) {
+                if (mBinaryDictionary != null) {
                     mBinaryDictionary.close();
                     mBinaryDictionary = null;
                 }
@@ -256,7 +227,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
 
     protected void closeBinaryDictionary() {
         // Ensure that no other threads are accessing the local binary dictionary.
-        getExecutor(mDictName).execute(new Runnable() {
+        ExecutorUtils.getExecutor(mDictName).execute(new Runnable() {
             @Override
             public void run() {
                 if (mBinaryDictionary != null) {
@@ -287,7 +258,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     }
 
     protected void clear() {
-        getExecutor(mDictName).execute(new Runnable() {
+        ExecutorUtils.getExecutor(mDictName).execute(new Runnable() {
             @Override
             public void run() {
                 if (mDictionaryWriter == null) {
@@ -331,7 +302,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
      * Check whether GC is needed and run GC if required.
      */
     protected void runGCIfRequired(final boolean mindsBlockByGC) {
-        getExecutor(mDictName).execute(new Runnable() {
+        ExecutorUtils.getExecutor(mDictName).execute(new Runnable() {
             @Override
             public void run() {
                 runGCIfRequiredInternalLocked(mindsBlockByGC);
@@ -344,7 +315,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         if (mBinaryDictionary.needsToRunGC(mindsBlockByGC)) {
             if (setProcessingLargeTaskIfNot()) {
                 // Run GC after currently existing time sensitive operations.
-                getExecutor(mDictName).executePrioritized(new Runnable() {
+                ExecutorUtils.getExecutor(mDictName).executePrioritized(new Runnable() {
                     @Override
                     public void run() {
                         try {
@@ -368,7 +339,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
             Log.w(TAG, "addWordDynamically is called for non-updatable dictionary: " + mDictName);
             return;
         }
-        getExecutor(mDictName).execute(new Runnable() {
+        ExecutorUtils.getExecutor(mDictName).execute(new Runnable() {
             @Override
             public void run() {
                 runGCIfRequiredInternalLocked(true /* mindsBlockByGC */);
@@ -388,7 +359,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                     + mDictName);
             return;
         }
-        getExecutor(mDictName).execute(new Runnable() {
+        ExecutorUtils.getExecutor(mDictName).execute(new Runnable() {
             @Override
             public void run() {
                 runGCIfRequiredInternalLocked(true /* mindsBlockByGC */);
@@ -406,7 +377,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                     + mDictName);
             return;
         }
-        getExecutor(mDictName).execute(new Runnable() {
+        ExecutorUtils.getExecutor(mDictName).execute(new Runnable() {
             @Override
             public void run() {
                 runGCIfRequiredInternalLocked(true /* mindsBlockByGC */);
@@ -430,7 +401,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                     "dictionary: " + mDictName);
             return;
         }
-        getExecutor(mDictName).execute(new Runnable() {
+        ExecutorUtils.getExecutor(mDictName).execute(new Runnable() {
             @Override
             public void run() {
                 final boolean locked = setProcessingLargeTaskIfNot();
@@ -461,7 +432,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         }
         final AsyncResultHolder<ArrayList<SuggestedWordInfo>> holder =
                 new AsyncResultHolder<ArrayList<SuggestedWordInfo>>();
-        getExecutor(mDictName).executePrioritized(new Runnable() {
+        ExecutorUtils.getExecutor(mDictName).executePrioritized(new Runnable() {
             @Override
             public void run() {
                 if (mBinaryDictionary == null) {
@@ -500,7 +471,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
             return false;
         }
         final AsyncResultHolder<Boolean> holder = new AsyncResultHolder<Boolean>();
-        getExecutor(mDictName).executePrioritized(new Runnable() {
+        ExecutorUtils.getExecutor(mDictName).executePrioritized(new Runnable() {
             @Override
             public void run() {
                 holder.set(isValidWordLocked(word));
@@ -560,7 +531,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         // swapping in the new one.
         // TODO: Ensure multi-thread assignment of mBinaryDictionary.
         final BinaryDictionary oldBinaryDictionary = mBinaryDictionary;
-        getExecutor(mDictName).executePrioritized(new Runnable() {
+        ExecutorUtils.getExecutor(mDictName).executePrioritized(new Runnable() {
             @Override
             public void run() {
                 mBinaryDictionary = newBinaryDictionary;
@@ -662,7 +633,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     private final void reloadDictionary() {
         // Ensure that only one thread attempts to read or write to the shared binary dictionary
         // file at the same time.
-        getExecutor(mDictName).execute(new Runnable() {
+        ExecutorUtils.getExecutor(mDictName).execute(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -696,7 +667,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                     // If we just loaded the binary dictionary, then mBinaryDictionary is not
                     // up-to-date yet so it's useless to test it right away. Schedule the check
                     // for right after it's loaded instead.
-                    getExecutor(mDictName).executePrioritized(new Runnable() {
+                    ExecutorUtils.getExecutor(mDictName).executePrioritized(new Runnable() {
                         @Override
                         public void run() {
                             if (mBinaryDictionary != null && !(isValidDictionary()
@@ -736,7 +707,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
             }
         };
         final Runnable oldTask = mUnfinishedFlushingTask.getAndSet(newTask);
-        getExecutor(mDictName).replaceAndExecute(oldTask, newTask);
+        ExecutorUtils.getExecutor(mDictName).replaceAndExecute(oldTask, newTask);
     }
 
     /**
@@ -757,7 +728,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     @UsedForTesting
     public boolean isInUnderlyingBinaryDictionaryForTests(final String word) {
         final AsyncResultHolder<Boolean> holder = new AsyncResultHolder<Boolean>();
-        getExecutor(mDictName).execute(new Runnable() {
+        ExecutorUtils.getExecutor(mDictName).execute(new Runnable() {
             @Override
             public void run() {
                 if (mDictType == Dictionary.TYPE_USER_HISTORY) {
@@ -771,7 +742,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     @UsedForTesting
     public void waitAllTasksForTests() {
         final CountDownLatch countDownLatch = new CountDownLatch(1);
-        getExecutor(mDictName).execute(new Runnable() {
+        ExecutorUtils.getExecutor(mDictName).execute(new Runnable() {
             @Override
             public void run() {
                 countDownLatch.countDown();
@@ -787,7 +758,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     @UsedForTesting
     public void dumpAllWordsForDebug() {
         reloadDictionaryIfRequired();
-        getExecutor(mDictName).execute(new Runnable() {
+        ExecutorUtils.getExecutor(mDictName).execute(new Runnable() {
             @Override
             public void run() {
                 Log.d(TAG, "Dump dictionary: " + mDictName);
