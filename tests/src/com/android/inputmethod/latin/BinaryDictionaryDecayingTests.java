@@ -150,7 +150,7 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
         binaryDictionary.flushWithGC();
         binaryDictionary.close();
 
-        final DictDecoder dictDecoder = FormatSpec.getDictDecoder(dictFile);
+        final DictDecoder dictDecoder = FormatSpec.getDictDecoder(dictFile, 0, dictFile.length());
         try {
             final FusionDictionary dict =
                     dictDecoder.readDictionaryBinary(false /* deleteDictIfBroken */);

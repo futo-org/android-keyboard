@@ -68,7 +68,8 @@ public class Ver2DictDecoderTests extends AndroidTestCase {
         }
 
         assertNotNull(testFile);
-        final Ver2DictDecoder dictDecoder = new Ver2DictDecoder(testFile, factory);
+        final Ver2DictDecoder dictDecoder = new Ver2DictDecoder(testFile, 0, testFile.length(),
+                factory);
         try {
             dictDecoder.openDictBuffer();
         } catch (Exception e) {
@@ -110,7 +111,8 @@ public class Ver2DictDecoderTests extends AndroidTestCase {
             Log.e(TAG, "IOException while the creating temporary file", e);
         }
 
-        final Ver2DictDecoder dictDecoder = new Ver2DictDecoder(testFile, factory);
+        final Ver2DictDecoder dictDecoder = new Ver2DictDecoder(testFile, 0, testFile.length(),
+                factory);
 
         // the default return value of getBuffer() must be null.
         assertNull("the default return value of getBuffer() is not null",

@@ -357,7 +357,7 @@ public final class BinaryDictDecoderUtils {
      * @return true if it's a binary dictionary, false otherwise
      */
     public static boolean isBinaryDictionary(final File file) {
-        final DictDecoder dictDecoder = FormatSpec.getDictDecoder(file);
+        final DictDecoder dictDecoder = FormatSpec.getDictDecoder(file, 0, file.length());
         if (dictDecoder == null) {
             return false;
         }

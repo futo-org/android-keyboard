@@ -229,7 +229,7 @@ final public class BinaryDictionaryGetter {
     private static boolean hackCanUseDictionaryFile(final Locale locale, final File f) {
         try {
             // Read the version of the file
-            final DictDecoder dictDecoder = FormatSpec.getDictDecoder(f);
+            final DictDecoder dictDecoder = FormatSpec.getDictDecoder(f, 0, f.length());
             final DictionaryHeader header = dictDecoder.readHeader();
 
             final String version = header.mDictionaryOptions.mAttributes.get(VERSION_KEY);

@@ -251,7 +251,8 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
 
         FusionDictionary dict = null;
         try {
-            final DictDecoder dictDecoder = FormatSpec.getDictDecoder(file, bufferType);
+            final DictDecoder dictDecoder = FormatSpec.getDictDecoder(file, 0, file.length(),
+                    bufferType);
             now = System.currentTimeMillis();
             dict = dictDecoder.readDictionaryBinary(false /* deleteDictIfBroken */);
             diff  = System.currentTimeMillis() - now;
@@ -413,7 +414,8 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
 
         long now = -1, diff = -1;
         try {
-            final DictDecoder dictDecoder = FormatSpec.getDictDecoder(file, bufferType);
+            final DictDecoder dictDecoder = FormatSpec.getDictDecoder(file, 0, file.length(),
+                    bufferType);
             now = System.currentTimeMillis();
             dictDecoder.readUnigramsAndBigramsBinary(resultWords, resultFreqs, resultBigrams);
             diff = System.currentTimeMillis() - now;
@@ -537,7 +539,8 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         addBigrams(dict, words, bigrams);
         timeWritingDictToFile(file, dict, formatOptions);
 
-        final DictDecoder dictDecoder = FormatSpec.getDictDecoder(file, DictDecoder.USE_BYTEARRAY);
+        final DictDecoder dictDecoder = FormatSpec.getDictDecoder(file, 0, file.length(),
+                DictDecoder.USE_BYTEARRAY);
         try {
             dictDecoder.openDictBuffer();
         } catch (IOException e) {
