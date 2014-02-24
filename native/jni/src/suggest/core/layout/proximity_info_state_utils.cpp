@@ -992,7 +992,16 @@ namespace latinime {
             }
         }
         if (character != NOT_AN_INDEX) {
-            codePointBuf[index] = proximityInfo->getCodePointOf(character);
+            const int codePoint = proximityInfo->getCodePointOf(character);
+            if (codePoint == NOT_A_CODE_POINT) {
+                AKLOGE("Key index(%d) is not found. Cannot construct most probable string",
+                        character);
+                ASSERT(false);
+                // Make the length zero, which means most probable string won't be used.
+                index = 0;
+                break;
+            }
+            codePointBuf[index] = codePoint;
             index++;
         }
         sumLogProbability += minLogProbability;
