@@ -232,6 +232,12 @@ public class DictionaryFacilitatorForSuggest {
         return null != mPersonalizationDictionary;
     }
 
+    public void flushPersonalizationDictionary() {
+        if (hasPersonalizationDictionary()) {
+            mPersonalizationDictionary.flush();
+        }
+    }
+
     public void waitForLoadingMainDictionary(final long timeout, final TimeUnit unit)
             throws InterruptedException {
         mLatchForWaitingLoadingMainDictionary.await(timeout, unit);
