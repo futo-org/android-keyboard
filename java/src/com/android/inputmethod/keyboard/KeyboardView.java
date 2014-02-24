@@ -146,6 +146,10 @@ public class KeyboardView extends View {
         mPaint.setAntiAlias(true);
     }
 
+    public KeyVisualAttributes getKeyVisualAttribute() {
+        return mKeyVisualAttributes;
+    }
+
     private static void blendAlpha(final Paint paint, final int alpha) {
         final int color = paint.getColor();
         paint.setARGB((paint.getAlpha() * alpha) / Constants.Color.ALPHA_OPAQUE,
