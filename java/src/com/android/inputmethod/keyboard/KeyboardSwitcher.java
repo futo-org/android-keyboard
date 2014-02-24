@@ -19,7 +19,6 @@ package com.android.inputmethod.keyboard;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
-import android.graphics.Paint;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
@@ -31,7 +30,7 @@ import com.android.inputmethod.accessibility.AccessibleKeyboardViewProxy;
 import com.android.inputmethod.compat.InputMethodServiceCompatUtils;
 import com.android.inputmethod.keyboard.KeyboardLayoutSet.KeyboardLayoutSetException;
 import com.android.inputmethod.keyboard.internal.KeyboardState;
-import com.android.inputmethod.latin.Constants;
+import com.android.inputmethod.keyboard.internal.KeyboardTextsSet;
 import com.android.inputmethod.latin.InputView;
 import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.LatinImeLogger;
@@ -81,8 +80,9 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     private KeyboardState mState;
 
     private KeyboardLayoutSet mKeyboardLayoutSet;
+    // TODO: The following {@link KeyboardTextsSet} should be in {@link KeyboardLayoutSet}.
+    private final KeyboardTextsSet mKeyboardTextsSet = new KeyboardTextsSet();
     private SettingsValues mCurrentSettingsValues;
-    private Key mSwitchToAlphaKey;
 
     /** mIsAutoCorrectionActive indicates that auto corrected word will be input instead of
      * what user actually typed. */
@@ -163,8 +163,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         mCurrentSettingsValues = settingsValues;
         try {
             mState.onLoadKeyboard();
-            final Keyboard symbols = mKeyboardLayoutSet.getKeyboard(KeyboardId.ELEMENT_SYMBOLS);
-            mSwitchToAlphaKey = symbols.getKey(Constants.CODE_SWITCH_ALPHA_SYMBOL);
+            mKeyboardTextsSet.setLocale(mSubtypeSwitcher.getCurrentSubtypeLocale());
         } catch (KeyboardLayoutSetException e) {
             Log.w(TAG, "loading keyboard failed: " + e.mKeyboardId, e.getCause());
             LatinImeLogger.logOnException(e.mKeyboardId.toString(), e.getCause());
@@ -290,10 +289,9 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     @Override
     public void setEmojiKeyboard() {
         mMainKeyboardFrame.setVisibility(View.GONE);
-        final Paint paint = mKeyboardView.newLabelPaint(mSwitchToAlphaKey);
         mEmojiPalettesView.startEmojiPalettes(
-                mSwitchToAlphaKey.getLabel(), paint.getColor(), paint.getTextSize(),
-                paint.getTypeface());
+                mKeyboardTextsSet.getText(KeyboardTextsSet.SWITCH_TO_ALPHA_KEY_LABEL),
+                mKeyboardView.getKeyVisualAttribute());
         mEmojiPalettesView.setVisibility(View.VISIBLE);
     }
 
