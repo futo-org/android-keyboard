@@ -237,7 +237,7 @@ public final class BinaryDictIOUtils {
             final File file, final long offset, final long length)
             throws FileNotFoundException, IOException, UnsupportedFormatException {
         final byte[] buffer = new byte[HEADER_READING_BUFFER_SIZE];
-        final DictDecoder dictDecoder = FormatSpec.getDictDecoder(file,
+        final DictDecoder dictDecoder = FormatSpec.getDictDecoder(file, offset, length,
                 new DictDecoder.DictionaryBufferFactory() {
                     @Override
                     public DictBuffer getDictionaryBuffer(File file)
@@ -251,8 +251,7 @@ public final class BinaryDictIOUtils {
                             inStream.close();
                         }
                     }
-                }
-        );
+                });
         if (dictDecoder == null) {
             return null;
         }

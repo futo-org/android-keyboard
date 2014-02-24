@@ -116,13 +116,18 @@ public class Ver2DictDecoder extends AbstractDictDecoder {
     }
 
     protected final File mDictionaryBinaryFile;
+    protected final long mOffset;
+    protected final long mLength;
     // TODO: Remove mBufferFactory and mDictBuffer from this class members because they are now
     // used only for testing.
     private final DictionaryBufferFactory mBufferFactory;
     protected DictBuffer mDictBuffer;
 
-    /* package */ Ver2DictDecoder(final File file, final int factoryFlag) {
+    /* package */ Ver2DictDecoder(final File file, final long offset, final long length,
+            final int factoryFlag) {
         mDictionaryBinaryFile = file;
+        mOffset = offset;
+        mLength = length;
         mDictBuffer = null;
         if ((factoryFlag & MASK_DICTBUFFER) == USE_READONLY_BYTEBUFFER) {
             mBufferFactory = new DictionaryBufferFromReadOnlyByteBufferFactory();
@@ -135,8 +140,11 @@ public class Ver2DictDecoder extends AbstractDictDecoder {
         }
     }
 
-    /* package */ Ver2DictDecoder(final File file, final DictionaryBufferFactory factory) {
+    /* package */ Ver2DictDecoder(final File file, final long offset, final long length,
+            final DictionaryBufferFactory factory) {
         mDictionaryBinaryFile = file;
+        mOffset = offset;
+        mLength = length;
         mBufferFactory = factory;
     }
 
@@ -164,9 +172,9 @@ public class Ver2DictDecoder extends AbstractDictDecoder {
     public DictionaryHeader readHeader() throws IOException, UnsupportedFormatException {
         // dictType is not being used in dicttool. Passing an empty string.
         final BinaryDictionary binaryDictionary = new BinaryDictionary(
-                mDictionaryBinaryFile.getAbsolutePath(), 0 /* offset */,
-                mDictionaryBinaryFile.length() /* length */, true /* useFullEditDistance */,
-                null /* locale */, "" /* dictType */, false /* isUpdatable */);
+                mDictionaryBinaryFile.getAbsolutePath(), mOffset, mLength,
+                true /* useFullEditDistance */, null /* locale */, "" /* dictType */,
+                false /* isUpdatable */);
         final DictionaryHeader header = binaryDictionary.getHeader();
         binaryDictionary.close();
         if (header == null) {
