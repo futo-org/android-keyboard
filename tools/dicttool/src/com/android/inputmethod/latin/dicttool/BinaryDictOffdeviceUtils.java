@@ -192,7 +192,7 @@ public final class BinaryDictOffdeviceUtils {
                             new BufferedInputStream(new FileInputStream(decodedSpec.mFile)));
                 } else {
                     final DictDecoder dictDecoder = FormatSpec.getDictDecoder(decodedSpec.mFile,
-                            DictDecoder.USE_BYTEARRAY);
+                            0, decodedSpec.mFile.length(), DictDecoder.USE_BYTEARRAY);
                     if (report) {
                         System.out.println("Format : Binary dictionary format");
                         System.out.println("Packaging : " + decodedSpec.describeChain());
