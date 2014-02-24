@@ -28,6 +28,7 @@ import com.android.inputmethod.latin.personalization.PersonalizationHelper;
 import com.android.inputmethod.latin.personalization.UserHistoryDictionary;
 import com.android.inputmethod.latin.settings.SettingsValues;
 import com.android.inputmethod.latin.utils.CollectionUtils;
+import com.android.inputmethod.latin.utils.ExecutorUtils;
 import com.android.inputmethod.latin.utils.LanguageModelParam;
 
 import java.io.File;
@@ -208,8 +209,7 @@ public class DictionaryFacilitatorForSuggest {
         if (listener != null) {
             listener.onUpdateMainDictionaryAvailability(hasMainDictionary());
         }
-        new Thread("InitializeBinaryDictionary") {
-            @Override
+        ExecutorUtils.getExecutor("InitializeBinaryDictionary").execute(new Runnable() {
             public void run() {
                 final DictionaryCollection newMainDict =
                         DictionaryFactory.createMainDictionaryFromManager(context, locale);
@@ -219,7 +219,7 @@ public class DictionaryFacilitatorForSuggest {
                 }
                 mLatchForWaitingLoadingMainDictionary.countDown();
             }
-        }.start();
+        });
     }
 
     // The main dictionary could have been loaded asynchronously.  Don't cache the return value
