@@ -64,18 +64,8 @@
             latin:keyStyle="defaultEnterKeyStyle"
             latin:keySpec="!icon/enter_key|!code/key_enter"
             latin:keyWidth="15.384%p" />
-        <switch>
-            <case
-                latin:keyboardLayoutSetElement="alphabet|alphabetAutomaticShifted"
-            >
-                <Spacer />
-            </case>
-            <!-- keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted" -->
-            <default>
-                <Key
-                    latin:keyStyle="emojiKeyStyle"
-                    latin:keyWidth="fillRight" />
-            </default>
-        </switch>
+        <Key
+            latin:keyStyle="emojiKeyStyle"
+            latin:keyWidth="fillRight" />
     </Row>
 </merge>
