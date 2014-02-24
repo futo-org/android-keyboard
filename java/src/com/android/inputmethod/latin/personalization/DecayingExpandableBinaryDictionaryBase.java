@@ -68,6 +68,11 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
             dumpAllWordsForDebug();
         }
         // Flush pending writes.
+        flush();
+        // TODO: Quit depending on finalize() and really close the dictionary file.
+    }
+
+    public void flush() {
         asyncFlushBinaryDictionary();
     }
 
