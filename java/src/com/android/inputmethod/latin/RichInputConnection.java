@@ -483,12 +483,16 @@ public final class RichInputConnection {
      *
      * @param start the character index where the selection should start.
      * @param end the character index where the selection should end.
-     * @return Returns true on success, false if the input connection is no longer valid either when
-     * setting the selection or when retrieving the text cache at that point.
+     * @return Returns true on success, false on failure: either the input connection is no longer
+     * valid when setting the selection or when retrieving the text cache at that point, or
+     * invalid arguments were passed.
      */
     public boolean setSelection(final int start, final int end) {
         if (DEBUG_BATCH_NESTING) checkBatchEdit();
         if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
+        if (start < 0 || end < 0) {
+            return false;
+        }
         mExpectedSelStart = start;
         mExpectedSelEnd = end;
         if (null != mIC) {
