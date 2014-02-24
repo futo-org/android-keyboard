@@ -25,7 +25,6 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.Rect;
-import android.graphics.Typeface;
 import android.os.Build;
 import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
@@ -49,6 +48,8 @@ import android.widget.TextView;
 import com.android.inputmethod.keyboard.internal.DynamicGridKeyboard;
 import com.android.inputmethod.keyboard.internal.EmojiLayoutParams;
 import com.android.inputmethod.keyboard.internal.EmojiPageKeyboardView;
+import com.android.inputmethod.keyboard.internal.KeyDrawParams;
+import com.android.inputmethod.keyboard.internal.KeyVisualAttributes;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SubtypeSwitcher;
@@ -634,20 +635,23 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
         // TODO:
     }
 
-    // Hack: These parameters are hacky.
-    public void startEmojiPalettes(final String switchToAlphaLabel, final int switchToAlphaColor,
-            final float switchToAlphaSize, final Typeface switchToAlphaTypeface) {
+    private static void setupAlphabetKey(final TextView alphabetKey, final String label,
+            final KeyDrawParams params) {
+        alphabetKey.setText(label);
+        alphabetKey.setTextColor(params.mTextColor);
+        alphabetKey.setTextSize(TypedValue.COMPLEX_UNIT_PX, params.mLabelSize);
+        alphabetKey.setTypeface(params.mTypeface);
+    }
+
+    public void startEmojiPalettes(final String switchToAlphaLabel,
+            final KeyVisualAttributes keyVisualAttr) {
         if (DEBUG_PAGER) {
             Log.d(TAG, "allocate emoji palettes memory " + mCurrentPagerPosition);
         }
-        mAlphabetKeyLeft.setText(switchToAlphaLabel);
-        mAlphabetKeyLeft.setTextColor(switchToAlphaColor);
-        mAlphabetKeyLeft.setTextSize(TypedValue.COMPLEX_UNIT_PX, switchToAlphaSize);
-        mAlphabetKeyLeft.setTypeface(switchToAlphaTypeface);
-        mAlphabetKeyRight.setText(switchToAlphaLabel);
-        mAlphabetKeyRight.setTextColor(switchToAlphaColor);
-        mAlphabetKeyRight.setTextSize(TypedValue.COMPLEX_UNIT_PX, switchToAlphaSize);
-        mAlphabetKeyRight.setTypeface(switchToAlphaTypeface);
+        final KeyDrawParams params = new KeyDrawParams();
+        params.updateParams(mEmojiLayoutParams.getActionBarHeight(), keyVisualAttr);
+        setupAlphabetKey(mAlphabetKeyLeft, switchToAlphaLabel, params);
+        setupAlphabetKey(mAlphabetKeyRight, switchToAlphaLabel, params);
         mEmojiPager.setAdapter(mEmojiPalettesAdapter);
         mEmojiPager.setCurrentItem(mCurrentPagerPosition);
     }
