@@ -340,10 +340,6 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         mState.onCodeInput(code, mLatinIME.getCurrentAutoCapsState());
     }
 
-    private boolean isShowingMainKeyboard() {
-        return null != mKeyboardView && mKeyboardView.isShown();
-    }
-
     public boolean isShowingEmojiPalettes() {
         return mEmojiPalettesView != null && mEmojiPalettesView.isShown();
     }
@@ -374,10 +370,6 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         if (mEmojiPalettesView != null) {
             mEmojiPalettesView.stopEmojiPalettes();
         }
-    }
-
-    public boolean isShowingMainKeyboardOrEmojiPalettes() {
-        return isShowingMainKeyboard() || isShowingEmojiPalettes();
     }
 
     public View onCreateInputView(final boolean isHardwareAcceleratedDrawingEnabled) {
