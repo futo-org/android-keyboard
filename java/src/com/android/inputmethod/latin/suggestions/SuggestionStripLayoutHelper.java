@@ -248,13 +248,14 @@ final class SuggestionStripLayoutHelper {
             final int indexInSuggestedWords) {
         final int positionInStrip =
                 getPositionInSuggestionStrip(indexInSuggestedWords, suggestedWords);
-        final boolean isTypedWord = !suggestedWords.mIsPrediction
-                && (indexInSuggestedWords == SuggestedWords.INDEX_OF_TYPED_WORD);
+        // Use identity for strings, not #equals : it's the typed word if it's the same object
+        final boolean isTypedWord =
+                suggestedWords.getWord(indexInSuggestedWords) == suggestedWords.mTypedWord;
 
         final int color;
         if (positionInStrip == mCenterPositionInStrip && suggestedWords.mWillAutoCorrect) {
             color = mColorAutoCorrect;
-        } else if (positionInStrip == mCenterPositionInStrip && suggestedWords.mTypedWordValid) {
+        } else if (isTypedWord && suggestedWords.mTypedWordValid) {
             color = mColorValidTypedWord;
         } else if (isTypedWord) {
             color = mColorTypedWord;
