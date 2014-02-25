@@ -242,8 +242,8 @@ final class SuggestionStripLayoutHelper {
         return indexInSuggestedWords;
     }
 
-    private int getSuggestionTextColor(final int indexInSuggestedWords,
-            final SuggestedWords suggestedWords) {
+    private int getSuggestionTextColor(final SuggestedWords suggestedWords,
+            final int indexInSuggestedWords) {
         final int positionInStrip =
                 getPositionInSuggestionStrip(indexInSuggestedWords, suggestedWords);
         // TODO: Need to revisit this logic with bigram suggestions
@@ -438,7 +438,7 @@ final class SuggestionStripLayoutHelper {
             // {@link SuggestionStripView#onClick(View)}.
             wordView.setTag(indexInSuggestedWords);
             wordView.setText(getStyledSuggestedWord(suggestedWords, indexInSuggestedWords));
-            wordView.setTextColor(getSuggestionTextColor(positionInStrip, suggestedWords));
+            wordView.setTextColor(getSuggestionTextColor(suggestedWords, indexInSuggestedWords));
             if (SuggestionStripView.DBG) {
                 mDebugInfoViews.get(positionInStrip).setText(
                         suggestedWords.getDebugString(indexInSuggestedWords));
