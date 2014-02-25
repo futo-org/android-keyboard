@@ -167,7 +167,7 @@
     <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"Seleccionar archivo de diccionario para instalar"</string>
     <string name="read_external_dictionary_confirm_install_message" msgid="4782116251651288054">"¿Realmente quieres instalar este archivo para <xliff:g id="LANGUAGE_NAME">%s</xliff:g>?"</string>
     <string name="error" msgid="8940763624668513648">"Se produjo un error."</string>
-    <string name="prefs_dump_contacts_dict" msgid="7227327764402323097">"Volcar diccionario de contactos"</string>
+    <string name="prefs_dump_contacts_dict" msgid="7227327764402323097">"Generar diccionario de contactos"</string>
     <string name="prefs_dump_user_dict" msgid="294870685041741951">"Volcar diccionario personal"</string>
     <string name="prefs_dump_user_history_dict" msgid="6821075152449554628">"Volcar diccionario hist. usuario"</string>
     <string name="prefs_dump_personalization_dict" msgid="7558387996151745284">"Volcar diccionario personalización"</string>
