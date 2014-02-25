@@ -69,7 +69,7 @@ public class SuggestedWords {
             final boolean isPrediction,
             final int sequenceNumber) {
         this(suggestedWordInfoList, rawSuggestions,
-                suggestedWordInfoList.isEmpty() ? null
+                (suggestedWordInfoList.isEmpty() || isPrediction) ? null
                         : suggestedWordInfoList.get(INDEX_OF_TYPED_WORD).mWord,
                 typedWordValid, willAutoCorrect, isObsoleteSuggestions, isPrediction,
                 sequenceNumber);
