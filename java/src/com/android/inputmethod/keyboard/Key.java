@@ -716,10 +716,14 @@ public class Key implements Comparable<Key> {
         return (attrs != null) ? attrs.mAltCode : CODE_UNSPECIFIED;
     }
 
+    public int getIconId() {
+        return mIconId;
+    }
+
     public Drawable getIcon(final KeyboardIconsSet iconSet, final int alpha) {
         final OptionalAttributes attrs = mOptionalAttributes;
         final int disabledIconId = (attrs != null) ? attrs.mDisabledIconId : ICON_UNDEFINED;
-        final int iconId = mEnabled ? mIconId : disabledIconId;
+        final int iconId = mEnabled ? getIconId() : disabledIconId;
         final Drawable icon = iconSet.getIconDrawable(iconId);
         if (icon != null) {
             icon.setAlpha(alpha);
@@ -731,7 +735,7 @@ public class Key implements Comparable<Key> {
         final OptionalAttributes attrs = mOptionalAttributes;
         final int previewIconId = (attrs != null) ? attrs.mPreviewIconId : ICON_UNDEFINED;
         return previewIconId != ICON_UNDEFINED
-                ? iconSet.getIconDrawable(previewIconId) : iconSet.getIconDrawable(mIconId);
+                ? iconSet.getIconDrawable(previewIconId) : iconSet.getIconDrawable(getIconId());
     }
 
     public int getWidth() {

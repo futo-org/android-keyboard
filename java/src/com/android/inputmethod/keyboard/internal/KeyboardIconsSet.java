@@ -102,7 +102,7 @@ public final class KeyboardIconsSet {
         return isValidIconId(iconId) ? ICON_NAMES[iconId] : "unknown<" + iconId + ">";
     }
 
-    static int getIconId(final String name) {
+    public static int getIconId(final String name) {
         Integer iconId = sNameToIdsMap.get(name);
         if (iconId != null) {
             return iconId;
