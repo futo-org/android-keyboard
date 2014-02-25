@@ -175,7 +175,7 @@
     </declare-styleable>
 
     <declare-styleable name="SuggestionStripView">
-        <attr name="suggestionStripOption" format="integer">
+        <attr name="suggestionStripOptions" format="integer">
             <!-- This should be aligned with SuggestionStripLayoutHelper.AUTO_CORRECT_* and etc. -->
             <flag name="autoCorrectBold" value="0x01" />
             <flag name="autoCorrectUnderline" value="0x02" />

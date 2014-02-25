@@ -133,7 +133,7 @@
         parent="SuggestionStripView"
     >
         <item name="android:background">@drawable/keyboard_suggest_strip_gb</item>
-        <item name="suggestionStripOption">autoCorrectBold|validTypedWordBold</item>
+        <item name="suggestionStripOptions">autoCorrectBold|validTypedWordBold</item>
         <item name="colorValidTypedWord">@color/highlight_color_gb</item>
         <item name="colorTypedWord">@color/typed_word_color_gb</item>
         <item name="colorAutoCorrect">@color/highlight_color_gb</item>

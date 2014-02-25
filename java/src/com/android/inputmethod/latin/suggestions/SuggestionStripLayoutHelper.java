@@ -95,9 +95,9 @@ final class SuggestionStripLayoutHelper {
     private static final CharacterStyle BOLD_SPAN = new StyleSpan(Typeface.BOLD);
     private static final CharacterStyle UNDERLINE_SPAN = new UnderlineSpan();
 
-    private final int mSuggestionStripOption;
+    private final int mSuggestionStripOptions;
     // These constants are the flag values of
-    // {@link R.styleable#SuggestionStripView_suggestionStripOption} attribute.
+    // {@link R.styleable#SuggestionStripView_suggestionStripOptions} attribute.
     private static final int AUTO_CORRECT_BOLD = 0x01;
     private static final int AUTO_CORRECT_UNDERLINE = 0x02;
     private static final int VALID_TYPED_WORD_BOLD = 0x04;
@@ -122,8 +122,8 @@ final class SuggestionStripLayoutHelper {
 
         final TypedArray a = context.obtainStyledAttributes(attrs,
                 R.styleable.SuggestionStripView, defStyle, R.style.SuggestionStripView);
-        mSuggestionStripOption = a.getInt(
-                R.styleable.SuggestionStripView_suggestionStripOption, 0);
+        mSuggestionStripOptions = a.getInt(
+                R.styleable.SuggestionStripView_suggestionStripOptions, 0);
         mAlphaObsoleted = ResourceUtils.getFraction(a,
                 R.styleable.SuggestionStripView_alphaObsoleted, 1.0f);
         mColorValidTypedWord = a.getColor(R.styleable.SuggestionStripView_colorValidTypedWord, 0);
@@ -200,22 +200,24 @@ final class SuggestionStripLayoutHelper {
             return null;
         }
         final String word = suggestedWords.getLabel(indexInSuggestedWords);
-        final boolean isAutoCorrect = indexInSuggestedWords == 1
-                && suggestedWords.mWillAutoCorrect;
-        final boolean isTypedWordValid = indexInSuggestedWords == 0
-                && suggestedWords.mTypedWordValid;
-        if (!isAutoCorrect && !isTypedWordValid) {
+        // TODO: don't use the index to decide whether this is the auto-correction/typed word, as
+        // this is brittle
+        final boolean isAutoCorrection = suggestedWords.mWillAutoCorrect
+                && indexInSuggestedWords == SuggestedWords.INDEX_OF_AUTO_CORRECTION;
+        final boolean isTypedWordValid = suggestedWords.mTypedWordValid
+                && indexInSuggestedWords == SuggestedWords.INDEX_OF_TYPED_WORD;
+        if (!isAutoCorrection && !isTypedWordValid) {
             return word;
         }
 
         final int len = word.length();
         final Spannable spannedWord = new SpannableString(word);
-        final int option = mSuggestionStripOption;
-        if ((isAutoCorrect && (option & AUTO_CORRECT_BOLD) != 0)
-                || (isTypedWordValid && (option & VALID_TYPED_WORD_BOLD) != 0)) {
+        final int options = mSuggestionStripOptions;
+        if ((isAutoCorrection && (options & AUTO_CORRECT_BOLD) != 0)
+                || (isTypedWordValid && (options & VALID_TYPED_WORD_BOLD) != 0)) {
             spannedWord.setSpan(BOLD_SPAN, 0, len, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
         }
-        if (isAutoCorrect && (option & AUTO_CORRECT_UNDERLINE) != 0) {
+        if (isAutoCorrection && (options & AUTO_CORRECT_UNDERLINE) != 0) {
             spannedWord.setSpan(UNDERLINE_SPAN, 0, len, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
         }
         return spannedWord;
