@@ -1360,10 +1360,12 @@ public final class InputLogic {
                         }});
         } else {
             // We found suggestion spans in the word. We'll create the SuggestedWords out of
-            // them, and make willAutoCorrect false.
+            // them, and make willAutoCorrect false. We make typedWordValid false, because the
+            // color of the word in the suggestion strip changes according to this parameter,
+            // and false gives the correct color.
             final SuggestedWords suggestedWords = new SuggestedWords(suggestions,
                     null /* rawSuggestions */, typedWord,
-                    true /* typedWordValid */, false /* willAutoCorrect */,
+                    false /* typedWordValid */, false /* willAutoCorrect */,
                     false /* isObsoleteSuggestions */, false /* isPrediction */,
                     SuggestedWords.NOT_A_SEQUENCE_NUMBER);
             mIsAutoCorrectionIndicatorOn = false;
