@@ -20,7 +20,9 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="important_notice_title" msgid="1836002733109536160"></string>
-    <string name="important_notice_contents" msgid="897137043719116217"></string>
+  <string-array name="important_notice_title_array">
+  </string-array>
+  <string-array name="important_notice_contents_array">
+  </string-array>
     <string name="use_personalized_dicts_summary" msgid="590432261305469627">"Learn from your communications and typed data to improve suggestions"</string>
 </resources>
