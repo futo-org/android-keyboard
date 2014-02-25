@@ -248,18 +248,18 @@ final class SuggestionStripLayoutHelper {
             final int indexInSuggestedWords) {
         final int positionInStrip =
                 getPositionInSuggestionStrip(indexInSuggestedWords, suggestedWords);
-        // TODO: Need to revisit this logic with bigram suggestions
-        final boolean isSuggested = (indexInSuggestedWords != SuggestedWords.INDEX_OF_TYPED_WORD);
+        final boolean isTypedWord = !suggestedWords.mIsPrediction
+                && (indexInSuggestedWords == SuggestedWords.INDEX_OF_TYPED_WORD);
 
         final int color;
         if (positionInStrip == mCenterPositionInStrip && suggestedWords.mWillAutoCorrect) {
             color = mColorAutoCorrect;
         } else if (positionInStrip == mCenterPositionInStrip && suggestedWords.mTypedWordValid) {
             color = mColorValidTypedWord;
-        } else if (isSuggested) {
-            color = mColorSuggested;
-        } else {
+        } else if (isTypedWord) {
             color = mColorTypedWord;
+        } else {
+            color = mColorSuggested;
         }
         if (LatinImeLogger.sDBG && suggestedWords.size() > 1) {
             // If we auto-correct, then the autocorrection is in slot 0 and the typed word
@@ -272,7 +272,7 @@ final class SuggestionStripLayoutHelper {
             }
         }
 
-        if (suggestedWords.mIsObsoleteSuggestions && isSuggested) {
+        if (suggestedWords.mIsObsoleteSuggestions && !isTypedWord) {
             return applyAlpha(color, mAlphaObsoleted);
         }
         return color;
