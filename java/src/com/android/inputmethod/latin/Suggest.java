@@ -147,6 +147,8 @@ public final class Suggest {
             }
         }
 
+        final boolean isPrediction = !wordComposer.isComposingWord();
+
         // We allow auto-correction if we have a whitelisted word, or if the word is not a valid
         // word of more than 1 char, except if the first suggestion is the same as the typed string
         // because in this case if it's strong enough to auto-correct that will mistakenly designate
@@ -165,7 +167,7 @@ public final class Suggest {
         // same time, it feels wrong that the SuggestedWord object includes information about
         // the current settings. It may also be useful to know, when the setting is off, whether
         // the word *would* have been auto-corrected.
-        if (!isCorrectionEnabled || !allowsToBeAutoCorrected || !wordComposer.isComposingWord()
+        if (!isCorrectionEnabled || !allowsToBeAutoCorrected || isPrediction
                 || suggestionsSet.isEmpty() || wordComposer.hasDigits()
                 || wordComposer.isMostlyCaps() || wordComposer.isResumed()
                 || !mDictionaryFacilitator.hasMainDictionary()
@@ -227,8 +229,7 @@ public final class Suggest {
                 // rename the attribute or change the value.
                 !allowsToBeAutoCorrected /* typedWordValid */,
                 hasAutoCorrection, /* willAutoCorrect */
-                false /* isObsoleteSuggestions */,
-                !wordComposer.isComposingWord() /* isPrediction */, sequenceNumber));
+                false /* isObsoleteSuggestions */, isPrediction, sequenceNumber));
     }
 
     // Retrieves suggestions for the batch input
