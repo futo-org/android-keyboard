@@ -24,6 +24,19 @@ void ShortcutDictContent::getShortcutEntryAndAdvancePosition(const int maxCodePo
         int *const outCodePoint, int *const outCodePointCount, int *const outProbability,
         bool *const outhasNext, int *const shortcutEntryPos) const {
     const BufferWithExtendableBuffer *const shortcutListBuffer = getContentBuffer();
+    if (*shortcutEntryPos < 0 || *shortcutEntryPos >=  shortcutListBuffer->getTailPosition()) {
+        AKLOGE("Invalid shortcut entry position. shortcutEntryPos: %d, bufSize: %d",
+                *shortcutEntryPos, shortcutListBuffer->getTailPosition());
+        ASSERT(false);
+        if (outhasNext) {
+            *outhasNext = false;
+        }
+        if (outCodePointCount) {
+            *outCodePointCount = 0;
+        }
+        return;
+    }
+
     const int shortcutFlags = shortcutListBuffer->readUintAndAdvancePosition(
             Ver4DictConstants::SHORTCUT_FLAGS_FIELD_SIZE, shortcutEntryPos);
     if (outProbability) {
