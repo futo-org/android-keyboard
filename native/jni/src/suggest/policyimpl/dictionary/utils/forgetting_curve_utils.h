@@ -24,7 +24,7 @@
 
 namespace latinime {
 
-class DictionaryHeaderStructurePolicy;
+class HeaderPolicy;
 
 class ForgettingCurveUtils {
  public:
@@ -35,12 +35,14 @@ class ForgettingCurveUtils {
 
     static const HistoricalInfo createUpdatedHistoricalInfo(
             const HistoricalInfo *const originalHistoricalInfo, const int newProbability,
-            const int timestamp);
+            const int timestamp, const HeaderPolicy *const headerPolicy);
 
     static const HistoricalInfo createHistoricalInfoToSave(
-            const HistoricalInfo *const originalHistoricalInfo);
+            const HistoricalInfo *const originalHistoricalInfo,
+            const HeaderPolicy *const headerPolicy);
 
-    static int decodeProbability(const HistoricalInfo *const historicalInfo);
+    static int decodeProbability(const HistoricalInfo *const historicalInfo,
+            const HeaderPolicy *const headerPolicy);
 
     static int getProbability(const int encodedUnigramProbability,
             const int encodedBigramProbability);
@@ -48,7 +50,7 @@ class ForgettingCurveUtils {
     static bool needsToKeep(const HistoricalInfo *const historicalInfo);
 
     static bool needsToDecay(const bool mindsBlockByDecay, const int unigramCount,
-            const int bigramCount, const DictionaryHeaderStructurePolicy *const headerPolicy);
+            const int bigramCount, const HeaderPolicy *const headerPolicy);
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(ForgettingCurveUtils);
@@ -57,21 +59,23 @@ class ForgettingCurveUtils {
      public:
         ProbabilityTable();
 
-        int getProbability(const int level, const int elapsedTimeStepCount) const {
-            return mTable[level][elapsedTimeStepCount];
+        int getProbability(const int tableId, const int level,
+                const int elapsedTimeStepCount) const {
+            return mTables[tableId][level][elapsedTimeStepCount];
         }
 
      private:
         DISALLOW_COPY_AND_ASSIGN(ProbabilityTable);
 
-        std::vector<std::vector<int> > mTable;
+        static const int PROBABILITY_TABLE_COUNT;
+
+        std::vector<std::vector<std::vector<int> > > mTables;
     };
 
     static const int MAX_COMPUTED_PROBABILITY;
     static const int DECAY_INTERVAL_SECONDS;
 
     static const int MAX_LEVEL;
-    static const int MAX_COUNT;
     static const int MIN_VALID_LEVEL;
     static const int TIME_STEP_DURATION_IN_SECONDS;
     static const int MAX_ELAPSED_TIME_STEP_COUNT;

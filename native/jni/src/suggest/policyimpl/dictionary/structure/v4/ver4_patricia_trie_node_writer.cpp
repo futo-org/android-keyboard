@@ -159,7 +159,7 @@ bool Ver4PatriciaTrieNodeWriter::updatePtNodeProbabilityAndGetNeedsToKeepPtNodeA
                     toBeUpdatedPtNodeParams->getTerminalId());
     if (originalProbabilityEntry.hasHistoricalInfo()) {
         const HistoricalInfo historicalInfo = ForgettingCurveUtils::createHistoricalInfoToSave(
-                originalProbabilityEntry.getHistoricalInfo());
+                originalProbabilityEntry.getHistoricalInfo(), mHeaderPolicy);
         const ProbabilityEntry probabilityEntry =
                 originalProbabilityEntry.createEntryWithUpdatedHistoricalInfo(&historicalInfo);
         if (!mBuffers->getMutableProbabilityDictContent()->setProbabilityEntry(
@@ -382,10 +382,11 @@ const ProbabilityEntry Ver4PatriciaTrieNodeWriter::createUpdatedEntryFrom(
         const ProbabilityEntry *const originalProbabilityEntry, const int newProbability,
         const int timestamp) const {
     // TODO: Consolidate historical info and probability.
-    if (mBuffers->getHeaderPolicy()->hasHistoricalInfoOfWords()) {
+    if (mHeaderPolicy->hasHistoricalInfoOfWords()) {
         const HistoricalInfo updatedHistoricalInfo =
                 ForgettingCurveUtils::createUpdatedHistoricalInfo(
-                        originalProbabilityEntry->getHistoricalInfo(), newProbability, timestamp);
+                        originalProbabilityEntry->getHistoricalInfo(), newProbability, timestamp,
+                        mHeaderPolicy);
         return originalProbabilityEntry->createEntryWithUpdatedHistoricalInfo(
                 &updatedHistoricalInfo);
     } else {
