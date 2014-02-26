@@ -148,7 +148,15 @@ const ForgettingCurveUtils::ProbabilityTable ForgettingCurveUtils::sProbabilityT
     return (TimeKeeper::peekCurrentTime() - timestamp) / TIME_STEP_DURATION_IN_SECONDS;
 }
 
-const int ForgettingCurveUtils::ProbabilityTable::PROBABILITY_TABLE_COUNT = 1;
+const int ForgettingCurveUtils::ProbabilityTable::PROBABILITY_TABLE_COUNT = 4;
+const int ForgettingCurveUtils::ProbabilityTable::WEAK_PROBABILITY_TABLE_ID = 0;
+const int ForgettingCurveUtils::ProbabilityTable::MODEST_PROBABILITY_TABLE_ID = 1;
+const int ForgettingCurveUtils::ProbabilityTable::STRONG_PROBABILITY_TABLE_ID = 2;
+const int ForgettingCurveUtils::ProbabilityTable::AGGRESSIVE_PROBABILITY_TABLE_ID = 3;
+const int ForgettingCurveUtils::ProbabilityTable::MODEST_BASE_PROBABILITY = 32;
+const int ForgettingCurveUtils::ProbabilityTable::STRONG_BASE_PROBABILITY = 35;
+const int ForgettingCurveUtils::ProbabilityTable::AGGRESSIVE_BASE_PROBABILITY = 40;
+
 
 ForgettingCurveUtils::ProbabilityTable::ProbabilityTable() : mTables() {
     mTables.resize(PROBABILITY_TABLE_COUNT);
@@ -156,8 +164,8 @@ ForgettingCurveUtils::ProbabilityTable::ProbabilityTable() : mTables() {
         mTables[tableId].resize(MAX_LEVEL + 1);
         for (int level = 0; level <= MAX_LEVEL; ++level) {
             mTables[tableId][level].resize(MAX_ELAPSED_TIME_STEP_COUNT + 1);
-            const float initialProbability =
-                    static_cast<float>(MAX_COMPUTED_PROBABILITY / (1 << (MAX_LEVEL - level)));
+            const float initialProbability = getBaseProbabilityForLevel(tableId, level);
+            const float endProbability = getBaseProbabilityForLevel(tableId, level - 1);
             for (int timeStepCount = 0; timeStepCount <= MAX_ELAPSED_TIME_STEP_COUNT;
                     ++timeStepCount) {
                 if (level == 0) {
@@ -166,13 +174,33 @@ ForgettingCurveUtils::ProbabilityTable::ProbabilityTable() : mTables() {
                 }
                 const int elapsedTime = timeStepCount * TIME_STEP_DURATION_IN_SECONDS;
                 const float probability = initialProbability
-                        * powf(2.0f, -1.0f * static_cast<float>(elapsedTime)
-                                / static_cast<float>(TIME_STEP_DURATION_IN_SECONDS
-                                        * (MAX_ELAPSED_TIME_STEP_COUNT + 1)));
+                        * powf(initialProbability / endProbability,
+                                -1.0f * static_cast<float>(elapsedTime)
+                                        / static_cast<float>(TIME_STEP_DURATION_IN_SECONDS
+                                                * (MAX_ELAPSED_TIME_STEP_COUNT + 1)));
                 mTables[tableId][level][timeStepCount] =
                         min(max(static_cast<int>(probability), 1), MAX_COMPUTED_PROBABILITY);
             }
         }
+    }
+}
+
+/* static */ int ForgettingCurveUtils::ProbabilityTable::getBaseProbabilityForLevel(
+        const int tableId, const int level) {
+    if (tableId == WEAK_PROBABILITY_TABLE_ID) {
+        // Max probability is 127.
+        return static_cast<float>(MAX_COMPUTED_PROBABILITY / (1 << (MAX_LEVEL - level)));
+    } else if (tableId == MODEST_PROBABILITY_TABLE_ID) {
+        // Max probability is 128.
+        return static_cast<float>(MODEST_BASE_PROBABILITY * (level + 1));
+    } else if (tableId == STRONG_PROBABILITY_TABLE_ID) {
+        // Max probability is 140.
+        return static_cast<float>(STRONG_BASE_PROBABILITY * (level + 1));
+    } else if (tableId == AGGRESSIVE_PROBABILITY_TABLE_ID) {
+        // Max probability is 160.
+        return static_cast<float>(AGGRESSIVE_BASE_PROBABILITY * (level + 1));
+    } else {
+        return NOT_A_PROBABILITY;
     }
 }
 
