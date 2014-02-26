@@ -168,9 +168,9 @@
     <string name="read_external_dictionary_confirm_install_message" msgid="4782116251651288054">"እውን ይሄ ፋይል ለ<xliff:g id="LANGUAGE_NAME">%s</xliff:g> ይጫን?"</string>
     <string name="error" msgid="8940763624668513648">"ስህተት ተከስቶ ነበር"</string>
     <string name="prefs_dump_contacts_dict" msgid="7227327764402323097">"የእውቂያዎች መዝገበ-ቃላትን ዝርዝር ይፍጠሩ"</string>
-    <string name="prefs_dump_user_dict" msgid="294870685041741951">"የግል መዝገበ-ቃላትን ያራግፉ"</string>
-    <string name="prefs_dump_user_history_dict" msgid="6821075152449554628">"የተጠቃሚ ታሪክ መዝገበ-ቃላትን ያራግፉ"</string>
-    <string name="prefs_dump_personalization_dict" msgid="7558387996151745284">"የግላዊነት ማላበሻ መዝገበ-ቃላትን ያራግፉ"</string>
+    <string name="prefs_dump_user_dict" msgid="294870685041741951">"የግል መዝገበ-ቃላትን ዝርዝር ይፍጠሩ"</string>
+    <string name="prefs_dump_user_history_dict" msgid="6821075152449554628">"የተጠቃሚ ታሪክ መዝገበ-ቃላትን ዝርዝር ይፍጠሩ"</string>
+    <string name="prefs_dump_personalization_dict" msgid="7558387996151745284">"የግላዊነት ማላበሻ መዝገበ-ቃላትን ዝርዝር ይፍጠሩ"</string>
     <string name="button_default" msgid="3988017840431881491">"ነባሪ"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"እንኳን ወደ <xliff:g id="APPLICATION_NAME">%s</xliff:g> በደህና መጡ"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"በጣት ምልክት መተየብ"</string>
