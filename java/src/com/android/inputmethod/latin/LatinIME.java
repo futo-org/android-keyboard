@@ -1316,8 +1316,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // Nothing to do so far.
     }
 
-    // TODO[IL]: Define a clear interface for this
-    public boolean isSuggestionStripVisible() {
+    private boolean isSuggestionStripVisible() {
         if (!hasSuggestionStripView()) {
             return false;
         }
@@ -1341,7 +1340,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         return currentSettings.isSuggestionsRequested();
     }
 
-    @Override
     public boolean hasSuggestionStripView() {
         return null != mSuggestionStripView;
     }
