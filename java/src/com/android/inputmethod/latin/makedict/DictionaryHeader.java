@@ -38,6 +38,10 @@ public final class DictionaryHeader {
     public static final String DICTIONARY_DATE_KEY = "date";
     public static final String HAS_HISTORICAL_INFO_KEY = "HAS_HISTORICAL_INFO";
     public static final String USES_FORGETTING_CURVE_KEY = "USES_FORGETTING_CURVE";
+    public static final String FORGETTING_CURVE_OCCURRENCES_TO_LEVEL_UP_KEY =
+            "FORGETTING_CURVE_OCCURRENCES_TO_LEVEL_UP";
+    public static final String FORGETTING_CURVE_PROBABILITY_VALUES_TABLE_ID_KEY =
+            "FORGETTING_CURVE_PROBABILITY_VALUES_TABLE_ID";
     public static final String ATTRIBUTE_VALUE_TRUE = "1";
 
     public DictionaryHeader(final int headerSize, final DictionaryOptions dictionaryOptions,

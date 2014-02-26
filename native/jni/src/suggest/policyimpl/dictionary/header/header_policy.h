@@ -52,7 +52,13 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
               mExtendedRegionSize(HeaderReadWriteUtils::readIntAttributeValue(&mAttributeMap,
                       EXTENDED_REGION_SIZE_KEY, 0 /* defaultValue */)),
               mHasHistoricalInfoOfWords(HeaderReadWriteUtils::readBoolAttributeValue(
-                      &mAttributeMap, HAS_HISTORICAL_INFO_KEY, false /* defaultValue */)) {}
+                      &mAttributeMap, HAS_HISTORICAL_INFO_KEY, false /* defaultValue */)),
+              mForgettingCurveOccurrencesToLevelUp(HeaderReadWriteUtils::readIntAttributeValue(
+                      &mAttributeMap, FORGETTING_CURVE_OCCURRENCES_TO_LEVEL_UP_KEY,
+                      DEFAULT_FORGETTING_CURVE_OCCURRENCES_TO_LEVEL_UP)),
+              mForgettingCurveProbabilityValuesTableId(HeaderReadWriteUtils::readIntAttributeValue(
+                      &mAttributeMap, FORGETTING_CURVE_PROBABILITY_VALUES_TABLE_ID_KEY,
+                      DEFAULT_FORGETTING_CURVE_PROBABILITY_VALUES_TABLE_ID)) {}
 
     // Constructs header information using an attribute map.
     HeaderPolicy(const FormatUtils::FORMAT_VERSION dictFormatVersion,
@@ -71,8 +77,13 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
                       DATE_KEY, TimeKeeper::peekCurrentTime() /* defaultValue */)),
               mUnigramCount(0), mBigramCount(0), mExtendedRegionSize(0),
               mHasHistoricalInfoOfWords(HeaderReadWriteUtils::readBoolAttributeValue(
-                      &mAttributeMap, HAS_HISTORICAL_INFO_KEY, false /* defaultValue */)) {
-        }
+                      &mAttributeMap, HAS_HISTORICAL_INFO_KEY, false /* defaultValue */)),
+              mForgettingCurveOccurrencesToLevelUp(HeaderReadWriteUtils::readIntAttributeValue(
+                      &mAttributeMap, FORGETTING_CURVE_OCCURRENCES_TO_LEVEL_UP_KEY,
+                      DEFAULT_FORGETTING_CURVE_OCCURRENCES_TO_LEVEL_UP)),
+              mForgettingCurveProbabilityValuesTableId(HeaderReadWriteUtils::readIntAttributeValue(
+                      &mAttributeMap, FORGETTING_CURVE_PROBABILITY_VALUES_TABLE_ID_KEY,
+                      DEFAULT_FORGETTING_CURVE_PROBABILITY_VALUES_TABLE_ID)) {}
 
     // Temporary dummy header.
     HeaderPolicy()
@@ -80,7 +91,8 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
               mAttributeMap(), mLocale(CharUtils::EMPTY_STRING), mMultiWordCostMultiplier(0.0f),
               mRequiresGermanUmlautProcessing(false), mIsDecayingDict(false),
               mDate(0), mLastDecayedTime(0), mUnigramCount(0), mBigramCount(0),
-              mExtendedRegionSize(0), mHasHistoricalInfoOfWords(false) {}
+              mExtendedRegionSize(0), mHasHistoricalInfoOfWords(false),
+              mForgettingCurveOccurrencesToLevelUp(0), mForgettingCurveProbabilityValuesTableId(0) {}
 
     ~HeaderPolicy() {}
 
@@ -160,11 +172,11 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
     }
 
     AK_FORCE_INLINE int getForgettingCurveOccurrencesToLevelUp() const {
-        return DEFAULT_FORGETTING_CURVE_OCCURRENCES_TO_LEVEL_UP;
+        return mForgettingCurveOccurrencesToLevelUp;
     }
 
     AK_FORCE_INLINE int getForgettingCurveProbabilityValuesTableId() const {
-        return DEFAULT_FORGETTING_CURVE_PROBABILITY_VALUES_TABLE_ID;
+        return mForgettingCurveProbabilityValuesTableId;
     }
 
     void readHeaderValueOrQuestionMark(const char *const key,
@@ -191,6 +203,8 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
     static const char *const EXTENDED_REGION_SIZE_KEY;
     static const char *const HAS_HISTORICAL_INFO_KEY;
     static const char *const LOCALE_KEY;
+    static const char *const FORGETTING_CURVE_OCCURRENCES_TO_LEVEL_UP_KEY;
+    static const char *const FORGETTING_CURVE_PROBABILITY_VALUES_TABLE_ID_KEY;
     static const int DEFAULT_MULTIPLE_WORDS_DEMOTION_RATE;
     static const float MULTIPLE_WORD_COST_MULTIPLIER_SCALE;
     static const int DEFAULT_FORGETTING_CURVE_OCCURRENCES_TO_LEVEL_UP;
@@ -210,6 +224,8 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
     const int mBigramCount;
     const int mExtendedRegionSize;
     const bool mHasHistoricalInfoOfWords;
+    const int mForgettingCurveOccurrencesToLevelUp;
+    const int mForgettingCurveProbabilityValuesTableId;
 
     const std::vector<int> readLocale() const;
     float readMultipleWordCostMultiplier() const;
