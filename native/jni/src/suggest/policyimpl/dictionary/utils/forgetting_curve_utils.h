@@ -68,8 +68,18 @@ class ForgettingCurveUtils {
         DISALLOW_COPY_AND_ASSIGN(ProbabilityTable);
 
         static const int PROBABILITY_TABLE_COUNT;
+        static const int WEAK_PROBABILITY_TABLE_ID;
+        static const int MODEST_PROBABILITY_TABLE_ID;
+        static const int STRONG_PROBABILITY_TABLE_ID;
+        static const int AGGRESSIVE_PROBABILITY_TABLE_ID;
+
+        static const int MODEST_BASE_PROBABILITY;
+        static const int STRONG_BASE_PROBABILITY;
+        static const int AGGRESSIVE_BASE_PROBABILITY;
 
         std::vector<std::vector<std::vector<int> > > mTables;
+
+        static int getBaseProbabilityForLevel(const int tableId, const int level);
     };
 
     static const int MAX_COMPUTED_PROBABILITY;
