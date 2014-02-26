@@ -50,6 +50,7 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
     public final Locale mLocale;
 
     private final String mDictName;
+    private Map<String, String> mAdditionalAttributeMap = null;
 
     protected DecayingExpandableBinaryDictionaryBase(final Context context,
             final String dictName, final Locale locale, final String dictionaryType,
@@ -78,7 +79,10 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
 
     @Override
     protected Map<String, String> getHeaderAttributeMap() {
-        HashMap<String, String> attributeMap = new HashMap<String, String>();
+        final Map<String, String> attributeMap = new HashMap<String, String>();
+        if (mAdditionalAttributeMap != null) {
+            attributeMap.putAll(mAdditionalAttributeMap);
+        }
         attributeMap.put(DictionaryHeader.USES_FORGETTING_CURVE_KEY,
                 DictionaryHeader.ATTRIBUTE_VALUE_TRUE);
         attributeMap.put(DictionaryHeader.HAS_HISTORICAL_INFO_KEY,
@@ -150,6 +154,13 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
         clear();
         // Then flush the cleared state of the dictionary on disk.
         asyncFlushBinaryDictionary();
+    }
+
+    @UsedForTesting
+    public void clearAndFlushDictionaryWithAdditionalAttributes(
+            final Map<String, String> attributeMap) {
+        mAdditionalAttributeMap = attributeMap;
+        clearAndFlushDictionary();
     }
 
     /* package */ void decayIfNeeded() {
