@@ -30,6 +30,7 @@ const int ForgettingCurveUtils::MAX_UNIGRAM_COUNT_AFTER_GC = 10000;
 const int ForgettingCurveUtils::MAX_BIGRAM_COUNT = 12000;
 const int ForgettingCurveUtils::MAX_BIGRAM_COUNT_AFTER_GC = 10000;
 
+const int ForgettingCurveUtils::MULTIPLIER_TWO_IN_PROBABILITY_SCALE = 8;
 const int ForgettingCurveUtils::MAX_COMPUTED_PROBABILITY = 127;
 const int ForgettingCurveUtils::DECAY_INTERVAL_SECONDS = 2 * 60 * 60;
 
@@ -84,7 +85,9 @@ const ForgettingCurveUtils::ProbabilityTable ForgettingCurveUtils::sProbabilityT
     } else if (bigramProbability == NOT_A_PROBABILITY) {
         return min(backoff(unigramProbability), MAX_COMPUTED_PROBABILITY);
     } else {
-        return min(max(unigramProbability, bigramProbability), MAX_COMPUTED_PROBABILITY);
+        // TODO: Investigate better way to handle bigram probability.
+        return min(max(unigramProbability, bigramProbability + MULTIPLIER_TWO_IN_PROBABILITY_SCALE),
+                MAX_COMPUTED_PROBABILITY);
     }
 }
 
@@ -137,11 +140,8 @@ const ForgettingCurveUtils::ProbabilityTable ForgettingCurveUtils::sProbabilityT
 
 // See comments in ProbabilityUtils::backoff().
 /* static */ int ForgettingCurveUtils::backoff(const int unigramProbability) {
-    if (unigramProbability == NOT_A_PROBABILITY) {
-        return NOT_A_PROBABILITY;
-    } else {
-        return max(unigramProbability - 8, 0);
-    }
+    // See TODO comments in ForgettingCurveUtils::getProbability().
+    return unigramProbability;
 }
 
 /* static */ int ForgettingCurveUtils::getElapsedTimeStepCount(const int timestamp) {

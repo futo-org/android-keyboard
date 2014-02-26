@@ -72,6 +72,7 @@ class ForgettingCurveUtils {
         std::vector<std::vector<std::vector<int> > > mTables;
     };
 
+    static const int MULTIPLIER_TWO_IN_PROBABILITY_SCALE;
     static const int MAX_COMPUTED_PROBABILITY;
     static const int DECAY_INTERVAL_SECONDS;
 
