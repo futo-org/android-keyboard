@@ -44,8 +44,6 @@ class DictionaryHeaderStructurePolicy {
 
     virtual float getMultiWordCostMultiplier() const = 0;
 
-    virtual int getLastDecayedTime() const = 0;
-
     virtual void readHeaderValueOrQuestionMark(const char *const key, int *outValue,
             int outValueSize) const = 0;
 

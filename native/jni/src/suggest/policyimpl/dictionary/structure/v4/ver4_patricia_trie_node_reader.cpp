@@ -65,7 +65,7 @@ const PtNodeParams Ver4PatriciaTrieNodeReader::fetchPtNodeInfoFromBufferAndProce
                 mProbabilityDictContent->getProbabilityEntry(terminalId);
         if (probabilityEntry.hasHistoricalInfo()) {
             probability = ForgettingCurveUtils::decodeProbability(
-                    probabilityEntry.getHistoricalInfo());
+                    probabilityEntry.getHistoricalInfo(), mHeaderPolicy);
         } else {
             probability = probabilityEntry.getProbability();
         }

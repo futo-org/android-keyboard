@@ -159,6 +159,14 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
         return &mAttributeMap;
     }
 
+    AK_FORCE_INLINE int getForgettingCurveOccurrencesToLevelUp() const {
+        return DEFAULT_FORGETTING_CURVE_OCCURRENCES_TO_LEVEL_UP;
+    }
+
+    AK_FORCE_INLINE int getForgettingCurveProbabilityValuesTableId() const {
+        return DEFAULT_FORGETTING_CURVE_PROBABILITY_VALUES_TABLE_ID;
+    }
+
     void readHeaderValueOrQuestionMark(const char *const key,
             int *outValue, int outValueSize) const;
 
@@ -185,6 +193,8 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
     static const char *const LOCALE_KEY;
     static const int DEFAULT_MULTIPLE_WORDS_DEMOTION_RATE;
     static const float MULTIPLE_WORD_COST_MULTIPLIER_SCALE;
+    static const int DEFAULT_FORGETTING_CURVE_OCCURRENCES_TO_LEVEL_UP;
+    static const int DEFAULT_FORGETTING_CURVE_PROBABILITY_VALUES_TABLE_ID;
 
     const FormatUtils::FORMAT_VERSION mDictFormatVersion;
     const HeaderReadWriteUtils::DictionaryFlags mDictionaryFlags;

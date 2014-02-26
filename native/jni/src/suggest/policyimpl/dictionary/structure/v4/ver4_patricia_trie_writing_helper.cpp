@@ -74,14 +74,15 @@ bool Ver4PatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
         const HeaderPolicy *const headerPolicy, Ver4DictBuffers *const buffersToWrite,
         int *const outUnigramCount, int *const outBigramCount) {
     Ver4PatriciaTrieNodeReader ptNodeReader(mBuffers->getTrieBuffer(),
-            mBuffers->getProbabilityDictContent());
+            mBuffers->getProbabilityDictContent(), headerPolicy);
     Ver4PtNodeArrayReader ptNodeArrayReader(mBuffers->getTrieBuffer());
     Ver4BigramListPolicy bigramPolicy(mBuffers->getMutableBigramDictContent(),
             mBuffers->getTerminalPositionLookupTable(), headerPolicy);
     Ver4ShortcutListPolicy shortcutPolicy(mBuffers->getMutableShortcutDictContent(),
             mBuffers->getTerminalPositionLookupTable());
     Ver4PatriciaTrieNodeWriter ptNodeWriter(mBuffers->getWritableTrieBuffer(),
-            mBuffers, &ptNodeReader, &ptNodeArrayReader, &bigramPolicy, &shortcutPolicy);
+            mBuffers, headerPolicy, &ptNodeReader, &ptNodeArrayReader, &bigramPolicy,
+            &shortcutPolicy);
 
     DynamicPtReadingHelper readingHelper(&ptNodeReader, &ptNodeArrayReader);
     readingHelper.initWithPtNodeArrayPos(rootPtNodeArrayPos);
@@ -126,7 +127,8 @@ bool Ver4PatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
     PtNodeWriter::DictPositionRelocationMap dictPositionRelocationMap;
     readingHelper.initWithPtNodeArrayPos(rootPtNodeArrayPos);
     Ver4PatriciaTrieNodeWriter ptNodeWriterForNewBuffers(buffersToWrite->getWritableTrieBuffer(),
-            buffersToWrite, &ptNodeReader, &ptNodeArrayReader, &bigramPolicy, &shortcutPolicy);
+            buffersToWrite, headerPolicy, &ptNodeReader, &ptNodeArrayReader, &bigramPolicy,
+            &shortcutPolicy);
     DynamicPtGcEventListeners::TraversePolicyToPlaceAndWriteValidPtNodesToBuffer
             traversePolicyToPlaceAndWriteValidPtNodesToBuffer(&ptNodeWriterForNewBuffers,
                     buffersToWrite->getWritableTrieBuffer(), &dictPositionRelocationMap);
@@ -137,14 +139,14 @@ bool Ver4PatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
 
     // Create policy instances for the GCed dictionary.
     Ver4PatriciaTrieNodeReader newPtNodeReader(buffersToWrite->getTrieBuffer(),
-            buffersToWrite->getProbabilityDictContent());
+            buffersToWrite->getProbabilityDictContent(), headerPolicy);
     Ver4PtNodeArrayReader newPtNodeArrayreader(buffersToWrite->getTrieBuffer());
     Ver4BigramListPolicy newBigramPolicy(buffersToWrite->getMutableBigramDictContent(),
             buffersToWrite->getTerminalPositionLookupTable(), headerPolicy);
     Ver4ShortcutListPolicy newShortcutPolicy(buffersToWrite->getMutableShortcutDictContent(),
             buffersToWrite->getTerminalPositionLookupTable());
     Ver4PatriciaTrieNodeWriter newPtNodeWriter(buffersToWrite->getWritableTrieBuffer(),
-            buffersToWrite, &newPtNodeReader, &newPtNodeArrayreader, &newBigramPolicy,
+            buffersToWrite, headerPolicy, &newPtNodeReader, &newPtNodeArrayreader, &newBigramPolicy,
             &newShortcutPolicy);
     // Re-assign terminal IDs for valid terminal PtNodes.
     TerminalPositionLookupTable::TerminalIdMap terminalIdMap;
@@ -202,8 +204,9 @@ bool Ver4PatriciaTrieWritingHelper::truncateUnigrams(
         const ProbabilityEntry probabilityEntry =
                 mBuffers->getProbabilityDictContent()->getProbabilityEntry(i);
         const int probability = probabilityEntry.hasHistoricalInfo() ?
-                ForgettingCurveUtils::decodeProbability(probabilityEntry.getHistoricalInfo()) :
-                        probabilityEntry.getProbability();
+                ForgettingCurveUtils::decodeProbability(
+                        probabilityEntry.getHistoricalInfo(), mBuffers->getHeaderPolicy()) :
+                probabilityEntry.getProbability();
         priorityQueue.push(DictProbability(terminalPos, probability,
                 probabilityEntry.getHistoricalInfo()->getTimeStamp()));
     }
@@ -245,8 +248,9 @@ bool Ver4PatriciaTrieWritingHelper::truncateBigrams(const int maxBigramCount) {
                 continue;
             }
             const int probability = bigramEntry.hasHistoricalInfo() ?
-                    ForgettingCurveUtils::decodeProbability(bigramEntry.getHistoricalInfo()) :
-                            bigramEntry.getProbability();
+                    ForgettingCurveUtils::decodeProbability(
+                            bigramEntry.getHistoricalInfo(), mBuffers->getHeaderPolicy()) :
+                    bigramEntry.getProbability();
             priorityQueue.push(DictProbability(entryPos, probability,
                     bigramEntry.getHistoricalInfo()->getTimeStamp()));
         }

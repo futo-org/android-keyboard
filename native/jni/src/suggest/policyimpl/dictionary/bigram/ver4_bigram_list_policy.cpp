@@ -37,7 +37,8 @@ void Ver4BigramListPolicy::getNextBigram(int *const outBigramPos, int *const out
     if (outProbability) {
         if (bigramEntry.hasHistoricalInfo()) {
             *outProbability =
-                    ForgettingCurveUtils::decodeProbability(bigramEntry.getHistoricalInfo());
+                    ForgettingCurveUtils::decodeProbability(bigramEntry.getHistoricalInfo(),
+                            mHeaderPolicy);
         } else {
             *outProbability = bigramEntry.getProbability();
         }
@@ -160,7 +161,7 @@ bool Ver4BigramListPolicy::updateAllBigramEntriesAndDeleteUselessEntries(const i
             }
         } else if (bigramEntry.hasHistoricalInfo()) {
             const HistoricalInfo historicalInfo = ForgettingCurveUtils::createHistoricalInfoToSave(
-                    bigramEntry.getHistoricalInfo());
+                    bigramEntry.getHistoricalInfo(), mHeaderPolicy);
             if (ForgettingCurveUtils::needsToKeep(&historicalInfo)) {
                 const BigramEntry updatedBigramEntry =
                         bigramEntry.updateHistoricalInfoAndGetEntry(&historicalInfo);
@@ -230,7 +231,8 @@ const BigramEntry Ver4BigramListPolicy::createUpdatedBigramEntryFrom(
     if (mHeaderPolicy->hasHistoricalInfoOfWords()) {
         const HistoricalInfo updatedHistoricalInfo =
                 ForgettingCurveUtils::createUpdatedHistoricalInfo(
-                        originalBigramEntry->getHistoricalInfo(), newProbability, timestamp);
+                        originalBigramEntry->getHistoricalInfo(), newProbability, timestamp,
+                        mHeaderPolicy);
         return originalBigramEntry->updateHistoricalInfoAndGetEntry(&updatedHistoricalInfo);
     } else {
         return originalBigramEntry->updateProbabilityAndGetEntry(newProbability);

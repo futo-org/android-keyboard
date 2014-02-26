@@ -28,6 +28,7 @@
 namespace latinime {
 
 class BufferWithExtendableBuffer;
+class HeaderPolicy;
 class Ver4BigramListPolicy;
 class Ver4DictBuffers;
 class Ver4PatriciaTrieNodeReader;
@@ -40,10 +41,11 @@ class Ver4ShortcutListPolicy;
 class Ver4PatriciaTrieNodeWriter : public PtNodeWriter {
  public:
     Ver4PatriciaTrieNodeWriter(BufferWithExtendableBuffer *const trieBuffer,
-            Ver4DictBuffers *const buffers, const PtNodeReader *const ptNodeReader,
+            Ver4DictBuffers *const buffers, const HeaderPolicy *const headerPolicy,
+            const PtNodeReader *const ptNodeReader,
             const PtNodeArrayReader *const ptNodeArrayReader,
             Ver4BigramListPolicy *const bigramPolicy, Ver4ShortcutListPolicy *const shortcutPolicy)
-            : mTrieBuffer(trieBuffer), mBuffers(buffers),
+            : mTrieBuffer(trieBuffer), mBuffers(buffers), mHeaderPolicy(headerPolicy),
               mReadingHelper(ptNodeReader, ptNodeArrayReader), mBigramPolicy(bigramPolicy),
               mShortcutPolicy(shortcutPolicy) {}
 
@@ -116,6 +118,7 @@ class Ver4PatriciaTrieNodeWriter : public PtNodeWriter {
 
     BufferWithExtendableBuffer *const mTrieBuffer;
     Ver4DictBuffers *const mBuffers;
+    const HeaderPolicy *const mHeaderPolicy;
     DynamicPtReadingHelper mReadingHelper;
     Ver4BigramListPolicy *const mBigramPolicy;
     Ver4ShortcutListPolicy *const mShortcutPolicy;

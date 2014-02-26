@@ -19,7 +19,7 @@
 #include <cmath>
 #include <stdlib.h>
 
-#include "suggest/core/policy/dictionary_header_structure_policy.h"
+#include "suggest/policyimpl/dictionary/header/header_policy.h"
 #include "suggest/policyimpl/dictionary/utils/probability_utils.h"
 #include "utils/time_keeper.h"
 
@@ -34,7 +34,6 @@ const int ForgettingCurveUtils::MAX_COMPUTED_PROBABILITY = 127;
 const int ForgettingCurveUtils::DECAY_INTERVAL_SECONDS = 2 * 60 * 60;
 
 const int ForgettingCurveUtils::MAX_LEVEL = 3;
-const int ForgettingCurveUtils::MAX_COUNT = 3;
 const int ForgettingCurveUtils::MIN_VALID_LEVEL = 1;
 const int ForgettingCurveUtils::TIME_STEP_DURATION_IN_SECONDS = 6 * 60 * 60;
 const int ForgettingCurveUtils::MAX_ELAPSED_TIME_STEP_COUNT = 15;
@@ -45,7 +44,7 @@ const ForgettingCurveUtils::ProbabilityTable ForgettingCurveUtils::sProbabilityT
 // TODO: Revise the logic to decide the initial probability depending on the given probability.
 /* static */ const HistoricalInfo ForgettingCurveUtils::createUpdatedHistoricalInfo(
         const HistoricalInfo *const originalHistoricalInfo,
-        const int newProbability, const int timestamp) {
+        const int newProbability, const int timestamp, const HeaderPolicy *const headerPolicy) {
     if (newProbability != NOT_A_PROBABILITY && originalHistoricalInfo->getLevel() == 0) {
         return HistoricalInfo(timestamp, MIN_VALID_LEVEL /* level */, 0 /* count */);
     } else if (!originalHistoricalInfo->isValid()) {
@@ -53,7 +52,7 @@ const ForgettingCurveUtils::ProbabilityTable ForgettingCurveUtils::sProbabilityT
         return HistoricalInfo(timestamp, 0 /* level */, 1 /* count */);
     } else {
         const int updatedCount = originalHistoricalInfo->getCount() + 1;
-        if (updatedCount > MAX_COUNT) {
+        if (updatedCount >= headerPolicy->getForgettingCurveOccurrencesToLevelUp()) {
             // The count exceeds the max value the level can be incremented.
             if (originalHistoricalInfo->getLevel() >= MAX_LEVEL) {
                 // The level is already max.
@@ -71,9 +70,10 @@ const ForgettingCurveUtils::ProbabilityTable ForgettingCurveUtils::sProbabilityT
 }
 
 /* static */ int ForgettingCurveUtils::decodeProbability(
-        const HistoricalInfo *const historicalInfo) {
+        const HistoricalInfo *const historicalInfo, const HeaderPolicy *const headerPolicy) {
     const int elapsedTimeStepCount = getElapsedTimeStepCount(historicalInfo->getTimeStamp());
-    return sProbabilityTable.getProbability(historicalInfo->getLevel(),
+    return sProbabilityTable.getProbability(
+            headerPolicy->getForgettingCurveProbabilityValuesTableId(), historicalInfo->getLevel(),
             min(max(elapsedTimeStepCount, 0), MAX_ELAPSED_TIME_STEP_COUNT));
 }
 
@@ -95,7 +95,8 @@ const ForgettingCurveUtils::ProbabilityTable ForgettingCurveUtils::sProbabilityT
 }
 
 /* static */ const HistoricalInfo ForgettingCurveUtils::createHistoricalInfoToSave(
-        const HistoricalInfo *const originalHistoricalInfo) {
+        const HistoricalInfo *const originalHistoricalInfo,
+        const HeaderPolicy *const headerPolicy) {
     if (originalHistoricalInfo->getTimeStamp() == NOT_A_TIMESTAMP) {
         return HistoricalInfo();
     }
@@ -115,8 +116,7 @@ const ForgettingCurveUtils::ProbabilityTable ForgettingCurveUtils::sProbabilityT
 }
 
 /* static */ bool ForgettingCurveUtils::needsToDecay(const bool mindsBlockByDecay,
-        const int unigramCount, const int bigramCount,
-        const DictionaryHeaderStructurePolicy *const headerPolicy) {
+        const int unigramCount, const int bigramCount, const HeaderPolicy *const headerPolicy) {
     if (unigramCount >= ForgettingCurveUtils::MAX_UNIGRAM_COUNT) {
         // Unigram count exceeds the limit.
         return true;
@@ -148,24 +148,30 @@ const ForgettingCurveUtils::ProbabilityTable ForgettingCurveUtils::sProbabilityT
     return (TimeKeeper::peekCurrentTime() - timestamp) / TIME_STEP_DURATION_IN_SECONDS;
 }
 
-ForgettingCurveUtils::ProbabilityTable::ProbabilityTable() : mTable() {
-    mTable.resize(MAX_LEVEL + 1);
-    for (int level = 0; level <= MAX_LEVEL; ++level) {
-        mTable[level].resize(MAX_ELAPSED_TIME_STEP_COUNT + 1);
-        const float initialProbability =
-                static_cast<float>(MAX_COMPUTED_PROBABILITY / (1 << (MAX_LEVEL - level)));
-        for (int timeStepCount = 0; timeStepCount <= MAX_ELAPSED_TIME_STEP_COUNT; ++timeStepCount) {
-            if (level == 0) {
-                mTable[level][timeStepCount] = NOT_A_PROBABILITY;
-                continue;
+const int ForgettingCurveUtils::ProbabilityTable::PROBABILITY_TABLE_COUNT = 1;
+
+ForgettingCurveUtils::ProbabilityTable::ProbabilityTable() : mTables() {
+    mTables.resize(PROBABILITY_TABLE_COUNT);
+    for (int tableId = 0; tableId < PROBABILITY_TABLE_COUNT; ++tableId) {
+        mTables[tableId].resize(MAX_LEVEL + 1);
+        for (int level = 0; level <= MAX_LEVEL; ++level) {
+            mTables[tableId][level].resize(MAX_ELAPSED_TIME_STEP_COUNT + 1);
+            const float initialProbability =
+                    static_cast<float>(MAX_COMPUTED_PROBABILITY / (1 << (MAX_LEVEL - level)));
+            for (int timeStepCount = 0; timeStepCount <= MAX_ELAPSED_TIME_STEP_COUNT;
+                    ++timeStepCount) {
+                if (level == 0) {
+                    mTables[tableId][level][timeStepCount] = NOT_A_PROBABILITY;
+                    continue;
+                }
+                const int elapsedTime = timeStepCount * TIME_STEP_DURATION_IN_SECONDS;
+                const float probability = initialProbability
+                        * powf(2.0f, -1.0f * static_cast<float>(elapsedTime)
+                                / static_cast<float>(TIME_STEP_DURATION_IN_SECONDS
+                                        * (MAX_ELAPSED_TIME_STEP_COUNT + 1)));
+                mTables[tableId][level][timeStepCount] =
+                        min(max(static_cast<int>(probability), 1), MAX_COMPUTED_PROBABILITY);
             }
-            const int elapsedTime = timeStepCount * TIME_STEP_DURATION_IN_SECONDS;
-            const float probability = initialProbability
-                    * powf(2.0f, -1.0f * static_cast<float>(elapsedTime)
-                            / static_cast<float>(TIME_STEP_DURATION_IN_SECONDS
-                                    * (MAX_ELAPSED_TIME_STEP_COUNT + 1)));
-            mTable[level][timeStepCount] =
-                    min(max(static_cast<int>(probability), 1), MAX_COMPUTED_PROBABILITY);
         }
     }
 }

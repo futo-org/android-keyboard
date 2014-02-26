@@ -382,7 +382,8 @@ const WordProperty Ver4PatriciaTriePolicy::getWordProperty(const int *const code
                     bigramWord1CodePoints + codePointCount);
             const HistoricalInfo *const historicalInfo = bigramEntry.getHistoricalInfo();
             const int probability = bigramEntry.hasHistoricalInfo() ?
-                    ForgettingCurveUtils::decodeProbability(bigramEntry.getHistoricalInfo()) :
+                    ForgettingCurveUtils::decodeProbability(
+                            bigramEntry.getHistoricalInfo(), mHeaderPolicy) :
                     bigramEntry.getProbability();
             bigrams.push_back(WordProperty::BigramProperty(&word1, probability,
                     historicalInfo->getTimeStamp(), historicalInfo->getLevel(),
