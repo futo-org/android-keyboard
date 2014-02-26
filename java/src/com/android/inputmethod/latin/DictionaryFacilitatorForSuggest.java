@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
@@ -142,7 +143,8 @@ public class DictionaryFacilitatorForSuggest {
 
     @UsedForTesting
     public DictionaryFacilitatorForSuggest(final Context context, final Locale locale,
-            final ArrayList<String> dictionaryTypes, final HashMap<String, File> dictionaryFiles) {
+            final ArrayList<String> dictionaryTypes, final HashMap<String, File> dictionaryFiles,
+            final Map<String, Map<String, String>> additionalDictAttributes) {
         mContext = context;
         mLocale = locale;
         mLatchForWaitingLoadingMainDictionary = new CountDownLatch(0);
@@ -159,6 +161,10 @@ public class DictionaryFacilitatorForSuggest {
                 userHistoryDictionary.reloadDictionaryIfRequired();
                 userHistoryDictionary.waitAllTasksForTests();
                 setUserHistoryDictionary(userHistoryDictionary);
+                if (additionalDictAttributes.containsKey(dictType)) {
+                    userHistoryDictionary.clearAndFlushDictionaryWithAdditionalAttributes(
+                            additionalDictAttributes.get(dictType));
+                }
             } else if (dictType.equals(Dictionary.TYPE_PERSONALIZATION)) {
                 final PersonalizationDictionary personalizationDictionary =
                         PersonalizationHelper.getPersonalizationDictionary(context, locale);
@@ -167,6 +173,10 @@ public class DictionaryFacilitatorForSuggest {
                 personalizationDictionary.reloadDictionaryIfRequired();
                 personalizationDictionary.waitAllTasksForTests();
                 setPersonalizationDictionary(personalizationDictionary);
+                if (additionalDictAttributes.containsKey(dictType)) {
+                    personalizationDictionary.clearAndFlushDictionaryWithAdditionalAttributes(
+                            additionalDictAttributes.get(dictType));
+                }
             } else if (dictType.equals(Dictionary.TYPE_USER)) {
                 final File file = dictionaryFiles.get(dictType);
                 final UserBinaryDictionary userDictionary = new UserBinaryDictionary(
