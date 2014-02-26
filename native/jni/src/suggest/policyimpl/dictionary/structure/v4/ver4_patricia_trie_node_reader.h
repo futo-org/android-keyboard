@@ -26,6 +26,7 @@
 namespace latinime {
 
 class BufferWithExtendableBuffer;
+class HeaderPolicy;
 class ProbabilityDictContent;
 
 /*
@@ -35,8 +36,10 @@ class ProbabilityDictContent;
 class Ver4PatriciaTrieNodeReader : public PtNodeReader {
  public:
     Ver4PatriciaTrieNodeReader(const BufferWithExtendableBuffer *const buffer,
-            const ProbabilityDictContent *const probabilityDictContent)
-            : mBuffer(buffer), mProbabilityDictContent(probabilityDictContent) {}
+            const ProbabilityDictContent *const probabilityDictContent,
+            const HeaderPolicy *const headerPolicy)
+            : mBuffer(buffer), mProbabilityDictContent(probabilityDictContent),
+              mHeaderPolicy(headerPolicy) {}
 
     ~Ver4PatriciaTrieNodeReader() {}
 
@@ -50,6 +53,7 @@ class Ver4PatriciaTrieNodeReader : public PtNodeReader {
 
     const BufferWithExtendableBuffer *const mBuffer;
     const ProbabilityDictContent *const mProbabilityDictContent;
+    const HeaderPolicy *const mHeaderPolicy;
 
     const PtNodeParams fetchPtNodeInfoFromBufferAndProcessMovedPtNode(const int ptNodePos,
             const int siblingNodePos) const;

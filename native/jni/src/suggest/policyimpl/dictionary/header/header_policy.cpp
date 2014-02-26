@@ -35,6 +35,8 @@ const char *const HeaderPolicy::HAS_HISTORICAL_INFO_KEY = "HAS_HISTORICAL_INFO";
 const char *const HeaderPolicy::LOCALE_KEY = "locale"; // match Java declaration
 const int HeaderPolicy::DEFAULT_MULTIPLE_WORDS_DEMOTION_RATE = 100;
 const float HeaderPolicy::MULTIPLE_WORD_COST_MULTIPLIER_SCALE = 100.0f;
+const int HeaderPolicy::DEFAULT_FORGETTING_CURVE_OCCURRENCES_TO_LEVEL_UP = 4;
+const int HeaderPolicy::DEFAULT_FORGETTING_CURVE_PROBABILITY_VALUES_TABLE_ID = 0;
 
 // Used for logging. Question mark is used to indicate that the key is not found.
 void HeaderPolicy::readHeaderValueOrQuestionMark(const char *const key, int *outValue,
