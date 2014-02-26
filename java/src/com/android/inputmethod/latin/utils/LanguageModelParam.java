@@ -37,9 +37,9 @@ public final class LanguageModelParam {
     // non-0. Thus, it's not meaningful to compare 10, 100, and so on.
     // TODO: Revise the logic in ForgettingCurveUtils in native code.
     private static final int UNIGRAM_PROBABILITY_FOR_VALID_WORD = 100;
-    private static final int UNIGRAM_PROBABILITY_FOR_OOV_WORD = 10;
-    private static final int BIGRAM_PROBABILITY_FOR_VALID_WORD = 0;
-    private static final int BIGRAM_PROBABILITY_FOR_OOV_WORD = 0;
+    private static final int UNIGRAM_PROBABILITY_FOR_OOV_WORD = Dictionary.NOT_A_PROBABILITY;
+    private static final int BIGRAM_PROBABILITY_FOR_VALID_WORD = 10;
+    private static final int BIGRAM_PROBABILITY_FOR_OOV_WORD = Dictionary.NOT_A_PROBABILITY;
 
     public final String mTargetWord;
     public final int[] mWord0;
