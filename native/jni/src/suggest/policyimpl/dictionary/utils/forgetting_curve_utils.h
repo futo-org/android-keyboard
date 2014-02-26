@@ -73,6 +73,7 @@ class ForgettingCurveUtils {
         static const int STRONG_PROBABILITY_TABLE_ID;
         static const int AGGRESSIVE_PROBABILITY_TABLE_ID;
 
+        static const int WEAK_MAX_PROBABILITY;
         static const int MODEST_BASE_PROBABILITY;
         static const int STRONG_BASE_PROBABILITY;
         static const int AGGRESSIVE_BASE_PROBABILITY;
@@ -83,7 +84,6 @@ class ForgettingCurveUtils {
     };
 
     static const int MULTIPLIER_TWO_IN_PROBABILITY_SCALE;
-    static const int MAX_COMPUTED_PROBABILITY;
     static const int DECAY_INTERVAL_SECONDS;
 
     static const int MAX_LEVEL;
