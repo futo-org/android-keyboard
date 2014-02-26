@@ -18,7 +18,7 @@
 
 namespace latinime {
 
-// Note that these are corresponding definitions in Java side in FormatSpec.FileHeader.
+// Note that these are corresponding definitions in Java side in DictionaryHeader.
 const char *const HeaderPolicy::MULTIPLE_WORDS_DEMOTION_RATE_KEY = "MULTIPLE_WORDS_DEMOTION_RATE";
 const char *const HeaderPolicy::REQUIRES_GERMAN_UMLAUT_PROCESSING_KEY =
         "REQUIRES_GERMAN_UMLAUT_PROCESSING";
@@ -33,6 +33,11 @@ const char *const HeaderPolicy::EXTENDED_REGION_SIZE_KEY = "EXTENDED_REGION_SIZE
 // count.
 const char *const HeaderPolicy::HAS_HISTORICAL_INFO_KEY = "HAS_HISTORICAL_INFO";
 const char *const HeaderPolicy::LOCALE_KEY = "locale"; // match Java declaration
+const char *const HeaderPolicy::FORGETTING_CURVE_OCCURRENCES_TO_LEVEL_UP_KEY =
+        "FORGETTING_CURVE_OCCURRENCES_TO_LEVEL_UP";
+const char *const HeaderPolicy::FORGETTING_CURVE_PROBABILITY_VALUES_TABLE_ID_KEY =
+        "FORGETTING_CURVE_PROBABILITY_VALUES_TABLE_ID";
+
 const int HeaderPolicy::DEFAULT_MULTIPLE_WORDS_DEMOTION_RATE = 100;
 const float HeaderPolicy::MULTIPLE_WORD_COST_MULTIPLIER_SCALE = 100.0f;
 const int HeaderPolicy::DEFAULT_FORGETTING_CURVE_OCCURRENCES_TO_LEVEL_UP = 4;
