@@ -86,6 +86,9 @@ public class KeyDetector {
      * @return the key that the touch point hits.
      */
     public Key detectHitKey(final int x, final int y) {
+        if (mKeyboard == null) {
+            return null;
+        }
         final int touchX = getTouchX(x);
         final int touchY = getTouchY(y);
 
