@@ -508,27 +508,31 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final EditorInfo editorInfo = getCurrentInputEditorInfo();
         final InputAttributes inputAttributes = new InputAttributes(editorInfo, isFullscreenMode());
         mSettings.loadSettings(this, locale, inputAttributes);
-        AudioAndHapticFeedbackManager.getInstance().onSettingsChanged(mSettings.getCurrent());
-        // To load the keyboard we need to load all the settings once, but resetting the
-        // contacts dictionary should be deferred until after the new layout has been displayed
-        // to improve responsivity. In the language switching process, we post a reopenDictionaries
-        // message, then come here to read the settings for the new language before we change
-        // the layout; at this time, we need to skip resetting the contacts dictionary. It will
-        // be done later inside {@see #initSuggest()} when the reopenDictionaries message is
-        // processed.
         final SettingsValues currentSettingsValues = mSettings.getCurrent();
-        final Suggest suggest = mInputLogic.mSuggest;
-        if (!mHandler.hasPendingReopenDictionaries() && suggest != null) {
+        AudioAndHapticFeedbackManager.getInstance().onSettingsChanged(currentSettingsValues);
+        // This method is called on startup and language switch, before the new layout has
+        // been displayed. Opening dictionaries never affects responsivity as dictionaries are
+        // asynchronously loaded.
+        initOrResetSuggestForSettingsValues(mInputLogic.mSuggest, locale, currentSettingsValues);
+    }
+
+    private void initOrResetSuggestForSettingsValues(final Suggest oldSuggest,
+            final Locale locale, final SettingsValues settingsValues) {
+        if (!mHandler.hasPendingReopenDictionaries() && oldSuggest != null) {
             // May need to reset dictionaries depending on the user settings.
             final DictionaryFacilitatorForSuggest oldDictionaryFacilitator =
-                    suggest.mDictionaryFacilitator;
+                    oldSuggest.mDictionaryFacilitator;
+            if (!oldDictionaryFacilitator.needsToBeRecreated(locale, settingsValues)) {
+                // Continue to use the same dictionary facilitator if no configuration has changed.
+                refreshPersonalizationDictionarySession();
+                return;
+            }
             final DictionaryFacilitatorForSuggest dictionaryFacilitator =
-                    new DictionaryFacilitatorForSuggest(currentSettingsValues,
-                            oldDictionaryFacilitator);
+                    new DictionaryFacilitatorForSuggest(settingsValues, oldDictionaryFacilitator);
             // Create Suggest instance with the new dictionary facilitator.
-            resetSuggest(new Suggest(suggest /* oldSuggest */, dictionaryFacilitator));
-        } else if (suggest == null) {
-            initSuggestForLocale(locale);
+            replaceSuggest(new Suggest(oldSuggest, dictionaryFacilitator));
+        } else if (oldSuggest == null) {
+            initSuggestForLocale(oldSuggest, locale);
         }
     }
 
@@ -588,13 +592,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         } else {
             subtypeLocale = switcherSubtypeLocale;
         }
-        initSuggestForLocale(subtypeLocale);
+        initSuggestForLocale(mInputLogic.mSuggest, subtypeLocale);
     }
 
-    private void initSuggestForLocale(final Locale locale) {
+    private void initSuggestForLocale(final Suggest oldSuggest, final Locale locale) {
         final SettingsValues settingsValues = mSettings.getCurrent();
         final DictionaryFacilitatorForSuggest oldDictionaryFacilitator =
-                (mInputLogic.mSuggest == null) ? null : mInputLogic.mSuggest.mDictionaryFacilitator;
+                (oldSuggest == null) ? null : oldSuggest.mDictionaryFacilitator;
         // Creates new dictionary facilitator for the new locale.
         final DictionaryFacilitatorForSuggest dictionaryFacilitator =
                 new DictionaryFacilitatorForSuggest(this /* context */, locale, settingsValues,
@@ -603,7 +607,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (settingsValues.mCorrectionEnabled) {
             newSuggest.setAutoCorrectionThreshold(settingsValues.mAutoCorrectionThreshold);
         }
-        resetSuggest(newSuggest);
+        replaceSuggest(newSuggest);
     }
 
     /* package private */ void resetSuggestMainDict() {
@@ -611,10 +615,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 mInputLogic.mSuggest.mDictionaryFacilitator;
         final DictionaryFacilitatorForSuggest dictionaryFacilitator =
                 new DictionaryFacilitatorForSuggest(this /* listener */, oldDictionaryFacilitator);
-        resetSuggest(new Suggest(mInputLogic.mSuggest /* oldSuggest */, dictionaryFacilitator));
+        replaceSuggest(new Suggest(mInputLogic.mSuggest /* oldSuggest */, dictionaryFacilitator));
     }
 
-    private void resetSuggest(final Suggest newSuggest) {
+    private void replaceSuggest(final Suggest newSuggest) {
         if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
             ResearchLogger.getInstance().initDictionary(newSuggest.mDictionaryFacilitator);
         }
@@ -1719,7 +1723,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final DictionaryFacilitatorForSuggest dictionaryFacilitator =
                 new DictionaryFacilitatorForSuggest(this, locale, mSettings.getCurrent(),
                         this /* listener */, oldDictionaryFacilitator);
-        resetSuggest(new Suggest(locale, dictionaryFacilitator));
+        replaceSuggest(new Suggest(locale, dictionaryFacilitator));
     }
 
     // DO NOT USE THIS for any other purpose than testing.

@@ -59,6 +59,7 @@ public final class Suggest {
     // Locale used for upper- and title-casing words
     public final Locale mLocale;
 
+    // TODO: Move dictionaryFacilitator constructing logics from LatinIME to Suggest.
     public Suggest(final Locale locale,
             final DictionaryFacilitatorForSuggest dictionaryFacilitator) {
         mLocale = locale;

@@ -186,6 +186,16 @@ public class DictionaryFacilitatorForSuggest {
         }
     }
 
+    public boolean needsToBeRecreated(final Locale newLocale,
+            final SettingsValues newSettingsValues) {
+        return !mLocale.equals(newLocale)
+                || (newSettingsValues.mUseContactsDict != (mContactsDictionary != null))
+                || (newSettingsValues.mUsePersonalizedDicts != (mUserHistoryDictionary != null))
+                || (newSettingsValues.mUsePersonalizedDicts != hasPersonalizationDictionary())
+                || (newSettingsValues.mUseOnlyPersonalizationDictionaryForDebug
+                        != (mDictionarySubsetForDebug != null));
+    }
+
     // initialize a debug flag for the personalization
     private void initForDebug(final SettingsValues settingsValues) {
         if (settingsValues.mUseOnlyPersonalizationDictionaryForDebug) {
