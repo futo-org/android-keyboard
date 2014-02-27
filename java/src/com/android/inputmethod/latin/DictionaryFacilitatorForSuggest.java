@@ -53,7 +53,6 @@ public class DictionaryFacilitatorForSuggest {
 
     private final ConcurrentHashMap<String, Dictionary> mDictionaries =
             CollectionUtils.newConcurrentHashMap();
-    private HashSet<String> mDictionarySubsetForDebug = null;
 
     private Dictionary mMainDictionary;
     private ContactsBinaryDictionary mContactsDictionary;
@@ -83,7 +82,6 @@ public class DictionaryFacilitatorForSuggest {
         mContext = context;
         mLocale = locale;
         mLatchForWaitingLoadingMainDictionary = new CountDownLatch(1);
-        initForDebug(settingsValues);
         loadMainDict(context, locale, listener);
         setUserDictionary(new UserBinaryDictionary(context, locale));
         resetAdditionalDictionaries(oldDictionaryFacilitator, settingsValues);
@@ -99,7 +97,6 @@ public class DictionaryFacilitatorForSuggest {
             final DictionaryFacilitatorForSuggest oldDictionaryFacilitator) {
         mContext = oldDictionaryFacilitator.mContext;
         mLocale = oldDictionaryFacilitator.mLocale;
-        mDictionarySubsetForDebug = oldDictionaryFacilitator.mDictionarySubsetForDebug;
         mLatchForWaitingLoadingMainDictionary = new CountDownLatch(1);
         loadMainDict(mContext, mLocale, listener);
         // Transfer user dictionary.
@@ -128,7 +125,6 @@ public class DictionaryFacilitatorForSuggest {
         mContext = oldDictionaryFacilitator.mContext;
         mLocale = oldDictionaryFacilitator.mLocale;
         mLatchForWaitingLoadingMainDictionary = new CountDownLatch(0);
-        initForDebug(settingsValues);
         // Transfer main dictionary.
         setMainDictionary(oldDictionaryFacilitator.mMainDictionary);
         oldDictionaryFacilitator.removeDictionary(Dictionary.TYPE_MAIN);
@@ -191,17 +187,7 @@ public class DictionaryFacilitatorForSuggest {
         return !mLocale.equals(newLocale)
                 || (newSettingsValues.mUseContactsDict != (mContactsDictionary != null))
                 || (newSettingsValues.mUsePersonalizedDicts != (mUserHistoryDictionary != null))
-                || (newSettingsValues.mUsePersonalizedDicts != hasPersonalizationDictionary())
-                || (newSettingsValues.mUseOnlyPersonalizationDictionaryForDebug
-                        != (mDictionarySubsetForDebug != null));
-    }
-
-    // initialize a debug flag for the personalization
-    private void initForDebug(final SettingsValues settingsValues) {
-        if (settingsValues.mUseOnlyPersonalizationDictionaryForDebug) {
-            mDictionarySubsetForDebug = new HashSet<String>();
-            mDictionarySubsetForDebug.add(Dictionary.TYPE_PERSONALIZATION);
-        }
+                || (newSettingsValues.mUsePersonalizedDicts != hasPersonalizationDictionary());
     }
 
     public void close() {
@@ -531,10 +517,6 @@ public class DictionaryFacilitatorForSuggest {
     }
 
     private void addOrReplaceDictionary(final String key, final Dictionary dict) {
-        if (mDictionarySubsetForDebug != null && !mDictionarySubsetForDebug.contains(key)) {
-            Log.w(TAG, "Ignore add " + key + " dictionary for debug.");
-            return;
-        }
         final Dictionary oldDict;
         if (dict == null) {
             oldDict = mDictionaries.remove(key);
