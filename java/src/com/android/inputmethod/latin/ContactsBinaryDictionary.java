@@ -78,7 +78,7 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
     public ContactsBinaryDictionary(final Context context, final Locale locale,
             final File dictFile) {
         super(context, getDictName(NAME, locale, dictFile), locale, Dictionary.TYPE_CONTACTS,
-                false /* isUpdatable */, dictFile);
+                dictFile);
         mLocale = locale;
         mUseFirstLastBigrams = useFirstLastBigramsForLocale(locale);
         registerObserver(context);
@@ -114,14 +114,14 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
     }
 
     @Override
-    public void loadDictionaryAsync() {
-        loadDeviceAccountsEmailAddresses();
-        loadDictionaryAsyncForUri(ContactsContract.Profile.CONTENT_URI);
+    public void loadInitialContentsLocked() {
+        loadDeviceAccountsEmailAddressesLocked();
+        loadDictionaryForUriLocked(ContactsContract.Profile.CONTENT_URI);
         // TODO: Switch this URL to the newer ContactsContract too
-        loadDictionaryAsyncForUri(Contacts.CONTENT_URI);
+        loadDictionaryForUriLocked(Contacts.CONTENT_URI);
     }
 
-    private void loadDeviceAccountsEmailAddresses() {
+    private void loadDeviceAccountsEmailAddressesLocked() {
         final List<String> accountVocabulary =
                 AccountUtils.getDeviceAccountsEmailAddresses(mContext);
         if (accountVocabulary == null || accountVocabulary.isEmpty()) {
@@ -131,12 +131,14 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
             if (DEBUG) {
                 Log.d(TAG, "loadAccountVocabulary: " + word);
             }
-            super.addWord(word, null /* shortcut */, FREQUENCY_FOR_CONTACTS, 0 /* shortcutFreq */,
-                    false /* isNotAWord */);
+            runGCIfRequiredLocked(true /* mindsBlockByGC */);
+            addWordDynamicallyLocked(word, FREQUENCY_FOR_CONTACTS, null /* shortcut */,
+                    0 /* shortcutFreq */, false /* isNotAWord */, false /* isBlacklisted */,
+                    BinaryDictionary.NOT_A_VALID_TIMESTAMP);
         }
     }
 
-    private void loadDictionaryAsyncForUri(final Uri uri) {
+    private void loadDictionaryForUriLocked(final Uri uri) {
         Cursor cursor = null;
         try {
             cursor = mContext.getContentResolver().query(uri, PROJECTION, null, null, null);
@@ -145,7 +147,7 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
             }
             if (cursor.moveToFirst()) {
                 sContactCountAtLastRebuild = getContactCount();
-                addWords(cursor);
+                addWordsLocked(cursor);
             }
         } catch (final SQLiteException e) {
             Log.e(TAG, "SQLiteException in the remote Contacts process.", e);
@@ -166,12 +168,12 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
         return false;
     }
 
-    private void addWords(final Cursor cursor) {
+    private void addWordsLocked(final Cursor cursor) {
         int count = 0;
         while (!cursor.isAfterLast() && count < MAX_CONTACT_COUNT) {
             String name = cursor.getString(INDEX_NAME);
             if (isValidName(name)) {
-                addName(name);
+                addNameLocked(name);
                 ++count;
             } else {
                 if (DEBUG_DUMP) {
@@ -207,7 +209,7 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
      * Adds the words in a name (e.g., firstname/lastname) to the binary dictionary along with their
      * bigrams depending on locale.
      */
-    private void addName(final String name) {
+    private void addNameLocked(final String name) {
         int len = StringUtils.codePointCount(name);
         String prevWord = null;
         // TODO: Better tokenization for non-Latin writing systems
@@ -226,13 +228,15 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
                     if (DEBUG) {
                         Log.d(TAG, "addName " + name + ", " + word + ", " + prevWord);
                     }
-                    super.addWord(word, null /* shortcut */, FREQUENCY_FOR_CONTACTS,
-                            0 /* shortcutFreq */, false /* isNotAWord */);
-                    if (!TextUtils.isEmpty(prevWord)) {
-                        if (mUseFirstLastBigrams) {
-                            super.addBigram(prevWord, word, FREQUENCY_FOR_CONTACTS_BIGRAM,
-                                    0 /* lastModifiedTime */);
-                        }
+                    runGCIfRequiredLocked(true /* mindsBlockByGC */);
+                    addWordDynamicallyLocked(word, FREQUENCY_FOR_CONTACTS,
+                            null /* shortcut */, 0 /* shortcutFreq */, false /* isNotAWord */,
+                            false /* isBlacklisted */, BinaryDictionary.NOT_A_VALID_TIMESTAMP);
+                    if (!TextUtils.isEmpty(prevWord) && mUseFirstLastBigrams) {
+                        runGCIfRequiredLocked(true /* mindsBlockByGC */);
+                        addBigramDynamicallyLocked(prevWord, word,
+                                FREQUENCY_FOR_CONTACTS_BIGRAM,
+                                BinaryDictionary.NOT_A_VALID_TIMESTAMP);
                     }
                     prevWord = word;
                 }
@@ -258,12 +262,12 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
     }
 
     @Override
-    protected boolean needsToReloadBeforeWriting() {
+    protected boolean needsToReloadAfterCreation() {
         return true;
     }
 
     @Override
-    protected boolean hasContentChanged() {
+    protected boolean haveContentsChanged() {
         final long startTime = SystemClock.uptimeMillis();
         final int contactCount = getContactCount();
         if (contactCount > MAX_CONTACT_COUNT) {
@@ -291,7 +295,7 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
             if (cursor.moveToFirst()) {
                 while (!cursor.isAfterLast()) {
                     String name = cursor.getString(INDEX_NAME);
-                    if (isValidName(name) && !isNameInDictionary(name)) {
+                    if (isValidName(name) && !isNameInDictionaryLocked(name)) {
                         if (DEBUG) {
                             Log.d(TAG, "Contact name missing: " + name + " (runtime = "
                                     + (SystemClock.uptimeMillis() - startTime) + " ms)");
@@ -321,7 +325,7 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
     /**
      * Checks if the words in a name are in the current binary dictionary.
      */
-    private boolean isNameInDictionary(final String name) {
+    private boolean isNameInDictionaryLocked(final String name) {
         int len = StringUtils.codePointCount(name);
         String prevWord = null;
         for (int i = 0; i < len; i++) {
@@ -332,11 +336,11 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
                 final int wordLen = StringUtils.codePointCount(word);
                 if (wordLen < MAX_WORD_LENGTH && wordLen > 1) {
                     if (!TextUtils.isEmpty(prevWord) && mUseFirstLastBigrams) {
-                        if (!super.isValidBigramLocked(prevWord, word)) {
+                        if (!isValidBigramLocked(prevWord, word)) {
                             return false;
                         }
                     } else {
-                        if (!super.isValidWordLocked(word)) {
+                        if (!isValidWordLocked(word)) {
                             return false;
                         }
                     }

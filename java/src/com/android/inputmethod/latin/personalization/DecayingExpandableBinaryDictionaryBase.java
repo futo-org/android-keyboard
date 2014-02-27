@@ -27,10 +27,8 @@ import com.android.inputmethod.latin.utils.LanguageModelParam;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  * This class is a base class of a dictionary that supports decaying for the personalized language
@@ -49,15 +47,13 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
     /** The locale for this dictionary. */
     public final Locale mLocale;
 
-    private final String mDictName;
     private Map<String, String> mAdditionalAttributeMap = null;
 
     protected DecayingExpandableBinaryDictionaryBase(final Context context,
             final String dictName, final Locale locale, final String dictionaryType,
             final File dictFile) {
-        super(context, dictName, locale, dictionaryType, true /* isUpdatable */, dictFile);
+        super(context, dictName, locale, dictionaryType, dictFile);
         mLocale = locale;
-        mDictName = dictName;
         if (mLocale != null && mLocale.toString().length() > 1) {
             reloadDictionaryIfRequired();
         }
@@ -79,7 +75,7 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
 
     @Override
     protected Map<String, String> getHeaderAttributeMap() {
-        final Map<String, String> attributeMap = new HashMap<String, String>();
+        final Map<String, String> attributeMap = super.getHeaderAttributeMap();
         if (mAdditionalAttributeMap != null) {
             attributeMap.putAll(mAdditionalAttributeMap);
         }
@@ -87,20 +83,16 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
                 DictionaryHeader.ATTRIBUTE_VALUE_TRUE);
         attributeMap.put(DictionaryHeader.HAS_HISTORICAL_INFO_KEY,
                 DictionaryHeader.ATTRIBUTE_VALUE_TRUE);
-        attributeMap.put(DictionaryHeader.DICTIONARY_ID_KEY, mDictName);
-        attributeMap.put(DictionaryHeader.DICTIONARY_LOCALE_KEY, mLocale.toString());
-        attributeMap.put(DictionaryHeader.DICTIONARY_VERSION_KEY,
-                String.valueOf(TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis())));
         return attributeMap;
     }
 
     @Override
-    protected boolean hasContentChanged() {
+    protected boolean haveContentsChanged() {
         return false;
     }
 
     @Override
-    protected boolean needsToReloadBeforeWriting() {
+    protected boolean needsToReloadAfterCreation() {
         return false;
     }
 
@@ -144,8 +136,8 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
     }
 
     @Override
-    protected void loadDictionaryAsync() {
-        // Never loaded to memory in Java side.
+    protected void loadInitialContentsLocked() {
+        // No initial contents.
     }
 
     @UsedForTesting

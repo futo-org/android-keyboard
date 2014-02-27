@@ -139,7 +139,7 @@ class InputLogicHandler implements Handler.Callback {
                                     forEnd /* dismissGestureFloatingPreviewText */);
                             if (forEnd) {
                                 mInBatchInput = false;
-                                // The following call schedules onEndBatchInputAsyncInternal
+                                // The following call schedules onEndBatchInputInternal
                                 // to be called on the UI thread.
                                 mLatinIME.mHandler.onEndBatchInput(suggestedWords);
                             }
