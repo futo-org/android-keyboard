@@ -45,7 +45,7 @@ import com.android.inputmethod.latin.utils.ResourceUtils;
 public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     private static final String TAG = KeyboardSwitcher.class.getSimpleName();
 
-    static final class KeyboardTheme {
+    public static final class KeyboardTheme {
         public final int mThemeId;
         public final int mStyleId;
 
