@@ -37,18 +37,20 @@ import com.android.inputmethod.latin.utils.ResourceUtils;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Locale;
 
 @SmallTest
 public class KeyboardLayoutSetTestsBase extends AndroidTestCase {
+    private static final int NUMBER_OF_SUBTYPES = 63;
+    private static final int NUMBER_OF_ASCII_CAPABLE_SUBTYPES = 40;
+
     private static final KeyboardTheme DEFAULT_KEYBOARD_THEME =
             KeyboardSwitcher.KEYBOARD_THEMES[KeyboardSwitcher.THEME_INDEX_DEFAULT];
 
     // All input method subtypes of LatinIME.
-    private List<InputMethodSubtype> mAllSubtypesList;
-    private List<InputMethodSubtype> mAsciiCabapleSubtypesList;
+    private final ArrayList<InputMethodSubtype> mAllSubtypesList = CollectionUtils.newArrayList();
+    private final ArrayList<InputMethodSubtype> mAsciiCapableSubtypesList =
+            CollectionUtils.newArrayList();
 
     private Context mThemeContext;
     private int mScreenMetrics;
@@ -62,20 +64,15 @@ public class KeyboardLayoutSetTestsBase extends AndroidTestCase {
         RichInputMethodManager.init(mThemeContext);
         final RichInputMethodManager richImm = RichInputMethodManager.getInstance();
 
-        final ArrayList<InputMethodSubtype> allSubtypesList = CollectionUtils.newArrayList();
-        final ArrayList<InputMethodSubtype> asciiCapableSubtypesList =
-                CollectionUtils.newArrayList();
         final InputMethodInfo imi = richImm.getInputMethodInfoOfThisIme();
         final int subtypeCount = imi.getSubtypeCount();
         for (int index = 0; index < subtypeCount; index++) {
             final InputMethodSubtype subtype = imi.getSubtypeAt(index);
-            allSubtypesList.add(subtype);
+            mAllSubtypesList.add(subtype);
             if (InputMethodSubtypeCompatUtils.isAsciiCapable(subtype)) {
-                asciiCapableSubtypesList.add(subtype);
+                mAsciiCapableSubtypesList.add(subtype);
             }
         }
-        mAllSubtypesList = Collections.unmodifiableList(allSubtypesList);
-        mAsciiCabapleSubtypesList = Collections.unmodifiableList(asciiCapableSubtypesList);
     }
 
     protected final boolean isPhone() {
@@ -84,11 +81,11 @@ public class KeyboardLayoutSetTestsBase extends AndroidTestCase {
     }
 
     public final void testAllSubtypesCount() {
-        assertEquals(63, mAllSubtypesList.size());
+        assertEquals(NUMBER_OF_SUBTYPES, mAllSubtypesList.size());
     }
 
     public final void testAsciiCapableSubtypesCount() {
-        assertEquals(40, mAsciiCabapleSubtypesList.size());
+        assertEquals(NUMBER_OF_ASCII_CAPABLE_SUBTYPES, mAsciiCapableSubtypesList.size());
     }
 
     protected final InputMethodSubtype getSubtype(final Locale locale,
@@ -101,7 +98,7 @@ public class KeyboardLayoutSetTestsBase extends AndroidTestCase {
                 return subtype;
             }
         }
-        for (final InputMethodSubtype subtype : mAsciiCabapleSubtypesList) {
+        for (final InputMethodSubtype subtype : mAsciiCapableSubtypesList) {
             final Locale subtypeLocale = SubtypeLocaleUtils.getSubtypeLocale(subtype);
             if (locale.equals(subtypeLocale)) {
                 // Create additional subtype.
