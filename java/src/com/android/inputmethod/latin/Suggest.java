@@ -133,12 +133,17 @@ public final class Suggest {
         mDictionaryFacilitator.getSuggestions(wordComposerForLookup, prevWordForBigram,
                 proximityInfo, blockOffensiveWords, additionalFeaturesOptions, SESSION_TYPING,
                 suggestionsSet, rawSuggestions);
+
+        final boolean isFirstCharCapitalized = wordComposer.isFirstCharCapitalized();
+        final boolean isAllUpperCase = wordComposer.isAllUpperCase();
         final String firstSuggestion;
         final String whitelistedWord;
         if (suggestionsSet.isEmpty()) {
             whitelistedWord = firstSuggestion = null;
         } else {
-            final SuggestedWordInfo firstSuggestedWordInfo = suggestionsSet.first();
+            final SuggestedWordInfo firstSuggestedWordInfo = getTransformedSuggestedWordInfo(
+                            suggestionsSet.first(), mLocale, isAllUpperCase, isFirstCharCapitalized,
+                            trailingSingleQuotesCount);
             firstSuggestion = firstSuggestedWordInfo.mWord;
             if (SuggestedWordInfo.KIND_WHITELIST != firstSuggestedWordInfo.mKind) {
                 whitelistedWord = null;
@@ -189,8 +194,6 @@ public final class Suggest {
         final ArrayList<SuggestedWordInfo> suggestionsContainer =
                 CollectionUtils.newArrayList(suggestionsSet);
         final int suggestionsCount = suggestionsContainer.size();
-        final boolean isFirstCharCapitalized = wordComposer.isFirstCharCapitalized();
-        final boolean isAllUpperCase = wordComposer.isAllUpperCase();
         if (isFirstCharCapitalized || isAllUpperCase || 0 != trailingSingleQuotesCount) {
             for (int i = 0; i < suggestionsCount; ++i) {
                 final SuggestedWordInfo wordInfo = suggestionsContainer.get(i);
