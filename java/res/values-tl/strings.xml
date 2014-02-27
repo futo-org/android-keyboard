@@ -167,14 +167,10 @@
     <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"Pumili ng file ng diksyunaryo na ii-install"</string>
     <string name="read_external_dictionary_confirm_install_message" msgid="4782116251651288054">"Talagang ii-install ang file na ito para sa <xliff:g id="LANGUAGE_NAME">%s</xliff:g>?"</string>
     <string name="error" msgid="8940763624668513648">"Nagkaroon ng error"</string>
-    <!-- no translation found for prefs_dump_contacts_dict (7227327764402323097) -->
-    <skip />
-    <!-- no translation found for prefs_dump_user_dict (294870685041741951) -->
-    <skip />
-    <!-- no translation found for prefs_dump_user_history_dict (6821075152449554628) -->
-    <skip />
-    <!-- no translation found for prefs_dump_personalization_dict (7558387996151745284) -->
-    <skip />
+    <string name="prefs_dump_contacts_dict" msgid="7227327764402323097">"Diksyunaryo ng contacts ng Dump"</string>
+    <string name="prefs_dump_user_dict" msgid="294870685041741951">"Personal na diksyunaryo ng Dump"</string>
+    <string name="prefs_dump_user_history_dict" msgid="6821075152449554628">"Diksyunaryo ng user history ng Dump"</string>
+    <string name="prefs_dump_personalization_dict" msgid="7558387996151745284">"Personalization dictionary ng Dump"</string>
     <string name="button_default" msgid="3988017840431881491">"Default"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"Maligayang pagdating sa <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"gamit ang Gesture na Pag-type"</string>
