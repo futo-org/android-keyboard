@@ -90,7 +90,7 @@ public final class KeyboardTextsTable {
         /*   8:20 */ "more_keys_for_s",
         /*   9:20 */ "more_keys_for_n",
         /*  10:20 */ "label_to_alpha_key",
-        /*  11:15 */ "more_keys_for_y",
+        /*  11:14 */ "more_keys_for_y",
         /*  12:13 */ "more_keys_for_d",
         /*  13:12 */ "more_keys_for_z",
         /*  14:10 */ "more_keys_for_t",
@@ -3585,7 +3585,7 @@ public final class KeyboardTextsTable {
     private static final Object[] LANGUAGES_AND_TEXTS = {
     // "locale", TEXT_ARRAY,  /* numberOfNonNullText/lengthOf_TEXT_ARRAY localeName */
         "DEFAULT", LANGUAGE_DEFAULT, /* 171/171 default */
-        "af", LANGUAGE_af,    /*   8/ 12 Afrikaans */
+        "af", LANGUAGE_af,    /*   7/ 12 Afrikaans */
         "ar", LANGUAGE_ar,    /*  58/110 Arabic */
         "az", LANGUAGE_az_AZ, /*   8/ 17 Azerbaijani (Azerbaijan) */
         "be", LANGUAGE_be_BY, /*  10/ 33 Belarusian (Belarus) */
