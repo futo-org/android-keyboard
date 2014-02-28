@@ -1368,13 +1368,23 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     public void setSuggestedWords(final SuggestedWords suggestedWords,
             final boolean isSuggestionStripVisible) {
         mInputLogic.setSuggestedWords(suggestedWords);
+        // TODO: Modify this when we support suggestions with hard keyboard
         if (!hasSuggestionStripView()) {
             return;
         }
+        mKeyboardSwitcher.onAutoCorrectionStateChanged(suggestedWords.mWillAutoCorrect);
+        if (!onEvaluateInputViewShown()) {
+            return;
+        }
+        if (!isSuggestionStripVisible) {
+            mSuggestionStripView.setVisibility(isFullscreenMode() ? View.GONE : View.INVISIBLE);
+            return;
+        }
+        mSuggestionStripView.setVisibility(View.VISIBLE);
+
         final SettingsValues currentSettings = mSettings.getCurrent();
         final boolean showSuggestions;
-        if (SuggestedWords.EMPTY == suggestedWords
-                || suggestedWords.isPunctuationSuggestions()
+        if (SuggestedWords.EMPTY == suggestedWords || suggestedWords.isPunctuationSuggestions()
                 || !currentSettings.isSuggestionsRequested()) {
             showSuggestions = !mSuggestionStripView.maybeShowImportantNoticeTitle(
                     currentSettings.mInputAttributes);
@@ -1384,16 +1394,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (showSuggestions) {
             mSuggestionStripView.setSuggestions(suggestedWords,
                     SubtypeLocaleUtils.isRtlLanguage(mSubtypeSwitcher.getCurrentSubtype()));
-        }
-        mKeyboardSwitcher.onAutoCorrectionStateChanged(suggestedWords.mWillAutoCorrect);
-        // TODO: Modify this when we support suggestions with hard keyboard
-        if (!onEvaluateInputViewShown() || !hasSuggestionStripView()) {
-            return;
-        }
-        if (isSuggestionStripVisible) {
-            mSuggestionStripView.setVisibility(View.VISIBLE);
-        } else {
-            mSuggestionStripView.setVisibility(isFullscreenMode() ? View.GONE : View.INVISIBLE);
         }
     }
 
