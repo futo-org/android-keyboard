@@ -163,7 +163,7 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
         clearAndFlushDictionary();
     }
 
-    /* package */ void decayIfNeeded() {
+    /* package */ void runGCIfRequired() {
         runGCIfRequired(false /* mindsBlockByGC */);
     }
 }
