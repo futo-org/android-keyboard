@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.latin.personalization;
 
+import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.FileUtils;
 
@@ -27,6 +28,7 @@ import java.io.FilenameFilter;
 import java.lang.ref.SoftReference;
 import java.util.Locale;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 public class PersonalizationHelper {
     private static final String TAG = PersonalizationHelper.class.getSimpleName();
@@ -59,14 +61,35 @@ public class PersonalizationHelper {
         }
     }
 
-    public static void tryDecayingAllOpeningUserHistoryDictionary() {
-        for (final ConcurrentHashMap.Entry<String, SoftReference<UserHistoryDictionary>> entry
-                : sLangUserHistoryDictCache.entrySet()) {
-            if (entry.getValue() != null) {
-                final UserHistoryDictionary dict = entry.getValue().get();
-                if (dict != null) {
-                    dict.decayIfNeeded();
-                }
+    private static int sCurrentTimestampForTesting = 0;
+    public static void currentTimeChangedForTesting(final int currentTimestamp) {
+        if (TimeUnit.MILLISECONDS.toSeconds(
+                DictionaryDecayBroadcastReciever.DICTIONARY_DECAY_INTERVAL)
+                        < currentTimestamp - sCurrentTimestampForTesting) {
+            // TODO: Run GC for both PersonalizationDictionary and UserHistoryDictionary.
+            runGCOnAllOpenedUserHistoryDictionaries();
+        }
+    }
+
+    public static void runGCOnAllOpenedUserHistoryDictionaries() {
+        runGCOnAllDictionariesIfRequired(sLangUserHistoryDictCache);
+    }
+
+    @UsedForTesting
+    public static void runGCOnAllOpenedPersonalizationDictionaries() {
+        runGCOnAllDictionariesIfRequired(sLangPersonalizationDictCache);
+    }
+
+    private static <T extends DecayingExpandableBinaryDictionaryBase>
+            void runGCOnAllDictionariesIfRequired(
+                    final ConcurrentHashMap<String, SoftReference<T>> dictionaryMap) {
+        for (final ConcurrentHashMap.Entry<String, SoftReference<T>> entry
+                : dictionaryMap.entrySet()) {
+            final DecayingExpandableBinaryDictionaryBase dict = entry.getValue().get();
+            if (dict != null) {
+                dict.runGCIfRequired();
+            } else {
+                dictionaryMap.remove(entry.getKey());
             }
         }
     }

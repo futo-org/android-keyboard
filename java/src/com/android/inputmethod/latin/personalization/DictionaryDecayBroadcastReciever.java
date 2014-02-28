@@ -43,7 +43,7 @@ public class DictionaryDecayBroadcastReciever extends BroadcastReceiver {
     /**
      * Interval to update for decaying dictionaries.
      */
-    private static final long DICTIONARY_DECAY_INTERVAL = TimeUnit.MINUTES.toMillis(60);
+    /* package */ static final long DICTIONARY_DECAY_INTERVAL = TimeUnit.MINUTES.toMillis(60);
 
     public static void setUpIntervalAlarmForDictionaryDecaying(Context context) {
         AlarmManager alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
@@ -60,7 +60,7 @@ public class DictionaryDecayBroadcastReciever extends BroadcastReceiver {
     public void onReceive(final Context context, final Intent intent) {
         final String action = intent.getAction();
         if (action.equals(DICTIONARY_DECAY_INTENT_ACTION)) {
-            PersonalizationHelper.tryDecayingAllOpeningUserHistoryDictionary();
+            PersonalizationHelper.runGCOnAllOpenedUserHistoryDictionaries();
         }
     }
 }

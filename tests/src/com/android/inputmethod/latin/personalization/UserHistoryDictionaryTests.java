@@ -267,13 +267,13 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
             assertTrue(dict.isInUnderlyingBinaryDictionaryForTests(word));
         }
         forcePassingShortTime();
-        dict.decayIfNeeded();
+        dict.runGCIfRequired();
         dict.waitAllTasksForTests();
         for (final String word : words) {
             assertTrue(dict.isInUnderlyingBinaryDictionaryForTests(word));
         }
         forcePassingLongTime();
-        dict.decayIfNeeded();
+        dict.runGCIfRequired();
         dict.waitAllTasksForTests();
         for (final String word : words) {
             assertFalse(dict.isInUnderlyingBinaryDictionaryForTests(word));
