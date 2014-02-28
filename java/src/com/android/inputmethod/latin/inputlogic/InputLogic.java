@@ -74,7 +74,7 @@ public final class InputLogic {
 
     // TODO : make all these fields private as soon as possible.
     // Current space state of the input method. This can be any of the above constants.
-    public int mSpaceState;
+    private int mSpaceState;
     // Never null
     public SuggestedWords mSuggestedWords = SuggestedWords.EMPTY;
     // TODO: mSuggest should be touched by a single thread.
@@ -85,7 +85,7 @@ public final class InputLogic {
     public LastComposedWord mLastComposedWord = LastComposedWord.NOT_A_COMPOSED_WORD;
     public final WordComposer mWordComposer;
     public final RichInputConnection mConnection;
-    public final RecapitalizeStatus mRecapitalizeStatus = new RecapitalizeStatus();
+    private final RecapitalizeStatus mRecapitalizeStatus = new RecapitalizeStatus();
 
     private int mDeleteCount;
     private long mLastKeyTime;
@@ -96,7 +96,7 @@ public final class InputLogic {
 
     // TODO: This boolean is persistent state and causes large side effects at unexpected times.
     // Find a way to remove it for readability.
-    public boolean mIsAutoCorrectionIndicatorOn;
+    private boolean mIsAutoCorrectionIndicatorOn;
 
     public InputLogic(final LatinIME latinIME,
             final SuggestionStripViewAccessor suggestionStripViewAccessor) {
