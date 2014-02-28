@@ -96,12 +96,11 @@ bool Ver4PatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
     }
     const int unigramCount = traversePolicyToUpdateUnigramProbabilityAndMarkUselessPtNodesAsDeleted
             .getValidUnigramCount();
-    if (headerPolicy->isDecayingDict()
-            && unigramCount > ForgettingCurveUtils::MAX_UNIGRAM_COUNT_AFTER_GC) {
-        if (!truncateUnigrams(&ptNodeReader, &ptNodeWriter,
-                ForgettingCurveUtils::MAX_UNIGRAM_COUNT_AFTER_GC)) {
+    const int maxUnigramCount = headerPolicy->getMaxUnigramCount();
+    if (headerPolicy->isDecayingDict() && unigramCount > maxUnigramCount) {
+        if (!truncateUnigrams(&ptNodeReader, &ptNodeWriter, maxUnigramCount)) {
             AKLOGE("Cannot remove unigrams. current: %d, max: %d", unigramCount,
-                    ForgettingCurveUtils::MAX_UNIGRAM_COUNT_AFTER_GC);
+                    maxUnigramCount);
             return false;
         }
     }
@@ -114,11 +113,10 @@ bool Ver4PatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
         return false;
     }
     const int bigramCount = traversePolicyToUpdateBigramProbability.getValidBigramEntryCount();
-    if (headerPolicy->isDecayingDict()
-            && bigramCount > ForgettingCurveUtils::MAX_BIGRAM_COUNT_AFTER_GC) {
-        if (!truncateBigrams(ForgettingCurveUtils::MAX_BIGRAM_COUNT_AFTER_GC)) {
-            AKLOGE("Cannot remove bigrams. current: %d, max: %d", bigramCount,
-                    ForgettingCurveUtils::MAX_BIGRAM_COUNT_AFTER_GC);
+    const int maxBigramCount = headerPolicy->getMaxBigramCount();
+    if (headerPolicy->isDecayingDict() && bigramCount > maxBigramCount) {
+        if (!truncateBigrams(maxBigramCount)) {
+            AKLOGE("Cannot remove bigrams. current: %d, max: %d", bigramCount, maxBigramCount);
             return false;
         }
     }

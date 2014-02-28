@@ -42,6 +42,10 @@ public final class DictionaryHeader {
             "FORGETTING_CURVE_OCCURRENCES_TO_LEVEL_UP";
     public static final String FORGETTING_CURVE_PROBABILITY_VALUES_TABLE_ID_KEY =
             "FORGETTING_CURVE_PROBABILITY_VALUES_TABLE_ID";
+    public static final String FORGETTING_CURVE_DURATION_TO_LEVEL_DOWN_IN_SECONDS_KEY =
+            "FORGETTING_CURVE_DURATION_TO_LEVEL_DOWN_IN_SECONDS";
+    public static final String MAX_UNIGRAM_COUNT_KEY = "MAX_UNIGRAM_COUNT";
+    public static final String MAX_BIGRAM_COUNT_KEY = "MAX_BIGRAM_COUNT";
     public static final String ATTRIBUTE_VALUE_TRUE = "1";
 
     public DictionaryHeader(final int headerSize, final DictionaryOptions dictionaryOptions,

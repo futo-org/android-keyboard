@@ -64,6 +64,9 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     private static final int TIMEOUT_FOR_READ_OPS_IN_MILLISECONDS = 100;
     private static final int TIMEOUT_FOR_READ_OPS_FOR_TESTS_IN_MILLISECONDS = 10000;
 
+    private static final int DEFAULT_MAX_UNIGRAM_COUNT = 10000;
+    private static final int DEFAULT_MAX_BIGRAM_COUNT = 10000;
+
     /**
      * The maximum length of a word in this dictionary.
      */
@@ -207,6 +210,10 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         attributeMap.put(DictionaryHeader.DICTIONARY_LOCALE_KEY, mLocale.toString());
         attributeMap.put(DictionaryHeader.DICTIONARY_VERSION_KEY,
                 String.valueOf(TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis())));
+        attributeMap.put(DictionaryHeader.MAX_UNIGRAM_COUNT_KEY,
+                String.valueOf(DEFAULT_MAX_UNIGRAM_COUNT));
+        attributeMap.put(DictionaryHeader.MAX_BIGRAM_COUNT_KEY,
+                String.valueOf(DEFAULT_MAX_BIGRAM_COUNT));
         return attributeMap;
     }
 

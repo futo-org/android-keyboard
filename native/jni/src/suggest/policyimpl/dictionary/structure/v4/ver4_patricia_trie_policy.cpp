@@ -329,11 +329,15 @@ void Ver4PatriciaTriePolicy::getProperty(const char *const query, const int quer
         snprintf(outResult, maxResultLength, "%d", mBigramCount);
     } else if (strncmp(query, MAX_UNIGRAM_COUNT_QUERY, compareLength) == 0) {
         snprintf(outResult, maxResultLength, "%d",
-                mHeaderPolicy->isDecayingDict() ? ForgettingCurveUtils::MAX_UNIGRAM_COUNT :
+                mHeaderPolicy->isDecayingDict() ?
+                        ForgettingCurveUtils::getUnigramCountHardLimit(
+                                mHeaderPolicy->getMaxUnigramCount()) :
                         static_cast<int>(Ver4DictConstants::MAX_DICTIONARY_SIZE));
     } else if (strncmp(query, MAX_BIGRAM_COUNT_QUERY, compareLength) == 0) {
         snprintf(outResult, maxResultLength, "%d",
-                mHeaderPolicy->isDecayingDict() ? ForgettingCurveUtils::MAX_BIGRAM_COUNT :
+                mHeaderPolicy->isDecayingDict() ?
+                        ForgettingCurveUtils::getBigramCountHardLimit(
+                                mHeaderPolicy->getMaxBigramCount()) :
                         static_cast<int>(Ver4DictConstants::MAX_DICTIONARY_SIZE));
     }
 }

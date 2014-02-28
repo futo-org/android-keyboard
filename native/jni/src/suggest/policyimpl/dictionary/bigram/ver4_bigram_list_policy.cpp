@@ -162,7 +162,7 @@ bool Ver4BigramListPolicy::updateAllBigramEntriesAndDeleteUselessEntries(const i
         } else if (bigramEntry.hasHistoricalInfo()) {
             const HistoricalInfo historicalInfo = ForgettingCurveUtils::createHistoricalInfoToSave(
                     bigramEntry.getHistoricalInfo(), mHeaderPolicy);
-            if (ForgettingCurveUtils::needsToKeep(&historicalInfo)) {
+            if (ForgettingCurveUtils::needsToKeep(&historicalInfo, mHeaderPolicy)) {
                 const BigramEntry updatedBigramEntry =
                         bigramEntry.updateHistoricalInfoAndGetEntry(&historicalInfo);
                 if (!mBigramDictContent->writeBigramEntry(&updatedBigramEntry, entryPos)) {
