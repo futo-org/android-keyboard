@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.latin.makedict;
 
+import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNode;
 
@@ -25,6 +26,7 @@ import java.io.IOException;
  * An interface of binary dictionary encoder.
  */
 public interface DictEncoder {
+    @UsedForTesting
     public void writeDictionary(final FusionDictionary dict, final FormatOptions formatOptions)
             throws IOException, UnsupportedFormatException;
 

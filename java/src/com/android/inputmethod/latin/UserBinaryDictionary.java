@@ -86,8 +86,7 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
 
     public UserBinaryDictionary(final Context context, final Locale locale,
             final boolean alsoUseMoreRestrictiveLocales, final File dictFile) {
-        super(context, getDictName(NAME, locale, dictFile), locale, Dictionary.TYPE_USER,
-                false /* isUpdatable */, dictFile);
+        super(context, getDictName(NAME, locale, dictFile), locale, Dictionary.TYPE_USER, dictFile);
         if (null == locale) throw new NullPointerException(); // Catch the error earlier
         final String localeStr = locale.toString();
         if (SubtypeLocaleUtils.NO_LANGUAGE.equals(localeStr)) {
@@ -130,7 +129,7 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
     }
 
     @Override
-    public void loadDictionaryAsync() {
+    public void loadInitialContentsLocked() {
         // Split the locale. For example "en" => ["en"], "de_DE" => ["de", "DE"],
         // "en_US_foo_bar_qux" => ["en", "US", "foo_bar_qux"] because of the limit of 3.
         // This is correct for locale processing.
@@ -182,7 +181,7 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
         try {
             cursor = mContext.getContentResolver().query(
                 Words.CONTENT_URI, PROJECTION_QUERY, request.toString(), requestArguments, null);
-            addWords(cursor);
+            addWordsLocked(cursor);
         } catch (final SQLiteException e) {
             Log.e(TAG, "SQLiteException in the remote User dictionary process.", e);
         } finally {
@@ -236,7 +235,7 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
         }
     }
 
-    private void addWords(final Cursor cursor) {
+    private void addWordsLocked(final Cursor cursor) {
         final boolean hasShortcutColumn = Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN;
         if (cursor == null) return;
         if (cursor.moveToFirst()) {
@@ -250,12 +249,16 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
                 final int adjustedFrequency = scaleFrequencyFromDefaultToLatinIme(frequency);
                 // Safeguard against adding really long words.
                 if (word.length() < MAX_WORD_LENGTH) {
-                    super.addWord(word, null, adjustedFrequency, 0 /* shortcutFreq */,
-                            false /* isNotAWord */);
-                }
-                if (null != shortcut && shortcut.length() < MAX_WORD_LENGTH) {
-                    super.addWord(shortcut, word, adjustedFrequency, USER_DICT_SHORTCUT_FREQUENCY,
-                            true /* isNotAWord */);
+                    runGCIfRequiredLocked(true /* mindsBlockByGC */);
+                    addWordDynamicallyLocked(word, adjustedFrequency, null /* shortcutTarget */,
+                            0 /* shortcutFreq */, false /* isNotAWord */,
+                            false /* isBlacklisted */, BinaryDictionary.NOT_A_VALID_TIMESTAMP);
+                    if (null != shortcut && shortcut.length() < MAX_WORD_LENGTH) {
+                        runGCIfRequiredLocked(true /* mindsBlockByGC */);
+                        addWordDynamicallyLocked(shortcut, adjustedFrequency, word,
+                                USER_DICT_SHORTCUT_FREQUENCY, true /* isNotAWord */,
+                                false /* isBlacklisted */, BinaryDictionary.NOT_A_VALID_TIMESTAMP);
+                    }
                 }
                 cursor.moveToNext();
             }
@@ -263,12 +266,12 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
     }
 
     @Override
-    protected boolean hasContentChanged() {
+    protected boolean haveContentsChanged() {
         return true;
     }
 
     @Override
-    protected boolean needsToReloadBeforeWriting() {
+    protected boolean needsToReloadAfterCreation() {
         return true;
     }
 }
