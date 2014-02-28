@@ -25,19 +25,16 @@
 
 namespace latinime {
 
-const int ForgettingCurveUtils::MAX_UNIGRAM_COUNT = 12000;
-const int ForgettingCurveUtils::MAX_UNIGRAM_COUNT_AFTER_GC = 10000;
-const int ForgettingCurveUtils::MAX_BIGRAM_COUNT = 12000;
-const int ForgettingCurveUtils::MAX_BIGRAM_COUNT_AFTER_GC = 10000;
-
 const int ForgettingCurveUtils::MULTIPLIER_TWO_IN_PROBABILITY_SCALE = 8;
 const int ForgettingCurveUtils::DECAY_INTERVAL_SECONDS = 2 * 60 * 60;
 
 const int ForgettingCurveUtils::MAX_LEVEL = 3;
 const int ForgettingCurveUtils::MIN_VALID_LEVEL = 1;
-const int ForgettingCurveUtils::TIME_STEP_DURATION_IN_SECONDS = 6 * 60 * 60;
 const int ForgettingCurveUtils::MAX_ELAPSED_TIME_STEP_COUNT = 15;
 const int ForgettingCurveUtils::DISCARD_LEVEL_ZERO_ENTRY_TIME_STEP_COUNT_THRESHOLD = 14;
+
+const float ForgettingCurveUtils::UNIGRAM_COUNT_HARD_LIMIT_WEIGHT = 1.2;
+const float ForgettingCurveUtils::BIGRAM_COUNT_HARD_LIMIT_WEIGHT = 1.2;
 
 const ForgettingCurveUtils::ProbabilityTable ForgettingCurveUtils::sProbabilityTable;
 
@@ -71,7 +68,8 @@ const ForgettingCurveUtils::ProbabilityTable ForgettingCurveUtils::sProbabilityT
 
 /* static */ int ForgettingCurveUtils::decodeProbability(
         const HistoricalInfo *const historicalInfo, const HeaderPolicy *const headerPolicy) {
-    const int elapsedTimeStepCount = getElapsedTimeStepCount(historicalInfo->getTimeStamp());
+    const int elapsedTimeStepCount = getElapsedTimeStepCount(historicalInfo->getTimeStamp(),
+            headerPolicy->getForgettingCurveDurationToLevelDown());
     return sProbabilityTable.getProbability(
             headerPolicy->getForgettingCurveProbabilityValuesTableId(), historicalInfo->getLevel(),
             min(max(elapsedTimeStepCount, 0), MAX_ELAPSED_TIME_STEP_COUNT));
@@ -90,10 +88,12 @@ const ForgettingCurveUtils::ProbabilityTable ForgettingCurveUtils::sProbabilityT
     }
 }
 
-/* static */ bool ForgettingCurveUtils::needsToKeep(const HistoricalInfo *const historicalInfo) {
+/* static */ bool ForgettingCurveUtils::needsToKeep(const HistoricalInfo *const historicalInfo,
+        const HeaderPolicy *const headerPolicy) {
     return historicalInfo->getLevel() > 0
-            || getElapsedTimeStepCount(historicalInfo->getTimeStamp())
-                    < DISCARD_LEVEL_ZERO_ENTRY_TIME_STEP_COUNT_THRESHOLD;
+            || getElapsedTimeStepCount(historicalInfo->getTimeStamp(),
+                    headerPolicy->getForgettingCurveDurationToLevelDown())
+                            < DISCARD_LEVEL_ZERO_ENTRY_TIME_STEP_COUNT_THRESHOLD;
 }
 
 /* static */ const HistoricalInfo ForgettingCurveUtils::createHistoricalInfoToSave(
@@ -102,7 +102,9 @@ const ForgettingCurveUtils::ProbabilityTable ForgettingCurveUtils::sProbabilityT
     if (originalHistoricalInfo->getTimeStamp() == NOT_A_TIMESTAMP) {
         return HistoricalInfo();
     }
-    const int elapsedTimeStep = getElapsedTimeStepCount(originalHistoricalInfo->getTimeStamp());
+    const int durationToLevelDownInSeconds = headerPolicy->getForgettingCurveDurationToLevelDown();
+    const int elapsedTimeStep = getElapsedTimeStepCount(
+            originalHistoricalInfo->getTimeStamp(), durationToLevelDownInSeconds);
     if (elapsedTimeStep <= MAX_ELAPSED_TIME_STEP_COUNT) {
         // No need to update historical info.
         return *originalHistoricalInfo;
@@ -111,18 +113,18 @@ const ForgettingCurveUtils::ProbabilityTable ForgettingCurveUtils::sProbabilityT
     const int maxLevelDownAmonut = elapsedTimeStep / (MAX_ELAPSED_TIME_STEP_COUNT + 1);
     const int levelDownAmount = (maxLevelDownAmonut >= originalHistoricalInfo->getLevel()) ?
             originalHistoricalInfo->getLevel() : maxLevelDownAmonut;
-    const int adjustedTimestamp = originalHistoricalInfo->getTimeStamp() +
-            levelDownAmount * (MAX_ELAPSED_TIME_STEP_COUNT + 1) * TIME_STEP_DURATION_IN_SECONDS;
-    return HistoricalInfo(adjustedTimestamp,
+    const int adjustedTimestampInSeconds = originalHistoricalInfo->getTimeStamp() +
+            levelDownAmount * durationToLevelDownInSeconds;
+    return HistoricalInfo(adjustedTimestampInSeconds,
             originalHistoricalInfo->getLevel() - levelDownAmount, 0 /* count */);
 }
 
 /* static */ bool ForgettingCurveUtils::needsToDecay(const bool mindsBlockByDecay,
         const int unigramCount, const int bigramCount, const HeaderPolicy *const headerPolicy) {
-    if (unigramCount >= ForgettingCurveUtils::MAX_UNIGRAM_COUNT) {
+    if (unigramCount >= getUnigramCountHardLimit(headerPolicy->getMaxUnigramCount())) {
         // Unigram count exceeds the limit.
         return true;
-    } else if (bigramCount >= ForgettingCurveUtils::MAX_BIGRAM_COUNT) {
+    } else if (bigramCount >= getBigramCountHardLimit(headerPolicy->getMaxBigramCount())) {
         // Bigram count exceeds the limit.
         return true;
     }
@@ -143,8 +145,12 @@ const ForgettingCurveUtils::ProbabilityTable ForgettingCurveUtils::sProbabilityT
     return unigramProbability;
 }
 
-/* static */ int ForgettingCurveUtils::getElapsedTimeStepCount(const int timestamp) {
-    return (TimeKeeper::peekCurrentTime() - timestamp) / TIME_STEP_DURATION_IN_SECONDS;
+/* static */ int ForgettingCurveUtils::getElapsedTimeStepCount(const int timestamp,
+        const int durationToLevelDownInSeconds) {
+    const int elapsedTimeInSeconds = TimeKeeper::peekCurrentTime() - timestamp;
+    const int timeStepDurationInSeconds =
+            durationToLevelDownInSeconds / (MAX_ELAPSED_TIME_STEP_COUNT + 1);
+    return elapsedTimeInSeconds / timeStepDurationInSeconds;
 }
 
 const int ForgettingCurveUtils::ProbabilityTable::PROBABILITY_TABLE_COUNT = 4;
@@ -172,12 +178,10 @@ ForgettingCurveUtils::ProbabilityTable::ProbabilityTable() : mTables() {
                     mTables[tableId][level][timeStepCount] = NOT_A_PROBABILITY;
                     continue;
                 }
-                const int elapsedTime = timeStepCount * TIME_STEP_DURATION_IN_SECONDS;
                 const float probability = initialProbability
                         * powf(initialProbability / endProbability,
-                                -1.0f * static_cast<float>(elapsedTime)
-                                        / static_cast<float>(TIME_STEP_DURATION_IN_SECONDS
-                                                * (MAX_ELAPSED_TIME_STEP_COUNT + 1)));
+                                -1.0f * static_cast<float>(timeStepCount)
+                                        / static_cast<float>(MAX_ELAPSED_TIME_STEP_COUNT + 1));
                 mTables[tableId][level][timeStepCount] =
                         min(max(static_cast<int>(probability), 1), MAX_PROBABILITY);
             }

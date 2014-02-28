@@ -28,11 +28,6 @@ class HeaderPolicy;
 
 class ForgettingCurveUtils {
  public:
-    static const int MAX_UNIGRAM_COUNT;
-    static const int MAX_UNIGRAM_COUNT_AFTER_GC;
-    static const int MAX_BIGRAM_COUNT;
-    static const int MAX_BIGRAM_COUNT_AFTER_GC;
-
     static const HistoricalInfo createUpdatedHistoricalInfo(
             const HistoricalInfo *const originalHistoricalInfo, const int newProbability,
             const int timestamp, const HeaderPolicy *const headerPolicy);
@@ -47,10 +42,21 @@ class ForgettingCurveUtils {
     static int getProbability(const int encodedUnigramProbability,
             const int encodedBigramProbability);
 
-    static bool needsToKeep(const HistoricalInfo *const historicalInfo);
+    static bool needsToKeep(const HistoricalInfo *const historicalInfo,
+            const HeaderPolicy *const headerPolicy);
 
     static bool needsToDecay(const bool mindsBlockByDecay, const int unigramCount,
             const int bigramCount, const HeaderPolicy *const headerPolicy);
+
+    AK_FORCE_INLINE static int getUnigramCountHardLimit(const int maxUnigramCount) {
+        return static_cast<int>(static_cast<float>(maxUnigramCount)
+                * UNIGRAM_COUNT_HARD_LIMIT_WEIGHT);
+    }
+
+    AK_FORCE_INLINE static int getBigramCountHardLimit(const int maxBigramCount) {
+        return static_cast<int>(static_cast<float>(maxBigramCount)
+                * BIGRAM_COUNT_HARD_LIMIT_WEIGHT);
+    }
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(ForgettingCurveUtils);
@@ -88,16 +94,17 @@ class ForgettingCurveUtils {
 
     static const int MAX_LEVEL;
     static const int MIN_VALID_LEVEL;
-    static const int TIME_STEP_DURATION_IN_SECONDS;
     static const int MAX_ELAPSED_TIME_STEP_COUNT;
     static const int DISCARD_LEVEL_ZERO_ENTRY_TIME_STEP_COUNT_THRESHOLD;
-    static const int HALF_LIFE_TIME_IN_SECONDS;
+
+    static const float UNIGRAM_COUNT_HARD_LIMIT_WEIGHT;
+    static const float BIGRAM_COUNT_HARD_LIMIT_WEIGHT;
 
     static const ProbabilityTable sProbabilityTable;
 
     static int backoff(const int unigramProbability);
 
-    static int getElapsedTimeStepCount(const int timestamp);
+    static int getElapsedTimeStepCount(const int timestamp, const int durationToLevelDown);
 };
 } // namespace latinime
 #endif /* LATINIME_FORGETTING_CURVE_UTILS_H */

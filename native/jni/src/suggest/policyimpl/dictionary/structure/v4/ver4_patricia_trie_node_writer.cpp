@@ -168,7 +168,7 @@ bool Ver4PatriciaTrieNodeWriter::updatePtNodeProbabilityAndGetNeedsToKeepPtNodeA
                     toBeUpdatedPtNodeParams->getTerminalId());
             return false;
         }
-        const bool isValid = ForgettingCurveUtils::needsToKeep(&historicalInfo);
+        const bool isValid = ForgettingCurveUtils::needsToKeep(&historicalInfo, mHeaderPolicy);
         if (!isValid) {
             if (!markPtNodeAsWillBecomeNonTerminal(toBeUpdatedPtNodeParams)) {
                 AKLOGE("Cannot mark PtNode as willBecomeNonTerminal.");

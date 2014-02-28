@@ -58,7 +58,14 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
                       DEFAULT_FORGETTING_CURVE_OCCURRENCES_TO_LEVEL_UP)),
               mForgettingCurveProbabilityValuesTableId(HeaderReadWriteUtils::readIntAttributeValue(
                       &mAttributeMap, FORGETTING_CURVE_PROBABILITY_VALUES_TABLE_ID_KEY,
-                      DEFAULT_FORGETTING_CURVE_PROBABILITY_VALUES_TABLE_ID)) {}
+                      DEFAULT_FORGETTING_CURVE_PROBABILITY_VALUES_TABLE_ID)),
+              mForgettingCurveDurationToLevelDown(HeaderReadWriteUtils::readIntAttributeValue(
+                      &mAttributeMap, FORGETTING_CURVE_DURATION_TO_LEVEL_DOWN_IN_SECONDS_KEY,
+                      DEFAULT_FORGETTING_CURVE_DURATION_TO_LEVEL_DOWN_IN_SECONDS)),
+              mMaxUnigramCount(HeaderReadWriteUtils::readIntAttributeValue(
+                      &mAttributeMap, MAX_UNIGRAM_COUNT_KEY, DEFAULT_MAX_UNIGRAM_COUNT)),
+              mMaxBigramCount(HeaderReadWriteUtils::readIntAttributeValue(
+                      &mAttributeMap, MAX_BIGRAM_COUNT_KEY, DEFAULT_MAX_BIGRAM_COUNT)) {}
 
     // Constructs header information using an attribute map.
     HeaderPolicy(const FormatUtils::FORMAT_VERSION dictFormatVersion,
@@ -83,7 +90,14 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
                       DEFAULT_FORGETTING_CURVE_OCCURRENCES_TO_LEVEL_UP)),
               mForgettingCurveProbabilityValuesTableId(HeaderReadWriteUtils::readIntAttributeValue(
                       &mAttributeMap, FORGETTING_CURVE_PROBABILITY_VALUES_TABLE_ID_KEY,
-                      DEFAULT_FORGETTING_CURVE_PROBABILITY_VALUES_TABLE_ID)) {}
+                      DEFAULT_FORGETTING_CURVE_PROBABILITY_VALUES_TABLE_ID)),
+              mForgettingCurveDurationToLevelDown(HeaderReadWriteUtils::readIntAttributeValue(
+                      &mAttributeMap, FORGETTING_CURVE_DURATION_TO_LEVEL_DOWN_IN_SECONDS_KEY,
+                      DEFAULT_FORGETTING_CURVE_DURATION_TO_LEVEL_DOWN_IN_SECONDS)),
+              mMaxUnigramCount(HeaderReadWriteUtils::readIntAttributeValue(
+                      &mAttributeMap, MAX_UNIGRAM_COUNT_KEY, DEFAULT_MAX_UNIGRAM_COUNT)),
+              mMaxBigramCount(HeaderReadWriteUtils::readIntAttributeValue(
+                      &mAttributeMap, MAX_BIGRAM_COUNT_KEY, DEFAULT_MAX_BIGRAM_COUNT)) {}
 
     // Temporary dummy header.
     HeaderPolicy()
@@ -92,7 +106,8 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
               mRequiresGermanUmlautProcessing(false), mIsDecayingDict(false),
               mDate(0), mLastDecayedTime(0), mUnigramCount(0), mBigramCount(0),
               mExtendedRegionSize(0), mHasHistoricalInfoOfWords(false),
-              mForgettingCurveOccurrencesToLevelUp(0), mForgettingCurveProbabilityValuesTableId(0) {}
+              mForgettingCurveOccurrencesToLevelUp(0), mForgettingCurveProbabilityValuesTableId(0),
+              mForgettingCurveDurationToLevelDown(0), mMaxUnigramCount(0), mMaxBigramCount(0) {}
 
     ~HeaderPolicy() {}
 
@@ -179,6 +194,18 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
         return mForgettingCurveProbabilityValuesTableId;
     }
 
+    AK_FORCE_INLINE int getForgettingCurveDurationToLevelDown() const {
+        return mForgettingCurveDurationToLevelDown;
+    }
+
+    AK_FORCE_INLINE int getMaxUnigramCount() const {
+        return mMaxUnigramCount;
+    }
+
+    AK_FORCE_INLINE int getMaxBigramCount() const {
+        return mMaxBigramCount;
+    }
+
     void readHeaderValueOrQuestionMark(const char *const key,
             int *outValue, int outValueSize) const;
 
@@ -205,10 +232,16 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
     static const char *const LOCALE_KEY;
     static const char *const FORGETTING_CURVE_OCCURRENCES_TO_LEVEL_UP_KEY;
     static const char *const FORGETTING_CURVE_PROBABILITY_VALUES_TABLE_ID_KEY;
+    static const char *const FORGETTING_CURVE_DURATION_TO_LEVEL_DOWN_IN_SECONDS_KEY;
+    static const char *const MAX_UNIGRAM_COUNT_KEY;
+    static const char *const MAX_BIGRAM_COUNT_KEY;
     static const int DEFAULT_MULTIPLE_WORDS_DEMOTION_RATE;
     static const float MULTIPLE_WORD_COST_MULTIPLIER_SCALE;
     static const int DEFAULT_FORGETTING_CURVE_OCCURRENCES_TO_LEVEL_UP;
     static const int DEFAULT_FORGETTING_CURVE_PROBABILITY_VALUES_TABLE_ID;
+    static const int DEFAULT_FORGETTING_CURVE_DURATION_TO_LEVEL_DOWN_IN_SECONDS;
+    static const int DEFAULT_MAX_UNIGRAM_COUNT;
+    static const int DEFAULT_MAX_BIGRAM_COUNT;
 
     const FormatUtils::FORMAT_VERSION mDictFormatVersion;
     const HeaderReadWriteUtils::DictionaryFlags mDictionaryFlags;
@@ -226,6 +259,9 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
     const bool mHasHistoricalInfoOfWords;
     const int mForgettingCurveOccurrencesToLevelUp;
     const int mForgettingCurveProbabilityValuesTableId;
+    const int mForgettingCurveDurationToLevelDown;
+    const int mMaxUnigramCount;
+    const int mMaxBigramCount;
 
     const std::vector<int> readLocale() const;
     float readMultipleWordCostMultiplier() const;
