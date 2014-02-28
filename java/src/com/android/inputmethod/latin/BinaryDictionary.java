@@ -28,6 +28,7 @@ import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.makedict.FusionDictionary.DictionaryOptions;
 import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
 import com.android.inputmethod.latin.makedict.WordProperty;
+import com.android.inputmethod.latin.personalization.PersonalizationHelper;
 import com.android.inputmethod.latin.settings.NativeSuggestOptions;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.FileUtils;
@@ -508,7 +509,9 @@ public final class BinaryDictionary extends Dictionary {
      */
     @UsedForTesting
     public static int setCurrentTimeForTest(final int currentTime) {
-        return setCurrentTimeForTestNative(currentTime);
+        final int currentNativeTimestamp = setCurrentTimeForTestNative(currentTime);
+        PersonalizationHelper.currentTimeChangedForTesting(currentNativeTimestamp);
+        return currentNativeTimestamp;
     }
 
     @UsedForTesting
