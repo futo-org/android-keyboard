@@ -142,8 +142,8 @@ public final class Suggest {
             whitelistedWord = firstSuggestion = null;
         } else {
             final SuggestedWordInfo firstSuggestedWordInfo = getTransformedSuggestedWordInfo(
-                            suggestionsSet.first(), mLocale, isAllUpperCase, isFirstCharCapitalized,
-                            trailingSingleQuotesCount);
+                    suggestionsSet.first(), mLocale, isAllUpperCase, isFirstCharCapitalized,
+                    trailingSingleQuotesCount);
             firstSuggestion = firstSuggestedWordInfo.mWord;
             if (SuggestedWordInfo.KIND_WHITELIST != firstSuggestedWordInfo.mKind) {
                 whitelistedWord = null;
@@ -161,10 +161,10 @@ public final class Suggest {
         // TODO: stop relying on indices to find where is the auto-correction in the suggested
         // words, and correct this test.
         final boolean allowsToBeAutoCorrected = (null != whitelistedWord
-                && !whitelistedWord.equals(consideredWord))
+                && !whitelistedWord.equals(typedWord))
                 || (consideredWord.length() > 1 && !mDictionaryFacilitator.isValidWord(
                         consideredWord, wordComposer.isFirstCharCapitalized())
-                        && !consideredWord.equals(firstSuggestion));
+                        && !typedWord.equals(firstSuggestion));
 
         final boolean hasAutoCorrection;
         // TODO: using isCorrectionEnabled here is not very good. It's probably useless, because
