@@ -550,7 +550,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             // Create Suggest instance with the new dictionary facilitator.
             replaceSuggest(new Suggest(oldSuggest, dictionaryFacilitator));
         } else if (oldSuggest == null) {
-            initSuggestForLocale(oldSuggest, locale);
+            initSuggest();
         }
     }
 
