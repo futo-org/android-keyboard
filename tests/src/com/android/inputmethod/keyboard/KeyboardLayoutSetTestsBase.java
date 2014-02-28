@@ -80,12 +80,25 @@ public class KeyboardLayoutSetTestsBase extends AndroidTestCase {
                 || mScreenMetrics == Constants.SCREEN_METRICS_LARGE_PHONE;
     }
 
+    private static String toString(final ArrayList<InputMethodSubtype> subtypeList) {
+        final StringBuilder sb = new StringBuilder();
+        for (int index = 0; index < subtypeList.size(); index++) {
+            final InputMethodSubtype subtype = subtypeList.get(index);
+            sb.append((index + 1) + ": ");
+            sb.append(SubtypeLocaleUtils.getSubtypeNameForLogging(subtype));
+            sb.append("\n");
+        }
+        return sb.toString();
+    }
+
     public final void testAllSubtypesCount() {
-        assertEquals(NUMBER_OF_SUBTYPES, mAllSubtypesList.size());
+        assertEquals(toString(mAllSubtypesList),
+                NUMBER_OF_SUBTYPES, mAllSubtypesList.size());
     }
 
     public final void testAsciiCapableSubtypesCount() {
-        assertEquals(NUMBER_OF_ASCII_CAPABLE_SUBTYPES, mAsciiCapableSubtypesList.size());
+        assertEquals(toString(mAsciiCapableSubtypesList),
+                NUMBER_OF_ASCII_CAPABLE_SUBTYPES, mAsciiCapableSubtypesList.size());
     }
 
     protected final InputMethodSubtype getSubtype(final Locale locale,
