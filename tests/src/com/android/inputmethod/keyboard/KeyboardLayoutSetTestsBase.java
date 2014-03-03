@@ -43,6 +43,7 @@ import java.util.Locale;
 public class KeyboardLayoutSetTestsBase extends AndroidTestCase {
     private static final int NUMBER_OF_SUBTYPES = 63;
     private static final int NUMBER_OF_ASCII_CAPABLE_SUBTYPES = 40;
+    private static final int NUMBER_OF_PREDEFINED_ADDITIONAL_SUBTYPES = 2;
 
     private static final KeyboardTheme DEFAULT_KEYBOARD_THEME =
             KeyboardSwitcher.KEYBOARD_THEMES[KeyboardSwitcher.THEME_INDEX_DEFAULT];
@@ -50,6 +51,8 @@ public class KeyboardLayoutSetTestsBase extends AndroidTestCase {
     // All input method subtypes of LatinIME.
     private final ArrayList<InputMethodSubtype> mAllSubtypesList = CollectionUtils.newArrayList();
     private final ArrayList<InputMethodSubtype> mAsciiCapableSubtypesList =
+            CollectionUtils.newArrayList();
+    private final ArrayList<InputMethodSubtype> mAdditionalSubtypesList =
             CollectionUtils.newArrayList();
 
     private Context mThemeContext;
@@ -68,6 +71,10 @@ public class KeyboardLayoutSetTestsBase extends AndroidTestCase {
         final int subtypeCount = imi.getSubtypeCount();
         for (int index = 0; index < subtypeCount; index++) {
             final InputMethodSubtype subtype = imi.getSubtypeAt(index);
+            if (AdditionalSubtypeUtils.isAdditionalSubtype(subtype)) {
+                mAdditionalSubtypesList.add(subtype);
+                continue;
+            }
             mAllSubtypesList.add(subtype);
             if (InputMethodSubtypeCompatUtils.isAsciiCapable(subtype)) {
                 mAsciiCapableSubtypesList.add(subtype);
@@ -99,6 +106,11 @@ public class KeyboardLayoutSetTestsBase extends AndroidTestCase {
     public final void testAsciiCapableSubtypesCount() {
         assertEquals(toString(mAsciiCapableSubtypesList),
                 NUMBER_OF_ASCII_CAPABLE_SUBTYPES, mAsciiCapableSubtypesList.size());
+    }
+
+    public final void testAdditionalSubtypesCount() {
+        assertEquals(toString(mAdditionalSubtypesList),
+                NUMBER_OF_PREDEFINED_ADDITIONAL_SUBTYPES, mAdditionalSubtypesList.size());
     }
 
     protected final InputMethodSubtype getSubtype(final Locale locale,

@@ -27,6 +27,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.inputmethod.InputMethodSubtype;
 
+import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.compat.InputMethodSubtypeCompatUtils;
 import com.android.inputmethod.latin.R;
 
@@ -42,6 +43,7 @@ public final class AdditionalSubtypeUtils {
         // This utility class is not publicly instantiable.
     }
 
+    @UsedForTesting
     public static boolean isAdditionalSubtype(final InputMethodSubtype subtype) {
         return subtype.containsExtraValueKey(IS_ADDITIONAL_SUBTYPE);
     }
