@@ -84,7 +84,6 @@ public final class SettingsValues {
     public final float mAutoCorrectionThreshold;
     public final boolean mCorrectionEnabled;
     public final int mSuggestionVisibility;
-    public final boolean mUseOnlyPersonalizationDictionaryForDebug;
     public final int mDisplayOrientation;
     private final AsyncResultHolder<AppWorkaroundsUtils> mAppWorkarounds;
 
@@ -168,8 +167,6 @@ public final class SettingsValues {
                 prefs, DebugSettings.PREF_KEY_PREVIEW_DISMISS_END_SCALE,
                 ResourceUtils.getFloatFromFraction(
                         res, R.fraction.config_key_preview_dismiss_end_scale));
-        mUseOnlyPersonalizationDictionaryForDebug = prefs.getBoolean(
-                DebugSettings.PREF_USE_ONLY_PERSONALIZATION_DICTIONARY_FOR_DEBUG, false);
         mDisplayOrientation = res.getConfiguration().orientation;
         mAppWorkarounds = new AsyncResultHolder<AppWorkaroundsUtils>();
         final PackageInfo packageInfo = TargetPackageInfoGetterTask.getCachedPackageInfo(
@@ -390,8 +387,6 @@ public final class SettingsValues {
         sb.append("" + mCorrectionEnabled);
         sb.append("\n   mSuggestionVisibility = ");
         sb.append("" + mSuggestionVisibility);
-        sb.append("\n   mUseOnlyPersonalizationDictionaryForDebug = ");
-        sb.append("" + mUseOnlyPersonalizationDictionaryForDebug);
         sb.append("\n   mDisplayOrientation = ");
         sb.append("" + mDisplayOrientation);
         sb.append("\n   mAppWorkarounds = ");
