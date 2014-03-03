@@ -50,7 +50,7 @@ public final class RichInputMethodManager {
     private static final RichInputMethodManager sInstance = new RichInputMethodManager();
 
     private InputMethodManagerCompatWrapper mImmWrapper;
-    private InputMethodInfo mInputMethodInfoOfThisIme;
+    private InputMethodInfoCache mInputMethodInfoCache;
     final HashMap<InputMethodInfo, List<InputMethodSubtype>>
             mSubtypeListCacheWithImplicitlySelectedSubtypes = CollectionUtils.newHashMap();
     final HashMap<InputMethodInfo, List<InputMethodSubtype>>
@@ -83,7 +83,8 @@ public final class RichInputMethodManager {
             return;
         }
         mImmWrapper = new InputMethodManagerCompatWrapper(context);
-        mInputMethodInfoOfThisIme = getInputMethodInfoOfThisIme(context);
+        mInputMethodInfoCache = new InputMethodInfoCache(
+                mImmWrapper.mImm, context.getPackageName());
 
         // Initialize additional subtypes.
         SubtypeLocaleUtils.init(context);
@@ -99,20 +100,10 @@ public final class RichInputMethodManager {
         return mImmWrapper.mImm;
     }
 
-    private InputMethodInfo getInputMethodInfoOfThisIme(final Context context) {
-        final String packageName = context.getPackageName();
-        for (final InputMethodInfo imi : mImmWrapper.mImm.getInputMethodList()) {
-            if (imi.getPackageName().equals(packageName)) {
-                return imi;
-            }
-        }
-        throw new RuntimeException("Input method id for " + packageName + " not found.");
-    }
-
     public List<InputMethodSubtype> getMyEnabledInputMethodSubtypeList(
             boolean allowsImplicitlySelectedSubtypes) {
-        return getEnabledInputMethodSubtypeList(mInputMethodInfoOfThisIme,
-                allowsImplicitlySelectedSubtypes);
+        return getEnabledInputMethodSubtypeList(
+                getInputMethodInfoOfThisIme(), allowsImplicitlySelectedSubtypes);
     }
 
     public boolean switchToNextInputMethod(final IBinder token, final boolean onlyCurrentIme) {
@@ -153,10 +144,10 @@ public final class RichInputMethodManager {
     private boolean switchToNextInputMethodAndSubtype(final IBinder token) {
         final InputMethodManager imm = mImmWrapper.mImm;
         final List<InputMethodInfo> enabledImis = imm.getEnabledInputMethodList();
-        final int currentIndex = getImiIndexInList(mInputMethodInfoOfThisIme, enabledImis);
+        final int currentIndex = getImiIndexInList(getInputMethodInfoOfThisIme(), enabledImis);
         if (currentIndex == INDEX_NOT_FOUND) {
             Log.w(TAG, "Can't find current IME in enabled IMEs: IME package="
-                    + mInputMethodInfoOfThisIme.getPackageName());
+                    + getInputMethodInfoOfThisIme().getPackageName());
             return false;
         }
         final InputMethodInfo nextImi = getNextNonAuxiliaryIme(currentIndex, enabledImis);
@@ -213,16 +204,45 @@ public final class RichInputMethodManager {
         return true;
     }
 
+    private static class InputMethodInfoCache {
+        private final InputMethodManager mImm;
+        private final String mImePackageName;
+
+        private InputMethodInfo mCachedValue;
+
+        public InputMethodInfoCache(final InputMethodManager imm, final String imePackageName) {
+            mImm = imm;
+            mImePackageName = imePackageName;
+        }
+
+        public synchronized InputMethodInfo get() {
+            if (mCachedValue != null) {
+                return mCachedValue;
+            }
+            for (final InputMethodInfo imi : mImm.getInputMethodList()) {
+                if (imi.getPackageName().equals(mImePackageName)) {
+                    mCachedValue = imi;
+                    return imi;
+                }
+            }
+            throw new RuntimeException("Input method id for " + mImePackageName + " not found.");
+        }
+
+        public synchronized void clear() {
+            mCachedValue = null;
+        }
+    }
+
     public InputMethodInfo getInputMethodInfoOfThisIme() {
-        return mInputMethodInfoOfThisIme;
+        return mInputMethodInfoCache.get();
     }
 
     public String getInputMethodIdOfThisIme() {
-        return mInputMethodInfoOfThisIme.getId();
+        return getInputMethodInfoOfThisIme().getId();
     }
 
     public boolean checkIfSubtypeBelongsToThisImeAndEnabled(final InputMethodSubtype subtype) {
-        return checkIfSubtypeBelongsToImeAndEnabled(mInputMethodInfoOfThisIme, subtype);
+        return checkIfSubtypeBelongsToImeAndEnabled(getInputMethodInfoOfThisIme(), subtype);
     }
 
     public boolean checkIfSubtypeBelongsToThisImeAndImplicitlyEnabled(
@@ -258,7 +278,7 @@ public final class RichInputMethodManager {
     }
 
     public boolean checkIfSubtypeBelongsToThisIme(final InputMethodSubtype subtype) {
-        return getSubtypeIndexInIme(subtype, mInputMethodInfoOfThisIme) != INDEX_NOT_FOUND;
+        return getSubtypeIndexInIme(subtype, getInputMethodInfoOfThisIme()) != INDEX_NOT_FOUND;
     }
 
     private static int getSubtypeIndexInIme(final InputMethodSubtype subtype,
@@ -286,7 +306,8 @@ public final class RichInputMethodManager {
 
     public boolean hasMultipleEnabledSubtypesInThisIme(
             final boolean shouldIncludeAuxiliarySubtypes) {
-        final List<InputMethodInfo> imiList = Collections.singletonList(mInputMethodInfoOfThisIme);
+        final List<InputMethodInfo> imiList = Collections.singletonList(
+                getInputMethodInfoOfThisIme());
         return hasMultipleEnabledSubtypes(shouldIncludeAuxiliarySubtypes, imiList);
     }
 
@@ -340,7 +361,7 @@ public final class RichInputMethodManager {
 
     public InputMethodSubtype findSubtypeByLocaleAndKeyboardLayoutSet(final String localeString,
             final String keyboardLayoutSetName) {
-        final InputMethodInfo myImi = mInputMethodInfoOfThisIme;
+        final InputMethodInfo myImi = getInputMethodInfoOfThisIme();
         final int count = myImi.getSubtypeCount();
         for (int i = 0; i < count; i++) {
             final InputMethodSubtype subtype = myImi.getSubtypeAt(i);
@@ -355,13 +376,14 @@ public final class RichInputMethodManager {
 
     public void setInputMethodAndSubtype(final IBinder token, final InputMethodSubtype subtype) {
         mImmWrapper.mImm.setInputMethodAndSubtype(
-                token, mInputMethodInfoOfThisIme.getId(), subtype);
+                token, getInputMethodIdOfThisIme(), subtype);
     }
 
     public void setAdditionalInputMethodSubtypes(final InputMethodSubtype[] subtypes) {
         mImmWrapper.mImm.setAdditionalInputMethodSubtypes(
-                mInputMethodInfoOfThisIme.getId(), subtypes);
-        // Clear the cache so that we go read the subtypes again next time.
+                getInputMethodIdOfThisIme(), subtypes);
+        // Clear the cache so that we go read the {@link InputMethodInfo} of this IME and list of
+        // subtypes again next time.
         clearSubtypeCaches();
     }
 
@@ -382,5 +404,6 @@ public final class RichInputMethodManager {
     public void clearSubtypeCaches() {
         mSubtypeListCacheWithImplicitlySelectedSubtypes.clear();
         mSubtypeListCacheWithoutImplicitlySelectedSubtypes.clear();
+        mInputMethodInfoCache.clear();
     }
 }
