@@ -84,7 +84,7 @@ public class KeyboardLayoutSetTestsBase extends AndroidTestCase {
         final StringBuilder sb = new StringBuilder();
         for (int index = 0; index < subtypeList.size(); index++) {
             final InputMethodSubtype subtype = subtypeList.get(index);
-            sb.append((index + 1) + ": ");
+            sb.append(index + ": ");
             sb.append(SubtypeLocaleUtils.getSubtypeNameForLogging(subtype));
             sb.append("\n");
         }
