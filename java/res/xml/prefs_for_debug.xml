@@ -65,11 +65,6 @@
         android:key="pref_key_preview_dismiss_duration"
         android:title="@string/prefs_key_popup_dismiss_duration_settings"
         latin:maxValue="100" /> <!-- milliseconds -->
-    <CheckBoxPreference
-        android:defaultValue="false"
-        android:key="use_only_personalization_dictionary_for_debug"
-        android:persistent="true"
-        android:title="@string/prefs_use_only_personalization_dictionary" />
     <PreferenceScreen
         android:key="read_external_dictionary"
         android:title="@string/prefs_read_external_dictionary" />

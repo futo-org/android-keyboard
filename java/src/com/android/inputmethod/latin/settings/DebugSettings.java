@@ -42,8 +42,6 @@ public final class DebugSettings extends PreferenceFragment
     public static final String PREF_FORCE_NON_DISTINCT_MULTITOUCH = "force_non_distinct_multitouch";
     public static final String PREF_USABILITY_STUDY_MODE = "usability_study_mode";
     public static final String PREF_STATISTICS_LOGGING = "enable_logging";
-    public static final String PREF_USE_ONLY_PERSONALIZATION_DICTIONARY_FOR_DEBUG =
-            "use_only_personalization_dictionary_for_debug";
     public static final String PREF_KEY_PREVIEW_SHOW_UP_START_SCALE =
             "pref_key_preview_show_up_start_scale";
     public static final String PREF_KEY_PREVIEW_DISMISS_END_SCALE =
