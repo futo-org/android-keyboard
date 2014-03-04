@@ -31,12 +31,14 @@ public interface MoreKeysPanel {
          * Remove the current {@link MoreKeysPanel} from the target view.
          * @param panel the panel to be dismissed.
          */
+        // TODO: Remove unused {@link MoreKeysPanel} argument.
         public void onDismissMoreKeysPanel(final MoreKeysPanel panel);
 
         /**
          * Instructs the parent to cancel the panel (e.g., when entering a different input mode).
          * @param panel the panel to be canceled.
          */
+        // TODO: Remove unused {@link MoreKeysPanel} argument.
         public void onCancelMoreKeysPanel(final MoreKeysPanel panel);
     }
 
