@@ -41,10 +41,6 @@ import java.util.Locale;
 
 @SmallTest
 public class KeyboardLayoutSetTestsBase extends AndroidTestCase {
-    private static final int NUMBER_OF_SUBTYPES = 63;
-    private static final int NUMBER_OF_ASCII_CAPABLE_SUBTYPES = 40;
-    private static final int NUMBER_OF_PREDEFINED_ADDITIONAL_SUBTYPES = 2;
-
     private static final KeyboardTheme DEFAULT_KEYBOARD_THEME =
             KeyboardSwitcher.KEYBOARD_THEMES[KeyboardSwitcher.THEME_INDEX_DEFAULT];
 
@@ -82,35 +78,21 @@ public class KeyboardLayoutSetTestsBase extends AndroidTestCase {
         }
     }
 
+    protected final ArrayList<InputMethodSubtype> getAllSubtypesList() {
+        return mAllSubtypesList;
+    }
+
+    protected final ArrayList<InputMethodSubtype> getAsciiCapableSubtypesList() {
+        return mAsciiCapableSubtypesList;
+    }
+
+    protected final ArrayList<InputMethodSubtype> getAdditionalSubtypesList() {
+        return mAdditionalSubtypesList;
+    }
+
     protected final boolean isPhone() {
         return mScreenMetrics == Constants.SCREEN_METRICS_SMALL_PHONE
                 || mScreenMetrics == Constants.SCREEN_METRICS_LARGE_PHONE;
-    }
-
-    private static String toString(final ArrayList<InputMethodSubtype> subtypeList) {
-        final StringBuilder sb = new StringBuilder();
-        for (int index = 0; index < subtypeList.size(); index++) {
-            final InputMethodSubtype subtype = subtypeList.get(index);
-            sb.append(index + ": ");
-            sb.append(SubtypeLocaleUtils.getSubtypeNameForLogging(subtype));
-            sb.append("\n");
-        }
-        return sb.toString();
-    }
-
-    public final void testAllSubtypesCount() {
-        assertEquals(toString(mAllSubtypesList),
-                NUMBER_OF_SUBTYPES, mAllSubtypesList.size());
-    }
-
-    public final void testAsciiCapableSubtypesCount() {
-        assertEquals(toString(mAsciiCapableSubtypesList),
-                NUMBER_OF_ASCII_CAPABLE_SUBTYPES, mAsciiCapableSubtypesList.size());
-    }
-
-    public final void testAdditionalSubtypesCount() {
-        assertEquals(toString(mAdditionalSubtypesList),
-                NUMBER_OF_PREDEFINED_ADDITIONAL_SUBTYPES, mAdditionalSubtypesList.size());
     }
 
     protected final InputMethodSubtype getSubtype(final Locale locale,
