@@ -122,7 +122,7 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
         onMoveKeyInternal(x, y, pointerId);
         if (hasOldKey && mCurrentKey == null) {
             // If the pointer has moved too far away from any target then cancel the panel.
-            mController.onCancelMoreKeysPanel(this);
+            mController.onCancelMoreKeysPanel();
         }
     }
 
@@ -184,7 +184,7 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
         if (!isShowingInParent()) {
             return;
         }
-        mController.onDismissMoreKeysPanel(this);
+        mController.onDismissMoreKeysPanel();
     }
 
     @Override

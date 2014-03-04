@@ -700,12 +700,12 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     }
 
     @Override
-    public void onCancelMoreKeysPanel(final MoreKeysPanel panel) {
+    public void onCancelMoreKeysPanel() {
         PointerTracker.dismissAllMoreKeysPanels();
     }
 
     @Override
-    public void onDismissMoreKeysPanel(final MoreKeysPanel panel) {
+    public void onDismissMoreKeysPanel() {
         dimEntireKeyboard(false /* dimmed */);
         if (isShowingMoreKeysPanel()) {
             mMoreKeysPanel.removeFromParent();

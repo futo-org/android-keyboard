@@ -29,26 +29,22 @@ public interface MoreKeysPanel {
 
         /**
          * Remove the current {@link MoreKeysPanel} from the target view.
-         * @param panel the panel to be dismissed.
          */
-        // TODO: Remove unused {@link MoreKeysPanel} argument.
-        public void onDismissMoreKeysPanel(final MoreKeysPanel panel);
+        public void onDismissMoreKeysPanel();
 
         /**
          * Instructs the parent to cancel the panel (e.g., when entering a different input mode).
-         * @param panel the panel to be canceled.
          */
-        // TODO: Remove unused {@link MoreKeysPanel} argument.
-        public void onCancelMoreKeysPanel(final MoreKeysPanel panel);
+        public void onCancelMoreKeysPanel();
     }
 
     public static final Controller EMPTY_CONTROLLER = new Controller() {
         @Override
         public void onShowMoreKeysPanel(final MoreKeysPanel panel) {}
         @Override
-        public void onDismissMoreKeysPanel(final MoreKeysPanel panel) {}
+        public void onDismissMoreKeysPanel() {}
         @Override
-        public void onCancelMoreKeysPanel(final MoreKeysPanel panel) {}
+        public void onCancelMoreKeysPanel() {}
     };
 
     /**
