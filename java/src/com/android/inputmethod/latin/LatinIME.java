@@ -78,7 +78,6 @@ import com.android.inputmethod.latin.suggestions.SuggestionStripView;
 import com.android.inputmethod.latin.suggestions.SuggestionStripViewAccessor;
 import com.android.inputmethod.latin.utils.ApplicationUtils;
 import com.android.inputmethod.latin.utils.CapsModeUtils;
-import com.android.inputmethod.latin.utils.CompletionInfoUtils;
 import com.android.inputmethod.latin.utils.CoordinateUtils;
 import com.android.inputmethod.latin.utils.ImportantNoticeUtils;
 import com.android.inputmethod.latin.utils.IntentUtils;
@@ -1044,18 +1043,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
     }
 
-    private void setSuggestionStripShownInternal(final boolean isSuggestionStripVisible) {
-        // TODO: Modify this if we support suggestions with hard keyboard
-        if (!onEvaluateInputViewShown() || !hasSuggestionStripView()) {
-            return;
-        }
-        if (isSuggestionStripVisible) {
-            mSuggestionStripView.setVisibility(View.VISIBLE);
-        } else {
-            mSuggestionStripView.setVisibility(isFullscreenMode() ? View.GONE : View.INVISIBLE);
-        }
-    }
-
     private int getAdjustedBackingViewHeight() {
         final int currentHeight = mKeyPreviewBackingView.getHeight();
         if (currentHeight > 0) {
@@ -1293,7 +1280,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public void onStartBatchInput() {
-        mInputLogic.onStartBatchInput(mSettings.getCurrent(),  mKeyboardSwitcher, mHandler);
+        mInputLogic.onStartBatchInput(mSettings.getCurrent(), mKeyboardSwitcher, mHandler);
     }
 
     @Override
@@ -1399,7 +1386,15 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     SubtypeLocaleUtils.isRtlLanguage(mSubtypeSwitcher.getCurrentSubtype()));
         }
         mKeyboardSwitcher.onAutoCorrectionStateChanged(suggestedWords.mWillAutoCorrect);
-        setSuggestionStripShownInternal(isSuggestionStripVisible);
+        // TODO: Modify this when we support suggestions with hard keyboard
+        if (!onEvaluateInputViewShown() || !hasSuggestionStripView()) {
+            return;
+        }
+        if (isSuggestionStripVisible) {
+            mSuggestionStripView.setVisibility(View.VISIBLE);
+        } else {
+            mSuggestionStripView.setVisibility(isFullscreenMode() ? View.GONE : View.INVISIBLE);
+        }
     }
 
     // TODO[IL]: Move this out of LatinIME.
