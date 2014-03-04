@@ -205,9 +205,9 @@ public final class InputLogic {
             LatinImeLogger.logOnManualSuggestion("", suggestion, index, suggestedWords);
             // Rely on onCodeInput to do the complicated swapping/stripping logic consistently.
             final int primaryCode = suggestion.charAt(0);
-            onCodeInput(primaryCode,
+            onCodeInput(settingsValues, primaryCode,
                     Constants.SUGGESTION_STRIP_COORDINATE, Constants.SUGGESTION_STRIP_COORDINATE,
-                    settingsValues, handler, keyboardSwitcher);
+                    keyboardSwitcher.getKeyboardShiftMode(), handler);
             if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
                 ResearchLogger.latinIME_punctuationSuggestion(index, suggestion,
                         false /* isBatchMode */, suggestedWords.mIsPrediction);
@@ -353,17 +353,21 @@ public final class InputLogic {
      * Typically, this is called whenever a key is pressed on the software keyboard. This is not
      * the entry point for gesture input; see the onBatchInput* family of functions for this.
      *
+     * @param settingsValues the current settings values.
      * @param code the code to handle. It may be a code point, or an internal key code.
      * @param x the x-coordinate where the user pressed the key, or NOT_A_COORDINATE.
      * @param y the y-coordinate where the user pressed the key, or NOT_A_COORDINATE.
+     * @param keyboardShiftMode the current shift mode of the keyboard, as returned by
+     *     {@link com.android.inputmethod.keyboard.KeyboardSwitcher#getKeyboardShiftMode()}
+     * @return the complete transaction object
      */
-    public void onCodeInput(final int code, final int x, final int y,
-            final SettingsValues settingsValues,
-            // TODO: remove these two arguments
-            final LatinIME.UIHandler handler, final KeyboardSwitcher keyboardSwitcher) {
+    public InputTransaction onCodeInput(final SettingsValues settingsValues, final int code,
+            final int x, final int y, final int keyboardShiftMode,
+            // TODO: remove this argument
+            final LatinIME.UIHandler handler) {
         final InputTransaction inputTransaction = new InputTransaction(settingsValues, code, x, y,
                 SystemClock.uptimeMillis(), mSpaceState,
-                getActualCapsMode(settingsValues, keyboardSwitcher.getKeyboardShiftMode()));
+                getActualCapsMode(settingsValues, keyboardShiftMode));
         if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
             ResearchLogger.latinIME_onCodeInput(inputTransaction.mKeyCode,
                     inputTransaction.mX, inputTransaction.mY);
@@ -473,15 +477,7 @@ public final class InputLogic {
             mEnteredText = null;
         }
         mConnection.endBatchEdit();
-        switch (inputTransaction.getRequiredShiftUpdate()) {
-        case InputTransaction.SHIFT_UPDATE_LATER:
-            mLatinIME.mHandler.postUpdateShiftState();
-            break;
-        case InputTransaction.SHIFT_UPDATE_NOW:
-            keyboardSwitcher.updateShiftState();
-            break;
-        default: // SHIFT_NO_UPDATE
-        }
+        return inputTransaction;
     }
 
     public void onStartBatchInput(final SettingsValues settingsValues,

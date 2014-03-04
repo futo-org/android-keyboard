@@ -59,6 +59,7 @@ import com.android.inputmethod.accessibility.AccessibleKeyboardViewProxy;
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.compat.InputMethodServiceCompatUtils;
 import com.android.inputmethod.dictionarypack.DictionaryPackConstants;
+import com.android.inputmethod.event.InputTransaction;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardActionListener;
 import com.android.inputmethod.keyboard.KeyboardId;
@@ -1265,8 +1266,18 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mSubtypeSwitcher.switchToShortcutIME(this);
             // Still call the *#onCodeInput methods for readability.
         }
-        mInputLogic.onCodeInput(codeToSend, keyX, keyY, mSettings.getCurrent(), mHandler,
-                mKeyboardSwitcher);
+        final InputTransaction completeInputTransaction =
+                mInputLogic.onCodeInput(mSettings.getCurrent(), codeToSend, keyX, keyY,
+                        mKeyboardSwitcher.getKeyboardShiftMode(), mHandler);
+        switch (completeInputTransaction.getRequiredShiftUpdate()) {
+            case InputTransaction.SHIFT_UPDATE_LATER:
+                mHandler.postUpdateShiftState();
+                break;
+            case InputTransaction.SHIFT_UPDATE_NOW:
+                mKeyboardSwitcher.updateShiftState();
+                break;
+            default: // SHIFT_NO_UPDATE
+        }
         mKeyboardSwitcher.onCodeInput(codePoint);
     }
 
