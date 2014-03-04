@@ -35,7 +35,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.android.inputmethod.keyboard.Keyboard;
-import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.keyboard.MainKeyboardView;
 import com.android.inputmethod.keyboard.MoreKeysPanel;
 import com.android.inputmethod.latin.AudioAndHapticFeedbackManager;
@@ -312,7 +311,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
     }
 
     boolean showMoreSuggestions() {
-        final Keyboard parentKeyboard = KeyboardSwitcher.getInstance().getKeyboard();
+        final Keyboard parentKeyboard = mMainKeyboardView.getKeyboard();
         if (parentKeyboard == null) {
             return false;
         }
@@ -320,6 +319,10 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         if (!layoutHelper.mMoreSuggestionsAvailable) {
             return false;
         }
+        // Dismiss another {@link MoreKeysPanel} that may be being showed, for example
+        // {@link MoreKeysKeyboardView}.
+        // TODO: Remove unused null argument.
+        mMainKeyboardView.onDismissMoreKeysPanel(null /* unused */);
         final int stripWidth = getWidth();
         final View container = mMoreSuggestionsContainer;
         final int maxWidth = stripWidth - container.getPaddingLeft() - container.getPaddingRight();
