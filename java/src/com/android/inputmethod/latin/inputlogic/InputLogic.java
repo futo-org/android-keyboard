@@ -289,19 +289,14 @@ public final class InputLogic {
      * Consider an update to the cursor position. Evaluate whether this update has happened as
      * part of normal typing or whether it was an explicit cursor move by the user. In any case,
      * do the necessary adjustments.
-     * @param settingsValues the current settings
      * @param oldSelStart old selection start
      * @param oldSelEnd old selection end
      * @param newSelStart new selection start
      * @param newSelEnd new selection end
-     * @param composingSpanStart composing span start
-     * @param composingSpanEnd composing span end
      * @return whether the cursor has moved as a result of user interaction.
      */
-    public boolean onUpdateSelection(final SettingsValues settingsValues,
-            final int oldSelStart, final int oldSelEnd,
-            final int newSelStart, final int newSelEnd,
-            final int composingSpanStart, final int composingSpanEnd) {
+    public boolean onUpdateSelection(final int oldSelStart, final int oldSelEnd,
+            final int newSelStart, final int newSelEnd) {
         if (mConnection.isBelatedExpectedUpdate(oldSelStart, newSelStart, oldSelEnd, newSelEnd)) {
             return false;
         }
@@ -334,8 +329,7 @@ public final class InputLogic {
             // we'd have the suggestion strip noticeably janky. To avoid that, we don't clear
             // it here, which means we'll keep outdated suggestions for a split second but the
             // visual result is better.
-            resetEntireInputState(settingsValues, newSelStart, newSelEnd,
-                    false /* clearSuggestionStrip */);
+            resetEntireInputState(newSelStart, newSelEnd, false /* clearSuggestionStrip */);
         } else {
             // resetEntireInputState calls resetCachesUponCursorMove, but forcing the
             // composition to end. But in all cases where we don't reset the entire input
@@ -503,7 +497,7 @@ public final class InputLogic {
             if (mWordComposer.isCursorFrontOrMiddleOfComposingWord()) {
                 // If we are in the middle of a recorrection, we need to commit the recorrection
                 // first so that we can insert the batch input at the current cursor position.
-                resetEntireInputState(settingsValues, mConnection.getExpectedSelectionStart(),
+                resetEntireInputState(mConnection.getExpectedSelectionStart(),
                         mConnection.getExpectedSelectionEnd(), true /* clearSuggestionStrip */);
             } else if (wordComposerSize <= 1) {
                 // We auto-correct the previous (typed, not gestured) string iff it's one character
@@ -584,8 +578,7 @@ public final class InputLogic {
         mInputLogicHandler.onUpdateBatchInput(batchPointers, mAutoCommitSequenceNumber);
     }
 
-    public void onEndBatchInput(final SettingsValues settingValues,
-            final InputPointers batchPointers) {
+    public void onEndBatchInput(final InputPointers batchPointers) {
         mInputLogicHandler.onEndBatchInput(batchPointers, mAutoCommitSequenceNumber);
         ++mAutoCommitSequenceNumber;
     }
@@ -657,7 +650,7 @@ public final class InputLogic {
                 if (mWordComposer.isCursorFrontOrMiddleOfComposingWord()) {
                     // If we are in the middle of a recorrection, we need to commit the recorrection
                     // first so that we can insert the character at the current cursor position.
-                    resetEntireInputState(settingsValues, mConnection.getExpectedSelectionStart(),
+                    resetEntireInputState(mConnection.getExpectedSelectionStart(),
                             mConnection.getExpectedSelectionEnd(), true /* clearSuggestionStrip */);
                 } else {
                     commitTyped(settingsValues, LastComposedWord.NOT_A_SEPARATOR);
@@ -699,7 +692,7 @@ public final class InputLogic {
         if (mWordComposer.isCursorFrontOrMiddleOfComposingWord()) {
             // If we are in the middle of a recorrection, we need to commit the recorrection
             // first so that we can insert the character at the current cursor position.
-            resetEntireInputState(settingsValues, mConnection.getExpectedSelectionStart(),
+            resetEntireInputState(mConnection.getExpectedSelectionStart(),
                     mConnection.getExpectedSelectionEnd(), true /* clearSuggestionStrip */);
             isComposingWord = false;
         }
@@ -781,7 +774,7 @@ public final class InputLogic {
         if (mWordComposer.isCursorFrontOrMiddleOfComposingWord()) {
             // If we are in the middle of a recorrection, we need to commit the recorrection
             // first so that we can insert the separator at the current cursor position.
-            resetEntireInputState(settingsValues, mConnection.getExpectedSelectionStart(),
+            resetEntireInputState(mConnection.getExpectedSelectionStart(),
                     mConnection.getExpectedSelectionEnd(), true /* clearSuggestionStrip */);
         }
         // isComposingWord() may have changed since we stored wasComposing
@@ -876,7 +869,6 @@ public final class InputLogic {
             // TODO: remove these arguments
             final LatinIME.UIHandler handler, final KeyboardSwitcher keyboardSwitcher) {
         mSpaceState = SpaceState.NONE;
-        final int deleteCountAtStart = mDeleteCount;
         mDeleteCount++;
 
         // In many cases, we may have to put the keyboard in auto-shift state again. However
@@ -887,7 +879,7 @@ public final class InputLogic {
         if (mWordComposer.isCursorFrontOrMiddleOfComposingWord()) {
             // If we are in the middle of a recorrection, we need to commit the recorrection
             // first so that we can remove the character at the current cursor position.
-            resetEntireInputState(settingsValues, mConnection.getExpectedSelectionStart(),
+            resetEntireInputState(mConnection.getExpectedSelectionStart(),
                     mConnection.getExpectedSelectionEnd(), true /* clearSuggestionStrip */);
             // When we exit this if-clause, mWordComposer.isComposingWord() will return false.
         }
@@ -1204,11 +1196,7 @@ public final class InputLogic {
                 timeStampInSeconds);
     }
 
-    public void performUpdateSuggestionStripSync(final SettingsValues settingsValues,
-            // TODO: Remove this argument
-            final LatinIME.UIHandler handler) {
-        handler.cancelUpdateSuggestionStrip();
-
+    public void performUpdateSuggestionStripSync(final SettingsValues settingsValues) {
         // Check if we have a suggestion engine attached.
         if (mSuggest == null || !settingsValues.isSuggestionsRequested()) {
             if (mWordComposer.isComposingWord()) {
@@ -1626,15 +1614,13 @@ public final class InputLogic {
      * This will clear the composing word, reset the last composed word, clear the suggestion
      * strip and tell the input connection about it so that it can refresh its caches.
      *
-     * @param settingsValues the current values of the settings.
      * @param newSelStart the new selection start, in java characters.
      * @param newSelEnd the new selection end, in java characters.
      * @param clearSuggestionStrip whether this method should clear the suggestion strip.
      */
     // TODO: how is this different from startInput ?!
-    // TODO: remove all references to this in LatinIME and make this private
-    public void resetEntireInputState(final SettingsValues settingsValues,
-            final int newSelStart, final int newSelEnd, final boolean clearSuggestionStrip) {
+    private void resetEntireInputState(final int newSelStart, final int newSelEnd,
+            final boolean clearSuggestionStrip) {
         final boolean shouldFinishComposition = mWordComposer.isComposingWord();
         resetComposingState(true /* alsoResetLastComposedWord */);
         if (clearSuggestionStrip) {
@@ -1652,8 +1638,7 @@ public final class InputLogic {
      *
      * @param alsoResetLastComposedWord whether to also reset the last composed word.
      */
-    // TODO: remove all references to this in LatinIME and make this private.
-    public void resetComposingState(final boolean alsoResetLastComposedWord) {
+    private void resetComposingState(final boolean alsoResetLastComposedWord) {
         mWordComposer.reset();
         if (alsoResetLastComposedWord) {
             mLastComposedWord = LastComposedWord.NOT_A_COMPOSED_WORD;
@@ -1698,9 +1683,8 @@ public final class InputLogic {
      * @param text the text on which to maybe apply the span.
      * @return the same text, with the auto-correction underline span if that's appropriate.
      */
-    // TODO: remove all references to this in LatinIME and make this private. Also, shouldn't
-    // this go in some *Utils class instead?
-    public CharSequence getTextWithUnderline(final String text) {
+    // TODO: Shouldn't this go in some *Utils class instead?
+    private CharSequence getTextWithUnderline(final String text) {
         return mIsAutoCorrectionIndicatorOn
                 ? SuggestionSpanUtils.getTextWithAutoCorrectionIndicatorUnderline(mLatinIME, text)
                 : text;
@@ -1765,8 +1749,7 @@ public final class InputLogic {
      *
      * @param settingsValues the current values of the settings.
      */
-    // TODO: Make this private.
-    public void promotePhantomSpace(final SettingsValues settingsValues) {
+    private void promotePhantomSpace(final SettingsValues settingsValues) {
         if (settingsValues.shouldInsertSpacesAutomatically()
                 && settingsValues.mSpacingAndPunctuations.mCurrentLanguageHasSpaces
                 && !mConnection.textBeforeCursorLooksLikeURL()) {
@@ -1872,7 +1855,8 @@ public final class InputLogic {
             final LatinIME.UIHandler handler) {
         // Complete any pending suggestions query first
         if (handler.hasPendingUpdateSuggestions()) {
-            performUpdateSuggestionStripSync(settingsValues, handler);
+            handler.cancelUpdateSuggestionStrip();
+            performUpdateSuggestionStripSync(settingsValues);
         }
         final String typedAutoCorrection = mWordComposer.getAutoCorrectionOrNull();
         final String typedWord = mWordComposer.getTypedWord();
@@ -1916,8 +1900,7 @@ public final class InputLogic {
      * @param commitType the type of the commit, as one of LastComposedWord.COMMIT_TYPE_*
      * @param separatorString the separator that's causing the commit, or NOT_A_SEPARATOR if none.
      */
-    // TODO: Make this private
-    public void commitChosenWord(final SettingsValues settingsValues, final String chosenWord,
+    private void commitChosenWord(final SettingsValues settingsValues, final String chosenWord,
             final int commitType, final String separatorString) {
         final SuggestedWords suggestedWords = mSuggestedWords;
         final CharSequence chosenWordWithSuggestions =

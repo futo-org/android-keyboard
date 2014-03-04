@@ -188,8 +188,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             final KeyboardSwitcher switcher = latinIme.mKeyboardSwitcher;
             switch (msg.what) {
             case MSG_UPDATE_SUGGESTION_STRIP:
+                cancelUpdateSuggestionStrip();
                 latinIme.mInputLogic.performUpdateSuggestionStripSync(
-                        latinIme.mSettings.getCurrent(), this /* handler */);
+                        latinIme.mSettings.getCurrent());
                 break;
             case MSG_UPDATE_SHIFT_STATE:
                 switcher.updateShiftState();
@@ -949,8 +950,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // NOTE: the test harness subclasses LatinIME and overrides isInputViewShown().
         // TODO: find a better way to simulate actual execution.
         if (isInputViewShown() &&
-                mInputLogic.onUpdateSelection(mSettings.getCurrent(), oldSelStart, oldSelEnd,
-                        newSelStart, newSelEnd, composingSpanStart, composingSpanEnd)) {
+                mInputLogic.onUpdateSelection(oldSelStart, oldSelEnd, newSelStart, newSelEnd)) {
             mKeyboardSwitcher.updateShiftState();
         }
 
@@ -1290,7 +1290,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public void onEndBatchInput(final InputPointers batchPointers) {
-        mInputLogic.onEndBatchInput(mSettings.getCurrent(), batchPointers);
+        mInputLogic.onEndBatchInput(batchPointers);
     }
 
     @Override
