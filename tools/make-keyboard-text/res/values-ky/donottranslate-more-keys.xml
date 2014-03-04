@@ -20,10 +20,8 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- U+0449: "щ" CYRILLIC SMALL LETTER SHCHA -->
     <string name="keylabel_for_east_slavic_row1_9">&#x0449;</string>
-    <!-- U+044A: "ъ" CYRILLIC SMALL LETTER HARD SIGN -->
-    <string name="keylabel_for_east_slavic_row1_12">&#x044A;</string>
     <!-- U+044B: "ы" CYRILLIC SMALL LETTER YERU -->
-    <string name="keylabel_for_east_slavic_row2_1">&#x044B;</string>
+    <string name="keylabel_for_east_slavic_row2_2">&#x044B;</string>
     <!-- U+044D: "э" CYRILLIC SMALL LETTER E -->
     <string name="keylabel_for_east_slavic_row2_11">&#x044D;</string>
     <!-- U+0438: "и" CYRILLIC SMALL LETTER I -->
