@@ -167,15 +167,10 @@ public class SuggestedWords {
             final CompletionInfo[] infos) {
         final ArrayList<SuggestedWordInfo> result = CollectionUtils.newArrayList();
         for (final CompletionInfo info : infos) {
-            if (info == null) continue;
-            final CharSequence text = info.getText();
-            if (null == text) continue;
-            final SuggestedWordInfo suggestedWordInfo = new SuggestedWordInfo(text.toString(),
-                    SuggestedWordInfo.MAX_SCORE, SuggestedWordInfo.KIND_APP_DEFINED,
-                    Dictionary.DICTIONARY_APPLICATION_DEFINED,
-                    SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
-                    SuggestedWordInfo.NOT_A_CONFIDENCE /* autoCommitFirstWordConfidence */);
-            result.add(suggestedWordInfo);
+            if (null == info || null == info.getText()) {
+                continue;
+            }
+            result.add(new SuggestedWordInfo(info));
         }
         return result;
     }
@@ -234,6 +229,9 @@ public class SuggestedWords {
         public static final int KIND_FLAG_EXACT_MATCH = 0x40000000;
 
         public final String mWord;
+        // The completion info from the application. Null for suggestions that don't come from
+        // the application (including keyboard-computed ones, so this is almost always null)
+        public final CompletionInfo mApplicationSpecifiedCompletionInfo;
         public final int mScore;
         public final int mKind; // one of the KIND_* constants above
         public final int mCodePointCount;
@@ -260,12 +258,29 @@ public class SuggestedWords {
                 final Dictionary sourceDict, final int indexOfTouchPointOfSecondWord,
                 final int autoCommitFirstWordConfidence) {
             mWord = word;
+            mApplicationSpecifiedCompletionInfo = null;
             mScore = score;
             mKind = kind;
             mSourceDict = sourceDict;
             mCodePointCount = StringUtils.codePointCount(mWord);
             mIndexOfTouchPointOfSecondWord = indexOfTouchPointOfSecondWord;
             mAutoCommitFirstWordConfidence = autoCommitFirstWordConfidence;
+        }
+
+        /**
+         * Create a new suggested word info from an application-specified completion.
+         * If the passed argument or its contained text is null, this throws a NPE.
+         * @param applicationSpecifiedCompletion The application-specified completion info.
+         */
+        public SuggestedWordInfo(final CompletionInfo applicationSpecifiedCompletion) {
+            mWord = applicationSpecifiedCompletion.getText().toString();
+            mApplicationSpecifiedCompletionInfo = applicationSpecifiedCompletion;
+            mScore = SuggestedWordInfo.MAX_SCORE;
+            mKind = SuggestedWordInfo.KIND_APP_DEFINED;
+            mSourceDict = Dictionary.DICTIONARY_APPLICATION_DEFINED;
+            mCodePointCount = StringUtils.codePointCount(mWord);
+            mIndexOfTouchPointOfSecondWord = SuggestedWordInfo.NOT_AN_INDEX;
+            mAutoCommitFirstWordConfidence = SuggestedWordInfo.NOT_A_CONFIDENCE;
         }
 
         public boolean isEligibleForAutoCommit() {

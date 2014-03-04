@@ -227,17 +227,16 @@ public final class InputLogic {
             }
         }
 
-        // TODO: stop relying on mApplicationSpecifiedCompletions. The SuggestionInfo object
-        // should contain a reference to the CompletionInfo instead.
-        if (settingsValues.isApplicationSpecifiedCompletionsOn()
-                && mLatinIME.mApplicationSpecifiedCompletions != null
-                && index >= 0 && index < mLatinIME.mApplicationSpecifiedCompletions.length) {
+        // TODO: We should not need the following branch. We should be able to take the same
+        // code path as for other kinds, use commitChosenWord, and do everything normally. We will
+        // however need to reset the suggestion strip right away, because we know we can't take
+        // the risk of calling commitCompletion twice because we don't know how the app will react.
+        if (SuggestedWordInfo.KIND_APP_DEFINED == suggestionInfo.mKind) {
             mSuggestedWords = SuggestedWords.EMPTY;
             mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
             keyboardSwitcher.updateShiftState();
             resetComposingState(true /* alsoResetLastComposedWord */);
-            final CompletionInfo completionInfo = mLatinIME.mApplicationSpecifiedCompletions[index];
-            mConnection.commitCompletion(completionInfo);
+            mConnection.commitCompletion(suggestionInfo.mApplicationSpecifiedCompletionInfo);
             mConnection.endBatchEdit();
             return;
         }
