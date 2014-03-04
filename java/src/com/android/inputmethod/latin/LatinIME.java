@@ -875,7 +875,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
         // This will set the punctuation suggestions if next word suggestion is off;
         // otherwise it will clear the suggestion strip.
-        setNeutralSuggestionStripInternal();
+        setNeutralSuggestionStrip();
 
         mHandler.cancelUpdateSuggestionStrip();
         mHandler.cancelDoubleSpacePeriodTimer();
@@ -1509,15 +1509,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mSuggestionStripView.showAddToDictionaryHint(word);
     }
 
-    // TODO[IL]: Define a clean interface for this
     // This will show either an empty suggestion strip (if prediction is enabled) or
     // punctuation suggestions (if it's disabled).
     @Override
     public void setNeutralSuggestionStrip() {
-        setNeutralSuggestionStripInternal();
-    }
-
-    private void setNeutralSuggestionStripInternal() {
         final SettingsValues currentSettings = mSettings.getCurrent();
         final SuggestedWords neutralSuggestions = currentSettings.mBigramPredictionEnabled
                 ? SuggestedWords.EMPTY : currentSettings.mSpacingAndPunctuations.mSuggestPuncList;
