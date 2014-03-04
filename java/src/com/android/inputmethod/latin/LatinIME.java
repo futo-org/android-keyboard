@@ -1276,15 +1276,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final InputTransaction completeInputTransaction =
                 mInputLogic.onCodeInput(mSettings.getCurrent(), event,
                         mKeyboardSwitcher.getKeyboardShiftMode(), mHandler);
-        switch (completeInputTransaction.getRequiredShiftUpdate()) {
-            case InputTransaction.SHIFT_UPDATE_LATER:
-                mHandler.postUpdateShiftState();
-                break;
-            case InputTransaction.SHIFT_UPDATE_NOW:
-                mKeyboardSwitcher.updateShiftState();
-                break;
-            default: // SHIFT_NO_UPDATE
-        }
+        updateShiftModeAfterInputTransaction(completeInputTransaction.getRequiredShiftUpdate());
         mKeyboardSwitcher.onCodeInput(codePoint);
     }
 
@@ -1500,8 +1492,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // interface
     @Override
     public void pickSuggestionManually(final int index, final SuggestedWordInfo suggestionInfo) {
-        mInputLogic.onPickSuggestionManually(mSettings.getCurrent(), index, suggestionInfo,
-                mHandler, mKeyboardSwitcher);
+        final InputTransaction completeInputTransaction = mInputLogic.onPickSuggestionManually(
+                mSettings.getCurrent(), index, suggestionInfo,
+                mKeyboardSwitcher.getKeyboardShiftMode(), mHandler);
+        updateShiftModeAfterInputTransaction(completeInputTransaction.getRequiredShiftUpdate());
     }
 
     @Override
@@ -1536,6 +1530,18 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (mKeyboardSwitcher.getMainKeyboardView() != null) {
             // Reload keyboard because the current language has been changed.
             mKeyboardSwitcher.loadKeyboard(getCurrentInputEditorInfo(), mSettings.getCurrent());
+        }
+    }
+
+    private void updateShiftModeAfterInputTransaction(final int requiredShiftUpdate) {
+        switch (requiredShiftUpdate) {
+        case InputTransaction.SHIFT_UPDATE_LATER:
+            mHandler.postUpdateShiftState();
+            break;
+        case InputTransaction.SHIFT_UPDATE_NOW:
+            mKeyboardSwitcher.updateShiftState();
+            break;
+        default: // SHIFT_NO_UPDATE
         }
     }
 

@@ -17,6 +17,7 @@
 package com.android.inputmethod.event;
 
 import com.android.inputmethod.latin.Constants;
+import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 
 /**
  * Class representing a generic input event as handled by Latin IME.
@@ -49,6 +50,8 @@ public class Event {
     final public static int EVENT_MODE_KEY = 3;
     // An event corresponding to a gesture.
     final public static int EVENT_GESTURE = 4;
+    // An event corresponding to the manual pick of a suggestion.
+    final public static int EVENT_SUGGESTION_PICKED = 5;
 
     // 0 is a valid code point, so we use -1 here.
     final public static int NOT_A_CODE_POINT = -1;
@@ -85,31 +88,50 @@ public class Event {
     // Some flags that can't go into the key code. It's a bit field of FLAG_*
     final private int mFlags;
 
+    // If this is of type EVENT_SUGGESTION_PICKED, this must not be null (and must be null in
+    // other cases).
+    final public SuggestedWordInfo mSuggestedWordInfo;
+
     // The next event, if any. Null if there is no next event yet.
     final public Event mNextEvent;
 
     // This method is private - to create a new event, use one of the create* utility methods.
     private Event(final int type, final int codePoint, final int keyCode, final int x, final int y,
-            final int flags, final Event next) {
+            final SuggestedWordInfo suggestedWordInfo, final int flags, final Event next) {
         mType = type;
         mCodePoint = codePoint;
         mKeyCode = keyCode;
         mX = x;
         mY = y;
+        mSuggestedWordInfo = suggestedWordInfo;
         mFlags = flags;
         mNextEvent = next;
+        // Sanity checks
+        // mSuggestedWordInfo is non-null if and only if the type is SUGGESTION_PICKED
+        if (EVENT_SUGGESTION_PICKED == mType) {
+            if (null == mSuggestedWordInfo) {
+                throw new RuntimeException("Wrong event: SUGGESTION_PICKED event must have a "
+                        + "non-null SuggestedWordInfo");
+            }
+        } else {
+            if (null != mSuggestedWordInfo) {
+                throw new RuntimeException("Wrong event: only SUGGESTION_PICKED events may have " +
+                        "a non-null SuggestedWordInfo");
+            }
+        }
     }
 
     public static Event createSoftwareKeypressEvent(final int codePoint, final int keyCode,
             final int x, final int y) {
-        return new Event(EVENT_INPUT_KEYPRESS, codePoint, keyCode, x, y, FLAG_NONE, null);
+        return new Event(EVENT_INPUT_KEYPRESS, codePoint, keyCode, x, y,
+                null /* suggestedWordInfo */, FLAG_NONE, null);
     }
 
     public static Event createHardwareKeypressEvent(final int codePoint, final int keyCode,
             final Event next) {
         return new Event(EVENT_INPUT_KEYPRESS, codePoint, keyCode,
                 Constants.EXTERNAL_KEYBOARD_COORDINATE, Constants.EXTERNAL_KEYBOARD_COORDINATE,
-                FLAG_NONE, next);
+                null /* suggestedWordInfo */, FLAG_NONE, next);
     }
 
     // This creates an input event for a dead character. @see {@link #FLAG_DEAD}
@@ -117,7 +139,7 @@ public class Event {
         // TODO: add an argument or something if we ever create a software layout with dead keys.
         return new Event(EVENT_INPUT_KEYPRESS, codePoint, keyCode,
                 Constants.EXTERNAL_KEYBOARD_COORDINATE, Constants.EXTERNAL_KEYBOARD_COORDINATE,
-                FLAG_DEAD, next);
+                null /* suggestedWordInfo */, FLAG_DEAD, next);
     }
 
     /**
@@ -130,7 +152,8 @@ public class Event {
     public static Event createEventForCodePointFromUnknownSource(final int codePoint) {
         // TODO: should we have a different type of event for this? After all, it's not a key press.
         return new Event(EVENT_INPUT_KEYPRESS, codePoint, NOT_A_KEY_CODE,
-                Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE, FLAG_NONE, null /* next */);
+                Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE,
+                null /* suggestedWordInfo */, FLAG_NONE, null /* next */);
     }
 
     /**
@@ -144,13 +167,24 @@ public class Event {
     public static Event createEventForCodePointFromAlreadyTypedText(final int codePoint,
             final int x, final int y) {
         // TODO: should we have a different type of event for this? After all, it's not a key press.
-        return new Event(EVENT_INPUT_KEYPRESS, codePoint, NOT_A_KEY_CODE, x, y, FLAG_NONE,
-                null /* next */);
+        return new Event(EVENT_INPUT_KEYPRESS, codePoint, NOT_A_KEY_CODE, x, y,
+                null /* suggestedWordInfo */, FLAG_NONE, null /* next */);
+    }
+
+    /**
+     * Creates an input event representing the manual pick of a suggestion.
+     * @return an event for this suggestion pick.
+     */
+    public static Event createSuggestionPickedEvent(final SuggestedWordInfo suggestedWordInfo) {
+        return new Event(EVENT_SUGGESTION_PICKED, NOT_A_CODE_POINT, NOT_A_KEY_CODE,
+                Constants.SUGGESTION_STRIP_COORDINATE, Constants.SUGGESTION_STRIP_COORDINATE,
+                suggestedWordInfo, FLAG_NONE, null);
     }
 
     public static Event createNotHandledEvent() {
         return new Event(EVENT_NOT_HANDLED, NOT_A_CODE_POINT, NOT_A_KEY_CODE,
-                Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE, FLAG_NONE, null);
+                Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE,
+                null /* suggestedWordInfo */, FLAG_NONE, null);
     }
 
     // Returns whether this event is for a dead character. @see {@link #FLAG_DEAD}
