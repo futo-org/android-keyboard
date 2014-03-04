@@ -323,6 +323,9 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         // {@link MoreKeysKeyboardView}.
         // TODO: Remove unused null argument.
         mMainKeyboardView.onDismissMoreKeysPanel(null /* unused */);
+        // Dismiss all key previews and sliding key input preview that may be being showed.
+        mMainKeyboardView.dismissAllKeyPreviews();
+        mMainKeyboardView.dismissSlidingKeyInputPreview();
         final int stripWidth = getWidth();
         final View container = mMoreSuggestionsContainer;
         final int maxWidth = stripWidth - container.getPaddingLeft() - container.getPaddingRight();
