@@ -361,7 +361,7 @@ public final class InputLogic {
             final SettingsValues settingsValues,
             // TODO: remove these two arguments
             final LatinIME.UIHandler handler, final KeyboardSwitcher keyboardSwitcher) {
-        final InputTransaction inputTransaction = new InputTransaction(code, x, y,
+        final InputTransaction inputTransaction = new InputTransaction(settingsValues, code, x, y,
                 SystemClock.uptimeMillis(), mSpaceState,
                 getActualCapsMode(settingsValues, keyboardSwitcher.getKeyboardShiftMode()));
         if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
@@ -386,11 +386,11 @@ public final class InputLogic {
         boolean didAutoCorrect = false;
         switch (inputTransaction.mKeyCode) {
         case Constants.CODE_DELETE:
-            handleBackspace(settingsValues, inputTransaction, handler);
+            handleBackspace(inputTransaction, handler);
             LatinImeLogger.logOnDelete(inputTransaction.mX, inputTransaction.mY);
             break;
         case Constants.CODE_SHIFT:
-            performRecapitalization(settingsValues);
+            performRecapitalization(inputTransaction.mSettingsValues);
             inputTransaction.requireShiftUpdate(InputTransaction.SHIFT_UPDATE_NOW);
             break;
         case Constants.CODE_CAPSLOCK:
@@ -445,23 +445,23 @@ public final class InputLogic {
             } else {
                 // No action label, and the action from imeOptions is NONE: this is a regular
                 // enter key that should input a carriage return.
-                didAutoCorrect = handleNonSpecialCharacter(settingsValues, inputTransaction,
-                        handler);
+                didAutoCorrect = handleNonSpecialCharacter(inputTransaction, handler);
             }
             break;
         case Constants.CODE_SHIFT_ENTER:
             // TODO: remove this object
-            final InputTransaction tmpTransaction = new InputTransaction(inputTransaction.mKeyCode,
+            final InputTransaction tmpTransaction = new InputTransaction(
+                    inputTransaction.mSettingsValues, inputTransaction.mKeyCode,
                     inputTransaction.mX, inputTransaction.mY, inputTransaction.mTimestamp,
                     inputTransaction.mSpaceState, inputTransaction.mShiftState);
-            didAutoCorrect = handleNonSpecialCharacter(settingsValues, tmpTransaction, handler);
+            didAutoCorrect = handleNonSpecialCharacter(tmpTransaction, handler);
             break;
         case Constants.CODE_ALPHA_FROM_EMOJI:
             // Note: Switching back from Emoji keyboard to the main keyboard is being handled in
             // {@link KeyboardState#onCodeInput(int,int)}.
             break;
         default:
-            didAutoCorrect = handleNonSpecialCharacter(settingsValues, inputTransaction, handler);
+            didAutoCorrect = handleNonSpecialCharacter(inputTransaction, handler);
             break;
         }
         // Reset after any single keystroke, except shift, capslock, and symbol-shift
@@ -625,29 +625,26 @@ public final class InputLogic {
      * manage keyboard-related stuff like shift, language switch, settings, layout switch, or
      * any key that results in multiple code points like the ".com" key.
      *
-     * @param settingsValues The current settings values.
      * @param inputTransaction The transaction in progress.
      * @return whether this caused an auto-correction to happen.
      */
-    private boolean handleNonSpecialCharacter(final SettingsValues settingsValues,
-            final InputTransaction inputTransaction,
+    private boolean handleNonSpecialCharacter(final InputTransaction inputTransaction,
             // TODO: remove this argument
             final LatinIME.UIHandler handler) {
         mSpaceState = SpaceState.NONE;
         final boolean didAutoCorrect;
-        if (settingsValues.isWordSeparator(inputTransaction.mKeyCode)
+        if (inputTransaction.mSettingsValues.isWordSeparator(inputTransaction.mKeyCode)
                 || Character.getType(inputTransaction.mKeyCode) == Character.OTHER_SYMBOL) {
-            didAutoCorrect = handleSeparator(settingsValues,
-                    Constants.SUGGESTION_STRIP_COORDINATE == inputTransaction.mX, inputTransaction,
-                    handler);
-            if (settingsValues.mIsInternal) {
+            didAutoCorrect = handleSeparator(inputTransaction,
+                    Constants.SUGGESTION_STRIP_COORDINATE == inputTransaction.mX, handler);
+            if (inputTransaction.mSettingsValues.mIsInternal) {
                 LatinImeLoggerUtils.onSeparator((char)inputTransaction.mKeyCode,
                         inputTransaction.mX, inputTransaction.mY);
             }
         } else {
             didAutoCorrect = false;
             if (SpaceState.PHANTOM == inputTransaction.mSpaceState) {
-                if (settingsValues.mIsInternal) {
+                if (inputTransaction.mSettingsValues.mIsInternal) {
                     if (mWordComposer.isComposingWord() && mWordComposer.isBatchMode()) {
                         LatinImeLoggerUtils.onAutoCorrection("", mWordComposer.getTypedWord(), " ",
                                 mWordComposer);
@@ -659,10 +656,10 @@ public final class InputLogic {
                     resetEntireInputState(mConnection.getExpectedSelectionStart(),
                             mConnection.getExpectedSelectionEnd(), true /* clearSuggestionStrip */);
                 } else {
-                    commitTyped(settingsValues, LastComposedWord.NOT_A_SEPARATOR);
+                    commitTyped(inputTransaction.mSettingsValues, LastComposedWord.NOT_A_SEPARATOR);
                 }
             }
-            handleNonSeparator(settingsValues, inputTransaction, handler);
+            handleNonSeparator(inputTransaction.mSettingsValues, inputTransaction, handler);
         }
         return didAutoCorrect;
     }
@@ -738,7 +735,7 @@ public final class InputLogic {
             mConnection.setComposingText(getTextWithUnderline(
                     mWordComposer.getTypedWord()), 1);
         } else {
-            final boolean swapWeakSpace = maybeStripSpace(settingsValues, inputTransaction,
+            final boolean swapWeakSpace = maybeStripSpace(inputTransaction,
                     Constants.SUGGESTION_STRIP_COORDINATE == inputTransaction.mX);
 
             sendKeyCodePoint(settingsValues, inputTransaction.mKeyCode);
@@ -759,19 +756,19 @@ public final class InputLogic {
 
     /**
      * Handle input of a separator code point.
-     * @param settingsValues The current settings values.
-     * @param isFromSuggestionStrip whether this code point comes from the suggestion strip.
      * @param inputTransaction The transaction in progress.
+     * @param isFromSuggestionStrip whether this code point comes from the suggestion strip.
      * @return whether this caused an auto-correction to happen.
      */
-    private boolean handleSeparator(final SettingsValues settingsValues,
-            final boolean isFromSuggestionStrip, final InputTransaction inputTransaction,
+    private boolean handleSeparator(final InputTransaction inputTransaction,
+            final boolean isFromSuggestionStrip,
             // TODO: remove this argument
             final LatinIME.UIHandler handler) {
         boolean didAutoCorrect = false;
         // We avoid sending spaces in languages without spaces if we were composing.
         final boolean shouldAvoidSendingCode = Constants.CODE_SPACE == inputTransaction.mKeyCode
-                && !settingsValues.mSpacingAndPunctuations.mCurrentLanguageHasSpaces
+                && !inputTransaction.mSettingsValues.mSpacingAndPunctuations
+                        .mCurrentLanguageHasSpaces
                 && mWordComposer.isComposingWord();
         if (mWordComposer.isCursorFrontOrMiddleOfComposingWord()) {
             // If we are in the middle of a recorrection, we need to commit the recorrection
@@ -781,19 +778,18 @@ public final class InputLogic {
         }
         // isComposingWord() may have changed since we stored wasComposing
         if (mWordComposer.isComposingWord()) {
-            if (settingsValues.mCorrectionEnabled) {
+            if (inputTransaction.mSettingsValues.mCorrectionEnabled) {
                 final String separator = shouldAvoidSendingCode ? LastComposedWord.NOT_A_SEPARATOR
                         : StringUtils.newSingleCodePointString(inputTransaction.mKeyCode);
-                commitCurrentAutoCorrection(settingsValues, separator, handler);
+                commitCurrentAutoCorrection(inputTransaction.mSettingsValues, separator, handler);
                 didAutoCorrect = true;
             } else {
-                commitTyped(settingsValues,
+                commitTyped(inputTransaction.mSettingsValues,
                         StringUtils.newSingleCodePointString(inputTransaction.mKeyCode));
             }
         }
 
-        final boolean swapWeakSpace = maybeStripSpace(settingsValues, inputTransaction,
-                isFromSuggestionStrip);
+        final boolean swapWeakSpace = maybeStripSpace(inputTransaction, isFromSuggestionStrip);
 
         final boolean isInsideDoubleQuoteOrAfterDigit =
                 Constants.CODE_DOUBLE_QUOTE == inputTransaction.mKeyCode
@@ -807,12 +803,12 @@ public final class InputLogic {
             // not inside a double quote or after a digit.
             needsPrecedingSpace = !isInsideDoubleQuoteOrAfterDigit;
         } else {
-            needsPrecedingSpace =
-                    settingsValues.isUsuallyPrecededBySpace(inputTransaction.mKeyCode);
+            needsPrecedingSpace = inputTransaction.mSettingsValues.isUsuallyPrecededBySpace(
+                    inputTransaction.mKeyCode);
         }
 
         if (needsPrecedingSpace) {
-            promotePhantomSpace(settingsValues);
+            promotePhantomSpace(inputTransaction.mSettingsValues);
         }
         if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
             ResearchLogger.latinIME_handleSeparator(inputTransaction.mKeyCode,
@@ -820,12 +816,12 @@ public final class InputLogic {
         }
 
         if (!shouldAvoidSendingCode) {
-            sendKeyCodePoint(settingsValues, inputTransaction.mKeyCode);
+            sendKeyCodePoint(inputTransaction.mSettingsValues, inputTransaction.mKeyCode);
         }
 
         if (Constants.CODE_SPACE == inputTransaction.mKeyCode) {
-            if (settingsValues.isSuggestionsRequested()) {
-                if (maybeDoubleSpacePeriod(settingsValues, handler)) {
+            if (inputTransaction.mSettingsValues.isSuggestionsRequested()) {
+                if (maybeDoubleSpacePeriod(inputTransaction.mSettingsValues, handler)) {
                     inputTransaction.requireShiftUpdate(InputTransaction.SHIFT_UPDATE_NOW);
                     mSpaceState = SpaceState.DOUBLE;
                 } else if (!mSuggestedWords.isPunctuationSuggestions()) {
@@ -840,7 +836,8 @@ public final class InputLogic {
                 swapSwapperAndSpace(inputTransaction);
                 mSpaceState = SpaceState.SWAP_PUNCTUATION;
             } else if ((SpaceState.PHANTOM == inputTransaction.mSpaceState
-                    && settingsValues.isUsuallyFollowedBySpace(inputTransaction.mKeyCode))
+                    && inputTransaction.mSettingsValues.isUsuallyFollowedBySpace(
+                            inputTransaction.mKeyCode))
                     || (Constants.CODE_DOUBLE_QUOTE == inputTransaction.mKeyCode
                             && isInsideDoubleQuoteOrAfterDigit)) {
                 // If we are in phantom space state, and the user presses a separator, we want to
@@ -868,11 +865,9 @@ public final class InputLogic {
 
     /**
      * Handle a press on the backspace key.
-     * @param settingsValues The current settings values.
      * @param inputTransaction The transaction in progress.
      */
-    private void handleBackspace(final SettingsValues settingsValues,
-            final InputTransaction inputTransaction,
+    private void handleBackspace(final InputTransaction inputTransaction,
             // TODO: remove this argument
             final LatinIME.UIHandler handler) {
         mSpaceState = SpaceState.NONE;
@@ -911,10 +906,10 @@ public final class InputLogic {
             }
         } else {
             if (mLastComposedWord.canRevertCommit()) {
-                if (settingsValues.mIsInternal) {
+                if (inputTransaction.mSettingsValues.mIsInternal) {
                     LatinImeLoggerUtils.onAutoCorrectionCancellation();
                 }
-                revertCommit(settingsValues, handler);
+                revertCommit(inputTransaction.mSettingsValues, handler);
                 return;
             }
             if (mEnteredText != null && mConnection.sameAsTextBeforeCursor(mEnteredText)) {
@@ -964,8 +959,8 @@ public final class InputLogic {
                     // This should never happen.
                     Log.e(TAG, "Backspace when we don't know the selection position");
                 }
-                if (settingsValues.isBeforeJellyBean() ||
-                        settingsValues.mInputAttributes.isTypeNull()) {
+                if (inputTransaction.mSettingsValues.isBeforeJellyBean() ||
+                        inputTransaction.mSettingsValues.mInputAttributes.isTypeNull()) {
                     // There are two possible reasons to send a key event: either the field has
                     // type TYPE_NULL, in which case the keyboard should send events, or we are
                     // running in backward compatibility mode. Before Jelly bean, the keyboard
@@ -1011,11 +1006,12 @@ public final class InputLogic {
                     }
                 }
             }
-            if (settingsValues.isSuggestionStripVisible()
-                    && settingsValues.mSpacingAndPunctuations.mCurrentLanguageHasSpaces
+            if (inputTransaction.mSettingsValues.isSuggestionStripVisible()
+                    && inputTransaction.mSettingsValues.mSpacingAndPunctuations
+                            .mCurrentLanguageHasSpaces
                     && !mConnection.isCursorFollowedByWordCharacter(
-                            settingsValues.mSpacingAndPunctuations)) {
-                restartSuggestionsOnWordTouchedByCursor(settingsValues,
+                            inputTransaction.mSettingsValues.mSpacingAndPunctuations)) {
+                restartSuggestionsOnWordTouchedByCursor(inputTransaction.mSettingsValues,
                         true /* includeResumedWordInSuggestions */);
             }
             // We just removed at least one character. We need to update the auto-caps state.
@@ -1053,13 +1049,12 @@ public final class InputLogic {
 
     /*
      * Strip a trailing space if necessary and returns whether it's a swap weak space situation.
-     * @param settingsValues The current settings values.
      * @param inputTransaction The transaction in progress.
      * @param isFromSuggestionStrip Whether this code point is coming from the suggestion strip.
      * @return whether we should swap the space instead of removing it.
      */
-    private boolean maybeStripSpace(final SettingsValues settingsValues,
-            final InputTransaction inputTransaction, final boolean isFromSuggestionStrip) {
+    private boolean maybeStripSpace(final InputTransaction inputTransaction,
+            final boolean isFromSuggestionStrip) {
         if (Constants.CODE_ENTER == inputTransaction.mKeyCode &&
                 SpaceState.SWAP_PUNCTUATION == inputTransaction.mSpaceState) {
             mConnection.removeTrailingSpace();
@@ -1068,10 +1063,12 @@ public final class InputLogic {
         if ((SpaceState.WEAK == inputTransaction.mSpaceState
                 || SpaceState.SWAP_PUNCTUATION == inputTransaction.mSpaceState)
                 && isFromSuggestionStrip) {
-            if (settingsValues.isUsuallyPrecededBySpace(inputTransaction.mKeyCode)) {
+            if (inputTransaction.mSettingsValues.isUsuallyPrecededBySpace(
+                    inputTransaction.mKeyCode)) {
                 return false;
             }
-            if (settingsValues.isUsuallyFollowedBySpace(inputTransaction.mKeyCode)) {
+            if (inputTransaction.mSettingsValues.isUsuallyFollowedBySpace(
+                    inputTransaction.mKeyCode)) {
                 return true;
             }
             mConnection.removeTrailingSpace();
@@ -1732,6 +1729,7 @@ public final class InputLogic {
      * @param settingsValues the current values of the settings.
      * @param codePoint the code point to send.
      */
+    // TODO: replace these two parameters with an InputTransaction
     private void sendKeyCodePoint(final SettingsValues settingsValues, final int codePoint) {
         if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
             ResearchLogger.latinIME_sendKeyCodePoint(codePoint);
