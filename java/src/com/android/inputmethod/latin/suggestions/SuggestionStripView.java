@@ -280,8 +280,8 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
     private final MoreKeysPanel.Controller mMoreSuggestionsController =
             new MoreKeysPanel.Controller() {
         @Override
-        public void onDismissMoreKeysPanel(final MoreKeysPanel panel) {
-            mMainKeyboardView.onDismissMoreKeysPanel(panel);
+        public void onDismissMoreKeysPanel() {
+            mMainKeyboardView.onDismissMoreKeysPanel();
         }
 
         @Override
@@ -290,7 +290,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         }
 
         @Override
-        public void onCancelMoreKeysPanel(final MoreKeysPanel panel) {
+        public void onCancelMoreKeysPanel() {
             dismissMoreSuggestionsPanel();
         }
     };
@@ -321,8 +321,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         }
         // Dismiss another {@link MoreKeysPanel} that may be being showed, for example
         // {@link MoreKeysKeyboardView}.
-        // TODO: Remove unused null argument.
-        mMainKeyboardView.onDismissMoreKeysPanel(null /* unused */);
+        mMainKeyboardView.onDismissMoreKeysPanel();
         // Dismiss all key previews and sliding key input preview that may be being showed.
         mMainKeyboardView.dismissAllKeyPreviews();
         mMainKeyboardView.dismissSlidingKeyInputPreview();
