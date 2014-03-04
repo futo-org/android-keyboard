@@ -124,9 +124,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private View mKeyPreviewBackingView;
     private SuggestionStripView mSuggestionStripView;
 
-    // TODO[IL]: remove this member completely.
-    public CompletionInfo[] mApplicationSpecifiedCompletions;
-
     private RichInputMethodManager mRichImm;
     @UsedForTesting final KeyboardSwitcher mKeyboardSwitcher;
     private final SubtypeSwitcher mSubtypeSwitcher;
@@ -812,7 +809,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // The EditorInfo might have a flag that affects fullscreen mode.
         // Note: This call should be done by InputMethodService?
         updateFullscreenMode();
-        mApplicationSpecifiedCompletions = null;
 
         // The app calling setText() has the effect of clearing the composing
         // span, so we should reset our state unconditionally, even if restarting is true.
@@ -1034,8 +1030,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             }
             return;
         }
-        mApplicationSpecifiedCompletions =
-                CompletionInfoUtils.removeNulls(applicationSpecifiedCompletions);
 
         final ArrayList<SuggestedWords.SuggestedWordInfo> applicationSuggestedWords =
                 SuggestedWords.getFromApplicationSpecifiedCompletions(
