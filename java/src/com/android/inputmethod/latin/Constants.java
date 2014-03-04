@@ -144,6 +144,7 @@ public final class Constants {
 
     public static final int NOT_A_CODE = -1;
     public static final int NOT_A_CURSOR_POSITION = -1;
+    // TODO: replace the following constants with state in InputTransaction?
     public static final int NOT_A_COORDINATE = -1;
     public static final int SUGGESTION_STRIP_COORDINATE = -2;
     public static final int SPELL_CHECKER_COORDINATE = -3;
