@@ -1229,9 +1229,8 @@ public final class InputLogic {
                     @Override
                     public void onGetSuggestedWords(final SuggestedWords suggestedWords) {
                         final SuggestedWords suggestedWordsWithMaybeOlderSuggestions =
-                                mLatinIME.maybeRetrieveOlderSuggestions(
-                                        mWordComposer.getTypedWord(), suggestedWords,
-                                        mSuggestedWords);
+                                maybeRetrieveOlderSuggestions(mWordComposer.getTypedWord(),
+                                        suggestedWords, mSuggestedWords);
                         holder.set(suggestedWordsWithMaybeOlderSuggestions);
                     }
                 }
@@ -1653,6 +1652,35 @@ public final class InputLogic {
         mWordComposer.reset();
         if (alsoResetLastComposedWord) {
             mLastComposedWord = LastComposedWord.NOT_A_COMPOSED_WORD;
+        }
+    }
+
+    /**
+     * Given a typed word and computed suggested words, return an object that may or may not
+     * contain older suggestions according to the contents of the current suggestions.
+     * @param typedWord The typed word as a string.
+     * @param suggestedWords The computed suggested words for this typed word.
+     * @param previousSuggestedWords The previous suggested words.
+     * @return suggestions possibly enriched with older suggestions.
+     */
+    private SuggestedWords maybeRetrieveOlderSuggestions(final String typedWord,
+            final SuggestedWords suggestedWords, final SuggestedWords previousSuggestedWords) {
+        // TODO: consolidate this into performUpdateSuggestionStripSync?
+        // We update the suggestion strip only when we have some suggestions to show, i.e. when
+        // the suggestion count is > 1; else, we leave the old suggestions, with the typed word
+        // replaced with the new one. However, when the length of the typed word is 1 or 0 (after
+        // a deletion typically), we do want to remove the old suggestions.
+        if (suggestedWords.size() > 1 || typedWord.length() <= 1) {
+            return suggestedWords;
+        } else {
+            final SuggestedWords oldSuggestedWords =
+                    previousSuggestedWords.isPunctuationSuggestions() ? SuggestedWords.EMPTY
+                            : previousSuggestedWords;
+            final ArrayList<SuggestedWords.SuggestedWordInfo> typedWordAndPreviousSuggestions =
+                    SuggestedWords.getTypedWordAndPreviousSuggestions(typedWord, oldSuggestedWords);
+            return new SuggestedWords(typedWordAndPreviousSuggestions, null /* rawSuggestions */,
+                    false /* typedWordValid */, false /* hasAutoCorrectionCandidate */,
+                    true /* isObsoleteSuggestions */, false /* isPrediction */);
         }
     }
 
