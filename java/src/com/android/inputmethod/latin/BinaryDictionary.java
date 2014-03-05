@@ -199,7 +199,6 @@ public final class BinaryDictionary extends Dictionary {
         return true;
     }
 
-    @UsedForTesting
     public DictionaryHeader getHeader() throws UnsupportedFormatException {
         if (mNativeDict == 0) {
             return null;
