@@ -23,12 +23,12 @@ import android.text.style.SuggestionSpan;
 import android.util.Log;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
-import android.view.inputmethod.CompletionInfo;
 import android.view.inputmethod.CorrectionInfo;
 import android.view.inputmethod.EditorInfo;
 
 import com.android.inputmethod.compat.SuggestionSpanUtils;
 import com.android.inputmethod.event.EventInterpreter;
+import com.android.inputmethod.event.InputTransaction;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.Dictionary;
@@ -365,6 +365,8 @@ public final class InputLogic {
             ResearchLogger.latinIME_onCodeInput(code, x, y);
         }
         final long when = SystemClock.uptimeMillis();
+        final InputTransaction inputTransaction = new InputTransaction(
+                getActualCapsMode(settingsValues, keyboardSwitcher.getKeyboardShiftMode()));
         if (code != Constants.CODE_DELETE
                 || when > mLastKeyTime + Constants.LONG_PRESS_MILLISECONDS) {
             mDeleteCount = 0;
@@ -389,12 +391,12 @@ public final class InputLogic {
         boolean didAutoCorrect = false;
         switch (code) {
         case Constants.CODE_DELETE:
-            handleBackspace(settingsValues, spaceState, handler, keyboardSwitcher);
+            handleBackspace(settingsValues, spaceState, inputTransaction, handler);
             LatinImeLogger.logOnDelete(x, y);
             break;
         case Constants.CODE_SHIFT:
             performRecapitalization(settingsValues);
-            keyboardSwitcher.updateShiftState();
+            inputTransaction.requireShiftUpdate(InputTransaction.SHIFT_UPDATE_NOW);
             break;
         case Constants.CODE_CAPSLOCK:
             // Note: Changing keyboard to shift lock state is handled in
@@ -449,12 +451,12 @@ public final class InputLogic {
                 // No action label, and the action from imeOptions is NONE: this is a regular
                 // enter key that should input a carriage return.
                 didAutoCorrect = handleNonSpecialCharacter(settingsValues, Constants.CODE_ENTER,
-                        x, y, spaceState, keyboardSwitcher, handler);
+                        x, y, spaceState, inputTransaction, handler);
             }
             break;
         case Constants.CODE_SHIFT_ENTER:
             didAutoCorrect = handleNonSpecialCharacter(settingsValues, Constants.CODE_ENTER,
-                    x, y, spaceState, keyboardSwitcher, handler);
+                    x, y, spaceState, inputTransaction, handler);
             break;
         case Constants.CODE_ALPHA_FROM_EMOJI:
             // Note: Switching back from Emoji keyboard to the main keyboard is being handled in
@@ -462,7 +464,7 @@ public final class InputLogic {
             break;
         default:
             didAutoCorrect = handleNonSpecialCharacter(settingsValues,
-                    code, x, y, spaceState, keyboardSwitcher, handler);
+                    code, x, y, spaceState, inputTransaction, handler);
             break;
         }
         // Reset after any single keystroke, except shift, capslock, and symbol-shift
@@ -474,6 +476,15 @@ public final class InputLogic {
             mEnteredText = null;
         }
         mConnection.endBatchEdit();
+        switch (inputTransaction.getRequiredShiftUpdate()) {
+        case InputTransaction.SHIFT_UPDATE_LATER:
+            mLatinIME.mHandler.postUpdateShiftState();
+            break;
+        case InputTransaction.SHIFT_UPDATE_NOW:
+            keyboardSwitcher.updateShiftState();
+            break;
+        default: // SHIFT_NO_UPDATE
+        }
     }
 
     public void onStartBatchInput(final SettingsValues settingsValues,
@@ -622,18 +633,20 @@ public final class InputLogic {
      * @param x the x-coordinate of the key press, or Contants.NOT_A_COORDINATE if not applicable.
      * @param y the y-coordinate of the key press, or Contants.NOT_A_COORDINATE if not applicable.
      * @param spaceState the space state at start of the batch input.
+     * @param inputTransaction The transaction in progress.
      * @return whether this caused an auto-correction to happen.
      */
     private boolean handleNonSpecialCharacter(final SettingsValues settingsValues,
             final int codePoint, final int x, final int y, final int spaceState,
-            // TODO: remove these arguments
-            final KeyboardSwitcher keyboardSwitcher, final LatinIME.UIHandler handler) {
+            final InputTransaction inputTransaction,
+            // TODO: remove this argument
+            final LatinIME.UIHandler handler) {
         mSpaceState = SpaceState.NONE;
         final boolean didAutoCorrect;
         if (settingsValues.isWordSeparator(codePoint)
                 || Character.getType(codePoint) == Character.OTHER_SYMBOL) {
             didAutoCorrect = handleSeparator(settingsValues, codePoint,
-                    Constants.SUGGESTION_STRIP_COORDINATE == x, spaceState, keyboardSwitcher,
+                    Constants.SUGGESTION_STRIP_COORDINATE == x, spaceState, inputTransaction,
                     handler);
             if (settingsValues.mIsInternal) {
                 LatinImeLoggerUtils.onSeparator((char)codePoint, x, y);
@@ -657,7 +670,7 @@ public final class InputLogic {
                 }
             }
             handleNonSeparator(settingsValues, codePoint, x, y, spaceState,
-                    keyboardSwitcher, handler);
+                    inputTransaction, handler);
         }
         return didAutoCorrect;
     }
@@ -669,11 +682,13 @@ public final class InputLogic {
      * @param x the x-coordinate of the key press, or Contants.NOT_A_COORDINATE if not applicable.
      * @param y the y-coordinate of the key press, or Contants.NOT_A_COORDINATE if not applicable.
      * @param spaceState the space state at start of the batch input.
+     * @param inputTransaction The transaction in progress.
      */
     private void handleNonSeparator(final SettingsValues settingsValues,
             final int codePoint, final int x, final int y, final int spaceState,
-            // TODO: Remove these arguments
-            final KeyboardSwitcher keyboardSwitcher, final LatinIME.UIHandler handler) {
+            final InputTransaction inputTransaction,
+            // TODO: Remove this argument
+            final LatinIME.UIHandler handler) {
         // TODO: refactor this method to stop flipping isComposingWord around all the time, and
         // make it shorter (possibly cut into several pieces). Also factor handleNonSpecialCharacter
         // which has the same name as other handle* methods but is not the same.
@@ -729,8 +744,7 @@ public final class InputLogic {
                 // We pass 1 to getPreviousWordForSuggestion because we were not composing a word
                 // yet, so the word we want is the 1st word before the cursor.
                 mWordComposer.setCapitalizedModeAndPreviousWordAtStartComposingTime(
-                        getActualCapsMode(settingsValues, keyboardSwitcher.getKeyboardShiftMode()),
-                        getNthPreviousWordForSuggestion(
+                        inputTransaction.mShiftState, getNthPreviousWordForSuggestion(
                                 settingsValues.mSpacingAndPunctuations, 1 /* nthPreviousWord */));
             }
             mConnection.setComposingText(getTextWithUnderline(
@@ -742,7 +756,7 @@ public final class InputLogic {
             sendKeyCodePoint(settingsValues, codePoint);
 
             if (swapWeakSpace) {
-                swapSwapperAndSpace(keyboardSwitcher);
+                swapSwapperAndSpace(inputTransaction);
                 mSpaceState = SpaceState.WEAK;
             }
             // In case the "add to dictionary" hint was still displayed.
@@ -760,12 +774,14 @@ public final class InputLogic {
      * @param codePoint the code point associated with the key.
      * @param isFromSuggestionStrip whether this code point comes from the suggestion strip.
      * @param spaceState the space state at start of the batch input.
+     * @param inputTransaction The transaction in progress.
      * @return whether this caused an auto-correction to happen.
      */
     private boolean handleSeparator(final SettingsValues settingsValues,
             final int codePoint, final boolean isFromSuggestionStrip, final int spaceState,
-            // TODO: remove these arguments
-            final KeyboardSwitcher keyboardSwitcher, final LatinIME.UIHandler handler) {
+            final InputTransaction inputTransaction,
+            // TODO: remove this argument
+            final LatinIME.UIHandler handler) {
         boolean didAutoCorrect = false;
         // We avoid sending spaces in languages without spaces if we were composing.
         final boolean shouldAvoidSendingCode = Constants.CODE_SPACE == codePoint
@@ -820,7 +836,7 @@ public final class InputLogic {
         if (Constants.CODE_SPACE == codePoint) {
             if (settingsValues.isSuggestionsRequested()) {
                 if (maybeDoubleSpacePeriod(settingsValues, handler)) {
-                    keyboardSwitcher.updateShiftState();
+                    inputTransaction.requireShiftUpdate(InputTransaction.SHIFT_UPDATE_NOW);
                     mSpaceState = SpaceState.DOUBLE;
                 } else if (!mSuggestedWords.isPunctuationSuggestions()) {
                     mSpaceState = SpaceState.WEAK;
@@ -831,7 +847,7 @@ public final class InputLogic {
             handler.postUpdateSuggestionStrip();
         } else {
             if (swapWeakSpace) {
-                swapSwapperAndSpace(keyboardSwitcher);
+                swapSwapperAndSpace(inputTransaction);
                 mSpaceState = SpaceState.SWAP_PUNCTUATION;
             } else if ((SpaceState.PHANTOM == spaceState
                     && settingsValues.isUsuallyFollowedBySpace(codePoint))
@@ -856,7 +872,7 @@ public final class InputLogic {
             mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
         }
 
-        keyboardSwitcher.updateShiftState();
+        inputTransaction.requireShiftUpdate(InputTransaction.SHIFT_UPDATE_NOW);
         return didAutoCorrect;
     }
 
@@ -864,17 +880,19 @@ public final class InputLogic {
      * Handle a press on the backspace key.
      * @param settingsValues The current settings values.
      * @param spaceState The space state at start of this batch edit.
+     * @param inputTransaction The transaction in progress.
      */
     private void handleBackspace(final SettingsValues settingsValues, final int spaceState,
-            // TODO: remove these arguments
-            final LatinIME.UIHandler handler, final KeyboardSwitcher keyboardSwitcher) {
+            final InputTransaction inputTransaction,
+            // TODO: remove this argument
+            final LatinIME.UIHandler handler) {
         mSpaceState = SpaceState.NONE;
         mDeleteCount++;
 
         // In many cases, we may have to put the keyboard in auto-shift state again. However
         // we want to wait a few milliseconds before doing it to avoid the keyboard flashing
         // during key repeat.
-        handler.postUpdateShiftState();
+        inputTransaction.requireShiftUpdate(InputTransaction.SHIFT_UPDATE_LATER);
 
         if (mWordComposer.isCursorFrontOrMiddleOfComposingWord()) {
             // If we are in the middle of a recorrection, we need to commit the recorrection
@@ -900,7 +918,7 @@ public final class InputLogic {
             if (!mWordComposer.isComposingWord()) {
                 // If we just removed the last character, auto-caps mode may have changed so we
                 // need to re-evaluate.
-                keyboardSwitcher.updateShiftState();
+                inputTransaction.requireShiftUpdate(InputTransaction.SHIFT_UPDATE_NOW);
             }
         } else {
             if (mLastComposedWord.canRevertCommit()) {
@@ -1012,7 +1030,7 @@ public final class InputLogic {
                         true /* includeResumedWordInSuggestions */);
             }
             // We just removed at least one character. We need to update the auto-caps state.
-            keyboardSwitcher.updateShiftState();
+            inputTransaction.requireShiftUpdate(InputTransaction.SHIFT_UPDATE_NOW);
         }
     }
 
@@ -1028,9 +1046,9 @@ public final class InputLogic {
      *
      * This method will check that there are two characters before the cursor and that the first
      * one is a space before it does the actual swapping.
+     * @param inputTransaction The transaction in progress.
      */
-    // TODO: Remove this argument
-    private void swapSwapperAndSpace(final KeyboardSwitcher keyboardSwitcher) {
+    private void swapSwapperAndSpace(final InputTransaction inputTransaction) {
         final CharSequence lastTwo = mConnection.getTextBeforeCursor(2, 0);
         // It is guaranteed lastTwo.charAt(1) is a swapper - else this method is not called.
         if (lastTwo != null && lastTwo.length() == 2 && lastTwo.charAt(0) == Constants.CODE_SPACE) {
@@ -1040,7 +1058,7 @@ public final class InputLogic {
             if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
                 ResearchLogger.latinIME_swapSwapperAndSpace(lastTwo, text);
             }
-            keyboardSwitcher.updateShiftState();
+            inputTransaction.requireShiftUpdate(InputTransaction.SHIFT_UPDATE_NOW);
         }
     }
 
@@ -1476,7 +1494,9 @@ public final class InputLogic {
      */
     private int getActualCapsMode(final SettingsValues settingsValues,
             final int keyboardShiftMode) {
-        if (keyboardShiftMode != WordComposer.CAPS_MODE_AUTO_SHIFTED) return keyboardShiftMode;
+        if (keyboardShiftMode != WordComposer.CAPS_MODE_AUTO_SHIFTED) {
+            return keyboardShiftMode;
+        }
         final int auto = getCurrentAutoCapsState(settingsValues);
         if (0 != (auto & TextUtils.CAP_MODE_CHARACTERS)) {
             return WordComposer.CAPS_MODE_AUTO_SHIFT_LOCKED;
