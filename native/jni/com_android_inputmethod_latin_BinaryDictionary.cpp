@@ -27,57 +27,12 @@
 #include "suggest/core/dictionary/word_property.h"
 #include "suggest/core/suggest_options.h"
 #include "suggest/policyimpl/dictionary/structure/dictionary_structure_with_buffer_policy_factory.h"
-#include "suggest/policyimpl/dictionary/utils/dict_file_writing_utils.h"
-#include "utils/autocorrection_threshold_utils.h"
 #include "utils/char_utils.h"
 #include "utils/time_keeper.h"
 
 namespace latinime {
 
 class ProximityInfo;
-
-// TODO: Move to makedict.
-static jboolean latinime_BinaryDictionary_createEmptyDictFile(JNIEnv *env, jclass clazz,
-        jstring filePath, jlong dictVersion, jstring locale, jobjectArray attributeKeyStringArray,
-        jobjectArray attributeValueStringArray) {
-    const jsize filePathUtf8Length = env->GetStringUTFLength(filePath);
-    char filePathChars[filePathUtf8Length + 1];
-    env->GetStringUTFRegion(filePath, 0, env->GetStringLength(filePath), filePathChars);
-    filePathChars[filePathUtf8Length] = '\0';
-    jsize localeLength = env->GetStringLength(locale);
-    jchar localeCodePoints[localeLength];
-    env->GetStringRegion(locale, 0, localeLength, localeCodePoints);
-    const int keyCount = env->GetArrayLength(attributeKeyStringArray);
-    const int valueCount = env->GetArrayLength(attributeValueStringArray);
-    if (keyCount != valueCount) {
-        return false;
-    }
-
-    DictionaryHeaderStructurePolicy::AttributeMap attributeMap;
-    for (int i = 0; i < keyCount; i++) {
-        jstring keyString = static_cast<jstring>(
-                env->GetObjectArrayElement(attributeKeyStringArray, i));
-        const jsize keyUtf8Length = env->GetStringUTFLength(keyString);
-        char keyChars[keyUtf8Length + 1];
-        env->GetStringUTFRegion(keyString, 0, env->GetStringLength(keyString), keyChars);
-        keyChars[keyUtf8Length] = '\0';
-        DictionaryHeaderStructurePolicy::AttributeMap::key_type key;
-        HeaderReadWriteUtils::insertCharactersIntoVector(keyChars, &key);
-
-        jstring valueString = static_cast<jstring>(
-                env->GetObjectArrayElement(attributeValueStringArray, i));
-        const jsize valueUtf8Length = env->GetStringUTFLength(valueString);
-        char valueChars[valueUtf8Length + 1];
-        env->GetStringUTFRegion(valueString, 0, env->GetStringLength(valueString), valueChars);
-        valueChars[valueUtf8Length] = '\0';
-        DictionaryHeaderStructurePolicy::AttributeMap::mapped_type value;
-        HeaderReadWriteUtils::insertCharactersIntoVector(valueChars, &value);
-        attributeMap[key] = value;
-    }
-
-    return DictFileWritingUtils::createEmptyDictFile(filePathChars, static_cast<int>(dictVersion),
-            CharUtils::convertShortArrayToIntVector(localeCodePoints, localeLength), &attributeMap);
-}
 
 static jlong latinime_BinaryDictionary_open(JNIEnv *env, jclass clazz, jstring sourceDir,
         jlong dictOffset, jlong dictSize, jboolean isUpdatable) {
@@ -335,30 +290,6 @@ static void latinime_BinaryDictionary_getWordProperty(JNIEnv *env, jclass clazz,
             outShortcutProbabilities);
 }
 
-static jfloat latinime_BinaryDictionary_calcNormalizedScore(JNIEnv *env, jclass clazz,
-        jintArray before, jintArray after, jint score) {
-    jsize beforeLength = env->GetArrayLength(before);
-    jsize afterLength = env->GetArrayLength(after);
-    int beforeCodePoints[beforeLength];
-    int afterCodePoints[afterLength];
-    env->GetIntArrayRegion(before, 0, beforeLength, beforeCodePoints);
-    env->GetIntArrayRegion(after, 0, afterLength, afterCodePoints);
-    return AutocorrectionThresholdUtils::calcNormalizedScore(beforeCodePoints, beforeLength,
-            afterCodePoints, afterLength, score);
-}
-
-static jint latinime_BinaryDictionary_editDistance(JNIEnv *env, jclass clazz, jintArray before,
-        jintArray after) {
-    jsize beforeLength = env->GetArrayLength(before);
-    jsize afterLength = env->GetArrayLength(after);
-    int beforeCodePoints[beforeLength];
-    int afterCodePoints[afterLength];
-    env->GetIntArrayRegion(before, 0, beforeLength, beforeCodePoints);
-    env->GetIntArrayRegion(after, 0, afterLength, afterCodePoints);
-    return AutocorrectionThresholdUtils::editDistance(beforeCodePoints, beforeLength,
-            afterCodePoints, afterLength);
-}
-
 static void latinime_BinaryDictionary_addUnigramWord(JNIEnv *env, jclass clazz, jlong dict,
         jintArray word, jint probability, jintArray shortcutTarget, jint shortuctProbability,
         jboolean isNotAWord, jboolean isBlacklisted, jint timestamp) {
@@ -518,17 +449,6 @@ static jstring latinime_BinaryDictionary_getProperty(JNIEnv *env, jclass clazz, 
     return env->NewStringUTF(resultChars);
 }
 
-static int latinime_BinaryDictionary_setCurrentTimeForTest(JNIEnv *env, jclass clazz,
-        jint currentTime) {
-    if (currentTime >= 0) {
-        TimeKeeper::startTestModeWithForceCurrentTime(currentTime);
-    } else {
-        TimeKeeper::stopTestMode();
-    }
-    TimeKeeper::setCurrentTime();
-    return TimeKeeper::peekCurrentTime();
-}
-
 static bool latinime_BinaryDictionary_isCorruptedNative(JNIEnv *env, jclass clazz, jlong dict) {
     Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
     if (!dictionary) {
@@ -538,12 +458,6 @@ static bool latinime_BinaryDictionary_isCorruptedNative(JNIEnv *env, jclass claz
 }
 
 static const JNINativeMethod sMethods[] = {
-    {
-        const_cast<char *>("createEmptyDictFileNative"),
-        const_cast<char *>(
-                "(Ljava/lang/String;JLjava/lang/String;[Ljava/lang/String;[Ljava/lang/String;)Z"),
-        reinterpret_cast<void *>(latinime_BinaryDictionary_createEmptyDictFile)
-    },
     {
         const_cast<char *>("openNative"),
         const_cast<char *>("(Ljava/lang/String;JJZ)J"),
@@ -606,16 +520,6 @@ static const JNINativeMethod sMethods[] = {
         reinterpret_cast<void *>(latinime_BinaryDictionary_getNextWord)
     },
     {
-        const_cast<char *>("calcNormalizedScoreNative"),
-        const_cast<char *>("([I[II)F"),
-        reinterpret_cast<void *>(latinime_BinaryDictionary_calcNormalizedScore)
-    },
-    {
-        const_cast<char *>("editDistanceNative"),
-        const_cast<char *>("([I[I)I"),
-        reinterpret_cast<void *>(latinime_BinaryDictionary_editDistance)
-    },
-    {
         const_cast<char *>("addUnigramWordNative"),
         const_cast<char *>("(J[II[IIZZI)V"),
         reinterpret_cast<void *>(latinime_BinaryDictionary_addUnigramWord)
@@ -640,11 +544,6 @@ static const JNINativeMethod sMethods[] = {
         const_cast<char *>("calculateProbabilityNative"),
         const_cast<char *>("(JII)I"),
         reinterpret_cast<void *>(latinime_BinaryDictionary_calculateProbabilityNative)
-    },
-    {
-        const_cast<char *>("setCurrentTimeForTestNative"),
-        const_cast<char *>("(I)I"),
-        reinterpret_cast<void *>(latinime_BinaryDictionary_setCurrentTimeForTest)
     },
     {
         const_cast<char *>("getPropertyNative"),
