@@ -40,6 +40,7 @@ public class InputTransaction {
 
     // Outputs
     private int mRequiredShiftUpdate = SHIFT_NO_UPDATE;
+    private boolean mRequiresUpdateSuggestions = false;
 
     public InputTransaction(final SettingsValues settingsValues, final Event event,
             final long timestamp, final int spaceState, final int shiftState) {
@@ -50,10 +51,34 @@ public class InputTransaction {
         mShiftState = shiftState;
     }
 
+    /**
+     * Indicate that this transaction requires some type of shift update.
+     * @param updateType What type of shift update this requires.
+     */
     public void requireShiftUpdate(final int updateType) {
         mRequiredShiftUpdate = Math.max(mRequiredShiftUpdate, updateType);
     }
+
+    /**
+     * Gets what type of shift update this transaction requires.
+     * @return The shift update type.
+     */
     public int getRequiredShiftUpdate() {
         return mRequiredShiftUpdate;
+    }
+
+    /**
+     * Indicate that this transaction requires updating the suggestions.
+     */
+    public void setRequiresUpdateSuggestions() {
+        mRequiresUpdateSuggestions = true;
+    }
+
+    /**
+     * Find out whether this transaction requires updating the suggestions.
+     * @return Whether this transaction requires updating the suggestions.
+     */
+    public boolean requiresUpdateSuggestions() {
+        return mRequiresUpdateSuggestions;
     }
 }

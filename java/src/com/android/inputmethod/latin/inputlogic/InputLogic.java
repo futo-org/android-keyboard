@@ -402,7 +402,7 @@ public final class InputLogic {
             // A special key, like delete, shift, emoji, or the settings key.
             switch (event.mKeyCode) {
             case Constants.CODE_DELETE:
-                handleBackspace(inputTransaction, handler);
+                handleBackspace(inputTransaction);
                 LatinImeLogger.logOnDelete(event.mX, event.mY);
                 break;
             case Constants.CODE_SHIFT:
@@ -673,7 +673,7 @@ public final class InputLogic {
                     commitTyped(inputTransaction.mSettingsValues, LastComposedWord.NOT_A_SEPARATOR);
                 }
             }
-            handleNonSeparator(inputTransaction.mSettingsValues, inputTransaction, handler);
+            handleNonSeparator(inputTransaction.mSettingsValues, inputTransaction);
         }
         return didAutoCorrect;
     }
@@ -684,9 +684,7 @@ public final class InputLogic {
      * @param inputTransaction The transaction in progress.
      */
     private void handleNonSeparator(final SettingsValues settingsValues,
-            final InputTransaction inputTransaction,
-            // TODO: Remove this argument
-            final LatinIME.UIHandler handler) {
+            final InputTransaction inputTransaction) {
         final int codePoint = inputTransaction.mEvent.mCodePoint;
         // TODO: refactor this method to stop flipping isComposingWord around all the time, and
         // make it shorter (possibly cut into several pieces). Also factor handleNonSpecialCharacter
@@ -762,7 +760,7 @@ public final class InputLogic {
             // In case the "add to dictionary" hint was still displayed.
             mSuggestionStripViewAccessor.dismissAddToDictionaryHint();
         }
-        handler.postUpdateSuggestionStrip();
+        inputTransaction.setRequiresUpdateSuggestions();
         if (settingsValues.mIsInternal) {
             LatinImeLoggerUtils.onNonSeparator((char)codePoint, inputTransaction.mEvent.mX,
                     inputTransaction.mEvent.mY);
@@ -844,7 +842,7 @@ public final class InputLogic {
             }
 
             startDoubleSpacePeriodCountdown(inputTransaction);
-            handler.postUpdateSuggestionStrip();
+            inputTransaction.setRequiresUpdateSuggestions();
         } else {
             if (swapWeakSpace) {
                 swapSwapperAndSpace(inputTransaction);
@@ -880,9 +878,7 @@ public final class InputLogic {
      * Handle a press on the backspace key.
      * @param inputTransaction The transaction in progress.
      */
-    private void handleBackspace(final InputTransaction inputTransaction,
-            // TODO: remove this argument
-            final LatinIME.UIHandler handler) {
+    private void handleBackspace(final InputTransaction inputTransaction) {
         mSpaceState = SpaceState.NONE;
         mDeleteCount++;
 
@@ -911,7 +907,7 @@ public final class InputLogic {
                 mWordComposer.deleteLast(inputTransaction.mEvent);
             }
             mConnection.setComposingText(getTextWithUnderline(mWordComposer.getTypedWord()), 1);
-            handler.postUpdateSuggestionStrip();
+            inputTransaction.setRequiresUpdateSuggestions();
             if (!mWordComposer.isComposingWord()) {
                 // If we just removed the last character, auto-caps mode may have changed so we
                 // need to re-evaluate.
@@ -922,7 +918,7 @@ public final class InputLogic {
                 if (inputTransaction.mSettingsValues.mIsInternal) {
                     LatinImeLoggerUtils.onAutoCorrectionCancellation();
                 }
-                revertCommit(inputTransaction.mSettingsValues, handler);
+                revertCommit(inputTransaction);
                 return;
             }
             if (mEnteredText != null && mConnection.sameAsTextBeforeCursor(mEnteredText)) {
@@ -1401,11 +1397,9 @@ public final class InputLogic {
      *
      * This is triggered upon pressing backspace just after a commit with auto-correction.
      *
-     * @param settingsValues the current settings values.
+     * @param inputTransaction The transaction in progress.
      */
-    private void revertCommit(final SettingsValues settingsValues,
-            // TODO: remove this argument
-            final LatinIME.UIHandler handler) {
+    private void revertCommit(final InputTransaction inputTransaction) {
         final String previousWord = mLastComposedWord.mPrevWord;
         final CharSequence originallyTypedWord = mLastComposedWord.mTypedWord;
         final CharSequence committedWord = mLastComposedWord.mCommittedWord;
@@ -1449,7 +1443,8 @@ public final class InputLogic {
                 // Given this, we add it to the list of suggestions, otherwise we discard it.
                 if (span instanceof SuggestionSpan) {
                     final SuggestionSpan suggestionSpan = (SuggestionSpan)span;
-                    if (!suggestionSpan.getLocale().equals(settingsValues.mLocale.toString())) {
+                    if (!suggestionSpan.getLocale().equals(
+                            inputTransaction.mSettingsValues.mLocale.toString())) {
                         continue;
                     }
                     for (final String suggestion : suggestionSpan.getSuggestions()) {
@@ -1464,11 +1459,11 @@ public final class InputLogic {
                 }
             }
             // Add the suggestion list to the list of suggestions.
-            textToCommit.setSpan(new SuggestionSpan(settingsValues.mLocale,
+            textToCommit.setSpan(new SuggestionSpan(inputTransaction.mSettingsValues.mLocale,
                     suggestions.toArray(new String[suggestions.size()]), 0 /* flags */),
                     0 /* start */, lastCharIndex /* end */, 0 /* flags */);
         }
-        if (settingsValues.mSpacingAndPunctuations.mCurrentLanguageHasSpaces) {
+        if (inputTransaction.mSettingsValues.mSpacingAndPunctuations.mCurrentLanguageHasSpaces) {
             // For languages with spaces, we revert to the typed string, but the cursor is still
             // after the separator so we don't resume suggestions. If the user wants to correct
             // the word, they have to press backspace again.
@@ -1481,7 +1476,7 @@ public final class InputLogic {
                     mLatinIME.getCoordinatesForCurrentKeyboard(codePoints), previousWord);
             mConnection.setComposingText(textToCommit, 1);
         }
-        if (settingsValues.mIsInternal) {
+        if (inputTransaction.mSettingsValues.mIsInternal) {
             LatinImeLoggerUtils.onSeparator(mLastComposedWord.mSeparatorString,
                     Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
         }
@@ -1494,7 +1489,7 @@ public final class InputLogic {
         // separator.
         mLastComposedWord = LastComposedWord.NOT_A_COMPOSED_WORD;
         // We have a separator between the word and the cursor: we should show predictions.
-        handler.postUpdateSuggestionStrip();
+        inputTransaction.setRequiresUpdateSuggestions();
     }
 
     /**
