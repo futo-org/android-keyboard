@@ -40,7 +40,7 @@ public final class AutoCorrectionUtils {
             final int autoCorrectionSuggestionScore = suggestion.mScore;
             // TODO: when the normalized score of the first suggestion is nearly equals to
             //       the normalized score of the second suggestion, behave less aggressive.
-            final float normalizedScore = BinaryDictionary.calcNormalizedScore(
+            final float normalizedScore = BinaryDictionaryUtils.calcNormalizedScore(
                     consideredWord, suggestion.mWord, autoCorrectionSuggestionScore);
             if (DBG) {
                 Log.d(TAG, "Normalized " + consideredWord + "," + suggestion + ","
@@ -71,9 +71,8 @@ public final class AutoCorrectionUtils {
         if (typedWordLength < MINIMUM_SAFETY_NET_CHAR_LENGTH) {
             return false;
         }
-        final int maxEditDistanceOfNativeDictionary =
-                (typedWordLength < 5 ? 2 : typedWordLength / 2) + 1;
-        final int distance = BinaryDictionary.editDistance(typedWord, suggestion);
+        final int maxEditDistanceOfNativeDictionary = (typedWordLength / 2) + 1;
+        final int distance = BinaryDictionaryUtils.editDistance(typedWord, suggestion);
         if (DBG) {
             Log.d(TAG, "Autocorrected edit distance = " + distance
                     + ", " + maxEditDistanceOfNativeDictionary);

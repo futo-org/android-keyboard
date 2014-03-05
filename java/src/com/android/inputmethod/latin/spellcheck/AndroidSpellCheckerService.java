@@ -37,6 +37,7 @@ import com.android.inputmethod.latin.SynchronouslyLoadedContactsBinaryDictionary
 import com.android.inputmethod.latin.SynchronouslyLoadedUserBinaryDictionary;
 import com.android.inputmethod.latin.UserBinaryDictionary;
 import com.android.inputmethod.latin.utils.AdditionalSubtypeUtils;
+import com.android.inputmethod.latin.utils.BinaryDictionaryUtils;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.LocaleUtils;
 import com.android.inputmethod.latin.utils.StringUtils;
@@ -320,7 +321,7 @@ public final class AndroidSpellCheckerService extends SpellCheckerService
                     hasRecommendedSuggestions = false;
                 } else {
                     gatheredSuggestions = EMPTY_STRING_ARRAY;
-                    final float normalizedScore = BinaryDictionary.calcNormalizedScore(
+                    final float normalizedScore = BinaryDictionaryUtils.calcNormalizedScore(
                             mOriginalText, mBestSuggestion, mBestScore);
                     hasRecommendedSuggestions = (normalizedScore > mRecommendedThreshold);
                 }
@@ -355,7 +356,7 @@ public final class AndroidSpellCheckerService extends SpellCheckerService
                 final int bestScore = mScores[mLength - 1];
                 final String bestSuggestion = mSuggestions.get(0);
                 final float normalizedScore =
-                        BinaryDictionary.calcNormalizedScore(
+                        BinaryDictionaryUtils.calcNormalizedScore(
                                 mOriginalText, bestSuggestion.toString(), bestScore);
                 hasRecommendedSuggestions = (normalizedScore > mRecommendedThreshold);
                 if (DBG) {

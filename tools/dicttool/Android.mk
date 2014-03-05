@@ -41,6 +41,7 @@ USED_TARGETTED_UTILS := \
         $(LATINIME_CORE_SOURCE_DIRECTORY)/SuggestedWords.java \
         $(LATINIME_CORE_SOURCE_DIRECTORY)/WordComposer.java \
         $(LATINIME_CORE_SOURCE_DIRECTORY)/settings/NativeSuggestOptions.java \
+        $(LATINIME_CORE_SOURCE_DIRECTORY)/utils/BinaryDictionaryUtils.java \
         $(LATINIME_CORE_SOURCE_DIRECTORY)/utils/ByteArrayDictBuffer.java \
         $(LATINIME_CORE_SOURCE_DIRECTORY)/utils/CollectionUtils.java \
         $(LATINIME_CORE_SOURCE_DIRECTORY)/utils/CombinedFormatUtils.java \
