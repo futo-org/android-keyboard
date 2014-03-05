@@ -96,6 +96,7 @@ public final class InputLogic {
     // TODO: This boolean is persistent state and causes large side effects at unexpected times.
     // Find a way to remove it for readability.
     private boolean mIsAutoCorrectionIndicatorOn;
+    private long mDoubleSpacePeriodCountdownStart;
 
     public InputLogic(final LatinIME latinIME,
             final SuggestionStripViewAccessor suggestionStripViewAccessor) {
@@ -138,6 +139,7 @@ public final class InputLogic {
         // In some cases (namely, after rotation of the device) editorInfo.initialSelStart is lying
         // so we try using some heuristics to find out about these and fix them.
         mConnection.tryFixLyingCursorPosition();
+        cancelDoubleSpacePeriodCountdown();
         mInputLogicHandler = new InputLogicHandler(mLatinIME, this);
     }
 
@@ -406,7 +408,7 @@ public final class InputLogic {
 
         // TODO: Consolidate the double-space period timer, mLastKeyTime, and the space state.
         if (event.mCodePoint != Constants.CODE_SPACE) {
-            handler.cancelDoubleSpacePeriodTimer();
+            cancelDoubleSpacePeriodCountdown();
         }
 
         boolean didAutoCorrect = false;
@@ -847,7 +849,7 @@ public final class InputLogic {
 
         if (Constants.CODE_SPACE == codePoint) {
             if (inputTransaction.mSettingsValues.isSuggestionsRequested()) {
-                if (maybeDoubleSpacePeriod(inputTransaction.mSettingsValues, handler)) {
+                if (maybeDoubleSpacePeriod(inputTransaction)) {
                     inputTransaction.requireShiftUpdate(InputTransaction.SHIFT_UPDATE_NOW);
                     mSpaceState = SpaceState.DOUBLE;
                 } else if (!mSuggestedWords.isPunctuationSuggestions()) {
@@ -855,7 +857,7 @@ public final class InputLogic {
                 }
             }
 
-            handler.startDoubleSpacePeriodTimer();
+            startDoubleSpacePeriodCountdown(inputTransaction);
             handler.postUpdateSuggestionStrip();
         } else {
             if (swapWeakSpace) {
@@ -952,7 +954,7 @@ public final class InputLogic {
                 return;
             }
             if (SpaceState.DOUBLE == inputTransaction.mSpaceState) {
-                handler.cancelDoubleSpacePeriodTimer();
+                cancelDoubleSpacePeriodCountdown();
                 if (mConnection.revertDoubleSpacePeriod()) {
                     // No need to reset mSpaceState, it has already be done (that's why we
                     // receive it as a parameter)
@@ -1100,6 +1102,19 @@ public final class InputLogic {
         return false;
     }
 
+    public void startDoubleSpacePeriodCountdown(final InputTransaction inputTransaction) {
+        mDoubleSpacePeriodCountdownStart = inputTransaction.mTimestamp;
+    }
+
+    public void cancelDoubleSpacePeriodCountdown() {
+        mDoubleSpacePeriodCountdownStart = 0;
+    }
+
+    public boolean isDoubleSpacePeriodCountdownActive(final InputTransaction inputTransaction) {
+        return inputTransaction.mTimestamp - mDoubleSpacePeriodCountdownStart
+                < inputTransaction.mSettingsValues.mDoubleSpacePeriodTimeout;
+    }
+
     /**
      * Apply the double-space-to-period transformation if applicable.
      *
@@ -1112,14 +1127,12 @@ public final class InputLogic {
      * method applies the transformation and returns true. Otherwise, it does nothing and
      * returns false.
      *
-     * @param settingsValues the current values of the settings.
+     * @param inputTransaction The transaction in progress.
      * @return true if we applied the double-space-to-period transformation, false otherwise.
      */
-    private boolean maybeDoubleSpacePeriod(final SettingsValues settingsValues,
-            // TODO: remove this argument
-            final LatinIME.UIHandler handler) {
-        if (!settingsValues.mUseDoubleSpacePeriod) return false;
-        if (!handler.isAcceptingDoubleSpacePeriod()) return false;
+    private boolean maybeDoubleSpacePeriod(final InputTransaction inputTransaction) {
+        if (!inputTransaction.mSettingsValues.mUseDoubleSpacePeriod) return false;
+        if (!isDoubleSpacePeriodCountdownActive(inputTransaction)) return false;
         // We only do this when we see two spaces and an accepted code point before the cursor.
         // The code point may be a surrogate pair but the two spaces may not, so we need 4 chars.
         final CharSequence lastThree = mConnection.getTextBeforeCursor(4, 0);
@@ -1135,10 +1148,10 @@ public final class InputLogic {
                 Character.isSurrogatePair(lastThree.charAt(0), lastThree.charAt(1)) ?
                         Character.codePointAt(lastThree, 0) : lastThree.charAt(length - 3);
         if (canBeFollowedByDoubleSpacePeriod(firstCodePoint)) {
-            handler.cancelDoubleSpacePeriodTimer();
+            cancelDoubleSpacePeriodCountdown();
             mConnection.deleteSurroundingText(2, 0);
-            final String textToInsert =
-                    settingsValues.mSpacingAndPunctuations.mSentenceSeparatorAndSpace;
+            final String textToInsert = inputTransaction.mSettingsValues.mSpacingAndPunctuations
+                    .mSentenceSeparatorAndSpace;
             mConnection.commitText(textToInsert, 1);
             if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
                 ResearchLogger.latinIME_maybeDoubleSpacePeriod(textToInsert,
