@@ -22,6 +22,7 @@ import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNode;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
+import com.android.inputmethod.latin.utils.BinaryDictionaryUtils;
 import com.android.inputmethod.latin.utils.LocaleUtils;
 
 import java.io.File;
@@ -54,7 +55,7 @@ public class Ver4DictEncoder implements DictEncoder {
         if (!mDictPlacedDir.isDirectory()) {
             throw new UnsupportedFormatException("Given path is not a directory.");
         }
-        if (!BinaryDictionary.createEmptyDictFile(mDictPlacedDir.getAbsolutePath(),
+        if (!BinaryDictionaryUtils.createEmptyDictFile(mDictPlacedDir.getAbsolutePath(),
                 FormatSpec.VERSION4, LocaleUtils.constructLocaleFromString(
                 dict.mOptions.mAttributes.get(DictionaryHeader.DICTIONARY_LOCALE_KEY)),
                 dict.mOptions.mAttributes)) {

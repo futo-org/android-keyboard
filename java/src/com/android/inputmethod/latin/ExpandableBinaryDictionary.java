@@ -27,6 +27,7 @@ import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
 import com.android.inputmethod.latin.makedict.WordProperty;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.utils.AsyncResultHolder;
+import com.android.inputmethod.latin.utils.BinaryDictionaryUtils;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.CombinedFormatUtils;
 import com.android.inputmethod.latin.utils.ExecutorUtils;
@@ -228,7 +229,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     }
 
     private void createBinaryDictionaryLocked() {
-        BinaryDictionary.createEmptyDictFile(mDictFile.getAbsolutePath(),
+        BinaryDictionaryUtils.createEmptyDictFile(mDictFile.getAbsolutePath(),
                 DICTIONARY_FORMAT_VERSION, mLocale, getHeaderAttributeMap());
     }
 

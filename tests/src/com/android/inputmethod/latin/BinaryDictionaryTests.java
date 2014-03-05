@@ -25,6 +25,7 @@ import com.android.inputmethod.latin.makedict.CodePointUtils;
 import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
 import com.android.inputmethod.latin.makedict.WordProperty;
+import com.android.inputmethod.latin.utils.BinaryDictionaryUtils;
 import com.android.inputmethod.latin.utils.FileUtils;
 import com.android.inputmethod.latin.utils.LanguageModelParam;
 
@@ -59,7 +60,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         file.delete();
         file.mkdir();
         Map<String, String> attributeMap = new HashMap<String, String>();
-        if (BinaryDictionary.createEmptyDictFile(file.getAbsolutePath(), FormatSpec.VERSION4,
+        if (BinaryDictionaryUtils.createEmptyDictFile(file.getAbsolutePath(), FormatSpec.VERSION4,
                 Locale.ENGLISH, attributeMap)) {
             return file;
         } else {

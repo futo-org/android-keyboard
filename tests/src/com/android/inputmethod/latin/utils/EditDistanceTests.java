@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.inputmethod.latin;
+package com.android.inputmethod.latin.utils;
 
 import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
@@ -29,7 +29,7 @@ public class EditDistanceTests extends AndroidTestCase {
      * sitting
      */
     public void testExample1() {
-        final int dist = BinaryDictionary.editDistance("kitten", "sitting");
+        final int dist = BinaryDictionaryUtils.editDistance("kitten", "sitting");
         assertEquals("edit distance between 'kitten' and 'sitting' is 3",
                 3, dist);
     }
@@ -42,26 +42,26 @@ public class EditDistanceTests extends AndroidTestCase {
      * S--unday
      */
     public void testExample2() {
-        final int dist = BinaryDictionary.editDistance("Saturday", "Sunday");
+        final int dist = BinaryDictionaryUtils.editDistance("Saturday", "Sunday");
         assertEquals("edit distance between 'Saturday' and 'Sunday' is 3",
                 3, dist);
     }
 
     public void testBothEmpty() {
-        final int dist = BinaryDictionary.editDistance("", "");
+        final int dist = BinaryDictionaryUtils.editDistance("", "");
         assertEquals("when both string are empty, no edits are needed",
                 0, dist);
     }
 
     public void testFirstArgIsEmpty() {
-        final int dist = BinaryDictionary.editDistance("", "aaaa");
+        final int dist = BinaryDictionaryUtils.editDistance("", "aaaa");
         assertEquals("when only one string of the arguments is empty,"
                  + " the edit distance is the length of the other.",
                  4, dist);
     }
 
     public void testSecoondArgIsEmpty() {
-        final int dist = BinaryDictionary.editDistance("aaaa", "");
+        final int dist = BinaryDictionaryUtils.editDistance("aaaa", "");
         assertEquals("when only one string of the arguments is empty,"
                  + " the edit distance is the length of the other.",
                  4, dist);
@@ -70,27 +70,27 @@ public class EditDistanceTests extends AndroidTestCase {
     public void testSameStrings() {
         final String arg1 = "The quick brown fox jumps over the lazy dog.";
         final String arg2 = "The quick brown fox jumps over the lazy dog.";
-        final int dist = BinaryDictionary.editDistance(arg1, arg2);
+        final int dist = BinaryDictionaryUtils.editDistance(arg1, arg2);
         assertEquals("when same strings are passed, distance equals 0.",
                 0, dist);
     }
 
     public void testSameReference() {
         final String arg = "The quick brown fox jumps over the lazy dog.";
-        final int dist = BinaryDictionary.editDistance(arg, arg);
+        final int dist = BinaryDictionaryUtils.editDistance(arg, arg);
         assertEquals("when same string references are passed, the distance equals 0.",
                 0, dist);
     }
 
     public void testNullArg() {
         try {
-            BinaryDictionary.editDistance(null, "aaa");
+            BinaryDictionaryUtils.editDistance(null, "aaa");
             fail("IllegalArgumentException should be thrown.");
         } catch (Exception e) {
             assertTrue(e instanceof IllegalArgumentException);
         }
         try {
-            BinaryDictionary.editDistance("aaa", null);
+            BinaryDictionaryUtils.editDistance("aaa", null);
             fail("IllegalArgumentException should be thrown.");
         } catch (Exception e) {
             assertTrue(e instanceof IllegalArgumentException);

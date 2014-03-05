@@ -40,7 +40,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 
 /**
  * Implements a static, compacted, binary dictionary of standard words.
@@ -142,8 +141,6 @@ public final class BinaryDictionary extends Dictionary {
         JniUtils.loadNativeLibrary();
     }
 
-    private static native boolean createEmptyDictFileNative(String filePath, long dictVersion,
-            String locale, String[] attributeKeyStringArray, String[] attributeValueStringArray);
     private static native long openNative(String sourceDir, long dictOffset, long dictSize,
             boolean isUpdatable);
     private static native void getHeaderInfoNative(long dict, int[] outHeaderSize,
@@ -167,8 +164,6 @@ public final class BinaryDictionary extends Dictionary {
             int[] suggestOptions, int[] prevWordCodePointArray,
             int[] outputCodePoints, int[] outputScores, int[] outputIndices, int[] outputTypes,
             int[] outputAutoCommitFirstWordConfidence);
-    private static native float calcNormalizedScoreNative(int[] before, int[] after, int score);
-    private static native int editDistanceNative(int[] before, int[] after);
     private static native void addUnigramWordNative(long dict, int[] word, int probability,
             int[] shortcutTarget, int shortcutProbability, boolean isNotAWord,
             boolean isBlacklisted, int timestamp);
@@ -179,23 +174,8 @@ public final class BinaryDictionary extends Dictionary {
             LanguageModelParam[] languageModelParams, int startIndex);
     private static native int calculateProbabilityNative(long dict, int unigramProbability,
             int bigramProbability);
-    private static native int setCurrentTimeForTestNative(int currentTime);
     private static native String getPropertyNative(long dict, String query);
     private static native boolean isCorruptedNative(long dict);
-
-    public static boolean createEmptyDictFile(final String filePath, final long dictVersion,
-            final Locale locale, final Map<String, String> attributeMap) {
-        final String[] keyArray = new String[attributeMap.size()];
-        final String[] valueArray = new String[attributeMap.size()];
-        int index = 0;
-        for (final String key : attributeMap.keySet()) {
-            keyArray[index] = key;
-            valueArray[index] = attributeMap.get(key);
-            index++;
-        }
-        return createEmptyDictFileNative(filePath, dictVersion, locale.toString(), keyArray,
-                valueArray);
-    }
 
     // TODO: Move native dict into session
     private final void loadDictionary(final String path, final long startOffset,
@@ -321,20 +301,6 @@ public final class BinaryDictionary extends Dictionary {
 
     public int getFormatVersion() {
         return getFormatVersionNative(mNativeDict);
-    }
-
-    public static float calcNormalizedScore(final String before, final String after,
-            final int score) {
-        return calcNormalizedScoreNative(StringUtils.toCodePointArray(before),
-                StringUtils.toCodePointArray(after), score);
-    }
-
-    public static int editDistance(final String before, final String after) {
-        if (before == null || after == null) {
-            throw new IllegalArgumentException();
-        }
-        return editDistanceNative(StringUtils.toCodePointArray(before),
-                StringUtils.toCodePointArray(after));
     }
 
     @Override
@@ -495,22 +461,6 @@ public final class BinaryDictionary extends Dictionary {
     public int calculateProbability(final int unigramProbability, final int bigramProbability) {
         if (!isValidDictionary()) return NOT_A_PROBABILITY;
         return calculateProbabilityNative(mNativeDict, unigramProbability, bigramProbability);
-    }
-
-    /**
-     * Control the current time to be used in the native code. If currentTime >= 0, this method sets
-     * the current time and gets into test mode.
-     * In test mode, set timestamp is used as the current time in the native code.
-     * If currentTime < 0, quit the test mode and returns to using time() to get the current time.
-     *
-     * @param currentTime seconds since the unix epoch
-     * @return current time got in the native code.
-     */
-    @UsedForTesting
-    public static int setCurrentTimeForTest(final int currentTime) {
-        final int currentNativeTimestamp = setCurrentTimeForTestNative(currentTime);
-        PersonalizationHelper.currentTimeChangedForTesting(currentNativeTimestamp);
-        return currentNativeTimestamp;
     }
 
     @UsedForTesting

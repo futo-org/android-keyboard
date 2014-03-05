@@ -27,6 +27,7 @@ import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.makedict.FusionDictionary;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNode;
 import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
+import com.android.inputmethod.latin.utils.BinaryDictionaryUtils;
 import com.android.inputmethod.latin.utils.FileUtils;
 import com.android.inputmethod.latin.utils.LocaleUtils;
 
@@ -111,7 +112,7 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
                 DictionaryHeader.ATTRIBUTE_VALUE_TRUE);
         attributeMap.put(DictionaryHeader.HAS_HISTORICAL_INFO_KEY,
                 DictionaryHeader.ATTRIBUTE_VALUE_TRUE);
-        if (BinaryDictionary.createEmptyDictFile(file.getAbsolutePath(), FormatSpec.VERSION4,
+        if (BinaryDictionaryUtils.createEmptyDictFile(file.getAbsolutePath(), FormatSpec.VERSION4,
                 LocaleUtils.constructLocaleFromString(TEST_LOCALE), attributeMap)) {
             return file;
         } else {
@@ -121,11 +122,11 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
     }
 
     private static int setCurrentTimeForTestMode(final int currentTime) {
-        return BinaryDictionary.setCurrentTimeForTest(currentTime);
+        return BinaryDictionaryUtils.setCurrentTimeForTest(currentTime);
     }
 
     private static int stopTestModeInNativeCode() {
-        return BinaryDictionary.setCurrentTimeForTest(-1);
+        return BinaryDictionaryUtils.setCurrentTimeForTest(-1);
     }
 
     public void testReadDictInJavaSide() {
