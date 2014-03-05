@@ -1295,7 +1295,10 @@ public final class InputLogic {
                     SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
                     SuggestedWordInfo.NOT_A_CONFIDENCE /* autoCommitFirstWordConfidence */));
         }
-        if (!isResumableWord(settingsValues, typedWord)) return;
+        if (!isResumableWord(settingsValues, typedWord)) {
+            mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
+            return;
+        }
         int i = 0;
         for (final SuggestionSpan span : range.getSuggestionSpansAtWord()) {
             for (final String s : span.getSuggestions()) {
