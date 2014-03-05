@@ -169,7 +169,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         private int mDelayUpdateSuggestions;
         private int mDelayUpdateShiftState;
-        private long mDoubleSpacePeriodTimeout;
         private long mDoubleSpacePeriodTimerStart;
 
         public UIHandler(final LatinIME ownerInstance) {
@@ -184,8 +183,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             final Resources res = latinIme.getResources();
             mDelayUpdateSuggestions = res.getInteger(R.integer.config_delay_update_suggestions);
             mDelayUpdateShiftState = res.getInteger(R.integer.config_delay_update_shift_state);
-            mDoubleSpacePeriodTimeout =
-                    res.getInteger(R.integer.config_double_space_period_timeout);
         }
 
         @Override
@@ -327,7 +324,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         public boolean isAcceptingDoubleSpacePeriod() {
             return SystemClock.uptimeMillis() - mDoubleSpacePeriodTimerStart
-                    < mDoubleSpacePeriodTimeout;
+                    < getOwnerInstance().mSettings.getCurrent().mDoubleSpacePeriodTimeout;
         }
 
         // Working variables for the following methods.
