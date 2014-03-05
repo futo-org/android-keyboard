@@ -20,8 +20,8 @@ import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.LargeTest;
 import android.util.Log;
 
-import com.android.inputmethod.latin.BinaryDictionary;
 import com.android.inputmethod.latin.ExpandableBinaryDictionary;
+import com.android.inputmethod.latin.utils.BinaryDictionaryUtils;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.FileUtils;
 
@@ -79,11 +79,11 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
     }
 
     private static int setCurrentTimeForTestMode(final int currentTime) {
-        return BinaryDictionary.setCurrentTimeForTest(currentTime);
+        return BinaryDictionaryUtils.setCurrentTimeForTest(currentTime);
     }
 
     private static int stopTestModeInNativeCode() {
-        return BinaryDictionary.setCurrentTimeForTest(-1);
+        return BinaryDictionaryUtils.setCurrentTimeForTest(-1);
     }
 
     /**

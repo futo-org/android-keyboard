@@ -30,6 +30,7 @@ import com.android.inputmethod.latin.makedict.FusionDictionary.PtNode;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
 import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
+import com.android.inputmethod.latin.utils.BinaryDictionaryUtils;
 import com.android.inputmethod.latin.utils.ByteArrayDictBuffer;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 
@@ -77,7 +78,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
 
     public BinaryDictDecoderEncoderTests(final long seed, final int maxUnigrams) {
         super();
-        BinaryDictionary.setCurrentTimeForTest(0);
+        BinaryDictionaryUtils.setCurrentTimeForTest(0);
         Log.e(TAG, "Testing dictionary: seed is " + seed);
         final Random random = new Random(seed);
         sWords.clear();
@@ -112,13 +113,13 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        BinaryDictionary.setCurrentTimeForTest(0);
+        BinaryDictionaryUtils.setCurrentTimeForTest(0);
     }
 
     @Override
     protected void tearDown() throws Exception {
         // Quit test mode.
-        BinaryDictionary.setCurrentTimeForTest(-1);
+        BinaryDictionaryUtils.setCurrentTimeForTest(-1);
         super.tearDown();
     }
 

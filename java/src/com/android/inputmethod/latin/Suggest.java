@@ -22,6 +22,7 @@ import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.latin.utils.AutoCorrectionUtils;
+import com.android.inputmethod.latin.utils.BinaryDictionaryUtils;
 import com.android.inputmethod.latin.utils.BoundedTreeSet;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.StringUtils;
@@ -308,7 +309,7 @@ public final class Suggest {
         // than i because we added the typed word to mSuggestions without touching mScores.
         for (int i = 0; i < suggestionsSize - 1; ++i) {
             final SuggestedWordInfo cur = suggestions.get(i + 1);
-            final float normalizedScore = BinaryDictionary.calcNormalizedScore(
+            final float normalizedScore = BinaryDictionaryUtils.calcNormalizedScore(
                     typedWord, cur.toString(), cur.mScore);
             final String scoreInfoString;
             if (normalizedScore > 0) {
