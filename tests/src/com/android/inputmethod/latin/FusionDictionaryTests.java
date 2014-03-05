@@ -19,6 +19,7 @@ package com.android.inputmethod.latin;
 import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
 
+import com.android.inputmethod.latin.makedict.FormatSpec.DictionaryOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary;
 import com.android.inputmethod.latin.makedict.ProbabilityInfo;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
@@ -32,7 +33,7 @@ import java.util.HashMap;
 public class FusionDictionaryTests extends AndroidTestCase {
     public void testFindWordInTree() {
         FusionDictionary dict = new FusionDictionary(new PtNodeArray(),
-                new FusionDictionary.DictionaryOptions(new HashMap<String,String>()));
+                new DictionaryOptions(new HashMap<String,String>()));
 
         dict.add("abc", new ProbabilityInfo(10), null, false /* isNotAWord */);
         assertNull(FusionDictionary.findWordInTree(dict.mRootNodeArray, "aaa"));
