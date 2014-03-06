@@ -17,6 +17,8 @@
 #ifndef LATINIME_TOUCH_POSITION_CORRECTION_UTILS_H
 #define LATINIME_TOUCH_POSITION_CORRECTION_UTILS_H
 
+#include <algorithm>
+
 #include "defines.h"
 #include "suggest/core/layout/proximity_info_params.h"
 
@@ -34,7 +36,7 @@ class TouchPositionCorrectionUtils {
         static const float R2 = 1.0f;
         const float x = normalizedSquaredDistance;
         if (!isTouchPositionCorrectionEnabled) {
-            return min(C, x);
+            return std::min(C, x);
         }
 
         // factor is a piecewise linear function like:
