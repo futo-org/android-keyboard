@@ -601,7 +601,7 @@ public final class InputLogic {
     }
 
     public void onEndBatchInput(final InputPointers batchPointers) {
-        mInputLogicHandler.onEndBatchInput(batchPointers, mAutoCommitSequenceNumber);
+        mInputLogicHandler.updateTailBatchInput(batchPointers, mAutoCommitSequenceNumber);
         ++mAutoCommitSequenceNumber;
     }
 
@@ -1794,7 +1794,7 @@ public final class InputLogic {
      * @param settingsValues the current values of the settings.
      * @param suggestedWords suggestedWords to use.
      */
-    public void endBatchInputInternal(final SettingsValues settingsValues,
+    public void onUpdateTailBatchInputCompleted(final SettingsValues settingsValues,
             final SuggestedWords suggestedWords,
             // TODO: remove this argument
             final KeyboardSwitcher keyboardSwitcher) {

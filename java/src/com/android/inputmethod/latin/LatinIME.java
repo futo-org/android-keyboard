@@ -156,7 +156,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         private static final int MSG_SHOW_GESTURE_PREVIEW_AND_SUGGESTION_STRIP = 3;
         private static final int MSG_RESUME_SUGGESTIONS = 4;
         private static final int MSG_REOPEN_DICTIONARIES = 5;
-        private static final int MSG_ON_END_BATCH_INPUT = 6;
+        private static final int MSG_UPDATE_TAIL_BATCH_INPUT_COMPLETED = 6;
         private static final int MSG_RESET_CACHES = 7;
         // Update this when adding new messages
         private static final int MSG_LAST = MSG_RESET_CACHES;
@@ -220,8 +220,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 // get any suggestions. Wait one frame.
                 postUpdateSuggestionStrip();
                 break;
-            case MSG_ON_END_BATCH_INPUT:
-                latinIme.mInputLogic.endBatchInputInternal(latinIme.mSettings.getCurrent(),
+            case MSG_UPDATE_TAIL_BATCH_INPUT_COMPLETED:
+                latinIme.mInputLogic.onUpdateTailBatchInputCompleted(
+                        latinIme.mSettings.getCurrent(),
                         (SuggestedWords) msg.obj, latinIme.mKeyboardSwitcher);
                 break;
             case MSG_RESET_CACHES:
@@ -304,8 +305,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     ARG1_NOT_GESTURE_INPUT, ARG2_UNUSED, suggestedWords).sendToTarget();
         }
 
-        public void onEndBatchInput(final SuggestedWords suggestedWords) {
-            obtainMessage(MSG_ON_END_BATCH_INPUT, suggestedWords).sendToTarget();
+        public void showTailBatchInputResult(final SuggestedWords suggestedWords) {
+            obtainMessage(MSG_UPDATE_TAIL_BATCH_INPUT_COMPLETED, suggestedWords).sendToTarget();
         }
 
         // Working variables for the following methods.
