@@ -38,26 +38,25 @@ class SparseTableDictContent : public DictContent {
                       MmappedBuffer::openBuffer(dictPath, lookupTableFileName, isUpdatable)),
               mAddressTableBuffer(
                       MmappedBuffer::openBuffer(dictPath, addressTableFileName, isUpdatable)),
-              mContentBuffer(MmappedBuffer::openBuffer(dictPath, contentFileName, isUpdatable)),
+              mContentBuffer(
+                      MmappedBuffer::openBuffer(dictPath, contentFileName, isUpdatable)),
               mExpandableLookupTableBuffer(
-                      mLookupTableBuffer.get() ? mLookupTableBuffer.get()->getBuffer() : nullptr,
-                      mLookupTableBuffer.get() ? mLookupTableBuffer.get()->getBufferSize() : 0,
+                      mLookupTableBuffer ? mLookupTableBuffer->getBuffer() : nullptr,
+                      mLookupTableBuffer ? mLookupTableBuffer->getBufferSize() : 0,
                       BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE),
               mExpandableAddressTableBuffer(
-                      mAddressTableBuffer.get() ? mAddressTableBuffer.get()->getBuffer() : nullptr,
-                      mAddressTableBuffer.get() ? mAddressTableBuffer.get()->getBufferSize() : 0,
+                      mAddressTableBuffer ? mAddressTableBuffer->getBuffer() : nullptr,
+                      mAddressTableBuffer ? mAddressTableBuffer->getBufferSize() : 0,
                       BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE),
-              mExpandableContentBuffer(mContentBuffer.get() ?
-                              mContentBuffer.get()->getBuffer() : nullptr,
-                      mContentBuffer.get() ? mContentBuffer.get()->getBufferSize() : 0,
+              mExpandableContentBuffer(mContentBuffer ? mContentBuffer->getBuffer() : nullptr,
+                      mContentBuffer ? mContentBuffer->getBufferSize() : 0,
                       BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE),
               mAddressLookupTable(&mExpandableLookupTableBuffer, &mExpandableAddressTableBuffer,
                       sparseTableBlockSize, sparseTableDataSize),
-              mIsValid(mLookupTableBuffer.get() && mAddressTableBuffer.get()
-                      && mContentBuffer.get()) {}
+              mIsValid(mLookupTableBuffer && mAddressTableBuffer && mContentBuffer) {}
 
     SparseTableDictContent(const int sparseTableBlockSize, const int sparseTableDataSize)
-            : mLookupTableBuffer(0), mAddressTableBuffer(0), mContentBuffer(0),
+            : mLookupTableBuffer(), mAddressTableBuffer(), mContentBuffer(),
               mExpandableLookupTableBuffer(Ver4DictConstants::MAX_DICTIONARY_SIZE),
               mExpandableAddressTableBuffer(Ver4DictConstants::MAX_DICTIONARY_SIZE),
               mExpandableContentBuffer(Ver4DictConstants::MAX_DICTIONARY_SIZE),

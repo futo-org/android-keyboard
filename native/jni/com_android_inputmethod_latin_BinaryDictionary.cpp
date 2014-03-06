@@ -46,15 +46,16 @@ static jlong latinime_BinaryDictionary_open(JNIEnv *env, jclass clazz, jstring s
     char sourceDirChars[sourceDirUtf8Length + 1];
     env->GetStringUTFRegion(sourceDir, 0, env->GetStringLength(sourceDir), sourceDirChars);
     sourceDirChars[sourceDirUtf8Length] = '\0';
-    DictionaryStructureWithBufferPolicy::StructurePolicyPtr dictionaryStructureWithBufferPolicy =
+    DictionaryStructureWithBufferPolicy::StructurePolicyPtr dictionaryStructureWithBufferPolicy(
             DictionaryStructureWithBufferPolicyFactory::newDictionaryStructureWithBufferPolicy(
                     sourceDirChars, static_cast<int>(dictOffset), static_cast<int>(dictSize),
-                    isUpdatable == JNI_TRUE);
-    if (!dictionaryStructureWithBufferPolicy.get()) {
+                    isUpdatable == JNI_TRUE));
+    if (!dictionaryStructureWithBufferPolicy) {
         return 0;
     }
 
-    Dictionary *const dictionary = new Dictionary(env, dictionaryStructureWithBufferPolicy);
+    Dictionary *const dictionary =
+            new Dictionary(env, std::move(dictionaryStructureWithBufferPolicy));
     PROF_END(66);
     PROF_CLOSE;
     return reinterpret_cast<jlong>(dictionary);

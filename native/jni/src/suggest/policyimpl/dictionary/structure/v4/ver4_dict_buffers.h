@@ -17,6 +17,8 @@
 #ifndef LATINIME_VER4_DICT_BUFFER_H
 #define LATINIME_VER4_DICT_BUFFER_H
 
+#include <memory>
+
 #include "defines.h"
 #include "suggest/policyimpl/dictionary/header/header_policy.h"
 #include "suggest/policyimpl/dictionary/structure/v4/content/bigram_dict_content.h"
@@ -31,10 +33,10 @@ namespace latinime {
 
 class Ver4DictBuffers {
  public:
-    typedef ExclusiveOwnershipPointer<Ver4DictBuffers> Ver4DictBuffersPtr;
+    typedef std::unique_ptr<Ver4DictBuffers> Ver4DictBuffersPtr;
 
     static Ver4DictBuffersPtr openVer4DictBuffers(const char *const dictDirPath,
-            const MmappedBuffer::MmappedBufferPtr &headerBuffer);
+            MmappedBuffer::MmappedBufferPtr headerBuffer);
 
     static AK_FORCE_INLINE Ver4DictBuffersPtr createVer4DictBuffers(
             const HeaderPolicy *const headerPolicy) {
@@ -42,7 +44,7 @@ class Ver4DictBuffers {
     }
 
     AK_FORCE_INLINE bool isValid() const {
-        return mHeaderBuffer.get() && mDictBuffer.get() && mHeaderPolicy.isValid()
+        return mHeaderBuffer && mDictBuffer && mHeaderPolicy.isValid()
                 && mProbabilityDictContent.isValid() && mTerminalPositionLookupTable.isValid()
                 && mBigramDictContent.isValid() && mShortcutDictContent.isValid();
     }
@@ -118,7 +120,7 @@ class Ver4DictBuffers {
     DISALLOW_COPY_AND_ASSIGN(Ver4DictBuffers);
 
     Ver4DictBuffers(const char *const dictDirPath,
-            const MmappedBuffer::MmappedBufferPtr &headerBuffer, const bool isUpdatable);
+            const MmappedBuffer::MmappedBufferPtr headerBuffer, const bool isUpdatable);
 
     Ver4DictBuffers(const HeaderPolicy *const headerPolicy);
 

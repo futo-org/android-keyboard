@@ -33,7 +33,7 @@ namespace latinime {
     const int mmapFd = open(path, O_RDONLY);
     if (mmapFd < 0) {
         AKLOGE("DICT: Can't open the source. path=%s errno=%d", path, errno);
-        return MmappedBufferPtr(0);
+        return MmappedBufferPtr(nullptr);
     }
     const int pagesize = sysconf(_SC_PAGESIZE);
     const int offset = bufferOffset % pagesize;
@@ -45,13 +45,13 @@ namespace latinime {
     if (mmappedBuffer == MAP_FAILED) {
         AKLOGE("DICT: Can't mmap dictionary. errno=%d", errno);
         close(mmapFd);
-        return MmappedBufferPtr(0);
+        return MmappedBufferPtr(nullptr);
     }
     uint8_t *const buffer = static_cast<uint8_t *>(mmappedBuffer) + offset;
     if (!buffer) {
         AKLOGE("DICT: buffer is null");
         close(mmapFd);
-        return MmappedBufferPtr(0);
+        return MmappedBufferPtr(nullptr);
     }
     return MmappedBufferPtr(new MmappedBuffer(buffer, bufferSize, mmappedBuffer, alignedSize,
             mmapFd, isUpdatable));
@@ -61,7 +61,7 @@ namespace latinime {
         const char *const path, const bool isUpdatable) {
     const int fileSize = FileUtils::getFileSize(path);
     if (fileSize == -1) {
-        return MmappedBufferPtr(0);
+        return MmappedBufferPtr(nullptr);
     } else if (fileSize == 0) {
         return MmappedBufferPtr(new MmappedBuffer(isUpdatable));
     } else {
@@ -76,7 +76,7 @@ namespace latinime {
     const int filePathLength = snprintf(filePath, filePathBufferSize, "%s%s", dirPath,
             fileName);
     if (filePathLength >= filePathBufferSize) {
-        return 0;
+        return MmappedBufferPtr(nullptr);
     }
     return openBuffer(filePath, isUpdatable);
 }
