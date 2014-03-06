@@ -352,13 +352,13 @@ template<typename T> AK_FORCE_INLINE const T &max(const T &a, const T &b) { retu
 #define MIN_OUTPUT_INDEX_FOR_DEBUG (-1)
 
 #define DISALLOW_DEFAULT_CONSTRUCTOR(TypeName) \
-  TypeName()
+  TypeName() = delete
 
 #define DISALLOW_COPY_CONSTRUCTOR(TypeName) \
-  TypeName(const TypeName&)
+  TypeName(const TypeName&) = delete
 
 #define DISALLOW_ASSIGNMENT_OPERATOR(TypeName) \
-  void operator=(const TypeName&)
+  void operator=(const TypeName&) = delete
 
 #define DISALLOW_COPY_AND_ASSIGN(TypeName) \
   DISALLOW_COPY_CONSTRUCTOR(TypeName);     \
