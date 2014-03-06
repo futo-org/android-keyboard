@@ -341,6 +341,7 @@ public final class FormatSpec {
         return null;
     }
 
+    @UsedForTesting
     public static DictDecoder getDictDecoder(final File dictFile, final long offset,
             final long length, final DictionaryBufferFactory factory) {
         if (dictFile.isDirectory()) {
@@ -351,6 +352,7 @@ public final class FormatSpec {
         return null;
     }
 
+    @UsedForTesting
     public static DictDecoder getDictDecoder(final File dictFile, final long offset,
             final long length) {
         return getDictDecoder(dictFile, offset, length, DictDecoder.USE_READONLY_BYTEBUFFER);

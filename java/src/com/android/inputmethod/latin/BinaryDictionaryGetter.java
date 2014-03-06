@@ -21,10 +21,9 @@ import android.content.SharedPreferences;
 import android.content.res.AssetFileDescriptor;
 import android.util.Log;
 
-import com.android.inputmethod.latin.makedict.DictDecoder;
 import com.android.inputmethod.latin.makedict.DictionaryHeader;
-import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
+import com.android.inputmethod.latin.utils.BinaryDictionaryUtils;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.DictionaryInfoUtils;
 import com.android.inputmethod.latin.utils.LocaleUtils;
@@ -226,12 +225,10 @@ final public class BinaryDictionaryGetter {
     // ## HACK ## we prevent usage of a dictionary before version 18. The reason for this is, since
     // those do not include whitelist entries, the new code with an old version of the dictionary
     // would lose whitelist functionality.
-    private static boolean hackCanUseDictionaryFile(final Locale locale, final File f) {
+    private static boolean hackCanUseDictionaryFile(final Locale locale, final File file) {
         try {
             // Read the version of the file
-            final DictDecoder dictDecoder = FormatSpec.getDictDecoder(f, 0, f.length());
-            final DictionaryHeader header = dictDecoder.readHeader();
-
+            final DictionaryHeader header = BinaryDictionaryUtils.getHeader(file);
             final String version = header.mDictionaryOptions.mAttributes.get(VERSION_KEY);
             if (null == version) {
                 // No version in the options : the format is unexpected

@@ -30,9 +30,11 @@ import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.makedict.BinaryDictIOUtils;
 import com.android.inputmethod.latin.makedict.DictionaryHeader;
+import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
 import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Locale;
@@ -283,7 +285,20 @@ public class DictionaryInfoUtils {
     }
 
     public static DictionaryHeader getDictionaryFileHeaderOrNull(final File file) {
-        return BinaryDictIOUtils.getDictionaryFileHeaderOrNull(file, 0, file.length());
+        return getDictionaryFileHeaderOrNull(file, 0, file.length());
+    }
+
+    private static DictionaryHeader getDictionaryFileHeaderOrNull(final File file,
+            final long offset, final long length) {
+        try {
+            final DictionaryHeader header =
+                    BinaryDictionaryUtils.getHeaderWithOffsetAndLength(file, offset, length);
+            return header;
+        } catch (UnsupportedFormatException e) {
+            return null;
+        } catch (IOException e) {
+            return null;
+        }
     }
 
     /**
@@ -294,7 +309,7 @@ public class DictionaryInfoUtils {
      */
     private static DictionaryInfo createDictionaryInfoFromFileAddress(
             final AssetFileAddress fileAddress) {
-        final DictionaryHeader header = BinaryDictIOUtils.getDictionaryFileHeaderOrNull(
+        final DictionaryHeader header = getDictionaryFileHeaderOrNull(
                 new File(fileAddress.mFilename), fileAddress.mOffset, fileAddress.mLength);
         if (header == null) {
             return null;
