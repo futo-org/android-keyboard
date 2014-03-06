@@ -21,11 +21,11 @@
 #include "suggest/core/dicnode/dic_node_vector.h"
 #include "suggest/core/dictionary/dictionary.h"
 #include "suggest/core/dictionary/digraph_utils.h"
-#include "suggest/core/dictionary/suggestions_output_utils.h"
 #include "suggest/core/layout/proximity_info.h"
 #include "suggest/core/policy/dictionary_structure_with_buffer_policy.h"
 #include "suggest/core/policy/traversal.h"
 #include "suggest/core/policy/weighting.h"
+#include "suggest/core/result/suggestions_output_utils.h"
 #include "suggest/core/session/dic_traverse_session.h"
 
 namespace latinime {
