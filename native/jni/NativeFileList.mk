@@ -31,7 +31,6 @@ LATIN_IME_CORE_SRC_FILES := \
         digraph_utils.cpp \
         error_type_utils.cpp \
         multi_bigram_map.cpp \
-        suggestions_output_utils.cpp \
         word_property.cpp) \
     $(addprefix suggest/core/layout/, \
         additional_proximity_chars.cpp \
@@ -40,6 +39,7 @@ LATIN_IME_CORE_SRC_FILES := \
         proximity_info_state.cpp \
         proximity_info_state_utils.cpp) \
     suggest/core/policy/weighting.cpp \
+    suggest/core/result/suggestions_output_utils.cpp \
     suggest/core/session/dic_traverse_session.cpp \
     $(addprefix suggest/policyimpl/dictionary/, \
         header/header_policy.cpp \
