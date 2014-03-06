@@ -16,6 +16,8 @@
 
 package com.android.inputmethod.event;
 
+import com.android.inputmethod.latin.settings.SettingsValues;
+
 /**
  * An object encapsulating a single transaction for input.
  */
@@ -30,6 +32,7 @@ public class InputTransaction {
     public static final int SHIFT_UPDATE_LATER = 2;
 
     // Initial conditions
+    public final SettingsValues mSettingsValues;
     // If the key inserts a code point, mKeyCode is always equal to the code points. Otherwise,
     // it's always a code that may not be a code point, typically a negative number.
     public final int mKeyCode;
@@ -42,8 +45,10 @@ public class InputTransaction {
     // Outputs
     private int mRequiredShiftUpdate = SHIFT_NO_UPDATE;
 
-    public InputTransaction(final int keyCode, final int x, final int y, final long timestamp,
-            final int spaceState, final int shiftState) {
+    public InputTransaction(final SettingsValues settingsValues, final int keyCode,
+            final int x, final int y, final long timestamp, final int spaceState,
+            final int shiftState) {
+        mSettingsValues = settingsValues;
         mKeyCode = keyCode;
         mX = x;
         mY = y;
