@@ -30,12 +30,25 @@ public class InputTransaction {
     public static final int SHIFT_UPDATE_LATER = 2;
 
     // Initial conditions
+    // If the key inserts a code point, mKeyCode is always equal to the code points. Otherwise,
+    // it's always a code that may not be a code point, typically a negative number.
+    public final int mKeyCode;
+    public final int mX; // Pressed x-coordinate, or one of Constants.*_COORDINATE
+    public final int mY; // Pressed y-coordinate, or one of Constants.*_COORDINATE
+    public final long mTimestamp;
+    public final int mSpaceState;
     public final int mShiftState;
 
     // Outputs
     private int mRequiredShiftUpdate = SHIFT_NO_UPDATE;
 
-    public InputTransaction(final int shiftState) {
+    public InputTransaction(final int keyCode, final int x, final int y, final long timestamp,
+            final int spaceState, final int shiftState) {
+        mKeyCode = keyCode;
+        mX = x;
+        mY = y;
+        mTimestamp = timestamp;
+        mSpaceState = spaceState;
         mShiftState = shiftState;
     }
 
