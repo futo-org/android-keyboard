@@ -222,54 +222,6 @@ public final class BinaryDictIOUtils {
         return countSize;
     }
 
-    private static final int HEADER_READING_BUFFER_SIZE = 16384;
-    /**
-     * Convenience method to read the header of a binary file.
-     *
-     * This is quite resource intensive - don't call when performance is critical.
-     *
-     * @param file The file to read.
-     * @param offset The offset in the file where to start reading the data.
-     * @param length The length of the data file.
-     * @return the header of the specified dictionary file.
-     */
-    private static DictionaryHeader getDictionaryFileHeader(
-            final File file, final long offset, final long length)
-            throws FileNotFoundException, IOException, UnsupportedFormatException {
-        final byte[] buffer = new byte[HEADER_READING_BUFFER_SIZE];
-        final DictDecoder dictDecoder = FormatSpec.getDictDecoder(file, offset, length,
-                new DictDecoder.DictionaryBufferFactory() {
-                    @Override
-                    public DictBuffer getDictionaryBuffer(File file)
-                            throws FileNotFoundException, IOException {
-                        final FileInputStream inStream = new FileInputStream(file);
-                        try {
-                            inStream.skip(offset);
-                            inStream.read(buffer);
-                            return new ByteArrayDictBuffer(buffer);
-                        } finally {
-                            inStream.close();
-                        }
-                    }
-                });
-        if (dictDecoder == null) {
-            return null;
-        }
-        return dictDecoder.readHeader();
-    }
-
-    public static DictionaryHeader getDictionaryFileHeaderOrNull(final File file, final long offset,
-            final long length) {
-        try {
-            final DictionaryHeader header = getDictionaryFileHeader(file, offset, length);
-            return header;
-        } catch (UnsupportedFormatException e) {
-            return null;
-        } catch (IOException e) {
-            return null;
-        }
-    }
-
     /**
      * Helper method to hide the actual value of the no children address.
      */

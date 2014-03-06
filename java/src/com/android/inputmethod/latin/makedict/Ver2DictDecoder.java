@@ -123,6 +123,7 @@ public class Ver2DictDecoder extends AbstractDictDecoder {
     private final DictionaryBufferFactory mBufferFactory;
     protected DictBuffer mDictBuffer;
 
+    @UsedForTesting
     /* package */ Ver2DictDecoder(final File file, final long offset, final long length,
             final int factoryFlag) {
         mDictionaryBinaryFile = file;
