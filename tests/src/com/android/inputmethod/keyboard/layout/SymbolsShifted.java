@@ -48,6 +48,10 @@ public class SymbolsShifted extends AbstractLayoutBase {
         Symbols.POUND_SIGN, Symbols.YEN_SIGN, key(Symbols.DOLLAR_SIGN, Symbols.CENT_SIGN),
         Symbols.CENT_SIGN
     };
+    public static final ExpectedKey[] CURRENCIES_OTHER_GENERIC = {
+        Symbols.POUND_SIGN, Symbols.EURO_SIGN, key(Symbols.DOLLAR_SIGN, Symbols.CENT_SIGN),
+        Symbols.CENT_SIGN
+    };
 
     // Common symbols shifted keyboard layout.
     private static final ExpectedKey[][] SYMBOLS_SHIFTED_COMMON =
