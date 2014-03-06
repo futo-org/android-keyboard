@@ -507,4 +507,44 @@ public final class StringUtils {
         return codePointCount(casedText) == 1
                 ? casedText.codePointAt(0) : CODE_UNSPECIFIED;
     }
+
+    @UsedForTesting
+    public static class Stringizer<E> {
+        public String stringize(final E element) {
+            return element != null ? element.toString() : "null";
+        }
+
+        @UsedForTesting
+        public final String join(final E[] array) {
+            return joinStringArray(toStringArray(array), null /* delimiter */);
+        }
+
+        @UsedForTesting
+        public final String join(final E[] array, final String delimiter) {
+            return joinStringArray(toStringArray(array), delimiter);
+        }
+
+        protected String[] toStringArray(final E[] array) {
+            final String[] stringArray = new String[array.length];
+            for (int index = 0; index < array.length; index++) {
+                stringArray[index] = stringize(array[index]);
+            }
+            return stringArray;
+        }
+
+        protected String joinStringArray(final String[] stringArray, final String delimiter) {
+            if (stringArray == null) {
+                return "null";
+            }
+            if (delimiter == null) {
+                return Arrays.toString(stringArray);
+            }
+            final StringBuilder sb = new StringBuilder();
+            for (int index = 0; index < stringArray.length; index++) {
+                sb.append(index == 0 ? "[" : delimiter);
+                sb.append(stringArray[index]);
+            }
+            return sb + "]";
+        }
+    }
 }
