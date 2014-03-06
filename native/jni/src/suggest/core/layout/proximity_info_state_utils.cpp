@@ -16,6 +16,7 @@
 
 #include "suggest/core/layout/proximity_info_state_utils.h"
 
+#include <algorithm>
 #include <cmath>
 #include <cstring> // for memset()
 #include <sstream> // for debug prints
