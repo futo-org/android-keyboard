@@ -323,7 +323,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
     }
 
     // Note that we need primaryCode argument because the keyboard may in shifted state and the
-    // primaryCode is different from {@link Key#mCode}.
+    // primaryCode is different from {@link Key#mKeyCode}.
     private void callListenerOnCodeInput(final Key key, final int primaryCode, final int x,
             final int y, final long eventTime) {
         final boolean ignoreModifierKey = mIsInDraggingFinger && key.isModifier();
@@ -360,7 +360,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
     }
 
     // Note that we need primaryCode argument because the keyboard may be in shifted state and the
-    // primaryCode is different from {@link Key#mCode}.
+    // primaryCode is different from {@link Key#mKeyCode}.
     private void callListenerOnRelease(final Key key, final int primaryCode,
             final boolean withSliding) {
         // See the comment at {@link #callListenerOnPressAndCheckKeyboardLayoutChange(Key}}.
