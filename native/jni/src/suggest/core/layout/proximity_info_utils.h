@@ -164,12 +164,15 @@ class ProximityInfoUtils {
             const int gridWidth, const int mostCommonKeyWidth, const int keyCount,
             const int x, const int y, const int primaryKey, const char *const localeStr,
             const hash_map_compat<int, int> *const codeToKeyMap, int *proximities) {
-        if (x == NOT_A_COORDINATE || y == NOT_A_COORDINATE) {
-            return;
-        }
         const int mostCommonKeyWidthSquare = mostCommonKeyWidth * mostCommonKeyWidth;
         int insertPos = 0;
         proximities[insertPos++] = primaryKey;
+        if (x == NOT_A_COORDINATE || y == NOT_A_COORDINATE) {
+            for (int i = insertPos; i < MAX_PROXIMITY_CHARS_SIZE; ++i) {
+                proximities[i] = NOT_A_CODE_POINT;
+            }
+            return;
+        }
         const int startIndex = getStartIndexFromCoordinates(x, y, cellHeight, cellWidth, gridWidth);
         if (startIndex >= 0) {
             for (int i = 0; i < MAX_PROXIMITY_CHARS_SIZE; ++i) {
