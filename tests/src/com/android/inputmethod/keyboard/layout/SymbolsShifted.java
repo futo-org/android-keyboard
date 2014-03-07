@@ -25,17 +25,35 @@ import com.android.inputmethod.latin.Constants;
  * The symbols shifted keyboard layout.
  */
 public final class SymbolsShifted extends LayoutBase {
-    public static ExpectedKey[][] getSymbolsShifted(final boolean isPhone) {
+    public static ExpectedKey[][] getLayout(final boolean isPhone) {
         return isPhone ? toPhoneSymbolsShifted(SYMBOLS_SHIFTED_COMMON)
                 : toTabletSymbolsShifted(SYMBOLS_SHIFTED_COMMON);
+    }
+
+    public static ExpectedKey[][] getDefaultLayout(final boolean isPhone) {
+        final ExpectedKeyboardBuilder builder = new ExpectedKeyboardBuilder(SYMBOLS_SHIFTED_COMMON);
+        builder.replaceKeyOfLabel(OTHER_CURRENCIES, SymbolsShifted.CURRENCIES_OTHER_THAN_DOLLAR);
+        final ExpectedKey[][] symbolsShiftedCommon = builder.build();
+        return isPhone ? toPhoneSymbolsShifted(symbolsShiftedCommon)
+                : toTabletSymbolsShifted(symbolsShiftedCommon);
     }
 
     // Functional key.
     public static final ExpectedKey BACK_TO_SYMBOLS_KEY = key("?123", Constants.CODE_SHIFT);
 
+    // Variations of the "other currencies" keys on the 2rd row.
+    public static final String OTHER_CURRENCIES = "other_currencies";
+    public static final ExpectedKey[] CURRENCIES_OTHER_THAN_DOLLAR = {
+        Symbols.POUND_SIGN, Symbols.CENT_SIGN, Symbols.EURO_SIGN, Symbols.YEN_SIGN
+    };
+    public static final ExpectedKey[] CURRENCIES_OTHER_THAN_EURO = {
+        Symbols.POUND_SIGN, Symbols.YEN_SIGN, key(Symbols.DOLLAR_SIGN, Symbols.CENT_SIGN),
+        Symbols.CENT_SIGN
+    };
+
     // Common symbols shifted keyboard layout.
     public static final ExpectedKey[][] SYMBOLS_SHIFTED_COMMON =
-            new ExpectedKeyboardBuilder(10, 9, 7, 5)
+            new ExpectedKeyboardBuilder(10, 1 /* other_currencies */ + 5, 7, 5)
             // U+0060: "`" GRAVE ACCENT
             // U+2022: "•" BULLET
             // U+221A: "√" SQUARE ROOT
@@ -60,14 +78,8 @@ public final class SymbolsShifted extends LayoutBase {
             // U+00B6: "¶" PILCROW SIGN
             // U+00A7: "§" SECTION SIGN
             .setMoreKeysOf("\u00B6", "\u00A7")
-            // U+00A3: "£" POUND SIGN
-            // U+00A2: "¢" CENT SIGN
-            // U+20AC: "€" EURO SIGN
-            // U+00A5: "¥" YEN SIGN
             // U+00B0: "°" DEGREE SIGN
-            .setLabelsOfRow(2,
-                    "\u00A3", "\u00A2", "\u20AC", "\u00A5", "^",
-                    "\u00B0", "=", "{", "}")
+            .setLabelsOfRow(2, OTHER_CURRENCIES, "^", "\u00B0", "=", "{", "}")
             // U+2191: "↑" UPWARDS ARROW
             // U+2193: "↓" DOWNWARDS ARROW
             // U+2190: "←" LEFTWARDS ARROW
@@ -124,19 +136,5 @@ public final class SymbolsShifted extends LayoutBase {
                 .addKeysOnTheLeftOfRow(4, Symbols.ALPHABET_KEY)
                 .addKeysOnTheRightOfRow(4, EMOJI_KEY)
                 .build();
-    }
-
-    // Helper method to add currency symbols for Euro.
-    public static ExpectedKeyboardBuilder euro(final ExpectedKeyboardBuilder builder) {
-        return builder
-                // U+00A5: "¥" YEN SIGN
-                // U+00A2: "¢" CENT SIGN
-                .replaceKeyOfLabel("\u00A5", key("\u00A2"))
-                // U+20AC: "€" EURO SIGN
-                // U+00A2: "¢" CENT SIGN
-                .replaceKeyOfLabel("\u20AC", key("$", moreKey("\u00A2")))
-                // U+00A2: "¢" CENT SIGN
-                // U+00A5: "¥" YEN SIGN
-                .replaceKeyOfLabel("\u00A2", key("\u00A5"));
     }
 }

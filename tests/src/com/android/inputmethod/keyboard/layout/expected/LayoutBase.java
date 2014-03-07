@@ -18,6 +18,10 @@ package com.android.inputmethod.keyboard.layout.expected;
 
 import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
 import com.android.inputmethod.latin.Constants;
+import com.android.inputmethod.latin.utils.CollectionUtils;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Base class to create an expected keyboard for unit test.
@@ -69,6 +73,24 @@ public class LayoutBase {
     // output code.
     public static ExpectedKey moreKey(final String label, final int code) {
         return ExpectedKey.newInstance(label, code);
+    }
+
+    // Helper method to create {@link ExpectedKey} array by joining {@link ExpectedKey},
+    // {@link ExpectedKey} array, and {@link String}.
+    public static ExpectedKey[] join(final Object ... keys) {
+        final ArrayList<ExpectedKey> list = CollectionUtils.newArrayList();
+        for (final Object key : keys) {
+            if (key instanceof ExpectedKey) {
+                list.add((ExpectedKey)key);
+            } else if (key instanceof ExpectedKey[]) {
+                list.addAll(Arrays.asList((ExpectedKey[])key));
+            } else if (key instanceof String) {
+                list.add(key((String)key));
+            } else {
+                throw new RuntimeException("Unknown expected key type: " + key);
+            }
+        }
+        return list.toArray(new ExpectedKey[list.size()]);
     }
 
     // Icon ids.

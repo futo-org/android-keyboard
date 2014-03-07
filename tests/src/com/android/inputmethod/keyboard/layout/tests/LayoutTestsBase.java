@@ -68,6 +68,11 @@ abstract class LayoutTestsBase extends KeyboardLayoutSetTestsBase {
         return LayoutBase.key(label, outputText, moreKeys);
     }
 
+    // Helper method to create {@link ExpectedKey} object that has new "more keys".
+    static ExpectedKey key(final ExpectedKey key, final ExpectedKey ... moreKeys) {
+        return LayoutBase.key(key, moreKeys);
+    }
+
     // Helper method to create {@link ExpectedKey} object for "more key" that has the label.
     static ExpectedKey moreKey(final String label) {
         return LayoutBase.moreKey(label);
@@ -79,6 +84,12 @@ abstract class LayoutTestsBase extends KeyboardLayoutSetTestsBase {
         return LayoutBase.moreKey(label, outputText);
     }
 
+    // Helper method to create {@link ExpectedKey} array by joining {@link ExpectedKey},
+    // {@link ExpectedKey} array, and {@link String}.
+    static ExpectedKey[] join(final Object ... keys) {
+        return LayoutBase.join(keys);
+    }
+
     // Locale for testing subtype.
     abstract Locale getTestLocale();
 
@@ -86,73 +97,73 @@ abstract class LayoutTestsBase extends KeyboardLayoutSetTestsBase {
     abstract String getTestKeyboardLayout();
 
     // Alphabet keyboard for testing subtype.
-    abstract ExpectedKey[][] getAlphabet(final boolean isPhone);
+    abstract ExpectedKey[][] getAlphabetLayout(final boolean isPhone);
 
     // Alphabet automatic shifted keyboard for testing subtype.
-    ExpectedKey[][] getAlphabetAutomaticShifted(final boolean isPhone) {
-        return AlphabetShifted.getAlphabet(getAlphabet(isPhone), getTestLocale());
+    ExpectedKey[][] getAlphabetAutomaticShiftedLayout(final boolean isPhone) {
+        return AlphabetShifted.getDefaultLayout(getAlphabetLayout(isPhone), getTestLocale());
     }
 
     // Alphabet manual shifted  keyboard for testing subtype.
-    ExpectedKey[][] getAlphabetManualShifted(final boolean isPhone) {
-        return AlphabetShifted.getAlphabet(getAlphabet(isPhone), getTestLocale());
+    ExpectedKey[][] getAlphabetManualShiftedLayout(final boolean isPhone) {
+        return AlphabetShifted.getDefaultLayout(getAlphabetLayout(isPhone), getTestLocale());
     }
 
     // Alphabet shift locked keyboard for testing subtype.
-    ExpectedKey[][] getAlphabetShiftLocked(final boolean isPhone) {
-        return AlphabetShifted.getAlphabet(getAlphabet(isPhone), getTestLocale());
+    ExpectedKey[][] getAlphabetShiftLockedLayout(final boolean isPhone) {
+        return AlphabetShifted.getDefaultLayout(getAlphabetLayout(isPhone), getTestLocale());
     }
 
     // Alphabet shift lock shifted keyboard for testing subtype.
-    ExpectedKey[][] getAlphabetShiftLockShifted(final boolean isPhone) {
-        return AlphabetShifted.getAlphabet(getAlphabet(isPhone), getTestLocale());
+    ExpectedKey[][] getAlphabetShiftLockShiftedLayout(final boolean isPhone) {
+        return AlphabetShifted.getDefaultLayout(getAlphabetLayout(isPhone), getTestLocale());
     }
 
     // Symbols keyboard for testing subtype.
-    ExpectedKey[][] getSymbols(final boolean isPhone) {
-        return Symbols.getSymbols(isPhone);
+    ExpectedKey[][] getSymbolsLayout(final boolean isPhone) {
+        return Symbols.getDefaultLayout(isPhone);
     }
 
     // Symbols shifted keyboard for testing subtype.
-    ExpectedKey[][] getSymbolsShifted(final boolean isPhone) {
-        return SymbolsShifted.getSymbolsShifted(isPhone);
+    ExpectedKey[][] getSymbolsShiftedLayout(final boolean isPhone) {
+        return SymbolsShifted.getDefaultLayout(isPhone);
     }
 
     // TODO: Add phone, phone symbols, number, number password layout tests.
 
     public final void testAlphabet() {
         final int elementId = KeyboardId.ELEMENT_ALPHABET;
-        doKeyboardTests(elementId, getAlphabet(isPhone()));
+        doKeyboardTests(elementId, getAlphabetLayout(isPhone()));
     }
 
     public final void testAlphabetAutomaticShifted() {
         final int elementId = KeyboardId.ELEMENT_ALPHABET_AUTOMATIC_SHIFTED;
-        doKeyboardTests(elementId, getAlphabetAutomaticShifted(isPhone()));
+        doKeyboardTests(elementId, getAlphabetAutomaticShiftedLayout(isPhone()));
     }
 
     public final void testAlphabetManualShifted() {
         final int elementId = KeyboardId.ELEMENT_ALPHABET_MANUAL_SHIFTED;
-        doKeyboardTests(elementId, getAlphabetManualShifted(isPhone()));
+        doKeyboardTests(elementId, getAlphabetManualShiftedLayout(isPhone()));
     }
 
     public final void testAlphabetShiftLocked() {
         final int elementId = KeyboardId.ELEMENT_ALPHABET_SHIFT_LOCKED;
-        doKeyboardTests(elementId, getAlphabetShiftLocked(isPhone()));
+        doKeyboardTests(elementId, getAlphabetShiftLockedLayout(isPhone()));
     }
 
     public final void testAlphabetShiftLockShifted() {
         final int elementId = KeyboardId.ELEMENT_ALPHABET_SHIFT_LOCK_SHIFTED;
-        doKeyboardTests(elementId, getAlphabetShiftLockShifted(isPhone()));
+        doKeyboardTests(elementId, getAlphabetShiftLockShiftedLayout(isPhone()));
     }
 
     public final void testSymbols() {
         final int elementId = KeyboardId.ELEMENT_SYMBOLS;
-        doKeyboardTests(elementId, getSymbols(isPhone()));
+        doKeyboardTests(elementId, getSymbolsLayout(isPhone()));
     }
 
     public final void testSymbolsShifted() {
         final int elementId = KeyboardId.ELEMENT_SYMBOLS_SHIFTED;
-        doKeyboardTests(elementId, getSymbolsShifted(isPhone()));
+        doKeyboardTests(elementId, getSymbolsShiftedLayout(isPhone()));
     }
 
     // Comparing expected keyboard and actual keyboard.

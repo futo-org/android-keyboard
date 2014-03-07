@@ -28,13 +28,12 @@ import java.util.Locale;
  * The generic upper case alphabet keyboard layout.
  */
 public final class AlphabetShifted extends LayoutBase {
-    public static ExpectedKey[][] getAlphabet(final ExpectedKey[][] lowerCaseKeyboard,
+    public static ExpectedKey[][] getDefaultLayout(final ExpectedKey[][] lowerCaseKeyboard,
             final Locale locale) {
-        final ExpectedKey[][] upperCaseKeyboard = ExpectedKeyboardBuilder.toUpperCase(
-                lowerCaseKeyboard, locale);
-        return new ExpectedKeyboardBuilder(upperCaseKeyboard)
-                .replaceKeyOfAll(SHIFT_KEY, SHIFTED_SHIFT_KEY)
-                .build();
+        final ExpectedKeyboardBuilder builder = new ExpectedKeyboardBuilder(lowerCaseKeyboard);
+        builder.toUpperCase(locale);
+        builder.replaceKeysOfAll(SHIFT_KEY, SHIFTED_SHIFT_KEY);
+        return builder.build();
     }
 
     // Icon id.
