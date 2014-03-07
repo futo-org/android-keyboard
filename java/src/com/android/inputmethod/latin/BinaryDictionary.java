@@ -87,6 +87,7 @@ public final class BinaryDictionary extends Dictionary {
     private final String mDictFilePath;
     private final boolean mIsUpdatable;
     private final int[] mInputCodePoints = new int[MAX_WORD_LENGTH];
+    private final int[] mOutputSuggestionCount = new int[1];
     private final int[] mOutputCodePoints = new int[MAX_WORD_LENGTH * MAX_RESULTS];
     private final int[] mSpaceIndices = new int[MAX_RESULTS];
     private final int[] mOutputScores = new int[MAX_RESULTS];
@@ -158,10 +159,10 @@ public final class BinaryDictionary extends Dictionary {
             ArrayList<int[]> outBigramTargets, ArrayList<int[]> outBigramProbabilityInfo,
             ArrayList<int[]> outShortcutTargets, ArrayList<Integer> outShortcutProbabilities);
     private static native int getNextWordNative(long dict, int token, int[] outCodePoints);
-    private static native int getSuggestionsNative(long dict, long proximityInfo,
+    private static native void getSuggestionsNative(long dict, long proximityInfo,
             long traverseSession, int[] xCoordinates, int[] yCoordinates, int[] times,
             int[] pointerIds, int[] inputCodePoints, int inputSize, int commitPoint,
-            int[] suggestOptions, int[] prevWordCodePointArray,
+            int[] suggestOptions, int[] prevWordCodePointArray, int[] outputSuggestionCount,
             int[] outputCodePoints, int[] outputScores, int[] outputIndices, int[] outputTypes,
             int[] outputAutoCommitFirstWordConfidence);
     private static native void addUnigramWordNative(long dict, int[] word, int probability,
@@ -258,12 +259,13 @@ public final class BinaryDictionary extends Dictionary {
         mNativeSuggestOptions.setIsGesture(isGesture);
         mNativeSuggestOptions.setAdditionalFeaturesOptions(additionalFeaturesOptions);
         // proximityInfo and/or prevWordForBigrams may not be null.
-        final int count = getSuggestionsNative(mNativeDict, proximityInfo.getNativeProximityInfo(),
+        getSuggestionsNative(mNativeDict, proximityInfo.getNativeProximityInfo(),
                 getTraverseSession(sessionId).getSession(), ips.getXCoordinates(),
                 ips.getYCoordinates(), ips.getTimes(), ips.getPointerIds(), mInputCodePoints,
                 inputSize, 0 /* commitPoint */, mNativeSuggestOptions.getOptions(),
-                prevWordCodePointArray, mOutputCodePoints, mOutputScores, mSpaceIndices,
-                mOutputTypes, mOutputAutoCommitFirstWordConfidence);
+                prevWordCodePointArray, mOutputSuggestionCount, mOutputCodePoints, mOutputScores,
+                mSpaceIndices, mOutputTypes, mOutputAutoCommitFirstWordConfidence);
+        final int count = mOutputSuggestionCount[0];
         final ArrayList<SuggestedWordInfo> suggestions = CollectionUtils.newArrayList();
         for (int j = 0; j < count; ++j) {
             final int start = j * MAX_WORD_LENGTH;

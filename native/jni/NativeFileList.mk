@@ -40,8 +40,10 @@ LATIN_IME_CORE_SRC_FILES := \
         proximity_info_state.cpp \
         proximity_info_state_utils.cpp) \
     suggest/core/policy/weighting.cpp \
-    suggest/core/result/suggestions_output_utils.cpp \
     suggest/core/session/dic_traverse_session.cpp \
+    $(addprefix suggest/core/result/, \
+        suggestion_results.cpp \
+        suggestions_output_utils.cpp) \
     $(addprefix suggest/policyimpl/dictionary/, \
         header/header_policy.cpp \
         header/header_read_write_utils.cpp \
