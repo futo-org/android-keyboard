@@ -18,7 +18,6 @@
 
 #include "suggest/core/layout/proximity_info_state.h"
 
-#include <algorithm>
 #include <cstring> // for memset() and memmove()
 #include <sstream> // for debug prints
 #include <vector>
@@ -172,7 +171,7 @@ float ProximityInfoState::getPointToKeyLength(
     const int keyId = mProximityInfo->getKeyIndexOf(codePoint);
     if (keyId != NOT_AN_INDEX) {
         const int index = inputIndex * mProximityInfo->getKeyCount() + keyId;
-        return std::min(mSampledNormalizedSquaredLengthCache[index], mMaxPointToKeyLength);
+        return min(mSampledNormalizedSquaredLengthCache[index], mMaxPointToKeyLength);
     }
     if (CharUtils::isIntentionalOmissionCodePoint(codePoint)) {
         return 0.0f;

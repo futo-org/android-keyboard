@@ -17,8 +17,6 @@
 #ifndef LATINIME_EDIT_DISTANCE_H
 #define LATINIME_EDIT_DISTANCE_H
 
-#include <algorithm>
-
 #include "defines.h"
 #include "suggest/policyimpl/utils/edit_distance_policy.h"
 
@@ -40,13 +38,13 @@ class EditDistance {
 
         for (int i = 0; i < beforeLength; ++i) {
             for (int j = 0; j < afterLength; ++j) {
-                dp[(afterLength + 1) * (i + 1) + (j + 1)] = std::min(
+                dp[(afterLength + 1) * (i + 1) + (j + 1)] = min(
                         dp[(afterLength + 1) * i + (j + 1)] + policy->getInsertionCost(i, j),
-                        std::min(
-                                dp[(afterLength + 1) * (i + 1) + j] + policy->getDeletionCost(i, j),
-                                dp[(afterLength + 1) * i + j] + policy->getSubstitutionCost(i, j)));
+                        min(dp[(afterLength + 1) * (i + 1) + j] + policy->getDeletionCost(i, j),
+                                dp[(afterLength + 1) * i + j]
+                                        + policy->getSubstitutionCost(i, j)));
                 if (policy->allowTransposition(i, j)) {
-                    dp[(afterLength + 1) * (i + 1) + (j + 1)] = std::min(
+                    dp[(afterLength + 1) * (i + 1) + (j + 1)] = min(
                             dp[(afterLength + 1) * (i + 1) + (j + 1)],
                             dp[(afterLength + 1) * (i - 1) + (j - 1)]
                                     + policy->getTranspositionCost(i, j));

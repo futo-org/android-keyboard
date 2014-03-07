@@ -17,7 +17,6 @@
 #ifndef LATINIME_DIC_NODE_PRIORITY_QUEUE_H
 #define LATINIME_DIC_NODE_PRIORITY_QUEUE_H
 
-#include <algorithm>
 #include <queue>
 #include <vector>
 
@@ -50,7 +49,7 @@ class DicNodePriorityQueue : public DicNodeReleaseListener {
 
     AK_FORCE_INLINE void setMaxSize(const int maxSize) {
         ASSERT(maxSize <= mCapacity);
-        mMaxSize = std::min(maxSize, mCapacity);
+        mMaxSize = min(maxSize, mCapacity);
     }
 
     AK_FORCE_INLINE void clearAndResizeToCapacity() {

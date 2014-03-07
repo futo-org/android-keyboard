@@ -16,7 +16,6 @@
 
 #include "utils/autocorrection_threshold_utils.h"
 
-#include <algorithm>
 #include <cmath>
 
 #include "defines.h"
@@ -100,7 +99,7 @@ const int AutocorrectionThresholdUtils::FULL_WORD_MULTIPLIER = 2;
     const float maxScore = score >= S_INT_MAX ? static_cast<float>(S_INT_MAX)
             : static_cast<float>(MAX_INITIAL_SCORE)
                     * powf(static_cast<float>(TYPED_LETTER_MULTIPLIER),
-                            static_cast<float>(std::min(beforeLength, afterLength - spaceCount)))
+                            static_cast<float>(min(beforeLength, afterLength - spaceCount)))
                     * static_cast<float>(FULL_WORD_MULTIPLIER);
 
     return (static_cast<float>(score) / maxScore) * weight;

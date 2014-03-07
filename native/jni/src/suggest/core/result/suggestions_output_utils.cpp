@@ -16,8 +16,6 @@
 
 #include "suggest/core/result/suggestions_output_utils.h"
 
-#include <algorithm>
-
 #include "suggest/core/dicnode/dic_node.h"
 #include "suggest/core/dicnode/dic_node_utils.h"
 #include "suggest/core/dictionary/binary_dictionary_shortcut_iterator.h"
@@ -38,7 +36,7 @@ const int SuggestionsOutputUtils::MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT = 16;
 #if DEBUG_EVALUATE_MOST_PROBABLE_STRING
     const int terminalSize = 0;
 #else
-    const int terminalSize = std::min(MAX_RESULTS,
+    const int terminalSize = min(MAX_RESULTS,
             static_cast<int>(traverseSession->getDicTraverseCache()->terminalSize()));
 #endif
     DicNode terminals[MAX_RESULTS]; // Avoiding non-POD variable length array
@@ -247,12 +245,12 @@ const int SuggestionsOutputUtils::MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT = 16;
             // shortcut entry's score == its base entry's score - 1
             shortcutScore = finalScore;
             // Protection against int underflow
-            shortcutScore = std::max(S_INT_MIN + 1, shortcutScore) - 1;
+            shortcutScore = max(S_INT_MIN + 1, shortcutScore) - 1;
             kind = Dictionary::KIND_SHORTCUT;
         }
         outputTypes[outputWordIndex] = kind;
         outputScores[outputWordIndex] = shortcutScore;
-        outputScores[outputWordIndex] = std::max(S_INT_MIN + 1, shortcutScore) - 1;
+        outputScores[outputWordIndex] = max(S_INT_MIN + 1, shortcutScore) - 1;
         const int startIndex2 = outputWordIndex * MAX_WORD_LENGTH;
         DicNodeUtils::appendTwoWords(0, 0, shortcutTarget, shortcutTargetStringLength,
                 &outputCodePoints[startIndex2]);

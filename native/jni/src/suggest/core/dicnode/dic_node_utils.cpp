@@ -16,7 +16,6 @@
 
 #include "suggest/core/dicnode/dic_node_utils.h"
 
-#include <algorithm>
 #include <cstring>
 
 #include "suggest/core/dicnode/dic_node.h"
@@ -118,7 +117,7 @@ namespace latinime {
         }
         actualLength0 = i + 1;
     }
-    actualLength0 = std::min(actualLength0, MAX_WORD_LENGTH);
+    actualLength0 = min(actualLength0, MAX_WORD_LENGTH);
     memmove(dest, src0, actualLength0 * sizeof(dest[0]));
     if (!src1 || length1 == 0) {
         return actualLength0;
@@ -130,7 +129,7 @@ namespace latinime {
         }
         actualLength1 = i + 1;
     }
-    actualLength1 = std::min(actualLength1, MAX_WORD_LENGTH - actualLength0);
+    actualLength1 = min(actualLength1, MAX_WORD_LENGTH - actualLength0);
     memmove(&dest[actualLength0], src1, actualLength1 * sizeof(dest[0]));
     return actualLength0 + actualLength1;
 }
