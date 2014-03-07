@@ -31,8 +31,7 @@ class Ver4ShortcutListPolicy : public DictionaryShortcutsStructurePolicy {
  public:
     Ver4ShortcutListPolicy(ShortcutDictContent *const shortcutDictContent,
             const TerminalPositionLookupTable *const terminalPositionLookupTable)
-            : mShortcutDictContent(shortcutDictContent),
-              mTerminalPositionLookupTable(terminalPositionLookupTable) {}
+            : mShortcutDictContent(shortcutDictContent) {}
 
     ~Ver4ShortcutListPolicy() {}
 
@@ -104,7 +103,6 @@ class Ver4ShortcutListPolicy : public DictionaryShortcutsStructurePolicy {
     DISALLOW_IMPLICIT_CONSTRUCTORS(Ver4ShortcutListPolicy);
 
     ShortcutDictContent *const mShortcutDictContent;
-    const TerminalPositionLookupTable *const mTerminalPositionLookupTable;
 };
 } // namespace latinime
 #endif // LATINIME_VER4_SHORTCUT_LIST_POLICY_H

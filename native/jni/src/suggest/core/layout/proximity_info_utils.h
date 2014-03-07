@@ -129,7 +129,7 @@ class ProximityInfoUtils {
     struct NormalDistribution {
      public:
         NormalDistribution(const float u, const float sigma)
-                : mU(u), mSigma(sigma),
+                : mU(u),
                   mPreComputedNonExpPart(1.0f / sqrtf(2.0f * M_PI_F
                           * GeometryUtils::SQUARE_FLOAT(sigma))),
                   mPreComputedExponentPart(-1.0f / (2.0f * GeometryUtils::SQUARE_FLOAT(sigma))) {}
@@ -143,7 +143,6 @@ class ProximityInfoUtils {
      private:
         DISALLOW_IMPLICIT_CONSTRUCTORS(NormalDistribution);
         const float mU; // mean value
-        const float mSigma; // standard deviation
         const float mPreComputedNonExpPart; // = 1 / sqrt(2 * PI * sigma^2)
         const float mPreComputedExponentPart; // = -1 / (2 * sigma^2)
     }; // struct NormalDistribution
