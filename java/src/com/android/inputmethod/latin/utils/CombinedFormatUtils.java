@@ -18,8 +18,8 @@ package com.android.inputmethod.latin.utils;
 
 import com.android.inputmethod.latin.makedict.DictionaryHeader;
 import com.android.inputmethod.latin.makedict.ProbabilityInfo;
+import com.android.inputmethod.latin.makedict.WeightedString;
 import com.android.inputmethod.latin.makedict.WordProperty;
-import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
 
 import java.util.HashMap;
 

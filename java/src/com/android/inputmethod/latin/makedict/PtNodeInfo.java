@@ -16,15 +16,12 @@
 
 package com.android.inputmethod.latin.makedict;
 
-import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
-
 import java.util.ArrayList;
 
 /**
  * Raw PtNode info straight out of a file. This will contain numbers for addresses.
  */
 public final class PtNodeInfo {
-
     public final int mOriginalAddress;
     public final int mEndAddress;
     public final int mFlags;

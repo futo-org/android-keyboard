@@ -21,7 +21,6 @@ import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.CharEncodin
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNode;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
-import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
 
 import java.io.File;
 import java.io.FileNotFoundException;
