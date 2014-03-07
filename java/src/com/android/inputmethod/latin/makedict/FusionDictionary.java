@@ -67,46 +67,6 @@ public final class FusionDictionary implements Iterable<WordProperty> {
     }
 
     /**
-     * A string with a probability.
-     *
-     * This represents an "attribute", that is either a bigram or a shortcut.
-     */
-    public static final class WeightedString {
-        public final String mWord;
-        public ProbabilityInfo mProbabilityInfo;
-
-        public WeightedString(final String word, final int probability) {
-            this(word, new ProbabilityInfo(probability));
-        }
-
-        public WeightedString(final String word, final ProbabilityInfo probabilityInfo) {
-            mWord = word;
-            mProbabilityInfo = probabilityInfo;
-        }
-
-        public int getProbability() {
-            return mProbabilityInfo.mProbability;
-        }
-
-        public void setProbability(final int probability) {
-            mProbabilityInfo = new ProbabilityInfo(probability);
-        }
-
-        @Override
-        public int hashCode() {
-            return Arrays.hashCode(new Object[] { mWord, mProbabilityInfo});
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (o == this) return true;
-            if (!(o instanceof WeightedString)) return false;
-            final WeightedString w = (WeightedString)o;
-            return mWord.equals(w.mWord) && mProbabilityInfo.equals(w.mProbabilityInfo);
-        }
-    }
-
-    /**
      * PtNode is a group of characters, with probability information, shortcut targets, bigrams,
      * and children (Pt means Patricia Trie).
      *

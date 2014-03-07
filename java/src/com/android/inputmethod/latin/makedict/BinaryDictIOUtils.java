@@ -18,13 +18,7 @@ package com.android.inputmethod.latin.makedict;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.Constants;
-import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.DictBuffer;
-import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
-import com.android.inputmethod.latin.utils.ByteArrayDictBuffer;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
