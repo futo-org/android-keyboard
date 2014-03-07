@@ -161,7 +161,7 @@ static int latinime_BinaryDictionary_getSuggestions(JNIEnv *env, jclass clazz, j
     const jsize prevWordCodePointsLength =
             prevWordCodePointsForBigrams ? env->GetArrayLength(prevWordCodePointsForBigrams) : 0;
     int prevWordCodePointsInternal[prevWordCodePointsLength];
-    int *prevWordCodePoints = 0;
+    int *prevWordCodePoints = nullptr;
     env->GetIntArrayRegion(xCoordinatesArray, 0, inputSize, xCoordinates);
     env->GetIntArrayRegion(yCoordinatesArray, 0, inputSize, yCoordinates);
     env->GetIntArrayRegion(timesArray, 0, inputSize, times);

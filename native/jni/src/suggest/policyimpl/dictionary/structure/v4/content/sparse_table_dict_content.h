@@ -40,20 +40,21 @@ class SparseTableDictContent : public DictContent {
                       MmappedBuffer::openBuffer(dictPath, addressTableFileName, isUpdatable)),
               mContentBuffer(MmappedBuffer::openBuffer(dictPath, contentFileName, isUpdatable)),
               mExpandableLookupTableBuffer(
-                      mLookupTableBuffer.get() ? mLookupTableBuffer.get()->getBuffer() : 0,
+                      mLookupTableBuffer.get() ? mLookupTableBuffer.get()->getBuffer() : nullptr,
                       mLookupTableBuffer.get() ? mLookupTableBuffer.get()->getBufferSize() : 0,
                       BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE),
               mExpandableAddressTableBuffer(
-                      mAddressTableBuffer.get() ? mAddressTableBuffer.get()->getBuffer() : 0,
+                      mAddressTableBuffer.get() ? mAddressTableBuffer.get()->getBuffer() : nullptr,
                       mAddressTableBuffer.get() ? mAddressTableBuffer.get()->getBufferSize() : 0,
                       BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE),
-              mExpandableContentBuffer(mContentBuffer.get() ? mContentBuffer.get()->getBuffer() : 0,
+              mExpandableContentBuffer(mContentBuffer.get() ?
+                              mContentBuffer.get()->getBuffer() : nullptr,
                       mContentBuffer.get() ? mContentBuffer.get()->getBufferSize() : 0,
                       BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE),
               mAddressLookupTable(&mExpandableLookupTableBuffer, &mExpandableAddressTableBuffer,
                       sparseTableBlockSize, sparseTableDataSize),
-              mIsValid(mLookupTableBuffer.get() != 0 && mAddressTableBuffer.get() != 0
-                      && mContentBuffer.get() != 0) {}
+              mIsValid(mLookupTableBuffer.get() && mAddressTableBuffer.get()
+                      && mContentBuffer.get()) {}
 
     SparseTableDictContent(const int sparseTableBlockSize, const int sparseTableDataSize)
             : mLookupTableBuffer(0), mAddressTableBuffer(0), mContentBuffer(0),

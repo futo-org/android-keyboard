@@ -84,7 +84,7 @@ const DigraphUtils::DigraphType DigraphUtils::USED_DIGRAPH_TYPES[] =
 }
 
 /**
- * Returns the digraph for the input composite glyph codepoint, or 0 if none exists.
+ * Returns the digraph for the input composite glyph codepoint, or nullptr if none exists.
  * compositeGlyphCodePoint: the method returns the digraph corresponding to this codepoint.
  */
 /* static */ const DigraphUtils::digraph_t *DigraphUtils::getDigraphForCodePoint(
@@ -96,17 +96,17 @@ const DigraphUtils::DigraphType DigraphUtils::USED_DIGRAPH_TYPES[] =
             return digraph;
         }
     }
-    return 0;
+    return nullptr;
 }
 
 /**
- * Returns the digraph for the input composite glyph codepoint, or 0 if none exists.
+ * Returns the digraph for the input composite glyph codepoint, or nullptr if none exists.
  * digraphType: the type of digraphs supported.
  * compositeGlyphCodePoint: the method returns the digraph corresponding to this codepoint.
  */
 /* static */ const DigraphUtils::digraph_t *DigraphUtils::getDigraphForDigraphTypeAndCodePoint(
         const DigraphUtils::DigraphType digraphType, const int compositeGlyphCodePoint) {
-    const DigraphUtils::digraph_t *digraphs = 0;
+    const DigraphUtils::digraph_t *digraphs = nullptr;
     const int compositeGlyphLowerCodePoint = CharUtils::toLowerCase(compositeGlyphCodePoint);
     const int digraphsSize =
             DigraphUtils::getAllDigraphsForDigraphTypeAndReturnSize(digraphType, &digraphs);
@@ -115,7 +115,7 @@ const DigraphUtils::DigraphType DigraphUtils::USED_DIGRAPH_TYPES[] =
             return &digraphs[i];
         }
     }
-    return 0;
+    return nullptr;
 }
 
 } // namespace latinime
