@@ -13,6 +13,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# HACK: Temporarily disable host tool build on Mac until the build system is ready for C++11.
+LATINIME_HOST_OSNAME := $(shell uname -s)
+ifneq ($(LATINIME_HOST_OSNAME), Darwin) # TODO: Remove this
+
 LATINIME_DICTTOOL_AOSP_LOCAL_PATH := $(call my-dir)
 LOCAL_PATH := $(LATINIME_DICTTOOL_AOSP_LOCAL_PATH)
 LATINIME_HOST_NATIVE_LIBNAME := liblatinime-aosp-dicttool-host
@@ -74,10 +78,14 @@ LOCAL_JAVA_LIBRARIES := junit
 LOCAL_ADDITIONAL_DEPENDENCIES := $(LATINIME_HOST_NATIVE_LIBNAME)
 LOCAL_JAR_MANIFEST := etc/manifest.txt
 LOCAL_MODULE := dicttool_aosp
+LOCAL_IS_HOST_MODULE := true
 
 include $(BUILD_HOST_JAVA_LIBRARY)
 include $(LOCAL_PATH)/etc/Android.mk
 
+endif # Darwin - TODO: Remove this
+
 # Clear our private variables
 LATINIME_DICTTOOL_AOSP_LOCAL_PATH :=
 LATINIME_LOCAL_DIR :=
+LATINIME_HOST_OSNAME :=
