@@ -42,9 +42,9 @@ class Weighting;
 class Suggest : public SuggestInterface {
  public:
     AK_FORCE_INLINE Suggest(const SuggestPolicy *const suggestPolicy)
-            : TRAVERSAL(suggestPolicy ? suggestPolicy->getTraversal() : 0),
-              SCORING(suggestPolicy ? suggestPolicy->getScoring() : 0),
-              WEIGHTING(suggestPolicy ? suggestPolicy->getWeighting() : 0) {}
+            : TRAVERSAL(suggestPolicy ? suggestPolicy->getTraversal() : nullptr),
+              SCORING(suggestPolicy ? suggestPolicy->getScoring() : nullptr),
+              WEIGHTING(suggestPolicy ? suggestPolicy->getWeighting() : nullptr) {}
     AK_FORCE_INLINE virtual ~Suggest() {}
     int getSuggestions(ProximityInfo *pInfo, void *traverseSession, int *inputXs, int *inputYs,
             int *times, int *pointerIds, int *inputCodePoints, int inputSize, int commitPoint,

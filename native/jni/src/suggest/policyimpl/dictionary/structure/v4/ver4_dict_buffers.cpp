@@ -31,7 +31,7 @@ namespace latinime {
     if (!headerBuffer.get()) {
         ASSERT(false);
         AKLOGE("The header buffer must be valid to open ver4 dict buffers.");
-        return Ver4DictBuffersPtr(0);
+        return Ver4DictBuffersPtr(nullptr);
     }
     // TODO: take only dictDirPath, and open both header and trie files in the constructor below
     return Ver4DictBuffersPtr(new Ver4DictBuffers(
@@ -118,10 +118,10 @@ Ver4DictBuffers::Ver4DictBuffers(const char *const dictPath,
           mDictBuffer(MmappedBuffer::openBuffer(dictPath,
                   Ver4DictConstants::TRIE_FILE_EXTENSION, isUpdatable)),
           mHeaderPolicy(headerBuffer.get()->getBuffer(), FormatUtils::VERSION_4),
-          mExpandableHeaderBuffer(headerBuffer.get() ? headerBuffer.get()->getBuffer() : 0,
+          mExpandableHeaderBuffer(headerBuffer.get() ? headerBuffer.get()->getBuffer() : nullptr,
                   mHeaderPolicy.getSize(),
                   BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE),
-          mExpandableTrieBuffer(mDictBuffer.get() ? mDictBuffer.get()->getBuffer() : 0,
+          mExpandableTrieBuffer(mDictBuffer.get() ? mDictBuffer.get()->getBuffer() : nullptr,
                   mDictBuffer.get() ? mDictBuffer.get()->getBufferSize() : 0,
                   BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE),
           mTerminalPositionLookupTable(dictPath, isUpdatable),

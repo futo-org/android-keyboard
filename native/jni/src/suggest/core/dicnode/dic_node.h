@@ -93,7 +93,7 @@ class DicNode {
               mProfiler(),
 #endif
               mDicNodeProperties(), mDicNodeState(), mIsCachedForNextSuggestion(false),
-              mIsUsed(false), mReleaseListener(0) {}
+              mIsUsed(false), mReleaseListener(nullptr) {}
 
     DicNode(const DicNode &dicNode);
     DicNode &operator=(const DicNode &dicNode);
