@@ -25,7 +25,7 @@ DicNode::DicNode(const DicNode &dicNode)
 #endif
           mDicNodeProperties(dicNode.mDicNodeProperties), mDicNodeState(dicNode.mDicNodeState),
           mIsCachedForNextSuggestion(dicNode.mIsCachedForNextSuggestion), mIsUsed(dicNode.mIsUsed),
-          mReleaseListener(0) {
+          mReleaseListener(nullptr) {
     /* empty */
 }
 

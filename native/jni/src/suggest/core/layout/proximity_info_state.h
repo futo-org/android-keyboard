@@ -43,7 +43,7 @@ class ProximityInfoState {
     // Defined here                        //
     /////////////////////////////////////////
     AK_FORCE_INLINE ProximityInfoState()
-            : mProximityInfo(0), mMaxPointToKeyLength(0.0f), mAverageSpeed(0.0f),
+            : mProximityInfo(nullptr), mMaxPointToKeyLength(0.0f), mAverageSpeed(0.0f),
               mHasTouchPositionCorrectionData(false), mMostCommonKeyWidthSquare(0),
               mKeyCount(0), mCellHeight(0), mCellWidth(0), mGridHeight(0), mGridWidth(0),
               mIsContinuousSuggestionPossible(false), mHasBeenUpdatedByGeometricInput(false),
