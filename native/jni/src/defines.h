@@ -344,6 +344,9 @@ static inline void prof_out(void) {
 #define MAX_POINTER_COUNT 1
 #define MAX_POINTER_COUNT_G 2
 
+template<typename T> AK_FORCE_INLINE const T &min(const T &a, const T &b) { return a < b ? a : b; }
+template<typename T> AK_FORCE_INLINE const T &max(const T &a, const T &b) { return a > b ? a : b; }
+
 // DEBUG
 #define INPUTLENGTH_FOR_DEBUG (-1)
 #define MIN_OUTPUT_INDEX_FOR_DEBUG (-1)

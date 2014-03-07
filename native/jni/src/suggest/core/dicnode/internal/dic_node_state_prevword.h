@@ -17,7 +17,6 @@
 #ifndef LATINIME_DIC_NODE_STATE_PREVWORD_H
 #define LATINIME_DIC_NODE_STATE_PREVWORD_H
 
-#include <algorithm>
 #include <cstring> // for memset() and memmove()
 #include <stdint.h>
 
@@ -70,7 +69,7 @@ class DicNodeStatePrevWord {
             const int prevWordNodePos, const int *const src0, const int16_t length0,
             const int *const src1, const int16_t length1,
             const int prevWordSecondWordFirstInputIndex, const int lastInputIndex) {
-        mPrevWordCount = std::min(prevWordCount, static_cast<int16_t>(MAX_RESULTS));
+        mPrevWordCount = min(prevWordCount, static_cast<int16_t>(MAX_RESULTS));
         mPrevWordProbability = prevWordProbability;
         mPrevWordPtNodePos = prevWordNodePos;
         int twoWordsLen =
