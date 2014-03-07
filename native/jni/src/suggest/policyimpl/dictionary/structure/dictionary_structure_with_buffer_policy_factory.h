@@ -21,7 +21,6 @@
 
 #include "defines.h"
 #include "suggest/core/policy/dictionary_structure_with_buffer_policy.h"
-#include "utils/exclusive_ownership_pointer.h"
 
 namespace latinime {
 

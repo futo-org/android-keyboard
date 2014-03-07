@@ -17,16 +17,16 @@
 #ifndef LATINIME_MMAPPED_BUFFER_H
 #define LATINIME_MMAPPED_BUFFER_H
 
+#include <memory>
 #include <stdint.h>
 
 #include "defines.h"
-#include "utils/exclusive_ownership_pointer.h"
 
 namespace latinime {
 
 class MmappedBuffer {
  public:
-    typedef ExclusiveOwnershipPointer<MmappedBuffer> MmappedBufferPtr;
+    typedef std::unique_ptr<const MmappedBuffer> MmappedBufferPtr;
 
     static MmappedBufferPtr openBuffer(const char *const path,
             const int bufferOffset, const int bufferSize, const bool isUpdatable);

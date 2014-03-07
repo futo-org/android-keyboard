@@ -37,12 +37,11 @@ class DicNodeVector;
 
 class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
  public:
-    PatriciaTriePolicy(const MmappedBuffer::MmappedBufferPtr &mmappedBuffer)
-            : mMmappedBuffer(mmappedBuffer),
-              mHeaderPolicy(mMmappedBuffer.get()->getBuffer(), FormatUtils::VERSION_2),
-              mDictRoot(mMmappedBuffer.get()->getBuffer() + mHeaderPolicy.getSize()),
-              mDictBufferSize(mMmappedBuffer.get()->getBufferSize()
-                      - mHeaderPolicy.getSize()),
+    PatriciaTriePolicy(MmappedBuffer::MmappedBufferPtr mmappedBuffer)
+            : mMmappedBuffer(std::move(mmappedBuffer)),
+              mHeaderPolicy(mMmappedBuffer->getBuffer(), FormatUtils::VERSION_2),
+              mDictRoot(mMmappedBuffer->getBuffer() + mHeaderPolicy.getSize()),
+              mDictBufferSize(mMmappedBuffer->getBufferSize() - mHeaderPolicy.getSize()),
               mBigramListPolicy(mDictRoot), mShortcutListPolicy(mDictRoot),
               mPtNodeReader(mDictRoot, mDictBufferSize, &mBigramListPolicy, &mShortcutListPolicy),
               mPtNodeArrayReader(mDictRoot, mDictBufferSize),

@@ -48,17 +48,17 @@ const char *const DictFileWritingUtils::TEMP_FILE_SUFFIX_FOR_WRITING_DICT_FILE =
         const std::vector<int> localeAsCodePointVector,
         const DictionaryHeaderStructurePolicy::AttributeMap *const attributeMap) {
     HeaderPolicy headerPolicy(FormatUtils::VERSION_4, localeAsCodePointVector, attributeMap);
-    Ver4DictBuffers::Ver4DictBuffersPtr dictBuffers =
-            Ver4DictBuffers::createVer4DictBuffers(&headerPolicy);
+    Ver4DictBuffers::Ver4DictBuffersPtr dictBuffers(
+            Ver4DictBuffers::createVer4DictBuffers(&headerPolicy));
     headerPolicy.fillInAndWriteHeaderToBuffer(true /* updatesLastDecayedTime */,
             0 /* unigramCount */, 0 /* bigramCount */,
-            0 /* extendedRegionSize */, dictBuffers.get()->getWritableHeaderBuffer());
+            0 /* extendedRegionSize */, dictBuffers->getWritableHeaderBuffer());
     if (!DynamicPtWritingUtils::writeEmptyDictionary(
-            dictBuffers.get()->getWritableTrieBuffer(), 0 /* rootPos */)) {
+            dictBuffers->getWritableTrieBuffer(), 0 /* rootPos */)) {
         AKLOGE("Empty ver4 dictionary structure cannot be created on memory.");
         return false;
     }
-    return dictBuffers.get()->flush(dirPath);
+    return dictBuffers->flush(dirPath);
 }
 
 /* static */ bool DictFileWritingUtils::flushAllHeaderAndBodyToFile(const char *const filePath,

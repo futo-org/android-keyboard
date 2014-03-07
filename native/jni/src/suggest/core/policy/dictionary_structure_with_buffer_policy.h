@@ -17,9 +17,10 @@
 #ifndef LATINIME_DICTIONARY_STRUCTURE_POLICY_H
 #define LATINIME_DICTIONARY_STRUCTURE_POLICY_H
 
+#include <memory>
+
 #include "defines.h"
 #include "suggest/core/dictionary/word_property.h"
-#include "utils/exclusive_ownership_pointer.h"
 
 namespace latinime {
 
@@ -35,7 +36,7 @@ class DictionaryShortcutsStructurePolicy;
  */
 class DictionaryStructureWithBufferPolicy {
  public:
-    typedef ExclusiveOwnershipPointer<DictionaryStructureWithBufferPolicy> StructurePolicyPtr;
+    typedef std::unique_ptr<DictionaryStructureWithBufferPolicy> StructurePolicyPtr;
 
     virtual ~DictionaryStructureWithBufferPolicy() {}
 

@@ -31,15 +31,14 @@ class SingleDictContent : public DictContent {
     SingleDictContent(const char *const dictPath, const char *const contentFileName,
             const bool isUpdatable)
             : mMmappedBuffer(MmappedBuffer::openBuffer(dictPath, contentFileName, isUpdatable)),
-              mExpandableContentBuffer(mMmappedBuffer.get() ?
-                              mMmappedBuffer.get()->getBuffer() : nullptr,
-                      mMmappedBuffer.get() ? mMmappedBuffer.get()->getBufferSize() : 0,
+              mExpandableContentBuffer(mMmappedBuffer ? mMmappedBuffer->getBuffer() : nullptr,
+                      mMmappedBuffer ? mMmappedBuffer->getBufferSize() : 0,
                       BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE),
-              mIsValid(mMmappedBuffer.get()) {}
+              mIsValid(mMmappedBuffer) {}
 
     SingleDictContent()
-            : mMmappedBuffer(0), mExpandableContentBuffer(Ver4DictConstants::MAX_DICTIONARY_SIZE),
-              mIsValid(true) {}
+            : mMmappedBuffer(nullptr),
+              mExpandableContentBuffer(Ver4DictConstants::MAX_DICTIONARY_SIZE), mIsValid(true) {}
 
     virtual ~SingleDictContent() {}
 

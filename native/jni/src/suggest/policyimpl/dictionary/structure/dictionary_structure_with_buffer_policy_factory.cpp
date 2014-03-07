@@ -41,7 +41,7 @@ namespace latinime {
         if (isUpdatable) {
             AKLOGE("One file dictionaries don't support updating. path: %s", path);
             ASSERT(false);
-            return DictionaryStructureWithBufferPolicy::StructurePolicyPtr(0);
+            return DictionaryStructureWithBufferPolicy::StructurePolicyPtr(nullptr);
         }
         return newPolicyforFileDict(path, bufOffset, size);
     }
@@ -55,13 +55,13 @@ namespace latinime {
     getHeaderFilePathInDictDir(path, headerFilePathBufSize, headerFilePath);
     // Allocated buffer in MmapedBuffer::openBuffer() will be freed in the destructor of
     // MmappedBufferPtr if the instance has the responsibility.
-    MmappedBuffer::MmappedBufferPtr mmappedBuffer = MmappedBuffer::openBuffer(headerFilePath,
-            isUpdatable);
-    if (!mmappedBuffer.get()) {
-        return DictionaryStructureWithBufferPolicy::StructurePolicyPtr(0);
+    MmappedBuffer::MmappedBufferPtr mmappedBuffer(
+            MmappedBuffer::openBuffer(headerFilePath, isUpdatable));
+    if (!mmappedBuffer) {
+        return DictionaryStructureWithBufferPolicy::StructurePolicyPtr(nullptr);
     }
-    switch (FormatUtils::detectFormatVersion(mmappedBuffer.get()->getBuffer(),
-            mmappedBuffer.get()->getBufferSize())) {
+    switch (FormatUtils::detectFormatVersion(mmappedBuffer->getBuffer(),
+            mmappedBuffer->getBufferSize())) {
         case FormatUtils::VERSION_2:
             AKLOGE("Given path is a directory but the format is version 2. path: %s", path);
             break;
@@ -72,25 +72,25 @@ namespace latinime {
                     Ver4DictConstants::HEADER_FILE_EXTENSION, dictDirPathBufSize, dictPath)) {
                 AKLOGE("Dictionary file name is not valid as a ver4 dictionary. path: %s", path);
                 ASSERT(false);
-                return DictionaryStructureWithBufferPolicy::StructurePolicyPtr(0);
+                return DictionaryStructureWithBufferPolicy::StructurePolicyPtr(nullptr);
             }
-            const Ver4DictBuffers::Ver4DictBuffersPtr dictBuffers =
-                    Ver4DictBuffers::openVer4DictBuffers(dictPath, mmappedBuffer);
-            if (!dictBuffers.get() || !dictBuffers.get()->isValid()) {
+            Ver4DictBuffers::Ver4DictBuffersPtr dictBuffers(
+                    Ver4DictBuffers::openVer4DictBuffers(dictPath, std::move(mmappedBuffer)));
+            if (!dictBuffers || !dictBuffers->isValid()) {
                 AKLOGE("DICT: The dictionary doesn't satisfy ver4 format requirements. path: %s",
                         path);
                 ASSERT(false);
-                return DictionaryStructureWithBufferPolicy::StructurePolicyPtr(0);
+                return DictionaryStructureWithBufferPolicy::StructurePolicyPtr(nullptr);
             }
             return DictionaryStructureWithBufferPolicy::StructurePolicyPtr(
-                    new Ver4PatriciaTriePolicy(dictBuffers));
+                    new Ver4PatriciaTriePolicy(std::move(dictBuffers)));
         }
         default:
             AKLOGE("DICT: dictionary format is unknown, bad magic number. path: %s", path);
             break;
     }
     ASSERT(false);
-    return DictionaryStructureWithBufferPolicy::StructurePolicyPtr(0);
+    return DictionaryStructureWithBufferPolicy::StructurePolicyPtr(nullptr);
 }
 
 /* static */ DictionaryStructureWithBufferPolicy::StructurePolicyPtr
@@ -98,16 +98,16 @@ namespace latinime {
                 const char *const path, const int bufOffset, const int size) {
     // Allocated buffer in MmapedBuffer::openBuffer() will be freed in the destructor of
     // MmappedBufferPtr if the instance has the responsibility.
-    MmappedBuffer::MmappedBufferPtr mmappedBuffer = MmappedBuffer::openBuffer(path, bufOffset,
-            size, false /* isUpdatable */);
-    if (!mmappedBuffer.get()) {
-        return DictionaryStructureWithBufferPolicy::StructurePolicyPtr(0);
+    MmappedBuffer::MmappedBufferPtr mmappedBuffer(
+            MmappedBuffer::openBuffer(path, bufOffset, size, false /* isUpdatable */));
+    if (!mmappedBuffer) {
+        return DictionaryStructureWithBufferPolicy::StructurePolicyPtr(nullptr);
     }
-    switch (FormatUtils::detectFormatVersion(mmappedBuffer.get()->getBuffer(),
-            mmappedBuffer.get()->getBufferSize())) {
+    switch (FormatUtils::detectFormatVersion(mmappedBuffer->getBuffer(),
+            mmappedBuffer->getBufferSize())) {
         case FormatUtils::VERSION_2:
             return DictionaryStructureWithBufferPolicy::StructurePolicyPtr(
-                    new PatriciaTriePolicy(mmappedBuffer));
+                    new PatriciaTriePolicy(std::move(mmappedBuffer)));
         case FormatUtils::VERSION_4:
             AKLOGE("Given path is a file but the format is version 4. path: %s", path);
             break;
@@ -116,7 +116,7 @@ namespace latinime {
             break;
     }
     ASSERT(false);
-    return DictionaryStructureWithBufferPolicy::StructurePolicyPtr(0);
+    return DictionaryStructureWithBufferPolicy::StructurePolicyPtr(nullptr);
 }
 
 /* static */ void DictionaryStructureWithBufferPolicyFactory::getHeaderFilePathInDictDir(
