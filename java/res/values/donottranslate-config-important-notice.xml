@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- 
+<?xml version="1.0" encoding="utf-8"?>
+<!--
 /*
 **
 ** Copyright 2014, The Android Open Source Project
@@ -16,9 +16,15 @@
 ** See the License for the specific language governing permissions and
 ** limitations under the License.
 */
- -->
+-->
 
-<resources xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="use_personalized_dicts_summary" msgid="590432261305469627">"Bruk kommunikasjonen og inndataene dine for å få bedre forslag"</string>
+<resources>
+    <!-- The array of the text of the important notices displayed on the suggestion strip. -->
+    <string-array name="important_notice_title_array" translatable="false">
+        <!-- empty -->
+    </string-array>
+    <!-- The array of the contents of the important notices. -->
+    <string-array name="important_notice_contents_array" translatable="false">
+        <!-- empty -->
+    </string-array>
 </resources>
