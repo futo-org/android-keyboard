@@ -37,6 +37,17 @@
     <Key
         latin:keySpec="n"
         latin:moreKeys="!text/more_keys_for_n" />
-    <include
-        latin:keyboardLayout="@xml/key_azerty3_right" />
+    <switch>
+        <case
+            latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLockShifted"
+        >
+            <Key
+                latin:keySpec="\?" />
+        </case>
+        <default>
+            <Key
+                latin:keySpec="\'"
+                latin:moreKeys="!text/more_keys_for_single_quote" />
+        </default>
+    </switch>
 </merge>
