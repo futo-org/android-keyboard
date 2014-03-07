@@ -12,6 +12,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Temporarily excluding dicttool
-#include $(call all-subdir-makefiles)
-include $(call all-named-subdir-makefiles, make-keyboard-text)
+include $(call all-subdir-makefiles)

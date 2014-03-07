@@ -13,6 +13,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# HACK: Temporarily disable host tool build on Mac until the build system is ready for C++11.
+LATINIME_HOST_OSNAME := $(shell uname -s)
+ifneq ($(LATINIME_HOST_OSNAME), Darwin) # TODO: Remove this
+
 LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 
@@ -49,9 +53,13 @@ LOCAL_SRC_FILES := \
     $(addprefix $(LATINIME_NATIVE_SRC_DIR)/, $(LATIN_IME_CORE_SRC_FILES))
 
 LOCAL_MODULE := $(LATINIME_HOST_NATIVE_LIBNAME)
+LOCAL_IS_HOST_MODULE := true
 
 include $(BUILD_HOST_SHARED_LIBRARY)
+
+endif # Darwin - TODO: Remove this
 
 # Clear our private variables
 include $(LOCAL_PATH)/$(LATINIME_NATIVE_JNI_DIR)/CleanupNativeFileList.mk
 LATINIME_DIR_RELATIVE_TO_DICTTOOL := ../..
+LATINIME_HOST_OSNAME :=
