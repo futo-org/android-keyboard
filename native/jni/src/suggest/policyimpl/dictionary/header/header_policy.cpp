@@ -16,8 +16,6 @@
 
 #include "suggest/policyimpl/dictionary/header/header_policy.h"
 
-#include <algorithm>
-
 namespace latinime {
 
 // Note that these are corresponding definitions in Java side in DictionaryHeader.
@@ -74,7 +72,7 @@ void HeaderPolicy::readHeaderValueOrQuestionMark(const char *const key, int *out
         outValue[1] = '\0';
         return;
     }
-    const int terminalIndex = std::min(static_cast<int>(it->second.size()), outValueSize - 1);
+    const int terminalIndex = min(static_cast<int>(it->second.size()), outValueSize - 1);
     for (int i = 0; i < terminalIndex; ++i) {
         outValue[i] = it->second[i];
     }

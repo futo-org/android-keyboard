@@ -16,7 +16,6 @@
 
 #include "suggest/policyimpl/dictionary/utils/forgetting_curve_utils.h"
 
-#include <algorithm>
 #include <cmath>
 #include <stdlib.h>
 
@@ -73,7 +72,7 @@ const ForgettingCurveUtils::ProbabilityTable ForgettingCurveUtils::sProbabilityT
             headerPolicy->getForgettingCurveDurationToLevelDown());
     return sProbabilityTable.getProbability(
             headerPolicy->getForgettingCurveProbabilityValuesTableId(), historicalInfo->getLevel(),
-            std::min(std::max(elapsedTimeStepCount, 0), MAX_ELAPSED_TIME_STEP_COUNT));
+            min(max(elapsedTimeStepCount, 0), MAX_ELAPSED_TIME_STEP_COUNT));
 }
 
 /* static */ int ForgettingCurveUtils::getProbability(const int unigramProbability,
@@ -81,11 +80,11 @@ const ForgettingCurveUtils::ProbabilityTable ForgettingCurveUtils::sProbabilityT
     if (unigramProbability == NOT_A_PROBABILITY) {
         return NOT_A_PROBABILITY;
     } else if (bigramProbability == NOT_A_PROBABILITY) {
-        return std::min(backoff(unigramProbability), MAX_PROBABILITY);
+        return min(backoff(unigramProbability), MAX_PROBABILITY);
     } else {
         // TODO: Investigate better way to handle bigram probability.
-        return std::min(std::max(unigramProbability,
-                bigramProbability + MULTIPLIER_TWO_IN_PROBABILITY_SCALE), MAX_PROBABILITY);
+        return min(max(unigramProbability, bigramProbability + MULTIPLIER_TWO_IN_PROBABILITY_SCALE),
+                MAX_PROBABILITY);
     }
 }
 
@@ -184,7 +183,7 @@ ForgettingCurveUtils::ProbabilityTable::ProbabilityTable() : mTables() {
                                 -1.0f * static_cast<float>(timeStepCount)
                                         / static_cast<float>(MAX_ELAPSED_TIME_STEP_COUNT + 1));
                 mTables[tableId][level][timeStepCount] =
-                        std::min(std::max(static_cast<int>(probability), 1), MAX_PROBABILITY);
+                        min(max(static_cast<int>(probability), 1), MAX_PROBABILITY);
             }
         }
     }

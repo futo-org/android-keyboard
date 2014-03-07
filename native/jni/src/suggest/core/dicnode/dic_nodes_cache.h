@@ -17,7 +17,6 @@
 #ifndef LATINIME_DIC_NODES_CACHE_H
 #define LATINIME_DIC_NODES_CACHE_H
 
-#include <algorithm>
 #include <stdint.h>
 
 #include "defines.h"
@@ -52,7 +51,7 @@ class DicNodesCache {
         // We want to use the max capacity for the current active dic node queue.
         mActiveDicNodes->clearAndResizeToCapacity();
         // nextActiveSize is used to limit the next iteration's active dic node size.
-        const int nextActiveSizeFittingToTheCapacity = std::min(nextActiveSize, getCacheCapacity());
+        const int nextActiveSizeFittingToTheCapacity = min(nextActiveSize, getCacheCapacity());
         mNextActiveDicNodes->clearAndResize(nextActiveSizeFittingToTheCapacity);
         mTerminalDicNodes->clearAndResize(terminalSize);
         // We want to use the max capacity for the cached dic nodes that will be used for the
