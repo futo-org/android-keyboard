@@ -100,6 +100,10 @@ class ProximityInfoUtils {
         const float dotProduct = ray1x * ray2x + ray1y * ray2y;
         const float lineLengthSqr = GeometryUtils::SQUARE_FLOAT(ray2x)
                 + GeometryUtils::SQUARE_FLOAT(ray2y);
+        if (lineLengthSqr <= 0.0f) {
+            // Return point to the point distance.
+            return getSquaredDistanceFloat(x, y, x1, y1);
+        }
         const float projectionLengthSqr = dotProduct / lineLengthSqr;
 
         float projectionX;
