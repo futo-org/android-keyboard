@@ -17,6 +17,7 @@
 #ifndef LATINIME_DIC_NODE_STATE_SCORING_H
 #define LATINIME_DIC_NODE_STATE_SCORING_H
 
+#include <algorithm>
 #include <stdint.h>
 
 #include "defines.h"
@@ -199,7 +200,7 @@ class DicNodeStateScoring {
             mNormalizedCompoundDistance = mSpatialDistance + mLanguageDistance;
         } else {
             mNormalizedCompoundDistance = (mSpatialDistance + mLanguageDistance)
-                    / static_cast<float>(max(1, totalInputIndex));
+                    / static_cast<float>(std::max(1, totalInputIndex));
         }
     }
 };

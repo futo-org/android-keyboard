@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-#include <cstring>
-
 #define LOG_TAG "LatinIME: bigram_dictionary.cpp"
 
 #include "bigram_dictionary.h"
+
+#include <algorithm>
+#include <cstring>
 
 #include "defines.h"
 #include "suggest/core/dictionary/binary_dictionary_bigrams_iterator.h"
@@ -142,7 +143,7 @@ int BigramDictionary::getPredictions(const int *prevWord, const int prevWordLeng
                 outBigramCodePoints, outputTypes);
         ++bigramCount;
     }
-    return min(bigramCount, MAX_RESULTS);
+    return std::min(bigramCount, MAX_RESULTS);
 }
 
 // Returns a pointer to the start of the bigram list.
