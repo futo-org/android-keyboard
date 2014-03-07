@@ -241,7 +241,7 @@ namespace latinime {
         // Calculate velocity by using distances and durations of
         // ProximityInfoParams::NUM_POINTS_FOR_SPEED_CALCULATION points for both forward and
         // backward.
-        const int forwardNumPoints = min(inputSize - 1,
+        const int forwardNumPoints = std::min(inputSize - 1,
                 index + ProximityInfoParams::NUM_POINTS_FOR_SPEED_CALCULATION);
         for (int j = index; j < forwardNumPoints; ++j) {
             if (i < sampledInputSize - 1 && j >= (*sampledInputIndice)[i + 1]) {
@@ -251,7 +251,7 @@ namespace latinime {
                     xCoordinates[j + 1], yCoordinates[j + 1]);
             duration += times[j + 1] - times[j];
         }
-        const int backwardNumPoints = max(0,
+        const int backwardNumPoints = std::max(0,
                 index - ProximityInfoParams::NUM_POINTS_FOR_SPEED_CALCULATION);
         for (int j = index - 1; j >= backwardNumPoints; --j) {
             if (i > 0 && j < (*sampledInputIndice)[i - 1]) {
@@ -273,7 +273,7 @@ namespace latinime {
 
     // Direction calculation.
     sampledDirections->resize(sampledInputSize - 1);
-    for (int i = max(0, lastSavedInputSize - 1); i < sampledInputSize - 1; ++i) {
+    for (int i = std::max(0, lastSavedInputSize - 1); i < sampledInputSize - 1; ++i) {
         (*sampledDirections)[i] = getDirection(sampledInputXs, sampledInputYs, i, i + 1);
     }
     return averageSpeed;
@@ -610,7 +610,7 @@ namespace latinime {
         const int inputIndex, const int keyId) {
     if (keyId != NOT_AN_INDEX) {
         const int index = inputIndex * keyCount + keyId;
-        return min((*sampledNormalizedSquaredLengthCache)[index], maxPointToKeyLength);
+        return std::min((*sampledNormalizedSquaredLengthCache)[index], maxPointToKeyLength);
     }
     // If the char is not a key on the keyboard then return the max length.
     return static_cast<float>(MAX_VALUE_FOR_WEIGHTING);
@@ -651,13 +651,13 @@ namespace latinime {
         }
 
         if (i == 0) {
-            skipProbability *= min(1.0f,
+            skipProbability *= std::min(1.0f,
                     nearestKeyDistance * ProximityInfoParams::NEAREST_DISTANCE_WEIGHT
                             + ProximityInfoParams::NEAREST_DISTANCE_BIAS);
             // Promote the first point
             skipProbability *= ProximityInfoParams::SKIP_FIRST_POINT_PROBABILITY;
         } else if (i == sampledInputSize - 1) {
-            skipProbability *= min(1.0f,
+            skipProbability *= std::min(1.0f,
                     nearestKeyDistance * ProximityInfoParams::NEAREST_DISTANCE_WEIGHT_FOR_LAST
                             + ProximityInfoParams::NEAREST_DISTANCE_BIAS_FOR_LAST);
             // Promote the last point
@@ -668,17 +668,17 @@ namespace latinime {
                     && speedRate
                             < (*sampledSpeedRates)[i + 1] - ProximityInfoParams::SPEED_MARGIN) {
                 if (currentAngle < ProximityInfoParams::CORNER_ANGLE_THRESHOLD) {
-                    skipProbability *= min(1.0f, speedRate
+                    skipProbability *= std::min(1.0f, speedRate
                             * ProximityInfoParams::SLOW_STRAIGHT_WEIGHT_FOR_SKIP_PROBABILITY);
                 } else {
                     // If the angle is small enough, we promote this point more. (e.g. pit vs put)
-                    skipProbability *= min(1.0f,
+                    skipProbability *= std::min(1.0f,
                             speedRate * ProximityInfoParams::SPEED_WEIGHT_FOR_SKIP_PROBABILITY
                                     + ProximityInfoParams::MIN_SPEED_RATE_FOR_SKIP_PROBABILITY);
                 }
             }
 
-            skipProbability *= min(1.0f,
+            skipProbability *= std::min(1.0f,
                     speedRate * nearestKeyDistance * ProximityInfoParams::NEAREST_DISTANCE_WEIGHT
                             + ProximityInfoParams::NEAREST_DISTANCE_BIAS);
 
@@ -708,10 +708,10 @@ namespace latinime {
         // (1.0f - skipProbability).
         const float inputCharProbability = 1.0f - skipProbability;
 
-        const float speedxAngleRate = min(speedRate * currentAngle / M_PI_F
+        const float speedxAngleRate = std::min(speedRate * currentAngle / M_PI_F
                 * ProximityInfoParams::SPEEDxANGLE_WEIGHT_FOR_STANDARD_DEVIATION,
                         ProximityInfoParams::MAX_SPEEDxANGLE_RATE_FOR_STANDARD_DEVIATION);
-        const float speedxNearestKeyDistanceRate = min(speedRate * nearestKeyDistance
+        const float speedxNearestKeyDistanceRate = std::min(speedRate * nearestKeyDistance
                 * ProximityInfoParams::SPEEDxNEAREST_WEIGHT_FOR_STANDARD_DEVIATION,
                         ProximityInfoParams::MAX_SPEEDxNEAREST_RATE_FOR_STANDARD_DEVIATION);
         const float sigma = speedxAngleRate + speedxNearestKeyDistanceRate
@@ -828,7 +828,7 @@ namespace latinime {
 
     // Decrease key probabilities of points which don't have the highest probability of that key
     // among nearby points. Probabilities of the first point and the last point are not suppressed.
-    for (int i = max(start, 1); i < sampledInputSize; ++i) {
+    for (int i = std::max(start, 1); i < sampledInputSize; ++i) {
         for (int j = i + 1; j < sampledInputSize; ++j) {
             if (!suppressCharProbabilities(
                     mostCommonKeyWidth, sampledInputSize, sampledLengthCache, i, j,
@@ -836,7 +836,7 @@ namespace latinime {
                 break;
             }
         }
-        for (int j = i - 1; j >= max(start, 0); --j) {
+        for (int j = i - 1; j >= std::max(start, 0); --j) {
             if (!suppressCharProbabilities(
                     mostCommonKeyWidth, sampledInputSize, sampledLengthCache, i, j,
                     charProbabilities)) {
@@ -879,7 +879,7 @@ namespace latinime {
         if (i >= lastSavedInputSize) {
             (*sampledSearchKeySets)[i].reset();
         }
-        for (int j = max(i, lastSavedInputSize); j < sampledInputSize; ++j) {
+        for (int j = std::max(i, lastSavedInputSize); j < sampledInputSize; ++j) {
             // TODO: Investigate if this is required. This may not fail.
             if ((*sampledLengthCache)[j] - (*sampledLengthCache)[i] >= readForwordLength) {
                 break;
@@ -930,7 +930,7 @@ namespace latinime {
             (*charProbabilities)[index0][NOT_AN_INDEX] += suppression;
 
             // Add the probability of the same key nearby index1
-            const float probabilityGain = min(suppression
+            const float probabilityGain = std::min(suppression
                     * ProximityInfoParams::SUPPRESSION_WEIGHT_FOR_PROBABILITY_GAIN,
                     (*charProbabilities)[index1][NOT_AN_INDEX]
                             * ProximityInfoParams::SKIP_PROBABALITY_WEIGHT_FOR_PROBABILITY_GAIN);
