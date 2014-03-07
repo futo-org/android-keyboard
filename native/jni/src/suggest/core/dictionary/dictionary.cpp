@@ -74,12 +74,11 @@ int Dictionary::getSuggestions(ProximityInfo *proximityInfo, DicTraverseSession 
     }
 }
 
-int Dictionary::getBigrams(const int *word, int length, int *outWords, int *outputScores,
-        int *outputTypes) const {
+void Dictionary::getPredictions(const int *word, int length,
+        SuggestionResults *const outSuggestionResults) const {
     TimeKeeper::setCurrentTime();
-    if (length <= 0) return 0;
-    return mBigramDictionary->getPredictions(word, length, outWords, outputScores,
-            outputTypes);
+    if (length <= 0) return;
+    mBigramDictionary->getPredictions(word, length, outSuggestionResults);
 }
 
 int Dictionary::getProbability(const int *word, int length) const {

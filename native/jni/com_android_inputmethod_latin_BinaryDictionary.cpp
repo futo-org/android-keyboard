@@ -25,6 +25,7 @@
 #include "jni_common.h"
 #include "suggest/core/dictionary/dictionary.h"
 #include "suggest/core/dictionary/word_property.h"
+#include "suggest/core/result/suggestion_results.h"
 #include "suggest/core/suggest_options.h"
 #include "suggest/policyimpl/dictionary/structure/dictionary_structure_with_buffer_policy_factory.h"
 #include "utils/char_utils.h"
@@ -139,15 +140,20 @@ static int latinime_BinaryDictionary_getFormatVersion(JNIEnv *env, jclass clazz,
     return headerPolicy->getFormatVersionNumber();
 }
 
-static int latinime_BinaryDictionary_getSuggestions(JNIEnv *env, jclass clazz, jlong dict,
+static void latinime_BinaryDictionary_getSuggestions(JNIEnv *env, jclass clazz, jlong dict,
         jlong proximityInfo, jlong dicTraverseSession, jintArray xCoordinatesArray,
         jintArray yCoordinatesArray, jintArray timesArray, jintArray pointerIdsArray,
         jintArray inputCodePointsArray, jint inputSize, jint commitPoint, jintArray suggestOptions,
-        jintArray prevWordCodePointsForBigrams, jintArray outputCodePointsArray,
-        jintArray scoresArray, jintArray spaceIndicesArray, jintArray outputTypesArray,
-        jintArray outputAutoCommitFirstWordConfidenceArray) {
+        jintArray prevWordCodePointsForBigrams, jintArray outSuggestionCount,
+        jintArray outCodePointsArray, jintArray outScoresArray, jintArray outSpaceIndicesArray,
+        jintArray outTypesArray, jintArray outAutoCommitFirstWordConfidenceArray) {
     Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
-    if (!dictionary) return 0;
+    // Assign 0 to outSuggestionCount here in case of returning earlier in this method.
+    int count = 0;
+    env->SetIntArrayRegion(outSuggestionCount, 0, 1 /* len */, &count);
+    if (!dictionary) {
+        return;
+    }
     ProximityInfo *pInfo = reinterpret_cast<ProximityInfo *>(proximityInfo);
     DicTraverseSession *traverseSession =
             reinterpret_cast<DicTraverseSession *>(dicTraverseSession);
@@ -181,26 +187,26 @@ static int latinime_BinaryDictionary_getSuggestions(JNIEnv *env, jclass clazz, j
 
     // Output values
     /* By the way, let's check the output array length here to make sure */
-    const jsize outputCodePointsLength = env->GetArrayLength(outputCodePointsArray);
+    const jsize outputCodePointsLength = env->GetArrayLength(outCodePointsArray);
     if (outputCodePointsLength != (MAX_WORD_LENGTH * MAX_RESULTS)) {
         AKLOGE("Invalid outputCodePointsLength: %d", outputCodePointsLength);
         ASSERT(false);
-        return 0;
+        return;
     }
-    const jsize scoresLength = env->GetArrayLength(scoresArray);
+    const jsize scoresLength = env->GetArrayLength(outScoresArray);
     if (scoresLength != MAX_RESULTS) {
         AKLOGE("Invalid scoresLength: %d", scoresLength);
         ASSERT(false);
-        return 0;
+        return;
     }
     int outputCodePoints[outputCodePointsLength];
     int scores[scoresLength];
-    const jsize spaceIndicesLength = env->GetArrayLength(spaceIndicesArray);
+    const jsize spaceIndicesLength = env->GetArrayLength(outSpaceIndicesArray);
     int spaceIndices[spaceIndicesLength];
-    const jsize outputTypesLength = env->GetArrayLength(outputTypesArray);
+    const jsize outputTypesLength = env->GetArrayLength(outTypesArray);
     int outputTypes[outputTypesLength];
     const jsize outputAutoCommitFirstWordConfidenceLength =
-            env->GetArrayLength(outputAutoCommitFirstWordConfidenceArray);
+            env->GetArrayLength(outAutoCommitFirstWordConfidenceArray);
     // We only use the first result, as obviously we will only ever autocommit the first one
     ASSERT(outputAutoCommitFirstWordConfidenceLength == 1);
     int outputAutoCommitFirstWordConfidence[outputAutoCommitFirstWordConfidenceLength];
@@ -210,26 +216,30 @@ static int latinime_BinaryDictionary_getSuggestions(JNIEnv *env, jclass clazz, j
     memset(outputTypes, 0, sizeof(outputTypes));
     memset(outputAutoCommitFirstWordConfidence, 0, sizeof(outputAutoCommitFirstWordConfidence));
 
-    int count;
     if (givenSuggestOptions.isGesture() || inputSize > 0) {
+        // TODO: Use SuggestionResults to return suggestions.
         count = dictionary->getSuggestions(pInfo, traverseSession, xCoordinates, yCoordinates,
                 times, pointerIds, inputCodePoints, inputSize, prevWordCodePoints,
                 prevWordCodePointsLength, commitPoint, &givenSuggestOptions, outputCodePoints,
                 scores, spaceIndices, outputTypes, outputAutoCommitFirstWordConfidence);
     } else {
-        count = dictionary->getBigrams(prevWordCodePoints, prevWordCodePointsLength,
-                outputCodePoints, scores, outputTypes);
+        SuggestionResults suggestionResults(MAX_RESULTS);
+        dictionary->getPredictions(prevWordCodePoints, prevWordCodePointsLength,
+                &suggestionResults);
+        suggestionResults.outputSuggestions(env, outSuggestionCount, outCodePointsArray,
+                outScoresArray, outSpaceIndicesArray, outTypesArray,
+                outAutoCommitFirstWordConfidenceArray);
+        return;
     }
 
     // Copy back the output values
-    env->SetIntArrayRegion(outputCodePointsArray, 0, outputCodePointsLength, outputCodePoints);
-    env->SetIntArrayRegion(scoresArray, 0, scoresLength, scores);
-    env->SetIntArrayRegion(spaceIndicesArray, 0, spaceIndicesLength, spaceIndices);
-    env->SetIntArrayRegion(outputTypesArray, 0, outputTypesLength, outputTypes);
-    env->SetIntArrayRegion(outputAutoCommitFirstWordConfidenceArray, 0,
+    env->SetIntArrayRegion(outSuggestionCount, 0, 1 /* len */, &count);
+    env->SetIntArrayRegion(outCodePointsArray, 0, outputCodePointsLength, outputCodePoints);
+    env->SetIntArrayRegion(outScoresArray, 0, scoresLength, scores);
+    env->SetIntArrayRegion(outSpaceIndicesArray, 0, spaceIndicesLength, spaceIndices);
+    env->SetIntArrayRegion(outTypesArray, 0, outputTypesLength, outputTypes);
+    env->SetIntArrayRegion(outAutoCommitFirstWordConfidenceArray, 0,
             outputAutoCommitFirstWordConfidenceLength, outputAutoCommitFirstWordConfidence);
-
-    return count;
 }
 
 static jint latinime_BinaryDictionary_getProbability(JNIEnv *env, jclass clazz, jlong dict,
@@ -496,7 +506,7 @@ static const JNINativeMethod sMethods[] = {
     },
     {
         const_cast<char *>("getSuggestionsNative"),
-        const_cast<char *>("(JJJ[I[I[I[I[III[I[I[I[I[I[I[I)I"),
+        const_cast<char *>("(JJJ[I[I[I[I[III[I[I[I[I[I[I[I[I)V"),
         reinterpret_cast<void *>(latinime_BinaryDictionary_getSuggestions)
     },
     {
