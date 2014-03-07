@@ -18,12 +18,11 @@ package com.android.inputmethod.latin.makedict;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.Constants;
+import com.android.inputmethod.latin.makedict.FormatSpec.DictionaryOptions;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 
@@ -277,45 +276,6 @@ public final class FusionDictionary implements Iterable<WordProperty> {
             }
             mIsNotAWord = isNotAWord;
             mIsBlacklistEntry = isBlacklistEntry;
-        }
-    }
-
-    /**
-     * Options global to the dictionary.
-     */
-    public static final class DictionaryOptions {
-        public final HashMap<String, String> mAttributes;
-        public DictionaryOptions(final HashMap<String, String> attributes) {
-            mAttributes = attributes;
-        }
-        @Override
-        public String toString() { // Convenience method
-            return toString(0, false);
-        }
-        public String toString(final int indentCount, final boolean plumbing) {
-            final StringBuilder indent = new StringBuilder();
-            if (plumbing) {
-                indent.append("H:");
-            } else {
-                for (int i = 0; i < indentCount; ++i) {
-                    indent.append(" ");
-                }
-            }
-            final StringBuilder s = new StringBuilder();
-            for (final String optionKey : mAttributes.keySet()) {
-                s.append(indent);
-                s.append(optionKey);
-                s.append(" = ");
-                if ("date".equals(optionKey) && !plumbing) {
-                    // Date needs a number of milliseconds, but the dictionary contains seconds
-                    s.append(new Date(
-                            1000 * Long.parseLong(mAttributes.get(optionKey))).toString());
-                } else {
-                    s.append(mAttributes.get(optionKey));
-                }
-                s.append("\n");
-            }
-            return s.toString();
         }
     }
 
