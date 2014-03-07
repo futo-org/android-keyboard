@@ -67,7 +67,7 @@ bool Ver4PatriciaTrieWritingHelper::writeToDictFileWithGC(const int rootPtNodeAr
             unigramCount, bigramCount, 0 /* extendedRegionSize */, &headerBuffer)) {
         return false;
     }
-    return dictBuffers.get()->flushHeaderAndDictBuffers(dictDirPath, &headerBuffer);
+    return dictBuffers->flushHeaderAndDictBuffers(dictDirPath, &headerBuffer);
 }
 
 bool Ver4PatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,

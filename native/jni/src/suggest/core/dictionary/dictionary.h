@@ -18,6 +18,7 @@
 #define LATINIME_DICTIONARY_H
 
 #include <stdint.h>
+#include <memory>
 
 #include "defines.h"
 #include "jni.h"
@@ -26,7 +27,6 @@
 #include "suggest/core/policy/dictionary_header_structure_policy.h"
 #include "suggest/core/policy/dictionary_structure_with_buffer_policy.h"
 #include "suggest/core/suggest_interface.h"
-#include "utils/exclusive_ownership_pointer.h"
 
 namespace latinime {
 
@@ -58,8 +58,8 @@ class Dictionary {
     static const int KIND_FLAG_POSSIBLY_OFFENSIVE = 0x80000000;
     static const int KIND_FLAG_EXACT_MATCH = 0x40000000;
 
-    Dictionary(JNIEnv *env, const DictionaryStructureWithBufferPolicy::StructurePolicyPtr
-            &dictionaryStructureWithBufferPolicy);
+    Dictionary(JNIEnv *env, DictionaryStructureWithBufferPolicy::StructurePolicyPtr
+            dictionaryStructureWithBufferPolicy);
 
     int getSuggestions(ProximityInfo *proximityInfo, DicTraverseSession *traverseSession,
             int *xcoordinates, int *ycoordinates, int *times, int *pointerIds, int *inputCodePoints,
@@ -108,8 +108,8 @@ class Dictionary {
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(Dictionary);
 
-    typedef ExclusiveOwnershipPointer<BigramDictionary> BigramDictionaryPtr;
-    typedef ExclusiveOwnershipPointer<SuggestInterface> SuggestInterfacePtr;
+    typedef std::unique_ptr<BigramDictionary> BigramDictionaryPtr;
+    typedef std::unique_ptr<SuggestInterface> SuggestInterfacePtr;
 
     static const int HEADER_ATTRIBUTE_BUFFER_SIZE;
 

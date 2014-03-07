@@ -34,9 +34,9 @@ namespace latinime {
 
 const int Dictionary::HEADER_ATTRIBUTE_BUFFER_SIZE = 32;
 
-Dictionary::Dictionary(JNIEnv *env, const DictionaryStructureWithBufferPolicy::StructurePolicyPtr
-        &dictionaryStructureWithBufferPolicy)
-        : mDictionaryStructureWithBufferPolicy(dictionaryStructureWithBufferPolicy),
+Dictionary::Dictionary(JNIEnv *env, DictionaryStructureWithBufferPolicy::StructurePolicyPtr
+        dictionaryStructureWithBufferPolicy)
+        : mDictionaryStructureWithBufferPolicy(std::move(dictionaryStructureWithBufferPolicy)),
           mBigramDictionary(new BigramDictionary(mDictionaryStructureWithBufferPolicy.get())),
           mGestureSuggest(new Suggest(GestureSuggestPolicyFactory::getGestureSuggestPolicy())),
           mTypingSuggest(new Suggest(TypingSuggestPolicyFactory::getTypingSuggestPolicy())) {
@@ -53,7 +53,7 @@ int Dictionary::getSuggestions(ProximityInfo *proximityInfo, DicTraverseSession 
     if (suggestOptions->isGesture()) {
         DicTraverseSession::initSessionInstance(
                 traverseSession, this, prevWordCodePoints, prevWordLength, suggestOptions);
-        result = mGestureSuggest.get()->getSuggestions(proximityInfo, traverseSession, xcoordinates,
+        result = mGestureSuggest->getSuggestions(proximityInfo, traverseSession, xcoordinates,
                 ycoordinates, times, pointerIds, inputCodePoints, inputSize, commitPoint, outWords,
                 outputScores, spaceIndices, outputTypes, outputAutoCommitFirstWordConfidence);
         if (DEBUG_DICT) {
@@ -63,7 +63,7 @@ int Dictionary::getSuggestions(ProximityInfo *proximityInfo, DicTraverseSession 
     } else {
         DicTraverseSession::initSessionInstance(
                 traverseSession, this, prevWordCodePoints, prevWordLength, suggestOptions);
-        result = mTypingSuggest.get()->getSuggestions(proximityInfo, traverseSession, xcoordinates,
+        result = mTypingSuggest->getSuggestions(proximityInfo, traverseSession, xcoordinates,
                 ycoordinates, times, pointerIds, inputCodePoints, inputSize, commitPoint,
                 outWords, outputScores, spaceIndices, outputTypes,
                 outputAutoCommitFirstWordConfidence);
@@ -78,7 +78,7 @@ int Dictionary::getBigrams(const int *word, int length, int *outWords, int *outp
         int *outputTypes) const {
     TimeKeeper::setCurrentTime();
     if (length <= 0) return 0;
-    return mBigramDictionary.get()->getPredictions(word, length, outWords, outputScores,
+    return mBigramDictionary->getPredictions(word, length, outWords, outputScores,
             outputTypes);
 }
 
@@ -95,7 +95,7 @@ int Dictionary::getProbability(const int *word, int length) const {
 int Dictionary::getBigramProbability(const int *word0, int length0, const int *word1,
         int length1) const {
     TimeKeeper::setCurrentTime();
-    return mBigramDictionary.get()->getBigramProbability(word0, length0, word1, length1);
+    return mBigramDictionary->getBigramProbability(word0, length0, word1, length1);
 }
 
 void Dictionary::addUnigramWord(const int *const word, const int length, const int probability,
@@ -103,7 +103,7 @@ void Dictionary::addUnigramWord(const int *const word, const int length, const i
         const int shortcutProbability, const bool isNotAWord, const bool isBlacklisted,
         const int timestamp) {
     TimeKeeper::setCurrentTime();
-    mDictionaryStructureWithBufferPolicy.get()->addUnigramWord(word, length, probability,
+    mDictionaryStructureWithBufferPolicy->addUnigramWord(word, length, probability,
             shortcutTargetCodePoints, shortcutLength, shortcutProbability, isNotAWord,
             isBlacklisted, timestamp);
 }
@@ -111,48 +111,48 @@ void Dictionary::addUnigramWord(const int *const word, const int length, const i
 void Dictionary::addBigramWords(const int *const word0, const int length0, const int *const word1,
         const int length1, const int probability, const int timestamp) {
     TimeKeeper::setCurrentTime();
-    mDictionaryStructureWithBufferPolicy.get()->addBigramWords(word0, length0, word1, length1,
+    mDictionaryStructureWithBufferPolicy->addBigramWords(word0, length0, word1, length1,
             probability, timestamp);
 }
 
 void Dictionary::removeBigramWords(const int *const word0, const int length0,
         const int *const word1, const int length1) {
     TimeKeeper::setCurrentTime();
-    mDictionaryStructureWithBufferPolicy.get()->removeBigramWords(word0, length0, word1, length1);
+    mDictionaryStructureWithBufferPolicy->removeBigramWords(word0, length0, word1, length1);
 }
 
 void Dictionary::flush(const char *const filePath) {
     TimeKeeper::setCurrentTime();
-    mDictionaryStructureWithBufferPolicy.get()->flush(filePath);
+    mDictionaryStructureWithBufferPolicy->flush(filePath);
 }
 
 void Dictionary::flushWithGC(const char *const filePath) {
     TimeKeeper::setCurrentTime();
-    mDictionaryStructureWithBufferPolicy.get()->flushWithGC(filePath);
+    mDictionaryStructureWithBufferPolicy->flushWithGC(filePath);
 }
 
 bool Dictionary::needsToRunGC(const bool mindsBlockByGC) {
     TimeKeeper::setCurrentTime();
-    return mDictionaryStructureWithBufferPolicy.get()->needsToRunGC(mindsBlockByGC);
+    return mDictionaryStructureWithBufferPolicy->needsToRunGC(mindsBlockByGC);
 }
 
 void Dictionary::getProperty(const char *const query, const int queryLength, char *const outResult,
         const int maxResultLength) {
     TimeKeeper::setCurrentTime();
-    return mDictionaryStructureWithBufferPolicy.get()->getProperty(query, queryLength, outResult,
+    return mDictionaryStructureWithBufferPolicy->getProperty(query, queryLength, outResult,
             maxResultLength);
 }
 
 const WordProperty Dictionary::getWordProperty(const int *const codePoints,
         const int codePointCount) {
     TimeKeeper::setCurrentTime();
-    return mDictionaryStructureWithBufferPolicy.get()->getWordProperty(
+    return mDictionaryStructureWithBufferPolicy->getWordProperty(
             codePoints, codePointCount);
 }
 
 int Dictionary::getNextWordAndNextToken(const int token, int *const outCodePoints) {
     TimeKeeper::setCurrentTime();
-    return mDictionaryStructureWithBufferPolicy.get()->getNextWordAndNextToken(
+    return mDictionaryStructureWithBufferPolicy->getNextWordAndNextToken(
             token, outCodePoints);
 }
 

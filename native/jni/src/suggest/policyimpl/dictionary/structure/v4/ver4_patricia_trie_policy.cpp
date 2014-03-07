@@ -135,7 +135,7 @@ int Ver4PatriciaTriePolicy::getShortcutPositionOfPtNode(const int ptNodePos) con
     if (ptNodeParams.isDeleted()) {
         return NOT_A_DICT_POS;
     }
-    return mBuffers.get()->getShortcutDictContent()->getShortcutListHeadPos(
+    return mBuffers->getShortcutDictContent()->getShortcutListHeadPos(
             ptNodeParams.getTerminalId());
 }
 
@@ -147,7 +147,7 @@ int Ver4PatriciaTriePolicy::getBigramsPositionOfPtNode(const int ptNodePos) cons
     if (ptNodeParams.isDeleted()) {
         return NOT_A_DICT_POS;
     }
-    return mBuffers.get()->getBigramDictContent()->getBigramListHeadPos(
+    return mBuffers->getBigramDictContent()->getBigramListHeadPos(
             ptNodeParams.getTerminalId());
 }
 
@@ -155,7 +155,7 @@ bool Ver4PatriciaTriePolicy::addUnigramWord(const int *const word, const int len
         const int probability, const int *const shortcutTargetCodePoints, const int shortcutLength,
         const int shortcutProbability, const bool isNotAWord, const bool isBlacklisted,
         const int timestamp) {
-    if (!mBuffers.get()->isUpdatable()) {
+    if (!mBuffers->isUpdatable()) {
         AKLOGI("Warning: addUnigramWord() is called for non-updatable dictionary.");
         return false;
     }
@@ -205,7 +205,7 @@ bool Ver4PatriciaTriePolicy::addUnigramWord(const int *const word, const int len
 bool Ver4PatriciaTriePolicy::addBigramWords(const int *const word0, const int length0,
         const int *const word1, const int length1, const int probability,
         const int timestamp) {
-    if (!mBuffers.get()->isUpdatable()) {
+    if (!mBuffers->isUpdatable()) {
         AKLOGI("Warning: addBigramWords() is called for non-updatable dictionary.");
         return false;
     }
@@ -243,7 +243,7 @@ bool Ver4PatriciaTriePolicy::addBigramWords(const int *const word0, const int le
 
 bool Ver4PatriciaTriePolicy::removeBigramWords(const int *const word0, const int length0,
         const int *const word1, const int length1) {
-    if (!mBuffers.get()->isUpdatable()) {
+    if (!mBuffers->isUpdatable()) {
         AKLOGI("Warning: addBigramWords() is called for non-updatable dictionary.");
         return false;
     }
@@ -276,7 +276,7 @@ bool Ver4PatriciaTriePolicy::removeBigramWords(const int *const word0, const int
 }
 
 void Ver4PatriciaTriePolicy::flush(const char *const filePath) {
-    if (!mBuffers.get()->isUpdatable()) {
+    if (!mBuffers->isUpdatable()) {
         AKLOGI("Warning: flush() is called for non-updatable dictionary. filePath: %s", filePath);
         return;
     }
@@ -287,7 +287,7 @@ void Ver4PatriciaTriePolicy::flush(const char *const filePath) {
 }
 
 void Ver4PatriciaTriePolicy::flushWithGC(const char *const filePath) {
-    if (!mBuffers.get()->isUpdatable()) {
+    if (!mBuffers->isUpdatable()) {
         AKLOGI("Warning: flushWithGC() is called for non-updatable dictionary.");
         return;
     }
@@ -298,11 +298,11 @@ void Ver4PatriciaTriePolicy::flushWithGC(const char *const filePath) {
 }
 
 bool Ver4PatriciaTriePolicy::needsToRunGC(const bool mindsBlockByGC) const {
-    if (!mBuffers.get()->isUpdatable()) {
+    if (!mBuffers->isUpdatable()) {
         AKLOGI("Warning: needsToRunGC() is called for non-updatable dictionary.");
         return false;
     }
-    if (mBuffers.get()->isNearSizeLimit()) {
+    if (mBuffers->isNearSizeLimit()) {
         // Additional buffer size is near the limit.
         return true;
     } else if (mHeaderPolicy->getExtendedRegionSize() + mDictBuffer->getUsedAdditionalBufferSize()
@@ -354,7 +354,7 @@ const WordProperty Ver4PatriciaTriePolicy::getWordProperty(const int *const code
     std::vector<int> codePointVector(ptNodeParams.getCodePoints(),
             ptNodeParams.getCodePoints() + ptNodeParams.getCodePointCount());
     const ProbabilityEntry probabilityEntry =
-            mBuffers.get()->getProbabilityDictContent()->getProbabilityEntry(
+            mBuffers->getProbabilityDictContent()->getProbabilityEntry(
                     ptNodeParams.getTerminalId());
     const HistoricalInfo *const historicalInfo = probabilityEntry.getHistoricalInfo();
     // Fetch bigram information.
@@ -362,9 +362,9 @@ const WordProperty Ver4PatriciaTriePolicy::getWordProperty(const int *const code
     const int bigramListPos = getBigramsPositionOfPtNode(ptNodePos);
     if (bigramListPos != NOT_A_DICT_POS) {
         int bigramWord1CodePoints[MAX_WORD_LENGTH];
-        const BigramDictContent *const bigramDictContent = mBuffers.get()->getBigramDictContent();
+        const BigramDictContent *const bigramDictContent = mBuffers->getBigramDictContent();
         const TerminalPositionLookupTable *const terminalPositionLookupTable =
-                mBuffers.get()->getTerminalPositionLookupTable();
+                mBuffers->getTerminalPositionLookupTable();
         bool hasNext = true;
         int readingPos = bigramListPos;
         while (hasNext) {
@@ -400,7 +400,7 @@ const WordProperty Ver4PatriciaTriePolicy::getWordProperty(const int *const code
     if (shortcutPos != NOT_A_DICT_POS) {
         int shortcutTarget[MAX_WORD_LENGTH];
         const ShortcutDictContent *const shortcutDictContent =
-                mBuffers.get()->getShortcutDictContent();
+                mBuffers->getShortcutDictContent();
         bool hasNext = true;
         while (hasNext) {
             int shortcutTargetLength = 0;
