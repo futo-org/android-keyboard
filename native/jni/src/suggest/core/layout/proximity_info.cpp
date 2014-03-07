@@ -18,6 +18,7 @@
 
 #include "suggest/core/layout/proximity_info.h"
 
+#include <algorithm>
 #include <cstring>
 #include <cmath>
 
@@ -63,7 +64,7 @@ ProximityInfo::ProximityInfo(JNIEnv *env, const jstring localeJStr,
                           static_cast<float>(mostCommonKeyWidth))),
           CELL_WIDTH((keyboardWidth + gridWidth - 1) / gridWidth),
           CELL_HEIGHT((keyboardHeight + gridHeight - 1) / gridHeight),
-          KEY_COUNT(min(keyCount, MAX_KEY_COUNT_IN_A_KEYBOARD)),
+          KEY_COUNT(std::min(keyCount, MAX_KEY_COUNT_IN_A_KEYBOARD)),
           KEYBOARD_WIDTH(keyboardWidth), KEYBOARD_HEIGHT(keyboardHeight),
           KEYBOARD_HYPOTENUSE(hypotf(KEYBOARD_WIDTH, KEYBOARD_HEIGHT)),
           HAS_TOUCH_POSITION_CORRECTION_DATA(keyCount > 0 && keyXCoordinates && keyYCoordinates
