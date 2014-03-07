@@ -22,21 +22,20 @@
 namespace latinime {
 
 class DictionaryStructureWithBufferPolicy;
+class SuggestionResults;
 
 class BigramDictionary {
  public:
     BigramDictionary(const DictionaryStructureWithBufferPolicy *const dictionaryStructurePolicy);
 
-    int getPredictions(const int *word, int length, int *outBigramCodePoints,
-            int *outBigramProbability, int *outputTypes) const;
+    void getPredictions(const int *word, int length,
+            SuggestionResults *const outSuggestionResults) const;
     int getBigramProbability(const int *word1, int length1, const int *word2, int length2) const;
     ~BigramDictionary();
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(BigramDictionary);
 
-    void addWordBigram(int *word, int length, int probability, int *bigramProbability,
-            int *bigramCodePoints, int *outputTypes) const;
     int getBigramListPositionForWord(const int *prevWord, const int prevWordLength,
             const bool forceLowerCaseSearch) const;
 

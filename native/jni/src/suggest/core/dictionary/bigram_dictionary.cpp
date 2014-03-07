@@ -25,6 +25,7 @@
 #include "suggest/core/dictionary/binary_dictionary_bigrams_iterator.h"
 #include "suggest/core/dictionary/dictionary.h"
 #include "suggest/core/policy/dictionary_structure_with_buffer_policy.h"
+#include "suggest/core/result/suggestion_results.h"
 #include "utils/char_utils.h"
 
 namespace latinime {
@@ -40,71 +41,13 @@ BigramDictionary::BigramDictionary(
 BigramDictionary::~BigramDictionary() {
 }
 
-void BigramDictionary::addWordBigram(int *word, int length, int probability, int *bigramProbability,
-        int *bigramCodePoints, int *outputTypes) const {
-    if (length >= MAX_WORD_LENGTH) {
-        length = MAX_WORD_LENGTH - 1;
-    }
-    word[length] = 0;
-    if (DEBUG_DICT_FULL) {
-#ifdef FLAG_DBG
-        char s[length + 1];
-        for (int i = 0; i <= length; i++) s[i] = static_cast<char>(word[i]);
-        AKLOGI("Bigram: Found word = %s, freq = %d :", s, probability);
-#endif
-    }
-
-    // Find the right insertion point
-    int insertAt = 0;
-    while (insertAt < MAX_RESULTS) {
-        if (probability > bigramProbability[insertAt] || (bigramProbability[insertAt] == probability
-                && length < CharUtils::getCodePointCount(MAX_WORD_LENGTH,
-                        bigramCodePoints + insertAt * MAX_WORD_LENGTH))) {
-            break;
-        }
-        insertAt++;
-    }
-    if (DEBUG_DICT_FULL) {
-        AKLOGI("Bigram: InsertAt -> %d MAX_RESULTS: %d", insertAt, MAX_RESULTS);
-    }
-    if (insertAt >= MAX_RESULTS) {
-        return;
-    }
-    // Shift result buffers to insert the new entry.
-    memmove(bigramProbability + (insertAt + 1), bigramProbability + insertAt,
-            (MAX_RESULTS - insertAt - 1) * sizeof(bigramProbability[0]));
-    memmove(outputTypes + (insertAt + 1), outputTypes + insertAt,
-            (MAX_RESULTS - insertAt - 1) * sizeof(outputTypes[0]));
-    memmove(bigramCodePoints + (insertAt + 1) * MAX_WORD_LENGTH,
-            bigramCodePoints + insertAt * MAX_WORD_LENGTH,
-            (MAX_RESULTS - insertAt - 1) * sizeof(bigramCodePoints[0]) * MAX_WORD_LENGTH);
-    // Put the result.
-    bigramProbability[insertAt] = probability;
-    outputTypes[insertAt] = Dictionary::KIND_PREDICTION;
-    int *dest = bigramCodePoints + insertAt * MAX_WORD_LENGTH;
-    while (length--) {
-        *dest++ = *word++;
-    }
-    *dest = 0; // NULL terminate
-    if (DEBUG_DICT_FULL) {
-        AKLOGI("Bigram: Added word at %d", insertAt);
-    }
-}
-
 /* Parameters :
  * prevWord: the word before, the one for which we need to look up bigrams.
  * prevWordLength: its length.
- * outBigramCodePoints: an array for output, at the same format as outwords for getSuggestions.
- * outBigramProbability: an array to output frequencies.
- * outputTypes: an array to output types.
- * This method returns the number of bigrams this word has, for backward compatibility.
+ * outSuggestionResults: SuggestionResults to put the predictions.
  */
-int BigramDictionary::getPredictions(const int *prevWord, const int prevWordLength,
-        int *const outBigramCodePoints, int *const outBigramProbability,
-        int *const outputTypes) const {
-    // TODO: remove unused arguments, and refrain from storing stuff in members of this class
-    // TODO: have "in" arguments before "out" ones, and make out args explicit in the name
-
+void BigramDictionary::getPredictions(const int *prevWord, const int prevWordLength,
+        SuggestionResults *const outSuggestionResults) const {
     int pos = getBigramListPositionForWord(prevWord, prevWordLength,
             false /* forceLowerCaseSearch */);
     // getBigramListPositionForWord returns 0 if this word isn't in the dictionary or has no bigrams
@@ -114,11 +57,10 @@ int BigramDictionary::getPredictions(const int *prevWord, const int prevWordLeng
                 true /* forceLowerCaseSearch */);
     }
     // If still no bigrams, we really don't have them!
-    if (NOT_A_DICT_POS == pos) return 0;
+    if (NOT_A_DICT_POS == pos) return;
 
-    int bigramCount = 0;
     int unigramProbability = 0;
-    int bigramBuffer[MAX_WORD_LENGTH];
+    int bigramCodePoints[MAX_WORD_LENGTH];
     BinaryDictionaryBigramsIterator bigramsIt(
             mDictionaryStructurePolicy->getBigramsStructurePolicy(), pos);
     while (bigramsIt.hasNext()) {
@@ -128,7 +70,7 @@ int BigramDictionary::getPredictions(const int *prevWord, const int prevWordLeng
         }
         const int codePointCount = mDictionaryStructurePolicy->
                 getCodePointsAndProbabilityAndReturnCodePointCount(bigramsIt.getBigramPos(),
-                        MAX_WORD_LENGTH, bigramBuffer, &unigramProbability);
+                        MAX_WORD_LENGTH, bigramCodePoints, &unigramProbability);
         if (codePointCount <= 0) {
             continue;
         }
@@ -139,11 +81,8 @@ int BigramDictionary::getPredictions(const int *prevWord, const int prevWordLeng
         // here, but it can't get too bad.
         const int probability = mDictionaryStructurePolicy->getProbability(
                 unigramProbability, bigramsIt.getProbability());
-        addWordBigram(bigramBuffer, codePointCount, probability, outBigramProbability,
-                outBigramCodePoints, outputTypes);
-        ++bigramCount;
+        outSuggestionResults->addPrediction(bigramCodePoints, codePointCount, probability);
     }
-    return std::min(bigramCount, MAX_RESULTS);
 }
 
 // Returns a pointer to the start of the bigram list.

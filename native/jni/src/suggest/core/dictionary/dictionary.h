@@ -33,6 +33,7 @@ namespace latinime {
 class DictionaryStructureWithBufferPolicy;
 class DicTraverseSession;
 class ProximityInfo;
+class SuggestionResults;
 class SuggestOptions;
 class WordProperty;
 
@@ -67,8 +68,8 @@ class Dictionary {
             const SuggestOptions *const suggestOptions, int *outWords, int *outputScores,
             int *spaceIndices, int *outputTypes, int *outputAutoCommitFirstWordConfidence) const;
 
-    int getBigrams(const int *word, int length, int *outWords, int *outputScores,
-            int *outputTypes) const;
+    void getPredictions(const int *word, int length,
+            SuggestionResults *const outSuggestionResults) const;
 
     int getProbability(const int *word, int length) const;
 
