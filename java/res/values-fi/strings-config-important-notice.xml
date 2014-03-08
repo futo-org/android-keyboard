@@ -20,9 +20,5 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-  <string-array name="important_notice_title_array">
-  </string-array>
-  <string-array name="important_notice_contents_array">
-  </string-array>
     <string name="use_personalized_dicts_summary" msgid="590432261305469627">"Ehdotusten parannus viestinnän ja kirjoitettujen tietojen avulla"</string>
 </resources>
