@@ -16,7 +16,6 @@
 
 #include "suggest/core/dicnode/dic_node_utils.h"
 
-#include <algorithm>
 #include <cstring>
 
 #include "suggest/core/dicnode/dic_node.h"
