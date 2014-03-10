@@ -61,7 +61,6 @@ class DicNodeStateOutput {
         }
     }
 
-    // TODO: Remove
     int getCodePointAt(const int index) const {
         return mCodePointsBuf[index];
     }

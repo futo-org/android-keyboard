@@ -162,9 +162,8 @@ class TypingTraversal : public Traversal {
         if (probability < ScoringParams::THRESHOLD_NEXT_WORD_PROBABILITY) {
             return false;
         }
-        const int c = dicNode->getOutputWordBuf()[0];
         const bool shortCappedWord = dicNode->getNodeCodePointCount()
-                < ScoringParams::THRESHOLD_SHORT_WORD_LENGTH && CharUtils::isAsciiUpper(c);
+                < ScoringParams::THRESHOLD_SHORT_WORD_LENGTH && dicNode->isFirstCharUppercase();
         return !shortCappedWord
                 || probability >= ScoringParams::THRESHOLD_NEXT_WORD_PROBABILITY_FOR_CAPPED;
     }
