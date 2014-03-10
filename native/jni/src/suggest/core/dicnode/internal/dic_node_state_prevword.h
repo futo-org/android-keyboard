@@ -123,8 +123,9 @@ class DicNodeStatePrevWord {
         return true;
     }
 
-    // TODO: Move to private
-    int mPrevWord[MAX_WORD_LENGTH];
+    const int *getPrevWordBuf() const {
+        return mPrevWord;
+    }
 
  private:
     DISALLOW_COPY_AND_ASSIGN(DicNodeStatePrevWord);
@@ -134,6 +135,7 @@ class DicNodeStatePrevWord {
     int16_t mPrevWordStart;
     int mPrevWordPtNodePos;
     int mSecondWordFirstInputIndex;
+    int mPrevWord[MAX_WORD_LENGTH];
 };
 } // namespace latinime
 #endif // LATINIME_DIC_NODE_STATE_PREVWORD_H

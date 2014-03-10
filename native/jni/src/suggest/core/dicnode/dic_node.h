@@ -36,7 +36,7 @@
 #define DUMP_WORD_AND_SCORE(header) \
         do { char charBuf[50]; char prevWordCharBuf[50]; \
         INTS_TO_CHARS(getOutputWordBuf(), getNodeCodePointCount(), charBuf, NELEMS(charBuf)); \
-        INTS_TO_CHARS(mDicNodeState.mDicNodeStatePrevWord.mPrevWord, \
+        INTS_TO_CHARS(mDicNodeState.mDicNodeStatePrevWord.getPrevWordBuf(), \
                 mDicNodeState.mDicNodeStatePrevWord.getPrevWordLength(), prevWordCharBuf, \
                 NELEMS(prevWordCharBuf)); \
         AKLOGI("#%8s, %5f, %5f, %5f, %5f, %s, %s, %d, %5f,", header, \
@@ -313,7 +313,7 @@ class DicNode {
     void outputResult(int *dest) const {
         const uint16_t prevWordLength = mDicNodeState.mDicNodeStatePrevWord.getPrevWordLength();
         const uint16_t currentDepth = getNodeCodePointCount();
-        DicNodeUtils::appendTwoWords(mDicNodeState.mDicNodeStatePrevWord.mPrevWord,
+        DicNodeUtils::appendTwoWords(mDicNodeState.mDicNodeStatePrevWord.getPrevWordBuf(),
                    prevWordLength, getOutputWordBuf(), currentDepth, dest);
         DUMP_WORD_AND_SCORE("OUTPUT");
     }
@@ -324,7 +324,7 @@ class DicNode {
     // are concatenated together in mPrevWord - which contains a space at the end.
     int getTotalNodeSpaceCount() const {
         if (isFirstWord()) return 0;
-        return CharUtils::getSpaceCount(mDicNodeState.mDicNodeStatePrevWord.mPrevWord,
+        return CharUtils::getSpaceCount(mDicNodeState.mDicNodeStatePrevWord.getPrevWordBuf(),
                 mDicNodeState.mDicNodeStatePrevWord.getPrevWordLength());
     }
 
@@ -376,7 +376,7 @@ class DicNode {
     }
 
     AK_FORCE_INLINE const int *getOutputWordBuf() const {
-        return mDicNodeState.mDicNodeStateOutput.mCodePointsBuf;
+        return mDicNodeState.mDicNodeStateOutput.getCodePointBuf();
     }
 
     int getPrevCodePointG(int pointerId) const {
