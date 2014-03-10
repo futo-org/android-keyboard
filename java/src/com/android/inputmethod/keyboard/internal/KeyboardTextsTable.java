@@ -1382,8 +1382,7 @@ public final class KeyboardTextsTable {
         // U+0146: "ņ" LATIN SMALL LETTER N WITH CEDILLA
         // U+00F1: "ñ" LATIN SMALL LETTER N WITH TILDE
         // U+0144: "ń" LATIN SMALL LETTER N WITH ACUTE
-        // U+0144: "ń" LATIN SMALL LETTER N WITH ACUTE
-        /* more_keys_for_n */ "\u0146,\u00F1,\u0144,\u0144",
+        /* more_keys_for_n */ "\u0146,\u00F1,\u0144",
         /* label_to_alpha_key */ null,
         // U+00FD: "ý" LATIN SMALL LETTER Y WITH ACUTE
         // U+00FF: "ÿ" LATIN SMALL LETTER Y WITH DIAERESIS
