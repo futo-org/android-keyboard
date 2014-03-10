@@ -58,6 +58,24 @@ class DicNodeState {
         mDicNodeStateScoring.init();
     }
 
+    // Init with previous word.
+    void initAsRootWithPreviousWord(const DicNodeState *prevWordDicNodeState,
+            const int prevWordPos, const int prevWordCodePointCount) {
+        mDicNodeStateOutput.init(); // reset for next word
+        mDicNodeStateInput.init(
+                &prevWordDicNodeState->mDicNodeStateInput, true /* resetTerminalDiffCost */);
+        mDicNodeStateScoring.init(&prevWordDicNodeState->mDicNodeStateScoring);
+        mDicNodeStatePrevWord.init(
+                prevWordDicNodeState->mDicNodeStatePrevWord.getPrevWordCount() + 1,
+                prevWordPos,
+                prevWordDicNodeState->mDicNodeStatePrevWord.mPrevWord,
+                prevWordDicNodeState->mDicNodeStatePrevWord.getPrevWordLength(),
+                prevWordDicNodeState->mDicNodeStateOutput.mCodePointsBuf,
+                prevWordCodePointCount,
+                prevWordDicNodeState->mDicNodeStatePrevWord.getSecondWordFirstInputIndex(),
+                prevWordDicNodeState->mDicNodeStateInput.getInputIndex(0) /* lastInputIndex */);
+    }
+
     // Init by copy
     AK_FORCE_INLINE void init(const DicNodeState *const src) {
         mDicNodeStateInput.init(&src->mDicNodeStateInput);
