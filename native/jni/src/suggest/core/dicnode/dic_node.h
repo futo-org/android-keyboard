@@ -130,21 +130,9 @@ class DicNode {
                 NOT_A_PROBABILITY /* probability */, false /* isTerminal */,
                 true /* hasChildren */, false /* isBlacklistedOrNotAWord */,  0 /* depth */,
                 0 /* terminalDepth */);
-        // TODO: Move to dicNodeState?
-        mDicNodeState.mDicNodeStateOutput.init(); // reset for next word
-        mDicNodeState.mDicNodeStateInput.init(
-                &dicNode->mDicNodeState.mDicNodeStateInput, true /* resetTerminalDiffCost */);
-        mDicNodeState.mDicNodeStateScoring.init(
-                &dicNode->mDicNodeState.mDicNodeStateScoring);
-        mDicNodeState.mDicNodeStatePrevWord.init(
-                dicNode->mDicNodeState.mDicNodeStatePrevWord.getPrevWordCount() + 1,
+        mDicNodeState.initAsRootWithPreviousWord(&dicNode->mDicNodeState,
                 dicNode->mDicNodeProperties.getPtNodePos(),
-                dicNode->mDicNodeState.mDicNodeStatePrevWord.mPrevWord,
-                dicNode->mDicNodeState.mDicNodeStatePrevWord.getPrevWordLength(),
-                dicNode->getOutputWordBuf(),
-                dicNode->mDicNodeProperties.getDepth(),
-                dicNode->mDicNodeState.mDicNodeStatePrevWord.getSecondWordFirstInputIndex(),
-                mDicNodeState.mDicNodeStateInput.getInputIndex(0) /* lastInputIndex */);
+                dicNode->mDicNodeProperties.getDepth());
         PROF_NODE_COPY(&dicNode->mProfiler, mProfiler);
     }
 
