@@ -138,7 +138,6 @@ class DicNode {
                 &dicNode->mDicNodeState.mDicNodeStateScoring);
         mDicNodeState.mDicNodeStatePrevWord.init(
                 dicNode->mDicNodeState.mDicNodeStatePrevWord.getPrevWordCount() + 1,
-                dicNode->mDicNodeProperties.getProbability(),
                 dicNode->mDicNodeProperties.getPtNodePos(),
                 dicNode->mDicNodeState.mDicNodeStatePrevWord.mPrevWord,
                 dicNode->mDicNodeState.mDicNodeStatePrevWord.getPrevWordLength(),
