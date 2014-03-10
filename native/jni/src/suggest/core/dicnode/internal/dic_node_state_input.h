@@ -25,7 +25,7 @@ namespace latinime {
 class DicNodeStateInput {
  public:
     DicNodeStateInput() {}
-    virtual ~DicNodeStateInput() {}
+    ~DicNodeStateInput() {}
 
     // TODO: Merge into DicNodeStatePrevWord::truncate
     void truncate(const int commitPoint) {
@@ -89,9 +89,8 @@ class DicNodeStateInput {
     }
 
  private:
-    // Caution!!!
-    // Use a default copy constructor and an assign operator because shallow copies are ok
-    // for this class
+    DISALLOW_COPY_AND_ASSIGN(DicNodeStateInput);
+
     int mInputIndex[MAX_POINTER_COUNT_G];
     int mPrevCodePoint[MAX_POINTER_COUNT_G];
     float mTerminalDiffCost[MAX_POINTER_COUNT_G];

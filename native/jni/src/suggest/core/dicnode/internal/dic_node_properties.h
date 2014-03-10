@@ -33,7 +33,7 @@ class DicNodeProperties {
               mIsTerminal(false), mHasChildrenPtNodes(false), mIsBlacklistedOrNotAWord(false),
               mDepth(0), mLeavingDepth(0) {}
 
-    virtual ~DicNodeProperties() {}
+    ~DicNodeProperties() {}
 
     // Should be called only once per DicNode is initialized.
     void init(const int pos, const int childrenPos, const int nodeCodePoint, const int probability,

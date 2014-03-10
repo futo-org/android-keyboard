@@ -97,7 +97,7 @@ class DicNode {
 
     DicNode(const DicNode &dicNode);
     DicNode &operator=(const DicNode &dicNode);
-    virtual ~DicNode() {}
+    ~DicNode() {}
 
     // Init for copy
     void initByCopy(const DicNode *const dicNode) {
