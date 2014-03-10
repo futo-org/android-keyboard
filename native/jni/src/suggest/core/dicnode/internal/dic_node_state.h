@@ -37,7 +37,18 @@ class DicNodeState {
               mDicNodeStateScoring() {
     }
 
-    virtual ~DicNodeState() {}
+    ~DicNodeState() {}
+
+    DicNodeState &operator=(const DicNodeState& src) {
+        init(&src);
+        return *this;
+    }
+
+    DicNodeState(const DicNodeState& src)
+            : mDicNodeStateInput(), mDicNodeStateOutput(), mDicNodeStatePrevWord(),
+              mDicNodeStateScoring() {
+        init(&src);
+    }
 
     // Init with prevWordPos
     void init(const int prevWordPos) {
@@ -62,11 +73,6 @@ class DicNodeState {
         mDicNodeStateOutput.addMergedNodeCodePoints(
                 mergedNodeCodePointCount, mergedNodeCodePoints);
     }
-
- private:
-    // Caution!!!
-    // Use a default copy constructor and an assign operator because shallow copies are ok
-    // for this class
 };
 } // namespace latinime
 #endif // LATINIME_DIC_NODE_STATE_H

@@ -31,20 +31,9 @@ class DicNodeStatePrevWord {
  public:
     AK_FORCE_INLINE DicNodeStatePrevWord()
             : mPrevWordCount(0), mPrevWordLength(0), mPrevWordStart(0), mPrevWordProbability(0),
-              mPrevWordPtNodePos(NOT_A_DICT_POS), mSecondWordFirstInputIndex(NOT_AN_INDEX) {
-        memset(mPrevWord, 0, sizeof(mPrevWord));
-    }
+              mPrevWordPtNodePos(NOT_A_DICT_POS), mSecondWordFirstInputIndex(NOT_AN_INDEX) {}
 
-    virtual ~DicNodeStatePrevWord() {}
-
-    void init() {
-        mPrevWordLength = 0;
-        mPrevWordCount = 0;
-        mPrevWordStart = 0;
-        mPrevWordProbability = -1;
-        mPrevWordPtNodePos = NOT_A_DICT_POS;
-        mSecondWordFirstInputIndex = NOT_AN_INDEX;
-    }
+    ~DicNodeStatePrevWord() {}
 
     void init(const int prevWordNodePos) {
         mPrevWordLength = 0;
@@ -53,6 +42,7 @@ class DicNodeStatePrevWord {
         mPrevWordProbability = -1;
         mPrevWordPtNodePos = prevWordNodePos;
         mSecondWordFirstInputIndex = NOT_AN_INDEX;
+        mPrevWord[0] = 0;
     }
 
     // Init by copy
@@ -141,9 +131,8 @@ class DicNodeStatePrevWord {
     int mPrevWord[MAX_WORD_LENGTH];
 
  private:
-    // Caution!!!
-    // Use a default copy constructor and an assign operator because shallow copies are ok
-    // for this class
+    DISALLOW_COPY_AND_ASSIGN(DicNodeStatePrevWord);
+
     int16_t mPrevWordCount;
     int16_t mPrevWordLength;
     int16_t mPrevWordStart;
