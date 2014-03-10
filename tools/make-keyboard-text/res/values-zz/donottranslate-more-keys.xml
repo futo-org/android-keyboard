@@ -29,7 +29,7 @@
          U+0103: "ă" LATIN SMALL LETTER A WITH BREVE
          U+0105: "ą" LATIN SMALL LETTER A WITH OGONEK
          U+00AA: "ª" FEMININE ORDINAL INDICATOR -->
-    <string name="more_keys_for_a">&#x00E0;,&#x00E1;,&#x00E2;,&#x00E3;,&#x00E4;,&#x00E5;,&#x00E6;,&#x00E3;,&#x00E5;,&#x0101;,&#x0103;,&#x0105;,&#x00AA;</string>
+    <string name="more_keys_for_a">&#x00E0;,&#x00E1;,&#x00E2;,&#x00E3;,&#x00E4;,&#x00E5;,&#x00E6;,&#x0101;,&#x0103;,&#x0105;,&#x00AA;</string>
     <!-- U+00E8: "è" LATIN SMALL LETTER E WITH GRAVE
          U+00E9: "é" LATIN SMALL LETTER E WITH ACUTE
          U+00EA: "ê" LATIN SMALL LETTER E WITH CIRCUMFLEX
