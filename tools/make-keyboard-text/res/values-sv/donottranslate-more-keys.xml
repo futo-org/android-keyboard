@@ -71,9 +71,8 @@
          U+016B: "ū" LATIN SMALL LETTER U WITH MACRON -->
     <string name="more_keys_for_u">&#x00FC;,&#x00FA;,&#x00F9;,&#x00FB;,&#x016B;</string>
     <!-- U+00FD: "ý" LATIN SMALL LETTER Y WITH ACUTE
-         U+00FF: "ÿ" LATIN SMALL LETTER Y WITH DIAERESIS
-         U+00FC: "ü" LATIN SMALL LETTER U WITH DIAERESIS -->
-    <string name="more_keys_for_y">&#x00FD;,&#x00FF;,&#x00FC;</string>
+         U+00FF: "ÿ" LATIN SMALL LETTER Y WITH DIAERESIS -->
+    <string name="more_keys_for_y">&#x00FD;,&#x00FF;</string>
     <!-- U+017A: "ź" LATIN SMALL LETTER Z WITH ACUTE
          U+017E: "ž" LATIN SMALL LETTER Z WITH CARON
          U+017C: "ż" LATIN SMALL LETTER Z WITH DOT ABOVE -->

@@ -3039,8 +3039,7 @@ public final class KeyboardTextsTable {
         /* label_to_alpha_key */ null,
         // U+00FD: "ý" LATIN SMALL LETTER Y WITH ACUTE
         // U+00FF: "ÿ" LATIN SMALL LETTER Y WITH DIAERESIS
-        // U+00FC: "ü" LATIN SMALL LETTER U WITH DIAERESIS
-        /* more_keys_for_y */ "\u00FD,\u00FF,\u00FC",
+        /* more_keys_for_y */ "\u00FD,\u00FF",
         // U+00F0: "ð" LATIN SMALL LETTER ETH
         // U+010F: "ď" LATIN SMALL LETTER D WITH CARON
         /* more_keys_for_d */ "\u00F0,\u010F",
