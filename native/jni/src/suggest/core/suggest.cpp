@@ -248,16 +248,15 @@ void Suggest::processTerminalDicNode(
     if (dicNode->shouldBeFilteredBySafetyNetForBigram()) {
         return;
     }
+    if (!dicNode->hasMatchedOrProximityCodePoints()) {
+        return;
+    }
     // Create a non-cached node here.
-    DicNode terminalDicNode;
-    DicNodeUtils::initByCopy(dicNode, &terminalDicNode);
+    DicNode terminalDicNode(*dicNode);
     if (TRAVERSAL->needsToTraverseAllUserInput()
             && dicNode->getInputIndex(0) < traverseSession->getInputSize()) {
         Weighting::addCostAndForwardInputIndex(WEIGHTING, CT_TERMINAL_INSERTION, traverseSession, 0,
                 &terminalDicNode, traverseSession->getMultiBigramMap());
-    }
-    if (!dicNode->hasMatchedOrProximityCodePoints()) {
-        return;
     }
     Weighting::addCostAndForwardInputIndex(WEIGHTING, CT_TERMINAL, traverseSession, 0,
             &terminalDicNode, traverseSession->getMultiBigramMap());
@@ -375,6 +374,7 @@ void Suggest::processDicNodeAsTransposition(DicTraverseSession *traverseSession,
         DicNode *dicNode) const {
     const int16_t pointIndex = dicNode->getInputIndex(0);
     DicNodeVector childDicNodes1;
+    DicNodeVector childDicNodes2;
     DicNodeUtils::getAllChildDicNodes(dicNode, traverseSession->getDictionaryStructurePolicy(),
             &childDicNodes1);
     const int childSize1 = childDicNodes1.getSizeAndLock();
@@ -386,7 +386,7 @@ void Suggest::processDicNodeAsTransposition(DicTraverseSession *traverseSession,
             continue;
         }
         if (childDicNodes1[i]->hasChildren()) {
-            DicNodeVector childDicNodes2;
+            childDicNodes2.clear();
             DicNodeUtils::getAllChildDicNodes(childDicNodes1[i],
                     traverseSession->getDictionaryStructurePolicy(), &childDicNodes2);
             const int childSize2 = childDicNodes2.getSizeAndLock();

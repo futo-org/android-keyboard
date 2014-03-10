@@ -37,7 +37,7 @@ class DicNodeStateScoring {
               mNormalizedCompoundDistanceAfterFirstWord(MAX_VALUE_FOR_WEIGHTING) {
     }
 
-    virtual ~DicNodeStateScoring() {}
+    ~DicNodeStateScoring() {}
 
     void init() {
         mEditCorrectionCount = 0;
@@ -175,9 +175,8 @@ class DicNodeStateScoring {
     }
 
  private:
-    // Caution!!!
-    // Use a default copy constructor and an assign operator because shallow copies are ok
-    // for this class
+    DISALLOW_COPY_AND_ASSIGN(DicNodeStateScoring);
+
     DoubleLetterLevel mDoubleLetterLevel;
     DigraphUtils::DigraphCodePointIndex mDigraphIndex;
 

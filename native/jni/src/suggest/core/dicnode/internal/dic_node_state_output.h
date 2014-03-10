@@ -27,11 +27,9 @@ namespace latinime {
 
 class DicNodeStateOutput {
  public:
-    DicNodeStateOutput() : mOutputtedCodePointCount(0) {
-        init();
-    }
+    DicNodeStateOutput() : mOutputtedCodePointCount(0) {}
 
-    virtual ~DicNodeStateOutput() {}
+    ~DicNodeStateOutput() {}
 
     void init() {
         mOutputtedCodePointCount = 0;
@@ -72,9 +70,8 @@ class DicNodeStateOutput {
     int mCodePointsBuf[MAX_WORD_LENGTH];
 
  private:
-    // Caution!!!
-    // Use a default copy constructor and an assign operator because shallow copies are ok
-    // for this class
+    DISALLOW_COPY_AND_ASSIGN(DicNodeStateOutput);
+
     uint16_t mOutputtedCodePointCount;
 };
 } // namespace latinime
