@@ -357,9 +357,9 @@ public final class RichInputConnection {
             mExpectedSelEnd -= beforeLength;
         } else {
             // There are fewer characters before the cursor in the buffer than we are being asked to
-            // delete.  Only delete what is there.
-            mExpectedSelStart = 0;
+            // delete. Only delete what is there, and update the end with the amount deleted.
             mExpectedSelEnd -= mExpectedSelStart;
+            mExpectedSelStart = 0;
         }
         if (null != mIC) {
             mIC.deleteSurroundingText(beforeLength, afterLength);
