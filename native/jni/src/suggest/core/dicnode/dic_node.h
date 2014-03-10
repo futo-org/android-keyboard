@@ -218,7 +218,7 @@ class DicNode {
     }
 
     bool isFirstCharUppercase() const {
-        const int c = getOutputWordBuf()[0];
+        const int c = mDicNodeState.mDicNodeStateOutput.getCodePointAt(0);
         return CharUtils::isAsciiUpper(c);
     }
 
