@@ -32,10 +32,10 @@ class DicNodeVector {
 #else
     static const int DEFAULT_NODES_SIZE_FOR_OPTIMIZATION = 60;
 #endif
-    AK_FORCE_INLINE DicNodeVector() : mDicNodes(0), mLock(false), mEmptyNode() {}
+    AK_FORCE_INLINE DicNodeVector() : mDicNodes(), mLock(false) {}
 
     // Specify the capacity of the vector
-    AK_FORCE_INLINE DicNodeVector(const int size) : mDicNodes(0), mLock(false), mEmptyNode() {
+    AK_FORCE_INLINE DicNodeVector(const int size) : mDicNodes(), mLock(false) {
         mDicNodes.reserve(size);
     }
 
@@ -52,13 +52,9 @@ class DicNodeVector {
         return static_cast<int>(mDicNodes.size());
     }
 
-    bool exceeds(const size_t limit) const {
-        return mDicNodes.size() >= limit;
-    }
-
     void pushPassingChild(DicNode *dicNode) {
         ASSERT(!mLock);
-        mDicNodes.push_back(mEmptyNode);
+        mDicNodes.emplace_back();
         mDicNodes.back().initAsPassingChild(dicNode);
     }
 
@@ -67,7 +63,7 @@ class DicNodeVector {
             const bool hasChildren, const bool isBlacklistedOrNotAWord,
             const uint16_t mergedNodeCodePointCount, const int *const mergedNodeCodePoints) {
         ASSERT(!mLock);
-        mDicNodes.push_back(mEmptyNode);
+        mDicNodes.emplace_back();
         mDicNodes.back().initAsChild(dicNode, ptNodePos, childrenPtNodeArrayPos, probability,
                 isTerminal, hasChildren, isBlacklistedOrNotAWord, mergedNodeCodePointCount,
                 mergedNodeCodePoints);
@@ -80,14 +76,13 @@ class DicNodeVector {
 
     DicNode *front() {
         ASSERT(1 <= static_cast<int>(mDicNodes.size()));
-        return &mDicNodes[0];
+        return &mDicNodes.front();
     }
 
  private:
     DISALLOW_COPY_AND_ASSIGN(DicNodeVector);
     std::vector<DicNode> mDicNodes;
     bool mLock;
-    DicNode mEmptyNode;
 };
 } // namespace latinime
 #endif // LATINIME_DIC_NODE_VECTOR_H
