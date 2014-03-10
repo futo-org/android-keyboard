@@ -66,13 +66,15 @@ class DicNodeStateOutput {
         return mCodePointsBuf[index];
     }
 
-    // TODO: Move to private
-    int mCodePointsBuf[MAX_WORD_LENGTH];
+    const int *getCodePointBuf() const {
+        return mCodePointsBuf;
+    }
 
  private:
     DISALLOW_COPY_AND_ASSIGN(DicNodeStateOutput);
 
     uint16_t mOutputtedCodePointCount;
+    int mCodePointsBuf[MAX_WORD_LENGTH];
 };
 } // namespace latinime
 #endif // LATINIME_DIC_NODE_STATE_OUTPUT_H

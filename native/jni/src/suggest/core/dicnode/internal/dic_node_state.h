@@ -68,9 +68,9 @@ class DicNodeState {
         mDicNodeStatePrevWord.init(
                 prevWordDicNodeState->mDicNodeStatePrevWord.getPrevWordCount() + 1,
                 prevWordPos,
-                prevWordDicNodeState->mDicNodeStatePrevWord.mPrevWord,
+                prevWordDicNodeState->mDicNodeStatePrevWord.getPrevWordBuf(),
                 prevWordDicNodeState->mDicNodeStatePrevWord.getPrevWordLength(),
-                prevWordDicNodeState->mDicNodeStateOutput.mCodePointsBuf,
+                prevWordDicNodeState->mDicNodeStateOutput.getCodePointBuf(),
                 prevWordCodePointCount,
                 prevWordDicNodeState->mDicNodeStatePrevWord.getSecondWordFirstInputIndex(),
                 prevWordDicNodeState->mDicNodeStateInput.getInputIndex(0) /* lastInputIndex */);
