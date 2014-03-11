@@ -354,7 +354,8 @@ const WordProperty PatriciaTriePolicy::getWordProperty(const int *const codePoin
                     &word1Probability);
             std::vector<int> word1(bigramWord1CodePoints,
                     bigramWord1CodePoints + word1CodePointCount);
-            bigrams.push_back(WordProperty::BigramProperty(&word1, bigramsIt.getProbability(),
+            const int probability = getProbability(word1Probability, bigramsIt.getProbability());
+            bigrams.push_back(WordProperty::BigramProperty(&word1, probability,
                     NOT_A_TIMESTAMP /* timestamp */, 0 /* level */, 0 /* count */));
         }
     }
