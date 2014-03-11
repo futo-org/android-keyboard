@@ -34,29 +34,47 @@ public final class KeyboardIconsSet {
     public static final int ICON_UNDEFINED = 0;
     private static final int ATTR_UNDEFINED = 0;
 
+    private static final String NAME_UNDEFINED = "undefined";
+    public static final String NAME_SHIFT_KEY = "shift_key";
+    public static final String NAME_SHIFT_KEY_SHIFTED = "shift_key_shifted";
+    public static final String NAME_DELETE_KEY = "delete_key";
+    public static final String NAME_SETTINGS_KEY = "settings_key";
+    public static final String NAME_SPACE_KEY = "space_key";
+    public static final String NAME_SPACE_KEY_FOR_NUMBER_LAYOUT = "space_key_for_number_layout";
+    public static final String NAME_ENTER_KEY = "enter_key";
+    public static final String NAME_SEARCH_KEY = "search_key";
+    public static final String NAME_TAB_KEY = "tab_key";
+    public static final String NANE_TAB_KEY_PREVIEW = "tab_key_preview";
+    public static final String NAME_SHORTCUT_KEY = "shortcut_key";
+    public static final String NAME_SHORTCUT_KEY_DISABLED = "shortcut_key_disabled";
+    public static final String NAME_LANGUAGE_SWITCH_KEY = "language_switch_key";
+    public static final String NAME_ZWNJ_KEY = "zwnj_key";
+    public static final String NAME_ZWJ_KEY = "zwj_key";
+    public static final String NAME_EMOJI_KEY = "emoji_key";
+
     private static final SparseIntArray ATTR_ID_TO_ICON_ID = new SparseIntArray();
 
     // Icon name to icon id map.
     private static final HashMap<String, Integer> sNameToIdsMap = CollectionUtils.newHashMap();
 
     private static final Object[] NAMES_AND_ATTR_IDS = {
-        "undefined",                    ATTR_UNDEFINED,
-        "shift_key",                    R.styleable.Keyboard_iconShiftKey,
-        "delete_key",                   R.styleable.Keyboard_iconDeleteKey,
-        "settings_key",                 R.styleable.Keyboard_iconSettingsKey,
-        "space_key",                    R.styleable.Keyboard_iconSpaceKey,
-        "enter_key",                    R.styleable.Keyboard_iconEnterKey,
-        "search_key",                   R.styleable.Keyboard_iconSearchKey,
-        "tab_key",                      R.styleable.Keyboard_iconTabKey,
-        "shortcut_key",                 R.styleable.Keyboard_iconShortcutKey,
-        "space_key_for_number_layout",  R.styleable.Keyboard_iconSpaceKeyForNumberLayout,
-        "shift_key_shifted",            R.styleable.Keyboard_iconShiftKeyShifted,
-        "shortcut_key_disabled",        R.styleable.Keyboard_iconShortcutKeyDisabled,
-        "tab_key_preview",              R.styleable.Keyboard_iconTabKeyPreview,
-        "language_switch_key",          R.styleable.Keyboard_iconLanguageSwitchKey,
-        "zwnj_key",                     R.styleable.Keyboard_iconZwnjKey,
-        "zwj_key",                      R.styleable.Keyboard_iconZwjKey,
-        "emoji_key",                    R.styleable.Keyboard_iconEmojiKey,
+        NAME_UNDEFINED,                   ATTR_UNDEFINED,
+        NAME_SHIFT_KEY,                   R.styleable.Keyboard_iconShiftKey,
+        NAME_DELETE_KEY,                  R.styleable.Keyboard_iconDeleteKey,
+        NAME_SETTINGS_KEY,                R.styleable.Keyboard_iconSettingsKey,
+        NAME_SPACE_KEY,                   R.styleable.Keyboard_iconSpaceKey,
+        NAME_ENTER_KEY,                   R.styleable.Keyboard_iconEnterKey,
+        NAME_SEARCH_KEY,                  R.styleable.Keyboard_iconSearchKey,
+        NAME_TAB_KEY,                     R.styleable.Keyboard_iconTabKey,
+        NAME_SHORTCUT_KEY,                R.styleable.Keyboard_iconShortcutKey,
+        NAME_SPACE_KEY_FOR_NUMBER_LAYOUT, R.styleable.Keyboard_iconSpaceKeyForNumberLayout,
+        NAME_SHIFT_KEY_SHIFTED,           R.styleable.Keyboard_iconShiftKeyShifted,
+        NAME_SHORTCUT_KEY_DISABLED,       R.styleable.Keyboard_iconShortcutKeyDisabled,
+        NANE_TAB_KEY_PREVIEW,             R.styleable.Keyboard_iconTabKeyPreview,
+        NAME_LANGUAGE_SWITCH_KEY,         R.styleable.Keyboard_iconLanguageSwitchKey,
+        NAME_ZWNJ_KEY,                    R.styleable.Keyboard_iconZwnjKey,
+        NAME_ZWJ_KEY,                     R.styleable.Keyboard_iconZwjKey,
+        NAME_EMOJI_KEY,                   R.styleable.Keyboard_iconEmojiKey,
     };
 
     private static int NUM_ICONS = NAMES_AND_ATTR_IDS.length / 2;

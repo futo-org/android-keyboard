@@ -16,36 +16,34 @@
 
 package com.android.inputmethod.keyboard.layout;
 
+import com.android.inputmethod.keyboard.layout.LayoutBase.LayoutCustomizer;
+import com.android.inputmethod.keyboard.layout.expected.AbstractLayoutBase;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKey;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
-import com.android.inputmethod.keyboard.layout.expected.LayoutBase;
-import com.android.inputmethod.latin.Constants;
 
 /**
  * The symbols keyboard layout.
  */
-public final class Symbols extends LayoutBase {
-    public static ExpectedKey[][] getLayout(final boolean isPhone) {
-        return isPhone ? toPhoneSymbol(SYMBOLS_COMMON) : toTabletSymbols(SYMBOLS_COMMON);
+public class Symbols extends AbstractLayoutBase {
+    private final LayoutCustomizer mCustomizer;
+
+    public Symbols(final LayoutCustomizer customizer) {
+        mCustomizer = customizer;
     }
 
-    public static ExpectedKey[][] getDefaultLayout(final boolean isPhone) {
-        final ExpectedKeyboardBuilder builder = new ExpectedKeyboardBuilder(getLayout(isPhone));
-        builder.replaceKeyOfLabel(CURRENCY, Symbols.CURRENCY_DOLLAR);
-        builder.replaceKeyOfLabel(DOUBLE_QUOTE,
-                key("\"", join(Symbols.DOUBLE_QUOTES_9LR, Symbols.DOUBLE_ANGLE_QUOTES_LR)));
-        builder.replaceKeyOfLabel(SINGLE_QUOTE,
-                key("'", join(Symbols.SINGLE_QUOTES_9LR, Symbols.SINGLE_ANGLE_QUOTES_LR)));
+    public ExpectedKey[][] getLayout(final boolean isPhone) {
+        final ExpectedKeyboardBuilder builder = new ExpectedKeyboardBuilder(isPhone
+                ? toPhoneSymbol(SYMBOLS_COMMON) : toTabletSymbols(SYMBOLS_COMMON));
+        builder.replaceKeyOfLabel(CURRENCY, mCustomizer.getCurrencyKey());
+        builder.replaceKeyOfLabel(DOUBLE_QUOTE, key("\"", joinKeys(
+                mCustomizer.getDoubleQuoteMoreKeys(), mCustomizer.getDoubleAngleQuoteKeys())));
+        builder.replaceKeyOfLabel(SINGLE_QUOTE, key("'", joinKeys(
+                mCustomizer.getSingleQuoteMoreKeys(), mCustomizer.getSingleAngleQuoteKeys())));
         return builder.build();
     }
 
-    // Functional keys.
-    public static final ExpectedKey ALPHABET_KEY = key("ABC", Constants.CODE_SWITCH_ALPHA_SYMBOL);
-    public static final ExpectedKey SYMBOLS_SHIFT_KEY = key("= \\ <", Constants.CODE_SHIFT);
-    public static final ExpectedKey TABLET_SYMBOLS_SHIFT_KEY = key("~ [ <", Constants.CODE_SHIFT);
-
     // Variations of the "currency" key on the 2nd row.
-    public static final String CURRENCY = "currency";
+    public static final String CURRENCY = "CURRENCY";
     // U+00A2: "¢" CENT SIGN
     // U+00A3: "£" POUND SIGN
     // U+00A5: "¥" YEN SIGN
@@ -63,13 +61,13 @@ public final class Symbols extends LayoutBase {
             CENT_SIGN, POUND_SIGN, DOLLAR_SIGN, YEN_SIGN, PESO_SIGN);
 
     // Variations of the "double quote" key's "more keys" on the 3rd row.
-    public static final String DOUBLE_QUOTE = "double_quote";
+    public static final String DOUBLE_QUOTE = "DOUBLE_QUOTE";
     // U+201C: "“" LEFT DOUBLE QUOTATION MARK
     // U+201D: "”" RIGHT DOUBLE QUOTATION MARK
     // U+201E: "„" DOUBLE LOW-9 QUOTATION MARK
-    static final ExpectedKey DQUOTE_LEFT = key("\u201C");
-    static final ExpectedKey DQUOTE_RIGHT = key("\u201D");
-    static final ExpectedKey DQUOTE_LOW9 = key("\u201E");
+    private static final ExpectedKey DQUOTE_LEFT = key("\u201C");
+    private static final ExpectedKey DQUOTE_RIGHT = key("\u201D");
+    private static final ExpectedKey DQUOTE_LOW9 = key("\u201E");
     public static ExpectedKey[] DOUBLE_QUOTES_9LR = { DQUOTE_LOW9, DQUOTE_LEFT, DQUOTE_RIGHT };
     public static ExpectedKey[] DOUBLE_QUOTES_R9L = { DQUOTE_RIGHT, DQUOTE_LOW9, DQUOTE_LEFT };
     public static ExpectedKey[] DOUBLE_QUOTES_L9R = { DQUOTE_LEFT, DQUOTE_LOW9, DQUOTE_RIGHT };
@@ -78,20 +76,17 @@ public final class Symbols extends LayoutBase {
     // U+00BB: "»" RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK
     private static final ExpectedKey DAQUOTE_LEFT = key("\u00AB");
     private static final ExpectedKey DAQUOTE_RIGHT = key("\u00BB");
-    private static final ExpectedKey DAQUOTE_LEFT_RTL = key("\u00AB", "\u00BB");
-    private static final ExpectedKey DAQUOTE_RIGHT_RTL = key("\u00BB", "\u00AB");
     public static ExpectedKey[] DOUBLE_ANGLE_QUOTES_LR = { DAQUOTE_LEFT, DAQUOTE_RIGHT };
     public static ExpectedKey[] DOUBLE_ANGLE_QUOTES_RL = { DAQUOTE_RIGHT, DAQUOTE_LEFT };
-    public static ExpectedKey[] DOUBLE_ANGLE_QUOTES_RTL = { DAQUOTE_LEFT_RTL, DAQUOTE_RIGHT_RTL };
 
     // Variations of the "single quote" key's "more keys" on the 3rd row.
-    public static final String SINGLE_QUOTE = "single_quote";
+    public static final String SINGLE_QUOTE = "SINGLE_QUOTE";
     // U+2018: "‘" LEFT SINGLE QUOTATION MARK
     // U+2019: "’" RIGHT SINGLE QUOTATION MARK
     // U+201A: "‚" SINGLE LOW-9 QUOTATION MARK
-    static final ExpectedKey SQUOTE_LEFT = key("\u2018");
-    static final ExpectedKey SQUOTE_RIGHT = key("\u2019");
-    static final ExpectedKey SQUOTE_LOW9 = key("\u201A");
+    private static final ExpectedKey SQUOTE_LEFT = key("\u2018");
+    private static final ExpectedKey SQUOTE_RIGHT = key("\u2019");
+    private static final ExpectedKey SQUOTE_LOW9 = key("\u201A");
     public static ExpectedKey[] SINGLE_QUOTES_9LR = { SQUOTE_LOW9, SQUOTE_LEFT, SQUOTE_RIGHT };
     public static ExpectedKey[] SINGLE_QUOTES_R9L = { SQUOTE_RIGHT, SQUOTE_LOW9, SQUOTE_LEFT };
     public static ExpectedKey[] SINGLE_QUOTES_L9R = { SQUOTE_LEFT, SQUOTE_LOW9, SQUOTE_RIGHT };
@@ -100,14 +95,11 @@ public final class Symbols extends LayoutBase {
     // U+203A: "›" SINGLE RIGHT-POINTING ANGLE QUOTATION MARK
     private static final ExpectedKey SAQUOTE_LEFT = key("\u2039");
     private static final ExpectedKey SAQUOTE_RIGHT = key("\u203A");
-    private static final ExpectedKey SAQUOTE_LEFT_RTL = key("\u2039", "\u203A");
-    private static final ExpectedKey SAQUOTE_RIGHT_RTL = key("\u203A", "\u2039");
     public static ExpectedKey[] SINGLE_ANGLE_QUOTES_LR = { SAQUOTE_LEFT, SAQUOTE_RIGHT };
     public static ExpectedKey[] SINGLE_ANGLE_QUOTES_RL = { SAQUOTE_RIGHT, SAQUOTE_LEFT };
-    public static ExpectedKey[] SINGLE_ANGLE_QUOTES_RTL = { SAQUOTE_LEFT_RTL, SAQUOTE_RIGHT_RTL };
 
     // Common symbols keyboard layout.
-    public static final ExpectedKey[][] SYMBOLS_COMMON = new ExpectedKeyboardBuilder(10, 9, 7, 5)
+    private static final ExpectedKey[][] SYMBOLS_COMMON = new ExpectedKeyboardBuilder(10, 9, 7, 5)
             .setLabelsOfRow(1, "1", "2", "3", "4", "5", "6", "7", "8", "9", "0")
             // U+00B9: "¹" SUPERSCRIPT ONE
             // U+00BD: "½" VULGAR FRACTION ONE HALF
@@ -156,25 +148,56 @@ public final class Symbols extends LayoutBase {
             .setMoreKeysOf(".", "\u2026")
             .build();
 
-    private static ExpectedKey[][] toPhoneSymbol(final ExpectedKey[][] common) {
+    private ExpectedKey[][] toPhoneSymbol(final ExpectedKey[][] common) {
         return new ExpectedKeyboardBuilder(common)
-                .addKeysOnTheLeftOfRow(3, Symbols.SYMBOLS_SHIFT_KEY)
+                .addKeysOnTheLeftOfRow(3, mCustomizer.getSymbolsShiftKey(true /* isPhone */))
                 .addKeysOnTheRightOfRow(3, DELETE_KEY)
-                .addKeysOnTheLeftOfRow(4, Symbols.ALPHABET_KEY)
+                .addKeysOnTheLeftOfRow(4, mCustomizer.getAlphabetKey())
                 .addKeysOnTheRightOfRow(4, key(ENTER_KEY, EMOJI_KEY))
                 .build();
     }
 
-    private static ExpectedKey[][] toTabletSymbols(final ExpectedKey[][] common) {
+    private ExpectedKey[][] toTabletSymbols(final ExpectedKey[][] common) {
         return new ExpectedKeyboardBuilder(common)
                 .addKeysOnTheLeftOfRow(3,
                         key("\\"), key("="))
                 .addKeysOnTheRightOfRow(1, DELETE_KEY)
                 .addKeysOnTheRightOfRow(2, ENTER_KEY)
-                .addKeysOnTheLeftOfRow(3, Symbols.TABLET_SYMBOLS_SHIFT_KEY)
-                .addKeysOnTheRightOfRow(3, Symbols.TABLET_SYMBOLS_SHIFT_KEY)
-                .addKeysOnTheLeftOfRow(4, Symbols.ALPHABET_KEY)
+                .addKeysOnTheLeftOfRow(3, mCustomizer.getSymbolsShiftKey(false /* isPhone */))
+                .addKeysOnTheRightOfRow(3, mCustomizer.getSymbolsShiftKey(false /* isPhone */))
+                .addKeysOnTheLeftOfRow(4, mCustomizer.getAlphabetKey())
                 .addKeysOnTheRightOfRow(4, EMOJI_KEY)
                 .build();
+    }
+
+    public static class RtlSymbols extends Symbols {
+        public RtlSymbols(final LayoutCustomizer customizer) {
+            super(customizer);
+        }
+
+        // U+00AB: "«" LEFT-POINTING DOUBLE ANGLE QUOTATION MARK
+        // U+00BB: "»" RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK
+        private static final ExpectedKey DAQUOTE_LEFT_RTL = key("\u00AB", "\u00BB");
+        private static final ExpectedKey DAQUOTE_RIGHT_RTL = key("\u00BB", "\u00AB");
+        public static ExpectedKey[] DOUBLE_ANGLE_QUOTES_LR_RTL = {
+                DAQUOTE_LEFT_RTL, DAQUOTE_RIGHT_RTL
+        };
+        // U+2039: "‹" SINGLE LEFT-POINTING ANGLE QUOTATION MARK
+        // U+203A: "›" SINGLE RIGHT-POINTING ANGLE QUOTATION MARK
+        private static final ExpectedKey SAQUOTE_LEFT_RTL = key("\u2039", "\u203A");
+        private static final ExpectedKey SAQUOTE_RIGHT_RTL = key("\u203A", "\u2039");
+        public static ExpectedKey[] SINGLE_ANGLE_QUOTES_LR_RTL = {
+                SAQUOTE_LEFT_RTL, SAQUOTE_RIGHT_RTL
+        };
+
+        @Override
+        public ExpectedKey[][] getLayout(final boolean isPhone) {
+            return new ExpectedKeyboardBuilder(super.getLayout(isPhone))
+                    .replaceKeyOfLabel("(", key("(", ")",
+                            moreKey("<", ">"), moreKey("{", "}"), moreKey("[", "]")))
+                    .replaceKeyOfLabel(")", key(")", "(",
+                            moreKey(">", "<"), moreKey("}", "{"), moreKey("]", "[")))
+                    .build();
+        }
     }
 }

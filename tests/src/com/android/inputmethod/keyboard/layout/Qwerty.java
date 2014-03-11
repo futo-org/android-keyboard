@@ -18,17 +18,22 @@ package com.android.inputmethod.keyboard.layout;
 
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKey;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
-import com.android.inputmethod.keyboard.layout.expected.LayoutBase;
 
 /**
  * The QWERTY alphabet keyboard.
  */
 public final class Qwerty extends LayoutBase {
-    public static final String LAYOUT_NAME = "qwerty";
+    private static final String LAYOUT_NAME = "qwerty";
 
-    public static ExpectedKey[][] getLayout(final boolean isPhone) {
-        return getDefaultAlphabetLayout(ALPHABET_COMMON, isPhone);
+    public Qwerty(final LayoutCustomizer customizer) {
+        super(customizer, Symbols.class, SymbolsShifted.class);
     }
+
+    @Override
+    public String getName() { return LAYOUT_NAME; }
+
+    @Override
+    ExpectedKey[][] getCommonAlphabetLayout(final boolean isPhone) { return ALPHABET_COMMON; }
 
     private static final ExpectedKey[][] ALPHABET_COMMON = new ExpectedKeyboardBuilder(10, 9, 7, 3)
             .setLabelsOfRow(1, "q", "w", "e", "r", "t", "y", "u", "i", "o", "p")

@@ -19,6 +19,7 @@ package com.android.inputmethod.keyboard.layout.expected;
 import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.utils.CollectionUtils;
+import com.android.inputmethod.latin.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,7 +27,7 @@ import java.util.Arrays;
 /**
  * Base class to create an expected keyboard for unit test.
  */
-public class LayoutBase {
+public abstract class AbstractLayoutBase {
     // Those helper methods have a lower case name to be readable when defining expected keyboard
     // layouts.
 
@@ -77,7 +78,7 @@ public class LayoutBase {
 
     // Helper method to create {@link ExpectedKey} array by joining {@link ExpectedKey},
     // {@link ExpectedKey} array, and {@link String}.
-    public static ExpectedKey[] join(final Object ... keys) {
+    public static ExpectedKey[] joinKeys(final Object ... keys) {
         final ArrayList<ExpectedKey> list = CollectionUtils.newArrayList();
         for (final Object key : keys) {
             if (key instanceof ExpectedKey) {
@@ -94,81 +95,20 @@ public class LayoutBase {
     }
 
     // Icon ids.
-    private static final int ICON_SHIFT = KeyboardIconsSet.getIconId("shift_key");
-    private static final int ICON_DELETE = KeyboardIconsSet.getIconId("delete_key");
-    private static final int ICON_SETTINGS = KeyboardIconsSet.getIconId("settings_key");
-    private static final int ICON_ENTER = KeyboardIconsSet.getIconId("enter_key");
-    private static final int ICON_EMOJI = KeyboardIconsSet.getIconId("emoji_key");
+    private static final int ICON_DELETE = KeyboardIconsSet.getIconId(
+            KeyboardIconsSet.NAME_DELETE_KEY);
+    private static final int ICON_SETTINGS = KeyboardIconsSet.getIconId(
+            KeyboardIconsSet.NAME_SETTINGS_KEY);
+    private static final int ICON_ENTER = KeyboardIconsSet.getIconId(
+            KeyboardIconsSet.NAME_ENTER_KEY);
+    private static final int ICON_EMOJI = KeyboardIconsSet.getIconId(
+            KeyboardIconsSet.NAME_EMOJI_KEY);
 
     // Functional keys.
-    public static final ExpectedKey CAPSLOCK_MORE_KEY = key(" ", Constants.CODE_CAPSLOCK);
-    public static final ExpectedKey SHIFT_KEY = key(ICON_SHIFT, Constants.CODE_SHIFT);
     public static final ExpectedKey DELETE_KEY = key(ICON_DELETE, Constants.CODE_DELETE);
-    public static final ExpectedKey SYMBOLS_KEY = key("?123", Constants.CODE_SWITCH_ALPHA_SYMBOL);
     public static final ExpectedKey SETTINGS_KEY = key(ICON_SETTINGS, Constants.CODE_SETTINGS);
     public static final ExpectedKey ENTER_KEY = key(ICON_ENTER, Constants.CODE_ENTER);
     public static final ExpectedKey EMOJI_KEY = key(ICON_EMOJI, Constants.CODE_EMOJI);
-
-    // Punctuation more keys for phone form factor.
-    public static final String[] PHONE_PUNCTUATION_MORE_KEYS = {
-            ";", "/", "(", ")", "#", "!", ",", "?",
-            "&", "%", "+", "\"", "-", ":", "'", "@"
-    };
-
-    // Punctuation more keys for tablet form factor.
-    public static final String[] TABLET_PUNCTUATION_MORE_KEYS = {
-            ";", "/", "(", ")", "#", "'", ",",
-            "&", "%", "+", "\"", "-", ":", "@"
-    };
-
-    // Helper method to create alphabet layout for phone by adding special function keys except
-    // shift key.
-    private static ExpectedKeyboardBuilder convertToPhoneAlphabetKeyboardBuilder(
-            final ExpectedKey[][] commonLayout) {
-        return new ExpectedKeyboardBuilder(commonLayout)
-                .addKeysOnTheRightOfRow(3, DELETE_KEY)
-                .setLabelsOfRow(4, ",", " ", ".")
-                .setMoreKeysOf(",", SETTINGS_KEY)
-                .setMoreKeysOf(".", PHONE_PUNCTUATION_MORE_KEYS)
-                .addKeysOnTheLeftOfRow(4, SYMBOLS_KEY)
-                .addKeysOnTheRightOfRow(4, key(ENTER_KEY, EMOJI_KEY));
-    }
-
-    // Helper method to create alphabet layout for tablet by adding special function keys except
-    // shift key.
-    private static ExpectedKeyboardBuilder convertToTabletAlphabetKeyboardBuilder(
-            final ExpectedKey[][] commonLayout) {
-        return new ExpectedKeyboardBuilder(commonLayout)
-                // U+00BF: "¿" INVERTED QUESTION MARK
-                // U+00A1: "¡" INVERTED EXCLAMATION MARK
-                .addKeysOnTheRightOfRow(3,
-                        key("!", moreKey("\u00A1")), key("?", moreKey("\u00BF")))
-                .addKeysOnTheRightOfRow(1, DELETE_KEY)
-                .addKeysOnTheRightOfRow(2, ENTER_KEY)
-                .setLabelsOfRow(4, "/", " ", ",", ".")
-                .setMoreKeysOf(".", TABLET_PUNCTUATION_MORE_KEYS)
-                .addKeysOnTheLeftOfRow(4, SYMBOLS_KEY, SETTINGS_KEY)
-                .addKeysOnTheRightOfRow(4, EMOJI_KEY);
-    }
-
-    // Helper method to create alphabet layout by adding special function keys.
-    public static ExpectedKey[][] getAlphabetLayoutWithoutShiftKeys(
-            final ExpectedKey[][] commonLayout, final boolean isPhone) {
-        return isPhone ? convertToPhoneAlphabetKeyboardBuilder(commonLayout).build()
-                : convertToTabletAlphabetKeyboardBuilder(commonLayout).build();
-    }
-
-    // Helper method to create alphabet layout by adding special function keys.
-    public static ExpectedKey[][] getDefaultAlphabetLayout(final ExpectedKey[][] commonLayout,
-            final boolean isPhone) {
-        final ExpectedKeyboardBuilder builder = new ExpectedKeyboardBuilder(
-                getAlphabetLayoutWithoutShiftKeys(commonLayout, isPhone));
-        if (isPhone) {
-            builder.addKeysOnTheLeftOfRow(3, key(SHIFT_KEY, CAPSLOCK_MORE_KEY));
-        } else {
-            builder.addKeysOnTheLeftOfRow(3, key(SHIFT_KEY, CAPSLOCK_MORE_KEY))
-                    .addKeysOnTheRightOfRow(3, key(SHIFT_KEY, CAPSLOCK_MORE_KEY));
-        }
-        return builder.build();
-    }
+    public static final ExpectedKey SPACEBAR = key(
+            StringUtils.newSingleCodePointString(Constants.CODE_SPACE));
 }
