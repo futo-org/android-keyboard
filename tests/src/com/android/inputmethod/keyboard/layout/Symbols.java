@@ -30,14 +30,13 @@ public final class Symbols extends LayoutBase {
     }
 
     public static ExpectedKey[][] getDefaultLayout(final boolean isPhone) {
-        final ExpectedKeyboardBuilder builder = new ExpectedKeyboardBuilder(SYMBOLS_COMMON);
+        final ExpectedKeyboardBuilder builder = new ExpectedKeyboardBuilder(getLayout(isPhone));
         builder.replaceKeyOfLabel(CURRENCY, Symbols.CURRENCY_DOLLAR);
         builder.replaceKeyOfLabel(DOUBLE_QUOTE,
                 key("\"", join(Symbols.DOUBLE_QUOTES_9LR, Symbols.DOUBLE_ANGLE_QUOTES_LR)));
         builder.replaceKeyOfLabel(SINGLE_QUOTE,
                 key("'", join(Symbols.SINGLE_QUOTES_9LR, Symbols.SINGLE_ANGLE_QUOTES_LR)));
-        final ExpectedKey[][] symbolsCommon = builder.build();
-        return isPhone ? toPhoneSymbol(symbolsCommon) : toTabletSymbols(symbolsCommon);
+        return builder.build();
     }
 
     // Functional keys.
