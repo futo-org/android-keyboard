@@ -25,7 +25,7 @@ import com.android.inputmethod.keyboard.layout.expected.LayoutBase;
  */
 public final class Qwerty extends LayoutBase {
     public static ExpectedKey[][] getLayout(final boolean isPhone) {
-        return toCommonAlphabet(ALPHABET_COMMON, isPhone);
+        return getDefaultAlphabetLayout(ALPHABET_COMMON, isPhone);
     }
 
     private static final ExpectedKey[][] ALPHABET_COMMON = new ExpectedKeyboardBuilder(10, 9, 7, 3)
