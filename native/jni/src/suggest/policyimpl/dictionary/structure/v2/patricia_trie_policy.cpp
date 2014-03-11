@@ -349,14 +349,14 @@ const WordProperty PatriciaTriePolicy::getWordProperty(const int *const codePoin
         // Skip the entry if the entry has been deleted. This never happens for ver2 dicts.
         if (bigramsIt.getBigramPos() != NOT_A_DICT_POS) {
             int word1Probability = NOT_A_PROBABILITY;
-            int word1CodePointCount = getCodePointsAndProbabilityAndReturnCodePointCount(
+            const int word1CodePointCount = getCodePointsAndProbabilityAndReturnCodePointCount(
                     bigramsIt.getBigramPos(), MAX_WORD_LENGTH, bigramWord1CodePoints,
                     &word1Probability);
-            std::vector<int> word1(bigramWord1CodePoints,
+            const std::vector<int> word1(bigramWord1CodePoints,
                     bigramWord1CodePoints + word1CodePointCount);
             const int probability = getProbability(word1Probability, bigramsIt.getProbability());
-            bigrams.push_back(WordProperty::BigramProperty(&word1, probability,
-                    NOT_A_TIMESTAMP /* timestamp */, 0 /* level */, 0 /* count */));
+            bigrams.emplace_back(&word1, probability,
+                    NOT_A_TIMESTAMP /* timestamp */, 0 /* level */, 0 /* count */);
         }
     }
     // Fetch shortcut information.
@@ -372,12 +372,11 @@ const WordProperty PatriciaTriePolicy::getWordProperty(const int *const codePoin
             hasNext = ShortcutListReadingUtils::hasNext(shortcutFlags);
             const int shortcutTargetLength = ShortcutListReadingUtils::readShortcutTarget(
                     mDictRoot, MAX_WORD_LENGTH, shortcutTargetCodePoints, &shortcutPos);
-            std::vector<int> shortcutTarget(shortcutTargetCodePoints,
+            const std::vector<int> shortcutTarget(shortcutTargetCodePoints,
                     shortcutTargetCodePoints + shortcutTargetLength);
             const int shortcutProbability =
                     ShortcutListReadingUtils::getProbabilityFromFlags(shortcutFlags);
-            shortcuts.push_back(
-                    WordProperty::ShortcutProperty(&shortcutTarget, shortcutProbability));
+            shortcuts.emplace_back(&shortcutTarget, shortcutProbability);
         }
     }
     return WordProperty(&codePointVector, ptNodeParams.isNotAWord(),

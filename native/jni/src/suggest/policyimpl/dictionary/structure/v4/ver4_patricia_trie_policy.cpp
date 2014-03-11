@@ -382,16 +382,16 @@ const WordProperty Ver4PatriciaTriePolicy::getWordProperty(const int *const code
             const int codePointCount = getCodePointsAndProbabilityAndReturnCodePointCount(
                     word1TerminalPtNodePos, MAX_WORD_LENGTH, bigramWord1CodePoints,
                     &word1Probability);
-            std::vector<int> word1(bigramWord1CodePoints,
+            const std::vector<int> word1(bigramWord1CodePoints,
                     bigramWord1CodePoints + codePointCount);
             const HistoricalInfo *const historicalInfo = bigramEntry.getHistoricalInfo();
             const int probability = bigramEntry.hasHistoricalInfo() ?
                     ForgettingCurveUtils::decodeProbability(
                             bigramEntry.getHistoricalInfo(), mHeaderPolicy) :
                     getProbability(word1Probability, bigramEntry.getProbability());
-            bigrams.push_back(WordProperty::BigramProperty(&word1, probability,
+            bigrams.emplace_back(&word1, probability,
                     historicalInfo->getTimeStamp(), historicalInfo->getLevel(),
-                    historicalInfo->getCount()));
+                    historicalInfo->getCount());
         }
     }
     // Fetch shortcut information.
@@ -407,8 +407,8 @@ const WordProperty Ver4PatriciaTriePolicy::getWordProperty(const int *const code
             int shortcutProbability = NOT_A_PROBABILITY;
             shortcutDictContent->getShortcutEntryAndAdvancePosition(MAX_WORD_LENGTH, shortcutTarget,
                     &shortcutTargetLength, &shortcutProbability, &hasNext, &shortcutPos);
-            std::vector<int> target(shortcutTarget, shortcutTarget + shortcutTargetLength);
-            shortcuts.push_back(WordProperty::ShortcutProperty(&target, shortcutProbability));
+            const std::vector<int> target(shortcutTarget, shortcutTarget + shortcutTargetLength);
+            shortcuts.emplace_back(&target, shortcutProbability);
         }
     }
     return WordProperty(&codePointVector, ptNodeParams.isNotAWord(),
