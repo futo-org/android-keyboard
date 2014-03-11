@@ -109,14 +109,13 @@ class Dictionary {
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(Dictionary);
 
-    typedef std::unique_ptr<BigramDictionary> BigramDictionaryPtr;
     typedef std::unique_ptr<SuggestInterface> SuggestInterfacePtr;
 
     static const int HEADER_ATTRIBUTE_BUFFER_SIZE;
 
     const DictionaryStructureWithBufferPolicy::StructurePolicyPtr
             mDictionaryStructureWithBufferPolicy;
-    const BigramDictionaryPtr mBigramDictionary;
+    const BigramDictionary mBigramDictionary;
     const SuggestInterfacePtr mGestureSuggest;
     const SuggestInterfacePtr mTypingSuggest;
 
