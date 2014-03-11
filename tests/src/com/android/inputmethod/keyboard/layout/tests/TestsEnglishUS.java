@@ -36,7 +36,7 @@ public final class TestsEnglishUS extends LayoutTestsBase {
 
     @Override
     String getTestKeyboardLayout() {
-        return "qwerty";
+        return Qwerty.LAYOUT_NAME;
     }
 
     @Override
