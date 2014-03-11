@@ -121,9 +121,10 @@ public class LayoutBase {
             "&", "%", "+", "\"", "-", ":", "@"
     };
 
+    // Helper method to create alphabet layout for phone by adding special function keys except
+    // shift key.
     private static ExpectedKeyboardBuilder toPhoneAlphabet(final ExpectedKeyboardBuilder builder) {
         return builder
-                .addKeysOnTheLeftOfRow(3, key(SHIFT_KEY, CAPSLOCK_MORE_KEY))
                 .addKeysOnTheRightOfRow(3, DELETE_KEY)
                 .setLabelsOfRow(4, ",", " ", ".")
                 .setMoreKeysOf(",", SETTINGS_KEY)
@@ -134,8 +135,7 @@ public class LayoutBase {
 
     // Helper method to create alphabet layout for tablet by adding special function keys except
     // shift key.
-    public static ExpectedKeyboardBuilder toTabletAlphabetWithoutShiftKeys(
-            final ExpectedKeyboardBuilder builder) {
+    private static ExpectedKeyboardBuilder toTabletAlphabet(final ExpectedKeyboardBuilder builder) {
         return builder
                 // U+00BF: "¿" INVERTED QUESTION MARK
                 // U+00A1: "¡" INVERTED EXCLAMATION MARK
@@ -150,13 +150,25 @@ public class LayoutBase {
     }
 
     // Helper method to create alphabet layout by adding special function keys.
-    public static ExpectedKey[][] toCommonAlphabet(final ExpectedKey[][] common,
+    public static ExpectedKey[][] getAlphabetLayoutWithoutShiftKeys(final ExpectedKey[][] common,
             final boolean isPhone) {
         final ExpectedKeyboardBuilder builder = new ExpectedKeyboardBuilder(common);
         if (isPhone) {
             toPhoneAlphabet(builder);
         } else {
-            toTabletAlphabetWithoutShiftKeys(builder);
+            toTabletAlphabet(builder).build();
+        }
+        return builder.build();
+    }
+
+    // Helper method to create alphabet layout by adding special function keys.
+    public static ExpectedKey[][] getDefaultAlphabetLayout(final ExpectedKey[][] common,
+            final boolean isPhone) {
+        final ExpectedKeyboardBuilder builder = new ExpectedKeyboardBuilder(
+                getAlphabetLayoutWithoutShiftKeys(common, isPhone));
+        if (isPhone) {
+            builder.addKeysOnTheLeftOfRow(3, key(SHIFT_KEY, CAPSLOCK_MORE_KEY));
+        } else {
             builder.addKeysOnTheLeftOfRow(3, key(SHIFT_KEY, CAPSLOCK_MORE_KEY))
                     .addKeysOnTheRightOfRow(3, key(SHIFT_KEY, CAPSLOCK_MORE_KEY));
         }
