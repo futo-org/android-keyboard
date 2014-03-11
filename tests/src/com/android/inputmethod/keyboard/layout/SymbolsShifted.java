@@ -31,11 +31,9 @@ public final class SymbolsShifted extends LayoutBase {
     }
 
     public static ExpectedKey[][] getDefaultLayout(final boolean isPhone) {
-        final ExpectedKeyboardBuilder builder = new ExpectedKeyboardBuilder(SYMBOLS_SHIFTED_COMMON);
+        final ExpectedKeyboardBuilder builder = new ExpectedKeyboardBuilder(getLayout(isPhone));
         builder.replaceKeyOfLabel(OTHER_CURRENCIES, SymbolsShifted.CURRENCIES_OTHER_THAN_DOLLAR);
-        final ExpectedKey[][] symbolsShiftedCommon = builder.build();
-        return isPhone ? toPhoneSymbolsShifted(symbolsShiftedCommon)
-                : toTabletSymbolsShifted(symbolsShiftedCommon);
+        return builder.build();
     }
 
     // Functional key.
