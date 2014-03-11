@@ -52,32 +52,56 @@ public final class ExpectedKeyboardBuilder extends AbstractKeyboardBuilder<Expec
     }
 
     // A replacement job to be performed.
-    interface ReplaceJob {
-        // Returns a {@link ExpectedKey} object to replace.
-        ExpectedKey replace(final ExpectedKey oldKey);
+    private interface ReplaceJob {
+        // Returns a {@link ExpectedKey} objects to replace.
+        ExpectedKey[] replacingKeys(final ExpectedKey oldKey);
         // Return true if replacing should be stopped at first occurrence.
         boolean stopAtFirstOccurrence();
+    }
+
+    private static ExpectedKey[] replaceKeyAt(final ExpectedKey[] keys, final int columnIndex,
+            final ExpectedKey[] replacingKeys) {
+        // Optimization for replacing a key with another key.
+        if (replacingKeys.length == 1) {
+            keys[columnIndex] = replacingKeys[0];
+            return keys;
+        }
+        final int newLength = keys.length - 1 + replacingKeys.length;
+        // Remove the key at columnIndex.
+        final ExpectedKey[] newKeys = Arrays.copyOf(keys, newLength);
+        System.arraycopy(keys, columnIndex + 1, newKeys, columnIndex + replacingKeys.length,
+                keys.length - 1 - columnIndex);
+        // Insert replacing keys at columnIndex.
+        System.arraycopy(replacingKeys, 0, newKeys, columnIndex, replacingKeys.length);
+        return newKeys;
+
     }
 
     // Replace key(s) that has the specified visual.
     private void replaceKeyOf(final ExpectedKeyVisual visual, final ReplaceJob job) {
         int replacedCount = 0;
-        final ExpectedKey[][] rows = build();
-        for (int rowIndex = 0; rowIndex < rows.length; rowIndex++) {
-            final ExpectedKey[] keys = rows[rowIndex];
-            for (int columnIndex = 0; columnIndex < keys.length; columnIndex++) {
-                if (keys[columnIndex].getVisual().equalsTo(visual)) {
-                    keys[columnIndex] = job.replace(keys[columnIndex]);
-                    replacedCount++;
-                    if (job.stopAtFirstOccurrence()) {
-                        return;
-                    }
+        final int rowCount = getRowCount();
+        for (int row = 1; row <= rowCount; row++) {
+            ExpectedKey[] keys = getRowAt(row);
+            for (int columnIndex = 0; columnIndex < keys.length; /* nothing */) {
+                final ExpectedKey currentKey = keys[columnIndex];
+                if (!currentKey.getVisual().equalsTo(visual)) {
+                    columnIndex++;
+                    continue;
+                }
+                final ExpectedKey[] replacingKeys = job.replacingKeys(currentKey);
+                keys = replaceKeyAt(keys, columnIndex, replacingKeys);
+                columnIndex += replacingKeys.length;
+                setRowAt(row, keys);
+                replacedCount++;
+                if (job.stopAtFirstOccurrence()) {
+                    return;
                 }
             }
         }
         if (replacedCount == 0) {
             throw new RuntimeException(
-                    "Can't find key that has visual: " + visual + " in\n" + toString(rows));
+                    "Can't find key that has visual: " + visual + " in\n" + this);
         }
     }
 
@@ -137,8 +161,10 @@ public final class ExpectedKeyboardBuilder extends AbstractKeyboardBuilder<Expec
     private void setMoreKeysOf(final ExpectedKeyVisual visual, final ExpectedKey[] moreKeys) {
         replaceKeyOf(visual, new ReplaceJob() {
             @Override
-            public ExpectedKey replace(final ExpectedKey oldKey) {
-                return ExpectedKey.newInstance(oldKey.getVisual(), oldKey.getOutput(), moreKeys);
+            public ExpectedKey[] replacingKeys(final ExpectedKey oldKey) {
+                return new ExpectedKey[] {
+                    ExpectedKey.newInstance(oldKey.getVisual(), oldKey.getOutput(), moreKeys)
+                };
             }
             @Override
             public boolean stopAtFirstOccurrence() {
@@ -194,17 +220,18 @@ public final class ExpectedKeyboardBuilder extends AbstractKeyboardBuilder<Expec
     }
 
     /**
-     * Replace the most top-left key that has the specified label with the new key.
-     * @param label the label of the key to set <code>newKey</code>.
-     * @param newKey the key to be set.
+     * Replace the most top-left key that has the specified label with the new keys.
+     * @param label the label of the key to set <code>newKeys</code>.
+     * @param newKeys the keys to be set.
      * @return this builder.
      */
-    public ExpectedKeyboardBuilder replaceKeyOfLabel(final String label, final ExpectedKey newKey) {
+    public ExpectedKeyboardBuilder replaceKeyOfLabel(final String label,
+            final ExpectedKey ... newKeys) {
         final ExpectedKeyVisual visual = ExpectedKeyVisual.newInstance(label);
         replaceKeyOf(visual, new ReplaceJob() {
             @Override
-            public ExpectedKey replace(final ExpectedKey oldKey) {
-                return newKey;
+            public ExpectedKey[] replacingKeys(final ExpectedKey oldKey) {
+                return newKeys;
             }
             @Override
             public boolean stopAtFirstOccurrence() {
@@ -215,17 +242,17 @@ public final class ExpectedKeyboardBuilder extends AbstractKeyboardBuilder<Expec
     }
 
     /**
-     * Replace the all specified keys  with the new key.
-     * @param key the key to be replaced by <code>newKey</code>.
-     * @param newKey the key to be set.
+     * Replace the all specified keys with the new keys.
+     * @param key the key to be replaced by <code>newKeys</code>.
+     * @param newKeys the keys to be set.
      * @return this builder.
      */
-    public ExpectedKeyboardBuilder replaceKeyOfAll(final ExpectedKey key,
-            final ExpectedKey newKey) {
+    public ExpectedKeyboardBuilder replaceKeysOfAll(final ExpectedKey key,
+            final ExpectedKey ... newKeys) {
         replaceKeyOf(key.getVisual(), new ReplaceJob() {
             @Override
-            public ExpectedKey replace(final ExpectedKey oldKey) {
-                return newKey;
+            public ExpectedKey[] replacingKeys(final ExpectedKey oldKey) {
+                return newKeys;
             }
             @Override
             public boolean stopAtFirstOccurrence() {
@@ -236,22 +263,26 @@ public final class ExpectedKeyboardBuilder extends AbstractKeyboardBuilder<Expec
     }
 
     /**
-     * Returns new keyboard instance that has upper case keys of the specified keyboard.
-     * @param rows the lower case keyboard.
+     * Convert all keys of this keyboard builder to upper case keys.
      * @param locale the locale used to convert cases.
-     * @return the upper case keyboard.
+     * @return this builder
      */
-    public static ExpectedKey[][] toUpperCase(final ExpectedKey[][] rows, final Locale locale) {
-        final ExpectedKey[][] upperCaseRows = new ExpectedKey[rows.length][];
-        for (int rowIndex = 0; rowIndex < rows.length; rowIndex++) {
-            final ExpectedKey[] lowerCaseKeys = rows[rowIndex];
+    public ExpectedKeyboardBuilder toUpperCase(final Locale locale) {
+        final int rowCount = getRowCount();
+        for (int row = 1; row <= rowCount; row++) {
+            final ExpectedKey[] lowerCaseKeys = getRowAt(row);
             final ExpectedKey[] upperCaseKeys = new ExpectedKey[lowerCaseKeys.length];
             for (int columnIndex = 0; columnIndex < lowerCaseKeys.length; columnIndex++) {
                 upperCaseKeys[columnIndex] = lowerCaseKeys[columnIndex].toUpperCase(locale);
             }
-            upperCaseRows[rowIndex] = upperCaseKeys;
+            setRowAt(row, upperCaseKeys);
         }
-        return upperCaseRows;
+        return this;
+    }
+
+    @Override
+    public String toString() {
+        return toString(build());
     }
 
     /**

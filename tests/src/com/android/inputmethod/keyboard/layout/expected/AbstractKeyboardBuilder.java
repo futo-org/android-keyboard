@@ -73,6 +73,14 @@ abstract class AbstractKeyboardBuilder<E> {
     }
 
     /**
+     * Return the number of rows.
+     * @return the number of rows being constructed.
+     */
+    int getRowCount() {
+        return mRows.length;
+    }
+
+    /**
      * Get the current contents of the specified row.
      * @param row the row number to get the contents.
      * @return the array of elements at row number <code>row</code>.

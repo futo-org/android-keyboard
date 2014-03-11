@@ -40,8 +40,8 @@ public final class TestsEnglishUS extends LayoutTestsBase {
     }
 
     @Override
-    ExpectedKey[][] getAlphabet(final boolean isPhone) {
-        final ExpectedKey[][] keyboard = Qwerty.getAlphabet(isPhone);
+    ExpectedKey[][] getAlphabetLayout(final boolean isPhone) {
+        final ExpectedKey[][] keyboard = Qwerty.getLayout(isPhone);
         final ExpectedKeyboardBuilder builder = new ExpectedKeyboardBuilder(keyboard);
         setAccentedLetters(builder);
         return builder.build();
