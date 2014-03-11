@@ -37,7 +37,7 @@ const int Dictionary::HEADER_ATTRIBUTE_BUFFER_SIZE = 32;
 Dictionary::Dictionary(JNIEnv *env, DictionaryStructureWithBufferPolicy::StructurePolicyPtr
         dictionaryStructureWithBufferPolicy)
         : mDictionaryStructureWithBufferPolicy(std::move(dictionaryStructureWithBufferPolicy)),
-          mBigramDictionary(new BigramDictionary(mDictionaryStructureWithBufferPolicy.get())),
+          mBigramDictionary(mDictionaryStructureWithBufferPolicy.get()),
           mGestureSuggest(new Suggest(GestureSuggestPolicyFactory::getGestureSuggestPolicy())),
           mTypingSuggest(new Suggest(TypingSuggestPolicyFactory::getTypingSuggestPolicy())) {
     logDictionaryInfo(env);
@@ -78,7 +78,7 @@ void Dictionary::getPredictions(const int *word, int length,
         SuggestionResults *const outSuggestionResults) const {
     TimeKeeper::setCurrentTime();
     if (length <= 0) return;
-    mBigramDictionary->getPredictions(word, length, outSuggestionResults);
+    mBigramDictionary.getPredictions(word, length, outSuggestionResults);
 }
 
 int Dictionary::getProbability(const int *word, int length) const {
@@ -94,7 +94,7 @@ int Dictionary::getProbability(const int *word, int length) const {
 int Dictionary::getBigramProbability(const int *word0, int length0, const int *word1,
         int length1) const {
     TimeKeeper::setCurrentTime();
-    return mBigramDictionary->getBigramProbability(word0, length0, word1, length1);
+    return mBigramDictionary.getBigramProbability(word0, length0, word1, length1);
 }
 
 void Dictionary::addUnigramWord(const int *const word, const int length, const int probability,
