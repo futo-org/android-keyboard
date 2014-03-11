@@ -24,6 +24,8 @@ import com.android.inputmethod.keyboard.layout.expected.LayoutBase;
  * The QWERTY alphabet keyboard.
  */
 public final class Qwerty extends LayoutBase {
+    public static final String LAYOUT_NAME = "qwerty";
+
     public static ExpectedKey[][] getLayout(final boolean isPhone) {
         return getDefaultAlphabetLayout(ALPHABET_COMMON, isPhone);
     }
