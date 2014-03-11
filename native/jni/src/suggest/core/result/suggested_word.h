@@ -30,9 +30,9 @@ class SuggestedWord {
      public:
         bool operator()(const SuggestedWord &left, const SuggestedWord &right) {
             if (left.getScore() != right.getScore()) {
-                return left.getScore() < right.getScore();
+                return left.getScore() > right.getScore();
             }
-            return left.getCodePointCount() > right.getCodePointCount();
+            return left.getCodePointCount() < right.getCodePointCount();
         }
 
      private:
