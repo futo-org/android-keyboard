@@ -123,8 +123,9 @@ public class LayoutBase {
 
     // Helper method to create alphabet layout for phone by adding special function keys except
     // shift key.
-    private static ExpectedKeyboardBuilder toPhoneAlphabet(final ExpectedKeyboardBuilder builder) {
-        return builder
+    private static ExpectedKeyboardBuilder convertToPhoneAlphabetKeyboardBuilder(
+            final ExpectedKey[][] commonLayout) {
+        return new ExpectedKeyboardBuilder(commonLayout)
                 .addKeysOnTheRightOfRow(3, DELETE_KEY)
                 .setLabelsOfRow(4, ",", " ", ".")
                 .setMoreKeysOf(",", SETTINGS_KEY)
@@ -135,8 +136,9 @@ public class LayoutBase {
 
     // Helper method to create alphabet layout for tablet by adding special function keys except
     // shift key.
-    private static ExpectedKeyboardBuilder toTabletAlphabet(final ExpectedKeyboardBuilder builder) {
-        return builder
+    private static ExpectedKeyboardBuilder convertToTabletAlphabetKeyboardBuilder(
+            final ExpectedKey[][] commonLayout) {
+        return new ExpectedKeyboardBuilder(commonLayout)
                 // U+00BF: "¿" INVERTED QUESTION MARK
                 // U+00A1: "¡" INVERTED EXCLAMATION MARK
                 .addKeysOnTheRightOfRow(3,
@@ -150,22 +152,17 @@ public class LayoutBase {
     }
 
     // Helper method to create alphabet layout by adding special function keys.
-    public static ExpectedKey[][] getAlphabetLayoutWithoutShiftKeys(final ExpectedKey[][] common,
-            final boolean isPhone) {
-        final ExpectedKeyboardBuilder builder = new ExpectedKeyboardBuilder(common);
-        if (isPhone) {
-            toPhoneAlphabet(builder);
-        } else {
-            toTabletAlphabet(builder).build();
-        }
-        return builder.build();
+    public static ExpectedKey[][] getAlphabetLayoutWithoutShiftKeys(
+            final ExpectedKey[][] commonLayout, final boolean isPhone) {
+        return isPhone ? convertToPhoneAlphabetKeyboardBuilder(commonLayout).build()
+                : convertToTabletAlphabetKeyboardBuilder(commonLayout).build();
     }
 
     // Helper method to create alphabet layout by adding special function keys.
-    public static ExpectedKey[][] getDefaultAlphabetLayout(final ExpectedKey[][] common,
+    public static ExpectedKey[][] getDefaultAlphabetLayout(final ExpectedKey[][] commonLayout,
             final boolean isPhone) {
         final ExpectedKeyboardBuilder builder = new ExpectedKeyboardBuilder(
-                getAlphabetLayoutWithoutShiftKeys(common, isPhone));
+                getAlphabetLayoutWithoutShiftKeys(commonLayout, isPhone));
         if (isPhone) {
             builder.addKeysOnTheLeftOfRow(3, key(SHIFT_KEY, CAPSLOCK_MORE_KEY));
         } else {
