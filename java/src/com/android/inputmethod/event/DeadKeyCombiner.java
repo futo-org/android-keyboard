@@ -43,19 +43,19 @@ public class DeadKeyCombiner implements Combiner {
             final int resultingCodePoint =
                     KeyCharacterMap.getDeadChar(deadCodePoint, event.mCodePoint);
             if (0 == resultingCodePoint) {
-                // We can't combine both characters. We need to commit the dead key as a committable
+                // We can't combine both characters. We need to commit the dead key as a separate
                 // character, and the next char too unless it's a space (because as a special case,
                 // dead key + space should result in only the dead key being committed - that's
                 // how dead keys work).
                 // If the event is a space, we should commit the dead char alone, but if it's
                 // not, we need to commit both.
-                return Event.createCommittableEvent(deadCodePoint,
+                return Event.createInputKeypressEvent(deadCodePoint, event.mKeyCode,
                         Constants.CODE_SPACE == event.mCodePoint ? null : event /* next */);
             } else {
                 // We could combine the characters.
-                return Event.createCommittableEvent(resultingCodePoint, null /* next */);
+                return Event.createInputKeypressEvent(resultingCodePoint, event.mKeyCode,
+                        null /* next */);
             }
         }
     }
-
 }

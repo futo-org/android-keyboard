@@ -33,61 +33,83 @@ public class Event {
     // but probably a bit too much
     // An event we don't handle in Latin IME, for example pressing Ctrl on a hardware keyboard.
     final public static int EVENT_NOT_HANDLED = 0;
-    // A character that is already final, for example pressing an alphabetic character on a
-    // hardware qwerty keyboard.
-    final public static int EVENT_COMMITTABLE = 1;
-    // A dead key, which means a character that should combine with what is coming next. Examples
-    // include the "^" character on an azerty keyboard which combines with "e" to make "ê", or
-    // AltGr+' on a dvorak international keyboard which combines with "e" to make "é". This is
-    // true regardless of the language or combining mode, and should be seen as a property of the
-    // key - a dead key followed by another key with which it can combine should be regarded as if
-    // the keyboard actually had such a key.
-    final public static int EVENT_DEAD = 2;
+    // A key press that is part of input, for example pressing an alphabetic character on a
+    // hardware qwerty keyboard. It may be part of a sequence that will be re-interpreted later
+    // through combination.
+    final public static int EVENT_INPUT_KEYPRESS = 1;
     // A toggle event is triggered by a key that affects the previous character. An example would
     // be a numeric key on a 10-key keyboard, which would toggle between 1 - a - b - c with
     // repeated presses.
-    final public static int EVENT_TOGGLE = 3;
+    final public static int EVENT_TOGGLE = 2;
     // A mode event instructs the combiner to change modes. The canonical example would be the
     // hankaku/zenkaku key on a Japanese keyboard, or even the caps lock key on a qwerty keyboard
     // if handled at the combiner level.
-    final public static int EVENT_MODE_KEY = 4;
+    final public static int EVENT_MODE_KEY = 3;
+    // An event corresponding to a gesture.
+    final public static int EVENT_GESTURE = 4;
 
-    final private static int NOT_A_CODE_POINT = 0;
+    // 0 is a valid code point, so we use -1 here.
+    final public static int NOT_A_CODE_POINT = -1;
+    // -1 is a valid key code, so we use 0 here.
+    final public static int NOT_A_KEY_CODE = 0;
+
+    final private static int FLAG_NONE = 0;
+    // This event is a dead character, usually input by a dead key. Examples include dead-acute
+    // or dead-abovering.
+    final private static int FLAG_DEAD = 0x1;
 
     final private int mType; // The type of event - one of the constants above
     // The code point associated with the event, if relevant. This is a unicode code point, and
     // has nothing to do with other representations of the key. It is only relevant if this event
-    // is the right type: COMMITTABLE or DEAD or TOGGLE, but for a mode key like hankaku/zenkaku or
-    // ctrl, there is no code point associated so this should be NOT_A_CODE_POINT to avoid
-    // unintentional use of its value when it's not relevant.
+    // is of KEYPRESS type, but for a mode key like hankaku/zenkaku or ctrl, there is no code point
+    // associated so this should be NOT_A_CODE_POINT to avoid unintentional use of its value when
+    // it's not relevant.
     final public int mCodePoint;
+
+    // The key code associated with the event, if relevant. This is relevant whenever this event
+    // has been triggered by a key press, but not for a gesture for example. This has conceptually
+    // no link to the code point, although keys that enter a straight code point may often set
+    // this to be equal to mCodePoint for convenience. If this is not a key, this must contain
+    // NOT_A_KEY_CODE.
+    final public int mKeyCode;
+
+    // Some flags that can't go into the key code. It's a bit field of FLAG_*
+    final private int mFlags;
+
     // The next event, if any. Null if there is no next event yet.
     final public Event mNextEvent;
 
     // This method is private - to create a new event, use one of the create* utility methods.
-    private Event(final int type, final int codePoint, final Event next) {
+    private Event(final int type, final int codePoint, final int keyCode, final int flags,
+            final Event next) {
         mType = type;
         mCodePoint = codePoint;
+        mKeyCode = keyCode;
+        mFlags = flags;
         mNextEvent = next;
     }
 
-    public static Event createDeadEvent(final int codePoint, final Event next) {
-        return new Event(EVENT_DEAD, codePoint, next);
+    public static Event createInputKeypressEvent(final int codePoint, final int keyCode,
+            final Event next) {
+        return new Event(EVENT_INPUT_KEYPRESS, codePoint, keyCode, FLAG_NONE, next);
     }
 
-    public static Event createCommittableEvent(final int codePoint, final Event next) {
-        return new Event(EVENT_COMMITTABLE, codePoint, next);
+    // This creates an input event for a dead character. @see {@link #FLAG_DEAD}
+    public static Event createDeadEvent(final int codePoint, final int keyCode, final Event next) {
+        return new Event(EVENT_INPUT_KEYPRESS, codePoint, keyCode, FLAG_DEAD, next);
     }
 
     public static Event createNotHandledEvent() {
-        return new Event(EVENT_NOT_HANDLED, NOT_A_CODE_POINT, null);
+        return new Event(EVENT_NOT_HANDLED, NOT_A_CODE_POINT, NOT_A_KEY_CODE, FLAG_NONE, null);
     }
 
-    public boolean isCommittable() {
-        return EVENT_COMMITTABLE == mType;
-    }
-
+    // Returns whether this event is for a dead character. @see {@link #FLAG_DEAD}
     public boolean isDead() {
-        return EVENT_DEAD == mType;
+        return 0 != (FLAG_DEAD & mFlags);
+    }
+
+    // TODO: remove this method - we should not have to test this
+    public boolean isCommittable() {
+        return EVENT_INPUT_KEYPRESS == mType || EVENT_MODE_KEY == mType || EVENT_TOGGLE == mType;
     }
 }
