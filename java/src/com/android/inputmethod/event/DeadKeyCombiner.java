@@ -49,11 +49,11 @@ public class DeadKeyCombiner implements Combiner {
                 // how dead keys work).
                 // If the event is a space, we should commit the dead char alone, but if it's
                 // not, we need to commit both.
-                return Event.createInputKeypressEvent(deadCodePoint, event.mKeyCode,
+                return Event.createHardwareKeypressEvent(deadCodePoint, event.mKeyCode,
                         Constants.CODE_SPACE == event.mCodePoint ? null : event /* next */);
             } else {
                 // We could combine the characters.
-                return Event.createInputKeypressEvent(resultingCodePoint, event.mKeyCode,
+                return Event.createHardwareKeypressEvent(resultingCodePoint, event.mKeyCode,
                         null /* next */);
             }
         }

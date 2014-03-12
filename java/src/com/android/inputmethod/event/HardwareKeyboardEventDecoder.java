@@ -47,7 +47,7 @@ public class HardwareKeyboardEventDecoder implements HardwareEventDecoder {
         // the key for 'A' or Space, but also Backspace or Ctrl or Caps Lock.
         final int keyCode = keyEvent.getKeyCode();
         if (KeyEvent.KEYCODE_DEL == keyCode) {
-            return Event.createInputKeypressEvent(Event.NOT_A_CODE_POINT, Constants.CODE_DELETE,
+            return Event.createHardwareKeypressEvent(Event.NOT_A_CODE_POINT, Constants.CODE_DELETE,
                     null /* next */);
         }
         if (keyEvent.isPrintingKey() || KeyEvent.KEYCODE_SPACE == keyCode
@@ -64,16 +64,16 @@ public class HardwareKeyboardEventDecoder implements HardwareEventDecoder {
                 // Shift key is being pressed, this should send a CODE_SHIFT_ENTER and let
                 // Latin IME decide what to do with it.
                 if (keyEvent.isShiftPressed()) {
-                    return Event.createInputKeypressEvent(Event.NOT_A_CODE_POINT,
+                    return Event.createHardwareKeypressEvent(Event.NOT_A_CODE_POINT,
                             Constants.CODE_SHIFT_ENTER, null /* next */);
                 } else {
-                    return Event.createInputKeypressEvent(Constants.CODE_ENTER, keyCode,
+                    return Event.createHardwareKeypressEvent(Constants.CODE_ENTER, keyCode,
                             null /* next */);
                 }
             }
             // If not Enter, then this is just a regular keypress event for a normal character
             // that can be committed right away, taking into account the current state.
-            return Event.createInputKeypressEvent(keyCode, codePointAndFlags, null /* next */);
+            return Event.createHardwareKeypressEvent(keyCode, codePointAndFlags, null /* next */);
         }
         return Event.createNotHandledEvent();
     }

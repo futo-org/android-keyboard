@@ -59,6 +59,7 @@ import com.android.inputmethod.accessibility.AccessibleKeyboardViewProxy;
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.compat.InputMethodServiceCompatUtils;
 import com.android.inputmethod.dictionarypack.DictionaryPackConstants;
+import com.android.inputmethod.event.Event;
 import com.android.inputmethod.event.InputTransaction;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardActionListener;
@@ -1266,8 +1267,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mSubtypeSwitcher.switchToShortcutIME(this);
             // Still call the *#onCodeInput methods for readability.
         }
+        final Event event = createSoftwareKeypressEvent(codeToSend, keyX, keyY);
         final InputTransaction completeInputTransaction =
-                mInputLogic.onCodeInput(mSettings.getCurrent(), codeToSend, keyX, keyY,
+                mInputLogic.onCodeInput(mSettings.getCurrent(), event,
                         mKeyboardSwitcher.getKeyboardShiftMode(), mHandler);
         switch (completeInputTransaction.getRequiredShiftUpdate()) {
             case InputTransaction.SHIFT_UPDATE_LATER:
@@ -1279,6 +1281,22 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             default: // SHIFT_NO_UPDATE
         }
         mKeyboardSwitcher.onCodeInput(codePoint);
+    }
+
+    // A helper method to split the code point and the key code. Ultimately, they should not be
+    // squashed into the same variable, and this method should be removed.
+    private static Event createSoftwareKeypressEvent(final int keyCodeOrCodePoint, final int keyX,
+             final int keyY) {
+        final int keyCode;
+        final int codePoint;
+        if (keyCodeOrCodePoint <= 0) {
+            keyCode = keyCodeOrCodePoint;
+            codePoint = Event.NOT_A_CODE_POINT;
+        } else {
+            keyCode = Event.NOT_A_KEY_CODE;
+            codePoint = keyCodeOrCodePoint;
+        }
+        return Event.createSoftwareKeypressEvent(codePoint, keyCode, keyX, keyY);
     }
 
     // Called from PointerTracker through the KeyboardActionListener interface

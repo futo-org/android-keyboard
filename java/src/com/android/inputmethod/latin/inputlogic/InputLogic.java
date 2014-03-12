@@ -27,6 +27,7 @@ import android.view.inputmethod.CorrectionInfo;
 import android.view.inputmethod.EditorInfo;
 
 import com.android.inputmethod.compat.SuggestionSpanUtils;
+import com.android.inputmethod.event.Event;
 import com.android.inputmethod.event.EventInterpreter;
 import com.android.inputmethod.event.InputTransaction;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
@@ -205,9 +206,9 @@ public final class InputLogic {
             LatinImeLogger.logOnManualSuggestion("", suggestion, index, suggestedWords);
             // Rely on onCodeInput to do the complicated swapping/stripping logic consistently.
             final int primaryCode = suggestion.charAt(0);
-            onCodeInput(settingsValues, primaryCode,
-                    Constants.SUGGESTION_STRIP_COORDINATE, Constants.SUGGESTION_STRIP_COORDINATE,
-                    keyboardSwitcher.getKeyboardShiftMode(), handler);
+            final Event event = Event.createSoftwareKeypressEvent(primaryCode, Event.NOT_A_KEY_CODE,
+                    Constants.SUGGESTION_STRIP_COORDINATE, Constants.SUGGESTION_STRIP_COORDINATE);
+            onCodeInput(settingsValues, event, keyboardSwitcher.getKeyboardShiftMode(), handler);
             if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
                 ResearchLogger.latinIME_punctuationSuggestion(index, suggestion,
                         false /* isBatchMode */, suggestedWords.mIsPrediction);
@@ -354,17 +355,21 @@ public final class InputLogic {
      * the entry point for gesture input; see the onBatchInput* family of functions for this.
      *
      * @param settingsValues the current settings values.
-     * @param code the code to handle. It may be a code point, or an internal key code.
-     * @param x the x-coordinate where the user pressed the key, or NOT_A_COORDINATE.
-     * @param y the y-coordinate where the user pressed the key, or NOT_A_COORDINATE.
+     * @param event the event to handle.
      * @param keyboardShiftMode the current shift mode of the keyboard, as returned by
      *     {@link com.android.inputmethod.keyboard.KeyboardSwitcher#getKeyboardShiftMode()}
      * @return the complete transaction object
      */
-    public InputTransaction onCodeInput(final SettingsValues settingsValues, final int code,
-            final int x, final int y, final int keyboardShiftMode,
+    public InputTransaction onCodeInput(final SettingsValues settingsValues, final Event event,
+            final int keyboardShiftMode,
             // TODO: remove this argument
             final LatinIME.UIHandler handler) {
+        // TODO: rework the following to not squash the keycode and the code point into the same
+        // var because it's confusing. Instead the switch() should handle this in a readable manner.
+        final int code =
+                Event.NOT_A_CODE_POINT == event.mCodePoint ? event.mKeyCode : event.mCodePoint;
+        final int x = event.mX;
+        final int y = event.mY;
         final InputTransaction inputTransaction = new InputTransaction(settingsValues, code, x, y,
                 SystemClock.uptimeMillis(), mSpaceState,
                 getActualCapsMode(settingsValues, keyboardShiftMode));
