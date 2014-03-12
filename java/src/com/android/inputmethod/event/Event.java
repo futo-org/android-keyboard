@@ -130,6 +130,12 @@ public class Event {
         return 0 != (FLAG_DEAD & mFlags);
     }
 
+    // Returns whether this is a fake key press from the suggestion strip. This happens with
+    // punctuation signs selected from the suggestion strip.
+    public boolean isSuggestionStripPress() {
+        return EVENT_INPUT_KEYPRESS == mType && Constants.SUGGESTION_STRIP_COORDINATE == mX;
+    }
+
     // TODO: remove this method - we should not have to test this
     public boolean isCommittable() {
         return EVENT_INPUT_KEYPRESS == mType || EVENT_MODE_KEY == mType || EVENT_TOGGLE == mType;
