@@ -68,6 +68,9 @@ namespace latinime {
         if (dirent->d_type == DT_DIR) {
             continue;
         }
+        if (strcmp(dirent->d_name, ".") == 0 || strcmp(dirent->d_name, "..") == 0) {
+            continue;
+        }
         const int filePathBufSize = getFilePathBufSize(dirPath, dirent->d_name);
         char filePath[filePathBufSize];
         getFilePath(dirPath, dirent->d_name, filePathBufSize, filePath);
