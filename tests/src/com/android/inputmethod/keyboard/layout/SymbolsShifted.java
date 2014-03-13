@@ -16,31 +16,31 @@
 
 package com.android.inputmethod.keyboard.layout;
 
+import com.android.inputmethod.keyboard.layout.LayoutBase.LayoutCustomizer;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKey;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
-import com.android.inputmethod.keyboard.layout.expected.LayoutBase;
-import com.android.inputmethod.latin.Constants;
+import com.android.inputmethod.keyboard.layout.expected.AbstractLayoutBase;
 
 /**
  * The symbols shifted keyboard layout.
  */
-public final class SymbolsShifted extends LayoutBase {
-    public static ExpectedKey[][] getLayout(final boolean isPhone) {
-        return isPhone ? toPhoneSymbolsShifted(SYMBOLS_SHIFTED_COMMON)
-                : toTabletSymbolsShifted(SYMBOLS_SHIFTED_COMMON);
+public class SymbolsShifted extends AbstractLayoutBase {
+    private final LayoutCustomizer mCustomizer;
+
+    public SymbolsShifted(final LayoutCustomizer customizer) {
+        mCustomizer = customizer;
     }
 
-    public static ExpectedKey[][] getDefaultLayout(final boolean isPhone) {
-        final ExpectedKeyboardBuilder builder = new ExpectedKeyboardBuilder(getLayout(isPhone));
-        builder.replaceKeyOfLabel(OTHER_CURRENCIES, SymbolsShifted.CURRENCIES_OTHER_THAN_DOLLAR);
+    public ExpectedKey[][] getLayout(final boolean isPhone) {
+        final ExpectedKeyboardBuilder builder = new ExpectedKeyboardBuilder(isPhone
+                ? toPhoneSymbolsShifted(SYMBOLS_SHIFTED_COMMON)
+                : toTabletSymbolsShifted(SYMBOLS_SHIFTED_COMMON));
+        builder.replaceKeyOfLabel(OTHER_CURRENCIES, mCustomizer.getOtherCurrencyKeys());
         return builder.build();
     }
 
-    // Functional key.
-    public static final ExpectedKey BACK_TO_SYMBOLS_KEY = key("?123", Constants.CODE_SHIFT);
-
     // Variations of the "other currencies" keys on the 2rd row.
-    public static final String OTHER_CURRENCIES = "other_currencies";
+    public static final String OTHER_CURRENCIES = "OTHER_CURRENCY";
     public static final ExpectedKey[] CURRENCIES_OTHER_THAN_DOLLAR = {
         Symbols.POUND_SIGN, Symbols.CENT_SIGN, Symbols.EURO_SIGN, Symbols.YEN_SIGN
     };
@@ -50,7 +50,7 @@ public final class SymbolsShifted extends LayoutBase {
     };
 
     // Common symbols shifted keyboard layout.
-    public static final ExpectedKey[][] SYMBOLS_SHIFTED_COMMON =
+    private static final ExpectedKey[][] SYMBOLS_SHIFTED_COMMON =
             new ExpectedKeyboardBuilder(10, 1 /* other_currencies */ + 5, 7, 5)
             // U+0060: "`" GRAVE ACCENT
             // U+2022: "•" BULLET
@@ -112,16 +112,16 @@ public final class SymbolsShifted extends LayoutBase {
             .setMoreKeysOf(".", "\u2026")
             .build();
 
-    private static ExpectedKey[][] toPhoneSymbolsShifted(final ExpectedKey[][] common) {
+    private ExpectedKey[][] toPhoneSymbolsShifted(final ExpectedKey[][] common) {
         return new ExpectedKeyboardBuilder(common)
-                .addKeysOnTheLeftOfRow(3, BACK_TO_SYMBOLS_KEY)
+                .addKeysOnTheLeftOfRow(3, mCustomizer.getBackToSymbolsKey())
                 .addKeysOnTheRightOfRow(3, DELETE_KEY)
-                .addKeysOnTheLeftOfRow(4, Symbols.ALPHABET_KEY)
+                .addKeysOnTheLeftOfRow(4, mCustomizer.getAlphabetKey())
                 .addKeysOnTheRightOfRow(4, key(ENTER_KEY, EMOJI_KEY))
                 .build();
     }
 
-    private static ExpectedKey[][] toTabletSymbolsShifted(final ExpectedKey[][] common) {
+    private ExpectedKey[][] toTabletSymbolsShifted(final ExpectedKey[][] common) {
         return new ExpectedKeyboardBuilder(common)
                 // U+00BF: "¿" INVERTED QUESTION MARK
                 // U+00A1: "¡" INVERTED EXCLAMATION MARK
@@ -129,10 +129,38 @@ public final class SymbolsShifted extends LayoutBase {
                         key("\u00A1"), key("\u00BF"))
                 .addKeysOnTheRightOfRow(1, DELETE_KEY)
                 .addKeysOnTheRightOfRow(2, ENTER_KEY)
-                .addKeysOnTheLeftOfRow(3, BACK_TO_SYMBOLS_KEY)
-                .addKeysOnTheRightOfRow(3, BACK_TO_SYMBOLS_KEY)
-                .addKeysOnTheLeftOfRow(4, Symbols.ALPHABET_KEY)
+                .addKeysOnTheLeftOfRow(3, mCustomizer.getBackToSymbolsKey())
+                .addKeysOnTheRightOfRow(3, mCustomizer.getBackToSymbolsKey())
+                .addKeysOnTheLeftOfRow(4, mCustomizer.getAlphabetKey())
                 .addKeysOnTheRightOfRow(4, EMOJI_KEY)
                 .build();
+    }
+
+    public static class RtlSymbolsShifted extends SymbolsShifted {
+        public RtlSymbolsShifted(final LayoutCustomizer customizer) {
+            super(customizer);
+        }
+
+        @Override
+        public ExpectedKey[][] getLayout(final boolean isPhone) {
+            return new ExpectedKeyboardBuilder(super.getLayout(isPhone))
+                .replaceKeyOfLabel("{", key("{", "}"))
+                .replaceKeyOfLabel("}", key("}", "{"))
+                .replaceKeyOfLabel("[", key("[", "]"))
+                .replaceKeyOfLabel("]", key("]", "["))
+                // U+2039: "‹" SINGLE LEFT-POINTING ANGLE QUOTATION MARK
+                // U+2264: "≤" LESS-THAN OR EQUAL TO
+                // U+00AB: "«" LEFT-POINTING DOUBLE ANGLE QUOTATION MARK
+                .replaceKeyOfLabel("<", key("<", ">",
+                        moreKey("\u2039", "\u203A"), moreKey("\u2264", "\u2265"),
+                        moreKey("\u00AB", "\u00BB")))
+                // U+203A: "›" SINGLE RIGHT-POINTING ANGLE QUOTATION MARK
+                // U+2265: "≥" GREATER-THAN EQUAL TO
+                // U+00BB: "»" RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK
+                .replaceKeyOfLabel(">", key(">", "<",
+                        moreKey("\u203A", "\u2039"), moreKey("\u2265", "\u2264"),
+                        moreKey("\u00BB", "\u00AB")))
+                .build();
+        }
     }
 }
