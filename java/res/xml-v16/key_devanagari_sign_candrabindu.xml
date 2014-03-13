@@ -29,8 +29,7 @@
         <case
             latin:keyboardLayoutSet="hindi"
         >
-            <!-- U+0901: "ँ" DEVANAGARI SIGN CANDRABINDU
-                 U+0945: "ॅ" DEVANAGARI VOWEL SIGN CANDRA E -->
+            <!-- U+0945: "ॅ" DEVANAGARI VOWEL SIGN CANDRA E -->
             <key-style
                 latin:styleName="moreKeysDevanagariSignCandrabindu"
                 latin:moreKeys="&#x0945;" />

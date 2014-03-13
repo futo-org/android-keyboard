@@ -63,7 +63,7 @@
             <Key
                 latin:keySpec="&#x0E29;"
                 latin:keyLabelFlags="fontNormal" />
-            <!--  U+0E28: "ศ" THAI CHARACTER SO SALA -->
+            <!-- U+0E28: "ศ" THAI CHARACTER SO SALA -->
             <Key
                 latin:keySpec="&#x0E28;"
                 latin:keyLabelFlags="fontNormal" />
