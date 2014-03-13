@@ -121,6 +121,17 @@ public final class ExpectedKeyboardBuilder extends AbstractKeyboardBuilder<Expec
     }
 
     /**
+     * Set the row with specified keys.
+     * @param row the row number to set keys.
+     * @param keys the keys to be set at <code>row</code>.
+     * @return this builder.
+     */
+    public ExpectedKeyboardBuilder setKeysOfRow(final int row, final ExpectedKey ... keys) {
+        setRowAt(row, keys);
+        return this;
+    }
+
+    /**
      * Set the "more keys" of the key that has the specified label.
      * @param label the label of the key to set the "more keys".
      * @param moreKeys the array of labels of the "more keys" to be set.
