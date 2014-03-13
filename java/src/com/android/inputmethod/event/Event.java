@@ -16,6 +16,8 @@
 
 package com.android.inputmethod.event;
 
+import com.android.inputmethod.latin.Constants;
+
 /**
  * Class representing a generic input event as handled by Latin IME.
  *
@@ -73,6 +75,13 @@ public class Event {
     // NOT_A_KEY_CODE.
     final public int mKeyCode;
 
+    // Coordinates of the touch event, if relevant. If useful, we may want to replace this with
+    // a MotionEvent or something in the future. This is only relevant when the keypress is from
+    // a software keyboard obviously, unless there are touch-sensitive hardware keyboards in the
+    // future or some other awesome sauce.
+    final public int mX;
+    final public int mY;
+
     // Some flags that can't go into the key code. It's a bit field of FLAG_*
     final private int mFlags;
 
@@ -80,27 +89,40 @@ public class Event {
     final public Event mNextEvent;
 
     // This method is private - to create a new event, use one of the create* utility methods.
-    private Event(final int type, final int codePoint, final int keyCode, final int flags,
-            final Event next) {
+    private Event(final int type, final int codePoint, final int keyCode, final int x, final int y,
+            final int flags, final Event next) {
         mType = type;
         mCodePoint = codePoint;
         mKeyCode = keyCode;
+        mX = x;
+        mY = y;
         mFlags = flags;
         mNextEvent = next;
     }
 
-    public static Event createInputKeypressEvent(final int codePoint, final int keyCode,
+    public static Event createSoftwareKeypressEvent(final int codePoint, final int keyCode,
+            final int x, final int y) {
+        return new Event(EVENT_INPUT_KEYPRESS, codePoint, keyCode, x, y, FLAG_NONE, null);
+    }
+
+    public static Event createHardwareKeypressEvent(final int codePoint, final int keyCode,
             final Event next) {
-        return new Event(EVENT_INPUT_KEYPRESS, codePoint, keyCode, FLAG_NONE, next);
+        return new Event(EVENT_INPUT_KEYPRESS, codePoint, keyCode,
+                Constants.EXTERNAL_KEYBOARD_COORDINATE, Constants.EXTERNAL_KEYBOARD_COORDINATE,
+                FLAG_NONE, next);
     }
 
     // This creates an input event for a dead character. @see {@link #FLAG_DEAD}
     public static Event createDeadEvent(final int codePoint, final int keyCode, final Event next) {
-        return new Event(EVENT_INPUT_KEYPRESS, codePoint, keyCode, FLAG_DEAD, next);
+        // TODO: add an argument or something if we ever create a software layout with dead keys.
+        return new Event(EVENT_INPUT_KEYPRESS, codePoint, keyCode,
+                Constants.EXTERNAL_KEYBOARD_COORDINATE, Constants.EXTERNAL_KEYBOARD_COORDINATE,
+                FLAG_DEAD, next);
     }
 
     public static Event createNotHandledEvent() {
-        return new Event(EVENT_NOT_HANDLED, NOT_A_CODE_POINT, NOT_A_KEY_CODE, FLAG_NONE, null);
+        return new Event(EVENT_NOT_HANDLED, NOT_A_CODE_POINT, NOT_A_KEY_CODE,
+                Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE, FLAG_NONE, null);
     }
 
     // Returns whether this event is for a dead character. @see {@link #FLAG_DEAD}
