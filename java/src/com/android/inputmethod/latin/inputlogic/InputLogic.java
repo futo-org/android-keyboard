@@ -730,8 +730,7 @@ public final class InputLogic {
             resetComposingState(false /* alsoResetLastComposedWord */);
         }
         if (isComposingWord) {
-            // TODO: pass the entire event to the word composer.
-            mWordComposer.add(codePoint, inputTransaction.mEvent.mX, inputTransaction.mEvent.mY);
+            mWordComposer.add(inputTransaction.mEvent);
             // If it's the first letter, make note of auto-caps state
             if (mWordComposer.size() == 1) {
                 // We pass 1 to getPreviousWordForSuggestion because we were not composing a word

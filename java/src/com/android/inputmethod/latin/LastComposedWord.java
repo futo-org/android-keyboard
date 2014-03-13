@@ -18,6 +18,10 @@ package com.android.inputmethod.latin;
 
 import android.text.TextUtils;
 
+import com.android.inputmethod.event.Event;
+
+import java.util.ArrayList;
+
 /**
  * This class encapsulates data about a word previously composed, but that has been
  * committed already. This is used for resuming suggestion, and cancel auto-correction.
@@ -41,6 +45,7 @@ public final class LastComposedWord {
     public static final String NOT_A_SEPARATOR = "";
 
     public final int[] mPrimaryKeyCodes;
+    public final ArrayList<Event> mEvents;
     public final String mTypedWord;
     public final CharSequence mCommittedWord;
     public final String mSeparatorString;
@@ -52,19 +57,21 @@ public final class LastComposedWord {
     private boolean mActive;
 
     public static final LastComposedWord NOT_A_COMPOSED_WORD =
-            new LastComposedWord(null, null, "", "", NOT_A_SEPARATOR, null,
-            WordComposer.CAPS_MODE_OFF);
+            new LastComposedWord(null, new ArrayList<Event>(), null, "", "",
+            NOT_A_SEPARATOR, null, WordComposer.CAPS_MODE_OFF);
 
     // Warning: this is using the passed objects as is and fully expects them to be
     // immutable. Do not fiddle with their contents after you passed them to this constructor.
-    public LastComposedWord(final int[] primaryKeyCodes, final InputPointers inputPointers,
-            final String typedWord, final CharSequence committedWord, final String separatorString,
+    public LastComposedWord(final int[] primaryKeyCodes, final ArrayList<Event> events,
+            final InputPointers inputPointers, final String typedWord,
+            final CharSequence committedWord, final String separatorString,
             final String prevWord, final int capitalizedMode) {
         mPrimaryKeyCodes = primaryKeyCodes;
         if (inputPointers != null) {
             mInputPointers.copy(inputPointers);
         }
         mTypedWord = typedWord;
+        mEvents = new ArrayList<Event>(events);
         mCommittedWord = committedWord;
         mSeparatorString = separatorString;
         mActive = true;

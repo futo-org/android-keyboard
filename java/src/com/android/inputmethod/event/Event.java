@@ -120,6 +120,34 @@ public class Event {
                 FLAG_DEAD, next);
     }
 
+    /**
+     * Create an input event with nothing but a code point. This is the most basic possible input
+     * event; it contains no information on many things the IME requires to function correctly,
+     * so avoid using it unless really nothing is known about this input.
+     * @param codePoint the code point.
+     * @return an event for this code point.
+     */
+    public static Event createEventForCodePointFromUnknownSource(final int codePoint) {
+        // TODO: should we have a different type of event for this? After all, it's not a key press.
+        return new Event(EVENT_INPUT_KEYPRESS, codePoint, NOT_A_KEY_CODE,
+                Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE, FLAG_NONE, null /* next */);
+    }
+
+    /**
+     * Creates an input event with a code point and x, y coordinates. This is typically used when
+     * resuming a previously-typed word, when the coordinates are still known.
+     * @param codePoint the code point to input.
+     * @param x the X coordinate.
+     * @param y the Y coordinate.
+     * @return an event for this code point and coordinates.
+     */
+    public static Event createEventForCodePointFromAlreadyTypedText(final int codePoint,
+            final int x, final int y) {
+        // TODO: should we have a different type of event for this? After all, it's not a key press.
+        return new Event(EVENT_INPUT_KEYPRESS, codePoint, NOT_A_KEY_CODE, x, y, FLAG_NONE,
+                null /* next */);
+    }
+
     public static Event createNotHandledEvent() {
         return new Event(EVENT_NOT_HANDLED, NOT_A_CODE_POINT, NOT_A_KEY_CODE,
                 Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE, FLAG_NONE, null);

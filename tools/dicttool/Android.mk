@@ -29,32 +29,34 @@ include $(CLEAR_VARS)
 LATINIME_LOCAL_DIR := ../..
 LATINIME_BASE_SOURCE_DIRECTORY := $(LATINIME_LOCAL_DIR)/java/src/com/android/inputmethod
 LATINIME_ANNOTATIONS_SOURCE_DIRECTORY := $(LATINIME_BASE_SOURCE_DIRECTORY)/annotations
-LATINIME_CORE_SOURCE_DIRECTORY := $(LATINIME_BASE_SOURCE_DIRECTORY)/latin
-MAKEDICT_CORE_SOURCE_DIRECTORY := $(LATINIME_CORE_SOURCE_DIRECTORY)/makedict
+MAKEDICT_CORE_SOURCE_DIRECTORY := $(LATINIME_BASE_SOURCE_DIRECTORY)/latin/makedict
 
 # Dependencies for Dicttool. Most of these files are needed by BinaryDictionary.java. Note that
 # a significant part of the dependencies are mocked in the compat/ directory, with empty or
 # nearly-empty implementations, for parts that we don't use in Dicttool.
-USED_TARGETTED_UTILS := \
-        $(LATINIME_CORE_SOURCE_DIRECTORY)/BinaryDictionary.java \
-        $(LATINIME_CORE_SOURCE_DIRECTORY)/DicTraverseSession.java \
-        $(LATINIME_CORE_SOURCE_DIRECTORY)/Dictionary.java \
-        $(LATINIME_CORE_SOURCE_DIRECTORY)/InputPointers.java \
-        $(LATINIME_CORE_SOURCE_DIRECTORY)/LastComposedWord.java \
-        $(LATINIME_CORE_SOURCE_DIRECTORY)/LatinImeLogger.java \
-        $(LATINIME_CORE_SOURCE_DIRECTORY)/SuggestedWords.java \
-        $(LATINIME_CORE_SOURCE_DIRECTORY)/WordComposer.java \
-        $(LATINIME_CORE_SOURCE_DIRECTORY)/settings/NativeSuggestOptions.java \
-        $(LATINIME_CORE_SOURCE_DIRECTORY)/utils/BinaryDictionaryUtils.java \
-        $(LATINIME_CORE_SOURCE_DIRECTORY)/utils/ByteArrayDictBuffer.java \
-        $(LATINIME_CORE_SOURCE_DIRECTORY)/utils/CollectionUtils.java \
-        $(LATINIME_CORE_SOURCE_DIRECTORY)/utils/CombinedFormatUtils.java \
-        $(LATINIME_CORE_SOURCE_DIRECTORY)/utils/CoordinateUtils.java \
-        $(LATINIME_CORE_SOURCE_DIRECTORY)/utils/FileUtils.java \
-        $(LATINIME_CORE_SOURCE_DIRECTORY)/utils/JniUtils.java \
-        $(LATINIME_CORE_SOURCE_DIRECTORY)/utils/LocaleUtils.java \
-        $(LATINIME_CORE_SOURCE_DIRECTORY)/utils/ResizableIntArray.java \
-        $(LATINIME_CORE_SOURCE_DIRECTORY)/utils/StringUtils.java
+LATINIME_SRCS_FOR_DICTTOOL := \
+        event/Event.java \
+        latin/BinaryDictionary.java \
+        latin/DicTraverseSession.java \
+        latin/Dictionary.java \
+        latin/InputPointers.java \
+        latin/LastComposedWord.java \
+        latin/LatinImeLogger.java \
+        latin/SuggestedWords.java \
+        latin/WordComposer.java \
+        latin/settings/NativeSuggestOptions.java \
+        latin/utils/BinaryDictionaryUtils.java \
+        latin/utils/ByteArrayDictBuffer.java \
+        latin/utils/CollectionUtils.java \
+        latin/utils/CombinedFormatUtils.java \
+        latin/utils/CoordinateUtils.java \
+        latin/utils/FileUtils.java \
+        latin/utils/JniUtils.java \
+        latin/utils/LocaleUtils.java \
+        latin/utils/ResizableIntArray.java \
+        latin/utils/StringUtils.java
+USED_TARGETED_SRCS := $(addprefix $(LATINIME_BASE_SOURCE_DIRECTORY)/, \
+        $(LATINIME_SRCS_FOR_DICTTOOL))
 
 DICTTOOL_ONDEVICE_TESTS_DIRECTORY := \
         $(LATINIME_LOCAL_DIR)/tests/src/com/android/inputmethod/latin/makedict/
@@ -68,11 +70,11 @@ LOCAL_ANNOTATIONS_SRC_FILES := \
 LOCAL_SRC_FILES := $(LOCAL_TOOL_SRC_FILES) \
         $(filter-out $(addprefix %/, $(notdir $(LOCAL_TOOL_SRC_FILES))), $(LOCAL_MAIN_SRC_FILES)) \
         $(LOCAL_ANNOTATIONS_SRC_FILES) \
-        $(LATINIME_CORE_SOURCE_DIRECTORY)/Constants.java \
+        $(LATINIME_BASE_SOURCE_DIRECTORY)/latin/Constants.java \
         $(call all-java-files-under, tests) \
         $(call all-java-files-under, $(DICTTOOL_ONDEVICE_TESTS_DIRECTORY)) \
         $(call all-java-files-under, $(DICTTOOL_COMPAT_TESTS_DIRECTORY)) \
-        $(USED_TARGETTED_UTILS)
+        $(USED_TARGETED_SRCS)
 
 LOCAL_JAVA_LIBRARIES := junit
 LOCAL_ADDITIONAL_DEPENDENCIES := $(LATINIME_HOST_NATIVE_LIBNAME)

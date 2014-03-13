@@ -16,10 +16,14 @@
 
 package com.android.inputmethod.latin;
 
+import com.android.inputmethod.event.Event;
+import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.CoordinateUtils;
 import com.android.inputmethod.latin.utils.StringUtils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 /**
  * A place to store the currently composing word with information such as adjacent key codes as well
@@ -41,6 +45,8 @@ public final class WordComposer {
     // and mCodePointSize can go past that. If mCodePointSize is greater than MAX_WORD_LENGTH,
     // this just does not contain the associated code points past MAX_WORD_LENGTH.
     private int[] mPrimaryKeyCodes;
+    // The list of events that served to compose this string.
+    private final ArrayList<Event> mEvents;
     private final InputPointers mInputPointers = new InputPointers(MAX_WORD_LENGTH);
     // This is the typed word, as a StringBuilder. This has the same contents as mPrimaryKeyCodes
     // but under a StringBuilder representation for ease of use, depending on what is more useful
@@ -82,6 +88,7 @@ public final class WordComposer {
 
     public WordComposer() {
         mPrimaryKeyCodes = new int[MAX_WORD_LENGTH];
+        mEvents = CollectionUtils.newArrayList();
         mTypedWord = new StringBuilder(MAX_WORD_LENGTH);
         mAutoCorrection = null;
         mTrailingSingleQuotesCount = 0;
@@ -95,6 +102,7 @@ public final class WordComposer {
 
     public WordComposer(final WordComposer source) {
         mPrimaryKeyCodes = Arrays.copyOf(source.mPrimaryKeyCodes, source.mPrimaryKeyCodes.length);
+        mEvents = new ArrayList<Event>(source.mEvents);
         mTypedWord = new StringBuilder(source.mTypedWord);
         mInputPointers.copy(source.mInputPointers);
         mCapsCount = source.mCapsCount;
@@ -115,6 +123,7 @@ public final class WordComposer {
      */
     public void reset() {
         mTypedWord.setLength(0);
+        mEvents.clear();
         mAutoCorrection = null;
         mCapsCount = 0;
         mDigitsCount = 0;
@@ -170,11 +179,16 @@ public final class WordComposer {
     }
 
     /**
-     * Add a new keystroke, with the pressed key's code point with the touch point coordinates.
+     * Add a new event for a key stroke, with the pressed key's code point with the touch point
+     * coordinates.
      */
-    public void add(final int primaryCode, final int keyX, final int keyY) {
+    public void add(final Event event) {
+        final int primaryCode = event.mCodePoint;
+        final int keyX = event.mX;
+        final int keyY = event.mY;
         final int newIndex = size();
         mTypedWord.appendCodePoint(primaryCode);
+        mEvents.add(event);
         refreshSize();
         mCursorPositionWithinWord = mCodePointSize;
         if (newIndex < MAX_WORD_LENGTH) {
@@ -202,6 +216,7 @@ public final class WordComposer {
 
     public void setCursorPositionWithinWord(final int posWithinWord) {
         mCursorPositionWithinWord = posWithinWord;
+        // TODO: compute where that puts us inside the events
     }
 
     public boolean isCursorFrontOrMiddleOfComposingWord() {
@@ -268,7 +283,7 @@ public final class WordComposer {
             final int codePoint = Character.codePointAt(word, i);
             // We don't want to override the batch input points that are held in mInputPointers
             // (See {@link #add(int,int,int)}).
-            add(codePoint, Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
+            add(Event.createEventForCodePointFromUnknownSource(codePoint));
         }
     }
 
@@ -285,8 +300,9 @@ public final class WordComposer {
         reset();
         final int length = codePoints.length;
         for (int i = 0; i < length; ++i) {
-            add(codePoints[i], CoordinateUtils.xFromArray(coordinates, i),
-                    CoordinateUtils.yFromArray(coordinates, i));
+            add(Event.createEventForCodePointFromAlreadyTypedText(codePoints[i],
+                    CoordinateUtils.xFromArray(coordinates, i),
+                    CoordinateUtils.yFromArray(coordinates, i)));
         }
         mIsResumed = true;
         mPreviousWordForSuggestion = null == previousWord ? null : previousWord.toString();
@@ -305,6 +321,8 @@ public final class WordComposer {
                         "In WordComposer: mCodes and mTypedWords have non-matching lengths");
             }
             final int lastChar = mTypedWord.codePointBefore(stringBuilderLength);
+            // TODO: with events and composition, this is absolutely not necessarily true.
+            mEvents.remove(mEvents.size() - 1);
             if (Character.isSupplementaryCodePoint(lastChar)) {
                 mTypedWord.delete(stringBuilderLength - 2, stringBuilderLength);
             } else {
@@ -445,7 +463,7 @@ public final class WordComposer {
         // the last composed word to ensure this does not happen.
         final int[] primaryKeyCodes = mPrimaryKeyCodes;
         mPrimaryKeyCodes = new int[MAX_WORD_LENGTH];
-        final LastComposedWord lastComposedWord = new LastComposedWord(primaryKeyCodes,
+        final LastComposedWord lastComposedWord = new LastComposedWord(primaryKeyCodes, mEvents,
                 mInputPointers, mTypedWord.toString(), committedWord, separatorString,
                 prevWord, mCapitalizedMode);
         mInputPointers.reset();
@@ -458,6 +476,7 @@ public final class WordComposer {
         mIsBatchMode = false;
         mPreviousWordForSuggestion = committedWord.toString();
         mTypedWord.setLength(0);
+        mEvents.clear();
         mCodePointSize = 0;
         mTrailingSingleQuotesCount = 0;
         mIsFirstCharCapitalized = false;
@@ -480,6 +499,8 @@ public final class WordComposer {
     public void resumeSuggestionOnLastComposedWord(final LastComposedWord lastComposedWord,
             final String previousWord) {
         mPrimaryKeyCodes = lastComposedWord.mPrimaryKeyCodes;
+        mEvents.clear();
+        Collections.copy(mEvents, lastComposedWord.mEvents);
         mInputPointers.set(lastComposedWord.mInputPointers);
         mTypedWord.setLength(0);
         mTypedWord.append(lastComposedWord.mTypedWord);
