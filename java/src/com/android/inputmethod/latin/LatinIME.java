@@ -45,6 +45,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.PrintWriterPrinter;
 import android.util.Printer;
+import android.util.SparseArray;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
@@ -60,6 +61,8 @@ import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.compat.InputMethodServiceCompatUtils;
 import com.android.inputmethod.dictionarypack.DictionaryPackConstants;
 import com.android.inputmethod.event.Event;
+import com.android.inputmethod.event.HardwareEventDecoder;
+import com.android.inputmethod.event.HardwareKeyboardEventDecoder;
 import com.android.inputmethod.event.InputTransaction;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardActionListener;
@@ -120,6 +123,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private final Settings mSettings;
     private final InputLogic mInputLogic = new InputLogic(this /* LatinIME */,
             this /* SuggestionStripViewAccessor */);
+    // We expect to have only one decoder in almost all cases, hence the default capacity of 1.
+    // If it turns out we need several, it will get grown seamlessly.
+    final SparseArray<HardwareEventDecoder> mHardwareEventDecoders
+            = new SparseArray<HardwareEventDecoder>(1);
 
     private View mExtractArea;
     private View mKeyPreviewBackingView;
@@ -1588,19 +1595,31 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
     }
 
+    private HardwareEventDecoder getHardwareKeyEventDecoder(final int deviceId) {
+        final HardwareEventDecoder decoder = mHardwareEventDecoders.get(deviceId);
+        if (null != decoder) return decoder;
+        // TODO: create the decoder according to the specification
+        final HardwareEventDecoder newDecoder = new HardwareKeyboardEventDecoder(deviceId);
+        mHardwareEventDecoders.put(deviceId, newDecoder);
+        return newDecoder;
+    }
+
     // Hooks for hardware keyboard
     @Override
-    public boolean onKeyDown(final int keyCode, final KeyEvent event) {
-        if (!ProductionFlag.IS_HARDWARE_KEYBOARD_SUPPORTED) return super.onKeyDown(keyCode, event);
-        // onHardwareKeyEvent, like onKeyDown returns true if it handled the event, false if
-        // it doesn't know what to do with it and leave it to the application. For example,
-        // hardware key events for adjusting the screen's brightness are passed as is.
-        if (mInputLogic.mEventInterpreter.onHardwareKeyEvent(event)) {
-            final long keyIdentifier = event.getDeviceId() << 32 + event.getKeyCode();
-            mInputLogic.mCurrentlyPressedHardwareKeys.add(keyIdentifier);
+    public boolean onKeyDown(final int keyCode, final KeyEvent keyEvent) {
+        if (!ProductionFlag.IS_HARDWARE_KEYBOARD_SUPPORTED) {
+            return super.onKeyDown(keyCode, keyEvent);
+        }
+        final Event event = getHardwareKeyEventDecoder(
+                keyEvent.getDeviceId()).decodeHardwareKey(keyEvent);
+        // If the event is not handled by LatinIME, we just pass it to the parent implementation.
+        // If it's handled, we return true because we did handle it.
+        if (event.isHandled()) {
+            mInputLogic.onCodeInput(mSettings.getCurrent(), event,
+                    mKeyboardSwitcher.getKeyboardShiftMode(), mHandler);
             return true;
         }
-        return super.onKeyDown(keyCode, event);
+        return super.onKeyDown(keyCode, keyEvent);
     }
 
     @Override

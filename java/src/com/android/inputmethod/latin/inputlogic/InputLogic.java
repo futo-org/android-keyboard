@@ -80,8 +80,6 @@ public final class InputLogic {
     public SuggestedWords mSuggestedWords = SuggestedWords.EMPTY;
     // TODO: mSuggest should be touched by a single thread.
     public volatile Suggest mSuggest;
-    // The event interpreter should never be null.
-    public final EventInterpreter mEventInterpreter;
 
     public LastComposedWord mLastComposedWord = LastComposedWord.NOT_A_COMPOSED_WORD;
     public final WordComposer mWordComposer;
@@ -104,7 +102,6 @@ public final class InputLogic {
         mLatinIME = latinIME;
         mSuggestionStripViewAccessor = suggestionStripViewAccessor;
         mWordComposer = new WordComposer();
-        mEventInterpreter = new EventInterpreter(latinIME);
         mConnection = new RichInputConnection(latinIME);
         mInputLogicHandler = InputLogicHandler.NULL_HANDLER;
     }
