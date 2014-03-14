@@ -114,7 +114,7 @@ public class Symbols extends AbstractLayoutBase {
     public static ExpectedKey[] SINGLE_ANGLE_QUOTES_RL = { SAQUOTE_RIGHT, SAQUOTE_LEFT };
 
     // Common symbols keyboard layout.
-    private static final ExpectedKey[][] SYMBOLS_COMMON = new ExpectedKeyboardBuilder(10, 9, 7, 5)
+    private static final ExpectedKey[][] SYMBOLS_COMMON = new ExpectedKeyboardBuilder()
             .setKeysOfRow(1,
                     // U+00B9: "¹" SUPERSCRIPT ONE
                     // U+00BD: "½" VULGAR FRACTION ONE HALF

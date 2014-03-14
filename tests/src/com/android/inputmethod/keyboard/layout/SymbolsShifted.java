@@ -70,8 +70,7 @@ public class SymbolsShifted extends AbstractLayoutBase {
     };
 
     // Common symbols shifted keyboard layout.
-    private static final ExpectedKey[][] SYMBOLS_SHIFTED_COMMON = new ExpectedKeyboardBuilder(
-            10, 1 /* other_currencies */+ 5, 7, 5)
+    private static final ExpectedKey[][] SYMBOLS_SHIFTED_COMMON = new ExpectedKeyboardBuilder()
             .setKeysOfRow(1,
                     key("~"),
                     // U+0060: "`" GRAVE ACCENT

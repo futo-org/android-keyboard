@@ -23,8 +23,8 @@ import java.util.Locale;
  * This class builds an expected keyboard for unit test.
  */
 public final class ExpectedKeyboardBuilder extends AbstractKeyboardBuilder<ExpectedKey> {
-    public ExpectedKeyboardBuilder(final int ... dimensions) {
-        super(dimensions);
+    public ExpectedKeyboardBuilder() {
+        super();
     }
 
     public ExpectedKeyboardBuilder(final ExpectedKey[][] rows) {

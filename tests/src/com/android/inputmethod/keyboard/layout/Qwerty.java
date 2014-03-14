@@ -35,7 +35,7 @@ public final class Qwerty extends LayoutBase {
     @Override
     ExpectedKey[][] getCommonAlphabetLayout(final boolean isPhone) { return ALPHABET_COMMON; }
 
-    private static final ExpectedKey[][] ALPHABET_COMMON = new ExpectedKeyboardBuilder(10, 9, 7, 3)
+    private static final ExpectedKey[][] ALPHABET_COMMON = new ExpectedKeyboardBuilder()
             .setLabelsOfRow(1, "q", "w", "e", "r", "t", "y", "u", "i", "o", "p")
             .setMoreKeysOf("q", "1")
             .setMoreKeysOf("w", "2")
