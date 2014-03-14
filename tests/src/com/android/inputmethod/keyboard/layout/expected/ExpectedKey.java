@@ -47,6 +47,13 @@ public class ExpectedKey {
                 ExpectedKeyOutput.newInstance(code), moreKeys);
     }
 
+    // A key that has an icon and an output text and may have "more keys".
+    static ExpectedKey newInstance(final int iconId, final String outputText,
+            final ExpectedKey ... moreKeys) {
+        return newInstance(ExpectedKeyVisual.newInstance(iconId),
+                ExpectedKeyOutput.newInstance(outputText), moreKeys);
+    }
+
     // A key that has an icon and a code point output and may have "more keys".
     static ExpectedKey newInstance(final int iconId, final int code,
             final ExpectedKey ... moreKeys) {

@@ -32,13 +32,28 @@ public class Symbols extends AbstractLayoutBase {
     }
 
     public ExpectedKey[][] getLayout(final boolean isPhone) {
-        final ExpectedKeyboardBuilder builder = new ExpectedKeyboardBuilder(isPhone
-                ? toPhoneSymbol(SYMBOLS_COMMON) : toTabletSymbols(SYMBOLS_COMMON));
-        builder.replaceKeyOfLabel(CURRENCY, mCustomizer.getCurrencyKey());
-        builder.replaceKeyOfLabel(DOUBLE_QUOTE, key("\"", joinKeys(
-                mCustomizer.getDoubleQuoteMoreKeys(), mCustomizer.getDoubleAngleQuoteKeys())));
-        builder.replaceKeyOfLabel(SINGLE_QUOTE, key("'", joinKeys(
-                mCustomizer.getSingleQuoteMoreKeys(), mCustomizer.getSingleAngleQuoteKeys())));
+        final ExpectedKeyboardBuilder builder = new ExpectedKeyboardBuilder(SYMBOLS_COMMON);
+        final LayoutCustomizer customizer = mCustomizer;
+        builder.replaceKeyOfLabel(CURRENCY, customizer.getCurrencyKey());
+        builder.replaceKeyOfLabel(DOUBLE_QUOTE, key("\"", joinMoreKeys(
+                customizer.getDoubleQuoteMoreKeys(), customizer.getDoubleAngleQuoteKeys())));
+        builder.replaceKeyOfLabel(SINGLE_QUOTE, key("'", joinMoreKeys(
+                customizer.getSingleQuoteMoreKeys(), customizer.getSingleAngleQuoteKeys())));
+        if (isPhone) {
+            builder.addKeysOnTheLeftOfRow(3, customizer.getSymbolsShiftKey(isPhone))
+                    .addKeysOnTheRightOfRow(3, DELETE_KEY)
+                    .addKeysOnTheLeftOfRow(4, customizer.getAlphabetKey())
+                    .addKeysOnTheRightOfRow(4, key(ENTER_KEY, EMOJI_KEY));
+        } else {
+            // Tablet symbols keyboard has extra two keys at the left edge of the 3rd row.
+            builder.addKeysOnTheLeftOfRow(3, joinKeys("\\", "="));
+            builder.addKeysOnTheRightOfRow(1, DELETE_KEY)
+                    .addKeysOnTheRightOfRow(2, ENTER_KEY)
+                    .addKeysOnTheLeftOfRow(3, customizer.getSymbolsShiftKey(isPhone))
+                    .addKeysOnTheRightOfRow(3, customizer.getSymbolsShiftKey(isPhone))
+                    .addKeysOnTheLeftOfRow(4, customizer.getAlphabetKey())
+                    .addKeysOnTheRightOfRow(4, EMOJI_KEY);
+        }
         return builder.build();
     }
 
@@ -100,75 +115,60 @@ public class Symbols extends AbstractLayoutBase {
 
     // Common symbols keyboard layout.
     private static final ExpectedKey[][] SYMBOLS_COMMON = new ExpectedKeyboardBuilder(10, 9, 7, 5)
-            .setLabelsOfRow(1, "1", "2", "3", "4", "5", "6", "7", "8", "9", "0")
-            // U+00B9: "¹" SUPERSCRIPT ONE
-            // U+00BD: "½" VULGAR FRACTION ONE HALF
-            // U+2153: "⅓" VULGAR FRACTION ONE THIRD
-            // U+00BC: "¼" VULGAR FRACTION ONE QUARTER
-            // U+215B: "⅛" VULGAR FRACTION ONE EIGHTH
-            .setMoreKeysOf("1", "\u00B9", "\u00BD", "\u2153", "\u00BC", "\u215B")
-            // U+00B2: "²" SUPERSCRIPT TWO
-            // U+2154: "⅔" VULGAR FRACTION TWO THIRDS
-            .setMoreKeysOf("2", "\u00B2", "\u2154")
-            // U+00B3: "³" SUPERSCRIPT THREE
-            // U+00BE: "¾" VULGAR FRACTION THREE QUARTERS
-            // U+215C: "⅜" VULGAR FRACTION THREE EIGHTHS
-            .setMoreKeysOf("3", "\u00B3", "\u00BE", "\u215C")
-            // U+2074: "⁴" SUPERSCRIPT FOUR
-            .setMoreKeysOf("4", "\u2074")
-            // U+215D: "⅝" VULGAR FRACTION FIVE EIGHTHS
-            .setMoreKeysOf("5", "\u215D")
-            // U+215E: "⅞" VULGAR FRACTION SEVEN EIGHTHS
-            .setMoreKeysOf("7", "\u215E")
-            // U+207F: "ⁿ" SUPERSCRIPT LATIN SMALL LETTER N
-            // U+2205: "∅" EMPTY SET
-            .setMoreKeysOf("0", "\u207F", "\u2205")
-            .setLabelsOfRow(2, "@", "#", CURRENCY, "%", "&", "-", "+", "(", ")")
-            // U+2030: "‰" PER MILLE SIGN
-            .setMoreKeysOf("%", "\u2030")
-            // U+2013: "–" EN DASH
-            // U+2014: "—" EM DASH
-            // U+00B7: "·" MIDDLE DOT
-            .setMoreKeysOf("-", "_", "\u2013", "\u2014", "\u00B7")
-            // U+00B1: "±" PLUS-MINUS SIGN
-            .setMoreKeysOf("+", "\u00B1")
-            .setMoreKeysOf("(", "<", "{", "[")
-            .setMoreKeysOf(")", ">", "}", "]")
-            .setLabelsOfRow(3, "*", DOUBLE_QUOTE, SINGLE_QUOTE, ":", ";", "!", "?")
-            // U+2020: "†" DAGGER
-            // U+2021: "‡" DOUBLE DAGGER
-            // U+2605: "★" BLACK STAR
-            .setMoreKeysOf("*", "\u2020", "\u2021", "\u2605")
-            // U+00A1: "¡" INVERTED EXCLAMATION MARK
-            .setMoreKeysOf("!", "\u00A1")
-            // U+00BF: "¿" INVERTED QUESTION MARK
-            .setMoreKeysOf("?", "\u00BF")
-            .setLabelsOfRow(4, "_", "/", " ", ",", ".")
-            // U+2026: "…" HORIZONTAL ELLIPSIS
-            .setMoreKeysOf(".", "\u2026")
+            .setKeysOfRow(1,
+                    // U+00B9: "¹" SUPERSCRIPT ONE
+                    // U+00BD: "½" VULGAR FRACTION ONE HALF
+                    // U+2153: "⅓" VULGAR FRACTION ONE THIRD
+                    // U+00BC: "¼" VULGAR FRACTION ONE QUARTER
+                    // U+215B: "⅛" VULGAR FRACTION ONE EIGHTH
+                    key("1", joinMoreKeys("\u00B9", "\u00BD", "\u2153", "\u00BC", "\u215B")),
+                    // U+00B2: "²" SUPERSCRIPT TWO
+                    // U+2154: "⅔" VULGAR FRACTION TWO THIRDS
+                    key("2", joinMoreKeys("\u00B2", "\u2154")),
+                    // U+00B3: "³" SUPERSCRIPT THREE
+                    // U+00BE: "¾" VULGAR FRACTION THREE QUARTERS
+                    // U+215C: "⅜" VULGAR FRACTION THREE EIGHTHS
+                    key("3", joinMoreKeys("\u00B3", "\u00BE", "\u215C")),
+                    // U+2074: "⁴" SUPERSCRIPT FOUR
+                    key("4", moreKey("\u2074")),
+                    // U+215D: "⅝" VULGAR FRACTION FIVE EIGHTHS
+                    key("5", moreKey("\u215D")),
+                    key("6"),
+                    // U+215E: "⅞" VULGAR FRACTION SEVEN EIGHTHS
+                    key("7", moreKey("\u215E")),
+                    key("8"),
+                    key("9"),
+                    // U+207F: "ⁿ" SUPERSCRIPT LATIN SMALL LETTER N
+                    // U+2205: "∅" EMPTY SET
+                    key("0", joinMoreKeys("\u207F", "\u2205")))
+            .setKeysOfRow(2,
+                    key("@"), key("#"), key(CURRENCY),
+                    // U+2030: "‰" PER MILLE SIGN
+                    key("%", moreKey("\u2030")),
+                    key("&"),
+                    // U+2013: "–" EN DASH
+                    // U+2014: "—" EM DASH
+                    // U+00B7: "·" MIDDLE DOT
+                    key("-", joinMoreKeys("_", "\u2013", "\u2014", "\u00B7")),
+                    // U+00B1: "±" PLUS-MINUS SIGN
+                    key("+", moreKey("\u00B1")),
+                    key("(", joinMoreKeys("<", "{", "[")),
+                    key(")", joinMoreKeys(">", "}", "]")))
+            .setKeysOfRow(3,
+                    // U+2020: "†" DAGGER
+                    // U+2021: "‡" DOUBLE DAGGER
+                    // U+2605: "★" BLACK STAR
+                    key("*", joinMoreKeys("\u2020", "\u2021", "\u2605")),
+                    key(DOUBLE_QUOTE), key(SINGLE_QUOTE), key(":"), key(";"),
+                    // U+00A1: "¡" INVERTED EXCLAMATION MARK
+                    key("!", moreKey("\u00A1")),
+                    // U+00BF: "¿" INVERTED QUESTION MARK
+                    key("?", moreKey("\u00BF")))
+            .setKeysOfRow(4,
+                    key("_"), key("/"), SPACE_KEY, key(","),
+                    // U+2026: "…" HORIZONTAL ELLIPSIS
+                    key(".", moreKey("\u2026")))
             .build();
-
-    private ExpectedKey[][] toPhoneSymbol(final ExpectedKey[][] common) {
-        return new ExpectedKeyboardBuilder(common)
-                .addKeysOnTheLeftOfRow(3, mCustomizer.getSymbolsShiftKey(true /* isPhone */))
-                .addKeysOnTheRightOfRow(3, DELETE_KEY)
-                .addKeysOnTheLeftOfRow(4, mCustomizer.getAlphabetKey())
-                .addKeysOnTheRightOfRow(4, key(ENTER_KEY, EMOJI_KEY))
-                .build();
-    }
-
-    private ExpectedKey[][] toTabletSymbols(final ExpectedKey[][] common) {
-        return new ExpectedKeyboardBuilder(common)
-                .addKeysOnTheLeftOfRow(3,
-                        key("\\"), key("="))
-                .addKeysOnTheRightOfRow(1, DELETE_KEY)
-                .addKeysOnTheRightOfRow(2, ENTER_KEY)
-                .addKeysOnTheLeftOfRow(3, mCustomizer.getSymbolsShiftKey(false /* isPhone */))
-                .addKeysOnTheRightOfRow(3, mCustomizer.getSymbolsShiftKey(false /* isPhone */))
-                .addKeysOnTheLeftOfRow(4, mCustomizer.getAlphabetKey())
-                .addKeysOnTheRightOfRow(4, EMOJI_KEY)
-                .build();
-    }
 
     public static class RtlSymbols extends Symbols {
         public RtlSymbols(final LayoutCustomizer customizer) {

@@ -32,10 +32,26 @@ public class SymbolsShifted extends AbstractLayoutBase {
     }
 
     public ExpectedKey[][] getLayout(final boolean isPhone) {
-        final ExpectedKeyboardBuilder builder = new ExpectedKeyboardBuilder(isPhone
-                ? toPhoneSymbolsShifted(SYMBOLS_SHIFTED_COMMON)
-                : toTabletSymbolsShifted(SYMBOLS_SHIFTED_COMMON));
-        builder.replaceKeyOfLabel(OTHER_CURRENCIES, mCustomizer.getOtherCurrencyKeys());
+        final ExpectedKeyboardBuilder builder = new ExpectedKeyboardBuilder(SYMBOLS_SHIFTED_COMMON);
+        final LayoutCustomizer customizer = mCustomizer;
+        builder.replaceKeyOfLabel(OTHER_CURRENCIES, customizer.getOtherCurrencyKeys());
+        if (isPhone) {
+            builder.addKeysOnTheLeftOfRow(3, customizer.getBackToSymbolsKey())
+                    .addKeysOnTheRightOfRow(3, DELETE_KEY)
+                    .addKeysOnTheLeftOfRow(4, customizer.getAlphabetKey())
+                    .addKeysOnTheRightOfRow(4, key(ENTER_KEY, EMOJI_KEY));
+        } else {
+            // Tablet symbols shifted keyboard has extra two keys at the right edge of the 3rd row.
+            // U+00BF: "¿" INVERTED QUESTION MARK
+            // U+00A1: "¡" INVERTED EXCLAMATION MARK
+            builder.addKeysOnTheRightOfRow(3, joinKeys("\u00A1", "\u00BF"));
+            builder.addKeysOnTheRightOfRow(1, DELETE_KEY)
+                    .addKeysOnTheRightOfRow(2, ENTER_KEY)
+                    .addKeysOnTheLeftOfRow(3, customizer.getBackToSymbolsKey())
+                    .addKeysOnTheRightOfRow(3, customizer.getBackToSymbolsKey())
+                    .addKeysOnTheLeftOfRow(4, customizer.getAlphabetKey())
+                    .addKeysOnTheRightOfRow(4, EMOJI_KEY);
+        }
         return builder.build();
     }
 
@@ -54,91 +70,70 @@ public class SymbolsShifted extends AbstractLayoutBase {
     };
 
     // Common symbols shifted keyboard layout.
-    private static final ExpectedKey[][] SYMBOLS_SHIFTED_COMMON =
-            new ExpectedKeyboardBuilder(10, 1 /* other_currencies */ + 5, 7, 5)
-            // U+0060: "`" GRAVE ACCENT
-            // U+2022: "•" BULLET
-            // U+221A: "√" SQUARE ROOT
-            // U+03C0: "π" GREEK SMALL LETTER PI
-            // U+00F7: "÷" DIVISION SIGN
-            // U+00D7: "×" MULTIPLICATION SIGN
-            // U+00B6: "¶" PILCROW SIGN
-            // U+2206: "∆" INCREMENT
-            .setLabelsOfRow(1,
-                    "~", "\u0060", "|", "\u2022", "\u221A",
-                    "\u03C0", "\u00F7", "\u00D7", "\u00B6", "\u2206")
-            // U+2022: "•" BULLET
-            // U+266A: "♪" EIGHTH NOTE
-            // U+2665: "♥" BLACK HEART SUIT
-            // U+2660: "♠" BLACK SPADE SUIT
-            // U+2666: "♦" BLACK DIAMOND SUIT
-            // U+2663: "♣" BLACK CLUB SUIT
-            .setMoreKeysOf("\u2022", "\u266A", "\u2665", "\u2660", "\u2666", "\u2663")
-            // U+03C0: "π" GREEK SMALL LETTER PI
-            // U+03A0: "Π" GREEK CAPITAL LETTER PI
-            .setMoreKeysOf("\u03C0", "\u03A0")
-            // U+00B6: "¶" PILCROW SIGN
-            // U+00A7: "§" SECTION SIGN
-            .setMoreKeysOf("\u00B6", "\u00A7")
-            // U+00B0: "°" DEGREE SIGN
-            .setLabelsOfRow(2, OTHER_CURRENCIES, "^", "\u00B0", "=", "{", "}")
-            // U+2191: "↑" UPWARDS ARROW
-            // U+2193: "↓" DOWNWARDS ARROW
-            // U+2190: "←" LEFTWARDS ARROW
-            // U+2192: "→" RIGHTWARDS ARROW
-            .setMoreKeysOf("^", "\u2191", "\u2193", "\u2190", "\u2192")
-            // U+00B0: "°" DEGREE SIGN
-            // U+2032: "′" PRIME
-            // U+2033: "″" DOUBLE PRIME
-            .setMoreKeysOf("\u00B0", "\u2032", "\u2033")
-            // U+2260: "≠" NOT EQUAL TO
-            // U+2248: "≈" ALMOST EQUAL TO
-            // U+221E: "∞" INFINITY
-            .setMoreKeysOf("=", "\u2260", "\u2248", "\u221E")
-            // U+00A9: "©" COPYRIGHT SIGN
-            // U+00AE: "®" REGISTERED SIGN
-            // U+2122: "™" TRADE MARK SIGN
-            // U+2105: "℅" CARE OF
+    private static final ExpectedKey[][] SYMBOLS_SHIFTED_COMMON = new ExpectedKeyboardBuilder(
+            10, 1 /* other_currencies */+ 5, 7, 5)
+            .setKeysOfRow(1,
+                    key("~"),
+                    // U+0060: "`" GRAVE ACCENT
+                    key("\u0060"),
+                    key("|"),
+                    // U+2022: "•" BULLET
+                    // U+266A: "♪" EIGHTH NOTE
+                    // U+2665: "♥" BLACK HEART SUIT
+                    // U+2660: "♠" BLACK SPADE SUIT
+                    // U+2666: "♦" BLACK DIAMOND SUIT
+                    // U+2663: "♣" BLACK CLUB SUIT
+                    key("\u2022", joinMoreKeys("\u266A", "\u2665", "\u2660", "\u2666", "\u2663")),
+                    // U+221A: "√" SQUARE ROOT
+                    key("\u221A"),
+                    // U+03C0: "π" GREEK SMALL LETTER PI
+                    // U+03A0: "Π" GREEK CAPITAL LETTER PI
+                    key("\u03C0", moreKey("\u03A0")),
+                    // U+00F7: "÷" DIVISION SIGN
+                    key("\u00F7"),
+                    // U+00D7: "×" MULTIPLICATION SIGN
+                    key("\u00D7"),
+                    // U+00B6: "¶" PILCROW SIGN
+                    // U+00A7: "§" SECTION SIGN
+                    key("\u00B6", moreKey("\u00A7")),
+                    // U+2206: "∆" INCREMENT
+                    key("\u2206"))
+            .setKeysOfRow(2,
+                    key(OTHER_CURRENCIES),
+                    // U+2191: "↑" UPWARDS ARROW
+                    // U+2193: "↓" DOWNWARDS ARROW
+                    // U+2190: "←" LEFTWARDS ARROW
+                    // U+2192: "→" RIGHTWARDS ARROW
+                    key("^", joinMoreKeys("\u2191", "\u2193", "\u2190", "\u2192")),
+                    // U+00B0: "°" DEGREE SIGN
+                    // U+2032: "′" PRIME
+                    // U+2033: "″" DOUBLE PRIME
+                    key("\u00B0", joinMoreKeys("\u2032", "\u2033")),
+                    // U+2260: "≠" NOT EQUAL TO
+                    // U+2248: "≈" ALMOST EQUAL TO
+                    // U+221E: "∞" INFINITY
+                    key("=", joinMoreKeys("\u2260", "\u2248", "\u221E")),
+                    key("{"),
+                    key("}"))
             .setLabelsOfRow(3,
-                    "\\", "\u00A9", "\u00AE", "\u2122", "\u2105",
-                    "[", "]")
-            .setLabelsOfRow(4,
-                    "<", ">", " ", ",", ".")
-            // U+2039: "‹" SINGLE LEFT-POINTING ANGLE QUOTATION MARK
-            // U+2264: "≤" LESS-THAN OR EQUAL TO
-            // U+00AB: "«" LEFT-POINTING DOUBLE ANGLE QUOTATION MARK
-            .setMoreKeysOf("<", "\u2039", "\u2264", "\u00AB")
-            // U+203A: "›" SINGLE RIGHT-POINTING ANGLE QUOTATION MARK
-            // U+2265: "≥" GREATER-THAN EQUAL TO
-            // U+00BB: "»" RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK
-            .setMoreKeysOf(">", "\u203A", "\u2265", "\u00BB")
-            // U+2026: "…" HORIZONTAL ELLIPSIS
-            .setMoreKeysOf(".", "\u2026")
+                    // U+00A9: "©" COPYRIGHT SIGN
+                    // U+00AE: "®" REGISTERED SIGN
+                    // U+2122: "™" TRADE MARK SIGN
+                    // U+2105: "℅" CARE OF
+                    "\\", "\u00A9", "\u00AE", "\u2122", "\u2105", "[", "]")
+            .setKeysOfRow(4,
+                    // U+2039: "‹" SINGLE LEFT-POINTING ANGLE QUOTATION MARK
+                    // U+2264: "≤" LESS-THAN OR EQUAL TO
+                    // U+00AB: "«" LEFT-POINTING DOUBLE ANGLE QUOTATION MARK
+                    key("<", joinMoreKeys("\u2039", "\u2264", "\u00AB")),
+                    // U+203A: "›" SINGLE RIGHT-POINTING ANGLE QUOTATION MARK
+                    // U+2265: "≥" GREATER-THAN EQUAL TO
+                    // U+00BB: "»" RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK
+                    key(">", joinMoreKeys("\u203A", "\u2265", "\u00BB")),
+                    SPACE_KEY, key(","),
+                    // U+2026: "…" HORIZONTAL ELLIPSIS
+                    key(".", moreKey("\u2026")))
             .build();
-
-    private ExpectedKey[][] toPhoneSymbolsShifted(final ExpectedKey[][] common) {
-        return new ExpectedKeyboardBuilder(common)
-                .addKeysOnTheLeftOfRow(3, mCustomizer.getBackToSymbolsKey())
-                .addKeysOnTheRightOfRow(3, DELETE_KEY)
-                .addKeysOnTheLeftOfRow(4, mCustomizer.getAlphabetKey())
-                .addKeysOnTheRightOfRow(4, key(ENTER_KEY, EMOJI_KEY))
-                .build();
-    }
-
-    private ExpectedKey[][] toTabletSymbolsShifted(final ExpectedKey[][] common) {
-        return new ExpectedKeyboardBuilder(common)
-                // U+00BF: "¿" INVERTED QUESTION MARK
-                // U+00A1: "¡" INVERTED EXCLAMATION MARK
-                .addKeysOnTheRightOfRow(3,
-                        key("\u00A1"), key("\u00BF"))
-                .addKeysOnTheRightOfRow(1, DELETE_KEY)
-                .addKeysOnTheRightOfRow(2, ENTER_KEY)
-                .addKeysOnTheLeftOfRow(3, mCustomizer.getBackToSymbolsKey())
-                .addKeysOnTheRightOfRow(3, mCustomizer.getBackToSymbolsKey())
-                .addKeysOnTheLeftOfRow(4, mCustomizer.getAlphabetKey())
-                .addKeysOnTheRightOfRow(4, EMOJI_KEY)
-                .build();
-    }
 
     public static class RtlSymbolsShifted extends SymbolsShifted {
         public RtlSymbolsShifted(final LayoutCustomizer customizer) {

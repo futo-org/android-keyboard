@@ -56,36 +56,36 @@ abstract class LayoutTestsBase extends KeyboardLayoutSetTestsBase {
     // Those helper methods have a lower case name to be readable when defining expected keyboard
     // layouts.
 
-    // Helper method to create {@link ExpectedKey} object that has the label.
+    // Helper method to create an {@link ExpectedKey} object that has the label.
     static ExpectedKey key(final String label, final ExpectedKey ... moreKeys) {
         return AbstractLayoutBase.key(label, moreKeys);
     }
 
-    // Helper method to create {@link ExpectedKey} object that has the label and the output text.
+    // Helper method to create an {@link ExpectedKey} object that has the label and the output text.
     static ExpectedKey key(final String label, final String outputText,
             final ExpectedKey ... moreKeys) {
         return AbstractLayoutBase.key(label, outputText, moreKeys);
     }
 
-    // Helper method to create {@link ExpectedKey} object that has new "more keys".
+    // Helper method to create an {@link ExpectedKey} object that has new "more keys".
     static ExpectedKey key(final ExpectedKey key, final ExpectedKey ... moreKeys) {
         return AbstractLayoutBase.key(key, moreKeys);
     }
 
-    // Helper method to create {@link ExpectedKey} object for "more key" that has the label.
+    // Helper method to create an {@link ExpectedKey} object for a "more key" that has the label.
     static ExpectedKey moreKey(final String label) {
         return AbstractLayoutBase.moreKey(label);
     }
 
-    // Helper method to create {@link ExpectedKey} object for "more key" that has the label and the
-    // output text.
+    // Helper method to create an {@link ExpectedKey} object for a "more key" that has the label
+    // and the output text.
     static ExpectedKey moreKey(final String label, final String outputText) {
         return AbstractLayoutBase.moreKey(label, outputText);
     }
 
     // Helper method to create {@link ExpectedKey} array by joining {@link ExpectedKey},
     // {@link ExpectedKey} array, and {@link String}.
-    static ExpectedKey[] moreKeys(final Object ... moreKeys) {
+    static ExpectedKey[] joinMoreKeys(final Object ... moreKeys) {
         return AbstractLayoutBase.joinKeys(moreKeys);
     }
 

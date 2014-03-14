@@ -146,6 +146,16 @@ public abstract class LayoutBase extends AbstractLayoutBase {
         }
 
         /**
+         * Get the space keys.
+         * @param isPhone true if requesting phone's keys.
+         * @return the array of {@link ExpectedKey} that should be placed at the center of the
+         *         keyboard.
+         */
+        public ExpectedKey[] getSpaceKeys(final boolean isPhone) {
+            return joinKeys(SPACE_KEY);
+        }
+
+        /**
          * Get the keys left to the spacebar.
          * @param isPhone true if requesting phone's keys.
          * @return the array of {@link ExpectedKey} that should be placed at left of the spacebar.
@@ -232,6 +242,10 @@ public abstract class LayoutBase extends AbstractLayoutBase {
             KeyboardIconsSet.NAME_SHIFT_KEY);
     private static final int ICON_SHIFTED_SHIFT = KeyboardIconsSet.getIconId(
             KeyboardIconsSet.NAME_SHIFT_KEY_SHIFTED);
+    private static final int ICON_ZWNJ = KeyboardIconsSet.getIconId(
+            KeyboardIconsSet.NAME_ZWNJ_KEY);
+    private static final int ICON_ZWJ = KeyboardIconsSet.getIconId(
+            KeyboardIconsSet.NAME_ZWJ_KEY);
 
     // Functional key.
     static final ExpectedKey CAPSLOCK_MORE_KEY = key(" ", Constants.CODE_CAPSLOCK);
@@ -249,7 +263,9 @@ public abstract class LayoutBase extends AbstractLayoutBase {
     // U+00BF: "¿" INVERTED QUESTION MARK
     static final ExpectedKey[] EXCLAMATION_AND_QUESTION_MARKS = joinKeys(
             key("!", moreKey("\u00A1")), key("?", moreKey("\u00BF")));
-
+    // U+200C: ZERO WIDTH NON-JOINER
+    // U+200D: ZERO WIDTH JOINER
+    static final ExpectedKey ZWNJ_ZWJ_KEY = key(ICON_ZWNJ, "\u200C", moreKey(ICON_ZWJ, "\u200D"));
 
     // Punctuation more keys for phone form factor.
     public static final ExpectedKey[] PHONE_PUNCTUATION_MORE_KEYS = joinKeys(
@@ -273,7 +289,7 @@ public abstract class LayoutBase extends AbstractLayoutBase {
         final LayoutCustomizer customizer = getCustomizer();
         final ExpectedKey[] spacebar = joinKeys(
                 customizer.getKeysLeftToSpacebar(isPhone),
-                SPACEBAR,
+                customizer.getSpaceKeys(isPhone),
                 customizer.getKeysRightToSpacebar(isPhone));
         builder.setKeysOfRow(4, spacebar);
         if (isPhone) {
