@@ -78,6 +78,12 @@ public abstract class AbstractLayoutBase {
 
     // Helper method to create {@link ExpectedKey} array by joining {@link ExpectedKey},
     // {@link ExpectedKey} array, and {@link String}.
+    public static ExpectedKey[] moreKeys(final Object ... moreKeys) {
+        return joinKeys(moreKeys);
+    }
+
+    // Helper method to create {@link ExpectedKey} array by joining {@link ExpectedKey},
+    // {@link ExpectedKey} array, and {@link String}.
     public static ExpectedKey[] joinKeys(final Object ... keys) {
         final ArrayList<ExpectedKey> list = CollectionUtils.newArrayList();
         for (final Object key : keys) {
