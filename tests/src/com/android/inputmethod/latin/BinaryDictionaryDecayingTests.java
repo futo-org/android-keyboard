@@ -75,16 +75,16 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
     }
 
     private void forcePassingShortTime(final BinaryDictionary binaryDictionary) {
-        // 4 days.
-        final int timeToElapse = (int)TimeUnit.SECONDS.convert(4, TimeUnit.DAYS);
+        // 30 days.
+        final int timeToElapse = (int)TimeUnit.SECONDS.convert(30, TimeUnit.DAYS);
         mCurrentTime += timeToElapse;
         setCurrentTimeForTestMode(mCurrentTime);
         binaryDictionary.flushWithGC();
     }
 
     private void forcePassingLongTime(final BinaryDictionary binaryDictionary) {
-        // 60 days.
-        final int timeToElapse = (int)TimeUnit.SECONDS.convert(60, TimeUnit.DAYS);
+        // 365 days.
+        final int timeToElapse = (int)TimeUnit.SECONDS.convert(365, TimeUnit.DAYS);
         mCurrentTime += timeToElapse;
         setCurrentTimeForTestMode(mCurrentTime);
         binaryDictionary.flushWithGC();
@@ -210,19 +210,12 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
         addUnigramWord(binaryDictionary, "a", Dictionary.NOT_A_PROBABILITY);
         assertFalse(binaryDictionary.isValidWord("a"));
         addUnigramWord(binaryDictionary, "a", Dictionary.NOT_A_PROBABILITY);
-        assertFalse(binaryDictionary.isValidWord("a"));
-        addUnigramWord(binaryDictionary, "a", Dictionary.NOT_A_PROBABILITY);
-        assertFalse(binaryDictionary.isValidWord("a"));
         addUnigramWord(binaryDictionary, "a", Dictionary.NOT_A_PROBABILITY);
         assertTrue(binaryDictionary.isValidWord("a"));
 
         addUnigramWord(binaryDictionary, "b", DUMMY_PROBABILITY);
         assertTrue(binaryDictionary.isValidWord("b"));
 
-        addBigramWords(binaryDictionary, "a", "b", Dictionary.NOT_A_PROBABILITY);
-        assertFalse(binaryDictionary.isValidBigram("a", "b"));
-        addBigramWords(binaryDictionary, "a", "b", Dictionary.NOT_A_PROBABILITY);
-        assertFalse(binaryDictionary.isValidBigram("a", "b"));
         addBigramWords(binaryDictionary, "a", "b", Dictionary.NOT_A_PROBABILITY);
         assertFalse(binaryDictionary.isValidBigram("a", "b"));
         addBigramWords(binaryDictionary, "a", "b", Dictionary.NOT_A_PROBABILITY);
@@ -265,8 +258,6 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
         addUnigramWord(binaryDictionary, "a", DUMMY_PROBABILITY);
         addUnigramWord(binaryDictionary, "a", DUMMY_PROBABILITY);
         addUnigramWord(binaryDictionary, "a", DUMMY_PROBABILITY);
-        addUnigramWord(binaryDictionary, "a", DUMMY_PROBABILITY);
-        addUnigramWord(binaryDictionary, "a", DUMMY_PROBABILITY);
         assertTrue(binaryDictionary.isValidWord("a"));
         forcePassingShortTime(binaryDictionary);
         assertTrue(binaryDictionary.isValidWord("a"));
@@ -280,12 +271,6 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
         forcePassingShortTime(binaryDictionary);
         assertFalse(binaryDictionary.isValidBigram("a", "b"));
 
-        addUnigramWord(binaryDictionary, "a", DUMMY_PROBABILITY);
-        addUnigramWord(binaryDictionary, "b", DUMMY_PROBABILITY);
-        addBigramWords(binaryDictionary, "a", "b", DUMMY_PROBABILITY);
-        addUnigramWord(binaryDictionary, "a", DUMMY_PROBABILITY);
-        addUnigramWord(binaryDictionary, "b", DUMMY_PROBABILITY);
-        addBigramWords(binaryDictionary, "a", "b", DUMMY_PROBABILITY);
         addUnigramWord(binaryDictionary, "a", DUMMY_PROBABILITY);
         addUnigramWord(binaryDictionary, "b", DUMMY_PROBABILITY);
         addBigramWords(binaryDictionary, "a", "b", DUMMY_PROBABILITY);
@@ -370,7 +355,7 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
 
     private void testOverflowUnigrams(final int formatVersion) {
         final int unigramCount = 20000;
-        final int eachUnigramTypedCount = 5;
+        final int eachUnigramTypedCount = 2;
         final int strongUnigramTypedCount = 20;
         final int weakUnigramTypedCount = 1;
         final int codePointSetSize = 50;
@@ -505,7 +490,7 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
         final int bigramCount = 20000;
         final int unigramCount = 1000;
         final int unigramTypedCount = 20;
-        final int eachBigramTypedCount = 5;
+        final int eachBigramTypedCount = 2;
         final int strongBigramTypedCount = 20;
         final int weakBigramTypedCount = 1;
         final int codePointSetSize = 50;

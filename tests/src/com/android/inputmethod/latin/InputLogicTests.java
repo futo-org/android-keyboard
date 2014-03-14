@@ -356,7 +356,7 @@ public class InputLogicTests extends InputTestsBase {
         final String NOT_CORRECTED_RESULT = "qpmx ";
         final String DESIRED_WORD = "qpmz";
         final String CORRECTED_RESULT = "qpmz ";
-        final int typeCountNotToAutocorrect = 3;
+        final int typeCountNotToAutocorrect = 1;
         final int typeCountToAutoCorrect = 16;
         int startIndex = 0;
         int endIndex = 0;

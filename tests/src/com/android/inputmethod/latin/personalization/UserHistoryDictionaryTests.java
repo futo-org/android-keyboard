@@ -72,8 +72,8 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
     }
 
     private void forcePassingLongTime() {
-        // 60 days.
-        final int timeToElapse = (int)TimeUnit.DAYS.toSeconds(60);
+        // 365 days.
+        final int timeToElapse = (int)TimeUnit.DAYS.toSeconds(365);
         mCurrentTime += timeToElapse;
         setCurrentTimeForTestMode(mCurrentTime);
     }
