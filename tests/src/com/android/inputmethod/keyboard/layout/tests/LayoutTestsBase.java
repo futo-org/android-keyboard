@@ -85,6 +85,12 @@ abstract class LayoutTestsBase extends KeyboardLayoutSetTestsBase {
 
     // Helper method to create {@link ExpectedKey} array by joining {@link ExpectedKey},
     // {@link ExpectedKey} array, and {@link String}.
+    static ExpectedKey[] moreKeys(final Object ... moreKeys) {
+        return AbstractLayoutBase.joinKeys(moreKeys);
+    }
+
+    // Helper method to create {@link ExpectedKey} array by joining {@link ExpectedKey},
+    // {@link ExpectedKey} array, and {@link String}.
     static ExpectedKey[] joinKeys(final Object ... keys) {
         return AbstractLayoutBase.joinKeys(keys);
     }
