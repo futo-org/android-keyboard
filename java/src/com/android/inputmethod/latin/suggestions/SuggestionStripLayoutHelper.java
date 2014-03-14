@@ -511,7 +511,8 @@ final class SuggestionStripLayoutHelper {
             final String importantNoticeTitle) {
         final TextView titleView = (TextView)importantNoticeStrip.findViewById(
                 R.id.important_notice_title);
-        final int width = stripWidth - titleView.getPaddingLeft() - titleView.getPaddingRight();
+        final int width = titleView.getWidth() - titleView.getPaddingLeft()
+                - titleView.getPaddingRight();
         titleView.setTextColor(mColorAutoCorrect);
         titleView.setText(importantNoticeTitle);
         titleView.setTextScaleX(1.0f); // Reset textScaleX.
