@@ -31,54 +31,66 @@ public abstract class AbstractLayoutBase {
     // Those helper methods have a lower case name to be readable when defining expected keyboard
     // layouts.
 
-    // Helper method to create {@link ExpectedKey} object that has the label.
+    // Helper method to create an {@link ExpectedKey} object that has the label.
     public static ExpectedKey key(final String label, final ExpectedKey ... moreKeys) {
         return ExpectedKey.newInstance(label, moreKeys);
     }
 
-    // Helper method to create {@link ExpectedKey} object that has the label and the output text.
+    // Helper method to create an {@link ExpectedKey} object that has the label and the output text.
     public static ExpectedKey key(final String label, final String outputText,
             final ExpectedKey ... moreKeys) {
         return ExpectedKey.newInstance(label, outputText, moreKeys);
     }
 
-    // Helper method to create {@link ExpectedKey} object that has the label and the output code.
+    // Helper method to create an {@link ExpectedKey} object that has the label and the output code.
     public static ExpectedKey key(final String label, final int code,
             final ExpectedKey ... moreKeys) {
         return ExpectedKey.newInstance(label, code, moreKeys);
     }
 
-    // Helper method to create {@link ExpectedKey} object that has the icon and the output code.
+    // Helper method to create an {@link ExpectedKey} object that has the icon and the output text.
+    public static ExpectedKey key(final int iconId, final String outputText,
+            final ExpectedKey ... moreKeys) {
+        return ExpectedKey.newInstance(iconId, outputText, moreKeys);
+    }
+
+    // Helper method to create an {@link ExpectedKey} object that has the icon and the output code.
     public static ExpectedKey key(final int iconId, final int code,
             final ExpectedKey ... moreKeys) {
         return ExpectedKey.newInstance(iconId, code, moreKeys);
     }
 
-    // Helper method to create {@link ExpectedKey} object that has new "more keys".
+    // Helper method to create an {@link ExpectedKey} object that has new "more keys".
     public static ExpectedKey key(final ExpectedKey key, final ExpectedKey ... moreKeys) {
         return ExpectedKey.newInstance(key.getVisual(), key.getOutput(), moreKeys);
     }
 
-    // Helper method to create {@link ExpectedKey} object for "more key" that has the label.
+    // Helper method to create an {@link ExpectedKey} object for a "more key" that has the label.
     public static ExpectedKey moreKey(final String label) {
         return ExpectedKey.newInstance(label);
     }
 
-    // Helper method to create {@link ExpectedKey} object for "more key" that has the label and the
-    // output text.
+    // Helper method to create an {@link ExpectedKey} object for a "more key" that has the label
+    // and the output text.
     public static ExpectedKey moreKey(final String label, final String outputText) {
         return ExpectedKey.newInstance(label, outputText);
     }
 
-    // Helper method to create {@link ExpectedKey} object for "more key" that has the label and the
-    // output code.
+    // Helper method to create an {@link ExpectedKey} object for a "more key" that has the label
+    // and the output code.
     public static ExpectedKey moreKey(final String label, final int code) {
         return ExpectedKey.newInstance(label, code);
     }
 
+    // Helper method to create an {@link ExpectedKey} object for a "more key" that has the icon
+    // and the output text.
+    public static ExpectedKey moreKey(final int iconId, final String outputText) {
+        return ExpectedKey.newInstance(iconId, outputText);
+    }
+
     // Helper method to create {@link ExpectedKey} array by joining {@link ExpectedKey},
     // {@link ExpectedKey} array, and {@link String}.
-    public static ExpectedKey[] moreKeys(final Object ... moreKeys) {
+    public static ExpectedKey[] joinMoreKeys(final Object ... moreKeys) {
         return joinKeys(moreKeys);
     }
 
@@ -115,6 +127,6 @@ public abstract class AbstractLayoutBase {
     public static final ExpectedKey SETTINGS_KEY = key(ICON_SETTINGS, Constants.CODE_SETTINGS);
     public static final ExpectedKey ENTER_KEY = key(ICON_ENTER, Constants.CODE_ENTER);
     public static final ExpectedKey EMOJI_KEY = key(ICON_EMOJI, Constants.CODE_EMOJI);
-    public static final ExpectedKey SPACEBAR = key(
+    public static final ExpectedKey SPACE_KEY = key(
             StringUtils.newSingleCodePointString(Constants.CODE_SPACE));
 }
