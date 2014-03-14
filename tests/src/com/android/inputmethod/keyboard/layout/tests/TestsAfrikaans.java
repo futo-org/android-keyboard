@@ -26,68 +26,76 @@ import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
 import java.util.Locale;
 
 /**
- * en_US: English (United States)/qwerty
+ * af: TestsAfrikaans/qwerty
  */
 @SmallTest
-public class TestsEnglishUS extends LayoutTestsBase {
-    private static final Locale LOCALE = new Locale("en", "US");
-    private static final LayoutBase LAYOUT = new Qwerty(new EnglishUSCustomizer(LOCALE));
+public final class TestsAfrikaans extends LayoutTestsBase {
+    private static final Locale LOCALE = new Locale("af");
+    private static final LayoutBase LAYOUT = new Qwerty(new AfrikaansCustomizer(LOCALE));
 
     @Override
     LayoutBase getLayout() { return LAYOUT; }
 
-    // TODO: Make this as generic English customizer.
-    static class EnglishUSCustomizer extends LayoutCustomizer {
-        public EnglishUSCustomizer(final Locale locale) { super(locale); }
+    private static class AfrikaansCustomizer extends LayoutCustomizer {
+        AfrikaansCustomizer(final Locale locale) { super(locale); }
 
         @Override
         public ExpectedKeyboardBuilder setAccentedLetters(final ExpectedKeyboardBuilder builder) {
             return builder
-                    // U+00E8: "è" LATIN SMALL LETTER E WITH GRAVE
                     // U+00E9: "é" LATIN SMALL LETTER E WITH ACUTE
+                    // U+00E8: "è" LATIN SMALL LETTER E WITH GRAVE
                     // U+00EA: "ê" LATIN SMALL LETTER E WITH CIRCUMFLEX
                     // U+00EB: "ë" LATIN SMALL LETTER E WITH DIAERESIS
+                    // U+0119: "ę" LATIN SMALL LETTER E WITH OGONEK
+                    // U+0117: "ė" LATIN SMALL LETTER E WITH DOT ABOVE
                     // U+0113: "ē" LATIN SMALL LETTER E WITH MACRON
-                    .setMoreKeysOf("e", "3", "\u00E8", "\u00E9", "\u00EA", "\u00EB", "\u0113")
+                    .setMoreKeysOf("e",
+                            "3", "\u00E9", "\u00E8", "\u00EA", "\u00EB", "\u0119", "\u0117",
+                            "\u0113")
+                    // U+00FA: "ú" LATIN SMALL LETTER U WITH ACUTE
                     // U+00FB: "û" LATIN SMALL LETTER U WITH CIRCUMFLEX
                     // U+00FC: "ü" LATIN SMALL LETTER U WITH DIAERESIS
                     // U+00F9: "ù" LATIN SMALL LETTER U WITH GRAVE
-                    // U+00FA: "ú" LATIN SMALL LETTER U WITH ACUTE
                     // U+016B: "ū" LATIN SMALL LETTER U WITH MACRON
-                    .setMoreKeysOf("u", "7", "\u00FB", "\u00FC", "\u00F9", "\u00FA", "\u016B")
-                    // U+00EE: "î" LATIN SMALL LETTER I WITH CIRCUMFLEX
-                    // U+00EF: "ï" LATIN SMALL LETTER I WITH DIAERESIS
+                    .setMoreKeysOf("u", "7", "\u00FA", "\u00FB", "\u00FC", "\u00F9", "\u016B")
+                    // U+00FD: "ý" LATIN SMALL LETTER Y WITH ACUTE
+                    // U+0133: "ĳ" LATIN SMALL LIGATURE IJ
+                    .setMoreKeysOf("y", "6", "\u00FD", "\u0133")
                     // U+00ED: "í" LATIN SMALL LETTER I WITH ACUTE
-                    // U+012B: "ī" LATIN SMALL LETTER I WITH MACRON
                     // U+00EC: "ì" LATIN SMALL LETTER I WITH GRAVE
-                    .setMoreKeysOf("i", "8", "\u00EE", "\u00EF", "\u00ED", "\u012B", "\u00EC")
+                    // U+00EF: "ï" LATIN SMALL LETTER I WITH DIAERESIS
+                    // U+00EE: "î" LATIN SMALL LETTER I WITH CIRCUMFLEX
+                    // U+012F: "į" LATIN SMALL LETTER I WITH OGONEK
+                    // U+012B: "ī" LATIN SMALL LETTER I WITH MACRON
+                    // U+0133: "ĳ" LATIN SMALL LIGATURE IJ
+                    .setMoreKeysOf("i",
+                            "8", "\u00ED", "\u00EC", "\u00EF", "\u00EE", "\u012F", "\u012B",
+                            "\u0133")
+                    // U+00F3: "ó" LATIN SMALL LETTER O WITH ACUTE
                     // U+00F4: "ô" LATIN SMALL LETTER O WITH CIRCUMFLEX
                     // U+00F6: "ö" LATIN SMALL LETTER O WITH DIAERESIS
                     // U+00F2: "ò" LATIN SMALL LETTER O WITH GRAVE
-                    // U+00F3: "ó" LATIN SMALL LETTER O WITH ACUTE
+                    // U+00F5: "õ" LATIN SMALL LETTER O WITH TILDE
                     // U+0153: "œ" LATIN SMALL LIGATURE OE
                     // U+00F8: "ø" LATIN SMALL LETTER O WITH STROKE
                     // U+014D: "ō" LATIN SMALL LETTER O WITH MACRON
-                    // U+00F5: "õ" LATIN SMALL LETTER O WITH TILDE
                     .setMoreKeysOf("o",
-                            "9", "\u00F4", "\u00F6", "\u00F2", "\u00F3", "\u0153", "\u00F8",
-                            "\u014D", "\u00F5")
+                            "9", "\u00F3", "\u00F4", "\u00F6", "\u00F2", "\u00F5", "\u0153",
+                            "\u00F8", "\u014D")
                     // U+00E1: "á" LATIN SMALL LETTER A WITH ACUTE
                     // U+00E2: "â" LATIN SMALL LETTER A WITH CIRCUMFLEX
                     // U+00E4: "ä" LATIN SMALL LETTER A WITH DIAERESIS
+                    // U+00E0: "à" LATIN SMALL LETTER A WITH GRAVE
                     // U+00E6: "æ" LATIN SMALL LETTER AE
                     // U+00E3: "ã" LATIN SMALL LETTER A WITH TILDE
                     // U+00E5: "å" LATIN SMALL LETTER A WITH RING ABOVE
                     // U+0101: "ā" LATIN SMALL LETTER A WITH MACRON
                     .setMoreKeysOf("a",
-                            "\u00E0", "\u00E1", "\u00E2", "\u00E4", "\u00E6", "\u00E3", "\u00E5",
+                            "\u00E1", "\u00E2", "\u00E4", "\u00E0", "\u00E6", "\u00E3", "\u00E5",
                             "\u0101")
-                    // U+00DF: "ß" LATIN SMALL LETTER SHARP S
-                    .setMoreKeysOf("s", "\u00DF")
-                    // U+00E7: "ç" LATIN SMALL LETTER C WITH CEDILLA
-                    .setMoreKeysOf("c", "\u00E7")
                     // U+00F1: "ñ" LATIN SMALL LETTER N WITH TILDE
-                    .setMoreKeysOf("n", "\u00F1");
+                    // U+0144: "ń" LATIN SMALL LETTER N WITH ACUTE
+                    .setMoreKeysOf("n", "\u00F1", "\u0144");
         }
     }
 }
