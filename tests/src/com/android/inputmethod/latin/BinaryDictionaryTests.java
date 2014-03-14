@@ -948,16 +948,15 @@ public class BinaryDictionaryTests extends AndroidTestCase {
             final HashSet<String> bigramWord1s = bigrams.get(word0);
             final WordProperty wordProperty = binaryDictionary.getWordProperty(word0);
             assertEquals(bigramWord1s.size(), wordProperty.mBigrams.size());
-            final int unigramProbability = wordProperty.getProbability();
             for (int j = 0; j < wordProperty.mBigrams.size(); j++) {
                 final String word1 = wordProperty.mBigrams.get(j).mWord;
                 assertTrue(bigramWord1s.contains(word1));
-                final int bigramProbability = wordProperty.mBigrams.get(j).getProbability();
-                final int probability = binaryDictionary.calculateProbability(
-                        unigramProbability, bigramProbability);
-                assertEquals((int)bigramProbabilities.get(new Pair<String, String>(word0, word1)),
-                        probability);
-                assertEquals(wordProperty.mBigrams.get(j).getProbability(), probability);
+                final int bigramProbabilityDelta = bigramProbabilities.get(
+                        new Pair<String, String>(word0, word1));
+                final int unigramProbability = wordProbabilities.get(word1);
+                final int bigramProbablity = binaryDictionary.calculateProbability(
+                        unigramProbability, bigramProbabilityDelta);
+                assertEquals(wordProperty.mBigrams.get(j).getProbability(), bigramProbablity);
             }
         }
     }
@@ -1040,16 +1039,16 @@ public class BinaryDictionaryTests extends AndroidTestCase {
             assertEquals((int)wordProbabilitiesToCheckLater.get(word0),
                     wordProperty.mProbabilityInfo.mProbability);
             wordSet.remove(word0);
-            final int unigramProbability = wordProperty.getProbability();
             final HashSet<String> bigramWord1s = bigrams.get(word0);
             for (int j = 0; j < wordProperty.mBigrams.size(); j++) {
                 final String word1 = wordProperty.mBigrams.get(j).mWord;
                 assertTrue(bigramWord1s.contains(word1));
-                final int bigramProbability = wordProperty.mBigrams.get(j).getProbability();
-                final int probability = binaryDictionary.calculateProbability(
-                        unigramProbability, bigramProbability);
+                final int unigramProbability = wordProbabilitiesToCheckLater.get(word1);
                 final Pair<String, String> bigram = new Pair<String, String>(word0, word1);
-                assertEquals((int)bigramProbabilitiesToCheckLater.get(bigram), probability);
+                final int bigramProbabilityDelta = bigramProbabilitiesToCheckLater.get(bigram);
+                final int bigramProbablity = binaryDictionary.calculateProbability(
+                        unigramProbability, bigramProbabilityDelta);
+                assertEquals(wordProperty.mBigrams.get(j).getProbability(), bigramProbablity);
                 bigramSet.remove(bigram);
             }
             token = result.mNextToken;
