@@ -26,19 +26,18 @@ import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
 import java.util.Locale;
 
 /**
- * en_US: English (United States)/qwerty
+ * sw: Swahili/qwerty
  */
 @SmallTest
-public class TestsEnglishUS extends LayoutTestsBase {
-    private static final Locale LOCALE = new Locale("en", "US");
-    private static final LayoutBase LAYOUT = new Qwerty(new EnglishUSCustomizer(LOCALE));
+public final class TestsSwahili extends LayoutTestsBase {
+    private static final Locale LOCALE = new Locale("sw");
+    private static final LayoutBase LAYOUT = new Qwerty(new SwahiliCustomizer(LOCALE));
 
     @Override
     LayoutBase getLayout() { return LAYOUT; }
 
-    // TODO: Make this as generic English customizer.
-    static class EnglishUSCustomizer extends LayoutCustomizer {
-        public EnglishUSCustomizer(final Locale locale) { super(locale); }
+    private static class SwahiliCustomizer extends LayoutCustomizer {
+        public SwahiliCustomizer(final Locale locale) { super(locale); }
 
         @Override
         public ExpectedKeyboardBuilder setAccentedLetters(final ExpectedKeyboardBuilder builder) {
@@ -84,6 +83,7 @@ public class TestsEnglishUS extends LayoutTestsBase {
                             "\u0101")
                     // U+00DF: "ß" LATIN SMALL LETTER SHARP S
                     .setMoreKeysOf("s", "\u00DF")
+                    .setMoreKeysOf("g", "g'")
                     // U+00E7: "ç" LATIN SMALL LETTER C WITH CEDILLA
                     .setMoreKeysOf("c", "\u00E7")
                     // U+00F1: "ñ" LATIN SMALL LETTER N WITH TILDE

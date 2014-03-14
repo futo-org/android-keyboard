@@ -50,10 +50,10 @@
     hr: Croatian/qwertz
     hu: Hungarian/qwertz
     hy_AM: Armenian (Armenia) Phonetic/armenian_phonetic
-    in: Indonesian/qwerty    # "id" is official language code of Indonesian.
+    in: Indonesian/qwerty    # "id" is the official language code of Indonesian.
     is: Icelandic/qwerty
     it: Italian/qwerty
-    iw: Hebrew/hebrew        # "he" is official language code of Hebrew.
+    iw: Hebrew/hebrew        # "he" is the official language code of Hebrew.
     ka_GE: Georgian (Georgia)/georgian
     kk: Kazakh/east_slavic
     km_KH: Khmer (Cambodia)/khmer
@@ -65,8 +65,8 @@
     mn_MN: Mongolian (Mongolia)/mongolian
     ms_MY: Malay (Malaysia)/qwerty
     nb: Norwegian Bokmål/nordic
-    ne_NP: Nepali (Nepal) Romanized/nepali_romanized)
-    ne_NP: Nepali (Nepal) Traditional/nepali_traditional)
+    ne_NP: Nepali (Nepal) Romanized/nepali_romanized
+    ne_NP: Nepali (Nepal) Traditional/nepali_traditional
     nl: Dutch/qwerty
     nl_BE: Dutch (Belgium)/azerty
     pl: Polish/qwerty
