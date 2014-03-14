@@ -106,6 +106,15 @@ public final class InputLogic {
         mInputLogicHandler = InputLogicHandler.NULL_HANDLER;
     }
 
+    // Replace the old Suggest with the passed Suggest and close it.
+    public void replaceSuggest(final Suggest newSuggest) {
+        final Suggest oldSuggest = mSuggest;
+        mSuggest = newSuggest;
+        if (oldSuggest != null) {
+            oldSuggest.close();
+        }
+    }
+
     /**
      * Initializes the input logic for input in an editor.
      *

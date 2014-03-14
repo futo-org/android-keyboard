@@ -650,9 +650,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
             ResearchLogger.getInstance().initDictionary(newSuggest.mDictionaryFacilitator);
         }
-        final Suggest oldSuggest = mInputLogic.mSuggest;
-        mInputLogic.mSuggest = newSuggest;
-        if (oldSuggest != null) oldSuggest.close();
+        mInputLogic.replaceSuggest(newSuggest);
         refreshPersonalizationDictionarySession();
     }
 
