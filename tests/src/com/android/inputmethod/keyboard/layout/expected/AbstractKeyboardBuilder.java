@@ -29,7 +29,7 @@ import java.util.Arrays;
  */
 abstract class AbstractKeyboardBuilder<E> {
     // A building array of rows.
-    private final E[][] mRows;
+    private E[][] mRows;
 
     // Returns an instance of default element.
     abstract E defaultElement();
@@ -42,12 +42,8 @@ abstract class AbstractKeyboardBuilder<E> {
      * Construct a builder filled with the default element.
      * @param dimensions the integer array of each row's size.
      */
-    AbstractKeyboardBuilder(final int ... dimensions) {
-        mRows = newArrayOfArray(dimensions.length);
-        for (int rowIndex = 0; rowIndex < dimensions.length; rowIndex++) {
-            mRows[rowIndex] = newArray(dimensions[rowIndex]);
-            Arrays.fill(mRows[rowIndex], defaultElement());
-        }
+    AbstractKeyboardBuilder() {
+        mRows = newArrayOfArray(0);
     }
 
     /**
@@ -102,10 +98,13 @@ abstract class AbstractKeyboardBuilder<E> {
      */
     void setRowAt(final int row, final E[] elements) {
         final int rowIndex = row - 1;
-        if (rowIndex < 0 || rowIndex >= mRows.length) {
+        if (rowIndex < 0) {
             throw new RuntimeException("Illegal row number: " + row);
         }
-        mRows[rowIndex] = elements;
+        final E[][] newRows = (rowIndex < mRows.length) ? mRows
+                : Arrays.copyOf(mRows, rowIndex + 1);
+        newRows[rowIndex] = elements;
+        mRows = newRows;
     }
 
     /**
@@ -120,8 +119,11 @@ abstract class AbstractKeyboardBuilder<E> {
     void setElementAt(final int row, final int column, final E element, final boolean insert) {
         final E[] elements = getRowAt(row);
         final int columnIndex = column - 1;
+        if (columnIndex < 0) {
+            throw new RuntimeException("Illegal column number: " + column);
+        }
         if (insert) {
-            if (columnIndex < 0 || columnIndex >= elements.length + 1) {
+            if (columnIndex >= elements.length + 1) {
                 throw new RuntimeException("Illegal column number: " + column);
             }
             final E[] newElements = Arrays.copyOf(elements, elements.length + 1);
@@ -134,9 +136,9 @@ abstract class AbstractKeyboardBuilder<E> {
             setRowAt(row, newElements);
             return;
         }
-        if (columnIndex < 0 || columnIndex >= elements.length) {
-            throw new RuntimeException("Illegal column number: " + column);
-        }
-        elements[columnIndex] = element;
+        final E[] newElements  = (columnIndex < elements.length) ? elements
+                : Arrays.copyOf(elements, columnIndex + 1);
+        newElements[columnIndex] = element;
+        setRowAt(row, newElements);
     }
 }

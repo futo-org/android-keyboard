@@ -85,7 +85,7 @@ public final class ActualKeyboardBuilder extends AbstractKeyboardBuilder<Key> {
         for (int rowIndex = 0; rowIndex < dimensions.length; rowIndex++) {
             dimensions[rowIndex] = rows.get(rowIndex).size();
         }
-        final ActualKeyboardBuilder builder = new ActualKeyboardBuilder(dimensions);
+        final ActualKeyboardBuilder builder = new ActualKeyboardBuilder();
 
         for (int rowIndex = 0; rowIndex < rows.size(); rowIndex++) {
             final int row = rowIndex + 1;
@@ -93,10 +93,6 @@ public final class ActualKeyboardBuilder extends AbstractKeyboardBuilder<Key> {
             builder.setRowAt(row, rowKeys.toArray(new Key[rowKeys.size()]));
         }
         return builder.build();
-    }
-
-    private ActualKeyboardBuilder(final int ... dimensions) {
-        super(dimensions);
     }
 
     @Override
