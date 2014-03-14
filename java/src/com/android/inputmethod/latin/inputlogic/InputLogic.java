@@ -28,7 +28,6 @@ import android.view.inputmethod.EditorInfo;
 
 import com.android.inputmethod.compat.SuggestionSpanUtils;
 import com.android.inputmethod.event.Event;
-import com.android.inputmethod.event.EventInterpreter;
 import com.android.inputmethod.event.InputTransaction;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.latin.Constants;
