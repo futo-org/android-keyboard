@@ -344,10 +344,6 @@ static inline void prof_out(void) {
 #define MAX_POINTER_COUNT 1
 #define MAX_POINTER_COUNT_G 2
 
-// DEBUG
-#define INPUTLENGTH_FOR_DEBUG (-1)
-#define MIN_OUTPUT_INDEX_FOR_DEBUG (-1)
-
 #define DISALLOW_DEFAULT_CONSTRUCTOR(TypeName) \
   TypeName() = delete
 
