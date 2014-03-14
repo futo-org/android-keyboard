@@ -36,17 +36,17 @@ public final class Qwerty extends LayoutBase {
     ExpectedKey[][] getCommonAlphabetLayout(final boolean isPhone) { return ALPHABET_COMMON; }
 
     private static final ExpectedKey[][] ALPHABET_COMMON = new ExpectedKeyboardBuilder()
-            .setLabelsOfRow(1, "q", "w", "e", "r", "t", "y", "u", "i", "o", "p")
-            .setMoreKeysOf("q", "1")
-            .setMoreKeysOf("w", "2")
-            .setMoreKeysOf("e", "3")
-            .setMoreKeysOf("r", "4")
-            .setMoreKeysOf("t", "5")
-            .setMoreKeysOf("y", "6")
-            .setMoreKeysOf("u", "7")
-            .setMoreKeysOf("i", "8")
-            .setMoreKeysOf("o", "9")
-            .setMoreKeysOf("p", "0")
+            .setKeysOfRow(1,
+                    key("q", moreKey("1")),
+                    key("w", moreKey("2")),
+                    key("e", moreKey("3")),
+                    key("r", moreKey("4")),
+                    key("t", moreKey("5")),
+                    key("y", moreKey("6")),
+                    key("u", moreKey("7")),
+                    key("i", moreKey("8")),
+                    key("o", moreKey("9")),
+                    key("p", moreKey("0")))
             .setLabelsOfRow(2, "a", "s", "d", "f", "g", "h", "j", "k", "l")
             .setLabelsOfRow(3, "z", "x", "c", "v", "b", "n", "m")
             .build();
