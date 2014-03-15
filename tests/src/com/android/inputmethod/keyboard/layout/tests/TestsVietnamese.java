@@ -54,8 +54,7 @@ public final class TestsVietnamese extends LayoutTestsBase {
 
         // U+20AB: "₫" DONG SIGN
         private static final ExpectedKey CURRENCY_DONG = key("\u20AB",
-                Symbols.DOLLAR_SIGN, Symbols.CENT_SIGN, Symbols.EURO_SIGN, Symbols.POUND_SIGN,
-                Symbols.YEN_SIGN, Symbols.PESO_SIGN);
+                Symbols.CURRENCY_GENERIC_MORE_KEYS);
 
         @Override
         public ExpectedKeyboardBuilder setAccentedLetters(final ExpectedKeyboardBuilder builder) {

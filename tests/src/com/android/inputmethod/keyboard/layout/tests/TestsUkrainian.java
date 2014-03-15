@@ -58,8 +58,7 @@ public final class TestsUkrainian extends LayoutTestsBase {
 
         // U+20B4: "₴" HRYVNIA SIGN
         private static final ExpectedKey CURRENCY_HRYVNIA = key("\u20B4",
-                Symbols.DOLLAR_SIGN, Symbols.CENT_SIGN, Symbols.EURO_SIGN, Symbols.POUND_SIGN,
-                Symbols.YEN_SIGN, Symbols.PESO_SIGN);
+                Symbols.CURRENCY_GENERIC_MORE_KEYS);
 
         @Override
         public ExpectedKeyboardBuilder setAccentedLetters(final ExpectedKeyboardBuilder builder) {

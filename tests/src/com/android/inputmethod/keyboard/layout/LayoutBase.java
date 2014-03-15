@@ -265,7 +265,8 @@ public abstract class LayoutBase extends AbstractLayoutBase {
             key("!", moreKey("\u00A1")), key("?", moreKey("\u00BF")));
     // U+200C: ZERO WIDTH NON-JOINER
     // U+200D: ZERO WIDTH JOINER
-    static final ExpectedKey ZWNJ_ZWJ_KEY = key(ICON_ZWNJ, "\u200C", moreKey(ICON_ZWJ, "\u200D"));
+    static final ExpectedKey ZWNJ_KEY = key(ICON_ZWNJ, "\u200C");
+    static final ExpectedKey ZWJ_KEY = key(ICON_ZWJ, "\u200D");
 
     // Punctuation more keys for phone form factor.
     public static final ExpectedKey[] PHONE_PUNCTUATION_MORE_KEYS = joinKeys(
