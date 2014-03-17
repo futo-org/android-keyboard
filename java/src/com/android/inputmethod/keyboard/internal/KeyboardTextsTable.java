@@ -1567,8 +1567,8 @@ public final class KeyboardTextsTable {
         // U+00BB: "»" RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK
         // U+2039: "‹" SINGLE LEFT-POINTING ANGLE QUOTATION MARK
         // U+203A: "›" SINGLE RIGHT-POINTING ANGLE QUOTATION MARK
-        /* more_keys_for_less_than */ "!fixedColumnOrder!3,!text/keyspec_left_single_angle_quote;,!text/keyspec_less_than_equal;,!text/keyspec_less_than",
-        /* more_keys_for_greater_than */ "!fixedColumnOrder!3,!text/keyspec_right_single_angle_quote;,!text/keyspec_greater_than_equal;,!text/keyspec_greater_than",
+        /* more_keys_for_less_than */ "!fixedColumnOrder!3,!text/keyspec_left_single_angle_quote,!text/keyspec_less_than_equal,!text/keyspec_less_than",
+        /* more_keys_for_greater_than */ "!fixedColumnOrder!3,!text/keyspec_right_single_angle_quote,!text/keyspec_greater_than_equal,!text/keyspec_greater_than",
     };
 
     /* Language fi: Finnish */
