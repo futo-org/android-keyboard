@@ -16,11 +16,6 @@
 
 package com.android.inputmethod.event;
 
-import android.util.SparseArray;
-import android.view.KeyEvent;
-
-import com.android.inputmethod.latin.Constants;
-import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 
 import java.util.ArrayList;
@@ -37,25 +32,9 @@ public class EventInterpreter {
     // TODO: Implement an object pool for events, as we'll create a lot of them
     // TODO: Create a combiner
     // TODO: Create an object type to represent input material + visual feedback + decoding state
-    // TODO: Create an interface to call back to Latin IME through the above object
 
-    final EventDecoderSpec mDecoderSpec;
-    final SparseArray<HardwareEventDecoder> mHardwareEventDecoders;
-    final SoftwareEventDecoder mSoftwareEventDecoder;
-    final LatinIME mLatinIme;
-    final ArrayList<Combiner> mCombiners;
-
-    /**
-     * Create a default interpreter.
-     *
-     * This creates a default interpreter that does nothing. A default interpreter should normally
-     * only be used for fallback purposes, when we really don't know what we want to do with input.
-     *
-     * @param latinIme a reference to the ime.
-     */
-    public EventInterpreter(final LatinIME latinIme) {
-        this(null, latinIme);
-    }
+    private final EventDecoderSpec mDecoderSpec;
+    private final ArrayList<Combiner> mCombiners;
 
     /**
      * Create an event interpreter according to a specification.
@@ -70,64 +49,10 @@ public class EventInterpreter {
      * interpreter that does no specific combining, and assumes the most common cases.
      *
      * @param specification the specification for event interpretation. null for default.
-     * @param latinIme a reference to the ime.
      */
-    public EventInterpreter(final EventDecoderSpec specification, final LatinIME latinIme) {
+    public EventInterpreter(final EventDecoderSpec specification) {
         mDecoderSpec = null != specification ? specification : new EventDecoderSpec();
-        // For both, we expect to have only one decoder in almost all cases, hence the default
-        // capacity of 1.
-        mHardwareEventDecoders = new SparseArray<HardwareEventDecoder>(1);
-        mSoftwareEventDecoder = new SoftwareKeyboardEventDecoder();
         mCombiners = CollectionUtils.newArrayList();
         mCombiners.add(new DeadKeyCombiner());
-        mLatinIme = latinIme;
-    }
-
-    // Helper method to decode a hardware key event into a generic event, and execute any
-    // necessary action.
-    public boolean onHardwareKeyEvent(final KeyEvent hardwareKeyEvent) {
-        final Event decodedEvent = getHardwareKeyEventDecoder(hardwareKeyEvent.getDeviceId())
-                .decodeHardwareKey(hardwareKeyEvent);
-        return onEvent(decodedEvent);
-    }
-
-    public boolean onSoftwareEvent() {
-        final Event decodedEvent = getSoftwareEventDecoder().decodeSoftwareEvent();
-        return onEvent(decodedEvent);
-    }
-
-    private HardwareEventDecoder getHardwareKeyEventDecoder(final int deviceId) {
-        final HardwareEventDecoder decoder = mHardwareEventDecoders.get(deviceId);
-        if (null != decoder) return decoder;
-        // TODO: create the decoder according to the specification
-        final HardwareEventDecoder newDecoder = new HardwareKeyboardEventDecoder(deviceId);
-        mHardwareEventDecoders.put(deviceId, newDecoder);
-        return newDecoder;
-    }
-
-    private SoftwareEventDecoder getSoftwareEventDecoder() {
-        // Within the context of Latin IME, since we never present several software interfaces
-        // at the time, we should never need multiple software event decoders at a time.
-        return mSoftwareEventDecoder;
-    }
-
-    private boolean onEvent(final Event event) {
-        Event currentlyProcessingEvent = event;
-        boolean processed = false;
-        for (int i = 0; i < mCombiners.size(); ++i) {
-            currentlyProcessingEvent = mCombiners.get(i).combine(event);
-        }
-        while (null != currentlyProcessingEvent) {
-            if (currentlyProcessingEvent.isCommittable()) {
-                mLatinIme.onCodeInput(currentlyProcessingEvent.mCodePoint,
-                        Constants.EXTERNAL_KEYBOARD_COORDINATE,
-                        Constants.EXTERNAL_KEYBOARD_COORDINATE);
-                processed = true;
-            } else if (event.isDead()) {
-                processed = true;
-            }
-            currentlyProcessingEvent = currentlyProcessingEvent.mNextEvent;
-        }
-        return processed;
     }
 }

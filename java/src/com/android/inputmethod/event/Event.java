@@ -168,4 +168,8 @@ public class Event {
     public boolean isCommittable() {
         return EVENT_INPUT_KEYPRESS == mType || EVENT_MODE_KEY == mType || EVENT_TOGGLE == mType;
     }
+
+    public boolean isHandled() {
+        return EVENT_NOT_HANDLED != mType;
+    }
 }
