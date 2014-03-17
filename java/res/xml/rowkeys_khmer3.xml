@@ -46,7 +46,7 @@
                 latin:keySpec="&#x17A2;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+17C7: "ះ" KHMER SIGN REAHMUK
-                 U+17C8: "ៈ" KHMER SIGN YUUKALEAPINTU;-->
+                 U+17C8: "ៈ" KHMER SIGN YUUKALEAPINTU -->
             <Key
                 latin:keySpec="&#x17C7;"
                 latin:keyHintLabel="&#x17C8;"
