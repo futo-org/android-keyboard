@@ -77,8 +77,7 @@ public final class Hindi extends LayoutBase {
 
         // U+20B9: "₹" INDIAN RUPEE SIGN
         private static final ExpectedKey CURRENCY_HINDI = key("\u20B9",
-                Symbols.DOLLAR_SIGN, Symbols.CENT_SIGN, Symbols.EURO_SIGN, Symbols.POUND_SIGN,
-                Symbols.YEN_SIGN, Symbols.PESO_SIGN);
+                Symbols.CURRENCY_GENERIC_MORE_KEYS);
     }
 
     @Override

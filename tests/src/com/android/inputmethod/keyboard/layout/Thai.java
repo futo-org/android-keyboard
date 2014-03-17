@@ -61,8 +61,7 @@ public final class Thai extends LayoutBase {
 
         // U+0E3F: "฿" THAI CURRENCY SYMBOL BAHT
         private static final ExpectedKey CURRENCY_BAHT = key("\u0E3F",
-                Symbols.DOLLAR_SIGN, Symbols.CENT_SIGN, Symbols.EURO_SIGN, Symbols.POUND_SIGN,
-                Symbols.YEN_SIGN, Symbols.PESO_SIGN);
+                Symbols.CURRENCY_GENERIC_MORE_KEYS);
     }
 
     @Override
