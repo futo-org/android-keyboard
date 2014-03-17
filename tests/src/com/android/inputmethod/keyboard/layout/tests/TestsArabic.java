@@ -25,7 +25,7 @@ import com.android.inputmethod.keyboard.layout.LayoutBase;
 import java.util.Locale;
 
 /**
- * ar: TestsArabic/arabic
+ * ar: Arabic/arabic
  */
 @SmallTest
 public class TestsArabic extends LayoutTestsBase {

@@ -95,10 +95,10 @@ public final class Arabic extends LayoutBase {
             return ARABIC_DIACRITICS;
         }
 
-        // U+0623: "ا" ARABIC LETTER ALEF
+        // U+0623: "أ" ARABIC LETTER ALEF WITH HAMZA ABOVE
         // U+200C: ZERO WIDTH NON-JOINER
         // U+0628: "ب" ARABIC LETTER BEH
-        // U+062C: "پ" ARABIC LETTER PEH
+        // U+062C: "ج" ARABIC LETTER JEEM
         private static final ExpectedKey ARABIC_ALPHABET_KEY = key(
                 "\u0623\u200C\u0628\u200C\u062C", Constants.CODE_SWITCH_ALPHA_SYMBOL);
         // U+0663: "٣" ARABIC-INDIC DIGIT THREE
@@ -107,10 +107,6 @@ public final class Arabic extends LayoutBase {
         // U+061F: "؟" ARABIC QUESTION MARK
         private static final ExpectedKey ARABIC_SYMBOLS_KEY = key(
                 "\u0663\u0662\u0661\u061F", Constants.CODE_SWITCH_ALPHA_SYMBOL);
-        // U+0663: "٣" ARABIC-INDIC DIGIT THREE
-        // U+0662: "٢" ARABIC-INDIC DIGIT TWO
-        // U+0661: "١" ARABIC-INDIC DIGIT ONE
-        // U+061F: "؟" ARABIC QUESTION MARK
         private static final ExpectedKey ARABIC_BACK_TO_SYMBOLS_KEY = key(
                 "\u0663\u0662\u0661\u061F", Constants.CODE_SHIFT);
 
