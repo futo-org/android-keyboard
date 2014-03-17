@@ -525,10 +525,10 @@ public final class KeyboardTextsTable {
         null, null, null, null, null, null, null, null, null, null,
         /* ~ more_keys_for_n */
         // Label for "switch to alphabetic" key.
-        // U+0623: "ا" ARABIC LETTER ALEF
+        // U+0623: "أ" ARABIC LETTER ALEF WITH HAMZA ABOVE
         // U+200C: ZERO WIDTH NON-JOINER
         // U+0628: "ب" ARABIC LETTER BEH
-        // U+062C: "پ" ARABIC LETTER PEH
+        // U+062C: "ج" ARABIC LETTER JEEM
         /* label_to_alpha_key */ "\u0623\u200C\u0628\u200C\u062C",
         /* more_keys_for_y ~ */
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
