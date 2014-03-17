@@ -32,25 +32,24 @@ class TypingScoring : public Scoring {
  public:
     static const TypingScoring *getInstance() { return &sInstance; }
 
-    AK_FORCE_INLINE bool getMostProbableString(
-            const DicTraverseSession *const traverseSession, const int terminalSize,
-            const float languageWeight, int *const outputCodePoints, int *const type,
-            int *const freq) const {
+    AK_FORCE_INLINE bool getMostProbableString(const DicTraverseSession *const traverseSession,
+            const int terminalSize, const float languageWeight, int *const outputCodePoints,
+            int *const type, int *const freq) const {
         return false;
     }
 
-    AK_FORCE_INLINE void safetyNetForMostProbableString(const int scoreCount,
-            const int maxScore, int *const outputCodePoints, int *const scores) const {
+    AK_FORCE_INLINE void safetyNetForMostProbableString(const int scoreCount, const int maxScore,
+            int *const outputCodePoints, int *const scores) const {
     }
 
     AK_FORCE_INLINE float getAdjustedLanguageWeight(DicTraverseSession *const traverseSession,
-             DicNode *const terminals, const int size) const {
+            DicNode *const terminals, const int size) const {
         return 1.0f;
     }
 
-    AK_FORCE_INLINE int calculateFinalScore(const float compoundDistance,
-            const int inputSize, const ErrorTypeUtils::ErrorType containedErrorTypes,
-            const bool forceCommit, const bool boostExactMatches) const {
+    AK_FORCE_INLINE int calculateFinalScore(const float compoundDistance, const int inputSize,
+            const ErrorTypeUtils::ErrorType containedErrorTypes, const bool forceCommit,
+            const bool boostExactMatches) const {
         const float maxDistance = ScoringParams::DISTANCE_WEIGHT_LANGUAGE
                 + static_cast<float>(inputSize) * ScoringParams::TYPING_MAX_OUTPUT_SCORE_PER_INPUT;
         float score = ScoringParams::TYPING_BASE_OUTPUT_SCORE - compoundDistance / maxDistance;
@@ -85,8 +84,8 @@ class TypingScoring : public Scoring {
         return true;
     }
 
-    AK_FORCE_INLINE bool sameAsTyped(
-            const DicTraverseSession *const traverseSession, const DicNode *const dicNode) const {
+    AK_FORCE_INLINE bool sameAsTyped(const DicTraverseSession *const traverseSession,
+            const DicNode *const dicNode) const {
         return traverseSession->getProximityInfoState(0)->sameAsTyped(
                 dicNode->getOutputWordBuf(), dicNode->getNodeCodePointCount());
     }
