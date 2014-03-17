@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+**
+** Copyright 2014, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+
+<merge
+    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
+>
+    <switch>
+        <case
+            latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted"
+        >
+            <!-- U+100E: "ဎ" MYANMAR LETTER DDHA -->
+            <Key
+                latin:keySpec="&#x100E;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- U+100D: "ဍ" MYANMAR LETTER DDA -->
+            <Key
+                latin:keySpec="&#x100D;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- U+1052: "ၒ" MYANMAR LETTER VOCALIC R -->
+            <Key
+                latin:keySpec="&#x1052;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- U+100B: "ဋ" MYANMAR LETTER TTA -->
+            <Key
+                latin:keySpec="&#x100B;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- U+1053: "ၓ" MYANMAR LETTER VOCALIC RR -->
+            <Key
+                latin:keySpec="&#x1053;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- U+1054: "ၔ" MYANMAR LETTER VOCALIC L -->
+            <Key
+                latin:keySpec="&#x1054;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- U+1055: "ၕ" MYANMAR LETTER VOCALIC LL -->
+            <Key
+                latin:keySpec="&#x1055;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- U+101B: "ရ" MYANMAR LETTER RA -->
+            <Key
+                latin:keySpec="&#x101B;"
+                latin:keyLabelFlags="fontNormal" />
+            <Key
+                latin:keySpec="*" />
+            <Key
+                latin:keySpec="(" />
+            <Key
+                latin:keySpec=")" />
+        </case>
+        <default>
+            <!-- U+1050: "ၐ" MYANMAR LETTER SHA -->
+            <Key
+                latin:keySpec="&#x1050;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- U+1041: "၁" MYANMAR DIGIT ONE -->
+            <Key
+                latin:keySpec="&#x1041;"
+                latin:keyHintLabel="1"
+                latin:additionalMoreKeys="1"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- U+1042: "၂" MYANMAR DIGIT TWO -->
+            <Key
+                latin:keySpec="&#x1042;"
+                latin:keyHintLabel="2"
+                latin:additionalMoreKeys="2"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- U+1043: "၃" MYANMAR DIGIT THREE -->
+            <Key
+                latin:keySpec="&#x1043;"
+                latin:keyHintLabel="3"
+                latin:additionalMoreKeys="3"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- U+1044: "၄" MYANMAR DIGIT FOUR -->
+            <Key
+                latin:keySpec="&#x1044;"
+                latin:keyHintLabel="4"
+                latin:additionalMoreKeys="4"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- U+1045: "၅" MYANMAR DIGIT FIVE -->
+            <Key
+                latin:keySpec="&#x1045;"
+                latin:keyHintLabel="5"
+                latin:additionalMoreKeys="5"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- U+1046: "၆" MYANMAR DIGIT SIX -->
+            <Key
+                latin:keySpec="&#x1046;"
+                latin:keyHintLabel="6"
+                latin:additionalMoreKeys="6"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- U+1047: "၇" MYANMAR DIGIT SEVEN -->
+            <Key
+                latin:keySpec="&#x1047;"
+                latin:keyHintLabel="7"
+                latin:additionalMoreKeys="7"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- U+1048: "၈" MYANMAR DIGIT EIGHT -->
+            <Key
+                latin:keySpec="&#x1048;"
+                latin:keyHintLabel="8"
+                latin:additionalMoreKeys="8"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- U+1049: "၉" MYANMAR DIGIT NINE -->
+            <Key
+                latin:keySpec="&#x1049;"
+                latin:keyHintLabel="9"
+                latin:additionalMoreKeys="9"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- U+1040: "၀" MYANMAR DIGIT ZERO -->
+            <Key
+                latin:keySpec="&#x1040;"
+                latin:keyHintLabel="0"
+                latin:additionalMoreKeys="0"
+                latin:keyLabelFlags="fontNormal" />
+        </default>
+    </switch>
+</merge>
