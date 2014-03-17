@@ -214,7 +214,7 @@ public final class Arabic extends LayoutBase {
                     // U+FEF9: "ﻹ" ARABIC LIGATURE LAM WITH ALEF WITH HAMZA BELOW ISOLATED FORM
                     // U+0625: "إ" ARABIC LETTER ALEF WITH HAMZA BELOW
                     // U+FEF5: "ﻵ" ARABIC LIGATURE LAM WITH ALEF WITH MADDA ABOVE ISOLATED FORM
-                    // U+0622: "آ" ARABIC LETTER ALEF WITH MADDA ABOVE -->
+                    // U+0622: "آ" ARABIC LETTER ALEF WITH MADDA ABOVE
                     key("\u0644",
                             moreKey("\uFEFB", "\u0644\u0627"), moreKey("\uFEF7", "\u0644\u0623"),
                             moreKey("\uFEF9", "\u0644\u0625"), moreKey("\uFEF5", "\u0644\u0622")),
