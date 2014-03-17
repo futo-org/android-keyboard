@@ -72,8 +72,6 @@ class TypingWeighting : public Weighting {
     float getMatchedCost(const DicTraverseSession *const traverseSession,
             const DicNode *const dicNode, DicNode_InputStateG *inputStateG) const {
         const int pointIndex = dicNode->getInputIndex(0);
-        // Note: min() required since length can be MAX_POINT_TO_KEY_LENGTH for characters not on
-        // the keyboard (like accented letters)
         const float normalizedSquaredLength = traverseSession->getProximityInfoState(0)
                 ->getPointToKeyLength(pointIndex,
                         CharUtils::toBaseLowerCase(dicNode->getNodeCodePoint()));
