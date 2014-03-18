@@ -34,7 +34,7 @@ public class SymbolsShifted extends AbstractLayoutBase {
     public ExpectedKey[][] getLayout(final boolean isPhone) {
         final ExpectedKeyboardBuilder builder = new ExpectedKeyboardBuilder(SYMBOLS_SHIFTED_COMMON);
         final LayoutCustomizer customizer = mCustomizer;
-        builder.replaceKeyOfLabel(OTHER_CURRENCIES, customizer.getOtherCurrencyKeys());
+        builder.replaceKeyOfLabel(OTHER_CURRENCIES, (Object[])customizer.getOtherCurrencyKeys());
         if (isPhone) {
             builder.addKeysOnTheLeftOfRow(3, customizer.getBackToSymbolsKey())
                     .addKeysOnTheRightOfRow(3, DELETE_KEY)
@@ -44,7 +44,7 @@ public class SymbolsShifted extends AbstractLayoutBase {
             // Tablet symbols shifted keyboard has extra two keys at the right edge of the 3rd row.
             // U+00BF: "¿" INVERTED QUESTION MARK
             // U+00A1: "¡" INVERTED EXCLAMATION MARK
-            builder.addKeysOnTheRightOfRow(3, joinKeys("\u00A1", "\u00BF"));
+            builder.addKeysOnTheRightOfRow(3, (Object[])joinKeys("\u00A1", "\u00BF"));
             builder.addKeysOnTheRightOfRow(1, DELETE_KEY)
                     .addKeysOnTheRightOfRow(2, ENTER_KEY)
                     .addKeysOnTheLeftOfRow(3, customizer.getBackToSymbolsKey())
@@ -72,10 +72,8 @@ public class SymbolsShifted extends AbstractLayoutBase {
     // Common symbols shifted keyboard layout.
     private static final ExpectedKey[][] SYMBOLS_SHIFTED_COMMON = new ExpectedKeyboardBuilder()
             .setKeysOfRow(1,
-                    key("~"),
                     // U+0060: "`" GRAVE ACCENT
-                    key("\u0060"),
-                    key("|"),
+                    "~", "\u0060", "|",
                     // U+2022: "•" BULLET
                     // U+266A: "♪" EIGHTH NOTE
                     // U+2665: "♥" BLACK HEART SUIT
@@ -84,21 +82,20 @@ public class SymbolsShifted extends AbstractLayoutBase {
                     // U+2663: "♣" BLACK CLUB SUIT
                     key("\u2022", joinMoreKeys("\u266A", "\u2665", "\u2660", "\u2666", "\u2663")),
                     // U+221A: "√" SQUARE ROOT
-                    key("\u221A"),
+                    "\u221A",
                     // U+03C0: "π" GREEK SMALL LETTER PI
                     // U+03A0: "Π" GREEK CAPITAL LETTER PI
                     key("\u03C0", moreKey("\u03A0")),
                     // U+00F7: "÷" DIVISION SIGN
-                    key("\u00F7"),
                     // U+00D7: "×" MULTIPLICATION SIGN
-                    key("\u00D7"),
+                    "\u00F7", "\u00D7",
                     // U+00B6: "¶" PILCROW SIGN
                     // U+00A7: "§" SECTION SIGN
                     key("\u00B6", moreKey("\u00A7")),
                     // U+2206: "∆" INCREMENT
-                    key("\u2206"))
+                    "\u2206")
             .setKeysOfRow(2,
-                    key(OTHER_CURRENCIES),
+                    OTHER_CURRENCIES,
                     // U+2191: "↑" UPWARDS ARROW
                     // U+2193: "↓" DOWNWARDS ARROW
                     // U+2190: "←" LEFTWARDS ARROW
@@ -112,9 +109,8 @@ public class SymbolsShifted extends AbstractLayoutBase {
                     // U+2248: "≈" ALMOST EQUAL TO
                     // U+221E: "∞" INFINITY
                     key("=", joinMoreKeys("\u2260", "\u2248", "\u221E")),
-                    key("{"),
-                    key("}"))
-            .setLabelsOfRow(3,
+                    "{", "}")
+            .setKeysOfRow(3,
                     // U+00A9: "©" COPYRIGHT SIGN
                     // U+00AE: "®" REGISTERED SIGN
                     // U+2122: "™" TRADE MARK SIGN
@@ -129,7 +125,7 @@ public class SymbolsShifted extends AbstractLayoutBase {
                     // U+2265: "≥" GREATER-THAN EQUAL TO
                     // U+00BB: "»" RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK
                     key(">", joinMoreKeys("\u203A", "\u2265", "\u00BB")),
-                    SPACE_KEY, key(","),
+                    SPACE_KEY, ",",
                     // U+2026: "…" HORIZONTAL ELLIPSIS
                     key(".", moreKey("\u2026")))
             .build();

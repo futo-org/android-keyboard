@@ -48,8 +48,8 @@ public final class Swiss extends LayoutBase {
                     key("i", moreKey("8")),
                     key("o", moreKey("9")),
                     key("p", moreKey("0")),
-                    key(ROW1_11))
-            .setLabelsOfRow(2, "a", "s", "d", "f", "g", "h", "j", "k", "l", ROW2_10, ROW2_11)
-            .setLabelsOfRow(3, "y", "x", "c", "v", "b", "n", "m")
+                    ROW1_11)
+            .setKeysOfRow(2, "a", "s", "d", "f", "g", "h", "j", "k", "l", ROW2_10, ROW2_11)
+            .setKeysOfRow(3, "y", "x", "c", "v", "b", "n", "m")
             .build();
 }

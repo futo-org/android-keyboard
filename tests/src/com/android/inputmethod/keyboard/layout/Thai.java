@@ -69,11 +69,11 @@ public final class Thai extends LayoutBase {
         final ExpectedKeyboardBuilder builder = new ExpectedKeyboardBuilder(ALPHABET_COMMON);
         if (isPhone) {
             // U+0E03: "ฃ" THAI CHARACTER KHO KHUAT
-            builder.addKeysOnTheRightOfRow(3, key("\u0E03"));
+            builder.addKeysOnTheRightOfRow(3, "\u0E03");
         } else {
             // U+0E03: "ฃ" THAI CHARACTER KHO KHUAT
-            builder.addKeysOnTheRightOfRow(2, key("\u0E03"))
-                    .addKeysOnTheRightOfRow(4, EXCLAMATION_AND_QUESTION_MARKS);
+            builder.addKeysOnTheRightOfRow(2, "\u0E03")
+                    .addKeysOnTheRightOfRow(4, (Object[])EXCLAMATION_AND_QUESTION_MARKS);
         }
         return builder.build();
     }
@@ -88,10 +88,10 @@ public final class Thai extends LayoutBase {
                 ALPHABET_SHIFTED_COMMON);
         if (isPhone) {
             // U+0E05: "ฅ" THAI CHARACTER KHO KHON
-            builder.addKeysOnTheRightOfRow(3, key("\u0E05"));
+            builder.addKeysOnTheRightOfRow(3, "\u0E05");
         } else {
             // U+0E05: "ฅ" THAI CHARACTER KHO KHON
-            builder.addKeysOnTheRightOfRow(2, key("\u0E05"));
+            builder.addKeysOnTheRightOfRow(2, "\u0E05");
         }
         return builder.build();
     }
@@ -101,11 +101,9 @@ public final class Thai extends LayoutBase {
     ExpectedKeyboardBuilder convertCommonLayoutToKeyboard(final ExpectedKeyboardBuilder builder,
             final boolean isPhone) {
         final LayoutCustomizer customizer = getCustomizer();
-        final ExpectedKey[] spacebar = joinKeys(
-                customizer.getKeysLeftToSpacebar(isPhone),
-                customizer.getSpaceKeys(isPhone),
-                customizer.getKeysRightToSpacebar(isPhone));
-        builder.setKeysOfRow(5, spacebar);
+        builder.setKeysOfRow(5, (Object[])customizer.getSpaceKeys(isPhone));
+        builder.addKeysOnTheLeftOfRow(5, (Object[])customizer.getKeysLeftToSpacebar(isPhone));
+        builder.addKeysOnTheRightOfRow(5, (Object[])customizer.getKeysRightToSpacebar(isPhone));
         if (isPhone) {
             builder.addKeysOnTheRightOfRow(4, DELETE_KEY)
                     .addKeysOnTheLeftOfRow(5, customizer.getSymbolsKey())
@@ -116,15 +114,15 @@ public final class Thai extends LayoutBase {
                     .addKeysOnTheLeftOfRow(5, customizer.getSymbolsKey(), SETTINGS_KEY)
                     .addKeysOnTheRightOfRow(5, EMOJI_KEY);
         }
-        builder.addKeysOnTheLeftOfRow(4, customizer.getLeftShiftKeys(isPhone))
-                .addKeysOnTheRightOfRow(4, customizer.getRightShiftKeys(isPhone));
+        builder.addKeysOnTheLeftOfRow(4, (Object[])customizer.getLeftShiftKeys(isPhone))
+                .addKeysOnTheRightOfRow(4, (Object[])customizer.getRightShiftKeys(isPhone));
         return builder;
     }
 
     private static final ExpectedKey[][] ALPHABET_COMMON = new ExpectedKeyboardBuilder()
             .setKeysOfRow(1,
                     // U+0E45: "ๅ" THAI CHARACTER LAKKHANGYAO
-                    key("\u0E45"),
+                    "\u0E45",
                     // U+0E51: "๑" THAI DIGIT ONE
                     key("/", joinMoreKeys("1", "\u0E51")),
                     // U+0E52: "๒" THAI DIGIT TWO
@@ -159,160 +157,110 @@ public final class Thai extends LayoutBase {
                     // U+0E50: "๐" THAI DIGIT ZERO
                     key("\u0E46", joinMoreKeys("0", "\u0E50")),
                     // U+0E44: "ไ" THAI CHARACTER SARA AI MAIMALAI
-                    key("\u0E44"),
                     // U+0E33: "ำ" THAI CHARACTER SARA AM
-                    key("\u0E33"),
                     // U+0E1E: "พ" THAI CHARACTER PHO PHAN
-                    key("\u0E1E"),
                     // U+0E30: "ะ" THAI CHARACTER SARA A
-                    key("\u0E30"),
+                    "\u0E44", "\u0E33", "\u0E1E", "\u0E30",
                     // U+0E31: " ั" THAI CHARACTER MAI HAN-AKAT
                     key(" \u0E31", "\u0E31"),
                     // U+0E35: " ี" HAI CHARACTER SARA II
                     key(" \u0E35", "\u0E35"),
                     // U+0E23: "ร" THAI CHARACTER RO RUA
-                    key("\u0E23"),
                     // U+0E19: "น" THAI CHARACTER NO NU
-                    key("\u0E19"),
                     // U+0E22: "ย" THAI CHARACTER YO YAK
-                    key("\u0E22"),
                     // U+0E1A: "บ" THAI CHARACTER BO BAIMAI
-                    key("\u0E1A"),
                     // U+0E25: "ล" THAI CHARACTER LO LING
-                    key("\u0E25"))
+                    "\u0E23", "\u0E19", "\u0E22", "\u0E1A", "\u0E25")
             .setKeysOfRow(3,
                     // U+0E1F: "ฟ" THAI CHARACTER FO FAN
-                    key("\u0E1F"),
                     // U+0E2B: "ห" THAI CHARACTER HO HIP
-                    key("\u0E2B"),
                     // U+0E01: "ก" THAI CHARACTER KO KAI
-                    key("\u0E01"),
                     // U+0E14: "ด" THAI CHARACTER DO DEK
-                    key("\u0E14"),
                     // U+0E40: "เ" THAI CHARACTER SARA E
-                    key("\u0E40"),
+                    "\u0E1F", "\u0E2B", "\u0E01", "\u0E14", "\u0E40",
                     // U+0E49: " ้" THAI CHARACTER MAI THO
                     key(" \u0E49", "\u0E49"),
                     // U+0E48: " ่" THAI CHARACTER MAI EK
                     key(" \u0E48", "\u0E48"),
                     // U+0E32: "า" THAI CHARACTER SARA AA
-                    key("\u0E32"),
                     // U+0E2A: "ส" THAI CHARACTER SO SUA
-                    key("\u0E2A"),
                     // U+0E27: "ว" THAI CHARACTER WO WAEN
-                    key("\u0E27"),
                     // U+0E07: "ง" THAI CHARACTER NGO NGU
-                    key("\u0E07"))
+                    "\u0E32", "\u0E2A", "\u0E27", "\u0E07")
             .setKeysOfRow(4,
                     // U+0E1C: "ผ" THAI CHARACTER PHO PHUNG
-                    key("\u0E1C"),
                     // U+0E1B: "ป" THAI CHARACTER PO PLA
-                    key("\u0E1B"),
                     // U+0E41: "แ" THAI CHARACTER SARA AE
-                    key("\u0E41"),
                     // U+0E2D: "อ" THAI CHARACTER O ANG
-                    key("\u0E2D"),
+                    "\u0E1C", "\u0E1B", "\u0E41", "\u0E2D",
                     // U+0E34: " ิ" THAI CHARACTER SARA I
                     key(" \u0E34", "\u0E34"),
                     // U+0E37: " ื" THAI CHARACTER SARA UEE
                     key(" \u0E37", "\u0E37"),
                     // U+0E17: "ท" THAI CHARACTER THO THAHAN
-                    key("\u0E17"),
                     // U+0E21: "ม" THAI CHARACTER MO MA
-                    key("\u0E21"),
                     // U+0E43: "ใ" THAI CHARACTER SARA AI MAIMUAN
-                    key("\u0E43"),
                     // U+0E1D: "ฝ" THAI CHARACTER FO FA
-                    key("\u0E1D"))
+                    "\u0E17", "\u0E21", "\u0E43", "\u0E1D")
             .build();
 
     private static final ExpectedKey[][] ALPHABET_SHIFTED_COMMON = new ExpectedKeyboardBuilder()
             .setKeysOfRow(1,
-                    key("+"),
                     // U+0E51: "๑" THAI DIGIT ONE
-                    key("\u0E51"),
                     // U+0E52: "๒" THAI DIGIT TWO
-                    key("\u0E52"),
                     // U+0E53: "๓" THAI DIGIT THREE
-                    key("\u0E53"),
                     // U+0E54: "๔" THAI DIGIT FOUR
-                    key("\u0E54"),
                     // U+0E39: " ู" THAI CHARACTER SARA UU
+                    "+", "\u0E51", "\u0E52", "\u0E53", "\u0E54",
                     key(" \u0E39", "\u0E39"),
                     // U+0E3F: "฿" THAI CURRENCY SYMBOL BAHT
-                    key("\u0E3F"),
                     // U+0E55: "๕" THAI DIGIT FIVE
-                    key("\u0E55"),
                     // U+0E56: "๖" THAI DIGIT SIX
-                    key("\u0E56"),
                     // U+0E57: "๗" THAI DIGIT SEVEN
-                    key("\u0E57"),
                     // U+0E58: "๘" THAI DIGIT EIGHT
-                    key("\u0E58"),
                     // U+0E59: "๙" THAI DIGIT NINE
-                    key("\u0E59"))
+                    "\u0E3F", "\u0E55", "\u0E56", "\u0E57", "\u0E58", "\u0E59")
             .setKeysOfRow(2,
                     // U+0E50: "๐" THAI DIGIT ZERO
-                    key("\u0E50"),
-                    key("\""),
                     // U+0E0E: "ฎ" THAI CHARACTER DO CHADA
-                    key("\u0E0E"),
                     // U+0E11: "ฑ" THAI CHARACTER THO NANGMONTHO
-                    key("\u0E11"),
                     // U+0E18: "ธ" THAI CHARACTER THO THONG
-                    key("\u0E18"),
+                    "\u0E50", "\"", "\u0E0E", "\u0E11", "\u0E18",
                     // U+0E4D: " ํ" THAI CHARACTER THANTHAKHAT
                     key(" \u0E4D", "\u0E4D"),
                     // U+0E4A: " ๊" THAI CHARACTER MAI TRI
                     key(" \u0E4A", "\u0E4A"),
                     // U+0E13: "ณ" THAI CHARACTER NO NEN
-                    key("\u0E13"),
                     // U+0E2F: "ฯ" THAI CHARACTER PAIYANNOI
-                    key("\u0E2F"),
                     // U+0E0D: "ญ" THAI CHARACTER YO YING
-                    key("\u0E0D"),
                     // U+0E10: "ฐ" THAI CHARACTER THO THAN
-                    key("\u0E10"),
-                    key(","))
+                    "\u0E13", "\u0E2F", "\u0E0D", "\u0E10", ",")
             .setKeysOfRow(3,
                     // U+0E24: "ฤ" THAI CHARACTER RU
-                    key("\u0E24"),
                     // U+0E06: "ฆ" THAI CHARACTER KHO RAKHANG
-                    key("\u0E06"),
                     // U+0E0F: "ฏ" THAI CHARACTER TO PATAK
-                    key("\u0E0F"),
                     // U+0E42: "โ" THAI CHARACTER SARA O
-                    key("\u0E42"),
                     // U+0E0C: "ฌ" THAI CHARACTER CHO CHOE
-                    key("\u0E0C"),
+                    "\u0E24", "\u0E06", "\u0E0F", "\u0E42", "\u0E0C",
                     // U+0E47: " ็" THAI CHARACTER MAITAIKHU
                     key(" \u0E47", "\u0E47"),
                     // U+0E4B: " ๋" THAI CHARACTER MAI CHATTAWA
                     key(" \u0E4B", "\u0E4B"),
                     // U+0E29: "ษ" THAI CHARACTER SO RUSI
-                    key("\u0E29"),
                     // U+0E28: "ศ" THAI CHARACTER SO SALA
-                    key("\u0E28"),
                     // U+0E0B: "ซ" THAI CHARACTER SO SO
-                    key("\u0E0B"),
-                    key("."))
+                    "\u0E29", "\u0E28", "\u0E0B", ".")
             .setKeysOfRow(4,
-                    key("("),
-                    key(")"),
                     // U+0E09: "ฉ" THAI CHARACTER CHO CHING
-                    key("\u0E09"),
                     // U+0E2E: "ฮ" THAI CHARACTER HO NOKHUK
-                    key("\u0E2E"),
+                    "(", ")", "\u0E09", "\u0E2E",
                     // U+0E3A: " ฺ" THAI CHARACTER PHINTHU
                     key(" \u0E3A", "\u0E3A"),
                     // U+0E4C: " ์" THAI CHARACTER THANTHAKHAT
                     key(" \u0E4C", "\u0E4C"),
-                    key("?"),
                     // U+0E12: "ฒ" THAI CHARACTER THO PHUTHAO
-                    key("\u0E12"),
                     // U+0E2C: "ฬ" THAI CHARACTER LO CHULA
-                    key("\u0E2C"),
                     // U+0E26: "ฦ" THAI CHARACTER LU
-                    key("\u0E26"))
+                    "?", "\u0E12", "\u0E2C", "\u0E26")
             .build();
 }

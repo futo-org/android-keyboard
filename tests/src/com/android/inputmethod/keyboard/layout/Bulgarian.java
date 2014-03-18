@@ -76,7 +76,7 @@ public final class Bulgarian extends LayoutBase {
                     // U+043F: "п" CYRILLIC SMALL LETTER PE
                     key("\u043F", moreKey("0")),
                     // U+0447: "ч" CYRILLIC SMALL LETTER CHE
-                    key("\u0447"))
+                    "\u0447")
             // U+0430: "а" CYRILLIC SMALL LETTER A
             // U+0441: "с" CYRILLIC SMALL LETTER ES
             // U+0434: "д" CYRILLIC SMALL LETTER DE
@@ -88,7 +88,7 @@ public final class Bulgarian extends LayoutBase {
             // U+043B: "л" CYRILLIC SMALL LETTER EL
             // U+0448: "ш" CYRILLIC SMALL LETTER SHA
             // U+0449: "щ" CYRILLIC SMALL LETTER SHCHA
-            .setLabelsOfRow(2,
+            .setKeysOfRow(2,
                     "\u0430", "\u0441", "\u0434", "\u0444", "\u0433", "\u0445", "\u0439", "\u043A",
                     "\u043B", "\u0448", "\u0449")
             // U+0437: "з" CYRILLIC SMALL LETTER ZE
@@ -99,7 +99,7 @@ public final class Bulgarian extends LayoutBase {
             // U+043D: "н" CYRILLIC SMALL LETTER EN
             // U+043C: "м" CYRILLIC SMALL LETTER EM
             // U+044E: "ю" CYRILLIC SMALL LETTER YU
-            .setLabelsOfRow(3,
+            .setKeysOfRow(3,
                     "\u0437", "\u044C", "\u0446", "\u0436", "\u0431", "\u043D", "\u043C", "\u044E")
             .build();
 }

@@ -112,37 +112,28 @@ public final class Greek extends LayoutBase {
                     // U+03AC: "ά" GREEK SMALL LETTER ALPHA WITH TONOS
                     key("\u03B1", moreKey("\u03AC")),
                     // U+03C3: "σ" GREEK SMALL LETTER SIGMA
-                    key("\u03C3"),
                     // U+03B4: "δ" GREEK SMALL LETTER DELTA
-                    key("\u03B4"),
                     // U+03C6: "φ" GREEK SMALL LETTER PHI
-                    key("\u03C6"),
                     // U+03B3: "γ" GREEK SMALL LETTER GAMMA
-                    key("\u03B3"),
+                    "\u03C3", "\u03B4", "\u03C6", "\u03B3",
                     // U+03B7: "η" GREEK SMALL LETTER ETA
                     // U+03AE: "ή" GREEK SMALL LETTER ETA WITH TONOS
                     key("\u03B7", moreKey("\u03AE")),
                     // U+03BE: "ξ" GREEK SMALL LETTER XI
-                    key("\u03BE"),
                     // U+03BA: "κ" GREEK SMALL LETTER KAPPA
-                    key("\u03BA"),
                     // U+03BB: "λ" GREEK SMALL LETTER LAMDA
-                    key("\u03BB"))
+                    "\u03BE", "\u03BA", "\u03BB")
             .setKeysOfRow(3,
                     // U+03B6: "ζ" GREEK SMALL LETTER ZETA
-                    key("\u03B6"),
                     // U+03C7: "χ" GREEK SMALL LETTER CHI
-                    key("\u03C7"),
                     // U+03C8: "ψ" GREEK SMALL LETTER PSI
-                    key("\u03C8"),
+                    "\u03B6", "\u03C7", "\u03C8",
                     // U+03C9: "ω" GREEK SMALL LETTER OMEGA
                     // U+03CE: "ώ" GREEK SMALL LETTER OMEGA WITH TONOS
                     key("\u03C9", moreKey("\u03CE")),
                     // U+03B2: "β" GREEK SMALL LETTER BETA
-                    key("\u03B2"),
                     // U+03BD: "ν" GREEK SMALL LETTER NU
-                    key("\u03BD"),
                     // U+03BC: "μ" GREEK SMALL LETTER MU
-                    key("\u03BC"))
+                    "\u03B2", "\u03BD", "\u03BC")
             .build();
 }
