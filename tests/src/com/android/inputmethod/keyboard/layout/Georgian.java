@@ -99,9 +99,8 @@ public final class Georgian extends LayoutBase {
                     // U+10FA: "ჺ" GEORGIAN LETTER AIN
                     key("\u10D0", moreKey("\u10FA")),
                     // U+10E1: "ს" GEORGIAN LETTER SAN
-                    key("\u10E1"),
                     // U+10D3: "დ" GEORGIAN LETTER DON
-                    key("\u10D3"),
+                    "\u10E1", "\u10D3",
                     // U+10E4: "ფ" GEORGIAN LETTER PHAR
                     // U+10F6: "ჶ" GEORGIAN LETTER FI
                     key("\u10E4", moreKey("\u10F6")),
@@ -115,27 +114,26 @@ public final class Georgian extends LayoutBase {
                     // U+10F7: "ჷ" GEORGIAN LETTER YN
                     key("\u10EF", moreKey("\u10F7")),
                     // U+10D9: "კ" GEORGIAN LETTER KAN
-                    key("\u10D9"),
                     // U+10DA: "ლ" GEORGIAN LETTER LAS
-                    key("\u10DA"))
+                    "\u10D9", "\u10DA")
             .setKeysOfRow(3,
                     // U+10D6: "ზ" GEORGIAN LETTER ZEN
-                    key("\u10D6"),
+                    "\u10D6",
                     // U+10EE: "ხ" GEORGIAN LETTER XAN
                     // U+10F4: "ჴ" GEORGIAN LETTER HAR
                     key("\u10EE", moreKey("\u10F4")),
                     // U+10EA: "ც" GEORGIAN LETTER CAN
-                    key("\u10EA"),
+                    "\u10EA",
                     // U+10D5: "ვ" GEORGIAN LETTER VIN
                     // U+10F3: "ჳ" GEORGIAN LETTER WE
                     key("\u10D5", moreKey("\u10F3")),
                     // U+10D1: "ბ" GEORGIAN LETTER BAN
-                    key("\u10D1"),
+                    "\u10D1",
                     // U+10DC: "ნ" GEORGIAN LETTER NAR
                     // U+10FC: "ჼ" MODIFIER LETTER GEORGIAN NAR
                     key("\u10DC", moreKey("\u10FC")),
                     // U+10DB: "მ" GEORGIAN LETTER MAN
-                    key("\u10DB"))
+                    "\u10DB")
             .build();
 
     private static final ExpectedKey[][] ALPHABET_SHIFTED_COMMON = new ExpectedKeyboardBuilder()
@@ -154,26 +152,12 @@ public final class Georgian extends LayoutBase {
                     key("O", moreKey("9")),
                     key("P", moreKey("0")))
             .setKeysOfRow(2,
-                    key("A"),
                     // U+10E8: "შ" GEORGIAN LETTER SHIN
-                    key("\u10E8"),
-                    key("D"),
-                    key("F"),
-                    key("G"),
-                    key("H"),
                     // U+10DF: "ჟ" GEORGIAN LETTER ZHAR
-                    key("\u10DF"),
-                    key("K"),
-                    key("L"))
+                    "A", "\u10E8", "D", "F", "G", "H", "\u10DF", "K", "L")
             .setKeysOfRow(3,
                     // U+10EB: "ძ" GEORGIAN LETTER JIL
-                    key("\u10EB"),
-                    key("X"),
                     // U+10E9: "ჩ" GEORGIAN LETTER CHIN
-                    key("\u10E9"),
-                    key("V"),
-                    key("B"),
-                    key("N"),
-                    key("M"))
+                    "\u10EB", "X", "\u10E9", "V", "B", "N", "M")
             .build();
 }

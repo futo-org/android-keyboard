@@ -99,77 +99,76 @@ public final class NepaliRomanized extends LayoutBase {
                     // U+0966: "०" DEVANAGARI DIGIT ZERO
                     key("\u092A", joinMoreKeys("\u0966", "0")),
                     // U+0907: "इ" DEVANAGARI LETTER I
-                    key("\u0907"))
-            // U+093E: "ा" DEVANAGARI VOWEL SIGN AA
-            // U+0938: "स" DEVANAGARI LETTER SA
-            // U+0926: "द" DEVANAGARI LETTER DA
-            // U+0909: "उ" DEVANAGARI LETTER U
-            // U+0917: "ग" DEVANAGARI LETTER GA
-            // U+0939: "ह" DEVANAGARI LETTER HA
-            // U+091C: "ज" DEVANAGARI LETTER JA
-            // U+0915: "क" DEVANAGARI LETTER KA
-            // U+0932: "ल" DEVANAGARI LETTER LA
-            // U+090F: "ए" DEVANAGARI LETTER E
-            // U+0950: "ॐ" DEVANAGARI OM
-            .setLabelsOfRow(2,
+                    "\u0907")
+            .setKeysOfRow(2,
+                    // U+093E: "ा" DEVANAGARI VOWEL SIGN AA
+                    // U+0938: "स" DEVANAGARI LETTER SA
+                    // U+0926: "द" DEVANAGARI LETTER DA
+                    // U+0909: "उ" DEVANAGARI LETTER U
+                    // U+0917: "ग" DEVANAGARI LETTER GA
+                    // U+0939: "ह" DEVANAGARI LETTER HA
+                    // U+091C: "ज" DEVANAGARI LETTER JA
+                    // U+0915: "क" DEVANAGARI LETTER KA
+                    // U+0932: "ल" DEVANAGARI LETTER LA
+                    // U+090F: "ए" DEVANAGARI LETTER E
+                    // U+0950: "ॐ" DEVANAGARI OM
                     "\u093E", "\u0938", "\u0926", "\u0909", "\u0917", "\u0939", "\u091C", "\u0915",
                     "\u0932", "\u090F", "\u0950")
-            // U+0937: "ष" DEVANAGARI LETTER SSA
-            // U+0921: "ड" DEVANAGARI LETTER DDA
-            // U+091A: "च" DEVANAGARI LETTER CA
-            // U+0935: "व" DEVANAGARI LETTER VA
-            // U+092C: "ब" DEVANAGARI LETTER BHA
-            // U+0928: "न" DEVANAGARI LETTER NA
-            // U+092E: "म" DEVANAGARI LETTER MA
-            // U+0964: "।" DEVANAGARI DANDA
-            // U+094D: "्" DEVANAGARI SIGN VIRAMA
-            .setLabelsOfRow(3,
-                    "\u0937", "\u0921", "\u091A", "\u0935", "\u092C", "\u0928", "\u092E", "\u0964",
+            .setKeysOfRow(3,
+                    // U+0937: "ष" DEVANAGARI LETTER SSA
+                    // U+0921: "ड" DEVANAGARI LETTER DDA
+                    // U+091A: "च" DEVANAGARI LETTER CA
+                    // U+0935: "व" DEVANAGARI LETTER VA
+                    // U+092C: "ब" DEVANAGARI LETTER BHA
+                    // U+0928: "न" DEVANAGARI LETTER NA
+                    // U+092E: "म" DEVANAGARI LETTER MA
+                    "\u0937", "\u0921", "\u091A", "\u0935", "\u092C", "\u0928", "\u092E",
+                    // U+0964: "।" DEVANAGARI DANDA
+                    // U+093D: "ऽ" DEVANAGARI SIGN AVAGRAHA
+                    key("\u0964", moreKey("\u093D")),
+                    // U+094D: "्" DEVANAGARI SIGN VIRAMA
                     "\u094D")
-            // U+0964: "।" DEVANAGARI DANDA
-            // U+093D: "ऽ" DEVANAGARI SIGN AVAGRAHA
-            .setMoreKeysOf("\u0964", "\u093D")
             .build();
 
     private static final ExpectedKey[][] ALPHABET_SHIFTED_COMMON = new ExpectedKeyboardBuilder()
-            // U+0920: "ठ" DEVANAGARI LETTER TTHA
-            // U+0914: "औ" DEVANAGARI LETTER AU
-            // U+0948: "ै" DEVANAGARI VOWEL SIGN AI
-            // U+0943: "ृ" DEVANAGARI VOWEL SIGN VOCALIC R
-            // U+0925: "थ" DEVANAGARI LETTER THA
-            // U+091E: "ञ" DEVANAGARI LETTER NYA
-            // U+0942: "ू" DEVANAGARI VOWEL SIGN UU
-            // U+0940: "ी" DEVANAGARI VOWEL SIGN II
-            // U+0913: "ओ" DEVANAGARI LETTER O
-            // U+092B: "फ" DEVANAGARI LETTER PHA
-            // U+0908: "ई" DEVANAGARI LETTER II
-            .setLabelsOfRow(1,
+            .setKeysOfRow(1,
+                    // U+0920: "ठ" DEVANAGARI LETTER TTHA
+                    // U+0914: "औ" DEVANAGARI LETTER AU
+                    // U+0948: "ै" DEVANAGARI VOWEL SIGN AI
+                    // U+0943: "ृ" DEVANAGARI VOWEL SIGN VOCALIC R
+                    // U+0925: "थ" DEVANAGARI LETTER THA
+                    // U+091E: "ञ" DEVANAGARI LETTER NYA
+                    // U+0942: "ू" DEVANAGARI VOWEL SIGN UU
+                    // U+0940: "ी" DEVANAGARI VOWEL SIGN II
+                    // U+0913: "ओ" DEVANAGARI LETTER O
+                    // U+092B: "फ" DEVANAGARI LETTER PHA
+                    // U+0908: "ई" DEVANAGARI LETTER II
                     "\u0920", "\u0914", "\u0948", "\u0943", "\u0925", "\u091E", "\u0942", "\u0940",
                     "\u0913", "\u092B", "\u0908")
-            // U+0906: "आ" DEVANAGARI LETTER AA
-            // U+0936: "श" DEVANAGARI LETTER SHA
-            // U+0927: "ध" DEVANAGARI LETTER DHA
-            // U+090A: "ऊ" DEVANAGARI LETTER UU
-            // U+0918: "घ" DEVANAGARI LETTER GHA
-            // U+0905: "अ" DEVANAGARI LETTER A
-            // U+091D: "झ" DEVANAGARI LETTER JHA
-            // U+0916: "ख" DEVANAGARI LETTER KHA
-            // U+0965: "॥" DEVANAGARI DOUBLE DANDA
-            // U+0910: "ऐ" DEVANAGARI LETTER AI
-            // U+0903: "ः" DEVANAGARI SIGN VISARGA
-            .setLabelsOfRow(2,
+            .setKeysOfRow(2,
+                    // U+0906: "आ" DEVANAGARI LETTER AA
+                    // U+0936: "श" DEVANAGARI LETTER SHA
+                    // U+0927: "ध" DEVANAGARI LETTER DHA
+                    // U+090A: "ऊ" DEVANAGARI LETTER UU
+                    // U+0918: "घ" DEVANAGARI LETTER GHA
+                    // U+0905: "अ" DEVANAGARI LETTER A
+                    // U+091D: "झ" DEVANAGARI LETTER JHA
+                    // U+0916: "ख" DEVANAGARI LETTER KHA
+                    // U+0965: "॥" DEVANAGARI DOUBLE DANDA
+                    // U+0910: "ऐ" DEVANAGARI LETTER AI
+                    // U+0903: "ः" DEVANAGARI SIGN VISARGA
                     "\u0906", "\u0936", "\u0927", "\u090A", "\u0918", "\u0905", "\u091D", "\u0916",
                     "\u0965", "\u0910", "\u0903")
-            // U+090B: "ऋ" DEVANAGARI LETTER VOCALIC R
-            // U+0922: "ढ" DEVANAGARI LETTER DDHA
-            // U+091B: "छ" DEVANAGARI LETTER CHA
-            // U+0901: "ँ" DEVANAGARI SIGN CANDRABINDU
-            // U+092D: "भ" DEVANAGARI LETTER BHA
-            // U+0923: "ण" DEVANAGARI LETTER NNA
-            // U+0902: "ं" DEVANAGARI SIGN ANUSVARA
-            // U+0919: "ङ" DEVANAGARI LETTER NGA
-            // U+094D: "्" DEVANAGARI SIGN VIRAMA
-            .setLabelsOfRow(3,
+            .setKeysOfRow(3,
+                    // U+090B: "ऋ" DEVANAGARI LETTER VOCALIC R
+                    // U+0922: "ढ" DEVANAGARI LETTER DDHA
+                    // U+091B: "छ" DEVANAGARI LETTER CHA
+                    // U+0901: "ँ" DEVANAGARI SIGN CANDRABINDU
+                    // U+092D: "भ" DEVANAGARI LETTER BHA
+                    // U+0923: "ण" DEVANAGARI LETTER NNA
+                    // U+0902: "ं" DEVANAGARI SIGN ANUSVARA
+                    // U+0919: "ङ" DEVANAGARI LETTER NGA
+                    // U+094D: "्" DEVANAGARI SIGN VIRAMA
                     "\u090B", "\u0922", "\u091B", "\u0901", "\u092D", "\u0923", "\u0902", "\u0919",
                     "\u094D")
             .build();

@@ -66,7 +66,7 @@ public final class Khmer extends LayoutBase {
             return ALPHABET_COMMON;
         }
         final ExpectedKeyboardBuilder builder = new ExpectedKeyboardBuilder(ALPHABET_COMMON);
-        builder.addKeysOnTheRightOfRow(4, EXCLAMATION_AND_QUESTION_MARKS);
+        builder.addKeysOnTheRightOfRow(4, (Object[])EXCLAMATION_AND_QUESTION_MARKS);
         return builder.build();
     }
 
@@ -84,11 +84,9 @@ public final class Khmer extends LayoutBase {
     ExpectedKeyboardBuilder convertCommonLayoutToKeyboard(final ExpectedKeyboardBuilder builder,
             final boolean isPhone) {
         final LayoutCustomizer customizer = getCustomizer();
-        final ExpectedKey[] spacebar = joinKeys(
-                customizer.getKeysLeftToSpacebar(isPhone),
-                customizer.getSpaceKeys(isPhone),
-                customizer.getKeysRightToSpacebar(isPhone));
-        builder.setKeysOfRow(5, spacebar);
+        builder.setKeysOfRow(5, (Object[])customizer.getSpaceKeys(isPhone));
+        builder.addKeysOnTheLeftOfRow(5, (Object[])customizer.getKeysLeftToSpacebar(isPhone));
+        builder.addKeysOnTheRightOfRow(5, (Object[])customizer.getKeysRightToSpacebar(isPhone));
         if (isPhone) {
             builder.addKeysOnTheRightOfRow(4, DELETE_KEY)
                     .addKeysOnTheLeftOfRow(5, customizer.getSymbolsKey())
@@ -99,8 +97,8 @@ public final class Khmer extends LayoutBase {
                     .addKeysOnTheLeftOfRow(5, customizer.getSymbolsKey(), SETTINGS_KEY)
                     .addKeysOnTheRightOfRow(5, EMOJI_KEY);
         }
-        builder.addKeysOnTheLeftOfRow(4, customizer.getLeftShiftKeys(isPhone))
-                .addKeysOnTheRightOfRow(4, customizer.getRightShiftKeys(isPhone));
+        builder.addKeysOnTheLeftOfRow(4, (Object[])customizer.getLeftShiftKeys(isPhone))
+                .addKeysOnTheRightOfRow(4, (Object[])customizer.getRightShiftKeys(isPhone));
         return builder;
     }
 
@@ -144,27 +142,18 @@ public final class Khmer extends LayoutBase {
                     key("\u17B2", moreKey("\u17B1")))
             .setKeysOfRow(2,
                     // U+1786: "ឆ" KHMER LETTER CHA
-                    key("\u1786"),
                     // U+17B9: "ឹ" KHMER VOWEL SIGN Y
-                    key("\u17B9"),
                     // U+17C1: "េ" KHMER VOWEL SIGN E
-                    key("\u17C1"),
                     // U+179A: "រ" KHMER LETTER RO
-                    key("\u179A"),
                     // U+178F: "ត" KHMER LETTER TA
-                    key("\u178F"),
                     // U+1799: "យ" KHMER LETTER YO
-                    key("\u1799"),
                     // U+17BB: "ុ" KHMER VOWEL SIGN U
-                    key("\u17BB"),
                     // U+17B7: "ិ" KHMER VOWEL SIGN I
-                    key("\u17B7"),
                     // U+17C4: "ោ" KHMER VOWEL SIGN OO
-                    key("\u17C4"),
                     // U+1795: "ផ" KHMER LETTER PHA
-                    key("\u1795"),
                     // U+17C0: "ៀ" KHMER VOWEL SIGN IE
-                    key("\u17C0"),
+                    "\u1786", "\u17B9", "\u17C1", "\u179A", "\u178F", "\u1799", "\u17BB", "\u17B7",
+                    "\u17C4", "\u1795", "\u17C0",
                     // U+17AA: "ឪ" KHMER INDEPENDENT VOWEL QUUV
                     // U+17A7: "ឧ" KHMER INDEPENDENT VOWEL QU
                     // U+17B1: "ឱ" KHMER INDEPENDENT VOWEL QOO TYPE ONE
@@ -174,32 +163,23 @@ public final class Khmer extends LayoutBase {
                     key("\u17AA", joinMoreKeys("\u17A7", "\u17B1", "\u17B3", "\u17A9", "\u17A8")))
             .setKeysOfRow(3,
                     // U+17B6: "ា" KHMER VOWEL SIGN AA
-                    key("\u17B6"),
                     // U+179F: "ស" KHMER LETTER SA
-                    key("\u179F"),
                     // U+178A: "ដ" KHMER LETTER DA
-                    key("\u178A"),
                     // U+1790: "ថ" KHMER LETTER THA
-                    key("\u1790"),
                     // U+1784: "ង" KHMER LETTER NGO
-                    key("\u1784"),
                     // U+17A0: "ហ" KHMER LETTER HA
-                    key("\u17A0"),
                     // U+17D2: "្" KHMER SIGN COENG
-                    key("\u17D2"),
                     // U+1780: "ក" KHMER LETTER KA
-                    key("\u1780"),
                     // U+179B: "ល" KHMER LETTER LO
-                    key("\u179B"),
                     // U+17BE: "ើ" KHMER VOWEL SIGN OE
-                    key("\u17BE"),
                     // U+17CB: "់" KHMER SIGN BANTOC
-                    key("\u17CB"),
+                    "\u17B6", "\u179F", "\u178A", "\u1790", "\u1784", "\u17A0", "\u17D2", "\u1780",
+                    "\u179B", "\u17BE", "\u17CB",
                     // U+17AE: "ឮ" KHMER INDEPENDENT VOWEL LYY
                     // U+17AD: "ឭ" KHMER INDEPENDENT VOWEL LY
                     // U+17B0: "ឰ" KHMER INDEPENDENT VOWEL QAI
                     key("\u17AE", joinMoreKeys("\u17AD", "\u17B0")))
-            .setLabelsOfRow(4,
+            .setKeysOfRow(4,
                     // U+178B: "ឋ" KHMER LETTER TTHA
                     // U+1781: "ខ" KHMER LETTER KHA
                     // U+1785: "ច" KHMER LETTER CA
@@ -241,7 +221,7 @@ public final class Khmer extends LayoutBase {
                     // U+00D7: "×" MULTIPLICATION SIGN
                     key("\u17CC", moreKey("\u00D7")),
                     // U+17CE: "៎" KHMER SIGN KAKABAT
-                    key("\u17CE"))
+                    "\u17CE")
             .setKeysOfRow(2,
                     // U+1788: "ឈ" KHMER LETTER CHO
                     // U+17DC: "ៜ" KHMER SIGN AVAKRAHASANYA
@@ -250,73 +230,52 @@ public final class Khmer extends LayoutBase {
                     // U+17DD: "៝" KHMER SIGN ATTHACAN
                     key("\u17BA", moreKey("\u17DD")),
                     // U+17C2: "ែ" KHMER VOWEL SIGN AE
-                    key("\u17C2"),
+                    "\u17C2",
                     // U+17AC: "ឬ" KHMER INDEPENDENT VOWEL RYY
                     // U+17AB: "ឫ" KHMER INDEPENDENT VOWEL RY
                     key("\u17AC", moreKey("\u17AB")),
                     // U+1791: "ទ" KHMER LETTER TO
-                    key("\u1791"),
                     // U+17BD: "ួ" KHMER VOWEL SIGN UA
-                    key("\u17BD"),
                     // U+17BC: "ូ" KHMER VOWEL SIGN UU
-                    key("\u17BC"),
                     // U+17B8: "ី" KHMER VOWEL SIGN II
-                    key("\u17B8"),
                     // U+17C5: "ៅ" KHMER VOWEL SIGN AU
-                    key("\u17C5"),
                     // U+1797: "ភ" KHMER LETTER PHO
-                    key("\u1797"),
                     // U+17BF: "ឿ" KHMER VOWEL SIGN YA
-                    key("\u17BF"),
                     // U+17B0: "ឰ" KHMER INDEPENDENT VOWEL QAI
-                    key("\u17B0"))
+                    "\u1791", "\u17BD", "\u17BC", "\u17B8", "\u17C5", "\u1797", "\u17BF", "\u17B0")
             .setKeysOfRow(3,
                     // U+17B6/U+17C6: "ាំ" KHMER VOWEL SIGN AA/KHMER SIGN NIKAHIT
-                    key("\u17B6\u17C6"),
                     // U+17C3: "ៃ" KHMER VOWEL SIGN AI
-                    key("\u17C3"),
                     // U+178C: "ឌ" KHMER LETTER DO
-                    key("\u178C"),
                     // U+1792: "ធ" KHMER LETTER THO
-                    key("\u1792"),
                     // U+17A2: "អ" KHMER LETTER QAE
-                    key("\u17A2"),
+                    "\u17B6\u17C6", "\u17C3", "\u178C", "\u1792", "\u17A2",
                     // U+17C7: "ះ" KHMER SIGN REAHMUK
                     // U+17C8: "ៈ" KHMER SIGN YUUKALEAPINTU
                     key("\u17C7", moreKey("\u17C8")),
                     // U+1789: "ញ" KHMER LETTER NYO
-                    key("\u1789"),
+                    "\u1789",
                     // U+1782: "គ" KHMER LETTER KO
                     // U+179D: "ឝ" KHMER LETTER SHA
                     key("\u1782", moreKey("\u179D")),
                     // U+17A1: "ឡ" KHMER LETTER LA
-                    key("\u17A1"),
                     // U+17C4/U+17C7: "ោះ" KHMER VOWEL SIGN OO/KHMER SIGN REAHMUK
-                    key("\u17C4\u17C7"),
                     // U+17C9: "៉" KHMER SIGN MUUSIKATOAN
-                    key("\u17C9"),
                     // U+17AF: "ឯ" KHMER INDEPENDENT VOWEL QE
-                    key("\u17AF"))
+                    "\u17A1", "\u17C4\u17C7", "\u17C9", "\u17AF")
             .setKeysOfRow(4,
                     // U+178D: "ឍ" KHMER LETTER TTHO
-                    key("\u178D"),
                     // U+1783: "ឃ" KHMER LETTER KHO
-                    key("\u1783"),
                     // U+1787: "ជ" KHMER LETTER CO
-                    key("\u1787"),
                     // U+17C1/U+17C7: "េះ" KHMER VOWEL SIGN E/KHMER SIGN REAHMUK
-                    key("\u17C1\u17C7"),
+                    "\u178D", "\u1783", "\u1787", "\u17C1\u17C7",
                     // U+1796: "ព" KHMER LETTER PO
                     // U+179E: "ឞ" KHMER LETTER SSO
                     key("\u1796", moreKey("\u179E")),
                     // U+178E: "ណ" KHMER LETTER NNO
-                    key("\u178E"),
                     // U+17C6: "ំ" KHMER SIGN NIKAHIT
-                    key("\u17C6"),
                     // U+17BB/U+17C7: "ុះ" KHMER VOWEL SIGN U/KHMER SIGN REAHMUK
-                    key("\u17BB\u17C7"),
                     // U+17D5: "៕" KHMER SIGN BARIYOOSAN
-                    key("\u17D5"),
-                    key("?"))
+                    "\u178E", "\u17C6", "\u17BB\u17C7", "\u17D5", "?")
             .build();
 }

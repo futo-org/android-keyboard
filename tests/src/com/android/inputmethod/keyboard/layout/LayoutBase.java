@@ -161,7 +161,7 @@ public abstract class LayoutBase extends AbstractLayoutBase {
          * @return the array of {@link ExpectedKey} that should be placed at left of the spacebar.
          */
         public ExpectedKey[] getKeysLeftToSpacebar(final boolean isPhone) {
-            return isPhone ? joinKeys(key(",", SETTINGS_KEY)) : joinKeys(key("/"));
+            return isPhone ? joinKeys(key(",", SETTINGS_KEY)) : joinKeys("/");
         }
 
         /**
@@ -171,7 +171,7 @@ public abstract class LayoutBase extends AbstractLayoutBase {
          */
         public ExpectedKey[] getKeysRightToSpacebar(final boolean isPhone) {
             final ExpectedKey periodKey = key(".", getPunctuationMoreKeys(isPhone));
-            return isPhone ? joinKeys(periodKey) : joinKeys(key(","), periodKey);
+            return isPhone ? joinKeys(periodKey) : joinKeys(",", periodKey);
         }
 
         /**
@@ -288,11 +288,9 @@ public abstract class LayoutBase extends AbstractLayoutBase {
     ExpectedKeyboardBuilder convertCommonLayoutToKeyboard(final ExpectedKeyboardBuilder builder,
             final boolean isPhone) {
         final LayoutCustomizer customizer = getCustomizer();
-        final ExpectedKey[] spacebar = joinKeys(
-                customizer.getKeysLeftToSpacebar(isPhone),
-                customizer.getSpaceKeys(isPhone),
-                customizer.getKeysRightToSpacebar(isPhone));
-        builder.setKeysOfRow(4, spacebar);
+        builder.setKeysOfRow(4, (Object[])customizer.getSpaceKeys(isPhone));
+        builder.addKeysOnTheLeftOfRow(4, (Object[])customizer.getKeysLeftToSpacebar(isPhone));
+        builder.addKeysOnTheRightOfRow(4, (Object[])customizer.getKeysRightToSpacebar(isPhone));
         if (isPhone) {
             builder.addKeysOnTheRightOfRow(3, DELETE_KEY)
                     .addKeysOnTheLeftOfRow(4, customizer.getSymbolsKey())
@@ -302,10 +300,9 @@ public abstract class LayoutBase extends AbstractLayoutBase {
                     .addKeysOnTheRightOfRow(2, ENTER_KEY)
                     .addKeysOnTheLeftOfRow(4, customizer.getSymbolsKey(), SETTINGS_KEY)
                     .addKeysOnTheRightOfRow(4, EMOJI_KEY);
-
         }
-        builder.addKeysOnTheLeftOfRow(3, customizer.getLeftShiftKeys(isPhone))
-            .addKeysOnTheRightOfRow(3, customizer.getRightShiftKeys(isPhone));
+        builder.addKeysOnTheLeftOfRow(3, (Object[])customizer.getLeftShiftKeys(isPhone))
+                .addKeysOnTheRightOfRow(3, (Object[])customizer.getRightShiftKeys(isPhone));
         return builder;
     }
 

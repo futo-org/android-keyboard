@@ -63,7 +63,7 @@ public final class NepaliTraditional extends LayoutBase {
                     // U+093D: "ऽ" DEVANAGARI SIGN AVAGRAHA
                     key("\u0947", joinMoreKeys("\u0903", "\u093D")),
                     // U+0964: "।" DEVANAGARI DANDA
-                    key("\u0964"),
+                    "\u0964",
                     // U+0930: "र" DEVANAGARI LETTER RA
                     // U+0930/U+0941: "रु" DEVANAGARI LETTER RA/DEVANAGARI VOWEL SIGN U
                     key("\u0930", moreKey("\u0930\u0941")));
@@ -73,9 +73,8 @@ public final class NepaliTraditional extends LayoutBase {
                     // U+093D: "ऽ" DEVANAGARI SIGN AVAGRAHA
                     key("\u0903", moreKey("\u093D")),
                     // U+0947: "े" DEVANAGARI VOWEL SIGN E
-                    key("\u0947"),
                     // U+0964: "।" DEVANAGARI DANDA
-                    key("\u0964"),
+                    "\u0947", "\u0964",
                     // U+0930: "र" DEVANAGARI LETTER RA
                     key("\u0930", moreKey("!")),
                     // U+094D: "्" DEVANAGARI SIGN VIRAMA
@@ -94,9 +93,8 @@ public final class NepaliTraditional extends LayoutBase {
         if (isPhone) {
             builder.addKeysOnTheRightOfRow(3,
                     // U+0902: "ं" DEVANAGARI SIGN ANUSVARA
-                    key("\u0902"),
                     // U+0919: "ङ" DEVANAGARI LETTER NGA
-                    key("\u0919"),
+                    "\u0902", "\u0919",
                     // U+0948: "ै" DEVANAGARI VOWEL SIGN AI
                     // U+0936/U+094D/U+0930:
                     //     "श्र" DEVANAGARI LETTER SHA/DEVANAGARI SIGN VIRAMA/DEVANAGARI LETTER RA
@@ -104,16 +102,15 @@ public final class NepaliTraditional extends LayoutBase {
         } else {
             builder.addKeysOnTheRightOfRow(3,
                     // U+0902: "ं" DEVANAGARI SIGN ANUSVARA
-                    key("\u0902"),
                     // U+0919: "ङ" DEVANAGARI LETTER NGA
-                    key("\u0919"),
+                    "\u0902", "\u0919",
                     // U+0948: "ै" DEVANAGARI VOWEL SIGN AI
                     // U+0936/U+094D/U+0930:
                     //     "श्र" DEVANAGARI LETTER SHA/DEVANAGARI SIGN VIRAMA/DEVANAGARI LETTER RA
                     key("\u0948", moreKey("\u0936\u094D\u0930")),
                     // U+0930/U+0941: "रु" DEVANAGARI LETTER RA/DEVANAGARI VOWEL SIGN U
                     key("\u0930\u0941", moreKey("!")),
-                    key("?"));
+                    "?");
         }
         return builder.build();
     }
@@ -153,27 +150,28 @@ public final class NepaliTraditional extends LayoutBase {
                     // U+0907: "इ" DEVANAGARI LETTER I
                     // U+0914: "औ" DEVANAGARI LETTER AU
                     key("\u0907", moreKey("\u0914")))
-            // U+092C: "ब" DEVANAGARI LETTER BA
-            // U+0915: "क" DEVANAGARI LETTER KA
-            // U+092E: "म" DEVANAGARI LETTER MA
-            // U+093E: "ा" DEVANAGARI VOWEL SIGN AA
-            // U+0928: "न" DEVANAGARI LETTER NA
-            // U+091C: "ज" DEVANAGARI LETTER JA
-            // U+0935: "व" DEVANAGARI LETTER VA
-            // U+092A: "प" DEVANAGARI LETTER PA
-            // U+093F: "ि" DEVANAGARI VOWEL SIGN I
-            // U+0938: "स" DEVANAGARI LETTER SA
-            // U+0941: "ु" DEVANAGARI VOWEL SIGN U
-            .setLabelsOfRow(2,
+            .setKeysOfRow(2,
+                    // U+092C: "ब" DEVANAGARI LETTER BA
+                    // U+0915: "क" DEVANAGARI LETTER KA
+                    // U+092E: "म" DEVANAGARI LETTER MA
+                    // U+093E: "ा" DEVANAGARI VOWEL SIGN AA
+                    // U+0928: "न" DEVANAGARI LETTER NA
+                    // U+091C: "ज" DEVANAGARI LETTER JA
+                    // U+0935: "व" DEVANAGARI LETTER VA
+                    // U+092A: "प" DEVANAGARI LETTER PA
+                    // U+093F: "ि" DEVANAGARI VOWEL SIGN I
+                    // U+0938: "स" DEVANAGARI LETTER SA
+                    // U+0941: "ु" DEVANAGARI VOWEL SIGN U
                     "\u092C", "\u0915", "\u092E", "\u093E", "\u0928", "\u091C", "\u0935", "\u092A",
                     "\u093F", "\u0938", "\u0941")
-            // U+0936: "श" DEVANAGARI LETTER SHA
-            // U+0939: "ह" DEVANAGARI LETTER HA
-            // U+0905: "अ" DEVANAGARI LETTER A
-            // U+0916: "ख" DEVANAGARI LETTER KHA
-            // U+0926: "द" DEVANAGARI LETTER DA
-            // U+0932: "ल" DEVANAGARI LETTER LA
-            .setLabelsOfRow(3, "\u0936", "\u0939", "\u0905", "\u0916", "\u0926", "\u0932")
+            .setKeysOfRow(3,
+                    // U+0936: "श" DEVANAGARI LETTER SHA
+                    // U+0939: "ह" DEVANAGARI LETTER HA
+                    // U+0905: "अ" DEVANAGARI LETTER A
+                    // U+0916: "ख" DEVANAGARI LETTER KHA
+                    // U+0926: "द" DEVANAGARI LETTER DA
+                    // U+0932: "ल" DEVANAGARI LETTER LA
+                    "\u0936", "\u0939", "\u0905", "\u0916", "\u0926", "\u0932")
             .build();
 
     private static final ExpectedKey[][] ALPHABET_SHIFTED_COMMON = new ExpectedKeyboardBuilder()
@@ -222,32 +220,32 @@ public final class NepaliTraditional extends LayoutBase {
                     // U+0943: "ृ" DEVANAGARI VOWEL SIGN VOCALIC R
                     // U+0913: "ओ" DEVANAGARI LETTER O
                     key("\u0943", moreKey("\u0913")))
-            // U+0906: "आ" DEVANAGARI LETTER AA
-            // U+0919/U+094D: "ङ्" DEVANAGARI LETTER NGA/DEVANAGARI SIGN VIRAMA
-            // U+0921/U+094D/U+0921:
-            //     "ड्ड" DEVANAGARI LETTER DDA/DEVANAGARI SIGN VIRAMA/DEVANAGARI LETTER DDA
-            // U+0901: "ँ" DEVANAGARI SIGN CANDRABINDU
-            // U+0926/U+094D/U+0926:
-            //     "द्द" DEVANAGARI LETTER DA/DEVANAGARI SIGN VIRAMA/DEVANAGARI LETTER DA
-            // U+091D: "झ" DEVANAGARI LETTER JHA
-            // U+094B: "ो" DEVANAGARI VOWEL SIGN O
-            // U+092B: "फ" DEVANAGARI LETTER PHA
-            // U+0940: "ी" DEVANAGARI VOWEL SIGN II
-            // U+091F/U+094D/U+0920:
-            //     "ट्ठ" DEVANAGARI LETTER TTA/DEVANAGARI SIGN VIRAMA/DEVANAGARI LETTER TTHA
-            // U+0942: "ू" DEVANAGARI VOWEL SIGN UU
-            .setLabelsOfRow(2,
+            .setKeysOfRow(2,
+                    // U+0906: "आ" DEVANAGARI LETTER AA
+                    // U+0919/U+094D: "ङ्" DEVANAGARI LETTER NGA/DEVANAGARI SIGN VIRAMA
+                    // U+0921/U+094D/U+0921:
+                    //     "ड्ड" DEVANAGARI LETTER DDA/DEVANAGARI SIGN VIRAMA/DEVANAGARI LETTER DDA
+                    // U+0901: "ँ" DEVANAGARI SIGN CANDRABINDU
+                    // U+0926/U+094D/U+0926:
+                    //     "द्द" DEVANAGARI LETTER DA/DEVANAGARI SIGN VIRAMA/DEVANAGARI LETTER DA
+                    // U+091D: "झ" DEVANAGARI LETTER JHA
+                    // U+094B: "ो" DEVANAGARI VOWEL SIGN O
+                    // U+092B: "फ" DEVANAGARI LETTER PHA
+                    // U+0940: "ी" DEVANAGARI VOWEL SIGN II
+                    // U+091F/U+094D/U+0920:
+                    //     "ट्ठ" DEVANAGARI LETTER TTA/DEVANAGARI SIGN VIRAMA/DEVANAGARI LETTER TTHA
+                    // U+0942: "ू" DEVANAGARI VOWEL SIGN UU
                     "\u0906", "\u0919\u094D", "\u0921\u094D\u0921", "\u0901", "\u0926\u094D\u0926",
                     "\u091D", "\u094B", "\u092B", "\u0940", "\u091F\u094D\u0920", "\u0942")
-            // U+0915/U+094D: "क्" DEVANAGARI LETTER KA/DEVANAGARI SIGN VIRAMA
-            // U+0939/U+094D/U+092E:
-            //     "ह्म" DEVANAGARI LETTER HA/DEVANAGARI SIGN VIRAMA/DEVANAGARI LETTER MA
-            // U+090B: "ऋ" DEVANAGARI LETTER VOCALIC R
-            // U+0950: "ॐ" DEVANAGARI OM
-            // U+094C: "ौ" DEVANAGARI VOWEL SIGN AU
-            // U+0926/U+094D/U+092F:
-            //     "द्य" DEVANAGARI LETTER DA/DEVANAGARI SIGN VIRAMA/DEVANAGARI LETTER YA
-            .setLabelsOfRow(3,
+            .setKeysOfRow(3,
+                    // U+0915/U+094D: "क्" DEVANAGARI LETTER KA/DEVANAGARI SIGN VIRAMA
+                    // U+0939/U+094D/U+092E:
+                    //     "ह्म" DEVANAGARI LETTER HA/DEVANAGARI SIGN VIRAMA/DEVANAGARI LETTER MA
+                    // U+090B: "ऋ" DEVANAGARI LETTER VOCALIC R
+                    // U+0950: "ॐ" DEVANAGARI OM
+                    // U+094C: "ौ" DEVANAGARI VOWEL SIGN AU
+                    // U+0926/U+094D/U+092F:
+                    //     "द्य" DEVANAGARI LETTER DA/DEVANAGARI SIGN VIRAMA/DEVANAGARI LETTER YA
                     "\u0915\u094D", "\u0939\u094D\u092E", "\u090B", "\u0950", "\u094C",
                     "\u0926\u094D\u092F")
             .build();

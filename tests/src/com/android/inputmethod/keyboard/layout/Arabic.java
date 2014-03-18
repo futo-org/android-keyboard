@@ -142,7 +142,7 @@ public final class Arabic extends LayoutBase {
         } else {
             final ExpectedKeyboardBuilder builder = new ExpectedKeyboardBuilder(ALPHABET_COMMON);
             // U+0626: "ئ" ARABIC LETTER YEH WITH HAMZA ABOVE
-            builder.insertKeysAtRow(3, 2, key("\u0626"));
+            builder.insertKeysAtRow(3, 2, "\u0626");
             return builder.build();
         }
     }
@@ -198,7 +198,7 @@ public final class Arabic extends LayoutBase {
                     // U+069C: "ڜ" ARABIC LETTER SEEN WITH THREE DOTS BELOW AND THREE DOTS ABOVE
                     key("\u0634", moreKey("\u069C")),
                     // U+0633: "س" ARABIC LETTER SEEN
-                    key("\u0633"),
+                    "\u0633",
                     // U+064A: "ي" ARABIC LETTER YEH
                     // U+0626: "ئ" ARABIC LETTER YEH WITH HAMZA ABOVE
                     // U+0649: "ى" ARABIC LETTER ALEF MAKSURA
@@ -226,18 +226,16 @@ public final class Arabic extends LayoutBase {
                     // U+0671: "ٱ" ARABIC LETTER ALEF WASLA
                     key("\u0627", joinMoreKeys("\u0622", "\u0621", "\u0623", "\u0625", "\u0671")),
                     // U+062A: "ت" ARABIC LETTER TEH
-                    key("\u062A"),
                     // U+0646: "ن" ARABIC LETTER NOON
-                    key("\u0646"),
                     // U+0645: "م" ARABIC LETTER MEEM
-                    key("\u0645"),
+                    "\u062A", "\u0646", "\u0645",
                     // U+0643: "ك" ARABIC LETTER KAF
                     // U+06AF: "گ" ARABIC LETTER GAF
                     // U+06A9: "ک" ARABIC LETTER KEHEH
                     key("\u0643", joinMoreKeys("\u06AF", "\u06A9")),
                     // U+0637: "ط" ARABIC LETTER TAH
-                    key("\u0637"))
-            .setKeysOfRow(3, joinKeys(
+                    "\u0637")
+            .setKeysOfRow(3,
                     // U+0630: "ذ" ARABIC LETTER THAL
                     // U+0621: "ء" ARABIC LETTER HAMZA
                     // U+0624: "ؤ" ARABIC LETTER WAW WITH HAMZA ABOVE
@@ -254,7 +252,7 @@ public final class Arabic extends LayoutBase {
                     key("\u0632", moreKey("\u0698")),
                     // U+0638: "ظ" ARABIC LETTER ZAH
                     // U+062F: "د" ARABIC LETTER DAL
-                    "\u0638", "\u062F"))
+                    "\u0638", "\u062F")
             .build();
 
     private static class ArabicSymbols extends RtlSymbols {

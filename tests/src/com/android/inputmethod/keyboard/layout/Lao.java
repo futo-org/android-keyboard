@@ -70,7 +70,7 @@ public final class Lao extends LayoutBase {
             return ALPHABET_COMMON;
         }
         final ExpectedKeyboardBuilder builder = new ExpectedKeyboardBuilder(ALPHABET_COMMON);
-        builder.addKeysOnTheRightOfRow(4, EXCLAMATION_AND_QUESTION_MARKS);
+        builder.addKeysOnTheRightOfRow(4, (Object[])EXCLAMATION_AND_QUESTION_MARKS);
         return builder.build();
     }
 
@@ -88,11 +88,9 @@ public final class Lao extends LayoutBase {
     ExpectedKeyboardBuilder convertCommonLayoutToKeyboard(final ExpectedKeyboardBuilder builder,
             final boolean isPhone) {
         final LayoutCustomizer customizer = getCustomizer();
-        final ExpectedKey[] spacebar = joinKeys(
-                customizer.getKeysLeftToSpacebar(isPhone),
-                customizer.getSpaceKeys(isPhone),
-                customizer.getKeysRightToSpacebar(isPhone));
-        builder.setKeysOfRow(5, spacebar);
+        builder.setKeysOfRow(5, (Object[])customizer.getSpaceKeys(isPhone));
+        builder.addKeysOnTheLeftOfRow(5, (Object[])customizer.getKeysLeftToSpacebar(isPhone));
+        builder.addKeysOnTheRightOfRow(5, (Object[])customizer.getKeysRightToSpacebar(isPhone));
         if (isPhone) {
             builder.addKeysOnTheRightOfRow(4, DELETE_KEY)
                     .addKeysOnTheLeftOfRow(5, customizer.getSymbolsKey())
@@ -103,8 +101,8 @@ public final class Lao extends LayoutBase {
                     .addKeysOnTheLeftOfRow(5, customizer.getSymbolsKey(), SETTINGS_KEY)
                     .addKeysOnTheRightOfRow(5, EMOJI_KEY);
         }
-        builder.addKeysOnTheLeftOfRow(4, customizer.getLeftShiftKeys(isPhone))
-                .addKeysOnTheRightOfRow(4, customizer.getRightShiftKeys(isPhone));
+        builder.addKeysOnTheLeftOfRow(4, (Object[])customizer.getLeftShiftKeys(isPhone))
+                .addKeysOnTheRightOfRow(4, (Object[])customizer.getRightShiftKeys(isPhone));
         return builder;
     }
 
@@ -123,9 +121,8 @@ public final class Lao extends LayoutBase {
                     // U+0ED4: "໔" LAO DIGIT FOUR
                     key("\u0E96", joinMoreKeys("4", "\u0ED4")),
                     // U+0EB8: "ຸ" LAO VOWEL SIGN U
-                    key("\u0EB8"),
                     // U+0EB9: "ູ" LAO VOWEL SIGN UU
-                    key("\u0EB9"),
+                    "\u0EB8", "\u0EB9",
                     // U+0E84: "ຄ" LAO LETTER KHO TAM
                     // U+0ED5: "໕" LAO DIGIT FIVE
                     key("\u0E84", joinMoreKeys("5", "\u0ED5")),
@@ -142,34 +139,26 @@ public final class Lao extends LayoutBase {
                     // U+0ED9: "໙" LAO DIGIT NINE
                     key("\u0E8A", joinMoreKeys("9", "\u0ED9")),
                     // U+0ECD: "ໍ" LAO NIGGAHITA
-                    key("\u0ECD"))
+                    "\u0ECD")
             .setKeysOfRow(2,
                     // U+0EBB: "ົ" LAO VOWEL SIGN MAI KON
-                    key("\u0EBB"),
+                    "\u0EBB",
                     // U+0EC4: "ໄ" LAO VOWEL SIGN AI
                     // U+0ED0: "໐" LAO DIGIT ZERO
                     key("\u0EC4", joinMoreKeys("0", "\u0ED0")),
                     // U+0EB3: "ຳ" LAO VOWEL SIGN AM
-                    key("\u0EB3"),
                     // U+0E9E: "ພ" LAO LETTER PHO TAM
-                    key("\u0E9E"),
                     // U+0EB0: "ະ" LAO VOWEL SIGN A
-                    key("\u0EB0"),
                     // U+0EB4: "ິ" LAO VOWEL SIGN I
-                    key("\u0EB4"),
                     // U+0EB5: "ີ" LAO VOWEL SIGN II
-                    key("\u0EB5"),
                     // U+0EAE: "ຮ" LAO LETTER HO TAM
-                    key("\u0EAE"),
                     // U+0E99: "ນ" LAO LETTER NO
-                    key("\u0E99"),
                     // U+0E8D: "ຍ" LAO LETTER NYO
-                    key("\u0E8D"),
                     // U+0E9A: "ບ" LAO LETTER BO
-                    key("\u0E9A"),
                     // U+0EA5: "ລ" LAO LETTER LO LOOT
-                    key("\u0EA5"))
-            .setLabelsOfRow(3,
+                    "\u0EB3", "\u0E9E", "\u0EB0", "\u0EB4", "\u0EB5", "\u0EAE", "\u0E99", "\u0E8D",
+                    "\u0E9A", "\u0EA5")
+            .setKeysOfRow(3,
                     // U+0EB1: "ັ" LAO VOWEL SIGN MAI KAN
                     // U+0EAB: "ຫ" LAO LETTER HO SUNG
                     // U+0E81: "ກ" LAO LETTER KO
@@ -184,7 +173,7 @@ public final class Lao extends LayoutBase {
                     // U+201C: "“" LEFT DOUBLE QUOTATION MARK
                     "\u0EB1", "\u0EAB", "\u0E81", "\u0E94", "\u0EC0", "\u0EC9", "\u0EC8", "\u0EB2",
                     "\u0EAA", "\u0EA7", "\u0E87", "\u201C")
-            .setLabelsOfRow(4,
+            .setKeysOfRow(4,
                     // U+0E9C: "ຜ" LAO LETTER PHO SUNG
                     // U+0E9B: "ປ" LAO LETTER PO
                     // U+0EC1: "ແ" LAO VOWEL SIGN EI
@@ -200,7 +189,7 @@ public final class Lao extends LayoutBase {
             .build();
 
     private static final ExpectedKey[][] ALPHABET_SHIFTED_COMMON = new ExpectedKeyboardBuilder()
-            .setLabelsOfRow(1,
+            .setKeysOfRow(1,
                     // U+0ED1: "໑" LAO DIGIT ONE
                     // U+0ED2: "໒" LAO DIGIT TWO
                     // U+0ED3: "໓" LAO DIGIT THREE
@@ -215,7 +204,7 @@ public final class Lao extends LayoutBase {
                     // U+0ECD/U+0EC8: "ໍ່" LAO NIGGAHITA/LAO TONE MAI EK
                     "\u0ED1", "\u0ED2", "\u0ED3", "\u0ED4", "\u0ECC", "\u0EBC", "\u0ED5", "\u0ED6",
                     "\u0ED7", "\u0ED8", "\u0ED9", "\u0ECD\u0EC8")
-            .setLabelsOfRow(2,
+            .setKeysOfRow(2,
                     // U+0EBB/U+0EC9: "" LAO VOWEL SIGN MAI KON/LAO TONE MAI THO
                     // U+0ED0: "໐" LAO DIGIT ZERO
                     // U+0EB3/U+0EC9: "ຳ້" LAO VOWEL SIGN AM/LAO TONE MAI THO
@@ -228,14 +217,14 @@ public final class Lao extends LayoutBase {
                     // U+201D: "”" RIGHT DOUBLE QUOTATION MARK
                     "\u0EBB\u0EC9", "\u0ED0", "\u0EB3\u0EC9", "_", "+", "\u0EB4\u0EC9",
                     "\u0EB5\u0EC9", "\u0EA3", "\u0EDC", "\u0EBD", "\u0EAB\u0EBC", "\u201D")
-            .setLabelsOfRow(3,
+            .setKeysOfRow(3,
                     // U+0EB1/U+0EC9: "ັ້" LAO VOWEL SIGN MAI KAN/LAO TONE MAI THO
                     // U+0ECA: "໊" LAO TONE MAI TI
                     // U+0ECB: "໋" LAO TONE MAI CATAWA
                     // U+201C: "“" LEFT DOUBLE QUOTATION MARK
                     "\u0EB1\u0EC9", ";", ".", ",", ":", "\u0ECA", "\u0ECB", "!", "?", "%", "=",
                     "\u201C")
-            .setLabelsOfRow(4,
+            .setKeysOfRow(4,
                     // U+20AD: "₭" KIP SIGN
                     // U+0EAF: "ຯ" LAO ELLIPSIS
                     // U+0EB6/U+0EC9: "ຶ້" LAO VOWEL SIGN Y/LAO TONE MAI THO

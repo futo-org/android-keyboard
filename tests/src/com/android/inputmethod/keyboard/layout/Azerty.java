@@ -51,7 +51,7 @@ public final class Azerty extends LayoutBase {
         } else {
             builder = new ExpectedKeyboardBuilder(ALPHABET_COMMON);
             getCustomizer().setAccentedLetters(builder);
-            builder.replaceKeyOfLabel(ROW3_QUOTE, key("?"));
+            builder.replaceKeyOfLabel(ROW3_QUOTE, "?");
         }
         builder.toUpperCase(getLocale());
         return builder.build();
@@ -71,7 +71,7 @@ public final class Azerty extends LayoutBase {
                     key("i", moreKey("8")),
                     key("o", moreKey("9")),
                     key("p", moreKey("0")))
-            .setLabelsOfRow(2, "q", "s", "d", "f", "g", "h", "j", "k", "l", "m")
-            .setLabelsOfRow(3, "w", "x", "c", "v", "b", "n", ROW3_QUOTE)
+            .setKeysOfRow(2, "q", "s", "d", "f", "g", "h", "j", "k", "l", "m")
+            .setKeysOfRow(3, "w", "x", "c", "v", "b", "n", ROW3_QUOTE)
             .build();
 }

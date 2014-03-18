@@ -46,7 +46,7 @@ public final class Spanish extends LayoutBase {
                     key("i", moreKey("8")),
                     key("o", moreKey("9")),
                     key("p", moreKey("0")))
-            .setLabelsOfRow(2, "a", "s", "d", "f", "g", "h", "j", "k", "l", ROW2_10)
-            .setLabelsOfRow(3, "z", "x", "c", "v", "b", "n", "m")
+            .setKeysOfRow(2, "a", "s", "d", "f", "g", "h", "j", "k", "l", ROW2_10)
+            .setKeysOfRow(3, "z", "x", "c", "v", "b", "n", "m")
             .build();
 }

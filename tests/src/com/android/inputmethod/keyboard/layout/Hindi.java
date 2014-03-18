@@ -155,7 +155,7 @@ public final class Hindi extends LayoutBase {
                     // U+0947/U+0902: "ें" DEVANAGARI VOWEL SIGN E/DEVANAGARI SIGN ANUSVARA
                     key("\u0947", moreKey("\u0947\u0902")),
                     // U+094D: "्" DEVANAGARI SIGN VIRAMA
-                    key("\u094D"),
+                    "\u094D",
                     // U+093F: "ि" DEVANAGARI VOWEL SIGN I
                     // U+093F/U+0902: "िं" DEVANAGARI VOWEL SIGN I/DEVANAGARI SIGN ANUSVARA
                     key("\u093F", moreKey("\u093F\u0902")),
@@ -164,7 +164,7 @@ public final class Hindi extends LayoutBase {
                     // U+0941/U+0901: "ुँ" DEVANAGARI VOWEL SIGN U/DEVANAGARI SIGN CANDRABINDU
                     key("\u0941", joinMoreKeys("\u0941\u0902", "\u0941\u0901")),
                     // U+092A: "प" DEVANAGARI LETTER PA
-                    key("\u092A"),
+                    "\u092A",
                     // U+0930: "र" DEVANAGARI LETTER RA
                     // U+090B: "ऋ" DEVANAGARI LETTER VOCALIC R
                     // U+0930/U+093C: "ऱ" DEVANAGARI LETTER RA/DEVANAGARI SIGN NUKTA
@@ -178,14 +178,12 @@ public final class Hindi extends LayoutBase {
                     //     "त्र" DEVANAGARI LETTER TA/DEVANAGARI SIGN VIRAMA/DEVANAGARI LETTER RA
                     key("\u0924", moreKey("\u0924\u094D\u0930")),
                     // U+091A: "च" DEVANAGARI LETTER CA
-                    key("\u091A"),
                     // U+091F: "ट" DEVANAGARI LETTER TTA
-                    key("\u091F"))
+                    "\u091A","\u091F")
             .setKeysOfRow(3,
                     // U+0949: "ॉ" DEVANAGARI VOWEL SIGN CANDRA O
-                    key("\u0949"),
                     // U+0902: "ं" DEVANAGARI SIGN ANUSVARA
-                    key("\u0902"),
+                    "\u0949", "\u0902",
                     // U+092E: "म" DEVANAGARI LETTER MA
                     // U+0950: "ॐ" DEVANAGARI OM
                     key("\u092E", moreKey("\u0950")),
@@ -195,13 +193,13 @@ public final class Hindi extends LayoutBase {
                     // U+0928/U+093C: "ऩ" DEVANAGARI LETTER NA/DEVANAGARI SIGN NUKTA
                     key("\u0928", joinMoreKeys("\u091E", "\u0919", "\u0928\u093C")),
                     // U+0935: "व" DEVANAGARI LETTER VA
-                    key("\u0935"),
+                    "\u0935",
                     // U+0932: "ल" DEVANAGARI LETTER LA
                     // U+090C: "ऌ" DEVANAGARI LETTER VOCALIC L
                     // U+0961: "ॡ" DEVANAGARI LETTER VOCALIC LL
                     key("\u0932", joinMoreKeys("\u090C", "\u0961")),
                     // U+0938: "स" DEVANAGARI LETTER SA
-                    key("\u0938"),
+                    "\u0938",
                     // U+092F: "य" DEVANAGARI LETTER YA
                     // U+095F: "य़" DEVANAGARI LETTER YYA
                     key("\u092F", moreKey("\u095F")),
@@ -232,11 +230,9 @@ public final class Hindi extends LayoutBase {
                     // U+090A/U+0901: "ऊँ" DEVANAGARI LETTER UU/DEVANAGARI SIGN CANDRABINDU
                     key("\u090A", joinMoreKeys("\u090A\u0902", "\u090A\u0901")),
                     // U+092D: "भ" DEVANAGARI LETTER BHA
-                    key("\u092D"),
                     // U+0903: "ः" DEVANAGARI SIGN VISARGA
-                    key("\u0903"),
                     // U+0918: "घ" DEVANAGARI LETTER GHA
-                    key("\u0918"),
+                    "\u092D", "\u0903", "\u0918",
                     // U+0927: "ध" DEVANAGARI LETTER DHA
                     // U+0915/U+094D/U+0937:
                     //     "क्ष" DEVANAGARI LETTER KA/DEVANAGARI SIGN VIRAMA/DEVANAGARI LETTER SSA
@@ -244,9 +240,8 @@ public final class Hindi extends LayoutBase {
                     //     "श्र" DEVANAGARI LETTER SHA/DEVANAGARI SIGN VIRAMA/DEVANAGARI LETTER RA
                     key("\u0927", joinMoreKeys("\u0915\u094D\u0937", "\u0936\u094D\u0930")),
                     // U+091D: "झ" DEVANAGARI LETTER JHA
-                    key("\u091D"),
                     // U+0922: "ढ" DEVANAGARI LETTER DDHA
-                    key("\u0922"))
+                    "\u091D", "\u0922")
             .setKeysOfRow(2,
                     // U+0913: "ओ" DEVANAGARI LETTER O
                     // U+0913/U+0902: "ओं" DEVANAGARI LETTER O/DEVANAGARI SIGN ANUSVARA
@@ -282,33 +277,29 @@ public final class Hindi extends LayoutBase {
                     // U+0916/U+093C: "ख़" DEVANAGARI LETTER KHA/DEVANAGARI SIGN NUKTA
                     key("\u0916", moreKey("\u0916\u093C")),
                     // U+0925: "थ" DEVANAGARI LETTER THA
-                    key("\u0925"),
                     // U+091B: "छ" DEVANAGARI LETTER CHA
-                    key("\u091B"),
                     // U+0920: "ठ" DEVANAGARI LETTER TTHA
-                    key("\u0920"))
+                    "\u0925", "\u091B", "\u0920")
             .setKeysOfRow(3,
                     // U+0911: "ऑ" DEVANAGARI LETTER CANDRA O
-                    key("\u0911"),
+                    "\u0911",
                     // U+0901: "ँ" DEVANAGARI SIGN CANDRABINDU
                     // U+0945: "ॅ" DEVANAGARI VOWEL SIGN CANDRA E
                     key("\u0901", moreKey("\u0945")),
                     // U+0923: "ण" DEVANAGARI LETTER NNA
-                    key("\u0923"),
                     // U+0929: "ऩ" DEVANAGARI LETTER NNNA
-                    key("\u0929"),
+                    "\u0923", "\u0929",
                     // U+0933: "ळ" DEVANAGARI LETTER LLA
                     // U+0934: "ऴ" DEVANAGARI LETTER LLLA
                     key("\u0933", moreKey("\u0934")),
                     // U+0936: "श" DEVANAGARI LETTER SHA
-                    key("\u0936"),
                     // U+0937: "ष" DEVANAGARI LETTER SSA
-                    key("\u0937"),
+                    "\u0936", "\u0937",
                     // U+0943: "ृ" DEVANAGARI VOWEL SIGN VOCALIC R
                     // U+0944: "ॄ" DEVANAGARI VOWEL SIGN VOCALIC RR
                     key("\u0943", moreKey("\u0944")),
                     // U+091E: "ञ" DEVANAGARI LETTER NYA
-                    key("\u091E"))
+                    "\u091E")
             .build();
 
     static class HindiSymbols extends Symbols {
