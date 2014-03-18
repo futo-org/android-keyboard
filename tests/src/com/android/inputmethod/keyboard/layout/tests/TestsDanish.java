@@ -19,7 +19,7 @@ package com.android.inputmethod.keyboard.layout.tests;
 import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.inputmethod.keyboard.layout.LayoutBase;
-import com.android.inputmethod.keyboard.layout.LayoutBase.EuroLayoutCustomizer;
+import com.android.inputmethod.keyboard.layout.LayoutBase.EuroCustomizer;
 import com.android.inputmethod.keyboard.layout.Nordic;
 import com.android.inputmethod.keyboard.layout.Symbols;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKey;
@@ -38,7 +38,7 @@ public final class TestsDanish extends LayoutTestsBase {
     @Override
     LayoutBase getLayout() { return LAYOUT; }
 
-    private static class DanishCustomizer extends EuroLayoutCustomizer {
+    private static class DanishCustomizer extends EuroCustomizer {
         public DanishCustomizer(final Locale locale) { super(locale); }
 
         @Override
@@ -58,29 +58,28 @@ public final class TestsDanish extends LayoutTestsBase {
             return builder
                     // U+00E9: "é" LATIN SMALL LETTER E WITH ACUTE
                     // U+00EB: "ë" LATIN SMALL LETTER E WITH DIAERESIS
-                    .setMoreKeysOf("e", "3", "\u00E9", "\u00EB")
+                    .setMoreKeysOf("e", "\u00E9", "\u00EB")
                     // U+00FD: "ý" LATIN SMALL LETTER Y WITH ACUTE
                     // U+00FF: "ÿ" LATIN SMALL LETTER Y WITH DIAERESIS
-                    .setMoreKeysOf("y", "6", "\u00FD", "\u00FF")
+                    .setMoreKeysOf("y", "\u00FD", "\u00FF")
                     // U+00FA: "ú" LATIN SMALL LETTER U WITH ACUTE
                     // U+00FC: "ü" LATIN SMALL LETTER U WITH DIAERESIS
                     // U+00FB: "û" LATIN SMALL LETTER U WITH CIRCUMFLEX
                     // U+00F9: "ù" LATIN SMALL LETTER U WITH GRAVE
                     // U+016B: "ū" LATIN SMALL LETTER U WITH MACRON
-                    .setMoreKeysOf("u", "7", "\u00FA", "\u00FC", "\u00FB", "\u00F9", "\u016B")
+                    .setMoreKeysOf("u", "\u00FA", "\u00FC", "\u00FB", "\u00F9", "\u016B")
                     // U+00ED: "í" LATIN SMALL LETTER I WITH ACUTE
                     // U+00EF: "ï" LATIN SMALL LETTER I WITH DIAERESIS
-                    .setMoreKeysOf("i", "8", "\u00ED", "\u00EF")
+                    .setMoreKeysOf("i", "\u00ED", "\u00EF")
                     // U+00F3: "ó" LATIN SMALL LETTER O WITH ACUTE
                     // U+00F4: "ô" LATIN SMALL LETTER O WITH CIRCUMFLEX
                     // U+00F2: "ò" LATIN SMALL LETTER O WITH GRAVE
                     // U+00F5: "õ" LATIN SMALL LETTER O WITH TILDE
                     // U+0153: "œ" LATIN SMALL LIGATURE OE
                     // U+014D: "ō" LATIN SMALL LETTER O WITH MACRON
-                    .setMoreKeysOf("o",
-                            "9", "\u00F3", "\u00F4", "\u00F2", "\u00F5", "\u0153", "\u014D")
+                    .setMoreKeysOf("o", "\u00F3", "\u00F4", "\u00F2", "\u00F5", "\u0153", "\u014D")
                     // U+00E5: "å" LATIN SMALL LETTER A WITH RING ABOVE
-                    .replaceKeyOfLabel(Nordic.ROW1_11, key("\u00E5"))
+                    .replaceKeyOfLabel(Nordic.ROW1_11, "\u00E5")
                     // U+00E6: "æ" LATIN SMALL LETTER AE
                     // U+00E4: "ä" LATIN SMALL LETTER A WITH DIAERESIS
                     .replaceKeyOfLabel(Nordic.ROW2_10, key("\u00E6", moreKey("\u00E4")))

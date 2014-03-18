@@ -19,7 +19,7 @@ package com.android.inputmethod.keyboard.layout.tests;
 import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.inputmethod.keyboard.layout.LayoutBase;
-import com.android.inputmethod.keyboard.layout.LayoutBase.EuroLayoutCustomizer;
+import com.android.inputmethod.keyboard.layout.LayoutBase.EuroCustomizer;
 import com.android.inputmethod.keyboard.layout.Qwerty;
 import com.android.inputmethod.keyboard.layout.Symbols;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKey;
@@ -38,7 +38,7 @@ public final class TestsSlovak extends LayoutTestsBase {
     @Override
     LayoutBase getLayout() { return LAYOUT; }
 
-    private static class SlovakCustomizer extends EuroLayoutCustomizer {
+    private static class SlovakCustomizer extends EuroCustomizer {
         public SlovakCustomizer(final Locale locale) { super(locale); }
 
         @Override
@@ -65,18 +65,18 @@ public final class TestsSlovak extends LayoutTestsBase {
                     // U+00EB: "ë" LATIN SMALL LETTER E WITH DIAERESIS
                     // U+0119: "ę" LATIN SMALL LETTER E WITH OGONEK
                     .setMoreKeysOf("e",
-                            "3", "\u00E9", "\u011B", "\u0113", "\u0117", "\u00E8", "\u00EA",
-                            "\u00EB", "\u0119")
+                            "\u00E9", "\u011B", "\u0113", "\u0117", "\u00E8", "\u00EA", "\u00EB",
+                            "\u0119")
                     // U+0155: "ŕ" LATIN SMALL LETTER R WITH ACUTE
                     // U+0159: "ř" LATIN SMALL LETTER R WITH CARON
                     // U+0157: "ŗ" LATIN SMALL LETTER R WITH CEDILLA
-                    .setMoreKeysOf("r", "4", "\u0155", "\u0159", "\u0157")
+                    .setMoreKeysOf("r", "\u0155", "\u0159", "\u0157")
                     // U+0165: "ť" LATIN SMALL LETTER T WITH CARON
                     // U+0163: "ţ" LATIN SMALL LETTER T WITH CEDILLA
-                    .setMoreKeysOf("t", "5", "\u0165", "\u0163")
+                    .setMoreKeysOf("t", "\u0165", "\u0163")
                     // U+00FD: "ý" LATIN SMALL LETTER Y WITH ACUTE
                     // U+00FF: "ÿ" LATIN SMALL LETTER Y WITH DIAERESIS
-                    .setMoreKeysOf("y", "6", "\u00FD", "\u00FF")
+                    .setMoreKeysOf("y", "\u00FD", "\u00FF")
                     // U+00FA: "ú" LATIN SMALL LETTER U WITH ACUTE
                     // U+016F: "ů" LATIN SMALL LETTER U WITH RING ABOVE
                     // U+00FC: "ü" LATIN SMALL LETTER U WITH DIAERESIS
@@ -86,8 +86,8 @@ public final class TestsSlovak extends LayoutTestsBase {
                     // U+00FB: "û" LATIN SMALL LETTER U WITH CIRCUMFLEX
                     // U+0171: "ű" LATIN SMALL LETTER U WITH DOUBLE ACUTE
                     .setMoreKeysOf("u",
-                            "7", "\u00FA", "\u016F", "\u00FC", "\u016B", "\u0173", "\u00F9",
-                            "\u00FB", "\u0171")
+                            "\u00FA", "\u016F", "\u00FC", "\u016B", "\u0173", "\u00F9", "\u00FB",
+                            "\u0171")
                     // U+00ED: "í" LATIN SMALL LETTER I WITH ACUTE
                     // U+012B: "ī" LATIN SMALL LETTER I WITH MACRON
                     // U+012F: "į" LATIN SMALL LETTER I WITH OGONEK
@@ -96,8 +96,7 @@ public final class TestsSlovak extends LayoutTestsBase {
                     // U+00EF: "ï" LATIN SMALL LETTER I WITH DIAERESIS
                     // U+0131: "ı" LATIN SMALL LETTER DOTLESS I
                     .setMoreKeysOf("i",
-                            "8", "\u00ED", "\u012B", "\u012F", "\u00EC", "\u00EE", "\u00EF",
-                            "\u0131")
+                            "\u00ED", "\u012B", "\u012F", "\u00EC", "\u00EE", "\u00EF", "\u0131")
                     // U+00F4: "ô" LATIN SMALL LETTER O WITH CIRCUMFLEX
                     // U+00F3: "ó" LATIN SMALL LETTER O WITH ACUTE
                     // U+00F6: "ö" LATIN SMALL LETTER O WITH DIAERESIS
@@ -107,8 +106,8 @@ public final class TestsSlovak extends LayoutTestsBase {
                     // U+0151: "ő" LATIN SMALL LETTER O WITH DOUBLE ACUTE
                     // U+00F8: "ø" LATIN SMALL LETTER O WITH STROKE
                     .setMoreKeysOf("o",
-                            "9", "\u00F4", "\u00F3", "\u00F6", "\u00F2", "\u00F5", "\u0153",
-                            "\u0151", "\u00F8")
+                            "\u00F4", "\u00F3", "\u00F6", "\u00F2", "\u00F5", "\u0153", "\u0151",
+                            "\u00F8")
                     // U+00E1: "á" LATIN SMALL LETTER A WITH ACUTE
                     // U+00E4: "ä" LATIN SMALL LETTER A WITH DIAERESIS
                     // U+0101: "ā" LATIN SMALL LETTER A WITH MACRON

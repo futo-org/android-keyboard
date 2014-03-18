@@ -28,6 +28,7 @@ import com.android.inputmethod.keyboard.layout.LayoutBase;
 import com.android.inputmethod.keyboard.layout.expected.AbstractLayoutBase;
 import com.android.inputmethod.keyboard.layout.expected.ActualKeyboardBuilder;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKey;
+import com.android.inputmethod.keyboard.layout.expected.ExpectedKey.ExpectedAdditionalMoreKey;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 
@@ -70,6 +71,12 @@ abstract class LayoutTestsBase extends KeyboardLayoutSetTestsBase {
     // Helper method to create an {@link ExpectedKey} object that has new "more keys".
     static ExpectedKey key(final ExpectedKey key, final ExpectedKey ... moreKeys) {
         return AbstractLayoutBase.key(key, moreKeys);
+    }
+
+    // Helper method to create an {@link ExpectedAdditionalMoreKey} object for an
+    // "additional more key" that has the label.
+    public static ExpectedAdditionalMoreKey additionalMoreKey(final String label) {
+        return AbstractLayoutBase.additionalMoreKey(label);
     }
 
     // Helper method to create an {@link ExpectedKey} object for a "more key" that has the label.

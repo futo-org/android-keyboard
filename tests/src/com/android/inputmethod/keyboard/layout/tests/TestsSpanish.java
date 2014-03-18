@@ -19,11 +19,9 @@ package com.android.inputmethod.keyboard.layout.tests;
 import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.inputmethod.keyboard.layout.LayoutBase;
-import com.android.inputmethod.keyboard.layout.LayoutBase.EuroLayoutCustomizer;
+import com.android.inputmethod.keyboard.layout.LayoutBase.EuroCustomizer;
 import com.android.inputmethod.keyboard.layout.Spanish;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKey;
-import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
-import com.android.inputmethod.keyboard.layout.tests.TestsSpanishUS.SpanishUSCustomizer;
 
 import java.util.Locale;
 
@@ -38,22 +36,20 @@ public class TestsSpanish extends LayoutTestsBase {
     @Override
     LayoutBase getLayout() { return LAYOUT; }
 
-    private static class SpanishESCustomizer extends EuroLayoutCustomizer {
-        private final SpanishUSCustomizer mSpanishUSCustomizer;
+    private static class SpanishESCustomizer extends SpanishCustomizer {
+        private final EuroCustomizer mEuroCustomizer;
 
         public SpanishESCustomizer(final Locale locale) {
             super(locale);
-            mSpanishUSCustomizer = new SpanishUSCustomizer(locale);
+            mEuroCustomizer = new EuroCustomizer(locale);
         }
 
         @Override
-        public ExpectedKey[] getPunctuationMoreKeys(final boolean isPhone) {
-            return mSpanishUSCustomizer.getPunctuationMoreKeys(isPhone);
-        }
+        public ExpectedKey getCurrencyKey() { return mEuroCustomizer.getCurrencyKey(); }
 
         @Override
-        public ExpectedKeyboardBuilder setAccentedLetters(final ExpectedKeyboardBuilder builder) {
-            return mSpanishUSCustomizer.setAccentedLetters(builder);
+        public ExpectedKey[] getOtherCurrencyKeys() {
+            return mEuroCustomizer.getOtherCurrencyKeys();
         }
     }
 }

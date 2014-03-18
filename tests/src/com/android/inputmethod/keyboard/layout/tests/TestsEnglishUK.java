@@ -36,7 +36,7 @@ public final class TestsEnglishUK extends TestsEnglishUS {
     @Override
     LayoutBase getLayout() { return LAYOUT; }
 
-    private static class EnglishUKCustomizer extends EnglishUSCustomizer {
+    private static class EnglishUKCustomizer extends EnglishCustomizer {
         public EnglishUKCustomizer(final Locale locale) { super(locale); }
 
         @Override

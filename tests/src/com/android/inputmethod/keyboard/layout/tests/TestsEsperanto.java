@@ -43,11 +43,12 @@ public class TestsEsperanto extends LayoutTestsBase {
         public ExpectedKeyboardBuilder setAccentedLetters(final ExpectedKeyboardBuilder builder) {
             return builder
                     // U+015D: "ŝ" LATIN SMALL LETTER S WITH CIRCUMFLEX
-                    .replaceKeyOfLabel("q", key("\u015D", moreKey("1"), moreKey("q")))
+                    .replaceKeyOfLabel("q", key("\u015D", joinMoreKeys(
+                            additionalMoreKey("1"), "q")))
                     // U+011D: "ĝ" LATIN SMALL LETTER G WITH CIRCUMFLEX
                     // U+0175: "ŵ" LATIN SMALL LETTER W WITH CIRCUMFLEX
-                    .replaceKeyOfLabel("w", key("\u011D",
-                            moreKey("2"), moreKey("w"), moreKey("\u0175")))
+                    .replaceKeyOfLabel("w", key("\u011D", joinMoreKeys(
+                            additionalMoreKey("2"), "w", "\u0175")))
                     // U+00E9: "é" LATIN SMALL LETTER E WITH ACUTE
                     // U+011B: "ě" LATIN SMALL LETTER E WITH CARON
                     // U+00E8: "è" LATIN SMALL LETTER E WITH GRAVE
@@ -57,25 +58,24 @@ public class TestsEsperanto extends LayoutTestsBase {
                     // U+0117: "ė" LATIN SMALL LETTER E WITH DOT ABOVE
                     // U+0113: "ē" LATIN SMALL LETTER E WITH MACRON
                     .setMoreKeysOf("e",
-                            "3", "\u00E9", "\u011B", "\u00E8", "\u00EA", "\u00EB", "\u0119",
-                            "\u0117", "\u0113")
+                            "\u00E9", "\u011B", "\u00E8", "\u00EA", "\u00EB", "\u0119", "\u0117",
+                            "\u0113")
                     // U+0159: "ř" LATIN SMALL LETTER R WITH CARON
                     // U+0155: "ŕ" LATIN SMALL LETTER R WITH ACUTE
                     // U+0157: "ŗ" LATIN SMALL LETTER R WITH CEDILLA
-                    .setMoreKeysOf("r", "4", "\u0159", "\u0155", "\u0157")
+                    .setMoreKeysOf("r", "\u0159", "\u0155", "\u0157")
                     // U+0165: "ť" LATIN SMALL LETTER T WITH CARON
                     // U+021B: "ț" LATIN SMALL LETTER T WITH COMMA BELOW
                     // U+0163: "ţ" LATIN SMALL LETTER T WITH CEDILLA
                     // U+0167: "ŧ" LATIN SMALL LETTER T WITH STROKE
-                    .setMoreKeysOf("t", "5", "\u0165", "\u021B", "\u0163", "\u0167")
+                    .setMoreKeysOf("t", "\u0165", "\u021B", "\u0163", "\u0167")
                     // U+016D: "ŭ" LATIN SMALL LETTER U WITH BREVE
                     // U+00FD: "ý" LATIN SMALL LETTER Y WITH ACUTE
                     // U+0177: "ŷ" LATIN SMALL LETTER Y WITH CIRCUMFLEX
                     // U+00FF: "ÿ" LATIN SMALL LETTER Y WITH DIAERESIS
                     // U+00FE: "þ" LATIN SMALL LETTER THORN
-                    .replaceKeyOfLabel("y", key("\u016D",
-                            moreKey("6"), moreKey("y"), moreKey("\u00FD"), moreKey("\u0177"),
-                            moreKey("\u00FF"), moreKey("\u00FE")))
+                    .replaceKeyOfLabel("y", key("\u016D", joinMoreKeys(
+                            additionalMoreKey("6"), "y", "\u00FD", "\u0177", "\u00FF", "\u00FE")))
                     // U+00FA: "ú" LATIN SMALL LETTER U WITH ACUTE
                     // U+016F: "ů" LATIN SMALL LETTER U WITH RING ABOVE
                     // U+00FB: "û" LATIN SMALL LETTER U WITH CIRCUMFLEX
@@ -87,8 +87,8 @@ public class TestsEsperanto extends LayoutTestsBase {
                     // U+0173: "ų" LATIN SMALL LETTER U WITH OGONEK
                     // U+00B5: "µ" MICRO SIGN
                     .setMoreKeysOf("u",
-                            "7", "\u00FA", "\u016F", "\u00FB", "\u00FC", "\u00F9", "\u016B",
-                            "\u0169", "\u0171", "\u0173", "\u00B5")
+                            "\u00FA", "\u016F", "\u00FB", "\u00FC", "\u00F9", "\u016B", "\u0169",
+                            "\u0171", "\u0173", "\u00B5")
                     // U+00ED: "í" LATIN SMALL LETTER I WITH ACUTE
                     // U+00EE: "î" LATIN SMALL LETTER I WITH CIRCUMFLEX
                     // U+00EF: "ï" LATIN SMALL LETTER I WITH DIAERESIS
@@ -99,8 +99,8 @@ public class TestsEsperanto extends LayoutTestsBase {
                     // U+0131: "ı" LATIN SMALL LETTER DOTLESS I
                     // U+0133: "ĳ" LATIN SMALL LIGATURE IJ
                     .setMoreKeysOf("i",
-                            "8", "\u00ED", "\u00EE", "\u00EF", "\u0129", "\u00EC", "\u012F",
-                            "\u012B", "\u0131", "\u0133")
+                            "\u00ED", "\u00EE", "\u00EF", "\u0129", "\u00EC", "\u012F", "\u012B",
+                            "\u0131", "\u0133")
                     // U+00F3: "ó" LATIN SMALL LETTER O WITH ACUTE
                     // U+00F6: "ö" LATIN SMALL LETTER O WITH DIAERESIS
                     // U+00F4: "ô" LATIN SMALL LETTER O WITH CIRCUMFLEX
@@ -112,8 +112,8 @@ public class TestsEsperanto extends LayoutTestsBase {
                     // U+0151: "ő" LATIN SMALL LETTER O WITH DOUBLE ACUTE
                     // U+00BA: "º" MASCULINE ORDINAL INDICATOR
                     .setMoreKeysOf("o",
-                            "9", "\u00F3", "\u00F6", "\u00F4", "\u00F2", "\u00F5", "\u0153",
-                            "\u00F8", "\u014D", "\u0151", "\u00BA")
+                            "\u00F3", "\u00F6", "\u00F4", "\u00F2", "\u00F5", "\u0153", "\u00F8",
+                            "\u014D", "\u0151", "\u00BA")
                     // U+00E1: "á" LATIN SMALL LETTER A WITH ACUTE
                     // U+00E0: "à" LATIN SMALL LETTER A WITH GRAVE
                     // U+00E2: "â" LATIN SMALL LETTER A WITH CIRCUMFLEX
@@ -162,7 +162,7 @@ public class TestsEsperanto extends LayoutTestsBase {
                     // U+0142: "ł" LATIN SMALL LETTER L WITH STROKE
                     .setMoreKeysOf("l", "\u013A", "\u013C", "\u013E", "\u0140", "\u0142")
                     // U+0135: "ĵ" LATIN SMALL LETTER J WITH CIRCUMFLEX
-                    .replaceKeyOfLabel(Spanish.ROW2_10, key("\u0135"))
+                    .replaceKeyOfLabel(Spanish.ROW2_10, "\u0135")
                     // U+017A: "ź" LATIN SMALL LETTER Z WITH ACUTE
                     // U+017C: "ż" LATIN SMALL LETTER Z WITH DOT ABOVE
                     // U+017E: "ž" LATIN SMALL LETTER Z WITH CARON

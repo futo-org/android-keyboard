@@ -58,14 +58,13 @@ public final class TestsNorwegian extends LayoutTestsBase {
                     // U+0117: "ė" LATIN SMALL LETTER E WITH DOT ABOVE
                     // U+0113: "ē" LATIN SMALL LETTER E WITH MACRON
                     .setMoreKeysOf("e",
-                            "3", "\u00E9", "\u00E8", "\u00EA", "\u00EB", "\u0119", "\u0117",
-                            "\u0113")
+                            "\u00E9", "\u00E8", "\u00EA", "\u00EB", "\u0119", "\u0117", "\u0113")
                     // U+00FC: "ü" LATIN SMALL LETTER U WITH DIAERESIS
                     // U+00FB: "û" LATIN SMALL LETTER U WITH CIRCUMFLEX
                     // U+00F9: "ù" LATIN SMALL LETTER U WITH GRAVE
                     // U+00FA: "ú" LATIN SMALL LETTER U WITH ACUTE
                     // U+016B: "ū" LATIN SMALL LETTER U WITH MACRON
-                    .setMoreKeysOf("u", "7", "\u00FC", "\u00FB", "\u00F9", "\u00FA", "\u016B")
+                    .setMoreKeysOf("u", "\u00FC", "\u00FB", "\u00F9", "\u00FA", "\u016B")
                     // U+00F4: "ô" LATIN SMALL LETTER O WITH CIRCUMFLEX
                     // U+00F2: "ò" LATIN SMALL LETTER O WITH GRAVE
                     // U+00F3: "ó" LATIN SMALL LETTER O WITH ACUTE
@@ -74,10 +73,9 @@ public final class TestsNorwegian extends LayoutTestsBase {
                     // U+0153: "œ" LATIN SMALL LIGATURE OE
                     // U+014D: "ō" LATIN SMALL LETTER O WITH MACRON
                     .setMoreKeysOf("o",
-                            "9", "\u00F4", "\u00F2", "\u00F3", "\u00F6", "\u00F5", "\u0153",
-                            "\u014D")
+                            "\u00F4", "\u00F2", "\u00F3", "\u00F6", "\u00F5", "\u0153", "\u014D")
                     // U+00E5: "å" LATIN SMALL LETTER A WITH RING ABOVE
-                    .replaceKeyOfLabel(Nordic.ROW1_11, key("\u00E5"))
+                    .replaceKeyOfLabel(Nordic.ROW1_11, "\u00E5")
                     // U+00F8: "ø" LATIN SMALL LETTER O WITH STROKE
                     // U+00F6: "ö" LATIN SMALL LETTER O WITH DIAERESIS
                     .replaceKeyOfLabel(Nordic.ROW2_10, key("\u00F8", moreKey("\u00F6")))

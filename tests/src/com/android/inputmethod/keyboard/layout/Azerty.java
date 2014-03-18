@@ -61,16 +61,16 @@ public final class Azerty extends LayoutBase {
 
     private static final ExpectedKey[][] ALPHABET_COMMON = new ExpectedKeyboardBuilder()
             .setKeysOfRow(1,
-                    key("a", moreKey("1")),
-                    key("z", moreKey("2")),
-                    key("e", moreKey("3")),
-                    key("r", moreKey("4")),
-                    key("t", moreKey("5")),
-                    key("y", moreKey("6")),
-                    key("u", moreKey("7")),
-                    key("i", moreKey("8")),
-                    key("o", moreKey("9")),
-                    key("p", moreKey("0")))
+                    key("a", additionalMoreKey("1")),
+                    key("z", additionalMoreKey("2")),
+                    key("e", additionalMoreKey("3")),
+                    key("r", additionalMoreKey("4")),
+                    key("t", additionalMoreKey("5")),
+                    key("y", additionalMoreKey("6")),
+                    key("u", additionalMoreKey("7")),
+                    key("i", additionalMoreKey("8")),
+                    key("o", additionalMoreKey("9")),
+                    key("p", additionalMoreKey("0")))
             .setKeysOfRow(2, "q", "s", "d", "f", "g", "h", "j", "k", "l", "m")
             .setKeysOfRow(3, "w", "x", "c", "v", "b", "n", ROW3_QUOTE)
             .build();

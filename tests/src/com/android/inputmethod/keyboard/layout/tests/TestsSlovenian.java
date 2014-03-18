@@ -19,7 +19,7 @@ package com.android.inputmethod.keyboard.layout.tests;
 import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.inputmethod.keyboard.layout.LayoutBase;
-import com.android.inputmethod.keyboard.layout.LayoutBase.EuroLayoutCustomizer;
+import com.android.inputmethod.keyboard.layout.LayoutBase.EuroCustomizer;
 import com.android.inputmethod.keyboard.layout.Qwerty;
 import com.android.inputmethod.keyboard.layout.Symbols;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKey;
@@ -38,7 +38,7 @@ public final class TestsSlovenian extends LayoutTestsBase {
     @Override
     LayoutBase getLayout() { return LAYOUT; }
 
-    private static class SlovenianCustomizer extends EuroLayoutCustomizer {
+    private static class SlovenianCustomizer extends EuroCustomizer {
         public SlovenianCustomizer(final Locale locale) { super(locale); }
 
         @Override

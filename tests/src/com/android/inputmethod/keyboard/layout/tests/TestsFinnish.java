@@ -19,7 +19,7 @@ package com.android.inputmethod.keyboard.layout.tests;
 import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.inputmethod.keyboard.layout.LayoutBase;
-import com.android.inputmethod.keyboard.layout.LayoutBase.EuroLayoutCustomizer;
+import com.android.inputmethod.keyboard.layout.LayoutBase.EuroCustomizer;
 import com.android.inputmethod.keyboard.layout.Nordic;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
 
@@ -36,14 +36,14 @@ public final class TestsFinnish extends LayoutTestsBase {
     @Override
     LayoutBase getLayout() { return LAYOUT; }
 
-    private static class FinnishCustomizer extends EuroLayoutCustomizer {
+    private static class FinnishCustomizer extends EuroCustomizer {
         public FinnishCustomizer(final Locale locale) { super(locale); }
 
         @Override
         public ExpectedKeyboardBuilder setAccentedLetters(final ExpectedKeyboardBuilder builder) {
             return builder
                     // U+00FC: "ü" LATIN SMALL LETTER U WITH DIAERESIS
-                    .setMoreKeysOf("u", "7", "\u00FC")
+                    .setMoreKeysOf("u", "\u00FC")
                     // U+00F8: "ø" LATIN SMALL LETTER O WITH STROKE
                     // U+00F4: "ô" LATIN SMALL LETTER O WITH CIRCUMFLEX
                     // U+00F2: "ò" LATIN SMALL LETTER O WITH GRAVE
@@ -52,10 +52,9 @@ public final class TestsFinnish extends LayoutTestsBase {
                     // U+0153: "œ" LATIN SMALL LIGATURE OE
                     // U+014D: "ō" LATIN SMALL LETTER O WITH MACRON
                     .setMoreKeysOf("o",
-                            "9", "\u00F8", "\u00F4", "\u00F2", "\u00F3", "\u00F5", "\u0153",
-                            "\u014D")
+                            "\u00F8", "\u00F4", "\u00F2", "\u00F3", "\u00F5", "\u0153", "\u014D")
                     // U+00E5: "å" LATIN SMALL LETTER A WITH RING ABOVE
-                    .replaceKeyOfLabel(Nordic.ROW1_11, key("\u00E5"))
+                    .replaceKeyOfLabel(Nordic.ROW1_11, "\u00E5")
                     // U+00F6: "ö" LATIN SMALL LETTER O WITH DIAERESIS
                     // U+00F8: "ø" LATIN SMALL LETTER O WITH STROKE
                     .replaceKeyOfLabel(Nordic.ROW2_10, key("\u00F6", moreKey("\u00F8")))

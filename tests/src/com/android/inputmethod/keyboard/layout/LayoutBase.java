@@ -188,8 +188,8 @@ public abstract class LayoutBase extends AbstractLayoutBase {
     /**
      * The layout customize class for countries that use Euro.
      */
-    public static class EuroLayoutCustomizer extends LayoutCustomizer {
-        public EuroLayoutCustomizer(final Locale locale) {
+    public static class EuroCustomizer extends LayoutCustomizer {
+        public EuroCustomizer(final Locale locale) {
             super(locale);
         }
 

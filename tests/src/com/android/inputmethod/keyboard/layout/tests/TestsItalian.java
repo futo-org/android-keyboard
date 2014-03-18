@@ -19,7 +19,7 @@ package com.android.inputmethod.keyboard.layout.tests;
 import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.inputmethod.keyboard.layout.LayoutBase;
-import com.android.inputmethod.keyboard.layout.LayoutBase.EuroLayoutCustomizer;
+import com.android.inputmethod.keyboard.layout.LayoutBase.EuroCustomizer;
 import com.android.inputmethod.keyboard.layout.Qwerty;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
 
@@ -36,7 +36,7 @@ public final class TestsItalian extends LayoutTestsBase {
     @Override
     LayoutBase getLayout() { return LAYOUT; }
 
-    private static class ItalianCustomizer extends EuroLayoutCustomizer {
+    private static class ItalianCustomizer extends EuroCustomizer {
         public ItalianCustomizer(final Locale locale) { super(locale); }
 
         @Override
@@ -50,22 +50,20 @@ public final class TestsItalian extends LayoutTestsBase {
                     // U+0117: "ė" LATIN SMALL LETTER E WITH DOT ABOVE
                     // U+0113: "ē" LATIN SMALL LETTER E WITH MACRON
                     .setMoreKeysOf("e",
-                            "3", "\u00E8", "\u00E9", "\u00EA", "\u00EB", "\u0119", "\u0117",
-                            "\u0113")
+                            "\u00E8", "\u00E9", "\u00EA", "\u00EB", "\u0119", "\u0117", "\u0113")
                     // U+00F9: "ù" LATIN SMALL LETTER U WITH GRAVE
                     // U+00FA: "ú" LATIN SMALL LETTER U WITH ACUTE
                     // U+00FB: "û" LATIN SMALL LETTER U WITH CIRCUMFLEX
                     // U+00FC: "ü" LATIN SMALL LETTER U WITH DIAERESIS
                     // U+016B: "ū" LATIN SMALL LETTER U WITH MACRON
-                    .setMoreKeysOf("u", "7", "\u00F9", "\u00FA", "\u00FB", "\u00FC", "\u016B")
+                    .setMoreKeysOf("u", "\u00F9", "\u00FA", "\u00FB", "\u00FC", "\u016B")
                     // U+00EC: "ì" LATIN SMALL LETTER I WITH GRAVE
                     // U+00ED: "í" LATIN SMALL LETTER I WITH ACUTE
                     // U+00EE: "î" LATIN SMALL LETTER I WITH CIRCUMFLEX
                     // U+00EF: "ï" LATIN SMALL LETTER I WITH DIAERESIS
                     // U+012F: "į" LATIN SMALL LETTER I WITH OGONEK
                     // U+012B: "ī" LATIN SMALL LETTER I WITH MACRON
-                    .setMoreKeysOf("i", "8", "\u00EC", "\u00ED", "\u00EE", "\u00EF", "\u012F",
-                            "\u012B")
+                    .setMoreKeysOf("i", "\u00EC", "\u00ED", "\u00EE", "\u00EF", "\u012F", "\u012B")
                     // U+00F2: "ò" LATIN SMALL LETTER O WITH GRAVE
                     // U+00F3: "ó" LATIN SMALL LETTER O WITH ACUTE
                     // U+00F4: "ô" LATIN SMALL LETTER O WITH CIRCUMFLEX
@@ -76,8 +74,8 @@ public final class TestsItalian extends LayoutTestsBase {
                     // U+014D: "ō" LATIN SMALL LETTER O WITH MACRON
                     // U+00BA: "º" MASCULINE ORDINAL INDICATOR
                     .setMoreKeysOf("o",
-                            "9", "\u00F2", "\u00F3", "\u00F4", "\u00F6", "\u00F5", "\u0153",
-                            "\u00F8", "\u014D", "\u00BA")
+                            "\u00F2", "\u00F3", "\u00F4", "\u00F6", "\u00F5", "\u0153", "\u00F8",
+                            "\u014D", "\u00BA")
                     // U+00E0: "à" LATIN SMALL LETTER A WITH GRAVE
                     // U+00E1: "á" LATIN SMALL LETTER A WITH ACUTE
                     // U+00E2: "â" LATIN SMALL LETTER A WITH CIRCUMFLEX

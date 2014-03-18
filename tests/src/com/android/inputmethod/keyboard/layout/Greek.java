@@ -36,7 +36,7 @@ public final class Greek extends LayoutBase {
     @Override
     public String getName() { return LAYOUT_NAME; }
 
-    public static class GreekCustomizer extends EuroLayoutCustomizer {
+    public static class GreekCustomizer extends EuroCustomizer {
         public GreekCustomizer(final Locale locale) { super(locale); }
 
         @Override

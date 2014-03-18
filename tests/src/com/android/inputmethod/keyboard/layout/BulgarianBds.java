@@ -67,30 +67,30 @@ public final class BulgarianBds extends LayoutBase {
                     key("\u0446", moreKey("0")),
                     // U+0431: "б" CYRILLIC SMALL LETTER BE
                     "\u0431")
-            // U+044C: "ь" CYRILLIC SMALL LETTER SOFT SIGN
-            // U+044F: "я" CYRILLIC SMALL LETTER YA
-            // U+0430: "а" CYRILLIC SMALL LETTER A
-            // U+043E: "о" CYRILLIC SMALL LETTER O
-            // U+0436: "ж" CYRILLIC SMALL LETTER ZHE
-            // U+0433: "г" CYRILLIC SMALL LETTER GHE
-            // U+0442: "т" CYRILLIC SMALL LETTER TE
-            // U+043D: "н" CYRILLIC SMALL LETTER EN
-            // U+0432: "в" CYRILLIC SMALL LETTER VE
-            // U+043C: "м" CYRILLIC SMALL LETTER EM
-            // U+0447: "ч" CYRILLIC SMALL LETTER CHE
             .setKeysOfRow(2,
+                    // U+044C: "ь" CYRILLIC SMALL LETTER SOFT SIGN
+                    // U+044F: "я" CYRILLIC SMALL LETTER YA
+                    // U+0430: "а" CYRILLIC SMALL LETTER A
+                    // U+043E: "о" CYRILLIC SMALL LETTER O
+                    // U+0436: "ж" CYRILLIC SMALL LETTER ZHE
+                    // U+0433: "г" CYRILLIC SMALL LETTER GHE
+                    // U+0442: "т" CYRILLIC SMALL LETTER TE
+                    // U+043D: "н" CYRILLIC SMALL LETTER EN
+                    // U+0432: "в" CYRILLIC SMALL LETTER VE
+                    // U+043C: "м" CYRILLIC SMALL LETTER EM
+                    // U+0447: "ч" CYRILLIC SMALL LETTER CHE
                     "\u044C", "\u044F", "\u0430", "\u043E", "\u0436", "\u0433", "\u0442", "\u043D",
                     "\u0432", "\u043C", "\u0447")
-            // U+044E: "ю" CYRILLIC SMALL LETTER YU
-            // U+0439: "й" CYRILLIC SMALL LETTER SHORT I
-            // U+044A: "ъ" CYRILLIC SMALL LETTER HARD SIGN
-            // U+044D: "э" CYRILLIC SMALL LETTER E
-            // U+0444: "ф" CYRILLIC SMALL LETTER EF
-            // U+0445: "х" CYRILLIC SMALL LETTER HA
-            // U+043F: "п" CYRILLIC SMALL LETTER PE
-            // U+0440: "р" CYRILLIC SMALL LETTER ER
-            // U+043B: "л" CYRILLIC SMALL LETTER EL
             .setKeysOfRow(3,
+                    // U+044E: "ю" CYRILLIC SMALL LETTER YU
+                    // U+0439: "й" CYRILLIC SMALL LETTER SHORT I
+                    // U+044A: "ъ" CYRILLIC SMALL LETTER HARD SIGN
+                    // U+044D: "э" CYRILLIC SMALL LETTER E
+                    // U+0444: "ф" CYRILLIC SMALL LETTER EF
+                    // U+0445: "х" CYRILLIC SMALL LETTER HA
+                    // U+043F: "п" CYRILLIC SMALL LETTER PE
+                    // U+0440: "р" CYRILLIC SMALL LETTER ER
+                    // U+043B: "л" CYRILLIC SMALL LETTER EL
                     "\u044E", "\u0439", "\u044A", "\u044D", "\u0444", "\u0445", "\u043F", "\u0440",
                     "\u043B")
             .build();

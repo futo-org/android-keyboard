@@ -29,7 +29,7 @@ import java.util.Locale;
 @SmallTest
 public final class TestsZulu extends TestsEnglishUS {
     private static final Locale LOCALE = new Locale("zu");
-    private static final LayoutBase LAYOUT = new Qwerty(new EnglishUSCustomizer(LOCALE));
+    private static final LayoutBase LAYOUT = new Qwerty(new EnglishCustomizer(LOCALE));
 
     @Override
     LayoutBase getLayout() { return LAYOUT; }

@@ -19,7 +19,7 @@ package com.android.inputmethod.keyboard.layout.tests;
 import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.inputmethod.keyboard.layout.LayoutBase;
-import com.android.inputmethod.keyboard.layout.LayoutBase.EuroLayoutCustomizer;
+import com.android.inputmethod.keyboard.layout.LayoutBase.EuroCustomizer;
 import com.android.inputmethod.keyboard.layout.Qwerty;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
 
@@ -36,7 +36,7 @@ public final class TestsTurkish extends LayoutTestsBase {
     @Override
     LayoutBase getLayout() { return LAYOUT; }
 
-    private static class TurkishCustomizer extends EuroLayoutCustomizer {
+    private static class TurkishCustomizer extends EuroCustomizer {
         public TurkishCustomizer(final Locale locale) { super(locale); }
 
         @Override
@@ -47,7 +47,7 @@ public final class TestsTurkish extends LayoutTestsBase {
                     // U+00F9: "ù" LATIN SMALL LETTER U WITH GRAVE
                     // U+00FA: "ú" LATIN SMALL LETTER U WITH ACUTE
                     // U+016B: "ū" LATIN SMALL LETTER U WITH MACRON
-                    .setMoreKeysOf("u", "7", "\u00FC", "\u00FB", "\u00F9", "\u00FA", "\u016B")
+                    .setMoreKeysOf("u", "\u00FC", "\u00FB", "\u00F9", "\u00FA", "\u016B")
                     // U+0131: "ı" LATIN SMALL LETTER DOTLESS I
                     // U+00EE: "î" LATIN SMALL LETTER I WITH CIRCUMFLEX
                     // U+00EF: "ï" LATIN SMALL LETTER I WITH DIAERESIS
@@ -55,7 +55,7 @@ public final class TestsTurkish extends LayoutTestsBase {
                     // U+00ED: "í" LATIN SMALL LETTER I WITH ACUTE
                     // U+012F: "į" LATIN SMALL LETTER I WITH OGONEK
                     // U+012B: "ī" LATIN SMALL LETTER I WITH MACRON
-                    .setMoreKeysOf("i", "8",
+                    .setMoreKeysOf("i",
                             "\u0131", "\u00EE", "\u00EF", "\u00EC", "\u00ED", "\u012F", "\u012B")
                     // U+00F6: "ö" LATIN SMALL LETTER O WITH DIAERESIS
                     // U+00F4: "ô" LATIN SMALL LETTER O WITH CIRCUMFLEX
@@ -66,8 +66,8 @@ public final class TestsTurkish extends LayoutTestsBase {
                     // U+00F8: "ø" LATIN SMALL LETTER O WITH STROKE
                     // U+014D: "ō" LATIN SMALL LETTER O WITH MACRON
                     .setMoreKeysOf("o",
-                            "9", "\u00F6", "\u00F4", "\u0153", "\u00F2", "\u00F3", "\u00F5",
-                            "\u00F8", "\u014D")
+                            "\u00F6", "\u00F4", "\u0153", "\u00F2", "\u00F3", "\u00F5", "\u00F8",
+                            "\u014D")
                     // U+00E2: "â" LATIN SMALL LETTER A WITH CIRCUMFLEX
                     .setMoreKeysOf("a", "\u00E2")
                     // U+015F: "ş" LATIN SMALL LETTER S WITH CEDILLA

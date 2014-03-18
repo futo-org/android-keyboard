@@ -58,8 +58,7 @@ public final class TestsPolish extends LayoutTestsBase {
                     // U+0117: "ė" LATIN SMALL LETTER E WITH DOT ABOVE
                     // U+0113: "ē" LATIN SMALL LETTER E WITH MACRON
                     .setMoreKeysOf("e",
-                            "3", "\u0119", "\u00E8", "\u00E9", "\u00EA", "\u00EB", "\u0117",
-                            "\u0113")
+                            "\u0119", "\u00E8", "\u00E9", "\u00EA", "\u00EB", "\u0117", "\u0113")
                     // U+00F3: "ó" LATIN SMALL LETTER O WITH ACUTE
                     // U+00F6: "ö" LATIN SMALL LETTER O WITH DIAERESIS
                     // U+00F4: "ô" LATIN SMALL LETTER O WITH CIRCUMFLEX
@@ -69,8 +68,8 @@ public final class TestsPolish extends LayoutTestsBase {
                     // U+00F8: "ø" LATIN SMALL LETTER O WITH STROKE
                     // U+014D: "ō" LATIN SMALL LETTER O WITH MACRON
                     .setMoreKeysOf("o",
-                            "9", "\u00F3", "\u00F6", "\u00F4", "\u00F2", "\u00F5", "\u0153",
-                            "\u00F8", "\u014D")
+                            "\u00F3", "\u00F6", "\u00F4", "\u00F2", "\u00F5", "\u0153", "\u00F8",
+                            "\u014D")
                     // U+0105: "ą" LATIN SMALL LETTER A WITH OGONEK
                     // U+00E1: "á" LATIN SMALL LETTER A WITH ACUTE
                     // U+00E0: "à" LATIN SMALL LETTER A WITH GRAVE

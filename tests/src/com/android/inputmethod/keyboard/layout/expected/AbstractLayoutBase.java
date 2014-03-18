@@ -17,6 +17,7 @@
 package com.android.inputmethod.keyboard.layout.expected;
 
 import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
+import com.android.inputmethod.keyboard.layout.expected.ExpectedKey.ExpectedAdditionalMoreKey;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.utils.StringUtils;
 
@@ -59,6 +60,15 @@ public abstract class AbstractLayoutBase {
     // Helper method to create an {@link ExpectedKey} object that has new "more keys".
     public static ExpectedKey key(final ExpectedKey key, final ExpectedKey ... moreKeys) {
         return ExpectedKey.newInstance(key.getVisual(), key.getOutput(), moreKeys);
+    }
+
+    // Helper method to create an {@link ExpectedAdditionalMoreKey} object for an
+    // "additional more key" that has the label.
+    // The additional more keys can be defined independently from other more keys. The position of
+    // the additional more keys in the long press popup keyboard can be controlled by specifying
+    // special marker "%" in the usual more keys definitions.
+    public static ExpectedAdditionalMoreKey additionalMoreKey(final String label) {
+        return ExpectedAdditionalMoreKey.newInstance(label);
     }
 
     // Helper method to create an {@link ExpectedKey} object for a "more key" that has the label.

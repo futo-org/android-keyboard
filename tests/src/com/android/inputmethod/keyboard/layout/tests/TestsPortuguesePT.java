@@ -19,9 +19,9 @@ package com.android.inputmethod.keyboard.layout.tests;
 import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.inputmethod.keyboard.layout.LayoutBase;
-import com.android.inputmethod.keyboard.layout.LayoutBase.EuroLayoutCustomizer;
+import com.android.inputmethod.keyboard.layout.LayoutBase.EuroCustomizer;
 import com.android.inputmethod.keyboard.layout.Qwerty;
-import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
+import com.android.inputmethod.keyboard.layout.expected.ExpectedKey;
 
 import java.util.Locale;
 
@@ -36,17 +36,20 @@ public final class TestsPortuguesePT extends TestsPortugueseBR {
     @Override
     LayoutBase getLayout() { return LAYOUT; }
 
-    private static class PortuguesePTCustomizer extends EuroLayoutCustomizer {
-        private final PortugueseBRCustomizer mPortugueseCustomizer;
+    private static class PortuguesePTCustomizer extends PortugueseCustomizer {
+        private final EuroCustomizer mEuroCustomizer;
 
         public PortuguesePTCustomizer(final Locale locale) {
             super(locale);
-            mPortugueseCustomizer = new PortugueseBRCustomizer(locale);
+            mEuroCustomizer = new EuroCustomizer(locale);
         }
 
         @Override
-        public ExpectedKeyboardBuilder setAccentedLetters(final ExpectedKeyboardBuilder builder) {
-            return mPortugueseCustomizer.setAccentedLetters(builder);
+        public ExpectedKey getCurrencyKey() { return mEuroCustomizer.getCurrencyKey(); }
+
+        @Override
+        public ExpectedKey[] getOtherCurrencyKeys() {
+            return mEuroCustomizer.getOtherCurrencyKeys();
         }
     }
 }
