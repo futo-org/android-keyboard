@@ -60,7 +60,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     public static final int THEME_INDEX_ICS = 0;
     public static final int THEME_INDEX_GB = 1;
     public static final int THEME_INDEX_KLP = 2;
-    public static final int THEME_INDEX_DEFAULT = THEME_INDEX_KLP;
+    public static final int DEFAULT_THEME_INDEX = THEME_INDEX_KLP;
     public static final KeyboardTheme[] KEYBOARD_THEMES = {
         new KeyboardTheme(THEME_INDEX_ICS, R.style.KeyboardTheme_ICS),
         new KeyboardTheme(THEME_INDEX_GB, R.style.KeyboardTheme_GB),
@@ -88,7 +88,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
      * what user actually typed. */
     private boolean mIsAutoCorrectionActive;
 
-    private KeyboardTheme mKeyboardTheme = KEYBOARD_THEMES[THEME_INDEX_DEFAULT];
+    private KeyboardTheme mKeyboardTheme = KEYBOARD_THEMES[DEFAULT_THEME_INDEX];
     private Context mThemeContext;
 
     private static final KeyboardSwitcher sInstance = new KeyboardSwitcher();

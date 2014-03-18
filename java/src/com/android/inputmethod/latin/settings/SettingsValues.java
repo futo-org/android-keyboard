@@ -285,7 +285,7 @@ public final class SettingsValues {
         // When autoCorrectionThreshold is greater than 1.0, it's like auto correction is off.
         final float autoCorrectionThreshold;
         try {
-            final int arrayIndex = Integer.valueOf(currentAutoCorrectionSetting);
+            final int arrayIndex = Integer.parseInt(currentAutoCorrectionSetting);
             if (arrayIndex >= 0 && arrayIndex < autoCorrectionThresholdValues.length) {
                 final String val = autoCorrectionThresholdValues[arrayIndex];
                 if (FLOAT_MAX_VALUE_MARKER_STRING.equals(val)) {
