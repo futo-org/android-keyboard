@@ -77,37 +77,33 @@ public final class Mongolian extends LayoutBase {
                     // U+0437: "з" CYRILLIC SMALL LETTER ZE
                     key("\u0437", moreKey("0")),
                     // U+043A: "к" CYRILLIC SMALL LETTER KA
-                    key("\u043A"))
-            // U+0439: "й" CYRILLIC SMALL LETTER SHORT I
-            // U+044B: "ы" CYRILLIC SMALL LETTER YERU
-            // U+0431: "б" CYRILLIC SMALL LETTER BE
-            // U+04E9: "ө" CYRILLIC SMALL LETTER BARRED O
-            // U+0430: "а" CYRILLIC SMALL LETTER A
-            // U+0445: "х" CYRILLIC SMALL LETTER HA
-            // U+0440: "р" CYRILLIC SMALL LETTER ER
-            // U+043E: "о" CYRILLIC SMALL LETTER O
-            // U+043B: "л" CYRILLIC SMALL LETTER EL
-            // U+0434: "д" CYRILLIC SMALL LETTER DE
-            // U+043F: "п" CYRILLIC SMALL LETTER PE
-            .setLabelsOfRow(2,
+                    "\u043A")
+            .setKeysOfRow(2,
+                    // U+0439: "й" CYRILLIC SMALL LETTER SHORT I
+                    // U+044B: "ы" CYRILLIC SMALL LETTER YERU
+                    // U+0431: "б" CYRILLIC SMALL LETTER BE
+                    // U+04E9: "ө" CYRILLIC SMALL LETTER BARRED O
+                    // U+0430: "а" CYRILLIC SMALL LETTER A
+                    // U+0445: "х" CYRILLIC SMALL LETTER HA
+                    // U+0440: "р" CYRILLIC SMALL LETTER ER
+                    // U+043E: "о" CYRILLIC SMALL LETTER O
+                    // U+043B: "л" CYRILLIC SMALL LETTER EL
+                    // U+0434: "д" CYRILLIC SMALL LETTER DE
+                    // U+043F: "п" CYRILLIC SMALL LETTER PE
                     "\u0439", "\u044B", "\u0431", "\u04E9", "\u0430", "\u0445", "\u0440", "\u043E",
                     "\u043B", "\u0434", "\u043F")
             .setKeysOfRow(3,
                     // U+044F: "я" CYRILLIC SMALL LETTER YA
-                    key("\u044F"),
                     // U+0447: "ч" CYRILLIC SMALL LETTER CHE
-                    key("\u0447"),
+                    "\u044F", "\u0447",
                     // U+0451: "ё" CYRILLIC SMALL LETTER IO
                     // U+0435: "е" CYRILLIC SMALL LETTER IE
                     key("\u0451", moreKey("\u0435")),
                     // U+0441: "с" CYRILLIC SMALL LETTER ES
-                    key("\u0441"),
                     // U+043C: "м" CYRILLIC SMALL LETTER EM
-                    key("\u043C"),
                     // U+0438: "и" CYRILLIC SMALL LETTER I
-                    key("\u0438"),
                     // U+0442: "т" CYRILLIC SMALL LETTER TE
-                    key("\u0442"),
+                    "\u0441", "\u043C", "\u0438", "\u0442",
                     // U+044C: "ь" CYRILLIC SMALL LETTER SOFT SIGN
                     // U+044A: "ъ" CYRILLIC SMALL LETTER HARD SIGN
                     key("\u044C", moreKey("\u044A")),

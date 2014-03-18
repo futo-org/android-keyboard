@@ -46,7 +46,7 @@ public class Symbols extends AbstractLayoutBase {
                     .addKeysOnTheRightOfRow(4, key(ENTER_KEY, EMOJI_KEY));
         } else {
             // Tablet symbols keyboard has extra two keys at the left edge of the 3rd row.
-            builder.addKeysOnTheLeftOfRow(3, joinKeys("\\", "="));
+            builder.addKeysOnTheLeftOfRow(3, (Object[])joinKeys("\\", "="));
             builder.addKeysOnTheRightOfRow(1, DELETE_KEY)
                     .addKeysOnTheRightOfRow(2, ENTER_KEY)
                     .addKeysOnTheLeftOfRow(3, customizer.getSymbolsShiftKey(isPhone))
@@ -136,11 +136,10 @@ public class Symbols extends AbstractLayoutBase {
                     key("4", moreKey("\u2074")),
                     // U+215D: "⅝" VULGAR FRACTION FIVE EIGHTHS
                     key("5", moreKey("\u215D")),
-                    key("6"),
+                    "6",
                     // U+215E: "⅞" VULGAR FRACTION SEVEN EIGHTHS
                     key("7", moreKey("\u215E")),
-                    key("8"),
-                    key("9"),
+                    "8", "9",
                     // U+207F: "ⁿ" SUPERSCRIPT LATIN SMALL LETTER N
                     // U+2205: "∅" EMPTY SET
                     key("0", joinMoreKeys("\u207F", "\u2205")))
@@ -148,7 +147,7 @@ public class Symbols extends AbstractLayoutBase {
                     key("@"), key("#"), key(CURRENCY),
                     // U+2030: "‰" PER MILLE SIGN
                     key("%", moreKey("\u2030")),
-                    key("&"),
+                    "&",
                     // U+2013: "–" EN DASH
                     // U+2014: "—" EM DASH
                     // U+00B7: "·" MIDDLE DOT

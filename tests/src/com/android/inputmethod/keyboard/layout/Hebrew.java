@@ -129,16 +129,14 @@ public final class Hebrew extends LayoutBase {
                     key("\u05E4", moreKey("0")))
             .setKeysOfRow(2,
                     // U+05E9: "ש" HEBREW LETTER SHIN
-                    key("\u05E9"),
                     // U+05D3: "ד" HEBREW LETTER DALET
-                    key("\u05D3"),
+                    "\u05E9", "\u05D3",
                     // U+05D2: "ג" HEBREW LETTER GIMEL
                     // U+05D2 U+05F3: "ג׳" HEBREW LETTER GIMEL + HEBREW PUNCTUATION GERESH
                     key("\u05D2", moreKey("\u05D2\u05F3")),
                     // U+05DB: "כ" HEBREW LETTER KAF
-                    key("\u05DB"),
                     // U+05E2: "ע" HEBREW LETTER AYIN
-                    key("\u05E2"),
+                    "\u05DB", "\u05E2",
                     // U+05D9: "י" HEBREW LETTER YOD
                     // U+05F2 U+05B7: "ײַ" HEBREW LIGATURE YIDDISH DOUBLE YOD + HEBREW POINT PATAH
                     key("\u05D9", moreKey("\u05F2\u05B7")),
@@ -146,25 +144,19 @@ public final class Hebrew extends LayoutBase {
                     // U+05D7 U+05F3: "ח׳" HEBREW LETTER HET + HEBREW PUNCTUATION GERESH
                     key("\u05D7", moreKey("\u05D7\u05F3")),
                     // U+05DC: "ל" HEBREW LETTER LAMED
-                    key("\u05DC"),
                     // U+05DA: "ך" HEBREW LETTER FINAL KAF
-                    key("\u05DA"),
                     // U+05E3: "ף" HEBREW LETTER FINAL PE
-                    key("\u05E3"))
+                    "\u05DC", "\u05DA", "\u05E3")
             .setKeysOfRow(3,
                     // U+05D6: "ז" HEBREW LETTER ZAYIN
                     // U+05D6 U+05F3: "ז׳" HEBREW LETTER ZAYIN + HEBREW PUNCTUATION GERESH
                     key("\u05D6", moreKey("\u05D6\u05F3")),
                     // U+05E1: "ס" HEBREW LETTER SAMEKH
-                    key("\u05E1"),
                     // U+05D1: "ב" HEBREW LETTER BET
-                    key("\u05D1"),
                     // U+05D4: "ה" HEBREW LETTER HE
-                    key("\u05D4"),
                     // U+05E0: "נ" HEBREW LETTER NUN
-                    key("\u05E0"),
                     // U+05DE: "מ" HEBREW LETTER MEM
-                    key("\u05DE"),
+                    "\u05E1", "\u05D1", "\u05D4", "\u05E0", "\u05DE",
                     // U+05E6: "צ" HEBREW LETTER TSADI
                     // U+05E6 U+05F3: "צ׳" HEBREW LETTER TSADI + HEBREW PUNCTUATION GERESH
                     key("\u05E6", moreKey("\u05E6\u05F3")),

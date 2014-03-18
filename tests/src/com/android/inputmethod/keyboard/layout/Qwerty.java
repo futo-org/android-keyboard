@@ -47,7 +47,7 @@ public final class Qwerty extends LayoutBase {
                     key("i", moreKey("8")),
                     key("o", moreKey("9")),
                     key("p", moreKey("0")))
-            .setLabelsOfRow(2, "a", "s", "d", "f", "g", "h", "j", "k", "l")
-            .setLabelsOfRow(3, "z", "x", "c", "v", "b", "n", "m")
+            .setKeysOfRow(2, "a", "s", "d", "f", "g", "h", "j", "k", "l")
+            .setKeysOfRow(3, "z", "x", "c", "v", "b", "n", "m")
             .build();
 }

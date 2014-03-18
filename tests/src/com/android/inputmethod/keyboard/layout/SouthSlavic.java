@@ -82,28 +82,28 @@ public final class SouthSlavic extends LayoutBase {
                     // U+043F: "п" CYRILLIC SMALL LETTER PE
                     key("\u043F", moreKey("0")),
                     // U+0448: "ш" CYRILLIC SMALL LETTER SHA
-                    key("\u0448"))
-            // U+0430: "а" CYRILLIC SMALL LETTER A
-            // U+0441: "с" CYRILLIC SMALL LETTER ES
-            // U+0434: "д" CYRILLIC SMALL LETTER DE
-            // U+0444: "ф" CYRILLIC SMALL LETTER EF
-            // U+0433: "г" CYRILLIC SMALL LETTER GHE
-            // U+0445: "х" CYRILLIC SMALL LETTER HA
-            // U+0458: "ј" CYRILLIC SMALL LETTER JE
-            // U+043A: "к" CYRILLIC SMALL LETTER KA
-            // U+043B: "л" CYRILLIC SMALL LETTER EL
-            // U+0447: "ч" CYRILLIC SMALL LETTER CHE
-            .setLabelsOfRow(2,
+                    "\u0448")
+            .setKeysOfRow(2,
+                    // U+0430: "а" CYRILLIC SMALL LETTER A
+                    // U+0441: "с" CYRILLIC SMALL LETTER ES
+                    // U+0434: "д" CYRILLIC SMALL LETTER DE
+                    // U+0444: "ф" CYRILLIC SMALL LETTER EF
+                    // U+0433: "г" CYRILLIC SMALL LETTER GHE
+                    // U+0445: "х" CYRILLIC SMALL LETTER HA
+                    // U+0458: "ј" CYRILLIC SMALL LETTER JE
+                    // U+043A: "к" CYRILLIC SMALL LETTER KA
+                    // U+043B: "л" CYRILLIC SMALL LETTER EL
+                    // U+0447: "ч" CYRILLIC SMALL LETTER CHE
                     "\u0430", "\u0441", "\u0434", "\u0444", "\u0433", "\u0445", "\u0458", "\u043A",
                     "\u043B", "\u0447", ROW2_11)
-            // U+045F: "џ" CYRILLIC SMALL LETTER DZHE
-            // U+0446: "ц" CYRILLIC SMALL LETTER TSE
-            // U+0432: "в" CYRILLIC SMALL LETTER VE
-            // U+0431: "б" CYRILLIC SMALL LETTER BE
-            // U+043D: "н" CYRILLIC SMALL LETTER EN
-            // U+043C: "м" CYRILLIC SMALL LETTER EM
-            // U+0436: "ж" CYRILLIC SMALL LETTER ZHE
-            .setLabelsOfRow(3,
+            .setKeysOfRow(3,
+                    // U+045F: "џ" CYRILLIC SMALL LETTER DZHE
+                    // U+0446: "ц" CYRILLIC SMALL LETTER TSE
+                    // U+0432: "в" CYRILLIC SMALL LETTER VE
+                    // U+0431: "б" CYRILLIC SMALL LETTER BE
+                    // U+043D: "н" CYRILLIC SMALL LETTER EN
+                    // U+043C: "м" CYRILLIC SMALL LETTER EM
+                    // U+0436: "ж" CYRILLIC SMALL LETTER ZHE
                     ROW3_1, "\u045F", "\u0446", "\u0432", "\u0431", "\u043D", "\u043C", ROW3_8,
                     "\u0436")
             .build();

@@ -148,7 +148,7 @@ public final class Farsi extends LayoutBase {
         }
         final ExpectedKeyboardBuilder builder = new ExpectedKeyboardBuilder(ALPHABET_COMMON);
         // U+0622: "آ" ARABIC LETTER ALEF WITH MADDA ABOVE
-        builder.insertKeysAtRow(3, 10, key("\u0622"));
+        builder.insertKeysAtRow(3, 10, "\u0622");
         return builder.build();
     }
 
@@ -195,12 +195,11 @@ public final class Farsi extends LayoutBase {
                     // U+06F0: "۰" EXTENDED ARABIC-INDIC DIGIT ZERO
                     key("\u062D", joinMoreKeys("\u06F0", "0")),
                     // U+062C: "ج" ARABIC LETTER JEEM
-                    key("\u062C"))
+                    "\u062C")
             .setKeysOfRow(2,
                     // U+0634: "ش" ARABIC LETTER SHEEN
-                    key("\u0634"),
                     // U+0633: "س" ARABIC LETTER SEEN
-                    key("\u0633"),
+                    "\u0634", "\u0633",
                     // U+06CC: "ی" ARABIC LETTER FARSI YEH
                     // U+0626: "ئ" ARABIC LETTER YEH WITH HAMZA ABOVE
                     // U+064A: "ي" ARABIC LETTER YEH
@@ -208,9 +207,8 @@ public final class Farsi extends LayoutBase {
                     // U+0649: "ى" ARABIC LETTER ALEF MAKSURA
                     key("\u06CC", joinMoreKeys("\u0626", "\u064A", moreKey("\uFBE8", "\u0649"))),
                     // U+0628: "ب" ARABIC LETTER BEH
-                    key("\u0628"),
                     // U+0644: "ل" ARABIC LETTER LAM
-                    key("\u0644"),
+                    "\u0628", "\u0644",
                     // U+0627: "ا" ARABIC LETTER ALEF
                     // U+0671: "ٱ" ARABIC LETTER ALEF WASLA
                     // U+0621: "ء" ARABIC LETTER HAMZA
@@ -222,15 +220,14 @@ public final class Farsi extends LayoutBase {
                     // U+0629: "ة": ARABIC LETTER TEH MARBUTA
                     key("\u062A", moreKey("\u0629")),
                     // U+0646: "ن" ARABIC LETTER NOON
-                    key("\u0646"),
                     // U+0645: "م" ARABIC LETTER MEEM
-                    key("\u0645"),
+                    "\u0646", "\u0645",
                     // U+06A9: "ک" ARABIC LETTER KEHEH
                     // U+0643: "ك" ARABIC LETTER KAF
                     key("\u06A9", moreKey("\u0643")),
                     // U+06AF: "گ" ARABIC LETTER GAF
-                    key("\u06AF"))
-            .setKeysOfRow(3, joinKeys(
+                    "\u06AF")
+            .setKeysOfRow(3,
                     // U+0638: "ظ" ARABIC LETTER ZAH
                     // U+0637: "ط" ARABIC LETTER TAH
                     // U+0698: "ژ" ARABIC LETTER JEH
@@ -244,7 +241,7 @@ public final class Farsi extends LayoutBase {
                     // U+0624: "ؤ" ARABIC LETTER WAW WITH HAMZA ABOVE
                     key("\u0648", moreKey("\u0624")),
                     // U+0686: "چ" ARABIC LETTER TCHEH
-                    "\u0686"))
+                    "\u0686")
             .build();
 
     private static class FarsiSymbols extends RtlSymbols {

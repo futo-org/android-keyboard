@@ -82,7 +82,7 @@ public final class EastSlavic extends LayoutBase {
                     // U+0437: "з" CYRILLIC SMALL LETTER ZE
                     key("\u0437", moreKey("0")),
                     // U+0445: "х" CYRILLIC SMALL LETTER HA
-                    key("\u0445"))
+                    "\u0445")
             // U+0444: "ф" CYRILLIC SMALL LETTER EF
             // U+0432: "в" CYRILLIC SMALL LETTER VE
             // U+0430: "а" CYRILLIC SMALL LETTER A
@@ -92,7 +92,7 @@ public final class EastSlavic extends LayoutBase {
             // U+043B: "л" CYRILLIC SMALL LETTER EL
             // U+0434: "д" CYRILLIC SMALL LETTER DE
             // U+0436: "ж" CYRILLIC SMALL LETTER ZHE
-            .setLabelsOfRow(2,
+            .setKeysOfRow(2,
                     "\u0444", ROW2_2, "\u0432", "\u0430", "\u043F", "\u0440", "\u043E", "\u043B",
                     "\u0434", "\u0436", ROW2_11)
             // U+044F: "я" CYRILLIC SMALL LETTER YA
@@ -103,7 +103,7 @@ public final class EastSlavic extends LayoutBase {
             // U+044C: "ь" CYRILLIC SMALL LETTER SOFT SIGN
             // U+0431: "б" CYRILLIC SMALL LETTER BE
             // U+044E: "ю" CYRILLIC SMALL LETTER YU
-            .setLabelsOfRow(3,
+            .setKeysOfRow(3,
                     "\u044F", "\u0447", "\u0441", "\u043C", ROW3_5, "\u0442", "\u044C", "\u0431",
                     "\u044E")
             .build();

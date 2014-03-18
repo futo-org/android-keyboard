@@ -16,6 +16,9 @@
 
 package com.android.inputmethod.keyboard.layout.expected;
 
+import com.android.inputmethod.latin.utils.CollectionUtils;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
 
@@ -105,67 +108,57 @@ public final class ExpectedKeyboardBuilder extends AbstractKeyboardBuilder<Expec
         }
     }
 
-    /**
-     * Set the row with specified keys that have specified labels.
-     * @param row the row number to set keys.
-     * @param labels the label texts of the keys.
-     * @return this builder.
-     */
-    public ExpectedKeyboardBuilder setLabelsOfRow(final int row, final String ... labels) {
-        final ExpectedKey[] keys = new ExpectedKey[labels.length];
-        for (int columnIndex = 0; columnIndex < labels.length; columnIndex++) {
-            keys[columnIndex] = ExpectedKey.newInstance(labels[columnIndex]);
+    // Helper method to create {@link ExpectedKey} array by joining {@link ExpectedKey},
+    // {@link ExpectedKey} array, and {@link String}.
+    static ExpectedKey[] joinKeys(final Object ... keys) {
+        final ArrayList<ExpectedKey> list = CollectionUtils.newArrayList();
+        for (final Object key : keys) {
+            if (key instanceof ExpectedKey) {
+                list.add((ExpectedKey)key);
+            } else if (key instanceof ExpectedKey[]) {
+                list.addAll(Arrays.asList((ExpectedKey[])key));
+            } else if (key instanceof String) {
+                list.add(ExpectedKey.newInstance((String)key));
+            } else {
+                throw new RuntimeException("Unknown expected key type: " + key);
+            }
         }
-        setRowAt(row, keys);
-        return this;
+        return list.toArray(new ExpectedKey[list.size()]);
     }
 
     /**
      * Set the row with specified keys.
      * @param row the row number to set keys.
-     * @param keys the keys to be set at <code>row</code>.
+     * @param keys the keys to be set at <code>row</code>. Each key can be {@link ExpectedKey},
+     *        {@link ExpectedKey} array, and {@link String}.
      * @return this builder.
      */
-    public ExpectedKeyboardBuilder setKeysOfRow(final int row, final ExpectedKey ... keys) {
-        setRowAt(row, keys);
+    public ExpectedKeyboardBuilder setKeysOfRow(final int row, final Object ... keys) {
+        setRowAt(row, joinKeys(keys));
         return this;
     }
 
     /**
      * Set the "more keys" of the key that has the specified label.
      * @param label the label of the key to set the "more keys".
-     * @param moreKeys the array of labels of the "more keys" to be set.
+     * @param moreKeys the array of "more key" to be set. Each "more key" can be
+     *        {@link ExpectedKey}, {@link ExpectedKey} array, and {@link String}.
      * @return this builder.
      */
-    public ExpectedKeyboardBuilder setMoreKeysOf(final String label, final String ... moreKeys) {
-        final ExpectedKey[] expectedMoreKeys = new ExpectedKey[moreKeys.length];
-        for (int index = 0; index < moreKeys.length; index++) {
-            expectedMoreKeys[index] = ExpectedKey.newInstance(moreKeys[index]);
-        }
-        setMoreKeysOf(label, expectedMoreKeys);
-        return this;
-    }
-
-    /**
-     * Set the "more keys" of the key that has the specified label.
-     * @param label the label of the key to set the "more keys".
-     * @param moreKeys the array of "more key" to be set.
-     * @return this builder.
-     */
-    public ExpectedKeyboardBuilder setMoreKeysOf(final String label,
-            final ExpectedKey ... moreKeys) {
-        setMoreKeysOf(ExpectedKeyVisual.newInstance(label), moreKeys);
+    public ExpectedKeyboardBuilder setMoreKeysOf(final String label, final Object ... moreKeys) {
+        setMoreKeysOf(ExpectedKeyVisual.newInstance(label), joinKeys(moreKeys));
         return this;
     }
 
     /**
      * Set the "more keys" of the key that has the specified icon.
      * @param iconId the icon id of the key to set the "more keys".
-     * @param moreKeys the array of "more key" to be set.
+     * @param moreKeys the array of "more key" to be set. Each "more key" can be
+     *        {@link ExpectedKey}, {@link ExpectedKey} array, and {@link String}.
      * @return this builder.
      */
-    public ExpectedKeyboardBuilder setMoreKeysOf(final int iconId, final ExpectedKey ... moreKeys) {
-        setMoreKeysOf(ExpectedKeyVisual.newInstance(iconId), moreKeys);
+    public ExpectedKeyboardBuilder setMoreKeysOf(final int iconId, final Object ... moreKeys) {
+        setMoreKeysOf(ExpectedKeyVisual.newInstance(iconId), joinKeys(moreKeys));
         return this;
     }
 
@@ -188,14 +181,16 @@ public final class ExpectedKeyboardBuilder extends AbstractKeyboardBuilder<Expec
      * Insert the keys at specified position.
      * @param row the row number to insert the <code>keys</code>.
      * @param column the column number to insert the <code>keys</code>.
-     * @param keys the array of keys to insert at <code>row,column</code>.
+     * @param keys the array of keys to insert at <code>row,column</code>. Each key can be
+     *        {@link ExpectedKey}, {@link ExpectedKey} array, and {@link String}.
      * @return this builder.
      * @throws {@link RuntimeException} if <code>row</code> or <code>column</code> is illegal.
      */
     public ExpectedKeyboardBuilder insertKeysAtRow(final int row, final int column,
-            final ExpectedKey ... keys) {
+            final Object ... keys) {
+        final ExpectedKey[] expectedKeys = joinKeys(keys);
         for (int index = 0; index < keys.length; index++) {
-            setElementAt(row, column + index, keys[index], true /* insert */);
+            setElementAt(row, column + index, expectedKeys[index], true /* insert */);
         }
         return this;
     }
@@ -203,15 +198,17 @@ public final class ExpectedKeyboardBuilder extends AbstractKeyboardBuilder<Expec
     /**
      * Add the keys on the left most of the row.
      * @param row the row number to add the <code>keys</code>.
-     * @param keys the array of keys to add on the left most of the row.
+     * @param keys the array of keys to add on the left most of the row. Each key can be
+     *        {@link ExpectedKey}, {@link ExpectedKey} array, and {@link String}.
      * @return this builder.
      * @throws {@link RuntimeException} if <code>row</code> is illegal.
      */
     public ExpectedKeyboardBuilder addKeysOnTheLeftOfRow(final int row,
-            final ExpectedKey ... keys) {
+            final Object ... keys) {
+        final ExpectedKey[] expectedKeys = joinKeys(keys);
         // Keys should be inserted from the last to preserve the order.
         for (int index = keys.length - 1; index >= 0; index--) {
-            setElementAt(row, 1, keys[index], true /* insert */);
+            setElementAt(row, 1, expectedKeys[index], true /* insert */);
         }
         return this;
     }
@@ -219,12 +216,13 @@ public final class ExpectedKeyboardBuilder extends AbstractKeyboardBuilder<Expec
     /**
      * Add the keys on the right most of the row.
      * @param row the row number to add the <code>keys</code>.
-     * @param keys the array of keys to add on the right most of the row.
+     * @param keys the array of keys to add on the right most of the row. Each key can be
+     *        {@link ExpectedKey}, {@link ExpectedKey} array, and {@link String}.
      * @return this builder.
      * @throws {@link RuntimeException} if <code>row</code> is illegal.
      */
     public ExpectedKeyboardBuilder addKeysOnTheRightOfRow(final int row,
-            final ExpectedKey ... keys) {
+            final Object ... keys) {
         final int rightEnd = getRowAt(row).length + 1;
         insertKeysAtRow(row, rightEnd, keys);
         return this;
@@ -233,16 +231,17 @@ public final class ExpectedKeyboardBuilder extends AbstractKeyboardBuilder<Expec
     /**
      * Replace the most top-left key that has the specified label with the new keys.
      * @param label the label of the key to set <code>newKeys</code>.
-     * @param newKeys the keys to be set.
+     * @param newKeys the keys to be set. Each key can be {@link ExpectedKey}, {@link ExpectedKey}
+     *        array, and {@link String}.
      * @return this builder.
      */
     public ExpectedKeyboardBuilder replaceKeyOfLabel(final String label,
-            final ExpectedKey ... newKeys) {
+            final Object ... newKeys) {
         final ExpectedKeyVisual visual = ExpectedKeyVisual.newInstance(label);
         replaceKeyOf(visual, new ReplaceJob() {
             @Override
             public ExpectedKey[] replacingKeys(final ExpectedKey oldKey) {
-                return newKeys;
+                return joinKeys(newKeys);
             }
             @Override
             public boolean stopAtFirstOccurrence() {
@@ -255,15 +254,16 @@ public final class ExpectedKeyboardBuilder extends AbstractKeyboardBuilder<Expec
     /**
      * Replace the all specified keys with the new keys.
      * @param key the key to be replaced by <code>newKeys</code>.
-     * @param newKeys the keys to be set.
+     * @param newKeys the keys to be set. Each key can be {@link ExpectedKey}, {@link ExpectedKey}
+     *        array, and {@link String}.
      * @return this builder.
      */
     public ExpectedKeyboardBuilder replaceKeysOfAll(final ExpectedKey key,
-            final ExpectedKey ... newKeys) {
+            final Object ... newKeys) {
         replaceKeyOf(key.getVisual(), new ReplaceJob() {
             @Override
             public ExpectedKey[] replacingKeys(final ExpectedKey oldKey) {
-                return newKeys;
+                return joinKeys(newKeys);
             }
             @Override
             public boolean stopAtFirstOccurrence() {
