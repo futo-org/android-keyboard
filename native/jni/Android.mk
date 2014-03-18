@@ -29,7 +29,7 @@ LOCAL_C_INCLUDES += $(LOCAL_PATH)/$(LATIN_IME_SRC_DIR)
 
 LOCAL_CFLAGS += -Werror -Wall -Wextra -Weffc++ -Wformat=2 -Wcast-qual -Wcast-align \
     -Wwrite-strings -Wfloat-equal -Wpointer-arith -Winit-self -Wredundant-decls \
-    -Woverloaded-virtual -Wstrict-null-sentinel -Wsign-promo -Wno-system-headers
+    -Woverloaded-virtual -Wsign-promo -Wno-system-headers
 
 # To suppress compiler warnings for unused variables/functions used for debug features etc.
 LOCAL_CFLAGS += -Wno-unused-parameter -Wno-unused-function
@@ -60,8 +60,9 @@ endif # FLAG_DO_PROFILE
 LOCAL_MODULE := libjni_latinime_common_static
 LOCAL_MODULE_TAGS := optional
 
+LOCAL_CLANG := true
 LOCAL_SDK_VERSION := 14
-LOCAL_NDK_STL_VARIANT := gnustl_static
+LOCAL_NDK_STL_VARIANT := c++_static
 
 include $(BUILD_STATIC_LIBRARY)
 ######################################
@@ -83,8 +84,9 @@ endif # FLAG_DO_PROFILE
 LOCAL_MODULE := libjni_latinime
 LOCAL_MODULE_TAGS := optional
 
+LOCAL_CLANG := true
 LOCAL_SDK_VERSION := 14
-LOCAL_NDK_STL_VARIANT := gnustl_static
+LOCAL_NDK_STL_VARIANT := c++_static
 LOCAL_LDFLAGS += -ldl
 
 include $(BUILD_SHARED_LIBRARY)
