@@ -64,6 +64,7 @@
     mk: Macedonian/south_slavic
     mn_MN: Mongolian (Mongolia)/mongolian
     ms_MY: Malay (Malaysia)/qwerty
+    (my_MM: Myanmar (Myanmar)/myanmar) # This is a preliminary keyboard layout.
     nb: Norwegian Bokmål/nordic
     ne_NP: Nepali (Nepal) Romanized/nepali_romanized
     ne_NP: Nepali (Nepal) Traditional/nepali_traditional
@@ -431,6 +432,8 @@
             android:imeSubtypeExtraValue="KeyboardLayoutSet=mongolian,EmojiCapable"
             android:isAsciiCapable="false"
     />
+    <!-- TODO: This Myanmar keyboard is a preliminary layout.
+               This isn't based on the final specification. -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
             android:subtypeId="0x84c87c61"
@@ -438,6 +441,14 @@
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,AsciiCapable,EmojiCapable"
             android:isAsciiCapable="true"
+    />
+    <subtype android:icon="@drawable/ic_ime_switcher_dark"
+            android:label="@string/subtype_generic"
+            android:subtypeId="0xea266ea4"
+            android:imeSubtypeLocale="my_MM"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=myanmar,EmojiCapable"
+            android:isAsciiCapable="false"
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
