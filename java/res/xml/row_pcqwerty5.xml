@@ -24,23 +24,21 @@
     <Row
         latin:keyWidth="7.692%p"
     >
-        <Spacer
-            latin:keyWidth="11.538%p" />
         <switch>
             <case
-                latin:supportsSwitchingToShortcutIme="true"
+                latin:hasShortcutKey="true"
             >
                 <Key
                     latin:keyStyle="shortcutKeyStyle"
                     latin:keyWidth="11.538%p" />
-                </case>
+            </case>
             <case
                 latin:clobberSettingsKey="false"
             >
                 <Key
                     latin:keyStyle="settingsKeyStyle"
                     latin:keyWidth="11.538%p" />
-                </case>
+            </case>
         </switch>
         <switch>
             <case
@@ -48,24 +46,23 @@
             >
                 <Key
                     latin:keyStyle="languageSwitchKeyStyle"
+                    latin:keyXPos="19.231%p"
                     latin:keyWidth="11.538%p" />
                 <Key
                     latin:keyStyle="spaceKeyStyle"
-                    latin:keyWidth="38.464%p" />
-                </case>
+                    latin:keyWidth="42.308%p" />
+            </case>
             <!-- languageSwitchKeyEnabled="false" -->
             <default>
                 <Key
                     latin:keyStyle="spaceKeyStyle"
-                    latin:keyWidth="50.002%p" />
+                    latin:keyXPos="26.923%p"
+                    latin:keyWidth="46.154%p" />
             </default>
         </switch>
         <Key
-            latin:keyStyle="defaultEnterKeyStyle"
-            latin:keySpec="!icon/enter_key|!code/key_enter"
-            latin:keyWidth="15.384%p" />
-        <Key
-            latin:keyStyle="emojiKeyStyle"
+            latin:keyStyle="enterKeyStyle"
+            latin:keyXPos="-19.231%p"
             latin:keyWidth="fillRight" />
     </Row>
 </merge>
