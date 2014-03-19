@@ -112,7 +112,7 @@
         >
             <key-style
                 latin:styleName="enterKeyStyle"
-                latin:keySpec="!text/label_go_key|!code/key_shift_enter"
+                latin:keySpec="!icon/enter_key|!code/key_shift_enter"
                 latin:parentStyle="defaultEnterKeyStyle" />
         </case>
         <case
