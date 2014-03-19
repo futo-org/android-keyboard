@@ -18,19 +18,35 @@ package com.android.inputmethod.keyboard.layout.tests;
 
 import android.test.suitebuilder.annotation.SmallTest;
 
+import com.android.inputmethod.keyboard.layout.Dvorak;
+import com.android.inputmethod.keyboard.layout.Dvorak.DvorakCustomizer;
 import com.android.inputmethod.keyboard.layout.LayoutBase;
-import com.android.inputmethod.keyboard.layout.Qwerty;
+import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
 
 import java.util.Locale;
 
 /**
- * zz: Alphabet/qwerty
+ * zz: Alphabet/dvorak
  */
 @SmallTest
-public final class TestsNoLanguage extends LayoutTestsBase {
+public final class TestsNoLanguageDvorak extends LayoutTestsBase {
     private static final Locale LOCALE = new Locale("zz");
-    private static final LayoutBase LAYOUT = new Qwerty(new NoLanguageCustomizer(LOCALE));
+    private static final LayoutBase LAYOUT = new Dvorak(new NoLanguageDvorakCustomizer(LOCALE));
 
     @Override
     LayoutBase getLayout() { return LAYOUT; }
+
+    private static class NoLanguageDvorakCustomizer extends DvorakCustomizer {
+        private final NoLanguageCustomizer mNoLanguageCustomizer;
+
+        public NoLanguageDvorakCustomizer(final Locale locale) {
+            super(locale);
+            mNoLanguageCustomizer = new NoLanguageCustomizer(locale);
+        }
+
+        @Override
+        public ExpectedKeyboardBuilder setAccentedLetters(final ExpectedKeyboardBuilder builder) {
+            return mNoLanguageCustomizer.setAccentedLetters(builder);
+        }
+    }
 }
