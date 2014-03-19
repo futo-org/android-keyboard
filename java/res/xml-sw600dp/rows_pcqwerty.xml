@@ -56,7 +56,7 @@
         latin:keyWidth="7.0%p"
     >
         <Spacer
-            latin:keyWidth="12.0%p" />
+            latin:keyWidth="10.0%p" />
         <include
             latin:keyboardLayout="@xml/rowkeys_pcqwerty3" />
         <Key

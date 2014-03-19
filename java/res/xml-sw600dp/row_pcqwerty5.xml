@@ -24,37 +24,32 @@
     <Row
         latin:keyWidth="7.0%p"
     >
+        <include
+            latin:keyWidth="9.0%p"
+            latin:keyboardLayout="@xml/key_shortcut" />
         <switch>
             <case
                 latin:languageSwitchKeyEnabled="true"
             >
                 <Key
                     latin:keyStyle="languageSwitchKeyStyle"
-                    latin:keyWidth="9.0%p"
-                    latin:backgroundType="functional" />
+                    latin:keyXPos="22.0%p"
+                    latin:keyWidth="9.0%p" />
+                <Key
+                    latin:keyStyle="spaceKeyStyle"
+                    latin:keyWidth="40.0%p" />
             </case>
-        </switch>
-        <Key
-            latin:keyStyle="spaceKeyStyle"
-            latin:keyXPos="25.5%p"
-            latin:keyWidth="49.0%p" />
-        <switch>
-            <case
-                latin:keyboardLayoutSetElement="alphabet|alphabetAutomaticShifted"
-            >
-                <include
-                    latin:keyXPos="-9.0%p"
-                    latin:keyWidth="9.0%p"
-                    latin:keyboardLayout="@xml/key_shortcut" />
-            </case>
-            <!-- keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted" -->
             <default>
-                <include
-                    latin:keyXPos="-9.0%p"
-                    latin:keyWidth="9.0%p"
-                    latin:backgroundType="functional"
-                    latin:keyboardLayout="@xml/key_f2" />
+                <Key
+                    latin:keyStyle="spaceKeyStyle"
+                    latin:keyXPos="29.0%p"
+                    latin:keyWidth="42.0%p" />
             </default>
         </switch>
+        <include
+            latin:keyXPos="-9.0%p"
+            latin:keyWidth="9.0%p"
+            latin:backgroundType="functional"
+            latin:keyboardLayout="@xml/key_f2" />
     </Row>
 </merge>
