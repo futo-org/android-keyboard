@@ -196,13 +196,16 @@ public final class InputLogic {
      * @param settingsValues the current values of the settings.
      * @param index the index of the suggestion.
      * @param suggestionInfo the suggestion info.
+     * @param keyboardShiftState the shift state of the keyboard, as returned by
+     *     {@link com.android.inputmethod.keyboard.KeyboardSwitcher#getKeyboardShiftMode()}
+     * @return the complete transaction object
      */
     // Called from {@link SuggestionStripView} through the {@link SuggestionStripView#Listener}
     // interface
-    public void onPickSuggestionManually(final SettingsValues settingsValues,
-            final int index, final SuggestedWordInfo suggestionInfo,
-            // TODO: remove these two arguments
-            final LatinIME.UIHandler handler, final KeyboardSwitcher keyboardSwitcher) {
+    public InputTransaction onPickSuggestionManually(final SettingsValues settingsValues,
+            final int index, final SuggestedWordInfo suggestionInfo, final int keyboardShiftState,
+            // TODO: remove this argument
+            final LatinIME.UIHandler handler) {
         final SuggestedWords suggestedWords = mSuggestedWords;
         final String suggestion = suggestionInfo.mWord;
         // If this is a punctuation picked from the suggestion strip, pass it to onCodeInput
@@ -212,16 +215,26 @@ public final class InputLogic {
             LatinImeLogger.logOnManualSuggestion("", suggestion, index, suggestedWords);
             // Rely on onCodeInput to do the complicated swapping/stripping logic consistently.
             final int primaryCode = suggestion.charAt(0);
-            final Event event = Event.createSoftwareKeypressEvent(primaryCode, Event.NOT_A_KEY_CODE,
-                    Constants.SUGGESTION_STRIP_COORDINATE, Constants.SUGGESTION_STRIP_COORDINATE);
-            onCodeInput(settingsValues, event, keyboardSwitcher.getKeyboardShiftMode(), handler);
+            // TODO: we should be using createSuggestionPickedEvent here, but for legacy reasons,
+            // onCodeInput is expected a software keypress event for a suggested punctuation
+            // because the current code is descended from a time where this information used not
+            // to be available. Fix this.
+            final Event event = Event.createSoftwareKeypressEvent(primaryCode,
+                    Event.NOT_A_KEY_CODE /* keyCode*/,
+                    Constants.SUGGESTION_STRIP_COORDINATE /* x */,
+                    Constants.SUGGESTION_STRIP_COORDINATE /* y */);
+            final InputTransaction completeTransaction = onCodeInput(settingsValues, event,
+                    keyboardShiftState, handler);
             if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
                 ResearchLogger.latinIME_punctuationSuggestion(index, suggestion,
                         false /* isBatchMode */, suggestedWords.mIsPrediction);
             }
-            return;
+            return completeTransaction;
         }
 
+        final Event event = Event.createSuggestionPickedEvent(suggestionInfo);
+        final InputTransaction inputTransaction = new InputTransaction(settingsValues,
+                event, SystemClock.uptimeMillis(), mSpaceState, keyboardShiftState);
         mConnection.beginBatchEdit();
         if (SpaceState.PHANTOM == mSpaceState && suggestion.length() > 0
                 // In the batch input mode, a manually picked suggested word should just replace
@@ -241,11 +254,11 @@ public final class InputLogic {
         if (SuggestedWordInfo.KIND_APP_DEFINED == suggestionInfo.mKind) {
             mSuggestedWords = SuggestedWords.EMPTY;
             mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
-            keyboardSwitcher.updateShiftState();
+            inputTransaction.requireShiftUpdate(InputTransaction.SHIFT_UPDATE_NOW);
             resetComposingState(true /* alsoResetLastComposedWord */);
             mConnection.commitCompletion(suggestionInfo.mApplicationSpecifiedCompletionInfo);
             mConnection.endBatchEdit();
-            return;
+            return inputTransaction;
         }
 
         // We need to log before we commit, because the word composer will store away the user
@@ -264,7 +277,7 @@ public final class InputLogic {
         mLastComposedWord.deactivate();
         // Space state must be updated before calling updateShiftState
         mSpaceState = SpaceState.PHANTOM;
-        keyboardSwitcher.updateShiftState();
+        inputTransaction.requireShiftUpdate(InputTransaction.SHIFT_UPDATE_NOW);
 
         // We should show the "Touch again to save" hint if the user pressed the first entry
         // AND it's in none of our current dictionaries (main, user or otherwise).
@@ -290,6 +303,7 @@ public final class InputLogic {
             // If we're not showing the "Touch again to save", then update the suggestion strip.
             handler.postUpdateSuggestionStrip();
         }
+        return inputTransaction;
     }
 
     /**
