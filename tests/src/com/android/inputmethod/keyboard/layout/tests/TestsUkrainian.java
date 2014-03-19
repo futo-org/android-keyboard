@@ -65,16 +65,16 @@ public final class TestsUkrainian extends LayoutTestsBase {
             return builder
                     // U+0433: "г" CYRILLIC SMALL LETTER GHE
                     // U+0491: "ґ" CYRILLIC SMALL LETTER GHE WITH UPTURN
-                    .setMoreKeysOf("\u0433", "7", "\u0491")
+                    .setMoreKeysOf("\u0433", "\u0491")
                     // U+0449: "щ" CYRILLIC SMALL LETTER SHCHA
-                    .replaceKeyOfLabel(EastSlavic.ROW1_9, key("\u0449", moreKey("9")))
+                    .replaceKeyOfLabel(EastSlavic.ROW1_9, key("\u0449", additionalMoreKey("9")))
                     // U+0456: "і" CYRILLIC SMALL LETTER BYELORUSSIAN-UKRAINIAN I
                     // U+0457: "ї" CYRILLIC SMALL LETTER YI
                     .replaceKeyOfLabel(EastSlavic.ROW2_2, key("\u0456", moreKey("\u0457")))
                     // U+0454: "є" CYRILLIC SMALL LETTER UKRAINIAN IE
-                    .replaceKeyOfLabel(EastSlavic.ROW2_11, key("\u0454"))
+                    .replaceKeyOfLabel(EastSlavic.ROW2_11, "\u0454")
                     // U+0438: "и" CYRILLIC SMALL LETTER I
-                    .replaceKeyOfLabel(EastSlavic.ROW3_5, key("\u0438"))
+                    .replaceKeyOfLabel(EastSlavic.ROW3_5, "\u0438")
                     // U+044C: "ь" CYRILLIC SMALL LETTER SOFT SIGN
                     // U+044A: "ъ" CYRILLIC SMALL LETTER HARD SIGN
                     .setMoreKeysOf("\u044C", "\u044A");

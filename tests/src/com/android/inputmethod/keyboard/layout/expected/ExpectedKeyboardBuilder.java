@@ -166,8 +166,35 @@ public final class ExpectedKeyboardBuilder extends AbstractKeyboardBuilder<Expec
         replaceKeyOf(visual, new ReplaceJob() {
             @Override
             public ExpectedKey[] replacingKeys(final ExpectedKey oldKey) {
+                return new ExpectedKey[] { oldKey.setMoreKeys(moreKeys) };
+            }
+            @Override
+            public boolean stopAtFirstOccurrence() {
+                return true;
+            }
+        });
+    }
+
+    /**
+     * Set the "additional more keys position" of the key that has the specified label.
+     * @param label the label of the key to set the "additional more keys".
+     * @param additionalMoreKeysPosition the position in the "more keys" where
+     *        "additional more keys" will be merged. The position starts from 1.
+     * @return this builder.
+     */
+    public ExpectedKeyboardBuilder setAdditionalMoreKeysPositionOf(final String label,
+            final int additionalMoreKeysPosition) {
+        final int additionalMoreKeysIndex = additionalMoreKeysPosition - 1;
+        if (additionalMoreKeysIndex < 0) {
+            throw new RuntimeException("Illegal additional more keys position: "
+                    + additionalMoreKeysPosition);
+        }
+        final ExpectedKeyVisual visual = ExpectedKeyVisual.newInstance(label);
+        replaceKeyOf(visual, new ReplaceJob() {
+            @Override
+            public ExpectedKey[] replacingKeys(final ExpectedKey oldKey) {
                 return new ExpectedKey[] {
-                    ExpectedKey.newInstance(oldKey.getVisual(), oldKey.getOutput(), moreKeys)
+                        oldKey.setAdditionalMoreKeysIndex(additionalMoreKeysIndex)
                 };
             }
             @Override
@@ -175,6 +202,7 @@ public final class ExpectedKeyboardBuilder extends AbstractKeyboardBuilder<Expec
                 return true;
             }
         });
+        return this;
     }
 
     /**

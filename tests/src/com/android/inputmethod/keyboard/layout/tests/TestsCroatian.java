@@ -59,7 +59,7 @@ public final class TestsCroatian extends LayoutTestsBase {
                     // U+017E: "ž" LATIN SMALL LETTER Z WITH CARON
                     // U+017A: "ź" LATIN SMALL LETTER Z WITH ACUTE
                     // U+017C: "ż" LATIN SMALL LETTER Z WITH DOT ABOVE
-                    .setMoreKeysOf("z", "6", "\u017E", "\u017A", "\u017C")
+                    .setMoreKeysOf("z", "\u017E", "\u017A", "\u017C")
                     // U+0161: "š" LATIN SMALL LETTER S WITH CARON
                     // U+015B: "ś" LATIN SMALL LETTER S WITH ACUTE
                     // U+00DF: "ß" LATIN SMALL LETTER SHARP S

@@ -51,15 +51,14 @@ public final class TestsRomanian extends LayoutTestsBase {
         public ExpectedKeyboardBuilder setAccentedLetters(final ExpectedKeyboardBuilder builder) {
             return builder
                     // U+021B: "ț" LATIN SMALL LETTER T WITH COMMA BELOW
-                    .setMoreKeysOf("t", "5", "\u021B")
+                    .setMoreKeysOf("t", "\u021B")
                     // U+00EE: "î" LATIN SMALL LETTER I WITH CIRCUMFLEX
                     // U+00EF: "ï" LATIN SMALL LETTER I WITH DIAERESIS
                     // U+00EC: "ì" LATIN SMALL LETTER I WITH GRAVE
                     // U+00ED: "í" LATIN SMALL LETTER I WITH ACUTE
                     // U+012F: "į" LATIN SMALL LETTER I WITH OGONEK
                     // U+012B: "ī" LATIN SMALL LETTER I WITH MACRON
-                    .setMoreKeysOf("i", "8", "\u00EE", "\u00EF", "\u00EC", "\u00ED", "\u012F",
-                            "\u012B")
+                    .setMoreKeysOf("i", "\u00EE", "\u00EF", "\u00EC", "\u00ED", "\u012F", "\u012B")
                     // U+00E2: "â" LATIN SMALL LETTER A WITH CIRCUMFLEX
                     // U+00E3: "ã" LATIN SMALL LETTER A WITH TILDE
                     // U+0103: "ă" LATIN SMALL LETTER A WITH BREVE

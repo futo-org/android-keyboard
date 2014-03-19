@@ -43,13 +43,13 @@ public final class TestsAzerbaijaniAZ extends LayoutTestsBase {
         public ExpectedKeyboardBuilder setAccentedLetters(final ExpectedKeyboardBuilder builder) {
             return builder
                     // U+0259: "ə" LATIN SMALL LETTER SCHWA
-                    .setMoreKeysOf("e", "3", "\u0259")
+                    .setMoreKeysOf("e", "\u0259")
                     // U+00FC: "ü" LATIN SMALL LETTER U WITH DIAERESIS
                     // U+00FB: "û" LATIN SMALL LETTER U WITH CIRCUMFLEX
                     // U+00F9: "ù" LATIN SMALL LETTER U WITH GRAVE
                     // U+00FA: "ú" LATIN SMALL LETTER U WITH ACUTE
                     // U+016B: "ū" LATIN SMALL LETTER U WITH MACRON
-                    .setMoreKeysOf("u", "7", "\u00FC", "\u00FB", "\u00F9", "\u00FA", "\u016B")
+                    .setMoreKeysOf("u", "\u00FC", "\u00FB", "\u00F9", "\u00FA", "\u016B")
                     // U+0131: "ı" LATIN SMALL LETTER DOTLESS I
                     // U+00EE: "î" LATIN SMALL LETTER I WITH CIRCUMFLEX
                     // U+00EF: "ï" LATIN SMALL LETTER I WITH DIAERESIS
@@ -58,8 +58,7 @@ public final class TestsAzerbaijaniAZ extends LayoutTestsBase {
                     // U+012F: "į" LATIN SMALL LETTER I WITH OGONEK
                     // U+012B: "ī" LATIN SMALL LETTER I WITH MACRON
                     .setMoreKeysOf("i",
-                            "8", "\u0131", "\u00EE", "\u00EF", "\u00EC", "\u00ED", "\u012F",
-                            "\u012B")
+                            "\u0131", "\u00EE", "\u00EF", "\u00EC", "\u00ED", "\u012F", "\u012B")
                     // U+00F6: "ö" LATIN SMALL LETTER O WITH DIAERESIS
                     // U+00F4: "ô" LATIN SMALL LETTER O WITH CIRCUMFLEX
                     // U+0153: "œ" LATIN SMALL LIGATURE OE
@@ -69,8 +68,8 @@ public final class TestsAzerbaijaniAZ extends LayoutTestsBase {
                     // U+00F8: "ø" LATIN SMALL LETTER O WITH STROKE
                     // U+014D: "ō" LATIN SMALL LETTER O WITH MACRON
                     .setMoreKeysOf("o",
-                            "9", "\u00F6", "\u00F4", "\u0153", "\u00F2", "\u00F3", "\u00F5",
-                            "\u00F8", "\u014D")
+                            "\u00F6", "\u00F4", "\u0153", "\u00F2", "\u00F3", "\u00F5", "\u00F8",
+                            "\u014D")
                     // U+00E2: "â" LATIN SMALL LETTER A WITH CIRCUMFLEX
                     .setMoreKeysOf("a", "\u00E2")
                     // U+015F: "ş" LATIN SMALL LETTER S WITH CEDILLA

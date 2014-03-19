@@ -63,24 +63,24 @@ public final class SouthSlavic extends LayoutBase {
     private static final ExpectedKey[][] ALPHABET_COMMON = new ExpectedKeyboardBuilder()
             .setKeysOfRow(1,
                     // U+0459: "љ" CYRILLIC SMALL LETTER LJE
-                    key("\u0459", moreKey("1")),
+                    key("\u0459", additionalMoreKey("1")),
                     // U+045A: "њ" CYRILLIC SMALL LETTER NJE
-                    key("\u045A", moreKey("2")),
+                    key("\u045A", additionalMoreKey("2")),
                     // U+0435: "е" CYRILLIC SMALL LETTER IE
-                    key("\u0435", moreKey("3")),
+                    key("\u0435", additionalMoreKey("3")),
                     // U+0440: "р" CYRILLIC SMALL LETTER ER
-                    key("\u0440", moreKey("4")),
+                    key("\u0440", additionalMoreKey("4")),
                     // U+0442: "т" CYRILLIC SMALL LETTER TE
-                    key("\u0442", moreKey("5")),
-                    key(ROW1_6, moreKey("6")),
+                    key("\u0442", additionalMoreKey("5")),
+                    key(ROW1_6, additionalMoreKey("6")),
                     // U+0443: "у" CYRILLIC SMALL LETTER U
-                    key("\u0443", moreKey("7")),
+                    key("\u0443", additionalMoreKey("7")),
                     // U+0438: "и" CYRILLIC SMALL LETTER I
-                    key("\u0438", moreKey("8")),
+                    key("\u0438", additionalMoreKey("8")),
                     // U+043E: "о" CYRILLIC SMALL LETTER O
-                    key("\u043E", moreKey("9")),
+                    key("\u043E", additionalMoreKey("9")),
                     // U+043F: "п" CYRILLIC SMALL LETTER PE
-                    key("\u043F", moreKey("0")),
+                    key("\u043F", additionalMoreKey("0")),
                     // U+0448: "ш" CYRILLIC SMALL LETTER SHA
                     "\u0448")
             .setKeysOfRow(2,

@@ -43,7 +43,7 @@ public final class TestsNoLanguage extends LayoutTestsBase {
         public ExpectedKeyboardBuilder setAccentedLetters(final ExpectedKeyboardBuilder builder) {
             return builder
                     // U+0175: "ŵ" LATIN SMALL LETTER W WITH CIRCUMFLEX
-                    .setMoreKeysOf("w", "2", "\u0175")
+                    .setMoreKeysOf("w", "\u0175")
                     // U+00E8: "è" LATIN SMALL LETTER E WITH GRAVE
                     // U+00E9: "é" LATIN SMALL LETTER E WITH ACUTE
                     // U+00EA: "ê" LATIN SMALL LETTER E WITH CIRCUMFLEX
@@ -54,22 +54,22 @@ public final class TestsNoLanguage extends LayoutTestsBase {
                     // U+0119: "ę" LATIN SMALL LETTER E WITH OGONEK
                     // U+011B: "ě" LATIN SMALL LETTER E WITH CARON
                     .setMoreKeysOf("e",
-                            "3", "\u00E8", "\u00E9", "\u00EA", "\u00EB", "\u0113", "\u0115",
-                            "\u0117", "\u0119", "\u011B")
+                            "\u00E8", "\u00E9", "\u00EA", "\u00EB", "\u0113", "\u0115", "\u0117",
+                            "\u0119", "\u011B")
                     // U+0155: "ŕ" LATIN SMALL LETTER R WITH ACUTE
                     // U+0157: "ŗ" LATIN SMALL LETTER R WITH CEDILLA
                     // U+0159: "ř" LATIN SMALL LETTER R WITH CARON
-                    .setMoreKeysOf("r", "4", "\u0155", "\u0157", "\u0159")
+                    .setMoreKeysOf("r", "\u0155", "\u0157", "\u0159")
                     // U+00FE: "þ" LATIN SMALL LETTER THORN
                     // U+0163: "ţ" LATIN SMALL LETTER T WITH CEDILLA
                     // U+0165: "ť" LATIN SMALL LETTER T WITH CARON
                     // U+0167: "ŧ" LATIN SMALL LETTER T WITH STROKE
-                    .setMoreKeysOf("t", "5", "\u00FE", "\u0163", "\u0165", "\u0167")
+                    .setMoreKeysOf("t", "\u00FE", "\u0163", "\u0165", "\u0167")
                     // U+00FD: "ý" LATIN SMALL LETTER Y WITH ACUTE
                     // U+0177: "ŷ" LATIN SMALL LETTER Y WITH CIRCUMFLEX
                     // U+00FF: "ÿ" LATIN SMALL LETTER Y WITH DIAERESIS
                     // U+0133: "ĳ" LATIN SMALL LIGATURE IJ
-                    .setMoreKeysOf("y", "6", "\u00FD", "\u0177", "\u00FF", "\u0133")
+                    .setMoreKeysOf("y", "\u00FD", "\u0177", "\u00FF", "\u0133")
                     // U+00F9: "ù" LATIN SMALL LETTER U WITH GRAVE
                     // U+00FA: "ú" LATIN SMALL LETTER U WITH ACUTE
                     // U+00FB: "û" LATIN SMALL LETTER U WITH CIRCUMFLEX
@@ -81,8 +81,8 @@ public final class TestsNoLanguage extends LayoutTestsBase {
                     // U+0171: "ű" LATIN SMALL LETTER U WITH DOUBLE ACUTE
                     // U+0173: "ų" LATIN SMALL LETTER U WITH OGONEK
                     .setMoreKeysOf("u",
-                            "7", "\u00F9", "\u00FA", "\u00FB", "\u00FC", "\u0169", "\u016B",
-                            "\u016D", "\u016F", "\u0171", "\u0173")
+                            "\u00F9", "\u00FA", "\u00FB", "\u00FC", "\u0169", "\u016B", "\u016D",
+                            "\u016F", "\u0171", "\u0173")
                     // U+00EC: "ì" LATIN SMALL LETTER I WITH GRAVE
                     // U+00ED: "í" LATIN SMALL LETTER I WITH ACUTE
                     // U+00EE: "î" LATIN SMALL LETTER I WITH CIRCUMFLEX
@@ -94,8 +94,8 @@ public final class TestsNoLanguage extends LayoutTestsBase {
                     // U+0131: "ı" LATIN SMALL LETTER DOTLESS I
                     // U+0133: "ĳ" LATIN SMALL LIGATURE IJ
                     .setMoreKeysOf("i",
-                            "8", "\u00EC", "\u00ED", "\u00EE", "\u00EF", "\u0129", "\u012B",
-                            "\u012D", "\u012F", "\u0131", "\u0133")
+                            "\u00EC", "\u00ED", "\u00EE", "\u00EF", "\u0129", "\u012B", "\u012D",
+                            "\u012F", "\u0131", "\u0133")
                     // U+00F2: "ò" LATIN SMALL LETTER O WITH GRAVE
                     // U+00F3: "ó" LATIN SMALL LETTER O WITH ACUTE
                     // U+00F4: "ô" LATIN SMALL LETTER O WITH CIRCUMFLEX
@@ -108,8 +108,8 @@ public final class TestsNoLanguage extends LayoutTestsBase {
                     // U+0153: "œ" LATIN SMALL LIGATURE OE
                     // U+00BA: "º" MASCULINE ORDINAL INDICATOR
                     .setMoreKeysOf("o",
-                            "9", "\u00F2", "\u00F3", "\u00F4", "\u00F5", "\u00F6", "\u00F8",
-                            "\u014D", "\u014F", "\u0151", "\u0153", "\u00BA")
+                            "\u00F2", "\u00F3", "\u00F4", "\u00F5", "\u00F6", "\u00F8", "\u014D",
+                            "\u014F", "\u0151", "\u0153", "\u00BA")
                     // U+00E0: "à" LATIN SMALL LETTER A WITH GRAVE
                     // U+00E1: "á" LATIN SMALL LETTER A WITH ACUTE
                     // U+00E2: "â" LATIN SMALL LETTER A WITH CIRCUMFLEX

@@ -71,14 +71,14 @@ public final class TestsVietnamese extends LayoutTestsBase {
                     // U+1EC5: "ễ" LATIN SMALL LETTER E WITH CIRCUMFLEX AND TILDE
                     // U+1EC7: "ệ" LATIN SMALL LETTER E WITH CIRCUMFLEX AND DOT BELOW
                     .setMoreKeysOf("e",
-                            "3", "\u00E8", "\u00E9", "\u1EBB", "\u1EBD", "\u1EB9", "\u00EA",
-                            "\u1EC1", "\u1EBF", "\u1EC3", "\u1EC5", "\u1EC7")
+                            "\u00E8", "\u00E9", "\u1EBB", "\u1EBD", "\u1EB9", "\u00EA", "\u1EC1",
+                            "\u1EBF", "\u1EC3", "\u1EC5", "\u1EC7")
                     // U+1EF3: "ỳ" LATIN SMALL LETTER Y WITH GRAVE
                     // U+00FD: "ý" LATIN SMALL LETTER Y WITH ACUTE
                     // U+1EF7: "ỷ" LATIN SMALL LETTER Y WITH HOOK ABOVE
                     // U+1EF9: "ỹ" LATIN SMALL LETTER Y WITH TILDE
                     // U+1EF5: "ỵ" LATIN SMALL LETTER Y WITH DOT BELOW
-                    .setMoreKeysOf("y", "6", "\u1EF3", "\u00FD", "\u1EF7", "\u1EF9", "\u1EF5")
+                    .setMoreKeysOf("y", "\u1EF3", "\u00FD", "\u1EF7", "\u1EF9", "\u1EF5")
                     // U+00F9: "ù" LATIN SMALL LETTER U WITH GRAVE
                     // U+00FA: "ú" LATIN SMALL LETTER U WITH ACUTE
                     // U+1EE7: "ủ" LATIN SMALL LETTER U WITH HOOK ABOVE
@@ -91,14 +91,14 @@ public final class TestsVietnamese extends LayoutTestsBase {
                     // U+1EEF: "ữ" LATIN SMALL LETTER U WITH HORN AND TILDE
                     // U+1EF1: "ự" LATIN SMALL LETTER U WITH HORN AND DOT BELOW
                     .setMoreKeysOf("u",
-                            "7", "\u00F9", "\u00FA", "\u1EE7", "\u0169", "\u1EE5", "\u01B0",
-                            "\u1EEB", "\u1EE9", "\u1EED", "\u1EEF", "\u1EF1")
+                            "\u00F9", "\u00FA", "\u1EE7", "\u0169", "\u1EE5", "\u01B0", "\u1EEB",
+                            "\u1EE9", "\u1EED", "\u1EEF", "\u1EF1")
                     // U+00EC: "ì" LATIN SMALL LETTER I WITH GRAVE
                     // U+00ED: "í" LATIN SMALL LETTER I WITH ACUTE
                     // U+1EC9: "ỉ" LATIN SMALL LETTER I WITH HOOK ABOVE
                     // U+0129: "ĩ" LATIN SMALL LETTER I WITH TILDE
                     // U+1ECB: "ị" LATIN SMALL LETTER I WITH DOT BELOW
-                    .setMoreKeysOf("i", "8", "\u00EC", "\u00ED", "\u1EC9", "\u0129", "\u1ECB")
+                    .setMoreKeysOf("i", "\u00EC", "\u00ED", "\u1EC9", "\u0129", "\u1ECB")
                     // U+00F2: "ò" LATIN SMALL LETTER O WITH GRAVE
                     // U+00F3: "ó" LATIN SMALL LETTER O WITH ACUTE
                     // U+1ECF: "ỏ" LATIN SMALL LETTER O WITH HOOK ABOVE
@@ -117,9 +117,9 @@ public final class TestsVietnamese extends LayoutTestsBase {
                     // U+1EE1: "ỡ" LATIN SMALL LETTER O WITH HORN AND TILDE
                     // U+1EE3: "ợ" LATIN SMALL LETTER O WITH HORN AND DOT BELOW
                     .setMoreKeysOf("o",
-                            "9", "\u00F2", "\u00F3", "\u1ECF", "\u00F5", "\u1ECD", "\u00F4",
-                            "\u1ED3", "\u1ED1", "\u1ED5", "\u1ED7", "\u1ED9", "\u01A1", "\u1EDD",
-                            "\u1EDB", "\u1EDF", "\u1EE1", "\u1EE3")
+                            "\u00F2", "\u00F3", "\u1ECF", "\u00F5", "\u1ECD", "\u00F4", "\u1ED3",
+                            "\u1ED1", "\u1ED5", "\u1ED7", "\u1ED9", "\u01A1", "\u1EDD", "\u1EDB",
+                            "\u1EDF", "\u1EE1", "\u1EE3")
                     // U+00E0: "à" LATIN SMALL LETTER A WITH GRAVE
                     // U+00E1: "á" LATIN SMALL LETTER A WITH ACUTE
                     // U+1EA3: "ả" LATIN SMALL LETTER A WITH HOOK ABOVE

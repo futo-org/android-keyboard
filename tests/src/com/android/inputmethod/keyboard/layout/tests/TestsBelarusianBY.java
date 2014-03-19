@@ -56,15 +56,15 @@ public final class TestsBelarusianBY extends LayoutTestsBase {
             return builder
                     // U+0435: "е" CYRILLIC SMALL LETTER IE
                     // U+0451: "ё" CYRILLIC SMALL LETTER IO
-                    .setMoreKeysOf("\u0435", "5", "\u0451")
+                    .setMoreKeysOf("\u0435", "\u0451")
                     // U+045E: "ў" CYRILLIC SMALL LETTER SHORT U
-                    .replaceKeyOfLabel(EastSlavic.ROW1_9, key("\u045E", moreKey("9")))
+                    .replaceKeyOfLabel(EastSlavic.ROW1_9, key("\u045E", additionalMoreKey("9")))
                     // U+044B: "ы" CYRILLIC SMALL LETTER YERU
-                    .replaceKeyOfLabel(EastSlavic.ROW2_2, key("\u044B"))
+                    .replaceKeyOfLabel(EastSlavic.ROW2_2, "\u044B")
                     // U+044D: "э" CYRILLIC SMALL LETTER E
-                    .replaceKeyOfLabel(EastSlavic.ROW2_11, key("\u044D"))
+                    .replaceKeyOfLabel(EastSlavic.ROW2_11, "\u044D")
                     // U+0456: "і" CYRILLIC SMALL LETTER BYELORUSSIAN-UKRAINIAN I
-                    .replaceKeyOfLabel(EastSlavic.ROW3_5, key("\u0456"))
+                    .replaceKeyOfLabel(EastSlavic.ROW3_5, "\u0456")
                     // U+044C: "ь" CYRILLIC SMALL LETTER SOFT SIGN
                     // U+044A: "ъ" CYRILLIC SMALL LETTER HARD SIGN
                     .setMoreKeysOf("\u044C", "\u044A");

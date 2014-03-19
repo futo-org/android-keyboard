@@ -59,18 +59,18 @@ public final class TestsLatvian extends LayoutTestsBase {
                     // U+0119: "ę" LATIN SMALL LETTER E WITH OGONEK
                     // U+011B: "ě" LATIN SMALL LETTER E WITH CARON
                     .setMoreKeysOf("e",
-                            "3", "\u0113", "\u0117", "\u00E8", "\u00E9", "\u00EA", "\u00EB",
-                            "\u0119", "\u011B")
+                            "\u0113", "\u0117", "\u00E8", "\u00E9", "\u00EA", "\u00EB", "\u0119",
+                            "\u011B")
                     // U+0157: "ŗ" LATIN SMALL LETTER R WITH CEDILLA
                     // U+0159: "ř" LATIN SMALL LETTER R WITH CARON
                     // U+0155: "ŕ" LATIN SMALL LETTER R WITH ACUTE
-                    .setMoreKeysOf("r", "4", "\u0157", "\u0159", "\u0155")
+                    .setMoreKeysOf("r", "\u0157", "\u0159", "\u0155")
                     // U+0163: "ţ" LATIN SMALL LETTER T WITH CEDILLA
                     // U+0165: "ť" LATIN SMALL LETTER T WITH CARON
-                    .setMoreKeysOf("t", "5", "\u0163", "\u0165")
+                    .setMoreKeysOf("t", "\u0163", "\u0165")
                     // U+00FD: "ý" LATIN SMALL LETTER Y WITH ACUTE
                     // U+00FF: "ÿ" LATIN SMALL LETTER Y WITH DIAERESIS
-                    .setMoreKeysOf("y", "6", "\u00FD", "\u00FF")
+                    .setMoreKeysOf("y", "\u00FD", "\u00FF")
                     // U+016B: "ū" LATIN SMALL LETTER U WITH MACRON
                     // U+0173: "ų" LATIN SMALL LETTER U WITH OGONEK
                     // U+00F9: "ù" LATIN SMALL LETTER U WITH GRAVE
@@ -80,8 +80,8 @@ public final class TestsLatvian extends LayoutTestsBase {
                     // U+016F: "ů" LATIN SMALL LETTER U WITH RING ABOVE
                     // U+0171: "ű" LATIN SMALL LETTER U WITH DOUBLE ACUTE
                     .setMoreKeysOf("u",
-                            "7", "\u016B", "\u0173", "\u00F9", "\u00FA", "\u00FB", "\u00FC",
-                            "\u016F", "\u0171")
+                            "\u016B", "\u0173", "\u00F9", "\u00FA", "\u00FB", "\u00FC", "\u016F",
+                            "\u0171")
                     // U+012B: "ī" LATIN SMALL LETTER I WITH MACRON
                     // U+012F: "į" LATIN SMALL LETTER I WITH OGONEK
                     // U+00EC: "ì" LATIN SMALL LETTER I WITH GRAVE
@@ -90,8 +90,7 @@ public final class TestsLatvian extends LayoutTestsBase {
                     // U+00EF: "ï" LATIN SMALL LETTER I WITH DIAERESIS
                     // U+0131: "ı" LATIN SMALL LETTER DOTLESS I
                     .setMoreKeysOf("i",
-                            "8", "\u012B", "\u012F", "\u00EC", "\u00ED", "\u00EE", "\u00EF",
-                            "\u0131")
+                            "\u012B", "\u012F", "\u00EC", "\u00ED", "\u00EE", "\u00EF", "\u0131")
                     // U+00F2: "ò" LATIN SMALL LETTER O WITH GRAVE
                     // U+00F3: "ó" LATIN SMALL LETTER O WITH ACUTE
                     // U+00F4: "ô" LATIN SMALL LETTER O WITH CIRCUMFLEX
@@ -101,8 +100,8 @@ public final class TestsLatvian extends LayoutTestsBase {
                     // U+0151: "ő" LATIN SMALL LETTER O WITH DOUBLE ACUTE
                     // U+00F8: "ø" LATIN SMALL LETTER O WITH STROKE
                     .setMoreKeysOf("o",
-                            "9", "\u00F2", "\u00F3", "\u00F4", "\u00F5", "\u00F6", "\u0153",
-                            "\u0151", "\u00F8")
+                            "\u00F2", "\u00F3", "\u00F4", "\u00F5", "\u00F6", "\u0153", "\u0151",
+                            "\u00F8")
                     // U+0101: "ā" LATIN SMALL LETTER A WITH MACRON
                     // U+00E0: "à" LATIN SMALL LETTER A WITH GRAVE
                     // U+00E1: "á" LATIN SMALL LETTER A WITH ACUTE

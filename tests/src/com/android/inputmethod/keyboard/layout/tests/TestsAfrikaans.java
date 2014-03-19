@@ -50,17 +50,16 @@ public final class TestsAfrikaans extends LayoutTestsBase {
                     // U+0117: "ė" LATIN SMALL LETTER E WITH DOT ABOVE
                     // U+0113: "ē" LATIN SMALL LETTER E WITH MACRON
                     .setMoreKeysOf("e",
-                            "3", "\u00E9", "\u00E8", "\u00EA", "\u00EB", "\u0119", "\u0117",
-                            "\u0113")
+                            "\u00E9", "\u00E8", "\u00EA", "\u00EB", "\u0119", "\u0117", "\u0113")
                     // U+00FA: "ú" LATIN SMALL LETTER U WITH ACUTE
                     // U+00FB: "û" LATIN SMALL LETTER U WITH CIRCUMFLEX
                     // U+00FC: "ü" LATIN SMALL LETTER U WITH DIAERESIS
                     // U+00F9: "ù" LATIN SMALL LETTER U WITH GRAVE
                     // U+016B: "ū" LATIN SMALL LETTER U WITH MACRON
-                    .setMoreKeysOf("u", "7", "\u00FA", "\u00FB", "\u00FC", "\u00F9", "\u016B")
+                    .setMoreKeysOf("u", "\u00FA", "\u00FB", "\u00FC", "\u00F9", "\u016B")
                     // U+00FD: "ý" LATIN SMALL LETTER Y WITH ACUTE
                     // U+0133: "ĳ" LATIN SMALL LIGATURE IJ
-                    .setMoreKeysOf("y", "6", "\u00FD", "\u0133")
+                    .setMoreKeysOf("y", "\u00FD", "\u0133")
                     // U+00ED: "í" LATIN SMALL LETTER I WITH ACUTE
                     // U+00EC: "ì" LATIN SMALL LETTER I WITH GRAVE
                     // U+00EF: "ï" LATIN SMALL LETTER I WITH DIAERESIS
@@ -69,8 +68,7 @@ public final class TestsAfrikaans extends LayoutTestsBase {
                     // U+012B: "ī" LATIN SMALL LETTER I WITH MACRON
                     // U+0133: "ĳ" LATIN SMALL LIGATURE IJ
                     .setMoreKeysOf("i",
-                            "8", "\u00ED", "\u00EC", "\u00EF", "\u00EE", "\u012F", "\u012B",
-                            "\u0133")
+                            "\u00ED", "\u00EC", "\u00EF", "\u00EE", "\u012F", "\u012B", "\u0133")
                     // U+00F3: "ó" LATIN SMALL LETTER O WITH ACUTE
                     // U+00F4: "ô" LATIN SMALL LETTER O WITH CIRCUMFLEX
                     // U+00F6: "ö" LATIN SMALL LETTER O WITH DIAERESIS
@@ -80,8 +78,8 @@ public final class TestsAfrikaans extends LayoutTestsBase {
                     // U+00F8: "ø" LATIN SMALL LETTER O WITH STROKE
                     // U+014D: "ō" LATIN SMALL LETTER O WITH MACRON
                     .setMoreKeysOf("o",
-                            "9", "\u00F3", "\u00F4", "\u00F6", "\u00F2", "\u00F5", "\u0153",
-                            "\u00F8", "\u014D")
+                            "\u00F3", "\u00F4", "\u00F6", "\u00F2", "\u00F5", "\u0153", "\u00F8",
+                            "\u014D")
                     // U+00E1: "á" LATIN SMALL LETTER A WITH ACUTE
                     // U+00E2: "â" LATIN SMALL LETTER A WITH CIRCUMFLEX
                     // U+00E4: "ä" LATIN SMALL LETTER A WITH DIAERESIS

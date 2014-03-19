@@ -52,15 +52,15 @@ public final class TestsRussian extends LayoutTestsBase {
             return builder
                     // U+0435: "е" CYRILLIC SMALL LETTER IE
                     // U+0451: "ё" CYRILLIC SMALL LETTER IO
-                    .setMoreKeysOf("\u0435", "5", "\u0451")
+                    .setMoreKeysOf("\u0435", "\u0451")
                     // U+0449: "щ" CYRILLIC SMALL LETTER SHCHA
-                    .replaceKeyOfLabel(EastSlavic.ROW1_9, key("\u0449", moreKey("9")))
+                    .replaceKeyOfLabel(EastSlavic.ROW1_9, key("\u0449", additionalMoreKey("9")))
                     // U+044B: "ы" CYRILLIC SMALL LETTER YERU
-                    .replaceKeyOfLabel(EastSlavic.ROW2_2, key("\u044B"))
+                    .replaceKeyOfLabel(EastSlavic.ROW2_2, "\u044B")
                     // U+044D: "э" CYRILLIC SMALL LETTER E
-                    .replaceKeyOfLabel(EastSlavic.ROW2_11, key("\u044D"))
+                    .replaceKeyOfLabel(EastSlavic.ROW2_11, "\u044D")
                     // U+0438: "и" CYRILLIC SMALL LETTER I
-                    .replaceKeyOfLabel(EastSlavic.ROW3_5, key("\u0438"))
+                    .replaceKeyOfLabel(EastSlavic.ROW3_5, "\u0438")
                     // U+044C: "ь" CYRILLIC SMALL LETTER SOFT SIGN
                     // U+044A: "ъ" CYRILLIC SMALL LETTER HARD SIGN
                     .setMoreKeysOf("\u044C", "\u044A");

@@ -44,24 +44,24 @@ public final class TestsKyrgyz extends LayoutTestsBase {
             return builder
                     // U+0443: "у" CYRILLIC SMALL LETTER U
                     // U+04AF: "ү" CYRILLIC SMALL LETTER STRAIGHT U
-                    .setMoreKeysOf("\u0443", "3", "\u04AF")
+                    .setMoreKeysOf("\u0443", "\u04AF")
                     // U+0435: "е" CYRILLIC SMALL LETTER IE
                     // U+0451: "ё" CYRILLIC SMALL LETTER IO
-                    .setMoreKeysOf("\u0435", "5", "\u0451")
+                    .setMoreKeysOf("\u0435", "\u0451")
                     // U+043D: "н" CYRILLIC SMALL LETTER EN
                     // U+04A3: "ң" CYRILLIC SMALL LETTER EN WITH DESCENDER
-                    .setMoreKeysOf("\u043D", "6", "\u04A3")
+                    .setMoreKeysOf("\u043D", "\u04A3")
                     // U+0449: "щ" CYRILLIC SMALL LETTER SHCHA
-                    .replaceKeyOfLabel(EastSlavic.ROW1_9, key("\u0449", moreKey("9")))
+                    .replaceKeyOfLabel(EastSlavic.ROW1_9, key("\u0449", additionalMoreKey("9")))
                     // U+044B: "ы" CYRILLIC SMALL LETTER YERU
-                    .replaceKeyOfLabel(EastSlavic.ROW2_2, key("\u044B"))
+                    .replaceKeyOfLabel(EastSlavic.ROW2_2, "\u044B")
                     // U+043E: "о" CYRILLIC SMALL LETTER O
                     // U+04E9: "ө" CYRILLIC SMALL LETTER BARRED O
                     .setMoreKeysOf("\u043E", "\u04E9")
                     // U+044D: "э" CYRILLIC SMALL LETTER E
-                    .replaceKeyOfLabel(EastSlavic.ROW2_11, key("\u044D"))
+                    .replaceKeyOfLabel(EastSlavic.ROW2_11, "\u044D")
                     // U+0438: "и" CYRILLIC SMALL LETTER I
-                    .replaceKeyOfLabel(EastSlavic.ROW3_5, key("\u0438"))
+                    .replaceKeyOfLabel(EastSlavic.ROW3_5, "\u0438")
                     // U+044C: "ь" CYRILLIC SMALL LETTER SOFT SIGN
                     // U+044A: "ъ" CYRILLIC SMALL LETTER HARD SIGN
                     .setMoreKeysOf("\u044C", "\u044A");
