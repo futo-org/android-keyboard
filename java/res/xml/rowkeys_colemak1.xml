@@ -63,4 +63,21 @@
         latin:keyHintLabel="9"
         latin:additionalMoreKeys="9"
         latin:moreKeys="!text/more_keys_for_y" />
+    <switch>
+        <case
+            latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLockShifted"
+        >
+            <Key
+                latin:keySpec=":"
+                latin:keyHintLabel="0"
+                latin:additionalMoreKeys="0" />
+        </case>
+        <default>
+            <Key
+                latin:keySpec=";"
+                latin:keyHintLabel="0"
+                latin:additionalMoreKeys="0"
+                latin:moreKeys=":" />
+        </default>
+    </switch>
 </merge>

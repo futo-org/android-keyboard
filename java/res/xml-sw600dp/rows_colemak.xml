@@ -28,8 +28,6 @@
     >
         <include
             latin:keyboardLayout="@xml/rowkeys_colemak1" />
-        <include
-            latin:keyboardLayout="@xml/key_colemak_colon" />
         <Key
             latin:keyStyle="deleteKeyStyle"
             latin:keyWidth="fillRight" />
