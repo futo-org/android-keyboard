@@ -83,6 +83,7 @@ class FrenchCustomizer extends LayoutCustomizer {
                 // U+00E7: "ç" LATIN SMALL LETTER C WITH CEDILLA
                 // U+0107: "ć" LATIN SMALL LETTER C WITH ACUTE
                 // U+010D: "č" LATIN SMALL LETTER C WITH CARON
-                .setMoreKeysOf("c", "\u00E7", "\u0107", "\u010D");
+                .setMoreKeysOf("c", "\u00E7", "\u0107", "\u010D")
+                .setAdditionalMoreKeysPositionOf("c", 2);
     }
 }

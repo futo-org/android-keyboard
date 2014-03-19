@@ -62,7 +62,7 @@
     <!-- U+00E7: "ç" LATIN SMALL LETTER C WITH CEDILLA
          U+0107: "ć" LATIN SMALL LETTER C WITH ACUTE
          U+010D: "č" LATIN SMALL LETTER C WITH CARON -->
-    <string name="more_keys_for_c">&#x00E7;,&#x0107;,&#x010D;</string>
+    <string name="more_keys_for_c">&#x00E7;,%,&#x0107;,&#x010D;</string>
     <!-- U+00FF: "ÿ" LATIN SMALL LETTER Y WITH DIAERESIS -->
     <string name="more_keys_for_y">%,&#x00FF;</string>
     <!-- U+00E8: "è" LATIN SMALL LETTER E WITH GRAVE -->
