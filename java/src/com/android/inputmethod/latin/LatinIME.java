@@ -1296,7 +1296,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // Called from PointerTracker through the KeyboardActionListener interface
     @Override
     public void onTextInput(final String rawText) {
-        mInputLogic.onTextInput(mSettings.getCurrent(), rawText, mHandler);
+        // TODO: have the keyboard pass the correct key code when we need it.
+        final Event event = Event.createSoftwareTextEvent(rawText, Event.NOT_A_KEY_CODE);
+        mInputLogic.onTextInput(mSettings.getCurrent(), event, mHandler);
         mKeyboardSwitcher.updateShiftState();
         mKeyboardSwitcher.onCodeInput(Constants.CODE_OUTPUT_TEXT);
     }

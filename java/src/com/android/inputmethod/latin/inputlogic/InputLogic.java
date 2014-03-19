@@ -159,11 +159,12 @@ public final class InputLogic {
      * some additional keys for example.
      *
      * @param settingsValues the current values of the settings.
-     * @param rawText the text to input.
+     * @param event the input event containing the data.
      */
-    public void onTextInput(final SettingsValues settingsValues, final String rawText,
+    public void onTextInput(final SettingsValues settingsValues, final Event event,
             // TODO: remove this argument
             final LatinIME.UIHandler handler) {
+        final String rawText = event.mText.toString();
         mConnection.beginBatchEdit();
         if (mWordComposer.isComposingWord()) {
             commitCurrentAutoCorrection(settingsValues, rawText, handler);
