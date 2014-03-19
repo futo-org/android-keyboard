@@ -50,6 +50,7 @@ public final class SettingsValues {
     // From resources:
     public final SpacingAndPunctuations mSpacingAndPunctuations;
     public final int mDelayUpdateOldSuggestions;
+    public final long mDoubleSpacePeriodTimeout;
 
     // From preferences, in the same order as xml/prefs.xml:
     public final boolean mAutoCap;
@@ -132,6 +133,7 @@ public final class SettingsValues {
         mBlockPotentiallyOffensive = Settings.readBlockPotentiallyOffensive(prefs, res);
         mAutoCorrectEnabled = Settings.readAutoCorrectEnabled(autoCorrectionThresholdRawValue, res);
         mBigramPredictionEnabled = readBigramPredictionEnabled(prefs, res);
+        mDoubleSpacePeriodTimeout = res.getInteger(R.integer.config_double_space_period_timeout);
 
         // Compute other readable settings
         mKeyLongpressTimeout = Settings.readKeyLongpressTimeout(prefs, res);
