@@ -150,7 +150,7 @@ abstract class LayoutTestsBase extends KeyboardLayoutSetTestsBase {
         Log.d(tag, "actual  =\n" + ActualKeyboardBuilder.toString(actualKeyboard));
         // Test both keyboards have the same number of rows.
         assertEquals(tag + " labels"
-                + "\nexpected=" + Arrays.deepToString(expectedKeyboard)
+                + "\nexpected=" + ExpectedKeyboardBuilder.toString(expectedKeyboard)
                 + "\nactual  =" + ActualKeyboardBuilder.toString(actualKeyboard),
                 expectedKeyboard.length, actualKeyboard.length);
         for (int r = 0; r < actualKeyboard.length; r++) {
