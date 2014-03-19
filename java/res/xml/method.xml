@@ -47,6 +47,7 @@
     fr: French/azerty
     fr_CA: French (Canada)/qwerty
     fr_CH: French (Switzerland)/swiss
+    gl_ES: Galician (Spain)/spanish
     hi: Hindi/hindi
     hr: Croatian/qwertz
     hu: Hungarian/qwertz
@@ -301,6 +302,14 @@
             android:imeSubtypeLocale="fr_CH"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=swiss,AsciiCapable,SupportTouchPositionCorrection,EmojiCapable"
+            android:isAsciiCapable="true"
+    />
+    <subtype android:icon="@drawable/ic_ime_switcher_dark"
+            android:label="@string/subtype_generic"
+            android:subtypeId="0xb939573c"
+            android:imeSubtypeLocale="gl_ES"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=spanish,AsciiCapable,EmojiCapable"
             android:isAsciiCapable="true"
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
