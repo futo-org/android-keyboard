@@ -218,10 +218,6 @@ class DicNode {
         return CharUtils::isAsciiUpper(c);
     }
 
-    bool isFirstWord() const {
-        return mDicNodeProperties.getPrevWordTerminalPtNodePos() == NOT_A_DICT_POS;
-    }
-
     bool isCompletion(const int inputSize) const {
         return mDicNodeState.mDicNodeStateInput.getInputIndex(0) >= inputSize;
     }
@@ -292,7 +288,9 @@ class DicNode {
     // the one that corresponds to the last word of the suggestion, and all the previous words
     // are concatenated together in mDicNodeStateOutput.
     int getTotalNodeSpaceCount() const {
-        if (isFirstWord()) return 0;
+        if (!hasMultipleWords()) {
+            return 0;
+        }
         return CharUtils::getSpaceCount(mDicNodeState.mDicNodeStateOutput.getCodePointBuf(),
                 mDicNodeState.mDicNodeStateOutput.getPrevWordsLength());
     }
