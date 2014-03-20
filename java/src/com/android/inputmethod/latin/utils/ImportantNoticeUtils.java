@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.provider.Settings;
 import android.provider.Settings.SettingNotFoundException;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.android.inputmethod.latin.InputAttributes;
@@ -82,7 +83,17 @@ public final class ImportantNoticeUtils {
         if (inputAttributes == null || inputAttributes.mIsPasswordField) {
             return false;
         }
-        return hasNewImportantNotice(context) && !isInSystemSetupWizard(context);
+        if (isInSystemSetupWizard(context)) {
+            return false;
+        }
+        if (!hasNewImportantNotice(context)) {
+            return false;
+        }
+        final String importantNoticeTitle = getNextImportantNoticeTitle(context);
+        if (TextUtils.isEmpty(importantNoticeTitle)) {
+            return false;
+        }
+        return true;
     }
 
     public static void updateLastImportantNoticeVersion(final Context context) {
