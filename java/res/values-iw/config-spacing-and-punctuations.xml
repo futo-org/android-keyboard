@@ -18,6 +18,8 @@
 */
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- The all letters need to be mirrored are found at
+         http://www.unicode.org/Public/6.1.0/ucd/BidiMirroring.txt -->
     <!-- Symbols that are suggested between words -->
-    <string name="suggested_punctuations" translatable="false">:,;,\",(,),\',-,/,@,_</string>
+    <string name="suggested_punctuations" translatable="false">!,?,\\,,:,;,\",(|),)|(,\',-,/,@,_</string>
 </resources>
