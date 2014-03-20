@@ -26,7 +26,7 @@ import java.util.ArrayList;
 @SmallTest
 public class KeyboardLayoutSetSubtypesCountTests extends KeyboardLayoutSetTestsBase {
     private static final int NUMBER_OF_SUBTYPES = 63;
-    private static final int NUMBER_OF_ASCII_CAPABLE_SUBTYPES = 40;
+    private static final int NUMBER_OF_ASCII_CAPABLE_SUBTYPES = 42;
     private static final int NUMBER_OF_PREDEFINED_ADDITIONAL_SUBTYPES = 2;
 
     private static String toString(final ArrayList<InputMethodSubtype> subtypeList) {
