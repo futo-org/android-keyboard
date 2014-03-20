@@ -177,7 +177,6 @@
     <string name="keyspec_right_single_angle_quote">&#x203A;</string>
     <!-- Comma key -->
     <string name="keylabel_for_comma">,</string>
-    <string name="more_keys_for_comma"></string>
     <string name="keylabel_for_tablet_comma">,</string>
     <string name="keyhintlabel_for_tablet_comma"></string>
     <string name="more_keys_for_tablet_comma"></string>
