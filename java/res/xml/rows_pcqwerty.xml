@@ -26,19 +26,8 @@
     <Row
         latin:keyWidth="7.692%p"
     >
-        <switch>
-            <case
-                latin:keyboardLayoutSetElement="alphabet|alphabetAutomaticShifted"
-            >
-                <include
-                    latin:keyboardLayout="@xml/rowkeys_pcqwerty1" />
-            </case>
-            <!-- keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted" -->
-            <default>
-                <include
-                     latin:keyboardLayout="@xml/rowkeys_pcqwerty1_shift" />
-            </default>
-        </switch>
+        <include
+            latin:keyboardLayout="@xml/rowkeys_pcqwerty1" />
     </Row>
     <Row
         latin:keyWidth="7.692%p"
