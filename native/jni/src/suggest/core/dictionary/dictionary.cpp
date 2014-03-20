@@ -45,7 +45,7 @@ Dictionary::Dictionary(JNIEnv *env, DictionaryStructureWithBufferPolicy::Structu
 
 int Dictionary::getSuggestions(ProximityInfo *proximityInfo, DicTraverseSession *traverseSession,
         int *xcoordinates, int *ycoordinates, int *times, int *pointerIds, int *inputCodePoints,
-        int inputSize, int *prevWordCodePoints, int prevWordLength, int commitPoint,
+        int inputSize, int *prevWordCodePoints, int prevWordLength,
         const SuggestOptions *const suggestOptions, int *outWords, int *outputScores,
         int *spaceIndices, int *outputTypes, int *outputAutoCommitFirstWordConfidence) const {
     TimeKeeper::setCurrentTime();
@@ -54,7 +54,7 @@ int Dictionary::getSuggestions(ProximityInfo *proximityInfo, DicTraverseSession 
         DicTraverseSession::initSessionInstance(
                 traverseSession, this, prevWordCodePoints, prevWordLength, suggestOptions);
         result = mGestureSuggest->getSuggestions(proximityInfo, traverseSession, xcoordinates,
-                ycoordinates, times, pointerIds, inputCodePoints, inputSize, commitPoint, outWords,
+                ycoordinates, times, pointerIds, inputCodePoints, inputSize, outWords,
                 outputScores, spaceIndices, outputTypes, outputAutoCommitFirstWordConfidence);
         if (DEBUG_DICT) {
             DUMP_RESULT(outWords, outputScores);
@@ -64,7 +64,7 @@ int Dictionary::getSuggestions(ProximityInfo *proximityInfo, DicTraverseSession 
         DicTraverseSession::initSessionInstance(
                 traverseSession, this, prevWordCodePoints, prevWordLength, suggestOptions);
         result = mTypingSuggest->getSuggestions(proximityInfo, traverseSession, xcoordinates,
-                ycoordinates, times, pointerIds, inputCodePoints, inputSize, commitPoint,
+                ycoordinates, times, pointerIds, inputCodePoints, inputSize,
                 outWords, outputScores, spaceIndices, outputTypes,
                 outputAutoCommitFirstWordConfidence);
         if (DEBUG_DICT) {

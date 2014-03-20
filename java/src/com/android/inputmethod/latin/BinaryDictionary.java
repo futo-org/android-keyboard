@@ -161,9 +161,9 @@ public final class BinaryDictionary extends Dictionary {
     private static native int getNextWordNative(long dict, int token, int[] outCodePoints);
     private static native void getSuggestionsNative(long dict, long proximityInfo,
             long traverseSession, int[] xCoordinates, int[] yCoordinates, int[] times,
-            int[] pointerIds, int[] inputCodePoints, int inputSize, int commitPoint,
-            int[] suggestOptions, int[] prevWordCodePointArray, int[] outputSuggestionCount,
-            int[] outputCodePoints, int[] outputScores, int[] outputIndices, int[] outputTypes,
+            int[] pointerIds, int[] inputCodePoints, int inputSize, int[] suggestOptions,
+            int[] prevWordCodePointArray, int[] outputSuggestionCount, int[] outputCodePoints,
+            int[] outputScores, int[] outputIndices, int[] outputTypes,
             int[] outputAutoCommitFirstWordConfidence);
     private static native void addUnigramWordNative(long dict, int[] word, int probability,
             int[] shortcutTarget, int shortcutProbability, boolean isNotAWord,
@@ -262,7 +262,7 @@ public final class BinaryDictionary extends Dictionary {
         getSuggestionsNative(mNativeDict, proximityInfo.getNativeProximityInfo(),
                 getTraverseSession(sessionId).getSession(), ips.getXCoordinates(),
                 ips.getYCoordinates(), ips.getTimes(), ips.getPointerIds(), mInputCodePoints,
-                inputSize, 0 /* commitPoint */, mNativeSuggestOptions.getOptions(),
+                inputSize, mNativeSuggestOptions.getOptions(),
                 prevWordCodePointArray, mOutputSuggestionCount, mOutputCodePoints, mOutputScores,
                 mSpaceIndices, mOutputTypes, mOutputAutoCommitFirstWordConfidence);
         final int count = mOutputSuggestionCount[0];

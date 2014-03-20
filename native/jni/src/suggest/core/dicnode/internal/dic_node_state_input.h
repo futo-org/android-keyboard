@@ -27,11 +27,6 @@ class DicNodeStateInput {
     DicNodeStateInput() {}
     ~DicNodeStateInput() {}
 
-    // TODO: Merge into DicNodeStatePrevWord::truncate
-    void truncate(const int commitPoint) {
-        mInputIndex[0] -= commitPoint;
-    }
-
     void init() {
         for (int i = 0; i < MAX_POINTER_COUNT_G; i++) {
             // TODO: The initial value for mInputIndex should be -1?

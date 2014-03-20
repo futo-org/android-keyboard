@@ -27,8 +27,8 @@ class SuggestInterface {
  public:
     virtual int getSuggestions(ProximityInfo *pInfo, void *traverseSession, int *inputXs,
             int *inputYs, int *times, int *pointerIds, int *inputCodePoints, int inputSize,
-            int commitPoint, int *outWords, int *outputScores, int *outputIndices,
-            int *outputTypes, int *outputAutoCommitFirstWordConfidence) const = 0;
+            int *outWords, int *outputScores, int *outputIndices, int *outputTypes,
+            int *outputAutoCommitFirstWordConfidence) const = 0;
     SuggestInterface() {}
     virtual ~SuggestInterface() {}
  private:
