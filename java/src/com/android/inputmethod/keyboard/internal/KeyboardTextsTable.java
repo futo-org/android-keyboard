@@ -1953,15 +1953,17 @@ public final class KeyboardTextsTable {
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         null, null, null, null, null, null, null,
         /* ~ more_keys_for_cyrillic_soft_sign */
-        // U+058A: "֊" ARMENIAN HYPHEN
-        // U+055C: "՜" ARMENIAN EXCLAMATION MARK
-        // U+055D: "՝" ARMENIAN COMMA
         // U+055E: "՞" ARMENIAN QUESTION MARK
-        // U+0559: "ՙ" ARMENIAN MODIFIER LETTER LEFT HALF RING
+        // U+055C: "՜" ARMENIAN EXCLAMATION MARK
         // U+055A: "՚" ARMENIAN APOSTROPHE
+        // U+0559: "ՙ" ARMENIAN MODIFIER LETTER LEFT HALF RING
+        // U+055D: "՝" ARMENIAN COMMA
         // U+055B: "՛" ARMENIAN EMPHASIS MARK
+        // U+058A: "֊" ARMENIAN HYPHEN
+        // U+00BB: "»" RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK
+        // U+00AB: "«" LEFT-POINTING DOUBLE ANGLE QUOTATION MARK
         // U+055F: "՟" ARMENIAN ABBREVIATION MARK
-        /* more_keys_for_punctuation */ "!fixedColumnOrder!8,!,?,\u0559,\u055A,.,\u055C,\\,,\u055E,:,;,\u055F,\u00AB,\u00BB,\u058A,\u055D,\u055B",
+        /* more_keys_for_punctuation */ "!autoColumnOrder!8,\\,,\u055E,\u055C,.,\u055A,\u0559,?,!,\u055D,\u055B,\u058A,\u00BB,\u00AB,\u055F,;,:",
         /* more_keys_for_nordic_row2_11 ~ */
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
