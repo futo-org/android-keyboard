@@ -23,6 +23,8 @@ import android.text.TextUtils;
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.utils.CollectionUtils;
+import com.android.inputmethod.latin.utils.RunInLocale;
+import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -38,17 +40,22 @@ public final class KeyboardTextsSet {
     // Resource name to text map.
     private HashMap<String, String> mResourceNameToTextsMap = CollectionUtils.newHashMap();
 
-    public void setLocale(final Locale locale) {
+    public void setLocale(final Locale locale, final Context context) {
         final String language = locale.getLanguage();
         mTextsTable = KeyboardTextsTable.getTextsTable(language);
-    }
-
-    // TODO: Consolidate this method with {@link #setLocale(Locale)}.
-    public void loadStringResources(final Context context) {
         final Resources res = context.getResources();
         final int referenceId = context.getApplicationInfo().labelRes;
         final String resourcePackageName = res.getResourcePackageName(referenceId);
-        loadStringResourcesInternal(res, RESOURCE_NAMES, resourcePackageName);
+        final RunInLocale<Void> job = new RunInLocale<Void>() {
+            @Override
+            protected Void job(final Resources resource) {
+                loadStringResourcesInternal(res, RESOURCE_NAMES, resourcePackageName);
+                return null;
+            }
+        };
+        // Null means the current system locale.
+        job.runInLocale(res,
+                SubtypeLocaleUtils.NO_LANGUAGE.equals(locale.toString()) ? null : locale);
     }
 
     @UsedForTesting
@@ -129,7 +136,7 @@ public final class KeyboardTextsSet {
 
     // These texts' name should be aligned with the @string/<name> in
     // values*/strings-action-keys.xml.
-    private static final String[] RESOURCE_NAMES = {
+    static final String[] RESOURCE_NAMES = {
         // Labels for action.
         "label_go_key",
         "label_send_key",
