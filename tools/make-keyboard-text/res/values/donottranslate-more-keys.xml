@@ -82,8 +82,8 @@
     <string name="more_keys_for_currency_dollar">&#x00A2;,&#x00A3;,&#x20AC;,&#x00A5;,&#x20B1;</string>
     <string name="keylabel_for_currency">$</string>
     <string name="more_keys_for_currency">$,&#x00A2;,&#x20AC;,&#x00A3;,&#x00A5;,&#x20B1;</string>
-    <string name="more_keys_for_punctuation">"!fixedColumnOrder!8,;,/,!text/keyspec_left_parenthesis,!text/keyspec_right_parenthesis,#,!,\\,,?,&amp;,\\%,+,\",-,:,',@"</string>
-    <string name="more_keys_for_tablet_punctuation">"!fixedColumnOrder!7,;,/,!text/keyspec_left_parenthesis,!text/keyspec_right_parenthesis,#,',\\,,&amp;,\\%,+,\",-,:,@"</string>
+    <string name="more_keys_for_punctuation">"!autoColumnOrder!8,\\,,?,!,#,!text/keyspec_right_parenthesis,!text/keyspec_left_parenthesis,/,;,',@,:,-,\",+,\\%,&amp;"</string>
+    <string name="more_keys_for_tablet_punctuation">"!autoColumnOrder!7,\\,,',#,!text/keyspec_right_parenthesis,!text/keyspec_left_parenthesis,/,;,@,:,-,\",+,\\%,&amp;"</string>
     <!-- U+00F1: "ñ" LATIN SMALL LETTER N WITH TILDE -->
     <string name="keylabel_for_spanish_row2_10">&#x00F1;</string>
     <!-- U+2020: "†" DAGGER
