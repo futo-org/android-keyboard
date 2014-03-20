@@ -17,7 +17,6 @@
 package com.android.inputmethod.keyboard.internal;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
 import android.view.inputmethod.InputMethodInfo;
@@ -25,7 +24,6 @@ import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.latin.RichInputMethodManager;
 import com.android.inputmethod.latin.utils.CollectionUtils;
-import com.android.inputmethod.latin.utils.RunInLocale;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 
 import java.util.ArrayList;
@@ -58,10 +56,11 @@ public final class KeyboardTextsSetTests extends AndroidTestCase {
     // subtypes. The text is needed to implement Emoji Keyboard, see
     // {@link KeyboardSwitcher#setEmojiKeyboard()}.
     public void testSwitchToAlphaKeyLabel() {
+        final Context context = getContext();
         final KeyboardTextsSet textsSet = new KeyboardTextsSet();
         for (final InputMethodSubtype subtype : mAllSubtypesList) {
             final Locale locale = SubtypeLocaleUtils.getSubtypeLocale(subtype);
-            textsSet.setLocale(locale);
+            textsSet.setLocale(locale, context);
             final String switchToAlphaKeyLabel = textsSet.getText(
                     KeyboardTextsSet.SWITCH_TO_ALPHA_KEY_LABEL);
             assertNotNull("Switch to alpha key label of " + locale, switchToAlphaKeyLabel);
@@ -87,15 +86,7 @@ public final class KeyboardTextsSetTests extends AndroidTestCase {
         final KeyboardTextsSet textsSet = new KeyboardTextsSet();
         for (final InputMethodSubtype subtype : mAllSubtypesList) {
             final Locale locale = SubtypeLocaleUtils.getSubtypeLocale(subtype);
-            textsSet.setLocale(locale);
-            final RunInLocale<Void> job = new RunInLocale<Void>() {
-                @Override
-                protected Void job(final Resources res) {
-                    textsSet.loadStringResources(context);
-                    return null;
-                }
-            };
-            job.runInLocale(context.getResources(), locale);
+            textsSet.setLocale(locale, context);
             for (final String name : TEXT_NAMES_FROM_RESOURCE) {
                 final String text = textsSet.getText(name);
                 assertNotNull(name + " of " + locale, text);
