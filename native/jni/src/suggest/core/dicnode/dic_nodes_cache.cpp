@@ -28,37 +28,4 @@ const int DicNodesCache::LARGE_PRIORITY_QUEUE_CAPACITY = 310;
 // Capacity for reducing memory footprint.
 const int DicNodesCache::SMALL_PRIORITY_QUEUE_CAPACITY = 100;
 
-/**
- * Truncates all of the dicNodes so that they start at the given commit point.
- * Only called for multi-word typing input.
- */
-DicNode *DicNodesCache::setCommitPoint(int commitPoint) {
-    std::list<DicNode> dicNodesList;
-    while (mCachedDicNodesForContinuousSuggestion->getSize() > 0) {
-        DicNode dicNode;
-        mCachedDicNodesForContinuousSuggestion->copyPop(&dicNode);
-        dicNodesList.push_front(dicNode);
-    }
-
-    // Get the starting words of the top scoring dicNode (last dicNode popped from priority queue)
-    // up to the commit point. These words have already been committed to the text view.
-    DicNode *topDicNode = &dicNodesList.front();
-    DicNode topDicNodeCopy;
-    DicNodeUtils::initByCopy(topDicNode, &topDicNodeCopy);
-
-    // Keep only those dicNodes that match the same starting words.
-    std::list<DicNode>::iterator iter;
-    for (iter = dicNodesList.begin(); iter != dicNodesList.end(); iter++) {
-        DicNode *dicNode = &*iter;
-        if (dicNode->truncateNode(&topDicNodeCopy, commitPoint)) {
-            mCachedDicNodesForContinuousSuggestion->copyPush(dicNode);
-        } else {
-            // Top dicNode should be reprocessed.
-            ASSERT(dicNode != topDicNode);
-            DicNode::managedDelete(dicNode);
-        }
-    }
-    mInputIndex -= commitPoint;
-    return topDicNode;
-}
 }  // namespace latinime
