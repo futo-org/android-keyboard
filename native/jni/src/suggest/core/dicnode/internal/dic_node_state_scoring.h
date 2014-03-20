@@ -31,7 +31,7 @@ class DicNodeStateScoring {
     AK_FORCE_INLINE DicNodeStateScoring()
             : mDoubleLetterLevel(NOT_A_DOUBLE_LETTER),
               mDigraphIndex(DigraphUtils::NOT_A_DIGRAPH_INDEX),
-              mEditCorrectionCount(0), mProximityCorrectionCount(0),
+              mEditCorrectionCount(0), mProximityCorrectionCount(0), mCompletionCount(0),
               mNormalizedCompoundDistance(0.0f), mSpatialDistance(0.0f), mLanguageDistance(0.0f),
               mRawLength(0.0f), mContainedErrorTypes(ErrorTypeUtils::NOT_AN_ERROR),
               mNormalizedCompoundDistanceAfterFirstWord(MAX_VALUE_FOR_WEIGHTING) {
@@ -42,6 +42,7 @@ class DicNodeStateScoring {
     void init() {
         mEditCorrectionCount = 0;
         mProximityCorrectionCount = 0;
+        mCompletionCount = 0;
         mNormalizedCompoundDistance = 0.0f;
         mSpatialDistance = 0.0f;
         mLanguageDistance = 0.0f;
@@ -55,6 +56,7 @@ class DicNodeStateScoring {
     AK_FORCE_INLINE void init(const DicNodeStateScoring *const scoring) {
         mEditCorrectionCount = scoring->mEditCorrectionCount;
         mProximityCorrectionCount = scoring->mProximityCorrectionCount;
+        mCompletionCount = scoring->mCompletionCount;
         mNormalizedCompoundDistance = scoring->mNormalizedCompoundDistance;
         mSpatialDistance = scoring->mSpatialDistance;
         mLanguageDistance = scoring->mLanguageDistance;
@@ -76,6 +78,9 @@ class DicNodeStateScoring {
         }
         if (ErrorTypeUtils::isProximityCorrectionError(errorType)) {
             ++mProximityCorrectionCount;
+        }
+        if (ErrorTypeUtils::isCompletion(errorType)) {
+            ++mCompletionCount;
         }
     }
 
@@ -127,6 +132,10 @@ class DicNodeStateScoring {
 
     int16_t getProximityCorrectionCount() const {
         return mProximityCorrectionCount;
+    }
+
+    int16_t getCompletionCount() const {
+        return mCompletionCount;
     }
 
     float getRawLength() const {
@@ -182,6 +191,7 @@ class DicNodeStateScoring {
 
     int16_t mEditCorrectionCount;
     int16_t mProximityCorrectionCount;
+    int16_t mCompletionCount;
 
     float mNormalizedCompoundDistance;
     float mSpatialDistance;

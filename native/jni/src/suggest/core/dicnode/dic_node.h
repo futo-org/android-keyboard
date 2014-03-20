@@ -270,9 +270,10 @@ class DicNode {
 
     bool hasMatchedOrProximityCodePoints() const {
         // This DicNode does not have matched or proximity code points when all code points have
-        // been handled as edit corrections so far.
-        return mDicNodeState.mDicNodeStateScoring.getEditCorrectionCount()
-                < getNodeCodePointCount();
+        // been handled as edit corrections or completion so far.
+        const int editCorrectionCount = mDicNodeState.mDicNodeStateScoring.getEditCorrectionCount();
+        const int completionCount = mDicNodeState.mDicNodeStateScoring.getCompletionCount();
+        return (editCorrectionCount + completionCount) < getNodeCodePointCount();
     }
 
     bool isTotalInputSizeExceedingLimit() const {
