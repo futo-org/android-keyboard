@@ -192,6 +192,7 @@ public final class WordComposer {
         final int keyX = event.mX;
         final int keyY = event.mY;
         final int newIndex = size();
+        mCombinerChain.processEvent(mEvents, event);
         mTypedWord.appendCodePoint(primaryCode);
         mEvents.add(event);
         refreshSize();

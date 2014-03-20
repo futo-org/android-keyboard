@@ -51,4 +51,19 @@ public class CombinerChain {
         // The dead key combiner is always active, and always first
         mCombiners.add(new DeadKeyCombiner());
     }
+
+    // Pass a new event through the whole chain.
+    public void processEvent(final ArrayList<Event> previousEvents, final Event newEvent) {
+        final ArrayList<Event> modifiablePreviousEvents = new ArrayList<Event>(previousEvents);
+        Event event = newEvent;
+        for (final Combiner combiner : mCombiners) {
+            // A combiner can never return more than one event; it can return several
+            // code points, but they should be encapsulated within one event.
+            event = combiner.processEvent(modifiablePreviousEvents, event);
+            if (null == event) {
+                // Combiners return null if they eat the event.
+                return;
+            }
+        }
+    }
 }
