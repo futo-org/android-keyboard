@@ -23,20 +23,22 @@
          U+0532: "Բ" ARMENIAN CAPITAL LETTER BEN
          U+0533: "Գ" ARMENIAN CAPITAL LETTER GIM -->
     <string name="label_to_alpha_key">&#x0531;&#x0532;&#x0533;</string>
-    <!-- U+058A: "֊" ARMENIAN HYPHEN -->
-    <!-- U+055C: "՜" ARMENIAN EXCLAMATION MARK -->
-    <!-- U+055D: "՝" ARMENIAN COMMA -->
-    <!-- U+055E: "՞" ARMENIAN QUESTION MARK -->
-    <!-- U+0559: "ՙ" ARMENIAN MODIFIER LETTER LEFT HALF RING -->
-    <!-- U+055A: "՚" ARMENIAN APOSTROPHE -->
-    <!-- U+055B: "՛" ARMENIAN EMPHASIS MARK -->
-    <!-- U+055F: "՟" ARMENIAN ABBREVIATION MARK -->
-    <string name="more_keys_for_punctuation">"!fixedColumnOrder!8,!,?,&#x0559;,&#x055A;,.,&#x055C;,\\,,&#x055E;,:,;,&#x055F;,&#x00AB;,&#x00BB;,&#x058A;,&#x055D;,&#x055B;"</string>
-    <!-- U+055E: "՞" ARMENIAN QUESTION MARK -->
-    <!-- U+00BF: "¿" INVERTED QUESTION MARK -->
+    <!-- U+055E: "՞" ARMENIAN QUESTION MARK
+         U+055C: "՜" ARMENIAN EXCLAMATION MARK
+         U+055A: "՚" ARMENIAN APOSTROPHE
+         U+0559: "ՙ" ARMENIAN MODIFIER LETTER LEFT HALF RING
+         U+055D: "՝" ARMENIAN COMMA
+         U+055B: "՛" ARMENIAN EMPHASIS MARK
+         U+058A: "֊" ARMENIAN HYPHEN
+         U+00BB: "»" RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK
+         U+00AB: "«" LEFT-POINTING DOUBLE ANGLE QUOTATION MARK
+         U+055F: "՟" ARMENIAN ABBREVIATION MARK -->
+    <string name="more_keys_for_punctuation">"!autoColumnOrder!8,\\,,&#x055E;,&#x055C;,.,&#x055A;,&#x0559;,?,!,&#x055D;,&#x055B;,&#x058A;,&#x00BB;,&#x00AB;,&#x055F;,;,:"</string>
+    <!-- U+055E: "՞" ARMENIAN QUESTION MARK
+         U+00BF: "¿" INVERTED QUESTION MARK -->
     <string name="more_keys_for_question">&#x055E;,&#x00BF;</string>
-    <!-- U+055C: "՜" ARMENIAN EXCLAMATION MARK -->
-    <!-- U+00A1: "¡" INVERTED EXCLAMATION MARK -->
+    <!-- U+055C: "՜" ARMENIAN EXCLAMATION MARK
+         U+00A1: "¡" INVERTED EXCLAMATION MARK -->
     <string name="more_keys_for_exclamation">&#x055C;,&#x00A1;</string>
     <!-- U+058F: "֏" ARMENIAN DRAM SIGN -->
     <!-- TODO: Enable this when we have glyph for the following letter
