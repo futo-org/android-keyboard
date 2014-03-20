@@ -169,7 +169,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         private int mDelayUpdateSuggestions;
         private int mDelayUpdateShiftState;
-        private long mDoubleSpacePeriodTimerStart;
 
         public UIHandler(final LatinIME ownerInstance) {
             super(ownerInstance);
@@ -283,10 +282,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             sendMessageDelayed(obtainMessage(MSG_UPDATE_SHIFT_STATE), mDelayUpdateShiftState);
         }
 
-        public void cancelUpdateShiftState() {
-            removeMessages(MSG_UPDATE_SHIFT_STATE);
-        }
-
         @UsedForTesting
         public void removeAllMessages() {
             for (int i = 0; i <= MSG_LAST; ++i) {
@@ -312,19 +307,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         public void onEndBatchInput(final SuggestedWords suggestedWords) {
             obtainMessage(MSG_ON_END_BATCH_INPUT, suggestedWords).sendToTarget();
-        }
-
-        public void startDoubleSpacePeriodTimer() {
-            mDoubleSpacePeriodTimerStart = SystemClock.uptimeMillis();
-        }
-
-        public void cancelDoubleSpacePeriodTimer() {
-            mDoubleSpacePeriodTimerStart = 0;
-        }
-
-        public boolean isAcceptingDoubleSpacePeriod() {
-            return SystemClock.uptimeMillis() - mDoubleSpacePeriodTimerStart
-                    < getOwnerInstance().mSettings.getCurrent().mDoubleSpacePeriodTimeout;
         }
 
         // Working variables for the following methods.
@@ -882,7 +864,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         setNeutralSuggestionStrip();
 
         mHandler.cancelUpdateSuggestionStrip();
-        mHandler.cancelDoubleSpacePeriodTimer();
 
         mainKeyboardView.setMainDictionaryAvailability(null != suggest
                 ? suggest.mDictionaryFacilitator.hasMainDictionary() : false);
