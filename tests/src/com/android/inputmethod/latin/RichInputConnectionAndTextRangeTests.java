@@ -89,6 +89,10 @@ public class RichInputConnectionAndTextRangeTests extends AndroidTestCase {
             mExtractedText = extractedText;
         }
 
+        public int cursorPos() {
+            return mTextBefore.length();
+        }
+
         /* (non-Javadoc)
          * @see android.view.inputmethod.InputConnectionWrapper#getTextBeforeCursor(int, int)
          */
@@ -131,13 +135,16 @@ public class RichInputConnectionAndTextRangeTests extends AndroidTestCase {
     }
 
     private class MockInputMethodService extends InputMethodService {
-        InputConnection mInputConnection;
-        public void setInputConnection(final InputConnection inputConnection) {
-            mInputConnection = inputConnection;
+        private MockConnection mMockConnection;
+        public void setInputConnection(final MockConnection mockConnection) {
+            mMockConnection = mockConnection;
+        }
+        public int cursorPos() {
+            return mMockConnection.cursorPos();
         }
         @Override
         public InputConnection getCurrentInputConnection() {
-            return mInputConnection;
+            return mMockConnection;
         }
     }
 
@@ -335,5 +342,83 @@ public class RichInputConnectionAndTextRangeTests extends AndroidTestCase {
         r = ic.getWordRangeAtCursor(SPACE, 0);
         suggestions = r.getSuggestionSpansAtWord();
         assertEquals(suggestions.length, 0);
+    }
+
+    public void testCursorTouchingWord() {
+        final MockInputMethodService ims = new MockInputMethodService();
+        final RichInputConnection ic = new RichInputConnection(ims);
+        final SpacingAndPunctuations sap = mSpacingAndPunctuations;
+
+        ims.setInputConnection(new MockConnection("users", 5));
+        ic.resetCachesUponCursorMoveAndReturnSuccess(ims.cursorPos(), ims.cursorPos(), true);
+        assertTrue(ic.isCursorTouchingWord(sap));
+
+        ims.setInputConnection(new MockConnection("users'", 5));
+        ic.resetCachesUponCursorMoveAndReturnSuccess(ims.cursorPos(), ims.cursorPos(), true);
+        assertTrue(ic.isCursorTouchingWord(sap));
+
+        ims.setInputConnection(new MockConnection("users'", 6));
+        ic.resetCachesUponCursorMoveAndReturnSuccess(ims.cursorPos(), ims.cursorPos(), true);
+        assertTrue(ic.isCursorTouchingWord(sap));
+
+        ims.setInputConnection(new MockConnection("'users'", 6));
+        ic.resetCachesUponCursorMoveAndReturnSuccess(ims.cursorPos(), ims.cursorPos(), true);
+        assertTrue(ic.isCursorTouchingWord(sap));
+
+        ims.setInputConnection(new MockConnection("'users'", 7));
+        ic.resetCachesUponCursorMoveAndReturnSuccess(ims.cursorPos(), ims.cursorPos(), true);
+        assertTrue(ic.isCursorTouchingWord(sap));
+
+        ims.setInputConnection(new MockConnection("users '", 6));
+        ic.resetCachesUponCursorMoveAndReturnSuccess(ims.cursorPos(), ims.cursorPos(), true);
+        assertFalse(ic.isCursorTouchingWord(sap));
+
+        ims.setInputConnection(new MockConnection("users '", 7));
+        ic.resetCachesUponCursorMoveAndReturnSuccess(ims.cursorPos(), ims.cursorPos(), true);
+        assertFalse(ic.isCursorTouchingWord(sap));
+
+        ims.setInputConnection(new MockConnection("re-", 3));
+        ic.resetCachesUponCursorMoveAndReturnSuccess(ims.cursorPos(), ims.cursorPos(), true);
+        assertTrue(ic.isCursorTouchingWord(sap));
+
+        ims.setInputConnection(new MockConnection("re--", 4));
+        ic.resetCachesUponCursorMoveAndReturnSuccess(ims.cursorPos(), ims.cursorPos(), true);
+        assertFalse(ic.isCursorTouchingWord(sap));
+
+        ims.setInputConnection(new MockConnection("-", 1));
+        ic.resetCachesUponCursorMoveAndReturnSuccess(ims.cursorPos(), ims.cursorPos(), true);
+        assertFalse(ic.isCursorTouchingWord(sap));
+
+        ims.setInputConnection(new MockConnection("--", 2));
+        ic.resetCachesUponCursorMoveAndReturnSuccess(ims.cursorPos(), ims.cursorPos(), true);
+        assertFalse(ic.isCursorTouchingWord(sap));
+
+        ims.setInputConnection(new MockConnection(" -", 2));
+        ic.resetCachesUponCursorMoveAndReturnSuccess(ims.cursorPos(), ims.cursorPos(), true);
+        assertFalse(ic.isCursorTouchingWord(sap));
+
+        ims.setInputConnection(new MockConnection(" --", 3));
+        ic.resetCachesUponCursorMoveAndReturnSuccess(ims.cursorPos(), ims.cursorPos(), true);
+        assertFalse(ic.isCursorTouchingWord(sap));
+
+        ims.setInputConnection(new MockConnection(" users '", 1));
+        ic.resetCachesUponCursorMoveAndReturnSuccess(ims.cursorPos(), ims.cursorPos(), true);
+        assertTrue(ic.isCursorTouchingWord(sap));
+
+        ims.setInputConnection(new MockConnection(" users '", 3));
+        ic.resetCachesUponCursorMoveAndReturnSuccess(ims.cursorPos(), ims.cursorPos(), true);
+        assertTrue(ic.isCursorTouchingWord(sap));
+
+        ims.setInputConnection(new MockConnection(" users '", 7));
+        ic.resetCachesUponCursorMoveAndReturnSuccess(ims.cursorPos(), ims.cursorPos(), true);
+        assertFalse(ic.isCursorTouchingWord(sap));
+
+        ims.setInputConnection(new MockConnection(" users are", 7));
+        ic.resetCachesUponCursorMoveAndReturnSuccess(ims.cursorPos(), ims.cursorPos(), true);
+        assertTrue(ic.isCursorTouchingWord(sap));
+
+        ims.setInputConnection(new MockConnection(" users 'are", 7));
+        ic.resetCachesUponCursorMoveAndReturnSuccess(ims.cursorPos(), ims.cursorPos(), true);
+        assertFalse(ic.isCursorTouchingWord(sap));
     }
 }

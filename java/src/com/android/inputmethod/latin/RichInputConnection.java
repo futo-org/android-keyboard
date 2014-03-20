@@ -687,13 +687,23 @@ public final class RichInputConnection {
     }
 
     public boolean isCursorTouchingWord(final SpacingAndPunctuations spacingAndPunctuations) {
-        final int codePointBeforeCursor = getCodePointBeforeCursor();
-        if (Constants.NOT_A_CODE == codePointBeforeCursor
-                || spacingAndPunctuations.isWordSeparator(codePointBeforeCursor)
-                || spacingAndPunctuations.isWordConnector(codePointBeforeCursor)) {
-            return isCursorFollowedByWordCharacter(spacingAndPunctuations);
+        if (isCursorFollowedByWordCharacter(spacingAndPunctuations)) {
+            // If what's after the cursor is a word character, then we're touching a word.
+            return true;
         }
-        return true;
+        final String textBeforeCursor = mCommittedTextBeforeComposingText.toString();
+        int indexOfCodePointInJavaChars = textBeforeCursor.length();
+        int consideredCodePoint = 0 == indexOfCodePointInJavaChars ? Constants.NOT_A_CODE
+                : textBeforeCursor.codePointBefore(indexOfCodePointInJavaChars);
+        // Search for the first non word-connector char
+        if (spacingAndPunctuations.isWordConnector(consideredCodePoint)) {
+            indexOfCodePointInJavaChars -= Character.charCount(consideredCodePoint);
+            consideredCodePoint = 0 == indexOfCodePointInJavaChars ? Constants.NOT_A_CODE
+                    : textBeforeCursor.codePointBefore(indexOfCodePointInJavaChars);
+        }
+        return !(Constants.NOT_A_CODE == consideredCodePoint
+                || spacingAndPunctuations.isWordSeparator(consideredCodePoint)
+                || spacingAndPunctuations.isWordConnector(consideredCodePoint));
     }
 
     public boolean isCursorFollowedByWordCharacter(
