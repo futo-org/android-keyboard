@@ -36,8 +36,6 @@ MAKEDICT_CORE_SOURCE_DIRECTORY := $(LATINIME_BASE_SOURCE_DIRECTORY)/latin/makedi
 # nearly-empty implementations, for parts that we don't use in Dicttool.
 LATINIME_SRCS_FOR_DICTTOOL := \
         event/Combiner.java \
-        event/CombinerChain.java \
-        event/DeadKeyCombiner.java \
         event/Event.java \
         latin/BinaryDictionary.java \
         latin/DicTraverseSession.java \

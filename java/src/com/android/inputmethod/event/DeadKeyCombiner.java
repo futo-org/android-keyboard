@@ -21,14 +21,17 @@ import android.view.KeyCharacterMap;
 
 import com.android.inputmethod.latin.Constants;
 
+import java.util.ArrayList;
+
 /**
  * A combiner that handles dead keys.
  */
 public class DeadKeyCombiner implements Combiner {
+    // TODO: make this a list of events instead
     final StringBuilder mDeadSequence = new StringBuilder();
 
     @Override
-    public Event combine(final Event event) {
+    public Event processEvent(final ArrayList<Event> previousEvents, final Event event) {
         if (null == event) return null; // Just in case some combiner is broken
         if (TextUtils.isEmpty(mDeadSequence)) {
             if (event.isDead()) {
