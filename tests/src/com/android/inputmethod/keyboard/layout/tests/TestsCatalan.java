@@ -48,12 +48,12 @@ public class TestsCatalan extends LayoutTestsBase {
 
         // U+00B7: "·" MIDDLE DOT
         private static final ExpectedKey[] PHONE_PUNCTUATION_MORE_KEYS = joinKeys(
-                ";", "/", "(", ")", "#", "\u00B7", "!", ",", "?",
-                "&", "%", "+", "\"", "-", ":", "'", "@");
+                ",", "?", "!", "\u00B7", "#", ")", "(", "/", ";",
+                "'", "@", ":", "-", "\"", "+", "%", "&");
 
         private static final ExpectedKey[] TABLET_PUNCTUATION_MORE_KEYS = joinKeys(
-                ";", "/", "(", ")", "#", "\u00B7", "'", ",",
-                "&", "%", "+", "\"", "-", ":", "@");
+                ",", "'", "\u00B7", "#", ")", "(", "/", ";",
+                "@", ":", "-", "\"", "+", "%", "&");
 
         @Override
         public ExpectedKeyboardBuilder setAccentedLetters(final ExpectedKeyboardBuilder builder) {

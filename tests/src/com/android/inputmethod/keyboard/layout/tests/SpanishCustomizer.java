@@ -38,8 +38,8 @@ class SpanishCustomizer extends LayoutCustomizer {
     private static final ExpectedKey[] PHONE_PUNCTUATION_MORE_KEYS = AbstractLayoutBase.joinKeys(
             // U+00A1: "¡" INVERTED EXCLAMATION MARK
             // U+00BF: "¿" INVERTED QUESTION MARK
-            "\u00A1", ";", "/", "(", ")", "#", "!", ",", "?",
-            "\u00BF", "&", "%", "+", "\"", "-", ":", "'", "@");
+            ",", "?", "!", "#", ")", "(", "/", ";", "\u00A1",
+            "'", "@", ":", "-", "\"", "+", "%", "&", "\u00BF");
 
     @Override
     public ExpectedKeyboardBuilder setAccentedLetters(final ExpectedKeyboardBuilder builder) {
