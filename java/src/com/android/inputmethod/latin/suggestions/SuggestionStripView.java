@@ -232,8 +232,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         if (!ImportantNoticeUtils.shouldShowImportantNotice(getContext(), inputAttributes)) {
             return false;
         }
-        final int width = getWidth();
-        if (width <= 0) {
+        if (getWidth() <= 0) {
             return false;
         }
         final String importantNoticeTitle = ImportantNoticeUtils.getNextImportantNoticeTitle(
@@ -241,7 +240,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         if (TextUtils.isEmpty(importantNoticeTitle)) {
             return false;
         }
-        mLayoutHelper.layoutImportantNotice(mImportantNoticeStrip, width, importantNoticeTitle);
+        mLayoutHelper.layoutImportantNotice(mImportantNoticeStrip, importantNoticeTitle);
         mStripVisibilityGroup.showImportantNoticeStrip();
         mImportantNoticeStrip.setOnClickListener(this);
         return true;

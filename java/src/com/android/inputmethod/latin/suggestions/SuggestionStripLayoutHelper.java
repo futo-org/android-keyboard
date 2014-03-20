@@ -507,7 +507,7 @@ final class SuggestionStripLayoutHelper {
                 hintView, 1.0f - mCenterSuggestionWeight, ViewGroup.LayoutParams.MATCH_PARENT);
     }
 
-    public void layoutImportantNotice(final View importantNoticeStrip, final int stripWidth,
+    public void layoutImportantNotice(final View importantNoticeStrip,
             final String importantNoticeTitle) {
         final TextView titleView = (TextView)importantNoticeStrip.findViewById(
                 R.id.important_notice_title);
@@ -516,8 +516,7 @@ final class SuggestionStripLayoutHelper {
         titleView.setTextColor(mColorAutoCorrect);
         titleView.setText(importantNoticeTitle);
         titleView.setTextScaleX(1.0f); // Reset textScaleX.
-        final float titleScaleX = getTextScaleX(
-                importantNoticeTitle, width, titleView.getPaint());
+        final float titleScaleX = getTextScaleX(importantNoticeTitle, width, titleView.getPaint());
         titleView.setTextScaleX(titleScaleX);
     }
 
