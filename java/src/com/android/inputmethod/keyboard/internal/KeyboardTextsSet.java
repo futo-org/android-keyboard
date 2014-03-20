@@ -43,18 +43,19 @@ public final class KeyboardTextsSet {
         mTextsTable = KeyboardTextsTable.getTextsTable(language);
     }
 
+    // TODO: Consolidate this method with {@link #setLocale(Locale)}.
     public void loadStringResources(final Context context) {
+        final Resources res = context.getResources();
         final int referenceId = context.getApplicationInfo().labelRes;
-        loadStringResourcesInternal(context, RESOURCE_NAMES, referenceId);
+        final String resourcePackageName = res.getResourcePackageName(referenceId);
+        loadStringResourcesInternal(res, RESOURCE_NAMES, resourcePackageName);
     }
 
     @UsedForTesting
-    void loadStringResourcesInternal(final Context context, final String[] resourceNames,
-            final int referenceId) {
-        final Resources res = context.getResources();
-        final String packageName = res.getResourcePackageName(referenceId);
+    void loadStringResourcesInternal(final Resources res, final String[] resourceNames,
+            final String resourcePackageName) {
         for (final String resName : resourceNames) {
-            final int resId = res.getIdentifier(resName, "string", packageName);
+            final int resId = res.getIdentifier(resName, "string", resourcePackageName);
             mResourceNameToTextsMap.put(resName, res.getString(resId));
         }
     }
@@ -77,6 +78,7 @@ public final class KeyboardTextsSet {
         return size;
     }
 
+    // TODO: Resolve text reference when creating {@link KeyboardTextsTable} class.
     public String resolveTextReference(final String rawText) {
         if (TextUtils.isEmpty(rawText)) {
             return null;
