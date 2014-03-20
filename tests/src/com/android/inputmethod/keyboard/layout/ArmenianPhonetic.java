@@ -74,19 +74,19 @@ public final class ArmenianPhonetic extends LayoutBase {
         private static final ExpectedKey ARMENIAN_ALPHABET_KEY = key(
                 "\u0531\u0532\u0533", Constants.CODE_SWITCH_ALPHA_SYMBOL);
 
-        // U+0559: "ՙ" ARMENIAN MODIFIER LETTER LEFT HALF RING
-        // U+055A: "՚" ARMENIAN APOSTROPHE
-        // U+055C: "՜" ARMENIAN EXCLAMATION MARK
         // U+055E: "՞" ARMENIAN QUESTION MARK
-        // U+055F: "՟" ARMENIAN ABBREVIATION MARK
-        // U+00AB: "«" LEFT-POINTING DOUBLE ANGLE QUOTATION MARK
-        // U+00BB: "»" RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK
-        // U+058A: "֊" ARMENIAN HYPHEN
+        // U+055C: "՜" ARMENIAN EXCLAMATION MARK
+        // U+055A: "՚" ARMENIAN APOSTROPHE
+        // U+0559: "ՙ" ARMENIAN MODIFIER LETTER LEFT HALF RING
         // U+055D: "՝" ARMENIAN COMMA
         // U+055B: "՛" ARMENIAN EMPHASIS MARK
+        // U+058A: "֊" ARMENIAN HYPHEN
+        // U+00BB: "»" RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK
+        // U+00AB: "«" LEFT-POINTING DOUBLE ANGLE QUOTATION MARK
+        // U+055F: "՟" ARMENIAN ABBREVIATION MARK
         private static final ExpectedKey[] ARMENIAN_PUNCTUATION_MORE_KEYS = joinMoreKeys(
-                "!", "?", "\u0559", "\u055A", ".", "\u055C", ",", "\u055E",
-                ":", ";", "\u055F", "\u00AB", "\u00BB", "\u058A", "\u055D", "\u055B");
+                ",", "\u055E", "\u055C", ".", "\u055A", "\u0559", "?", "!",
+                "\u055D", "\u055B", "\u058A", "\u00BB", "\u00AB", "\u055F", ";", ":");
     }
 
     @Override
