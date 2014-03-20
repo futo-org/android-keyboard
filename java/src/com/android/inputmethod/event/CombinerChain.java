@@ -58,6 +58,14 @@ public class CombinerChain {
         mStateFeedback = new SpannableStringBuilder();
     }
 
+    public void reset() {
+        mCombinedText.setLength(0);
+        mStateFeedback.clear();
+        for (final Combiner c : mCombiners) {
+            c.reset();
+        }
+    }
+
     /**
      * Pass a new event through the whole chain.
      * @param previousEvents the list of previous events in this composition

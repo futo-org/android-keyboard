@@ -127,6 +127,7 @@ public final class WordComposer {
      * Clear out the keys registered so far.
      */
     public void reset() {
+        mCombinerChain.reset();
         mTypedWord.setLength(0);
         mEvents.clear();
         mAutoCorrection = null;
@@ -246,6 +247,8 @@ public final class WordComposer {
      * @return true if the cursor is still inside the composing word, false otherwise.
      */
     public boolean moveCursorByAndReturnIfInsideComposingWord(final int expectedMoveAmount) {
+        // TODO: should uncommit the composing feedback
+        mCombinerChain.reset();
         int actualMoveAmountWithinWord = 0;
         int cursorPos = mCursorPositionWithinWord;
         final int[] codePoints;
@@ -485,6 +488,7 @@ public final class WordComposer {
         mIsBatchMode = false;
         mPreviousWordForSuggestion = committedWord.toString();
         mTypedWord.setLength(0);
+        mCombinerChain.reset();
         mEvents.clear();
         mCodePointSize = 0;
         mTrailingSingleQuotesCount = 0;
@@ -512,6 +516,7 @@ public final class WordComposer {
         Collections.copy(mEvents, lastComposedWord.mEvents);
         mInputPointers.set(lastComposedWord.mInputPointers);
         mTypedWord.setLength(0);
+        mCombinerChain.reset();
         mTypedWord.append(lastComposedWord.mTypedWord);
         refreshSize();
         mCapitalizedMode = lastComposedWord.mCapitalizedMode;
