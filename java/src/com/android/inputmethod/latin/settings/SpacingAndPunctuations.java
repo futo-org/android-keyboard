@@ -18,7 +18,6 @@ package com.android.inputmethod.latin.settings;
 
 import android.content.res.Resources;
 
-import com.android.inputmethod.keyboard.internal.KeyboardTextsSet;
 import com.android.inputmethod.keyboard.internal.MoreKeySpec;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.PunctuationSuggestions;
@@ -61,10 +60,8 @@ public final class SpacingAndPunctuations {
         // English variants. German rules (not "German typography") also have small gotchas.
         mUsesAmericanTypography = Locale.ENGLISH.getLanguage().equals(locale.getLanguage());
         mUsesGermanRules = Locale.GERMAN.getLanguage().equals(locale.getLanguage());
-        final KeyboardTextsSet textsSet = new KeyboardTextsSet();
-        textsSet.setLocale(locale);
         final String[] suggestPuncsSpec = MoreKeySpec.splitKeySpecs(
-                textsSet.resolveTextReference(res.getString(R.string.suggested_punctuations)));
+                res.getString(R.string.suggested_punctuations));
         mSuggestPuncList = PunctuationSuggestions.newPunctuationSuggestions(suggestPuncsSpec);
     }
 
