@@ -44,7 +44,7 @@ const int Suggest::MIN_CONTINUOUS_SUGGESTION_INPUT_SIZE = 2;
  */
 int Suggest::getSuggestions(ProximityInfo *pInfo, void *traverseSession,
         int *inputXs, int *inputYs, int *times, int *pointerIds, int *inputCodePoints,
-        int inputSize, int commitPoint, int *outWords, int *outputScores, int *outputIndices,
+        int inputSize, int *outWords, int *outputScores, int *outputIndices,
         int *outputTypes, int *outputAutoCommitFirstWordConfidence) const {
     PROF_OPEN;
     PROF_START(0);
@@ -54,7 +54,7 @@ int Suggest::getSuggestions(ProximityInfo *pInfo, void *traverseSession,
             pointerIds, maxSpatialDistance, TRAVERSAL->getMaxPointerCount());
     // TODO: Add the way to evaluate cache
 
-    initializeSearch(tSession, commitPoint);
+    initializeSearch(tSession);
     PROF_END(0);
     PROF_START(1);
 
@@ -77,27 +77,15 @@ int Suggest::getSuggestions(ProximityInfo *pInfo, void *traverseSession,
  * Initializes the search at the root of the lexicon trie. Note that when possible the search will
  * continue suggestion from where it left off during the last call.
  */
-void Suggest::initializeSearch(DicTraverseSession *traverseSession, int commitPoint) const {
+void Suggest::initializeSearch(DicTraverseSession *traverseSession) const {
     if (!traverseSession->getProximityInfoState(0)->isUsed()) {
         return;
     }
 
-    // Never auto partial commit for now.
-    commitPoint = 0;
-
     if (traverseSession->getInputSize() > MIN_CONTINUOUS_SUGGESTION_INPUT_SIZE
             && traverseSession->isContinuousSuggestionPossible()) {
-        if (commitPoint == 0) {
-            // Continue suggestion
-            traverseSession->getDicTraverseCache()->continueSearch();
-        } else {
-            // Continue suggestion after partial commit.
-            DicNode *topDicNode =
-                    traverseSession->getDicTraverseCache()->setCommitPoint(commitPoint);
-            traverseSession->setPrevWordPtNodePos(topDicNode->getPrevWordPtNodePos());
-            traverseSession->getDicTraverseCache()->continueSearch();
-            traverseSession->setPartiallyCommited();
-        }
+        // Continue suggestion
+        traverseSession->getDicTraverseCache()->continueSearch();
     } else {
         // Restart recognition at the root.
         traverseSession->resetCache(TRAVERSAL->getMaxCacheSize(traverseSession->getInputSize()),

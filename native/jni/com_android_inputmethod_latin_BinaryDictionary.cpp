@@ -143,7 +143,7 @@ static int latinime_BinaryDictionary_getFormatVersion(JNIEnv *env, jclass clazz,
 static void latinime_BinaryDictionary_getSuggestions(JNIEnv *env, jclass clazz, jlong dict,
         jlong proximityInfo, jlong dicTraverseSession, jintArray xCoordinatesArray,
         jintArray yCoordinatesArray, jintArray timesArray, jintArray pointerIdsArray,
-        jintArray inputCodePointsArray, jint inputSize, jint commitPoint, jintArray suggestOptions,
+        jintArray inputCodePointsArray, jint inputSize, jintArray suggestOptions,
         jintArray prevWordCodePointsForBigrams, jintArray outSuggestionCount,
         jintArray outCodePointsArray, jintArray outScoresArray, jintArray outSpaceIndicesArray,
         jintArray outTypesArray, jintArray outAutoCommitFirstWordConfidenceArray) {
@@ -220,7 +220,7 @@ static void latinime_BinaryDictionary_getSuggestions(JNIEnv *env, jclass clazz, 
         // TODO: Use SuggestionResults to return suggestions.
         count = dictionary->getSuggestions(pInfo, traverseSession, xCoordinates, yCoordinates,
                 times, pointerIds, inputCodePoints, inputSize, prevWordCodePoints,
-                prevWordCodePointsLength, commitPoint, &givenSuggestOptions, outputCodePoints,
+                prevWordCodePointsLength, &givenSuggestOptions, outputCodePoints,
                 scores, spaceIndices, outputTypes, outputAutoCommitFirstWordConfidence);
     } else {
         SuggestionResults suggestionResults(MAX_RESULTS);
@@ -506,7 +506,7 @@ static const JNINativeMethod sMethods[] = {
     },
     {
         const_cast<char *>("getSuggestionsNative"),
-        const_cast<char *>("(JJJ[I[I[I[I[III[I[I[I[I[I[I[I[I)V"),
+        const_cast<char *>("(JJJ[I[I[I[I[II[I[I[I[I[I[I[I[I)V"),
         reinterpret_cast<void *>(latinime_BinaryDictionary_getSuggestions)
     },
     {

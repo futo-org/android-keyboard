@@ -76,8 +76,6 @@ class DicNodesCache {
                 moveNodesAndReturnReusableEmptyQueue(mNextActiveDicNodes, &mActiveDicNodes);
     }
 
-    DicNode *setCommitPoint(int commitPoint);
-
     int activeSize() const { return mActiveDicNodes->getSize(); }
     int terminalSize() const { return mTerminalDicNodes->getSize(); }
     bool isLookAheadCorrectionInputIndex(const int inputIndex) const {

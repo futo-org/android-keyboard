@@ -70,18 +70,6 @@ class DicNodeStatePrevWord {
         mSecondWordFirstInputIndex = prevWordSecondWordFirstInputIndex;
     }
 
-    void truncate(const int offset) {
-        // TODO: memmove
-        if (mPrevWordLength < offset) {
-            memset(mPrevWord, 0, sizeof(mPrevWord));
-            mPrevWordLength = 0;
-            return;
-        }
-        const int newPrevWordLength = mPrevWordLength - offset;
-        memmove(mPrevWord, &mPrevWord[offset], newPrevWordLength * sizeof(mPrevWord[0]));
-        mPrevWordLength = newPrevWordLength;
-    }
-
     void setSecondWordFirstInputIndex(const int inputIndex) {
         mSecondWordFirstInputIndex = inputIndex;
     }
@@ -109,18 +97,6 @@ class DicNodeStatePrevWord {
 
     int getPrevWordCodePointAt(const int id) const {
         return mPrevWord[id];
-    }
-
-    bool startsWith(const DicNodeStatePrevWord *const prefix, const int prefixLen) const {
-        if (prefixLen > mPrevWordLength) {
-            return false;
-        }
-        for (int i = 0; i < prefixLen; ++i) {
-            if (mPrevWord[i] != prefix->mPrevWord[i]) {
-                return false;
-            }
-        }
-        return true;
     }
 
     const int *getPrevWordBuf() const {

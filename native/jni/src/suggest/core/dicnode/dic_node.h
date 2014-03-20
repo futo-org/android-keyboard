@@ -284,33 +284,6 @@ class DicNode {
         return prevWordsLen + currentWordDepth > MAX_WORD_LENGTH - 3;
     }
 
-    // TODO: This may be defective. Needs to be revised.
-    bool truncateNode(const DicNode *const topNode, const int inputCommitPoint) {
-        const int prevWordLenOfTop = mDicNodeState.mDicNodeStatePrevWord.getPrevWordLength();
-        int newPrevWordStartIndex = inputCommitPoint;
-        int charCount = 0;
-        // Find new word start index
-        for (int i = 0; i < prevWordLenOfTop; ++i) {
-            const int c = mDicNodeState.mDicNodeStatePrevWord.getPrevWordCodePointAt(i);
-            // TODO: Check other separators.
-            if (c != KEYCODE_SPACE && c != KEYCODE_SINGLE_QUOTE) {
-                if (charCount == inputCommitPoint) {
-                    newPrevWordStartIndex = i;
-                    break;
-                }
-                ++charCount;
-            }
-        }
-        if (!mDicNodeState.mDicNodeStatePrevWord.startsWith(
-                &topNode->mDicNodeState.mDicNodeStatePrevWord, newPrevWordStartIndex - 1)) {
-            // Node mismatch.
-            return false;
-        }
-        mDicNodeState.mDicNodeStateInput.truncate(inputCommitPoint);
-        mDicNodeState.mDicNodeStatePrevWord.truncate(newPrevWordStartIndex);
-        return true;
-    }
-
     void outputResult(int *dest) const {
         const uint16_t prevWordLength = mDicNodeState.mDicNodeStatePrevWord.getPrevWordLength();
         const uint16_t currentDepth = getNodeCodePointCount();
