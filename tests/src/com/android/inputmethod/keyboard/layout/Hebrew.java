@@ -91,12 +91,12 @@ public final class Hebrew extends LayoutBase {
         private static final ExpectedKey CURRENCY_NEW_SHEQEL = key("\u20AA",
                 Symbols.CURRENCY_GENERIC_MORE_KEYS);
         private static final ExpectedKey[] RTL_PHONE_PUNCTUATION_MORE_KEYS = joinKeys(
-                ";", "/", key("(", ")"), key(")", "("), "#", "!", ",", "?",
-                "&", "%", "+", "\"", "-", ":", "'", "@");
+                ",", "?", "!", "#", key(")", "("), key("(", ")"), "/", ";",
+                "'", "@", ":", "-", "\"", "+", "%", "&");
         // Punctuation more keys for tablet form factor.
         private static final ExpectedKey[] RTL_TABLET_PUNCTUATION_MORE_KEYS = joinKeys(
-                ";", "/", key("(", ")"), key(")", "("), "#", "'", ",",
-                "&", "%", "+", "\"", "-", ":", "@");
+                ",", "'", "#", key(")", "("), key("(", ")"), "/", ";",
+                "@", ":", "-", "\"", "+", "%", "&");
     }
 
     @Override

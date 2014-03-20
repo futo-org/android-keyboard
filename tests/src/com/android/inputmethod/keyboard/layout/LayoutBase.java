@@ -270,13 +270,12 @@ public abstract class LayoutBase extends AbstractLayoutBase {
 
     // Punctuation more keys for phone form factor.
     public static final ExpectedKey[] PHONE_PUNCTUATION_MORE_KEYS = joinKeys(
-            ";", "/", "(", ")", "#", "!", ",", "?",
-            "&", "%", "+", "\"", "-", ":", "'", "@");
-
+            ",", "?", "!", "#", ")", "(", "/", ";",
+            "'", "@", ":", "-", "\"", "+", "%", "&");
     // Punctuation more keys for tablet form factor.
     public static final ExpectedKey[] TABLET_PUNCTUATION_MORE_KEYS = joinKeys(
-            ";", "/", "(", ")", "#", "'", ",",
-            "&", "%", "+", "\"", "-", ":", "@");
+            ",", "'", "#", ")", "(", "/", ";",
+            "@", ":", "-", "\"", "+", "%", "&");
 
    /**
      * Helper method to create alphabet layout adding special function keys.
