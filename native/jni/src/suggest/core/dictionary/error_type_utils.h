@@ -59,6 +59,10 @@ class ErrorTypeUtils {
         return (errorType & PROXIMITY_CORRECTION) != 0;
     }
 
+    static bool isCompletion(const ErrorType errorType) {
+        return (errorType & COMPLETION) != 0;
+    }
+
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(ErrorTypeUtils);
 
