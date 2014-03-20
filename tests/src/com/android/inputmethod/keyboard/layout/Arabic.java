@@ -72,7 +72,7 @@ public final class Arabic extends LayoutBase {
         public ExpectedKey[] getKeysLeftToSpacebar(final boolean isPhone) {
             if (isPhone) {
                 // U+060C: "،" ARABIC COMMA
-                return joinKeys(key("\u060C", joinMoreKeys(",", SETTINGS_KEY)));
+                return joinKeys(key("\u060C", SETTINGS_KEY));
             }
             return super.getKeysLeftToSpacebar(isPhone);
         }
@@ -312,7 +312,7 @@ public final class Arabic extends LayoutBase {
                     // U+00BF: "¿" INVERTED QUESTION MARK
                     .replaceKeyOfLabel("?", key("\u061F", joinMoreKeys("?", "\u00BF")))
                     // U+060C: "،" ARABIC COMMA
-                    .replaceKeyOfLabel(",", key("\u060C", moreKey(",")))
+                    .replaceKeyOfLabel(",", "\u060C")
                     // U+FD3E: "﴾" ORNATE LEFT PARENTHESIS
                     // U+FD3F: "﴿" ORNATE RIGHT PARENTHESIS
                     .replaceKeyOfLabel("(", key("(", ")",
@@ -342,7 +342,7 @@ public final class Arabic extends LayoutBase {
                     // U+266A: "♪" EIGHTH NOTE
                     .setMoreKeysOf("\u2022", "\u266A")
                     // U+060C: "،" ARABIC COMMA
-                    .replaceKeyOfLabel(",", key("\u060C", moreKey(",")))
+                    .replaceKeyOfLabel(",", "\u060C")
                     .build();
         }
     }
