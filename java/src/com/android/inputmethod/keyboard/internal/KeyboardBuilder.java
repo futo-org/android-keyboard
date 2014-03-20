@@ -34,7 +34,6 @@ import com.android.inputmethod.keyboard.KeyboardId;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.utils.ResourceUtils;
-import com.android.inputmethod.latin.utils.RunInLocale;
 import com.android.inputmethod.latin.utils.StringUtils;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 import com.android.inputmethod.latin.utils.XmlParseUtils;
@@ -45,7 +44,6 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Locale;
 
 /**
  * Keyboard Building helper.
@@ -278,18 +276,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
 
             params.mThemeId = keyboardAttr.getInt(R.styleable.Keyboard_themeId, 0);
             params.mIconsSet.loadIcons(keyboardAttr);
-            final Locale locale = params.mId.mLocale;
-            params.mTextsSet.setLocale(locale);
-            final RunInLocale<Void> job = new RunInLocale<Void>() {
-                @Override
-                protected Void job(final Resources res) {
-                    params.mTextsSet.loadStringResources(mContext);
-                    return null;
-                }
-            };
-            // Null means the current system locale.
-            job.runInLocale(mResources,
-                    SubtypeLocaleUtils.isNoLanguage(params.mId.mSubtype) ? null : locale);
+            params.mTextsSet.setLocale(params.mId.mLocale, mContext);
 
             final int resourceId = keyboardAttr.getResourceId(
                     R.styleable.Keyboard_touchPositionCorrectionData, 0);

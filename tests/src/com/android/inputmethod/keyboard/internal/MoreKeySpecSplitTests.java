@@ -23,7 +23,6 @@ import android.test.InstrumentationTestCase;
 import android.test.suitebuilder.annotation.MediumTest;
 
 import com.android.inputmethod.latin.utils.CollectionUtils;
-import com.android.inputmethod.latin.utils.RunInLocale;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -41,14 +40,7 @@ public class MoreKeySpecSplitTests extends InstrumentationTestCase {
 
         final Instrumentation instrumentation = getInstrumentation();
         final Context targetContext = instrumentation.getTargetContext();
-        mTextsSet.setLocale(TEST_LOCALE);
-        new RunInLocale<Void>() {
-            @Override
-            protected Void job(final Resources res) {
-                mTextsSet.loadStringResources(targetContext);
-                return null;
-            }
-        }.runInLocale(targetContext.getResources(), TEST_LOCALE);
+        mTextsSet.setLocale(TEST_LOCALE, targetContext);
         final String[] testResourceNames = getAllResourceIdNames(
                 com.android.inputmethod.latin.tests.R.string.class);
         final Context testContext = instrumentation.getContext();

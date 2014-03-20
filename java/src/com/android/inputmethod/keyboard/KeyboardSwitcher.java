@@ -163,7 +163,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         mCurrentSettingsValues = settingsValues;
         try {
             mState.onLoadKeyboard();
-            mKeyboardTextsSet.setLocale(mSubtypeSwitcher.getCurrentSubtypeLocale());
+            mKeyboardTextsSet.setLocale(mSubtypeSwitcher.getCurrentSubtypeLocale(), mThemeContext);
         } catch (KeyboardLayoutSetException e) {
             Log.w(TAG, "loading keyboard failed: " + e.mKeyboardId, e.getCause());
             LatinImeLogger.logOnException(e.mKeyboardId.toString(), e.getCause());

@@ -22,11 +22,7 @@ import static com.android.inputmethod.keyboard.internal.KeyboardIconsSet.PREFIX_
 import static com.android.inputmethod.latin.Constants.CODE_OUTPUT_TEXT;
 import static com.android.inputmethod.latin.Constants.CODE_UNSPECIFIED;
 
-import android.content.Context;
-import android.content.res.Resources;
 import android.test.AndroidTestCase;
-
-import com.android.inputmethod.latin.utils.RunInLocale;
 
 import java.util.Locale;
 
@@ -51,16 +47,7 @@ abstract class KeySpecParserTestsBase extends AndroidTestCase {
     protected void setUp() throws Exception {
         super.setUp();
 
-        mTextsSet.setLocale(TEST_LOCALE);
-        final Context context = getContext();
-        new RunInLocale<Void>() {
-            @Override
-            protected Void job(final Resources res) {
-                mTextsSet.loadStringResources(context);
-                return null;
-            }
-        }.runInLocale(context.getResources(), TEST_LOCALE);
-
+        mTextsSet.setLocale(TEST_LOCALE, getContext());
         mCodeSettings = KeyboardCodesSet.getCode(CODE_SETTINGS_NAME);
         mCodeActionNext = KeyboardCodesSet.getCode("key_action_next");
         mSettingsIconId = KeyboardIconsSet.getIconId(ICON_SETTINGS_NAME);
