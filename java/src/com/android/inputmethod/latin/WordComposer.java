@@ -167,13 +167,6 @@ public final class WordComposer {
         return mPrimaryKeyCodes[index];
     }
 
-    public int getCodeBeforeCursor() {
-        if (mCursorPositionWithinWord < 1 || mCursorPositionWithinWord > mPrimaryKeyCodes.length) {
-            return Constants.NOT_A_CODE;
-        }
-        return mPrimaryKeyCodes[mCursorPositionWithinWord - 1];
-    }
-
     public InputPointers getInputPointers() {
         return mInputPointers;
     }
