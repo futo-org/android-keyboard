@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.latin;
 
+import com.android.inputmethod.event.CombinerChain;
 import com.android.inputmethod.event.Event;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.CoordinateUtils;
@@ -39,6 +40,8 @@ public final class WordComposer {
     public static final int CAPS_MODE_MANUAL_SHIFT_LOCKED = 0x3;
     public static final int CAPS_MODE_AUTO_SHIFTED = 0x5;
     public static final int CAPS_MODE_AUTO_SHIFT_LOCKED = 0x7;
+
+    private CombinerChain mCombinerChain;
 
     // An array of code points representing the characters typed so far.
     // The array is limited to MAX_WORD_LENGTH code points, but mTypedWord extends past that
@@ -87,6 +90,7 @@ public final class WordComposer {
     private boolean mIsFirstCharCapitalized;
 
     public WordComposer() {
+        mCombinerChain = new CombinerChain();
         mPrimaryKeyCodes = new int[MAX_WORD_LENGTH];
         mEvents = CollectionUtils.newArrayList();
         mTypedWord = new StringBuilder(MAX_WORD_LENGTH);
@@ -101,6 +105,7 @@ public final class WordComposer {
     }
 
     public WordComposer(final WordComposer source) {
+        mCombinerChain = source.mCombinerChain;
         mPrimaryKeyCodes = Arrays.copyOf(source.mPrimaryKeyCodes, source.mPrimaryKeyCodes.length);
         mEvents = new ArrayList<Event>(source.mEvents);
         mTypedWord = new StringBuilder(source.mTypedWord);
