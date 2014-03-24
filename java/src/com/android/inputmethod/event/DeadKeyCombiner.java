@@ -61,4 +61,9 @@ public class DeadKeyCombiner implements Combiner {
             }
         }
     }
+
+    @Override
+    public CharSequence getCombiningStateFeedback() {
+        return mDeadSequence;
+    }
 }

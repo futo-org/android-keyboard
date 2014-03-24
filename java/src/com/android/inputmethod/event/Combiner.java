@@ -34,4 +34,10 @@ public interface Combiner {
      * @return the resulting event.
      */
     Event processEvent(ArrayList<Event> previousEvents, Event event);
+
+    /**
+     * Get the feedback that should be shown to the user for the current state of this combiner.
+     * @return A CharSequence representing the feedback to show users. It may include styles.
+     */
+    CharSequence getCombiningStateFeedback();
 }

@@ -193,7 +193,10 @@ public final class WordComposer {
         final int keyY = event.mY;
         final int newIndex = size();
         mCombinerChain.processEvent(mEvents, event);
-        mTypedWord.appendCodePoint(primaryCode);
+        // TODO: remove mTypedWord and compute it dynamically when necessary. We also need to
+        // make the views of the composing word a SpannableString.
+        mTypedWord.replace(0, mTypedWord.length(),
+                mCombinerChain.getComposingWordWithCombiningFeedback().toString());
         mEvents.add(event);
         refreshSize();
         mCursorPositionWithinWord = mCodePointSize;

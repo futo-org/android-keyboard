@@ -18,6 +18,7 @@ package com.android.inputmethod.event;
 
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
+import com.android.inputmethod.latin.utils.StringUtils;
 
 /**
  * Class representing a generic input event as handled by Latin IME.
@@ -222,5 +223,20 @@ public class Event {
 
     public boolean isHandled() {
         return EVENT_NOT_HANDLED != mType;
+    }
+
+    public CharSequence getTextToCommit() {
+        switch (mType) {
+        case EVENT_MODE_KEY:
+        case EVENT_NOT_HANDLED:
+            return "";
+        case EVENT_INPUT_KEYPRESS:
+        case EVENT_TOGGLE:
+            return StringUtils.newSingleCodePointString(mCodePoint);
+        case EVENT_GESTURE:
+        case EVENT_SOFTWARE_GENERATED_STRING:
+            return mText;
+        }
+        throw new RuntimeException("Unknown event type: " + mType);
     }
 }
