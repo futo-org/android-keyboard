@@ -273,6 +273,9 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     public static int readKeyboardThemeIndex(final SharedPreferences prefs, final Resources res) {
         final int defaultThemeIndex = readDefaultKeyboardThemeIndex(res);
         final String themeIndexString = prefs.getString(PREF_KEYBOARD_LAYOUT, null);
+        if (themeIndexString == null) {
+            return defaultThemeIndex;
+        }
         try {
             return Integer.parseInt(themeIndexString);
         } catch (final NumberFormatException e) {
