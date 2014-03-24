@@ -23,10 +23,16 @@ import java.util.ArrayList;
 public class CombinerChain {
     private StringBuilder mComposingWord = new StringBuilder();
     public CombinerChain(final Combiner... combinerList) {}
+
     public void processEvent(final ArrayList<Event> previousEvents, final Event newEvent) {
         mComposingWord.append(newEvent.getTextToCommit());
     }
+
     public CharSequence getComposingWordWithCombiningFeedback() {
         return mComposingWord;
+    }
+
+    public void reset() {
+        mComposingWord.setLength(0);
     }
 }

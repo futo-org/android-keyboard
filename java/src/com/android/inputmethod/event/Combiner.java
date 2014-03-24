@@ -40,4 +40,9 @@ public interface Combiner {
      * @return A CharSequence representing the feedback to show users. It may include styles.
      */
     CharSequence getCombiningStateFeedback();
+
+    /**
+     * Reset the state of this combiner, for example when the cursor was moved.
+     */
+    void reset();
 }

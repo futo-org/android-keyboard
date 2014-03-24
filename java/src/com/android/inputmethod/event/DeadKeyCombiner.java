@@ -63,6 +63,11 @@ public class DeadKeyCombiner implements Combiner {
     }
 
     @Override
+    public void reset() {
+        mDeadSequence.setLength(0);
+    }
+
+    @Override
     public CharSequence getCombiningStateFeedback() {
         return mDeadSequence;
     }
