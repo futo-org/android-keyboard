@@ -72,7 +72,8 @@ const ForgettingCurveUtils::ProbabilityTable ForgettingCurveUtils::sProbabilityT
     const int elapsedTimeStepCount = getElapsedTimeStepCount(historicalInfo->getTimeStamp(),
             headerPolicy->getForgettingCurveDurationToLevelDown());
     return sProbabilityTable.getProbability(
-            headerPolicy->getForgettingCurveProbabilityValuesTableId(), historicalInfo->getLevel(),
+            headerPolicy->getForgettingCurveProbabilityValuesTableId(),
+            std::min(std::max(historicalInfo->getLevel(), 0), MAX_LEVEL),
             std::min(std::max(elapsedTimeStepCount, 0), MAX_ELAPSED_TIME_STEP_COUNT));
 }
 
