@@ -41,13 +41,11 @@ uint32_t SparseTable::get(const int id) const {
 bool SparseTable::set(const int id, const uint32_t value) {
     const int posInIndexTable = getPosInIndexTable(id);
     // Extends the index table if needed.
-    if (mIndexTableBuffer->getTailPosition() < posInIndexTable) {
-        int tailPos = mIndexTableBuffer->getTailPosition();
-        while(tailPos < posInIndexTable) {
-            if (!mIndexTableBuffer->writeUintAndAdvancePosition(NOT_EXIST, INDEX_SIZE, &tailPos)) {
-                AKLOGE("cannot extend index table. tailPos: %d to: %d", tailPos, posInIndexTable);
-                return false;
-            }
+    int tailPos = mIndexTableBuffer->getTailPosition();
+    while (tailPos <= posInIndexTable) {
+        if (!mIndexTableBuffer->writeUintAndAdvancePosition(NOT_EXIST, INDEX_SIZE, &tailPos)) {
+            AKLOGE("cannot extend index table. tailPos: %d to: %d", tailPos, posInIndexTable);
+            return false;
         }
     }
     if (contains(id)) {
