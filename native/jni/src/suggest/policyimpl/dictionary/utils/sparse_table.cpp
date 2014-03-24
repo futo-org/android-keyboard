@@ -34,6 +34,12 @@ uint32_t SparseTable::get(const int id) const {
     const int indexTableReadingPos = getPosInIndexTable(id);
     const int index = mIndexTableBuffer->readUint(INDEX_SIZE, indexTableReadingPos);
     const int contentTableReadingPos = getPosInContentTable(id, index);
+    if (contentTableReadingPos < 0
+            || contentTableReadingPos >= mContentTableBuffer->getTailPosition()) {
+        AKLOGE("contentTableReadingPos(%d) is invalid. id: %d, index: %d",
+                contentTableReadingPos, id, index);
+        return NOT_A_DICT_POS;
+    }
     const int contentValue = mContentTableBuffer->readUint(mDataSize, contentTableReadingPos);
     return contentValue == NOT_EXIST ? NOT_A_DICT_POS : contentValue;
 }
