@@ -16,6 +16,8 @@
 
 package com.android.inputmethod.event;
 
+import android.text.SpannableStringBuilder;
+
 import com.android.inputmethod.latin.utils.CollectionUtils;
 
 import java.util.ArrayList;
@@ -33,8 +35,10 @@ import java.util.ArrayList;
  * a colored background.
  */
 public class CombinerChain {
-    // TODO: Create an object type to represent input material + visual feedback + decoding state
-
+    // The already combined text, as described above
+    private StringBuilder mCombinedText;
+    // The feedback on the composing state, as described above
+    private SpannableStringBuilder mStateFeedback;
     private final ArrayList<Combiner> mCombiners;
 
     /**
@@ -50,9 +54,15 @@ public class CombinerChain {
         mCombiners = CollectionUtils.newArrayList();
         // The dead key combiner is always active, and always first
         mCombiners.add(new DeadKeyCombiner());
+        mCombinedText = new StringBuilder();
+        mStateFeedback = new SpannableStringBuilder();
     }
 
-    // Pass a new event through the whole chain.
+    /**
+     * Pass a new event through the whole chain.
+     * @param previousEvents the list of previous events in this composition
+     * @param newEvent the new event to process
+     */
     public void processEvent(final ArrayList<Event> previousEvents, final Event newEvent) {
         final ArrayList<Event> modifiablePreviousEvents = new ArrayList<Event>(previousEvents);
         Event event = newEvent;
@@ -62,8 +72,24 @@ public class CombinerChain {
             event = combiner.processEvent(modifiablePreviousEvents, event);
             if (null == event) {
                 // Combiners return null if they eat the event.
-                return;
+                break;
             }
         }
+        if (null != event) {
+            mCombinedText.append(event.getTextToCommit());
+        }
+        mStateFeedback.clear();
+        for (int i = mCombiners.size() - 1; i >= 0; --i) {
+            mStateFeedback.append(mCombiners.get(i).getCombiningStateFeedback());
+        }
+    }
+
+    /**
+     * Get the char sequence that should be displayed as the composing word. It may include
+     * styling spans.
+     */
+    public CharSequence getComposingWordWithCombiningFeedback() {
+        final SpannableStringBuilder s = new SpannableStringBuilder(mCombinedText);
+        return s.append(mStateFeedback);
     }
 }
