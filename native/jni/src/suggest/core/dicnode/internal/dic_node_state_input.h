@@ -53,7 +53,7 @@ class DicNodeStateInput {
         mTerminalDiffCost[pointerId] = terminalDiffCost;
     }
 
-    void init(const DicNodeStateInput *const src) {
+    void initByCopy(const DicNodeStateInput *const src) {
         init(src, false);
     }
 
