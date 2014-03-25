@@ -20,7 +20,6 @@
 #include "defines.h"
 #include "suggest/core/dicnode/internal/dic_node_state_input.h"
 #include "suggest/core/dicnode/internal/dic_node_state_output.h"
-#include "suggest/core/dicnode/internal/dic_node_state_prevword.h"
 #include "suggest/core/dicnode/internal/dic_node_state_scoring.h"
 
 namespace latinime {
@@ -29,65 +28,50 @@ class DicNodeState {
  public:
     DicNodeStateInput mDicNodeStateInput;
     DicNodeStateOutput mDicNodeStateOutput;
-    DicNodeStatePrevWord mDicNodeStatePrevWord;
     DicNodeStateScoring mDicNodeStateScoring;
 
     AK_FORCE_INLINE DicNodeState()
-            : mDicNodeStateInput(), mDicNodeStateOutput(), mDicNodeStatePrevWord(),
-              mDicNodeStateScoring() {
-    }
+            : mDicNodeStateInput(), mDicNodeStateOutput(), mDicNodeStateScoring() {}
 
     ~DicNodeState() {}
 
     DicNodeState &operator=(const DicNodeState& src) {
-        init(&src);
+        initByCopy(&src);
         return *this;
     }
 
     DicNodeState(const DicNodeState& src)
-            : mDicNodeStateInput(), mDicNodeStateOutput(), mDicNodeStatePrevWord(),
-              mDicNodeStateScoring() {
-        init(&src);
+            : mDicNodeStateInput(), mDicNodeStateOutput(), mDicNodeStateScoring() {
+        initByCopy(&src);
     }
 
-    // Init with prevWordPos
-    void init(const int prevWordPos) {
+    // Init for root
+    void init() {
         mDicNodeStateInput.init();
         mDicNodeStateOutput.init();
-        mDicNodeStatePrevWord.init(prevWordPos);
         mDicNodeStateScoring.init();
     }
 
     // Init with previous word.
     void initAsRootWithPreviousWord(const DicNodeState *prevWordDicNodeState,
-            const int prevWordPos, const int prevWordCodePointCount) {
-        mDicNodeStateOutput.init(); // reset for next word
+            const int prevWordCodePointCount) {
+        mDicNodeStateOutput.init(&prevWordDicNodeState->mDicNodeStateOutput);
         mDicNodeStateInput.init(
                 &prevWordDicNodeState->mDicNodeStateInput, true /* resetTerminalDiffCost */);
-        mDicNodeStateScoring.init(&prevWordDicNodeState->mDicNodeStateScoring);
-        mDicNodeStatePrevWord.init(
-                prevWordDicNodeState->mDicNodeStatePrevWord.getPrevWordCount() + 1,
-                prevWordPos,
-                prevWordDicNodeState->mDicNodeStatePrevWord.getPrevWordBuf(),
-                prevWordDicNodeState->mDicNodeStatePrevWord.getPrevWordLength(),
-                prevWordDicNodeState->mDicNodeStateOutput.getCodePointBuf(),
-                prevWordCodePointCount,
-                prevWordDicNodeState->mDicNodeStatePrevWord.getSecondWordFirstInputIndex(),
-                prevWordDicNodeState->mDicNodeStateInput.getInputIndex(0) /* lastInputIndex */);
+        mDicNodeStateScoring.initByCopy(&prevWordDicNodeState->mDicNodeStateScoring);
     }
 
     // Init by copy
-    AK_FORCE_INLINE void init(const DicNodeState *const src) {
-        mDicNodeStateInput.init(&src->mDicNodeStateInput);
-        mDicNodeStateOutput.init(&src->mDicNodeStateOutput);
-        mDicNodeStatePrevWord.init(&src->mDicNodeStatePrevWord);
-        mDicNodeStateScoring.init(&src->mDicNodeStateScoring);
+    AK_FORCE_INLINE void initByCopy(const DicNodeState *const src) {
+        mDicNodeStateInput.initByCopy(&src->mDicNodeStateInput);
+        mDicNodeStateOutput.initByCopy(&src->mDicNodeStateOutput);
+        mDicNodeStateScoring.initByCopy(&src->mDicNodeStateScoring);
     }
 
     // Init by copy and adding merged node code points.
     void init(const DicNodeState *const src, const uint16_t mergedNodeCodePointCount,
             const int *const mergedNodeCodePoints) {
-        init(src);
+        initByCopy(src);
         mDicNodeStateOutput.addMergedNodeCodePoints(
                 mergedNodeCodePointCount, mergedNodeCodePoints);
     }

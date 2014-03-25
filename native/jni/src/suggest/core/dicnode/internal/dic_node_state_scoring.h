@@ -53,7 +53,7 @@ class DicNodeStateScoring {
         mContainedErrorTypes = ErrorTypeUtils::NOT_AN_ERROR;
     }
 
-    AK_FORCE_INLINE void init(const DicNodeStateScoring *const scoring) {
+    AK_FORCE_INLINE void initByCopy(const DicNodeStateScoring *const scoring) {
         mEditCorrectionCount = scoring->mEditCorrectionCount;
         mProximityCorrectionCount = scoring->mProximityCorrectionCount;
         mCompletionCount = scoring->mCompletionCount;
