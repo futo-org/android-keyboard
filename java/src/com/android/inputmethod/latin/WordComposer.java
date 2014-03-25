@@ -200,6 +200,33 @@ public final class WordComposer {
         mAutoCorrection = null;
     }
 
+    /**
+     * Delete the last composing unit as a result of hitting backspace.
+     */
+    public void deleteLast(final Event event) {
+        mCombinerChain.processEvent(mEvents, event);
+        mEvents.add(event);
+        refreshTypedWordCache();
+        // We may have deleted the last one.
+        if (0 == size()) {
+            mIsFirstCharCapitalized = false;
+        }
+        if (mTrailingSingleQuotesCount > 0) {
+            --mTrailingSingleQuotesCount;
+        } else {
+            int i = mTypedWordCache.length();
+            while (i > 0) {
+                i = Character.offsetByCodePoints(mTypedWordCache, i, -1);
+                if (Constants.CODE_SINGLE_QUOTE != Character.codePointAt(mTypedWordCache, i)) {
+                    break;
+                }
+                ++mTrailingSingleQuotesCount;
+            }
+        }
+        mCursorPositionWithinWord = mCodePointSize;
+        mAutoCorrection = null;
+    }
+
     public void setCursorPositionWithinWord(final int posWithinWord) {
         mCursorPositionWithinWord = posWithinWord;
         // TODO: compute where that puts us inside the events
@@ -294,33 +321,6 @@ public final class WordComposer {
         }
         mIsResumed = true;
         mPreviousWordForSuggestion = null == previousWord ? null : previousWord.toString();
-    }
-
-    /**
-     * Delete the last composing unit as a result of hitting backspace.
-     */
-    public void deleteLast(final Event event) {
-        mCombinerChain.processEvent(mEvents, event);
-        mEvents.add(event);
-        refreshTypedWordCache();
-        // We may have deleted the last one.
-        if (0 == size()) {
-            mIsFirstCharCapitalized = false;
-        }
-        if (mTrailingSingleQuotesCount > 0) {
-            --mTrailingSingleQuotesCount;
-        } else {
-            int i = mTypedWordCache.length();
-            while (i > 0) {
-                i = Character.offsetByCodePoints(mTypedWordCache, i, -1);
-                if (Constants.CODE_SINGLE_QUOTE != Character.codePointAt(mTypedWordCache, i)) {
-                    break;
-                }
-                ++mTrailingSingleQuotesCount;
-            }
-        }
-        mCursorPositionWithinWord = mCodePointSize;
-        mAutoCorrection = null;
     }
 
     /**
