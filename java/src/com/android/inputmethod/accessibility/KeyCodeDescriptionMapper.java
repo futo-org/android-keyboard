@@ -58,9 +58,6 @@ public final class KeyCodeDescriptionMapper {
     }
 
     private void initInternal() {
-        // Manual label substitutions for key labels with no string resource
-        mKeyLabelMap.put(":-)", R.string.spoken_description_smiley);
-
         // Special non-character codes defined in Keyboard
         mKeyCodeMap.put(Constants.CODE_SPACE, R.string.spoken_description_space);
         mKeyCodeMap.put(Constants.CODE_DELETE, R.string.spoken_description_delete);
@@ -75,6 +72,7 @@ public final class KeyCodeDescriptionMapper {
         mKeyCodeMap.put(Constants.CODE_ACTION_NEXT, R.string.spoken_description_action_next);
         mKeyCodeMap.put(Constants.CODE_ACTION_PREVIOUS,
                 R.string.spoken_description_action_previous);
+        mKeyCodeMap.put(Constants.CODE_EMOJI, R.string.spoken_description_emoji);
     }
 
     /**
