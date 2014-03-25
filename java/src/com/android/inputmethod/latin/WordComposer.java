@@ -314,29 +314,14 @@ public final class WordComposer {
     }
 
     /**
-     * Delete the last keystroke as a result of hitting backspace.
+     * Delete the last composing unit as a result of hitting backspace.
      */
-    public void deleteLast() {
-        final int size = size();
-        if (size > 0) {
-            // Note: mTypedWord.length() and mCodes.length differ when there are surrogate pairs
-            final int stringBuilderLength = mTypedWord.length();
-            if (stringBuilderLength < size) {
-                throw new RuntimeException(
-                        "In WordComposer: mCodes and mTypedWords have non-matching lengths");
-            }
-            final int lastChar = mTypedWord.codePointBefore(stringBuilderLength);
-            // TODO: with events and composition, this is absolutely not necessarily true.
-            mEvents.remove(mEvents.size() - 1);
-            if (Character.isSupplementaryCodePoint(lastChar)) {
-                mTypedWord.delete(stringBuilderLength - 2, stringBuilderLength);
-            } else {
-                mTypedWord.deleteCharAt(stringBuilderLength - 1);
-            }
-            if (Character.isUpperCase(lastChar)) mCapsCount--;
-            if (Character.isDigit(lastChar)) mDigitsCount--;
-            refreshSize();
-        }
+    public void deleteLast(final Event event) {
+        mCombinerChain.processEvent(mEvents, event);
+        mTypedWord.replace(0, mTypedWord.length(),
+                mCombinerChain.getComposingWordWithCombiningFeedback().toString());
+        mEvents.add(event);
+        refreshSize();
         // We may have deleted the last one.
         if (0 == size()) {
             mIsFirstCharCapitalized = false;
