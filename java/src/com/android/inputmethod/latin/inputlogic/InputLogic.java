@@ -32,6 +32,7 @@ import com.android.inputmethod.event.InputTransaction;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.Dictionary;
+import com.android.inputmethod.latin.DictionaryFacilitatorForSuggest;
 import com.android.inputmethod.latin.InputPointers;
 import com.android.inputmethod.latin.LastComposedWord;
 import com.android.inputmethod.latin.LatinIME;
@@ -77,8 +78,7 @@ public final class InputLogic {
     private int mSpaceState;
     // Never null
     public SuggestedWords mSuggestedWords = SuggestedWords.EMPTY;
-    // TODO: mSuggest should be touched by a single thread.
-    public volatile Suggest mSuggest;
+    public final Suggest mSuggest = new Suggest();
 
     public LastComposedWord mLastComposedWord = LastComposedWord.NOT_A_COMPOSED_WORD;
     public final WordComposer mWordComposer;
@@ -104,15 +104,6 @@ public final class InputLogic {
         mWordComposer = new WordComposer();
         mConnection = new RichInputConnection(latinIME);
         mInputLogicHandler = InputLogicHandler.NULL_HANDLER;
-    }
-
-    // Replace the old Suggest with the passed Suggest and close it.
-    public void replaceSuggest(final Suggest newSuggest) {
-        final Suggest oldSuggest = mSuggest;
-        mSuggest = newSuggest;
-        if (oldSuggest != null) {
-            oldSuggest.close();
-        }
     }
 
     /**
@@ -283,23 +274,18 @@ public final class InputLogic {
 
         // We should show the "Touch again to save" hint if the user pressed the first entry
         // AND it's in none of our current dictionaries (main, user or otherwise).
-        // Please note that if mSuggest is null, it means that everything is off: suggestion
-        // and correction, so we shouldn't try to show the hint
-        final Suggest suggest = mSuggest;
+        final DictionaryFacilitatorForSuggest dictionaryFacilitator =
+                mSuggest.mDictionaryFacilitator;
         final boolean showingAddToDictionaryHint =
                 (SuggestedWordInfo.KIND_TYPED == suggestionInfo.mKind
                         || SuggestedWordInfo.KIND_OOV_CORRECTION == suggestionInfo.mKind)
-                        && suggest != null
-                        // If the suggestion is not in the dictionary, the hint should be shown.
-                        && !suggest.mDictionaryFacilitator.isValidWord(suggestion,
-                                true /* ignoreCase */);
+                        && !dictionaryFacilitator.isValidWord(suggestion, true /* ignoreCase */);
 
         if (settingsValues.mIsInternal) {
             LatinImeLoggerUtils.onSeparator((char)Constants.CODE_SPACE,
                     Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
         }
-        if (showingAddToDictionaryHint
-                && suggest.mDictionaryFacilitator.isUserDictionaryEnabled()) {
+        if (showingAddToDictionaryHint && dictionaryFacilitator.isUserDictionaryEnabled()) {
             mSuggestionStripViewAccessor.showAddToDictionaryHint(suggestion);
         } else {
             // If we're not showing the "Touch again to save", then update the suggestion strip.
@@ -1231,20 +1217,17 @@ public final class InputLogic {
         if (!settingsValues.mCorrectionEnabled) return;
 
         if (TextUtils.isEmpty(suggestion)) return;
-        final Suggest suggest = mSuggest;
-        if (suggest == null) return;
-
         final boolean wasAutoCapitalized =
                 mWordComposer.wasAutoCapitalized() && !mWordComposer.isMostlyCaps();
         final int timeStampInSeconds = (int)TimeUnit.MILLISECONDS.toSeconds(
                 System.currentTimeMillis());
-        suggest.mDictionaryFacilitator.addToUserHistory(suggestion, wasAutoCapitalized, prevWord,
+        mSuggest.mDictionaryFacilitator.addToUserHistory(suggestion, wasAutoCapitalized, prevWord,
                 timeStampInSeconds);
     }
 
     public void performUpdateSuggestionStripSync(final SettingsValues settingsValues) {
         // Check if we have a suggestion engine attached.
-        if (mSuggest == null || !settingsValues.isSuggestionsRequested()) {
+        if (!settingsValues.isSuggestionsRequested()) {
             if (mWordComposer.isComposingWord()) {
                 Log.w(TAG, "Called updateSuggestionsOrPredictions but suggestions were not "
                         + "requested!");
@@ -1446,10 +1429,8 @@ public final class InputLogic {
         }
         mConnection.deleteSurroundingText(deleteLength, 0);
         if (!TextUtils.isEmpty(previousWord) && !TextUtils.isEmpty(committedWord)) {
-            if (mSuggest != null) {
-                mSuggest.mDictionaryFacilitator.cancelAddingUserHistory(
-                        previousWord, committedWordString);
-            }
+            mSuggest.mDictionaryFacilitator.cancelAddingUserHistory(
+                    previousWord, committedWordString);
         }
         final String stringToCommit = originallyTypedWord + mLastComposedWord.mSeparatorString;
         final SpannableString textToCommit = new SpannableString(stringToCommit);
