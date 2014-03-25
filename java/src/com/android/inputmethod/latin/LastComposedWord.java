@@ -38,38 +38,25 @@ public final class LastComposedWord {
     // or it may be exactly what the user typed if it's in the dictionary or the IME does not have
     // enough confidence in any suggestion to auto-correct (auto-correct to typed word).
     public static final int COMMIT_TYPE_DECIDED_WORD = 2;
-    // COMMIT_TYPE_CANCEL_AUTO_CORRECT is used upon committing back the old word upon cancelling
-    // an auto-correction.
-    public static final int COMMIT_TYPE_CANCEL_AUTO_CORRECT = 3;
 
     public static final String NOT_A_SEPARATOR = "";
 
-    public final ArrayList<Event> mEvents;
     public final String mTypedWord;
     public final CharSequence mCommittedWord;
     public final String mSeparatorString;
     public final String mPrevWord;
     public final int mCapitalizedMode;
-    public final InputPointers mInputPointers =
-            new InputPointers(Constants.DICTIONARY_MAX_WORD_LENGTH);
 
     private boolean mActive;
 
     public static final LastComposedWord NOT_A_COMPOSED_WORD =
-            new LastComposedWord(new ArrayList<Event>(), null, "", "",
-                    NOT_A_SEPARATOR, null, WordComposer.CAPS_MODE_OFF);
+            new LastComposedWord("", "", NOT_A_SEPARATOR, null, WordComposer.CAPS_MODE_OFF);
 
     // Warning: this is using the passed objects as is and fully expects them to be
     // immutable. Do not fiddle with their contents after you passed them to this constructor.
-    public LastComposedWord(final ArrayList<Event> events,
-            final InputPointers inputPointers, final String typedWord,
-            final CharSequence committedWord, final String separatorString,
-            final String prevWord, final int capitalizedMode) {
-        if (inputPointers != null) {
-            mInputPointers.copy(inputPointers);
-        }
+    public LastComposedWord(final String typedWord, final CharSequence committedWord,
+            final String separatorString, final String prevWord, final int capitalizedMode) {
         mTypedWord = typedWord;
-        mEvents = new ArrayList<Event>(events);
         mCommittedWord = committedWord;
         mSeparatorString = separatorString;
         mActive = true;
