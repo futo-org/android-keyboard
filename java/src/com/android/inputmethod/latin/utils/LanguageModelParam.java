@@ -119,7 +119,7 @@ public final class LanguageModelParam {
     private static LanguageModelParam detectWhetherVaildWordOrNotAndGetLanguageModelParam(
             final String prevWord, final String targetWord, final int timestamp,
             final DictionaryFacilitatorForSuggest dictionaryFacilitator) {
-        final Locale locale = dictionaryFacilitator.mLocale;
+        final Locale locale = dictionaryFacilitator.getLocale();
         if (!dictionaryFacilitator.isValidWord(targetWord, true /* ignoreCase */)) {
             // OOV word.
             return createAndGetLanguageModelParamOfWord(prevWord, targetWord, timestamp,

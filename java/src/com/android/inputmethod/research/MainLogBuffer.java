@@ -155,8 +155,9 @@ public abstract class MainLogBuffer extends FixedLogBuffer {
         }
         // Reload the dictionary in case it has changed (e.g., because the user has changed
         // languages).
-        if ((mDictionaryFacilitator == null || !mDictionaryFacilitator.hasMainDictionary())
-                && mDictionaryForTesting == null) {
+        if ((mDictionaryFacilitator == null
+                || !mDictionaryFacilitator.hasInitializedMainDictionary())
+                        && mDictionaryForTesting == null) {
             // Main dictionary is unavailable.  Since we cannot check it, we cannot tell if a
             // word is out-of-vocabulary or not.  Therefore, we must judge the entire buffer
             // contents to potentially pose a privacy risk.
