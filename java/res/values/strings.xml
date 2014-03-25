@@ -192,8 +192,8 @@
     <string name="spoken_description_space">Space</string>
     <!-- Spoken description for the "Mic" keyboard key. -->
     <string name="spoken_description_mic">Voice input</string>
-    <!-- Spoken description for the "Smiley" keyboard key. -->
-    <string name="spoken_description_smiley">Smiley face</string>
+    <!-- Spoken description for the "Emoji" keyboard key. -->
+    <string name="spoken_description_emoji">Emoji</string>
     <!-- Spoken description for the "Return" keyboard key. -->
     <string name="spoken_description_return">Return</string>
     <!-- Spoken description for the "Search" keyboard key. -->
