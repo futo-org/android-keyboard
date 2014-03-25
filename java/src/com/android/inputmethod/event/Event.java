@@ -229,9 +229,9 @@ public class Event {
         switch (mType) {
         case EVENT_MODE_KEY:
         case EVENT_NOT_HANDLED:
+        case EVENT_TOGGLE:
             return "";
         case EVENT_INPUT_KEYPRESS:
-        case EVENT_TOGGLE:
             return StringUtils.newSingleCodePointString(mCodePoint);
         case EVENT_GESTURE:
         case EVENT_SOFTWARE_GENERATED_STRING:

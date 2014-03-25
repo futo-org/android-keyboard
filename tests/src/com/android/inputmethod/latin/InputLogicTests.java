@@ -454,4 +454,24 @@ public class InputLogicTests extends InputTestsBase {
         assertEquals("predictions after recorrection", "Obama",
                 suggestedWords.size() > 0 ? suggestedWords.getWord(0) : null);
     }
+
+    public void testComposingMultipleBackspace() {
+        final String WORD_TO_TYPE = "radklro";
+        final int TIMES_TO_TYPE = 3;
+        final int TIMES_TO_BACKSPACE = 8;
+        type(WORD_TO_TYPE);
+        type(Constants.CODE_DELETE);
+        type(Constants.CODE_DELETE);
+        type(Constants.CODE_DELETE);
+        type(WORD_TO_TYPE);
+        type(Constants.CODE_DELETE);
+        type(Constants.CODE_DELETE);
+        type(WORD_TO_TYPE);
+        type(Constants.CODE_DELETE);
+        type(Constants.CODE_DELETE);
+        type(Constants.CODE_DELETE);
+        assertEquals("composing with multiple backspace",
+                WORD_TO_TYPE.length() * TIMES_TO_TYPE - TIMES_TO_BACKSPACE,
+                mEditText.getText().length());
+    }
 }

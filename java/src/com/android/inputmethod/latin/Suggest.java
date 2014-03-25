@@ -18,6 +18,7 @@ package com.android.inputmethod.latin;
 
 import android.text.TextUtils;
 
+import com.android.inputmethod.event.Event;
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.define.ProductionFlag;
@@ -104,7 +105,11 @@ public final class Suggest {
         if (trailingSingleQuotesCount > 0) {
             wordComposerForLookup = new WordComposer(wordComposer);
             for (int i = trailingSingleQuotesCount - 1; i >= 0; --i) {
-                wordComposerForLookup.deleteLast();
+                // TODO: do not create a fake event for this. Ideally the word composer should know
+                // how to give out the word without trailing quotes and we can remove this entirely
+                wordComposerForLookup.deleteLast(Event.createSoftwareKeypressEvent(
+                        Event.NOT_A_CODE_POINT, Constants.CODE_DELETE,
+                        Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE));
             }
         } else {
             wordComposerForLookup = wordComposer;

@@ -17,7 +17,9 @@
 package com.android.inputmethod.event;
 
 import android.text.SpannableStringBuilder;
+import android.text.TextUtils;
 
+import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 
 import java.util.ArrayList;
@@ -84,7 +86,19 @@ public class CombinerChain {
             }
         }
         if (null != event) {
-            mCombinedText.append(event.getTextToCommit());
+            // TODO: figure out the generic way of doing this
+            if (Constants.CODE_DELETE == event.mKeyCode) {
+                final int length = mCombinedText.length();
+                if (length > 0) {
+                    final int lastCodePoint = mCombinedText.codePointBefore(length);
+                    mCombinedText.delete(length - Character.charCount(lastCodePoint), length);
+                }
+            } else {
+                final CharSequence textToCommit = event.getTextToCommit();
+                if (!TextUtils.isEmpty(textToCommit)) {
+                    mCombinedText.append(textToCommit);
+                }
+            }
         }
         mStateFeedback.clear();
         for (int i = mCombiners.size() - 1; i >= 0; --i) {

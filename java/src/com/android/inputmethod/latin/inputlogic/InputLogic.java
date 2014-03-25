@@ -908,7 +908,7 @@ public final class InputLogic {
                 mWordComposer.reset();
                 mWordComposer.setRejectedBatchModeSuggestion(rejectedSuggestion);
             } else {
-                mWordComposer.deleteLast();
+                mWordComposer.deleteLast(inputTransaction.mEvent);
             }
             mConnection.setComposingText(getTextWithUnderline(mWordComposer.getTypedWord()), 1);
             handler.postUpdateSuggestionStrip();
