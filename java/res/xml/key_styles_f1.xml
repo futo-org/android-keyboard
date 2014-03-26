@@ -36,7 +36,7 @@
             <key-style
                 latin:styleName="f1MoreKeysStyle"
                 latin:keyLabelFlags="hasPopupHint"
-                latin:moreKeys="!text/settings_as_more_key"
+                latin:moreKeys="!text/keyspec_settings"
                 latin:backgroundType="functional" />
         </default>
     </switch>

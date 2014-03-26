@@ -27,21 +27,21 @@
          U+00E6: "æ" LATIN SMALL LETTER AE
          U+00E5: "å" LATIN SMALL LETTER A WITH RING ABOVE
          U+0101: "ā" LATIN SMALL LETTER A WITH MACRON -->
-    <string name="more_keys_for_a">&#x00E2;,&#x00E3;,&#x0103;,&#x00E0;,&#x00E1;,&#x00E4;,&#x00E6;,&#x00E5;,&#x0101;</string>
+    <string name="morekeys_a">&#x00E2;,&#x00E3;,&#x0103;,&#x00E0;,&#x00E1;,&#x00E4;,&#x00E6;,&#x00E5;,&#x0101;</string>
     <!-- U+00EE: "î" LATIN SMALL LETTER I WITH CIRCUMFLEX
          U+00EF: "ï" LATIN SMALL LETTER I WITH DIAERESIS
          U+00EC: "ì" LATIN SMALL LETTER I WITH GRAVE
          U+00ED: "í" LATIN SMALL LETTER I WITH ACUTE
          U+012F: "į" LATIN SMALL LETTER I WITH OGONEK
          U+012B: "ī" LATIN SMALL LETTER I WITH MACRON -->
-    <string name="more_keys_for_i">&#x00EE;,&#x00EF;,&#x00EC;,&#x00ED;,&#x012F;,&#x012B;</string>
+    <string name="morekeys_i">&#x00EE;,&#x00EF;,&#x00EC;,&#x00ED;,&#x012F;,&#x012B;</string>
     <!-- U+0219: "ș" LATIN SMALL LETTER S WITH COMMA BELOW
          U+00DF: "ß" LATIN SMALL LETTER SHARP S
          U+015B: "ś" LATIN SMALL LETTER S WITH ACUTE
          U+0161: "š" LATIN SMALL LETTER S WITH CARON -->
-    <string name="more_keys_for_s">&#x0219;,&#x00DF;,&#x015B;,&#x0161;</string>
+    <string name="morekeys_s">&#x0219;,&#x00DF;,&#x015B;,&#x0161;</string>
     <!-- U+021B: "ț" LATIN SMALL LETTER T WITH COMMA BELOW -->
-    <string name="more_keys_for_t">&#x021B;</string>
+    <string name="morekeys_t">&#x021B;</string>
     <string name="single_quotes">!text/single_9qm_rqm</string>
     <string name="double_quotes">!text/double_9qm_rqm</string>
 </resources>

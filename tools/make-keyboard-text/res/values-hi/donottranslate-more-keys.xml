@@ -22,42 +22,39 @@
          U+0915: "क" DEVANAGARI LETTER KA
          U+0916: "ख" DEVANAGARI LETTER KHA
          U+0917: "ग" DEVANAGARI LETTER GA -->
-    <string name="label_to_alpha_key">&#x0915;&#x0916;&#x0917;</string>
+    <string name="keylabel_to_alpha">&#x0915;&#x0916;&#x0917;</string>
     <!-- U+0967: "१" DEVANAGARI DIGIT ONE -->
-    <string name="keylabel_for_symbols_1">&#x0967;</string>
+    <string name="keyspec_symbols_1">&#x0967;</string>
     <!-- U+0968: "२" DEVANAGARI DIGIT TWO -->
-    <string name="keylabel_for_symbols_2">&#x0968;</string>
+    <string name="keyspec_symbols_2">&#x0968;</string>
     <!-- U+0969: "३" DEVANAGARI DIGIT THREE -->
-    <string name="keylabel_for_symbols_3">&#x0969;</string>
+    <string name="keyspec_symbols_3">&#x0969;</string>
     <!-- U+096A: "४" DEVANAGARI DIGIT FOUR -->
-    <string name="keylabel_for_symbols_4">&#x096A;</string>
+    <string name="keyspec_symbols_4">&#x096A;</string>
     <!-- U+096B: "५" DEVANAGARI DIGIT FIVE -->
-    <string name="keylabel_for_symbols_5">&#x096B;</string>
+    <string name="keyspec_symbols_5">&#x096B;</string>
     <!-- U+096C: "६" DEVANAGARI DIGIT SIX -->
-    <string name="keylabel_for_symbols_6">&#x096C;</string>
+    <string name="keyspec_symbols_6">&#x096C;</string>
     <!-- U+096D: "७" DEVANAGARI DIGIT SEVEN -->
-    <string name="keylabel_for_symbols_7">&#x096D;</string>
+    <string name="keyspec_symbols_7">&#x096D;</string>
     <!-- U+096E: "८" DEVANAGARI DIGIT EIGHT -->
-    <string name="keylabel_for_symbols_8">&#x096E;</string>
+    <string name="keyspec_symbols_8">&#x096E;</string>
     <!-- U+096F: "९" DEVANAGARI DIGIT NINE -->
-    <string name="keylabel_for_symbols_9">&#x096F;</string>
+    <string name="keyspec_symbols_9">&#x096F;</string>
     <!-- U+0966: "०" DEVANAGARI DIGIT ZERO -->
-    <string name="keylabel_for_symbols_0">&#x0966;</string>
+    <string name="keyspec_symbols_0">&#x0966;</string>
     <!-- Label for "switch to symbols" key. -->
-    <string name="label_to_symbol_key">?&#x0967;&#x0968;&#x0969;</string>
-    <!-- Label for "switch to symbols with microphone" key. This string shouldn't include the "mic"
-         part because it'll be appended by the code. -->
-    <string name="label_to_symbol_with_microphone_key">&#x0967;&#x0968;&#x0969;</string>
-    <string name="additional_more_keys_for_symbols_1">1</string>
-    <string name="additional_more_keys_for_symbols_2">2</string>
-    <string name="additional_more_keys_for_symbols_3">3</string>
-    <string name="additional_more_keys_for_symbols_4">4</string>
-    <string name="additional_more_keys_for_symbols_5">5</string>
-    <string name="additional_more_keys_for_symbols_6">6</string>
-    <string name="additional_more_keys_for_symbols_7">7</string>
-    <string name="additional_more_keys_for_symbols_8">8</string>
-    <string name="additional_more_keys_for_symbols_9">9</string>
-    <string name="additional_more_keys_for_symbols_0">0</string>
+    <string name="keylabel_to_symbol">?&#x0967;&#x0968;&#x0969;</string>
+    <string name="additional_morekeys_symbols_1">1</string>
+    <string name="additional_morekeys_symbols_2">2</string>
+    <string name="additional_morekeys_symbols_3">3</string>
+    <string name="additional_morekeys_symbols_4">4</string>
+    <string name="additional_morekeys_symbols_5">5</string>
+    <string name="additional_morekeys_symbols_6">6</string>
+    <string name="additional_morekeys_symbols_7">7</string>
+    <string name="additional_morekeys_symbols_8">8</string>
+    <string name="additional_morekeys_symbols_9">9</string>
+    <string name="additional_morekeys_symbols_0">0</string>
     <!-- U+20B9: "₹" INDIAN RUPEE SIGN -->
-    <string name="keylabel_for_currency">&#x20B9;</string>
+    <string name="keyspec_currency">&#x20B9;</string>
 </resources>

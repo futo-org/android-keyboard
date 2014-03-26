@@ -19,22 +19,22 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- U+0449: "щ" CYRILLIC SMALL LETTER SHCHA -->
-    <string name="keylabel_for_east_slavic_row1_9">&#x0449;</string>
+    <string name="keyspec_east_slavic_row1_9">&#x0449;</string>
     <!-- U+044B: "ы" CYRILLIC SMALL LETTER YERU -->
-    <string name="keylabel_for_east_slavic_row2_2">&#x044B;</string>
+    <string name="keyspec_east_slavic_row2_2">&#x044B;</string>
     <!-- U+044D: "э" CYRILLIC SMALL LETTER E -->
-    <string name="keylabel_for_east_slavic_row2_11">&#x044D;</string>
+    <string name="keyspec_east_slavic_row2_11">&#x044D;</string>
     <!-- U+0438: "и" CYRILLIC SMALL LETTER I -->
-    <string name="keylabel_for_east_slavic_row3_5">&#x0438;</string>
+    <string name="keyspec_east_slavic_row3_5">&#x0438;</string>
     <!-- U+0451: "ё" CYRILLIC SMALL LETTER IO -->
-    <string name="more_keys_for_cyrillic_ie">&#x0451;</string>
+    <string name="morekeys_cyrillic_ie">&#x0451;</string>
     <!-- U+044A: "ъ" CYRILLIC SMALL LETTER HARD SIGN -->
-    <string name="more_keys_for_cyrillic_soft_sign">&#x044A;</string>
+    <string name="morekeys_cyrillic_soft_sign">&#x044A;</string>
     <!-- Label for "switch to alphabetic" key.
          U+0410: "А" CYRILLIC CAPITAL LETTER A
          U+0411: "Б" CYRILLIC CAPITAL LETTER BE
          U+0412: "В" CYRILLIC CAPITAL LETTER VE -->
-    <string name="label_to_alpha_key">&#x0410;&#x0411;&#x0412;</string>
+    <string name="keylabel_to_alpha">&#x0410;&#x0411;&#x0412;</string>
     <string name="single_quotes">!text/single_9qm_lqm</string>
     <string name="double_quotes">!text/double_9qm_lqm</string>
 </resources>

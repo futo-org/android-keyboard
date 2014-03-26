@@ -29,7 +29,7 @@
             <Key
                 latin:keyStyle="shortcutKeyStyle"
                 latin:keyLabelFlags="hasPopupHint|preserveCase"
-                latin:moreKeys="!text/settings_as_more_key" />
+                latin:moreKeys="!text/keyspec_settings" />
         </case>
         <case
             latin:supportsSwitchingToShortcutIme="true"

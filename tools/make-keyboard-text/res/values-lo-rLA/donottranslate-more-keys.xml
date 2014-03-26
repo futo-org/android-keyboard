@@ -22,7 +22,7 @@
          U+0E81: "ກ" LAO LETTER KO
          U+0E82: "ຂ" LAO LETTER KHO SUNG
          U+0E84: "ຄ" LAO LETTER KHO TAM -->
-    <string name="label_to_alpha_key">&#x0E81;&#x0E82;&#x0E84;</string>
+    <string name="keylabel_to_alpha">&#x0E81;&#x0E82;&#x0E84;</string>
     <!-- U+20AD: "₭" KIP SIGN -->
-    <string name="keylabel_for_currency">&#x20AD;</string>
+    <string name="keyspec_currency">&#x20AD;</string>
 </resources>

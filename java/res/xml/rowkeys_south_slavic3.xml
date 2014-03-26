@@ -22,7 +22,7 @@
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
     <Key
-        latin:keySpec="!text/keylabel_for_south_slavic_row3_1" />
+        latin:keySpec="!text/keyspec_south_slavic_row3_1" />
     <!-- U+045F: "џ" CYRILLIC SMALL LETTER DZHE -->
     <Key
         latin:keySpec="&#x045F;" />
@@ -42,7 +42,7 @@
     <Key
         latin:keySpec="&#x043C;" />
     <Key
-        latin:keySpec="!text/keylabel_for_south_slavic_row3_8" />
+        latin:keySpec="!text/keyspec_south_slavic_row3_8" />
     <!-- U+0436: "ж" CYRILLIC SMALL LETTER ZHE -->
     <Key
         latin:keySpec="&#x0436;" />

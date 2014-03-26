@@ -97,11 +97,11 @@
     <!-- Only for non-tablet device -->
     <key-style
         latin:styleName="numPhoneToSymbolKeyStyle"
-        latin:keySpec="!text/label_to_phone_symbols_key|!code/key_switch_alpha_symbol"
+        latin:keySpec="!text/keylabel_to_phone_symbols|!code/key_switch_alpha_symbol"
         latin:parentStyle="numModeKeyStyle" />
     <key-style
         latin:styleName="numPhoneToNumericKeyStyle"
-        latin:keySpec="!text/label_to_phone_numeric_key|!code/key_switch_alpha_symbol"
+        latin:keySpec="!text/keylabel_to_phone_numeric|!code/key_switch_alpha_symbol"
         latin:parentStyle="numModeKeyStyle" />
     <key-style
         latin:styleName="numPauseKeyStyle"

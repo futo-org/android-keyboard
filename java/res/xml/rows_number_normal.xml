@@ -63,7 +63,7 @@
                 <Key
                     latin:keySpec="."
                     latin:keyLabelFlags="hasPopupHint"
-                    latin:moreKeys="!text/more_keys_for_am_pm"
+                    latin:moreKeys="!text/morekeys_am_pm"
                     latin:keyStyle="numFunctionalKeyStyle"
                     latin:keyWidth="fillRight" />
             </case>
