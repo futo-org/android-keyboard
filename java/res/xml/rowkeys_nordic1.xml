@@ -24,5 +24,5 @@
     <include
         latin:keyboardLayout="@xml/rowkeys_qwerty1" />
     <Key
-        latin:keySpec="!text/keylabel_for_nordic_row1_11" />
+        latin:keySpec="!text/keyspec_nordic_row1_11" />
 </merge>

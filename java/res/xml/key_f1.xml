@@ -40,7 +40,7 @@
             latin:supportsSwitchingToShortcutIme="false"
         >
             <Key
-                latin:keySpec="!text/keylabel_for_comma"
+                latin:keySpec="!text/keyspec_comma"
                 latin:keyLabelFlags="hasPopupHint"
                 latin:keyStyle="f1MoreKeysStyle" />
         </case>
@@ -54,9 +54,9 @@
         <!-- latin:hasShortcutKey="false" -->
         <default>
             <Key
-                latin:keySpec="!text/keylabel_for_comma"
+                latin:keySpec="!text/keyspec_comma"
                 latin:keyLabelFlags="hasPopupHint"
-                latin:additionalMoreKeys="!text/shortcut_as_more_key"
+                latin:additionalMoreKeys="!text/keyspec_shortcut"
                 latin:keyStyle="f1MoreKeysStyle" />
         </default>
     </switch>

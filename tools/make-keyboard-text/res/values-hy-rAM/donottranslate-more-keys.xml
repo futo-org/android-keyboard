@@ -22,7 +22,7 @@
          U+0531: "Ա" ARMENIAN CAPITAL LETTER AYB
          U+0532: "Բ" ARMENIAN CAPITAL LETTER BEN
          U+0533: "Գ" ARMENIAN CAPITAL LETTER GIM -->
-    <string name="label_to_alpha_key">&#x0531;&#x0532;&#x0533;</string>
+    <string name="keylabel_to_alpha">&#x0531;&#x0532;&#x0533;</string>
     <!-- U+055E: "՞" ARMENIAN QUESTION MARK
          U+055C: "՜" ARMENIAN EXCLAMATION MARK
          U+055A: "՚" ARMENIAN APOSTROPHE
@@ -33,21 +33,21 @@
          U+00BB: "»" RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK
          U+00AB: "«" LEFT-POINTING DOUBLE ANGLE QUOTATION MARK
          U+055F: "՟" ARMENIAN ABBREVIATION MARK -->
-    <string name="more_keys_for_punctuation">"!autoColumnOrder!8,\\,,&#x055E;,&#x055C;,.,&#x055A;,&#x0559;,?,!,&#x055D;,&#x055B;,&#x058A;,&#x00BB;,&#x00AB;,&#x055F;,;,:"</string>
+    <string name="morekeys_punctuation">"!autoColumnOrder!8,\\,,&#x055E;,&#x055C;,.,&#x055A;,&#x0559;,?,!,&#x055D;,&#x055B;,&#x058A;,&#x00BB;,&#x00AB;,&#x055F;,;,:"</string>
     <!-- U+055E: "՞" ARMENIAN QUESTION MARK
          U+00BF: "¿" INVERTED QUESTION MARK -->
-    <string name="more_keys_for_question">&#x055E;,&#x00BF;</string>
+    <string name="morekeys_question">&#x055E;,&#x00BF;</string>
     <!-- U+055C: "՜" ARMENIAN EXCLAMATION MARK
          U+00A1: "¡" INVERTED EXCLAMATION MARK -->
-    <string name="more_keys_for_exclamation">&#x055C;,&#x00A1;</string>
+    <string name="morekeys_exclamation">&#x055C;,&#x00A1;</string>
     <!-- U+058F: "֏" ARMENIAN DRAM SIGN -->
     <!-- TODO: Enable this when we have glyph for the following letter
-         <string name="keylabel_for_currency">&#x058F;</string>
+         <string name="keyspec_currency">&#x058F;</string>
     -->
     <!-- U+055D: "՝" ARMENIAN COMMA -->
-    <string name="keylabel_for_tablet_comma">&#x055D;</string>
+    <string name="keyspec_tablet_comma">&#x055D;</string>
     <!-- U+0589: "։" ARMENIAN FULL STOP -->
-    <string name="keylabel_for_period">&#x0589;</string>
-    <string name="keylabel_for_tablet_period">&#x0589;</string>
-    <string name="more_keys_for_tablet_period">!text/more_keys_for_punctuation</string>
+    <string name="keyspec_period">&#x0589;</string>
+    <string name="keyspec_tablet_period">&#x0589;</string>
+    <string name="morekeys_tablet_period">!text/morekeys_punctuation</string>
 </resources>

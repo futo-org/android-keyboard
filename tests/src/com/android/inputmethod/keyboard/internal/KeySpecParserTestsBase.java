@@ -251,14 +251,14 @@ abstract class KeySpecParserTestsBase extends AndroidTestCase {
     }
 
     public void testResourceReference() {
-        assertParser("Settings as more key", "!text/settings_as_more_key",
+        assertParser("Settings as more key", "!text/keyspec_settings",
                 null, null, mSettingsIconId, mCodeSettings);
 
         assertParser("Action next as more key", "!text/label_next_key|!code/key_action_next",
                 "Next", null, ICON_UNDEFINED, mCodeActionNext);
 
         assertParser("Popular domain",
-                "!text/keylabel_for_popular_domain|!text/keylabel_for_popular_domain ",
+                "!text/keyspec_popular_domain|!text/keyspec_popular_domain ",
                 ".com", ".com ", ICON_UNDEFINED, CODE_OUTPUT_TEXT);
     }
 

@@ -28,21 +28,21 @@
             <Key
                 latin:keySpec="!text/keyspec_left_double_angle_quote"
                 latin:backgroundType="functional"
-                latin:moreKeys="!text/more_keys_for_less_than" />
+                latin:moreKeys="!text/morekeys_less_than" />
             <Key
                 latin:keySpec="!text/keyspec_right_double_angle_quote"
                 latin:backgroundType="functional"
-                latin:moreKeys="!text/more_keys_for_greater_than" />
+                latin:moreKeys="!text/morekeys_greater_than" />
         </case>
         <default>
             <Key
                 latin:keySpec="!text/keyspec_less_than"
                 latin:backgroundType="functional"
-                latin:moreKeys="!text/more_keys_for_less_than" />
+                latin:moreKeys="!text/morekeys_less_than" />
             <Key
                 latin:keySpec="!text/keyspec_greater_than"
                 latin:backgroundType="functional"
-                latin:moreKeys="!text/more_keys_for_greater_than" />
+                latin:moreKeys="!text/morekeys_greater_than" />
         </default>
     </switch>
 </merge>

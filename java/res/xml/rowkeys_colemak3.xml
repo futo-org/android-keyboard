@@ -23,20 +23,20 @@
 >
     <Key
         latin:keySpec="z"
-        latin:moreKeys="!text/more_keys_for_z" />
+        latin:moreKeys="!text/morekeys_z" />
     <Key
         latin:keySpec="x" />
     <Key
         latin:keySpec="c"
-        latin:moreKeys="!text/more_keys_for_c" />
+        latin:moreKeys="!text/morekeys_c" />
     <Key
         latin:keySpec="v"
-        latin:moreKeys="!text/more_keys_for_v" />
+        latin:moreKeys="!text/morekeys_v" />
     <Key
         latin:keySpec="b" />
     <Key
         latin:keySpec="k"
-        latin:moreKeys="!text/more_keys_for_k" />
+        latin:moreKeys="!text/morekeys_k" />
     <Key
         latin:keySpec="m" />
 </merge>

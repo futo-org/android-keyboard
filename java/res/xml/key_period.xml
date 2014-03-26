@@ -34,15 +34,15 @@
             <Key
                 latin:keyStyle="baseKeyDevanagariSignVirama"
                 latin:keyLabelFlags="hasPopupHint"
-                latin:moreKeys="!text/more_keys_for_punctuation"
+                latin:moreKeys="!text/morekeys_punctuation"
                 latin:backgroundType="functional" />
         </case>
         <default>
             <Key
-                latin:keySpec="!text/keylabel_for_period"
-                latin:keyHintLabel="!text/keyhintlabel_for_period"
+                latin:keySpec="!text/keyspec_period"
+                latin:keyHintLabel="!text/keyhintlabel_period"
                 latin:keyLabelFlags="hasPopupHint|hasShiftedLetterHint"
-                latin:moreKeys="!text/more_keys_for_period"
+                latin:moreKeys="!text/morekeys_period"
                 latin:backgroundType="functional" />
         </default>
     </switch>

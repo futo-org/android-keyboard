@@ -25,24 +25,24 @@
         latin:keySpec="~" />
     <Key
         latin:keySpec="!"
-        latin:additionalMoreKeys="!text/more_keys_for_exclamation" />
+        latin:additionalMoreKeys="!text/morekeys_exclamation" />
     <Key
         latin:keySpec="\@" />
     <Key
         latin:keySpec="\#" />
     <Key
         latin:keySpec="$"
-        latin:additionalMoreKeys="!text/more_keys_for_currency_dollar" />
+        latin:additionalMoreKeys="!text/morekeys_currency_dollar" />
     <Key
         latin:keySpec="%"
-        latin:additionalMoreKeys="!text/more_keys_for_symbols_percent" />
+        latin:additionalMoreKeys="!text/morekeys_symbols_percent" />
     <Key
         latin:keySpec="^" />
     <Key
         latin:keySpec="&amp;" />
     <Key
         latin:keySpec="*"
-        latin:additionalMoreKeys="!text/more_keys_for_star" />
+        latin:additionalMoreKeys="!text/morekeys_star" />
     <Key
         latin:keySpec="(" />
     <Key
@@ -54,6 +54,6 @@
          U+221A: "√" SQUARE ROOT -->
     <Key
         latin:keySpec="+"
-        latin:additionalMoreKeys="!text/more_keys_for_plus"
+        latin:additionalMoreKeys="!text/morekeys_plus"
         latin:moreKeys="&#x00D7;,&#x00F7;,&#x221A;" />
 </merge>

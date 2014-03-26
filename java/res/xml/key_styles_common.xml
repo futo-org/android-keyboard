@@ -133,24 +133,24 @@
         latin:backgroundType="functional" />
     <key-style
         latin:styleName="toSymbolKeyStyle"
-        latin:keySpec="!text/label_to_symbol_key|!code/key_switch_alpha_symbol"
+        latin:keySpec="!text/keylabel_to_symbol|!code/key_switch_alpha_symbol"
         latin:parentStyle="baseForLayoutSwitchKeyStyle" />
     <key-style
         latin:styleName="toAlphaKeyStyle"
-        latin:keySpec="!text/label_to_alpha_key|!code/key_switch_alpha_symbol"
+        latin:keySpec="!text/keylabel_to_alpha|!code/key_switch_alpha_symbol"
         latin:parentStyle="baseForLayoutSwitchKeyStyle" />
     <key-style
         latin:styleName="toMoreSymbolKeyStyle"
-        latin:keySpec="!text/label_to_more_symbol_key|!code/key_shift"
+        latin:keySpec="!text/keylabel_to_more_symbol|!code/key_shift"
         latin:parentStyle="baseForLayoutSwitchKeyStyle" />
     <key-style
         latin:styleName="backFromMoreSymbolKeyStyle"
-        latin:keySpec="!text/label_to_symbol_key|!code/key_shift"
+        latin:keySpec="!text/keylabel_to_symbol|!code/key_shift"
         latin:parentStyle="baseForLayoutSwitchKeyStyle" />
     <key-style
         latin:styleName="comKeyStyle"
-        latin:keySpec="!text/keylabel_for_popular_domain"
+        latin:keySpec="!text/keyspec_popular_domain"
         latin:keyLabelFlags="autoXScale|fontNormal|hasPopupHint|preserveCase"
-        latin:moreKeys="!text/more_keys_for_popular_domain"
+        latin:moreKeys="!text/morekeys_popular_domain"
         latin:backgroundType="functional" />
 </merge>

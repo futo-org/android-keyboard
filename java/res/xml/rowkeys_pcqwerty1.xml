@@ -30,44 +30,44 @@
                 latin:additionalMoreKeys="~" />
             <Key
                 latin:keySpec="1"
-                latin:additionalMoreKeys="!,!text/more_keys_for_exclamation"
-                latin:moreKeys="!text/more_keys_for_symbols_1" />
+                latin:additionalMoreKeys="!,!text/morekeys_exclamation"
+                latin:moreKeys="!text/morekeys_symbols_1" />
             <Key
                 latin:keySpec="2"
                 latin:additionalMoreKeys="\@"
-                latin:moreKeys="!text/more_keys_for_symbols_2" />
+                latin:moreKeys="!text/morekeys_symbols_2" />
             <Key
                 latin:keySpec="3"
                 latin:additionalMoreKeys="\#"
-                latin:moreKeys="!text/more_keys_for_symbols_3" />
+                latin:moreKeys="!text/morekeys_symbols_3" />
             <Key
                 latin:keySpec="4"
                 latin:additionalMoreKeys="$"
-                latin:moreKeys="!text/more_keys_for_symbols_4" />
+                latin:moreKeys="!text/morekeys_symbols_4" />
             <Key
                 latin:keySpec="5"
                 latin:additionalMoreKeys="\\%"
-                latin:moreKeys="!text/more_keys_for_symbols_5" />
+                latin:moreKeys="!text/morekeys_symbols_5" />
             <Key
                 latin:keySpec="6"
                 latin:additionalMoreKeys="^"
-                latin:moreKeys="!text/more_keys_for_symbols_6" />
+                latin:moreKeys="!text/morekeys_symbols_6" />
             <Key
                 latin:keySpec="7"
                 latin:additionalMoreKeys="&amp;"
-                latin:moreKeys="!text/more_keys_for_symbols_7" />
+                latin:moreKeys="!text/morekeys_symbols_7" />
             <Key
                 latin:keySpec="8"
                 latin:additionalMoreKeys="*"
-                latin:moreKeys="!text/more_keys_for_symbols_8" />
+                latin:moreKeys="!text/morekeys_symbols_8" />
             <Key
                 latin:keySpec="9"
                 latin:additionalMoreKeys="("
-                latin:moreKeys="!text/more_keys_for_symbols_9" />
+                latin:moreKeys="!text/morekeys_symbols_9" />
             <Key
                 latin:keySpec="0"
                 latin:additionalMoreKeys=")"
-                latin:moreKeys="!text/more_keys_for_symbols_0" />
+                latin:moreKeys="!text/morekeys_symbols_0" />
             <!-- U+2013: "–" EN DASH
                  U+2014: "—" EM DASH
                  U+00B7: "·" MIDDLE DOT -->

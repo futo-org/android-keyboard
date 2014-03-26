@@ -31,7 +31,7 @@
         latin:keySpec="y"
         latin:keyHintLabel="5"
         latin:additionalMoreKeys="5"
-        latin:moreKeys="!text/more_keys_for_y" />
+        latin:moreKeys="!text/morekeys_y" />
     <Key
         latin:keySpec="f"
         latin:keyHintLabel="6"
@@ -40,20 +40,20 @@
         latin:keySpec="g"
         latin:keyHintLabel="7"
         latin:additionalMoreKeys="7"
-        latin:moreKeys="!text/more_keys_for_g" />
+        latin:moreKeys="!text/morekeys_g" />
     <Key
         latin:keySpec="c"
         latin:keyHintLabel="8"
         latin:additionalMoreKeys="8"
-        latin:moreKeys="!text/more_keys_for_c" />
+        latin:moreKeys="!text/morekeys_c" />
     <Key
         latin:keySpec="r"
         latin:keyHintLabel="9"
         latin:additionalMoreKeys="9"
-        latin:moreKeys="!text/more_keys_for_r" />
+        latin:moreKeys="!text/morekeys_r" />
     <Key
         latin:keySpec="l"
         latin:keyHintLabel="0"
         latin:additionalMoreKeys="0"
-        latin:moreKeys="!text/more_keys_for_l" />
+        latin:moreKeys="!text/morekeys_l" />
 </merge>

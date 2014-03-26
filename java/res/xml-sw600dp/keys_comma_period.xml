@@ -22,17 +22,17 @@
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
     <Key
-        latin:keySpec="!text/keylabel_for_tablet_comma"
-        latin:keyHintLabel="!text/keyhintlabel_for_tablet_comma"
+        latin:keySpec="!text/keyspec_tablet_comma"
+        latin:keyHintLabel="!text/keyhintlabel_tablet_comma"
         latin:keyLabelFlags="hasPopupHint"
-        latin:moreKeys="!text/more_keys_for_tablet_comma"
+        latin:moreKeys="!text/morekeys_tablet_comma"
         latin:backgroundType="functional"
         latin:keyStyle="hasShiftedLetterHintStyle" />
     <Key
-        latin:keySpec="!text/keylabel_for_tablet_period"
-        latin:keyHintLabel="!text/keyhintlabel_for_tablet_period"
+        latin:keySpec="!text/keyspec_tablet_period"
+        latin:keyHintLabel="!text/keyhintlabel_tablet_period"
         latin:keyLabelFlags="hasPopupHint"
-        latin:moreKeys="!text/more_keys_for_tablet_period"
+        latin:moreKeys="!text/morekeys_tablet_period"
         latin:backgroundType="functional"
         latin:keyStyle="hasShiftedLetterHintStyle" />
 </merge>
