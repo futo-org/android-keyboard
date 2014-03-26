@@ -67,7 +67,7 @@ int registerNativeMethods(JNIEnv *env, const char *const className, const JNINat
         AKLOGE("Native registration unable to find class '%s'", className);
         return JNI_FALSE;
     }
-    if (env->RegisterNatives(clazz, methods, numMethods) < 0) {
+    if (env->RegisterNatives(clazz, methods, numMethods) != 0) {
         AKLOGE("RegisterNatives failed for '%s'", className);
         env->DeleteLocalRef(clazz);
         return JNI_FALSE;
