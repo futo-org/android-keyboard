@@ -632,7 +632,9 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
     }
 
     public void setHardwareAcceleratedDrawingEnabled(final boolean enabled) {
-        // TODO:
+        if (!enabled) return;
+        // TODO: Should use LAYER_TYPE_SOFTWARE when hardware acceleration is off?
+        setLayerType(LAYER_TYPE_HARDWARE, null);
     }
 
     private static void setupAlphabetKey(final TextView alphabetKey, final String label,
