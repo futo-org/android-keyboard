@@ -426,8 +426,9 @@ public final class WordComposer {
         // Note: currently, we come here whenever we commit a word. If it's a MANUAL_PICK
         // or a DECIDED_WORD we may cancel the commit later; otherwise, we should deactivate
         // the last composed word to ensure this does not happen.
-        final LastComposedWord lastComposedWord = new LastComposedWord(
-                mTypedWord.toString(), committedWord, separatorString, prevWord, mCapitalizedMode);
+        final LastComposedWord lastComposedWord = new LastComposedWord(mEvents,
+                mInputPointers, mTypedWord.toString(), committedWord, separatorString,
+                prevWord, mCapitalizedMode);
         mInputPointers.reset();
         if (type != LastComposedWord.COMMIT_TYPE_DECIDED_WORD
                 && type != LastComposedWord.COMMIT_TYPE_MANUAL_PICK) {
@@ -458,6 +459,24 @@ public final class WordComposer {
     public void discardPreviousWordForSuggestion() {
         mPreviousWordForSuggestion = null;
     }
+
+    public void resumeSuggestionOnLastComposedWord(final LastComposedWord lastComposedWord,
+            final String previousWord) {
+        mEvents.clear();
+        Collections.copy(mEvents, lastComposedWord.mEvents);
+        mInputPointers.set(lastComposedWord.mInputPointers);
+        mTypedWord.setLength(0);
+        mCombinerChain.reset();
+        mTypedWord.append(lastComposedWord.mTypedWord);
+        refreshSize();
+        mCapitalizedMode = lastComposedWord.mCapitalizedMode;
+        mAutoCorrection = null; // This will be filled by the next call to updateSuggestion.
+        mCursorPositionWithinWord = mCodePointSize;
+        mRejectedBatchModeSuggestion = null;
+        mIsResumed = true;
+        mPreviousWordForSuggestion = previousWord;
+    }
+
     public boolean isBatchMode() {
         return mIsBatchMode;
     }
