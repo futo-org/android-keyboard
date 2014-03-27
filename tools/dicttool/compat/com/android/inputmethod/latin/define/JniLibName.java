@@ -21,5 +21,5 @@ public final class JniLibName {
         // This class is not publicly instantiable.
     }
 
-    public static final String JNI_LIB_NAME = "latinime-dicttool-host";
+    public static final String JNI_LIB_NAME = "latinime-aosp-dicttool-host";
 }
