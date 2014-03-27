@@ -35,7 +35,7 @@ LATINIME_TESTS_SOURCE_DIRECTORY := $(LATINIME_LOCAL_DIR)/tests/src/com/android/i
 # Dependencies for Dicttool. Most of these files are needed by BinaryDictionary.java. Note that
 # a significant part of the dependencies are mocked in the compat/ directory, with empty or
 # nearly-empty implementations, for parts that we don't use in Dicttool.
-LATINIME_SRCS_FOR_DICTTOOL := \
+LATINIME_SRC_FILES_FOR_DICTTOOL := \
         event/Combiner.java \
         event/Event.java \
         latin/BinaryDictionary.java \
@@ -57,12 +57,12 @@ LATINIME_SRCS_FOR_DICTTOOL := \
         latin/utils/ResizableIntArray.java \
         latin/utils/StringUtils.java
 
-LATINIME_TEST_SRCS_FOR_DICTTOOL := \
+LATINIME_TEST_SRC_FILES_FOR_DICTTOOL := \
         utils/ByteArrayDictBuffer.java
 
 USED_TARGETED_SRCS := \
-        $(addprefix $(LATINIME_BASE_SOURCE_DIRECTORY)/, $(LATINIME_SRCS_FOR_DICTTOOL)) \
-        $(addprefix $(LATINIME_TESTS_SOURCE_DIRECTORY)/, $(LATINIME_TEST_SRCS_FOR_DICTTOOL))
+        $(addprefix $(LATINIME_BASE_SOURCE_DIRECTORY)/, $(LATINIME_SRC_FILES_FOR_DICTTOOL)) \
+        $(addprefix $(LATINIME_TESTS_SOURCE_DIRECTORY)/, $(LATINIME_TEST_SRC_FILES_FOR_DICTTOOL))
 
 DICTTOOL_ONDEVICE_TESTS_DIRECTORY := \
         $(LATINIME_LOCAL_DIR)/tests/src/com/android/inputmethod/latin/makedict/
@@ -75,12 +75,11 @@ LOCAL_ANNOTATIONS_SRC_FILES := \
 
 LOCAL_SRC_FILES := $(LOCAL_TOOL_SRC_FILES) \
         $(filter-out $(addprefix %/, $(notdir $(LOCAL_TOOL_SRC_FILES))), $(LOCAL_MAIN_SRC_FILES)) \
-        $(LOCAL_ANNOTATIONS_SRC_FILES) \
+        $(call all-java-files-under, $(DICTTOOL_COMPAT_TESTS_DIRECTORY)) \
+        $(LOCAL_ANNOTATIONS_SRC_FILES) $(USED_TARGETED_SRCS) \
         $(LATINIME_BASE_SOURCE_DIRECTORY)/latin/Constants.java \
         $(call all-java-files-under, tests) \
-        $(call all-java-files-under, $(DICTTOOL_ONDEVICE_TESTS_DIRECTORY)) \
-        $(call all-java-files-under, $(DICTTOOL_COMPAT_TESTS_DIRECTORY)) \
-        $(USED_TARGETED_SRCS)
+        $(call all-java-files-under, $(DICTTOOL_ONDEVICE_TESTS_DIRECTORY))
 
 LOCAL_JAVA_LIBRARIES := junit
 LOCAL_ADDITIONAL_DEPENDENCIES := $(LATINIME_HOST_NATIVE_LIBNAME)
