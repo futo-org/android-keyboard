@@ -31,7 +31,7 @@ import java.util.Locale;
 
 public final class KeyboardTextsSet {
     public static final String PREFIX_TEXT = "!text/";
-    public static final String SWITCH_TO_ALPHA_KEY_LABEL = "label_to_alpha_key";
+    public static final String SWITCH_TO_ALPHA_KEY_LABEL = "keylabel_to_alpha";
 
     private static final char BACKSLASH = Constants.CODE_BACKSLASH;
     private static final int MAX_STRING_REFERENCE_INDIRECTION = 10;
