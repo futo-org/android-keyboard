@@ -20,6 +20,7 @@ import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.LargeTest;
 import android.util.Pair;
 
+import com.android.inputmethod.latin.makedict.BinaryDictIOUtils;
 import com.android.inputmethod.latin.makedict.CodePointUtils;
 import com.android.inputmethod.latin.makedict.DictDecoder;
 import com.android.inputmethod.latin.makedict.DictionaryHeader;
@@ -151,7 +152,8 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
         binaryDictionary.flushWithGC();
         binaryDictionary.close();
 
-        final DictDecoder dictDecoder = FormatSpec.getDictDecoder(dictFile, 0, dictFile.length());
+        final DictDecoder dictDecoder =
+                BinaryDictIOUtils.getDictDecoder(dictFile, 0, dictFile.length());
         try {
             final FusionDictionary dict =
                     dictDecoder.readDictionaryBinary(false /* deleteDictIfBroken */);

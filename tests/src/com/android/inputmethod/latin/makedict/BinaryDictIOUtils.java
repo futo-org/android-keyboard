@@ -18,7 +18,9 @@ package com.android.inputmethod.latin.makedict;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.Constants;
+import com.android.inputmethod.latin.makedict.DictDecoder.DictionaryBufferFactory;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -30,6 +32,38 @@ public final class BinaryDictIOUtils {
 
     private BinaryDictIOUtils() {
         // This utility class is not publicly instantiable.
+    }
+
+    /**
+     * Returns new dictionary decoder.
+     *
+     * @param dictFile the dictionary file.
+     * @param bufferType The type of buffer, as one of USE_* in DictDecoder.
+     * @return new dictionary decoder if the dictionary file exists, otherwise null.
+     */
+    public static DictDecoder getDictDecoder(final File dictFile, final long offset,
+            final long length, final int bufferType) {
+        if (dictFile.isDirectory()) {
+            return new Ver4DictDecoder(dictFile, bufferType);
+        } else if (dictFile.isFile()) {
+            return new Ver2DictDecoder(dictFile, offset, length, bufferType);
+        }
+        return null;
+    }
+
+    public static DictDecoder getDictDecoder(final File dictFile, final long offset,
+            final long length, final DictionaryBufferFactory factory) {
+        if (dictFile.isDirectory()) {
+            return new Ver4DictDecoder(dictFile, factory);
+        } else if (dictFile.isFile()) {
+            return new Ver2DictDecoder(dictFile, offset, length, factory);
+        }
+        return null;
+    }
+
+    public static DictDecoder getDictDecoder(final File dictFile, final long offset,
+            final long length) {
+        return getDictDecoder(dictFile, offset, length, DictDecoder.USE_READONLY_BYTEBUFFER);
     }
 
     private static final class Position {
