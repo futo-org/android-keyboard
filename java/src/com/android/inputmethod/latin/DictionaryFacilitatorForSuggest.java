@@ -480,6 +480,9 @@ public class DictionaryFacilitatorForSuggest {
             return false;
         }
         final Dictionaries dictionaries = mDictionaries;
+        if (dictionaries.mLocale == null) {
+            return false;
+        }
         final String lowerCasedWord = word.toLowerCase(dictionaries.mLocale);
         final Map<String, Dictionary> dictMap = dictionaries.mDictMap;
         for (final Dictionary dictionary : dictMap.values()) {
