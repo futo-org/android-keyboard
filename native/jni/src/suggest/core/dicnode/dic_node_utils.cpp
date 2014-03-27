@@ -16,8 +16,6 @@
 
 #include "suggest/core/dicnode/dic_node_utils.h"
 
-#include <cstring>
-
 #include "suggest/core/dicnode/dic_node.h"
 #include "suggest/core/dicnode/dic_node_vector.h"
 #include "suggest/core/dictionary/multi_bigram_map.h"
@@ -103,34 +101,4 @@ namespace latinime {
             NOT_A_PROBABILITY);
 }
 
-////////////////
-// Char utils //
-////////////////
-
-// TODO: Move to char_utils?
-/* static */ int DicNodeUtils::appendTwoWords(const int *const src0, const int16_t length0,
-        const int *const src1, const int16_t length1, int *const dest) {
-    int actualLength0 = 0;
-    for (int i = 0; i < length0; ++i) {
-        if (src0[i] == 0) {
-            break;
-        }
-        actualLength0 = i + 1;
-    }
-    actualLength0 = std::min(actualLength0, MAX_WORD_LENGTH);
-    memmove(dest, src0, actualLength0 * sizeof(dest[0]));
-    if (!src1 || length1 == 0) {
-        return actualLength0;
-    }
-    int actualLength1 = 0;
-    for (int i = 0; i < length1; ++i) {
-        if (src1[i] == 0) {
-            break;
-        }
-        actualLength1 = i + 1;
-    }
-    actualLength1 = std::min(actualLength1, MAX_WORD_LENGTH - actualLength0);
-    memmove(&dest[actualLength0], src1, actualLength1 * sizeof(dest[0]));
-    return actualLength0 + actualLength1;
-}
 } // namespace latinime
