@@ -17,6 +17,7 @@
 package com.android.inputmethod.latin.dicttool;
 
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils;
+import com.android.inputmethod.latin.makedict.BinaryDictIOUtils;
 import com.android.inputmethod.latin.makedict.DictDecoder;
 import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.makedict.FusionDictionary;
@@ -191,8 +192,9 @@ public final class BinaryDictOffdeviceUtils {
                     return CombinedInputOutput.readDictionaryCombined(
                             new BufferedInputStream(new FileInputStream(decodedSpec.mFile)));
                 } else {
-                    final DictDecoder dictDecoder = FormatSpec.getDictDecoder(decodedSpec.mFile,
-                            0, decodedSpec.mFile.length(), DictDecoder.USE_BYTEARRAY);
+                    final DictDecoder dictDecoder = BinaryDictIOUtils.getDictDecoder(
+                            decodedSpec.mFile, 0, decodedSpec.mFile.length(),
+                            DictDecoder.USE_BYTEARRAY);
                     if (report) {
                         System.out.println("Format : Binary dictionary format");
                         System.out.println("Packaging : " + decodedSpec.describeChain());

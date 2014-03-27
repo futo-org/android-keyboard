@@ -28,7 +28,6 @@ import java.nio.ByteBuffer;
  *
  * All the methods in this class are static.
  *
- * TODO: Remove calls from classes except Ver3DictDecoder
  * TODO: Move this file to makedict/internal.
  * TODO: Rename this class to DictDecoderUtils.
  */
@@ -356,7 +355,7 @@ public final class BinaryDictDecoderUtils {
      * @return true if it's a binary dictionary, false otherwise
      */
     public static boolean isBinaryDictionary(final File file) {
-        final DictDecoder dictDecoder = FormatSpec.getDictDecoder(file, 0, file.length());
+        final DictDecoder dictDecoder = BinaryDictIOUtils.getDictDecoder(file, 0, file.length());
         if (dictDecoder == null) {
             return false;
         }
