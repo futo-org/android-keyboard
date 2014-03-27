@@ -199,47 +199,30 @@ static void latinime_BinaryDictionary_getSuggestions(JNIEnv *env, jclass clazz, 
         ASSERT(false);
         return;
     }
-    int outputCodePoints[outputCodePointsLength];
-    int scores[scoresLength];
-    const jsize spaceIndicesLength = env->GetArrayLength(outSpaceIndicesArray);
-    int spaceIndices[spaceIndicesLength];
-    const jsize outputTypesLength = env->GetArrayLength(outTypesArray);
-    int outputTypes[outputTypesLength];
     const jsize outputAutoCommitFirstWordConfidenceLength =
             env->GetArrayLength(outAutoCommitFirstWordConfidenceArray);
-    // We only use the first result, as obviously we will only ever autocommit the first one
     ASSERT(outputAutoCommitFirstWordConfidenceLength == 1);
-    int outputAutoCommitFirstWordConfidence[outputAutoCommitFirstWordConfidenceLength];
-    memset(outputCodePoints, 0, sizeof(outputCodePoints));
-    memset(scores, 0, sizeof(scores));
-    memset(spaceIndices, 0, sizeof(spaceIndices));
-    memset(outputTypes, 0, sizeof(outputTypes));
-    memset(outputAutoCommitFirstWordConfidence, 0, sizeof(outputAutoCommitFirstWordConfidence));
-
-    if (givenSuggestOptions.isGesture() || inputSize > 0) {
-        // TODO: Use SuggestionResults to return suggestions.
-        count = dictionary->getSuggestions(pInfo, traverseSession, xCoordinates, yCoordinates,
-                times, pointerIds, inputCodePoints, inputSize, prevWordCodePoints,
-                prevWordCodePointsLength, &givenSuggestOptions, outputCodePoints,
-                scores, spaceIndices, outputTypes, outputAutoCommitFirstWordConfidence);
-    } else {
-        SuggestionResults suggestionResults(MAX_RESULTS);
-        dictionary->getPredictions(prevWordCodePoints, prevWordCodePointsLength,
-                &suggestionResults);
-        suggestionResults.outputSuggestions(env, outSuggestionCount, outCodePointsArray,
-                outScoresArray, outSpaceIndicesArray, outTypesArray,
-                outAutoCommitFirstWordConfidenceArray);
+    if (outputAutoCommitFirstWordConfidenceLength != 1) {
+        // We only use the first result, as obviously we will only ever autocommit the first one
+        AKLOGE("Invalid outputAutoCommitFirstWordConfidenceLength: %d",
+                outputAutoCommitFirstWordConfidenceLength);
+        ASSERT(false);
         return;
     }
 
-    // Copy back the output values
-    env->SetIntArrayRegion(outSuggestionCount, 0, 1 /* len */, &count);
-    env->SetIntArrayRegion(outCodePointsArray, 0, outputCodePointsLength, outputCodePoints);
-    env->SetIntArrayRegion(outScoresArray, 0, scoresLength, scores);
-    env->SetIntArrayRegion(outSpaceIndicesArray, 0, spaceIndicesLength, spaceIndices);
-    env->SetIntArrayRegion(outTypesArray, 0, outputTypesLength, outputTypes);
-    env->SetIntArrayRegion(outAutoCommitFirstWordConfidenceArray, 0,
-            outputAutoCommitFirstWordConfidenceLength, outputAutoCommitFirstWordConfidence);
+    SuggestionResults suggestionResults(MAX_RESULTS);
+    if (givenSuggestOptions.isGesture() || inputSize > 0) {
+        // TODO: Use SuggestionResults to return suggestions.
+        dictionary->getSuggestions(pInfo, traverseSession, xCoordinates, yCoordinates,
+                times, pointerIds, inputCodePoints, inputSize, prevWordCodePoints,
+                prevWordCodePointsLength, &givenSuggestOptions, &suggestionResults);
+    } else {
+        dictionary->getPredictions(prevWordCodePoints, prevWordCodePointsLength,
+                &suggestionResults);
+    }
+    suggestionResults.outputSuggestions(env, outSuggestionCount, outCodePointsArray,
+            outScoresArray, outSpaceIndicesArray, outTypesArray,
+            outAutoCommitFirstWordConfidenceArray);
 }
 
 static jint latinime_BinaryDictionary_getProbability(JNIEnv *env, jclass clazz, jlong dict,

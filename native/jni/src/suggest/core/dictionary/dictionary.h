@@ -62,11 +62,11 @@ class Dictionary {
     Dictionary(JNIEnv *env, DictionaryStructureWithBufferPolicy::StructurePolicyPtr
             dictionaryStructureWithBufferPolicy);
 
-    int getSuggestions(ProximityInfo *proximityInfo, DicTraverseSession *traverseSession,
+    void getSuggestions(ProximityInfo *proximityInfo, DicTraverseSession *traverseSession,
             int *xcoordinates, int *ycoordinates, int *times, int *pointerIds, int *inputCodePoints,
             int inputSize, int *prevWordCodePoints, int prevWordLength,
-            const SuggestOptions *const suggestOptions, int *outWords, int *outputScores,
-            int *spaceIndices, int *outputTypes, int *outputAutoCommitFirstWordConfidence) const;
+            const SuggestOptions *const suggestOptions,
+            SuggestionResults *const outSuggestionResults) const;
 
     void getPredictions(const int *word, int length,
             SuggestionResults *const outSuggestionResults) const;

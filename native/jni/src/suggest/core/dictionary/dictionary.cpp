@@ -22,6 +22,7 @@
 
 #include "defines.h"
 #include "suggest/core/policy/dictionary_header_structure_policy.h"
+#include "suggest/core/result/suggestion_results.h"
 #include "suggest/core/session/dic_traverse_session.h"
 #include "suggest/core/suggest.h"
 #include "suggest/core/suggest_options.h"
@@ -43,34 +44,25 @@ Dictionary::Dictionary(JNIEnv *env, DictionaryStructureWithBufferPolicy::Structu
     logDictionaryInfo(env);
 }
 
-int Dictionary::getSuggestions(ProximityInfo *proximityInfo, DicTraverseSession *traverseSession,
+void Dictionary::getSuggestions(ProximityInfo *proximityInfo, DicTraverseSession *traverseSession,
         int *xcoordinates, int *ycoordinates, int *times, int *pointerIds, int *inputCodePoints,
         int inputSize, int *prevWordCodePoints, int prevWordLength,
-        const SuggestOptions *const suggestOptions, int *outWords, int *outputScores,
-        int *spaceIndices, int *outputTypes, int *outputAutoCommitFirstWordConfidence) const {
+        const SuggestOptions *const suggestOptions,
+        SuggestionResults *const outSuggestionResults) const {
     TimeKeeper::setCurrentTime();
-    int result = 0;
+    DicTraverseSession::initSessionInstance(
+            traverseSession, this, prevWordCodePoints, prevWordLength, suggestOptions);
     if (suggestOptions->isGesture()) {
-        DicTraverseSession::initSessionInstance(
-                traverseSession, this, prevWordCodePoints, prevWordLength, suggestOptions);
-        result = mGestureSuggest->getSuggestions(proximityInfo, traverseSession, xcoordinates,
-                ycoordinates, times, pointerIds, inputCodePoints, inputSize, outWords,
-                outputScores, spaceIndices, outputTypes, outputAutoCommitFirstWordConfidence);
-        if (DEBUG_DICT) {
-            DUMP_RESULT(outWords, outputScores);
-        }
-        return result;
-    } else {
-        DicTraverseSession::initSessionInstance(
-                traverseSession, this, prevWordCodePoints, prevWordLength, suggestOptions);
-        result = mTypingSuggest->getSuggestions(proximityInfo, traverseSession, xcoordinates,
+        mGestureSuggest->getSuggestions(proximityInfo, traverseSession, xcoordinates,
                 ycoordinates, times, pointerIds, inputCodePoints, inputSize,
-                outWords, outputScores, spaceIndices, outputTypes,
-                outputAutoCommitFirstWordConfidence);
-        if (DEBUG_DICT) {
-            DUMP_RESULT(outWords, outputScores);
-        }
-        return result;
+                outSuggestionResults);
+    } else {
+        mTypingSuggest->getSuggestions(proximityInfo, traverseSession, xcoordinates,
+                ycoordinates, times, pointerIds, inputCodePoints, inputSize,
+                outSuggestionResults);
+    }
+    if (DEBUG_DICT) {
+        outSuggestionResults->dumpSuggestions();
     }
 }
 
