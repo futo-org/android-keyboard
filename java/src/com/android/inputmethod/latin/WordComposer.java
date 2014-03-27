@@ -165,14 +165,14 @@ public final class WordComposer {
     }
 
     /**
-     * Add a new event for a key stroke, with the pressed key's code point with the touch point
-     * coordinates.
+     * Process an input event.
+     *
+     * All input events should be supported, including software/hardware events, characters as well
+     * as deletions, multiple inputs and gestures.
+     *
+     * @param event the event to process.
      */
-    public void add(final Event event) {
-        processEvent(event);
-    }
-
-    private void processEvent(final Event event) {
+    public void processEvent(final Event event) {
         final int primaryCode = event.mCodePoint;
         final int keyX = event.mX;
         final int keyY = event.mY;
@@ -221,13 +221,6 @@ public final class WordComposer {
             if (Character.isDigit(primaryCode)) mDigitsCount++;
         }
         mAutoCorrection = null;
-    }
-
-    /**
-     * Delete the last composing unit as a result of hitting backspace.
-     */
-    public void deleteLast(final Event event) {
-        processEvent(event);
     }
 
     public void setCursorPositionWithinWord(final int posWithinWord) {
@@ -301,7 +294,7 @@ public final class WordComposer {
             final int codePoint = Character.codePointAt(word, i);
             // We don't want to override the batch input points that are held in mInputPointers
             // (See {@link #add(int,int,int)}).
-            add(Event.createEventForCodePointFromUnknownSource(codePoint));
+            processEvent(Event.createEventForCodePointFromUnknownSource(codePoint));
         }
     }
 
@@ -318,7 +311,7 @@ public final class WordComposer {
         reset();
         final int length = codePoints.length;
         for (int i = 0; i < length; ++i) {
-            add(Event.createEventForCodePointFromAlreadyTypedText(codePoints[i],
+            processEvent(Event.createEventForCodePointFromAlreadyTypedText(codePoints[i],
                     CoordinateUtils.xFromArray(coordinates, i),
                     CoordinateUtils.yFromArray(coordinates, i)));
         }

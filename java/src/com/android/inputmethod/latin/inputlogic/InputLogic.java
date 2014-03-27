@@ -727,7 +727,7 @@ public final class InputLogic {
             resetComposingState(false /* alsoResetLastComposedWord */);
         }
         if (isComposingWord) {
-            mWordComposer.add(inputTransaction.mEvent);
+            mWordComposer.processEvent(inputTransaction.mEvent);
             // If it's the first letter, make note of auto-caps state
             if (mWordComposer.isSingleLetter()) {
                 // We pass 1 to getPreviousWordForSuggestion because we were not composing a word
@@ -893,7 +893,7 @@ public final class InputLogic {
                 mWordComposer.reset();
                 mWordComposer.setRejectedBatchModeSuggestion(rejectedSuggestion);
             } else {
-                mWordComposer.deleteLast(inputTransaction.mEvent);
+                mWordComposer.processEvent(inputTransaction.mEvent);
             }
             mConnection.setComposingText(getTextWithUnderline(mWordComposer.getTypedWord()), 1);
             inputTransaction.setRequiresUpdateSuggestions();
