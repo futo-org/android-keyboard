@@ -17,8 +17,6 @@
 #ifndef LATINIME_DIC_NODE_UTILS_H
 #define LATINIME_DIC_NODE_UTILS_H
 
-#include <stdint.h>
-
 #include "defines.h"
 
 namespace latinime {
@@ -30,8 +28,6 @@ class MultiBigramMap;
 
 class DicNodeUtils {
  public:
-    static int appendTwoWords(const int *src0, const int16_t length0, const int *src1,
-            const int16_t length1, int *const dest);
     static void initAsRoot(
             const DictionaryStructureWithBufferPolicy *const dictionaryStructurePolicy,
             const int prevWordPtNodePos, DicNode *const newRootDicNode);
