@@ -254,8 +254,9 @@ const int SuggestionsOutputUtils::MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT = 16;
         outputScores[outputWordIndex] = shortcutScore;
         outputScores[outputWordIndex] = std::max(S_INT_MIN + 1, shortcutScore) - 1;
         const int startIndex2 = outputWordIndex * MAX_WORD_LENGTH;
-        DicNodeUtils::appendTwoWords(0, 0, shortcutTarget, shortcutTargetStringLength,
-                &outputCodePoints[startIndex2]);
+        // Copy shortcut target code points to the output buffer.
+        memmove(&outputCodePoints[startIndex2], shortcutTarget,
+                shortcutTargetStringLength * sizeof(shortcutTarget[0]));
         ++outputWordIndex;
     }
     return outputWordIndex;
