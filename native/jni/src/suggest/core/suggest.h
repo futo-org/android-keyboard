@@ -36,6 +36,7 @@ class DicNode;
 class DicTraverseSession;
 class ProximityInfo;
 class Scoring;
+class SuggestionResults;
 class Traversal;
 class Weighting;
 
@@ -46,10 +47,9 @@ class Suggest : public SuggestInterface {
               SCORING(suggestPolicy ? suggestPolicy->getScoring() : nullptr),
               WEIGHTING(suggestPolicy ? suggestPolicy->getWeighting() : nullptr) {}
     AK_FORCE_INLINE virtual ~Suggest() {}
-    int getSuggestions(ProximityInfo *pInfo, void *traverseSession, int *inputXs, int *inputYs,
-            int *times, int *pointerIds, int *inputCodePoints, int inputSize, int *outWords,
-            int *outputScores, int *outputIndices, int *outputTypes,
-            int *outputAutoCommitFirstWordConfidence) const;
+    void getSuggestions(ProximityInfo *pInfo, void *traverseSession, int *inputXs, int *inputYs,
+            int *times, int *pointerIds, int *inputCodePoints, int inputSize,
+            SuggestionResults *const outSuggestionResults) const;
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(Suggest);

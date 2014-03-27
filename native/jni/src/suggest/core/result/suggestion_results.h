@@ -35,8 +35,12 @@ class SuggestionResults {
     void outputSuggestions(JNIEnv *env, jintArray outSuggestionCount, jintArray outCodePointsArray,
             jintArray outScoresArray, jintArray outSpaceIndicesArray, jintArray outTypesArray,
             jintArray outAutoCommitFirstWordConfidenceArray);
-
     void addPrediction(const int *const codePoints, const int codePointCount, const int score);
+    void addSuggestion(const int *const codePoints, const int codePointCount,
+            const int score, const int type, const int indexToPartialCommit,
+            const int autocimmitFirstWordConfindence);
+    void getSortedScores(int *const outScores) const;
+    void dumpSuggestions() const;
 
     int getSuggestionCount() const {
         return mSuggestedWords.size();

@@ -24,6 +24,7 @@
 #include "suggest/core/dictionary/dictionary.h"
 #include "suggest/core/dictionary/error_type_utils.h"
 #include "suggest/core/policy/scoring.h"
+#include "suggest/core/result/suggestion_results.h"
 #include "suggest/core/session/dic_traverse_session.h"
 
 namespace latinime {
@@ -31,10 +32,9 @@ namespace latinime {
 const int SuggestionsOutputUtils::MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT = 16;
 
 // TODO: Split this method.
-/* static */ int SuggestionsOutputUtils::outputSuggestions(
+/* static */ void SuggestionsOutputUtils::outputSuggestions(
         const Scoring *const scoringPolicy, DicTraverseSession *traverseSession,
-        int *outputScores, int *outputCodePoints, int *outputIndicesToPartialCommit,
-        int *outputTypes, int *outputAutoCommitFirstWordConfidence) {
+        SuggestionResults *const outSuggestionResults) {
 #if DEBUG_EVALUATE_MOST_PROBABLE_STRING
     const int terminalSize = 0;
 #else
@@ -49,18 +49,6 @@ const int SuggestionsOutputUtils::MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT = 16;
 
     const float languageWeight = scoringPolicy->getAdjustedLanguageWeight(
             traverseSession, terminals, terminalSize);
-
-    int outputWordIndex = 0;
-    // Insert most probable word at index == 0 as long as there is one terminal at least
-    const bool hasMostProbableString =
-            scoringPolicy->getMostProbableString(traverseSession, terminalSize, languageWeight,
-                    &outputCodePoints[0], &outputTypes[0], &outputScores[0]);
-    if (hasMostProbableString) {
-        outputIndicesToPartialCommit[outputWordIndex] = NOT_AN_INDEX;
-        ++outputWordIndex;
-    }
-
-    int maxScore = S_INT_MIN;
     // Force autocorrection for obvious long multi-word suggestions when the top suggestion is
     // a long multiple words suggestion.
     // TODO: Implement a smarter auto-commit method for handling multi-word suggestions.
@@ -75,16 +63,12 @@ const int SuggestionsOutputUtils::MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT = 16;
     // TODO: have partial commit work even with multiple pointers.
     const bool outputSecondWordFirstLetterInputIndex =
             traverseSession->isOnlyOnePointerUsed(0 /* pointerId */);
-    if (terminalSize > 0) {
-        // If we have no suggestions, don't write this
-        outputAutoCommitFirstWordConfidence[0] =
-                computeFirstWordConfidence(&terminals[0]);
-    }
     const bool boostExactMatches = traverseSession->getDictionaryStructurePolicy()->
             getHeaderStructurePolicy()->shouldBoostExactMatches();
+
+    int codePoints[MAX_WORD_LENGTH];
     // Output suggestion results here
-    for (int terminalIndex = 0; terminalIndex < terminalSize && outputWordIndex < MAX_RESULTS;
-            ++terminalIndex) {
+    for (int terminalIndex = 0; terminalIndex < terminalSize; ++terminalIndex) {
         DicNode *terminalDicNode = &terminals[terminalIndex];
         if (DEBUG_GEO_FULL) {
             terminalDicNode->dump("OUT:");
@@ -118,25 +102,18 @@ const int SuggestionsOutputUtils::MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT = 16;
                 (forceCommitMultiWords && terminalDicNode->hasMultipleWords())
                          || (isValidWord && scoringPolicy->doesAutoCorrectValidWord()),
                 boostExactMatches);
-        if (maxScore < finalScore && isValidWord) {
-            maxScore = finalScore;
-        }
 
         // Don't output invalid words. However, we still need to submit their shortcuts if any.
         if (isValidWord) {
-            outputTypes[outputWordIndex] = Dictionary::KIND_CORRECTION | outputTypeFlags;
-            outputScores[outputWordIndex] = finalScore;
-            if (outputSecondWordFirstLetterInputIndex) {
-                outputIndicesToPartialCommit[outputWordIndex] =
-                        terminalDicNode->getSecondWordFirstInputIndex(
-                                traverseSession->getProximityInfoState(0));
-            } else {
-                outputIndicesToPartialCommit[outputWordIndex] = NOT_AN_INDEX;
-            }
-            // Populate the outputChars array with the suggested word.
-            const int startIndex = outputWordIndex * MAX_WORD_LENGTH;
-            terminalDicNode->outputResult(&outputCodePoints[startIndex]);
-            ++outputWordIndex;
+            terminalDicNode->outputResult(codePoints);
+            const int indexToPartialCommit = outputSecondWordFirstLetterInputIndex ?
+                    terminalDicNode->getSecondWordFirstInputIndex(
+                            traverseSession->getProximityInfoState(0)) :
+                    NOT_AN_INDEX;
+            outSuggestionResults->addSuggestion(codePoints,
+                    terminalDicNode->getTotalNodeCodePointCount(),
+                    finalScore, Dictionary::KIND_CORRECTION | outputTypeFlags,
+                    indexToPartialCommit, computeFirstWordConfidence(terminalDicNode));
         }
 
         if (!terminalDicNode->hasMultipleWords()) {
@@ -152,28 +129,11 @@ const int SuggestionsOutputUtils::MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT = 16;
                              traverseSession->getInputSize(),
                              terminalDicNode->getContainedErrorTypes(),
                              true /* forceCommit */, boostExactMatches) : finalScore;
-            const int updatedOutputWordIndex = outputShortcuts(&shortcutIt,
-                    outputWordIndex, shortcutBaseScore, outputCodePoints, outputScores, outputTypes,
-                    sameAsTyped);
-            const int secondWordFirstInputIndex = terminalDicNode->getSecondWordFirstInputIndex(
-                    traverseSession->getProximityInfoState(0));
-            for (int i = outputWordIndex; i < updatedOutputWordIndex; ++i) {
-                if (outputSecondWordFirstLetterInputIndex) {
-                    outputIndicesToPartialCommit[i] = secondWordFirstInputIndex;
-                } else {
-                    outputIndicesToPartialCommit[i] = NOT_AN_INDEX;
-                }
-            }
-            outputWordIndex = updatedOutputWordIndex;
+            outputShortcuts(&shortcutIt, shortcutBaseScore, sameAsTyped, outSuggestionResults);
         }
         DicNode::managedDelete(terminalDicNode);
     }
-
-    if (hasMostProbableString) {
-        scoringPolicy->safetyNetForMostProbableString(outputWordIndex, maxScore,
-                &outputCodePoints[0], outputScores);
-    }
-    return outputWordIndex;
+    scoringPolicy->getMostProbableString(traverseSession, languageWeight, outSuggestionResults);
 }
 
 /* static */ int SuggestionsOutputUtils::computeFirstWordConfidence(
@@ -228,12 +188,11 @@ const int SuggestionsOutputUtils::MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT = 16;
     return distanceContribution + lengthContribution + spaceContribution;
 }
 
-/* static */ int SuggestionsOutputUtils::outputShortcuts(
-        BinaryDictionaryShortcutIterator *const shortcutIt,
-        int outputWordIndex, const int finalScore, int *const outputCodePoints,
-        int *const outputScores, int *const outputTypes, const bool sameAsTyped) {
+/* static */ void SuggestionsOutputUtils::outputShortcuts(
+        BinaryDictionaryShortcutIterator *const shortcutIt, const int finalScore,
+        const bool sameAsTyped, SuggestionResults *const outSuggestionResults) {
     int shortcutTarget[MAX_WORD_LENGTH];
-    while (shortcutIt->hasNextShortcutTarget() && outputWordIndex < MAX_RESULTS) {
+    while (shortcutIt->hasNextShortcutTarget()) {
         bool isWhilelist;
         int shortcutTargetStringLength;
         shortcutIt->nextShortcutTarget(MAX_WORD_LENGTH, shortcutTarget,
@@ -250,15 +209,9 @@ const int SuggestionsOutputUtils::MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT = 16;
             shortcutScore = std::max(S_INT_MIN + 1, shortcutScore) - 1;
             kind = Dictionary::KIND_SHORTCUT;
         }
-        outputTypes[outputWordIndex] = kind;
-        outputScores[outputWordIndex] = shortcutScore;
-        outputScores[outputWordIndex] = std::max(S_INT_MIN + 1, shortcutScore) - 1;
-        const int startIndex2 = outputWordIndex * MAX_WORD_LENGTH;
-        // Copy shortcut target code points to the output buffer.
-        memmove(&outputCodePoints[startIndex2], shortcutTarget,
-                shortcutTargetStringLength * sizeof(shortcutTarget[0]));
-        ++outputWordIndex;
+        outSuggestionResults->addSuggestion(shortcutTarget, shortcutTargetStringLength,
+                std::max(S_INT_MIN + 1, shortcutScore) - 1, kind, NOT_AN_INDEX,
+                NOT_A_FIRST_WORD_CONFIDENCE);
     }
-    return outputWordIndex;
 }
 } // namespace latinime
