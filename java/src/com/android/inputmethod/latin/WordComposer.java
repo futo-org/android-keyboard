@@ -43,6 +43,11 @@ public final class WordComposer {
 
     private CombinerChain mCombinerChain;
 
+    // An array of code points representing the characters typed so far.
+    // The array is limited to MAX_WORD_LENGTH code points, but mTypedWord extends past that
+    // and mCodePointSize can go past that. If mCodePointSize is greater than MAX_WORD_LENGTH,
+    // this just does not contain the associated code points past MAX_WORD_LENGTH.
+    private int[] mPrimaryKeyCodes;
     // The list of events that served to compose this string.
     private final ArrayList<Event> mEvents;
     private final InputPointers mInputPointers = new InputPointers(MAX_WORD_LENGTH);
@@ -86,6 +91,7 @@ public final class WordComposer {
 
     public WordComposer() {
         mCombinerChain = new CombinerChain();
+        mPrimaryKeyCodes = new int[MAX_WORD_LENGTH];
         mEvents = CollectionUtils.newArrayList();
         mTypedWord = new StringBuilder(MAX_WORD_LENGTH);
         mAutoCorrection = null;
@@ -100,6 +106,7 @@ public final class WordComposer {
 
     public WordComposer(final WordComposer source) {
         mCombinerChain = source.mCombinerChain;
+        mPrimaryKeyCodes = Arrays.copyOf(source.mPrimaryKeyCodes, source.mPrimaryKeyCodes.length);
         mEvents = new ArrayList<Event>(source.mEvents);
         mTypedWord = new StringBuilder(source.mTypedWord);
         mInputPointers.copy(source.mInputPointers);
@@ -152,6 +159,14 @@ public final class WordComposer {
         return size() > 0;
     }
 
+    // TODO: make sure that the index should not exceed MAX_WORD_LENGTH
+    public int getCodeAt(int index) {
+        if (index >= MAX_WORD_LENGTH) {
+            return -1;
+        }
+        return mPrimaryKeyCodes[index];
+    }
+
     public InputPointers getInputPointers() {
         return mInputPointers;
     }
@@ -180,6 +195,8 @@ public final class WordComposer {
         refreshSize();
         mCursorPositionWithinWord = mCodePointSize;
         if (newIndex < MAX_WORD_LENGTH) {
+            mPrimaryKeyCodes[newIndex] = primaryCode >= Constants.CODE_SPACE
+                    ? Character.toLowerCase(primaryCode) : primaryCode;
             // In the batch input mode, the {@code mInputPointers} holds batch input points and
             // shouldn't be overridden by the "typed key" coordinates
             // (See {@link #setBatchInputWord}).
@@ -227,7 +244,15 @@ public final class WordComposer {
         mCombinerChain.reset();
         int actualMoveAmountWithinWord = 0;
         int cursorPos = mCursorPositionWithinWord;
-        final int[] codePoints = StringUtils.toCodePointArray(mTypedWord.toString());
+        final int[] codePoints;
+        if (mCodePointSize >= MAX_WORD_LENGTH) {
+            // If we have more than MAX_WORD_LENGTH characters, we don't have everything inside
+            // mPrimaryKeyCodes. This should be rare enough that we can afford to just compute
+            // the array on the fly when this happens.
+            codePoints = StringUtils.toCodePointArray(mTypedWord.toString());
+        } else {
+            codePoints = mPrimaryKeyCodes;
+        }
         if (expectedMoveAmount >= 0) {
             // Moving the cursor forward for the expected amount or until the end of the word has
             // been reached, whichever comes first.
@@ -426,7 +451,9 @@ public final class WordComposer {
         // Note: currently, we come here whenever we commit a word. If it's a MANUAL_PICK
         // or a DECIDED_WORD we may cancel the commit later; otherwise, we should deactivate
         // the last composed word to ensure this does not happen.
-        final LastComposedWord lastComposedWord = new LastComposedWord(mEvents,
+        final int[] primaryKeyCodes = mPrimaryKeyCodes;
+        mPrimaryKeyCodes = new int[MAX_WORD_LENGTH];
+        final LastComposedWord lastComposedWord = new LastComposedWord(primaryKeyCodes, mEvents,
                 mInputPointers, mTypedWord.toString(), committedWord, separatorString,
                 prevWord, mCapitalizedMode);
         mInputPointers.reset();
@@ -462,6 +489,7 @@ public final class WordComposer {
 
     public void resumeSuggestionOnLastComposedWord(final LastComposedWord lastComposedWord,
             final String previousWord) {
+        mPrimaryKeyCodes = lastComposedWord.mPrimaryKeyCodes;
         mEvents.clear();
         Collections.copy(mEvents, lastComposedWord.mEvents);
         mInputPointers.set(lastComposedWord.mInputPointers);
