@@ -93,7 +93,8 @@
     <string name="spoken_description_tab" msgid="2667716002663482248">"Tab"</string>
     <string name="spoken_description_space" msgid="2582521050049860859">"შორისი"</string>
     <string name="spoken_description_mic" msgid="615536748882611950">"ხმოვანი შეყვანა"</string>
-    <string name="spoken_description_smiley" msgid="2256309826200113918">"ღიმილი"</string>
+    <!-- no translation found for spoken_description_emoji (6934027701390427635) -->
+    <skip />
     <string name="spoken_description_return" msgid="8178083177238315647">"დაბრუნება"</string>
     <string name="spoken_description_search" msgid="1247236163755920808">"ძიება"</string>
     <string name="spoken_description_dot" msgid="40711082435231673">"წერტილი"</string>
