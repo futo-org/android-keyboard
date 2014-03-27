@@ -249,18 +249,8 @@ public final class BinaryDictionary extends Dictionary {
         final boolean isGesture = composer.isBatchMode();
         if (composerSize <= 1 || !isGesture) {
             if (composerSize > MAX_WORD_LENGTH - 1) return null;
-            final CharSequence typedWord = composer.getTypedWord();
-            final int charCount = typedWord.length();
-            int typedWordCharIndex = 0;
-            int inputCodePointIndex = 0;
-            while (typedWordCharIndex < charCount) {
-                final int codePoint = Character.codePointAt(typedWord, typedWordCharIndex);
-                mInputCodePoints[inputCodePointIndex] = codePoint;
-                typedWordCharIndex += Character.charCount(codePoint);
-                inputCodePointIndex += 1;
-                if (inputCodePointIndex >= MAX_WORD_LENGTH) {
-                    break;
-                }
+            for (int i = 0; i < composerSize; i++) {
+                mInputCodePoints[i] = composer.getCodeAt(i);
             }
         }
 
