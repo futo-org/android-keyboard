@@ -483,12 +483,6 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     }
 
     /**
-     * Abstract method for checking if it is required to reload the dictionary before writing
-     * a binary dictionary.
-     */
-    abstract protected boolean needsToReloadAfterCreation();
-
-    /**
      * Create a new binary dictionary and load initial contents.
      */
     private void createNewDictionaryLocked() {

@@ -269,9 +269,4 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
     protected boolean haveContentsChanged() {
         return true;
     }
-
-    @Override
-    protected boolean needsToReloadAfterCreation() {
-        return true;
-    }
 }
