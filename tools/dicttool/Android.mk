@@ -30,6 +30,7 @@ LATINIME_LOCAL_DIR := ../..
 LATINIME_BASE_SOURCE_DIRECTORY := $(LATINIME_LOCAL_DIR)/java/src/com/android/inputmethod
 LATINIME_ANNOTATIONS_SOURCE_DIRECTORY := $(LATINIME_BASE_SOURCE_DIRECTORY)/annotations
 MAKEDICT_CORE_SOURCE_DIRECTORY := $(LATINIME_BASE_SOURCE_DIRECTORY)/latin/makedict
+LATINIME_TESTS_SOURCE_DIRECTORY := $(LATINIME_LOCAL_DIR)/tests/src/com/android/inputmethod/latin
 
 # Dependencies for Dicttool. Most of these files are needed by BinaryDictionary.java. Note that
 # a significant part of the dependencies are mocked in the compat/ directory, with empty or
@@ -47,7 +48,6 @@ LATINIME_SRCS_FOR_DICTTOOL := \
         latin/WordComposer.java \
         latin/settings/NativeSuggestOptions.java \
         latin/utils/BinaryDictionaryUtils.java \
-        latin/utils/ByteArrayDictBuffer.java \
         latin/utils/CollectionUtils.java \
         latin/utils/CombinedFormatUtils.java \
         latin/utils/CoordinateUtils.java \
@@ -56,8 +56,13 @@ LATINIME_SRCS_FOR_DICTTOOL := \
         latin/utils/LocaleUtils.java \
         latin/utils/ResizableIntArray.java \
         latin/utils/StringUtils.java
-USED_TARGETED_SRCS := $(addprefix $(LATINIME_BASE_SOURCE_DIRECTORY)/, \
-        $(LATINIME_SRCS_FOR_DICTTOOL))
+
+LATINIME_TEST_SRCS_FOR_DICTTOOL := \
+        utils/ByteArrayDictBuffer.java
+
+USED_TARGETED_SRCS := \
+        $(addprefix $(LATINIME_BASE_SOURCE_DIRECTORY)/, $(LATINIME_SRCS_FOR_DICTTOOL)) \
+        $(addprefix $(LATINIME_TESTS_SOURCE_DIRECTORY)/, $(LATINIME_TEST_SRCS_FOR_DICTTOOL))
 
 DICTTOOL_ONDEVICE_TESTS_DIRECTORY := \
         $(LATINIME_LOCAL_DIR)/tests/src/com/android/inputmethod/latin/makedict/

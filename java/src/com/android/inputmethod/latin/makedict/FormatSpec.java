@@ -18,9 +18,7 @@ package com.android.inputmethod.latin.makedict;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.Constants;
-import com.android.inputmethod.latin.makedict.DictDecoder.DictionaryBufferFactory;
 
-import java.io.File;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -361,42 +359,6 @@ public final class FormatSpec {
             }
             return s.toString();
         }
-    }
-
-    /**
-     * Returns new dictionary decoder.
-     *
-     * @param dictFile the dictionary file.
-     * @param offset the offset in the file.
-     * @param length the length of the file, in bytes.
-     * @param bufferType The type of buffer, as one of USE_* in DictDecoder.
-     * @return new dictionary decoder if the dictionary file exists, otherwise null.
-     */
-    public static DictDecoder getDictDecoder(final File dictFile, final long offset,
-            final long length, final int bufferType) {
-        if (dictFile.isDirectory()) {
-            return new Ver4DictDecoder(dictFile, bufferType);
-        } else if (dictFile.isFile()) {
-            return new Ver2DictDecoder(dictFile, offset, length, bufferType);
-        }
-        return null;
-    }
-
-    @UsedForTesting
-    public static DictDecoder getDictDecoder(final File dictFile, final long offset,
-            final long length, final DictionaryBufferFactory factory) {
-        if (dictFile.isDirectory()) {
-            return new Ver4DictDecoder(dictFile, factory);
-        } else if (dictFile.isFile()) {
-            return new Ver2DictDecoder(dictFile, offset, length, factory);
-        }
-        return null;
-    }
-
-    @UsedForTesting
-    public static DictDecoder getDictDecoder(final File dictFile, final long offset,
-            final long length) {
-        return getDictDecoder(dictFile, offset, length, DictDecoder.USE_READONLY_BYTEBUFFER);
     }
 
     private FormatSpec() {

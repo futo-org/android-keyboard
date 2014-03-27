@@ -16,6 +16,8 @@
 
 package com.android.inputmethod.latin.dicttool;
 
+import com.android.inputmethod.latin.Dictionary;
+import com.android.inputmethod.latin.makedict.BinaryDictIOUtils;
 import com.android.inputmethod.latin.makedict.DictDecoder;
 import com.android.inputmethod.latin.makedict.DictEncoder;
 import com.android.inputmethod.latin.makedict.DictionaryHeader;
@@ -77,7 +79,7 @@ public class BinaryDictOffdeviceUtilsTests extends TestCase {
             assertEquals("Wrong decode spec", BinaryDictOffdeviceUtils.COMPRESSION, step);
         }
         assertEquals("Wrong decode spec", 3, decodeSpec.mDecoderSpec.size());
-        final DictDecoder dictDecoder = FormatSpec.getDictDecoder(decodeSpec.mFile, 0,
+        final DictDecoder dictDecoder = BinaryDictIOUtils.getDictDecoder(decodeSpec.mFile, 0,
                 decodeSpec.mFile.length());
         final FusionDictionary resultDict =
                 dictDecoder.readDictionaryBinary(false /* deleteDictIfBroken */);
