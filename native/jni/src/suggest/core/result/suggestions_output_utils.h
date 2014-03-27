@@ -25,16 +25,15 @@ class BinaryDictionaryShortcutIterator;
 class DicNode;
 class DicTraverseSession;
 class Scoring;
+class SuggestionResults;
 
 class SuggestionsOutputUtils {
  public:
     /**
      * Outputs the final list of suggestions (i.e., terminal nodes).
      */
-    static int outputSuggestions(const Scoring *const scoringPolicy,
-            DicTraverseSession *traverseSession, int *outputScores, int *outputCodePoints,
-            int *outputIndicesToPartialCommit, int *outputTypes,
-            int *outputAutoCommitFirstWordConfidence);
+    static void outputSuggestions(const Scoring *const scoringPolicy,
+            DicTraverseSession *traverseSession, SuggestionResults *const outSuggestionResults);
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(SuggestionsOutputUtils);
@@ -44,9 +43,9 @@ class SuggestionsOutputUtils {
 
     static int computeFirstWordConfidence(const DicNode *const terminalDicNode);
 
-    static int outputShortcuts(BinaryDictionaryShortcutIterator *const shortcutIt,
-            int outputWordIndex, const int finalScore, int *const outputCodePoints,
-            int *const outputScores, int *const outputTypes, const bool sameAsTyped);
+    static void outputShortcuts(BinaryDictionaryShortcutIterator *const shortcutIt,
+            const int finalScore, const bool sameAsTyped,
+            SuggestionResults *const outSuggestionResults);
 };
 } // namespace latinime
 #endif // LATINIME_SUGGESTIONS_OUTPUT_UTILS

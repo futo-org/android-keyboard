@@ -103,7 +103,8 @@ AK_FORCE_INLINE static int intArrayToCharArray(const int *const source, const in
 #define AKLOGI(fmt, ...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, fmt, ##__VA_ARGS__)
 #endif // defined(HOST_TOOL)
 
-#define DUMP_RESULT(words, frequencies) do { dumpResult(words, frequencies); } while (0)
+#define DUMP_SUGGESTION(words, frequencies, index, score) \
+        do { dumpWordInfo(words, frequencies, index, score); } while (0)
 #define DUMP_WORD(word, length) do { dumpWord(word, length); } while (0)
 #define INTS_TO_CHARS(input, length, output, outlength) do { \
         intArrayToCharArray(input, length, output, outlength); } while (0)
@@ -165,7 +166,7 @@ static inline void showStackTrace() {
 #else // defined(FLAG_DO_PROFILE) || defined(FLAG_DBG)
 #define AKLOGE(fmt, ...)
 #define AKLOGI(fmt, ...)
-#define DUMP_RESULT(words, frequencies)
+#define DUMP_SUGGESTION(words, frequencies, index, score)
 #define DUMP_WORD(word, length)
 #undef DO_ASSERT_TEST
 #define ASSERT(success)

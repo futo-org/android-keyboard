@@ -54,13 +54,23 @@ void SuggestionResults::outputSuggestions(JNIEnv *env, jintArray outSuggestionCo
 
 void SuggestionResults::addPrediction(const int *const codePoints, const int codePointCount,
         const int probability) {
-    if (codePointCount <= 0 || codePointCount > MAX_WORD_LENGTH
-            || probability == NOT_A_PROBABILITY) {
+    if (probability == NOT_A_PROBABILITY) {
         // Invalid word.
         return;
     }
-    // Use probability as a score of the word.
-    const int score = probability;
+    addSuggestion(codePoints, codePointCount, probability, Dictionary::KIND_PREDICTION,
+            NOT_AN_INDEX, NOT_A_FIRST_WORD_CONFIDENCE);
+}
+
+void SuggestionResults::addSuggestion(const int *const codePoints, const int codePointCount,
+        const int score, const int type, const int indexToPartialCommit,
+        const int autocimmitFirstWordConfindence) {
+    if (codePointCount <= 0 || codePointCount > MAX_WORD_LENGTH) {
+        // Invalid word.
+        AKLOGE("Invalid word is added to the suggestion results. codePointCount: %d",
+                codePointCount);
+        return;
+    }
     if (getSuggestionCount() >= mMaxSuggestionCount) {
         const SuggestedWord &mWorstSuggestion = mSuggestedWords.top();
         if (score > mWorstSuggestion.getScore() || (score == mWorstSuggestion.getScore()
@@ -70,8 +80,31 @@ void SuggestionResults::addPrediction(const int *const codePoints, const int cod
             return;
         }
     }
-    mSuggestedWords.push(SuggestedWord(codePoints, codePointCount, score,
-            Dictionary::KIND_PREDICTION, NOT_AN_INDEX, NOT_A_FIRST_WORD_CONFIDENCE));
+    mSuggestedWords.push(SuggestedWord(codePoints, codePointCount, score, type,
+            indexToPartialCommit, autocimmitFirstWordConfindence));
+}
+
+void SuggestionResults::getSortedScores(int *const outScores) const {
+    auto copyOfSuggestedWords = mSuggestedWords;
+    while (!copyOfSuggestedWords.empty()) {
+        const SuggestedWord &suggestedWord = copyOfSuggestedWords.top();
+        outScores[copyOfSuggestedWords.size() - 1] = suggestedWord.getScore();
+        copyOfSuggestedWords.pop();
+    }
+}
+
+void SuggestionResults::dumpSuggestions() const {
+    std::vector<SuggestedWord> suggestedWords;
+    auto copyOfSuggestedWords = mSuggestedWords;
+    while (!copyOfSuggestedWords.empty()) {
+        suggestedWords.push_back(copyOfSuggestedWords.top());
+        copyOfSuggestedWords.pop();
+    }
+    int index = 0;
+    for (auto it = suggestedWords.rbegin(); it != suggestedWords.rend(); ++it) {
+        DUMP_SUGGESTION(it->getCodePoint(), it->getCodePointCount(), index, it->getScore());
+        index++;
+    }
 }
 
 } // namespace latinime

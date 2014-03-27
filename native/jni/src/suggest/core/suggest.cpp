@@ -42,10 +42,9 @@ const int Suggest::MIN_CONTINUOUS_SUGGESTION_INPUT_SIZE = 2;
  * automatically activated for sequential calls that share the same starting input.
  * TODO: Stop detecting continuous suggestion. Start using traverseSession instead.
  */
-int Suggest::getSuggestions(ProximityInfo *pInfo, void *traverseSession,
+void Suggest::getSuggestions(ProximityInfo *pInfo, void *traverseSession,
         int *inputXs, int *inputYs, int *times, int *pointerIds, int *inputCodePoints,
-        int inputSize, int *outWords, int *outputScores, int *outputIndices,
-        int *outputTypes, int *outputAutoCommitFirstWordConfidence) const {
+        int inputSize, SuggestionResults *const outSuggestionResults) const {
     PROF_OPEN;
     PROF_START(0);
     const float maxSpatialDistance = TRAVERSAL->getMaxSpatialDistance();
@@ -66,11 +65,9 @@ int Suggest::getSuggestions(ProximityInfo *pInfo, void *traverseSession,
     }
     PROF_END(1);
     PROF_START(2);
-    const int size = SuggestionsOutputUtils::outputSuggestions(SCORING, tSession, outputScores,
-            outWords, outputIndices, outputTypes, outputAutoCommitFirstWordConfidence);
+    SuggestionsOutputUtils::outputSuggestions(SCORING, tSession, outSuggestionResults);
     PROF_END(2);
     PROF_CLOSE;
-    return size;
 }
 
 /**
