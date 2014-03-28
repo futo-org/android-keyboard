@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.latin.makedict;
 
+import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.BinaryDictionary;
 import com.android.inputmethod.latin.utils.CombinedFormatUtils;
 
@@ -30,6 +31,7 @@ public final class ProbabilityInfo {
     public final int mLevel;
     public final int mCount;
 
+    @UsedForTesting
     public static ProbabilityInfo max(final ProbabilityInfo probabilityInfo1,
             final ProbabilityInfo probabilityInfo2) {
         if (probabilityInfo1 == null) {

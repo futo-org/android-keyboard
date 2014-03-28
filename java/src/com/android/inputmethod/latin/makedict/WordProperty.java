@@ -42,6 +42,7 @@ public final class WordProperty implements Comparable<WordProperty> {
 
     private int mHashCode = 0;
 
+    @UsedForTesting
     public WordProperty(final String word, final ProbabilityInfo probabilityInfo,
             final ArrayList<WeightedString> shortcutTargets,
             final ArrayList<WeightedString> bigrams,
