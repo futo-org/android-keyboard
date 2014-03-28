@@ -244,7 +244,7 @@ public final class BinaryDictionary extends Dictionary {
         // TODO: toLowerCase in the native code
         final int[] prevWordCodePointArray = (null == prevWord)
                 ? null : StringUtils.toCodePointArray(prevWord);
-        final int composerSize = composer.size();
+        final int composerSize = composer.sizeWithoutTrailingSingleQuotes();
 
         final boolean isGesture = composer.isBatchMode();
         if (composerSize <= 1 || !isGesture) {

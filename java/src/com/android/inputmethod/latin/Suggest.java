@@ -101,19 +101,6 @@ public final class Suggest {
                 : typedWord;
         LatinImeLogger.onAddSuggestedWord(typedWord, Dictionary.TYPE_USER_TYPED);
 
-        final WordComposer wordComposerForLookup;
-        if (trailingSingleQuotesCount > 0) {
-            wordComposerForLookup = new WordComposer(wordComposer);
-            for (int i = trailingSingleQuotesCount - 1; i >= 0; --i) {
-                // TODO: do not create a fake event for this. Ideally the word composer should know
-                // how to give out the word without trailing quotes and we can remove this entirely
-                wordComposerForLookup.deleteLast(Event.createSoftwareKeypressEvent(
-                        Event.NOT_A_CODE_POINT, Constants.CODE_DELETE,
-                        Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE));
-            }
-        } else {
-            wordComposerForLookup = wordComposer;
-        }
         final ArrayList<SuggestedWordInfo> rawSuggestions;
         if (ProductionFlag.INCLUDE_RAW_SUGGESTIONS) {
             rawSuggestions = CollectionUtils.newArrayList();
@@ -121,7 +108,7 @@ public final class Suggest {
             rawSuggestions = null;
         }
         final SuggestionResults suggestionResults = mDictionaryFacilitator.getSuggestionResults(
-                wordComposerForLookup, prevWordForBigram, proximityInfo, blockOffensiveWords,
+                wordComposer, prevWordForBigram, proximityInfo, blockOffensiveWords,
                 additionalFeaturesOptions, SESSION_TYPING, rawSuggestions);
 
         final boolean isFirstCharCapitalized = wordComposer.isFirstCharCapitalized();
