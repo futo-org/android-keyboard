@@ -262,11 +262,6 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
     }
 
     @Override
-    protected boolean needsToReloadAfterCreation() {
-        return true;
-    }
-
-    @Override
     protected boolean haveContentsChanged() {
         final long startTime = SystemClock.uptimeMillis();
         final int contactCount = getContactCount();
