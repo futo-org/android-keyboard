@@ -132,8 +132,13 @@ public final class WordComposer {
      * Number of keystrokes in the composing word.
      * @return the number of keystrokes
      */
-    public final int size() {
+    // This may be made public if need be, but right now it's not used anywhere
+    /* package for tests */ int size() {
         return mCodePointSize;
+    }
+
+    public boolean isSingleLetter() {
+        return size() == 1;
     }
 
     // When the composition contains trailing quotes, we don't pass them to the suggestion engine.
