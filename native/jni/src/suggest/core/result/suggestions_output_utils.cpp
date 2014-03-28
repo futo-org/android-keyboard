@@ -17,11 +17,11 @@
 #include "suggest/core/result/suggestions_output_utils.h"
 
 #include <algorithm>
+#include <vector>
 
 #include "suggest/core/dicnode/dic_node.h"
 #include "suggest/core/dicnode/dic_node_utils.h"
 #include "suggest/core/dictionary/binary_dictionary_shortcut_iterator.h"
-#include "suggest/core/dictionary/dictionary.h"
 #include "suggest/core/dictionary/error_type_utils.h"
 #include "suggest/core/policy/scoring.h"
 #include "suggest/core/result/suggestion_results.h"
@@ -31,103 +31,111 @@ namespace latinime {
 
 const int SuggestionsOutputUtils::MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT = 16;
 
-// TODO: Split this method.
 /* static */ void SuggestionsOutputUtils::outputSuggestions(
         const Scoring *const scoringPolicy, DicTraverseSession *traverseSession,
         SuggestionResults *const outSuggestionResults) {
 #if DEBUG_EVALUATE_MOST_PROBABLE_STRING
     const int terminalSize = 0;
 #else
-    const int terminalSize = std::min(MAX_RESULTS,
-            static_cast<int>(traverseSession->getDicTraverseCache()->terminalSize()));
+    const int terminalSize = traverseSession->getDicTraverseCache()->terminalSize();
 #endif
-    DicNode terminals[MAX_RESULTS]; // Avoiding non-POD variable length array
-
+    std::vector<DicNode> terminals(terminalSize);
     for (int index = terminalSize - 1; index >= 0; --index) {
         traverseSession->getDicTraverseCache()->popTerminal(&terminals[index]);
     }
 
     const float languageWeight = scoringPolicy->getAdjustedLanguageWeight(
-            traverseSession, terminals, terminalSize);
+            traverseSession, terminals.data(), terminalSize);
     // Force autocorrection for obvious long multi-word suggestions when the top suggestion is
     // a long multiple words suggestion.
     // TODO: Implement a smarter auto-commit method for handling multi-word suggestions.
     const bool forceCommitMultiWords = scoringPolicy->autoCorrectsToMultiWordSuggestionIfTop()
             && (traverseSession->getInputSize() >= MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT
-                    && terminals[0].hasMultipleWords());
+                    && !terminals.empty() && terminals.front().hasMultipleWords());
     // TODO: have partial commit work even with multiple pointers.
     const bool outputSecondWordFirstLetterInputIndex =
             traverseSession->isOnlyOnePointerUsed(0 /* pointerId */);
     const bool boostExactMatches = traverseSession->getDictionaryStructurePolicy()->
             getHeaderStructurePolicy()->shouldBoostExactMatches();
 
-    int codePoints[MAX_WORD_LENGTH];
     // Output suggestion results here
-    for (int terminalIndex = 0; terminalIndex < terminalSize; ++terminalIndex) {
-        DicNode *terminalDicNode = &terminals[terminalIndex];
-        if (DEBUG_GEO_FULL) {
-            terminalDicNode->dump("OUT:");
-        }
-        const float doubleLetterCost =
-                scoringPolicy->getDoubleLetterDemotionDistanceCost(terminalDicNode);
-        const float compoundDistance = terminalDicNode->getCompoundDistance(languageWeight)
-                + doubleLetterCost;
-        const bool isPossiblyOffensiveWord =
-                traverseSession->getDictionaryStructurePolicy()->getProbability(
-                        terminalDicNode->getProbability(), NOT_A_PROBABILITY) <= 0;
-        const bool isExactMatch =
-                ErrorTypeUtils::isExactMatch(terminalDicNode->getContainedErrorTypes());
-        const bool isFirstCharUppercase = terminalDicNode->isFirstCharUppercase();
-        // Heuristic: We exclude probability=0 first-char-uppercase words from exact match.
-        // (e.g. "AMD" and "and")
-        const bool isSafeExactMatch = isExactMatch
-                && !(isPossiblyOffensiveWord && isFirstCharUppercase);
-        const int outputTypeFlags =
-                (isPossiblyOffensiveWord ? Dictionary::KIND_FLAG_POSSIBLY_OFFENSIVE : 0)
-                | ((isSafeExactMatch && boostExactMatches) ? Dictionary::KIND_FLAG_EXACT_MATCH : 0);
-
-        // Entries that are blacklisted or do not represent a word should not be output.
-        const bool isValidWord = !terminalDicNode->isBlacklistedOrNotAWord();
-
-        // Increase output score of top typing suggestion to ensure autocorrection.
-        // TODO: Better integration with java side autocorrection logic.
-        const int finalScore = scoringPolicy->calculateFinalScore(
-                compoundDistance, traverseSession->getInputSize(),
-                terminalDicNode->getContainedErrorTypes(),
-                (forceCommitMultiWords && terminalDicNode->hasMultipleWords())
-                         || (isValidWord && scoringPolicy->doesAutoCorrectValidWord()),
-                boostExactMatches);
-
-        // Don't output invalid words. However, we still need to submit their shortcuts if any.
-        if (isValidWord) {
-            terminalDicNode->outputResult(codePoints);
-            const int indexToPartialCommit = outputSecondWordFirstLetterInputIndex ?
-                    terminalDicNode->getSecondWordFirstInputIndex(
-                            traverseSession->getProximityInfoState(0)) :
-                    NOT_AN_INDEX;
-            outSuggestionResults->addSuggestion(codePoints,
-                    terminalDicNode->getTotalNodeCodePointCount(),
-                    finalScore, Dictionary::KIND_CORRECTION | outputTypeFlags,
-                    indexToPartialCommit, computeFirstWordConfidence(terminalDicNode));
-        }
-
-        if (!terminalDicNode->hasMultipleWords()) {
-            BinaryDictionaryShortcutIterator shortcutIt(
-                    traverseSession->getDictionaryStructurePolicy()->getShortcutsStructurePolicy(),
-                    traverseSession->getDictionaryStructurePolicy()
-                            ->getShortcutPositionOfPtNode(terminalDicNode->getPtNodePos()));
-            // Shortcut is not supported for multiple words suggestions.
-            // TODO: Check shortcuts during traversal for multiple words suggestions.
-            const bool sameAsTyped = scoringPolicy->sameAsTyped(traverseSession, terminalDicNode);
-            const int shortcutBaseScore = scoringPolicy->doesAutoCorrectValidWord() ?
-                     scoringPolicy->calculateFinalScore(compoundDistance,
-                             traverseSession->getInputSize(),
-                             terminalDicNode->getContainedErrorTypes(),
-                             true /* forceCommit */, boostExactMatches) : finalScore;
-            outputShortcuts(&shortcutIt, shortcutBaseScore, sameAsTyped, outSuggestionResults);
-        }
+    for (auto &terminalDicNode : terminals) {
+        outputSuggestionsOfDicNode(scoringPolicy, traverseSession, &terminalDicNode,
+                languageWeight, boostExactMatches, forceCommitMultiWords,
+                outputSecondWordFirstLetterInputIndex, outSuggestionResults);
     }
     scoringPolicy->getMostProbableString(traverseSession, languageWeight, outSuggestionResults);
+}
+
+/* static */ void SuggestionsOutputUtils::outputSuggestionsOfDicNode(
+        const Scoring *const scoringPolicy, DicTraverseSession *traverseSession,
+        const DicNode *const terminalDicNode, const float languageWeight,
+        const bool boostExactMatches, const bool forceCommitMultiWords,
+        const bool outputSecondWordFirstLetterInputIndex,
+        SuggestionResults *const outSuggestionResults) {
+    if (DEBUG_GEO_FULL) {
+        terminalDicNode->dump("OUT:");
+    }
+    const float doubleLetterCost =
+            scoringPolicy->getDoubleLetterDemotionDistanceCost(terminalDicNode);
+    const float compoundDistance = terminalDicNode->getCompoundDistance(languageWeight)
+            + doubleLetterCost;
+    const bool isPossiblyOffensiveWord =
+            traverseSession->getDictionaryStructurePolicy()->getProbability(
+                    terminalDicNode->getProbability(), NOT_A_PROBABILITY) <= 0;
+    const bool isExactMatch =
+            ErrorTypeUtils::isExactMatch(terminalDicNode->getContainedErrorTypes());
+    const bool isFirstCharUppercase = terminalDicNode->isFirstCharUppercase();
+    // Heuristic: We exclude probability=0 first-char-uppercase words from exact match.
+    // (e.g. "AMD" and "and")
+    const bool isSafeExactMatch = isExactMatch
+            && !(isPossiblyOffensiveWord && isFirstCharUppercase);
+    const int outputTypeFlags =
+            (isPossiblyOffensiveWord ? Dictionary::KIND_FLAG_POSSIBLY_OFFENSIVE : 0)
+            | ((isSafeExactMatch && boostExactMatches) ? Dictionary::KIND_FLAG_EXACT_MATCH : 0);
+
+    // Entries that are blacklisted or do not represent a word should not be output.
+    const bool isValidWord = !terminalDicNode->isBlacklistedOrNotAWord();
+
+    // Increase output score of top typing suggestion to ensure autocorrection.
+    // TODO: Better integration with java side autocorrection logic.
+    const int finalScore = scoringPolicy->calculateFinalScore(
+            compoundDistance, traverseSession->getInputSize(),
+            terminalDicNode->getContainedErrorTypes(),
+            (forceCommitMultiWords && terminalDicNode->hasMultipleWords())
+                     || (isValidWord && scoringPolicy->doesAutoCorrectValidWord()),
+            boostExactMatches);
+
+    // Don't output invalid words. However, we still need to submit their shortcuts if any.
+    if (isValidWord) {
+        int codePoints[MAX_WORD_LENGTH];
+        terminalDicNode->outputResult(codePoints);
+        const int indexToPartialCommit = outputSecondWordFirstLetterInputIndex ?
+                terminalDicNode->getSecondWordFirstInputIndex(
+                        traverseSession->getProximityInfoState(0)) :
+                NOT_AN_INDEX;
+        outSuggestionResults->addSuggestion(codePoints,
+                terminalDicNode->getTotalNodeCodePointCount(),
+                finalScore, Dictionary::KIND_CORRECTION | outputTypeFlags,
+                indexToPartialCommit, computeFirstWordConfidence(terminalDicNode));
+    }
+
+    // Output shortcuts.
+    // Shortcut is not supported for multiple words suggestions.
+    // TODO: Check shortcuts during traversal for multiple words suggestions.
+    if (!terminalDicNode->hasMultipleWords()) {
+        BinaryDictionaryShortcutIterator shortcutIt(
+                traverseSession->getDictionaryStructurePolicy()->getShortcutsStructurePolicy(),
+                traverseSession->getDictionaryStructurePolicy()
+                        ->getShortcutPositionOfPtNode(terminalDicNode->getPtNodePos()));
+        const bool sameAsTyped = scoringPolicy->sameAsTyped(traverseSession, terminalDicNode);
+        const int shortcutBaseScore = scoringPolicy->doesAutoCorrectValidWord() ?
+                 scoringPolicy->calculateFinalScore(compoundDistance,
+                         traverseSession->getInputSize(),
+                         terminalDicNode->getContainedErrorTypes(),
+                         true /* forceCommit */, boostExactMatches) : finalScore;
+        outputShortcuts(&shortcutIt, shortcutBaseScore, sameAsTyped, outSuggestionResults);
+    }
 }
 
 /* static */ int SuggestionsOutputUtils::computeFirstWordConfidence(
