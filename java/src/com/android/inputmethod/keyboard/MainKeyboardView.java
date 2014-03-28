@@ -930,11 +930,6 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
             return middleText;
         }
 
-        final String shortText = SubtypeLocaleUtils.getShortDisplayName(subtype);
-        if (fitsTextIntoWidth(width, shortText, paint)) {
-            return shortText;
-        }
-
         return "";
     }
 
