@@ -41,11 +41,15 @@ class SuggestionsOutputUtils {
     // Inputs longer than this will autocorrect if the suggestion is multi-word
     static const int MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT;
 
-    static int computeFirstWordConfidence(const DicNode *const terminalDicNode);
-
+    static void outputSuggestionsOfDicNode(const Scoring *const scoringPolicy,
+            DicTraverseSession *traverseSession, const DicNode *const terminalDicNode,
+            const float languageWeight, const bool boostExactMatches,
+            const bool forceCommitMultiWords, const bool outputSecondWordFirstLetterInputIndex,
+            SuggestionResults *const outSuggestionResults);
     static void outputShortcuts(BinaryDictionaryShortcutIterator *const shortcutIt,
             const int finalScore, const bool sameAsTyped,
             SuggestionResults *const outSuggestionResults);
+    static int computeFirstWordConfidence(const DicNode *const terminalDicNode);
 };
 } // namespace latinime
 #endif // LATINIME_SUGGESTIONS_OUTPUT_UTILS
