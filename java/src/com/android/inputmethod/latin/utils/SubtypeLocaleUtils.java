@@ -201,11 +201,11 @@ public final class SubtypeLocaleUtils {
     //  fr_CH swiss   F  Français (Suisse)
     //  de    qwertz  F  Deutsch
     //  de_CH swiss   T  Deutsch (Schweiz)
-    //  zz    qwerty  F  No language (QWERTY)    in system locale
+    //  zz    qwerty  F  Alphabet (QWERTY)       in system locale
     //  fr    qwertz  T  Français (QWERTZ)
     //  de    qwerty  T  Deutsch (QWERTY)
     //  en_US azerty  T  English (US) (AZERTY)   exception
-    //  zz    azerty  T  No language (AZERTY)    in system locale
+    //  zz    azerty  T  Alphabet (AZERTY)       in system locale
 
     private static String getReplacementString(final InputMethodSubtype subtype,
             final Locale displayLocale) {
@@ -294,21 +294,21 @@ public final class SubtypeLocaleUtils {
 
     // InputMethodSubtype's display name for spacebar text in its locale.
     //        isAdditionalSubtype (T=true, F=false)
-    // locale layout  | Short  Middle      Full
-    // ------ ------- - ---- --------- ----------------------
-    //  en_US qwerty  F  En  English   English (US)           exception
-    //  en_GB qwerty  F  En  English   English (UK)           exception
-    //  es_US spanish F  Es  Español   Español (EE.UU.)       exception
-    //  fr    azerty  F  Fr  Français  Français
-    //  fr_CA qwerty  F  Fr  Français  Français (Canada)
-    //  fr_CH swiss   F  Fr  Français  Français (Suisse)
-    //  de    qwertz  F  De  Deutsch   Deutsch
-    //  de_CH swiss   T  De  Deutsch   Deutsch (Schweiz)
-    //  zz    qwerty  F      QWERTY    QWERTY
-    //  fr    qwertz  T  Fr  Français  Français
-    //  de    qwerty  T  De  Deutsch   Deutsch
-    //  en_US azerty  T  En  English   English (US)
-    //  zz    azerty  T      AZERTY    AZERTY
+    // locale layout  |  Middle      Full
+    // ------ ------- - --------- ----------------------
+    //  en_US qwerty  F  English   English (US)           exception
+    //  en_GB qwerty  F  English   English (UK)           exception
+    //  es_US spanish F  Español   Español (EE.UU.)       exception
+    //  fr    azerty  F  Français  Français
+    //  fr_CA qwerty  F  Français  Français (Canada)
+    //  fr_CH swiss   F  Français  Français (Suisse)
+    //  de    qwertz  F  Deutsch   Deutsch
+    //  de_CH swiss   T  Deutsch   Deutsch (Schweiz)
+    //  zz    qwerty  F  QWERTY    QWERTY
+    //  fr    qwertz  T  Français  Français
+    //  de    qwerty  T  Deutsch   Deutsch
+    //  en_US azerty  T  English   English (US)
+    //  zz    azerty  T  AZERTY    AZERTY
 
     // Get InputMethodSubtype's full display name in its locale.
     public static String getFullDisplayName(final InputMethodSubtype subtype) {
@@ -325,15 +325,6 @@ public final class SubtypeLocaleUtils {
         }
         final Locale locale = getSubtypeLocale(subtype);
         return getSubtypeLocaleDisplayName(locale.getLanguage());
-    }
-
-    // Get InputMethodSubtype's short display name in its locale.
-    public static String getShortDisplayName(final InputMethodSubtype subtype) {
-        if (isNoLanguage(subtype)) {
-            return "";
-        }
-        final Locale locale = getSubtypeLocale(subtype);
-        return StringUtils.capitalizeFirstCodePoint(locale.getLanguage(), locale);
     }
 
     // TODO: Get this information from the framework instead of maintaining here by ourselves.
