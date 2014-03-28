@@ -83,14 +83,6 @@ class DicNode {
 #if DEBUG_DICT
     DicNodeProfiler mProfiler;
 #endif
-    //////////////////
-    // Memory utils //
-    //////////////////
-    AK_FORCE_INLINE static void managedDelete(DicNode *node) {
-        node->remove();
-    }
-    // end
-    /////////////////
 
     AK_FORCE_INLINE DicNode()
             :
@@ -158,7 +150,7 @@ class DicNode {
         PROF_NODE_COPY(&dicNode->mProfiler, mProfiler);
     }
 
-    AK_FORCE_INLINE void remove() {
+    AK_FORCE_INLINE void finalize() {
         mIsUsed = false;
         if (mReleaseListener) {
             mReleaseListener->onReleased(this);
@@ -478,17 +470,7 @@ class DicNode {
         mReleaseListener = releaseListener;
     }
 
-    AK_FORCE_INLINE bool compare(const DicNode *right) {
-        if (!isUsed() && !right->isUsed()) {
-            // Compare pointer values here for stable comparison
-            return this > right;
-        }
-        if (!isUsed()) {
-            return true;
-        }
-        if (!right->isUsed()) {
-            return false;
-        }
+    AK_FORCE_INLINE bool compare(const DicNode *right) const {
         // Promote exact matches to prevent them from being pruned.
         const bool leftExactMatch = ErrorTypeUtils::isExactMatch(getContainedErrorTypes());
         const bool rightExactMatch = ErrorTypeUtils::isExactMatch(right->getContainedErrorTypes());
