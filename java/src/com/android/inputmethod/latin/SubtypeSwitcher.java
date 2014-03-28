@@ -34,6 +34,7 @@ import android.view.inputmethod.InputMethodSubtype;
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.compat.InputMethodSubtypeCompatUtils;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
+import com.android.inputmethod.keyboard.internal.NeedsToDisplayLanguage;
 import com.android.inputmethod.latin.utils.LocaleUtils;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 
@@ -88,26 +89,6 @@ public final class SubtypeSwitcher {
                     EXTRA_VALUE_OF_DUMMY_EMOJI_SUBTYPE,
                     false /* isAuxiliary */, false /* overridesImplicitlyEnabledSubtype */,
                     SUBTYPE_ID_OF_DUMMY_EMOJI_SUBTYPE);
-
-    static final class NeedsToDisplayLanguage {
-        private int mEnabledSubtypeCount;
-        private boolean mIsSystemLanguageSameAsInputLanguage;
-
-        public boolean needsToDisplayLanguage(final InputMethodSubtype subtype) {
-            if (SubtypeLocaleUtils.isNoLanguage(subtype)) {
-                return true;
-            }
-            return mEnabledSubtypeCount >= 2 || !mIsSystemLanguageSameAsInputLanguage;
-        }
-
-        public void updateEnabledSubtypeCount(final int count) {
-            mEnabledSubtypeCount = count;
-        }
-
-        public void updateIsSystemLanguageSameAsInputLanguage(final boolean isSame) {
-            mIsSystemLanguageSameAsInputLanguage = isSame;
-        }
-    }
 
     public static SubtypeSwitcher getInstance() {
         return sInstance;
