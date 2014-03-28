@@ -93,7 +93,10 @@ public final class SubtypeSwitcher {
         private int mEnabledSubtypeCount;
         private boolean mIsSystemLanguageSameAsInputLanguage;
 
-        public boolean getValue() {
+        public boolean needsToDisplayLanguage(final InputMethodSubtype subtype) {
+            if (SubtypeLocaleUtils.isNoLanguage(subtype)) {
+                return true;
+            }
             return mEnabledSubtypeCount >= 2 || !mIsSystemLanguageSameAsInputLanguage;
         }
 
@@ -265,14 +268,8 @@ public final class SubtypeSwitcher {
     // Subtype Switching functions //
     //////////////////////////////////
 
-    public boolean needsToDisplayLanguage(final Locale keyboardLocale) {
-        if (keyboardLocale.toString().equals(SubtypeLocaleUtils.NO_LANGUAGE)) {
-            return true;
-        }
-        if (!keyboardLocale.equals(getCurrentSubtypeLocale())) {
-            return false;
-        }
-        return mNeedsToDisplayLanguage.getValue();
+    public boolean needsToDisplayLanguage(final InputMethodSubtype subtype) {
+        return mNeedsToDisplayLanguage.needsToDisplayLanguage(subtype);
     }
 
     public boolean isSystemLocaleSameAsLocaleOfAllEnabledSubtypesOfEnabledImes() {

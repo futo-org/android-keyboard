@@ -205,7 +205,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         final boolean subtypeChanged = (oldKeyboard == null)
                 || !keyboard.mId.mLocale.equals(oldKeyboard.mId.mLocale);
         final boolean needsToDisplayLanguage = mSubtypeSwitcher.needsToDisplayLanguage(
-                keyboard.mId.mLocale);
+                keyboard.mId.mSubtype);
         keyboardView.startDisplayLanguageOnSpacebar(subtypeChanged, needsToDisplayLanguage,
                 RichInputMethodManager.getInstance().hasMultipleEnabledIMEsOrSubtypes(true));
     }
