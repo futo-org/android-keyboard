@@ -268,6 +268,7 @@ public final class AndroidSpellCheckerService extends SpellCheckerService
             // if it doesn't. See documentation for binarySearch.
             final int insertIndex = positionIndex >= 0 ? positionIndex : -positionIndex - 1;
 
+            // Weak <- insertIndex == 0, ..., insertIndex == mLength -> Strong
             if (insertIndex == 0 && mLength >= mMaxLength) {
                 // In the future, we may want to keep track of the best suggestion score even if
                 // we are asked for 0 suggestions. In this case, we can use the following
@@ -285,11 +286,6 @@ public final class AndroidSpellCheckerService extends SpellCheckerService
                 // }
                 return true;
             }
-            if (insertIndex >= mMaxLength) {
-                // We found a suggestion, but its score is too weak to be kept considering
-                // the suggestion limit.
-                return true;
-            }
 
             final String wordString = new String(word, wordOffset, wordLength);
             if (mLength < mMaxLength) {
@@ -297,12 +293,13 @@ public final class AndroidSpellCheckerService extends SpellCheckerService
                 ++mLength;
                 System.arraycopy(mScores, insertIndex, mScores, insertIndex + 1, copyLen);
                 mSuggestions.add(insertIndex, wordString);
+                mScores[insertIndex] = score;
             } else {
-                System.arraycopy(mScores, 1, mScores, 0, insertIndex);
+                System.arraycopy(mScores, 1, mScores, 0, insertIndex - 1);
                 mSuggestions.add(insertIndex, wordString);
                 mSuggestions.remove(0);
+                mScores[insertIndex - 1] = score;
             }
-            mScores[insertIndex] = score;
 
             return true;
         }
