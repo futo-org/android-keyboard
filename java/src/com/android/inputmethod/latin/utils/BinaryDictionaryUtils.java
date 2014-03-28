@@ -26,6 +26,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public final class BinaryDictionaryUtils {
     private static final String TAG = BinaryDictionaryUtils.class.getSimpleName();
@@ -62,6 +64,31 @@ public final class BinaryDictionaryUtils {
             throw new IOException();
         }
         return header;
+    }
+
+    public static boolean renameDict(final File dictFile, final File newDictFile) {
+        if (dictFile.isFile()) {
+            return dictFile.renameTo(newDictFile);
+        } else if (dictFile.isDirectory()) {
+            final String dictName = dictFile.getName();
+            final String newDictName = newDictFile.getName();
+            if (newDictFile.exists()) {
+                return false;
+            }
+            for (final File file : dictFile.listFiles()) {
+                if (!file.isFile()) {
+                    continue;
+                }
+                final String fileName = file.getName();
+                final String newFileName = fileName.replaceFirst(
+                        Pattern.quote(dictName), Matcher.quoteReplacement(newDictName));
+                if (!file.renameTo(new File(dictFile, newFileName))) {
+                    return false;
+                }
+            }
+            return dictFile.renameTo(newDictFile);
+        }
+        return false;
     }
 
     public static boolean createEmptyDictFile(final String filePath, final long dictVersion,
