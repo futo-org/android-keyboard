@@ -104,25 +104,6 @@ public final class WordComposer {
         refreshSize();
     }
 
-    public WordComposer(final WordComposer source) {
-        mCombinerChain = source.mCombinerChain;
-        mPrimaryKeyCodes = Arrays.copyOf(source.mPrimaryKeyCodes, source.mPrimaryKeyCodes.length);
-        mEvents = new ArrayList<Event>(source.mEvents);
-        mTypedWord = new StringBuilder(source.mTypedWord);
-        mInputPointers.copy(source.mInputPointers);
-        mCapsCount = source.mCapsCount;
-        mDigitsCount = source.mDigitsCount;
-        mIsFirstCharCapitalized = source.mIsFirstCharCapitalized;
-        mCapitalizedMode = source.mCapitalizedMode;
-        mTrailingSingleQuotesCount = source.mTrailingSingleQuotesCount;
-        mIsResumed = source.mIsResumed;
-        mIsBatchMode = source.mIsBatchMode;
-        mCursorPositionWithinWord = source.mCursorPositionWithinWord;
-        mRejectedBatchModeSuggestion = source.mRejectedBatchModeSuggestion;
-        mPreviousWordForSuggestion = source.mPreviousWordForSuggestion;
-        refreshSize();
-    }
-
     /**
      * Clear out the keys registered so far.
      */
@@ -153,6 +134,13 @@ public final class WordComposer {
      */
     public final int size() {
         return mCodePointSize;
+    }
+
+    // When the composition contains trailing quotes, we don't pass them to the suggestion engine.
+    // This is because "'tgis'" should be corrected to "'this'", but we can't afford to consider
+    // single quotes as separators because of their very common use as apostrophes.
+    public int sizeWithoutTrailingSingleQuotes() {
+        return size() - mTrailingSingleQuotesCount;
     }
 
     public final boolean isComposingWord() {

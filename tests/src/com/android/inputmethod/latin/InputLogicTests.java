@@ -474,4 +474,43 @@ public class InputLogicTests extends InputTestsBase {
                 WORD_TO_TYPE.length() * TIMES_TO_TYPE - TIMES_TO_BACKSPACE,
                 mEditText.getText().length());
     }
+
+    public void testManySingleQuotes() {
+        final String WORD_TO_AUTOCORRECT = "i";
+        final String WORD_AUTOCORRECTED = "I";
+        final String QUOTES = "''''''''''''''''''''";
+        final String WORD_TO_TYPE = WORD_TO_AUTOCORRECT + QUOTES + " ";
+        final String EXPECTED_RESULT = WORD_AUTOCORRECTED + QUOTES + " ";
+        type(WORD_TO_TYPE);
+        assertEquals("auto-correct with many trailing single quotes", EXPECTED_RESULT,
+                mEditText.getText().toString());
+    }
+
+    public void testManySingleQuotesOneByOne() {
+        final String WORD_TO_AUTOCORRECT = "i";
+        final String WORD_AUTOCORRECTED = "I";
+        final String QUOTES = "''''''''''''''''''''";
+        final String WORD_TO_TYPE = WORD_TO_AUTOCORRECT + QUOTES + " ";
+        final String EXPECTED_RESULT = WORD_AUTOCORRECTED + QUOTES + " ";
+
+        for (int i = 0; i < WORD_TO_TYPE.length(); ++i) {
+            type(WORD_TO_TYPE.substring(i, i+1));
+            sleep(DELAY_TO_WAIT_FOR_PREDICTIONS);
+            runMessages();
+        }
+        assertEquals("type many trailing single quotes one by one", EXPECTED_RESULT,
+                mEditText.getText().toString());
+    }
+
+    public void testTypingSingleQuotesOneByOne() {
+        final String WORD_TO_TYPE = "it's ";
+        final String EXPECTED_RESULT = WORD_TO_TYPE;
+        for (int i = 0; i < WORD_TO_TYPE.length(); ++i) {
+            type(WORD_TO_TYPE.substring(i, i+1));
+            sleep(DELAY_TO_WAIT_FOR_PREDICTIONS);
+            runMessages();
+        }
+        assertEquals("type words letter by letter", EXPECTED_RESULT,
+                mEditText.getText().toString());
+    }
 }
