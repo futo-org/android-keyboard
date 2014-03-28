@@ -265,7 +265,6 @@ void Suggest::processExpandedDicNode(
             traverseSession->getDicTraverseCache()->copyPushNextActive(dicNode);
         }
     }
-    DicNode::managedDelete(dicNode);
 }
 
 void Suggest::processDicNodeAsMatch(DicTraverseSession *traverseSession,
@@ -388,7 +387,6 @@ void Suggest::processDicNodeAsTransposition(DicTraverseSession *traverseSession,
                 processExpandedDicNode(traverseSession, childDicNode2);
             }
         }
-        DicNode::managedDelete(childDicNodes1[i]);
     }
 }
 

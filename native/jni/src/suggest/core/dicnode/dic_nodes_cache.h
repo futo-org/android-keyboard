@@ -100,14 +100,7 @@ class DicNodesCache {
     }
 
     AK_FORCE_INLINE void copyPushNextActive(DicNode *dicNode) {
-        DicNode *pushedDicNode = mNextActiveDicNodes->copyPush(dicNode);
-        if (!pushedDicNode) {
-            if (dicNode->isCached()) {
-                dicNode->remove();
-            }
-            // We simply drop any dic node that was not cached, ignoring the slim chance
-            // that one of its children represents what the user really wanted.
-        }
+        mNextActiveDicNodes->copyPush(dicNode);
     }
 
     void popTerminal(DicNode *dest) {
