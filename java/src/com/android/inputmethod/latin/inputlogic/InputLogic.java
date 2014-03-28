@@ -513,14 +513,12 @@ public final class InputLogic {
                             mWordComposer);
                 }
             }
-            final int wordComposerSize = mWordComposer.size();
-            // Since isComposingWord() is true, the size is at least 1.
             if (mWordComposer.isCursorFrontOrMiddleOfComposingWord()) {
                 // If we are in the middle of a recorrection, we need to commit the recorrection
                 // first so that we can insert the batch input at the current cursor position.
                 resetEntireInputState(mConnection.getExpectedSelectionStart(),
                         mConnection.getExpectedSelectionEnd(), true /* clearSuggestionStrip */);
-            } else if (wordComposerSize <= 1) {
+            } else if (mWordComposer.isSingleLetter()) {
                 // We auto-correct the previous (typed, not gestured) string iff it's one character
                 // long. The reason for this is, even in the middle of gesture typing, you'll still
                 // tap one-letter words and you want them auto-corrected (typically, "i" in English
@@ -740,7 +738,7 @@ public final class InputLogic {
         if (isComposingWord) {
             mWordComposer.add(inputTransaction.mEvent);
             // If it's the first letter, make note of auto-caps state
-            if (mWordComposer.size() == 1) {
+            if (mWordComposer.isSingleLetter()) {
                 // We pass 1 to getPreviousWordForSuggestion because we were not composing a word
                 // yet, so the word we want is the 1st word before the cursor.
                 mWordComposer.setCapitalizedModeAndPreviousWordAtStartComposingTime(
