@@ -130,6 +130,7 @@ public final class InputLogic {
         // so we try using some heuristics to find out about these and fix them.
         mConnection.tryFixLyingCursorPosition();
         cancelDoubleSpacePeriodCountdown();
+        mInputLogicHandler.destroy();
         mInputLogicHandler = new InputLogicHandler(mLatinIME, this);
     }
 
