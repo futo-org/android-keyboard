@@ -28,9 +28,10 @@ import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.makedict.FormatSpec.DictionaryOptions;
 import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
 import com.android.inputmethod.latin.makedict.WordProperty;
-import com.android.inputmethod.latin.personalization.PersonalizationHelper;
 import com.android.inputmethod.latin.settings.NativeSuggestOptions;
+import com.android.inputmethod.latin.utils.BinaryDictionaryUtils;
 import com.android.inputmethod.latin.utils.CollectionUtils;
+import com.android.inputmethod.latin.utils.FileUtils;
 import com.android.inputmethod.latin.utils.JniUtils;
 import com.android.inputmethod.latin.utils.LanguageModelParam;
 import com.android.inputmethod.latin.utils.StringUtils;
@@ -80,6 +81,8 @@ public final class BinaryDictionary extends Dictionary {
     public static final int FORMAT_WORD_PROPERTY_TIMESTAMP_INDEX = 1;
     public static final int FORMAT_WORD_PROPERTY_LEVEL_INDEX = 2;
     public static final int FORMAT_WORD_PROPERTY_COUNT_INDEX = 3;
+
+    public static final String DICT_FILE_NAME_SUFFIX_FOR_MIGRATION = ".migrate";
 
     private long mNativeDict;
     private final Locale mLocale;
@@ -456,6 +459,24 @@ public final class BinaryDictionary extends Dictionary {
     public boolean needsToRunGC(final boolean mindsBlockByGC) {
         if (!isValidDictionary()) return false;
         return needsToRunGCNative(mNativeDict, mindsBlockByGC);
+    }
+
+    public boolean migrateTo(final int newFormatVersion) {
+        if (!isValidDictionary()) {
+            return false;
+        }
+        final String tmpDictFilePath = mDictFilePath + DICT_FILE_NAME_SUFFIX_FOR_MIGRATION;
+        // TODO: Implement migrateNative(tmpDictFilePath, newFormatVersion).
+        close();
+        final File dictFile = new File(mDictFilePath);
+        final File tmpDictFile = new File(tmpDictFilePath);
+        FileUtils.deleteRecursively(dictFile);
+        if (!BinaryDictionaryUtils.renameDict(tmpDictFile, dictFile)) {
+            return false;
+        }
+        loadDictionary(dictFile.getAbsolutePath(), 0 /* startOffset */,
+                dictFile.length(), mIsUpdatable);
+        return true;
     }
 
     @UsedForTesting

@@ -137,6 +137,11 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         return formatVersion == FormatSpec.VERSION4;
     }
 
+    private boolean needsToMigrateDictionary(final int formatVersion) {
+        // TODO: Check version.
+        return false;
+    }
+
     public boolean isValidDictionaryLocked() {
         return mBinaryDictionary.isValidDictionary();
     }
@@ -476,6 +481,10 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         openBinaryDictionaryLocked();
         if (oldBinaryDictionary != null) {
             oldBinaryDictionary.close();
+        }
+        if (mBinaryDictionary.isValidDictionary()
+                && needsToMigrateDictionary(mBinaryDictionary.getFormatVersion())) {
+            mBinaryDictionary.migrateTo(DICTIONARY_FORMAT_VERSION);
         }
     }
 
