@@ -131,7 +131,6 @@ const int SuggestionsOutputUtils::MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT = 16;
                              true /* forceCommit */, boostExactMatches) : finalScore;
             outputShortcuts(&shortcutIt, shortcutBaseScore, sameAsTyped, outSuggestionResults);
         }
-        DicNode::managedDelete(terminalDicNode);
     }
     scoringPolicy->getMostProbableString(traverseSession, languageWeight, outSuggestionResults);
 }

@@ -68,7 +68,7 @@ class DicNodePriorityQueue : public DicNodeReleaseListener {
         }
         setMaxSize(maxSize);
         for (int i = 0; i < mCapacity + 1; ++i) {
-            mDicNodesBuf[i].remove();
+            mDicNodesBuf[i].finalize();
             mDicNodesBuf[i].setReleaseListener(this);
             mUnusedNodeIndices[i] = i == mCapacity ? NOT_A_NODE_ID : static_cast<int>(i) + 1;
         }
@@ -89,11 +89,11 @@ class DicNodePriorityQueue : public DicNodeReleaseListener {
         if (dest) {
             DicNodeUtils::initByCopy(node, dest);
         }
-        node->remove();
+        node->finalize();
         mDicNodesQueue.pop();
     }
 
-    void onReleased(DicNode *dicNode) {
+    void onReleased(const DicNode *dicNode) {
         const int index = static_cast<int>(dicNode - &mDicNodesBuf[0]);
         if (mUnusedNodeIndices[index] != NOT_A_NODE_ID) {
             // it's already released
@@ -190,7 +190,7 @@ class DicNodePriorityQueue : public DicNodeReleaseListener {
             mDicNodesQueue.push(dicNode);
             return dicNode;
         }
-        dicNode->remove();
+        dicNode->finalize();
         return 0;
     }
 

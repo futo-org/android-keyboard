@@ -27,7 +27,7 @@ class DicNodeReleaseListener {
  public:
     DicNodeReleaseListener() {}
     virtual ~DicNodeReleaseListener() {}
-    virtual void onReleased(DicNode *dicNode) = 0;
+    virtual void onReleased(const DicNode *dicNode) = 0;
  private:
     DISALLOW_COPY_AND_ASSIGN(DicNodeReleaseListener);
 };
