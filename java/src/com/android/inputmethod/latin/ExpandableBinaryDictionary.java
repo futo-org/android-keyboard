@@ -269,6 +269,9 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     }
 
     private void runGCAfterAllPrioritizedTasksIfRequiredLocked(final boolean mindsBlockByGC) {
+        if (mBinaryDictionary == null) {
+            return;
+        }
         // needsToRunGC() have to be called with lock.
         if (mBinaryDictionary.needsToRunGC(mindsBlockByGC)) {
             if (setProcessingLargeTaskIfNot()) {
@@ -357,6 +360,9 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
             public void run() {
                 final boolean locked = setProcessingLargeTaskIfNot();
                 try {
+                    if (mBinaryDictionary == null) {
+                        return;
+                    }
                     mBinaryDictionary.addMultipleDictionaryEntries(
                             languageModelParams.toArray(
                                     new LanguageModelParam[languageModelParams.size()]));
@@ -496,6 +502,9 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     }
 
     private void flushDictionaryLocked() {
+        if (mBinaryDictionary == null) {
+            return;
+        }
         if (mBinaryDictionary.needsToRunGC(false /* mindsBlockByGC */)) {
             mBinaryDictionary.flushWithGC();
         } else {
