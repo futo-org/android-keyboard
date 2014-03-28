@@ -60,7 +60,7 @@ import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.latin.settings.DebugSettings;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.CoordinateUtils;
-import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
+import com.android.inputmethod.latin.utils.SpacebarLanguageUtils;
 import com.android.inputmethod.latin.utils.TypefaceUtils;
 import com.android.inputmethod.latin.utils.UsabilityStudyLogUtils;
 import com.android.inputmethod.research.ResearchLogger;
@@ -918,14 +918,13 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     // Layout language name on spacebar.
     private String layoutLanguageOnSpacebar(final Paint paint,
             final InputMethodSubtype subtype, final int width) {
-
         // Choose appropriate language name to fit into the width.
-        final String fullText = SubtypeLocaleUtils.getFullDisplayName(subtype);
+        final String fullText = SpacebarLanguageUtils.getFullDisplayName(subtype);
         if (fitsTextIntoWidth(width, fullText, paint)) {
             return fullText;
         }
 
-        final String middleText = SubtypeLocaleUtils.getMiddleDisplayName(subtype);
+        final String middleText = SpacebarLanguageUtils.getMiddleDisplayName(subtype);
         if (fitsTextIntoWidth(width, middleText, paint)) {
             return middleText;
         }
