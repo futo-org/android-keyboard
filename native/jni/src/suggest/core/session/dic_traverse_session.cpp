@@ -68,7 +68,6 @@ void DicTraverseSession::resetCache(const int thresholdForNextActiveDicNodes, co
     mDicNodesCache.reset(thresholdForNextActiveDicNodes /* nextActiveSize */,
             maxWords /* terminalSize */);
     mMultiBigramMap.clear();
-    mPartiallyCommited = false;
 }
 
 void DicTraverseSession::initializeProximityInfoStates(const int *const inputCodePoints,

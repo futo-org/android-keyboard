@@ -52,14 +52,9 @@ const int SuggestionsOutputUtils::MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT = 16;
     // Force autocorrection for obvious long multi-word suggestions when the top suggestion is
     // a long multiple words suggestion.
     // TODO: Implement a smarter auto-commit method for handling multi-word suggestions.
-    // traverseSession->isPartiallyCommited() always returns false because we never auto partial
-    // commit for now.
-    const bool forceCommitMultiWords = (terminalSize > 0) ?
-            scoringPolicy->autoCorrectsToMultiWordSuggestionIfTop()
-                    && (traverseSession->isPartiallyCommited()
-                            || (traverseSession->getInputSize()
-                                    >= MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT
-                                            && terminals[0].hasMultipleWords())) : false;
+    const bool forceCommitMultiWords = scoringPolicy->autoCorrectsToMultiWordSuggestionIfTop()
+            && (traverseSession->getInputSize() >= MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT
+                    && terminals[0].hasMultipleWords());
     // TODO: have partial commit work even with multiple pointers.
     const bool outputSecondWordFirstLetterInputIndex =
             traverseSession->isOnlyOnePointerUsed(0 /* pointerId */);

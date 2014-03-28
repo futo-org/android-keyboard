@@ -61,7 +61,7 @@ class DicTraverseSession {
     AK_FORCE_INLINE DicTraverseSession(JNIEnv *env, jstring localeStr, bool usesLargeCache)
             : mPrevWordPtNodePos(NOT_A_DICT_POS), mProximityInfo(nullptr),
               mDictionary(nullptr), mSuggestOptions(nullptr), mDicNodesCache(usesLargeCache),
-              mMultiBigramMap(), mInputSize(0), mPartiallyCommited(false), mMaxPointerCount(1),
+              mMultiBigramMap(), mInputSize(0), mMaxPointerCount(1),
               mMultiWordCostMultiplier(1.0f) {
         // NOTE: mProximityInfoStates is an array of instances.
         // No need to initialize it explicitly here.
@@ -95,8 +95,6 @@ class DicTraverseSession {
         return &mProximityInfoStates[id];
     }
     int getInputSize() const { return mInputSize; }
-    void setPartiallyCommited() { mPartiallyCommited = true; }
-    bool isPartiallyCommited() const { return mPartiallyCommited; }
 
     bool isOnlyOnePointerUsed(int *pointerId) const {
         // Not in the dictionary word
@@ -188,7 +186,6 @@ class DicTraverseSession {
     ProximityInfoState mProximityInfoStates[MAX_POINTER_COUNT_G];
 
     int mInputSize;
-    bool mPartiallyCommited;
     int mMaxPointerCount;
 
     /////////////////////////////////
