@@ -38,7 +38,6 @@ import android.net.ConnectivityManager;
 import android.os.Debug;
 import android.os.IBinder;
 import android.os.Message;
-import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -1230,7 +1229,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final InputTransaction completeInputTransaction =
                 mInputLogic.onCodeInput(mSettings.getCurrent(), event,
                         mKeyboardSwitcher.getKeyboardShiftMode(), mHandler);
-        updateShiftModeAfterInputTransaction(completeInputTransaction.getRequiredShiftUpdate());
+        updateStateAfterInputTransaction(completeInputTransaction);
         mKeyboardSwitcher.onCodeInput(codePoint);
     }
 
@@ -1450,7 +1449,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final InputTransaction completeInputTransaction = mInputLogic.onPickSuggestionManually(
                 mSettings.getCurrent(), index, suggestionInfo,
                 mKeyboardSwitcher.getKeyboardShiftMode(), mHandler);
-        updateShiftModeAfterInputTransaction(completeInputTransaction.getRequiredShiftUpdate());
+        updateStateAfterInputTransaction(completeInputTransaction);
     }
 
     @Override
@@ -1488,8 +1487,14 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
     }
 
-    private void updateShiftModeAfterInputTransaction(final int requiredShiftUpdate) {
-        switch (requiredShiftUpdate) {
+    /**
+     * After an input transaction has been executed, some state must be updated. This includes
+     * the shift state of the keyboard and suggestions. This method looks at the finished
+     * inputTransaction to find out what is necessary and updates the state accordingly.
+     * @param inputTransaction The transaction that has been executed.
+     */
+    private void updateStateAfterInputTransaction(final InputTransaction inputTransaction) {
+        switch (inputTransaction.getRequiredShiftUpdate()) {
         case InputTransaction.SHIFT_UPDATE_LATER:
             mHandler.postUpdateShiftState();
             break;
@@ -1497,6 +1502,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mKeyboardSwitcher.updateShiftState();
             break;
         default: // SHIFT_NO_UPDATE
+        }
+        if (inputTransaction.requiresUpdateSuggestions()) {
+            mHandler.postUpdateSuggestionStrip();
         }
     }
 
