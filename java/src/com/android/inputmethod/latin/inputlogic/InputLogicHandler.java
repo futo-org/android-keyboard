@@ -43,7 +43,7 @@ class InputLogicHandler implements Handler.Callback {
     // is initialized, though probably only the monkey can actually do this.
     public static final InputLogicHandler NULL_HANDLER = new InputLogicHandler() {
         @Override
-        public void destroy() {}
+        public void reset() {}
         @Override
         public boolean handleMessage(final Message msg) { return true; }
         @Override
@@ -75,8 +75,8 @@ class InputLogicHandler implements Handler.Callback {
         mInputLogic = inputLogic;
     }
 
-    public void destroy() {
-        mNonUIThreadHandler.getLooper().quit();
+    public void reset() {
+        mNonUIThreadHandler.removeCallbacksAndMessages(null);
     }
 
     /**

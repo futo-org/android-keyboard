@@ -130,8 +130,11 @@ public final class InputLogic {
         // so we try using some heuristics to find out about these and fix them.
         mConnection.tryFixLyingCursorPosition();
         cancelDoubleSpacePeriodCountdown();
-        mInputLogicHandler.destroy();
-        mInputLogicHandler = new InputLogicHandler(mLatinIME, this);
+        if (InputLogicHandler.NULL_HANDLER == mInputLogicHandler) {
+            mInputLogicHandler = new InputLogicHandler(mLatinIME, this);
+        } else {
+            mInputLogicHandler.reset();
+        }
     }
 
     /**
@@ -142,8 +145,7 @@ public final class InputLogic {
             mConnection.finishComposingText();
         }
         resetComposingState(true /* alsoResetLastComposedWord */);
-        mInputLogicHandler.destroy();
-        mInputLogicHandler = InputLogicHandler.NULL_HANDLER;
+        mInputLogicHandler.reset();
     }
 
     /**
