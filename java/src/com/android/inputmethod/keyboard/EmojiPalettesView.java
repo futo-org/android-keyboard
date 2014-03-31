@@ -606,7 +606,8 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
             return;
         }
         final int code = (Integer) tag;
-        mKeyboardActionListener.onCodeInput(code, NOT_A_COORDINATE, NOT_A_COORDINATE);
+        mKeyboardActionListener.onCodeInput(code, NOT_A_COORDINATE, NOT_A_COORDINATE,
+                false /* isKeyRepeat */);
         mKeyboardActionListener.onReleaseKey(code, false /* withSliding */);
     }
 
@@ -634,7 +635,8 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
         if (code == Constants.CODE_OUTPUT_TEXT) {
             mKeyboardActionListener.onTextInput(key.getOutputText());
         } else {
-            mKeyboardActionListener.onCodeInput(code, NOT_A_COORDINATE, NOT_A_COORDINATE);
+            mKeyboardActionListener.onCodeInput(code, NOT_A_COORDINATE, NOT_A_COORDINATE,
+                    false /* isKeyRepeat */);
         }
         mKeyboardActionListener.onReleaseKey(code, false /* withSliding */);
     }
@@ -901,8 +903,8 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
         }
 
         private void handleKeyUp() {
-            mKeyboardActionListener.onCodeInput(
-                    Constants.CODE_DELETE, NOT_A_COORDINATE, NOT_A_COORDINATE);
+            mKeyboardActionListener.onCodeInput(Constants.CODE_DELETE,
+                    NOT_A_COORDINATE, NOT_A_COORDINATE, false /* isKeyRepeat */);
             mKeyboardActionListener.onReleaseKey(
                     Constants.CODE_DELETE, false /* withSliding */);
             ++mRepeatCount;

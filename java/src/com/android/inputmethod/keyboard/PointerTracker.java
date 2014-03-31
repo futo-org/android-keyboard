@@ -325,7 +325,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
     // Note that we need primaryCode argument because the keyboard may in shifted state and the
     // primaryCode is different from {@link Key#mKeyCode}.
     private void callListenerOnCodeInput(final Key key, final int primaryCode, final int x,
-            final int y, final long eventTime) {
+            final int y, final long eventTime, final boolean isKeyRepeat) {
         final boolean ignoreModifierKey = mIsInDraggingFinger && key.isModifier();
         final boolean altersCode = key.altCodeWhileTyping() && sTimerProxy.isTypingState();
         final int code = altersCode ? key.getAltCode() : primaryCode;
@@ -350,10 +350,10 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
                 sListener.onTextInput(key.getOutputText());
             } else if (code != Constants.CODE_UNSPECIFIED) {
                 if (mKeyboard.hasProximityCharsCorrection(code)) {
-                    sListener.onCodeInput(code, x, y);
+                    sListener.onCodeInput(code, x, y, isKeyRepeat);
                 } else {
                     sListener.onCodeInput(code,
-                            Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
+                            Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE, isKeyRepeat);
                 }
             }
         }
@@ -1204,7 +1204,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
         }
 
         final int code = key.getCode();
-        callListenerOnCodeInput(key, code, x, y, eventTime);
+        callListenerOnCodeInput(key, code, x, y, eventTime, false /* isKeyRepeat */);
         callListenerOnRelease(key, code, false /* withSliding */);
     }
 
@@ -1229,7 +1229,8 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
         final int nextRepeatCount = repeatCount + 1;
         startKeyRepeatTimer(nextRepeatCount);
         callListenerOnPressAndCheckKeyboardLayoutChange(key, repeatCount);
-        callListenerOnCodeInput(key, code, mKeyX, mKeyY, SystemClock.uptimeMillis());
+        callListenerOnCodeInput(key, code, mKeyX, mKeyY, SystemClock.uptimeMillis(),
+                true /* isKeyRepeat */);
     }
 
     private void startKeyRepeatTimer(final int repeatCount) {

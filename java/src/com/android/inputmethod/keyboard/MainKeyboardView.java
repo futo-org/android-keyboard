@@ -626,8 +626,8 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
             final int moreKeyCode = key.getMoreKeys()[0].mCode;
             tracker.onLongPressed();
             listener.onPressKey(moreKeyCode, 0 /* repeatCount */, true /* isSinglePointer */);
-            listener.onCodeInput(moreKeyCode,
-                    Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
+            listener.onCodeInput(moreKeyCode, Constants.NOT_A_COORDINATE,
+                    Constants.NOT_A_COORDINATE, false /* isKeyRepeat */);
             listener.onReleaseKey(moreKeyCode, false /* withSliding */);
             return;
         }
