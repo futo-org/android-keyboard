@@ -13,5 +13,6 @@
 # limitations under the License.
 
 LATIN_IME_CORE_SRC_FILES :=
+LATIN_IME_CORE_TEST_FILES :=
 LATIN_IME_JNI_SRC_FILES :=
 LATIN_IME_SRC_DIR :=

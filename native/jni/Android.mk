@@ -87,6 +87,8 @@ LOCAL_NDK_STL_VARIANT := c++_static
 LOCAL_LDFLAGS += -ldl
 
 include $(BUILD_SHARED_LIBRARY)
-
 #################### Clean up the tmp vars
 include $(LOCAL_PATH)/CleanupNativeFileList.mk
+
+#################### Unit test on host environment
+include $(LOCAL_PATH)/HostUnitTests.mk
