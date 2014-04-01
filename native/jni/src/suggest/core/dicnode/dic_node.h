@@ -19,7 +19,6 @@
 
 #include "defines.h"
 #include "suggest/core/dicnode/dic_node_profiler.h"
-#include "suggest/core/dicnode/dic_node_release_listener.h"
 #include "suggest/core/dicnode/dic_node_utils.h"
 #include "suggest/core/dicnode/internal/dic_node_state.h"
 #include "suggest/core/dicnode/internal/dic_node_properties.h"
@@ -89,8 +88,7 @@ class DicNode {
 #if DEBUG_DICT
               mProfiler(),
 #endif
-              mDicNodeProperties(), mDicNodeState(), mIsCachedForNextSuggestion(false),
-              mIsUsed(false), mReleaseListener(nullptr) {}
+              mDicNodeProperties(), mDicNodeState(), mIsCachedForNextSuggestion(false) {}
 
     DicNode(const DicNode &dicNode);
     DicNode &operator=(const DicNode &dicNode);
@@ -98,7 +96,6 @@ class DicNode {
 
     // Init for copy
     void initByCopy(const DicNode *const dicNode) {
-        mIsUsed = true;
         mIsCachedForNextSuggestion = dicNode->mIsCachedForNextSuggestion;
         mDicNodeProperties.initByCopy(&dicNode->mDicNodeProperties);
         mDicNodeState.initByCopy(&dicNode->mDicNodeState);
@@ -107,7 +104,6 @@ class DicNode {
 
     // Init for root with prevWordPtNodePos which is used for bigram
     void initAsRoot(const int rootPtNodeArrayPos, const int prevWordPtNodePos) {
-        mIsUsed = true;
         mIsCachedForNextSuggestion = false;
         mDicNodeProperties.init(rootPtNodeArrayPos, prevWordPtNodePos);
         mDicNodeState.init();
@@ -116,7 +112,6 @@ class DicNode {
 
     // Init for root with previous word
     void initAsRootWithPreviousWord(const DicNode *const dicNode, const int rootPtNodeArrayPos) {
-        mIsUsed = true;
         mIsCachedForNextSuggestion = dicNode->mIsCachedForNextSuggestion;
         mDicNodeProperties.init(rootPtNodeArrayPos, dicNode->mDicNodeProperties.getPtNodePos());
         mDicNodeState.initAsRootWithPreviousWord(&dicNode->mDicNodeState,
@@ -125,7 +120,6 @@ class DicNode {
     }
 
     void initAsPassingChild(DicNode *parentDicNode) {
-        mIsUsed = true;
         mIsCachedForNextSuggestion = parentDicNode->mIsCachedForNextSuggestion;
         const int parentCodePoint = parentDicNode->getNodeTypedCodePoint();
         mDicNodeProperties.init(&parentDicNode->mDicNodeProperties, parentCodePoint);
@@ -137,7 +131,6 @@ class DicNode {
             const int childrenPtNodeArrayPos, const int probability, const bool isTerminal,
             const bool hasChildren, const bool isBlacklistedOrNotAWord,
             const uint16_t mergedNodeCodePointCount, const int *const mergedNodeCodePoints) {
-        mIsUsed = true;
         uint16_t newDepth = static_cast<uint16_t>(dicNode->getNodeCodePointCount() + 1);
         mIsCachedForNextSuggestion = dicNode->mIsCachedForNextSuggestion;
         const uint16_t newLeavingDepth = static_cast<uint16_t>(
@@ -148,17 +141,6 @@ class DicNode {
         mDicNodeState.init(&dicNode->mDicNodeState, mergedNodeCodePointCount,
                 mergedNodeCodePoints);
         PROF_NODE_COPY(&dicNode->mProfiler, mProfiler);
-    }
-
-    AK_FORCE_INLINE void finalize() {
-        mIsUsed = false;
-        if (mReleaseListener) {
-            mReleaseListener->onReleased(this);
-        }
-    }
-
-    bool isUsed() const {
-        return mIsUsed;
     }
 
     bool isRoot() const {
@@ -466,10 +448,6 @@ class DicNode {
 #endif
     }
 
-    void setReleaseListener(DicNodeReleaseListener *releaseListener) {
-        mReleaseListener = releaseListener;
-    }
-
     AK_FORCE_INLINE bool compare(const DicNode *right) const {
         // Promote exact matches to prevent them from being pruned.
         const bool leftExactMatch = ErrorTypeUtils::isExactMatch(getContainedErrorTypes());
@@ -507,8 +485,6 @@ class DicNode {
     DicNodeState mDicNodeState;
     // TODO: Remove
     bool mIsCachedForNextSuggestion;
-    bool mIsUsed;
-    DicNodeReleaseListener *mReleaseListener;
 
     AK_FORCE_INLINE int getTotalInputIndex() const {
         int index = 0;
