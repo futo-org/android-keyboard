@@ -44,7 +44,8 @@
                             + mDicNodeState.mDicNodeStateOutput.getPrevWordsLength(), \
                     charBuf, NELEMS(charBuf)); \
             AKLOGI("#%8s, %5f, %5f, %5f, %5f, %s, %d, %5f,", header, \
-                    getSpatialDistanceForScoring(), getLanguageDistanceForScoring(), \
+                    getSpatialDistanceForScoring(), \
+                    mDicNodeState.mDicNodeStateScoring.getLanguageDistance(), \
                     getNormalizedCompoundDistance(), getRawLength(), charBuf, \
                     getInputIndex(0), getNormalizedCompoundDistanceAfterFirstWord()); \
         } while (0)
@@ -121,8 +122,10 @@ class DicNode {
 
     void initAsPassingChild(DicNode *parentDicNode) {
         mIsCachedForNextSuggestion = parentDicNode->mIsCachedForNextSuggestion;
-        const int parentCodePoint = parentDicNode->getNodeTypedCodePoint();
-        mDicNodeProperties.init(&parentDicNode->mDicNodeProperties, parentCodePoint);
+        const int codePoint =
+                parentDicNode->mDicNodeState.mDicNodeStateOutput.getCurrentWordCodePointAt(
+                            parentDicNode->getNodeCodePointCount());
+        mDicNodeProperties.init(&parentDicNode->mDicNodeProperties, codePoint);
         mDicNodeState.initByCopy(&parentDicNode->mDicNodeState);
         PROF_NODE_COPY(&parentDicNode->mProfiler, mProfiler);
     }
@@ -166,11 +169,6 @@ class DicNode {
 
     void setCached() {
         mIsCachedForNextSuggestion = true;
-    }
-
-    // Used to expand the node in DicNodeUtils
-    int getNodeTypedCodePoint() const {
-        return mDicNodeState.mDicNodeStateOutput.getCurrentWordCodePointAt(getNodeCodePointCount());
     }
 
     // Check if the current word and the previous word can be considered as a valid multiple word
@@ -243,17 +241,13 @@ class DicNode {
     }
 
     bool isTotalInputSizeExceedingLimit() const {
-        const int prevWordsLen = mDicNodeState.mDicNodeStateOutput.getPrevWordsLength();
-        const int currentWordDepth = getNodeCodePointCount();
         // TODO: 3 can be 2? Needs to be investigated.
         // TODO: Have a const variable for 3 (or 2)
-        return prevWordsLen + currentWordDepth > MAX_WORD_LENGTH - 3;
+        return getTotalNodeCodePointCount() > MAX_WORD_LENGTH - 3;
     }
 
     void outputResult(int *dest) const {
-        const uint16_t prevWordLength = mDicNodeState.mDicNodeStateOutput.getPrevWordsLength();
-        const uint16_t currentDepth = getNodeCodePointCount();
-        memmove(dest, getOutputWordBuf(), (prevWordLength + currentDepth) * sizeof(dest[0]));
+        memmove(dest, getOutputWordBuf(), getTotalNodeCodePointCount() * sizeof(dest[0]));
         DUMP_WORD_AND_SCORE("OUTPUT");
     }
 
@@ -309,11 +303,6 @@ class DicNode {
     // Used to prune nodes
     float getCompoundDistance(const float languageWeight) const {
         return mDicNodeState.mDicNodeStateScoring.getCompoundDistance(languageWeight);
-    }
-
-    // Used to commit input partially
-    int getPrevWordPtNodePos() const {
-        return mDicNodeProperties.getPrevWordTerminalPtNodePos();
     }
 
     AK_FORCE_INLINE const int *getOutputWordBuf() const {
@@ -378,10 +367,6 @@ class DicNode {
         return mDicNodeState.mDicNodeStateScoring.getSpatialDistance();
     }
 
-    float getLanguageDistanceForScoring() const {
-        return mDicNodeState.mDicNodeStateScoring.getLanguageDistance();
-    }
-
     // For space-aware gestures, we store the normalized distance at the char index
     // that ends the first word of the suggestion. We call this the distance after
     // first word.
@@ -389,20 +374,8 @@ class DicNode {
         return mDicNodeState.mDicNodeStateScoring.getNormalizedCompoundDistanceAfterFirstWord();
     }
 
-    float getLanguageDistanceRatePerWordForScoring() const {
-        const float langDist = getLanguageDistanceForScoring();
-        const float totalWordCount =
-                static_cast<float>(mDicNodeState.mDicNodeStateOutput.getPrevWordCount() + 1);
-        return langDist / totalWordCount;
-    }
-
     float getRawLength() const {
         return mDicNodeState.mDicNodeStateScoring.getRawLength();
-    }
-
-    bool isLessThanOneErrorForScoring() const {
-        return mDicNodeState.mDicNodeStateScoring.getEditCorrectionCount()
-                + mDicNodeState.mDicNodeStateScoring.getProximityCorrectionCount() <= 1;
     }
 
     DoubleLetterLevel getDoubleLetterLevel() const {
