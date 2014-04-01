@@ -34,9 +34,6 @@ LOCAL_CFLAGS += -Werror -Wall -Wextra -Weffc++ -Wformat=2 -Wcast-qual -Wcast-ali
 # To suppress compiler warnings for unused variables/functions used for debug features etc.
 LOCAL_CFLAGS += -Wno-unused-parameter -Wno-unused-function
 
-# For C++11
-LOCAL_CFLAGS += -std=c++11
-
 include $(LOCAL_PATH)/NativeFileList.mk
 
 LOCAL_SRC_FILES := \
