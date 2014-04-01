@@ -292,41 +292,6 @@ public final class SubtypeLocaleUtils {
         return keyboardLayoutSet;
     }
 
-    // InputMethodSubtype's display name for spacebar text in its locale.
-    //        isAdditionalSubtype (T=true, F=false)
-    // locale layout  |  Middle      Full
-    // ------ ------- - --------- ----------------------
-    //  en_US qwerty  F  English   English (US)           exception
-    //  en_GB qwerty  F  English   English (UK)           exception
-    //  es_US spanish F  Español   Español (EE.UU.)       exception
-    //  fr    azerty  F  Français  Français
-    //  fr_CA qwerty  F  Français  Français (Canada)
-    //  fr_CH swiss   F  Français  Français (Suisse)
-    //  de    qwertz  F  Deutsch   Deutsch
-    //  de_CH swiss   T  Deutsch   Deutsch (Schweiz)
-    //  zz    qwerty  F  QWERTY    QWERTY
-    //  fr    qwertz  T  Français  Français
-    //  de    qwerty  T  Deutsch   Deutsch
-    //  en_US azerty  T  English   English (US)
-    //  zz    azerty  T  AZERTY    AZERTY
-
-    // Get InputMethodSubtype's full display name in its locale.
-    public static String getFullDisplayName(final InputMethodSubtype subtype) {
-        if (isNoLanguage(subtype)) {
-            return getKeyboardLayoutSetDisplayName(subtype);
-        }
-        return getSubtypeLocaleDisplayName(subtype.getLocale());
-    }
-
-    // Get InputMethodSubtype's middle display name in its locale.
-    public static String getMiddleDisplayName(final InputMethodSubtype subtype) {
-        if (isNoLanguage(subtype)) {
-            return getKeyboardLayoutSetDisplayName(subtype);
-        }
-        final Locale locale = getSubtypeLocale(subtype);
-        return getSubtypeLocaleDisplayName(locale.getLanguage());
-    }
-
     // TODO: Get this information from the framework instead of maintaining here by ourselves.
     // Sorted list of known Right-To-Left language codes.
     private static final String[] SORTED_RTL_LANGUAGES = {
