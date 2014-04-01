@@ -23,38 +23,30 @@
 
 #include "defines.h"
 #include "suggest/core/dicnode/dic_node.h"
-#include "suggest/core/dicnode/dic_node_release_listener.h"
+#include "suggest/core/dicnode/dic_node_pool.h"
 
 namespace latinime {
 
-class DicNodePriorityQueue : public DicNodeReleaseListener {
+class DicNodePriorityQueue {
  public:
     AK_FORCE_INLINE explicit DicNodePriorityQueue(const int capacity)
-            : mCapacity(capacity), mMaxSize(capacity), mDicNodesBuf(),
-              mUnusedNodeIndices(), mNextUnusedNodeId(0), mDicNodesQueue() {
-        mDicNodesBuf.resize(mCapacity + 1);
-        mUnusedNodeIndices.resize(mCapacity + 1);
-        clearAndResizeToCapacity();
+            : mMaxSize(capacity), mDicNodesQueue(), mDicNodePool(capacity) {
+        clear();
     }
 
     // Non virtual inline destructor -- never inherit this class
     AK_FORCE_INLINE ~DicNodePriorityQueue() {}
 
-    int getSize() const {
+    AK_FORCE_INLINE int getSize() const {
         return static_cast<int>(mDicNodesQueue.size());
     }
 
-    int getMaxSize() const {
+    AK_FORCE_INLINE int getMaxSize() const {
         return mMaxSize;
     }
 
     AK_FORCE_INLINE void setMaxSize(const int maxSize) {
-        ASSERT(maxSize <= mCapacity);
-        mMaxSize = std::min(maxSize, mCapacity);
-    }
-
-    AK_FORCE_INLINE void clearAndResizeToCapacity() {
-        clearAndResize(mCapacity);
+        mMaxSize = maxSize;
     }
 
     AK_FORCE_INLINE void clear() {
@@ -62,25 +54,32 @@ class DicNodePriorityQueue : public DicNodeReleaseListener {
     }
 
     AK_FORCE_INLINE void clearAndResize(const int maxSize) {
-        ASSERT(maxSize <= mCapacity);
+        mMaxSize = maxSize;
         while (!mDicNodesQueue.empty()) {
             mDicNodesQueue.pop();
         }
-        setMaxSize(maxSize);
-        for (int i = 0; i < mCapacity + 1; ++i) {
-            mDicNodesBuf[i].finalize();
-            mDicNodesBuf[i].setReleaseListener(this);
-            mUnusedNodeIndices[i] = (i == mCapacity) ? NOT_A_NODE_ID : (i + 1);
+        mDicNodePool.reset(mMaxSize + 1);
+    }
+
+    AK_FORCE_INLINE void copyPush(const DicNode *const dicNode) {
+        DicNode *const pooledDicNode = newDicNode(dicNode);
+        if (!pooledDicNode) {
+            return;
         }
-        mNextUnusedNodeId = 0;
+        if (getSize() < mMaxSize) {
+            mDicNodesQueue.push(pooledDicNode);
+            return;
+        }
+        if (betterThanWorstDicNode(pooledDicNode)) {
+            mDicNodePool.placeBackInstance(mDicNodesQueue.top());
+            mDicNodesQueue.pop();
+            mDicNodesQueue.push(pooledDicNode);
+            return;
+        }
+        mDicNodePool.placeBackInstance(pooledDicNode);
     }
 
-    // Copy
-    AK_FORCE_INLINE DicNode *copyPush(const DicNode *const dicNode) {
-        return copyPush(dicNode, mMaxSize);
-    }
-
-    AK_FORCE_INLINE void copyPop(DicNode *dest) {
+    AK_FORCE_INLINE void copyPop(DicNode *const dest) {
         if (mDicNodesQueue.empty()) {
             ASSERT(false);
             return;
@@ -89,34 +88,16 @@ class DicNodePriorityQueue : public DicNodeReleaseListener {
         if (dest) {
             DicNodeUtils::initByCopy(node, dest);
         }
-        node->finalize();
+        mDicNodePool.placeBackInstance(node);
         mDicNodesQueue.pop();
     }
 
-    void onReleased(const DicNode *dicNode) {
-        const int index = static_cast<int>(dicNode - &mDicNodesBuf[0]);
-        if (mUnusedNodeIndices[index] != NOT_A_NODE_ID) {
-            // it's already released
-            return;
-        }
-        mUnusedNodeIndices[index] = mNextUnusedNodeId;
-        mNextUnusedNodeId = index;
-        ASSERT(index >= 0 && index < (mCapacity + 1));
-    }
-
-    AK_FORCE_INLINE void dump() const {
-        AKLOGI("\n\n\n\n\n===========================");
-        for (int i = 0; i < mCapacity + 1; ++i) {
-            if (mDicNodesBuf[i].isUsed()) {
-                mDicNodesBuf[i].dump("QUEUE: ");
-            }
-        }
-        AKLOGI("===========================\n\n\n\n\n");
+    AK_FORCE_INLINE void dump() {
+        mDicNodePool.dump();
     }
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(DicNodePriorityQueue);
-    static const int NOT_A_NODE_ID = -1;
 
     AK_FORCE_INLINE static bool compareDicNode(const DicNode *const left,
             const DicNode *const right) {
@@ -124,26 +105,15 @@ class DicNodePriorityQueue : public DicNodeReleaseListener {
     }
 
     struct DicNodeComparator {
-        bool operator ()(DicNode *left, DicNode *right) {
+        bool operator ()(const DicNode *left, const DicNode *right) const {
             return compareDicNode(left, right);
         }
     };
 
     typedef std::priority_queue<DicNode *, std::vector<DicNode *>, DicNodeComparator> DicNodesQueue;
-    const int mCapacity;
     int mMaxSize;
-    std::vector<DicNode> mDicNodesBuf; // of each element of mDicNodesBuf respectively
-    std::vector<int> mUnusedNodeIndices;
-    int mNextUnusedNodeId;
     DicNodesQueue mDicNodesQueue;
-
-    inline bool isFull(const int maxSize) const {
-        return getSize() >= maxSize;
-    }
-
-    AK_FORCE_INLINE void pop() {
-        copyPop(nullptr);
-    }
+    DicNodePool mDicNodePool;
 
     AK_FORCE_INLINE bool betterThanWorstDicNode(const DicNode *const dicNode) const {
         DicNode *worstNode = mDicNodesQueue.top();
@@ -153,61 +123,13 @@ class DicNodePriorityQueue : public DicNodeReleaseListener {
         return compareDicNode(dicNode, worstNode);
     }
 
-    AK_FORCE_INLINE DicNode *searchEmptyDicNode() {
-        if (mCapacity == 0) {
-            return nullptr;
-        }
-        if (mNextUnusedNodeId == NOT_A_NODE_ID) {
-            AKLOGI("No unused node found.");
-            for (int i = 0; i < mCapacity + 1; ++i) {
-                AKLOGI("Dump node availability, %d, %d, %d",
-                        i, mDicNodesBuf[i].isUsed(), mUnusedNodeIndices[i]);
-            }
-            ASSERT(false);
-            return nullptr;
-        }
-        DicNode *dicNode = &mDicNodesBuf[mNextUnusedNodeId];
-        markNodeAsUsed(dicNode);
-        return dicNode;
-    }
-
-    AK_FORCE_INLINE void markNodeAsUsed(DicNode *dicNode) {
-        const int index = static_cast<int>(dicNode - &mDicNodesBuf[0]);
-        mNextUnusedNodeId = mUnusedNodeIndices[index];
-        mUnusedNodeIndices[index] = NOT_A_NODE_ID;
-        ASSERT(index >= 0 && index < (mCapacity + 1));
-    }
-
-    AK_FORCE_INLINE DicNode *pushPoolNodeWithMaxSize(DicNode *dicNode, const int maxSize) {
-        if (!dicNode) {
-            return nullptr;
-        }
-        if (!isFull(maxSize)) {
-            mDicNodesQueue.push(dicNode);
-            return dicNode;
-        }
-        if (betterThanWorstDicNode(dicNode)) {
-            pop();
-            mDicNodesQueue.push(dicNode);
-            return dicNode;
-        }
-        dicNode->finalize();
-        return nullptr;
-    }
-
-    // Copy
-    AK_FORCE_INLINE DicNode *copyPush(const DicNode *const dicNode, const int maxSize) {
-        return pushPoolNodeWithMaxSize(newDicNode(dicNode), maxSize);
-    }
-
     AK_FORCE_INLINE DicNode *newDicNode(const DicNode *const dicNode) {
-        DicNode *newNode = searchEmptyDicNode();
+        DicNode *newNode = mDicNodePool.getInstance();
         if (newNode) {
             DicNodeUtils::initByCopy(dicNode, newNode);
         }
         return newNode;
     }
-
 };
 } // namespace latinime
 #endif // LATINIME_DIC_NODE_PRIORITY_QUEUE_H
