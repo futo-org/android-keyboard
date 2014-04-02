@@ -219,13 +219,11 @@ public final class InputLogic {
                     Event.NOT_A_KEY_CODE /* keyCode*/,
                     Constants.SUGGESTION_STRIP_COORDINATE /* x */,
                     Constants.SUGGESTION_STRIP_COORDINATE /* y */);
-            final InputTransaction completeTransaction = onCodeInput(settingsValues, event,
-                    keyboardShiftState, handler);
             if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
                 ResearchLogger.latinIME_punctuationSuggestion(index, suggestion,
                         false /* isBatchMode */, suggestedWords.mIsPrediction);
             }
-            return completeTransaction;
+            return onCodeInput(settingsValues, event, keyboardShiftState, handler);
         }
 
         final Event event = Event.createSuggestionPickedEvent(suggestionInfo);
