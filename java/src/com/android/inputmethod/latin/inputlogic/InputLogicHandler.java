@@ -54,7 +54,8 @@ class InputLogicHandler implements Handler.Callback {
         @Override
         public void onCancelBatchInput() {}
         @Override
-        public void onEndBatchInput(final InputPointers batchPointers, final int sequenceNumber) {}
+        public void updateTailBatchInput(final InputPointers batchPointers,
+                final int sequenceNumber) {}
         @Override
         public void getSuggestedWords(final int sessionId, final int sequenceNumber,
                 final OnGetSuggestedWordsCallback callback) {}
@@ -106,7 +107,7 @@ class InputLogicHandler implements Handler.Callback {
      * Fetch suggestions corresponding to an update of a batch input.
      * @param batchPointers the updated pointers, including the part that was passed last time.
      * @param sequenceNumber the sequence number associated with this batch input.
-     * @param forEnd true if this is the end of a batch input, false if it's an update.
+     * @param isTailBatchInput true if this is the end of a batch input, false if it's an update.
      */
     // This method can be called from any thread and will see to it that the correct threads
     // are used for parts that require it. This method will send a message to the Non-UI handler
@@ -115,7 +116,7 @@ class InputLogicHandler implements Handler.Callback {
     // send a message to the UI handler in LatinIME so that showing suggestions can be done on
     // the UI thread.
     private void updateBatchInput(final InputPointers batchPointers,
-            final int sequenceNumber, final boolean forEnd) {
+            final int sequenceNumber, final boolean isTailBatchInput) {
         synchronized (mLock) {
             if (!mInBatchInput) {
                 // Batch input has ended or canceled while the message was being delivered.
@@ -136,12 +137,12 @@ class InputLogicHandler implements Handler.Callback {
                                 suggestedWords = mInputLogic.mSuggestedWords;
                             }
                             mLatinIME.mHandler.showGesturePreviewAndSuggestionStrip(suggestedWords,
-                                    forEnd /* dismissGestureFloatingPreviewText */);
-                            if (forEnd) {
+                                    isTailBatchInput /* dismissGestureFloatingPreviewText */);
+                            if (isTailBatchInput) {
                                 mInBatchInput = false;
                                 // The following call schedules onEndBatchInputInternal
                                 // to be called on the UI thread.
-                                mLatinIME.mHandler.onEndBatchInput(suggestedWords);
+                                mLatinIME.mHandler.showTailBatchInputResult(suggestedWords);
                             }
                         }
                     });
@@ -159,13 +160,13 @@ class InputLogicHandler implements Handler.Callback {
     // Called on the UI thread by InputLogic.
     public void onUpdateBatchInput(final InputPointers batchPointers,
             final int sequenceNumber) {
-        updateBatchInput(batchPointers, sequenceNumber, false /* forEnd */);
+        updateBatchInput(batchPointers, sequenceNumber, false /* isTailBatchInput */);
     }
 
     /**
      * Cancel a batch input.
      *
-     * Note that as opposed to onEndBatchInput, we do the UI side of this immediately on the
+     * Note that as opposed to updateTailBatchInput, we do the UI side of this immediately on the
      * same thread, rather than get this to call a method in LatinIME. This is because
      * canceling a batch input does not necessitate the long operation of pulling suggestions.
      */
@@ -177,17 +178,20 @@ class InputLogicHandler implements Handler.Callback {
     }
 
     /**
-     * Finish a batch input.
+     * Trigger an update for a tail batch input.
      *
-     * This fetches suggestions, updates the suggestion strip and commits the first suggestion.
-     * It also dismisses the floating text preview.
+     * A tail batch input is the last update for a gesture, the one that is triggered after the
+     * user lifts their finger. This method schedules fetching suggestions on the non-UI thread,
+     * then when the suggestions are computed it comes back on the UI thread to update the
+     * suggestion strip, commit the first suggestion, and dismiss the floating text preview.
      *
      * @param batchPointers the updated batch pointers.
      * @param sequenceNumber the sequence number associated with this batch input.
      */
     // Called on the UI thread by InputLogic.
-    public void onEndBatchInput(final InputPointers batchPointers, final int sequenceNumber) {
-        updateBatchInput(batchPointers, sequenceNumber, true /* forEnd */);
+    public void updateTailBatchInput(final InputPointers batchPointers,
+            final int sequenceNumber) {
+        updateBatchInput(batchPointers, sequenceNumber, true /* isTailBatchInput */);
     }
 
     public void getSuggestedWords(final int sessionId, final int sequenceNumber,
