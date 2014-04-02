@@ -29,18 +29,23 @@ namespace latinime {
 class SuggestionResults {
  public:
     explicit SuggestionResults(const int maxSuggestionCount)
-            : mMaxSuggestionCount(maxSuggestionCount), mSuggestedWords() {}
+            : mMaxSuggestionCount(maxSuggestionCount), mLanguageWeight(NOT_A_LANGUAGE_WEIGHT),
+              mSuggestedWords() {}
 
     // Returns suggestion count.
     void outputSuggestions(JNIEnv *env, jintArray outSuggestionCount, jintArray outCodePointsArray,
             jintArray outScoresArray, jintArray outSpaceIndicesArray, jintArray outTypesArray,
-            jintArray outAutoCommitFirstWordConfidenceArray);
+            jintArray outAutoCommitFirstWordConfidenceArray, jfloatArray outLanguageWeight);
     void addPrediction(const int *const codePoints, const int codePointCount, const int score);
     void addSuggestion(const int *const codePoints, const int codePointCount,
             const int score, const int type, const int indexToPartialCommit,
             const int autocimmitFirstWordConfindence);
     void getSortedScores(int *const outScores) const;
     void dumpSuggestions() const;
+
+    void setLanguageWeight(const float languageWeight) {
+        mLanguageWeight = languageWeight;
+    }
 
     int getSuggestionCount() const {
         return mSuggestedWords.size();
@@ -50,6 +55,7 @@ class SuggestionResults {
     DISALLOW_IMPLICIT_CONSTRUCTORS(SuggestionResults);
 
     const int mMaxSuggestionCount;
+    float mLanguageWeight;
     std::priority_queue<
             SuggestedWord, std::vector<SuggestedWord>, SuggestedWord::Comparator> mSuggestedWords;
 };

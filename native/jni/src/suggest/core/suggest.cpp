@@ -44,7 +44,8 @@ const int Suggest::MIN_CONTINUOUS_SUGGESTION_INPUT_SIZE = 2;
  */
 void Suggest::getSuggestions(ProximityInfo *pInfo, void *traverseSession,
         int *inputXs, int *inputYs, int *times, int *pointerIds, int *inputCodePoints,
-        int inputSize, SuggestionResults *const outSuggestionResults) const {
+        int inputSize, const float languageWeight,
+        SuggestionResults *const outSuggestionResults) const {
     PROF_OPEN;
     PROF_START(0);
     const float maxSpatialDistance = TRAVERSAL->getMaxSpatialDistance();
@@ -65,7 +66,8 @@ void Suggest::getSuggestions(ProximityInfo *pInfo, void *traverseSession,
     }
     PROF_END(1);
     PROF_START(2);
-    SuggestionsOutputUtils::outputSuggestions(SCORING, tSession, outSuggestionResults);
+    SuggestionsOutputUtils::outputSuggestions(
+            SCORING, tSession, languageWeight, outSuggestionResults);
     PROF_END(2);
     PROF_CLOSE;
 }

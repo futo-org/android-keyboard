@@ -33,7 +33,8 @@ class SuggestionsOutputUtils {
      * Outputs the final list of suggestions (i.e., terminal nodes).
      */
     static void outputSuggestions(const Scoring *const scoringPolicy,
-            DicTraverseSession *traverseSession, SuggestionResults *const outSuggestionResults);
+            DicTraverseSession *traverseSession, const float languageWeight,
+            SuggestionResults *const outSuggestionResults);
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(SuggestionsOutputUtils);

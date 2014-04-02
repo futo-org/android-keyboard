@@ -210,20 +210,22 @@ static void latinime_BinaryDictionary_getSuggestions(JNIEnv *env, jclass clazz, 
         ASSERT(false);
         return;
     }
-
+    float languageWeight;
+    env->GetFloatArrayRegion(inOutLanguageWeight, 0, 1 /* len */, &languageWeight);
     SuggestionResults suggestionResults(MAX_RESULTS);
     if (givenSuggestOptions.isGesture() || inputSize > 0) {
         // TODO: Use SuggestionResults to return suggestions.
         dictionary->getSuggestions(pInfo, traverseSession, xCoordinates, yCoordinates,
                 times, pointerIds, inputCodePoints, inputSize, prevWordCodePoints,
-                prevWordCodePointsLength, &givenSuggestOptions, &suggestionResults);
+                prevWordCodePointsLength, &givenSuggestOptions, languageWeight,
+                &suggestionResults);
     } else {
         dictionary->getPredictions(prevWordCodePoints, prevWordCodePointsLength,
                 &suggestionResults);
     }
     suggestionResults.outputSuggestions(env, outSuggestionCount, outCodePointsArray,
             outScoresArray, outSpaceIndicesArray, outTypesArray,
-            outAutoCommitFirstWordConfidenceArray);
+            outAutoCommitFirstWordConfidenceArray, inOutLanguageWeight);
 }
 
 static jint latinime_BinaryDictionary_getProbability(JNIEnv *env, jclass clazz, jlong dict,
