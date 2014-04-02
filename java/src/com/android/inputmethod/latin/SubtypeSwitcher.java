@@ -34,7 +34,7 @@ import android.view.inputmethod.InputMethodSubtype;
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.compat.InputMethodSubtypeCompatUtils;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
-import com.android.inputmethod.keyboard.internal.NeedsToDisplayLanguage;
+import com.android.inputmethod.keyboard.internal.LanguageOnSpacebarHelper;
 import com.android.inputmethod.latin.utils.LocaleUtils;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 
@@ -54,7 +54,8 @@ public final class SubtypeSwitcher {
     private /* final */ Resources mResources;
     private /* final */ ConnectivityManager mConnectivityManager;
 
-    private final NeedsToDisplayLanguage mNeedsToDisplayLanguage = new NeedsToDisplayLanguage();
+    private final LanguageOnSpacebarHelper mLanguageOnSpacebarHelper =
+            new LanguageOnSpacebarHelper();
     private InputMethodInfo mShortcutInputMethodInfo;
     private InputMethodSubtype mShortcutSubtype;
     private InputMethodSubtype mNoLanguageSubtype;
@@ -127,7 +128,7 @@ public final class SubtypeSwitcher {
     public void updateParametersOnStartInputView() {
         final List<InputMethodSubtype> enabledSubtypesOfThisIme =
                 mRichImm.getMyEnabledInputMethodSubtypeList(true);
-        mNeedsToDisplayLanguage.updateEnabledSubtypeCount(enabledSubtypesOfThisIme.size());
+        mLanguageOnSpacebarHelper.updateEnabledSubtypes(enabledSubtypesOfThisIme);
         updateShortcutIME();
     }
 
@@ -176,7 +177,7 @@ public final class SubtypeSwitcher {
         final boolean sameLanguage = systemLocale.getLanguage().equals(newLocale.getLanguage());
         final boolean implicitlyEnabled =
                 mRichImm.checkIfSubtypeBelongsToThisImeAndImplicitlyEnabled(newSubtype);
-        mNeedsToDisplayLanguage.updateIsSystemLanguageSameAsInputLanguage(
+        mLanguageOnSpacebarHelper.updateIsSystemLanguageSameAsInputLanguage(
                 sameLocale || (sameLanguage && implicitlyEnabled));
 
         updateShortcutIME();
@@ -249,8 +250,8 @@ public final class SubtypeSwitcher {
     // Subtype Switching functions //
     //////////////////////////////////
 
-    public boolean needsToDisplayLanguage(final InputMethodSubtype subtype) {
-        return mNeedsToDisplayLanguage.needsToDisplayLanguage(subtype);
+    public int getLanguageOnSpacebarFormatType(final InputMethodSubtype subtype) {
+        return mLanguageOnSpacebarHelper.getLanguageOnSpacebarFormatType(subtype);
     }
 
     public boolean isSystemLocaleSameAsLocaleOfAllEnabledSubtypesOfEnabledImes() {

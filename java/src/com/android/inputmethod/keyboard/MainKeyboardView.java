@@ -49,6 +49,7 @@ import com.android.inputmethod.keyboard.internal.GestureTrailsDrawingPreview;
 import com.android.inputmethod.keyboard.internal.KeyDrawParams;
 import com.android.inputmethod.keyboard.internal.KeyPreviewChoreographer;
 import com.android.inputmethod.keyboard.internal.KeyPreviewDrawParams;
+import com.android.inputmethod.keyboard.internal.LanguageOnSpacebarHelper;
 import com.android.inputmethod.keyboard.internal.NonDistinctMultitouchHelper;
 import com.android.inputmethod.keyboard.internal.SlidingKeyInputDrawingPreview;
 import com.android.inputmethod.keyboard.internal.TimerHandler;
@@ -123,7 +124,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     // Stuff to draw language name on spacebar.
     private final int mLanguageOnSpacebarFinalAlpha;
     private ObjectAnimator mLanguageOnSpacebarFadeoutAnimator;
-    private boolean mNeedsToDisplayLanguage;
+    private int mLanguageOnSpacebarFormatType;
     private boolean mHasMultipleEnabledIMEsOrSubtypes;
     private int mLanguageOnSpacebarAnimAlpha = Constants.Color.ALPHA_OPAQUE;
     private final float mLanguageOnSpacebarTextRatio;
@@ -811,14 +812,16 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     }
 
     public void startDisplayLanguageOnSpacebar(final boolean subtypeChanged,
-            final boolean needsToDisplayLanguage, final boolean hasMultipleEnabledIMEsOrSubtypes) {
-        mNeedsToDisplayLanguage = needsToDisplayLanguage;
+            final int languageOnSpacebarFormatType,
+            final boolean hasMultipleEnabledIMEsOrSubtypes) {
+        mLanguageOnSpacebarFormatType = languageOnSpacebarFormatType;
         mHasMultipleEnabledIMEsOrSubtypes = hasMultipleEnabledIMEsOrSubtypes;
         final ObjectAnimator animator = mLanguageOnSpacebarFadeoutAnimator;
         if (animator == null) {
-            mNeedsToDisplayLanguage = false;
+            mLanguageOnSpacebarFormatType = LanguageOnSpacebarHelper.FORMAT_TYPE_NONE;
         } else {
-            if (subtypeChanged && needsToDisplayLanguage) {
+            if (subtypeChanged
+                    && languageOnSpacebarFormatType != LanguageOnSpacebarHelper.FORMAT_TYPE_NONE) {
                 setLanguageOnSpacebarAnimAlpha(Constants.Color.ALPHA_OPAQUE);
                 if (animator.isStarted()) {
                     animator.cancel();
@@ -919,9 +922,11 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     private String layoutLanguageOnSpacebar(final Paint paint,
             final InputMethodSubtype subtype, final int width) {
         // Choose appropriate language name to fit into the width.
-        final String fullText = SpacebarLanguageUtils.getFullDisplayName(subtype);
-        if (fitsTextIntoWidth(width, fullText, paint)) {
-            return fullText;
+        if (mLanguageOnSpacebarFormatType == LanguageOnSpacebarHelper.FORMAT_TYPE_FULL_LOCALE) {
+            final String fullText = SpacebarLanguageUtils.getFullDisplayName(subtype);
+            if (fitsTextIntoWidth(width, fullText, paint)) {
+                return fullText;
+            }
         }
 
         final String middleText = SpacebarLanguageUtils.getMiddleDisplayName(subtype);
@@ -937,7 +942,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         final int height = key.getHeight();
 
         // If input language are explicitly selected.
-        if (mNeedsToDisplayLanguage) {
+        if (mLanguageOnSpacebarFormatType != LanguageOnSpacebarHelper.FORMAT_TYPE_NONE) {
             paint.setTextAlign(Align.CENTER);
             paint.setTypeface(Typeface.DEFAULT);
             paint.setTextSize(mLanguageOnSpacebarTextSize);
