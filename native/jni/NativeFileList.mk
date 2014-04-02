@@ -99,3 +99,6 @@ LATIN_IME_CORE_SRC_FILES := \
         char_utils.cpp \
         log_utils.cpp \
         time_keeper.cpp)
+
+LATIN_IME_CORE_TEST_FILES := \
+    utils/autocorrection_threshold_utils_test.cpp
