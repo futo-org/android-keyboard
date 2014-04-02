@@ -146,7 +146,8 @@ static void latinime_BinaryDictionary_getSuggestions(JNIEnv *env, jclass clazz, 
         jintArray inputCodePointsArray, jint inputSize, jintArray suggestOptions,
         jintArray prevWordCodePointsForBigrams, jintArray outSuggestionCount,
         jintArray outCodePointsArray, jintArray outScoresArray, jintArray outSpaceIndicesArray,
-        jintArray outTypesArray, jintArray outAutoCommitFirstWordConfidenceArray) {
+        jintArray outTypesArray, jintArray outAutoCommitFirstWordConfidenceArray,
+        jfloatArray inOutLanguageWeight) {
     Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
     // Assign 0 to outSuggestionCount here in case of returning earlier in this method.
     int count = 0;
@@ -489,7 +490,7 @@ static const JNINativeMethod sMethods[] = {
     },
     {
         const_cast<char *>("getSuggestionsNative"),
-        const_cast<char *>("(JJJ[I[I[I[I[II[I[I[I[I[I[I[I[I)V"),
+        const_cast<char *>("(JJJ[I[I[I[I[II[I[I[I[I[I[I[I[I[F)V"),
         reinterpret_cast<void *>(latinime_BinaryDictionary_getSuggestions)
     },
     {

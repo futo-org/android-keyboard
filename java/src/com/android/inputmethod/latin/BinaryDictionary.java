@@ -97,6 +97,7 @@ public final class BinaryDictionary extends Dictionary {
     private final int[] mOutputTypes = new int[MAX_RESULTS];
     // Only one result is ever used
     private final int[] mOutputAutoCommitFirstWordConfidence = new int[1];
+    private final float[] mInputOutputLanguageWeight = new float[1];
 
     private final NativeSuggestOptions mNativeSuggestOptions = new NativeSuggestOptions();
 
@@ -167,7 +168,7 @@ public final class BinaryDictionary extends Dictionary {
             int[] pointerIds, int[] inputCodePoints, int inputSize, int[] suggestOptions,
             int[] prevWordCodePointArray, int[] outputSuggestionCount, int[] outputCodePoints,
             int[] outputScores, int[] outputIndices, int[] outputTypes,
-            int[] outputAutoCommitFirstWordConfidence);
+            int[] outputAutoCommitFirstWordConfidence, float[] inOutLanguageWeight);
     private static native void addUnigramWordNative(long dict, int[] word, int probability,
             int[] shortcutTarget, int shortcutProbability, boolean isNotAWord,
             boolean isBlacklisted, int timestamp);
@@ -262,13 +263,22 @@ public final class BinaryDictionary extends Dictionary {
         final int inputSize = isGesture ? ips.getPointerSize() : composerSize;
         mNativeSuggestOptions.setIsGesture(isGesture);
         mNativeSuggestOptions.setAdditionalFeaturesOptions(additionalFeaturesOptions);
+        if (inOutLanguageWeight != null) {
+            mInputOutputLanguageWeight[0] = inOutLanguageWeight[0];
+        } else {
+            mInputOutputLanguageWeight[0] = Dictionary.NOT_A_LANGUAGE_WEIGHT;
+        }
         // proximityInfo and/or prevWordForBigrams may not be null.
         getSuggestionsNative(mNativeDict, proximityInfo.getNativeProximityInfo(),
                 getTraverseSession(sessionId).getSession(), ips.getXCoordinates(),
                 ips.getYCoordinates(), ips.getTimes(), ips.getPointerIds(), mInputCodePoints,
                 inputSize, mNativeSuggestOptions.getOptions(),
                 prevWordCodePointArray, mOutputSuggestionCount, mOutputCodePoints, mOutputScores,
-                mSpaceIndices, mOutputTypes, mOutputAutoCommitFirstWordConfidence);
+                mSpaceIndices, mOutputTypes, mOutputAutoCommitFirstWordConfidence,
+                mInputOutputLanguageWeight);
+        if (inOutLanguageWeight != null) {
+            inOutLanguageWeight[0] = mInputOutputLanguageWeight[0];
+        }
         final int count = mOutputSuggestionCount[0];
         final ArrayList<SuggestedWordInfo> suggestions = CollectionUtils.newArrayList();
         for (int j = 0; j < count; ++j) {
