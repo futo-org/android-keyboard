@@ -461,12 +461,14 @@ public class DictionaryFacilitatorForSuggest {
         final Map<String, Dictionary> dictMap = dictionaries.mDictMap;
         final SuggestionResults suggestionResults =
                 new SuggestionResults(dictionaries.mLocale, SuggestedWords.MAX_SUGGESTIONS);
+        final float[] languageWeight = new float[] { Dictionary.NOT_A_LANGUAGE_WEIGHT };
         for (final String dictType : dictTypesOrderedToGetSuggestion) {
             final Dictionary dictionary = dictMap.get(dictType);
             if (null == dictionary) continue;
             final ArrayList<SuggestedWordInfo> dictionarySuggestions =
                     dictionary.getSuggestionsWithSessionId(composer, prevWord, proximityInfo,
-                            blockOffensiveWords, additionalFeaturesOptions, sessionId);
+                            blockOffensiveWords, additionalFeaturesOptions, sessionId,
+                            languageWeight);
             if (null == dictionarySuggestions) continue;
             suggestionResults.addAll(dictionarySuggestions);
             if (null != rawSuggestions) {

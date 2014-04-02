@@ -387,7 +387,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     public ArrayList<SuggestedWordInfo> getSuggestionsWithSessionId(final WordComposer composer,
             final String prevWord, final ProximityInfo proximityInfo,
             final boolean blockOffensiveWords, final int[] additionalFeaturesOptions,
-            final int sessionId) {
+            final int sessionId, final float[] inOutLanguageWeight) {
         reloadDictionaryIfRequired();
         if (processingLargeTask()) {
             return null;
@@ -404,7 +404,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                 final ArrayList<SuggestedWordInfo> binarySuggestion =
                         mBinaryDictionary.getSuggestionsWithSessionId(composer, prevWord,
                                 proximityInfo, blockOffensiveWords, additionalFeaturesOptions,
-                                sessionId);
+                                sessionId, inOutLanguageWeight);
                 holder.set(binarySuggestion);
                 if (mBinaryDictionary.isCorrupted()) {
                     removeBinaryDictionaryLocked();
@@ -417,9 +417,10 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     @Override
     public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
             final String prevWord, final ProximityInfo proximityInfo,
-            final boolean blockOffensiveWords, final int[] additionalFeaturesOptions) {
+            final boolean blockOffensiveWords, final int[] additionalFeaturesOptions,
+            final float[] inOutLanguageWeight) {
         return getSuggestionsWithSessionId(composer, prevWord, proximityInfo, blockOffensiveWords,
-                additionalFeaturesOptions, 0 /* sessionId */);
+                additionalFeaturesOptions, 0 /* sessionId */, inOutLanguageWeight);
     }
 
     @Override
