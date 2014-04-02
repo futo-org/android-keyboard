@@ -204,10 +204,12 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         keyboardView.updateShortcutKey(mSubtypeSwitcher.isShortcutImeReady());
         final boolean subtypeChanged = (oldKeyboard == null)
                 || !keyboard.mId.mLocale.equals(oldKeyboard.mId.mLocale);
-        final boolean needsToDisplayLanguage = mSubtypeSwitcher.needsToDisplayLanguage(
+        final int languageOnSpacebarFormatType = mSubtypeSwitcher.getLanguageOnSpacebarFormatType(
                 keyboard.mId.mSubtype);
-        keyboardView.startDisplayLanguageOnSpacebar(subtypeChanged, needsToDisplayLanguage,
-                RichInputMethodManager.getInstance().hasMultipleEnabledIMEsOrSubtypes(true));
+        final boolean hasMultipleEnabledIMEsOrSubtypes = RichInputMethodManager.getInstance()
+                .hasMultipleEnabledIMEsOrSubtypes(true /* shouldIncludeAuxiliarySubtypes */);
+        keyboardView.startDisplayLanguageOnSpacebar(subtypeChanged, languageOnSpacebarFormatType,
+                hasMultipleEnabledIMEsOrSubtypes);
     }
 
     public Keyboard getKeyboard() {
