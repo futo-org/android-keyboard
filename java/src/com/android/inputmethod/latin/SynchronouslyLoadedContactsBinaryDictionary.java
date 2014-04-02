@@ -34,10 +34,11 @@ public final class SynchronouslyLoadedContactsBinaryDictionary extends ContactsB
     @Override
     public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer codes,
             final String prevWordForBigrams, final ProximityInfo proximityInfo,
-            final boolean blockOffensiveWords, final int[] additionalFeaturesOptions) {
+            final boolean blockOffensiveWords, final int[] additionalFeaturesOptions,
+            final float[] inOutLanguageWeight) {
         synchronized (mLock) {
             return super.getSuggestions(codes, prevWordForBigrams, proximityInfo,
-                    blockOffensiveWords, additionalFeaturesOptions);
+                    blockOffensiveWords, additionalFeaturesOptions, inOutLanguageWeight);
         }
     }
 

@@ -27,6 +27,7 @@ import java.util.ArrayList;
  */
 public abstract class Dictionary {
     public static final int NOT_A_PROBABILITY = -1;
+    public static final float NOT_A_LANGUAGE_WEIGHT = -1.0f;
 
     // The following types do not actually come from real dictionary instances, so we create
     // corresponding instances.
@@ -70,22 +71,26 @@ public abstract class Dictionary {
      * @param proximityInfo the object for key proximity. May be ignored by some implementations.
      * @param blockOffensiveWords whether to block potentially offensive words
      * @param additionalFeaturesOptions options about additional features used for the suggestion.
+     * @param inOutLanguageWeight the language weight used for generating suggestions.
+     * inOutLanguageWeight is a float array that has only one element. This can be updated when the
+     * different language weight is used.
      * @return the list of suggestions (possibly null if none)
      */
     // TODO: pass more context than just the previous word, to enable better suggestions (n-gram
     // and more)
     abstract public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
             final String prevWord, final ProximityInfo proximityInfo,
-            final boolean blockOffensiveWords, final int[] additionalFeaturesOptions);
+            final boolean blockOffensiveWords, final int[] additionalFeaturesOptions,
+            final float[] inOutLanguageWeight);
 
     // The default implementation of this method ignores sessionId.
     // Subclasses that want to use sessionId need to override this method.
     public ArrayList<SuggestedWordInfo> getSuggestionsWithSessionId(final WordComposer composer,
             final String prevWord, final ProximityInfo proximityInfo,
             final boolean blockOffensiveWords, final int[] additionalFeaturesOptions,
-            final int sessionId) {
+            final int sessionId, final float[] inOutLanguageWeight) {
         return getSuggestions(composer, prevWord, proximityInfo, blockOffensiveWords,
-                additionalFeaturesOptions);
+                additionalFeaturesOptions, inOutLanguageWeight);
     }
 
     /**
@@ -159,7 +164,8 @@ public abstract class Dictionary {
         @Override
         public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
                 final String prevWord, final ProximityInfo proximityInfo,
-                final boolean blockOffensiveWords, final int[] additionalFeaturesOptions) {
+                final boolean blockOffensiveWords, final int[] additionalFeaturesOptions,
+                final float[] inOutLanguageWeight) {
             return null;
         }
 
