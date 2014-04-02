@@ -173,9 +173,7 @@ public final class WordComposer {
         final int keyX = event.mX;
         final int keyY = event.mY;
         final int newIndex = size();
-        mCombinerChain.processEvent(mEvents, event);
-        mEvents.add(event);
-        refreshTypedWordCache();
+        processEvent(event);
         mCursorPositionWithinWord = mCodePointSize;
         if (newIndex < MAX_WORD_LENGTH) {
             mPrimaryKeyCodes[newIndex] = primaryCode >= Constants.CODE_SPACE
@@ -200,13 +198,17 @@ public final class WordComposer {
         mAutoCorrection = null;
     }
 
+    private void processEvent(final Event event) {
+        mCombinerChain.processEvent(mEvents, event);
+        mEvents.add(event);
+        refreshTypedWordCache();
+    }
+
     /**
      * Delete the last composing unit as a result of hitting backspace.
      */
     public void deleteLast(final Event event) {
-        mCombinerChain.processEvent(mEvents, event);
-        mEvents.add(event);
-        refreshTypedWordCache();
+        processEvent(event);
         // We may have deleted the last one.
         if (0 == size()) {
             mIsFirstCharCapitalized = false;
