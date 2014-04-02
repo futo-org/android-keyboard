@@ -23,7 +23,6 @@ import com.android.inputmethod.latin.utils.CoordinateUtils;
 import com.android.inputmethod.latin.utils.StringUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 
 /**
@@ -51,11 +50,6 @@ public final class WordComposer {
     // The list of events that served to compose this string.
     private final ArrayList<Event> mEvents;
     private final InputPointers mInputPointers = new InputPointers(MAX_WORD_LENGTH);
-    // This is the typed word, as a StringBuilder. This has the same contents as mPrimaryKeyCodes
-    // but under a StringBuilder representation for ease of use, depending on what is more useful
-    // at any given time. However this is not limited in size, while mPrimaryKeyCodes is limited
-    // to MAX_WORD_LENGTH code points.
-    private final StringBuilder mTypedWord;
     // The previous word (before the composing word). Used as context for suggestions. May be null
     // after resetting and before starting a new composing word, or when there is no context like
     // at the start of text for example. It can also be set to null externally when the user
@@ -73,6 +67,7 @@ public final class WordComposer {
     private String mRejectedBatchModeSuggestion;
 
     // Cache these values for performance
+    private CharSequence mTypedWordCache;
     private int mCapsCount;
     private int mDigitsCount;
     private int mCapitalizedMode;
@@ -93,7 +88,6 @@ public final class WordComposer {
         mCombinerChain = new CombinerChain();
         mPrimaryKeyCodes = new int[MAX_WORD_LENGTH];
         mEvents = CollectionUtils.newArrayList();
-        mTypedWord = new StringBuilder(MAX_WORD_LENGTH);
         mAutoCorrection = null;
         mTrailingSingleQuotesCount = 0;
         mIsResumed = false;
@@ -101,7 +95,7 @@ public final class WordComposer {
         mCursorPositionWithinWord = 0;
         mRejectedBatchModeSuggestion = null;
         mPreviousWordForSuggestion = null;
-        refreshSize();
+        refreshTypedWordCache();
     }
 
     /**
@@ -109,7 +103,6 @@ public final class WordComposer {
      */
     public void reset() {
         mCombinerChain.reset();
-        mTypedWord.setLength(0);
         mEvents.clear();
         mAutoCorrection = null;
         mCapsCount = 0;
@@ -121,11 +114,12 @@ public final class WordComposer {
         mCursorPositionWithinWord = 0;
         mRejectedBatchModeSuggestion = null;
         mPreviousWordForSuggestion = null;
-        refreshSize();
+        refreshTypedWordCache();
     }
 
-    private final void refreshSize() {
-        mCodePointSize = mTypedWord.codePointCount(0, mTypedWord.length());
+    private final void refreshTypedWordCache() {
+        mTypedWordCache = mCombinerChain.getComposingWordWithCombiningFeedback();
+        mCodePointSize = Character.codePointCount(mTypedWordCache, 0, mTypedWordCache.length());
     }
 
     /**
@@ -180,12 +174,8 @@ public final class WordComposer {
         final int keyY = event.mY;
         final int newIndex = size();
         mCombinerChain.processEvent(mEvents, event);
-        // TODO: remove mTypedWord and compute it dynamically when necessary. We also need to
-        // make the views of the composing word a SpannableString.
-        mTypedWord.replace(0, mTypedWord.length(),
-                mCombinerChain.getComposingWordWithCombiningFeedback().toString());
         mEvents.add(event);
-        refreshSize();
+        refreshTypedWordCache();
         mCursorPositionWithinWord = mCodePointSize;
         if (newIndex < MAX_WORD_LENGTH) {
             mPrimaryKeyCodes[newIndex] = primaryCode >= Constants.CODE_SPACE
@@ -242,7 +232,7 @@ public final class WordComposer {
             // If we have more than MAX_WORD_LENGTH characters, we don't have everything inside
             // mPrimaryKeyCodes. This should be rare enough that we can afford to just compute
             // the array on the fly when this happens.
-            codePoints = StringUtils.toCodePointArray(mTypedWord.toString());
+            codePoints = StringUtils.toCodePointArray(mTypedWordCache);
         } else {
             codePoints = mPrimaryKeyCodes;
         }
@@ -311,10 +301,8 @@ public final class WordComposer {
      */
     public void deleteLast(final Event event) {
         mCombinerChain.processEvent(mEvents, event);
-        mTypedWord.replace(0, mTypedWord.length(),
-                mCombinerChain.getComposingWordWithCombiningFeedback().toString());
         mEvents.add(event);
-        refreshSize();
+        refreshTypedWordCache();
         // We may have deleted the last one.
         if (0 == size()) {
             mIsFirstCharCapitalized = false;
@@ -322,10 +310,12 @@ public final class WordComposer {
         if (mTrailingSingleQuotesCount > 0) {
             --mTrailingSingleQuotesCount;
         } else {
-            int i = mTypedWord.length();
+            int i = mTypedWordCache.length();
             while (i > 0) {
-                i = mTypedWord.offsetByCodePoints(i, -1);
-                if (Constants.CODE_SINGLE_QUOTE != mTypedWord.codePointAt(i)) break;
+                i = Character.offsetByCodePoints(mTypedWordCache, i, -1);
+                if (Constants.CODE_SINGLE_QUOTE != Character.codePointAt(mTypedWordCache, i)) {
+                    break;
+                }
                 ++mTrailingSingleQuotesCount;
             }
         }
@@ -338,7 +328,7 @@ public final class WordComposer {
      * @return the word that was typed so far. Never returns null.
      */
     public String getTypedWord() {
-        return mTypedWord.toString();
+        return mTypedWordCache.toString();
     }
 
     public String getPreviousWordForSuggestion() {
@@ -447,7 +437,7 @@ public final class WordComposer {
         final int[] primaryKeyCodes = mPrimaryKeyCodes;
         mPrimaryKeyCodes = new int[MAX_WORD_LENGTH];
         final LastComposedWord lastComposedWord = new LastComposedWord(primaryKeyCodes, mEvents,
-                mInputPointers, mTypedWord.toString(), committedWord, separatorString,
+                mInputPointers, mTypedWordCache.toString(), committedWord, separatorString,
                 prevWord, mCapitalizedMode);
         mInputPointers.reset();
         if (type != LastComposedWord.COMMIT_TYPE_DECIDED_WORD
@@ -458,14 +448,13 @@ public final class WordComposer {
         mDigitsCount = 0;
         mIsBatchMode = false;
         mPreviousWordForSuggestion = committedWord.toString();
-        mTypedWord.setLength(0);
         mCombinerChain.reset();
         mEvents.clear();
         mCodePointSize = 0;
         mTrailingSingleQuotesCount = 0;
         mIsFirstCharCapitalized = false;
         mCapitalizedMode = CAPS_MODE_OFF;
-        refreshSize();
+        refreshTypedWordCache();
         mAutoCorrection = null;
         mCursorPositionWithinWord = 0;
         mIsResumed = false;
@@ -486,10 +475,8 @@ public final class WordComposer {
         mEvents.clear();
         Collections.copy(mEvents, lastComposedWord.mEvents);
         mInputPointers.set(lastComposedWord.mInputPointers);
-        mTypedWord.setLength(0);
         mCombinerChain.reset();
-        mTypedWord.append(lastComposedWord.mTypedWord);
-        refreshSize();
+        refreshTypedWordCache();
         mCapitalizedMode = lastComposedWord.mCapitalizedMode;
         mAutoCorrection = null; // This will be filled by the next call to updateSuggestion.
         mCursorPositionWithinWord = mCodePointSize;
