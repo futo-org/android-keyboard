@@ -172,28 +172,29 @@ public final class StringUtils {
 
     private static final int[] EMPTY_CODEPOINTS = {};
 
-    public static int[] toCodePointArray(final String string) {
-        return toCodePointArray(string, 0, string.length());
+    public static int[] toCodePointArray(final CharSequence charSequence) {
+        return toCodePointArray(charSequence, 0, charSequence.length());
     }
 
     /**
      * Converts a range of a string to an array of code points.
-     * @param string the source string.
+     * @param charSequence the source string.
      * @param startIndex the start index inside the string in java chars, inclusive.
      * @param endIndex the end index inside the string in java chars, exclusive.
      * @return a new array of code points. At most endIndex - startIndex, but possibly less.
      */
-    public static int[] toCodePointArray(final String string,
+    public static int[] toCodePointArray(final CharSequence charSequence,
             final int startIndex, final int endIndex) {
-        final int length = string.length();
+        final int length = charSequence.length();
         if (length <= 0) {
             return EMPTY_CODEPOINTS;
         }
-        final int[] codePoints = new int[string.codePointCount(startIndex, endIndex)];
+        final int[] codePoints =
+                new int[Character.codePointCount(charSequence, startIndex, endIndex)];
         int destIndex = 0;
         for (int index = startIndex; index < endIndex;
-                index = string.offsetByCodePoints(index, 1)) {
-            codePoints[destIndex] = string.codePointAt(index);
+                index = Character.offsetByCodePoints(charSequence, index, 1)) {
+            codePoints[destIndex] = Character.codePointAt(charSequence, index);
             destIndex++;
         }
         return codePoints;
