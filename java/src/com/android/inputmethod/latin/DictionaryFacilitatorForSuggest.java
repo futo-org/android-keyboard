@@ -36,7 +36,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -53,6 +52,15 @@ public class DictionaryFacilitatorForSuggest {
     private volatile CountDownLatch mLatchForWaitingLoadingMainDictionary = new CountDownLatch(0);
     // To synchronize assigning mDictionaries to ensure closing dictionaries.
     private Object mLock = new Object();
+
+    private static final String[] dictTypesOrderedToGetSuggestion =
+            new String[] {
+                Dictionary.TYPE_MAIN,
+                Dictionary.TYPE_USER_HISTORY,
+                Dictionary.TYPE_PERSONALIZATION,
+                Dictionary.TYPE_USER,
+                Dictionary.TYPE_CONTACTS
+            };
 
     /**
      * Class contains dictionaries for a locale.
@@ -453,7 +461,8 @@ public class DictionaryFacilitatorForSuggest {
         final Map<String, Dictionary> dictMap = dictionaries.mDictMap;
         final SuggestionResults suggestionResults =
                 new SuggestionResults(dictionaries.mLocale, SuggestedWords.MAX_SUGGESTIONS);
-        for (final Dictionary dictionary : dictMap.values()) {
+        for (final String dictType : dictTypesOrderedToGetSuggestion) {
+            final Dictionary dictionary = dictMap.get(dictType);
             if (null == dictionary) continue;
             final ArrayList<SuggestedWordInfo> dictionarySuggestions =
                     dictionary.getSuggestionsWithSessionId(composer, prevWord, proximityInfo,
