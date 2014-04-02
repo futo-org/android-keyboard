@@ -166,8 +166,8 @@ class TypingWeighting : public Weighting {
         const bool firstCompletion = dicNode->getInputIndex(0)
                 == traverseSession->getInputSize();
         // TODO: Change the cost for the first completion for the gesture?
-        const float cost = firstCompletion ? ScoringParams::COST_FIRST_LOOKAHEAD
-                : ScoringParams::COST_LOOKAHEAD;
+        const float cost = firstCompletion ? ScoringParams::COST_FIRST_COMPLETION
+                : ScoringParams::COST_COMPLETION;
         return cost;
     }
 
