@@ -65,7 +65,7 @@ class Dictionary {
     void getSuggestions(ProximityInfo *proximityInfo, DicTraverseSession *traverseSession,
             int *xcoordinates, int *ycoordinates, int *times, int *pointerIds, int *inputCodePoints,
             int inputSize, int *prevWordCodePoints, int prevWordLength,
-            const SuggestOptions *const suggestOptions,
+            const SuggestOptions *const suggestOptions, const float languageWeight,
             SuggestionResults *const outSuggestionResults) const;
 
     void getPredictions(const int *word, int length,

@@ -33,7 +33,7 @@ const int SuggestionsOutputUtils::MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT = 16;
 
 /* static */ void SuggestionsOutputUtils::outputSuggestions(
         const Scoring *const scoringPolicy, DicTraverseSession *traverseSession,
-        SuggestionResults *const outSuggestionResults) {
+        const float languageWeight, SuggestionResults *const outSuggestionResults) {
 #if DEBUG_EVALUATE_MOST_PROBABLE_STRING
     const int terminalSize = 0;
 #else
@@ -43,9 +43,12 @@ const int SuggestionsOutputUtils::MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT = 16;
     for (int index = terminalSize - 1; index >= 0; --index) {
         traverseSession->getDicTraverseCache()->popTerminal(&terminals[index]);
     }
-
-    const float languageWeight = scoringPolicy->getAdjustedLanguageWeight(
-            traverseSession, terminals.data(), terminalSize);
+    // Compute a language weight when an invalid language weight is passed.
+    // NOT_A_LANGUAGE_WEIGHT (-1) is assumed as an invalid language weight.
+    const float languageWeightToOutputSuggestions = (languageWeight < 0.0f) ?
+            scoringPolicy->getAdjustedLanguageWeight(
+                    traverseSession, terminals.data(), terminalSize) : languageWeight;
+    outSuggestionResults->setLanguageWeight(languageWeightToOutputSuggestions);
     // Force autocorrection for obvious long multi-word suggestions when the top suggestion is
     // a long multiple words suggestion.
     // TODO: Implement a smarter auto-commit method for handling multi-word suggestions.
@@ -61,10 +64,11 @@ const int SuggestionsOutputUtils::MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT = 16;
     // Output suggestion results here
     for (auto &terminalDicNode : terminals) {
         outputSuggestionsOfDicNode(scoringPolicy, traverseSession, &terminalDicNode,
-                languageWeight, boostExactMatches, forceCommitMultiWords,
+                languageWeightToOutputSuggestions, boostExactMatches, forceCommitMultiWords,
                 outputSecondWordFirstLetterInputIndex, outSuggestionResults);
     }
-    scoringPolicy->getMostProbableString(traverseSession, languageWeight, outSuggestionResults);
+    scoringPolicy->getMostProbableString(traverseSession, languageWeightToOutputSuggestions,
+            outSuggestionResults);
 }
 
 /* static */ void SuggestionsOutputUtils::outputSuggestionsOfDicNode(

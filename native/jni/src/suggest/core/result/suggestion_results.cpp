@@ -20,7 +20,8 @@ namespace latinime {
 
 void SuggestionResults::outputSuggestions(JNIEnv *env, jintArray outSuggestionCount,
         jintArray outputCodePointsArray, jintArray outScoresArray, jintArray outSpaceIndicesArray,
-        jintArray outTypesArray, jintArray outAutoCommitFirstWordConfidenceArray) {
+        jintArray outTypesArray, jintArray outAutoCommitFirstWordConfidenceArray,
+        jfloatArray outLanguageWeight) {
     int outputIndex = 0;
     while (!mSuggestedWords.empty()) {
         const SuggestedWord &suggestedWord = mSuggestedWords.top();
@@ -50,6 +51,7 @@ void SuggestionResults::outputSuggestions(JNIEnv *env, jintArray outSuggestionCo
         mSuggestedWords.pop();
     }
     env->SetIntArrayRegion(outSuggestionCount, 0 /* start */, 1 /* len */, &outputIndex);
+    env->SetFloatArrayRegion(outLanguageWeight, 0 /* start */, 1 /* len */, &mLanguageWeight);
 }
 
 void SuggestionResults::addPrediction(const int *const codePoints, const int codePointCount,
@@ -94,6 +96,7 @@ void SuggestionResults::getSortedScores(int *const outScores) const {
 }
 
 void SuggestionResults::dumpSuggestions() const {
+    AKLOGE("language weight: %f", mLanguageWeight);
     std::vector<SuggestedWord> suggestedWords;
     auto copyOfSuggestedWords = mSuggestedWords;
     while (!copyOfSuggestedWords.empty()) {
