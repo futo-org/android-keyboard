@@ -29,11 +29,10 @@
         <case
             latin:keyboardLayoutSet="hindi"
         >
-            <!-- U+25CC: "◌" DOTTED CIRCLE
-                 U+0944: "ॄ" DEVANAGARI VOWEL SIGN VOCALIC RR -->
+            <!-- U+0944: "ॄ" DEVANAGARI VOWEL SIGN VOCALIC RR -->
             <key-style
                 latin:styleName="moreKeysDevanagariVowelSignVocalicR"
-                latin:moreKeys="&#x25CC;&#x0944;|&#x0944;" />
+                latin:moreKeys="&#x0944;" />
         </case>
         <case
             latin:keyboardLayoutSet="nepali_traditional"
@@ -48,10 +47,10 @@
                 latin:styleName="moreKeysDevanagariVowelSignVocalicR" />
         </default>
     </switch>
-    <!-- U+25CC: "◌" DOTTED CIRCLE
-         U+0943: "ृ" DEVANAGARI VOWEL SIGN VOCALIC R -->
-    <Key
-        latin:keyStyle="moreKeysDevanagariVowelSignVocalicR"
-        latin:keySpec="&#x25CC;&#x0943;|&#x0943;"
-        latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+    <!-- U+0943: "ृ" DEVANAGARI VOWEL SIGN VOCALIC R -->
+    <key-style
+        latin:styleName="baseKeyDevanagariVowelSignVocalicR"
+        latin:parentStyle="moreKeysDevanagariVowelSignVocalicR"
+        latin:keySpec="&#x0943;"
+        latin:keyLabelFlags="fontNormal" />
 </merge>

@@ -72,8 +72,7 @@ public final class NepaliRomanized extends LayoutBase {
                     // U+091F: "ट" DEVANAGARI LETTER TTA
                     // U+0967: "१" DEVANAGARI DIGIT ONE
                     // U+093C: "़" DEVANAGARI SIGN NUKTA
-                    // TODO: Nukta should be moreKey(SIGN_NUKTA, "\u093C").
-                    key("\u091F", joinMoreKeys("\u0967", "1", "\u093C")),
+                    key("\u091F", joinMoreKeys("\u0967", "1", key(SIGN_NUKTA, "\u093C"))),
                     // U+094C: "ौ" DEVANAGARI VOWEL SIGN AU
                     // U+0968: "२" DEVANAGARI DIGIT TWO
                     key(VOWEL_SIGN_AU, "\u094C", joinMoreKeys("\u0968", "2")),

@@ -29,27 +29,30 @@
         <case
             latin:keyboardLayoutSet="hindi"
         >
-            <!-- U+0944: "ॄ" DEVANAGARI VOWEL SIGN VOCALIC RR -->
-            <key-style
-                latin:styleName="moreKeysDevanagariVowelSignVocalicR"
-                latin:moreKeys="&#x0944;" />
+            <!-- U+097D: "ॽ" DEVANAGARI LETTER GLOTTAL STOP
+                 U+0970: "॰" DEVANAGARI ABBREVIATION SIGN
+                 U+093D: "ऽ" DEVANAGARI SIGN AVAGRAHA -->
+             <key-style
+                latin:styleName="moreKeysDevanagariSignNukta"
+                latin:moreKeys="&#x097D;,&#x0970;,&#x093D;" />
         </case>
         <case
-            latin:keyboardLayoutSet="nepali_traditional"
+            latin:keyboardLayoutSet="nepali_romanized"
         >
-            <!-- U+0913: "ओ" DEVANAGARI LETTER O -->
-            <key-style
-                latin:styleName="moreKeysDevanagariVowelSignVocalicR"
-                latin:moreKeys="&#x0913;" />
+            <!-- U+093C: "़" DEVANAGARI SIGN NUKTA -->
+             <key-style
+                latin:styleName="moreKeysDevanagariSignNukta"
+                latin:moreKeys="&#x093C;" />
         </case>
         <default>
              <key-style
-                latin:styleName="moreKeysDevanagariVowelSignVocalicR" />
+                latin:styleName="moreKeysDevanagariSignNukta" />
         </default>
     </switch>
-    <!-- U+0943: "ृ" DEVANAGARI VOWEL SIGN VOCALIC R -->
-    <Key
-        latin:keyStyle="moreKeysDevanagariVowelSignVocalicR"
-        latin:keySpec="&#x0943;"
+    <!-- U+093C: "़" DEVANAGARI SIGN NUKTA -->
+    <key-style
+        latin:styleName="baseKeyDevanagariSignNukta"
+        latin:parentStyle="moreKeysDevanagariSignNukta"
+        latin:keySpec="&#x093C;"
         latin:keyLabelFlags="fontNormal" />
 </merge>

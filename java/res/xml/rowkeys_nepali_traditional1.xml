@@ -91,7 +91,9 @@
                  render dotted circle for incomplete combining letter of some scripts, different
                  set of Key definitions are needed based on the API version. -->
             <include
-                latin:keyboardLayout="@xml/key_devanagari_vowel_sign_vocalic_r" />
+                latin:keyboardLayout="@xml/keystyle_devanagari_vowel_sign_vocalic_r" />
+            <Key
+                latin:keyStyle="baseKeyDevanagariVowelSignVocalicR" />
         </case>
         <default>
             <!-- U+091F: "ट" DEVANAGARI LETTER TTA
