@@ -2,7 +2,7 @@
 <!--
 /*
 **
-** Copyright 2013, The Android Open Source Project
+** Copyright 2014, The Android Open Source Project
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
 ** you may not use this file except in compliance with the License.
@@ -29,20 +29,15 @@
         <case
             latin:keyboardLayoutSet="hindi_compact"
         >
-            <!-- U+094D: "्" DEVANAGARI SIGN VIRAMA -->
+            <!-- U+25CC: "◌" DOTTED CIRCLE
+                 U+0945: "ॅ" DEVANAGARI VOWEL SIGN CANDRA E -->
             <key-style
-                latin:styleName="moreKeysDevanagariSignVirama"
-                latin:moreKeys="&#x094D;" />
+                latin:styleName="moreKeysDevanagariVowelSignCandraE"
+                latin:moreKeys="&#x25CC;&#x0945;|&#x0945;" />
         </case>
         <default>
              <key-style
-                latin:styleName="moreKeysDevanagariSignVirama" />
+                latin:styleName="moreKeysDevanagariVowelSignCandraE" />
         </default>
     </switch>
-    <!-- U+094D: "्" DEVANAGARI SIGN VIRAMA -->
-    <key-style
-        latin:styleName="baseKeyDevanagariSignVirama"
-        latin:parentStyle="moreKeysDevanagariSignVirama"
-        latin:keySpec="&#x094D;"
-        latin:keyLabelFlags="fontNormal" />
 </merge>

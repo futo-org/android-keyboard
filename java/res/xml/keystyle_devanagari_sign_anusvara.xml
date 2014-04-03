@@ -25,10 +25,28 @@
 <merge
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
+    <switch>
+        <case
+            latin:keyboardLayoutSet="hindi_compact"
+        >
+            <!-- U+25CC: "◌" DOTTED CIRCLE
+                 U+0903: "ः‍" DEVANAGARI SIGN VISARGA
+                 U+0901: "ँ" DEVANAGARI SIGN CANDRABINDU
+                 U+093C: "़" DEVANAGARI SIGN NUKTA -->
+            <key-style
+                latin:styleName="moreKeysDevanagariSignAnusvara"
+                latin:moreKeys="&#x25CC;&#x0903;|&#x0903;,&#x25CC;&#x0901;|&#x0901;,&#x25CC;&#x093C;|&#x093C;" />
+        </case>
+        <default>
+             <key-style
+                latin:styleName="moreKeysDevanagariSignAnusvara" />
+        </default>
+    </switch>
     <!-- U+25CC: "◌" DOTTED CIRCLE
          U+0902: "ं" DEVANAGARI SIGN ANUSVARA -->
     <key-style
         latin:styleName="baseKeyDevanagariSignAnusvara"
+        latin:parentStyle="moreKeysDevanagariSignAnusvara"
         latin:keySpec="&#x25CC;&#x0902;|&#x0902;"
         latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 </merge>

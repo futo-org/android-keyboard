@@ -35,6 +35,14 @@
                 latin:moreKeys="&#x0947;&#x0902;" />
         </case>
         <case
+            latin:keyboardLayoutSet="hindi_compact"
+        >
+            <!-- U+0947: "े" DEVANAGARI VOWEL SIGN E -->
+            <key-style
+                latin:styleName="moreKeysDevanagariVowelSignE"
+                latin:moreKeys="&#x0947;" />
+        </case>
+        <case
             latin:keyboardLayoutSet="nepali_traditional"
         >
             <!-- U+0903: "ः‍" DEVANAGARI SIGN VISARGA

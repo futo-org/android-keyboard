@@ -49,6 +49,7 @@
     fr_CH: French (Switzerland)/swiss
     gl_ES: Galician (Spain)/spanish
     hi: Hindi/hindi
+    hi: Hindi/hindi_compact
     hr: Croatian/qwertz
     hu: Hungarian/qwertz
     hy_AM: Armenian (Armenia) Phonetic/armenian_phonetic
@@ -318,6 +319,14 @@
             android:imeSubtypeLocale="hi"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=hindi,EmojiCapable"
+            android:isAsciiCapable="false"
+    />
+    <subtype android:icon="@drawable/ic_ime_switcher_dark"
+            android:label="@string/subtype_generic_compact"
+            android:subtypeId="0xe49c89a1"
+            android:imeSubtypeLocale="hi"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=hindi_compact,EmojiCapable"
             android:isAsciiCapable="false"
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"

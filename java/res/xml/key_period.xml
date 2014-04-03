@@ -23,6 +23,17 @@
 >
     <switch>
         <case
+            latin:languageCode="hi"
+            latin:keyboardLayoutSet="hindi_compact"
+        >
+            <!-- U+0964: "।" DEVANAGARI DANDA -->
+            <Key
+                latin:keySpec="\u0964"
+                latin:keyLabelFlags="hasPopupHint"
+                latin:moreKeys="!autoColumnOrder!9,\\,,.,?,!,#,),(,/,;,',@,:,-,&quot;,+,\\%,&amp;"
+                latin:backgroundType="functional" />
+        </case>
+        <case
             latin:languageCode="ne"
             latin:keyboardLayoutSet="nepali_traditional"
         >
