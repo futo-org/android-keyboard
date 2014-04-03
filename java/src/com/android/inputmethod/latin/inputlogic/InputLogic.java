@@ -210,15 +210,7 @@ public final class InputLogic {
             // So, LatinImeLogger logs "" as a user's input.
             LatinImeLogger.logOnManualSuggestion("", suggestion, index, suggestedWords);
             // Rely on onCodeInput to do the complicated swapping/stripping logic consistently.
-            final int primaryCode = suggestion.charAt(0);
-            // TODO: we should be using createSuggestionPickedEvent here, but for legacy reasons,
-            // onCodeInput is expected a software keypress event for a suggested punctuation
-            // because the current code is descended from a time where this information used not
-            // to be available. Fix this.
-            final Event event = Event.createSoftwareKeypressEvent(primaryCode,
-                    Event.NOT_A_KEY_CODE /* keyCode*/,
-                    Constants.SUGGESTION_STRIP_COORDINATE /* x */,
-                    Constants.SUGGESTION_STRIP_COORDINATE /* y */);
+            final Event event = Event.createPunctuationSuggestionPickedEvent(suggestionInfo);
             if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
                 ResearchLogger.latinIME_punctuationSuggestion(index, suggestion,
                         false /* isBatchMode */, suggestedWords.mIsPrediction);
