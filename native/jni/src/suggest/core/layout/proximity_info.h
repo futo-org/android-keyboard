@@ -35,7 +35,6 @@ class ProximityInfo {
             const jfloatArray sweetSpotCenterYs, const jfloatArray sweetSpotRadii);
     ~ProximityInfo();
     bool hasSpaceProximity(const int x, const int y) const;
-    int getNormalizedSquaredDistance(const int inputIndex, const int proximityIndex) const;
     float getNormalizedSquaredDistanceFromCenterFloatG(
             const int keyId, const int x, const int y, const bool isGeometric) const;
     int getCodePointOf(const int keyIndex) const;
@@ -48,8 +47,6 @@ class ProximityInfo {
     float getSweetSpotRadiiAt(int keyIndex) const { return mSweetSpotRadii[keyIndex]; }
     float getSweetSpotCenterXAt(int keyIndex) const { return mSweetSpotCenterXs[keyIndex]; }
     float getSweetSpotCenterYAt(int keyIndex) const { return mSweetSpotCenterYs[keyIndex]; }
-    void calculateNearbyKeyCodes(
-            const int x, const int y, const int primaryKey, int *inputCodes) const;
     bool hasTouchPositionCorrectionData() const { return HAS_TOUCH_POSITION_CORRECTION_DATA; }
     int getMostCommonKeyWidth() const { return MOST_COMMON_KEY_WIDTH; }
     int getMostCommonKeyWidthSquare() const { return MOST_COMMON_KEY_WIDTH_SQUARE; }
@@ -97,7 +94,6 @@ class ProximityInfo {
     const int GRID_HEIGHT;
     const int MOST_COMMON_KEY_WIDTH;
     const int MOST_COMMON_KEY_WIDTH_SQUARE;
-    const int MOST_COMMON_KEY_HEIGHT;
     const float NORMALIZED_SQUARED_MOST_COMMON_KEY_HYPOTENUSE;
     const int CELL_WIDTH;
     const int CELL_HEIGHT;
@@ -124,7 +120,6 @@ class ProximityInfo {
     int mCenterXsG[MAX_KEY_COUNT_IN_A_KEYBOARD];
     int mCenterYsG[MAX_KEY_COUNT_IN_A_KEYBOARD];
     int mKeyKeyDistancesG[MAX_KEY_COUNT_IN_A_KEYBOARD][MAX_KEY_COUNT_IN_A_KEYBOARD];
-    // TODO: move to correction.h
 };
 } // namespace latinime
 #endif // LATINIME_PROXIMITY_INFO_H

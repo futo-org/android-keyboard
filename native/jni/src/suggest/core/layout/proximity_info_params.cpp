@@ -98,7 +98,4 @@ const int ProximityInfoParams::LOOKUP_RADIUS_PERCENTILE = 50;
 const int ProximityInfoParams::FIRST_POINT_TIME_OFFSET_MILLIS = 150;
 const int ProximityInfoParams::STRONG_DOUBLE_LETTER_TIME_MILLIS = 600;
 
-// Used by ProximityInfoStateUtils::calculateNormalizedSquaredDistance()
-const int ProximityInfoParams::NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR = 1 << 10;
-
 } // namespace latinime
