@@ -16,6 +16,8 @@
 
 package com.android.inputmethod.keyboard.layout;
 
+import static com.android.inputmethod.keyboard.layout.DevanagariLetterConstants.*;
+
 import com.android.inputmethod.keyboard.KeyboardId;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKey;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
@@ -96,25 +98,37 @@ public final class Hindi extends LayoutBase {
                     // U+094C: "ौ" DEVANAGARI VOWEL SIGN AU
                     // U+094C/U+0902: "ौं" DEVANAGARI VOWEL SIGN AU/DEVANAGARI SIGN ANUSVARA
                     // U+0967: "१" DEVANAGARI DIGIT ONE
-                    key("\u094C", joinMoreKeys("\u094C\u0902", "\u0967", "1")),
+                    key(VOWEL_SIGN_AU, "\u094C", joinMoreKeys(
+                            moreKey(VOWEL_SIGN_AU + "\u0902", "\u094C\u0902"),
+                            "\u0967", "1")),
                     // U+0948: "ै" DEVANAGARI VOWEL SIGN AI
                     // U+0948/U+0902: "ैं" DEVANAGARI VOWEL SIGN AI/DEVANAGARI SIGN ANUSVARA
                     // U+0968: "२" DEVANAGARI DIGIT TWO
-                    key("\u0948", joinMoreKeys("\u0948\u0902", "\u0968", "2")),
+                    key(VOWEL_SIGN_AI, "\u0948", joinMoreKeys(
+                            moreKey(VOWEL_SIGN_AI + "\u0902", "\u0948\u0902"),
+                            "\u0968", "2")),
                     // U+093E: "ा" DEVANAGARI VOWEL SIGN AA
                     // U+093E/U+0902: "ां" DEVANAGARI VOWEL SIGN AA/DEVANAGARI SIGN ANUSVARA
                     // U+093E/U+0901: "ाँ" DEVANAGARI VOWEL SIGN AA/DEVANAGARI SIGN CANDRABINDU
                     // U+0969: "३" DEVANAGARI DIGIT THREE
-                    key("\u093E", joinMoreKeys("\u093E\u0902", "\u093E\u0901", "\u0969", "3")),
+                    key(VOWEL_SIGN_AA, "\u093E", joinMoreKeys(
+                            moreKey(VOWEL_SIGN_AA + "\u0902", "\u093E\u0902"),
+                            moreKey(VOWEL_SIGN_AA + "\u0901", "\u093E\u0901"),
+                            "\u0969", "3")),
                     // U+0940: "ी" DEVANAGARI VOWEL SIGN II
                     // U+0940/U+0902: "ीं" DEVANAGARI VOWEL SIGN II/DEVANAGARI SIGN ANUSVARA
                     // U+096A: "४" DEVANAGARI DIGIT FOUR
-                    key("\u0940", joinMoreKeys("\u0940\u0902", "\u096A", "4")),
+                    key(VOWEL_SIGN_II, "\u0940", joinMoreKeys(
+                            moreKey(VOWEL_SIGN_II + "\u0902", "\u0940\u0902"),
+                            "\u096A", "4")),
                     // U+0942: "ू" DEVANAGARI VOWEL SIGN UU
                     // U+0942/U+0902: "ूं" DEVANAGARI VOWEL SIGN UU/DEVANAGARI SIGN ANUSVARA
                     // U+0942/U+0901: "ूँ" DEVANAGARI VOWEL SIGN UU/DEVANAGARI SIGN CANDRABINDU
                     // U+096B: "५" DEVANAGARI DIGIT FIVE
-                    key("\u0942", joinMoreKeys("\u0942\u0902", "\u0942\u0901", "\u096B", "5")),
+                    key(VOWEL_SIGN_UU, "\u0942", joinMoreKeys(
+                            moreKey(VOWEL_SIGN_UU + "\u0902", "\u0942\u0902"),
+                            moreKey(VOWEL_SIGN_UU + "\u0901", "\u0942\u0901"),
+                            "\u096B", "5")),
                     // U+092C: "ब" DEVANAGARI LETTER BA
                     // U+092C/U+0952: "ब॒" DEVANAGARI LETTER BA/DEVANAGARI STRESS SIGN ANUDATTA
                     // U+096C: "६" DEVANAGARI DIGIT SIX
@@ -150,19 +164,26 @@ public final class Hindi extends LayoutBase {
                     // U+094B/U+0902: "қं" DEVANAGARI VOWEL SIGN O/DEVANAGARI SIGN ANUSVARA
                     // U+0949: "ॉ" DEVANAGARI VOWEL SIGN CANDRA O
                     // U+094A: "ॊ" DEVANAGARI VOWEL SIGN SHORT O
-                    key("\u094B", joinMoreKeys("\u094B\u0902", "\u0949", "\u094A")),
+                    key(VOWEL_SIGN_O, "\u094B", joinMoreKeys(
+                            moreKey(VOWEL_SIGN_O + "\u0902", "\u094B\u0902"),
+                            moreKey(VOWEL_SIGN_CANDRA_O, "\u0949"),
+                            moreKey(VOWEL_SIGN_SHORT_O, "\u094A"))),
                     // U+0947: "े" DEVANAGARI VOWEL SIGN E
                     // U+0947/U+0902: "ें" DEVANAGARI VOWEL SIGN E/DEVANAGARI SIGN ANUSVARA
-                    key("\u0947", moreKey("\u0947\u0902")),
+                    key(VOWEL_SIGN_E, "\u0947",
+                            moreKey(VOWEL_SIGN_E + "\u0902", "\u0947\u0902")),
                     // U+094D: "्" DEVANAGARI SIGN VIRAMA
-                    "\u094D",
+                    key(SIGN_VIRAMA, "\u094D"),
                     // U+093F: "ि" DEVANAGARI VOWEL SIGN I
                     // U+093F/U+0902: "िं" DEVANAGARI VOWEL SIGN I/DEVANAGARI SIGN ANUSVARA
-                    key("\u093F", moreKey("\u093F\u0902")),
+                    key(VOWEL_SIGN_I, "\u093F",
+                            moreKey("\u093F" + SIGN_ANUSVARA, "\u093F\u0902")),
                     // U+0941: "ु" DEVANAGARI VOWEL SIGN U
                     // U+0941/U+0902: "ुं" DEVANAGARI VOWEL SIGN U/DEVANAGARI SIGN ANUSVARA
                     // U+0941/U+0901: "ुँ" DEVANAGARI VOWEL SIGN U/DEVANAGARI SIGN CANDRABINDU
-                    key("\u0941", joinMoreKeys("\u0941\u0902", "\u0941\u0901")),
+                    key(VOWEL_SIGN_U, "\u0941", joinMoreKeys(
+                            moreKey(VOWEL_SIGN_U + "\u0902", "\u0941\u0902"),
+                            moreKey(VOWEL_SIGN_U + "\u0901", "\u0941\u0901"))),
                     // U+092A: "प" DEVANAGARI LETTER PA
                     "\u092A",
                     // U+0930: "र" DEVANAGARI LETTER RA
@@ -182,8 +203,9 @@ public final class Hindi extends LayoutBase {
                     "\u091A","\u091F")
             .setKeysOfRow(3,
                     // U+0949: "ॉ" DEVANAGARI VOWEL SIGN CANDRA O
+                    key(VOWEL_SIGN_CANDRA_O, "\u0949"),
                     // U+0902: "ं" DEVANAGARI SIGN ANUSVARA
-                    "\u0949", "\u0902",
+                    key(SIGN_ANUSVARA, "\u0902"),
                     // U+092E: "म" DEVANAGARI LETTER MA
                     // U+0950: "ॐ" DEVANAGARI OM
                     key("\u092E", moreKey("\u0950")),
@@ -207,7 +229,10 @@ public final class Hindi extends LayoutBase {
                     // U+097D: "ॽ" DEVANAGARI LETTER GLOTTAL STOP
                     // U+0970: "॰" DEVANAGARI ABBREVIATION SIGN
                     // U+093D: "ऽ" DEVANAGARI SIGN AVAGRAHA
-                    key("\u093C", joinMoreKeys("\u097D", "\u0970", "\u093D")))
+                    key(SIGN_NUKTA, "\u093C", joinMoreKeys(
+                            moreKey(LETTER_GLOTTAL_STOP, "\u097D"),
+                            moreKey(ABBREVIATION_SIGN, "\u0970"),
+                            moreKey(SIGN_AVAGRAHA, "\u093D"))))
             .build();
 
     private static final ExpectedKey[][] ALPHABET_SHIFTED_COMMON = new ExpectedKeyboardBuilder()
@@ -232,7 +257,7 @@ public final class Hindi extends LayoutBase {
                     // U+092D: "भ" DEVANAGARI LETTER BHA
                     // U+0903: "ः" DEVANAGARI SIGN VISARGA
                     // U+0918: "घ" DEVANAGARI LETTER GHA
-                    "\u092D", "\u0903", "\u0918",
+                    "\u092D", key(SIGN_VISARGA, "\u0903"), "\u0918",
                     // U+0927: "ध" DEVANAGARI LETTER DHA
                     // U+0915/U+094D/U+0937:
                     //     "क्ष" DEVANAGARI LETTER KA/DEVANAGARI SIGN VIRAMA/DEVANAGARI LETTER SSA
@@ -285,7 +310,7 @@ public final class Hindi extends LayoutBase {
                     "\u0911",
                     // U+0901: "ँ" DEVANAGARI SIGN CANDRABINDU
                     // U+0945: "ॅ" DEVANAGARI VOWEL SIGN CANDRA E
-                    key("\u0901", moreKey("\u0945")),
+                    key(SIGN_CANDRABINDU, "\u0901", moreKey(VOWEL_SIGN_CANDRA_E, "\u0945")),
                     // U+0923: "ण" DEVANAGARI LETTER NNA
                     // U+0929: "ऩ" DEVANAGARI LETTER NNNA
                     "\u0923", "\u0929",
@@ -297,7 +322,7 @@ public final class Hindi extends LayoutBase {
                     "\u0936", "\u0937",
                     // U+0943: "ृ" DEVANAGARI VOWEL SIGN VOCALIC R
                     // U+0944: "ॄ" DEVANAGARI VOWEL SIGN VOCALIC RR
-                    key("\u0943", moreKey("\u0944")),
+                    key(VOWEL_SIGN_VOCALIC_R, "\u0943", moreKey(VOWEL_SIGN_VOCALIC_RR, "\u0944")),
                     // U+091E: "ञ" DEVANAGARI LETTER NYA
                     "\u091E")
             .build();
