@@ -118,14 +118,6 @@ static inline void dumpWordInfo(const int *word, const int length, const int ran
     }
 }
 
-static inline void dumpResult(const int *outWords, const int *frequencies) {
-    AKLOGI("--- DUMP RESULT ---------");
-    for (int i = 0; i < MAX_RESULTS; ++i) {
-        dumpWordInfo(&outWords[i * MAX_WORD_LENGTH], MAX_WORD_LENGTH, i, frequencies[i]);
-    }
-    AKLOGI("-------------------------");
-}
-
 static AK_FORCE_INLINE void dumpWord(const int *word, const int length) {
     static char charBuf[50];
     const int N = intArrayToCharArray(word, length, charBuf, NELEMS(charBuf));

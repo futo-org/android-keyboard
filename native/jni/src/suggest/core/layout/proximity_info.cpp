@@ -58,7 +58,6 @@ ProximityInfo::ProximityInfo(JNIEnv *env, const jstring localeJStr,
         const jfloatArray sweetSpotCenterYs, const jfloatArray sweetSpotRadii)
         : GRID_WIDTH(gridWidth), GRID_HEIGHT(gridHeight), MOST_COMMON_KEY_WIDTH(mostCommonKeyWidth),
           MOST_COMMON_KEY_WIDTH_SQUARE(mostCommonKeyWidth * mostCommonKeyWidth),
-          MOST_COMMON_KEY_HEIGHT(mostCommonKeyHeight),
           NORMALIZED_SQUARED_MOST_COMMON_KEY_HYPOTENUSE(1.0f +
                   GeometryUtils::SQUARE_FLOAT(static_cast<float>(mostCommonKeyHeight) /
                           static_cast<float>(mostCommonKeyWidth))),
