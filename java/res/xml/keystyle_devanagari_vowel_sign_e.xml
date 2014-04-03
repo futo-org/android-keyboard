@@ -36,6 +36,15 @@
                 latin:moreKeys="&#x25CC;&#x0947;&#x0902;|&#x0947;&#x0902;" />
         </case>
         <case
+            latin:keyboardLayoutSet="hindi_compact"
+        >
+            <!-- U+25CC: "◌" DOTTED CIRCLE
+                 U+0947: "े" DEVANAGARI VOWEL SIGN E -->
+            <key-style
+                latin:styleName="moreKeysDevanagariVowelSignE"
+                latin:moreKeys="&#x25CC;&#x0947;|&#x0947;" />
+        </case>
+        <case
             latin:keyboardLayoutSet="nepali_traditional"
         >
             <!-- U+25CC: "◌" DOTTED CIRCLE

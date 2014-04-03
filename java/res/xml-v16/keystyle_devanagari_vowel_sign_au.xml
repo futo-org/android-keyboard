@@ -34,6 +34,14 @@
                 latin:styleName="moreKeysDevanagariVowelSignAu"
                 latin:moreKeys="&#x094C;&#x0902;,%" />
         </case>
+        <case
+            latin:keyboardLayoutSet="hindi_compact"
+        >
+            <!-- U+094C: "ौ" DEVANAGARI VOWEL SIGN AU -->
+            <key-style
+                latin:styleName="moreKeysDevanagariVowelSignAu"
+                latin:moreKeys="&#x094C;,%" />
+        </case>
         <default>
              <key-style
                 latin:styleName="moreKeysDevanagariVowelSignAu" />

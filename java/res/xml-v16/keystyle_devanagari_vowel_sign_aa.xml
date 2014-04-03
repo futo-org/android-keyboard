@@ -35,6 +35,14 @@
                 latin:styleName="moreKeysDevanagariVowelSignAa"
                 latin:moreKeys="&#x093E;&#x0902;,&#x093E;&#x0901;,%" />
         </case>
+        <case
+            latin:keyboardLayoutSet="hindi_compact"
+        >
+            <!-- U+093E: "ा" DEVANAGARI VOWEL SIGN AA -->
+            <key-style
+                latin:styleName="moreKeysDevanagariVowelSignAa"
+                latin:moreKeys="&#x093E;,%" />
+        </case>
         <default>
             <key-style
                 latin:styleName="moreKeysDevanagariVowelSignAa" />

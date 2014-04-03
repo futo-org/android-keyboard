@@ -36,6 +36,15 @@
                 latin:styleName="moreKeysDevanagariVowelSignUu"
                 latin:moreKeys="&#x25CC;&#x0942;&#x0902;|&#x0942;&#x0902;,&#x25CC;&#x0942;&#x0901;|&#x0942;&#x0901;,%" />
         </case>
+        <case
+            latin:keyboardLayoutSet="hindi_compact"
+        >
+            <!-- U+25CC: "◌" DOTTED CIRCLE
+                 U+0942: "ू" DEVANAGARI VOWEL SIGN UU -->
+            <key-style
+                latin:styleName="moreKeysDevanagariVowelSignUu"
+                latin:moreKeys="&#x25CC;&#x0942;|&#x0942;,%" />
+        </case>
         <default>
              <key-style
                 latin:styleName="moreKeysDevanagariVowelSignUu" />

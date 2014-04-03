@@ -36,6 +36,16 @@
                 latin:moreKeys="&#x25CC;&#x0944;|&#x0944;" />
         </case>
         <case
+            latin:keyboardLayoutSet="hindi_compact"
+        >
+            <!-- U+090B: "ऋ" DEVANAGARI LETTER VOCALIC R
+                 U+25CC: "◌" DOTTED CIRCLE
+                 U+0943: "ृ" DEVANAGARI VOWEL SIGN VOCALIC R -->
+            <key-style
+                latin:styleName="moreKeysDevanagariVowelSignVocalicR"
+                latin:moreKeys="&#x090B;,&#x25CC;&#x0943;|&#x0943;" />
+        </case>
+        <case
             latin:keyboardLayoutSet="nepali_traditional"
         >
             <!-- U+0913: "ओ" DEVANAGARI LETTER O -->
