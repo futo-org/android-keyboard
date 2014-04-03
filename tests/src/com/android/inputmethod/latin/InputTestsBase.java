@@ -65,7 +65,6 @@ public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
     protected MyEditText mEditText;
     protected View mInputView;
     protected InputConnection mInputConnection;
-    private boolean mPreviousDebugSetting;
     private boolean mPreviousBigramPredictionSettings;
     private String mPreviousAutoCorrectSetting;
 
@@ -185,7 +184,7 @@ public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
         mEditText.setEnabled(true);
         setupService();
         mLatinIME = getService();
-        mPreviousDebugSetting = setDebugMode(true);
+        setDebugMode(true);
         mPreviousBigramPredictionSettings = setBooleanPreference(Settings.PREF_BIGRAM_PREDICTIONS,
                 true, true /* defaultValue */);
         mPreviousAutoCorrectSetting = setStringPreference(Settings.PREF_AUTO_CORRECTION_THRESHOLD,
@@ -219,7 +218,7 @@ public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
                 true /* defaultValue */);
         setStringPreference(Settings.PREF_AUTO_CORRECTION_THRESHOLD, mPreviousAutoCorrectSetting,
                 DEFAULT_AUTO_CORRECTION_THRESHOLD);
-        setDebugMode(mPreviousDebugSetting);
+        setDebugMode(false);
         super.tearDown();
     }
 

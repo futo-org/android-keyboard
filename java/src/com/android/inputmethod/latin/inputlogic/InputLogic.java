@@ -823,13 +823,11 @@ public final class InputLogic {
         }
 
         if (Constants.CODE_SPACE == codePoint) {
-            if (inputTransaction.mSettingsValues.isSuggestionsRequested()) {
-                if (maybeDoubleSpacePeriod(inputTransaction)) {
-                    inputTransaction.requireShiftUpdate(InputTransaction.SHIFT_UPDATE_NOW);
-                    mSpaceState = SpaceState.DOUBLE;
-                } else if (!mSuggestedWords.isPunctuationSuggestions()) {
-                    mSpaceState = SpaceState.WEAK;
-                }
+            if (maybeDoubleSpacePeriod(inputTransaction)) {
+                inputTransaction.requireShiftUpdate(InputTransaction.SHIFT_UPDATE_NOW);
+                mSpaceState = SpaceState.DOUBLE;
+            } else if (!mSuggestedWords.isPunctuationSuggestions()) {
+                mSpaceState = SpaceState.WEAK;
             }
 
             startDoubleSpacePeriodCountdown(inputTransaction);
