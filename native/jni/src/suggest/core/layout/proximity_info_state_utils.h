@@ -90,10 +90,6 @@ class ProximityInfoStateUtils {
             std::vector<float> *sampledNormalizedSquaredLengthCache);
     static void initPrimaryInputWord(const int inputSize, const int *const inputProximities,
             int *primaryInputWord);
-    static void initNormalizedSquaredDistances(const ProximityInfo *const proximityInfo,
-            const int inputSize, const int *inputXCoordinates, const int *inputYCoordinates,
-            const int *const inputProximities, const std::vector<int> *const sampledInputXs,
-            const std::vector<int> *const sampledInputYs, int *normalizedSquaredDistances);
     static void dump(const bool isGeometric, const int inputSize,
             const int *const inputXCoordinates, const int *const inputYCoordinates,
             const int sampledInputSize, const std::vector<int> *const sampledInputXs,

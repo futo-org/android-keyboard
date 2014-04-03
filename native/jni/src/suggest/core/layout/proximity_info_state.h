@@ -108,10 +108,6 @@ class ProximityInfoState {
         return false;
     }
 
-    inline const int *getPrimaryInputWord() const {
-        return mPrimaryInputWord;
-    }
-
     inline bool touchPositionCorrectionEnabled() const {
         return mTouchPositionCorrectionEnabled;
     }
@@ -155,10 +151,6 @@ class ProximityInfoState {
             const bool checkProximityChars, int *proximityIndex = 0) const;
 
     ProximityType getProximityTypeG(const int index, const int codePoint) const;
-
-    const std::vector<int> *getSearchKeyVector(const int index) const {
-        return &mSampledSearchKeyVectors[index];
-    }
 
     float getSpeedRate(const int index) const {
         return mSpeedRates[index];
