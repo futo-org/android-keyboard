@@ -180,8 +180,7 @@ public abstract class LayoutBase extends AbstractLayoutBase {
          * @return the array of {@link ExpectedKey} that are "more keys" of the punctuation key.
          */
         public ExpectedKey[] getPunctuationMoreKeys(final boolean isPhone) {
-            return isPhone ? PHONE_PUNCTUATION_MORE_KEYS
-                    : TABLET_PUNCTUATION_MORE_KEYS;
+            return isPhone ? PHONE_PUNCTUATION_MORE_KEYS : TABLET_PUNCTUATION_MORE_KEYS;
         }
     }
 

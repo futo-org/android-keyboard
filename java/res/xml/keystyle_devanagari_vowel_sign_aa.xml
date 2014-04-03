@@ -36,6 +36,15 @@
                 latin:styleName="moreKeysDevanagariVowelSignAa"
                 latin:moreKeys="&#x25CC;&#x093E;&#x0902;|&#x093E;&#x0902;,&#x25CC;&#x093E;&#x0901;|&#x093E;&#x0901;,%" />
         </case>
+        <case
+            latin:keyboardLayoutSet="hindi_compact"
+        >
+            <!-- U+25CC: "◌" DOTTED CIRCLE
+                 U+093E: "ा" DEVANAGARI VOWEL SIGN AA -->
+            <key-style
+                latin:styleName="moreKeysDevanagariVowelSignAa"
+                latin:moreKeys="&#x25CC;&#x093E;|&#x093E;,%" />
+        </case>
         <default>
             <key-style
                 latin:styleName="moreKeysDevanagariVowelSignAa" />

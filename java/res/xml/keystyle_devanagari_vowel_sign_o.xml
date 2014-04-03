@@ -30,12 +30,21 @@
             latin:keyboardLayoutSet="hindi"
         >
             <!-- U+25CC: "◌" DOTTED CIRCLE
-                 U+094B/U+0902: "қं" DEVANAGARI VOWEL SIGN O/DEVANAGARI SIGN ANUSVARA
+                 U+094B/U+0902: "ों" DEVANAGARI VOWEL SIGN O/DEVANAGARI SIGN ANUSVARA
                  U+0949: "ॉ" DEVANAGARI VOWEL SIGN CANDRA O
                  U+094A: "ॊ" DEVANAGARI VOWEL SIGN SHORT O -->
             <key-style
                 latin:styleName="moreKeysDevanagariVowelSignO"
                 latin:moreKeys="&#x25CC;&#x094B;&#x0902;|&#x094B;&#x0902;,&#x25CC;&#x0949;|&#x0949;,&#x25CC;&#x094A;|&#x094A;" />
+        </case>
+        <case
+            latin:keyboardLayoutSet="hindi_compact"
+        >
+            <!-- U+25CC: "◌" DOTTED CIRCLE
+                 U+094B: "ो" DEVANAGARI VOWEL SIGN O -->
+            <key-style
+                latin:styleName="moreKeysDevanagariVowelSignO"
+                latin:moreKeys="&#x25CC;&#x094B;|&#x094B;" />
         </case>
         <default>
              <key-style

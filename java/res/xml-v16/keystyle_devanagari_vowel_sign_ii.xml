@@ -34,6 +34,14 @@
                 latin:styleName="moreKeysDevanagariVowelSignIi"
                 latin:moreKeys="&#x0940;&#x0902;,%" />
         </case>
+        <case
+            latin:keyboardLayoutSet="hindi_compact"
+        >
+            <!-- U+0940: "ी" DEVANAGARI VOWEL SIGN II -->
+            <key-style
+                latin:styleName="moreKeysDevanagariVowelSignIi"
+                latin:moreKeys="&#x0940;,%" />
+        </case>
         <default>
              <key-style
                 latin:styleName="moreKeysDevanagariVowelSignIi" />
