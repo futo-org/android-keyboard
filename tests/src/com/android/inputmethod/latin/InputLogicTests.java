@@ -16,7 +16,10 @@
 
 package com.android.inputmethod.latin;
 
+import com.android.inputmethod.latin.settings.Settings;
+
 import android.test.suitebuilder.annotation.LargeTest;
+import android.text.TextUtils;
 import android.view.inputmethod.BaseInputConnection;
 
 @LargeTest
@@ -179,6 +182,8 @@ public class InputLogicTests extends InputTestsBase {
     }
 
     public void testDoubleSpace() {
+        // Set default pref just in case
+        setBooleanPreference(Settings.PREF_KEY_USE_DOUBLE_SPACE_PERIOD, true, true);
         // U+1F607 is an emoji
         final String[] STRINGS_TO_TYPE =
                 new String[] { "this   ", "a+  ", "\u1F607  ", "..  ", ")  ", "(  ", "%  " };
@@ -198,6 +203,76 @@ public class InputLogicTests extends InputTestsBase {
         type(STRING_TO_TYPE);
         type(Constants.CODE_DELETE);
         assertEquals("double space make a period", EXPECTED_RESULT, mEditText.getText().toString());
+    }
+
+    private void testDoubleSpacePeriodWithSettings(final boolean expectsPeriod,
+            final Object... settingsKeysValues) {
+        final Object[] oldSettings = new Object[settingsKeysValues.length / 2];
+        final String STRING_WITHOUT_PERIOD = "this  ";
+        final String STRING_WITH_PERIOD = "this. ";
+        final String EXPECTED_RESULT = expectsPeriod ? STRING_WITH_PERIOD : STRING_WITHOUT_PERIOD;
+        try {
+            for (int i = 0; i < settingsKeysValues.length; i += 2) {
+                if (settingsKeysValues[i + 1] instanceof String) {
+                    oldSettings[i / 2] = setStringPreference((String)settingsKeysValues[i],
+                            (String)settingsKeysValues[i + 1], "0");
+                } else {
+                    oldSettings[i / 2] = setBooleanPreference((String)settingsKeysValues[i],
+                            (Boolean)settingsKeysValues[i + 1], false);
+                }
+            }
+            mLatinIME.loadSettings();
+            mEditText.setText("");
+            type(STRING_WITHOUT_PERIOD);
+            assertEquals("double-space-to-period with specific settings "
+                    + TextUtils.join(" ", settingsKeysValues),
+                    EXPECTED_RESULT, mEditText.getText().toString());
+        } finally {
+            // Restore old settings
+            for (int i = 0; i < settingsKeysValues.length; i += 2) {
+                if (null == oldSettings[i / 2]) {
+                    break;
+                } if (oldSettings[i / 2] instanceof String) {
+                    setStringPreference((String)settingsKeysValues[i], (String)oldSettings[i / 2],
+                            "");
+                } else {
+                    setBooleanPreference((String)settingsKeysValues[i], (Boolean)oldSettings[i / 2],
+                            false);
+                }
+            }
+        }
+    }
+
+    public void testDoubleSpacePeriod() {
+        // Reset settings to default, else these tests will go flaky.
+        setStringPreference(Settings.PREF_SHOW_SUGGESTIONS_SETTING, "0", "0");
+        setStringPreference(Settings.PREF_AUTO_CORRECTION_THRESHOLD, "1", "1");
+        setBooleanPreference(Settings.PREF_KEY_USE_DOUBLE_SPACE_PERIOD, true, true);
+        testDoubleSpacePeriodWithSettings(true /* expectsPeriod */);
+        // "Suggestion visibility" to "always hide"
+        testDoubleSpacePeriodWithSettings(true, Settings.PREF_SHOW_SUGGESTIONS_SETTING, "2");
+        // "Suggestion visibility" to "portrait only"
+        testDoubleSpacePeriodWithSettings(true, Settings.PREF_SHOW_SUGGESTIONS_SETTING, "1");
+        // "Suggestion visibility" to "always show"
+        testDoubleSpacePeriodWithSettings(true, Settings.PREF_SHOW_SUGGESTIONS_SETTING, "0");
+
+        // "Double-space period" to "off"
+        testDoubleSpacePeriodWithSettings(false, Settings.PREF_KEY_USE_DOUBLE_SPACE_PERIOD, false);
+
+        // "Auto-correction" to "off"
+        testDoubleSpacePeriodWithSettings(true, Settings.PREF_AUTO_CORRECTION_THRESHOLD, "0");
+        // "Auto-correction" to "modest"
+        testDoubleSpacePeriodWithSettings(true, Settings.PREF_AUTO_CORRECTION_THRESHOLD, "1");
+        // "Auto-correction" to "very aggressive"
+        testDoubleSpacePeriodWithSettings(true, Settings.PREF_AUTO_CORRECTION_THRESHOLD, "3");
+
+        // "Suggestion visibility" to "always hide" and "Auto-correction" to "off"
+        testDoubleSpacePeriodWithSettings(true, Settings.PREF_SHOW_SUGGESTIONS_SETTING, "0",
+                Settings.PREF_AUTO_CORRECTION_THRESHOLD, "0");
+        // "Suggestion visibility" to "always hide" and "Auto-correction" to "off"
+        testDoubleSpacePeriodWithSettings(false, Settings.PREF_SHOW_SUGGESTIONS_SETTING, "0",
+                Settings.PREF_AUTO_CORRECTION_THRESHOLD, "0",
+                Settings.PREF_KEY_USE_DOUBLE_SPACE_PERIOD, false);
     }
 
     public void testBackspaceAtStartAfterAutocorrect() {
