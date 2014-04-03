@@ -262,6 +262,9 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         ExecutorUtils.getExecutor(mDictName).execute(new Runnable() {
             @Override
             public void run() {
+                if (mBinaryDictionary == null) {
+                    return;
+                }
                 runGCAfterAllPrioritizedTasksIfRequiredLocked(mindsBlockByGC);
             }
         });
@@ -274,9 +277,6 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     }
 
     private void runGCAfterAllPrioritizedTasksIfRequiredLocked(final boolean mindsBlockByGC) {
-        if (mBinaryDictionary == null) {
-            return;
-        }
         // needsToRunGC() have to be called with lock.
         if (mBinaryDictionary.needsToRunGC(mindsBlockByGC)) {
             if (setProcessingLargeTaskIfNot()) {
@@ -301,9 +301,13 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     protected void addWordDynamically(final String word, final int frequency,
             final String shortcutTarget, final int shortcutFreq, final boolean isNotAWord,
             final boolean isBlacklisted, final int timestamp) {
+        reloadDictionaryIfRequired();
         ExecutorUtils.getExecutor(mDictName).execute(new Runnable() {
             @Override
             public void run() {
+                if (mBinaryDictionary == null) {
+                    return;
+                }
                 runGCAfterAllPrioritizedTasksIfRequiredLocked(true /* mindsBlockByGC */);
                 addWordDynamicallyLocked(word, frequency, shortcutTarget, shortcutFreq,
                         isNotAWord, isBlacklisted, timestamp);
@@ -323,9 +327,13 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
      */
     protected void addBigramDynamically(final String word0, final String word1,
             final int frequency, final int timestamp) {
+        reloadDictionaryIfRequired();
         ExecutorUtils.getExecutor(mDictName).execute(new Runnable() {
             @Override
             public void run() {
+                if (mBinaryDictionary == null) {
+                    return;
+                }
                 runGCAfterAllPrioritizedTasksIfRequiredLocked(true /* mindsBlockByGC */);
                 addBigramDynamicallyLocked(word0, word1, frequency, timestamp);
             }
@@ -341,9 +349,13 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
      * Dynamically remove a word bigram in the dictionary.
      */
     protected void removeBigramDynamically(final String word0, final String word1) {
+        reloadDictionaryIfRequired();
         ExecutorUtils.getExecutor(mDictName).execute(new Runnable() {
             @Override
             public void run() {
+                if (mBinaryDictionary == null) {
+                    return;
+                }
                 runGCAfterAllPrioritizedTasksIfRequiredLocked(true /* mindsBlockByGC */);
                 mBinaryDictionary.removeBigramWords(word0, word1);
             }
@@ -360,14 +372,15 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     protected void addMultipleDictionaryEntriesDynamically(
             final ArrayList<LanguageModelParam> languageModelParams,
             final AddMultipleDictionaryEntriesCallback callback) {
+        reloadDictionaryIfRequired();
         ExecutorUtils.getExecutor(mDictName).execute(new Runnable() {
             @Override
             public void run() {
+                if (mBinaryDictionary == null) {
+                    return;
+                }
                 final boolean locked = setProcessingLargeTaskIfNot();
                 try {
-                    if (mBinaryDictionary == null) {
-                        return;
-                    }
                     mBinaryDictionary.addMultipleDictionaryEntries(
                             languageModelParams.toArray(
                                     new LanguageModelParam[languageModelParams.size()]));

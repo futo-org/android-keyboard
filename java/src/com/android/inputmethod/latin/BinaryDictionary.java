@@ -89,6 +89,8 @@ public final class BinaryDictionary extends Dictionary {
     private final long mDictSize;
     private final String mDictFilePath;
     private final boolean mIsUpdatable;
+    private boolean mHasUpdated;
+
     private final int[] mInputCodePoints = new int[MAX_WORD_LENGTH];
     private final int[] mOutputSuggestionCount = new int[1];
     private final int[] mOutputCodePoints = new int[MAX_WORD_LENGTH * MAX_RESULTS];
@@ -138,6 +140,7 @@ public final class BinaryDictionary extends Dictionary {
         mDictSize = length;
         mDictFilePath = filename;
         mIsUpdatable = isUpdatable;
+        mHasUpdated = false;
         mNativeSuggestOptions.setUseFullEditDistance(useFullEditDistance);
         loadDictionary(filename, offset, length, isUpdatable);
     }
@@ -185,6 +188,7 @@ public final class BinaryDictionary extends Dictionary {
     // TODO: Move native dict into session
     private final void loadDictionary(final String path, final long startOffset,
             final long length, final boolean isUpdatable) {
+        mHasUpdated = false;
         mNativeDict = openNative(path, startOffset, length, isUpdatable);
     }
 
@@ -401,6 +405,7 @@ public final class BinaryDictionary extends Dictionary {
                 StringUtils.toCodePointArray(shortcutTarget) : null;
         addUnigramWordNative(mNativeDict, codePoints, probability, shortcutTargetCodePoints,
                 shortcutProbability, isNotAWord, isBlacklisted, timestamp);
+        mHasUpdated = true;
     }
 
     // Add a bigram entry to binary dictionary with timestamp in native code.
@@ -412,6 +417,7 @@ public final class BinaryDictionary extends Dictionary {
         final int[] codePoints0 = StringUtils.toCodePointArray(word0);
         final int[] codePoints1 = StringUtils.toCodePointArray(word1);
         addBigramWordsNative(mNativeDict, codePoints0, codePoints1, probability, timestamp);
+        mHasUpdated = true;
     }
 
     // Remove a bigram entry form binary dictionary in native code.
@@ -422,6 +428,7 @@ public final class BinaryDictionary extends Dictionary {
         final int[] codePoints0 = StringUtils.toCodePointArray(word0);
         final int[] codePoints1 = StringUtils.toCodePointArray(word1);
         removeBigramWordsNative(mNativeDict, codePoints0, codePoints1);
+        mHasUpdated = true;
     }
 
     public void addMultipleDictionaryEntries(final LanguageModelParam[] languageModelParams) {
@@ -433,6 +440,7 @@ public final class BinaryDictionary extends Dictionary {
             }
             processedParamCount = addMultipleDictionaryEntriesNative(mNativeDict,
                     languageModelParams, processedParamCount);
+            mHasUpdated = true;
             if (processedParamCount <= 0) {
                 return;
             }
@@ -451,8 +459,10 @@ public final class BinaryDictionary extends Dictionary {
 
     public void flush() {
         if (!isValidDictionary()) return;
-        flushNative(mNativeDict, mDictFilePath);
-        reopen();
+        if (mHasUpdated) {
+            flushNative(mNativeDict, mDictFilePath);
+            reopen();
+        }
     }
 
     public void flushWithGC() {

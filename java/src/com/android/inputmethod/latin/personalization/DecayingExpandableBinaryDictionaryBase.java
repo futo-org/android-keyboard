@@ -66,7 +66,7 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
         }
         // Flush pending writes.
         flush();
-        // TODO: Quit depending on finalize() and really close the dictionary file.
+        super.close();
     }
 
     public void flush() {

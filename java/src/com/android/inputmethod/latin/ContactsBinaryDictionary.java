@@ -100,10 +100,6 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
                 });
     }
 
-    public void reopen(final Context context) {
-        registerObserver(context);
-    }
-
     @Override
     public synchronized void close() {
         if (mObserver != null) {
