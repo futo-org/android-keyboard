@@ -485,7 +485,7 @@
             android:isAsciiCapable="false"
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
-            android:label="@string/subtype_nepali_traditional"
+            android:label="@string/subtype_generic_traditional"
             android:subtypeId="0x5fafea88"
             android:imeSubtypeLocale="ne_NP"
             android:imeSubtypeMode="keyboard"
