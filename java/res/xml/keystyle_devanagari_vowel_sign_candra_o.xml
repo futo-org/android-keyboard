@@ -25,8 +25,10 @@
 <merge
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
-    <!-- U+0902: "ं" DEVANAGARI SIGN ANUSVARA -->
-    <Key
-        latin:keySpec="&#x0902;"
-        latin:keyLabelFlags="fontNormal" />
+    <!-- U+25CC: "◌" DOTTED CIRCLE
+         U+0949: "ॉ" DEVANAGARI VOWEL SIGN CANDRA O -->
+    <key-style
+        latin:styleName="baseKeyDevanagariVowelSignCandraO"
+        latin:keySpec="&#x25CC;&#x0949;|&#x0949;"
+        latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 </merge>

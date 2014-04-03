@@ -25,23 +25,9 @@
 <merge
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
-    <switch>
-        <case
-            latin:keyboardLayoutSet="hindi"
-        >
-            <!-- U+0945: "ॅ" DEVANAGARI VOWEL SIGN CANDRA E -->
-            <key-style
-                latin:styleName="moreKeysDevanagariSignCandrabindu"
-                latin:moreKeys="&#x0945;" />
-        </case>
-        <default>
-             <key-style
-                latin:styleName="moreKeysDevanagariSignCandrabindu" />
-        </default>
-    </switch>
-    <!-- U+0901: "ँ" DEVANAGARI SIGN CANDRABINDU -->
-    <Key
-        latin:keyStyle="moreKeysDevanagariSignCandrabindu"
-        latin:keySpec="&#x0901;"
+    <!-- U+0949: "ॉ" DEVANAGARI VOWEL SIGN CANDRA O -->
+    <key-style
+        latin:styleName="baseKeyDevanagariVowelSignCandraO"
+        latin:keySpec="&#x0949;"
         latin:keyLabelFlags="fontNormal" />
 </merge>

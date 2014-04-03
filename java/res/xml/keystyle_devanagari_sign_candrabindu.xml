@@ -29,21 +29,22 @@
         <case
             latin:keyboardLayoutSet="hindi"
         >
-            <!-- U+097D: "ॽ" DEVANAGARI LETTER GLOTTAL STOP
-                 U+0970: "॰" DEVANAGARI ABBREVIATION SIGN
-                 U+093D: "ऽ" DEVANAGARI SIGN AVAGRAHA -->
-             <key-style
-                latin:styleName="moreKeysDevanagariSignNukta"
-                latin:moreKeys="&#x097D;,&#x0970;,&#x093D;" />
+            <!-- U+25CC: "◌" DOTTED CIRCLE
+                 U+0945: "ॅ" DEVANAGARI VOWEL SIGN CANDRA E -->
+            <key-style
+                latin:styleName="moreKeysDevanagariSignCandrabindu"
+                latin:moreKeys="&#x25CC;&#x0945;|&#x0945;" />
         </case>
         <default>
              <key-style
-                latin:styleName="moreKeysDevanagariSignNukta" />
+                latin:styleName="moreKeysDevanagariSignCandrabindu" />
         </default>
     </switch>
-    <!-- U+093C: "़" DEVANAGARI SIGN NUKTA -->
-    <Key
-        latin:keyStyle="moreKeysDevanagariSignNukta"
-        latin:keySpec="&#x093C;"
-        latin:keyLabelFlags="fontNormal" />
+    <!-- U+25CC: "◌" DOTTED CIRCLE
+         U+0901: "ँ" DEVANAGARI SIGN CANDRABINDU -->
+    <key-style
+        latin:styleName="baseKeyDevanagariSignCandrabindu"
+        latin:parentStyle="moreKeysDevanagariSignCandrabindu"
+        latin:keySpec="&#x25CC;&#x0901;|&#x0901;"
+        latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 </merge>

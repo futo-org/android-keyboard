@@ -25,9 +25,34 @@
 <merge
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
+    <switch>
+        <case
+            latin:keyboardLayoutSet="hindi"
+        >
+            <!-- U+25CC: "◌" DOTTED CIRCLE
+                 U+0944: "ॄ" DEVANAGARI VOWEL SIGN VOCALIC RR -->
+            <key-style
+                latin:styleName="moreKeysDevanagariVowelSignVocalicR"
+                latin:moreKeys="&#x25CC;&#x0944;|&#x0944;" />
+        </case>
+        <case
+            latin:keyboardLayoutSet="nepali_traditional"
+        >
+            <!-- U+0913: "ओ" DEVANAGARI LETTER O -->
+            <key-style
+                latin:styleName="moreKeysDevanagariVowelSignVocalicR"
+                latin:moreKeys="&#x0913;" />
+        </case>
+        <default>
+             <key-style
+                latin:styleName="moreKeysDevanagariVowelSignVocalicR" />
+        </default>
+    </switch>
     <!-- U+25CC: "◌" DOTTED CIRCLE
-         U+0949: "ॉ" DEVANAGARI VOWEL SIGN CANDRA O -->
-    <Key
-        latin:keySpec="&#x25CC;&#x0949;|&#x0949;"
+         U+0943: "ृ" DEVANAGARI VOWEL SIGN VOCALIC R -->
+    <key-style
+        latin:styleName="baseKeyDevanagariVowelSignVocalicR"
+        latin:parentStyle="moreKeysDevanagariVowelSignVocalicR"
+        latin:keySpec="&#x25CC;&#x0943;|&#x0943;"
         latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 </merge>

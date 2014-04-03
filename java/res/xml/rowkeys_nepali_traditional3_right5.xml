@@ -29,7 +29,9 @@
                  render dotted circle for incomplete combining letter of some scripts, different
                  set of Key definitions are needed based on the API version. -->
             <include
-                latin:keyboardLayout="@xml/key_devanagari_sign_anusvara" />
+                latin:keyboardLayout="@xml/keystyle_devanagari_sign_anusvara" />
+            <Key
+                latin:keyStyle="baseKeyDevanagariSignAnusvara" />
             <!-- U+0919: "ङ" DEVANAGARI LETTER NGA -->
             <Key
                 latin:keySpec="&#x0919;"
@@ -53,9 +55,9 @@
             <!-- Because the font rendering system prior to API version 16 can't automatically
                  render dotted circle for incomplete combining letter of some scripts, different
                  set of Key definitions are needed based on the API version. -->
-            <!-- U+093D: "ऽ" DEVANAGARI SIGN AVAGRAHA -->
             <include
                 latin:keyboardLayout="@xml/keystyle_devanagari_sign_visarga" />
+            <!-- U+093D: "ऽ" DEVANAGARI SIGN AVAGRAHA -->
             <Key
                 latin:keyStyle="baseKeyDevanagariSignVisarga"
                 latin:moreKeys="&#x093D;" />
