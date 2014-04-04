@@ -189,11 +189,6 @@ public final class WordComposer {
                 newIndex, primaryCode, mIsFirstCharCapitalized);
         if (Character.isUpperCase(primaryCode)) mCapsCount++;
         if (Character.isDigit(primaryCode)) mDigitsCount++;
-        if (Constants.CODE_SINGLE_QUOTE == primaryCode) {
-            ++mTrailingSingleQuotesCount;
-        } else {
-            mTrailingSingleQuotesCount = 0;
-        }
     }
 
     private void processEvent(final Event event) {
@@ -209,6 +204,26 @@ public final class WordComposer {
         if (0 == mCodePointSize) {
             mIsFirstCharCapitalized = false;
         }
+        if (Constants.CODE_DELETE == event.mKeyCode) {
+            if (mTrailingSingleQuotesCount > 0) {
+                --mTrailingSingleQuotesCount;
+            } else {
+                // Delete, but we didn't end in a quote: must recompute mTrailingSingleQuotesCount
+                // We're only searching for single quotes, so no need to account for code points
+                for (int i = mTypedWordCache.length() - 1; i > 0; --i) {
+                    if (Constants.CODE_SINGLE_QUOTE != mTypedWordCache.charAt(i)) {
+                        break;
+                    }
+                    ++mTrailingSingleQuotesCount;
+                }
+            }
+        } else {
+            if (Constants.CODE_SINGLE_QUOTE == primaryCode) {
+                ++mTrailingSingleQuotesCount;
+            } else {
+                mTrailingSingleQuotesCount = 0;
+            }
+        }
         mAutoCorrection = null;
     }
 
@@ -217,18 +232,6 @@ public final class WordComposer {
      */
     public void deleteLast(final Event event) {
         processEvent(event);
-        if (mTrailingSingleQuotesCount > 0) {
-            --mTrailingSingleQuotesCount;
-        } else {
-            int i = mTypedWordCache.length();
-            while (i > 0) {
-                i = Character.offsetByCodePoints(mTypedWordCache, i, -1);
-                if (Constants.CODE_SINGLE_QUOTE != Character.codePointAt(mTypedWordCache, i)) {
-                    break;
-                }
-                ++mTrailingSingleQuotesCount;
-            }
-        }
     }
 
     public void setCursorPositionWithinWord(final int posWithinWord) {
