@@ -174,7 +174,6 @@ public final class WordComposer {
         final int keyY = event.mY;
         final int newIndex = size();
         processEvent(event);
-        mCursorPositionWithinWord = mCodePointSize;
         if (newIndex < MAX_WORD_LENGTH) {
             mPrimaryKeyCodes[newIndex] = primaryCode >= Constants.CODE_SPACE
                     ? Character.toLowerCase(primaryCode) : primaryCode;
@@ -195,13 +194,22 @@ public final class WordComposer {
         } else {
             mTrailingSingleQuotesCount = 0;
         }
-        mAutoCorrection = null;
     }
 
     private void processEvent(final Event event) {
+        final int primaryCode = event.mCodePoint;
+        final int keyX = event.mX;
+        final int keyY = event.mY;
+        final int newIndex = size();
         mCombinerChain.processEvent(mEvents, event);
         mEvents.add(event);
         refreshTypedWordCache();
+        mCursorPositionWithinWord = mCodePointSize;
+        // We may have deleted the last one.
+        if (0 == mCodePointSize) {
+            mIsFirstCharCapitalized = false;
+        }
+        mAutoCorrection = null;
     }
 
     /**
@@ -209,10 +217,6 @@ public final class WordComposer {
      */
     public void deleteLast(final Event event) {
         processEvent(event);
-        // We may have deleted the last one.
-        if (0 == size()) {
-            mIsFirstCharCapitalized = false;
-        }
         if (mTrailingSingleQuotesCount > 0) {
             --mTrailingSingleQuotesCount;
         } else {
@@ -225,8 +229,6 @@ public final class WordComposer {
                 ++mTrailingSingleQuotesCount;
             }
         }
-        mCursorPositionWithinWord = mCodePointSize;
-        mAutoCorrection = null;
     }
 
     public void setCursorPositionWithinWord(final int posWithinWord) {
