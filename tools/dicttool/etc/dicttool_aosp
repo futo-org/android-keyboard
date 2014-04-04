@@ -68,5 +68,14 @@ else
     libpath="$frameworkdir/$lib"
 fi
 
+# Check if the host Java executable supports a 32-bit JVM. It needs to do because the JNI
+# library is 32-bit.
+${DICTTOOL_JAVA-java} -d32 -version > /dev/null 2>&1
+if [[ $? != 0 ]] ; then
+    echo Please specify a Java executable that supports a 32-bit JVM as DICTTOOL_JAVA.
+    exit 1
+fi
+
 # might need more memory, e.g. -Xmx128M
-exec java -ea -classpath "$libpath":"$jarpath" -Djava.library.path="$libdir" "$classname" "$@"
+exec ${DICTTOOL_JAVA-java} -d32 -ea -classpath "$libpath":"$jarpath" \
+    -Djava.library.path="$libdir" "$classname" "$@"
