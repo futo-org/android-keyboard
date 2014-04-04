@@ -48,6 +48,7 @@ import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.RichInputMethodManager;
 import com.android.inputmethod.latin.utils.AdditionalSubtypeUtils;
 import com.android.inputmethod.latin.utils.CollectionUtils;
+import com.android.inputmethod.latin.utils.DialogUtils;
 import com.android.inputmethod.latin.utils.IntentUtils;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 
@@ -517,7 +518,8 @@ public final class AdditionalSubtypeSettings extends PreferenceFragment {
 
     private AlertDialog createDialog(
             @SuppressWarnings("unused") final SubtypePreference subtypePref) {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        final AlertDialog.Builder builder = new AlertDialog.Builder(
+                DialogUtils.getPlatformDialogThemeContext(getActivity()));
         builder.setTitle(R.string.custom_input_styles_title)
                 .setMessage(R.string.custom_input_style_note_message)
                 .setNegativeButton(R.string.not_now, null)

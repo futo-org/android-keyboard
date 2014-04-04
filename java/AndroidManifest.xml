@@ -57,6 +57,7 @@
         </service>
 
         <activity android:name=".setup.SetupActivity"
+                android:theme="@style/platformActivityTheme"
                 android:label="@string/english_ime_name"
                 android:icon="@drawable/ic_launcher_keyboard"
                 android:launchMode="singleTask"
@@ -68,6 +69,7 @@
         </activity>
 
         <activity android:name=".setup.SetupWizardActivity"
+                android:theme="@style/platformActivityTheme"
                 android:label="@string/english_ime_name"
                 android:clearTaskOnLaunch="true">
             <intent-filter>
@@ -84,6 +86,7 @@
         </receiver>
 
         <activity android:name=".settings.SettingsActivity"
+                android:theme="@style/platformActivityTheme"
                 android:label="@string/english_ime_settings"
                 android:uiOptions="splitActionBarWhenNarrow">
             <intent-filter>
@@ -92,6 +95,7 @@
         </activity>
 
         <activity android:name=".spellcheck.SpellCheckerSettingsActivity"
+                  android:theme="@style/platformActivityTheme"
                   android:label="@string/android_spell_checker_settings">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -99,6 +103,7 @@
         </activity>
 
         <activity android:name=".settings.DebugSettingsActivity"
+                android:theme="@style/platformActivityTheme"
                 android:label="@string/english_ime_debug_settings">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -145,8 +150,8 @@
         </receiver>
 
         <activity android:name="com.android.inputmethod.dictionarypack.DictionarySettingsActivity"
+                android:theme="@style/platformActivityTheme"
                 android:label="@string/dictionary_settings_title"
-                android:theme="@android:style/Theme.Holo"
                 android:uiOptions="splitActionBarWhenNarrow">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -154,8 +159,8 @@
         </activity>
 
         <activity android:name="com.android.inputmethod.dictionarypack.DownloadOverMeteredDialog"
-                android:label="@string/dictionary_install_over_metered_network_prompt"
-                android:theme="@android:style/Theme.Holo">
+                android:theme="@style/platformActivityTheme"
+                android:label="@string/dictionary_install_over_metered_network_prompt">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
             </intent-filter>

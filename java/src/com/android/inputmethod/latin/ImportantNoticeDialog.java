@@ -23,6 +23,7 @@ import android.content.DialogInterface.OnClickListener;
 import android.content.DialogInterface.OnDismissListener;
 import android.content.DialogInterface.OnShowListener;
 
+import com.android.inputmethod.latin.utils.DialogUtils;
 import com.android.inputmethod.latin.utils.ImportantNoticeUtils;
 
 /**
@@ -40,7 +41,7 @@ public final class ImportantNoticeDialog extends AlertDialog implements OnShowLi
 
     public ImportantNoticeDialog(
             final Context context, final ImportantNoticeDialogListener listener) {
-        super(context, THEME_HOLO_DARK);
+        super(DialogUtils.getPlatformDialogThemeContext(context));
         mListener = listener;
         mNextImportantNoticeVersion = ImportantNoticeUtils.getNextImportantNoticeVersion(context);
         setMessage(ImportantNoticeUtils.getNextImportantNoticeContents(context));
