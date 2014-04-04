@@ -219,22 +219,15 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         return null;
     }
 
-    /**
-     * Update keyboard shift state triggered by connected EditText status change.
-     */
-    public void updateShiftState() {
-        mState.onUpdateShiftState(mLatinIME.getCurrentAutoCapsState(),
-                mLatinIME.getCurrentRecapitalizeState());
-    }
-
     // TODO: Remove this method. Come up with a more comprehensive way to reset the keyboard layout
     // when a keyboard layout set doesn't get reloaded in LatinIME.onStartInputViewInternal().
     public void resetKeyboardStateToAlphabet() {
         mState.onResetKeyboardStateToAlphabet();
     }
 
-    public void onPressKey(final int code, final boolean isSinglePointer) {
-        mState.onPressKey(code, isSinglePointer, mLatinIME.getCurrentAutoCapsState());
+    public void onPressKey(final int code, final boolean isSinglePointer,
+            final int currentAutoCapsState) {
+        mState.onPressKey(code, isSinglePointer, currentAutoCapsState);
     }
 
     public void onReleaseKey(final int code, final boolean withSliding) {
@@ -338,8 +331,8 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     /**
      * Updates state machine to figure out when to automatically switch back to the previous mode.
      */
-    public void onCodeInput(final int code) {
-        mState.onCodeInput(code, mLatinIME.getCurrentAutoCapsState());
+    public void onCodeInput(final int code, final int currentAutoCapsState) {
+        mState.onCodeInput(code, currentAutoCapsState);
     }
 
     public boolean isShowingEmojiPalettes() {
