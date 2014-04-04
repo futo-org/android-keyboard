@@ -24,6 +24,7 @@
 
 #include "defines.h"
 #include "suggest/core/layout/geometry_utils.h"
+#include "suggest/core/layout/normal_distribution.h"
 #include "suggest/core/layout/proximity_info.h"
 #include "suggest/core/layout/proximity_info_params.h"
 
@@ -717,8 +718,8 @@ namespace latinime {
         const float sigma = speedxAngleRate + speedxNearestKeyDistanceRate
                 + ProximityInfoParams::MIN_STANDARD_DEVIATION;
 
-        ProximityInfoUtils::NormalDistribution
-                distribution(ProximityInfoParams::CENTER_VALUE_OF_NORMALIZED_DISTRIBUTION, sigma);
+        NormalDistribution distribution(
+                ProximityInfoParams::CENTER_VALUE_OF_NORMALIZED_DISTRIBUTION, sigma);
         // Summing up probability densities of all near keys.
         float sumOfProbabilityDensities = 0.0f;
         for (int j = 0; j < keyCount; ++j) {
