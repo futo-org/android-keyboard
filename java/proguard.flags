@@ -14,3 +14,10 @@
 -keepclassmembers class * {
     native <methods>;
 }
+
+# Keep classes that are used as a parameter type of methods that are also marked as keep
+# to preserve changing those methods' signature.
+-keep class com.android.inputmethod.latin.utils.LanguageModelParam
+-keep class com.android.inputmethod.latin.AssetFileAddress
+-keep class com.android.inputmethod.latin.makedict.ProbabilityInfo
+-keep class com.android.inputmethod.latin.Dictionary
