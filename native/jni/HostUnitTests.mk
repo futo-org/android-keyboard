@@ -29,10 +29,8 @@ LATIN_IME_SRC_DIR := src
 LOCAL_CFLAGS += -std=c++11 -Wno-unused-parameter -Wno-unused-function
 LOCAL_CLANG := true
 LOCAL_C_INCLUDES += $(LOCAL_PATH)/$(LATIN_IME_SRC_DIR)
-LOCAL_IS_HOST_MODULE := true
 LOCAL_MODULE := liblatinime_host_static_for_unittests
 LOCAL_MODULE_TAGS := optional
-LOCAL_NDK_STL_VARIANT := c++_static
 LOCAL_SRC_FILES := $(addprefix $(LATIN_IME_SRC_DIR)/, $(LATIN_IME_CORE_SRC_FILES))
 include $(BUILD_HOST_STATIC_LIBRARY)
 
@@ -43,10 +41,8 @@ LATIN_IME_TEST_SRC_DIR := tests
 LOCAL_CFLAGS += -std=c++11 -Wno-unused-parameter -Wno-unused-function
 LOCAL_CLANG := true
 LOCAL_C_INCLUDES += $(LOCAL_PATH)/$(LATIN_IME_SRC_DIR)
-LOCAL_IS_HOST_MODULE := true
 LOCAL_MODULE := liblatinime_host_unittests
 LOCAL_MODULE_TAGS := tests
-LOCAL_NDK_STL_VARIANT := c++_static
 LOCAL_SRC_FILES := $(addprefix $(LATIN_IME_TEST_SRC_DIR)/, $(LATIN_IME_CORE_TEST_FILES))
 LOCAL_STATIC_LIBRARIES += liblatinime_host_static_for_unittests libgtest_host libgtest_main_host
 include $(BUILD_HOST_NATIVE_TEST)
