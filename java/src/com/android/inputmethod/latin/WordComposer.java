@@ -169,7 +169,26 @@ public final class WordComposer {
      * coordinates.
      */
     public void add(final Event event) {
+        final int primaryCode = event.mCodePoint;
+        final int keyX = event.mX;
+        final int keyY = event.mY;
+        final int newIndex = size();
         processEvent(event);
+        if (newIndex < MAX_WORD_LENGTH) {
+            mPrimaryKeyCodes[newIndex] = primaryCode >= Constants.CODE_SPACE
+                    ? Character.toLowerCase(primaryCode) : primaryCode;
+            // In the batch input mode, the {@code mInputPointers} holds batch input points and
+            // shouldn't be overridden by the "typed key" coordinates
+            // (See {@link #setBatchInputWord}).
+            if (!mIsBatchMode) {
+                // TODO: Set correct pointer id and time
+                mInputPointers.addPointerAt(newIndex, keyX, keyY, 0, 0);
+            }
+        }
+        mIsFirstCharCapitalized = isFirstCharCapitalized(
+                newIndex, primaryCode, mIsFirstCharCapitalized);
+        if (Character.isUpperCase(primaryCode)) mCapsCount++;
+        if (Character.isDigit(primaryCode)) mDigitsCount++;
     }
 
     private void processEvent(final Event event) {
@@ -204,19 +223,6 @@ public final class WordComposer {
             } else {
                 mTrailingSingleQuotesCount = 0;
             }
-            if (newIndex < MAX_WORD_LENGTH) {
-                // In the batch input mode, the {@code mInputPointers} holds batch input points and
-                // shouldn't be overridden by the "typed key" coordinates
-                // (See {@link #setBatchInputWord}).
-                if (!mIsBatchMode) {
-                    // TODO: Set correct pointer id and time
-                    mInputPointers.addPointerAt(newIndex, keyX, keyY, 0, 0);
-                }
-            }
-            mIsFirstCharCapitalized = isFirstCharCapitalized(
-                    newIndex, primaryCode, mIsFirstCharCapitalized);
-            if (Character.isUpperCase(primaryCode)) mCapsCount++;
-            if (Character.isDigit(primaryCode)) mDigitsCount++;
         }
         mAutoCorrection = null;
     }
