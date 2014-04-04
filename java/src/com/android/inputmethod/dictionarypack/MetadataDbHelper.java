@@ -45,10 +45,8 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
     // This is the first released version of the database that implements CLIENTID. It is
     // used to identify the versions for upgrades. This should never change going forward.
     private static final int METADATA_DATABASE_VERSION_WITH_CLIENTID = 6;
-    // This is the current database version. It should be updated when the database schema
-    // gets updated. It is passed to the framework constructor of SQLiteOpenHelper, so
-    // that's what the framework uses to track our database version.
-    private static final int METADATA_DATABASE_VERSION = 6;
+    // The current database version.
+    private static final int CURRENT_METADATA_DATABASE_VERSION = 7;
 
     private final static long NOT_A_DOWNLOAD_ID = -1;
 
@@ -169,7 +167,7 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
     private MetadataDbHelper(final Context context, final String clientId) {
         super(context,
                 METADATA_DATABASE_NAME_STEM + (TextUtils.isEmpty(clientId) ? "" : "." + clientId),
-                null, METADATA_DATABASE_VERSION);
+                null, CURRENT_METADATA_DATABASE_VERSION);
         mContext = context;
         mClientId = clientId;
     }
@@ -219,22 +217,45 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
 
     /**
      * Upgrade the database. Upgrade from version 3 is supported.
+     * Version 3 has a DB named METADATA_DATABASE_NAME_STEM containing a table METADATA_TABLE_NAME.
+     * Version 6 and above has a DB named METADATA_DATABASE_NAME_STEM containing a
+     * table CLIENT_TABLE_NAME, and for each client a table called METADATA_TABLE_STEM + "." + the
+     * name of the client and contains a table METADATA_TABLE_NAME.
+     * For schemas, see the above create statements. The schemas have never changed so far.
+     *
+     * This method is called by the framework. See {@link SQLiteOpenHelper#onUpgrade}
+     * @param db The database we are upgrading
+     * @param oldVersion The old database version (the one on the disk)
+     * @param newVersion The new database version as supplied to the constructor of SQLiteOpenHelper
      */
     @Override
     public void onUpgrade(final SQLiteDatabase db, final int oldVersion, final int newVersion) {
         if (METADATA_DATABASE_INITIAL_VERSION == oldVersion
-                && METADATA_DATABASE_VERSION_WITH_CLIENTID == newVersion) {
+                && METADATA_DATABASE_VERSION_WITH_CLIENTID <= newVersion
+                && CURRENT_METADATA_DATABASE_VERSION >= newVersion) {
             // Upgrade from version METADATA_DATABASE_INITIAL_VERSION to version
             // METADATA_DATABASE_VERSION_WITH_CLIENT_ID
+            // Only the default database should contain the client table, so we test for mClientId.
             if (TextUtils.isEmpty(mClientId)) {
-                // Only the default database should contain the client table.
-                // Anyway in version 3 only the default table existed so the emptyness
+                // Anyway in version 3 only the default table existed so the emptiness
                 // test should always be true, but better check to be sure.
                 createClientTable(db);
             }
+        } else if (METADATA_DATABASE_VERSION_WITH_CLIENTID < newVersion
+                && CURRENT_METADATA_DATABASE_VERSION >= newVersion) {
+            // Here we drop the client table, so that all clients send us their information again.
+            // The client table contains the URL to hit to update the available dictionaries list,
+            // but the info about the dictionaries themselves is stored in the table called
+            // METADATA_TABLE_NAME and we want to keep it, so we only drop the client table.
+            db.execSQL("DROP TABLE IF EXISTS " + CLIENT_TABLE_NAME);
+            // Only the default database should contain the client table, so we test for mClientId.
+            if (TextUtils.isEmpty(mClientId)) {
+                createClientTable(db);
+            }
         } else {
-            // Version 3 was the earliest version, so we should never come here. If we do, we
-            // have no idea what this database is, so we'd better wipe it off.
+            // If we're not in the above case, either we are upgrading from an earlier versionCode
+            // and we should wipe the database, or we are handling a version we never heard about
+            // (can only be a bug) so it's safer to wipe the database.
             db.execSQL("DROP TABLE IF EXISTS " + METADATA_TABLE_NAME);
             db.execSQL("DROP TABLE IF EXISTS " + CLIENT_TABLE_NAME);
             onCreate(db);
