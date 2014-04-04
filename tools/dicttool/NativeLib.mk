@@ -29,13 +29,7 @@ ifeq ($(FLAG_DBG), true)
     LOCAL_CFLAGS += -DFLAG_DBG -funwind-tables -fno-inline
 endif #FLAG_DBG
 
-ifneq ($(strip $(HOST_JDK_IS_64BIT_VERSION)),)
-LOCAL_CFLAGS += -m64
-LOCAL_LDFLAGS += -m64
-endif #HOST_JDK_IS_64BIT_VERSION
-
-LOCAL_CFLAGS += -DHOST_TOOL -fPIC -Wno-deprecated
-LOCAL_NO_DEFAULT_COMPILER_FLAGS := true
+LOCAL_CFLAGS += -DHOST_TOOL -fPIC -Wno-deprecated -Wno-unused-parameter -Wno-unused-function
 
 LOCAL_CLANG := true
 # For C++11
@@ -44,7 +38,6 @@ LOCAL_CFLAGS += -std=c++11
 LATINIME_NATIVE_JNI_DIR := $(LATINIME_DIR_RELATIVE_TO_DICTTOOL)/native/jni
 LATINIME_NATIVE_SRC_DIR := $(LATINIME_DIR_RELATIVE_TO_DICTTOOL)/native/jni/src
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/$(LATINIME_NATIVE_SRC_DIR)
-# Used in jni_common.cpp to avoid registering useless methods.
 
 include $(LOCAL_PATH)/$(LATINIME_NATIVE_JNI_DIR)/NativeFileList.mk
 
