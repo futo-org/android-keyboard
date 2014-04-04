@@ -83,6 +83,7 @@ import com.android.inputmethod.latin.suggestions.SuggestionStripViewAccessor;
 import com.android.inputmethod.latin.utils.ApplicationUtils;
 import com.android.inputmethod.latin.utils.CapsModeUtils;
 import com.android.inputmethod.latin.utils.CoordinateUtils;
+import com.android.inputmethod.latin.utils.DialogUtils;
 import com.android.inputmethod.latin.utils.ImportantNoticeUtils;
 import com.android.inputmethod.latin.utils.IntentUtils;
 import com.android.inputmethod.latin.utils.JniUtils;
@@ -1662,8 +1663,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 }
             }
         };
-        final AlertDialog.Builder builder =
-                new AlertDialog.Builder(this).setItems(items, listener).setTitle(title);
+        final AlertDialog.Builder builder = new AlertDialog.Builder(
+                DialogUtils.getPlatformDialogThemeContext(this));
+        builder.setItems(items, listener).setTitle(title);
         showOptionDialog(builder.create());
     }
 
