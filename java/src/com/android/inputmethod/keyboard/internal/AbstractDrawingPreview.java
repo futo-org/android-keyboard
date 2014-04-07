@@ -29,25 +29,37 @@ import com.android.inputmethod.keyboard.PointerTracker;
 public abstract class AbstractDrawingPreview {
     private final View mDrawingView;
     private boolean mPreviewEnabled;
+    private boolean mHasValidGeometry;
 
     protected AbstractDrawingPreview(final View drawingView) {
         mDrawingView = drawingView;
     }
 
-    public final View getDrawingView() {
+    protected final View getDrawingView() {
         return mDrawingView;
+    }
+
+    protected final boolean isPreviewEnabled() {
+        return mPreviewEnabled && mHasValidGeometry;
     }
 
     public final void setPreviewEnabled(final boolean enabled) {
         mPreviewEnabled = enabled;
     }
 
-    public boolean isPreviewEnabled() {
-        return mPreviewEnabled;
-    }
-
-    public void setKeyboardGeometry(final int[] originCoords, final int width, final int height) {
-        // Default implementation is empty.
+    /**
+     * Set {@link MainKeyboardView} geometry and position in the {@link SoftInputWindow}.
+     * The class that is overriding this method must call this super implementation.
+     *
+     * @param originCoords the top-left coordinates of the {@link MainKeyboardView} in
+     *        {@link SoftInputWindow} coordinate-system. This is unused but has a point in an
+     *        extended class, such as {@link GestureTrailsDrawingPreview}.
+     * @param width the width of {@link MainKeyboardView}.
+     * @param height the height of {@link MainKeyboardView}.
+     */
+    public void setKeyboardViewGeometry(final int[] originCoords, final int width,
+            final int height) {
+        mHasValidGeometry = (width > 0 && height > 0);
     }
 
     public abstract void onDeallocateMemory();

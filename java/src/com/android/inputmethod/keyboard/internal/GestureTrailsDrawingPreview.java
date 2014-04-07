@@ -95,7 +95,9 @@ public final class GestureTrailsDrawingPreview extends AbstractDrawingPreview {
     }
 
     @Override
-    public void setKeyboardGeometry(final int[] originCoords, final int width, final int height) {
+    public void setKeyboardViewGeometry(final int[] originCoords, final int width,
+            final int height) {
+        super.setKeyboardViewGeometry(originCoords, width, height);
         mOffscreenOffsetY = (int)(height
                 * GestureStrokeRecognitionPoints.EXTRA_GESTURE_TRAIL_AREA_ABOVE_KEYBOARD_RATIO);
         mOffscreenWidth = width;

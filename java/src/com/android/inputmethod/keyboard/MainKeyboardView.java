@@ -30,7 +30,6 @@ import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.preference.PreferenceManager;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -428,21 +427,11 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     }
 
     private void locatePreviewPlacerView() {
-        if (mDrawingPreviewPlacerView.getParent() != null) {
-            return;
-        }
-        final int width = getWidth();
-        final int height = getHeight();
-        if (width == 0 || height == 0) {
-            // In transient state.
-            return;
-        }
         getLocationInWindow(mOriginCoords);
-        final DisplayMetrics dm = getResources().getDisplayMetrics();
-        if (CoordinateUtils.y(mOriginCoords) < dm.heightPixels / 4) {
-            // In transient state.
-            return;
-        }
+        mDrawingPreviewPlacerView.setKeyboardViewGeometry(mOriginCoords, getWidth(), getHeight());
+    }
+
+    private void installPreviewPlacerView() {
         final View rootView = getRootView();
         if (rootView == null) {
             Log.w(TAG, "Cannot find root view");
@@ -452,10 +441,9 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         // Note: It'd be very weird if we get null by android.R.id.content.
         if (windowContentView == null) {
             Log.w(TAG, "Cannot find android.R.id.content view to add DrawingPreviewPlacerView");
-        } else {
-            windowContentView.addView(mDrawingPreviewPlacerView);
-            mDrawingPreviewPlacerView.setKeyboardViewGeometry(mOriginCoords, width, height);
+            return;
         }
+        windowContentView.addView(mDrawingPreviewPlacerView);
     }
 
     /**
@@ -576,6 +564,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
+        installPreviewPlacerView();
         // Notify the ResearchLogger (development only diagnostics) that the keyboard view has
         // been attached.  This is needed to properly show the splash screen, which requires that
         // the window token of the KeyboardView be non-null.
