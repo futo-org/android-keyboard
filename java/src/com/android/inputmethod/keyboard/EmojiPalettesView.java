@@ -518,6 +518,14 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
     }
 
     @Override
+    public boolean dispatchTouchEvent(final MotionEvent ev) {
+        // Add here to the stack trace to nail down the {@link IllegalArgumentException} exception
+        // in MotionEvent that sporadically happens.
+        // TODO: Remove this override method once the issue has been addressed.
+        return super.dispatchTouchEvent(ev);
+    }
+
+    @Override
     public void onTabChanged(final String tabId) {
         final int categoryId = mEmojiCategory.getCategoryId(tabId);
         setCurrentCategoryId(categoryId, false /* force */);
