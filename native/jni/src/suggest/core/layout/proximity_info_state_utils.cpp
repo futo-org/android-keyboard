@@ -188,13 +188,10 @@ namespace latinime {
         const int lastSavedInputSize, const bool isGeometric,
         const std::vector<int> *const sampledInputXs,
         const std::vector<int> *const sampledInputYs,
-        std::vector<NearKeycodesSet> *sampledNearKeySets,
         std::vector<float> *sampledNormalizedSquaredLengthCache) {
-    sampledNearKeySets->resize(sampledInputSize);
     const int keyCount = proximityInfo->getKeyCount();
     sampledNormalizedSquaredLengthCache->resize(sampledInputSize * keyCount);
     for (int i = lastSavedInputSize; i < sampledInputSize; ++i) {
-        (*sampledNearKeySets)[i].reset();
         for (int k = 0; k < keyCount; ++k) {
             const int index = i * keyCount + k;
             const int x = (*sampledInputXs)[i];
@@ -203,10 +200,6 @@ namespace latinime {
                     proximityInfo->getNormalizedSquaredDistanceFromCenterFloatG(
                             k, x, y, isGeometric);
             (*sampledNormalizedSquaredLengthCache)[index] = normalizedSquaredDistance;
-            if (normalizedSquaredDistance
-                    < ProximityInfoParams::NEAR_KEY_NORMALIZED_SQUARED_THRESHOLD) {
-                (*sampledNearKeySets)[i][k] = true;
-            }
         }
     }
 }
@@ -626,7 +619,6 @@ namespace latinime {
         const std::vector<float> *const sampledSpeedRates,
         const std::vector<int> *const sampledLengthCache,
         const std::vector<float> *const sampledNormalizedSquaredLengthCache,
-        std::vector<NearKeycodesSet> *sampledNearKeySets,
         const ProximityInfo *const proximityInfo,
         std::vector<hash_map_compat<int, float> > *charProbabilities) {
     charProbabilities->resize(sampledInputSize);
@@ -643,12 +635,10 @@ namespace latinime {
 
         float nearestKeyDistance = static_cast<float>(MAX_VALUE_FOR_WEIGHTING);
         for (int j = 0; j < keyCount; ++j) {
-            if ((*sampledNearKeySets)[i].test(j)) {
-                const float distance = getPointToKeyByIdLength(
-                        maxPointToKeyLength, sampledNormalizedSquaredLengthCache, keyCount, i, j);
-                if (distance < nearestKeyDistance) {
-                    nearestKeyDistance = distance;
-                }
+            const float distance = getPointToKeyByIdLength(
+                    maxPointToKeyLength, sampledNormalizedSquaredLengthCache, keyCount, i, j);
+            if (distance < nearestKeyDistance) {
+                nearestKeyDistance = distance;
             }
         }
 
@@ -744,27 +734,23 @@ namespace latinime {
         // Summing up probability densities of all near keys.
         float sumOfProbabilityDensities = 0.0f;
         for (int j = 0; j < keyCount; ++j) {
-            if ((*sampledNearKeySets)[i].test(j)) {
-                sumOfProbabilityDensities += distribution.getProbabilityDensity(
-                        proximityInfo->getKeyCenterXOfKeyIdG(j,
-                                NOT_A_COORDINATE /* referencePointX */, true /* isGeometric */),
-                        proximityInfo->getKeyCenterYOfKeyIdG(j,
-                                NOT_A_COORDINATE /* referencePointY */, true /* isGeometric */));
-            }
+            sumOfProbabilityDensities += distribution.getProbabilityDensity(
+                    proximityInfo->getKeyCenterXOfKeyIdG(j,
+                            NOT_A_COORDINATE /* referencePointX */, true /* isGeometric */),
+                    proximityInfo->getKeyCenterYOfKeyIdG(j,
+                            NOT_A_COORDINATE /* referencePointY */, true /* isGeometric */));
         }
 
         // Split the probability of an input point to keys that are close to the input point.
         for (int j = 0; j < keyCount; ++j) {
-            if ((*sampledNearKeySets)[i].test(j)) {
-                const float probabilityDensity = distribution.getProbabilityDensity(
-                        proximityInfo->getKeyCenterXOfKeyIdG(j,
-                                NOT_A_COORDINATE /* referencePointX */, true /* isGeometric */),
-                        proximityInfo->getKeyCenterYOfKeyIdG(j,
-                                NOT_A_COORDINATE /* referencePointY */, true /* isGeometric */));
-                const float probability = inputCharProbability * probabilityDensity
-                        / sumOfProbabilityDensities;
-                (*charProbabilities)[i][j] = probability;
-            }
+            const float probabilityDensity = distribution.getProbabilityDensity(
+                    proximityInfo->getKeyCenterXOfKeyIdG(j,
+                            NOT_A_COORDINATE /* referencePointX */, true /* isGeometric */),
+                    proximityInfo->getKeyCenterYOfKeyIdG(j,
+                            NOT_A_COORDINATE /* referencePointY */, true /* isGeometric */));
+            const float probability = inputCharProbability * probabilityDensity
+                    / sumOfProbabilityDensities;
+            (*charProbabilities)[i][j] = probability;
         }
     }
 
@@ -820,10 +806,9 @@ namespace latinime {
         for (int j = 0; j < keyCount; ++j) {
             hash_map_compat<int, float>::iterator it = (*charProbabilities)[i].find(j);
             if (it == (*charProbabilities)[i].end()){
-                (*sampledNearKeySets)[i].reset(j);
+                continue;
             } else if(it->second < ProximityInfoParams::MIN_PROBABILITY) {
                 // Erases from near keys vector because it has very low probability.
-                (*sampledNearKeySets)[i].reset(j);
                 (*charProbabilities)[i].erase(j);
             } else {
                 it->second = -logf(it->second);
@@ -835,9 +820,8 @@ namespace latinime {
 
 /* static */ void ProximityInfoStateUtils::updateSampledSearchKeySets(
         const ProximityInfo *const proximityInfo, const int sampledInputSize,
-        const int lastSavedInputSize,
-        const std::vector<int> *const sampledLengthCache,
-        const std::vector<NearKeycodesSet> *const sampledNearKeySets,
+        const int lastSavedInputSize, const std::vector<int> *const sampledLengthCache,
+        const std::vector<hash_map_compat<int, float> > *const charProbabilities,
         std::vector<NearKeycodesSet> *sampledSearchKeySets,
         std::vector<std::vector<int> > *sampledSearchKeyVectors) {
     sampledSearchKeySets->resize(sampledInputSize);
@@ -854,7 +838,12 @@ namespace latinime {
             if ((*sampledLengthCache)[j] - (*sampledLengthCache)[i] >= readForwordLength) {
                 break;
             }
-            (*sampledSearchKeySets)[i] |= (*sampledNearKeySets)[j];
+            for(const auto& charProbability : charProbabilities->at(j)) {
+                if (charProbability.first == NOT_AN_INDEX) {
+                    continue;
+                }
+                (*sampledSearchKeySets)[i].set(charProbability.first);
+            }
         }
     }
     const int keyCount = proximityInfo->getKeyCount();

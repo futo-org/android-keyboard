@@ -91,7 +91,6 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
         mSampledInputIndice.clear();
         mSampledLengthCache.clear();
         mSampledNormalizedSquaredLengthCache.clear();
-        mSampledNearKeySets.clear();
         mSampledSearchKeySets.clear();
         mSpeedRates.clear();
         mBeelineSpeedPercentiles.clear();
@@ -126,18 +125,17 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
     if (mSampledInputSize > 0) {
         ProximityInfoStateUtils::initGeometricDistanceInfos(mProximityInfo, mSampledInputSize,
                 lastSavedInputSize, isGeometric, &mSampledInputXs, &mSampledInputYs,
-                &mSampledNearKeySets, &mSampledNormalizedSquaredLengthCache);
+                &mSampledNormalizedSquaredLengthCache);
         if (isGeometric) {
             // updates probabilities of skipping or mapping each key for all points.
             ProximityInfoStateUtils::updateAlignPointProbabilities(
                     mMaxPointToKeyLength, mProximityInfo->getMostCommonKeyWidth(),
                     mProximityInfo->getKeyCount(), lastSavedInputSize, mSampledInputSize,
                     &mSampledInputXs, &mSampledInputYs, &mSpeedRates, &mSampledLengthCache,
-                    &mSampledNormalizedSquaredLengthCache, &mSampledNearKeySets,
-                    mProximityInfo, &mCharProbabilities);
+                    &mSampledNormalizedSquaredLengthCache, mProximityInfo, &mCharProbabilities);
             ProximityInfoStateUtils::updateSampledSearchKeySets(mProximityInfo,
                     mSampledInputSize, lastSavedInputSize, &mSampledLengthCache,
-                    &mSampledNearKeySets, &mSampledSearchKeySets,
+                    &mCharProbabilities, &mSampledSearchKeySets,
                     &mSampledSearchKeyVectors);
             mMostProbableStringProbability = ProximityInfoStateUtils::getMostProbableString(
                     mProximityInfo, mSampledInputSize, &mCharProbabilities, mMostProbableString);
