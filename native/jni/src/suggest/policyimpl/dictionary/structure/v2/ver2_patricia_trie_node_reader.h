@@ -17,7 +17,7 @@
 #ifndef LATINIME_VER2_PATRICIA_TRIE_NODE_READER_H
 #define LATINIME_VER2_PATRICIA_TRIE_NODE_READER_H
 
-#include <stdint.h>
+#include <cstdint>
 
 #include "defines.h"
 #include "suggest/policyimpl/dictionary/structure/pt_common/pt_node_params.h"

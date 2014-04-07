@@ -17,7 +17,7 @@
 #ifndef LATINIME_PATRICIA_TRIE_POLICY_H
 #define LATINIME_PATRICIA_TRIE_POLICY_H
 
-#include <stdint.h>
+#include <cstdint>
 #include <vector>
 
 #include "defines.h"

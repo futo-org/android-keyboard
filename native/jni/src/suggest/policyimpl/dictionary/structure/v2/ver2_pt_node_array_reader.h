@@ -17,7 +17,7 @@
 #ifndef LATINIME_VER2_PT_NODE_ARRAY_READER_H
 #define LATINIME_VER2_PT_NODE_ARRAY_READER_H
 
-#include <stdint.h>
+#include <cstdint>
 
 #include "defines.h"
 #include "suggest/policyimpl/dictionary/structure/pt_common/pt_node_array_reader.h"

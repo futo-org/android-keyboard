@@ -17,7 +17,7 @@
 #ifndef LATINIME_DIC_NODE_PROPERTIES_H
 #define LATINIME_DIC_NODE_PROPERTIES_H
 
-#include <stdint.h>
+#include <cstdint>
 
 #include "defines.h"
 

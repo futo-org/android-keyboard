@@ -17,7 +17,7 @@
 #ifndef LATINIME_BYTE_ARRAY_UTILS_H
 #define LATINIME_BYTE_ARRAY_UTILS_H
 
-#include <stdint.h>
+#include <cstdint>
 
 #include "defines.h"
 

@@ -17,7 +17,7 @@
 #ifndef LATINIME_SHORTCUT_LIST_READING_UTILS_H
 #define LATINIME_SHORTCUT_LIST_READING_UTILS_H
 
-#include <stdint.h>
+#include <cstdint>
 
 #include "defines.h"
 

@@ -17,8 +17,6 @@
 #ifndef LATINIME_DICTIONARY_STRUCTURE_WITH_BUFFER_POLICY_FACTORY_H
 #define LATINIME_DICTIONARY_STRUCTURE_WITH_BUFFER_POLICY_FACTORY_H
 
-#include <stdint.h>
-
 #include "defines.h"
 #include "suggest/core/policy/dictionary_structure_with_buffer_policy.h"
 

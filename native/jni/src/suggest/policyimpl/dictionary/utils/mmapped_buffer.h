@@ -17,8 +17,8 @@
 #ifndef LATINIME_MMAPPED_BUFFER_H
 #define LATINIME_MMAPPED_BUFFER_H
 
+#include <cstdint>
 #include <memory>
-#include <stdint.h>
 
 #include "defines.h"
 

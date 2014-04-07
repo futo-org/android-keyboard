@@ -17,7 +17,7 @@
 #ifndef LATINIME_BIGRAM_LIST_POLICY_H
 #define LATINIME_BIGRAM_LIST_POLICY_H
 
-#include <stdint.h>
+#include <cstdint>
 
 #include "defines.h"
 #include "suggest/core/policy/dictionary_bigrams_structure_policy.h"

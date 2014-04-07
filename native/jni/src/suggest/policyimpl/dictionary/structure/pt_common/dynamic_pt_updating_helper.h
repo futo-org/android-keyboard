@@ -17,8 +17,6 @@
 #ifndef LATINIME_DYNAMIC_PT_UPDATING_HELPER_H
 #define LATINIME_DYNAMIC_PT_UPDATING_HELPER_H
 
-#include <stdint.h>
-
 #include "defines.h"
 #include "suggest/policyimpl/dictionary/structure/pt_common/pt_node_params.h"
 #include "utils/hash_map_compat.h"

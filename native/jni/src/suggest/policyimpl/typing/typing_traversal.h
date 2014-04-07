@@ -17,7 +17,7 @@
 #ifndef LATINIME_TYPING_TRAVERSAL_H
 #define LATINIME_TYPING_TRAVERSAL_H
 
-#include <stdint.h>
+#include <cstdint>
 
 #include "defines.h"
 #include "suggest/core/dicnode/dic_node.h"

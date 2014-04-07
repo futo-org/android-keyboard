@@ -17,8 +17,8 @@
 #ifndef LATINIME_BLOOM_FILTER_H
 #define LATINIME_BLOOM_FILTER_H
 
+#include <cstdint>
 #include <cstring>
-#include <stdint.h>
 
 #include "defines.h"
 

@@ -17,8 +17,8 @@
 #ifndef LATINIME_BIGRAM_LIST_READ_WRITE_UTILS_H
 #define LATINIME_BIGRAM_LIST_READ_WRITE_UTILS_H
 
+#include <cstdint>
 #include <cstdlib>
-#include <stdint.h>
 
 #include "defines.h"
 

@@ -17,7 +17,7 @@
 #ifndef LATINIME_ERROR_TYPE_UTILS_H
 #define LATINIME_ERROR_TYPE_UTILS_H
 
-#include <stdint.h>
+#include <cstdint>
 
 #include "defines.h"
 

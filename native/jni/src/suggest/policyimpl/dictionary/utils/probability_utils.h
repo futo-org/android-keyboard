@@ -17,8 +17,6 @@
 #ifndef LATINIME_PROBABILITY_UTILS_H
 #define LATINIME_PROBABILITY_UTILS_H
 
-#include <stdint.h>
-
 #include "defines.h"
 
 namespace latinime {
