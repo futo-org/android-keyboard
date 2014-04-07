@@ -55,7 +55,7 @@ public final class DrawingPreviewPlacerView extends RelativeLayout {
         CoordinateUtils.copy(mKeyboardViewOrigin, originCoords);
         final int count = mPreviews.size();
         for (int i = 0; i < count; i++) {
-            mPreviews.get(i).setKeyboardGeometry(originCoords, width, height);
+            mPreviews.get(i).setKeyboardViewGeometry(originCoords, width, height);
         }
     }
 
