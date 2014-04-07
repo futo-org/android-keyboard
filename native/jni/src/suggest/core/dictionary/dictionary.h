@@ -17,7 +17,6 @@
 #ifndef LATINIME_DICTIONARY_H
 #define LATINIME_DICTIONARY_H
 
-#include <stdint.h>
 #include <memory>
 
 #include "defines.h"

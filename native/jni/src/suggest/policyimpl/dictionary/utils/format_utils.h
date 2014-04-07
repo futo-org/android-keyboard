@@ -17,7 +17,7 @@
 #ifndef LATINIME_FORMAT_UTILS_H
 #define LATINIME_FORMAT_UTILS_H
 
-#include <stdint.h>
+#include <cstdint>
 
 #include "defines.h"
 

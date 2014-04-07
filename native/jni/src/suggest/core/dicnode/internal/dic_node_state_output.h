@@ -18,8 +18,8 @@
 #define LATINIME_DIC_NODE_STATE_OUTPUT_H
 
 #include <algorithm>
+#include <cstdint>
 #include <cstring> // for memmove()
-#include <stdint.h>
 
 #include "defines.h"
 

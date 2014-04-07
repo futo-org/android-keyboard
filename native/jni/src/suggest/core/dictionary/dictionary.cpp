@@ -18,8 +18,6 @@
 
 #include "suggest/core/dictionary/dictionary.h"
 
-#include <stdint.h>
-
 #include "defines.h"
 #include "suggest/core/policy/dictionary_header_structure_policy.h"
 #include "suggest/core/result/suggestion_results.h"

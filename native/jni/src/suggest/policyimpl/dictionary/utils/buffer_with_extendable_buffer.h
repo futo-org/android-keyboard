@@ -18,7 +18,7 @@
 #define LATINIME_BUFFER_WITH_EXTENDABLE_BUFFER_H
 
 #include <cstddef>
-#include <stdint.h>
+#include <cstdint>
 #include <vector>
 
 #include "defines.h"

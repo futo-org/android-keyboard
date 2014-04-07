@@ -18,7 +18,7 @@
 #define LATINIME_DIC_NODE_STATE_SCORING_H
 
 #include <algorithm>
-#include <stdint.h>
+#include <cstdint>
 
 #include "defines.h"
 #include "suggest/core/dictionary/digraph_utils.h"

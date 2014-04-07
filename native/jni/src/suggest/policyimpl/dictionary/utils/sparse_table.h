@@ -17,7 +17,7 @@
 #ifndef LATINIME_SPARSE_TABLE_H
 #define LATINIME_SPARSE_TABLE_H
 
-#include <stdint.h>
+#include <cstdint>
 
 #include "defines.h"
 #include "suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer.h"

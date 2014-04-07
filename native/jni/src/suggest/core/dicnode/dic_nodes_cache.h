@@ -18,7 +18,6 @@
 #define LATINIME_DIC_NODES_CACHE_H
 
 #include <algorithm>
-#include <stdint.h>
 
 #include "defines.h"
 #include "suggest/core/dicnode/dic_node_priority_queue.h"

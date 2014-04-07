@@ -17,7 +17,6 @@
 #include "suggest/policyimpl/dictionary/structure/dictionary_structure_with_buffer_policy_factory.h"
 
 #include <climits>
-#include <stdint.h>
 
 #include "defines.h"
 #include "suggest/policyimpl/dictionary/structure/v2/patricia_trie_policy.h"
