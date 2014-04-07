@@ -135,7 +135,8 @@
     <string name="subtype_with_layout_en_GB" msgid="1931018968641592304">"Bahasa Inggeris (UK) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_en_US" msgid="8809311287529805422">"Bahasa Inggeris (AS) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_es_US" msgid="510930471167541338">"Bahasa Sepanyol (AS) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
-    <string name="subtype_nepali_traditional" msgid="1994571919751163596">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (Tradisional)"</string>
+    <!-- no translation found for subtype_generic_traditional (8584594350973800586) -->
+    <skip />
     <string name="subtype_no_language" msgid="7137390094240139495">"Tiada bahasa (Abjad)"</string>
     <string name="subtype_no_language_qwerty" msgid="244337630616742604">"Abjad (QWERTY)"</string>
     <string name="subtype_no_language_qwertz" msgid="443066912507547976">"Abjad (QWERTZ)"</string>

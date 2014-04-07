@@ -135,7 +135,8 @@
     <string name="subtype_with_layout_en_GB" msgid="1931018968641592304">"Engleză (Regatul Unit) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_en_US" msgid="8809311287529805422">"Engleză (S.U.A.) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_es_US" msgid="510930471167541338">"Spaniolă (S.U.A.) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
-    <string name="subtype_nepali_traditional" msgid="1994571919751163596">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (tradițională)"</string>
+    <!-- no translation found for subtype_generic_traditional (8584594350973800586) -->
+    <skip />
     <string name="subtype_no_language" msgid="7137390094240139495">"Nicio limbă (alfabet)"</string>
     <string name="subtype_no_language_qwerty" msgid="244337630616742604">"Alfabet (QWERTY)"</string>
     <string name="subtype_no_language_qwertz" msgid="443066912507547976">"Alfabet (QWERTZ)"</string>

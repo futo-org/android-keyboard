@@ -135,7 +135,7 @@
     <string name="subtype_with_layout_en_GB" msgid="1931018968641592304">"อังกฤษ (สหราชอาณาจักร) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_en_US" msgid="8809311287529805422">"อังกฤษ (สหรัฐอเมริกา) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_es_US" msgid="510930471167541338">"สเปน (สหรัฐอเมริกา) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
-    <string name="subtype_nepali_traditional" msgid="1994571919751163596">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (ดั้งเดิม)"</string>
+    <string name="subtype_generic_traditional" msgid="8584594350973800586">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (ดั้งเดิม)"</string>
     <string name="subtype_no_language" msgid="7137390094240139495">"ไม่มีภาษา (ตัวอักษรละติน)"</string>
     <string name="subtype_no_language_qwerty" msgid="244337630616742604">"ตัวอักษร (QWERTY)"</string>
     <string name="subtype_no_language_qwertz" msgid="443066912507547976">"ตัวอักษร (QWERTZ)"</string>
