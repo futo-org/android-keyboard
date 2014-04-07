@@ -213,13 +213,18 @@ public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
 
     @Override
     protected void tearDown() throws Exception {
+        mLatinIME.onFinishInputView(true);
+        mLatinIME.onFinishInput();
+        runMessages();
         mLatinIME.mHandler.removeAllMessages();
         setBooleanPreference(Settings.PREF_BIGRAM_PREDICTIONS, mPreviousBigramPredictionSettings,
                 true /* defaultValue */);
         setStringPreference(Settings.PREF_AUTO_CORRECTION_THRESHOLD, mPreviousAutoCorrectSetting,
                 DEFAULT_AUTO_CORRECTION_THRESHOLD);
         setDebugMode(false);
+        mLatinIME.recycle();
         super.tearDown();
+        mLatinIME = null;
     }
 
     // We need to run the messages added to the handler from LatinIME. The only way to do
