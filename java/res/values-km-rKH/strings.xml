@@ -135,7 +135,7 @@
     <string name="subtype_with_layout_en_GB" msgid="1931018968641592304">"អង់គ្លេស (ចក្រភព​អង់គ្លេស) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_en_US" msgid="8809311287529805422">"អង់គ្លេស (អាមេរិក) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_es_US" msgid="510930471167541338">"អេស្ប៉ាញ (អាមេរិក) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
-    <string name="subtype_nepali_traditional" msgid="1994571919751163596">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (អក្សរ​ពេញ)"</string>
+    <string name="subtype_generic_traditional" msgid="8584594350973800586">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (អក្សរ​ពេញ)"</string>
     <string name="subtype_no_language" msgid="7137390094240139495">"គ្មាន​ភាសា (អក្សរ​ក្រម)"</string>
     <string name="subtype_no_language_qwerty" msgid="244337630616742604">"តាម​លំដាប់​អក្សរក្រម (QWERTY)"</string>
     <string name="subtype_no_language_qwertz" msgid="443066912507547976">"តាម​លំដាប់​អក្សរក្រម (QWERTZ)"</string>
@@ -167,7 +167,7 @@
     <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"ជ្រើស​ឯកសារ​វចនានុក្រម​ ដើម្បី​ដំឡើង"</string>
     <string name="read_external_dictionary_confirm_install_message" msgid="4782116251651288054">"ពិត​ជា​ដំឡើង​ឯកសារ​នេះ​សម្រាប់ <xliff:g id="LANGUAGE_NAME">%s</xliff:g>?"</string>
     <string name="error" msgid="8940763624668513648">"មាន​កំហុស"</string>
-    <string name="prefs_dump_contacts_dict" msgid="7227327764402323097">"បោះបង់​វចនានុក្រម​ទំនាក់ទំនង"</string>
+    <string name="prefs_dump_contacts_dict" msgid="7227327764402323097">"រាយ​វចនានុក្រម​ទំនាក់ទំនង"</string>
     <string name="prefs_dump_user_dict" msgid="294870685041741951">"បោះបង់​វចនានុក្រម​ផ្ទាល់ខ្លួន"</string>
     <string name="prefs_dump_user_history_dict" msgid="6821075152449554628">"បោះបង់​វចនានុក្រម​​ប្រវត្តិ​អ្នកប្រើ"</string>
     <string name="prefs_dump_personalization_dict" msgid="7558387996151745284">"បោះបង់​វចនានុក្រម​ផ្ទាល់ខ្លួន"</string>

@@ -135,7 +135,7 @@
     <string name="subtype_with_layout_en_GB" msgid="1931018968641592304">"angličtina (UK) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_en_US" msgid="8809311287529805422">"angličtina (USA) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_es_US" msgid="510930471167541338">"španielčina (USA) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
-    <string name="subtype_nepali_traditional" msgid="1994571919751163596">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (tradičná)"</string>
+    <string name="subtype_generic_traditional" msgid="8584594350973800586">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (tradičná)"</string>
     <string name="subtype_no_language" msgid="7137390094240139495">"Žiadny jazyk (latinka)"</string>
     <string name="subtype_no_language_qwerty" msgid="244337630616742604">"Latinka (QWERTY)"</string>
     <string name="subtype_no_language_qwertz" msgid="443066912507547976">"Latinka (QWERTZ)"</string>
