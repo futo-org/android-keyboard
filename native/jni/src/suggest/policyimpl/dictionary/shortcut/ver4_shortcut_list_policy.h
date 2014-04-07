@@ -17,8 +17,6 @@
 #ifndef LATINIME_VER4_SHORTCUT_LIST_POLICY_H
 #define LATINIME_VER4_SHORTCUT_LIST_POLICY_H
 
-#include <stdint.h>
-
 #include "defines.h"
 #include "suggest/core/policy/dictionary_shortcuts_structure_policy.h"
 #include "suggest/policyimpl/dictionary/shortcut/shortcut_list_reading_utils.h"

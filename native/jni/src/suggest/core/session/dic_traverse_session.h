@@ -17,7 +17,6 @@
 #ifndef LATINIME_DIC_TRAVERSE_SESSION_H
 #define LATINIME_DIC_TRAVERSE_SESSION_H
 
-#include <stdint.h>
 #include <vector>
 
 #include "defines.h"

@@ -17,8 +17,8 @@
 #include "suggest/policyimpl/dictionary/structure/pt_common/dynamic_pt_writing_utils.h"
 
 #include <cstddef>
+#include <cstdint>
 #include <cstdlib>
-#include <stdint.h>
 
 #include "suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer.h"
 

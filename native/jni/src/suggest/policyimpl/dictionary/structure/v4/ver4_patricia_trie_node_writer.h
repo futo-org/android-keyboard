@@ -17,8 +17,6 @@
 #ifndef LATINIME_VER4_PATRICIA_TRIE_NODE_WRITER_H
 #define LATINIME_VER4_PATRICIA_TRIE_NODE_WRITER_H
 
-#include <stdint.h>
-
 #include "defines.h"
 #include "suggest/policyimpl/dictionary/structure/pt_common/dynamic_pt_reading_helper.h"
 #include "suggest/policyimpl/dictionary/structure/pt_common/pt_node_params.h"

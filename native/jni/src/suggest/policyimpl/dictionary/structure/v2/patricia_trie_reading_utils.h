@@ -17,7 +17,7 @@
 #ifndef LATINIME_PATRICIA_TRIE_READING_UTILS_H
 #define LATINIME_PATRICIA_TRIE_READING_UTILS_H
 
-#include <stdint.h>
+#include <cstdint>
 
 #include "defines.h"
 

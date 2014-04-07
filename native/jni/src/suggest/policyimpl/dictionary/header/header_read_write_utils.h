@@ -17,7 +17,7 @@
 #ifndef LATINIME_HEADER_READ_WRITE_UTILS_H
 #define LATINIME_HEADER_READ_WRITE_UTILS_H
 
-#include <stdint.h>
+#include <cstdint>
 
 #include "defines.h"
 #include "suggest/core/policy/dictionary_header_structure_policy.h"

@@ -17,7 +17,7 @@
 #ifndef LATINIME_DYNAMIC_PT_READING_UTILS_H
 #define LATINIME_DYNAMIC_PT_READING_UTILS_H
 
-#include <stdint.h>
+#include <cstdint>
 
 #include "defines.h"
 
