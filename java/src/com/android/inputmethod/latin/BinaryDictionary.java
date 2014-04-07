@@ -247,7 +247,9 @@ public final class BinaryDictionary extends Dictionary {
             final String prevWord, final ProximityInfo proximityInfo,
             final boolean blockOffensiveWords, final int[] additionalFeaturesOptions,
             final int sessionId, final float[] inOutLanguageWeight) {
-        if (!isValidDictionary()) return null;
+        if (!isValidDictionary()) {
+            return null;
+        }
 
         Arrays.fill(mInputCodePoints, Constants.NOT_A_CODE);
         // TODO: toLowerCase in the native code
@@ -257,12 +259,11 @@ public final class BinaryDictionary extends Dictionary {
         final boolean isGesture = composer.isBatchMode();
         final int inputSize;
         if (!isGesture) {
-            final int composerSize = composer.sizeWithoutTrailingSingleQuotes();
-            if (composerSize > MAX_WORD_LENGTH - 1) return null;
-            for (int i = 0; i < composerSize; i++) {
-                mInputCodePoints[i] = composer.getCodeAt(i);
+            inputSize = composer.copyCodePointsExceptTrailingSingleQuotesAndReturnCodePointCount(
+                    mInputCodePoints, MAX_WORD_LENGTH);
+            if (inputSize < 0) {
+                return null;
             }
-            inputSize = composerSize;
         } else {
             inputSize = inputPointers.getPointerSize();
         }
