@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.TreeMap;
 import java.util.jar.JarFile;
 
@@ -36,12 +35,13 @@ public class MoreKeysResources {
     private static final String MARK_NAMES = "@NAMES@";
     private static final String MARK_DEFAULT_TEXTS = "@DEFAULT_TEXTS@";
     private static final String MARK_TEXTS = "@TEXTS@";
-    private static final String MARK_LANGUAGES_AND_TEXTS = "@LANGUAGES_AND_TEXTS@";
+    private static final String TEXTS_ARRAY_NAME_PREFIX = "TEXTS_";
+    private static final String MARK_LOCALES_AND_TEXTS = "@LOCALES_AND_TEXTS@";
     private static final String EMPTY_STRING_VAR = "EMPTY";
 
     private final JarFile mJar;
     // String resources maps sorted by its language. The language is determined from the jar entry
-    // name by calling {@link JarUtils#getLanguegFromEntryName(String)}.
+    // name by calling {@link JarUtils#getLocaleFromEntryName(String)}.
     private final TreeMap<String, StringResourceMap> mResourcesMap =
             new TreeMap<String, StringResourceMap>();
     // Default string resources map.
@@ -60,9 +60,9 @@ public class MoreKeysResources {
                 jar, TEXT_RESOURCE_NAME);
         for (final String entryName : resourceEntryNames) {
             final StringResourceMap resMap = new StringResourceMap(entryName);
-            mResourcesMap.put(resMap.mLanguage, resMap);
+            mResourcesMap.put(resMap.mLocale, resMap);
         }
-        mDefaultResourceMap = mResourcesMap.get(LocaleUtils.DEFAULT_LANGUAGE_NAME);
+        mDefaultResourceMap = mResourcesMap.get(LocaleUtils.DEFAULT_LOCALE_KEY);
 
         // Initialize name histogram and names list.
         final HashMap<String, Integer> nameHistogram = mNameHistogram;
@@ -72,12 +72,12 @@ public class MoreKeysResources {
             resourceNamesList.add(res.mName);
         }
         // Make name histogram.
-        for (final String language : mResourcesMap.keySet()) {
-            final StringResourceMap resMap = mResourcesMap.get(language);
+        for (final String locale : mResourcesMap.keySet()) {
+            final StringResourceMap resMap = mResourcesMap.get(locale);
             if (resMap == mDefaultResourceMap) continue;
             for (final StringResource res : resMap.getResources()) {
                 if (!mDefaultResourceMap.contains(res.mName)) {
-                    throw new RuntimeException(res.mName + " in " + language
+                    throw new RuntimeException(res.mName + " in " + locale
                             + " doesn't have default resource");
                 }
                 final int histogramValue = nameHistogram.get(res.mName);
@@ -143,8 +143,8 @@ public class MoreKeysResources {
                 dumpDefaultTexts(out);
             } else if (line.contains(MARK_TEXTS)) {
                 dumpTexts(out);
-            } else if (line.contains(MARK_LANGUAGES_AND_TEXTS)) {
-                dumpLanguageMap(out);
+            } else if (line.contains(MARK_LOCALES_AND_TEXTS)) {
+                dumpLocalesMap(out);
             } else {
                 out.println(line);
             }
@@ -165,17 +165,17 @@ public class MoreKeysResources {
         mDefaultResourceMap.setOutputArraySize(outputArraySize);
     }
 
-    private static String getArrayNameForLanguage(final String language) {
-        return "LANGUAGE_" + language;
+    private static String getArrayNameForLocale(final String locale) {
+        return TEXTS_ARRAY_NAME_PREFIX + locale;
     }
 
     private void dumpTexts(final PrintStream out) {
         for (final StringResourceMap resMap : mResourcesMap.values()) {
-            final String language = resMap.mLanguage;
+            final String locale = resMap.mLocale;
             if (resMap == mDefaultResourceMap) continue;
-            out.format("    /* Language %s: %s */\n",
-                    language, LocaleUtils.getLanguageDisplayName(language));
-            out.format("    private static final String[] " + getArrayNameForLanguage(language)
+            out.format("    /* Locale %s: %s */\n",
+                    locale, LocaleUtils.getLocaleDisplayName(locale));
+            out.format("    private static final String[] " + getArrayNameForLocale(locale)
                     + " = {\n");
             final int outputArraySize = dumpTextsInternal(out, resMap);
             resMap.setOutputArraySize(outputArraySize);
@@ -183,17 +183,16 @@ public class MoreKeysResources {
         }
     }
 
-    private void dumpLanguageMap(final PrintStream out) {
+    private void dumpLocalesMap(final PrintStream out) {
         for (final StringResourceMap resMap : mResourcesMap.values()) {
-            final String language = resMap.mLanguage;
-            final Locale locale = LocaleUtils.constructLocaleFromString(language);
-            final String languageKeyToDump = locale.getCountry().isEmpty()
-                    ? String.format("\"%s\"", language)
-                    : String.format("\"%s\"", locale.getLanguage());
-            out.format("        %s, %-15s /* %3d/%3d %s */\n",
-                    languageKeyToDump, getArrayNameForLanguage(language) + ",",
+            final String locale = resMap.mLocale;
+            final String localeToDump = locale.equals(LocaleUtils.DEFAULT_LOCALE_KEY)
+                    ? String.format("\"%s\"", locale)
+                    : String.format("\"%s\"%s", locale, "       ".substring(locale.length()));
+            out.format("        %s, %-12s /* %3d/%3d %s */\n",
+                    localeToDump, getArrayNameForLocale(locale) + ",",
                     resMap.getResources().size(), resMap.getOutputArraySize(),
-                    LocaleUtils.getLanguageDisplayName(language));
+                    LocaleUtils.getLocaleDisplayName(locale));
         }
     }
 

@@ -26,9 +26,9 @@ import java.util.Locale;
  * for the make-keyboard-text tool.
  */
 public final class LocaleUtils {
-    public static final String DEFAULT_LANGUAGE_NAME = "DEFAULT";
-    public static final String NO_LANGUAGE_CODE = "zz";
-    public static final String NO_LANGUAGE_DISPLAY_NAME = "Alphabet";
+    public static final String DEFAULT_LOCALE_KEY = "DEFAULT";
+    public static final String NO_LANGUAGE_LOCALE_CODE = "zz";
+    public static final String NO_LANGUAGE_LOCALE_DISPLAY_NAME = "Alphabet";
 
     private LocaleUtils() {
         // Intentional empty constructor for utility class.
@@ -48,7 +48,8 @@ public final class LocaleUtils {
             if (retval != null) {
                 return retval;
             }
-            String[] localeParams = localeStr.split("_", 3);
+            final String[] localeParams = localeStr.split("_", 3);
+            // TODO: Use JDK 7 Locale.Builder to handle a script name.
             if (localeParams.length == 1) {
                 retval = new Locale(localeParams[0]);
             } else if (localeParams.length == 2) {
@@ -63,11 +64,11 @@ public final class LocaleUtils {
         }
     }
 
-    public static String getLanguageDisplayName(final String language) {
-        if (language.equals(NO_LANGUAGE_CODE)) {
-            return NO_LANGUAGE_DISPLAY_NAME;
+    public static String getLocaleDisplayName(final String localeString) {
+        if (localeString.equals(NO_LANGUAGE_LOCALE_CODE)) {
+            return NO_LANGUAGE_LOCALE_DISPLAY_NAME;
         }
-        final Locale locale = constructLocaleFromString(language);
+        final Locale locale = constructLocaleFromString(localeString);
         return locale.getDisplayName(Locale.ENGLISH);
     }
 }
