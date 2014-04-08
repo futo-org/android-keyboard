@@ -36,7 +36,7 @@ public final class StatsUtils {
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         final Boolean usePersonalizedDict =
                 prefs.getBoolean(Settings.PREF_KEY_USE_PERSONALIZED_DICTS, true);
-        Log.d(TAG, "onCreateCompleted. context: " context.toString() + "usePersonalizedDict: "
+        Log.d(TAG, "onCreateCompleted. context: " + context.toString() + "usePersonalizedDict: "
                 + usePersonalizedDict);
     }
 
