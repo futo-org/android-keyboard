@@ -49,7 +49,7 @@
     fr_CH: French (Switzerland)/swiss
     gl_ES: Galician (Spain)/spanish
     hi: Hindi/hindi
-    hi: Hindi/hindi_compact
+    (hi: Hindi/hindi_compact) # This is a preliminary keyboard layout.
     hr: Croatian/qwertz
     hu: Hungarian/qwertz
     hy_AM: Armenian (Armenia) Phonetic/armenian_phonetic
