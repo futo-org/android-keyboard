@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "suggest/core/dictionary/word_property.h"
+#include "suggest/core/dictionary/property/word_property.h"
 
 namespace latinime {
 
@@ -23,9 +23,12 @@ void WordProperty::outputProperties(JNIEnv *const env, jintArray outCodePoints,
         jobject outBigramProbabilities, jobject outShortcutTargets,
         jobject outShortcutProbabilities) const {
     env->SetIntArrayRegion(outCodePoints, 0 /* start */, mCodePoints.size(), &mCodePoints[0]);
-    jboolean flags[] = {mIsNotAWord, mIsBlacklisted, mHasBigrams, mHasShortcuts};
+
+    jboolean flags[] = {mUnigramProperty.isNotAWord(), mUnigramProperty.isBlacklisted(),
+            !mBigrams.empty(), mUnigramProperty.hasShortcuts()};
     env->SetBooleanArrayRegion(outFlags, 0 /* start */, NELEMS(flags), flags);
-    int probabilityInfo[] = {mProbability, mTimestamp, mLevel, mCount};
+    int probabilityInfo[] = {mUnigramProperty.getProbability(), mUnigramProperty.getTimestamp(),
+            mUnigramProperty.getLevel(), mUnigramProperty.getCount()};
     env->SetIntArrayRegion(outProbabilityInfo, 0 /* start */, NELEMS(probabilityInfo),
             probabilityInfo);
 
@@ -35,19 +38,17 @@ void WordProperty::outputProperties(JNIEnv *const env, jintArray outCodePoints,
     jmethodID addMethodId = env->GetMethodID(arrayListClass, "add", "(Ljava/lang/Object;)Z");
 
     // Output bigrams.
-    const int bigramCount = mBigrams.size();
-    for (int i = 0; i < bigramCount; ++i) {
-        const BigramProperty *const bigramProperty = &mBigrams[i];
-        const std::vector<int> *const word1CodePoints = bigramProperty->getTargetCodePoints();
+    for (const auto &bigramProperty : mBigrams) {
+        const std::vector<int> *const word1CodePoints = bigramProperty.getTargetCodePoints();
         jintArray bigramWord1CodePointArray = env->NewIntArray(word1CodePoints->size());
         env->SetIntArrayRegion(bigramWord1CodePointArray, 0 /* start */,
-                word1CodePoints->size(), &word1CodePoints->at(0));
+                word1CodePoints->size(), word1CodePoints->data());
         env->CallBooleanMethod(outBigramTargets, addMethodId, bigramWord1CodePointArray);
         env->DeleteLocalRef(bigramWord1CodePointArray);
 
-        int bigramProbabilityInfo[] = {bigramProperty->getProbability(),
-                bigramProperty->getTimestamp(), bigramProperty->getLevel(),
-                bigramProperty->getCount()};
+        int bigramProbabilityInfo[] = {bigramProperty.getProbability(),
+                bigramProperty.getTimestamp(), bigramProperty.getLevel(),
+                bigramProperty.getCount()};
         jintArray bigramProbabilityInfoArray = env->NewIntArray(NELEMS(bigramProbabilityInfo));
         env->SetIntArrayRegion(bigramProbabilityInfoArray, 0 /* start */,
                 NELEMS(bigramProbabilityInfo), bigramProbabilityInfo);
@@ -56,16 +57,15 @@ void WordProperty::outputProperties(JNIEnv *const env, jintArray outCodePoints,
     }
 
     // Output shortcuts.
-    const int shortcutTargetCount = mShortcuts.size();
-    for (int i = 0; i < shortcutTargetCount; ++i) {
-        const std::vector<int> *const targetCodePoints = mShortcuts[i].getTargetCodePoints();
+    for (const auto &shortcut : mUnigramProperty.getShortcuts()) {
+        const std::vector<int> *const targetCodePoints = shortcut.getTargetCodePoints();
         jintArray shortcutTargetCodePointArray = env->NewIntArray(targetCodePoints->size());
         env->SetIntArrayRegion(shortcutTargetCodePointArray, 0 /* start */,
-                targetCodePoints->size(), &targetCodePoints->at(0));
+                targetCodePoints->size(), targetCodePoints->data());
         env->CallBooleanMethod(outShortcutTargets, addMethodId, shortcutTargetCodePointArray);
         env->DeleteLocalRef(shortcutTargetCodePointArray);
         jobject integerProbability = env->NewObject(integerClass, intToIntegerConstructorId,
-                mShortcuts[i].getProbability());
+                shortcut.getProbability());
         env->CallBooleanMethod(outShortcutProbabilities, addMethodId, integerProbability);
         env->DeleteLocalRef(integerProbability);
     }
