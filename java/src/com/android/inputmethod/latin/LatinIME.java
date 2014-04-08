@@ -88,6 +88,7 @@ import com.android.inputmethod.latin.utils.ImportantNoticeUtils;
 import com.android.inputmethod.latin.utils.IntentUtils;
 import com.android.inputmethod.latin.utils.JniUtils;
 import com.android.inputmethod.latin.utils.LeakGuardHandlerWrapper;
+import com.android.inputmethod.latin.utils.StatsUtils;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 import com.android.inputmethod.research.ResearchLogger;
 
@@ -509,6 +510,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         registerReceiver(mDictionaryDumpBroadcastReceiver, dictDumpFilter);
 
         DictionaryDecayBroadcastReciever.setUpIntervalAlarmForDictionaryDecaying(this);
+
+        StatsUtils.onCreateCompleted(this);
     }
 
     // Has to be package-visible for unit tests
@@ -628,6 +631,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         PersonalizationDictionarySessionRegistrar.close(this);
         LatinImeLogger.commit();
         LatinImeLogger.onDestroy();
+        StatsUtils.onDestroy();
         super.onDestroy();
     }
 
