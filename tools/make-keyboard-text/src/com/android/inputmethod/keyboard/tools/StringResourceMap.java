@@ -34,6 +34,8 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 public class StringResourceMap {
+    // Lanugage name.
+    public final String mLanguage;
     // String resource list.
     private final List<StringResource> mResources;
     // Name to string resource map.
@@ -45,22 +47,28 @@ public class StringResourceMap {
     // {@link MoreKeysResources#dumpLanguageMap(OutputStream)} via {@link #getOutputArraySize()}.
     private int mOutputArraySize;
 
-    public StringResourceMap(final InputStream is) {
+    public StringResourceMap(final String jarEntryName) {
+        mLanguage = JarUtils.getLanguageFromEntryName(jarEntryName);
         final StringResourceHandler handler = new StringResourceHandler();
         final SAXParserFactory factory = SAXParserFactory.newInstance();
         factory.setNamespaceAware(true);
+        final InputStream stream = JarUtils.openResource(jarEntryName);
         try {
             final SAXParser parser = factory.newSAXParser();
             // In order to get comment tag.
             parser.setProperty("http://xml.org/sax/properties/lexical-handler", handler);
-            parser.parse(is, handler);
+            parser.parse(stream, handler);
         } catch (ParserConfigurationException e) {
+            throw new RuntimeException(e.getMessage(), e);
         } catch (SAXParseException e) {
             throw new RuntimeException(e.getMessage() + " at line " + e.getLineNumber()
-                    + ", column " + e.getColumnNumber());
+                    + ", column " + e.getColumnNumber(), e);
         } catch (SAXException e) {
-            throw new RuntimeException(e.getMessage());
+            throw new RuntimeException(e.getMessage(), e);
         } catch (IOException e) {
+            throw new RuntimeException(e.getMessage(), e);
+        } finally {
+            JarUtils.close(stream);
         }
 
         mResources = Collections.unmodifiableList(handler.mResources);

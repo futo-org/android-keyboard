@@ -16,10 +16,8 @@
 
 package com.android.inputmethod.keyboard.tools;
 
-import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.io.PrintStream;
@@ -28,6 +26,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.TreeMap;
 import java.util.jar.JarFile;
 
 public class MoreKeysResources {
@@ -38,20 +37,13 @@ public class MoreKeysResources {
     private static final String MARK_DEFAULT_TEXTS = "@DEFAULT_TEXTS@";
     private static final String MARK_TEXTS = "@TEXTS@";
     private static final String MARK_LANGUAGES_AND_TEXTS = "@LANGUAGES_AND_TEXTS@";
-    private static final String DEFAULT_LANGUAGE_NAME = "DEFAULT";
     private static final String EMPTY_STRING_VAR = "EMPTY";
 
-    private static final String NO_LANGUAGE_CODE = "zz";
-    private static final String NO_LANGUAGE_DISPLAY_NAME = "Alphabet";
-
     private final JarFile mJar;
-    // Language to string resources map.
-    private final HashMap<String, StringResourceMap> mResourcesMap =
-            new HashMap<String, StringResourceMap>();
-    // Sorted languages list. The language is taken from string resource directories
-    // (values-<language>/) or {@link #DEFAULT_LANGUAGE_NAME} for the default string resource
-    // directory (values/).
-    private final ArrayList<String> mSortedLanguagesList = new ArrayList<String>();
+    // String resources maps sorted by its language. The language is determined from the jar entry
+    // name by calling {@link JarUtils#getLanguegFromEntryName(String)}.
+    private final TreeMap<String, StringResourceMap> mResourcesMap =
+            new TreeMap<String, StringResourceMap>();
     // Default string resources map.
     private final StringResourceMap mDefaultResourceMap;
     // Histogram of string resource names. This is used to sort {@link #mSortedResourceNames}.
@@ -64,22 +56,13 @@ public class MoreKeysResources {
 
     public MoreKeysResources(final JarFile jar) {
         mJar = jar;
-        final ArrayList<String> resources = JarUtils.getNameListing(jar, TEXT_RESOURCE_NAME);
-        for (final String name : resources) {
-            final String dirName = name.substring(0, name.lastIndexOf('/'));
-            final int pos = dirName.lastIndexOf('/');
-            final String parentName = (pos >= 0) ? dirName.substring(pos + 1) : dirName;
-            final String language = getLanguageFromResDir(parentName);
-            final InputStream stream = JarUtils.openResource(name);
-            try {
-                mResourcesMap.put(language, new StringResourceMap(stream));
-            } finally {
-                close(stream);
-            }
+        final ArrayList<String> resourceEntryNames = JarUtils.getEntryNameListing(
+                jar, TEXT_RESOURCE_NAME);
+        for (final String entryName : resourceEntryNames) {
+            final StringResourceMap resMap = new StringResourceMap(entryName);
+            mResourcesMap.put(resMap.mLanguage, resMap);
         }
-        mDefaultResourceMap = mResourcesMap.get(DEFAULT_LANGUAGE_NAME);
-        mSortedLanguagesList.addAll(mResourcesMap.keySet());
-        Collections.sort(mSortedLanguagesList);
+        mDefaultResourceMap = mResourcesMap.get(LocaleUtils.DEFAULT_LANGUAGE_NAME);
 
         // Initialize name histogram and names list.
         final HashMap<String, Integer> nameHistogram = mNameHistogram;
@@ -118,22 +101,8 @@ public class MoreKeysResources {
         mSortedResourceNames = resourceNamesList.toArray(new String[resourceNamesList.size()]);
     }
 
-    private static String getLanguageFromResDir(final String dirName) {
-        final int languagePos = dirName.indexOf('-');
-        if (languagePos < 0) {
-            // Default resource.
-            return DEFAULT_LANGUAGE_NAME;
-        }
-        final String language = dirName.substring(languagePos + 1);
-        final int countryPos = language.indexOf("-r");
-        if (countryPos < 0) {
-            return language;
-        }
-        return language.replace("-r", "_");
-    }
-
     public void writeToJava(final String outDir) {
-        final ArrayList<String> list = JarUtils.getNameListing(mJar, JAVA_TEMPLATE);
+        final ArrayList<String> list = JarUtils.getEntryNameListing(mJar, JAVA_TEMPLATE);
         if (list.isEmpty()) {
             throw new RuntimeException("Can't find java template " + JAVA_TEMPLATE);
         }
@@ -159,8 +128,8 @@ public class MoreKeysResources {
         } catch (IOException e) {
             throw new RuntimeException(e);
         } finally {
-            close(lnr);
-            close(ps);
+            JarUtils.close(lnr);
+            JarUtils.close(ps);
         }
     }
 
@@ -201,10 +170,11 @@ public class MoreKeysResources {
     }
 
     private void dumpTexts(final PrintStream out) {
-        for (final String language : mSortedLanguagesList) {
-            final StringResourceMap resMap = mResourcesMap.get(language);
+        for (final StringResourceMap resMap : mResourcesMap.values()) {
+            final String language = resMap.mLanguage;
             if (resMap == mDefaultResourceMap) continue;
-            out.format("    /* Language %s: %s */\n", language, getLanguageDisplayName(language));
+            out.format("    /* Language %s: %s */\n",
+                    language, LocaleUtils.getLanguageDisplayName(language));
             out.format("    private static final String[] " + getArrayNameForLanguage(language)
                     + " = {\n");
             final int outputArraySize = dumpTextsInternal(out, resMap);
@@ -214,8 +184,8 @@ public class MoreKeysResources {
     }
 
     private void dumpLanguageMap(final PrintStream out) {
-        for (final String language : mSortedLanguagesList) {
-            final StringResourceMap resMap = mResourcesMap.get(language);
+        for (final StringResourceMap resMap : mResourcesMap.values()) {
+            final String language = resMap.mLanguage;
             final Locale locale = LocaleUtils.constructLocaleFromString(language);
             final String languageKeyToDump = locale.getCountry().isEmpty()
                     ? String.format("\"%s\"", language)
@@ -223,16 +193,8 @@ public class MoreKeysResources {
             out.format("        %s, %-15s /* %3d/%3d %s */\n",
                     languageKeyToDump, getArrayNameForLanguage(language) + ",",
                     resMap.getResources().size(), resMap.getOutputArraySize(),
-                    getLanguageDisplayName(language));
+                    LocaleUtils.getLanguageDisplayName(language));
         }
-    }
-
-    private static String getLanguageDisplayName(final String language) {
-        final Locale locale = LocaleUtils.constructLocaleFromString(language);
-        if (locale.getLanguage().equals(NO_LANGUAGE_CODE)) {
-            return NO_LANGUAGE_DISPLAY_NAME;
-        }
-        return locale.getDisplayName(Locale.ENGLISH);
     }
 
     private int dumpTextsInternal(final PrintStream out, final StringResourceMap resMap) {
@@ -288,14 +250,5 @@ public class MoreKeysResources {
             }
         }
         return sb.toString();
-    }
-
-    private static void close(final Closeable stream) {
-        try {
-            if (stream != null) {
-                stream.close();
-            }
-        } catch (IOException e) {
-        }
     }
 }
