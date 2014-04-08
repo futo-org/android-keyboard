@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.keyboard.tools;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -58,7 +59,7 @@ public final class JarUtils {
         public boolean accept(String dirName, String name);
     }
 
-    public static ArrayList<String> getNameListing(final JarFile jar, final JarFilter filter) {
+    public static ArrayList<String> getEntryNameListing(final JarFile jar, final JarFilter filter) {
         final ArrayList<String> result = new ArrayList<String>();
         final Enumeration<JarEntry> entries = jar.entries();
         while (entries.hasMoreElements()) {
@@ -74,12 +75,42 @@ public final class JarUtils {
         return result;
     }
 
-    public static ArrayList<String> getNameListing(final JarFile jar, final String filterName) {
-        return getNameListing(jar, new JarFilter() {
+    public static ArrayList<String> getEntryNameListing(final JarFile jar,
+            final String filterName) {
+        return getEntryNameListing(jar, new JarFilter() {
             @Override
             public boolean accept(final String dirName, final String name) {
                 return name.equals(filterName);
             }
         });
+    }
+
+    // The language is taken from string resource jar entry name (values-<language>/)
+    // or {@link LocaleUtils#DEFAULT_LANGUAGE_NAME} for the default string resource
+    // directory (values/).
+    public static String getLanguageFromEntryName(final String jarEntryName) {
+        final String dirName = jarEntryName.substring(0, jarEntryName.lastIndexOf('/'));
+        final int pos = dirName.lastIndexOf('/');
+        final String parentName = (pos >= 0) ? dirName.substring(pos + 1) : dirName;
+        final int languagePos = parentName.indexOf('-');
+        if (languagePos < 0) {
+            // Default resource name.
+            return LocaleUtils.DEFAULT_LANGUAGE_NAME;
+        }
+        final String language = parentName.substring(languagePos + 1);
+        final int countryPos = language.indexOf("-r");
+        if (countryPos < 0) {
+            return language;
+        }
+        return language.replace("-r", "_");
+    }
+
+    public static void close(final Closeable stream) {
+        try {
+            if (stream != null) {
+                stream.close();
+            }
+        } catch (IOException e) {
+        }
     }
 }

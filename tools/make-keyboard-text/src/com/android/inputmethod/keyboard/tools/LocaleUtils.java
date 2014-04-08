@@ -26,6 +26,10 @@ import java.util.Locale;
  * for the make-keyboard-text tool.
  */
 public final class LocaleUtils {
+    public static final String DEFAULT_LANGUAGE_NAME = "DEFAULT";
+    public static final String NO_LANGUAGE_CODE = "zz";
+    public static final String NO_LANGUAGE_DISPLAY_NAME = "Alphabet";
+
     private LocaleUtils() {
         // Intentional empty constructor for utility class.
     }
@@ -57,5 +61,13 @@ public final class LocaleUtils {
             }
             return retval;
         }
+    }
+
+    public static String getLanguageDisplayName(final String language) {
+        if (language.equals(NO_LANGUAGE_CODE)) {
+            return NO_LANGUAGE_DISPLAY_NAME;
+        }
+        final Locale locale = constructLocaleFromString(language);
+        return locale.getDisplayName(Locale.ENGLISH);
     }
 }
