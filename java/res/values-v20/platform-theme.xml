@@ -21,9 +21,6 @@
 <!-- TODO: This file is temporarily placed under values-v20. -->
 <!-- TODO: It might be moved under values-v21. -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- TODO: Use Theme.Quantum.Light once it is fixed.
     <style name="platformActivityTheme" parent="@android:style/Theme.Quantum.Light" />
-    -->
-    <style name="platformActivityTheme" parent="@android:style/Theme.Quantum.Light.NoActionBar.Fullscreen" />
     <style name="platformDialogTheme" parent="@android:style/Theme.Quantum.Light.Dialog" />
 </resources>
