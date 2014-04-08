@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.TreeMap;
 import java.util.jar.JarFile;
 
@@ -60,9 +61,10 @@ public class MoreKeysResources {
                 jar, TEXT_RESOURCE_NAME);
         for (final String entryName : resourceEntryNames) {
             final StringResourceMap resMap = new StringResourceMap(entryName);
-            mResourcesMap.put(resMap.mLocale, resMap);
+            mResourcesMap.put(LocaleUtils.getLocaleCode(resMap.mLocale), resMap);
         }
-        mDefaultResourceMap = mResourcesMap.get(LocaleUtils.DEFAULT_LOCALE_KEY);
+        mDefaultResourceMap = mResourcesMap.get(
+                LocaleUtils.getLocaleCode(LocaleUtils.DEFAULT_LOCALE));
 
         // Initialize name histogram and names list.
         final HashMap<String, Integer> nameHistogram = mNameHistogram;
@@ -165,13 +167,13 @@ public class MoreKeysResources {
         mDefaultResourceMap.setOutputArraySize(outputArraySize);
     }
 
-    private static String getArrayNameForLocale(final String locale) {
-        return TEXTS_ARRAY_NAME_PREFIX + locale;
+    private static String getArrayNameForLocale(final Locale locale) {
+        return TEXTS_ARRAY_NAME_PREFIX + LocaleUtils.getLocaleCode(locale);
     }
 
     private void dumpTexts(final PrintStream out) {
         for (final StringResourceMap resMap : mResourcesMap.values()) {
-            final String locale = resMap.mLocale;
+            final Locale locale = resMap.mLocale;
             if (resMap == mDefaultResourceMap) continue;
             out.format("    /* Locale %s: %s */\n",
                     locale, LocaleUtils.getLocaleDisplayName(locale));
@@ -185,10 +187,11 @@ public class MoreKeysResources {
 
     private void dumpLocalesMap(final PrintStream out) {
         for (final StringResourceMap resMap : mResourcesMap.values()) {
-            final String locale = resMap.mLocale;
-            final String localeToDump = locale.equals(LocaleUtils.DEFAULT_LOCALE_KEY)
-                    ? String.format("\"%s\"", locale)
-                    : String.format("\"%s\"%s", locale, "       ".substring(locale.length()));
+            final Locale locale = resMap.mLocale;
+            final String localeStr = LocaleUtils.getLocaleCode(locale);
+            final String localeToDump = (locale == LocaleUtils.DEFAULT_LOCALE)
+                    ? String.format("\"%s\"", localeStr)
+                    : String.format("\"%s\"%s", localeStr, "       ".substring(localeStr.length()));
             out.format("        %s, %-12s /* %3d/%3d %s */\n",
                     localeToDump, getArrayNameForLocale(locale) + ",",
                     resMap.getResources().size(), resMap.getOutputArraySize(),

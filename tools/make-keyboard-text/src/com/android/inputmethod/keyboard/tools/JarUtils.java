@@ -24,6 +24,7 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.Locale;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -86,23 +87,23 @@ public final class JarUtils {
     }
 
     // The locale is taken from string resource jar entry name (values-<locale>/)
-    // or {@link LocaleUtils#DEFAULT_LOCALE_KEY} for the default string resource
+    // or {@link LocaleUtils#DEFAULT_LOCALE} for the default string resource
     // directory (values/).
-    public static String getLocaleFromEntryName(final String jarEntryName) {
+    public static Locale getLocaleFromEntryName(final String jarEntryName) {
         final String dirName = jarEntryName.substring(0, jarEntryName.lastIndexOf('/'));
         final int pos = dirName.lastIndexOf('/');
         final String parentName = (pos >= 0) ? dirName.substring(pos + 1) : dirName;
         final int localePos = parentName.indexOf('-');
         if (localePos < 0) {
             // Default resource name.
-            return LocaleUtils.DEFAULT_LOCALE_KEY;
+            return LocaleUtils.DEFAULT_LOCALE;
         }
-        final String locale = parentName.substring(localePos + 1);
-        final int regionPos = locale.indexOf("-r");
+        final String localeStr = parentName.substring(localePos + 1);
+        final int regionPos = localeStr.indexOf("-r");
         if (regionPos < 0) {
-            return locale;
+            return LocaleUtils.constructLocaleFromString(localeStr);
         }
-        return locale.replace("-r", "_");
+        return LocaleUtils.constructLocaleFromString(localeStr.replace("-r", "_"));
     }
 
     public static void close(final Closeable stream) {
