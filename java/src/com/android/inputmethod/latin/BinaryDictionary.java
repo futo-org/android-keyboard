@@ -253,18 +253,20 @@ public final class BinaryDictionary extends Dictionary {
         // TODO: toLowerCase in the native code
         final int[] prevWordCodePointArray = (null == prevWord)
                 ? null : StringUtils.toCodePointArray(prevWord);
-        final int composerSize = composer.sizeWithoutTrailingSingleQuotes();
-
+        final InputPointers inputPointers = composer.getInputPointers();
         final boolean isGesture = composer.isBatchMode();
-        if (composerSize <= 1 || !isGesture) {
+        final int inputSize;
+        if (!isGesture) {
+            final int composerSize = composer.sizeWithoutTrailingSingleQuotes();
             if (composerSize > MAX_WORD_LENGTH - 1) return null;
             for (int i = 0; i < composerSize; i++) {
                 mInputCodePoints[i] = composer.getCodeAt(i);
             }
+            inputSize = composerSize;
+        } else {
+            inputSize = inputPointers.getPointerSize();
         }
 
-        final InputPointers ips = composer.getInputPointers();
-        final int inputSize = isGesture ? ips.getPointerSize() : composerSize;
         mNativeSuggestOptions.setIsGesture(isGesture);
         mNativeSuggestOptions.setAdditionalFeaturesOptions(additionalFeaturesOptions);
         if (inOutLanguageWeight != null) {
@@ -274,12 +276,12 @@ public final class BinaryDictionary extends Dictionary {
         }
         // proximityInfo and/or prevWordForBigrams may not be null.
         getSuggestionsNative(mNativeDict, proximityInfo.getNativeProximityInfo(),
-                getTraverseSession(sessionId).getSession(), ips.getXCoordinates(),
-                ips.getYCoordinates(), ips.getTimes(), ips.getPointerIds(), mInputCodePoints,
-                inputSize, mNativeSuggestOptions.getOptions(),
-                prevWordCodePointArray, mOutputSuggestionCount, mOutputCodePoints, mOutputScores,
-                mSpaceIndices, mOutputTypes, mOutputAutoCommitFirstWordConfidence,
-                mInputOutputLanguageWeight);
+                getTraverseSession(sessionId).getSession(), inputPointers.getXCoordinates(),
+                inputPointers.getYCoordinates(), inputPointers.getTimes(),
+                inputPointers.getPointerIds(), mInputCodePoints, inputSize,
+                mNativeSuggestOptions.getOptions(), prevWordCodePointArray, mOutputSuggestionCount,
+                mOutputCodePoints, mOutputScores, mSpaceIndices, mOutputTypes,
+                mOutputAutoCommitFirstWordConfidence, mInputOutputLanguageWeight);
         if (inOutLanguageWeight != null) {
             inOutLanguageWeight[0] = mInputOutputLanguageWeight[0];
         }
