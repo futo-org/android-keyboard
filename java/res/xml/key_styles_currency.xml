@@ -129,6 +129,32 @@
                 latin:styleName="moreCurrency4KeyStyle"
                 latin:keySpec="&#x00A2;" />
         </case>
+        <!-- IN: India (Rupee) -->
+        <case
+            latin:countryCode="IN"
+        >
+            <!-- U+20B9: "₹" INDIAN RUPEE SIGN
+                 U+00A3: "£" POUND SIGN
+                 U+20AC: "€" EURO SIGN
+                 U+00A2: "¢" CENT SIGN -->
+            <key-style
+                latin:styleName="currencyKeyStyle"
+                latin:keySpec="&#x20B9;"
+                latin:moreKeys="!text/morekeys_currency" />
+            <key-style
+                latin:styleName="moreCurrency1KeyStyle"
+                latin:keySpec="&#x00A3;" />
+            <key-style
+                latin:styleName="moreCurrency2KeyStyle"
+                latin:keySpec="&#x20AC;" />
+            <key-style
+                latin:styleName="moreCurrency3KeyStyle"
+                latin:keySpec="$"
+                latin:moreKeys="&#x00A2;" />
+            <key-style
+                latin:styleName="moreCurrency4KeyStyle"
+                latin:keySpec="&#x00A2;" />
+        </case>
         <!-- GB: United Kingdom (Pound) -->
         <case
             latin:countryCode="GB"

@@ -34,6 +34,7 @@
     de: German/qwertz
     de_CH: German (Switzerland)/swiss
     el: Greek/greek
+    en_IN: English (India)/qwerty
     en_US: English (United States)/qwerty
     en_GB: English (Great Britain)/qwerty
     eo: Esperanto/spanish
@@ -214,6 +215,14 @@
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=greek,EmojiCapable"
             android:isAsciiCapable="false"
+    />
+    <subtype android:icon="@drawable/ic_ime_switcher_dark"
+            android:label="@string/subtype_generic"
+            android:subtypeId="0x8d58fc2d"
+            android:imeSubtypeLocale="en_IN"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,AsciiCapable,EmojiCapable"
+            android:isAsciiCapable="true"
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"

@@ -51,7 +51,7 @@ public final class Hindi extends LayoutBase {
         public ExpectedKey getBackToSymbolsKey() { return HINDI_BACK_TO_SYMBOLS_KEY; }
 
         @Override
-        public ExpectedKey getCurrencyKey() { return CURRENCY_HINDI; }
+        public ExpectedKey getCurrencyKey() { return CURRENCY_RUPEE; }
 
         @Override
         public ExpectedKey[] getOtherCurrencyKeys() {
@@ -78,7 +78,7 @@ public final class Hindi extends LayoutBase {
                 Constants.CODE_SHIFT);
 
         // U+20B9: "₹" INDIAN RUPEE SIGN
-        private static final ExpectedKey CURRENCY_HINDI = key("\u20B9",
+        private static final ExpectedKey CURRENCY_RUPEE = key("\u20B9",
                 Symbols.CURRENCY_GENERIC_MORE_KEYS);
     }
 
