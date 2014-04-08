@@ -339,7 +339,7 @@ const WordProperty PatriciaTriePolicy::getWordProperty(const int *const codePoin
     std::vector<int> codePointVector(ptNodeParams.getCodePoints(),
             ptNodeParams.getCodePoints() + ptNodeParams.getCodePointCount());
     // Fetch bigram information.
-    std::vector<WordProperty::BigramProperty> bigrams;
+    std::vector<BigramProperty> bigrams;
     const int bigramListPos = getBigramsPositionOfPtNode(ptNodePos);
     int bigramWord1CodePoints[MAX_WORD_LENGTH];
     BinaryDictionaryBigramsIterator bigramsIt(getBigramsStructurePolicy(), bigramListPos);
@@ -360,7 +360,7 @@ const WordProperty PatriciaTriePolicy::getWordProperty(const int *const codePoin
         }
     }
     // Fetch shortcut information.
-    std::vector<WordProperty::ShortcutProperty> shortcuts;
+    std::vector<UnigramProperty::ShortcutProperty> shortcuts;
     int shortcutPos = getShortcutPositionOfPtNode(ptNodePos);
     if (shortcutPos != NOT_A_DICT_POS) {
         int shortcutTargetCodePoints[MAX_WORD_LENGTH];
@@ -379,11 +379,10 @@ const WordProperty PatriciaTriePolicy::getWordProperty(const int *const codePoin
             shortcuts.emplace_back(&shortcutTarget, shortcutProbability);
         }
     }
-    return WordProperty(&codePointVector, ptNodeParams.isNotAWord(),
-            ptNodeParams.isBlacklisted(), ptNodeParams.hasBigrams(),
-            ptNodeParams.hasShortcutTargets(), ptNodeParams.getProbability(),
-            NOT_A_TIMESTAMP /* timestamp */, 0 /* level */, 0 /* count */,
-            &bigrams, &shortcuts);
+    const UnigramProperty unigramProperty(ptNodeParams.isNotAWord(),
+            ptNodeParams.isBlacklisted(), ptNodeParams.getProbability(),
+            NOT_A_TIMESTAMP /* timestamp */, 0 /* level */, 0 /* count */, &shortcuts);
+    return WordProperty(&codePointVector, &unigramProperty, &bigrams);
 }
 
 int PatriciaTriePolicy::getNextWordAndNextToken(const int token, int *const outCodePoints) {

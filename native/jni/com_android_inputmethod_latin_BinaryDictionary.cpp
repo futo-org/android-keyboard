@@ -24,7 +24,7 @@
 #include "jni.h"
 #include "jni_common.h"
 #include "suggest/core/dictionary/dictionary.h"
-#include "suggest/core/dictionary/word_property.h"
+#include "suggest/core/dictionary/property/word_property.h"
 #include "suggest/core/result/suggestion_results.h"
 #include "suggest/core/suggest_options.h"
 #include "suggest/policyimpl/dictionary/structure/dictionary_structure_with_buffer_policy_factory.h"
