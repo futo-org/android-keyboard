@@ -20,7 +20,7 @@
 #include <memory>
 
 #include "defines.h"
-#include "suggest/core/dictionary/word_property.h"
+#include "suggest/core/dictionary/property/word_property.h"
 
 namespace latinime {
 
