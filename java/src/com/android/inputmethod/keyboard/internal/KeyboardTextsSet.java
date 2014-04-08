@@ -41,8 +41,7 @@ public final class KeyboardTextsSet {
     private HashMap<String, String> mResourceNameToTextsMap = CollectionUtils.newHashMap();
 
     public void setLocale(final Locale locale, final Context context) {
-        final String language = locale.getLanguage();
-        mTextsTable = KeyboardTextsTable.getTextsTable(language);
+        mTextsTable = KeyboardTextsTable.getTextsTable(locale);
         final Resources res = context.getResources();
         final int referenceId = context.getApplicationInfo().labelRes;
         final String resourcePackageName = res.getResourcePackageName(referenceId);

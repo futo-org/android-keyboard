@@ -34,8 +34,8 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 public class StringResourceMap {
-    // Lanugage name.
-    public final String mLanguage;
+    // Locale name.
+    public final String mLocale;
     // String resource list.
     private final List<StringResource> mResources;
     // Name to string resource map.
@@ -44,11 +44,11 @@ public class StringResourceMap {
     // The length of String[] that is created from this {@link StringResourceMap}. The length is
     // calculated in {@link MoreKeysResources#dumpTexts(OutputStream)} and recorded by
     // {@link #setOutputArraySize(int)}. The recorded length is used as a part of comment by
-    // {@link MoreKeysResources#dumpLanguageMap(OutputStream)} via {@link #getOutputArraySize()}.
+    // {@link MoreKeysResources#dumpLocaleMap(OutputStream)} via {@link #getOutputArraySize()}.
     private int mOutputArraySize;
 
     public StringResourceMap(final String jarEntryName) {
-        mLanguage = JarUtils.getLanguageFromEntryName(jarEntryName);
+        mLocale = JarUtils.getLocaleFromEntryName(jarEntryName);
         final StringResourceHandler handler = new StringResourceHandler();
         final SAXParserFactory factory = SAXParserFactory.newInstance();
         factory.setNamespaceAware(true);
