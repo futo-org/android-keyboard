@@ -191,13 +191,42 @@ public final class StringUtils {
         }
         final int[] codePoints =
                 new int[Character.codePointCount(charSequence, startIndex, endIndex)];
+        copyCodePointsAndReturnCodePointCount(codePoints, charSequence, startIndex, endIndex,
+                false /* downCase */);
+        return codePoints;
+    }
+
+    /**
+     * Copies the codepoints in a CharSequence to an int array.
+     *
+     * This method assumes there is enough space in the array to store the code points. The size
+     * can be measured with Character#codePointCount(CharSequence, int, int) before passing to this
+     * method. If the int array is too small, an ArrayIndexOutOfBoundsException will be thrown.
+     * Also, this method makes no effort to be thread-safe. Do not modify the CharSequence while
+     * this method is running, or the behavior is undefined.
+     * This method can optionally downcase code points before copying them, but it pays no attention
+     * to locale while doing so.
+     *
+     * @param destination the int array.
+     * @param charSequence the CharSequence.
+     * @param startIndex the start index inside the string in java chars, inclusive.
+     * @param endIndex the end index inside the string in java chars, exclusive.
+     * @param downCase if this is true, code points will be downcased before being copied.
+     * @return the number of copied code points.
+     */
+    public static int copyCodePointsAndReturnCodePointCount(final int[] destination,
+            final CharSequence charSequence, final int startIndex, final int endIndex,
+            final boolean downCase) {
         int destIndex = 0;
         for (int index = startIndex; index < endIndex;
                 index = Character.offsetByCodePoints(charSequence, index, 1)) {
-            codePoints[destIndex] = Character.codePointAt(charSequence, index);
+            final int codePoint = Character.codePointAt(charSequence, index);
+            // TODO: stop using this, as it's not aware of the locale and does not always do
+            // the right thing.
+            destination[destIndex] = downCase ? Character.toLowerCase(codePoint) : codePoint;
             destIndex++;
         }
-        return codePoints;
+        return destIndex;
     }
 
     public static int[] toSortedCodePointArray(final String string) {

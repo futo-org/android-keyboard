@@ -131,27 +131,40 @@ public final class WordComposer {
         return mCodePointSize;
     }
 
+    /**
+     * Copy the code points in the typed word to a destination array of ints.
+     *
+     * If the array is too small to hold the code points in the typed word, nothing is copied and
+     * -1 is returned.
+     *
+     * @param destination the array of ints.
+     * @param maxSize the size of the array.
+     * @return the number of copied code points.
+     */
+    public int copyCodePointsExceptTrailingSingleQuotesAndReturnCodePointCount(
+            final int[] destination, final int maxSize) {
+        int i = mTypedWordCache.length() - 1;
+        while (i >= 0 && mTypedWordCache.charAt(i) == Constants.CODE_SINGLE_QUOTE) {
+            --i;
+        }
+        if (i < 0) {
+            // The string is empty or contains only single quotes.
+            return 0;
+        }
+        final int codePointSize = Character.codePointCount(mTypedWordCache, 0, i);
+        if (codePointSize > maxSize) {
+            return -1;
+        }
+        return StringUtils.copyCodePointsAndReturnCodePointCount(destination, mTypedWordCache, 0,
+                i + 1, true /* downCase */);
+    }
+
     public boolean isSingleLetter() {
         return size() == 1;
     }
 
-    // When the composition contains trailing quotes, we don't pass them to the suggestion engine.
-    // This is because "'tgis'" should be corrected to "'this'", but we can't afford to consider
-    // single quotes as separators because of their very common use as apostrophes.
-    public int sizeWithoutTrailingSingleQuotes() {
-        return size() - mTrailingSingleQuotesCount;
-    }
-
     public final boolean isComposingWord() {
         return size() > 0;
-    }
-
-    // TODO: make sure that the index should not exceed MAX_WORD_LENGTH
-    public int getCodeAt(int index) {
-        if (index >= MAX_WORD_LENGTH) {
-            return -1;
-        }
-        return mPrimaryKeyCodes[index];
     }
 
     public InputPointers getInputPointers() {
