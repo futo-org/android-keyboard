@@ -3656,7 +3656,7 @@ public final class KeyboardTextsTable {
 
     private static final Object[] LOCALES_AND_TEXTS = {
     // "locale", TEXT_ARRAY,  /* numberOfNonNullText/lengthOf_TEXT_ARRAY localeName */
-        "DEFAULT", TEXTS_DEFAULT, /* 168/168 default */
+        "DEFAULT", TEXTS_DEFAULT, /* 168/168 DEFAULT */
         "af"     , TEXTS_af,    /*   7/ 12 Afrikaans */
         "ar"     , TEXTS_ar,    /*  55/107 Arabic */
         "az_AZ"  , TEXTS_az_AZ, /*   8/ 17 Azerbaijani (Azerbaijan) */
