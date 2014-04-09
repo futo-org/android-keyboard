@@ -28,9 +28,6 @@ class ProximityInfoParams {
     static const float VERTICAL_SWEET_SPOT_SCALE;
     static const float VERTICAL_SWEET_SPOT_SCALE_G;
 
-    // Used by ProximityInfoStateUtils::initGeometricDistanceInfos()
-    static const float NEAR_KEY_NORMALIZED_SQUARED_THRESHOLD;
-
     // Used by ProximityInfoStateUtils::updateNearKeysDistances()
     static const float NEAR_KEY_THRESHOLD_FOR_DISTANCE;
 

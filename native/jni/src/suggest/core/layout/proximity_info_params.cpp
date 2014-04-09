@@ -24,9 +24,6 @@ const float ProximityInfoParams::VERTICAL_SWEET_SPOT_SCALE = 1.0f;
 const float ProximityInfoParams::VERTICAL_SWEET_SPOT_SCALE_G = 0.5f;
 
 /* Per method constants */
-// Used by ProximityInfoStateUtils::initGeometricDistanceInfos()
-const float ProximityInfoParams::NEAR_KEY_NORMALIZED_SQUARED_THRESHOLD = 4.0f;
-
 // Used by ProximityInfoStateUtils::updateNearKeysDistances()
 const float ProximityInfoParams::NEAR_KEY_THRESHOLD_FOR_DISTANCE = 2.0f;
 
@@ -50,7 +47,7 @@ const int ProximityInfoParams::NUM_POINTS_FOR_SPEED_CALCULATION = 2;
 const int ProximityInfoParams::LAST_POINT_SKIP_DISTANCE_SCALE = 4;
 
 // Used by ProximityInfoStateUtils::updateAlignPointProbabilities()
-const float ProximityInfoParams::MIN_PROBABILITY = 0.000001f;
+const float ProximityInfoParams::MIN_PROBABILITY = 0.000005f;
 const float ProximityInfoParams::MAX_SKIP_PROBABILITY = 0.95f;
 const float ProximityInfoParams::SKIP_FIRST_POINT_PROBABILITY = 0.01f;
 const float ProximityInfoParams::SKIP_LAST_POINT_PROBABILITY = 0.1f;

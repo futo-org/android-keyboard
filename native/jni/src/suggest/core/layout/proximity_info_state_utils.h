@@ -71,13 +71,12 @@ class ProximityInfoStateUtils {
             const std::vector<float> *const sampledSpeedRates,
             const std::vector<int> *const sampledLengthCache,
             const std::vector<float> *const sampledNormalizedSquaredLengthCache,
-            std::vector<NearKeycodesSet> *sampledNearKeySets,
             const ProximityInfo *const proximityInfo,
             std::vector<hash_map_compat<int, float> > *charProbabilities);
     static void updateSampledSearchKeySets(const ProximityInfo *const proximityInfo,
             const int sampledInputSize, const int lastSavedInputSize,
             const std::vector<int> *const sampledLengthCache,
-            const std::vector<NearKeycodesSet> *const sampledNearKeySets,
+            const std::vector<hash_map_compat<int, float> > *const charProbabilities,
             std::vector<NearKeycodesSet> *sampledSearchKeySets,
             std::vector<std::vector<int> > *sampledSearchKeyVectors);
     static float getPointToKeyByIdLength(const float maxPointToKeyLength,
@@ -87,7 +86,6 @@ class ProximityInfoStateUtils {
             const int sampledInputSize, const int lastSavedInputSize, const bool isGeometric,
             const std::vector<int> *const sampledInputXs,
             const std::vector<int> *const sampledInputYs,
-            std::vector<NearKeycodesSet> *sampledNearKeySets,
             std::vector<float> *sampledNormalizedSquaredLengthCache);
     static void initPrimaryInputWord(const int inputSize, const int *const inputProximities,
             int *primaryInputWord);
