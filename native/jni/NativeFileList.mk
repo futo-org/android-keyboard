@@ -101,4 +101,5 @@ LATIN_IME_CORE_SRC_FILES := \
         time_keeper.cpp)
 
 LATIN_IME_CORE_TEST_FILES := \
+    defines_test.cpp \
     utils/autocorrection_threshold_utils_test.cpp
