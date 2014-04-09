@@ -35,7 +35,13 @@
 // Must be equal to ProximityInfo.MAX_PROXIMITY_CHARS_SIZE in Java
 #define MAX_PROXIMITY_CHARS_SIZE 16
 #define ADDITIONAL_PROXIMITY_CHAR_DELIMITER_CODE 2
-#define NELEMS(x) (sizeof(x) / sizeof((x)[0]))
+
+// TODO: Use size_t instead of int.
+// Disclaimer: You will see a compile error if you use this macro against a variable-length array.
+// Sorry for the inconvenience. It isn't supported.
+template <typename T, int N>
+char (&ArraySizeHelper(T (&array)[N]))[N];
+#define NELEMS(x) (sizeof(ArraySizeHelper(x)))
 
 AK_FORCE_INLINE static int intArrayToCharArray(const int *const source, const int sourceSize,
         char *dest, const int destSize) {
