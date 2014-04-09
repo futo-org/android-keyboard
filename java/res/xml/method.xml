@@ -40,7 +40,7 @@
     eo: Esperanto/spanish
     es: Spanish/spanish
     es_US: Spanish (United States)/spanish
-    (es_419: Spanish (Latin America)/qwerty)
+    es_419: Spanish (Latin America)/spanish
     et_EE: Estonian (Estonia)/nordic
     eu_ES: Basque (Spain)/spanish
     fa: Persian/farsi
@@ -248,16 +248,14 @@
             android:imeSubtypeExtraValue="KeyboardLayoutSet=spanish,AsciiCapable,EmojiCapable"
             android:isAsciiCapable="true"
     />
-    <!--
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
-            android:subtypeId="0x623f9286"
+            android:subtypeId="0xa23e5d19"
             android:imeSubtypeLocale="es_419"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=spanish,AsciiCapable,EmojiCapable"
             android:isAsciiCapable="true"
     />
-    -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
             android:subtypeId="0xec2d3955"
