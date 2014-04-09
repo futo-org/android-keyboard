@@ -78,8 +78,13 @@ class ProximityInfoParams {
     static const float SPEEDxNEAREST_WEIGHT_FOR_STANDARD_DEVIATION;
     static const float MAX_SPEEDxNEAREST_RATE_FOR_STANDARD_DEVIATION;
     static const float MIN_STANDARD_DEVIATION;
-    static const float PREV_DISTANCE_WEIGHT;
-    static const float NEXT_DISTANCE_WEIGHT;
+    // X means gesture's direction. Y means gesture's orthogonal direction.
+    static const float STANDARD_DEVIATION_X_WEIGHT_FOR_FIRST;
+    static const float STANDARD_DEVIATION_Y_WEIGHT_FOR_FIRST;
+    static const float STANDARD_DEVIATION_X_WEIGHT_FOR_LAST;
+    static const float STANDARD_DEVIATION_Y_WEIGHT_FOR_LAST;
+    static const float STANDARD_DEVIATION_X_WEIGHT;
+    static const float STANDARD_DEVIATION_Y_WEIGHT;
 
     // Used by ProximityInfoStateUtils::suppressCharProbabilities()
     static const float SUPPRESSION_LENGTH_WEIGHT;

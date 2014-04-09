@@ -72,6 +72,7 @@ class ProximityInfoStateUtils {
             const std::vector<int> *const sampledLengthCache,
             const std::vector<float> *const sampledNormalizedSquaredLengthCache,
             std::vector<NearKeycodesSet> *sampledNearKeySets,
+            const ProximityInfo *const proximityInfo,
             std::vector<hash_map_compat<int, float> > *charProbabilities);
     static void updateSampledSearchKeySets(const ProximityInfo *const proximityInfo,
             const int sampledInputSize, const int lastSavedInputSize,

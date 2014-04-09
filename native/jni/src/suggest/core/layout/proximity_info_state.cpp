@@ -134,7 +134,7 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
                     mProximityInfo->getKeyCount(), lastSavedInputSize, mSampledInputSize,
                     &mSampledInputXs, &mSampledInputYs, &mSpeedRates, &mSampledLengthCache,
                     &mSampledNormalizedSquaredLengthCache, &mSampledNearKeySets,
-                    &mCharProbabilities);
+                    mProximityInfo, &mCharProbabilities);
             ProximityInfoStateUtils::updateSampledSearchKeySets(mProximityInfo,
                     mSampledInputSize, lastSavedInputSize, &mSampledLengthCache,
                     &mSampledNearKeySets, &mSampledSearchKeySets,

@@ -101,4 +101,5 @@ LATIN_IME_CORE_SRC_FILES := \
 
 LATIN_IME_CORE_TEST_FILES := \
     defines_test.cpp \
+    suggest/core/layout/normal_distribution_2d_test.cpp \
     utils/autocorrection_threshold_utils_test.cpp

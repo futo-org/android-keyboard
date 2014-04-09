@@ -24,7 +24,7 @@
 
 #include "defines.h"
 #include "suggest/core/layout/geometry_utils.h"
-#include "suggest/core/layout/normal_distribution.h"
+#include "suggest/core/layout/normal_distribution_2d.h"
 #include "suggest/core/layout/proximity_info.h"
 #include "suggest/core/layout/proximity_info_params.h"
 
@@ -627,6 +627,7 @@ namespace latinime {
         const std::vector<int> *const sampledLengthCache,
         const std::vector<float> *const sampledNormalizedSquaredLengthCache,
         std::vector<NearKeycodesSet> *sampledNearKeySets,
+        const ProximityInfo *const proximityInfo,
         std::vector<hash_map_compat<int, float> > *charProbabilities) {
     charProbabilities->resize(sampledInputSize);
     // Calculates probabilities of using a point as a correlated point with the character
@@ -709,89 +710,57 @@ namespace latinime {
         // (1.0f - skipProbability).
         const float inputCharProbability = 1.0f - skipProbability;
 
-        const float speedxAngleRate = std::min(speedRate * currentAngle / M_PI_F
+        const float speedMultipliedByAngleRate = std::min(speedRate * currentAngle / M_PI_F
                 * ProximityInfoParams::SPEEDxANGLE_WEIGHT_FOR_STANDARD_DEVIATION,
                         ProximityInfoParams::MAX_SPEEDxANGLE_RATE_FOR_STANDARD_DEVIATION);
-        const float speedxNearestKeyDistanceRate = std::min(speedRate * nearestKeyDistance
-                * ProximityInfoParams::SPEEDxNEAREST_WEIGHT_FOR_STANDARD_DEVIATION,
-                        ProximityInfoParams::MAX_SPEEDxNEAREST_RATE_FOR_STANDARD_DEVIATION);
-        const float sigma = speedxAngleRate + speedxNearestKeyDistanceRate
-                + ProximityInfoParams::MIN_STANDARD_DEVIATION;
-
-        NormalDistribution distribution(
-                ProximityInfoParams::CENTER_VALUE_OF_NORMALIZED_DISTRIBUTION, sigma);
+        const float speedMultipliedByNearestKeyDistanceRate = std::min(
+                speedRate * nearestKeyDistance
+                        * ProximityInfoParams::SPEEDxNEAREST_WEIGHT_FOR_STANDARD_DEVIATION,
+                                ProximityInfoParams::MAX_SPEEDxNEAREST_RATE_FOR_STANDARD_DEVIATION);
+        const float sigma = (speedMultipliedByAngleRate + speedMultipliedByNearestKeyDistanceRate
+                + ProximityInfoParams::MIN_STANDARD_DEVIATION) * mostCommonKeyWidth;
+        float theta = 0.0f;
+        // TODO: Use different metrics to compute sigmas.
+        float sigmaX = sigma;
+        float sigmaY = sigma;
+        if (i == 0 && i != sampledInputSize - 1) {
+            // First point
+            theta = getDirection(sampledInputXs, sampledInputYs, i + 1, i);
+            sigmaX *= ProximityInfoParams::STANDARD_DEVIATION_X_WEIGHT_FOR_FIRST;
+            sigmaY *= ProximityInfoParams::STANDARD_DEVIATION_Y_WEIGHT_FOR_FIRST;
+        } else {
+            if (i == sampledInputSize - 1) {
+                // Last point
+                sigmaX *= ProximityInfoParams::STANDARD_DEVIATION_X_WEIGHT_FOR_LAST;
+                sigmaY *= ProximityInfoParams::STANDARD_DEVIATION_Y_WEIGHT_FOR_LAST;
+            } else {
+                sigmaX *= ProximityInfoParams::STANDARD_DEVIATION_X_WEIGHT;
+                sigmaY *= ProximityInfoParams::STANDARD_DEVIATION_Y_WEIGHT;
+            }
+            theta = getDirection(sampledInputXs, sampledInputYs, i, i - 1);
+        }
+        NormalDistribution2D distribution((*sampledInputXs)[i], sigmaX, (*sampledInputYs)[i],
+                sigmaY, theta);
         // Summing up probability densities of all near keys.
         float sumOfProbabilityDensities = 0.0f;
         for (int j = 0; j < keyCount; ++j) {
             if ((*sampledNearKeySets)[i].test(j)) {
-                float distance = sqrtf(getPointToKeyByIdLength(
-                        maxPointToKeyLength, sampledNormalizedSquaredLengthCache, keyCount, i, j));
-                if (i == 0 && i != sampledInputSize - 1) {
-                    // For the first point, weighted average of distances from first point and the
-                    // next point to the key is used as a point to key distance.
-                    const float nextDistance = sqrtf(getPointToKeyByIdLength(
-                            maxPointToKeyLength, sampledNormalizedSquaredLengthCache, keyCount,
-                            i + 1, j));
-                    if (nextDistance < distance) {
-                        // The distance of the first point tends to bigger than continuing
-                        // points because the first touch by the user can be sloppy.
-                        // So we promote the first point if the distance of that point is larger
-                        // than the distance of the next point.
-                        distance = (distance
-                                + nextDistance * ProximityInfoParams::NEXT_DISTANCE_WEIGHT)
-                                        / (1.0f + ProximityInfoParams::NEXT_DISTANCE_WEIGHT);
-                    }
-                } else if (i != 0 && i == sampledInputSize - 1) {
-                    // For the first point, weighted average of distances from last point and
-                    // the previous point to the key is used as a point to key distance.
-                    const float previousDistance = sqrtf(getPointToKeyByIdLength(
-                            maxPointToKeyLength, sampledNormalizedSquaredLengthCache, keyCount,
-                            i - 1, j));
-                    if (previousDistance < distance) {
-                        // The distance of the last point tends to bigger than continuing points
-                        // because the last touch by the user can be sloppy. So we promote the
-                        // last point if the distance of that point is larger than the distance of
-                        // the previous point.
-                        distance = (distance
-                                + previousDistance * ProximityInfoParams::PREV_DISTANCE_WEIGHT)
-                                        / (1.0f + ProximityInfoParams::PREV_DISTANCE_WEIGHT);
-                    }
-                }
-                // TODO: Promote the first point when the extended line from the next input is near
-                // from a key. Also, promote the last point as well.
-                sumOfProbabilityDensities += distribution.getProbabilityDensity(distance);
+                sumOfProbabilityDensities += distribution.getProbabilityDensity(
+                        proximityInfo->getKeyCenterXOfKeyIdG(j,
+                                NOT_A_COORDINATE /* referencePointX */, true /* isGeometric */),
+                        proximityInfo->getKeyCenterYOfKeyIdG(j,
+                                NOT_A_COORDINATE /* referencePointY */, true /* isGeometric */));
             }
         }
 
         // Split the probability of an input point to keys that are close to the input point.
         for (int j = 0; j < keyCount; ++j) {
             if ((*sampledNearKeySets)[i].test(j)) {
-                float distance = sqrtf(getPointToKeyByIdLength(
-                        maxPointToKeyLength, sampledNormalizedSquaredLengthCache, keyCount, i, j));
-                if (i == 0 && i != sampledInputSize - 1) {
-                    // For the first point, weighted average of distances from the first point and
-                    // the next point to the key is used as a point to key distance.
-                    const float prevDistance = sqrtf(getPointToKeyByIdLength(
-                            maxPointToKeyLength, sampledNormalizedSquaredLengthCache, keyCount,
-                            i + 1, j));
-                    if (prevDistance < distance) {
-                        distance = (distance
-                                + prevDistance * ProximityInfoParams::NEXT_DISTANCE_WEIGHT)
-                                        / (1.0f + ProximityInfoParams::NEXT_DISTANCE_WEIGHT);
-                    }
-                } else if (i != 0 && i == sampledInputSize - 1) {
-                    // For the first point, weighted average of distances from last point and
-                    // the previous point to the key is used as a point to key distance.
-                    const float prevDistance = sqrtf(getPointToKeyByIdLength(
-                            maxPointToKeyLength, sampledNormalizedSquaredLengthCache, keyCount,
-                            i - 1, j));
-                    if (prevDistance < distance) {
-                        distance = (distance
-                                + prevDistance * ProximityInfoParams::PREV_DISTANCE_WEIGHT)
-                                        / (1.0f + ProximityInfoParams::PREV_DISTANCE_WEIGHT);
-                    }
-                }
-                const float probabilityDensity = distribution.getProbabilityDensity(distance);
+                const float probabilityDensity = distribution.getProbabilityDensity(
+                        proximityInfo->getKeyCenterXOfKeyIdG(j,
+                                NOT_A_COORDINATE /* referencePointX */, true /* isGeometric */),
+                        proximityInfo->getKeyCenterYOfKeyIdG(j,
+                                NOT_A_COORDINATE /* referencePointY */, true /* isGeometric */));
                 const float probability = inputCharProbability * probabilityDensity
                         / sumOfProbabilityDensities;
                 (*charProbabilities)[i][j] = probability;
