@@ -18,8 +18,10 @@
 
 #include <gtest/gtest.h>
 
+#include <algorithm>
 #include <cstdlib>
-#include <ctime>
+#include <functional>
+#include <random>
 #include <unordered_set>
 #include <vector>
 
@@ -27,32 +29,49 @@ namespace latinime {
 namespace {
 
 TEST(BloomFilterTest, TestFilter) {
+    static const int TEST_RANDOM_DATA_MAX = 65536;
     static const int ELEMENT_COUNT = 1000;
-    srand(time(0));
     std::vector<int> elements;
-    std::unordered_set<int> elementsThatHaveBeenSetInFilter;
-    for (int i = 0; i < ELEMENT_COUNT; ++i) {
-        elements.push_back(rand());
+
+    // Initialize data set with random integers.
+    {
+        // Use the uniform integer distribution [0, TEST_RANDOM_DATA_MAX].
+        std::uniform_int_distribution<int> distribution(0, TEST_RANDOM_DATA_MAX);
+        auto randomNumberGenerator = std::bind(distribution, std::mt19937());
+        for (int i = 0; i < ELEMENT_COUNT; ++i) {
+            elements.push_back(randomNumberGenerator());
+        }
     }
+
+    // Make sure BloomFilter contains nothing by default.
     BloomFilter bloomFilter;
     for (const int elem : elements) {
         ASSERT_FALSE(bloomFilter.isInFilter(elem));
     }
-    for (const int elem : elements) {
-        if (rand() % 2 == 0) {
-            bloomFilter.setInFilter(elem);
-            elementsThatHaveBeenSetInFilter.insert(elem);
+
+    // Copy some of the test vector into bloom filter.
+    std::unordered_set<int> elementsThatHaveBeenSetInFilter;
+    {
+        // Use the uniform integer distribution [0, 1].
+        std::uniform_int_distribution<int> distribution(0, 1);
+        auto randomBitGenerator = std::bind(distribution, std::mt19937());
+        for (const int elem : elements) {
+            if (randomBitGenerator() == 0) {
+                bloomFilter.setInFilter(elem);
+                elementsThatHaveBeenSetInFilter.insert(elem);
+            }
         }
     }
+
     for (const int elem : elements) {
         const bool existsInFilter = bloomFilter.isInFilter(elem);
         const bool hasBeenSetInFilter =
                 elementsThatHaveBeenSetInFilter.find(elem) != elementsThatHaveBeenSetInFilter.end();
         if (hasBeenSetInFilter) {
-            ASSERT_TRUE(existsInFilter);
+            EXPECT_TRUE(existsInFilter) << "elem: " << elem;
         }
         if (!existsInFilter) {
-            ASSERT_FALSE(hasBeenSetInFilter);
+            EXPECT_FALSE(hasBeenSetInFilter) << "elem: " << elem;
         }
     }
 }
