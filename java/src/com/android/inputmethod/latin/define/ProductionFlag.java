@@ -30,6 +30,12 @@ public final class ProductionFlag {
 
     public static final boolean IS_HARDWARE_KEYBOARD_SUPPORTED = false;
 
+    // When true, enable {@link InputMethodService#onUpdateCursor} callback with
+    // {@link InputMethodService#setCursorAnchorMonitorMode}, which is not yet available in
+    // API level 19. Do not turn this on in production until the new API becomes publicly
+    // available.
+    public static final boolean USES_CURSOR_ANCHOR_MONITOR = false;
+
     // Include all suggestions from all dictionaries in {@link SuggestedWords#mRawSuggestions}.
     public static final boolean INCLUDE_RAW_SUGGESTIONS = false;
 }
