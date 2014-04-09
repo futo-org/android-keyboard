@@ -27,7 +27,6 @@ LATIN_IME_CORE_SRC_FILES := \
         dic_nodes_cache.cpp) \
     $(addprefix suggest/core/dictionary/, \
         bigram_dictionary.cpp \
-        bloom_filter.cpp \
         dictionary.cpp \
         digraph_utils.cpp \
         error_type_utils.cpp \
