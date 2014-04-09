@@ -308,4 +308,68 @@ public class StringAndJsonUtilsTests extends AndroidTestCase {
             assertEquals(objs[i], newObjArray.get(i));
         }
     }
+
+    public void testToCodePointArray() {
+        final String STR_WITH_SUPPLEMENTARY_CHAR = "abcde\uD861\uDED7fgh\u0000\u2002\u2003\u3000xx";
+        final int[] EXPECTED_RESULT = new int[] { 'a', 'b', 'c', 'd', 'e', 0x286D7, 'f', 'g', 'h',
+                0, 0x2002, 0x2003, 0x3000, 'x', 'x'};
+        final int[] codePointArray = StringUtils.toCodePointArray(STR_WITH_SUPPLEMENTARY_CHAR, 0,
+                STR_WITH_SUPPLEMENTARY_CHAR.length());
+        assertEquals("toCodePointArray, size matches", codePointArray.length,
+                EXPECTED_RESULT.length);
+        for (int i = 0; i < EXPECTED_RESULT.length; ++i) {
+            assertEquals("toCodePointArray position " + i, codePointArray[i], EXPECTED_RESULT[i]);
+        }
+    }
+
+    public void testCopyCodePointsAndReturnCodePointCount() {
+        final String STR_WITH_SUPPLEMENTARY_CHAR = "AbcDE\uD861\uDED7fGh\u0000\u2002\u3000あx";
+        final int[] EXPECTED_RESULT = new int[] { 'A', 'b', 'c', 'D', 'E', 0x286D7,
+                'f', 'G', 'h', 0, 0x2002, 0x3000, 'あ', 'x'};
+        final int[] EXPECTED_RESULT_DOWNCASE = new int[] { 'a', 'b', 'c', 'd', 'e', 0x286D7,
+                'f', 'g', 'h', 0, 0x2002, 0x3000, 'あ', 'x'};
+
+        int[] codePointArray = new int[50];
+        int codePointCount = StringUtils.copyCodePointsAndReturnCodePointCount(codePointArray,
+                STR_WITH_SUPPLEMENTARY_CHAR, 0,
+                STR_WITH_SUPPLEMENTARY_CHAR.length(), false /* downCase */);
+        assertEquals("copyCodePointsAndReturnCodePointCount, size matches", codePointCount,
+                EXPECTED_RESULT.length);
+        for (int i = 0; i < codePointCount; ++i) {
+            assertEquals("copyCodePointsAndReturnCodePointCount position " + i, codePointArray[i],
+                    EXPECTED_RESULT[i]);
+        }
+
+        codePointCount = StringUtils.copyCodePointsAndReturnCodePointCount(codePointArray,
+                STR_WITH_SUPPLEMENTARY_CHAR, 0,
+                STR_WITH_SUPPLEMENTARY_CHAR.length(), true /* downCase */);
+        assertEquals("copyCodePointsAndReturnCodePointCount downcase, size matches", codePointCount,
+                EXPECTED_RESULT_DOWNCASE.length);
+        for (int i = 0; i < codePointCount; ++i) {
+            assertEquals("copyCodePointsAndReturnCodePointCount position " + i, codePointArray[i],
+                    EXPECTED_RESULT_DOWNCASE[i]);
+        }
+
+        final int JAVA_CHAR_COUNT = 8;
+        final int CODEPOINT_COUNT = 7;
+        codePointCount = StringUtils.copyCodePointsAndReturnCodePointCount(codePointArray,
+                STR_WITH_SUPPLEMENTARY_CHAR, 0, JAVA_CHAR_COUNT, false /* downCase */);
+        assertEquals("copyCodePointsAndReturnCodePointCount, size matches", codePointCount,
+                CODEPOINT_COUNT);
+        for (int i = 0; i < codePointCount; ++i) {
+            assertEquals("copyCodePointsAndReturnCodePointCount position " + i, codePointArray[i],
+                    EXPECTED_RESULT[i]);
+        }
+
+        boolean exceptionHappened = false;
+        codePointArray = new int[5];
+        try {
+            codePointCount = StringUtils.copyCodePointsAndReturnCodePointCount(codePointArray,
+                    STR_WITH_SUPPLEMENTARY_CHAR, 0, JAVA_CHAR_COUNT, false /* downCase */);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            exceptionHappened = true;
+        }
+        assertTrue("copyCodePointsAndReturnCodePointCount throws when array is too small",
+                exceptionHappened);
+    }
 }
