@@ -88,7 +88,7 @@ void Suggest::initializeSearch(DicTraverseSession *traverseSession) const {
     } else {
         // Restart recognition at the root.
         traverseSession->resetCache(TRAVERSAL->getMaxCacheSize(traverseSession->getInputSize()),
-                MAX_RESULTS);
+                TRAVERSAL->getTerminalCacheSize());
         // Create a new dic node here
         DicNode rootNode;
         DicNodeUtils::initAsRoot(traverseSession->getDictionaryStructurePolicy(),

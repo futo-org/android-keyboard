@@ -146,6 +146,10 @@ class TypingTraversal : public Traversal {
                 : ScoringParams::MAX_CACHE_DIC_NODE_SIZE;
     }
 
+    AK_FORCE_INLINE int getTerminalCacheSize() const {
+        return MAX_RESULTS;
+    }
+
     AK_FORCE_INLINE bool isPossibleOmissionChildNode(
             const DicTraverseSession *const traverseSession, const DicNode *const parentDicNode,
             const DicNode *const dicNode) const {
