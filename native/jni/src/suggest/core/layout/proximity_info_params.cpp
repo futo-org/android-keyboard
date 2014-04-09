@@ -76,8 +76,12 @@ const float ProximityInfoParams::MAX_SPEEDxANGLE_RATE_FOR_STANDARD_DEVIATION = 0
 const float ProximityInfoParams::SPEEDxNEAREST_WEIGHT_FOR_STANDARD_DEVIATION = 0.5f;
 const float ProximityInfoParams::MAX_SPEEDxNEAREST_RATE_FOR_STANDARD_DEVIATION = 0.15f;
 const float ProximityInfoParams::MIN_STANDARD_DEVIATION = 0.37f;
-const float ProximityInfoParams::PREV_DISTANCE_WEIGHT = 0.5f;
-const float ProximityInfoParams::NEXT_DISTANCE_WEIGHT = 0.6f;
+const float ProximityInfoParams::STANDARD_DEVIATION_X_WEIGHT_FOR_FIRST = 1.25f;
+const float ProximityInfoParams::STANDARD_DEVIATION_Y_WEIGHT_FOR_FIRST = 0.85f;
+const float ProximityInfoParams::STANDARD_DEVIATION_X_WEIGHT_FOR_LAST = 1.4f;
+const float ProximityInfoParams::STANDARD_DEVIATION_Y_WEIGHT_FOR_LAST = 0.95f;
+const float ProximityInfoParams::STANDARD_DEVIATION_X_WEIGHT = 1.1f;
+const float ProximityInfoParams::STANDARD_DEVIATION_Y_WEIGHT = 0.95f;
 
 // Used by ProximityInfoStateUtils::suppressCharProbabilities()
 const float ProximityInfoParams::SUPPRESSION_LENGTH_WEIGHT = 1.5f;
