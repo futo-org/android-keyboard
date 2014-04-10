@@ -148,6 +148,17 @@ public final class InputLogic {
         mInputLogicHandler.reset();
     }
 
+    // Normally this class just gets out of scope after the process ends, but in unit tests, we
+    // create several instances of LatinIME in the same process, which results in several
+    // instances of InputLogic. This cleans up the associated handler so that tests don't leak
+    // handlers.
+    public void recycle() {
+        final InputLogicHandler inputLogicHandler = mInputLogicHandler;
+        mInputLogicHandler = InputLogicHandler.NULL_HANDLER;
+        inputLogicHandler.destroy();
+        mSuggest.mDictionaryFacilitator.closeDictionaries();
+    }
+
     /**
      * React to a string input.
      *
