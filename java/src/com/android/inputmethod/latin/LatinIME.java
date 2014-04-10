@@ -635,6 +635,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         super.onDestroy();
     }
 
+    @UsedForTesting
+    public void recycle() {
+        mInputLogic.recycle();
+    }
+
     @Override
     public void onConfigurationChanged(final Configuration conf) {
         // If orientation changed while predicting, commit the change

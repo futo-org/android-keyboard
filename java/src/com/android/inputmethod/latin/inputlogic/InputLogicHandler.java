@@ -20,6 +20,7 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
 
+import com.android.inputmethod.compat.LooperCompatUtils;
 import com.android.inputmethod.latin.InputPointers;
 import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.Suggest;
@@ -78,6 +79,12 @@ class InputLogicHandler implements Handler.Callback {
 
     public void reset() {
         mNonUIThreadHandler.removeCallbacksAndMessages(null);
+    }
+
+    // In unit tests, we create several instances of LatinIME, which results in several instances
+    // of InputLogicHandler. To avoid these handlers lingering, we call this.
+    public void destroy() {
+        LooperCompatUtils.quitSafely(mNonUIThreadHandler.getLooper());
     }
 
     /**
