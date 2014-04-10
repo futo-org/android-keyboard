@@ -85,7 +85,7 @@ public final class Greek extends LayoutBase {
                     key(ROW1_2, moreKey("2")),
                     // U+03B5: "ε" GREEK SMALL LETTER EPSILON
                     // U+03AD: "έ" GREEK SMALL LETTER EPSILON WITH TONOS
-                    key("\u03B5", joinMoreKeys("3", "\u03AD")),
+                    key("\u03B5", joinMoreKeys("\u03AD", "3")),
                     // U+03C1: "ρ" GREEK SMALL LETTER RHO
                     key("\u03C1", moreKey("4")),
                     // U+03C4: "τ" GREEK SMALL LETTER TAU
@@ -94,17 +94,17 @@ public final class Greek extends LayoutBase {
                     // U+03CD: "ύ" GREEK SMALL LETTER UPSILON WITH TONOS
                     // U+03CB: "ϋ" GREEK SMALL LETTER UPSILON WITH DIALYTIKA
                     // U+03B0: "ΰ" GREEK SMALL LETTER UPSILON WITH DIALYTIKA AND TONOS
-                    key("\u03C5", joinMoreKeys("6", "\u03CD", "\u03CB", "\u03B0")),
+                    key("\u03C5", joinMoreKeys("\u03CD", "6", "\u03CB", "\u03B0")),
                     // U+03B8: "θ" GREEK SMALL LETTER THETA
                     key("\u03B8", moreKey("7")),
                     // U+03B9: "ι" GREEK SMALL LETTER IOTA
                     // U+03AF: "ί" GREEK SMALL LETTER IOTA WITH TONOS
                     // U+03CA: "ϊ" GREEK SMALL LETTER IOTA WITH DIALYTIKA
                     // U+0390: "ΐ" GREEK SMALL LETTER IOTA WITH DIALYTIKA AND TONOS
-                    key("\u03B9", joinMoreKeys("8", "\u03AF", "\u03CA", "\u0390")),
+                    key("\u03B9", joinMoreKeys("\u03AF", "8", "\u03CA", "\u0390")),
                     // U+03BF: "ο" GREEK SMALL LETTER OMICRON
                     // U+03CC: "ό" GREEK SMALL LETTER OMICRON WITH TONOS
-                    key("\u03BF", joinMoreKeys("9", "\u03CC")),
+                    key("\u03BF", joinMoreKeys("\u03CC", "9")),
                     // U+03C0: "π" GREEK SMALL LETTER PI
                     key("\u03C0", moreKey("0")))
             .setKeysOfRow(2,
