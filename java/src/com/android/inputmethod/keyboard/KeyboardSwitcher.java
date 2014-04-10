@@ -297,10 +297,17 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     }
 
     // Implements {@link KeyboardState.SwitchActions}.
+    // TODO[IL]: merge the two following methods; remove the one without args.
     @Override
     public void requestUpdatingShiftState() {
         mState.onUpdateShiftState(mLatinIME.getCurrentAutoCapsState(),
                 mLatinIME.getCurrentRecapitalizeState());
+    }
+
+    // Future method for requesting an updating to the shift state.
+    public void requestUpdatingShiftState(final int currentAutoCapsState,
+            final int currentRecapitalizeState) {
+        mState.onUpdateShiftState(currentAutoCapsState, currentRecapitalizeState);
     }
 
     // Implements {@link KeyboardState.SwitchActions}.
