@@ -53,6 +53,7 @@ class GermanCustomizer extends LayoutCustomizer {
                 // U+00FA: "ú" LATIN SMALL LETTER U WITH ACUTE
                 // U+016B: "ū" LATIN SMALL LETTER U WITH MACRON
                 .setMoreKeysOf("u", "\u00FC", "\u00FB", "\u00F9", "\u00FA", "\u016B")
+                .setAdditionalMoreKeysPositionOf("u", 2)
                 // U+00F6: "ö" LATIN SMALL LETTER O WITH DIAERESIS
                 // U+00F4: "ô" LATIN SMALL LETTER O WITH CIRCUMFLEX
                 // U+00F2: "ò" LATIN SMALL LETTER O WITH GRAVE
@@ -64,6 +65,7 @@ class GermanCustomizer extends LayoutCustomizer {
                 .setMoreKeysOf("o",
                         "\u00F6", "\u00F4", "\u00F2", "\u00F3", "\u00F5", "\u0153", "\u00F8",
                         "\u014D")
+                .setAdditionalMoreKeysPositionOf("o", 2)
                 // U+00E4: "ä" LATIN SMALL LETTER A WITH DIAERESIS
                 // U+00E2: "â" LATIN SMALL LETTER A WITH CIRCUMFLEX
                 // U+00E0: "à" LATIN SMALL LETTER A WITH GRAVE
@@ -75,6 +77,7 @@ class GermanCustomizer extends LayoutCustomizer {
                 .setMoreKeysOf("a",
                         "\u00E4", "\u00E2", "\u00E0", "\u00E1", "\u00E6", "\u00E3", "\u00E5",
                         "\u0101")
+                .setAdditionalMoreKeysPositionOf("a", 2)
                 // U+00DF: "ß" LATIN SMALL LETTER SHARP S
                 // U+015B: "ś" LATIN SMALL LETTER S WITH ACUTE
                 // U+0161: "š" LATIN SMALL LETTER S WITH CARON
