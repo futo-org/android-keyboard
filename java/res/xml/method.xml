@@ -57,6 +57,7 @@
     in: Indonesian/qwerty    # "id" is the official language code of Indonesian.
     is: Icelandic/qwerty
     it: Italian/qwerty
+    it_CH: Italian (Switzerland)/swiss
     iw: Hebrew/hebrew        # "he" is the official language code of Hebrew.
     ka_GE: Georgian (Georgia)/georgian
     kk: Kazakh/east_slavic
@@ -383,6 +384,14 @@
             android:imeSubtypeLocale="it"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="AsciiCapable,SupportTouchPositionCorrection,EmojiCapable"
+            android:isAsciiCapable="true"
+    />
+    <subtype android:icon="@drawable/ic_ime_switcher_dark"
+            android:label="@string/subtype_generic"
+            android:subtypeId="0xd914fe1a"
+            android:imeSubtypeLocale="it_CH"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=swiss,AsciiCapable,EmojiCapable"
             android:isAsciiCapable="true"
     />
     <!-- Java uses the deprecated "iw" code instead of the standard "he" code for Hebrew. -->

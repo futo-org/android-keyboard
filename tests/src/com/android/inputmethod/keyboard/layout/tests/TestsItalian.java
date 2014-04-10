@@ -20,6 +20,7 @@ import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.inputmethod.keyboard.layout.LayoutBase;
 import com.android.inputmethod.keyboard.layout.LayoutBase.EuroCustomizer;
+import com.android.inputmethod.keyboard.layout.LayoutBase.LayoutCustomizer;
 import com.android.inputmethod.keyboard.layout.Qwerty;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
 
@@ -31,12 +32,26 @@ import java.util.Locale;
 @SmallTest
 public final class TestsItalian extends LayoutTestsBase {
     private static final Locale LOCALE = new Locale("it");
-    private static final LayoutBase LAYOUT = new Qwerty(new ItalianCustomizer(LOCALE));
+    private static final LayoutBase LAYOUT = new Qwerty(new ItalianITCustomizer(LOCALE));
 
     @Override
     LayoutBase getLayout() { return LAYOUT; }
 
-    private static class ItalianCustomizer extends EuroCustomizer {
+    private static class ItalianITCustomizer extends EuroCustomizer {
+        private final ItalianCustomizer mItalianCustomizer;
+
+        public ItalianITCustomizer(final Locale locale) {
+            super(locale);
+            mItalianCustomizer = new ItalianCustomizer(locale);
+        }
+
+        @Override
+        public ExpectedKeyboardBuilder setAccentedLetters(final ExpectedKeyboardBuilder builder) {
+            return mItalianCustomizer.setAccentedLetters(builder);
+        }
+    }
+
+    static class ItalianCustomizer extends LayoutCustomizer {
         public ItalianCustomizer(final Locale locale) { super(locale); }
 
         @Override
