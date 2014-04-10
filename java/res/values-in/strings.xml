@@ -194,7 +194,7 @@
     <string name="dictionary_provider_name" msgid="3027315045397363079">"Penyedia Kamus"</string>
     <string name="dictionary_service_name" msgid="6237472350693511448">"Layanan Kamus"</string>
     <string name="download_description" msgid="6014835283119198591">"Informasi pembaruan kamus"</string>
-    <string name="dictionary_settings_title" msgid="8091417676045693313">"Kamus add-on"</string>
+    <string name="dictionary_settings_title" msgid="8091417676045693313">"Kamus pengaya"</string>
     <string name="dictionary_install_over_metered_network_prompt" msgid="3587517870006332980">"Kamus yang tersedia"</string>
     <string name="dictionary_settings_summary" msgid="5305694987799824349">"Setelan untuk kamus"</string>
     <string name="user_dictionaries" msgid="3582332055892252845">"Kamus pengguna"</string>
