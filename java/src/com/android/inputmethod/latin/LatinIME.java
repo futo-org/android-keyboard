@@ -199,7 +199,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                         latinIme.mSettings.getCurrent());
                 break;
             case MSG_UPDATE_SHIFT_STATE:
-                switcher.requestUpdatingShiftState();
+                switcher.requestUpdatingShiftState(latinIme.getCurrentAutoCapsState(),
+                        latinIme.getCurrentRecapitalizeState());
                 break;
             case MSG_SHOW_GESTURE_PREVIEW_AND_SUGGESTION_STRIP:
                 if (msg.arg1 == ARG1_NOT_GESTURE_INPUT) {
@@ -843,7 +844,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             // we need to re-evaluate the shift state, but not the whole layout which would be
             // disruptive.
             // Space state must be updated before calling updateShiftState
-            switcher.requestUpdatingShiftState();
+            switcher.requestUpdatingShiftState(getCurrentAutoCapsState(),
+                    getCurrentRecapitalizeState());
         }
         // This will set the punctuation suggestions if next word suggestion is off;
         // otherwise it will clear the suggestion strip.
@@ -922,7 +924,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // TODO: find a better way to simulate actual execution.
         if (isInputViewShown() &&
                 mInputLogic.onUpdateSelection(oldSelStart, oldSelEnd, newSelStart, newSelEnd)) {
-            mKeyboardSwitcher.requestUpdatingShiftState();
+            mKeyboardSwitcher.requestUpdatingShiftState(getCurrentAutoCapsState(),
+                    getCurrentRecapitalizeState());
         }
 
         mSubtypeState.currentSubtypeUsed();
@@ -1266,7 +1269,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // TODO: have the keyboard pass the correct key code when we need it.
         final Event event = Event.createSoftwareTextEvent(rawText, Event.NOT_A_KEY_CODE);
         mInputLogic.onTextInput(mSettings.getCurrent(), event, mHandler);
-        mKeyboardSwitcher.requestUpdatingShiftState();
+        mKeyboardSwitcher.requestUpdatingShiftState(getCurrentAutoCapsState(),
+                getCurrentRecapitalizeState());
         mKeyboardSwitcher.onCodeInput(Constants.CODE_OUTPUT_TEXT, getCurrentAutoCapsState());
     }
 
@@ -1510,7 +1514,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mHandler.postUpdateShiftState();
             break;
         case InputTransaction.SHIFT_UPDATE_NOW:
-            mKeyboardSwitcher.requestUpdatingShiftState();
+            mKeyboardSwitcher.requestUpdatingShiftState(getCurrentAutoCapsState(),
+                    getCurrentRecapitalizeState());
             break;
         default: // SHIFT_NO_UPDATE
         }
