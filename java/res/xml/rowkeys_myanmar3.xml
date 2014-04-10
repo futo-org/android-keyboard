@@ -25,10 +25,18 @@
         <case
             latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted"
         >
-            <!-- U+1017: "ဗ" MYANMAR LETTER BA -->
+            <!-- U+101A: "ယ" MYANMAR LETTER YA -->
             <Key
-                latin:keySpec="&#x1017;"
+                latin:keySpec="&#x101A;"
                 latin:keyLabelFlags="fontNormal" />
+            <!-- U+1039: "္" MYANMAR SIGN VIRAMA -->
+            <Key
+                latin:keySpec="&#x1039;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- U+1004/U+103A/U+1039: "င်္င" MYANMAR LETTER NGA/MYANMAR SIGN ASAT/MYANMAR SIGN VIRAMA -->
+            <Key
+                latin:keySpec="&#x1004;&#x103A;&#x1039;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <!-- U+103E: "ှ" MYANMAR CONSONANT SIGN MEDIAL HA -->
             <Key
                 latin:keySpec="&#x103E;"
@@ -37,33 +45,25 @@
             <Key
                 latin:keySpec="&#x102E;"
                 latin:keyLabelFlags="fontNormal" />
-            <!-- U+1039: "္" MYANMAR SIGN VIRAMA -->
+            <!-- U+1030: "ူ" MYANMAR VOWEL SIGN UU -->
             <Key
-                latin:keySpec="&#x1039;"
+                latin:keySpec="&#x1030;"
                 latin:keyLabelFlags="fontNormal" />
-            <!-- U+103D: "ွ" MYANMAR CONSONANT SIGN MEDIAL WA -->
+            <!-- U+102B: "ါ" MYANMAR VOWEL SIGN TALL AA -->
             <Key
-                latin:keySpec="&#x103D;"
-                latin:keyLabelFlags="fontNormal" />
-            <!-- U+1036: "ံ" MYANMAR SIGN ANUSVARA -->
-            <Key
-                latin:keySpec="&#x1036;"
+                latin:keySpec="&#x102B;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+1032: "ဲ" MYANMAR VOWEL SIGN AI -->
             <Key
                 latin:keySpec="&#x1032;"
                 latin:keyLabelFlags="fontNormal" />
-            <!-- U+1012: "ဒ" MYANMAR LETTER DA -->
+            <!-- U+1036: "ံ" MYANMAR SIGN ANUSVARA -->
             <Key
-                latin:keySpec="&#x1012;"
+                latin:keySpec="&#x1036;"
                 latin:keyLabelFlags="fontNormal" />
-            <!-- U+1013: "ဓ" MYANMAR LETTER DHA -->
+            <!-- U+101F: "ဟ" MYANMAR LETTER HA -->
             <Key
-                latin:keySpec="&#x1013;"
-                latin:keyLabelFlags="fontNormal" />
-            <!-- U+1002: "ဂ" MYANMAR LETTER GA -->
-            <Key
-                latin:keySpec="&#x1002;"
+                latin:keySpec="&#x101F;"
                 latin:keyLabelFlags="fontNormal" />
         </case>
         <default>
@@ -75,33 +75,44 @@
             <Key
                 latin:keySpec="&#x103B;"
                 latin:keyLabelFlags="fontNormal" />
-            <!-- U+102D: "ိ" MYANMAR VOWEL SIGN I -->
-            <Key
-                latin:keySpec="&#x102D;"
-                latin:keyLabelFlags="fontNormal" />
-            <!-- U+103A: "်" MYANMAR SIGN ASAT -->
-            <Key
-                latin:keySpec="&#x103A;"
-                latin:keyLabelFlags="fontNormal" />
-            <!-- U+102B: "ါ" MYANMAR VOWEL SIGN TALL AA -->
-            <Key
-                latin:keySpec="&#x102B;"
-                latin:keyLabelFlags="fontNormal" />
-            <!-- U+1037: "့" MYANMAR SIGN DOT BELOW -->
-            <Key
-                latin:keySpec="&#x1037;"
-                latin:keyLabelFlags="fontNormal" />
             <!-- U+103C: "ြ" MYANMAR CONSONANT SIGN MEDIAL RA -->
             <Key
                 latin:keySpec="&#x103C;"
                 latin:keyLabelFlags="fontNormal" />
-            <!-- U+102F: "ု" MYANMAR VOWEL SIGN U -->
+            <!-- U+103D: "ွ" MYANMAR CONSONANT SIGN MEDIAL WA
+                 U+103E: "ှ" MYANMAR CONSONANT SIGN MEDIAL HA
+                 U+103D/U+103E: "ွှ" MYANMAR CONSONANT SIGN MEDIAL WA/MYANMAR CONSONANT SIGN MEDIAL HA -->
+            <Key
+                latin:keySpec="&#x103D;"
+                latin:moreKeys="&#x103E;,&#x103D;&#x103E;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- U+102D: "ိ" MYANMAR VOWEL SIGN I
+                 U+102E: "ီ" MYANMAR VOWEL SIGN II -->
+            <Key
+                latin:keySpec="&#x102D;"
+                latin:moreKeys="&#x102E;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- U+102F: "ု" MYANMAR VOWEL SIGN U
+                 U+1030: "ူ" MYANMAR VOWEL SIGN UU -->
             <Key
                 latin:keySpec="&#x102F;"
+                latin:moreKeys="&#x1030;"
                 latin:keyLabelFlags="fontNormal" />
-            <!-- U+1030: "ူ" MYANMAR VOWEL SIGN UU -->
+            <!-- U+102C: "ာ" MYANMAR VOWEL SIGN AA -->
             <Key
-                latin:keySpec="&#x1030;"
+                latin:keySpec="&#x102C;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- U+103A: "်" MYANMAR SIGN ASAT
+                 U+1032: "ဲ" MYANMAR VOWEL SIGN AI -->
+            <Key
+                latin:keySpec="&#x103A;"
+                latin:moreKeys="&#x1032;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- U+1037: "့" MYANMAR SIGN DOT BELOW
+                 U+1036: "ံ" MYANMAR SIGN ANUSVARA -->
+            <Key
+                latin:keySpec="&#x1037;"
+                latin:moreKeys="&#x1036;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+1038: "း" MYANMAR SIGN VISARGA -->
             <Key

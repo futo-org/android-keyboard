@@ -24,7 +24,7 @@
     <include
         latin:keyboardLayout="@xml/key_styles_common" />
     <Row
-        latin:keyWidth="8.1818%p"
+        latin:keyWidth="9.0%p"
     >
         <include
             latin:keyboardLayout="@xml/rowkeys_myanmar1" />
@@ -33,40 +33,30 @@
             latin:keyWidth="fillRight" />
         </Row>
     <Row
-        latin:keyWidth="8.1818%p"
+        latin:keyWidth="9.0%p"
     >
         <include
             latin:keyboardLayout="@xml/rowkeys_myanmar2" />
     </Row>
     <Row
-        latin:keyWidth="8.1818%p"
+        latin:keyWidth="9.0%p"
     >
         <include
-            latin:keyXPos="4.0909%p"
             latin:keyboardLayout="@xml/rowkeys_myanmar3" />
         <Key
             latin:keyStyle="enterKeyStyle"
             latin:keyWidth="fillRight" />
     </Row>
     <Row
-        latin:keyWidth="8.1818%p"
+        latin:keyWidth="9.0%p"
     >
         <Key
             latin:keyStyle="shiftKeyStyle"
             latin:keyWidth="10.0%p" />
         <include
             latin:keyboardLayout="@xml/rowkeys_myanmar4" />
-        <switch>
-            <case
-                latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted"
-            >
-                <Spacer />
-            </case>
-            <default>
-                <include
-                    latin:keyboardLayout="@xml/keys_exclamation_question" />
-            </default>
-        </switch>
+        <include
+            latin:keyboardLayout="@xml/keys_exclamation_question" />
     </Row>
     <include
         latin:keyboardLayout="@xml/row_qwerty4" />

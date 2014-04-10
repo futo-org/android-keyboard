@@ -25,42 +25,40 @@
         <case
             latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted"
         >
-            <!-- U+1007: "ဇ" MYANMAR LETTER JA -->
+            <!-- U+1025: "ဥ" MYANMAR LETTER U -->
             <Key
-                latin:keySpec="&#x1007;"
-                latin:keyLabelFlags="fontNormal" />
-            <!-- U+100C: "ဌ" MYANMAR LETTER TTHA -->
-            <Key
-                latin:keySpec="&#x100C;"
-                latin:keyLabelFlags="fontNormal" />
-            <!-- U+1003: "ဃ" MYANMAR LETTER GHA -->
-            <Key
-                latin:keySpec="&#x1003;"
-                latin:keyLabelFlags="fontNormal" />
-            <!-- U+1020: "ဠ" MYANMAR LETTER LLA -->
-            <Key
-                latin:keySpec="&#x1020;"
-                latin:keyLabelFlags="fontNormal" />
-            <!-- U+101A: "ယ" MYANMAR LETTER YA -->
-            <Key
-                latin:keySpec="&#x101A;"
-                latin:keyLabelFlags="fontNormal" />
-            <!-- U+1009: "ဉ" MYANMAR LETTER NYA -->
-            <Key
-                latin:keySpec="&#x1009;"
+                latin:keySpec="&#x1025;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+1026: "ဦ" MYANMAR LETTER UU -->
             <Key
                 latin:keySpec="&#x1026;"
                 latin:keyLabelFlags="fontNormal" />
-            <!-- U+102A: "ဪ" MYANMAR LETTER AU -->
+            <!-- U+100C: "ဌ" MYANMAR LETTER TTHA -->
             <Key
-                latin:keySpec="&#x102A;"
-                latin:keyLabelFlags="fontNormal|autoXScale" />
-            <!-- U+1051: "ၑ" MYANMAR LETTER SSA -->
-            <Key
-                latin:keySpec="&#x1051;"
+                latin:keySpec="&#x100C;"
                 latin:keyLabelFlags="fontNormal" />
+            <!-- U+100B: "ဋ" MYANMAR LETTER TTA -->
+            <Key
+                latin:keySpec="&#x100B;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- U+100D: "ဍ" MYANMAR LETTER DDA -->
+            <Key
+                latin:keySpec="&#x100D;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- U+1020: "ဠ" MYANMAR LETTER LLA -->
+            <Key
+                latin:keySpec="&#x1020;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- U+100B/U+1039/U+100C: "ဋ္ဌ" MYANMAR LETTER TTA/MYANMAR SIGN VIRAMA/MYANMAR LETTER TTHA -->
+            <Key
+                latin:keySpec="&#x100B;&#x1039;&#x100C;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+            <!-- U+100F/U+1039/U+100D: "ဏ္ဍ" MYANMAR LETTER NNA/MYANMAR SIGN VIRAMA/MYANMAR LETTER DDA
+                 U+100F/U+1039/U+100C: "ဏ္ဌ" MYANMAR LETTER NNA/MYANMAR SIGN VIRAMA/MYANMAR LETTER TTHA -->
+            <Key
+                latin:keySpec="&#x100F;&#x1039;&#x100D;"
+                latin:moreKeys="&#x100F;&#x1039;&#x100C;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
         </case>
         <default>
             <!-- U+1016: "ဖ" MYANMAR LETTER PHA -->
@@ -83,21 +81,19 @@
             <Key
                 latin:keySpec="&#x1018;"
                 latin:keyLabelFlags="fontNormal" />
-            <!-- U+100A: "ည" MYANMAR LETTER NNYA -->
+            <!-- U+100A: "ည" MYANMAR LETTER NNYA
+                 U+1009: "ဉ" MYANMAR LETTER NYA -->
             <Key
                 latin:keySpec="&#x100A;"
+                latin:moreKeys="&#x1009;"
                 latin:keyLabelFlags="fontNormal" />
-            <!-- U+102C: "ာ" MYANMAR VOWEL SIGN AA -->
+            <!-- U+101B: "ရ" MYANMAR LETTER RA -->
             <Key
-                latin:keySpec="&#x102C;"
+                latin:keySpec="&#x101B;"
                 latin:keyLabelFlags="fontNormal" />
-            <!-- U+1029: "ဩ" MYANMAR LETTER O -->
+            <!-- U+101D: "ဝ" MYANMAR LETTER WA -->
             <Key
-                latin:keySpec="&#x1029;"
-                latin:keyLabelFlags="fontNormal" />
-            <!-- U+104F: "၏" MYANMAR SYMBOL GENITIVE -->
-            <Key
-                latin:keySpec="&#x104F;"
+                latin:keySpec="&#x101D;"
                 latin:keyLabelFlags="fontNormal" />
         </default>
     </switch>
