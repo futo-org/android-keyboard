@@ -21,7 +21,6 @@ import android.test.suitebuilder.annotation.SmallTest;
 import com.android.inputmethod.keyboard.layout.LayoutBase;
 import com.android.inputmethod.keyboard.layout.Swiss;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
-import com.android.inputmethod.keyboard.layout.tests.TestsItalian.ItalianCustomizer;
 
 import java.util.Locale;
 
