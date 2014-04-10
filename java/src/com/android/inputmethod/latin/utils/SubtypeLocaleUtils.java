@@ -25,7 +25,7 @@ import android.os.Build;
 import android.util.Log;
 import android.view.inputmethod.InputMethodSubtype;
 
-import com.android.inputmethod.latin.DictionaryFactory;
+import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.R;
 
 import java.util.Arrays;
@@ -33,10 +33,10 @@ import java.util.HashMap;
 import java.util.Locale;
 
 public final class SubtypeLocaleUtils {
-    static final String TAG = SubtypeLocaleUtils.class.getSimpleName();
-    // This class must be located in the same package as LatinIME.java.
-    private static final String RESOURCE_PACKAGE_NAME =
-            DictionaryFactory.class.getPackage().getName();
+    private static final String TAG = SubtypeLocaleUtils.class.getSimpleName();
+
+    // This reference class {@link Constants} must be located in the same package as LatinIME.java.
+    private static final String RESOURCE_PACKAGE_NAME = Constants.class.getPackage().getName();
 
     // Special language code to represent "no language".
     public static final String NO_LANGUAGE = "zz";
@@ -44,7 +44,8 @@ public final class SubtypeLocaleUtils {
     public static final String EMOJI = "emoji";
     public static final int UNKNOWN_KEYBOARD_LAYOUT = R.string.subtype_generic;
 
-    private static boolean sInitialized = false;
+    private static volatile boolean sInitialized = false;
+    private static final Object sInitializeLock = new Object();
     private static Resources sResources;
     private static String[] sPredefinedKeyboardLayoutSet;
     // Keyboard layout to its display name map.
@@ -77,9 +78,16 @@ public final class SubtypeLocaleUtils {
     }
 
     // Note that this initialization method can be called multiple times.
-    public static synchronized void init(final Context context) {
-        if (sInitialized) return;
+    public static void init(final Context context) {
+        synchronized (sInitializeLock) {
+            if (sInitialized == false) {
+                initLocked(context);
+                sInitialized = true;
+            }
+        }
+    }
 
+    private static void initLocked(final Context context) {
         final Resources res = context.getResources();
         sResources = res;
 
@@ -122,8 +130,6 @@ public final class SubtypeLocaleUtils {
             final String keyboardLayoutSet = keyboardLayoutSetMap[i + 1];
             sLocaleAndExtraValueToKeyboardLayoutSetMap.put(key, keyboardLayoutSet);
         }
-
-        sInitialized = true;
     }
 
     public static String[] getPredefinedKeyboardLayoutSet() {
@@ -167,8 +173,18 @@ public final class SubtypeLocaleUtils {
         return getSubtypeLocaleDisplayNameInternal(localeString, displayLocale);
     }
 
+    public static String getSubtypeLanguageDisplayName(final String localeString) {
+        final Locale locale = LocaleUtils.constructLocaleFromString(localeString);
+        final Locale displayLocale = getDisplayLocaleOfSubtypeLocale(localeString);
+        return getSubtypeLocaleDisplayNameInternal(locale.getLanguage(), displayLocale);
+    }
+
     private static String getSubtypeLocaleDisplayNameInternal(final String localeString,
             final Locale displayLocale) {
+        if (NO_LANGUAGE.equals(localeString)) {
+            // No language subtype should be displayed in system locale.
+            return sResources.getString(R.string.subtype_no_language);
+        }
         final Integer exceptionalNameResId = sExceptionalLocaleToNameIdsMap.get(localeString);
         final String displayName;
         if (exceptionalNameResId != null) {
@@ -179,9 +195,6 @@ public final class SubtypeLocaleUtils {
                 }
             };
             displayName = getExceptionalName.runInLocale(sResources, displayLocale);
-        } else if (NO_LANGUAGE.equals(localeString)) {
-            // No language subtype should be displayed in system locale.
-            return sResources.getString(R.string.subtype_no_language);
         } else {
             final Locale locale = LocaleUtils.constructLocaleFromString(localeString);
             displayName = locale.getDisplayName(displayLocale);

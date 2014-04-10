@@ -18,8 +18,6 @@ package com.android.inputmethod.latin.utils;
 
 import android.view.inputmethod.InputMethodSubtype;
 
-import java.util.Locale;
-
 public final class SpacebarLanguageUtils {
     private SpacebarLanguageUtils() {
         // Intentional empty constructor for utility class.
@@ -55,7 +53,6 @@ public final class SpacebarLanguageUtils {
         if (SubtypeLocaleUtils.isNoLanguage(subtype)) {
             return SubtypeLocaleUtils.getKeyboardLayoutSetDisplayName(subtype);
         }
-        final Locale locale = SubtypeLocaleUtils.getSubtypeLocale(subtype);
-        return SubtypeLocaleUtils.getSubtypeLocaleDisplayName(locale.getLanguage());
+        return SubtypeLocaleUtils.getSubtypeLanguageDisplayName(subtype.getLocale());
     }
 }
