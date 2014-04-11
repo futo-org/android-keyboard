@@ -18,10 +18,10 @@
 #define LATINIME_PROXIMITY_INFO_STATE_UTILS_H
 
 #include <bitset>
+#include <unordered_map>
 #include <vector>
 
 #include "defines.h"
-#include "utils/hash_map_compat.h"
 
 namespace latinime {
 class ProximityInfo;
@@ -29,7 +29,7 @@ class ProximityInfoParams;
 
 class ProximityInfoStateUtils {
  public:
-    typedef hash_map_compat<int, float> NearKeysDistanceMap;
+    typedef std::unordered_map<int, float> NearKeysDistanceMap;
     typedef std::bitset<MAX_KEY_COUNT_IN_A_KEYBOARD> NearKeycodesSet;
 
     static int trimLastTwoTouchPoints(std::vector<int> *sampledInputXs,
@@ -72,11 +72,11 @@ class ProximityInfoStateUtils {
             const std::vector<int> *const sampledLengthCache,
             const std::vector<float> *const sampledNormalizedSquaredLengthCache,
             const ProximityInfo *const proximityInfo,
-            std::vector<hash_map_compat<int, float> > *charProbabilities);
+            std::vector<std::unordered_map<int, float> > *charProbabilities);
     static void updateSampledSearchKeySets(const ProximityInfo *const proximityInfo,
             const int sampledInputSize, const int lastSavedInputSize,
             const std::vector<int> *const sampledLengthCache,
-            const std::vector<hash_map_compat<int, float> > *const charProbabilities,
+            const std::vector<std::unordered_map<int, float> > *const charProbabilities,
             std::vector<NearKeycodesSet> *sampledSearchKeySets,
             std::vector<std::vector<int> > *sampledSearchKeyVectors);
     static float getPointToKeyByIdLength(const float maxPointToKeyLength,
@@ -105,7 +105,7 @@ class ProximityInfoStateUtils {
     // TODO: Move to most_probable_string_utils.h
     static float getMostProbableString(const ProximityInfo *const proximityInfo,
             const int sampledInputSize,
-            const std::vector<hash_map_compat<int, float> > *const charProbabilities,
+            const std::vector<std::unordered_map<int, float> > *const charProbabilities,
             int *const codePointBuf);
 
  private:
@@ -147,7 +147,7 @@ class ProximityInfoStateUtils {
             const int index2);
     static bool suppressCharProbabilities(const int mostCommonKeyWidth,
             const int sampledInputSize, const std::vector<int> *const lengthCache, const int index0,
-            const int index1, std::vector<hash_map_compat<int, float> > *charProbabilities);
+            const int index1, std::vector<std::unordered_map<int, float> > *charProbabilities);
     static float calculateSquaredDistanceFromSweetSpotCenter(
             const ProximityInfo *const proximityInfo, const std::vector<int> *const sampledInputXs,
             const std::vector<int> *const sampledInputYs, const int keyIndex,

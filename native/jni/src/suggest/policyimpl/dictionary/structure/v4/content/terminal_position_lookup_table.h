@@ -17,16 +17,17 @@
 #ifndef LATINIME_TERMINAL_POSITION_LOOKUP_TABLE_H
 #define LATINIME_TERMINAL_POSITION_LOOKUP_TABLE_H
 
+#include <unordered_map>
+
 #include "defines.h"
 #include "suggest/policyimpl/dictionary/structure/v4/content/single_dict_content.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_dict_constants.h"
-#include "utils/hash_map_compat.h"
 
 namespace latinime {
 
 class TerminalPositionLookupTable : public SingleDictContent {
  public:
-    typedef hash_map_compat<int, int> TerminalIdMap;
+    typedef std::unordered_map<int, int> TerminalIdMap;
 
     TerminalPositionLookupTable(const char *const dictPath, const bool isUpdatable)
             : SingleDictContent(dictPath,

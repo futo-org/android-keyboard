@@ -17,18 +17,18 @@
 #ifndef LATINIME_PT_NODE_WRITER_H
 #define LATINIME_PT_NODE_WRITER_H
 
-#include "defines.h"
+#include <unordered_map>
 
+#include "defines.h"
 #include "suggest/policyimpl/dictionary/structure/pt_common/pt_node_params.h"
-#include "utils/hash_map_compat.h"
 
 namespace latinime {
 
 // Interface class used to write PtNode information.
 class PtNodeWriter {
  public:
-    typedef hash_map_compat<int, int> PtNodeArrayPositionRelocationMap;
-    typedef hash_map_compat<int, int> PtNodePositionRelocationMap;
+    typedef std::unordered_map<int, int> PtNodeArrayPositionRelocationMap;
+    typedef std::unordered_map<int, int> PtNodePositionRelocationMap;
     struct DictPositionRelocationMap {
      public:
         DictPositionRelocationMap()

@@ -17,10 +17,11 @@
 #ifndef LATINIME_PROXIMITY_INFO_H
 #define LATINIME_PROXIMITY_INFO_H
 
+#include <unordered_map>
+
 #include "defines.h"
 #include "jni.h"
 #include "suggest/core/layout/proximity_info_utils.h"
-#include "utils/hash_map_compat.h"
 
 namespace latinime {
 
@@ -114,7 +115,7 @@ class ProximityInfo {
     // Sweet spots for geometric input. Note that we have extra sweet spots only for Y coordinates.
     float mSweetSpotCenterYsG[MAX_KEY_COUNT_IN_A_KEYBOARD];
     float mSweetSpotRadii[MAX_KEY_COUNT_IN_A_KEYBOARD];
-    hash_map_compat<int, int> mLowerCodePointToKeyMap;
+    std::unordered_map<int, int> mLowerCodePointToKeyMap;
     int mKeyIndexToOriginalCodePoint[MAX_KEY_COUNT_IN_A_KEYBOARD];
     int mKeyIndexToLowerCodePointG[MAX_KEY_COUNT_IN_A_KEYBOARD];
     int mCenterXsG[MAX_KEY_COUNT_IN_A_KEYBOARD];

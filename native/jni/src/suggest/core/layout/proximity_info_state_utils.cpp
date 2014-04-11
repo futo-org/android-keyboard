@@ -20,6 +20,7 @@
 #include <cmath>
 #include <cstring> // for memset()
 #include <sstream> // for debug prints
+#include <unordered_map>
 #include <vector>
 
 #include "defines.h"
@@ -620,7 +621,7 @@ namespace latinime {
         const std::vector<int> *const sampledLengthCache,
         const std::vector<float> *const sampledNormalizedSquaredLengthCache,
         const ProximityInfo *const proximityInfo,
-        std::vector<hash_map_compat<int, float> > *charProbabilities) {
+        std::vector<std::unordered_map<int, float> > *charProbabilities) {
     charProbabilities->resize(sampledInputSize);
     // Calculates probabilities of using a point as a correlated point with the character
     // for each point.
@@ -762,7 +763,7 @@ namespace latinime {
             sstream << "Speed: "<< (*sampledSpeedRates)[i] << ", ";
             sstream << "Angle: "<< getPointAngle(sampledInputXs, sampledInputYs, i) << ", \n";
 
-            for (hash_map_compat<int, float>::iterator it = (*charProbabilities)[i].begin();
+            for (std::unordered_map<int, float>::iterator it = (*charProbabilities)[i].begin();
                     it != (*charProbabilities)[i].end(); ++it) {
                 if (it->first == NOT_AN_INDEX) {
                     sstream << it->first
@@ -804,7 +805,7 @@ namespace latinime {
     // Converting from raw probabilities to log probabilities to calculate spatial distance.
     for (int i = start; i < sampledInputSize; ++i) {
         for (int j = 0; j < keyCount; ++j) {
-            hash_map_compat<int, float>::iterator it = (*charProbabilities)[i].find(j);
+            std::unordered_map<int, float>::iterator it = (*charProbabilities)[i].find(j);
             if (it == (*charProbabilities)[i].end()){
                 continue;
             } else if(it->second < ProximityInfoParams::MIN_PROBABILITY) {
@@ -821,7 +822,7 @@ namespace latinime {
 /* static */ void ProximityInfoStateUtils::updateSampledSearchKeySets(
         const ProximityInfo *const proximityInfo, const int sampledInputSize,
         const int lastSavedInputSize, const std::vector<int> *const sampledLengthCache,
-        const std::vector<hash_map_compat<int, float> > *const charProbabilities,
+        const std::vector<std::unordered_map<int, float> > *const charProbabilities,
         std::vector<NearKeycodesSet> *sampledSearchKeySets,
         std::vector<std::vector<int> > *sampledSearchKeyVectors) {
     sampledSearchKeySets->resize(sampledInputSize);
@@ -867,7 +868,7 @@ namespace latinime {
 /* static */ bool ProximityInfoStateUtils::suppressCharProbabilities(const int mostCommonKeyWidth,
         const int sampledInputSize, const std::vector<int> *const lengthCache,
         const int index0, const int index1,
-        std::vector<hash_map_compat<int, float> > *charProbabilities) {
+        std::vector<std::unordered_map<int, float> > *charProbabilities) {
     ASSERT(0 <= index0 && index0 < sampledInputSize);
     ASSERT(0 <= index1 && index1 < sampledInputSize);
     const float keyWidthFloat = static_cast<float>(mostCommonKeyWidth);
@@ -878,9 +879,9 @@ namespace latinime {
     const float suppressionRate = ProximityInfoParams::MIN_SUPPRESSION_RATE
             + diff / keyWidthFloat / ProximityInfoParams::SUPPRESSION_LENGTH_WEIGHT
                     * ProximityInfoParams::SUPPRESSION_WEIGHT;
-    for (hash_map_compat<int, float>::iterator it = (*charProbabilities)[index0].begin();
+    for (std::unordered_map<int, float>::iterator it = (*charProbabilities)[index0].begin();
             it != (*charProbabilities)[index0].end(); ++it) {
-        hash_map_compat<int, float>::iterator it2 =  (*charProbabilities)[index1].find(it->first);
+        std::unordered_map<int, float>::iterator it2 = (*charProbabilities)[index1].find(it->first);
         if (it2 != (*charProbabilities)[index1].end() && it->second < it2->second) {
             const float newProbability = it->second * suppressionRate;
             const float suppression = it->second - newProbability;
@@ -932,7 +933,7 @@ namespace latinime {
 // returns probability of generating the word.
 /* static */ float ProximityInfoStateUtils::getMostProbableString(
         const ProximityInfo *const proximityInfo, const int sampledInputSize,
-        const std::vector<hash_map_compat<int, float> > *const charProbabilities,
+        const std::vector<std::unordered_map<int, float> > *const charProbabilities,
         int *const codePointBuf) {
     ASSERT(sampledInputSize >= 0);
     memset(codePointBuf, 0, sizeof(codePointBuf[0]) * MAX_WORD_LENGTH);
@@ -942,7 +943,7 @@ namespace latinime {
     for (int i = 0; i < sampledInputSize && index < MAX_WORD_LENGTH - 1; ++i) {
         float minLogProbability = static_cast<float>(MAX_VALUE_FOR_WEIGHTING);
         int character = NOT_AN_INDEX;
-        for (hash_map_compat<int, float>::const_iterator it = (*charProbabilities)[i].begin();
+        for (std::unordered_map<int, float>::const_iterator it = (*charProbabilities)[i].begin();
                 it != (*charProbabilities)[i].end(); ++it) {
             const float logProbability = (it->first != NOT_AN_INDEX)
                     ? it->second + ProximityInfoParams::DEMOTION_LOG_PROBABILITY : it->second;
