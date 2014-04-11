@@ -21,6 +21,7 @@
 #include <algorithm>
 #include <cstring> // for memset() and memmove()
 #include <sstream> // for debug prints
+#include <unordered_map>
 #include <vector>
 
 #include "defines.h"
@@ -296,7 +297,7 @@ bool ProximityInfoState::hasSpaceProximity(const int index) const {
 // Returns a probability of mapping index to keyIndex.
 float ProximityInfoState::getProbability(const int index, const int keyIndex) const {
     ASSERT(0 <= index && index < mSampledInputSize);
-    hash_map_compat<int, float>::const_iterator it = mCharProbabilities[index].find(keyIndex);
+    std::unordered_map<int, float>::const_iterator it = mCharProbabilities[index].find(keyIndex);
     if (it != mCharProbabilities[index].end()) {
         return it->second;
     }

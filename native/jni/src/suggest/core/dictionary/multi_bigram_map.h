@@ -18,12 +18,12 @@
 #define LATINIME_MULTI_BIGRAM_MAP_H
 
 #include <cstddef>
+#include <unordered_map>
 
 #include "defines.h"
 #include "suggest/core/dictionary/binary_dictionary_bigrams_iterator.h"
 #include "suggest/core/dictionary/bloom_filter.h"
 #include "suggest/core/policy/dictionary_structure_with_buffer_policy.h"
-#include "utils/hash_map_compat.h"
 
 namespace latinime {
 
@@ -63,7 +63,7 @@ class MultiBigramMap {
         // NOTE: The BigramMap class doesn't use DISALLOW_COPY_AND_ASSIGN() because its default
         // copy constructor is needed for use in hash_map.
         static const int DEFAULT_HASH_MAP_SIZE_FOR_EACH_BIGRAM_MAP;
-        hash_map_compat<int, int> mBigramMap;
+        std::unordered_map<int, int> mBigramMap;
         BloomFilter mBloomFilter;
     };
 
@@ -75,7 +75,7 @@ class MultiBigramMap {
             const int nextWordPosition, const int unigramProbability);
 
     static const size_t MAX_CACHED_PREV_WORDS_IN_BIGRAM_MAP;
-    hash_map_compat<int, BigramMap> mBigramMaps;
+    std::unordered_map<int, BigramMap> mBigramMaps;
 };
 } // namespace latinime
 #endif // LATINIME_MULTI_BIGRAM_MAP_H

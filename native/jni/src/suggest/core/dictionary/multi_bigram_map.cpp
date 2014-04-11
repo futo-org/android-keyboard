@@ -17,6 +17,7 @@
 #include "suggest/core/dictionary/multi_bigram_map.h"
 
 #include <cstddef>
+#include <unordered_map>
 
 namespace latinime {
 
@@ -35,7 +36,7 @@ const int MultiBigramMap::BigramMap::DEFAULT_HASH_MAP_SIZE_FOR_EACH_BIGRAM_MAP =
 int MultiBigramMap::getBigramProbability(
         const DictionaryStructureWithBufferPolicy *const structurePolicy,
         const int wordPosition, const int nextWordPosition, const int unigramProbability) {
-    hash_map_compat<int, BigramMap>::const_iterator mapPosition =
+    std::unordered_map<int, BigramMap>::const_iterator mapPosition =
             mBigramMaps.find(wordPosition);
     if (mapPosition != mBigramMaps.end()) {
         return mapPosition->second.getBigramProbability(structurePolicy, nextWordPosition,
@@ -70,7 +71,7 @@ int MultiBigramMap::BigramMap::getBigramProbability(
         const int nextWordPosition, const int unigramProbability) const {
     int bigramProbability = NOT_A_PROBABILITY;
     if (mBloomFilter.isInFilter(nextWordPosition)) {
-        const hash_map_compat<int, int>::const_iterator bigramProbabilityIt =
+        const std::unordered_map<int, int>::const_iterator bigramProbabilityIt =
                 mBigramMap.find(nextWordPosition);
         if (bigramProbabilityIt != mBigramMap.end()) {
             bigramProbability = bigramProbabilityIt->second;

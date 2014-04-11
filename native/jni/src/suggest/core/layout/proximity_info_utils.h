@@ -18,18 +18,18 @@
 #define LATINIME_PROXIMITY_INFO_UTILS_H
 
 #include <cmath>
+#include <unordered_map>
 
 #include "defines.h"
 #include "suggest/core/layout/additional_proximity_chars.h"
 #include "suggest/core/layout/geometry_utils.h"
 #include "utils/char_utils.h"
-#include "utils/hash_map_compat.h"
 
 namespace latinime {
 class ProximityInfoUtils {
  public:
     static AK_FORCE_INLINE int getKeyIndexOf(const int keyCount, const int c,
-            const hash_map_compat<int, int> *const codeToKeyMap) {
+            const std::unordered_map<int, int> *const codeToKeyMap) {
         if (keyCount == 0) {
             // We do not have the coordinate data
             return NOT_AN_INDEX;
@@ -38,7 +38,7 @@ class ProximityInfoUtils {
             return NOT_AN_INDEX;
         }
         const int lowerCode = CharUtils::toLowerCase(c);
-        hash_map_compat<int, int>::const_iterator mapPos = codeToKeyMap->find(lowerCode);
+        std::unordered_map<int, int>::const_iterator mapPos = codeToKeyMap->find(lowerCode);
         if (mapPos != codeToKeyMap->end()) {
             return mapPos->second;
         }
@@ -52,7 +52,7 @@ class ProximityInfoUtils {
             const int *const proximityCharsArray, const int cellHeight, const int cellWidth,
             const int gridWidth, const int mostCommonKeyWidth, const int keyCount,
             const char *const localeStr,
-            const hash_map_compat<int, int> *const codeToKeyMap, int *inputProximities) {
+            const std::unordered_map<int, int> *const codeToKeyMap, int *inputProximities) {
         // Initialize
         // - mInputCodes
         // - mNormalizedSquaredDistances
@@ -144,7 +144,7 @@ class ProximityInfoUtils {
             const int *const proximityCharsArray, const int cellHeight, const int cellWidth,
             const int gridWidth, const int mostCommonKeyWidth, const int keyCount,
             const int x, const int y, const int primaryKey, const char *const localeStr,
-            const hash_map_compat<int, int> *const codeToKeyMap, int *proximities) {
+            const std::unordered_map<int, int> *const codeToKeyMap, int *proximities) {
         const int mostCommonKeyWidthSquare = mostCommonKeyWidth * mostCommonKeyWidth;
         int insertPos = 0;
         proximities[insertPos++] = primaryKey;
