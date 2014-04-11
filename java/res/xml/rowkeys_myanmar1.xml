@@ -25,50 +25,49 @@
         <case
             latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted"
         >
-            <!-- U+100E: "ဎ" MYANMAR LETTER DDHA -->
+            <!-- U+1027: "ဧ" MYANMAR LETTER E -->
             <Key
-                latin:keySpec="&#x100E;"
+                latin:keySpec="&#x1027;"
                 latin:keyLabelFlags="fontNormal" />
-            <!-- U+100D: "ဍ" MYANMAR LETTER DDA -->
+            <!-- U+104F: "၏" MYANMAR SYMBOL GENITIVE -->
             <Key
-                latin:keySpec="&#x100D;"
+                latin:keySpec="&#x104F;"
                 latin:keyLabelFlags="fontNormal" />
-            <!-- U+1052: "ၒ" MYANMAR LETTER VOCALIC R -->
+            <!-- U+1024: "ဤ" MYANMAR LETTER II -->
             <Key
-                latin:keySpec="&#x1052;"
+                latin:keySpec="&#x1024;"
                 latin:keyLabelFlags="fontNormal" />
-            <!-- U+100B: "ဋ" MYANMAR LETTER TTA -->
+            <!-- U+1023: "ဣ" MYANMAR LETTER I -->
             <Key
-                latin:keySpec="&#x100B;"
+                latin:keySpec="&#x1023;"
                 latin:keyLabelFlags="fontNormal" />
-            <!-- U+1053: "ၓ" MYANMAR LETTER VOCALIC RR -->
+            <!-- U+104E: "၎" MYANMAR SYMBOL AFOREMENTIONED -->
             <Key
-                latin:keySpec="&#x1053;"
+                latin:keySpec="&#x104E;"
                 latin:keyLabelFlags="fontNormal" />
-            <!-- U+1054: "ၔ" MYANMAR LETTER VOCALIC L -->
+            <!-- U+1000/U+103B/U+1015/U+103A: "ကျပ်"
+                 MYANMAR LETTER KA/MYANMAR CONSONANT SIGN MEDIAL YA/MYANMAR LETTER PA/MYANMAR SIGN ASAT -->
             <Key
-                latin:keySpec="&#x1054;"
+                latin:keySpec="&#x1000;&#x103B;&#x1015;&#x103A;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio|autoScale" />
+            <!-- U+1029: "ဩ" MYANMAR LETTER O -->
+            <Key
+                latin:keySpec="&#x1029;"
+                latin:keyLabelFlags="fontNormal|autoScale" />
+            <!-- U+102A: "ဪ" MYANMAR LETTER AU -->
+            <Key
+                latin:keySpec="&#x102A;"
+                latin:keyLabelFlags="fontNormal|autoScale" />
+            <!-- U+104D: "၍" MYANMAR SYMBOL COMPLETED -->
+            <Key
+                latin:keySpec="&#x104D;"
                 latin:keyLabelFlags="fontNormal" />
-            <!-- U+1055: "ၕ" MYANMAR LETTER VOCALIC LL -->
+            <!-- U+104C: "၌" MYANMAR SYMBOL LOCATIVE -->
             <Key
-                latin:keySpec="&#x1055;"
+                latin:keySpec="&#x104C;"
                 latin:keyLabelFlags="fontNormal" />
-            <!-- U+101B: "ရ" MYANMAR LETTER RA -->
-            <Key
-                latin:keySpec="&#x101B;"
-                latin:keyLabelFlags="fontNormal" />
-            <Key
-                latin:keySpec="*" />
-            <Key
-                latin:keySpec="(" />
-            <Key
-                latin:keySpec=")" />
         </case>
         <default>
-            <!-- U+1050: "ၐ" MYANMAR LETTER SHA -->
-            <Key
-                latin:keySpec="&#x1050;"
-                latin:keyLabelFlags="fontNormal" />
             <!-- U+1041: "၁" MYANMAR DIGIT ONE -->
             <Key
                 latin:keySpec="&#x1041;"
