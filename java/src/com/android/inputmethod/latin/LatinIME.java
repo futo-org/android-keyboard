@@ -367,6 +367,12 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 if (latinIme != null) {
                     executePendingImsCallback(latinIme, editorInfo, restarting);
                     latinIme.onStartInputInternal(editorInfo, restarting);
+                    if (ProductionFlag.USES_CURSOR_ANCHOR_MONITOR) {
+                        // Currently we need to call this every time when the IME is attached to
+                        // new application.
+                        // TODO: Consider if we can do this automatically in the framework.
+                        InputMethodServiceCompatUtils.setCursorAnchorMonitorMode(latinIme, 1);
+                    }
                 }
             }
         }
@@ -929,6 +935,14 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
 
         mSubtypeState.currentSubtypeUsed();
+    }
+
+    @Override
+    public void onUpdateCursor(Rect rect) {
+        if (DEBUG) {
+            Log.i(TAG, "onUpdateCursor:" + rect.toShortString());
+        }
+        super.onUpdateCursor(rect);
     }
 
     /**
