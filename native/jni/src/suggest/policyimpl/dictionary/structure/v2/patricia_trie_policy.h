@@ -81,10 +81,8 @@ class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
         return &mShortcutListPolicy;
     }
 
-    bool addUnigramWord(const int *const word, const int length, const int probability,
-            const int *const shortcutTargetCodePoints, const int shortcutLength,
-            const int shortcutProbability, const bool isNotAWord, const bool isBlacklisted,
-            const int timestamp) {
+    bool addUnigramWord(const int *const word, const int length,
+            const UnigramProperty *const unigramProperty) {
         // This method should not be called for non-updatable dictionary.
         AKLOGI("Warning: addUnigramWord() is called for non-updatable dictionary.");
         return false;

@@ -50,15 +50,10 @@ void Dictionary::getSuggestions(ProximityInfo *proximityInfo, DicTraverseSession
     TimeKeeper::setCurrentTime();
     DicTraverseSession::initSessionInstance(
             traverseSession, this, prevWordCodePoints, prevWordLength, suggestOptions);
-    if (suggestOptions->isGesture()) {
-        mGestureSuggest->getSuggestions(proximityInfo, traverseSession, xcoordinates,
-                ycoordinates, times, pointerIds, inputCodePoints, inputSize,
-                languageWeight, outSuggestionResults);
-    } else {
-        mTypingSuggest->getSuggestions(proximityInfo, traverseSession, xcoordinates,
-                ycoordinates, times, pointerIds, inputCodePoints, inputSize,
-                languageWeight, outSuggestionResults);
-    }
+    const auto &suggest = suggestOptions->isGesture() ? mGestureSuggest : mTypingSuggest;
+    suggest->getSuggestions(proximityInfo, traverseSession, xcoordinates,
+            ycoordinates, times, pointerIds, inputCodePoints, inputSize,
+            languageWeight, outSuggestionResults);
     if (DEBUG_DICT) {
         outSuggestionResults->dumpSuggestions();
     }
@@ -87,14 +82,10 @@ int Dictionary::getBigramProbability(const int *word0, int length0, const int *w
     return mBigramDictionary.getBigramProbability(word0, length0, word1, length1);
 }
 
-void Dictionary::addUnigramWord(const int *const word, const int length, const int probability,
-        const int *const shortcutTargetCodePoints, const int shortcutLength,
-        const int shortcutProbability, const bool isNotAWord, const bool isBlacklisted,
-        const int timestamp) {
+void Dictionary::addUnigramWord(const int *const word, const int length,
+        const UnigramProperty *const unigramProperty) {
     TimeKeeper::setCurrentTime();
-    mDictionaryStructureWithBufferPolicy->addUnigramWord(word, length, probability,
-            shortcutTargetCodePoints, shortcutLength, shortcutProbability, isNotAWord,
-            isBlacklisted, timestamp);
+    mDictionaryStructureWithBufferPolicy->addUnigramWord(word, length, unigramProperty);
 }
 
 void Dictionary::addBigramWords(const int *const word0, const int length0, const int *const word1,
