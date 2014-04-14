@@ -154,9 +154,7 @@ int Ver4PatriciaTriePolicy::getBigramsPositionOfPtNode(const int ptNodePos) cons
 }
 
 bool Ver4PatriciaTriePolicy::addUnigramWord(const int *const word, const int length,
-        const int probability, const int *const shortcutTargetCodePoints, const int shortcutLength,
-        const int shortcutProbability, const bool isNotAWord, const bool isBlacklisted,
-        const int timestamp) {
+        const UnigramProperty *const unigramProperty) {
     if (!mBuffers->isUpdatable()) {
         AKLOGI("Warning: addUnigramWord() is called for non-updatable dictionary.");
         return false;
@@ -170,20 +168,24 @@ bool Ver4PatriciaTriePolicy::addUnigramWord(const int *const word, const int len
         AKLOGE("The word is too long to insert to the dictionary, length: %d", length);
         return false;
     }
-    if (shortcutLength > MAX_WORD_LENGTH) {
-        AKLOGE("The shortcutTarget is too long to insert to the dictionary, length: %d",
-                shortcutLength);
-        return false;
+    for (const auto &shortcut : unigramProperty->getShortcuts()) {
+        if (shortcut.getTargetCodePoints()->size() > MAX_WORD_LENGTH) {
+            AKLOGE("One of shortcut targets is too long to insert to the dictionary, length: %d",
+                    shortcut.getTargetCodePoints()->size());
+            return false;
+        }
     }
     DynamicPtReadingHelper readingHelper(&mNodeReader, &mPtNodeArrayReader);
     readingHelper.initWithPtNodeArrayPos(getRootPosition());
     bool addedNewUnigram = false;
-    if (mUpdatingHelper.addUnigramWord(&readingHelper, word, length, probability, isNotAWord,
-            isBlacklisted, timestamp,  &addedNewUnigram)) {
+    if (mUpdatingHelper.addUnigramWord(&readingHelper, word, length,
+            unigramProperty->getProbability(), unigramProperty->isNotAWord(),
+            unigramProperty->isBlacklisted(), unigramProperty->getTimestamp(),
+            &addedNewUnigram)) {
         if (addedNewUnigram) {
             mUnigramCount++;
         }
-        if (shortcutLength > 0) {
+        if (unigramProperty->getShortcuts().size() > 0) {
             // Add shortcut target.
             const int wordPos = getTerminalPtNodePositionOfWord(word, length,
                     false /* forceLowerCaseSearch */);
@@ -191,11 +193,15 @@ bool Ver4PatriciaTriePolicy::addUnigramWord(const int *const word, const int len
                 AKLOGE("Cannot find terminal PtNode position to add shortcut target.");
                 return false;
             }
-            if (!mUpdatingHelper.addShortcutTarget(wordPos, shortcutTargetCodePoints,
-                    shortcutLength, shortcutProbability)) {
-                AKLOGE("Cannot add new shortcut target. PtNodePos: %d, length: %d, probability: %d",
-                        wordPos, shortcutLength, shortcutProbability);
-                return false;
+            for (const auto &shortcut : unigramProperty->getShortcuts()) {
+                if (!mUpdatingHelper.addShortcutTarget(wordPos,
+                        shortcut.getTargetCodePoints()->data(),
+                        shortcut.getTargetCodePoints()->size(), shortcut.getProbability())) {
+                    AKLOGE("Cannot add new shortcut target. PtNodePos: %d, length: %d, "
+                            "probability: %d", wordPos, shortcut.getTargetCodePoints()->size(),
+                            shortcut.getProbability());
+                    return false;
+                }
             }
         }
         return true;

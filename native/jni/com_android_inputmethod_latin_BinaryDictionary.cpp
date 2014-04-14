@@ -19,16 +19,19 @@
 #include "com_android_inputmethod_latin_BinaryDictionary.h"
 
 #include <cstring> // for memset()
+#include <vector>
 
 #include "defines.h"
 #include "jni.h"
 #include "jni_common.h"
 #include "suggest/core/dictionary/dictionary.h"
+#include "suggest/core/dictionary/property/unigram_property.h"
 #include "suggest/core/dictionary/property/word_property.h"
 #include "suggest/core/result/suggestion_results.h"
 #include "suggest/core/suggest_options.h"
 #include "suggest/policyimpl/dictionary/structure/dictionary_structure_with_buffer_policy_factory.h"
 #include "utils/char_utils.h"
+#include "utils/jni_data_utils.h"
 #include "utils/time_keeper.h"
 
 namespace latinime {
@@ -288,22 +291,24 @@ static void latinime_BinaryDictionary_getWordProperty(JNIEnv *env, jclass clazz,
 }
 
 static void latinime_BinaryDictionary_addUnigramWord(JNIEnv *env, jclass clazz, jlong dict,
-        jintArray word, jint probability, jintArray shortcutTarget, jint shortuctProbability,
+        jintArray word, jint probability, jintArray shortcutTarget, jint shortcutProbability,
         jboolean isNotAWord, jboolean isBlacklisted, jint timestamp) {
     Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
     if (!dictionary) {
         return;
     }
-    jsize wordLength = env->GetArrayLength(word);
-    int codePoints[wordLength];
-    env->GetIntArrayRegion(word, 0, wordLength, codePoints);
-    jsize shortcutLength = shortcutTarget ? env->GetArrayLength(shortcutTarget) : 0;
-    int shortcutTargetCodePoints[shortcutLength];
-    if (shortcutTarget) {
-        env->GetIntArrayRegion(shortcutTarget, 0, shortcutLength, shortcutTargetCodePoints);
+    jsize codePointCount = env->GetArrayLength(word);
+    int codePoints[codePointCount];
+    env->GetIntArrayRegion(word, 0, codePointCount, codePoints);
+    std::vector<UnigramProperty::ShortcutProperty> shortcuts;
+    std::vector<int> shortcutTargetCodePoints;
+    JniDataUtils::jintarrayToVector(env, shortcutTarget, &shortcutTargetCodePoints);
+    if (!shortcutTargetCodePoints.empty()) {
+        shortcuts.emplace_back(&shortcutTargetCodePoints, shortcutProbability);
     }
-    dictionary->addUnigramWord(codePoints, wordLength, probability, shortcutTargetCodePoints,
-            shortcutLength, shortuctProbability, isNotAWord, isBlacklisted, timestamp);
+    const UnigramProperty unigramProperty(isNotAWord, isBlacklisted,
+            probability, timestamp, 0 /* level */, 0 /* count */, &shortcuts);
+    dictionary->addUnigramWord(codePoints, codePointCount, &unigramProperty);
 }
 
 static void latinime_BinaryDictionary_addBigramWords(JNIEnv *env, jclass clazz, jlong dict,
@@ -394,15 +399,17 @@ static int latinime_BinaryDictionary_addMultipleDictionaryEntries(JNIEnv *env, j
         jboolean isBlacklisted = env->GetBooleanField(languageModelParam, isBlacklistedFieldId);
         jintArray shortcutTarget = static_cast<jintArray>(
                 env->GetObjectField(languageModelParam, shortcutTargetFieldId));
-        jsize shortcutLength = shortcutTarget ? env->GetArrayLength(shortcutTarget) : 0;
-        int shortcutTargetCodePoints[shortcutLength];
-        if (shortcutTarget) {
-            env->GetIntArrayRegion(shortcutTarget, 0, shortcutLength, shortcutTargetCodePoints);
+        std::vector<UnigramProperty::ShortcutProperty> shortcuts;
+        std::vector<int> shortcutTargetCodePoints;
+        JniDataUtils::jintarrayToVector(env, shortcutTarget, &shortcutTargetCodePoints);
+        if (!shortcutTargetCodePoints.empty()) {
+            jint shortcutProbability =
+                    env->GetIntField(languageModelParam, shortcutProbabilityFieldId);
+            shortcuts.emplace_back(&shortcutTargetCodePoints, shortcutProbability);
         }
-        jint shortcutProbability = env->GetIntField(languageModelParam, shortcutProbabilityFieldId);
-        dictionary->addUnigramWord(word1CodePoints, word1Length, unigramProbability,
-                shortcutTargetCodePoints, shortcutLength, shortcutProbability,
-                isNotAWord, isBlacklisted, timestamp);
+        const UnigramProperty unigramProperty(isNotAWord, isBlacklisted,
+                unigramProbability, timestamp, 0 /* level */, 0 /* count */, &shortcuts);
+        dictionary->addUnigramWord(word1CodePoints, word1Length, &unigramProperty);
         if (word0) {
             jint bigramProbability = env->GetIntField(languageModelParam, bigramProbabilityFieldId);
             dictionary->addBigramWords(word0CodePoints, word0Length, word1CodePoints, word1Length,
