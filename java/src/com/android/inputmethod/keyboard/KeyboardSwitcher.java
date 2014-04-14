@@ -230,8 +230,9 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         mState.onPressKey(code, isSinglePointer, currentAutoCapsState);
     }
 
-    public void onReleaseKey(final int code, final boolean withSliding) {
-        mState.onReleaseKey(code, withSliding);
+    public void onReleaseKey(final int code, final boolean withSliding,
+            final int currentAutoCapsState, final int currentRecapitalizeState) {
+        mState.onReleaseKey(code, withSliding, currentAutoCapsState, currentRecapitalizeState);
     }
 
     public void onFinishSlidingInput() {
