@@ -52,12 +52,16 @@ public class DeadKeyCombiner implements Combiner {
                 // how dead keys work).
                 // If the event is a space, we should commit the dead char alone, but if it's
                 // not, we need to commit both.
+                // TODO: this is not necessarily triggered by hardware key events, so it's not
+                // a good idea to masquerade as one. This should be typed as a software
+                // composite event or something.
                 return Event.createHardwareKeypressEvent(deadCodePoint, event.mKeyCode,
-                        Constants.CODE_SPACE == event.mCodePoint ? null : event /* next */);
+                        Constants.CODE_SPACE == event.mCodePoint ? null : event /* next */,
+                        false /* isKeyRepeat */);
             } else {
                 // We could combine the characters.
                 return Event.createHardwareKeypressEvent(resultingCodePoint, event.mKeyCode,
-                        null /* next */);
+                        null /* next */, false /* isKeyRepeat */);
             }
         }
     }

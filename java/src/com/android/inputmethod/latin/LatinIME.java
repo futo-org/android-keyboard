@@ -1224,7 +1224,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     // Implementation of {@link KeyboardActionListener}.
     @Override
-    public void onCodeInput(final int codePoint, final int x, final int y) {
+    public void onCodeInput(final int codePoint, final int x, final int y,
+            final boolean isKeyRepeat) {
         final MainKeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
         // x and y include some padding, but everything down the line (especially native
         // code) needs the coordinates in the keyboard frame.
@@ -1250,7 +1251,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mSubtypeSwitcher.switchToShortcutIME(this);
             // Still call the *#onCodeInput methods for readability.
         }
-        final Event event = createSoftwareKeypressEvent(codeToSend, keyX, keyY);
+        final Event event = createSoftwareKeypressEvent(codeToSend, keyX, keyY, isKeyRepeat);
         final InputTransaction completeInputTransaction =
                 mInputLogic.onCodeInput(mSettings.getCurrent(), event,
                         mKeyboardSwitcher.getKeyboardShiftMode(), mHandler);
@@ -1261,7 +1262,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // A helper method to split the code point and the key code. Ultimately, they should not be
     // squashed into the same variable, and this method should be removed.
     private static Event createSoftwareKeypressEvent(final int keyCodeOrCodePoint, final int keyX,
-             final int keyY) {
+             final int keyY, final boolean isKeyRepeat) {
         final int keyCode;
         final int codePoint;
         if (keyCodeOrCodePoint <= 0) {
@@ -1271,7 +1272,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             keyCode = Event.NOT_A_KEY_CODE;
             codePoint = keyCodeOrCodePoint;
         }
-        return Event.createSoftwareKeypressEvent(codePoint, keyCode, keyX, keyY);
+        return Event.createSoftwareKeypressEvent(codePoint, keyCode, keyX, keyY, isKeyRepeat);
     }
 
     // Called from PointerTracker through the KeyboardActionListener interface
