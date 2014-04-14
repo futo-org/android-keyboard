@@ -884,10 +884,17 @@ public final class InputLogic {
         mSpaceState = SpaceState.NONE;
         mDeleteCount++;
 
-        // In many cases, we may have to put the keyboard in auto-shift state again. However
-        // we want to wait a few milliseconds before doing it to avoid the keyboard flashing
-        // during key repeat.
-        inputTransaction.requireShiftUpdate(InputTransaction.SHIFT_UPDATE_LATER);
+        // In many cases after backspace, we need to update the shift state. Normally we need
+        // to do this right away to avoid the shift state being out of date in case the user types
+        // backspace then some other character very fast. However, in the case of backspace key
+        // repeat, this can lead to flashiness when the cursor flies over positions where the
+        // shift state should be updated, so if this is a key repeat, we update after a small delay.
+        // Then again, even in the case of a key repeat, if the cursor is at start of text, it
+        // can't go any further back, so we can update right away even if it's a key repeat.
+        final int shiftUpdateKind =
+                inputTransaction.mEvent.isKeyRepeat() && mConnection.getExpectedSelectionStart() > 0
+                ? InputTransaction.SHIFT_UPDATE_LATER : InputTransaction.SHIFT_UPDATE_NOW;
+        inputTransaction.requireShiftUpdate(shiftUpdateKind);
 
         if (mWordComposer.isCursorFrontOrMiddleOfComposingWord()) {
             // If we are in the middle of a recorrection, we need to commit the recorrection
@@ -910,11 +917,6 @@ public final class InputLogic {
             }
             mConnection.setComposingText(getTextWithUnderline(mWordComposer.getTypedWord()), 1);
             inputTransaction.setRequiresUpdateSuggestions();
-            if (!mWordComposer.isComposingWord()) {
-                // If we just removed the last character, auto-caps mode may have changed so we
-                // need to re-evaluate.
-                inputTransaction.requireShiftUpdate(InputTransaction.SHIFT_UPDATE_NOW);
-            }
         } else {
             if (mLastComposedWord.canRevertCommit()) {
                 if (inputTransaction.mSettingsValues.mIsInternal) {
@@ -1025,8 +1027,6 @@ public final class InputLogic {
                 restartSuggestionsOnWordTouchedByCursor(inputTransaction.mSettingsValues,
                         true /* includeResumedWordInSuggestions */);
             }
-            // We just removed at least one character. We need to update the auto-caps state.
-            inputTransaction.requireShiftUpdate(InputTransaction.SHIFT_UPDATE_NOW);
         }
     }
 

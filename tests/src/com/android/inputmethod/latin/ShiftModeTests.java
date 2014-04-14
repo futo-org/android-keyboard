@@ -53,4 +53,29 @@ public class ShiftModeTests extends InputTestsBase {
         type(" ");
         assertTrue("Caps after period space", isCapsModeAutoShifted());
     }
+
+    public void testBackspace() {
+        assertTrue("Initial auto caps state", isCapsModeAutoShifted());
+        type("A");
+        assertFalse("Caps state after one letter", isCapsModeAutoShifted());
+        type(Constants.CODE_DELETE);
+        assertTrue("Auto caps state at start after delete", isCapsModeAutoShifted());
+    }
+
+    public void testRepeatingBackspace() {
+        final String SENTENCE_TO_TYPE = "Test sentence. Another.";
+        final int BACKSPACE_COUNT =
+                SENTENCE_TO_TYPE.length() - SENTENCE_TO_TYPE.lastIndexOf(' ') - 1;
+
+        type(SENTENCE_TO_TYPE);
+        assertFalse("Caps after typing \"" + SENTENCE_TO_TYPE + "\"", isCapsModeAutoShifted());
+        type(Constants.CODE_DELETE);
+        for (int i = 1; i < BACKSPACE_COUNT; ++i) {
+            repeatKey(Constants.CODE_DELETE);
+        }
+        assertFalse("Caps immediately after repeating Backspace a lot", isCapsModeAutoShifted());
+        sleep(DELAY_TO_WAIT_FOR_PREDICTIONS);
+        runMessages();
+        assertTrue("Caps after a while after repeating Backspace a lot", isCapsModeAutoShifted());
+    }
 }

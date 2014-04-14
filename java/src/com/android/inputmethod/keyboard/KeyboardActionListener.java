@@ -53,8 +53,10 @@ public interface KeyboardActionListener {
      *            {@link PointerTracker} or so, the value should be
      *            {@link Constants#NOT_A_COORDINATE}.If it's called on insertion from the
      *            suggestion strip, it should be {@link Constants#SUGGESTION_STRIP_COORDINATE}.
+     * @param isKeyRepeat true if this is a key repeat, false otherwise
      */
-    public void onCodeInput(int primaryCode, int x, int y);
+    // TODO: change this to send an Event object instead
+    public void onCodeInput(int primaryCode, int x, int y, boolean isKeyRepeat);
 
     /**
      * Sends a string of characters to the listener.
@@ -107,7 +109,7 @@ public interface KeyboardActionListener {
         @Override
         public void onReleaseKey(int primaryCode, boolean withSliding) {}
         @Override
-        public void onCodeInput(int primaryCode, int x, int y) {}
+        public void onCodeInput(int primaryCode, int x, int y, boolean isKeyRepeat) {}
         @Override
         public void onTextInput(String text) {}
         @Override

@@ -65,6 +65,8 @@ public class Event {
     // This event is a dead character, usually input by a dead key. Examples include dead-acute
     // or dead-abovering.
     final private static int FLAG_DEAD = 0x1;
+    // This event is coming from a key repeat, software or hardware.
+    final private static int FLAG_REPEAT = 0x2;
 
     final private int mEventType; // The type of event - one of the constants above
     // The code point associated with the event, if relevant. This is a unicode code point, and
@@ -130,16 +132,16 @@ public class Event {
     }
 
     public static Event createSoftwareKeypressEvent(final int codePoint, final int keyCode,
-            final int x, final int y) {
+            final int x, final int y, final boolean isKeyRepeat) {
         return new Event(EVENT_TYPE_INPUT_KEYPRESS, null /* text */, codePoint, keyCode, x, y,
-                null /* suggestedWordInfo */, FLAG_NONE, null /* next */);
+                null /* suggestedWordInfo */, isKeyRepeat ? FLAG_REPEAT : FLAG_NONE, null);
     }
 
     public static Event createHardwareKeypressEvent(final int codePoint, final int keyCode,
-            final Event next) {
+            final Event next, final boolean isKeyRepeat) {
         return new Event(EVENT_TYPE_INPUT_KEYPRESS, null /* text */, codePoint, keyCode,
                 Constants.EXTERNAL_KEYBOARD_COORDINATE, Constants.EXTERNAL_KEYBOARD_COORDINATE,
-                null /* suggestedWordInfo */, FLAG_NONE, next);
+                null /* suggestedWordInfo */, isKeyRepeat ? FLAG_REPEAT : FLAG_NONE, next);
     }
 
     // This creates an input event for a dead character. @see {@link #FLAG_DEAD}
@@ -226,6 +228,10 @@ public class Event {
     // Returns whether this event is for a dead character. @see {@link #FLAG_DEAD}
     public boolean isDead() {
         return 0 != (FLAG_DEAD & mFlags);
+    }
+
+    public boolean isKeyRepeat() {
+        return 0 != (FLAG_REPEAT & mFlags);
     }
 
     // Returns whether this is a fake key press from the suggestion strip. This happens with

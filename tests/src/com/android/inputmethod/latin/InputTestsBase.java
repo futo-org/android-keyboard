@@ -254,7 +254,7 @@ public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
     }
 
     // type(int) and type(String): helper methods to send a code point resp. a string to LatinIME.
-    protected void type(final int codePoint) {
+    protected void typeInternal(final int codePoint, final boolean isKeyRepeat) {
         // onPressKey and onReleaseKey are explicitly deactivated here, but they do happen in the
         // code (although multitouch/slide input and other factors make the sequencing complicated).
         // They are supposed to be entirely deconnected from the input logic from LatinIME point of
@@ -263,14 +263,24 @@ public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
         // but keep them in mind if something breaks. Commenting them out as is should work.
         //mLatinIME.onPressKey(codePoint, 0 /* repeatCount */, true /* isSinglePointer */);
         final Key key = mKeyboard.getKey(codePoint);
-        if (key != null) {
+        if (key == null) {
+            mLatinIME.onCodeInput(codePoint, Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE,
+                    isKeyRepeat);
+        } else {
             final int x = key.getX() + key.getWidth() / 2;
             final int y = key.getY() + key.getHeight() / 2;
-            mLatinIME.onCodeInput(codePoint, x, y);
-            return;
+            mLatinIME.onCodeInput(codePoint, x, y, isKeyRepeat);
         }
-        mLatinIME.onCodeInput(codePoint, Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
+        // Also see the comment at the top of this function about onReleaseKey
         //mLatinIME.onReleaseKey(codePoint, false /* withSliding */);
+    }
+
+    protected void type(final int codePoint) {
+        typeInternal(codePoint, false /* isKeyRepeat */);
+    }
+
+    protected void repeatKey(final int codePoint) {
+        typeInternal(codePoint, true /* isKeyRepeat */);
     }
 
     protected void type(final String stringToType) {
