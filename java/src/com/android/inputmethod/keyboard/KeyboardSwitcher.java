@@ -45,28 +45,6 @@ import com.android.inputmethod.latin.utils.ResourceUtils;
 public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     private static final String TAG = KeyboardSwitcher.class.getSimpleName();
 
-    public static final class KeyboardTheme {
-        public final int mThemeId;
-        public final int mStyleId;
-
-        // Note: The themeId should be aligned with "themeId" attribute of Keyboard style
-        // in values/style.xml.
-        public KeyboardTheme(final int themeId, final int styleId) {
-            mThemeId = themeId;
-            mStyleId = styleId;
-        }
-    }
-
-    public static final int THEME_INDEX_ICS = 0;
-    public static final int THEME_INDEX_GB = 1;
-    public static final int THEME_INDEX_KLP = 2;
-    public static final int DEFAULT_THEME_INDEX = THEME_INDEX_KLP;
-    public static final KeyboardTheme[] KEYBOARD_THEMES = {
-        new KeyboardTheme(THEME_INDEX_ICS, R.style.KeyboardTheme_ICS),
-        new KeyboardTheme(THEME_INDEX_GB, R.style.KeyboardTheme_GB),
-        new KeyboardTheme(THEME_INDEX_KLP, R.style.KeyboardTheme_KLP),
-    };
-
     private SubtypeSwitcher mSubtypeSwitcher;
     private SharedPreferences mPrefs;
 
@@ -88,7 +66,8 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
      * what user actually typed. */
     private boolean mIsAutoCorrectionActive;
 
-    private KeyboardTheme mKeyboardTheme = KEYBOARD_THEMES[DEFAULT_THEME_INDEX];
+    private KeyboardTheme mKeyboardTheme =
+            KeyboardTheme.KEYBOARD_THEMES[KeyboardTheme.DEFAULT_THEME_INDEX];
     private Context mThemeContext;
 
     private static final KeyboardSwitcher sInstance = new KeyboardSwitcher();
@@ -127,13 +106,13 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
             final SharedPreferences prefs) {
         final Resources res = context.getResources();
         final int index = Settings.readKeyboardThemeIndex(prefs, res);
-        if (index >= 0 && index < KEYBOARD_THEMES.length) {
-            return KEYBOARD_THEMES[index];
+        if (index >= 0 && index < KeyboardTheme.KEYBOARD_THEMES.length) {
+            return KeyboardTheme.KEYBOARD_THEMES[index];
         }
         final int defaultThemeIndex = Settings.resetAndGetDefaultKeyboardThemeIndex(prefs, res);
         Log.w(TAG, "Illegal keyboard theme in preference: " + index + ", default to "
                 + defaultThemeIndex);
-        return KEYBOARD_THEMES[defaultThemeIndex];
+        return KeyboardTheme.KEYBOARD_THEMES[defaultThemeIndex];
     }
 
     private boolean updateKeyboardThemeAndContextThemeWrapper(final Context context,
