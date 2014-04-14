@@ -33,14 +33,6 @@
     <!-- config_more_keys_keyboard_key_height x 1.2 -->
     <dimen name="config_more_keys_keyboard_slide_allowance">53.76dp</dimen>
 
-    <fraction name="config_keyboard_top_padding_gb">1.818%p</fraction>
-    <fraction name="config_keyboard_bottom_padding_gb">0.0%p</fraction>
-    <fraction name="config_key_vertical_gap_gb">5.941%p</fraction>
-    <fraction name="config_key_horizontal_gap_gb">0.997%p</fraction>
-    <!-- config_more_keys_keyboard_key_height x -1.0 -->
-    <dimen name="config_more_keys_keyboard_vertical_correction_gb">-44.8dp</dimen>
-    <dimen name="config_key_preview_offset_gb">0.0dp</dimen>
-
     <fraction name="config_keyboard_top_padding_holo">2.727%p</fraction>
     <fraction name="config_keyboard_bottom_padding_holo">0.0%p</fraction>
     <fraction name="config_key_vertical_gap_holo">5.368%p</fraction>

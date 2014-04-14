@@ -37,26 +37,6 @@
     </string-array>
 
     <string-array
-        name="touch_position_correction_data_gb"
-        translatable="false"
-    >
-        <!-- First row -->
-        <item>0.0091285</item>
-        <item>0.1193203</item>
-        <item>0.1622607</item>
-
-        <!-- Second row -->
-        <item>-0.0233128</item>
-        <item>0.1379798</item>
-        <item>0.1585229</item>
-
-        <!-- Third row -->
-        <item>-0.0080185</item>
-        <item>0.1911477</item>
-        <item>0.1570948</item>
-    </string-array>
-
-    <string-array
         name="touch_position_correction_data_holo"
         translatable="false"
     >
