@@ -23,7 +23,6 @@ import android.content.res.Resources;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import com.android.inputmethod.keyboard.KeyboardTheme;
 import com.android.inputmethod.latin.AudioAndHapticFeedbackManager;
 import com.android.inputmethod.latin.InputAttributes;
 import com.android.inputmethod.latin.R;
@@ -268,42 +267,6 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
             editor.apply();
         }
         return prefs.getBoolean(PREF_SHOW_LANGUAGE_SWITCH_KEY, true);
-    }
-
-    public static int readKeyboardThemeIndex(final SharedPreferences prefs, final Resources res) {
-        final int defaultThemeIndex = readDefaultKeyboardThemeIndex(res);
-        final String themeIndexString = prefs.getString(PREF_KEYBOARD_LAYOUT, null);
-        if (themeIndexString == null) {
-            return defaultThemeIndex;
-        }
-        try {
-            return Integer.parseInt(themeIndexString);
-        } catch (final NumberFormatException e) {
-            // Format error, returns default keyboard theme index.
-            Log.e(TAG, "Illegal keyboard theme in preference: " + themeIndexString + ", default to "
-                    + defaultThemeIndex, e);
-        }
-        return defaultThemeIndex;
-    }
-
-    private static int readDefaultKeyboardThemeIndex(final Resources res) {
-        final String defaultThemeIndexString = res.getString(
-                R.string.config_default_keyboard_theme_index);
-        try {
-            return Integer.parseInt(defaultThemeIndexString);
-        } catch (final NumberFormatException e) {
-            final int defaultThemeIndex = KeyboardTheme.DEFAULT_THEME_INDEX;
-            Log.e(TAG, "Corrupted default keyoard theme in resource: " + defaultThemeIndexString
-                    + ", default to " + defaultThemeIndex, e);
-            return defaultThemeIndex;
-        }
-    }
-
-    public static int resetAndGetDefaultKeyboardThemeIndex(final SharedPreferences prefs,
-            final Resources res) {
-        final int defaultThemeIndex = readDefaultKeyboardThemeIndex(res);
-        prefs.edit().putString(PREF_KEYBOARD_LAYOUT, Integer.toString(defaultThemeIndex)).apply();
-        return defaultThemeIndex;
     }
 
     public static String readPrefAdditionalSubtypes(final SharedPreferences prefs,

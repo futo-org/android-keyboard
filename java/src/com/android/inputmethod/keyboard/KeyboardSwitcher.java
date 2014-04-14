@@ -38,7 +38,6 @@ import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.RichInputMethodManager;
 import com.android.inputmethod.latin.SubtypeSwitcher;
 import com.android.inputmethod.latin.WordComposer;
-import com.android.inputmethod.latin.settings.Settings;
 import com.android.inputmethod.latin.settings.SettingsValues;
 import com.android.inputmethod.latin.utils.ResourceUtils;
 
@@ -66,8 +65,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
      * what user actually typed. */
     private boolean mIsAutoCorrectionActive;
 
-    private KeyboardTheme mKeyboardTheme =
-            KeyboardTheme.KEYBOARD_THEMES[KeyboardTheme.DEFAULT_THEME_INDEX];
+    private KeyboardTheme mKeyboardTheme = KeyboardTheme.getDefaultKeyboardTheme();
     private Context mThemeContext;
 
     private static final KeyboardSwitcher sInstance = new KeyboardSwitcher();
@@ -96,23 +94,10 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
 
     public void updateKeyboardTheme() {
         final boolean themeUpdated = updateKeyboardThemeAndContextThemeWrapper(
-                mLatinIME, getKeyboardTheme(mLatinIME, mPrefs));
+                mLatinIME, KeyboardTheme.getKeyboardTheme(mPrefs));
         if (themeUpdated && mKeyboardView != null) {
             mLatinIME.setInputView(onCreateInputView(mIsHardwareAcceleratedDrawingEnabled));
         }
-    }
-
-    private static KeyboardTheme getKeyboardTheme(final Context context,
-            final SharedPreferences prefs) {
-        final Resources res = context.getResources();
-        final int index = Settings.readKeyboardThemeIndex(prefs, res);
-        if (index >= 0 && index < KeyboardTheme.KEYBOARD_THEMES.length) {
-            return KeyboardTheme.KEYBOARD_THEMES[index];
-        }
-        final int defaultThemeIndex = Settings.resetAndGetDefaultKeyboardThemeIndex(prefs, res);
-        Log.w(TAG, "Illegal keyboard theme in preference: " + index + ", default to "
-                + defaultThemeIndex);
-        return KeyboardTheme.KEYBOARD_THEMES[defaultThemeIndex];
     }
 
     private boolean updateKeyboardThemeAndContextThemeWrapper(final Context context,
