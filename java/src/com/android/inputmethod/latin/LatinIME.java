@@ -657,9 +657,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mInputLogic.commitTyped(mSettings.getCurrent(), LastComposedWord.NOT_A_SEPARATOR);
             mInputLogic.mConnection.finishComposingText();
             mInputLogic.mConnection.endBatchEdit();
-            if (isShowingOptionDialog()) {
-                mOptionsDialog.dismiss();
-            }
         }
         PersonalizationDictionarySessionRegistrar.onConfigurationChanged(this, conf,
                 mInputLogic.mSuggest.mDictionaryFacilitator);
@@ -990,7 +987,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
 
         if (TRACE) Debug.stopMethodTracing();
-        if (mOptionsDialog != null && mOptionsDialog.isShowing()) {
+        if (isShowingOptionDialog()) {
             mOptionsDialog.dismiss();
             mOptionsDialog = null;
         }
@@ -1186,7 +1183,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     // Implement {@link ImportantNoticeDialog.ImportantNoticeDialogListener}
     @Override
-    public void onDismissImportantNoticeDialog(final int nextVersion) {
+    public void onUserAcknowledgmentOfImportantNoticeDialog(final int nextVersion) {
         setNeutralSuggestionStrip();
     }
 
@@ -1694,7 +1691,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final AlertDialog.Builder builder = new AlertDialog.Builder(
                 DialogUtils.getPlatformDialogThemeContext(this));
         builder.setItems(items, listener).setTitle(title);
-        showOptionDialog(builder.create());
+        final AlertDialog dialog = builder.create();
+        dialog.setCancelable(true /* cancelable */);
+        dialog.setCanceledOnTouchOutside(true /* cancelable */);
+        showOptionDialog(dialog);
     }
 
     // TODO: Move this method out of {@link LatinIME}.
@@ -1703,9 +1703,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (windowToken == null) {
             return;
         }
-
-        dialog.setCancelable(true /* cancelable */);
-        dialog.setCanceledOnTouchOutside(true /* cancelable */);
 
         final Window window = dialog.getWindow();
         final WindowManager.LayoutParams lp = window.getAttributes();

@@ -20,8 +20,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
-import android.content.DialogInterface.OnDismissListener;
-import android.content.DialogInterface.OnShowListener;
 
 import com.android.inputmethod.latin.utils.DialogUtils;
 import com.android.inputmethod.latin.utils.ImportantNoticeUtils;
@@ -29,11 +27,10 @@ import com.android.inputmethod.latin.utils.ImportantNoticeUtils;
 /**
  * The dialog box that shows the important notice contents.
  */
-public final class ImportantNoticeDialog extends AlertDialog implements OnShowListener,
-        OnClickListener, OnDismissListener {
+public final class ImportantNoticeDialog extends AlertDialog implements OnClickListener {
     public interface ImportantNoticeDialogListener {
+        public void onUserAcknowledgmentOfImportantNoticeDialog(final int nextVersion);
         public void onClickSettingsOfImportantNoticeDialog(final int nextVersion);
-        public void onDismissImportantNoticeDialog(final int nextVersion);
     }
 
     private final ImportantNoticeDialogListener mListener;
@@ -50,9 +47,9 @@ public final class ImportantNoticeDialog extends AlertDialog implements OnShowLi
         if (shouldHaveSettingsButton()) {
             setButton(BUTTON_NEGATIVE, context.getString(R.string.go_to_settings), this);
         }
-        // Set listeners.
-        setOnShowListener(this);
-        setOnDismissListener(this);
+        // This dialog is cancelable by pressing back key. See {@link #onBackPress()}.
+        setCancelable(true /* cancelable */);
+        setCanceledOnTouchOutside(false /* cancelable */);
     }
 
     private boolean shouldHaveSettingsButton() {
@@ -60,9 +57,9 @@ public final class ImportantNoticeDialog extends AlertDialog implements OnShowLi
                 == ImportantNoticeUtils.VERSION_TO_ENABLE_PERSONALIZED_SUGGESTIONS;
     }
 
-    @Override
-    public void onShow(final DialogInterface dialog) {
+    private void userAcknowledged() {
         ImportantNoticeUtils.updateLastImportantNoticeVersion(getContext());
+        mListener.onUserAcknowledgmentOfImportantNoticeDialog(mNextImportantNoticeVersion);
     }
 
     @Override
@@ -70,10 +67,12 @@ public final class ImportantNoticeDialog extends AlertDialog implements OnShowLi
         if (shouldHaveSettingsButton() && which == BUTTON_NEGATIVE) {
             mListener.onClickSettingsOfImportantNoticeDialog(mNextImportantNoticeVersion);
         }
+        userAcknowledged();
     }
 
     @Override
-    public void onDismiss(final DialogInterface dialog) {
-        mListener.onDismissImportantNoticeDialog(mNextImportantNoticeVersion);
+    public void onBackPressed() {
+        super.onBackPressed();
+        userAcknowledged();
     }
 }
