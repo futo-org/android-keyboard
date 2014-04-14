@@ -41,7 +41,7 @@ import java.util.Locale;
 @SmallTest
 public class KeyboardLayoutSetTestsBase extends AndroidTestCase {
     private static final KeyboardTheme DEFAULT_KEYBOARD_THEME =
-            KeyboardTheme.KEYBOARD_THEMES[KeyboardTheme.DEFAULT_THEME_INDEX];
+            KeyboardTheme.getDefaultKeyboardTheme();
 
     // All input method subtypes of LatinIME.
     private final ArrayList<InputMethodSubtype> mAllSubtypesList = CollectionUtils.newArrayList();

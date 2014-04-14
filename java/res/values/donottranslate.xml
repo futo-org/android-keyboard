@@ -58,7 +58,7 @@
         <item>@string/layout_gingerbread</item>
         <item>@string/layout_klp</item>
     </string-array>
-    <!-- An element must be an index of {@link KeyboardSwitcher#KEYBOARD_THEMES[]}. -->
+    <!-- An element must be a keyboard theme id of {@link KeyboardTheme#THEME_ID_*}. -->
     <string-array name="keyboard_layout_modes_values">
         <item>0</item>
         <item>1</item>
@@ -66,12 +66,12 @@
     </string-array>
 
     <!-- For keyboard color scheme option dialog. -->
-    <string-array name="keyboard_color_schemes">
+    <string-array name="keyboard_theme_names">
         <item>@string/keyboard_color_scheme_white</item>
         <item>@string/keyboard_color_scheme_blue</item>
     </string-array>
-    <!-- An element must be an index of {@link KeyboardSwitcher#KEYBOARD_THEMES[]}. -->
-    <string-array name="keyboard_color_schemes_values">
+    <!-- An element must be a keyboard theme id of {@link KeyboardTheme#THEME_ID_*}. -->
+    <string-array name="keyboard_theme_ids">
         <item>2</item>
         <item>0</item>
     </string-array>

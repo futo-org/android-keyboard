@@ -16,18 +16,24 @@
 
 package com.android.inputmethod.keyboard;
 
+import android.content.SharedPreferences;
+import android.util.Log;
+
 import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.settings.Settings;
 
 public final class KeyboardTheme {
-    public static final int THEME_INDEX_ICS = 0;
-    public static final int THEME_INDEX_GB = 1;
-    public static final int THEME_INDEX_KLP = 2;
-    public static final int DEFAULT_THEME_INDEX = THEME_INDEX_KLP;
+    private static final String TAG = KeyboardTheme.class.getSimpleName();
 
-    public static final KeyboardTheme[] KEYBOARD_THEMES = {
-        new KeyboardTheme(THEME_INDEX_ICS, R.style.KeyboardTheme_ICS),
-        new KeyboardTheme(THEME_INDEX_GB, R.style.KeyboardTheme_GB),
-        new KeyboardTheme(THEME_INDEX_KLP, R.style.KeyboardTheme_KLP),
+    public static final int THEME_ID_ICS = 0;
+    public static final int THEME_ID_GB = 1;
+    public static final int THEME_ID_KLP = 2;
+    private static final int DEFAULT_THEME_ID = THEME_ID_KLP;
+
+    private static final KeyboardTheme[] KEYBOARD_THEMES = {
+        new KeyboardTheme(THEME_ID_ICS, R.style.KeyboardTheme_ICS),
+        new KeyboardTheme(THEME_ID_GB, R.style.KeyboardTheme_GB),
+        new KeyboardTheme(THEME_ID_KLP, R.style.KeyboardTheme_KLP),
     };
 
     public final int mThemeId;
@@ -38,5 +44,40 @@ public final class KeyboardTheme {
     public KeyboardTheme(final int themeId, final int styleId) {
         mThemeId = themeId;
         mStyleId = styleId;
+    }
+
+    private static KeyboardTheme searchKeyboardTheme(final int themeId) {
+        // TODO: This search algorithm isn't optimal if there are many themes.
+        for (final KeyboardTheme theme : KEYBOARD_THEMES) {
+            if (theme.mThemeId == themeId) {
+                return theme;
+            }
+        }
+        return null;
+    }
+
+    public static KeyboardTheme getDefaultKeyboardTheme() {
+        return searchKeyboardTheme(DEFAULT_THEME_ID);
+    }
+
+    public static KeyboardTheme getKeyboardTheme(final SharedPreferences prefs) {
+        final String themeIdString = prefs.getString(Settings.PREF_KEYBOARD_LAYOUT, null);
+        if (themeIdString == null) {
+            return getDefaultKeyboardTheme();
+        }
+        try {
+            final int themeId = Integer.parseInt(themeIdString);
+            final KeyboardTheme theme = searchKeyboardTheme(themeId);
+            if (theme != null) {
+                return theme;
+            }
+            Log.w(TAG, "Unknown keyboard theme in preference: " + themeIdString);
+        } catch (final NumberFormatException e) {
+            Log.w(TAG, "Illegal keyboard theme in preference: " + themeIdString);
+        }
+        // Reset preference to default value.
+        final String defaultThemeIdString = Integer.toString(DEFAULT_THEME_ID);
+        prefs.edit().putString(Settings.PREF_KEYBOARD_LAYOUT, defaultThemeIdString).apply();
+        return getDefaultKeyboardTheme();
     }
 }
