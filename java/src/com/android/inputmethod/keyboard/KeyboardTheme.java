@@ -26,13 +26,11 @@ public final class KeyboardTheme {
     private static final String TAG = KeyboardTheme.class.getSimpleName();
 
     public static final int THEME_ID_ICS = 0;
-    public static final int THEME_ID_GB = 1;
     public static final int THEME_ID_KLP = 2;
     private static final int DEFAULT_THEME_ID = THEME_ID_KLP;
 
     private static final KeyboardTheme[] KEYBOARD_THEMES = {
         new KeyboardTheme(THEME_ID_ICS, R.style.KeyboardTheme_ICS),
-        new KeyboardTheme(THEME_ID_GB, R.style.KeyboardTheme_GB),
         new KeyboardTheme(THEME_ID_KLP, R.style.KeyboardTheme_KLP),
     };
 

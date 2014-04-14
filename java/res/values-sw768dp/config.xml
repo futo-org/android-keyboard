@@ -26,14 +26,6 @@
     <fraction name="config_max_keyboard_height">46%p</fraction>
     <fraction name="config_min_keyboard_height">-35.0%p</fraction>
 
-    <fraction name="config_keyboard_top_padding_gb">2.291%p</fraction>
-    <fraction name="config_keyboard_bottom_padding_gb">0.0%p</fraction>
-    <fraction name="config_key_vertical_gap_gb">4.687%p</fraction>
-    <fraction name="config_key_horizontal_gap_gb">1.272%p</fraction>
-    <!-- config_more_keys_keyboard_key_height x -1.0 -->
-    <dimen name="config_more_keys_keyboard_vertical_correction_gb">-81.9dp</dimen>
-    <dimen name="config_key_preview_offset_gb">16.0dp</dimen>
-
     <fraction name="config_keyboard_top_padding_holo">2.335%p</fraction>
     <fraction name="config_keyboard_bottom_padding_holo">0.0%p</fraction>
     <fraction name="config_key_vertical_gap_holo">3.312%p</fraction>

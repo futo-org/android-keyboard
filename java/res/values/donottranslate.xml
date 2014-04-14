@@ -47,24 +47,6 @@
     <string name="prefs_debug_mode">Debug Mode</string>
     <string name="prefs_force_non_distinct_multitouch">Force non-distinct multitouch</string>
 
-    <!-- Keyboard theme names -->
-    <string name="layout_gingerbread">Gingerbread</string>
-    <string name="layout_ics">IceCreamSandwich</string>
-    <string name="layout_klp">KeyLimePie</string>
-
-    <!-- For keyboard theme switcher dialog -->
-    <string-array name="keyboard_layout_modes">
-        <item>@string/layout_ics</item>
-        <item>@string/layout_gingerbread</item>
-        <item>@string/layout_klp</item>
-    </string-array>
-    <!-- An element must be a keyboard theme id of {@link KeyboardTheme#THEME_ID_*}. -->
-    <string-array name="keyboard_layout_modes_values">
-        <item>0</item>
-        <item>1</item>
-        <item>2</item>
-    </string-array>
-
     <!-- For keyboard color scheme option dialog. -->
     <string-array name="keyboard_theme_names">
         <item>@string/keyboard_color_scheme_white</item>

@@ -19,20 +19,6 @@
 -->
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- Color resources for Gingerbread theme. -->
-    <color name="highlight_color_gb">#FFFCAE00</color>
-    <color name="typed_word_color_gb">@android:color/white</color>
-    <color name="highlight_translucent_color_gb">#99FCAE00</color>
-    <color name="key_text_color_gb">@android:color/white</color>
-    <color name="key_text_shadow_color_gb">#BB000000</color>
-    <color name="key_text_inactivated_color_gb">#66E0E4E5</color>
-    <color name="key_hint_letter_color_gb">#80000000</color>
-    <color name="key_hint_label_color_gb">#E0E0E4E5</color>
-    <color name="key_shifted_letter_hint_inactivated_color_gb">#66E0E4E5</color>
-    <color name="key_shifted_letter_hint_activated_color_gb">#CCE0E4E5</color>
-    <color name="spacebar_text_color_gb">#FFC0C0C0</color>
-    <color name="spacebar_text_shadow_color_gb">#80000000</color>
-    <color name="gesture_floating_preview_color_gb">#C0000000</color>
     <!-- Color resources for IceCreamSandwich theme. Base color = 33B5E5 -->
     <!-- android:color/holo_blue_light value is #FF33B5E5 -->
     <color name="highlight_color_ics">#FF33B5E5</color>
