@@ -29,6 +29,7 @@ class DicNodeVector;
 class DictionaryBigramsStructurePolicy;
 class DictionaryHeaderStructurePolicy;
 class DictionaryShortcutsStructurePolicy;
+class UnigramProperty;
 
 /*
  * This class abstracts the structure of dictionaries.
@@ -69,9 +70,7 @@ class DictionaryStructureWithBufferPolicy {
 
     // Returns whether the update was success or not.
     virtual bool addUnigramWord(const int *const word, const int length,
-            const int probability, const int *const shortcutTargetCodePoints,
-            const int shortcutLength, const int shortcutProbability, const bool isNotAWord,
-            const bool isBlacklisted,const int timestamp) = 0;
+            const UnigramProperty *const unigramProperty) = 0;
 
     // Returns whether the update was success or not.
     virtual bool addBigramWords(const int *const word0, const int length0, const int *const word1,
