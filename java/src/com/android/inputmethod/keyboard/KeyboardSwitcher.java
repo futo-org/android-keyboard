@@ -147,7 +147,8 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         return false;
     }
 
-    public void loadKeyboard(final EditorInfo editorInfo, final SettingsValues settingsValues) {
+    public void loadKeyboard(final EditorInfo editorInfo, final SettingsValues settingsValues,
+            final int currentAutoCapsState, final int currentRecapitalizeState) {
         final KeyboardLayoutSet.Builder builder = new KeyboardLayoutSet.Builder(
                 mThemeContext, editorInfo);
         final Resources res = mThemeContext.getResources();
@@ -162,7 +163,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         mKeyboardLayoutSet = builder.build();
         mCurrentSettingsValues = settingsValues;
         try {
-            mState.onLoadKeyboard();
+            mState.onLoadKeyboard(currentAutoCapsState, currentRecapitalizeState);
             mKeyboardTextsSet.setLocale(mSubtypeSwitcher.getCurrentSubtypeLocale(), mThemeContext);
         } catch (KeyboardLayoutSetException e) {
             Log.w(TAG, "loading keyboard failed: " + e.mKeyboardId, e.getCause());
@@ -221,13 +222,14 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
 
     // TODO: Remove this method. Come up with a more comprehensive way to reset the keyboard layout
     // when a keyboard layout set doesn't get reloaded in LatinIME.onStartInputViewInternal().
-    public void resetKeyboardStateToAlphabet() {
-        mState.onResetKeyboardStateToAlphabet();
+    public void resetKeyboardStateToAlphabet(final int currentAutoCapsState,
+            final int currentRecapitalizeState) {
+        mState.onResetKeyboardStateToAlphabet(currentAutoCapsState, currentRecapitalizeState);
     }
 
     public void onPressKey(final int code, final boolean isSinglePointer,
-            final int currentAutoCapsState) {
-        mState.onPressKey(code, isSinglePointer, currentAutoCapsState);
+            final int currentAutoCapsState, final int currentRecapitalizeState) {
+        mState.onPressKey(code, isSinglePointer, currentAutoCapsState, currentRecapitalizeState);
     }
 
     public void onReleaseKey(final int code, final boolean withSliding,
@@ -235,8 +237,9 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         mState.onReleaseKey(code, withSliding, currentAutoCapsState, currentRecapitalizeState);
     }
 
-    public void onFinishSlidingInput() {
-        mState.onFinishSlidingInput();
+    public void onFinishSlidingInput(final int currentAutoCapsState,
+            final int currentRecapitalizeState) {
+        mState.onFinishSlidingInput(currentAutoCapsState, currentRecapitalizeState);
     }
 
     // Implements {@link KeyboardState.SwitchActions}.
@@ -297,14 +300,6 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         setKeyboard(mKeyboardLayoutSet.getKeyboard(KeyboardId.ELEMENT_SYMBOLS_SHIFTED));
     }
 
-    // Implements {@link KeyboardState.SwitchActions}.
-    // TODO[IL]: merge the two following methods; remove the one without args.
-    @Override
-    public void requestUpdatingShiftState() {
-        mState.onUpdateShiftState(mLatinIME.getCurrentAutoCapsState(),
-                mLatinIME.getCurrentRecapitalizeState());
-    }
-
     // Future method for requesting an updating to the shift state.
     public void requestUpdatingShiftState(final int currentAutoCapsState,
             final int currentRecapitalizeState) {
@@ -339,8 +334,9 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     /**
      * Updates state machine to figure out when to automatically switch back to the previous mode.
      */
-    public void onCodeInput(final int code, final int currentAutoCapsState) {
-        mState.onCodeInput(code, currentAutoCapsState);
+    public void onCodeInput(final int code, final int currentAutoCapsState,
+            final int currentRecapitalizeState) {
+        mState.onCodeInput(code, currentAutoCapsState, currentRecapitalizeState);
     }
 
     public boolean isShowingEmojiPalettes() {
