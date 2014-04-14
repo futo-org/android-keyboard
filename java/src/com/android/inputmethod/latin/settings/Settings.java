@@ -23,7 +23,7 @@ import android.content.res.Resources;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import com.android.inputmethod.keyboard.KeyboardSwitcher;
+import com.android.inputmethod.keyboard.KeyboardTheme;
 import com.android.inputmethod.latin.AudioAndHapticFeedbackManager;
 import com.android.inputmethod.latin.InputAttributes;
 import com.android.inputmethod.latin.R;
@@ -292,7 +292,7 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
         try {
             return Integer.parseInt(defaultThemeIndexString);
         } catch (final NumberFormatException e) {
-            final int defaultThemeIndex = KeyboardSwitcher.DEFAULT_THEME_INDEX;
+            final int defaultThemeIndex = KeyboardTheme.DEFAULT_THEME_INDEX;
             Log.e(TAG, "Corrupted default keyoard theme in resource: " + defaultThemeIndexString
                     + ", default to " + defaultThemeIndex, e);
             return defaultThemeIndex;

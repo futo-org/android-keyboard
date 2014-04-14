@@ -27,7 +27,6 @@ import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.compat.InputMethodSubtypeCompatUtils;
 import com.android.inputmethod.keyboard.KeyboardLayoutSet.Builder;
-import com.android.inputmethod.keyboard.KeyboardSwitcher.KeyboardTheme;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.RichInputMethodManager;
@@ -42,7 +41,7 @@ import java.util.Locale;
 @SmallTest
 public class KeyboardLayoutSetTestsBase extends AndroidTestCase {
     private static final KeyboardTheme DEFAULT_KEYBOARD_THEME =
-            KeyboardSwitcher.KEYBOARD_THEMES[KeyboardSwitcher.DEFAULT_THEME_INDEX];
+            KeyboardTheme.KEYBOARD_THEMES[KeyboardTheme.DEFAULT_THEME_INDEX];
 
     // All input method subtypes of LatinIME.
     private final ArrayList<InputMethodSubtype> mAllSubtypesList = CollectionUtils.newArrayList();
