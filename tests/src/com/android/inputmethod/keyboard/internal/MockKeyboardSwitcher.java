@@ -125,11 +125,6 @@ public class MockKeyboardSwitcher implements KeyboardState.SwitchActions {
     }
 
     @Override
-    public void requestUpdatingShiftState() {
-        mState.onUpdateShiftState(mAutoCapsState, RecapitalizeStatus.NOT_A_RECAPITALIZE_MODE);
-    }
-
-    @Override
     public void requestUpdatingShiftState(final int currentAutoCapsState,
             final int currentRecapitalizeState) {
         mState.onUpdateShiftState(currentAutoCapsState, currentRecapitalizeState);
@@ -155,7 +150,7 @@ public class MockKeyboardSwitcher implements KeyboardState.SwitchActions {
     }
 
     public void loadKeyboard() {
-        mState.onLoadKeyboard();
+        mState.onLoadKeyboard(mAutoCapsState, RecapitalizeStatus.NOT_A_RECAPITALIZE_MODE);
     }
 
     public void saveKeyboardState() {
@@ -163,7 +158,8 @@ public class MockKeyboardSwitcher implements KeyboardState.SwitchActions {
     }
 
     public void onPressKey(final int code, final boolean isSinglePointer) {
-        mState.onPressKey(code, isSinglePointer, mAutoCapsState);
+        mState.onPressKey(code, isSinglePointer, mAutoCapsState,
+                RecapitalizeStatus.NOT_A_RECAPITALIZE_MODE);
     }
 
     public void onReleaseKey(final int code, final boolean withSliding) {
@@ -187,10 +183,10 @@ public class MockKeyboardSwitcher implements KeyboardState.SwitchActions {
         } else {
             mAutoCapsState = mAutoCapsMode;
         }
-        mState.onCodeInput(code, mAutoCapsState);
+        mState.onCodeInput(code, mAutoCapsState, RecapitalizeStatus.NOT_A_RECAPITALIZE_MODE);
     }
 
     public void onFinishSlidingInput() {
-        mState.onFinishSlidingInput();
+        mState.onFinishSlidingInput(mAutoCapsState, RecapitalizeStatus.NOT_A_RECAPITALIZE_MODE);
     }
 }
