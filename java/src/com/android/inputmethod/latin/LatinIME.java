@@ -501,7 +501,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final IntentFilter filter = new IntentFilter();
         filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         filter.addAction(AudioManager.RINGER_MODE_CHANGED_ACTION);
-        registerReceiver(mReceiver, filter);
+        registerReceiver(mConnectivityAndRingerModeChangeReceiver, filter);
 
         final IntentFilter packageFilter = new IntentFilter();
         packageFilter.addAction(Intent.ACTION_PACKAGE_ADDED);
@@ -630,7 +630,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     public void onDestroy() {
         mInputLogic.mSuggest.mDictionaryFacilitator.closeDictionaries();
         mSettings.onDestroy();
-        unregisterReceiver(mReceiver);
+        unregisterReceiver(mConnectivityAndRingerModeChangeReceiver);
         if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
             ResearchLogger.getInstance().onDestroy();
         }
@@ -645,6 +645,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @UsedForTesting
     public void recycle() {
+        unregisterReceiver(mDictionaryPackInstallReceiver);
+        unregisterReceiver(mDictionaryDumpBroadcastReceiver);
+        unregisterReceiver(mConnectivityAndRingerModeChangeReceiver);
         mInputLogic.recycle();
     }
 
@@ -1635,7 +1638,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // boolean onKeyMultiple(final int keyCode, final int count, final KeyEvent event);
 
     // receive ringer mode change and network state change.
-    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
+    private BroadcastReceiver mConnectivityAndRingerModeChangeReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(final Context context, final Intent intent) {
             final String action = intent.getAction();
