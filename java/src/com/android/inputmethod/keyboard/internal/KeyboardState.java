@@ -28,7 +28,7 @@ import com.android.inputmethod.latin.utils.RecapitalizeStatus;
  * This class contains all keyboard state transition logic.
  *
  * The input events are {@link #onLoadKeyboard()}, {@link #onSaveKeyboardState()},
- * {@link #onPressKey(int,boolean,int)}, {@link #onReleaseKey(int,boolean)},
+ * {@link #onPressKey(int,boolean,int)}, {@link #onReleaseKey(int,boolean,int,int)},
  * {@link #onCodeInput(int,int)}, {@link #onFinishSlidingInput()},
  * {@link #onUpdateShiftState(int,int)}, {@link #onResetKeyboardStateToAlphabet()}.
  *
@@ -49,10 +49,13 @@ public final class KeyboardState {
         public void setSymbolsKeyboard();
         public void setSymbolsShiftedKeyboard();
 
+        // Legacy method. TODO: remove the following method.
+        public void requestUpdatingShiftState();
         /**
          * Request to call back {@link KeyboardState#onUpdateShiftState(int, int)}.
          */
-        public void requestUpdatingShiftState();
+        public void requestUpdatingShiftState(final int currentAutoCapsState,
+                final int currentRecapitalizeState);
 
         public void startDoubleTapShiftKeyTimer();
         public boolean isInDoubleTapShiftKeyTimeout();
@@ -373,13 +376,14 @@ public final class KeyboardState {
         }
     }
 
-    public void onReleaseKey(final int code, final boolean withSliding) {
+    public void onReleaseKey(final int code, final boolean withSliding,
+            final int currentAutoCapsState, final int currentRecapitalizeState) {
         if (DEBUG_EVENT) {
             Log.d(TAG, "onReleaseKey: code=" + Constants.printableCode(code)
                     + " sliding=" + withSliding + " " + this);
         }
         if (code == Constants.CODE_SHIFT) {
-            onReleaseShift(withSliding);
+            onReleaseShift(withSliding, currentAutoCapsState, currentRecapitalizeState);
         } else if (code == Constants.CODE_CAPSLOCK) {
             setShiftLocked(!mAlphabetShiftState.isShiftLocked());
         } else if (code == Constants.CODE_SWITCH_ALPHA_SYMBOL) {
@@ -513,7 +517,8 @@ public final class KeyboardState {
         }
     }
 
-    private void onReleaseShift(final boolean withSliding) {
+    private void onReleaseShift(final boolean withSliding, final int currentAutoCapsState,
+            final int currentRecapitalizeState) {
         if (RecapitalizeStatus.NOT_A_RECAPITALIZE_MODE != mRecapitalizeMode) {
             // We are recapitalizing. We should match the keyboard state to the recapitalize
             // state in priority.
@@ -536,7 +541,8 @@ public final class KeyboardState {
                 // After chording input, automatic shift state may have been changed depending on
                 // what characters were input.
                 mShiftKeyState.onRelease();
-                mSwitchActions.requestUpdatingShiftState();
+                mSwitchActions.requestUpdatingShiftState(currentAutoCapsState,
+                        currentRecapitalizeState);
                 return;
             } else if (mAlphabetShiftState.isShiftLockShifted() && withSliding) {
                 // In shift locked state, shift has been pressed and slid out to other key.
