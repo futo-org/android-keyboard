@@ -130,6 +130,12 @@ public class MockKeyboardSwitcher implements KeyboardState.SwitchActions {
     }
 
     @Override
+    public void requestUpdatingShiftState(final int currentAutoCapsState,
+            final int currentRecapitalizeState) {
+        mState.onUpdateShiftState(currentAutoCapsState, currentRecapitalizeState);
+    }
+
+    @Override
     public void startDoubleTapShiftKeyTimer() {
         mIsInDoubleTapShiftKeyTimeout = true;
     }
@@ -161,7 +167,12 @@ public class MockKeyboardSwitcher implements KeyboardState.SwitchActions {
     }
 
     public void onReleaseKey(final int code, final boolean withSliding) {
-        mState.onReleaseKey(code, withSliding);
+        onReleaseKey(code, withSliding, mAutoCapsState, RecapitalizeStatus.NOT_A_RECAPITALIZE_MODE);
+    }
+
+    public void onReleaseKey(final int code, final boolean withSliding,
+            final int currentAutoCapsState, final int currentRecapitalizeState) {
+        mState.onReleaseKey(code, withSliding, currentAutoCapsState, currentRecapitalizeState);
         if (mLongPressTimeoutCode == code) {
             mLongPressTimeoutCode = 0;
         }
