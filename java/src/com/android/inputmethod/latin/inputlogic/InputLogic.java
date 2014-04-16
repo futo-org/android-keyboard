@@ -1284,6 +1284,10 @@ public final class InputLogic {
                 || !settingsValues.mSpacingAndPunctuations.mCurrentLanguageHasSpaces
         // If no suggestions are requested, don't try restarting suggestions.
                 || !settingsValues.isSuggestionsRequested()
+        // If we are currently in a batch input, we must not resume suggestions, or the result
+        // of the batch input will replace the new composition. This may happen in the corner case
+        // that the app moves the cursor on its own accord during a batch input.
+                || mInputLogicHandler.isInBatchInput()
         // If the cursor is not touching a word, or if there is a selection, return right away.
                 || mConnection.hasSelection()
         // If we don't know the cursor location, return.

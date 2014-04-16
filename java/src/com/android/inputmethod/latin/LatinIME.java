@@ -819,9 +819,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             // When rotating, initialSelStart and initialSelEnd sometimes are lying. Make a best
             // effort to work around this bug.
             mInputLogic.mConnection.tryFixLyingCursorPosition();
-            if (isDifferentTextField) {
-                mHandler.postResumeSuggestions();
-            }
+            mHandler.postResumeSuggestions();
             canReachInputConnection = true;
         }
 
