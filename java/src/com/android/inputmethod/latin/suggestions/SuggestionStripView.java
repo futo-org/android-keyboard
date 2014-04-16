@@ -240,6 +240,9 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         if (TextUtils.isEmpty(importantNoticeTitle)) {
             return false;
         }
+        if (isShowingMoreSuggestionPanel()) {
+            dismissMoreSuggestionsPanel();
+        }
         mLayoutHelper.layoutImportantNotice(mImportantNoticeStrip, importantNoticeTitle);
         mStripVisibilityGroup.showImportantNoticeStrip();
         mImportantNoticeStrip.setOnClickListener(this);
