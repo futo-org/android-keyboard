@@ -421,7 +421,19 @@ public class DictionaryFacilitatorForSuggest {
         final String suggestionLowerCase = suggestion.toLowerCase(dictionaries.mLocale);
         final String secondWord;
         if (wasAutoCapitalized) {
-            secondWord = suggestionLowerCase;
+            if (isValidWord(suggestion, false /* ignoreCase */)
+                    && !isValidWord(suggestionLowerCase, false /* ignoreCase */)) {
+                // If the word was auto-capitalized and exists only as a capitalized word in the
+                // dictionary, then we must not downcase it before registering it. For example,
+                // the name of the contacts in start-of-sentence position would come here with the
+                // wasAutoCapitalized flag: if we downcase it, we'd register a lower-case version
+                // of that contact's name which would end up popping in suggestions.
+                secondWord = suggestion;
+            } else {
+                // If however the word is not in the dictionary, or exists as a lower-case word
+                // only, then we consider that was a lower-case word that had been auto-capitalized.
+                secondWord = suggestionLowerCase;
+            }
         } else {
             // HACK: We'd like to avoid adding the capitalized form of common words to the User
             // History dictionary in order to avoid suggesting them until the dictionary
