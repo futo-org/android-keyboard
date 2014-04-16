@@ -536,7 +536,6 @@ public class DictionaryFacilitatorForSuggest {
         return maxFreq;
     }
 
-
     public void clearUserHistoryDictionary() {
         final UserHistoryDictionary userHistoryDict = mDictionaries.mUserHistoryDictionary;
         if (userHistoryDict == null) {
