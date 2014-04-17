@@ -71,7 +71,8 @@
             android:layout_weight="12.5"
             android:layout_height="match_parent"
             android:background="@color/emoji_key_background_color"
-            android:src="@drawable/sym_keyboard_delete_holo_dark" />
+            android:src="@drawable/sym_keyboard_delete_holo_dark"
+            android:contentDescription="@string/spoken_description_delete" />
     </LinearLayout>
     <android.support.v4.view.ViewPager
         android:id="@+id/emoji_keyboard_pager"
@@ -99,7 +100,8 @@
             android:id="@+id/emoji_keyboard_space"
             android:layout_width="0dip"
             android:layout_weight="0.70"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:contentDescription="@string/spoken_description_space"/>
         <TextView
             android:id="@+id/emoji_keyboard_alphabet_right"
             android:layout_width="0dip"

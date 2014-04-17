@@ -23,5 +23,6 @@
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
     android:src="@drawable/suggestions_strip_divider"
+    android:contentDescription="@null"
     android:padding="0dp"
     android:gravity="center" />
