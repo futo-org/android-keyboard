@@ -47,8 +47,13 @@ public class ExecutorUtils {
     public static void shutdownAllExecutors() {
         synchronized(sExecutorMap) {
             for (final PrioritizedSerialExecutor executor : sExecutorMap.values()) {
-                executor.shutdown();
-                sExecutorMap.remove(executor);
+                executor.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        executor.shutdown();
+                        sExecutorMap.remove(executor);
+                    }
+                });
             }
         }
     }
