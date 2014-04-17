@@ -123,7 +123,7 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
                 "places",
                 "symbols",
                 "emoticons" };
-        private static final int[] sCategoryIcon = new int[] {
+        private static final int[] sCategoryIcon = {
                 R.drawable.ic_emoji_recent_light,
                 R.drawable.ic_emoji_people_light,
                 R.drawable.ic_emoji_objects_light,
@@ -133,6 +133,14 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
                 0 };
         private static final String[] sCategoryLabel =
                 { null, null, null, null, null, null, ":-)" };
+        private static final int[] sAccessibilityDescriptionResourceIdsForCategories = {
+                R.string.spoken_descrption_emoji_category_recents,
+                R.string.spoken_descrption_emoji_category_people,
+                R.string.spoken_descrption_emoji_category_objects,
+                R.string.spoken_descrption_emoji_category_nature,
+                R.string.spoken_descrption_emoji_category_places,
+                R.string.spoken_descrption_emoji_category_symbols,
+                R.string.spoken_descrption_emoji_category_emoticons };
         private static final int[] sCategoryElementId = {
                 KeyboardId.ELEMENT_EMOJI_RECENTS,
                 KeyboardId.ELEMENT_EMOJI_CATEGORY1,
@@ -142,6 +150,7 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
                 KeyboardId.ELEMENT_EMOJI_CATEGORY5,
                 KeyboardId.ELEMENT_EMOJI_CATEGORY6 };
         private final SharedPreferences mPrefs;
+        private final Resources mRes;
         private final int mMaxPageKeyCount;
         private final KeyboardLayoutSet mLayoutSet;
         private final HashMap<String, Integer> mCategoryNameToIdMap = CollectionUtils.newHashMap();
@@ -156,6 +165,7 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
         public EmojiCategory(final SharedPreferences prefs, final Resources res,
                 final KeyboardLayoutSet layoutSet) {
             mPrefs = prefs;
+            mRes = res;
             mMaxPageKeyCount = res.getInteger(R.integer.config_emoji_keyboard_max_page_key_count);
             mLayoutSet = layoutSet;
             for (int i = 0; i < sCategoryName.length; ++i) {
@@ -204,6 +214,10 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
 
         public String getCategoryLabel(final int categoryId) {
             return sCategoryLabel[categoryId];
+        }
+
+        public String getAccessibilityDescription(final int categoryId) {
+            return mRes.getString(sAccessibilityDescriptionResourceIdsForCategories[categoryId]);
         }
 
         public ArrayList<CategoryProperties> getShownCategories() {
@@ -447,12 +461,14 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
             final ImageView iconView = (ImageView)LayoutInflater.from(getContext()).inflate(
                     R.layout.emoji_keyboard_tab_icon, null);
             iconView.setImageResource(mEmojiCategory.getCategoryIcon(categoryId));
+            iconView.setContentDescription(mEmojiCategory.getAccessibilityDescription(categoryId));
             tspec.setIndicator(iconView);
         }
         if (mEmojiCategory.getCategoryLabel(categoryId) != null) {
             final TextView textView = (TextView)LayoutInflater.from(getContext()).inflate(
                     R.layout.emoji_keyboard_tab_label, null);
             textView.setText(mEmojiCategory.getCategoryLabel(categoryId));
+            textView.setContentDescription(mEmojiCategory.getAccessibilityDescription(categoryId));
             textView.setTextColor(mTabLabelColor);
             tspec.setIndicator(textView);
         }
