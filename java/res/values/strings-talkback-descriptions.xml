@@ -108,4 +108,19 @@
     <string name="keyboard_mode_time">time</string>
     <!-- Description of the keyboard mode for entering URLs. -->
     <string name="keyboard_mode_url">URL</string>
+
+    <!-- Description of the emoji category icon of Recents. -->
+    <string name="spoken_descrption_emoji_category_recents">Recents</string>
+    <!-- Description of the emoji category icon of People. -->
+    <string name="spoken_descrption_emoji_category_people">People</string>
+    <!-- Description of the emoji category icon of Objects. -->
+    <string name="spoken_descrption_emoji_category_objects">Objects</string>
+    <!-- Description of the emoji category icon of Nature. -->
+    <string name="spoken_descrption_emoji_category_nature">Nature</string>
+    <!-- Description of the emoji category icon of Places. -->
+    <string name="spoken_descrption_emoji_category_places">Places</string>
+    <!-- Description of the emoji category icon of Symbols. -->
+    <string name="spoken_descrption_emoji_category_symbols">Symbols</string>
+    <!-- Description of the emoji category icon of Emoticons. -->
+    <string name="spoken_descrption_emoji_category_emoticons">Emoticons</string>
 </resources>
