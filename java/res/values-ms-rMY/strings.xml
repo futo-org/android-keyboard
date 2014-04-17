@@ -76,48 +76,6 @@
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"Lihat perkataan yang dicadangkan semasa membuat gerak isyarat"</string>
     <string name="gesture_space_aware" msgid="2078291600664682496">"Gerak isyarat frasa"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Luncur ke kekunci ruang untuk masukkan ruang semasa gerak isyarat"</string>
-    <string name="spoken_use_headphones" msgid="896961781287283493">"Pasangkan set kepala untuk mendengar kekunci kata laluan disebut dengan kuat."</string>
-    <string name="spoken_current_text_is" msgid="2485723011272583845">"Teks semasa adalah %s"</string>
-    <string name="spoken_no_text_entered" msgid="7479685225597344496">"Tiada teks dimasukkan"</string>
-    <string name="spoken_auto_correct" msgid="5150455215290003221">"<xliff:g id="KEY_NAME">%1$s</xliff:g> membetulkan <xliff:g id="ORIGINAL_WORD">%2$s</xliff:g> menjadi <xliff:g id="CORRECTED_WORD">%3$s</xliff:g>"</string>
-    <string name="spoken_auto_correct_obscured" msgid="2309828861778711939">"<xliff:g id="KEY_NAME">%1$s</xliff:g> melakukan autopembetulan"</string>
-    <string name="spoken_description_unknown" msgid="3197434010402179157">"Kod kunci %d"</string>
-    <string name="spoken_description_shift" msgid="244197883292549308">"Shift"</string>
-    <string name="spoken_description_shift_shifted" msgid="1681877323344195035">"Kunci anjak dihidupkan (ketik untuk melumpuhkan)"</string>
-    <string name="spoken_description_caps_lock" msgid="3276478269526304432">"Kunci huruf besar dihidupkan (ketik untuk melumpuhkan)"</string>
-    <string name="spoken_description_delete" msgid="8740376944276199801">"Padam"</string>
-    <string name="spoken_description_to_symbol" msgid="5486340107500448969">"Simbol"</string>
-    <string name="spoken_description_to_alpha" msgid="23129338819771807">"Huruf"</string>
-    <string name="spoken_description_to_numeric" msgid="591752092685161732">"Numbers"</string>
-    <string name="spoken_description_settings" msgid="4627462689603838099">"Tetapan"</string>
-    <string name="spoken_description_tab" msgid="2667716002663482248">"Tab"</string>
-    <string name="spoken_description_space" msgid="2582521050049860859">"Ruang"</string>
-    <string name="spoken_description_mic" msgid="615536748882611950">"Input suara"</string>
-    <string name="spoken_description_emoji" msgid="6934027701390427635">"Emoji"</string>
-    <string name="spoken_description_return" msgid="8178083177238315647">"Kembali"</string>
-    <string name="spoken_description_search" msgid="1247236163755920808">"Cari"</string>
-    <string name="spoken_description_dot" msgid="40711082435231673">"Titik"</string>
-    <string name="spoken_description_language_switch" msgid="5507091328222331316">"Tukar bahasa"</string>
-    <string name="spoken_description_action_next" msgid="8636078276664150324">"Seterusnya"</string>
-    <string name="spoken_description_action_previous" msgid="800872415009336208">"Sebelumnya"</string>
-    <string name="spoken_description_shiftmode_on" msgid="5700440798609574589">"Shift didayakan"</string>
-    <string name="spoken_description_shiftmode_locked" msgid="593175803181701830">"Kunci huruf besar didayakan"</string>
-    <string name="spoken_description_shiftmode_off" msgid="657219998449174808">"Kunci anjak dilumpuhkan"</string>
-    <string name="spoken_description_mode_symbol" msgid="7183343879909747642">"Mod simbol"</string>
-    <string name="spoken_description_mode_alpha" msgid="3528307674390156956">"Mod huruf"</string>
-    <string name="spoken_description_mode_phone" msgid="6520207943132026264">"Mod telefon"</string>
-    <string name="spoken_description_mode_phone_shift" msgid="5499629753962641227">"Mod simbol telefon"</string>
-    <string name="announce_keyboard_hidden" msgid="8718927835531429807">"Papan kekunci tersembunyi"</string>
-    <string name="announce_keyboard_mode" msgid="7486740369324538848">"Menunjukkan papan kekunci <xliff:g id="KEYBOARD_MODE">%s</xliff:g>"</string>
-    <string name="keyboard_mode_date" msgid="3137520166817128102">"tarikh"</string>
-    <string name="keyboard_mode_date_time" msgid="339593358488851072">"tarikh dan masa"</string>
-    <string name="keyboard_mode_email" msgid="6216248078128294262">"e-mel"</string>
-    <string name="keyboard_mode_im" msgid="1137405089766557048">"pemesejan"</string>
-    <string name="keyboard_mode_number" msgid="7991623440699957069">"nombor"</string>
-    <string name="keyboard_mode_phone" msgid="6851627527401433229">"telefon"</string>
-    <string name="keyboard_mode_text" msgid="6479436687899701619">"teks"</string>
-    <string name="keyboard_mode_time" msgid="4381856885582143277">"masa"</string>
-    <string name="keyboard_mode_url" msgid="1519819835514911218">"URL"</string>
     <string name="voice_input" msgid="3583258583521397548">"Kunci input suara"</string>
     <string name="voice_input_disabled_summary" msgid="8141750303464726129">"Tiada kaedah input suara didayakan. Semak Bahasa &amp; tetapan input."</string>
     <string name="configure_input_method" msgid="373356270290742459">"Konfigurasikan kaedah input"</string>

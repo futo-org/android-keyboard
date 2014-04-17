@@ -76,48 +76,6 @@
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"Afficher le mot suggéré lors des gestes"</string>
     <string name="gesture_space_aware" msgid="2078291600664682496">"Geste multiterme"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Insérer un espace avec barre d\'espace lors de la saisie gestuelle"</string>
-    <string name="spoken_use_headphones" msgid="896961781287283493">"Branchez des écouteurs pour entendre l\'énoncé à haute voix des touches lors de la saisie du mot de passe."</string>
-    <string name="spoken_current_text_is" msgid="2485723011272583845">"Le texte actuel est %s"</string>
-    <string name="spoken_no_text_entered" msgid="7479685225597344496">"Aucun texte saisi"</string>
-    <string name="spoken_auto_correct" msgid="5150455215290003221">"La touche <xliff:g id="KEY_NAME">%1$s</xliff:g> permet de remplacer <xliff:g id="ORIGINAL_WORD">%2$s</xliff:g> par <xliff:g id="CORRECTED_WORD">%3$s</xliff:g>."</string>
-    <string name="spoken_auto_correct_obscured" msgid="2309828861778711939">"La touche <xliff:g id="KEY_NAME">%1$s</xliff:g> permet d\'effectuer une correction automatique."</string>
-    <string name="spoken_description_unknown" msgid="3197434010402179157">"Code touche %d"</string>
-    <string name="spoken_description_shift" msgid="244197883292549308">"Maj"</string>
-    <string name="spoken_description_shift_shifted" msgid="1681877323344195035">"Touche Maj activée (appuyer pour désactiver)"</string>
-    <string name="spoken_description_caps_lock" msgid="3276478269526304432">"Verrouillage des majuscules activé (appuyer pour désactiver)"</string>
-    <string name="spoken_description_delete" msgid="8740376944276199801">"Supprimer"</string>
-    <string name="spoken_description_to_symbol" msgid="5486340107500448969">"Symboles"</string>
-    <string name="spoken_description_to_alpha" msgid="23129338819771807">"Lettres"</string>
-    <string name="spoken_description_to_numeric" msgid="591752092685161732">"Chiffres"</string>
-    <string name="spoken_description_settings" msgid="4627462689603838099">"Paramètres"</string>
-    <string name="spoken_description_tab" msgid="2667716002663482248">"Tabulation"</string>
-    <string name="spoken_description_space" msgid="2582521050049860859">"Espace"</string>
-    <string name="spoken_description_mic" msgid="615536748882611950">"Saisie vocale"</string>
-    <string name="spoken_description_emoji" msgid="6934027701390427635">"Emoji"</string>
-    <string name="spoken_description_return" msgid="8178083177238315647">"Entrée"</string>
-    <string name="spoken_description_search" msgid="1247236163755920808">"Rechercher"</string>
-    <string name="spoken_description_dot" msgid="40711082435231673">"Point"</string>
-    <string name="spoken_description_language_switch" msgid="5507091328222331316">"Changer de langue"</string>
-    <string name="spoken_description_action_next" msgid="8636078276664150324">"Touche suivante"</string>
-    <string name="spoken_description_action_previous" msgid="800872415009336208">"Touche précédente"</string>
-    <string name="spoken_description_shiftmode_on" msgid="5700440798609574589">"Touche Maj activée"</string>
-    <string name="spoken_description_shiftmode_locked" msgid="593175803181701830">"Verrouillage des majuscules activé"</string>
-    <string name="spoken_description_shiftmode_off" msgid="657219998449174808">"Touche Maj désactivée"</string>
-    <string name="spoken_description_mode_symbol" msgid="7183343879909747642">"Mode Symboles"</string>
-    <string name="spoken_description_mode_alpha" msgid="3528307674390156956">"Mode Lettres"</string>
-    <string name="spoken_description_mode_phone" msgid="6520207943132026264">"Mode Téléphone"</string>
-    <string name="spoken_description_mode_phone_shift" msgid="5499629753962641227">"Mode Symboles du téléphone"</string>
-    <string name="announce_keyboard_hidden" msgid="8718927835531429807">"Clavier masqué"</string>
-    <string name="announce_keyboard_mode" msgid="7486740369324538848">"Affichage du clavier <xliff:g id="KEYBOARD_MODE">%s</xliff:g>."</string>
-    <string name="keyboard_mode_date" msgid="3137520166817128102">"Date"</string>
-    <string name="keyboard_mode_date_time" msgid="339593358488851072">"Date et heure"</string>
-    <string name="keyboard_mode_email" msgid="6216248078128294262">"Adresse e-mail"</string>
-    <string name="keyboard_mode_im" msgid="1137405089766557048">"SMS/MMS"</string>
-    <string name="keyboard_mode_number" msgid="7991623440699957069">"Chiffre"</string>
-    <string name="keyboard_mode_phone" msgid="6851627527401433229">"Numéro de téléphone"</string>
-    <string name="keyboard_mode_text" msgid="6479436687899701619">"Texte"</string>
-    <string name="keyboard_mode_time" msgid="4381856885582143277">"Heure"</string>
-    <string name="keyboard_mode_url" msgid="1519819835514911218">"URL"</string>
     <string name="voice_input" msgid="3583258583521397548">"Touche de saisie vocale"</string>
     <string name="voice_input_disabled_summary" msgid="8141750303464726129">"Aucun mode de saisie vocale activé. Vérifiez les paramètres de langue et de saisie."</string>
     <string name="configure_input_method" msgid="373356270290742459">"Configurer les modes de saisie"</string>

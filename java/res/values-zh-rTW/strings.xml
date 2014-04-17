@@ -76,48 +76,6 @@
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"使用滑行輸入時顯示建議字詞"</string>
     <string name="gesture_space_aware" msgid="2078291600664682496">"詞組手勢"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"手勢輸入時，滑過空格鍵即可輸入空格"</string>
-    <string name="spoken_use_headphones" msgid="896961781287283493">"連接耳機即可聽取系統朗讀密碼按鍵。"</string>
-    <string name="spoken_current_text_is" msgid="2485723011272583845">"目前文字為 %s"</string>
-    <string name="spoken_no_text_entered" msgid="7479685225597344496">"未輸入文字"</string>
-    <string name="spoken_auto_correct" msgid="5150455215290003221">"按下「<xliff:g id="KEY_NAME">%1$s</xliff:g>」可將「<xliff:g id="ORIGINAL_WORD">%2$s</xliff:g>」修正為「<xliff:g id="CORRECTED_WORD">%3$s</xliff:g>」"</string>
-    <string name="spoken_auto_correct_obscured" msgid="2309828861778711939">"按下「<xliff:g id="KEY_NAME">%1$s</xliff:g>」可執行自動修正"</string>
-    <string name="spoken_description_unknown" msgid="3197434010402179157">"按鍵代碼 %d"</string>
-    <string name="spoken_description_shift" msgid="244197883292549308">"Shift 鍵"</string>
-    <string name="spoken_description_shift_shifted" msgid="1681877323344195035">"Shift 鍵已開啟 (輕按即可停用)"</string>
-    <string name="spoken_description_caps_lock" msgid="3276478269526304432">"大寫鎖定已開啟 (輕按即可停用)"</string>
-    <string name="spoken_description_delete" msgid="8740376944276199801">"刪除"</string>
-    <string name="spoken_description_to_symbol" msgid="5486340107500448969">"符號"</string>
-    <string name="spoken_description_to_alpha" msgid="23129338819771807">"字母"</string>
-    <string name="spoken_description_to_numeric" msgid="591752092685161732">"數字"</string>
-    <string name="spoken_description_settings" msgid="4627462689603838099">"設定"</string>
-    <string name="spoken_description_tab" msgid="2667716002663482248">"Tab 鍵"</string>
-    <string name="spoken_description_space" msgid="2582521050049860859">"空白鍵"</string>
-    <string name="spoken_description_mic" msgid="615536748882611950">"語音輸入"</string>
-    <string name="spoken_description_emoji" msgid="6934027701390427635">"表情符號"</string>
-    <string name="spoken_description_return" msgid="8178083177238315647">"返回"</string>
-    <string name="spoken_description_search" msgid="1247236163755920808">"搜尋"</string>
-    <string name="spoken_description_dot" msgid="40711082435231673">"點"</string>
-    <string name="spoken_description_language_switch" msgid="5507091328222331316">"切換語言"</string>
-    <string name="spoken_description_action_next" msgid="8636078276664150324">"下一頁"</string>
-    <string name="spoken_description_action_previous" msgid="800872415009336208">"上一頁"</string>
-    <string name="spoken_description_shiftmode_on" msgid="5700440798609574589">"Shift 鍵已啟用"</string>
-    <string name="spoken_description_shiftmode_locked" msgid="593175803181701830">"大寫鎖定已啟用"</string>
-    <string name="spoken_description_shiftmode_off" msgid="657219998449174808">"Shift 鍵已停用"</string>
-    <string name="spoken_description_mode_symbol" msgid="7183343879909747642">"符號模式"</string>
-    <string name="spoken_description_mode_alpha" msgid="3528307674390156956">"字母模式"</string>
-    <string name="spoken_description_mode_phone" msgid="6520207943132026264">"撥號模式"</string>
-    <string name="spoken_description_mode_phone_shift" msgid="5499629753962641227">"撥號符號模式"</string>
-    <string name="announce_keyboard_hidden" msgid="8718927835531429807">"鍵盤已隱藏"</string>
-    <string name="announce_keyboard_mode" msgid="7486740369324538848">"目前顯示的是<xliff:g id="KEYBOARD_MODE">%s</xliff:g>鍵盤"</string>
-    <string name="keyboard_mode_date" msgid="3137520166817128102">"日期"</string>
-    <string name="keyboard_mode_date_time" msgid="339593358488851072">"日期和時間"</string>
-    <string name="keyboard_mode_email" msgid="6216248078128294262">"電子郵件"</string>
-    <string name="keyboard_mode_im" msgid="1137405089766557048">"簡訊"</string>
-    <string name="keyboard_mode_number" msgid="7991623440699957069">"數字"</string>
-    <string name="keyboard_mode_phone" msgid="6851627527401433229">"電話號碼"</string>
-    <string name="keyboard_mode_text" msgid="6479436687899701619">"文字"</string>
-    <string name="keyboard_mode_time" msgid="4381856885582143277">"時間"</string>
-    <string name="keyboard_mode_url" msgid="1519819835514911218">"網址"</string>
     <string name="voice_input" msgid="3583258583521397548">"語音輸入按鍵"</string>
     <string name="voice_input_disabled_summary" msgid="8141750303464726129">"尚未啟動語音輸入法，請檢查語言與輸入設定。"</string>
     <string name="configure_input_method" msgid="373356270290742459">"設定輸入法"</string>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*
+**
+** Copyright 2014, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+ -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="spoken_use_headphones" msgid="896961781287283493">"Нууц үгний товчнуудыг чангаар уншихыг сонсохын тулд чихэвчээ залгана уу."</string>
+    <string name="spoken_current_text_is" msgid="2485723011272583845">"Одоогийн текст %s"</string>
+    <string name="spoken_no_text_entered" msgid="7479685225597344496">"Текст оруулаагүй"</string>
+    <string name="spoken_auto_correct" msgid="5150455215290003221">"<xliff:g id="KEY_NAME">%1$s</xliff:g> нь <xliff:g id="ORIGINAL_WORD">%2$s</xliff:g>-г <xliff:g id="CORRECTED_WORD">%3$s</xliff:g> руу залруулна"</string>
+    <string name="spoken_auto_correct_obscured" msgid="2309828861778711939">"<xliff:g id="KEY_NAME">%1$s</xliff:g> авто-залруулалт хийдэг"</string>
+    <string name="spoken_description_unknown" msgid="3197434010402179157">"Товчийн код %d"</string>
+    <string name="spoken_description_shift" msgid="244197883292549308">"Сэлгэх"</string>
+    <string name="spoken_description_shift_shifted" msgid="1681877323344195035">"Сэлгэхийг идэвхжүүлсэн (товшиж идэвхгүйжүүлнэ үү)"</string>
+    <string name="spoken_description_caps_lock" msgid="3276478269526304432">"Томоор бичихийг асаасан (товшиж идэвхгүйжүүлнэ үү)"</string>
+    <string name="spoken_description_delete" msgid="8740376944276199801">"Устгах"</string>
+    <string name="spoken_description_to_symbol" msgid="5486340107500448969">"Симбол"</string>
+    <string name="spoken_description_to_alpha" msgid="23129338819771807">"Үсэгнүүд"</string>
+    <string name="spoken_description_to_numeric" msgid="591752092685161732">"Тоонууд"</string>
+    <string name="spoken_description_settings" msgid="4627462689603838099">"Тохиргоо"</string>
+    <string name="spoken_description_tab" msgid="2667716002663482248">"Таб"</string>
+    <string name="spoken_description_space" msgid="2582521050049860859">"Хоосон зай"</string>
+    <string name="spoken_description_mic" msgid="615536748882611950">"Дуугаар оруулах"</string>
+    <string name="spoken_description_emoji" msgid="6934027701390427635">"Эможи"</string>
+    <string name="spoken_description_return" msgid="8178083177238315647">"Буцах"</string>
+    <string name="spoken_description_search" msgid="1247236163755920808">"Хайх"</string>
+    <string name="spoken_description_dot" msgid="40711082435231673">"Цэг"</string>
+    <string name="spoken_description_language_switch" msgid="5507091328222331316">"Хэл солих"</string>
+    <string name="spoken_description_action_next" msgid="8636078276664150324">"Дараах"</string>
+    <string name="spoken_description_action_previous" msgid="800872415009336208">"Өмнөх"</string>
+    <string name="spoken_description_shiftmode_on" msgid="5700440798609574589">"Сэлгэхийг идэвхжүүлсэн"</string>
+    <string name="spoken_description_shiftmode_locked" msgid="593175803181701830">"Томоор бичихийг идэвхжүүлсэн"</string>
+    <string name="spoken_description_shiftmode_off" msgid="657219998449174808">"Сэлгэхийг идэвхжүүлээгүй"</string>
+    <string name="spoken_description_mode_symbol" msgid="7183343879909747642">"Симбол төлөв"</string>
+    <string name="spoken_description_mode_alpha" msgid="3528307674390156956">"Үсэгнүүд төлөв"</string>
+    <string name="spoken_description_mode_phone" msgid="6520207943132026264">"Утасны төлөв"</string>
+    <string name="spoken_description_mode_phone_shift" msgid="5499629753962641227">"Утасны символ төлөв"</string>
+    <string name="announce_keyboard_hidden" msgid="8718927835531429807">"Гарыг нуусан"</string>
+    <string name="announce_keyboard_mode" msgid="7486740369324538848">"<xliff:g id="KEYBOARD_MODE">%s</xliff:g> гар харуулж байна"</string>
+    <string name="keyboard_mode_date" msgid="3137520166817128102">"огноо"</string>
+    <string name="keyboard_mode_date_time" msgid="339593358488851072">"огноо болон цаг"</string>
+    <string name="keyboard_mode_email" msgid="6216248078128294262">"и"</string>
+    <string name="keyboard_mode_im" msgid="1137405089766557048">"зурвас"</string>
+    <string name="keyboard_mode_number" msgid="7991623440699957069">"дугаар"</string>
+    <string name="keyboard_mode_phone" msgid="6851627527401433229">"утас"</string>
+    <string name="keyboard_mode_text" msgid="6479436687899701619">"текст"</string>
+    <string name="keyboard_mode_time" msgid="4381856885582143277">"цаг"</string>
+    <string name="keyboard_mode_url" msgid="1519819835514911218">"URL"</string>
+</resources>

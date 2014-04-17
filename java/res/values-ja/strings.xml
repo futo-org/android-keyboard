@@ -76,48 +76,6 @@
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"ジェスチャーで入力候補を表示できます"</string>
     <string name="gesture_space_aware" msgid="2078291600664682496">"フレーズジェスチャー"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Spaceキーに指を滑らせると、ジェスチャー中にスペースを入力できます"</string>
-    <string name="spoken_use_headphones" msgid="896961781287283493">"パスワードのキーが音声出力されるのでヘッドセットを接続してください。"</string>
-    <string name="spoken_current_text_is" msgid="2485723011272583845">"現在のテキスト:%s"</string>
-    <string name="spoken_no_text_entered" msgid="7479685225597344496">"テキストが入力されていません"</string>
-    <string name="spoken_auto_correct" msgid="5150455215290003221">"<xliff:g id="KEY_NAME">%1$s</xliff:g>は<xliff:g id="ORIGINAL_WORD">%2$s</xliff:g>を<xliff:g id="CORRECTED_WORD">%3$s</xliff:g>に修正します"</string>
-    <string name="spoken_auto_correct_obscured" msgid="2309828861778711939">"<xliff:g id="KEY_NAME">%1$s</xliff:g>で自動修正が実行されます"</string>
-    <string name="spoken_description_unknown" msgid="3197434010402179157">"キーコード:%d"</string>
-    <string name="spoken_description_shift" msgid="244197883292549308">"Shift"</string>
-    <string name="spoken_description_shift_shifted" msgid="1681877323344195035">"Shift有効（タップして解除）"</string>
-    <string name="spoken_description_caps_lock" msgid="3276478269526304432">"Caps lock有効（タップして解除）"</string>
-    <string name="spoken_description_delete" msgid="8740376944276199801">"DEL"</string>
-    <string name="spoken_description_to_symbol" msgid="5486340107500448969">"記号"</string>
-    <string name="spoken_description_to_alpha" msgid="23129338819771807">"英字"</string>
-    <string name="spoken_description_to_numeric" msgid="591752092685161732">"数字"</string>
-    <string name="spoken_description_settings" msgid="4627462689603838099">"設定"</string>
-    <string name="spoken_description_tab" msgid="2667716002663482248">"Tab"</string>
-    <string name="spoken_description_space" msgid="2582521050049860859">"Space"</string>
-    <string name="spoken_description_mic" msgid="615536748882611950">"音声入力"</string>
-    <string name="spoken_description_emoji" msgid="6934027701390427635">"絵文字"</string>
-    <string name="spoken_description_return" msgid="8178083177238315647">"Enter"</string>
-    <string name="spoken_description_search" msgid="1247236163755920808">"検索"</string>
-    <string name="spoken_description_dot" msgid="40711082435231673">"中点"</string>
-    <string name="spoken_description_language_switch" msgid="5507091328222331316">"言語を切り替え"</string>
-    <string name="spoken_description_action_next" msgid="8636078276664150324">"次へ"</string>
-    <string name="spoken_description_action_previous" msgid="800872415009336208">"前へ"</string>
-    <string name="spoken_description_shiftmode_on" msgid="5700440798609574589">"Shift有効"</string>
-    <string name="spoken_description_shiftmode_locked" msgid="593175803181701830">"Caps lock有効"</string>
-    <string name="spoken_description_shiftmode_off" msgid="657219998449174808">"Shift解除"</string>
-    <string name="spoken_description_mode_symbol" msgid="7183343879909747642">"記号モード"</string>
-    <string name="spoken_description_mode_alpha" msgid="3528307674390156956">"英数モード"</string>
-    <string name="spoken_description_mode_phone" msgid="6520207943132026264">"電話モード"</string>
-    <string name="spoken_description_mode_phone_shift" msgid="5499629753962641227">"電話記号モード"</string>
-    <string name="announce_keyboard_hidden" msgid="8718927835531429807">"キーボードは非表示です"</string>
-    <string name="announce_keyboard_mode" msgid="7486740369324538848">"<xliff:g id="KEYBOARD_MODE">%s</xliff:g>のキーボードを表示しています"</string>
-    <string name="keyboard_mode_date" msgid="3137520166817128102">"日付"</string>
-    <string name="keyboard_mode_date_time" msgid="339593358488851072">"日時"</string>
-    <string name="keyboard_mode_email" msgid="6216248078128294262">"メールアドレス"</string>
-    <string name="keyboard_mode_im" msgid="1137405089766557048">"メッセージ"</string>
-    <string name="keyboard_mode_number" msgid="7991623440699957069">"数値"</string>
-    <string name="keyboard_mode_phone" msgid="6851627527401433229">"電話番号"</string>
-    <string name="keyboard_mode_text" msgid="6479436687899701619">"テキスト"</string>
-    <string name="keyboard_mode_time" msgid="4381856885582143277">"時刻"</string>
-    <string name="keyboard_mode_url" msgid="1519819835514911218">"URL"</string>
     <string name="voice_input" msgid="3583258583521397548">"音声入力キー"</string>
     <string name="voice_input_disabled_summary" msgid="8141750303464726129">"有効になっている音声入力方法がありません。[言語と入力]設定をご確認ください。"</string>
     <string name="configure_input_method" msgid="373356270290742459">"入力方法を設定"</string>

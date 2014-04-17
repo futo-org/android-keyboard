@@ -75,50 +75,6 @@
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"Қимылдау кезінде ұсынылған сөзді көру"</string>
     <string name="gesture_space_aware" msgid="8244483979855138643">"Фраза қимылы"</string>
     <string name="gesture_space_aware_summary" msgid="3226298212755100667">"Бос орын пернесін жанау арқылы қимылдар барысында бос орындарды енгізу"</string>
-    <string name="spoken_use_headphones" msgid="896961781287283493">"Дауыспен айтылатын құпия сөз кілттерін есту үшін құлақаспап қосыңыз."</string>
-    <string name="spoken_current_text_is" msgid="2485723011272583845">"Ағымдағы мәтін - %s"</string>
-    <string name="spoken_no_text_entered" msgid="7479685225597344496">"Мәтін енгізілмеген"</string>
-    <!-- no translation found for spoken_auto_correct (8005997889020109763) -->
-    <skip />
-    <!-- no translation found for spoken_auto_correct_obscured (6276420476908833791) -->
-    <skip />
-    <string name="spoken_description_unknown" msgid="3197434010402179157">"Перне коды %d"</string>
-    <string name="spoken_description_shift" msgid="244197883292549308">"Shift"</string>
-    <string name="spoken_description_shift_shifted" msgid="1681877323344195035">"Shift қосулы (өшіру үшін түрту)"</string>
-    <string name="spoken_description_caps_lock" msgid="3276478269526304432">"Caps lock қосулы (өшіру үшін түрту)"</string>
-    <string name="spoken_description_delete" msgid="8740376944276199801">"Жою"</string>
-    <string name="spoken_description_to_symbol" msgid="5486340107500448969">"Таңбалар"</string>
-    <string name="spoken_description_to_alpha" msgid="23129338819771807">"Әріптер"</string>
-    <string name="spoken_description_to_numeric" msgid="591752092685161732">"Сандар"</string>
-    <string name="spoken_description_settings" msgid="4627462689603838099">"Баптаулар"</string>
-    <string name="spoken_description_tab" msgid="2667716002663482248">"Tab"</string>
-    <string name="spoken_description_space" msgid="2582521050049860859">"Бос орын"</string>
-    <string name="spoken_description_mic" msgid="615536748882611950">"Дауыстық енгізу"</string>
-    <string name="spoken_description_smiley" msgid="2256309826200113918">"Жымиған жүз"</string>
-    <string name="spoken_description_return" msgid="8178083177238315647">"Қалпына келтіру"</string>
-    <string name="spoken_description_search" msgid="1247236163755920808">"Іздеу"</string>
-    <string name="spoken_description_dot" msgid="40711082435231673">"Нүкте"</string>
-    <string name="spoken_description_language_switch" msgid="5507091328222331316">"Тілді ауыстыру"</string>
-    <string name="spoken_description_action_next" msgid="8636078276664150324">"Келесі"</string>
-    <string name="spoken_description_action_previous" msgid="800872415009336208">"Алдағы"</string>
-    <string name="spoken_description_shiftmode_on" msgid="5700440798609574589">"Shift қосылған"</string>
-    <string name="spoken_description_shiftmode_locked" msgid="593175803181701830">"Caps lock қосылған"</string>
-    <string name="spoken_description_shiftmode_off" msgid="657219998449174808">"Shift өшірілген"</string>
-    <string name="spoken_description_mode_symbol" msgid="7183343879909747642">"Таңбалар режимі"</string>
-    <string name="spoken_description_mode_alpha" msgid="3528307674390156956">"Әріптер режимі"</string>
-    <string name="spoken_description_mode_phone" msgid="6520207943132026264">"Телефон режимі"</string>
-    <string name="spoken_description_mode_phone_shift" msgid="5499629753962641227">"Телефон таңбалары режимі"</string>
-    <string name="announce_keyboard_hidden" msgid="8718927835531429807">"Пернетақта жасырылған"</string>
-    <string name="announce_keyboard_mode" msgid="4729081055438508321">"Көрсетілетін <xliff:g id="MODE">%s</xliff:g> пернетақтасы"</string>
-    <string name="keyboard_mode_date" msgid="3137520166817128102">"күн"</string>
-    <string name="keyboard_mode_date_time" msgid="339593358488851072">"күн мен уақыт"</string>
-    <string name="keyboard_mode_email" msgid="6216248078128294262">"электрондық пошта"</string>
-    <string name="keyboard_mode_im" msgid="1137405089766557048">"хабар алмасу"</string>
-    <string name="keyboard_mode_number" msgid="7991623440699957069">"нөмір"</string>
-    <string name="keyboard_mode_phone" msgid="6851627527401433229">"телефон"</string>
-    <string name="keyboard_mode_text" msgid="6479436687899701619">"мәтін"</string>
-    <string name="keyboard_mode_time" msgid="4381856885582143277">"уақыт"</string>
-    <string name="keyboard_mode_url" msgid="1519819835514911218">"URL"</string>
     <string name="voice_input" msgid="3583258583521397548">"Дауыстық енгізу пернесі"</string>
     <string name="configure_input_method" msgid="373356270290742459">"Енгізу әдістерін теңшеу"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Енгізу тілдері"</string>
