@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+**
+** Copyright 2014, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- Spoken description to let the user know that when typing in a password, they can plug in a headset in to hear spoken descriptions of the keys they type. [CHAR LIMIT=NONE] -->
+    <string name="spoken_use_headphones">Plug in a headset to hear password keys spoken aloud.</string>
+
+    <!-- Spoken description for the currently entered text -->
+    <string name="spoken_current_text_is">Current text is "%s"</string>
+    <!-- Spoken description when there is no text entered -->
+    <string name="spoken_no_text_entered">No text entered</string>
+
+    <!-- Spoken description to let the user know what auto-correction will be performed when a key is pressed. An auto-correction replaces a single word with one or more words. -->
+    <string name="spoken_auto_correct"><xliff:g id="KEY_NAME" example="Space">%1$s</xliff:g> corrects <xliff:g id="ORIGINAL_WORD">%2$s</xliff:g> to <xliff:g id="CORRECTED_WORD">%3$s</xliff:g></string>
+    <!-- Spoken description used during obscured (e.g. password) entry to let the user know that auto-correction will be performed when a key is pressed. -->
+    <string name="spoken_auto_correct_obscured"><xliff:g id="KEY_NAME" example="Space">%1$s</xliff:g> performs auto-correction</string>
+
+    <!-- Spoken description for unknown keyboard keys. -->
+    <string name="spoken_description_unknown">Key code %d</string>
+    <!-- Spoken description for the "Shift" keyboard key when "Shift" is off. -->
+    <string name="spoken_description_shift">Shift</string>
+    <!-- Spoken description for the "Shift" keyboard key when "Shift" is on. -->
+    <string name="spoken_description_shift_shifted">Shift on (tap to disable)</string>
+    <!-- Spoken description for the "Shift" keyboard key when "Caps lock" is on. -->
+    <string name="spoken_description_caps_lock">Caps lock on (tap to disable)</string>
+    <!-- Spoken description for the "Delete" keyboard key. -->
+    <string name="spoken_description_delete">Delete</string>
+    <!-- Spoken description for the "To Symbol" keyboard key. -->
+    <string name="spoken_description_to_symbol">Symbols</string>
+    <!-- Spoken description for the "To Alpha" keyboard key. -->
+    <string name="spoken_description_to_alpha">Letters</string>
+    <!-- Spoken description for the "To Numbers" keyboard key. -->
+    <string name="spoken_description_to_numeric">Numbers</string>
+    <!-- Spoken description for the "Settings" keyboard key. -->
+    <string name="spoken_description_settings">Settings</string>
+    <!-- Spoken description for the "Tab" keyboard key. -->
+    <string name="spoken_description_tab">Tab</string>
+    <!-- Spoken description for the "Space" keyboard key. -->
+    <string name="spoken_description_space">Space</string>
+    <!-- Spoken description for the "Mic" keyboard key. -->
+    <string name="spoken_description_mic">Voice input</string>
+    <!-- Spoken description for the "Emoji" keyboard key. -->
+    <string name="spoken_description_emoji">Emoji</string>
+    <!-- Spoken description for the "Return" keyboard key. -->
+    <string name="spoken_description_return">Return</string>
+    <!-- Spoken description for the "Search" keyboard key. -->
+    <string name="spoken_description_search">Search</string>
+    <!-- Spoken description for the "U+2022" (BULLET) keyboard key. -->
+    <string name="spoken_description_dot">Dot</string>
+    <!-- Spoken description for the "Switch language" keyboard key. -->
+    <string name="spoken_description_language_switch">Switch language</string>
+    <!-- Spoken description for the "Next" action keyboard key. -->
+    <string name="spoken_description_action_next">Next</string>
+    <!-- Spoken description for the "Previous" action keyboard key. -->
+    <string name="spoken_description_action_previous">Previous</string>
+
+    <!-- Spoken feedback after turning "Shift" mode on. -->
+    <string name="spoken_description_shiftmode_on">Shift enabled</string>
+    <!-- Spoken feedback after turning "Caps lock" mode on. -->
+    <string name="spoken_description_shiftmode_locked">Caps lock enabled</string>
+    <!-- Spoken feedback after turning "Shift" mode off. -->
+    <string name="spoken_description_shiftmode_off">Shift disabled</string>
+
+    <!-- Spoken feedback after changing to the symbols keyboard. -->
+    <string name="spoken_description_mode_symbol">Symbols mode</string>
+    <!-- Spoken feedback after changing to the alphanumeric keyboard. -->
+    <string name="spoken_description_mode_alpha">Letters mode</string>
+    <!-- Spoken feedback after changing to the phone dialer keyboard. -->
+    <string name="spoken_description_mode_phone">Phone mode</string>
+    <!-- Spoken feedback after changing to the shifted phone dialer (symbols) keyboard. -->
+    <string name="spoken_description_mode_phone_shift">Phone symbols mode</string>
+
+    <!-- Spoken feedback when the keyboard is hidden. -->
+    <string name="announce_keyboard_hidden">Keyboard hidden</string>
+    <!-- Spoken feedback when the keyboard mode changes. -->
+    <string name="announce_keyboard_mode">Showing <xliff:g id="KEYBOARD_MODE" example="email">%s</xliff:g> keyboard</string>
+    <!-- Description of the keyboard mode for entering dates. -->
+    <string name="keyboard_mode_date">date</string>
+    <!-- Description of the keyboard mode for entering dates and times. -->
+    <string name="keyboard_mode_date_time">date and time</string>
+    <!-- Description of the keyboard mode for entering email addresses. -->
+    <string name="keyboard_mode_email">email</string>
+    <!-- Description of the keyboard mode for entering text messages. -->
+    <string name="keyboard_mode_im">messaging</string>
+    <!-- Description of the keyboard mode for entering numbers. -->
+    <string name="keyboard_mode_number">number</string>
+    <!-- Description of the keyboard mode for entering phone numbers. -->
+    <string name="keyboard_mode_phone">phone</string>
+    <!-- Description of the keyboard mode for entering generic text. -->
+    <string name="keyboard_mode_text">text</string>
+    <!-- Description of the keyboard mode for entering times. -->
+    <string name="keyboard_mode_time">time</string>
+    <!-- Description of the keyboard mode for entering URLs. -->
+    <string name="keyboard_mode_url">URL</string>
+</resources>

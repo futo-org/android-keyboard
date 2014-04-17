@@ -76,48 +76,6 @@
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"Visualizza la parola suggerita durante il gesto"</string>
     <string name="gesture_space_aware" msgid="2078291600664682496">"Gesto frase"</string>
     <string name="gesture_space_aware_summary" msgid="4371385818348528538">"Inserisci spazi durante gesti facendo scivolare dito su spazio"</string>
-    <string name="spoken_use_headphones" msgid="896961781287283493">"Collega gli auricolari per ascoltare la pronuncia dei tasti premuti per la password."</string>
-    <string name="spoken_current_text_is" msgid="2485723011272583845">"Il testo attuale è %s"</string>
-    <string name="spoken_no_text_entered" msgid="7479685225597344496">"Nessun testo inserito"</string>
-    <string name="spoken_auto_correct" msgid="5150455215290003221">"<xliff:g id="KEY_NAME">%1$s</xliff:g> corregge <xliff:g id="ORIGINAL_WORD">%2$s</xliff:g> con <xliff:g id="CORRECTED_WORD">%3$s</xliff:g>"</string>
-    <string name="spoken_auto_correct_obscured" msgid="2309828861778711939">"<xliff:g id="KEY_NAME">%1$s</xliff:g> esegue la correzione automatica"</string>
-    <string name="spoken_description_unknown" msgid="3197434010402179157">"Codice tasto %d"</string>
-    <string name="spoken_description_shift" msgid="244197883292549308">"Maiuscolo"</string>
-    <string name="spoken_description_shift_shifted" msgid="1681877323344195035">"Maiuscolo attivo (tocca per disattivare)"</string>
-    <string name="spoken_description_caps_lock" msgid="3276478269526304432">"Blocco maiuscole attivo (tocca per disattivare)"</string>
-    <string name="spoken_description_delete" msgid="8740376944276199801">"Cancella"</string>
-    <string name="spoken_description_to_symbol" msgid="5486340107500448969">"Simboli"</string>
-    <string name="spoken_description_to_alpha" msgid="23129338819771807">"Lettere"</string>
-    <string name="spoken_description_to_numeric" msgid="591752092685161732">"Numeri"</string>
-    <string name="spoken_description_settings" msgid="4627462689603838099">"Impostazioni"</string>
-    <string name="spoken_description_tab" msgid="2667716002663482248">"Tabulazione"</string>
-    <string name="spoken_description_space" msgid="2582521050049860859">"Spazio"</string>
-    <string name="spoken_description_mic" msgid="615536748882611950">"Input vocale"</string>
-    <string name="spoken_description_emoji" msgid="6934027701390427635">"Emoji"</string>
-    <string name="spoken_description_return" msgid="8178083177238315647">"Invio"</string>
-    <string name="spoken_description_search" msgid="1247236163755920808">"Cerca"</string>
-    <string name="spoken_description_dot" msgid="40711082435231673">"Pallino"</string>
-    <string name="spoken_description_language_switch" msgid="5507091328222331316">"Cambia lingua"</string>
-    <string name="spoken_description_action_next" msgid="8636078276664150324">"Successivo"</string>
-    <string name="spoken_description_action_previous" msgid="800872415009336208">"Precedente"</string>
-    <string name="spoken_description_shiftmode_on" msgid="5700440798609574589">"Maiuscolo attivo"</string>
-    <string name="spoken_description_shiftmode_locked" msgid="593175803181701830">"Blocco maiuscole attivo"</string>
-    <string name="spoken_description_shiftmode_off" msgid="657219998449174808">"Maiuscolo disattivato"</string>
-    <string name="spoken_description_mode_symbol" msgid="7183343879909747642">"Modalità simboli"</string>
-    <string name="spoken_description_mode_alpha" msgid="3528307674390156956">"Modalità lettere"</string>
-    <string name="spoken_description_mode_phone" msgid="6520207943132026264">"Modalità telefono"</string>
-    <string name="spoken_description_mode_phone_shift" msgid="5499629753962641227">"Modalità simboli telefono"</string>
-    <string name="announce_keyboard_hidden" msgid="8718927835531429807">"Tastiera nascosta"</string>
-    <string name="announce_keyboard_mode" msgid="7486740369324538848">"Ecco la tastiera <xliff:g id="KEYBOARD_MODE">%s</xliff:g>"</string>
-    <string name="keyboard_mode_date" msgid="3137520166817128102">"data"</string>
-    <string name="keyboard_mode_date_time" msgid="339593358488851072">"data e ora"</string>
-    <string name="keyboard_mode_email" msgid="6216248078128294262">"email"</string>
-    <string name="keyboard_mode_im" msgid="1137405089766557048">"messaggi"</string>
-    <string name="keyboard_mode_number" msgid="7991623440699957069">"numero"</string>
-    <string name="keyboard_mode_phone" msgid="6851627527401433229">"telefono"</string>
-    <string name="keyboard_mode_text" msgid="6479436687899701619">"testo"</string>
-    <string name="keyboard_mode_time" msgid="4381856885582143277">"ora"</string>
-    <string name="keyboard_mode_url" msgid="1519819835514911218">"URL"</string>
     <string name="voice_input" msgid="3583258583521397548">"Tasto input vocale"</string>
     <string name="voice_input_disabled_summary" msgid="8141750303464726129">"Nessun metodo di immissione vocale abilitato. Controlla le impostazioni Lingua e input."</string>
     <string name="configure_input_method" msgid="373356270290742459">"Configura metodi di immissione"</string>
