@@ -94,6 +94,8 @@
     <string name="subtype_with_layout_en_US" msgid="8809311287529805422">"Англи (АНУ) ( <xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g> )"</string>
     <string name="subtype_with_layout_es_US" msgid="510930471167541338">"Испани (АНУ-ын) (<xliff:g id="KEYBOARD_LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_generic_traditional" msgid="8584594350973800586">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (уламжлалт)"</string>
+    <string name="subtype_generic_cyrillic" msgid="7486451947618138947">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (Кирилл)"</string>
+    <string name="subtype_generic_latin" msgid="9128716486310604145">"<xliff:g id="LANGUAGE_NAME">%s</xliff:g> (Латин)"</string>
     <string name="subtype_no_language" msgid="7137390094240139495">"Хэл байхгүй (Цагаан толгой)"</string>
     <string name="subtype_no_language_qwerty" msgid="244337630616742604">"Цагаан толгой (QWERTY)"</string>
     <string name="subtype_no_language_qwertz" msgid="443066912507547976">"Цагаан толгой (QWERTZ)"</string>
