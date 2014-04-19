@@ -39,8 +39,8 @@ class Ver4DictBuffers {
             MmappedBuffer::MmappedBufferPtr headerBuffer);
 
     static AK_FORCE_INLINE Ver4DictBuffersPtr createVer4DictBuffers(
-            const HeaderPolicy *const headerPolicy) {
-        return Ver4DictBuffersPtr(new Ver4DictBuffers(headerPolicy));
+            const HeaderPolicy *const headerPolicy, const int maxTrieSize) {
+        return Ver4DictBuffersPtr(new Ver4DictBuffers(headerPolicy, maxTrieSize));
     }
 
     AK_FORCE_INLINE bool isValid() const {
@@ -122,7 +122,7 @@ class Ver4DictBuffers {
     Ver4DictBuffers(const char *const dictDirPath,
             const MmappedBuffer::MmappedBufferPtr headerBuffer, const bool isUpdatable);
 
-    Ver4DictBuffers(const HeaderPolicy *const headerPolicy);
+    Ver4DictBuffers(const HeaderPolicy *const headerPolicy, const int maxTrieSize);
 
     const MmappedBuffer::MmappedBufferPtr mHeaderBuffer;
     const MmappedBuffer::MmappedBufferPtr mDictBuffer;
