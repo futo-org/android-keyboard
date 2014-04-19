@@ -260,7 +260,7 @@ public final class BinaryDictionary extends Dictionary {
         final int inputSize;
         if (!isGesture) {
             inputSize = composer.copyCodePointsExceptTrailingSingleQuotesAndReturnCodePointCount(
-                    mInputCodePoints, MAX_WORD_LENGTH);
+                    mInputCodePoints);
             if (inputSize < 0) {
                 return null;
             }
