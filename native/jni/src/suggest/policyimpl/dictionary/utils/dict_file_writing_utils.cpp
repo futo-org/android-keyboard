@@ -49,7 +49,8 @@ const char *const DictFileWritingUtils::TEMP_FILE_SUFFIX_FOR_WRITING_DICT_FILE =
         const DictionaryHeaderStructurePolicy::AttributeMap *const attributeMap) {
     HeaderPolicy headerPolicy(FormatUtils::VERSION_4, localeAsCodePointVector, attributeMap);
     Ver4DictBuffers::Ver4DictBuffersPtr dictBuffers(
-            Ver4DictBuffers::createVer4DictBuffers(&headerPolicy));
+            Ver4DictBuffers::createVer4DictBuffers(&headerPolicy,
+                    Ver4DictConstants::MAX_DICT_EXTENDED_REGION_SIZE));
     headerPolicy.fillInAndWriteHeaderToBuffer(true /* updatesLastDecayedTime */,
             0 /* unigramCount */, 0 /* bigramCount */,
             0 /* extendedRegionSize */, dictBuffers->getWritableHeaderBuffer());
