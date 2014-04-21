@@ -25,6 +25,9 @@ import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.CoordinateUtils;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Loads an XML description of a keyboard and stores the attributes of the keys. A keyboard
  * consists of rows of keys.
@@ -76,8 +79,8 @@ public class Keyboard {
 
     /** Array of keys and icons in this keyboard */
     private final Key[] mKeys;
-    public final Key[] mShiftKeys;
-    public final Key[] mAltCodeKeysWhileTyping;
+    public final List<Key> mShiftKeys;
+    public final List<Key> mAltCodeKeysWhileTyping;
     public final KeyboardIconsSet mIconsSet;
 
     private final SparseArray<Key> mKeyCache = CollectionUtils.newSparseArray();
@@ -101,9 +104,8 @@ public class Keyboard {
         mVerticalGap = params.mVerticalGap;
 
         mKeys = params.mKeys.toArray(new Key[params.mKeys.size()]);
-        mShiftKeys = params.mShiftKeys.toArray(new Key[params.mShiftKeys.size()]);
-        mAltCodeKeysWhileTyping = params.mAltCodeKeysWhileTyping.toArray(
-                new Key[params.mAltCodeKeysWhileTyping.size()]);
+        mShiftKeys = Collections.unmodifiableList(params.mShiftKeys);
+        mAltCodeKeysWhileTyping = Collections.unmodifiableList(params.mAltCodeKeysWhileTyping);
         mIconsSet = params.mIconsSet;
 
         mProximityInfo = new ProximityInfo(params.mId.mLocale.toString(),
