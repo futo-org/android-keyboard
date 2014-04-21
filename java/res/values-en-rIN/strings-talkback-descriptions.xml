@@ -20,46 +20,53 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="spoken_use_headphones" msgid="896961781287283493">"Plug in a headset to hear password keys spoken aloud."</string>
-    <string name="spoken_current_text_is" msgid="2485723011272583845">"Current text is %s"</string>
-    <string name="spoken_no_text_entered" msgid="7479685225597344496">"No text entered"</string>
-    <string name="spoken_auto_correct" msgid="5150455215290003221">"<xliff:g id="KEY_NAME">%1$s</xliff:g> corrects <xliff:g id="ORIGINAL_WORD">%2$s</xliff:g> to <xliff:g id="CORRECTED_WORD">%3$s</xliff:g>"</string>
-    <string name="spoken_auto_correct_obscured" msgid="2309828861778711939">"<xliff:g id="KEY_NAME">%1$s</xliff:g> performs auto-correction"</string>
-    <string name="spoken_description_unknown" msgid="3197434010402179157">"Key code %d"</string>
-    <string name="spoken_description_shift" msgid="244197883292549308">"Shift"</string>
-    <string name="spoken_description_shift_shifted" msgid="1681877323344195035">"Shift on (tap to disable)"</string>
-    <string name="spoken_description_caps_lock" msgid="3276478269526304432">"Caps lock on (tap to disable)"</string>
-    <string name="spoken_description_delete" msgid="8740376944276199801">"Delete"</string>
-    <string name="spoken_description_to_symbol" msgid="5486340107500448969">"Symbols"</string>
-    <string name="spoken_description_to_alpha" msgid="23129338819771807">"Letters"</string>
-    <string name="spoken_description_to_numeric" msgid="591752092685161732">"Numbers"</string>
-    <string name="spoken_description_settings" msgid="4627462689603838099">"Settings"</string>
-    <string name="spoken_description_tab" msgid="2667716002663482248">"Tab"</string>
-    <string name="spoken_description_space" msgid="2582521050049860859">"Space"</string>
-    <string name="spoken_description_mic" msgid="615536748882611950">"Voice input"</string>
-    <string name="spoken_description_emoji" msgid="6934027701390427635">"Emoji"</string>
-    <string name="spoken_description_return" msgid="8178083177238315647">"Return"</string>
-    <string name="spoken_description_search" msgid="1247236163755920808">"Search"</string>
-    <string name="spoken_description_dot" msgid="40711082435231673">"Dot"</string>
-    <string name="spoken_description_language_switch" msgid="5507091328222331316">"Switch language"</string>
-    <string name="spoken_description_action_next" msgid="8636078276664150324">"Next"</string>
-    <string name="spoken_description_action_previous" msgid="800872415009336208">"Previous"</string>
-    <string name="spoken_description_shiftmode_on" msgid="5700440798609574589">"Shift enabled"</string>
-    <string name="spoken_description_shiftmode_locked" msgid="593175803181701830">"Caps lock enabled"</string>
-    <string name="spoken_description_shiftmode_off" msgid="657219998449174808">"Shift disabled"</string>
-    <string name="spoken_description_mode_symbol" msgid="7183343879909747642">"Symbols mode"</string>
-    <string name="spoken_description_mode_alpha" msgid="3528307674390156956">"Letters mode"</string>
-    <string name="spoken_description_mode_phone" msgid="6520207943132026264">"Phone mode"</string>
-    <string name="spoken_description_mode_phone_shift" msgid="5499629753962641227">"Phone symbols mode"</string>
-    <string name="announce_keyboard_hidden" msgid="8718927835531429807">"Keyboard hidden"</string>
-    <string name="announce_keyboard_mode" msgid="7486740369324538848">"Showing <xliff:g id="KEYBOARD_MODE">%s</xliff:g> keyboard"</string>
-    <string name="keyboard_mode_date" msgid="3137520166817128102">"date"</string>
-    <string name="keyboard_mode_date_time" msgid="339593358488851072">"date and time"</string>
-    <string name="keyboard_mode_email" msgid="6216248078128294262">"email"</string>
-    <string name="keyboard_mode_im" msgid="1137405089766557048">"messaging"</string>
-    <string name="keyboard_mode_number" msgid="7991623440699957069">"number"</string>
-    <string name="keyboard_mode_phone" msgid="6851627527401433229">"phone"</string>
-    <string name="keyboard_mode_text" msgid="6479436687899701619">"text"</string>
-    <string name="keyboard_mode_time" msgid="4381856885582143277">"time"</string>
-    <string name="keyboard_mode_url" msgid="1519819835514911218">"URL"</string>
+    <string name="spoken_use_headphones" msgid="4313642710742229868">"Plug in a headset to hear password keys spoken aloud."</string>
+    <string name="spoken_current_text_is" msgid="4240549866156675799">"Current text is %s"</string>
+    <string name="spoken_no_text_entered" msgid="1711276837961785646">"No text entered"</string>
+    <string name="spoken_auto_correct" msgid="8989324692167993804">"<xliff:g id="KEY_NAME">%1$s</xliff:g> corrects <xliff:g id="ORIGINAL_WORD">%2$s</xliff:g> to <xliff:g id="CORRECTED_WORD">%3$s</xliff:g>"</string>
+    <string name="spoken_auto_correct_obscured" msgid="7769449372355268412">"<xliff:g id="KEY_NAME">%1$s</xliff:g> performs auto-correction"</string>
+    <string name="spoken_description_unknown" msgid="2382510329910793539">"Key code %d"</string>
+    <string name="spoken_description_shift" msgid="7209798151676638728">"Shift"</string>
+    <string name="spoken_description_shift_shifted" msgid="1609924271343916689">"Shift on (tap to disable)"</string>
+    <string name="spoken_description_caps_lock" msgid="5020582161133170892">"Caps lock on (tap to disable)"</string>
+    <string name="spoken_description_delete" msgid="3878902286264983302">"Delete"</string>
+    <string name="spoken_description_to_symbol" msgid="8244903740201126590">"Symbols"</string>
+    <string name="spoken_description_to_alpha" msgid="4081215210530031950">"Letters"</string>
+    <string name="spoken_description_to_numeric" msgid="4560261331530795682">"Numbers"</string>
+    <string name="spoken_description_settings" msgid="7281251004003143204">"Settings"</string>
+    <string name="spoken_description_tab" msgid="8210782459446866716">"Tab"</string>
+    <string name="spoken_description_space" msgid="5908716896642059145">"Space"</string>
+    <string name="spoken_description_mic" msgid="6153138783813452464">"Voice input"</string>
+    <string name="spoken_description_emoji" msgid="7990051553008088470">"Emoji"</string>
+    <string name="spoken_description_return" msgid="3183692287397645708">"Return"</string>
+    <string name="spoken_description_search" msgid="5099937658231911288">"Search"</string>
+    <string name="spoken_description_dot" msgid="5644176501632325560">"Full stop"</string>
+    <string name="spoken_description_language_switch" msgid="6818666779313544553">"Switch language"</string>
+    <string name="spoken_description_action_next" msgid="431761808119616962">"Next"</string>
+    <string name="spoken_description_action_previous" msgid="2919072174697865110">"Previous"</string>
+    <string name="spoken_description_shiftmode_on" msgid="5107180516341258979">"Shift enabled"</string>
+    <string name="spoken_description_shiftmode_locked" msgid="7307477738053606881">"Caps lock enabled"</string>
+    <string name="spoken_description_shiftmode_off" msgid="5039126122829961331">"Shift disabled"</string>
+    <string name="spoken_description_mode_symbol" msgid="111186851131446691">"Symbols mode"</string>
+    <string name="spoken_description_mode_alpha" msgid="4676004119618778911">"Letters mode"</string>
+    <string name="spoken_description_mode_phone" msgid="2061220553756692903">"Phone mode"</string>
+    <string name="spoken_description_mode_phone_shift" msgid="7879963803547701090">"Phone symbols mode"</string>
+    <string name="announce_keyboard_hidden" msgid="2313574218950517779">"Keyboard hidden"</string>
+    <string name="announce_keyboard_mode" msgid="6698257917367823205">"Showing <xliff:g id="KEYBOARD_MODE">%s</xliff:g> keyboard"</string>
+    <string name="keyboard_mode_date" msgid="6597407244976713364">"date"</string>
+    <string name="keyboard_mode_date_time" msgid="3642804408726668808">"date and time"</string>
+    <string name="keyboard_mode_email" msgid="1239682082047693644">"email"</string>
+    <string name="keyboard_mode_im" msgid="3812086215529493501">"messaging"</string>
+    <string name="keyboard_mode_number" msgid="5395042245837996809">"number"</string>
+    <string name="keyboard_mode_phone" msgid="2486230278064523665">"phone"</string>
+    <string name="keyboard_mode_text" msgid="9138789594969187494">"text"</string>
+    <string name="keyboard_mode_time" msgid="8558297845514402675">"time"</string>
+    <string name="keyboard_mode_url" msgid="8072011652949962550">"URL"</string>
+    <string name="spoken_descrption_emoji_category_recents" msgid="4185344945205590692">"Recents"</string>
+    <string name="spoken_descrption_emoji_category_people" msgid="8414196269847492817">"People"</string>
+    <string name="spoken_descrption_emoji_category_objects" msgid="6116297906606195278">"Objects"</string>
+    <string name="spoken_descrption_emoji_category_nature" msgid="5018340512472354640">"Nature"</string>
+    <string name="spoken_descrption_emoji_category_places" msgid="1163315840948545317">"Places"</string>
+    <string name="spoken_descrption_emoji_category_symbols" msgid="474680659024880601">"Symbols"</string>
+    <string name="spoken_descrption_emoji_category_emoticons" msgid="456737544787823539">"Emoticons"</string>
 </resources>
