@@ -84,7 +84,7 @@ LOCAL_MODULE_TAGS := optional
 LOCAL_CLANG := true
 LOCAL_SDK_VERSION := 14
 LOCAL_NDK_STL_VARIANT := c++_static
-LOCAL_LDFLAGS += -ldl -fuse-ld=mcld
+LOCAL_LDFLAGS += -ldl
 
 include $(BUILD_SHARED_LIBRARY)
 #################### Clean up the tmp vars
