@@ -68,7 +68,7 @@ public class DynamicGridKeyboard extends Keyboard {
     }
 
     private Key getTemplateKey(final int code) {
-        for (final Key key : super.getKeys()) {
+        for (final Key key : super.getSortedKeys()) {
             if (key.getCode() == code) {
                 return key;
             }
@@ -207,7 +207,7 @@ public class DynamicGridKeyboard extends Keyboard {
     }
 
     @Override
-    public List<Key> getKeys() {
+    public List<Key> getSortedKeys() {
         synchronized (mLock) {
             if (mCachedGridKeys != null) {
                 return mCachedGridKeys;
@@ -222,7 +222,7 @@ public class DynamicGridKeyboard extends Keyboard {
     @Override
     public List<Key> getNearestKeys(final int x, final int y) {
         // TODO: Calculate the nearest key index in mGridKeys from x and y.
-        return getKeys();
+        return getSortedKeys();
     }
 
     static final class GridKey extends Key {

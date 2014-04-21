@@ -24,27 +24,13 @@ import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.StringUtils;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 /**
  * This class builds an actual keyboard for unit test.
  */
 public final class ActualKeyboardBuilder extends AbstractKeyboardBuilder<Key> {
-    // Comparator to sort {@link Key}s from top-left to bottom-right order.
-    private static final Comparator<Key> ROW_COLUMN_COMPARATOR = new Comparator<Key>() {
-        @Override
-        public int compare(final Key lhs, final Key rhs) {
-            if (lhs.getY() < rhs.getY()) return -1;
-            if (lhs.getY() > rhs.getY()) return 1;
-            if (lhs.getX() < rhs.getX()) return -1;
-            if (lhs.getX() > rhs.getX()) return 1;
-            return 0;
-        }
-    };
-
-    private static ArrayList<Key> filterOutSpacerAndSortKeys(final List<Key> keys) {
+    private static ArrayList<Key> filterOutSpacer(final List<Key> keys) {
         final ArrayList<Key> filteredKeys = CollectionUtils.newArrayList();
         for (final Key key : keys) {
             if (key.isSpacer()) {
@@ -52,25 +38,23 @@ public final class ActualKeyboardBuilder extends AbstractKeyboardBuilder<Key> {
             }
             filteredKeys.add(key);
         }
-        Collections.sort(filteredKeys, ROW_COLUMN_COMPARATOR);
         return filteredKeys;
     }
 
     /**
      * Create the keyboard that consists of the array of rows of the actual keyboard's keys.
-     * @param keys the list of keys of the actual keyboard.
+     * @param sortedKeys the sorted list of keys of the actual keyboard.
      * @return the actual keyboard grouped with rows.
      */
-    public static Key[][] buildKeyboard(final List<Key> keys) {
-        // Filter out spacer and sort keys from top-left to bottom-right order to prepare to
-        // create rows.
-        final ArrayList<Key> sortedKeys = filterOutSpacerAndSortKeys(keys);
+    public static Key[][] buildKeyboard(final List<Key> sortedKeys) {
+        // Filter out spacer to prepare to create rows.
+        final ArrayList<Key> filteredSortedKeys = filterOutSpacer(sortedKeys);
 
         // Grouping keys into rows.
         final ArrayList<ArrayList<Key>> rows = CollectionUtils.newArrayList();
         ArrayList<Key> elements = CollectionUtils.newArrayList();
-        int lastY = sortedKeys.get(0).getY();
-        for (final Key key : sortedKeys) {
+        int lastY = filteredSortedKeys.get(0).getY();
+        for (final Key key : filteredSortedKeys) {
             if (lastY != key.getY()) {
                 // A new row is starting.
                 lastY = key.getY();
