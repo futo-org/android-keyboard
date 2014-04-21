@@ -77,8 +77,8 @@ public class Keyboard {
     /** Maximum column for more keys keyboard */
     public final int mMaxMoreKeysKeyboardColumn;
 
-    /** Array of keys and icons in this keyboard */
-    private final Key[] mKeys;
+    /** List of keys in this keyboard */
+    private final List<Key> mKeys;
     public final List<Key> mShiftKeys;
     public final List<Key> mAltCodeKeysWhileTyping;
     public final KeyboardIconsSet mIconsSet;
@@ -103,7 +103,7 @@ public class Keyboard {
         mTopPadding = params.mTopPadding;
         mVerticalGap = params.mVerticalGap;
 
-        mKeys = params.mKeys.toArray(new Key[params.mKeys.size()]);
+        mKeys = Collections.unmodifiableList(CollectionUtils.newArrayList(params.mKeys));
         mShiftKeys = Collections.unmodifiableList(params.mShiftKeys);
         mAltCodeKeysWhileTyping = Collections.unmodifiableList(params.mAltCodeKeysWhileTyping);
         mIconsSet = params.mIconsSet;
@@ -154,7 +154,7 @@ public class Keyboard {
         return mProximityInfo;
     }
 
-    public Key[] getKeys() {
+    public List<Key> getKeys() {
         return mKeys;
     }
 

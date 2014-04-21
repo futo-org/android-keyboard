@@ -58,9 +58,10 @@ import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.ResourceUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -297,7 +298,7 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
 
         private int getCategoryPageCount(final int categoryId) {
             final Keyboard keyboard = mLayoutSet.getKeyboard(sCategoryElementId[categoryId]);
-            return (keyboard.getKeys().length - 1) / mMaxPageKeyCount + 1;
+            return (keyboard.getKeys().size() - 1) / mMaxPageKeyCount + 1;
         }
 
         // Returns a pair of the category id and the category page id from the view pager's page
@@ -394,13 +395,13 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
             }
         };
 
-        private static Key[][] sortKeysIntoPages(final Key[] inKeys, final int maxPageCount) {
-            final Key[] keys = Arrays.copyOf(inKeys, inKeys.length);
-            Arrays.sort(keys, 0, keys.length, EMOJI_KEY_COMPARATOR);
-            final int pageCount = (keys.length - 1) / maxPageCount + 1;
+        private static Key[][] sortKeysIntoPages(final List<Key> inKeys, final int maxPageCount) {
+            final ArrayList<Key> keys = CollectionUtils.newArrayList(inKeys);
+            Collections.sort(keys, EMOJI_KEY_COMPARATOR);
+            final int pageCount = (keys.size() - 1) / maxPageCount + 1;
             final Key[][] retval = new Key[pageCount][maxPageCount];
-            for (int i = 0; i < keys.length; ++i) {
-                retval[i / maxPageCount][i % maxPageCount] = keys[i];
+            for (int i = 0; i < keys.size(); ++i) {
+                retval[i / maxPageCount][i % maxPageCount] = keys.get(i);
             }
             return retval;
         }

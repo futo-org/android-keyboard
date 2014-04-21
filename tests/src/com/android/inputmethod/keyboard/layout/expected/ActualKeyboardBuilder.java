@@ -26,6 +26,7 @@ import com.android.inputmethod.latin.utils.StringUtils;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 /**
  * This class builds an actual keyboard for unit test.
@@ -43,7 +44,7 @@ public final class ActualKeyboardBuilder extends AbstractKeyboardBuilder<Key> {
         }
     };
 
-    private static ArrayList<Key> filterOutSpacerAndSortKeys(final Key[] keys) {
+    private static ArrayList<Key> filterOutSpacerAndSortKeys(final List<Key> keys) {
         final ArrayList<Key> filteredKeys = CollectionUtils.newArrayList();
         for (final Key key : keys) {
             if (key.isSpacer()) {
@@ -57,10 +58,10 @@ public final class ActualKeyboardBuilder extends AbstractKeyboardBuilder<Key> {
 
     /**
      * Create the keyboard that consists of the array of rows of the actual keyboard's keys.
-     * @param keys the array of keys of the actual keyboard.
+     * @param keys the list of keys of the actual keyboard.
      * @return the actual keyboard grouped with rows.
      */
-    public static Key[][] buildKeyboard(final Key[] keys) {
+    public static Key[][] buildKeyboard(final List<Key> keys) {
         // Filter out spacer and sort keys from top-left to bottom-right order to prepare to
         // create rows.
         final ArrayList<Key> sortedKeys = filterOutSpacerAndSortKeys(keys);
