@@ -129,22 +129,25 @@ public final class WordComposer {
      * -1 is returned.
      *
      * @param destination the array of ints.
-     * @param maxSize the size of the array.
      * @return the number of copied code points.
      */
     public int copyCodePointsExceptTrailingSingleQuotesAndReturnCodePointCount(
-            final int[] destination, final int maxSize) {
-        final int i = mTypedWordCache.length() - 1 - trailingSingleQuotesCount();
-        if (i < 0) {
+            final int[] destination) {
+        // lastIndex is exclusive
+        final int lastIndex = mTypedWordCache.length() - trailingSingleQuotesCount();
+        if (lastIndex <= 0) {
             // The string is empty or contains only single quotes.
             return 0;
         }
-        final int codePointSize = Character.codePointCount(mTypedWordCache, 0, i);
-        if (codePointSize > maxSize) {
+
+        // The following function counts the number of code points in the text range which begins
+        // at index 0 and extends to the character at lastIndex.
+        final int codePointSize = Character.codePointCount(mTypedWordCache, 0, lastIndex);
+        if (codePointSize > destination.length) {
             return -1;
         }
         return StringUtils.copyCodePointsAndReturnCodePointCount(destination, mTypedWordCache, 0,
-                i + 1, true /* downCase */);
+                lastIndex, true /* downCase */);
     }
 
     public boolean isSingleLetter() {
