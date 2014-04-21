@@ -29,6 +29,7 @@ import com.android.inputmethod.latin.utils.JsonUtils;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -216,9 +217,9 @@ public class DynamicGridKeyboard extends Keyboard {
     }
 
     @Override
-    public Key[] getNearestKeys(final int x, final int y) {
+    public List<Key> getNearestKeys(final int x, final int y) {
         // TODO: Calculate the nearest key index in mGridKeys from x and y.
-        return getKeys();
+        return Arrays.asList(getKeys());
     }
 
     static final class GridKey extends Key {

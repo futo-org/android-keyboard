@@ -211,10 +211,10 @@ public class Keyboard {
      * Returns the array of the keys that are closest to the given point.
      * @param x the x-coordinate of the point
      * @param y the y-coordinate of the point
-     * @return the array of the nearest keys to the given point. If the given
+     * @return the list of the nearest keys to the given point. If the given
      * point is out of range, then an array of size zero is returned.
      */
-    public Key[] getNearestKeys(final int x, final int y) {
+    public List<Key> getNearestKeys(final int x, final int y) {
         // Avoid dead pixels at edges of the keyboard
         final int adjustedX = Math.max(0, Math.min(x, mOccupiedWidth - 1));
         final int adjustedY = Math.max(0, Math.min(y, mOccupiedHeight - 1));

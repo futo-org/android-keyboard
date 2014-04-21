@@ -22,9 +22,13 @@ import android.util.Log;
 
 import com.android.inputmethod.keyboard.internal.TouchPositionCorrection;
 import com.android.inputmethod.latin.Constants;
+import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.JniUtils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class ProximityInfo {
     private static final String TAG = ProximityInfo.class.getSimpleName();
@@ -34,7 +38,7 @@ public class ProximityInfo {
     public static final int MAX_PROXIMITY_CHARS_SIZE = 16;
     /** Number of key widths from current touch point to search for nearest keys. */
     private static final float SEARCH_DISTANCE = 1.2f;
-    private static final Key[] EMPTY_KEY_ARRAY = new Key[0];
+    private static final List<Key> EMPTY_KEY_LIST = Collections.emptyList();
     private static final float DEFAULT_TOUCH_POSITION_CORRECTION_RADIUS = 0.15f;
 
     private final int mGridWidth;
@@ -48,7 +52,7 @@ public class ProximityInfo {
     private final int mMostCommonKeyWidth;
     private final int mMostCommonKeyHeight;
     private final Key[] mKeys;
-    private final Key[][] mGridNeighbors;
+    private final List<Key>[] mGridNeighbors;
     private final String mLocaleStr;
 
     ProximityInfo(final String localeStr, final int gridWidth, final int gridHeight,
@@ -70,7 +74,7 @@ public class ProximityInfo {
         mMostCommonKeyHeight = mostCommonKeyHeight;
         mMostCommonKeyWidth = mostCommonKeyWidth;
         mKeys = keys;
-        mGridNeighbors = new Key[mGridSize][];
+        mGridNeighbors = new List[mGridSize];
         if (minWidth == 0 || height == 0) {
             // No proximity required. Keyboard might be more keys keyboard.
             return;
@@ -110,14 +114,14 @@ public class ProximityInfo {
     }
 
     private long createNativeProximityInfo(final TouchPositionCorrection touchPositionCorrection) {
-        final Key[][] gridNeighborKeys = mGridNeighbors;
+        final List<Key>[] gridNeighborKeys = mGridNeighbors;
         final int[] proximityCharsArray = new int[mGridSize * MAX_PROXIMITY_CHARS_SIZE];
         Arrays.fill(proximityCharsArray, Constants.NOT_A_CODE);
         for (int i = 0; i < mGridSize; ++i) {
-            final int proximityCharsLength = gridNeighborKeys[i].length;
+            final int proximityCharsLength = gridNeighborKeys[i].size();
             int infoIndex = i * MAX_PROXIMITY_CHARS_SIZE;
             for (int j = 0; j < proximityCharsLength; ++j) {
-                final Key neighborKey = gridNeighborKeys[i][j];
+                final Key neighborKey = gridNeighborKeys[i].get(j);
                 // Excluding from proximityCharsArray
                 if (!needsProximityInfo(neighborKey)) {
                     continue;
@@ -353,9 +357,13 @@ y |---+---+---+---+-v-+-|-+---+---+---+---+---|          | thresholdBase and get
         }
 
         for (int i = 0; i < gridSize; ++i) {
-            final int base = i * keyCount;
-            mGridNeighbors[i] =
-                    Arrays.copyOfRange(neighborsFlatBuffer, base, base + neighborCountPerCell[i]);
+            final int indexStart = i * keyCount;
+            final int indexEnd = indexStart + neighborCountPerCell[i];
+            final ArrayList<Key> neighbords = CollectionUtils.newArrayList(indexEnd - indexStart);
+            for (int index = indexStart; index < indexEnd; index++) {
+                neighbords.add(neighborsFlatBuffer[index]);
+            }
+            mGridNeighbors[i] = Collections.unmodifiableList(neighbords);
         }
     }
 
@@ -369,7 +377,7 @@ y |---+---+---+---+-v-+-|-+---+---+---+---+---|          | thresholdBase and get
         if (primaryKeyCode > Constants.CODE_SPACE) {
             dest[index++] = primaryKeyCode;
         }
-        final Key[] nearestKeys = getNearestKeys(x, y);
+        final List<Key> nearestKeys = getNearestKeys(x, y);
         for (Key key : nearestKeys) {
             if (index >= destLength) {
                 break;
@@ -385,9 +393,9 @@ y |---+---+---+---+-v-+-|-+---+---+---+---+---|          | thresholdBase and get
         }
     }
 
-    public Key[] getNearestKeys(final int x, final int y) {
+    public List<Key> getNearestKeys(final int x, final int y) {
         if (mGridNeighbors == null) {
-            return EMPTY_KEY_ARRAY;
+            return EMPTY_KEY_LIST;
         }
         if (x >= 0 && x < mKeyboardMinWidth && y >= 0 && y < mKeyboardHeight) {
             int index = (y / mCellHeight) * mGridWidth + (x / mCellWidth);
@@ -395,6 +403,6 @@ y |---+---+---+---+-v-+-|-+---+---+---+---+---|          | thresholdBase and get
                 return mGridNeighbors[index];
             }
         }
-        return EMPTY_KEY_ARRAY;
+        return EMPTY_KEY_LIST;
     }
 }
