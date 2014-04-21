@@ -515,7 +515,8 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         createBinaryDictionaryLocked();
         openBinaryDictionaryLocked();
         loadInitialContentsLocked();
-        mBinaryDictionary.flushWithGC();
+        // Run GC and flush to file when initial contents have been loaded.
+        mBinaryDictionary.flushWithGCIfHasUpdated();
     }
 
     private void flushDictionaryLocked() {
