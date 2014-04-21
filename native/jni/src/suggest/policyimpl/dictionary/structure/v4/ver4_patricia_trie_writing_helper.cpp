@@ -55,7 +55,8 @@ bool Ver4PatriciaTrieWritingHelper::writeToDictFileWithGC(const int rootPtNodeAr
         const char *const dictDirPath) {
     const HeaderPolicy *const headerPolicy = mBuffers->getHeaderPolicy();
     Ver4DictBuffers::Ver4DictBuffersPtr dictBuffers(
-            Ver4DictBuffers::createVer4DictBuffers(headerPolicy));
+            Ver4DictBuffers::createVer4DictBuffers(headerPolicy,
+                    Ver4DictConstants::MAX_DICTIONARY_SIZE));
     int unigramCount = 0;
     int bigramCount = 0;
     if (!runGC(rootPtNodeArrayPos, headerPolicy, dictBuffers.get(), &unigramCount, &bigramCount)) {

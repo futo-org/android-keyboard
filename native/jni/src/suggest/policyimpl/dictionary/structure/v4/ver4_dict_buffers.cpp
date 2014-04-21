@@ -130,11 +130,10 @@ Ver4DictBuffers::Ver4DictBuffers(const char *const dictPath,
           mShortcutDictContent(dictPath, isUpdatable),
           mIsUpdatable(isUpdatable) {}
 
-Ver4DictBuffers::Ver4DictBuffers(const HeaderPolicy *const headerPolicy)
+Ver4DictBuffers::Ver4DictBuffers(const HeaderPolicy *const headerPolicy, const int maxTrieSize)
         : mHeaderBuffer(nullptr), mDictBuffer(nullptr), mHeaderPolicy(),
           mExpandableHeaderBuffer(Ver4DictConstants::MAX_DICTIONARY_SIZE),
-          mExpandableTrieBuffer(Ver4DictConstants::MAX_DICTIONARY_SIZE),
-          mTerminalPositionLookupTable(),
+          mExpandableTrieBuffer(maxTrieSize), mTerminalPositionLookupTable(),
           mProbabilityDictContent(headerPolicy->hasHistoricalInfoOfWords()),
           mBigramDictContent(headerPolicy->hasHistoricalInfoOfWords()), mShortcutDictContent(),
           mIsUpdatable(true) {}
