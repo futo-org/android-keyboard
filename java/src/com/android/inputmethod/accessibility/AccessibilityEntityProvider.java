@@ -159,8 +159,7 @@ public final class AccessibilityEntityProvider extends AccessibilityNodeProvider
 
             // Add the virtual children of the root View.
             final Keyboard keyboard = mKeyboardView.getKeyboard();
-            final Key[] keys = keyboard.getKeys();
-            for (Key key : keys) {
+            for (final Key key : keyboard.getKeys()) {
                 final int childVirtualViewId = generateVirtualViewIdForKey(key);
                 rootInfo.addChild(mKeyboardView, childVirtualViewId);
             }
@@ -308,8 +307,7 @@ public final class AccessibilityEntityProvider extends AccessibilityNodeProvider
         }
         mVirtualViewIdToKey.clear();
 
-        final Key[] keys = keyboard.getKeys();
-        for (Key key : keys) {
+        for (final Key key : keyboard.getKeys()) {
             final int virtualViewId = generateVirtualViewIdForKey(key);
             mVirtualViewIdToKey.put(virtualViewId, key);
         }

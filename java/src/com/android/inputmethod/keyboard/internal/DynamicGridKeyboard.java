@@ -31,6 +31,7 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -51,7 +52,7 @@ public class DynamicGridKeyboard extends Keyboard {
     private final ArrayDeque<GridKey> mGridKeys = CollectionUtils.newArrayDeque();
     private final ArrayDeque<Key> mPendingKeys = CollectionUtils.newArrayDeque();
 
-    private Key[] mCachedGridKeys;
+    private List<Key> mCachedGridKeys;
 
     public DynamicGridKeyboard(final SharedPreferences prefs, final Keyboard templateKeyboard,
             final int maxKeyCount, final int categoryId) {
@@ -206,12 +207,14 @@ public class DynamicGridKeyboard extends Keyboard {
     }
 
     @Override
-    public Key[] getKeys() {
+    public List<Key> getKeys() {
         synchronized (mLock) {
             if (mCachedGridKeys != null) {
                 return mCachedGridKeys;
             }
-            mCachedGridKeys = mGridKeys.toArray(new Key[mGridKeys.size()]);
+            final ArrayList<Key> cachedKeys = CollectionUtils.newArrayList(mGridKeys.size());
+            cachedKeys.addAll(mGridKeys);
+            mCachedGridKeys = Collections.unmodifiableList(cachedKeys);
             return mCachedGridKeys;
         }
     }
@@ -219,7 +222,7 @@ public class DynamicGridKeyboard extends Keyboard {
     @Override
     public List<Key> getNearestKeys(final int x, final int y) {
         // TODO: Calculate the nearest key index in mGridKeys from x and y.
-        return Arrays.asList(getKeys());
+        return getKeys();
     }
 
     static final class GridKey extends Key {
