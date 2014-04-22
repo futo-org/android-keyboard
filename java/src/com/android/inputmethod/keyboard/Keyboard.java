@@ -166,15 +166,6 @@ public class Keyboard {
         return mSortedKeys;
     }
 
-    public Key getKeyFromOutputText(final String outputText) {
-        for (final Key key : getSortedKeys()) {
-            if (outputText.equals(key.getOutputText())) {
-                return key;
-            }
-        }
-        return null;
-    }
-
     public Key getKey(final int code) {
         if (code == Constants.CODE_UNSPECIFIED) {
             return null;
