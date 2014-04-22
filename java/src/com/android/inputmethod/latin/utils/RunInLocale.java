@@ -35,18 +35,18 @@ public abstract class RunInLocale<T> {
      */
     public T runInLocale(final Resources res, final Locale newLocale) {
         synchronized (sLockForRunInLocale) {
-            final Configuration savedConf = res.getConfiguration();
-            if (newLocale == null || newLocale.equals(savedConf.locale)) {
+            final Configuration conf = res.getConfiguration();
+            if (newLocale == null || newLocale.equals(conf.locale)) {
                 return job(res);
             }
-            final Configuration newConf = new Configuration();
-            newConf.setTo(savedConf);
-            newConf.setLocale(newLocale);
+            final Locale savedLocale = conf.locale;
             try {
-                res.updateConfiguration(newConf, null);
+                conf.locale = newLocale;
+                res.updateConfiguration(conf, null);
                 return job(res);
             } finally {
-                res.updateConfiguration(savedConf, null);
+                conf.locale = savedLocale;
+                res.updateConfiguration(conf, null);
             }
         }
     }
