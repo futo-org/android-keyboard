@@ -217,9 +217,6 @@ public class DictionaryFacilitatorForSuggest {
         // Replace Dictionaries.
         final Dictionaries newDictionaries = new Dictionaries(newLocale, newMainDict,
                 newContactsDict,  newUserDictionary, newUserHistoryDict, newPersonalizationDict);
-        if (listener != null) {
-            listener.onUpdateMainDictionaryAvailability(newDictionaries.hasMainDict());
-        }
         final Dictionaries oldDictionaries;
         synchronized (mLock) {
             oldDictionaries = mDictionaries;
@@ -227,6 +224,9 @@ public class DictionaryFacilitatorForSuggest {
             if (reloadMainDictionary) {
                 asyncReloadMainDictionary(context, newLocale, listener);
             }
+        }
+        if (listener != null) {
+            listener.onUpdateMainDictionaryAvailability(hasInitializedMainDictionary());
         }
 
         // Clean up old dictionaries.
@@ -266,7 +266,7 @@ public class DictionaryFacilitatorForSuggest {
                     }
                 }
                 if (listener != null) {
-                    listener.onUpdateMainDictionaryAvailability(mDictionaries.hasMainDict());
+                    listener.onUpdateMainDictionaryAvailability(hasInitializedMainDictionary());
                 }
                 latchForWaitingLoadingMainDictionary.countDown();
             }
