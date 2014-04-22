@@ -26,7 +26,6 @@ import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
 import android.support.v4.view.accessibility.AccessibilityNodeProviderCompat;
 import android.support.v4.view.accessibility.AccessibilityRecordCompat;
 import android.util.Log;
-import android.util.SparseArray;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
@@ -37,8 +36,9 @@ import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardView;
 import com.android.inputmethod.latin.settings.Settings;
 import com.android.inputmethod.latin.settings.SettingsValues;
-import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.CoordinateUtils;
+
+import java.util.List;
 
 /**
  * Exposes a virtual view sub-tree for {@link KeyboardView} and generates
@@ -58,9 +58,6 @@ public final class AccessibilityEntityProvider extends AccessibilityNodeProvider
     private final KeyCodeDescriptionMapper mKeyCodeDescriptionMapper;
     private final AccessibilityUtils mAccessibilityUtils;
 
-    /** A map of integer IDs to {@link Key}s. */
-    private final SparseArray<Key> mVirtualViewIdToKey = CollectionUtils.newSparseArray();
-
     /** Temporary rect used to calculate in-screen bounds. */
     private final Rect mTempBoundsInScreen = new Rect();
 
@@ -72,6 +69,9 @@ public final class AccessibilityEntityProvider extends AccessibilityNodeProvider
 
     /** The current keyboard view. */
     private KeyboardView mKeyboardView;
+
+    /** The current keyboard. */
+    private Keyboard mKeyboard;
 
     public AccessibilityEntityProvider(final KeyboardView keyboardView,
             final InputMethodService inputMethod) {
@@ -92,14 +92,43 @@ public final class AccessibilityEntityProvider extends AccessibilityNodeProvider
 
         // Since this class is constructed lazily, we might not get a subsequent
         // call to setKeyboard() and therefore need to call it now.
-        setKeyboard();
+        setKeyboard(keyboardView.getKeyboard());
     }
 
     /**
      * Sets the keyboard represented by this node provider.
+     *
+     * @param keyboard The keyboard that is being set to the keyboard view.
      */
-    public void setKeyboard() {
-        assignVirtualViewIds();
+    public void setKeyboard(final Keyboard keyboard) {
+        mKeyboard = keyboard;
+    }
+
+    private Key getKeyOf(final int virtualViewId) {
+        if (mKeyboard == null) {
+            return null;
+        }
+        final List<Key> sortedKeys = mKeyboard.getSortedKeys();
+        // Use a virtual view id as an index of the sorted keys list.
+        if (virtualViewId >= 0 && virtualViewId < sortedKeys.size()) {
+            return sortedKeys.get(virtualViewId);
+        }
+        return null;
+    }
+
+    private int getVirtualViewIdOf(final Key key) {
+        if (mKeyboard == null) {
+            return View.NO_ID;
+        }
+        final List<Key> sortedKeys = mKeyboard.getSortedKeys();
+        final int size = sortedKeys.size();
+        for (int index = 0; index < size; index++) {
+            if (sortedKeys.get(index) == key) {
+                // Use an index of the sorted keys list as a virtual view id.
+                return index;
+            }
+        }
+        return View.NO_ID;
     }
 
     /**
@@ -112,7 +141,7 @@ public final class AccessibilityEntityProvider extends AccessibilityNodeProvider
      * @see AccessibilityEvent
      */
     public AccessibilityEvent createAccessibilityEvent(final Key key, final int eventType) {
-        final int virtualViewId = generateVirtualViewIdForKey(key);
+        final int virtualViewId = getVirtualViewIdOf(key);
         final String keyDescription = getKeyDescription(key);
         final AccessibilityEvent event = AccessibilityEvent.obtain(eventType);
         event.setPackageName(mKeyboardView.getContext().getPackageName());
@@ -158,16 +187,21 @@ public final class AccessibilityEntityProvider extends AccessibilityNodeProvider
             ViewCompat.onInitializeAccessibilityNodeInfo(mKeyboardView, rootInfo);
 
             // Add the virtual children of the root View.
-            final Keyboard keyboard = mKeyboardView.getKeyboard();
-            for (final Key key : keyboard.getSortedKeys()) {
-                final int childVirtualViewId = generateVirtualViewIdForKey(key);
-                rootInfo.addChild(mKeyboardView, childVirtualViewId);
+            final List<Key> sortedKeys = mKeyboard.getSortedKeys();
+            final int size = sortedKeys.size();
+            for (int index = 0; index < size; index++) {
+                final Key key = sortedKeys.get(index);
+                if (key.isSpacer()) {
+                    continue;
+                }
+                // Use an index of the sorted keys list as a virtual view id.
+                rootInfo.addChild(mKeyboardView, index);
             }
             return rootInfo;
         }
 
-        // Find the view that corresponds to the given id.
-        final Key key = mVirtualViewIdToKey.get(virtualViewId);
+        // Find the key that corresponds to the given virtual view id.
+        final Key key = getKeyOf(virtualViewId);
         if (key == null) {
             Log.e(TAG, "Invalid virtual view ID: " + virtualViewId);
             return null;
@@ -226,7 +260,7 @@ public final class AccessibilityEntityProvider extends AccessibilityNodeProvider
     @Override
     public boolean performAction(final int virtualViewId, final int action,
             final Bundle arguments) {
-        final Key key = mVirtualViewIdToKey.get(virtualViewId);
+        final Key key = getKeyOf(virtualViewId);
         if (key == null) {
             return false;
         }
@@ -242,7 +276,7 @@ public final class AccessibilityEntityProvider extends AccessibilityNodeProvider
      * @return The result of performing the action, or false if the action is not supported.
      */
     boolean performActionForKey(final Key key, final int action, final Bundle arguments) {
-        final int virtualViewId = generateVirtualViewIdForKey(key);
+        final int virtualViewId = getVirtualViewIdOf(key);
 
         switch (action) {
         case AccessibilityNodeInfoCompat.ACTION_ACCESSIBILITY_FOCUS:
@@ -288,7 +322,7 @@ public final class AccessibilityEntityProvider extends AccessibilityNodeProvider
         final boolean shouldObscure = mAccessibilityUtils.shouldObscureInput(editorInfo);
         final SettingsValues currentSettings = Settings.getInstance().getCurrent();
         final String keyCodeDescription = mKeyCodeDescriptionMapper.getDescriptionForKey(
-                mKeyboardView.getContext(), mKeyboardView.getKeyboard(), key, shouldObscure);
+                mKeyboardView.getContext(), mKeyboard, key, shouldObscure);
         if (currentSettings.isWordSeparator(key.getCode())) {
             return mAccessibilityUtils.getAutoCorrectionDescription(
                     keyCodeDescription, shouldObscure);
@@ -298,39 +332,9 @@ public final class AccessibilityEntityProvider extends AccessibilityNodeProvider
     }
 
     /**
-     * Assigns virtual view IDs to keyboard keys and populates the related maps.
-     */
-    private void assignVirtualViewIds() {
-        final Keyboard keyboard = mKeyboardView.getKeyboard();
-        if (keyboard == null) {
-            return;
-        }
-        mVirtualViewIdToKey.clear();
-
-        for (final Key key : keyboard.getSortedKeys()) {
-            final int virtualViewId = generateVirtualViewIdForKey(key);
-            mVirtualViewIdToKey.put(virtualViewId, key);
-        }
-    }
-
-    /**
      * Updates the parent's on-screen location.
      */
     private void updateParentLocation() {
         mKeyboardView.getLocationOnScreen(mParentLocation);
-    }
-
-    /**
-     * Generates a virtual view identifier for the given key. Returned
-     * identifiers are valid until the next global layout state change.
-     *
-     * @param key The key to identify.
-     * @return A virtual view identifier.
-     */
-    private static int generateVirtualViewIdForKey(final Key key) {
-        // The key x- and y-coordinates are stable between layout changes.
-        // Generate an identifier by bit-shifting the x-coordinate to the
-        // left-half of the integer and OR'ing with the y-coordinate.
-        return ((0xFFFF & key.getX()) << (Integer.SIZE / 2)) | (0xFFFF & key.getY());
     }
 }
