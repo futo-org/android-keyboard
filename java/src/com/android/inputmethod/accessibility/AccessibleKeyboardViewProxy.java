@@ -55,6 +55,7 @@ public final class AccessibleKeyboardViewProxy extends AccessibilityDelegateComp
 
     private InputMethodService mInputMethod;
     private MainKeyboardView mView;
+    private Keyboard mKeyboard;
     private AccessibilityEntityProvider mAccessibilityNodeProvider;
 
     private Key mLastHoverKey = null;
@@ -66,6 +67,7 @@ public final class AccessibleKeyboardViewProxy extends AccessibilityDelegateComp
 
     /** The most recently set keyboard mode. */
     private int mLastKeyboardMode;
+    private static final int NOT_A_KEYBOARD_MODE = -1;
 
     public static void init(final InputMethodService inputMethod) {
         sInstance.initInternal(inputMethod);
@@ -104,6 +106,10 @@ public final class AccessibleKeyboardViewProxy extends AccessibilityDelegateComp
             return;
         }
         mAccessibilityNodeProvider.setView(view);
+
+        // Since this class is constructed lazily, we might not get a subsequent
+        // call to setKeyboard() and therefore need to call it now.
+        setKeyboard(view.getKeyboard());
     }
 
     /**
@@ -111,15 +117,17 @@ public final class AccessibleKeyboardViewProxy extends AccessibilityDelegateComp
      * <p>
      * <b>Note:</b> This method will be called even if accessibility is not
      * enabled.
+     * @param keyboard The keyboard that is being set to the wrapping view.
      */
-    public void setKeyboard() {
-        if (mView == null) {
+    public void setKeyboard(final Keyboard keyboard) {
+        if (keyboard == null) {
             return;
         }
+        mKeyboard = keyboard;
         if (mAccessibilityNodeProvider != null) {
-            mAccessibilityNodeProvider.setKeyboard();
+            mAccessibilityNodeProvider.setKeyboard(keyboard);
         }
-        final int keyboardMode = mView.getKeyboard().mId.mMode;
+        final int keyboardMode = keyboard.mId.mMode;
 
         // Since this method is called even when accessibility is off, make sure
         // to check the state before announcing anything. Also, don't announce
@@ -139,7 +147,7 @@ public final class AccessibleKeyboardViewProxy extends AccessibilityDelegateComp
             return;
         }
         announceKeyboardHidden();
-        mLastKeyboardMode = -1;
+        mLastKeyboardMode = NOT_A_KEYBOARD_MODE;
     }
 
     /**
@@ -148,7 +156,7 @@ public final class AccessibleKeyboardViewProxy extends AccessibilityDelegateComp
      *
      * @param mode The new keyboard mode.
      */
-    private void announceKeyboardMode(int mode) {
+    private void announceKeyboardMode(final int mode) {
         final int resId = KEYBOARD_MODE_RES_IDS.get(mode);
         if (resId == 0) {
             return;
@@ -329,12 +337,11 @@ public final class AccessibleKeyboardViewProxy extends AccessibilityDelegateComp
      * Notifies the user of changes in the keyboard shift state.
      */
     public void notifyShiftState() {
-        if (mView == null) {
+        if (mView == null || mKeyboard == null) {
             return;
         }
 
-        final Keyboard keyboard = mView.getKeyboard();
-        final KeyboardId keyboardId = keyboard.mId;
+        final KeyboardId keyboardId = mKeyboard.mId;
         final int elementId = keyboardId.mElementId;
         final Context context = mView.getContext();
         final CharSequence text;
@@ -359,14 +366,13 @@ public final class AccessibleKeyboardViewProxy extends AccessibilityDelegateComp
      * Notifies the user of changes in the keyboard symbols state.
      */
     public void notifySymbolsState() {
-        if (mView == null) {
+        if (mView == null || mKeyboard == null) {
             return;
         }
 
-        final Keyboard keyboard = mView.getKeyboard();
-        final Context context = mView.getContext();
-        final KeyboardId keyboardId = keyboard.mId;
+        final KeyboardId keyboardId = mKeyboard.mId;
         final int elementId = keyboardId.mElementId;
+        final Context context = mView.getContext();
         final int resId;
 
         switch (elementId) {
@@ -388,12 +394,9 @@ public final class AccessibleKeyboardViewProxy extends AccessibilityDelegateComp
             resId = R.string.spoken_description_mode_phone_shift;
             break;
         default:
-            resId = -1;
-        }
-
-        if (resId < 0) {
             return;
         }
+
         final String text = context.getString(resId);
         AccessibilityUtils.getInstance().announceForAccessibility(mView, text);
     }

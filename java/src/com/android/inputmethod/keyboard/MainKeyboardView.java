@@ -406,7 +406,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
 
         // This always needs to be set since the accessibility state can
         // potentially change without the keyboard being set again.
-        AccessibleKeyboardViewProxy.getInstance().setKeyboard();
+        AccessibleKeyboardViewProxy.getInstance().setKeyboard(keyboard);
     }
 
     /**
