@@ -213,8 +213,7 @@ public class DynamicGridKeyboard extends Keyboard {
             if (mCachedGridKeys != null) {
                 return mCachedGridKeys;
             }
-            final ArrayList<Key> cachedKeys = CollectionUtils.newArrayList(mGridKeys.size());
-            cachedKeys.addAll(mGridKeys);
+            final ArrayList<Key> cachedKeys = new ArrayList<Key>(mGridKeys);
             mCachedGridKeys = Collections.unmodifiableList(cachedKeys);
             return mCachedGridKeys;
         }
