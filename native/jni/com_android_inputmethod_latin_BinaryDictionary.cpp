@@ -65,6 +65,13 @@ static jlong latinime_BinaryDictionary_open(JNIEnv *env, jclass clazz, jstring s
     return reinterpret_cast<jlong>(dictionary);
 }
 
+static jlong latinime_BinaryDictionary_createOnMemory(JNIEnv *env, jclass clazz,
+        jlong formatVersion, jstring locale, jobjectArray attributeKeyStringArray,
+        jobjectArray attributeValueStringArray) {
+    // TODO: Implement.
+    return 0;
+}
+
 static void latinime_BinaryDictionary_flush(JNIEnv *env, jclass clazz, jlong dict,
         jstring filePath) {
     Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
@@ -466,6 +473,11 @@ static const JNINativeMethod sMethods[] = {
         const_cast<char *>("openNative"),
         const_cast<char *>("(Ljava/lang/String;JJZ)J"),
         reinterpret_cast<void *>(latinime_BinaryDictionary_open)
+    },
+    {
+        const_cast<char *>("createOnMemoryNative"),
+        const_cast<char *>("(JLjava/lang/String;[Ljava/lang/String;[Ljava/lang/String;)J"),
+        reinterpret_cast<void *>(latinime_BinaryDictionary_createOnMemory)
     },
     {
         const_cast<char *>("closeNative"),
