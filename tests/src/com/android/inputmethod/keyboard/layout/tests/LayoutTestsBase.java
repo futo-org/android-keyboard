@@ -150,7 +150,8 @@ abstract class LayoutTestsBase extends KeyboardLayoutSetTestsBase {
         // Create actual keyboard object.
         final Keyboard keyboard = mKeyboardLayoutSet.getKeyboard(elementId);
         // Create actual keyboard to be compared with the expected keyboard.
-        final Key[][] actualKeyboard = ActualKeyboardBuilder.buildKeyboard(keyboard.getKeys());
+        final Key[][] actualKeyboard = ActualKeyboardBuilder.buildKeyboard(
+                keyboard.getSortedKeys());
 
         // Dump human readable definition of expected/actual keyboards.
         Log.d(tag, "expected=\n" + ExpectedKeyboardBuilder.toString(expectedKeyboard));
