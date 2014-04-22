@@ -29,7 +29,6 @@ import com.android.inputmethod.latin.utils.JsonUtils;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -148,9 +147,10 @@ public class DynamicGridKeyboard extends Keyboard {
     private static Key getKeyByCode(final Collection<DynamicGridKeyboard> keyboards,
             final int code) {
         for (final DynamicGridKeyboard keyboard : keyboards) {
-            final Key key = keyboard.getKey(code);
-            if (key != null) {
-                return key;
+            for (final Key key : keyboard.getSortedKeys()) {
+                if (key.getCode() == code) {
+                    return key;
+                }
             }
         }
         return null;
@@ -158,10 +158,11 @@ public class DynamicGridKeyboard extends Keyboard {
 
     private static Key getKeyByOutputText(final Collection<DynamicGridKeyboard> keyboards,
             final String outputText) {
-        for (final DynamicGridKeyboard kbd : keyboards) {
-            final Key key = kbd.getKeyFromOutputText(outputText);
-            if (key != null) {
-                return key;
+        for (final DynamicGridKeyboard keyboard : keyboards) {
+            for (final Key key : keyboard.getSortedKeys()) {
+                if (outputText.equals(key.getOutputText())) {
+                    return key;
+                }
             }
         }
         return null;
