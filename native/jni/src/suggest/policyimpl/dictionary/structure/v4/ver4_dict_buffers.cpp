@@ -131,7 +131,7 @@ Ver4DictBuffers::Ver4DictBuffers(const char *const dictPath,
           mIsUpdatable(isUpdatable) {}
 
 Ver4DictBuffers::Ver4DictBuffers(const HeaderPolicy *const headerPolicy, const int maxTrieSize)
-        : mHeaderBuffer(nullptr), mDictBuffer(nullptr), mHeaderPolicy(),
+        : mHeaderBuffer(nullptr), mDictBuffer(nullptr), mHeaderPolicy(headerPolicy),
           mExpandableHeaderBuffer(Ver4DictConstants::MAX_DICTIONARY_SIZE),
           mExpandableTrieBuffer(maxTrieSize), mTerminalPositionLookupTable(),
           mProbabilityDictContent(headerPolicy->hasHistoricalInfoOfWords()),
