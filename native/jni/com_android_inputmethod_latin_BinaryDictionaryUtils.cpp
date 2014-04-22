@@ -24,6 +24,7 @@
 #include "suggest/policyimpl/dictionary/utils/dict_file_writing_utils.h"
 #include "utils/autocorrection_threshold_utils.h"
 #include "utils/char_utils.h"
+#include "utils/jni_data_utils.h"
 #include "utils/time_keeper.h"
 
 namespace latinime {
@@ -43,29 +44,9 @@ static jboolean latinime_BinaryDictionaryUtils_createEmptyDictFile(JNIEnv *env, 
     if (keyCount != valueCount) {
         return false;
     }
-
-    DictionaryHeaderStructurePolicy::AttributeMap attributeMap;
-    for (int i = 0; i < keyCount; i++) {
-        jstring keyString = static_cast<jstring>(
-                env->GetObjectArrayElement(attributeKeyStringArray, i));
-        const jsize keyUtf8Length = env->GetStringUTFLength(keyString);
-        char keyChars[keyUtf8Length + 1];
-        env->GetStringUTFRegion(keyString, 0, env->GetStringLength(keyString), keyChars);
-        keyChars[keyUtf8Length] = '\0';
-        DictionaryHeaderStructurePolicy::AttributeMap::key_type key;
-        HeaderReadWriteUtils::insertCharactersIntoVector(keyChars, &key);
-
-        jstring valueString = static_cast<jstring>(
-                env->GetObjectArrayElement(attributeValueStringArray, i));
-        const jsize valueUtf8Length = env->GetStringUTFLength(valueString);
-        char valueChars[valueUtf8Length + 1];
-        env->GetStringUTFRegion(valueString, 0, env->GetStringLength(valueString), valueChars);
-        valueChars[valueUtf8Length] = '\0';
-        DictionaryHeaderStructurePolicy::AttributeMap::mapped_type value;
-        HeaderReadWriteUtils::insertCharactersIntoVector(valueChars, &value);
-        attributeMap[key] = value;
-    }
-
+    DictionaryHeaderStructurePolicy::AttributeMap attributeMap =
+            JniDataUtils::constructAttributeMap(env, attributeKeyStringArray,
+                    attributeValueStringArray);
     return DictFileWritingUtils::createEmptyDictFile(filePathChars, static_cast<int>(dictVersion),
             CharUtils::convertShortArrayToIntVector(localeCodePoints, localeLength), &attributeMap);
 }

@@ -21,6 +21,8 @@
 
 #include "defines.h"
 #include "jni.h"
+#include "suggest/core/policy/dictionary_header_structure_policy.h"
+#include "suggest/policyimpl/dictionary/header/header_read_write_utils.h"
 
 namespace latinime {
 
@@ -34,6 +36,33 @@ class JniDataUtils {
         const jsize arrayLength = env->GetArrayLength(array);
         outVector->resize(arrayLength);
         env->GetIntArrayRegion(array, 0 /* start */, arrayLength, outVector->data());
+    }
+
+    static DictionaryHeaderStructurePolicy::AttributeMap constructAttributeMap(JNIEnv *env,
+            jobjectArray attributeKeyStringArray, jobjectArray attributeValueStringArray) {
+        DictionaryHeaderStructurePolicy::AttributeMap attributeMap;
+        const int keyCount = env->GetArrayLength(attributeKeyStringArray);
+        for (int i = 0; i < keyCount; i++) {
+            jstring keyString = static_cast<jstring>(
+                    env->GetObjectArrayElement(attributeKeyStringArray, i));
+            const jsize keyUtf8Length = env->GetStringUTFLength(keyString);
+            char keyChars[keyUtf8Length + 1];
+            env->GetStringUTFRegion(keyString, 0, env->GetStringLength(keyString), keyChars);
+            keyChars[keyUtf8Length] = '\0';
+            DictionaryHeaderStructurePolicy::AttributeMap::key_type key;
+            HeaderReadWriteUtils::insertCharactersIntoVector(keyChars, &key);
+
+            jstring valueString = static_cast<jstring>(
+                    env->GetObjectArrayElement(attributeValueStringArray, i));
+            const jsize valueUtf8Length = env->GetStringUTFLength(valueString);
+            char valueChars[valueUtf8Length + 1];
+            env->GetStringUTFRegion(valueString, 0, env->GetStringLength(valueString), valueChars);
+            valueChars[valueUtf8Length] = '\0';
+            DictionaryHeaderStructurePolicy::AttributeMap::mapped_type value;
+            HeaderReadWriteUtils::insertCharactersIntoVector(valueChars, &value);
+            attributeMap[key] = value;
+        }
+        return attributeMap;
     }
 
  private:
