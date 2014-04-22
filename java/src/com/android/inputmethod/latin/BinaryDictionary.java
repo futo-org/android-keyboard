@@ -460,6 +460,7 @@ public final class BinaryDictionary extends Dictionary {
                 dictFile.length(), mIsUpdatable);
     }
 
+    // Flush to dict file if the dictionary has been updated.
     public void flush() {
         if (!isValidDictionary()) return;
         if (mHasUpdated) {
@@ -468,6 +469,14 @@ public final class BinaryDictionary extends Dictionary {
         }
     }
 
+    // Run GC and flush to dict file if the dictionary has been updated.
+    public void flushWithGCIfHasUpdated() {
+        if (mHasUpdated) {
+            flushWithGC();
+        }
+    }
+
+    // Run GC and flush to dict file.
     public void flushWithGC() {
         if (!isValidDictionary()) return;
         flushWithGCNative(mNativeDict, mDictFilePath);
