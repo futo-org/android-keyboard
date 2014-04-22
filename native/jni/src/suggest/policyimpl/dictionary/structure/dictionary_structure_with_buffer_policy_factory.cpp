@@ -19,10 +19,12 @@
 #include <climits>
 
 #include "defines.h"
+#include "suggest/policyimpl/dictionary/structure/pt_common/dynamic_pt_writing_utils.h"
 #include "suggest/policyimpl/dictionary/structure/v2/patricia_trie_policy.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_dict_buffers.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_dict_constants.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_patricia_trie_policy.h"
+#include "suggest/policyimpl/dictionary/utils/dict_file_writing_utils.h"
 #include "suggest/policyimpl/dictionary/utils/file_utils.h"
 #include "suggest/policyimpl/dictionary/utils/format_utils.h"
 #include "suggest/policyimpl/dictionary/utils/mmapped_buffer.h"
@@ -56,6 +58,11 @@ namespace latinime {
             Ver4DictBuffers::Ver4DictBuffersPtr dictBuffers =
                     Ver4DictBuffers::createVer4DictBuffers(&headerPolicy,
                             Ver4DictConstants::MAX_DICT_EXTENDED_REGION_SIZE);
+            if (!DynamicPtWritingUtils::writeEmptyDictionary(
+                    dictBuffers->getWritableTrieBuffer(), 0 /* rootPos */)) {
+                AKLOGE("Empty ver4 dictionary structure cannot be created on memory.");
+                return DictionaryStructureWithBufferPolicy::StructurePolicyPtr(nullptr);
+            }
             return DictionaryStructureWithBufferPolicy::StructurePolicyPtr(
                     new Ver4PatriciaTriePolicy(std::move(dictBuffers)));
         }
