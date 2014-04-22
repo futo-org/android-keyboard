@@ -118,10 +118,11 @@ public class ProximityInfo {
         final int[] proximityCharsArray = new int[mGridSize * MAX_PROXIMITY_CHARS_SIZE];
         Arrays.fill(proximityCharsArray, Constants.NOT_A_CODE);
         for (int i = 0; i < mGridSize; ++i) {
-            final int proximityCharsLength = gridNeighborKeys[i].size();
+            final List<Key> neighborKeys = gridNeighborKeys[i];
+            final int proximityCharsLength = neighborKeys.size();
             int infoIndex = i * MAX_PROXIMITY_CHARS_SIZE;
             for (int j = 0; j < proximityCharsLength; ++j) {
-                final Key neighborKey = gridNeighborKeys[i].get(j);
+                final Key neighborKey = neighborKeys.get(j);
                 // Excluding from proximityCharsArray
                 if (!needsProximityInfo(neighborKey)) {
                     continue;
@@ -359,11 +360,11 @@ y |---+---+---+---+-v-+-|-+---+---+---+---+---|          | thresholdBase and get
         for (int i = 0; i < gridSize; ++i) {
             final int indexStart = i * keyCount;
             final int indexEnd = indexStart + neighborCountPerCell[i];
-            final ArrayList<Key> neighbords = CollectionUtils.newArrayList(indexEnd - indexStart);
+            final ArrayList<Key> neighbors = CollectionUtils.newArrayList(indexEnd - indexStart);
             for (int index = indexStart; index < indexEnd; index++) {
-                neighbords.add(neighborsFlatBuffer[index]);
+                neighbors.add(neighborsFlatBuffer[index]);
             }
-            mGridNeighbors[i] = Collections.unmodifiableList(neighbords);
+            mGridNeighbors[i] = Collections.unmodifiableList(neighbors);
         }
     }
 
