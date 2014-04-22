@@ -51,13 +51,13 @@ public class ProximityInfo {
     private final int mKeyboardHeight;
     private final int mMostCommonKeyWidth;
     private final int mMostCommonKeyHeight;
-    private final List<Key> mKeys;
+    private final List<Key> mSortedKeys;
     private final List<Key>[] mGridNeighbors;
     private final String mLocaleStr;
 
     ProximityInfo(final String localeStr, final int gridWidth, final int gridHeight,
             final int minWidth, final int height, final int mostCommonKeyWidth,
-            final int mostCommonKeyHeight, final List<Key> keys,
+            final int mostCommonKeyHeight, final List<Key> sortedKeys,
             final TouchPositionCorrection touchPositionCorrection) {
         if (TextUtils.isEmpty(localeStr)) {
             mLocaleStr = "";
@@ -73,7 +73,7 @@ public class ProximityInfo {
         mKeyboardHeight = height;
         mMostCommonKeyHeight = mostCommonKeyHeight;
         mMostCommonKeyWidth = mostCommonKeyWidth;
-        mKeys = keys;
+        mSortedKeys = sortedKeys;
         mGridNeighbors = new List[mGridSize];
         if (minWidth == 0 || height == 0) {
             // No proximity required. Keyboard might be more keys keyboard.
@@ -146,8 +146,8 @@ public class ProximityInfo {
             }
         }
 
-        final List<Key> keys = mKeys;
-        final int keyCount = getProximityInfoKeysCount(keys);
+        final List<Key> sortedKeys = mSortedKeys;
+        final int keyCount = getProximityInfoKeysCount(sortedKeys);
         final int[] keyXCoordinates = new int[keyCount];
         final int[] keyYCoordinates = new int[keyCount];
         final int[] keyWidths = new int[keyCount];
@@ -157,8 +157,8 @@ public class ProximityInfo {
         final float[] sweetSpotCenterYs;
         final float[] sweetSpotRadii;
 
-        for (int infoIndex = 0, keyIndex = 0; keyIndex < keys.size(); keyIndex++) {
-            final Key key = keys.get(keyIndex);
+        for (int infoIndex = 0, keyIndex = 0; keyIndex < sortedKeys.size(); keyIndex++) {
+            final Key key = sortedKeys.get(keyIndex);
             // Excluding from key coordinate arrays
             if (!needsProximityInfo(key)) {
                 continue;
@@ -181,8 +181,8 @@ public class ProximityInfo {
             final int rows = touchPositionCorrection.getRows();
             final float defaultRadius = DEFAULT_TOUCH_POSITION_CORRECTION_RADIUS
                     * (float)Math.hypot(mMostCommonKeyWidth, mMostCommonKeyHeight);
-            for (int infoIndex = 0, keyIndex = 0; keyIndex < keys.size(); keyIndex++) {
-                final Key key = keys.get(keyIndex);
+            for (int infoIndex = 0, keyIndex = 0; keyIndex < sortedKeys.size(); keyIndex++) {
+                final Key key = sortedKeys.get(keyIndex);
                 // Excluding from touch position correction arrays
                 if (!needsProximityInfo(key)) {
                     continue;
@@ -244,7 +244,7 @@ public class ProximityInfo {
 
     private void computeNearestNeighbors() {
         final int defaultWidth = mMostCommonKeyWidth;
-        final int keyCount = mKeys.size();
+        final int keyCount = mSortedKeys.size();
         final int gridSize = mGridNeighbors.length;
         final int threshold = (int) (defaultWidth * SEARCH_DISTANCE);
         final int thresholdSquared = threshold * threshold;
@@ -263,7 +263,7 @@ public class ProximityInfo {
         final int[] neighborCountPerCell = new int[gridSize];
         final int halfCellWidth = mCellWidth / 2;
         final int halfCellHeight = mCellHeight / 2;
-        for (final Key key : mKeys) {
+        for (final Key key : mSortedKeys) {
             if (key.isSpacer()) continue;
 
 /* HOW WE PRE-SELECT THE CELLS (iterate over only the relevant cells, instead of all of them)

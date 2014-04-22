@@ -43,7 +43,7 @@ public final class MoreKeysDetector extends KeyDetector {
 
         Key nearestKey = null;
         int nearestDist = (y < 0) ? mSlideAllowanceSquareTop : mSlideAllowanceSquare;
-        for (final Key key : keyboard.getKeys()) {
+        for (final Key key : keyboard.getSortedKeys()) {
             final int dist = key.squaredDistanceToEdge(touchX, touchY);
             if (dist < nearestDist) {
                 nearestKey = key;

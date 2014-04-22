@@ -78,7 +78,7 @@ public class Keyboard {
     public final int mMaxMoreKeysKeyboardColumn;
 
     /** List of keys in this keyboard */
-    private final List<Key> mKeys;
+    private final List<Key> mSortedKeys;
     public final List<Key> mShiftKeys;
     public final List<Key> mAltCodeKeysWhileTyping;
     public final KeyboardIconsSet mIconsSet;
@@ -103,14 +103,16 @@ public class Keyboard {
         mTopPadding = params.mTopPadding;
         mVerticalGap = params.mVerticalGap;
 
-        mKeys = Collections.unmodifiableList(CollectionUtils.newArrayList(params.mKeys));
+        mSortedKeys = Collections.unmodifiableList(
+                CollectionUtils.newArrayList(params.mSortedKeys));
         mShiftKeys = Collections.unmodifiableList(params.mShiftKeys);
         mAltCodeKeysWhileTyping = Collections.unmodifiableList(params.mAltCodeKeysWhileTyping);
         mIconsSet = params.mIconsSet;
 
         mProximityInfo = new ProximityInfo(params.mId.mLocale.toString(),
                 params.GRID_WIDTH, params.GRID_HEIGHT, mOccupiedWidth, mOccupiedHeight,
-                mMostCommonKeyWidth, mMostCommonKeyHeight, mKeys, params.mTouchPositionCorrection);
+                mMostCommonKeyWidth, mMostCommonKeyHeight, mSortedKeys,
+                params.mTouchPositionCorrection);
         mProximityCharsCorrectionEnabled = params.mProximityCharsCorrectionEnabled;
     }
 
@@ -129,7 +131,7 @@ public class Keyboard {
         mTopPadding = keyboard.mTopPadding;
         mVerticalGap = keyboard.mVerticalGap;
 
-        mKeys = keyboard.mKeys;
+        mSortedKeys = keyboard.mSortedKeys;
         mShiftKeys = keyboard.mShiftKeys;
         mAltCodeKeysWhileTyping = keyboard.mAltCodeKeysWhileTyping;
         mIconsSet = keyboard.mIconsSet;
@@ -154,12 +156,18 @@ public class Keyboard {
         return mProximityInfo;
     }
 
-    public List<Key> getKeys() {
-        return mKeys;
+    /**
+     * Return the sorted list of keys of this keyboard.
+     * The keys are sorted from top-left to bottom-right order.
+     * The list may contain {@link Spacer} object as well.
+     * @return the sorted unmodifiable list of {@link Key}s of this keyboard.
+     */
+    public List<Key> getSortedKeys() {
+        return mSortedKeys;
     }
 
     public Key getKeyFromOutputText(final String outputText) {
-        for (final Key key : getKeys()) {
+        for (final Key key : getSortedKeys()) {
             if (outputText.equals(key.getOutputText())) {
                 return key;
             }
@@ -177,7 +185,7 @@ public class Keyboard {
                 return mKeyCache.valueAt(index);
             }
 
-            for (final Key key : getKeys()) {
+            for (final Key key : getSortedKeys()) {
                 if (key.getCode() == code) {
                     mKeyCache.put(code, key);
                     return key;
@@ -193,7 +201,7 @@ public class Keyboard {
             return true;
         }
 
-        for (final Key key : getKeys()) {
+        for (final Key key : getSortedKeys()) {
             if (key == aKey) {
                 mKeyCache.put(key.getCode(), key);
                 return true;

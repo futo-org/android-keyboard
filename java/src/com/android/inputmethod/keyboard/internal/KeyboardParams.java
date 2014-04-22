@@ -24,6 +24,8 @@ import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.SortedSet;
 import java.util.TreeSet;
 
 public class KeyboardParams {
@@ -58,7 +60,8 @@ public class KeyboardParams {
     public int GRID_WIDTH;
     public int GRID_HEIGHT;
 
-    public final TreeSet<Key> mKeys = CollectionUtils.newTreeSet(); // ordered set
+    // Keys are sorted from top-left to bottom-right order.
+    public final SortedSet<Key> mSortedKeys = new TreeSet<Key>(ROW_COLUMN_COMPARATOR);
     public final ArrayList<Key> mShiftKeys = CollectionUtils.newArrayList();
     public final ArrayList<Key> mAltCodeKeysWhileTyping = CollectionUtils.newArrayList();
     public final KeyboardIconsSet mIconsSet = new KeyboardIconsSet();
@@ -75,8 +78,20 @@ public class KeyboardParams {
     public final TouchPositionCorrection mTouchPositionCorrection =
             new TouchPositionCorrection();
 
+    // Comparator to sort {@link Key}s from top-left to bottom-right order.
+    private static final Comparator<Key> ROW_COLUMN_COMPARATOR = new Comparator<Key>() {
+        @Override
+        public int compare(final Key lhs, final Key rhs) {
+            if (lhs.getY() < rhs.getY()) return -1;
+            if (lhs.getY() > rhs.getY()) return 1;
+            if (lhs.getX() < rhs.getX()) return -1;
+            if (lhs.getX() > rhs.getX()) return 1;
+            return 0;
+        }
+    };
+
     protected void clearKeys() {
-        mKeys.clear();
+        mSortedKeys.clear();
         mShiftKeys.clear();
         clearHistogram();
     }
@@ -88,7 +103,7 @@ public class KeyboardParams {
             // Ignore zero width {@link Spacer}.
             return;
         }
-        mKeys.add(key);
+        mSortedKeys.add(key);
         if (isSpacer) {
             return;
         }

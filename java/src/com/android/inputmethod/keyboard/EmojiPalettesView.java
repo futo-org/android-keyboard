@@ -298,7 +298,7 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
 
         private int getCategoryPageCount(final int categoryId) {
             final Keyboard keyboard = mLayoutSet.getKeyboard(sCategoryElementId[categoryId]);
-            return (keyboard.getKeys().size() - 1) / mMaxPageKeyCount + 1;
+            return (keyboard.getSortedKeys().size() - 1) / mMaxPageKeyCount + 1;
         }
 
         // Returns a pair of the category id and the category page id from the view pager's page
@@ -347,7 +347,8 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
                 }
 
                 final Keyboard keyboard = mLayoutSet.getKeyboard(sCategoryElementId[categoryId]);
-                final Key[][] sortedKeys = sortKeysIntoPages(keyboard.getKeys(), mMaxPageKeyCount);
+                final Key[][] sortedKeys = sortKeysIntoPages(
+                        keyboard.getSortedKeys(), mMaxPageKeyCount);
                 for (int pageId = 0; pageId < sortedKeys.length; ++pageId) {
                     final DynamicGridKeyboard tempKeyboard = new DynamicGridKeyboard(mPrefs,
                             mLayoutSet.getKeyboard(KeyboardId.ELEMENT_EMOJI_RECENTS),
