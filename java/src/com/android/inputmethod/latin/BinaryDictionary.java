@@ -41,6 +41,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * Implements a static, compacted, binary dictionary of standard words.
@@ -123,8 +124,7 @@ public final class BinaryDictionary extends Dictionary {
     }
 
     /**
-     * Constructor for the binary dictionary. This is supposed to be called from the
-     * dictionary factory.
+     * Constructs binary dictionary using existing dictionary file.
      * @param filename the name of the file to read through native code.
      * @param offset the offset of the dictionary data within the file.
      * @param length the length of the binary data.
@@ -144,6 +144,38 @@ public final class BinaryDictionary extends Dictionary {
         mNativeSuggestOptions.setUseFullEditDistance(useFullEditDistance);
         loadDictionary(filename, offset, length, isUpdatable);
     }
+
+    /**
+     * Constructs binary dictionary on memory.
+     * @param filename the name of the file used to flush.
+     * @param useFullEditDistance whether to use the full edit distance in suggestions
+     * @param dictType the dictionary type, as a human-readable string
+     * @param formatVersion the format version of the dictionary
+     * @param attributeMap the attributes of the dictionary
+     */
+    @UsedForTesting
+    public BinaryDictionary(final String filename, final boolean useFullEditDistance,
+            final Locale locale, final String dictType, final long formatVersion,
+            final Map<String, String> attributeMap) {
+        super(dictType);
+        mLocale = locale;
+        mDictSize = 0;
+        mDictFilePath = filename;
+        // On memory dictionary is always updatable.
+        mIsUpdatable = true;
+        mHasUpdated = false;
+        mNativeSuggestOptions.setUseFullEditDistance(useFullEditDistance);
+        final String[] keyArray = new String[attributeMap.size()];
+        final String[] valueArray = new String[attributeMap.size()];
+        int index = 0;
+        for (final String key : attributeMap.keySet()) {
+            keyArray[index] = key;
+            valueArray[index] = attributeMap.get(key);
+            index++;
+        }
+        mNativeDict = openOnMemoryNative(formatVersion, locale.toString(), keyArray, valueArray);
+    }
+
 
     static {
         JniUtils.loadNativeLibrary();

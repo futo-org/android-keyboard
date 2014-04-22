@@ -97,6 +97,37 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         binaryDictionary.close();
     }
 
+    public void testConstructingDictionaryOnMemory() {
+        testConstructingDictionaryOnMemory(FormatSpec.VERSION4);
+    }
+
+    private void testConstructingDictionaryOnMemory(final int formatVersion) {
+        File dictFile = null;
+        try {
+            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary", formatVersion);
+        } catch (IOException e) {
+            fail("IOException while writing an initial dictionary : " + e);
+        }
+        FileUtils.deleteRecursively(dictFile);
+        assertFalse(dictFile.exists());
+        BinaryDictionary binaryDictionary = new BinaryDictionary(dictFile.getAbsolutePath(),
+                true /* useFullEditDistance */, Locale.getDefault(), TEST_LOCALE, formatVersion,
+                new HashMap<String, String>());
+        assertTrue(binaryDictionary.isValidDictionary());
+        assertEquals(formatVersion, binaryDictionary.getFormatVersion());
+        final int probability = 100;
+        addUnigramWord(binaryDictionary, "word", probability);
+        assertEquals(probability, binaryDictionary.getFrequency("word"));
+        assertFalse(dictFile.exists());
+        binaryDictionary.flush();
+        assertTrue(dictFile.exists());
+        assertTrue(binaryDictionary.isValidDictionary());
+        assertEquals(formatVersion, binaryDictionary.getFormatVersion());
+        assertEquals(probability, binaryDictionary.getFrequency("word"));
+        binaryDictionary.close();
+        dictFile.delete();
+    }
+
     public void testAddTooLongWord() {
         testAddTooLongWord(FormatSpec.VERSION4);
     }

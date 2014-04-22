@@ -99,6 +99,27 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
               mMaxBigramCount(HeaderReadWriteUtils::readIntAttributeValue(
                       &mAttributeMap, MAX_BIGRAM_COUNT_KEY, DEFAULT_MAX_BIGRAM_COUNT)) {}
 
+    // Copy header information
+    HeaderPolicy(const HeaderPolicy *const headerPolicy)
+            : mDictFormatVersion(headerPolicy->mDictFormatVersion),
+              mDictionaryFlags(headerPolicy->mDictionaryFlags), mSize(headerPolicy->mSize),
+              mAttributeMap(headerPolicy->mAttributeMap), mLocale(headerPolicy->mLocale),
+              mMultiWordCostMultiplier(headerPolicy->mMultiWordCostMultiplier),
+              mRequiresGermanUmlautProcessing(headerPolicy->mRequiresGermanUmlautProcessing),
+              mIsDecayingDict(headerPolicy->mIsDecayingDict),
+              mDate(headerPolicy->mDate), mLastDecayedTime(headerPolicy->mLastDecayedTime),
+              mUnigramCount(headerPolicy->mUnigramCount), mBigramCount(headerPolicy->mBigramCount),
+              mExtendedRegionSize(headerPolicy->mExtendedRegionSize),
+              mHasHistoricalInfoOfWords(headerPolicy->mHasHistoricalInfoOfWords),
+              mForgettingCurveOccurrencesToLevelUp(
+                      headerPolicy->mForgettingCurveOccurrencesToLevelUp),
+              mForgettingCurveProbabilityValuesTableId(
+                      headerPolicy->mForgettingCurveProbabilityValuesTableId),
+              mForgettingCurveDurationToLevelDown(
+                      headerPolicy->mForgettingCurveDurationToLevelDown),
+              mMaxUnigramCount(headerPolicy->mMaxUnigramCount),
+              mMaxBigramCount(headerPolicy->mMaxBigramCount) {}
+
     // Temporary dummy header.
     HeaderPolicy()
             : mDictFormatVersion(FormatUtils::UNKNOWN_VERSION), mDictionaryFlags(0), mSize(0),
