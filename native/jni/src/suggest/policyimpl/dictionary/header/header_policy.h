@@ -69,7 +69,7 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
 
     // Constructs header information using an attribute map.
     HeaderPolicy(const FormatUtils::FORMAT_VERSION dictFormatVersion,
-            const std::vector<int> locale,
+            const std::vector<int> &locale,
             const DictionaryHeaderStructurePolicy::AttributeMap *const attributeMap)
             : mDictFormatVersion(dictFormatVersion),
               mDictionaryFlags(HeaderReadWriteUtils::createAndGetDictionaryFlagsUsingAttributeMap(

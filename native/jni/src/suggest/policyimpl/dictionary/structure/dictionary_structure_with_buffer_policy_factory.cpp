@@ -30,24 +30,45 @@
 namespace latinime {
 
 /* static */ DictionaryStructureWithBufferPolicy::StructurePolicyPtr
-        DictionaryStructureWithBufferPolicyFactory
-                ::newDictionaryStructureWithBufferPolicy(const char *const path,
-                        const int bufOffset, const int size, const bool isUpdatable) {
+        DictionaryStructureWithBufferPolicyFactory::newPolicyForExistingDictFile(
+                const char *const path, const int bufOffset, const int size,
+                const bool isUpdatable) {
     if (FileUtils::existsDir(path)) {
         // Given path represents a directory.
-        return newPolicyforDirectoryDict(path, isUpdatable);
+        return newPolicyForDirectoryDict(path, isUpdatable);
     } else {
         if (isUpdatable) {
             AKLOGE("One file dictionaries don't support updating. path: %s", path);
             ASSERT(false);
             return DictionaryStructureWithBufferPolicy::StructurePolicyPtr(nullptr);
         }
-        return newPolicyforFileDict(path, bufOffset, size);
+        return newPolicyForFileDict(path, bufOffset, size);
     }
 }
 
 /* static */ DictionaryStructureWithBufferPolicy::StructurePolicyPtr
-        DictionaryStructureWithBufferPolicyFactory::newPolicyforDirectoryDict(
+        DictionaryStructureWithBufferPolicyFactory:: newPolicyForOnMemoryDict(
+                const int formatVersion, const std::vector<int> &locale,
+                const DictionaryHeaderStructurePolicy::AttributeMap *const attributeMap) {
+    switch (formatVersion) {
+        case FormatUtils::VERSION_4: {
+            HeaderPolicy headerPolicy(FormatUtils::VERSION_4, locale, attributeMap);
+            Ver4DictBuffers::Ver4DictBuffersPtr dictBuffers =
+                    Ver4DictBuffers::createVer4DictBuffers(&headerPolicy,
+                            Ver4DictConstants::MAX_DICT_EXTENDED_REGION_SIZE);
+            return DictionaryStructureWithBufferPolicy::StructurePolicyPtr(
+                    new Ver4PatriciaTriePolicy(std::move(dictBuffers)));
+        }
+        default:
+            AKLOGE("DICT: dictionary format %d is not supported for on memory dictionary",
+                    formatVersion);
+            break;
+    }
+    return DictionaryStructureWithBufferPolicy::StructurePolicyPtr(nullptr);
+}
+
+/* static */ DictionaryStructureWithBufferPolicy::StructurePolicyPtr
+        DictionaryStructureWithBufferPolicyFactory::newPolicyForDirectoryDict(
                 const char *const path, const bool isUpdatable) {
     const int headerFilePathBufSize = PATH_MAX + 1 /* terminator */;
     char headerFilePath[headerFilePathBufSize];
@@ -93,7 +114,7 @@ namespace latinime {
 }
 
 /* static */ DictionaryStructureWithBufferPolicy::StructurePolicyPtr
-        DictionaryStructureWithBufferPolicyFactory::newPolicyforFileDict(
+        DictionaryStructureWithBufferPolicyFactory::newPolicyForFileDict(
                 const char *const path, const int bufOffset, const int size) {
     // Allocated buffer in MmapedBuffer::openBuffer() will be freed in the destructor of
     // MmappedBufferPtr if the instance has the responsibility.
