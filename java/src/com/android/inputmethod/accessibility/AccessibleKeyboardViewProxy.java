@@ -34,6 +34,7 @@ import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardId;
 import com.android.inputmethod.keyboard.MainKeyboardView;
 import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 
 public final class AccessibleKeyboardViewProxy extends AccessibilityDelegateCompat {
     private static final AccessibleKeyboardViewProxy sInstance = new AccessibleKeyboardViewProxy();
@@ -66,8 +67,8 @@ public final class AccessibleKeyboardViewProxy extends AccessibilityDelegateComp
     private int mEdgeSlop;
 
     /** The most recently set keyboard mode. */
-    private int mLastKeyboardMode;
-    private static final int NOT_A_KEYBOARD_MODE = -1;
+    private int mLastKeyboardMode = KEYBOARD_IS_HIDDEN;
+    private static final int KEYBOARD_IS_HIDDEN = -1;
 
     public static void init(final InputMethodService inputMethod) {
         sInstance.initInternal(inputMethod);
@@ -123,20 +124,27 @@ public final class AccessibleKeyboardViewProxy extends AccessibilityDelegateComp
         if (keyboard == null) {
             return;
         }
-        mKeyboard = keyboard;
         if (mAccessibilityNodeProvider != null) {
             mAccessibilityNodeProvider.setKeyboard(keyboard);
         }
-        final int keyboardMode = keyboard.mId.mMode;
+        final Keyboard lastKeyboard = mKeyboard;
+        final int lastKeyboardMode = mLastKeyboardMode;
+        mKeyboard = keyboard;
+        mLastKeyboardMode = keyboard.mId.mMode;
 
         // Since this method is called even when accessibility is off, make sure
-        // to check the state before announcing anything. Also, don't announce
-        // changes within the same mode.
-        if (AccessibilityUtils.getInstance().isAccessibilityEnabled()
-                && (mLastKeyboardMode != keyboardMode)) {
-            announceKeyboardMode(keyboardMode);
+        // to check the state before announcing anything.
+        if (!AccessibilityUtils.getInstance().isAccessibilityEnabled()) {
+            return;
         }
-        mLastKeyboardMode = keyboardMode;
+        // Announce the language name only when the language is changed.
+        if (lastKeyboard == null || !lastKeyboard.mId.mSubtype.equals(keyboard.mId.mSubtype)) {
+            announceKeyboardLanguage(keyboard);
+        }
+        // Announce the mode only when the mode is changed.
+        if (lastKeyboardMode != keyboard.mId.mMode) {
+            announceKeyboardMode(keyboard);
+        }
     }
 
     /**
@@ -147,23 +155,35 @@ public final class AccessibleKeyboardViewProxy extends AccessibilityDelegateComp
             return;
         }
         announceKeyboardHidden();
-        mLastKeyboardMode = NOT_A_KEYBOARD_MODE;
+        mLastKeyboardMode = KEYBOARD_IS_HIDDEN;
     }
 
     /**
-     * Announces which type of keyboard is being displayed. If the keyboard type
-     * is unknown, no announcement is made.
+     * Announces which language of keyboard is being displayed.
      *
-     * @param mode The new keyboard mode.
+     * @param keyboard The new keyboard.
      */
-    private void announceKeyboardMode(final int mode) {
-        final int resId = KEYBOARD_MODE_RES_IDS.get(mode);
-        if (resId == 0) {
+    private void announceKeyboardLanguage(final Keyboard keyboard) {
+        final String languageText = SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(
+                keyboard.mId.mSubtype);
+        sendWindowStateChanged(languageText);
+    }
+
+    /**
+     * Announces which type of keyboard is being displayed.
+     * If the keyboard type is unknown, no announcement is made.
+     *
+     * @param keyboard The new keyboard.
+     */
+    private void announceKeyboardMode(final Keyboard keyboard) {
+        final int mode = keyboard.mId.mMode;
+        final Context context = mView.getContext();
+        final int modeTextResId = KEYBOARD_MODE_RES_IDS.get(mode);
+        if (modeTextResId == 0) {
             return;
         }
-        final Context context = mView.getContext();
-        final String keyboardMode = context.getString(resId);
-        final String text = context.getString(R.string.announce_keyboard_mode, keyboardMode);
+        final String modeText = context.getString(modeTextResId);
+        final String text = context.getString(R.string.announce_keyboard_mode, modeText);
         sendWindowStateChanged(text);
     }
 
