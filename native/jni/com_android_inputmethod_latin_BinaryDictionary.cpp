@@ -51,7 +51,7 @@ static jlong latinime_BinaryDictionary_open(JNIEnv *env, jclass clazz, jstring s
     env->GetStringUTFRegion(sourceDir, 0, env->GetStringLength(sourceDir), sourceDirChars);
     sourceDirChars[sourceDirUtf8Length] = '\0';
     DictionaryStructureWithBufferPolicy::StructurePolicyPtr dictionaryStructureWithBufferPolicy(
-            DictionaryStructureWithBufferPolicyFactory::newDictionaryStructureWithBufferPolicy(
+            DictionaryStructureWithBufferPolicyFactory::newPolicyForExistingDictFile(
                     sourceDirChars, static_cast<int>(dictOffset), static_cast<int>(dictSize),
                     isUpdatable == JNI_TRUE));
     if (!dictionaryStructureWithBufferPolicy) {
@@ -68,8 +68,29 @@ static jlong latinime_BinaryDictionary_open(JNIEnv *env, jclass clazz, jstring s
 static jlong latinime_BinaryDictionary_createOnMemory(JNIEnv *env, jclass clazz,
         jlong formatVersion, jstring locale, jobjectArray attributeKeyStringArray,
         jobjectArray attributeValueStringArray) {
-    // TODO: Implement.
-    return 0;
+    const jsize localeUtf8Length = env->GetStringUTFLength(locale);
+    char localeChars[localeUtf8Length + 1];
+    env->GetStringUTFRegion(locale, 0, env->GetStringLength(locale), localeChars);
+    localeChars[localeUtf8Length] = '\0';
+    std::vector<int> localeCodePoints;
+    HeaderReadWriteUtils::insertCharactersIntoVector(localeChars, &localeCodePoints);
+    const int keyCount = env->GetArrayLength(attributeKeyStringArray);
+    const int valueCount = env->GetArrayLength(attributeValueStringArray);
+    if (keyCount != valueCount) {
+        return false;
+    }
+    DictionaryHeaderStructurePolicy::AttributeMap attributeMap =
+            JniDataUtils::constructAttributeMap(env, attributeKeyStringArray,
+                    attributeValueStringArray);
+    DictionaryStructureWithBufferPolicy::StructurePolicyPtr dictionaryStructureWithBufferPolicy =
+            DictionaryStructureWithBufferPolicyFactory::newPolicyForOnMemoryDict(
+                    formatVersion, localeCodePoints, &attributeMap);
+    if (!dictionaryStructureWithBufferPolicy) {
+        return 0;
+    }
+    Dictionary *const dictionary =
+            new Dictionary(env, std::move(dictionaryStructureWithBufferPolicy));
+    return reinterpret_cast<jlong>(dictionary);
 }
 
 static void latinime_BinaryDictionary_flush(JNIEnv *env, jclass clazz, jlong dict,

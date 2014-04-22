@@ -36,9 +36,14 @@ static jboolean latinime_BinaryDictionaryUtils_createEmptyDictFile(JNIEnv *env, 
     char filePathChars[filePathUtf8Length + 1];
     env->GetStringUTFRegion(filePath, 0, env->GetStringLength(filePath), filePathChars);
     filePathChars[filePathUtf8Length] = '\0';
-    jsize localeLength = env->GetStringLength(locale);
-    jchar localeCodePoints[localeLength];
-    env->GetStringRegion(locale, 0, localeLength, localeCodePoints);
+
+    const jsize localeUtf8Length = env->GetStringUTFLength(locale);
+    char localeChars[localeUtf8Length + 1];
+    env->GetStringUTFRegion(locale, 0, env->GetStringLength(locale), localeChars);
+    localeChars[localeUtf8Length] = '\0';
+    std::vector<int> localeCodePoints;
+    HeaderReadWriteUtils::insertCharactersIntoVector(localeChars, &localeCodePoints);
+
     const int keyCount = env->GetArrayLength(attributeKeyStringArray);
     const int valueCount = env->GetArrayLength(attributeValueStringArray);
     if (keyCount != valueCount) {
@@ -48,7 +53,7 @@ static jboolean latinime_BinaryDictionaryUtils_createEmptyDictFile(JNIEnv *env, 
             JniDataUtils::constructAttributeMap(env, attributeKeyStringArray,
                     attributeValueStringArray);
     return DictFileWritingUtils::createEmptyDictFile(filePathChars, static_cast<int>(dictVersion),
-            CharUtils::convertShortArrayToIntVector(localeCodePoints, localeLength), &attributeMap);
+            localeCodePoints, &attributeMap);
 }
 
 static jfloat latinime_BinaryDictionaryUtils_calcNormalizedScore(JNIEnv *env, jclass clazz,

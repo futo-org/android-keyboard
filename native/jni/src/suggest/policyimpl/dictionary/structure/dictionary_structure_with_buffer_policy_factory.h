@@ -17,7 +17,10 @@
 #ifndef LATINIME_DICTIONARY_STRUCTURE_WITH_BUFFER_POLICY_FACTORY_H
 #define LATINIME_DICTIONARY_STRUCTURE_WITH_BUFFER_POLICY_FACTORY_H
 
+#include <vector>
+
 #include "defines.h"
+#include "suggest/core/policy/dictionary_header_structure_policy.h"
 #include "suggest/core/policy/dictionary_structure_with_buffer_policy.h"
 
 namespace latinime {
@@ -25,17 +28,22 @@ namespace latinime {
 class DictionaryStructureWithBufferPolicyFactory {
  public:
     static DictionaryStructureWithBufferPolicy::StructurePolicyPtr
-            newDictionaryStructureWithBufferPolicy(const char *const path, const int bufOffset,
+            newPolicyForExistingDictFile(const char *const path, const int bufOffset,
                     const int size, const bool isUpdatable);
+
+    static DictionaryStructureWithBufferPolicy::StructurePolicyPtr
+            newPolicyForOnMemoryDict(const int formatVersion,
+                    const std::vector<int> &locale,
+                    const DictionaryHeaderStructurePolicy::AttributeMap *const attributeMap);
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(DictionaryStructureWithBufferPolicyFactory);
 
     static DictionaryStructureWithBufferPolicy::StructurePolicyPtr
-            newPolicyforDirectoryDict(const char *const path, const bool isUpdatable);
+            newPolicyForDirectoryDict(const char *const path, const bool isUpdatable);
 
     static DictionaryStructureWithBufferPolicy::StructurePolicyPtr
-            newPolicyforFileDict(const char *const path, const int bufOffset, const int size);
+            newPolicyForFileDict(const char *const path, const int bufOffset, const int size);
 
     static void getHeaderFilePathInDictDir(const char *const dirPath,
             const int outHeaderFileBufSize, char *const outHeaderFilePath);
