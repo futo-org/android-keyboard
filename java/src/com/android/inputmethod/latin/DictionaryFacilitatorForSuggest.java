@@ -69,8 +69,9 @@ public class DictionaryFacilitatorForSuggest {
         public final Locale mLocale;
         public final ConcurrentHashMap<String, Dictionary> mDictMap =
                 CollectionUtils.newConcurrentHashMap();
-        // Main dictionary will be asynchronously loaded.
-        public Dictionary mMainDictionary;
+        public final ConcurrentHashMap<String, ExpandableBinaryDictionary> mSubDictMap =
+                CollectionUtils.newConcurrentHashMap();
+        // TODO: Remove sub dictionary members and use mSubDictMap.
         public final ContactsBinaryDictionary mContactsDictionary;
         public final UserBinaryDictionary mUserDictionary;
         public final UserHistoryDictionary mUserHistoryDictionary;
@@ -78,7 +79,6 @@ public class DictionaryFacilitatorForSuggest {
 
         public Dictionaries() {
             mLocale = null;
-            mMainDictionary = null;
             mContactsDictionary = null;
             mUserDictionary = null;
             mUserHistoryDictionary = null;
@@ -90,57 +90,56 @@ public class DictionaryFacilitatorForSuggest {
             final UserHistoryDictionary userHistoryDict,
             final PersonalizationDictionary personalizationDict) {
             mLocale = locale;
+            // Main dictionary can be asynchronously loaded.
             setMainDict(mainDict);
             mContactsDictionary = contactsDict;
-            if (mContactsDictionary != null) {
-                mDictMap.put(Dictionary.TYPE_CONTACTS, mContactsDictionary);
-            }
+            setSubDict(Dictionary.TYPE_CONTACTS, mContactsDictionary);
             mUserDictionary = userDict;
-            if (mUserDictionary != null) {
-                mDictMap.put(Dictionary.TYPE_USER, mUserDictionary);
-            }
+            setSubDict(Dictionary.TYPE_USER, mUserDictionary);
             mUserHistoryDictionary = userHistoryDict;
-            if (mUserHistoryDictionary != null) {
-                mDictMap.put(Dictionary.TYPE_USER_HISTORY, mUserHistoryDictionary);
-            }
+            setSubDict(Dictionary.TYPE_USER_HISTORY, mUserHistoryDictionary);
             mPersonalizationDictionary = personalizationDict;
-            if (mPersonalizationDictionary != null) {
-                mDictMap.put(Dictionary.TYPE_PERSONALIZATION, mPersonalizationDictionary);
+            setSubDict(Dictionary.TYPE_PERSONALIZATION, mPersonalizationDictionary);
+        }
+
+        private void setSubDict(final String dictType, final ExpandableBinaryDictionary dict) {
+            if (dict != null) {
+                mDictMap.put(dictType, dict);
+                mSubDictMap.put(dictType, dict);
             }
         }
 
         public void setMainDict(final Dictionary mainDict) {
-            mMainDictionary = mainDict;
             // Close old dictionary if exists. Main dictionary can be assigned multiple times.
             final Dictionary oldDict;
-            if (mMainDictionary != null) {
-                oldDict = mDictMap.put(Dictionary.TYPE_MAIN, mMainDictionary);
+            if (mainDict != null) {
+                oldDict = mDictMap.put(Dictionary.TYPE_MAIN, mainDict);
             } else {
                 oldDict = mDictMap.remove(Dictionary.TYPE_MAIN);
             }
-            if (oldDict != null && mMainDictionary != oldDict) {
+            if (oldDict != null && mainDict != oldDict) {
                 oldDict.close();
             }
         }
 
-        public boolean hasMainDict() {
-            return mMainDictionary != null;
+        public Dictionary getMainDict() {
+            return mDictMap.get(Dictionary.TYPE_MAIN);
         }
 
-        public boolean hasContactsDict() {
-            return mContactsDictionary != null;
+        public ExpandableBinaryDictionary getSubDict(final String dictType) {
+            return mSubDictMap.get(dictType);
         }
 
-        public boolean hasUserDict() {
-            return mUserDictionary != null;
+        public boolean hasDict(final String dictType) {
+            return mDictMap.contains(dictType);
         }
 
-        public boolean hasUserHistoryDict() {
-            return mUserHistoryDictionary != null;
-        }
-
-        public boolean hasPersonalizationDict() {
-            return mPersonalizationDictionary != null;
+        public void closeDict(final String dictType) {
+            final Dictionary dict = mDictMap.remove(dictType);
+            mSubDictMap.remove(dictType);
+            if (dict != null) {
+                dict.close();
+            }
         }
     }
 
@@ -172,12 +171,12 @@ public class DictionaryFacilitatorForSuggest {
             // The main dictionary will be asynchronously loaded.
             newMainDict = null;
         } else {
-            newMainDict = mDictionaries.mMainDictionary;
+            newMainDict = mDictionaries.getMainDict();
         }
 
         // Open or move contacts dictionary.
         final ContactsBinaryDictionary newContactsDict;
-        if (!closeContactsDictionary && mDictionaries.hasContactsDict()) {
+        if (!closeContactsDictionary && mDictionaries.hasDict(Dictionary.TYPE_CONTACTS)) {
             newContactsDict = mDictionaries.mContactsDictionary;
         } else if (useContactsDict) {
             newContactsDict = new ContactsBinaryDictionary(context, newLocale);
@@ -187,7 +186,7 @@ public class DictionaryFacilitatorForSuggest {
 
         // Open or move user dictionary.
         final UserBinaryDictionary newUserDictionary;
-        if (!closeUserDictionary && mDictionaries.hasUserDict()) {
+        if (!closeUserDictionary && mDictionaries.hasDict(Dictionary.TYPE_USER)) {
             newUserDictionary = mDictionaries.mUserDictionary;
         } else {
             newUserDictionary = new UserBinaryDictionary(context, newLocale);
@@ -195,7 +194,7 @@ public class DictionaryFacilitatorForSuggest {
 
         // Open or move user history dictionary.
         final UserHistoryDictionary newUserHistoryDict;
-        if (!closeUserHistoryDictionary && mDictionaries.hasUserHistoryDict()) {
+        if (!closeUserHistoryDictionary && mDictionaries.hasDict(Dictionary.TYPE_USER_HISTORY)) {
             newUserHistoryDict = mDictionaries.mUserHistoryDictionary;
         } else if (usePersonalizedDicts) {
             newUserHistoryDict = PersonalizationHelper.getUserHistoryDictionary(context, newLocale);
@@ -205,7 +204,8 @@ public class DictionaryFacilitatorForSuggest {
 
         // Open or move personalization dictionary.
         final PersonalizationDictionary newPersonalizationDict;
-        if (!closePersonalizationDictionary && mDictionaries.hasPersonalizationDict()) {
+        if (!closePersonalizationDictionary
+                && mDictionaries.hasDict(Dictionary.TYPE_PERSONALIZATION)) {
             newPersonalizationDict = mDictionaries.mPersonalizationDictionary;
         } else if (usePersonalizedDicts) {
             newPersonalizationDict =
@@ -230,22 +230,23 @@ public class DictionaryFacilitatorForSuggest {
         }
 
         // Clean up old dictionaries.
+        if (reloadMainDictionary) {
+            oldDictionaries.closeDict(Dictionary.TYPE_MAIN);
+        }
+        if (closeContactsDictionary) {
+            oldDictionaries.closeDict(Dictionary.TYPE_CONTACTS);
+        }
+        if (closeUserDictionary) {
+            oldDictionaries.closeDict(Dictionary.TYPE_USER);
+        }
+        if (closeUserHistoryDictionary) {
+            oldDictionaries.closeDict(Dictionary.TYPE_USER_HISTORY);
+        }
+        if (closePersonalizationDictionary) {
+            oldDictionaries.closeDict(Dictionary.TYPE_PERSONALIZATION);
+        }
         oldDictionaries.mDictMap.clear();
-        if (reloadMainDictionary && oldDictionaries.hasMainDict()) {
-            oldDictionaries.mMainDictionary.close();
-        }
-        if (closeContactsDictionary && oldDictionaries.hasContactsDict()) {
-            oldDictionaries.mContactsDictionary.close();
-        }
-        if (closeUserDictionary && oldDictionaries.hasUserDict()) {
-            oldDictionaries.mUserDictionary.close();
-        }
-        if (closeUserHistoryDictionary && oldDictionaries.hasUserHistoryDict()) {
-            oldDictionaries.mUserHistoryDictionary.close();
-        }
-        if (closePersonalizationDictionary && oldDictionaries.hasPersonalizationDict()) {
-            oldDictionaries.mPersonalizationDictionary.close();
-        }
+        oldDictionaries.mSubDictMap.clear();
     }
 
     private void asyncReloadMainDictionary(final Context context, final Locale locale,
@@ -332,32 +333,20 @@ public class DictionaryFacilitatorForSuggest {
             dictionaries = mDictionaries;
             mDictionaries = new Dictionaries();
         }
-        if (dictionaries.hasMainDict()) {
-            dictionaries.mMainDictionary.close();
-        }
-        if (dictionaries.hasContactsDict()) {
-            dictionaries.mContactsDictionary.close();
-        }
-        if (dictionaries.hasUserDict()) {
-            dictionaries.mUserDictionary.close();
-        }
-        if (dictionaries.hasUserHistoryDict()) {
-            dictionaries.mUserHistoryDictionary.close();
-        }
-        if (dictionaries.hasPersonalizationDict()) {
-            dictionaries.mPersonalizationDictionary.close();
+        for (final Dictionary dict : dictionaries.mDictMap.values()) {
+            dict.close();
         }
     }
 
     // The main dictionary could have been loaded asynchronously.  Don't cache the return value
     // of this method.
     public boolean hasInitializedMainDictionary() {
-        final Dictionaries dictionaries = mDictionaries;
-        return dictionaries.hasMainDict() && dictionaries.mMainDictionary.isInitialized();
+        final Dictionary mainDict = mDictionaries.getMainDict();
+        return mainDict != null &&  mainDict.isInitialized();
     }
 
     public boolean hasPersonalizationDictionary() {
-        return mDictionaries.hasPersonalizationDict();
+        return mDictionaries.hasDict(Dictionary.TYPE_PERSONALIZATION);
     }
 
     public void flushPersonalizationDictionary() {
@@ -377,18 +366,9 @@ public class DictionaryFacilitatorForSuggest {
     public void waitForLoadingDictionariesForTesting(final long timeout, final TimeUnit unit)
             throws InterruptedException {
         waitForLoadingMainDictionary(timeout, unit);
-        final Dictionaries dictionaries = mDictionaries;
-        if (dictionaries.hasContactsDict()) {
-            dictionaries.mContactsDictionary.waitAllTasksForTests();
-        }
-        if (dictionaries.hasUserDict()) {
-            dictionaries.mUserDictionary.waitAllTasksForTests();
-        }
-        if (dictionaries.hasUserHistoryDict()) {
-            dictionaries.mUserHistoryDictionary.waitAllTasksForTests();
-        }
-        if (dictionaries.hasPersonalizationDict()) {
-            dictionaries.mPersonalizationDictionary.waitAllTasksForTests();
+        final Map<String, ExpandableBinaryDictionary> dictMap = mDictionaries.mSubDictMap;
+        for (final ExpandableBinaryDictionary dict : dictMap.values()) {
+            dict.waitAllTasksForTests();
         }
     }
 
@@ -411,7 +391,7 @@ public class DictionaryFacilitatorForSuggest {
     public void addToUserHistory(final String suggestion, final boolean wasAutoCapitalized,
             final String previousWord, final int timeStampInSeconds) {
         final Dictionaries dictionaries = mDictionaries;
-        if (!dictionaries.hasUserHistoryDict()) {
+        if (!dictionaries.hasDict(Dictionary.TYPE_USER_HISTORY)) {
             return;
         }
         final int maxFreq = getMaxFrequency(suggestion);
@@ -439,8 +419,8 @@ public class DictionaryFacilitatorForSuggest {
             // History dictionary in order to avoid suggesting them until the dictionary
             // consolidation is done.
             // TODO: Remove this hack when ready.
-            final int lowerCaseFreqInMainDict = dictionaries.hasMainDict() ?
-                    dictionaries.mMainDictionary.getFrequency(suggestionLowerCase) :
+            final int lowerCaseFreqInMainDict = dictionaries.hasDict(Dictionary.TYPE_MAIN) ?
+                    dictionaries.getMainDict().getFrequency(suggestionLowerCase) :
                             Dictionary.NOT_A_PROBABILITY;
             if (maxFreq < lowerCaseFreqInMainDict
                     && lowerCaseFreqInMainDict >= CAPITALIZED_FORM_MAX_PROBABILITY_FOR_INSERT) {
@@ -492,10 +472,10 @@ public class DictionaryFacilitatorForSuggest {
 
     public boolean isValidMainDictWord(final String word) {
         final Dictionaries dictionaries = mDictionaries;
-        if (TextUtils.isEmpty(word) || !dictionaries.hasMainDict()) {
+        if (TextUtils.isEmpty(word) || !dictionaries.hasDict(Dictionary.TYPE_MAIN)) {
             return false;
         }
-        return dictionaries.mMainDictionary.isValidWord(word);
+        return dictionaries.getMainDict().isValidWord(word);
     }
 
     public boolean isValidWord(final String word, final boolean ignoreCase) {
@@ -538,7 +518,8 @@ public class DictionaryFacilitatorForSuggest {
 
 
     public void clearUserHistoryDictionary() {
-        final UserHistoryDictionary userHistoryDict = mDictionaries.mUserHistoryDictionary;
+        final ExpandableBinaryDictionary userHistoryDict =
+                mDictionaries.getSubDict(Dictionary.TYPE_USER_HISTORY);
         if (userHistoryDict == null) {
             return;
         }
@@ -548,8 +529,8 @@ public class DictionaryFacilitatorForSuggest {
     // This method gets called only when the IME receives a notification to remove the
     // personalization dictionary.
     public void clearPersonalizationDictionary() {
-        final PersonalizationDictionary personalizationDict =
-                mDictionaries.mPersonalizationDictionary;
+        final ExpandableBinaryDictionary personalizationDict =
+                mDictionaries.getSubDict(Dictionary.TYPE_PERSONALIZATION);
         if (personalizationDict == null) {
             return;
         }
@@ -571,18 +552,7 @@ public class DictionaryFacilitatorForSuggest {
     }
 
     public void dumpDictionaryForDebug(final String dictName) {
-        final ExpandableBinaryDictionary dictToDump;
-        if (dictName.equals(Dictionary.TYPE_CONTACTS)) {
-            dictToDump = mDictionaries.mContactsDictionary;
-        } else if (dictName.equals(Dictionary.TYPE_USER)) {
-            dictToDump = mDictionaries.mUserDictionary;
-        } else if (dictName.equals(Dictionary.TYPE_USER_HISTORY)) {
-            dictToDump = mDictionaries.mUserHistoryDictionary;
-        } else if (dictName.equals(Dictionary.TYPE_PERSONALIZATION)) {
-            dictToDump = mDictionaries.mPersonalizationDictionary;
-        } else {
-            dictToDump = null;
-        }
+        final ExpandableBinaryDictionary dictToDump = mDictionaries.getSubDict(dictName);
         if (dictToDump == null) {
             Log.e(TAG, "Cannot dump " + dictName + ". "
                     + "The dictionary is not being used for suggestion or cannot be dumped.");
