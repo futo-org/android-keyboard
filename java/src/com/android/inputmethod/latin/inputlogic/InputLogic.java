@@ -451,8 +451,10 @@ public final class InputLogic {
                 break;
             case Constants.CODE_SHIFT_ENTER:
                 // TODO: remove this object
+                final Event tmpEvent = Event.createSoftwareKeypressEvent(Constants.CODE_ENTER,
+                        event.mKeyCode, event.mX, event.mY, event.isKeyRepeat());
                 final InputTransaction tmpTransaction = new InputTransaction(
-                        inputTransaction.mSettingsValues, inputTransaction.mEvent,
+                        inputTransaction.mSettingsValues, tmpEvent,
                         inputTransaction.mTimestamp, inputTransaction.mSpaceState,
                         inputTransaction.mShiftState);
                 didAutoCorrect = handleNonSpecialCharacter(tmpTransaction, handler);
