@@ -27,8 +27,8 @@
     <string name="spoken_auto_correct_obscured" msgid="7769449372355268412">"按<xliff:g id="KEY_NAME">%1$s</xliff:g>键可进行自动更正"</string>
     <string name="spoken_description_unknown" msgid="2382510329910793539">"键码为%d"</string>
     <string name="spoken_description_shift" msgid="7209798151676638728">"Shift"</string>
-    <string name="spoken_description_shift_shifted" msgid="1609924271343916689">"Shift模式已启用（点按即可停用）"</string>
-    <string name="spoken_description_caps_lock" msgid="5020582161133170892">"大写锁定模式已启用（点按即可停用）"</string>
+    <string name="spoken_description_shift_shifted" msgid="1609924271343916689">"已开启Shift模式（点按即可关闭）"</string>
+    <string name="spoken_description_caps_lock" msgid="5020582161133170892">"已锁定大写模式（点按即可关闭）"</string>
     <string name="spoken_description_delete" msgid="3878902286264983302">"删除"</string>
     <string name="spoken_description_to_symbol" msgid="8244903740201126590">"符号"</string>
     <string name="spoken_description_to_alpha" msgid="4081215210530031950">"字母"</string>
@@ -38,15 +38,15 @@
     <string name="spoken_description_space" msgid="5908716896642059145">"空格"</string>
     <string name="spoken_description_mic" msgid="6153138783813452464">"语音输入"</string>
     <string name="spoken_description_emoji" msgid="7990051553008088470">"表情符号"</string>
-    <string name="spoken_description_return" msgid="3183692287397645708">"返回"</string>
+    <string name="spoken_description_return" msgid="3183692287397645708">"回车"</string>
     <string name="spoken_description_search" msgid="5099937658231911288">"搜索"</string>
     <string name="spoken_description_dot" msgid="5644176501632325560">"点"</string>
     <string name="spoken_description_language_switch" msgid="6818666779313544553">"切换语言"</string>
     <string name="spoken_description_action_next" msgid="431761808119616962">"下一个"</string>
     <string name="spoken_description_action_previous" msgid="2919072174697865110">"上一个"</string>
-    <string name="spoken_description_shiftmode_on" msgid="5107180516341258979">"Shift模式已启用"</string>
-    <string name="spoken_description_shiftmode_locked" msgid="7307477738053606881">"大写锁定模式已启用"</string>
-    <string name="spoken_description_shiftmode_off" msgid="5039126122829961331">"Shift模式已停用"</string>
+    <string name="spoken_description_shiftmode_on" msgid="5107180516341258979">"已开启Shift模式"</string>
+    <string name="spoken_description_shiftmode_locked" msgid="7307477738053606881">"已锁定大写模式"</string>
+    <string name="spoken_description_shiftmode_off" msgid="5039126122829961331">"已关闭Shift模式"</string>
     <string name="spoken_description_mode_symbol" msgid="111186851131446691">"符号模式"</string>
     <string name="spoken_description_mode_alpha" msgid="4676004119618778911">"字母模式"</string>
     <string name="spoken_description_mode_phone" msgid="2061220553756692903">"电话模式"</string>
@@ -62,9 +62,9 @@
     <string name="keyboard_mode_text" msgid="9138789594969187494">"文字"</string>
     <string name="keyboard_mode_time" msgid="8558297845514402675">"时间"</string>
     <string name="keyboard_mode_url" msgid="8072011652949962550">"网址"</string>
-    <string name="spoken_descrption_emoji_category_recents" msgid="4185344945205590692">"最近使用"</string>
+    <string name="spoken_descrption_emoji_category_recents" msgid="4185344945205590692">"最近用过"</string>
     <string name="spoken_descrption_emoji_category_people" msgid="8414196269847492817">"人物"</string>
-    <string name="spoken_descrption_emoji_category_objects" msgid="6116297906606195278">"物体"</string>
+    <string name="spoken_descrption_emoji_category_objects" msgid="6116297906606195278">"物件"</string>
     <string name="spoken_descrption_emoji_category_nature" msgid="5018340512472354640">"自然"</string>
     <string name="spoken_descrption_emoji_category_places" msgid="1163315840948545317">"地点"</string>
     <string name="spoken_descrption_emoji_category_symbols" msgid="474680659024880601">"符号"</string>

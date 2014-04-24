@@ -26,7 +26,7 @@
     <string name="spoken_auto_correct" msgid="8989324692167993804">"<xliff:g id="KEY_NAME">%1$s</xliff:g> retter <xliff:g id="ORIGINAL_WORD">%2$s</xliff:g> til <xliff:g id="CORRECTED_WORD">%3$s</xliff:g>"</string>
     <string name="spoken_auto_correct_obscured" msgid="7769449372355268412">"<xliff:g id="KEY_NAME">%1$s</xliff:g> udfører automatisk stavekontrol"</string>
     <string name="spoken_description_unknown" msgid="2382510329910793539">"Tastekode %d"</string>
-    <string name="spoken_description_shift" msgid="7209798151676638728">"Shift-tast"</string>
+    <string name="spoken_description_shift" msgid="7209798151676638728">"Shift"</string>
     <string name="spoken_description_shift_shifted" msgid="1609924271343916689">"Shift er aktiveret (tryk for at deaktivere)"</string>
     <string name="spoken_description_caps_lock" msgid="5020582161133170892">"Caps lock er slået til (tryk for at deaktivere)"</string>
     <string name="spoken_description_delete" msgid="3878902286264983302">"Slet"</string>
@@ -36,9 +36,9 @@
     <string name="spoken_description_settings" msgid="7281251004003143204">"Indstillinger"</string>
     <string name="spoken_description_tab" msgid="8210782459446866716">"Fane"</string>
     <string name="spoken_description_space" msgid="5908716896642059145">"Mellemrum"</string>
-    <string name="spoken_description_mic" msgid="6153138783813452464">"Taleinput"</string>
+    <string name="spoken_description_mic" msgid="6153138783813452464">"Stemmeinput"</string>
     <string name="spoken_description_emoji" msgid="7990051553008088470">"Emoji"</string>
-    <string name="spoken_description_return" msgid="3183692287397645708">"Tilbage"</string>
+    <string name="spoken_description_return" msgid="3183692287397645708">"Return"</string>
     <string name="spoken_description_search" msgid="5099937658231911288">"Søgning"</string>
     <string name="spoken_description_dot" msgid="5644176501632325560">"Prik"</string>
     <string name="spoken_description_language_switch" msgid="6818666779313544553">"Skift sprog"</string>
