@@ -35,7 +35,7 @@
     <string name="spoken_description_to_numeric" msgid="4560261331530795682">"หมายเลข"</string>
     <string name="spoken_description_settings" msgid="7281251004003143204">"การตั้งค่า"</string>
     <string name="spoken_description_tab" msgid="8210782459446866716">"แท็บ"</string>
-    <string name="spoken_description_space" msgid="5908716896642059145">"{0}&lt;td{1} {/1}class=\"shortcuts\"&gt;{/0} Space"</string>
+    <string name="spoken_description_space" msgid="5908716896642059145">"วรรค"</string>
     <string name="spoken_description_mic" msgid="6153138783813452464">"การป้อนข้อมูลด้วยเสียง"</string>
     <string name="spoken_description_emoji" msgid="7990051553008088470">"อีโมจิ"</string>
     <string name="spoken_description_return" msgid="3183692287397645708">"ส่งคืน"</string>
