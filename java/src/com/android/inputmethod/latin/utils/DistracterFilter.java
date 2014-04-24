@@ -40,7 +40,7 @@ public class DistracterFilter {
         mKeyboard = keyboard;
     }
 
-    public boolean isDistractorToWordsInDictionaries(final String prevWord,
+    public boolean isDistracterToWordsInDictionaries(final String prevWord,
             final String targetWord) {
         // TODO: to be implemented
         return false;
