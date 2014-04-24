@@ -540,18 +540,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         refreshPersonalizationDictionarySession();
     }
 
-    private DistracterFilter createDistracterFilter() {
-        final MainKeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
-        // TODO: Create Keyboard when mainKeyboardView is null.
-        // TODO: Figure out the most reasonable keyboard for the filter. Refer to the
-        // spellchecker's logic.
-        final Keyboard keyboard = (mainKeyboardView != null) ?
-                mainKeyboardView.getKeyboard() : null;
-        final DistracterFilter distracterFilter = new DistracterFilter(mInputLogic.mSuggest,
-                keyboard);
-        return distracterFilter;
-    }
-
     private void refreshPersonalizationDictionarySession() {
         final DictionaryFacilitatorForSuggest dictionaryFacilitator =
                 mInputLogic.mSuggest.mDictionaryFacilitator;
@@ -1749,6 +1737,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     /* package for test */ void clearPersonalizedDictionariesForTest() {
         mInputLogic.mSuggest.mDictionaryFacilitator.clearUserHistoryDictionary();
         mInputLogic.mSuggest.mDictionaryFacilitator.clearPersonalizationDictionary();
+    }
+
+    @UsedForTesting
+    /* package for test */ DistracterFilter createDistracterFilter() {
+        return DistracterFilter.createDistracterFilter(mInputLogic.mSuggest, mKeyboardSwitcher);
     }
 
     public void dumpDictionaryForDebug(final String dictName) {
