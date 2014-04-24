@@ -19,14 +19,12 @@ package com.android.inputmethod.accessibility;
 import android.graphics.Rect;
 import android.inputmethodservice.InputMethodService;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.accessibility.AccessibilityEventCompat;
 import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
 import android.support.v4.view.accessibility.AccessibilityNodeProviderCompat;
 import android.support.v4.view.accessibility.AccessibilityRecordCompat;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.inputmethod.EditorInfo;
@@ -234,27 +232,6 @@ public final class AccessibilityEntityProvider extends AccessibilityNodeProvider
             info.addAction(AccessibilityNodeInfoCompat.ACTION_ACCESSIBILITY_FOCUS);
         }
         return info;
-    }
-
-    /**
-     * Simulates a key press by injecting touch events into the keyboard view.
-     * This avoids the complexity of trackers and listeners within the keyboard.
-     *
-     * @param key The key to press.
-     */
-    void simulateKeyPress(final Key key) {
-        final int x = key.getHitBox().centerX();
-        final int y = key.getHitBox().centerY();
-        final long downTime = SystemClock.uptimeMillis();
-        final MotionEvent downEvent = MotionEvent.obtain(
-                downTime, downTime, MotionEvent.ACTION_DOWN, x, y, 0);
-        final MotionEvent upEvent = MotionEvent.obtain(
-                downTime, SystemClock.uptimeMillis(), MotionEvent.ACTION_UP, x, y, 0);
-
-        mKeyboardView.onTouchEvent(downEvent);
-        mKeyboardView.onTouchEvent(upEvent);
-        downEvent.recycle();
-        upEvent.recycle();
     }
 
     @Override
