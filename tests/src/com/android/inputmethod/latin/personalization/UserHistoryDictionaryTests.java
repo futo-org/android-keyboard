@@ -147,7 +147,7 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
         final UserHistoryDictionary dict = PersonalizationHelper.getUserHistoryDictionary(
                 mContext, locale);
         dict.waitAllTasksForTests();
-        dict.clearAndFlushDictionary();
+        dict.clear();
         dict.close();
         dict.waitAllTasksForTests();
     }
