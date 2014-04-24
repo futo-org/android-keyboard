@@ -18,6 +18,7 @@ package com.android.inputmethod.accessibility;
 
 import android.content.Context;
 import android.inputmethodservice.InputMethodService;
+import android.os.SystemClock;
 import android.support.v4.view.AccessibilityDelegateCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.accessibility.AccessibilityEventCompat;
@@ -241,7 +242,8 @@ public final class AccessibleKeyboardViewProxy extends AccessibilityDelegateComp
             // Make sure we're not getting an EXIT event because the user slid
             // off the keyboard area, then force a key press.
             if (key != null) {
-                getAccessibilityNodeProvider().simulateKeyPress(key);
+                final long downTime = simulateKeyPress(key);
+                simulateKeyRelease(key, downTime);
             }
             //$FALL-THROUGH$
         case MotionEvent.ACTION_HOVER_ENTER:
@@ -279,6 +281,38 @@ public final class AccessibleKeyboardViewProxy extends AccessibilityDelegateComp
         return (localX >= mEdgeSlop) && (localY >= mEdgeSlop)
                 && (localX < (mView.getWidth() - mEdgeSlop))
                 && (localY < (mView.getHeight() - mEdgeSlop));
+    }
+
+    /**
+     * Simulates a key press by injecting touch event into the keyboard view.
+     * This avoids the complexity of trackers and listeners within the keyboard.
+     *
+     * @param key The key to press.
+     */
+    private long simulateKeyPress(final Key key) {
+        final int x = key.getHitBox().centerX();
+        final int y = key.getHitBox().centerY();
+        final long downTime = SystemClock.uptimeMillis();
+        final MotionEvent downEvent = MotionEvent.obtain(
+                downTime, downTime, MotionEvent.ACTION_DOWN, x, y, 0);
+        mView.onTouchEvent(downEvent);
+        downEvent.recycle();
+        return downTime;
+    }
+
+    /**
+     * Simulates a key release by injecting touch event into the keyboard view.
+     * This avoids the complexity of trackers and listeners within the keyboard.
+     *
+     * @param key The key to release.
+     */
+    private void simulateKeyRelease(final Key key, final long downTime) {
+        final int x = key.getHitBox().centerX();
+        final int y = key.getHitBox().centerY();
+        final MotionEvent upEvent = MotionEvent.obtain(
+                downTime, SystemClock.uptimeMillis(), MotionEvent.ACTION_UP, x, y, 0);
+        mView.onTouchEvent(upEvent);
+        upEvent.recycle();
     }
 
     /**
