@@ -542,7 +542,7 @@ public class DictionaryFacilitatorForSuggest {
         if (userHistoryDict == null) {
             return;
         }
-        userHistoryDict.clearAndFlushDictionary();
+        userHistoryDict.clear();
     }
 
     // This method gets called only when the IME receives a notification to remove the
@@ -553,7 +553,7 @@ public class DictionaryFacilitatorForSuggest {
         if (personalizationDict == null) {
             return;
         }
-        personalizationDict.clearAndFlushDictionary();
+        personalizationDict.clear();
     }
 
     public void addMultipleDictionaryEntriesToPersonalizationDictionary(

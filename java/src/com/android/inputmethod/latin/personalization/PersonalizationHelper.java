@@ -135,7 +135,7 @@ public class PersonalizationHelper {
                 if (entry.getValue() != null) {
                     final DecayingExpandableBinaryDictionaryBase dict = entry.getValue().get();
                     if (dict != null) {
-                        dict.clearAndFlushDictionary();
+                        dict.clear();
                     }
                 }
             }

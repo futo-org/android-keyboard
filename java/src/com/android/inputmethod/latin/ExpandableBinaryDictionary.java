@@ -244,7 +244,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                 true /* useFullEditDistance */, mLocale, mDictType, true /* isUpdatable */);
     }
 
-    protected void clear() {
+    public void clear() {
         ExecutorUtils.getExecutor(mDictName).execute(new Runnable() {
             @Override
             public void run() {
