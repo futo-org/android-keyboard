@@ -136,18 +136,10 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
     }
 
     @UsedForTesting
-    public void clearAndFlushDictionary() {
-        // Clear the node structure on memory
-        clear();
-        // Then flush the cleared state of the dictionary on disk.
-        asyncFlushBinaryDictionary();
-    }
-
-    @UsedForTesting
     public void clearAndFlushDictionaryWithAdditionalAttributes(
             final Map<String, String> attributeMap) {
         mAdditionalAttributeMap = attributeMap;
-        clearAndFlushDictionary();
+        clear();
     }
 
     /* package */ void runGCIfRequired() {
