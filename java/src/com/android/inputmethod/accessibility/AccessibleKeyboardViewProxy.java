@@ -17,7 +17,6 @@
 package com.android.inputmethod.accessibility;
 
 import android.content.Context;
-import android.inputmethodservice.InputMethodService;
 import android.os.SystemClock;
 import android.support.v4.view.AccessibilityDelegateCompat;
 import android.support.v4.view.ViewCompat;
@@ -55,7 +54,6 @@ public final class AccessibleKeyboardViewProxy extends AccessibilityDelegateComp
         KEYBOARD_MODE_RES_IDS.put(KeyboardId.MODE_URL, R.string.keyboard_mode_url);
     }
 
-    private InputMethodService mInputMethod;
     private MainKeyboardView mView;
     private Keyboard mKeyboard;
     private AccessibilityEntityProvider mAccessibilityNodeProvider;
@@ -71,8 +69,8 @@ public final class AccessibleKeyboardViewProxy extends AccessibilityDelegateComp
     private int mLastKeyboardMode = KEYBOARD_IS_HIDDEN;
     private static final int KEYBOARD_IS_HIDDEN = -1;
 
-    public static void init(final InputMethodService inputMethod) {
-        sInstance.initInternal(inputMethod);
+    public static void init(final Context context) {
+        sInstance.initInternal(context);
     }
 
     public static AccessibleKeyboardViewProxy getInstance() {
@@ -83,9 +81,8 @@ public final class AccessibleKeyboardViewProxy extends AccessibilityDelegateComp
         // Not publicly instantiable.
     }
 
-    private void initInternal(final InputMethodService inputMethod) {
-        mInputMethod = inputMethod;
-        mEdgeSlop = inputMethod.getResources().getDimensionPixelSize(
+    private void initInternal(final Context context) {
+        mEdgeSlop = context.getResources().getDimensionPixelSize(
                 R.dimen.config_accessibility_edge_slop);
     }
 
@@ -285,7 +282,7 @@ public final class AccessibleKeyboardViewProxy extends AccessibilityDelegateComp
         // will call this method multiple times it is a good practice to
         // cache the provider instance.
         if (mAccessibilityNodeProvider == null) {
-            mAccessibilityNodeProvider = new AccessibilityEntityProvider(mView, mInputMethod);
+            mAccessibilityNodeProvider = new AccessibilityEntityProvider(mView);
         }
         return mAccessibilityNodeProvider;
     }

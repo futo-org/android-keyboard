@@ -68,7 +68,7 @@ public final class KeyboardId {
     public final int mHeight;
     public final int mMode;
     public final int mElementId;
-    private final EditorInfo mEditorInfo;
+    public final EditorInfo mEditorInfo;
     public final boolean mClobberSettingsKey;
     public final boolean mSupportsSwitchingToShortcutIme;
     public final boolean mLanguageSwitchKeyEnabled;

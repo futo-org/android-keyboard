@@ -17,7 +17,6 @@
 package com.android.inputmethod.accessibility;
 
 import android.graphics.Rect;
-import android.inputmethodservice.InputMethodService;
 import android.os.Bundle;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.accessibility.AccessibilityEventCompat;
@@ -52,7 +51,6 @@ public final class AccessibilityEntityProvider extends AccessibilityNodeProvider
     private static final String TAG = AccessibilityEntityProvider.class.getSimpleName();
     private static final int UNDEFINED = Integer.MIN_VALUE;
 
-    private final InputMethodService mInputMethodService;
     private final KeyCodeDescriptionMapper mKeyCodeDescriptionMapper;
     private final AccessibilityUtils mAccessibilityUtils;
 
@@ -71,9 +69,7 @@ public final class AccessibilityEntityProvider extends AccessibilityNodeProvider
     /** The current keyboard. */
     private Keyboard mKeyboard;
 
-    public AccessibilityEntityProvider(final KeyboardView keyboardView,
-            final InputMethodService inputMethod) {
-        mInputMethodService = inputMethod;
+    public AccessibilityEntityProvider(final KeyboardView keyboardView) {
         mKeyCodeDescriptionMapper = KeyCodeDescriptionMapper.getInstance();
         mAccessibilityUtils = AccessibilityUtils.getInstance();
         setView(keyboardView);
@@ -295,7 +291,7 @@ public final class AccessibilityEntityProvider extends AccessibilityNodeProvider
      * @return The context-specific description of the key.
      */
     private String getKeyDescription(final Key key) {
-        final EditorInfo editorInfo = mInputMethodService.getCurrentInputEditorInfo();
+        final EditorInfo editorInfo = mKeyboard.mId.mEditorInfo;
         final boolean shouldObscure = mAccessibilityUtils.shouldObscureInput(editorInfo);
         final SettingsValues currentSettings = Settings.getInstance().getCurrent();
         final String keyCodeDescription = mKeyCodeDescriptionMapper.getDescriptionForKey(
