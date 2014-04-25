@@ -72,26 +72,23 @@ public class DictionaryFacilitatorForSuggest {
         public final ConcurrentHashMap<String, ExpandableBinaryDictionary> mSubDictMap =
                 CollectionUtils.newConcurrentHashMap();
         // TODO: Remove sub dictionary members and use mSubDictMap.
-        public final ContactsBinaryDictionary mContactsDictionary;
         public final UserBinaryDictionary mUserDictionary;
         public final PersonalizationDictionary mPersonalizationDictionary;
 
         public Dictionaries() {
             mLocale = null;
-            mContactsDictionary = null;
             mUserDictionary = null;
             mPersonalizationDictionary = null;
         }
 
         public Dictionaries(final Locale locale, final Dictionary mainDict,
-            final ContactsBinaryDictionary contactsDict, final UserBinaryDictionary userDict,
+            final ExpandableBinaryDictionary contactsDict, final UserBinaryDictionary userDict,
             final ExpandableBinaryDictionary userHistoryDict,
             final PersonalizationDictionary personalizationDict) {
             mLocale = locale;
             // Main dictionary can be asynchronously loaded.
             setMainDict(mainDict);
-            mContactsDictionary = contactsDict;
-            setSubDict(Dictionary.TYPE_CONTACTS, mContactsDictionary);
+            setSubDict(Dictionary.TYPE_CONTACTS, contactsDict);
             mUserDictionary = userDict;
             setSubDict(Dictionary.TYPE_USER, mUserDictionary);
             setSubDict(Dictionary.TYPE_USER_HISTORY, userHistoryDict);
@@ -172,9 +169,9 @@ public class DictionaryFacilitatorForSuggest {
         }
 
         // Open or move contacts dictionary.
-        final ContactsBinaryDictionary newContactsDict;
+        final ExpandableBinaryDictionary newContactsDict;
         if (!closeContactsDictionary && mDictionaries.hasDict(Dictionary.TYPE_CONTACTS)) {
-            newContactsDict = mDictionaries.mContactsDictionary;
+            newContactsDict = mDictionaries.getSubDict(Dictionary.TYPE_CONTACTS);
         } else if (useContactsDict) {
             newContactsDict = new ContactsBinaryDictionary(context, newLocale);
         } else {
