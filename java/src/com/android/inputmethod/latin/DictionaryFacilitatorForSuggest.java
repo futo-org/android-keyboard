@@ -73,18 +73,16 @@ public class DictionaryFacilitatorForSuggest {
                 CollectionUtils.newConcurrentHashMap();
         // TODO: Remove sub dictionary members and use mSubDictMap.
         public final UserBinaryDictionary mUserDictionary;
-        public final PersonalizationDictionary mPersonalizationDictionary;
 
         public Dictionaries() {
             mLocale = null;
             mUserDictionary = null;
-            mPersonalizationDictionary = null;
         }
 
         public Dictionaries(final Locale locale, final Dictionary mainDict,
             final ExpandableBinaryDictionary contactsDict, final UserBinaryDictionary userDict,
             final ExpandableBinaryDictionary userHistoryDict,
-            final PersonalizationDictionary personalizationDict) {
+            final ExpandableBinaryDictionary personalizationDict) {
             mLocale = locale;
             // Main dictionary can be asynchronously loaded.
             setMainDict(mainDict);
@@ -92,8 +90,7 @@ public class DictionaryFacilitatorForSuggest {
             mUserDictionary = userDict;
             setSubDict(Dictionary.TYPE_USER, mUserDictionary);
             setSubDict(Dictionary.TYPE_USER_HISTORY, userHistoryDict);
-            mPersonalizationDictionary = personalizationDict;
-            setSubDict(Dictionary.TYPE_PERSONALIZATION, mPersonalizationDictionary);
+            setSubDict(Dictionary.TYPE_PERSONALIZATION, personalizationDict);
         }
 
         private void setSubDict(final String dictType, final ExpandableBinaryDictionary dict) {
@@ -197,10 +194,10 @@ public class DictionaryFacilitatorForSuggest {
         }
 
         // Open or move personalization dictionary.
-        final PersonalizationDictionary newPersonalizationDict;
+        final ExpandableBinaryDictionary newPersonalizationDict;
         if (!closePersonalizationDictionary
                 && mDictionaries.hasDict(Dictionary.TYPE_PERSONALIZATION)) {
-            newPersonalizationDict = mDictionaries.mPersonalizationDictionary;
+            newPersonalizationDict = mDictionaries.getSubDict(Dictionary.TYPE_PERSONALIZATION);
         } else if (usePersonalizedDicts) {
             newPersonalizationDict =
                     PersonalizationHelper.getPersonalizationDictionary(context, newLocale);
@@ -344,8 +341,8 @@ public class DictionaryFacilitatorForSuggest {
     }
 
     public void flushPersonalizationDictionary() {
-        final PersonalizationDictionary personalizationDict =
-                mDictionaries.mPersonalizationDictionary;
+        final ExpandableBinaryDictionary personalizationDict =
+                mDictionaries.getSubDict(Dictionary.TYPE_PERSONALIZATION);
         if (personalizationDict != null) {
             personalizationDict.asyncFlushBinaryDictionary();
         }
@@ -537,15 +534,16 @@ public class DictionaryFacilitatorForSuggest {
     public void addMultipleDictionaryEntriesToPersonalizationDictionary(
             final ArrayList<LanguageModelParam> languageModelParams,
             final ExpandableBinaryDictionary.AddMultipleDictionaryEntriesCallback callback) {
-        final PersonalizationDictionary personalizationDict =
-                mDictionaries.mPersonalizationDictionary;
-        if (personalizationDict == null) {
+        final ExpandableBinaryDictionary personalizationDict =
+                mDictionaries.getSubDict(Dictionary.TYPE_PERSONALIZATION);
+        if (personalizationDict == null || languageModelParams == null
+                || languageModelParams.isEmpty()) {
             if (callback != null) {
                 callback.onFinished();
             }
             return;
         }
-        personalizationDict.addMultipleDictionaryEntriesToDictionary(languageModelParams, callback);
+        personalizationDict.addMultipleDictionaryEntriesDynamically(languageModelParams, callback);
     }
 
     public void dumpDictionaryForDebug(final String dictName) {
