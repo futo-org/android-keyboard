@@ -369,7 +369,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     /**
      * Dynamically add multiple entries to the dictionary.
      */
-    protected void addMultipleDictionaryEntriesDynamically(
+    public void addMultipleDictionaryEntriesDynamically(
             final ArrayList<LanguageModelParam> languageModelParams,
             final AddMultipleDictionaryEntriesCallback callback) {
         reloadDictionaryIfRequired();
