@@ -122,7 +122,7 @@ public class DictionaryFacilitatorForSuggest {
         }
 
         public boolean hasDict(final String dictType) {
-            return mDictMap.contains(dictType);
+            return mDictMap.containsKey(dictType);
         }
 
         public void closeDict(final String dictType) {
