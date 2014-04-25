@@ -333,7 +333,7 @@ public class DictionaryFacilitatorForSuggest {
     // of this method.
     public boolean hasInitializedMainDictionary() {
         final Dictionary mainDict = mDictionaries.getMainDict();
-        return mainDict != null &&  mainDict.isInitialized();
+        return mainDict != null && mainDict.isInitialized();
     }
 
     public boolean hasPersonalizationDictionary() {
@@ -384,7 +384,7 @@ public class DictionaryFacilitatorForSuggest {
         final Dictionaries dictionaries = mDictionaries;
         final ExpandableBinaryDictionary userHistoryDictionary =
                 dictionaries.getSubDict(Dictionary.TYPE_USER_HISTORY);
-        if (userHistoryDictionary != null) {
+        if (userHistoryDictionary == null) {
             return;
         }
         final int maxFreq = getMaxFrequency(suggestion);
