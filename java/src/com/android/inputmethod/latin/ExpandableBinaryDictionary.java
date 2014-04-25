@@ -27,7 +27,6 @@ import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
 import com.android.inputmethod.latin.makedict.WordProperty;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.utils.AsyncResultHolder;
-import com.android.inputmethod.latin.utils.BinaryDictionaryUtils;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.CombinedFormatUtils;
 import com.android.inputmethod.latin.utils.ExecutorUtils;
@@ -233,15 +232,16 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         mBinaryDictionary = null;
     }
 
-    private void createBinaryDictionaryLocked() {
-        BinaryDictionaryUtils.createEmptyDictFile(mDictFile.getAbsolutePath(),
-                DICTIONARY_FORMAT_VERSION, mLocale, getHeaderAttributeMap());
-    }
-
     private void openBinaryDictionaryLocked() {
         mBinaryDictionary = new BinaryDictionary(
                 mDictFile.getAbsolutePath(), 0 /* offset */, mDictFile.length(),
                 true /* useFullEditDistance */, mLocale, mDictType, true /* isUpdatable */);
+    }
+
+    private void createOnMemoryBinaryDictionaryLocked() {
+        mBinaryDictionary = new BinaryDictionary(
+                mDictFile.getAbsolutePath(), true /* useFullEditDistance */, mLocale, mDictType,
+                DICTIONARY_FORMAT_VERSION, getHeaderAttributeMap());
     }
 
     public void clear() {
@@ -249,8 +249,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
             @Override
             public void run() {
                 removeBinaryDictionaryLocked();
-                createBinaryDictionaryLocked();
-                openBinaryDictionaryLocked();
+                createOnMemoryBinaryDictionaryLocked();
             }
         });
     }
@@ -512,8 +511,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                     + mDictNameDictionaryUpdateController.mLastUpdateTime);
         }
         removeBinaryDictionaryLocked();
-        createBinaryDictionaryLocked();
-        openBinaryDictionaryLocked();
+        createOnMemoryBinaryDictionaryLocked();
         loadInitialContentsLocked();
         // Run GC and flush to file when initial contents have been loaded.
         mBinaryDictionary.flushWithGCIfHasUpdated();

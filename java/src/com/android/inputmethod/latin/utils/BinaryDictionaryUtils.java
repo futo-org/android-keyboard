@@ -91,6 +91,7 @@ public final class BinaryDictionaryUtils {
         return false;
     }
 
+    @UsedForTesting
     public static boolean createEmptyDictFile(final String filePath, final long dictVersion,
             final Locale locale, final Map<String, String> attributeMap) {
         final String[] keyArray = new String[attributeMap.size()];
