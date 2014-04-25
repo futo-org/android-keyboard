@@ -543,7 +543,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     private DistracterFilter createDistracterFilter() {
         final MainKeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
-        final Keyboard keyboard = mainKeyboardView.getKeyboard();
+        // TODO: Create Keyboard when mainKeyboardView is null.
+        // TODO: Figure out the most reasonable keyboard for the filter. Refer to the
+        // spellchecker's logic.
+        final Keyboard keyboard = (mainKeyboardView != null) ?
+                mainKeyboardView.getKeyboard() : null;
         final DistracterFilter distracterFilter = new DistracterFilter(mInputLogic.mSuggest,
                 keyboard);
         return distracterFilter;
