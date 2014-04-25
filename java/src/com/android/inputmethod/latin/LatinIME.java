@@ -84,6 +84,7 @@ import com.android.inputmethod.latin.utils.ApplicationUtils;
 import com.android.inputmethod.latin.utils.CapsModeUtils;
 import com.android.inputmethod.latin.utils.CoordinateUtils;
 import com.android.inputmethod.latin.utils.DialogUtils;
+import com.android.inputmethod.latin.utils.DistracterFilter;
 import com.android.inputmethod.latin.utils.ImportantNoticeUtils;
 import com.android.inputmethod.latin.utils.IntentUtils;
 import com.android.inputmethod.latin.utils.JniUtils;
@@ -540,6 +541,14 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         refreshPersonalizationDictionarySession();
     }
 
+    private DistracterFilter createDistracterFilter() {
+        final MainKeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
+        final Keyboard keyboard = mainKeyboardView.getKeyboard();
+        final DistracterFilter distracterFilter = new DistracterFilter(mInputLogic.mSuggest,
+                keyboard);
+        return distracterFilter;
+    }
+
     private void refreshPersonalizationDictionarySession() {
         final DictionaryFacilitatorForSuggest dictionaryFacilitator =
                 mInputLogic.mSuggest.mDictionaryFacilitator;
@@ -564,7 +573,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             PersonalizationHelper.removeAllPersonalizationDictionaries(this);
             PersonalizationDictionarySessionRegistrar.resetAll(this);
         } else {
-            PersonalizationDictionarySessionRegistrar.init(this, dictionaryFacilitator);
+            final DistracterFilter distracterFilter = createDistracterFilter();
+            PersonalizationDictionarySessionRegistrar.init(
+                    this, dictionaryFacilitator, distracterFilter);
         }
     }
 
@@ -662,8 +673,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mInputLogic.mConnection.finishComposingText();
             mInputLogic.mConnection.endBatchEdit();
         }
+        final DistracterFilter distracterFilter = createDistracterFilter();
         PersonalizationDictionarySessionRegistrar.onConfigurationChanged(this, conf,
-                mInputLogic.mSuggest.mDictionaryFacilitator);
+                mInputLogic.mSuggest.mDictionaryFacilitator, distracterFilter);
         super.onConfigurationChanged(conf);
     }
 
