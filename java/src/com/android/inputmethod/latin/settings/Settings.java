@@ -72,8 +72,6 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     public static final String PREF_BIGRAM_PREDICTIONS = "next_word_prediction";
     public static final String PREF_GESTURE_SETTINGS = "gesture_typing_settings";
     public static final String PREF_GESTURE_INPUT = "gesture_input";
-    public static final String PREF_SLIDING_KEY_INPUT_PREVIEW = "pref_sliding_key_input_preview";
-    public static final String PREF_KEY_LONGPRESS_TIMEOUT = "pref_key_longpress_timeout";
     public static final String PREF_VIBRATION_DURATION_SETTINGS =
             "pref_vibration_duration_settings";
     public static final String PREF_KEYPRESS_SOUND_VOLUME =
@@ -196,7 +194,7 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     // Accessed from the settings interface, hence public
     public static boolean readKeypressSoundEnabled(final SharedPreferences prefs,
             final Resources res) {
-        return prefs.getBoolean(Settings.PREF_SOUND_ON,
+        return prefs.getBoolean(PREF_SOUND_ON,
                 res.getBoolean(R.bool.config_default_sound_enabled));
     }
 
@@ -216,7 +214,7 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
 
     public static boolean readBlockPotentiallyOffensive(final SharedPreferences prefs,
             final Resources res) {
-        return prefs.getBoolean(Settings.PREF_BLOCK_POTENTIALLY_OFFENSIVE,
+        return prefs.getBoolean(PREF_BLOCK_POTENTIALLY_OFFENSIVE,
                 res.getBoolean(R.bool.config_block_potentially_offensive));
     }
 
@@ -227,12 +225,12 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     public static boolean readGestureInputEnabled(final SharedPreferences prefs,
             final Resources res) {
         return readFromBuildConfigIfGestureInputEnabled(res)
-                && prefs.getBoolean(Settings.PREF_GESTURE_INPUT, true);
+                && prefs.getBoolean(PREF_GESTURE_INPUT, true);
     }
 
     public static boolean readPhraseGestureEnabled(final SharedPreferences prefs,
             final Resources res) {
-        return prefs.getBoolean(Settings.PREF_PHRASE_GESTURE_ENABLED,
+        return prefs.getBoolean(PREF_PHRASE_GESTURE_ENABLED,
                 res.getBoolean(R.bool.config_default_phrase_gesture_enabled));
     }
 
@@ -278,7 +276,7 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
 
     public static void writePrefAdditionalSubtypes(final SharedPreferences prefs,
             final String prefSubtypes) {
-        prefs.edit().putString(Settings.PREF_CUSTOM_INPUT_STYLES, prefSubtypes).apply();
+        prefs.edit().putString(PREF_CUSTOM_INPUT_STYLES, prefSubtypes).apply();
     }
 
     public static float readKeypressSoundVolume(final SharedPreferences prefs,
@@ -301,7 +299,7 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     public static int readKeyLongpressTimeout(final SharedPreferences prefs,
             final Resources res) {
         final int milliseconds = prefs.getInt(
-                PREF_KEY_LONGPRESS_TIMEOUT, UNDEFINED_PREFERENCE_VALUE_INT);
+                DebugSettings.PREF_KEY_LONGPRESS_TIMEOUT, UNDEFINED_PREFERENCE_VALUE_INT);
         return (milliseconds != UNDEFINED_PREFERENCE_VALUE_INT) ? milliseconds
                 : readDefaultKeyLongpressTimeout(res);
     }
@@ -354,18 +352,18 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
         if (!enableSetupWizardByConfig) {
             return false;
         }
-        if (!prefs.contains(Settings.PREF_SHOW_SETUP_WIZARD_ICON)) {
+        if (!prefs.contains(PREF_SHOW_SETUP_WIZARD_ICON)) {
             final ApplicationInfo appInfo = context.getApplicationInfo();
             final boolean isApplicationInSystemImage =
                     (appInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0;
             // Default value
             return !isApplicationInSystemImage;
         }
-        return prefs.getBoolean(Settings.PREF_SHOW_SETUP_WIZARD_ICON, false);
+        return prefs.getBoolean(PREF_SHOW_SETUP_WIZARD_ICON, false);
     }
 
     public static boolean isInternal(final SharedPreferences prefs) {
-        return prefs.getBoolean(Settings.PREF_KEY_IS_INTERNAL, false);
+        return prefs.getBoolean(PREF_KEY_IS_INTERNAL, false);
     }
 
     public void writeLastUsedPersonalizationToken(byte[] token) {

@@ -41,6 +41,18 @@
         android:title="@string/prefs_usability_study_mode"
         android:persistent="true"
         android:defaultValue="false" />
+    <CheckBoxPreference
+        android:key="pref_sliding_key_input_preview"
+        android:title="@string/sliding_key_input_preview"
+        android:summary="@string/sliding_key_input_preview_summary"
+        android:persistent="true"
+        android:defaultValue="true" />
+    <com.android.inputmethod.latin.settings.SeekBarDialogPreference
+        android:key="pref_key_longpress_timeout"
+        android:title="@string/prefs_key_longpress_timeout_settings"
+        latin:minValue="@integer/config_min_longpress_timeout"
+        latin:maxValue="@integer/config_max_longpress_timeout"
+        latin:stepValue="@integer/config_longpress_timeout_step" />
     <com.android.inputmethod.latin.settings.SeekBarDialogPreference
         android:key="pref_key_preview_show_up_start_scale"
         android:title="@string/prefs_key_popup_show_up_start_scale_settings"
