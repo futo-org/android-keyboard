@@ -74,20 +74,18 @@ public class DictionaryFacilitatorForSuggest {
         // TODO: Remove sub dictionary members and use mSubDictMap.
         public final ContactsBinaryDictionary mContactsDictionary;
         public final UserBinaryDictionary mUserDictionary;
-        public final UserHistoryDictionary mUserHistoryDictionary;
         public final PersonalizationDictionary mPersonalizationDictionary;
 
         public Dictionaries() {
             mLocale = null;
             mContactsDictionary = null;
             mUserDictionary = null;
-            mUserHistoryDictionary = null;
             mPersonalizationDictionary = null;
         }
 
         public Dictionaries(final Locale locale, final Dictionary mainDict,
             final ContactsBinaryDictionary contactsDict, final UserBinaryDictionary userDict,
-            final UserHistoryDictionary userHistoryDict,
+            final ExpandableBinaryDictionary userHistoryDict,
             final PersonalizationDictionary personalizationDict) {
             mLocale = locale;
             // Main dictionary can be asynchronously loaded.
@@ -96,8 +94,7 @@ public class DictionaryFacilitatorForSuggest {
             setSubDict(Dictionary.TYPE_CONTACTS, mContactsDictionary);
             mUserDictionary = userDict;
             setSubDict(Dictionary.TYPE_USER, mUserDictionary);
-            mUserHistoryDictionary = userHistoryDict;
-            setSubDict(Dictionary.TYPE_USER_HISTORY, mUserHistoryDictionary);
+            setSubDict(Dictionary.TYPE_USER_HISTORY, userHistoryDict);
             mPersonalizationDictionary = personalizationDict;
             setSubDict(Dictionary.TYPE_PERSONALIZATION, mPersonalizationDictionary);
         }
@@ -193,9 +190,9 @@ public class DictionaryFacilitatorForSuggest {
         }
 
         // Open or move user history dictionary.
-        final UserHistoryDictionary newUserHistoryDict;
+        final ExpandableBinaryDictionary newUserHistoryDict;
         if (!closeUserHistoryDictionary && mDictionaries.hasDict(Dictionary.TYPE_USER_HISTORY)) {
-            newUserHistoryDict = mDictionaries.mUserHistoryDictionary;
+            newUserHistoryDict = mDictionaries.getSubDict(Dictionary.TYPE_USER_HISTORY);
         } else if (usePersonalizedDicts) {
             newUserHistoryDict = PersonalizationHelper.getUserHistoryDictionary(context, newLocale);
         } else {
@@ -353,7 +350,7 @@ public class DictionaryFacilitatorForSuggest {
         final PersonalizationDictionary personalizationDict =
                 mDictionaries.mPersonalizationDictionary;
         if (personalizationDict != null) {
-            personalizationDict.flush();
+            personalizationDict.asyncFlushBinaryDictionary();
         }
     }
 
@@ -391,7 +388,9 @@ public class DictionaryFacilitatorForSuggest {
     public void addToUserHistory(final String suggestion, final boolean wasAutoCapitalized,
             final String previousWord, final int timeStampInSeconds) {
         final Dictionaries dictionaries = mDictionaries;
-        if (!dictionaries.hasDict(Dictionary.TYPE_USER_HISTORY)) {
+        final ExpandableBinaryDictionary userHistoryDictionary =
+                dictionaries.getSubDict(Dictionary.TYPE_USER_HISTORY);
+        if (userHistoryDictionary != null) {
             return;
         }
         final int maxFreq = getMaxFrequency(suggestion);
@@ -433,14 +432,15 @@ public class DictionaryFacilitatorForSuggest {
         // We demote unrecognized words (frequency < 0, below) by specifying them as "invalid".
         // We don't add words with 0-frequency (assuming they would be profanity etc.).
         final boolean isValid = maxFreq > 0;
-        dictionaries.mUserHistoryDictionary.addToDictionary(
-                previousWord, secondWord, isValid, timeStampInSeconds);
+        UserHistoryDictionary.addToDictionary(userHistoryDictionary, previousWord, secondWord,
+                isValid, timeStampInSeconds);
     }
 
     public void cancelAddingUserHistory(final String previousWord, final String committedWord) {
-        final UserHistoryDictionary userHistoryDictionary = mDictionaries.mUserHistoryDictionary;
+        final ExpandableBinaryDictionary userHistoryDictionary =
+                mDictionaries.getSubDict(Dictionary.TYPE_USER_HISTORY);
         if (userHistoryDictionary != null) {
-            userHistoryDictionary.cancelAddingUserHistory(previousWord, committedWord);
+            userHistoryDictionary.removeBigramDynamically(previousWord, committedWord);
         }
     }
 

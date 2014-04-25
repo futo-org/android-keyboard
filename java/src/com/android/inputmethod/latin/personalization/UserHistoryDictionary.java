@@ -18,7 +18,9 @@ package com.android.inputmethod.latin.personalization;
 
 import android.content.Context;
 
+import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.Dictionary;
+import com.android.inputmethod.latin.ExpandableBinaryDictionary;
 
 import java.io.File;
 import java.util.Locale;
@@ -40,13 +42,36 @@ public class UserHistoryDictionary extends DecayingExpandableBinaryDictionaryBas
                 dictFile);
     }
 
-    public void cancelAddingUserHistory(final String word0, final String word1) {
-        removeBigramDynamically(word0, word1);
-    }
-
     @Override
     public boolean isValidWord(final String word) {
         // Strings out of this dictionary should not be considered existing words.
         return false;
+    }
+
+    /**
+     * Pair will be added to the user history dictionary.
+     *
+     * The first word may be null. That means we don't know the context, in other words,
+     * it's only a unigram. The first word may also be an empty string : this means start
+     * context, as in beginning of a sentence for example.
+     * The second word may not be null (a NullPointerException would be thrown).
+     */
+    public static void addToDictionary(final ExpandableBinaryDictionary userHistoryDictionary,
+            final String word0, final String word1, final boolean isValid, final int timestamp) {
+        if (word1.length() >= Constants.DICTIONARY_MAX_WORD_LENGTH ||
+                (word0 != null && word0.length() >= Constants.DICTIONARY_MAX_WORD_LENGTH)) {
+            return;
+        }
+        final int frequency = isValid ?
+                FREQUENCY_FOR_WORDS_IN_DICTS : FREQUENCY_FOR_WORDS_NOT_IN_DICTS;
+        userHistoryDictionary.addWordDynamically(word1, frequency, null /* shortcutTarget */,
+                0 /* shortcutFreq */, false /* isNotAWord */, false /* isBlacklisted */, timestamp);
+        // Do not insert a word as a bigram of itself
+        if (word1.equals(word0)) {
+            return;
+        }
+        if (null != word0) {
+            userHistoryDictionary.addBigramDynamically(word0, word1, frequency, timestamp);
+        }
     }
 }

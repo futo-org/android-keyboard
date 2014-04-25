@@ -65,12 +65,8 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
             dumpAllWordsForDebug();
         }
         // Flush pending writes.
-        flush();
-        super.close();
-    }
-
-    public void flush() {
         asyncFlushBinaryDictionary();
+        super.close();
     }
 
     @Override
@@ -101,33 +97,6 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
             return;
         }
         addMultipleDictionaryEntriesDynamically(languageModelParams, callback);
-    }
-
-    /**
-     * Pair will be added to the decaying dictionary.
-     *
-     * The first word may be null. That means we don't know the context, in other words,
-     * it's only a unigram. The first word may also be an empty string : this means start
-     * context, as in beginning of a sentence for example.
-     * The second word may not be null (a NullPointerException would be thrown).
-     */
-    public void addToDictionary(final String word0, final String word1, final boolean isValid,
-            final int timestamp) {
-        if (word1.length() >= Constants.DICTIONARY_MAX_WORD_LENGTH ||
-                (word0 != null && word0.length() >= Constants.DICTIONARY_MAX_WORD_LENGTH)) {
-            return;
-        }
-        final int frequency = isValid ?
-                FREQUENCY_FOR_WORDS_IN_DICTS : FREQUENCY_FOR_WORDS_NOT_IN_DICTS;
-        addWordDynamically(word1, frequency, null /* shortcutTarget */, 0 /* shortcutFreq */,
-                false /* isNotAWord */, false /* isBlacklisted */, timestamp);
-        // Do not insert a word as a bigram of itself
-        if (word1.equals(word0)) {
-            return;
-        }
-        if (null != word0) {
-            addBigramDynamically(word0, word1, frequency, timestamp);
-        }
     }
 
     @Override
