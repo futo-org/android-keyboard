@@ -298,7 +298,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     /**
      * Dynamically adds a word unigram to the dictionary. May overwrite an existing entry.
      */
-    protected void addWordDynamically(final String word, final int frequency,
+    public void addWordDynamically(final String word, final int frequency,
             final String shortcutTarget, final int shortcutFreq, final boolean isNotAWord,
             final boolean isBlacklisted, final int timestamp) {
         reloadDictionaryIfRequired();
@@ -325,7 +325,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     /**
      * Dynamically adds a word bigram in the dictionary. May overwrite an existing entry.
      */
-    protected void addBigramDynamically(final String word0, final String word1,
+    public void addBigramDynamically(final String word0, final String word1,
             final int frequency, final int timestamp) {
         reloadDictionaryIfRequired();
         ExecutorUtils.getExecutor(mDictName).execute(new Runnable() {
@@ -348,7 +348,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     /**
      * Dynamically remove a word bigram in the dictionary.
      */
-    protected void removeBigramDynamically(final String word0, final String word1) {
+    public void removeBigramDynamically(final String word0, final String word1) {
         reloadDictionaryIfRequired();
         ExecutorUtils.getExecutor(mDictName).execute(new Runnable() {
             @Override
@@ -634,7 +634,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     /**
      * Flush binary dictionary to dictionary file.
      */
-    protected void asyncFlushBinaryDictionary() {
+    public void asyncFlushBinaryDictionary() {
         final Runnable newTask = new Runnable() {
             @Override
             public void run() {

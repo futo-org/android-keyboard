@@ -111,7 +111,7 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
     private static void addToDict(final UserHistoryDictionary dict, final List<String> words) {
         String prevWord = null;
         for (String word : words) {
-            dict.addToDictionary(prevWord, word, true,
+            UserHistoryDictionary.addToDictionary(dict, prevWord, word, true,
                     (int)TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()));
             prevWord = word;
         }
@@ -262,7 +262,7 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
         dict.waitAllTasksForTests();
         String prevWord = null;
         for (final String word : words) {
-            dict.addToDictionary(prevWord, word, true, mCurrentTime);
+            UserHistoryDictionary.addToDictionary(dict, prevWord, word, true, mCurrentTime);
             prevWord = word;
             assertTrue(dict.isInUnderlyingBinaryDictionaryForTests(word));
         }
