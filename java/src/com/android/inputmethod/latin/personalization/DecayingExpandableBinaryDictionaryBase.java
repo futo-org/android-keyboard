@@ -87,18 +87,6 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
         return false;
     }
 
-    public void addMultipleDictionaryEntriesToDictionary(
-            final ArrayList<LanguageModelParam> languageModelParams,
-            final ExpandableBinaryDictionary.AddMultipleDictionaryEntriesCallback callback) {
-        if (languageModelParams == null || languageModelParams.isEmpty()) {
-            if (callback != null) {
-                callback.onFinished();
-            }
-            return;
-        }
-        addMultipleDictionaryEntriesDynamically(languageModelParams, callback);
-    }
-
     @Override
     protected void loadInitialContentsLocked() {
         // No initial contents.
