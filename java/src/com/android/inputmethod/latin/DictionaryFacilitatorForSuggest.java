@@ -510,7 +510,6 @@ public class DictionaryFacilitatorForSuggest {
         return maxFreq;
     }
 
-
     public void clearUserHistoryDictionary() {
         final ExpandableBinaryDictionary userHistoryDict =
                 mDictionaries.getSubDict(Dictionary.TYPE_USER_HISTORY);
