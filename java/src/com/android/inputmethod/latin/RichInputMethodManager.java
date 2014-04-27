@@ -20,6 +20,7 @@ import static com.android.inputmethod.latin.Constants.Subtype.KEYBOARD_MODE;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -405,5 +406,16 @@ public final class RichInputMethodManager {
         mSubtypeListCacheWithImplicitlySelectedSubtypes.clear();
         mSubtypeListCacheWithoutImplicitlySelectedSubtypes.clear();
         mInputMethodInfoCache.clear();
+    }
+
+    public boolean shouldOfferSwitchingToNextInputMethod(final IBinder binder,
+            boolean defaultValue) {
+        // Use the default value instead on Jelly Bean MR2 and previous where
+        // {@link InputMethodManager#shouldOfferSwitchingToNextInputMethod} isn't yet available
+        // and on KitKat where the API is still just a stub to return true always.
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
+            return defaultValue;
+        }
+        return mImmWrapper.shouldOfferSwitchingToNextInputMethod(binder);
     }
 }
