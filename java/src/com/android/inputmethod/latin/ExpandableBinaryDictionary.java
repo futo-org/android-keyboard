@@ -27,7 +27,6 @@ import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
 import com.android.inputmethod.latin.makedict.WordProperty;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.utils.AsyncResultHolder;
-import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.CombinedFormatUtils;
 import com.android.inputmethod.latin.utils.ExecutorUtils;
 import com.android.inputmethod.latin.utils.FileUtils;
@@ -38,7 +37,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -74,15 +72,6 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
 
     private static final int DICTIONARY_FORMAT_VERSION = FormatSpec.VERSION4;
 
-    /**
-     * A static map of update controllers, each of which records the time of accesses to a single
-     * binary dictionary file and tracks whether the file is regenerating. The key for this map is
-     * the dictionary name  and the value is the shared dictionary time recorder associated with
-     * that dictionary name.
-     */
-    private static final ConcurrentHashMap<String, DictionaryUpdateController>
-            sDictNameDictionaryUpdateControllerMap = CollectionUtils.newConcurrentHashMap();
-
     /** The application context. */
     protected final Context mContext;
 
@@ -105,14 +94,9 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     /** Dictionary file */
     private final File mDictFile;
 
-    // TODO: remove, once dynamic operations is serialized
-    /** Controls updating the shared binary dictionary file across multiple instances. */
-    private final DictionaryUpdateController mDictNameDictionaryUpdateController;
+    private final AtomicBoolean mProcessingLargeTask;
+    private boolean mNeedsToReload;
 
-    // TODO: remove, once dynamic operations is serialized
-    /** Controls updating the local binary dictionary for this instance. */
-    private final DictionaryUpdateController mPerInstanceDictionaryUpdateController =
-            new DictionaryUpdateController();
 
     /* A extension for a binary dictionary file. */
     protected static final String DICT_FILE_EXTENSION = ".dict";
@@ -146,21 +130,6 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     }
 
     /**
-     * Gets the dictionary update controller for the given dictionary name.
-     */
-    private static DictionaryUpdateController getDictionaryUpdateController(
-            final String dictName) {
-        DictionaryUpdateController recorder = sDictNameDictionaryUpdateControllerMap.get(dictName);
-        if (recorder == null) {
-            synchronized(sDictNameDictionaryUpdateControllerMap) {
-                recorder = new DictionaryUpdateController();
-                sDictNameDictionaryUpdateControllerMap.put(dictName, recorder);
-            }
-        }
-        return recorder;
-    }
-
-    /**
      * Creates a new expandable binary dictionary.
      *
      * @param context The application context of the parent.
@@ -179,7 +148,8 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         mLocale = locale;
         mDictFile = getDictFile(context, dictName, dictFile);
         mBinaryDictionary = null;
-        mDictNameDictionaryUpdateController = getDictionaryUpdateController(dictName);
+        mProcessingLargeTask = new AtomicBoolean();
+        mNeedsToReload = false;
     }
 
     public static File getDictFile(final Context context, final String dictName,
@@ -286,7 +256,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                         try {
                             mBinaryDictionary.flushWithGC();
                         } finally {
-                            mDictNameDictionaryUpdateController.mProcessingLargeTask.set(false);
+                            mProcessingLargeTask.set(false);
                         }
                     }
                 });
@@ -388,7 +358,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                         callback.onFinished();
                     }
                     if (locked) {
-                        mDictNameDictionaryUpdateController.mProcessingLargeTask.set(false);
+                        mProcessingLargeTask.set(false);
                     }
                 }
             }
@@ -462,24 +432,10 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     }
 
     /**
-     * Load the current binary dictionary from internal storage in a background thread. If no binary
-     * dictionary exists, this method will generate one.
-     */
-    protected void loadDictionary() {
-        mPerInstanceDictionaryUpdateController.mLastUpdateRequestTime = System.currentTimeMillis();
-        reloadDictionaryIfRequired();
-    }
-
-    /**
      * Loads the current binary dictionary from internal storage. Assumes the dictionary file
      * exists.
      */
     private void loadBinaryDictionaryLocked() {
-        if (DEBUG) {
-            Log.d(TAG, "Loading binary dictionary: " + mDictName + " request="
-                    + mDictNameDictionaryUpdateController.mLastUpdateRequestTime + " update="
-                    + mDictNameDictionaryUpdateController.mLastUpdateTime);
-        }
         if (DBG_STRESS_TEST) {
             // Test if this class does not cause problems when it takes long time to load binary
             // dictionary.
@@ -505,11 +461,6 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
      * Create a new binary dictionary and load initial contents.
      */
     private void createNewDictionaryLocked() {
-        if (DEBUG) {
-            Log.d(TAG, "Generating binary dictionary: " + mDictName + " request="
-                    + mDictNameDictionaryUpdateController.mLastUpdateRequestTime + " update="
-                    + mDictNameDictionaryUpdateController.mLastUpdateTime);
-        }
         removeBinaryDictionaryLocked();
         createOnMemoryBinaryDictionaryLocked();
         loadInitialContentsLocked();
@@ -529,20 +480,11 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     }
 
     /**
-     * Marks that the dictionary is out of date and requires a reload.
+     * Marks that the dictionary needs to be reloaded.
      *
-     * @param requiresRebuild Indicates that the source dictionary content has changed and a rebuild
-     *        of the binary file is required. If not true, the next reload process will only read
-     *        the current binary dictionary from file.
      */
-    protected void setRequiresReload(final boolean requiresRebuild) {
-        final long time = System.currentTimeMillis();
-        mPerInstanceDictionaryUpdateController.mLastUpdateRequestTime = time;
-        mDictNameDictionaryUpdateController.mLastUpdateRequestTime = time;
-        if (DEBUG) {
-            Log.d(TAG, "Reload request: " + mDictName + ": request=" + time + " update="
-                    + mDictNameDictionaryUpdateController.mLastUpdateTime);
-        }
+    protected void setNeedsToReload() {
+        mNeedsToReload = true;
     }
 
     /**
@@ -559,18 +501,17 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
      * Returns whether a dictionary reload is required.
      */
     private boolean isReloadRequired() {
-        return mBinaryDictionary == null || mPerInstanceDictionaryUpdateController.isOutOfDate();
+        return mBinaryDictionary == null || mNeedsToReload;
     }
 
     private boolean processingLargeTask() {
-        return mDictNameDictionaryUpdateController.mProcessingLargeTask.get();
+        return mProcessingLargeTask.get();
     }
 
     // Returns whether the dictionary is being used for a large task. If true, we should not use
     // this dictionary for latency sensitive operations.
     private boolean setProcessingLargeTaskIfNot() {
-        return mDictNameDictionaryUpdateController.mProcessingLargeTask.compareAndSet(
-                false /* expect */ , true /* update */);
+        return mProcessingLargeTask.compareAndSet(false /* expect */ , true /* update */);
     }
 
     /**
@@ -584,28 +525,17 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
             @Override
             public void run() {
                 try {
-                    final long time = System.currentTimeMillis();
-                    final boolean openedDictIsOutOfDate =
-                            mDictNameDictionaryUpdateController.isOutOfDate();
-                    if (!dictionaryFileExists()
-                            || (openedDictIsOutOfDate && haveContentsChanged())) {
+                    if (!dictionaryFileExists() || haveContentsChanged()) {
                         // If the shared dictionary file does not exist or is out of date and
                         // contents have been updated, the first instance that acquires the lock
                         // will generate a new one
-                        mDictNameDictionaryUpdateController.mLastUpdateTime = time;
                         createNewDictionaryLocked();
-                    } else if (openedDictIsOutOfDate) {
-                        // If not, the reload request was unnecessary so revert
-                        // LastUpdateRequestTime to LastUpdateTime.
-                        mDictNameDictionaryUpdateController.mLastUpdateRequestTime =
-                                mDictNameDictionaryUpdateController.mLastUpdateTime;
-                    } else if (mBinaryDictionary == null ||
-                            mPerInstanceDictionaryUpdateController.mLastUpdateTime
-                                    < mDictNameDictionaryUpdateController.mLastUpdateTime) {
+                    } else if (mBinaryDictionary == null) {
                         // Otherwise, if the local dictionary is older than the shared dictionary,
                         // load the shared dictionary.
                         loadBinaryDictionaryLocked();
                     }
+                    mNeedsToReload = false;
                     if (mBinaryDictionary != null && !(isValidDictionaryLocked()
                             // TODO: remove the check below
                             && matchesExpectedBinaryDictFormatVersionForThisType(
@@ -613,12 +543,10 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                         // Binary dictionary or its format version is not valid. Regenerate
                         // the dictionary file. writeBinaryDictionary will remove the
                         // existing files if appropriate.
-                        mDictNameDictionaryUpdateController.mLastUpdateTime = time;
                         createNewDictionaryLocked();
                     }
-                    mPerInstanceDictionaryUpdateController.mLastUpdateTime = time;
                 } finally {
-                    mDictNameDictionaryUpdateController.mProcessingLargeTask.set(false);
+                    mProcessingLargeTask.set(false);
                 }
             }
         });
@@ -641,20 +569,6 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         };
         final Runnable oldTask = mUnfinishedFlushingTask.getAndSet(newTask);
         ExecutorUtils.getExecutor(mDictName).replaceAndExecute(oldTask, newTask);
-    }
-
-    /**
-     * For tracking whether the dictionary is out of date and the dictionary is used in a large
-     * task. Can be shared across multiple dictionary instances that access the same filename.
-     */
-    private static class DictionaryUpdateController {
-        public volatile long mLastUpdateTime = 0;
-        public volatile long mLastUpdateRequestTime = 0;
-        public volatile AtomicBoolean mProcessingLargeTask = new AtomicBoolean();
-
-        public boolean isOutOfDate() {
-            return (mLastUpdateRequestTime > mLastUpdateTime);
-        }
     }
 
     // TODO: Implement BinaryDictionary.isInDictionary().

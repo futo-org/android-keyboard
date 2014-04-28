@@ -89,8 +89,8 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
         registerObserver(context);
 
         // Load the current binary dictionary from internal storage. If no binary dictionary exists,
-        // loadDictionary will start a new thread to generate one asynchronously.
-        loadDictionary();
+        // reloadDictionaryIfRequired will start a new thread to generate one asynchronously.
+        reloadDictionaryIfRequired();
     }
 
     private synchronized void registerObserver(final Context context) {
@@ -100,7 +100,7 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
                 new ContentObserver(null) {
                     @Override
                     public void onChange(boolean self) {
-                        setRequiresReload(true);
+                        setNeedsToReload();
                     }
                 });
     }
