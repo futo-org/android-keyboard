@@ -511,12 +511,12 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
      */
     private final void asyncReloadDictionary() {
         if (mIsReloading.compareAndSet(false, true)) {
-            mNeedsToReload = false;
             asyncExecuteTaskWithWriteLock(new Runnable() {
                 @Override
                 public void run() {
                     try {
-                        if (!mDictFile.exists() || haveContentsChanged()) {
+                        // TODO: Quit checking contents in ExpandableBinaryDictionary.
+                        if (!mDictFile.exists() || (mNeedsToReload && haveContentsChanged())) {
                             // If the dictionary file does not exist or contents have been updated,
                             // generate a new one.
                             createNewDictionaryLocked();
@@ -524,6 +524,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                             // Otherwise, load the existing dictionary.
                             loadBinaryDictionaryLocked();
                         }
+                        mNeedsToReload = false;
                         if (mBinaryDictionary != null && !(isValidDictionaryLocked()
                                 // TODO: remove the check below
                                 && matchesExpectedBinaryDictFormatVersionForThisType(
