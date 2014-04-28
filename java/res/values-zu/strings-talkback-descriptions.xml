@@ -26,12 +26,12 @@
     <string name="spoken_auto_correct" msgid="8989324692167993804">"I-<xliff:g id="KEY_NAME">%1$s</xliff:g> ilungisa i-<xliff:g id="ORIGINAL_WORD">%2$s</xliff:g> kube yi-<xliff:g id="CORRECTED_WORD">%3$s</xliff:g>"</string>
     <string name="spoken_auto_correct_obscured" msgid="7769449372355268412">"I-<xliff:g id="KEY_NAME">%1$s</xliff:g> yenza ukulungisa okuzenzakalelayo"</string>
     <string name="spoken_description_unknown" msgid="2382510329910793539">"Ikhodi yokhiye %d"</string>
-    <string name="spoken_description_shift" msgid="7209798151676638728">"I-Shift"</string>
+    <string name="spoken_description_shift" msgid="7209798151676638728">"U-Shift"</string>
     <string name="spoken_description_shift_shifted" msgid="1609924271343916689">"U-Shift uvuliwe (thepha ukuwuvimbela)"</string>
     <string name="spoken_description_caps_lock" msgid="5020582161133170892">"Ofeleba bavuliwe (thepha ukubavimbela)"</string>
     <string name="spoken_description_delete" msgid="3878902286264983302">"Susa"</string>
     <string name="spoken_description_to_symbol" msgid="8244903740201126590">"Amasimbuli"</string>
-    <string name="spoken_description_to_alpha" msgid="4081215210530031950">"Imbhalo"</string>
+    <string name="spoken_description_to_alpha" msgid="4081215210530031950">"Izinhlamvu"</string>
     <string name="spoken_description_to_numeric" msgid="4560261331530795682">"Izinombolo"</string>
     <string name="spoken_description_settings" msgid="7281251004003143204">"Izilungiselelo"</string>
     <string name="spoken_description_tab" msgid="8210782459446866716">"Ithebhu"</string>
@@ -65,7 +65,7 @@
     <string name="spoken_descrption_emoji_category_recents" msgid="4185344945205590692">"Okwakamuva"</string>
     <string name="spoken_descrption_emoji_category_people" msgid="8414196269847492817">"Abantu"</string>
     <string name="spoken_descrption_emoji_category_objects" msgid="6116297906606195278">"Izinto"</string>
-    <string name="spoken_descrption_emoji_category_nature" msgid="5018340512472354640">"Awendalo"</string>
+    <string name="spoken_descrption_emoji_category_nature" msgid="5018340512472354640">"Indalo"</string>
     <string name="spoken_descrption_emoji_category_places" msgid="1163315840948545317">"Izindawo"</string>
     <string name="spoken_descrption_emoji_category_symbols" msgid="474680659024880601">"Amasimbuli"</string>
     <string name="spoken_descrption_emoji_category_emoticons" msgid="456737544787823539">"Izithombe-mzwelo"</string>
