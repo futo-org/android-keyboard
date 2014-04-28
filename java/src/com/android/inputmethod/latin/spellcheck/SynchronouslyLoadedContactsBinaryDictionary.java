@@ -27,10 +27,11 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 public final class SynchronouslyLoadedContactsBinaryDictionary extends ContactsBinaryDictionary {
+    private static final String NAME = "spellcheck_contacts";
     private final Object mLock = new Object();
 
     public SynchronouslyLoadedContactsBinaryDictionary(final Context context, final Locale locale) {
-        super(context, locale);
+        super(context, locale, null /* dictFile */, NAME);
     }
 
     @Override
