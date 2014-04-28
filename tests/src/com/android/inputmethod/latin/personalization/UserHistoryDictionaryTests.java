@@ -264,6 +264,7 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
         for (final String word : words) {
             UserHistoryDictionary.addToDictionary(dict, prevWord, word, true, mCurrentTime);
             prevWord = word;
+            dict.waitAllTasksForTests();
             assertTrue(dict.isInUnderlyingBinaryDictionaryForTests(word));
         }
         forcePassingShortTime();
