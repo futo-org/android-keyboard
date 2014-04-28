@@ -1229,7 +1229,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // TODO: Revise the language switch key behavior to make it much smarter and more reasonable.
     public void switchToNextSubtype() {
         final IBinder token = getWindow().getWindow().getAttributes().token;
-        if (mSettings.getCurrent().mIncludesOtherImesInLanguageSwitchList) {
+        if (shouldSwitchToOtherInputMethods()) {
             mRichImm.switchToNextInputMethod(token, false /* onlyCurrentIme */);
             return;
         }
@@ -1798,5 +1798,29 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final SettingsValues settingsValues = mSettings.getCurrent();
         p.println(settingsValues.dump());
         // TODO: Dump all settings values
+    }
+
+    public boolean shouldSwitchToOtherInputMethods() {
+        // TODO: Revisit here to reorganize the settings. Probably we can/should use different
+        // strategy once the implementation of
+        // {@link InputMethodManager#shouldOfferSwitchingToNextInputMethod} is defined well.
+        final boolean fallbackValue = mSettings.getCurrent().mIncludesOtherImesInLanguageSwitchList;
+        final IBinder token = getWindow().getWindow().getAttributes().token;
+        if (token == null) {
+            return fallbackValue;
+        }
+        return mRichImm.shouldOfferSwitchingToNextInputMethod(token, fallbackValue);
+    }
+
+    public boolean shouldShowLanguageSwitchKey() {
+        // TODO: Revisit here to reorganize the settings. Probably we can/should use different
+        // strategy once the implementation of
+        // {@link InputMethodManager#shouldOfferSwitchingToNextInputMethod} is defined well.
+        final boolean fallbackValue = mSettings.getCurrent().isLanguageSwitchKeyEnabled();
+        final IBinder token = getWindow().getWindow().getAttributes().token;
+        if (token == null) {
+            return fallbackValue;
+        }
+        return mRichImm.shouldOfferSwitchingToNextInputMethod(token, fallbackValue);
     }
 }
