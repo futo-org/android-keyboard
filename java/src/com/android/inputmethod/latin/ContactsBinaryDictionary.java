@@ -87,9 +87,6 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
         mLocale = locale;
         mUseFirstLastBigrams = useFirstLastBigramsForLocale(locale);
         registerObserver(context);
-
-        // Load the current binary dictionary from internal storage. If no binary dictionary exists,
-        // reloadDictionaryIfRequired will start a new thread to generate one asynchronously.
         reloadDictionaryIfRequired();
     }
 
