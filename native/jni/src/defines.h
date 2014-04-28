@@ -330,9 +330,6 @@ static inline void prof_out(void) {
 #define MAX_PROBABILITY 255
 #define MAX_BIGRAM_ENCODED_PROBABILITY 15
 
-// Assuming locale strings such as en_US, sr-Latn etc.
-#define MAX_LOCALE_STRING_LENGTH 10
-
 // Max value for length, distance and probability which are used in weighting
 // TODO: Remove
 #define MAX_VALUE_FOR_WEIGHTING 10000000

@@ -103,6 +103,8 @@ class ProximityInfo {
     const int KEYBOARD_HEIGHT;
     const float KEYBOARD_HYPOTENUSE;
     const bool HAS_TOUCH_POSITION_CORRECTION_DATA;
+    // Assuming locale strings such as en_US, sr-Latn etc.
+    static const int MAX_LOCALE_STRING_LENGTH = 10;
     char mLocaleStr[MAX_LOCALE_STRING_LENGTH];
     int *mProximityCharsArray;
     int mKeyXCoordinates[MAX_KEY_COUNT_IN_A_KEYBOARD];
