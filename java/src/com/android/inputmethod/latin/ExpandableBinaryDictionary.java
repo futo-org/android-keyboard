@@ -40,7 +40,6 @@ import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Abstract base class for an expandable dictionary that can be created and updated dynamically
@@ -100,9 +99,6 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
 
     /* A extension for a binary dictionary file. */
     protected static final String DICT_FILE_EXTENSION = ".dict";
-
-    private final AtomicReference<Runnable> mUnfinishedFlushingTask =
-            new AtomicReference<Runnable>();
 
     /**
      * Abstract method for loading initial contents of a given dictionary.
@@ -561,14 +557,12 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
      * Flush binary dictionary to dictionary file.
      */
     public void asyncFlushBinaryDictionary() {
-        final Runnable newTask = new Runnable() {
+        ExecutorUtils.getExecutor(mDictName).execute(new Runnable() {
             @Override
             public void run() {
                 flushDictionaryLocked();
             }
-        };
-        final Runnable oldTask = mUnfinishedFlushingTask.getAndSet(newTask);
-        ExecutorUtils.getExecutor(mDictName).replaceAndExecute(oldTask, newTask);
+        });
     }
 
     // TODO: Implement BinaryDictionary.isInDictionary().

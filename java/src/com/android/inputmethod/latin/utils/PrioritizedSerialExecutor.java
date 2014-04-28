@@ -47,16 +47,6 @@ public class PrioritizedSerialExecutor {
     }
 
     /**
-     * Clears all queued tasks.
-     */
-    public void clearAllTasks() {
-        synchronized(mLock) {
-            mTasks.clear();
-            mPrioritizedTasks.clear();
-        }
-    }
-
-    /**
      * Enqueues the given task into the task queue.
      * @param r the enqueued task
      */
@@ -120,33 +110,10 @@ public class PrioritizedSerialExecutor {
         }
     }
 
-    public void remove(final Runnable r) {
-        synchronized(mLock) {
-            mTasks.remove(r);
-            mPrioritizedTasks.remove(r);
-        }
-    }
-
-    public void replaceAndExecute(final Runnable oldTask, final Runnable newTask) {
-        synchronized(mLock) {
-            if (oldTask != null) remove(oldTask);
-            execute(newTask);
-        }
-    }
-
     public void shutdown() {
         synchronized(mLock) {
             mIsShutdown = true;
             mThreadPoolExecutor.shutdown();
-        }
-    }
-
-    public boolean isTerminated() {
-        synchronized(mLock) {
-            if (!mIsShutdown) {
-                return false;
-            }
-            return mPrioritizedTasks.isEmpty() && mTasks.isEmpty() && mActive == null;
         }
     }
 }
