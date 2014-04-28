@@ -86,7 +86,12 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
 
     public UserBinaryDictionary(final Context context, final Locale locale,
             final boolean alsoUseMoreRestrictiveLocales, final File dictFile) {
-        super(context, getDictName(NAME, locale, dictFile), locale, Dictionary.TYPE_USER, dictFile);
+        this(context, locale, alsoUseMoreRestrictiveLocales, dictFile, NAME);
+    }
+
+    protected UserBinaryDictionary(final Context context, final Locale locale,
+            final boolean alsoUseMoreRestrictiveLocales, final File dictFile, final String name) {
+        super(context, getDictName(name, locale, dictFile), locale, Dictionary.TYPE_USER, dictFile);
         if (null == locale) throw new NullPointerException(); // Catch the error earlier
         final String localeStr = locale.toString();
         if (SubtypeLocaleUtils.NO_LANGUAGE.equals(localeStr)) {
