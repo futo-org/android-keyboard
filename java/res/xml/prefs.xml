@@ -157,13 +157,6 @@
                 android:summary="@string/include_other_imes_in_language_switch_list_summary"
                 android:persistent="true"
                 android:defaultValue="false" />
-            <!-- Values for popup dismiss delay are added programmatically -->
-            <CheckBoxPreference
-                android:key="pref_sliding_key_input_preview"
-                android:title="@string/sliding_key_input_preview"
-                android:summary="@string/sliding_key_input_preview_summary"
-                android:persistent="true"
-                android:defaultValue="true" />
             <ListPreference
                 android:key="pref_keyboard_layout_20110916"
                 android:title="@string/keyboard_color_scheme"
@@ -179,12 +172,6 @@
             <ListPreference
                 android:key="pref_key_preview_popup_dismiss_delay"
                 android:title="@string/key_preview_popup_dismiss_delay" />
-            <com.android.inputmethod.latin.settings.SeekBarDialogPreference
-                android:key="pref_key_longpress_timeout"
-                android:title="@string/prefs_key_longpress_timeout_settings"
-                latin:minValue="@integer/config_min_longpress_timeout"
-                latin:maxValue="@integer/config_max_longpress_timeout"
-                latin:stepValue="@integer/config_longpress_timeout_step" />
             <com.android.inputmethod.latin.settings.SeekBarDialogPreference
                 android:key="pref_vibration_duration_settings"
                 android:title="@string/prefs_keypress_vibration_duration_settings"
