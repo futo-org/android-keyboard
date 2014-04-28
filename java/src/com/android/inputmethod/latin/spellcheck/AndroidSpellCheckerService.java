@@ -33,8 +33,6 @@ import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.DictionaryCollection;
 import com.android.inputmethod.latin.DictionaryFactory;
 import com.android.inputmethod.latin.R;
-import com.android.inputmethod.latin.SynchronouslyLoadedContactsBinaryDictionary;
-import com.android.inputmethod.latin.SynchronouslyLoadedUserBinaryDictionary;
 import com.android.inputmethod.latin.UserBinaryDictionary;
 import com.android.inputmethod.latin.utils.AdditionalSubtypeUtils;
 import com.android.inputmethod.latin.utils.BinaryDictionaryUtils;
