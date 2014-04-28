@@ -23,6 +23,7 @@ import android.util.Log;
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
+import com.android.inputmethod.latin.personalization.ContextualDictionary;
 import com.android.inputmethod.latin.personalization.PersonalizationDictionary;
 import com.android.inputmethod.latin.personalization.UserHistoryDictionary;
 import com.android.inputmethod.latin.utils.CollectionUtils;
@@ -63,7 +64,8 @@ public class DictionaryFacilitatorForSuggest {
                 Dictionary.TYPE_USER_HISTORY,
                 Dictionary.TYPE_PERSONALIZATION,
                 Dictionary.TYPE_USER,
-                Dictionary.TYPE_CONTACTS
+                Dictionary.TYPE_CONTACTS,
+                Dictionary.TYPE_CONTEXTUAL
             };
 
     private static final Map<String, Class<? extends ExpandableBinaryDictionary>>
@@ -74,6 +76,7 @@ public class DictionaryFacilitatorForSuggest {
         DICT_TYPE_TO_CLASS.put(Dictionary.TYPE_PERSONALIZATION, PersonalizationDictionary.class);
         DICT_TYPE_TO_CLASS.put(Dictionary.TYPE_USER, UserBinaryDictionary.class);
         DICT_TYPE_TO_CLASS.put(Dictionary.TYPE_CONTACTS, ContactsBinaryDictionary.class);
+        DICT_TYPE_TO_CLASS.put(Dictionary.TYPE_CONTEXTUAL, ContextualDictionary.class);
     }
 
     private static final String DICT_FACTORY_METHOD_NAME = "getDictionary";
@@ -201,6 +204,7 @@ public class DictionaryFacilitatorForSuggest {
         if (usePersonalizedDicts) {
             subDictTypesToUse.add(Dictionary.TYPE_USER_HISTORY);
             subDictTypesToUse.add(Dictionary.TYPE_PERSONALIZATION);
+            subDictTypesToUse.add(Dictionary.TYPE_CONTEXTUAL);
         }
 
         final Dictionary newMainDict;
