@@ -116,12 +116,12 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
             // devices. On older versions of the platform, the hook above will be called instead.
             @Override
             public void onChange(final boolean self, final Uri uri) {
-                setRequiresReload(true);
+                setNeedsToReload();
             }
         };
         cres.registerContentObserver(Words.CONTENT_URI, true, mObserver);
         mEnabled = readIsEnabled();
-        loadDictionary();
+        reloadDictionaryIfRequired();
     }
 
     @Override
