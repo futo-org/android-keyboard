@@ -16,6 +16,8 @@
 
 package com.android.inputmethod.latin.utils;
 
+import com.android.inputmethod.annotations.UsedForTesting;
+
 import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -74,6 +76,7 @@ public class PrioritizedSerialExecutor {
      * Enqueues the given task into the prioritized task queue.
      * @param r the enqueued task
      */
+    @UsedForTesting
     public void executePrioritized(final Runnable r) {
         synchronized(mLock) {
             if (!mIsShutdown) {
