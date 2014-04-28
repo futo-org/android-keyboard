@@ -45,10 +45,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 /**
  * Abstract base class for an expandable dictionary that can be created and updated dynamically
  * during runtime. When updated it automatically generates a new binary dictionary to handle future
- * queries in native code. This binary dictionary is written to internal storage, and potentially
- * shared across multiple ExpandableBinaryDictionary instances. Updates to each dictionary filename
- * are controlled across multiple instances to ensure that only one instance can update the same
- * dictionary at the same time.
+ * queries in native code. This binary dictionary is written to internal storage.
  */
 abstract public class ExpandableBinaryDictionary extends Dictionary {
 
@@ -82,8 +79,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
 
     /**
      * The name of this dictionary, used as a part of the filename for storing the binary
-     * dictionary. Multiple dictionary instances with the same name is supported, with access
-     * controlled by DictionaryUpdateController.
+     * dictionary.
      */
     private final String mDictName;
 
@@ -112,7 +108,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     /**
      * Indicates that the source dictionary contents have changed and a rebuild of the binary file
      * is required. If it returns false, the next reload will only read the current binary
-     * dictionary from file. Note that the shared binary dictionary is locked when this is called.
+     * dictionary from file.
      */
     protected abstract boolean haveContentsChanged();
 
@@ -484,17 +480,6 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         mBinaryDictionary.flushWithGCIfHasUpdated();
     }
 
-    private void flushDictionaryLocked() {
-        if (mBinaryDictionary == null) {
-            return;
-        }
-        if (mBinaryDictionary.needsToRunGC(false /* mindsBlockByGC */)) {
-            mBinaryDictionary.flushWithGC();
-        } else {
-            mBinaryDictionary.flush();
-        }
-    }
-
     /**
      * Marks that the dictionary needs to be reloaded.
      *
@@ -531,9 +516,9 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                 @Override
                 public void run() {
                     try {
-                        if (!dictionaryFileExists() || haveContentsChanged()) {
-                            // If the shared dictionary file does not exist or contents have been
-                            // updated, generate a new one.
+                        if (!mDictFile.exists() || haveContentsChanged()) {
+                            // If the dictionary file does not exist or contents have been updated,
+                            // generate a new one.
                             createNewDictionaryLocked();
                         } else if (mBinaryDictionary == null) {
                             // Otherwise, load the existing dictionary.
@@ -556,11 +541,6 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         }
     }
 
-    // TODO: cache the file's existence so that we avoid doing a disk access each time.
-    private boolean dictionaryFileExists() {
-        return mDictFile.exists();
-    }
-
     /**
      * Flush binary dictionary to dictionary file.
      */
@@ -568,7 +548,14 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         asyncExecuteTaskWithWriteLock(new Runnable() {
             @Override
             public void run() {
-                flushDictionaryLocked();
+                if (mBinaryDictionary == null) {
+                    return;
+                }
+                if (mBinaryDictionary.needsToRunGC(false /* mindsBlockByGC */)) {
+                    mBinaryDictionary.flushWithGC();
+                } else {
+                    mBinaryDictionary.flush();
+                }
             }
         });
     }
