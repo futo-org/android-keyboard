@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 public final class SynchronouslyLoadedUserBinaryDictionary extends UserBinaryDictionary {
+    private static final String NAME = "spellcheck_user";
     private final Object mLock = new Object();
 
     public SynchronouslyLoadedUserBinaryDictionary(final Context context, final Locale locale) {
@@ -35,7 +36,7 @@ public final class SynchronouslyLoadedUserBinaryDictionary extends UserBinaryDic
 
     public SynchronouslyLoadedUserBinaryDictionary(final Context context, final Locale locale,
             final boolean alsoUseMoreRestrictiveLocales) {
-        super(context, locale, alsoUseMoreRestrictiveLocales, null /* dictFile */);
+        super(context, locale, alsoUseMoreRestrictiveLocales, null /* dictFile */, NAME);
     }
 
     @Override
