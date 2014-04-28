@@ -14,21 +14,28 @@
  * limitations under the License.
  */
 
-package com.android.inputmethod.latin;
+package com.android.inputmethod.latin.spellcheck;
 
 import android.content.Context;
 
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
+import com.android.inputmethod.latin.UserBinaryDictionary;
+import com.android.inputmethod.latin.WordComposer;
 
 import java.util.ArrayList;
 import java.util.Locale;
 
-public final class SynchronouslyLoadedContactsBinaryDictionary extends ContactsBinaryDictionary {
+public final class SynchronouslyLoadedUserBinaryDictionary extends UserBinaryDictionary {
     private final Object mLock = new Object();
 
-    public SynchronouslyLoadedContactsBinaryDictionary(final Context context, final Locale locale) {
-        super(context, locale);
+    public SynchronouslyLoadedUserBinaryDictionary(final Context context, final Locale locale) {
+        this(context, locale, false /* alsoUseMoreRestrictiveLocales */);
+    }
+
+    public SynchronouslyLoadedUserBinaryDictionary(final Context context, final Locale locale,
+            final boolean alsoUseMoreRestrictiveLocales) {
+        super(context, locale, alsoUseMoreRestrictiveLocales, null /* dictFile */);
     }
 
     @Override
