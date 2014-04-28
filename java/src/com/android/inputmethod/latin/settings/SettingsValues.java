@@ -119,7 +119,7 @@ public final class SettingsValues {
         mSoundOn = Settings.readKeypressSoundEnabled(prefs, res);
         mKeyPreviewPopupOn = Settings.readKeyPreviewPopupEnabled(prefs, res);
         mSlidingKeyInputPreviewEnabled = prefs.getBoolean(
-                Settings.PREF_SLIDING_KEY_INPUT_PREVIEW, true);
+                DebugSettings.PREF_SLIDING_KEY_INPUT_PREVIEW, true);
         mShowsVoiceInputKey = needsToShowVoiceInputKey(prefs, res);
         final String autoCorrectionThresholdRawValue = prefs.getString(
                 Settings.PREF_AUTO_CORRECTION_THRESHOLD,

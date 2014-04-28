@@ -55,6 +55,8 @@ public final class DebugSettings extends PreferenceFragment
     private static final String PREF_DUMP_USER_DICT = "dump_user_dict";
     private static final String PREF_DUMP_USER_HISTORY_DICT = "dump_user_history_dict";
     private static final String PREF_DUMP_PERSONALIZATION_DICT = "dump_personalization_dict";
+    public static final String PREF_SLIDING_KEY_INPUT_PREVIEW = "pref_sliding_key_input_preview";
+    public static final String PREF_KEY_LONGPRESS_TIMEOUT = "pref_key_longpress_timeout";
 
     private static final boolean SHOW_STATISTICS_LOGGING = false;
 
@@ -110,6 +112,7 @@ public final class DebugSettings extends PreferenceFragment
         findPreference(PREF_DUMP_PERSONALIZATION_DICT).setOnPreferenceClickListener(
                 dictDumpPrefClickListener);
         final Resources res = getResources();
+        setupKeyLongpressTimeoutSettings(prefs, res);
         setupKeyPreviewAnimationDuration(prefs, res, PREF_KEY_PREVIEW_SHOW_UP_DURATION,
                 res.getInteger(R.integer.config_key_preview_show_up_duration));
         setupKeyPreviewAnimationDuration(prefs, res, PREF_KEY_PREVIEW_DISMISS_DURATION,
@@ -198,6 +201,44 @@ public final class DebugSettings extends PreferenceFragment
             mDebugMode.setTitle(getResources().getString(R.string.prefs_debug_mode));
             mDebugMode.setSummary(version);
         }
+    }
+
+    private void setupKeyLongpressTimeoutSettings(final SharedPreferences sp,
+            final Resources res) {
+        final SeekBarDialogPreference pref = (SeekBarDialogPreference)findPreference(
+                PREF_KEY_LONGPRESS_TIMEOUT);
+        if (pref == null) {
+            return;
+        }
+        pref.setInterface(new SeekBarDialogPreference.ValueProxy() {
+            @Override
+            public void writeValue(final int value, final String key) {
+                sp.edit().putInt(key, value).apply();
+            }
+
+            @Override
+            public void writeDefaultValue(final String key) {
+                sp.edit().remove(key).apply();
+            }
+
+            @Override
+            public int readValue(final String key) {
+                return Settings.readKeyLongpressTimeout(sp, res);
+            }
+
+            @Override
+            public int readDefaultValue(final String key) {
+                return Settings.readDefaultKeyLongpressTimeout(res);
+            }
+
+            @Override
+            public String getValueText(final int value) {
+                return res.getString(R.string.abbreviation_unit_milliseconds, value);
+            }
+
+            @Override
+            public void feedbackValue(final int value) {}
+        });
     }
 
     private void setupKeyPreviewAnimationScale(final SharedPreferences sp, final Resources res,
