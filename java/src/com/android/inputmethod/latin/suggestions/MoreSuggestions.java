@@ -74,7 +74,13 @@ public final class MoreSuggestions extends Keyboard {
             int rowStartIndex = fromIndex;
             final int size = Math.min(suggestedWords.size(), SuggestedWords.MAX_SUGGESTIONS);
             while (index < size) {
-                final String word = suggestedWords.getLabel(index);
+                final String word;
+                if (isIndexSubjectToAutoCorrection(suggestedWords, index)) {
+                    // INDEX_OF_AUTO_CORRECTION and INDEX_OF_TYPED_WORD got swapped.
+                    word = suggestedWords.getLabel(SuggestedWords.INDEX_OF_TYPED_WORD);
+                } else {
+                    word = suggestedWords.getLabel(index);
+                }
                 // TODO: Should take care of text x-scaling.
                 mWidths[index] = (int)(TypefaceUtils.getStringWidth(word, paint) + padding);
                 final int numColumn = index - rowStartIndex + 1;
@@ -172,6 +178,11 @@ public final class MoreSuggestions extends Keyboard {
         }
     }
 
+    private static boolean isIndexSubjectToAutoCorrection(final SuggestedWords suggestedWords,
+            final int index) {
+        return suggestedWords.mWillAutoCorrect && index == SuggestedWords.INDEX_OF_AUTO_CORRECTION;
+    }
+
     public static final class Builder extends KeyboardBuilder<MoreSuggestionsParam> {
         private final MoreSuggestionsView mPaneView;
         private SuggestedWords mSuggestedWords;
@@ -189,7 +200,6 @@ public final class MoreSuggestions extends Keyboard {
             final int xmlId = R.xml.kbd_suggestions_pane_template;
             load(xmlId, parentKeyboard.mId);
             mParams.mVerticalGap = mParams.mTopPadding = parentKeyboard.mVerticalGap / 2;
-
             mPaneView.updateKeyboardGeometry(mParams.mDefaultRowHeight);
             final int count = mParams.layout(suggestedWords, fromIndex, maxWidth, minWidth, maxRow,
                     mPaneView.newLabelPaint(null /* key */), mResources);
@@ -206,8 +216,16 @@ public final class MoreSuggestions extends Keyboard {
                 final int x = params.getX(index);
                 final int y = params.getY(index);
                 final int width = params.getWidth(index);
-                final String word = mSuggestedWords.getLabel(index);
-                final String info = mSuggestedWords.getDebugString(index);
+                final String word;
+                final String info;
+                if (isIndexSubjectToAutoCorrection(mSuggestedWords, index)) {
+                    // INDEX_OF_AUTO_CORRECTION and INDEX_OF_TYPED_WORD got swapped.
+                    word = mSuggestedWords.getLabel(SuggestedWords.INDEX_OF_TYPED_WORD);
+                    info = mSuggestedWords.getDebugString(SuggestedWords.INDEX_OF_TYPED_WORD);
+                } else {
+                    word = mSuggestedWords.getLabel(index);
+                    info = mSuggestedWords.getDebugString(index);
+                }
                 final int indexInMoreSuggestions = index + SUGGESTION_CODE_BASE;
                 final Key key = new Key(word, KeyboardIconsSet.ICON_UNDEFINED,
                         indexInMoreSuggestions, null /* outputText */, info, 0 /* labelFlags */,
