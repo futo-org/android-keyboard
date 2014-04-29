@@ -27,6 +27,7 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 
 import com.android.inputmethod.accessibility.AccessibleKeyboardViewProxy;
+import com.android.inputmethod.compat.InputMethodServiceCompatUtils;
 import com.android.inputmethod.keyboard.KeyboardLayoutSet.KeyboardLayoutSetException;
 import com.android.inputmethod.keyboard.internal.KeyboardState;
 import com.android.inputmethod.latin.InputView;
@@ -43,8 +44,6 @@ import com.android.inputmethod.latin.utils.ResourceUtils;
 public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     private static final String TAG = KeyboardSwitcher.class.getSimpleName();
 
-    public static final String PREF_KEYBOARD_LAYOUT = "pref_keyboard_layout_20110916";
-
     static final class KeyboardTheme {
         public final int mThemeId;
         public final int mStyleId;
@@ -57,9 +56,14 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         }
     }
 
-    private static final KeyboardTheme[] KEYBOARD_THEMES = {
-        new KeyboardTheme(0, R.style.KeyboardTheme_ICS),
-        new KeyboardTheme(1, R.style.KeyboardTheme_GB),
+    public static final int THEME_INDEX_ICS = 0;
+    public static final int THEME_INDEX_GB = 1;
+    public static final int THEME_INDEX_KLP = 2;
+    public static final int THEME_INDEX_DEFAULT = THEME_INDEX_KLP;
+    public static final KeyboardTheme[] KEYBOARD_THEMES = {
+        new KeyboardTheme(THEME_INDEX_ICS, R.style.KeyboardTheme_ICS),
+        new KeyboardTheme(THEME_INDEX_GB, R.style.KeyboardTheme_GB),
+        new KeyboardTheme(THEME_INDEX_KLP, R.style.KeyboardTheme_KLP),
     };
 
     private SubtypeSwitcher mSubtypeSwitcher;
@@ -71,6 +75,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     private EmojiPalettesView mEmojiPalettesView;
     private LatinIME mLatinIME;
     private Resources mResources;
+    private boolean mIsHardwareAcceleratedDrawingEnabled;
 
     private KeyboardState mState;
 
@@ -80,7 +85,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
      * what user actually typed. */
     private boolean mIsAutoCorrectionActive;
 
-    private KeyboardTheme mKeyboardTheme = KEYBOARD_THEMES[0];
+    private KeyboardTheme mKeyboardTheme = KEYBOARD_THEMES[THEME_INDEX_DEFAULT];
     private Context mThemeContext;
 
     private static final KeyboardSwitcher sInstance = new KeyboardSwitcher();
@@ -104,32 +109,40 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         mPrefs = prefs;
         mSubtypeSwitcher = SubtypeSwitcher.getInstance();
         mState = new KeyboardState(this);
-        setContextThemeWrapper(latinIme, getKeyboardTheme(latinIme, prefs));
+        mIsHardwareAcceleratedDrawingEnabled =
+                InputMethodServiceCompatUtils.enableHardwareAcceleration(mLatinIME);
+    }
+
+    public void updateKeyboardTheme() {
+        final boolean themeUpdated = updateKeyboardThemeAndContextThemeWrapper(
+                mLatinIME, getKeyboardTheme(mLatinIME, mPrefs));
+        if (themeUpdated && mKeyboardView != null) {
+            mLatinIME.setInputView(onCreateInputView(mIsHardwareAcceleratedDrawingEnabled));
+        }
     }
 
     private static KeyboardTheme getKeyboardTheme(final Context context,
             final SharedPreferences prefs) {
-        final String defaultIndex = context.getString(R.string.config_default_keyboard_theme_index);
-        final String themeIndex = prefs.getString(PREF_KEYBOARD_LAYOUT, defaultIndex);
-        try {
-            final int index = Integer.valueOf(themeIndex);
-            if (index >= 0 && index < KEYBOARD_THEMES.length) {
-                return KEYBOARD_THEMES[index];
-            }
-        } catch (NumberFormatException e) {
-            // Format error, keyboard theme is default to 0.
+        final Resources res = context.getResources();
+        final int index = Settings.readKeyboardThemeIndex(prefs, res);
+        if (index >= 0 && index < KEYBOARD_THEMES.length) {
+            return KEYBOARD_THEMES[index];
         }
-        Log.w(TAG, "Illegal keyboard theme in preference: " + themeIndex + ", default to "
-                + defaultIndex);
-        return KEYBOARD_THEMES[Integer.valueOf(defaultIndex)];
+        final int defaultThemeIndex = Settings.resetAndGetDefaultKeyboardThemeIndex(prefs, res);
+        Log.w(TAG, "Illegal keyboard theme in preference: " + index + ", default to "
+                + defaultThemeIndex);
+        return KEYBOARD_THEMES[defaultThemeIndex];
     }
 
-    private void setContextThemeWrapper(final Context context, final KeyboardTheme keyboardTheme) {
+    private boolean updateKeyboardThemeAndContextThemeWrapper(final Context context,
+            final KeyboardTheme keyboardTheme) {
         if (mThemeContext == null || mKeyboardTheme.mThemeId != keyboardTheme.mThemeId) {
             mKeyboardTheme = keyboardTheme;
             mThemeContext = new ContextThemeWrapper(context, keyboardTheme.mStyleId);
             KeyboardLayoutSet.clearKeyboardCache();
+            return true;
         }
+        return false;
     }
 
     public void loadKeyboard(final EditorInfo editorInfo, final SettingsValues settingsValues) {
@@ -361,7 +374,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
             mKeyboardView.closing();
         }
 
-        setContextThemeWrapper(mLatinIME, mKeyboardTheme);
+        updateKeyboardThemeAndContextThemeWrapper(mLatinIME, mKeyboardTheme);
         mCurrentInputView = (InputView)LayoutInflater.from(mThemeContext).inflate(
                 R.layout.input_view, null);
         mMainKeyboardFrame = mCurrentInputView.findViewById(R.id.main_keyboard_frame);

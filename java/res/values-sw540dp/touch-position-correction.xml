@@ -48,7 +48,7 @@
     </string-array>
 
     <string-array
-        name="touch_position_correction_data_ics"
+        name="touch_position_correction_data_holo"
         translatable="false"
     >
         <!-- The default touch position data (See com.android.inputmethod.keyboard.ProximityInfo)

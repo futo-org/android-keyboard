@@ -77,7 +77,7 @@
     <string name="more_keys_for_currency_dollar">&#x00A2;,&#x00A3;,&#x20AC;,&#x00A5;,&#x20B1;</string>
     <string name="keylabel_for_currency">$</string>
     <string name="more_keys_for_currency">$,&#x00A2;,&#x20AC;,&#x00A3;,&#x00A5;,&#x20B1;</string>
-    <string name="more_keys_for_punctuation">"!fixedColumnOrder!4,#,!,\\,,\?,-,:,',\@"</string>
+    <string name="more_keys_for_punctuation">"!fixedColumnOrder!8,;,/,(,),#,!,\\,,\?,&amp;,\\%,+,\",-,:,',\@"</string>
     <!-- U+2020: "†" DAGGER
          U+2021: "‡" DOUBLE DAGGER
          U+2605: "★" BLACK STAR -->

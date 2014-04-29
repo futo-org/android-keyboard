@@ -103,15 +103,30 @@
     <!-- Keyboard theme names -->
     <string name="layout_gingerbread">Gingerbread</string>
     <string name="layout_ics">IceCreamSandwich</string>
+    <string name="layout_klp">KeyLimePie</string>
 
     <!-- For keyboard theme switcher dialog -->
     <string-array name="keyboard_layout_modes">
         <item>@string/layout_ics</item>
         <item>@string/layout_gingerbread</item>
+        <item>@string/layout_klp</item>
     </string-array>
+    <!-- An element must be an index of {@link KeyboardSwitcher#KEYBOARD_THEMES[]}. -->
     <string-array name="keyboard_layout_modes_values">
         <item>0</item>
         <item>1</item>
+        <item>2</item>
+    </string-array>
+
+    <!-- For keyboard color scheme option dialog. -->
+    <string-array name="keyboard_color_schemes">
+        <item>@string/keyboard_color_scheme_white</item>
+        <item>@string/keyboard_color_scheme_blue</item>
+    </string-array>
+    <!-- An element must be an index of {@link KeyboardSwitcher#KEYBOARD_THEMES[]}. -->
+    <string-array name="keyboard_color_schemes_values">
+        <item>2</item>
+        <item>0</item>
     </string-array>
 
     <!-- Subtype locale display name exceptions.

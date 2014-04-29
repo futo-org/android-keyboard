@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+**
+** Copyright 2013, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+    <style name="KeyboardTheme.KLP" parent="KeyboardIcons.Holo">
+        <item name="keyboardStyle">@style/Keyboard.KLP</item>
+        <item name="keyboardViewStyle">@style/KeyboardView.KLP</item>
+        <item name="mainKeyboardViewStyle">@style/MainKeyboardView.KLP</item>
+        <item name="emojiPalettesViewStyle">@style/EmojiPalettesView.KLP</item>
+        <item name="moreKeysKeyboardStyle">@style/MoreKeysKeyboard.KLP</item>
+        <item name="moreKeysKeyboardViewStyle">@style/MoreKeysKeyboardView.KLP</item>
+        <item name="moreKeysKeyboardContainerStyle">@style/MoreKeysKeyboardContainer.KLP</item>
+        <item name="suggestionStripViewStyle">@style/SuggestionStripView.KLP</item>
+        <item name="suggestionWordStyle">@style/SuggestionWord.KLP</item>
+    </style>
+    <style
+        name="Keyboard.KLP"
+        parent="Keyboard"
+    >
+        <!-- This should be aligned with KeyboardSwitcher.KEYBOARD_THEMES[] -->
+        <item name="themeId">0</item>
+        <item name="keyboardTopPadding">@fraction/keyboard_top_padding_holo</item>
+        <item name="keyboardBottomPadding">@fraction/keyboard_bottom_padding_holo</item>
+        <item name="horizontalGap">@fraction/key_horizontal_gap_holo</item>
+        <item name="verticalGap">@fraction/key_bottom_gap_holo</item>
+        <item name="touchPositionCorrectionData">@array/touch_position_correction_data_holo</item>
+    </style>
+    <style
+        name="KeyboardView.KLP"
+        parent="KeyboardView"
+    >
+        <item name="android:background">@drawable/keyboard_background_holo</item>
+        <item name="keyBackground">@drawable/btn_keyboard_key_klp</item>
+        <item name="keyTypeface">bold</item>
+        <item name="keyTextColor">@color/key_text_color_holo</item>
+        <item name="keyTextInactivatedColor">@color/key_text_inactivated_color_holo</item>
+        <item name="keyHintLetterColor">@color/key_hint_letter_color_holo</item>
+        <item name="keyHintLabelColor">@color/key_hint_label_color_holo</item>
+        <item name="keyShiftedLetterHintInactivatedColor">@color/key_shifted_letter_hint_inactivated_color_holo</item>
+        <item name="keyShiftedLetterHintActivatedColor">@color/key_shifted_letter_hint_activated_color_holo</item>
+        <item name="keyPreviewTextColor">@color/key_text_color_holo</item>
+        <item name="keyTextShadowColor">@color/key_text_shadow_color_holo</item>
+        <item name="keyTextShadowRadius">0.0</item>
+    </style>
+    <style
+        name="MainKeyboardView.KLP"
+        parent="KeyboardView.KLP"
+    >
+        <item name="keyPreviewLayout">@layout/key_preview_klp</item>
+        <item name="keyPreviewOffset">@dimen/key_preview_offset_holo</item>
+        <item name="gestureFloatingPreviewTextColor">@color/highlight_color_klp</item>
+        <item name="gestureFloatingPreviewColor">@color/gesture_floating_preview_color_holo</item>
+        <item name="gestureTrailColor">@color/highlight_color_klp</item>
+        <item name="slidingKeyInputPreviewColor">@color/highlight_translucent_color_klp</item>
+        <item name="autoCorrectionSpacebarLedEnabled">false</item>
+        <item name="autoCorrectionSpacebarLedIcon">@drawable/sym_keyboard_space_led_holo</item>
+        <item name="spacebarTextColor">@color/spacebar_text_color_holo</item>
+        <item name="spacebarTextShadowColor">@color/spacebar_text_shadow_color_holo</item>
+    </style>
+    <!-- Though {@link EmojiPalettesView} doesn't extend {@link KeyboardView}, some views inside it,
+         for instance delete button, need themed {@link KeyboardView} attributes. -->
+    <style
+        name="EmojiPalettesView.KLP"
+        parent="KeyboardView.KLP"
+    >
+        <item name="keyBackgroundEmojiFunctional">@drawable/btn_keyboard_key_functional_klp</item>
+        <item name="emojiTabLabelColor">@color/emoji_tab_label_color_holo</item>
+    </style>
+    <style
+        name="MoreKeysKeyboard.KLP"
+        parent="Keyboard.KLP"
+    >
+        <item name="keyboardTopPadding">0%p</item>
+        <item name="keyboardBottomPadding">0%p</item>
+        <item name="horizontalGap">0%p</item>
+        <item name="touchPositionCorrectionData">@null</item>
+    </style>
+    <style
+        name="MoreKeysKeyboardView.KLP"
+        parent="KeyboardView.KLP"
+    >
+        <item name="android:background">@null</item>
+        <item name="keyBackground">@drawable/btn_keyboard_key_popup_klp</item>
+        <item name="keyTypeface">normal</item>
+        <item name="verticalCorrection">@dimen/more_keys_keyboard_vertical_correction_holo</item>
+    </style>
+    <style
+        name="MoreKeysKeyboardContainer.KLP"
+    >
+        <item name="android:background">@drawable/keyboard_popup_panel_background_klp</item>
+    </style>
+    <style
+        name="SuggestionStripView.KLP"
+        parent="SuggestionStripView"
+    >
+        <item name="android:background">@drawable/keyboard_suggest_strip_holo</item>
+        <item name="suggestionStripOption">autoCorrectBold|validTypedWordBold</item>
+        <item name="colorValidTypedWord">@color/typed_word_color_klp</item>
+        <item name="colorTypedWord">@color/typed_word_color_klp</item>
+        <item name="colorAutoCorrect">@color/highlight_color_klp</item>
+        <item name="colorSuggested">@color/suggested_word_color_klp</item>
+        <item name="alphaObsoleted">70%</item>
+    </style>
+    <style name="SuggestionWord.KLP">
+        <item name="android:background">@drawable/btn_suggestion_klp</item>
+    </style>
+</resources>

@@ -47,7 +47,7 @@
             <Key
                 latin:keyLabel="!text/keylabel_for_comma"
                 latin:keyLabelFlags="hasPopupHint"
-                latin:additionalMoreKeys="!text/more_keys_for_comma"
+                latin:additionalMoreKeys="!text/more_keys_for_comma,!text/shortcut_as_more_key"
                 latin:keyStyle="f1MoreKeysStyle" />
         </default>
     </switch>

@@ -37,13 +37,15 @@ public final class FormatSpec {
      * sion
      *
      * o |
-     * p | not used                                4 bits
-     * t | has bigrams ?                           1 bit, 1 = yes, 0 = no : CONTAINS_BIGRAMS_FLAG
-     * i | FRENCH_LIGATURE_PROCESSING_FLAG
-     * o | supports dynamic updates ?              1 bit, 1 = yes, 0 = no : SUPPORTS_DYNAMIC_UPDATE
-     * n | GERMAN_UMLAUT_PROCESSING_FLAG
-     * f |
-     * lags
+     * p | not used                                3 bits
+     * t | each unigram and bigram entry has a time stamp?
+     * i |                                         1 bit, 1 = yes, 0 = no : CONTAINS_TIMESTAMP_FLAG
+     * o | has bigrams ?                           1 bit, 1 = yes, 0 = no : CONTAINS_BIGRAMS_FLAG
+     * n | FRENCH_LIGATURE_PROCESSING_FLAG
+     * f | supports dynamic updates ?              1 bit, 1 = yes, 0 = no : SUPPORTS_DYNAMIC_UPDATE
+     * l | GERMAN_UMLAUT_PROCESSING_FLAG
+     * a |
+     * gs
      *
      * h |
      * e | size of the file header, 4bytes
@@ -211,6 +213,7 @@ public final class FormatSpec {
     static final int SUPPORTS_DYNAMIC_UPDATE = 0x2;
     static final int FRENCH_LIGATURE_PROCESSING_FLAG = 0x4;
     static final int CONTAINS_BIGRAMS_FLAG = 0x8;
+    static final int CONTAINS_TIMESTAMP_FLAG = 0x10;
 
     // TODO: Make this value adaptative to content data, store it in the header, and
     // use it in the reading code.
@@ -263,6 +266,7 @@ public final class FormatSpec {
     // These values are used only by version 4 or later.
     static final String TRIE_FILE_EXTENSION = ".trie";
     static final String FREQ_FILE_EXTENSION = ".freq";
+    static final String UNIGRAM_TIMESTAMP_FILE_EXTENSION = ".timestamp";
     // tat = Terminal Address Table
     static final String TERMINAL_ADDRESS_TABLE_FILE_EXTENSION = ".tat";
     static final String BIGRAM_FILE_EXTENSION = ".bigram";
@@ -271,14 +275,20 @@ public final class FormatSpec {
     static final String CONTENT_TABLE_FILE_SUFFIX = "_index";
     static final int FREQUENCY_AND_FLAGS_SIZE = 2;
     static final int TERMINAL_ADDRESS_TABLE_ADDRESS_SIZE = 3;
+    static final int UNIGRAM_TIMESTAMP_SIZE = 4;
 
     // With the English main dictionary as of October 2013, the size of bigram address table is
     // is 584KB with the block size being 4.
     // This is 91% of that of full address table.
     static final int BIGRAM_ADDRESS_TABLE_BLOCK_SIZE = 4;
-    static final int BIGRAM_CONTENT_COUNT = 1;
+    static final int BIGRAM_CONTENT_COUNT = 2;
     static final int BIGRAM_FREQ_CONTENT_INDEX = 0;
+    static final int BIGRAM_TIMESTAMP_CONTENT_INDEX = 1;
     static final String BIGRAM_FREQ_CONTENT_ID = "_freq";
+    static final String BIGRAM_TIMESTAMP_CONTENT_ID = "_timestamp";
+    static final int BIGRAM_TIMESTAMP_SIZE = 4;
+    static final int BIGRAM_COUNTER_SIZE = 1;
+    static final int BIGRAM_LEVEL_SIZE = 1;
 
     static final int SHORTCUT_CONTENT_COUNT = 1;
     static final int SHORTCUT_CONTENT_INDEX = 0;
@@ -294,6 +304,8 @@ public final class FormatSpec {
     static final int INVALID_CHARACTER = -1;
 
     static final int MAX_PTNODES_FOR_ONE_BYTE_PTNODE_COUNT = 0x7F; // 127
+    // Large PtNode array size field size is 2 bytes.
+    static final int LARGE_PTNODE_ARRAY_SIZE_FIELD_SIZE_FLAG = 0x8000;
     static final int MAX_PTNODES_IN_A_PT_NODE_ARRAY = 0x7FFF; // 32767
     static final int MAX_BIGRAMS_IN_A_PTNODE = 10000;
     static final int MAX_SHORTCUT_LIST_SIZE_IN_A_PTNODE = 0xFFFF;
@@ -321,6 +333,7 @@ public final class FormatSpec {
         public final int mVersion;
         public final boolean mSupportsDynamicUpdate;
         public final boolean mHasTerminalId;
+        public final boolean mHasTimestamp;
         @UsedForTesting
         public FormatOptions(final int version) {
             this(version, false);
@@ -328,6 +341,11 @@ public final class FormatSpec {
 
         @UsedForTesting
         public FormatOptions(final int version, final boolean supportsDynamicUpdate) {
+            this(version, supportsDynamicUpdate, false /* hasTimestamp */);
+        }
+
+        public FormatOptions(final int version, final boolean supportsDynamicUpdate,
+                final boolean hasTimestamp) {
             mVersion = version;
             if (version < FIRST_VERSION_WITH_DYNAMIC_UPDATE && supportsDynamicUpdate) {
                 throw new RuntimeException("Dynamic updates are only supported with versions "
@@ -335,6 +353,7 @@ public final class FormatSpec {
             }
             mSupportsDynamicUpdate = supportsDynamicUpdate;
             mHasTerminalId = (version >= FIRST_VERSION_WITH_TERMINAL_ID);
+            mHasTimestamp = hasTimestamp;
         }
     }
 

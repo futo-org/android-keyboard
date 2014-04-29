@@ -17,32 +17,32 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- Functional keys. -->
     <item android:state_single="true" android:state_pressed="true"
-          android:color="@color/key_text_color_functional_ics" />
+          android:drawable="@drawable/btn_keyboard_key_dark_pressed_klp" />
     <item android:state_single="true"
-          android:color="@color/key_text_color_functional_ics" />
+          android:drawable="@drawable/btn_keyboard_key_dark_normal_holo" />
 
     <!-- Action keys. -->
     <item android:state_active="true" android:state_pressed="true"
-          android:color="@color/key_text_color_normal_ics" />
+          android:drawable="@drawable/btn_keyboard_key_dark_pressed_klp" />
     <item android:state_active="true"
-          android:color="@color/key_text_color_normal_ics" />
+          android:drawable="@drawable/btn_keyboard_key_dark_active_klp" />
 
     <!-- Toggle keys. Use checkable/checked state. -->
     <item android:state_checkable="true" android:state_checked="true" android:state_pressed="true"
-          android:color="@color/key_text_color_normal_ics" />
+          android:drawable="@drawable/btn_keyboard_key_dark_pressed_on_klp" />
     <item android:state_checkable="true" android:state_pressed="true"
-          android:color="@color/key_text_color_normal_ics" />
+          android:drawable="@drawable/btn_keyboard_key_dark_pressed_off_klp" />
     <item android:state_checkable="true" android:state_checked="true"
-          android:color="@color/key_text_color_normal_ics" />
+          android:drawable="@drawable/btn_keyboard_key_dark_normal_on_klp" />
     <item android:state_checkable="true"
-          android:color="@color/key_text_color_normal_ics" />
+          android:drawable="@drawable/btn_keyboard_key_dark_normal_off_holo" />
 
     <!-- Empty background keys. -->
     <item android:state_empty="true"
-          android:color="@color/key_text_color_normal_ics" />
+          android:drawable="@drawable/transparent" />
 
     <!-- Normal keys. -->
     <item android:state_pressed="true"
-          android:color="@color/key_text_color_normal_ics" />
-    <item android:color="@color/key_text_color_normal_ics" />
+          android:drawable="@drawable/btn_keyboard_key_light_pressed_klp" />
+    <item android:drawable="@drawable/btn_keyboard_key_light_normal_holo" />
 </selector>

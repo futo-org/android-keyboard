@@ -725,8 +725,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         LatinImeLogger.commit();
         LatinImeLogger.onDestroy();
         if (mInputUpdater != null) {
-            mInputUpdater.onDestroy();
-            mInputUpdater = null;
+            mInputUpdater.quitLooper();
         }
         super.onDestroy();
     }
@@ -811,6 +810,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         super.onStartInputView(editorInfo, restarting);
         mRichImm.clearSubtypeCaches();
         final KeyboardSwitcher switcher = mKeyboardSwitcher;
+        switcher.updateKeyboardTheme();
         final MainKeyboardView mainKeyboardView = switcher.getMainKeyboardView();
         // If we are starting input in a different text field from before, we'll have to reload
         // settings, so currentSettingsValues can't be final.
@@ -910,6 +910,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 false /* shouldFinishComposition */)) {
             // We try resetting the caches up to 5 times before giving up.
             mHandler.postResetCaches(isDifferentTextField, 5 /* remainingTries */);
+            // mLastSelection{Start,End} are reset later in this method, don't need to do it here
             canReachInputConnection = false;
         } else {
             if (isDifferentTextField) {
@@ -989,10 +990,16 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             if (textLength > mLastSelectionStart
                     || (textLength < Constants.EDITOR_CONTENTS_CACHE_SIZE
                             && mLastSelectionStart < Constants.EDITOR_CONTENTS_CACHE_SIZE)) {
+                // It should not be possible to have only one of those variables be
+                // NOT_A_CURSOR_POSITION, so if they are equal, either the selection is zero-sized
+                // (simple cursor, no selection) or there is no cursor/we don't know its pos
+                final boolean wasEqual = mLastSelectionStart == mLastSelectionEnd;
                 mLastSelectionStart = textLength;
                 // We can't figure out the value of mLastSelectionEnd :(
-                // But at least if it's smaller than mLastSelectionStart something is wrong
-                if (mLastSelectionStart > mLastSelectionEnd) {
+                // But at least if it's smaller than mLastSelectionStart something is wrong,
+                // and if they used to be equal we also don't want to make it look like there is a
+                // selection.
+                if (wasEqual || mLastSelectionStart > mLastSelectionEnd) {
                     mLastSelectionEnd = mLastSelectionStart;
                 }
             }
@@ -1457,7 +1464,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     private boolean maybeDoubleSpacePeriod() {
         final SettingsValues currentSettingsValues = mSettings.getCurrent();
-        if (!currentSettingsValues.mCorrectionEnabled) return false;
         if (!currentSettingsValues.mUseDoubleSpacePeriod) return false;
         if (!mHandler.isAcceptingDoubleSpacePeriod()) return false;
         // We only do this when we see two spaces and an accepted code point before the cursor.
@@ -1502,6 +1508,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 || codePoint == Constants.CODE_CLOSING_CURLY_BRACKET
                 || codePoint == Constants.CODE_CLOSING_ANGLE_BRACKET
                 || codePoint == Constants.CODE_PLUS
+                || codePoint == Constants.CODE_PERCENT
                 || Character.getType(codePoint) == Character.OTHER_SYMBOL;
     }
 
@@ -1816,13 +1823,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mWordComposer.setCapitalizedModeAtStartComposingTime(getActualCapsMode());
     }
 
-    private static final class InputUpdater implements Handler.Callback {
+    static final class InputUpdater implements Handler.Callback {
         private final Handler mHandler;
         private final LatinIME mLatinIme;
         private final Object mLock = new Object();
         private boolean mInBatchInput; // synchronized using {@link #mLock}.
 
-        private InputUpdater(final LatinIME latinIme) {
+        InputUpdater(final LatinIME latinIme) {
             final HandlerThread handlerThread = new HandlerThread(
                     InputUpdater.class.getSimpleName());
             handlerThread.start();
@@ -1939,7 +1946,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     .sendToTarget();
         }
 
-        private void onDestroy() {
+        void quitLooper() {
             mHandler.removeMessages(MSG_GET_SUGGESTED_WORDS);
             mHandler.removeMessages(MSG_UPDATE_GESTURE_PREVIEW_AND_SUGGESTION_STRIP);
             mHandler.getLooper().quit();
@@ -2156,26 +2163,12 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 // later (typically, in a subsequent press on backspace).
                 mLastSelectionEnd = mLastSelectionStart;
                 mConnection.deleteSurroundingText(numCharsDeleted, 0);
-                if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-                    ResearchLogger.latinIME_handleBackspace(numCharsDeleted,
-                            false /* shouldUncommitLogUnit */);
-                }
             } else {
                 // There is no selection, just delete one character.
                 if (NOT_A_CURSOR_POSITION == mLastSelectionEnd) {
                     // This should never happen.
                     Log.e(TAG, "Backspace when we don't know the selection position");
                 }
-                final int codePointBeforeCursor = mConnection.getCodePointBeforeCursor();
-                if (codePointBeforeCursor == Constants.NOT_A_CODE) {
-                    // Nothing to delete before the cursor. We have to revert the deletion states
-                    // that were updated at the beginning of this method.
-                    mDeleteCount--;
-                    mExpectingUpdateSelection = false;
-                    return;
-                }
-                final int lengthToDelete =
-                        Character.isSupplementaryCodePoint(codePointBeforeCursor) ? 2 : 1;
                 if (mAppWorkAroundsUtils.isBeforeJellyBean() ||
                         currentSettings.mInputAttributes.isTypeNull()) {
                     // There are two possible reasons to send a key event: either the field has
@@ -2186,23 +2179,28 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     // applications are relying on this behavior so we continue to support it for
                     // older apps, so we retain this behavior if the app has target SDK < JellyBean.
                     sendDownUpKeyEvent(KeyEvent.KEYCODE_DEL);
+                    if (mDeleteCount > DELETE_ACCELERATE_AT) {
+                        sendDownUpKeyEvent(KeyEvent.KEYCODE_DEL);
+                    }
                 } else {
+                    final int codePointBeforeCursor = mConnection.getCodePointBeforeCursor();
+                    if (codePointBeforeCursor == Constants.NOT_A_CODE) {
+                        // Nothing to delete before the cursor. We have to revert the deletion
+                        // states that were updated at the beginning of this method.
+                        mDeleteCount--;
+                        mExpectingUpdateSelection = false;
+                        return;
+                    }
+                    final int lengthToDelete =
+                            Character.isSupplementaryCodePoint(codePointBeforeCursor) ? 2 : 1;
                     mConnection.deleteSurroundingText(lengthToDelete, 0);
-                }
-                if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-                    ResearchLogger.latinIME_handleBackspace(lengthToDelete,
-                            true /* shouldUncommitLogUnit */);
-                }
-                if (mDeleteCount > DELETE_ACCELERATE_AT) {
-                    final int codePointBeforeCursorToDeleteAgain =
-                            mConnection.getCodePointBeforeCursor();
-                    if (codePointBeforeCursorToDeleteAgain != Constants.NOT_A_CODE) {
-                        final int lengthToDeleteAgain = Character.isSupplementaryCodePoint(
-                                codePointBeforeCursorToDeleteAgain) ? 2 : 1;
-                        mConnection.deleteSurroundingText(lengthToDeleteAgain, 0);
-                        if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-                            ResearchLogger.latinIME_handleBackspace(lengthToDeleteAgain,
-                                    true /* shouldUncommitLogUnit */);
+                    if (mDeleteCount > DELETE_ACCELERATE_AT) {
+                        final int codePointBeforeCursorToDeleteAgain =
+                                mConnection.getCodePointBeforeCursor();
+                        if (codePointBeforeCursorToDeleteAgain != Constants.NOT_A_CODE) {
+                            final int lengthToDeleteAgain = Character.isSupplementaryCodePoint(
+                                   codePointBeforeCursorToDeleteAgain) ? 2 : 1;
+                            mConnection.deleteSurroundingText(lengthToDeleteAgain, 0);
                         }
                     }
                 }
@@ -2342,9 +2340,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             if (!mRecapitalizeStatus.isSetAt(mLastSelectionStart, mLastSelectionEnd)) {
                 mLastSelectionStart = mRecapitalizeStatus.getNewCursorStart();
                 mLastSelectionEnd = mRecapitalizeStatus.getNewCursorEnd();
-                mConnection.setSelection(mLastSelectionStart, mLastSelectionEnd);
             }
         }
+        mConnection.finishComposingText();
         mRecapitalizeStatus.rotate();
         final int numCharsDeleted = mLastSelectionEnd - mLastSelectionStart;
         mConnection.setSelection(mLastSelectionEnd, mLastSelectionEnd);

@@ -31,10 +31,10 @@
     <fraction name="key_bottom_gap_gb">5.941%p</fraction>
     <fraction name="key_horizontal_gap_gb">0.997%p</fraction>
 
-    <fraction name="keyboard_top_padding_ics">2.727%p</fraction>
-    <fraction name="keyboard_bottom_padding_ics">0.0%p</fraction>
-    <fraction name="key_bottom_gap_ics">5.368%p</fraction>
-    <fraction name="key_horizontal_gap_ics">1.020%p</fraction>
+    <fraction name="keyboard_top_padding_holo">2.727%p</fraction>
+    <fraction name="keyboard_bottom_padding_holo">0.0%p</fraction>
+    <fraction name="key_bottom_gap_holo">5.368%p</fraction>
+    <fraction name="key_horizontal_gap_holo">1.020%p</fraction>
 
     <!-- left or right padding of label alignment -->
     <dimen name="key_label_horizontal_padding">8dp</dimen>
@@ -54,9 +54,9 @@
     <fraction name="key_letter_ratio_5row">78%</fraction>
     <fraction name="key_uppercase_letter_ratio_5row">48%</fraction>
 
-    <dimen name="key_preview_offset_ics">1.6dp</dimen>
+    <dimen name="key_preview_offset_holo">1.6dp</dimen>
     <!-- popup_key_height x -0.5 -->
-    <dimen name="more_keys_keyboard_vertical_correction_ics">-22.4dp</dimen>
+    <dimen name="more_keys_keyboard_vertical_correction_holo">-22.4dp</dimen>
 
     <dimen name="suggestions_strip_height">36dp</dimen>
     <dimen name="more_suggestions_row_height">36dp</dimen>

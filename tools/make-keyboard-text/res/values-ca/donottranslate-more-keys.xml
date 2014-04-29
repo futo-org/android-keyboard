@@ -71,7 +71,7 @@
          U+0142: "ł" LATIN SMALL LETTER L WITH STROKE -->
     <string name="more_keys_for_l">l&#x00B7;l,&#x0142;</string>
     <!-- U+00B7: "·" MIDDLE DOT -->
-    <string name="more_keys_for_punctuation">"!fixedColumnOrder!4,&#x00B7;,!,\\,,\?,:,;,\@"</string>
+    <string name="more_keys_for_punctuation">"!fixedColumnOrder!9,;,/,(,),#,&#x00B7;,!,\\,,\?,&amp;,\\%,+,\",-,:,',\@"</string>
     <string name="more_keys_for_period">\?,&#x00B7;</string>
     <!-- U+00E7: "ç" LATIN SMALL LETTER C WITH CEDILLA -->
     <string name="keylabel_for_spanish_row2_10">&#x00E7;</string>

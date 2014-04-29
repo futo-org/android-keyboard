@@ -30,7 +30,7 @@
         <item name="maxMoreKeysColumn">@integer/config_max_more_keys_column</item>
     </style>
     <style name="KeyboardView">
-        <item name="keyBackground">@drawable/btn_keyboard_key_ics</item>
+        <item name="keyBackground">@drawable/btn_keyboard_key_klp</item>
         <item name="keyLetterSize">@fraction/key_letter_ratio</item>
         <item name="keyLargeLetterRatio">@fraction/key_large_letter_ratio</item>
         <item name="keyLabelSize">@fraction/key_label_ratio</item>
@@ -110,7 +110,7 @@
         name="EmojiPalettesView"
         parent="KeyboardView"
     >
-        <item name="emojiTabLabelColor">@color/emoji_tab_label_color_ics</item>
+        <item name="emojiTabLabelColor">@color/emoji_tab_label_color_holo</item>
     </style>
     <style name="MoreKeysKeyboard" />
     <style

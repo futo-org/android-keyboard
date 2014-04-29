@@ -2,7 +2,7 @@
 <!--
 /*
 **
-** Copyright 2011, The Android Open Source Project
+** Copyright 2013, The Android Open Source Project
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
 ** you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@
 -->
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
-    <style name="KeyboardTheme.ICS" parent="KeyboardIcons.ICS">
+    <style name="KeyboardTheme.ICS" parent="KeyboardIcons.Holo">
         <item name="keyboardStyle">@style/Keyboard.ICS</item>
         <item name="keyboardViewStyle">@style/KeyboardView.ICS</item>
         <item name="mainKeyboardViewStyle">@style/MainKeyboardView.ICS</item>
@@ -30,40 +30,17 @@
         <item name="suggestionStripViewStyle">@style/SuggestionStripView.ICS</item>
         <item name="suggestionWordStyle">@style/SuggestionWord.ICS</item>
     </style>
-    <style name="KeyboardIcons.ICS">
-        <!-- Keyboard icons -->
-        <!-- TODO: The following holo icon for phone (drawable-hdpi and drawable-xhdpi) are missing.
-             sym_keyboard_123_mic_holo
-             -->
-        <item name="iconShiftKey">@drawable/sym_keyboard_shift_holo_dark</item>
-        <item name="iconDeleteKey">@drawable/sym_keyboard_delete_holo_dark</item>
-        <item name="iconSettingsKey">@drawable/sym_keyboard_settings_holo_dark</item>
-        <item name="iconSpaceKey">@null</item>
-        <item name="iconEnterKey">@drawable/sym_keyboard_return_holo_dark</item>
-        <item name="iconSearchKey">@drawable/sym_keyboard_search_holo_dark</item>
-        <item name="iconTabKey">@drawable/sym_keyboard_tab_holo_dark</item>
-        <item name="iconShortcutKey">@drawable/sym_keyboard_voice_holo_dark</item>
-        <item name="iconShortcutForLabel">@drawable/sym_keyboard_label_mic_holo_dark</item>
-        <item name="iconSpaceKeyForNumberLayout">@drawable/sym_keyboard_space_holo_dark</item>
-        <item name="iconShiftKeyShifted">@drawable/sym_keyboard_shift_locked_holo_dark</item>
-        <item name="iconShortcutKeyDisabled">@drawable/sym_keyboard_voice_off_holo_dark</item>
-        <item name="iconTabKeyPreview">@drawable/sym_keyboard_feedback_tab</item>
-        <item name="iconLanguageSwitchKey">@drawable/sym_keyboard_language_switch_dark</item>
-        <item name="iconZwnjKey">@drawable/sym_keyboard_zwnj_holo_dark</item>
-        <item name="iconZwjKey">@drawable/sym_keyboard_zwj_holo_dark</item>
-        <item name="iconEmojiKey">@drawable/sym_keyboard_smiley_holo_dark</item>
-    </style>
     <style
         name="Keyboard.ICS"
         parent="Keyboard"
     >
         <!-- This should be aligned with KeyboardSwitcher.KEYBOARD_THEMES[] -->
-        <item name="themeId">0</item>
-        <item name="keyboardTopPadding">@fraction/keyboard_top_padding_ics</item>
-        <item name="keyboardBottomPadding">@fraction/keyboard_bottom_padding_ics</item>
-        <item name="horizontalGap">@fraction/key_horizontal_gap_ics</item>
-        <item name="verticalGap">@fraction/key_bottom_gap_ics</item>
-        <item name="touchPositionCorrectionData">@array/touch_position_correction_data_ics</item>
+        <item name="themeId">2</item>
+        <item name="keyboardTopPadding">@fraction/keyboard_top_padding_holo</item>
+        <item name="keyboardBottomPadding">@fraction/keyboard_bottom_padding_holo</item>
+        <item name="horizontalGap">@fraction/key_horizontal_gap_holo</item>
+        <item name="verticalGap">@fraction/key_bottom_gap_holo</item>
+        <item name="touchPositionCorrectionData">@array/touch_position_correction_data_holo</item>
     </style>
     <style
         name="KeyboardView.ICS"
@@ -72,14 +49,14 @@
         <item name="android:background">@drawable/keyboard_background_holo</item>
         <item name="keyBackground">@drawable/btn_keyboard_key_ics</item>
         <item name="keyTypeface">bold</item>
-        <item name="keyTextColor">@color/key_text_color_ics</item>
-        <item name="keyTextInactivatedColor">@color/key_text_inactivated_color_ics</item>
-        <item name="keyHintLetterColor">@color/key_hint_letter_color_ics</item>
-        <item name="keyHintLabelColor">@color/key_hint_label_color_ics</item>
-        <item name="keyShiftedLetterHintInactivatedColor">@color/key_shifted_letter_hint_inactivated_color_ics</item>
-        <item name="keyShiftedLetterHintActivatedColor">@color/key_shifted_letter_hint_activated_color_ics</item>
-        <item name="keyPreviewTextColor">@color/key_text_color_ics</item>
-        <item name="keyTextShadowColor">@color/key_text_shadow_color_ics</item>
+        <item name="keyTextColor">@color/key_text_color_holo</item>
+        <item name="keyTextInactivatedColor">@color/key_text_inactivated_color_holo</item>
+        <item name="keyHintLetterColor">@color/key_hint_letter_color_holo</item>
+        <item name="keyHintLabelColor">@color/key_hint_label_color_holo</item>
+        <item name="keyShiftedLetterHintInactivatedColor">@color/key_shifted_letter_hint_inactivated_color_holo</item>
+        <item name="keyShiftedLetterHintActivatedColor">@color/key_shifted_letter_hint_activated_color_holo</item>
+        <item name="keyPreviewTextColor">@color/key_text_color_holo</item>
+        <item name="keyTextShadowColor">@color/key_text_shadow_color_holo</item>
         <item name="keyTextShadowRadius">0.0</item>
     </style>
     <style
@@ -87,15 +64,15 @@
         parent="KeyboardView.ICS"
     >
         <item name="keyPreviewLayout">@layout/key_preview_ics</item>
-        <item name="keyPreviewOffset">@dimen/key_preview_offset_ics</item>
-        <item name="gestureFloatingPreviewTextColor">@color/highlight_color_holo</item>
-        <item name="gestureFloatingPreviewColor">@color/gesture_floating_preview_color_ics</item>
-        <item name="gestureTrailColor">@color/highlight_color_holo</item>
-        <item name="slidingKeyInputPreviewColor">@color/highlight_translucent_color_holo</item>
+        <item name="keyPreviewOffset">@dimen/key_preview_offset_holo</item>
+        <item name="gestureFloatingPreviewTextColor">@color/highlight_color_ics</item>
+        <item name="gestureFloatingPreviewColor">@color/gesture_floating_preview_color_holo</item>
+        <item name="gestureTrailColor">@color/highlight_color_ics</item>
+        <item name="slidingKeyInputPreviewColor">@color/highlight_translucent_color_ics</item>
         <item name="autoCorrectionSpacebarLedEnabled">false</item>
         <item name="autoCorrectionSpacebarLedIcon">@drawable/sym_keyboard_space_led_holo</item>
-        <item name="spacebarTextColor">@color/spacebar_text_color_ics</item>
-        <item name="spacebarTextShadowColor">@color/spacebar_text_shadow_color_ics</item>
+        <item name="spacebarTextColor">@color/spacebar_text_color_holo</item>
+        <item name="spacebarTextShadowColor">@color/spacebar_text_shadow_color_holo</item>
     </style>
     <!-- Though {@link EmojiPalettesView} doesn't extend {@link KeyboardView}, some views inside it,
          for instance delete button, need themed {@link KeyboardView} attributes. -->
@@ -104,7 +81,7 @@
         parent="KeyboardView.ICS"
     >
         <item name="keyBackgroundEmojiFunctional">@drawable/btn_keyboard_key_functional_ics</item>
-        <item name="emojiTabLabelColor">@color/emoji_tab_label_color_ics</item>
+        <item name="emojiTabLabelColor">@color/emoji_tab_label_color_holo</item>
     </style>
     <style
         name="MoreKeysKeyboard.ICS"
@@ -122,12 +99,12 @@
         <item name="android:background">@null</item>
         <item name="keyBackground">@drawable/btn_keyboard_key_popup_ics</item>
         <item name="keyTypeface">normal</item>
-        <item name="verticalCorrection">@dimen/more_keys_keyboard_vertical_correction_ics</item>
+        <item name="verticalCorrection">@dimen/more_keys_keyboard_vertical_correction_holo</item>
     </style>
     <style
         name="MoreKeysKeyboardContainer.ICS"
     >
-        <item name="android:background">@drawable/keyboard_popup_panel_background_holo</item>
+        <item name="android:background">@drawable/keyboard_popup_panel_background_ics</item>
     </style>
     <style
         name="SuggestionStripView.ICS"
@@ -135,10 +112,10 @@
     >
         <item name="android:background">@drawable/keyboard_suggest_strip_holo</item>
         <item name="suggestionStripOption">autoCorrectBold|validTypedWordBold</item>
-        <item name="colorValidTypedWord">@color/typed_word_color_holo</item>
-        <item name="colorTypedWord">@color/typed_word_color_holo</item>
-        <item name="colorAutoCorrect">@color/highlight_color_holo</item>
-        <item name="colorSuggested">@color/suggested_word_color_holo</item>
+        <item name="colorValidTypedWord">@color/typed_word_color_ics</item>
+        <item name="colorTypedWord">@color/typed_word_color_ics</item>
+        <item name="colorAutoCorrect">@color/highlight_color_ics</item>
+        <item name="colorSuggested">@color/suggested_word_color_ics</item>
         <item name="alphaObsoleted">70%</item>
     </style>
     <style name="SuggestionWord.ICS">

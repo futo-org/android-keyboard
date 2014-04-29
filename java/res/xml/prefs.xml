@@ -158,6 +158,13 @@
                 android:summary="@string/sliding_key_input_preview_summary"
                 android:persistent="true"
                 android:defaultValue="true" />
+            <ListPreference
+                android:key="pref_keyboard_layout_20110916"
+                android:title="@string/keyboard_color_scheme"
+                android:persistent="true"
+                android:entryValues="@array/keyboard_color_schemes_values"
+                android:entries="@array/keyboard_color_schemes"
+                android:defaultValue="@string/config_default_keyboard_theme_index" />
             <PreferenceScreen
                 android:fragment="com.android.inputmethod.latin.settings.AdditionalSubtypeSettings"
                 android:key="custom_input_styles"

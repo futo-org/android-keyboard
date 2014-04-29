@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2011 The Android Open Source Project
+<!-- Copyright (C) 2013 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -20,17 +20,17 @@
 >
     <!-- Left edge -->
     <item latin:state_left_edge="true" latin:state_has_morekeys="true"
-          android:drawable="@drawable/keyboard_key_feedback_left_more_background_holo" />
+          android:drawable="@drawable/keyboard_key_feedback_left_more_background_ics" />
     <item latin:state_left_edge="true"
-          android:drawable="@drawable/keyboard_key_feedback_left_background_holo" />
+          android:drawable="@drawable/keyboard_key_feedback_left_background_ics" />
 
     <!-- Right edge -->
     <item latin:state_right_edge="true" latin:state_has_morekeys="true"
-          android:drawable="@drawable/keyboard_key_feedback_right_more_background_holo" />
+          android:drawable="@drawable/keyboard_key_feedback_right_more_background_ics" />
     <item latin:state_right_edge="true"
-          android:drawable="@drawable/keyboard_key_feedback_right_background_holo" />
+          android:drawable="@drawable/keyboard_key_feedback_right_background_ics" />
 
     <item latin:state_has_morekeys="true"
-          android:drawable="@drawable/keyboard_key_feedback_more_background_holo" />
-    <item android:drawable="@drawable/keyboard_key_feedback_background_holo" />
+          android:drawable="@drawable/keyboard_key_feedback_more_background_ics" />
+    <item android:drawable="@drawable/keyboard_key_feedback_background_ics" />
 </selector>

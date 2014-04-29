@@ -129,7 +129,9 @@ public class Ver3DictEncoder implements DictEncoder {
         if (countSize != 1 && countSize != 2) {
             throw new RuntimeException("Strange size from getGroupCountSize : " + countSize);
         }
-        mPosition = BinaryDictEncoderUtils.writeUIntToBuffer(mBuffer, mPosition, ptNodeCount,
+        final int encodedPtNodeCount = (countSize == 2) ?
+                (ptNodeCount | FormatSpec.LARGE_PTNODE_ARRAY_SIZE_FIELD_SIZE_FLAG) : ptNodeCount;
+        mPosition = BinaryDictEncoderUtils.writeUIntToBuffer(mBuffer, mPosition, encodedPtNodeCount,
                 countSize);
     }
 

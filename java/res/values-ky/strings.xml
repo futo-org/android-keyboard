@@ -112,18 +112,9 @@
     <skip />
     <!-- no translation found for added_word (8993883354622484372) -->
     <skip />
-    <string name="label_go_key" msgid="1635148082137219148">"Баруу"</string>
-    <string name="label_next_key" msgid="362972844525672568">"Кийин"</string>
-    <string name="label_previous_key" msgid="1211868118071386787">"Мурун"</string>
-    <string name="label_done_key" msgid="2441578748772529288">"Даяр"</string>
-    <string name="label_send_key" msgid="2815056534433717444">"Жибер"</string>
     <!-- no translation found for label_to_symbol_key (8516904117128967293) -->
     <skip />
     <!-- no translation found for label_to_symbol_with_microphone_key (9035925553010061906) -->
-    <skip />
-    <!-- no translation found for label_pause_key (181098308428035340) -->
-    <skip />
-    <!-- no translation found for label_wait_key (6402152600878093134) -->
     <skip />
     <!-- no translation found for spoken_use_headphones (896961781287283493) -->
     <skip />

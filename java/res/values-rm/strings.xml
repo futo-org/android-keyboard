@@ -123,25 +123,15 @@
     <!-- no translation found for gesture_floating_preview_text_summary (4472696213996203533) -->
     <skip />
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : Memorisà"</string>
-    <string name="label_go_key" msgid="1635148082137219148">"Dai"</string>
-    <string name="label_next_key" msgid="362972844525672568">"Vinavant"</string>
-    <!-- no translation found for label_previous_key (1211868118071386787) -->
-    <skip />
-    <string name="label_done_key" msgid="2441578748772529288">"Finì"</string>
-    <string name="label_send_key" msgid="2815056534433717444">"Trametter"</string>
-    <!-- no translation found for label_pause_key (181098308428035340) -->
-    <skip />
-    <!-- no translation found for label_wait_key (6402152600878093134) -->
-    <skip />
     <!-- no translation found for spoken_use_headphones (896961781287283493) -->
     <skip />
     <!-- no translation found for spoken_current_text_is (2485723011272583845) -->
     <skip />
     <!-- no translation found for spoken_no_text_entered (7479685225597344496) -->
     <skip />
-    <!-- no translation found for spoken_auto_correct (5381764628886369268) -->
+    <!-- no translation found for spoken_auto_correct (8005997889020109763) -->
     <skip />
-    <!-- no translation found for spoken_auto_correct_obscured (1186884531440481089) -->
+    <!-- no translation found for spoken_auto_correct_obscured (6276420476908833791) -->
     <skip />
     <!-- no translation found for spoken_description_unknown (3197434010402179157) -->
     <skip />

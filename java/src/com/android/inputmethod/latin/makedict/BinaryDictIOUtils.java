@@ -460,8 +460,10 @@ public final class BinaryDictIOUtils {
                 destination.write((byte)infos.length);
                 break;
             case 2:
-                destination.write((byte)(infos.length >> 8));
-                destination.write((byte)(infos.length & 0xFF));
+                final int encodedPtNodeCount =
+                        infos.length | FormatSpec.LARGE_PTNODE_ARRAY_SIZE_FIELD_SIZE_FLAG;
+                destination.write((byte)(encodedPtNodeCount >> 8));
+                destination.write((byte)(encodedPtNodeCount & 0xFF));
                 break;
             default:
                 throw new RuntimeException("Invalid node count size.");

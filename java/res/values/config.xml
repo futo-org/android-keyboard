@@ -41,8 +41,8 @@
     <integer name="config_keyboard_grid_width">32</integer>
     <integer name="config_keyboard_grid_height">16</integer>
     <integer name="config_double_space_period_timeout">1100</integer>
-    <!-- This configuration is the index of the array {@link KeyboardSwitcher.KEYBOARD_THEMES}. -->
-    <string name="config_default_keyboard_theme_index" translatable="false">0</string>
+    <!-- This configuration is an index of  {@link KeyboardSwitcher#KEYBOARD_THEMES[]}. -->
+    <string name="config_default_keyboard_theme_index" translatable="false">2</string>
     <integer name="config_max_more_keys_column">5</integer>
 
     <!--

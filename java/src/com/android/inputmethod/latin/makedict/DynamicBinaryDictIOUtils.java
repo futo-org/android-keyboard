@@ -22,6 +22,7 @@ import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.DictBuffer;
 import com.android.inputmethod.latin.makedict.FormatSpec.FileHeader;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
+import com.android.inputmethod.latin.utils.CollectionUtils;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -217,6 +218,25 @@ public final class DynamicBinaryDictIOUtils {
     }
 
     /**
+     * Converts a list of WeightedString to a list of PendingAttribute.
+     */
+    public static ArrayList<PendingAttribute> resolveBigramPositions(final DictUpdater dictUpdater,
+            final ArrayList<WeightedString> bigramStrings)
+                    throws IOException, UnsupportedFormatException {
+        if (bigramStrings == null) return CollectionUtils.newArrayList();
+        final ArrayList<PendingAttribute> bigrams = CollectionUtils.newArrayList();
+        for (final WeightedString bigram : bigramStrings) {
+            final int pos = dictUpdater.getTerminalPosition(bigram.mWord);
+            if (pos == FormatSpec.NOT_VALID_WORD) {
+                // TODO: figure out what is the correct thing to do here.
+            } else {
+                bigrams.add(new PendingAttribute(bigram.mFrequency, pos));
+            }
+        }
+        return bigrams;
+    }
+
+    /**
      * Insert a word into a binary dictionary.
      *
      * @param dictUpdater the dict updater.
@@ -238,18 +258,9 @@ public final class DynamicBinaryDictIOUtils {
             final ArrayList<WeightedString> shortcuts, final boolean isNotAWord,
             final boolean isBlackListEntry)
                     throws IOException, UnsupportedFormatException {
-        final ArrayList<PendingAttribute> bigrams = new ArrayList<PendingAttribute>();
+        final ArrayList<PendingAttribute> bigrams = resolveBigramPositions(dictUpdater,
+                bigramStrings);
         final DictBuffer dictBuffer = dictUpdater.getDictBuffer();
-        if (bigramStrings != null) {
-            for (final WeightedString bigram : bigramStrings) {
-                int position = dictUpdater.getTerminalPosition(bigram.mWord);
-                if (position == FormatSpec.NOT_VALID_WORD) {
-                    // TODO: figure out what is the correct thing to do here.
-                } else {
-                    bigrams.add(new PendingAttribute(bigram.mFrequency, position));
-                }
-            }
-        }
 
         final boolean isTerminal = true;
         final boolean hasBigrams = !bigrams.isEmpty();

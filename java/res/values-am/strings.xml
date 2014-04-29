@@ -74,20 +74,11 @@
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"ተለዋዋጭ ተንሳፋፊ ቅድመ-እይታ"</string>
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"ምልክት እየሰጡ ሳሉ በአስተያየት የተጠቆመው ቃል ይመልከቱ"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : ተቀምጧል"</string>
-    <string name="label_go_key" msgid="1635148082137219148">"ሂድ"</string>
-    <string name="label_next_key" msgid="362972844525672568">"በመቀጠል"</string>
-    <string name="label_previous_key" msgid="1211868118071386787">"ቀዳሚ"</string>
-    <string name="label_done_key" msgid="2441578748772529288">"ተከናውኗል"</string>
-    <string name="label_send_key" msgid="2815056534433717444">" ይላኩ"</string>
-    <string name="label_pause_key" msgid="181098308428035340">"ላፍታ አቁም"</string>
-    <string name="label_wait_key" msgid="6402152600878093134">"ቆይ"</string>
     <string name="spoken_use_headphones" msgid="896961781287283493">"የይለፍቃል ቁልፎች ጮክ በለው ሲነገሩ ለመስማት የጆሮ ማዳመጫ ሰካ::"</string>
     <string name="spoken_current_text_is" msgid="2485723011272583845">"የአሁኑ ፅሁፍ %s ነው"</string>
     <string name="spoken_no_text_entered" msgid="7479685225597344496">"ምንም ፅሁፍ አልገባም"</string>
-    <!-- no translation found for spoken_auto_correct (5381764628886369268) -->
-    <skip />
-    <!-- no translation found for spoken_auto_correct_obscured (1186884531440481089) -->
-    <skip />
+    <string name="spoken_auto_correct" msgid="8005997889020109763">"<xliff:g id="KEY">%1$s</xliff:g> <xliff:g id="ORIGINAL_WORD">%2$s</xliff:g>ን ወደ <xliff:g id="CORRECTED">%3$s</xliff:g> ያርመዋል"</string>
+    <string name="spoken_auto_correct_obscured" msgid="6276420476908833791">"<xliff:g id="KEY">%1$s</xliff:g> ራስ-ሰር እርማትን ያከናውናል"</string>
     <string name="spoken_description_unknown" msgid="3197434010402179157">"የቁልፍ ኮድ%d"</string>
     <string name="spoken_description_shift" msgid="244197883292549308">"ቀይር"</string>
     <string name="spoken_description_shift_shifted" msgid="1681877323344195035">"ቅያር በርቷል (ለማሰናክል ንካ)"</string>
@@ -156,6 +147,9 @@
     <string name="subtype_no_language_colemak" msgid="5837418400010302623">"ፊደላት (Colemak)"</string>
     <string name="subtype_no_language_pcqwerty" msgid="5354918232046200018">"ፊደላት (ፒሲ)"</string>
     <string name="subtype_emoji" msgid="7483586578074549196">"ኢሞጂ"</string>
+    <string name="keyboard_color_scheme" msgid="9192934113872818070">"የቀለም ዘዴ"</string>
+    <string name="keyboard_color_scheme_white" msgid="6684064723850265438">"ነጭ"</string>
+    <string name="keyboard_color_scheme_blue" msgid="2488527224758177593">"ሰማያዊ"</string>
     <string name="custom_input_styles_title" msgid="8429952441821251512">"የተበጁ የግቤት ስታይሎች"</string>
     <string name="add_style" msgid="6163126614514489951">"ስታይል አክል"</string>
     <string name="add" msgid="8299699805688017798">"አክል"</string>
@@ -163,7 +157,7 @@
     <string name="save" msgid="7646738597196767214">"አስቀምጥ"</string>
     <string name="subtype_locale" msgid="8576443440738143764">"ቋንቋ"</string>
     <string name="keyboard_layout_set" msgid="4309233698194565609">"አቀማመጥ"</string>
-    <string name="custom_input_style_note_message" msgid="8826731320846363423">"የተበጀው የግብዓት ቅጥህን ከመጠቀምህ በፊት መንቃት አለበት። አሁን ማንቃት ትፈልጋለህ?"</string>
+    <string name="custom_input_style_note_message" msgid="8826731320846363423">"የተበጀው የእርስዎን ግብዓት ቅጥ ከመጠቀምዎ በፊት መንቃት አለበት። አሁን ማንቃት ይፈልጋሉ?"</string>
     <string name="enable" msgid="5031294444630523247">"አንቃ"</string>
     <string name="not_now" msgid="6172462888202790482">"አሁን አልፈልግም"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"ተመሳሳዩ የግብዓት ቅጥ አስቀድሞ አለ፦ <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>

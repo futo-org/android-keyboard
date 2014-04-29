@@ -55,6 +55,8 @@
         <item>MODEL=HTL22:MANUFACTURER=HTC,15</item>
         <!-- Motorola Razor M -->
         <item>MODEL=XT907:MANUFACTURER=motorola,30</item>
+        <!-- Motorola DVX -->
+        <item>MODEL=XT1035:MANUFACTURER=motorola,18</item>
         <!-- Sony Xperia Z, Z Ultra -->
         <item>MODEL=C6603|C6806:MANUFACTURER=Sony,35</item>
         <!-- Default value for unknown device. The negative value means system default. -->
