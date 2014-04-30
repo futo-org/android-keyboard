@@ -136,12 +136,19 @@ public final class AccessibleKeyboardViewProxy extends AccessibilityDelegateComp
             return;
         }
         // Announce the language name only when the language is changed.
-        if (lastKeyboard == null || !lastKeyboard.mId.mSubtype.equals(keyboard.mId.mSubtype)) {
+        if (lastKeyboard == null || !keyboard.mId.mSubtype.equals(lastKeyboard.mId.mSubtype)) {
             announceKeyboardLanguage(keyboard);
+            return;
         }
         // Announce the mode only when the mode is changed.
-        if (lastKeyboardMode != keyboard.mId.mMode) {
+        if (keyboard.mId.mMode != lastKeyboardMode) {
             announceKeyboardMode(keyboard);
+            return;
+        }
+        // Announce the keyboard type only when the type is changed.
+        if (keyboard.mId.mElementId != lastKeyboard.mId.mElementId) {
+            announceKeyboardType(keyboard, lastKeyboard);
+            return;
         }
     }
 
@@ -174,14 +181,57 @@ public final class AccessibleKeyboardViewProxy extends AccessibilityDelegateComp
      * @param keyboard The new keyboard.
      */
     private void announceKeyboardMode(final Keyboard keyboard) {
-        final int mode = keyboard.mId.mMode;
         final Context context = mView.getContext();
-        final int modeTextResId = KEYBOARD_MODE_RES_IDS.get(mode);
+        final int modeTextResId = KEYBOARD_MODE_RES_IDS.get(keyboard.mId.mMode);
         if (modeTextResId == 0) {
             return;
         }
         final String modeText = context.getString(modeTextResId);
         final String text = context.getString(R.string.announce_keyboard_mode, modeText);
+        sendWindowStateChanged(text);
+    }
+
+    /**
+     * Announces which type of keyboard is being displayed.
+     *
+     * @param keyboard The new keyboard.
+     * @param lastKeyboard The last keyboard.
+     */
+    private void announceKeyboardType(final Keyboard keyboard, final Keyboard lastKeyboard) {
+        final int lastElementId = lastKeyboard.mId.mElementId;
+        final int resId;
+        switch (keyboard.mId.mElementId) {
+        case KeyboardId.ELEMENT_ALPHABET_AUTOMATIC_SHIFTED:
+        case KeyboardId.ELEMENT_ALPHABET:
+            if (lastElementId == KeyboardId.ELEMENT_ALPHABET
+                    || lastElementId == KeyboardId.ELEMENT_ALPHABET_AUTOMATIC_SHIFTED) {
+                return;
+            }
+            resId = R.string.spoken_description_mode_alpha;
+            break;
+        case KeyboardId.ELEMENT_ALPHABET_MANUAL_SHIFTED:
+            resId = R.string.spoken_description_shiftmode_on;
+            break;
+        case KeyboardId.ELEMENT_ALPHABET_SHIFT_LOCK_SHIFTED:
+        case KeyboardId.ELEMENT_ALPHABET_SHIFT_LOCKED:
+            resId = R.string.spoken_description_shiftmode_locked;
+            break;
+        case KeyboardId.ELEMENT_SYMBOLS:
+            resId = R.string.spoken_description_mode_symbol;
+            break;
+        case KeyboardId.ELEMENT_SYMBOLS_SHIFTED:
+            resId = R.string.spoken_description_mode_symbol_shift;
+            break;
+        case KeyboardId.ELEMENT_PHONE:
+            resId = R.string.spoken_description_mode_phone;
+            break;
+        case KeyboardId.ELEMENT_PHONE_SYMBOLS:
+            resId = R.string.spoken_description_mode_phone_shift;
+            break;
+        default:
+            return;
+        }
+        final String text = mView.getContext().getString(resId);
         sendWindowStateChanged(text);
     }
 
@@ -301,7 +351,7 @@ public final class AccessibleKeyboardViewProxy extends AccessibilityDelegateComp
     }
 
     /**
-     * Simulates a key press by injecting touch event into the keyboard view.
+     * Simulates a key press by injecting touch an event into the keyboard view.
      * This avoids the complexity of trackers and listeners within the keyboard.
      *
      * @param key The key to press.
@@ -318,7 +368,7 @@ public final class AccessibleKeyboardViewProxy extends AccessibilityDelegateComp
     }
 
     /**
-     * Simulates a key release by injecting touch event into the keyboard view.
+     * Simulates a key release by injecting touch an event into the keyboard view.
      * This avoids the complexity of trackers and listeners within the keyboard.
      *
      * @param key The key to release.
@@ -382,73 +432,5 @@ public final class AccessibleKeyboardViewProxy extends AccessibilityDelegateComp
             break;
         }
         return true;
-    }
-
-    /**
-     * Notifies the user of changes in the keyboard shift state.
-     */
-    public void notifyShiftState() {
-        if (mView == null || mKeyboard == null) {
-            return;
-        }
-
-        final KeyboardId keyboardId = mKeyboard.mId;
-        final int elementId = keyboardId.mElementId;
-        final Context context = mView.getContext();
-        final CharSequence text;
-
-        switch (elementId) {
-        case KeyboardId.ELEMENT_ALPHABET_SHIFT_LOCK_SHIFTED:
-        case KeyboardId.ELEMENT_ALPHABET_SHIFT_LOCKED:
-            text = context.getText(R.string.spoken_description_shiftmode_locked);
-            break;
-        case KeyboardId.ELEMENT_ALPHABET_AUTOMATIC_SHIFTED:
-        case KeyboardId.ELEMENT_ALPHABET_MANUAL_SHIFTED:
-        case KeyboardId.ELEMENT_SYMBOLS_SHIFTED:
-            text = context.getText(R.string.spoken_description_shiftmode_on);
-            break;
-        default:
-            text = context.getText(R.string.spoken_description_shiftmode_off);
-        }
-        AccessibilityUtils.getInstance().announceForAccessibility(mView, text);
-    }
-
-    /**
-     * Notifies the user of changes in the keyboard symbols state.
-     */
-    public void notifySymbolsState() {
-        if (mView == null || mKeyboard == null) {
-            return;
-        }
-
-        final KeyboardId keyboardId = mKeyboard.mId;
-        final int elementId = keyboardId.mElementId;
-        final Context context = mView.getContext();
-        final int resId;
-
-        switch (elementId) {
-        case KeyboardId.ELEMENT_ALPHABET:
-        case KeyboardId.ELEMENT_ALPHABET_AUTOMATIC_SHIFTED:
-        case KeyboardId.ELEMENT_ALPHABET_MANUAL_SHIFTED:
-        case KeyboardId.ELEMENT_ALPHABET_SHIFT_LOCK_SHIFTED:
-        case KeyboardId.ELEMENT_ALPHABET_SHIFT_LOCKED:
-            resId = R.string.spoken_description_mode_alpha;
-            break;
-        case KeyboardId.ELEMENT_SYMBOLS:
-        case KeyboardId.ELEMENT_SYMBOLS_SHIFTED:
-            resId = R.string.spoken_description_mode_symbol;
-            break;
-        case KeyboardId.ELEMENT_PHONE:
-            resId = R.string.spoken_description_mode_phone;
-            break;
-        case KeyboardId.ELEMENT_PHONE_SYMBOLS:
-            resId = R.string.spoken_description_mode_phone_shift;
-            break;
-        default:
-            return;
-        }
-
-        final String text = context.getString(resId);
-        AccessibilityUtils.getInstance().announceForAccessibility(mView, text);
     }
 }

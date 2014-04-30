@@ -74,11 +74,10 @@
     <string name="spoken_description_shiftmode_on">Shift enabled</string>
     <!-- Spoken feedback after turning "Caps lock" mode on. -->
     <string name="spoken_description_shiftmode_locked">Caps lock enabled</string>
-    <!-- Spoken feedback after turning "Shift" mode off. -->
-    <string name="spoken_description_shiftmode_off">Shift disabled</string>
-
     <!-- Spoken feedback after changing to the symbols keyboard. -->
     <string name="spoken_description_mode_symbol">Symbols mode</string>
+    <!-- Spoken feedback after changing to the symbols shift keyboard. -->
+    <string name="spoken_description_mode_symbol_shift">Symbols shift mode</string>
     <!-- Spoken feedback after changing to the alphanumeric keyboard. -->
     <string name="spoken_description_mode_alpha">Letters mode</string>
     <!-- Spoken feedback after changing to the phone dialer keyboard. -->

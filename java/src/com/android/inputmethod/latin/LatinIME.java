@@ -1596,18 +1596,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     public void onReleaseKey(final int primaryCode, final boolean withSliding) {
         mKeyboardSwitcher.onReleaseKey(primaryCode, withSliding, getCurrentAutoCapsState(),
                 getCurrentRecapitalizeState());
-
-        // If accessibility is on, ensure the user receives keyboard state updates.
-        if (AccessibilityUtils.getInstance().isTouchExplorationEnabled()) {
-            switch (primaryCode) {
-            case Constants.CODE_SHIFT:
-                AccessibleKeyboardViewProxy.getInstance().notifyShiftState();
-                break;
-            case Constants.CODE_SWITCH_ALPHA_SYMBOL:
-                AccessibleKeyboardViewProxy.getInstance().notifySymbolsState();
-                break;
-            }
-        }
     }
 
     private HardwareEventDecoder getHardwareKeyEventDecoder(final int deviceId) {
