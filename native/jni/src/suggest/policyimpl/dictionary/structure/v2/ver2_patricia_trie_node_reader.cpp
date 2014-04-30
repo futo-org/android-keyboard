@@ -16,7 +16,7 @@
 
 #include "suggest/policyimpl/dictionary/structure/v2/ver2_patricia_trie_node_reader.h"
 
-#include "suggest/policyimpl/dictionary/structure/v2/patricia_trie_reading_utils.h"
+#include "suggest/policyimpl/dictionary/structure/pt_common/patricia_trie_reading_utils.h"
 
 namespace latinime {
 
