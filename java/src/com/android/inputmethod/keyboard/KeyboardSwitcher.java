@@ -123,7 +123,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         builder.setOptions(
                 mSubtypeSwitcher.isShortcutImeEnabled(),
                 settingsValues.mShowsVoiceInputKey,
-                mLatinIME.shouldSwitchToOtherInputMethods());
+                mLatinIME.shouldShowLanguageSwitchKey());
         mKeyboardLayoutSet = builder.build();
         mCurrentSettingsValues = settingsValues;
         try {
