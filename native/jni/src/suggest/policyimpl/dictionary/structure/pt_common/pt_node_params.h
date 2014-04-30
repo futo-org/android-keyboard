@@ -21,7 +21,7 @@
 
 #include "defines.h"
 #include "suggest/policyimpl/dictionary/structure/pt_common/dynamic_pt_reading_utils.h"
-#include "suggest/policyimpl/dictionary/structure/v2/patricia_trie_reading_utils.h"
+#include "suggest/policyimpl/dictionary/structure/pt_common/patricia_trie_reading_utils.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_dict_constants.h"
 
 namespace latinime {

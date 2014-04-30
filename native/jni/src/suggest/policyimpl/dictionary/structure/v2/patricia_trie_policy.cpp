@@ -22,7 +22,7 @@
 #include "suggest/core/dicnode/dic_node_vector.h"
 #include "suggest/core/dictionary/binary_dictionary_bigrams_iterator.h"
 #include "suggest/policyimpl/dictionary/structure/pt_common/dynamic_pt_reading_helper.h"
-#include "suggest/policyimpl/dictionary/structure/v2/patricia_trie_reading_utils.h"
+#include "suggest/policyimpl/dictionary/structure/pt_common/patricia_trie_reading_utils.h"
 #include "suggest/policyimpl/dictionary/utils/probability_utils.h"
 
 namespace latinime {

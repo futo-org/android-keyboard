@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "suggest/policyimpl/dictionary/structure/v2/patricia_trie_reading_utils.h"
+#include "suggest/policyimpl/dictionary/structure/pt_common/patricia_trie_reading_utils.h"
 
 #include "defines.h"
 #include "suggest/core/policy/dictionary_bigrams_structure_policy.h"
