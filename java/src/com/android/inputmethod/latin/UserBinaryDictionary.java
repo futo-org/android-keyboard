@@ -29,7 +29,6 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.android.inputmethod.compat.UserDictionaryCompatUtils;
-import com.android.inputmethod.latin.utils.LocaleUtils;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 
 import java.io.File;
@@ -74,7 +73,6 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
     private ContentObserver mObserver;
     final private String mLocale;
     final private boolean mAlsoUseMoreRestrictiveLocales;
-    final public boolean mEnabled;
 
     public UserBinaryDictionary(final Context context, final Locale locale) {
         this(context, locale, false /* alsoUseMoreRestrictiveLocales */, null /* dictFile */);
@@ -120,7 +118,6 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
             }
         };
         cres.registerContentObserver(Words.CONTENT_URI, true, mObserver);
-        mEnabled = readIsEnabled();
         reloadDictionaryIfRequired();
     }
 
@@ -198,8 +195,8 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
         }
     }
 
-    private boolean readIsEnabled() {
-        final ContentResolver cr = mContext.getContentResolver();
+    public static boolean isEnabled(final Context context) {
+        final ContentResolver cr = context.getContentResolver();
         final ContentProviderClient client = cr.acquireContentProviderClient(Words.CONTENT_URI);
         if (client != null) {
             client.release();
@@ -212,18 +209,15 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
     /**
      * Adds a word to the user dictionary and makes it persistent.
      *
+     * @param context the context
+     * @param locale the locale
      * @param word the word to add. If the word is capitalized, then the dictionary will
      * recognize it as a capitalized word when searched.
      */
-    public synchronized void addWordToUserDictionary(final String word) {
+    public static void addWordToUserDictionary(final Context context, final Locale locale,
+            final String word) {
         // Update the user dictionary provider
-        final Locale locale;
-        if (USER_DICTIONARY_ALL_LANGUAGES == mLocale) {
-            locale = null;
-        } else {
-            locale = LocaleUtils.constructLocaleFromString(mLocale);
-        }
-        UserDictionaryCompatUtils.addWord(mContext, word,
+        UserDictionaryCompatUtils.addWord(context, word,
                 HISTORICAL_DEFAULT_USER_DICTIONARY_FREQUENCY, null, locale);
     }
 
