@@ -51,23 +51,15 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
     // to auto-correct, so we set this to the highest frequency that won't, i.e. 14.
     private static final int USER_DICT_SHORTCUT_FREQUENCY = 14;
 
-    // TODO: use Words.SHORTCUT when we target JellyBean or above
-    final static String SHORTCUT = "shortcut";
-    private static final String[] PROJECTION_QUERY;
-    static {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            PROJECTION_QUERY = new String[] {
-                Words.WORD,
-                SHORTCUT,
-                Words.FREQUENCY,
-            };
-        } else {
-            PROJECTION_QUERY = new String[] {
-                Words.WORD,
-                Words.FREQUENCY,
-            };
-        }
-    }
+    private static final String[] PROJECTION_QUERY_WITH_SHORTCUT = new String[] {
+        Words.WORD,
+        Words.SHORTCUT,
+        Words.FREQUENCY,
+    };
+    private static final String[] PROJECTION_QUERY_WITHOUT_SHORTCUT = new String[] {
+        Words.WORD,
+        Words.FREQUENCY,
+    };
 
     private static final String NAME = "userunigram";
 
@@ -182,10 +174,29 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
         } else {
             requestArguments = localeElements;
         }
+        final String requestString = request.toString();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            try {
+                addWordsFromProjectionLocked(PROJECTION_QUERY_WITH_SHORTCUT, requestString,
+                        requestArguments);
+            } catch (IllegalArgumentException e) {
+                // This may happen on some non-compliant devices where the declared API is JB+ but
+                // the SHORTCUT column is not present for some reason.
+                addWordsFromProjectionLocked(PROJECTION_QUERY_WITHOUT_SHORTCUT, requestString,
+                        requestArguments);
+            }
+        } else {
+            addWordsFromProjectionLocked(PROJECTION_QUERY_WITHOUT_SHORTCUT, requestString,
+                    requestArguments);
+        }
+    }
+
+    private void addWordsFromProjectionLocked(final String[] query, String request,
+            final String[] requestArguments) throws IllegalArgumentException {
         Cursor cursor = null;
         try {
             cursor = mContext.getContentResolver().query(
-                Words.CONTENT_URI, PROJECTION_QUERY, request.toString(), requestArguments, null);
+                    Words.CONTENT_URI, query, request, requestArguments, null);
             addWordsLocked(cursor);
         } catch (final SQLiteException e) {
             Log.e(TAG, "SQLiteException in the remote User dictionary process.", e);
@@ -245,7 +256,7 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
         if (cursor == null) return;
         if (cursor.moveToFirst()) {
             final int indexWord = cursor.getColumnIndex(Words.WORD);
-            final int indexShortcut = hasShortcutColumn ? cursor.getColumnIndex(SHORTCUT) : 0;
+            final int indexShortcut = hasShortcutColumn ? cursor.getColumnIndex(Words.SHORTCUT) : 0;
             final int indexFrequency = cursor.getColumnIndex(Words.FREQUENCY);
             while (!cursor.isAfterLast()) {
                 final String word = cursor.getString(indexWord);
