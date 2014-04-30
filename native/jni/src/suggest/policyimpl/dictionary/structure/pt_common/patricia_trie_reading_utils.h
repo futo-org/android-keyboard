@@ -26,7 +26,6 @@ namespace latinime {
 class DictionaryShortcutsStructurePolicy;
 class DictionaryBigramsStructurePolicy;
 
-// TODO: Move to pt_common
 class PatriciaTrieReadingUtils {
  public:
     typedef uint8_t NodeFlags;

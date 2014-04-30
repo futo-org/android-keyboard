@@ -56,10 +56,10 @@ LATIN_IME_CORE_SRC_FILES := \
         dynamic_pt_reading_helper.cpp \
         dynamic_pt_reading_utils.cpp \
         dynamic_pt_updating_helper.cpp \
-        dynamic_pt_writing_utils.cpp) \
+        dynamic_pt_writing_utils.cpp \
+        patricia_trie_reading_utils.cpp) \
     $(addprefix suggest/policyimpl/dictionary/structure/v2/, \
         patricia_trie_policy.cpp \
-        patricia_trie_reading_utils.cpp \
         ver2_patricia_trie_node_reader.cpp \
         ver2_pt_node_array_reader.cpp) \
     $(addprefix suggest/policyimpl/dictionary/structure/v4/, \

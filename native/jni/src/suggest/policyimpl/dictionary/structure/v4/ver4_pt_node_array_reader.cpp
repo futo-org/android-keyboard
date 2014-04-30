@@ -17,7 +17,7 @@
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_pt_node_array_reader.h"
 
 #include "suggest/policyimpl/dictionary/structure/pt_common/dynamic_pt_reading_utils.h"
-#include "suggest/policyimpl/dictionary/structure/v2/patricia_trie_reading_utils.h"
+#include "suggest/policyimpl/dictionary/structure/pt_common/patricia_trie_reading_utils.h"
 #include "suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer.h"
 
 namespace latinime {
