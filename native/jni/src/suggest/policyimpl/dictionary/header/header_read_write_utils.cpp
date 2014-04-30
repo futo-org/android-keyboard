@@ -26,6 +26,13 @@
 
 namespace latinime {
 
+// Number of base-10 digits in the largest integer + 1 to leave room for a zero terminator.
+// As such, this is the maximum number of characters will be needed to represent an int as a
+// string, including the terminator; this is used as the size of a string buffer large enough to
+// hold any value that is intended to fit in an integer, e.g. in the code that reads the header
+// of the binary dictionary where a {key,value} string pair scheme is used.
+const int HeaderReadWriteUtils::LARGEST_INT_DIGIT_COUNT = 11;
+
 const int HeaderReadWriteUtils::MAX_ATTRIBUTE_KEY_LENGTH = 256;
 const int HeaderReadWriteUtils::MAX_ATTRIBUTE_VALUE_LENGTH = 256;
 
@@ -154,8 +161,8 @@ typedef DictionaryHeaderStructurePolicy::AttributeMap AttributeMap;
 /* static */ void HeaderReadWriteUtils::setIntAttributeInner(AttributeMap *const headerAttributes,
         const AttributeMap::key_type *const key, const int value) {
     AttributeMap::mapped_type valueVector;
-    char charBuf[LARGEST_INT_DIGIT_COUNT + 1];
-    snprintf(charBuf, LARGEST_INT_DIGIT_COUNT + 1, "%d", value);
+    char charBuf[LARGEST_INT_DIGIT_COUNT];
+    snprintf(charBuf, sizeof(charBuf), "%d", value);
     insertCharactersIntoVector(charBuf, &valueVector);
     (*headerAttributes)[*key] = valueVector;
 }
