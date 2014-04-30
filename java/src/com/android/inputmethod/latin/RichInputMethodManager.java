@@ -410,11 +410,20 @@ public final class RichInputMethodManager {
 
     public boolean shouldOfferSwitchingToNextInputMethod(final IBinder binder,
             boolean defaultValue) {
-        // Use the default value instead on Jelly Bean MR2 and previous where
-        // {@link InputMethodManager#shouldOfferSwitchingToNextInputMethod} isn't yet available
-        // and on KitKat where the API is still just a stub to return true always.
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
+        // Use the default value instead on Jelly Bean MR2 and previous, where
+        // {@link InputMethodManager#shouldOfferSwitchingToNextInputMethod} isn't yet available.
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN_MR2) {
             return defaultValue;
+        }
+        // Use the default value instead on KitKat as well, where
+        // {@link InputMethodManager#shouldOfferSwitchingToNextInputMethod} is still just a stub to
+        // return true always.
+        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
+            // Make sure this is actually KitKat.
+            // TODO: Consider to remove this check once the *next* version becomes available.
+            if (Build.VERSION.CODENAME.equals("REL")) {
+                return defaultValue;
+            }
         }
         return mImmWrapper.shouldOfferSwitchingToNextInputMethod(binder);
     }
