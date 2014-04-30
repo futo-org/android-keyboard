@@ -293,13 +293,6 @@ static inline void prof_out(void) {
 #define M_PI_F 3.14159265f
 #define MAX_PERCENTILE 100
 
-// Number of base-10 digits in the largest integer + 1 to leave room for a zero terminator.
-// As such, this is the maximum number of characters will be needed to represent an int as a
-// string, including the terminator; this is used as the size of a string buffer large enough to
-// hold any value that is intended to fit in an integer, e.g. in the code that reads the header
-// of the binary dictionary where a {key,value} string pair scheme is used.
-#define LARGEST_INT_DIGIT_COUNT 11
-
 #define NOT_A_CODE_POINT (-1)
 #define NOT_A_DISTANCE (-1)
 #define NOT_A_COORDINATE (-1)
