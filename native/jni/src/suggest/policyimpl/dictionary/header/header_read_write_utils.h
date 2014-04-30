@@ -92,6 +92,7 @@ class HeaderReadWriteUtils {
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(HeaderReadWriteUtils);
 
+    static const int LARGEST_INT_DIGIT_COUNT;
     static const int MAX_ATTRIBUTE_KEY_LENGTH;
     static const int MAX_ATTRIBUTE_VALUE_LENGTH;
 
