@@ -49,6 +49,7 @@ public class DictionaryFacilitatorForSuggest {
     private static final int CAPITALIZED_FORM_MAX_PROBABILITY_FOR_INSERT = 140;
 
     private Dictionaries mDictionaries = new Dictionaries();
+    private boolean mIsUserDictEnabled = false;
     private volatile CountDownLatch mLatchForWaitingLoadingMainDictionary = new CountDownLatch(0);
     // To synchronize assigning mDictionaries to ensure closing dictionaries.
     private Object mLock = new Object();
@@ -71,24 +72,21 @@ public class DictionaryFacilitatorForSuggest {
                 CollectionUtils.newConcurrentHashMap();
         public final ConcurrentHashMap<String, ExpandableBinaryDictionary> mSubDictMap =
                 CollectionUtils.newConcurrentHashMap();
-        // TODO: Remove sub dictionary members and use mSubDictMap.
-        public final UserBinaryDictionary mUserDictionary;
 
         public Dictionaries() {
             mLocale = null;
-            mUserDictionary = null;
         }
 
         public Dictionaries(final Locale locale, final Dictionary mainDict,
-            final ExpandableBinaryDictionary contactsDict, final UserBinaryDictionary userDict,
+            final ExpandableBinaryDictionary contactsDict,
+            final ExpandableBinaryDictionary userDict,
             final ExpandableBinaryDictionary userHistoryDict,
             final ExpandableBinaryDictionary personalizationDict) {
             mLocale = locale;
             // Main dictionary can be asynchronously loaded.
             setMainDict(mainDict);
             setSubDict(Dictionary.TYPE_CONTACTS, contactsDict);
-            mUserDictionary = userDict;
-            setSubDict(Dictionary.TYPE_USER, mUserDictionary);
+            setSubDict(Dictionary.TYPE_USER, userDict);
             setSubDict(Dictionary.TYPE_USER_HISTORY, userHistoryDict);
             setSubDict(Dictionary.TYPE_PERSONALIZATION, personalizationDict);
         }
@@ -176,11 +174,12 @@ public class DictionaryFacilitatorForSuggest {
         }
 
         // Open or move user dictionary.
-        final UserBinaryDictionary newUserDictionary;
+        final ExpandableBinaryDictionary newUserDictionary;
         if (!closeUserDictionary && mDictionaries.hasDict(Dictionary.TYPE_USER)) {
-            newUserDictionary = mDictionaries.mUserDictionary;
+            newUserDictionary = mDictionaries.getSubDict(Dictionary.TYPE_USER);
         } else {
             newUserDictionary = new UserBinaryDictionary(context, newLocale);
+            mIsUserDictEnabled = UserBinaryDictionary.isEnabled(context);
         }
 
         // Open or move user history dictionary.
@@ -364,19 +363,15 @@ public class DictionaryFacilitatorForSuggest {
     }
 
     public boolean isUserDictionaryEnabled() {
-        final UserBinaryDictionary userDictionary = mDictionaries.mUserDictionary;
-        if (userDictionary == null) {
-            return false;
-        }
-        return userDictionary.mEnabled;
+        return mIsUserDictEnabled;
     }
 
-    public void addWordToUserDictionary(String word) {
-        final UserBinaryDictionary userDictionary = mDictionaries.mUserDictionary;
-        if (userDictionary == null) {
+    public void addWordToUserDictionary(final Context context, final String word) {
+        final Locale locale = getLocale();
+        if (locale == null) {
             return;
         }
-        userDictionary.addWordToUserDictionary(word);
+        UserBinaryDictionary.addWordToUserDictionary(context, locale, word);
     }
 
     public void addToUserHistory(final String suggestion, final boolean wasAutoCapitalized,
