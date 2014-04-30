@@ -46,8 +46,9 @@
     <string name="spoken_description_action_previous" msgid="2919072174697865110">"Önceki"</string>
     <string name="spoken_description_shiftmode_on" msgid="5107180516341258979">"Üst karakter etkin"</string>
     <string name="spoken_description_shiftmode_locked" msgid="7307477738053606881">"Büyük harf etkin"</string>
-    <string name="spoken_description_shiftmode_off" msgid="5039126122829961331">"Üst karakter devre dışı"</string>
     <string name="spoken_description_mode_symbol" msgid="111186851131446691">"Sembol modu"</string>
+    <!-- no translation found for spoken_description_mode_symbol_shift (3940566070908816492) -->
+    <skip />
     <string name="spoken_description_mode_alpha" msgid="4676004119618778911">"Harf modu"</string>
     <string name="spoken_description_mode_phone" msgid="2061220553756692903">"Telefon modu"</string>
     <string name="spoken_description_mode_phone_shift" msgid="7879963803547701090">"Telefon sembolleri modu"</string>
