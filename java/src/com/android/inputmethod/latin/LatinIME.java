@@ -1179,7 +1179,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         } else {
             wordToEdit = word;
         }
-        mInputLogic.mSuggest.mDictionaryFacilitator.addWordToUserDictionary(wordToEdit);
+        mInputLogic.mSuggest.mDictionaryFacilitator.addWordToUserDictionary(
+                this /* context */, wordToEdit);
     }
 
     // Callback for the {@link SuggestionStripView}, to call when the important notice strip is
