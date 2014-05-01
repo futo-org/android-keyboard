@@ -528,17 +528,17 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                         } else if (mBinaryDictionary == null) {
                             // Otherwise, load the existing dictionary.
                             loadBinaryDictionaryLocked();
+                            if (mBinaryDictionary != null && !(isValidDictionaryLocked()
+                                    // TODO: remove the check below
+                                    && matchesExpectedBinaryDictFormatVersionForThisType(
+                                            mBinaryDictionary.getFormatVersion()))) {
+                                // Binary dictionary or its format version is not valid. Regenerate
+                                // the dictionary file. writeBinaryDictionary will remove the
+                                // existing files if appropriate.
+                                createNewDictionaryLocked();
+                            }
                         }
                         mNeedsToReload = false;
-                        if (mBinaryDictionary != null && !(isValidDictionaryLocked()
-                                // TODO: remove the check below
-                                && matchesExpectedBinaryDictFormatVersionForThisType(
-                                        mBinaryDictionary.getFormatVersion()))) {
-                            // Binary dictionary or its format version is not valid. Regenerate
-                            // the dictionary file. writeBinaryDictionary will remove the
-                            // existing files if appropriate.
-                            createNewDictionaryLocked();
-                        }
                     } finally {
                         mIsReloading.set(false);
                     }
