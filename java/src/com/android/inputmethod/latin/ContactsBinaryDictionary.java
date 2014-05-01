@@ -61,9 +61,6 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
     /** The number of contacts in the most recent dictionary rebuild. */
     static private int sContactCountAtLastRebuild = 0;
 
-    /** The locale for this contacts dictionary. Controls name bigram predictions. */
-    public final Locale mLocale;
-
     private ContentObserver mObserver;
 
     /**
@@ -71,11 +68,7 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
      */
     private final boolean mUseFirstLastBigrams;
 
-    public ContactsBinaryDictionary(final Context context, final Locale locale) {
-        this(context, locale, null /* dictFile */);
-    }
-
-    public ContactsBinaryDictionary(final Context context, final Locale locale,
+    private ContactsBinaryDictionary(final Context context, final Locale locale,
             final File dictFile) {
         this(context, locale, dictFile, NAME);
     }
@@ -84,10 +77,14 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
             final File dictFile, final String name) {
         super(context, getDictName(name, locale, dictFile), locale, Dictionary.TYPE_CONTACTS,
                 dictFile);
-        mLocale = locale;
         mUseFirstLastBigrams = useFirstLastBigramsForLocale(locale);
         registerObserver(context);
         reloadDictionaryIfRequired();
+    }
+
+    public static ContactsBinaryDictionary getDictionary(final Context context, final Locale locale,
+            final File dictFile) {
+        return new ContactsBinaryDictionary(context, locale, dictFile);
     }
 
     private synchronized void registerObserver(final Context context) {

@@ -32,14 +32,15 @@ import java.util.Locale;
 public class UserHistoryDictionary extends DecayingExpandableBinaryDictionaryBase {
     /* package */ static final String NAME = UserHistoryDictionary.class.getSimpleName();
 
+    // TODO: Make this constructor private
     /* package */ UserHistoryDictionary(final Context context, final Locale locale) {
-        this(context, locale, null /* dictFile */);
+        super(context, getDictName(NAME, locale, null /* dictFile */), locale,
+                Dictionary.TYPE_USER_HISTORY, null /* dictFile */);
     }
 
-    public UserHistoryDictionary(final Context context, final Locale locale,
+    public static UserHistoryDictionary getDictionary(final Context context, final Locale locale,
             final File dictFile) {
-        super(context, getDictName(NAME, locale, dictFile), locale, Dictionary.TYPE_USER_HISTORY,
-                dictFile);
+        return PersonalizationHelper.getUserHistoryDictionary(context, locale);
     }
 
     @Override
