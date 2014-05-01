@@ -334,6 +334,18 @@ public class InputLogicTests extends InputTestsBase {
         assertEquals("manual pick then separator", EXPECTED_RESULT, mEditText.getText().toString());
     }
 
+    // This test matches the one in InputLogicTestsNonEnglish. In some non-English languages,
+    // ! and ? are clustering punctuation signs.
+    public void testClusteringPunctuation() {
+        final String WORD1_TO_TYPE = "test";
+        final String WORD2_TO_TYPE = "!!?!:!";
+        final String EXPECTED_RESULT = "test!!?!:!";
+        type(WORD1_TO_TYPE);
+        pickSuggestionManually(0, WORD1_TO_TYPE);
+        type(WORD2_TO_TYPE);
+        assertEquals("clustering punctuation", EXPECTED_RESULT, mEditText.getText().toString());
+    }
+
     public void testManualPickThenStripperThenPick() {
         final String WORD_TO_TYPE = "this";
         final String STRIPPER = "\n";

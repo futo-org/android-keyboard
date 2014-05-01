@@ -784,11 +784,11 @@ public final class InputLogic {
             // TODO: remove this argument
             final LatinIME.UIHandler handler) {
         final int codePoint = inputTransaction.mEvent.mCodePoint;
+        final SettingsValues settingsValues = inputTransaction.mSettingsValues;
         boolean didAutoCorrect = false;
         // We avoid sending spaces in languages without spaces if we were composing.
         final boolean shouldAvoidSendingCode = Constants.CODE_SPACE == codePoint
-                && !inputTransaction.mSettingsValues.mSpacingAndPunctuations
-                        .mCurrentLanguageHasSpaces
+                && !settingsValues.mSpacingAndPunctuations.mCurrentLanguageHasSpaces
                 && mWordComposer.isComposingWord();
         if (mWordComposer.isCursorFrontOrMiddleOfComposingWord()) {
             // If we are in the middle of a recorrection, we need to commit the recorrection
@@ -798,13 +798,13 @@ public final class InputLogic {
         }
         // isComposingWord() may have changed since we stored wasComposing
         if (mWordComposer.isComposingWord()) {
-            if (inputTransaction.mSettingsValues.mCorrectionEnabled) {
+            if (settingsValues.mCorrectionEnabled) {
                 final String separator = shouldAvoidSendingCode ? LastComposedWord.NOT_A_SEPARATOR
                         : StringUtils.newSingleCodePointString(codePoint);
-                commitCurrentAutoCorrection(inputTransaction.mSettingsValues, separator, handler);
+                commitCurrentAutoCorrection(settingsValues, separator, handler);
                 didAutoCorrect = true;
             } else {
-                commitTyped(inputTransaction.mSettingsValues,
+                commitTyped(settingsValues,
                         StringUtils.newSingleCodePointString(codePoint));
             }
         }
@@ -821,20 +821,23 @@ public final class InputLogic {
             // Double quotes behave like they are usually preceded by space iff we are
             // not inside a double quote or after a digit.
             needsPrecedingSpace = !isInsideDoubleQuoteOrAfterDigit;
+        } else if (settingsValues.mSpacingAndPunctuations.isClusteringSymbol(codePoint)
+                && settingsValues.mSpacingAndPunctuations.isClusteringSymbol(
+                        mConnection.getCodePointBeforeCursor())) {
+            needsPrecedingSpace = false;
         } else {
-            needsPrecedingSpace = inputTransaction.mSettingsValues.isUsuallyPrecededBySpace(
-                    codePoint);
+            needsPrecedingSpace = settingsValues.isUsuallyPrecededBySpace(codePoint);
         }
 
         if (needsPrecedingSpace) {
-            promotePhantomSpace(inputTransaction.mSettingsValues);
+            promotePhantomSpace(settingsValues);
         }
         if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
             ResearchLogger.latinIME_handleSeparator(codePoint, mWordComposer.isComposingWord());
         }
 
         if (!shouldAvoidSendingCode) {
-            sendKeyCodePoint(inputTransaction.mSettingsValues, codePoint);
+            sendKeyCodePoint(settingsValues, codePoint);
         }
 
         if (Constants.CODE_SPACE == codePoint) {
@@ -852,7 +855,7 @@ public final class InputLogic {
                 swapSwapperAndSpace(inputTransaction);
                 mSpaceState = SpaceState.SWAP_PUNCTUATION;
             } else if ((SpaceState.PHANTOM == inputTransaction.mSpaceState
-                    && inputTransaction.mSettingsValues.isUsuallyFollowedBySpace(codePoint))
+                    && settingsValues.isUsuallyFollowedBySpace(codePoint))
                     || (Constants.CODE_DOUBLE_QUOTE == codePoint
                             && isInsideDoubleQuoteOrAfterDigit)) {
                 // If we are in phantom space state, and the user presses a separator, we want to
