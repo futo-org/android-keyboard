@@ -23,8 +23,7 @@ import android.util.Log;
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
-import com.android.inputmethod.latin.personalization.DecayingExpandableBinaryDictionaryBase;
-import com.android.inputmethod.latin.personalization.PersonalizationHelper;
+import com.android.inputmethod.latin.personalization.PersonalizationDictionary;
 import com.android.inputmethod.latin.personalization.UserHistoryDictionary;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.ExecutorUtils;
@@ -147,13 +146,13 @@ public class DictionaryFacilitatorForSuggest {
     private static ExpandableBinaryDictionary getSubDict(final String dictType,
             final Context context, final Locale locale, final File dictFile) {
         if (Dictionary.TYPE_CONTACTS.equals(dictType)) {
-            return new ContactsBinaryDictionary(context, locale, dictFile);
+            return ContactsBinaryDictionary.getDictionary(context, locale, dictFile);
         } else if (Dictionary.TYPE_USER.equals(dictType)) {
-            return new UserBinaryDictionary(context, locale, dictFile);
+            return UserBinaryDictionary.getDictionary(context, locale, dictFile);
         } else if (Dictionary.TYPE_USER_HISTORY.equals(dictType)) {
-            return PersonalizationHelper.getUserHistoryDictionary(context, locale);
+            return UserHistoryDictionary.getDictionary(context, locale, dictFile);
         } else if (Dictionary.TYPE_PERSONALIZATION.equals(dictType)) {
-            return PersonalizationHelper.getPersonalizationDictionary(context, locale);
+            return PersonalizationDictionary.getDictionary(context, locale, dictFile);
         } else {
             return null;
         }

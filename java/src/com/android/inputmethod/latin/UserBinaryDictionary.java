@@ -74,17 +74,8 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
     final private String mLocale;
     final private boolean mAlsoUseMoreRestrictiveLocales;
 
-    public UserBinaryDictionary(final Context context, final Locale locale) {
-        this(context, locale, false /* alsoUseMoreRestrictiveLocales */, null /* dictFile */);
-    }
-
-    public UserBinaryDictionary(final Context context, final Locale locale, final File dictFile) {
-        this(context, locale, false /* alsoUseMoreRestrictiveLocales */, dictFile);
-    }
-
-    public UserBinaryDictionary(final Context context, final Locale locale,
-            final boolean alsoUseMoreRestrictiveLocales, final File dictFile) {
-        this(context, locale, alsoUseMoreRestrictiveLocales, dictFile, NAME);
+    private UserBinaryDictionary(final Context context, final Locale locale, final File dictFile) {
+        this(context, locale, false /* alsoUseMoreRestrictiveLocales */, dictFile, NAME);
     }
 
     protected UserBinaryDictionary(final Context context, final Locale locale,
@@ -119,6 +110,11 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
         };
         cres.registerContentObserver(Words.CONTENT_URI, true, mObserver);
         reloadDictionaryIfRequired();
+    }
+
+    public static UserBinaryDictionary getDictionary(final Context context, final Locale locale,
+            final File dictFile) {
+        return new UserBinaryDictionary(context, locale, dictFile);
     }
 
     @Override
