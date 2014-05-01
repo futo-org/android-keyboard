@@ -89,8 +89,7 @@ public class DictionaryFacilitatorForSuggest {
      */
     private static class Dictionaries {
         public final Locale mLocale;
-        public final ConcurrentHashMap<String, Dictionary> mDictMap =
-                CollectionUtils.newConcurrentHashMap();
+        private Dictionary mMainDict;
         public final ConcurrentHashMap<String, ExpandableBinaryDictionary> mSubDictMap =
                 CollectionUtils.newConcurrentHashMap();
 
@@ -110,26 +109,25 @@ public class DictionaryFacilitatorForSuggest {
 
         private void setSubDict(final String dictType, final ExpandableBinaryDictionary dict) {
             if (dict != null) {
-                mDictMap.put(dictType, dict);
                 mSubDictMap.put(dictType, dict);
             }
         }
 
         public void setMainDict(final Dictionary mainDict) {
             // Close old dictionary if exists. Main dictionary can be assigned multiple times.
-            final Dictionary oldDict;
-            if (mainDict != null) {
-                oldDict = mDictMap.put(Dictionary.TYPE_MAIN, mainDict);
-            } else {
-                oldDict = mDictMap.remove(Dictionary.TYPE_MAIN);
-            }
+            final Dictionary oldDict = mMainDict;
+            mMainDict = mainDict;
             if (oldDict != null && mainDict != oldDict) {
                 oldDict.close();
             }
         }
 
-        public Dictionary getMainDict() {
-            return mDictMap.get(Dictionary.TYPE_MAIN);
+        public Dictionary getDict(final String dictType) {
+            if (Dictionary.TYPE_MAIN.equals(dictType)) {
+                return mMainDict;
+            } else {
+                return getSubDict(dictType);
+            }
         }
 
         public ExpandableBinaryDictionary getSubDict(final String dictType) {
@@ -137,12 +135,20 @@ public class DictionaryFacilitatorForSuggest {
         }
 
         public boolean hasDict(final String dictType) {
-            return mDictMap.containsKey(dictType);
+            if (Dictionary.TYPE_MAIN.equals(dictType)) {
+                return mMainDict != null;
+            } else {
+                return mSubDictMap.containsKey(dictType);
+            }
         }
 
         public void closeDict(final String dictType) {
-            final Dictionary dict = mDictMap.remove(dictType);
-            mSubDictMap.remove(dictType);
+            final Dictionary dict;
+            if (Dictionary.TYPE_MAIN.equals(dictType)) {
+                dict = mMainDict;
+            } else {
+                dict = mSubDictMap.remove(dictType);
+            }
             if (dict != null) {
                 dict.close();
             }
@@ -202,7 +208,7 @@ public class DictionaryFacilitatorForSuggest {
             // The main dictionary will be asynchronously loaded.
             newMainDict = null;
         } else {
-            newMainDict = mDictionaries.getMainDict();
+            newMainDict = mDictionaries.getDict(Dictionary.TYPE_MAIN);
         }
 
         final Map<String, ExpandableBinaryDictionary> subDicts = CollectionUtils.newHashMap();
@@ -244,7 +250,6 @@ public class DictionaryFacilitatorForSuggest {
                 oldDictionaries.closeDict(dictType);
             }
         }
-        oldDictionaries.mDictMap.clear();
         oldDictionaries.mSubDictMap.clear();
     }
 
@@ -308,15 +313,15 @@ public class DictionaryFacilitatorForSuggest {
             dictionaries = mDictionaries;
             mDictionaries = new Dictionaries();
         }
-        for (final Dictionary dict : dictionaries.mDictMap.values()) {
-            dict.close();
+        for (final String dictType : DICT_TYPES_ORDERED_TO_GET_SUGGESTION) {
+            dictionaries.closeDict(dictType);
         }
     }
 
     // The main dictionary could have been loaded asynchronously.  Don't cache the return value
     // of this method.
     public boolean hasInitializedMainDictionary() {
-        final Dictionary mainDict = mDictionaries.getMainDict();
+        final Dictionary mainDict = mDictionaries.getDict(Dictionary.TYPE_MAIN);
         return mainDict != null && mainDict.isInitialized();
     }
 
@@ -393,7 +398,7 @@ public class DictionaryFacilitatorForSuggest {
             // consolidation is done.
             // TODO: Remove this hack when ready.
             final int lowerCaseFreqInMainDict = dictionaries.hasDict(Dictionary.TYPE_MAIN) ?
-                    dictionaries.getMainDict().getFrequency(suggestionLowerCase) :
+                    dictionaries.getDict(Dictionary.TYPE_MAIN).getFrequency(suggestionLowerCase) :
                             Dictionary.NOT_A_PROBABILITY;
             if (maxFreq < lowerCaseFreqInMainDict
                     && lowerCaseFreqInMainDict >= CAPITALIZED_FORM_MAX_PROBABILITY_FOR_INSERT) {
@@ -424,12 +429,11 @@ public class DictionaryFacilitatorForSuggest {
             final boolean blockOffensiveWords, final int[] additionalFeaturesOptions,
             final int sessionId, final ArrayList<SuggestedWordInfo> rawSuggestions) {
         final Dictionaries dictionaries = mDictionaries;
-        final Map<String, Dictionary> dictMap = dictionaries.mDictMap;
         final SuggestionResults suggestionResults =
                 new SuggestionResults(dictionaries.mLocale, SuggestedWords.MAX_SUGGESTIONS);
         final float[] languageWeight = new float[] { Dictionary.NOT_A_LANGUAGE_WEIGHT };
         for (final String dictType : DICT_TYPES_ORDERED_TO_GET_SUGGESTION) {
-            final Dictionary dictionary = dictMap.get(dictType);
+            final Dictionary dictionary = dictionaries.getDict(dictType);
             if (null == dictionary) continue;
             final ArrayList<SuggestedWordInfo> dictionarySuggestions =
                     dictionary.getSuggestionsWithSessionId(composer, prevWord, proximityInfo,
@@ -445,11 +449,11 @@ public class DictionaryFacilitatorForSuggest {
     }
 
     public boolean isValidMainDictWord(final String word) {
-        final Dictionaries dictionaries = mDictionaries;
-        if (TextUtils.isEmpty(word) || !dictionaries.hasDict(Dictionary.TYPE_MAIN)) {
+        final Dictionary mainDict = mDictionaries.getDict(Dictionary.TYPE_MAIN);
+        if (TextUtils.isEmpty(word) || mainDict == null) {
             return false;
         }
-        return dictionaries.getMainDict().isValidWord(word);
+        return mainDict.isValidWord(word);
     }
 
     public boolean isValidWord(final String word, final boolean ignoreCase) {
@@ -461,8 +465,8 @@ public class DictionaryFacilitatorForSuggest {
             return false;
         }
         final String lowerCasedWord = word.toLowerCase(dictionaries.mLocale);
-        final Map<String, Dictionary> dictMap = dictionaries.mDictMap;
-        for (final Dictionary dictionary : dictMap.values()) {
+        for (final String dictType : DICT_TYPES_ORDERED_TO_GET_SUGGESTION) {
+            final Dictionary dictionary = dictionaries.getDict(dictType);
             // Ideally the passed map would come out of a {@link java.util.concurrent.Future} and
             // would be immutable once it's finished initializing, but concretely a null test is
             // probably good enough for the time being.
@@ -480,8 +484,10 @@ public class DictionaryFacilitatorForSuggest {
             return Dictionary.NOT_A_PROBABILITY;
         }
         int maxFreq = -1;
-        final Map<String, Dictionary> dictMap = mDictionaries.mDictMap;
-        for (final Dictionary dictionary : dictMap.values()) {
+        final Dictionaries dictionaries = mDictionaries;
+        for (final String dictType : DICT_TYPES_ORDERED_TO_GET_SUGGESTION) {
+            final Dictionary dictionary = dictionaries.getDict(dictType);
+            if (dictionary == null) continue;
             final int tempFreq = dictionary.getFrequency(word);
             if (tempFreq >= maxFreq) {
                 maxFreq = tempFreq;
