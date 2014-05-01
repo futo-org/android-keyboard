@@ -36,9 +36,7 @@ import com.android.inputmethod.keyboard.MainKeyboardView;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 
-public final class AccessibleKeyboardViewProxy extends AccessibilityDelegateCompat {
-    private static final AccessibleKeyboardViewProxy sInstance = new AccessibleKeyboardViewProxy();
-
+public final class MainKeyboardAccessibilityDelegate extends AccessibilityDelegateCompat {
     /** Map of keyboard modes to resource IDs. */
     private static final SparseIntArray KEYBOARD_MODE_RES_IDS = new SparseIntArray();
 
@@ -54,9 +52,9 @@ public final class AccessibleKeyboardViewProxy extends AccessibilityDelegateComp
         KEYBOARD_MODE_RES_IDS.put(KeyboardId.MODE_URL, R.string.keyboard_mode_url);
     }
 
-    private MainKeyboardView mView;
+    private final MainKeyboardView mView;
     private Keyboard mKeyboard;
-    private AccessibilityEntityProvider mAccessibilityNodeProvider;
+    private MainKeyboardAccessibilityNodeProvider mAccessibilityNodeProvider;
 
     private Key mLastHoverKey = null;
 
@@ -69,46 +67,14 @@ public final class AccessibleKeyboardViewProxy extends AccessibilityDelegateComp
     private int mLastKeyboardMode = KEYBOARD_IS_HIDDEN;
     private static final int KEYBOARD_IS_HIDDEN = -1;
 
-    public static void init(final Context context) {
-        sInstance.initInternal(context);
-    }
-
-    public static AccessibleKeyboardViewProxy getInstance() {
-        return sInstance;
-    }
-
-    private AccessibleKeyboardViewProxy() {
-        // Not publicly instantiable.
-    }
-
-    private void initInternal(final Context context) {
+    public MainKeyboardAccessibilityDelegate(final MainKeyboardView view) {
+        final Context context = view.getContext();
         mEdgeSlop = context.getResources().getDimensionPixelSize(
                 R.dimen.config_accessibility_edge_slop);
-    }
-
-    /**
-     * Sets the view wrapped by this proxy.
-     *
-     * @param view The view to wrap.
-     */
-    public void setView(final MainKeyboardView view) {
-        if (view == null) {
-            // Ignore null views.
-            return;
-        }
         mView = view;
 
         // Ensure that the view has an accessibility delegate.
         ViewCompat.setAccessibilityDelegate(view, this);
-
-        if (mAccessibilityNodeProvider == null) {
-            return;
-        }
-        mAccessibilityNodeProvider.setView(view);
-
-        // Since this class is constructed lazily, we might not get a subsequent
-        // call to setKeyboard() and therefore need to call it now.
-        setKeyboard(view.getKeyboard());
     }
 
     /**
@@ -156,9 +122,6 @@ public final class AccessibleKeyboardViewProxy extends AccessibilityDelegateComp
      * Called when the keyboard is hidden and accessibility is enabled.
      */
     public void onHideWindow() {
-        if (mView == null) {
-            return;
-        }
         announceKeyboardHidden();
         mLastKeyboardMode = KEYBOARD_IS_HIDDEN;
     }
@@ -264,7 +227,7 @@ public final class AccessibleKeyboardViewProxy extends AccessibilityDelegateComp
     }
 
     /**
-     * Proxy method for View.getAccessibilityNodeProvider(). This method is called in SDK
+     * Delegate method for View.getAccessibilityNodeProvider(). This method is called in SDK
      * version 15 (Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) and higher to obtain the virtual
      * node hierarchy provider.
      *
@@ -272,10 +235,7 @@ public final class AccessibleKeyboardViewProxy extends AccessibilityDelegateComp
      * @return The accessibility node provider for the current keyboard.
      */
     @Override
-    public AccessibilityEntityProvider getAccessibilityNodeProvider(final View host) {
-        if (mView == null) {
-            return null;
-        }
+    public MainKeyboardAccessibilityNodeProvider getAccessibilityNodeProvider(final View host) {
         return getAccessibilityNodeProvider();
     }
 
@@ -288,10 +248,6 @@ public final class AccessibleKeyboardViewProxy extends AccessibilityDelegateComp
      * @return {@code true} if the event is handled
      */
     public boolean dispatchHoverEvent(final MotionEvent event, final KeyDetector keyDetector) {
-        if (mView == null) {
-            return false;
-        }
-
         final int x = (int) event.getX();
         final int y = (int) event.getY();
         final Key previousKey = mLastHoverKey;
@@ -325,14 +281,14 @@ public final class AccessibleKeyboardViewProxy extends AccessibilityDelegateComp
     }
 
     /**
-     * @return A lazily-instantiated node provider for this view proxy.
+     * @return A lazily-instantiated node provider for this view delegate.
      */
-    private AccessibilityEntityProvider getAccessibilityNodeProvider() {
+    private MainKeyboardAccessibilityNodeProvider getAccessibilityNodeProvider() {
         // Instantiate the provide only when requested. Since the system
         // will call this method multiple times it is a good practice to
         // cache the provider instance.
         if (mAccessibilityNodeProvider == null) {
-            mAccessibilityNodeProvider = new AccessibilityEntityProvider(mView);
+            mAccessibilityNodeProvider = new MainKeyboardAccessibilityNodeProvider(mView);
         }
         return mAccessibilityNodeProvider;
     }
@@ -417,7 +373,7 @@ public final class AccessibleKeyboardViewProxy extends AccessibilityDelegateComp
         if (key == null) {
             return false;
         }
-        final AccessibilityEntityProvider provider = getAccessibilityNodeProvider();
+        final MainKeyboardAccessibilityNodeProvider provider = getAccessibilityNodeProvider();
 
         switch (event.getAction()) {
         case MotionEvent.ACTION_HOVER_ENTER:
