@@ -29,6 +29,7 @@ import android.provider.ContactsContract.Contacts;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.personalization.AccountUtils;
 import com.android.inputmethod.latin.utils.StringUtils;
 
@@ -82,6 +83,7 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
         reloadDictionaryIfRequired();
     }
 
+    @UsedForTesting
     public static ContactsBinaryDictionary getDictionary(final Context context, final Locale locale,
             final File dictFile) {
         return new ContactsBinaryDictionary(context, locale, dictFile);
