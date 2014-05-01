@@ -68,6 +68,7 @@
     lv: Latvian/qwerty
     mk: Macedonian/south_slavic
     mn_MN: Mongolian (Mongolia)/mongolian
+    (mr_IN: Marathi (India)/marathi) # This is a preliminary keyboard layout.
     ms_MY: Malay (Malaysia)/qwerty
     (my_MM: Myanmar (Myanmar)/myanmar) # This is a preliminary keyboard layout.
     nb: Norwegian Bokmål/nordic
@@ -475,6 +476,16 @@
             android:imeSubtypeLocale="mn_MN"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=mongolian,EmojiCapable"
+            android:isAsciiCapable="false"
+    />
+    <!-- TODO: This marathi keyboard is a preliminary layout.
+               This isn't based on the final specification. -->
+    <subtype android:icon="@drawable/ic_ime_switcher_dark"
+            android:label="@string/subtype_generic"
+            android:subtypeId="0x747b9f03"
+            android:imeSubtypeLocale="mr_IN"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=marathi,EmojiCapable"
             android:isAsciiCapable="false"
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"

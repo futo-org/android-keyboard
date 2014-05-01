@@ -43,6 +43,14 @@
                 latin:moreKeys="&#x0948;,%" />
         </case>
         <case
+            latin:keyboardLayoutSet="marathi"
+        >
+            <!-- U+0910: "ऐ" DEVANAGARI LETTER AI -->
+            <key-style
+                latin:styleName="moreKeysDevanagariVowelSignAi"
+                latin:moreKeys="&#x0910;,%" />
+        </case>
+        <case
             latin:keyboardLayoutSet="nepali_traditional"
         >
             <!-- U+0936/U+094D/U+0930: "श्र" DEVANAGARI LETTER SHA/DEVANAGARI SIGN VIRAMA/DEVANAGARI LETTER RA -->
