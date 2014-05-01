@@ -318,6 +318,8 @@ static inline void prof_out(void) {
 #define KEYCODE_SPACE ' '
 #define KEYCODE_SINGLE_QUOTE '\''
 #define KEYCODE_HYPHEN_MINUS '-'
+// Code point to indicate beginning-of-sentence. This is not in the code point space of unicode.
+#define CODE_POINT_BEGINNING_OF_SENTENCE 0x110000
 
 #define SUGGEST_INTERFACE_OUTPUT_SCALE 1000000.0f
 #define MAX_PROBABILITY 255
