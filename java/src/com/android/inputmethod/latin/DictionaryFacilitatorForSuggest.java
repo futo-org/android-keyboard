@@ -31,6 +31,8 @@ import com.android.inputmethod.latin.utils.LanguageModelParam;
 import com.android.inputmethod.latin.utils.SuggestionResults;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -63,6 +65,20 @@ public class DictionaryFacilitatorForSuggest {
                 Dictionary.TYPE_USER,
                 Dictionary.TYPE_CONTACTS
             };
+
+    private static final Map<String, Class<? extends ExpandableBinaryDictionary>>
+            DICT_TYPE_TO_CLASS = CollectionUtils.newHashMap();
+
+    static {
+        DICT_TYPE_TO_CLASS.put(Dictionary.TYPE_USER_HISTORY, UserHistoryDictionary.class);
+        DICT_TYPE_TO_CLASS.put(Dictionary.TYPE_PERSONALIZATION, PersonalizationDictionary.class);
+        DICT_TYPE_TO_CLASS.put(Dictionary.TYPE_USER, UserBinaryDictionary.class);
+        DICT_TYPE_TO_CLASS.put(Dictionary.TYPE_CONTACTS, ContactsBinaryDictionary.class);
+    }
+
+    private static final String DICT_FACTORY_METHOD_NAME = "getDictionary";
+    private static final Class<?>[] DICT_FACTORY_METHOD_ARG_TYPES =
+            new Class[] { Context.class, Locale.class, File.class };
 
     private static final String[] SUB_DICT_TYPES =
             Arrays.copyOfRange(DICT_TYPES_ORDERED_TO_GET_SUGGESTION, 1 /* start */,
@@ -145,15 +161,20 @@ public class DictionaryFacilitatorForSuggest {
 
     private static ExpandableBinaryDictionary getSubDict(final String dictType,
             final Context context, final Locale locale, final File dictFile) {
-        if (Dictionary.TYPE_CONTACTS.equals(dictType)) {
-            return ContactsBinaryDictionary.getDictionary(context, locale, dictFile);
-        } else if (Dictionary.TYPE_USER.equals(dictType)) {
-            return UserBinaryDictionary.getDictionary(context, locale, dictFile);
-        } else if (Dictionary.TYPE_USER_HISTORY.equals(dictType)) {
-            return UserHistoryDictionary.getDictionary(context, locale, dictFile);
-        } else if (Dictionary.TYPE_PERSONALIZATION.equals(dictType)) {
-            return PersonalizationDictionary.getDictionary(context, locale, dictFile);
-        } else {
+        final Class<? extends ExpandableBinaryDictionary> dictClass =
+                DICT_TYPE_TO_CLASS.get(dictType);
+        if (dictClass == null) {
+            return null;
+        }
+        try {
+            final Method factoryMethod = dictClass.getMethod(DICT_FACTORY_METHOD_NAME,
+                    DICT_FACTORY_METHOD_ARG_TYPES);
+            final Object dict = factoryMethod.invoke(null /* obj */,
+                    new Object[] { context, locale, dictFile });
+            return (ExpandableBinaryDictionary) dict;
+        } catch (final NoSuchMethodException | SecurityException | IllegalAccessException
+                | IllegalArgumentException | InvocationTargetException e) {
+            Log.e(TAG, "Cannot create dictionary: " + dictType, e);
             return null;
         }
     }
@@ -165,9 +186,10 @@ public class DictionaryFacilitatorForSuggest {
         final boolean localeHasBeenChanged = !newLocale.equals(mDictionaries.mLocale);
         // We always try to have the main dictionary. Other dictionaries can be unused.
         final boolean reloadMainDictionary = localeHasBeenChanged || forceReloadMainDictionary;
+        // TODO: Make subDictTypesToUse configurable by resource or a static final list.
         final Set<String> subDictTypesToUse = CollectionUtils.newHashSet();
         if (useContactsDict) {
-            subDictTypesToUse.add(Dictionary.TYPE_USER);
+            subDictTypesToUse.add(Dictionary.TYPE_CONTACTS);
         }
         subDictTypesToUse.add(Dictionary.TYPE_USER);
         if (usePersonalizedDicts) {

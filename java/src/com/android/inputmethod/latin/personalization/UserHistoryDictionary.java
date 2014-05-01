@@ -18,6 +18,7 @@ package com.android.inputmethod.latin.personalization;
 
 import android.content.Context;
 
+import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.ExpandableBinaryDictionary;
@@ -38,6 +39,7 @@ public class UserHistoryDictionary extends DecayingExpandableBinaryDictionaryBas
                 Dictionary.TYPE_USER_HISTORY, null /* dictFile */);
     }
 
+    @UsedForTesting
     public static UserHistoryDictionary getDictionary(final Context context, final Locale locale,
             final File dictFile) {
         return PersonalizationHelper.getUserHistoryDictionary(context, locale);

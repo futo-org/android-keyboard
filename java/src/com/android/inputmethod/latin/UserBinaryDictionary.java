@@ -28,6 +28,7 @@ import android.provider.UserDictionary.Words;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.compat.UserDictionaryCompatUtils;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 
@@ -104,6 +105,7 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
         reloadDictionaryIfRequired();
     }
 
+    @UsedForTesting
     public static UserBinaryDictionary getDictionary(final Context context, final Locale locale,
             final File dictFile) {
         return new UserBinaryDictionary(context, locale, dictFile);
