@@ -58,6 +58,11 @@ class BigramDictContent : public SparseTableDictContent {
         return addressLookupTable->get(terminalId);
     }
 
+    bool writeBigramEntryAtTail(const BigramEntry *const bigramEntryToWrite) {
+        int writingPos = getContentBuffer()->getTailPosition();
+        return writeBigramEntryAndAdvancePosition(bigramEntryToWrite, &writingPos);
+    }
+
     bool writeBigramEntry(const BigramEntry *const bigramEntryToWrite, const int entryWritingPos) {
         int writingPos = entryWritingPos;
         return writeBigramEntryAndAdvancePosition(bigramEntryToWrite, &writingPos);
@@ -71,7 +76,7 @@ class BigramDictContent : public SparseTableDictContent {
         return getUpdatableAddressLookupTable()->set(terminalId, bigramListPos);
     }
 
-    bool copyBigramList(const int bigramListPos, const int toPos);
+    bool copyBigramList(const int bigramListPos, const int toPos, int *const outTailEntryPos);
 
     bool flushToFile(const char *const dictPath) const {
         return flush(dictPath, Ver4DictConstants::BIGRAM_LOOKUP_TABLE_FILE_EXTENSION,
