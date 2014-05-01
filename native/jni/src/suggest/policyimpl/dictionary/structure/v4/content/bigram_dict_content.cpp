@@ -113,13 +113,17 @@ bool BigramDictContent::writeBigramEntryAndAdvancePosition(
     return true;
 }
 
-bool BigramDictContent::copyBigramList(const int bigramListPos, const int toPos) {
+bool BigramDictContent::copyBigramList(const int bigramListPos, const int toPos,
+        int *const outTailEntryPos) {
     int readingPos = bigramListPos;
     int writingPos = toPos;
     bool hasNext = true;
     while (hasNext) {
         const BigramEntry bigramEntry = getBigramEntryAndAdvancePosition(&readingPos);
         hasNext = bigramEntry.hasNext();
+        if (!hasNext) {
+            *outTailEntryPos = writingPos;
+        }
         if (!writeBigramEntryAndAdvancePosition(&bigramEntry, &writingPos)) {
             AKLOGE("Cannot write bigram entry to copy. pos: %d", writingPos);
             return false;

@@ -55,7 +55,7 @@ bool Ver4BigramListPolicy::addNewEntry(const int terminalId, const int newTarget
     }
     const int bigramListPos = mBigramDictContent->getBigramListHeadPos(terminalId);
     if (bigramListPos == NOT_A_DICT_POS) {
-        // Updating PtNode doesn't have a bigram list.
+        // Updating PtNode that doesn't have a bigram list.
         // Create new bigram list.
         if (!mBigramDictContent->createNewBigramList(terminalId)) {
             return false;
@@ -98,19 +98,27 @@ bool Ver4BigramListPolicy::addNewEntry(const int terminalId, const int newTarget
     if (!mBigramDictContent->createNewBigramList(terminalId)) {
         return false;
     }
-    // Write new entry at a head position of the bigram list.
     int writingPos = mBigramDictContent->getBigramListHeadPos(terminalId);
-    const BigramEntry newBigramEntry(true /* hasNext */, NOT_A_PROBABILITY, newTargetTerminalId);
+    int tailEntryPos = NOT_A_DICT_POS;
+    // Copy existing bigram list.
+    if (!mBigramDictContent->copyBigramList(bigramListPos, writingPos, &tailEntryPos)) {
+        return false;
+    }
+    // Write new entry at the tail position of the bigram content.
+    const BigramEntry newBigramEntry(false /* hasNext */, NOT_A_PROBABILITY, newTargetTerminalId);
     const BigramEntry bigramEntryToWrite = createUpdatedBigramEntryFrom(
             &newBigramEntry, newProbability, timestamp);
-    if (!mBigramDictContent->writeBigramEntryAndAdvancePosition(&bigramEntryToWrite, &writingPos)) {
+    if (!mBigramDictContent->writeBigramEntryAtTail(&bigramEntryToWrite)) {
+        return false;
+    }
+    // Update has next flag of the tail entry.
+    if (!updateHasNextFlag(true /* hasNext */, tailEntryPos)) {
         return false;
     }
     if (outAddedNewEntry) {
         *outAddedNewEntry = true;
     }
-    // Append existing entries by copying.
-    return mBigramDictContent->copyBigramList(bigramListPos, writingPos);
+    return true;
 }
 
 bool Ver4BigramListPolicy::removeEntry(const int terminalId, const int targetTerminalId) {
@@ -237,6 +245,12 @@ const BigramEntry Ver4BigramListPolicy::createUpdatedBigramEntryFrom(
     } else {
         return originalBigramEntry->updateProbabilityAndGetEntry(newProbability);
     }
+}
+
+bool Ver4BigramListPolicy::updateHasNextFlag(const bool hasNext, const int bigramEntryPos) {
+    const BigramEntry bigramEntry = mBigramDictContent->getBigramEntry(bigramEntryPos);
+    const BigramEntry updatedBigramEntry = bigramEntry.updateHasNextAndGetEntry(hasNext);
+    return mBigramDictContent->writeBigramEntry(&updatedBigramEntry, bigramEntryPos);
 }
 
 } // namespace latinime
