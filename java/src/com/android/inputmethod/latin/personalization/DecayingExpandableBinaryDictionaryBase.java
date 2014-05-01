@@ -18,15 +18,11 @@ package com.android.inputmethod.latin.personalization;
 
 import android.content.Context;
 
-import com.android.inputmethod.annotations.UsedForTesting;
-import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.ExpandableBinaryDictionary;
 import com.android.inputmethod.latin.makedict.DictionaryHeader;
-import com.android.inputmethod.latin.utils.LanguageModelParam;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Map;
 
@@ -46,8 +42,6 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
 
     /** The locale for this dictionary. */
     public final Locale mLocale;
-
-    private Map<String, String> mAdditionalAttributeMap = null;
 
     protected DecayingExpandableBinaryDictionaryBase(final Context context,
             final String dictName, final Locale locale, final String dictionaryType,
@@ -72,9 +66,6 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
     @Override
     protected Map<String, String> getHeaderAttributeMap() {
         final Map<String, String> attributeMap = super.getHeaderAttributeMap();
-        if (mAdditionalAttributeMap != null) {
-            attributeMap.putAll(mAdditionalAttributeMap);
-        }
         attributeMap.put(DictionaryHeader.USES_FORGETTING_CURVE_KEY,
                 DictionaryHeader.ATTRIBUTE_VALUE_TRUE);
         attributeMap.put(DictionaryHeader.HAS_HISTORICAL_INFO_KEY,
@@ -90,13 +81,6 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
     @Override
     protected void loadInitialContentsLocked() {
         // No initial contents.
-    }
-
-    @UsedForTesting
-    public void clearAndFlushDictionaryWithAdditionalAttributes(
-            final Map<String, String> attributeMap) {
-        mAdditionalAttributeMap = attributeMap;
-        clear();
     }
 
     /* package */ void runGCIfRequired() {
