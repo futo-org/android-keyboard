@@ -45,6 +45,19 @@ public class InputLogicTestsNonEnglish extends InputTestsBase {
                 mEditText.getText().toString());
     }
 
+    public void testClusteringPunctuationForFrench() {
+        final String WORD1_TO_TYPE = "test";
+        final String WORD2_TO_TYPE = "!!?!:!";
+        // In English, the expected result would be "test!!?!:!"
+        final String EXPECTED_RESULT = "test !!?! : !";
+        changeLanguage("fr");
+        type(WORD1_TO_TYPE);
+        pickSuggestionManually(0, WORD1_TO_TYPE);
+        type(WORD2_TO_TYPE);
+        assertEquals("clustering punctuation for French", EXPECTED_RESULT,
+                mEditText.getText().toString());
+    }
+
     public void testWordThenSpaceThenPunctuationFromStripTwiceForFrench() {
         final String WORD_TO_TYPE = "test ";
         final String PUNCTUATION_FROM_STRIP = "!";
