@@ -26,14 +26,15 @@ import java.util.Locale;
 public class PersonalizationDictionary extends DecayingExpandableBinaryDictionaryBase {
     /* package */ static final String NAME = PersonalizationDictionary.class.getSimpleName();
 
+    // TODO: Make this constructor private
     /* package */ PersonalizationDictionary(final Context context, final Locale locale) {
-        this(context, locale, null /* dictFile */);
+        super(context, getDictName(NAME, locale, null /* dictFile */), locale,
+                Dictionary.TYPE_PERSONALIZATION, null /* dictFile */);
     }
 
-    public PersonalizationDictionary(final Context context, final Locale locale,
-            final File dictFile) {
-        super(context, getDictName(NAME, locale, dictFile), locale, Dictionary.TYPE_PERSONALIZATION,
-                dictFile);
+    public static PersonalizationDictionary getDictionary(final Context context,
+            final Locale locale, final File dictFile) {
+        return PersonalizationHelper.getPersonalizationDictionary(context, locale);
     }
 
     @Override
