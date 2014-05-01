@@ -772,7 +772,9 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     }
 
     public void onHideWindow() {
-        mAccessibilityDelegate.onHideWindow();
+        if (AccessibilityUtils.getInstance().isAccessibilityEnabled()) {
+            mAccessibilityDelegate.onHideWindow();
+        }
     }
 
     /**
