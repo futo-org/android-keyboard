@@ -55,7 +55,6 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.accessibility.AccessibilityUtils;
-import com.android.inputmethod.accessibility.AccessibleKeyboardViewProxy;
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.compat.InputMethodServiceCompatUtils;
 import com.android.inputmethod.dictionarypack.DictionaryPackConstants;
@@ -1001,10 +1000,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     public void hideWindow() {
         LatinImeLogger.commit();
         mKeyboardSwitcher.onHideWindow();
-
-        if (AccessibilityUtils.getInstance().isAccessibilityEnabled()) {
-            AccessibleKeyboardViewProxy.getInstance().onHideWindow();
-        }
 
         if (TRACE) Debug.stopMethodTracing();
         if (isShowingOptionDialog()) {

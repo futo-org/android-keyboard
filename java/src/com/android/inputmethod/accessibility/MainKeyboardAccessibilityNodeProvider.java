@@ -47,8 +47,8 @@ import java.util.List;
  * virtual views, thus conveying their logical structure.
  * </p>
  */
-public final class AccessibilityEntityProvider extends AccessibilityNodeProviderCompat {
-    private static final String TAG = AccessibilityEntityProvider.class.getSimpleName();
+public final class MainKeyboardAccessibilityNodeProvider extends AccessibilityNodeProviderCompat {
+    private static final String TAG = MainKeyboardAccessibilityNodeProvider.class.getSimpleName();
     private static final int UNDEFINED = Integer.MIN_VALUE;
 
     private final KeyCodeDescriptionMapper mKeyCodeDescriptionMapper;
@@ -64,23 +64,14 @@ public final class AccessibilityEntityProvider extends AccessibilityNodeProvider
     private int mAccessibilityFocusedView = UNDEFINED;
 
     /** The current keyboard view. */
-    private KeyboardView mKeyboardView;
+    private final KeyboardView mKeyboardView;
 
     /** The current keyboard. */
     private Keyboard mKeyboard;
 
-    public AccessibilityEntityProvider(final KeyboardView keyboardView) {
+    public MainKeyboardAccessibilityNodeProvider(final KeyboardView keyboardView) {
         mKeyCodeDescriptionMapper = KeyCodeDescriptionMapper.getInstance();
         mAccessibilityUtils = AccessibilityUtils.getInstance();
-        setView(keyboardView);
-    }
-
-    /**
-     * Sets the keyboard view represented by this node provider.
-     *
-     * @param keyboardView The keyboard view to represent.
-     */
-    public void setView(final KeyboardView keyboardView) {
         mKeyboardView = keyboardView;
         updateParentLocation();
 

@@ -39,7 +39,7 @@ import android.view.inputmethod.InputMethodSubtype;
 import android.widget.TextView;
 
 import com.android.inputmethod.accessibility.AccessibilityUtils;
-import com.android.inputmethod.accessibility.AccessibleKeyboardViewProxy;
+import com.android.inputmethod.accessibility.MainKeyboardAccessibilityDelegate;
 import com.android.inputmethod.annotations.ExternallyReferenced;
 import com.android.inputmethod.keyboard.internal.DrawingHandler;
 import com.android.inputmethod.keyboard.internal.DrawingPreviewPlacerView;
@@ -179,6 +179,8 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     private final DrawingHandler mDrawingHandler =
             new DrawingHandler(this);
 
+    private final MainKeyboardAccessibilityDelegate mAccessibilityDelegate;
+
     public MainKeyboardView(final Context context, final AttributeSet attrs) {
         this(context, attrs, R.attr.mainKeyboardViewStyle);
     }
@@ -278,6 +280,8 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
 
         mLanguageOnSpacebarHorizontalMargin = (int)getResources().getDimension(
                 R.dimen.config_language_on_spacebar_horizontal_margin);
+
+        mAccessibilityDelegate = new MainKeyboardAccessibilityDelegate(this);
     }
 
     @Override
@@ -404,9 +408,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
             ResearchLogger.mainKeyboardView_setKeyboard(keyboard, orientation);
         }
 
-        // This always needs to be set since the accessibility state can
-        // potentially change without the keyboard being set again.
-        AccessibleKeyboardViewProxy.getInstance().setKeyboard(keyboard);
+        mAccessibilityDelegate.setKeyboard(keyboard);
     }
 
     /**
@@ -769,6 +771,10 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         mMoreKeysKeyboardCache.clear();
     }
 
+    public void onHideWindow() {
+        mAccessibilityDelegate.onHideWindow();
+    }
+
     /**
      * Receives hover events from the input framework.
      *
@@ -779,8 +785,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     @Override
     public boolean dispatchHoverEvent(final MotionEvent event) {
         if (AccessibilityUtils.getInstance().isTouchExplorationEnabled()) {
-            return AccessibleKeyboardViewProxy.getInstance().dispatchHoverEvent(
-                    event, mKeyDetector);
+            return mAccessibilityDelegate.dispatchHoverEvent(event, mKeyDetector);
         }
 
         // Reflection doesn't support calling superclass methods.
