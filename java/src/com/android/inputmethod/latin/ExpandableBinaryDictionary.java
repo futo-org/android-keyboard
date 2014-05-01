@@ -97,6 +97,8 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
 
     private final ReentrantReadWriteLock mLock;
 
+    private Map<String, String> mAdditionalAttributeMap = null;
+
     /* A extension for a binary dictionary file. */
     protected static final String DICT_FILE_EXTENSION = ".dict";
 
@@ -196,6 +198,9 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
 
     protected Map<String, String> getHeaderAttributeMap() {
         HashMap<String, String> attributeMap = new HashMap<String, String>();
+        if (mAdditionalAttributeMap != null) {
+            attributeMap.putAll(mAdditionalAttributeMap);
+        }
         attributeMap.put(DictionaryHeader.DICTIONARY_ID_KEY, mDictName);
         attributeMap.put(DictionaryHeader.DICTIONARY_LOCALE_KEY, mLocale.toString());
         attributeMap.put(DictionaryHeader.DICTIONARY_VERSION_KEY,
@@ -592,6 +597,12 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     }
 
     @UsedForTesting
+    public void clearAndFlushDictionaryWithAdditionalAttributes(
+            final Map<String, String> attributeMap) {
+        mAdditionalAttributeMap = attributeMap;
+        clear();
+    }
+
     public void dumpAllWordsForDebug() {
         reloadDictionaryIfRequired();
         asyncExecuteTaskWithLock(mLock.readLock(), new Runnable() {

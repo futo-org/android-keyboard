@@ -23,7 +23,7 @@ import android.util.Log;
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
-import com.android.inputmethod.latin.personalization.PersonalizationDictionary;
+import com.android.inputmethod.latin.personalization.DecayingExpandableBinaryDictionaryBase;
 import com.android.inputmethod.latin.personalization.PersonalizationHelper;
 import com.android.inputmethod.latin.personalization.UserHistoryDictionary;
 import com.android.inputmethod.latin.utils.CollectionUtils;
@@ -33,9 +33,11 @@ import com.android.inputmethod.latin.utils.SuggestionResults;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -54,7 +56,7 @@ public class DictionaryFacilitatorForSuggest {
     // To synchronize assigning mDictionaries to ensure closing dictionaries.
     private Object mLock = new Object();
 
-    private static final String[] dictTypesOrderedToGetSuggestion =
+    private static final String[] DICT_TYPES_ORDERED_TO_GET_SUGGESTION =
             new String[] {
                 Dictionary.TYPE_MAIN,
                 Dictionary.TYPE_USER_HISTORY,
@@ -62,6 +64,10 @@ public class DictionaryFacilitatorForSuggest {
                 Dictionary.TYPE_USER,
                 Dictionary.TYPE_CONTACTS
             };
+
+    private static final String[] SUB_DICT_TYPES =
+            Arrays.copyOfRange(DICT_TYPES_ORDERED_TO_GET_SUGGESTION, 1 /* start */,
+                    DICT_TYPES_ORDERED_TO_GET_SUGGESTION.length);
 
     /**
      * Class contains dictionaries for a locale.
@@ -78,17 +84,13 @@ public class DictionaryFacilitatorForSuggest {
         }
 
         public Dictionaries(final Locale locale, final Dictionary mainDict,
-            final ExpandableBinaryDictionary contactsDict,
-            final ExpandableBinaryDictionary userDict,
-            final ExpandableBinaryDictionary userHistoryDict,
-            final ExpandableBinaryDictionary personalizationDict) {
+                final Map<String, ExpandableBinaryDictionary> subDicts) {
             mLocale = locale;
             // Main dictionary can be asynchronously loaded.
             setMainDict(mainDict);
-            setSubDict(Dictionary.TYPE_CONTACTS, contactsDict);
-            setSubDict(Dictionary.TYPE_USER, userDict);
-            setSubDict(Dictionary.TYPE_USER_HISTORY, userHistoryDict);
-            setSubDict(Dictionary.TYPE_PERSONALIZATION, personalizationDict);
+            for (final Map.Entry<String, ExpandableBinaryDictionary> entry : subDicts.entrySet()) {
+                setSubDict(entry.getKey(), entry.getValue());
+            }
         }
 
         private void setSubDict(final String dictType, final ExpandableBinaryDictionary dict) {
@@ -142,6 +144,21 @@ public class DictionaryFacilitatorForSuggest {
         return mDictionaries.mLocale;
     }
 
+    private static ExpandableBinaryDictionary getSubDict(final String dictType,
+            final Context context, final Locale locale, final File dictFile) {
+        if (Dictionary.TYPE_CONTACTS.equals(dictType)) {
+            return new ContactsBinaryDictionary(context, locale, dictFile);
+        } else if (Dictionary.TYPE_USER.equals(dictType)) {
+            return new UserBinaryDictionary(context, locale, dictFile);
+        } else if (Dictionary.TYPE_USER_HISTORY.equals(dictType)) {
+            return PersonalizationHelper.getUserHistoryDictionary(context, locale);
+        } else if (Dictionary.TYPE_PERSONALIZATION.equals(dictType)) {
+            return PersonalizationHelper.getPersonalizationDictionary(context, locale);
+        } else {
+            return null;
+        }
+    }
+
     public void resetDictionaries(final Context context, final Locale newLocale,
             final boolean useContactsDict, final boolean usePersonalizedDicts,
             final boolean forceReloadMainDictionary,
@@ -149,11 +166,15 @@ public class DictionaryFacilitatorForSuggest {
         final boolean localeHasBeenChanged = !newLocale.equals(mDictionaries.mLocale);
         // We always try to have the main dictionary. Other dictionaries can be unused.
         final boolean reloadMainDictionary = localeHasBeenChanged || forceReloadMainDictionary;
-        final boolean closeContactsDictionary = localeHasBeenChanged || !useContactsDict;
-        final boolean closeUserDictionary = localeHasBeenChanged;
-        final boolean closeUserHistoryDictionary = localeHasBeenChanged || !usePersonalizedDicts;
-        final boolean closePersonalizationDictionary =
-                localeHasBeenChanged || !usePersonalizedDicts;
+        final Set<String> subDictTypesToUse = CollectionUtils.newHashSet();
+        if (useContactsDict) {
+            subDictTypesToUse.add(Dictionary.TYPE_USER);
+        }
+        subDictTypesToUse.add(Dictionary.TYPE_USER);
+        if (usePersonalizedDicts) {
+            subDictTypesToUse.add(Dictionary.TYPE_USER_HISTORY);
+            subDictTypesToUse.add(Dictionary.TYPE_PERSONALIZATION);
+        }
 
         final Dictionary newMainDict;
         if (reloadMainDictionary) {
@@ -163,50 +184,25 @@ public class DictionaryFacilitatorForSuggest {
             newMainDict = mDictionaries.getMainDict();
         }
 
-        // Open or move contacts dictionary.
-        final ExpandableBinaryDictionary newContactsDict;
-        if (!closeContactsDictionary && mDictionaries.hasDict(Dictionary.TYPE_CONTACTS)) {
-            newContactsDict = mDictionaries.getSubDict(Dictionary.TYPE_CONTACTS);
-        } else if (useContactsDict) {
-            newContactsDict = new ContactsBinaryDictionary(context, newLocale);
-        } else {
-            newContactsDict = null;
-        }
-
-        // Open or move user dictionary.
-        final ExpandableBinaryDictionary newUserDictionary;
-        if (!closeUserDictionary && mDictionaries.hasDict(Dictionary.TYPE_USER)) {
-            newUserDictionary = mDictionaries.getSubDict(Dictionary.TYPE_USER);
-        } else {
-            newUserDictionary = new UserBinaryDictionary(context, newLocale);
-            mIsUserDictEnabled = UserBinaryDictionary.isEnabled(context);
-        }
-
-        // Open or move user history dictionary.
-        final ExpandableBinaryDictionary newUserHistoryDict;
-        if (!closeUserHistoryDictionary && mDictionaries.hasDict(Dictionary.TYPE_USER_HISTORY)) {
-            newUserHistoryDict = mDictionaries.getSubDict(Dictionary.TYPE_USER_HISTORY);
-        } else if (usePersonalizedDicts) {
-            newUserHistoryDict = PersonalizationHelper.getUserHistoryDictionary(context, newLocale);
-        } else {
-            newUserHistoryDict = null;
-        }
-
-        // Open or move personalization dictionary.
-        final ExpandableBinaryDictionary newPersonalizationDict;
-        if (!closePersonalizationDictionary
-                && mDictionaries.hasDict(Dictionary.TYPE_PERSONALIZATION)) {
-            newPersonalizationDict = mDictionaries.getSubDict(Dictionary.TYPE_PERSONALIZATION);
-        } else if (usePersonalizedDicts) {
-            newPersonalizationDict =
-                    PersonalizationHelper.getPersonalizationDictionary(context, newLocale);
-        } else {
-            newPersonalizationDict = null;
+        final Map<String, ExpandableBinaryDictionary> subDicts = CollectionUtils.newHashMap();
+        for (final String dictType : SUB_DICT_TYPES) {
+            if (!subDictTypesToUse.contains(dictType)) {
+                // This dictionary will not be used.
+                continue;
+            }
+            final ExpandableBinaryDictionary dict;
+            if (!localeHasBeenChanged && mDictionaries.hasDict(dictType)) {
+                // Continue to use current dictionary.
+                dict = mDictionaries.getSubDict(dictType);
+            } else {
+                // Start to use new dictionary.
+                dict = getSubDict(dictType, context, newLocale, null /* dictFile */);
+            }
+            subDicts.put(dictType, dict);
         }
 
         // Replace Dictionaries.
-        final Dictionaries newDictionaries = new Dictionaries(newLocale, newMainDict,
-                newContactsDict,  newUserDictionary, newUserHistoryDict, newPersonalizationDict);
+        final Dictionaries newDictionaries = new Dictionaries(newLocale, newMainDict, subDicts);
         final Dictionaries oldDictionaries;
         synchronized (mLock) {
             oldDictionaries = mDictionaries;
@@ -218,22 +214,14 @@ public class DictionaryFacilitatorForSuggest {
         if (listener != null) {
             listener.onUpdateMainDictionaryAvailability(hasInitializedMainDictionary());
         }
-
         // Clean up old dictionaries.
         if (reloadMainDictionary) {
             oldDictionaries.closeDict(Dictionary.TYPE_MAIN);
         }
-        if (closeContactsDictionary) {
-            oldDictionaries.closeDict(Dictionary.TYPE_CONTACTS);
-        }
-        if (closeUserDictionary) {
-            oldDictionaries.closeDict(Dictionary.TYPE_USER);
-        }
-        if (closeUserHistoryDictionary) {
-            oldDictionaries.closeDict(Dictionary.TYPE_USER_HISTORY);
-        }
-        if (closePersonalizationDictionary) {
-            oldDictionaries.closeDict(Dictionary.TYPE_PERSONALIZATION);
+        for (final String dictType : SUB_DICT_TYPES) {
+            if (localeHasBeenChanged || !subDictTypesToUse.contains(dictType)) {
+                oldDictionaries.closeDict(dictType);
+            }
         }
         oldDictionaries.mDictMap.clear();
         oldDictionaries.mSubDictMap.clear();
@@ -269,52 +257,28 @@ public class DictionaryFacilitatorForSuggest {
             final ArrayList<String> dictionaryTypes, final HashMap<String, File> dictionaryFiles,
             final Map<String, Map<String, String>> additionalDictAttributes) {
         Dictionary mainDictionary = null;
-        ContactsBinaryDictionary contactsDictionary = null;
-        UserBinaryDictionary userDictionary = null;
-        UserHistoryDictionary userHistoryDictionary = null;
-        PersonalizationDictionary personalizationDictionary = null;
+        final Map<String, ExpandableBinaryDictionary> subDicts = CollectionUtils.newHashMap();
 
         for (final String dictType : dictionaryTypes) {
             if (dictType.equals(Dictionary.TYPE_MAIN)) {
                 mainDictionary = DictionaryFactory.createMainDictionaryFromManager(context, locale);
-            } else if (dictType.equals(Dictionary.TYPE_USER_HISTORY)) {
-                userHistoryDictionary =
-                        PersonalizationHelper.getUserHistoryDictionary(context, locale);
-                // Staring with an empty user history dictionary for testing.
-                // Testing program may populate this dictionary before actual testing.
-                userHistoryDictionary.reloadDictionaryIfRequired();
-                userHistoryDictionary.waitAllTasksForTests();
-                if (additionalDictAttributes.containsKey(dictType)) {
-                    userHistoryDictionary.clearAndFlushDictionaryWithAdditionalAttributes(
-                            additionalDictAttributes.get(dictType));
-                }
-            } else if (dictType.equals(Dictionary.TYPE_PERSONALIZATION)) {
-                personalizationDictionary =
-                        PersonalizationHelper.getPersonalizationDictionary(context, locale);
-                // Staring with an empty personalization dictionary for testing.
-                // Testing program may populate this dictionary before actual testing.
-                personalizationDictionary.reloadDictionaryIfRequired();
-                personalizationDictionary.waitAllTasksForTests();
-                if (additionalDictAttributes.containsKey(dictType)) {
-                    personalizationDictionary.clearAndFlushDictionaryWithAdditionalAttributes(
-                            additionalDictAttributes.get(dictType));
-                }
-            } else if (dictType.equals(Dictionary.TYPE_USER)) {
-                final File file = dictionaryFiles.get(dictType);
-                userDictionary = new UserBinaryDictionary(context, locale, file);
-                userDictionary.reloadDictionaryIfRequired();
-                userDictionary.waitAllTasksForTests();
-            } else if (dictType.equals(Dictionary.TYPE_CONTACTS)) {
-                final File file = dictionaryFiles.get(dictType);
-                contactsDictionary = new ContactsBinaryDictionary(context, locale, file);
-                contactsDictionary.reloadDictionaryIfRequired();
-                contactsDictionary.waitAllTasksForTests();
             } else {
-                throw new RuntimeException("Unknown dictionary type: " + dictType);
+                final File dictFile = dictionaryFiles.get(dictType);
+                final ExpandableBinaryDictionary dict = getSubDict(
+                        dictType, context, locale, dictFile);
+                if (additionalDictAttributes.containsKey(dictType)) {
+                    dict.clearAndFlushDictionaryWithAdditionalAttributes(
+                            additionalDictAttributes.get(dictType));
+                }
+                if (dict == null) {
+                    throw new RuntimeException("Unknown dictionary type: " + dictType);
+                }
+                dict.reloadDictionaryIfRequired();
+                dict.waitAllTasksForTests();
+                subDicts.put(dictType, dict);
             }
         }
-        mDictionaries = new Dictionaries(locale, mainDictionary, contactsDictionary,
-                userDictionary, userHistoryDictionary, personalizationDictionary);
+        mDictionaries = new Dictionaries(locale, mainDictionary, subDicts);
     }
 
     public void closeDictionaries() {
@@ -443,7 +407,7 @@ public class DictionaryFacilitatorForSuggest {
         final SuggestionResults suggestionResults =
                 new SuggestionResults(dictionaries.mLocale, SuggestedWords.MAX_SUGGESTIONS);
         final float[] languageWeight = new float[] { Dictionary.NOT_A_LANGUAGE_WEIGHT };
-        for (final String dictType : dictTypesOrderedToGetSuggestion) {
+        for (final String dictType : DICT_TYPES_ORDERED_TO_GET_SUGGESTION) {
             final Dictionary dictionary = dictMap.get(dictType);
             if (null == dictionary) continue;
             final ArrayList<SuggestedWordInfo> dictionarySuggestions =
