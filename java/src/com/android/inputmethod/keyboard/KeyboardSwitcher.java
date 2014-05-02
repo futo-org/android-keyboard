@@ -147,7 +147,9 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
 
     public void onHideWindow() {
         mIsAutoCorrectionActive = false;
-        mKeyboardView.onHideWindow();
+        if (mKeyboardView != null) {
+            mKeyboardView.onHideWindow();
+        }
     }
 
     private void setKeyboard(final Keyboard keyboard) {
