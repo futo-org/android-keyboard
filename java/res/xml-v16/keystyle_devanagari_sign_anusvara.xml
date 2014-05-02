@@ -36,6 +36,15 @@
                 latin:styleName="moreKeysDevanagariSignAnusvara"
                 latin:moreKeys="&#x0903;,&#x0901;,&#x093C;" />
         </case>
+        <case
+            latin:keyboardLayoutSet="marathi"
+        >
+            <!-- U+0903: "ः‍" DEVANAGARI SIGN VISARGA
+                 U+0901: "ँ" DEVANAGARI SIGN CANDRABINDU -->
+            <key-style
+                latin:styleName="moreKeysDevanagariSignAnusvara"
+                latin:moreKeys="&#x0903;,&#x0901;" />
+        </case>
         <default>
              <key-style
                 latin:styleName="moreKeysDevanagariSignAnusvara" />

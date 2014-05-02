@@ -43,6 +43,14 @@
                 latin:moreKeys="&#x0947;" />
         </case>
         <case
+            latin:keyboardLayoutSet="marathi"
+        >
+            <!-- U+090F: "ए" DEVANAGARI LETTER SHORT E -->
+            <key-style
+                latin:styleName="moreKeysDevanagariVowelSignE"
+                latin:moreKeys="&#x090F;" />
+        </case>
+        <case
             latin:keyboardLayoutSet="nepali_traditional"
         >
             <!-- U+0903: "ः‍" DEVANAGARI SIGN VISARGA

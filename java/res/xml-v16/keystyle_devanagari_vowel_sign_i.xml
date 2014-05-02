@@ -42,6 +42,14 @@
                 latin:styleName="moreKeysDevanagariVowelSignI"
                 latin:moreKeys="&#x093F;" />
         </case>
+        <case
+            latin:keyboardLayoutSet="marathi"
+        >
+            <!-- U+0907: "इ" DEVANAGARI LETTER I -->
+            <key-style
+                latin:styleName="moreKeysDevanagariVowelSignI"
+                latin:moreKeys="&#x0907;" />
+        </case>
         <default>
              <key-style
                 latin:styleName="moreKeysDevanagariVowelSignI" />

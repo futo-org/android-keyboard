@@ -35,6 +35,14 @@
                 latin:styleName="moreKeysDevanagariVowelSignCandraO"
                 latin:moreKeys="&#x25CC;&#x0949;|&#x0949;" />
         </case>
+        <case
+            latin:keyboardLayoutSet="marathi"
+        >
+            <!-- U+0911: "ऑ" DEVANAGARI LETTER CANDRA O -->
+            <key-style
+                latin:styleName="moreKeysDevanagariVowelSignCandraO"
+                latin:moreKeys="&#x0911;" />
+        </case>
         <default>
              <key-style
                 latin:styleName="moreKeysDevanagariVowelSignCandraO" />

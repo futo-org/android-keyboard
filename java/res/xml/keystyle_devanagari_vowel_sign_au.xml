@@ -44,6 +44,14 @@
                 latin:styleName="moreKeysDevanagariVowelSignAu"
                 latin:moreKeys="&#x25CC;&#x094C;|&#x094C;,%" />
         </case>
+        <case
+            latin:keyboardLayoutSet="marathi"
+        >
+            <!-- U+0914: "औ" DEVANAGARI LETTER AU -->
+            <key-style
+                latin:styleName="moreKeysDevanagariVowelSignAu"
+                latin:moreKeys="&#x0914;,%" />
+        </case>
         <default>
              <key-style
                 latin:styleName="moreKeysDevanagariVowelSignAu" />

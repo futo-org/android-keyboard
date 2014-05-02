@@ -35,6 +35,14 @@
                 latin:styleName="moreKeysDevanagariSignVirama"
                 latin:moreKeys="&#x25CC;&#x094D;|&#x094D;" />
         </case>
+        <case
+            latin:keyboardLayoutSet="marathi"
+        >
+            <!-- U+0905: "अ" DEVANAGARI LETTER A -->
+            <key-style
+                latin:styleName="moreKeysDevanagariSignVirama"
+                latin:moreKeys="&#x0905;" />
+        </case>
         <default>
              <key-style
                 latin:styleName="moreKeysDevanagariSignVirama" />
