@@ -46,6 +46,14 @@
                 latin:styleName="moreKeysDevanagariVowelSignO"
                 latin:moreKeys="&#x25CC;&#x094B;|&#x094B;" />
         </case>
+        <case
+            latin:keyboardLayoutSet="marathi"
+        >
+            <!-- U+0913: "ओ" DEVANAGARI LETTER O -->
+            <key-style
+                latin:styleName="moreKeysDevanagariVowelSignO"
+                latin:moreKeys="&#x0913;" />
+        </case>
         <default>
              <key-style
                 latin:styleName="moreKeysDevanagariVowelSignO" />

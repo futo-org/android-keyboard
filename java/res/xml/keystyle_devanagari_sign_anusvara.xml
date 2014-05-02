@@ -37,6 +37,16 @@
                 latin:styleName="moreKeysDevanagariSignAnusvara"
                 latin:moreKeys="&#x25CC;&#x0903;|&#x0903;,&#x25CC;&#x0901;|&#x0901;,&#x25CC;&#x093C;|&#x093C;" />
         </case>
+        <case
+            latin:keyboardLayoutSet="marathi"
+        >
+            <!-- U+25CC: "◌" DOTTED CIRCLE
+                 U+0903: "ः‍" DEVANAGARI SIGN VISARGA
+                 U+0901: "ँ" DEVANAGARI SIGN CANDRABINDU -->
+            <key-style
+                latin:styleName="moreKeysDevanagariSignAnusvara"
+                latin:moreKeys="&#x25CC;&#x0903;|&#x0903;,&#x25CC;&#x0901;|&#x0901;" />
+        </case>
         <default>
              <key-style
                 latin:styleName="moreKeysDevanagariSignAnusvara" />
