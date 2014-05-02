@@ -257,61 +257,61 @@
      <!-- Spoken description for Unicode code point U+1F0CF -->
      <string name="spoken_emoji_1F0CF">Playing card black joker</string>
      <!-- Spoken description for Unicode code point U+1F170 -->
-     <string name="spoken_emoji_1F170">Negative squared latin capital letter a</string>
+     <string name="spoken_emoji_1F170">Blood type A</string>
      <!-- Spoken description for Unicode code point U+1F171 -->
-     <string name="spoken_emoji_1F171">Negative squared latin capital letter b</string>
+     <string name="spoken_emoji_1F171">Blood type B</string>
      <!-- Spoken description for Unicode code point U+1F17E -->
-     <string name="spoken_emoji_1F17E">Negative squared latin capital letter o</string>
+     <string name="spoken_emoji_1F17E">Blood type O</string>
      <!-- Spoken description for Unicode code point U+1F17F -->
-     <string name="spoken_emoji_1F17F">Negative squared latin capital letter p</string>
+     <string name="spoken_emoji_1F17F">Parking lot</string>
      <!-- Spoken description for Unicode code point U+1F18E -->
-     <string name="spoken_emoji_1F18E">Negative squared ab</string>
-     <!-- Spoken description for Unicode code point U+1F191 -->
-     <string name="spoken_emoji_1F191">Squared cl</string>
+     <string name="spoken_emoji_1F18E">Blood type AB</string>
+     <!-- Spoken description for Unicode code point U+1F191, means "clear" -->
+     <string name="spoken_emoji_1F191">Squared CL</string>
      <!-- Spoken description for Unicode code point U+1F192 -->
      <string name="spoken_emoji_1F192">Squared cool</string>
      <!-- Spoken description for Unicode code point U+1F193 -->
      <string name="spoken_emoji_1F193">Squared free</string>
      <!-- Spoken description for Unicode code point U+1F194 -->
-     <string name="spoken_emoji_1F194">Squared id</string>
+     <string name="spoken_emoji_1F194">Squared ID</string>
      <!-- Spoken description for Unicode code point U+1F195 -->
      <string name="spoken_emoji_1F195">Squared new</string>
      <!-- Spoken description for Unicode code point U+1F196 -->
-     <string name="spoken_emoji_1F196">Squared ng</string>
+     <string name="spoken_emoji_1F196">Squared N G</string>
      <!-- Spoken description for Unicode code point U+1F197 -->
-     <string name="spoken_emoji_1F197">Squared ok</string>
+     <string name="spoken_emoji_1F197">Squared OK</string>
      <!-- Spoken description for Unicode code point U+1F198 -->
-     <string name="spoken_emoji_1F198">Squared sos</string>
+     <string name="spoken_emoji_1F198">Squared SOS</string>
      <!-- Spoken description for Unicode code point U+1F199 -->
      <string name="spoken_emoji_1F199">Squared up with exclamation mark</string>
-     <!-- Spoken description for Unicode code point U+1F19A -->
+     <!-- Spoken description for Unicode code point U+1F19A, means "versus" -->
      <string name="spoken_emoji_1F19A">Squared vs</string>
      <!-- Spoken description for Unicode code point U+1F201 -->
-     <string name="spoken_emoji_1F201">Squared katakana koko</string>
-     <!-- Spoken description for Unicode code point U+1F202 -->
-     <string name="spoken_emoji_1F202">Squared katakana sa</string>
-     <!-- Spoken description for Unicode code point U+1F21A -->
-     <string name="spoken_emoji_1F21A">Squared cjk unified ideograph-7121</string>
+     <string name="spoken_emoji_1F201">Squared katakana here</string>
+     <!-- Spoken description for Unicode code point U+1F202-->
+     <string name="spoken_emoji_1F202">Squared katakana service</string>
+     <!-- Spoken description for Unicode code point U+1F21A, means "free" or "no-charge" -->
+     <string name="spoken_emoji_1F21A">Squared ideograph charge-free</string>
      <!-- Spoken description for Unicode code point U+1F22F -->
-     <string name="spoken_emoji_1F22F">Squared cjk unified ideograph-6307</string>
+     <string name="spoken_emoji_1F22F">Squared ideograph reserved-seat</string>
      <!-- Spoken description for Unicode code point U+1F232 -->
-     <string name="spoken_emoji_1F232">Squared cjk unified ideograph-7981</string>
+     <string name="spoken_emoji_1F232">Squared ideograph prohibitation</string>
      <!-- Spoken description for Unicode code point U+1F233 -->
-     <string name="spoken_emoji_1F233">Squared cjk unified ideograph-7a7a</string>
+     <string name="spoken_emoji_1F233">Squared ideograph vacancy</string>
      <!-- Spoken description for Unicode code point U+1F234 -->
-     <string name="spoken_emoji_1F234">Squared cjk unified ideograph-5408</string>
+     <string name="spoken_emoji_1F234">Squared ideograph acceptance</string>
      <!-- Spoken description for Unicode code point U+1F235 -->
-     <string name="spoken_emoji_1F235">Squared cjk unified ideograph-6e80</string>
-     <!-- Spoken description for Unicode code point U+1F236 -->
-     <string name="spoken_emoji_1F236">Squared cjk unified ideograph-6709</string>
+     <string name="spoken_emoji_1F235">Squared ideograph full occupancy</string>
+     <!-- Spoken description for Unicode code point U+1F236, means "charged" or "fee-based" -->
+     <string name="spoken_emoji_1F236">Squared ideograph paid</string>
      <!-- Spoken description for Unicode code point U+1F237 -->
-     <string name="spoken_emoji_1F237">Squared cjk unified ideograph-6708</string>
-     <!-- Spoken description for Unicode code point U+1F238 -->
-     <string name="spoken_emoji_1F238">Squared cjk unified ideograph-7533</string>
+     <string name="spoken_emoji_1F237">Squared ideograph monthly</string>
+     <!-- Spoken description for Unicode code point U+1F238, means "subscription" or "application" -->
+     <string name="spoken_emoji_1F238">Squared ideograph application</string>
      <!-- Spoken description for Unicode code point U+1F239 -->
-     <string name="spoken_emoji_1F239">Squared cjk unified ideograph-5272</string>
+     <string name="spoken_emoji_1F239">Squared ideograph discount</string>
      <!-- Spoken description for Unicode code point U+1F23A -->
-     <string name="spoken_emoji_1F23A">Squared cjk unified ideograph-55b6</string>
+     <string name="spoken_emoji_1F23A">Squared ideograph in business</string>
      <!-- Spoken description for Unicode code point U+1F250 -->
      <string name="spoken_emoji_1F250">Circled ideograph advantage</string>
      <!-- Spoken description for Unicode code point U+1F251 -->
