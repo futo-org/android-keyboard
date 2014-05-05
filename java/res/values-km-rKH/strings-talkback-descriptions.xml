@@ -47,8 +47,7 @@
     <string name="spoken_description_shiftmode_on" msgid="5107180516341258979">"បាន​បើក Shift"</string>
     <string name="spoken_description_shiftmode_locked" msgid="7307477738053606881">"បាន​បើក Caps lock"</string>
     <string name="spoken_description_mode_symbol" msgid="111186851131446691">"របៀប​និមិត្ត​សញ្ញា"</string>
-    <!-- no translation found for spoken_description_mode_symbol_shift (3940566070908816492) -->
-    <skip />
+    <string name="spoken_description_mode_symbol_shift" msgid="3940566070908816492">"របៀប Symbols shift"</string>
     <string name="spoken_description_mode_alpha" msgid="4676004119618778911">"របៀប​អក្សរ"</string>
     <string name="spoken_description_mode_phone" msgid="2061220553756692903">"របៀប​ទូរស័ព្ទ"</string>
     <string name="spoken_description_mode_phone_shift" msgid="7879963803547701090">"​របៀប​និមិត្ត​សញ្ញា​ទូរស័ព្ទ"</string>

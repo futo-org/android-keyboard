@@ -47,8 +47,7 @@
     <string name="spoken_description_shiftmode_on" msgid="5107180516341258979">"Верхний регистр включен."</string>
     <string name="spoken_description_shiftmode_locked" msgid="7307477738053606881">"Caps Lock включен."</string>
     <string name="spoken_description_mode_symbol" msgid="111186851131446691">"Режим добавления символов."</string>
-    <!-- no translation found for spoken_description_mode_symbol_shift (3940566070908816492) -->
-    <skip />
+    <string name="spoken_description_mode_symbol_shift" msgid="3940566070908816492">"Режим ввода символов в верхнем регистре."</string>
     <string name="spoken_description_mode_alpha" msgid="4676004119618778911">"Режим ввода текста."</string>
     <string name="spoken_description_mode_phone" msgid="2061220553756692903">"Режим набора номера."</string>
     <string name="spoken_description_mode_phone_shift" msgid="7879963803547701090">"Режим телефонных символов."</string>
