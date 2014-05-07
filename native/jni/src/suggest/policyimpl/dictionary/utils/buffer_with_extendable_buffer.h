@@ -37,13 +37,13 @@ class BufferWithExtendableBuffer {
     BufferWithExtendableBuffer(uint8_t *const originalBuffer, const int originalBufferSize,
             const int maxAdditionalBufferSize)
             : mOriginalBuffer(originalBuffer), mOriginalBufferSize(originalBufferSize),
-              mAdditionalBuffer(EXTEND_ADDITIONAL_BUFFER_SIZE_STEP), mUsedAdditionalBufferSize(0),
+              mAdditionalBuffer(0), mUsedAdditionalBufferSize(0),
               mMaxAdditionalBufferSize(maxAdditionalBufferSize) {}
 
     // Without original buffer.
     BufferWithExtendableBuffer(const int maxAdditionalBufferSize)
             : mOriginalBuffer(0), mOriginalBufferSize(0),
-              mAdditionalBuffer(EXTEND_ADDITIONAL_BUFFER_SIZE_STEP), mUsedAdditionalBufferSize(0),
+              mAdditionalBuffer(0), mUsedAdditionalBufferSize(0),
               mMaxAdditionalBufferSize(maxAdditionalBufferSize) {}
 
     AK_FORCE_INLINE int getTailPosition() const {
