@@ -63,12 +63,12 @@
     <fraction name="config_key_shifted_letter_hint_ratio_5row">27%</fraction>
 
     <dimen name="config_suggestions_strip_height">44dp</dimen>
+    <dimen name="config_suggestions_strip_horizontal_margin">0dp</dimen>
     <dimen name="config_more_suggestions_row_height">44dp</dimen>
     <integer name="config_max_more_suggestions_row">6</integer>
     <fraction name="config_min_more_suggestions_width">90%</fraction>
-    <dimen name="config_suggestions_strip_horizontal_padding">94.5dp</dimen>
     <dimen name="config_suggestion_min_width">48.0dp</dimen>
-    <dimen name="config_suggestion_text_horizontal_padding">12dp</dimen>
+    <dimen name="config_suggestion_text_horizontal_padding">10dp</dimen>
     <dimen name="config_suggestion_text_size">22dp</dimen>
     <dimen name="config_more_suggestions_hint_text_size">33dp</dimen>
 

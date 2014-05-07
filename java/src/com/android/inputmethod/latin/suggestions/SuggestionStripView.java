@@ -209,7 +209,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
     }
 
     public void showAddToDictionaryHint(final String word) {
-        mLayoutHelper.layoutAddToDictionaryHint(word, mAddToDictionaryStrip, getWidth());
+        mLayoutHelper.layoutAddToDictionaryHint(word, mAddToDictionaryStrip);
         // {@link TextView#setTag()} is used to hold the word to be added to dictionary. The word
         // will be extracted at {@link #onClick(View)}.
         mAddToDictionaryStrip.setTag(word);

@@ -309,9 +309,8 @@ final class SuggestionStripLayoutHelper {
 
         setupWordViewsTextAndColor(suggestedWords, mSuggestionsCountInStrip);
         final TextView centerWordView = mWordViews.get(mCenterPositionInStrip);
-        final int availableStripWidth = placerView.getWidth()
-                - placerView.getPaddingRight() - placerView.getPaddingLeft();
-        final int centerWidth = getSuggestionWidth(mCenterPositionInStrip, availableStripWidth);
+        final int stripWidth = stripView.getWidth();
+        final int centerWidth = getSuggestionWidth(mCenterPositionInStrip, stripWidth);
         final int countInStrip;
         if (suggestedWords.size() == 1 || getTextScaleX(centerWordView.getText(), centerWidth,
                 centerWordView.getPaint()) < MIN_TEXT_XSCALE) {
@@ -319,11 +318,11 @@ final class SuggestionStripLayoutHelper {
             // by consolidating all slots in the strip.
             countInStrip = 1;
             mMoreSuggestionsAvailable = (suggestedWords.size() > countInStrip);
-            layoutWord(mCenterPositionInStrip, availableStripWidth - mPadding);
+            layoutWord(mCenterPositionInStrip, stripWidth - mPadding);
             stripView.addView(centerWordView);
             setLayoutWeight(centerWordView, 1.0f, ViewGroup.LayoutParams.MATCH_PARENT);
             if (SuggestionStripView.DBG) {
-                layoutDebugInfo(mCenterPositionInStrip, placerView, availableStripWidth);
+                layoutDebugInfo(mCenterPositionInStrip, placerView, stripWidth);
             }
         } else {
             countInStrip = mSuggestionsCountInStrip;
@@ -337,7 +336,7 @@ final class SuggestionStripLayoutHelper {
                     x += divider.getMeasuredWidth();
                 }
 
-                final int width = getSuggestionWidth(positionInStrip, availableStripWidth);
+                final int width = getSuggestionWidth(positionInStrip, stripWidth);
                 final TextView wordView = layoutWord(positionInStrip, width);
                 stripView.addView(wordView);
                 setLayoutWeight(wordView, getSuggestionWeight(positionInStrip),
@@ -474,8 +473,8 @@ final class SuggestionStripLayoutHelper {
         return countInStrip;
     }
 
-    public void layoutAddToDictionaryHint(final String word, final ViewGroup addToDictionaryStrip,
-            final int stripWidth) {
+    public void layoutAddToDictionaryHint(final String word, final ViewGroup addToDictionaryStrip) {
+        final int stripWidth = addToDictionaryStrip.getWidth();
         final int width = stripWidth - mDividerWidth - mPadding * 2;
 
         final TextView wordView = (TextView)addToDictionaryStrip.findViewById(R.id.word_to_save);

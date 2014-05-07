@@ -43,8 +43,6 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/config_suggestions_strip_height"
             android:gravity="center_vertical"
-            android:paddingRight="@dimen/config_suggestions_strip_horizontal_padding"
-            android:paddingLeft="@dimen/config_suggestions_strip_horizontal_padding"
             style="?attr/suggestionStripViewStyle" />
 
         <!-- To ensure that key preview popup is correctly placed when the current system locale is
