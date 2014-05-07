@@ -234,6 +234,7 @@ public class DictionaryFacilitatorForSuggest {
         synchronized (mLock) {
             oldDictionaries = mDictionaries;
             mDictionaries = newDictionaries;
+            mIsUserDictEnabled = UserBinaryDictionary.isEnabled(context);
             if (reloadMainDictionary) {
                 asyncReloadMainDictionary(context, newLocale, listener);
             }
