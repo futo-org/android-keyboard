@@ -32,6 +32,7 @@
 #include "suggest/policyimpl/dictionary/structure/dictionary_structure_with_buffer_policy_factory.h"
 #include "utils/char_utils.h"
 #include "utils/jni_data_utils.h"
+#include "utils/log_utils.h"
 #include "utils/time_keeper.h"
 
 namespace latinime {
@@ -489,14 +490,85 @@ static bool latinime_BinaryDictionary_isCorruptedNative(JNIEnv *env, jclass claz
     return dictionary->getDictionaryStructurePolicy()->isCorrupted();
 }
 
+static DictionaryStructureWithBufferPolicy::StructurePolicyPtr runGCAndGetNewStructurePolicy(
+        DictionaryStructureWithBufferPolicy::StructurePolicyPtr structurePolicy,
+        const char *const dictFilePath) {
+    structurePolicy->flushWithGC(dictFilePath);
+    structurePolicy.release();
+    return DictionaryStructureWithBufferPolicyFactory::newPolicyForExistingDictFile(
+            dictFilePath, 0 /* offset */, 0 /* size */, true /* isUpdatable */);
+}
+
 static bool latinime_BinaryDictionary_migrateNative(JNIEnv *env, jclass clazz, jlong dict,
         jstring dictFilePath, jlong newFormatVersion) {
     Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
     if (!dictionary) {
         return false;
     }
-    // TODO: Implement.
-    return false;
+    const jsize filePathUtf8Length = env->GetStringUTFLength(dictFilePath);
+    char dictFilePathChars[filePathUtf8Length + 1];
+    env->GetStringUTFRegion(dictFilePath, 0, env->GetStringLength(dictFilePath), dictFilePathChars);
+    dictFilePathChars[filePathUtf8Length] = '\0';
+
+    const DictionaryHeaderStructurePolicy *const headerPolicy =
+            dictionary->getDictionaryStructurePolicy()->getHeaderStructurePolicy();
+    DictionaryStructureWithBufferPolicy::StructurePolicyPtr dictionaryStructureWithBufferPolicy =
+            DictionaryStructureWithBufferPolicyFactory::newPolicyForOnMemoryDict(
+                    newFormatVersion, *headerPolicy->getLocale(), headerPolicy->getAttributeMap());
+    if (!dictionaryStructureWithBufferPolicy) {
+        LogUtils::logToJava(env, "Cannot migrate header.");
+        return false;
+    }
+
+    // TODO: Migrate historical information.
+    int wordCodePoints[MAX_WORD_LENGTH];
+    int token = 0;
+    // Add unigrams.
+    do {
+        token = dictionary->getNextWordAndNextToken(token, wordCodePoints);
+        const int wordLength = CharUtils::getCodePointCount(MAX_WORD_LENGTH, wordCodePoints);
+        const WordProperty wordProperty = dictionary->getWordProperty(wordCodePoints, wordLength);
+        if (dictionaryStructureWithBufferPolicy->needsToRunGC(true /* mindsBlockByGC */)) {
+            dictionaryStructureWithBufferPolicy = runGCAndGetNewStructurePolicy(
+                    std::move(dictionaryStructureWithBufferPolicy), dictFilePathChars);
+            if (!dictionaryStructureWithBufferPolicy) {
+                LogUtils::logToJava(env, "Cannot open dict after GC.");
+                return false;
+            }
+        }
+        if (!dictionaryStructureWithBufferPolicy->addUnigramWord(wordCodePoints, wordLength,
+                wordProperty.getUnigramProperty())) {
+            LogUtils::logToJava(env, "Cannot add unigram to the new dict.");
+            return false;
+        }
+    } while (token != 0);
+
+    // Add bigrams.
+    do {
+        token = dictionary->getNextWordAndNextToken(token, wordCodePoints);
+        const int wordLength = CharUtils::getCodePointCount(MAX_WORD_LENGTH, wordCodePoints);
+        const WordProperty wordProperty = dictionary->getWordProperty(wordCodePoints, wordLength);
+        if (dictionaryStructureWithBufferPolicy->needsToRunGC(true /* mindsBlockByGC */)) {
+            dictionaryStructureWithBufferPolicy = runGCAndGetNewStructurePolicy(
+                    std::move(dictionaryStructureWithBufferPolicy), dictFilePathChars);
+            if (!dictionaryStructureWithBufferPolicy) {
+                LogUtils::logToJava(env, "Cannot open dict after GC.");
+                return false;
+            }
+        }
+        for (const BigramProperty &bigarmProperty : *wordProperty.getBigramProperties()) {
+            const std::vector<int> *targetCodePoints = bigarmProperty.getTargetCodePoints();
+            if (!dictionaryStructureWithBufferPolicy->addBigramWords(wordCodePoints, wordLength,
+                    targetCodePoints->data(), targetCodePoints->size(),
+                    bigarmProperty.getProbability(), bigarmProperty.getTimestamp())) {
+                LogUtils::logToJava(env, "Cannot add bigram to the new dict.");
+                return false;
+            }
+        }
+    } while (token != 0);
+    // Save to File.
+    dictionaryStructureWithBufferPolicy->flushWithGC(dictFilePathChars);
+    return true;
 }
 
 static const JNINativeMethod sMethods[] = {
