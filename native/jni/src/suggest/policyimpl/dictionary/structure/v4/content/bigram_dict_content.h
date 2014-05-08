@@ -88,6 +88,10 @@ class BigramDictContent : public SparseTableDictContent {
             const BigramDictContent *const originalBigramDictContent,
             int *const outBigramEntryCount);
 
+    bool isContentTailPos(const int pos) const {
+        return pos == getContentBuffer()->getTailPosition();
+    }
+
  private:
     DISALLOW_COPY_AND_ASSIGN(BigramDictContent);
 
