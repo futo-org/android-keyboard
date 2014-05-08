@@ -80,7 +80,8 @@ public final class LanguageModelParam {
     public static ArrayList<LanguageModelParam> createLanguageModelParamsFrom(
             final ArrayList<String> tokens, final int timestamp,
             final DictionaryFacilitatorForSuggest dictionaryFacilitator,
-            final SpacingAndPunctuations spacingAndPunctuations) {
+            final SpacingAndPunctuations spacingAndPunctuations,
+            final DistracterFilter distracterFilter) {
         final ArrayList<LanguageModelParam> languageModelParams =
                 CollectionUtils.newArrayList();
         final int N = tokens.size();
@@ -109,7 +110,8 @@ public final class LanguageModelParam {
             }
             final LanguageModelParam languageModelParam =
                     detectWhetherVaildWordOrNotAndGetLanguageModelParam(
-                            prevWord, tempWord, timestamp, dictionaryFacilitator);
+                            prevWord, tempWord, timestamp, dictionaryFacilitator,
+                            distracterFilter);
             if (languageModelParam == null) {
                 continue;
             }
@@ -121,27 +123,33 @@ public final class LanguageModelParam {
 
     private static LanguageModelParam detectWhetherVaildWordOrNotAndGetLanguageModelParam(
             final String prevWord, final String targetWord, final int timestamp,
-            final DictionaryFacilitatorForSuggest dictionaryFacilitator) {
+            final DictionaryFacilitatorForSuggest dictionaryFacilitator,
+            final DistracterFilter distracterFilter) {
         final Locale locale = dictionaryFacilitator.getLocale();
         if (locale == null) {
             return null;
-        }
-        if (!dictionaryFacilitator.isValidWord(targetWord, true /* ignoreCase */)) {
-            // OOV word.
-            return createAndGetLanguageModelParamOfWord(prevWord, targetWord, timestamp,
-                    false /* isValidWord */, locale);
         }
         if (dictionaryFacilitator.isValidWord(targetWord, false /* ignoreCase */)) {
             return createAndGetLanguageModelParamOfWord(prevWord, targetWord, timestamp,
                     true /* isValidWord */, locale);
         }
+
         final String lowerCaseTargetWord = targetWord.toLowerCase(locale);
         if (dictionaryFacilitator.isValidWord(lowerCaseTargetWord, false /* ignoreCase */)) {
             // Add the lower-cased word.
             return createAndGetLanguageModelParamOfWord(prevWord, lowerCaseTargetWord,
                     timestamp, true /* isValidWord */, locale);
         }
-        // Treat the word as an OOV word.
+
+        // Treat the word as an OOV word. The following statement checks whether this OOV
+        // is a distracter to words in dictionaries. Being a distracter means the OOV word is
+        // too close to a common word in dictionaries (e.g., the OOV "mot" is very close to "not").
+        // Adding such a word to dictonaries would interfere with entering in-dictionary words. For
+        // example, adding "mot" to dictionaries might interfere with entering "not".
+        // This kind of OOV should be filtered out.
+        if (distracterFilter.isDistracterToWordsInDictionaries(prevWord, targetWord)) {
+            return null;
+        }
         return createAndGetLanguageModelParamOfWord(prevWord, targetWord, timestamp,
                 false /* isValidWord */, locale);
     }
