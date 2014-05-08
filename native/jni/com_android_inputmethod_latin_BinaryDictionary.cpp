@@ -489,6 +489,16 @@ static bool latinime_BinaryDictionary_isCorruptedNative(JNIEnv *env, jclass claz
     return dictionary->getDictionaryStructurePolicy()->isCorrupted();
 }
 
+static bool latinime_BinaryDictionary_migrateNative(JNIEnv *env, jclass clazz, jlong dict,
+        jstring dictFilePath, jlong newFormatVersion) {
+    Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
+    if (!dictionary) {
+        return false;
+    }
+    // TODO: Implement.
+    return false;
+}
+
 static const JNINativeMethod sMethods[] = {
     {
         const_cast<char *>("openNative"),
@@ -591,6 +601,11 @@ static const JNINativeMethod sMethods[] = {
         const_cast<char *>("isCorruptedNative"),
         const_cast<char *>("(J)Z"),
         reinterpret_cast<void *>(latinime_BinaryDictionary_isCorruptedNative)
+    },
+    {
+        const_cast<char *>("migrateNative"),
+        const_cast<char *>("(JLjava/lang/String;J)Z"),
+        reinterpret_cast<void *>(latinime_BinaryDictionary_migrateNative)
     }
 };
 
