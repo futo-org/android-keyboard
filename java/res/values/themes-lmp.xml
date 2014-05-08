@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+**
+** Copyright 2014, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+    <style name="KeyboardTheme.LMP" parent="KeyboardIcons.LMP">
+        <item name="keyboardStyle">@style/Keyboard.LMP</item>
+        <item name="keyboardViewStyle">@style/KeyboardView.LMP</item>
+        <item name="mainKeyboardViewStyle">@style/MainKeyboardView.LMP</item>
+        <item name="keyPreviewTextViewStyle">@style/KeyPreviewTextView.LMP</item>
+        <item name="emojiPalettesViewStyle">@style/EmojiPalettesView.LMP</item>
+        <item name="moreKeysKeyboardStyle">@style/MoreKeysKeyboard.LMP</item>
+        <item name="moreKeysKeyboardViewStyle">@style/MoreKeysKeyboardView.LMP</item>
+        <item name="suggestionStripViewStyle">@style/SuggestionStripView.LMP</item>
+        <item name="suggestionWordStyle">@style/SuggestionWord.LMP</item>
+    </style>
+    <style
+        name="Keyboard.LMP"
+        parent="Keyboard"
+    >
+        <!-- This should be aligned with KeyboardSwitcher.KEYBOARD_THEMES[] -->
+        <item name="themeId">0</item>
+        <item name="keyboardTopPadding">@fraction/config_keyboard_top_padding_holo</item>
+        <item name="keyboardBottomPadding">@fraction/config_keyboard_bottom_padding_holo</item>
+        <item name="horizontalGap">@fraction/config_key_horizontal_gap_holo</item>
+        <item name="verticalGap">@fraction/config_key_vertical_gap_holo</item>
+        <item name="touchPositionCorrectionData">@array/touch_position_correction_data_holo</item>
+    </style>
+    <style
+        name="KeyboardView.LMP"
+        parent="KeyboardView"
+    >
+        <item name="android:background">@drawable/keyboard_background_holo</item>
+        <item name="keyBackground">@drawable/btn_keyboard_key_lmp</item>
+        <item name="keyTypeface">bold</item>
+        <item name="keyTextColor">@color/key_text_color_holo</item>
+        <item name="keyTextInactivatedColor">@color/key_text_inactivated_color_holo</item>
+        <item name="keyHintLetterColor">@color/key_hint_letter_color_lmp</item>
+        <item name="keyHintLabelColor">@color/key_hint_label_color_holo</item>
+        <item name="keyShiftedLetterHintInactivatedColor">@color/key_shifted_letter_hint_inactivated_color_holo</item>
+        <item name="keyShiftedLetterHintActivatedColor">@color/key_shifted_letter_hint_activated_color_holo</item>
+        <item name="keyPreviewTextColor">@color/key_text_color_holo</item>
+        <item name="keyTextShadowColor">@color/key_text_shadow_color_holo</item>
+        <item name="keyTextShadowRadius">0.0</item>
+    </style>
+    <style
+        name="MainKeyboardView.LMP"
+        parent="KeyboardView.LMP"
+    >
+        <item name="keyPreviewOffset">@dimen/config_key_preview_offset_holo</item>
+        <item name="gestureFloatingPreviewTextColor">@color/highlight_color_lmp</item>
+        <item name="gestureFloatingPreviewColor">@color/gesture_floating_preview_color_holo</item>
+        <item name="gestureTrailColor">@color/highlight_color_lmp</item>
+        <item name="slidingKeyInputPreviewColor">@color/highlight_translucent_color_lmp</item>
+        <item name="autoCorrectionSpacebarLedEnabled">false</item>
+        <item name="autoCorrectionSpacebarLedIcon">@drawable/sym_keyboard_space_led_holo</item>
+        <item name="languageOnSpacebarTextColor">@color/spacebar_text_color_holo</item>
+        <item name="languageOnSpacebarTextShadowColor">@color/spacebar_text_shadow_color_holo</item>
+        <item name="spacebarBackground">@drawable/btn_keyboard_spacebar_lmp</item>
+    </style>
+    <style
+        name="KeyPreviewTextView.LMP"
+        parent="KeyPreviewTextView"
+    >
+        <item name="android:background">@drawable/keyboard_key_feedback_lmp</item>
+    </style>
+    <!-- Though {@link EmojiPalettesView} doesn't extend {@link KeyboardView}, some views inside it,
+         for instance delete button, need themed {@link KeyboardView} attributes. -->
+    <style
+        name="EmojiPalettesView.LMP"
+        parent="KeyboardView.LMP"
+    >
+        <item name="keyBackgroundEmojiFunctional">@drawable/btn_keyboard_key_functional_lmp</item>
+        <item name="emojiTabLabelColor">@color/emoji_tab_label_color_holo</item>
+    </style>
+    <style
+        name="MoreKeysKeyboard.LMP"
+        parent="Keyboard.LMP"
+    >
+        <item name="keyboardTopPadding">0%p</item>
+        <item name="keyboardBottomPadding">0%p</item>
+        <item name="horizontalGap">0%p</item>
+        <item name="touchPositionCorrectionData">@null</item>
+    </style>
+    <style
+        name="MoreKeysKeyboardView.LMP"
+        parent="KeyboardView.LMP"
+    >
+        <item name="android:background">@drawable/keyboard_popup_panel_background_lmp</item>
+        <item name="keyBackground">@drawable/btn_keyboard_key_popup_lmp</item>
+        <item name="keyTypeface">normal</item>
+        <item name="verticalCorrection">@dimen/config_more_keys_keyboard_vertical_correction_holo</item>
+    </style>
+    <style
+        name="SuggestionStripView.LMP"
+        parent="KeyboardView.LMP"
+    >
+        <item name="suggestionsCountInStrip">@integer/config_suggestions_count_in_strip</item>
+        <item name="centerSuggestionPercentile">@fraction/config_center_suggestion_percentile</item>
+        <item name="maxMoreSuggestionsRow">@integer/config_max_more_suggestions_row</item>
+        <item name="minMoreSuggestionsWidth">@fraction/config_min_more_suggestions_width</item>
+        <item name="android:background">@drawable/keyboard_suggest_strip_holo</item>
+        <item name="suggestionStripOptions">autoCorrectBold|validTypedWordBold</item>
+        <item name="colorValidTypedWord">@color/typed_word_color_lmp</item>
+        <item name="colorTypedWord">@color/typed_word_color_lmp</item>
+        <item name="colorAutoCorrect">@color/highlight_color_lmp</item>
+        <item name="colorSuggested">@color/suggested_word_color_lmp</item>
+        <item name="alphaObsoleted">70%</item>
+    </style>
+    <style
+        name="SuggestionWord.LMP"
+        parent="SuggestionWord"
+    >
+        <item name="android:background">@drawable/btn_suggestion_lmp</item>
+        <item name="android:textColor">@color/highlight_color_lmp</item>
+    </style>
+</resources>
