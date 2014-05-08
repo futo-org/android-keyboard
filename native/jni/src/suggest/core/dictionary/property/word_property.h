@@ -42,6 +42,14 @@ class WordProperty {
             jintArray outProbabilityInfo, jobject outBigramTargets, jobject outBigramProbabilities,
             jobject outShortcutTargets, jobject outShortcutProbabilities) const;
 
+    const UnigramProperty *getUnigramProperty() const {
+        return &mUnigramProperty;
+    }
+
+    const std::vector<BigramProperty> *getBigramProperties() const {
+        return &mBigrams;
+    }
+
  private:
     // Default copy constructor is used for using as a return value.
     DISALLOW_ASSIGNMENT_OPERATOR(WordProperty);

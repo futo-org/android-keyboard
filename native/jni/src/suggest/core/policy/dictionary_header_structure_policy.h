@@ -49,6 +49,8 @@ class DictionaryHeaderStructurePolicy {
 
     virtual bool shouldBoostExactMatches() const = 0;
 
+    virtual const std::vector<int> *getLocale() const = 0;
+
  protected:
     DictionaryHeaderStructurePolicy() {}
 

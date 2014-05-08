@@ -238,6 +238,10 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
             const int unigramCount, const int bigramCount, const int extendedRegionSize,
             DictionaryHeaderStructurePolicy::AttributeMap *outAttributeMap) const;
 
+    AK_FORCE_INLINE const std::vector<int> *getLocale() const {
+        return &mLocale;
+    }
+
  private:
     DISALLOW_COPY_AND_ASSIGN(HeaderPolicy);
 
