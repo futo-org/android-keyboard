@@ -470,7 +470,10 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         }
         if (mBinaryDictionary.isValidDictionary()
                 && needsToMigrateDictionary(mBinaryDictionary.getFormatVersion())) {
-            mBinaryDictionary.migrateTo(DICTIONARY_FORMAT_VERSION);
+            if (!mBinaryDictionary.migrateTo(DICTIONARY_FORMAT_VERSION)) {
+                Log.e(TAG, "Dictionary migration failed: " + mDictName);
+                removeBinaryDictionaryLocked();
+            }
         }
     }
 
