@@ -218,6 +218,8 @@ public final class BinaryDictionary extends Dictionary {
             int bigramProbability);
     private static native String getPropertyNative(long dict, String query);
     private static native boolean isCorruptedNative(long dict);
+    private static native boolean migrateNative(long dict, String dictFilePath,
+            long newFormatVersion);
 
     // TODO: Move native dict into session
     private final void loadDictionary(final String path, final long startOffset,
@@ -533,7 +535,9 @@ public final class BinaryDictionary extends Dictionary {
             return false;
         }
         final String tmpDictFilePath = mDictFilePath + DICT_FILE_NAME_SUFFIX_FOR_MIGRATION;
-        // TODO: Implement migrateNative(tmpDictFilePath, newFormatVersion).
+        if (!migrateNative(mNativeDict, tmpDictFilePath, newFormatVersion)) {
+            return false;
+        }
         close();
         final File dictFile = new File(mDictFilePath);
         final File tmpDictFile = new File(tmpDictFilePath);
