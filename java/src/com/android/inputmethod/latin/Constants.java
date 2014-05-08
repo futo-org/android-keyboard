@@ -115,6 +115,11 @@ public final class Constants {
              */
             public static final String IS_ADDITIONAL_SUBTYPE = "isAdditionalSubtype";
 
+            /**
+             * The subtype extra value used to specify the combining rules.
+             */
+            public static final String COMBINING_RULES = "CombiningRules";
+
             private ExtraValue() {
                 // This utility class is not publicly instantiable.
             }

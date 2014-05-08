@@ -503,7 +503,7 @@
             android:subtypeId="0xea266ea4"
             android:imeSubtypeLocale="my_MM"
             android:imeSubtypeMode="keyboard"
-            android:imeSubtypeExtraValue="KeyboardLayoutSet=myanmar,EmojiCapable"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=myanmar,EmojiCapable,CombiningRules=MyanmarReordering"
             android:isAsciiCapable="false"
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"

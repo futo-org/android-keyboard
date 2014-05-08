@@ -20,6 +20,13 @@ import com.android.inputmethod.latin.utils.CollectionUtils;
 
 import java.util.ArrayList;
 
+/**
+ * Compatibility class that stands in for the combiner chain in LatinIME.
+ *
+ * This is not used by dicttool, it's just needed by the dependency chain.
+ */
+// TODO: there should not be a dependency to this in dicttool, so there
+// should be a sensible way to separate them cleanly.
 public class CombinerChain {
     private StringBuilder mComposingWord = new StringBuilder();
     public CombinerChain(final Combiner... combinerList) {}
@@ -34,5 +41,10 @@ public class CombinerChain {
 
     public void reset() {
         mComposingWord.setLength(0);
+    }
+
+    public static Combiner[] createCombiners(final String spec) {
+        // Dicttool never uses a combiner at all, so we just return a zero-sized array.
+        return new Combiner[0];
     }
 }

@@ -41,6 +41,7 @@ public final class WordComposer {
     public static final int CAPS_MODE_AUTO_SHIFT_LOCKED = 0x7;
 
     private CombinerChain mCombinerChain;
+    private String mCombiningSpec; // Memory so that we don't uselessly recreate the combiner chain
 
     // The list of events that served to compose this string.
     private final ArrayList<Event> mEvents;
@@ -88,6 +89,21 @@ public final class WordComposer {
         mRejectedBatchModeSuggestion = null;
         mPreviousWordForSuggestion = null;
         refreshTypedWordCache();
+    }
+
+    /**
+     * Restart input with a new combining spec.
+     * @param combiningSpec The spec string for combining. This is found in the extra value.
+     */
+    public void restart(final String combiningSpec) {
+        final String nonNullCombiningSpec = null == combiningSpec ? "" : combiningSpec;
+        if (nonNullCombiningSpec.equals(mCombiningSpec)) {
+            mCombinerChain.reset();
+        } else {
+            mCombinerChain = new CombinerChain(CombinerChain.createCombiners(nonNullCombiningSpec));
+            mCombiningSpec = nonNullCombiningSpec;
+        }
+        reset();
     }
 
     /**
