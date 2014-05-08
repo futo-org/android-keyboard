@@ -24,12 +24,16 @@
         android:id="@+id/suggestions_strip"
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/config_suggestions_strip_horizontal_margin"
+        android:layout_marginRight="@dimen/config_suggestions_strip_horizontal_margin" />
     <LinearLayout
         android:id="@+id/add_to_dictionary_strip"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/config_suggestions_strip_horizontal_margin"
+        android:layout_marginRight="@dimen/config_suggestions_strip_horizontal_margin"
         android:visibility="invisible">
         <TextView
             android:id="@+id/word_to_save"
@@ -49,7 +53,9 @@
         android:id="@+id/important_notice_strip"
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/config_suggestions_strip_horizontal_margin"
+        android:layout_marginRight="@dimen/config_suggestions_strip_horizontal_margin">
         <TextView
             android:id="@+id/important_notice_title"
             android:layout_width="match_parent"

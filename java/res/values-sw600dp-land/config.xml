@@ -48,7 +48,8 @@
     <fraction name="config_key_letter_ratio_5row">62%</fraction>
     <fraction name="config_key_shifted_letter_hint_ratio_5row">36%</fraction>
 
-    <dimen name="config_suggestions_strip_horizontal_padding">252.0dp</dimen>
+    <dimen name="config_suggestions_strip_height">44dp</dimen>
+    <dimen name="config_suggestions_strip_horizontal_margin">180.0dp</dimen>
     <integer name="config_max_more_suggestions_row">5</integer>
     <fraction name="config_min_more_suggestions_width">50%</fraction>
 
