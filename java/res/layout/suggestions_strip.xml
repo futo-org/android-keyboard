@@ -64,4 +64,12 @@
             android:textSize="16sp"
             style="?attr/suggestionWordStyle" />
     </LinearLayout>
+    <ImageButton
+        android:id="@+id/suggestions_strip_voice_key"
+        android:layout_width="@dimen/config_suggestions_strip_edge_key_width"
+        android:layout_height="fill_parent"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        style="?attr/suggestionWordStyle" />
 </merge>
