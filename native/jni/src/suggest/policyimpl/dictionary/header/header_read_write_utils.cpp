@@ -98,8 +98,9 @@ typedef DictionaryHeaderStructurePolicy::AttributeMap AttributeMap;
         case FormatUtils::VERSION_2:
             // Version 2 dictionary writing is not supported.
             return false;
+        case FormatUtils::VERSION_4_ONLY_FOR_TESTING:
         case FormatUtils::VERSION_4:
-            return buffer->writeUintAndAdvancePosition(FormatUtils::VERSION_4 /* data */,
+            return buffer->writeUintAndAdvancePosition(version /* data */,
                     HEADER_DICTIONARY_VERSION_SIZE, writingPos);
         default:
             return false;

@@ -25,6 +25,18 @@ const uint32_t FormatUtils::MAGIC_NUMBER = 0x9BC13AFE;
 // Magic number (4 bytes), version (2 bytes), flags (2 bytes), header size (4 bytes) = 12
 const int FormatUtils::DICTIONARY_MINIMUM_SIZE = 12;
 
+/* static */ FormatUtils::FORMAT_VERSION FormatUtils::getFormatVersion(const int formatVersion) {
+    switch (formatVersion) {
+        case VERSION_2:
+            return VERSION_2;
+        case VERSION_4_ONLY_FOR_TESTING:
+            return VERSION_4_ONLY_FOR_TESTING;
+        case VERSION_4:
+            return VERSION_4;
+        default:
+            return UNKNOWN_VERSION;
+    }
+}
 /* static */ FormatUtils::FORMAT_VERSION FormatUtils::detectFormatVersion(
         const uint8_t *const dict, const int dictSize) {
     // The magic number is stored big-endian.
@@ -46,6 +58,8 @@ const int FormatUtils::DICTIONARY_MINIMUM_SIZE = 12;
             // same so we use them for both here.
             if (ByteArrayUtils::readUint16(dict, 4) == VERSION_2) {
                 return VERSION_2;
+            } else if (ByteArrayUtils::readUint16(dict, 4) == VERSION_4_ONLY_FOR_TESTING) {
+                return VERSION_4_ONLY_FOR_TESTING;
             } else if (ByteArrayUtils::readUint16(dict, 4) == VERSION_4) {
                 return VERSION_4;
             } else {

@@ -31,6 +31,7 @@ class FormatUtils {
     enum FORMAT_VERSION {
         // These MUST have the same values as the relevant constants in FormatSpec.java.
         VERSION_2 = 2,
+        VERSION_4_ONLY_FOR_TESTING = 399,
         VERSION_4 = 401,
         UNKNOWN_VERSION = -1
     };
@@ -39,6 +40,7 @@ class FormatUtils {
     // unsupported or obsolete dictionary formats.
     static const uint32_t MAGIC_NUMBER;
 
+    static FORMAT_VERSION getFormatVersion(const int formatVersion);
     static FORMAT_VERSION detectFormatVersion(const uint8_t *const dict, const int dictSize);
 
  private:
