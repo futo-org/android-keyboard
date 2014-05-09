@@ -39,7 +39,7 @@
 
     <!-- Empty background keys. -->
     <item android:state_empty="true"
-          android:drawable="@android:color/transparent" />
+          android:drawable="@drawable/transparent" />
 
     <!-- Normal keys. -->
     <item android:state_pressed="true"

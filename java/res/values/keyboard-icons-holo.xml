@@ -21,6 +21,9 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
     <style name="KeyboardIcons.Holo">
         <!-- Keyboard icons -->
+        <!-- TODO: The following holo icon for phone (drawable-hdpi and drawable-xhdpi) are missing.
+             sym_keyboard_123_mic_holo
+             -->
         <item name="iconShiftKey">@drawable/sym_keyboard_shift_holo_dark</item>
         <item name="iconDeleteKey">@drawable/sym_keyboard_delete_holo_dark</item>
         <item name="iconSettingsKey">@drawable/sym_keyboard_settings_holo_dark</item>
