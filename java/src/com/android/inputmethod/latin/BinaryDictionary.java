@@ -373,8 +373,7 @@ public final class BinaryDictionary extends Dictionary {
         return getProbabilityNative(mNativeDict, codePoints);
     }
 
-    // TODO: Add a batch process version (isValidBigramMultiple?) to avoid excessive numbers of jni
-    // calls when checking for changes in an entire dictionary.
+    @UsedForTesting
     public boolean isValidBigram(final String word0, final String word1) {
         return getBigramProbability(word0, word1) != NOT_A_PROBABILITY;
     }
