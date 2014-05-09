@@ -56,7 +56,8 @@ class Ver4BigramListPolicy : public DictionaryBigramsStructurePolicy {
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(Ver4BigramListPolicy);
 
-    int getEntryPosToUpdate(const int targetTerminalIdToFind, const int bigramListPos) const;
+    int getEntryPosToUpdate(const int targetTerminalIdToFind, const int bigramListPos,
+            int *const outTailEntryPos) const;
 
     const BigramEntry createUpdatedBigramEntryFrom(const BigramEntry *const originalBigramEntry,
             const int newProbability, const int timestamp) const;

@@ -50,12 +50,18 @@ void Ver4BigramListPolicy::getNextBigram(int *const outBigramPos, int *const out
 
 bool Ver4BigramListPolicy::addNewEntry(const int terminalId, const int newTargetTerminalId,
         const int newProbability, const int timestamp, bool *const outAddedNewEntry) {
+    // 1. The word has no bigrams yet.
+    // 2. The word has bigrams, and there is the target in the list.
+    // 3. The word has bigrams, and there is an invalid entry that can be reclaimed.
+    // 4. The word has bigrams. We have to append new bigram entry to the list.
+    // 5. Same as 4, but the list is the last entry of the content file.
+
     if (outAddedNewEntry) {
         *outAddedNewEntry = false;
     }
     const int bigramListPos = mBigramDictContent->getBigramListHeadPos(terminalId);
     if (bigramListPos == NOT_A_DICT_POS) {
-        // Updating PtNode that doesn't have a bigram list.
+        // Case 1. PtNode that doesn't have a bigram list.
         // Create new bigram list.
         if (!mBigramDictContent->createNewBigramList(terminalId)) {
             return false;
@@ -75,50 +81,55 @@ bool Ver4BigramListPolicy::addNewEntry(const int terminalId, const int newTarget
         return true;
     }
 
-    const int entryPosToUpdate = getEntryPosToUpdate(newTargetTerminalId, bigramListPos);
-    if (entryPosToUpdate != NOT_A_DICT_POS) {
-        // Overwrite existing entry.
-        const BigramEntry originalBigramEntry =
-                mBigramDictContent->getBigramEntry(entryPosToUpdate);
-        if (!originalBigramEntry.isValid()) {
-            // Reuse invalid entry.
-            if (outAddedNewEntry) {
-                *outAddedNewEntry = true;
+    int tailEntryPos = NOT_A_DICT_POS;
+    const int entryPosToUpdate = getEntryPosToUpdate(newTargetTerminalId, bigramListPos,
+            &tailEntryPos);
+    if (tailEntryPos != NOT_A_DICT_POS || entryPosToUpdate == NOT_A_DICT_POS) {
+        // Case 4, 5.
+        // Add new entry to the bigram list.
+        if (tailEntryPos == NOT_A_DICT_POS) {
+            // Case 4. Create new bigram list.
+            if (!mBigramDictContent->createNewBigramList(terminalId)) {
+                return false;
+            }
+            const int destPos = mBigramDictContent->getBigramListHeadPos(terminalId);
+            // Copy existing bigram list.
+            if (!mBigramDictContent->copyBigramList(bigramListPos, destPos, &tailEntryPos)) {
+                return false;
             }
         }
-        const BigramEntry updatedBigramEntry =
-                originalBigramEntry.updateTargetTerminalIdAndGetEntry(newTargetTerminalId);
+        // Write new entry at the tail position of the bigram content.
+        const BigramEntry newBigramEntry(false /* hasNext */, NOT_A_PROBABILITY,
+                newTargetTerminalId);
         const BigramEntry bigramEntryToWrite = createUpdatedBigramEntryFrom(
-                &updatedBigramEntry, newProbability, timestamp);
-        return mBigramDictContent->writeBigramEntry(&bigramEntryToWrite, entryPosToUpdate);
+                &newBigramEntry, newProbability, timestamp);
+        if (!mBigramDictContent->writeBigramEntryAtTail(&bigramEntryToWrite)) {
+            return false;
+        }
+        // Update has next flag of the tail entry.
+        if (!updateHasNextFlag(true /* hasNext */, tailEntryPos)) {
+            return false;
+        }
+        if (outAddedNewEntry) {
+            *outAddedNewEntry = true;
+        }
+        return true;
     }
 
-    // Add new entry to the bigram list.
-    // Create new bigram list.
-    if (!mBigramDictContent->createNewBigramList(terminalId)) {
-        return false;
+    // Case 2. Overwrite the existing entry. Case 3. Reclaim and reuse the existing invalid entry.
+    const BigramEntry originalBigramEntry = mBigramDictContent->getBigramEntry(entryPosToUpdate);
+    if (!originalBigramEntry.isValid()) {
+        // Case 3. Reuse the existing invalid entry. outAddedNewEntry is false when an existing
+        // entry is updated.
+        if (outAddedNewEntry) {
+            *outAddedNewEntry = true;
+        }
     }
-    int writingPos = mBigramDictContent->getBigramListHeadPos(terminalId);
-    int tailEntryPos = NOT_A_DICT_POS;
-    // Copy existing bigram list.
-    if (!mBigramDictContent->copyBigramList(bigramListPos, writingPos, &tailEntryPos)) {
-        return false;
-    }
-    // Write new entry at the tail position of the bigram content.
-    const BigramEntry newBigramEntry(false /* hasNext */, NOT_A_PROBABILITY, newTargetTerminalId);
+    const BigramEntry updatedBigramEntry =
+            originalBigramEntry.updateTargetTerminalIdAndGetEntry(newTargetTerminalId);
     const BigramEntry bigramEntryToWrite = createUpdatedBigramEntryFrom(
-            &newBigramEntry, newProbability, timestamp);
-    if (!mBigramDictContent->writeBigramEntryAtTail(&bigramEntryToWrite)) {
-        return false;
-    }
-    // Update has next flag of the tail entry.
-    if (!updateHasNextFlag(true /* hasNext */, tailEntryPos)) {
-        return false;
-    }
-    if (outAddedNewEntry) {
-        *outAddedNewEntry = true;
-    }
-    return true;
+            &updatedBigramEntry, newProbability, timestamp);
+    return mBigramDictContent->writeBigramEntry(&bigramEntryToWrite, entryPosToUpdate);
 }
 
 bool Ver4BigramListPolicy::removeEntry(const int terminalId, const int targetTerminalId) {
@@ -127,7 +138,8 @@ bool Ver4BigramListPolicy::removeEntry(const int terminalId, const int targetTer
         // Bigram list doesn't exist.
         return false;
     }
-    const int entryPosToUpdate = getEntryPosToUpdate(targetTerminalId, bigramListPos);
+    const int entryPosToUpdate = getEntryPosToUpdate(targetTerminalId, bigramListPos,
+            nullptr /* outTailEntryPos */);
     if (entryPosToUpdate == NOT_A_DICT_POS) {
         // Bigram entry doesn't exist.
         return false;
@@ -212,7 +224,10 @@ int Ver4BigramListPolicy::getBigramEntryConut(const int terminalId) {
 }
 
 int Ver4BigramListPolicy::getEntryPosToUpdate(const int targetTerminalIdToFind,
-        const int bigramListPos) const {
+        const int bigramListPos, int *const outTailEntryPos) const {
+    if (outTailEntryPos) {
+        *outTailEntryPos = NOT_A_DICT_POS;
+    }
     bool hasNext = true;
     int invalidEntryPos = NOT_A_DICT_POS;
     int readingPos = bigramListPos;
@@ -227,6 +242,11 @@ int Ver4BigramListPolicy::getEntryPosToUpdate(const int targetTerminalIdToFind,
         } else if (!bigramEntry.isValid()) {
             // Invalid entry that can be reused is found.
             invalidEntryPos = entryPos;
+        }
+        if (!hasNext && mBigramDictContent->isContentTailPos(readingPos)) {
+            if (outTailEntryPos) {
+                *outTailEntryPos = entryPos;
+            }
         }
     }
     return invalidEntryPos;
