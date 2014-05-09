@@ -16,7 +16,6 @@
 
 package com.android.inputmethod.latin.personalization;
 
-import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.FileUtils;
 
@@ -66,8 +65,8 @@ public class PersonalizationHelper {
         if (TimeUnit.MILLISECONDS.toSeconds(
                 DictionaryDecayBroadcastReciever.DICTIONARY_DECAY_INTERVAL)
                         < currentTimestamp - sCurrentTimestampForTesting) {
-            // TODO: Run GC for both PersonalizationDictionary and UserHistoryDictionary.
             runGCOnAllOpenedUserHistoryDictionaries();
+            runGCOnAllOpenedPersonalizationDictionaries();
         }
     }
 
@@ -75,7 +74,6 @@ public class PersonalizationHelper {
         runGCOnAllDictionariesIfRequired(sLangUserHistoryDictCache);
     }
 
-    @UsedForTesting
     public static void runGCOnAllOpenedPersonalizationDictionaries() {
         runGCOnAllDictionariesIfRequired(sLangPersonalizationDictCache);
     }

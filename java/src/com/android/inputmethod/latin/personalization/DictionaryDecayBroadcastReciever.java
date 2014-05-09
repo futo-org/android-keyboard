@@ -61,6 +61,7 @@ public class DictionaryDecayBroadcastReciever extends BroadcastReceiver {
         final String action = intent.getAction();
         if (action.equals(DICTIONARY_DECAY_INTENT_ACTION)) {
             PersonalizationHelper.runGCOnAllOpenedUserHistoryDictionaries();
+            PersonalizationHelper.runGCOnAllOpenedPersonalizationDictionaries();
         }
     }
 }
