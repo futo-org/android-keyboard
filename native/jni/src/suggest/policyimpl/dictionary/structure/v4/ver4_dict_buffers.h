@@ -36,7 +36,8 @@ class Ver4DictBuffers {
     typedef std::unique_ptr<Ver4DictBuffers> Ver4DictBuffersPtr;
 
     static Ver4DictBuffersPtr openVer4DictBuffers(const char *const dictDirPath,
-            MmappedBuffer::MmappedBufferPtr headerBuffer);
+            MmappedBuffer::MmappedBufferPtr headerBuffer,
+            const FormatUtils::FORMAT_VERSION formatVersion);
 
     static AK_FORCE_INLINE Ver4DictBuffersPtr createVer4DictBuffers(
             const HeaderPolicy *const headerPolicy, const int maxTrieSize) {
@@ -120,7 +121,8 @@ class Ver4DictBuffers {
     DISALLOW_COPY_AND_ASSIGN(Ver4DictBuffers);
 
     Ver4DictBuffers(const char *const dictDirPath,
-            const MmappedBuffer::MmappedBufferPtr headerBuffer, const bool isUpdatable);
+            const MmappedBuffer::MmappedBufferPtr headerBuffer, const bool isUpdatable,
+            const FormatUtils::FORMAT_VERSION formatVersion);
 
     Ver4DictBuffers(const HeaderPolicy *const headerPolicy, const int maxTrieSize);
 

@@ -46,21 +46,23 @@ public class BinaryDictionaryTests extends AndroidTestCase {
 
     private File createEmptyDictionaryAndGetFile(final String dictId,
             final int formatVersion) throws IOException {
-       if (formatVersion == FormatSpec.VERSION4) {
-            return createEmptyVer4DictionaryAndGetFile(dictId);
+        if (formatVersion == FormatSpec.VERSION4
+                || formatVersion == FormatSpec.VERSION4_ONLY_FOR_TESTING) {
+            return createEmptyVer4DictionaryAndGetFile(dictId, formatVersion);
         } else {
             throw new IOException("Dictionary format version " + formatVersion
                     + " is not supported.");
         }
     }
 
-    private File createEmptyVer4DictionaryAndGetFile(final String dictId) throws IOException {
+    private File createEmptyVer4DictionaryAndGetFile(final String dictId,
+            final int formatVersion) throws IOException {
         final File file = File.createTempFile(dictId, TEST_DICT_FILE_EXTENSION,
                 getContext().getCacheDir());
         file.delete();
         file.mkdir();
         Map<String, String> attributeMap = new HashMap<String, String>();
-        if (BinaryDictionaryUtils.createEmptyDictFile(file.getAbsolutePath(), FormatSpec.VERSION4,
+        if (BinaryDictionaryUtils.createEmptyDictFile(file.getAbsolutePath(), formatVersion,
                 Locale.ENGLISH, attributeMap)) {
             return file;
         } else {
@@ -1222,5 +1224,37 @@ public class BinaryDictionaryTests extends AndroidTestCase {
                         shortcutTarget.getProbability());
             }
         }
+    }
+
+    public void testDictMigration() {
+        testDictMigration(FormatSpec.VERSION4_ONLY_FOR_TESTING, FormatSpec.VERSION4);
+    }
+
+    private void testDictMigration(final int fromFormatVersion, final int toFormatVersion) {
+        File dictFile = null;
+        try {
+            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary", fromFormatVersion);
+        } catch (IOException e) {
+            fail("IOException while writing an initial dictionary : " + e);
+        }
+        final BinaryDictionary binaryDictionary = new BinaryDictionary(dictFile.getAbsolutePath(),
+                0 /* offset */, dictFile.length(), true /* useFullEditDistance */,
+                Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
+        final int unigramProbability = 100;
+        addUnigramWord(binaryDictionary, "aaa", unigramProbability);
+        addUnigramWord(binaryDictionary, "bbb", unigramProbability);
+        final int bigramProbability = 10;
+        addBigramWords(binaryDictionary, "aaa", "bbb", bigramProbability);
+        assertEquals(unigramProbability, binaryDictionary.getFrequency("aaa"));
+        assertEquals(unigramProbability, binaryDictionary.getFrequency("bbb"));
+        assertTrue(binaryDictionary.isValidBigram("aaa", "bbb"));
+        assertEquals(fromFormatVersion, binaryDictionary.getFormatVersion());
+        assertTrue(binaryDictionary.migrateTo(toFormatVersion));
+        assertTrue(binaryDictionary.isValidDictionary());
+        assertEquals(toFormatVersion, binaryDictionary.getFormatVersion());
+        assertEquals(unigramProbability, binaryDictionary.getFrequency("aaa"));
+        assertEquals(unigramProbability, binaryDictionary.getFrequency("bbb"));
+        // TODO: Add tests for bigram frequency when the implementation gets ready.
+        assertTrue(binaryDictionary.isValidBigram("aaa", "bbb"));
     }
 }

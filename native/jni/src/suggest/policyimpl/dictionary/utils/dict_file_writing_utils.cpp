@@ -34,9 +34,12 @@ const char *const DictFileWritingUtils::TEMP_FILE_SUFFIX_FOR_WRITING_DICT_FILE =
         const int dictVersion, const std::vector<int> localeAsCodePointVector,
         const DictionaryHeaderStructurePolicy::AttributeMap *const attributeMap) {
     TimeKeeper::setCurrentTime();
-    switch (dictVersion) {
+    const FormatUtils::FORMAT_VERSION formatVersion = FormatUtils::getFormatVersion(dictVersion);
+    switch (formatVersion) {
+        case FormatUtils::VERSION_4_ONLY_FOR_TESTING:
         case FormatUtils::VERSION_4:
-            return createEmptyV4DictFile(filePath, localeAsCodePointVector, attributeMap);
+            return createEmptyV4DictFile(filePath, localeAsCodePointVector, attributeMap,
+                    formatVersion);
         default:
             AKLOGE("Cannot create dictionary %s because format version %d is not supported.",
                     filePath, dictVersion);
@@ -46,8 +49,9 @@ const char *const DictFileWritingUtils::TEMP_FILE_SUFFIX_FOR_WRITING_DICT_FILE =
 
 /* static */ bool DictFileWritingUtils::createEmptyV4DictFile(const char *const dirPath,
         const std::vector<int> localeAsCodePointVector,
-        const DictionaryHeaderStructurePolicy::AttributeMap *const attributeMap) {
-    HeaderPolicy headerPolicy(FormatUtils::VERSION_4, localeAsCodePointVector, attributeMap);
+        const DictionaryHeaderStructurePolicy::AttributeMap *const attributeMap,
+        const FormatUtils::FORMAT_VERSION formatVersion) {
+    HeaderPolicy headerPolicy(formatVersion, localeAsCodePointVector, attributeMap);
     Ver4DictBuffers::Ver4DictBuffersPtr dictBuffers(
             Ver4DictBuffers::createVer4DictBuffers(&headerPolicy,
                     Ver4DictConstants::MAX_DICT_EXTENDED_REGION_SIZE));

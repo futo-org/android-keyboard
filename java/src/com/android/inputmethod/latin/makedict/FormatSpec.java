@@ -186,7 +186,12 @@ public final class FormatSpec {
     // From version 4 on, we use version * 100 + revision as a version number. That allows
     // us to change the format during development while having testing devices remove
     // older files with each upgrade, while still having a readable versioning scheme.
+    // When we bump up the dictionary format version, we should update
+    // ExpandableDictionary.needsToMigrateDictionary() and
+    // ExpandableDictionary.matchesExpectedBinaryDictFormatVersionForThisType().
     public static final int VERSION2 = 2;
+    // Dictionary version used for testing.
+    public static final int VERSION4_ONLY_FOR_TESTING = 399;
     public static final int VERSION4 = 401;
     static final int MINIMUM_SUPPORTED_VERSION = VERSION2;
     static final int MAXIMUM_SUPPORTED_VERSION = VERSION4;

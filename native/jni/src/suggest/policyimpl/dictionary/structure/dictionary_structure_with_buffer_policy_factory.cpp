@@ -52,9 +52,11 @@ namespace latinime {
         DictionaryStructureWithBufferPolicyFactory:: newPolicyForOnMemoryDict(
                 const int formatVersion, const std::vector<int> &locale,
                 const DictionaryHeaderStructurePolicy::AttributeMap *const attributeMap) {
-    switch (formatVersion) {
+    FormatUtils::FORMAT_VERSION dictFormatVersion = FormatUtils::getFormatVersion(formatVersion);
+    switch (dictFormatVersion) {
+        case FormatUtils::VERSION_4_ONLY_FOR_TESTING:
         case FormatUtils::VERSION_4: {
-            HeaderPolicy headerPolicy(FormatUtils::VERSION_4, locale, attributeMap);
+            HeaderPolicy headerPolicy(dictFormatVersion, locale, attributeMap);
             Ver4DictBuffers::Ver4DictBuffersPtr dictBuffers =
                     Ver4DictBuffers::createVer4DictBuffers(&headerPolicy,
                             Ver4DictConstants::MAX_DICT_EXTENDED_REGION_SIZE);
@@ -87,11 +89,13 @@ namespace latinime {
     if (!mmappedBuffer) {
         return DictionaryStructureWithBufferPolicy::StructurePolicyPtr(nullptr);
     }
-    switch (FormatUtils::detectFormatVersion(mmappedBuffer->getBuffer(),
-            mmappedBuffer->getBufferSize())) {
+    const FormatUtils::FORMAT_VERSION formatVersion = FormatUtils::detectFormatVersion(
+            mmappedBuffer->getBuffer(), mmappedBuffer->getBufferSize());
+    switch (formatVersion) {
         case FormatUtils::VERSION_2:
             AKLOGE("Given path is a directory but the format is version 2. path: %s", path);
             break;
+        case FormatUtils::VERSION_4_ONLY_FOR_TESTING:
         case FormatUtils::VERSION_4: {
             const int dictDirPathBufSize = strlen(headerFilePath) + 1 /* terminator */;
             char dictPath[dictDirPathBufSize];
@@ -102,7 +106,8 @@ namespace latinime {
                 return DictionaryStructureWithBufferPolicy::StructurePolicyPtr(nullptr);
             }
             Ver4DictBuffers::Ver4DictBuffersPtr dictBuffers(
-                    Ver4DictBuffers::openVer4DictBuffers(dictPath, std::move(mmappedBuffer)));
+                    Ver4DictBuffers::openVer4DictBuffers(dictPath, std::move(mmappedBuffer),
+                            formatVersion));
             if (!dictBuffers || !dictBuffers->isValid()) {
                 AKLOGE("DICT: The dictionary doesn't satisfy ver4 format requirements. path: %s",
                         path);
@@ -135,6 +140,7 @@ namespace latinime {
         case FormatUtils::VERSION_2:
             return DictionaryStructureWithBufferPolicy::StructurePolicyPtr(
                     new PatriciaTriePolicy(std::move(mmappedBuffer)));
+        case FormatUtils::VERSION_4_ONLY_FOR_TESTING:
         case FormatUtils::VERSION_4:
             AKLOGE("Given path is a file but the format is version 4. path: %s", path);
             break;
