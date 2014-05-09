@@ -179,9 +179,7 @@ bool Ver4PatriciaTriePolicy::addUnigramWord(const int *const word, const int len
     readingHelper.initWithPtNodeArrayPos(getRootPosition());
     bool addedNewUnigram = false;
     if (mUpdatingHelper.addUnigramWord(&readingHelper, word, length,
-            unigramProperty->getProbability(), unigramProperty->isNotAWord(),
-            unigramProperty->isBlacklisted(), unigramProperty->getTimestamp(),
-            &addedNewUnigram)) {
+            unigramProperty, &addedNewUnigram)) {
         if (addedNewUnigram) {
             mUnigramCount++;
         }

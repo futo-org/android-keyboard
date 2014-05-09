@@ -16,6 +16,7 @@
 
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_patricia_trie_node_writer.h"
 
+#include "suggest/core/dictionary/property/unigram_property.h"
 #include "suggest/policyimpl/dictionary/bigram/ver4_bigram_list_policy.h"
 #include "suggest/policyimpl/dictionary/header/header_policy.h"
 #include "suggest/policyimpl/dictionary/shortcut/ver4_shortcut_list_policy.h"
@@ -133,9 +134,11 @@ bool Ver4PatriciaTrieNodeWriter::markPtNodeAsWillBecomeNonTerminal(
             &writingPos);
 }
 
-bool Ver4PatriciaTrieNodeWriter::updatePtNodeProbability(
-        const PtNodeParams *const toBeUpdatedPtNodeParams, const int newProbability,
-        const int timestamp) {
+bool Ver4PatriciaTrieNodeWriter::updatePtNodeUnigramProperty(
+        const PtNodeParams *const toBeUpdatedPtNodeParams,
+        const UnigramProperty *const unigramProperty) {
+    // Update probability and historical information.
+    // TODO: Update other information in the unigram property.
     if (!toBeUpdatedPtNodeParams->isTerminal()) {
         return false;
     }
@@ -143,7 +146,7 @@ bool Ver4PatriciaTrieNodeWriter::updatePtNodeProbability(
             mBuffers->getProbabilityDictContent()->getProbabilityEntry(
                     toBeUpdatedPtNodeParams->getTerminalId());
     const ProbabilityEntry probabilityEntry = createUpdatedEntryFrom(&originalProbabilityEntry,
-            newProbability, timestamp);
+            unigramProperty);
     return mBuffers->getMutableProbabilityDictContent()->setProbabilityEntry(
             toBeUpdatedPtNodeParams->getTerminalId(), &probabilityEntry);
 }
@@ -204,7 +207,8 @@ bool Ver4PatriciaTrieNodeWriter::writePtNodeAndAdvancePosition(
 
 
 bool Ver4PatriciaTrieNodeWriter::writeNewTerminalPtNodeAndAdvancePosition(
-        const PtNodeParams *const ptNodeParams, const int timestamp, int *const ptNodeWritingPos) {
+        const PtNodeParams *const ptNodeParams, const UnigramProperty *const unigramProperty,
+        int *const ptNodeWritingPos) {
     int terminalId = Ver4DictConstants::NOT_A_TERMINAL_ID;
     if (!writePtNodeAndGetTerminalIdAndAdvancePosition(ptNodeParams, &terminalId,
             ptNodeWritingPos)) {
@@ -213,7 +217,7 @@ bool Ver4PatriciaTrieNodeWriter::writeNewTerminalPtNodeAndAdvancePosition(
     // Write probability.
     ProbabilityEntry newProbabilityEntry;
     const ProbabilityEntry probabilityEntryToWrite = createUpdatedEntryFrom(
-            &newProbabilityEntry, ptNodeParams->getProbability(), timestamp);
+            &newProbabilityEntry, unigramProperty);
     return mBuffers->getMutableProbabilityDictContent()->setProbabilityEntry(terminalId,
             &probabilityEntryToWrite);
 }
@@ -379,18 +383,20 @@ bool Ver4PatriciaTrieNodeWriter::writePtNodeAndGetTerminalIdAndAdvancePosition(
 }
 
 const ProbabilityEntry Ver4PatriciaTrieNodeWriter::createUpdatedEntryFrom(
-        const ProbabilityEntry *const originalProbabilityEntry, const int newProbability,
-        const int timestamp) const {
+        const ProbabilityEntry *const originalProbabilityEntry,
+        const UnigramProperty *const unigramProperty) const {
     // TODO: Consolidate historical info and probability.
     if (mHeaderPolicy->hasHistoricalInfoOfWords()) {
         const HistoricalInfo updatedHistoricalInfo =
                 ForgettingCurveUtils::createUpdatedHistoricalInfo(
-                        originalProbabilityEntry->getHistoricalInfo(), newProbability, timestamp,
+                        originalProbabilityEntry->getHistoricalInfo(),
+                        unigramProperty->getProbability(), unigramProperty->getTimestamp(),
                         mHeaderPolicy);
         return originalProbabilityEntry->createEntryWithUpdatedHistoricalInfo(
                 &updatedHistoricalInfo);
     } else {
-        return originalProbabilityEntry->createEntryWithUpdatedProbability(newProbability);
+        return originalProbabilityEntry->createEntryWithUpdatedProbability(
+                unigramProperty->getProbability());
     }
 }
 

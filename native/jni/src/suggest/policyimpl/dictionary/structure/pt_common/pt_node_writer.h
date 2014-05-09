@@ -24,6 +24,8 @@
 
 namespace latinime {
 
+class UnigramProperty;
+
 // Interface class used to write PtNode information.
 class PtNodeWriter {
  public:
@@ -51,8 +53,8 @@ class PtNodeWriter {
     virtual bool markPtNodeAsWillBecomeNonTerminal(
             const PtNodeParams *const toBeUpdatedPtNodeParams) = 0;
 
-    virtual bool updatePtNodeProbability(const PtNodeParams *const toBeUpdatedPtNodeParams,
-            const int probability, const int timestamp) = 0;
+    virtual bool updatePtNodeUnigramProperty(const PtNodeParams *const toBeUpdatedPtNodeParams,
+            const UnigramProperty *const unigramProperty) = 0;
 
     virtual bool updatePtNodeProbabilityAndGetNeedsToKeepPtNodeAfterGC(
             const PtNodeParams *const toBeUpdatedPtNodeParams,
@@ -65,7 +67,7 @@ class PtNodeWriter {
             int *const ptNodeWritingPos) = 0;
 
     virtual bool writeNewTerminalPtNodeAndAdvancePosition(const PtNodeParams *const ptNodeParams,
-            const int timestamp, int *const ptNodeWritingPos) = 0;
+            const UnigramProperty *const unigramProperty, int *const ptNodeWritingPos) = 0;
 
     virtual bool addNewBigramEntry(const PtNodeParams *const sourcePtNodeParams,
             const PtNodeParams *const targetPtNodeParam, const int probability, const int timestamp,
