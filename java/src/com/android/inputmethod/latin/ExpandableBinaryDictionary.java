@@ -92,8 +92,8 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     /** Indicates whether a task for reloading the dictionary has been scheduled. */
     private final AtomicBoolean mIsReloading;
 
-    /** Indicates whether the current dictionary needs to be reloaded. */
-    private boolean mNeedsToReload;
+    /** Indicates whether the current dictionary needs to be recreated. */
+    private boolean mNeedsToRecreate;
 
     private final ReentrantReadWriteLock mLock;
 
@@ -106,13 +106,6 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
      * Abstract method for loading initial contents of a given dictionary.
      */
     protected abstract void loadInitialContentsLocked();
-
-    /**
-     * Indicates that the source dictionary contents have changed and a rebuild of the binary file
-     * is required. If it returns false, the next reload will only read the current binary
-     * dictionary from file.
-     */
-    protected abstract boolean haveContentsChanged();
 
     private boolean matchesExpectedBinaryDictFormatVersionForThisType(final int formatVersion) {
         return formatVersion == FormatSpec.VERSION4;
@@ -147,7 +140,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         mDictFile = getDictFile(context, dictName, dictFile);
         mBinaryDictionary = null;
         mIsReloading = new AtomicBoolean();
-        mNeedsToReload = false;
+        mNeedsToRecreate = false;
         mLock = new ReentrantReadWriteLock();
     }
 
@@ -489,11 +482,11 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     }
 
     /**
-     * Marks that the dictionary needs to be reloaded.
+     * Marks that the dictionary needs to be recreated.
      *
      */
-    protected void setNeedsToReload() {
-        mNeedsToReload = true;
+    protected void setNeedsToRecreate() {
+        mNeedsToRecreate = true;
     }
 
     /**
@@ -511,7 +504,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
      * Returns whether a dictionary reload is required.
      */
     private boolean isReloadRequired() {
-        return mBinaryDictionary == null || mNeedsToReload;
+        return mBinaryDictionary == null || mNeedsToRecreate;
     }
 
     /**
@@ -523,8 +516,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                 @Override
                 public void run() {
                     try {
-                        // TODO: Quit checking contents in ExpandableBinaryDictionary.
-                        if (!mDictFile.exists() || (mNeedsToReload && haveContentsChanged())) {
+                        if (!mDictFile.exists() || mNeedsToRecreate) {
                             // If the dictionary file does not exist or contents have been updated,
                             // generate a new one.
                             createNewDictionaryLocked();
@@ -536,12 +528,12 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                                     && matchesExpectedBinaryDictFormatVersionForThisType(
                                             mBinaryDictionary.getFormatVersion()))) {
                                 // Binary dictionary or its format version is not valid. Regenerate
-                                // the dictionary file. writeBinaryDictionary will remove the
+                                // the dictionary file. createNewDictionaryLocked will remove the
                                 // existing files if appropriate.
                                 createNewDictionaryLocked();
                             }
                         }
-                        mNeedsToReload = false;
+                        mNeedsToRecreate = false;
                     } finally {
                         mIsReloading.set(false);
                     }
