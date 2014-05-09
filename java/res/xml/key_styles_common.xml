@@ -87,7 +87,7 @@
         latin:keyboardLayout="@xml/key_styles_enter" />
     <key-style
         latin:styleName="spaceKeyStyle"
-        latin:keySpec=" |!code/key_space"
+        latin:keySpec="!icon/space_key|!code/key_space"
         latin:keyActionFlags="noKeyPreview|enableLongPress" />
     <!-- U+200C: ZERO WIDTH NON-JOINER
          U+200D: ZERO WIDTH JOINER -->
