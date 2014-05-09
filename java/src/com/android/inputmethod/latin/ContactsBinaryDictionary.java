@@ -31,9 +31,12 @@ import android.util.Log;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.personalization.AccountUtils;
+import com.android.inputmethod.latin.utils.CollectionUtils;
+import com.android.inputmethod.latin.utils.ExecutorUtils;
 import com.android.inputmethod.latin.utils.StringUtils;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -60,7 +63,10 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
     private static final int INDEX_NAME = 1;
 
     /** The number of contacts in the most recent dictionary rebuild. */
-    static private int sContactCountAtLastRebuild = 0;
+    private int mContactCountAtLastRebuild = 0;
+
+    /** The hash code of ArrayList of contacts names in the most recent dictionary rebuild. */
+    private int mHashCodeAtLastRebuild = 0;
 
     private ContentObserver mObserver;
 
@@ -96,7 +102,14 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
                 new ContentObserver(null) {
                     @Override
                     public void onChange(boolean self) {
-                        setNeedsToReload();
+                        ExecutorUtils.getExecutor("Check Contacts").execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (haveContentsChanged()) {
+                                    setNeedsToRecreate();
+                                }
+                            }
+                        });
                     }
                 });
     }
@@ -143,7 +156,7 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
                 return;
             }
             if (cursor.moveToFirst()) {
-                sContactCountAtLastRebuild = getContactCount();
+                mContactCountAtLastRebuild = getContactCount();
                 addWordsLocked(cursor);
             }
         } catch (final SQLiteException e) {
@@ -167,9 +180,11 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
 
     private void addWordsLocked(final Cursor cursor) {
         int count = 0;
+        final ArrayList<String> names = CollectionUtils.newArrayList();
         while (!cursor.isAfterLast() && count < MAX_CONTACT_COUNT) {
             String name = cursor.getString(INDEX_NAME);
             if (isValidName(name)) {
+                names.add(name);
                 addNameLocked(name);
                 ++count;
             } else {
@@ -179,6 +194,7 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
             }
             cursor.moveToNext();
         }
+        mHashCodeAtLastRebuild = names.hashCode();
     }
 
     private int getContactCount() {
@@ -258,8 +274,7 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
         return end;
     }
 
-    @Override
-    protected boolean haveContentsChanged() {
+    private boolean haveContentsChanged() {
         final long startTime = SystemClock.uptimeMillis();
         final int contactCount = getContactCount();
         if (contactCount > MAX_CONTACT_COUNT) {
@@ -268,9 +283,9 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
             // TODO: Sort and check only the MAX_CONTACT_COUNT most recent contacts?
             return false;
         }
-        if (contactCount != sContactCountAtLastRebuild) {
+        if (contactCount != mContactCountAtLastRebuild) {
             if (DEBUG) {
-                Log.d(TAG, "Contact count changed: " + sContactCountAtLastRebuild + " to "
+                Log.d(TAG, "Contact count changed: " + mContactCountAtLastRebuild + " to "
                         + contactCount);
             }
             return true;
@@ -283,19 +298,19 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
         if (null == cursor) {
             return false;
         }
+        final ArrayList<String> names = CollectionUtils.newArrayList();
         try {
             if (cursor.moveToFirst()) {
                 while (!cursor.isAfterLast()) {
                     String name = cursor.getString(INDEX_NAME);
-                    if (isValidName(name) && !isNameInDictionaryLocked(name)) {
-                        if (DEBUG) {
-                            Log.d(TAG, "Contact name missing: " + name + " (runtime = "
-                                    + (SystemClock.uptimeMillis() - startTime) + " ms)");
-                        }
-                        return true;
+                    if (isValidName(name)) {
+                        names.add(name);
                     }
                     cursor.moveToNext();
                 }
+            }
+            if (names.hashCode() != mHashCodeAtLastRebuild) {
+                return true;
             }
         } finally {
             cursor.close();
@@ -312,34 +327,5 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
             return true;
         }
         return false;
-    }
-
-    /**
-     * Checks if the words in a name are in the current binary dictionary.
-     */
-    private boolean isNameInDictionaryLocked(final String name) {
-        int len = StringUtils.codePointCount(name);
-        String prevWord = null;
-        for (int i = 0; i < len; i++) {
-            if (Character.isLetter(name.codePointAt(i))) {
-                int end = getWordEndPosition(name, len, i);
-                String word = name.substring(i, end);
-                i = end - 1;
-                final int wordLen = StringUtils.codePointCount(word);
-                if (wordLen < MAX_WORD_LENGTH && wordLen > 1) {
-                    if (!TextUtils.isEmpty(prevWord) && mUseFirstLastBigrams) {
-                        if (!isValidBigramLocked(prevWord, word)) {
-                            return false;
-                        }
-                    } else {
-                        if (!isValidWordLocked(word)) {
-                            return false;
-                        }
-                    }
-                    prevWord = word;
-                }
-            }
-        }
-        return true;
     }
 }

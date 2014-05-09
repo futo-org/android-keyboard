@@ -74,11 +74,6 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
     }
 
     @Override
-    protected boolean haveContentsChanged() {
-        return false;
-    }
-
-    @Override
     protected void loadInitialContentsLocked() {
         // No initial contents.
     }

@@ -98,7 +98,7 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
             // devices. On older versions of the platform, the hook above will be called instead.
             @Override
             public void onChange(final boolean self, final Uri uri) {
-                setNeedsToReload();
+                setNeedsToRecreate();
             }
         };
         cres.registerContentObserver(Words.CONTENT_URI, true, mObserver);
@@ -271,10 +271,5 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
                 cursor.moveToNext();
             }
         }
-    }
-
-    @Override
-    protected boolean haveContentsChanged() {
-        return true;
     }
 }
