@@ -57,8 +57,8 @@ class Ver4PatriciaTrieNodeWriter : public PtNodeWriter {
     virtual bool markPtNodeAsWillBecomeNonTerminal(
             const PtNodeParams *const toBeUpdatedPtNodeParams);
 
-    virtual bool updatePtNodeProbability(const PtNodeParams *const toBeUpdatedPtNodeParams,
-            const int newProbability, const int timestamp);
+    virtual bool updatePtNodeUnigramProperty(const PtNodeParams *const toBeUpdatedPtNodeParams,
+            const UnigramProperty *const unigramProperty);
 
     virtual bool updatePtNodeProbabilityAndGetNeedsToKeepPtNodeAfterGC(
             const PtNodeParams *const toBeUpdatedPtNodeParams, bool *const outNeedsToKeepPtNode);
@@ -73,7 +73,7 @@ class Ver4PatriciaTrieNodeWriter : public PtNodeWriter {
             int *const ptNodeWritingPos);
 
     virtual bool writeNewTerminalPtNodeAndAdvancePosition(const PtNodeParams *const ptNodeParams,
-            const int timestamp, int *const ptNodeWritingPos);
+            const UnigramProperty *const unigramProperty, int *const ptNodeWritingPos);
 
     virtual bool addNewBigramEntry(const PtNodeParams *const sourcePtNodeParams,
             const PtNodeParams *const targetPtNodeParam, const int probability, const int timestamp,
@@ -102,11 +102,12 @@ class Ver4PatriciaTrieNodeWriter : public PtNodeWriter {
             const PtNodeParams *const ptNodeParams, int *const outTerminalId,
             int *const ptNodeWritingPos);
 
-    // Create updated probability entry using given probability and timestamp. In addition to the
+    // Create updated probability entry using given unigram property. In addition to the
     // probability, this method updates historical information if needed.
+    // TODO: Update flags belonging to the unigram property.
     const ProbabilityEntry createUpdatedEntryFrom(
-            const ProbabilityEntry *const originalProbabilityEntry, const int newProbability,
-            const int timestamp) const;
+            const ProbabilityEntry *const originalProbabilityEntry,
+            const UnigramProperty *const unigramProperty) const;
 
     bool updatePtNodeFlags(const int ptNodePos, const bool isBlacklisted, const bool isNotAWord,
             const bool isTerminal, const bool hasShortcutTargets, const bool hasBigrams,

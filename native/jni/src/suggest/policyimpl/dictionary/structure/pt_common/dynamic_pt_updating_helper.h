@@ -26,6 +26,7 @@ class BufferWithExtendableBuffer;
 class DynamicPtReadingHelper;
 class PtNodeReader;
 class PtNodeWriter;
+class UnigramProperty;
 
 class DynamicPtUpdatingHelper {
  public:
@@ -37,9 +38,8 @@ class DynamicPtUpdatingHelper {
 
     // Add a word to the dictionary. If the word already exists, update the probability.
     bool addUnigramWord(DynamicPtReadingHelper *const readingHelper,
-            const int *const wordCodePoints, const int codePointCount, const int probability,
-            const bool isNotAWord, const bool isBlacklisted, const int timestamp,
-            bool *const outAddedNewUnigram);
+            const int *const wordCodePoints, const int codePointCount,
+            const UnigramProperty *const unigramProperty, bool *const outAddedNewUnigram);
 
     // Add a bigram relation from word0Pos to word1Pos.
     bool addBigramWords(const int word0Pos, const int word1Pos, const int probability,
@@ -62,25 +62,22 @@ class DynamicPtUpdatingHelper {
     PtNodeWriter *const mPtNodeWriter;
 
     bool createAndInsertNodeIntoPtNodeArray(const int parentPos, const int *const nodeCodePoints,
-            const int nodeCodePointCount, const bool isNotAWord, const bool isBlacklisted,
-            const int probability, const int timestamp, int *const forwardLinkFieldPos);
+            const int nodeCodePointCount, const UnigramProperty *const unigramProperty,
+            int *const forwardLinkFieldPos);
 
-    bool setPtNodeProbability(const PtNodeParams *const originalPtNodeParams, const bool isNotAWord,
-            const bool isBlacklisted, const int probability, const int timestamp,
-            bool *const outAddedNewUnigram);
+    bool setPtNodeProbability(const PtNodeParams *const originalPtNodeParams,
+            const UnigramProperty *const unigramProperty, bool *const outAddedNewUnigram);
 
     bool createChildrenPtNodeArrayAndAChildPtNode(const PtNodeParams *const parentPtNodeParams,
-            const bool isNotAWord, const bool isBlacklisted, const int probability,
-            const int timestamp, const int *const codePoints, const int codePointCount);
+            const UnigramProperty *const unigramProperty, const int *const codePoints,
+            const int codePointCount);
 
     bool createNewPtNodeArrayWithAChildPtNode(const int parentPos, const int *const nodeCodePoints,
-            const int nodeCodePointCount, const bool isNotAWord, const bool isBlacklisted,
-            const int probability, const int timestamp);
+            const int nodeCodePointCount, const UnigramProperty *const unigramProperty);
 
     bool reallocatePtNodeAndAddNewPtNodes(
             const PtNodeParams *const reallocatingPtNodeParams, const int overlappingCodePointCount,
-            const bool isNotAWord, const bool isBlacklisted, const int probabilityOfNewPtNode,
-            const int timestamp, const int *const newNodeCodePoints,
+            const UnigramProperty *const unigramProperty, const int *const newNodeCodePoints,
             const int newNodeCodePointCount);
 
     const PtNodeParams getUpdatedPtNodeParams(const PtNodeParams *const originalPtNodeParams,
