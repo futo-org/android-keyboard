@@ -64,7 +64,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
      * what user actually typed. */
     private boolean mIsAutoCorrectionActive;
 
-    private KeyboardTheme mKeyboardTheme;
+    private KeyboardTheme mKeyboardTheme = KeyboardTheme.getDefaultKeyboardTheme();
     private Context mThemeContext;
 
     private static final KeyboardSwitcher sInstance = new KeyboardSwitcher();
@@ -101,7 +101,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
 
     private boolean updateKeyboardThemeAndContextThemeWrapper(final Context context,
             final KeyboardTheme keyboardTheme) {
-        if (mThemeContext == null || !keyboardTheme.equals(mKeyboardTheme)) {
+        if (mThemeContext == null || mKeyboardTheme.mThemeId != keyboardTheme.mThemeId) {
             mKeyboardTheme = keyboardTheme;
             mThemeContext = new ContextThemeWrapper(context, keyboardTheme.mStyleId);
             KeyboardLayoutSet.clearKeyboardCache();
@@ -342,8 +342,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
             mKeyboardView.closing();
         }
 
-        updateKeyboardThemeAndContextThemeWrapper(
-                mLatinIME, KeyboardTheme.getKeyboardTheme(mPrefs));
+        updateKeyboardThemeAndContextThemeWrapper(mLatinIME, mKeyboardTheme);
         mCurrentInputView = (InputView)LayoutInflater.from(mThemeContext).inflate(
                 R.layout.input_view, null);
         mMainKeyboardFrame = mCurrentInputView.findViewById(R.id.main_keyboard_frame);
