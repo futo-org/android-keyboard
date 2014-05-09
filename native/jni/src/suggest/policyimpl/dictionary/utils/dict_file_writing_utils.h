@@ -21,6 +21,7 @@
 
 #include "defines.h"
 #include "suggest/policyimpl/dictionary/header/header_read_write_utils.h"
+#include "suggest/policyimpl/dictionary/utils/format_utils.h"
 
 namespace latinime {
 
@@ -46,7 +47,8 @@ class DictFileWritingUtils {
 
     static bool createEmptyV4DictFile(const char *const filePath,
             const std::vector<int> localeAsCodePointVector,
-            const DictionaryHeaderStructurePolicy::AttributeMap *const attributeMap);
+            const DictionaryHeaderStructurePolicy::AttributeMap *const attributeMap,
+            const FormatUtils::FORMAT_VERSION formatVersion);
 
     static bool flushBufferToFile(const char *const filePath,
             const BufferWithExtendableBuffer *const buffer);

@@ -540,7 +540,9 @@ public final class BinaryDictionary extends Dictionary {
         close();
         final File dictFile = new File(mDictFilePath);
         final File tmpDictFile = new File(tmpDictFilePath);
-        FileUtils.deleteRecursively(dictFile);
+        if (!FileUtils.deleteRecursively(dictFile)) {
+            return false;
+        }
         if (!BinaryDictionaryUtils.renameDict(tmpDictFile, dictFile)) {
             return false;
         }

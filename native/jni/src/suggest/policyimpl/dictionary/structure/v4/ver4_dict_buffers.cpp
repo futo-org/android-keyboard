@@ -27,7 +27,8 @@
 namespace latinime {
 
 /* static */ Ver4DictBuffers::Ver4DictBuffersPtr Ver4DictBuffers::openVer4DictBuffers(
-        const char *const dictPath, MmappedBuffer::MmappedBufferPtr headerBuffer) {
+        const char *const dictPath, MmappedBuffer::MmappedBufferPtr headerBuffer,
+        const FormatUtils::FORMAT_VERSION formatVersion) {
     if (!headerBuffer) {
         ASSERT(false);
         AKLOGE("The header buffer must be valid to open ver4 dict buffers.");
@@ -35,7 +36,8 @@ namespace latinime {
     }
     // TODO: take only dictDirPath, and open both header and trie files in the constructor below
     const bool isUpdatable = headerBuffer->isUpdatable();
-    return Ver4DictBuffersPtr(new Ver4DictBuffers(dictPath, std::move(headerBuffer), isUpdatable));
+    return Ver4DictBuffersPtr(new Ver4DictBuffers(dictPath, std::move(headerBuffer), isUpdatable,
+            formatVersion));
 }
 
 bool Ver4DictBuffers::flushHeaderAndDictBuffers(const char *const dictDirPath,
@@ -113,11 +115,12 @@ bool Ver4DictBuffers::flushHeaderAndDictBuffers(const char *const dictDirPath,
 }
 
 Ver4DictBuffers::Ver4DictBuffers(const char *const dictPath,
-        MmappedBuffer::MmappedBufferPtr headerBuffer, const bool isUpdatable)
+        MmappedBuffer::MmappedBufferPtr headerBuffer, const bool isUpdatable,
+        const FormatUtils::FORMAT_VERSION formatVersion)
         : mHeaderBuffer(std::move(headerBuffer)),
           mDictBuffer(MmappedBuffer::openBuffer(dictPath,
                   Ver4DictConstants::TRIE_FILE_EXTENSION, isUpdatable)),
-          mHeaderPolicy(mHeaderBuffer->getBuffer(), FormatUtils::VERSION_4),
+          mHeaderPolicy(mHeaderBuffer->getBuffer(), formatVersion),
           mExpandableHeaderBuffer(mHeaderBuffer ? mHeaderBuffer->getBuffer() : nullptr,
                   mHeaderPolicy.getSize(),
                   BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE),
