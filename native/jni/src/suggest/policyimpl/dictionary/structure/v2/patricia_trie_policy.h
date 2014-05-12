@@ -22,9 +22,9 @@
 
 #include "defines.h"
 #include "suggest/core/policy/dictionary_structure_with_buffer_policy.h"
-#include "suggest/policyimpl/dictionary/bigram/bigram_list_policy.h"
 #include "suggest/policyimpl/dictionary/header/header_policy.h"
-#include "suggest/policyimpl/dictionary/shortcut/shortcut_list_policy.h"
+#include "suggest/policyimpl/dictionary/structure/v2/bigram/bigram_list_policy.h"
+#include "suggest/policyimpl/dictionary/structure/v2/shortcut/shortcut_list_policy.h"
 #include "suggest/policyimpl/dictionary/structure/v2/ver2_patricia_trie_node_reader.h"
 #include "suggest/policyimpl/dictionary/structure/v2/ver2_pt_node_array_reader.h"
 #include "suggest/policyimpl/dictionary/utils/format_utils.h"
