@@ -76,7 +76,7 @@ bool Ver4PatriciaTrieNodeWriter::markPtNodeAsMoved(
             PatriciaTrieReadingUtils::getFlagsAndAdvancePosition(dictBuf, &pos);
     const PatriciaTrieReadingUtils::NodeFlags updatedFlags =
             DynamicPtReadingUtils::updateAndGetFlags(originalFlags, true /* isMoved */,
-                    false /* isDeleted */,  false /* willBecomeNonTerminal */);
+                    false /* isDeleted */, false /* willBecomeNonTerminal */);
     int writingPos = toBeUpdatedPtNodeParams->getHeadPos();
     // Update flags.
     if (!DynamicPtWritingUtils::writeFlagsAndAdvancePosition(mTrieBuffer, updatedFlags,
