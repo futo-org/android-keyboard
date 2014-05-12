@@ -24,9 +24,6 @@
          at input history to suggest a hopefully helpful suggestions for the next word? -->
     <bool name="config_default_next_word_prediction">true</bool>
 
-    <!-- This configuration must be aligned with {@link KeyboardTheme#DEFAULT_THEME_ID}. -->
-    <string name="config_default_keyboard_theme_id" translatable="false">2</string>
-
     <integer name="config_delay_update_shift_state">100</integer>
     <integer name="config_double_space_period_timeout">1100</integer>
 

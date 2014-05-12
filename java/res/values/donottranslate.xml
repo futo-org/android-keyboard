@@ -47,17 +47,6 @@
     <string name="prefs_debug_mode">Debug Mode</string>
     <string name="prefs_force_non_distinct_multitouch">Force non-distinct multitouch</string>
 
-    <!-- For keyboard color scheme option dialog. -->
-    <string-array name="keyboard_theme_names">
-        <item>@string/keyboard_color_scheme_white</item>
-        <item>@string/keyboard_color_scheme_blue</item>
-    </string-array>
-    <!-- An element must be a keyboard theme id of {@link KeyboardTheme#THEME_ID_*}. -->
-    <string-array name="keyboard_theme_ids">
-        <item>2</item>
-        <item>0</item>
-    </string-array>
-
     <!-- Subtype locale display name exceptions.
          For each exception, there should be related string resources for display name that may have
          explicit keyboard layout. The string resource name must be "subtype_<locale>" or

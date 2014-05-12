@@ -18,6 +18,7 @@ package com.android.inputmethod.keyboard;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.preference.PreferenceManager;
 import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
 import android.view.ContextThemeWrapper;
@@ -40,9 +41,6 @@ import java.util.Locale;
 
 @SmallTest
 public class KeyboardLayoutSetTestsBase extends AndroidTestCase {
-    private static final KeyboardTheme DEFAULT_KEYBOARD_THEME =
-            KeyboardTheme.getDefaultKeyboardTheme();
-
     // All input method subtypes of LatinIME.
     private final ArrayList<InputMethodSubtype> mAllSubtypesList = CollectionUtils.newArrayList();
     private final ArrayList<InputMethodSubtype> mAsciiCapableSubtypesList =
@@ -58,7 +56,9 @@ public class KeyboardLayoutSetTestsBase extends AndroidTestCase {
         super.setUp();
         mScreenMetrics = mContext.getResources().getInteger(R.integer.config_screen_metrics);
 
-        mThemeContext = new ContextThemeWrapper(mContext, DEFAULT_KEYBOARD_THEME.mStyleId);
+        final KeyboardTheme keyboardTheme = KeyboardTheme.getKeyboardTheme(
+                PreferenceManager.getDefaultSharedPreferences(mContext));
+        mThemeContext = new ContextThemeWrapper(mContext, keyboardTheme.mStyleId);
         RichInputMethodManager.init(mThemeContext);
         final RichInputMethodManager richImm = RichInputMethodManager.getInstance();
 

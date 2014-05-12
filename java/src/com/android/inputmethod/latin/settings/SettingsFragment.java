@@ -37,6 +37,7 @@ import android.util.Log;
 import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.dictionarypack.DictionarySettingsActivity;
+import com.android.inputmethod.keyboard.KeyboardTheme;
 import com.android.inputmethod.latin.AudioAndHapticFeedbackManager;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SubtypeSwitcher;
@@ -253,8 +254,28 @@ public final class SettingsFragment extends InputMethodSettingsFragment
         }
         updateListPreferenceSummaryToCurrentValue(Settings.PREF_SHOW_SUGGESTIONS_SETTING);
         updateListPreferenceSummaryToCurrentValue(Settings.PREF_KEY_PREVIEW_POPUP_DISMISS_DELAY);
-        updateListPreferenceSummaryToCurrentValue(Settings.PREF_KEYBOARD_LAYOUT);
+        final ListPreference keyboardThemePref = (ListPreference)findPreference(
+                Settings.PREF_KEYBOARD_THEME);
+        if (keyboardThemePref != null) {
+            final KeyboardTheme keyboardTheme = KeyboardTheme.getKeyboardTheme(prefs);
+            final String value = Integer.toString(keyboardTheme.mThemeId);
+            final CharSequence entries[] = keyboardThemePref.getEntries();
+            final int entryIndex = keyboardThemePref.findIndexOfValue(value);
+            keyboardThemePref.setSummary(entryIndex < 0 ? null : entries[entryIndex]);
+            keyboardThemePref.setValue(value);
+        }
         updateCustomInputStylesSummary(prefs, res);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        final SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
+        final ListPreference keyboardThemePref = (ListPreference)findPreference(
+                Settings.PREF_KEYBOARD_THEME);
+        if (keyboardThemePref != null) {
+            KeyboardTheme.saveKeyboardThemeId(keyboardThemePref.getValue(), prefs);
+        }
     }
 
     @Override
@@ -287,7 +308,7 @@ public final class SettingsFragment extends InputMethodSettingsFragment
         ensureConsistencyOfAutoCorrectionSettings();
         updateListPreferenceSummaryToCurrentValue(Settings.PREF_SHOW_SUGGESTIONS_SETTING);
         updateListPreferenceSummaryToCurrentValue(Settings.PREF_KEY_PREVIEW_POPUP_DISMISS_DELAY);
-        updateListPreferenceSummaryToCurrentValue(Settings.PREF_KEYBOARD_LAYOUT);
+        updateListPreferenceSummaryToCurrentValue(Settings.PREF_KEYBOARD_THEME);
         refreshEnablingsOfKeypressSoundAndVibrationSettings(prefs, getResources());
     }
 
