@@ -55,7 +55,7 @@ public class DictionaryFacilitatorForSuggest {
     private boolean mIsUserDictEnabled = false;
     private volatile CountDownLatch mLatchForWaitingLoadingMainDictionary = new CountDownLatch(0);
     // To synchronize assigning mDictionaries to ensure closing dictionaries.
-    private Object mLock = new Object();
+    private final Object mLock = new Object();
 
     private static final String[] DICT_TYPES_ORDERED_TO_GET_SUGGESTION =
             new String[] {
@@ -368,30 +368,42 @@ public class DictionaryFacilitatorForSuggest {
     public void addToUserHistory(final String suggestion, final boolean wasAutoCapitalized,
             final String previousWord, final int timeStampInSeconds) {
         final Dictionaries dictionaries = mDictionaries;
+        final String[] words = suggestion.split(Constants.WORD_SEPARATOR);
+        for (int i = 0; i < words.length; i++) {
+            final String currentWord = words[i];
+            final String prevWord = (i == 0) ? previousWord : words[i - 1];
+            final boolean wasCurrentWordAutoCapitalized = (i == 0) ? wasAutoCapitalized : false;
+            addWordToUserHistory(dictionaries, prevWord, currentWord,
+                    wasCurrentWordAutoCapitalized, timeStampInSeconds);
+        }
+    }
+
+    private void addWordToUserHistory(final Dictionaries dictionaries, final String prevWord,
+            final String word, final boolean wasAutoCapitalized, final int timeStampInSeconds) {
         final ExpandableBinaryDictionary userHistoryDictionary =
                 dictionaries.getSubDict(Dictionary.TYPE_USER_HISTORY);
         if (userHistoryDictionary == null) {
             return;
         }
-        final int maxFreq = getMaxFrequency(suggestion);
+        final int maxFreq = getMaxFrequency(word);
         if (maxFreq == 0) {
             return;
         }
-        final String suggestionLowerCase = suggestion.toLowerCase(dictionaries.mLocale);
+        final String lowerCasedWord = word.toLowerCase(dictionaries.mLocale);
         final String secondWord;
         if (wasAutoCapitalized) {
-            if (isValidWord(suggestion, false /* ignoreCase */)
-                    && !isValidWord(suggestionLowerCase, false /* ignoreCase */)) {
+            if (isValidWord(word, false /* ignoreCase */)
+                    && !isValidWord(lowerCasedWord, false /* ignoreCase */)) {
                 // If the word was auto-capitalized and exists only as a capitalized word in the
                 // dictionary, then we must not downcase it before registering it. For example,
                 // the name of the contacts in start-of-sentence position would come here with the
                 // wasAutoCapitalized flag: if we downcase it, we'd register a lower-case version
                 // of that contact's name which would end up popping in suggestions.
-                secondWord = suggestion;
+                secondWord = word;
             } else {
                 // If however the word is not in the dictionary, or exists as a lower-case word
                 // only, then we consider that was a lower-case word that had been auto-capitalized.
-                secondWord = suggestionLowerCase;
+                secondWord = lowerCasedWord;
             }
         } else {
             // HACK: We'd like to avoid adding the capitalized form of common words to the User
@@ -399,20 +411,20 @@ public class DictionaryFacilitatorForSuggest {
             // consolidation is done.
             // TODO: Remove this hack when ready.
             final int lowerCaseFreqInMainDict = dictionaries.hasDict(Dictionary.TYPE_MAIN) ?
-                    dictionaries.getDict(Dictionary.TYPE_MAIN).getFrequency(suggestionLowerCase) :
+                    dictionaries.getDict(Dictionary.TYPE_MAIN).getFrequency(lowerCasedWord) :
                             Dictionary.NOT_A_PROBABILITY;
             if (maxFreq < lowerCaseFreqInMainDict
                     && lowerCaseFreqInMainDict >= CAPITALIZED_FORM_MAX_PROBABILITY_FOR_INSERT) {
                 // Use lower cased word as the word can be a distracter of the popular word.
-                secondWord = suggestionLowerCase;
+                secondWord = lowerCasedWord;
             } else {
-                secondWord = suggestion;
+                secondWord = word;
             }
         }
         // We demote unrecognized words (frequency < 0, below) by specifying them as "invalid".
         // We don't add words with 0-frequency (assuming they would be profanity etc.).
         final boolean isValid = maxFreq > 0;
-        UserHistoryDictionary.addToDictionary(userHistoryDictionary, previousWord, secondWord,
+        UserHistoryDictionary.addToDictionary(userHistoryDictionary, prevWord, secondWord,
                 isValid, timeStampInSeconds);
     }
 
