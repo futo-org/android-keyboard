@@ -97,6 +97,11 @@ public final class InputLogic {
     private boolean mIsAutoCorrectionIndicatorOn;
     private long mDoubleSpacePeriodCountdownStart;
 
+    /**
+     * Create a new instance of the input logic.
+     * @param latinIME the instance of the parent LatinIME. We should remove this when we can.
+     * @param suggestionStripViewAccessor an object to access the suggestion strip view.
+     */
     public InputLogic(final LatinIME latinIME,
             final SuggestionStripViewAccessor suggestionStripViewAccessor) {
         mLatinIME = latinIME;
@@ -117,9 +122,12 @@ public final class InputLogic {
      *
      * @param restarting whether input is starting in the same field as before. Unused for now.
      * @param editorInfo the editorInfo associated with the editor.
+     * @param combiningSpec the combining spec string for this subtype
      */
-    public void startInput(final boolean restarting, final EditorInfo editorInfo) {
+    public void startInput(final boolean restarting, final EditorInfo editorInfo,
+            final String combiningSpec) {
         mEnteredText = null;
+        mWordComposer.restart(combiningSpec);
         resetComposingState(true /* alsoResetLastComposedWord */);
         mDeleteCount = 0;
         mSpaceState = SpaceState.NONE;
@@ -135,6 +143,14 @@ public final class InputLogic {
         } else {
             mInputLogicHandler.reset();
         }
+    }
+
+    /**
+     * Call this when the subtype changes.
+     * @param combiningSpec the spec string for the combining rules
+     */
+    public void onSubtypeChanged(final String combiningSpec) {
+        mWordComposer.restart(combiningSpec);
     }
 
     /**

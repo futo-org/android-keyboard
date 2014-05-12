@@ -733,6 +733,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // Note that the calling sequence of onCreate() and onCurrentInputMethodSubtypeChanged()
         // is not guaranteed. It may even be called at the same time on a different thread.
         mSubtypeSwitcher.onSubtypeChanged(subtype);
+        mInputLogic.onSubtypeChanged(SubtypeLocaleUtils.getCombiningRulesExtraValue(subtype));
         loadKeyboard();
     }
 
@@ -808,7 +809,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         // The app calling setText() has the effect of clearing the composing
         // span, so we should reset our state unconditionally, even if restarting is true.
-        mInputLogic.startInput(restarting, editorInfo);
+        // We also tell the input logic about the combining rules for the current subtype, so
+        // it can adjust its combiners if needed.
+        mInputLogic.startInput(restarting, editorInfo,
+                mSubtypeSwitcher.getCombiningRulesExtraValueOfCurrentSubtype());
 
         // Note: the following does a round-trip IPC on the main thread: be careful
         final Locale currentLocale = mSubtypeSwitcher.getCurrentSubtypeLocale();

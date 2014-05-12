@@ -326,4 +326,8 @@ public final class SubtypeSwitcher {
                 + DUMMY_EMOJI_SUBTYPE);
         return DUMMY_EMOJI_SUBTYPE;
     }
+
+    public String getCombiningRulesExtraValueOfCurrentSubtype() {
+        return SubtypeLocaleUtils.getCombiningRulesExtraValue(getCurrentSubtype());
+    }
 }

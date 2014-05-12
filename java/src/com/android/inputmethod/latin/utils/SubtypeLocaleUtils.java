@@ -324,4 +324,8 @@ public final class SubtypeLocaleUtils {
     public static boolean isRtlLanguage(final InputMethodSubtype subtype) {
         return isRtlLanguage(getSubtypeLocale(subtype));
     }
+
+    public static String getCombiningRulesExtraValue(final InputMethodSubtype subtype) {
+        return subtype.getExtraValueOf(Constants.Subtype.ExtraValue.COMBINING_RULES);
+    }
 }
