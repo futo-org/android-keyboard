@@ -109,6 +109,8 @@ public abstract class AbstractLayoutBase {
     // Icon ids.
     private static final int ICON_DELETE = KeyboardIconsSet.getIconId(
             KeyboardIconsSet.NAME_DELETE_KEY);
+    private static final int ICON_SPACE = KeyboardIconsSet.getIconId(
+            KeyboardIconsSet.NAME_SPACE_KEY);
     private static final int ICON_TAB = KeyboardIconsSet.getIconId(
             KeyboardIconsSet.NAME_TAB_KEY);
     private static final int ICON_SHORTCUT = KeyboardIconsSet.getIconId(
@@ -131,6 +133,5 @@ public abstract class AbstractLayoutBase {
             ICON_LANGUAGE_SWITCH, Constants.CODE_LANGUAGE_SWITCH);
     public static final ExpectedKey ENTER_KEY = key(ICON_ENTER, Constants.CODE_ENTER);
     public static final ExpectedKey EMOJI_KEY = key(ICON_EMOJI, Constants.CODE_EMOJI);
-    public static final ExpectedKey SPACE_KEY = key(
-            StringUtils.newSingleCodePointString(Constants.CODE_SPACE));
+    public static final ExpectedKey SPACE_KEY = key(ICON_SPACE, Constants.CODE_SPACE);
 }
