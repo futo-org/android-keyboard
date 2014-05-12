@@ -57,6 +57,8 @@ public abstract class Dictionary {
     public static final String TYPE_USER_HISTORY = "history";
     // Personalization dictionary.
     public static final String TYPE_PERSONALIZATION = "personalization";
+    // Contextual dictionary.
+    public static final String TYPE_CONTEXTUAL = "contextual";
     public final String mDictType;
 
     public Dictionary(final String dictType) {
