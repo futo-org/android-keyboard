@@ -26,13 +26,6 @@
     >
         <switch>
             <case
-                latin:hasShortcutKey="true"
-            >
-                <Key
-                    latin:keyStyle="shortcutKeyStyle"
-                    latin:keyWidth="11.538%p" />
-            </case>
-            <case
                 latin:clobberSettingsKey="false"
             >
                 <Key

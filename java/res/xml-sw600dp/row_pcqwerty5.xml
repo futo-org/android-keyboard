@@ -26,7 +26,7 @@
     >
         <include
             latin:keyWidth="9.0%p"
-            latin:keyboardLayout="@xml/key_shortcut" />
+            latin:keyboardLayout="@xml/key_settings" />
         <switch>
             <case
                 latin:languageSwitchKeyEnabled="true"

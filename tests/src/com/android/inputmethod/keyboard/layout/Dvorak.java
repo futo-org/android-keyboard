@@ -51,7 +51,7 @@ public final class Dvorak extends LayoutBase {
 
         @Override
         public ExpectedKey[] getKeysLeftToSpacebar(final boolean isPhone) {
-            return isPhone ? joinKeys(key("q", SHORTCUT_KEY, SETTINGS_KEY)) : joinKeys(key("/"));
+            return isPhone ? joinKeys(key("q", SETTINGS_KEY)) : joinKeys(key("/"));
         }
 
         @Override

@@ -50,7 +50,7 @@ public final class PcQwerty extends LayoutBase {
 
         @Override
         public ExpectedKey[] getKeysLeftToSpacebar(final boolean isPhone) {
-            return joinKeys(key(SHORTCUT_KEY, SETTINGS_KEY));
+            return joinKeys(SETTINGS_KEY);
         }
 
         @Override

@@ -30,7 +30,6 @@
         <Key
             latin:keySpec="q"
             latin:backgroundType="normal"
-            latin:additionalMoreKeys="!text/keyspec_shortcut"
             latin:keyStyle="f1MoreKeysStyle" />
         <include
             latin:keyXPos="25%p"

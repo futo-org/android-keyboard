@@ -29,7 +29,7 @@
             latin:keyStyle="toSymbolKeyStyle"
             latin:keyWidth="10.0%p" />
         <include
-            latin:keyboardLayout="@xml/key_shortcut" />
+            latin:keyboardLayout="@xml/key_settings" />
         <include
             latin:keyboardLayout="@xml/key_f1" />
         <include
