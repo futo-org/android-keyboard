@@ -52,7 +52,6 @@ public final class SubtypeSwitcher {
 
     private /* final */ RichInputMethodManager mRichImm;
     private /* final */ Resources mResources;
-    private /* final */ ConnectivityManager mConnectivityManager;
 
     private final LanguageOnSpacebarHelper mLanguageOnSpacebarHelper =
             new LanguageOnSpacebarHelper();
@@ -111,10 +110,10 @@ public final class SubtypeSwitcher {
         }
         mResources = context.getResources();
         mRichImm = RichInputMethodManager.getInstance();
-        mConnectivityManager = (ConnectivityManager) context.getSystemService(
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(
                 Context.CONNECTIVITY_SERVICE);
 
-        final NetworkInfo info = mConnectivityManager.getActiveNetworkInfo();
+        final NetworkInfo info = connectivityManager.getActiveNetworkInfo();
         mIsNetworkConnected = (info != null && info.isConnected());
 
         onSubtypeChanged(getCurrentSubtype());
