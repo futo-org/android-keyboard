@@ -19,7 +19,6 @@ package com.android.inputmethod.keyboard.layout.expected;
 import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKey.ExpectedAdditionalMoreKey;
 import com.android.inputmethod.latin.Constants;
-import com.android.inputmethod.latin.utils.StringUtils;
 
 /**
  * Base class to create an expected keyboard for unit test.

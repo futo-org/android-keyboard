@@ -28,6 +28,9 @@ import java.util.List;
 
 /**
  * This class builds an actual keyboard for unit test.
+ *
+ * An actual keyboard is an array of rows, and a row consists of an array of {@link Key}s.
+ * Each row may have different number of {@link Key}s.
  */
 public final class ActualKeyboardBuilder extends AbstractKeyboardBuilder<Key> {
     private static ArrayList<Key> filterOutSpacer(final List<Key> keys) {
@@ -43,7 +46,8 @@ public final class ActualKeyboardBuilder extends AbstractKeyboardBuilder<Key> {
 
     /**
      * Create the keyboard that consists of the array of rows of the actual keyboard's keys.
-     * @param sortedKeys the sorted list of keys of the actual keyboard.
+     * @param sortedKeys keys list of the actual keyboard that is sorted from top-left to
+     * bottom-right.
      * @return the actual keyboard grouped with rows.
      */
     public static Key[][] buildKeyboard(final List<Key> sortedKeys) {
