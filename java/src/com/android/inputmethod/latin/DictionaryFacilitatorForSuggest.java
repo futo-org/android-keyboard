@@ -370,7 +370,8 @@ public class DictionaryFacilitatorForSuggest {
     }
 
     public void addToUserHistory(final String suggestion, final boolean wasAutoCapitalized,
-            final String previousWord, final int timeStampInSeconds) {
+            final String previousWord, final int timeStampInSeconds,
+            final boolean blockPotentiallyOffensive) {
         final Dictionaries dictionaries = mDictionaries;
         final String[] words = suggestion.split(Constants.WORD_SEPARATOR);
         for (int i = 0; i < words.length; i++) {
@@ -378,19 +379,20 @@ public class DictionaryFacilitatorForSuggest {
             final String prevWord = (i == 0) ? previousWord : words[i - 1];
             final boolean wasCurrentWordAutoCapitalized = (i == 0) ? wasAutoCapitalized : false;
             addWordToUserHistory(dictionaries, prevWord, currentWord,
-                    wasCurrentWordAutoCapitalized, timeStampInSeconds);
+                    wasCurrentWordAutoCapitalized, timeStampInSeconds, blockPotentiallyOffensive);
         }
     }
 
     private void addWordToUserHistory(final Dictionaries dictionaries, final String prevWord,
-            final String word, final boolean wasAutoCapitalized, final int timeStampInSeconds) {
+            final String word, final boolean wasAutoCapitalized, final int timeStampInSeconds,
+            final boolean blockPotentiallyOffensive) {
         final ExpandableBinaryDictionary userHistoryDictionary =
                 dictionaries.getSubDict(Dictionary.TYPE_USER_HISTORY);
         if (userHistoryDictionary == null) {
             return;
         }
         final int maxFreq = getMaxFrequency(word);
-        if (maxFreq == 0) {
+        if (maxFreq == 0 && blockPotentiallyOffensive) {
             return;
         }
         final String lowerCasedWord = word.toLowerCase(dictionaries.mLocale);
