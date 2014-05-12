@@ -51,7 +51,10 @@ abstract class LayoutTestsBase extends KeyboardLayoutSetTestsBase {
         mSubtype = getSubtype(mLayout.getLocale(), mLayout.getName());
         mLogTag = SubtypeLocaleUtils.getSubtypeNameForLogging(mSubtype) + "/"
                 + (isPhone() ? "phone" : "tablet");
-        mKeyboardLayoutSet = createKeyboardLayoutSet(mSubtype, null /* editorInfo */);
+        // TODO: Test with voice and language switch keys enabled and disabled.
+        mKeyboardLayoutSet = createKeyboardLayoutSet(mSubtype, null /* editorInfo */,
+                true /* isShortcutImeEnabled */, true /* showsVoiceInputKey */,
+                true /* isLanguageSwitchKeyEnabled */);
     }
 
     // Those helper methods have a lower case name to be readable when defining expected keyboard

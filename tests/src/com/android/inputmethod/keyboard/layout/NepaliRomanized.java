@@ -47,7 +47,7 @@ public final class NepaliRomanized extends LayoutBase {
 
         @Override
         public ExpectedKey[] getSpaceKeys(final boolean isPhone) {
-            return joinKeys(SPACE_KEY, key(ZWNJ_KEY, ZWJ_KEY));
+            return joinKeys(LANGUAGE_SWITCH_KEY, SPACE_KEY, key(ZWNJ_KEY, ZWJ_KEY));
         }
 
         // U+0930/U+0941/U+002E "रु." NEPALESE RUPEE SIGN

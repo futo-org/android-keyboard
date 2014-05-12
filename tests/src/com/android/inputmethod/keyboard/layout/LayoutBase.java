@@ -152,7 +152,7 @@ public abstract class LayoutBase extends AbstractLayoutBase {
          *         keyboard.
          */
         public ExpectedKey[] getSpaceKeys(final boolean isPhone) {
-            return joinKeys(SPACE_KEY);
+            return joinKeys(LANGUAGE_SWITCH_KEY, SPACE_KEY);
         }
 
         /**
@@ -161,7 +161,7 @@ public abstract class LayoutBase extends AbstractLayoutBase {
          * @return the array of {@link ExpectedKey} that should be placed at left of the spacebar.
          */
         public ExpectedKey[] getKeysLeftToSpacebar(final boolean isPhone) {
-            return isPhone ? joinKeys(key(",", SETTINGS_KEY)) : joinKeys("/");
+            return isPhone ? joinKeys(key(SHORTCUT_KEY, SETTINGS_KEY)) : joinKeys("/");
         }
 
         /**
@@ -296,7 +296,8 @@ public abstract class LayoutBase extends AbstractLayoutBase {
         } else {
             builder.addKeysOnTheRightOfRow(1, DELETE_KEY)
                     .addKeysOnTheRightOfRow(2, ENTER_KEY)
-                    .addKeysOnTheLeftOfRow(4, customizer.getSymbolsKey(), SETTINGS_KEY)
+                    .addKeysOnTheLeftOfRow(4,
+                            customizer.getSymbolsKey(), key(SHORTCUT_KEY, SETTINGS_KEY))
                     .addKeysOnTheRightOfRow(4, EMOJI_KEY);
         }
         builder.addKeysOnTheLeftOfRow(3, (Object[])customizer.getLeftShiftKeys(isPhone))
