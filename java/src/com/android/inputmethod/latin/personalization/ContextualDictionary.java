@@ -50,9 +50,4 @@ public class ContextualDictionary extends ExpandableBinaryDictionary {
     @Override
     protected void loadInitialContentsLocked() {
     }
-
-    @Override
-    protected boolean haveContentsChanged() {
-        return false;
-    }
 }
