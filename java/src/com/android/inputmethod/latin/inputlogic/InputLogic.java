@@ -604,7 +604,7 @@ public final class InputLogic {
             if (null != candidate
                     && mSuggestedWords.mSequenceNumber >= mAutoCommitSequenceNumber) {
                 if (candidate.mSourceDict.shouldAutoCommit(candidate)) {
-                    final String[] commitParts = candidate.mWord.split(" ", 2);
+                    final String[] commitParts = candidate.mWord.split(Constants.WORD_SEPARATOR, 2);
                     batchPointers.shift(candidate.mIndexOfTouchPointOfSecondWord);
                     promotePhantomSpace(settingsValues);
                     mConnection.commitText(commitParts[0], 0);
@@ -1962,10 +1962,11 @@ public final class InputLogic {
         final CharSequence chosenWordWithSuggestions =
                 SuggestionSpanUtils.getTextWithSuggestionSpan(mLatinIME, chosenWord,
                         suggestedWords);
-        mConnection.commitText(chosenWordWithSuggestions, 1);
-        // TODO: we pass 2 here, but would it be better to move this above and pass 1 instead?
+        // Use the 2nd previous word as the previous word because the 1st previous word is the word
+        // to be committed.
         final String prevWord = mConnection.getNthPreviousWord(
                 settingsValues.mSpacingAndPunctuations, 2);
+        mConnection.commitText(chosenWordWithSuggestions, 1);
         // Add the word to the user history dictionary
         performAdditionToUserHistoryDictionary(settingsValues, chosenWord, prevWord);
         // TODO: figure out here if this is an auto-correct or if the best word is actually

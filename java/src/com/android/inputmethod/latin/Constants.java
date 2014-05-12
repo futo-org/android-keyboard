@@ -169,6 +169,8 @@ public final class Constants {
     // How many continuous deletes at which to start deleting at a higher speed.
     public static final int DELETE_ACCELERATE_AT = 20;
 
+    public static final String WORD_SEPARATOR = " ";
+
     public static boolean isValidCoordinate(final int coordinate) {
         // Detect {@link NOT_A_COORDINATE}, {@link SUGGESTION_STRIP_COORDINATE},
         // and {@link SPELL_CHECKER_COORDINATE}.
