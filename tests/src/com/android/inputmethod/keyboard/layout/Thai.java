@@ -111,7 +111,8 @@ public final class Thai extends LayoutBase {
         } else {
             builder.addKeysOnTheRightOfRow(1, DELETE_KEY)
                     .addKeysOnTheRightOfRow(3, ENTER_KEY)
-                    .addKeysOnTheLeftOfRow(5, customizer.getSymbolsKey(), SETTINGS_KEY)
+                    .addKeysOnTheLeftOfRow(5,
+                            customizer.getSymbolsKey(), key(SHORTCUT_KEY, SETTINGS_KEY))
                     .addKeysOnTheRightOfRow(5, EMOJI_KEY);
         }
         builder.addKeysOnTheLeftOfRow(4, (Object[])customizer.getLeftShiftKeys(isPhone))

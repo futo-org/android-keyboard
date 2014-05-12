@@ -67,15 +67,6 @@ public final class Farsi extends LayoutBase {
         }
 
         @Override
-        public ExpectedKey[] getKeysLeftToSpacebar(final boolean isPhone) {
-            if (isPhone) {
-                // U+060C: "،" ARABIC COMMA
-                return joinKeys(key("\u060C", SETTINGS_KEY));
-            }
-            return super.getKeysLeftToSpacebar(isPhone);
-        }
-
-        @Override
         public ExpectedKey[] getKeysRightToSpacebar(final boolean isPhone) {
             if (isPhone) {
                 return super.getKeysRightToSpacebar(isPhone);
@@ -91,7 +82,7 @@ public final class Farsi extends LayoutBase {
 
         @Override
         public ExpectedKey[] getSpaceKeys(final boolean isPhone) {
-            return joinKeys(SPACE_KEY, key(ZWNJ_KEY, ZWJ_KEY));
+            return joinKeys(LANGUAGE_SWITCH_KEY, SPACE_KEY, key(ZWNJ_KEY, ZWJ_KEY));
         }
 
         @Override
