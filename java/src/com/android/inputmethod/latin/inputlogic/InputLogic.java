@@ -1225,7 +1225,7 @@ public final class InputLogic {
         final int timeStampInSeconds = (int)TimeUnit.MILLISECONDS.toSeconds(
                 System.currentTimeMillis());
         mSuggest.mDictionaryFacilitator.addToUserHistory(suggestion, wasAutoCapitalized, prevWord,
-                timeStampInSeconds);
+                timeStampInSeconds, settingsValues.mBlockPotentiallyOffensive);
     }
 
     public void performUpdateSuggestionStripSync(final SettingsValues settingsValues) {
