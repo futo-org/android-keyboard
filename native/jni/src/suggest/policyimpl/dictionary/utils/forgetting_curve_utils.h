@@ -30,7 +30,7 @@ class ForgettingCurveUtils {
  public:
     static const HistoricalInfo createUpdatedHistoricalInfo(
             const HistoricalInfo *const originalHistoricalInfo, const int newProbability,
-            const int timestamp, const HeaderPolicy *const headerPolicy);
+            const HistoricalInfo *const newHistoricalInfo, const HeaderPolicy *const headerPolicy);
 
     static const HistoricalInfo createHistoricalInfoToSave(
             const HistoricalInfo *const originalHistoricalInfo,
@@ -93,7 +93,7 @@ class ForgettingCurveUtils {
     static const int DECAY_INTERVAL_SECONDS;
 
     static const int MAX_LEVEL;
-    static const int MIN_VALID_LEVEL;
+    static const int MIN_VISIBLE_LEVEL;
     static const int MAX_ELAPSED_TIME_STEP_COUNT;
     static const int DISCARD_LEVEL_ZERO_ENTRY_TIME_STEP_COUNT_THRESHOLD;
 
@@ -103,8 +103,11 @@ class ForgettingCurveUtils {
     static const ProbabilityTable sProbabilityTable;
 
     static int backoff(const int unigramProbability);
-
     static int getElapsedTimeStepCount(const int timestamp, const int durationToLevelDown);
+    static int clampToVisibleEntryLevelRange(const int level);
+    static int clampToValidLevelRange(const int level);
+    static int clampToValidCountRange(const int count, const HeaderPolicy *const headerPolicy);
+    static int clampToValidTimeStepCountRange(const int timeStepCount);
 };
 } // namespace latinime
 #endif /* LATINIME_FORGETTING_CURVE_UTILS_H */

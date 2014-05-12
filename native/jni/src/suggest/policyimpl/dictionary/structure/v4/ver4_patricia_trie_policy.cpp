@@ -425,6 +425,9 @@ const WordProperty Ver4PatriciaTriePolicy::getWordProperty(const int *const code
 }
 
 int Ver4PatriciaTriePolicy::getNextWordAndNextToken(const int token, int *const outCodePoints) {
+    // TODO: Return code point count like other methods.
+    // Null termination.
+    outCodePoints[0] = 0;
     if (token == 0) {
         mTerminalPtNodePositionsForIteratingWords.clear();
         DynamicPtReadingHelper::TraversePolicyToGetAllTerminalPtNodePositions traversePolicy(
@@ -441,8 +444,13 @@ int Ver4PatriciaTriePolicy::getNextWordAndNextToken(const int token, int *const 
     }
     const int terminalPtNodePos = mTerminalPtNodePositionsForIteratingWords[token];
     int unigramProbability = NOT_A_PROBABILITY;
-    getCodePointsAndProbabilityAndReturnCodePointCount(terminalPtNodePos, MAX_WORD_LENGTH,
-            outCodePoints, &unigramProbability);
+    const int codePointCount = getCodePointsAndProbabilityAndReturnCodePointCount(
+            terminalPtNodePos, MAX_WORD_LENGTH, outCodePoints, &unigramProbability);
+    if (codePointCount < MAX_WORD_LENGTH) {
+        // Null termination. outCodePoints have to be null terminated or contain MAX_WORD_LENGTH
+        // code points.
+        outCodePoints[codePointCount] = 0;
+    }
     const int nextToken = token + 1;
     if (nextToken >= terminalPtNodePositionsVectorSize) {
         // All words have been iterated.
