@@ -330,7 +330,7 @@ public abstract class LayoutBase extends AbstractLayoutBase {
      * Get the complete expected keyboard layout.
      * @param isPhone true if requesting phone's layout.
      * @param elementId the element id of the requesting keyboard mode.
-     * @return
+     * @return the keyboard layout of the <code>elementId</code>.
      */
     public ExpectedKey[][] getLayout(final boolean isPhone, final int elementId) {
         if (elementId == KeyboardId.ELEMENT_SYMBOLS) {

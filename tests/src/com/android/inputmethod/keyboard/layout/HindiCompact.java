@@ -16,29 +16,12 @@
 
 package com.android.inputmethod.keyboard.layout;
 
-import static com.android.inputmethod.keyboard.layout.DevanagariLetterConstants.SIGN_ANUSVARA;
-import static com.android.inputmethod.keyboard.layout.DevanagariLetterConstants.SIGN_CANDRABINDU;
-import static com.android.inputmethod.keyboard.layout.DevanagariLetterConstants.SIGN_NUKTA;
-import static com.android.inputmethod.keyboard.layout.DevanagariLetterConstants.SIGN_VIRAMA;
-import static com.android.inputmethod.keyboard.layout.DevanagariLetterConstants.SIGN_VISARGA;
-import static com.android.inputmethod.keyboard.layout.DevanagariLetterConstants.VOWEL_SIGN_AA;
-import static com.android.inputmethod.keyboard.layout.DevanagariLetterConstants.VOWEL_SIGN_AI;
-import static com.android.inputmethod.keyboard.layout.DevanagariLetterConstants.VOWEL_SIGN_AU;
-import static com.android.inputmethod.keyboard.layout.DevanagariLetterConstants.VOWEL_SIGN_CANDRA_E;
-import static com.android.inputmethod.keyboard.layout.DevanagariLetterConstants.VOWEL_SIGN_CANDRA_O;
-import static com.android.inputmethod.keyboard.layout.DevanagariLetterConstants.VOWEL_SIGN_E;
-import static com.android.inputmethod.keyboard.layout.DevanagariLetterConstants.VOWEL_SIGN_I;
-import static com.android.inputmethod.keyboard.layout.DevanagariLetterConstants.VOWEL_SIGN_II;
-import static com.android.inputmethod.keyboard.layout.DevanagariLetterConstants.VOWEL_SIGN_O;
-import static com.android.inputmethod.keyboard.layout.DevanagariLetterConstants.VOWEL_SIGN_U;
-import static com.android.inputmethod.keyboard.layout.DevanagariLetterConstants.VOWEL_SIGN_UU;
-import static com.android.inputmethod.keyboard.layout.DevanagariLetterConstants.VOWEL_SIGN_VOCALIC_R;
+import static com.android.inputmethod.keyboard.layout.DevanagariLetterConstants.*;
 
 import com.android.inputmethod.keyboard.layout.Hindi.HindiCustomizer;
 import com.android.inputmethod.keyboard.layout.Hindi.HindiSymbols;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKey;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
-import com.android.inputmethod.latin.Constants;
 
 import java.util.Locale;
 
