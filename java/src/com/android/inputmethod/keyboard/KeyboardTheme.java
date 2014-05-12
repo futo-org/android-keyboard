@@ -42,8 +42,7 @@ public final class KeyboardTheme {
                 VERSION_CODES.ICE_CREAM_SANDWICH),
         new KeyboardTheme(THEME_ID_KLP, R.style.KeyboardTheme_KLP,
                 VERSION_CODES.KITKAT),
-        // TODO: Update to LMP style.
-        new KeyboardTheme(THEME_ID_LMP, R.style.KeyboardTheme_KLP,
+        new KeyboardTheme(THEME_ID_LMP, R.style.KeyboardTheme_LMP,
                 // TODO: Update this constant once the *next* version becomes available.
                 VERSION_CODES.CUR_DEVELOPMENT),
     };
