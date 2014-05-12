@@ -21,9 +21,9 @@ import java.util.Arrays;
 /**
  * This class builds a keyboard that is a two dimensional array of elements <code>E</code>.
  *
- * A keyboard consists of array of rows, and a row consists of array of elements. Each row may have
- * different number of elements. A element of a keyboard can be specified by a row number and a
- * column number, both numbers starts from 1.
+ * A keyboard consists of an array of rows, and a row consists of an array of elements. Each row
+ * may have different number of elements. A element of a keyboard can be specified by a row number
+ * and a column number, both numbers starts from 1.
  *
  * @param <E> the type of a keyboard element. A keyboard element must be an immutable object.
  */
@@ -39,8 +39,7 @@ abstract class AbstractKeyboardBuilder<E> {
     abstract E[][] newArrayOfArray(final int size);
 
     /**
-     * Construct a builder filled with the default element.
-     * @param dimensions the integer array of each row's size.
+     * Construct an empty builder.
      */
     AbstractKeyboardBuilder() {
         mRows = newArrayOfArray(0);
@@ -80,7 +79,7 @@ abstract class AbstractKeyboardBuilder<E> {
      * Get the current contents of the specified row.
      * @param row the row number to get the contents.
      * @return the array of elements at row number <code>row</code>.
-     * @throws {@link RuntimeException} if <code>row</code> is illegal.
+     * @throws RuntimeException if <code>row</code> is illegal.
      */
     E[] getRowAt(final int row) {
         final int rowIndex = row - 1;
@@ -94,7 +93,7 @@ abstract class AbstractKeyboardBuilder<E> {
      * Set an array of elements to the specified row.
      * @param row the row number to set <code>elements</code>.
      * @param elements the array of elements to set at row number <code>row</code>.
-     * @throws {@link RuntimeException} if <code>row</code> is illegal.
+     * @throws RuntimeException if <code>row</code> is illegal.
      */
     void setRowAt(final int row, final E[] elements) {
         final int rowIndex = row - 1;
@@ -114,7 +113,7 @@ abstract class AbstractKeyboardBuilder<E> {
      * @param element the element to set or insert at <code>row,column</code>.
      * @param insert if true, the <code>element</code> is inserted at <code>row,column</code>.
      *        Otherwise the <code>element</code> replace the element at <code>row,column</code>.
-     * @throws {@link RuntimeException} if <code>row</code> or <code>column</code> is illegal.
+     * @throws RuntimeException if <code>row</code> or <code>column</code> is illegal.
      */
     void setElementAt(final int row, final int column, final E element, final boolean insert) {
         final E[] elements = getRowAt(row);
