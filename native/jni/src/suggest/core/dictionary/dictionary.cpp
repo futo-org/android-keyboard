@@ -88,11 +88,10 @@ void Dictionary::addUnigramWord(const int *const word, const int length,
     mDictionaryStructureWithBufferPolicy->addUnigramWord(word, length, unigramProperty);
 }
 
-void Dictionary::addBigramWords(const int *const word0, const int length0, const int *const word1,
-        const int length1, const int probability, const int timestamp) {
+void Dictionary::addBigramWords(const int *const word0, const int length0,
+        const BigramProperty *const bigramProperty) {
     TimeKeeper::setCurrentTime();
-    mDictionaryStructureWithBufferPolicy->addBigramWords(word0, length0, word1, length1,
-            probability, timestamp);
+    mDictionaryStructureWithBufferPolicy->addBigramWords(word0, length0, bigramProperty);
 }
 
 void Dictionary::removeBigramWords(const int *const word0, const int length0,

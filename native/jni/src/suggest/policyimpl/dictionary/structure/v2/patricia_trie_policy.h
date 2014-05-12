@@ -88,8 +88,8 @@ class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
         return false;
     }
 
-    bool addBigramWords(const int *const word0, const int length0, const int *const word1,
-            const int length1, const int probability, const int timestamp) {
+    bool addBigramWords(const int *const word0, const int length0,
+            const BigramProperty *const bigramProperty) {
         // This method should not be called for non-updatable dictionary.
         AKLOGI("Warning: addBigramWords() is called for non-updatable dictionary.");
         return false;

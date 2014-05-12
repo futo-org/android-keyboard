@@ -580,7 +580,6 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
         final BinaryDictionary binaryDictionary = new BinaryDictionary(dictFile.getAbsolutePath(),
                 0 /* offset */, dictFile.length(), true /* useFullEditDistance */,
                 Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
-        // TODO: Add tests for bigrams when the implementation gets ready.
         addUnigramWord(binaryDictionary, "aaa", DUMMY_PROBABILITY);
         assertTrue(binaryDictionary.isValidWord("aaa"));
         addUnigramWord(binaryDictionary, "bbb", Dictionary.NOT_A_PROBABILITY);
@@ -590,6 +589,11 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
         addUnigramWord(binaryDictionary, "ccc", DUMMY_PROBABILITY);
         addUnigramWord(binaryDictionary, "ccc", DUMMY_PROBABILITY);
         addUnigramWord(binaryDictionary, "ccc", DUMMY_PROBABILITY);
+        addUnigramWord(binaryDictionary, "abc", DUMMY_PROBABILITY);
+        addBigramWords(binaryDictionary, "aaa", "abc", DUMMY_PROBABILITY);
+        assertTrue(binaryDictionary.isValidBigram("aaa", "abc"));
+        addBigramWords(binaryDictionary, "aaa", "bbb", Dictionary.NOT_A_PROBABILITY);
+        assertFalse(binaryDictionary.isValidBigram("aaa", "bbb"));
 
         assertEquals(fromFormatVersion, binaryDictionary.getFormatVersion());
         assertTrue(binaryDictionary.migrateTo(toFormatVersion));
@@ -600,6 +604,10 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
         assertTrue(binaryDictionary.getFrequency("aaa") < binaryDictionary.getFrequency("ccc"));
         addUnigramWord(binaryDictionary, "bbb", Dictionary.NOT_A_PROBABILITY);
         assertTrue(binaryDictionary.isValidWord("bbb"));
+        assertTrue(binaryDictionary.isValidBigram("aaa", "abc"));
+        assertFalse(binaryDictionary.isValidBigram("aaa", "bbb"));
+        addBigramWords(binaryDictionary, "aaa", "bbb", Dictionary.NOT_A_PROBABILITY);
+        assertTrue(binaryDictionary.isValidBigram("aaa", "bbb"));
         binaryDictionary.close();
         dictFile.delete();
     }

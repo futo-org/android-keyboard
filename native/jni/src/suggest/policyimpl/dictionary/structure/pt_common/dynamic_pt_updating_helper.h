@@ -22,6 +22,7 @@
 
 namespace latinime {
 
+class BigramProperty;
 class BufferWithExtendableBuffer;
 class DynamicPtReadingHelper;
 class PtNodeReader;
@@ -42,8 +43,8 @@ class DynamicPtUpdatingHelper {
             const UnigramProperty *const unigramProperty, bool *const outAddedNewUnigram);
 
     // Add a bigram relation from word0Pos to word1Pos.
-    bool addBigramWords(const int word0Pos, const int word1Pos, const int probability,
-            const int timestamp, bool *const outAddedNewBigram);
+    bool addBigramWords(const int word0Pos, const int word1Pos,
+            const BigramProperty *const bigramProperty, bool *const outAddedNewBigram);
 
     // Remove a bigram relation from word0Pos to word1Pos.
     bool removeBigramWords(const int word0Pos, const int word1Pos);

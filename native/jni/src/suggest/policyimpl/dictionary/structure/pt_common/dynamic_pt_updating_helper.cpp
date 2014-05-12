@@ -85,13 +85,13 @@ bool DynamicPtUpdatingHelper::addUnigramWord(
 }
 
 bool DynamicPtUpdatingHelper::addBigramWords(const int word0Pos, const int word1Pos,
-        const int probability, const int timestamp, bool *const outAddedNewBigram) {
+        const BigramProperty *const bigramProperty, bool *const outAddedNewBigram) {
     const PtNodeParams sourcePtNodeParams(
             mPtNodeReader->fetchNodeInfoInBufferFromPtNodePos(word0Pos));
     const PtNodeParams targetPtNodeParams(
             mPtNodeReader->fetchNodeInfoInBufferFromPtNodePos(word1Pos));
-    return mPtNodeWriter->addNewBigramEntry(&sourcePtNodeParams, &targetPtNodeParams, probability,
-            timestamp, outAddedNewBigram);
+    return mPtNodeWriter->addNewBigramEntry(&sourcePtNodeParams, &targetPtNodeParams,
+            bigramProperty, outAddedNewBigram);
 }
 
 // Remove a bigram relation from word0Pos to word1Pos.
