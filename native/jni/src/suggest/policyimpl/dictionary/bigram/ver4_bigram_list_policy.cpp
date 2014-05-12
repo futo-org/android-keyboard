@@ -257,10 +257,12 @@ const BigramEntry Ver4BigramListPolicy::createUpdatedBigramEntryFrom(
         const int timestamp) const {
     // TODO: Consolidate historical info and probability.
     if (mHeaderPolicy->hasHistoricalInfoOfWords()) {
+        // Use 1 for count to indicate the bigram has inputed.
+        const HistoricalInfo historicalInfoForUpdate(timestamp, 0 /* level */, 1 /* count */);
         const HistoricalInfo updatedHistoricalInfo =
                 ForgettingCurveUtils::createUpdatedHistoricalInfo(
-                        originalBigramEntry->getHistoricalInfo(), newProbability, timestamp,
-                        mHeaderPolicy);
+                        originalBigramEntry->getHistoricalInfo(), newProbability,
+                        &historicalInfoForUpdate, mHeaderPolicy);
         return originalBigramEntry->updateHistoricalInfoAndGetEntry(&updatedHistoricalInfo);
     } else {
         return originalBigramEntry->updateProbabilityAndGetEntry(newProbability);

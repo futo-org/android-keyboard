@@ -93,15 +93,17 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
 
     private File createEmptyDictionaryAndGetFile(final String dictId,
             final int formatVersion) throws IOException {
-        if (formatVersion == FormatSpec.VERSION4) {
-            return createEmptyVer4DictionaryAndGetFile(dictId);
+        if (formatVersion == FormatSpec.VERSION4
+                || formatVersion == FormatSpec.VERSION4_ONLY_FOR_TESTING) {
+            return createEmptyVer4DictionaryAndGetFile(dictId, formatVersion);
         } else {
             throw new IOException("Dictionary format version " + formatVersion
                     + " is not supported.");
         }
     }
 
-    private File createEmptyVer4DictionaryAndGetFile(final String dictId) throws IOException {
+    private File createEmptyVer4DictionaryAndGetFile(final String dictId, final int formatVersion)
+            throws IOException {
         final File file = File.createTempFile(dictId, TEST_DICT_FILE_EXTENSION,
                 getContext().getCacheDir());
         FileUtils.deleteRecursively(file);
@@ -113,7 +115,7 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
                 DictionaryHeader.ATTRIBUTE_VALUE_TRUE);
         attributeMap.put(DictionaryHeader.HAS_HISTORICAL_INFO_KEY,
                 DictionaryHeader.ATTRIBUTE_VALUE_TRUE);
-        if (BinaryDictionaryUtils.createEmptyDictFile(file.getAbsolutePath(), FormatSpec.VERSION4,
+        if (BinaryDictionaryUtils.createEmptyDictFile(file.getAbsolutePath(), formatVersion,
                 LocaleUtils.constructLocaleFromString(TEST_LOCALE), attributeMap)) {
             return file;
         } else {
@@ -561,5 +563,44 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
                 break;
             }
         }
+    }
+
+    public void testDictMigration() {
+        testDictMigration(FormatSpec.VERSION4_ONLY_FOR_TESTING, FormatSpec.VERSION4);
+    }
+
+    private void testDictMigration(final int fromFormatVersion, final int toFormatVersion) {
+        setCurrentTimeForTestMode(mCurrentTime);
+        File dictFile = null;
+        try {
+            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary", fromFormatVersion);
+        } catch (IOException e) {
+            fail("IOException while writing an initial dictionary : " + e);
+        }
+        final BinaryDictionary binaryDictionary = new BinaryDictionary(dictFile.getAbsolutePath(),
+                0 /* offset */, dictFile.length(), true /* useFullEditDistance */,
+                Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
+        // TODO: Add tests for bigrams when the implementation gets ready.
+        addUnigramWord(binaryDictionary, "aaa", DUMMY_PROBABILITY);
+        assertTrue(binaryDictionary.isValidWord("aaa"));
+        addUnigramWord(binaryDictionary, "bbb", Dictionary.NOT_A_PROBABILITY);
+        assertFalse(binaryDictionary.isValidWord("bbb"));
+        addUnigramWord(binaryDictionary, "ccc", DUMMY_PROBABILITY);
+        addUnigramWord(binaryDictionary, "ccc", DUMMY_PROBABILITY);
+        addUnigramWord(binaryDictionary, "ccc", DUMMY_PROBABILITY);
+        addUnigramWord(binaryDictionary, "ccc", DUMMY_PROBABILITY);
+        addUnigramWord(binaryDictionary, "ccc", DUMMY_PROBABILITY);
+
+        assertEquals(fromFormatVersion, binaryDictionary.getFormatVersion());
+        assertTrue(binaryDictionary.migrateTo(toFormatVersion));
+        assertTrue(binaryDictionary.isValidDictionary());
+        assertEquals(toFormatVersion, binaryDictionary.getFormatVersion());
+        assertTrue(binaryDictionary.isValidWord("aaa"));
+        assertFalse(binaryDictionary.isValidWord("bbb"));
+        assertTrue(binaryDictionary.getFrequency("aaa") < binaryDictionary.getFrequency("ccc"));
+        addUnigramWord(binaryDictionary, "bbb", Dictionary.NOT_A_PROBABILITY);
+        assertTrue(binaryDictionary.isValidWord("bbb"));
+        binaryDictionary.close();
+        dictFile.delete();
     }
 }
