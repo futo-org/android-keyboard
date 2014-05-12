@@ -30,7 +30,7 @@ const int ForgettingCurveUtils::MULTIPLIER_TWO_IN_PROBABILITY_SCALE = 8;
 const int ForgettingCurveUtils::DECAY_INTERVAL_SECONDS = 2 * 60 * 60;
 
 const int ForgettingCurveUtils::MAX_LEVEL = 3;
-const int ForgettingCurveUtils::MIN_VALID_LEVEL = 1;
+const int ForgettingCurveUtils::MIN_VISIBLE_LEVEL = 1;
 const int ForgettingCurveUtils::MAX_ELAPSED_TIME_STEP_COUNT = 15;
 const int ForgettingCurveUtils::DISCARD_LEVEL_ZERO_ENTRY_TIME_STEP_COUNT_THRESHOLD = 14;
 
@@ -41,25 +41,34 @@ const ForgettingCurveUtils::ProbabilityTable ForgettingCurveUtils::sProbabilityT
 
 // TODO: Revise the logic to decide the initial probability depending on the given probability.
 /* static */ const HistoricalInfo ForgettingCurveUtils::createUpdatedHistoricalInfo(
-        const HistoricalInfo *const originalHistoricalInfo,
-        const int newProbability, const int timestamp, const HeaderPolicy *const headerPolicy) {
+        const HistoricalInfo *const originalHistoricalInfo, const int newProbability,
+        const HistoricalInfo *const newHistoricalInfo, const HeaderPolicy *const headerPolicy) {
+    const int timestamp = newHistoricalInfo->getTimeStamp();
     if (newProbability != NOT_A_PROBABILITY && originalHistoricalInfo->getLevel() == 0) {
-        return HistoricalInfo(timestamp, MIN_VALID_LEVEL /* level */, 0 /* count */);
-    } else if (!originalHistoricalInfo->isValid()) {
+        // Add entry as a valid word.
+        const int level = clampToVisibleEntryLevelRange(newHistoricalInfo->getLevel());
+        const int count = clampToValidCountRange(newHistoricalInfo->getCount(), headerPolicy);
+        return HistoricalInfo(timestamp, level, count);
+    } else if (!originalHistoricalInfo->isValid()
+            || originalHistoricalInfo->getLevel() < newHistoricalInfo->getLevel()
+            || (originalHistoricalInfo->getLevel() == newHistoricalInfo->getLevel()
+                    && originalHistoricalInfo->getCount() < newHistoricalInfo->getCount())) {
         // Initial information.
-        return HistoricalInfo(timestamp, 0 /* level */, 1 /* count */);
+        const int level = clampToValidLevelRange(newHistoricalInfo->getLevel());
+        const int count = clampToValidCountRange(newHistoricalInfo->getCount(), headerPolicy);
+        return HistoricalInfo(timestamp, level, count);
     } else {
         const int updatedCount = originalHistoricalInfo->getCount() + 1;
         if (updatedCount >= headerPolicy->getForgettingCurveOccurrencesToLevelUp()) {
             // The count exceeds the max value the level can be incremented.
             if (originalHistoricalInfo->getLevel() >= MAX_LEVEL) {
                 // The level is already max.
-                return HistoricalInfo(timestamp, originalHistoricalInfo->getLevel(),
-                        originalHistoricalInfo->getCount());
+                return HistoricalInfo(timestamp,
+                        originalHistoricalInfo->getLevel(), originalHistoricalInfo->getCount());
             } else {
                 // Level up.
-                return HistoricalInfo(timestamp, originalHistoricalInfo->getLevel() + 1,
-                        0 /* count */);
+                return HistoricalInfo(timestamp,
+                        originalHistoricalInfo->getLevel() + 1, 0 /* count */);
             }
         } else {
             return HistoricalInfo(timestamp, originalHistoricalInfo->getLevel(), updatedCount);
@@ -73,8 +82,8 @@ const ForgettingCurveUtils::ProbabilityTable ForgettingCurveUtils::sProbabilityT
             headerPolicy->getForgettingCurveDurationToLevelDown());
     return sProbabilityTable.getProbability(
             headerPolicy->getForgettingCurveProbabilityValuesTableId(),
-            std::min(std::max(historicalInfo->getLevel(), 0), MAX_LEVEL),
-            std::min(std::max(elapsedTimeStepCount, 0), MAX_ELAPSED_TIME_STEP_COUNT));
+            clampToValidLevelRange(historicalInfo->getLevel()),
+            clampToValidTimeStepCountRange(elapsedTimeStepCount));
 }
 
 /* static */ int ForgettingCurveUtils::getProbability(const int unigramProbability,
@@ -153,6 +162,23 @@ const ForgettingCurveUtils::ProbabilityTable ForgettingCurveUtils::sProbabilityT
     const int timeStepDurationInSeconds =
             durationToLevelDownInSeconds / (MAX_ELAPSED_TIME_STEP_COUNT + 1);
     return elapsedTimeInSeconds / timeStepDurationInSeconds;
+}
+
+/* static */ int ForgettingCurveUtils::clampToVisibleEntryLevelRange(const int level) {
+    return std::min(std::max(level, MIN_VISIBLE_LEVEL), MAX_LEVEL);
+}
+
+/* static */ int ForgettingCurveUtils::clampToValidCountRange(const int count,
+        const HeaderPolicy *const headerPolicy) {
+    return std::min(std::max(count, 0), headerPolicy->getForgettingCurveOccurrencesToLevelUp() - 1);
+}
+
+/* static */ int ForgettingCurveUtils::clampToValidLevelRange(const int level) {
+    return std::min(std::max(level, 0), MAX_LEVEL);
+}
+
+/* static */ int ForgettingCurveUtils::clampToValidTimeStepCountRange(const int timeStepCount) {
+    return std::min(std::max(timeStepCount, 0), MAX_ELAPSED_TIME_STEP_COUNT);
 }
 
 const int ForgettingCurveUtils::ProbabilityTable::PROBABILITY_TABLE_COUNT = 4;
