@@ -69,6 +69,15 @@ public final class Arabic extends LayoutBase {
         }
 
         @Override
+        public ExpectedKey[] getKeysLeftToSpacebar(final boolean isPhone) {
+            if (isPhone) {
+                // U+060C: "،" ARABIC COMMA
+                return joinKeys(key("\u060C", SETTINGS_KEY));
+            }
+            return super.getKeysLeftToSpacebar(isPhone);
+        }
+
+        @Override
         public ExpectedKey[] getKeysRightToSpacebar(final boolean isPhone) {
             if (isPhone) {
                 return super.getKeysRightToSpacebar(isPhone);

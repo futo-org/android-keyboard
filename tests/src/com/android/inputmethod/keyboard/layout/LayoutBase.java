@@ -29,7 +29,6 @@ import java.util.Locale;
  * The base class of keyboard layout.
  */
 public abstract class LayoutBase extends AbstractLayoutBase {
-
     /**
      * This class is used to customize common keyboard layout to language specific layout.
      */
@@ -161,7 +160,8 @@ public abstract class LayoutBase extends AbstractLayoutBase {
          * @return the array of {@link ExpectedKey} that should be placed at left of the spacebar.
          */
         public ExpectedKey[] getKeysLeftToSpacebar(final boolean isPhone) {
-            return isPhone ? joinKeys(key(SHORTCUT_KEY, SETTINGS_KEY)) : joinKeys("/");
+            // U+002C: "," COMMA
+            return isPhone ? joinKeys(key("\u002C", SETTINGS_KEY)) : joinKeys("/");
         }
 
         /**
@@ -296,8 +296,7 @@ public abstract class LayoutBase extends AbstractLayoutBase {
         } else {
             builder.addKeysOnTheRightOfRow(1, DELETE_KEY)
                     .addKeysOnTheRightOfRow(2, ENTER_KEY)
-                    .addKeysOnTheLeftOfRow(4,
-                            customizer.getSymbolsKey(), key(SHORTCUT_KEY, SETTINGS_KEY))
+                    .addKeysOnTheLeftOfRow(4, customizer.getSymbolsKey(), SETTINGS_KEY)
                     .addKeysOnTheRightOfRow(4, EMOJI_KEY);
         }
         builder.addKeysOnTheLeftOfRow(3, (Object[])customizer.getLeftShiftKeys(isPhone))
@@ -307,6 +306,10 @@ public abstract class LayoutBase extends AbstractLayoutBase {
 
     /**
      * Get common alphabet layout. This layout doesn't contain any special keys.
+     *
+     * A keyboard layout is an array of rows, and a row consists of an array of
+     * {@link ExpectedKey}s. Each row may have different number of {@link ExpectedKey}s.
+     *
      * @param isPhone true if requesting phone's layout.
      * @return the common alphabet keyboard layout.
      */
@@ -314,6 +317,10 @@ public abstract class LayoutBase extends AbstractLayoutBase {
 
     /**
      * Get common alphabet shifted layout. This layout doesn't contain any special keys.
+     *
+     * A keyboard layout is an array of rows, and a row consists of an array of
+     * {@link ExpectedKey}s. Each row may have different number of {@link ExpectedKey}s.
+     *
      * @param isPhone true if requesting phone's layout.
      * @param elementId the element id of the requesting shifted mode.
      * @return the common alphabet shifted keyboard layout.
@@ -328,6 +335,10 @@ public abstract class LayoutBase extends AbstractLayoutBase {
 
     /**
      * Get the complete expected keyboard layout.
+     *
+     * A keyboard layout is an array of rows, and a row consists of an array of
+     * {@link ExpectedKey}s. Each row may have different number of {@link ExpectedKey}s.
+     *
      * @param isPhone true if requesting phone's layout.
      * @param elementId the element id of the requesting keyboard mode.
      * @return the keyboard layout of the <code>elementId</code>.

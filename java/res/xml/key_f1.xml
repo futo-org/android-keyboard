@@ -36,27 +36,10 @@
                 latin:keySpec="\@"
                 latin:keyStyle="f1MoreKeysStyle" />
         </case>
-        <case
-            latin:supportsSwitchingToShortcutIme="false"
-        >
-            <Key
-                latin:keySpec="!text/keyspec_comma"
-                latin:keyLabelFlags="hasPopupHint"
-                latin:keyStyle="f1MoreKeysStyle" />
-        </case>
-        <!-- latin:supportsSwitchingToShortcutIme="true" -->
-        <case
-            latin:hasShortcutKey="true"
-        >
-            <Key
-                latin:keyStyle="shortcutKeyStyle" />
-        </case>
-        <!-- latin:hasShortcutKey="false" -->
         <default>
             <Key
                 latin:keySpec="!text/keyspec_comma"
                 latin:keyLabelFlags="hasPopupHint"
-                latin:additionalMoreKeys="!text/keyspec_shortcut"
                 latin:keyStyle="f1MoreKeysStyle" />
         </default>
     </switch>
