@@ -24,6 +24,11 @@ import java.util.Locale;
 
 /**
  * This class builds an expected keyboard for unit test.
+ *
+ * An expected keyboard is an array of rows, and a row consists of an array of {@link ExpectedKey}s.
+ * Each row may have different number of {@link ExpectedKey}s. While building an expected keyboard,
+ * an {@link ExpectedKey} can be specified by a row number and a column number, both numbers starts
+ * from 1.
  */
 public final class ExpectedKeyboardBuilder extends AbstractKeyboardBuilder<ExpectedKey> {
     public ExpectedKeyboardBuilder() {
@@ -212,7 +217,7 @@ public final class ExpectedKeyboardBuilder extends AbstractKeyboardBuilder<Expec
      * @param keys the array of keys to insert at <code>row,column</code>. Each key can be
      *        {@link ExpectedKey}, {@link ExpectedKey} array, and {@link String}.
      * @return this builder.
-     * @throws {@link RuntimeException} if <code>row</code> or <code>column</code> is illegal.
+     * @throws RuntimeException if <code>row</code> or <code>column</code> is illegal.
      */
     public ExpectedKeyboardBuilder insertKeysAtRow(final int row, final int column,
             final Object ... keys) {
@@ -229,7 +234,7 @@ public final class ExpectedKeyboardBuilder extends AbstractKeyboardBuilder<Expec
      * @param keys the array of keys to add on the left most of the row. Each key can be
      *        {@link ExpectedKey}, {@link ExpectedKey} array, and {@link String}.
      * @return this builder.
-     * @throws {@link RuntimeException} if <code>row</code> is illegal.
+     * @throws RuntimeException if <code>row</code> is illegal.
      */
     public ExpectedKeyboardBuilder addKeysOnTheLeftOfRow(final int row,
             final Object ... keys) {
@@ -247,7 +252,7 @@ public final class ExpectedKeyboardBuilder extends AbstractKeyboardBuilder<Expec
      * @param keys the array of keys to add on the right most of the row. Each key can be
      *        {@link ExpectedKey}, {@link ExpectedKey} array, and {@link String}.
      * @return this builder.
-     * @throws {@link RuntimeException} if <code>row</code> is illegal.
+     * @throws RuntimeException if <code>row</code> is illegal.
      */
     public ExpectedKeyboardBuilder addKeysOnTheRightOfRow(final int row,
             final Object ... keys) {
