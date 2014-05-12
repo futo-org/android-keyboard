@@ -664,6 +664,8 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
                     R.styleable.Keyboard_Case_isMultiLine, id.isMultiLine());
             final boolean imeActionMatched = matchInteger(caseAttr,
                     R.styleable.Keyboard_Case_imeAction, id.imeAction());
+            final boolean isIconDefinedMatched = isIconDefined(caseAttr,
+                    R.styleable.Keyboard_Case_isIconDefined, mParams.mIconsSet);
             final boolean localeCodeMatched = matchString(caseAttr,
                     R.styleable.Keyboard_Case_localeCode, id.mLocale.toString());
             final boolean languageCodeMatched = matchString(caseAttr,
@@ -675,10 +677,11 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
                     && passwordInputMatched && clobberSettingsKeyMatched
                     && supportsSwitchingToShortcutImeMatched && hasShortcutKeyMatched
                     && languageSwitchKeyEnabledMatched && isMultiLineMatched && imeActionMatched
-                    && localeCodeMatched && languageCodeMatched && countryCodeMatched;
+                    && isIconDefinedMatched && localeCodeMatched && languageCodeMatched
+                    && countryCodeMatched;
 
             if (DEBUG) {
-                startTag("<%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s>%s", TAG_CASE,
+                startTag("<%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s>%s", TAG_CASE,
                         textAttr(caseAttr.getString(
                                 R.styleable.Keyboard_Case_keyboardLayoutSet), "keyboardLayoutSet"),
                         textAttr(caseAttr.getString(
@@ -704,6 +707,8 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
                                 "languageSwitchKeyEnabled"),
                         booleanAttr(caseAttr, R.styleable.Keyboard_Case_isMultiLine,
                                 "isMultiLine"),
+                        textAttr(caseAttr.getString(R.styleable.Keyboard_Case_isIconDefined),
+                                "isIconDefined"),
                         textAttr(caseAttr.getString(R.styleable.Keyboard_Case_localeCode),
                                 "localeCode"),
                         textAttr(caseAttr.getString(R.styleable.Keyboard_Case_languageCode),
@@ -753,6 +758,16 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
             return StringUtils.containsInArray(strValue, a.getString(index).split("\\|"));
         }
         return false;
+    }
+
+    private static boolean isIconDefined(final TypedArray a, final int index,
+            final KeyboardIconsSet iconsSet) {
+        if (!a.hasValue(index)) {
+            return true;
+        }
+        final String iconName = a.getString(index);
+        final int iconId = KeyboardIconsSet.getIconId(iconName);
+        return iconsSet.getIconDrawable(iconId) != null;
     }
 
     private boolean parseDefault(final XmlPullParser parser, final KeyboardRow row,
