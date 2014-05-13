@@ -35,10 +35,14 @@
     <string name="spoken_description_unknown">Key code %d</string>
     <!-- Spoken description for the "Shift" keyboard key when "Shift" is off. -->
     <string name="spoken_description_shift">Shift</string>
+    <!-- Spoken description for the "Shift" keyboard key in symbols mode. -->
+    <string name="spoken_description_symbols_shift">More symbols</string>
     <!-- Spoken description for the "Shift" keyboard key when "Shift" is on. -->
-    <string name="spoken_description_shift_shifted">Shift on (tap to disable)</string>
+    <string name="spoken_description_shift_shifted">Shift</string>
+    <!-- Spoken description for the "Shift" keyboard key in 2nd symbols (a.k.a. symbols shift) mode. -->
+    <string name="spoken_description_symbols_shift_shifted">Symbols</string>
     <!-- Spoken description for the "Shift" keyboard key when "Caps lock" is on. -->
-    <string name="spoken_description_caps_lock">Caps lock on (tap to disable)</string>
+    <string name="spoken_description_caps_lock">Shift</string>
     <!-- Spoken description for the "Delete" keyboard key. -->
     <string name="spoken_description_delete">Delete</string>
     <!-- Spoken description for the "To Symbol" keyboard key. -->
@@ -76,8 +80,8 @@
     <string name="spoken_description_shiftmode_locked">Caps lock enabled</string>
     <!-- Spoken feedback after changing to the symbols keyboard. -->
     <string name="spoken_description_mode_symbol">Symbols mode</string>
-    <!-- Spoken feedback after changing to the symbols shift keyboard. -->
-    <string name="spoken_description_mode_symbol_shift">Symbols shift mode</string>
+    <!-- Spoken feedback after changing to the 2nd symbols (a.k.a. symbols shift) keyboard. -->
+    <string name="spoken_description_mode_symbol_shift">More symbols mode</string>
     <!-- Spoken feedback after changing to the alphanumeric keyboard. -->
     <string name="spoken_description_mode_alpha">Letters mode</string>
     <!-- Spoken feedback after changing to the phone dialer keyboard. -->

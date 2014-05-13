@@ -189,8 +189,13 @@ public final class KeyCodeDescriptionMapper {
             break;
         case KeyboardId.ELEMENT_ALPHABET_AUTOMATIC_SHIFTED:
         case KeyboardId.ELEMENT_ALPHABET_MANUAL_SHIFTED:
-        case KeyboardId.ELEMENT_SYMBOLS_SHIFTED:
             resId = R.string.spoken_description_shift_shifted;
+            break;
+        case KeyboardId.ELEMENT_SYMBOLS:
+            resId = R.string.spoken_description_symbols_shift;
+            break;
+        case KeyboardId.ELEMENT_SYMBOLS_SHIFTED:
+            resId = R.string.spoken_description_symbols_shift_shifted;
             break;
         default:
             resId = R.string.spoken_description_shift;
