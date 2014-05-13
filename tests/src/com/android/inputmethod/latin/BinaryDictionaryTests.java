@@ -1245,6 +1245,12 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         addUnigramWord(binaryDictionary, "bbb", unigramProbability);
         final int bigramProbability = 10;
         addBigramWords(binaryDictionary, "aaa", "bbb", bigramProbability);
+        final int shortcutProbability = 10;
+        binaryDictionary.addUnigramWord("ccc", unigramProbability, "xxx", shortcutProbability,
+                false /* isNotAWord */, false /* isBlacklisted */, 0 /* timestamp */);
+        binaryDictionary.addUnigramWord("ddd", unigramProbability, null /* shortcutTarget */,
+                Dictionary.NOT_A_PROBABILITY, true /* isNotAWord */,
+                true /* isBlacklisted */, 0 /* timestamp */);
         assertEquals(unigramProbability, binaryDictionary.getFrequency("aaa"));
         assertEquals(unigramProbability, binaryDictionary.getFrequency("bbb"));
         assertTrue(binaryDictionary.isValidBigram("aaa", "bbb"));
@@ -1256,5 +1262,84 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         assertEquals(unigramProbability, binaryDictionary.getFrequency("bbb"));
         // TODO: Add tests for bigram frequency when the implementation gets ready.
         assertTrue(binaryDictionary.isValidBigram("aaa", "bbb"));
+        WordProperty wordProperty = binaryDictionary.getWordProperty("ccc");
+        assertEquals(1, wordProperty.mShortcutTargets.size());
+        assertEquals("xxx", wordProperty.mShortcutTargets.get(0).mWord);
+        wordProperty = binaryDictionary.getWordProperty("ddd");
+        assertTrue(wordProperty.mIsBlacklistEntry);
+        assertTrue(wordProperty.mIsNotAWord);
+    }
+
+    public void testLargeDictMigration() {
+        testLargeDictMigration(FormatSpec.VERSION4_ONLY_FOR_TESTING, FormatSpec.VERSION4);
+    }
+
+    private void testLargeDictMigration(final int fromFormatVersion, final int toFormatVersion) {
+        final int UNIGRAM_COUNT = 3000;
+        final int BIGRAM_COUNT = 3000;
+        final int codePointSetSize = 50;
+        final long seed = System.currentTimeMillis();
+        final Random random = new Random(seed);
+
+        File dictFile = null;
+        try {
+            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary", fromFormatVersion);
+        } catch (IOException e) {
+            fail("IOException while writing an initial dictionary : " + e);
+        }
+        final BinaryDictionary binaryDictionary = new BinaryDictionary(dictFile.getAbsolutePath(),
+                0 /* offset */, dictFile.length(), true /* useFullEditDistance */,
+                Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
+
+        final ArrayList<String> words = new ArrayList<String>();
+        final ArrayList<Pair<String, String>> bigrams = new ArrayList<Pair<String,String>>();
+        final int[] codePointSet = CodePointUtils.generateCodePointSet(codePointSetSize, random);
+        final HashMap<String, Integer> unigramProbabilities = new HashMap<String, Integer>();
+        final HashMap<Pair<String, String>, Integer> bigramProbabilities =
+                new HashMap<Pair<String, String>, Integer>();
+
+        for (int i = 0; i < UNIGRAM_COUNT; i++) {
+            final String word = CodePointUtils.generateWord(random, codePointSet);
+            final int unigramProbability = random.nextInt(0xFF);
+            addUnigramWord(binaryDictionary, word, unigramProbability);
+            if (binaryDictionary.needsToRunGC(true /* mindsBlockByGC */)) {
+                binaryDictionary.flushWithGC();
+            }
+            words.add(word);
+            unigramProbabilities.put(word, unigramProbability);
+        }
+
+        for (int i = 0; i < BIGRAM_COUNT; i++) {
+            final int word0Index = random.nextInt(words.size());
+            final int word1Index = random.nextInt(words.size());
+            if (word0Index == word1Index) {
+                continue;
+            }
+            final String word0 = words.get(word0Index);
+            final String word1 = words.get(word1Index);
+            final int bigramProbability = random.nextInt(0xF);
+            binaryDictionary.addBigramWords(word0, word1, bigramProbability,
+                    BinaryDictionary.NOT_A_VALID_TIMESTAMP);
+            if (binaryDictionary.needsToRunGC(true /* mindsBlockByGC */)) {
+                binaryDictionary.flushWithGC();
+            }
+            final Pair<String, String> bigram = new Pair<String, String>(word0, word1);
+            bigrams.add(bigram);
+            bigramProbabilities.put(bigram, bigramProbability);
+        }
+        assertTrue(binaryDictionary.migrateTo(toFormatVersion));
+
+        for (final String word : words) {
+            assertEquals((int)unigramProbabilities.get(word), binaryDictionary.getFrequency(word));
+        }
+        assertEquals(unigramProbabilities.size(), Integer.parseInt(
+                binaryDictionary.getPropertyForTest(BinaryDictionary.UNIGRAM_COUNT_QUERY)));
+
+        for (final Pair<String, String> bigram : bigrams) {
+            // TODO: Add tests for bigram frequency when the implementation gets ready.
+            assertTrue(binaryDictionary.isValidBigram(bigram.first, bigram.second));
+        }
+        assertEquals(bigramProbabilities.size(), Integer.parseInt(
+                binaryDictionary.getPropertyForTest(BinaryDictionary.BIGRAM_COUNT_QUERY)));
     }
 }
