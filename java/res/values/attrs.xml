@@ -74,6 +74,7 @@
         <!-- Size of the text for spacebar language label, in the proportion of key height. -->
         <attr name="languageOnSpacebarTextRatio" format="fraction" />
         <attr name="languageOnSpacebarTextColor" format="color" />
+        <attr name="languageOnSpacebarTextShadowRadius" format="float" />
         <attr name="languageOnSpacebarTextShadowColor" format="color" />
         <!-- Background image for the spacebar. -->
         <attr name="spacebarBackground" format="reference" />

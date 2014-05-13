@@ -26,7 +26,6 @@
     <color name="suggested_word_color_ics">#B233B5E5</color>
     <color name="highlight_translucent_color_ics">#9933B5E5</color>
     <color name="key_text_color_holo">@android:color/white</color>
-    <color name="key_text_shadow_color_holo">@android:color/transparent</color>
     <color name="key_text_inactivated_color_holo">#66E0E4E5</color>
     <color name="key_hint_letter_color_holo">#80000000</color>
     <color name="key_hint_label_color_holo">#A0FFFFFF</color>
