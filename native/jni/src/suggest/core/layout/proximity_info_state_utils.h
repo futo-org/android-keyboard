@@ -56,7 +56,7 @@ class ProximityInfoStateUtils {
             const std::vector<int> *const sampledLengthCache,
             const std::vector<int> *const sampledInputIndice,
             std::vector<float> *sampledSpeedRates, std::vector<float> *sampledDirections);
-    static void refreshBeelineSpeedRates(const int mostCommonKeyWidth,  const float averageSpeed,
+    static void refreshBeelineSpeedRates(const int mostCommonKeyWidth, const float averageSpeed,
             const int inputSize, const int *const xCoordinates, const int *const yCoordinates,
             const int *times, const int sampledInputSize,
             const std::vector<int> *const sampledInputXs,

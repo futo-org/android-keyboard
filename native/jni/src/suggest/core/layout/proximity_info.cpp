@@ -226,7 +226,7 @@ int ProximityInfo::getKeyCenterXOfKeyIdG(
 // When the referencePointY is NOT_A_COORDINATE, this method calculates the return value without
 // using the line segment.
 int ProximityInfo::getKeyCenterYOfKeyIdG(
-        const int keyId,  const int referencePointY, const bool isGeometric) const {
+        const int keyId, const int referencePointY, const bool isGeometric) const {
     // TODO: Remove "isGeometric" and have separate "proximity_info"s for gesture and typing.
     if (keyId < 0) {
         return 0;

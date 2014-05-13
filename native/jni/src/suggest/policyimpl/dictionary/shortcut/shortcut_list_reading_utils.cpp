@@ -44,7 +44,7 @@ const int ShortcutListReadingUtils::WHITELIST_SHORTCUT_PROBABILITY = 15;
 }
 
 /* static */ int ShortcutListReadingUtils::readShortcutTarget(
-        const uint8_t *const dictRoot, const int maxLength,  int *const outWord, int *const pos) {
+        const uint8_t *const dictRoot, const int maxLength, int *const outWord, int *const pos) {
     return ByteArrayUtils::readStringAndAdvancePosition(dictRoot, maxLength, outWord, pos);
 }
 
