@@ -82,6 +82,7 @@ public class KeyboardView extends View {
     private final float mVerticalCorrection;
     private final Drawable mKeyBackground;
     private final Rect mKeyBackgroundPadding = new Rect();
+    private static final float KET_TEXT_SHADOW_RADIUS_DISABLED = -1.0f;
 
     // HORIZONTAL ELLIPSIS "...", character for popup hint.
     private static final String POPUP_HINT_CHAR = "\u2026";
@@ -133,7 +134,7 @@ public class KeyboardView extends View {
         mKeyShiftedLetterHintPadding = keyboardViewAttr.getDimension(
                 R.styleable.KeyboardView_keyShiftedLetterHintPadding, 0.0f);
         mKeyTextShadowRadius = keyboardViewAttr.getFloat(
-                R.styleable.KeyboardView_keyTextShadowRadius, 0.0f);
+                R.styleable.KeyboardView_keyTextShadowRadius, KET_TEXT_SHADOW_RADIUS_DISABLED);
         mVerticalCorrection = keyboardViewAttr.getDimension(
                 R.styleable.KeyboardView_verticalCorrection, 0.0f);
         keyboardViewAttr.recycle();
@@ -414,18 +415,23 @@ public class KeyboardView extends View {
                 }
             }
 
-            paint.setColor(key.selectTextColor(params));
             if (key.isEnabled()) {
-                // Set a drop shadow for the text
-                paint.setShadowLayer(mKeyTextShadowRadius, 0.0f, 0.0f, params.mTextShadowColor);
+                paint.setColor(key.selectTextColor(params));
+                // Set a drop shadow for the text if the shadow radius is positive value.
+                if (mKeyTextShadowRadius > 0.0f) {
+                    paint.setShadowLayer(mKeyTextShadowRadius, 0.0f, 0.0f, params.mTextShadowColor);
+                } else {
+                    paint.clearShadowLayer();
+                }
             } else {
                 // Make label invisible
                 paint.setColor(Color.TRANSPARENT);
+                paint.clearShadowLayer();
             }
             blendAlpha(paint, params.mAnimAlpha);
             canvas.drawText(label, 0, label.length(), positionX, baseline, paint);
             // Turn off drop shadow and reset x-scale.
-            paint.setShadowLayer(0.0f, 0.0f, 0.0f, Color.TRANSPARENT);
+            paint.clearShadowLayer();
             paint.setTextScaleX(1.0f);
 
             if (icon != null) {

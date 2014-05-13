@@ -74,6 +74,7 @@ import java.util.WeakHashMap;
  * @attr ref R.styleable#MainKeyboardView_autoCorrectionSpacebarLedIcon
  * @attr ref R.styleable#MainKeyboardView_languageOnSpacebarTextRatio
  * @attr ref R.styleable#MainKeyboardView_languageOnSpacebarTextColor
+ * @attr ref R.styleable#MainKeyboardView_languageOnSpacebarTextShadowRadius
  * @attr ref R.styleable#MainKeyboardView_languageOnSpacebarTextShadowColor
  * @attr ref R.styleable#MainKeyboardView_spacebarBackground
  * @attr ref R.styleable#MainKeyboardView_languageOnSpacebarFinalAlpha
@@ -129,7 +130,9 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     private final float mLanguageOnSpacebarTextRatio;
     private float mLanguageOnSpacebarTextSize;
     private final int mLanguageOnSpacebarTextColor;
+    private final float mLanguageOnSpacebarTextShadowRadius;
     private final int mLanguageOnSpacebarTextShadowColor;
+    private static final float LANGUAGE_ON_SPACEBAR_TEXT_SHADOW_RADIUS_DISABLED = -1.0f;
     // The minimum x-scale to fit the language name on spacebar.
     private static final float MINIMUM_XSCALE_OF_LANGUAGE_NAME = 0.8f;
     // Stuff to draw auto correction LED on spacebar.
@@ -231,6 +234,9 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
                 R.styleable.MainKeyboardView_languageOnSpacebarTextRatio, 1, 1, 1.0f);
         mLanguageOnSpacebarTextColor = mainKeyboardViewAttr.getColor(
                 R.styleable.MainKeyboardView_languageOnSpacebarTextColor, 0);
+        mLanguageOnSpacebarTextShadowRadius = mainKeyboardViewAttr.getFloat(
+                R.styleable.MainKeyboardView_languageOnSpacebarTextShadowRadius,
+                LANGUAGE_ON_SPACEBAR_TEXT_SHADOW_RADIUS_DISABLED);
         mLanguageOnSpacebarTextShadowColor = mainKeyboardViewAttr.getColor(
                 R.styleable.MainKeyboardView_languageOnSpacebarTextShadowColor, 0);
         mLanguageOnSpacebarFinalAlpha = mainKeyboardViewAttr.getInt(
@@ -948,12 +954,17 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
             final float descent = paint.descent();
             final float textHeight = -paint.ascent() + descent;
             final float baseline = height / 2 + textHeight / 2;
-            paint.setColor(mLanguageOnSpacebarTextShadowColor);
-            paint.setAlpha(mLanguageOnSpacebarAnimAlpha);
-            canvas.drawText(language, width / 2, baseline - descent - 1, paint);
+            if (mLanguageOnSpacebarTextShadowRadius > 0.0f) {
+                paint.setShadowLayer(mLanguageOnSpacebarTextShadowRadius, 0, 0,
+                        mLanguageOnSpacebarTextShadowColor);
+            } else {
+                paint.clearShadowLayer();
+            }
             paint.setColor(mLanguageOnSpacebarTextColor);
             paint.setAlpha(mLanguageOnSpacebarAnimAlpha);
             canvas.drawText(language, width / 2, baseline - descent, paint);
+            paint.clearShadowLayer();
+            paint.setTextScaleX(1.0f);
         }
 
         // Draw the spacebar icon at the bottom
