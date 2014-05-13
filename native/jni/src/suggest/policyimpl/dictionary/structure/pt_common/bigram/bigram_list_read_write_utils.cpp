@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "suggest/policyimpl/dictionary/bigram/bigram_list_read_write_utils.h"
+#include "suggest/policyimpl/dictionary/structure/pt_common/bigram/bigram_list_read_write_utils.h"
 
 #include "suggest/policyimpl/dictionary/utils/byte_array_utils.h"
 #include "suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer.h"

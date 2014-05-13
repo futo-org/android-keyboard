@@ -21,10 +21,10 @@
 
 #include "defines.h"
 #include "suggest/core/policy/dictionary_structure_with_buffer_policy.h"
-#include "suggest/policyimpl/dictionary/bigram/ver4_bigram_list_policy.h"
 #include "suggest/policyimpl/dictionary/header/header_policy.h"
-#include "suggest/policyimpl/dictionary/shortcut/ver4_shortcut_list_policy.h"
 #include "suggest/policyimpl/dictionary/structure/pt_common/dynamic_pt_updating_helper.h"
+#include "suggest/policyimpl/dictionary/structure/v4/bigram/ver4_bigram_list_policy.h"
+#include "suggest/policyimpl/dictionary/structure/v4/shortcut/ver4_shortcut_list_policy.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_dict_buffers.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_patricia_trie_node_reader.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_patricia_trie_node_writer.h"

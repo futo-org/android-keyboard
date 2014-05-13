@@ -46,23 +46,22 @@ LATIN_IME_CORE_SRC_FILES := \
     $(addprefix suggest/policyimpl/dictionary/, \
         header/header_policy.cpp \
         header/header_read_write_utils.cpp \
-        shortcut/shortcut_list_reading_utils.cpp \
         structure/dictionary_structure_with_buffer_policy_factory.cpp) \
-    $(addprefix suggest/policyimpl/dictionary/bigram/, \
-        bigram_list_read_write_utils.cpp \
-        ver4_bigram_list_policy.cpp) \
     $(addprefix suggest/policyimpl/dictionary/structure/pt_common/, \
+        bigram/bigram_list_read_write_utils.cpp \
         dynamic_pt_gc_event_listeners.cpp \
         dynamic_pt_reading_helper.cpp \
         dynamic_pt_reading_utils.cpp \
         dynamic_pt_updating_helper.cpp \
         dynamic_pt_writing_utils.cpp \
-        patricia_trie_reading_utils.cpp) \
+        patricia_trie_reading_utils.cpp \
+        shortcut/shortcut_list_reading_utils.cpp ) \
     $(addprefix suggest/policyimpl/dictionary/structure/v2/, \
         patricia_trie_policy.cpp \
         ver2_patricia_trie_node_reader.cpp \
         ver2_pt_node_array_reader.cpp) \
     $(addprefix suggest/policyimpl/dictionary/structure/v4/, \
+        bigram/ver4_bigram_list_policy.cpp \
         ver4_dict_buffers.cpp \
         ver4_dict_constants.cpp \
         ver4_patricia_trie_node_reader.cpp \

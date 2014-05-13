@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "suggest/policyimpl/dictionary/shortcut/shortcut_list_reading_utils.h"
+#include "suggest/policyimpl/dictionary/structure/pt_common/shortcut/shortcut_list_reading_utils.h"
 
 #include "suggest/policyimpl/dictionary/utils/byte_array_utils.h"
 
