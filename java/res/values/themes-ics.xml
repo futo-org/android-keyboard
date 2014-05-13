@@ -56,8 +56,8 @@
         <item name="keyShiftedLetterHintInactivatedColor">@color/key_shifted_letter_hint_inactivated_color_holo</item>
         <item name="keyShiftedLetterHintActivatedColor">@color/key_shifted_letter_hint_activated_color_holo</item>
         <item name="keyPreviewTextColor">@color/key_text_color_holo</item>
-        <item name="keyTextShadowColor">@color/key_text_shadow_color_holo</item>
-        <item name="keyTextShadowRadius">0.0</item>
+        <!-- A negative value to disable key text shadow layer. -->
+        <item name="keyTextShadowRadius">-1.0</item>
     </style>
     <style
         name="MainKeyboardView.ICS"
@@ -71,6 +71,7 @@
         <item name="autoCorrectionSpacebarLedEnabled">false</item>
         <item name="autoCorrectionSpacebarLedIcon">@drawable/sym_keyboard_space_led_holo</item>
         <item name="languageOnSpacebarTextColor">@color/spacebar_text_color_holo</item>
+        <item name="languageOnSpacebarTextShadowRadius">1.0</item>
         <item name="languageOnSpacebarTextShadowColor">@color/spacebar_text_shadow_color_holo</item>
         <item name="spacebarBackground">@drawable/btn_keyboard_spacebar_ics</item>
     </style>
