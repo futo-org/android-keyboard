@@ -73,8 +73,8 @@ class DictionaryStructureWithBufferPolicy {
             const UnigramProperty *const unigramProperty) = 0;
 
     // Returns whether the update was success or not.
-    virtual bool addBigramWords(const int *const word0, const int length0, const int *const word1,
-            const int length1, const int probability, const int timestamp) = 0;
+    virtual bool addBigramWords(const int *const word0, const int length0,
+            const BigramProperty *const bigramProperty) = 0;
 
     // Returns whether the update was success or not.
     virtual bool removeBigramWords(const int *const word0, const int length0,

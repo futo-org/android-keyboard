@@ -76,8 +76,8 @@ class Dictionary {
     void addUnigramWord(const int *const codePoints, const int codePointCount,
             const UnigramProperty *const unigramProperty);
 
-    void addBigramWords(const int *const word0, const int length0, const int *const word1,
-            const int length1, const int probability, const int timestamp);
+    void addBigramWords(const int *const word0, const int length0,
+            const BigramProperty *const bigramProperty);
 
     void removeBigramWords(const int *const word0, const int length0, const int *const word1,
             const int length1);

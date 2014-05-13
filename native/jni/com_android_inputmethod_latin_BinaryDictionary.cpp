@@ -335,7 +335,7 @@ static void latinime_BinaryDictionary_addUnigramWord(JNIEnv *env, jclass clazz, 
     if (!shortcutTargetCodePoints.empty()) {
         shortcuts.emplace_back(&shortcutTargetCodePoints, shortcutProbability);
     }
-    // Use 1 for count to indicate the word has inputed.
+    // Use 1 for count to indicate the word has inputted.
     const UnigramProperty unigramProperty(isNotAWord, isBlacklisted,
             probability, timestamp, 0 /* level */, 1 /* count */, &shortcuts);
     dictionary->addUnigramWord(codePoints, codePointCount, &unigramProperty);
@@ -353,8 +353,12 @@ static void latinime_BinaryDictionary_addBigramWords(JNIEnv *env, jclass clazz, 
     jsize word1Length = env->GetArrayLength(word1);
     int word1CodePoints[word1Length];
     env->GetIntArrayRegion(word1, 0, word1Length, word1CodePoints);
-    dictionary->addBigramWords(word0CodePoints, word0Length, word1CodePoints,
-            word1Length, probability, timestamp);
+    const std::vector<int> bigramTargetCodePoints(
+            word1CodePoints, word1CodePoints + word1Length);
+    // Use 1 for count to indicate the bigram has inputted.
+    const BigramProperty bigramProperty(&bigramTargetCodePoints, probability,
+            timestamp, 0 /* level */, 1 /* count */);
+    dictionary->addBigramWords(word0CodePoints, word0Length, &bigramProperty);
 }
 
 static void latinime_BinaryDictionary_removeBigramWords(JNIEnv *env, jclass clazz, jlong dict,
@@ -437,14 +441,18 @@ static int latinime_BinaryDictionary_addMultipleDictionaryEntries(JNIEnv *env, j
                     env->GetIntField(languageModelParam, shortcutProbabilityFieldId);
             shortcuts.emplace_back(&shortcutTargetCodePoints, shortcutProbability);
         }
-        // Use 1 for count to indicate the word has inputed.
+        // Use 1 for count to indicate the word has inputted.
         const UnigramProperty unigramProperty(isNotAWord, isBlacklisted,
                 unigramProbability, timestamp, 0 /* level */, 1 /* count */, &shortcuts);
         dictionary->addUnigramWord(word1CodePoints, word1Length, &unigramProperty);
         if (word0) {
             jint bigramProbability = env->GetIntField(languageModelParam, bigramProbabilityFieldId);
-            dictionary->addBigramWords(word0CodePoints, word0Length, word1CodePoints, word1Length,
-                    bigramProbability, timestamp);
+            const std::vector<int> bigramTargetCodePoints(
+                    word1CodePoints, word1CodePoints + word1Length);
+            // Use 1 for count to indicate the bigram has inputted.
+            const BigramProperty bigramProperty(&bigramTargetCodePoints, bigramProbability,
+                    timestamp, 0 /* level */, 1 /* count */);
+            dictionary->addBigramWords(word0CodePoints, word0Length, &bigramProperty);
         }
         if (dictionary->needsToRunGC(true /* mindsBlockByGC */)) {
             return i + 1;
@@ -558,11 +566,9 @@ static bool latinime_BinaryDictionary_migrateNative(JNIEnv *env, jclass clazz, j
                 return false;
             }
         }
-        for (const BigramProperty &bigarmProperty : *wordProperty.getBigramProperties()) {
-            const std::vector<int> *targetCodePoints = bigarmProperty.getTargetCodePoints();
+        for (const BigramProperty &bigramProperty : *wordProperty.getBigramProperties()) {
             if (!dictionaryStructureWithBufferPolicy->addBigramWords(wordCodePoints, wordLength,
-                    targetCodePoints->data(), targetCodePoints->size(),
-                    bigarmProperty.getProbability(), bigarmProperty.getTimestamp())) {
+                    &bigramProperty)) {
                 LogUtils::logToJava(env, "Cannot add bigram to the new dict.");
                 return false;
             }

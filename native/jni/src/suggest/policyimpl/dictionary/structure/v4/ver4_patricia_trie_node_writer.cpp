@@ -223,11 +223,10 @@ bool Ver4PatriciaTrieNodeWriter::writeNewTerminalPtNodeAndAdvancePosition(
 }
 
 bool Ver4PatriciaTrieNodeWriter::addNewBigramEntry(
-        const PtNodeParams *const sourcePtNodeParams,
-        const PtNodeParams *const targetPtNodeParam, const int probability, const int timestamp,
-        bool *const outAddedNewBigram) {
+        const PtNodeParams *const sourcePtNodeParams, const PtNodeParams *const targetPtNodeParam,
+        const BigramProperty *const bigramProperty, bool *const outAddedNewBigram) {
     if (!mBigramPolicy->addNewEntry(sourcePtNodeParams->getTerminalId(),
-            targetPtNodeParam->getTerminalId(), probability, timestamp, outAddedNewBigram)) {
+            targetPtNodeParam->getTerminalId(), bigramProperty, outAddedNewBigram)) {
         AKLOGE("Cannot add new bigram entry. terminalId: %d, targetTerminalId: %d",
                 sourcePtNodeParams->getTerminalId(), targetPtNodeParam->getTerminalId());
         return false;

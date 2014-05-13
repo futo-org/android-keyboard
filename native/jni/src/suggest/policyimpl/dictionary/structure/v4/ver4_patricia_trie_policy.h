@@ -93,8 +93,8 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     bool addUnigramWord(const int *const word, const int length,
             const UnigramProperty *const unigramProperty);
 
-    bool addBigramWords(const int *const word0, const int length0, const int *const word1,
-            const int length1, const int probability, const int timestamp);
+    bool addBigramWords(const int *const word0, const int length0,
+            const BigramProperty *const bigramProperty);
 
     bool removeBigramWords(const int *const word0, const int length0, const int *const word1,
             const int length1);
