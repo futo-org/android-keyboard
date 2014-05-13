@@ -40,11 +40,17 @@
     <color name="suggested_word_color_klp">#B2F0F0F0</color>
     <color name="highlight_translucent_color_klp">#99E0E0E0</color>
     <!-- Color resources for LMP theme. Base color = F0F0F0 -->
-    <color name="key_hint_letter_color_lmp">@android:color/white</color>
-    <color name="highlight_color_lmp">#FFF0F0F0</color>
-    <color name="typed_word_color_lmp">#D8F0F0F0</color>
-    <color name="suggested_word_color_lmp">#B2F0F0F0</color>
-    <color name="highlight_translucent_color_lmp">#99E0E0E0</color>
+    <color name="key_text_inactive_color_lmp">#808184</color>
+    <color name="key_hint_letter_color_lmp">#808184</color>
+    <color name="highlight_color_lmp">#7FCAC3</color>
+    <color name="typed_word_color_lmp">#D87FCAC3</color>
+    <color name="suggested_word_color_lmp">#B27FCAC3</color>
+    <color name="highlight_translucent_color_lmp">#997FCAC3</color>
+    <color name="keyboard_background_lmp">#384248</color>
+    <color name="key_background_lmp">#384248</color>
+    <color name="key_background_pressed_lmp">#546872</color>
+    <color name="suggestions_strip_background_lmp">#263238</color>
+    <color name="suggested_word_background_selected_lmp">#384248</color>
     <!-- Color resources for setup wizard and tutorial -->
     <color name="setup_background">#FFEBEBEB</color>
     <color name="setup_text_dark">#FF707070</color>

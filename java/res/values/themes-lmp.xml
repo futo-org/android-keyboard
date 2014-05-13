@@ -35,7 +35,7 @@
         parent="Keyboard"
     >
         <!-- This should be aligned with KeyboardSwitcher.KEYBOARD_THEMES[] -->
-        <item name="themeId">0</item>
+        <item name="themeId">3</item>
         <item name="keyboardTopPadding">@fraction/config_keyboard_top_padding_holo</item>
         <item name="keyboardBottomPadding">@fraction/config_keyboard_bottom_padding_holo</item>
         <item name="horizontalGap">@fraction/config_key_horizontal_gap_holo</item>
@@ -46,15 +46,15 @@
         name="KeyboardView.LMP"
         parent="KeyboardView"
     >
-        <item name="android:background">@drawable/keyboard_background_holo</item>
+        <item name="android:background">@color/keyboard_background_lmp</item>
         <item name="keyBackground">@drawable/btn_keyboard_key_lmp</item>
         <item name="keyTypeface">bold</item>
         <item name="keyTextColor">@color/key_text_color_holo</item>
-        <item name="keyTextInactivatedColor">@color/key_text_inactivated_color_holo</item>
+        <item name="keyTextInactivatedColor">@color/key_text_inactive_color_lmp</item>
         <item name="keyHintLetterColor">@color/key_hint_letter_color_lmp</item>
-        <item name="keyHintLabelColor">@color/key_hint_label_color_holo</item>
-        <item name="keyShiftedLetterHintInactivatedColor">@color/key_shifted_letter_hint_inactivated_color_holo</item>
-        <item name="keyShiftedLetterHintActivatedColor">@color/key_shifted_letter_hint_activated_color_holo</item>
+        <item name="keyHintLabelColor">@color/key_text_inactive_color_lmp</item>
+        <item name="keyShiftedLetterHintInactivatedColor">@color/key_text_inactive_color_lmp</item>
+        <item name="keyShiftedLetterHintActivatedColor">@color/key_text_color_holo</item>
         <item name="keyPreviewTextColor">@color/key_text_color_holo</item>
         <!-- A negative value to disable key text shadow layer. -->
         <item name="keyTextShadowRadius">-1.0</item>
@@ -70,9 +70,9 @@
         <item name="slidingKeyInputPreviewColor">@color/highlight_translucent_color_lmp</item>
         <item name="autoCorrectionSpacebarLedEnabled">false</item>
         <item name="autoCorrectionSpacebarLedIcon">@drawable/sym_keyboard_space_led_holo</item>
-        <item name="languageOnSpacebarTextColor">@color/spacebar_text_color_holo</item>
-        <item name="languageOnSpacebarTextShadowRadius">1.0</item>
-        <item name="languageOnSpacebarTextShadowColor">@color/spacebar_text_shadow_color_holo</item>
+        <item name="languageOnSpacebarTextColor">@color/key_text_inactive_color_lmp</item>
+        <!-- A negative value to disable text shadow layer. -->
+        <item name="languageOnSpacebarTextShadowRadius">-1.0</item>
         <item name="spacebarBackground">@drawable/btn_keyboard_spacebar_lmp</item>
     </style>
     <style
