@@ -42,7 +42,12 @@ public final class KeyboardIconsSet {
     public static final String NAME_SPACE_KEY = "space_key";
     public static final String NAME_SPACE_KEY_FOR_NUMBER_LAYOUT = "space_key_for_number_layout";
     public static final String NAME_ENTER_KEY = "enter_key";
+    public static final String NAME_GO_KEY = "go_key";
     public static final String NAME_SEARCH_KEY = "search_key";
+    public static final String NAME_SEND_KEY = "send_key";
+    public static final String NAME_NEXT_KEY = "next_key";
+    public static final String NAME_DONE_KEY = "done_key";
+    public static final String NAME_PREVIOUS_KEY = "previous_key";
     public static final String NAME_TAB_KEY = "tab_key";
     public static final String NANE_TAB_KEY_PREVIEW = "tab_key_preview";
     public static final String NAME_SHORTCUT_KEY = "shortcut_key";
@@ -64,7 +69,12 @@ public final class KeyboardIconsSet {
         NAME_SETTINGS_KEY,                R.styleable.Keyboard_iconSettingsKey,
         NAME_SPACE_KEY,                   R.styleable.Keyboard_iconSpaceKey,
         NAME_ENTER_KEY,                   R.styleable.Keyboard_iconEnterKey,
+        NAME_GO_KEY,                      R.styleable.Keyboard_iconGoKey,
         NAME_SEARCH_KEY,                  R.styleable.Keyboard_iconSearchKey,
+        NAME_SEND_KEY,                    R.styleable.Keyboard_iconSendKey,
+        NAME_NEXT_KEY,                    R.styleable.Keyboard_iconNextKey,
+        NAME_DONE_KEY,                    R.styleable.Keyboard_iconDoneKey,
+        NAME_PREVIOUS_KEY,                R.styleable.Keyboard_iconPreviousKey,
         NAME_TAB_KEY,                     R.styleable.Keyboard_iconTabKey,
         NAME_SHORTCUT_KEY,                R.styleable.Keyboard_iconShortcutKey,
         NAME_SPACE_KEY_FOR_NUMBER_LAYOUT, R.styleable.Keyboard_iconSpaceKeyForNumberLayout,

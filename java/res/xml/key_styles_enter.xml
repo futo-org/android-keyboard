@@ -284,10 +284,30 @@
         </case>
         <case
             latin:imeAction="actionGo"
+            latin:isIconDefined="go_key"
+        >
+            <key-style
+                latin:styleName="enterKeyStyle"
+                latin:keySpec="!icon/go_key|!code/key_enter"
+                latin:backgroundType="action"
+                latin:parentStyle="defaultEnterKeyStyle" />
+        </case>
+        <case
+            latin:imeAction="actionGo"
         >
             <key-style
                 latin:styleName="enterKeyStyle"
                 latin:keySpec="!text/label_go_key|!code/key_enter"
+                latin:backgroundType="action"
+                latin:parentStyle="defaultEnterKeyStyle" />
+        </case>
+        <case
+            latin:imeAction="actionNext"
+            latin:isIconDefined="next_key"
+        >
+            <key-style
+                latin:styleName="enterKeyStyle"
+                latin:keySpec="!icon/next_key|!code/key_enter"
                 latin:backgroundType="action"
                 latin:parentStyle="defaultEnterKeyStyle" />
         </case>
@@ -302,6 +322,16 @@
         </case>
         <case
             latin:imeAction="actionPrevious"
+            latin:isIconDefined="previous_key"
+        >
+            <key-style
+                latin:styleName="enterKeyStyle"
+                latin:keySpec="!icon/previous_key|!code/key_enter"
+                latin:backgroundType="action"
+                latin:parentStyle="defaultEnterKeyStyle" />
+        </case>
+        <case
+            latin:imeAction="actionPrevious"
         >
             <key-style
                 latin:styleName="enterKeyStyle"
@@ -311,10 +341,30 @@
         </case>
         <case
             latin:imeAction="actionDone"
+            latin:isIconDefined="done_key"
+        >
+            <key-style
+                latin:styleName="enterKeyStyle"
+                latin:keySpec="!icon/done_key|!code/key_enter"
+                latin:backgroundType="action"
+                latin:parentStyle="defaultEnterKeyStyle" />
+        </case>
+        <case
+            latin:imeAction="actionDone"
         >
             <key-style
                 latin:styleName="enterKeyStyle"
                 latin:keySpec="!text/label_done_key|!code/key_enter"
+                latin:backgroundType="action"
+                latin:parentStyle="defaultEnterKeyStyle" />
+        </case>
+        <case
+            latin:imeAction="actionSend"
+            latin:isIconDefined="send_key"
+        >
+            <key-style
+                latin:styleName="enterKeyStyle"
+                latin:keySpec="!icon/send_key|!code/key_enter"
                 latin:backgroundType="action"
                 latin:parentStyle="defaultEnterKeyStyle" />
         </case>

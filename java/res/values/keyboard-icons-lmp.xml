@@ -26,7 +26,13 @@
         <item name="iconSettingsKey">@drawable/sym_keyboard_settings_holo_dark</item>
         <item name="iconSpaceKey">@drawable/sym_keyboard_space_holo_dark</item>
         <item name="iconEnterKey">@drawable/sym_keyboard_return_holo_dark</item>
+        <!-- TODO: Uncomment those icon definitions once we have those icon assets. -->
+        <!-- <item name="iconGoKey">@drawable/sym_keyboard_go_holo_dark</item> -->
         <item name="iconSearchKey">@drawable/sym_keyboard_search_holo_dark</item>
+        <!-- <item name="iconSendKey">@drawable/sym_keyboard_send_holo_dark</item> -->
+        <!-- <item name="iconNextKey">@drawable/sym_keyboard_next_holo_dark</item> -->
+        <!-- <item name="iconDoneKey">@drawable/sym_keyboard_done_holo_dark</item> -->
+        <!-- <item name="iconPreviousKey">@drawable/sym_keyboard_previous_holo_dark</item> -->
         <item name="iconTabKey">@drawable/sym_keyboard_tab_holo_dark</item>
         <item name="iconShortcutKey">@drawable/sym_keyboard_voice_holo_dark</item>
         <item name="iconSpaceKeyForNumberLayout">@drawable/sym_keyboard_space_holo_dark</item>
