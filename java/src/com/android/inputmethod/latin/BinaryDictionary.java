@@ -414,8 +414,8 @@ public final class BinaryDictionary extends Dictionary {
         public WordProperty mWordProperty;
         public int mNextToken;
 
-        public GetNextWordPropertyResult(final WordProperty wordPreperty, final int nextToken) {
-            mWordProperty = wordPreperty;
+        public GetNextWordPropertyResult(final WordProperty wordProperty, final int nextToken) {
+            mWordProperty = wordProperty;
             mNextToken = nextToken;
         }
     }
