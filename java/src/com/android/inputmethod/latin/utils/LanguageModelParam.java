@@ -129,6 +129,9 @@ public final class LanguageModelParam {
         if (locale == null) {
             return null;
         }
+        // TODO: Though targetWord is an IV (in-vocabulary) word, we should still apply
+        // distracterFilter in the following code. If targetWord is a distracter,
+        // it should be filtered out.
         if (dictionaryFacilitator.isValidWord(targetWord, false /* ignoreCase */)) {
             return createAndGetLanguageModelParamOfWord(prevWord, targetWord, timestamp,
                     true /* isValidWord */, locale);
