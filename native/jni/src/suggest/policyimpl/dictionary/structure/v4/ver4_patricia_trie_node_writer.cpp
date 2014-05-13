@@ -415,4 +415,4 @@ bool Ver4PatriciaTrieNodeWriter::updatePtNodeFlags(const int ptNodePos,
     return true;
 }
 
-}
+} // namespace latinime

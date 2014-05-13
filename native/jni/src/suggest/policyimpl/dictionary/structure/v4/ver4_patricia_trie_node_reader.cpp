@@ -95,4 +95,4 @@ const PtNodeParams Ver4PatriciaTrieNodeReader::fetchPtNodeInfoFromBufferAndProce
     }
 }
 
-}
+} // namespace latinime
