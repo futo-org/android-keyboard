@@ -21,7 +21,7 @@
 
 #include "defines.h"
 #include "suggest/core/policy/dictionary_bigrams_structure_policy.h"
-#include "suggest/policyimpl/dictionary/bigram/bigram_list_read_write_utils.h"
+#include "suggest/policyimpl/dictionary/structure/pt_common/bigram/bigram_list_read_write_utils.h"
 
 namespace latinime {
 

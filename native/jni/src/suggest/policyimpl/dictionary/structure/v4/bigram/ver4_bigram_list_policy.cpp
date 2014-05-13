@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-#include "suggest/policyimpl/dictionary/bigram/ver4_bigram_list_policy.h"
+#include "suggest/policyimpl/dictionary/structure/v4/bigram/ver4_bigram_list_policy.h"
 
 #include "suggest/core/dictionary/property/bigram_property.h"
-#include "suggest/policyimpl/dictionary/bigram/bigram_list_read_write_utils.h"
 #include "suggest/policyimpl/dictionary/header/header_policy.h"
+#include "suggest/policyimpl/dictionary/structure/pt_common/bigram/bigram_list_read_write_utils.h"
 #include "suggest/policyimpl/dictionary/structure/v4/content/bigram_dict_content.h"
 #include "suggest/policyimpl/dictionary/structure/v4/content/terminal_position_lookup_table.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_dict_constants.h"
