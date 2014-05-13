@@ -381,6 +381,7 @@ final class SuggestionStripLayoutHelper {
         }
 
         // Disable this suggestion if the suggestion is null or empty.
+        // TODO: Fix disabled {@link TextView}'s content description.
         wordView.setEnabled(!TextUtils.isEmpty(word));
         final CharSequence text = getEllipsizedText(word, width, wordView.getPaint());
         final float scaleX = getTextScaleX(word, width, wordView.getPaint());
@@ -424,7 +425,9 @@ final class SuggestionStripLayoutHelper {
             final int countInStrip) {
         // Clear all suggestions first
         for (int positionInStrip = 0; positionInStrip < countInStrip; ++positionInStrip) {
-            mWordViews.get(positionInStrip).setText(null);
+            final TextView wordView = mWordViews.get(positionInStrip);
+            wordView.setText(null);
+            wordView.setTag(null);
             // Make this inactive for touches in {@link #layoutWord(int,int)}.
             if (SuggestionStripView.DBG) {
                 mDebugInfoViews.get(positionInStrip).setText(null);
