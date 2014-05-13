@@ -76,7 +76,7 @@ class Ver4PatriciaTrieNodeWriter : public PtNodeWriter {
             const UnigramProperty *const unigramProperty, int *const ptNodeWritingPos);
 
     virtual bool addNewBigramEntry(const PtNodeParams *const sourcePtNodeParams,
-            const PtNodeParams *const targetPtNodeParam, const int probability, const int timestamp,
+            const PtNodeParams *const targetPtNodeParam, const BigramProperty *const bigramProperty,
             bool *const outAddedNewBigram);
 
     virtual bool removeBigramEntry(const PtNodeParams *const sourcePtNodeParams,

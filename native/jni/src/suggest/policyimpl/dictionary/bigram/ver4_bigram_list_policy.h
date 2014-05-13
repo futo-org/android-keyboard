@@ -24,6 +24,7 @@
 namespace latinime {
 
 class BigramDictContent;
+class BigramProperty;
 class HeaderPolicy;
 class TerminalPositionLookupTable;
 
@@ -43,8 +44,8 @@ class Ver4BigramListPolicy : public DictionaryBigramsStructurePolicy {
         // Do nothing because we don't need to skip bigram lists in ver4 dictionaries.
     }
 
-    bool addNewEntry(const int terminalId, const int newTargetTerminalId, const int newProbability,
-            const int timestamp, bool *const outAddedNewEntry);
+    bool addNewEntry(const int terminalId, const int newTargetTerminalId,
+            const BigramProperty *const bigramProperty, bool *const outAddedNewEntry);
 
     bool removeEntry(const int terminalId, const int targetTerminalId);
 
@@ -60,7 +61,7 @@ class Ver4BigramListPolicy : public DictionaryBigramsStructurePolicy {
             int *const outTailEntryPos) const;
 
     const BigramEntry createUpdatedBigramEntryFrom(const BigramEntry *const originalBigramEntry,
-            const int newProbability, const int timestamp) const;
+            const BigramProperty *const bigramProperty) const;
 
     bool updateHasNextFlag(const bool hasNext, const int bigramEntryPos);
 

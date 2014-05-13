@@ -209,8 +209,7 @@ bool Ver4PatriciaTriePolicy::addUnigramWord(const int *const word, const int len
 }
 
 bool Ver4PatriciaTriePolicy::addBigramWords(const int *const word0, const int length0,
-        const int *const word1, const int length1, const int probability,
-        const int timestamp) {
+        const BigramProperty *const bigramProperty) {
     if (!mBuffers->isUpdatable()) {
         AKLOGI("Warning: addBigramWords() is called for non-updatable dictionary.");
         return false;
@@ -220,9 +219,10 @@ bool Ver4PatriciaTriePolicy::addBigramWords(const int *const word0, const int le
                 mDictBuffer->getTailPosition());
         return false;
     }
-    if (length0 > MAX_WORD_LENGTH || length1 > MAX_WORD_LENGTH) {
+    if (length0 > MAX_WORD_LENGTH
+            || bigramProperty->getTargetCodePoints()->size() > MAX_WORD_LENGTH) {
         AKLOGE("Either src word or target word is too long to insert the bigram to the dictionary. "
-                "length0: %d, length1: %d", length0, length1);
+                "length0: %d, length1: %d", length0, bigramProperty->getTargetCodePoints()->size());
         return false;
     }
     const int word0Pos = getTerminalPtNodePositionOfWord(word0, length0,
@@ -230,14 +230,14 @@ bool Ver4PatriciaTriePolicy::addBigramWords(const int *const word0, const int le
     if (word0Pos == NOT_A_DICT_POS) {
         return false;
     }
-    const int word1Pos = getTerminalPtNodePositionOfWord(word1, length1,
-            false /* forceLowerCaseSearch */);
+    const int word1Pos = getTerminalPtNodePositionOfWord(
+            bigramProperty->getTargetCodePoints()->data(),
+            bigramProperty->getTargetCodePoints()->size(), false /* forceLowerCaseSearch */);
     if (word1Pos == NOT_A_DICT_POS) {
         return false;
     }
     bool addedNewBigram = false;
-    if (mUpdatingHelper.addBigramWords(word0Pos, word1Pos, probability, timestamp,
-            &addedNewBigram)) {
+    if (mUpdatingHelper.addBigramWords(word0Pos, word1Pos, bigramProperty, &addedNewBigram)) {
         if (addedNewBigram) {
             mBigramCount++;
         }

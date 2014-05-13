@@ -16,6 +16,7 @@
 
 #include "suggest/policyimpl/dictionary/bigram/ver4_bigram_list_policy.h"
 
+#include "suggest/core/dictionary/property/bigram_property.h"
 #include "suggest/policyimpl/dictionary/bigram/bigram_list_read_write_utils.h"
 #include "suggest/policyimpl/dictionary/header/header_policy.h"
 #include "suggest/policyimpl/dictionary/structure/v4/content/bigram_dict_content.h"
@@ -49,13 +50,12 @@ void Ver4BigramListPolicy::getNextBigram(int *const outBigramPos, int *const out
 }
 
 bool Ver4BigramListPolicy::addNewEntry(const int terminalId, const int newTargetTerminalId,
-        const int newProbability, const int timestamp, bool *const outAddedNewEntry) {
+        const BigramProperty *const bigramProperty, bool *const outAddedNewEntry) {
     // 1. The word has no bigrams yet.
     // 2. The word has bigrams, and there is the target in the list.
     // 3. The word has bigrams, and there is an invalid entry that can be reclaimed.
     // 4. The word has bigrams. We have to append new bigram entry to the list.
     // 5. Same as 4, but the list is the last entry of the content file.
-
     if (outAddedNewEntry) {
         *outAddedNewEntry = false;
     }
@@ -69,7 +69,7 @@ bool Ver4BigramListPolicy::addNewEntry(const int terminalId, const int newTarget
         const BigramEntry newBigramEntry(false /* hasNext */, NOT_A_PROBABILITY,
                 newTargetTerminalId);
         const BigramEntry bigramEntryToWrite = createUpdatedBigramEntryFrom(&newBigramEntry,
-                newProbability, timestamp);
+                bigramProperty);
         // Write an entry.
         const int writingPos =  mBigramDictContent->getBigramListHeadPos(terminalId);
         if (!mBigramDictContent->writeBigramEntry(&bigramEntryToWrite, writingPos)) {
@@ -102,7 +102,7 @@ bool Ver4BigramListPolicy::addNewEntry(const int terminalId, const int newTarget
         const BigramEntry newBigramEntry(false /* hasNext */, NOT_A_PROBABILITY,
                 newTargetTerminalId);
         const BigramEntry bigramEntryToWrite = createUpdatedBigramEntryFrom(
-                &newBigramEntry, newProbability, timestamp);
+                &newBigramEntry, bigramProperty);
         if (!mBigramDictContent->writeBigramEntryAtTail(&bigramEntryToWrite)) {
             return false;
         }
@@ -128,7 +128,7 @@ bool Ver4BigramListPolicy::addNewEntry(const int terminalId, const int newTarget
     const BigramEntry updatedBigramEntry =
             originalBigramEntry.updateTargetTerminalIdAndGetEntry(newTargetTerminalId);
     const BigramEntry bigramEntryToWrite = createUpdatedBigramEntryFrom(
-            &updatedBigramEntry, newProbability, timestamp);
+            &updatedBigramEntry, bigramProperty);
     return mBigramDictContent->writeBigramEntry(&bigramEntryToWrite, entryPosToUpdate);
 }
 
@@ -253,19 +253,19 @@ int Ver4BigramListPolicy::getEntryPosToUpdate(const int targetTerminalIdToFind,
 }
 
 const BigramEntry Ver4BigramListPolicy::createUpdatedBigramEntryFrom(
-        const BigramEntry *const originalBigramEntry, const int newProbability,
-        const int timestamp) const {
+        const BigramEntry *const originalBigramEntry,
+        const BigramProperty *const bigramProperty) const {
     // TODO: Consolidate historical info and probability.
     if (mHeaderPolicy->hasHistoricalInfoOfWords()) {
-        // Use 1 for count to indicate the bigram has inputed.
-        const HistoricalInfo historicalInfoForUpdate(timestamp, 0 /* level */, 1 /* count */);
+        const HistoricalInfo historicalInfoForUpdate(bigramProperty->getTimestamp(),
+                bigramProperty->getLevel(), bigramProperty->getCount());
         const HistoricalInfo updatedHistoricalInfo =
                 ForgettingCurveUtils::createUpdatedHistoricalInfo(
-                        originalBigramEntry->getHistoricalInfo(), newProbability,
+                        originalBigramEntry->getHistoricalInfo(), bigramProperty->getProbability(),
                         &historicalInfoForUpdate, mHeaderPolicy);
         return originalBigramEntry->updateHistoricalInfoAndGetEntry(&updatedHistoricalInfo);
     } else {
-        return originalBigramEntry->updateProbabilityAndGetEntry(newProbability);
+        return originalBigramEntry->updateProbabilityAndGetEntry(bigramProperty->getProbability());
     }
 }
 
