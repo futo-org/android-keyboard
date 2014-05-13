@@ -431,6 +431,7 @@
             <!--  This should be aligned with KeyboardId.IME_ACTION_* -->
             <enum name="actionCustomLabel" value="0x100" />
         </attr>
+        <attr name="isIconDefined" format="string" />
         <attr name="localeCode" format="string" />
         <attr name="languageCode" format="string" />
         <attr name="countryCode" format="string" />
