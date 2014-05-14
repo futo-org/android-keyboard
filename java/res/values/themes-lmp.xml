@@ -88,7 +88,7 @@
         name="EmojiPalettesView.LMP"
         parent="MainKeyboardView.LMP"
     >
-        <item name="emojiTabLabelColor">@color/emoji_tab_label_color_holo</item>
+        <item name="emojiTabLabelColor">@color/emoji_tab_label_color_lmp</item>
     </style>
     <style
         name="MoreKeysKeyboard.LMP"
