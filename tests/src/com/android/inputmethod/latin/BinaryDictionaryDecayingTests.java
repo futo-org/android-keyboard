@@ -46,6 +46,8 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
     private static final String TEST_DICT_FILE_EXTENSION = ".testDict";
     private static final String TEST_LOCALE = "test";
     private static final int DUMMY_PROBABILITY = 0;
+    private static final int[] DICT_FORMAT_VERSIONS =
+            new int[] { FormatSpec.VERSION4, FormatSpec.VERSION4_DEV };
 
     private int mCurrentTime = 0;
 
@@ -94,7 +96,8 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
     private File createEmptyDictionaryAndGetFile(final String dictId,
             final int formatVersion) throws IOException {
         if (formatVersion == FormatSpec.VERSION4
-                || formatVersion == FormatSpec.VERSION4_ONLY_FOR_TESTING) {
+                || formatVersion == FormatSpec.VERSION4_ONLY_FOR_TESTING
+                || formatVersion == FormatSpec.VERSION4_DEV) {
             return createEmptyVer4DictionaryAndGetFile(dictId, formatVersion);
         } else {
             throw new IOException("Dictionary format version " + formatVersion
@@ -120,7 +123,7 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
             return file;
         } else {
             throw new IOException("Empty dictionary " + file.getAbsolutePath()
-                    + " cannot be created.");
+                    + " cannot be created. Foramt version: " + formatVersion);
         }
     }
 
@@ -133,7 +136,9 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
     }
 
     public void testReadDictInJavaSide() {
-        testReadDictInJavaSide(FormatSpec.VERSION4);
+        for (final int formatVersion : DICT_FORMAT_VERSIONS) {
+            testReadDictInJavaSide(formatVersion);
+        }
     }
 
     private void testReadDictInJavaSide(final int formatVersion) {
@@ -178,10 +183,6 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
     }
 
     public void testControlCurrentTime() {
-        testControlCurrentTime(FormatSpec.VERSION4);
-    }
-
-    private void testControlCurrentTime(final int formatVersion) {
         final int TEST_COUNT = 1000;
         final long seed = System.currentTimeMillis();
         final Random random = new Random(seed);
@@ -197,7 +198,9 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
     }
 
     public void testAddValidAndInvalidWords() {
-        testAddValidAndInvalidWords(FormatSpec.VERSION4);
+        for (final int formatVersion : DICT_FORMAT_VERSIONS) {
+            testAddValidAndInvalidWords(formatVersion);
+        }
     }
 
     private void testAddValidAndInvalidWords(final int formatVersion) {
@@ -240,7 +243,9 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
     }
 
     public void testDecayingProbability() {
-        testDecayingProbability(FormatSpec.VERSION4);
+        for (final int formatVersion : DICT_FORMAT_VERSIONS) {
+            testDecayingProbability(formatVersion);
+        }
     }
 
     private void testDecayingProbability(final int formatVersion) {
@@ -295,7 +300,9 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
     }
 
     public void testAddManyUnigramsToDecayingDict() {
-        testAddManyUnigramsToDecayingDict(FormatSpec.VERSION4);
+        for (final int formatVersion : DICT_FORMAT_VERSIONS) {
+            testAddManyUnigramsToDecayingDict(formatVersion);
+        }
     }
 
     private void testAddManyUnigramsToDecayingDict(final int formatVersion) {
@@ -354,7 +361,9 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
     }
 
     public void testOverflowUnigrams() {
-        testOverflowUnigrams(FormatSpec.VERSION4);
+        for (final int formatVersion : DICT_FORMAT_VERSIONS) {
+            testOverflowUnigrams(formatVersion);
+        }
     }
 
     private void testOverflowUnigrams(final int formatVersion) {
@@ -413,7 +422,9 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
     }
 
     public void testAddManyBigramsToDecayingDict() {
-        testAddManyBigramsToDecayingDict(FormatSpec.VERSION4);
+        for (final int formatVersion : DICT_FORMAT_VERSIONS) {
+            testAddManyBigramsToDecayingDict(formatVersion);
+        }
     }
 
     private void testAddManyBigramsToDecayingDict(final int formatVersion) {
@@ -487,7 +498,9 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
     }
 
     public void testOverflowBigrams() {
-        testOverflowBigrams(FormatSpec.VERSION4);
+        for (final int formatVersion : DICT_FORMAT_VERSIONS) {
+            testOverflowBigrams(formatVersion);
+        }
     }
 
     private void testOverflowBigrams(final int formatVersion) {
@@ -566,7 +579,9 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
     }
 
     public void testDictMigration() {
-        testDictMigration(FormatSpec.VERSION4_ONLY_FOR_TESTING, FormatSpec.VERSION4);
+        for (final int formatVersion : DICT_FORMAT_VERSIONS) {
+            testDictMigration(FormatSpec.VERSION4_ONLY_FOR_TESTING, formatVersion);
+        }
     }
 
     private void testDictMigration(final int fromFormatVersion, final int toFormatVersion) {
