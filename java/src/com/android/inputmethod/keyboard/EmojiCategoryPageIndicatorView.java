@@ -25,7 +25,7 @@ import android.util.AttributeSet;
 import android.widget.LinearLayout;
 
 public class EmojiCategoryPageIndicatorView extends LinearLayout {
-    private static final float BOTTOM_MARGIN_RATIO = 0.66f;
+    private static final float BOTTOM_MARGIN_RATIO = 1.0f;
     private final Paint mPaint = new Paint();
     private int mCategoryPageSize = 0;
     private int mCurrentCategoryPageId = 0;

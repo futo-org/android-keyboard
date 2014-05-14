@@ -133,7 +133,7 @@
     <integer name="config_gesture_trail_shadow_ratio">-1</integer>
 
     <!-- Common configuration of Emoji keyboard -->
-    <dimen name="config_emoji_category_page_id_height">3dp</dimen>
+    <dimen name="config_emoji_category_page_id_height">2dp</dimen>
 
     <!-- Inset used in Accessibility mode to avoid accidental key presses when a finger slides off the screen. -->
     <dimen name="config_accessibility_edge_slop">8dp</dimen>
