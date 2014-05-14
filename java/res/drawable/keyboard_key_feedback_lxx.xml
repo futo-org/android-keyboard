@@ -20,17 +20,17 @@
 >
     <!-- Left edge -->
     <item latin:state_left_edge="true" latin:state_has_morekeys="true"
-          android:drawable="@drawable/keyboard_key_feedback_left_more_background_lmp" />
+          android:drawable="@drawable/keyboard_key_feedback_left_more_background_lxx" />
     <item latin:state_left_edge="true"
-          android:drawable="@drawable/keyboard_key_feedback_left_background_lmp" />
+          android:drawable="@drawable/keyboard_key_feedback_left_background_lxx" />
 
     <!-- Right edge -->
     <item latin:state_right_edge="true" latin:state_has_morekeys="true"
-          android:drawable="@drawable/keyboard_key_feedback_right_more_background_lmp" />
+          android:drawable="@drawable/keyboard_key_feedback_right_more_background_lxx" />
     <item latin:state_right_edge="true"
-          android:drawable="@drawable/keyboard_key_feedback_right_background_lmp" />
+          android:drawable="@drawable/keyboard_key_feedback_right_background_lxx" />
 
     <item latin:state_has_morekeys="true"
-          android:drawable="@drawable/keyboard_key_feedback_more_background_lmp" />
-    <item android:drawable="@drawable/keyboard_key_feedback_background_lmp" />
+          android:drawable="@drawable/keyboard_key_feedback_more_background_lxx" />
+    <item android:drawable="@drawable/keyboard_key_feedback_background_lxx" />
 </selector>

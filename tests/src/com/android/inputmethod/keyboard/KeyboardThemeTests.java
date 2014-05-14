@@ -29,7 +29,7 @@ public class KeyboardThemeTests extends AndroidTestCase {
     private static final int THEME_ID_NULL = -1;
     private static final int THEME_ID_ICS = KeyboardTheme.THEME_ID_ICS;
     private static final int THEME_ID_KLP = KeyboardTheme.THEME_ID_KLP;
-    private static final int THEME_ID_LMP = KeyboardTheme.THEME_ID_LMP;
+    private static final int THEME_ID_LXX = KeyboardTheme.THEME_ID_LXX;
 
     @Override
     protected void setUp() throws Exception {
@@ -64,11 +64,11 @@ public class KeyboardThemeTests extends AndroidTestCase {
         assertDefaultKeyboardTheme(sdkVersion, THEME_ID_KLP, THEME_ID_KLP);
     }
 
-    private void assertDefaultKeyboardThemeLMP(final int sdkVersion) {
-        // Forced to switch to LMP theme.
-        assertDefaultKeyboardTheme(sdkVersion, THEME_ID_NULL, THEME_ID_LMP);
-        assertDefaultKeyboardTheme(sdkVersion, THEME_ID_ICS, THEME_ID_LMP);
-        assertDefaultKeyboardTheme(sdkVersion, THEME_ID_KLP, THEME_ID_LMP);
+    private void assertDefaultKeyboardThemeLXX(final int sdkVersion) {
+        // Forced to switch to LXX theme.
+        assertDefaultKeyboardTheme(sdkVersion, THEME_ID_NULL, THEME_ID_LXX);
+        assertDefaultKeyboardTheme(sdkVersion, THEME_ID_ICS, THEME_ID_LXX);
+        assertDefaultKeyboardTheme(sdkVersion, THEME_ID_KLP, THEME_ID_LXX);
     }
 
     public void testDefaultKeyboardThemeICS() {
@@ -86,8 +86,8 @@ public class KeyboardThemeTests extends AndroidTestCase {
         assertDefaultKeyboardThemeKLP(VERSION_CODES.KITKAT);
     }
 
-    public void testDefaultKeyboardThemeLMP() {
+    public void testDefaultKeyboardThemeLXX() {
         // TODO: Update this constant once the *next* version becomes available.
-        assertDefaultKeyboardThemeLMP(VERSION_CODES.CUR_DEVELOPMENT);
+        assertDefaultKeyboardThemeLXX(VERSION_CODES.CUR_DEVELOPMENT);
     }
 }
