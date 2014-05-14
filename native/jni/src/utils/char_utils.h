@@ -86,11 +86,18 @@ class CharUtils {
         return spaceCount;
     }
 
+    static AK_FORCE_INLINE int isInUnicodeSpace(const int codePoint) {
+        return codePoint >= MIN_UNICODE_CODE_POINT && codePoint <= MAX_UNICODE_CODE_POINT;
+    }
+
     static unsigned short latin_tolower(const unsigned short c);
     static const std::vector<int> EMPTY_STRING;
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(CharUtils);
+
+    static const int MIN_UNICODE_CODE_POINT;
+    static const int MAX_UNICODE_CODE_POINT;
 
     /**
      * Table mapping most combined Latin, Greek, and Cyrillic characters

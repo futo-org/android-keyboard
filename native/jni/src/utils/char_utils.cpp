@@ -22,6 +22,9 @@
 
 namespace latinime {
 
+const int CharUtils::MIN_UNICODE_CODE_POINT = 0;
+const int CharUtils::MAX_UNICODE_CODE_POINT = 0x10FFFF;
+
 struct LatinCapitalSmallPair {
   unsigned short capital;
   unsigned short small;

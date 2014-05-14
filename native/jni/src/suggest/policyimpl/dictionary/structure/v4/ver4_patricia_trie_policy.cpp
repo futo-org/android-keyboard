@@ -59,13 +59,17 @@ void Ver4PatriciaTriePolicy::createAndGetAllChildDicNodes(const DicNode *const d
             // valid terminal DicNode.
             isTerminal = ptNodeParams.getProbability() != NOT_A_PROBABILITY;
         }
+        readingHelper.readNextSiblingNode(ptNodeParams);
+        if (!ptNodeParams.representsNonWordInfo()) {
+            // Skip PtNodes that represent non-word information.
+            continue;
+        }
         childDicNodes->pushLeavingChild(dicNode, ptNodeParams.getHeadPos(),
                 ptNodeParams.getChildrenPos(), ptNodeParams.getProbability(), isTerminal,
                 ptNodeParams.hasChildren(),
                 ptNodeParams.isBlacklisted()
                         || ptNodeParams.isNotAWord() /* isBlacklistedOrNotAWord */,
                 ptNodeParams.getCodePointCount(), ptNodeParams.getCodePoints());
-        readingHelper.readNextSiblingNode(ptNodeParams);
     }
     if (readingHelper.isError()) {
         mIsCorrupted = true;
