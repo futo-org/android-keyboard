@@ -23,6 +23,7 @@ import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
 import android.support.v4.view.ViewPager;
@@ -66,8 +67,8 @@ import java.util.concurrent.TimeUnit;
 public final class EmojiPalettesView extends LinearLayout implements OnTabChangeListener,
         ViewPager.OnPageChangeListener, View.OnClickListener, View.OnTouchListener,
         EmojiPageKeyboardView.OnKeyEventListener {
-    private final int mKeyBackgroundId;
-    private final int mEmojiFunctionalKeyBackgroundId;
+    private final int mFunctionalKeyBackgroundId;
+    private final int mSpacebarBackgroundId;
     private final ColorStateList mTabLabelColor;
     private final DeleteKeyOnTouchListener mDeleteKeyOnTouchListener;
     private EmojiPalettesAdapter mEmojiPalettesAdapter;
@@ -92,10 +93,12 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
         super(context, attrs, defStyle);
         final TypedArray keyboardViewAttr = context.obtainStyledAttributes(attrs,
                 R.styleable.KeyboardView, defStyle, R.style.KeyboardView);
-        mKeyBackgroundId = keyboardViewAttr.getResourceId(
+        final int keyBackgroundId = keyboardViewAttr.getResourceId(
                 R.styleable.KeyboardView_keyBackground, 0);
-        mEmojiFunctionalKeyBackgroundId = keyboardViewAttr.getResourceId(
-                R.styleable.KeyboardView_keyBackgroundEmojiFunctional, 0);
+        mFunctionalKeyBackgroundId = keyboardViewAttr.getResourceId(
+                R.styleable.KeyboardView_functionalKeyBackground, keyBackgroundId);
+        mSpacebarBackgroundId = keyboardViewAttr.getResourceId(
+                R.styleable.KeyboardView_spacebarBackground, keyBackgroundId);
         keyboardViewAttr.recycle();
         final TypedArray emojiPalettesViewAttr = context.obtainStyledAttributes(attrs,
                 R.styleable.EmojiPalettesView, defStyle, R.style.EmojiPalettesView);
@@ -182,6 +185,7 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
 
         // deleteKey depends only on OnTouchListener.
         final ImageView deleteKey = (ImageView)findViewById(R.id.emoji_keyboard_delete);
+        deleteKey.setBackgroundResource(mFunctionalKeyBackgroundId);
         deleteKey.setTag(Constants.CODE_DELETE);
         deleteKey.setOnTouchListener(mDeleteKeyOnTouchListener);
 
@@ -193,17 +197,17 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
         // The text on alphabet keys are set at
         // {@link #startEmojiPalettes(String,int,float,Typeface)}.
         mAlphabetKeyLeft = (TextView)findViewById(R.id.emoji_keyboard_alphabet_left);
-        mAlphabetKeyLeft.setBackgroundResource(mEmojiFunctionalKeyBackgroundId);
+        mAlphabetKeyLeft.setBackgroundResource(mFunctionalKeyBackgroundId);
         mAlphabetKeyLeft.setTag(Constants.CODE_ALPHA_FROM_EMOJI);
         mAlphabetKeyLeft.setOnTouchListener(this);
         mAlphabetKeyLeft.setOnClickListener(this);
         mAlphabetKeyRight = (TextView)findViewById(R.id.emoji_keyboard_alphabet_right);
-        mAlphabetKeyRight.setBackgroundResource(mEmojiFunctionalKeyBackgroundId);
+        mAlphabetKeyRight.setBackgroundResource(mFunctionalKeyBackgroundId);
         mAlphabetKeyRight.setTag(Constants.CODE_ALPHA_FROM_EMOJI);
         mAlphabetKeyRight.setOnTouchListener(this);
         mAlphabetKeyRight.setOnClickListener(this);
         final ImageView spaceKey = (ImageView)findViewById(R.id.emoji_keyboard_space);
-        spaceKey.setBackgroundResource(mKeyBackgroundId);
+        spaceKey.setBackgroundResource(mSpacebarBackgroundId);
         spaceKey.setTag(Constants.CODE_SPACE);
         spaceKey.setOnTouchListener(this);
         spaceKey.setOnClickListener(this);

@@ -218,7 +218,7 @@ public class Key implements Comparable<Key> {
      *
      * @param keySpec the key specification.
      * @param keyAttr the Key XML attributes array.
-     * @param keyStyle the {@link KeyStyle} of this key.
+     * @param style the {@link KeyStyle} of this key.
      * @param params the keyboard building parameters.
      * @param row the row that this key belongs to. row's x-coordinate will be the right edge of
      *        this key.
@@ -857,17 +857,6 @@ public class Key implements Comparable<Key> {
         android.R.attr.state_empty
     };
 
-    // functional normal state (with properties)
-    private static final int[] KEY_STATE_FUNCTIONAL_NORMAL = {
-            android.R.attr.state_single
-    };
-
-    // functional pressed state (with properties)
-    private static final int[] KEY_STATE_FUNCTIONAL_PRESSED = {
-            android.R.attr.state_single,
-            android.R.attr.state_pressed
-    };
-
     // action normal state (with properties)
     private static final int[] KEY_STATE_ACTIVE_NORMAL = {
             android.R.attr.state_active
@@ -880,25 +869,43 @@ public class Key implements Comparable<Key> {
     };
 
     /**
-     * Returns the drawable state for the key, based on the current state and type of the key.
-     * @return the drawable state of the key.
+     * Returns the background drawable for the key, based on the current state and type of the key.
+     * @return the background drawable of the key.
      * @see android.graphics.drawable.StateListDrawable#setState(int[])
      */
-    public final int[] getCurrentDrawableState() {
-        switch (mBackgroundType) {
-        case BACKGROUND_TYPE_FUNCTIONAL:
-            return mPressed ? KEY_STATE_FUNCTIONAL_PRESSED : KEY_STATE_FUNCTIONAL_NORMAL;
-        case BACKGROUND_TYPE_ACTION:
-            return mPressed ? KEY_STATE_ACTIVE_PRESSED : KEY_STATE_ACTIVE_NORMAL;
-        case BACKGROUND_TYPE_STICKY_OFF:
-            return mPressed ? KEY_STATE_PRESSED_HIGHLIGHT_OFF : KEY_STATE_NORMAL_HIGHLIGHT_OFF;
-        case BACKGROUND_TYPE_STICKY_ON:
-            return mPressed ? KEY_STATE_PRESSED_HIGHLIGHT_ON : KEY_STATE_NORMAL_HIGHLIGHT_ON;
-        case BACKGROUND_TYPE_EMPTY:
-            return mPressed ? KEY_STATE_PRESSED : KEY_STATE_EMPTY;
-        default: /* BACKGROUND_TYPE_NORMAL */
-            return mPressed ? KEY_STATE_PRESSED : KEY_STATE_NORMAL;
+    public final Drawable selectBackgroundDrawable(final Drawable keyBackground,
+            final Drawable functionalKeyBackground, final Drawable spacebarBackground) {
+        final Drawable background;
+        if (mBackgroundType == BACKGROUND_TYPE_FUNCTIONAL) {
+            background = functionalKeyBackground;
+        } else if (getCode() == Constants.CODE_SPACE) {
+            background = spacebarBackground;
+        } else {
+            background = keyBackground;
         }
+        final int[] stateSet;
+        switch (mBackgroundType) {
+        case BACKGROUND_TYPE_ACTION:
+            stateSet = mPressed ? KEY_STATE_ACTIVE_PRESSED : KEY_STATE_ACTIVE_NORMAL;
+            break;
+        case BACKGROUND_TYPE_STICKY_OFF:
+            stateSet = mPressed ? KEY_STATE_PRESSED_HIGHLIGHT_OFF : KEY_STATE_NORMAL_HIGHLIGHT_OFF;
+            break;
+        case BACKGROUND_TYPE_STICKY_ON:
+            stateSet = mPressed ? KEY_STATE_PRESSED_HIGHLIGHT_ON : KEY_STATE_NORMAL_HIGHLIGHT_ON;
+            break;
+        case BACKGROUND_TYPE_EMPTY:
+            stateSet = mPressed ? KEY_STATE_PRESSED : KEY_STATE_EMPTY;
+            break;
+        case BACKGROUND_TYPE_FUNCTIONAL:
+            stateSet = mPressed ? KEY_STATE_PRESSED : KEY_STATE_NORMAL;
+            break;
+        default: /* BACKGROUND_TYPE_NORMAL */
+            stateSet = mPressed ? KEY_STATE_PRESSED : KEY_STATE_NORMAL;
+            break;
+        }
+        background.setState(stateSet);
+        return background;
     }
 
     public static class Spacer extends Key {
