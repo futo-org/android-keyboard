@@ -90,6 +90,15 @@ class JniDataUtils {
         }
     }
 
+    static void putIntToArray(JNIEnv *env, jintArray array, const int index, const int value) {
+        env->SetIntArrayRegion(array, index, 1 /* len */, &value);
+    }
+
+    static void putFloatToArray(JNIEnv *env, jfloatArray array, const int index,
+            const float value) {
+        env->SetFloatArrayRegion(array, index, 1 /* len */, &value);
+    }
+
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(JniDataUtils);
 

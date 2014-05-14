@@ -32,24 +32,19 @@ void SuggestionResults::outputSuggestions(JNIEnv *env, jintArray outSuggestionCo
         JniDataUtils::outputCodePoints(env, outputCodePointsArray, start,
                 MAX_WORD_LENGTH /* maxLength */, suggestedWord.getCodePoint(),
                 suggestedWord.getCodePointCount(), true /* needsNullTermination */);
-        const int score = suggestedWord.getScore();
-        env->SetIntArrayRegion(outScoresArray, outputIndex, 1 /* len */, &score);
-        const int indexToPartialCommit = suggestedWord.getIndexToPartialCommit();
-        env->SetIntArrayRegion(outSpaceIndicesArray, outputIndex, 1 /* len */,
-                &indexToPartialCommit);
-        const int type = suggestedWord.getType();
-        env->SetIntArrayRegion(outTypesArray, outputIndex, 1 /* len */, &type);
+        JniDataUtils::putIntToArray(env, outScoresArray, outputIndex, suggestedWord.getScore());
+        JniDataUtils::putIntToArray(env, outSpaceIndicesArray, outputIndex,
+                suggestedWord.getIndexToPartialCommit());
+        JniDataUtils::putIntToArray(env, outTypesArray, outputIndex, suggestedWord.getType());
         if (mSuggestedWords.size() == 1) {
-            const int autoCommitFirstWordConfidence =
-                    suggestedWord.getAutoCommitFirstWordConfidence();
-            env->SetIntArrayRegion(outAutoCommitFirstWordConfidenceArray, 0 /* start */,
-                    1 /* len */, &autoCommitFirstWordConfidence);
+            JniDataUtils::putIntToArray(env, outAutoCommitFirstWordConfidenceArray, 0 /* index */,
+                    suggestedWord.getAutoCommitFirstWordConfidence());
         }
         ++outputIndex;
         mSuggestedWords.pop();
     }
-    env->SetIntArrayRegion(outSuggestionCount, 0 /* start */, 1 /* len */, &outputIndex);
-    env->SetFloatArrayRegion(outLanguageWeight, 0 /* start */, 1 /* len */, &mLanguageWeight);
+    JniDataUtils::putIntToArray(env, outSuggestionCount, 0 /* index */, outputIndex);
+    JniDataUtils::putFloatToArray(env, outLanguageWeight, 0 /* index */, mLanguageWeight);
 }
 
 void SuggestionResults::addPrediction(const int *const codePoints, const int codePointCount,
