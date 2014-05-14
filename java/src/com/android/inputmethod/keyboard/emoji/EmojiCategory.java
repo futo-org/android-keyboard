@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.inputmethod.keyboard.internal;
+package com.android.inputmethod.keyboard.emoji;
 
 import android.content.SharedPreferences;
 import android.content.res.Resources;
@@ -39,8 +39,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
-// TODO: Move this class to com.android.inputmethod.emoji package.
-public final class EmojiCategory {
+final class EmojiCategory {
     private final String TAG = EmojiCategory.class.getSimpleName();
 
     private static final int ID_UNSPECIFIED = -1;
