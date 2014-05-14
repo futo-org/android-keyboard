@@ -220,7 +220,7 @@ public class InputLogicTestsReorderingMyanmar extends InputTestsBase {
 
     public void testMyanmarReordering() {
         int testNumber = 0;
-        changeLanguage("mm_MY");
+        changeLanguage("my_MM", "CombiningRules=MyanmarReordering");
         for (final Pair[] test : TESTS) {
             // Small trick to reset LatinIME : setText("") and send updateSelection with values
             // LatinIME has never seen, and cursor pos 0,0.

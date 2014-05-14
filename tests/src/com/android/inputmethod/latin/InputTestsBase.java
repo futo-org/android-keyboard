@@ -299,11 +299,15 @@ public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
     }
 
     protected void changeLanguage(final String locale) {
-        changeLanguageWithoutWait(locale);
+        changeLanguage(locale, null);
+    }
+
+    protected void changeLanguage(final String locale, final String combiningSpec) {
+        changeLanguageWithoutWait(locale, combiningSpec);
         waitForDictionariesToBeLoaded();
     }
 
-    protected void changeLanguageWithoutWait(final String locale) {
+    protected void changeLanguageWithoutWait(final String locale, final String combiningSpec) {
         mEditText.mCurrentLocale = LocaleUtils.constructLocaleFromString(locale);
         // TODO: this is forcing a QWERTY keyboard for all locales, which is wrong.
         // It's still better than using whatever keyboard is the current one, but we
@@ -314,7 +318,8 @@ public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
                 "KeyboardLayoutSet=" + SubtypeLocaleUtils.QWERTY
                 + "," + Constants.Subtype.ExtraValue.ASCII_CAPABLE
                 + "," + Constants.Subtype.ExtraValue.ENABLED_WHEN_DEFAULT_IS_NOT_ASCII_CAPABLE
-                + "," + Constants.Subtype.ExtraValue.EMOJI_CAPABLE;
+                + "," + Constants.Subtype.ExtraValue.EMOJI_CAPABLE
+                + null == combiningSpec ? "" : ("," + combiningSpec);
         final InputMethodSubtype subtype = InputMethodSubtypeCompatUtils.newInputMethodSubtype(
                 R.string.subtype_no_language_qwerty,
                 R.drawable.ic_ime_switcher_dark,
@@ -325,7 +330,7 @@ public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
                 false /* overridesImplicitlyEnabledSubtype */,
                 0 /* id */);
         SubtypeSwitcher.getInstance().forceSubtype(subtype);
-        mLatinIME.loadKeyboard();
+        mLatinIME.onCurrentInputMethodSubtypeChanged(subtype);
         runMessages();
         mKeyboard = mLatinIME.mKeyboardSwitcher.getKeyboard();
         mLatinIME.clearPersonalizedDictionariesForTest();
