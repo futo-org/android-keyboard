@@ -56,6 +56,7 @@ bool Ver4DictBuffers::flushHeaderAndDictBuffers(const char *const dictDirPath,
             return false;
         }
     }
+    umask(S_IWGRP | S_IWOTH);
     if (mkdir(tmpDirPath, S_IRWXU) == -1) {
         AKLOGE("Cannot create directory: %s. errno: %d.", tmpDirPath, errno);
         return false;
