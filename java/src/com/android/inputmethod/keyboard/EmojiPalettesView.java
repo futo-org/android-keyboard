@@ -33,6 +33,7 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TabHost;
@@ -45,6 +46,7 @@ import com.android.inputmethod.keyboard.internal.EmojiPageKeyboardView;
 import com.android.inputmethod.keyboard.internal.EmojiPalettesAdapter;
 import com.android.inputmethod.keyboard.internal.KeyDrawParams;
 import com.android.inputmethod.keyboard.internal.KeyVisualAttributes;
+import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SubtypeSwitcher;
@@ -74,8 +76,10 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
     private EmojiPalettesAdapter mEmojiPalettesAdapter;
     private final EmojiLayoutParams mEmojiLayoutParams;
 
+    private ImageButton mDeleteKey;
     private TextView mAlphabetKeyLeft;
     private TextView mAlphabetKeyRight;
+    private ImageButton mSpacebar;
     private TabHost mTabHost;
     private ViewPager mEmojiPager;
     private int mCurrentPagerPosition = 0;
@@ -147,6 +151,7 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
             final TextView textView = (TextView)LayoutInflater.from(getContext()).inflate(
                     R.layout.emoji_keyboard_tab_label, null);
             textView.setText(mEmojiCategory.getCategoryLabel(categoryId));
+            textView.setTypeface(Typeface.DEFAULT_BOLD);
             textView.setContentDescription(mEmojiCategory.getAccessibilityDescription(categoryId));
             textView.setTextColor(mTabLabelColor);
             tspec.setIndicator(textView);
@@ -184,10 +189,10 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
         mEmojiLayoutParams.setActionBarProperties(actionBar);
 
         // deleteKey depends only on OnTouchListener.
-        final ImageView deleteKey = (ImageView)findViewById(R.id.emoji_keyboard_delete);
-        deleteKey.setBackgroundResource(mFunctionalKeyBackgroundId);
-        deleteKey.setTag(Constants.CODE_DELETE);
-        deleteKey.setOnTouchListener(mDeleteKeyOnTouchListener);
+        mDeleteKey = (ImageButton)findViewById(R.id.emoji_keyboard_delete);
+        mDeleteKey.setBackgroundResource(mFunctionalKeyBackgroundId);
+        mDeleteKey.setTag(Constants.CODE_DELETE);
+        mDeleteKey.setOnTouchListener(mDeleteKeyOnTouchListener);
 
         // {@link #mAlphabetKeyLeft}, {@link #mAlphabetKeyRight, and spaceKey depend on
         // {@link View.OnClickListener} as well as {@link View.OnTouchListener}.
@@ -206,12 +211,12 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
         mAlphabetKeyRight.setTag(Constants.CODE_ALPHA_FROM_EMOJI);
         mAlphabetKeyRight.setOnTouchListener(this);
         mAlphabetKeyRight.setOnClickListener(this);
-        final ImageView spaceKey = (ImageView)findViewById(R.id.emoji_keyboard_space);
-        spaceKey.setBackgroundResource(mSpacebarBackgroundId);
-        spaceKey.setTag(Constants.CODE_SPACE);
-        spaceKey.setOnTouchListener(this);
-        spaceKey.setOnClickListener(this);
-        mEmojiLayoutParams.setKeyProperties(spaceKey);
+        mSpacebar = (ImageButton)findViewById(R.id.emoji_keyboard_space);
+        mSpacebar.setBackgroundResource(mSpacebarBackgroundId);
+        mSpacebar.setTag(Constants.CODE_SPACE);
+        mSpacebar.setOnTouchListener(this);
+        mSpacebar.setOnClickListener(this);
+        mEmojiLayoutParams.setKeyProperties(mSpacebar);
     }
 
     @Override
@@ -353,7 +358,9 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
     }
 
     public void startEmojiPalettes(final String switchToAlphaLabel,
-            final KeyVisualAttributes keyVisualAttr) {
+            final KeyVisualAttributes keyVisualAttr, final KeyboardIconsSet iconSet) {
+        mDeleteKey.setImageDrawable(iconSet.getIconDrawable(KeyboardIconsSet.NAME_DELETE_KEY));
+        mSpacebar.setImageDrawable(iconSet.getIconDrawable(KeyboardIconsSet.NAME_SPACE_KEY));
         final KeyDrawParams params = new KeyDrawParams();
         params.updateParams(mEmojiLayoutParams.getActionBarHeight(), keyVisualAttr);
         setupAlphabetKey(mAlphabetKeyLeft, switchToAlphaLabel, params);
