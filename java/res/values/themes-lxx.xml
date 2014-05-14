@@ -19,19 +19,19 @@
 -->
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
-    <style name="KeyboardTheme.LMP" parent="KeyboardIcons.LMP">
-        <item name="keyboardStyle">@style/Keyboard.LMP</item>
-        <item name="keyboardViewStyle">@style/KeyboardView.LMP</item>
-        <item name="mainKeyboardViewStyle">@style/MainKeyboardView.LMP</item>
-        <item name="keyPreviewTextViewStyle">@style/KeyPreviewTextView.LMP</item>
-        <item name="emojiPalettesViewStyle">@style/EmojiPalettesView.LMP</item>
-        <item name="moreKeysKeyboardStyle">@style/MoreKeysKeyboard.LMP</item>
-        <item name="moreKeysKeyboardViewStyle">@style/MoreKeysKeyboardView.LMP</item>
-        <item name="suggestionStripViewStyle">@style/SuggestionStripView.LMP</item>
-        <item name="suggestionWordStyle">@style/SuggestionWord.LMP</item>
+    <style name="KeyboardTheme.LXX" parent="KeyboardIcons.LXX">
+        <item name="keyboardStyle">@style/Keyboard.LXX</item>
+        <item name="keyboardViewStyle">@style/KeyboardView.LXX</item>
+        <item name="mainKeyboardViewStyle">@style/MainKeyboardView.LXX</item>
+        <item name="keyPreviewTextViewStyle">@style/KeyPreviewTextView.LXX</item>
+        <item name="emojiPalettesViewStyle">@style/EmojiPalettesView.LXX</item>
+        <item name="moreKeysKeyboardStyle">@style/MoreKeysKeyboard.LXX</item>
+        <item name="moreKeysKeyboardViewStyle">@style/MoreKeysKeyboardView.LXX</item>
+        <item name="suggestionStripViewStyle">@style/SuggestionStripView.LXX</item>
+        <item name="suggestionWordStyle">@style/SuggestionWord.LXX</item>
     </style>
     <style
-        name="Keyboard.LMP"
+        name="Keyboard.LXX"
         parent="Keyboard"
     >
         <!-- This should be aligned with KeyboardSwitcher.KEYBOARD_THEMES[] -->
@@ -43,56 +43,56 @@
         <item name="touchPositionCorrectionData">@array/touch_position_correction_data_holo</item>
     </style>
     <style
-        name="KeyboardView.LMP"
+        name="KeyboardView.LXX"
         parent="KeyboardView"
     >
-        <item name="android:background">@color/keyboard_background_lmp</item>
-        <item name="keyBackground">@drawable/btn_keyboard_key_lmp</item>
-        <item name="functionalKeyBackground">@drawable/btn_keyboard_key_functional_lmp</item>
-        <item name="spacebarBackground">@drawable/btn_keyboard_spacebar_lmp</item>
+        <item name="android:background">@color/keyboard_background_lxx</item>
+        <item name="keyBackground">@drawable/btn_keyboard_key_lxx</item>
+        <item name="functionalKeyBackground">@drawable/btn_keyboard_key_functional_lxx</item>
+        <item name="spacebarBackground">@drawable/btn_keyboard_spacebar_lxx</item>
         <item name="keyTypeface">bold</item>
         <item name="keyTextColor">@color/key_text_color_holo</item>
-        <item name="keyTextInactivatedColor">@color/key_text_inactive_color_lmp</item>
-        <item name="keyHintLetterColor">@color/key_hint_letter_color_lmp</item>
-        <item name="keyHintLabelColor">@color/key_text_inactive_color_lmp</item>
-        <item name="keyShiftedLetterHintInactivatedColor">@color/key_text_inactive_color_lmp</item>
+        <item name="keyTextInactivatedColor">@color/key_text_inactive_color_lxx</item>
+        <item name="keyHintLetterColor">@color/key_hint_letter_color_lxx</item>
+        <item name="keyHintLabelColor">@color/key_text_inactive_color_lxx</item>
+        <item name="keyShiftedLetterHintInactivatedColor">@color/key_text_inactive_color_lxx</item>
         <item name="keyShiftedLetterHintActivatedColor">@color/key_text_color_holo</item>
         <item name="keyPreviewTextColor">@color/key_text_color_holo</item>
         <!-- A negative value to disable key text shadow layer. -->
         <item name="keyTextShadowRadius">-1.0</item>
     </style>
     <style
-        name="MainKeyboardView.LMP"
-        parent="KeyboardView.LMP"
+        name="MainKeyboardView.LXX"
+        parent="KeyboardView.LXX"
     >
         <item name="keyPreviewOffset">@dimen/config_key_preview_offset_holo</item>
-        <item name="gestureFloatingPreviewTextColor">@color/highlight_color_lmp</item>
+        <item name="gestureFloatingPreviewTextColor">@color/highlight_color_lxx</item>
         <item name="gestureFloatingPreviewColor">@color/gesture_floating_preview_color_holo</item>
-        <item name="gestureTrailColor">@color/highlight_color_lmp</item>
-        <item name="slidingKeyInputPreviewColor">@color/highlight_translucent_color_lmp</item>
+        <item name="gestureTrailColor">@color/highlight_color_lxx</item>
+        <item name="slidingKeyInputPreviewColor">@color/highlight_translucent_color_lxx</item>
         <item name="autoCorrectionSpacebarLedEnabled">false</item>
         <item name="autoCorrectionSpacebarLedIcon">@drawable/sym_keyboard_space_led_holo</item>
-        <item name="languageOnSpacebarTextColor">@color/key_text_inactive_color_lmp</item>
+        <item name="languageOnSpacebarTextColor">@color/key_text_inactive_color_lxx</item>
         <!-- A negative value to disable text shadow layer. -->
         <item name="languageOnSpacebarTextShadowRadius">-1.0</item>
     </style>
     <style
-        name="KeyPreviewTextView.LMP"
+        name="KeyPreviewTextView.LXX"
         parent="KeyPreviewTextView"
     >
-        <item name="android:background">@drawable/keyboard_key_feedback_lmp</item>
+        <item name="android:background">@drawable/keyboard_key_feedback_lxx</item>
     </style>
     <!-- Though {@link EmojiPalettesView} doesn't extend {@link KeyboardView}, some views inside it,
          for instance delete button, need themed {@link KeyboardView} attributes. -->
     <style
-        name="EmojiPalettesView.LMP"
-        parent="MainKeyboardView.LMP"
+        name="EmojiPalettesView.LXX"
+        parent="MainKeyboardView.LXX"
     >
-        <item name="emojiTabLabelColor">@color/emoji_tab_label_color_lmp</item>
+        <item name="emojiTabLabelColor">@color/emoji_tab_label_color_lxx</item>
     </style>
     <style
-        name="MoreKeysKeyboard.LMP"
-        parent="Keyboard.LMP"
+        name="MoreKeysKeyboard.LXX"
+        parent="Keyboard.LXX"
     >
         <item name="keyboardTopPadding">0%p</item>
         <item name="keyboardBottomPadding">0%p</item>
@@ -100,17 +100,17 @@
         <item name="touchPositionCorrectionData">@null</item>
     </style>
     <style
-        name="MoreKeysKeyboardView.LMP"
-        parent="KeyboardView.LMP"
+        name="MoreKeysKeyboardView.LXX"
+        parent="KeyboardView.LXX"
     >
-        <item name="android:background">@drawable/keyboard_popup_panel_background_lmp</item>
-        <item name="keyBackground">@drawable/btn_keyboard_key_popup_lmp</item>
+        <item name="android:background">@drawable/keyboard_popup_panel_background_lxx</item>
+        <item name="keyBackground">@drawable/btn_keyboard_key_popup_lxx</item>
         <item name="keyTypeface">normal</item>
         <item name="verticalCorrection">@dimen/config_more_keys_keyboard_vertical_correction_holo</item>
     </style>
     <style
-        name="SuggestionStripView.LMP"
-        parent="KeyboardView.LMP"
+        name="SuggestionStripView.LXX"
+        parent="KeyboardView.LXX"
     >
         <item name="suggestionsCountInStrip">@integer/config_suggestions_count_in_strip</item>
         <item name="centerSuggestionPercentile">@fraction/config_center_suggestion_percentile</item>
@@ -118,17 +118,17 @@
         <item name="minMoreSuggestionsWidth">@fraction/config_min_more_suggestions_width</item>
         <item name="android:background">@drawable/keyboard_suggest_strip_holo</item>
         <item name="suggestionStripOptions">autoCorrectBold|validTypedWordBold</item>
-        <item name="colorValidTypedWord">@color/typed_word_color_lmp</item>
-        <item name="colorTypedWord">@color/typed_word_color_lmp</item>
-        <item name="colorAutoCorrect">@color/highlight_color_lmp</item>
-        <item name="colorSuggested">@color/suggested_word_color_lmp</item>
+        <item name="colorValidTypedWord">@color/typed_word_color_lxx</item>
+        <item name="colorTypedWord">@color/typed_word_color_lxx</item>
+        <item name="colorAutoCorrect">@color/highlight_color_lxx</item>
+        <item name="colorSuggested">@color/suggested_word_color_lxx</item>
         <item name="alphaObsoleted">70%</item>
     </style>
     <style
-        name="SuggestionWord.LMP"
+        name="SuggestionWord.LXX"
         parent="SuggestionWord"
     >
-        <item name="android:background">@drawable/btn_suggestion_lmp</item>
-        <item name="android:textColor">@color/highlight_color_lmp</item>
+        <item name="android:background">@drawable/btn_suggestion_lxx</item>
+        <item name="android:textColor">@color/highlight_color_lxx</item>
     </style>
 </resources>
