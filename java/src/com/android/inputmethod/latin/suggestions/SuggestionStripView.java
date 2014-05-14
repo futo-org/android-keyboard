@@ -124,9 +124,9 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
             mImportantNoticeStrip.setVisibility(INVISIBLE);
         }
 
-        public void showImportantNoticeStrip() {
+        public void showImportantNoticeStrip(final boolean enableVoiceKey) {
             mSuggestionsStrip.setVisibility(INVISIBLE);
-            mVoiceKey.setVisibility(INVISIBLE);
+            mVoiceKey.setVisibility(enableVoiceKey ? VISIBLE : INVISIBLE);
             mAddToDictionaryStrip.setVisibility(INVISIBLE);
             mImportantNoticeStrip.setVisibility(VISIBLE);
         }
@@ -274,7 +274,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
             dismissMoreSuggestionsPanel();
         }
         mLayoutHelper.layoutImportantNotice(mImportantNoticeStrip, importantNoticeTitle);
-        mStripVisibilityGroup.showImportantNoticeStrip();
+        mStripVisibilityGroup.showImportantNoticeStrip(isVoiceKeyEnabled());
         mImportantNoticeStrip.setOnClickListener(this);
         return true;
     }
