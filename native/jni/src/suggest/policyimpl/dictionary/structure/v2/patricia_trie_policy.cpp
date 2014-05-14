@@ -24,6 +24,7 @@
 #include "suggest/policyimpl/dictionary/structure/pt_common/dynamic_pt_reading_helper.h"
 #include "suggest/policyimpl/dictionary/structure/pt_common/patricia_trie_reading_utils.h"
 #include "suggest/policyimpl/dictionary/utils/probability_utils.h"
+#include "utils/char_utils.h"
 
 namespace latinime {
 
@@ -318,12 +319,15 @@ int PatriciaTriePolicy::createAndGetLeavingChildNode(const DicNode *const dicNod
     PatriciaTrieReadingUtils::readPtNodeInfo(mDictRoot, ptNodePos, getShortcutsStructurePolicy(),
             getBigramsStructurePolicy(), &flags, &mergedNodeCodePointCount, mergedNodeCodePoints,
             &probability, &childrenPos, &shortcutPos, &bigramPos, &siblingPos);
-    childDicNodes->pushLeavingChild(dicNode, ptNodePos, childrenPos, probability,
-            PatriciaTrieReadingUtils::isTerminal(flags),
-            PatriciaTrieReadingUtils::hasChildrenInFlags(flags),
-            PatriciaTrieReadingUtils::isBlacklisted(flags)
-                    || PatriciaTrieReadingUtils::isNotAWord(flags),
-            mergedNodeCodePointCount, mergedNodeCodePoints);
+    // Skip PtNodes don't start with Unicode code point because they represent non-word information.
+    if (CharUtils::isInUnicodeSpace(mergedNodeCodePoints[0])) {
+        childDicNodes->pushLeavingChild(dicNode, ptNodePos, childrenPos, probability,
+                PatriciaTrieReadingUtils::isTerminal(flags),
+                PatriciaTrieReadingUtils::hasChildrenInFlags(flags),
+                PatriciaTrieReadingUtils::isBlacklisted(flags)
+                        || PatriciaTrieReadingUtils::isNotAWord(flags),
+                mergedNodeCodePointCount, mergedNodeCodePoints);
+    }
     return siblingPos;
 }
 
