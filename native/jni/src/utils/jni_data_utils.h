@@ -23,6 +23,7 @@
 #include "jni.h"
 #include "suggest/core/policy/dictionary_header_structure_policy.h"
 #include "suggest/policyimpl/dictionary/header/header_read_write_utils.h"
+#include "utils/char_utils.h"
 
 namespace latinime {
 
@@ -69,16 +70,31 @@ class JniDataUtils {
             const int maxLength, const int *const codePoints, const int codePointCount,
             const bool needsNullTermination) {
         const int outputCodePointCount = std::min(maxLength, codePointCount);
-        env->SetIntArrayRegion(intArrayToOutputCodePoints, start, outputCodePointCount, codePoints);
+        int outputCodePonts[outputCodePointCount];
+        for (int i = 0; i < outputCodePointCount; ++i) {
+            const int codePoint = codePoints[i];
+            if (!CharUtils::isInUnicodeSpace(codePoint)) {
+                outputCodePonts[i] = CODE_POINT_REPLACEMENT_CHARACTER;
+            } else if (codePoint >= 0x01 && codePoint <= 0x1F) {
+                // Control code.
+                outputCodePonts[i] = CODE_POINT_REPLACEMENT_CHARACTER;
+            } else {
+                outputCodePonts[i] = codePoint;
+            }
+        }
+        env->SetIntArrayRegion(intArrayToOutputCodePoints, start, outputCodePointCount,
+                outputCodePonts);
         if (needsNullTermination && outputCodePointCount < maxLength) {
-            const int terminal = 0;
             env->SetIntArrayRegion(intArrayToOutputCodePoints, start + outputCodePointCount,
-                    1 /* len */, &terminal);
+                    1 /* len */, &CODE_POINT_NULL);
         }
     }
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(JniDataUtils);
+
+    static const int CODE_POINT_REPLACEMENT_CHARACTER;
+    static const int CODE_POINT_NULL;
 };
 } // namespace latinime
 #endif // LATINIME_JNI_DATA_UTILS_H
