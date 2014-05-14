@@ -48,6 +48,8 @@
     >
         <item name="android:background">@drawable/keyboard_background_holo</item>
         <item name="keyBackground">@drawable/btn_keyboard_key_ics</item>
+        <item name="functionalKeyBackground">@drawable/btn_keyboard_key_functional_ics</item>
+        <item name="spacebarBackground">@drawable/btn_keyboard_spacebar_ics</item>
         <item name="keyTypeface">bold</item>
         <item name="keyTextColor">@color/key_text_color_holo</item>
         <item name="keyTextInactivatedColor">@color/key_text_inactivated_color_holo</item>
@@ -73,7 +75,6 @@
         <item name="languageOnSpacebarTextColor">@color/spacebar_text_color_holo</item>
         <item name="languageOnSpacebarTextShadowRadius">1.0</item>
         <item name="languageOnSpacebarTextShadowColor">@color/spacebar_text_shadow_color_holo</item>
-        <item name="spacebarBackground">@drawable/btn_keyboard_spacebar_ics</item>
     </style>
     <style
         name="KeyPreviewTextView.ICS"
@@ -85,9 +86,8 @@
          for instance delete button, need themed {@link KeyboardView} attributes. -->
     <style
         name="EmojiPalettesView.ICS"
-        parent="KeyboardView.ICS"
+        parent="MainKeyboardView.ICS"
     >
-        <item name="keyBackgroundEmojiFunctional">@drawable/btn_keyboard_key_functional_ics</item>
         <item name="emojiTabLabelColor">@color/emoji_tab_label_color_holo</item>
     </style>
     <style

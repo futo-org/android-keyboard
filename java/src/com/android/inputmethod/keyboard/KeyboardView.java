@@ -47,6 +47,8 @@ import java.util.HashSet;
  * A view that renders a virtual {@link Keyboard}.
  *
  * @attr ref R.styleable#KeyboardView_keyBackground
+ * @attr ref R.styleable#KeyboardView_functionalKeyBackground
+ * @attr ref R.styleable#KeyboardView_spacebarBackground
  * @attr ref R.styleable#KeyboardView_keyLabelHorizontalPadding
  * @attr ref R.styleable#KeyboardView_keyHintLetterPadding
  * @attr ref R.styleable#KeyboardView_keyPopupHintLetterPadding
@@ -81,6 +83,8 @@ public class KeyboardView extends View {
     private final float mKeyTextShadowRadius;
     private final float mVerticalCorrection;
     private final Drawable mKeyBackground;
+    private final Drawable mFunctionalKeyBackground;
+    private final Drawable mSpacebarBackground;
     private final Rect mKeyBackgroundPadding = new Rect();
     private static final float KET_TEXT_SHADOW_RADIUS_DISABLED = -1.0f;
 
@@ -125,6 +129,14 @@ public class KeyboardView extends View {
                 R.styleable.KeyboardView, defStyle, R.style.KeyboardView);
         mKeyBackground = keyboardViewAttr.getDrawable(R.styleable.KeyboardView_keyBackground);
         mKeyBackground.getPadding(mKeyBackgroundPadding);
+        final Drawable functionalKeyBackground = keyboardViewAttr.getDrawable(
+                R.styleable.KeyboardView_functionalKeyBackground);
+        mFunctionalKeyBackground = (functionalKeyBackground != null) ? functionalKeyBackground
+                : mKeyBackground;
+        final Drawable spacebarBackground = keyboardViewAttr.getDrawable(
+                R.styleable.KeyboardView_spacebarBackground);
+        mSpacebarBackground = (spacebarBackground != null) ? spacebarBackground
+                : mKeyBackground;
         mKeyLabelHorizontalPadding = keyboardViewAttr.getDimensionPixelOffset(
                 R.styleable.KeyboardView_keyLabelHorizontalPadding, 0);
         mKeyHintLetterPadding = keyboardViewAttr.getDimension(
@@ -324,7 +336,9 @@ public class KeyboardView extends View {
         params.mAnimAlpha = Constants.Color.ALPHA_OPAQUE;
 
         if (!key.isSpacer()) {
-            onDrawKeyBackground(key, canvas, mKeyBackground);
+            final Drawable background = key.selectBackgroundDrawable(
+                    mKeyBackground, mFunctionalKeyBackground, mSpacebarBackground);
+            onDrawKeyBackground(key, canvas, background);
         }
         onDrawKeyTopVisuals(key, canvas, paint, params);
 
@@ -339,8 +353,6 @@ public class KeyboardView extends View {
         final int bgHeight = key.getHeight() + padding.top + padding.bottom;
         final int bgX = -padding.left;
         final int bgY = -padding.top;
-        final int[] drawableState = key.getCurrentDrawableState();
-        background.setState(drawableState);
         final Rect bounds = background.getBounds();
         if (bgWidth != bounds.right || bgHeight != bounds.bottom) {
             background.setBounds(0, 0, bgWidth, bgHeight);

@@ -48,6 +48,8 @@
     >
         <item name="android:background">@color/keyboard_background_lmp</item>
         <item name="keyBackground">@drawable/btn_keyboard_key_lmp</item>
+        <item name="functionalKeyBackground">@drawable/btn_keyboard_key_functional_lmp</item>
+        <item name="spacebarBackground">@drawable/btn_keyboard_spacebar_lmp</item>
         <item name="keyTypeface">bold</item>
         <item name="keyTextColor">@color/key_text_color_holo</item>
         <item name="keyTextInactivatedColor">@color/key_text_inactive_color_lmp</item>
@@ -73,7 +75,6 @@
         <item name="languageOnSpacebarTextColor">@color/key_text_inactive_color_lmp</item>
         <!-- A negative value to disable text shadow layer. -->
         <item name="languageOnSpacebarTextShadowRadius">-1.0</item>
-        <item name="spacebarBackground">@drawable/btn_keyboard_spacebar_lmp</item>
     </style>
     <style
         name="KeyPreviewTextView.LMP"
@@ -85,9 +86,8 @@
          for instance delete button, need themed {@link KeyboardView} attributes. -->
     <style
         name="EmojiPalettesView.LMP"
-        parent="KeyboardView.LMP"
+        parent="MainKeyboardView.LMP"
     >
-        <item name="keyBackgroundEmojiFunctional">@drawable/btn_keyboard_key_functional_lmp</item>
         <item name="emojiTabLabelColor">@color/emoji_tab_label_color_holo</item>
     </style>
     <style

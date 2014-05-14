@@ -109,12 +109,7 @@
     <style name="KeyPreviewTextView" />
     <!-- Though {@link EmojiPalettesView} doesn't extend {@link KeyboardView}, some views inside it,
          for instance delete button, need themed {@link KeyboardView} attributes. -->
-    <style
-        name="EmojiPalettesView"
-        parent="KeyboardView"
-    >
-        <item name="emojiTabLabelColor">@color/emoji_tab_label_color_holo</item>
-    </style>
+    <style name="EmojiPalettesView" />
     <style name="MoreKeysKeyboard" />
     <style
         name="MoreKeysKeyboardView"
