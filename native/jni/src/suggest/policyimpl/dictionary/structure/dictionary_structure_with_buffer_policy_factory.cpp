@@ -19,6 +19,9 @@
 #include <climits>
 
 #include "defines.h"
+#include "suggest/policyimpl/dictionary/structure/backward/v401/ver4_dict_buffers.h"
+#include "suggest/policyimpl/dictionary/structure/backward/v401/ver4_dict_constants.h"
+#include "suggest/policyimpl/dictionary/structure/backward/v401/ver4_patricia_trie_policy.h"
 #include "suggest/policyimpl/dictionary/structure/pt_common/dynamic_pt_writing_utils.h"
 #include "suggest/policyimpl/dictionary/structure/v2/patricia_trie_policy.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_dict_buffers.h"
@@ -42,7 +45,7 @@ namespace latinime {
         if (isUpdatable) {
             AKLOGE("One file dictionaries don't support updating. path: %s", path);
             ASSERT(false);
-            return DictionaryStructureWithBufferPolicy::StructurePolicyPtr(nullptr);
+            return nullptr;
         }
         return newPolicyForFileDict(path, bufOffset, size);
     }
@@ -54,26 +57,43 @@ namespace latinime {
                 const DictionaryHeaderStructurePolicy::AttributeMap *const attributeMap) {
     FormatUtils::FORMAT_VERSION dictFormatVersion = FormatUtils::getFormatVersion(formatVersion);
     switch (dictFormatVersion) {
-        case FormatUtils::VERSION_4_ONLY_FOR_TESTING:
         case FormatUtils::VERSION_4: {
-            HeaderPolicy headerPolicy(dictFormatVersion, locale, attributeMap);
-            Ver4DictBuffers::Ver4DictBuffersPtr dictBuffers =
-                    Ver4DictBuffers::createVer4DictBuffers(&headerPolicy,
-                            Ver4DictConstants::MAX_DICT_EXTENDED_REGION_SIZE);
-            if (!DynamicPtWritingUtils::writeEmptyDictionary(
-                    dictBuffers->getWritableTrieBuffer(), 0 /* rootPos */)) {
-                AKLOGE("Empty ver4 dictionary structure cannot be created on memory.");
-                return DictionaryStructureWithBufferPolicy::StructurePolicyPtr(nullptr);
-            }
-            return DictionaryStructureWithBufferPolicy::StructurePolicyPtr(
-                    new Ver4PatriciaTriePolicy(std::move(dictBuffers)));
+            return newPolicyForOnMemoryV4Dict<backward::v401::Ver4DictConstants,
+                    backward::v401::Ver4DictBuffers,
+                    backward::v401::Ver4DictBuffers::Ver4DictBuffersPtr,
+                    backward::v401::Ver4PatriciaTriePolicy>(
+                            dictFormatVersion, locale, attributeMap);
+        }
+        case FormatUtils::VERSION_4_ONLY_FOR_TESTING:
+        case FormatUtils::VERSION_4_DEV: {
+            return newPolicyForOnMemoryV4Dict<Ver4DictConstants, Ver4DictBuffers,
+                    Ver4DictBuffers::Ver4DictBuffersPtr, Ver4PatriciaTriePolicy>(
+                            dictFormatVersion, locale, attributeMap);
         }
         default:
             AKLOGE("DICT: dictionary format %d is not supported for on memory dictionary",
                     formatVersion);
             break;
     }
-    return DictionaryStructureWithBufferPolicy::StructurePolicyPtr(nullptr);
+    return nullptr;
+}
+
+template<class DictConstants, class DictBuffers, class DictBuffersPtr, class StructurePolicy>
+/* static */ DictionaryStructureWithBufferPolicy::StructurePolicyPtr
+        DictionaryStructureWithBufferPolicyFactory::newPolicyForOnMemoryV4Dict(
+                const FormatUtils::FORMAT_VERSION formatVersion,
+                const std::vector<int> &locale,
+                const DictionaryHeaderStructurePolicy::AttributeMap *const attributeMap) {
+    HeaderPolicy headerPolicy(formatVersion, locale, attributeMap);
+    DictBuffersPtr dictBuffers = DictBuffers::createVer4DictBuffers(&headerPolicy,
+            DictConstants::MAX_DICT_EXTENDED_REGION_SIZE);
+    if (!DynamicPtWritingUtils::writeEmptyDictionary(
+            dictBuffers->getWritableTrieBuffer(), 0 /* rootPos */)) {
+        AKLOGE("Empty ver4 dictionary structure cannot be created on memory.");
+        return nullptr;
+    }
+    return DictionaryStructureWithBufferPolicy::StructurePolicyPtr(
+            new StructurePolicy(std::move(dictBuffers)));
 }
 
 /* static */ DictionaryStructureWithBufferPolicy::StructurePolicyPtr
@@ -84,10 +104,10 @@ namespace latinime {
     getHeaderFilePathInDictDir(path, headerFilePathBufSize, headerFilePath);
     // Allocated buffer in MmapedBuffer::openBuffer() will be freed in the destructor of
     // MmappedBufferPtr if the instance has the responsibility.
-    MmappedBuffer::MmappedBufferPtr mmappedBuffer(
-            MmappedBuffer::openBuffer(headerFilePath, isUpdatable));
+    MmappedBuffer::MmappedBufferPtr mmappedBuffer =
+            MmappedBuffer::openBuffer(headerFilePath, isUpdatable);
     if (!mmappedBuffer) {
-        return DictionaryStructureWithBufferPolicy::StructurePolicyPtr(nullptr);
+        return nullptr;
     }
     const FormatUtils::FORMAT_VERSION formatVersion = FormatUtils::detectFormatVersion(
             mmappedBuffer->getBuffer(), mmappedBuffer->getBufferSize());
@@ -95,34 +115,50 @@ namespace latinime {
         case FormatUtils::VERSION_2:
             AKLOGE("Given path is a directory but the format is version 2. path: %s", path);
             break;
-        case FormatUtils::VERSION_4_ONLY_FOR_TESTING:
         case FormatUtils::VERSION_4: {
-            const int dictDirPathBufSize = strlen(headerFilePath) + 1 /* terminator */;
-            char dictPath[dictDirPathBufSize];
-            if (!FileUtils::getFilePathWithoutSuffix(headerFilePath,
-                    Ver4DictConstants::HEADER_FILE_EXTENSION, dictDirPathBufSize, dictPath)) {
-                AKLOGE("Dictionary file name is not valid as a ver4 dictionary. path: %s", path);
-                ASSERT(false);
-                return DictionaryStructureWithBufferPolicy::StructurePolicyPtr(nullptr);
-            }
-            Ver4DictBuffers::Ver4DictBuffersPtr dictBuffers(
-                    Ver4DictBuffers::openVer4DictBuffers(dictPath, std::move(mmappedBuffer),
-                            formatVersion));
-            if (!dictBuffers || !dictBuffers->isValid()) {
-                AKLOGE("DICT: The dictionary doesn't satisfy ver4 format requirements. path: %s",
-                        path);
-                ASSERT(false);
-                return DictionaryStructureWithBufferPolicy::StructurePolicyPtr(nullptr);
-            }
-            return DictionaryStructureWithBufferPolicy::StructurePolicyPtr(
-                    new Ver4PatriciaTriePolicy(std::move(dictBuffers)));
+            return newPolicyForV4Dict<backward::v401::Ver4DictConstants,
+                    backward::v401::Ver4DictBuffers,
+                    backward::v401::Ver4DictBuffers::Ver4DictBuffersPtr,
+                    backward::v401::Ver4PatriciaTriePolicy>(
+                            headerFilePath, formatVersion, std::move(mmappedBuffer));
+        }
+        case FormatUtils::VERSION_4_ONLY_FOR_TESTING:
+        case FormatUtils::VERSION_4_DEV: {
+            return newPolicyForV4Dict<Ver4DictConstants, Ver4DictBuffers,
+                    Ver4DictBuffers::Ver4DictBuffersPtr, Ver4PatriciaTriePolicy>(
+                            headerFilePath, formatVersion, std::move(mmappedBuffer));
         }
         default:
             AKLOGE("DICT: dictionary format is unknown, bad magic number. path: %s", path);
             break;
     }
     ASSERT(false);
-    return DictionaryStructureWithBufferPolicy::StructurePolicyPtr(nullptr);
+    return nullptr;
+}
+
+template<class DictConstants, class DictBuffers, class DictBuffersPtr, class StructurePolicy>
+/* static */ DictionaryStructureWithBufferPolicy::StructurePolicyPtr
+        DictionaryStructureWithBufferPolicyFactory::newPolicyForV4Dict(
+                const char *const headerFilePath, const FormatUtils::FORMAT_VERSION formatVersion,
+                MmappedBuffer::MmappedBufferPtr &&mmappedBuffer) {
+    const int dictDirPathBufSize = strlen(headerFilePath) + 1 /* terminator */;
+    char dictPath[dictDirPathBufSize];
+    if (!FileUtils::getFilePathWithoutSuffix(headerFilePath,
+            DictConstants::HEADER_FILE_EXTENSION, dictDirPathBufSize, dictPath)) {
+        AKLOGE("Dictionary file name is not valid as a ver4 dictionary. path: %s", path);
+        ASSERT(false);
+        return nullptr;
+    }
+    DictBuffersPtr dictBuffers =
+            DictBuffers::openVer4DictBuffers(dictPath, std::move(mmappedBuffer), formatVersion);
+    if (!dictBuffers || !dictBuffers->isValid()) {
+        AKLOGE("DICT: The dictionary doesn't satisfy ver4 format requirements. path: %s",
+                path);
+        ASSERT(false);
+        return nullptr;
+    }
+    return DictionaryStructureWithBufferPolicy::StructurePolicyPtr(
+            new StructurePolicy(std::move(dictBuffers)));
 }
 
 /* static */ DictionaryStructureWithBufferPolicy::StructurePolicyPtr
@@ -133,7 +169,7 @@ namespace latinime {
     MmappedBuffer::MmappedBufferPtr mmappedBuffer(
             MmappedBuffer::openBuffer(path, bufOffset, size, false /* isUpdatable */));
     if (!mmappedBuffer) {
-        return DictionaryStructureWithBufferPolicy::StructurePolicyPtr(nullptr);
+        return nullptr;
     }
     switch (FormatUtils::detectFormatVersion(mmappedBuffer->getBuffer(),
             mmappedBuffer->getBufferSize())) {
@@ -142,6 +178,7 @@ namespace latinime {
                     new PatriciaTriePolicy(std::move(mmappedBuffer)));
         case FormatUtils::VERSION_4_ONLY_FOR_TESTING:
         case FormatUtils::VERSION_4:
+        case FormatUtils::VERSION_4_DEV:
             AKLOGE("Given path is a file but the format is version 4. path: %s", path);
             break;
         default:
@@ -149,7 +186,7 @@ namespace latinime {
             break;
     }
     ASSERT(false);
-    return DictionaryStructureWithBufferPolicy::StructurePolicyPtr(nullptr);
+    return nullptr;
 }
 
 /* static */ void DictionaryStructureWithBufferPolicyFactory::getHeaderFilePathInDictDir(

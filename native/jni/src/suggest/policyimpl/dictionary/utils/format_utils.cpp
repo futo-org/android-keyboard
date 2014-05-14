@@ -33,6 +33,8 @@ const int FormatUtils::DICTIONARY_MINIMUM_SIZE = 12;
             return VERSION_4_ONLY_FOR_TESTING;
         case VERSION_4:
             return VERSION_4;
+        case VERSION_4_DEV:
+            return VERSION_4_DEV;
         default:
             return UNKNOWN_VERSION;
     }
@@ -62,6 +64,8 @@ const int FormatUtils::DICTIONARY_MINIMUM_SIZE = 12;
                 return VERSION_4_ONLY_FOR_TESTING;
             } else if (ByteArrayUtils::readUint16(dict, 4) == VERSION_4) {
                 return VERSION_4;
+            } else if (ByteArrayUtils::readUint16(dict, 4) == VERSION_4_DEV) {
+                return VERSION_4_DEV;
             } else {
                 return UNKNOWN_VERSION;
             }
