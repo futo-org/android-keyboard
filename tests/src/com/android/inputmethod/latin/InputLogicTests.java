@@ -600,4 +600,16 @@ public class InputLogicTests extends InputTestsBase {
         assertEquals("type words letter by letter", EXPECTED_RESULT,
                 mEditText.getText().toString());
     }
+
+    public void testSwitchLanguages() {
+        final String WORD_TO_TYPE_FIRST_PART = "com";
+        final String WORD_TO_TYPE_SECOND_PART = "md ";
+        final String EXPECTED_RESULT = "comme ";
+        changeLanguage("en");
+        type(WORD_TO_TYPE_FIRST_PART);
+        changeLanguage("fr");
+        type(WORD_TO_TYPE_SECOND_PART);
+        assertEquals("Composing continues after switching languages", EXPECTED_RESULT,
+                mEditText.getText().toString());
+    }
 }

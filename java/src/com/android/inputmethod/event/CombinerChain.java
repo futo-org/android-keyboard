@@ -56,18 +56,20 @@ public class CombinerChain {
      *
      * The combiner chain takes events as inputs and outputs code points and combining state.
      * For example, if the input language is Japanese, the combining chain will typically perform
-     * kana conversion.
+     * kana conversion. This takes a string for initial text, taken to be present before the
+     * cursor: we'll start after this.
      *
+     * @param initialText The text that has already been combined so far.
      * @param combinerList A list of combiners to be applied in order.
      */
-    public CombinerChain(final Combiner... combinerList) {
+    public CombinerChain(final String initialText, final Combiner... combinerList) {
         mCombiners = CollectionUtils.newArrayList();
         // The dead key combiner is always active, and always first
         mCombiners.add(new DeadKeyCombiner());
         for (final Combiner combiner : combinerList) {
             mCombiners.add(combiner);
         }
-        mCombinedText = new StringBuilder();
+        mCombinedText = new StringBuilder(initialText);
         mStateFeedback = new SpannableStringBuilder();
     }
 
