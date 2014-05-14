@@ -936,7 +936,11 @@ public final class InputLogic {
             } else {
                 mWordComposer.processEvent(inputTransaction.mEvent);
             }
-            mConnection.setComposingText(getTextWithUnderline(mWordComposer.getTypedWord()), 1);
+            if (mWordComposer.isComposingWord()) {
+                mConnection.setComposingText(getTextWithUnderline(mWordComposer.getTypedWord()), 1);
+            } else {
+                mConnection.commitText("", 1);
+            }
             inputTransaction.setRequiresUpdateSuggestions();
         } else {
             if (mLastComposedWord.canRevertCommit()) {
