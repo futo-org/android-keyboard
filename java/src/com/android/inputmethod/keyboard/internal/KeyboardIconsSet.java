@@ -138,6 +138,10 @@ public final class KeyboardIconsSet {
         throw new RuntimeException("unknown icon name: " + name);
     }
 
+    public Drawable getIconDrawable(final String name) {
+        return getIconDrawable(getIconId(name));
+    }
+
     public Drawable getIconDrawable(final int iconId) {
         if (isValidIconId(iconId)) {
             return mIcons[iconId];

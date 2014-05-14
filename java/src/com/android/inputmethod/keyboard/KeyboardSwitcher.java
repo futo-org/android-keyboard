@@ -253,10 +253,11 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     // Implements {@link KeyboardState.SwitchActions}.
     @Override
     public void setEmojiKeyboard() {
+        final Keyboard keyboard = mKeyboardView.getKeyboard();
         mMainKeyboardFrame.setVisibility(View.GONE);
         mEmojiPalettesView.startEmojiPalettes(
                 mKeyboardTextsSet.getText(KeyboardTextsSet.SWITCH_TO_ALPHA_KEY_LABEL),
-                mKeyboardView.getKeyVisualAttribute());
+                mKeyboardView.getKeyVisualAttribute(), keyboard.mIconsSet);
         mEmojiPalettesView.setVisibility(View.VISIBLE);
     }
 
