@@ -33,6 +33,7 @@ class FormatUtils {
         VERSION_2 = 2,
         VERSION_4_ONLY_FOR_TESTING = 399,
         VERSION_4 = 401,
+        VERSION_4_DEV = 402,
         UNKNOWN_VERSION = -1
     };
 

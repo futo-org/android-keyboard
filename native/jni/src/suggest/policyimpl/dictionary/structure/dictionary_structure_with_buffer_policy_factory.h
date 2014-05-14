@@ -22,6 +22,8 @@
 #include "defines.h"
 #include "suggest/core/policy/dictionary_header_structure_policy.h"
 #include "suggest/core/policy/dictionary_structure_with_buffer_policy.h"
+#include "suggest/policyimpl/dictionary/utils/format_utils.h"
+#include "suggest/policyimpl/dictionary/utils/mmapped_buffer.h"
 
 namespace latinime {
 
@@ -32,15 +34,25 @@ class DictionaryStructureWithBufferPolicyFactory {
                     const int size, const bool isUpdatable);
 
     static DictionaryStructureWithBufferPolicy::StructurePolicyPtr
-            newPolicyForOnMemoryDict(const int formatVersion,
-                    const std::vector<int> &locale,
+            newPolicyForOnMemoryDict(const int formatVersion, const std::vector<int> &locale,
                     const DictionaryHeaderStructurePolicy::AttributeMap *const attributeMap);
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(DictionaryStructureWithBufferPolicyFactory);
 
+    template<class DictConstants, class DictBuffers, class DictBuffersPtr, class StructurePolicy>
+    static DictionaryStructureWithBufferPolicy::StructurePolicyPtr
+            newPolicyForOnMemoryV4Dict(const FormatUtils::FORMAT_VERSION formatVersion,
+                    const std::vector<int> &locale,
+                    const DictionaryHeaderStructurePolicy::AttributeMap *const attributeMap);
+
     static DictionaryStructureWithBufferPolicy::StructurePolicyPtr
             newPolicyForDirectoryDict(const char *const path, const bool isUpdatable);
+
+    template<class DictConstants, class DictBuffers, class DictBuffersPtr, class StructurePolicy>
+    static DictionaryStructureWithBufferPolicy::StructurePolicyPtr newPolicyForV4Dict(
+            const char *const headerFilePath, const FormatUtils::FORMAT_VERSION formatVersion,
+                    MmappedBuffer::MmappedBufferPtr &&mmappedBuffer);
 
     static DictionaryStructureWithBufferPolicy::StructurePolicyPtr
             newPolicyForFileDict(const char *const path, const int bufOffset, const int size);

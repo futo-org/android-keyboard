@@ -45,6 +45,12 @@ class DictFileWritingUtils {
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(DictFileWritingUtils);
 
+    static bool createEmptyV401DictFile(const char *const filePath,
+            const std::vector<int> localeAsCodePointVector,
+            const DictionaryHeaderStructurePolicy::AttributeMap *const attributeMap,
+            const FormatUtils::FORMAT_VERSION formatVersion);
+
+    template<class DictConstants, class DictBuffers, class DictBuffersPtr>
     static bool createEmptyV4DictFile(const char *const filePath,
             const std::vector<int> localeAsCodePointVector,
             const DictionaryHeaderStructurePolicy::AttributeMap *const attributeMap,
