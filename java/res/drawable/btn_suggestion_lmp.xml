@@ -23,5 +23,5 @@
 >
     <item
         android:state_pressed="true"
-        android:drawable="@drawable/btn_keyboard_key_popup_selected_lmp" />
+        android:drawable="@color/suggested_word_background_selected_lmp" />
 </selector>
