@@ -193,8 +193,9 @@ public final class FormatSpec {
     // Dictionary version used for testing.
     public static final int VERSION4_ONLY_FOR_TESTING = 399;
     public static final int VERSION4 = 401;
+    public static final int VERSION4_DEV = 402;
     static final int MINIMUM_SUPPORTED_VERSION = VERSION2;
-    static final int MAXIMUM_SUPPORTED_VERSION = VERSION4;
+    static final int MAXIMUM_SUPPORTED_VERSION = VERSION4_DEV;
 
     // TODO: Make this value adaptative to content data, store it in the header, and
     // use it in the reading code.

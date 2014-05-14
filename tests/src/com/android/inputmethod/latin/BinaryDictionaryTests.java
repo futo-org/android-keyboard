@@ -43,11 +43,14 @@ import java.util.Random;
 public class BinaryDictionaryTests extends AndroidTestCase {
     private static final String TEST_DICT_FILE_EXTENSION = ".testDict";
     private static final String TEST_LOCALE = "test";
+    private static final int[] DICT_FORMAT_VERSIONS =
+            new int[] { FormatSpec.VERSION4, FormatSpec.VERSION4_DEV };
 
     private File createEmptyDictionaryAndGetFile(final String dictId,
             final int formatVersion) throws IOException {
         if (formatVersion == FormatSpec.VERSION4
-                || formatVersion == FormatSpec.VERSION4_ONLY_FOR_TESTING) {
+                || formatVersion == FormatSpec.VERSION4_ONLY_FOR_TESTING
+                || formatVersion == FormatSpec.VERSION4_DEV) {
             return createEmptyVer4DictionaryAndGetFile(dictId, formatVersion);
         } else {
             throw new IOException("Dictionary format version " + formatVersion
@@ -67,12 +70,14 @@ public class BinaryDictionaryTests extends AndroidTestCase {
             return file;
         } else {
             throw new IOException("Empty dictionary " + file.getAbsolutePath()
-                    + " cannot be created.");
+                    + " cannot be created. Format version: " + formatVersion);
         }
     }
 
     public void testIsValidDictionary() {
-        testIsValidDictionary(FormatSpec.VERSION4);
+        for (final int formatVersion : DICT_FORMAT_VERSIONS) {
+            testIsValidDictionary(formatVersion);
+        }
     }
 
     private void testIsValidDictionary(final int formatVersion) {
@@ -100,7 +105,9 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     }
 
     public void testConstructingDictionaryOnMemory() {
-        testConstructingDictionaryOnMemory(FormatSpec.VERSION4);
+        for (final int formatVersion : DICT_FORMAT_VERSIONS) {
+            testConstructingDictionaryOnMemory(formatVersion);
+        }
     }
 
     private void testConstructingDictionaryOnMemory(final int formatVersion) {
@@ -131,7 +138,9 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     }
 
     public void testAddTooLongWord() {
-        testAddTooLongWord(FormatSpec.VERSION4);
+        for (final int formatVersion : DICT_FORMAT_VERSIONS) {
+            testAddTooLongWord(formatVersion);
+        }
     }
 
     private void testAddTooLongWord(final int formatVersion) {
@@ -190,7 +199,9 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     }
 
     public void testAddUnigramWord() {
-        testAddUnigramWord(FormatSpec.VERSION4);
+        for (final int formatVersion : DICT_FORMAT_VERSIONS) {
+            testAddUnigramWord(formatVersion);
+        }
     }
 
     private void testAddUnigramWord(final int formatVersion) {
@@ -232,7 +243,9 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     }
 
     public void testRandomlyAddUnigramWord() {
-        testRandomlyAddUnigramWord(FormatSpec.VERSION4);
+        for (final int formatVersion : DICT_FORMAT_VERSIONS) {
+            testRandomlyAddUnigramWord(formatVersion);
+        }
     }
 
     private void testRandomlyAddUnigramWord(final int formatVersion) {
@@ -268,7 +281,9 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     }
 
     public void testAddBigramWords() {
-        testAddBigramWords(FormatSpec.VERSION4);
+        for (final int formatVersion : DICT_FORMAT_VERSIONS) {
+            testAddBigramWords(formatVersion);
+        }
     }
 
     private void testAddBigramWords(final int formatVersion) {
@@ -336,7 +351,9 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     }
 
     public void testRandomlyAddBigramWords() {
-        testRandomlyAddBigramWords(FormatSpec.VERSION4);
+        for (final int formatVersion : DICT_FORMAT_VERSIONS) {
+            testRandomlyAddBigramWords(formatVersion);
+        }
     }
 
     private void testRandomlyAddBigramWords(final int formatVersion) {
@@ -397,7 +414,9 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     }
 
     public void testRemoveBigramWords() {
-        testRemoveBigramWords(FormatSpec.VERSION4);
+        for (final int formatVersion : DICT_FORMAT_VERSIONS) {
+            testRemoveBigramWords(formatVersion);
+        }
     }
 
     private void testRemoveBigramWords(final int formatVersion) {
@@ -447,7 +466,9 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     }
 
     public void testFlushDictionary() {
-        testFlushDictionary(FormatSpec.VERSION4);
+        for (final int formatVersion : DICT_FORMAT_VERSIONS) {
+            testFlushDictionary(formatVersion);
+        }
     }
 
     private void testFlushDictionary(final int formatVersion) {
@@ -499,7 +520,9 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     }
 
     public void testFlushWithGCDictionary() {
-        testFlushWithGCDictionary(FormatSpec.VERSION4);
+        for (final int formatVersion : DICT_FORMAT_VERSIONS) {
+            testFlushWithGCDictionary(formatVersion);
+        }
     }
 
     private void testFlushWithGCDictionary(final int formatVersion) {
@@ -547,7 +570,9 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     }
 
     public void testAddBigramWordsAndFlashWithGC() {
-        testAddBigramWordsAndFlashWithGC(FormatSpec.VERSION4);
+        for (final int formatVersion : DICT_FORMAT_VERSIONS) {
+            testAddBigramWordsAndFlashWithGC(formatVersion);
+        }
     }
 
     // TODO: Evaluate performance of GC
@@ -616,7 +641,9 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     }
 
     public void testRandomOperationsAndFlashWithGC() {
-        testRandomOperationsAndFlashWithGC(FormatSpec.VERSION4);
+        for (final int formatVersion : DICT_FORMAT_VERSIONS) {
+            testRandomOperationsAndFlashWithGC(formatVersion);
+        }
     }
 
     private void testRandomOperationsAndFlashWithGC(final int formatVersion) {
@@ -727,7 +754,9 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     }
 
     public void testAddManyUnigramsAndFlushWithGC() {
-        testAddManyUnigramsAndFlushWithGC(FormatSpec.VERSION4);
+        for (final int formatVersion : DICT_FORMAT_VERSIONS) {
+            testAddManyUnigramsAndFlushWithGC(formatVersion);
+        }
     }
 
     private void testAddManyUnigramsAndFlushWithGC(final int formatVersion) {
@@ -775,7 +804,9 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     }
 
     public void testUnigramAndBigramCount() {
-        testUnigramAndBigramCount(FormatSpec.VERSION4);
+        for (final int formatVersion : DICT_FORMAT_VERSIONS) {
+            testUnigramAndBigramCount(formatVersion);
+        }
     }
 
     private void testUnigramAndBigramCount(final int formatVersion) {
@@ -834,7 +865,9 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     }
 
     public void testAddMultipleDictionaryEntries() {
-        testAddMultipleDictionaryEntries(FormatSpec.VERSION4);
+        for (final int formatVersion : DICT_FORMAT_VERSIONS) {
+            testAddMultipleDictionaryEntries(formatVersion);
+        }
     }
 
     private void testAddMultipleDictionaryEntries(final int formatVersion) {
@@ -896,7 +929,9 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     }
 
     public void testGetWordProperties() {
-        testGetWordProperties(FormatSpec.VERSION4);
+        for (final int formatVersion : DICT_FORMAT_VERSIONS) {
+            testGetWordProperties(formatVersion);
+        }
     }
 
     private void testGetWordProperties(final int formatVersion) {
@@ -995,7 +1030,9 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     }
 
     public void testIterateAllWords() {
-        testIterateAllWords(FormatSpec.VERSION4);
+        for (final int formatVersion : DICT_FORMAT_VERSIONS) {
+            testIterateAllWords(formatVersion);
+        }
     }
 
     private void testIterateAllWords(final int formatVersion) {
@@ -1091,7 +1128,9 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     }
 
     public void testAddShortcuts() {
-        testAddShortcuts(FormatSpec.VERSION4);
+        for (final int formatVersion : DICT_FORMAT_VERSIONS) {
+            testAddShortcuts(formatVersion);
+        }
     }
 
     private void testAddShortcuts(final int formatVersion) {
@@ -1151,7 +1190,9 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     }
 
     public void testAddManyShortcuts() {
-        testAddManyShortcuts(FormatSpec.VERSION4);
+        for (final int formatVersion : DICT_FORMAT_VERSIONS) {
+            testAddManyShortcuts(formatVersion);
+        }
     }
 
     private void testAddManyShortcuts(final int formatVersion) {
@@ -1227,7 +1268,9 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     }
 
     public void testDictMigration() {
-        testDictMigration(FormatSpec.VERSION4_ONLY_FOR_TESTING, FormatSpec.VERSION4);
+        for (final int formatVersion : DICT_FORMAT_VERSIONS) {
+            testDictMigration(FormatSpec.VERSION4_ONLY_FOR_TESTING, formatVersion);
+        }
     }
 
     private void testDictMigration(final int fromFormatVersion, final int toFormatVersion) {
@@ -1271,7 +1314,9 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     }
 
     public void testLargeDictMigration() {
-        testLargeDictMigration(FormatSpec.VERSION4_ONLY_FOR_TESTING, FormatSpec.VERSION4);
+        for (final int formatVersion : DICT_FORMAT_VERSIONS) {
+            testLargeDictMigration(FormatSpec.VERSION4_ONLY_FOR_TESTING, formatVersion);
+        }
     }
 
     private void testLargeDictMigration(final int fromFormatVersion, final int toFormatVersion) {
