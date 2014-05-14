@@ -207,9 +207,33 @@ public class MyanmarReordering implements Combiner {
                 return clearAndGetResultingEvent(newEvent);
             }
         } else if (Constants.CODE_DELETE == newEvent.mKeyCode) {
-            if (mCurrentEvents.size() > 0) {
-                mCurrentEvents.remove(mCurrentEvents.size() - 1);
-                return null;
+            final Event lastEvent = getLastEvent();
+            final int eventSize = mCurrentEvents.size();
+            if (null != lastEvent) {
+                if (VOWEL_E == lastEvent.mCodePoint) {
+                    // We have a VOWEL_E at the end. There are four cases.
+                    // - The vowel is the only code point in the buffer. Remove it.
+                    // - The vowel is preceded by a ZWNJ. Remove both vowel E and ZWNJ.
+                    // - The vowel is preceded by a consonant/medial, remove the consonant/medial.
+                    // - In all other cases, it's strange, so just remove the last code point.
+                    if (eventSize <= 1) {
+                        mCurrentEvents.clear();
+                    } else { // eventSize >= 2
+                        final int previousCodePoint = mCurrentEvents.get(eventSize - 2).mCodePoint;
+                        if (previousCodePoint == ZERO_WIDTH_NON_JOINER) {
+                            mCurrentEvents.remove(eventSize - 1);
+                            mCurrentEvents.remove(eventSize - 2);
+                        } else if (isConsonantOrMedial(previousCodePoint)) {
+                            mCurrentEvents.remove(eventSize - 2);
+                        } else {
+                            mCurrentEvents.remove(eventSize - 1);
+                        }
+                    }
+                    return null;
+                } else if (eventSize > 0) {
+                    mCurrentEvents.remove(eventSize - 1);
+                    return null;
+                }
             }
         }
         // This character is not part of the combining scheme, so we should reset everything.
