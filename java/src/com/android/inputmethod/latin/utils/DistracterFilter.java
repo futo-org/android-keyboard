@@ -17,8 +17,6 @@
 package com.android.inputmethod.latin.utils;
 
 import com.android.inputmethod.keyboard.Keyboard;
-import com.android.inputmethod.keyboard.KeyboardSwitcher;
-import com.android.inputmethod.keyboard.MainKeyboardView;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.Suggest;
 import com.android.inputmethod.latin.Suggest.OnGetSuggestedWordsCallback;
@@ -52,18 +50,6 @@ public class DistracterFilter {
     public DistracterFilter(final Suggest suggest, final Keyboard keyboard) {
         mSuggest = suggest;
         mKeyboard = keyboard;
-    }
-
-    public static DistracterFilter createDistracterFilter(final Suggest suggest,
-            final KeyboardSwitcher keyboardSwitcher) {
-        final MainKeyboardView mainKeyboardView = keyboardSwitcher.getMainKeyboardView();
-        // TODO: Create Keyboard when mainKeyboardView is null.
-        // TODO: Figure out the most reasonable keyboard for the filter. Refer to the
-        // spellchecker's logic.
-        final Keyboard keyboard = (mainKeyboardView != null) ?
-                mainKeyboardView.getKeyboard() : null;
-        final DistracterFilter distracterFilter = new DistracterFilter(suggest, keyboard);
-        return distracterFilter;
     }
 
     private static boolean suggestionExceedsDistracterThreshold(
