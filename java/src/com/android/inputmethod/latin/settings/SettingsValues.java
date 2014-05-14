@@ -73,6 +73,7 @@ public final class SettingsValues {
     public final boolean mPhraseGestureEnabled;
     public final int mKeyLongpressTimeout;
     public final Locale mLocale;
+    public final boolean mEnableMetricsLogging;
 
     // From the input box
     public final InputAttributes mInputAttributes;
@@ -134,7 +135,7 @@ public final class SettingsValues {
         mAutoCorrectEnabled = Settings.readAutoCorrectEnabled(autoCorrectionThresholdRawValue, res);
         mBigramPredictionEnabled = readBigramPredictionEnabled(prefs, res);
         mDoubleSpacePeriodTimeout = res.getInteger(R.integer.config_double_space_period_timeout);
-
+        mEnableMetricsLogging = prefs.getBoolean(Settings.PREF_ENABLE_METRICS_LOGGING, true);
         // Compute other readable settings
         mKeyLongpressTimeout = Settings.readKeyLongpressTimeout(prefs, res);
         mKeypressVibrationDuration = Settings.readKeypressVibrationDuration(prefs, res);

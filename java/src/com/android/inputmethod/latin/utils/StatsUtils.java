@@ -17,37 +17,18 @@
 package com.android.inputmethod.latin.utils;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
-import android.util.Log;
-
-import com.android.inputmethod.latin.settings.Settings;
+import com.android.inputmethod.latin.settings.SettingsValues;
 
 public final class StatsUtils {
-    private static final String TAG = StatsUtils.class.getSimpleName();
-    private static final StatsUtils sInstance = new StatsUtils();
-
-    public static void onCreateCompleted(final Context context) {
-        sInstance.onCreateCompletedInternal(context);
+    public static void init(final Context context) {
     }
 
-    private void onCreateCompletedInternal(final Context context) {
-        mContext = context;
-        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
-        final Boolean usePersonalizedDict =
-                prefs.getBoolean(Settings.PREF_KEY_USE_PERSONALIZED_DICTS, true);
-        Log.d(TAG, "onCreateCompleted. context: " + context.toString() + "usePersonalizedDict: "
-                + usePersonalizedDict);
+    public static void onCreate(final SettingsValues settingsValues) {
+    }
+
+    public static void onLoadSettings(final SettingsValues settingsValues) {
     }
 
     public static void onDestroy() {
-        sInstance.onDestroyInternal();
     }
-
-    private void onDestroyInternal() {
-        Log.d(TAG, "onDestroy. context: " + mContext.toString());
-        mContext = null;
-    }
-
-    private Context mContext;
 }
