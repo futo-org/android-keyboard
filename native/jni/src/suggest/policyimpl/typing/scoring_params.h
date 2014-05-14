@@ -44,6 +44,7 @@ class ScoringParams {
     static const float PROXIMITY_COST;
     static const float FIRST_CHAR_PROXIMITY_COST;
     static const float FIRST_PROXIMITY_COST;
+    static const float INTENTIONAL_OMISSION_COST;
     static const float OMISSION_COST;
     static const float OMISSION_COST_SAME_CHAR;
     static const float OMISSION_COST_FIRST_CHAR;
