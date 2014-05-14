@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.inputmethod.keyboard;
+package com.android.inputmethod.keyboard.emoji;
 
 import static com.android.inputmethod.latin.Constants.NOT_A_COORDINATE;
 
@@ -40,10 +40,10 @@ import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TextView;
 
-import com.android.inputmethod.keyboard.internal.EmojiCategory;
-import com.android.inputmethod.keyboard.internal.EmojiLayoutParams;
-import com.android.inputmethod.keyboard.internal.EmojiPageKeyboardView;
-import com.android.inputmethod.keyboard.internal.EmojiPalettesAdapter;
+import com.android.inputmethod.keyboard.Key;
+import com.android.inputmethod.keyboard.KeyboardActionListener;
+import com.android.inputmethod.keyboard.KeyboardLayoutSet;
+import com.android.inputmethod.keyboard.KeyboardView;
 import com.android.inputmethod.keyboard.internal.KeyDrawParams;
 import com.android.inputmethod.keyboard.internal.KeyVisualAttributes;
 import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
@@ -65,7 +65,6 @@ import java.util.concurrent.TimeUnit;
  * </ol>
  * Because of the above reasons, this class doesn't extend {@link KeyboardView}.
  */
-// TODO: Move this class to com.android.inputmethod.emoji package.
 public final class EmojiPalettesView extends LinearLayout implements OnTabChangeListener,
         ViewPager.OnPageChangeListener, View.OnClickListener, View.OnTouchListener,
         EmojiPageKeyboardView.OnKeyEventListener {
@@ -317,7 +316,7 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
 
     /**
      * Called from {@link EmojiPageKeyboardView} through
-     * {@link com.android.inputmethod.keyboard.internal.EmojiPageKeyboardView.OnKeyEventListener}
+     * {@link com.android.inputmethod.keyboard.emoji.EmojiPageKeyboardView.OnKeyEventListener}
      * interface to handle touch events from non-View-based elements such as Emoji buttons.
      */
     @Override
@@ -328,7 +327,7 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
 
     /**
      * Called from {@link EmojiPageKeyboardView} through
-     * {@link com.android.inputmethod.keyboard.internal.EmojiPageKeyboardView.OnKeyEventListener}
+     * {@link com.android.inputmethod.keyboard.emoji.EmojiPageKeyboardView.OnKeyEventListener}
      * interface to handle touch events from non-View-based elements such as Emoji buttons.
      */
     @Override

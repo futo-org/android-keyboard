@@ -28,6 +28,7 @@ import android.view.inputmethod.EditorInfo;
 
 import com.android.inputmethod.compat.InputMethodServiceCompatUtils;
 import com.android.inputmethod.keyboard.KeyboardLayoutSet.KeyboardLayoutSetException;
+import com.android.inputmethod.keyboard.emoji.EmojiPalettesView;
 import com.android.inputmethod.keyboard.internal.KeyboardState;
 import com.android.inputmethod.keyboard.internal.KeyboardTextsSet;
 import com.android.inputmethod.latin.InputView;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.inputmethod.keyboard;
+package com.android.inputmethod.keyboard.emoji;
 
 import com.android.inputmethod.latin.R;
 
@@ -24,7 +24,6 @@ import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 
-//TODO: Move this class to com.android.inputmethod.emoji package.
 public final class EmojiCategoryPageIndicatorView extends LinearLayout {
     private static final float BOTTOM_MARGIN_RATIO = 1.0f;
     private final Paint mPaint = new Paint();

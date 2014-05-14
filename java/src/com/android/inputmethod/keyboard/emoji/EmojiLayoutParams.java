@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.inputmethod.keyboard.internal;
+package com.android.inputmethod.keyboard.emoji;
 
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.utils.ResourceUtils;
@@ -24,8 +24,7 @@ import android.support.v4.view.ViewPager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-//TODO: Move this class to com.android.inputmethod.emoji package.
-public final class EmojiLayoutParams {
+final class EmojiLayoutParams {
     private static final int DEFAULT_KEYBOARD_ROWS = 4;
 
     public final int mEmojiPagerHeight;

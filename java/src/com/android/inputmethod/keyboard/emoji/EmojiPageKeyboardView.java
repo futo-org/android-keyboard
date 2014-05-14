@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.inputmethod.keyboard.internal;
+package com.android.inputmethod.keyboard.emoji;
 
 import android.content.Context;
 import android.os.Handler;
@@ -26,16 +26,14 @@ import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.KeyDetector;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardView;
-import com.android.inputmethod.keyboard.PointerTracker;
 import com.android.inputmethod.latin.R;
 
 /**
  * This is an extended {@link KeyboardView} class that hosts an emoji page keyboard.
- * Multi-touch unsupported. No {@link PointerTracker}s. No gesture support.
+ * Multi-touch unsupported. No gesture support.
  */
-// TODO: Move this class to com.android.inputmethod.emoji package.
 // TODO: Implement key popup preview.
-public final class EmojiPageKeyboardView extends KeyboardView implements
+final class EmojiPageKeyboardView extends KeyboardView implements
         GestureDetector.OnGestureListener {
     private static final long KEY_PRESS_DELAY_TIME = 250;  // msec
     private static final long KEY_RELEASE_DELAY_TIME = 30;  // msec

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.inputmethod.keyboard.internal;
+package com.android.inputmethod.keyboard.emoji;
 
 import android.support.v4.view.PagerAdapter;
 import android.util.Log;
@@ -29,8 +29,7 @@ import com.android.inputmethod.keyboard.KeyboardView;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 
-// TODO: Move this class to com.android.inputmethod.emoji package.
-public final class EmojiPalettesAdapter extends PagerAdapter {
+final class EmojiPalettesAdapter extends PagerAdapter {
     private static final String TAG = EmojiPalettesAdapter.class.getSimpleName();
     private static final boolean DEBUG_PAGER = false;
 
