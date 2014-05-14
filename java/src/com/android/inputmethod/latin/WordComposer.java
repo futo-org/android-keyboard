@@ -80,7 +80,7 @@ public final class WordComposer {
     private boolean mIsFirstCharCapitalized;
 
     public WordComposer() {
-        mCombinerChain = new CombinerChain();
+        mCombinerChain = new CombinerChain("");
         mEvents = CollectionUtils.newArrayList();
         mAutoCorrection = null;
         mIsResumed = false;
@@ -92,18 +92,17 @@ public final class WordComposer {
     }
 
     /**
-     * Restart input with a new combining spec.
+     * Restart the combiners, possibly with a new spec.
      * @param combiningSpec The spec string for combining. This is found in the extra value.
      */
-    public void restart(final String combiningSpec) {
+    public void restartCombining(final String combiningSpec) {
         final String nonNullCombiningSpec = null == combiningSpec ? "" : combiningSpec;
-        if (nonNullCombiningSpec.equals(mCombiningSpec)) {
-            mCombinerChain.reset();
-        } else {
-            mCombinerChain = new CombinerChain(CombinerChain.createCombiners(nonNullCombiningSpec));
+        if (!nonNullCombiningSpec.equals(mCombiningSpec)) {
+            mCombinerChain = new CombinerChain(
+                    mCombinerChain.getComposingWordWithCombiningFeedback().toString(),
+                    CombinerChain.createCombiners(nonNullCombiningSpec));
             mCombiningSpec = nonNullCombiningSpec;
         }
-        reset();
     }
 
     /**

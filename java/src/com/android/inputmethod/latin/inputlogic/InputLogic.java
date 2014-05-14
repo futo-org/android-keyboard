@@ -127,7 +127,7 @@ public final class InputLogic {
     public void startInput(final boolean restarting, final EditorInfo editorInfo,
             final String combiningSpec) {
         mEnteredText = null;
-        mWordComposer.restart(combiningSpec);
+        mWordComposer.restartCombining(combiningSpec);
         resetComposingState(true /* alsoResetLastComposedWord */);
         mDeleteCount = 0;
         mSpaceState = SpaceState.NONE;
@@ -150,7 +150,7 @@ public final class InputLogic {
      * @param combiningSpec the spec string for the combining rules
      */
     public void onSubtypeChanged(final String combiningSpec) {
-        mWordComposer.restart(combiningSpec);
+        mWordComposer.restartCombining(combiningSpec);
     }
 
     /**

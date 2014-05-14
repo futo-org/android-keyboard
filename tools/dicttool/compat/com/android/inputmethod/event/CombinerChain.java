@@ -28,8 +28,10 @@ import java.util.ArrayList;
 // TODO: there should not be a dependency to this in dicttool, so there
 // should be a sensible way to separate them cleanly.
 public class CombinerChain {
-    private StringBuilder mComposingWord = new StringBuilder();
-    public CombinerChain(final Combiner... combinerList) {}
+    private StringBuilder mComposingWord;
+    public CombinerChain(final String initialText, final Combiner... combinerList) {
+        mComposingWord = new StringBuilder(initialText);
+    }
 
     public void processEvent(final ArrayList<Event> previousEvents, final Event newEvent) {
         mComposingWord.append(newEvent.getTextToCommit());
