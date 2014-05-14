@@ -76,7 +76,6 @@ import java.util.WeakHashMap;
  * @attr ref R.styleable#MainKeyboardView_languageOnSpacebarTextColor
  * @attr ref R.styleable#MainKeyboardView_languageOnSpacebarTextShadowRadius
  * @attr ref R.styleable#MainKeyboardView_languageOnSpacebarTextShadowColor
- * @attr ref R.styleable#MainKeyboardView_spacebarBackground
  * @attr ref R.styleable#MainKeyboardView_languageOnSpacebarFinalAlpha
  * @attr ref R.styleable#MainKeyboardView_languageOnSpacebarFadeoutAnimator
  * @attr ref R.styleable#MainKeyboardView_altCodeKeyWhileTypingFadeoutAnimator
@@ -120,7 +119,6 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     /* Space key and its icon and background. */
     private Key mSpaceKey;
     private Drawable mSpacebarIcon;
-    private final Drawable mSpacebarBackground;
     // Stuff to draw language name on spacebar.
     private final int mLanguageOnSpacebarFinalAlpha;
     private ObjectAnimator mLanguageOnSpacebarFadeoutAnimator;
@@ -154,7 +152,6 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     private final SlidingKeyInputDrawingPreview mSlidingKeyInputDrawingPreview;
 
     // Key preview
-    private static final boolean FADE_OUT_KEY_TOP_LETTER_WHEN_KEY_IS_PRESSED = false;
     private final KeyPreviewDrawParams mKeyPreviewDrawParams;
     private final KeyPreviewChoreographer mKeyPreviewChoreographer;
 
@@ -224,8 +221,6 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
                 R.styleable.MainKeyboardView_backgroundDimAlpha, 0);
         mBackgroundDimAlphaPaint.setColor(Color.BLACK);
         mBackgroundDimAlphaPaint.setAlpha(backgroundDimAlpha);
-        mSpacebarBackground = mainKeyboardViewAttr.getDrawable(
-                R.styleable.MainKeyboardView_spacebarBackground);
         mAutoCorrectionSpacebarLedEnabled = mainKeyboardViewAttr.getBoolean(
                 R.styleable.MainKeyboardView_autoCorrectionSpacebarLedEnabled, false);
         mAutoCorrectionSpacebarLedIcon = mainKeyboardViewAttr.getDrawable(
@@ -557,6 +552,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     }
 
     // Note that this method is called from a non-UI thread.
+    @SuppressWarnings("static-method")
     public void setMainDictionaryAvailability(final boolean mainDictionaryAvailable) {
         PointerTracker.setMainDictionaryAvailability(mainDictionaryAvailable);
     }
@@ -864,29 +860,11 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         }
     }
 
-    // Draw key background.
-    @Override
-    protected void onDrawKeyBackground(final Key key, final Canvas canvas,
-            final Drawable background) {
-        if (key.getCode() == Constants.CODE_SPACE) {
-            super.onDrawKeyBackground(key, canvas, mSpacebarBackground);
-            return;
-        }
-        super.onDrawKeyBackground(key, canvas, background);
-    }
-
     @Override
     protected void onDrawKeyTopVisuals(final Key key, final Canvas canvas, final Paint paint,
             final KeyDrawParams params) {
         if (key.altCodeWhileTyping() && key.isEnabled()) {
             params.mAnimAlpha = mAltCodeKeyWhileTypingAnimAlpha;
-        }
-        // Don't draw key top letter when key preview is showing.
-        if (FADE_OUT_KEY_TOP_LETTER_WHEN_KEY_IS_PRESSED
-                && mKeyPreviewChoreographer.isShowingKeyPreview(key)) {
-            // TODO: Fade out animation for the key top letter, and fade in animation for the key
-            // background color when the user presses the key.
-            return;
         }
         final int code = key.getCode();
         if (code == Constants.CODE_SPACE) {
