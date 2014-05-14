@@ -33,6 +33,7 @@ import com.android.inputmethod.latin.R;
  * This is an extended {@link KeyboardView} class that hosts an emoji page keyboard.
  * Multi-touch unsupported. No {@link PointerTracker}s. No gesture support.
  */
+// TODO: Move this class to com.android.inputmethod.emoji package.
 // TODO: Implement key popup preview.
 public final class EmojiPageKeyboardView extends KeyboardView implements
         GestureDetector.OnGestureListener {
