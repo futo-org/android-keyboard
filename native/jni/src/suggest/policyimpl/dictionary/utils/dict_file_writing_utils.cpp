@@ -17,6 +17,10 @@
 #include "suggest/policyimpl/dictionary/utils/dict_file_writing_utils.h"
 
 #include <cstdio>
+#include <errno.h>
+#include <fcntl.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
 #include "suggest/policyimpl/dictionary/header/header_policy.h"
 #include "suggest/policyimpl/dictionary/structure/pt_common/dynamic_pt_writing_utils.h"
@@ -100,9 +104,15 @@ const char *const DictFileWritingUtils::TEMP_FILE_SUFFIX_FOR_WRITING_DICT_FILE =
 
 /* static */ bool DictFileWritingUtils::flushBufferToFile(const char *const filePath,
         const BufferWithExtendableBuffer *const buffer) {
-    FILE *const file = fopen(filePath, "wb");
+    const int fd = open(filePath, O_WRONLY | O_CREAT | O_EXCL, S_IRUSR | S_IWUSR);
+    if (fd == -1) {
+        AKLOGE("File %s cannot be opened. errno: %d", filePath, errno);
+        ASSERT(false);
+        return false;
+    }
+    FILE *const file = fdopen(fd, "wb");
     if (!file) {
-        AKLOGE("File %s cannot be opened.", filePath);
+        AKLOGE("fdopen failed for the file %s. errno: %d", filePath, errno);
         ASSERT(false);
         return false;
     }
