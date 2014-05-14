@@ -90,19 +90,14 @@ public class DistracterFilter {
      */
     public boolean isDistracterToWordsInDictionaries(final String prevWord,
             final String testedWord) {
-        if (mSuggest == null) {
+        if (mSuggest == null || mKeyboard == null) {
             return false;
         }
 
         final WordComposer composer = new WordComposer();
         final int[] codePoints = StringUtils.toCodePointArray(testedWord);
         final int[] coordinates;
-        if (null == mKeyboard) {
-            coordinates = CoordinateUtils.newCoordinateArray(codePoints.length,
-                    Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
-        } else {
-            coordinates = mKeyboard.getCoordinates(codePoints);
-        }
+        coordinates = mKeyboard.getCoordinates(codePoints);
         composer.setComposingWord(codePoints, coordinates, prevWord);
 
         final int trailingSingleQuotesCount = composer.trailingSingleQuotesCount();
