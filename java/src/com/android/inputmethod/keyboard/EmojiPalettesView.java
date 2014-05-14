@@ -153,7 +153,9 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
             textView.setText(mEmojiCategory.getCategoryLabel(categoryId));
             textView.setTypeface(Typeface.DEFAULT_BOLD);
             textView.setContentDescription(mEmojiCategory.getAccessibilityDescription(categoryId));
-            textView.setTextColor(mTabLabelColor);
+            if (mTabLabelColor != null) {
+                textView.setTextColor(mTabLabelColor);
+            }
             tspec.setIndicator(textView);
         }
         host.addTab(tspec);
