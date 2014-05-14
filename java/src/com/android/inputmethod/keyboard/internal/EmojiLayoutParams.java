@@ -24,7 +24,8 @@ import android.support.v4.view.ViewPager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-public class EmojiLayoutParams {
+//TODO: Move this class to com.android.inputmethod.emoji package.
+public final class EmojiLayoutParams {
     private static final int DEFAULT_KEYBOARD_ROWS = 4;
 
     public final int mEmojiPagerHeight;

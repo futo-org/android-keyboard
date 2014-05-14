@@ -20,7 +20,6 @@ import android.content.SharedPreferences;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.android.inputmethod.keyboard.EmojiPalettesView;
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.latin.settings.Settings;
@@ -36,6 +35,7 @@ import java.util.List;
 /**
  * This is a Keyboard class where you can add keys dynamically shown in a grid layout
  */
+// TODO: Move this class to com.android.inputmethod.emoji package.
 public class DynamicGridKeyboard extends Keyboard {
     private static final String TAG = DynamicGridKeyboard.class.getSimpleName();
     private static final int TEMPLATE_KEY_CODE_0 = 0x30;
@@ -62,7 +62,7 @@ public class DynamicGridKeyboard extends Keyboard {
         mVerticalStep = key0.getHeight() + mVerticalGap;
         mColumnsNum = mBaseWidth / mHorizontalStep;
         mMaxKeyCount = maxKeyCount;
-        mIsRecents = categoryId == EmojiPalettesView.CATEGORY_ID_RECENTS;
+        mIsRecents = categoryId == EmojiCategory.ID_RECENTS;
         mPrefs = prefs;
     }
 
