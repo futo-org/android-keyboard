@@ -302,7 +302,6 @@ static jint latinime_BinaryDictionary_getNextWord(JNIEnv *env, jclass clazz,
     int wordCodePoints[outCodePointsLength];
     memset(wordCodePoints, 0, sizeof(wordCodePoints));
     const int nextToken = dictionary->getNextWordAndNextToken(token, wordCodePoints);
-    env->SetIntArrayRegion(outCodePoints, 0, outCodePointsLength, wordCodePoints);
     JniDataUtils::outputCodePoints(env, outCodePoints, 0 /* start */,
             MAX_WORD_LENGTH /* maxLength */, wordCodePoints, outCodePointsLength,
             false /* needsNullTermination */);
