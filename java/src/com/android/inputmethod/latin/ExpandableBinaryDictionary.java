@@ -607,6 +607,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                 Log.d(TAG, "Dump dictionary: " + mDictName);
                 try {
                     final DictionaryHeader header = mBinaryDictionary.getHeader();
+                    Log.d(TAG, "Format version: " + mBinaryDictionary.getFormatVersion());
                     Log.d(TAG, CombinedFormatUtils.formatAttributeMap(
                             header.mDictionaryOptions.mAttributes));
                 } catch (final UnsupportedFormatException e) {
