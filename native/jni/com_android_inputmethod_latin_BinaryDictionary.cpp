@@ -136,10 +136,9 @@ static void latinime_BinaryDictionary_getHeaderInfo(JNIEnv *env, jclass clazz, j
     if (!dictionary) return;
     const DictionaryHeaderStructurePolicy *const headerPolicy =
             dictionary->getDictionaryStructurePolicy()->getHeaderStructurePolicy();
-    const int headerSize = headerPolicy->getSize();
-    env->SetIntArrayRegion(outHeaderSize, 0 /* start */, 1 /* len */, &headerSize);
-    const int formatVersion = headerPolicy->getFormatVersionNumber();
-    env->SetIntArrayRegion(outFormatVersion, 0 /* start */, 1 /* len */, &formatVersion);
+    JniDataUtils::putIntToArray(env, outHeaderSize, 0 /* index */, headerPolicy->getSize());
+    JniDataUtils::putIntToArray(env, outFormatVersion, 0 /* index */,
+            headerPolicy->getFormatVersionNumber());
     // Output attribute map
     jclass arrayListClass = env->FindClass("java/util/ArrayList");
     jmethodID addMethodId = env->GetMethodID(arrayListClass, "add", "(Ljava/lang/Object;)Z");
@@ -184,8 +183,7 @@ static void latinime_BinaryDictionary_getSuggestions(JNIEnv *env, jclass clazz, 
         jfloatArray inOutLanguageWeight) {
     Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
     // Assign 0 to outSuggestionCount here in case of returning earlier in this method.
-    int count = 0;
-    env->SetIntArrayRegion(outSuggestionCount, 0, 1 /* len */, &count);
+    JniDataUtils::putIntToArray(env, outSuggestionCount, 0 /* index */, 0);
     if (!dictionary) {
         return;
     }
