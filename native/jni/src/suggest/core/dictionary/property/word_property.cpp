@@ -16,14 +16,17 @@
 
 #include "suggest/core/dictionary/property/word_property.h"
 
+#include "utils/jni_data_utils.h"
+
 namespace latinime {
 
 void WordProperty::outputProperties(JNIEnv *const env, jintArray outCodePoints,
         jbooleanArray outFlags, jintArray outProbabilityInfo, jobject outBigramTargets,
         jobject outBigramProbabilities, jobject outShortcutTargets,
         jobject outShortcutProbabilities) const {
-    env->SetIntArrayRegion(outCodePoints, 0 /* start */, mCodePoints.size(), &mCodePoints[0]);
-
+    JniDataUtils::outputCodePoints(env, outCodePoints, 0 /* start */,
+            MAX_WORD_LENGTH /* maxLength */, mCodePoints.data(), mCodePoints.size(),
+            false /* needsNullTermination */);
     jboolean flags[] = {mUnigramProperty.isNotAWord(), mUnigramProperty.isBlacklisted(),
             !mBigrams.empty(), mUnigramProperty.hasShortcuts()};
     env->SetBooleanArrayRegion(outFlags, 0 /* start */, NELEMS(flags), flags);
@@ -41,8 +44,9 @@ void WordProperty::outputProperties(JNIEnv *const env, jintArray outCodePoints,
     for (const auto &bigramProperty : mBigrams) {
         const std::vector<int> *const word1CodePoints = bigramProperty.getTargetCodePoints();
         jintArray bigramWord1CodePointArray = env->NewIntArray(word1CodePoints->size());
-        env->SetIntArrayRegion(bigramWord1CodePointArray, 0 /* start */,
-                word1CodePoints->size(), word1CodePoints->data());
+        JniDataUtils::outputCodePoints(env, bigramWord1CodePointArray, 0 /* start */,
+                word1CodePoints->size(), word1CodePoints->data(), word1CodePoints->size(),
+                false /* needsNullTermination */);
         env->CallBooleanMethod(outBigramTargets, addMethodId, bigramWord1CodePointArray);
         env->DeleteLocalRef(bigramWord1CodePointArray);
 
@@ -62,6 +66,9 @@ void WordProperty::outputProperties(JNIEnv *const env, jintArray outCodePoints,
         jintArray shortcutTargetCodePointArray = env->NewIntArray(targetCodePoints->size());
         env->SetIntArrayRegion(shortcutTargetCodePointArray, 0 /* start */,
                 targetCodePoints->size(), targetCodePoints->data());
+        JniDataUtils::outputCodePoints(env, shortcutTargetCodePointArray, 0 /* start */,
+                targetCodePoints->size(), targetCodePoints->data(), targetCodePoints->size(),
+                false /* needsNullTermination */);
         env->CallBooleanMethod(outShortcutTargets, addMethodId, shortcutTargetCodePointArray);
         env->DeleteLocalRef(shortcutTargetCodePointArray);
         jobject integerProbability = env->NewObject(integerClass, intToIntegerConstructorId,

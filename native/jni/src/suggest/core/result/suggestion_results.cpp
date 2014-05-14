@@ -16,6 +16,8 @@
 
 #include "suggest/core/result/suggestion_results.h"
 
+#include "utils/jni_data_utils.h"
+
 namespace latinime {
 
 void SuggestionResults::outputSuggestions(JNIEnv *env, jintArray outSuggestionCount,
@@ -27,13 +29,9 @@ void SuggestionResults::outputSuggestions(JNIEnv *env, jintArray outSuggestionCo
         const SuggestedWord &suggestedWord = mSuggestedWords.top();
         suggestedWord.getCodePointCount();
         const int start = outputIndex * MAX_WORD_LENGTH;
-        env->SetIntArrayRegion(outputCodePointsArray, start, suggestedWord.getCodePointCount(),
-                suggestedWord.getCodePoint());
-        if (suggestedWord.getCodePointCount() < MAX_WORD_LENGTH) {
-            const int terminal = 0;
-            env->SetIntArrayRegion(outputCodePointsArray, start + suggestedWord.getCodePointCount(),
-                    1 /* len */, &terminal);
-        }
+        JniDataUtils::outputCodePoints(env, outputCodePointsArray, start,
+                MAX_WORD_LENGTH /* maxLength */, suggestedWord.getCodePoint(),
+                suggestedWord.getCodePointCount(), true /* needsNullTermination */);
         const int score = suggestedWord.getScore();
         env->SetIntArrayRegion(outScoresArray, outputIndex, 1 /* len */, &score);
         const int indexToPartialCommit = suggestedWord.getIndexToPartialCommit();
