@@ -149,14 +149,16 @@ static void latinime_BinaryDictionary_getHeaderInfo(JNIEnv *env, jclass clazz, j
             it != attributeMap->end(); ++it) {
         // Output key
         jintArray keyCodePointArray = env->NewIntArray(it->first.size());
-        env->SetIntArrayRegion(
-                keyCodePointArray, 0 /* start */, it->first.size(), &it->first.at(0));
+        JniDataUtils::outputCodePoints(env, keyCodePointArray, 0 /* start */,
+                it->first.size(), it->first.data(), it->first.size(),
+                false /* needsNullTermination */);
         env->CallBooleanMethod(outAttributeKeys, addMethodId, keyCodePointArray);
         env->DeleteLocalRef(keyCodePointArray);
         // Output value
         jintArray valueCodePointArray = env->NewIntArray(it->second.size());
-        env->SetIntArrayRegion(
-                valueCodePointArray, 0 /* start */, it->second.size(), &it->second.at(0));
+        JniDataUtils::outputCodePoints(env, valueCodePointArray, 0 /* start */,
+                it->second.size(), it->second.data(), it->second.size(),
+                false /* needsNullTermination */);
         env->CallBooleanMethod(outAttributeValues, addMethodId, valueCodePointArray);
         env->DeleteLocalRef(valueCodePointArray);
     }
@@ -301,6 +303,9 @@ static jint latinime_BinaryDictionary_getNextWord(JNIEnv *env, jclass clazz,
     memset(wordCodePoints, 0, sizeof(wordCodePoints));
     const int nextToken = dictionary->getNextWordAndNextToken(token, wordCodePoints);
     env->SetIntArrayRegion(outCodePoints, 0, outCodePointsLength, wordCodePoints);
+    JniDataUtils::outputCodePoints(env, outCodePoints, 0 /* start */,
+            MAX_WORD_LENGTH /* maxLength */, wordCodePoints, outCodePointsLength,
+            false /* needsNullTermination */);
     return nextToken;
 }
 

@@ -65,6 +65,18 @@ class JniDataUtils {
         return attributeMap;
     }
 
+    static void outputCodePoints(JNIEnv *env, jintArray intArrayToOutputCodePoints, const int start,
+            const int maxLength, const int *const codePoints, const int codePointCount,
+            const bool needsNullTermination) {
+        const int outputCodePointCount = std::min(maxLength, codePointCount);
+        env->SetIntArrayRegion(intArrayToOutputCodePoints, start, outputCodePointCount, codePoints);
+        if (needsNullTermination && outputCodePointCount < maxLength) {
+            const int terminal = 0;
+            env->SetIntArrayRegion(intArrayToOutputCodePoints, start + outputCodePointCount,
+                    1 /* len */, &terminal);
+        }
+    }
+
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(JniDataUtils);
 };
