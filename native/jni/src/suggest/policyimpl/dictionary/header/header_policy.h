@@ -143,6 +143,8 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
                 return FormatUtils::VERSION_4_ONLY_FOR_TESTING;
             case FormatUtils::VERSION_4:
                 return FormatUtils::VERSION_4;
+            case FormatUtils::VERSION_4_DEV:
+                return FormatUtils::VERSION_4_DEV;
             default:
                 return FormatUtils::UNKNOWN_VERSION;
         }

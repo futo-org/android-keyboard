@@ -100,6 +100,7 @@ typedef DictionaryHeaderStructurePolicy::AttributeMap AttributeMap;
             return false;
         case FormatUtils::VERSION_4_ONLY_FOR_TESTING:
         case FormatUtils::VERSION_4:
+        case FormatUtils::VERSION_4_DEV:
             return buffer->writeUintAndAdvancePosition(version /* data */,
                     HEADER_DICTIONARY_VERSION_SIZE, writingPos);
         default:

@@ -23,6 +23,7 @@
 #include <sys/types.h>
 
 #include "suggest/policyimpl/dictionary/header/header_policy.h"
+#include "suggest/policyimpl/dictionary/structure/backward/v401/ver4_dict_buffers.h"
 #include "suggest/policyimpl/dictionary/structure/pt_common/dynamic_pt_writing_utils.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_dict_buffers.h"
 #include "suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer.h"
@@ -40,10 +41,16 @@ const char *const DictFileWritingUtils::TEMP_FILE_SUFFIX_FOR_WRITING_DICT_FILE =
     TimeKeeper::setCurrentTime();
     const FormatUtils::FORMAT_VERSION formatVersion = FormatUtils::getFormatVersion(dictVersion);
     switch (formatVersion) {
-        case FormatUtils::VERSION_4_ONLY_FOR_TESTING:
         case FormatUtils::VERSION_4:
-            return createEmptyV4DictFile(filePath, localeAsCodePointVector, attributeMap,
-                    formatVersion);
+            return createEmptyV4DictFile<backward::v401::Ver4DictConstants,
+                    backward::v401::Ver4DictBuffers,
+                    backward::v401::Ver4DictBuffers::Ver4DictBuffersPtr>(
+                            filePath, localeAsCodePointVector, attributeMap, formatVersion);
+        case FormatUtils::VERSION_4_ONLY_FOR_TESTING:
+        case FormatUtils::VERSION_4_DEV:
+            return createEmptyV4DictFile<Ver4DictConstants, Ver4DictBuffers,
+                    Ver4DictBuffers::Ver4DictBuffersPtr>(
+                            filePath, localeAsCodePointVector, attributeMap, formatVersion);
         default:
             AKLOGE("Cannot create dictionary %s because format version %d is not supported.",
                     filePath, dictVersion);
@@ -51,14 +58,14 @@ const char *const DictFileWritingUtils::TEMP_FILE_SUFFIX_FOR_WRITING_DICT_FILE =
     }
 }
 
+template<class DictConstants, class DictBuffers, class DictBuffersPtr>
 /* static */ bool DictFileWritingUtils::createEmptyV4DictFile(const char *const dirPath,
         const std::vector<int> localeAsCodePointVector,
         const DictionaryHeaderStructurePolicy::AttributeMap *const attributeMap,
         const FormatUtils::FORMAT_VERSION formatVersion) {
     HeaderPolicy headerPolicy(formatVersion, localeAsCodePointVector, attributeMap);
-    Ver4DictBuffers::Ver4DictBuffersPtr dictBuffers(
-            Ver4DictBuffers::createVer4DictBuffers(&headerPolicy,
-                    Ver4DictConstants::MAX_DICT_EXTENDED_REGION_SIZE));
+    DictBuffersPtr dictBuffers = DictBuffers::createVer4DictBuffers(&headerPolicy,
+            DictConstants::MAX_DICT_EXTENDED_REGION_SIZE);
     headerPolicy.fillInAndWriteHeaderToBuffer(true /* updatesLastDecayedTime */,
             0 /* unigramCount */, 0 /* bigramCount */,
             0 /* extendedRegionSize */, dictBuffers->getWritableHeaderBuffer());
