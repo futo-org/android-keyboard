@@ -27,8 +27,10 @@
     <string name="spoken_auto_correct_obscured" msgid="7769449372355268412">"<xliff:g id="KEY_NAME">%1$s</xliff:g> avto-korreksiyanı həyata keçirir"</string>
     <string name="spoken_description_unknown" msgid="2382510329910793539">"%d açar kodu"</string>
     <string name="spoken_description_shift" msgid="7209798151676638728">"Sürüşdürmə"</string>
-    <string name="spoken_description_shift_shifted" msgid="1609924271343916689">"Sürüşdürmə aktivdir (deaktiv etmək üçün klikləyin)"</string>
-    <string name="spoken_description_caps_lock" msgid="5020582161133170892">"Böyük hərf kilidi aktivdir (deaktiv etmək üçün klikləyin)"</string>
+    <string name="spoken_description_symbols_shift" msgid="3483198879916435717">"Daha çox simvol"</string>
+    <string name="spoken_description_shift_shifted" msgid="3122704922642232605">"Sürüşdürmə"</string>
+    <string name="spoken_description_symbols_shift_shifted" msgid="5179175466878186081">"Simvollar"</string>
+    <string name="spoken_description_caps_lock" msgid="1224851412185975036">"Sürüşdürmə"</string>
     <string name="spoken_description_delete" msgid="3878902286264983302">"Sil"</string>
     <string name="spoken_description_to_symbol" msgid="8244903740201126590">"Simvollar"</string>
     <string name="spoken_description_to_alpha" msgid="4081215210530031950">"Hərflər"</string>
@@ -47,7 +49,7 @@
     <string name="spoken_description_shiftmode_on" msgid="5107180516341258979">"Sürüşdürmə aktivdir"</string>
     <string name="spoken_description_shiftmode_locked" msgid="7307477738053606881">"Böyük hərf kilidi aktivdir"</string>
     <string name="spoken_description_mode_symbol" msgid="111186851131446691">"Simvol rejimi"</string>
-    <string name="spoken_description_mode_symbol_shift" msgid="3940566070908816492">"Simvol dəyişmə rejimi"</string>
+    <string name="spoken_description_mode_symbol_shift" msgid="4305607977537665389">"Daha çox simvol rejimi"</string>
     <string name="spoken_description_mode_alpha" msgid="4676004119618778911">"Hərf rejimi"</string>
     <string name="spoken_description_mode_phone" msgid="2061220553756692903">"Telefon rejimi"</string>
     <string name="spoken_description_mode_phone_shift" msgid="7879963803547701090">"Telefon simvol rejimi"</string>
