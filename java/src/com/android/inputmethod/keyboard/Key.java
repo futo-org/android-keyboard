@@ -60,6 +60,7 @@ public class Key implements Comparable<Key> {
     private final int mLabelFlags;
     private static final int LABEL_FLAGS_ALIGN_LEFT = 0x01;
     private static final int LABEL_FLAGS_ALIGN_RIGHT = 0x02;
+    private static final int LABEL_FLAGS_ALIGN_BUTTOM = 0x04;
     private static final int LABEL_FLAGS_ALIGN_LEFT_OF_CENTER = 0x08;
     private static final int LABEL_FLAGS_FONT_NORMAL = 0x10;
     private static final int LABEL_FLAGS_FONT_MONO_SPACE = 0x20;
@@ -644,6 +645,10 @@ public class Key implements Comparable<Key> {
 
     public final boolean isAlignRight() {
         return (mLabelFlags & LABEL_FLAGS_ALIGN_RIGHT) != 0;
+    }
+
+    public final boolean isAlignButtom() {
+        return (mLabelFlags & LABEL_FLAGS_ALIGN_BUTTOM) != 0;
     }
 
     public final boolean isAlignLeftOfCenter() {
