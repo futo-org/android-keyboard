@@ -100,7 +100,7 @@
     <key-style
         latin:styleName="defaultEnterKeyStyle"
         latin:keySpec="!icon/enter_key|!code/key_enter"
-        latin:keyLabelFlags="preserveCase|autoXScale|followKeyLabelRatio"
+        latin:keyLabelFlags="preserveCase|autoXScale|followKeyLabelRatio|followFunctionalTextColor"
         latin:keyActionFlags="noKeyPreview"
         latin:backgroundType="functional"
         latin:parentStyle="navigateMoreKeysStyle" />

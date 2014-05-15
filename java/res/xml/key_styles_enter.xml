@@ -255,7 +255,7 @@
     <!-- Enter key style -->
     <key-style
         latin:styleName="defaultEnterKeyStyle"
-        latin:keyLabelFlags="preserveCase|autoXScale|followKeyLabelRatio"
+        latin:keyLabelFlags="preserveCase|autoXScale|followKeyLabelRatio|followFunctionalTextColor"
         latin:keyActionFlags="noKeyPreview"
         latin:backgroundType="functional"
         latin:parentStyle="navigateMoreKeysStyle" />

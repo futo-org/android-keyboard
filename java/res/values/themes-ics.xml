@@ -53,6 +53,7 @@
         <item name="keyTypeface">bold</item>
         <item name="keyTextColor">@color/key_text_color_holo</item>
         <item name="keyTextInactivatedColor">@color/key_text_inactivated_color_holo</item>
+        <item name="functionalTextColor">@color/key_text_color_holo</item>
         <item name="keyHintLetterColor">@color/key_hint_letter_color_holo</item>
         <item name="keyHintLabelColor">@color/key_hint_label_color_holo</item>
         <item name="keyShiftedLetterHintInactivatedColor">@color/key_shifted_letter_hint_inactivated_color_holo</item>
