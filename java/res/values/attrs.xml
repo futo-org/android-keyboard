@@ -72,8 +72,6 @@
     </declare-styleable>
 
     <declare-styleable name="MainKeyboardView">
-        <attr name="autoCorrectionSpacebarLedEnabled" format="boolean" />
-        <attr name="autoCorrectionSpacebarLedIcon" format="reference" />
         <!-- Size of the text for spacebar language label, in the proportion of key height. -->
         <attr name="languageOnSpacebarTextRatio" format="fraction" />
         <attr name="languageOnSpacebarTextColor" format="color" />
