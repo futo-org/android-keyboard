@@ -50,12 +50,14 @@ class DicTraverseSession {
     }
 
     AK_FORCE_INLINE DicTraverseSession(JNIEnv *env, jstring localeStr, bool usesLargeCache)
-            : mPrevWordPtNodePos(NOT_A_DICT_POS), mProximityInfo(nullptr),
-              mDictionary(nullptr), mSuggestOptions(nullptr), mDicNodesCache(usesLargeCache),
-              mMultiBigramMap(), mInputSize(0), mMaxPointerCount(1),
+            : mProximityInfo(nullptr), mDictionary(nullptr), mSuggestOptions(nullptr),
+              mDicNodesCache(usesLargeCache), mMultiBigramMap(), mInputSize(0), mMaxPointerCount(1),
               mMultiWordCostMultiplier(1.0f) {
         // NOTE: mProximityInfoStates is an array of instances.
         // No need to initialize it explicitly here.
+        for (size_t i = 0; i < NELEMS(mPrevWordsPtNodePos); ++i) {
+            mPrevWordsPtNodePos[i] = NOT_A_DICT_POS;
+        }
     }
 
     // Non virtual inline destructor -- never inherit this class
@@ -77,7 +79,7 @@ class DicTraverseSession {
     //--------------------
     const ProximityInfo *getProximityInfo() const { return mProximityInfo; }
     const SuggestOptions *getSuggestOptions() const { return mSuggestOptions; }
-    int getPrevWordPtNodePos() const { return mPrevWordPtNodePos; }
+    int getPrevWordPtNodePos() const { return mPrevWordsPtNodePos[0]; }
     DicNodesCache *getDicTraverseCache() { return &mDicNodesCache; }
     MultiBigramMap *getMultiBigramMap() { return &mMultiBigramMap; }
     const ProximityInfoState *getProximityInfoState(int id) const {
@@ -164,7 +166,7 @@ class DicTraverseSession {
             const int *const inputYs, const int *const times, const int *const pointerIds,
             const int inputSize, const float maxSpatialDistance, const int maxPointerCount);
 
-    int mPrevWordPtNodePos;
+    int mPrevWordsPtNodePos[MAX_PREV_WORD_COUNT_FOR_N_GRAM];
     const ProximityInfo *mProximityInfo;
     const Dictionary *mDictionary;
     const SuggestOptions *mSuggestOptions;
