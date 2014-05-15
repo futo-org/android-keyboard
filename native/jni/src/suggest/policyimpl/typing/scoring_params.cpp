@@ -37,6 +37,7 @@ const float ScoringParams::DISTANCE_WEIGHT_LENGTH = 0.1524f;
 const float ScoringParams::PROXIMITY_COST = 0.0694f;
 const float ScoringParams::FIRST_CHAR_PROXIMITY_COST = 0.072f;
 const float ScoringParams::FIRST_PROXIMITY_COST = 0.07788f;
+const float ScoringParams::INTENTIONAL_OMISSION_COST = 0.1f;
 const float ScoringParams::OMISSION_COST = 0.467f;
 const float ScoringParams::OMISSION_COST_SAME_CHAR = 0.345f;
 const float ScoringParams::OMISSION_COST_FIRST_CHAR = 0.5256f;
