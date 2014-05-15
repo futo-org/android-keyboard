@@ -86,6 +86,7 @@ public class Key implements Comparable<Key> {
     private static final int LABEL_FLAGS_PRESERVE_CASE = 0x10000;
     private static final int LABEL_FLAGS_SHIFTED_LETTER_ACTIVATED = 0x20000;
     private static final int LABEL_FLAGS_FROM_CUSTOM_ACTION_LABEL = 0x40000;
+    private static final int LABEL_FLAGS_FOLLOW_FUNCTIONAL_TEXT_COLOR = 0x80000;
     private static final int LABEL_FLAGS_DISABLE_HINT_LABEL = 0x40000000;
     private static final int LABEL_FLAGS_DISABLE_ADDITIONAL_MORE_KEYS = 0x80000000;
 
@@ -583,6 +584,9 @@ public class Key implements Comparable<Key> {
     }
 
     public final int selectTextColor(final KeyDrawParams params) {
+        if ((mLabelFlags & LABEL_FLAGS_FOLLOW_FUNCTIONAL_TEXT_COLOR) != 0) {
+            return params.mFunctionalTextColor;
+        }
         return isShiftedLetterActivated() ? params.mTextInactivatedColor : params.mTextColor;
     }
 
