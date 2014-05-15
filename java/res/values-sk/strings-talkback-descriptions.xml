@@ -27,8 +27,10 @@
     <string name="spoken_auto_correct_obscured" msgid="7769449372355268412">"Klávesom <xliff:g id="KEY_NAME">%1$s</xliff:g> spustíte automatické opravy"</string>
     <string name="spoken_description_unknown" msgid="2382510329910793539">"Kód klávesa %d"</string>
     <string name="spoken_description_shift" msgid="7209798151676638728">"Shift"</string>
-    <string name="spoken_description_shift_shifted" msgid="1609924271343916689">"Kláves Shift je zapnutý (zakážete ho klepnutím)"</string>
-    <string name="spoken_description_caps_lock" msgid="5020582161133170892">"Kláves Caps Lock je zapnutý (zakážete ho klepnutím)"</string>
+    <string name="spoken_description_symbols_shift" msgid="3483198879916435717">"Ďalšie symboly"</string>
+    <string name="spoken_description_shift_shifted" msgid="3122704922642232605">"Shift"</string>
+    <string name="spoken_description_symbols_shift_shifted" msgid="5179175466878186081">"Symboly"</string>
+    <string name="spoken_description_caps_lock" msgid="1224851412185975036">"Shift"</string>
     <string name="spoken_description_delete" msgid="3878902286264983302">"Odstrániť"</string>
     <string name="spoken_description_to_symbol" msgid="8244903740201126590">"Symboly"</string>
     <string name="spoken_description_to_alpha" msgid="4081215210530031950">"Písmená"</string>
@@ -47,7 +49,7 @@
     <string name="spoken_description_shiftmode_on" msgid="5107180516341258979">"Kláves Shift je povolený"</string>
     <string name="spoken_description_shiftmode_locked" msgid="7307477738053606881">"Kláves Caps Lock je povolený"</string>
     <string name="spoken_description_mode_symbol" msgid="111186851131446691">"Režim symbolov"</string>
-    <string name="spoken_description_mode_symbol_shift" msgid="3940566070908816492">"Režim klávesnice symbolov"</string>
+    <string name="spoken_description_mode_symbol_shift" msgid="4305607977537665389">"Režim ďalších symbolov"</string>
     <string name="spoken_description_mode_alpha" msgid="4676004119618778911">"Režim písmen"</string>
     <string name="spoken_description_mode_phone" msgid="2061220553756692903">"Režim telefónu"</string>
     <string name="spoken_description_mode_phone_shift" msgid="7879963803547701090">"Režim telefónnych symbolov"</string>
