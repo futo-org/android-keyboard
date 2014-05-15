@@ -28,6 +28,7 @@
 #include "suggest/core/dictionary/property/unigram_property.h"
 #include "suggest/core/dictionary/property/word_property.h"
 #include "suggest/core/result/suggestion_results.h"
+#include "suggest/core/session/prev_words_info.h"
 #include "suggest/core/suggest_options.h"
 #include "suggest/policyimpl/dictionary/structure/dictionary_structure_with_buffer_policy_factory.h"
 #include "utils/char_utils.h"
@@ -247,15 +248,15 @@ static void latinime_BinaryDictionary_getSuggestions(JNIEnv *env, jclass clazz, 
     float languageWeight;
     env->GetFloatArrayRegion(inOutLanguageWeight, 0, 1 /* len */, &languageWeight);
     SuggestionResults suggestionResults(MAX_RESULTS);
+    const PrevWordsInfo prevWordsInfo(prevWordCodePoints, prevWordCodePointsLength,
+            false /* isStartOfSentence */);
     if (givenSuggestOptions.isGesture() || inputSize > 0) {
         // TODO: Use SuggestionResults to return suggestions.
         dictionary->getSuggestions(pInfo, traverseSession, xCoordinates, yCoordinates,
-                times, pointerIds, inputCodePoints, inputSize, prevWordCodePoints,
-                prevWordCodePointsLength, &givenSuggestOptions, languageWeight,
-                &suggestionResults);
+                times, pointerIds, inputCodePoints, inputSize, &prevWordsInfo,
+                &givenSuggestOptions, languageWeight, &suggestionResults);
     } else {
-        dictionary->getPredictions(prevWordCodePoints, prevWordCodePointsLength,
-                &suggestionResults);
+        dictionary->getPredictions(&prevWordsInfo, &suggestionResults);
     }
     suggestionResults.outputSuggestions(env, outSuggestionCount, outCodePointsArray,
             outScoresArray, outSpaceIndicesArray, outTypesArray,
@@ -282,8 +283,8 @@ static jint latinime_BinaryDictionary_getBigramProbability(JNIEnv *env, jclass c
     int word1CodePoints[word1Length];
     env->GetIntArrayRegion(word0, 0, word0Length, word0CodePoints);
     env->GetIntArrayRegion(word1, 0, word1Length, word1CodePoints);
-    return dictionary->getBigramProbability(word0CodePoints, word0Length, word1CodePoints,
-            word1Length);
+    const PrevWordsInfo prevWordsInfo(word0CodePoints, word0Length, false /* isStartOfSentence */);
+    return dictionary->getBigramProbability(&prevWordsInfo, word1CodePoints, word1Length);
 }
 
 // Method to iterate all words in the dictionary for makedict.

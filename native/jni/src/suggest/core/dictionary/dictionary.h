@@ -31,6 +31,7 @@ namespace latinime {
 
 class DictionaryStructureWithBufferPolicy;
 class DicTraverseSession;
+class PrevWordsInfo;
 class ProximityInfo;
 class SuggestionResults;
 class SuggestOptions;
@@ -62,16 +63,17 @@ class Dictionary {
 
     void getSuggestions(ProximityInfo *proximityInfo, DicTraverseSession *traverseSession,
             int *xcoordinates, int *ycoordinates, int *times, int *pointerIds, int *inputCodePoints,
-            int inputSize, int *prevWordCodePoints, int prevWordLength,
+            int inputSize, const PrevWordsInfo *const prevWordsInfo,
             const SuggestOptions *const suggestOptions, const float languageWeight,
             SuggestionResults *const outSuggestionResults) const;
 
-    void getPredictions(const int *word, int length,
+    void getPredictions(const PrevWordsInfo *const prevWordsInfo,
             SuggestionResults *const outSuggestionResults) const;
 
     int getProbability(const int *word, int length) const;
 
-    int getBigramProbability(const int *word0, int length0, const int *word1, int length1) const;
+    int getBigramProbability(const PrevWordsInfo *const prevWordsInfo,
+            const int *word1, int length1) const;
 
     void addUnigramWord(const int *const codePoints, const int codePointCount,
             const UnigramProperty *const unigramProperty);

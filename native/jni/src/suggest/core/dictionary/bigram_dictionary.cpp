@@ -26,6 +26,7 @@
 #include "suggest/core/dictionary/dictionary.h"
 #include "suggest/core/policy/dictionary_structure_with_buffer_policy.h"
 #include "suggest/core/result/suggestion_results.h"
+#include "suggest/core/session/prev_words_info.h"
 #include "utils/char_utils.h"
 
 namespace latinime {
@@ -42,19 +43,18 @@ BigramDictionary::~BigramDictionary() {
 }
 
 /* Parameters :
- * prevWord: the word before, the one for which we need to look up bigrams.
- * prevWordLength: its length.
+ * prevWordsInfo: Information of previous words to get the predictions.
  * outSuggestionResults: SuggestionResults to put the predictions.
  */
-void BigramDictionary::getPredictions(const int *prevWord, const int prevWordLength,
+void BigramDictionary::getPredictions(const PrevWordsInfo *const prevWordsInfo,
         SuggestionResults *const outSuggestionResults) const {
-    int pos = getBigramListPositionForWord(prevWord, prevWordLength,
-            false /* forceLowerCaseSearch */);
+    int pos = getBigramListPositionForWord(prevWordsInfo->getPrevWordCodePoints(),
+            prevWordsInfo->getPrevWordCodePointCount(), false /* forceLowerCaseSearch */);
     // getBigramListPositionForWord returns 0 if this word isn't in the dictionary or has no bigrams
     if (NOT_A_DICT_POS == pos) {
         // If no bigrams for this exact word, search again in lower case.
-        pos = getBigramListPositionForWord(prevWord, prevWordLength,
-                true /* forceLowerCaseSearch */);
+        pos = getBigramListPositionForWord(prevWordsInfo->getPrevWordCodePoints(),
+                prevWordsInfo->getPrevWordCodePointCount(), true /* forceLowerCaseSearch */);
     }
     // If still no bigrams, we really don't have them!
     if (NOT_A_DICT_POS == pos) return;
@@ -96,9 +96,10 @@ int BigramDictionary::getBigramListPositionForWord(const int *prevWord, const in
     return mDictionaryStructurePolicy->getBigramsPositionOfPtNode(pos);
 }
 
-int BigramDictionary::getBigramProbability(const int *word0, int length0, const int *word1,
-        int length1) const {
-    int pos = getBigramListPositionForWord(word0, length0, false /* forceLowerCaseSearch */);
+int BigramDictionary::getBigramProbability(const PrevWordsInfo *const prevWordsInfo,
+        const int *word1, int length1) const {
+    int pos = getBigramListPositionForWord(prevWordsInfo->getPrevWordCodePoints(),
+            prevWordsInfo->getPrevWordCodePointCount(), false /* forceLowerCaseSearch */);
     // getBigramListPositionForWord returns 0 if this word isn't in the dictionary or has no bigrams
     if (NOT_A_DICT_POS == pos) return NOT_A_PROBABILITY;
     int nextWordPos = mDictionaryStructurePolicy->getTerminalPtNodePositionOfWord(word1, length1,
