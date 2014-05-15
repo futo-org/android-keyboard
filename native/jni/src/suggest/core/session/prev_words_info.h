@@ -27,27 +27,39 @@ namespace latinime {
 class PrevWordsInfo {
  public:
     // No prev word information.
-    PrevWordsInfo()
-            : mPrevWordCodePoints(nullptr), mPrevWordCodePointCount(0) {}
+    PrevWordsInfo() {
+        clear();
+    }
 
     PrevWordsInfo(const int *const prevWordCodePoints, const int prevWordCodePointCount,
-            const bool isBeginningOfSentence)
-            : mPrevWordCodePoints(prevWordCodePoints),
-              mPrevWordCodePointCount(prevWordCodePointCount) {}
-
+            const bool isBeginningOfSentence) {
+        clear();
+        mPrevWordCodePoints[0] = prevWordCodePoints;
+        mPrevWordCodePointCount[0] = prevWordCodePointCount;
+        mIsBeginningOfSentence[0] = isBeginningOfSentence;
+    }
     const int *getPrevWordCodePoints() const {
-        return mPrevWordCodePoints;
+        return mPrevWordCodePoints[0];
     }
 
     int getPrevWordCodePointCount() const {
-        return mPrevWordCodePointCount;
+        return mPrevWordCodePointCount[0];
     }
 
  private:
     DISALLOW_COPY_AND_ASSIGN(PrevWordsInfo);
 
-    const int *const mPrevWordCodePoints;
-    const int mPrevWordCodePointCount;
+    void clear() {
+        for (size_t i = 0; i < NELEMS(mPrevWordCodePoints); ++i) {
+            mPrevWordCodePoints[i] = nullptr;
+            mPrevWordCodePointCount[i] = 0;
+            mIsBeginningOfSentence[i] = false;
+        }
+    }
+
+    const int *mPrevWordCodePoints[MAX_PREV_WORD_COUNT_FOR_N_GRAM];
+    int mPrevWordCodePointCount[MAX_PREV_WORD_COUNT_FOR_N_GRAM];
+    bool mIsBeginningOfSentence[MAX_PREV_WORD_COUNT_FOR_N_GRAM];
 };
 } // namespace latinime
 #endif // LATINIME_PREV_WORDS_INFO_H
