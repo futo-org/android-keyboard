@@ -34,16 +34,17 @@ static jlong latinime_setDicTraverseSession(JNIEnv *env, jclass clazz, jstring l
 static void latinime_initDicTraverseSession(JNIEnv *env, jclass clazz, jlong traverseSession,
         jlong dictionary, jintArray previousWord, jint previousWordLength) {
     DicTraverseSession *ts = reinterpret_cast<DicTraverseSession *>(traverseSession);
+    if (!ts) {
+        return;
+    }
     Dictionary *dict = reinterpret_cast<Dictionary *>(dictionary);
     if (!previousWord) {
-        DicTraverseSession::initSessionInstance(
-                ts, dict, 0 /* prevWord */, 0 /* prevWordLength*/, 0 /* suggestOptions */);
+        ts->init(dict, 0 /* prevWord */, 0 /* prevWordLength*/, 0 /* suggestOptions */);
         return;
     }
     int prevWord[previousWordLength];
     env->GetIntArrayRegion(previousWord, 0, previousWordLength, prevWord);
-    DicTraverseSession::initSessionInstance(
-            ts, dict, prevWord, previousWordLength, 0 /* suggestOptions */);
+    ts->init(dict, prevWord, previousWordLength, 0 /* suggestOptions */);
 }
 
 static void latinime_releaseDicTraverseSession(JNIEnv *env, jclass clazz, jlong traverseSession) {
