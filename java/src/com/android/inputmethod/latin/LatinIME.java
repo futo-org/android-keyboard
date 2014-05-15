@@ -905,7 +905,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     private void onFinishInputViewInternal(final boolean finishingInput) {
         super.onFinishInputView(finishingInput);
-        mKeyboardSwitcher.onFinishInputView();
         mKeyboardSwitcher.deallocateMemory();
         // Remove pending messages related to update suggestions
         mHandler.cancelUpdateSuggestionStrip();
@@ -1388,7 +1387,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (!hasSuggestionStripView()) {
             return;
         }
-        mKeyboardSwitcher.onAutoCorrectionStateChanged(suggestedWords.mWillAutoCorrect);
         if (!onEvaluateInputViewShown()) {
             return;
         }

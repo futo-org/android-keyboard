@@ -71,8 +71,6 @@
         <item name="gestureFloatingPreviewColor">@color/gesture_floating_preview_color_holo</item>
         <item name="gestureTrailColor">@color/highlight_color_lxx</item>
         <item name="slidingKeyInputPreviewColor">@color/highlight_translucent_color_lxx</item>
-        <item name="autoCorrectionSpacebarLedEnabled">false</item>
-        <item name="autoCorrectionSpacebarLedIcon">@drawable/sym_keyboard_space_led_holo</item>
         <item name="languageOnSpacebarTextColor">@color/key_text_inactive_color_lxx</item>
         <!-- A negative value to disable text shadow layer. -->
         <item name="languageOnSpacebarTextShadowRadius">-1.0</item>

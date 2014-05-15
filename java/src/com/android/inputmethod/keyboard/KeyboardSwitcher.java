@@ -61,10 +61,6 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     private final KeyboardTextsSet mKeyboardTextsSet = new KeyboardTextsSet();
     private SettingsValues mCurrentSettingsValues;
 
-    /** mIsAutoCorrectionActive indicates that auto corrected word will be input instead of
-     * what user actually typed. */
-    private boolean mIsAutoCorrectionActive;
-
     private KeyboardTheme mKeyboardTheme;
     private Context mThemeContext;
 
@@ -142,12 +138,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         }
     }
 
-    public void onFinishInputView() {
-        mIsAutoCorrectionActive = false;
-    }
-
     public void onHideWindow() {
-        mIsAutoCorrectionActive = false;
         if (mKeyboardView != null) {
             mKeyboardView.onHideWindow();
         }
@@ -168,7 +159,6 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
                 mCurrentSettingsValues.mKeyPreviewShowUpDuration,
                 mCurrentSettingsValues.mKeyPreviewDismissEndScale,
                 mCurrentSettingsValues.mKeyPreviewDismissDuration);
-        keyboardView.updateAutoCorrectionState(mIsAutoCorrectionActive);
         keyboardView.updateShortcutKey(mSubtypeSwitcher.isShortcutImeReady());
         final boolean subtypeChanged = (oldKeyboard == null)
                 || !keyboard.mId.mLocale.equals(oldKeyboard.mId.mLocale);
@@ -364,15 +354,6 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     public void onNetworkStateChanged() {
         if (mKeyboardView != null) {
             mKeyboardView.updateShortcutKey(mSubtypeSwitcher.isShortcutImeReady());
-        }
-    }
-
-    public void onAutoCorrectionStateChanged(final boolean isAutoCorrection) {
-        if (mIsAutoCorrectionActive != isAutoCorrection) {
-            mIsAutoCorrectionActive = isAutoCorrection;
-            if (mKeyboardView != null) {
-                mKeyboardView.updateAutoCorrectionState(isAutoCorrection);
-            }
         }
     }
 
