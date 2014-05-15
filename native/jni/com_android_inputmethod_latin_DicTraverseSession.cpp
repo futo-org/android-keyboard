@@ -22,6 +22,7 @@
 #include "jni.h"
 #include "jni_common.h"
 #include "suggest/core/session/dic_traverse_session.h"
+#include "suggest/core/session/prev_words_info.h"
 
 namespace latinime {
 class Dictionary;
@@ -39,12 +40,14 @@ static void latinime_initDicTraverseSession(JNIEnv *env, jclass clazz, jlong tra
     }
     Dictionary *dict = reinterpret_cast<Dictionary *>(dictionary);
     if (!previousWord) {
-        ts->init(dict, 0 /* prevWord */, 0 /* prevWordLength*/, 0 /* suggestOptions */);
+        PrevWordsInfo prevWordsInfo;
+        ts->init(dict, &prevWordsInfo, 0 /* suggestOptions */);
         return;
     }
     int prevWord[previousWordLength];
     env->GetIntArrayRegion(previousWord, 0, previousWordLength, prevWord);
-    ts->init(dict, prevWord, previousWordLength, 0 /* suggestOptions */);
+    PrevWordsInfo prevWordsInfo(prevWord, previousWordLength, false /* isStartOfSentence */);
+    ts->init(dict, &prevWordsInfo, 0 /* suggestOptions */);
 }
 
 static void latinime_releaseDicTraverseSession(JNIEnv *env, jclass clazz, jlong traverseSession) {
