@@ -481,6 +481,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         KeyboardSwitcher.init(this);
         AudioAndHapticFeedbackManager.init(this);
         AccessibilityUtils.init(this);
+        StatsUtils.init(this);
 
         super.onCreate();
 
@@ -520,7 +521,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         DictionaryDecayBroadcastReciever.setUpIntervalAlarmForDictionaryDecaying(this);
 
-        StatsUtils.onCreateCompleted(this);
+        StatsUtils.onCreate(mSettings.getCurrent());
     }
 
     // Has to be package-visible for unit tests
@@ -539,6 +540,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             resetSuggestForLocale(locale);
         }
         refreshPersonalizationDictionarySession();
+        StatsUtils.onLoadSettings(currentSettingsValues);
     }
 
     private void refreshPersonalizationDictionarySession() {
