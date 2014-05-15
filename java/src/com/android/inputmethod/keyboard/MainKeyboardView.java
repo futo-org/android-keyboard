@@ -70,8 +70,6 @@ import java.util.WeakHashMap;
 /**
  * A view that is responsible for detecting key presses and touch movements.
  *
- * @attr ref R.styleable#MainKeyboardView_autoCorrectionSpacebarLedEnabled
- * @attr ref R.styleable#MainKeyboardView_autoCorrectionSpacebarLedIcon
  * @attr ref R.styleable#MainKeyboardView_languageOnSpacebarTextRatio
  * @attr ref R.styleable#MainKeyboardView_languageOnSpacebarTextColor
  * @attr ref R.styleable#MainKeyboardView_languageOnSpacebarTextShadowRadius
@@ -133,11 +131,6 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     private static final float LANGUAGE_ON_SPACEBAR_TEXT_SHADOW_RADIUS_DISABLED = -1.0f;
     // The minimum x-scale to fit the language name on spacebar.
     private static final float MINIMUM_XSCALE_OF_LANGUAGE_NAME = 0.8f;
-    // Stuff to draw auto correction LED on spacebar.
-    private boolean mAutoCorrectionSpacebarLedOn;
-    private final boolean mAutoCorrectionSpacebarLedEnabled;
-    private final Drawable mAutoCorrectionSpacebarLedIcon;
-    private static final int SPACE_LED_LENGTH_PERCENT = 80;
 
     // Stuff to draw altCodeWhileTyping keys.
     private final ObjectAnimator mAltCodeKeyWhileTypingFadeoutAnimator;
@@ -221,10 +214,6 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
                 R.styleable.MainKeyboardView_backgroundDimAlpha, 0);
         mBackgroundDimAlphaPaint.setColor(Color.BLACK);
         mBackgroundDimAlphaPaint.setAlpha(backgroundDimAlpha);
-        mAutoCorrectionSpacebarLedEnabled = mainKeyboardViewAttr.getBoolean(
-                R.styleable.MainKeyboardView_autoCorrectionSpacebarLedEnabled, false);
-        mAutoCorrectionSpacebarLedIcon = mainKeyboardViewAttr.getDrawable(
-                R.styleable.MainKeyboardView_autoCorrectionSpacebarLedIcon);
         mLanguageOnSpacebarTextRatio = mainKeyboardViewAttr.getFraction(
                 R.styleable.MainKeyboardView_languageOnSpacebarTextRatio, 1, 1, 1.0f);
         mLanguageOnSpacebarTextColor = mainKeyboardViewAttr.getColor(
@@ -834,14 +823,6 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         invalidateKey(mSpaceKey);
     }
 
-    public void updateAutoCorrectionState(final boolean isAutoCorrection) {
-        if (!mAutoCorrectionSpacebarLedEnabled) {
-            return;
-        }
-        mAutoCorrectionSpacebarLedOn = isAutoCorrection;
-        invalidateKey(mSpaceKey);
-    }
-
     private void dimEntireKeyboard(final boolean dimmed) {
         final boolean needsRedrawing = mNeedsToDimEntireKeyboard != dimmed;
         mNeedsToDimEntireKeyboard = dimmed;
@@ -946,13 +927,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         }
 
         // Draw the spacebar icon at the bottom
-        if (mAutoCorrectionSpacebarLedOn) {
-            final int iconWidth = width * SPACE_LED_LENGTH_PERCENT / 100;
-            final int iconHeight = mAutoCorrectionSpacebarLedIcon.getIntrinsicHeight();
-            int x = (width - iconWidth) / 2;
-            int y = height - iconHeight;
-            drawIcon(canvas, mAutoCorrectionSpacebarLedIcon, x, y, iconWidth, iconHeight);
-        } else if (mSpacebarIcon != null) {
+        if (mSpacebarIcon != null) {
             final int iconWidth = mSpacebarIcon.getIntrinsicWidth();
             final int iconHeight = mSpacebarIcon.getIntrinsicHeight();
             int x = (width - iconWidth) / 2;
