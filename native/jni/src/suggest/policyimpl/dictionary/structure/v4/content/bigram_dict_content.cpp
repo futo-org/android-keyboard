@@ -38,8 +38,6 @@ const BigramEntry BigramDictContent::getBigramEntryAndAdvancePosition(
     int level = 0;
     int count = 0;
     if (mHasHistoricalInfo) {
-        probability = bigramListBuffer->readUintAndAdvancePosition(
-                Ver4DictConstants::PROBABILITY_SIZE, bigramEntryPos);
         timestamp = bigramListBuffer->readUintAndAdvancePosition(
                 Ver4DictConstants::TIME_STAMP_FIELD_SIZE, bigramEntryPos);
         level = bigramListBuffer->readUintAndAdvancePosition(
@@ -47,7 +45,8 @@ const BigramEntry BigramDictContent::getBigramEntryAndAdvancePosition(
         count = bigramListBuffer->readUintAndAdvancePosition(
                 Ver4DictConstants::WORD_COUNT_FIELD_SIZE, bigramEntryPos);
     } else {
-        probability = bigramFlags & Ver4DictConstants::BIGRAM_PROBABILITY_MASK;
+        probability = bigramListBuffer->readUintAndAdvancePosition(
+                Ver4DictConstants::PROBABILITY_SIZE, bigramEntryPos);
     }
     const int encodedTargetTerminalId = bigramListBuffer->readUintAndAdvancePosition(
             Ver4DictConstants::BIGRAM_TARGET_TERMINAL_ID_FIELD_SIZE, bigramEntryPos);
@@ -65,21 +64,13 @@ const BigramEntry BigramDictContent::getBigramEntryAndAdvancePosition(
 bool BigramDictContent::writeBigramEntryAndAdvancePosition(
         const BigramEntry *const bigramEntryToWrite, int *const entryWritingPos) {
     BufferWithExtendableBuffer *const bigramListBuffer = getWritableContentBuffer();
-    const int bigramFlags = createAndGetBigramFlags(
-            mHasHistoricalInfo ? 0 : bigramEntryToWrite->getProbability(),
-            bigramEntryToWrite->hasNext());
+    const int bigramFlags = createAndGetBigramFlags(bigramEntryToWrite->hasNext());
     if (!bigramListBuffer->writeUintAndAdvancePosition(bigramFlags,
             Ver4DictConstants::BIGRAM_FLAGS_FIELD_SIZE, entryWritingPos)) {
         AKLOGE("Cannot write bigram flags. pos: %d, flags: %x", *entryWritingPos, bigramFlags);
         return false;
     }
     if (mHasHistoricalInfo) {
-        if (!bigramListBuffer->writeUintAndAdvancePosition(bigramEntryToWrite->getProbability(),
-                Ver4DictConstants::PROBABILITY_SIZE, entryWritingPos)) {
-            AKLOGE("Cannot write bigram probability. pos: %d, probability: %d", *entryWritingPos,
-                    bigramEntryToWrite->getProbability());
-            return false;
-        }
         const HistoricalInfo *const historicalInfo = bigramEntryToWrite->getHistoricalInfo();
         if (!bigramListBuffer->writeUintAndAdvancePosition(historicalInfo->getTimeStamp(),
                 Ver4DictConstants::TIME_STAMP_FIELD_SIZE, entryWritingPos)) {
@@ -97,6 +88,13 @@ bool BigramDictContent::writeBigramEntryAndAdvancePosition(
                 Ver4DictConstants::WORD_COUNT_FIELD_SIZE, entryWritingPos)) {
             AKLOGE("Cannot write bigram count. pos: %d, count: %d", *entryWritingPos,
                     historicalInfo->getCount());
+            return false;
+        }
+    } else {
+        if (!bigramListBuffer->writeUintAndAdvancePosition(bigramEntryToWrite->getProbability(),
+                Ver4DictConstants::PROBABILITY_SIZE, entryWritingPos)) {
+            AKLOGE("Cannot write bigram probability. pos: %d, probability: %d", *entryWritingPos,
+                    bigramEntryToWrite->getProbability());
             return false;
         }
     }

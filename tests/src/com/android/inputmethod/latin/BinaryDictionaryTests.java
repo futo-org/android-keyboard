@@ -46,6 +46,10 @@ public class BinaryDictionaryTests extends AndroidTestCase {
     private static final int[] DICT_FORMAT_VERSIONS =
             new int[] { FormatSpec.VERSION4, FormatSpec.VERSION4_DEV };
 
+    private static boolean canCheckBigramProbability(final int formatVersion) {
+        return formatVersion >= FormatSpec.VERSION4_DEV;
+    }
+
     private File createEmptyDictionaryAndGetFile(final String dictId,
             final int formatVersion) throws IOException {
         if (formatVersion == FormatSpec.VERSION4
@@ -298,8 +302,8 @@ public class BinaryDictionaryTests extends AndroidTestCase {
                 Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
 
         final int unigramProbability = 100;
-        final int bigramProbability = 10;
-        final int updatedBigramProbability = 15;
+        final int bigramProbability = 150;
+        final int updatedBigramProbability = 200;
         addUnigramWord(binaryDictionary, "aaa", unigramProbability);
         addUnigramWord(binaryDictionary, "abb", unigramProbability);
         addUnigramWord(binaryDictionary, "bcc", unigramProbability);
@@ -308,25 +312,26 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         addBigramWords(binaryDictionary, "abb", "aaa", bigramProbability);
         addBigramWords(binaryDictionary, "abb", "bcc", bigramProbability);
 
-        final int probability = binaryDictionary.calculateProbability(unigramProbability,
-                bigramProbability);
-        assertEquals(true, binaryDictionary.isValidBigram("aaa", "abb"));
-        assertEquals(true, binaryDictionary.isValidBigram("aaa", "bcc"));
-        assertEquals(true, binaryDictionary.isValidBigram("abb", "aaa"));
-        assertEquals(true, binaryDictionary.isValidBigram("abb", "bcc"));
-        assertEquals(probability, binaryDictionary.getBigramProbability("aaa", "abb"));
-        assertEquals(probability, binaryDictionary.getBigramProbability("aaa", "bcc"));
-        assertEquals(probability, binaryDictionary.getBigramProbability("abb", "aaa"));
-        assertEquals(probability, binaryDictionary.getBigramProbability("abb", "bcc"));
+        assertTrue(binaryDictionary.isValidBigram("aaa", "abb"));
+        assertTrue(binaryDictionary.isValidBigram("aaa", "bcc"));
+        assertTrue(binaryDictionary.isValidBigram("abb", "aaa"));
+        assertTrue(binaryDictionary.isValidBigram("abb", "bcc"));
+        if (canCheckBigramProbability(formatVersion)) {
+            assertEquals(bigramProbability, binaryDictionary.getBigramProbability("aaa", "abb"));
+            assertEquals(bigramProbability, binaryDictionary.getBigramProbability("aaa", "bcc"));
+            assertEquals(bigramProbability, binaryDictionary.getBigramProbability("abb", "aaa"));
+            assertEquals(bigramProbability, binaryDictionary.getBigramProbability("abb", "bcc"));
+        }
 
         addBigramWords(binaryDictionary, "aaa", "abb", updatedBigramProbability);
-        final int updatedProbability = binaryDictionary.calculateProbability(unigramProbability,
-                updatedBigramProbability);
-        assertEquals(updatedProbability, binaryDictionary.getBigramProbability("aaa", "abb"));
+        if (canCheckBigramProbability(formatVersion)) {
+            assertEquals(updatedBigramProbability,
+                    binaryDictionary.getBigramProbability("aaa", "abb"));
+        }
 
-        assertEquals(false, binaryDictionary.isValidBigram("bcc", "aaa"));
-        assertEquals(false, binaryDictionary.isValidBigram("bcc", "bbc"));
-        assertEquals(false, binaryDictionary.isValidBigram("aaa", "aaa"));
+        assertFalse(binaryDictionary.isValidBigram("bcc", "aaa"));
+        assertFalse(binaryDictionary.isValidBigram("bcc", "bbc"));
+        assertFalse(binaryDictionary.isValidBigram("aaa", "aaa"));
         assertEquals(Dictionary.NOT_A_PROBABILITY,
                 binaryDictionary.getBigramProbability("bcc", "aaa"));
         assertEquals(Dictionary.NOT_A_PROBABILITY,
@@ -341,11 +346,18 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         addUnigramWord(binaryDictionary, "fgh", unigramProbability);
         addUnigramWord(binaryDictionary, "abc", unigramProbability);
         addUnigramWord(binaryDictionary, "f", unigramProbability);
-        assertEquals(probability, binaryDictionary.getBigramProbability("abcde", "fghij"));
+
+        if (canCheckBigramProbability(formatVersion)) {
+            assertEquals(bigramProbability,
+                    binaryDictionary.getBigramProbability("abcde", "fghij"));
+        }
         assertEquals(Dictionary.NOT_A_PROBABILITY,
                 binaryDictionary.getBigramProbability("abcde", "fgh"));
         addBigramWords(binaryDictionary, "abcde", "fghij", updatedBigramProbability);
-        assertEquals(updatedProbability, binaryDictionary.getBigramProbability("abcde", "fghij"));
+        if (canCheckBigramProbability(formatVersion)) {
+            assertEquals(updatedBigramProbability,
+                    binaryDictionary.getBigramProbability("abcde", "fghij"));
+        }
 
         dictFile.delete();
     }
@@ -396,18 +408,21 @@ public class BinaryDictionaryTests extends AndroidTestCase {
             }
             final Pair<String, String> bigram = new Pair<String, String>(word0, word1);
             bigramWords.add(bigram);
-            final int bigramProbability = random.nextInt(0xF);
+            final int unigramProbability = unigramProbabilities.get(word1);
+            final int bigramProbability =
+                    unigramProbability + random.nextInt(0xFF - unigramProbability);
             bigramProbabilities.put(bigram, bigramProbability);
             addBigramWords(binaryDictionary, word0, word1, bigramProbability);
         }
 
         for (final Pair<String, String> bigram : bigramWords) {
-            final int unigramProbability = unigramProbabilities.get(bigram.second);
             final int bigramProbability = bigramProbabilities.get(bigram);
-            final int probability = binaryDictionary.calculateProbability(unigramProbability,
-                    bigramProbability);
-            assertEquals(probability,
-                    binaryDictionary.getBigramProbability(bigram.first, bigram.second));
+            assertEquals(bigramProbability != Dictionary.NOT_A_PROBABILITY,
+                    binaryDictionary.isValidBigram(bigram.first, bigram.second));
+            if (canCheckBigramProbability(formatVersion)) {
+                assertEquals(bigramProbability,
+                        binaryDictionary.getBigramProbability(bigram.first, bigram.second));
+            }
         }
 
         dictFile.delete();
@@ -430,7 +445,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
                 0 /* offset */, dictFile.length(), true /* useFullEditDistance */,
                 Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
         final int unigramProbability = 100;
-        final int bigramProbability = 10;
+        final int bigramProbability = 150;
         addUnigramWord(binaryDictionary, "aaa", unigramProbability);
         addUnigramWord(binaryDictionary, "abb", unigramProbability);
         addUnigramWord(binaryDictionary, "bcc", unigramProbability);
@@ -439,23 +454,23 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         addBigramWords(binaryDictionary, "abb", "aaa", bigramProbability);
         addBigramWords(binaryDictionary, "abb", "bcc", bigramProbability);
 
-        assertEquals(true, binaryDictionary.isValidBigram("aaa", "abb"));
-        assertEquals(true, binaryDictionary.isValidBigram("aaa", "bcc"));
-        assertEquals(true, binaryDictionary.isValidBigram("abb", "aaa"));
-        assertEquals(true, binaryDictionary.isValidBigram("abb", "bcc"));
+        assertTrue(binaryDictionary.isValidBigram("aaa", "abb"));
+        assertTrue(binaryDictionary.isValidBigram("aaa", "bcc"));
+        assertTrue(binaryDictionary.isValidBigram("abb", "aaa"));
+        assertTrue(binaryDictionary.isValidBigram("abb", "bcc"));
 
         binaryDictionary.removeBigramWords("aaa", "abb");
-        assertEquals(false, binaryDictionary.isValidBigram("aaa", "abb"));
+        assertFalse(binaryDictionary.isValidBigram("aaa", "abb"));
         addBigramWords(binaryDictionary, "aaa", "abb", bigramProbability);
-        assertEquals(true, binaryDictionary.isValidBigram("aaa", "abb"));
+        assertTrue(binaryDictionary.isValidBigram("aaa", "abb"));
 
 
         binaryDictionary.removeBigramWords("aaa", "bcc");
-        assertEquals(false, binaryDictionary.isValidBigram("aaa", "bcc"));
+        assertFalse(binaryDictionary.isValidBigram("aaa", "bcc"));
         binaryDictionary.removeBigramWords("abb", "aaa");
-        assertEquals(false, binaryDictionary.isValidBigram("abb", "aaa"));
+        assertFalse(binaryDictionary.isValidBigram("abb", "aaa"));
         binaryDictionary.removeBigramWords("abb", "bcc");
-        assertEquals(false, binaryDictionary.isValidBigram("abb", "bcc"));
+        assertFalse(binaryDictionary.isValidBigram("abb", "bcc"));
 
         binaryDictionary.removeBigramWords("aaa", "abb");
         // Test remove non-existing bigram operation.
@@ -537,7 +552,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
                 Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
 
         final int unigramProbability = 100;
-        final int bigramProbability = 10;
+        final int bigramProbability = 150;
         addUnigramWord(binaryDictionary, "aaa", unigramProbability);
         addUnigramWord(binaryDictionary, "abb", unigramProbability);
         addUnigramWord(binaryDictionary, "bcc", unigramProbability);
@@ -551,18 +566,18 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         binaryDictionary = new BinaryDictionary(dictFile.getAbsolutePath(),
                 0 /* offset */, dictFile.length(), true /* useFullEditDistance */,
                 Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
-        final int probability = binaryDictionary.calculateProbability(unigramProbability,
-                bigramProbability);
         assertEquals(unigramProbability, binaryDictionary.getFrequency("aaa"));
         assertEquals(unigramProbability, binaryDictionary.getFrequency("abb"));
         assertEquals(unigramProbability, binaryDictionary.getFrequency("bcc"));
-        assertEquals(probability, binaryDictionary.getBigramProbability("aaa", "abb"));
-        assertEquals(probability, binaryDictionary.getBigramProbability("aaa", "bcc"));
-        assertEquals(probability, binaryDictionary.getBigramProbability("abb", "aaa"));
-        assertEquals(probability, binaryDictionary.getBigramProbability("abb", "bcc"));
-        assertEquals(false, binaryDictionary.isValidBigram("bcc", "aaa"));
-        assertEquals(false, binaryDictionary.isValidBigram("bcc", "bbc"));
-        assertEquals(false, binaryDictionary.isValidBigram("aaa", "aaa"));
+        if (canCheckBigramProbability(formatVersion)) {
+            assertEquals(bigramProbability, binaryDictionary.getBigramProbability("aaa", "abb"));
+            assertEquals(bigramProbability, binaryDictionary.getBigramProbability("aaa", "bcc"));
+            assertEquals(bigramProbability, binaryDictionary.getBigramProbability("abb", "aaa"));
+            assertEquals(bigramProbability, binaryDictionary.getBigramProbability("abb", "bcc"));
+        }
+        assertFalse(binaryDictionary.isValidBigram("bcc", "aaa"));
+        assertFalse(binaryDictionary.isValidBigram("bcc", "bbc"));
+        assertFalse(binaryDictionary.isValidBigram("aaa", "aaa"));
         binaryDictionary.flushWithGC();
         binaryDictionary.close();
 
@@ -617,7 +632,9 @@ public class BinaryDictionaryTests extends AndroidTestCase {
             }
             final Pair<String, String> bigram = new Pair<String, String>(word0, word1);
             bigramWords.add(bigram);
-            final int bigramProbability = random.nextInt(0xF);
+            final int unigramProbability = unigramProbabilities.get(word1);
+            final int bigramProbability =
+                    unigramProbability + random.nextInt(0xFF - unigramProbability);
             bigramProbabilities.put(bigram, bigramProbability);
             addBigramWords(binaryDictionary, word0, word1, bigramProbability);
         }
@@ -628,13 +645,15 @@ public class BinaryDictionaryTests extends AndroidTestCase {
                 0 /* offset */, dictFile.length(), true /* useFullEditDistance */,
                 Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
 
+
         for (final Pair<String, String> bigram : bigramWords) {
-            final int unigramProbability = unigramProbabilities.get(bigram.second);
             final int bigramProbability = bigramProbabilities.get(bigram);
-            final int probability = binaryDictionary.calculateProbability(unigramProbability,
-                    bigramProbability);
-            assertEquals(probability,
-                    binaryDictionary.getBigramProbability(bigram.first, bigram.second));
+            assertEquals(bigramProbability != Dictionary.NOT_A_PROBABILITY,
+                    binaryDictionary.isValidBigram(bigram.first, bigram.second));
+            if (canCheckBigramProbability(formatVersion)) {
+                assertEquals(bigramProbability,
+                        binaryDictionary.getBigramProbability(bigram.first, bigram.second));
+            }
         }
 
         dictFile.delete();
@@ -709,7 +728,9 @@ public class BinaryDictionaryTests extends AndroidTestCase {
                     if (TextUtils.equals(word0, word1)) {
                         continue;
                     }
-                    final int bigramProbability = random.nextInt(0xF);
+                    final int unigramProbability = unigramProbabilities.get(word1);
+                    final int bigramProbability =
+                            unigramProbability + random.nextInt(0xFF - unigramProbability);
                     final Pair<String, String> bigram = new Pair<String, String>(word0, word1);
                     bigramWords.add(bigram);
                     bigramProbabilities.put(bigram, bigramProbability);
@@ -734,17 +755,20 @@ public class BinaryDictionaryTests extends AndroidTestCase {
             // Test whether the all bigram operations are collectlly handled.
             for (int i = 0; i < bigramWords.size(); i++) {
                 final Pair<String, String> bigram = bigramWords.get(i);
-                final int unigramProbability = unigramProbabilities.get(bigram.second);
                 final int probability;
                 if (bigramProbabilities.containsKey(bigram)) {
                     final int bigramProbability = bigramProbabilities.get(bigram);
-                    probability = binaryDictionary.calculateProbability(unigramProbability,
-                            bigramProbability);
+                    probability = bigramProbability;
                 } else {
                     probability = Dictionary.NOT_A_PROBABILITY;
                 }
-                assertEquals(probability,
-                        binaryDictionary.getBigramProbability(bigram.first, bigram.second));
+
+                if (canCheckBigramProbability(formatVersion)) {
+                    assertEquals(probability,
+                            binaryDictionary.getBigramProbability(bigram.first, bigram.second));
+                }
+                assertEquals(probability != Dictionary.NOT_A_PROBABILITY,
+                        binaryDictionary.isValidBigram(bigram.first, bigram.second));
             }
             binaryDictionary.flushWithGC();
             binaryDictionary.close();
@@ -894,7 +918,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         for (int i = 0; i < languageModelParams.length; i++) {
             final String word = CodePointUtils.generateWord(random, codePointSet);
             final int probability = random.nextInt(0xFF);
-            final int bigramProbability = random.nextInt(0xF);
+            final int bigramProbability = probability + random.nextInt(0xFF - probability);
             unigramProbabilities.put(word, probability);
             if (prevWord == null) {
                 languageModelParams[i] = new LanguageModelParam(word, probability,
@@ -920,11 +944,13 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         for (Map.Entry<Pair<String, String>, Integer> entry : bigramProbabilities.entrySet()) {
             final String word0 = entry.getKey().first;
             final String word1 = entry.getKey().second;
-            final int unigramProbability = unigramProbabilities.get(word1);
             final int bigramProbability = entry.getValue();
-            final int probability = binaryDictionary.calculateProbability(
-                    unigramProbability, bigramProbability);
-            assertEquals(probability, binaryDictionary.getBigramProbability(word0, word1));
+            assertEquals(bigramProbability != Dictionary.NOT_A_PROBABILITY,
+                    binaryDictionary.isValidBigram(word0, word1));
+            if (canCheckBigramProbability(formatVersion)) {
+                assertEquals(bigramProbability,
+                        binaryDictionary.getBigramProbability(word0, word1));
+            }
         }
     }
 
@@ -994,7 +1020,9 @@ public class BinaryDictionaryTests extends AndroidTestCase {
             }
             final String word0 = words.get(word0Index);
             final String word1 = words.get(word1Index);
-            final int bigramProbability = random.nextInt(0xF);
+            final int unigramProbability = wordProbabilities.get(word1);
+            final int bigramProbability =
+                    unigramProbability + random.nextInt(0xFF - unigramProbability);
             binaryDictionary.addBigramWords(word0, word1, bigramProbability,
                     BinaryDictionary.NOT_A_VALID_TIMESTAMP);
             if (binaryDictionary.needsToRunGC(false /* mindsBlockByGC */)) {
@@ -1019,12 +1047,11 @@ public class BinaryDictionaryTests extends AndroidTestCase {
             for (int j = 0; j < wordProperty.mBigrams.size(); j++) {
                 final String word1 = wordProperty.mBigrams.get(j).mWord;
                 assertTrue(bigramWord1s.contains(word1));
-                final int bigramProbabilityDelta = bigramProbabilities.get(
-                        new Pair<String, String>(word0, word1));
-                final int unigramProbability = wordProbabilities.get(word1);
-                final int bigramProbablity = binaryDictionary.calculateProbability(
-                        unigramProbability, bigramProbabilityDelta);
-                assertEquals(wordProperty.mBigrams.get(j).getProbability(), bigramProbablity);
+                if (canCheckBigramProbability(formatVersion)) {
+                    final int bigramProbability = bigramProbabilities.get(
+                            new Pair<String, String>(word0, word1));
+                    assertEquals(bigramProbability, wordProperty.mBigrams.get(j).getProbability());
+                }
             }
         }
     }
@@ -1082,7 +1109,9 @@ public class BinaryDictionaryTests extends AndroidTestCase {
             }
             final String word0 = words.get(word0Index);
             final String word1 = words.get(word1Index);
-            final int bigramProbability = random.nextInt(0xF);
+            final int unigramProbability = wordProbabilitiesToCheckLater.get(word1);
+            final int bigramProbability =
+                    unigramProbability + random.nextInt(0xFF - unigramProbability);
             binaryDictionary.addBigramWords(word0, word1, bigramProbability,
                     BinaryDictionary.NOT_A_VALID_TIMESTAMP);
             if (binaryDictionary.needsToRunGC(false /* mindsBlockByGC */)) {
@@ -1113,12 +1142,11 @@ public class BinaryDictionaryTests extends AndroidTestCase {
             for (int j = 0; j < wordProperty.mBigrams.size(); j++) {
                 final String word1 = wordProperty.mBigrams.get(j).mWord;
                 assertTrue(bigramWord1s.contains(word1));
-                final int unigramProbability = wordProbabilitiesToCheckLater.get(word1);
                 final Pair<String, String> bigram = new Pair<String, String>(word0, word1);
-                final int bigramProbabilityDelta = bigramProbabilitiesToCheckLater.get(bigram);
-                final int bigramProbablity = binaryDictionary.calculateProbability(
-                        unigramProbability, bigramProbabilityDelta);
-                assertEquals(wordProperty.mBigrams.get(j).getProbability(), bigramProbablity);
+                if (canCheckBigramProbability(formatVersion)) {
+                    final int bigramProbability = bigramProbabilitiesToCheckLater.get(bigram);
+                    assertEquals(bigramProbability, wordProperty.mBigrams.get(j).getProbability());
+                }
                 bigramSet.remove(bigram);
             }
             token = result.mNextToken;
@@ -1286,7 +1314,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         final int unigramProbability = 100;
         addUnigramWord(binaryDictionary, "aaa", unigramProbability);
         addUnigramWord(binaryDictionary, "bbb", unigramProbability);
-        final int bigramProbability = 10;
+        final int bigramProbability = 150;
         addBigramWords(binaryDictionary, "aaa", "bbb", bigramProbability);
         final int shortcutProbability = 10;
         binaryDictionary.addUnigramWord("ccc", unigramProbability, "xxx", shortcutProbability,
@@ -1303,7 +1331,9 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         assertEquals(toFormatVersion, binaryDictionary.getFormatVersion());
         assertEquals(unigramProbability, binaryDictionary.getFrequency("aaa"));
         assertEquals(unigramProbability, binaryDictionary.getFrequency("bbb"));
-        // TODO: Add tests for bigram frequency when the implementation gets ready.
+        if (canCheckBigramProbability(toFormatVersion)) {
+            assertEquals(bigramProbability, binaryDictionary.getBigramProbability("aaa", "bbb"));
+        }
         assertTrue(binaryDictionary.isValidBigram("aaa", "bbb"));
         WordProperty wordProperty = binaryDictionary.getWordProperty("ccc");
         assertEquals(1, wordProperty.mShortcutTargets.size());
@@ -1362,7 +1392,9 @@ public class BinaryDictionaryTests extends AndroidTestCase {
             }
             final String word0 = words.get(word0Index);
             final String word1 = words.get(word1Index);
-            final int bigramProbability = random.nextInt(0xF);
+            final int unigramProbability = unigramProbabilities.get(word1);
+            final int bigramProbability =
+                    random.nextInt(0xFF - unigramProbability) + unigramProbability;
             binaryDictionary.addBigramWords(word0, word1, bigramProbability,
                     BinaryDictionary.NOT_A_VALID_TIMESTAMP);
             if (binaryDictionary.needsToRunGC(true /* mindsBlockByGC */)) {
@@ -1381,7 +1413,10 @@ public class BinaryDictionaryTests extends AndroidTestCase {
                 binaryDictionary.getPropertyForTest(BinaryDictionary.UNIGRAM_COUNT_QUERY)));
 
         for (final Pair<String, String> bigram : bigrams) {
-            // TODO: Add tests for bigram frequency when the implementation gets ready.
+            if (canCheckBigramProbability(toFormatVersion)) {
+                assertEquals((int)bigramProbabilities.get(bigram),
+                        binaryDictionary.getBigramProbability(bigram.first, bigram.second));
+            }
             assertTrue(binaryDictionary.isValidBigram(bigram.first, bigram.second));
         }
         assertEquals(bigramProbabilities.size(), Integer.parseInt(
