@@ -213,13 +213,16 @@ bool Ver4PatriciaTrieWritingHelper::truncateUnigrams(
     // Delete unigrams.
     while (static_cast<int>(priorityQueue.size()) > maxUnigramCount) {
         const int ptNodePos = priorityQueue.top().getDictPos();
+        priorityQueue.pop();
         const PtNodeParams ptNodeParams =
                 ptNodeReader->fetchNodeInfoInBufferFromPtNodePos(ptNodePos);
+        if (ptNodeParams.representsNonWordInfo()) {
+            continue;
+        }
         if (!ptNodeWriter->markPtNodeAsWillBecomeNonTerminal(&ptNodeParams)) {
             AKLOGE("Cannot mark PtNode as willBecomeNonterminal. PtNode pos: %d", ptNodePos);
             return false;
         }
-        priorityQueue.pop();
     }
     return true;
 }
