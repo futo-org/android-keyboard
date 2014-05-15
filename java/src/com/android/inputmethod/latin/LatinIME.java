@@ -84,6 +84,7 @@ import com.android.inputmethod.latin.utils.CapsModeUtils;
 import com.android.inputmethod.latin.utils.CoordinateUtils;
 import com.android.inputmethod.latin.utils.DialogUtils;
 import com.android.inputmethod.latin.utils.DistracterFilter;
+import com.android.inputmethod.latin.utils.DistracterFilterUtils;
 import com.android.inputmethod.latin.utils.ImportantNoticeUtils;
 import com.android.inputmethod.latin.utils.IntentUtils;
 import com.android.inputmethod.latin.utils.JniUtils;
@@ -1745,7 +1746,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @UsedForTesting
     /* package for test */ DistracterFilter createDistracterFilter() {
-        return DistracterFilter.createDistracterFilter(mInputLogic.mSuggest, mKeyboardSwitcher);
+        return DistracterFilterUtils.createDistracterFilter(
+                mInputLogic.mSuggest, mKeyboardSwitcher);
     }
 
     public void dumpDictionaryForDebug(final String dictName) {
