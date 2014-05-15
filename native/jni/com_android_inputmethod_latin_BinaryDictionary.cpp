@@ -467,16 +467,6 @@ static int latinime_BinaryDictionary_addMultipleDictionaryEntries(JNIEnv *env, j
     return languageModelParamCount;
 }
 
-static int latinime_BinaryDictionary_calculateProbabilityNative(JNIEnv *env, jclass clazz,
-        jlong dict, jint unigramProbability, jint bigramProbability) {
-    Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
-    if (!dictionary) {
-        return NOT_A_PROBABILITY;
-    }
-    return dictionary->getDictionaryStructurePolicy()->getProbability(unigramProbability,
-            bigramProbability);
-}
-
 static jstring latinime_BinaryDictionary_getProperty(JNIEnv *env, jclass clazz, jlong dict,
         jstring query) {
     Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
@@ -668,11 +658,6 @@ static const JNINativeMethod sMethods[] = {
         const_cast<char *>(
                 "(J[Lcom/android/inputmethod/latin/utils/LanguageModelParam;I)I"),
         reinterpret_cast<void *>(latinime_BinaryDictionary_addMultipleDictionaryEntries)
-    },
-    {
-        const_cast<char *>("calculateProbabilityNative"),
-        const_cast<char *>("(JII)I"),
-        reinterpret_cast<void *>(latinime_BinaryDictionary_calculateProbabilityNative)
     },
     {
         const_cast<char *>("getPropertyNative"),

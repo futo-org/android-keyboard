@@ -95,9 +95,8 @@ class BigramDictContent : public SparseTableDictContent {
  private:
     DISALLOW_COPY_AND_ASSIGN(BigramDictContent);
 
-    int createAndGetBigramFlags(const int probability, const bool hasNext) const {
-        return (probability & Ver4DictConstants::BIGRAM_PROBABILITY_MASK)
-                | (hasNext ? Ver4DictConstants::BIGRAM_HAS_NEXT_MASK : 0);
+    int createAndGetBigramFlags(const bool hasNext) const {
+        return hasNext ? Ver4DictConstants::BIGRAM_HAS_NEXT_MASK : 0;
     }
 
     bool runGCBigramList(const int bigramListPos,
