@@ -115,9 +115,7 @@ int Ver4PatriciaTriePolicy::getProbability(const int unigramProbability,
         } else if (bigramProbability == NOT_A_PROBABILITY) {
             return ProbabilityUtils::backoff(unigramProbability);
         } else {
-            // bigramProbability is a bigram probability delta.
-            return ProbabilityUtils::computeProbabilityForBigram(unigramProbability,
-                    bigramProbability);
+            return bigramProbability;
         }
     }
 }
@@ -398,7 +396,7 @@ const WordProperty Ver4PatriciaTriePolicy::getWordProperty(const int *const code
             const int probability = bigramEntry.hasHistoricalInfo() ?
                     ForgettingCurveUtils::decodeProbability(
                             bigramEntry.getHistoricalInfo(), mHeaderPolicy) :
-                    getProbability(word1Probability, bigramEntry.getProbability());
+                    bigramEntry.getProbability();
             bigrams.emplace_back(&word1, probability,
                     historicalInfo->getTimeStamp(), historicalInfo->getLevel(),
                     historicalInfo->getCount());

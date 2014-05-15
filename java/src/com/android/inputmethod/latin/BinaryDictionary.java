@@ -214,8 +214,6 @@ public final class BinaryDictionary extends Dictionary {
     private static native void removeBigramWordsNative(long dict, int[] word0, int[] word1);
     private static native int addMultipleDictionaryEntriesNative(long dict,
             LanguageModelParam[] languageModelParams, int startIndex);
-    private static native int calculateProbabilityNative(long dict, int unigramProbability,
-            int bigramProbability);
     private static native String getPropertyNative(long dict, String query);
     private static native boolean isCorruptedNative(long dict);
     private static native boolean migrateNative(long dict, String dictFilePath,
@@ -549,12 +547,6 @@ public final class BinaryDictionary extends Dictionary {
         loadDictionary(dictFile.getAbsolutePath(), 0 /* startOffset */,
                 dictFile.length(), mIsUpdatable);
         return true;
-    }
-
-    @UsedForTesting
-    public int calculateProbability(final int unigramProbability, final int bigramProbability) {
-        if (!isValidDictionary()) return NOT_A_PROBABILITY;
-        return calculateProbabilityNative(mNativeDict, unigramProbability, bigramProbability);
     }
 
     @UsedForTesting
