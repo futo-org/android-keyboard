@@ -54,12 +54,15 @@ class TypingWeighting : public Weighting {
 
     float getOmissionCost(const DicNode *const parentDicNode, const DicNode *const dicNode) const {
         const bool isZeroCostOmission = parentDicNode->isZeroCostOmission();
+        const bool isIntentionalOmission = parentDicNode->canBeIntentionalOmission();
         const bool sameCodePoint = dicNode->isSameNodeCodePoint(parentDicNode);
         // If the traversal omitted the first letter then the dicNode should now be on the second.
         const bool isFirstLetterOmission = dicNode->getNodeCodePointCount() == 2;
         float cost = 0.0f;
         if (isZeroCostOmission) {
             cost = 0.0f;
+        } else if (isIntentionalOmission) {
+            cost = ScoringParams::INTENTIONAL_OMISSION_COST;
         } else if (isFirstLetterOmission) {
             cost = ScoringParams::OMISSION_COST_FIRST_CHAR;
         } else {
