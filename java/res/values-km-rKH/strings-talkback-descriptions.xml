@@ -27,8 +27,10 @@
     <string name="spoken_auto_correct_obscured" msgid="7769449372355268412">"<xliff:g id="KEY_NAME">%1$s</xliff:g> អនុវត្ត​ការ​កែ​ស្វ័យ​ប្រវត្តិ"</string>
     <string name="spoken_description_unknown" msgid="2382510329910793539">"កូដ​គ្រាប់​ចុច %d"</string>
     <string name="spoken_description_shift" msgid="7209798151676638728">"Shift"</string>
-    <string name="spoken_description_shift_shifted" msgid="1609924271343916689">"បើក Shift (​ប៉ះ​ដើម្បី​បិទ)"</string>
-    <string name="spoken_description_caps_lock" msgid="5020582161133170892">"បើក Caps lock (ប៉ះ​​ដើម្បី​បិទ)"</string>
+    <string name="spoken_description_symbols_shift" msgid="3483198879916435717">"និមិត្ត​សញ្ញា​​ច្រើន​ទៀត"</string>
+    <string name="spoken_description_shift_shifted" msgid="3122704922642232605">"Shift"</string>
+    <string name="spoken_description_symbols_shift_shifted" msgid="5179175466878186081">"និមិត្តសញ្ញា"</string>
+    <string name="spoken_description_caps_lock" msgid="1224851412185975036">"Shift"</string>
     <string name="spoken_description_delete" msgid="3878902286264983302">"លុប"</string>
     <string name="spoken_description_to_symbol" msgid="8244903740201126590">"និមិត្តសញ្ញា"</string>
     <string name="spoken_description_to_alpha" msgid="4081215210530031950">"អក្សរ"</string>
@@ -47,7 +49,7 @@
     <string name="spoken_description_shiftmode_on" msgid="5107180516341258979">"បាន​បើក Shift"</string>
     <string name="spoken_description_shiftmode_locked" msgid="7307477738053606881">"បាន​បើក Caps lock"</string>
     <string name="spoken_description_mode_symbol" msgid="111186851131446691">"របៀប​និមិត្ត​សញ្ញា"</string>
-    <string name="spoken_description_mode_symbol_shift" msgid="3940566070908816492">"របៀប Symbols shift"</string>
+    <string name="spoken_description_mode_symbol_shift" msgid="4305607977537665389">"របៀប​និមិត្ត​សញ្ញា​​ច្រើន​ទៀត"</string>
     <string name="spoken_description_mode_alpha" msgid="4676004119618778911">"របៀប​អក្សរ"</string>
     <string name="spoken_description_mode_phone" msgid="2061220553756692903">"របៀប​ទូរស័ព្ទ"</string>
     <string name="spoken_description_mode_phone_shift" msgid="7879963803547701090">"​របៀប​និមិត្ត​សញ្ញា​ទូរស័ព្ទ"</string>

@@ -27,8 +27,10 @@
     <string name="spoken_auto_correct_obscured" msgid="7769449372355268412">"<xliff:g id="KEY_NAME">%1$s</xliff:g> voer outokorrigering uit"</string>
     <string name="spoken_description_unknown" msgid="2382510329910793539">"Sleutelkode %d"</string>
     <string name="spoken_description_shift" msgid="7209798151676638728">"Shift"</string>
-    <string name="spoken_description_shift_shifted" msgid="1609924271343916689">"Shift aan (tik om te deaktiveer)"</string>
-    <string name="spoken_description_caps_lock" msgid="5020582161133170892">"Kasslot aan (tik om te deaktiveer)"</string>
+    <string name="spoken_description_symbols_shift" msgid="3483198879916435717">"Meer simbole"</string>
+    <string name="spoken_description_shift_shifted" msgid="3122704922642232605">"Shift"</string>
+    <string name="spoken_description_symbols_shift_shifted" msgid="5179175466878186081">"Simbole"</string>
+    <string name="spoken_description_caps_lock" msgid="1224851412185975036">"Shift"</string>
     <string name="spoken_description_delete" msgid="3878902286264983302">"Vee uit"</string>
     <string name="spoken_description_to_symbol" msgid="8244903740201126590">"Simbole"</string>
     <string name="spoken_description_to_alpha" msgid="4081215210530031950">"Letters"</string>
@@ -47,7 +49,7 @@
     <string name="spoken_description_shiftmode_on" msgid="5107180516341258979">"Shift geaktiveer"</string>
     <string name="spoken_description_shiftmode_locked" msgid="7307477738053606881">"Bokas-slot geaktiveer"</string>
     <string name="spoken_description_mode_symbol" msgid="111186851131446691">"Simboolmodus"</string>
-    <string name="spoken_description_mode_symbol_shift" msgid="3940566070908816492">"Simbole-skuifsleutelmodus"</string>
+    <string name="spoken_description_mode_symbol_shift" msgid="4305607977537665389">"Meersimbole-modus"</string>
     <string name="spoken_description_mode_alpha" msgid="4676004119618778911">"Lettermodus"</string>
     <string name="spoken_description_mode_phone" msgid="2061220553756692903">"Foonmodus"</string>
     <string name="spoken_description_mode_phone_shift" msgid="7879963803547701090">"Foonsimbool-modus"</string>
