@@ -36,17 +36,17 @@ void DicTraverseSession::init(const Dictionary *const dictionary,
             ->getMultiWordCostMultiplier();
     mSuggestOptions = suggestOptions;
     if (!prevWordsInfo->getPrevWordCodePoints()) {
-        mPrevWordPtNodePos = NOT_A_DICT_POS;
+        mPrevWordsPtNodePos[0] = NOT_A_DICT_POS;
         return;
     }
     // TODO: merge following similar calls to getTerminalPosition into one case-insensitive call.
-    mPrevWordPtNodePos = getDictionaryStructurePolicy()->getTerminalPtNodePositionOfWord(
+    mPrevWordsPtNodePos[0] = getDictionaryStructurePolicy()->getTerminalPtNodePositionOfWord(
             prevWordsInfo->getPrevWordCodePoints(), prevWordsInfo->getPrevWordCodePointCount(),
             false /* forceLowerCaseSearch */);
-    if (mPrevWordPtNodePos == NOT_A_DICT_POS) {
+    if (mPrevWordsPtNodePos[0] == NOT_A_DICT_POS) {
         // Check bigrams for lower-cased previous word if original was not found. Useful for
         // auto-capitalized words like "The [current_word]".
-        mPrevWordPtNodePos = getDictionaryStructurePolicy()->getTerminalPtNodePositionOfWord(
+        mPrevWordsPtNodePos[0] = getDictionaryStructurePolicy()->getTerminalPtNodePositionOfWord(
                 prevWordsInfo->getPrevWordCodePoints(), prevWordsInfo->getPrevWordCodePointCount(),
                 true /* forceLowerCaseSearch */);
     }
