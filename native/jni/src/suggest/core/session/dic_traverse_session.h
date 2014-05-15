@@ -44,15 +44,6 @@ class DicTraverseSession {
                 dictSize >= DICTIONARY_SIZE_THRESHOLD_TO_USE_LARGE_CACHE_FOR_SUGGESTION);
     }
 
-    static AK_FORCE_INLINE void initSessionInstance(DicTraverseSession *traverseSession,
-            const Dictionary *const dictionary, const int *prevWord, const int prevWordLength,
-            const SuggestOptions *const suggestOptions) {
-        if (traverseSession) {
-            DicTraverseSession *tSession = static_cast<DicTraverseSession *>(traverseSession);
-            tSession->init(dictionary, prevWord, prevWordLength, suggestOptions);
-        }
-    }
-
     static AK_FORCE_INLINE void releaseSessionInstance(DicTraverseSession *traverseSession) {
         delete traverseSession;
     }
@@ -86,8 +77,6 @@ class DicTraverseSession {
     const ProximityInfo *getProximityInfo() const { return mProximityInfo; }
     const SuggestOptions *getSuggestOptions() const { return mSuggestOptions; }
     int getPrevWordPtNodePos() const { return mPrevWordPtNodePos; }
-    // TODO: REMOVE
-    void setPrevWordPtNodePos(const int ptNodePos) { mPrevWordPtNodePos = ptNodePos; }
     DicNodesCache *getDicTraverseCache() { return &mDicNodesCache; }
     MultiBigramMap *getMultiBigramMap() { return &mMultiBigramMap; }
     const ProximityInfoState *getProximityInfoState(int id) const {

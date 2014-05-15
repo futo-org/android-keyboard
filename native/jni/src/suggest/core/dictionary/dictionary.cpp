@@ -48,8 +48,7 @@ void Dictionary::getSuggestions(ProximityInfo *proximityInfo, DicTraverseSession
         const SuggestOptions *const suggestOptions, const float languageWeight,
         SuggestionResults *const outSuggestionResults) const {
     TimeKeeper::setCurrentTime();
-    DicTraverseSession::initSessionInstance(
-            traverseSession, this, prevWordCodePoints, prevWordLength, suggestOptions);
+    traverseSession->init(this, prevWordCodePoints, prevWordLength, suggestOptions);
     const auto &suggest = suggestOptions->isGesture() ? mGestureSuggest : mTypingSuggest;
     suggest->getSuggestions(proximityInfo, traverseSession, xcoordinates,
             ycoordinates, times, pointerIds, inputCodePoints, inputSize,
