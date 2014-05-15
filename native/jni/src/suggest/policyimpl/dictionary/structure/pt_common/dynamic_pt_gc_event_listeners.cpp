@@ -29,10 +29,10 @@ bool DynamicPtGcEventListeners
     // PtNode is useless when the PtNode is not a terminal and doesn't have any not useless
     // children.
     bool isUselessPtNode = !ptNodeParams->isTerminal();
-    if (ptNodeParams->isTerminal()) {
+    if (ptNodeParams->isTerminal() && !ptNodeParams->representsNonWordInfo()) {
         bool needsToKeepPtNode = true;
-        if (!mPtNodeWriter->updatePtNodeProbabilityAndGetNeedsToKeepPtNodeAfterGC(ptNodeParams,
-                &needsToKeepPtNode)) {
+        if (!mPtNodeWriter->updatePtNodeProbabilityAndGetNeedsToKeepPtNodeAfterGC(
+                ptNodeParams, &needsToKeepPtNode)) {
             AKLOGE("Cannot update PtNode probability or get needs to keep PtNode after GC.");
             return false;
         }
