@@ -30,7 +30,7 @@
         latin:parentStyle="numKeyBaseStyle" />
     <key-style
         latin:styleName="numModeKeyStyle"
-        latin:keyLabelFlags="fontNormal|followKeyLetterRatio"
+        latin:keyLabelFlags="fontNormal|followKeyLetterRatio|followFunctionalTextColor"
         latin:parentStyle="numKeyBaseStyle" />
     <key-style
         latin:styleName="numFunctionalKeyStyle"

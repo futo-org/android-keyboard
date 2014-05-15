@@ -140,7 +140,7 @@
     </switch>
     <key-style
         latin:styleName="baseForLayoutSwitchKeyStyle"
-        latin:keyLabelFlags="preserveCase"
+        latin:keyLabelFlags="preserveCase|followFunctionalTextColor"
         latin:keyActionFlags="noKeyPreview"
         latin:backgroundType="functional" />
     <key-style
