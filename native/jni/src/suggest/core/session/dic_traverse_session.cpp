@@ -20,6 +20,7 @@
 #include "suggest/core/dictionary/dictionary.h"
 #include "suggest/core/policy/dictionary_header_structure_policy.h"
 #include "suggest/core/policy/dictionary_structure_with_buffer_policy.h"
+#include "suggest/core/session/prev_words_info.h"
 
 namespace latinime {
 
@@ -28,24 +29,26 @@ namespace latinime {
 const int DicTraverseSession::DICTIONARY_SIZE_THRESHOLD_TO_USE_LARGE_CACHE_FOR_SUGGESTION =
         256 * 1024;
 
-void DicTraverseSession::init(const Dictionary *const dictionary, const int *prevWord,
-        int prevWordLength, const SuggestOptions *const suggestOptions) {
+void DicTraverseSession::init(const Dictionary *const dictionary,
+        const PrevWordsInfo *const prevWordsInfo, const SuggestOptions *const suggestOptions) {
     mDictionary = dictionary;
     mMultiWordCostMultiplier = getDictionaryStructurePolicy()->getHeaderStructurePolicy()
             ->getMultiWordCostMultiplier();
     mSuggestOptions = suggestOptions;
-    if (!prevWord) {
+    if (!prevWordsInfo->getPrevWordCodePoints()) {
         mPrevWordPtNodePos = NOT_A_DICT_POS;
         return;
     }
     // TODO: merge following similar calls to getTerminalPosition into one case-insensitive call.
     mPrevWordPtNodePos = getDictionaryStructurePolicy()->getTerminalPtNodePositionOfWord(
-            prevWord, prevWordLength, false /* forceLowerCaseSearch */);
+            prevWordsInfo->getPrevWordCodePoints(), prevWordsInfo->getPrevWordCodePointCount(),
+            false /* forceLowerCaseSearch */);
     if (mPrevWordPtNodePos == NOT_A_DICT_POS) {
         // Check bigrams for lower-cased previous word if original was not found. Useful for
         // auto-capitalized words like "The [current_word]".
         mPrevWordPtNodePos = getDictionaryStructurePolicy()->getTerminalPtNodePositionOfWord(
-                prevWord, prevWordLength, true /* forceLowerCaseSearch */);
+                prevWordsInfo->getPrevWordCodePoints(), prevWordsInfo->getPrevWordCodePointCount(),
+                true /* forceLowerCaseSearch */);
     }
 }
 

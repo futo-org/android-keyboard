@@ -22,15 +22,17 @@
 namespace latinime {
 
 class DictionaryStructureWithBufferPolicy;
+class PrevWordsInfo;
 class SuggestionResults;
 
 class BigramDictionary {
  public:
     BigramDictionary(const DictionaryStructureWithBufferPolicy *const dictionaryStructurePolicy);
 
-    void getPredictions(const int *word, int length,
+    void getPredictions(const PrevWordsInfo *const prevWordsInfo,
             SuggestionResults *const outSuggestionResults) const;
-    int getBigramProbability(const int *word1, int length1, const int *word2, int length2) const;
+    int getBigramProbability(const PrevWordsInfo *const prevWordsInfo,
+            const int *word1, int length1) const;
     ~BigramDictionary();
 
  private:

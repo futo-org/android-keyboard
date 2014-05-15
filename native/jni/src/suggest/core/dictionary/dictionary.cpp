@@ -44,11 +44,11 @@ Dictionary::Dictionary(JNIEnv *env, DictionaryStructureWithBufferPolicy::Structu
 
 void Dictionary::getSuggestions(ProximityInfo *proximityInfo, DicTraverseSession *traverseSession,
         int *xcoordinates, int *ycoordinates, int *times, int *pointerIds, int *inputCodePoints,
-        int inputSize, int *prevWordCodePoints, int prevWordLength,
+        int inputSize, const PrevWordsInfo *const prevWordsInfo,
         const SuggestOptions *const suggestOptions, const float languageWeight,
         SuggestionResults *const outSuggestionResults) const {
     TimeKeeper::setCurrentTime();
-    traverseSession->init(this, prevWordCodePoints, prevWordLength, suggestOptions);
+    traverseSession->init(this, prevWordsInfo, suggestOptions);
     const auto &suggest = suggestOptions->isGesture() ? mGestureSuggest : mTypingSuggest;
     suggest->getSuggestions(proximityInfo, traverseSession, xcoordinates,
             ycoordinates, times, pointerIds, inputCodePoints, inputSize,
@@ -58,11 +58,10 @@ void Dictionary::getSuggestions(ProximityInfo *proximityInfo, DicTraverseSession
     }
 }
 
-void Dictionary::getPredictions(const int *word, int length,
+void Dictionary::getPredictions(const PrevWordsInfo *const prevWordsInfo,
         SuggestionResults *const outSuggestionResults) const {
     TimeKeeper::setCurrentTime();
-    if (length <= 0) return;
-    mBigramDictionary.getPredictions(word, length, outSuggestionResults);
+    mBigramDictionary.getPredictions(prevWordsInfo, outSuggestionResults);
 }
 
 int Dictionary::getProbability(const int *word, int length) const {
@@ -75,10 +74,10 @@ int Dictionary::getProbability(const int *word, int length) const {
     return getDictionaryStructurePolicy()->getUnigramProbabilityOfPtNode(pos);
 }
 
-int Dictionary::getBigramProbability(const int *word0, int length0, const int *word1,
+int Dictionary::getBigramProbability(const PrevWordsInfo *const prevWordsInfo, const int *word1,
         int length1) const {
     TimeKeeper::setCurrentTime();
-    return mBigramDictionary.getBigramProbability(word0, length0, word1, length1);
+    return mBigramDictionary.getBigramProbability(prevWordsInfo, word1, length1);
 }
 
 void Dictionary::addUnigramWord(const int *const word, const int length,
