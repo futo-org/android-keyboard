@@ -90,11 +90,6 @@
             latin:keyWidth="fillRight" />
     </Row>
     <Row>
-        <Key
-            latin:keyStyle="numSpaceKeyStyle" />
-        <Key
-            latin:keySpec="0"
-            latin:keyStyle="numKeyStyle" />
         <switch>
             <case
                 latin:mode="date"
@@ -124,6 +119,11 @@
                     latin:keyStyle="numKeyStyle" />
             </default>
         </switch>
+        <Key
+            latin:keySpec="0"
+            latin:keyStyle="numKeyStyle" />
+        <Key
+            latin:keyStyle="numSpaceKeyStyle" />
         <Key
             latin:keyStyle="enterKeyStyle"
             latin:keyWidth="fillRight" />
