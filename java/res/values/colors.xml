@@ -34,6 +34,7 @@
     <color name="spacebar_text_color_holo">#FFC0C0C0</color>
     <color name="spacebar_text_shadow_color_holo">#80000000</color>
     <color name="gesture_floating_preview_color_holo">#C0000000</color>
+    <color name="emoji_tab_page_indicator_background_holo">#111111</color>
     <!-- Color resources for KLP theme. Base color = F0F0F0 -->
     <color name="highlight_color_klp">#FFF0F0F0</color>
     <color name="typed_word_color_klp">#D8F0F0F0</color>
@@ -53,12 +54,11 @@
     <color name="suggestions_strip_background_lxx_dark">#263238</color>
     <color name="suggested_word_background_selected_lxx_dark">#384248</color>
     <color name="gesture_floating_preview_color_lxx_dark">#C0000000</color>
+    <color name="emoji_tab_page_indicator_background_lxx_dark">#263238</color>
     <!-- Color resources for setup wizard and tutorial -->
     <color name="setup_background">#FFEBEBEB</color>
     <color name="setup_text_dark">#FF707070</color>
     <color name="setup_text_action">@android:color/holo_blue_light</color>
     <color name="setup_step_background">@android:color/background_light</color>
     <color name="setup_welcome_video_margin_color">#FFCCCCCC</color>
-    <color name="emoji_category_page_id_background_holo">#FF000000</color>
-    <color name="emoji_category_page_id_foreground_holo">#80FFFFFF</color>
 </resources>

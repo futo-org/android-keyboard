@@ -16,29 +16,36 @@
 
 package com.android.inputmethod.keyboard.emoji;
 
-import com.android.inputmethod.latin.R;
-
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.AttributeSet;
-import android.widget.LinearLayout;
+import android.view.View;
 
-public final class EmojiCategoryPageIndicatorView extends LinearLayout {
+import com.android.inputmethod.latin.R;
+
+public final class EmojiCategoryPageIndicatorView extends View {
     private static final float BOTTOM_MARGIN_RATIO = 1.0f;
     private final Paint mPaint = new Paint();
     private int mCategoryPageSize = 0;
     private int mCurrentCategoryPageId = 0;
     private float mOffset = 0.0f;
 
-    public EmojiCategoryPageIndicatorView(final Context context) {
-        this(context, null /* attrs */);
+    public EmojiCategoryPageIndicatorView(final Context context, final AttributeSet attrs) {
+        this(context, attrs, R.attr.emojiCategoryPageIndicatorViewStyle);
     }
 
-    public EmojiCategoryPageIndicatorView(final Context context, final AttributeSet attrs) {
-        super(context, attrs);
-        mPaint.setColor(context.getResources().getColor(
-                R.color.emoji_category_page_id_foreground_holo));
+    public EmojiCategoryPageIndicatorView(final Context context, final AttributeSet attrs,
+            final int defStyle) {
+        super(context, attrs, defStyle);
+        final TypedArray indicatorViewAttr = context.obtainStyledAttributes(attrs,
+                R.styleable.EmojiCategoryPageIndicatorView, defStyle,
+                R.style.EmojiCategoryPageIndicatorView);
+        final int indicatorColor = indicatorViewAttr.getColor(
+                R.styleable.EmojiCategoryPageIndicatorView_emojiCategoryPageIndicatorColor, 0);
+        indicatorViewAttr.recycle();
+        mPaint.setColor(indicatorColor);
     }
 
     public void setCategoryPageId(final int size, final int id, final float offset) {

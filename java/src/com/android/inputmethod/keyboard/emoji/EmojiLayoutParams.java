@@ -16,13 +16,14 @@
 
 package com.android.inputmethod.keyboard.emoji;
 
-import com.android.inputmethod.latin.R;
-import com.android.inputmethod.latin.utils.ResourceUtils;
-
 import android.content.res.Resources;
 import android.support.v4.view.ViewPager;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+
+import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.utils.ResourceUtils;
 
 final class EmojiLayoutParams {
     private static final int DEFAULT_KEYBOARD_ROWS = 4;
@@ -67,10 +68,10 @@ final class EmojiLayoutParams {
         vp.setLayoutParams(lp);
     }
 
-    public void setCategoryPageIdViewProperties(final LinearLayout ll) {
-        final LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) ll.getLayoutParams();
+    public void setCategoryPageIdViewProperties(final View v) {
+        final LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) v.getLayoutParams();
         lp.height = mEmojiCategoryPageIdViewHeight;
-        ll.setLayoutParams(lp);
+        v.setLayoutParams(lp);
     }
 
     public int getActionBarHeight() {
