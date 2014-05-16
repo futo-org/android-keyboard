@@ -113,11 +113,8 @@ public final class BinaryDictionary extends Dictionary {
         synchronized(mDicTraverseSessions) {
             DicTraverseSession traverseSession = mDicTraverseSessions.get(traverseSessionId);
             if (traverseSession == null) {
-                traverseSession = mDicTraverseSessions.get(traverseSessionId);
-                if (traverseSession == null) {
-                    traverseSession = new DicTraverseSession(mLocale, mNativeDict, mDictSize);
-                    mDicTraverseSessions.put(traverseSessionId, traverseSession);
-                }
+                traverseSession = new DicTraverseSession(mLocale, mNativeDict, mDictSize);
+                mDicTraverseSessions.put(traverseSessionId, traverseSession);
             }
             return traverseSession;
         }
@@ -266,18 +263,8 @@ public final class BinaryDictionary extends Dictionary {
                 new FormatSpec.FormatOptions(outFormatVersion[0], hasHistoricalInfo));
     }
 
-
     @Override
     public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
-            final String prevWord, final ProximityInfo proximityInfo,
-            final boolean blockOffensiveWords, final int[] additionalFeaturesOptions,
-            final float[] inOutLanguageWeight) {
-        return getSuggestionsWithSessionId(composer, prevWord, proximityInfo, blockOffensiveWords,
-                additionalFeaturesOptions, 0 /* sessionId */, inOutLanguageWeight);
-    }
-
-    @Override
-    public ArrayList<SuggestedWordInfo> getSuggestionsWithSessionId(final WordComposer composer,
             final String prevWord, final ProximityInfo proximityInfo,
             final boolean blockOffensiveWords, final int[] additionalFeaturesOptions,
             final int sessionId, final float[] inOutLanguageWeight) {

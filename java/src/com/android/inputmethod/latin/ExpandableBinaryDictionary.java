@@ -366,7 +366,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     }
 
     @Override
-    public ArrayList<SuggestedWordInfo> getSuggestionsWithSessionId(final WordComposer composer,
+    public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
             final String prevWord, final ProximityInfo proximityInfo,
             final boolean blockOffensiveWords, final int[] additionalFeaturesOptions,
             final int sessionId, final float[] inOutLanguageWeight) {
@@ -380,9 +380,9 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                     return null;
                 }
                 final ArrayList<SuggestedWordInfo> suggestions =
-                        mBinaryDictionary.getSuggestionsWithSessionId(composer, prevWord,
-                                proximityInfo, blockOffensiveWords, additionalFeaturesOptions,
-                                sessionId, inOutLanguageWeight);
+                        mBinaryDictionary.getSuggestions(composer, prevWord, proximityInfo,
+                                blockOffensiveWords, additionalFeaturesOptions, sessionId,
+                                inOutLanguageWeight);
                 if (mBinaryDictionary.isCorrupted()) {
                     Log.i(TAG, "Dictionary (" + mDictName +") is corrupted. "
                             + "Remove and regenerate it.");
@@ -398,15 +398,6 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
             }
         }
         return null;
-    }
-
-    @Override
-    public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
-            final String prevWord, final ProximityInfo proximityInfo,
-            final boolean blockOffensiveWords, final int[] additionalFeaturesOptions,
-            final float[] inOutLanguageWeight) {
-        return getSuggestionsWithSessionId(composer, prevWord, proximityInfo, blockOffensiveWords,
-                additionalFeaturesOptions, 0 /* sessionId */, inOutLanguageWeight);
     }
 
     @Override
