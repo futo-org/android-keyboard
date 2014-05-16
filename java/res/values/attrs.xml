@@ -51,6 +51,7 @@
         <!-- Background image for the spacebar.  This image needs to be a
              {@link StateListDrawable}, with the following possible states: normal, pressed. -->
         <attr name="spacebarBackground" format="reference" />
+        <attr name="spacebarIconWidthRatio" format="float" />
         <!-- Horizontal padding of left/right aligned key label to the edge of the key. -->
         <attr name="keyLabelHorizontalPadding" format="dimension" />
         <!-- Right padding of hint letter to the edge of the key.-->
@@ -284,6 +285,7 @@
             <!-- This should be aligned with Key.LABEL_FLAGS__* -->
             <flag name="alignLeft" value="0x01" />
             <flag name="alignRight" value="0x02" />
+            <flag name="alignButtom" value="0x04" />
             <flag name="alignLeftOfCenter" value="0x08" />
             <flag name="fontNormal" value="0x10" />
             <flag name="fontMonoSpace" value="0x20" />

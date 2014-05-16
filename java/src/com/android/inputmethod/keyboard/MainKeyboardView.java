@@ -27,7 +27,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
 import android.preference.PreferenceManager;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -116,7 +115,6 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
 
     /* Space key and its icon and background. */
     private Key mSpaceKey;
-    private Drawable mSpacebarIcon;
     // Stuff to draw language name on spacebar.
     private final int mLanguageOnSpacebarFinalAlpha;
     private ObjectAnimator mLanguageOnSpacebarFadeoutAnimator;
@@ -389,8 +387,6 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         mMoreKeysKeyboardCache.clear();
 
         mSpaceKey = keyboard.getKey(Constants.CODE_SPACE);
-        mSpacebarIcon = (mSpaceKey != null)
-                ? mSpaceKey.getIcon(keyboard.mIconsSet, Constants.Color.ALPHA_OPAQUE) : null;
         final int keyHeight = keyboard.mMostCommonKeyHeight - keyboard.mVerticalGap;
         mLanguageOnSpacebarTextSize = keyHeight * mLanguageOnSpacebarTextRatio;
         if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
@@ -847,18 +843,19 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         if (key.altCodeWhileTyping() && key.isEnabled()) {
             params.mAnimAlpha = mAltCodeKeyWhileTypingAnimAlpha;
         }
+        super.onDrawKeyTopVisuals(key, canvas, paint, params);
         final int code = key.getCode();
         if (code == Constants.CODE_SPACE) {
-            drawSpacebar(key, canvas, paint);
+            // If input language are explicitly selected.
+            if (mLanguageOnSpacebarFormatType != LanguageOnSpacebarHelper.FORMAT_TYPE_NONE) {
+                drawLanguageOnSpacebar(key, canvas, paint);
+            }
             // Whether space key needs to show the "..." popup hint for special purposes
             if (key.isLongPressEnabled() && mHasMultipleEnabledIMEsOrSubtypes) {
                 drawKeyPopupHint(key, canvas, paint, params);
             }
         } else if (code == Constants.CODE_LANGUAGE_SWITCH) {
-            super.onDrawKeyTopVisuals(key, canvas, paint, params);
             drawKeyPopupHint(key, canvas, paint, params);
-        } else {
-            super.onDrawKeyTopVisuals(key, canvas, paint, params);
         }
     }
 
@@ -898,42 +895,29 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         return "";
     }
 
-    private void drawSpacebar(final Key key, final Canvas canvas, final Paint paint) {
+    private void drawLanguageOnSpacebar(final Key key, final Canvas canvas, final Paint paint) {
         final int width = key.getWidth();
         final int height = key.getHeight();
-
-        // If input language are explicitly selected.
-        if (mLanguageOnSpacebarFormatType != LanguageOnSpacebarHelper.FORMAT_TYPE_NONE) {
-            paint.setTextAlign(Align.CENTER);
-            paint.setTypeface(Typeface.DEFAULT);
-            paint.setTextSize(mLanguageOnSpacebarTextSize);
-            final InputMethodSubtype subtype = getKeyboard().mId.mSubtype;
-            final String language = layoutLanguageOnSpacebar(paint, subtype, width);
-            // Draw language text with shadow
-            final float descent = paint.descent();
-            final float textHeight = -paint.ascent() + descent;
-            final float baseline = height / 2 + textHeight / 2;
-            if (mLanguageOnSpacebarTextShadowRadius > 0.0f) {
-                paint.setShadowLayer(mLanguageOnSpacebarTextShadowRadius, 0, 0,
-                        mLanguageOnSpacebarTextShadowColor);
-            } else {
-                paint.clearShadowLayer();
-            }
-            paint.setColor(mLanguageOnSpacebarTextColor);
-            paint.setAlpha(mLanguageOnSpacebarAnimAlpha);
-            canvas.drawText(language, width / 2, baseline - descent, paint);
+        paint.setTextAlign(Align.CENTER);
+        paint.setTypeface(Typeface.DEFAULT);
+        paint.setTextSize(mLanguageOnSpacebarTextSize);
+        final InputMethodSubtype subtype = getKeyboard().mId.mSubtype;
+        final String language = layoutLanguageOnSpacebar(paint, subtype, width);
+        // Draw language text with shadow
+        final float descent = paint.descent();
+        final float textHeight = -paint.ascent() + descent;
+        final float baseline = height / 2 + textHeight / 2;
+        if (mLanguageOnSpacebarTextShadowRadius > 0.0f) {
+            paint.setShadowLayer(mLanguageOnSpacebarTextShadowRadius, 0, 0,
+                    mLanguageOnSpacebarTextShadowColor);
+        } else {
             paint.clearShadowLayer();
-            paint.setTextScaleX(1.0f);
         }
-
-        // Draw the spacebar icon at the bottom
-        if (mSpacebarIcon != null) {
-            final int iconWidth = mSpacebarIcon.getIntrinsicWidth();
-            final int iconHeight = mSpacebarIcon.getIntrinsicHeight();
-            int x = (width - iconWidth) / 2;
-            int y = height - iconHeight;
-            drawIcon(canvas, mSpacebarIcon, x, y, iconWidth, iconHeight);
-        }
+        paint.setColor(mLanguageOnSpacebarTextColor);
+        paint.setAlpha(mLanguageOnSpacebarAnimAlpha);
+        canvas.drawText(language, width / 2, baseline - descent, paint);
+        paint.clearShadowLayer();
+        paint.setTextScaleX(1.0f);
     }
 
     @Override

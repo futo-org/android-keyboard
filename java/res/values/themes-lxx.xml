@@ -50,6 +50,7 @@
         <item name="keyBackground">@drawable/btn_keyboard_key_lxx</item>
         <item name="functionalKeyBackground">@drawable/btn_keyboard_key_functional_lxx</item>
         <item name="spacebarBackground">@drawable/btn_keyboard_spacebar_lxx</item>
+        <item name="spacebarIconWidthRatio">0.9</item>
         <item name="keyTypeface">bold</item>
         <item name="keyTextColor">@color/key_text_color_holo</item>
         <item name="keyTextInactivatedColor">@color/key_text_inactive_color_lxx</item>
