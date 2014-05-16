@@ -372,4 +372,14 @@ public class StringAndJsonUtilsTests extends AndroidTestCase {
         assertTrue("copyCodePointsAndReturnCodePointCount throws when array is too small",
                 exceptionHappened);
     }
+
+    public void testGetTrailingSingleQuotesCount() {
+        assertEquals(0, StringUtils.getTrailingSingleQuotesCount(""));
+        assertEquals(1, StringUtils.getTrailingSingleQuotesCount("'"));
+        assertEquals(5, StringUtils.getTrailingSingleQuotesCount("'''''"));
+        assertEquals(0, StringUtils.getTrailingSingleQuotesCount("a"));
+        assertEquals(0, StringUtils.getTrailingSingleQuotesCount("'this"));
+        assertEquals(1, StringUtils.getTrailingSingleQuotesCount("'word'"));
+        assertEquals(0, StringUtils.getTrailingSingleQuotesCount("I'm"));
+    }
 }
