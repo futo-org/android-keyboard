@@ -149,7 +149,8 @@ public final class WordComposer {
     public int copyCodePointsExceptTrailingSingleQuotesAndReturnCodePointCount(
             final int[] destination) {
         // lastIndex is exclusive
-        final int lastIndex = mTypedWordCache.length() - trailingSingleQuotesCount();
+        final int lastIndex = mTypedWordCache.length()
+                - StringUtils.getTrailingSingleQuotesCount(mTypedWordCache);
         if (lastIndex <= 0) {
             // The string is empty or contains only single quotes.
             return 0;
@@ -329,15 +330,6 @@ public final class WordComposer {
      */
     public boolean isFirstCharCapitalized() {
         return mIsFirstCharCapitalized;
-    }
-
-    public int trailingSingleQuotesCount() {
-        final int lastIndex = mTypedWordCache.length() - 1;
-        int i = lastIndex;
-        while (i >= 0 && mTypedWordCache.charAt(i) == Constants.CODE_SINGLE_QUOTE) {
-            --i;
-        }
-        return lastIndex - i;
     }
 
     /**
