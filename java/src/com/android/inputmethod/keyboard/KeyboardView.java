@@ -28,6 +28,7 @@ import android.graphics.Rect;
 import android.graphics.Region;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.NinePatchDrawable;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -49,6 +50,7 @@ import java.util.HashSet;
  * @attr ref R.styleable#KeyboardView_keyBackground
  * @attr ref R.styleable#KeyboardView_functionalKeyBackground
  * @attr ref R.styleable#KeyboardView_spacebarBackground
+ * @attr ref R.styleable#KeyboardView_spacebarIconWidthRatio
  * @attr ref R.styleable#KeyboardView_keyLabelHorizontalPadding
  * @attr ref R.styleable#KeyboardView_keyHintLetterPadding
  * @attr ref R.styleable#KeyboardView_keyPopupHintLetterPadding
@@ -85,6 +87,7 @@ public class KeyboardView extends View {
     private final Drawable mKeyBackground;
     private final Drawable mFunctionalKeyBackground;
     private final Drawable mSpacebarBackground;
+    private final float mSpacebarIconWidthRatio;
     private final Rect mKeyBackgroundPadding = new Rect();
     private static final float KET_TEXT_SHADOW_RADIUS_DISABLED = -1.0f;
 
@@ -135,8 +138,9 @@ public class KeyboardView extends View {
                 : mKeyBackground;
         final Drawable spacebarBackground = keyboardViewAttr.getDrawable(
                 R.styleable.KeyboardView_spacebarBackground);
-        mSpacebarBackground = (spacebarBackground != null) ? spacebarBackground
-                : mKeyBackground;
+        mSpacebarBackground = (spacebarBackground != null) ? spacebarBackground : mKeyBackground;
+        mSpacebarIconWidthRatio = keyboardViewAttr.getFloat(
+                R.styleable.KeyboardView_spacebarIconWidthRatio, 1.0f);
         mKeyLabelHorizontalPadding = keyboardViewAttr.getDimensionPixelOffset(
                 R.styleable.KeyboardView_keyLabelHorizontalPadding, 0);
         mKeyHintLetterPadding = keyboardViewAttr.getDimension(
@@ -513,10 +517,16 @@ public class KeyboardView extends View {
 
         // Draw key icon.
         if (label == null && icon != null) {
-            final int iconWidth = Math.min(icon.getIntrinsicWidth(), keyWidth);
+            final int iconWidth;
+            if (key.getCode() == Constants.CODE_SPACE && icon instanceof NinePatchDrawable) {
+                iconWidth = (int)(keyWidth * mSpacebarIconWidthRatio);
+            } else {
+                iconWidth = Math.min(icon.getIntrinsicWidth(), keyWidth);
+            }
             final int iconHeight = icon.getIntrinsicHeight();
             final int iconX, alignX;
-            final int iconY = (keyHeight - iconHeight) / 2;
+            final int iconY = key.isAlignButtom() ? keyHeight - iconHeight
+                    : (keyHeight - iconHeight) / 2;
             if (key.isAlignLeft()) {
                 iconX = mKeyLabelHorizontalPadding;
                 alignX = iconX;

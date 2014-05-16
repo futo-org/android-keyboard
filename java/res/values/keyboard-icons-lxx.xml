@@ -25,7 +25,7 @@
         <item name="iconShiftKey">@drawable/sym_keyboard_shift_holo_dark</item>
         <item name="iconDeleteKey">@drawable/sym_keyboard_delete_lxx_dark</item>
         <item name="iconSettingsKey">@drawable/sym_keyboard_settings_lxx_dark</item>
-        <item name="iconSpaceKey">@drawable/sym_keyboard_space_holo_dark</item>
+        <item name="iconSpaceKey">@drawable/sym_keyboard_spacebar_lxx_dark</item>
         <item name="iconEnterKey">@drawable/sym_keyboard_return_holo_dark</item>
         <item name="iconGoKey">@drawable/sym_keyboard_go_lxx_dark</item>
         <item name="iconSearchKey">@drawable/sym_keyboard_search_lxx_dark</item>
