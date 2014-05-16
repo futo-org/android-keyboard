@@ -73,6 +73,7 @@ public abstract class Dictionary {
      * @param proximityInfo the object for key proximity. May be ignored by some implementations.
      * @param blockOffensiveWords whether to block potentially offensive words
      * @param additionalFeaturesOptions options about additional features used for the suggestion.
+     * @param sessionId the session id.
      * @param inOutLanguageWeight the language weight used for generating suggestions.
      * inOutLanguageWeight is a float array that has only one element. This can be updated when the
      * different language weight is used.
@@ -83,17 +84,7 @@ public abstract class Dictionary {
     abstract public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
             final String prevWord, final ProximityInfo proximityInfo,
             final boolean blockOffensiveWords, final int[] additionalFeaturesOptions,
-            final float[] inOutLanguageWeight);
-
-    // The default implementation of this method ignores sessionId.
-    // Subclasses that want to use sessionId need to override this method.
-    public ArrayList<SuggestedWordInfo> getSuggestionsWithSessionId(final WordComposer composer,
-            final String prevWord, final ProximityInfo proximityInfo,
-            final boolean blockOffensiveWords, final int[] additionalFeaturesOptions,
-            final int sessionId, final float[] inOutLanguageWeight) {
-        return getSuggestions(composer, prevWord, proximityInfo, blockOffensiveWords,
-                additionalFeaturesOptions, inOutLanguageWeight);
-    }
+            final int sessionId, final float[] inOutLanguageWeight);
 
     /**
      * Checks if the given word occurs in the dictionary
@@ -167,7 +158,7 @@ public abstract class Dictionary {
         public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
                 final String prevWord, final ProximityInfo proximityInfo,
                 final boolean blockOffensiveWords, final int[] additionalFeaturesOptions,
-                final float[] inOutLanguageWeight) {
+                final int sessionId, final float[] inOutLanguageWeight) {
             return null;
         }
 
