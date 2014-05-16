@@ -140,10 +140,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private final SubtypeState mSubtypeState = new SubtypeState();
 
     // Object for reacting to adding/removing a dictionary pack.
-    private final BroadcastReceiver mDictionaryPackInstallReceiver =
+    private BroadcastReceiver mDictionaryPackInstallReceiver =
             new DictionaryPackInstallBroadcastReceiver(this);
 
-    private final BroadcastReceiver mDictionaryDumpBroadcastReceiver =
+    private BroadcastReceiver mDictionaryDumpBroadcastReceiver =
             new DictionaryDumpBroadcastReceiver(this);
 
     private AlertDialog mOptionsDialog;
@@ -1629,8 +1629,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // boolean onKeyMultiple(final int keyCode, final int count, final KeyEvent event);
 
     // receive ringer mode change and network state change.
-    private final BroadcastReceiver mConnectivityAndRingerModeChangeReceiver =
-            new BroadcastReceiver() {
+    private BroadcastReceiver mConnectivityAndRingerModeChangeReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(final Context context, final Intent intent) {
             final String action = intent.getAction();
@@ -1747,7 +1746,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @UsedForTesting
     /* package for test */ DistracterFilter createDistracterFilter() {
-        return DistracterFilterUtils.createDistracterFilter(this /* Context */, mKeyboardSwitcher);
+        return DistracterFilterUtils.createDistracterFilter(
+                mInputLogic.mSuggest, mKeyboardSwitcher);
     }
 
     public void dumpDictionaryForDebug(final String dictName) {
