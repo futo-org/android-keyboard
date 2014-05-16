@@ -16,8 +16,17 @@
 
 package com.android.inputmethod.latin.utils;
 
+import java.util.Locale;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+
+import android.content.Context;
+import android.util.Log;
+
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.latin.Constants;
+import com.android.inputmethod.latin.DictionaryFacilitatorForSuggest.
+        DictionaryInitializationListener;
 import com.android.inputmethod.latin.Suggest;
 import com.android.inputmethod.latin.Suggest.OnGetSuggestedWordsCallback;
 import com.android.inputmethod.latin.SuggestedWords;
@@ -29,6 +38,11 @@ import com.android.inputmethod.latin.WordComposer;
  * or user history dictionaries
  */
 public class DistracterFilter {
+    private static final String TAG = DistracterFilter.class.getSimpleName();
+
+    private static final long TIMEOUT_TO_WAIT_LOADING_DICTIONARIES_IN_SECONDS = 120;
+
+    private final Context mContext;
     private final Suggest mSuggest;
     private final Keyboard mKeyboard;
 
@@ -42,13 +56,13 @@ public class DistracterFilter {
     /**
      * Create a DistracterFilter instance.
      *
-     * @param suggest an instance of Suggest which will be used to obtain a list of suggestions
-     *                for a potential distracter
+     * @param context the context.
      * @param keyboard the keyboard that is currently being used. This information is needed
      *                 when calling mSuggest.getSuggestedWords(...) to obtain a list of suggestions.
      */
-    public DistracterFilter(final Suggest suggest, final Keyboard keyboard) {
-        mSuggest = suggest;
+    public DistracterFilter(final Context context, final Keyboard keyboard) {
+        mContext = context;
+        mSuggest = new Suggest();
         mKeyboard = keyboard;
     }
 
@@ -66,18 +80,43 @@ public class DistracterFilter {
         return false;
     }
 
+    private void loadDictionariesForLocale(final Locale newlocale) throws InterruptedException {
+        final CountDownLatch countdownLatch = new CountDownLatch(1 /* count */);
+        mSuggest.mDictionaryFacilitator.resetDictionaries(mContext, newlocale,
+                false /* useContactsDict */, false /* usePersonalizedDicts */,
+                false /* forceReloadMainDictionary */,
+                new DictionaryInitializationListener() {
+                    @Override
+                    public void onUpdateMainDictionaryAvailability(
+                            boolean isMainDictionaryAvailable) {
+                        countdownLatch.countDown();
+                    }
+                });
+        countdownLatch.await(TIMEOUT_TO_WAIT_LOADING_DICTIONARIES_IN_SECONDS, TimeUnit.SECONDS);
+    }
+
     /**
      * Determine whether a word is a distracter to words in dictionaries.
      *
      * @param prevWord the previous word, or null if none.
      * @param testedWord the word that will be tested to see whether it is a distracter to words
      *                   in dictionaries.
+     * @param locale the locale of words.
      * @return true if testedWord is a distracter, otherwise false.
      */
     public boolean isDistracterToWordsInDictionaries(final String prevWord,
-            final String testedWord) {
-        if (mSuggest == null || mKeyboard == null) {
+            final String testedWord, final Locale locale) {
+        if (mKeyboard == null || locale == null) {
             return false;
+        }
+        if (!locale.equals(mSuggest.mDictionaryFacilitator.getLocale())) {
+            // Reset dictionaries for the locale.
+            try {
+                loadDictionariesForLocale(locale);
+            } catch (final InterruptedException e) {
+                Log.e(TAG, "Interrupted while waiting for loading dicts in DistracterFilter", e);
+                return false;
+            }
         }
 
         final WordComposer composer = new WordComposer();
