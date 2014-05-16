@@ -86,9 +86,10 @@ public class DistracterFilter {
         coordinates = mKeyboard.getCoordinates(codePoints);
         composer.setComposingWord(codePoints, coordinates, prevWord);
 
-        final int trailingSingleQuotesCount = composer.trailingSingleQuotesCount();
-        final String consideredWord = trailingSingleQuotesCount > 0 ? testedWord.substring(0,
-                testedWord.length() - trailingSingleQuotesCount) : testedWord;
+        final int trailingSingleQuotesCount = StringUtils.getTrailingSingleQuotesCount(testedWord);
+        final String consideredWord = trailingSingleQuotesCount > 0 ?
+                testedWord.substring(0, testedWord.length() - trailingSingleQuotesCount) :
+                testedWord;
         final AsyncResultHolder<Boolean> holder = new AsyncResultHolder<Boolean>();
         final OnGetSuggestedWordsCallback callback = new OnGetSuggestedWordsCallback() {
             @Override

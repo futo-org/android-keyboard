@@ -94,8 +94,8 @@ public final class Suggest {
             final boolean blockOffensiveWords, final boolean isCorrectionEnabled,
             final int[] additionalFeaturesOptions, final int sequenceNumber,
             final OnGetSuggestedWordsCallback callback) {
-        final int trailingSingleQuotesCount = wordComposer.trailingSingleQuotesCount();
         final String typedWord = wordComposer.getTypedWord();
+        final int trailingSingleQuotesCount = StringUtils.getTrailingSingleQuotesCount(typedWord);
         final String consideredWord = trailingSingleQuotesCount > 0
                 ? typedWord.substring(0, typedWord.length() - trailingSingleQuotesCount)
                 : typedWord;

@@ -538,6 +538,15 @@ public final class StringUtils {
                 ? casedText.codePointAt(0) : CODE_UNSPECIFIED;
     }
 
+    public static int getTrailingSingleQuotesCount(final CharSequence charSequence) {
+        final int lastIndex = charSequence.length() - 1;
+        int i = lastIndex;
+        while (i >= 0 && charSequence.charAt(i) == Constants.CODE_SINGLE_QUOTE) {
+            --i;
+        }
+        return lastIndex - i;
+    }
+
     @UsedForTesting
     public static class Stringizer<E> {
         public String stringize(final E element) {
