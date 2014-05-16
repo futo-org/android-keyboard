@@ -18,6 +18,7 @@ package com.android.inputmethod.keyboard.emoji;
 
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.Rect;
 import android.os.Build;
 import android.util.Log;
@@ -69,17 +70,14 @@ final class EmojiCategory {
             "symbols",
             "emoticons" };
 
-    private static final int[] sCategoryIcon = {
-            R.drawable.ic_emoji_recent_holo_dark,
-            R.drawable.ic_emoji_people_holo_dark,
-            R.drawable.ic_emoji_objects_holo_dark,
-            R.drawable.ic_emoji_nature_holo_dark,
-            R.drawable.ic_emoji_places_holo_dark,
-            R.drawable.ic_emoji_symbols_holo_dark,
-            0 };
-
-    private static final String[] sCategoryLabel =
-            { null, null, null, null, null, null, ":-)" };
+    private static final int[] sCategoryTabIconAttr = {
+            R.styleable.EmojiPalettesView_iconEmojiRecentsTab,
+            R.styleable.EmojiPalettesView_iconEmojiCategory1Tab,
+            R.styleable.EmojiPalettesView_iconEmojiCategory2Tab,
+            R.styleable.EmojiPalettesView_iconEmojiCategory3Tab,
+            R.styleable.EmojiPalettesView_iconEmojiCategory4Tab,
+            R.styleable.EmojiPalettesView_iconEmojiCategory5Tab,
+            R.styleable.EmojiPalettesView_iconEmojiCategory6Tab };
 
     private static final int[] sAccessibilityDescriptionResourceIdsForCategories = {
             R.string.spoken_descrption_emoji_category_recents,
@@ -104,6 +102,7 @@ final class EmojiCategory {
     private final int mMaxPageKeyCount;
     private final KeyboardLayoutSet mLayoutSet;
     private final HashMap<String, Integer> mCategoryNameToIdMap = CollectionUtils.newHashMap();
+    private final int[] mCategoryTabIconId = new int[sCategoryName.length];
     private final ArrayList<CategoryProperties> mShownCategories =
             CollectionUtils.newArrayList();
     private final ConcurrentHashMap<Long, DynamicGridKeyboard>
@@ -113,13 +112,15 @@ final class EmojiCategory {
     private int mCurrentCategoryPageId = 0;
 
     public EmojiCategory(final SharedPreferences prefs, final Resources res,
-            final KeyboardLayoutSet layoutSet) {
+            final KeyboardLayoutSet layoutSet, final TypedArray emojiPaletteViewAttr) {
         mPrefs = prefs;
         mRes = res;
         mMaxPageKeyCount = res.getInteger(R.integer.config_emoji_keyboard_max_page_key_count);
         mLayoutSet = layoutSet;
         for (int i = 0; i < sCategoryName.length; ++i) {
             mCategoryNameToIdMap.put(sCategoryName[i], i);
+            mCategoryTabIconId[i] = emojiPaletteViewAttr.getResourceId(
+                    sCategoryTabIconAttr[i], 0);
         }
         addShownCategoryId(EmojiCategory.ID_RECENTS);
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2
@@ -158,12 +159,8 @@ final class EmojiCategory {
         return mCategoryNameToIdMap.get(strings[0]);
     }
 
-    public int getCategoryIcon(final int categoryId) {
-        return sCategoryIcon[categoryId];
-    }
-
-    public String getCategoryLabel(final int categoryId) {
-        return sCategoryLabel[categoryId];
+    public int getCategoryTabIcon(final int categoryId) {
+        return mCategoryTabIconId[categoryId];
     }
 
     public String getAccessibilityDescription(final int categoryId) {
