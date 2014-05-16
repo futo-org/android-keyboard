@@ -26,7 +26,13 @@ import android.test.suitebuilder.annotation.SmallTest;
 public class KeyboardThemeTests extends AndroidTestCase {
     private SharedPreferences mPrefs;
 
+    // TODO: Remove this constant once the *next* version becomes available.
+    private static final int VERSION_CODES_LXX = VERSION_CODES.CUR_DEVELOPMENT;
+
     private static final int THEME_ID_NULL = -1;
+    private static final int THEME_ID_UNKNOWN = -2;
+    private static final int THEME_ID_ILLEGAL = -3;
+    private static final String ILLEGAL_THEME_ID_STRING = "ThisCausesNumberFormatExecption";
     private static final int THEME_ID_ICS = KeyboardTheme.THEME_ID_ICS;
     private static final int THEME_ID_KLP = KeyboardTheme.THEME_ID_KLP;
     private static final int THEME_ID_LXX = KeyboardTheme.THEME_ID_LXX;
@@ -37,57 +43,281 @@ public class KeyboardThemeTests extends AndroidTestCase {
         mPrefs = PreferenceManager.getDefaultSharedPreferences(getContext());
     }
 
+    /*
+     * Helper functions.
+     */
+
+    private static boolean isValidKeyboardThemeId(final int themeId) {
+        switch (themeId) {
+        case THEME_ID_ICS:
+        case THEME_ID_KLP:
+        case THEME_ID_LXX:
+            return true;
+        default:
+            return false;
+        }
+    }
+
+    private void setKeyboardThemePreference(final String prefKey, final int themeId) {
+        final String themeIdString = Integer.toString(themeId);
+        if (isValidKeyboardThemeId(themeId) || themeId == THEME_ID_UNKNOWN) {
+            // Set valid theme id to preference.
+            mPrefs.edit().putString(prefKey, themeIdString).apply();
+            return;
+        }
+        if (themeId == THEME_ID_NULL) {
+            // Simulate undefined preference.
+            mPrefs.edit().remove(prefKey).apply();
+            return;
+        }
+        // themeId == THEME_ID_ILLEGAL
+        // Simulate illegal format theme id in preference.
+        mPrefs.edit().putString(prefKey, ILLEGAL_THEME_ID_STRING).apply();
+    }
+
+    private void assertKeyboardTheme(final int sdkVersion, final int expectedThemeId) {
+        assertEquals(expectedThemeId, KeyboardTheme.getKeyboardTheme(mPrefs, sdkVersion).mThemeId);
+    }
+
+    /*
+     * Test keyboard theme preference on the same platform version and the same keyboard version.
+     */
+
+    private void assertKeyboardThemePreference(final int sdkVersion, final int oldThemeId,
+            final int expectedThemeId) {
+        final String prefKey = KeyboardTheme.getPreferenceKey(sdkVersion);
+        setKeyboardThemePreference(prefKey, oldThemeId);
+        assertKeyboardTheme(sdkVersion, expectedThemeId);
+    }
+
+    private void assertKeyboardThemePreferenceOnKlp(final int sdkVersion) {
+        final int defaultThemeId = THEME_ID_KLP;
+        assertKeyboardThemePreference(sdkVersion, THEME_ID_NULL, defaultThemeId);
+        assertKeyboardThemePreference(sdkVersion, THEME_ID_ICS, THEME_ID_ICS);
+        assertKeyboardThemePreference(sdkVersion, THEME_ID_KLP, THEME_ID_KLP);
+        assertKeyboardThemePreference(sdkVersion, THEME_ID_LXX, THEME_ID_LXX);
+        assertKeyboardThemePreference(sdkVersion, THEME_ID_UNKNOWN, defaultThemeId);
+        assertKeyboardThemePreference(sdkVersion, THEME_ID_ILLEGAL, defaultThemeId);
+    }
+
+    public void testKeyboardThemePreferenceOnKlp() {
+        assertKeyboardThemePreferenceOnKlp(VERSION_CODES.ICE_CREAM_SANDWICH);
+        assertKeyboardThemePreferenceOnKlp(VERSION_CODES.ICE_CREAM_SANDWICH_MR1);
+        assertKeyboardThemePreferenceOnKlp(VERSION_CODES.JELLY_BEAN);
+        assertKeyboardThemePreferenceOnKlp(VERSION_CODES.JELLY_BEAN_MR1);
+        assertKeyboardThemePreferenceOnKlp(VERSION_CODES.JELLY_BEAN_MR2);
+        assertKeyboardThemePreferenceOnKlp(VERSION_CODES.KITKAT);
+    }
+
+    private void assertKeyboardThemePreferenceOnLxx(final int sdkVersion) {
+        final int defaultThemeId = THEME_ID_LXX;
+        assertKeyboardThemePreference(sdkVersion, THEME_ID_NULL, defaultThemeId);
+        assertKeyboardThemePreference(sdkVersion, THEME_ID_ICS, THEME_ID_ICS);
+        assertKeyboardThemePreference(sdkVersion, THEME_ID_KLP, THEME_ID_KLP);
+        assertKeyboardThemePreference(sdkVersion, THEME_ID_LXX, THEME_ID_LXX);
+        assertKeyboardThemePreference(sdkVersion, THEME_ID_UNKNOWN, defaultThemeId);
+        assertKeyboardThemePreference(sdkVersion, THEME_ID_ILLEGAL, defaultThemeId);
+    }
+
+    public void testKeyboardThemePreferenceOnLxx() {
+        assertKeyboardThemePreferenceOnLxx(VERSION_CODES_LXX);
+    }
+
+    /*
+     * Test default keyboard theme based on the platform version.
+     */
+
     private void assertDefaultKeyboardTheme(final int sdkVersion, final int oldThemeId,
             final int expectedThemeId) {
-        if (oldThemeId == THEME_ID_NULL) {
-            mPrefs.edit().remove(KeyboardTheme.KITKAT_KEYBOARD_THEME_KEY).apply();
-        } else {
-            final String themeIdString = Integer.toString(oldThemeId);
-            mPrefs.edit().putString(KeyboardTheme.KITKAT_KEYBOARD_THEME_KEY, themeIdString).apply();
-        }
+        final String oldPrefKey = KeyboardTheme.KLP_KEYBOARD_THEME_KEY;
+        setKeyboardThemePreference(oldPrefKey, oldThemeId);
+
         final KeyboardTheme defaultTheme =
                 KeyboardTheme.getDefaultKeyboardTheme(mPrefs, sdkVersion);
+
         assertNotNull(defaultTheme);
         assertEquals(expectedThemeId, defaultTheme.mThemeId);
-        assertFalse(mPrefs.contains(KeyboardTheme.KITKAT_KEYBOARD_THEME_KEY));
+        if (sdkVersion <= VERSION_CODES.KITKAT) {
+            // Old preference must be retained if it is valid. Otherwise it must be pruned.
+            assertEquals(isValidKeyboardThemeId(oldThemeId), mPrefs.contains(oldPrefKey));
+            return;
+        }
+        // Old preference must be removed.
+        assertFalse(mPrefs.contains(oldPrefKey));
     }
 
-    private void assertDefaultKeyboardThemeICS(final int sdkVersion) {
-        assertDefaultKeyboardTheme(sdkVersion, THEME_ID_NULL, THEME_ID_ICS);
-        assertDefaultKeyboardTheme(sdkVersion, THEME_ID_ICS, THEME_ID_ICS);
-        assertDefaultKeyboardTheme(sdkVersion, THEME_ID_KLP, THEME_ID_KLP);
-    }
-
-    private void assertDefaultKeyboardThemeKLP(final int sdkVersion) {
+    private void assertDefaultKeyboardThemeOnKlp(final int sdkVersion) {
         assertDefaultKeyboardTheme(sdkVersion, THEME_ID_NULL, THEME_ID_KLP);
         assertDefaultKeyboardTheme(sdkVersion, THEME_ID_ICS, THEME_ID_ICS);
         assertDefaultKeyboardTheme(sdkVersion, THEME_ID_KLP, THEME_ID_KLP);
+        assertDefaultKeyboardTheme(sdkVersion, THEME_ID_UNKNOWN, THEME_ID_KLP);
+        assertDefaultKeyboardTheme(sdkVersion, THEME_ID_ILLEGAL, THEME_ID_KLP);
     }
 
-    private void assertDefaultKeyboardThemeLXX(final int sdkVersion) {
+    public void testDefaultKeyboardThemeOnKlp() {
+        assertDefaultKeyboardThemeOnKlp(VERSION_CODES.ICE_CREAM_SANDWICH);
+        assertDefaultKeyboardThemeOnKlp(VERSION_CODES.ICE_CREAM_SANDWICH_MR1);
+        assertDefaultKeyboardThemeOnKlp(VERSION_CODES.JELLY_BEAN);
+        assertDefaultKeyboardThemeOnKlp(VERSION_CODES.JELLY_BEAN_MR1);
+        assertDefaultKeyboardThemeOnKlp(VERSION_CODES.JELLY_BEAN_MR2);
+        assertDefaultKeyboardThemeOnKlp(VERSION_CODES.KITKAT);
+    }
+
+    private void assertDefaultKeyboardThemeOnLxx(final int sdkVersion) {
         // Forced to switch to LXX theme.
         assertDefaultKeyboardTheme(sdkVersion, THEME_ID_NULL, THEME_ID_LXX);
         assertDefaultKeyboardTheme(sdkVersion, THEME_ID_ICS, THEME_ID_LXX);
         assertDefaultKeyboardTheme(sdkVersion, THEME_ID_KLP, THEME_ID_LXX);
+        assertDefaultKeyboardTheme(sdkVersion, THEME_ID_UNKNOWN, THEME_ID_LXX);
+        assertDefaultKeyboardTheme(sdkVersion, THEME_ID_ILLEGAL, THEME_ID_LXX);
     }
 
-    public void testDefaultKeyboardThemeICS() {
-        assertDefaultKeyboardThemeICS(VERSION_CODES.ICE_CREAM_SANDWICH);
-        assertDefaultKeyboardThemeICS(VERSION_CODES.ICE_CREAM_SANDWICH_MR1);
+    public void testDefaultKeyboardThemeOnLxx() {
+        assertDefaultKeyboardThemeOnLxx(VERSION_CODES_LXX);
     }
 
-    public void testDefaultKeyboardThemeJB() {
-        assertDefaultKeyboardThemeICS(VERSION_CODES.JELLY_BEAN);
-        assertDefaultKeyboardThemeICS(VERSION_CODES.JELLY_BEAN_MR1);
-        assertDefaultKeyboardThemeICS(VERSION_CODES.JELLY_BEAN_MR2);
+    /*
+     * Test keyboard theme preference while upgrading the keyboard that doesn't support LXX theme
+     * to the keyboard that supports LXX theme.
+     */
+
+    private void assertUpgradeKeyboardToLxxOn(final int sdkVersion, final int oldThemeId,
+            final int expectedThemeId) {
+        setKeyboardThemePreference(KeyboardTheme.KLP_KEYBOARD_THEME_KEY, oldThemeId);
+        // Clean up new keyboard theme preference to simulate "upgrade to LXX keyboard".
+        setKeyboardThemePreference(KeyboardTheme.LXX_KEYBOARD_THEME_KEY, THEME_ID_NULL);
+
+        final KeyboardTheme theme = KeyboardTheme.getKeyboardTheme(mPrefs, sdkVersion);
+
+        assertNotNull(theme);
+        assertEquals(expectedThemeId, theme.mThemeId);
+        if (sdkVersion <= VERSION_CODES.KITKAT) {
+            // New preference must not exist.
+            assertFalse(mPrefs.contains(KeyboardTheme.LXX_KEYBOARD_THEME_KEY));
+            // Old preference must be retained if it is valid. Otherwise it must be pruned.
+            assertEquals(isValidKeyboardThemeId(oldThemeId),
+                    mPrefs.contains(KeyboardTheme.KLP_KEYBOARD_THEME_KEY));
+            if (isValidKeyboardThemeId(oldThemeId)) {
+                // Old preference must have an expected value.
+                assertEquals(mPrefs.getString(KeyboardTheme.KLP_KEYBOARD_THEME_KEY, null),
+                        Integer.toString(expectedThemeId));
+            }
+            return;
+        }
+        // Old preference must be removed.
+        assertFalse(mPrefs.contains(KeyboardTheme.KLP_KEYBOARD_THEME_KEY));
+        // New preference must not exist.
+        assertFalse(mPrefs.contains(KeyboardTheme.LXX_KEYBOARD_THEME_KEY));
     }
 
-    public void testDefaultKeyboardThemeKLP() {
-        assertDefaultKeyboardThemeKLP(VERSION_CODES.KITKAT);
+    private void assertUpgradeKeyboardToLxxOnKlp(final int sdkVersion) {
+        assertUpgradeKeyboardToLxxOn(sdkVersion, THEME_ID_NULL, THEME_ID_KLP);
+        assertUpgradeKeyboardToLxxOn(sdkVersion, THEME_ID_ICS, THEME_ID_ICS);
+        assertUpgradeKeyboardToLxxOn(sdkVersion, THEME_ID_KLP, THEME_ID_KLP);
+        assertUpgradeKeyboardToLxxOn(sdkVersion, THEME_ID_UNKNOWN, THEME_ID_KLP);
+        assertUpgradeKeyboardToLxxOn(sdkVersion, THEME_ID_ILLEGAL, THEME_ID_KLP);
     }
 
-    public void testDefaultKeyboardThemeLXX() {
-        // TODO: Update this constant once the *next* version becomes available.
-        assertDefaultKeyboardThemeLXX(VERSION_CODES.CUR_DEVELOPMENT);
+    // Upgrading keyboard on I,J and K.
+    public void testUpgradeKeyboardToLxxOnKlp() {
+        assertUpgradeKeyboardToLxxOnKlp(VERSION_CODES.ICE_CREAM_SANDWICH);
+        assertUpgradeKeyboardToLxxOnKlp(VERSION_CODES.ICE_CREAM_SANDWICH_MR1);
+        assertUpgradeKeyboardToLxxOnKlp(VERSION_CODES.JELLY_BEAN);
+        assertUpgradeKeyboardToLxxOnKlp(VERSION_CODES.JELLY_BEAN_MR1);
+        assertUpgradeKeyboardToLxxOnKlp(VERSION_CODES.JELLY_BEAN_MR2);
+        assertUpgradeKeyboardToLxxOnKlp(VERSION_CODES.KITKAT);
+    }
+
+    private void assertUpgradeKeyboardToLxxOnLxx(final int sdkVersion) {
+        // Forced to switch to LXX theme.
+        assertUpgradeKeyboardToLxxOn(sdkVersion, THEME_ID_NULL, THEME_ID_LXX);
+        assertUpgradeKeyboardToLxxOn(sdkVersion, THEME_ID_ICS, THEME_ID_LXX);
+        assertUpgradeKeyboardToLxxOn(sdkVersion, THEME_ID_KLP, THEME_ID_LXX);
+        assertUpgradeKeyboardToLxxOn(sdkVersion, THEME_ID_UNKNOWN, THEME_ID_LXX);
+        assertUpgradeKeyboardToLxxOn(sdkVersion, THEME_ID_ILLEGAL, THEME_ID_LXX);
+    }
+
+    // Upgrading keyboard on L.
+    public void testUpgradeKeyboardToLxxOnLxx() {
+        assertUpgradeKeyboardToLxxOnLxx(VERSION_CODES_LXX);
+    }
+
+    /*
+     * Test keyboard theme preference while upgrading platform version.
+     */
+
+    private void assertUpgradePlatformFromTo(final int oldSdkVersion, final int newSdkVersion,
+            final int oldThemeId, final int expectedThemeId) {
+        if (newSdkVersion < oldSdkVersion) {
+            // No need to test.
+            return;
+        }
+        // Clean up preferences.
+        setKeyboardThemePreference(KeyboardTheme.KLP_KEYBOARD_THEME_KEY, THEME_ID_NULL);
+        setKeyboardThemePreference(KeyboardTheme.LXX_KEYBOARD_THEME_KEY, THEME_ID_NULL);
+
+        final String oldPrefKey = KeyboardTheme.getPreferenceKey(oldSdkVersion);
+        setKeyboardThemePreference(oldPrefKey, oldThemeId);
+
+        assertKeyboardTheme(newSdkVersion, expectedThemeId);
+    }
+
+    private void assertUpgradePlatformFromKlpToKlp(final int oldSdkVersion,
+            final int newSdkVersion) {
+        assertUpgradePlatformFromTo(oldSdkVersion, newSdkVersion, THEME_ID_NULL, THEME_ID_KLP);
+        assertUpgradePlatformFromTo(oldSdkVersion, newSdkVersion, THEME_ID_ICS, THEME_ID_ICS);
+        assertUpgradePlatformFromTo(oldSdkVersion, newSdkVersion, THEME_ID_KLP, THEME_ID_KLP);
+        assertUpgradePlatformFromTo(oldSdkVersion, newSdkVersion, THEME_ID_UNKNOWN, THEME_ID_KLP);
+        assertUpgradePlatformFromTo(oldSdkVersion, newSdkVersion, THEME_ID_ILLEGAL, THEME_ID_KLP);
+    }
+
+    private void assertUpgradePlatformToKlpFrom(final int oldSdkVersion) {
+        assertUpgradePlatformFromKlpToKlp(oldSdkVersion, VERSION_CODES.ICE_CREAM_SANDWICH);
+        assertUpgradePlatformFromKlpToKlp(oldSdkVersion, VERSION_CODES.ICE_CREAM_SANDWICH_MR1);
+        assertUpgradePlatformFromKlpToKlp(oldSdkVersion, VERSION_CODES.JELLY_BEAN);
+        assertUpgradePlatformFromKlpToKlp(oldSdkVersion, VERSION_CODES.JELLY_BEAN_MR1);
+        assertUpgradePlatformFromKlpToKlp(oldSdkVersion, VERSION_CODES.JELLY_BEAN_MR2);
+        assertUpgradePlatformFromKlpToKlp(oldSdkVersion, VERSION_CODES.KITKAT);
+    }
+
+    // Update platform from I,J, and K to I,J, and K
+    public void testUpgradePlatformToKlpFromKlp() {
+        assertUpgradePlatformToKlpFrom(VERSION_CODES.ICE_CREAM_SANDWICH);
+        assertUpgradePlatformToKlpFrom(VERSION_CODES.ICE_CREAM_SANDWICH_MR1);
+        assertUpgradePlatformToKlpFrom(VERSION_CODES.JELLY_BEAN);
+        assertUpgradePlatformToKlpFrom(VERSION_CODES.JELLY_BEAN_MR1);
+        assertUpgradePlatformToKlpFrom(VERSION_CODES.JELLY_BEAN_MR2);
+        assertUpgradePlatformToKlpFrom(VERSION_CODES.KITKAT);
+    }
+
+    private void assertUpgradePlatformToLxxFrom(final int oldSdkVersion) {
+        // Forced to switch to LXX theme.
+        final int newSdkVersion = VERSION_CODES_LXX;
+        assertUpgradePlatformFromTo(oldSdkVersion, newSdkVersion, THEME_ID_NULL, THEME_ID_LXX);
+        assertUpgradePlatformFromTo(oldSdkVersion, newSdkVersion, THEME_ID_ICS, THEME_ID_LXX);
+        assertUpgradePlatformFromTo(oldSdkVersion, newSdkVersion, THEME_ID_KLP, THEME_ID_LXX);
+        assertUpgradePlatformFromTo(oldSdkVersion, newSdkVersion, THEME_ID_UNKNOWN, THEME_ID_LXX);
+        assertUpgradePlatformFromTo(oldSdkVersion, newSdkVersion, THEME_ID_ILLEGAL, THEME_ID_LXX);
+    }
+
+    // Update platform from I,J, and K to L
+    public void testUpgradePlatformToLxx() {
+        assertUpgradePlatformToLxxFrom(VERSION_CODES.ICE_CREAM_SANDWICH);
+        assertUpgradePlatformToLxxFrom(VERSION_CODES.ICE_CREAM_SANDWICH_MR1);
+        assertUpgradePlatformToLxxFrom(VERSION_CODES.JELLY_BEAN);
+        assertUpgradePlatformToLxxFrom(VERSION_CODES.JELLY_BEAN_MR1);
+        assertUpgradePlatformToLxxFrom(VERSION_CODES.JELLY_BEAN_MR2);
+        assertUpgradePlatformToLxxFrom(VERSION_CODES.KITKAT);
+    }
+
+    // Update platform from L to L.
+    public void testUpgradePlatformToLxxFromLxx() {
+        final int oldSdkVersion = VERSION_CODES_LXX;
+        final int newSdkVersion = VERSION_CODES_LXX;
+        assertUpgradePlatformFromTo(oldSdkVersion, newSdkVersion, THEME_ID_NULL, THEME_ID_LXX);
+        assertUpgradePlatformFromTo(oldSdkVersion, newSdkVersion, THEME_ID_ICS, THEME_ID_ICS);
+        assertUpgradePlatformFromTo(oldSdkVersion, newSdkVersion, THEME_ID_KLP, THEME_ID_KLP);
+        assertUpgradePlatformFromTo(oldSdkVersion, newSdkVersion, THEME_ID_UNKNOWN, THEME_ID_LXX);
+        assertUpgradePlatformFromTo(oldSdkVersion, newSdkVersion, THEME_ID_ILLEGAL, THEME_ID_LXX);
     }
 }
