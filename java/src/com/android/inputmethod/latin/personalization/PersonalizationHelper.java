@@ -138,11 +138,13 @@ public class PersonalizationHelper {
                 }
             }
             dictionaryMap.clear();
-            if (!FileUtils.deleteFilteredFiles(
-                    context.getFilesDir(), new DictFilter(dictNamePrefix))) {
+            final File filesDir = context.getFilesDir();
+            if (filesDir == null) {
+                Log.e(TAG, "context.getFilesDir() returned null.");
+            }
+            if (!FileUtils.deleteFilteredFiles(filesDir, new DictFilter(dictNamePrefix))) {
                 Log.e(TAG, "Cannot remove all existing dictionary files. filesDir: "
-                        + context.getFilesDir().getAbsolutePath() + ", dictNamePrefix: "
-                        + dictNamePrefix);
+                        + filesDir.getAbsolutePath() + ", dictNamePrefix: " + dictNamePrefix);
             }
         }
     }
