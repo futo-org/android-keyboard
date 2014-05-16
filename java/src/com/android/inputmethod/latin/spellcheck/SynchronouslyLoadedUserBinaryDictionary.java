@@ -43,10 +43,10 @@ public final class SynchronouslyLoadedUserBinaryDictionary extends UserBinaryDic
     public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer codes,
             final String prevWordForBigrams, final ProximityInfo proximityInfo,
             final boolean blockOffensiveWords, final int[] additionalFeaturesOptions,
-            final float[] inOutLanguageWeight) {
+            final int sessionId, final float[] inOutLanguageWeight) {
         synchronized (mLock) {
             return super.getSuggestions(codes, prevWordForBigrams, proximityInfo,
-                    blockOffensiveWords, additionalFeaturesOptions, inOutLanguageWeight);
+                    blockOffensiveWords, additionalFeaturesOptions, sessionId, inOutLanguageWeight);
         }
     }
 

@@ -455,7 +455,7 @@ public class DictionaryFacilitatorForSuggest {
             final Dictionary dictionary = dictionaries.getDict(dictType);
             if (null == dictionary) continue;
             final ArrayList<SuggestedWordInfo> dictionarySuggestions =
-                    dictionary.getSuggestionsWithSessionId(composer, prevWord, proximityInfo,
+                    dictionary.getSuggestions(composer, prevWord, proximityInfo,
                             blockOffensiveWords, additionalFeaturesOptions, sessionId,
                             languageWeight);
             if (null == dictionarySuggestions) continue;

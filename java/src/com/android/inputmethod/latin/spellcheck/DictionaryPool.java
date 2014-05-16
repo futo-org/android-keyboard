@@ -54,7 +54,7 @@ public final class DictionaryPool extends LinkedBlockingQueue<DictAndKeyboard> {
                 public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
                         final String prevWord, final ProximityInfo proximityInfo,
                         final boolean blockOffensiveWords, final int[] additionalFeaturesOptions,
-                        final float[] inOutLanguageWeight) {
+                        final int sessionId, final float[] inOutLanguageWeight) {
                     return noSuggestions;
                 }
                 @Override

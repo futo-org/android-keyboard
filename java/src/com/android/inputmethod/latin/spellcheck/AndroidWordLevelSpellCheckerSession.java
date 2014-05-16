@@ -327,7 +327,7 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
                 final ArrayList<SuggestedWordInfo> suggestions =
                         dictInfo.mDictionary.getSuggestions(composer, prevWord,
                                 dictInfo.getProximityInfo(), true /* blockOffensiveWords */,
-                                null /* additionalFeaturesOptions */,
+                                null /* additionalFeaturesOptions */, 0 /* sessionId */,
                                 null /* inOutLanguageWeight */);
                 if (suggestions != null) {
                     for (final SuggestedWordInfo suggestion : suggestions) {
