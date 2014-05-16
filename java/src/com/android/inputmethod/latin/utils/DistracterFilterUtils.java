@@ -16,18 +16,17 @@
 
 package com.android.inputmethod.latin.utils;
 
-import android.content.Context;
-
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.keyboard.MainKeyboardView;
+import com.android.inputmethod.latin.Suggest;
 
 public class DistracterFilterUtils {
     private DistracterFilterUtils() {
         // This utility class is not publicly instantiable.
     }
 
-    public static final DistracterFilter createDistracterFilter(final Context context,
+    public static final DistracterFilter createDistracterFilter(final Suggest suggest,
             final KeyboardSwitcher keyboardSwitcher) {
         final MainKeyboardView mainKeyboardView = keyboardSwitcher.getMainKeyboardView();
         // TODO: Create Keyboard when mainKeyboardView is null.
@@ -35,7 +34,7 @@ public class DistracterFilterUtils {
         // spellchecker's logic.
         final Keyboard keyboard = (mainKeyboardView != null) ?
                 mainKeyboardView.getKeyboard() : null;
-        final DistracterFilter distracterFilter = new DistracterFilter(context, keyboard);
+        final DistracterFilter distracterFilter = new DistracterFilter(suggest, keyboard);
         return distracterFilter;
     }
 }

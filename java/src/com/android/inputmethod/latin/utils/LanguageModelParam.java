@@ -150,7 +150,7 @@ public final class LanguageModelParam {
         // Adding such a word to dictonaries would interfere with entering in-dictionary words. For
         // example, adding "mot" to dictionaries might interfere with entering "not".
         // This kind of OOV should be filtered out.
-        if (distracterFilter.isDistracterToWordsInDictionaries(prevWord, targetWord, locale)) {
+        if (distracterFilter.isDistracterToWordsInDictionaries(prevWord, targetWord)) {
             return null;
         }
         return createAndGetLanguageModelParamOfWord(prevWord, targetWord, timestamp,
