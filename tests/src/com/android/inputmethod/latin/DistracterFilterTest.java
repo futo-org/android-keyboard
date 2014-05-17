@@ -16,6 +16,8 @@
 
 package com.android.inputmethod.latin;
 
+import java.util.Locale;
+
 import android.test.suitebuilder.annotation.LargeTest;
 
 import com.android.inputmethod.latin.utils.DistracterFilter;
@@ -35,39 +37,49 @@ public class DistracterFilterTest extends InputTestsBase {
 
     public void testIsDistractorToWordsInDictionaries() {
         final String EMPTY_PREV_WORD = null;
+
+        final Locale localeEnUs = new Locale("en", "US");
         String typedWord = "alot";
         // For this test case, we consider "alot" is a distracter to "a lot".
-        assertTrue(mDistracterFilter.isDistracterToWordsInDictionaries(EMPTY_PREV_WORD, typedWord));
+        assertTrue(mDistracterFilter.isDistracterToWordsInDictionaries(
+                EMPTY_PREV_WORD, typedWord, localeEnUs));
 
         typedWord = "mot";
         // For this test case, we consider "mot" is a distracter to "not".
-        assertTrue(mDistracterFilter.isDistracterToWordsInDictionaries(EMPTY_PREV_WORD, typedWord));
+        assertTrue(mDistracterFilter.isDistracterToWordsInDictionaries(
+                EMPTY_PREV_WORD, typedWord, localeEnUs));
 
         typedWord = "wierd";
         // For this test case, we consider "wierd" is a distracter to "weird".
-        assertTrue(mDistracterFilter.isDistracterToWordsInDictionaries(EMPTY_PREV_WORD, typedWord));
+        assertTrue(mDistracterFilter.isDistracterToWordsInDictionaries(
+                EMPTY_PREV_WORD, typedWord, localeEnUs));
 
         typedWord = "hoe";
         // For this test case, we consider "hoe" is a distracter to "how".
-        assertTrue(mDistracterFilter.isDistracterToWordsInDictionaries(EMPTY_PREV_WORD, typedWord));
+        assertTrue(mDistracterFilter.isDistracterToWordsInDictionaries(
+                EMPTY_PREV_WORD, typedWord, localeEnUs));
 
         typedWord = "nit";
         // For this test case, we consider "nit" is a distracter to "not".
-        assertTrue(mDistracterFilter.isDistracterToWordsInDictionaries(EMPTY_PREV_WORD, typedWord));
+        assertTrue(mDistracterFilter.isDistracterToWordsInDictionaries(
+                EMPTY_PREV_WORD, typedWord, localeEnUs));
 
         typedWord = "ill";
         // For this test case, we consider "ill" is a distracter to "I'll".
-        assertTrue(mDistracterFilter.isDistracterToWordsInDictionaries(EMPTY_PREV_WORD, typedWord));
+        assertTrue(mDistracterFilter.isDistracterToWordsInDictionaries(
+                EMPTY_PREV_WORD, typedWord, localeEnUs));
 
         typedWord = "asdfd";
         // For this test case, we consider "asdfd" is not a distracter to any word in dictionaries.
         assertFalse(
-                mDistracterFilter.isDistracterToWordsInDictionaries(EMPTY_PREV_WORD, typedWord));
+                mDistracterFilter.isDistracterToWordsInDictionaries(
+                        EMPTY_PREV_WORD, typedWord, localeEnUs));
 
         typedWord = "thank";
         // For this test case, we consider "thank" is not a distracter to any other word
         // in dictionaries.
         assertFalse(
-                mDistracterFilter.isDistracterToWordsInDictionaries(EMPTY_PREV_WORD, typedWord));
+                mDistracterFilter.isDistracterToWordsInDictionaries(
+                        EMPTY_PREV_WORD, typedWord, localeEnUs));
     }
 }
