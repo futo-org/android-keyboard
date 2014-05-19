@@ -23,13 +23,13 @@
 
     <!-- Toggle keys. Use checkable/checked state. -->
     <item android:state_checkable="true" android:state_checked="true" android:state_pressed="true"
-          android:drawable="@drawable/btn_keyboard_key_dark_pressed_on_lxx_dark" />
+          android:drawable="@drawable/btn_keyboard_key_pressed_on_lxx_dark" />
     <item android:state_checkable="true" android:state_pressed="true"
-          android:drawable="@drawable/btn_keyboard_key_dark_pressed_off_lxx_dark" />
+          android:drawable="@drawable/btn_keyboard_key_pressed_off_lxx_dark" />
     <item android:state_checkable="true" android:state_checked="true"
-          android:drawable="@drawable/btn_keyboard_key_dark_normal_on_lxx_dark" />
+          android:drawable="@drawable/btn_keyboard_key_normal_on_lxx_dark" />
     <item android:state_checkable="true"
-          android:drawable="@drawable/btn_keyboard_key_dark_normal_off_lxx_dark" />
+          android:drawable="@drawable/btn_keyboard_key_normal_off_lxx_dark" />
 
     <!-- Empty background keys. -->
     <item android:state_empty="true"

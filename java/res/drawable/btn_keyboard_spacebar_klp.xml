@@ -16,6 +16,6 @@
 
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_pressed="true"
-          android:drawable="@drawable/btn_keyboard_key_light_pressed_klp" />
-    <item android:drawable="@drawable/btn_keyboard_key_light_normal_holo" />
+          android:drawable="@drawable/btn_keyboard_key_pressed_klp_light" />
+    <item android:drawable="@drawable/btn_keyboard_key_normal_holo_light" />
 </selector>
