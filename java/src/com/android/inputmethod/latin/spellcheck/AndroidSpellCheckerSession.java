@@ -23,6 +23,7 @@ import android.view.textservice.SentenceSuggestionsInfo;
 import android.view.textservice.SuggestionsInfo;
 import android.view.textservice.TextInfo;
 
+import com.android.inputmethod.latin.PrevWordsInfo;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 
 import java.util.ArrayList;
@@ -57,7 +58,7 @@ public final class AndroidSpellCheckerSession extends AndroidWordLevelSpellCheck
             final int offset = ssi.getOffsetAt(i);
             final int length = ssi.getLengthAt(i);
             final String subText = typedText.substring(offset, offset + length);
-            final String prevWord = currentWord;
+            final PrevWordsInfo prevWordsInfo = new PrevWordsInfo(currentWord);
             currentWord = subText;
             if (!subText.contains(AndroidSpellCheckerService.SINGLE_QUOTE)) {
                 continue;
@@ -73,7 +74,7 @@ public final class AndroidSpellCheckerSession extends AndroidWordLevelSpellCheck
                 if (TextUtils.isEmpty(splitText)) {
                     continue;
                 }
-                if (mSuggestionsCache.getSuggestionsFromCache(splitText, prevWord) == null) {
+                if (mSuggestionsCache.getSuggestionsFromCache(splitText, prevWordsInfo) == null) {
                     continue;
                 }
                 final int newLength = splitText.length();
@@ -148,7 +149,8 @@ public final class AndroidSpellCheckerSession extends AndroidWordLevelSpellCheck
                 } else {
                     prevWord = null;
                 }
-                retval[i] = onGetSuggestionsInternal(textInfos[i], prevWord, suggestionsLimit);
+                final PrevWordsInfo prevWordsInfo = new PrevWordsInfo(prevWord);
+                retval[i] = onGetSuggestionsInternal(textInfos[i], prevWordsInfo, suggestionsLimit);
                 retval[i].setCookieAndSequence(textInfos[i].getCookie(),
                         textInfos[i].getSequence());
             }

@@ -20,6 +20,7 @@ import android.util.Log;
 
 import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.DictionaryFacilitatorForSuggest;
+import com.android.inputmethod.latin.PrevWordsInfo;
 import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
 
 import java.util.ArrayList;
@@ -85,7 +86,7 @@ public final class LanguageModelParam {
         final ArrayList<LanguageModelParam> languageModelParams =
                 CollectionUtils.newArrayList();
         final int N = tokens.size();
-        String prevWord = null;
+        PrevWordsInfo prevWordsInfo = new PrevWordsInfo(null);
         for (int i = 0; i < N; ++i) {
             final String tempWord = tokens.get(i);
             if (StringUtils.isEmptyStringOrWhiteSpaces(tempWord)) {
@@ -102,7 +103,7 @@ public final class LanguageModelParam {
                             + tempWord + "\"");
                 }
                 // Sentence terminator found. Split.
-                prevWord = null;
+                prevWordsInfo = new PrevWordsInfo(null);
                 continue;
             }
             if (DEBUG_TOKEN) {
@@ -110,19 +111,19 @@ public final class LanguageModelParam {
             }
             final LanguageModelParam languageModelParam =
                     detectWhetherVaildWordOrNotAndGetLanguageModelParam(
-                            prevWord, tempWord, timestamp, dictionaryFacilitator,
+                            prevWordsInfo, tempWord, timestamp, dictionaryFacilitator,
                             distracterFilter);
             if (languageModelParam == null) {
                 continue;
             }
             languageModelParams.add(languageModelParam);
-            prevWord = languageModelParam.mTargetWord;
+            prevWordsInfo = new PrevWordsInfo(languageModelParam.mTargetWord);
         }
         return languageModelParams;
     }
 
     private static LanguageModelParam detectWhetherVaildWordOrNotAndGetLanguageModelParam(
-            final String prevWord, final String targetWord, final int timestamp,
+            final PrevWordsInfo prevWordsInfo, final String targetWord, final int timestamp,
             final DictionaryFacilitatorForSuggest dictionaryFacilitator,
             final DistracterFilter distracterFilter) {
         final Locale locale = dictionaryFacilitator.getLocale();
@@ -133,14 +134,14 @@ public final class LanguageModelParam {
         // distracterFilter in the following code. If targetWord is a distracter,
         // it should be filtered out.
         if (dictionaryFacilitator.isValidWord(targetWord, false /* ignoreCase */)) {
-            return createAndGetLanguageModelParamOfWord(prevWord, targetWord, timestamp,
+            return createAndGetLanguageModelParamOfWord(prevWordsInfo, targetWord, timestamp,
                     true /* isValidWord */, locale);
         }
 
         final String lowerCaseTargetWord = targetWord.toLowerCase(locale);
         if (dictionaryFacilitator.isValidWord(lowerCaseTargetWord, false /* ignoreCase */)) {
             // Add the lower-cased word.
-            return createAndGetLanguageModelParamOfWord(prevWord, lowerCaseTargetWord,
+            return createAndGetLanguageModelParamOfWord(prevWordsInfo, lowerCaseTargetWord,
                     timestamp, true /* isValidWord */, locale);
         }
 
@@ -150,26 +151,26 @@ public final class LanguageModelParam {
         // Adding such a word to dictonaries would interfere with entering in-dictionary words. For
         // example, adding "mot" to dictionaries might interfere with entering "not".
         // This kind of OOV should be filtered out.
-        if (distracterFilter.isDistracterToWordsInDictionaries(prevWord, targetWord, locale)) {
+        if (distracterFilter.isDistracterToWordsInDictionaries(prevWordsInfo, targetWord, locale)) {
             return null;
         }
-        return createAndGetLanguageModelParamOfWord(prevWord, targetWord, timestamp,
+        return createAndGetLanguageModelParamOfWord(prevWordsInfo, targetWord, timestamp,
                 false /* isValidWord */, locale);
     }
 
     private static LanguageModelParam createAndGetLanguageModelParamOfWord(
-            final String prevWord, final String targetWord, final int timestamp,
+            final PrevWordsInfo prevWordsInfo, final String targetWord, final int timestamp,
             final boolean isValidWord, final Locale locale) {
         final String word;
         if (StringUtils.getCapitalizationType(targetWord) == StringUtils.CAPITALIZE_FIRST
-                && prevWord == null && !isValidWord) {
+                && prevWordsInfo.mPrevWord == null && !isValidWord) {
             word = targetWord.toLowerCase(locale);
         } else {
             word = targetWord;
         }
         final int unigramProbability = isValidWord ?
                 UNIGRAM_PROBABILITY_FOR_VALID_WORD : UNIGRAM_PROBABILITY_FOR_OOV_WORD;
-        if (prevWord == null) {
+        if (prevWordsInfo.mPrevWord == null) {
             if (DEBUG) {
                 Log.d(TAG, "--- add unigram: current("
                         + (isValidWord ? "Valid" : "OOV") + ") = " + word);
@@ -177,12 +178,12 @@ public final class LanguageModelParam {
             return new LanguageModelParam(word, unigramProbability, timestamp);
         }
         if (DEBUG) {
-            Log.d(TAG, "--- add bigram: prev = " + prevWord + ", current("
+            Log.d(TAG, "--- add bigram: prev = " + prevWordsInfo.mPrevWord + ", current("
                     + (isValidWord ? "Valid" : "OOV") + ") = " + word);
         }
         final int bigramProbability = isValidWord ?
                 BIGRAM_PROBABILITY_FOR_VALID_WORD : BIGRAM_PROBABILITY_FOR_OOV_WORD;
-        return new LanguageModelParam(prevWord, word, unigramProbability,
+        return new LanguageModelParam(prevWordsInfo.mPrevWord, word, unigramProbability,
                 bigramProbability, timestamp);
     }
 }

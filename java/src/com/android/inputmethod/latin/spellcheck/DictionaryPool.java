@@ -20,6 +20,7 @@ import android.util.Log;
 
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.Dictionary;
+import com.android.inputmethod.latin.PrevWordsInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.WordComposer;
 import com.android.inputmethod.latin.utils.CollectionUtils;
@@ -52,7 +53,7 @@ public final class DictionaryPool extends LinkedBlockingQueue<DictAndKeyboard> {
                 // TODO: this dummy dictionary should be a singleton in the Dictionary class.
                 @Override
                 public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
-                        final String prevWord, final ProximityInfo proximityInfo,
+                        final PrevWordsInfo prevWordsInfo, final ProximityInfo proximityInfo,
                         final boolean blockOffensiveWords, final int[] additionalFeaturesOptions,
                         final int sessionId, final float[] inOutLanguageWeight) {
                     return noSuggestions;

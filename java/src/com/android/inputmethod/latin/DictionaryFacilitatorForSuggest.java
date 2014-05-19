@@ -444,7 +444,7 @@ public class DictionaryFacilitatorForSuggest {
 
     // TODO: Revise the way to fusion suggestion results.
     public SuggestionResults getSuggestionResults(final WordComposer composer,
-            final String prevWord, final ProximityInfo proximityInfo,
+            final PrevWordsInfo prevWordsInfo, final ProximityInfo proximityInfo,
             final boolean blockOffensiveWords, final int[] additionalFeaturesOptions,
             final int sessionId, final ArrayList<SuggestedWordInfo> rawSuggestions) {
         final Dictionaries dictionaries = mDictionaries;
@@ -455,7 +455,7 @@ public class DictionaryFacilitatorForSuggest {
             final Dictionary dictionary = dictionaries.getDict(dictType);
             if (null == dictionary) continue;
             final ArrayList<SuggestedWordInfo> dictionarySuggestions =
-                    dictionary.getSuggestions(composer, prevWord, proximityInfo,
+                    dictionary.getSuggestions(composer, prevWordsInfo, proximityInfo,
                             blockOffensiveWords, additionalFeaturesOptions, sessionId,
                             languageWeight);
             if (null == dictionarySuggestions) continue;

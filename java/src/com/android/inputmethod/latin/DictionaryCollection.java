@@ -57,7 +57,7 @@ public final class DictionaryCollection extends Dictionary {
 
     @Override
     public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
-            final String prevWord, final ProximityInfo proximityInfo,
+            final PrevWordsInfo prevWordsInfo, final ProximityInfo proximityInfo,
             final boolean blockOffensiveWords, final int[] additionalFeaturesOptions,
             final int sessionId, final float[] inOutLanguageWeight) {
         final CopyOnWriteArrayList<Dictionary> dictionaries = mDictionaries;
@@ -65,13 +65,13 @@ public final class DictionaryCollection extends Dictionary {
         // To avoid creating unnecessary objects, we get the list out of the first
         // dictionary and add the rest to it if not null, hence the get(0)
         ArrayList<SuggestedWordInfo> suggestions = dictionaries.get(0).getSuggestions(composer,
-                prevWord, proximityInfo, blockOffensiveWords, additionalFeaturesOptions,
+                prevWordsInfo, proximityInfo, blockOffensiveWords, additionalFeaturesOptions,
                 sessionId, inOutLanguageWeight);
         if (null == suggestions) suggestions = CollectionUtils.newArrayList();
         final int length = dictionaries.size();
         for (int i = 1; i < length; ++ i) {
             final ArrayList<SuggestedWordInfo> sugg = dictionaries.get(i).getSuggestions(composer,
-                    prevWord, proximityInfo, blockOffensiveWords, additionalFeaturesOptions,
+                    prevWordsInfo, proximityInfo, blockOffensiveWords, additionalFeaturesOptions,
                     sessionId, inOutLanguageWeight);
             if (null != sugg) suggestions.addAll(sugg);
         }
