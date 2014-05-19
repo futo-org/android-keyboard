@@ -29,8 +29,8 @@ namespace latinime {
 
 /* static */ void DicNodeUtils::initAsRoot(
         const DictionaryStructureWithBufferPolicy *const dictionaryStructurePolicy,
-        const int prevWordPtNodePos, DicNode *const newRootDicNode) {
-    newRootDicNode->initAsRoot(dictionaryStructurePolicy->getRootPosition(), prevWordPtNodePos);
+        const int *const prevWordsPtNodePos, DicNode *const newRootDicNode) {
+    newRootDicNode->initAsRoot(dictionaryStructurePolicy->getRootPosition(), prevWordsPtNodePos);
 }
 
 /*static */ void DicNodeUtils::initAsRootWithPreviousWord(
@@ -86,7 +86,7 @@ namespace latinime {
         const DicNode *const dicNode, MultiBigramMap *const multiBigramMap) {
     const int unigramProbability = dicNode->getProbability();
     const int ptNodePos = dicNode->getPtNodePos();
-    const int prevWordTerminalPtNodePos = dicNode->getPrevWordTerminalPtNodePos();
+    const int prevWordTerminalPtNodePos = dicNode->getNthPrevWordTerminalPtNodePos(1 /* n */);
     if (NOT_A_DICT_POS == ptNodePos || NOT_A_DICT_POS == prevWordTerminalPtNodePos) {
         // Note: Normally wordPos comes from the dictionary and should never equal
         // NOT_A_VALID_WORD_POS.

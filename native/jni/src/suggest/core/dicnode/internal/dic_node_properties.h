@@ -32,15 +32,14 @@ class DicNodeProperties {
             : mPtNodePos(NOT_A_DICT_POS), mChildrenPtNodeArrayPos(NOT_A_DICT_POS),
               mProbability(NOT_A_PROBABILITY), mDicNodeCodePoint(NOT_A_CODE_POINT),
               mIsTerminal(false), mHasChildrenPtNodes(false),
-              mIsBlacklistedOrNotAWord(false), mDepth(0), mLeavingDepth(0),
-              mPrevWordTerminalPtNodePos(NOT_A_DICT_POS) {}
+              mIsBlacklistedOrNotAWord(false), mDepth(0), mLeavingDepth(0) {}
 
     ~DicNodeProperties() {}
 
     // Should be called only once per DicNode is initialized.
     void init(const int pos, const int childrenPos, const int nodeCodePoint, const int probability,
             const bool isTerminal, const bool hasChildren, const bool isBlacklistedOrNotAWord,
-            const uint16_t depth, const uint16_t leavingDepth, const int prevWordNodePos) {
+            const uint16_t depth, const uint16_t leavingDepth, const int *const prevWordsNodePos) {
         mPtNodePos = pos;
         mChildrenPtNodeArrayPos = childrenPos;
         mDicNodeCodePoint = nodeCodePoint;
@@ -50,11 +49,11 @@ class DicNodeProperties {
         mIsBlacklistedOrNotAWord = isBlacklistedOrNotAWord;
         mDepth = depth;
         mLeavingDepth = leavingDepth;
-        mPrevWordTerminalPtNodePos = prevWordNodePos;
+        memmove(mPrevWordsTerminalPtNodePos, prevWordsNodePos, sizeof(mPrevWordsTerminalPtNodePos));
     }
 
-    // Init for root with prevWordPtNodePos which is used for bigram
-    void init(const int rootPtNodeArrayPos, const int prevWordNodePos) {
+    // Init for root with prevWordsPtNodePos which is used for n-gram
+    void init(const int rootPtNodeArrayPos, const int *const prevWordsNodePos) {
         mPtNodePos = NOT_A_DICT_POS;
         mChildrenPtNodeArrayPos = rootPtNodeArrayPos;
         mDicNodeCodePoint = NOT_A_CODE_POINT;
@@ -64,7 +63,7 @@ class DicNodeProperties {
         mIsBlacklistedOrNotAWord = false;
         mDepth = 0;
         mLeavingDepth = 0;
-        mPrevWordTerminalPtNodePos = prevWordNodePos;
+        memmove(mPrevWordsTerminalPtNodePos, prevWordsNodePos, sizeof(mPrevWordsTerminalPtNodePos));
     }
 
     void initByCopy(const DicNodeProperties *const dicNodeProp) {
@@ -77,7 +76,8 @@ class DicNodeProperties {
         mIsBlacklistedOrNotAWord = dicNodeProp->mIsBlacklistedOrNotAWord;
         mDepth = dicNodeProp->mDepth;
         mLeavingDepth = dicNodeProp->mLeavingDepth;
-        mPrevWordTerminalPtNodePos = dicNodeProp->mPrevWordTerminalPtNodePos;
+        memmove(mPrevWordsTerminalPtNodePos, dicNodeProp->mPrevWordsTerminalPtNodePos,
+                sizeof(mPrevWordsTerminalPtNodePos));
     }
 
     // Init as passing child
@@ -91,7 +91,8 @@ class DicNodeProperties {
         mIsBlacklistedOrNotAWord = dicNodeProp->mIsBlacklistedOrNotAWord;
         mDepth = dicNodeProp->mDepth + 1; // Increment the depth of a passing child
         mLeavingDepth = dicNodeProp->mLeavingDepth;
-        mPrevWordTerminalPtNodePos = dicNodeProp->mPrevWordTerminalPtNodePos;
+        memmove(mPrevWordsTerminalPtNodePos, dicNodeProp->mPrevWordsTerminalPtNodePos,
+                sizeof(mPrevWordsTerminalPtNodePos));
     }
 
     int getPtNodePos() const {
@@ -131,8 +132,8 @@ class DicNodeProperties {
         return mIsBlacklistedOrNotAWord;
     }
 
-    int getPrevWordTerminalPtNodePos() const {
-        return mPrevWordTerminalPtNodePos;
+    const int *getPrevWordsTerminalPtNodePos() const {
+        return mPrevWordsTerminalPtNodePos;
     }
 
  private:
@@ -148,7 +149,7 @@ class DicNodeProperties {
     bool mIsBlacklistedOrNotAWord;
     uint16_t mDepth;
     uint16_t mLeavingDepth;
-    int mPrevWordTerminalPtNodePos;
+    int mPrevWordsTerminalPtNodePos[MAX_PREV_WORD_COUNT_FOR_N_GRAM];
 };
 } // namespace latinime
 #endif // LATINIME_DIC_NODE_PROPERTIES_H
