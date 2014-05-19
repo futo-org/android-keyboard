@@ -48,21 +48,10 @@ BigramDictionary::~BigramDictionary() {
  */
 void BigramDictionary::getPredictions(const PrevWordsInfo *const prevWordsInfo,
         SuggestionResults *const outSuggestionResults) const {
-    int pos = getBigramListPositionForWord(prevWordsInfo->getPrevWordCodePoints(),
-            prevWordsInfo->getPrevWordCodePointCount(), false /* forceLowerCaseSearch */);
-    // getBigramListPositionForWord returns 0 if this word isn't in the dictionary or has no bigrams
-    if (NOT_A_DICT_POS == pos) {
-        // If no bigrams for this exact word, search again in lower case.
-        pos = getBigramListPositionForWord(prevWordsInfo->getPrevWordCodePoints(),
-                prevWordsInfo->getPrevWordCodePointCount(), true /* forceLowerCaseSearch */);
-    }
-    // If still no bigrams, we really don't have them!
-    if (NOT_A_DICT_POS == pos) return;
-
     int unigramProbability = 0;
     int bigramCodePoints[MAX_WORD_LENGTH];
-    BinaryDictionaryBigramsIterator bigramsIt(
-            mDictionaryStructurePolicy->getBigramsStructurePolicy(), pos);
+    BinaryDictionaryBigramsIterator bigramsIt =
+            prevWordsInfo->getBigramsIteratorForPrediction(mDictionaryStructurePolicy);
     while (bigramsIt.hasNext()) {
         bigramsIt.next();
         if (bigramsIt.getBigramPos() == NOT_A_DICT_POS) {
@@ -98,16 +87,11 @@ int BigramDictionary::getBigramListPositionForWord(const int *prevWord, const in
 
 int BigramDictionary::getBigramProbability(const PrevWordsInfo *const prevWordsInfo,
         const int *word1, int length1) const {
-    int pos = getBigramListPositionForWord(prevWordsInfo->getPrevWordCodePoints(),
-            prevWordsInfo->getPrevWordCodePointCount(), false /* forceLowerCaseSearch */);
-    // getBigramListPositionForWord returns 0 if this word isn't in the dictionary or has no bigrams
-    if (NOT_A_DICT_POS == pos) return NOT_A_PROBABILITY;
     int nextWordPos = mDictionaryStructurePolicy->getTerminalPtNodePositionOfWord(word1, length1,
             false /* forceLowerCaseSearch */);
     if (NOT_A_DICT_POS == nextWordPos) return NOT_A_PROBABILITY;
-
-    BinaryDictionaryBigramsIterator bigramsIt(
-            mDictionaryStructurePolicy->getBigramsStructurePolicy(), pos);
+    BinaryDictionaryBigramsIterator bigramsIt =
+            prevWordsInfo->getBigramsIteratorForPrediction(mDictionaryStructurePolicy);
     while (bigramsIt.hasNext()) {
         bigramsIt.next();
         if (bigramsIt.getBigramPos() == nextWordPos

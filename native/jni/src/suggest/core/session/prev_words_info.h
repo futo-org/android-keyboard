@@ -18,6 +18,8 @@
 #define LATINIME_PREV_WORDS_INFO_H
 
 #include "defines.h"
+#include "suggest/core/dictionary/binary_dictionary_bigrams_iterator.h"
+#include "suggest/core/policy/dictionary_structure_with_buffer_policy.h"
 
 namespace latinime {
 
@@ -38,16 +40,63 @@ class PrevWordsInfo {
         mPrevWordCodePointCount[0] = prevWordCodePointCount;
         mIsBeginningOfSentence[0] = isBeginningOfSentence;
     }
-    const int *getPrevWordCodePoints() const {
-        return mPrevWordCodePoints[0];
+
+    void getPrevWordsTerminalPtNodePos(
+            const DictionaryStructureWithBufferPolicy *const dictStructurePolicy,
+            int *const outPrevWordsTerminalPtNodePos) const {
+        for (size_t i = 0; i < NELEMS(mPrevWordCodePoints); ++i) {
+            outPrevWordsTerminalPtNodePos[i] = getTerminalPtNodePosOfWord(dictStructurePolicy,
+                    mPrevWordCodePoints[i], mPrevWordCodePointCount[i],
+                    mIsBeginningOfSentence[i]);
+        }
     }
 
-    int getPrevWordCodePointCount() const {
-        return mPrevWordCodePointCount[0];
+    BinaryDictionaryBigramsIterator getBigramsIteratorForPrediction(
+            const DictionaryStructureWithBufferPolicy *const dictStructurePolicy) const {
+        int pos = getBigramListPositionForWord(dictStructurePolicy, mPrevWordCodePoints[0],
+                mPrevWordCodePointCount[0], false /* forceLowerCaseSearch */);
+        // getBigramListPositionForWord returns NOT_A_DICT_POS if this word isn't in the
+        // dictionary or has no bigrams
+        if (NOT_A_DICT_POS == pos) {
+            // If no bigrams for this exact word, search again in lower case.
+            pos = getBigramListPositionForWord(dictStructurePolicy, mPrevWordCodePoints[0],
+                    mPrevWordCodePointCount[0], true /* forceLowerCaseSearch */);
+        }
+        return BinaryDictionaryBigramsIterator(
+                dictStructurePolicy->getBigramsStructurePolicy(), pos);
     }
 
  private:
     DISALLOW_COPY_AND_ASSIGN(PrevWordsInfo);
+
+    static int getTerminalPtNodePosOfWord(
+            const DictionaryStructureWithBufferPolicy *const dictStructurePolicy,
+            const int *const wordCodePoints, const int wordCodePointCount,
+            const bool isBeginningOfSentence) {
+        if (!dictStructurePolicy || !wordCodePoints) {
+            return NOT_A_DICT_POS;
+        }
+        const int wordPtNodePos = dictStructurePolicy->getTerminalPtNodePositionOfWord(
+                wordCodePoints, wordCodePointCount, false /* forceLowerCaseSearch */);
+        if (wordPtNodePos != NOT_A_DICT_POS) {
+            return wordPtNodePos;
+        }
+        // Check bigrams for lower-cased previous word if original was not found. Useful for
+        // auto-capitalized words like "The [current_word]".
+        return dictStructurePolicy->getTerminalPtNodePositionOfWord(
+                wordCodePoints, wordCodePointCount, true /* forceLowerCaseSearch */);
+    }
+
+    static int getBigramListPositionForWord(
+            const DictionaryStructureWithBufferPolicy *const dictStructurePolicy,
+            const int *wordCodePoints, const int wordCodePointCount,
+            const bool forceLowerCaseSearch) {
+        if (!wordCodePoints || wordCodePointCount <= 0) return NOT_A_DICT_POS;
+        const int terminalPtNodePos = dictStructurePolicy->getTerminalPtNodePositionOfWord(
+                wordCodePoints, wordCodePointCount, forceLowerCaseSearch);
+        if (NOT_A_DICT_POS == terminalPtNodePos) return NOT_A_DICT_POS;
+        return dictStructurePolicy->getBigramsPositionOfPtNode(terminalPtNodePos);
+    }
 
     void clear() {
         for (size_t i = 0; i < NELEMS(mPrevWordCodePoints); ++i) {
