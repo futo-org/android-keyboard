@@ -110,6 +110,8 @@
     <!-- Though {@link EmojiPalettesView} doesn't extend {@link KeyboardView}, some views inside it,
          for instance delete button, need themed {@link KeyboardView} attributes. -->
     <style name="EmojiPalettesView" />
+    <style name="EmojiTabWidget" />
+    <style name="EmojiCategoryPageIndicatorView" />
     <style name="MoreKeysKeyboard" />
     <style
         name="MoreKeysKeyboardView"

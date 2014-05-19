@@ -41,11 +41,9 @@
                 android:id="@android:id/tabs"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/emoji_category_tab_selected_holo_dark"
                 android:divider="@null"
                 android:tabStripEnabled="true"
-                android:tabStripLeft="@drawable/emoji_category_tab_unselected_holo_dark"
-                android:tabStripRight="@drawable/emoji_category_tab_unselected_holo_dark" />
+                style="?attr/emojiTabWidgetStyle" />
             <FrameLayout
                 android:id="@android:id/tabcontent"
                 android:layout_width="0dip"
@@ -79,8 +77,8 @@
     <com.android.inputmethod.keyboard.emoji.EmojiCategoryPageIndicatorView
         android:id="@+id/emoji_category_page_id_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/emoji_category_page_id_background_holo" />
+        android:layout_height="2dip"
+        style="?attr/emojiCategoryPageIndicatorViewStyle" />
     <LinearLayout
         android:id="@+id/emoji_action_bar"
         android:orientation="horizontal"
