@@ -38,7 +38,7 @@ public final class EmojiCategoryPageIndicatorView extends LinearLayout {
     public EmojiCategoryPageIndicatorView(final Context context, final AttributeSet attrs) {
         super(context, attrs);
         mPaint.setColor(context.getResources().getColor(
-                R.color.emoji_category_page_id_view_foreground));
+                R.color.emoji_category_page_id_foreground_holo));
     }
 
     public void setCategoryPageId(final int size, final int id, final float offset) {

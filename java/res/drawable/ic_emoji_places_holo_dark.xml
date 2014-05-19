@@ -21,13 +21,12 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:state_focused="true"
-        android:drawable="@drawable/ic_emoji_nature_light_activated" />
+        android:drawable="@drawable/ic_emoji_places_activated_holo_dark" />
     <item
         android:state_pressed="true"
-        android:drawable="@drawable/ic_emoji_nature_light_activated" />
+        android:drawable="@drawable/ic_emoji_places_activated_holo_dark" />
     <item
         android:state_selected="true"
-        android:drawable="@drawable/ic_emoji_nature_light_activated" />
-    <item
-        android:drawable="@drawable/ic_emoji_nature_light_normal" />
+        android:drawable="@drawable/ic_emoji_places_activated_holo_dark" />
+    <item android:drawable="@drawable/ic_emoji_places_normal_holo_dark" />
 </selector>

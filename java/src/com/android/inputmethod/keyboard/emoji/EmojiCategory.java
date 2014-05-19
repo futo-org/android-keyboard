@@ -70,12 +70,12 @@ final class EmojiCategory {
             "emoticons" };
 
     private static final int[] sCategoryIcon = {
-            R.drawable.ic_emoji_recent_light,
-            R.drawable.ic_emoji_people_light,
-            R.drawable.ic_emoji_objects_light,
-            R.drawable.ic_emoji_nature_light,
-            R.drawable.ic_emoji_places_light,
-            R.drawable.ic_emoji_symbols_light,
+            R.drawable.ic_emoji_recent_holo_dark,
+            R.drawable.ic_emoji_people_holo_dark,
+            R.drawable.ic_emoji_objects_holo_dark,
+            R.drawable.ic_emoji_nature_holo_dark,
+            R.drawable.ic_emoji_places_holo_dark,
+            R.drawable.ic_emoji_symbols_holo_dark,
             0 };
 
     private static final String[] sCategoryLabel =
