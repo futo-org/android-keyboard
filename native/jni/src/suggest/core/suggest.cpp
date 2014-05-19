@@ -92,7 +92,7 @@ void Suggest::initializeSearch(DicTraverseSession *traverseSession) const {
         // Create a new dic node here
         DicNode rootNode;
         DicNodeUtils::initAsRoot(traverseSession->getDictionaryStructurePolicy(),
-                traverseSession->getPrevWordPtNodePos(), &rootNode);
+                traverseSession->getPrevWordsPtNodePos(), &rootNode);
         traverseSession->getDicTraverseCache()->copyPushActive(&rootNode);
     }
 }

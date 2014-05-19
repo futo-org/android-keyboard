@@ -79,7 +79,7 @@ class DicTraverseSession {
     //--------------------
     const ProximityInfo *getProximityInfo() const { return mProximityInfo; }
     const SuggestOptions *getSuggestOptions() const { return mSuggestOptions; }
-    int getPrevWordPtNodePos() const { return mPrevWordsPtNodePos[0]; }
+    const int *getPrevWordsPtNodePos() const { return mPrevWordsPtNodePos; }
     DicNodesCache *getDicTraverseCache() { return &mDicNodesCache; }
     MultiBigramMap *getMultiBigramMap() { return &mMultiBigramMap; }
     const ProximityInfoState *getProximityInfoState(int id) const {
