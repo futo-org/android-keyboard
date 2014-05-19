@@ -87,7 +87,13 @@
         name="EmojiPalettesView.ICS"
         parent="MainKeyboardView.ICS"
     >
-        <item name="emojiTabLabelColor">@color/emoji_tab_label_color_holo</item>
+        <item name="iconEmojiRecentsTab">@drawable/ic_emoji_recents_holo_dark</item>
+        <item name="iconEmojiCategory1Tab">@drawable/ic_emoji_people_holo_dark</item>
+        <item name="iconEmojiCategory2Tab">@drawable/ic_emoji_objects_holo_dark</item>
+        <item name="iconEmojiCategory3Tab">@drawable/ic_emoji_nature_holo_dark</item>
+        <item name="iconEmojiCategory4Tab">@drawable/ic_emoji_places_holo_dark</item>
+        <item name="iconEmojiCategory5Tab">@drawable/ic_emoji_symbols_holo_dark</item>
+        <item name="iconEmojiCategory6Tab">@drawable/ic_emoji_emoticons_holo_dark</item>
     </style>
     <style
         name="MoreKeysKeyboard.ICS"

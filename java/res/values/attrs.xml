@@ -172,7 +172,13 @@
     </declare-styleable>
 
     <declare-styleable name="EmojiPalettesView">
-        <attr name="emojiTabLabelColor" format="reference" />
+        <attr name="iconEmojiRecentsTab" format="reference" />
+        <attr name="iconEmojiCategory1Tab" format="reference" />
+        <attr name="iconEmojiCategory2Tab" format="reference" />
+        <attr name="iconEmojiCategory3Tab" format="reference" />
+        <attr name="iconEmojiCategory4Tab" format="reference" />
+        <attr name="iconEmojiCategory5Tab" format="reference" />
+        <attr name="iconEmojiCategory6Tab" format="reference" />
     </declare-styleable>
 
     <declare-styleable name="SuggestionStripView">
