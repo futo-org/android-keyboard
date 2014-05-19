@@ -71,17 +71,17 @@ public final class Suggest {
     }
 
     public void getSuggestedWords(final WordComposer wordComposer,
-            final String prevWordForBigram, final ProximityInfo proximityInfo,
+            final PrevWordsInfo prevWordsInfo, final ProximityInfo proximityInfo,
             final boolean blockOffensiveWords, final boolean isCorrectionEnabled,
             final int[] additionalFeaturesOptions, final int sessionId, final int sequenceNumber,
             final OnGetSuggestedWordsCallback callback) {
-        LatinImeLogger.onStartSuggestion(prevWordForBigram);
+        LatinImeLogger.onStartSuggestion(prevWordsInfo.mPrevWord);
         if (wordComposer.isBatchMode()) {
-            getSuggestedWordsForBatchInput(wordComposer, prevWordForBigram, proximityInfo,
+            getSuggestedWordsForBatchInput(wordComposer, prevWordsInfo, proximityInfo,
                     blockOffensiveWords, additionalFeaturesOptions, sessionId, sequenceNumber,
                     callback);
         } else {
-            getSuggestedWordsForTypingInput(wordComposer, prevWordForBigram, proximityInfo,
+            getSuggestedWordsForTypingInput(wordComposer, prevWordsInfo, proximityInfo,
                     blockOffensiveWords, isCorrectionEnabled, additionalFeaturesOptions,
                     sequenceNumber, callback);
         }
@@ -90,7 +90,7 @@ public final class Suggest {
     // Retrieves suggestions for the typing input
     // and calls the callback function with the suggestions.
     private void getSuggestedWordsForTypingInput(final WordComposer wordComposer,
-            final String prevWordForBigram, final ProximityInfo proximityInfo,
+            final PrevWordsInfo prevWordsInfo, final ProximityInfo proximityInfo,
             final boolean blockOffensiveWords, final boolean isCorrectionEnabled,
             final int[] additionalFeaturesOptions, final int sequenceNumber,
             final OnGetSuggestedWordsCallback callback) {
@@ -108,7 +108,7 @@ public final class Suggest {
             rawSuggestions = null;
         }
         final SuggestionResults suggestionResults = mDictionaryFacilitator.getSuggestionResults(
-                wordComposer, prevWordForBigram, proximityInfo, blockOffensiveWords,
+                wordComposer, prevWordsInfo, proximityInfo, blockOffensiveWords,
                 additionalFeaturesOptions, SESSION_TYPING, rawSuggestions);
 
         final boolean isFirstCharCapitalized = wordComposer.isFirstCharCapitalized();
@@ -215,7 +215,7 @@ public final class Suggest {
     // Retrieves suggestions for the batch input
     // and calls the callback function with the suggestions.
     private void getSuggestedWordsForBatchInput(final WordComposer wordComposer,
-            final String prevWordForBigram, final ProximityInfo proximityInfo,
+            final PrevWordsInfo prevWordsInfo, final ProximityInfo proximityInfo,
             final boolean blockOffensiveWords, final int[] additionalFeaturesOptions,
             final int sessionId, final int sequenceNumber,
             final OnGetSuggestedWordsCallback callback) {
@@ -226,7 +226,7 @@ public final class Suggest {
             rawSuggestions = null;
         }
         final SuggestionResults suggestionResults = mDictionaryFacilitator.getSuggestionResults(
-                wordComposer, prevWordForBigram, proximityInfo, blockOffensiveWords,
+                wordComposer, prevWordsInfo, proximityInfo, blockOffensiveWords,
                 additionalFeaturesOptions, sessionId, rawSuggestions);
         for (SuggestedWordInfo wordInfo : suggestionResults) {
             LatinImeLogger.onAddSuggestedWord(wordInfo.mWord, wordInfo.mSourceDict.mDictType);

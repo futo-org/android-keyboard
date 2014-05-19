@@ -367,7 +367,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
 
     @Override
     public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
-            final String prevWord, final ProximityInfo proximityInfo,
+            final PrevWordsInfo prevWordsInfo, final ProximityInfo proximityInfo,
             final boolean blockOffensiveWords, final int[] additionalFeaturesOptions,
             final int sessionId, final float[] inOutLanguageWeight) {
         reloadDictionaryIfRequired();
@@ -380,7 +380,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                     return null;
                 }
                 final ArrayList<SuggestedWordInfo> suggestions =
-                        mBinaryDictionary.getSuggestions(composer, prevWord, proximityInfo,
+                        mBinaryDictionary.getSuggestions(composer, prevWordsInfo, proximityInfo,
                                 blockOffensiveWords, additionalFeaturesOptions, sessionId,
                                 inOutLanguageWeight);
                 if (mBinaryDictionary.isCorrupted()) {

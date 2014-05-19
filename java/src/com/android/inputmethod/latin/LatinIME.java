@@ -1428,8 +1428,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (DEBUG) {
             if (mInputLogic.mWordComposer.isComposingWord()
                     || mInputLogic.mWordComposer.isBatchMode()) {
-                final String previousWord
-                        = mInputLogic.mWordComposer.getPreviousWordForSuggestion();
+                final PrevWordsInfo prevWordsInfo
+                        = mInputLogic.mWordComposer.getPrevWordsInfoForSuggestion();
                 // TODO: this is for checking consistency with older versions. Remove this when
                 // we are confident this is stable.
                 // We're checking the previous word in the text field against the memorized previous
@@ -1438,14 +1438,14 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 final CharSequence rereadPrevWord = mInputLogic.getNthPreviousWordForSuggestion(
                         currentSettings.mSpacingAndPunctuations,
                         mInputLogic.mWordComposer.isComposingWord() ? 2 : 1);
-                if (!TextUtils.equals(previousWord, rereadPrevWord)) {
+                if (!TextUtils.equals(prevWordsInfo.mPrevWord, rereadPrevWord)) {
                     throw new RuntimeException("Unexpected previous word: "
-                            + previousWord + " <> " + rereadPrevWord);
+                            + prevWordsInfo.mPrevWord + " <> " + rereadPrevWord);
                 }
             }
         }
         mInputLogic.mSuggest.getSuggestedWords(mInputLogic.mWordComposer,
-                mInputLogic.mWordComposer.getPreviousWordForSuggestion(),
+                mInputLogic.mWordComposer.getPrevWordsInfoForSuggestion(),
                 keyboard.getProximityInfo(), currentSettings.mBlockPotentiallyOffensive,
                 currentSettings.mCorrectionEnabled, additionalFeaturesOptions, sessionId,
                 sequenceNumber, callback);

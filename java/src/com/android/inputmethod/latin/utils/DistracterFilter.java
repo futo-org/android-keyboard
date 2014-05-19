@@ -24,6 +24,7 @@ import android.util.Log;
 
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.latin.Constants;
+import com.android.inputmethod.latin.PrevWordsInfo;
 import com.android.inputmethod.latin.Suggest;
 import com.android.inputmethod.latin.Suggest.OnGetSuggestedWordsCallback;
 import com.android.inputmethod.latin.SuggestedWords;
@@ -88,13 +89,13 @@ public class DistracterFilter {
     /**
      * Determine whether a word is a distracter to words in dictionaries.
      *
-     * @param prevWord the previous word, or null if none.
+     * @param prevWordsInfo the information of previous words.
      * @param testedWord the word that will be tested to see whether it is a distracter to words
      *                   in dictionaries.
      * @param locale the locale of words.
      * @return true if testedWord is a distracter, otherwise false.
      */
-    public boolean isDistracterToWordsInDictionaries(final String prevWord,
+    public boolean isDistracterToWordsInDictionaries(final PrevWordsInfo prevWordsInfo,
             final String testedWord, final Locale locale) {
         if (mKeyboard == null || locale == null) {
             return false;
@@ -113,7 +114,7 @@ public class DistracterFilter {
         final int[] codePoints = StringUtils.toCodePointArray(testedWord);
         final int[] coordinates;
         coordinates = mKeyboard.getCoordinates(codePoints);
-        composer.setComposingWord(codePoints, coordinates, prevWord);
+        composer.setComposingWord(codePoints, coordinates, prevWordsInfo.mPrevWord);
 
         final int trailingSingleQuotesCount = StringUtils.getTrailingSingleQuotesCount(testedWord);
         final String consideredWord = trailingSingleQuotesCount > 0 ?
@@ -133,7 +134,7 @@ public class DistracterFilter {
                 }
             }
         };
-        mSuggest.getSuggestedWords(composer, prevWord, mKeyboard.getProximityInfo(),
+        mSuggest.getSuggestedWords(composer, prevWordsInfo, mKeyboard.getProximityInfo(),
                 true /* blockOffensiveWords */, true /* isCorrectionEnbaled */,
                 null /* additionalFeaturesOptions */, 0 /* sessionId */,
                 SuggestedWords.NOT_A_SEQUENCE_NUMBER, callback);
