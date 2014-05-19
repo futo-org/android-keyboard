@@ -416,14 +416,11 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
 
     private static class DeleteKeyOnTouchListener implements OnTouchListener {
         static final long MAX_REPEAT_COUNT_TIME = TimeUnit.SECONDS.toMillis(30);
-        final int mDeleteKeyPressedBackgroundColor;
         final long mKeyRepeatStartTimeout;
         final long mKeyRepeatInterval;
 
         public DeleteKeyOnTouchListener(Context context) {
             final Resources res = context.getResources();
-            mDeleteKeyPressedBackgroundColor =
-                    res.getColor(R.color.emoji_key_pressed_background_color);
             mKeyRepeatStartTimeout = res.getInteger(R.integer.config_key_repeat_start_timeout);
             mKeyRepeatInterval = res.getInteger(R.integer.config_key_repeat_interval);
             mTimer = new CountDownTimer(MAX_REPEAT_COUNT_TIME, mKeyRepeatInterval) {
@@ -500,7 +497,7 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
             mTimer.cancel();
             mRepeatCount = 0;
             handleKeyDown();
-            v.setBackgroundColor(mDeleteKeyPressedBackgroundColor);
+            v.setPressed(true /* pressed */);
             mState = KEY_REPEAT_STATE_KEY_DOWN;
             mTimer.start();
         }
@@ -510,7 +507,7 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
             if (mState == KEY_REPEAT_STATE_KEY_DOWN) {
                 handleKeyUp();
             }
-            v.setBackgroundColor(Color.TRANSPARENT);
+            v.setPressed(false /* pressed */);
             mState = KEY_REPEAT_STATE_INITIALIZED;
         }
 

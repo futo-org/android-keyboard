@@ -61,8 +61,4 @@
     <color name="setup_welcome_video_margin_color">#FFCCCCCC</color>
     <color name="emoji_category_page_id_background_holo">#FF000000</color>
     <color name="emoji_category_page_id_foreground_holo">#80FFFFFF</color>
-
-    <!-- TODO: Color which should be included in the theme -->
-    <color name="emoji_key_background_color">#00000000</color>
-    <color name="emoji_key_pressed_background_color">#30FFFFFF</color>
 </resources>
