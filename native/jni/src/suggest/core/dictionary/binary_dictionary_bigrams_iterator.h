@@ -30,6 +30,11 @@ class BinaryDictionaryBigramsIterator {
               mBigramPos(NOT_A_DICT_POS), mProbability(NOT_A_PROBABILITY),
               mHasNext(pos != NOT_A_DICT_POS) {}
 
+    BinaryDictionaryBigramsIterator(BinaryDictionaryBigramsIterator &&bigramsIterator)
+            : mBigramsStructurePolicy(bigramsIterator.mBigramsStructurePolicy),
+              mPos(bigramsIterator.mPos), mBigramPos(bigramsIterator.mBigramPos),
+              mProbability(bigramsIterator.mProbability), mHasNext(bigramsIterator.mHasNext) {}
+
     AK_FORCE_INLINE bool hasNext() const {
         return mHasNext;
     }
