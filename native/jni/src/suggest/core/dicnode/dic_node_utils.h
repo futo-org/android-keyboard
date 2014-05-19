@@ -30,7 +30,7 @@ class DicNodeUtils {
  public:
     static void initAsRoot(
             const DictionaryStructureWithBufferPolicy *const dictionaryStructurePolicy,
-            const int prevWordPtNodePos, DicNode *const newRootDicNode);
+            const int *const prevWordPtNodePos, DicNode *const newRootDicNode);
     static void initAsRootWithPreviousWord(
             const DictionaryStructureWithBufferPolicy *const dictionaryStructurePolicy,
             const DicNode *const prevWordLastDicNode, DicNode *const newRootDicNode);
