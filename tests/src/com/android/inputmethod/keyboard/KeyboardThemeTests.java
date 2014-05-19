@@ -16,6 +16,11 @@
 
 package com.android.inputmethod.keyboard;
 
+import static com.android.inputmethod.keyboard.KeyboardTheme.THEME_ID_ICS;
+import static com.android.inputmethod.keyboard.KeyboardTheme.THEME_ID_KLP;
+import static com.android.inputmethod.keyboard.KeyboardTheme.THEME_ID_LXX_DARK;
+import static com.android.inputmethod.keyboard.KeyboardTheme.THEME_ID_LXX_LIGHT;
+
 import android.content.SharedPreferences;
 import android.os.Build.VERSION_CODES;
 import android.preference.PreferenceManager;
@@ -33,9 +38,6 @@ public class KeyboardThemeTests extends AndroidTestCase {
     private static final int THEME_ID_UNKNOWN = -2;
     private static final int THEME_ID_ILLEGAL = -3;
     private static final String ILLEGAL_THEME_ID_STRING = "ThisCausesNumberFormatExecption";
-    private static final int THEME_ID_ICS = KeyboardTheme.THEME_ID_ICS;
-    private static final int THEME_ID_KLP = KeyboardTheme.THEME_ID_KLP;
-    private static final int THEME_ID_LXX_DARK = KeyboardTheme.THEME_ID_LXX_DARK;
 
     @Override
     protected void setUp() throws Exception {
@@ -51,6 +53,7 @@ public class KeyboardThemeTests extends AndroidTestCase {
         switch (themeId) {
         case THEME_ID_ICS:
         case THEME_ID_KLP:
+        case THEME_ID_LXX_LIGHT:
         case THEME_ID_LXX_DARK:
             return true;
         default:
@@ -99,6 +102,7 @@ public class KeyboardThemeTests extends AndroidTestCase {
         assertKeyboardThemePreference(sdkVersion, THEME_ID_NULL, defaultThemeId);
         assertKeyboardThemePreference(sdkVersion, THEME_ID_ICS, THEME_ID_ICS);
         assertKeyboardThemePreference(sdkVersion, THEME_ID_KLP, THEME_ID_KLP);
+        assertKeyboardThemePreference(sdkVersion, THEME_ID_LXX_LIGHT, THEME_ID_LXX_LIGHT);
         assertKeyboardThemePreference(sdkVersion, THEME_ID_LXX_DARK, THEME_ID_LXX_DARK);
         assertKeyboardThemePreference(sdkVersion, THEME_ID_UNKNOWN, defaultThemeId);
         assertKeyboardThemePreference(sdkVersion, THEME_ID_ILLEGAL, defaultThemeId);
@@ -114,10 +118,11 @@ public class KeyboardThemeTests extends AndroidTestCase {
     }
 
     private void assertKeyboardThemePreferenceOnLxx(final int sdkVersion) {
-        final int defaultThemeId = THEME_ID_LXX_DARK;
+        final int defaultThemeId = THEME_ID_LXX_LIGHT;
         assertKeyboardThemePreference(sdkVersion, THEME_ID_NULL, defaultThemeId);
         assertKeyboardThemePreference(sdkVersion, THEME_ID_ICS, THEME_ID_ICS);
         assertKeyboardThemePreference(sdkVersion, THEME_ID_KLP, THEME_ID_KLP);
+        assertKeyboardThemePreference(sdkVersion, THEME_ID_LXX_LIGHT, THEME_ID_LXX_LIGHT);
         assertKeyboardThemePreference(sdkVersion, THEME_ID_LXX_DARK, THEME_ID_LXX_DARK);
         assertKeyboardThemePreference(sdkVersion, THEME_ID_UNKNOWN, defaultThemeId);
         assertKeyboardThemePreference(sdkVersion, THEME_ID_ILLEGAL, defaultThemeId);
@@ -169,11 +174,11 @@ public class KeyboardThemeTests extends AndroidTestCase {
 
     private void assertDefaultKeyboardThemeOnLxx(final int sdkVersion) {
         // Forced to switch to LXX theme.
-        assertDefaultKeyboardTheme(sdkVersion, THEME_ID_NULL, THEME_ID_LXX_DARK);
-        assertDefaultKeyboardTheme(sdkVersion, THEME_ID_ICS, THEME_ID_LXX_DARK);
-        assertDefaultKeyboardTheme(sdkVersion, THEME_ID_KLP, THEME_ID_LXX_DARK);
-        assertDefaultKeyboardTheme(sdkVersion, THEME_ID_UNKNOWN, THEME_ID_LXX_DARK);
-        assertDefaultKeyboardTheme(sdkVersion, THEME_ID_ILLEGAL, THEME_ID_LXX_DARK);
+        assertDefaultKeyboardTheme(sdkVersion, THEME_ID_NULL, THEME_ID_LXX_LIGHT);
+        assertDefaultKeyboardTheme(sdkVersion, THEME_ID_ICS, THEME_ID_LXX_LIGHT);
+        assertDefaultKeyboardTheme(sdkVersion, THEME_ID_KLP, THEME_ID_LXX_LIGHT);
+        assertDefaultKeyboardTheme(sdkVersion, THEME_ID_UNKNOWN, THEME_ID_LXX_LIGHT);
+        assertDefaultKeyboardTheme(sdkVersion, THEME_ID_ILLEGAL, THEME_ID_LXX_LIGHT);
     }
 
     public void testDefaultKeyboardThemeOnLxx() {
@@ -234,11 +239,11 @@ public class KeyboardThemeTests extends AndroidTestCase {
 
     private void assertUpgradeKeyboardToLxxOnLxx(final int sdkVersion) {
         // Forced to switch to LXX theme.
-        assertUpgradeKeyboardToLxxOn(sdkVersion, THEME_ID_NULL, THEME_ID_LXX_DARK);
-        assertUpgradeKeyboardToLxxOn(sdkVersion, THEME_ID_ICS, THEME_ID_LXX_DARK);
-        assertUpgradeKeyboardToLxxOn(sdkVersion, THEME_ID_KLP, THEME_ID_LXX_DARK);
-        assertUpgradeKeyboardToLxxOn(sdkVersion, THEME_ID_UNKNOWN, THEME_ID_LXX_DARK);
-        assertUpgradeKeyboardToLxxOn(sdkVersion, THEME_ID_ILLEGAL, THEME_ID_LXX_DARK);
+        assertUpgradeKeyboardToLxxOn(sdkVersion, THEME_ID_NULL, THEME_ID_LXX_LIGHT);
+        assertUpgradeKeyboardToLxxOn(sdkVersion, THEME_ID_ICS, THEME_ID_LXX_LIGHT);
+        assertUpgradeKeyboardToLxxOn(sdkVersion, THEME_ID_KLP, THEME_ID_LXX_LIGHT);
+        assertUpgradeKeyboardToLxxOn(sdkVersion, THEME_ID_UNKNOWN, THEME_ID_LXX_LIGHT);
+        assertUpgradeKeyboardToLxxOn(sdkVersion, THEME_ID_ILLEGAL, THEME_ID_LXX_LIGHT);
     }
 
     // Upgrading keyboard on L.
@@ -298,15 +303,15 @@ public class KeyboardThemeTests extends AndroidTestCase {
         // Forced to switch to LXX theme.
         final int newSdkVersion = VERSION_CODES_LXX;
         assertUpgradePlatformFromTo(
-                oldSdkVersion, newSdkVersion, THEME_ID_NULL, THEME_ID_LXX_DARK);
+                oldSdkVersion, newSdkVersion, THEME_ID_NULL, THEME_ID_LXX_LIGHT);
         assertUpgradePlatformFromTo(
-                oldSdkVersion, newSdkVersion, THEME_ID_ICS, THEME_ID_LXX_DARK);
+                oldSdkVersion, newSdkVersion, THEME_ID_ICS, THEME_ID_LXX_LIGHT);
         assertUpgradePlatformFromTo(
-                oldSdkVersion, newSdkVersion, THEME_ID_KLP, THEME_ID_LXX_DARK);
+                oldSdkVersion, newSdkVersion, THEME_ID_KLP, THEME_ID_LXX_LIGHT);
         assertUpgradePlatformFromTo(
-                oldSdkVersion, newSdkVersion, THEME_ID_UNKNOWN, THEME_ID_LXX_DARK);
+                oldSdkVersion, newSdkVersion, THEME_ID_UNKNOWN, THEME_ID_LXX_LIGHT);
         assertUpgradePlatformFromTo(
-                oldSdkVersion, newSdkVersion, THEME_ID_ILLEGAL, THEME_ID_LXX_DARK);
+                oldSdkVersion, newSdkVersion, THEME_ID_ILLEGAL, THEME_ID_LXX_LIGHT);
     }
 
     // Update platform from I,J, and K to L
@@ -324,14 +329,18 @@ public class KeyboardThemeTests extends AndroidTestCase {
         final int oldSdkVersion = VERSION_CODES_LXX;
         final int newSdkVersion = VERSION_CODES_LXX;
         assertUpgradePlatformFromTo(
-                oldSdkVersion, newSdkVersion, THEME_ID_NULL, THEME_ID_LXX_DARK);
+                oldSdkVersion, newSdkVersion, THEME_ID_NULL, THEME_ID_LXX_LIGHT);
         assertUpgradePlatformFromTo(
                 oldSdkVersion, newSdkVersion, THEME_ID_ICS, THEME_ID_ICS);
         assertUpgradePlatformFromTo(
                 oldSdkVersion, newSdkVersion, THEME_ID_KLP, THEME_ID_KLP);
         assertUpgradePlatformFromTo(
-                oldSdkVersion, newSdkVersion, THEME_ID_UNKNOWN, THEME_ID_LXX_DARK);
+                oldSdkVersion, newSdkVersion, THEME_ID_LXX_LIGHT, THEME_ID_LXX_LIGHT);
         assertUpgradePlatformFromTo(
-                oldSdkVersion, newSdkVersion, THEME_ID_ILLEGAL, THEME_ID_LXX_DARK);
+                oldSdkVersion, newSdkVersion, THEME_ID_LXX_DARK, THEME_ID_LXX_DARK);
+        assertUpgradePlatformFromTo(
+                oldSdkVersion, newSdkVersion, THEME_ID_UNKNOWN, THEME_ID_LXX_LIGHT);
+        assertUpgradePlatformFromTo(
+                oldSdkVersion, newSdkVersion, THEME_ID_ILLEGAL, THEME_ID_LXX_LIGHT);
     }
 }
