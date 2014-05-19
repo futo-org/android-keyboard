@@ -34,7 +34,7 @@ public final class KeyboardTheme {
 
     static final int THEME_ID_ICS = 0;
     static final int THEME_ID_KLP = 2;
-    static final int THEME_ID_LXX = 3;
+    static final int THEME_ID_LXX_DARK = 3;
     static final int DEFAULT_THEME_ID = THEME_ID_KLP;
 
     private static final KeyboardTheme[] KEYBOARD_THEMES = {
@@ -42,7 +42,7 @@ public final class KeyboardTheme {
                 VERSION_CODES.BASE),
         new KeyboardTheme(THEME_ID_KLP, R.style.KeyboardTheme_KLP,
                 VERSION_CODES.ICE_CREAM_SANDWICH),
-        new KeyboardTheme(THEME_ID_LXX, R.style.KeyboardTheme_LXX,
+        new KeyboardTheme(THEME_ID_LXX_DARK, R.style.KeyboardTheme_LXX_Dark,
                 // TODO: Update this constant once the *next* version becomes available.
                 VERSION_CODES.CUR_DEVELOPMENT),
     };
@@ -88,7 +88,7 @@ public final class KeyboardTheme {
             return 5;
         case THEME_ID_KLP:
             return 9;
-        case THEME_ID_LXX:
+        case THEME_ID_LXX_DARK:
             return 10;
         default: // Invalid theme
             return -1;
