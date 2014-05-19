@@ -59,8 +59,8 @@
     <color name="setup_text_action">@android:color/holo_blue_light</color>
     <color name="setup_step_background">@android:color/background_light</color>
     <color name="setup_welcome_video_margin_color">#FFCCCCCC</color>
-    <color name="emoji_category_page_id_view_background">#FF000000</color>
-    <color name="emoji_category_page_id_view_foreground">#80FFFFFF</color>
+    <color name="emoji_category_page_id_background_holo">#FF000000</color>
+    <color name="emoji_category_page_id_foreground_holo">#80FFFFFF</color>
 
     <!-- TODO: Color which should be included in the theme -->
     <color name="emoji_key_background_color">#00000000</color>
