@@ -70,7 +70,6 @@
             android:layout_width="0dip"
             android:layout_weight="12.5"
             android:layout_height="match_parent"
-            android:background="@color/emoji_key_background_color"
             android:src="@drawable/sym_keyboard_delete_holo_dark"
             android:contentDescription="@string/spoken_description_delete" />
     </LinearLayout>
