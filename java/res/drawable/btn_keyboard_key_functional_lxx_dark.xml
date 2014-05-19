@@ -17,6 +17,6 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- Functional keys. -->
     <item android:state_pressed="true"
-          android:drawable="@color/key_background_pressed_lxx" />
-    <item android:drawable="@color/key_background_lxx" />
+          android:drawable="@color/key_background_pressed_lxx_dark" />
+    <item android:drawable="@color/key_background_lxx_dark" />
 </selector>
