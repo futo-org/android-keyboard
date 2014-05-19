@@ -20,6 +20,7 @@ import android.content.Context;
 
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.ContactsBinaryDictionary;
+import com.android.inputmethod.latin.PrevWordsInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.WordComposer;
 
@@ -36,11 +37,11 @@ public final class SynchronouslyLoadedContactsBinaryDictionary extends ContactsB
 
     @Override
     public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer codes,
-            final String prevWordForBigrams, final ProximityInfo proximityInfo,
+            final PrevWordsInfo prevWordsInfo, final ProximityInfo proximityInfo,
             final boolean blockOffensiveWords, final int[] additionalFeaturesOptions,
             final int sessionId, final float[] inOutLanguageWeight) {
         synchronized (mLock) {
-            return super.getSuggestions(codes, prevWordForBigrams, proximityInfo,
+            return super.getSuggestions(codes, prevWordsInfo, proximityInfo,
                     blockOffensiveWords, additionalFeaturesOptions, sessionId, inOutLanguageWeight);
         }
     }

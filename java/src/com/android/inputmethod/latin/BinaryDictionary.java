@@ -265,7 +265,7 @@ public final class BinaryDictionary extends Dictionary {
 
     @Override
     public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
-            final String prevWord, final ProximityInfo proximityInfo,
+            final PrevWordsInfo prevWordsInfo, final ProximityInfo proximityInfo,
             final boolean blockOffensiveWords, final int[] additionalFeaturesOptions,
             final int sessionId, final float[] inOutLanguageWeight) {
         if (!isValidDictionary()) {
@@ -274,8 +274,8 @@ public final class BinaryDictionary extends Dictionary {
 
         Arrays.fill(mInputCodePoints, Constants.NOT_A_CODE);
         // TODO: toLowerCase in the native code
-        final int[] prevWordCodePointArray = (null == prevWord)
-                ? null : StringUtils.toCodePointArray(prevWord);
+        final int[] prevWordCodePointArray = (null == prevWordsInfo.mPrevWord)
+                ? null : StringUtils.toCodePointArray(prevWordsInfo.mPrevWord);
         final InputPointers inputPointers = composer.getInputPointers();
         final boolean isGesture = composer.isBatchMode();
         final int inputSize;

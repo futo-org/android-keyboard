@@ -50,12 +50,12 @@ public final class ReadOnlyBinaryDictionary extends Dictionary {
 
     @Override
     public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
-            final String prevWord, final ProximityInfo proximityInfo,
+            final PrevWordsInfo prevWordsInfo, final ProximityInfo proximityInfo,
             final boolean blockOffensiveWords, final int[] additionalFeaturesOptions,
             final int sessionId, final float[] inOutLanguageWeight) {
         if (mLock.readLock().tryLock()) {
             try {
-                return mBinaryDictionary.getSuggestions(composer, prevWord, proximityInfo,
+                return mBinaryDictionary.getSuggestions(composer, prevWordsInfo, proximityInfo,
                         blockOffensiveWords, additionalFeaturesOptions, sessionId,
                         inOutLanguageWeight);
             } finally {

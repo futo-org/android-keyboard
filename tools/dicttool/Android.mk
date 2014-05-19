@@ -44,6 +44,7 @@ LATINIME_SRC_FILES_FOR_DICTTOOL := \
         latin/InputPointers.java \
         latin/LastComposedWord.java \
         latin/LatinImeLogger.java \
+        latin/PrevWordsInfo.java \
         latin/SuggestedWords.java \
         latin/WordComposer.java \
         latin/settings/NativeSuggestOptions.java \

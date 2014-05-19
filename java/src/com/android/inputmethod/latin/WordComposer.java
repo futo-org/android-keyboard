@@ -46,11 +46,9 @@ public final class WordComposer {
     // The list of events that served to compose this string.
     private final ArrayList<Event> mEvents;
     private final InputPointers mInputPointers = new InputPointers(MAX_WORD_LENGTH);
-    // The previous word (before the composing word). Used as context for suggestions. May be null
-    // after resetting and before starting a new composing word, or when there is no context like
-    // at the start of text for example. It can also be set to null externally when the user
-    // enters a separator that does not let bigrams across, like a period or a comma.
-    private String mPreviousWordForSuggestion;
+    // The information of previous words (before the composing word). Must not be null. Used as
+    // context for suggestions.
+    private PrevWordsInfo mPrevWordsInfo;
     private String mAutoCorrection;
     private boolean mIsResumed;
     private boolean mIsBatchMode;
@@ -87,7 +85,7 @@ public final class WordComposer {
         mIsBatchMode = false;
         mCursorPositionWithinWord = 0;
         mRejectedBatchModeSuggestion = null;
-        mPreviousWordForSuggestion = null;
+        mPrevWordsInfo = new PrevWordsInfo(null);
         refreshTypedWordCache();
     }
 
@@ -119,7 +117,7 @@ public final class WordComposer {
         mIsBatchMode = false;
         mCursorPositionWithinWord = 0;
         mRejectedBatchModeSuggestion = null;
-        mPreviousWordForSuggestion = null;
+        mPrevWordsInfo = new PrevWordsInfo(null);
         refreshTypedWordCache();
     }
 
@@ -309,7 +307,7 @@ public final class WordComposer {
                     CoordinateUtils.yFromArray(coordinates, i)));
         }
         mIsResumed = true;
-        mPreviousWordForSuggestion = null == previousWord ? null : previousWord.toString();
+        mPrevWordsInfo = new PrevWordsInfo(null == previousWord ? null : previousWord.toString());
     }
 
     /**
@@ -320,8 +318,8 @@ public final class WordComposer {
         return mTypedWordCache.toString();
     }
 
-    public String getPreviousWordForSuggestion() {
-        return mPreviousWordForSuggestion;
+    public PrevWordsInfo getPrevWordsInfoForSuggestion() {
+        return mPrevWordsInfo;
     }
 
     /**
@@ -379,7 +377,7 @@ public final class WordComposer {
     public void setCapitalizedModeAndPreviousWordAtStartComposingTime(final int mode,
             final CharSequence previousWord) {
         mCapitalizedMode = mode;
-        mPreviousWordForSuggestion = null == previousWord ? null : previousWord.toString();
+        mPrevWordsInfo = new PrevWordsInfo(null == previousWord ? null : previousWord.toString());
     }
 
     /**
@@ -430,7 +428,7 @@ public final class WordComposer {
         mCapsCount = 0;
         mDigitsCount = 0;
         mIsBatchMode = false;
-        mPreviousWordForSuggestion = committedWord.toString();
+        mPrevWordsInfo = new PrevWordsInfo(committedWord.toString());
         mCombinerChain.reset();
         mEvents.clear();
         mCodePointSize = 0;
@@ -448,11 +446,11 @@ public final class WordComposer {
     // when the user inputs a separator that's not whitespace (including the case of the
     // double-space-to-period feature).
     public void discardPreviousWordForSuggestion() {
-        mPreviousWordForSuggestion = null;
+        mPrevWordsInfo = new PrevWordsInfo(null);
     }
 
     public void resumeSuggestionOnLastComposedWord(final LastComposedWord lastComposedWord,
-            final String previousWord) {
+            final PrevWordsInfo prevWordsInfo) {
         mEvents.clear();
         Collections.copy(mEvents, lastComposedWord.mEvents);
         mInputPointers.set(lastComposedWord.mInputPointers);
@@ -463,7 +461,7 @@ public final class WordComposer {
         mCursorPositionWithinWord = mCodePointSize;
         mRejectedBatchModeSuggestion = null;
         mIsResumed = true;
-        mPreviousWordForSuggestion = previousWord;
+        mPrevWordsInfo = prevWordsInfo;
     }
 
     public boolean isBatchMode() {

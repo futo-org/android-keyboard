@@ -31,6 +31,7 @@ import com.android.inputmethod.compat.SuggestionsInfoCompatUtils;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.Dictionary;
+import com.android.inputmethod.latin.PrevWordsInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.WordComposer;
 import com.android.inputmethod.latin.spellcheck.AndroidSpellCheckerService.SuggestionsGatherer;
@@ -71,26 +72,26 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
                 new LruCache<String, SuggestionsParams>(MAX_CACHE_SIZE);
 
         // TODO: Support n-gram input
-        private static String generateKey(String query, String prevWord) {
-            if (TextUtils.isEmpty(query) || TextUtils.isEmpty(prevWord)) {
+        private static String generateKey(final String query, final PrevWordsInfo prevWordsInfo) {
+            if (TextUtils.isEmpty(query) || TextUtils.isEmpty(prevWordsInfo.mPrevWord)) {
                 return query;
             }
-            return query + CHAR_DELIMITER + prevWord;
+            return query + CHAR_DELIMITER + prevWordsInfo.mPrevWord;
         }
 
-        // TODO: Support n-gram input
-        public SuggestionsParams getSuggestionsFromCache(String query, String prevWord) {
-            return mUnigramSuggestionsInfoCache.get(generateKey(query, prevWord));
+        public SuggestionsParams getSuggestionsFromCache(String query,
+                final PrevWordsInfo prevWordsInfo) {
+            return mUnigramSuggestionsInfoCache.get(generateKey(query, prevWordsInfo));
         }
 
-        // TODO: Support n-gram input
         public void putSuggestionsToCache(
-                String query, String prevWord, String[] suggestions, int flags) {
+                final String query, final PrevWordsInfo prevWordsInfo,
+                final String[] suggestions, final int flags) {
             if (suggestions == null || TextUtils.isEmpty(query)) {
                 return;
             }
             mUnigramSuggestionsInfoCache.put(
-                    generateKey(query, prevWord), new SuggestionsParams(suggestions, flags));
+                    generateKey(query, prevWordsInfo), new SuggestionsParams(suggestions, flags));
         }
 
         public void clearCache() {
@@ -259,11 +260,12 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
     }
 
     protected SuggestionsInfo onGetSuggestionsInternal(
-            final TextInfo textInfo, final String prevWord, final int suggestionsLimit) {
+            final TextInfo textInfo, final PrevWordsInfo prevWordsInfo,
+            final int suggestionsLimit) {
         try {
             final String inText = textInfo.getText();
             final SuggestionsParams cachedSuggestionsParams =
-                    mSuggestionsCache.getSuggestionsFromCache(inText, prevWord);
+                    mSuggestionsCache.getSuggestionsFromCache(inText, prevWordsInfo);
             if (cachedSuggestionsParams != null) {
                 if (DBG) {
                     Log.d(TAG, "Cache hit: " + inText + ", " + cachedSuggestionsParams.mFlags);
@@ -325,7 +327,7 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
                 composer.setComposingWord(codePoints, coordinates, null /* previousWord */);
                 // TODO: make a spell checker option to block offensive words or not
                 final ArrayList<SuggestedWordInfo> suggestions =
-                        dictInfo.mDictionary.getSuggestions(composer, prevWord,
+                        dictInfo.mDictionary.getSuggestions(composer, prevWordsInfo,
                                 dictInfo.getProximityInfo(), true /* blockOffensiveWords */,
                                 null /* additionalFeaturesOptions */, 0 /* sessionId */,
                                 null /* inOutLanguageWeight */);
@@ -369,7 +371,8 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
                                     .getValueOf_RESULT_ATTR_HAS_RECOMMENDED_SUGGESTIONS()
                             : 0);
             final SuggestionsInfo retval = new SuggestionsInfo(flags, result.mSuggestions);
-            mSuggestionsCache.putSuggestionsToCache(text, prevWord, result.mSuggestions, flags);
+            mSuggestionsCache.putSuggestionsToCache(text, prevWordsInfo, result.mSuggestions,
+                    flags);
             return retval;
         } catch (RuntimeException e) {
             // Don't kill the keyboard if there is a bug in the spell checker
