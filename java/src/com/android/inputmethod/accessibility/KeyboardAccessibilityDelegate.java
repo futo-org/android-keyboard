@@ -32,11 +32,11 @@ import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.KeyDetector;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardId;
-import com.android.inputmethod.keyboard.MainKeyboardView;
+import com.android.inputmethod.keyboard.KeyboardView;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 
-public final class MainKeyboardAccessibilityDelegate extends AccessibilityDelegateCompat {
+public class KeyboardAccessibilityDelegate extends AccessibilityDelegateCompat {
     /** Map of keyboard modes to resource IDs. */
     private static final SparseIntArray KEYBOARD_MODE_RES_IDS = new SparseIntArray();
 
@@ -52,9 +52,10 @@ public final class MainKeyboardAccessibilityDelegate extends AccessibilityDelega
         KEYBOARD_MODE_RES_IDS.put(KeyboardId.MODE_URL, R.string.keyboard_mode_url);
     }
 
-    private final MainKeyboardView mView;
+    private final KeyboardView mKeyboardView;
+    private final KeyDetector mKeyDetector;
     private Keyboard mKeyboard;
-    private MainKeyboardAccessibilityNodeProvider mAccessibilityNodeProvider;
+    private KeyboardAccessibilityNodeProvider mAccessibilityNodeProvider;
 
     private Key mLastHoverKey = null;
 
@@ -67,14 +68,17 @@ public final class MainKeyboardAccessibilityDelegate extends AccessibilityDelega
     private int mLastKeyboardMode = KEYBOARD_IS_HIDDEN;
     private static final int KEYBOARD_IS_HIDDEN = -1;
 
-    public MainKeyboardAccessibilityDelegate(final MainKeyboardView view) {
-        final Context context = view.getContext();
+    public KeyboardAccessibilityDelegate(final KeyboardView keyboardView,
+            final KeyDetector keyDetector) {
+        super();
+        final Context context = keyboardView.getContext();
         mEdgeSlop = context.getResources().getDimensionPixelSize(
                 R.dimen.config_accessibility_edge_slop);
-        mView = view;
+        mKeyboardView = keyboardView;
+        mKeyDetector = keyDetector;
 
         // Ensure that the view has an accessibility delegate.
-        ViewCompat.setAccessibilityDelegate(view, this);
+        ViewCompat.setAccessibilityDelegate(keyboardView, this);
     }
 
     /**
@@ -144,7 +148,7 @@ public final class MainKeyboardAccessibilityDelegate extends AccessibilityDelega
      * @param keyboard The new keyboard.
      */
     private void announceKeyboardMode(final Keyboard keyboard) {
-        final Context context = mView.getContext();
+        final Context context = mKeyboardView.getContext();
         final int modeTextResId = KEYBOARD_MODE_RES_IDS.get(keyboard.mId.mMode);
         if (modeTextResId == 0) {
             return;
@@ -194,7 +198,7 @@ public final class MainKeyboardAccessibilityDelegate extends AccessibilityDelega
         default:
             return;
         }
-        final String text = mView.getContext().getString(resId);
+        final String text = mKeyboardView.getContext().getString(resId);
         sendWindowStateChanged(text);
     }
 
@@ -202,7 +206,7 @@ public final class MainKeyboardAccessibilityDelegate extends AccessibilityDelega
      * Announces that the keyboard has been hidden.
      */
     private void announceKeyboardHidden() {
-        final Context context = mView.getContext();
+        final Context context = mKeyboardView.getContext();
         final String text = context.getString(R.string.announce_keyboard_hidden);
 
         sendWindowStateChanged(text);
@@ -216,13 +220,13 @@ public final class MainKeyboardAccessibilityDelegate extends AccessibilityDelega
     private void sendWindowStateChanged(final String text) {
         final AccessibilityEvent stateChange = AccessibilityEvent.obtain(
                 AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED);
-        mView.onInitializeAccessibilityEvent(stateChange);
+        mKeyboardView.onInitializeAccessibilityEvent(stateChange);
         stateChange.getText().add(text);
         stateChange.setContentDescription(null);
 
-        final ViewParent parent = mView.getParent();
+        final ViewParent parent = mKeyboardView.getParent();
         if (parent != null) {
-            parent.requestSendAccessibilityEvent(mView, stateChange);
+            parent.requestSendAccessibilityEvent(mKeyboardView, stateChange);
         }
     }
 
@@ -235,7 +239,7 @@ public final class MainKeyboardAccessibilityDelegate extends AccessibilityDelega
      * @return The accessibility node provider for the current keyboard.
      */
     @Override
-    public MainKeyboardAccessibilityNodeProvider getAccessibilityNodeProvider(final View host) {
+    public KeyboardAccessibilityNodeProvider getAccessibilityNodeProvider(final View host) {
         return getAccessibilityNodeProvider();
     }
 
@@ -243,18 +247,16 @@ public final class MainKeyboardAccessibilityDelegate extends AccessibilityDelega
      * Receives hover events when touch exploration is turned on in SDK versions ICS and higher.
      *
      * @param event The hover event.
-     * @param keyDetector The {@link KeyDetector} to determine on which key the <code>event</code>
-     *     is hovering.
      * @return {@code true} if the event is handled
      */
-    public boolean dispatchHoverEvent(final MotionEvent event, final KeyDetector keyDetector) {
+    public boolean dispatchHoverEvent(final MotionEvent event) {
         final int x = (int) event.getX();
         final int y = (int) event.getY();
         final Key previousKey = mLastHoverKey;
         final Key key;
 
         if (pointInView(x, y)) {
-            key = keyDetector.detectHitKey(x, y);
+            key = mKeyDetector.detectHitKey(x, y);
         } else {
             key = null;
         }
@@ -283,12 +285,12 @@ public final class MainKeyboardAccessibilityDelegate extends AccessibilityDelega
     /**
      * @return A lazily-instantiated node provider for this view delegate.
      */
-    private MainKeyboardAccessibilityNodeProvider getAccessibilityNodeProvider() {
+    private KeyboardAccessibilityNodeProvider getAccessibilityNodeProvider() {
         // Instantiate the provide only when requested. Since the system
         // will call this method multiple times it is a good practice to
         // cache the provider instance.
         if (mAccessibilityNodeProvider == null) {
-            mAccessibilityNodeProvider = new MainKeyboardAccessibilityNodeProvider(mView);
+            mAccessibilityNodeProvider = new KeyboardAccessibilityNodeProvider(mKeyboardView);
         }
         return mAccessibilityNodeProvider;
     }
@@ -302,8 +304,8 @@ public final class MainKeyboardAccessibilityDelegate extends AccessibilityDelega
      */
     private boolean pointInView(final int localX, final int localY) {
         return (localX >= mEdgeSlop) && (localY >= mEdgeSlop)
-                && (localX < (mView.getWidth() - mEdgeSlop))
-                && (localY < (mView.getHeight() - mEdgeSlop));
+                && (localX < (mKeyboardView.getWidth() - mEdgeSlop))
+                && (localY < (mKeyboardView.getHeight() - mEdgeSlop));
     }
 
     /**
@@ -318,7 +320,7 @@ public final class MainKeyboardAccessibilityDelegate extends AccessibilityDelega
         final long downTime = SystemClock.uptimeMillis();
         final MotionEvent downEvent = MotionEvent.obtain(
                 downTime, downTime, MotionEvent.ACTION_DOWN, x, y, 0);
-        mView.onTouchEvent(downEvent);
+        mKeyboardView.onTouchEvent(downEvent);
         downEvent.recycle();
         return downTime;
     }
@@ -334,7 +336,7 @@ public final class MainKeyboardAccessibilityDelegate extends AccessibilityDelega
         final int y = key.getHitBox().centerY();
         final MotionEvent upEvent = MotionEvent.obtain(
                 downTime, SystemClock.uptimeMillis(), MotionEvent.ACTION_UP, x, y, 0);
-        mView.onTouchEvent(upEvent);
+        mKeyboardView.onTouchEvent(upEvent);
         upEvent.recycle();
     }
 
@@ -373,7 +375,7 @@ public final class MainKeyboardAccessibilityDelegate extends AccessibilityDelega
         if (key == null) {
             return false;
         }
-        final MainKeyboardAccessibilityNodeProvider provider = getAccessibilityNodeProvider();
+        final KeyboardAccessibilityNodeProvider provider = getAccessibilityNodeProvider();
 
         switch (event.getAction()) {
         case MotionEvent.ACTION_HOVER_ENTER:
