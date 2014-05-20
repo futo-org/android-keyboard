@@ -332,6 +332,7 @@
     />
     <!-- TODO: This hindi_compact keyboard is a preliminary layout.
                This isn't based on the final specification. -->
+    <!--
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic_compact"
             android:subtypeId="0xe49c89a1"
@@ -340,6 +341,7 @@
             android:imeSubtypeExtraValue="KeyboardLayoutSet=hindi_compact,EmojiCapable"
             android:isAsciiCapable="false"
     />
+    -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
             android:subtypeId="0x35b7526a"
@@ -480,6 +482,7 @@
     />
     <!-- TODO: This marathi keyboard is a preliminary layout.
                This isn't based on the final specification. -->
+    <!--
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
             android:subtypeId="0x747b9f03"
@@ -488,6 +491,7 @@
             android:imeSubtypeExtraValue="KeyboardLayoutSet=marathi,EmojiCapable"
             android:isAsciiCapable="false"
     />
+    -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
             android:subtypeId="0x84c87c61"
@@ -498,6 +502,7 @@
     />
     <!-- TODO: This Myanmar keyboard is a preliminary layout.
                This isn't based on the final specification. -->
+    <!--
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
             android:subtypeId="0xea266ea4"
@@ -506,6 +511,7 @@
             android:imeSubtypeExtraValue="KeyboardLayoutSet=myanmar,EmojiCapable,CombiningRules=MyanmarReordering"
             android:isAsciiCapable="false"
     />
+    -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
             android:subtypeId="0x3f12ee14"
