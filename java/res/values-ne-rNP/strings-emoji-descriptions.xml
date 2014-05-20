@@ -1,0 +1,1646 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*
+**
+** Copyright 2014, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+ -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- no translation found for spoken_emoji_00A9 (2859822817116803638) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_00AE (7708335454134589027) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_203C (153340916701508663) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_2049 (4877256448299555371) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_2122 (9188440722954720429) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_2139 (9114342638917304327) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_2194 (8055202727034946680) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_2195 (8028122253301087407) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_2196 (4019164898967854363) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_2197 (4255723717709017801) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_2198 (1452063451313622090) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_2199 (6942722693368807849) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_21A9 (5204750172335111188) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_21AA (3950259884359247006) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_231A (6751448803233874993) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_231B (5956428809948426182) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_23E9 (4022497733535162237) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_23EA (2251396938087774944) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_23EB (3746885195641491865) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_23EC (7852372752901163416) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_23F0 (8474219588750627870) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_23F3 (166900119581024371) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_24C2 (3948348737566038470) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_25AA (7865181015100227349) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_25AB (6446532820937381457) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_25B6 (2423897708496040947) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_25C0 (3595083440074484934) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_25FB (4838691986881215419) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_25FC (7008859564991191050) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_25FD (7673439755069217479) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_25FE (6782214109919768923) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_2600 (2272722634618990413) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_2601 (6205136889311537150) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_260E (8670395193046424238) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_2611 (4530550203347054611) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_2614 (1612791247861229500) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_2615 (3320562382424018588) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_261D (4690554173549768467) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_263A (3170094381521989300) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_2648 (4621241062667020673) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_2649 (7694461245947059086) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_264A (1258074605878705030) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_264B (4409219914377810956) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_264C (6520255367817054163) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_264D (1504758945499854018) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_264E (2354847104530633519) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_264F (5822933280406416112) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_2650 (4832481156714796163) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_2651 (840953134601595090) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_2652 (3586925968718775281) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_2653 (8420547731496254492) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_2660 (4541170554542412536) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_2663 (3669352721942285724) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_2665 (6347941599683765843) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_2666 (8296769213401115999) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_2668 (7063148281053820386) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_267B (21716857176812762) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_267F (8833496533226475443) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_2693 (7443148847598433088) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_26A0 (6272635532992727510) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_26A1 (5604749644693339145) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_26AA (8005748091690377153) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_26AB (1655910278422753244) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_26BD (1545218197938889737) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_26BE (8959760533076498209) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_26C4 (3045791757044255626) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_26C5 (5580129409712578639) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_26CE (8963656417276062998) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_26D4 (2231451988209604130) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_26EA (7513319636103804907) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_26F2 (7134115206158891037) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_26F3 (4912302210162075465) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_26F5 (4766328116769075217) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_26FA (5888017494809199037) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_26FD (2417060622927453534) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_2702 (4005741160717451912) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_2705 (164605766946697759) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_2708 (7153840886849268988) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_2709 (2217319160724311369) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_270A (508347232762319473) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_270B (6640562128327753423) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_270C (1344288035704944581) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_270F (6108251586067318718) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_2712 (6320544535087710482) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_2714 (1968242800064001654) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_2716 (511941294762977228) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_2728 (5650330815808691881) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_2733 (8915809595141157327) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_2734 (4846583547980754332) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_2744 (4350636647760161042) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_2747 (3718282973916474455) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_274C (2752145886733295314) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_274E (4262918689871098338) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_2753 (6935897159942119808) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_2754 (7277504915105532954) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_2755 (6853076969826960210) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_2757 (3707907828776912174) -->
+    <skip />
+    <string name="spoken_emoji_2764" msgid="4214257843609432167">"दह्रो कालो हृदय"</string>
+    <!-- no translation found for spoken_emoji_2795 (6563954833786162168) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_2796 (5990926508250772777) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_2797 (24694184172879174) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_27A1 (3513434778263100580) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_27B0 (203395646864662198) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_27BF (4940514642375640510) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_2934 (9062130477982973457) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_2935 (6198710960720232074) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_2B05 (4813405635410707690) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_2B06 (1223172079106250748) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_2B07 (1599124424746596150) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_2B1B (3461247311988501626) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_2B1C (5793146430145248915) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_2B50 (3850845519526950524) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_2B55 (9137882158811541824) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_3030 (4609172241893565639) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_303D (2545833934975907505) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_3297 (928912923628973800) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_3299 (3930347573693668426) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F004 (1705216181345894600) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F0CF (7601493592085987866) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F170 (3817698686602826773) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F171 (3684218589626650242) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F17E (2978809190364779029) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F17F (463634348668462040) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F18E (1650705325221496768) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F191 (5386969264431429221) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F192 (8324226436829162496) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F193 (4731758603321515364) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F194 (4903128609556175887) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F195 (1433142500411060924) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F196 (8825160701159634202) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F197 (7841079241554176535) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F198 (7020298909426960622) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F199 (5971252667136235630) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F19A (4557270135899843959) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F201 (7000490044681139002) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F202 (8560906958695043947) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F21A (1496435317324514033) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F22F (609797148862445402) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F232 (8125716331632035820) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F233 (8749401090457355028) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F234 (3546951604285970768) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F235 (5320186982841793711) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F236 (879755752069393034) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F237 (6741807001205851437) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F238 (5504414186438196912) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F239 (1634067311597618959) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F23A (3107862957630169536) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F250 (6586943922806727907) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F251 (9099032855993346948) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F300 (4720098285295840383) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F301 (3601962477653752974) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F302 (3404357123421753593) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F303 (3899301321538188206) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F304 (2767148930689050040) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F305 (9165812924292061196) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F306 (5889294736109193104) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F307 (2714290867291163713) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F308 (688704703985173377) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F309 (6217981957992313528) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F30A (4329309263152110893) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F30B (5729430693700923112) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F30C (2961230863217543082) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F30D (1113905673331547953) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F30E (5278512600749223671) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F30F (5718144880978707493) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F310 (2959618582975247601) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F311 (623906380914895542) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F312 (4458575672576125401) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F313 (7599181787989497294) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F314 (4898293184964365413) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F315 (3218117051779496309) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F316 (2061317145777689569) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F317 (2721090687319539049) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F318 (3814091755648887570) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F319 (4074299824890459465) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F31A (3092285278116977103) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F31B (2658562138386927881) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F31C (7914768515547867384) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F31D (1925730459848297182) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F31E (8022112382524084418) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F31F (1051661214137766369) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F320 (5450591979068216115) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F330 (3115760035618051575) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F331 (5658888205290008691) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F332 (2935650450421165938) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F333 (5898847427062482675) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F334 (6183375224678417894) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F335 (5352418412103584941) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F337 (3839107352363566289) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F338 (6389970364260468490) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F339 (9128891447985256151) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F33A (2025828400095233078) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F33B (8163868254348448552) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F33C (6850371206262335812) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F33D (9033484052864509610) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F33E (2540173396638444120) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F33F (4384823344364908558) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F340 (3494255459156499305) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F341 (4581959481754990158) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F342 (3119068426871821222) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F343 (2663317495805149004) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F344 (2738517881678722159) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F345 (6135288642349085554) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F346 (2075395322785406367) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F347 (7753453754963890571) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F348 (1247076837284932788) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F349 (5563054555180611086) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F34A (4688661208570160524) -->
+    <skip />
+    <string name="spoken_emoji_1F34B" msgid="4335318423164185706">"कागती"</string>
+    <!-- no translation found for spoken_emoji_1F34C (3712827239858159474) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F34D (7712521967162622936) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F34E (1859466882598614228) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F34F (8251711032295005633) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F350 (625802980159197701) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F351 (4269460120610911895) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F352 (965600953360182635) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F353 (7068623879906925592) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F354 (45162285238888494) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F355 (9157587635526433283) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F356 (2667196119149852244) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F357 (8022817413851052256) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F358 (3042693264748036476) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F359 (3988148661730121958) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F35A (1763824172198327268) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F35B (62530406745717835) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F35C (7537756539198945509) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F35D (8173523083861875196) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F35E (2935428307894662571) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F35F (4840297386785728443) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F360 (4094659855684686801) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F361 (6475486395784096109) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F362 (5004692577661076275) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F363 (1606603765717743806) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F364 (6550457766169570811) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F365 (4963815540953316307) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F366 (7862401745277049404) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F367 (7447972978281980414) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F368 (7790003146142724913) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F369 (7383712944084857350) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F36A (2726271795913042295) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F36B (6342163604299875931) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F36C (2168934753998218790) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F36D (3671507903799975792) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F36E (4630541402785165902) -->
+    <skip />
+    <string name="spoken_emoji_1F36F" msgid="5577915387425169439">"महदानी"</string>
+    <!-- no translation found for spoken_emoji_1F370 (7243244547866114951) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F371 (6731527040552916358) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F372 (1635035323832181733) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F373 (7799289534289221045) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F374 (5973820884987069131) -->
+    <skip />
+    <string name="spoken_emoji_1F375" msgid="1074832087699617700">"ह्यान्डल बिनाको चियाकप"</string>
+    <!-- no translation found for spoken_emoji_1F376 (6499274685584852067) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F377 (1762398562314172075) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F378 (5528234560590117516) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F379 (790581290787943325) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F37A (391966822450619516) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F37B (9015043286465670662) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F37C (2532113819464508894) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F380 (3487363857092458827) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F381 (614180683680675444) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F382 (4720497171946687501) -->
+    <skip />
+    <string name="spoken_emoji_1F383" msgid="3536505941578757623">"ज्याक-o-लालटिन"</string>
+    <!-- no translation found for spoken_emoji_1F384 (1797870204479059004) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F385 (1754174063483626367) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F386 (2130445450758114746) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F387 (3403182563117999933) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F388 (2903047203723251804) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F389 (2352830665883549388) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F38A (6280428984773641322) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F38B (4902225837479015489) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F38C (7623268024030989365) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F38D (8237542796124408528) -->
+    <skip />
+    <string name="spoken_emoji_1F38E" msgid="5373397476238212371">"जापानी गुडिया"</string>
+    <!-- no translation found for spoken_emoji_1F38F (8754091376829552844) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F390 (8903307048095431374) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F391 (2134952069191911841) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F392 (6380405493914304737) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F393 (6947890064872470996) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F3A0 (3572095190082826057) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F3A1 (4300565511681058798) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F3A2 (15486093912232140) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F3A3 (921739319504942924) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F3A4 (7497596355346856950) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F3A5 (4290497821228183002) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F3A6 (26019057872319055) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F3A7 (837856608794094105) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F3A8 (2332260356509244587) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F3A9 (9045869366525115256) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F3AA (5728760354237132) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F3AB (1657997517193216284) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F3AC (4317366554314492152) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F3AD (607157286336130470) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F3AE (2902308174671548150) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F3AF (5420539221790296407) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F3B0 (7440244806527891956) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F3B1 (545544382391379234) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F3B2 (8302262034774787493) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F3B3 (5180870610771027520) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F3B4 (4723852033266071564) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F3B5 (1998470239850548554) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F3B6 (3827730457113941705) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F3B7 (5503403099445042180) -->
+    <skip />
+    <string name="spoken_emoji_1F3B8" msgid="3985658156795011430">"गितार"</string>
+    <!-- no translation found for spoken_emoji_1F3B9 (5596295757967881451) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F3BA (4284064120340683558) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F3BB (2856598510069988745) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F3BC (1608424748821446230) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F3BD (5490786111375627777) -->
+    <skip />
+    <string name="spoken_emoji_1F3BE" msgid="1851613105691627931">"टेनिस रैकेट र बल"</string>
+    <!-- no translation found for spoken_emoji_1F3BF (6862405997423247921) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F3C0 (7421420756115104085) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F3C1 (6926537251677319922) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F3C2 (5708596929237987082) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F3C3 (5850982999510115824) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F3C4 (8468355585994639838) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F3C6 (9094474706847545409) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F3C7 (8172206200368370116) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F3C8 (5619171461277597709) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F3C9 (6371294008765871043) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F3CA (130977831787806932) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F3E0 (6277213201655811842) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F3E1 (233476176077538885) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F3E2 (919736380093964570) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F3E3 (6177606081825094184) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F3E4 (717377871070970293) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F3E5 (1350532500431776780) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F3E6 (342132788513806214) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F3E7 (6322352038284944265) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F3E8 (5864918444350599907) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F3E9 (7830416185375326938) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F3EA (5081084413084360479) -->
+    <skip />
+    <string name="spoken_emoji_1F3EB" msgid="7010966528205150525">"स्कूल"</string>
+    <!-- no translation found for spoken_emoji_1F3EC (4845978861878295154) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F3ED (3980316226665215370) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F3EE (1253964276770550248) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F3EF (1128975573507389883) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F3F0 (1544632297502291578) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F400 (2063034795679578294) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F401 (6736421616217369594) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F402 (7276670995895485604) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F403 (8045709541897118928) -->
+    <skip />
+    <string name="spoken_emoji_1F404" msgid="5240777285676662335">"गाई"</string>
+    <!-- no translation found for spoken_emoji_1F406 (5163461930159540018) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F407 (6905370221172708160) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F408 (1362164550508207284) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F409 (8476130983168866013) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F40A (1149626786411545043) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F40B (5199104921208397643) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F40C (2704006052881702675) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F40D (8648186663643157522) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F40E (7219137467573327268) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F40F (7834336676729040395) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F410 (8686765722255775031) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F411 (3585715397876383525) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F412 (4924794582980077838) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F413 (1460475310405677377) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F414 (5857296282631892219) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F415 (5920041074892949527) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F416 (4362403392912540286) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F417 (6836978415840795128) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F418 (7926161463897783691) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F419 (1055233959755784186) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F41A (5195666556511558060) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F41B (7652480167465557832) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F41C (1123461148697574239) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F41D (718579308764058851) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F41E (6766305509608115467) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F41F (1207261298343160838) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F420 (1041145003133609221) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F421 (1748378324417438751) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F422 (4106724877523329148) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F423 (4077407945958691907) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F424 (6911326019270172283) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F425 (5466514196557885577) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F426 (2163979138772892755) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F427 (3585670324511212961) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F428 (7955440808647898579) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F429 (5028269352809819035) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F42A (4681926706404032484) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F42B (2725166074981558322) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F42C (6764791873413727085) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F42D (1033643138546864251) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F42E (8099223337120508820) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F42F (2104743989330781572) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F430 (525492897063150160) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F431 (6051358666235016851) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F432 (7698001871193018305) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F433 (3762356053512899326) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F434 (3619943222159943226) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F435 (59199202683252958) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F436 (340544719369009828) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F437 (1219818379784982585) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F438 (9128124743321008210) -->
+    <skip />
+    <string name="spoken_emoji_1F439" msgid="1424161319554642266">"लोखर्के अनुहार"</string>
+    <!-- no translation found for spoken_emoji_1F43A (6727645488430385584) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F43B (5397170068392865167) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F43C (2715995734367032431) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F43D (6005480717951776597) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F43E (8917626103219080547) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F440 (7144338258163384433) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F442 (1905515392292676124) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F443 (1491504447758933115) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F444 (3654613047946080332) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F445 (7024905244040509204) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F446 (2150365643636471745) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F447 (8794022344940891388) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F448 (3261812959215550650) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F449 (4764447975177805991) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F44A (7197417095486424841) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F44B (1975968945250833117) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F44C (3185919567897876562) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F44D (6182553970602667815) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F44E (8030851867365111809) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F44F (5148753662268213389) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F450 (1012021072085157054) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F451 (8257466714629051320) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F452 (4567394011149905466) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F453 (5978410551173163010) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F454 (348469036193323252) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F455 (5665118831861433578) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F456 (1890991330923356408) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F457 (3904310482655702620) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F458 (5704243858031107692) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F459 (3553148747050035251) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F45A (1389654639484716101) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F45B (1113293170254222904) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F45C (3410257778598006936) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F45D (812176504300064819) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F45E (2901741399934723562) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F45F (6828566359287798863) -->
+    <skip />
+    <string name="spoken_emoji_1F460" msgid="305863879170420855">"अग्लो-कुर्कुच्चा भएको जुत्ता"</string>
+    <!-- no translation found for spoken_emoji_1F461 (5160493217831417630) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F462 (1722897795554863734) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F463 (5850772903593010699) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F464 (1228335905487734913) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F465 (4461307702499679879) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F466 (1938873085514108889) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F467 (8237080594860144998) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F468 (6081300722526675382) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F469 (1090140923076108158) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F46A (5063570981942606595) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F46B (6795882374287327952) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F46C (6844464165783964495) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F46D (2316773068014053180) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F46E (5897625605860822401) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F46F (7716871657717641490) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F470 (6409995400510338892) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F471 (3058247860441670806) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F472 (3928854667819339142) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F473 (5921952095808988381) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F474 (1082237499496725183) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F475 (7280323988642212761) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F476 (4713322657821088296) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F477 (2197036131029221370) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F478 (7245521193493488875) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F479 (6876475321015553972) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F47A (3900813633102703571) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F47B (2608250873194079390) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F47C (3838699131276537421) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F47D (2874077455888369538) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F47E (3642607168625579507) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F47F (441605977269926252) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F480 (3696253485164878739) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F481 (320408708521966893) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F482 (3424354860245608949) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F483 (3221113594843849083) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F484 (7348014979080444885) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F485 (6133507975565116339) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F486 (9085459968247394155) -->
+    <skip />
+    <string name="spoken_emoji_1F487" msgid="1479113637259592150">"सैलुन"</string>
+    <!-- no translation found for spoken_emoji_1F488 (6922559285234100252) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F489 (8114863680950147305) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F48A (8526843630145963032) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F48B (2538528967897640292) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F48C (1681173271652890232) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F48D (8259886164999042373) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F48E (8777981696011111101) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F48F (741593675183677907) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F490 (4482549128959806736) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F491 (2305245307882441500) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F492 (3884119934804475732) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F493 (1208828371565525121) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F494 (6198876398509338718) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F495 (9206202744967130919) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F496 (5436953041732207775) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F497 (7285142863951448473) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F498 (7940131245037575715) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F499 (4453235040265550009) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F49A (6262178648366971405) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F49B (8085384999750714368) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F49C (453829540120898698) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F49D (3460534750224161888) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F49E (4490636226072523867) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F49F (2059319756421226336) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4A0 (1954850380550212038) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4A1 (403137413540909021) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4A2 (2604192053295622063) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4A3 (6378351742957821735) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4A4 (7217736258870346625) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4A5 (5401995723541239858) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4A6 (3837802182716483848) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4A7 (5718438987757885141) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4A8 (4472108229720006377) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4A9 (1240958472788430032) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4AA (8427525538635146416) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4AB (5484114759939427459) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4AC (5571196638219612682) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4AD (353174619257798652) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4AE (1223142786927162641) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4AF (3526278354452138397) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4B0 (4124102195175124156) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4B1 (8339494003418572905) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4B2 (3179159430187243132) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4B3 (5375412518221759596) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4B4 (1068592463669453204) -->
+    <skip />
+    <string name="spoken_emoji_1F4B5" msgid="1426708699891832564">"डलर हस्ताक्षरित बैकनोट"</string>
+    <!-- no translation found for spoken_emoji_1F4B6 (8289249930736444837) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4B7 (5245100496860739429) -->
+    <skip />
+    <string name="spoken_emoji_1F4B8" msgid="4401099580477164440">"पखेटाली मुद्रा"</string>
+    <!-- no translation found for spoken_emoji_1F4B9 (647509393536679903) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4BA (1269737854891046321) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4BB (6252883563347816451) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4BC (6182597732218446206) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4BD (5820961044768829176) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4BE (4754542485835379808) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4BF (2237481756984721795) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4C0 (491582501089694461) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4C1 (6645461382494158111) -->
+    <skip />
+    <string name="spoken_emoji_1F4C2" msgid="8095638715523765338">"खुला फाइल फोल्डर"</string>
+    <!-- no translation found for spoken_emoji_1F4C3 (3727274466173970142) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4C4 (4382570710795501612) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4C5 (8693944622627762487) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4C6 (8469908708708424640) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4C7 (2665313547987324495) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4C8 (8007686702282833600) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4C9 (2271951411192893684) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4CA (3525692829622381444) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4CB (977639227554095521) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4CC (156107396088741574) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4CD (4266572175361190231) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4CE (6294288509864968290) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4CF (149679400831136810) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4D0 (8130339336619202915) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4D1 (5852176364856284968) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4D2 (2276810154105920052) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4D3 (5873386492793610808) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4D4 (4754469936418776360) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4D5 (4642713351802778905) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4D6 (6987347918381807186) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4D7 (7813394163241379223) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4D8 (7189799718984979521) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4D9 (3874664073186440225) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4DA (872212072924287762) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4DB (2015183603583392969) -->
+    <skip />
+    <string name="spoken_emoji_1F4DC" msgid="5075845110932456783">"सार्नु"</string>
+    <!-- no translation found for spoken_emoji_1F4DD (2494006707147586786) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4DE (7883008605002117671) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4DF (3538610110623780465) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4E0 (2960778342609543077) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4E1 (6269733703719242108) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4E2 (1987535386302883116) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4E3 (5588916572878599224) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4E4 (2063561529097749707) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4E5 (3232462702926143576) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4E6 (3399454337197561635) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4E7 (5557136988503873238) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4E8 (30698793974124123) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4E9 (5947550337678643166) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4EA (772614045207213751) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4EB (6491414165464146137) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4EC (7369517138779988438) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4ED (5657520436285454241) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4EE (8464138906243608614) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4EF (8801427577198798226) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4F0 (6330208624731662525) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4F1 (3966503935581675695) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4F2 (1057540341746100087) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4F3 (5003984447315754658) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4F4 (5549847566968306253) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4F5 (3660199448671699238) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4F6 (2676974903233268860) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4F7 (2643891943105989039) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4F9 (4475626303058218048) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4FA (1079796186652960775) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4FB (3848729587403760645) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F4FC (8370432508874310054) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F500 (2389947994502144547) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F501 (2132188352433347009) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F502 (2361976580513178391) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F503 (8936283551917858793) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F504 (708290317843535943) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F505 (6348909939004951860) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F506 (4449609297521280173) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F507 (7136386694923708448) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F508 (5063567689831527865) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F509 (3948050077992370791) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F50A (5818194948677277197) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F50B (8083470451266295876) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F50C (7793219132036431680) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F50D (8140244710637926780) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F50E (4751821352839693365) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F50F (915079280472199605) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F510 (7658381761691758318) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F511 (262319867774655688) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F512 (5628688337255115175) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F513 (8579201846619420981) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F514 (7027268683047322521) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F515 (8903179856036069242) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F516 (108097933937925381) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F517 (2450846665734313397) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F518 (7028220286841437832) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F519 (8211189165075445687) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F51A (823966751787338892) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F51B (5920570742107943382) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F51C (110609810659826676) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F51D (4087697222026095447) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F51E (8512873526157201775) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F51F (8673370823728653973) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F520 (7335109890337048900) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F521 (2693185864450925778) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F522 (8419130286280673347) -->
+    <skip />
+    <string name="spoken_emoji_1F523" msgid="3318053476401719421">"प्रतीकको लागि प्रतीक प्रविष्ट गर्नुस्"</string>
+    <!-- no translation found for spoken_emoji_1F524 (1625073997522316331) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F525 (4083884189172963790) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F526 (2035494936742643580) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F527 (134257142354034271) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F528 (700627429570609375) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F529 (7480548235904988573) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F52A (7613580031502317893) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F52B (4554906608328118613) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F52C (1330294501371770790) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F52D (7549551775445177140) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F52E (4457099417872625141) -->
+    <skip />
+    <string name="spoken_emoji_1F52F" msgid="8899031001317442792">"बिचमा थोप्ला निहित छ चुच्चे तारा"</string>
+    <!-- no translation found for spoken_emoji_1F530 (3572898444281774023) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F531 (5225633376450025396) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F532 (9169568490485180779) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F533 (6554193837201918598) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F534 (8339298801331865340) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F535 (1227403104835533512) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F536 (5477372445510469331) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F537 (3158915214347274626) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F538 (4300084249474451991) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F539 (6535159756325742275) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F53A (3728196273988781389) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F53B (7182097039614128707) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F53C (4077022046319615029) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F53D (3939112784894620713) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F550 (7761392621689986218) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F551 (2699448504113431716) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F552 (5872107867411853750) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F553 (8490966286158640743) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F554 (7662585417832909280) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F555 (5564698204520412009) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F556 (7325712194836512205) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F557 (4398343183682848693) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F558 (3110507820404018172) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F559 (2972160366448337839) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F55A (5568112876681714834) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F55B (6731739890330659276) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F55C (7838853679879115890) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F55D (3518832144255922544) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F55E (3092760695634993002) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F55F (2326720311892906763) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F560 (5771339179963924448) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F561 (3139944777062475382) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F562 (8273944611162457084) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F563 (8643976903718136299) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F564 (3511070239796141638) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F565 (4567451985272963088) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F566 (2790552288169929810) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F567 (9026037362100689337) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F5FB (9037503671676124015) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F5FC (1409415995817242150) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F5FD (2562726956654429582) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F5FE (1184469756905210580) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F5FF (6003594799354942297) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F600 (7601109464776835283) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F601 (746026523967444503) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F602 (8354558091785198246) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F603 (3861022912544159823) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F604 (5119021072966343531) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F605 (6140813923973561735) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F606 (3549936813966832799) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F607 (2826424078212384817) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F608 (7343559595089811640) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F609 (5481030187207504405) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F60A (5023337769148679767) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F60B (3005248217216195694) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F60C (349384012958268496) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F60D (7921853137164938391) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F60E (441718886380605643) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F60F (2674453144890180538) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F610 (3225675825334102369) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F611 (7199179827619679668) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F612 (985081329745137998) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F613 (5548607684830303562) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F614 (3196305665259916390) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F615 (3051674239303969101) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F616 (8124887056243813089) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F617 (7052733625511122870) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F618 (408207170572303753) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F619 (8645430335143153645) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F61A (2882157190974340247) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F61B (3765927202787211499) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F61C (198943912107589389) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F61D (7643546385877816182) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F61E (1528732952202098364) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F61F (1853664164636082404) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F620 (6051942001307375830) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F621 (2114711878097257704) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F622 (29291014645931822) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F623 (7803959833595184773) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F624 (8637637647725752799) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F625 (6153625183493635030) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F626 (6179485689935562950) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F627 (8566204052903012809) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F628 (8875777401624904224) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F629 (1411538490319190118) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F62A (4726686726690289969) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F62B (3221980473921623613) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F62C (4616356691941225182) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F62D (4283677508698812232) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F62E (726083405284353894) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F62F (7746620088234710962) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F630 (3298804852155581163) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F631 (1603391150954646779) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F632 (4846193232203976013) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F633 (4023593836629700443) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F634 (3155265083246248129) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F635 (4616691133452764482) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F636 (947000211822375683) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F637 (1269551267347165774) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F638 (3410766467496872301) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F639 (1833417519781022031) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F63A (8566294484007152613) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F63B (74417995938927571) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F63C (6472812005729468870) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F63D (1638398369553349509) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F63E (6788969063020278986) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F63F (1207234562459550185) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F640 (6023054549904329638) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F645 (5202090629227587076) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F646 (6734425134415138134) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F647 (1090285518444205483) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F648 (8978535230610522356) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F649 (8486145279809495102) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F64A (1237524974033228660) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F64B (4251150782016370475) -->
+    <skip />
+    <string name="spoken_emoji_1F64C" msgid="5446231430684558344">"उत्सवमा दुवै हात उठाँउदैको व्यक्ति"</string>
+    <!-- no translation found for spoken_emoji_1F64D (4646485595309482342) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F64E (3376579939836656097) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F64F (1044439574356230711) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F680 (513263736012689059) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F681 (9201341783850525339) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F682 (8046933583867498698) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F683 (8772750354339223092) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F684 (346396777356203608) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F685 (1237059817190832730) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F686 (3525197227223620343) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F687 (5110143437960392837) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F688 (4702085029871797965) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F689 (2375851019798817094) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F68A (6368370859718717198) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F68B (2920160427117436633) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F68C (1061520934758810864) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F68D (2890059031360969304) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F68E (6234042976027309654) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F68F (5871099334672012107) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F690 (8080964620200195262) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F691 (999173032408730501) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F692 (1712863785341849487) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F693 (7987109037389768934) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F694 (6061658916653884608) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F695 (6913445460364247283) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F696 (6391604457418285404) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F697 (7978399334396733790) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F698 (7006050861129732018) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F699 (630317052666590607) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F69A (4739797891735823577) -->
+    <skip />
+    <string name="spoken_emoji_1F69B" msgid="4715997280786620649">"जोडिएको ठूलोगाडी"</string>
+    <!-- no translation found for spoken_emoji_1F69C (5557395610750818161) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F69D (5467164189942951047) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F69E (169238196389832234) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F69F (7508128757012845102) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F6A0 (8733056213790160147) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F6A1 (4666516337749347253) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F6A2 (4511220588943129583) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F6A3 (8412962252222205387) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F6A4 (8867571300266339211) -->
+    <skip />
+    <string name="spoken_emoji_1F6A5" msgid="7650260812741963884">"तेर्सो यातायात बत्ती"</string>
+    <!-- no translation found for spoken_emoji_1F6A6 (485575967773793454) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F6A7 (6411048933816976794) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F6A8 (6345717218374788364) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F6A9 (6586380356807600412) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F6AA (8954448167261738885) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F6AB (5313946262888343544) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F6AC (6946858177965948288) -->
+    <skip />
+    <string name="spoken_emoji_1F6AD" msgid="6320088669185507241">"धुम्रपान निषेधित चिन्ह"</string>
+    <!-- no translation found for spoken_emoji_1F6AE (1062469925352817189) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F6AF (2286668056123642208) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F6B0 (179424763882990952) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F6B1 (5585212805429161877) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F6B2 (1771885082068421875) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F6B3 (8033779581263314408) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F6B4 (1999538449018476947) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F6B5 (340846352660993117) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F6B6 (4351024386495098336) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F6B7 (4564800655866838802) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F6B8 (3020531906940267349) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F6B9 (1207095844125041251) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F6BA (2346879310071017531) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F6BB (2370172469642078526) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F6BC (5558827593563530851) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F6BD (9213590243049835957) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F6BE (394016533781742491) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F6BF (906336365928291207) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F6C0 (4592099854378821599) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F6C1 (2845056048320031158) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F6C2 (8117262514698011877) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F6C3 (1176342001834630675) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F6C4 (1477622834179978886) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_1F6C5 (2495834050856617451) -->
+    <skip />
+</resources>
