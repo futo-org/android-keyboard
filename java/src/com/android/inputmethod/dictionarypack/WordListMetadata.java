@@ -30,6 +30,7 @@ public class WordListMetadata {
     public final String mDescription;
     public final long mLastUpdate;
     public final long mFileSize;
+    public final String mRawChecksum;
     public final String mChecksum;
     public final String mLocalFilename;
     public final String mRemoteFilename;
@@ -50,13 +51,15 @@ public class WordListMetadata {
 
     public WordListMetadata(final String id, final int type,
             final String description, final long lastUpdate, final long fileSize,
-            final String checksum, final String localFilename, final String remoteFilename,
-            final int version, final int formatVersion, final int flags, final String locale) {
+            final String rawChecksum, final String checksum, final String localFilename,
+            final String remoteFilename, final int version, final int formatVersion,
+            final int flags, final String locale) {
         mId = id;
         mType = type;
         mDescription = description;
         mLastUpdate = lastUpdate; // In milliseconds
         mFileSize = fileSize;
+        mRawChecksum = rawChecksum;
         mChecksum = checksum;
         mLocalFilename = localFilename;
         mRemoteFilename = remoteFilename;
@@ -77,6 +80,7 @@ public class WordListMetadata {
         final String description = values.getAsString(MetadataDbHelper.DESCRIPTION_COLUMN);
         final Long lastUpdate = values.getAsLong(MetadataDbHelper.DATE_COLUMN);
         final Long fileSize = values.getAsLong(MetadataDbHelper.FILESIZE_COLUMN);
+        final String rawChecksum = values.getAsString(MetadataDbHelper.RAW_CHECKSUM_COLUMN);
         final String checksum = values.getAsString(MetadataDbHelper.CHECKSUM_COLUMN);
         final String localFilename = values.getAsString(MetadataDbHelper.LOCAL_FILENAME_COLUMN);
         final String remoteFilename = values.getAsString(MetadataDbHelper.REMOTE_FILENAME_COLUMN);
@@ -98,8 +102,8 @@ public class WordListMetadata {
                 || null == locale) {
             throw new IllegalArgumentException();
         }
-        return new WordListMetadata(id, type, description, lastUpdate, fileSize, checksum,
-                localFilename, remoteFilename, version, formatVersion, flags, locale);
+        return new WordListMetadata(id, type, description, lastUpdate, fileSize, rawChecksum,
+                checksum, localFilename, remoteFilename, version, formatVersion, flags, locale);
     }
 
     @Override
@@ -110,6 +114,7 @@ public class WordListMetadata {
         sb.append("\nDescription : ").append(mDescription);
         sb.append("\nLastUpdate : ").append(mLastUpdate);
         sb.append("\nFileSize : ").append(mFileSize);
+        sb.append("\nRawChecksum : ").append(mRawChecksum);
         sb.append("\nChecksum : ").append(mChecksum);
         sb.append("\nLocalFilename : ").append(mLocalFilename);
         sb.append("\nRemoteFilename : ").append(mRemoteFilename);

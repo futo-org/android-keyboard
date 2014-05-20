@@ -37,6 +37,7 @@ public class MetadataParser {
     private static final String DESCRIPTION_FIELD_NAME = MetadataDbHelper.DESCRIPTION_COLUMN;
     private static final String UPDATE_FIELD_NAME = "update";
     private static final String FILESIZE_FIELD_NAME = MetadataDbHelper.FILESIZE_COLUMN;
+    private static final String RAW_CHECKSUM_FIELD_NAME = MetadataDbHelper.RAW_CHECKSUM_COLUMN;
     private static final String CHECKSUM_FIELD_NAME = MetadataDbHelper.CHECKSUM_COLUMN;
     private static final String REMOTE_FILENAME_FIELD_NAME =
             MetadataDbHelper.REMOTE_FILENAME_COLUMN;
@@ -80,6 +81,7 @@ public class MetadataParser {
                 arguments.get(DESCRIPTION_FIELD_NAME),
                 Long.parseLong(arguments.get(UPDATE_FIELD_NAME)),
                 Long.parseLong(arguments.get(FILESIZE_FIELD_NAME)),
+                arguments.get(RAW_CHECKSUM_FIELD_NAME),
                 arguments.get(CHECKSUM_FIELD_NAME),
                 null,
                 arguments.get(REMOTE_FILENAME_FIELD_NAME),

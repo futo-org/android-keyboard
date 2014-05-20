@@ -325,8 +325,9 @@ public final class ActionBatch {
                     MetadataDbHelper.TYPE_BULK, MetadataDbHelper.STATUS_AVAILABLE,
                     mWordList.mId, mWordList.mLocale, mWordList.mDescription,
                     null == mWordList.mLocalFilename ? "" : mWordList.mLocalFilename,
-                    mWordList.mRemoteFilename, mWordList.mLastUpdate, mWordList.mChecksum,
-                    mWordList.mFileSize, mWordList.mVersion, mWordList.mFormatVersion);
+                    mWordList.mRemoteFilename, mWordList.mLastUpdate, mWordList.mRawChecksum,
+                    mWordList.mChecksum, mWordList.mFileSize, mWordList.mVersion,
+                    mWordList.mFormatVersion);
             PrivateLog.log("Insert 'available' record for " + mWordList.mDescription
                     + " and locale " + mWordList.mLocale);
             db.insert(MetadataDbHelper.METADATA_TABLE_NAME, null, values);
@@ -374,7 +375,7 @@ public final class ActionBatch {
             final ContentValues values = MetadataDbHelper.makeContentValues(0,
                     MetadataDbHelper.TYPE_BULK, MetadataDbHelper.STATUS_INSTALLED,
                     mWordList.mId, mWordList.mLocale, mWordList.mDescription,
-                    "", mWordList.mRemoteFilename, mWordList.mLastUpdate,
+                    "", mWordList.mRemoteFilename, mWordList.mLastUpdate, mWordList.mRawChecksum,
                     mWordList.mChecksum, mWordList.mFileSize, mWordList.mVersion,
                     mWordList.mFormatVersion);
             PrivateLog.log("Insert 'preinstalled' record for " + mWordList.mDescription
@@ -416,8 +417,9 @@ public final class ActionBatch {
                     oldValues.getAsInteger(MetadataDbHelper.STATUS_COLUMN),
                     mWordList.mId, mWordList.mLocale, mWordList.mDescription,
                     oldValues.getAsString(MetadataDbHelper.LOCAL_FILENAME_COLUMN),
-                    mWordList.mRemoteFilename, mWordList.mLastUpdate, mWordList.mChecksum,
-                    mWordList.mFileSize, mWordList.mVersion, mWordList.mFormatVersion);
+                    mWordList.mRemoteFilename, mWordList.mLastUpdate, mWordList.mRawChecksum,
+                    mWordList.mChecksum, mWordList.mFileSize, mWordList.mVersion,
+                    mWordList.mFormatVersion);
             PrivateLog.log("Updating record for " + mWordList.mDescription
                     + " and locale " + mWordList.mLocale);
             db.update(MetadataDbHelper.METADATA_TABLE_NAME, values,
