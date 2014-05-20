@@ -28,9 +28,9 @@
     <string name="spoken_description_unknown" msgid="2382510329910793539">"‏کد کلید %d"</string>
     <string name="spoken_description_shift" msgid="7209798151676638728">"Shift"</string>
     <string name="spoken_description_symbols_shift" msgid="3483198879916435717">"نمادهای بیشتر"</string>
-    <string name="spoken_description_shift_shifted" msgid="3122704922642232605">"تغییر وضعیت"</string>
+    <string name="spoken_description_shift_shifted" msgid="3122704922642232605">"تبدیل"</string>
     <string name="spoken_description_symbols_shift_shifted" msgid="5179175466878186081">"نمادها"</string>
-    <string name="spoken_description_caps_lock" msgid="1224851412185975036">"تغییر وضعیت"</string>
+    <string name="spoken_description_caps_lock" msgid="1224851412185975036">"تبدیل"</string>
     <string name="spoken_description_delete" msgid="3878902286264983302">"حذف"</string>
     <string name="spoken_description_to_symbol" msgid="8244903740201126590">"نمادها"</string>
     <string name="spoken_description_to_alpha" msgid="4081215210530031950">"حروف"</string>

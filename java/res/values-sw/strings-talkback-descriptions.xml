@@ -28,9 +28,9 @@
     <string name="spoken_description_unknown" msgid="2382510329910793539">"Msimbo wa kitufe %d"</string>
     <string name="spoken_description_shift" msgid="7209798151676638728">"Shift"</string>
     <string name="spoken_description_symbols_shift" msgid="3483198879916435717">"Alama zaidi"</string>
-    <string name="spoken_description_shift_shifted" msgid="3122704922642232605">"Badilisha"</string>
+    <string name="spoken_description_shift_shifted" msgid="3122704922642232605">"Shift"</string>
     <string name="spoken_description_symbols_shift_shifted" msgid="5179175466878186081">"Alama"</string>
-    <string name="spoken_description_caps_lock" msgid="1224851412185975036">"Badilisha"</string>
+    <string name="spoken_description_caps_lock" msgid="1224851412185975036">"Shift"</string>
     <string name="spoken_description_delete" msgid="3878902286264983302">"Futa"</string>
     <string name="spoken_description_to_symbol" msgid="8244903740201126590">"Alama"</string>
     <string name="spoken_description_to_alpha" msgid="4081215210530031950">"Herufi"</string>
