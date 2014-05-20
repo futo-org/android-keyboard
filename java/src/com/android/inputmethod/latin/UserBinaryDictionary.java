@@ -258,12 +258,12 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
                 // Safeguard against adding really long words.
                 if (word.length() < MAX_WORD_LENGTH) {
                     runGCIfRequiredLocked(true /* mindsBlockByGC */);
-                    addWordDynamicallyLocked(word, adjustedFrequency, null /* shortcutTarget */,
+                    addUnigramLocked(word, adjustedFrequency, null /* shortcutTarget */,
                             0 /* shortcutFreq */, false /* isNotAWord */,
                             false /* isBlacklisted */, BinaryDictionary.NOT_A_VALID_TIMESTAMP);
                     if (null != shortcut && shortcut.length() < MAX_WORD_LENGTH) {
                         runGCIfRequiredLocked(true /* mindsBlockByGC */);
-                        addWordDynamicallyLocked(shortcut, adjustedFrequency, word,
+                        addUnigramLocked(shortcut, adjustedFrequency, word,
                                 USER_DICT_SHORTCUT_FREQUENCY, true /* isNotAWord */,
                                 false /* isBlacklisted */, BinaryDictionary.NOT_A_VALID_TIMESTAMP);
                     }

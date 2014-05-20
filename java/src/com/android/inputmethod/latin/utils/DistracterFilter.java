@@ -114,7 +114,7 @@ public class DistracterFilter {
         final int[] codePoints = StringUtils.toCodePointArray(testedWord);
         final int[] coordinates;
         coordinates = mKeyboard.getCoordinates(codePoints);
-        composer.setComposingWord(codePoints, coordinates, prevWordsInfo.mPrevWord);
+        composer.setComposingWord(codePoints, coordinates, prevWordsInfo);
 
         final int trailingSingleQuotesCount = StringUtils.getTrailingSingleQuotesCount(testedWord);
         final String consideredWord = trailingSingleQuotesCount > 0 ?

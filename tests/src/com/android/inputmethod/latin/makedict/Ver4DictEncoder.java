@@ -19,6 +19,7 @@ package com.android.inputmethod.latin.makedict;
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.BinaryDictionary;
 import com.android.inputmethod.latin.Dictionary;
+import com.android.inputmethod.latin.PrevWordsInfo;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNode;
 import com.android.inputmethod.latin.utils.BinaryDictionaryUtils;
@@ -74,13 +75,13 @@ public class Ver4DictEncoder implements DictEncoder {
         for (final WordProperty wordProperty : dict) {
             // TODO: switch to addMultipleDictionaryEntries when they support shortcuts
             if (null == wordProperty.mShortcutTargets || wordProperty.mShortcutTargets.isEmpty()) {
-                binaryDict.addUnigramWord(wordProperty.mWord, wordProperty.getProbability(),
+                binaryDict.addUnigramEntry(wordProperty.mWord, wordProperty.getProbability(),
                         null /* shortcutTarget */, 0 /* shortcutProbability */,
                         wordProperty.mIsNotAWord, wordProperty.mIsBlacklistEntry,
                         0 /* timestamp */);
             } else {
                 for (final WeightedString shortcutTarget : wordProperty.mShortcutTargets) {
-                    binaryDict.addUnigramWord(wordProperty.mWord, wordProperty.getProbability(),
+                    binaryDict.addUnigramEntry(wordProperty.mWord, wordProperty.getProbability(),
                             shortcutTarget.mWord, shortcutTarget.getProbability(),
                             wordProperty.mIsNotAWord, wordProperty.mIsBlacklistEntry,
                             0 /* timestamp */);
@@ -93,8 +94,8 @@ public class Ver4DictEncoder implements DictEncoder {
         for (final WordProperty word0Property : dict) {
             if (null == word0Property.mBigrams) continue;
             for (final WeightedString word1 : word0Property.mBigrams) {
-                binaryDict.addBigramWords(word0Property.mWord, word1.mWord, word1.getProbability(),
-                        0 /* timestamp */);
+                binaryDict.addNgramEntry(new PrevWordsInfo(word0Property.mWord), word1.mWord,
+                        word1.getProbability(), 0 /* timestamp */);
                 if (binaryDict.needsToRunGC(true /* mindsBlockByGC */)) {
                     binaryDict.flushWithGC();
                 }
