@@ -65,7 +65,7 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
 
     private void addUnigramWord(final BinaryDictionary binaryDictionary, final String word,
             final int probability) {
-        binaryDictionary.addUnigramEntry(word, probability, "" /* shortcutTarget */,
+        binaryDictionary.addUnigramWord(word, probability, "" /* shortcutTarget */,
                 BinaryDictionary.NOT_A_PROBABILITY /* shortcutProbability */,
                 false /* isNotAWord */, false /* isBlacklisted */,
                 mCurrentTime /* timestamp */);
@@ -73,13 +73,8 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
 
     private void addBigramWords(final BinaryDictionary binaryDictionary, final String word0,
             final String word1, final int probability) {
-        binaryDictionary.addNgramEntry(new PrevWordsInfo(word0), word1, probability,
+        binaryDictionary.addBigramWords(word0, word1, probability,
                 mCurrentTime /* timestamp */);
-    }
-
-    private static boolean isValidBigram(final BinaryDictionary binaryDictionary,
-            final String word0, final String word1) {
-        return binaryDictionary.isValidNgram(new PrevWordsInfo(word0), word1);
     }
 
     private void forcePassingShortTime(final BinaryDictionary binaryDictionary) {
@@ -229,19 +224,19 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
         assertTrue(binaryDictionary.isValidWord("b"));
 
         addBigramWords(binaryDictionary, "a", "b", Dictionary.NOT_A_PROBABILITY);
-        assertFalse(isValidBigram(binaryDictionary, "a", "b"));
+        assertFalse(binaryDictionary.isValidBigram("a", "b"));
         addBigramWords(binaryDictionary, "a", "b", Dictionary.NOT_A_PROBABILITY);
-        assertTrue(isValidBigram(binaryDictionary, "a", "b"));
+        assertTrue(binaryDictionary.isValidBigram("a", "b"));
 
         addUnigramWord(binaryDictionary, "c", DUMMY_PROBABILITY);
         addBigramWords(binaryDictionary, "a", "c", DUMMY_PROBABILITY);
-        assertTrue(isValidBigram(binaryDictionary, "a", "c"));
+        assertTrue(binaryDictionary.isValidBigram("a", "c"));
 
         // Add bigrams of not valid unigrams.
         addBigramWords(binaryDictionary, "x", "y", Dictionary.NOT_A_PROBABILITY);
-        assertFalse(isValidBigram(binaryDictionary, "x", "y"));
+        assertFalse(binaryDictionary.isValidBigram("x", "y"));
         addBigramWords(binaryDictionary, "x", "y", DUMMY_PROBABILITY);
-        assertFalse(isValidBigram(binaryDictionary, "x", "y"));
+        assertFalse(binaryDictionary.isValidBigram("x", "y"));
 
         binaryDictionary.close();
         dictFile.delete();
@@ -281,9 +276,9 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
         addUnigramWord(binaryDictionary, "a", DUMMY_PROBABILITY);
         addUnigramWord(binaryDictionary, "b", DUMMY_PROBABILITY);
         addBigramWords(binaryDictionary, "a", "b", DUMMY_PROBABILITY);
-        assertTrue(isValidBigram(binaryDictionary, "a", "b"));
+        assertTrue(binaryDictionary.isValidBigram("a", "b"));
         forcePassingShortTime(binaryDictionary);
-        assertFalse(isValidBigram(binaryDictionary, "a", "b"));
+        assertFalse(binaryDictionary.isValidBigram("a", "b"));
 
         addUnigramWord(binaryDictionary, "a", DUMMY_PROBABILITY);
         addUnigramWord(binaryDictionary, "b", DUMMY_PROBABILITY);
@@ -294,11 +289,11 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
         addUnigramWord(binaryDictionary, "a", DUMMY_PROBABILITY);
         addUnigramWord(binaryDictionary, "b", DUMMY_PROBABILITY);
         addBigramWords(binaryDictionary, "a", "b", DUMMY_PROBABILITY);
-        assertTrue(isValidBigram(binaryDictionary, "a", "b"));
+        assertTrue(binaryDictionary.isValidBigram("a", "b"));
         forcePassingShortTime(binaryDictionary);
-        assertTrue(isValidBigram(binaryDictionary, "a", "b"));
+        assertTrue(binaryDictionary.isValidBigram("a", "b"));
         forcePassingLongTime(binaryDictionary);
-        assertFalse(isValidBigram(binaryDictionary, "a", "b"));
+        assertFalse(binaryDictionary.isValidBigram("a", "b"));
 
         binaryDictionary.close();
         dictFile.delete();
@@ -554,8 +549,8 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
         for (int j = 0; j < weakBigramTypedCount; j++) {
             addBigramWords(binaryDictionary, weak, target, DUMMY_PROBABILITY);
         }
-        assertTrue(isValidBigram(binaryDictionary, strong, target));
-        assertTrue(isValidBigram(binaryDictionary, weak, target));
+        assertTrue(binaryDictionary.isValidBigram(strong, target));
+        assertTrue(binaryDictionary.isValidBigram(weak, target));
 
         for (int i = 0; i < bigramCount; i++) {
             final int word0Index = random.nextInt(words.size());
@@ -576,8 +571,8 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
                         Integer.parseInt(binaryDictionary.getPropertyForTest(
                                 BinaryDictionary.BIGRAM_COUNT_QUERY));
                 assertTrue(bigramCountBeforeGC > bigramCountAfterGC);
-                assertTrue(isValidBigram(binaryDictionary, strong, target));
-                assertFalse(isValidBigram(binaryDictionary, weak, target));
+                assertTrue(binaryDictionary.isValidBigram(strong, target));
+                assertFalse(binaryDictionary.isValidBigram(weak, target));
                 break;
             }
         }
@@ -611,9 +606,9 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
         addUnigramWord(binaryDictionary, "ccc", DUMMY_PROBABILITY);
         addUnigramWord(binaryDictionary, "abc", DUMMY_PROBABILITY);
         addBigramWords(binaryDictionary, "aaa", "abc", DUMMY_PROBABILITY);
-        assertTrue(isValidBigram(binaryDictionary, "aaa", "abc"));
+        assertTrue(binaryDictionary.isValidBigram("aaa", "abc"));
         addBigramWords(binaryDictionary, "aaa", "bbb", Dictionary.NOT_A_PROBABILITY);
-        assertFalse(isValidBigram(binaryDictionary, "aaa", "bbb"));
+        assertFalse(binaryDictionary.isValidBigram("aaa", "bbb"));
 
         assertEquals(fromFormatVersion, binaryDictionary.getFormatVersion());
         assertTrue(binaryDictionary.migrateTo(toFormatVersion));
@@ -624,10 +619,10 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
         assertTrue(binaryDictionary.getFrequency("aaa") < binaryDictionary.getFrequency("ccc"));
         addUnigramWord(binaryDictionary, "bbb", Dictionary.NOT_A_PROBABILITY);
         assertTrue(binaryDictionary.isValidWord("bbb"));
-        assertTrue(isValidBigram(binaryDictionary, "aaa", "abc"));
-        assertFalse(isValidBigram(binaryDictionary, "aaa", "bbb"));
+        assertTrue(binaryDictionary.isValidBigram("aaa", "abc"));
+        assertFalse(binaryDictionary.isValidBigram("aaa", "bbb"));
         addBigramWords(binaryDictionary, "aaa", "bbb", Dictionary.NOT_A_PROBABILITY);
-        assertTrue(isValidBigram(binaryDictionary, "aaa", "bbb"));
+        assertTrue(binaryDictionary.isValidBigram("aaa", "bbb"));
         binaryDictionary.close();
         dictFile.delete();
     }
