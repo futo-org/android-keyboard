@@ -294,10 +294,11 @@ public final class WordComposer {
      * This will register NOT_A_COORDINATE for X and Ys, and use the passed keyboard for proximity.
      * @param codePoints the code points to set as the composing word.
      * @param coordinates the x, y coordinates of the key in the CoordinateUtils format
-     * @param prevWordsInfo the information of previous words, to use as context for suggestions
+     * @param previousWord the previous word, to use as context for suggestions. Can be null if
+     *   the context is nil (typically, at start of text).
      */
     public void setComposingWord(final int[] codePoints, final int[] coordinates,
-            final PrevWordsInfo prevWordsInfo) {
+            final CharSequence previousWord) {
         reset();
         final int length = codePoints.length;
         for (int i = 0; i < length; ++i) {
@@ -306,7 +307,7 @@ public final class WordComposer {
                     CoordinateUtils.yFromArray(coordinates, i)));
         }
         mIsResumed = true;
-        mPrevWordsInfo = prevWordsInfo;
+        mPrevWordsInfo = new PrevWordsInfo(null == previousWord ? null : previousWord.toString());
     }
 
     /**
@@ -412,13 +413,13 @@ public final class WordComposer {
     // `type' should be one of the LastComposedWord.COMMIT_TYPE_* constants above.
     // committedWord should contain suggestion spans if applicable.
     public LastComposedWord commitWord(final int type, final CharSequence committedWord,
-            final String separatorString, final PrevWordsInfo prevWordsInfo) {
+            final String separatorString, final String prevWord) {
         // Note: currently, we come here whenever we commit a word. If it's a MANUAL_PICK
         // or a DECIDED_WORD we may cancel the commit later; otherwise, we should deactivate
         // the last composed word to ensure this does not happen.
         final LastComposedWord lastComposedWord = new LastComposedWord(mEvents,
                 mInputPointers, mTypedWordCache.toString(), committedWord, separatorString,
-                prevWordsInfo, mCapitalizedMode);
+                prevWord, mCapitalizedMode);
         mInputPointers.reset();
         if (type != LastComposedWord.COMMIT_TYPE_DECIDED_WORD
                 && type != LastComposedWord.COMMIT_TYPE_MANUAL_PICK) {

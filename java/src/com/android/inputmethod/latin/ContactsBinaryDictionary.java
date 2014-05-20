@@ -142,7 +142,7 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
                 Log.d(TAG, "loadAccountVocabulary: " + word);
             }
             runGCIfRequiredLocked(true /* mindsBlockByGC */);
-            addUnigramLocked(word, FREQUENCY_FOR_CONTACTS, null /* shortcut */,
+            addWordDynamicallyLocked(word, FREQUENCY_FOR_CONTACTS, null /* shortcut */,
                     0 /* shortcutFreq */, false /* isNotAWord */, false /* isBlacklisted */,
                     BinaryDictionary.NOT_A_VALID_TIMESTAMP);
         }
@@ -224,7 +224,7 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
      */
     private void addNameLocked(final String name) {
         int len = StringUtils.codePointCount(name);
-        PrevWordsInfo prevWordsInfo = new PrevWordsInfo(null);
+        String prevWord = null;
         // TODO: Better tokenization for non-Latin writing systems
         for (int i = 0; i < len; i++) {
             if (Character.isLetter(name.codePointAt(i))) {
@@ -239,19 +239,19 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
                 final int wordLen = StringUtils.codePointCount(word);
                 if (wordLen < MAX_WORD_LENGTH && wordLen > 1) {
                     if (DEBUG) {
-                        Log.d(TAG, "addName " + name + ", " + word + ", "
-                                + prevWordsInfo.mPrevWord);
+                        Log.d(TAG, "addName " + name + ", " + word + ", " + prevWord);
                     }
                     runGCIfRequiredLocked(true /* mindsBlockByGC */);
-                    addUnigramLocked(word, FREQUENCY_FOR_CONTACTS,
+                    addWordDynamicallyLocked(word, FREQUENCY_FOR_CONTACTS,
                             null /* shortcut */, 0 /* shortcutFreq */, false /* isNotAWord */,
                             false /* isBlacklisted */, BinaryDictionary.NOT_A_VALID_TIMESTAMP);
-                    if (!TextUtils.isEmpty(prevWordsInfo.mPrevWord) && mUseFirstLastBigrams) {
+                    if (!TextUtils.isEmpty(prevWord) && mUseFirstLastBigrams) {
                         runGCIfRequiredLocked(true /* mindsBlockByGC */);
-                        addNgramEntryLocked(prevWordsInfo, word, FREQUENCY_FOR_CONTACTS_BIGRAM,
+                        addBigramDynamicallyLocked(prevWord, word,
+                                FREQUENCY_FOR_CONTACTS_BIGRAM,
                                 BinaryDictionary.NOT_A_VALID_TIMESTAMP);
                     }
-                    prevWordsInfo = new PrevWordsInfo(word);
+                    prevWord = word;
                 }
             }
         }

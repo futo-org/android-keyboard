@@ -370,23 +370,22 @@ public class DictionaryFacilitatorForSuggest {
     }
 
     public void addToUserHistory(final String suggestion, final boolean wasAutoCapitalized,
-            final PrevWordsInfo prevWordsInfo, final int timeStampInSeconds,
+            final String previousWord, final int timeStampInSeconds,
             final boolean blockPotentiallyOffensive) {
         final Dictionaries dictionaries = mDictionaries;
         final String[] words = suggestion.split(Constants.WORD_SEPARATOR);
         for (int i = 0; i < words.length; i++) {
             final String currentWord = words[i];
-            final PrevWordsInfo prevWordsInfoForCurrentWord =
-                    (i == 0) ? prevWordsInfo : new PrevWordsInfo(words[i - 1]);
+            final String prevWord = (i == 0) ? previousWord : words[i - 1];
             final boolean wasCurrentWordAutoCapitalized = (i == 0) ? wasAutoCapitalized : false;
-            addWordToUserHistory(dictionaries, prevWordsInfoForCurrentWord, currentWord,
+            addWordToUserHistory(dictionaries, prevWord, currentWord,
                     wasCurrentWordAutoCapitalized, timeStampInSeconds, blockPotentiallyOffensive);
         }
     }
 
-    private void addWordToUserHistory(final Dictionaries dictionaries,
-            final PrevWordsInfo prevWordsInfo, final String word, final boolean wasAutoCapitalized,
-            final int timeStampInSeconds, final boolean blockPotentiallyOffensive) {
+    private void addWordToUserHistory(final Dictionaries dictionaries, final String prevWord,
+            final String word, final boolean wasAutoCapitalized, final int timeStampInSeconds,
+            final boolean blockPotentiallyOffensive) {
         final ExpandableBinaryDictionary userHistoryDictionary =
                 dictionaries.getSubDict(Dictionary.TYPE_USER_HISTORY);
         if (userHistoryDictionary == null) {
@@ -431,16 +430,15 @@ public class DictionaryFacilitatorForSuggest {
         // We demote unrecognized words (frequency < 0, below) by specifying them as "invalid".
         // We don't add words with 0-frequency (assuming they would be profanity etc.).
         final boolean isValid = maxFreq > 0;
-        UserHistoryDictionary.addToDictionary(userHistoryDictionary, prevWordsInfo, secondWord,
+        UserHistoryDictionary.addToDictionary(userHistoryDictionary, prevWord, secondWord,
                 isValid, timeStampInSeconds);
     }
 
-    public void cancelAddingUserHistory(final PrevWordsInfo prevWordsInfo,
-            final String committedWord) {
+    public void cancelAddingUserHistory(final String previousWord, final String committedWord) {
         final ExpandableBinaryDictionary userHistoryDictionary =
                 mDictionaries.getSubDict(Dictionary.TYPE_USER_HISTORY);
         if (userHistoryDictionary != null) {
-            userHistoryDictionary.removeNgramDynamically(prevWordsInfo, committedWord);
+            userHistoryDictionary.removeBigramDynamically(previousWord, committedWord);
         }
     }
 
