@@ -269,9 +269,9 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     }
 
     /**
-     * Adds unigram information of a word to the dictionary. May overwrite an existing entry.
+     * Dynamically adds a word unigram to the dictionary. May overwrite an existing entry.
      */
-    public void addUnigramEntry(final String word, final int frequency,
+    public void addWordDynamically(final String word, final int frequency,
             final String shortcutTarget, final int shortcutFreq, final boolean isNotAWord,
             final boolean isBlacklisted, final int timestamp) {
         reloadDictionaryIfRequired();
@@ -282,23 +282,23 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                     return;
                 }
                 runGCIfRequiredLocked(true /* mindsBlockByGC */);
-                addUnigramLocked(word, frequency, shortcutTarget, shortcutFreq,
+                addWordDynamicallyLocked(word, frequency, shortcutTarget, shortcutFreq,
                         isNotAWord, isBlacklisted, timestamp);
             }
         });
     }
 
-    protected void addUnigramLocked(final String word, final int frequency,
+    protected void addWordDynamicallyLocked(final String word, final int frequency,
             final String shortcutTarget, final int shortcutFreq, final boolean isNotAWord,
             final boolean isBlacklisted, final int timestamp) {
-        mBinaryDictionary.addUnigramEntry(word, frequency, shortcutTarget, shortcutFreq,
+        mBinaryDictionary.addUnigramWord(word, frequency, shortcutTarget, shortcutFreq,
                 isNotAWord, isBlacklisted, timestamp);
     }
 
     /**
-     * Adds n-gram information of a word to the dictionary. May overwrite an existing entry.
+     * Dynamically adds a word bigram in the dictionary. May overwrite an existing entry.
      */
-    public void addNgramEntry(final PrevWordsInfo prevWordsInfo, final String word,
+    public void addBigramDynamically(final String word0, final String word1,
             final int frequency, final int timestamp) {
         reloadDictionaryIfRequired();
         asyncExecuteTaskWithWriteLock(new Runnable() {
@@ -308,20 +308,20 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                     return;
                 }
                 runGCIfRequiredLocked(true /* mindsBlockByGC */);
-                addNgramEntryLocked(prevWordsInfo, word, frequency, timestamp);
+                addBigramDynamicallyLocked(word0, word1, frequency, timestamp);
             }
         });
     }
 
-    protected void addNgramEntryLocked(final PrevWordsInfo prevWordsInfo, final String word,
+    protected void addBigramDynamicallyLocked(final String word0, final String word1,
             final int frequency, final int timestamp) {
-        mBinaryDictionary.addNgramEntry(prevWordsInfo, word, frequency, timestamp);
+        mBinaryDictionary.addBigramWords(word0, word1, frequency, timestamp);
     }
 
     /**
-     * Dynamically remove the n-gram entry in the dictionary.
+     * Dynamically remove a word bigram in the dictionary.
      */
-    public void removeNgramDynamically(final PrevWordsInfo prevWordsInfo, final String word1) {
+    public void removeBigramDynamically(final String word0, final String word1) {
         reloadDictionaryIfRequired();
         asyncExecuteTaskWithWriteLock(new Runnable() {
             @Override
@@ -330,7 +330,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                     return;
                 }
                 runGCIfRequiredLocked(true /* mindsBlockByGC */);
-                mBinaryDictionary.removeNgramEntry(prevWordsInfo, word1);
+                mBinaryDictionary.removeBigramWords(word0, word1);
             }
         });
     }
@@ -428,9 +428,9 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         return mBinaryDictionary.isValidWord(word);
     }
 
-    protected boolean isValidNgramLocked(final PrevWordsInfo prevWordsInfo, final String word) {
+    protected boolean isValidBigramLocked(final String word1, final String word2) {
         if (mBinaryDictionary == null) return false;
-        return mBinaryDictionary.isValidNgram(prevWordsInfo, word);
+        return mBinaryDictionary.isValidBigram(word1, word2);
     }
 
     /**
