@@ -46,6 +46,8 @@ public final class InputAttributes {
         final int inputType = null != editorInfo ? editorInfo.inputType : 0;
         final int inputClass = inputType & InputType.TYPE_MASK_CLASS;
         mInputType = inputType;
+        mIsPasswordField = InputTypeUtils.isPasswordInputType(inputType)
+                || InputTypeUtils.isVisiblePasswordInputType(inputType);
         if (inputClass != InputType.TYPE_CLASS_TEXT) {
             // If we are not looking at a TYPE_CLASS_TEXT field, the following strange
             // cases may arise, so we do a couple sanity checks for them. If it's a
@@ -61,7 +63,6 @@ public final class InputAttributes {
                 Log.w(TAG, String.format("Unexpected input class: inputType=0x%08x"
                         + " imeOptions=0x%08x", inputType, editorInfo.imeOptions));
             }
-            mIsPasswordField = false;
             mIsSettingsSuggestionStripOn = false;
             mInputTypeNoAutoCorrect = false;
             mApplicationSpecifiedCompletionOn = false;
@@ -79,8 +80,6 @@ public final class InputAttributes {
         final boolean flagAutoComplete =
                 0 != (inputType & InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE);
 
-        mIsPasswordField = InputTypeUtils.isPasswordInputType(inputType)
-                || InputTypeUtils.isVisiblePasswordInputType(inputType);
         // TODO: Have a helper method in InputTypeUtils
         // Make sure that passwords are not displayed in {@link SuggestionStripView}.
         final boolean noSuggestionStrip = mIsPasswordField
