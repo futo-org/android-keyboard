@@ -52,19 +52,9 @@ public final class MainKeyboardAccessibilityDelegate
     private int mLastKeyboardMode = KEYBOARD_IS_HIDDEN;
     private static final int KEYBOARD_IS_HIDDEN = -1;
 
-    private Key mLastHoverKey = null;
-
-    /**
-     * Inset in pixels to look for keys when the user's finger exits the keyboard area.
-     */
-    private final int mEdgeSlop;
-
     public MainKeyboardAccessibilityDelegate(final MainKeyboardView mainKeyboardView,
             final KeyDetector keyDetector) {
         super(mainKeyboardView, keyDetector);
-        final Context context = mainKeyboardView.getContext();
-        mEdgeSlop = context.getResources().getDimensionPixelSize(
-                R.dimen.config_accessibility_edge_slop);
     }
 
     /**
@@ -190,139 +180,5 @@ public final class MainKeyboardAccessibilityDelegate
         final String text = context.getString(R.string.announce_keyboard_hidden);
 
         sendWindowStateChanged(text);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean dispatchHoverEvent(final MotionEvent event) {
-        final int x = (int) event.getX();
-        final int y = (int) event.getY();
-        final Key previousKey = mLastHoverKey;
-        final Key key;
-
-        if (pointInView(x, y)) {
-            key = mKeyDetector.detectHitKey(x, y);
-        } else {
-            key = null;
-        }
-        mLastHoverKey = key;
-
-        switch (event.getAction()) {
-        case MotionEvent.ACTION_HOVER_EXIT:
-            // Make sure we're not getting an EXIT event because the user slid
-            // off the keyboard area, then force a key press.
-            if (key != null) {
-                final long downTime = simulateKeyPress(key);
-                simulateKeyRelease(key, downTime);
-            }
-            //$FALL-THROUGH$
-        case MotionEvent.ACTION_HOVER_ENTER:
-            return onHoverKey(key, event);
-        case MotionEvent.ACTION_HOVER_MOVE:
-            if (key != previousKey) {
-                return onTransitionKey(key, previousKey, event);
-            }
-            return onHoverKey(key, event);
-        }
-        return false;
-    }
-
-    /**
-     * Utility method to determine whether the given point, in local coordinates, is inside the
-     * view, where the area of the view is contracted by the edge slop factor.
-     *
-     * @param localX The local x-coordinate.
-     * @param localY The local y-coordinate.
-     */
-    private boolean pointInView(final int localX, final int localY) {
-        return (localX >= mEdgeSlop) && (localY >= mEdgeSlop)
-                && (localX < (mKeyboardView.getWidth() - mEdgeSlop))
-                && (localY < (mKeyboardView.getHeight() - mEdgeSlop));
-    }
-
-    /**
-     * Simulates a key press by injecting touch an event into the keyboard view.
-     * This avoids the complexity of trackers and listeners within the keyboard.
-     *
-     * @param key The key to press.
-     */
-    private long simulateKeyPress(final Key key) {
-        final int x = key.getHitBox().centerX();
-        final int y = key.getHitBox().centerY();
-        final long downTime = SystemClock.uptimeMillis();
-        final MotionEvent downEvent = MotionEvent.obtain(
-                downTime, downTime, MotionEvent.ACTION_DOWN, x, y, 0);
-        mKeyboardView.onTouchEvent(downEvent);
-        downEvent.recycle();
-        return downTime;
-    }
-
-    /**
-     * Simulates a key release by injecting touch an event into the keyboard view.
-     * This avoids the complexity of trackers and listeners within the keyboard.
-     *
-     * @param key The key to release.
-     */
-    private void simulateKeyRelease(final Key key, final long downTime) {
-        final int x = key.getHitBox().centerX();
-        final int y = key.getHitBox().centerY();
-        final MotionEvent upEvent = MotionEvent.obtain(
-                downTime, SystemClock.uptimeMillis(), MotionEvent.ACTION_UP, x, y, 0);
-        mKeyboardView.onTouchEvent(upEvent);
-        upEvent.recycle();
-    }
-
-    /**
-     * Simulates a transition between two {@link Key}s by sending a HOVER_EXIT on the previous key,
-     * a HOVER_ENTER on the current key, and a HOVER_MOVE on the current key.
-     *
-     * @param currentKey The currently hovered key.
-     * @param previousKey The previously hovered key.
-     * @param event The event that triggered the transition.
-     * @return {@code true} if the event was handled.
-     */
-    private boolean onTransitionKey(final Key currentKey, final Key previousKey,
-            final MotionEvent event) {
-        final int savedAction = event.getAction();
-        event.setAction(MotionEvent.ACTION_HOVER_EXIT);
-        onHoverKey(previousKey, event);
-        event.setAction(MotionEvent.ACTION_HOVER_ENTER);
-        onHoverKey(currentKey, event);
-        event.setAction(MotionEvent.ACTION_HOVER_MOVE);
-        final boolean handled = onHoverKey(currentKey, event);
-        event.setAction(savedAction);
-        return handled;
-    }
-
-    /**
-     * Handles a hover event on a key. If {@link Key} extended View, this would be analogous to
-     * calling View.onHoverEvent(MotionEvent).
-     *
-     * @param key The currently hovered key.
-     * @param event The hover event.
-     * @return {@code true} if the event was handled.
-     */
-    private boolean onHoverKey(final Key key, final MotionEvent event) {
-        // Null keys can't receive events.
-        if (key == null) {
-            return false;
-        }
-        final KeyboardAccessibilityNodeProvider provider = getAccessibilityNodeProvider();
-
-        switch (event.getAction()) {
-        case MotionEvent.ACTION_HOVER_ENTER:
-            provider.sendAccessibilityEventForKey(
-                    key, AccessibilityEventCompat.TYPE_VIEW_HOVER_ENTER);
-            provider.performActionForKey(
-                    key, AccessibilityNodeInfoCompat.ACTION_ACCESSIBILITY_FOCUS, null);
-            break;
-        case MotionEvent.ACTION_HOVER_EXIT:
-            provider.sendAccessibilityEventForKey(
-                    key, AccessibilityEventCompat.TYPE_VIEW_HOVER_EXIT);
-            break;
-        }
-        return true;
     }
 }
