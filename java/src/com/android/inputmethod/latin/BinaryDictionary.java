@@ -359,14 +359,16 @@ public final class BinaryDictionary extends Dictionary {
     }
 
     @UsedForTesting
-    public boolean isValidBigram(final String word0, final String word1) {
-        return getBigramProbability(word0, word1) != NOT_A_PROBABILITY;
+    public boolean isValidNgram(final PrevWordsInfo prevWordsInfo, final String word) {
+        return getNgramProbability(prevWordsInfo, word) != NOT_A_PROBABILITY;
     }
 
-    public int getBigramProbability(final String word0, final String word1) {
-        if (TextUtils.isEmpty(word0) || TextUtils.isEmpty(word1)) return NOT_A_PROBABILITY;
-        final int[] codePoints0 = StringUtils.toCodePointArray(word0);
-        final int[] codePoints1 = StringUtils.toCodePointArray(word1);
+    public int getNgramProbability(final PrevWordsInfo prevWordsInfo, final String word) {
+        if (TextUtils.isEmpty(prevWordsInfo.mPrevWord) || TextUtils.isEmpty(word)) {
+            return NOT_A_PROBABILITY;
+        }
+        final int[] codePoints0 = StringUtils.toCodePointArray(prevWordsInfo.mPrevWord);
+        final int[] codePoints1 = StringUtils.toCodePointArray(word);
         return getBigramProbabilityNative(mNativeDict, codePoints0, codePoints1);
     }
 
@@ -417,7 +419,7 @@ public final class BinaryDictionary extends Dictionary {
     }
 
     // Add a unigram entry to binary dictionary with unigram attributes in native code.
-    public void addUnigramWord(final String word, final int probability,
+    public void addUnigramEntry(final String word, final int probability,
             final String shortcutTarget, final int shortcutProbability, final boolean isNotAWord,
             final boolean isBlacklisted, final int timestamp) {
         if (TextUtils.isEmpty(word)) {
@@ -431,25 +433,26 @@ public final class BinaryDictionary extends Dictionary {
         mHasUpdated = true;
     }
 
-    // Add a bigram entry to binary dictionary with timestamp in native code.
-    public void addBigramWords(final String word0, final String word1, final int probability,
+    // Add an n-gram entry to the binary dictionary with timestamp in native code.
+    public void addNgramEntry(final PrevWordsInfo prevWordsInfo, final String word,
+            final int probability,
             final int timestamp) {
-        if (TextUtils.isEmpty(word0) || TextUtils.isEmpty(word1)) {
+        if (TextUtils.isEmpty(prevWordsInfo.mPrevWord) || TextUtils.isEmpty(word)) {
             return;
         }
-        final int[] codePoints0 = StringUtils.toCodePointArray(word0);
-        final int[] codePoints1 = StringUtils.toCodePointArray(word1);
+        final int[] codePoints0 = StringUtils.toCodePointArray(prevWordsInfo.mPrevWord);
+        final int[] codePoints1 = StringUtils.toCodePointArray(word);
         addBigramWordsNative(mNativeDict, codePoints0, codePoints1, probability, timestamp);
         mHasUpdated = true;
     }
 
-    // Remove a bigram entry form binary dictionary in native code.
-    public void removeBigramWords(final String word0, final String word1) {
-        if (TextUtils.isEmpty(word0) || TextUtils.isEmpty(word1)) {
+    // Remove an n-gram entry from the binary dictionary in native code.
+    public void removeNgramEntry(final PrevWordsInfo prevWordsInfo, final String word) {
+        if (TextUtils.isEmpty(prevWordsInfo.mPrevWord) || TextUtils.isEmpty(word)) {
             return;
         }
-        final int[] codePoints0 = StringUtils.toCodePointArray(word0);
-        final int[] codePoints1 = StringUtils.toCodePointArray(word1);
+        final int[] codePoints0 = StringUtils.toCodePointArray(prevWordsInfo.mPrevWord);
+        final int[] codePoints1 = StringUtils.toCodePointArray(word);
         removeBigramWordsNative(mNativeDict, codePoints0, codePoints1);
         mHasUpdated = true;
     }
