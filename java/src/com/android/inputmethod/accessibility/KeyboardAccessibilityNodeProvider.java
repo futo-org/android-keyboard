@@ -47,8 +47,8 @@ import java.util.List;
  * virtual views, thus conveying their logical structure.
  * </p>
  */
-public final class MainKeyboardAccessibilityNodeProvider extends AccessibilityNodeProviderCompat {
-    private static final String TAG = MainKeyboardAccessibilityNodeProvider.class.getSimpleName();
+public final class KeyboardAccessibilityNodeProvider extends AccessibilityNodeProviderCompat {
+    private static final String TAG = KeyboardAccessibilityNodeProvider.class.getSimpleName();
     private static final int UNDEFINED = Integer.MIN_VALUE;
 
     private final KeyCodeDescriptionMapper mKeyCodeDescriptionMapper;
@@ -69,7 +69,8 @@ public final class MainKeyboardAccessibilityNodeProvider extends AccessibilityNo
     /** The current keyboard. */
     private Keyboard mKeyboard;
 
-    public MainKeyboardAccessibilityNodeProvider(final KeyboardView keyboardView) {
+    public KeyboardAccessibilityNodeProvider(final KeyboardView keyboardView) {
+        super();
         mKeyCodeDescriptionMapper = KeyCodeDescriptionMapper.getInstance();
         mAccessibilityUtils = AccessibilityUtils.getInstance();
         mKeyboardView = keyboardView;
