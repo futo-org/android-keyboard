@@ -22,6 +22,8 @@ import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 
+import com.android.inputmethod.accessibility.AccessibilityUtils;
+import com.android.inputmethod.accessibility.KeyboardAccessibilityDelegate;
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.KeyDetector;
 import com.android.inputmethod.keyboard.Keyboard;
@@ -53,6 +55,7 @@ final class EmojiPageKeyboardView extends KeyboardView implements
     private OnKeyEventListener mListener = EMPTY_LISTENER;
     private final KeyDetector mKeyDetector = new KeyDetector();
     private final GestureDetector mGestureDetector;
+    private final KeyboardAccessibilityDelegate<EmojiPageKeyboardView> mAccessibilityDelegate;
 
     public EmojiPageKeyboardView(final Context context, final AttributeSet attrs) {
         this(context, attrs, R.attr.keyboardViewStyle);
@@ -64,6 +67,7 @@ final class EmojiPageKeyboardView extends KeyboardView implements
         mGestureDetector = new GestureDetector(context, this);
         mGestureDetector.setIsLongpressEnabled(false /* isLongpressEnabled */);
         mHandler = new Handler();
+        mAccessibilityDelegate = new KeyboardAccessibilityDelegate<>(this, mKeyDetector);
     }
 
     public void setOnKeyEventListener(final OnKeyEventListener listener) {
@@ -77,6 +81,15 @@ final class EmojiPageKeyboardView extends KeyboardView implements
     public void setKeyboard(final Keyboard keyboard) {
         super.setKeyboard(keyboard);
         mKeyDetector.setKeyboard(keyboard, 0 /* correctionX */, 0 /* correctionY */);
+    }
+
+    @Override
+    public boolean dispatchHoverEvent(final MotionEvent event) {
+        if (!AccessibilityUtils.getInstance().isTouchExplorationEnabled()) {
+            // Reflection doesn't support calling superclass methods.
+            return false;
+        }
+        return mAccessibilityDelegate.dispatchHoverEvent(event);
     }
 
     /**
