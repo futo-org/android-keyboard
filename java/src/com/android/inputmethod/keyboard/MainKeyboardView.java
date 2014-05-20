@@ -38,7 +38,7 @@ import android.view.inputmethod.InputMethodSubtype;
 import android.widget.TextView;
 
 import com.android.inputmethod.accessibility.AccessibilityUtils;
-import com.android.inputmethod.accessibility.KeyboardAccessibilityDelegate;
+import com.android.inputmethod.accessibility.MainKeyboardAccessibilityDelegate;
 import com.android.inputmethod.annotations.ExternallyReferenced;
 import com.android.inputmethod.keyboard.internal.DrawingHandler;
 import com.android.inputmethod.keyboard.internal.DrawingPreviewPlacerView;
@@ -170,7 +170,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     private final DrawingHandler mDrawingHandler =
             new DrawingHandler(this);
 
-    private final KeyboardAccessibilityDelegate mAccessibilityDelegate;
+    private final MainKeyboardAccessibilityDelegate mAccessibilityDelegate;
 
     public MainKeyboardView(final Context context, final AttributeSet attrs) {
         this(context, attrs, R.attr.mainKeyboardViewStyle);
@@ -269,7 +269,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         mLanguageOnSpacebarHorizontalMargin = (int)getResources().getDimension(
                 R.dimen.config_language_on_spacebar_horizontal_margin);
 
-        mAccessibilityDelegate = new KeyboardAccessibilityDelegate(this, mKeyDetector);
+        mAccessibilityDelegate = new MainKeyboardAccessibilityDelegate(this, mKeyDetector);
     }
 
     @Override
