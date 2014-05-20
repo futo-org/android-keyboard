@@ -17,6 +17,7 @@
 package com.android.inputmethod.accessibility;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.SparseIntArray;
@@ -27,20 +28,17 @@ import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardId;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.R;
-import com.android.inputmethod.latin.utils.CollectionUtils;
 
-import java.util.HashMap;
+import java.util.Locale;
 
 public final class KeyCodeDescriptionMapper {
     private static final String TAG = KeyCodeDescriptionMapper.class.getSimpleName();
+    private static final String SPOKEN_EMOJI_RESOURCE_NAME_FORMAT = "spoken_emoji_%04X";
 
     // The resource ID of the string spoken for obscured keys
     private static final int OBSCURED_KEY_RES_ID = R.string.spoken_description_dot;
 
     private static KeyCodeDescriptionMapper sInstance = new KeyCodeDescriptionMapper();
-
-    // Map of key labels to spoken description resource IDs
-    private final HashMap<CharSequence, Integer> mKeyLabelMap = CollectionUtils.newHashMap();
 
     // Sparse array of spoken description resource IDs indexed by key codes
     private final SparseIntArray mKeyCodeMap;
@@ -114,17 +112,12 @@ public final class KeyCodeDescriptionMapper {
             return getDescriptionForActionKey(context, keyboard, key);
         }
 
-        if (!TextUtils.isEmpty(key.getLabel())) {
-            final String label = key.getLabel().trim();
-
-            // First, attempt to map the label to a pre-defined description.
-            if (mKeyLabelMap.containsKey(label)) {
-                return context.getString(mKeyLabelMap.get(label));
-            }
+        if (code == Constants.CODE_OUTPUT_TEXT) {
+            return key.getOutputText();
         }
 
         // Just attempt to speak the description.
-        if (key.getCode() != Constants.CODE_UNSPECIFIED) {
+        if (code != Constants.CODE_UNSPECIFIED) {
             return getDescriptionForKeyCode(context, keyboard, key, shouldObscure);
         }
         return null;
@@ -139,7 +132,7 @@ public final class KeyCodeDescriptionMapper {
      * @param keyboard The keyboard on which the key resides.
      * @return a character sequence describing the action performed by pressing the key
      */
-    private String getDescriptionForSwitchAlphaSymbol(final Context context,
+    private static String getDescriptionForSwitchAlphaSymbol(final Context context,
             final Keyboard keyboard) {
         final KeyboardId keyboardId = keyboard.mId;
         final int elementId = keyboardId.mElementId;
@@ -177,7 +170,8 @@ public final class KeyCodeDescriptionMapper {
      * @param keyboard The keyboard on which the key resides.
      * @return A context-sensitive description of the "Shift" key.
      */
-    private String getDescriptionForShiftKey(final Context context, final Keyboard keyboard) {
+    private static String getDescriptionForShiftKey(final Context context,
+            final Keyboard keyboard) {
         final KeyboardId keyboardId = keyboard.mId;
         final int elementId = keyboardId.mElementId;
         final int resId;
@@ -211,7 +205,7 @@ public final class KeyCodeDescriptionMapper {
      * @param key The key to describe.
      * @return Returns a context-sensitive description of the "Enter" action key.
      */
-    private String getDescriptionForActionKey(final Context context, final Keyboard keyboard,
+    private static String getDescriptionForActionKey(final Context context, final Keyboard keyboard,
             final Key key) {
         final KeyboardId keyboardId = keyboard.mId;
         final int actionId = keyboardId.imeAction();
@@ -280,6 +274,13 @@ public final class KeyCodeDescriptionMapper {
         if (mKeyCodeMap.indexOfKey(code) >= 0) {
             return context.getString(mKeyCodeMap.get(code));
         }
+        final int spokenEmojiId = getSpokenDescriptionId(
+                context, code, SPOKEN_EMOJI_RESOURCE_NAME_FORMAT);
+        if (spokenEmojiId != 0) {
+            final String spokenEmoji = context.getString(spokenEmojiId);
+            mKeyCodeMap.append(code, spokenEmojiId);
+            return spokenEmoji;
+        }
         if (isDefinedNonCtrl) {
             return Character.toString((char) code);
         }
@@ -287,5 +288,14 @@ public final class KeyCodeDescriptionMapper {
             return key.getLabel();
         }
         return context.getString(R.string.spoken_description_unknown, code);
+    }
+
+    private static int getSpokenDescriptionId(final Context context, final int code,
+            final String resourceNameFormat) {
+        final String resourceName = String.format(Locale.ROOT, resourceNameFormat, code);
+        final Resources resources = context.getResources();
+        final String packageName = resources.getResourcePackageName(
+                R.string.spoken_description_unknown);
+        return resources.getIdentifier(resourceName, "string", packageName);
     }
 }
