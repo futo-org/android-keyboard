@@ -21,6 +21,7 @@ import android.test.suitebuilder.annotation.LargeTest;
 import android.util.Log;
 
 import com.android.inputmethod.latin.ExpandableBinaryDictionary;
+import com.android.inputmethod.latin.PrevWordsInfo;
 import com.android.inputmethod.latin.utils.BinaryDictionaryUtils;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.FileUtils;
@@ -109,11 +110,11 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
     }
 
     private static void addToDict(final UserHistoryDictionary dict, final List<String> words) {
-        String prevWord = null;
+        PrevWordsInfo prevWordsInfo = new PrevWordsInfo(null);
         for (String word : words) {
-            UserHistoryDictionary.addToDictionary(dict, prevWord, word, true,
+            UserHistoryDictionary.addToDictionary(dict, prevWordsInfo, word, true,
                     (int)TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()));
-            prevWord = word;
+            prevWordsInfo = new PrevWordsInfo(word);
         }
     }
 
@@ -260,10 +261,10 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
         final UserHistoryDictionary dict =
                 PersonalizationHelper.getUserHistoryDictionary(getContext(), dummyLocale);
         dict.waitAllTasksForTests();
-        String prevWord = null;
+        PrevWordsInfo prevWordsInfo = new PrevWordsInfo(null);
         for (final String word : words) {
-            UserHistoryDictionary.addToDictionary(dict, prevWord, word, true, mCurrentTime);
-            prevWord = word;
+            UserHistoryDictionary.addToDictionary(dict, prevWordsInfo, word, true, mCurrentTime);
+            prevWordsInfo = new PrevWordsInfo(word);
             dict.waitAllTasksForTests();
             assertTrue(dict.isInUnderlyingBinaryDictionaryForTests(word));
         }

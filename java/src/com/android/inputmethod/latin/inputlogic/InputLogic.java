@@ -37,6 +37,7 @@ import com.android.inputmethod.latin.InputPointers;
 import com.android.inputmethod.latin.LastComposedWord;
 import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.LatinImeLogger;
+import com.android.inputmethod.latin.PrevWordsInfo;
 import com.android.inputmethod.latin.RichInputConnection;
 import com.android.inputmethod.latin.Suggest;
 import com.android.inputmethod.latin.Suggest.OnGetSuggestedWordsCallback;
@@ -1233,7 +1234,7 @@ public final class InputLogic {
     }
 
     private void performAdditionToUserHistoryDictionary(final SettingsValues settingsValues,
-            final String suggestion, final String prevWord) {
+            final String suggestion, final PrevWordsInfo prevWordsInfo) {
         // If correction is not enabled, we don't add words to the user history dictionary.
         // That's to avoid unintended additions in some sensitive fields, or fields that
         // expect to receive non-words.
@@ -1244,8 +1245,8 @@ public final class InputLogic {
                 mWordComposer.wasAutoCapitalized() && !mWordComposer.isMostlyCaps();
         final int timeStampInSeconds = (int)TimeUnit.MILLISECONDS.toSeconds(
                 System.currentTimeMillis());
-        mSuggest.mDictionaryFacilitator.addToUserHistory(suggestion, wasAutoCapitalized, prevWord,
-                timeStampInSeconds, settingsValues.mBlockPotentiallyOffensive);
+        mSuggest.mDictionaryFacilitator.addToUserHistory(suggestion, wasAutoCapitalized,
+                prevWordsInfo, timeStampInSeconds, settingsValues.mBlockPotentiallyOffensive);
     }
 
     public void performUpdateSuggestionStripSync(final SettingsValues settingsValues) {
@@ -1370,13 +1371,16 @@ public final class InputLogic {
             }
         }
         final int[] codePoints = StringUtils.toCodePointArray(typedWord);
+        // We want the previous word for suggestion. If we have chars in the word
+        // before the cursor, then we want the word before that, hence 2; otherwise,
+        // we want the word immediately before the cursor, hence 1.
+        final CharSequence prevWord = getNthPreviousWordForSuggestion(
+                settingsValues.mSpacingAndPunctuations,
+                0 == numberOfCharsInWordBeforeCursor ? 1 : 2);
+        final PrevWordsInfo prevWordsInfo =
+                new PrevWordsInfo(prevWord != null ? prevWord.toString() : null);
         mWordComposer.setComposingWord(codePoints,
-                mLatinIME.getCoordinatesForCurrentKeyboard(codePoints),
-                getNthPreviousWordForSuggestion(settingsValues.mSpacingAndPunctuations,
-                        // We want the previous word for suggestion. If we have chars in the word
-                        // before the cursor, then we want the word before that, hence 2; otherwise,
-                        // we want the word immediately before the cursor, hence 1.
-                        0 == numberOfCharsInWordBeforeCursor ? 1 : 2));
+                mLatinIME.getCoordinatesForCurrentKeyboard(codePoints), prevWordsInfo);
         mWordComposer.setCursorPositionWithinWord(
                 typedWord.codePointCount(0, numberOfCharsInWordBeforeCursor));
         mConnection.setComposingRegion(expectedCursorPosition - numberOfCharsInWordBeforeCursor,
@@ -1431,7 +1435,7 @@ public final class InputLogic {
      * @param inputTransaction The transaction in progress.
      */
     private void revertCommit(final InputTransaction inputTransaction) {
-        final String previousWord = mLastComposedWord.mPrevWord;
+        final PrevWordsInfo prevWordsInfo = mLastComposedWord.mPrevWordsInfo;
         final CharSequence originallyTypedWord = mLastComposedWord.mTypedWord;
         final CharSequence committedWord = mLastComposedWord.mCommittedWord;
         final String committedWordString = committedWord.toString();
@@ -1453,9 +1457,9 @@ public final class InputLogic {
             }
         }
         mConnection.deleteSurroundingText(deleteLength, 0);
-        if (!TextUtils.isEmpty(previousWord) && !TextUtils.isEmpty(committedWord)) {
+        if (!TextUtils.isEmpty(prevWordsInfo.mPrevWord) && !TextUtils.isEmpty(committedWord)) {
             mSuggest.mDictionaryFacilitator.cancelAddingUserHistory(
-                    previousWord, committedWordString);
+                    prevWordsInfo, committedWordString);
         }
         final String stringToCommit = originallyTypedWord + mLastComposedWord.mSeparatorString;
         final SpannableString textToCommit = new SpannableString(stringToCommit);
@@ -1504,7 +1508,7 @@ public final class InputLogic {
             // with the typed word, so we need to resume suggestions right away.
             final int[] codePoints = StringUtils.toCodePointArray(stringToCommit);
             mWordComposer.setComposingWord(codePoints,
-                    mLatinIME.getCoordinatesForCurrentKeyboard(codePoints), previousWord);
+                    mLatinIME.getCoordinatesForCurrentKeyboard(codePoints), prevWordsInfo);
             mConnection.setComposingText(textToCommit, 1);
         }
         if (inputTransaction.mSettingsValues.mIsInternal) {
@@ -1968,17 +1972,17 @@ public final class InputLogic {
                         suggestedWords);
         // Use the 2nd previous word as the previous word because the 1st previous word is the word
         // to be committed.
-        final String prevWord = mConnection.getNthPreviousWord(
-                settingsValues.mSpacingAndPunctuations, 2);
+        final PrevWordsInfo prevWordsInfo = new PrevWordsInfo(mConnection.getNthPreviousWord(
+                settingsValues.mSpacingAndPunctuations, 2));
         mConnection.commitText(chosenWordWithSuggestions, 1);
         // Add the word to the user history dictionary
-        performAdditionToUserHistoryDictionary(settingsValues, chosenWord, prevWord);
+        performAdditionToUserHistoryDictionary(settingsValues, chosenWord, prevWordsInfo);
         // TODO: figure out here if this is an auto-correct or if the best word is actually
         // what user typed. Note: currently this is done much later in
         // LastComposedWord#didCommitTypedWord by string equality of the remembered
         // strings.
         mLastComposedWord = mWordComposer.commitWord(commitType,
-                chosenWordWithSuggestions, separatorString, prevWord);
+                chosenWordWithSuggestions, separatorString, prevWordsInfo);
         final boolean shouldDiscardPreviousWordForSuggestion;
         if (0 == StringUtils.codePointCount(separatorString)) {
             // Separator is 0-length, we can keep the previous word for suggestion. Either this

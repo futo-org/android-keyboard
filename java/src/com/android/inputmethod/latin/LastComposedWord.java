@@ -48,7 +48,7 @@ public final class LastComposedWord {
     public final String mTypedWord;
     public final CharSequence mCommittedWord;
     public final String mSeparatorString;
-    public final String mPrevWord;
+    public final PrevWordsInfo mPrevWordsInfo;
     public final int mCapitalizedMode;
     public final InputPointers mInputPointers =
             new InputPointers(Constants.DICTIONARY_MAX_WORD_LENGTH);
@@ -64,7 +64,7 @@ public final class LastComposedWord {
     public LastComposedWord(final ArrayList<Event> events,
             final InputPointers inputPointers, final String typedWord,
             final CharSequence committedWord, final String separatorString,
-            final String prevWord, final int capitalizedMode) {
+            final PrevWordsInfo prevWordsInfo, final int capitalizedMode) {
         if (inputPointers != null) {
             mInputPointers.copy(inputPointers);
         }
@@ -73,7 +73,7 @@ public final class LastComposedWord {
         mCommittedWord = committedWord;
         mSeparatorString = separatorString;
         mActive = true;
-        mPrevWord = prevWord;
+        mPrevWordsInfo = prevWordsInfo;
         mCapitalizedMode = capitalizedMode;
     }
 

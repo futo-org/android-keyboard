@@ -40,8 +40,8 @@ public class WordComposerTests extends AndroidTestCase {
         final int[] COORDINATES_WITHIN_BMP =
                 CoordinateUtils.newCoordinateArray(CODEPOINTS_WITHIN_BMP.length,
                         Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
-        final String PREVWORD = "prevword";
-        wc.setComposingWord(CODEPOINTS_WITHIN_BMP, COORDINATES_WITHIN_BMP, PREVWORD);
+        final PrevWordsInfo PREV_WORDS_INFO = new PrevWordsInfo("prevword");
+        wc.setComposingWord(CODEPOINTS_WITHIN_BMP, COORDINATES_WITHIN_BMP, PREV_WORDS_INFO);
         assertEquals(wc.size(), STR_WITHIN_BMP.codePointCount(0, STR_WITHIN_BMP.length()));
         assertFalse(wc.isCursorFrontOrMiddleOfComposingWord());
         wc.setCursorPositionWithinWord(2);
@@ -57,7 +57,7 @@ public class WordComposerTests extends AndroidTestCase {
         assertTrue(wc.moveCursorByAndReturnIfInsideComposingWord(1));
         assertFalse(wc.isCursorFrontOrMiddleOfComposingWord());
         // Check the previous word is still there
-        assertEquals(PREVWORD, wc.getPrevWordsInfoForSuggestion().mPrevWord);
+        assertEquals(PREV_WORDS_INFO, wc.getPrevWordsInfoForSuggestion());
         // Move the cursor past the end of the word
         assertFalse(wc.moveCursorByAndReturnIfInsideComposingWord(1));
         assertFalse(wc.moveCursorByAndReturnIfInsideComposingWord(15));
@@ -74,7 +74,7 @@ public class WordComposerTests extends AndroidTestCase {
                 CoordinateUtils.newCoordinateArray(CODEPOINTS_WITH_SUPPLEMENTARY_CHAR.length,
                         Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
         wc.setComposingWord(CODEPOINTS_WITH_SUPPLEMENTARY_CHAR, COORDINATES_WITH_SUPPLEMENTARY_CHAR,
-                null /* previousWord */);
+                new PrevWordsInfo(null));
         assertEquals(wc.size(), CODEPOINTS_WITH_SUPPLEMENTARY_CHAR.length);
         assertFalse(wc.isCursorFrontOrMiddleOfComposingWord());
         wc.setCursorPositionWithinWord(3);
@@ -85,46 +85,53 @@ public class WordComposerTests extends AndroidTestCase {
         assertFalse(wc.isCursorFrontOrMiddleOfComposingWord());
         assertNull(wc.getPrevWordsInfoForSuggestion().mPrevWord);
 
+        final PrevWordsInfo PREV_WORDS_INFO_STR_WITHIN_BMP = new PrevWordsInfo(STR_WITHIN_BMP);
         wc.setComposingWord(CODEPOINTS_WITH_SUPPLEMENTARY_CHAR, COORDINATES_WITH_SUPPLEMENTARY_CHAR,
-                STR_WITHIN_BMP);
+                PREV_WORDS_INFO_STR_WITHIN_BMP);
         wc.setCursorPositionWithinWord(3);
         assertTrue(wc.moveCursorByAndReturnIfInsideComposingWord(7));
-        assertEquals(STR_WITHIN_BMP, wc.getPrevWordsInfoForSuggestion().mPrevWord);
+        assertEquals(PREV_WORDS_INFO_STR_WITHIN_BMP, wc.getPrevWordsInfoForSuggestion());
 
+        final PrevWordsInfo PREV_WORDS_INFO_STR_WITH_SUPPLEMENTARY_CHAR =
+                new PrevWordsInfo(STR_WITH_SUPPLEMENTARY_CHAR);
         wc.setComposingWord(CODEPOINTS_WITH_SUPPLEMENTARY_CHAR, COORDINATES_WITH_SUPPLEMENTARY_CHAR,
-                STR_WITH_SUPPLEMENTARY_CHAR);
+                PREV_WORDS_INFO_STR_WITH_SUPPLEMENTARY_CHAR);
         wc.setCursorPositionWithinWord(3);
         assertTrue(wc.moveCursorByAndReturnIfInsideComposingWord(7));
-        assertEquals(STR_WITH_SUPPLEMENTARY_CHAR, wc.getPrevWordsInfoForSuggestion().mPrevWord);
+        assertEquals(PREV_WORDS_INFO_STR_WITH_SUPPLEMENTARY_CHAR,
+                wc.getPrevWordsInfoForSuggestion());
 
         wc.setComposingWord(CODEPOINTS_WITH_SUPPLEMENTARY_CHAR, COORDINATES_WITH_SUPPLEMENTARY_CHAR,
-                STR_WITHIN_BMP);
+                PREV_WORDS_INFO_STR_WITHIN_BMP);
         wc.setCursorPositionWithinWord(3);
         assertTrue(wc.moveCursorByAndReturnIfInsideComposingWord(-3));
         assertFalse(wc.moveCursorByAndReturnIfInsideComposingWord(-1));
-        assertEquals(STR_WITHIN_BMP, wc.getPrevWordsInfoForSuggestion().mPrevWord);
+        assertEquals(PREV_WORDS_INFO_STR_WITHIN_BMP, wc.getPrevWordsInfoForSuggestion());
 
+
+        final PrevWordsInfo PREV_WORDS_INFO_NULL = new PrevWordsInfo(null);
         wc.setComposingWord(CODEPOINTS_WITH_SUPPLEMENTARY_CHAR, COORDINATES_WITH_SUPPLEMENTARY_CHAR,
-                null /* previousWord */);
+                PREV_WORDS_INFO_NULL);
         wc.setCursorPositionWithinWord(3);
         assertFalse(wc.moveCursorByAndReturnIfInsideComposingWord(-9));
         assertNull(wc.getPrevWordsInfoForSuggestion().mPrevWord);
 
         wc.setComposingWord(CODEPOINTS_WITH_SUPPLEMENTARY_CHAR, COORDINATES_WITH_SUPPLEMENTARY_CHAR,
-                STR_WITH_SUPPLEMENTARY_CHAR);
+                PREV_WORDS_INFO_STR_WITH_SUPPLEMENTARY_CHAR);
         assertTrue(wc.moveCursorByAndReturnIfInsideComposingWord(-10));
-        assertEquals(STR_WITH_SUPPLEMENTARY_CHAR, wc.getPrevWordsInfoForSuggestion().mPrevWord);
+        assertEquals(PREV_WORDS_INFO_STR_WITH_SUPPLEMENTARY_CHAR,
+                wc.getPrevWordsInfoForSuggestion());
 
         wc.setComposingWord(CODEPOINTS_WITH_SUPPLEMENTARY_CHAR, COORDINATES_WITH_SUPPLEMENTARY_CHAR,
-                null /* previousWord */);
+                PREV_WORDS_INFO_NULL);
         assertFalse(wc.moveCursorByAndReturnIfInsideComposingWord(-11));
 
         wc.setComposingWord(CODEPOINTS_WITH_SUPPLEMENTARY_CHAR, COORDINATES_WITH_SUPPLEMENTARY_CHAR,
-                null /* previousWord */);
+                PREV_WORDS_INFO_NULL);
         assertTrue(wc.moveCursorByAndReturnIfInsideComposingWord(0));
 
         wc.setComposingWord(CODEPOINTS_WITH_SUPPLEMENTARY_CHAR, COORDINATES_WITH_SUPPLEMENTARY_CHAR,
-                null /* previousWord */);
+                PREV_WORDS_INFO_NULL);
         wc.setCursorPositionWithinWord(2);
         assertTrue(wc.moveCursorByAndReturnIfInsideComposingWord(0));
     }
