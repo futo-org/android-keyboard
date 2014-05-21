@@ -22,6 +22,7 @@ import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.ExpandableBinaryDictionary;
+import com.android.inputmethod.latin.PrevWordsInfo;
 
 import java.io.File;
 import java.util.Locale;
@@ -52,29 +53,32 @@ public class UserHistoryDictionary extends DecayingExpandableBinaryDictionaryBas
     }
 
     /**
-     * Pair will be added to the user history dictionary.
+     * Add a word to the user history dictionary.
      *
-     * The first word may be null. That means we don't know the context, in other words,
-     * it's only a unigram. The first word may also be an empty string : this means start
-     * context, as in beginning of a sentence for example.
-     * The second word may not be null (a NullPointerException would be thrown).
+     * @param userHistoryDictionary the user history dictionary
+     * @param prevWordsInfo the information of previous words
+     * @param word the word the user inputted
+     * @param isValid whether the word is valid or not
+     * @param timestamp the timestamp when the word has been inputted
      */
     public static void addToDictionary(final ExpandableBinaryDictionary userHistoryDictionary,
-            final String word0, final String word1, final boolean isValid, final int timestamp) {
-        if (word1.length() >= Constants.DICTIONARY_MAX_WORD_LENGTH ||
-                (word0 != null && word0.length() >= Constants.DICTIONARY_MAX_WORD_LENGTH)) {
+            final PrevWordsInfo prevWordsInfo, final String word, final boolean isValid,
+            final int timestamp) {
+        final String prevWord = prevWordsInfo.mPrevWord;
+        if (word.length() >= Constants.DICTIONARY_MAX_WORD_LENGTH ||
+                (prevWord != null && prevWord.length() >= Constants.DICTIONARY_MAX_WORD_LENGTH)) {
             return;
         }
         final int frequency = isValid ?
                 FREQUENCY_FOR_WORDS_IN_DICTS : FREQUENCY_FOR_WORDS_NOT_IN_DICTS;
-        userHistoryDictionary.addWordDynamically(word1, frequency, null /* shortcutTarget */,
+        userHistoryDictionary.addUnigramEntry(word, frequency, null /* shortcutTarget */,
                 0 /* shortcutFreq */, false /* isNotAWord */, false /* isBlacklisted */, timestamp);
         // Do not insert a word as a bigram of itself
-        if (word1.equals(word0)) {
+        if (word.equals(prevWord)) {
             return;
         }
-        if (null != word0) {
-            userHistoryDictionary.addBigramDynamically(word0, word1, frequency, timestamp);
+        if (null != prevWord) {
+            userHistoryDictionary.addNgramEntry(prevWordsInfo, word, frequency, timestamp);
         }
     }
 }
