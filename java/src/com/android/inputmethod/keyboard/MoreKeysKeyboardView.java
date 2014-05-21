@@ -130,7 +130,7 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
     public void onUpEvent(final int x, final int y, final int pointerId, final long eventTime) {
         if (mCurrentKey != null && mActivePointerId == pointerId) {
             updateReleaseKeyGraphics(mCurrentKey);
-            onCodeInput(mCurrentKey.getCode(), x, y);
+            onKeyInput(mCurrentKey, x, y);
             mCurrentKey = null;
         }
     }
@@ -138,7 +138,8 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
     /**
      * Performs the specific action for this panel when the user presses a key on the panel.
      */
-    protected void onCodeInput(final int code, final int x, final int y) {
+    protected void onKeyInput(final Key key, final int x, final int y) {
+        final int code = key.getCode();
         if (code == Constants.CODE_OUTPUT_TEXT) {
             mListener.onTextInput(mCurrentKey.getOutputText());
         } else if (code != Constants.CODE_UNSPECIFIED) {
