@@ -203,12 +203,12 @@ class DicNode {
         return mDicNodeState.mDicNodeStateInput.getInputIndex(0) < inputSize - 1;
     }
 
-    // Used to get n-gram probability in DicNodeUtils
+    // Used to get n-gram probability in DicNodeUtils.
     int getPtNodePos() const {
         return mDicNodeProperties.getPtNodePos();
     }
 
-    // Used to get n-gram probability in DicNodeUtils
+    // Used to get n-gram probability in DicNodeUtils. n is 1-indexed.
     int getNthPrevWordTerminalPtNodePos(const int n) const {
         if (n <= 0 || n > MAX_PREV_WORD_COUNT_FOR_N_GRAM) {
             return NOT_A_DICT_POS;

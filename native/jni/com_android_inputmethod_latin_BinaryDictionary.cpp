@@ -343,7 +343,7 @@ static void latinime_BinaryDictionary_addUnigramWord(JNIEnv *env, jclass clazz, 
     // Use 1 for count to indicate the word has inputted.
     const UnigramProperty unigramProperty(isNotAWord, isBlacklisted,
             probability, timestamp, 0 /* level */, 1 /* count */, &shortcuts);
-    dictionary->addUnigramWord(codePoints, codePointCount, &unigramProperty);
+    dictionary->addUnigramEntry(codePoints, codePointCount, &unigramProperty);
 }
 
 static void latinime_BinaryDictionary_addBigramWords(JNIEnv *env, jclass clazz, jlong dict,
@@ -363,7 +363,9 @@ static void latinime_BinaryDictionary_addBigramWords(JNIEnv *env, jclass clazz, 
     // Use 1 for count to indicate the bigram has inputted.
     const BigramProperty bigramProperty(&bigramTargetCodePoints, probability,
             timestamp, 0 /* level */, 1 /* count */);
-    dictionary->addBigramWords(word0CodePoints, word0Length, &bigramProperty);
+    const PrevWordsInfo prevWordsInfo(word0CodePoints, word0Length,
+            false /* isBeginningOfSentence */);
+    dictionary->addNgramEntry(&prevWordsInfo, &bigramProperty);
 }
 
 static void latinime_BinaryDictionary_removeBigramWords(JNIEnv *env, jclass clazz, jlong dict,
@@ -378,8 +380,9 @@ static void latinime_BinaryDictionary_removeBigramWords(JNIEnv *env, jclass claz
     jsize word1Length = env->GetArrayLength(word1);
     int word1CodePoints[word1Length];
     env->GetIntArrayRegion(word1, 0, word1Length, word1CodePoints);
-    dictionary->removeBigramWords(word0CodePoints, word0Length, word1CodePoints,
-            word1Length);
+    const PrevWordsInfo prevWordsInfo(word0CodePoints, word0Length,
+            false /* isBeginningOfSentence */);
+    dictionary->removeNgramEntry(&prevWordsInfo, word1CodePoints, word1Length);
 }
 
 // Returns how many language model params are processed.
@@ -449,7 +452,7 @@ static int latinime_BinaryDictionary_addMultipleDictionaryEntries(JNIEnv *env, j
         // Use 1 for count to indicate the word has inputted.
         const UnigramProperty unigramProperty(isNotAWord, isBlacklisted,
                 unigramProbability, timestamp, 0 /* level */, 1 /* count */, &shortcuts);
-        dictionary->addUnigramWord(word1CodePoints, word1Length, &unigramProperty);
+        dictionary->addUnigramEntry(word1CodePoints, word1Length, &unigramProperty);
         if (word0) {
             jint bigramProbability = env->GetIntField(languageModelParam, bigramProbabilityFieldId);
             const std::vector<int> bigramTargetCodePoints(
@@ -457,7 +460,9 @@ static int latinime_BinaryDictionary_addMultipleDictionaryEntries(JNIEnv *env, j
             // Use 1 for count to indicate the bigram has inputted.
             const BigramProperty bigramProperty(&bigramTargetCodePoints, bigramProbability,
                     timestamp, 0 /* level */, 1 /* count */);
-            dictionary->addBigramWords(word0CodePoints, word0Length, &bigramProperty);
+            const PrevWordsInfo prevWordsInfo(word0CodePoints, word0Length,
+                    false /* isBeginningOfSentence */);
+            dictionary->addNgramEntry(&prevWordsInfo, &bigramProperty);
         }
         if (dictionary->needsToRunGC(true /* mindsBlockByGC */)) {
             return i + 1;
@@ -541,7 +546,7 @@ static bool latinime_BinaryDictionary_migrateNative(JNIEnv *env, jclass clazz, j
                 return false;
             }
         }
-        if (!dictionaryStructureWithBufferPolicy->addUnigramWord(wordCodePoints, wordLength,
+        if (!dictionaryStructureWithBufferPolicy->addUnigramEntry(wordCodePoints, wordLength,
                 wordProperty.getUnigramProperty())) {
             LogUtils::logToJava(env, "Cannot add unigram to the new dict.");
             return false;
@@ -561,8 +566,10 @@ static bool latinime_BinaryDictionary_migrateNative(JNIEnv *env, jclass clazz, j
                 return false;
             }
         }
+        const PrevWordsInfo prevWordsInfo(wordCodePoints, wordLength,
+                false /* isStartOfSentence */);
         for (const BigramProperty &bigramProperty : *wordProperty.getBigramProperties()) {
-            if (!dictionaryStructureWithBufferPolicy->addBigramWords(wordCodePoints, wordLength,
+            if (!dictionaryStructureWithBufferPolicy->addNgramEntry(&prevWordsInfo,
                     &bigramProperty)) {
                 LogUtils::logToJava(env, "Cannot add bigram to the new dict.");
                 return false;

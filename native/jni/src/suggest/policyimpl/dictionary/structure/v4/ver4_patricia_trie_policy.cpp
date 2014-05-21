@@ -23,6 +23,7 @@
 #include "suggest/core/dictionary/property/bigram_property.h"
 #include "suggest/core/dictionary/property/unigram_property.h"
 #include "suggest/core/dictionary/property/word_property.h"
+#include "suggest/core/session/prev_words_info.h"
 #include "suggest/policyimpl/dictionary/structure/pt_common/dynamic_pt_reading_helper.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_patricia_trie_node_reader.h"
 #include "suggest/policyimpl/dictionary/utils/forgetting_curve_utils.h"
@@ -155,10 +156,10 @@ int Ver4PatriciaTriePolicy::getBigramsPositionOfPtNode(const int ptNodePos) cons
             ptNodeParams.getTerminalId());
 }
 
-bool Ver4PatriciaTriePolicy::addUnigramWord(const int *const word, const int length,
+bool Ver4PatriciaTriePolicy::addUnigramEntry(const int *const word, const int length,
         const UnigramProperty *const unigramProperty) {
     if (!mBuffers->isUpdatable()) {
-        AKLOGI("Warning: addUnigramWord() is called for non-updatable dictionary.");
+        AKLOGI("Warning: addUnigramEntry() is called for non-updatable dictionary.");
         return false;
     }
     if (mDictBuffer->getTailPosition() >= MIN_DICT_SIZE_TO_REFUSE_DYNAMIC_OPERATIONS) {
@@ -210,10 +211,10 @@ bool Ver4PatriciaTriePolicy::addUnigramWord(const int *const word, const int len
     }
 }
 
-bool Ver4PatriciaTriePolicy::addBigramWords(const int *const word0, const int length0,
+bool Ver4PatriciaTriePolicy::addNgramEntry(const PrevWordsInfo *const prevWordsInfo,
         const BigramProperty *const bigramProperty) {
     if (!mBuffers->isUpdatable()) {
-        AKLOGI("Warning: addBigramWords() is called for non-updatable dictionary.");
+        AKLOGI("Warning: addNgramEntry() is called for non-updatable dictionary.");
         return false;
     }
     if (mDictBuffer->getTailPosition() >= MIN_DICT_SIZE_TO_REFUSE_DYNAMIC_OPERATIONS) {
@@ -221,15 +222,20 @@ bool Ver4PatriciaTriePolicy::addBigramWords(const int *const word0, const int le
                 mDictBuffer->getTailPosition());
         return false;
     }
-    if (length0 > MAX_WORD_LENGTH
-            || bigramProperty->getTargetCodePoints()->size() > MAX_WORD_LENGTH) {
-        AKLOGE("Either src word or target word is too long to insert the bigram to the dictionary. "
-                "length0: %d, length1: %d", length0, bigramProperty->getTargetCodePoints()->size());
+    if (!prevWordsInfo->isValid()) {
+        AKLOGE("prev words info is not valid for adding n-gram entry to the dictionary.");
         return false;
     }
-    const int word0Pos = getTerminalPtNodePositionOfWord(word0, length0,
-            false /* forceLowerCaseSearch */);
-    if (word0Pos == NOT_A_DICT_POS) {
+    if (bigramProperty->getTargetCodePoints()->size() > MAX_WORD_LENGTH) {
+        AKLOGE("The word is too long to insert the ngram to the dictionary. "
+                "length: %d", bigramProperty->getTargetCodePoints()->size());
+        return false;
+    }
+    int prevWordsPtNodePos[MAX_PREV_WORD_COUNT_FOR_N_GRAM];
+    prevWordsInfo->getPrevWordsTerminalPtNodePos(this, prevWordsPtNodePos,
+            false /* tryLowerCaseSearch */);
+    // TODO: Support N-gram.
+    if (prevWordsPtNodePos[0] == NOT_A_DICT_POS) {
         return false;
     }
     const int word1Pos = getTerminalPtNodePositionOfWord(
@@ -239,7 +245,8 @@ bool Ver4PatriciaTriePolicy::addBigramWords(const int *const word0, const int le
         return false;
     }
     bool addedNewBigram = false;
-    if (mUpdatingHelper.addBigramWords(word0Pos, word1Pos, bigramProperty, &addedNewBigram)) {
+    if (mUpdatingHelper.addBigramWords(prevWordsPtNodePos[0], word1Pos, bigramProperty,
+            &addedNewBigram)) {
         if (addedNewBigram) {
             mBigramCount++;
         }
@@ -249,10 +256,10 @@ bool Ver4PatriciaTriePolicy::addBigramWords(const int *const word0, const int le
     }
 }
 
-bool Ver4PatriciaTriePolicy::removeBigramWords(const int *const word0, const int length0,
-        const int *const word1, const int length1) {
+bool Ver4PatriciaTriePolicy::removeNgramEntry(const PrevWordsInfo *const prevWordsInfo,
+        const int *const word, const int length) {
     if (!mBuffers->isUpdatable()) {
-        AKLOGI("Warning: addBigramWords() is called for non-updatable dictionary.");
+        AKLOGI("Warning: removeNgramEntry() is called for non-updatable dictionary.");
         return false;
     }
     if (mDictBuffer->getTailPosition() >= MIN_DICT_SIZE_TO_REFUSE_DYNAMIC_OPERATIONS) {
@@ -260,22 +267,26 @@ bool Ver4PatriciaTriePolicy::removeBigramWords(const int *const word0, const int
                 mDictBuffer->getTailPosition());
         return false;
     }
-    if (length0 > MAX_WORD_LENGTH || length1 > MAX_WORD_LENGTH) {
-        AKLOGE("Either src word or target word is too long to remove the bigram to from the "
-                "dictionary. length0: %d, length1: %d", length0, length1);
+    if (!prevWordsInfo->isValid()) {
+        AKLOGE("prev words info is not valid for removing n-gram entry form the dictionary.");
         return false;
     }
-    const int word0Pos = getTerminalPtNodePositionOfWord(word0, length0,
+    if (length > MAX_WORD_LENGTH) {
+        AKLOGE("word is too long to remove n-gram entry form the dictionary. length: %d", length);
+    }
+    int prevWordsPtNodePos[MAX_PREV_WORD_COUNT_FOR_N_GRAM];
+    prevWordsInfo->getPrevWordsTerminalPtNodePos(this, prevWordsPtNodePos,
+            false /* tryLowerCaseSerch */);
+    // TODO: Support N-gram.
+    if (prevWordsPtNodePos[0] == NOT_A_DICT_POS) {
+        return false;
+    }
+    const int wordPos = getTerminalPtNodePositionOfWord(word, length,
             false /* forceLowerCaseSearch */);
-    if (word0Pos == NOT_A_DICT_POS) {
+    if (wordPos == NOT_A_DICT_POS) {
         return false;
     }
-    const int word1Pos = getTerminalPtNodePositionOfWord(word1, length1,
-            false /* forceLowerCaseSearch */);
-    if (word1Pos == NOT_A_DICT_POS) {
-        return false;
-    }
-    if (mUpdatingHelper.removeBigramWords(word0Pos, word1Pos)) {
+    if (mUpdatingHelper.removeBigramWords(prevWordsPtNodePos[0], wordPos)) {
         mBigramCount--;
         return true;
     } else {

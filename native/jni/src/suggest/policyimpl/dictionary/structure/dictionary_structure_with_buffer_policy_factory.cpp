@@ -145,7 +145,8 @@ template<class DictConstants, class DictBuffers, class DictBuffersPtr, class Str
     char dictPath[dictDirPathBufSize];
     if (!FileUtils::getFilePathWithoutSuffix(headerFilePath,
             DictConstants::HEADER_FILE_EXTENSION, dictDirPathBufSize, dictPath)) {
-        AKLOGE("Dictionary file name is not valid as a ver4 dictionary. path: %s", path);
+        AKLOGE("Dictionary file name is not valid as a ver4 dictionary. header path: %s",
+                headerFilePath);
         ASSERT(false);
         return nullptr;
     }
@@ -153,7 +154,7 @@ template<class DictConstants, class DictBuffers, class DictBuffersPtr, class Str
             DictBuffers::openVer4DictBuffers(dictPath, std::move(mmappedBuffer), formatVersion);
     if (!dictBuffers || !dictBuffers->isValid()) {
         AKLOGE("DICT: The dictionary doesn't satisfy ver4 format requirements. path: %s",
-                path);
+                dictPath);
         ASSERT(false);
         return nullptr;
     }
