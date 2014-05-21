@@ -17,9 +17,9 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- Action keys. -->
     <item android:state_active="true" android:state_pressed="true"
-          android:drawable="@color/key_background_pressed_lxx_dark" />
+          android:drawable="@drawable/btn_keyboard_key_active_pressed_lxx_dark" />
     <item android:state_active="true"
-          android:drawable="@color/key_background_lxx_dark" />
+          android:drawable="@drawable/btn_keyboard_key_active_lxx_dark" />
 
     <!-- Toggle keys. Use checkable/checked state. -->
     <item android:state_checkable="true" android:state_checked="true" android:state_pressed="true"
