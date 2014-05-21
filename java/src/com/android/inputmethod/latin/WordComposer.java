@@ -371,12 +371,12 @@ public final class WordComposer {
      * Also, batch input needs to know about the current caps mode to display correctly
      * capitalized suggestions.
      * @param mode the mode at the time of start
-     * @param previousWord the previous word as context for suggestions. May be null if none.
+     * @param prevWordsInfo the information of previous words
      */
     public void setCapitalizedModeAndPreviousWordAtStartComposingTime(final int mode,
-            final CharSequence previousWord) {
+            final PrevWordsInfo prevWordsInfo) {
         mCapitalizedMode = mode;
-        mPrevWordsInfo = new PrevWordsInfo(null == previousWord ? null : previousWord.toString());
+        mPrevWordsInfo = prevWordsInfo;
     }
 
     /**

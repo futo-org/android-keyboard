@@ -575,7 +575,7 @@ public final class InputLogic {
         mWordComposer.setCapitalizedModeAndPreviousWordAtStartComposingTime(
                 getActualCapsMode(settingsValues, keyboardSwitcher.getKeyboardShiftMode()),
                 // Prev word is 1st word before cursor
-                getNthPreviousWordForSuggestion(
+                getPrevWordsInfoFromNthPreviousWordForSuggestion(
                         settingsValues.mSpacingAndPunctuations, 1 /* nthPreviousWord */));
     }
 
@@ -614,7 +614,8 @@ public final class InputLogic {
                             getCurrentAutoCapsState(settingsValues), getCurrentRecapitalizeState());
                     mWordComposer.setCapitalizedModeAndPreviousWordAtStartComposingTime(
                             getActualCapsMode(settingsValues,
-                                    keyboardSwitcher.getKeyboardShiftMode()), commitParts[0]);
+                                    keyboardSwitcher.getKeyboardShiftMode()),
+                                            new PrevWordsInfo(commitParts[0]));
                     ++mAutoCommitSequenceNumber;
                 }
             }
@@ -765,7 +766,8 @@ public final class InputLogic {
                 // We pass 1 to getPreviousWordForSuggestion because we were not composing a word
                 // yet, so the word we want is the 1st word before the cursor.
                 mWordComposer.setCapitalizedModeAndPreviousWordAtStartComposingTime(
-                        inputTransaction.mShiftState, getNthPreviousWordForSuggestion(
+                        inputTransaction.mShiftState,
+                        getPrevWordsInfoFromNthPreviousWordForSuggestion(
                                 settingsValues.mSpacingAndPunctuations, 1 /* nthPreviousWord */));
             }
             mConnection.setComposingText(getTextWithUnderline(
@@ -1326,7 +1328,8 @@ public final class InputLogic {
             // Show predictions.
             mWordComposer.setCapitalizedModeAndPreviousWordAtStartComposingTime(
                     WordComposer.CAPS_MODE_OFF,
-                    getNthPreviousWordForSuggestion(settingsValues.mSpacingAndPunctuations, 1));
+                    getPrevWordsInfoFromNthPreviousWordForSuggestion(
+                            settingsValues.mSpacingAndPunctuations, 1));
             mLatinIME.mHandler.postUpdateSuggestionStrip();
             return;
         }
@@ -1374,11 +1377,9 @@ public final class InputLogic {
         // We want the previous word for suggestion. If we have chars in the word
         // before the cursor, then we want the word before that, hence 2; otherwise,
         // we want the word immediately before the cursor, hence 1.
-        final CharSequence prevWord = getNthPreviousWordForSuggestion(
+        final PrevWordsInfo prevWordsInfo = getPrevWordsInfoFromNthPreviousWordForSuggestion(
                 settingsValues.mSpacingAndPunctuations,
                 0 == numberOfCharsInWordBeforeCursor ? 1 : 2);
-        final PrevWordsInfo prevWordsInfo =
-                new PrevWordsInfo(prevWord != null ? prevWord.toString() : null);
         mWordComposer.setComposingWord(codePoints,
                 mLatinIME.getCoordinatesForCurrentKeyboard(codePoints), prevWordsInfo);
         mWordComposer.setCursorPositionWithinWord(
@@ -1590,21 +1591,23 @@ public final class InputLogic {
     }
 
     /**
-     * Get the nth previous word before the cursor as context for the suggestion process.
+     * Get information fo previous words from the nth previous word before the cursor as context
+     * for the suggestion process.
      * @param spacingAndPunctuations the current spacing and punctuations settings.
      * @param nthPreviousWord reverse index of the word to get (1-indexed)
-     * @return the nth previous word before the cursor.
+     * @return the information of previous words
      */
     // TODO: Make this private
-    public CharSequence getNthPreviousWordForSuggestion(
+    public PrevWordsInfo getPrevWordsInfoFromNthPreviousWordForSuggestion(
             final SpacingAndPunctuations spacingAndPunctuations, final int nthPreviousWord) {
         if (spacingAndPunctuations.mCurrentLanguageHasSpaces) {
             // If we are typing in a language with spaces we can just look up the previous
-            // word from textview.
-            return mConnection.getNthPreviousWord(spacingAndPunctuations, nthPreviousWord);
+            // word information from textview.
+            return mConnection.getPrevWordsInfoFromNthPreviousWord(
+                    spacingAndPunctuations, nthPreviousWord);
         } else {
-            return LastComposedWord.NOT_A_COMPOSED_WORD == mLastComposedWord ? null
-                    : mLastComposedWord.mCommittedWord;
+            return LastComposedWord.NOT_A_COMPOSED_WORD == mLastComposedWord ? new PrevWordsInfo()
+                    : new PrevWordsInfo(mLastComposedWord.mCommittedWord.toString());
         }
     }
 
@@ -1972,8 +1975,8 @@ public final class InputLogic {
                         suggestedWords);
         // Use the 2nd previous word as the previous word because the 1st previous word is the word
         // to be committed.
-        final PrevWordsInfo prevWordsInfo = new PrevWordsInfo(mConnection.getNthPreviousWord(
-                settingsValues.mSpacingAndPunctuations, 2));
+        final PrevWordsInfo prevWordsInfo = mConnection.getPrevWordsInfoFromNthPreviousWord(
+                settingsValues.mSpacingAndPunctuations, 2);
         mConnection.commitText(chosenWordWithSuggestions, 1);
         // Add the word to the user history dictionary
         performAdditionToUserHistoryDictionary(settingsValues, chosenWord, prevWordsInfo);

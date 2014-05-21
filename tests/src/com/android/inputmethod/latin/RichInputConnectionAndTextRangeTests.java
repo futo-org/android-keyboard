@@ -155,13 +155,17 @@ public class RichInputConnectionAndTextRangeTests extends AndroidTestCase {
      */
     public void testGetPreviousWord() {
         // If one of the following cases breaks, the bigram suggestions won't work.
-        assertEquals(RichInputConnection.getNthPreviousWord(
-                "abc def", mSpacingAndPunctuations, 2), "abc");
-        assertNull(RichInputConnection.getNthPreviousWord(
-                "abc", mSpacingAndPunctuations, 2));
-        assertNull(RichInputConnection.getNthPreviousWord(
-                "abc. def", mSpacingAndPunctuations, 2));
+        assertEquals(RichInputConnection.getPrevWordsInfoFromNthPreviousWord(
+                "abc def", mSpacingAndPunctuations, 2).mPrevWord, "abc");
+        assertNull(RichInputConnection.getPrevWordsInfoFromNthPreviousWord(
+                "abc", mSpacingAndPunctuations, 2).mPrevWord);
+        assertNull(RichInputConnection.getPrevWordsInfoFromNthPreviousWord(
+                "abc. def", mSpacingAndPunctuations, 2).mPrevWord);
 
+        assertFalse(RichInputConnection.getPrevWordsInfoFromNthPreviousWord(
+                "abc def", mSpacingAndPunctuations, 2).mIsBeginningOfSentence);
+        assertTrue(RichInputConnection.getPrevWordsInfoFromNthPreviousWord(
+                "abc", mSpacingAndPunctuations, 2).mIsBeginningOfSentence);
         // The following tests reflect the current behavior of the function
         // RichInputConnection#getNthPreviousWord.
         // TODO: However at this time, the code does never go
@@ -169,23 +173,23 @@ public class RichInputConnectionAndTextRangeTests extends AndroidTestCase {
         // this function if needed - especially since it does not seem very
         // logical. These tests are just there to catch any unintentional
         // changes in the behavior of the RichInputConnection#getPreviousWord method.
-        assertEquals(RichInputConnection.getNthPreviousWord(
-                "abc def ", mSpacingAndPunctuations, 2), "abc");
-        assertEquals(RichInputConnection.getNthPreviousWord(
-                "abc def.", mSpacingAndPunctuations, 2), "abc");
-        assertEquals(RichInputConnection.getNthPreviousWord(
-                "abc def .", mSpacingAndPunctuations, 2), "def");
-        assertNull(RichInputConnection.getNthPreviousWord(
-                "abc ", mSpacingAndPunctuations, 2));
+        assertEquals(RichInputConnection.getPrevWordsInfoFromNthPreviousWord(
+                "abc def ", mSpacingAndPunctuations, 2).mPrevWord, "abc");
+        assertEquals(RichInputConnection.getPrevWordsInfoFromNthPreviousWord(
+                "abc def.", mSpacingAndPunctuations, 2).mPrevWord, "abc");
+        assertEquals(RichInputConnection.getPrevWordsInfoFromNthPreviousWord(
+                "abc def .", mSpacingAndPunctuations, 2).mPrevWord, "def");
+        assertEquals(RichInputConnection.getPrevWordsInfoFromNthPreviousWord(
+                "abc ", mSpacingAndPunctuations, 2).mPrevWord, null);
 
-        assertEquals(RichInputConnection.getNthPreviousWord(
-                "abc def", mSpacingAndPunctuations, 1), "def");
-        assertEquals(RichInputConnection.getNthPreviousWord(
-                "abc def ", mSpacingAndPunctuations, 1), "def");
-        assertNull(RichInputConnection.getNthPreviousWord(
-                "abc def.", mSpacingAndPunctuations, 1));
-        assertNull(RichInputConnection.getNthPreviousWord(
-                "abc def .", mSpacingAndPunctuations, 1));
+        assertEquals(RichInputConnection.getPrevWordsInfoFromNthPreviousWord(
+                "abc def", mSpacingAndPunctuations, 1).mPrevWord, "def");
+        assertEquals(RichInputConnection.getPrevWordsInfoFromNthPreviousWord(
+                "abc def ", mSpacingAndPunctuations, 1).mPrevWord, "def");
+        assertNull(RichInputConnection.getPrevWordsInfoFromNthPreviousWord(
+                "abc def.", mSpacingAndPunctuations, 1).mPrevWord);
+        assertNull(RichInputConnection.getPrevWordsInfoFromNthPreviousWord(
+                "abc def .", mSpacingAndPunctuations, 1).mPrevWord);
     }
 
     /**
