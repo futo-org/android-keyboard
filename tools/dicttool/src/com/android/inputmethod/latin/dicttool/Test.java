@@ -19,16 +19,29 @@ package com.android.inputmethod.latin.dicttool;
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderEncoderTests;
 import com.android.inputmethod.latin.makedict.BinaryDictEncoderFlattenTreeTests;
 import com.android.inputmethod.latin.makedict.FusionDictionaryTest;
+import com.android.inputmethod.latin.utils.FileUtils;
 
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.file.Files;
 import java.util.ArrayList;
 
 /**
  * Dicttool command implementing self-tests.
  */
 public class Test extends Dicttool.Command {
+    private static final String getTmpDir() {
+        try {
+            return Files.createTempDirectory("dicttool").toString();
+        } catch (IOException e) {
+            throw new RuntimeException("Can't get temporary directory", e);
+        }
+    }
+    private static final String TEST_TMP_DIR_BASE = getTmpDir();
+    public static final File TEST_TMP_DIR = new File(TEST_TMP_DIR_BASE);
     public static final String COMMAND = "test";
     private static final int DEFAULT_MAX_UNIGRAMS = 1500;
     private long mSeed = System.currentTimeMillis();
@@ -56,8 +69,12 @@ public class Test extends Dicttool.Command {
 
     @Override
     public String getHelp() {
-        final StringBuilder s = new StringBuilder("test [-s seed] [-m maxUnigrams] [testName...]\n"
-                + "If seed is not specified, the current time is used.\nTest list is:\n");
+        final StringBuilder s = new StringBuilder(
+                "test [-s seed] [-m maxUnigrams] [-n] [testName...]\n"
+                + "If seed is not specified, the current time is used.\n"
+                + "If -n option is provided, do not delete temporary files in "
+                + TEST_TMP_DIR_BASE + "/*.\n"
+                + "Test list is:\n");
         for (final Method m : mAllTestMethods) {
             s.append("  ");
             s.append(m.getName());
@@ -70,17 +87,26 @@ public class Test extends Dicttool.Command {
     public void run() throws IllegalAccessException, InstantiationException,
             InvocationTargetException {
         int i = 0;
+        boolean deleteTmpDir = true;
         while (i < mArgs.length) {
             final String arg = mArgs[i++];
             if ("-s".equals(arg)) {
                 mSeed = Long.parseLong(mArgs[i++]);
             } else if ("-m".equals(arg)) {
                 mMaxUnigrams = Integer.parseInt(mArgs[i++]);
+            } else if ("-n".equals(arg)) {
+                deleteTmpDir = false;
             } else {
                 mUsedTestMethods.add(arg);
             }
         }
-        runChosenTests();
+        try {
+            runChosenTests();
+        } finally {
+            if (deleteTmpDir) {
+                FileUtils.deleteRecursively(TEST_TMP_DIR);
+            }
+        }
     }
 
     private void runChosenTests() throws IllegalAccessException, InstantiationException,
