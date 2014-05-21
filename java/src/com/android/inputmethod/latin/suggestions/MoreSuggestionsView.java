@@ -20,10 +20,12 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
 
+import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.MoreKeysKeyboardView;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SuggestedWords;
+import com.android.inputmethod.latin.suggestions.MoreSuggestions.MoreSuggestionKey;
 import com.android.inputmethod.latin.suggestions.MoreSuggestions.MoreSuggestionsListener;
 
 /**
@@ -59,7 +61,12 @@ public final class MoreSuggestionsView extends MoreKeysKeyboardView {
     }
 
     @Override
-    public void onCodeInput(final int code, final int x, final int y) {
+    protected void onKeyInput(final Key key, final int x, final int y) {
+        if (!(key instanceof MoreSuggestionKey)) {
+            Log.e(TAG, "Expected key is MoreSuggestionKey, but found "
+                    + key.getClass().getName());
+            return;
+        }
         final Keyboard keyboard = getKeyboard();
         if (!(keyboard instanceof MoreSuggestions)) {
             Log.e(TAG, "Expected keyboard is MoreSuggestions, but found "
@@ -67,7 +74,7 @@ public final class MoreSuggestionsView extends MoreKeysKeyboardView {
             return;
         }
         final SuggestedWords suggestedWords = ((MoreSuggestions)keyboard).mSuggestedWords;
-        final int index = code - MoreSuggestions.SUGGESTION_CODE_BASE;
+        final int index = ((MoreSuggestionKey)key).mSuggestedWordIndex;
         if (index < 0 || index >= suggestedWords.size()) {
             Log.e(TAG, "Selected suggestion has an illegal index: " + index);
             return;

@@ -27,14 +27,13 @@ import com.android.inputmethod.keyboard.KeyboardActionListener;
 import com.android.inputmethod.keyboard.internal.KeyboardBuilder;
 import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
 import com.android.inputmethod.keyboard.internal.KeyboardParams;
+import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.utils.TypefaceUtils;
 
 public final class MoreSuggestions extends Keyboard {
-    public static final int SUGGESTION_CODE_BASE = 1024;
-
     public final SuggestedWords mSuggestedWords;
 
     public static abstract class MoreSuggestionsListener extends KeyboardActionListener.Adapter {
@@ -178,7 +177,7 @@ public final class MoreSuggestions extends Keyboard {
         }
     }
 
-    private static boolean isIndexSubjectToAutoCorrection(final SuggestedWords suggestedWords,
+    static boolean isIndexSubjectToAutoCorrection(final SuggestedWords suggestedWords,
             final int index) {
         return suggestedWords.mWillAutoCorrect && index == SuggestedWords.INDEX_OF_AUTO_CORRECTION;
     }
@@ -226,11 +225,7 @@ public final class MoreSuggestions extends Keyboard {
                     word = mSuggestedWords.getLabel(index);
                     info = mSuggestedWords.getDebugString(index);
                 }
-                final int indexInMoreSuggestions = index + SUGGESTION_CODE_BASE;
-                final Key key = new Key(word, KeyboardIconsSet.ICON_UNDEFINED,
-                        indexInMoreSuggestions, null /* outputText */, info, 0 /* labelFlags */,
-                        Key.BACKGROUND_TYPE_NORMAL, x, y, width, params.mDefaultRowHeight,
-                        params.mHorizontalGap, params.mVerticalGap);
+                final Key key = new MoreSuggestionKey(word, info, index, params);
                 params.markAsEdgeKey(key, index);
                 params.onAddKey(key);
                 final int columnNumber = params.getColumnNumber(index);
@@ -242,6 +237,19 @@ public final class MoreSuggestions extends Keyboard {
                 }
             }
             return new MoreSuggestions(params, mSuggestedWords);
+        }
+    }
+
+    static final class MoreSuggestionKey extends Key {
+        public final int mSuggestedWordIndex;
+
+        public MoreSuggestionKey(final String word, final String info, final int index,
+                final MoreSuggestionsParam params) {
+            super(word /* label */, KeyboardIconsSet.ICON_UNDEFINED, Constants.CODE_OUTPUT_TEXT,
+                    word /* outputText */, info, 0 /* labelFlags */, Key.BACKGROUND_TYPE_NORMAL,
+                    params.getX(index), params.getY(index), params.getWidth(index),
+                    params.mDefaultRowHeight, params.mHorizontalGap, params.mVerticalGap);
+            mSuggestedWordIndex = index;
         }
     }
 
