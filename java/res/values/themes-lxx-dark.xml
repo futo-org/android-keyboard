@@ -122,7 +122,8 @@
         parent="KeyboardView.LXX_Dark"
     >
         <item name="android:background">@drawable/keyboard_popup_panel_background_lxx_dark</item>
-        <item name="keyBackground">@drawable/btn_keyboard_key_popup_lxx_dark</item>
+        <!-- Reuse KLP key background -->
+        <item name="keyBackground">@drawable/btn_keyboard_key_popup_klp</item>
         <item name="keyTypeface">normal</item>
         <item name="verticalCorrection">@dimen/config_more_keys_keyboard_vertical_correction_holo</item>
     </style>
