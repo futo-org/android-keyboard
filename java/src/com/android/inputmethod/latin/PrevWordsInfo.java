@@ -16,6 +16,9 @@
 
 package com.android.inputmethod.latin;
 
+import android.util.Log;
+
+// TODO: Support multiple previous words for n-gram.
 public class PrevWordsInfo {
     // The previous word. May be null after resetting and before starting a new composing word, or
     // when there is no context like at the start of text for example. It can also be set to null
@@ -23,7 +26,18 @@ public class PrevWordsInfo {
     // or a comma.
     public final String mPrevWord;
 
+    // TODO: Have sentence separator.
+    // Whether the current context is beginning of sentence or not.
+    public final boolean mIsBeginningOfSentence;
+
+    // Beginning of sentence.
+    public PrevWordsInfo() {
+        mPrevWord = null;
+        mIsBeginningOfSentence = true;
+    }
+
     public PrevWordsInfo(final String prevWord) {
         mPrevWord = prevWord;
+        mIsBeginningOfSentence = false;
     }
 }

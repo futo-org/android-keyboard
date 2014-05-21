@@ -1435,12 +1435,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 // We're checking the previous word in the text field against the memorized previous
                 // word. If we are composing a word we should have the second word before the cursor
                 // memorized, otherwise we should have the first.
-                final CharSequence rereadPrevWord = mInputLogic.getNthPreviousWordForSuggestion(
-                        currentSettings.mSpacingAndPunctuations,
-                        mInputLogic.mWordComposer.isComposingWord() ? 2 : 1);
-                if (!TextUtils.equals(prevWordsInfo.mPrevWord, rereadPrevWord)) {
+                final PrevWordsInfo rereadPrevWordsInfo =
+                        mInputLogic.getPrevWordsInfoFromNthPreviousWordForSuggestion(
+                                currentSettings.mSpacingAndPunctuations,
+                                mInputLogic.mWordComposer.isComposingWord() ? 2 : 1);
+                if (!TextUtils.equals(prevWordsInfo.mPrevWord, rereadPrevWordsInfo.mPrevWord)) {
                     throw new RuntimeException("Unexpected previous word: "
-                            + prevWordsInfo.mPrevWord + " <> " + rereadPrevWord);
+                            + prevWordsInfo.mPrevWord + " <> " + rereadPrevWordsInfo.mPrevWord);
                 }
             }
         }
