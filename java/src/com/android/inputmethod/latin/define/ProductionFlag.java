@@ -38,4 +38,7 @@ public final class ProductionFlag {
 
     // Include all suggestions from all dictionaries in {@link SuggestedWords#mRawSuggestions}.
     public static final boolean INCLUDE_RAW_SUGGESTIONS = false;
+
+    // When false, the metrics logging is not yet ready to be enabled.
+    public static final boolean IS_METRICS_LOGGING_SUPPORTED = false;
 }
