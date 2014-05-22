@@ -16,13 +16,23 @@
 
 package com.android.inputmethod.latin.utils;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.text.InputType;
 import android.util.Log;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.keyboard.Keyboard;
+import com.android.inputmethod.keyboard.KeyboardId;
+import com.android.inputmethod.keyboard.KeyboardLayoutSet;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.PrevWordsInfo;
 import com.android.inputmethod.latin.Suggest;
@@ -41,8 +51,10 @@ public class DistracterFilter {
     private static final long TIMEOUT_TO_WAIT_LOADING_DICTIONARIES_IN_SECONDS = 120;
 
     private final Context mContext;
+    private final Map<Locale, InputMethodSubtype> mLocaleToSubtypeMap;
+    private final Map<Locale, Keyboard> mLocaleToKeyboardMap;
     private final Suggest mSuggest;
-    private final Keyboard mKeyboard;
+    private Keyboard mKeyboard;
 
     // If the score of the top suggestion exceeds this value, the tested word (e.g.,
     // an OOV, a misspelling, or an in-vocabulary word) would be considered as a distracter to
@@ -51,17 +63,32 @@ public class DistracterFilter {
     // the dictionary.
     private static final float DISTRACTER_WORD_SCORE_THRESHOLD = 2.0f;
 
+    // Create empty distracter filter.
+    public DistracterFilter() {
+        this(null, new ArrayList<InputMethodSubtype>());
+    }
+
     /**
      * Create a DistracterFilter instance.
      *
      * @param context the context.
-     * @param keyboard the keyboard that is currently being used. This information is needed
-     *                 when calling mSuggest.getSuggestedWords(...) to obtain a list of suggestions.
+     * @param enabledSubtypes the enabled subtypes.
      */
-    public DistracterFilter(final Context context, final Keyboard keyboard) {
+    public DistracterFilter(final Context context, final List<InputMethodSubtype> enabledSubtypes) {
         mContext = context;
+        mLocaleToSubtypeMap = new HashMap<>();
+        for (final InputMethodSubtype subtype : enabledSubtypes) {
+            final Locale locale = SubtypeLocaleUtils.getSubtypeLocale(subtype);
+            if (mLocaleToSubtypeMap.containsKey(locale)) {
+                // Multiple subtypes are enabled for one locale.
+                // TODO: Investigate what we should do for this case.
+                continue;
+            }
+            mLocaleToSubtypeMap.put(locale, subtype);
+        }
+        mLocaleToKeyboardMap = new HashMap<>();
         mSuggest = new Suggest();
-        mKeyboard = keyboard;
+        mKeyboard = null;
     }
 
     private static boolean suggestionExceedsDistracterThreshold(
@@ -78,6 +105,30 @@ public class DistracterFilter {
         return false;
     }
 
+    private void loadKeyboardForLocale(final Locale newLocale) {
+        final Keyboard cachedKeyboard = mLocaleToKeyboardMap.get(newLocale);
+        if (cachedKeyboard != null) {
+            mKeyboard = cachedKeyboard;
+            return;
+        }
+        final InputMethodSubtype subtype = mLocaleToSubtypeMap.get(newLocale);
+        if (subtype == null) {
+            return;
+        }
+        final EditorInfo editorInfo = new EditorInfo();
+        editorInfo.inputType = InputType.TYPE_CLASS_TEXT;
+        final KeyboardLayoutSet.Builder builder = new KeyboardLayoutSet.Builder(
+                mContext, editorInfo);
+        final Resources res = mContext.getResources();
+        final int keyboardWidth = ResourceUtils.getDefaultKeyboardWidth(res);
+        final int keyboardHeight = ResourceUtils.getDefaultKeyboardHeight(res);
+        builder.setKeyboardGeometry(keyboardWidth, keyboardHeight);
+        builder.setSubtype(subtype);
+        builder.setIsSpellChecker(false /* isSpellChecker */);
+        final KeyboardLayoutSet layoutSet = builder.build();
+        mKeyboard = layoutSet.getKeyboard(KeyboardId.ELEMENT_ALPHABET);
+    }
+
     private void loadDictionariesForLocale(final Locale newlocale) throws InterruptedException {
         mSuggest.mDictionaryFacilitator.resetDictionaries(mContext, newlocale,
                 false /* useContactsDict */, false /* usePersonalizedDicts */,
@@ -92,15 +143,21 @@ public class DistracterFilter {
      * @param prevWordsInfo the information of previous words.
      * @param testedWord the word that will be tested to see whether it is a distracter to words
      *                   in dictionaries.
-     * @param locale the locale of words.
+     * @param locale the locale of word.
      * @return true if testedWord is a distracter, otherwise false.
      */
     public boolean isDistracterToWordsInDictionaries(final PrevWordsInfo prevWordsInfo,
             final String testedWord, final Locale locale) {
-        if (mKeyboard == null || locale == null) {
+        if (locale == null) {
             return false;
         }
         if (!locale.equals(mSuggest.mDictionaryFacilitator.getLocale())) {
+            if (!mLocaleToSubtypeMap.containsKey(locale)) {
+                Log.e(TAG, "Locale " + locale + " is not enabled.");
+                // TODO: Investigate what we should do for disabled locales.
+                return false;
+            }
+            loadKeyboardForLocale(locale);
             // Reset dictionaries for the locale.
             try {
                 loadDictionariesForLocale(locale);
@@ -109,11 +166,12 @@ public class DistracterFilter {
                 return false;
             }
         }
-
+        if (mKeyboard == null) {
+            return false;
+        }
         final WordComposer composer = new WordComposer();
         final int[] codePoints = StringUtils.toCodePointArray(testedWord);
-        final int[] coordinates;
-        coordinates = mKeyboard.getCoordinates(codePoints);
+        final int[] coordinates = mKeyboard.getCoordinates(codePoints);
         composer.setComposingWord(codePoints, coordinates, prevWordsInfo);
 
         final int trailingSingleQuotesCount = StringUtils.getTrailingSingleQuotesCount(testedWord);
