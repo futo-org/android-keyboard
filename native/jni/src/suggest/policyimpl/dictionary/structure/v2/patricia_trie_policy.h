@@ -81,24 +81,24 @@ class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
         return &mShortcutListPolicy;
     }
 
-    bool addUnigramWord(const int *const word, const int length,
+    bool addUnigramEntry(const int *const word, const int length,
             const UnigramProperty *const unigramProperty) {
         // This method should not be called for non-updatable dictionary.
-        AKLOGI("Warning: addUnigramWord() is called for non-updatable dictionary.");
+        AKLOGI("Warning: addUnigramEntry() is called for non-updatable dictionary.");
         return false;
     }
 
-    bool addBigramWords(const int *const word0, const int length0,
+    bool addNgramEntry(const PrevWordsInfo *const prevWordsInfo,
             const BigramProperty *const bigramProperty) {
         // This method should not be called for non-updatable dictionary.
-        AKLOGI("Warning: addBigramWords() is called for non-updatable dictionary.");
+        AKLOGI("Warning: addNgramEntry() is called for non-updatable dictionary.");
         return false;
     }
 
-    bool removeBigramWords(const int *const word0, const int length0, const int *const word1,
-            const int length1) {
+    bool removeNgramEntry(const PrevWordsInfo *const prevWordsInfo, const int *const word,
+            const int length) {
         // This method should not be called for non-updatable dictionary.
-        AKLOGI("Warning: removeBigramWords() is called for non-updatable dictionary.");
+        AKLOGI("Warning: removeNgramEntry() is called for non-updatable dictionary.");
         return false;
     }
 

@@ -73,16 +73,16 @@ class Dictionary {
     int getProbability(const int *word, int length) const;
 
     int getBigramProbability(const PrevWordsInfo *const prevWordsInfo,
-            const int *word1, int length1) const;
+            const int *word, int length) const;
 
-    void addUnigramWord(const int *const codePoints, const int codePointCount,
+    void addUnigramEntry(const int *const codePoints, const int codePointCount,
             const UnigramProperty *const unigramProperty);
 
-    void addBigramWords(const int *const word0, const int length0,
+    void addNgramEntry(const PrevWordsInfo *const prevWordsInfo,
             const BigramProperty *const bigramProperty);
 
-    void removeBigramWords(const int *const word0, const int length0, const int *const word1,
-            const int length1);
+    void removeNgramEntry(const PrevWordsInfo *const prevWordsInfo, const int *const word,
+            const int length);
 
     void flush(const char *const filePath);
 

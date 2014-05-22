@@ -36,7 +36,7 @@ void DicTraverseSession::init(const Dictionary *const dictionary,
             ->getMultiWordCostMultiplier();
     mSuggestOptions = suggestOptions;
     prevWordsInfo->getPrevWordsTerminalPtNodePos(
-            getDictionaryStructurePolicy(), mPrevWordsPtNodePos);
+            getDictionaryStructurePolicy(), mPrevWordsPtNodePos, true /* tryLowerCaseSearch */);
 }
 
 void DicTraverseSession::setupForGetSuggestions(const ProximityInfo *pInfo,

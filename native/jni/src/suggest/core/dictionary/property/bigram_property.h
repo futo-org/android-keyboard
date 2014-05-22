@@ -23,6 +23,7 @@
 
 namespace latinime {
 
+// TODO: Change to NgramProperty.
 class BigramProperty {
  public:
     BigramProperty(const std::vector<int> *const targetCodePoints,

@@ -74,28 +74,28 @@ int Dictionary::getProbability(const int *word, int length) const {
     return getDictionaryStructurePolicy()->getUnigramProbabilityOfPtNode(pos);
 }
 
-int Dictionary::getBigramProbability(const PrevWordsInfo *const prevWordsInfo, const int *word1,
-        int length1) const {
+int Dictionary::getBigramProbability(const PrevWordsInfo *const prevWordsInfo, const int *word,
+        int length) const {
     TimeKeeper::setCurrentTime();
-    return mBigramDictionary.getBigramProbability(prevWordsInfo, word1, length1);
+    return mBigramDictionary.getBigramProbability(prevWordsInfo, word, length);
 }
 
-void Dictionary::addUnigramWord(const int *const word, const int length,
+void Dictionary::addUnigramEntry(const int *const word, const int length,
         const UnigramProperty *const unigramProperty) {
     TimeKeeper::setCurrentTime();
-    mDictionaryStructureWithBufferPolicy->addUnigramWord(word, length, unigramProperty);
+    mDictionaryStructureWithBufferPolicy->addUnigramEntry(word, length, unigramProperty);
 }
 
-void Dictionary::addBigramWords(const int *const word0, const int length0,
+void Dictionary::addNgramEntry(const PrevWordsInfo *const prevWordsInfo,
         const BigramProperty *const bigramProperty) {
     TimeKeeper::setCurrentTime();
-    mDictionaryStructureWithBufferPolicy->addBigramWords(word0, length0, bigramProperty);
+    mDictionaryStructureWithBufferPolicy->addNgramEntry(prevWordsInfo, bigramProperty);
 }
 
-void Dictionary::removeBigramWords(const int *const word0, const int length0,
-        const int *const word1, const int length1) {
+void Dictionary::removeNgramEntry(const PrevWordsInfo *const prevWordsInfo,
+        const int *const word, const int length) {
     TimeKeeper::setCurrentTime();
-    mDictionaryStructureWithBufferPolicy->removeBigramWords(word0, length0, word1, length1);
+    mDictionaryStructureWithBufferPolicy->removeNgramEntry(prevWordsInfo, word, length);
 }
 
 void Dictionary::flush(const char *const filePath) {
