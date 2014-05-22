@@ -77,14 +77,16 @@ public class DistracterFilter {
     public DistracterFilter(final Context context, final List<InputMethodSubtype> enabledSubtypes) {
         mContext = context;
         mLocaleToSubtypeMap = new HashMap<>();
-        for (final InputMethodSubtype subtype : enabledSubtypes) {
-            final Locale locale = SubtypeLocaleUtils.getSubtypeLocale(subtype);
-            if (mLocaleToSubtypeMap.containsKey(locale)) {
-                // Multiple subtypes are enabled for one locale.
-                // TODO: Investigate what we should do for this case.
-                continue;
+        if (enabledSubtypes != null) {
+            for (final InputMethodSubtype subtype : enabledSubtypes) {
+                final Locale locale = SubtypeLocaleUtils.getSubtypeLocale(subtype);
+                if (mLocaleToSubtypeMap.containsKey(locale)) {
+                    // Multiple subtypes are enabled for one locale.
+                    // TODO: Investigate what we should do for this case.
+                    continue;
+                }
+                mLocaleToSubtypeMap.put(locale, subtype);
             }
-            mLocaleToSubtypeMap.put(locale, subtype);
         }
         mLocaleToKeyboardMap = new HashMap<>();
         mSuggest = new Suggest();
