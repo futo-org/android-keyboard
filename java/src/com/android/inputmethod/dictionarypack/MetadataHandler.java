@@ -52,6 +52,8 @@ public class MetadataHandler {
             final int idIndex = results.getColumnIndex(MetadataDbHelper.WORDLISTID_COLUMN);
             final int updateIndex = results.getColumnIndex(MetadataDbHelper.DATE_COLUMN);
             final int fileSizeIndex = results.getColumnIndex(MetadataDbHelper.FILESIZE_COLUMN);
+            final int rawChecksumIndex =
+                    results.getColumnIndex(MetadataDbHelper.RAW_CHECKSUM_COLUMN);
             final int checksumIndex = results.getColumnIndex(MetadataDbHelper.CHECKSUM_COLUMN);
             final int localFilenameIndex =
                     results.getColumnIndex(MetadataDbHelper.LOCAL_FILENAME_COLUMN);
@@ -66,6 +68,7 @@ public class MetadataHandler {
                         results.getString(descriptionColumn),
                         results.getLong(updateIndex),
                         results.getLong(fileSizeIndex),
+                        results.getString(rawChecksumIndex),
                         results.getString(checksumIndex),
                         results.getString(localFilenameIndex),
                         results.getString(remoteFilenameIndex),

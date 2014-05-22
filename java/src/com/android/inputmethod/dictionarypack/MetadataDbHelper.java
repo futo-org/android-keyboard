@@ -20,6 +20,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.text.TextUtils;
 import android.util.Log;
@@ -46,7 +47,7 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
     // used to identify the versions for upgrades. This should never change going forward.
     private static final int METADATA_DATABASE_VERSION_WITH_CLIENTID = 6;
     // The current database version.
-    private static final int CURRENT_METADATA_DATABASE_VERSION = 7;
+    private static final int CURRENT_METADATA_DATABASE_VERSION = 8;
 
     private final static long NOT_A_DOWNLOAD_ID = -1;
 
@@ -66,7 +67,8 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
     public static final String VERSION_COLUMN = "version";
     public static final String FORMATVERSION_COLUMN = "formatversion";
     public static final String FLAGS_COLUMN = "flags";
-    public static final int COLUMN_COUNT = 13;
+    public static final String RAW_CHECKSUM_COLUMN = "rawChecksum";
+    public static final int COLUMN_COUNT = 14;
 
     private static final String CLIENT_CLIENT_ID_COLUMN = "clientid";
     private static final String CLIENT_METADATA_URI_COLUMN = "uri";
@@ -119,8 +121,9 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
             + CHECKSUM_COLUMN + " TEXT, "
             + FILESIZE_COLUMN + " INTEGER, "
             + VERSION_COLUMN + " INTEGER,"
-            + FORMATVERSION_COLUMN + " INTEGER,"
-            + FLAGS_COLUMN + " INTEGER,"
+            + FORMATVERSION_COLUMN + " INTEGER, "
+            + FLAGS_COLUMN + " INTEGER, "
+            + RAW_CHECKSUM_COLUMN + " TEXT,"
             + "PRIMARY KEY (" + WORDLISTID_COLUMN + "," + VERSION_COLUMN + "));";
     private static final String METADATA_CREATE_CLIENT_TABLE =
             "CREATE TABLE IF NOT EXISTS " + CLIENT_TABLE_NAME + " ("
@@ -136,7 +139,8 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
     static final String[] METADATA_TABLE_COLUMNS = { PENDINGID_COLUMN, TYPE_COLUMN,
             STATUS_COLUMN, WORDLISTID_COLUMN, LOCALE_COLUMN, DESCRIPTION_COLUMN,
             LOCAL_FILENAME_COLUMN, REMOTE_FILENAME_COLUMN, DATE_COLUMN, CHECKSUM_COLUMN,
-            FILESIZE_COLUMN, VERSION_COLUMN, FORMATVERSION_COLUMN, FLAGS_COLUMN };
+            FILESIZE_COLUMN, VERSION_COLUMN, FORMATVERSION_COLUMN, FLAGS_COLUMN,
+            RAW_CHECKSUM_COLUMN };
     // List of all client table columns.
     static final String[] CLIENT_TABLE_COLUMNS = { CLIENT_CLIENT_ID_COLUMN,
             CLIENT_METADATA_URI_COLUMN, CLIENT_PENDINGID_COLUMN, FLAGS_COLUMN };
@@ -215,6 +219,17 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
         createClientTable(db);
     }
 
+    private void addRawChecksumColumnUnlessPresent(final SQLiteDatabase db, final String clientId) {
+        try {
+            db.execSQL("SELECT " + RAW_CHECKSUM_COLUMN + " FROM "
+                    + METADATA_TABLE_NAME + " LIMIT 0;");
+        } catch (SQLiteException e) {
+            Log.i(TAG, "No " + RAW_CHECKSUM_COLUMN + " column : creating it");
+            db.execSQL("ALTER TABLE " + METADATA_TABLE_NAME + " ADD COLUMN "
+                    + RAW_CHECKSUM_COLUMN + " TEXT;");
+        }
+    }
+
     /**
      * Upgrade the database. Upgrade from version 3 is supported.
      * Version 3 has a DB named METADATA_DATABASE_NAME_STEM containing a table METADATA_TABLE_NAME.
@@ -260,6 +275,12 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
             db.execSQL("DROP TABLE IF EXISTS " + CLIENT_TABLE_NAME);
             onCreate(db);
         }
+        // A rawChecksum column that did not exist in the previous versions was added that
+        // corresponds to the md5 checksum of the file after decompression/decryption. This is to
+        // strengthen the system against corrupted dictionary files.
+        // The most secure way to upgrade a database is to just test for the column presence, and
+        // add it if it's not there.
+        addRawChecksumColumnUnlessPresent(db, mClientId);
     }
 
     /**
@@ -431,7 +452,7 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
     public static ContentValues makeContentValues(final int pendingId, final int type,
             final int status, final String wordlistId, final String locale,
             final String description, final String filename, final String url, final long date,
-            final String checksum, final long filesize, final int version,
+            final String rawChecksum, final String checksum, final long filesize, final int version,
             final int formatVersion) {
         final ContentValues result = new ContentValues(COLUMN_COUNT);
         result.put(PENDINGID_COLUMN, pendingId);
@@ -443,6 +464,7 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
         result.put(LOCAL_FILENAME_COLUMN, filename);
         result.put(REMOTE_FILENAME_COLUMN, url);
         result.put(DATE_COLUMN, date);
+        result.put(RAW_CHECKSUM_COLUMN, rawChecksum);
         result.put(CHECKSUM_COLUMN, checksum);
         result.put(FILESIZE_COLUMN, filesize);
         result.put(VERSION_COLUMN, version);
@@ -478,6 +500,8 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
         if (null == result.get(REMOTE_FILENAME_COLUMN)) result.put(REMOTE_FILENAME_COLUMN, "");
         // 0 for the update date : 1970/1/1. Unless specified.
         if (null == result.get(DATE_COLUMN)) result.put(DATE_COLUMN, 0);
+        // Raw checksum unknown unless specified
+        if (null == result.get(RAW_CHECKSUM_COLUMN)) result.put(RAW_CHECKSUM_COLUMN, "");
         // Checksum unknown unless specified
         if (null == result.get(CHECKSUM_COLUMN)) result.put(CHECKSUM_COLUMN, "");
         // No filesize unless specified
@@ -525,6 +549,7 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
             putStringResult(result, cursor, LOCAL_FILENAME_COLUMN);
             putStringResult(result, cursor, REMOTE_FILENAME_COLUMN);
             putIntResult(result, cursor, DATE_COLUMN);
+            putStringResult(result, cursor, RAW_CHECKSUM_COLUMN);
             putStringResult(result, cursor, CHECKSUM_COLUMN);
             putIntResult(result, cursor, FILESIZE_COLUMN);
             putIntResult(result, cursor, VERSION_COLUMN);
