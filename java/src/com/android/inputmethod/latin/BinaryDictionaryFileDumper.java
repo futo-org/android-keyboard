@@ -28,6 +28,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.android.inputmethod.dictionarypack.DictionaryPackConstants;
+import com.android.inputmethod.dictionarypack.MD5Calculator;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.DictionaryInfoUtils;
 import com.android.inputmethod.latin.utils.DictionaryInfoUtils.DictionaryInfo;
@@ -38,6 +39,7 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.Closeable;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -218,7 +220,8 @@ public final class BinaryDictionaryFileDumper {
      * and creating it (and its containing directory) if necessary.
      */
     private static void cacheWordList(final String wordlistId, final String locale,
-            final ContentProviderClient providerClient, final Context context) {
+            final String rawChecksum, final ContentProviderClient providerClient,
+            final Context context) {
         final int COMPRESSED_CRYPTED_COMPRESSED = 0;
         final int CRYPTED_COMPRESSED = 1;
         final int COMPRESSED_CRYPTED = 2;
@@ -300,6 +303,13 @@ public final class BinaryDictionaryFileDumper {
                 checkMagicAndCopyFileTo(bufferedInputStream, bufferedOutputStream);
                 bufferedOutputStream.flush();
                 bufferedOutputStream.close();
+                final String actualRawChecksum = MD5Calculator.checksum(
+                        new BufferedInputStream(new FileInputStream(outputFile)));
+                Log.i(TAG, "Computed checksum for downloaded dictionary. Expected = " + rawChecksum
+                        + " ; actual = " + actualRawChecksum);
+                if (!TextUtils.isEmpty(rawChecksum) && !rawChecksum.equals(actualRawChecksum)) {
+                    throw new IOException("Could not decode the file correctly : checksum differs");
+                }
                 final File finalFile = new File(finalFileName);
                 finalFile.delete();
                 if (!outputFile.renameTo(finalFile)) {
@@ -409,7 +419,7 @@ public final class BinaryDictionaryFileDumper {
             final List<WordListInfo> idList = getWordListWordListInfos(locale, context,
                     hasDefaultWordList);
             for (WordListInfo id : idList) {
-                cacheWordList(id.mId, id.mLocale, providerClient, context);
+                cacheWordList(id.mId, id.mLocale, id.mRawChecksum, providerClient, context);
             }
         } finally {
             providerClient.release();
