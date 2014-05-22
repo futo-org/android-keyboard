@@ -383,8 +383,8 @@ const WordProperty PatriciaTriePolicy::getWordProperty(const int *const codePoin
             shortcuts.emplace_back(&shortcutTarget, shortcutProbability);
         }
     }
-    const UnigramProperty unigramProperty(ptNodeParams.isNotAWord(),
-            ptNodeParams.isBlacklisted(), ptNodeParams.getProbability(),
+    const UnigramProperty unigramProperty(ptNodeParams.representsBeginningOfSentence(),
+            ptNodeParams.isNotAWord(), ptNodeParams.isBlacklisted(), ptNodeParams.getProbability(),
             NOT_A_TIMESTAMP /* timestamp */, 0 /* level */, 0 /* count */, &shortcuts);
     return WordProperty(&codePointVector, &unigramProperty, &bigrams);
 }

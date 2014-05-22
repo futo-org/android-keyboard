@@ -246,6 +246,10 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
         return &mLocale;
     }
 
+    bool supportsBeginningOfSentence() const {
+        return mDictFormatVersion == FormatUtils::VERSION_4_DEV;
+    }
+
  private:
     DISALLOW_COPY_AND_ASSIGN(HeaderPolicy);
 

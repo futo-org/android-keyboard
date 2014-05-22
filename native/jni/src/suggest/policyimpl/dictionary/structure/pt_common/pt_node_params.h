@@ -164,6 +164,11 @@ class PtNodeParams {
                 && isNotAWord();
     }
 
+    AK_FORCE_INLINE int representsBeginningOfSentence() const {
+        return getCodePointCount() > 0 && getCodePoints()[0] == CODE_POINT_BEGINNING_OF_SENTENCE
+                && isNotAWord();
+    }
+
     // Parent node position
     AK_FORCE_INLINE int getParentPos() const {
         return mParentPos;
