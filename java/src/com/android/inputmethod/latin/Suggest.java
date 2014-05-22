@@ -111,7 +111,10 @@ public final class Suggest {
                 additionalFeaturesOptions, SESSION_TYPING, rawSuggestions);
 
         final boolean isFirstCharCapitalized = wordComposer.isFirstCharCapitalized();
-        final boolean isAllUpperCase = wordComposer.isAllUpperCase();
+        // If resumed, then we don't want to upcase everything: resuming on a fully-capitalized
+        // words is rarely done to switch to another fully-capitalized word, but usually to a
+        // normal, non-capitalized suggestion.
+        final boolean isAllUpperCase = wordComposer.isAllUpperCase() && !wordComposer.isResumed();
         final String firstSuggestion;
         final String whitelistedWord;
         if (suggestionResults.isEmpty()) {
