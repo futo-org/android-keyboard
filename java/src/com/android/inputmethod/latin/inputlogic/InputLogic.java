@@ -805,10 +805,11 @@ public final class InputLogic {
         final int codePoint = inputTransaction.mEvent.mCodePoint;
         final SettingsValues settingsValues = inputTransaction.mSettingsValues;
         boolean didAutoCorrect = false;
+        final boolean wasComposingWord = mWordComposer.isComposingWord();
         // We avoid sending spaces in languages without spaces if we were composing.
         final boolean shouldAvoidSendingCode = Constants.CODE_SPACE == codePoint
                 && !settingsValues.mSpacingAndPunctuations.mCurrentLanguageHasSpaces
-                && mWordComposer.isComposingWord();
+                && wasComposingWord;
         if (mWordComposer.isCursorFrontOrMiddleOfComposingWord()) {
             // If we are in the middle of a recorrection, we need to commit the recorrection
             // first so that we can insert the separator at the current cursor position.
@@ -852,7 +853,7 @@ public final class InputLogic {
             promotePhantomSpace(settingsValues);
         }
         if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-            ResearchLogger.latinIME_handleSeparator(codePoint, mWordComposer.isComposingWord());
+            ResearchLogger.latinIME_handleSeparator(codePoint, wasComposingWord);
         }
 
         if (!shouldAvoidSendingCode) {
@@ -868,7 +869,9 @@ public final class InputLogic {
             }
 
             startDoubleSpacePeriodCountdown(inputTransaction);
-            inputTransaction.setRequiresUpdateSuggestions();
+            if (wasComposingWord) {
+                inputTransaction.setRequiresUpdateSuggestions();
+            }
         } else {
             if (swapWeakSpace) {
                 swapSwapperAndSpace(inputTransaction);
