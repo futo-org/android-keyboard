@@ -31,6 +31,7 @@
 #include "suggest/core/dictionary/property/bigram_property.h"
 #include "suggest/core/dictionary/property/unigram_property.h"
 #include "suggest/core/dictionary/property/word_property.h"
+#include "suggest/core/session/prev_words_info.h"
 #include "suggest/policyimpl/dictionary/structure/pt_common/dynamic_pt_reading_helper.h"
 #include "suggest/policyimpl/dictionary/structure/backward/v401/ver4_patricia_trie_node_reader.h"
 #include "suggest/policyimpl/dictionary/utils/forgetting_curve_utils.h"
@@ -163,10 +164,10 @@ int Ver4PatriciaTriePolicy::getBigramsPositionOfPtNode(const int ptNodePos) cons
             ptNodeParams.getTerminalId());
 }
 
-bool Ver4PatriciaTriePolicy::addUnigramWord(const int *const word, const int length,
+bool Ver4PatriciaTriePolicy::addUnigramEntry(const int *const word, const int length,
         const UnigramProperty *const unigramProperty) {
     if (!mBuffers->isUpdatable()) {
-        AKLOGI("Warning: addUnigramWord() is called for non-updatable dictionary.");
+        AKLOGI("Warning: addUnigramEntry() is called for non-updatable dictionary.");
         return false;
     }
     if (mDictBuffer->getTailPosition() >= MIN_DICT_SIZE_TO_REFUSE_DYNAMIC_OPERATIONS) {
@@ -218,10 +219,12 @@ bool Ver4PatriciaTriePolicy::addUnigramWord(const int *const word, const int len
     }
 }
 
-bool Ver4PatriciaTriePolicy::addBigramWords(const int *const word0, const int length0,
+bool Ver4PatriciaTriePolicy::addNgramEntry(const PrevWordsInfo *const prevWordsInfo,
         const BigramProperty *const bigramProperty) {
+    const int length0 = prevWordsInfo->getNthPrevWordCodePointCount(1);
+    const int *word0 = prevWordsInfo->getNthPrevWordCodePoints(1);
     if (!mBuffers->isUpdatable()) {
-        AKLOGI("Warning: addBigramWords() is called for non-updatable dictionary.");
+        AKLOGI("Warning: addNgramEntry() is called for non-updatable dictionary.");
         return false;
     }
     if (mDictBuffer->getTailPosition() >= MIN_DICT_SIZE_TO_REFUSE_DYNAMIC_OPERATIONS) {
@@ -257,8 +260,10 @@ bool Ver4PatriciaTriePolicy::addBigramWords(const int *const word0, const int le
     }
 }
 
-bool Ver4PatriciaTriePolicy::removeBigramWords(const int *const word0, const int length0,
+bool Ver4PatriciaTriePolicy::removeNgramEntry(const PrevWordsInfo *const prevWordsInfo,
         const int *const word1, const int length1) {
+    const int length0 = prevWordsInfo->getNthPrevWordCodePointCount(1);
+    const int *word0 = prevWordsInfo->getNthPrevWordCodePoints(1);
     if (!mBuffers->isUpdatable()) {
         AKLOGI("Warning: addBigramWords() is called for non-updatable dictionary.");
         return false;

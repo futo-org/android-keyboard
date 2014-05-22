@@ -29,6 +29,7 @@ class DicNodeVector;
 class DictionaryBigramsStructurePolicy;
 class DictionaryHeaderStructurePolicy;
 class DictionaryShortcutsStructurePolicy;
+class PrevWordsInfo;
 class UnigramProperty;
 
 /*
@@ -69,16 +70,16 @@ class DictionaryStructureWithBufferPolicy {
     virtual const DictionaryShortcutsStructurePolicy *getShortcutsStructurePolicy() const = 0;
 
     // Returns whether the update was success or not.
-    virtual bool addUnigramWord(const int *const word, const int length,
+    virtual bool addUnigramEntry(const int *const word, const int length,
             const UnigramProperty *const unigramProperty) = 0;
 
     // Returns whether the update was success or not.
-    virtual bool addBigramWords(const int *const word0, const int length0,
+    virtual bool addNgramEntry(const PrevWordsInfo *const prevWordsInfo,
             const BigramProperty *const bigramProperty) = 0;
 
     // Returns whether the update was success or not.
-    virtual bool removeBigramWords(const int *const word0, const int length0,
-            const int *const word1, const int length1) = 0;
+    virtual bool removeNgramEntry(const PrevWordsInfo *const prevWordsInfo,
+            const int *const word, const int length) = 0;
 
     virtual void flush(const char *const filePath) = 0;
 

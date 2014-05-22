@@ -41,13 +41,23 @@ class PrevWordsInfo {
         mIsBeginningOfSentence[0] = isBeginningOfSentence;
     }
 
+    bool isValid() const {
+        for (size_t i = 0; i < NELEMS(mPrevWordCodePoints); ++i) {
+            if (mPrevWordCodePointCount[i] > MAX_WORD_LENGTH) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     void getPrevWordsTerminalPtNodePos(
             const DictionaryStructureWithBufferPolicy *const dictStructurePolicy,
-            int *const outPrevWordsTerminalPtNodePos) const {
+            int *const outPrevWordsTerminalPtNodePos,
+            const bool tryLowerCaseSearch) const {
         for (size_t i = 0; i < NELEMS(mPrevWordCodePoints); ++i) {
             outPrevWordsTerminalPtNodePos[i] = getTerminalPtNodePosOfWord(dictStructurePolicy,
                     mPrevWordCodePoints[i], mPrevWordCodePointCount[i],
-                    mIsBeginningOfSentence[i]);
+                    mIsBeginningOfSentence[i], tryLowerCaseSearch);
         }
     }
 
@@ -66,19 +76,37 @@ class PrevWordsInfo {
                 dictStructurePolicy->getBigramsStructurePolicy(), pos);
     }
 
+    // n is 1-indexed.
+    const int *getNthPrevWordCodePoints(const int n) const {
+        if (n <= 0 || n > MAX_PREV_WORD_COUNT_FOR_N_GRAM) {
+            return nullptr;
+        }
+        return mPrevWordCodePoints[n - 1];
+    }
+
+    // n is 1-indexed.
+    int getNthPrevWordCodePointCount(const int n) const {
+        if (n <= 0 || n > MAX_PREV_WORD_COUNT_FOR_N_GRAM) {
+            return 0;
+        }
+        return mPrevWordCodePointCount[n - 1];
+    }
+
  private:
     DISALLOW_COPY_AND_ASSIGN(PrevWordsInfo);
 
     static int getTerminalPtNodePosOfWord(
             const DictionaryStructureWithBufferPolicy *const dictStructurePolicy,
             const int *const wordCodePoints, const int wordCodePointCount,
-            const bool isBeginningOfSentence) {
+            const bool isBeginningOfSentence, const bool tryLowerCaseSearch) {
         if (!dictStructurePolicy || !wordCodePoints) {
             return NOT_A_DICT_POS;
         }
         const int wordPtNodePos = dictStructurePolicy->getTerminalPtNodePositionOfWord(
                 wordCodePoints, wordCodePointCount, false /* forceLowerCaseSearch */);
-        if (wordPtNodePos != NOT_A_DICT_POS) {
+        if (wordPtNodePos != NOT_A_DICT_POS || !tryLowerCaseSearch) {
+            // Return the position when when the word was found or doesn't try lower case
+            // search.
             return wordPtNodePos;
         }
         // Check bigrams for lower-cased previous word if original was not found. Useful for
