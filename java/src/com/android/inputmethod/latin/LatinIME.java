@@ -1747,9 +1747,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @UsedForTesting
     /* package for test */ DistracterFilter createDistracterFilter() {
-        return new DistracterFilter(this /* Context */,
+        // Return an empty distracter filter when this method is called before onCreate().
+        return (mRichImm != null) ? new DistracterFilter(this /* Context */,
                 mRichImm.getMyEnabledInputMethodSubtypeList(
-                        true /* allowsImplicitlySelectedSubtypes */));
+                        true /* allowsImplicitlySelectedSubtypes */)) : new DistracterFilter();
     }
 
     public void dumpDictionaryForDebug(final String dictName) {
