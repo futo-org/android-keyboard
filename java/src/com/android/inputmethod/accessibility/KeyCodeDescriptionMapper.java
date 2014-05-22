@@ -33,6 +33,7 @@ import java.util.Locale;
 
 public final class KeyCodeDescriptionMapper {
     private static final String TAG = KeyCodeDescriptionMapper.class.getSimpleName();
+    private static final String SPOKEN_LETTER_RESOURCE_NAME_FORMAT = "spoken_accented_letter_%04X";
     private static final String SPOKEN_EMOJI_RESOURCE_NAME_FORMAT = "spoken_emoji_%04X";
 
     // The resource ID of the string spoken for obscured keys
@@ -71,6 +72,15 @@ public final class KeyCodeDescriptionMapper {
         mKeyCodeMap.put(Constants.CODE_ACTION_PREVIOUS,
                 R.string.spoken_description_action_previous);
         mKeyCodeMap.put(Constants.CODE_EMOJI, R.string.spoken_description_emoji);
+        // Because the upper-case and lower-case mappings of the following letters is depending on
+        // the locale, the upper case descriptions should be defined here. The lower case
+        // descriptions are handled in {@link #getSpokenLetterDescriptionId(Context,int)}.
+        // U+0049: "I" LATIN CAPITAL LETTER I
+        // U+0069: "i" LATIN SMALL LETTER I
+        // U+0130: "İ" LATIN CAPITAL LETTER I WITH DOT ABOVE
+        // U+0131: "ı" LATIN SMALL LETTER DOTLESS I
+        mKeyCodeMap.put(0x0049, R.string.spoken_letter_0049);
+        mKeyCodeMap.put(0x0130, R.string.spoken_letter_0130);
     }
 
     /**
@@ -271,15 +281,19 @@ public final class KeyCodeDescriptionMapper {
         if (shouldObscure && isDefinedNonCtrl) {
             return context.getString(OBSCURED_KEY_RES_ID);
         }
-        if (mKeyCodeMap.indexOfKey(code) >= 0) {
-            return context.getString(mKeyCodeMap.get(code));
+        final int index = mKeyCodeMap.indexOfKey(code);
+        if (index >= 0) {
+            return context.getString(mKeyCodeMap.valueAt(index));
         }
+        final String accentedLetter = getSpokenAccentedLetterDescriptionId(context, code);
+        if (accentedLetter != null) {
+            return accentedLetter;
+        }
+        // Here, <code>code</code> may be a base letter.
         final int spokenEmojiId = getSpokenDescriptionId(
                 context, code, SPOKEN_EMOJI_RESOURCE_NAME_FORMAT);
         if (spokenEmojiId != 0) {
-            final String spokenEmoji = context.getString(spokenEmojiId);
-            mKeyCodeMap.append(code, spokenEmojiId);
-            return spokenEmoji;
+            return context.getString(spokenEmojiId);
         }
         if (isDefinedNonCtrl) {
             return Character.toString((char) code);
@@ -290,12 +304,31 @@ public final class KeyCodeDescriptionMapper {
         return context.getString(R.string.spoken_description_unknown, code);
     }
 
-    private static int getSpokenDescriptionId(final Context context, final int code,
+    private String getSpokenAccentedLetterDescriptionId(final Context context, final int code) {
+        final boolean isUpperCase = Character.isUpperCase(code);
+        final int baseCode = isUpperCase ? Character.toLowerCase(code) : code;
+        final int baseIndex = mKeyCodeMap.indexOfKey(baseCode);
+        final int resId = (baseIndex >= 0) ? mKeyCodeMap.valueAt(baseIndex)
+                : getSpokenDescriptionId(context, baseCode, SPOKEN_LETTER_RESOURCE_NAME_FORMAT);
+        if (resId == 0) {
+            return null;
+        }
+        final String spokenText = context.getString(resId);
+        return isUpperCase ? context.getString(R.string.spoke_description_upper_case, spokenText)
+                : spokenText;
+    }
+
+    private int getSpokenDescriptionId(final Context context, final int code,
             final String resourceNameFormat) {
         final String resourceName = String.format(Locale.ROOT, resourceNameFormat, code);
         final Resources resources = context.getResources();
-        final String packageName = resources.getResourcePackageName(
+        // Note that the resource package name may differ from the context package name.
+        final String resourcePackageName = resources.getResourcePackageName(
                 R.string.spoken_description_unknown);
-        return resources.getIdentifier(resourceName, "string", packageName);
+        final int resId = resources.getIdentifier(resourceName, "string", resourcePackageName);
+        if (resId != 0) {
+            mKeyCodeMap.append(code, resId);
+        }
+        return resId;
     }
 }
