@@ -48,14 +48,20 @@ class UnigramProperty {
     };
 
     UnigramProperty()
-            : mIsNotAWord(false), mIsBlacklisted(false), mProbability(NOT_A_PROBABILITY),
-              mTimestamp(NOT_A_TIMESTAMP), mLevel(0), mCount(0), mShortcuts() {}
+            : mRepresentsBeginningOfSentence(false), mIsNotAWord(false), mIsBlacklisted(false),
+              mProbability(NOT_A_PROBABILITY), mTimestamp(NOT_A_TIMESTAMP), mLevel(0), mCount(0),
+              mShortcuts() {}
 
-    UnigramProperty(const bool isNotAWord, const bool isBlacklisted, const int probability,
-            const int timestamp, const int level, const int count,
-            const std::vector<ShortcutProperty> *const shortcuts)
-            : mIsNotAWord(isNotAWord), mIsBlacklisted(isBlacklisted), mProbability(probability),
+    UnigramProperty(const bool representsBeginningOfSentence, const bool isNotAWord,
+            const bool isBlacklisted, const int probability, const int timestamp, const int level,
+            const int count, const std::vector<ShortcutProperty> *const shortcuts)
+            : mRepresentsBeginningOfSentence(representsBeginningOfSentence),
+              mIsNotAWord(isNotAWord), mIsBlacklisted(isBlacklisted), mProbability(probability),
               mTimestamp(timestamp), mLevel(level), mCount(count), mShortcuts(*shortcuts) {}
+
+    bool representsBeginningOfSentence() const {
+        return mRepresentsBeginningOfSentence;
+    }
 
     bool isNotAWord() const {
         return mIsNotAWord;
@@ -94,6 +100,7 @@ class UnigramProperty {
     DISALLOW_ASSIGNMENT_OPERATOR(UnigramProperty);
 
     // TODO: Make members const.
+    bool mRepresentsBeginningOfSentence;
     bool mIsNotAWord;
     bool mIsBlacklisted;
     int mProbability;

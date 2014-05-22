@@ -341,8 +341,8 @@ static void latinime_BinaryDictionary_addUnigramWord(JNIEnv *env, jclass clazz, 
         shortcuts.emplace_back(&shortcutTargetCodePoints, shortcutProbability);
     }
     // Use 1 for count to indicate the word has inputted.
-    const UnigramProperty unigramProperty(isNotAWord, isBlacklisted,
-            probability, timestamp, 0 /* level */, 1 /* count */, &shortcuts);
+    const UnigramProperty unigramProperty(false /* isBeginningOfSentence */, isNotAWord,
+            isBlacklisted, probability, timestamp, 0 /* level */, 1 /* count */, &shortcuts);
     dictionary->addUnigramEntry(codePoints, codePointCount, &unigramProperty);
 }
 
@@ -450,8 +450,9 @@ static int latinime_BinaryDictionary_addMultipleDictionaryEntries(JNIEnv *env, j
             shortcuts.emplace_back(&shortcutTargetCodePoints, shortcutProbability);
         }
         // Use 1 for count to indicate the word has inputted.
-        const UnigramProperty unigramProperty(isNotAWord, isBlacklisted,
-                unigramProbability, timestamp, 0 /* level */, 1 /* count */, &shortcuts);
+        const UnigramProperty unigramProperty(false /* isBeginningOfSentence */, isNotAWord,
+                isBlacklisted, unigramProbability, timestamp, 0 /* level */, 1 /* count */,
+                &shortcuts);
         dictionary->addUnigramEntry(word1CodePoints, word1Length, &unigramProperty);
         if (word0) {
             jint bigramProbability = env->GetIntField(languageModelParam, bigramProbabilityFieldId);
