@@ -167,8 +167,9 @@ public final class BinaryDictionaryFileDumper {
             do {
                 final String wordListId = cursor.getString(0);
                 final String wordListLocale = cursor.getString(1);
+                final String wordListRawChecksum = cursor.getString(2);
                 if (TextUtils.isEmpty(wordListId)) continue;
-                list.add(new WordListInfo(wordListId, wordListLocale));
+                list.add(new WordListInfo(wordListId, wordListLocale, wordListRawChecksum));
             } while (cursor.moveToNext());
             return list;
         } catch (RemoteException e) {
