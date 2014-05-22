@@ -82,6 +82,12 @@ int Dictionary::getBigramProbability(const PrevWordsInfo *const prevWordsInfo, c
 
 void Dictionary::addUnigramEntry(const int *const word, const int length,
         const UnigramProperty *const unigramProperty) {
+    if (unigramProperty->representsBeginningOfSentence()
+            && !mDictionaryStructureWithBufferPolicy->getHeaderStructurePolicy()
+                    ->supportsBeginningOfSentence()) {
+        AKLOGE("The dictionary doesn't support Beginning-of-Sentence.");
+        return;
+    }
     TimeKeeper::setCurrentTime();
     mDictionaryStructureWithBufferPolicy->addUnigramEntry(word, length, unigramProperty);
 }

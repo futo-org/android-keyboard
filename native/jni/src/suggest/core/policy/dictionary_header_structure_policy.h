@@ -51,6 +51,8 @@ class DictionaryHeaderStructurePolicy {
 
     virtual const std::vector<int> *getLocale() const = 0;
 
+    virtual bool supportsBeginningOfSentence() const = 0;
+
  protected:
     DictionaryHeaderStructurePolicy() {}
 
