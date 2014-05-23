@@ -257,7 +257,7 @@
         latin:styleName="defaultEnterKeyStyle"
         latin:keyLabelFlags="preserveCase|autoXScale|followKeyLabelRatio|followFunctionalTextColor"
         latin:keyActionFlags="noKeyPreview"
-        latin:backgroundType="functional"
+        latin:backgroundType="action"
         latin:parentStyle="navigateMoreKeysStyle" />
     <key-style
         latin:styleName="shiftEnterKeyStyle"

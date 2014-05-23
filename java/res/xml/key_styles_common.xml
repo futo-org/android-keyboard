@@ -82,7 +82,7 @@
         latin:styleName="emojiKeyStyle"
         latin:keySpec="!icon/emoji_key|!code/key_emoji"
         latin:keyActionFlags="noKeyPreview"
-        latin:backgroundType="functional" />
+        latin:backgroundType="action" />
     <include
         latin:keyboardLayout="@xml/key_styles_enter" />
     <key-style
