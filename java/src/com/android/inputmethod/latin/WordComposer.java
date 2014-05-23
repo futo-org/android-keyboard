@@ -85,7 +85,7 @@ public final class WordComposer {
         mIsBatchMode = false;
         mCursorPositionWithinWord = 0;
         mRejectedBatchModeSuggestion = null;
-        mPrevWordsInfo = new PrevWordsInfo(null);
+        mPrevWordsInfo = PrevWordsInfo.EMPTY_PREV_WORDS_INFO;
         refreshTypedWordCache();
     }
 
@@ -117,7 +117,7 @@ public final class WordComposer {
         mIsBatchMode = false;
         mCursorPositionWithinWord = 0;
         mRejectedBatchModeSuggestion = null;
-        mPrevWordsInfo = new PrevWordsInfo(null);
+        mPrevWordsInfo = PrevWordsInfo.EMPTY_PREV_WORDS_INFO;
         refreshTypedWordCache();
     }
 
@@ -445,7 +445,7 @@ public final class WordComposer {
     // when the user inputs a separator that's not whitespace (including the case of the
     // double-space-to-period feature).
     public void discardPreviousWordForSuggestion() {
-        mPrevWordsInfo = new PrevWordsInfo(null);
+        mPrevWordsInfo = PrevWordsInfo.EMPTY_PREV_WORDS_INFO;
     }
 
     public void resumeSuggestionOnLastComposedWord(final LastComposedWord lastComposedWord,

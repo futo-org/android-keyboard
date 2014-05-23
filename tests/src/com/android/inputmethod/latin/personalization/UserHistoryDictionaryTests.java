@@ -110,7 +110,7 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
     }
 
     private static void addToDict(final UserHistoryDictionary dict, final List<String> words) {
-        PrevWordsInfo prevWordsInfo = new PrevWordsInfo(null);
+        PrevWordsInfo prevWordsInfo = PrevWordsInfo.EMPTY_PREV_WORDS_INFO;
         for (String word : words) {
             UserHistoryDictionary.addToDictionary(dict, prevWordsInfo, word, true,
                     (int)TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()));

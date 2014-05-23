@@ -224,7 +224,7 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
      */
     private void addNameLocked(final String name) {
         int len = StringUtils.codePointCount(name);
-        PrevWordsInfo prevWordsInfo = new PrevWordsInfo(null);
+        PrevWordsInfo prevWordsInfo = PrevWordsInfo.EMPTY_PREV_WORDS_INFO;
         // TODO: Better tokenization for non-Latin writing systems
         for (int i = 0; i < len; i++) {
             if (Character.isLetter(name.codePointAt(i))) {
