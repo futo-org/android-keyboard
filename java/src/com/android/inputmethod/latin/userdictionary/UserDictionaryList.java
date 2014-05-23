@@ -56,7 +56,7 @@ public class UserDictionaryList extends PreferenceFragment {
         final Cursor cursor = activity.getContentResolver().query(UserDictionary.Words.CONTENT_URI,
                 new String[] { UserDictionary.Words.LOCALE },
                 null, null, null);
-        final TreeSet<String> localeSet = new TreeSet<String>();
+        final TreeSet<String> localeSet = new TreeSet<>();
         if (null == cursor) {
             // The user dictionary service is not present or disabled. Return null.
             return null;

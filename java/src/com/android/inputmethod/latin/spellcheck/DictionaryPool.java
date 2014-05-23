@@ -23,7 +23,6 @@ import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.PrevWordsInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.WordComposer;
-import com.android.inputmethod.latin.utils.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -47,7 +46,7 @@ public final class DictionaryPool extends LinkedBlockingQueue<DictAndKeyboard> {
     private final Locale mLocale;
     private int mSize;
     private volatile boolean mClosed;
-    final static ArrayList<SuggestedWordInfo> noSuggestions = CollectionUtils.newArrayList();
+    final static ArrayList<SuggestedWordInfo> noSuggestions = new ArrayList<>();
     private final static DictAndKeyboard dummyDict = new DictAndKeyboard(
             new Dictionary(Dictionary.TYPE_MAIN) {
                 // TODO: this dummy dictionary should be a singleton in the Dictionary class.

@@ -31,7 +31,7 @@ import java.util.Locale;
 @SmallTest
 public class SpacebarLanguagetUtilsTests extends AndroidTestCase {
     // All input method subtypes of LatinIME.
-    private final ArrayList<InputMethodSubtype> mSubtypesList = CollectionUtils.newArrayList();
+    private final ArrayList<InputMethodSubtype> mSubtypesList = new ArrayList<>();
 
     private RichInputMethodManager mRichImm;
     private Resources mRes;

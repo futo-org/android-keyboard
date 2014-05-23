@@ -30,7 +30,7 @@ public final class TypefaceUtils {
     }
 
     // This sparse array caches key label text height in pixel indexed by key label text size.
-    private static final SparseArray<Float> sTextHeightCache = CollectionUtils.newSparseArray();
+    private static final SparseArray<Float> sTextHeightCache = new SparseArray<>();
     // Working variable for the following method.
     private static final Rect sTextHeightBounds = new Rect();
 
@@ -50,7 +50,7 @@ public final class TypefaceUtils {
     }
 
     // This sparse array caches key label text width in pixel indexed by key label text size.
-    private static final SparseArray<Float> sTextWidthCache = CollectionUtils.newSparseArray();
+    private static final SparseArray<Float> sTextWidthCache = new SparseArray<>();
     // Working variable for the following method.
     private static final Rect sTextWidthBounds = new Rect();
 

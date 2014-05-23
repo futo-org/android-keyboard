@@ -41,7 +41,6 @@ import com.android.inputmethod.latin.InputAttributes;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SubtypeSwitcher;
-import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.InputTypeUtils;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 import com.android.inputmethod.latin.utils.XmlParseUtils;
@@ -81,7 +80,7 @@ public final class KeyboardLayoutSet {
     // them from disappearing from sKeyboardCache.
     private static final Keyboard[] sForcibleKeyboardCache = new Keyboard[FORCIBLE_CACHE_SIZE];
     private static final HashMap<KeyboardId, SoftReference<Keyboard>> sKeyboardCache =
-            CollectionUtils.newHashMap();
+            new HashMap<>();
     private static final KeysCache sKeysCache = new KeysCache();
 
     @SuppressWarnings("serial")
@@ -117,7 +116,7 @@ public final class KeyboardLayoutSet {
         int mKeyboardHeight;
         // Sparse array of KeyboardLayoutSet element parameters indexed by element's id.
         final SparseArray<ElementParams> mKeyboardLayoutSetElementIdToParamsMap =
-                CollectionUtils.newSparseArray();
+                new SparseArray<>();
     }
 
     public static void clearKeyboardCache() {
@@ -181,7 +180,7 @@ public final class KeyboardLayoutSet {
         }
 
         final KeyboardBuilder<KeyboardParams> builder =
-                new KeyboardBuilder<KeyboardParams>(mContext, new KeyboardParams());
+                new KeyboardBuilder<>(mContext, new KeyboardParams());
         if (id.isAlphabetKeyboard()) {
             builder.setAutoGenerate(sKeysCache);
         }
@@ -192,7 +191,7 @@ public final class KeyboardLayoutSet {
         }
         builder.setProximityCharsCorrectionEnabled(elementParams.mProximityCharsCorrectionEnabled);
         final Keyboard keyboard = builder.build();
-        sKeyboardCache.put(id, new SoftReference<Keyboard>(keyboard));
+        sKeyboardCache.put(id, new SoftReference<>(keyboard));
         if ((id.mElementId == KeyboardId.ELEMENT_ALPHABET
                 || id.mElementId == KeyboardId.ELEMENT_ALPHABET_AUTOMATIC_SHIFTED)
                 && !mParams.mIsSpellChecker) {

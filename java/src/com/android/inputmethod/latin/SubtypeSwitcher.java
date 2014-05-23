@@ -255,8 +255,7 @@ public final class SubtypeSwitcher {
 
     public boolean isSystemLocaleSameAsLocaleOfAllEnabledSubtypesOfEnabledImes() {
         final Locale systemLocale = mResources.getConfiguration().locale;
-        final Set<InputMethodSubtype> enabledSubtypesOfEnabledImes =
-                new HashSet<InputMethodSubtype>();
+        final Set<InputMethodSubtype> enabledSubtypesOfEnabledImes = new HashSet<>();
         final InputMethodManager inputMethodManager = mRichImm.getInputMethodManager();
         final List<InputMethodInfo> enabledInputMethodInfoList =
                 inputMethodManager.getEnabledInputMethodList();

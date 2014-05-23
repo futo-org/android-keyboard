@@ -37,7 +37,6 @@ import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.latin.settings.Settings;
-import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.CoordinateUtils;
 import com.android.inputmethod.latin.utils.ResourceUtils;
 import com.android.inputmethod.research.ResearchLogger;
@@ -144,7 +143,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
     // TODO: Device specific parameter would be better for device specific hack?
     private static final float PHANTOM_SUDDEN_MOVE_THRESHOLD = 0.25f; // in keyWidth
 
-    private static final ArrayList<PointerTracker> sTrackers = CollectionUtils.newArrayList();
+    private static final ArrayList<PointerTracker> sTrackers = new ArrayList<>();
     private static final PointerTrackerQueue sPointerTrackerQueue = new PointerTrackerQueue();
 
     public final int mPointerId;

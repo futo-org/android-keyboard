@@ -119,7 +119,7 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
         final File file = File.createTempFile(dictId, TEST_DICT_FILE_EXTENSION,
                 getContext().getCacheDir());
         FileUtils.deleteRecursively(file);
-        Map<String, String> attributeMap = new HashMap<String, String>();
+        Map<String, String> attributeMap = new HashMap<>();
         attributeMap.put(DictionaryHeader.DICTIONARY_ID_KEY, dictId);
         attributeMap.put(DictionaryHeader.DICTIONARY_VERSION_KEY,
                 String.valueOf(TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis())));
@@ -333,7 +333,7 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
         setCurrentTimeForTestMode(mCurrentTime);
 
         final int[] codePointSet = CodePointUtils.generateCodePointSet(codePointSetSize, random);
-        final ArrayList<String> words = new ArrayList<String>();
+        final ArrayList<String> words = new ArrayList<>();
 
         for (int i = 0; i < unigramCount; i++) {
             final String word = CodePointUtils.generateWord(random, codePointSet);
@@ -456,8 +456,8 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
         setCurrentTimeForTestMode(mCurrentTime);
 
         final int[] codePointSet = CodePointUtils.generateCodePointSet(codePointSetSize, random);
-        final ArrayList<String> words = new ArrayList<String>();
-        final ArrayList<Pair<String, String>> bigrams = new ArrayList<Pair<String, String>>();
+        final ArrayList<String> words = new ArrayList<>();
+        final ArrayList<Pair<String, String>> bigrams = new ArrayList<>();
 
         for (int i = 0; i < unigramCount; ++i) {
             final String word = CodePointUtils.generateWord(random, codePointSet);
@@ -471,7 +471,7 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
             }
             final String word0 = words.get(word0Index);
             final String word1 = words.get(word1Index);
-            final Pair<String, String> bigram = new Pair<String, String>(word0, word1);
+            final Pair<String, String> bigram = new Pair<>(word0, word1);
             bigrams.add(bigram);
         }
 
@@ -535,7 +535,7 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
         setCurrentTimeForTestMode(mCurrentTime);
         final int[] codePointSet = CodePointUtils.generateCodePointSet(codePointSetSize, random);
 
-        final ArrayList<String> words = new ArrayList<String>();
+        final ArrayList<String> words = new ArrayList<>();
         for (int i = 0; i < unigramCount; i++) {
             final String word = CodePointUtils.generateWord(random, codePointSet);
             words.add(word);

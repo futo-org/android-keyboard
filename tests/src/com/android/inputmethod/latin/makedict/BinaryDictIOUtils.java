@@ -90,7 +90,7 @@ public final class BinaryDictIOUtils {
             final Map<Integer, ArrayList<PendingAttribute>> bigrams) {
         int[] pushedChars = new int[FormatSpec.MAX_WORD_LENGTH + 1];
 
-        Stack<Position> stack = new Stack<Position>();
+        Stack<Position> stack = new Stack<>();
         int index = 0;
 
         Position initPos = new Position(bodyOffset, 0);

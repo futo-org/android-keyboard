@@ -84,8 +84,7 @@ public final class LanguageModelParam {
             final DictionaryFacilitator dictionaryFacilitator,
             final SpacingAndPunctuations spacingAndPunctuations,
             final DistracterFilter distracterFilter) {
-        final ArrayList<LanguageModelParam> languageModelParams =
-                CollectionUtils.newArrayList();
+        final ArrayList<LanguageModelParam> languageModelParams = new ArrayList<>();
         final int N = tokens.size();
         PrevWordsInfo prevWordsInfo = PrevWordsInfo.EMPTY_PREV_WORDS_INFO;
         for (int i = 0; i < N; ++i) {

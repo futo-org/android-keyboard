@@ -48,7 +48,7 @@ public class BinaryDictionaryUtilsTests extends AndroidTestCase {
     private File createEmptyVer4DictionaryAndGetFile(final String dictId) throws IOException {
         final File file = getDictFile(dictId);
         FileUtils.deleteRecursively(file);
-        Map<String, String> attributeMap = new HashMap<String, String>();
+        Map<String, String> attributeMap = new HashMap<>();
         attributeMap.put(DictionaryHeader.DICTIONARY_ID_KEY, dictId);
         attributeMap.put(DictionaryHeader.DICTIONARY_VERSION_KEY,
                 String.valueOf(TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis())));

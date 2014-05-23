@@ -35,7 +35,7 @@ public final class LocaleUtils {
         // Intentional empty constructor for utility class.
     }
 
-    private static final HashMap<String, Locale> sLocaleCache = new HashMap<String, Locale>();
+    private static final HashMap<String, Locale> sLocaleCache = new HashMap<>();
 
     private static final int INDEX_LANGUAGE = 0;
     private static final int INDEX_SCRIPT = 1;

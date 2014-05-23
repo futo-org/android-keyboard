@@ -58,7 +58,6 @@ public class Ver2DictDecoderTests extends AndroidTestCase {
         }
     }
 
-    @SuppressWarnings("null")
     public void runTestOpenBuffer(final String testName, final DictionaryBufferFactory factory) {
         File testFile = null;
         try {
@@ -102,7 +101,6 @@ public class Ver2DictDecoderTests extends AndroidTestCase {
                 new DictionaryBufferFromWritableByteBufferFactory());
     }
 
-    @SuppressWarnings("null")
     public void runTestGetBuffer(final String testName, final DictionaryBufferFactory factory) {
         File testFile = null;
         try {

@@ -258,7 +258,7 @@ public class BinaryDictEncoderUtils {
             final PtNodeArray rootNodeArray) {
         final int treeSize = FusionDictionary.countPtNodes(rootNodeArray);
         MakedictLog.i("Counted nodes : " + treeSize);
-        final ArrayList<PtNodeArray> flatTree = new ArrayList<PtNodeArray>(treeSize);
+        final ArrayList<PtNodeArray> flatTree = new ArrayList<>(treeSize);
         return flattenTreeInner(flatTree, rootNodeArray);
     }
 

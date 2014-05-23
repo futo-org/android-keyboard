@@ -22,9 +22,9 @@ import com.android.inputmethod.keyboard.internal.KeyVisualAttributes;
 import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
 import com.android.inputmethod.keyboard.internal.KeyboardParams;
 import com.android.inputmethod.latin.Constants;
-import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.CoordinateUtils;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -83,7 +83,7 @@ public class Keyboard {
     public final List<Key> mAltCodeKeysWhileTyping;
     public final KeyboardIconsSet mIconsSet;
 
-    private final SparseArray<Key> mKeyCache = CollectionUtils.newSparseArray();
+    private final SparseArray<Key> mKeyCache = new SparseArray<>();
 
     private final ProximityInfo mProximityInfo;
     private final boolean mProximityCharsCorrectionEnabled;
@@ -103,8 +103,7 @@ public class Keyboard {
         mTopPadding = params.mTopPadding;
         mVerticalGap = params.mVerticalGap;
 
-        mSortedKeys = Collections.unmodifiableList(
-                CollectionUtils.newArrayList(params.mSortedKeys));
+        mSortedKeys = Collections.unmodifiableList(new ArrayList<>(params.mSortedKeys));
         mShiftKeys = Collections.unmodifiableList(params.mShiftKeys);
         mAltCodeKeysWhileTyping = Collections.unmodifiableList(params.mAltCodeKeysWhileTyping);
         mIconsSet = params.mIconsSet;
@@ -159,7 +158,7 @@ public class Keyboard {
     /**
      * Return the sorted list of keys of this keyboard.
      * The keys are sorted from top-left to bottom-right order.
-     * The list may contain {@link Spacer} object as well.
+     * The list may contain {@link Key.Spacer} object as well.
      * @return the sorted unmodifiable list of {@link Key}s of this keyboard.
      */
     public List<Key> getSortedKeys() {

@@ -27,8 +27,7 @@ import com.android.inputmethod.compat.AppWorkaroundsUtils;
 public final class TargetPackageInfoGetterTask extends
         AsyncTask<String, Void, PackageInfo> {
     private static final int MAX_CACHE_ENTRIES = 64; // arbitrary
-    private static final LruCache<String, PackageInfo> sCache =
-            new LruCache<String, PackageInfo>(MAX_CACHE_ENTRIES);
+    private static final LruCache<String, PackageInfo> sCache = new LruCache<>(MAX_CACHE_ENTRIES);
 
     public static PackageInfo getCachedPackageInfo(final String packageName) {
         if (null == packageName) return null;

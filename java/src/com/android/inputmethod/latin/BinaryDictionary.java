@@ -30,7 +30,6 @@ import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
 import com.android.inputmethod.latin.makedict.WordProperty;
 import com.android.inputmethod.latin.settings.NativeSuggestOptions;
 import com.android.inputmethod.latin.utils.BinaryDictionaryUtils;
-import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.FileUtils;
 import com.android.inputmethod.latin.utils.JniUtils;
 import com.android.inputmethod.latin.utils.LanguageModelParam;
@@ -104,8 +103,7 @@ public final class BinaryDictionary extends Dictionary {
 
     private final NativeSuggestOptions mNativeSuggestOptions = new NativeSuggestOptions();
 
-    private final SparseArray<DicTraverseSession> mDicTraverseSessions =
-            CollectionUtils.newSparseArray();
+    private final SparseArray<DicTraverseSession> mDicTraverseSessions = new SparseArray<>();
 
     // TODO: There should be a way to remove used DicTraverseSession objects from
     // {@code mDicTraverseSessions}.
@@ -248,11 +246,11 @@ public final class BinaryDictionary extends Dictionary {
         }
         final int[] outHeaderSize = new int[1];
         final int[] outFormatVersion = new int[1];
-        final ArrayList<int[]> outAttributeKeys = CollectionUtils.newArrayList();
-        final ArrayList<int[]> outAttributeValues = CollectionUtils.newArrayList();
+        final ArrayList<int[]> outAttributeKeys = new ArrayList<>();
+        final ArrayList<int[]> outAttributeValues = new ArrayList<>();
         getHeaderInfoNative(mNativeDict, outHeaderSize, outFormatVersion, outAttributeKeys,
                 outAttributeValues);
-        final HashMap<String, String> attributes = new HashMap<String, String>();
+        final HashMap<String, String> attributes = new HashMap<>();
         for (int i = 0; i < outAttributeKeys.size(); i++) {
             final String attributeKey = StringUtils.getStringFromNullTerminatedCodePointArray(
                     outAttributeKeys.get(i));
@@ -312,7 +310,7 @@ public final class BinaryDictionary extends Dictionary {
             inOutLanguageWeight[0] = mInputOutputLanguageWeight[0];
         }
         final int count = mOutputSuggestionCount[0];
-        final ArrayList<SuggestedWordInfo> suggestions = CollectionUtils.newArrayList();
+        final ArrayList<SuggestedWordInfo> suggestions = new ArrayList<>();
         for (int j = 0; j < count; ++j) {
             final int start = j * MAX_WORD_LENGTH;
             int len = 0;
@@ -386,10 +384,10 @@ public final class BinaryDictionary extends Dictionary {
         final boolean[] outFlags = new boolean[FORMAT_WORD_PROPERTY_OUTPUT_FLAG_COUNT];
         final int[] outProbabilityInfo =
                 new int[FORMAT_WORD_PROPERTY_OUTPUT_PROBABILITY_INFO_COUNT];
-        final ArrayList<int[]> outBigramTargets = CollectionUtils.newArrayList();
-        final ArrayList<int[]> outBigramProbabilityInfo = CollectionUtils.newArrayList();
-        final ArrayList<int[]> outShortcutTargets = CollectionUtils.newArrayList();
-        final ArrayList<Integer> outShortcutProbabilities = CollectionUtils.newArrayList();
+        final ArrayList<int[]> outBigramTargets = new ArrayList<>();
+        final ArrayList<int[]> outBigramProbabilityInfo = new ArrayList<>();
+        final ArrayList<int[]> outShortcutTargets = new ArrayList<>();
+        final ArrayList<Integer> outShortcutProbabilities = new ArrayList<>();
         getWordPropertyNative(mNativeDict, codePoints, outCodePoints, outFlags, outProbabilityInfo,
                 outBigramTargets, outBigramProbabilityInfo, outShortcutTargets,
                 outShortcutProbabilities);

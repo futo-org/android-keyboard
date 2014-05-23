@@ -29,8 +29,7 @@ public class Dicttool {
         abstract public String getHelp();
         abstract public void run() throws Exception;
     }
-    static HashMap<String, Class<? extends Command>> sCommands =
-            new HashMap<String, Class<? extends Command>>();
+    static HashMap<String, Class<? extends Command>> sCommands = new HashMap<>();
     static {
         CommandList.populate();
     }

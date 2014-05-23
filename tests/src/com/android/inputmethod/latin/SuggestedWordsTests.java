@@ -16,12 +16,10 @@
 
 package com.android.inputmethod.latin;
 
-import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
-
 import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
 
-import com.android.inputmethod.latin.utils.CollectionUtils;
+import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -33,7 +31,7 @@ public class SuggestedWordsTests extends AndroidTestCase {
         final String TYPED_WORD = "typed";
         final int TYPED_WORD_FREQ = 5;
         final int NUMBER_OF_ADDED_SUGGESTIONS = 5;
-        final ArrayList<SuggestedWordInfo> list = CollectionUtils.newArrayList();
+        final ArrayList<SuggestedWordInfo> list = new ArrayList<>();
         list.add(new SuggestedWordInfo(TYPED_WORD, TYPED_WORD_FREQ,
                 SuggestedWordInfo.KIND_TYPED, null /* sourceDict */,
                 SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,

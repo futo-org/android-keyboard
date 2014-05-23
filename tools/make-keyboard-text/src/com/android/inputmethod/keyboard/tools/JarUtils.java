@@ -61,7 +61,7 @@ public final class JarUtils {
     }
 
     public static ArrayList<String> getEntryNameListing(final JarFile jar, final JarFilter filter) {
-        final ArrayList<String> result = new ArrayList<String>();
+        final ArrayList<String> result = new ArrayList<>();
         final Enumeration<JarEntry> entries = jar.entries();
         while (entries.hasMoreElements()) {
             final JarEntry entry = entries.nextElement();

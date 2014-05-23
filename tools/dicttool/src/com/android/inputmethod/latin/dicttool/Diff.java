@@ -85,8 +85,7 @@ public class Diff extends Dicttool.Command {
 
     private static void diffHeaders(final FusionDictionary dict0, final FusionDictionary dict1) {
         boolean hasDifferences = false;
-        final HashMap<String, String> options1 =
-                new HashMap<String, String>(dict1.mOptions.mAttributes);
+        final HashMap<String, String> options1 = new HashMap<>(dict1.mOptions.mAttributes);
         for (final String optionKey : dict0.mOptions.mAttributes.keySet()) {
             if (!dict0.mOptions.mAttributes.get(optionKey).equals(
                     dict1.mOptions.mAttributes.get(optionKey))) {

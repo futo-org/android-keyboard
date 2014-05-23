@@ -17,7 +17,6 @@
 package com.android.inputmethod.event;
 
 import com.android.inputmethod.latin.Constants;
-import com.android.inputmethod.latin.utils.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,7 +31,7 @@ public class MyanmarReordering implements Combiner {
     // U+200B ZERO WIDTH SPACE
     private final static int ZERO_WIDTH_NON_JOINER = 0x200B; // should be 0x200C
 
-    private final ArrayList<Event> mCurrentEvents = CollectionUtils.newArrayList();
+    private final ArrayList<Event> mCurrentEvents = new ArrayList<>();
 
     // List of consonants :
     // U+1000 MYANMAR LETTER KA

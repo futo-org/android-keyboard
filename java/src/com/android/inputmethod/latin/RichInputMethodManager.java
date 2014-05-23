@@ -31,7 +31,6 @@ import android.view.inputmethod.InputMethodSubtype;
 import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
 import com.android.inputmethod.latin.settings.Settings;
 import com.android.inputmethod.latin.utils.AdditionalSubtypeUtils;
-import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 
 import java.util.Collections;
@@ -53,9 +52,9 @@ public final class RichInputMethodManager {
     private InputMethodManagerCompatWrapper mImmWrapper;
     private InputMethodInfoCache mInputMethodInfoCache;
     final HashMap<InputMethodInfo, List<InputMethodSubtype>>
-            mSubtypeListCacheWithImplicitlySelectedSubtypes = CollectionUtils.newHashMap();
+            mSubtypeListCacheWithImplicitlySelectedSubtypes = new HashMap<>();
     final HashMap<InputMethodInfo, List<InputMethodSubtype>>
-            mSubtypeListCacheWithoutImplicitlySelectedSubtypes = CollectionUtils.newHashMap();
+            mSubtypeListCacheWithoutImplicitlySelectedSubtypes = new HashMap<>();
 
     private static final int INDEX_NOT_FOUND = -1;
 

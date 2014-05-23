@@ -27,7 +27,6 @@ import android.view.inputmethod.InputMethodSubtype;
 import android.view.textservice.SuggestionsInfo;
 
 import com.android.inputmethod.keyboard.KeyboardLayoutSet;
-import com.android.inputmethod.latin.BinaryDictionary;
 import com.android.inputmethod.latin.ContactsBinaryDictionary;
 import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.DictionaryCollection;
@@ -77,7 +76,7 @@ public final class AndroidSpellCheckerService extends SpellCheckerService
     private final Object mUseContactsLock = new Object();
 
     private final HashSet<WeakReference<DictionaryCollection>> mDictionaryCollectionsList =
-            CollectionUtils.newHashSet();
+            new HashSet<>();
 
     public static final int SCRIPT_LATIN = 0;
     public static final int SCRIPT_CYRILLIC = 1;
@@ -94,7 +93,7 @@ public final class AndroidSpellCheckerService extends SpellCheckerService
         // proximity to pass to the dictionary descent algorithm.
         // IMPORTANT: this only contains languages - do not write countries in there.
         // Only the language is searched from the map.
-        mLanguageToScript = CollectionUtils.newTreeMap();
+        mLanguageToScript = new TreeMap<>();
         mLanguageToScript.put("cs", SCRIPT_LATIN);
         mLanguageToScript.put("da", SCRIPT_LATIN);
         mLanguageToScript.put("de", SCRIPT_LATIN);
@@ -255,7 +254,7 @@ public final class AndroidSpellCheckerService extends SpellCheckerService
             mOriginalText = originalText;
             mRecommendedThreshold = recommendedThreshold;
             mMaxLength = maxLength;
-            mSuggestions = CollectionUtils.newArrayList(maxLength + 1);
+            mSuggestions = new ArrayList<>(maxLength + 1);
             mScores = new int[mMaxLength];
         }
 
@@ -441,8 +440,7 @@ public final class AndroidSpellCheckerService extends SpellCheckerService
                 }
             }
             dictionaryCollection.addDictionary(mContactsDictionary);
-            mDictionaryCollectionsList.add(
-                    new WeakReference<DictionaryCollection>(dictionaryCollection));
+            mDictionaryCollectionsList.add(new WeakReference<>(dictionaryCollection));
         }
         return new DictAndKeyboard(dictionaryCollection, keyboardLayoutSet);
     }

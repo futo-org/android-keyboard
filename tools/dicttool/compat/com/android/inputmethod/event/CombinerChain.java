@@ -16,8 +16,6 @@
 
 package com.android.inputmethod.event;
 
-import com.android.inputmethod.latin.utils.CollectionUtils;
-
 import java.util.ArrayList;
 
 /**

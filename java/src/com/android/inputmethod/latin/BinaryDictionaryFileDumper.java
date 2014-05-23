@@ -29,7 +29,6 @@ import android.util.Log;
 
 import com.android.inputmethod.dictionarypack.DictionaryPackConstants;
 import com.android.inputmethod.dictionarypack.MD5Calculator;
-import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.DictionaryInfoUtils;
 import com.android.inputmethod.latin.utils.DictionaryInfoUtils.DictionaryInfo;
 import com.android.inputmethod.latin.utils.FileTransforms;
@@ -44,8 +43,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -165,7 +164,7 @@ public final class BinaryDictionaryFileDumper {
             if (cursor.getCount() <= 0 || !cursor.moveToFirst()) {
                 return Collections.<WordListInfo>emptyList();
             }
-            final ArrayList<WordListInfo> list = CollectionUtils.newArrayList();
+            final ArrayList<WordListInfo> list = new ArrayList<>();
             do {
                 final String wordListId = cursor.getString(0);
                 final String wordListLocale = cursor.getString(1);

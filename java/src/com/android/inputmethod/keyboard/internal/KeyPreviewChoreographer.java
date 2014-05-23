@@ -32,7 +32,6 @@ import android.widget.TextView;
 
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.latin.R;
-import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.CoordinateUtils;
 import com.android.inputmethod.latin.utils.ViewLayoutUtils;
 
@@ -48,9 +47,9 @@ import java.util.HashSet;
  */
 public final class KeyPreviewChoreographer {
     // Free {@link TextView} pool that can be used for key preview.
-    private final ArrayDeque<TextView> mFreeKeyPreviewTextViews = CollectionUtils.newArrayDeque();
+    private final ArrayDeque<TextView> mFreeKeyPreviewTextViews = new ArrayDeque<>();
     // Map from {@link Key} to {@link TextView} that is currently being displayed as key preview.
-    private final HashMap<Key,TextView> mShowingKeyPreviewTextViews = CollectionUtils.newHashMap();
+    private final HashMap<Key,TextView> mShowingKeyPreviewTextViews = new HashMap<>();
 
     private final KeyPreviewDrawParams mParams;
 
@@ -83,7 +82,7 @@ public final class KeyPreviewChoreographer {
     }
 
     public void dismissAllKeyPreviews() {
-        for (final Key key : new HashSet<Key>(mShowingKeyPreviewTextViews.keySet())) {
+        for (final Key key : new HashSet<>(mShowingKeyPreviewTextViews.keySet())) {
             dismissKeyPreview(key, false /* withAnimation */);
         }
     }

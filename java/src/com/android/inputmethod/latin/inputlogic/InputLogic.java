@@ -49,7 +49,6 @@ import com.android.inputmethod.latin.settings.SettingsValues;
 import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
 import com.android.inputmethod.latin.suggestions.SuggestionStripViewAccessor;
 import com.android.inputmethod.latin.utils.AsyncResultHolder;
-import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.InputTypeUtils;
 import com.android.inputmethod.latin.utils.LatinImeLoggerUtils;
 import com.android.inputmethod.latin.utils.RecapitalizeStatus;
@@ -89,7 +88,7 @@ public final class InputLogic {
 
     private int mDeleteCount;
     private long mLastKeyTime;
-    public final TreeSet<Long> mCurrentlyPressedHardwareKeys = CollectionUtils.newTreeSet();
+    public final TreeSet<Long> mCurrentlyPressedHardwareKeys = new TreeSet<>();
 
     // Keeps track of most recently inserted text (multi-character key) for reverting
     private String mEnteredText;
@@ -1270,7 +1269,7 @@ public final class InputLogic {
             return;
         }
 
-        final AsyncResultHolder<SuggestedWords> holder = new AsyncResultHolder<SuggestedWords>();
+        final AsyncResultHolder<SuggestedWords> holder = new AsyncResultHolder<>();
         mInputLogicHandler.getSuggestedWords(Suggest.SESSION_TYPING,
                 SuggestedWords.NOT_A_SEQUENCE_NUMBER, new OnGetSuggestedWordsCallback() {
                     @Override
@@ -1350,7 +1349,7 @@ public final class InputLogic {
         // we just do not resume because it's safer.
         final int numberOfCharsInWordBeforeCursor = range.getNumberOfCharsInWordBeforeCursor();
         if (numberOfCharsInWordBeforeCursor > expectedCursorPosition) return;
-        final ArrayList<SuggestedWordInfo> suggestions = CollectionUtils.newArrayList();
+        final ArrayList<SuggestedWordInfo> suggestions = new ArrayList<>();
         final String typedWord = range.mWord.toString();
         if (includeResumedWordInSuggestions) {
             suggestions.add(new SuggestedWordInfo(typedWord,
@@ -1473,7 +1472,7 @@ public final class InputLogic {
                     committedWord.length(), Object.class);
             final int lastCharIndex = textToCommit.length() - 1;
             // We will collect all suggestions in the following array.
-            final ArrayList<String> suggestions = CollectionUtils.newArrayList();
+            final ArrayList<String> suggestions = new ArrayList<>();
             // First, add the committed word to the list of suggestions.
             suggestions.add(committedWordString);
             for (final Object span : spans) {

@@ -336,7 +336,7 @@ public class DictionaryInfoUtils {
 
     public static ArrayList<DictionaryInfo> getCurrentDictionaryFileNameAndVersionInfo(
             final Context context) {
-        final ArrayList<DictionaryInfo> dictList = CollectionUtils.newArrayList();
+        final ArrayList<DictionaryInfo> dictList = new ArrayList<>();
 
         // Retrieve downloaded dictionaries
         final File[] directoryList = getCachedDirectoryList(context);

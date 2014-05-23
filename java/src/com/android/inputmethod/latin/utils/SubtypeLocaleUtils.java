@@ -49,17 +49,14 @@ public final class SubtypeLocaleUtils {
     private static Resources sResources;
     private static String[] sPredefinedKeyboardLayoutSet;
     // Keyboard layout to its display name map.
-    private static final HashMap<String, String> sKeyboardLayoutToDisplayNameMap =
-            CollectionUtils.newHashMap();
+    private static final HashMap<String, String> sKeyboardLayoutToDisplayNameMap = new HashMap<>();
     // Keyboard layout to subtype name resource id map.
-    private static final HashMap<String, Integer> sKeyboardLayoutToNameIdsMap =
-            CollectionUtils.newHashMap();
+    private static final HashMap<String, Integer> sKeyboardLayoutToNameIdsMap = new HashMap<>();
     // Exceptional locale to subtype name resource id map.
-    private static final HashMap<String, Integer> sExceptionalLocaleToNameIdsMap =
-            CollectionUtils.newHashMap();
+    private static final HashMap<String, Integer> sExceptionalLocaleToNameIdsMap = new HashMap<>();
     // Exceptional locale to subtype name with layout resource id map.
     private static final HashMap<String, Integer> sExceptionalLocaleToWithLayoutNameIdsMap =
-            CollectionUtils.newHashMap();
+            new HashMap<>();
     private static final String SUBTYPE_NAME_RESOURCE_PREFIX =
             "string/subtype_";
     private static final String SUBTYPE_NAME_RESOURCE_GENERIC_PREFIX =
@@ -71,7 +68,7 @@ public final class SubtypeLocaleUtils {
     // Keyboard layout set name for the subtypes that don't have a keyboardLayoutSet extra value.
     // This is for compatibility to keep the same subtype ids as pre-JellyBean.
     private static final HashMap<String, String> sLocaleAndExtraValueToKeyboardLayoutSetMap =
-            CollectionUtils.newHashMap();
+            new HashMap<>();
 
     private SubtypeLocaleUtils() {
         // Intentional empty constructor for utility class.

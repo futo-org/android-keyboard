@@ -175,7 +175,7 @@ public final class LocaleUtils {
         return saveLocale;
     }
 
-    private static final HashMap<String, Locale> sLocaleCache = new HashMap<String, Locale>();
+    private static final HashMap<String, Locale> sLocaleCache = new HashMap<>();
 
     /**
      * Creates a locale from a string specification.

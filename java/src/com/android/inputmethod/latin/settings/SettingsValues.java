@@ -171,7 +171,7 @@ public final class SettingsValues {
                 ResourceUtils.getFloatFromFraction(
                         res, R.fraction.config_key_preview_dismiss_end_scale));
         mDisplayOrientation = res.getConfiguration().orientation;
-        mAppWorkarounds = new AsyncResultHolder<AppWorkaroundsUtils>();
+        mAppWorkarounds = new AsyncResultHolder<>();
         final PackageInfo packageInfo = TargetPackageInfoGetterTask.getCachedPackageInfo(
                 mInputAttributes.mTargetApplicationPackageName);
         if (null != packageInfo) {

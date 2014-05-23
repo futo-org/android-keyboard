@@ -16,8 +16,6 @@
 
 package com.android.inputmethod.keyboard.layout.expected;
 
-import com.android.inputmethod.latin.utils.CollectionUtils;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
@@ -116,7 +114,7 @@ public final class ExpectedKeyboardBuilder extends AbstractKeyboardBuilder<Expec
     // Helper method to create {@link ExpectedKey} array by joining {@link ExpectedKey},
     // {@link ExpectedKey} array, and {@link String}.
     static ExpectedKey[] joinKeys(final Object ... keys) {
-        final ArrayList<ExpectedKey> list = CollectionUtils.newArrayList();
+        final ArrayList<ExpectedKey> list = new ArrayList<>();
         for (final Object key : keys) {
             if (key instanceof ExpectedKey) {
                 list.add((ExpectedKey)key);

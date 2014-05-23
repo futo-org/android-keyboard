@@ -20,7 +20,6 @@ import android.text.InputType;
 import android.util.Log;
 import android.view.inputmethod.EditorInfo;
 
-import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.InputTypeUtils;
 import com.android.inputmethod.latin.utils.StringUtils;
 
@@ -214,7 +213,7 @@ public final class InputAttributes {
     }
 
     private static String toFlagsString(final int flags) {
-        final ArrayList<String> flagsArray = CollectionUtils.newArrayList();
+        final ArrayList<String> flagsArray = new ArrayList<>();
         if (0 != (flags & InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS))
             flagsArray.add("TYPE_TEXT_FLAG_NO_SUGGESTIONS");
         if (0 != (flags & InputType.TYPE_TEXT_FLAG_MULTI_LINE))

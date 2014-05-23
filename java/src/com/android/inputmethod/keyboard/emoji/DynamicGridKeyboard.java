@@ -23,7 +23,6 @@ import android.util.Log;
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.latin.settings.Settings;
-import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.JsonUtils;
 
 import java.util.ArrayDeque;
@@ -47,8 +46,8 @@ final class DynamicGridKeyboard extends Keyboard {
     private final int mColumnsNum;
     private final int mMaxKeyCount;
     private final boolean mIsRecents;
-    private final ArrayDeque<GridKey> mGridKeys = CollectionUtils.newArrayDeque();
-    private final ArrayDeque<Key> mPendingKeys = CollectionUtils.newArrayDeque();
+    private final ArrayDeque<GridKey> mGridKeys = new ArrayDeque<>();
+    private final ArrayDeque<Key> mPendingKeys = new ArrayDeque<>();
 
     private List<Key> mCachedGridKeys;
 
@@ -131,7 +130,7 @@ final class DynamicGridKeyboard extends Keyboard {
     }
 
     private void saveRecentKeys() {
-        final ArrayList<Object> keys = CollectionUtils.newArrayList();
+        final ArrayList<Object> keys = new ArrayList<>();
         for (final Key key : mGridKeys) {
             if (key.getOutputText() != null) {
                 keys.add(key.getOutputText());

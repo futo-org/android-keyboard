@@ -24,7 +24,6 @@ import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.latin.utils.AutoCorrectionUtils;
 import com.android.inputmethod.latin.utils.BinaryDictionaryUtils;
-import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.StringUtils;
 import com.android.inputmethod.latin.utils.SuggestionResults;
 
@@ -106,7 +105,7 @@ public final class Suggest {
 
         final ArrayList<SuggestedWordInfo> rawSuggestions;
         if (ProductionFlag.INCLUDE_RAW_SUGGESTIONS) {
-            rawSuggestions = CollectionUtils.newArrayList();
+            rawSuggestions = new ArrayList<>();
         } else {
             rawSuggestions = null;
         }
@@ -175,7 +174,7 @@ public final class Suggest {
         }
 
         final ArrayList<SuggestedWordInfo> suggestionsContainer =
-                CollectionUtils.newArrayList(suggestionResults);
+                new ArrayList<>(suggestionResults);
         final int suggestionsCount = suggestionsContainer.size();
         if (isFirstCharCapitalized || isAllUpperCase || 0 != trailingSingleQuotesCount) {
             for (int i = 0; i < suggestionsCount; ++i) {
@@ -227,7 +226,7 @@ public final class Suggest {
             final OnGetSuggestedWordsCallback callback) {
         final ArrayList<SuggestedWordInfo> rawSuggestions;
         if (ProductionFlag.INCLUDE_RAW_SUGGESTIONS) {
-            rawSuggestions = CollectionUtils.newArrayList();
+            rawSuggestions = new ArrayList<>();
         } else {
             rawSuggestions = null;
         }
@@ -239,7 +238,7 @@ public final class Suggest {
         }
 
         final ArrayList<SuggestedWordInfo> suggestionsContainer =
-                CollectionUtils.newArrayList(suggestionResults);
+                new ArrayList<>(suggestionResults);
         final int suggestionsCount = suggestionsContainer.size();
         final boolean isFirstCharCapitalized = wordComposer.wasShiftedNoLock();
         final boolean isAllUpperCase = wordComposer.isAllUpperCase();
@@ -282,8 +281,7 @@ public final class Suggest {
         final SuggestedWordInfo typedWordInfo = suggestions.get(0);
         typedWordInfo.setDebugString("+");
         final int suggestionsSize = suggestions.size();
-        final ArrayList<SuggestedWordInfo> suggestionsList =
-                CollectionUtils.newArrayList(suggestionsSize);
+        final ArrayList<SuggestedWordInfo> suggestionsList = new ArrayList<>(suggestionsSize);
         suggestionsList.add(typedWordInfo);
         // Note: i here is the index in mScores[], but the index in mSuggestions is one more
         // than i because we added the typed word to mSuggestions without touching mScores.

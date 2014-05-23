@@ -43,12 +43,11 @@ public class MoreKeysResources {
     private final JarFile mJar;
     // String resources maps sorted by its language. The language is determined from the jar entry
     // name by calling {@link JarUtils#getLocaleFromEntryName(String)}.
-    private final TreeMap<String, StringResourceMap> mResourcesMap =
-            new TreeMap<String, StringResourceMap>();
+    private final TreeMap<String, StringResourceMap> mResourcesMap = new TreeMap<>();
     // Default string resources map.
     private final StringResourceMap mDefaultResourceMap;
     // Histogram of string resource names. This is used to sort {@link #mSortedResourceNames}.
-    private final HashMap<String, Integer> mNameHistogram = new HashMap<String, Integer>();
+    private final HashMap<String, Integer> mNameHistogram = new HashMap<>();
     // Sorted string resource names array; Descending order of histogram count.
     // The string resource name is specified as an attribute "name" in string resource files.
     // The string resource can be accessed by specifying name "!text/<name>"
@@ -68,7 +67,7 @@ public class MoreKeysResources {
 
         // Initialize name histogram and names list.
         final HashMap<String, Integer> nameHistogram = mNameHistogram;
-        final ArrayList<String> resourceNamesList = new ArrayList<String>();
+        final ArrayList<String> resourceNamesList = new ArrayList<>();
         for (final StringResource res : mDefaultResourceMap.getResources()) {
             nameHistogram.put(res.mName, 0); // Initialize histogram value.
             resourceNamesList.add(res.mName);
