@@ -74,7 +74,7 @@ public class WordComposerTests extends AndroidTestCase {
                 CoordinateUtils.newCoordinateArray(CODEPOINTS_WITH_SUPPLEMENTARY_CHAR.length,
                         Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
         wc.setComposingWord(CODEPOINTS_WITH_SUPPLEMENTARY_CHAR, COORDINATES_WITH_SUPPLEMENTARY_CHAR,
-                new PrevWordsInfo(null));
+                PrevWordsInfo.EMPTY_PREV_WORDS_INFO);
         assertEquals(wc.size(), CODEPOINTS_WITH_SUPPLEMENTARY_CHAR.length);
         assertFalse(wc.isCursorFrontOrMiddleOfComposingWord());
         wc.setCursorPositionWithinWord(3);
@@ -109,7 +109,7 @@ public class WordComposerTests extends AndroidTestCase {
         assertEquals(PREV_WORDS_INFO_STR_WITHIN_BMP, wc.getPrevWordsInfoForSuggestion());
 
 
-        final PrevWordsInfo PREV_WORDS_INFO_NULL = new PrevWordsInfo(null);
+        final PrevWordsInfo PREV_WORDS_INFO_NULL = PrevWordsInfo.EMPTY_PREV_WORDS_INFO;
         wc.setComposingWord(CODEPOINTS_WITH_SUPPLEMENTARY_CHAR, COORDINATES_WITH_SUPPLEMENTARY_CHAR,
                 PREV_WORDS_INFO_NULL);
         wc.setCursorPositionWithinWord(3);

@@ -542,7 +542,7 @@ public final class RichInputConnection {
             final SpacingAndPunctuations spacingAndPunctuations, final int n) {
         mIC = mParent.getCurrentInputConnection();
         if (null == mIC) {
-            return new PrevWordsInfo(null);
+            return PrevWordsInfo.EMPTY_PREV_WORDS_INFO;
         }
         final CharSequence prev = getTextBeforeCursor(LOOKBACK_CHARACTER_NUM, 0);
         if (DEBUG_PREVIOUS_TEXT && null != prev) {
@@ -588,30 +588,30 @@ public final class RichInputConnection {
     // (n = 2) "abc. def|" -> beginning-of-sentence
     public static PrevWordsInfo getPrevWordsInfoFromNthPreviousWord(final CharSequence prev,
             final SpacingAndPunctuations spacingAndPunctuations, final int n) {
-        if (prev == null) return new PrevWordsInfo(null);
+        if (prev == null) return PrevWordsInfo.EMPTY_PREV_WORDS_INFO;
         final String[] w = spaceRegex.split(prev);
 
         // If we can't find n words, or we found an empty word, the context is
         // beginning-of-sentence.
         if (w.length < n) {
-            return new PrevWordsInfo();
+            return PrevWordsInfo.BEGINNING_OF_SENTENCE;
         }
         final String nthPrevWord = w[w.length - n];
         final int length = nthPrevWord.length();
         if (length <= 0) {
-            return  new PrevWordsInfo();
+            return PrevWordsInfo.BEGINNING_OF_SENTENCE;
         }
 
         // If ends in a sentence separator, the context is beginning-of-sentence.
         final char lastChar = nthPrevWord.charAt(length - 1);
         if (spacingAndPunctuations.isSentenceSeparator(lastChar)) {
-            new PrevWordsInfo();
+            return PrevWordsInfo.BEGINNING_OF_SENTENCE;
         }
         // If ends in a word separator or connector, the context is unclear.
         // TODO: Return meaningful context for this case.
         if (spacingAndPunctuations.isWordSeparator(lastChar)
                 || spacingAndPunctuations.isWordConnector(lastChar)) {
-            return new PrevWordsInfo(null);
+            return PrevWordsInfo.EMPTY_PREV_WORDS_INFO;
         }
         return new PrevWordsInfo(nthPrevWord);
     }
