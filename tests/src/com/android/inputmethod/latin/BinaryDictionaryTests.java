@@ -47,11 +47,11 @@ public class BinaryDictionaryTests extends AndroidTestCase {
             new int[] { FormatSpec.VERSION4, FormatSpec.VERSION4_DEV };
 
     private static boolean canCheckBigramProbability(final int formatVersion) {
-        return formatVersion >= FormatSpec.VERSION4_DEV;
+        return formatVersion > FormatSpec.VERSION401;
     }
 
     private static boolean supportsBeginningOfSentence(final int formatVersion) {
-        return formatVersion >= FormatSpec.VERSION4_DEV;
+        return formatVersion > FormatSpec.VERSION401;
     }
 
     private File createEmptyDictionaryAndGetFile(final String dictId,

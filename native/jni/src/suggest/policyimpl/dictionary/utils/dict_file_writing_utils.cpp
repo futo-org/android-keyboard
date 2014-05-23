@@ -41,11 +41,12 @@ const char *const DictFileWritingUtils::TEMP_FILE_SUFFIX_FOR_WRITING_DICT_FILE =
     TimeKeeper::setCurrentTime();
     const FormatUtils::FORMAT_VERSION formatVersion = FormatUtils::getFormatVersion(dictVersion);
     switch (formatVersion) {
-        case FormatUtils::VERSION_4:
+        case FormatUtils::VERSION_401:
             return createEmptyV4DictFile<backward::v401::Ver4DictConstants,
                     backward::v401::Ver4DictBuffers,
                     backward::v401::Ver4DictBuffers::Ver4DictBuffersPtr>(
                             filePath, localeAsCodePointVector, attributeMap, formatVersion);
+        case FormatUtils::VERSION_4:
         case FormatUtils::VERSION_4_ONLY_FOR_TESTING:
         case FormatUtils::VERSION_4_DEV:
             return createEmptyV4DictFile<Ver4DictConstants, Ver4DictBuffers,

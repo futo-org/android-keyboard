@@ -64,7 +64,7 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
     }
 
     private static boolean supportsBeginningOfSentence(final int formatVersion) {
-        return formatVersion >= FormatSpec.VERSION4_DEV;
+        return formatVersion > FormatSpec.VERSION401;
     }
 
     private void addUnigramWord(final BinaryDictionary binaryDictionary, final String word,
