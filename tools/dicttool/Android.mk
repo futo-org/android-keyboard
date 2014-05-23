@@ -15,7 +15,9 @@
 
 # HACK: Temporarily disable host tool build on Mac until the build system is ready for C++11.
 LATINIME_HOST_OSNAME := $(shell uname -s)
-ifneq ($(LATINIME_HOST_OSNAME), Darwin) # TODO: Remove this
+ifeq ($(LATINIME_HOST_OSNAME), Darwin) # TODO: Remove this
+$(warning dicttool_aosp is not supported on $(LATINIME_HOST_OSNAME))
+else # TODO: Remove this
 
 LATINIME_DICTTOOL_AOSP_LOCAL_PATH := $(call my-dir)
 LOCAL_PATH := $(LATINIME_DICTTOOL_AOSP_LOCAL_PATH)
