@@ -292,7 +292,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
             final String shortcutTarget, final int shortcutFreq, final boolean isNotAWord,
             final boolean isBlacklisted, final int timestamp) {
         mBinaryDictionary.addUnigramEntry(word, frequency, shortcutTarget, shortcutFreq,
-                isNotAWord, isBlacklisted, timestamp);
+                false /* isBeginningOfSentence */, isNotAWord, isBlacklisted, timestamp);
     }
 
     /**
