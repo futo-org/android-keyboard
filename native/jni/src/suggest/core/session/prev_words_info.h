@@ -20,11 +20,11 @@
 #include "defines.h"
 #include "suggest/core/dictionary/binary_dictionary_bigrams_iterator.h"
 #include "suggest/core/policy/dictionary_structure_with_buffer_policy.h"
+#include "utils/char_utils.h"
 
 namespace latinime {
 
 // TODO: Support n-gram.
-// TODO: Support beginning of sentence.
 // This class does not take ownership of any code point buffers.
 class PrevWordsInfo {
  public:
@@ -52,8 +52,7 @@ class PrevWordsInfo {
 
     void getPrevWordsTerminalPtNodePos(
             const DictionaryStructureWithBufferPolicy *const dictStructurePolicy,
-            int *const outPrevWordsTerminalPtNodePos,
-            const bool tryLowerCaseSearch) const {
+            int *const outPrevWordsTerminalPtNodePos, const bool tryLowerCaseSearch) const {
         for (size_t i = 0; i < NELEMS(mPrevWordCodePoints); ++i) {
             outPrevWordsTerminalPtNodePos[i] = getTerminalPtNodePosOfWord(dictStructurePolicy,
                     mPrevWordCodePoints[i], mPrevWordCodePointCount[i],
@@ -63,17 +62,11 @@ class PrevWordsInfo {
 
     BinaryDictionaryBigramsIterator getBigramsIteratorForPrediction(
             const DictionaryStructureWithBufferPolicy *const dictStructurePolicy) const {
-        int pos = getBigramListPositionForWord(dictStructurePolicy, mPrevWordCodePoints[0],
-                mPrevWordCodePointCount[0], false /* forceLowerCaseSearch */);
-        // getBigramListPositionForWord returns NOT_A_DICT_POS if this word isn't in the
-        // dictionary or has no bigrams
-        if (NOT_A_DICT_POS == pos) {
-            // If no bigrams for this exact word, search again in lower case.
-            pos = getBigramListPositionForWord(dictStructurePolicy, mPrevWordCodePoints[0],
-                    mPrevWordCodePointCount[0], true /* forceLowerCaseSearch */);
-        }
-        return BinaryDictionaryBigramsIterator(
-                dictStructurePolicy->getBigramsStructurePolicy(), pos);
+        const int bigramListPos = getBigramListPositionForWordWithTryingLowerCaseSearch(
+                dictStructurePolicy, mPrevWordCodePoints[0], mPrevWordCodePointCount[0],
+                mIsBeginningOfSentence[0]);
+        return BinaryDictionaryBigramsIterator(dictStructurePolicy->getBigramsStructurePolicy(),
+                bigramListPos);
     }
 
     // n is 1-indexed.
@@ -102,8 +95,18 @@ class PrevWordsInfo {
         if (!dictStructurePolicy || !wordCodePoints) {
             return NOT_A_DICT_POS;
         }
+        int codePoints[MAX_WORD_LENGTH];
+        int codePointCount = wordCodePointCount;
+        memmove(codePoints, wordCodePoints, sizeof(int) * codePointCount);
+        if (isBeginningOfSentence) {
+            codePointCount = CharUtils::attachBeginningOfSentenceMarker(codePoints,
+                    codePointCount, MAX_WORD_LENGTH);
+            if (codePointCount <= 0) {
+                return NOT_A_DICT_POS;
+            }
+        }
         const int wordPtNodePos = dictStructurePolicy->getTerminalPtNodePositionOfWord(
-                wordCodePoints, wordCodePointCount, false /* forceLowerCaseSearch */);
+                codePoints, codePointCount, false /* forceLowerCaseSearch */);
         if (wordPtNodePos != NOT_A_DICT_POS || !tryLowerCaseSearch) {
             // Return the position when when the word was found or doesn't try lower case
             // search.
@@ -112,7 +115,33 @@ class PrevWordsInfo {
         // Check bigrams for lower-cased previous word if original was not found. Useful for
         // auto-capitalized words like "The [current_word]".
         return dictStructurePolicy->getTerminalPtNodePositionOfWord(
-                wordCodePoints, wordCodePointCount, true /* forceLowerCaseSearch */);
+                codePoints, codePointCount, true /* forceLowerCaseSearch */);
+    }
+
+    static int getBigramListPositionForWordWithTryingLowerCaseSearch(
+            const DictionaryStructureWithBufferPolicy *const dictStructurePolicy,
+            const int *const wordCodePoints, const int wordCodePointCount,
+            const bool isBeginningOfSentence) {
+        int codePoints[MAX_WORD_LENGTH];
+        int codePointCount = wordCodePointCount;
+        memmove(codePoints, wordCodePoints, sizeof(int) * codePointCount);
+        if (isBeginningOfSentence) {
+            codePointCount = CharUtils::attachBeginningOfSentenceMarker(codePoints,
+                    codePointCount, MAX_WORD_LENGTH);
+            if (codePointCount <= 0) {
+                return NOT_A_DICT_POS;
+            }
+        }
+        int pos = getBigramListPositionForWord(dictStructurePolicy, codePoints,
+                codePointCount, false /* forceLowerCaseSearch */);
+        // getBigramListPositionForWord returns NOT_A_DICT_POS if this word isn't in the
+        // dictionary or has no bigrams
+        if (NOT_A_DICT_POS == pos) {
+            // If no bigrams for this exact word, search again in lower case.
+            pos = getBigramListPositionForWord(dictStructurePolicy, codePoints,
+                    codePointCount, true /* forceLowerCaseSearch */);
+        }
+        return pos;
     }
 
     static int getBigramListPositionForWord(

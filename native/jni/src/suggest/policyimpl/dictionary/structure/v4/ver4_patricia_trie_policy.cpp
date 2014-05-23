@@ -181,9 +181,19 @@ bool Ver4PatriciaTriePolicy::addUnigramEntry(const int *const word, const int le
     DynamicPtReadingHelper readingHelper(&mNodeReader, &mPtNodeArrayReader);
     readingHelper.initWithPtNodeArrayPos(getRootPosition());
     bool addedNewUnigram = false;
-    if (mUpdatingHelper.addUnigramWord(&readingHelper, word, length,
+    int codePointsToAdd[MAX_WORD_LENGTH];
+    int codePointCountToAdd = length;
+    memmove(codePointsToAdd, word, sizeof(int) * length);
+    if (unigramProperty->representsBeginningOfSentence()) {
+        codePointCountToAdd = CharUtils::attachBeginningOfSentenceMarker(codePointsToAdd,
+                codePointCountToAdd, MAX_WORD_LENGTH);
+    }
+    if (codePointCountToAdd <= 0) {
+        return false;
+    }
+    if (mUpdatingHelper.addUnigramWord(&readingHelper, codePointsToAdd, codePointCountToAdd,
             unigramProperty, &addedNewUnigram)) {
-        if (addedNewUnigram) {
+        if (addedNewUnigram && !unigramProperty->representsBeginningOfSentence()) {
             mUnigramCount++;
         }
         if (unigramProperty->getShortcuts().size() > 0) {
