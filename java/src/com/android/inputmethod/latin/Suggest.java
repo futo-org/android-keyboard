@@ -52,10 +52,13 @@ public final class Suggest {
     private static final int SUPPRESS_SUGGEST_THRESHOLD = -2000000000;
 
     private static final boolean DBG = LatinImeLogger.sDBG;
-    public final DictionaryFacilitatorForSuggest mDictionaryFacilitator =
-            new DictionaryFacilitatorForSuggest();
+    private final DictionaryFacilitator mDictionaryFacilitator;
 
     private float mAutoCorrectionThreshold;
+
+    public Suggest(final DictionaryFacilitator dictionaryFacilitator) {
+        mDictionaryFacilitator = dictionaryFacilitator;
+    }
 
     public Locale getLocale() {
         return mDictionaryFacilitator.getLocale();

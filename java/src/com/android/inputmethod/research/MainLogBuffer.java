@@ -20,7 +20,7 @@ import android.util.Log;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.Dictionary;
-import com.android.inputmethod.latin.DictionaryFacilitatorForSuggest;
+import com.android.inputmethod.latin.DictionaryFacilitator;
 import com.android.inputmethod.latin.define.ProductionFlag;
 
 import java.io.IOException;
@@ -75,7 +75,7 @@ public abstract class MainLogBuffer extends FixedLogBuffer {
     // The size of the n-grams logged.  E.g. N_GRAM_SIZE = 2 means to sample bigrams.
     public static final int N_GRAM_SIZE = 2;
 
-    private final DictionaryFacilitatorForSuggest mDictionaryFacilitator;
+    private final DictionaryFacilitator mDictionaryFacilitator;
     @UsedForTesting
     private Dictionary mDictionaryForTesting;
     private boolean mIsStopping = false;
@@ -87,7 +87,7 @@ public abstract class MainLogBuffer extends FixedLogBuffer {
     /* package for test */ int mNumWordsUntilSafeToSample;
 
     public MainLogBuffer(final int wordsBetweenSamples, final int numInitialWordsToIgnore,
-            final DictionaryFacilitatorForSuggest dictionaryFacilitator) {
+            final DictionaryFacilitator dictionaryFacilitator) {
         super(N_GRAM_SIZE + wordsBetweenSamples);
         mNumWordsBetweenNGrams = wordsBetweenSamples;
         mNumWordsUntilSafeToSample = DEBUG ? 0 : numInitialWordsToIgnore;

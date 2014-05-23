@@ -45,8 +45,8 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 // TODO: Consolidate dictionaries in native code.
-public class DictionaryFacilitatorForSuggest {
-    public static final String TAG = DictionaryFacilitatorForSuggest.class.getSimpleName();
+public class DictionaryFacilitator {
+    public static final String TAG = DictionaryFacilitator.class.getSimpleName();
 
     // HACK: This threshold is being used when adding a capitalized entry in the User History
     // dictionary.
@@ -162,7 +162,7 @@ public class DictionaryFacilitatorForSuggest {
         public void onUpdateMainDictionaryAvailability(boolean isMainDictionaryAvailable);
     }
 
-    public DictionaryFacilitatorForSuggest() {}
+    public DictionaryFacilitator() {}
 
     public Locale getLocale() {
         return mDictionaries.mLocale;
