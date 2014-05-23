@@ -114,7 +114,8 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     private boolean needsToMigrateDictionary(final int formatVersion) {
         // When we bump up the dictionary format version, the old version should be added to here
         // for supporting migration. Note that native code has to support reading such formats.
-        return formatVersion == FormatSpec.VERSION4_ONLY_FOR_TESTING;
+        return formatVersion == FormatSpec.VERSION4_ONLY_FOR_TESTING
+                || formatVersion == FormatSpec.VERSION401;
     }
 
     public boolean isValidDictionaryLocked() {
