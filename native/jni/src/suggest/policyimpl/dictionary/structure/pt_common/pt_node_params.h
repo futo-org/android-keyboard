@@ -160,7 +160,7 @@ class PtNodeParams {
     }
 
     AK_FORCE_INLINE bool representsNonWordInfo() const {
-        return getCodePointCount() > 0 && CharUtils::isInUnicodeSpace(getCodePoints()[0])
+        return getCodePointCount() > 0 && !CharUtils::isInUnicodeSpace(getCodePoints()[0])
                 && isNotAWord();
     }
 
