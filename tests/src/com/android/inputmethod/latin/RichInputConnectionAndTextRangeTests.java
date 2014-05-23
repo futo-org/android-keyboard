@@ -157,10 +157,10 @@ public class RichInputConnectionAndTextRangeTests extends AndroidTestCase {
         // If one of the following cases breaks, the bigram suggestions won't work.
         assertEquals(RichInputConnection.getPrevWordsInfoFromNthPreviousWord(
                 "abc def", mSpacingAndPunctuations, 2).mPrevWord, "abc");
-        assertNull(RichInputConnection.getPrevWordsInfoFromNthPreviousWord(
-                "abc", mSpacingAndPunctuations, 2).mPrevWord);
-        assertNull(RichInputConnection.getPrevWordsInfoFromNthPreviousWord(
-                "abc. def", mSpacingAndPunctuations, 2).mPrevWord);
+        assertEquals(RichInputConnection.getPrevWordsInfoFromNthPreviousWord(
+                "abc", mSpacingAndPunctuations, 2), PrevWordsInfo.BEGINNING_OF_SENTENCE);
+        assertEquals(RichInputConnection.getPrevWordsInfoFromNthPreviousWord(
+                "abc. def", mSpacingAndPunctuations, 2), PrevWordsInfo.BEGINNING_OF_SENTENCE);
 
         assertFalse(RichInputConnection.getPrevWordsInfoFromNthPreviousWord(
                 "abc def", mSpacingAndPunctuations, 2).mIsBeginningOfSentence);
@@ -180,16 +180,22 @@ public class RichInputConnectionAndTextRangeTests extends AndroidTestCase {
         assertEquals(RichInputConnection.getPrevWordsInfoFromNthPreviousWord(
                 "abc def .", mSpacingAndPunctuations, 2).mPrevWord, "def");
         assertEquals(RichInputConnection.getPrevWordsInfoFromNthPreviousWord(
-                "abc ", mSpacingAndPunctuations, 2).mPrevWord, null);
+                "abc ", mSpacingAndPunctuations, 2), PrevWordsInfo.BEGINNING_OF_SENTENCE);
 
         assertEquals(RichInputConnection.getPrevWordsInfoFromNthPreviousWord(
                 "abc def", mSpacingAndPunctuations, 1).mPrevWord, "def");
         assertEquals(RichInputConnection.getPrevWordsInfoFromNthPreviousWord(
                 "abc def ", mSpacingAndPunctuations, 1).mPrevWord, "def");
-        assertNull(RichInputConnection.getPrevWordsInfoFromNthPreviousWord(
-                "abc def.", mSpacingAndPunctuations, 1).mPrevWord);
-        assertNull(RichInputConnection.getPrevWordsInfoFromNthPreviousWord(
-                "abc def .", mSpacingAndPunctuations, 1).mPrevWord);
+        assertEquals(RichInputConnection.getPrevWordsInfoFromNthPreviousWord(
+                "abc def.", mSpacingAndPunctuations, 1), PrevWordsInfo.BEGINNING_OF_SENTENCE);
+        assertEquals(RichInputConnection.getPrevWordsInfoFromNthPreviousWord(
+                "abc def .", mSpacingAndPunctuations, 1), PrevWordsInfo.BEGINNING_OF_SENTENCE);
+        assertEquals(RichInputConnection.getPrevWordsInfoFromNthPreviousWord(
+                "abc, def", mSpacingAndPunctuations, 2), PrevWordsInfo.EMPTY_PREV_WORDS_INFO);
+        assertEquals(RichInputConnection.getPrevWordsInfoFromNthPreviousWord(
+                "abc? def", mSpacingAndPunctuations, 2), PrevWordsInfo.EMPTY_PREV_WORDS_INFO);
+        assertEquals(RichInputConnection.getPrevWordsInfoFromNthPreviousWord(
+                "abc! def", mSpacingAndPunctuations, 2), PrevWordsInfo.EMPTY_PREV_WORDS_INFO);
     }
 
     /**
