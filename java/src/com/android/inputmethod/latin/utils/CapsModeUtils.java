@@ -62,6 +62,22 @@ public final class CapsModeUtils {
     }
 
     /**
+     * Helper method to find out if a code point is starting punctuation.
+     *
+     * This include the Unicode START_PUNCTUATION category, but also some other symbols that are
+     * starting, like the inverted question mark or the double quote.
+     *
+     * @param codePoint the code point
+     * @return true if it's starting punctuation, false otherwise.
+     */
+    private static boolean isStartPunctuation(final int codePoint) {
+        return (codePoint == Constants.CODE_DOUBLE_QUOTE || codePoint == Constants.CODE_SINGLE_QUOTE
+                || codePoint == Constants.CODE_INVERTED_QUESTION_MARK
+                || codePoint == Constants.CODE_INVERTED_EXCLAMATION_MARK
+                || Character.getType(codePoint) == Character.START_PUNCTUATION);
+    }
+
+    /**
      * Determine what caps mode should be in effect at the current offset in
      * the text. Only the mode bits set in <var>reqModes</var> will be
      * checked. Note that the caps mode flags here are explicitly defined
@@ -115,8 +131,7 @@ public final class CapsModeUtils {
         } else {
             for (i = cs.length(); i > 0; i--) {
                 final char c = cs.charAt(i - 1);
-                if (c != Constants.CODE_DOUBLE_QUOTE && c != Constants.CODE_SINGLE_QUOTE
-                        && Character.getType(c) != Character.START_PUNCTUATION) {
+                if (!isStartPunctuation(c)) {
                     break;
                 }
             }
@@ -210,11 +225,14 @@ public final class CapsModeUtils {
 
         // We found out that we have a period. We need to determine if this is a full stop or
         // otherwise sentence-ending period, or an abbreviation like "e.g.". An abbreviation
-        // looks like (\w\.){2,}
+        // looks like (\w\.){2,}. Moreover, in German, you put periods after digits for dates
+        // and some other things, and in German specifically we need to not go into autocaps after
+        // a whitespace-digits-period sequence.
         // To find out, we will have a simple state machine with the following states :
-        // START, WORD, PERIOD, ABBREVIATION
+        // START, WORD, PERIOD, ABBREVIATION, NUMBER
         // On START : (just before the first period)
         //           letter => WORD
+        //           digit => NUMBER if German; end with caps otherwise
         //           whitespace => end with no caps (it was a stand-alone period)
         //           otherwise => end with caps (several periods/symbols in a row)
         // On WORD : (within the word just before the first period)
@@ -228,6 +246,11 @@ public final class CapsModeUtils {
         //           letter => LETTER
         //           period => PERIOD
         //           otherwise => end with no caps (it was an abbreviation)
+        // On NUMBER : (period immediately preceded by one or more digits)
+        //           digit => NUMBER
+        //           letter => LETTER (promote to word)
+        //           otherwise => end with no caps (it was a whitespace-digits-period sequence,
+        //            or a punctuation-digits-period sequence like "11.11.")
         // "Not an abbreviation" in the above chart essentially covers cases like "...yes.". This
         // should capitalize.
 
@@ -235,6 +258,7 @@ public final class CapsModeUtils {
         final int WORD = 1;
         final int PERIOD = 2;
         final int LETTER = 3;
+        final int NUMBER = 4;
         final int caps = (TextUtils.CAP_MODE_CHARACTERS | TextUtils.CAP_MODE_WORDS
                 | TextUtils.CAP_MODE_SENTENCES) & reqModes;
         final int noCaps = (TextUtils.CAP_MODE_CHARACTERS | TextUtils.CAP_MODE_WORDS) & reqModes;
@@ -247,6 +271,8 @@ public final class CapsModeUtils {
                     state = WORD;
                 } else if (Character.isWhitespace(c)) {
                     return noCaps;
+                } else if (Character.isDigit(c) && spacingAndPunctuations.mUsesGermanRules) {
+                    state = NUMBER;
                 } else {
                     return caps;
                 }
@@ -272,6 +298,15 @@ public final class CapsModeUtils {
                     state = LETTER;
                 } else if (spacingAndPunctuations.isSentenceSeparator(c)) {
                     state = PERIOD;
+                } else {
+                    return noCaps;
+                }
+                break;
+            case NUMBER:
+                if (Character.isLetter(c)) {
+                    state = WORD;
+                } else if (Character.isDigit(c)) {
+                    state = NUMBER;
                 } else {
                     return noCaps;
                 }
