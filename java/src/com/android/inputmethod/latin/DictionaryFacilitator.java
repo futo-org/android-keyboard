@@ -169,7 +169,7 @@ public class DictionaryFacilitator {
     }
 
     public DictionaryFacilitator() {
-        mDistracterFilter = new DistracterFilter();
+        mDistracterFilter = new DistracterFilter.EmptyDistracterFilter();
     }
 
     public DictionaryFacilitator(final DistracterFilter distracterFilter) {
