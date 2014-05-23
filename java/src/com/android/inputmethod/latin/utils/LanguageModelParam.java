@@ -19,7 +19,7 @@ package com.android.inputmethod.latin.utils;
 import android.util.Log;
 
 import com.android.inputmethod.latin.Dictionary;
-import com.android.inputmethod.latin.DictionaryFacilitatorForSuggest;
+import com.android.inputmethod.latin.DictionaryFacilitator;
 import com.android.inputmethod.latin.PrevWordsInfo;
 import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
 
@@ -80,7 +80,7 @@ public final class LanguageModelParam {
     // Process a list of words and return a list of {@link LanguageModelParam} objects.
     public static ArrayList<LanguageModelParam> createLanguageModelParamsFrom(
             final ArrayList<String> tokens, final int timestamp,
-            final DictionaryFacilitatorForSuggest dictionaryFacilitator,
+            final DictionaryFacilitator dictionaryFacilitator,
             final SpacingAndPunctuations spacingAndPunctuations,
             final DistracterFilter distracterFilter) {
         final ArrayList<LanguageModelParam> languageModelParams =
@@ -124,7 +124,7 @@ public final class LanguageModelParam {
 
     private static LanguageModelParam detectWhetherVaildWordOrNotAndGetLanguageModelParam(
             final PrevWordsInfo prevWordsInfo, final String targetWord, final int timestamp,
-            final DictionaryFacilitatorForSuggest dictionaryFacilitator,
+            final DictionaryFacilitator dictionaryFacilitator,
             final DistracterFilter distracterFilter) {
         final Locale locale = dictionaryFacilitator.getLocale();
         if (locale == null) {

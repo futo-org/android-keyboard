@@ -52,7 +52,7 @@ import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.keyboard.KeyboardView;
 import com.android.inputmethod.keyboard.MainKeyboardView;
 import com.android.inputmethod.latin.Constants;
-import com.android.inputmethod.latin.DictionaryFacilitatorForSuggest;
+import com.android.inputmethod.latin.DictionaryFacilitator;
 import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.RichInputConnection;
@@ -167,7 +167,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     protected static final int SUSPEND_DURATION_IN_MINUTES = 1;
 
     // used to check whether words are not unique
-    private DictionaryFacilitatorForSuggest mDictionaryFacilitator;
+    private DictionaryFacilitator mDictionaryFacilitator;
     private MainKeyboardView mMainKeyboardView;
     // TODO: Check whether a superclass can be used instead of LatinIME.
     /* package for test */ LatinIME mLatinIME;
@@ -656,7 +656,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         mInFeedbackDialog = false;
     }
 
-    public void initDictionary(final DictionaryFacilitatorForSuggest dictionaryFacilitator) {
+    public void initDictionary(final DictionaryFacilitator dictionaryFacilitator) {
         mDictionaryFacilitator = dictionaryFacilitator;
         // MainLogBuffer now has an out-of-date Suggest object.  Close down MainLogBuffer and create
         // a new one.
