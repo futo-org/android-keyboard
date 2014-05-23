@@ -32,8 +32,9 @@ class FormatUtils {
         // These MUST have the same values as the relevant constants in FormatSpec.java.
         VERSION_2 = 2,
         VERSION_4_ONLY_FOR_TESTING = 399,
-        VERSION_4 = 401,
-        VERSION_4_DEV = 402,
+        VERSION_401 = 401,
+        VERSION_4 = 402,
+        VERSION_4_DEV = 403,
         UNKNOWN_VERSION = -1
     };
 

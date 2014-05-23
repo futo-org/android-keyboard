@@ -192,8 +192,9 @@ public final class FormatSpec {
     public static final int VERSION2 = 2;
     // Dictionary version used for testing.
     public static final int VERSION4_ONLY_FOR_TESTING = 399;
-    public static final int VERSION4 = 401;
-    public static final int VERSION4_DEV = 402;
+    public static final int VERSION401 = 401;
+    public static final int VERSION4 = 402;
+    public static final int VERSION4_DEV = 403;
     static final int MINIMUM_SUPPORTED_VERSION = VERSION2;
     static final int MAXIMUM_SUPPORTED_VERSION = VERSION4_DEV;
 

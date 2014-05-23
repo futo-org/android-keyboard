@@ -29,6 +29,8 @@ const int FormatUtils::DICTIONARY_MINIMUM_SIZE = 12;
     switch (formatVersion) {
         case VERSION_2:
             return VERSION_2;
+        case VERSION_401:
+            return VERSION_401;
         case VERSION_4_ONLY_FOR_TESTING:
             return VERSION_4_ONLY_FOR_TESTING;
         case VERSION_4:
@@ -60,6 +62,8 @@ const int FormatUtils::DICTIONARY_MINIMUM_SIZE = 12;
             // same so we use them for both here.
             if (ByteArrayUtils::readUint16(dict, 4) == VERSION_2) {
                 return VERSION_2;
+            } else if (ByteArrayUtils::readUint16(dict, 4) == VERSION_401) {
+                return VERSION_401;
             } else if (ByteArrayUtils::readUint16(dict, 4) == VERSION_4_ONLY_FOR_TESTING) {
                 return VERSION_4_ONLY_FOR_TESTING;
             } else if (ByteArrayUtils::readUint16(dict, 4) == VERSION_4) {
