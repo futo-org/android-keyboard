@@ -87,7 +87,7 @@ public final class LanguageModelParam {
         final ArrayList<LanguageModelParam> languageModelParams =
                 CollectionUtils.newArrayList();
         final int N = tokens.size();
-        PrevWordsInfo prevWordsInfo = new PrevWordsInfo(null);
+        PrevWordsInfo prevWordsInfo = PrevWordsInfo.EMPTY_PREV_WORDS_INFO;
         for (int i = 0; i < N; ++i) {
             final String tempWord = tokens.get(i);
             if (StringUtils.isEmptyStringOrWhiteSpaces(tempWord)) {
@@ -104,7 +104,7 @@ public final class LanguageModelParam {
                             + tempWord + "\"");
                 }
                 // Sentence terminator found. Split.
-                prevWordsInfo = new PrevWordsInfo(null);
+                prevWordsInfo = PrevWordsInfo.EMPTY_PREV_WORDS_INFO;
                 continue;
             }
             if (DEBUG_TOKEN) {

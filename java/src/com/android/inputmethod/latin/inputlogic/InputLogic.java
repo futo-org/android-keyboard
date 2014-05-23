@@ -1612,8 +1612,9 @@ public final class InputLogic {
             return mConnection.getPrevWordsInfoFromNthPreviousWord(
                     spacingAndPunctuations, nthPreviousWord);
         } else {
-            return LastComposedWord.NOT_A_COMPOSED_WORD == mLastComposedWord ? new PrevWordsInfo()
-                    : new PrevWordsInfo(mLastComposedWord.mCommittedWord.toString());
+            return LastComposedWord.NOT_A_COMPOSED_WORD == mLastComposedWord ?
+                    PrevWordsInfo.BEGINNING_OF_SENTENCE :
+                            new PrevWordsInfo(mLastComposedWord.mCommittedWord.toString());
         }
     }
 

@@ -37,7 +37,7 @@ public class DistracterFilterTest extends InputTestsBase {
     }
 
     public void testIsDistractorToWordsInDictionaries() {
-        final PrevWordsInfo EMPTY_PREV_WORDS_INFO = new PrevWordsInfo(null);
+        final PrevWordsInfo EMPTY_PREV_WORDS_INFO = PrevWordsInfo.EMPTY_PREV_WORDS_INFO;
 
         final Locale localeEnUs = new Locale("en", "US");
         String typedWord = "alot";
