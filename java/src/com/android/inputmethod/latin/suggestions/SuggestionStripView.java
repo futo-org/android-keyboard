@@ -50,7 +50,6 @@ import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.latin.settings.Settings;
 import com.android.inputmethod.latin.suggestions.MoreSuggestions.MoreSuggestionsListener;
-import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.ImportantNoticeUtils;
 import com.android.inputmethod.research.ResearchLogger;
 
@@ -78,9 +77,9 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
     private final MoreSuggestionsView mMoreSuggestionsView;
     private final MoreSuggestions.Builder mMoreSuggestionsBuilder;
 
-    private final ArrayList<TextView> mWordViews = CollectionUtils.newArrayList();
-    private final ArrayList<TextView> mDebugInfoViews = CollectionUtils.newArrayList();
-    private final ArrayList<View> mDividerViews = CollectionUtils.newArrayList();
+    private final ArrayList<TextView> mWordViews = new ArrayList<>();
+    private final ArrayList<TextView> mDebugInfoViews = new ArrayList<>();
+    private final ArrayList<View> mDividerViews = new ArrayList<>();
 
     Listener mListener;
     private SuggestedWords mSuggestedWords = SuggestedWords.EMPTY;

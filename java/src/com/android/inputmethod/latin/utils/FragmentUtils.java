@@ -31,7 +31,7 @@ import com.android.inputmethod.research.FeedbackFragment;
 import java.util.HashSet;
 
 public class FragmentUtils {
-    private static final HashSet<String> sLatinImeFragments = new HashSet<String>();
+    private static final HashSet<String> sLatinImeFragments = new HashSet<>();
     static {
         sLatinImeFragments.add(DictionarySettingsFragment.class.getName());
         sLatinImeFragments.add(AboutPreferences.class.getName());

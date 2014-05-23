@@ -18,7 +18,6 @@ package com.android.inputmethod.latin;
 
 import com.android.inputmethod.event.CombinerChain;
 import com.android.inputmethod.event.Event;
-import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.CoordinateUtils;
 import com.android.inputmethod.latin.utils.StringUtils;
 
@@ -79,7 +78,7 @@ public final class WordComposer {
 
     public WordComposer() {
         mCombinerChain = new CombinerChain("");
-        mEvents = CollectionUtils.newArrayList();
+        mEvents = new ArrayList<>();
         mAutoCorrection = null;
         mIsResumed = false;
         mIsBatchMode = false;

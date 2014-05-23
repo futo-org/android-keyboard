@@ -32,9 +32,6 @@ import java.nio.ByteBuffer;
  * TODO: Rename this class to DictDecoderUtils.
  */
 public final class BinaryDictDecoderUtils {
-
-    private static final boolean DBG = MakedictLog.DBG;
-
     private BinaryDictDecoderUtils() {
         // This utility class is not publicly instantiable.
     }

@@ -77,6 +77,7 @@ import android.util.Pair;
  */
 
 @LargeTest
+@SuppressWarnings("rawtypes")
 public class InputLogicTestsReorderingMyanmar extends InputTestsBase {
     // The tests are formatted as follows.
     // Each test is an entry in the array of Pair arrays.
@@ -202,6 +203,7 @@ public class InputLogicTestsReorderingMyanmar extends InputTestsBase {
         */
     };
 
+    @SuppressWarnings("unchecked")
     private void doMyanmarTest(final int testNumber, final Pair[] test) {
         int stepNumber = 0;
         for (final Pair<int[], String> step : test) {

@@ -160,7 +160,7 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
         // this legacy database. New clients should make sure to always pass a client ID so as
         // to avoid conflicts.
         final String clientId = null != clientIdOrNull ? clientIdOrNull : "";
-        if (null == sInstanceMap) sInstanceMap = new TreeMap<String, MetadataDbHelper>();
+        if (null == sInstanceMap) sInstanceMap = new TreeMap<>();
         MetadataDbHelper helper = sInstanceMap.get(clientId);
         if (null == helper) {
             helper = new MetadataDbHelper(context, clientId);
@@ -639,7 +639,7 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
     public static ArrayList<DownloadRecord> getDownloadRecordsForDownloadId(final Context context,
             final long downloadId) {
         final SQLiteDatabase defaultDb = getDb(context, "");
-        final ArrayList<DownloadRecord> results = new ArrayList<DownloadRecord>();
+        final ArrayList<DownloadRecord> results = new ArrayList<>();
         final Cursor cursor = defaultDb.query(CLIENT_TABLE_NAME, CLIENT_TABLE_COLUMNS,
                 null, null, null, null, null);
         try {
@@ -923,7 +923,7 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
                 // - Remove the old entry from the table
                 // - Erase the old file
                 // We start by gathering the names of the files we should delete.
-                final List<String> filenames = new LinkedList<String>();
+                final List<String> filenames = new LinkedList<>();
                 final Cursor c = db.query(METADATA_TABLE_NAME,
                         new String[] { LOCAL_FILENAME_COLUMN },
                         LOCALE_COLUMN + " = ? AND " +

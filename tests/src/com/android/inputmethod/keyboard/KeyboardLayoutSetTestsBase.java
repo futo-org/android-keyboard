@@ -32,7 +32,6 @@ import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.RichInputMethodManager;
 import com.android.inputmethod.latin.utils.AdditionalSubtypeUtils;
-import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.ResourceUtils;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 
@@ -42,11 +41,9 @@ import java.util.Locale;
 @SmallTest
 public class KeyboardLayoutSetTestsBase extends AndroidTestCase {
     // All input method subtypes of LatinIME.
-    private final ArrayList<InputMethodSubtype> mAllSubtypesList = CollectionUtils.newArrayList();
-    private final ArrayList<InputMethodSubtype> mAsciiCapableSubtypesList =
-            CollectionUtils.newArrayList();
-    private final ArrayList<InputMethodSubtype> mAdditionalSubtypesList =
-            CollectionUtils.newArrayList();
+    private final ArrayList<InputMethodSubtype> mAllSubtypesList = new ArrayList<>();
+    private final ArrayList<InputMethodSubtype> mAsciiCapableSubtypesList = new ArrayList<>();
+    private final ArrayList<InputMethodSubtype> mAdditionalSubtypesList = new ArrayList<>();
 
     private Context mThemeContext;
     private int mScreenMetrics;

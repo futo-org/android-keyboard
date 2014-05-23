@@ -41,8 +41,8 @@ public class PrioritizedSerialExecutor {
     private Runnable mActive;
 
     public PrioritizedSerialExecutor() {
-        mTasks = new ConcurrentLinkedQueue<Runnable>();
-        mPrioritizedTasks = new ConcurrentLinkedQueue<Runnable>();
+        mTasks = new ConcurrentLinkedQueue<>();
+        mPrioritizedTasks = new ConcurrentLinkedQueue<>();
         mIsShutdown = false;
         mThreadPoolExecutor = new ThreadPoolExecutor(1 /* corePoolSize */, 1 /* maximumPoolSize */,
                 0 /* keepAliveTime */, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<Runnable>(1));

@@ -22,7 +22,6 @@ import android.text.TextUtils;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.Constants;
-import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.RunInLocale;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 
@@ -38,7 +37,7 @@ public final class KeyboardTextsSet {
 
     private String[] mTextsTable;
     // Resource name to text map.
-    private HashMap<String, String> mResourceNameToTextsMap = CollectionUtils.newHashMap();
+    private HashMap<String, String> mResourceNameToTextsMap = new HashMap<>();
 
     public void setLocale(final Locale locale, final Context context) {
         mTextsTable = KeyboardTextsTable.getTextsTable(locale);

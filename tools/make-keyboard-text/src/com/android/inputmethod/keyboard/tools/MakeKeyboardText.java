@@ -36,7 +36,7 @@ public class MakeKeyboardText {
         }
 
         public Options(final String[] argsArray) {
-            final LinkedList<String> args = new LinkedList<String>(Arrays.asList(argsArray));
+            final LinkedList<String> args = new LinkedList<>(Arrays.asList(argsArray));
             String arg = null;
             String java = null;
             try {

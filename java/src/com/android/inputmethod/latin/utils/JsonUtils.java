@@ -37,7 +37,7 @@ public final class JsonUtils {
     private static final String EMPTY_STRING = "";
 
     public static List<Object> jsonStrToList(final String s) {
-        final ArrayList<Object> list = CollectionUtils.newArrayList();
+        final ArrayList<Object> list = new ArrayList<>();
         final JsonReader reader = new JsonReader(new StringReader(s));
         try {
             reader.beginArray();

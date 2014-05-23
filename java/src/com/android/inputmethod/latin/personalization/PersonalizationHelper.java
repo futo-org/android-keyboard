@@ -16,11 +16,10 @@
 
 package com.android.inputmethod.latin.personalization;
 
-import com.android.inputmethod.latin.utils.CollectionUtils;
-import com.android.inputmethod.latin.utils.FileUtils;
-
 import android.content.Context;
 import android.util.Log;
+
+import com.android.inputmethod.latin.utils.FileUtils;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -33,9 +32,9 @@ public class PersonalizationHelper {
     private static final String TAG = PersonalizationHelper.class.getSimpleName();
     private static final boolean DEBUG = false;
     private static final ConcurrentHashMap<String, SoftReference<UserHistoryDictionary>>
-            sLangUserHistoryDictCache = CollectionUtils.newConcurrentHashMap();
+            sLangUserHistoryDictCache = new ConcurrentHashMap<>();
     private static final ConcurrentHashMap<String, SoftReference<PersonalizationDictionary>>
-            sLangPersonalizationDictCache = CollectionUtils.newConcurrentHashMap();
+            sLangPersonalizationDictCache = new ConcurrentHashMap<>();
 
     public static UserHistoryDictionary getUserHistoryDictionary(
             final Context context, final Locale locale) {
@@ -54,8 +53,7 @@ public class PersonalizationHelper {
                 }
             }
             final UserHistoryDictionary dict = new UserHistoryDictionary(context, locale);
-            sLangUserHistoryDictCache.put(localeStr,
-                    new SoftReference<UserHistoryDictionary>(dict));
+            sLangUserHistoryDictCache.put(localeStr, new SoftReference<>(dict));
             return dict;
         }
     }
@@ -108,8 +106,7 @@ public class PersonalizationHelper {
                 }
             }
             final PersonalizationDictionary dict = new PersonalizationDictionary(context, locale);
-            sLangPersonalizationDictCache.put(
-                    localeStr, new SoftReference<PersonalizationDictionary>(dict));
+            sLangPersonalizationDictCache.put(localeStr, new SoftReference<>(dict));
             return dict;
         }
     }

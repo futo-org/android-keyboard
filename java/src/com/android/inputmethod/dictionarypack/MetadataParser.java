@@ -52,7 +52,7 @@ public class MetadataParser {
      */
     private static WordListMetadata parseOneWordList(final JsonReader reader)
             throws IOException, BadFormatException {
-        final TreeMap<String, String> arguments = new TreeMap<String, String>();
+        final TreeMap<String, String> arguments = new TreeMap<>();
         reader.beginObject();
         while (reader.hasNext()) {
             final String name = reader.nextName();
@@ -100,7 +100,7 @@ public class MetadataParser {
     public static List<WordListMetadata> parseMetadata(final InputStreamReader input)
             throws IOException, BadFormatException {
         JsonReader reader = new JsonReader(input);
-        final ArrayList<WordListMetadata> readInfo = new ArrayList<WordListMetadata>();
+        final ArrayList<WordListMetadata> readInfo = new ArrayList<>();
         reader.beginArray();
         while (reader.hasNext()) {
             final WordListMetadata thisMetadata = parseOneWordList(reader);

@@ -18,7 +18,6 @@ package com.android.inputmethod.latin.makedict;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.BinaryDictionary;
-import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.CombinedFormatUtils;
 import com.android.inputmethod.latin.utils.StringUtils;
 
@@ -78,8 +77,8 @@ public final class WordProperty implements Comparable<WordProperty> {
             final ArrayList<Integer> shortcutProbabilities) {
         mWord = StringUtils.getStringFromNullTerminatedCodePointArray(codePoints);
         mProbabilityInfo = createProbabilityInfoFromArray(probabilityInfo);
-        mShortcutTargets = CollectionUtils.newArrayList();
-        mBigrams = CollectionUtils.newArrayList();
+        mShortcutTargets = new ArrayList<>();
+        mBigrams = new ArrayList<>();
         mIsBeginningOfSentence = false;
         mIsNotAWord = isNotAWord;
         mIsBlacklistEntry = isBlacklisted;

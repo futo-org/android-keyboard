@@ -20,7 +20,6 @@ import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.BinaryDictionary;
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.CharEncoding;
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.DictBuffer;
-import com.android.inputmethod.latin.utils.CollectionUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -34,8 +33,6 @@ import java.util.Arrays;
 // TODO: Separate logics that are used only for testing.
 @UsedForTesting
 public class Ver2DictDecoder extends AbstractDictDecoder {
-    private static final String TAG = Ver2DictDecoder.class.getSimpleName();
-
     /**
      * A utility class for reading a PtNode.
      */
@@ -233,7 +230,7 @@ public class Ver2DictDecoder extends AbstractDictDecoder {
         final ArrayList<WeightedString> shortcutTargets;
         if (0 != (flags & FormatSpec.FLAG_HAS_SHORTCUT_TARGETS)) {
             // readShortcut will add shortcuts to shortcutTargets.
-            shortcutTargets = new ArrayList<WeightedString>();
+            shortcutTargets = new ArrayList<>();
             addressPointer += PtNodeReader.readShortcut(mDictBuffer, shortcutTargets);
         } else {
             shortcutTargets = null;
@@ -241,7 +238,7 @@ public class Ver2DictDecoder extends AbstractDictDecoder {
 
         final ArrayList<PendingAttribute> bigrams;
         if (0 != (flags & FormatSpec.FLAG_HAS_BIGRAMS)) {
-            bigrams = new ArrayList<PendingAttribute>();
+            bigrams = new ArrayList<>();
             addressPointer += PtNodeReader.readBigramAddresses(mDictBuffer, bigrams,
                     addressPointer);
             if (bigrams.size() >= FormatSpec.MAX_BIGRAMS_IN_A_PTNODE) {
@@ -267,7 +264,7 @@ public class Ver2DictDecoder extends AbstractDictDecoder {
         final FusionDictionary fusionDict =
                 new FusionDictionary(new FusionDictionary.PtNodeArray(), header.mDictionaryOptions);
         int token = 0;
-        final ArrayList<WordProperty> wordProperties = CollectionUtils.newArrayList();
+        final ArrayList<WordProperty> wordProperties = new ArrayList<>();
         do {
             final BinaryDictionary.GetNextWordPropertyResult result =
                     binaryDictionary.getNextWordProperty(token);

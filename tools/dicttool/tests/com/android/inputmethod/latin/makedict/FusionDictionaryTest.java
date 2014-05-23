@@ -32,7 +32,7 @@ import java.util.Random;
  * Unit tests for FusionDictionary.
  */
 public class FusionDictionaryTest extends TestCase {
-    private static final ArrayList<String> sWords = new ArrayList<String>();
+    private static final ArrayList<String> sWords = new ArrayList<>();
     private static final int MAX_UNIGRAMS = 1000;
 
     private void prepare(final long seed) {

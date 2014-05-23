@@ -29,7 +29,6 @@ import com.android.inputmethod.latin.personalization.PersonalizationDataChunk;
 import com.android.inputmethod.latin.personalization.PersonalizationDictionary;
 import com.android.inputmethod.latin.personalization.UserHistoryDictionary;
 import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
-import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.DistracterFilter;
 import com.android.inputmethod.latin.utils.ExecutorUtils;
 import com.android.inputmethod.latin.utils.LanguageModelParam;
@@ -41,10 +40,10 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -75,7 +74,7 @@ public class DictionaryFacilitator {
             };
 
     private static final Map<String, Class<? extends ExpandableBinaryDictionary>>
-            DICT_TYPE_TO_CLASS = CollectionUtils.newHashMap();
+            DICT_TYPE_TO_CLASS = new HashMap<>();
 
     static {
         DICT_TYPE_TO_CLASS.put(Dictionary.TYPE_USER_HISTORY, UserHistoryDictionary.class);
@@ -100,7 +99,7 @@ public class DictionaryFacilitator {
         public final Locale mLocale;
         private Dictionary mMainDict;
         public final ConcurrentHashMap<String, ExpandableBinaryDictionary> mSubDictMap =
-                CollectionUtils.newConcurrentHashMap();
+                new ConcurrentHashMap<>();
 
         public Dictionaries() {
             mLocale = null;
@@ -212,7 +211,7 @@ public class DictionaryFacilitator {
         // We always try to have the main dictionary. Other dictionaries can be unused.
         final boolean reloadMainDictionary = localeHasBeenChanged || forceReloadMainDictionary;
         // TODO: Make subDictTypesToUse configurable by resource or a static final list.
-        final Set<String> subDictTypesToUse = CollectionUtils.newHashSet();
+        final HashSet<String> subDictTypesToUse = new HashSet<>();
         if (useContactsDict) {
             subDictTypesToUse.add(Dictionary.TYPE_CONTACTS);
         }
@@ -231,7 +230,7 @@ public class DictionaryFacilitator {
             newMainDict = mDictionaries.getDict(Dictionary.TYPE_MAIN);
         }
 
-        final Map<String, ExpandableBinaryDictionary> subDicts = CollectionUtils.newHashMap();
+        final Map<String, ExpandableBinaryDictionary> subDicts = new HashMap<>();
         for (final String dictType : SUB_DICT_TYPES) {
             if (!subDictTypesToUse.contains(dictType)) {
                 // This dictionary will not be used.
@@ -304,7 +303,7 @@ public class DictionaryFacilitator {
             final ArrayList<String> dictionaryTypes, final HashMap<String, File> dictionaryFiles,
             final Map<String, Map<String, String>> additionalDictAttributes) {
         Dictionary mainDictionary = null;
-        final Map<String, ExpandableBinaryDictionary> subDicts = CollectionUtils.newHashMap();
+        final Map<String, ExpandableBinaryDictionary> subDicts = new HashMap<>();
 
         for (final String dictType : dictionaryTypes) {
             if (dictType.equals(Dictionary.TYPE_MAIN)) {

@@ -53,8 +53,8 @@ public class Test extends Dicttool.Command {
         BinaryDictDecoderEncoderTests.class,
         BinaryDictEncoderFlattenTreeTests.class,
     };
-    private ArrayList<Method> mAllTestMethods = new ArrayList<Method>();
-    private ArrayList<String> mUsedTestMethods = new ArrayList<String>();
+    private ArrayList<Method> mAllTestMethods = new ArrayList<>();
+    private ArrayList<String> mUsedTestMethods = new ArrayList<>();
 
     public Test() {
         for (final Class<?> c : sClassesToTest) {

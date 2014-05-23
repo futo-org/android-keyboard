@@ -95,8 +95,7 @@ public final class AdditionalSubtypeUtils {
             return EMPTY_SUBTYPE_ARRAY;
         }
         final String[] prefSubtypeArray = prefSubtypes.split(PREF_SUBTYPE_SEPARATOR);
-        final ArrayList<InputMethodSubtype> subtypesList =
-                CollectionUtils.newArrayList(prefSubtypeArray.length);
+        final ArrayList<InputMethodSubtype> subtypesList = new ArrayList<>(prefSubtypeArray.length);
         for (final String prefSubtype : prefSubtypeArray) {
             final String elems[] = prefSubtype.split(LOCALE_AND_LAYOUT_SEPARATOR);
             if (elems.length != LENGTH_WITHOUT_EXTRA_VALUE

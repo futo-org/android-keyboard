@@ -22,7 +22,6 @@ import android.util.Log;
 
 import com.android.inputmethod.keyboard.internal.TouchPositionCorrection;
 import com.android.inputmethod.latin.Constants;
-import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.JniUtils;
 
 import java.util.ArrayList;
@@ -55,6 +54,7 @@ public class ProximityInfo {
     private final List<Key>[] mGridNeighbors;
     private final String mLocaleStr;
 
+    @SuppressWarnings("unchecked")
     ProximityInfo(final String localeStr, final int gridWidth, final int gridHeight,
             final int minWidth, final int height, final int mostCommonKeyWidth,
             final int mostCommonKeyHeight, final List<Key> sortedKeys,
@@ -360,7 +360,7 @@ y |---+---+---+---+-v-+-|-+---+---+---+---+---|          | thresholdBase and get
         for (int i = 0; i < gridSize; ++i) {
             final int indexStart = i * keyCount;
             final int indexEnd = indexStart + neighborCountPerCell[i];
-            final ArrayList<Key> neighbors = CollectionUtils.newArrayList(indexEnd - indexStart);
+            final ArrayList<Key> neighbors = new ArrayList<>(indexEnd - indexStart);
             for (int index = indexStart; index < indexEnd; index++) {
                 neighbors.add(neighborsFlatBuffer[index]);
             }

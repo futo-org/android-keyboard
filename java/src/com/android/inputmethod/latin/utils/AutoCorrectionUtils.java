@@ -16,11 +16,10 @@
 
 package com.android.inputmethod.latin.utils;
 
-import com.android.inputmethod.latin.BinaryDictionary;
+import android.util.Log;
+
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
-
-import android.util.Log;
 
 public final class AutoCorrectionUtils {
     private static final boolean DBG = LatinImeLogger.sDBG;

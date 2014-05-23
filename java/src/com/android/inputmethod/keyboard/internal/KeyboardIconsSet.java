@@ -23,7 +23,6 @@ import android.util.Log;
 import android.util.SparseIntArray;
 
 import com.android.inputmethod.latin.R;
-import com.android.inputmethod.latin.utils.CollectionUtils;
 
 import java.util.HashMap;
 
@@ -60,7 +59,7 @@ public final class KeyboardIconsSet {
     private static final SparseIntArray ATTR_ID_TO_ICON_ID = new SparseIntArray();
 
     // Icon name to icon id map.
-    private static final HashMap<String, Integer> sNameToIdsMap = CollectionUtils.newHashMap();
+    private static final HashMap<String, Integer> sNameToIdsMap = new HashMap<>();
 
     private static final Object[] NAMES_AND_ATTR_IDS = {
         NAME_UNDEFINED,                   ATTR_UNDEFINED,

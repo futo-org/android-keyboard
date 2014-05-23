@@ -72,7 +72,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
                 getContext().getCacheDir());
         file.delete();
         file.mkdir();
-        Map<String, String> attributeMap = new HashMap<String, String>();
+        Map<String, String> attributeMap = new HashMap<>();
         if (BinaryDictionaryUtils.createEmptyDictFile(file.getAbsolutePath(), formatVersion,
                 Locale.ENGLISH, attributeMap)) {
             return file;
@@ -287,7 +287,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
                 0 /* offset */, dictFile.length(), true /* useFullEditDistance */,
                 Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
 
-        final HashMap<String, Integer> probabilityMap = new HashMap<String, Integer>();
+        final HashMap<String, Integer> probabilityMap = new HashMap<>();
         // Test a word that isn't contained within the dictionary.
         final Random random = new Random(seed);
         final int[] codePointSet = CodePointUtils.generateCodePointSet(codePointSetSize, random);
@@ -405,12 +405,11 @@ public class BinaryDictionaryTests extends AndroidTestCase {
                 0 /* offset */, dictFile.length(), true /* useFullEditDistance */,
                 Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
 
-        final ArrayList<String> words = new ArrayList<String>();
-        final ArrayList<Pair<String, String>> bigramWords = new ArrayList<Pair<String,String>>();
+        final ArrayList<String> words = new ArrayList<>();
+        final ArrayList<Pair<String, String>> bigramWords = new ArrayList<>();
         final int[] codePointSet = CodePointUtils.generateCodePointSet(codePointSetSize, random);
-        final HashMap<String, Integer> unigramProbabilities = new HashMap<String, Integer>();
-        final HashMap<Pair<String, String>, Integer> bigramProbabilities =
-                new HashMap<Pair<String, String>, Integer>();
+        final HashMap<String, Integer> unigramProbabilities = new HashMap<>();
+        final HashMap<Pair<String, String>, Integer> bigramProbabilities = new HashMap<>();
 
         for (int i = 0; i < wordCount; ++i) {
             final String word = CodePointUtils.generateWord(random, codePointSet);
@@ -426,7 +425,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
             if (TextUtils.equals(word0, word1)) {
                 continue;
             }
-            final Pair<String, String> bigram = new Pair<String, String>(word0, word1);
+            final Pair<String, String> bigram = new Pair<>(word0, word1);
             bigramWords.add(bigram);
             final int unigramProbability = unigramProbabilities.get(word1);
             final int bigramProbability =
@@ -629,12 +628,11 @@ public class BinaryDictionaryTests extends AndroidTestCase {
                 0 /* offset */, dictFile.length(), true /* useFullEditDistance */,
                 Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
 
-        final ArrayList<String> words = new ArrayList<String>();
-        final ArrayList<Pair<String, String>> bigramWords = new ArrayList<Pair<String,String>>();
+        final ArrayList<String> words = new ArrayList<>();
+        final ArrayList<Pair<String, String>> bigramWords = new ArrayList<>();
         final int[] codePointSet = CodePointUtils.generateCodePointSet(codePointSetSize, random);
-        final HashMap<String, Integer> unigramProbabilities = new HashMap<String, Integer>();
-        final HashMap<Pair<String, String>, Integer> bigramProbabilities =
-                new HashMap<Pair<String, String>, Integer>();
+        final HashMap<String, Integer> unigramProbabilities = new HashMap<>();
+        final HashMap<Pair<String, String>, Integer> bigramProbabilities = new HashMap<>();
 
         for (int i = 0; i < wordCount; ++i) {
             final String word = CodePointUtils.generateWord(random, codePointSet);
@@ -650,7 +648,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
             if (TextUtils.equals(word0, word1)) {
                 continue;
             }
-            final Pair<String, String> bigram = new Pair<String, String>(word0, word1);
+            final Pair<String, String> bigram = new Pair<>(word0, word1);
             bigramWords.add(bigram);
             final int unigramProbability = unigramProbabilities.get(word1);
             final int bigramProbability =
@@ -707,12 +705,11 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         BinaryDictionary binaryDictionary = new BinaryDictionary(dictFile.getAbsolutePath(),
                 0 /* offset */, dictFile.length(), true /* useFullEditDistance */,
                 Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
-        final ArrayList<String> words = new ArrayList<String>();
-        final ArrayList<Pair<String, String>> bigramWords = new ArrayList<Pair<String,String>>();
+        final ArrayList<String> words = new ArrayList<>();
+        final ArrayList<Pair<String, String>> bigramWords = new ArrayList<>();
         final int[] codePointSet = CodePointUtils.generateCodePointSet(codePointSetSize, random);
-        final HashMap<String, Integer> unigramProbabilities = new HashMap<String, Integer>();
-        final HashMap<Pair<String, String>, Integer> bigramProbabilities =
-                new HashMap<Pair<String, String>, Integer>();
+        final HashMap<String, Integer> unigramProbabilities = new HashMap<>();
+        final HashMap<Pair<String, String>, Integer> bigramProbabilities = new HashMap<>();
         for (int i = 0; i < initialUnigramCount; ++i) {
             final String word = CodePointUtils.generateWord(random, codePointSet);
             words.add(word);
@@ -751,7 +748,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
                     final int unigramProbability = unigramProbabilities.get(word1);
                     final int bigramProbability =
                             unigramProbability + random.nextInt(0xFF - unigramProbability);
-                    final Pair<String, String> bigram = new Pair<String, String>(word0, word1);
+                    final Pair<String, String> bigram = new Pair<>(word0, word1);
                     bigramWords.add(bigram);
                     bigramProbabilities.put(bigram, bigramProbability);
                     addBigramWords(binaryDictionary, word0, word1, bigramProbability);
@@ -817,8 +814,8 @@ public class BinaryDictionaryTests extends AndroidTestCase {
             fail("IOException while writing an initial dictionary : " + e);
         }
 
-        final ArrayList<String> words = new ArrayList<String>();
-        final HashMap<String, Integer> unigramProbabilities = new HashMap<String, Integer>();
+        final ArrayList<String> words = new ArrayList<>();
+        final HashMap<String, Integer> unigramProbabilities = new HashMap<>();
         final int[] codePointSet = CodePointUtils.generateCodePointSet(codePointSetSize, random);
 
         BinaryDictionary binaryDictionary;
@@ -868,8 +865,8 @@ public class BinaryDictionaryTests extends AndroidTestCase {
             fail("IOException while writing an initial dictionary : " + e);
         }
 
-        final ArrayList<String> words = new ArrayList<String>();
-        final HashSet<Pair<String, String>> bigrams = new HashSet<Pair<String, String>>();
+        final ArrayList<String> words = new ArrayList<>();
+        final HashSet<Pair<String, String>> bigrams = new HashSet<>();
         final int[] codePointSet = CodePointUtils.generateCodePointSet(codePointSetSize, random);
 
         BinaryDictionary binaryDictionary;
@@ -889,18 +886,18 @@ public class BinaryDictionaryTests extends AndroidTestCase {
                 if (TextUtils.equals(word0, word1)) {
                     continue;
                 }
-                bigrams.add(new Pair<String, String>(word0, word1));
+                bigrams.add(new Pair<>(word0, word1));
                 final int bigramProbability = random.nextInt(0xF);
                 addBigramWords(binaryDictionary, word0, word1, bigramProbability);
             }
-            assertEquals(new HashSet<String>(words).size(), Integer.parseInt(
+            assertEquals(new HashSet<>(words).size(), Integer.parseInt(
                     binaryDictionary.getPropertyForTest(BinaryDictionary.UNIGRAM_COUNT_QUERY)));
-            assertEquals(new HashSet<Pair<String, String>>(bigrams).size(), Integer.parseInt(
+            assertEquals(new HashSet<>(bigrams).size(), Integer.parseInt(
                     binaryDictionary.getPropertyForTest(BinaryDictionary.BIGRAM_COUNT_QUERY)));
             binaryDictionary.flushWithGC();
-            assertEquals(new HashSet<String>(words).size(), Integer.parseInt(
+            assertEquals(new HashSet<>(words).size(), Integer.parseInt(
                     binaryDictionary.getPropertyForTest(BinaryDictionary.UNIGRAM_COUNT_QUERY)));
-            assertEquals(new HashSet<Pair<String, String>>(bigrams).size(), Integer.parseInt(
+            assertEquals(new HashSet<>(bigrams).size(), Integer.parseInt(
                     binaryDictionary.getPropertyForTest(BinaryDictionary.BIGRAM_COUNT_QUERY)));
             binaryDictionary.close();
         }
@@ -929,9 +926,8 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         }
 
         final int[] codePointSet = CodePointUtils.generateCodePointSet(codePointSetSize, random);
-        final HashMap<String, Integer> unigramProbabilities = new HashMap<String, Integer>();
-        final HashMap<Pair<String, String>, Integer> bigramProbabilities =
-                new HashMap<Pair<String, String>, Integer>();
+        final HashMap<String, Integer> unigramProbabilities = new HashMap<>();
+        final HashMap<Pair<String, String>, Integer> bigramProbabilities = new HashMap<>();
 
         final LanguageModelParam[] languageModelParams = new LanguageModelParam[lmParamCount];
         String prevWord = null;
@@ -946,7 +942,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
             } else {
                 languageModelParams[i] = new LanguageModelParam(prevWord, word, probability,
                         bigramProbability, BinaryDictionary.NOT_A_VALID_TIMESTAMP);
-                bigramProbabilities.put(new Pair<String, String>(prevWord, word),
+                bigramProbabilities.put(new Pair<>(prevWord, word),
                         bigramProbability);
             }
             prevWord = (random.nextDouble() < bigramContinueRate) ? word : null;
@@ -1001,11 +997,10 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         final WordProperty invalidWordProperty = binaryDictionary.getWordProperty("dummyWord");
         assertFalse(invalidWordProperty.isValid());
 
-        final ArrayList<String> words = new ArrayList<String>();
-        final HashMap<String, Integer> wordProbabilities = new HashMap<String, Integer>();
-        final HashMap<String, HashSet<String>> bigrams = new HashMap<String, HashSet<String>>();
-        final HashMap<Pair<String, String>, Integer> bigramProbabilities =
-                new HashMap<Pair<String, String>, Integer>();
+        final ArrayList<String> words = new ArrayList<>();
+        final HashMap<String, Integer> wordProbabilities = new HashMap<>();
+        final HashMap<String, HashSet<String>> bigrams = new HashMap<>();
+        final HashMap<Pair<String, String>, Integer> bigramProbabilities = new HashMap<>();
 
         for (int i = 0; i < UNIGRAM_COUNT; i++) {
             final String word = CodePointUtils.generateWord(random, codePointSet);
@@ -1049,11 +1044,11 @@ public class BinaryDictionaryTests extends AndroidTestCase {
                 binaryDictionary.flushWithGC();
             }
             if (!bigrams.containsKey(word0)) {
-                final HashSet<String> bigramWord1s = new HashSet<String>();
+                final HashSet<String> bigramWord1s = new HashSet<>();
                 bigrams.put(word0, bigramWord1s);
             }
             bigrams.get(word0).add(word1);
-            bigramProbabilities.put(new Pair<String, String>(word0, word1), bigramProbability);
+            bigramProbabilities.put(new Pair<>(word0, word1), bigramProbability);
         }
 
         for (int i = 0; i < words.size(); i++) {
@@ -1068,8 +1063,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
                 final String word1 = wordProperty.mBigrams.get(j).mWord;
                 assertTrue(bigramWord1s.contains(word1));
                 if (canCheckBigramProbability(formatVersion)) {
-                    final int bigramProbability = bigramProbabilities.get(
-                            new Pair<String, String>(word0, word1));
+                    final int bigramProbability = bigramProbabilities.get(new Pair<>(word0, word1));
                     assertEquals(bigramProbability, wordProperty.mBigrams.get(j).getProbability());
                 }
             }
@@ -1103,12 +1097,11 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         final WordProperty invalidWordProperty = binaryDictionary.getWordProperty("dummyWord");
         assertFalse(invalidWordProperty.isValid());
 
-        final ArrayList<String> words = new ArrayList<String>();
-        final HashMap<String, Integer> wordProbabilitiesToCheckLater =
-                new HashMap<String, Integer>();
-        final HashMap<String, HashSet<String>> bigrams = new HashMap<String, HashSet<String>>();
+        final ArrayList<String> words = new ArrayList<>();
+        final HashMap<String, Integer> wordProbabilitiesToCheckLater = new HashMap<>();
+        final HashMap<String, HashSet<String>> bigrams = new HashMap<>();
         final HashMap<Pair<String, String>, Integer> bigramProbabilitiesToCheckLater =
-                new HashMap<Pair<String, String>, Integer>();
+                new HashMap<>();
 
         for (int i = 0; i < UNIGRAM_COUNT; i++) {
             final String word = CodePointUtils.generateWord(random, codePointSet);
@@ -1137,17 +1130,16 @@ public class BinaryDictionaryTests extends AndroidTestCase {
                 binaryDictionary.flushWithGC();
             }
             if (!bigrams.containsKey(word0)) {
-                final HashSet<String> bigramWord1s = new HashSet<String>();
+                final HashSet<String> bigramWord1s = new HashSet<>();
                 bigrams.put(word0, bigramWord1s);
             }
             bigrams.get(word0).add(word1);
-            bigramProbabilitiesToCheckLater.put(
-                    new Pair<String, String>(word0, word1), bigramProbability);
+            bigramProbabilitiesToCheckLater.put(new Pair<>(word0, word1), bigramProbability);
         }
 
-        final HashSet<String> wordSet = new HashSet<String>(words);
+        final HashSet<String> wordSet = new HashSet<>(words);
         final HashSet<Pair<String, String>> bigramSet =
-                new HashSet<Pair<String,String>>(bigramProbabilitiesToCheckLater.keySet());
+                new HashSet<>(bigramProbabilitiesToCheckLater.keySet());
         int token = 0;
         do {
             final BinaryDictionary.GetNextWordPropertyResult result =
@@ -1161,7 +1153,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
             for (int j = 0; j < wordProperty.mBigrams.size(); j++) {
                 final String word1 = wordProperty.mBigrams.get(j).mWord;
                 assertTrue(bigramWord1s.contains(word1));
-                final Pair<String, String> bigram = new Pair<String, String>(word0, word1);
+                final Pair<String, String> bigram = new Pair<>(word0, word1);
                 if (canCheckBigramProbability(formatVersion)) {
                     final int bigramProbability = bigramProbabilitiesToCheckLater.get(bigram);
                     assertEquals(bigramProbability, wordProperty.mBigrams.get(j).getProbability());
@@ -1212,7 +1204,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         binaryDictionary.addUnigramEntry("aaa", unigramProbability, "yyy",
                 shortcutProbability, false /* isBeginningOfSentence */, false /* isNotAWord */,
                 false /* isBlacklisted */, 0 /* timestamp */);
-        final HashMap<String, Integer> shortcutTargets = new HashMap<String, Integer>();
+        final HashMap<String, Integer> shortcutTargets = new HashMap<>();
         shortcutTargets.put("zzz", updatedShortcutProbability);
         shortcutTargets.put("yyy", shortcutProbability);
         wordProperty = binaryDictionary.getWordProperty("aaa");
@@ -1250,10 +1242,9 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         final int codePointSetSize = 20;
         final int[] codePointSet = CodePointUtils.generateCodePointSet(codePointSetSize, random);
 
-        final ArrayList<String> words = new ArrayList<String>();
-        final HashMap<String, Integer> unigramProbabilities = new HashMap<String, Integer>();
-        final HashMap<String, HashMap<String, Integer>> shortcutTargets =
-                new HashMap<String, HashMap<String, Integer>>();
+        final ArrayList<String> words = new ArrayList<>();
+        final HashMap<String, Integer> unigramProbabilities = new HashMap<>();
+        final HashMap<String, HashMap<String, Integer>> shortcutTargets = new HashMap<>();
 
         File dictFile = null;
         try {
@@ -1287,8 +1278,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
                 final HashMap<String, Integer> shortcutTargetsOfWord = shortcutTargets.get(word);
                 shortcutTargetsOfWord.put(shortcutTarget, shortcutProbability);
             } else {
-                final HashMap<String, Integer> shortcutTargetsOfWord =
-                        new HashMap<String, Integer>();
+                final HashMap<String, Integer> shortcutTargetsOfWord = new HashMap<>();
                 shortcutTargetsOfWord.put(shortcutTarget, shortcutProbability);
                 shortcutTargets.put(word, shortcutTargetsOfWord);
             }
@@ -1386,12 +1376,11 @@ public class BinaryDictionaryTests extends AndroidTestCase {
                 0 /* offset */, dictFile.length(), true /* useFullEditDistance */,
                 Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
 
-        final ArrayList<String> words = new ArrayList<String>();
-        final ArrayList<Pair<String, String>> bigrams = new ArrayList<Pair<String,String>>();
+        final ArrayList<String> words = new ArrayList<>();
+        final ArrayList<Pair<String, String>> bigrams = new ArrayList<>();
         final int[] codePointSet = CodePointUtils.generateCodePointSet(codePointSetSize, random);
-        final HashMap<String, Integer> unigramProbabilities = new HashMap<String, Integer>();
-        final HashMap<Pair<String, String>, Integer> bigramProbabilities =
-                new HashMap<Pair<String, String>, Integer>();
+        final HashMap<String, Integer> unigramProbabilities = new HashMap<>();
+        final HashMap<Pair<String, String>, Integer> bigramProbabilities = new HashMap<>();
 
         for (int i = 0; i < UNIGRAM_COUNT; i++) {
             final String word = CodePointUtils.generateWord(random, codePointSet);
@@ -1419,7 +1408,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
             if (binaryDictionary.needsToRunGC(true /* mindsBlockByGC */)) {
                 binaryDictionary.flushWithGC();
             }
-            final Pair<String, String> bigram = new Pair<String, String>(word0, word1);
+            final Pair<String, String> bigram = new Pair<>(word0, word1);
             bigrams.add(bigram);
             bigramProbabilities.put(bigram, bigramProbability);
         }

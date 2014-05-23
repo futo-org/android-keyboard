@@ -41,8 +41,7 @@ public final class ResourceUtils {
         // This utility class is not publicly instantiable.
     }
 
-    private static final HashMap<String, String> sDeviceOverrideValueMap =
-            CollectionUtils.newHashMap();
+    private static final HashMap<String, String> sDeviceOverrideValueMap = new HashMap<>();
 
     private static final String[] BUILD_KEYS_AND_VALUES = {
         "HARDWARE", Build.HARDWARE,
@@ -54,8 +53,8 @@ public final class ResourceUtils {
     private static final String sBuildKeyValuesDebugString;
 
     static {
-        sBuildKeyValues = CollectionUtils.newHashMap();
-        final ArrayList<String> keyValuePairs = CollectionUtils.newArrayList();
+        sBuildKeyValues = new HashMap<>();
+        final ArrayList<String> keyValuePairs = new ArrayList<>();
         final int keyCount = BUILD_KEYS_AND_VALUES.length / 2;
         for (int i = 0; i < keyCount; i++) {
             final int index = i * 2;

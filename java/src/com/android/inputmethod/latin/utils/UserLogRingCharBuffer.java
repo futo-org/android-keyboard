@@ -66,7 +66,7 @@ public final class UserLogRingCharBuffer {
             return;
         }
         if (LatinImeLogger.sUsabilityStudy) {
-            UsabilityStudyLogUtils.getInstance().writeChar(c, x, y);
+            UsabilityStudyLogUtils.writeChar(c, x, y);
         }
         mCharBuf[mEnd] = c;
         mXBuf[mEnd] = x;

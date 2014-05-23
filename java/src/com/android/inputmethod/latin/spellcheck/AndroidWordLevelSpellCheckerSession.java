@@ -28,7 +28,6 @@ import android.view.textservice.SuggestionsInfo;
 import android.view.textservice.TextInfo;
 
 import com.android.inputmethod.compat.SuggestionsInfoCompatUtils;
-import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.PrevWordsInfo;
@@ -69,7 +68,7 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
         private static final char CHAR_DELIMITER = '\uFFFC';
         private static final int MAX_CACHE_SIZE = 50;
         private final LruCache<String, SuggestionsParams> mUnigramSuggestionsInfoCache =
-                new LruCache<String, SuggestionsParams>(MAX_CACHE_SIZE);
+                new LruCache<>(MAX_CACHE_SIZE);
 
         // TODO: Support n-gram input
         private static String generateKey(final String query, final PrevWordsInfo prevWordsInfo) {

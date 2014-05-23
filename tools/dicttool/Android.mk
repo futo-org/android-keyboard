@@ -49,7 +49,6 @@ LATINIME_SRC_FILES_FOR_DICTTOOL := \
         latin/WordComposer.java \
         latin/settings/NativeSuggestOptions.java \
         latin/utils/BinaryDictionaryUtils.java \
-        latin/utils/CollectionUtils.java \
         latin/utils/CombinedFormatUtils.java \
         latin/utils/CoordinateUtils.java \
         latin/utils/FileUtils.java \

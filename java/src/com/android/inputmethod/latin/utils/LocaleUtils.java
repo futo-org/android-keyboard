@@ -159,7 +159,7 @@ public final class LocaleUtils {
         return LOCALE_MATCH <= level;
     }
 
-    private static final HashMap<String, Locale> sLocaleCache = CollectionUtils.newHashMap();
+    private static final HashMap<String, Locale> sLocaleCache = new HashMap<>();
 
     /**
      * Creates a locale from a string specification.

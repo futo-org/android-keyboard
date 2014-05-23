@@ -17,8 +17,6 @@
 package com.android.inputmethod.latin;
 
 import com.android.inputmethod.keyboard.internal.KeySpecParser;
-import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
-import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.StringUtils;
 
 import java.util.ArrayList;
@@ -49,7 +47,7 @@ public final class PunctuationSuggestions extends SuggestedWords {
      */
     public static PunctuationSuggestions newPunctuationSuggestions(
             final String[] punctuationSpecs) {
-        final ArrayList<SuggestedWordInfo> puncuationsList = CollectionUtils.newArrayList();
+        final ArrayList<SuggestedWordInfo> puncuationsList = new ArrayList<>();
         for (final String puncSpec : punctuationSpecs) {
             puncuationsList.add(newHardCodedWordInfo(puncSpec));
         }

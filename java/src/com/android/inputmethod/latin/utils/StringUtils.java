@@ -28,7 +28,6 @@ import java.util.Arrays;
 import java.util.Locale;
 
 public final class StringUtils {
-    private static final String TAG = StringUtils.class.getSimpleName();
     public static final int CAPITALIZE_NONE = 0;  // No caps, or mixed case
     public static final int CAPITALIZE_FIRST = 1; // First only
     public static final int CAPITALIZE_ALL = 2;   // All caps
@@ -110,7 +109,7 @@ public final class StringUtils {
         if (!containsInArray(text, elements)) {
             return extraValues;
         }
-        final ArrayList<String> result = CollectionUtils.newArrayList(elements.length - 1);
+        final ArrayList<String> result = new ArrayList<>(elements.length - 1);
         for (final String element : elements) {
             if (!text.equals(element)) {
                 result.add(element);

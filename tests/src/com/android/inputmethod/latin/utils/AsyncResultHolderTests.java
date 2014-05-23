@@ -45,27 +45,27 @@ public class AsyncResultHolderTests extends AndroidTestCase {
     }
 
     public void testGetWithoutSet() {
-        final AsyncResultHolder<Integer> holder = new AsyncResultHolder<Integer>();
+        final AsyncResultHolder<Integer> holder = new AsyncResultHolder<>();
         final int resultValue = holder.get(DEFAULT_VALUE, TIMEOUT_IN_MILLISECONDS);
         assertEquals(DEFAULT_VALUE, resultValue);
     }
 
     public void testGetBeforeSet() {
-        final AsyncResultHolder<Integer> holder = new AsyncResultHolder<Integer>();
+        final AsyncResultHolder<Integer> holder = new AsyncResultHolder<>();
         setAfterGivenTime(holder, SET_VALUE, TIMEOUT_IN_MILLISECONDS + MARGIN_IN_MILLISECONDS);
         final int resultValue = holder.get(DEFAULT_VALUE, TIMEOUT_IN_MILLISECONDS);
         assertEquals(DEFAULT_VALUE, resultValue);
     }
 
     public void testGetAfterSet() {
-        final AsyncResultHolder<Integer> holder = new AsyncResultHolder<Integer>();
+        final AsyncResultHolder<Integer> holder = new AsyncResultHolder<>();
         holder.set(SET_VALUE);
         final int resultValue = holder.get(DEFAULT_VALUE, TIMEOUT_IN_MILLISECONDS);
         assertEquals(SET_VALUE, resultValue);
     }
 
     public void testGetBeforeTimeout() {
-        final AsyncResultHolder<Integer> holder = new AsyncResultHolder<Integer>();
+        final AsyncResultHolder<Integer> holder = new AsyncResultHolder<>();
         setAfterGivenTime(holder, SET_VALUE, TIMEOUT_IN_MILLISECONDS - MARGIN_IN_MILLISECONDS);
         final int resultValue = holder.get(DEFAULT_VALUE, TIMEOUT_IN_MILLISECONDS);
         assertEquals(SET_VALUE, resultValue);

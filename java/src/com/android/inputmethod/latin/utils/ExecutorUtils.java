@@ -24,8 +24,9 @@ import java.util.concurrent.ConcurrentHashMap;
  * Utilities to manage executors.
  */
 public class ExecutorUtils {
-    private static final ConcurrentHashMap<String, PrioritizedSerialExecutor>
-            sExecutorMap = CollectionUtils.newConcurrentHashMap();
+    private static final ConcurrentHashMap<String, PrioritizedSerialExecutor> sExecutorMap =
+            new ConcurrentHashMap<>();
+
     /**
      * Gets the executor for the given dictionary name.
      */

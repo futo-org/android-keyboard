@@ -16,8 +16,6 @@
 
 package com.android.inputmethod.keyboard.internal;
 
-import com.android.inputmethod.latin.utils.CollectionUtils;
-
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -44,14 +42,12 @@ import java.util.Locale;
  */
 public final class KeyboardTextsTable {
     // Name to index map.
-    private static final HashMap<String, Integer> sNameToIndexesMap = CollectionUtils.newHashMap();
+    private static final HashMap<String, Integer> sNameToIndexesMap = new HashMap<>();
     // Locale to texts table map.
-    private static final HashMap<String, String[]> sLocaleToTextsTableMap =
-            CollectionUtils.newHashMap();
+    private static final HashMap<String, String[]> sLocaleToTextsTableMap = new HashMap<>();
     // TODO: Remove this variable after debugging.
     // Texts table to locale maps.
-    private static final HashMap<String[], String> sTextsTableToLocaleMap =
-            CollectionUtils.newHashMap();
+    private static final HashMap<String[], String> sTextsTableToLocaleMap = new HashMap<>();
 
     public static String getText(final String name, final String[] textsTable) {
         final Integer indexObj = sNameToIndexesMap.get(name);

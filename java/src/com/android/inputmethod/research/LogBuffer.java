@@ -31,7 +31,7 @@ public class LogBuffer {
     private final LinkedList<LogUnit> mLogUnits;
 
     public LogBuffer() {
-        mLogUnits = new LinkedList<LogUnit>();
+        mLogUnits = new LinkedList<>();
     }
 
     protected LinkedList<LogUnit> getLogUnits() {

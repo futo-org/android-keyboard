@@ -53,7 +53,6 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     private static final String TAG = ExpandableBinaryDictionary.class.getSimpleName();
 
     /** Whether to print debug output to log */
-    private static boolean DEBUG = false;
     private static final boolean DBG_STRESS_TEST = false;
 
     private static final int TIMEOUT_FOR_READ_OPS_IN_MILLISECONDS = 100;
@@ -192,7 +191,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     }
 
     protected Map<String, String> getHeaderAttributeMap() {
-        HashMap<String, String> attributeMap = new HashMap<String, String>();
+        HashMap<String, String> attributeMap = new HashMap<>();
         if (mAdditionalAttributeMap != null) {
             attributeMap.putAll(mAdditionalAttributeMap);
         }

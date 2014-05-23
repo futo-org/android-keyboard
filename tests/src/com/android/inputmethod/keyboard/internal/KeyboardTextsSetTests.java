@@ -23,7 +23,6 @@ import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.latin.RichInputMethodManager;
-import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 
 import java.util.ArrayList;
@@ -42,7 +41,7 @@ public final class KeyboardTextsSetTests extends AndroidTestCase {
         RichInputMethodManager.init(getContext());
         final RichInputMethodManager richImm = RichInputMethodManager.getInstance();
 
-        final ArrayList<InputMethodSubtype> allSubtypesList = CollectionUtils.newArrayList();
+        final ArrayList<InputMethodSubtype> allSubtypesList = new ArrayList<>();
         final InputMethodInfo imi = richImm.getInputMethodInfoOfThisIme();
         final int subtypeCount = imi.getSubtypeCount();
         for (int index = 0; index < subtypeCount; index++) {

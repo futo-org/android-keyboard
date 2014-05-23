@@ -16,8 +16,6 @@
 
 package android.util;
 
-import com.android.inputmethod.latin.utils.CollectionUtils;
-
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -30,8 +28,8 @@ public class SparseArray<E> {
     }
 
     public SparseArray(final int initialCapacity) {
-        mKeys = CollectionUtils.newArrayList(initialCapacity);
-        mValues = CollectionUtils.newArrayList(initialCapacity);
+        mKeys = new ArrayList<>(initialCapacity);
+        mValues = new ArrayList<>(initialCapacity);
     }
 
     public int size() {

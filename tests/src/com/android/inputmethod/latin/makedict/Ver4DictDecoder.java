@@ -18,7 +18,6 @@ package com.android.inputmethod.latin.makedict;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.BinaryDictionary;
-import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.FileUtils;
 
 import java.io.File;
@@ -31,8 +30,6 @@ import java.util.ArrayList;
  */
 @UsedForTesting
 public class Ver4DictDecoder extends AbstractDictDecoder {
-    private static final String TAG = Ver4DictDecoder.class.getSimpleName();
-
     final File mDictDirectory;
 
     @UsedForTesting
@@ -73,7 +70,7 @@ public class Ver4DictDecoder extends AbstractDictDecoder {
         final FusionDictionary fusionDict =
                 new FusionDictionary(new FusionDictionary.PtNodeArray(), header.mDictionaryOptions);
         int token = 0;
-        final ArrayList<WordProperty> wordProperties = CollectionUtils.newArrayList();
+        final ArrayList<WordProperty> wordProperties = new ArrayList<>();
         do {
             final BinaryDictionary.GetNextWordPropertyResult result =
                     binaryDictionary.getNextWordProperty(token);

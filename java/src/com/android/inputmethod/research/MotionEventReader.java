@@ -67,11 +67,10 @@ public class MotionEventReader {
 
     @UsedForTesting
     static class ReplayData {
-        final ArrayList<Integer> mActions = new ArrayList<Integer>();
-        final ArrayList<PointerProperties[]> mPointerPropertiesArrays
-                = new ArrayList<PointerProperties[]>();
-        final ArrayList<PointerCoords[]> mPointerCoordsArrays = new ArrayList<PointerCoords[]>();
-        final ArrayList<Long> mTimes = new ArrayList<Long>();
+        final ArrayList<Integer> mActions = new ArrayList<>();
+        final ArrayList<PointerProperties[]> mPointerPropertiesArrays = new ArrayList<>();
+        final ArrayList<PointerCoords[]> mPointerCoordsArrays = new ArrayList<>();
+        final ArrayList<Long> mTimes = new ArrayList<>();
     }
 
     /**
@@ -228,8 +227,7 @@ public class MotionEventReader {
 
     private PointerProperties[] readPointerProperties(final JsonReader jsonReader)
             throws IOException {
-        final ArrayList<PointerProperties> pointerPropertiesArrayList =
-                new ArrayList<PointerProperties>();
+        final ArrayList<PointerProperties> pointerPropertiesArrayList = new ArrayList<>();
         jsonReader.beginArray();
         while (jsonReader.hasNext()) {
             final PointerProperties pointerProperties = new PointerProperties();
@@ -254,7 +252,7 @@ public class MotionEventReader {
         jsonReader.beginArray();
         while (jsonReader.hasNext()) {  // Array of historical data
             jsonReader.beginObject();
-            final ArrayList<PointerCoords> pointerCoordsArrayList = new ArrayList<PointerCoords>();
+            final ArrayList<PointerCoords> pointerCoordsArrayList = new ArrayList<>();
             while (jsonReader.hasNext()) {  // Time/data object
                 final String name = jsonReader.nextName();
                 if (name.equals("t")) {

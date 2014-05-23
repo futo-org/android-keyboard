@@ -20,7 +20,6 @@ import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
 import com.android.inputmethod.keyboard.internal.MoreKeySpec;
 import com.android.inputmethod.latin.Constants;
-import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.StringUtils;
 
 import java.util.ArrayList;
@@ -34,7 +33,7 @@ import java.util.List;
  */
 public final class ActualKeyboardBuilder extends AbstractKeyboardBuilder<Key> {
     private static ArrayList<Key> filterOutSpacer(final List<Key> keys) {
-        final ArrayList<Key> filteredKeys = CollectionUtils.newArrayList();
+        final ArrayList<Key> filteredKeys = new ArrayList<>();
         for (final Key key : keys) {
             if (key.isSpacer()) {
                 continue;
@@ -55,15 +54,15 @@ public final class ActualKeyboardBuilder extends AbstractKeyboardBuilder<Key> {
         final ArrayList<Key> filteredSortedKeys = filterOutSpacer(sortedKeys);
 
         // Grouping keys into rows.
-        final ArrayList<ArrayList<Key>> rows = CollectionUtils.newArrayList();
-        ArrayList<Key> elements = CollectionUtils.newArrayList();
+        final ArrayList<ArrayList<Key>> rows = new ArrayList<>();
+        ArrayList<Key> elements = new ArrayList<>();
         int lastY = filteredSortedKeys.get(0).getY();
         for (final Key key : filteredSortedKeys) {
             if (lastY != key.getY()) {
                 // A new row is starting.
                 lastY = key.getY();
                 rows.add(elements);
-                elements = CollectionUtils.newArrayList();
+                elements = new ArrayList<>();
             }
             elements.add(key);
         }

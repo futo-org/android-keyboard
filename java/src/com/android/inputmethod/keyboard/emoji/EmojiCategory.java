@@ -31,7 +31,6 @@ import com.android.inputmethod.keyboard.KeyboardLayoutSet;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.settings.Settings;
-import com.android.inputmethod.latin.utils.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -101,12 +100,11 @@ final class EmojiCategory {
     private final Resources mRes;
     private final int mMaxPageKeyCount;
     private final KeyboardLayoutSet mLayoutSet;
-    private final HashMap<String, Integer> mCategoryNameToIdMap = CollectionUtils.newHashMap();
+    private final HashMap<String, Integer> mCategoryNameToIdMap = new HashMap<>();
     private final int[] mCategoryTabIconId = new int[sCategoryName.length];
-    private final ArrayList<CategoryProperties> mShownCategories =
-            CollectionUtils.newArrayList();
-    private final ConcurrentHashMap<Long, DynamicGridKeyboard>
-            mCategoryKeyboardMap = new ConcurrentHashMap<Long, DynamicGridKeyboard>();
+    private final ArrayList<CategoryProperties> mShownCategories = new ArrayList<>();
+    private final ConcurrentHashMap<Long, DynamicGridKeyboard> mCategoryKeyboardMap =
+            new ConcurrentHashMap<>();
 
     private int mCurrentCategoryId = EmojiCategory.ID_UNSPECIFIED;
     private int mCurrentCategoryPageId = 0;
@@ -257,7 +255,7 @@ final class EmojiCategory {
             final int temp = sum;
             sum += properties.mPageCount;
             if (sum > position) {
-                return new Pair<Integer, Integer>(properties.mCategoryId, position - temp);
+                return new Pair<>(properties.mCategoryId, position - temp);
             }
         }
         return null;
@@ -343,7 +341,7 @@ final class EmojiCategory {
     };
 
     private static Key[][] sortKeysIntoPages(final List<Key> inKeys, final int maxPageCount) {
-        final ArrayList<Key> keys = CollectionUtils.newArrayList(inKeys);
+        final ArrayList<Key> keys = new ArrayList<>(inKeys);
         Collections.sort(keys, EMOJI_KEY_COMPARATOR);
         final int pageCount = (keys.size() - 1) / maxPageCount + 1;
         final Key[][] retval = new Key[pageCount][maxPageCount];

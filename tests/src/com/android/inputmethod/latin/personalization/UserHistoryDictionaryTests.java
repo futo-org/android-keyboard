@@ -23,15 +23,14 @@ import android.util.Log;
 import com.android.inputmethod.latin.ExpandableBinaryDictionary;
 import com.android.inputmethod.latin.PrevWordsInfo;
 import com.android.inputmethod.latin.utils.BinaryDictionaryUtils;
-import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.FileUtils;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -102,11 +101,11 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
     }
 
     private static List<String> generateWords(final int number, final Random random) {
-        final Set<String> wordSet = CollectionUtils.newHashSet();
+        final HashSet<String> wordSet = new HashSet<>();
         while (wordSet.size() < number) {
             wordSet.add(generateWord(random.nextInt()));
         }
-        return new ArrayList<String>(wordSet);
+        return new ArrayList<>(wordSet);
     }
 
     private static void addToDict(final UserHistoryDictionary dict, final List<String> words) {

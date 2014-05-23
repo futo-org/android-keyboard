@@ -23,7 +23,6 @@ import android.content.res.Resources;
 import android.util.Log;
 
 import com.android.inputmethod.annotations.UsedForTesting;
-import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.DictionaryInfoUtils;
 
 import java.io.File;
@@ -55,7 +54,7 @@ public final class DictionaryFactory {
                     createReadOnlyBinaryDictionary(context, locale));
         }
 
-        final LinkedList<Dictionary> dictList = CollectionUtils.newLinkedList();
+        final LinkedList<Dictionary> dictList = new LinkedList<>();
         final ArrayList<AssetFileAddress> assetFileList =
                 BinaryDictionaryGetter.getDictionaryFiles(locale, context);
         if (null != assetFileList) {

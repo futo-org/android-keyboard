@@ -29,15 +29,13 @@ import android.util.SparseArray;
 import android.view.View;
 
 import com.android.inputmethod.keyboard.PointerTracker;
-import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.LeakGuardHandlerWrapper;
 
 /**
  * Draw preview graphics of multiple gesture trails during gesture input.
  */
 public final class GestureTrailsDrawingPreview extends AbstractDrawingPreview {
-    private final SparseArray<GestureTrailDrawingPoints> mGestureTrails =
-            CollectionUtils.newSparseArray();
+    private final SparseArray<GestureTrailDrawingPoints> mGestureTrails = new SparseArray<>();
     private final GestureTrailDrawingParams mDrawingParams;
     private final Paint mGesturePaint;
     private int mOffscreenWidth;

@@ -29,7 +29,6 @@ import android.view.View;
 import android.widget.ProgressBar;
 
 public class DictionaryDownloadProgressBar extends ProgressBar {
-    @SuppressWarnings("unused")
     private static final String TAG = DictionaryDownloadProgressBar.class.getSimpleName();
     private static final int NOT_A_DOWNLOADMANAGER_PENDING_ID = 0;
 
@@ -119,7 +118,6 @@ public class DictionaryDownloadProgressBar extends ProgressBar {
             try {
                 final UpdateHelper updateHelper = new UpdateHelper();
                 final Query query = new Query().setFilterById(mId);
-                int lastProgress = 0;
                 setIndeterminate(true);
                 while (!isInterrupted()) {
                     final Cursor cursor = mDownloadManagerWrapper.query(query);

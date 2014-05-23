@@ -31,7 +31,6 @@ import java.util.Map;
  * model.
  */
 public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableBinaryDictionary {
-    private static final String TAG = DecayingExpandableBinaryDictionaryBase.class.getSimpleName();
     private static final boolean DBG_DUMP_ON_CLOSE = false;
 
     /** Any pair being typed or picked */

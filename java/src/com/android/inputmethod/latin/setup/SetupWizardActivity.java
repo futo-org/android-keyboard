@@ -37,7 +37,6 @@ import com.android.inputmethod.compat.TextViewCompatUtils;
 import com.android.inputmethod.compat.ViewCompatUtils;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.settings.SettingsActivity;
-import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.LeakGuardHandlerWrapper;
 
 import java.util.ArrayList;
@@ -482,7 +481,7 @@ public final class SetupWizardActivity extends Activity implements View.OnClickL
 
     static final class SetupStepGroup {
         private final SetupStepIndicatorView mIndicatorView;
-        private final ArrayList<SetupStep> mGroup = CollectionUtils.newArrayList();
+        private final ArrayList<SetupStep> mGroup = new ArrayList<>();
 
         public SetupStepGroup(final SetupStepIndicatorView indicatorView) {
             mIndicatorView = indicatorView;

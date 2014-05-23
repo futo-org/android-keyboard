@@ -138,7 +138,7 @@ public class DictionaryMaker {
         }
 
         public Arguments(String[] argsArray) throws IOException {
-            final LinkedList<String> args = new LinkedList<String>(Arrays.asList(argsArray));
+            final LinkedList<String> args = new LinkedList<>(Arrays.asList(argsArray));
             if (args.isEmpty()) {
                 displayHelp();
             }

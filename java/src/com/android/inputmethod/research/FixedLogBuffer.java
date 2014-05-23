@@ -163,7 +163,7 @@ public class FixedLogBuffer extends LogBuffer {
         // Allocate space for n*2 logUnits.  There will be at least n, one for each word, and
         // there may be additional for punctuation, between-word commands, etc.  This should be
         // enough that reallocation won't be necessary.
-        final ArrayList<LogUnit> resultList = new ArrayList<LogUnit>(n * 2);
+        final ArrayList<LogUnit> resultList = new ArrayList<>(n * 2);
         for (final LogUnit logUnit : logUnits) {
             n -= logUnit.getNumWords();
             if (n < 0) break;
