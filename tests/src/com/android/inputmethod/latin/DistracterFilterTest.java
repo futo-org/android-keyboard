@@ -20,19 +20,19 @@ import java.util.Locale;
 
 import android.test.suitebuilder.annotation.LargeTest;
 
-import com.android.inputmethod.latin.utils.DistracterFilter;
+import com.android.inputmethod.latin.utils.DistracterFilterUsingSuggestion;
 
 /**
  * Unit test for DistracterFilter
  */
 @LargeTest
 public class DistracterFilterTest extends InputTestsBase {
-    private DistracterFilter mDistracterFilter;
+    private DistracterFilterUsingSuggestion mDistracterFilter;
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        mDistracterFilter = new DistracterFilter(getContext());
+        mDistracterFilter = new DistracterFilterUsingSuggestion(getContext());
         mDistracterFilter.updateEnabledSubtypes(mLatinIME.getEnabledSubtypesForTest());
     }
 
