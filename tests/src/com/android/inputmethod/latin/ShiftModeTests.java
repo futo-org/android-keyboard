@@ -109,4 +109,17 @@ public class ShiftModeTests extends InputTestsBase {
         type("¡");
         assertTrue("(Spanish) Auto caps after inverted bang", isCapsModeAutoShifted());
     }
+
+    public void testOtherSentenceSeparators() {
+        changeLanguage("hy-AM");
+        assertTrue("(Armenian) Auto caps at start", isCapsModeAutoShifted());
+        type("Hey. ");
+        assertFalse("(Armenian) No auto-caps after latin period", isCapsModeAutoShifted());
+        type("Hey\u0589");
+        assertFalse("(Armenian) No auto-caps directly after armenian period",
+                isCapsModeAutoShifted());
+        type(" ");
+        assertTrue("(Armenian) Auto-caps after armenian period-whitespace",
+                isCapsModeAutoShifted());
+    }
 }
