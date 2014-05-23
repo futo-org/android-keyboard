@@ -25,8 +25,6 @@
         <item name="mainKeyboardViewStyle">@style/MainKeyboardView.LXX_Dark</item>
         <item name="keyPreviewTextViewStyle">@style/KeyPreviewTextView.LXX_Dark</item>
         <item name="emojiPalettesViewStyle">@style/EmojiPalettesView.LXX_Dark</item>
-        <item name="emojiTabWidgetStyle">@style/EmojiTabWidget.LXX_Dark</item>
-        <item name="emojiCategoryPageIndicatorViewStyle">@style/EmojiCategoryPageIndicatorView.LXX_Dark</item>
         <item name="moreKeysKeyboardStyle">@style/MoreKeysKeyboard.LXX_Dark</item>
         <item name="moreKeysKeyboardViewStyle">@style/MoreKeysKeyboardView.LXX_Dark</item>
         <item name="suggestionStripViewStyle">@style/SuggestionStripView.LXX_Dark</item>
@@ -90,6 +88,9 @@
         name="EmojiPalettesView.LXX_Dark"
         parent="MainKeyboardView.LXX_Dark"
     >
+        <item name="categoryIndicatorEnabled">false</item>
+        <item name="categoryPageIndicatorColor">@color/highlight_color_lxx_dark</item>
+        <item name="categoryPageIndicatorBackground">@color/emoji_tab_page_indicator_background_lxx_dark</item>
         <!-- TODO: Update those icons to LXX_Dark theme. -->
         <item name="iconEmojiRecentsTab">@drawable/ic_emoji_recents_holo_dark</item>
         <item name="iconEmojiCategory1Tab">@drawable/ic_emoji_people_holo_dark</item>
@@ -98,15 +99,6 @@
         <item name="iconEmojiCategory4Tab">@drawable/ic_emoji_places_holo_dark</item>
         <item name="iconEmojiCategory5Tab">@drawable/ic_emoji_symbols_holo_dark</item>
         <item name="iconEmojiCategory6Tab">@drawable/ic_emoji_emoticons_holo_dark</item>
-    </style>
-    <style name="EmojiCategoryPageIndicatorView.LXX_Dark">
-        <item name="android:background">@color/emoji_tab_page_indicator_background_lxx_dark</item>
-        <item name="emojiCategoryPageIndicatorColor">@color/highlight_color_lxx_dark</item>
-    </style>
-    <style name="EmojiTabWidget.LXX_Dark">
-        <item name="android:background">@drawable/emoji_category_tab_selected_lxx_dark</item>
-        <item name="android:tabStripLeft">@drawable/emoji_category_tab_unselected_lxx_dark</item>
-        <item name="android:tabStripRight">@drawable/emoji_category_tab_unselected_lxx_dark</item>
     </style>
     <style
         name="MoreKeysKeyboard.LXX_Dark"

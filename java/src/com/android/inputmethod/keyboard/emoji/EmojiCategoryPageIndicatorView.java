@@ -17,13 +17,10 @@
 package com.android.inputmethod.keyboard.emoji;
 
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.View;
-
-import com.android.inputmethod.latin.R;
 
 public final class EmojiCategoryPageIndicatorView extends View {
     private static final float BOTTOM_MARGIN_RATIO = 1.0f;
@@ -33,19 +30,17 @@ public final class EmojiCategoryPageIndicatorView extends View {
     private float mOffset = 0.0f;
 
     public EmojiCategoryPageIndicatorView(final Context context, final AttributeSet attrs) {
-        this(context, attrs, R.attr.emojiCategoryPageIndicatorViewStyle);
+        this(context, attrs, 0);
     }
 
     public EmojiCategoryPageIndicatorView(final Context context, final AttributeSet attrs,
             final int defStyle) {
         super(context, attrs, defStyle);
-        final TypedArray indicatorViewAttr = context.obtainStyledAttributes(attrs,
-                R.styleable.EmojiCategoryPageIndicatorView, defStyle,
-                R.style.EmojiCategoryPageIndicatorView);
-        final int indicatorColor = indicatorViewAttr.getColor(
-                R.styleable.EmojiCategoryPageIndicatorView_emojiCategoryPageIndicatorColor, 0);
-        indicatorViewAttr.recycle();
-        mPaint.setColor(indicatorColor);
+    }
+
+    public void setColors(final int foregroundColor, final int backgroundColor) {
+        mPaint.setColor(foregroundColor);
+        setBackgroundColor(backgroundColor);
     }
 
     public void setCategoryPageId(final int size, final int id, final float offset) {
