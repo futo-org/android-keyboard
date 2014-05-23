@@ -61,7 +61,7 @@ void Ver4PatriciaTriePolicy::createAndGetAllChildDicNodes(const DicNode *const d
             isTerminal = ptNodeParams.getProbability() != NOT_A_PROBABILITY;
         }
         readingHelper.readNextSiblingNode(ptNodeParams);
-        if (!ptNodeParams.representsNonWordInfo()) {
+        if (ptNodeParams.representsNonWordInfo()) {
             // Skip PtNodes that represent non-word information.
             continue;
         }
