@@ -35,6 +35,8 @@ public final class WordProperty implements Comparable<WordProperty> {
     public final ProbabilityInfo mProbabilityInfo;
     public final ArrayList<WeightedString> mShortcutTargets;
     public final ArrayList<WeightedString> mBigrams;
+    // TODO: Support mIsBeginningOfSentence.
+    public final boolean mIsBeginningOfSentence;
     public final boolean mIsNotAWord;
     public final boolean mIsBlacklistEntry;
     public final boolean mHasShortcuts;
@@ -51,6 +53,7 @@ public final class WordProperty implements Comparable<WordProperty> {
         mProbabilityInfo = probabilityInfo;
         mShortcutTargets = shortcutTargets;
         mBigrams = bigrams;
+        mIsBeginningOfSentence = false;
         mIsNotAWord = isNotAWord;
         mIsBlacklistEntry = isBlacklistEntry;
         mHasBigrams = bigrams != null && !bigrams.isEmpty();
@@ -77,6 +80,7 @@ public final class WordProperty implements Comparable<WordProperty> {
         mProbabilityInfo = createProbabilityInfoFromArray(probabilityInfo);
         mShortcutTargets = CollectionUtils.newArrayList();
         mBigrams = CollectionUtils.newArrayList();
+        mIsBeginningOfSentence = false;
         mIsNotAWord = isNotAWord;
         mIsBlacklistEntry = isBlacklisted;
         mHasShortcuts = hasShortcuts;

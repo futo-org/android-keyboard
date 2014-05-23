@@ -56,7 +56,7 @@ bool DynamicPtGcEventListeners
         }
     } else {
         mValueStack.back() += 1;
-        if (ptNodeParams->isTerminal()) {
+        if (ptNodeParams->isTerminal() && !ptNodeParams->representsNonWordInfo()) {
             mValidUnigramCount += 1;
         }
     }
