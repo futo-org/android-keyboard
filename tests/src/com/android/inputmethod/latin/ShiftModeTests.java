@@ -78,4 +78,35 @@ public class ShiftModeTests extends InputTestsBase {
         runMessages();
         assertTrue("Caps after a while after repeating Backspace a lot", isCapsModeAutoShifted());
     }
+
+    public void testAutoCapsAfterDigitsPeriod() {
+        changeLanguage("en");
+        type("On 22.11.");
+        assertFalse("(English) Auto caps after digits-period", isCapsModeAutoShifted());
+        type(" ");
+        assertTrue("(English) Auto caps after digits-period-whitespace", isCapsModeAutoShifted());
+        mEditText.setText("");
+        changeLanguage("fr");
+        type("Le 22.");
+        assertFalse("(French) Auto caps after digits-period", isCapsModeAutoShifted());
+        type(" ");
+        assertTrue("(French) Auto caps after digits-period-whitespace", isCapsModeAutoShifted());
+        mEditText.setText("");
+        changeLanguage("de");
+        type("Am 22.");
+        assertFalse("(German) Auto caps after digits-period", isCapsModeAutoShifted());
+        type(" ");
+        // For German, no auto-caps in this case
+        assertFalse("(German) Auto caps after digits-period-whitespace", isCapsModeAutoShifted());
+    }
+
+    public void testAutoCapsAfterInvertedMarks() {
+        changeLanguage("es");
+        assertTrue("(Spanish) Auto caps at start", isCapsModeAutoShifted());
+        type("Hey. ¿");
+        assertTrue("(Spanish) Auto caps after inverted what", isCapsModeAutoShifted());
+        mEditText.setText("");
+        type("¡");
+        assertTrue("(Spanish) Auto caps after inverted bang", isCapsModeAutoShifted());
+    }
 }

@@ -192,7 +192,6 @@ public final class Constants {
     public static final int CODE_SPACE = ' ';
     public static final int CODE_PERIOD = '.';
     public static final int CODE_COMMA = ',';
-    public static final int CODE_ARMENIAN_PERIOD = 0x0589;
     public static final int CODE_DASH = '-';
     public static final int CODE_SINGLE_QUOTE = '\'';
     public static final int CODE_DOUBLE_QUOTE = '"';
@@ -208,6 +207,8 @@ public final class Constants {
     public static final int CODE_CLOSING_SQUARE_BRACKET = ']';
     public static final int CODE_CLOSING_CURLY_BRACKET = '}';
     public static final int CODE_CLOSING_ANGLE_BRACKET = '>';
+    public static final int CODE_INVERTED_QUESTION_MARK = 0xBF; // ¿
+    public static final int CODE_INVERTED_EXCLAMATION_MARK = 0xA1; // ¡
 
     /**
      * Special keys code. Must be negative.
