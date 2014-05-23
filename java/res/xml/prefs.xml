@@ -153,6 +153,7 @@
                 android:defaultValue="true" />
             <CheckBoxPreference
                 android:key="pref_include_other_imes_in_language_switch_list"
+                android:dependency="pref_show_language_switch_key"
                 android:title="@string/include_other_imes_in_language_switch_list"
                 android:summary="@string/include_other_imes_in_language_switch_list_summary"
                 android:persistent="true"

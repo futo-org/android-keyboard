@@ -59,7 +59,7 @@ public final class SettingsFragment extends InputMethodSettingsFragment
     private static final boolean DBG_USE_INTERNAL_PERSONAL_DICTIONARY_SETTINGS = false;
     private static final boolean USE_INTERNAL_PERSONAL_DICTIONARY_SETTIGS =
             DBG_USE_INTERNAL_PERSONAL_DICTIONARY_SETTINGS
-                    || Build.VERSION.SDK_INT <= 18 /* Build.VERSION.JELLY_BEAN_MR2 */;
+            || Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN_MR2;
 
     private void setPreferenceEnabled(final String preferenceKey, final boolean enabled) {
         final Preference preference = findPreference(preferenceKey);
@@ -169,6 +169,13 @@ public final class SettingsFragment extends InputMethodSettingsFragment
             removePreference(Settings.PREF_VIBRATE_ON, generalSettings);
             removePreference(Settings.PREF_VIBRATION_DURATION_SETTINGS, advancedSettings);
         }
+        if (!Settings.ENABLE_SHOW_LANGUAGE_SWITCH_KEY_SETTINGS) {
+            removePreference(
+                    Settings.PREF_SHOW_LANGUAGE_SWITCH_KEY, advancedSettings);
+            removePreference(
+                    Settings.PREF_INCLUDE_OTHER_IMES_IN_LANGUAGE_SWITCH_LIST, advancedSettings);
+        }
+
 
         // TODO: consolidate key preview dismiss delay with the key preview animation parameters.
         if (!Settings.readFromBuildConfigIfToShowKeyPreviewPopupOption(res)) {
@@ -198,9 +205,6 @@ public final class SettingsFragment extends InputMethodSettingsFragment
         if (!res.getBoolean(R.bool.config_setup_wizard_available)) {
             removePreference(Settings.PREF_SHOW_SETUP_WIZARD_ICON, advancedSettings);
         }
-
-        setPreferenceEnabled(Settings.PREF_INCLUDE_OTHER_IMES_IN_LANGUAGE_SWITCH_LIST,
-                Settings.readShowsLanguageSwitchKey(prefs));
 
         final PreferenceGroup textCorrectionGroup =
                 (PreferenceGroup) findPreference(Settings.PREF_CORRECTION_SETTINGS);
@@ -299,9 +303,6 @@ public final class SettingsFragment extends InputMethodSettingsFragment
         if (key.equals(Settings.PREF_POPUP_ON)) {
             setPreferenceEnabled(Settings.PREF_KEY_PREVIEW_POPUP_DISMISS_DELAY,
                     Settings.readKeyPreviewPopupEnabled(prefs, res));
-        } else if (key.equals(Settings.PREF_SHOW_LANGUAGE_SWITCH_KEY)) {
-            setPreferenceEnabled(Settings.PREF_INCLUDE_OTHER_IMES_IN_LANGUAGE_SWITCH_LIST,
-                    Settings.readShowsLanguageSwitchKey(prefs));
         } else if (key.equals(Settings.PREF_SHOW_SETUP_WIZARD_ICON)) {
             LauncherIconVisibilityManager.updateSetupWizardIconVisibility(getActivity());
         }
