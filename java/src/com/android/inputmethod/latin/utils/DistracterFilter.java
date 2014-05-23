@@ -16,7 +16,6 @@
 
 package com.android.inputmethod.latin.utils;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -57,6 +56,7 @@ public class DistracterFilter {
     private final DictionaryFacilitator mDictionaryFacilitator;
     private final Suggest mSuggest;
     private Keyboard mKeyboard;
+    private final Object mLock = new Object();
 
     // If the score of the top suggestion exceeds this value, the tested word (e.g.,
     // an OOV, a misspelling, or an in-vocabulary word) would be considered as a distracter to
@@ -67,33 +67,57 @@ public class DistracterFilter {
 
     // Create empty distracter filter.
     public DistracterFilter() {
-        this(null, new ArrayList<InputMethodSubtype>());
+        mContext = null;
+        mLocaleToSubtypeMap = new HashMap<>();
+        mLocaleToKeyboardMap = new HashMap<>();
+        // TODO: Quit assigning null.
+        mDictionaryFacilitator = null;
+        mSuggest = null;
+        mKeyboard = null;
     }
 
     /**
      * Create a DistracterFilter instance.
      *
      * @param context the context.
-     * @param enabledSubtypes the enabled subtypes.
      */
-    public DistracterFilter(final Context context, final List<InputMethodSubtype> enabledSubtypes) {
+    public DistracterFilter(final Context context) {
         mContext = context;
         mLocaleToSubtypeMap = new HashMap<>();
-        if (enabledSubtypes != null) {
-            for (final InputMethodSubtype subtype : enabledSubtypes) {
-                final Locale locale = SubtypeLocaleUtils.getSubtypeLocale(subtype);
-                if (mLocaleToSubtypeMap.containsKey(locale)) {
-                    // Multiple subtypes are enabled for one locale.
-                    // TODO: Investigate what we should do for this case.
-                    continue;
-                }
-                mLocaleToSubtypeMap.put(locale, subtype);
-            }
-        }
         mLocaleToKeyboardMap = new HashMap<>();
         mDictionaryFacilitator = new DictionaryFacilitator();
         mSuggest = new Suggest(mDictionaryFacilitator);
         mKeyboard = null;
+    }
+
+    public void close() {
+        if (mDictionaryFacilitator != null) {
+            mDictionaryFacilitator.closeDictionaries();
+        }
+    }
+
+    public void updateEnabledSubtypes(final List<InputMethodSubtype> enabledSubtypes) {
+        final Map<Locale, InputMethodSubtype> newLocaleToSubtypeMap = new HashMap<>();
+        if (enabledSubtypes != null) {
+            for (final InputMethodSubtype subtype : enabledSubtypes) {
+                final Locale locale = SubtypeLocaleUtils.getSubtypeLocale(subtype);
+                if (newLocaleToSubtypeMap.containsKey(locale)) {
+                    // Multiple subtypes are enabled for one locale.
+                    // TODO: Investigate what we should do for this case.
+                    continue;
+                }
+                newLocaleToSubtypeMap.put(locale, subtype);
+            }
+        }
+        if (mLocaleToSubtypeMap.equals(newLocaleToSubtypeMap)) {
+            // Enabled subtypes have not been changed.
+            return;
+        }
+        synchronized (mLock) {
+            mLocaleToSubtypeMap.clear();
+            mLocaleToSubtypeMap.putAll(newLocaleToSubtypeMap);
+            mLocaleToKeyboardMap.clear();
+        }
     }
 
     private static boolean suggestionExceedsDistracterThreshold(
@@ -116,7 +140,10 @@ public class DistracterFilter {
             mKeyboard = cachedKeyboard;
             return;
         }
-        final InputMethodSubtype subtype = mLocaleToSubtypeMap.get(newLocale);
+        final InputMethodSubtype subtype;
+        synchronized (mLock) {
+            subtype = mLocaleToSubtypeMap.get(newLocale);
+        }
         if (subtype == null) {
             return;
         }
@@ -153,22 +180,25 @@ public class DistracterFilter {
      */
     public boolean isDistracterToWordsInDictionaries(final PrevWordsInfo prevWordsInfo,
             final String testedWord, final Locale locale) {
-        if (locale == null) {
+        if (mSuggest == null || locale == null) {
             return false;
         }
         if (!locale.equals(mDictionaryFacilitator.getLocale())) {
-            if (!mLocaleToSubtypeMap.containsKey(locale)) {
-                Log.e(TAG, "Locale " + locale + " is not enabled.");
-                // TODO: Investigate what we should do for disabled locales.
-                return false;
-            }
-            loadKeyboardForLocale(locale);
-            // Reset dictionaries for the locale.
-            try {
-                loadDictionariesForLocale(locale);
-            } catch (final InterruptedException e) {
-                Log.e(TAG, "Interrupted while waiting for loading dicts in DistracterFilter", e);
-                return false;
+            synchronized (mLock) {
+                if (!mLocaleToSubtypeMap.containsKey(locale)) {
+                    Log.e(TAG, "Locale " + locale + " is not enabled.");
+                    // TODO: Investigate what we should do for disabled locales.
+                    return false;
+                }
+                loadKeyboardForLocale(locale);
+                // Reset dictionaries for the locale.
+                try {
+                    loadDictionariesForLocale(locale);
+                } catch (final InterruptedException e) {
+                    Log.e(TAG, "Interrupted while waiting for loading dicts in DistracterFilter",
+                            e);
+                    return false;
+                }
             }
         }
         if (mKeyboard == null) {

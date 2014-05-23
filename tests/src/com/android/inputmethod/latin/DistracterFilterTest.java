@@ -32,7 +32,8 @@ public class DistracterFilterTest extends InputTestsBase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        mDistracterFilter = mLatinIME.createDistracterFilter();
+        mDistracterFilter = new DistracterFilter(getContext());
+        mDistracterFilter.updateEnabledSubtypes(mLatinIME.getEnabledSubtypesForTest());
     }
 
     public void testIsDistractorToWordsInDictionaries() {

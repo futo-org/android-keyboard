@@ -81,6 +81,7 @@ import com.android.inputmethod.latin.suggestions.SuggestionStripView;
 import com.android.inputmethod.latin.suggestions.SuggestionStripViewAccessor;
 import com.android.inputmethod.latin.utils.ApplicationUtils;
 import com.android.inputmethod.latin.utils.CapsModeUtils;
+import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.CoordinateUtils;
 import com.android.inputmethod.latin.utils.DialogUtils;
 import com.android.inputmethod.latin.utils.DistracterFilter;
@@ -95,6 +96,7 @@ import com.android.inputmethod.research.ResearchLogger;
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
@@ -122,7 +124,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private static final String SCHEME_PACKAGE = "package";
 
     private final Settings mSettings;
-    private final DictionaryFacilitator mDictionaryFacilitator = new DictionaryFacilitator();
+    private final DictionaryFacilitator mDictionaryFacilitator =
+            new DictionaryFacilitator(new DistracterFilter(this /* context */));
     private final InputLogic mInputLogic = new InputLogic(this /* LatinIME */,
             this /* SuggestionStripViewAccessor */, mDictionaryFacilitator);
     // We expect to have only one decoder in almost all cases, hence the default capacity of 1.
@@ -538,6 +541,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (!mHandler.hasPendingReopenDictionaries()) {
             resetSuggestForLocale(locale);
         }
+        mDictionaryFacilitator.updateEnabledSubtypes(mRichImm.getMyEnabledInputMethodSubtypeList(
+                true /* allowsImplicitlySelectedSubtypes */));
         refreshPersonalizationDictionarySession();
         StatsUtils.onLoadSettings(currentSettingsValues);
     }
@@ -564,9 +569,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             PersonalizationHelper.removeAllPersonalizationDictionaries(this);
             PersonalizationDictionarySessionRegistrar.resetAll(this);
         } else {
-            final DistracterFilter distracterFilter = createDistracterFilter();
-            PersonalizationDictionarySessionRegistrar.init(
-                    this, mDictionaryFacilitator, distracterFilter);
+            PersonalizationDictionarySessionRegistrar.init(this, mDictionaryFacilitator);
         }
     }
 
@@ -660,9 +663,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mInputLogic.mConnection.finishComposingText();
             mInputLogic.mConnection.endBatchEdit();
         }
-        final DistracterFilter distracterFilter = createDistracterFilter();
         PersonalizationDictionarySessionRegistrar.onConfigurationChanged(this, conf,
-                mDictionaryFacilitator, distracterFilter);
+                mDictionaryFacilitator);
         super.onConfigurationChanged(conf);
     }
 
@@ -1739,11 +1741,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     @UsedForTesting
-    /* package for test */ DistracterFilter createDistracterFilter() {
-        // Return an empty distracter filter when this method is called before onCreate().
-        return (mRichImm != null) ? new DistracterFilter(this /* Context */,
-                mRichImm.getMyEnabledInputMethodSubtypeList(
-                        true /* allowsImplicitlySelectedSubtypes */)) : new DistracterFilter();
+    /* package for test */ List<InputMethodSubtype> getEnabledSubtypesForTest() {
+        return (mRichImm != null) ? mRichImm.getMyEnabledInputMethodSubtypeList(
+                true /* allowsImplicitlySelectedSubtypes */) : new ArrayList<InputMethodSubtype>();
     }
 
     public void dumpDictionaryForDebug(final String dictName) {

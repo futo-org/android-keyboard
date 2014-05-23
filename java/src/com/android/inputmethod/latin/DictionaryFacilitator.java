@@ -19,14 +19,18 @@ package com.android.inputmethod.latin;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.personalization.ContextualDictionary;
+import com.android.inputmethod.latin.personalization.PersonalizationDataChunk;
 import com.android.inputmethod.latin.personalization.PersonalizationDictionary;
 import com.android.inputmethod.latin.personalization.UserHistoryDictionary;
+import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
 import com.android.inputmethod.latin.utils.CollectionUtils;
+import com.android.inputmethod.latin.utils.DistracterFilter;
 import com.android.inputmethod.latin.utils.ExecutorUtils;
 import com.android.inputmethod.latin.utils.LanguageModelParam;
 import com.android.inputmethod.latin.utils.SuggestionResults;
@@ -37,6 +41,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -57,6 +62,7 @@ public class DictionaryFacilitator {
     private volatile CountDownLatch mLatchForWaitingLoadingMainDictionary = new CountDownLatch(0);
     // To synchronize assigning mDictionaries to ensure closing dictionaries.
     private final Object mLock = new Object();
+    private final DistracterFilter mDistracterFilter;
 
     private static final String[] DICT_TYPES_ORDERED_TO_GET_SUGGESTION =
             new String[] {
@@ -162,7 +168,17 @@ public class DictionaryFacilitator {
         public void onUpdateMainDictionaryAvailability(boolean isMainDictionaryAvailable);
     }
 
-    public DictionaryFacilitator() {}
+    public DictionaryFacilitator() {
+        mDistracterFilter = new DistracterFilter();
+    }
+
+    public DictionaryFacilitator(final DistracterFilter distracterFilter) {
+        mDistracterFilter = distracterFilter;
+    }
+
+    public void updateEnabledSubtypes(final List<InputMethodSubtype> enabledSubtypes) {
+        mDistracterFilter.updateEnabledSubtypes(enabledSubtypes);
+    }
 
     public Locale getLocale() {
         return mDictionaries.mLocale;
@@ -321,6 +337,7 @@ public class DictionaryFacilitator {
         for (final String dictType : DICT_TYPES_ORDERED_TO_GET_SUGGESTION) {
             dictionaries.closeDict(dictType);
         }
+        mDistracterFilter.close();
     }
 
     // The main dictionary could have been loaded asynchronously.  Don't cache the return value
@@ -537,9 +554,16 @@ public class DictionaryFacilitator {
         personalizationDict.clear();
     }
 
-    public void addMultipleDictionaryEntriesToPersonalizationDictionary(
-            final ArrayList<LanguageModelParam> languageModelParams,
+    public void addEntriesToPersonalizationDictionary(
+            final PersonalizationDataChunk personalizationDataChunk,
+            final SpacingAndPunctuations spacingAndPunctuations,
             final ExpandableBinaryDictionary.AddMultipleDictionaryEntriesCallback callback) {
+        final ArrayList<LanguageModelParam> languageModelParams =
+                LanguageModelParam.createLanguageModelParamsFrom(
+                        personalizationDataChunk.mTokens,
+                        personalizationDataChunk.mTimestampInSeconds,
+                        this /* dictionaryFacilitator */, spacingAndPunctuations,
+                        mDistracterFilter);
         final ExpandableBinaryDictionary personalizationDict =
                 mDictionaries.getSubDict(Dictionary.TYPE_PERSONALIZATION);
         if (personalizationDict == null || languageModelParams == null
