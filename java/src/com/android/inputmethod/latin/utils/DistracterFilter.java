@@ -34,6 +34,7 @@ import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardId;
 import com.android.inputmethod.keyboard.KeyboardLayoutSet;
 import com.android.inputmethod.latin.Constants;
+import com.android.inputmethod.latin.DictionaryFacilitator;
 import com.android.inputmethod.latin.PrevWordsInfo;
 import com.android.inputmethod.latin.Suggest;
 import com.android.inputmethod.latin.Suggest.OnGetSuggestedWordsCallback;
@@ -53,6 +54,7 @@ public class DistracterFilter {
     private final Context mContext;
     private final Map<Locale, InputMethodSubtype> mLocaleToSubtypeMap;
     private final Map<Locale, Keyboard> mLocaleToKeyboardMap;
+    private final DictionaryFacilitator mDictionaryFacilitator;
     private final Suggest mSuggest;
     private Keyboard mKeyboard;
 
@@ -89,7 +91,8 @@ public class DistracterFilter {
             }
         }
         mLocaleToKeyboardMap = new HashMap<>();
-        mSuggest = new Suggest();
+        mDictionaryFacilitator = new DictionaryFacilitator();
+        mSuggest = new Suggest(mDictionaryFacilitator);
         mKeyboard = null;
     }
 
@@ -132,10 +135,10 @@ public class DistracterFilter {
     }
 
     private void loadDictionariesForLocale(final Locale newlocale) throws InterruptedException {
-        mSuggest.mDictionaryFacilitator.resetDictionaries(mContext, newlocale,
+        mDictionaryFacilitator.resetDictionaries(mContext, newlocale,
                 false /* useContactsDict */, false /* usePersonalizedDicts */,
                 false /* forceReloadMainDictionary */, null /* listener */);
-        mSuggest.mDictionaryFacilitator.waitForLoadingMainDictionary(
+        mDictionaryFacilitator.waitForLoadingMainDictionary(
                 TIMEOUT_TO_WAIT_LOADING_DICTIONARIES_IN_SECONDS, TimeUnit.SECONDS);
     }
 
@@ -153,7 +156,7 @@ public class DistracterFilter {
         if (locale == null) {
             return false;
         }
-        if (!locale.equals(mSuggest.mDictionaryFacilitator.getLocale())) {
+        if (!locale.equals(mDictionaryFacilitator.getLocale())) {
             if (!mLocaleToSubtypeMap.containsKey(locale)) {
                 Log.e(TAG, "Locale " + locale + " is not enabled.");
                 // TODO: Investigate what we should do for disabled locales.

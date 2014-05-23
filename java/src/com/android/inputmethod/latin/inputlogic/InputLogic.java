@@ -32,7 +32,7 @@ import com.android.inputmethod.event.InputTransaction;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.Dictionary;
-import com.android.inputmethod.latin.DictionaryFacilitatorForSuggest;
+import com.android.inputmethod.latin.DictionaryFacilitator;
 import com.android.inputmethod.latin.InputPointers;
 import com.android.inputmethod.latin.LastComposedWord;
 import com.android.inputmethod.latin.LatinIME;
@@ -79,7 +79,8 @@ public final class InputLogic {
     private int mSpaceState;
     // Never null
     public SuggestedWords mSuggestedWords = SuggestedWords.EMPTY;
-    public final Suggest mSuggest = new Suggest();
+    public final Suggest mSuggest;
+    private final DictionaryFacilitator mDictionaryFacilitator;
 
     public LastComposedWord mLastComposedWord = LastComposedWord.NOT_A_COMPOSED_WORD;
     public final WordComposer mWordComposer;
@@ -102,14 +103,19 @@ public final class InputLogic {
      * Create a new instance of the input logic.
      * @param latinIME the instance of the parent LatinIME. We should remove this when we can.
      * @param suggestionStripViewAccessor an object to access the suggestion strip view.
+     * @param dictionaryFacilitator facilitator for getting suggestions and updating user history
+     * dictionary.
      */
     public InputLogic(final LatinIME latinIME,
-            final SuggestionStripViewAccessor suggestionStripViewAccessor) {
+            final SuggestionStripViewAccessor suggestionStripViewAccessor,
+            final DictionaryFacilitator dictionaryFacilitator) {
         mLatinIME = latinIME;
         mSuggestionStripViewAccessor = suggestionStripViewAccessor;
         mWordComposer = new WordComposer();
         mConnection = new RichInputConnection(latinIME);
         mInputLogicHandler = InputLogicHandler.NULL_HANDLER;
+        mSuggest = new Suggest(dictionaryFacilitator);
+        mDictionaryFacilitator = dictionaryFacilitator;
     }
 
     /**
@@ -173,7 +179,7 @@ public final class InputLogic {
         final InputLogicHandler inputLogicHandler = mInputLogicHandler;
         mInputLogicHandler = InputLogicHandler.NULL_HANDLER;
         inputLogicHandler.destroy();
-        mSuggest.mDictionaryFacilitator.closeDictionaries();
+        mDictionaryFacilitator.closeDictionaries();
     }
 
     /**
@@ -295,18 +301,16 @@ public final class InputLogic {
 
         // We should show the "Touch again to save" hint if the user pressed the first entry
         // AND it's in none of our current dictionaries (main, user or otherwise).
-        final DictionaryFacilitatorForSuggest dictionaryFacilitator =
-                mSuggest.mDictionaryFacilitator;
         final boolean showingAddToDictionaryHint =
                 (SuggestedWordInfo.KIND_TYPED == suggestionInfo.mKind
                         || SuggestedWordInfo.KIND_OOV_CORRECTION == suggestionInfo.mKind)
-                        && !dictionaryFacilitator.isValidWord(suggestion, true /* ignoreCase */);
+                        && !mDictionaryFacilitator.isValidWord(suggestion, true /* ignoreCase */);
 
         if (settingsValues.mIsInternal) {
             LatinImeLoggerUtils.onSeparator((char)Constants.CODE_SPACE,
                     Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
         }
-        if (showingAddToDictionaryHint && dictionaryFacilitator.isUserDictionaryEnabled()) {
+        if (showingAddToDictionaryHint && mDictionaryFacilitator.isUserDictionaryEnabled()) {
             mSuggestionStripViewAccessor.showAddToDictionaryHint(suggestion);
         } else {
             // If we're not showing the "Touch again to save", then update the suggestion strip.
@@ -1250,7 +1254,7 @@ public final class InputLogic {
                 mWordComposer.wasAutoCapitalized() && !mWordComposer.isMostlyCaps();
         final int timeStampInSeconds = (int)TimeUnit.MILLISECONDS.toSeconds(
                 System.currentTimeMillis());
-        mSuggest.mDictionaryFacilitator.addToUserHistory(suggestion, wasAutoCapitalized,
+        mDictionaryFacilitator.addToUserHistory(suggestion, wasAutoCapitalized,
                 prevWordsInfo, timeStampInSeconds, settingsValues.mBlockPotentiallyOffensive);
     }
 
@@ -1462,8 +1466,7 @@ public final class InputLogic {
         }
         mConnection.deleteSurroundingText(deleteLength, 0);
         if (!TextUtils.isEmpty(prevWordsInfo.mPrevWord) && !TextUtils.isEmpty(committedWord)) {
-            mSuggest.mDictionaryFacilitator.cancelAddingUserHistory(
-                    prevWordsInfo, committedWordString);
+            mDictionaryFacilitator.cancelAddingUserHistory(prevWordsInfo, committedWordString);
         }
         final String stringToCommit = originallyTypedWord + mLastComposedWord.mSeparatorString;
         final SpannableString textToCommit = new SpannableString(stringToCommit);
