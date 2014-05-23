@@ -17,13 +17,8 @@
 package com.android.inputmethod.accessibility;
 
 import android.content.Context;
-import android.os.SystemClock;
-import android.support.v4.view.accessibility.AccessibilityEventCompat;
-import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
 import android.util.SparseIntArray;
-import android.view.MotionEvent;
 
-import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.KeyDetector;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardId;

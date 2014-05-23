@@ -93,9 +93,9 @@ public class LogUnit {
     private SuggestedWords mSuggestedWords;
 
     public LogUnit() {
-        mLogStatementList = new ArrayList<LogStatement>();
-        mValuesList = new ArrayList<Object[]>();
-        mTimeList = new ArrayList<Long>();
+        mLogStatementList = new ArrayList<>();
+        mValuesList = new ArrayList<>();
+        mTimeList = new ArrayList<>();
         mIsPartOfMegaword = false;
         mCorrectionType = CORRECTIONTYPE_NO_CORRECTION;
         mSuggestedWords = null;
@@ -311,9 +311,9 @@ public class LogUnit {
 
                 // Create the LogUnit containing the later logStatements and associated data.
                 final LogUnit newLogUnit = new LogUnit(
-                        new ArrayList<LogStatement>(laterLogStatements),
-                        new ArrayList<Object[]>(laterValues),
-                        new ArrayList<Long>(laterTimes),
+                        new ArrayList<>(laterLogStatements),
+                        new ArrayList<>(laterValues),
+                        new ArrayList<>(laterTimes),
                         true /* isPartOfMegaword */);
                 newLogUnit.mWords = null;
                 newLogUnit.mMayContainDigit = mMayContainDigit;

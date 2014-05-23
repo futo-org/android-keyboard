@@ -33,7 +33,7 @@ public class LeakGuardHandlerWrapper<T> extends Handler {
         if (ownerInstance == null) {
             throw new NullPointerException("ownerInstance is null");
         }
-        mOwnerInstanceRef = new WeakReference<T>(ownerInstance);
+        mOwnerInstanceRef = new WeakReference<>(ownerInstance);
     }
 
     public T getOwnerInstance() {

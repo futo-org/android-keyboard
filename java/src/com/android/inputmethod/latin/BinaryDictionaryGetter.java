@@ -24,7 +24,6 @@ import android.util.Log;
 import com.android.inputmethod.latin.makedict.DictionaryHeader;
 import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
 import com.android.inputmethod.latin.utils.BinaryDictionaryUtils;
-import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.DictionaryInfoUtils;
 import com.android.inputmethod.latin.utils.LocaleUtils;
 
@@ -160,7 +159,7 @@ final public class BinaryDictionaryGetter {
     public static File[] getCachedWordLists(final String locale, final Context context) {
         final File[] directoryList = DictionaryInfoUtils.getCachedDirectoryList(context);
         if (null == directoryList) return EMPTY_FILE_ARRAY;
-        final HashMap<String, FileAndMatchLevel> cacheFiles = CollectionUtils.newHashMap();
+        final HashMap<String, FileAndMatchLevel> cacheFiles = new HashMap<>();
         for (File directory : directoryList) {
             if (!directory.isDirectory()) continue;
             final String dirLocale =
@@ -273,7 +272,7 @@ final public class BinaryDictionaryGetter {
         final DictPackSettings dictPackSettings = new DictPackSettings(context);
 
         boolean foundMainDict = false;
-        final ArrayList<AssetFileAddress> fileList = CollectionUtils.newArrayList();
+        final ArrayList<AssetFileAddress> fileList = new ArrayList<>();
         // cachedWordLists may not be null, see doc for getCachedDictionaryList
         for (final File f : cachedWordLists) {
             final String wordListId = DictionaryInfoUtils.getWordListIdFromFileName(f.getName());

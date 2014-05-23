@@ -19,8 +19,6 @@ package com.android.inputmethod.latin;
 import android.test.suitebuilder.annotation.LargeTest;
 import android.view.inputmethod.BaseInputConnection;
 
-import com.android.inputmethod.latin.suggestions.SuggestionStripView;
-
 @LargeTest
 public class InputLogicTestsLanguageWithoutSpaces extends InputTestsBase {
     public void testAutoCorrectForLanguageWithoutSpaces() {

@@ -149,7 +149,7 @@ public final class MoreKeySpec {
                 // Skip empty entry.
                 if (pos - start > 0) {
                     if (list == null) {
-                        list = CollectionUtils.newArrayList();
+                        list = new ArrayList<>();
                     }
                     list.add(text.substring(start, pos));
                 }

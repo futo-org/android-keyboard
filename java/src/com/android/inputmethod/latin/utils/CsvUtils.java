@@ -209,7 +209,7 @@ public final class CsvUtils {
     @UsedForTesting
     public static String[] split(final int splitFlags, final String line) throws CsvParseException {
         final boolean trimSpaces = (splitFlags & SPLIT_FLAGS_TRIM_SPACES) != 0;
-        final ArrayList<String> fields = CollectionUtils.newArrayList();
+        final ArrayList<String> fields = new ArrayList<>();
         final int length = line.length();
         int start = 0;
         do {

@@ -18,7 +18,6 @@ package com.android.inputmethod.keyboard.layout.expected;
 
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.internal.MoreKeySpec;
-import com.android.inputmethod.latin.utils.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -73,9 +72,8 @@ public class ExpectedKey {
         // The additional more keys can be defined independently from other more keys.
         // The position of the additional more keys in the long press popup keyboard can be
         // controlled by specifying special marker "%" in the usual more keys definitions.
-        final ArrayList<ExpectedKey> moreKeysList = CollectionUtils.newArrayList();
-        final ArrayList<ExpectedAdditionalMoreKey> additionalMoreKeys =
-                CollectionUtils.newArrayList();
+        final ArrayList<ExpectedKey> moreKeysList = new ArrayList<>();
+        final ArrayList<ExpectedAdditionalMoreKey> additionalMoreKeys = new ArrayList<>();
         int firstAdditionalMoreKeyIndex = -1;
         for (int index = 0; index < moreKeys.length; index++) {
             final ExpectedKey moreKey = moreKeys[index];

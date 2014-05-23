@@ -98,7 +98,7 @@ public class CombinedInputOutput {
             headerLine = reader.readLine();
         }
         final String header[] = headerLine.split(",");
-        final HashMap<String, String> attributes = new HashMap<String, String>();
+        final HashMap<String, String> attributes = new HashMap<>();
         for (String item : header) {
             final String keyValue[] = item.split("=");
             if (2 != keyValue.length) {
@@ -115,8 +115,8 @@ public class CombinedInputOutput {
         String word = null;
         ProbabilityInfo probabilityInfo = new ProbabilityInfo(0);
         boolean isNotAWord = false;
-        ArrayList<WeightedString> bigrams = new ArrayList<WeightedString>();
-        ArrayList<WeightedString> shortcuts = new ArrayList<WeightedString>();
+        ArrayList<WeightedString> bigrams = new ArrayList<>();
+        ArrayList<WeightedString> shortcuts = new ArrayList<>();
         while (null != (line = reader.readLine())) {
             if (line.startsWith(COMMENT_LINE_STARTER)) continue;
             final String args[] = line.trim().split(",");
@@ -128,8 +128,8 @@ public class CombinedInputOutput {
                         dict.setBigram(word, s.mWord, s.mProbabilityInfo);
                     }
                 }
-                if (!shortcuts.isEmpty()) shortcuts = new ArrayList<WeightedString>();
-                if (!bigrams.isEmpty()) bigrams = new ArrayList<WeightedString>();
+                if (!shortcuts.isEmpty()) shortcuts = new ArrayList<>();
+                if (!bigrams.isEmpty()) bigrams = new ArrayList<>();
                 isNotAWord = false;
                 for (String param : args) {
                     final String params[] = param.split("=", 2);
@@ -223,7 +223,7 @@ public class CombinedInputOutput {
      */
     public static void writeDictionaryCombined(
             final Writer destination, final FusionDictionary dict) throws IOException {
-        final TreeSet<WordProperty> wordPropertiesInDict = new TreeSet<WordProperty>();
+        final TreeSet<WordProperty> wordPropertiesInDict = new TreeSet<>();
         for (final WordProperty wordProperty : dict) {
             // This for ordering by frequency, then by asciibetic order
             wordPropertiesInDict.add(wordProperty);

@@ -27,7 +27,6 @@ import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.SuggestionSpanPickedNotificationReceiver;
-import com.android.inputmethod.latin.utils.CollectionUtils;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -73,7 +72,7 @@ public final class SuggestionSpanUtils {
             return pickedWord;
         }
 
-        final ArrayList<String> suggestionsList = CollectionUtils.newArrayList();
+        final ArrayList<String> suggestionsList = new ArrayList<>();
         for (int i = 0; i < suggestedWords.size(); ++i) {
             if (suggestionsList.size() >= SuggestionSpan.SUGGESTIONS_MAX_SIZE) {
                 break;

@@ -57,7 +57,6 @@ import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.latin.settings.DebugSettings;
-import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.CoordinateUtils;
 import com.android.inputmethod.latin.utils.SpacebarLanguageUtils;
 import com.android.inputmethod.latin.utils.TypefaceUtils;
@@ -150,8 +149,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     private final Paint mBackgroundDimAlphaPaint = new Paint();
     private boolean mNeedsToDimEntireKeyboard;
     private final View mMoreKeysKeyboardContainer;
-    private final WeakHashMap<Key, Keyboard> mMoreKeysKeyboardCache =
-            CollectionUtils.newWeakHashMap();
+    private final WeakHashMap<Key, Keyboard> mMoreKeysKeyboardCache = new WeakHashMap<>();
     private final boolean mConfigShowMoreKeysKeyboardAtTouchedPoint;
     // More keys panel (used by both more keys keyboard and more suggestions view)
     // TODO: Consider extending to support multiple more keys panels

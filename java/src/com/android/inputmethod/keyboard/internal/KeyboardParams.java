@@ -21,7 +21,6 @@ import android.util.SparseIntArray;
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.KeyboardId;
 import com.android.inputmethod.latin.Constants;
-import com.android.inputmethod.latin.utils.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -61,9 +60,9 @@ public class KeyboardParams {
     public int GRID_HEIGHT;
 
     // Keys are sorted from top-left to bottom-right order.
-    public final SortedSet<Key> mSortedKeys = new TreeSet<Key>(ROW_COLUMN_COMPARATOR);
-    public final ArrayList<Key> mShiftKeys = CollectionUtils.newArrayList();
-    public final ArrayList<Key> mAltCodeKeysWhileTyping = CollectionUtils.newArrayList();
+    public final SortedSet<Key> mSortedKeys = new TreeSet<>(ROW_COLUMN_COMPARATOR);
+    public final ArrayList<Key> mShiftKeys = new ArrayList<>();
+    public final ArrayList<Key> mAltCodeKeysWhileTyping = new ArrayList<>();
     public final KeyboardIconsSet mIconsSet = new KeyboardIconsSet();
     public final KeyboardTextsSet mTextsSet = new KeyboardTextsSet();
     public final KeyStylesSet mKeyStyles = new KeyStylesSet(mTextsSet);

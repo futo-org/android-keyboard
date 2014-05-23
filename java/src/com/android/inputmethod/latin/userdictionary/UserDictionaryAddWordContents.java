@@ -256,7 +256,7 @@ public class UserDictionaryAddWordContents {
         // The system locale should be inside. We want it at the 2nd spot.
         locales.remove(systemLocale); // system locale may not be null
         locales.remove(""); // Remove the empty string if it's there
-        final ArrayList<LocaleRenderer> localesList = new ArrayList<LocaleRenderer>();
+        final ArrayList<LocaleRenderer> localesList = new ArrayList<>();
         // Add the passed locale, then the system locale at the top of the list. Add an
         // "all languages" entry at the bottom of the list.
         addLocaleDisplayNameToList(activity, localesList, mLocale);

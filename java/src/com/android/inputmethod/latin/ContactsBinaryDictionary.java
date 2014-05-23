@@ -31,7 +31,6 @@ import android.util.Log;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.personalization.AccountUtils;
-import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.ExecutorUtils;
 import com.android.inputmethod.latin.utils.StringUtils;
 
@@ -180,7 +179,7 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
 
     private void addWordsLocked(final Cursor cursor) {
         int count = 0;
-        final ArrayList<String> names = CollectionUtils.newArrayList();
+        final ArrayList<String> names = new ArrayList<>();
         while (!cursor.isAfterLast() && count < MAX_CONTACT_COUNT) {
             String name = cursor.getString(INDEX_NAME);
             if (isValidName(name)) {
@@ -298,7 +297,7 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
         if (null == cursor) {
             return false;
         }
-        final ArrayList<String> names = CollectionUtils.newArrayList();
+        final ArrayList<String> names = new ArrayList<>();
         try {
             if (cursor.moveToFirst()) {
                 while (!cursor.isAfterLast()) {

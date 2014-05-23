@@ -38,7 +38,6 @@ import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.define.ProductionFlag;
-import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.TypefaceUtils;
 import com.android.inputmethod.research.ResearchLogger;
 
@@ -110,7 +109,7 @@ public class KeyboardView extends View {
     /** True if all keys should be drawn */
     private boolean mInvalidateAllKeys;
     /** The keys that should be drawn */
-    private final HashSet<Key> mInvalidatedKeys = CollectionUtils.newHashSet();
+    private final HashSet<Key> mInvalidatedKeys = new HashSet<>();
     /** The working rectangle variable */
     private final Rect mWorkingRect = new Rect();
     /** The keyboard bitmap buffer for faster updates */

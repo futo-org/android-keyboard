@@ -134,8 +134,8 @@ public class UserDictionaryAddWordFragment extends Fragment
 
         final Spinner localeSpinner =
                 (Spinner)mRootView.findViewById(R.id.user_dictionary_add_locale);
-        final ArrayAdapter<LocaleRenderer> adapter = new ArrayAdapter<LocaleRenderer>(getActivity(),
-                android.R.layout.simple_spinner_item, localesList);
+        final ArrayAdapter<LocaleRenderer> adapter = new ArrayAdapter<>(
+                getActivity(), android.R.layout.simple_spinner_item, localesList);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         localeSpinner.setAdapter(adapter);
         localeSpinner.setOnItemSelectedListener(this);

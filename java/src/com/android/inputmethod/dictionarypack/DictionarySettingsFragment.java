@@ -33,13 +33,13 @@ import android.preference.PreferenceGroup;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.util.Log;
-import android.view.animation.AnimationUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 
 import com.android.inputmethod.latin.R;
 
@@ -67,8 +67,8 @@ public final class DictionarySettingsFragment extends PreferenceFragment
     private boolean mChangedSettings;
     private DictionaryListInterfaceState mDictionaryListInterfaceState =
             new DictionaryListInterfaceState();
-    private TreeMap<String, WordListPreference> mCurrentPreferenceMap =
-            new TreeMap<String, WordListPreference>(); // never null
+    // never null
+    private TreeMap<String, WordListPreference> mCurrentPreferenceMap = new TreeMap<>();
 
     private final BroadcastReceiver mConnectivityChangedReceiver = new BroadcastReceiver() {
             @Override
@@ -280,19 +280,18 @@ public final class DictionarySettingsFragment extends PreferenceFragment
                 : activity.getContentResolver().query(contentUri, null, null, null, null);
 
         if (null == cursor) {
-            final ArrayList<Preference> result = new ArrayList<Preference>();
+            final ArrayList<Preference> result = new ArrayList<>();
             result.add(createErrorMessage(activity, R.string.cannot_connect_to_dict_service));
             return result;
         }
         try {
             if (!cursor.moveToFirst()) {
-                final ArrayList<Preference> result = new ArrayList<Preference>();
+                final ArrayList<Preference> result = new ArrayList<>();
                 result.add(createErrorMessage(activity, R.string.no_dictionaries_available));
                 return result;
             } else {
                 final String systemLocaleString = Locale.getDefault().toString();
-                final TreeMap<String, WordListPreference> prefMap =
-                        new TreeMap<String, WordListPreference>();
+                final TreeMap<String, WordListPreference> prefMap = new TreeMap<>();
                 final int idIndex = cursor.getColumnIndex(MetadataDbHelper.WORDLISTID_COLUMN);
                 final int versionIndex = cursor.getColumnIndex(MetadataDbHelper.VERSION_COLUMN);
                 final int localeIndex = cursor.getColumnIndex(MetadataDbHelper.LOCALE_COLUMN);

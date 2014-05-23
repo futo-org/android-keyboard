@@ -20,7 +20,6 @@ import android.util.Log;
 
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
-import com.android.inputmethod.latin.utils.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -36,22 +35,22 @@ public final class DictionaryCollection extends Dictionary {
 
     public DictionaryCollection(final String dictType) {
         super(dictType);
-        mDictionaries = CollectionUtils.newCopyOnWriteArrayList();
+        mDictionaries = new CopyOnWriteArrayList<>();
     }
 
     public DictionaryCollection(final String dictType, final Dictionary... dictionaries) {
         super(dictType);
         if (null == dictionaries) {
-            mDictionaries = CollectionUtils.newCopyOnWriteArrayList();
+            mDictionaries = new CopyOnWriteArrayList<>();
         } else {
-            mDictionaries = CollectionUtils.newCopyOnWriteArrayList(dictionaries);
+            mDictionaries = new CopyOnWriteArrayList<>(dictionaries);
             mDictionaries.removeAll(Collections.singleton(null));
         }
     }
 
     public DictionaryCollection(final String dictType, final Collection<Dictionary> dictionaries) {
         super(dictType);
-        mDictionaries = CollectionUtils.newCopyOnWriteArrayList(dictionaries);
+        mDictionaries = new CopyOnWriteArrayList<>(dictionaries);
         mDictionaries.removeAll(Collections.singleton(null));
     }
 
@@ -67,7 +66,7 @@ public final class DictionaryCollection extends Dictionary {
         ArrayList<SuggestedWordInfo> suggestions = dictionaries.get(0).getSuggestions(composer,
                 prevWordsInfo, proximityInfo, blockOffensiveWords, additionalFeaturesOptions,
                 sessionId, inOutLanguageWeight);
-        if (null == suggestions) suggestions = CollectionUtils.newArrayList();
+        if (null == suggestions) suggestions = new ArrayList<>();
         final int length = dictionaries.size();
         for (int i = 1; i < length; ++ i) {
             final ArrayList<SuggestedWordInfo> sugg = dictionaries.get(i).getSuggestions(composer,

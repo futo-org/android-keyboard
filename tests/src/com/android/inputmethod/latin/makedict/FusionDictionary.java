@@ -57,7 +57,7 @@ public final class FusionDictionary implements Iterable<WordProperty> {
         int mCachedParentAddress = 0;
 
         public PtNodeArray() {
-            mData = new ArrayList<PtNode>();
+            mData = new ArrayList<>();
         }
         public PtNodeArray(ArrayList<PtNode> data) {
             Collections.sort(data, PTNODE_COMPARATOR);
@@ -161,14 +161,14 @@ public final class FusionDictionary implements Iterable<WordProperty> {
             // We don't want write permission to escape outside the package, so we return a copy
             if (null == mShortcutTargets) return null;
             final ArrayList<WeightedString> copyOfShortcutTargets =
-                    new ArrayList<WeightedString>(mShortcutTargets);
+                    new ArrayList<>(mShortcutTargets);
             return copyOfShortcutTargets;
         }
 
         public ArrayList<WeightedString> getBigrams() {
             // We don't want write permission to escape outside the package, so we return a copy
             if (null == mBigrams) return null;
-            final ArrayList<WeightedString> copyOfBigrams = new ArrayList<WeightedString>(mBigrams);
+            final ArrayList<WeightedString> copyOfBigrams = new ArrayList<>(mBigrams);
             return copyOfBigrams;
         }
 
@@ -183,7 +183,7 @@ public final class FusionDictionary implements Iterable<WordProperty> {
          */
         public void addBigram(final String word, final ProbabilityInfo probabilityInfo) {
             if (mBigrams == null) {
-                mBigrams = new ArrayList<WeightedString>();
+                mBigrams = new ArrayList<>();
             }
             WeightedString bigram = getBigram(word);
             if (bigram != null) {
@@ -571,7 +571,6 @@ public final class FusionDictionary implements Iterable<WordProperty> {
     /**
      * Helper method to find a word in a given branch.
      */
-    @SuppressWarnings("unused")
     public static PtNode findWordInTree(PtNodeArray nodeArray, final String string) {
         int index = 0;
         final StringBuilder checker = DBG ? new StringBuilder() : null;
@@ -651,7 +650,7 @@ public final class FusionDictionary implements Iterable<WordProperty> {
 
         public DictionaryIterator(ArrayList<PtNode> ptRoot) {
             mCurrentString = new StringBuilder();
-            mPositions = new LinkedList<Position>();
+            mPositions = new LinkedList<>();
             final Position rootPos = new Position(ptRoot);
             mPositions.add(rootPos);
         }

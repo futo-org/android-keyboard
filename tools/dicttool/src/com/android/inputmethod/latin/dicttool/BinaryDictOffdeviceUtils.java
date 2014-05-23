@@ -19,15 +19,14 @@ package com.android.inputmethod.latin.dicttool;
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils;
 import com.android.inputmethod.latin.makedict.BinaryDictIOUtils;
 import com.android.inputmethod.latin.makedict.DictDecoder;
-import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.makedict.FusionDictionary;
 import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
 
 import org.xml.sax.SAXException;
 
-import java.io.File;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -54,7 +53,7 @@ public final class BinaryDictOffdeviceUtils {
     private final static int MAX_DECODE_DEPTH = 8;
 
     public static class DecoderChainSpec {
-        ArrayList<String> mDecoderSpec = new ArrayList<String>();
+        ArrayList<String> mDecoderSpec = new ArrayList<>();
         File mFile;
         public DecoderChainSpec addStep(final String stepDescription) {
             mDecoderSpec.add(stepDescription);

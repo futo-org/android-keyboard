@@ -69,7 +69,7 @@ public final class LastComposedWord {
             mInputPointers.copy(inputPointers);
         }
         mTypedWord = typedWord;
-        mEvents = new ArrayList<Event>(events);
+        mEvents = new ArrayList<>(events);
         mCommittedWord = committedWord;
         mSeparatorString = separatorString;
         mActive = true;

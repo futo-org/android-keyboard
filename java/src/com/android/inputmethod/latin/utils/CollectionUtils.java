@@ -16,91 +16,19 @@
 
 package com.android.inputmethod.latin.utils;
 
-import android.util.SparseArray;
-
-import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.TreeSet;
-import java.util.WeakHashMap;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 public final class CollectionUtils {
     private CollectionUtils() {
         // This utility class is not publicly instantiable.
     }
 
-    public static <K,V> HashMap<K,V> newHashMap() {
-        return new HashMap<K,V>();
-    }
-
-    public static <K, V> WeakHashMap<K, V> newWeakHashMap() {
-        return new WeakHashMap<K, V>();
-    }
-
-    public static <K,V> TreeMap<K,V> newTreeMap() {
-        return new TreeMap<K,V>();
-    }
-
     public static <K, V> Map<K,V> newSynchronizedTreeMap() {
-        final TreeMap<K,V> treeMap = newTreeMap();
+        final TreeMap<K,V> treeMap = new TreeMap<>();
         return Collections.synchronizedMap(treeMap);
-    }
-
-    public static <K,V> ConcurrentHashMap<K,V> newConcurrentHashMap() {
-        return new ConcurrentHashMap<K,V>();
-    }
-
-    public static <E> HashSet<E> newHashSet() {
-        return new HashSet<E>();
-    }
-
-    public static <E> TreeSet<E> newTreeSet() {
-        return new TreeSet<E>();
-    }
-
-    public static <E> ArrayList<E> newArrayList() {
-        return new ArrayList<E>();
-    }
-
-    public static <E> ArrayList<E> newArrayList(final int initialCapacity) {
-        return new ArrayList<E>(initialCapacity);
-    }
-
-    public static <E> ArrayList<E> newArrayList(final Collection<E> collection) {
-        return new ArrayList<E>(collection);
-    }
-
-    public static <E> LinkedList<E> newLinkedList() {
-        return new LinkedList<E>();
-    }
-
-    public static <E> CopyOnWriteArrayList<E> newCopyOnWriteArrayList() {
-        return new CopyOnWriteArrayList<E>();
-    }
-
-    public static <E> CopyOnWriteArrayList<E> newCopyOnWriteArrayList(
-            final Collection<E> collection) {
-        return new CopyOnWriteArrayList<E>(collection);
-    }
-
-    public static <E> CopyOnWriteArrayList<E> newCopyOnWriteArrayList(final E[] array) {
-        return new CopyOnWriteArrayList<E>(array);
-    }
-
-    public static <E> ArrayDeque<E> newArrayDeque() {
-        return new ArrayDeque<E>();
-    }
-
-    public static <E> SparseArray<E> newSparseArray() {
-        return new SparseArray<E>();
     }
 
     public static <E> ArrayList<E> arrayAsList(final E[] array, final int start, final int end) {
@@ -111,7 +39,7 @@ public final class CollectionUtils {
             throw new IllegalArgumentException();
         }
 
-        final ArrayList<E> list = newArrayList(end - start);
+        final ArrayList<E> list = new ArrayList<>(end - start);
         for (int i = start; i < end; i++) {
             list.add(array[i]);
         }

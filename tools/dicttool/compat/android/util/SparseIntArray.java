@@ -24,7 +24,7 @@ public class SparseIntArray {
     }
 
     public SparseIntArray(final int initialCapacity) {
-        mArray = new SparseArray<Integer>(initialCapacity);
+        mArray = new SparseArray<>(initialCapacity);
     }
 
     public int size() {

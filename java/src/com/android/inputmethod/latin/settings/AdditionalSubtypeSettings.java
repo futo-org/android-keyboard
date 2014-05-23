@@ -47,7 +47,6 @@ import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.RichInputMethodManager;
 import com.android.inputmethod.latin.utils.AdditionalSubtypeUtils;
-import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.DialogUtils;
 import com.android.inputmethod.latin.utils.IntentUtils;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
@@ -101,7 +100,7 @@ public final class AdditionalSubtypeSettings extends PreferenceFragment {
             super(context, android.R.layout.simple_spinner_item);
             setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-            final TreeSet<SubtypeLocaleItem> items = CollectionUtils.newTreeSet();
+            final TreeSet<SubtypeLocaleItem> items = new TreeSet<>();
             final InputMethodInfo imi = RichInputMethodManager.getInstance()
                     .getInputMethodInfoOfThisIme();
             final int count = imi.getSubtypeCount();
@@ -369,7 +368,6 @@ public final class AdditionalSubtypeSettings extends PreferenceFragment {
                 mSubtype = (InputMethodSubtype)source.readParcelable(null);
             }
 
-            @SuppressWarnings("hiding")
             public static final Parcelable.Creator<SavedState> CREATOR =
                     new Parcelable.Creator<SavedState>() {
                         @Override
@@ -516,8 +514,7 @@ public final class AdditionalSubtypeSettings extends PreferenceFragment {
                 localeString, keyboardLayoutSetName);
     }
 
-    private AlertDialog createDialog(
-            @SuppressWarnings("unused") final SubtypePreference subtypePref) {
+    private AlertDialog createDialog(final SubtypePreference subtypePref) {
         final AlertDialog.Builder builder = new AlertDialog.Builder(
                 DialogUtils.getPlatformDialogThemeContext(getActivity()));
         builder.setTitle(R.string.custom_input_styles_title)
@@ -555,7 +552,7 @@ public final class AdditionalSubtypeSettings extends PreferenceFragment {
 
     private InputMethodSubtype[] getSubtypes() {
         final PreferenceGroup group = getPreferenceScreen();
-        final ArrayList<InputMethodSubtype> subtypes = CollectionUtils.newArrayList();
+        final ArrayList<InputMethodSubtype> subtypes = new ArrayList<>();
         final int count = group.getPreferenceCount();
         for (int i = 0; i < count; i++) {
             final Preference pref = group.getPreference(i);

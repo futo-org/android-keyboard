@@ -16,7 +16,6 @@
 
 package com.android.inputmethod.dictionarypack;
 
-import android.app.DownloadManager;
 import android.app.DownloadManager.Request;
 import android.content.ContentValues;
 import android.content.Context;
@@ -600,7 +599,7 @@ public final class ActionBatch {
     private final Queue<Action> mActions;
 
     public ActionBatch() {
-        mActions = new LinkedList<Action>();
+        mActions = new LinkedList<>();
     }
 
     public void add(final Action a) {

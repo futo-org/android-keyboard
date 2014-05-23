@@ -73,7 +73,7 @@ public class StringResourceMap {
         }
 
         mResources = Collections.unmodifiableList(handler.mResources);
-        final HashMap<String,StringResource> map = new HashMap<String,StringResource>();
+        final HashMap<String, StringResource> map = new HashMap<>();
         for (final StringResource res : mResources) {
             map.put(res.mName, res);
         }
@@ -105,7 +105,7 @@ public class StringResourceMap {
         private static final String TAG_STRING = "string";
         private static final String ATTR_NAME = "name";
 
-        final ArrayList<StringResource> mResources = new ArrayList<StringResource>();
+        final ArrayList<StringResource> mResources = new ArrayList<>();
 
         private String mName;
         private final StringBuilder mValue = new StringBuilder();

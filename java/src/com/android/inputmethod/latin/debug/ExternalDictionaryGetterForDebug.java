@@ -27,7 +27,6 @@ import com.android.inputmethod.latin.BinaryDictionaryFileDumper;
 import com.android.inputmethod.latin.BinaryDictionaryGetter;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.makedict.DictionaryHeader;
-import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.DialogUtils;
 import com.android.inputmethod.latin.utils.DictionaryInfoUtils;
 import com.android.inputmethod.latin.utils.LocaleUtils;
@@ -50,7 +49,7 @@ public class ExternalDictionaryGetterForDebug {
 
     private static String[] findDictionariesInTheDownloadedFolder() {
         final File[] files = new File(SOURCE_FOLDER).listFiles();
-        final ArrayList<String> eligibleList = CollectionUtils.newArrayList();
+        final ArrayList<String> eligibleList = new ArrayList<>();
         for (File f : files) {
             final DictionaryHeader header = DictionaryInfoUtils.getDictionaryFileHeaderOrNull(f);
             if (null == header) continue;

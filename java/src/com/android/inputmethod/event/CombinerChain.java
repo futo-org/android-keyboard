@@ -20,7 +20,6 @@ import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 
 import com.android.inputmethod.latin.Constants;
-import com.android.inputmethod.latin.utils.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,8 +43,8 @@ public class CombinerChain {
     private SpannableStringBuilder mStateFeedback;
     private final ArrayList<Combiner> mCombiners;
 
-    private static final HashMap<String, Class> IMPLEMENTED_COMBINERS
-            = new HashMap<String, Class>();
+    private static final HashMap<String, Class<? extends Combiner>> IMPLEMENTED_COMBINERS =
+            new HashMap<>();
     static {
         IMPLEMENTED_COMBINERS.put("MyanmarReordering", MyanmarReordering.class);
     }
@@ -63,7 +62,7 @@ public class CombinerChain {
      * @param combinerList A list of combiners to be applied in order.
      */
     public CombinerChain(final String initialText, final Combiner... combinerList) {
-        mCombiners = CollectionUtils.newArrayList();
+        mCombiners = new ArrayList<>();
         // The dead key combiner is always active, and always first
         mCombiners.add(new DeadKeyCombiner());
         for (final Combiner combiner : combinerList) {
@@ -87,7 +86,7 @@ public class CombinerChain {
      * @param newEvent the new event to process
      */
     public void processEvent(final ArrayList<Event> previousEvents, final Event newEvent) {
-        final ArrayList<Event> modifiablePreviousEvents = new ArrayList<Event>(previousEvents);
+        final ArrayList<Event> modifiablePreviousEvents = new ArrayList<>(previousEvents);
         Event event = newEvent;
         for (final Combiner combiner : mCombiners) {
             // A combiner can never return more than one event; it can return several
@@ -136,12 +135,13 @@ public class CombinerChain {
         final Combiner[] combiners = new Combiner[combinerDescriptors.length];
         int i = 0;
         for (final String combinerDescriptor : combinerDescriptors) {
-            final Class combinerClass = IMPLEMENTED_COMBINERS.get(combinerDescriptor);
+            final Class<? extends Combiner> combinerClass =
+                    IMPLEMENTED_COMBINERS.get(combinerDescriptor);
             if (null == combinerClass) {
                 throw new RuntimeException("Unknown combiner descriptor: " + combinerDescriptor);
             }
             try {
-                combiners[i++] = (Combiner)combinerClass.newInstance();
+                combiners[i++] = combinerClass.newInstance();
             } catch (InstantiationException e) {
                 throw new RuntimeException("Unable to instantiate combiner: " + combinerDescriptor,
                         e);

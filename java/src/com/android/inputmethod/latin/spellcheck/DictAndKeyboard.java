@@ -16,11 +16,11 @@
 
 package com.android.inputmethod.latin.spellcheck;
 
-import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardId;
 import com.android.inputmethod.keyboard.KeyboardLayoutSet;
 import com.android.inputmethod.keyboard.ProximityInfo;
+import com.android.inputmethod.latin.Dictionary;
 
 /**
  * A container for a Dictionary and a Keyboard.
@@ -28,19 +28,15 @@ import com.android.inputmethod.keyboard.ProximityInfo;
 public final class DictAndKeyboard {
     public final Dictionary mDictionary;
     public final Keyboard mKeyboard;
-    private final Keyboard mManualShiftedKeyboard;
 
     public DictAndKeyboard(
             final Dictionary dictionary, final KeyboardLayoutSet keyboardLayoutSet) {
         mDictionary = dictionary;
         if (keyboardLayoutSet == null) {
             mKeyboard = null;
-            mManualShiftedKeyboard = null;
             return;
         }
         mKeyboard = keyboardLayoutSet.getKeyboard(KeyboardId.ELEMENT_ALPHABET);
-        mManualShiftedKeyboard =
-                keyboardLayoutSet.getKeyboard(KeyboardId.ELEMENT_ALPHABET_MANUAL_SHIFTED);
     }
 
     public ProximityInfo getProximityInfo() {

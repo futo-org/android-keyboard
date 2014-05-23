@@ -81,7 +81,6 @@ import com.android.inputmethod.latin.suggestions.SuggestionStripView;
 import com.android.inputmethod.latin.suggestions.SuggestionStripViewAccessor;
 import com.android.inputmethod.latin.utils.ApplicationUtils;
 import com.android.inputmethod.latin.utils.CapsModeUtils;
-import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.CoordinateUtils;
 import com.android.inputmethod.latin.utils.DialogUtils;
 import com.android.inputmethod.latin.utils.DistracterFilterUsingSuggestion;
@@ -130,8 +129,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             this /* SuggestionStripViewAccessor */, mDictionaryFacilitator);
     // We expect to have only one decoder in almost all cases, hence the default capacity of 1.
     // If it turns out we need several, it will get grown seamlessly.
-    final SparseArray<HardwareEventDecoder> mHardwareEventDecoders
-            = new SparseArray<HardwareEventDecoder>(1);
+    final SparseArray<HardwareEventDecoder> mHardwareEventDecoders = new SparseArray<>(1);
 
     private View mExtractArea;
     private View mKeyPreviewBackingView;

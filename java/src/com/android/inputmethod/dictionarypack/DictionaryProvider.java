@@ -357,7 +357,7 @@ public final class DictionaryProvider extends ContentProvider {
             return Collections.<WordListInfo>emptyList();
         }
         try {
-            final HashMap<String, WordListInfo> dicts = new HashMap<String, WordListInfo>();
+            final HashMap<String, WordListInfo> dicts = new HashMap<>();
             final int idIndex = results.getColumnIndex(MetadataDbHelper.WORDLISTID_COLUMN);
             final int localeIndex = results.getColumnIndex(MetadataDbHelper.LOCALE_COLUMN);
             final int localFileNameIndex =

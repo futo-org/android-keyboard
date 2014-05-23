@@ -19,7 +19,6 @@ package com.android.inputmethod.latin;
 import android.text.TextUtils;
 import android.view.inputmethod.CompletionInfo;
 
-import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.StringUtils;
 
 import java.util.ArrayList;
@@ -34,8 +33,7 @@ public class SuggestedWords {
     // The maximum number of suggestions available.
     public static final int MAX_SUGGESTIONS = 18;
 
-    private static final ArrayList<SuggestedWordInfo> EMPTY_WORD_INFO_LIST =
-            CollectionUtils.newArrayList(0);
+    private static final ArrayList<SuggestedWordInfo> EMPTY_WORD_INFO_LIST = new ArrayList<>(0);
     public static final SuggestedWords EMPTY = new SuggestedWords(
             EMPTY_WORD_INFO_LIST, null /* rawSuggestions */, false, false, false, false);
 
@@ -165,7 +163,7 @@ public class SuggestedWords {
 
     public static ArrayList<SuggestedWordInfo> getFromApplicationSpecifiedCompletions(
             final CompletionInfo[] infos) {
-        final ArrayList<SuggestedWordInfo> result = CollectionUtils.newArrayList();
+        final ArrayList<SuggestedWordInfo> result = new ArrayList<>();
         for (final CompletionInfo info : infos) {
             if (null == info || null == info.getText()) {
                 continue;
@@ -179,8 +177,8 @@ public class SuggestedWords {
     // and replace it with what the user currently typed.
     public static ArrayList<SuggestedWordInfo> getTypedWordAndPreviousSuggestions(
             final String typedWord, final SuggestedWords previousSuggestions) {
-        final ArrayList<SuggestedWordInfo> suggestionsList = CollectionUtils.newArrayList();
-        final HashSet<String> alreadySeen = CollectionUtils.newHashSet();
+        final ArrayList<SuggestedWordInfo> suggestionsList = new ArrayList<>();
+        final HashSet<String> alreadySeen = new HashSet<>();
         suggestionsList.add(new SuggestedWordInfo(typedWord, SuggestedWordInfo.MAX_SCORE,
                 SuggestedWordInfo.KIND_TYPED, Dictionary.DICTIONARY_USER_TYPED,
                 SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
@@ -337,7 +335,7 @@ public class SuggestedWords {
     // SuggestedWords is an immutable object, as much as possible. We must not just remove
     // words from the member ArrayList as some other parties may expect the object to never change.
     public SuggestedWords getSuggestedWordsExcludingTypedWord() {
-        final ArrayList<SuggestedWordInfo> newSuggestions = CollectionUtils.newArrayList();
+        final ArrayList<SuggestedWordInfo> newSuggestions = new ArrayList<>();
         String typedWord = null;
         for (int i = 0; i < mSuggestedWordInfoList.size(); ++i) {
             final SuggestedWordInfo info = mSuggestedWordInfoList.get(i);
@@ -361,7 +359,7 @@ public class SuggestedWords {
     // we should only suggest replacements for this last word.
     // TODO: make this work with languages without spaces.
     public SuggestedWords getSuggestedWordsForLastWordOfPhraseGesture() {
-        final ArrayList<SuggestedWordInfo> newSuggestions = CollectionUtils.newArrayList();
+        final ArrayList<SuggestedWordInfo> newSuggestions = new ArrayList<>();
         for (int i = 0; i < mSuggestedWordInfoList.size(); ++i) {
             final SuggestedWordInfo info = mSuggestedWordInfoList.get(i);
             final int indexOfLastSpace = info.mWord.lastIndexOf(Constants.CODE_SPACE) + 1;

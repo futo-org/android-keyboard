@@ -30,7 +30,6 @@ public class LatinImeStressTests extends InputTestsBase {
         final int maxWordCountToTypeInEachIteration = 20;
         final long seed = System.currentTimeMillis();
         final Random random = new Random(seed);
-        final int codePointSetSize = 30;
         final int[] codePointSet = CodePointUtils.LATIN_ALPHABETS_LOWER;
         for (int i = 0; i < switchCount; ++i) {
             changeLanguageWithoutWait(locales[random.nextInt(locales.length)],

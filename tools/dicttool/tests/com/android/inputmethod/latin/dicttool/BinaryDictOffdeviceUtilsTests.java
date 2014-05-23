@@ -16,12 +16,10 @@
 
 package com.android.inputmethod.latin.dicttool;
 
-import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.makedict.BinaryDictIOUtils;
 import com.android.inputmethod.latin.makedict.DictDecoder;
 import com.android.inputmethod.latin.makedict.DictEncoder;
 import com.android.inputmethod.latin.makedict.DictionaryHeader;
-import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.makedict.FormatSpec.DictionaryOptions;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary;
@@ -32,8 +30,8 @@ import com.android.inputmethod.latin.makedict.Ver2DictEncoder;
 
 import junit.framework.TestCase;
 
-import java.io.File;
 import java.io.BufferedOutputStream;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;

@@ -203,7 +203,7 @@ public class DistracterFilterUsingSuggestion implements DistracterFilter {
         final String consideredWord = trailingSingleQuotesCount > 0 ?
                 testedWord.substring(0, testedWord.length() - trailingSingleQuotesCount) :
                 testedWord;
-        final AsyncResultHolder<Boolean> holder = new AsyncResultHolder<Boolean>();
+        final AsyncResultHolder<Boolean> holder = new AsyncResultHolder<>();
         final OnGetSuggestedWordsCallback callback = new OnGetSuggestedWordsCallback() {
             @Override
             public void onGetSuggestedWords(final SuggestedWords suggestedWords) {

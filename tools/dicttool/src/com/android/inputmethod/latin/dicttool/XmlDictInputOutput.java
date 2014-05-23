@@ -115,7 +115,7 @@ public class XmlDictInputOutput {
                     }
                 }
             } else if (ROOT_TAG.equals(localName)) {
-                final HashMap<String, String> attributes = new HashMap<String, String>();
+                final HashMap<String, String> attributes = new HashMap<>();
                 for (int attrIndex = 0; attrIndex < attrs.getLength(); ++attrIndex) {
                     final String attrName = attrs.getLocalName(attrIndex);
                     attributes.put(attrName, attrs.getValue(attrIndex));
@@ -172,7 +172,7 @@ public class XmlDictInputOutput {
             DST_ATTRIBUTE = dstAttribute;
             DST_FREQ = dstFreq;
             mSrc = null;
-            mAssocMap = new HashMap<String, ArrayList<WeightedString>>();
+            mAssocMap = new HashMap<>();
         }
 
         @Override
@@ -184,7 +184,7 @@ public class XmlDictInputOutput {
                 int freq = getValueFromFreqString(attrs.getValue(uri, DST_FREQ));
                 WeightedString bigram = new WeightedString(dst, freq / XML_TO_MEMORY_RATIO);
                 ArrayList<WeightedString> bigramList = mAssocMap.get(mSrc);
-                if (null == bigramList) bigramList = new ArrayList<WeightedString>();
+                if (null == bigramList) bigramList = new ArrayList<>();
                 bigramList.add(bigram);
                 mAssocMap.put(mSrc, bigramList);
             }
@@ -352,7 +352,7 @@ public class XmlDictInputOutput {
      */
     public static void writeDictionaryXml(Writer destination, FusionDictionary dict)
             throws IOException {
-        final TreeSet<WordProperty> wordPropertiesInDict = new TreeSet<WordProperty>();
+        final TreeSet<WordProperty> wordPropertiesInDict = new TreeSet<>();
         for (WordProperty wordProperty : dict) {
             wordPropertiesInDict.add(wordProperty);
         }

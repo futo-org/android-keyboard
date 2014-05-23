@@ -177,7 +177,7 @@ public final class UpdateHandler {
      */
     public static boolean tryUpdate(final Context context, final boolean updateNow) {
         // TODO: loop through all clients instead of only doing the default one.
-        final TreeSet<String> uris = new TreeSet<String>();
+        final TreeSet<String> uris = new TreeSet<>();
         final Cursor cursor = MetadataDbHelper.queryClientIds(context);
         if (null == cursor) return false;
         try {
@@ -557,7 +557,7 @@ public final class UpdateHandler {
         // Instantiation of a parameterized type is not possible in Java, so it's not possible to
         // return the same type of list that was passed - probably the same reason why Collections
         // does not do it. So we need to decide statically which concrete type to return.
-        return new LinkedList<T>(src);
+        return new LinkedList<>(src);
     }
 
     /**
@@ -740,10 +740,10 @@ public final class UpdateHandler {
         final ActionBatch actions = new ActionBatch();
         // Upgrade existing word lists
         DebugLogUtils.l("Comparing dictionaries");
-        final Set<String> wordListIds = new TreeSet<String>();
+        final Set<String> wordListIds = new TreeSet<>();
         // TODO: Can these be null?
-        if (null == from) from = new ArrayList<WordListMetadata>();
-        if (null == to) to = new ArrayList<WordListMetadata>();
+        if (null == from) from = new ArrayList<>();
+        if (null == to) to = new ArrayList<>();
         for (WordListMetadata wlData : from) wordListIds.add(wlData.mId);
         for (WordListMetadata wlData : to) wordListIds.add(wlData.mId);
         for (String id : wordListIds) {

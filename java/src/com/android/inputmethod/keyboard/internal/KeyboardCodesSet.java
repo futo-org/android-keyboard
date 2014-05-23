@@ -17,14 +17,13 @@
 package com.android.inputmethod.keyboard.internal;
 
 import com.android.inputmethod.latin.Constants;
-import com.android.inputmethod.latin.utils.CollectionUtils;
 
 import java.util.HashMap;
 
 public final class KeyboardCodesSet {
     public static final String PREFIX_CODE = "!code/";
 
-    private static final HashMap<String, Integer> sNameToIdMap = CollectionUtils.newHashMap();
+    private static final HashMap<String, Integer> sNameToIdMap = new HashMap<>();
 
     private KeyboardCodesSet() {
         // This utility class is not publicly instantiable.

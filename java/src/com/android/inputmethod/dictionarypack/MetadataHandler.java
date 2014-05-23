@@ -43,7 +43,7 @@ public class MetadataHandler {
      * @return the constructed list of wordlist metadata.
      */
     private static List<WordListMetadata> makeMetadataObject(final Cursor results) {
-        final ArrayList<WordListMetadata> buildingMetadata = new ArrayList<WordListMetadata>();
+        final ArrayList<WordListMetadata> buildingMetadata = new ArrayList<>();
         if (null != results && results.moveToFirst()) {
             final int localeColumn = results.getColumnIndex(MetadataDbHelper.LOCALE_COLUMN);
             final int typeColumn = results.getColumnIndex(MetadataDbHelper.TYPE_COLUMN);

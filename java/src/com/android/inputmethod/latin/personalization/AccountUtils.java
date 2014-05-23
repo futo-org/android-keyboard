@@ -35,7 +35,7 @@ public class AccountUtils {
     }
 
     public static List<String> getDeviceAccountsEmailAddresses(final Context context) {
-        final ArrayList<String> retval = new ArrayList<String>();
+        final ArrayList<String> retval = new ArrayList<>();
         for (final Account account : getAccounts(context)) {
             final String name = account.name;
             if (Patterns.EMAIL_ADDRESS.matcher(name).matches()) {
@@ -54,7 +54,7 @@ public class AccountUtils {
      */
     public static List<String> getDeviceAccountsWithDomain(
             final Context context, final String domain) {
-        final ArrayList<String> retval = new ArrayList<String>();
+        final ArrayList<String> retval = new ArrayList<>();
         final String atDomain = "@" + domain.toLowerCase(Locale.ROOT);
         for (final Account account : getAccounts(context)) {
             if (account.name.toLowerCase(Locale.ROOT).endsWith(atDomain)) {
