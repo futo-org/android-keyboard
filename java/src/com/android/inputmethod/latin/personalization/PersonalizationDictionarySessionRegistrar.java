@@ -20,17 +20,14 @@ import android.content.Context;
 import android.content.res.Configuration;
 
 import com.android.inputmethod.latin.DictionaryFacilitator;
-import com.android.inputmethod.latin.utils.DistracterFilter;
 
 public class PersonalizationDictionarySessionRegistrar {
     public static void init(final Context context,
-            final DictionaryFacilitator dictionaryFacilitator,
-            final DistracterFilter distracterFilter) {
+            final DictionaryFacilitator dictionaryFacilitator) {
     }
 
     public static void onConfigurationChanged(final Context context, final Configuration conf,
-            final DictionaryFacilitator dictionaryFacilitator,
-            final DistracterFilter distracterFilter) {
+            final DictionaryFacilitator dictionaryFacilitator) {
     }
 
     public static void onUpdateData(final Context context, final String type) {

@@ -24,6 +24,7 @@ import com.android.inputmethod.latin.PrevWordsInfo;
 import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 // Note: this class is used as a parameter type of a native method. You should be careful when you
@@ -79,7 +80,7 @@ public final class LanguageModelParam {
 
     // Process a list of words and return a list of {@link LanguageModelParam} objects.
     public static ArrayList<LanguageModelParam> createLanguageModelParamsFrom(
-            final ArrayList<String> tokens, final int timestamp,
+            final List<String> tokens, final int timestamp,
             final DictionaryFacilitator dictionaryFacilitator,
             final SpacingAndPunctuations spacingAndPunctuations,
             final DistracterFilter distracterFilter) {
