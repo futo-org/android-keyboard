@@ -25,6 +25,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Message;
 import android.provider.Settings;
+import android.support.v4.view.ViewCompat;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodInfo;
@@ -34,7 +35,6 @@ import android.widget.TextView;
 import android.widget.VideoView;
 
 import com.android.inputmethod.compat.TextViewCompatUtils;
-import com.android.inputmethod.compat.ViewCompatUtils;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.settings.SettingsActivity;
 import com.android.inputmethod.latin.utils.LeakGuardHandlerWrapper;
@@ -448,8 +448,8 @@ public final class SetupWizardActivity extends Activity implements View.OnClickL
             mActionLabel = (TextView)mStepView.findViewById(R.id.setup_step_action_label);
             mActionLabel.setText(res.getString(actionLabel));
             if (actionIcon == 0) {
-                final int paddingEnd = ViewCompatUtils.getPaddingEnd(mActionLabel);
-                ViewCompatUtils.setPaddingRelative(mActionLabel, paddingEnd, 0, paddingEnd, 0);
+                final int paddingEnd = ViewCompat.getPaddingEnd(mActionLabel);
+                ViewCompat.setPaddingRelative(mActionLabel, paddingEnd, 0, paddingEnd, 0);
             } else {
                 TextViewCompatUtils.setCompoundDrawablesRelativeWithIntrinsicBounds(
                         mActionLabel, res.getDrawable(actionIcon), null, null, null);
