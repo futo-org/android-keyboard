@@ -25,8 +25,6 @@
         <item name="mainKeyboardViewStyle">@style/MainKeyboardView.ICS</item>
         <item name="keyPreviewTextViewStyle">@style/KeyPreviewTextView.ICS</item>
         <item name="emojiPalettesViewStyle">@style/EmojiPalettesView.ICS</item>
-        <item name="emojiTabWidgetStyle">@style/EmojiTabWidget.ICS</item>
-        <item name="emojiCategoryPageIndicatorViewStyle">@style/EmojiCategoryPageIndicatorView.ICS</item>
         <item name="moreKeysKeyboardStyle">@style/MoreKeysKeyboard.ICS</item>
         <item name="moreKeysKeyboardViewStyle">@style/MoreKeysKeyboardView.ICS</item>
         <item name="suggestionStripViewStyle">@style/SuggestionStripView.ICS</item>
@@ -89,6 +87,11 @@
         name="EmojiPalettesView.ICS"
         parent="MainKeyboardView.ICS"
     >
+        <item name="categoryIndicatorEnabled">true</item>
+        <item name="categoryIndicatorDrawable">@drawable/emoji_category_tab_selected_ics</item>
+        <item name="categoryIndicatorBackground">@drawable/emoji_category_tab_unselected_holo_dark</item>
+        <item name="categoryPageIndicatorColor">@color/highlight_color_ics</item>
+        <item name="categoryPageIndicatorBackground">@color/emoji_tab_page_indicator_background_holo</item>
         <item name="iconEmojiRecentsTab">@drawable/ic_emoji_recents_holo_dark</item>
         <item name="iconEmojiCategory1Tab">@drawable/ic_emoji_people_holo_dark</item>
         <item name="iconEmojiCategory2Tab">@drawable/ic_emoji_objects_holo_dark</item>
@@ -96,15 +99,6 @@
         <item name="iconEmojiCategory4Tab">@drawable/ic_emoji_places_holo_dark</item>
         <item name="iconEmojiCategory5Tab">@drawable/ic_emoji_symbols_holo_dark</item>
         <item name="iconEmojiCategory6Tab">@drawable/ic_emoji_emoticons_holo_dark</item>
-    </style>
-    <style name="EmojiCategoryPageIndicatorView.ICS">
-        <item name="android:background">@color/emoji_tab_page_indicator_background_holo</item>
-        <item name="emojiCategoryPageIndicatorColor">@color/highlight_color_ics</item>
-    </style>
-    <style name="EmojiTabWidget.ICS">
-        <item name="android:background">@drawable/emoji_category_tab_selected_ics</item>
-        <item name="android:tabStripLeft">@drawable/emoji_category_tab_unselected_holo_dark</item>
-        <item name="android:tabStripRight">@drawable/emoji_category_tab_unselected_holo_dark</item>
     </style>
     <style
         name="MoreKeysKeyboard.ICS"

@@ -36,6 +36,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
+import android.widget.TabWidget;
 import android.widget.TextView;
 
 import com.android.inputmethod.keyboard.Key;
@@ -68,6 +69,11 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
         EmojiPageKeyboardView.OnKeyEventListener {
     private final int mFunctionalKeyBackgroundId;
     private final int mSpacebarBackgroundId;
+    private final boolean mCategoryIndicatorEnabled;
+    private final int mCategoryIndicatorDrawableResId;
+    private final int mCategoryIndicatorBackgroundResId;
+    private final int mCategoryPageIndicatorColor;
+    private final int mCategoryPageIndicatorBackground;
     private final DeleteKeyOnTouchListener mDeleteKeyOnTouchListener;
     private EmojiPalettesAdapter mEmojiPalettesAdapter;
     private final EmojiLayoutParams mEmojiLayoutParams;
@@ -114,6 +120,16 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
                 R.styleable.EmojiPalettesView, defStyle, R.style.EmojiPalettesView);
         mEmojiCategory = new EmojiCategory(PreferenceManager.getDefaultSharedPreferences(context),
                 res, layoutSet, emojiPalettesViewAttr);
+        mCategoryIndicatorEnabled = emojiPalettesViewAttr.getBoolean(
+                R.styleable.EmojiPalettesView_categoryIndicatorEnabled, false);
+        mCategoryIndicatorDrawableResId = emojiPalettesViewAttr.getResourceId(
+                R.styleable.EmojiPalettesView_categoryIndicatorDrawable, 0);
+        mCategoryIndicatorBackgroundResId = emojiPalettesViewAttr.getResourceId(
+                R.styleable.EmojiPalettesView_categoryIndicatorBackground, 0);
+        mCategoryPageIndicatorColor = emojiPalettesViewAttr.getColor(
+                R.styleable.EmojiPalettesView_categoryPageIndicatorColor, 0);
+        mCategoryPageIndicatorBackground = emojiPalettesViewAttr.getColor(
+                R.styleable.EmojiPalettesView_categoryPageIndicatorBackground, 0);
         emojiPalettesViewAttr.recycle();
         mDeleteKeyOnTouchListener = new DeleteKeyOnTouchListener(context);
     }
@@ -152,7 +168,15 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
             addTab(mTabHost, properties.mCategoryId);
         }
         mTabHost.setOnTabChangedListener(this);
-        mTabHost.getTabWidget().setStripEnabled(true);
+        final TabWidget tabWidget = mTabHost.getTabWidget();
+        tabWidget.setStripEnabled(mCategoryIndicatorEnabled);
+        if (mCategoryIndicatorEnabled) {
+            // On TabWidget's strip, what looks like an indicator is actually a background.
+            // And what looks like a background are actually left and right drawables.
+            tabWidget.setBackgroundResource(mCategoryIndicatorDrawableResId);
+            tabWidget.setLeftStripDrawable(mCategoryIndicatorBackgroundResId);
+            tabWidget.setRightStripDrawable(mCategoryIndicatorBackgroundResId);
+        }
 
         mEmojiPalettesAdapter = new EmojiPalettesAdapter(mEmojiCategory, this);
 
@@ -165,6 +189,8 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
 
         mEmojiCategoryPageIndicatorView =
                 (EmojiCategoryPageIndicatorView)findViewById(R.id.emoji_category_page_id_view);
+        mEmojiCategoryPageIndicatorView.setColors(
+                mCategoryPageIndicatorColor, mCategoryPageIndicatorBackground);
         mEmojiLayoutParams.setCategoryPageIdViewProperties(mEmojiCategoryPageIndicatorView);
 
         setCurrentCategoryId(mEmojiCategory.getCurrentCategoryId(), true /* force */);

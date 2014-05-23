@@ -41,9 +41,7 @@
                 android:id="@android:id/tabs"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:divider="@null"
-                android:tabStripEnabled="true"
-                style="?attr/emojiTabWidgetStyle" />
+                android:divider="@null" />
             <FrameLayout
                 android:id="@android:id/tabcontent"
                 android:layout_width="0dip"
@@ -77,8 +75,7 @@
     <com.android.inputmethod.keyboard.emoji.EmojiCategoryPageIndicatorView
         android:id="@+id/emoji_category_page_id_view"
         android:layout_width="match_parent"
-        android:layout_height="2dip"
-        style="?attr/emojiCategoryPageIndicatorViewStyle" />
+        android:layout_height="2dip" />
     <LinearLayout
         android:id="@+id/emoji_action_bar"
         android:orientation="horizontal"

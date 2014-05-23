@@ -30,10 +30,6 @@
         <attr name="keyPreviewTextViewStyle" format="reference"/>
         <!-- EmojiPalettesView style -->
         <attr name="emojiPalettesViewStyle" format="reference" />
-        <!-- TabWidget of EmojiPlettesView style -->
-        <attr name="emojiTabWidgetStyle" format="reference" />
-        <!-- EmojiCategoryPageIndicatorView style -->
-        <attr name="emojiCategoryPageIndicatorViewStyle" format="reference" />
         <!-- MoreKeysKeyboard style -->
         <attr name="moreKeysKeyboardStyle" format="reference" />
         <!-- MoreKeysKeyboardView style -->
@@ -176,6 +172,11 @@
     </declare-styleable>
 
     <declare-styleable name="EmojiPalettesView">
+        <attr name="categoryIndicatorEnabled" format="boolean" />
+        <attr name="categoryIndicatorDrawable" format="reference" />
+        <attr name="categoryIndicatorBackground" format="reference" />
+        <attr name="categoryPageIndicatorColor" format="color" />
+        <attr name="categoryPageIndicatorBackground" format="color" />
         <attr name="iconEmojiRecentsTab" format="reference" />
         <attr name="iconEmojiCategory1Tab" format="reference" />
         <attr name="iconEmojiCategory2Tab" format="reference" />
@@ -183,10 +184,6 @@
         <attr name="iconEmojiCategory4Tab" format="reference" />
         <attr name="iconEmojiCategory5Tab" format="reference" />
         <attr name="iconEmojiCategory6Tab" format="reference" />
-    </declare-styleable>
-
-    <declare-styleable name="EmojiCategoryPageIndicatorView">
-        <attr name="emojiCategoryPageIndicatorColor" format="color" />
     </declare-styleable>
 
     <declare-styleable name="SuggestionStripView">
