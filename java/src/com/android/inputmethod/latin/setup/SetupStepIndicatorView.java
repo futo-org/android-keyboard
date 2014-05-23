@@ -20,10 +20,10 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.view.View;
 
+import com.android.inputmethod.compat.ViewCompatUtils;
 import com.android.inputmethod.latin.R;
 
 public final class SetupStepIndicatorView extends View {
@@ -38,12 +38,12 @@ public final class SetupStepIndicatorView extends View {
     }
 
     public void setIndicatorPosition(final int stepPos, final int totalStepNum) {
-        final int layoutDirection = ViewCompat.getLayoutDirection(this);
+        final int layoutDirection = ViewCompatUtils.getLayoutDirection(this);
         // The indicator position is the center of the partition that is equally divided into
         // the total step number.
         final float partionWidth = 1.0f / totalStepNum;
         final float pos = stepPos * partionWidth + partionWidth / 2.0f;
-        mXRatio = (layoutDirection == ViewCompat.LAYOUT_DIRECTION_RTL) ? 1.0f - pos : pos;
+        mXRatio = (layoutDirection == ViewCompatUtils.LAYOUT_DIRECTION_RTL) ? 1.0f - pos : pos;
         invalidate();
     }
 

@@ -218,7 +218,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         clear();
         final int layoutDirection = isRtlLanguage ? ViewCompat.LAYOUT_DIRECTION_RTL
                 : ViewCompat.LAYOUT_DIRECTION_LTR;
-        ViewCompat.setLayoutDirection(this, layoutDirection);
+        setLayoutDirection(layoutDirection);
         mStripVisibilityGroup.setLayoutDirection(layoutDirection);
         mSuggestedWords = suggestedWords;
         mSuggestionsCountInStrip = mLayoutHelper.layoutAndReturnSuggestionCountInStrip(
