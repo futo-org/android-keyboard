@@ -16,6 +16,8 @@
 
 package android.test;
 
+import com.android.inputmethod.latin.dicttool.Test;
+
 import junit.framework.TestCase;
 
 import java.io.File;
@@ -27,7 +29,11 @@ import java.io.File;
  */
 public class AndroidTestCase extends TestCase {
     public File getCacheDir() {
-        return new File(".");
+        final File dir = Test.TEST_TMP_DIR;
+        if (!dir.isDirectory()) {
+            dir.mkdirs();
+        }
+        return dir;
     }
     public AndroidTestCase getContext() {
         return this;
