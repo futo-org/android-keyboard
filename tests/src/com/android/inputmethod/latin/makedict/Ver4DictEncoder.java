@@ -77,14 +77,14 @@ public class Ver4DictEncoder implements DictEncoder {
             if (null == wordProperty.mShortcutTargets || wordProperty.mShortcutTargets.isEmpty()) {
                 binaryDict.addUnigramEntry(wordProperty.mWord, wordProperty.getProbability(),
                         null /* shortcutTarget */, 0 /* shortcutProbability */,
-                        wordProperty.mIsNotAWord, wordProperty.mIsBlacklistEntry,
-                        0 /* timestamp */);
+                        wordProperty.mIsBeginningOfSentence, wordProperty.mIsNotAWord,
+                        wordProperty.mIsBlacklistEntry, 0 /* timestamp */);
             } else {
                 for (final WeightedString shortcutTarget : wordProperty.mShortcutTargets) {
                     binaryDict.addUnigramEntry(wordProperty.mWord, wordProperty.getProbability(),
                             shortcutTarget.mWord, shortcutTarget.getProbability(),
-                            wordProperty.mIsNotAWord, wordProperty.mIsBlacklistEntry,
-                            0 /* timestamp */);
+                            wordProperty.mIsBeginningOfSentence, wordProperty.mIsNotAWord,
+                            wordProperty.mIsBlacklistEntry, 0 /* timestamp */);
                 }
             }
             if (binaryDict.needsToRunGC(true /* mindsBlockByGC */)) {

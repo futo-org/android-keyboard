@@ -20,6 +20,8 @@ import android.util.Log;
 
 // TODO: Support multiple previous words for n-gram.
 public class PrevWordsInfo {
+    public static final PrevWordsInfo BEGINNING_OF_SENTENCE = new PrevWordsInfo();
+
     // The previous word. May be null after resetting and before starting a new composing word, or
     // when there is no context like at the start of text for example. It can also be set to null
     // externally when the user enters a separator that does not let bigrams across, like a period
@@ -32,12 +34,16 @@ public class PrevWordsInfo {
 
     // Beginning of sentence.
     public PrevWordsInfo() {
-        mPrevWord = null;
+        mPrevWord = "";
         mIsBeginningOfSentence = true;
     }
 
     public PrevWordsInfo(final String prevWord) {
         mPrevWord = prevWord;
         mIsBeginningOfSentence = false;
+    }
+
+    public boolean isValid() {
+        return mPrevWord != null;
     }
 }

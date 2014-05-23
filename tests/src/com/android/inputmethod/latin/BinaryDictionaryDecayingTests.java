@@ -63,12 +63,16 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
         super.tearDown();
     }
 
+    private static boolean supportsBeginningOfSentence(final int formatVersion) {
+        return formatVersion >= FormatSpec.VERSION4_DEV;
+    }
+
     private void addUnigramWord(final BinaryDictionary binaryDictionary, final String word,
             final int probability) {
         binaryDictionary.addUnigramEntry(word, probability, "" /* shortcutTarget */,
                 BinaryDictionary.NOT_A_PROBABILITY /* shortcutProbability */,
-                false /* isNotAWord */, false /* isBlacklisted */,
-                mCurrentTime /* timestamp */);
+                false /* isBeginningOfSentence */, false /* isNotAWord */,
+                false /* isBlacklisted */, mCurrentTime /* timestamp */);
     }
 
     private void addBigramWords(final BinaryDictionary binaryDictionary, final String word0,
@@ -628,6 +632,59 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
         assertFalse(isValidBigram(binaryDictionary, "aaa", "bbb"));
         addBigramWords(binaryDictionary, "aaa", "bbb", Dictionary.NOT_A_PROBABILITY);
         assertTrue(isValidBigram(binaryDictionary, "aaa", "bbb"));
+        binaryDictionary.close();
+        dictFile.delete();
+    }
+
+    public void testBeginningOfSentence() {
+        for (final int formatVersion : DICT_FORMAT_VERSIONS) {
+            if (supportsBeginningOfSentence(formatVersion)) {
+                testBeginningOfSentence(formatVersion);
+            }
+        }
+    }
+
+    private void testBeginningOfSentence(final int formatVersion) {
+        setCurrentTimeForTestMode(mCurrentTime);
+        File dictFile = null;
+        try {
+            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary", formatVersion);
+        } catch (IOException e) {
+            fail("IOException while writing an initial dictionary : " + e);
+        }
+        final BinaryDictionary binaryDictionary = new BinaryDictionary(dictFile.getAbsolutePath(),
+                0 /* offset */, dictFile.length(), true /* useFullEditDistance */,
+                Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
+
+        binaryDictionary.addUnigramEntry("", DUMMY_PROBABILITY, "" /* shortcutTarget */,
+                BinaryDictionary.NOT_A_PROBABILITY /* shortcutProbability */,
+                true /* isBeginningOfSentence */, true /* isNotAWord */, false /* isBlacklisted */,
+                mCurrentTime);
+        final PrevWordsInfo prevWordsInfoStartOfSentence = PrevWordsInfo.BEGINNING_OF_SENTENCE;
+        addUnigramWord(binaryDictionary, "aaa", DUMMY_PROBABILITY);
+        binaryDictionary.addNgramEntry(prevWordsInfoStartOfSentence, "aaa", DUMMY_PROBABILITY,
+                mCurrentTime);
+        assertTrue(binaryDictionary.isValidNgram(prevWordsInfoStartOfSentence, "aaa"));
+        binaryDictionary.addNgramEntry(prevWordsInfoStartOfSentence, "aaa", DUMMY_PROBABILITY,
+                mCurrentTime);
+        addUnigramWord(binaryDictionary, "bbb", DUMMY_PROBABILITY);
+        binaryDictionary.addNgramEntry(prevWordsInfoStartOfSentence, "bbb", DUMMY_PROBABILITY,
+                mCurrentTime);
+        assertTrue(binaryDictionary.isValidNgram(prevWordsInfoStartOfSentence, "aaa"));
+        assertTrue(binaryDictionary.isValidNgram(prevWordsInfoStartOfSentence, "bbb"));
+
+        forcePassingLongTime(binaryDictionary);
+        assertFalse(binaryDictionary.isValidNgram(prevWordsInfoStartOfSentence, "aaa"));
+        assertFalse(binaryDictionary.isValidNgram(prevWordsInfoStartOfSentence, "bbb"));
+
+        addUnigramWord(binaryDictionary, "aaa", DUMMY_PROBABILITY);
+        binaryDictionary.addNgramEntry(prevWordsInfoStartOfSentence, "aaa", DUMMY_PROBABILITY,
+                mCurrentTime);
+        addUnigramWord(binaryDictionary, "bbb", DUMMY_PROBABILITY);
+        binaryDictionary.addNgramEntry(prevWordsInfoStartOfSentence, "bbb", DUMMY_PROBABILITY,
+                mCurrentTime);
+        assertTrue(binaryDictionary.isValidNgram(prevWordsInfoStartOfSentence, "aaa"));
+        assertTrue(binaryDictionary.isValidNgram(prevWordsInfoStartOfSentence, "bbb"));
         binaryDictionary.close();
         dictFile.delete();
     }
