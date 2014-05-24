@@ -24,23 +24,13 @@ import java.lang.reflect.Method;
 // Currently {@link #getPaddingEnd(View)} and {@link #setPaddingRelative(View,int,int,int,int)}
 // are missing from android-support-v4 static library in KitKat SDK.
 public final class ViewCompatUtils {
-    // Note that View.LAYOUT_DIRECTION_LTR and View.LAYOUT_DIRECTION_RTL have been introduced in
-    // API level 17 (Build.VERSION_CODE.JELLY_BEAN_MR1).
-    public static final int LAYOUT_DIRECTION_LTR = (Integer)CompatUtils.getFieldValue(null, 0x0,
-            CompatUtils.getField(View.class, "LAYOUT_DIRECTION_LTR"));
-    public static final int LAYOUT_DIRECTION_RTL = (Integer)CompatUtils.getFieldValue(null, 0x1,
-            CompatUtils.getField(View.class, "LAYOUT_DIRECTION_RTL"));
-
-    // Note that View.getPaddingEnd(), View.setPaddingRelative(int,int,int,int), and
-    // View.getLayoutDirection() have been introduced in API level 17
-    // (Build.VERSION_CODE.JELLY_BEAN_MR1).
+    // Note that View.getPaddingEnd(), View.setPaddingRelative(int,int,int,int) have been
+    // introduced in API level 17 (Build.VERSION_CODE.JELLY_BEAN_MR1).
     private static final Method METHOD_getPaddingEnd = CompatUtils.getMethod(
             View.class, "getPaddingEnd");
     private static final Method METHOD_setPaddingRelative = CompatUtils.getMethod(
             View.class, "setPaddingRelative",
             Integer.TYPE, Integer.TYPE, Integer.TYPE, Integer.TYPE);
-    private static final Method METHOD_getLayoutDirection = CompatUtils.getMethod(
-            View.class, "getLayoutDirection");
 
     private ViewCompatUtils() {
         // This utility class is not publicly instantiable.
@@ -60,12 +50,5 @@ public final class ViewCompatUtils {
             return;
         }
         CompatUtils.invoke(view, null, METHOD_setPaddingRelative, start, top, end, bottom);
-    }
-
-    public static int getLayoutDirection(final View view) {
-        if (METHOD_getLayoutDirection == null) {
-            return LAYOUT_DIRECTION_LTR;
-        }
-        return (Integer)CompatUtils.invoke(view, 0, METHOD_getLayoutDirection);
     }
 }
