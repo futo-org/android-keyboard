@@ -131,7 +131,6 @@
             <key-style
                 latin:styleName="enterKeyStyle"
                 latin:keySpec="!text/label_go_key|!code/key_enter"
-                latin:backgroundType="action"
                 latin:parentStyle="defaultEnterKeyStyle" />
         </case>
         <case
@@ -150,7 +149,6 @@
             <key-style
                 latin:styleName="enterKeyStyle"
                 latin:keySpec="!text/label_next_key|!code/key_enter"
-                latin:backgroundType="action"
                 latin:parentStyle="defaultEnterKeyStyle" />
         </case>
         <case
@@ -169,7 +167,6 @@
             <key-style
                 latin:styleName="enterKeyStyle"
                 latin:keySpec="!text/label_previous_key|!code/key_enter"
-                latin:backgroundType="action"
                 latin:parentStyle="defaultEnterKeyStyle" />
         </case>
         <case
@@ -188,7 +185,6 @@
             <key-style
                 latin:styleName="enterKeyStyle"
                 latin:keySpec="!text/label_done_key|!code/key_enter"
-                latin:backgroundType="action"
                 latin:parentStyle="defaultEnterKeyStyle" />
         </case>
         <case
@@ -207,6 +203,15 @@
             <key-style
                 latin:styleName="enterKeyStyle"
                 latin:keySpec="!text/label_send_key|!code/key_enter"
+                latin:parentStyle="defaultEnterKeyStyle" />
+        </case>
+        <case
+            latin:imeAction="actionSearch"
+            latin:isIconDefined="search_key"
+        >
+            <key-style
+                latin:styleName="enterKeyStyle"
+                latin:keySpec="!icon/search_key|!code/key_enter"
                 latin:backgroundType="action"
                 latin:parentStyle="defaultEnterKeyStyle" />
         </case>
@@ -215,8 +220,7 @@
         >
             <key-style
                 latin:styleName="enterKeyStyle"
-                latin:keySpec="!icon/search_key|!code/key_enter"
-                latin:backgroundType="action"
+                latin:keySpec="!text/label_search_key|!code/key_enter"
                 latin:parentStyle="defaultEnterKeyStyle" />
         </case>
         <case
@@ -226,7 +230,6 @@
                 latin:styleName="enterKeyStyle"
                 latin:keySpec="dummy_label|!code/key_enter"
                 latin:keyLabelFlags="fromCustomActionLabel"
-                latin:backgroundType="action"
                 latin:parentStyle="defaultEnterKeyStyle" />
         </case>
         <!-- imeAction is either actionNone or actionUnspecified. -->
