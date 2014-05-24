@@ -89,13 +89,16 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
     private final StripVisibilityGroup mStripVisibilityGroup;
 
     private static class StripVisibilityGroup {
+        private final View mSuggestionStripView;
         private final View mSuggestionsStrip;
         private final View mVoiceKey;
         private final View mAddToDictionaryStrip;
         private final View mImportantNoticeStrip;
 
-        public StripVisibilityGroup(final View suggestionsStrip, final View voiceKey,
-                final View addToDictionaryStrip, final View importantNoticeStrip) {
+        public StripVisibilityGroup(final View suggestionStripView,
+                final ViewGroup suggestionsStrip, final ImageButton voiceKey,
+                final ViewGroup addToDictionaryStrip, final View importantNoticeStrip) {
+            mSuggestionStripView = suggestionStripView;
             mSuggestionsStrip = suggestionsStrip;
             mVoiceKey = voiceKey;
             mAddToDictionaryStrip = addToDictionaryStrip;
@@ -103,7 +106,10 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
             showSuggestionsStrip(false /* voiceKeyEnabled */);
         }
 
-        public void setLayoutDirection(final int layoutDirection) {
+        public void setLayoutDirection(final boolean isRtlLanguage) {
+            final int layoutDirection = isRtlLanguage ? ViewCompat.LAYOUT_DIRECTION_RTL
+                    : ViewCompat.LAYOUT_DIRECTION_LTR;
+            ViewCompat.setLayoutDirection(mSuggestionStripView, layoutDirection);
             ViewCompat.setLayoutDirection(mSuggestionsStrip, layoutDirection);
             ViewCompat.setLayoutDirection(mAddToDictionaryStrip, layoutDirection);
             ViewCompat.setLayoutDirection(mImportantNoticeStrip, layoutDirection);
@@ -155,7 +161,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         mVoiceKey = (ImageButton)findViewById(R.id.suggestions_strip_voice_key);
         mAddToDictionaryStrip = (ViewGroup)findViewById(R.id.add_to_dictionary_strip);
         mImportantNoticeStrip = findViewById(R.id.important_notice_strip);
-        mStripVisibilityGroup = new StripVisibilityGroup(mSuggestionsStrip, mVoiceKey,
+        mStripVisibilityGroup = new StripVisibilityGroup(this, mSuggestionsStrip, mVoiceKey,
                 mAddToDictionaryStrip, mImportantNoticeStrip);
 
         for (int pos = 0; pos < SuggestedWords.MAX_SUGGESTIONS; pos++) {
@@ -216,10 +222,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
 
     public void setSuggestions(final SuggestedWords suggestedWords, final boolean isRtlLanguage) {
         clear();
-        final int layoutDirection = isRtlLanguage ? ViewCompat.LAYOUT_DIRECTION_RTL
-                : ViewCompat.LAYOUT_DIRECTION_LTR;
-        setLayoutDirection(layoutDirection);
-        mStripVisibilityGroup.setLayoutDirection(layoutDirection);
+        mStripVisibilityGroup.setLayoutDirection(isRtlLanguage);
         mSuggestedWords = suggestedWords;
         mSuggestionsCountInStrip = mLayoutHelper.layoutAndReturnSuggestionCountInStrip(
                 mSuggestedWords, mSuggestionsStrip, this);
