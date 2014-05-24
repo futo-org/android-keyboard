@@ -140,6 +140,7 @@ public final class KeyboardTextsSet {
         "label_send_key",
         "label_next_key",
         "label_done_key",
+        "label_search_key",
         "label_previous_key",
         // Other labels.
         "label_pause_key",
