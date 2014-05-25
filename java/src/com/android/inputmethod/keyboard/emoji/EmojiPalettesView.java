@@ -380,6 +380,7 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
     }
 
     public void stopEmojiPalettes() {
+        mEmojiPalettesAdapter.releaseCurrentKey(true /* withKeyRegistering */);
         mEmojiPalettesAdapter.flushPendingRecentKeys();
         mEmojiPager.setAdapter(null);
     }
