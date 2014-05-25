@@ -102,7 +102,7 @@ final class EmojiPageKeyboardView extends KeyboardView implements
         }
         final Key key = getKey(e);
         if (key != null && key != mCurrentKey) {
-            releaseCurrentKey();
+            releaseCurrentKey(false /* withKeyRegistering */);
         }
         return true;
     }
@@ -119,7 +119,7 @@ final class EmojiPageKeyboardView extends KeyboardView implements
         return mKeyDetector.detectHitKey(x, y);
     }
 
-    public void releaseCurrentKey() {
+    public void releaseCurrentKey(final boolean withKeyRegistering) {
         mHandler.removeCallbacks(mPendingKeyDown);
         mPendingKeyDown = null;
         final Key currentKey = mCurrentKey;
@@ -128,13 +128,16 @@ final class EmojiPageKeyboardView extends KeyboardView implements
         }
         currentKey.onReleased();
         invalidateKey(currentKey);
+        if (withKeyRegistering) {
+            mListener.onReleaseKey(currentKey);
+        }
         mCurrentKey = null;
     }
 
     @Override
     public boolean onDown(final MotionEvent e) {
         final Key key = getKey(e);
-        releaseCurrentKey();
+        releaseCurrentKey(false /* withKeyRegistering */);
         mCurrentKey = key;
         if (key == null) {
             return false;
@@ -163,7 +166,7 @@ final class EmojiPageKeyboardView extends KeyboardView implements
         final Key key = getKey(e);
         final Runnable pendingKeyDown = mPendingKeyDown;
         final Key currentKey = mCurrentKey;
-        releaseCurrentKey();
+        releaseCurrentKey(false /* withKeyRegistering */);
         if (key == null) {
             return false;
         }
@@ -189,14 +192,14 @@ final class EmojiPageKeyboardView extends KeyboardView implements
     @Override
     public boolean onScroll(final MotionEvent e1, final MotionEvent e2, final float distanceX,
            final float distanceY) {
-        releaseCurrentKey();
+        releaseCurrentKey(false /* withKeyRegistering */);
         return false;
     }
 
     @Override
     public boolean onFling(final MotionEvent e1, final MotionEvent e2, final float velocityX,
             final float velocityY) {
-        releaseCurrentKey();
+        releaseCurrentKey(false /* withKeyRegistering */);
         return false;
     }
 

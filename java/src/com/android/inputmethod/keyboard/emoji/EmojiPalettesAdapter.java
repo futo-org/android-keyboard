@@ -68,13 +68,18 @@ final class EmojiPalettesAdapter extends PagerAdapter {
     }
 
     public void onPageScrolled() {
+        releaseCurrentKey(false /* withKeyRegistering */);
+    }
+
+    public void releaseCurrentKey(final boolean withKeyRegistering) {
         // Make sure the delayed key-down event (highlight effect and haptic feedback) will be
         // canceled.
         final EmojiPageKeyboardView currentKeyboardView =
                 mActiveKeyboardViews.get(mActivePosition);
-        if (currentKeyboardView != null) {
-            currentKeyboardView.releaseCurrentKey();
+        if (currentKeyboardView == null) {
+            return;
         }
+        currentKeyboardView.releaseCurrentKey(withKeyRegistering);
     }
 
     @Override
@@ -90,7 +95,7 @@ final class EmojiPalettesAdapter extends PagerAdapter {
         }
         final EmojiPageKeyboardView oldKeyboardView = mActiveKeyboardViews.get(mActivePosition);
         if (oldKeyboardView != null) {
-            oldKeyboardView.releaseCurrentKey();
+            oldKeyboardView.releaseCurrentKey(false /* withKeyRegistering */);
             oldKeyboardView.deallocateMemory();
         }
         mActivePosition = position;
