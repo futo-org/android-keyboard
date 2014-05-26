@@ -130,43 +130,40 @@ public final class LanguageModelParam {
         if (locale == null) {
             return null;
         }
-        // TODO: Though targetWord is an IV (in-vocabulary) word, we should still apply
-        // distracterFilter in the following code. If targetWord is a distracter,
-        // it should be filtered out.
         if (dictionaryFacilitator.isValidWord(targetWord, false /* ignoreCase */)) {
             return createAndGetLanguageModelParamOfWord(prevWordsInfo, targetWord, timestamp,
-                    true /* isValidWord */, locale);
+                    true /* isValidWord */, locale, distracterFilter);
         }
 
         final String lowerCaseTargetWord = targetWord.toLowerCase(locale);
         if (dictionaryFacilitator.isValidWord(lowerCaseTargetWord, false /* ignoreCase */)) {
             // Add the lower-cased word.
             return createAndGetLanguageModelParamOfWord(prevWordsInfo, lowerCaseTargetWord,
-                    timestamp, true /* isValidWord */, locale);
+                    timestamp, true /* isValidWord */, locale, distracterFilter);
         }
 
-        // Treat the word as an OOV word. The following statement checks whether this OOV
-        // is a distracter to words in dictionaries. Being a distracter means the OOV word is
-        // too close to a common word in dictionaries (e.g., the OOV "mot" is very close to "not").
-        // Adding such a word to dictonaries would interfere with entering in-dictionary words. For
-        // example, adding "mot" to dictionaries might interfere with entering "not".
-        // This kind of OOV should be filtered out.
-        if (distracterFilter.isDistracterToWordsInDictionaries(prevWordsInfo, targetWord, locale)) {
-            return null;
-        }
+        // Treat the word as an OOV word.
         return createAndGetLanguageModelParamOfWord(prevWordsInfo, targetWord, timestamp,
-                false /* isValidWord */, locale);
+                false /* isValidWord */, locale, distracterFilter);
     }
 
     private static LanguageModelParam createAndGetLanguageModelParamOfWord(
             final PrevWordsInfo prevWordsInfo, final String targetWord, final int timestamp,
-            final boolean isValidWord, final Locale locale) {
+            final boolean isValidWord, final Locale locale,
+            final DistracterFilter distracterFilter) {
         final String word;
         if (StringUtils.getCapitalizationType(targetWord) == StringUtils.CAPITALIZE_FIRST
                 && prevWordsInfo.mPrevWord == null && !isValidWord) {
             word = targetWord.toLowerCase(locale);
         } else {
             word = targetWord;
+        }
+        // Check whether the word is a distracter to words in the dictionaries.
+        if (distracterFilter.isDistracterToWordsInDictionaries(prevWordsInfo, word, locale)) {
+            if (DEBUG) {
+                Log.d(TAG, "The word (" + word + ") is a distracter. Skip this word.");
+            }
+            return null;
         }
         final int unigramProbability = isValidWord ?
                 UNIGRAM_PROBABILITY_FOR_VALID_WORD : UNIGRAM_PROBABILITY_FOR_OOV_WORD;
