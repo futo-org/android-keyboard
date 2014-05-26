@@ -127,7 +127,7 @@ public final class Suggest {
                     suggestionResults.first(), suggestionResults.mLocale, isAllUpperCase,
                     isFirstCharCapitalized, trailingSingleQuotesCount);
             firstSuggestion = firstSuggestedWordInfo.mWord;
-            if (SuggestedWordInfo.KIND_WHITELIST != firstSuggestedWordInfo.mKind) {
+            if (!firstSuggestedWordInfo.isKindOf(SuggestedWordInfo.KIND_WHITELIST)) {
                 whitelistedWord = null;
             } else {
                 whitelistedWord = firstSuggestion;
@@ -158,7 +158,7 @@ public final class Suggest {
                 || suggestionResults.isEmpty() || wordComposer.hasDigits()
                 || wordComposer.isMostlyCaps() || wordComposer.isResumed()
                 || !mDictionaryFacilitator.hasInitializedMainDictionary()
-                || SuggestedWordInfo.KIND_SHORTCUT == suggestionResults.first().mKind) {
+                || suggestionResults.first().isKindOf(SuggestedWordInfo.KIND_SHORTCUT)) {
             // If we don't have a main dictionary, we never want to auto-correct. The reason for
             // this is, the user may have a contact whose name happens to match a valid word in
             // their language, and it will unexpectedly auto-correct. For example, if the user

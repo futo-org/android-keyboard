@@ -326,13 +326,8 @@ public final class BinaryDictionary extends Dictionary {
                     // offensive, then we don't output it unless it's also an exact match.
                     continue;
                 }
-                final int kind = mOutputTypes[j] & SuggestedWordInfo.KIND_MASK_KIND;
-                final int score = SuggestedWordInfo.KIND_WHITELIST == kind
-                        ? SuggestedWordInfo.MAX_SCORE : mOutputScores[j];
-                // TODO: check that all users of the `kind' parameter are ready to accept
-                // flags too and pass mOutputTypes[j] instead of kind
                 suggestions.add(new SuggestedWordInfo(new String(mOutputCodePoints, start, len),
-                        score, kind, this /* sourceDict */,
+                        mOutputScores[j], mOutputTypes[j], this /* sourceDict */,
                         mSpaceIndices[j] /* indexOfTouchPointOfSecondWord */,
                         mOutputAutoCommitFirstWordConfidence[0]));
             }

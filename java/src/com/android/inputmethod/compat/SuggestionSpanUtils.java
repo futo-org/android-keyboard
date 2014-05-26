@@ -78,7 +78,7 @@ public final class SuggestionSpanUtils {
                 break;
             }
             final SuggestedWordInfo info = suggestedWords.getInfo(i);
-            if (info.mKind == SuggestedWordInfo.KIND_PREDICTION) {
+            if (info.isKindOf(SuggestedWordInfo.KIND_PREDICTION)) {
                 continue;
             }
             final String word = suggestedWords.getWord(i);
