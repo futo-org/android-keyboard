@@ -27,6 +27,7 @@ import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
 import com.android.inputmethod.latin.makedict.WordProperty;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.utils.CombinedFormatUtils;
+import com.android.inputmethod.latin.utils.DistracterFilter;
 import com.android.inputmethod.latin.utils.ExecutorUtils;
 import com.android.inputmethod.latin.utils.FileUtils;
 import com.android.inputmethod.latin.utils.LanguageModelParam;
@@ -271,14 +272,20 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     /**
      * Adds unigram information of a word to the dictionary. May overwrite an existing entry.
      */
-    public void addUnigramEntry(final String word, final int frequency,
+    public void addUnigramEntryWithCheckingDistracter(final String word, final int frequency,
             final String shortcutTarget, final int shortcutFreq, final boolean isNotAWord,
-            final boolean isBlacklisted, final int timestamp) {
+            final boolean isBlacklisted, final int timestamp,
+            final DistracterFilter distracterFilter) {
         reloadDictionaryIfRequired();
         asyncExecuteTaskWithWriteLock(new Runnable() {
             @Override
             public void run() {
                 if (mBinaryDictionary == null) {
+                    return;
+                }
+                if (distracterFilter.isDistracterToWordsInDictionaries(
+                        PrevWordsInfo.EMPTY_PREV_WORDS_INFO, word, mLocale)) {
+                    // The word is a distracter.
                     return;
                 }
                 runGCIfRequiredLocked(true /* mindsBlockByGC */);

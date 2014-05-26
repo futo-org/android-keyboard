@@ -32,6 +32,7 @@ import android.view.inputmethod.InputMethodSubtype;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardId;
 import com.android.inputmethod.keyboard.KeyboardLayoutSet;
+import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.DictionaryFacilitator;
 import com.android.inputmethod.latin.PrevWordsInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
@@ -205,14 +206,25 @@ public class DistracterFilterUsingSuggestion implements DistracterFilter {
         final String consideredWord = trailingSingleQuotesCount > 0 ?
                 testedWord.substring(0, testedWord.length() - trailingSingleQuotesCount) :
                 testedWord;
-
-        final SuggestionResults suggestionResults = mDictionaryFacilitator.getSuggestionResults(
-                composer, PrevWordsInfo.EMPTY_PREV_WORDS_INFO, mKeyboard.getProximityInfo(),
-                true /* blockOffensiveWords */, null /* additionalFeaturesOptions */,
-                0 /* sessionId */, null /* rawSuggestions */);
-        if (suggestionResults.isEmpty()) {
-            return false;
-        }
-        return isDistracter(suggestionResults, consideredWord);
+        final AsyncResultHolder<Boolean> holder = new AsyncResultHolder<>();
+        ExecutorUtils.getExecutor("check distracters").execute(new Runnable() {
+            @Override
+            public void run() {
+                final SuggestionResults suggestionResults =
+                        mDictionaryFacilitator.getSuggestionResults(
+                                composer, PrevWordsInfo.EMPTY_PREV_WORDS_INFO,
+                                mKeyboard.getProximityInfo(), true /* blockOffensiveWords */,
+                                null /* additionalFeaturesOptions */, 0 /* sessionId */,
+                                null /* rawSuggestions */);
+                if (suggestionResults.isEmpty()) {
+                    holder.set(false);
+                    return;
+                }
+                holder.set(isDistracter(suggestionResults, consideredWord));
+            }
+        });
+        // It's OK to block the distracter filtering, but the dictionary lookup should be done
+        // sequentially using ExecutorUtils.
+        return holder.get(false /* defaultValue */, Constants.GET_SUGGESTED_WORDS_TIMEOUT);
     }
 }

@@ -168,7 +168,7 @@ public class DictionaryFacilitator {
     }
 
     public DictionaryFacilitator() {
-        mDistracterFilter = new DistracterFilter.EmptyDistracterFilter();
+        mDistracterFilter = DistracterFilter.EMPTY_DISTRACTER_FILTER;
     }
 
     public DictionaryFacilitator(final DistracterFilter distracterFilter) {
@@ -448,7 +448,7 @@ public class DictionaryFacilitator {
         // We don't add words with 0-frequency (assuming they would be profanity etc.).
         final boolean isValid = maxFreq > 0;
         UserHistoryDictionary.addToDictionary(userHistoryDictionary, prevWordsInfo, secondWord,
-                isValid, timeStampInSeconds);
+                isValid, timeStampInSeconds, mDistracterFilter);
     }
 
     public void cancelAddingUserHistory(final PrevWordsInfo prevWordsInfo,
