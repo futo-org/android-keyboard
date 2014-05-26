@@ -89,6 +89,9 @@ const int SuggestionsOutputUtils::MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT = 16;
                     terminalDicNode->getProbability(), NOT_A_PROBABILITY) <= 0;
     const bool isExactMatch =
             ErrorTypeUtils::isExactMatch(terminalDicNode->getContainedErrorTypes());
+    const bool isExactMatchWithIntentionalOmission =
+            ErrorTypeUtils::isExactMatchWithIntentionalOmission(
+                    terminalDicNode->getContainedErrorTypes());
     const bool isFirstCharUppercase = terminalDicNode->isFirstCharUppercase();
     // Heuristic: We exclude probability=0 first-char-uppercase words from exact match.
     // (e.g. "AMD" and "and")
@@ -96,7 +99,9 @@ const int SuggestionsOutputUtils::MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT = 16;
             && !(isPossiblyOffensiveWord && isFirstCharUppercase);
     const int outputTypeFlags =
             (isPossiblyOffensiveWord ? Dictionary::KIND_FLAG_POSSIBLY_OFFENSIVE : 0)
-            | ((isSafeExactMatch && boostExactMatches) ? Dictionary::KIND_FLAG_EXACT_MATCH : 0);
+            | ((isSafeExactMatch && boostExactMatches) ? Dictionary::KIND_FLAG_EXACT_MATCH : 0)
+            | (isExactMatchWithIntentionalOmission ?
+                    Dictionary::KIND_FLAG_EXACT_MATCH_WITH_INTENTIONAL_OMISSION : 0);
 
     // Entries that are blacklisted or do not represent a word should not be output.
     const bool isValidWord = !terminalDicNode->isBlacklistedOrNotAWord();

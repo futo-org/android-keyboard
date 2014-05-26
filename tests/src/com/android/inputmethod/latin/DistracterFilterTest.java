@@ -40,34 +40,31 @@ public class DistracterFilterTest extends InputTestsBase {
         final PrevWordsInfo EMPTY_PREV_WORDS_INFO = PrevWordsInfo.EMPTY_PREV_WORDS_INFO;
 
         final Locale localeEnUs = new Locale("en", "US");
-        String typedWord = "alot";
-        // For this test case, we consider "alot" is a distracter to "a lot".
+        String typedWord;
+
+        typedWord = "google";
+        // For this test case, we consider "google" is a distracter to "Google".
         assertTrue(mDistracterFilter.isDistracterToWordsInDictionaries(
                 EMPTY_PREV_WORDS_INFO, typedWord, localeEnUs));
 
-        typedWord = "mot";
-        // For this test case, we consider "mot" is a distracter to "not".
+        typedWord = "Bill";
+        // For this test case, we consider "Bill" is a distracter to "bill".
         assertTrue(mDistracterFilter.isDistracterToWordsInDictionaries(
                 EMPTY_PREV_WORDS_INFO, typedWord, localeEnUs));
 
-        typedWord = "wierd";
-        // For this test case, we consider "wierd" is a distracter to "weird".
+        typedWord = "nOt";
+        // For this test case, we consider "nOt" is a distracter to "not".
         assertTrue(mDistracterFilter.isDistracterToWordsInDictionaries(
                 EMPTY_PREV_WORDS_INFO, typedWord, localeEnUs));
 
-        typedWord = "hoe";
-        // For this test case, we consider "hoe" is a distracter to "how".
-        assertTrue(mDistracterFilter.isDistracterToWordsInDictionaries(
-                EMPTY_PREV_WORDS_INFO, typedWord, localeEnUs));
-
-        typedWord = "nit";
-        // For this test case, we consider "nit" is a distracter to "not".
+        typedWord = "were";
+        // For this test case, we consider "were" is a distracter to "we're".
         assertTrue(mDistracterFilter.isDistracterToWordsInDictionaries(
                 EMPTY_PREV_WORDS_INFO, typedWord, localeEnUs));
 
         typedWord = "ill";
-        // For this test case, we consider "ill" is a distracter to "I'll".
-        assertTrue(mDistracterFilter.isDistracterToWordsInDictionaries(
+        // For this test case, we consider "ill" is not a distracter to any word in dictionaries.
+        assertFalse(mDistracterFilter.isDistracterToWordsInDictionaries(
                 EMPTY_PREV_WORDS_INFO, typedWord, localeEnUs));
 
         typedWord = "asdfd";

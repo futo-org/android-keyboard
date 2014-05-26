@@ -225,13 +225,14 @@ public class SuggestedWords {
         public static final int KIND_MASK_FLAGS = 0xFFFFFF00; // Mask to get the flags
         public static final int KIND_FLAG_POSSIBLY_OFFENSIVE = 0x80000000;
         public static final int KIND_FLAG_EXACT_MATCH = 0x40000000;
+        public static final int KIND_FLAG_EXACT_MATCH_WITH_INTENTIONAL_OMISSION = 0x20000000;
 
         public final String mWord;
         // The completion info from the application. Null for suggestions that don't come from
         // the application (including keyboard-computed ones, so this is almost always null)
         public final CompletionInfo mApplicationSpecifiedCompletionInfo;
         public final int mScore;
-        public final int mKind; // one of the KIND_* constants above
+        public final int mKind; // kind and kind flags
         public final int mCodePointCount;
         public final Dictionary mSourceDict;
         // For auto-commit. This keeps track of the index inside the touch coordinates array
@@ -247,7 +248,7 @@ public class SuggestedWords {
          * Create a new suggested word info.
          * @param word The string to suggest.
          * @param score A measure of how likely this suggestion is.
-         * @param kind The kind of suggestion, as one of the above KIND_* constants.
+         * @param kind The kind of suggestion, as one of the above KIND_* constants with flags.
          * @param sourceDict What instance of Dictionary produced this suggestion.
          * @param indexOfTouchPointOfSecondWord See mIndexOfTouchPointOfSecondWord.
          * @param autoCommitFirstWordConfidence See mAutoCommitFirstWordConfidence.
@@ -282,7 +283,11 @@ public class SuggestedWords {
         }
 
         public boolean isEligibleForAutoCommit() {
-            return (KIND_CORRECTION == mKind && NOT_AN_INDEX != mIndexOfTouchPointOfSecondWord);
+            return (isKindOf(KIND_CORRECTION) && NOT_AN_INDEX != mIndexOfTouchPointOfSecondWord);
+        }
+
+        public boolean isKindOf(final int kind) {
+            return (mKind & KIND_MASK_KIND) == kind;
         }
 
         public void setDebugString(final String str) {
@@ -339,7 +344,7 @@ public class SuggestedWords {
         String typedWord = null;
         for (int i = 0; i < mSuggestedWordInfoList.size(); ++i) {
             final SuggestedWordInfo info = mSuggestedWordInfoList.get(i);
-            if (SuggestedWordInfo.KIND_TYPED != info.mKind) {
+            if (!info.isKindOf(SuggestedWordInfo.KIND_TYPED)) {
                 newSuggestions.add(info);
             } else {
                 assert(null == typedWord);
