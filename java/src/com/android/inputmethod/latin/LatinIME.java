@@ -258,7 +258,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             if (latinIme == null) {
                 return;
             }
-            if (!latinIme.mSettings.getCurrent().isSuggestionStripVisible()) {
+            if (!latinIme.mSettings.getCurrent()
+                    .isCurrentOrientationAllowingSuggestionsPerUserSettings()) {
                 return;
             }
             removeMessages(MSG_RESUME_SUGGESTIONS);
@@ -1346,7 +1347,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 currentSettings.mInputAttributes)) {
             return true;
         }
-        if (!currentSettings.isSuggestionStripVisible()) {
+        if (!currentSettings.isCurrentOrientationAllowingSuggestionsPerUserSettings()) {
             return false;
         }
         if (currentSettings.isApplicationSpecifiedCompletionsOn()) {
@@ -1391,8 +1392,14 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         final SettingsValues currentSettings = mSettings.getCurrent();
         final boolean showSuggestions;
-        if (SuggestedWords.EMPTY == suggestedWords || suggestedWords.isPunctuationSuggestions()
-                || !currentSettings.isSuggestionsRequested()) {
+        // May show the important notice when there are no suggestions to show,
+        if (SuggestedWords.EMPTY == suggestedWords
+                // or the suggestion strip is expected to show punctuation suggestions,
+                || suggestedWords.isPunctuationSuggestions()
+                // or it's not requested to show suggestions by the input field,
+                || !currentSettings.isSuggestionsRequested()
+                // or the "show correction suggestions" settings is off by users preference.
+                || !currentSettings.isCurrentOrientationAllowingSuggestionsPerUserSettings()) {
             showSuggestions = !mSuggestionStripView.maybeShowImportantNoticeTitle(
                     currentSettings.mInputAttributes);
         } else {

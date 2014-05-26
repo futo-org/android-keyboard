@@ -1050,7 +1050,8 @@ public final class InputLogic {
                     }
                 }
             }
-            if (inputTransaction.mSettingsValues.isSuggestionStripVisible()
+            if (inputTransaction.mSettingsValues
+                    .isCurrentOrientationAllowingSuggestionsPerUserSettings()
                     && inputTransaction.mSettingsValues.mSpacingAndPunctuations
                             .mCurrentLanguageHasSpaces
                     && !mConnection.isCursorFollowedByWordCharacter(

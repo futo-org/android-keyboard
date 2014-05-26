@@ -190,10 +190,11 @@ public final class SettingsValues {
 
     public boolean isSuggestionsRequested() {
         return mInputAttributes.mIsSettingsSuggestionStripOn
-                && (mCorrectionEnabled || isSuggestionStripVisible());
+                && (mCorrectionEnabled
+                        || isCurrentOrientationAllowingSuggestionsPerUserSettings());
     }
 
-    public boolean isSuggestionStripVisible() {
+    public boolean isCurrentOrientationAllowingSuggestionsPerUserSettings() {
         return (mSuggestionVisibility == SUGGESTION_VISIBILITY_SHOW_VALUE)
                 || (mSuggestionVisibility == SUGGESTION_VISIBILITY_SHOW_ONLY_PORTRAIT_VALUE
                         && mDisplayOrientation == Configuration.ORIENTATION_PORTRAIT);
