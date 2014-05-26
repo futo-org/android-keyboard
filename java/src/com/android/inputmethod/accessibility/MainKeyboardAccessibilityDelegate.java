@@ -17,17 +17,29 @@
 package com.android.inputmethod.accessibility;
 
 import android.content.Context;
+import android.os.SystemClock;
+import android.util.Log;
 import android.util.SparseIntArray;
+import android.view.MotionEvent;
 
+import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.KeyDetector;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardId;
 import com.android.inputmethod.keyboard.MainKeyboardView;
+import com.android.inputmethod.keyboard.PointerTracker;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 
+/**
+ * This class represents a delegate that can be registered in {@link MainKeyboardView} to enhance
+ * accessibility support via composition rather via inheritance.
+ */
 public final class MainKeyboardAccessibilityDelegate
-        extends KeyboardAccessibilityDelegate<MainKeyboardView> {
+        extends KeyboardAccessibilityDelegate<MainKeyboardView>
+        implements AccessibilityLongPressTimer.LongPressTimerCallback {
+    private static final String TAG = MainKeyboardAccessibilityDelegate.class.getSimpleName();
+
     /** Map of keyboard modes to resource IDs. */
     private static final SparseIntArray KEYBOARD_MODE_RES_IDS = new SparseIntArray();
 
@@ -46,10 +58,15 @@ public final class MainKeyboardAccessibilityDelegate
     /** The most recently set keyboard mode. */
     private int mLastKeyboardMode = KEYBOARD_IS_HIDDEN;
     private static final int KEYBOARD_IS_HIDDEN = -1;
+    private boolean mShouldIgnoreOnRegisterHoverKey;
+
+    private final AccessibilityLongPressTimer mAccessibilityLongPressTimer;
 
     public MainKeyboardAccessibilityDelegate(final MainKeyboardView mainKeyboardView,
             final KeyDetector keyDetector) {
         super(mainKeyboardView, keyDetector);
+        mAccessibilityLongPressTimer = new AccessibilityLongPressTimer(
+                this /* callback */, mainKeyboardView.getContext());
     }
 
     /**
@@ -171,5 +188,64 @@ public final class MainKeyboardAccessibilityDelegate
      */
     private void announceKeyboardHidden() {
         sendWindowStateChanged(R.string.announce_keyboard_hidden);
+    }
+
+    @Override
+    protected void onRegisterHoverKey(final Key key, final MotionEvent event) {
+        if (DEBUG_HOVER) {
+            Log.d(TAG, "onRegisterHoverKey: key=" + key + " ignore="
+                    + mShouldIgnoreOnRegisterHoverKey);
+        }
+        if (!mShouldIgnoreOnRegisterHoverKey) {
+            super.onRegisterHoverKey(key, event);
+        }
+        mShouldIgnoreOnRegisterHoverKey = false;
+    }
+
+    @Override
+    protected void onHoverEnterTo(final Key key) {
+        if (DEBUG_HOVER) {
+            Log.d(TAG, "onHoverEnterTo: key=" + key);
+        }
+        mAccessibilityLongPressTimer.cancelLongPress();
+        super.onHoverEnterTo(key);
+        if (key.isLongPressEnabled()) {
+            mAccessibilityLongPressTimer.startLongPress(key);
+        }
+    }
+
+    protected void onHoverExitFrom(final Key key) {
+        if (DEBUG_HOVER) {
+            Log.d(TAG, "onHoverExitFrom: key=" + key);
+        }
+        mAccessibilityLongPressTimer.cancelLongPress();
+        super.onHoverExitFrom(key);
+    }
+
+    @Override
+    public void onLongPressed(final Key key) {
+        if (DEBUG_HOVER) {
+            Log.d(TAG, "onLongPressed: key=" + key);
+        }
+        final PointerTracker tracker = PointerTracker.getPointerTracker(HOVER_EVENT_POINTER_ID);
+        final long eventTime = SystemClock.uptimeMillis();
+        final int x = key.getHitBox().centerX();
+        final int y = key.getHitBox().centerY();
+        final MotionEvent downEvent = MotionEvent.obtain(
+                eventTime, eventTime, MotionEvent.ACTION_DOWN, x, y, 0 /* metaState */);
+        // Inject a fake down event to {@link PointerTracker} to handle a long press correctly.
+        tracker.processMotionEvent(downEvent, mKeyDetector);
+        // The above fake down event triggers an unnecessary long press timer that should be
+        // canceled.
+        tracker.cancelLongPressTimer();
+        downEvent.recycle();
+        // Invoke {@link MainKeyboardView#onLongPress(PointerTracker)} as if a long press timeout
+        // has passed.
+        mKeyboardView.onLongPress(tracker);
+        // If {@link Key#hasNoPanelAutoMoreKeys()} is true (such as "0 +" key on the phone layout)
+        // or a key invokes IME switcher dialog, we should just ignore the next
+        // {@link #onRegisterHoverKey(Key,MotionEvent)}. It can be determined by whether
+        // {@link PointerTracker} is in operation or not.
+        mShouldIgnoreOnRegisterHoverKey = !tracker.isInOperation();
     }
 }

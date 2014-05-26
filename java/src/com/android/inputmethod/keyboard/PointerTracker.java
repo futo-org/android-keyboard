@@ -1078,6 +1078,14 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
         mIsTrackingForActionDisabled = true;
     }
 
+    public boolean isInOperation() {
+        return !mIsTrackingForActionDisabled;
+    }
+
+    public void cancelLongPressTimer() {
+        sTimerProxy.cancelLongPressTimerOf(this);
+    }
+
     public void onLongPressed() {
         resetKeySelectionByDraggingFinger();
         cancelTrackingForAction();
