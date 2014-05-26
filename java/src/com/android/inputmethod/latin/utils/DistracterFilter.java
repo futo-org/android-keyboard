@@ -40,7 +40,7 @@ public interface DistracterFilter {
 
     public void close();
 
-    public static final class EmptyDistracterFilter implements DistracterFilter {
+    public static final DistracterFilter EMPTY_DISTRACTER_FILTER = new DistracterFilter() {
         @Override
         public boolean isDistracterToWordsInDictionaries(PrevWordsInfo prevWordsInfo,
                 String testedWord, Locale locale) {
@@ -54,5 +54,5 @@ public interface DistracterFilter {
         @Override
         public void updateEnabledSubtypes(List<InputMethodSubtype> enabledSubtypes) {
         }
-    }
+    };
 }

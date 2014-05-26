@@ -23,6 +23,7 @@ import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.ExpandableBinaryDictionary;
 import com.android.inputmethod.latin.PrevWordsInfo;
+import com.android.inputmethod.latin.utils.DistracterFilter;
 
 import java.io.File;
 import java.util.Locale;
@@ -60,10 +61,11 @@ public class UserHistoryDictionary extends DecayingExpandableBinaryDictionaryBas
      * @param word the word the user inputted
      * @param isValid whether the word is valid or not
      * @param timestamp the timestamp when the word has been inputted
+     * @param distracterFilter the filter to check whether the word is a distracter
      */
     public static void addToDictionary(final ExpandableBinaryDictionary userHistoryDictionary,
             final PrevWordsInfo prevWordsInfo, final String word, final boolean isValid,
-            final int timestamp) {
+            final int timestamp, final DistracterFilter distracterFilter) {
         final String prevWord = prevWordsInfo.mPrevWord;
         if (word.length() >= Constants.DICTIONARY_MAX_WORD_LENGTH ||
                 (prevWord != null && prevWord.length() >= Constants.DICTIONARY_MAX_WORD_LENGTH)) {
@@ -71,8 +73,9 @@ public class UserHistoryDictionary extends DecayingExpandableBinaryDictionaryBas
         }
         final int frequency = isValid ?
                 FREQUENCY_FOR_WORDS_IN_DICTS : FREQUENCY_FOR_WORDS_NOT_IN_DICTS;
-        userHistoryDictionary.addUnigramEntry(word, frequency, null /* shortcutTarget */,
-                0 /* shortcutFreq */, false /* isNotAWord */, false /* isBlacklisted */, timestamp);
+        userHistoryDictionary.addUnigramEntryWithCheckingDistracter(word, frequency,
+                null /* shortcutTarget */, 0 /* shortcutFreq */, false /* isNotAWord */,
+                false /* isBlacklisted */, timestamp, distracterFilter);
         // Do not insert a word as a bigram of itself
         if (word.equals(prevWord)) {
             return;

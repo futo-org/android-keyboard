@@ -23,6 +23,7 @@ import android.util.Log;
 import com.android.inputmethod.latin.ExpandableBinaryDictionary;
 import com.android.inputmethod.latin.PrevWordsInfo;
 import com.android.inputmethod.latin.utils.BinaryDictionaryUtils;
+import com.android.inputmethod.latin.utils.DistracterFilter;
 import com.android.inputmethod.latin.utils.FileUtils;
 
 import java.io.File;
@@ -112,7 +113,8 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
         PrevWordsInfo prevWordsInfo = PrevWordsInfo.EMPTY_PREV_WORDS_INFO;
         for (String word : words) {
             UserHistoryDictionary.addToDictionary(dict, prevWordsInfo, word, true,
-                    (int)TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()));
+                    (int)TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()),
+                    DistracterFilter.EMPTY_DISTRACTER_FILTER);
             prevWordsInfo = new PrevWordsInfo(word);
         }
     }
@@ -262,7 +264,8 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
         dict.waitAllTasksForTests();
         PrevWordsInfo prevWordsInfo = new PrevWordsInfo(null);
         for (final String word : words) {
-            UserHistoryDictionary.addToDictionary(dict, prevWordsInfo, word, true, mCurrentTime);
+            UserHistoryDictionary.addToDictionary(dict, prevWordsInfo, word, true, mCurrentTime,
+                    DistracterFilter.EMPTY_DISTRACTER_FILTER);
             prevWordsInfo = new PrevWordsInfo(word);
             dict.waitAllTasksForTests();
             assertTrue(dict.isInUnderlyingBinaryDictionaryForTests(word));
