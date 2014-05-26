@@ -57,6 +57,7 @@ class Dictionary {
     static const int KIND_MASK_FLAGS = 0xFFFFFF00; // Mask to get the flags
     static const int KIND_FLAG_POSSIBLY_OFFENSIVE = 0x80000000;
     static const int KIND_FLAG_EXACT_MATCH = 0x40000000;
+    static const int KIND_FLAG_EXACT_MATCH_WITH_INTENTIONAL_OMISSION = 0x20000000;
 
     Dictionary(JNIEnv *env, DictionaryStructureWithBufferPolicy::StructurePolicyPtr
             dictionaryStructureWithBufferPolicy);

@@ -31,4 +31,8 @@ const ErrorTypeUtils::ErrorType ErrorTypeUtils::NEW_WORD = 0x80;
 const ErrorTypeUtils::ErrorType ErrorTypeUtils::ERRORS_TREATED_AS_AN_EXACT_MATCH =
         NOT_AN_ERROR | MATCH_WITH_CASE_ERROR | MATCH_WITH_ACCENT_ERROR | MATCH_WITH_DIGRAPH;
 
+const ErrorTypeUtils::ErrorType
+        ErrorTypeUtils::ERRORS_TREATED_AS_AN_EXACT_MATCH_WITH_INTENTIONAL_OMISSION =
+                ERRORS_TREATED_AS_AN_EXACT_MATCH | INTENTIONAL_OMISSION;
+
 } // namespace latinime

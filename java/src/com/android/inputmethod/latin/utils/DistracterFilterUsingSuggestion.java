@@ -32,12 +32,8 @@ import android.view.inputmethod.InputMethodSubtype;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardId;
 import com.android.inputmethod.keyboard.KeyboardLayoutSet;
-import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.DictionaryFacilitator;
 import com.android.inputmethod.latin.PrevWordsInfo;
-import com.android.inputmethod.latin.Suggest;
-import com.android.inputmethod.latin.Suggest.OnGetSuggestedWordsCallback;
-import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.WordComposer;
 
@@ -47,6 +43,7 @@ import com.android.inputmethod.latin.WordComposer;
  */
 public class DistracterFilterUsingSuggestion implements DistracterFilter {
     private static final String TAG = DistracterFilterUsingSuggestion.class.getSimpleName();
+    private static final boolean DEBUG = false;
 
     private static final long TIMEOUT_TO_WAIT_LOADING_DICTIONARIES_IN_SECONDS = 120;
 
@@ -54,16 +51,8 @@ public class DistracterFilterUsingSuggestion implements DistracterFilter {
     private final Map<Locale, InputMethodSubtype> mLocaleToSubtypeMap;
     private final Map<Locale, Keyboard> mLocaleToKeyboardMap;
     private final DictionaryFacilitator mDictionaryFacilitator;
-    private final Suggest mSuggest;
     private Keyboard mKeyboard;
     private final Object mLock = new Object();
-
-    // If the score of the top suggestion exceeds this value, the tested word (e.g.,
-    // an OOV, a misspelling, or an in-vocabulary word) would be considered as a distracter to
-    // words in dictionary. The greater the threshold is, the less likely the tested word would
-    // become a distracter, which means the tested word will be more likely to be added to
-    // the dictionary.
-    private static final float DISTRACTER_WORD_SCORE_THRESHOLD = 2.0f;
 
     /**
      * Create a DistracterFilter instance.
@@ -75,7 +64,6 @@ public class DistracterFilterUsingSuggestion implements DistracterFilter {
         mLocaleToSubtypeMap = new HashMap<>();
         mLocaleToKeyboardMap = new HashMap<>();
         mDictionaryFacilitator = new DictionaryFacilitator();
-        mSuggest = new Suggest(mDictionaryFacilitator);
         mKeyboard = null;
     }
 
@@ -109,16 +97,30 @@ public class DistracterFilterUsingSuggestion implements DistracterFilter {
         }
     }
 
-    private static boolean suggestionExceedsDistracterThreshold(
-            final SuggestedWordInfo suggestion, final String consideredWord,
-            final float distracterThreshold) {
-        if (null != suggestion) {
-            final int suggestionScore = suggestion.mScore;
-            final float normalizedScore = BinaryDictionaryUtils.calcNormalizedScore(
-                    consideredWord, suggestion.mWord, suggestionScore);
-            if (normalizedScore > distracterThreshold) {
-                return true;
+    private static boolean isDistracter(
+            final SuggestionResults suggestionResults, final String consideredWord) {
+        for (final SuggestedWordInfo suggestedWordInfo : suggestionResults) {
+            if (suggestedWordInfo.mWord.equals(consideredWord)) {
+                continue;
             }
+            // Exact match can include case errors, accent errors, digraph conversions.
+            final boolean isExactMatch =
+                    (suggestedWordInfo.mKind & SuggestedWordInfo.KIND_FLAG_EXACT_MATCH) != 0;
+            final boolean isExactMatchWithIntentionalOmission = (suggestedWordInfo.mKind
+                    & SuggestedWordInfo.KIND_FLAG_EXACT_MATCH_WITH_INTENTIONAL_OMISSION) != 0;
+
+            if (DEBUG) {
+                final float normalizedScore = BinaryDictionaryUtils.calcNormalizedScore(
+                        consideredWord, suggestedWordInfo.mWord, suggestedWordInfo.mScore);
+                Log.d(TAG, "consideredWord: " +  consideredWord);
+                Log.d(TAG, "top suggestion: " +  suggestedWordInfo.mWord);
+                Log.d(TAG, "suggestionScore: " +  suggestedWordInfo.mScore);
+                Log.d(TAG, "normalizedScore: " +  normalizedScore);
+                Log.d(TAG, "isExactMatch: " + isExactMatch);
+                Log.d(TAG, "isExactMatchWithIntentionalOmission: "
+                            + isExactMatchWithIntentionalOmission);
+            }
+            return isExactMatch || isExactMatchWithIntentionalOmission;
         }
         return false;
     }
@@ -161,7 +163,7 @@ public class DistracterFilterUsingSuggestion implements DistracterFilter {
     /**
      * Determine whether a word is a distracter to words in dictionaries.
      *
-     * @param prevWordsInfo the information of previous words.
+     * @param prevWordsInfo the information of previous words. Not used for now.
      * @param testedWord the word that will be tested to see whether it is a distracter to words
      *                   in dictionaries.
      * @param locale the locale of word.
@@ -197,31 +199,20 @@ public class DistracterFilterUsingSuggestion implements DistracterFilter {
         final WordComposer composer = new WordComposer();
         final int[] codePoints = StringUtils.toCodePointArray(testedWord);
         final int[] coordinates = mKeyboard.getCoordinates(codePoints);
-        composer.setComposingWord(codePoints, coordinates, prevWordsInfo);
+        composer.setComposingWord(codePoints, coordinates, PrevWordsInfo.EMPTY_PREV_WORDS_INFO);
 
         final int trailingSingleQuotesCount = StringUtils.getTrailingSingleQuotesCount(testedWord);
         final String consideredWord = trailingSingleQuotesCount > 0 ?
                 testedWord.substring(0, testedWord.length() - trailingSingleQuotesCount) :
                 testedWord;
-        final AsyncResultHolder<Boolean> holder = new AsyncResultHolder<>();
-        final OnGetSuggestedWordsCallback callback = new OnGetSuggestedWordsCallback() {
-            @Override
-            public void onGetSuggestedWords(final SuggestedWords suggestedWords) {
-                if (suggestedWords != null && suggestedWords.size() > 1) {
-                    // The suggestedWordInfo at 0 is the typed word. The 1st suggestion from
-                    // the decoder is at index 1.
-                    final SuggestedWordInfo firstSuggestion = suggestedWords.getInfo(1);
-                    final boolean hasStrongDistractor = suggestionExceedsDistracterThreshold(
-                            firstSuggestion, consideredWord, DISTRACTER_WORD_SCORE_THRESHOLD);
-                    holder.set(hasStrongDistractor);
-                }
-            }
-        };
-        mSuggest.getSuggestedWords(composer, prevWordsInfo, mKeyboard.getProximityInfo(),
-                true /* blockOffensiveWords */, true /* isCorrectionEnbaled */,
-                null /* additionalFeaturesOptions */, 0 /* sessionId */,
-                SuggestedWords.NOT_A_SEQUENCE_NUMBER, callback);
 
-        return holder.get(false /* defaultValue */, Constants.GET_SUGGESTED_WORDS_TIMEOUT);
+        final SuggestionResults suggestionResults = mDictionaryFacilitator.getSuggestionResults(
+                composer, PrevWordsInfo.EMPTY_PREV_WORDS_INFO, mKeyboard.getProximityInfo(),
+                true /* blockOffensiveWords */, null /* additionalFeaturesOptions */,
+                0 /* sessionId */, null /* rawSuggestions */);
+        if (suggestionResults.isEmpty()) {
+            return false;
+        }
+        return isDistracter(suggestionResults, consideredWord);
     }
 }

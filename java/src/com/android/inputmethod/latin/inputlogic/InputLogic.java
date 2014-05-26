@@ -270,7 +270,7 @@ public final class InputLogic {
         // code path as for other kinds, use commitChosenWord, and do everything normally. We will
         // however need to reset the suggestion strip right away, because we know we can't take
         // the risk of calling commitCompletion twice because we don't know how the app will react.
-        if (SuggestedWordInfo.KIND_APP_DEFINED == suggestionInfo.mKind) {
+        if (suggestionInfo.isKindOf(SuggestedWordInfo.KIND_APP_DEFINED)) {
             mSuggestedWords = SuggestedWords.EMPTY;
             mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
             inputTransaction.requireShiftUpdate(InputTransaction.SHIFT_UPDATE_NOW);
