@@ -30,11 +30,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class PrioritizedSerialExecutorTests extends AndroidTestCase {
     private static final String TAG = PrioritizedSerialExecutorTests.class.getSimpleName();
 
+    private static final String TEST_EXECUTOR_ID = "test";
     private static final int NUM_OF_TASKS = 10;
     private static final int DELAY_FOR_WAITING_TASKS_MILLISECONDS = 500;
 
     public void testExecute() {
-        final PrioritizedSerialExecutor executor = new PrioritizedSerialExecutor();
+        final PrioritizedSerialExecutor executor = new PrioritizedSerialExecutor(TEST_EXECUTOR_ID);
         final AtomicInteger v = new AtomicInteger(0);
         for (int i = 0; i < NUM_OF_TASKS; ++i) {
             executor.execute(new Runnable() {
@@ -54,7 +55,7 @@ public class PrioritizedSerialExecutorTests extends AndroidTestCase {
     }
 
     public void testExecutePrioritized() {
-        final PrioritizedSerialExecutor executor = new PrioritizedSerialExecutor();
+        final PrioritizedSerialExecutor executor = new PrioritizedSerialExecutor(TEST_EXECUTOR_ID);
         final AtomicInteger v = new AtomicInteger(0);
         for (int i = 0; i < NUM_OF_TASKS; ++i) {
             executor.executePrioritized(new Runnable() {
@@ -74,7 +75,7 @@ public class PrioritizedSerialExecutorTests extends AndroidTestCase {
     }
 
     public void testExecuteCombined() {
-        final PrioritizedSerialExecutor executor = new PrioritizedSerialExecutor();
+        final PrioritizedSerialExecutor executor = new PrioritizedSerialExecutor(TEST_EXECUTOR_ID);
         final AtomicInteger v = new AtomicInteger(0);
         for (int i = 0; i < NUM_OF_TASKS; ++i) {
             executor.execute(new Runnable() {
