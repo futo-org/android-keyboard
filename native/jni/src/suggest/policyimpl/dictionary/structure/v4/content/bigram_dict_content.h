@@ -99,6 +99,20 @@ class BigramDictContent : public SparseTableDictContent {
         return hasNext ? Ver4DictConstants::BIGRAM_HAS_NEXT_MASK : 0;
     }
 
+    int getBigramEntrySize() const {
+        if (mHasHistoricalInfo) {
+            return Ver4DictConstants::BIGRAM_FLAGS_FIELD_SIZE
+                    + Ver4DictConstants::TIME_STAMP_FIELD_SIZE
+                    + Ver4DictConstants::WORD_LEVEL_FIELD_SIZE
+                    + Ver4DictConstants::WORD_COUNT_FIELD_SIZE
+                    + Ver4DictConstants::BIGRAM_TARGET_TERMINAL_ID_FIELD_SIZE;
+        } else {
+            return Ver4DictConstants::BIGRAM_FLAGS_FIELD_SIZE
+                    + Ver4DictConstants::PROBABILITY_SIZE
+                    + Ver4DictConstants::BIGRAM_TARGET_TERMINAL_ID_FIELD_SIZE;
+        }
+    }
+
     bool runGCBigramList(const int bigramListPos,
             const BigramDictContent *const sourceBigramDictContent, const int toPos,
             const TerminalPositionLookupTable::TerminalIdMap *const terminalIdMap,
