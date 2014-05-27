@@ -95,15 +95,15 @@ static jlong latinime_BinaryDictionary_createOnMemory(JNIEnv *env, jclass clazz,
     return reinterpret_cast<jlong>(dictionary);
 }
 
-static void latinime_BinaryDictionary_flush(JNIEnv *env, jclass clazz, jlong dict,
+static bool latinime_BinaryDictionary_flush(JNIEnv *env, jclass clazz, jlong dict,
         jstring filePath) {
     Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
-    if (!dictionary) return;
+    if (!dictionary) return false;
     const jsize filePathUtf8Length = env->GetStringUTFLength(filePath);
     char filePathChars[filePathUtf8Length + 1];
     env->GetStringUTFRegion(filePath, 0, env->GetStringLength(filePath), filePathChars);
     filePathChars[filePathUtf8Length] = '\0';
-    dictionary->flush(filePathChars);
+    return dictionary->flush(filePathChars);
 }
 
 static bool latinime_BinaryDictionary_needsToRunGC(JNIEnv *env, jclass clazz,
@@ -113,15 +113,15 @@ static bool latinime_BinaryDictionary_needsToRunGC(JNIEnv *env, jclass clazz,
     return dictionary->needsToRunGC(mindsBlockByGC == JNI_TRUE);
 }
 
-static void latinime_BinaryDictionary_flushWithGC(JNIEnv *env, jclass clazz, jlong dict,
+static bool latinime_BinaryDictionary_flushWithGC(JNIEnv *env, jclass clazz, jlong dict,
         jstring filePath) {
     Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
-    if (!dictionary) return;
+    if (!dictionary) return false;
     const jsize filePathUtf8Length = env->GetStringUTFLength(filePath);
     char filePathChars[filePathUtf8Length + 1];
     env->GetStringUTFRegion(filePath, 0, env->GetStringLength(filePath), filePathChars);
     filePathChars[filePathUtf8Length] = '\0';
-    dictionary->flushWithGC(filePathChars);
+    return dictionary->flushWithGC(filePathChars);
 }
 
 static void latinime_BinaryDictionary_close(JNIEnv *env, jclass clazz, jlong dict) {
@@ -324,13 +324,13 @@ static void latinime_BinaryDictionary_getWordProperty(JNIEnv *env, jclass clazz,
             outShortcutProbabilities);
 }
 
-static void latinime_BinaryDictionary_addUnigramWord(JNIEnv *env, jclass clazz, jlong dict,
+static bool latinime_BinaryDictionary_addUnigramWord(JNIEnv *env, jclass clazz, jlong dict,
         jintArray word, jint probability, jintArray shortcutTarget, jint shortcutProbability,
         jboolean isBeginningOfSentence, jboolean isNotAWord, jboolean isBlacklisted,
         jint timestamp) {
     Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
     if (!dictionary) {
-        return;
+        return false;
     }
     jsize codePointCount = env->GetArrayLength(word);
     int codePoints[codePointCount];
@@ -344,15 +344,15 @@ static void latinime_BinaryDictionary_addUnigramWord(JNIEnv *env, jclass clazz, 
     // Use 1 for count to indicate the word has inputted.
     const UnigramProperty unigramProperty(isBeginningOfSentence, isNotAWord,
             isBlacklisted, probability, timestamp, 0 /* level */, 1 /* count */, &shortcuts);
-    dictionary->addUnigramEntry(codePoints, codePointCount, &unigramProperty);
+    return dictionary->addUnigramEntry(codePoints, codePointCount, &unigramProperty);
 }
 
-static void latinime_BinaryDictionary_addBigramWords(JNIEnv *env, jclass clazz, jlong dict,
+static bool latinime_BinaryDictionary_addBigramWords(JNIEnv *env, jclass clazz, jlong dict,
         jintArray word0, jboolean isBeginningOfSentence, jintArray word1, jint probability,
         jint timestamp) {
     Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
     if (!dictionary) {
-        return;
+        return false;
     }
     jsize word0Length = env->GetArrayLength(word0);
     int word0CodePoints[word0Length];
@@ -366,14 +366,14 @@ static void latinime_BinaryDictionary_addBigramWords(JNIEnv *env, jclass clazz, 
     const BigramProperty bigramProperty(&bigramTargetCodePoints, probability,
             timestamp, 0 /* level */, 1 /* count */);
     const PrevWordsInfo prevWordsInfo(word0CodePoints, word0Length, isBeginningOfSentence);
-    dictionary->addNgramEntry(&prevWordsInfo, &bigramProperty);
+    return dictionary->addNgramEntry(&prevWordsInfo, &bigramProperty);
 }
 
-static void latinime_BinaryDictionary_removeBigramWords(JNIEnv *env, jclass clazz, jlong dict,
+static bool latinime_BinaryDictionary_removeBigramWords(JNIEnv *env, jclass clazz, jlong dict,
         jintArray word0, jboolean isBeginningOfSentence, jintArray word1) {
     Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
     if (!dictionary) {
-        return;
+        return false;
     }
     jsize word0Length = env->GetArrayLength(word0);
     int word0CodePoints[word0Length];
@@ -382,7 +382,7 @@ static void latinime_BinaryDictionary_removeBigramWords(JNIEnv *env, jclass claz
     int word1CodePoints[word1Length];
     env->GetIntArrayRegion(word1, 0, word1Length, word1CodePoints);
     const PrevWordsInfo prevWordsInfo(word0CodePoints, word0Length, isBeginningOfSentence);
-    dictionary->removeNgramEntry(&prevWordsInfo, word1CodePoints, word1Length);
+    return dictionary->removeNgramEntry(&prevWordsInfo, word1CodePoints, word1Length);
 }
 
 // Returns how many language model params are processed.
@@ -610,7 +610,7 @@ static const JNINativeMethod sMethods[] = {
     },
     {
         const_cast<char *>("flushNative"),
-        const_cast<char *>("(JLjava/lang/String;)V"),
+        const_cast<char *>("(JLjava/lang/String;)Z"),
         reinterpret_cast<void *>(latinime_BinaryDictionary_flush)
     },
     {
@@ -620,7 +620,7 @@ static const JNINativeMethod sMethods[] = {
     },
     {
         const_cast<char *>("flushWithGCNative"),
-        const_cast<char *>("(JLjava/lang/String;)V"),
+        const_cast<char *>("(JLjava/lang/String;)Z"),
         reinterpret_cast<void *>(latinime_BinaryDictionary_flushWithGC)
     },
     {
@@ -651,17 +651,17 @@ static const JNINativeMethod sMethods[] = {
     },
     {
         const_cast<char *>("addUnigramWordNative"),
-        const_cast<char *>("(J[II[IIZZZI)V"),
+        const_cast<char *>("(J[II[IIZZZI)Z"),
         reinterpret_cast<void *>(latinime_BinaryDictionary_addUnigramWord)
     },
     {
         const_cast<char *>("addBigramWordsNative"),
-        const_cast<char *>("(J[IZ[III)V"),
+        const_cast<char *>("(J[IZ[III)Z"),
         reinterpret_cast<void *>(latinime_BinaryDictionary_addBigramWords)
     },
     {
         const_cast<char *>("removeBigramWordsNative"),
-        const_cast<char *>("(J[IZ[I)V"),
+        const_cast<char *>("(J[IZ[I)Z"),
         reinterpret_cast<void *>(latinime_BinaryDictionary_removeBigramWords)
     },
     {
