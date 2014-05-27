@@ -23,9 +23,11 @@ namespace latinime {
 const BigramEntry BigramDictContent::getBigramEntryAndAdvancePosition(
         int *const bigramEntryPos) const {
     const BufferWithExtendableBuffer *const bigramListBuffer = getContentBuffer();
-    if (*bigramEntryPos < 0 || *bigramEntryPos >=  bigramListBuffer->getTailPosition()) {
-        AKLOGE("Invalid bigram entry position. bigramEntryPos: %d, bufSize: %d",
-                *bigramEntryPos, bigramListBuffer->getTailPosition());
+    const int bigramEntryTailPos = (*bigramEntryPos) + getBigramEntrySize();
+    if (*bigramEntryPos < 0 || bigramEntryTailPos > bigramListBuffer->getTailPosition()) {
+        AKLOGE("Invalid bigram entry position. bigramEntryPos: %d, bigramEntryTailPos: %d, "
+                "bufSize: %d", *bigramEntryPos, bigramEntryTailPos,
+                        bigramListBuffer->getTailPosition());
         ASSERT(false);
         return BigramEntry(false /* hasNext */, NOT_A_PROBABILITY,
                 Ver4DictConstants::NOT_A_TERMINAL_ID);
