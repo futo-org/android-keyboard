@@ -220,7 +220,7 @@ public class KeyboardAccessibilityDelegate<KV extends KeyboardView>
             provider.sendAccessibilityEventForKey(
                     key, AccessibilityEventCompat.TYPE_VIEW_HOVER_ENTER);
             provider.performActionForKey(
-                    key, AccessibilityNodeInfoCompat.ACTION_ACCESSIBILITY_FOCUS, null);
+                    key, AccessibilityNodeInfoCompat.ACTION_ACCESSIBILITY_FOCUS);
             break;
         case MotionEvent.ACTION_HOVER_EXIT:
             provider.sendAccessibilityEventForKey(
