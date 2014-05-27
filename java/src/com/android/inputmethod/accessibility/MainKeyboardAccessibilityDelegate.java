@@ -163,17 +163,13 @@ public final class MainKeyboardAccessibilityDelegate
         default:
             return;
         }
-        final String text = mKeyboardView.getContext().getString(resId);
-        sendWindowStateChanged(text);
+        sendWindowStateChanged(resId);
     }
 
     /**
      * Announces that the keyboard has been hidden.
      */
     private void announceKeyboardHidden() {
-        final Context context = mKeyboardView.getContext();
-        final String text = context.getString(R.string.announce_keyboard_hidden);
-
-        sendWindowStateChanged(text);
+        sendWindowStateChanged(R.string.announce_keyboard_hidden);
     }
 }
