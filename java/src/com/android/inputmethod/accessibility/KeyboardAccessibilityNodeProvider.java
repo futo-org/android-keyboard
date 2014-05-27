@@ -229,7 +229,7 @@ public final class KeyboardAccessibilityNodeProvider extends AccessibilityNodePr
         if (key == null) {
             return false;
         }
-        return performActionForKey(key, action, arguments);
+        return performActionForKey(key, action);
     }
 
     /**
@@ -237,25 +237,16 @@ public final class KeyboardAccessibilityNodeProvider extends AccessibilityNodePr
      *
      * @param key The on which to perform the action.
      * @param action The action to perform.
-     * @param arguments The action's arguments.
      * @return The result of performing the action, or false if the action is not supported.
      */
-    boolean performActionForKey(final Key key, final int action, final Bundle arguments) {
-        final int virtualViewId = getVirtualViewIdOf(key);
-
+    boolean performActionForKey(final Key key, final int action) {
         switch (action) {
         case AccessibilityNodeInfoCompat.ACTION_ACCESSIBILITY_FOCUS:
-            if (mAccessibilityFocusedView == virtualViewId) {
-                return false;
-            }
-            mAccessibilityFocusedView = virtualViewId;
+            mAccessibilityFocusedView = getVirtualViewIdOf(key);
             sendAccessibilityEventForKey(
                     key, AccessibilityEventCompat.TYPE_VIEW_ACCESSIBILITY_FOCUSED);
             return true;
         case AccessibilityNodeInfoCompat.ACTION_CLEAR_ACCESSIBILITY_FOCUS:
-            if (mAccessibilityFocusedView != virtualViewId) {
-                return false;
-            }
             mAccessibilityFocusedView = UNDEFINED;
             sendAccessibilityEventForKey(
                     key, AccessibilityEventCompat.TYPE_VIEW_ACCESSIBILITY_FOCUS_CLEARED);
