@@ -117,9 +117,9 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     bool removeNgramEntry(const PrevWordsInfo *const prevWordsInfo, const int *const word,
             const int length);
 
-    void flush(const char *const filePath);
+    bool flush(const char *const filePath);
 
-    void flushWithGC(const char *const filePath);
+    bool flushWithGC(const char *const filePath);
 
     bool needsToRunGC(const bool mindsBlockByGC) const;
 

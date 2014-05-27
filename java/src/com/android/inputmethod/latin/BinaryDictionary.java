@@ -183,9 +183,9 @@ public final class BinaryDictionary extends Dictionary {
     private static native void getHeaderInfoNative(long dict, int[] outHeaderSize,
             int[] outFormatVersion, ArrayList<int[]> outAttributeKeys,
             ArrayList<int[]> outAttributeValues);
-    private static native void flushNative(long dict, String filePath);
+    private static native boolean flushNative(long dict, String filePath);
     private static native boolean needsToRunGCNative(long dict, boolean mindsBlockByGC);
-    private static native void flushWithGCNative(long dict, String filePath);
+    private static native boolean flushWithGCNative(long dict, String filePath);
     private static native void closeNative(long dict);
     private static native int getFormatVersionNative(long dict);
     private static native int getProbabilityNative(long dict, int[] word);
@@ -203,12 +203,12 @@ public final class BinaryDictionary extends Dictionary {
             int[] outputSuggestionCount, int[] outputCodePoints, int[] outputScores,
             int[] outputIndices, int[] outputTypes, int[] outputAutoCommitFirstWordConfidence,
             float[] inOutLanguageWeight);
-    private static native void addUnigramWordNative(long dict, int[] word, int probability,
+    private static native boolean addUnigramWordNative(long dict, int[] word, int probability,
             int[] shortcutTarget, int shortcutProbability, boolean isBeginningOfSentence,
             boolean isNotAWord, boolean isBlacklisted, int timestamp);
-    private static native void addBigramWordsNative(long dict, int[] word0,
+    private static native boolean addBigramWordsNative(long dict, int[] word0,
             boolean isBeginningOfSentence, int[] word1, int probability, int timestamp);
-    private static native void removeBigramWordsNative(long dict, int[] word0,
+    private static native boolean removeBigramWordsNative(long dict, int[] word0,
             boolean isBeginningOfSentence, int[] word1);
     private static native int addMultipleDictionaryEntriesNative(long dict,
             LanguageModelParam[] languageModelParams, int startIndex);
@@ -417,45 +417,53 @@ public final class BinaryDictionary extends Dictionary {
     }
 
     // Add a unigram entry to binary dictionary with unigram attributes in native code.
-    public void addUnigramEntry(final String word, final int probability,
+    public boolean addUnigramEntry(final String word, final int probability,
             final String shortcutTarget, final int shortcutProbability,
             final boolean isBeginningOfSentence, final boolean isNotAWord,
             final boolean isBlacklisted, final int timestamp) {
         if (word == null || (word.isEmpty() && !isBeginningOfSentence)) {
-            return;
+            return false;
         }
         final int[] codePoints = StringUtils.toCodePointArray(word);
         final int[] shortcutTargetCodePoints = (shortcutTarget != null) ?
                 StringUtils.toCodePointArray(shortcutTarget) : null;
-        addUnigramWordNative(mNativeDict, codePoints, probability, shortcutTargetCodePoints,
-                shortcutProbability, isBeginningOfSentence, isNotAWord, isBlacklisted, timestamp);
+        if (!addUnigramWordNative(mNativeDict, codePoints, probability, shortcutTargetCodePoints,
+                shortcutProbability, isBeginningOfSentence, isNotAWord, isBlacklisted, timestamp)) {
+            return false;
+        }
         mHasUpdated = true;
+        return true;
     }
 
     // Add an n-gram entry to the binary dictionary with timestamp in native code.
-    public void addNgramEntry(final PrevWordsInfo prevWordsInfo, final String word,
-            final int probability,
-            final int timestamp) {
+    public boolean addNgramEntry(final PrevWordsInfo prevWordsInfo, final String word,
+            final int probability, final int timestamp) {
         if (!prevWordsInfo.isValid() || TextUtils.isEmpty(word)) {
-            return;
+            return false;
         }
         final int[] codePoints0 = StringUtils.toCodePointArray(prevWordsInfo.mPrevWord);
         final int[] codePoints1 = StringUtils.toCodePointArray(word);
-        addBigramWordsNative(mNativeDict, codePoints0, prevWordsInfo.mIsBeginningOfSentence,
-                codePoints1, probability, timestamp);
+        if (!addBigramWordsNative(mNativeDict, codePoints0, prevWordsInfo.mIsBeginningOfSentence,
+                codePoints1, probability, timestamp)) {
+            return false;
+        }
         mHasUpdated = true;
+        return true;
     }
 
     // Remove an n-gram entry from the binary dictionary in native code.
-    public void removeNgramEntry(final PrevWordsInfo prevWordsInfo, final String word) {
+    public boolean removeNgramEntry(final PrevWordsInfo prevWordsInfo, final String word) {
         if (!prevWordsInfo.isValid() || TextUtils.isEmpty(word)) {
-            return;
+            return false;
         }
         final int[] codePoints0 = StringUtils.toCodePointArray(prevWordsInfo.mPrevWord);
         final int[] codePoints1 = StringUtils.toCodePointArray(word);
-        removeBigramWordsNative(mNativeDict, codePoints0, prevWordsInfo.mIsBeginningOfSentence,
-                codePoints1);
+        if (!removeBigramWordsNative(mNativeDict, codePoints0, prevWordsInfo.mIsBeginningOfSentence,
+                codePoints1)) {
+            return false;
+        }
         mHasUpdated = true;
+        return true;
     }
 
     public void addMultipleDictionaryEntries(final LanguageModelParam[] languageModelParams) {
@@ -485,26 +493,33 @@ public final class BinaryDictionary extends Dictionary {
     }
 
     // Flush to dict file if the dictionary has been updated.
-    public void flush() {
-        if (!isValidDictionary()) return;
+    public boolean flush() {
+        if (!isValidDictionary()) return false;
         if (mHasUpdated) {
-            flushNative(mNativeDict, mDictFilePath);
+            if (!flushNative(mNativeDict, mDictFilePath)) {
+                return false;
+            }
             reopen();
         }
+        return true;
     }
 
     // Run GC and flush to dict file if the dictionary has been updated.
-    public void flushWithGCIfHasUpdated() {
+    public boolean flushWithGCIfHasUpdated() {
         if (mHasUpdated) {
-            flushWithGC();
+            return flushWithGC();
         }
+        return true;
     }
 
     // Run GC and flush to dict file.
-    public void flushWithGC() {
-        if (!isValidDictionary()) return;
-        flushWithGCNative(mNativeDict, mDictFilePath);
+    public boolean flushWithGC() {
+        if (!isValidDictionary()) return false;
+        if (!flushWithGCNative(mNativeDict, mDictFilePath)) {
+            return false;
+        }
         reopen();
+        return true;
     }
 
     /**

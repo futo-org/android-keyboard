@@ -81,9 +81,11 @@ class DictionaryStructureWithBufferPolicy {
     virtual bool removeNgramEntry(const PrevWordsInfo *const prevWordsInfo,
             const int *const word, const int length) = 0;
 
-    virtual void flush(const char *const filePath) = 0;
+    // Returns whether the flush was success or not.
+    virtual bool flush(const char *const filePath) = 0;
 
-    virtual void flushWithGC(const char *const filePath) = 0;
+    // Returns whether the GC and flush were success or not.
+    virtual bool flushWithGC(const char *const filePath) = 0;
 
     virtual bool needsToRunGC(const bool mindsBlockByGC) const = 0;
 

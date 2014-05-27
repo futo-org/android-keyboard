@@ -80,38 +80,38 @@ int Dictionary::getBigramProbability(const PrevWordsInfo *const prevWordsInfo, c
     return mBigramDictionary.getBigramProbability(prevWordsInfo, word, length);
 }
 
-void Dictionary::addUnigramEntry(const int *const word, const int length,
+bool Dictionary::addUnigramEntry(const int *const word, const int length,
         const UnigramProperty *const unigramProperty) {
     if (unigramProperty->representsBeginningOfSentence()
             && !mDictionaryStructureWithBufferPolicy->getHeaderStructurePolicy()
                     ->supportsBeginningOfSentence()) {
         AKLOGE("The dictionary doesn't support Beginning-of-Sentence.");
-        return;
+        return false;
     }
     TimeKeeper::setCurrentTime();
-    mDictionaryStructureWithBufferPolicy->addUnigramEntry(word, length, unigramProperty);
+    return mDictionaryStructureWithBufferPolicy->addUnigramEntry(word, length, unigramProperty);
 }
 
-void Dictionary::addNgramEntry(const PrevWordsInfo *const prevWordsInfo,
+bool Dictionary::addNgramEntry(const PrevWordsInfo *const prevWordsInfo,
         const BigramProperty *const bigramProperty) {
     TimeKeeper::setCurrentTime();
-    mDictionaryStructureWithBufferPolicy->addNgramEntry(prevWordsInfo, bigramProperty);
+    return mDictionaryStructureWithBufferPolicy->addNgramEntry(prevWordsInfo, bigramProperty);
 }
 
-void Dictionary::removeNgramEntry(const PrevWordsInfo *const prevWordsInfo,
+bool Dictionary::removeNgramEntry(const PrevWordsInfo *const prevWordsInfo,
         const int *const word, const int length) {
     TimeKeeper::setCurrentTime();
-    mDictionaryStructureWithBufferPolicy->removeNgramEntry(prevWordsInfo, word, length);
+    return mDictionaryStructureWithBufferPolicy->removeNgramEntry(prevWordsInfo, word, length);
 }
 
-void Dictionary::flush(const char *const filePath) {
+bool Dictionary::flush(const char *const filePath) {
     TimeKeeper::setCurrentTime();
-    mDictionaryStructureWithBufferPolicy->flush(filePath);
+    return mDictionaryStructureWithBufferPolicy->flush(filePath);
 }
 
-void Dictionary::flushWithGC(const char *const filePath) {
+bool Dictionary::flushWithGC(const char *const filePath) {
     TimeKeeper::setCurrentTime();
-    mDictionaryStructureWithBufferPolicy->flushWithGC(filePath);
+    return mDictionaryStructureWithBufferPolicy->flushWithGC(filePath);
 }
 
 bool Dictionary::needsToRunGC(const bool mindsBlockByGC) {
