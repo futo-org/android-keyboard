@@ -33,6 +33,7 @@ import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardId;
 import com.android.inputmethod.keyboard.KeyboardLayoutSet;
 import com.android.inputmethod.latin.Constants;
+import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.DictionaryFacilitator;
 import com.android.inputmethod.latin.PrevWordsInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
@@ -98,10 +99,12 @@ public class DistracterFilterUsingSuggestion implements DistracterFilter {
         }
     }
 
-    private static boolean isDistracter(
+    private boolean isDistracter(
             final SuggestionResults suggestionResults, final String consideredWord) {
+        int perfectMatchProbability = Dictionary.NOT_A_PROBABILITY;
         for (final SuggestedWordInfo suggestedWordInfo : suggestionResults) {
             if (suggestedWordInfo.mWord.equals(consideredWord)) {
+                perfectMatchProbability = mDictionaryFacilitator.getFrequency(consideredWord);
                 continue;
             }
             // Exact match can include case errors, accent errors, digraph conversions.
@@ -120,6 +123,17 @@ public class DistracterFilterUsingSuggestion implements DistracterFilter {
                 Log.d(TAG, "isExactMatch: " + isExactMatch);
                 Log.d(TAG, "isExactMatchWithIntentionalOmission: "
                             + isExactMatchWithIntentionalOmission);
+            }
+            if (perfectMatchProbability != Dictionary.NOT_A_PROBABILITY) {
+                final int topNonPerfectProbability = mDictionaryFacilitator.getFrequency(
+                        suggestedWordInfo.mWord);
+                if (DEBUG) {
+                    Log.d(TAG, "perfectMatchProbability: " + perfectMatchProbability);
+                    Log.d(TAG, "topNonPerfectProbability: " + topNonPerfectProbability);
+                }
+                if (perfectMatchProbability > topNonPerfectProbability) {
+                    return false;
+                }
             }
             return isExactMatch || isExactMatchWithIntentionalOmission;
         }

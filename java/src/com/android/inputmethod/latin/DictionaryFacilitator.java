@@ -408,7 +408,7 @@ public class DictionaryFacilitator {
         if (userHistoryDictionary == null) {
             return;
         }
-        final int maxFreq = getMaxFrequency(word);
+        final int maxFreq = getFrequency(word);
         if (maxFreq == 0 && blockPotentiallyOffensive) {
             return;
         }
@@ -516,7 +516,7 @@ public class DictionaryFacilitator {
         return false;
     }
 
-    private int getMaxFrequency(final String word) {
+    public int getFrequency(final String word) {
         if (TextUtils.isEmpty(word)) {
             return Dictionary.NOT_A_PROBABILITY;
         }
