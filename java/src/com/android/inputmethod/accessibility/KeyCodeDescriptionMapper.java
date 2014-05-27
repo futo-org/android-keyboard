@@ -285,15 +285,14 @@ public final class KeyCodeDescriptionMapper {
         if (index >= 0) {
             return context.getString(mKeyCodeMap.valueAt(index));
         }
-        final String accentedLetter = getSpokenAccentedLetterDescriptionId(context, code);
+        final String accentedLetter = getSpokenAccentedLetterDescription(context, code);
         if (accentedLetter != null) {
             return accentedLetter;
         }
-        // Here, <code>code</code> may be a base letter.
-        final int spokenEmojiId = getSpokenDescriptionId(
-                context, code, SPOKEN_EMOJI_RESOURCE_NAME_FORMAT);
-        if (spokenEmojiId != 0) {
-            return context.getString(spokenEmojiId);
+        // Here, <code>code</code> may be a base (non-accented) letter.
+        final String emojiDescription = getSpokenEmojiDescription(context, code);
+        if (emojiDescription != null) {
+            return emojiDescription;
         }
         if (isDefinedNonCtrl) {
             return Character.toString((char) code);
@@ -304,7 +303,7 @@ public final class KeyCodeDescriptionMapper {
         return context.getString(R.string.spoken_description_unknown, code);
     }
 
-    private String getSpokenAccentedLetterDescriptionId(final Context context, final int code) {
+    private String getSpokenAccentedLetterDescription(final Context context, final int code) {
         final boolean isUpperCase = Character.isUpperCase(code);
         final int baseCode = isUpperCase ? Character.toLowerCase(code) : code;
         final int baseIndex = mKeyCodeMap.indexOfKey(baseCode);
@@ -314,7 +313,17 @@ public final class KeyCodeDescriptionMapper {
             return null;
         }
         final String spokenText = context.getString(resId);
-        return isUpperCase ? context.getString(R.string.spoke_description_upper_case, spokenText)
+        return isUpperCase ? context.getString(R.string.spoken_description_upper_case, spokenText)
+                : spokenText;
+    }
+
+    private String getSpokenEmojiDescription(final Context context, final int code) {
+        final int resId = getSpokenDescriptionId(context, code, SPOKEN_EMOJI_RESOURCE_NAME_FORMAT);
+        if (resId == 0) {
+            return null;
+        }
+        final String spokenText = context.getString(resId);
+        return TextUtils.isEmpty(spokenText) ? context.getString(R.string.spoken_emoji_unknown)
                 : spokenText;
     }
 

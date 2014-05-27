@@ -128,11 +128,13 @@
     <string name="spoken_descrption_emoji_category_emoticons">Emoticons</string>
 
     <!-- Description of an upper case letter of LOWER_LETTER. -->
-    <string name="spoke_description_upper_case">Capital <xliff:g id="LOWER_LETTER" example="A, E, ligature">%s</xliff:g></string>
+    <string name="spoken_description_upper_case">Capital <xliff:g id="LOWER_LETTER" example="A, E, ligature">%s</xliff:g></string>
     <!-- Spoken description for Unicode code point U+0049: "I" LATIN CAPITAL LETTER I
          Note that depending on locale, the lower-case of this letter is U+0069 or U+0131. -->
     <string name="spoken_letter_0049">Capital I</string>
     <!-- Spoken description for Unicode code point U+0130: "İ" LATIN CAPITAL LETTER I WITH DOT ABOVE
          Note that depending on locale, the lower-case of this letter is U+0069 or U+0131. -->
     <string name="spoken_letter_0130">Capital I, dot above</string>
+    <!-- Spoken description for unknown emoji code point. -->
+    <string name="spoken_emoji_unknown">Unknown emoji</string>
 </resources>
