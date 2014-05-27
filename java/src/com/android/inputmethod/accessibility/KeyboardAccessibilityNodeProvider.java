@@ -134,7 +134,7 @@ public final class KeyboardAccessibilityNodeProvider extends AccessibilityNodePr
         event.setClassName(key.getClass().getName());
         event.setContentDescription(keyDescription);
         event.setEnabled(true);
-        final AccessibilityRecordCompat record = new AccessibilityRecordCompat(event);
+        final AccessibilityRecordCompat record = AccessibilityEventCompat.asRecord(event);
         record.setSource(mKeyboardView, virtualViewId);
         return event;
     }

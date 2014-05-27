@@ -114,7 +114,7 @@ public final class AccessibilityUtils {
      * @param event The event to check.
      * @return {@true} is the event is a touch exploration event
      */
-    public boolean isTouchExplorationEvent(final MotionEvent event) {
+    public static boolean isTouchExplorationEvent(final MotionEvent event) {
         final int action = event.getAction();
         return action == MotionEvent.ACTION_HOVER_ENTER
                 || action == MotionEvent.ACTION_HOVER_EXIT
