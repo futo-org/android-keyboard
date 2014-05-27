@@ -27,14 +27,10 @@
     <string name="spoken_auto_correct_obscured" msgid="7769449372355268412">"<xliff:g id="KEY_NAME">%1$s</xliff:g> realiza correção automática"</string>
     <string name="spoken_description_unknown" msgid="2382510329910793539">"Código de tecla %d"</string>
     <string name="spoken_description_shift" msgid="7209798151676638728">"Shift"</string>
-    <!-- no translation found for spoken_description_symbols_shift (3483198879916435717) -->
-    <skip />
-    <!-- no translation found for spoken_description_shift_shifted (3122704922642232605) -->
-    <skip />
-    <!-- no translation found for spoken_description_symbols_shift_shifted (5179175466878186081) -->
-    <skip />
-    <!-- no translation found for spoken_description_caps_lock (1224851412185975036) -->
-    <skip />
+    <string name="spoken_description_symbols_shift" msgid="3483198879916435717">"Mais símbolos"</string>
+    <string name="spoken_description_shift_shifted" msgid="3122704922642232605">"Shift"</string>
+    <string name="spoken_description_symbols_shift_shifted" msgid="5179175466878186081">"Símbolos"</string>
+    <string name="spoken_description_caps_lock" msgid="1224851412185975036">"Shift"</string>
     <string name="spoken_description_delete" msgid="3878902286264983302">"Excluir"</string>
     <string name="spoken_description_to_symbol" msgid="8244903740201126590">"Símbolos"</string>
     <string name="spoken_description_to_alpha" msgid="4081215210530031950">"Letras"</string>
@@ -53,8 +49,7 @@
     <string name="spoken_description_shiftmode_on" msgid="5107180516341258979">"Shift ativado"</string>
     <string name="spoken_description_shiftmode_locked" msgid="7307477738053606881">"Caps Lock ativado"</string>
     <string name="spoken_description_mode_symbol" msgid="111186851131446691">"Modo de símbolos"</string>
-    <!-- no translation found for spoken_description_mode_symbol_shift (4305607977537665389) -->
-    <skip />
+    <string name="spoken_description_mode_symbol_shift" msgid="4305607977537665389">"Modo mais símbolos"</string>
     <string name="spoken_description_mode_alpha" msgid="4676004119618778911">"Modo de letras"</string>
     <string name="spoken_description_mode_phone" msgid="2061220553756692903">"Modo de telefone"</string>
     <string name="spoken_description_mode_phone_shift" msgid="7879963803547701090">"Modo de símbolos do telefone"</string>
@@ -76,4 +71,10 @@
     <string name="spoken_descrption_emoji_category_places" msgid="1163315840948545317">"Lugares"</string>
     <string name="spoken_descrption_emoji_category_symbols" msgid="474680659024880601">"Símbolos"</string>
     <string name="spoken_descrption_emoji_category_emoticons" msgid="456737544787823539">"Emoticons"</string>
+    <!-- no translation found for spoke_description_upper_case (397360656350553385) -->
+    <skip />
+    <!-- no translation found for spoken_letter_0049 (4743162182646977944) -->
+    <skip />
+    <!-- no translation found for spoken_letter_0130 (4766619646231612274) -->
+    <skip />
 </resources>
