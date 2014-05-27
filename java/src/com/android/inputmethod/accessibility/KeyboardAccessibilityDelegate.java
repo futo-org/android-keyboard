@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.accessibility;
 
+import android.content.Context;
 import android.os.SystemClock;
 import android.support.v4.view.AccessibilityDelegateCompat;
 import android.support.v4.view.ViewCompat;
@@ -67,6 +68,19 @@ public class KeyboardAccessibilityDelegate<KV extends KeyboardView>
 
     protected Keyboard getKeyboard() {
         return mKeyboard;
+    }
+
+    /**
+     * Sends a window state change event with the specified string resource id.
+     *
+     * @param resId The string resource id of the text to send with the event.
+     */
+    protected void sendWindowStateChanged(final int resId) {
+        if (resId == 0) {
+            return;
+        }
+        final Context context = mKeyboardView.getContext();
+        sendWindowStateChanged(context.getString(resId));
     }
 
     /**
