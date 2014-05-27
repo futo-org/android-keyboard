@@ -49,7 +49,7 @@ import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.latin.settings.Settings;
-import com.android.inputmethod.latin.suggestions.MoreSuggestions.MoreSuggestionsListener;
+import com.android.inputmethod.latin.suggestions.MoreSuggestionsView.MoreSuggestionsListener;
 import com.android.inputmethod.latin.utils.ImportantNoticeUtils;
 import com.android.inputmethod.research.ResearchLogger;
 

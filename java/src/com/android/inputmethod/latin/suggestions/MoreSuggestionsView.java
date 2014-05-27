@@ -22,11 +22,12 @@ import android.util.Log;
 
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
+import com.android.inputmethod.keyboard.KeyboardActionListener;
 import com.android.inputmethod.keyboard.MoreKeysKeyboardView;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SuggestedWords;
+import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.suggestions.MoreSuggestions.MoreSuggestionKey;
-import com.android.inputmethod.latin.suggestions.MoreSuggestions.MoreSuggestionsListener;
 
 /**
  * A view that renders a virtual {@link MoreSuggestions}. It handles rendering of keys and detecting
@@ -34,6 +35,10 @@ import com.android.inputmethod.latin.suggestions.MoreSuggestions.MoreSuggestions
  */
 public final class MoreSuggestionsView extends MoreKeysKeyboardView {
     private static final String TAG = MoreSuggestionsView.class.getSimpleName();
+
+    public static abstract class MoreSuggestionsListener extends KeyboardActionListener.Adapter {
+        public abstract void onSuggestionSelected(final int index, final SuggestedWordInfo info);
+    }
 
     public MoreSuggestionsView(final Context context, final AttributeSet attrs) {
         this(context, attrs, R.attr.moreKeysKeyboardViewStyle);
