@@ -25,6 +25,8 @@
     <string name="label_previous_key" msgid="1421141755779895275">"Նախորդը"</string>
     <string name="label_done_key" msgid="7564866296502630852">"Պատրաստ է"</string>
     <string name="label_send_key" msgid="482252074224462163">"Ուղարկել"</string>
+    <!-- no translation found for label_search_key (7965186050435796642) -->
+    <skip />
     <string name="label_pause_key" msgid="2225922926459730642">"Դադարեցնել"</string>
     <string name="label_wait_key" msgid="5891247853595466039">"Սպասել"</string>
 </resources>
