@@ -28,14 +28,14 @@ public class ExecutorUtils {
             new ConcurrentHashMap<>();
 
     /**
-     * Gets the executor for the given dictionary name.
+     * Gets the executor for the given id.
      */
-    public static PrioritizedSerialExecutor getExecutor(final String dictName) {
-        PrioritizedSerialExecutor executor = sExecutorMap.get(dictName);
+    public static PrioritizedSerialExecutor getExecutor(final String id) {
+        PrioritizedSerialExecutor executor = sExecutorMap.get(id);
         if (executor == null) {
             synchronized(sExecutorMap) {
-                executor = new PrioritizedSerialExecutor();
-                sExecutorMap.put(dictName, executor);
+                executor = new PrioritizedSerialExecutor(id);
+                sExecutorMap.put(id, executor);
             }
         }
         return executor;
