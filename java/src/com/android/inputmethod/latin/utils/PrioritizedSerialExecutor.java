@@ -21,6 +21,7 @@ import com.android.inputmethod.annotations.UsedForTesting;
 import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -40,12 +41,26 @@ public class PrioritizedSerialExecutor {
     // The task which is running now.
     private Runnable mActive;
 
-    public PrioritizedSerialExecutor() {
+    private static class ThreadFactoryWithId implements ThreadFactory {
+        private final String mId;
+
+        public ThreadFactoryWithId(final String id) {
+            mId = id;
+        }
+
+        @Override
+        public Thread newThread(final Runnable r) {
+            return new Thread(r, TAG + " - " + mId);
+        }
+    }
+
+    public PrioritizedSerialExecutor(final String id) {
         mTasks = new ConcurrentLinkedQueue<>();
         mPrioritizedTasks = new ConcurrentLinkedQueue<>();
         mIsShutdown = false;
         mThreadPoolExecutor = new ThreadPoolExecutor(1 /* corePoolSize */, 1 /* maximumPoolSize */,
-                0 /* keepAliveTime */, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<Runnable>(1));
+                0 /* keepAliveTime */, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<Runnable>(1),
+                new ThreadFactoryWithId(id));
     }
 
     /**
