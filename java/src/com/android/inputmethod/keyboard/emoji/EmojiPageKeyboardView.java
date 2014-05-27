@@ -83,13 +83,15 @@ final class EmojiPageKeyboardView extends KeyboardView implements
         mKeyDetector.setKeyboard(keyboard, 0 /* correctionX */, 0 /* correctionY */);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public boolean dispatchHoverEvent(final MotionEvent event) {
-        if (!AccessibilityUtils.getInstance().isTouchExplorationEnabled()) {
-            // Reflection doesn't support calling superclass methods.
-            return false;
+    public boolean onHoverEvent(final MotionEvent event) {
+        if (AccessibilityUtils.getInstance().isTouchExplorationEnabled()) {
+            return mAccessibilityDelegate.onHoverEvent(event);
         }
-        return mAccessibilityDelegate.dispatchHoverEvent(event);
+        return super.onHoverEvent(event);
     }
 
     /**

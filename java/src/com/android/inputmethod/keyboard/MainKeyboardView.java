@@ -763,19 +763,14 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     }
 
     /**
-     * Receives hover events from the input framework.
-     *
-     * @param event The motion event to be dispatched.
-     * @return {@code true} if the event was handled by the view, {@code false}
-     *         otherwise
+     * {@inheritDoc}
      */
     @Override
-    public boolean dispatchHoverEvent(final MotionEvent event) {
-        if (!AccessibilityUtils.getInstance().isTouchExplorationEnabled()) {
-            // Reflection doesn't support calling superclass methods.
-            return false;
+    public boolean onHoverEvent(final MotionEvent event) {
+        if (AccessibilityUtils.getInstance().isTouchExplorationEnabled()) {
+            return mAccessibilityDelegate.onHoverEvent(event);
         }
-        return mAccessibilityDelegate.dispatchHoverEvent(event);
+        return super.onHoverEvent(event);
     }
 
     public void updateShortcutKey(final boolean available) {

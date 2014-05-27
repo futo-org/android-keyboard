@@ -37,7 +37,7 @@ public class KeyboardAccessibilityDelegate<KV extends KeyboardView>
     protected final KeyDetector mKeyDetector;
     private Keyboard mKeyboard;
     private KeyboardAccessibilityNodeProvider mAccessibilityNodeProvider;
-    private Key mLastHoverKey;
+    private Key mCurrentHoverKey;
 
     public KeyboardAccessibilityDelegate(final KV keyboardView, final KeyDetector keyDetector) {
         super();
@@ -117,14 +117,14 @@ public class KeyboardAccessibilityDelegate<KV extends KeyboardView>
      * Receives hover events when touch exploration is turned on in SDK versions ICS and higher.
      *
      * @param event The hover event.
-     * @return {@code true} if the event is handled
+     * @return {@code true} if the event is handled.
      */
-    public boolean dispatchHoverEvent(final MotionEvent event) {
+    public boolean onHoverEvent(final MotionEvent event) {
         final int x = (int) event.getX();
         final int y = (int) event.getY();
-        final Key previousKey = mLastHoverKey;
+        final Key previousKey = mCurrentHoverKey;
         final Key key = mKeyDetector.detectHitKey(x, y);
-        mLastHoverKey = key;
+        mCurrentHoverKey = key;
 
         switch (event.getAction()) {
         case MotionEvent.ACTION_HOVER_EXIT:
@@ -133,17 +133,30 @@ public class KeyboardAccessibilityDelegate<KV extends KeyboardView>
             if (key != null) {
                 final long downTime = simulateKeyPress(key);
                 simulateKeyRelease(key, downTime);
+                onHoverExitKey(key);
             }
-            //$FALL-THROUGH$
+            mCurrentHoverKey = null;
+            break;
         case MotionEvent.ACTION_HOVER_ENTER:
-            return onHoverKey(key, event);
+            if (key != null) {
+                onHoverEnterKey(key);
+            }
+            break;
         case MotionEvent.ACTION_HOVER_MOVE:
             if (key != previousKey) {
-                return onTransitionKey(key, previousKey, event);
+                if (previousKey != null) {
+                    onHoverExitKey(previousKey);
+                }
+                if (key != null) {
+                    onHoverEnterKey(key);
+                }
             }
-            return onHoverKey(key, event);
+            if (key != null) {
+                onHoverMoveKey(key);
+            }
+            break;
         }
-        return false;
+        return true;
     }
 
     /**
@@ -151,6 +164,7 @@ public class KeyboardAccessibilityDelegate<KV extends KeyboardView>
      * This avoids the complexity of trackers and listeners within the keyboard.
      *
      * @param key The key to press.
+     * @return the event time of the simulated key press.
      */
     private long simulateKeyPress(final Key key) {
         final int x = key.getHitBox().centerX();
@@ -168,6 +182,7 @@ public class KeyboardAccessibilityDelegate<KV extends KeyboardView>
      * This avoids the complexity of trackers and listeners within the keyboard.
      *
      * @param key The key to release.
+     * @param downTime the event time of the key press.
      */
     private void simulateKeyRelease(final Key key, final long downTime) {
         final int x = key.getHitBox().centerX();
@@ -179,54 +194,30 @@ public class KeyboardAccessibilityDelegate<KV extends KeyboardView>
     }
 
     /**
-     * Simulates a transition between two {@link Key}s by sending a HOVER_EXIT on the previous key,
-     * a HOVER_ENTER on the current key, and a HOVER_MOVE on the current key.
+     * Handles a hover enter event on a key.
      *
-     * @param currentKey The currently hovered key.
-     * @param previousKey The previously hovered key.
-     * @param event The event that triggered the transition.
-     * @return {@code true} if the event was handled.
+     * @param key The currently hovered key.
      */
-    private boolean onTransitionKey(final Key currentKey, final Key previousKey,
-            final MotionEvent event) {
-        final int savedAction = event.getAction();
-        event.setAction(MotionEvent.ACTION_HOVER_EXIT);
-        onHoverKey(previousKey, event);
-        event.setAction(MotionEvent.ACTION_HOVER_ENTER);
-        onHoverKey(currentKey, event);
-        event.setAction(MotionEvent.ACTION_HOVER_MOVE);
-        final boolean handled = onHoverKey(currentKey, event);
-        event.setAction(savedAction);
-        return handled;
+    protected void onHoverEnterKey(final Key key) {
+        final KeyboardAccessibilityNodeProvider provider = getAccessibilityNodeProvider();
+        provider.sendAccessibilityEventForKey(key, AccessibilityEventCompat.TYPE_VIEW_HOVER_ENTER);
+        provider.performActionForKey(key, AccessibilityNodeInfoCompat.ACTION_ACCESSIBILITY_FOCUS);
     }
 
     /**
-     * Handles a hover event on a key. If {@link Key} extended View, this would be analogous to
-     * calling View.onHoverEvent(MotionEvent).
+     * Handles a hover move event on a key.
      *
      * @param key The currently hovered key.
-     * @param event The hover event.
-     * @return {@code true} if the event was handled.
      */
-    private boolean onHoverKey(final Key key, final MotionEvent event) {
-        // Null keys can't receive events.
-        if (key == null) {
-            return false;
-        }
-        final KeyboardAccessibilityNodeProvider provider = getAccessibilityNodeProvider();
+    protected void onHoverMoveKey(final Key key) { }
 
-        switch (event.getAction()) {
-        case MotionEvent.ACTION_HOVER_ENTER:
-            provider.sendAccessibilityEventForKey(
-                    key, AccessibilityEventCompat.TYPE_VIEW_HOVER_ENTER);
-            provider.performActionForKey(
-                    key, AccessibilityNodeInfoCompat.ACTION_ACCESSIBILITY_FOCUS);
-            break;
-        case MotionEvent.ACTION_HOVER_EXIT:
-            provider.sendAccessibilityEventForKey(
-                    key, AccessibilityEventCompat.TYPE_VIEW_HOVER_EXIT);
-            break;
-        }
-        return true;
+    /**
+     * Handles a hover exit event on a key.
+     *
+     * @param key The currently hovered key.
+     */
+    protected void onHoverExitKey(final Key key) {
+        final KeyboardAccessibilityNodeProvider provider = getAccessibilityNodeProvider();
+        provider.sendAccessibilityEventForKey(key, AccessibilityEventCompat.TYPE_VIEW_HOVER_EXIT);
     }
 }
