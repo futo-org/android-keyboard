@@ -23,22 +23,16 @@ import android.graphics.drawable.Drawable;
 
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
-import com.android.inputmethod.keyboard.KeyboardActionListener;
 import com.android.inputmethod.keyboard.internal.KeyboardBuilder;
 import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
 import com.android.inputmethod.keyboard.internal.KeyboardParams;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SuggestedWords;
-import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.utils.TypefaceUtils;
 
 public final class MoreSuggestions extends Keyboard {
     public final SuggestedWords mSuggestedWords;
-
-    public static abstract class MoreSuggestionsListener extends KeyboardActionListener.Adapter {
-        public abstract void onSuggestionSelected(final int index, final SuggestedWordInfo info);
-    }
 
     MoreSuggestions(final MoreSuggestionsParam params, final SuggestedWords suggestedWords) {
         super(params);
