@@ -75,33 +75,54 @@ public class Ver4DictEncoder implements DictEncoder {
         for (final WordProperty wordProperty : dict) {
             // TODO: switch to addMultipleDictionaryEntries when they support shortcuts
             if (null == wordProperty.mShortcutTargets || wordProperty.mShortcutTargets.isEmpty()) {
-                binaryDict.addUnigramEntry(wordProperty.mWord, wordProperty.getProbability(),
+                if (!binaryDict.addUnigramEntry(wordProperty.mWord, wordProperty.getProbability(),
                         null /* shortcutTarget */, 0 /* shortcutProbability */,
                         wordProperty.mIsBeginningOfSentence, wordProperty.mIsNotAWord,
-                        wordProperty.mIsBlacklistEntry, 0 /* timestamp */);
+                        wordProperty.mIsBlacklistEntry, 0 /* timestamp */)) {
+                    MakedictLog.e("Cannot add unigram entry for " + wordProperty.mWord);
+                }
             } else {
                 for (final WeightedString shortcutTarget : wordProperty.mShortcutTargets) {
-                    binaryDict.addUnigramEntry(wordProperty.mWord, wordProperty.getProbability(),
+                    if (!binaryDict.addUnigramEntry(wordProperty.mWord,
+                            wordProperty.getProbability(),
                             shortcutTarget.mWord, shortcutTarget.getProbability(),
                             wordProperty.mIsBeginningOfSentence, wordProperty.mIsNotAWord,
-                            wordProperty.mIsBlacklistEntry, 0 /* timestamp */);
+                            wordProperty.mIsBlacklistEntry, 0 /* timestamp */)) {
+                        MakedictLog.e("Cannot add unigram entry for " + wordProperty.mWord
+                                + ", shortcutTarget: " + shortcutTarget.mWord);
+                        return;
+                    }
                 }
             }
             if (binaryDict.needsToRunGC(true /* mindsBlockByGC */)) {
-                binaryDict.flushWithGC();
+                if (!binaryDict.flushWithGC()) {
+                    MakedictLog.e("Cannot flush dict with GC.");
+                    return;
+                }
             }
         }
         for (final WordProperty word0Property : dict) {
             if (null == word0Property.mBigrams) continue;
             for (final WeightedString word1 : word0Property.mBigrams) {
-                binaryDict.addNgramEntry(new PrevWordsInfo(word0Property.mWord), word1.mWord,
-                        word1.getProbability(), 0 /* timestamp */);
+                final PrevWordsInfo prevWordsInfo = new PrevWordsInfo(word0Property.mWord);
+                if (!binaryDict.addNgramEntry(prevWordsInfo, word1.mWord,
+                        word1.getProbability(), 0 /* timestamp */)) {
+                    MakedictLog.e("Cannot add n-gram entry for "
+                            + prevWordsInfo + " -> " + word1.mWord);
+                    return;
+                }
                 if (binaryDict.needsToRunGC(true /* mindsBlockByGC */)) {
-                    binaryDict.flushWithGC();
+                    if (!binaryDict.flushWithGC()) {
+                        MakedictLog.e("Cannot flush dict with GC.");
+                        return;
+                    }
                 }
             }
         }
-        binaryDict.flushWithGC();
+        if (!binaryDict.flushWithGC()) {
+            MakedictLog.e("Cannot flush dict with GC.");
+            return;
+        }
         binaryDict.close();
     }
 

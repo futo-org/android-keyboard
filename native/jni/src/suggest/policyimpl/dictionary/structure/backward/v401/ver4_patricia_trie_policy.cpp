@@ -296,26 +296,30 @@ bool Ver4PatriciaTriePolicy::removeNgramEntry(const PrevWordsInfo *const prevWor
     }
 }
 
-void Ver4PatriciaTriePolicy::flush(const char *const filePath) {
+bool Ver4PatriciaTriePolicy::flush(const char *const filePath) {
     if (!mBuffers->isUpdatable()) {
         AKLOGI("Warning: flush() is called for non-updatable dictionary. filePath: %s", filePath);
-        return;
+        return false;
     }
     if (!mWritingHelper.writeToDictFile(filePath, mUnigramCount, mBigramCount)) {
         AKLOGE("Cannot flush the dictionary to file.");
         mIsCorrupted = true;
+        return false;
     }
+    return true;
 }
 
-void Ver4PatriciaTriePolicy::flushWithGC(const char *const filePath) {
+bool Ver4PatriciaTriePolicy::flushWithGC(const char *const filePath) {
     if (!mBuffers->isUpdatable()) {
         AKLOGI("Warning: flushWithGC() is called for non-updatable dictionary.");
-        return;
+        return false;
     }
     if (!mWritingHelper.writeToDictFileWithGC(getRootPosition(), filePath)) {
         AKLOGE("Cannot flush the dictionary to file with GC.");
         mIsCorrupted = true;
+        return false;
     }
+    return true;
 }
 
 bool Ver4PatriciaTriePolicy::needsToRunGC(const bool mindsBlockByGC) const {

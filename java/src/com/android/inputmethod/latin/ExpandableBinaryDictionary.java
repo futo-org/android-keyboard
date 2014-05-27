@@ -298,8 +298,10 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     protected void addUnigramLocked(final String word, final int frequency,
             final String shortcutTarget, final int shortcutFreq, final boolean isNotAWord,
             final boolean isBlacklisted, final int timestamp) {
-        mBinaryDictionary.addUnigramEntry(word, frequency, shortcutTarget, shortcutFreq,
-                false /* isBeginningOfSentence */, isNotAWord, isBlacklisted, timestamp);
+        if (!mBinaryDictionary.addUnigramEntry(word, frequency, shortcutTarget, shortcutFreq,
+                false /* isBeginningOfSentence */, isNotAWord, isBlacklisted, timestamp)) {
+            Log.e(TAG, "Cannot add unigram entry. word: " + word);
+        }
     }
 
     /**
@@ -322,7 +324,11 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
 
     protected void addNgramEntryLocked(final PrevWordsInfo prevWordsInfo, final String word,
             final int frequency, final int timestamp) {
-        mBinaryDictionary.addNgramEntry(prevWordsInfo, word, frequency, timestamp);
+        if (!mBinaryDictionary.addNgramEntry(prevWordsInfo, word, frequency, timestamp)) {
+            Log.e(TAG, "Cannot add n-gram entry.");
+            Log.e(TAG, "  PrevWordsInfo: " + prevWordsInfo);
+            Log.e(TAG, "  word: " + word);
+        }
     }
 
     /**

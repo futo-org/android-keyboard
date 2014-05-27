@@ -53,4 +53,10 @@ public class PrevWordsInfo {
     public boolean isValid() {
         return mPrevWord != null;
     }
+
+    @Override
+    public String toString() {
+        return "PrevWord: " + mPrevWord + ", isBeginningOfSentence: "
+                    + mIsBeginningOfSentence + ".";
+    }
 }
