@@ -208,8 +208,7 @@ public class SuggestedWords {
         public static final int NOT_A_CONFIDENCE = -1;
         public static final int MAX_SCORE = Integer.MAX_VALUE;
 
-        // TODO: Make KIND_MASK_KIND private.
-        public static final int KIND_MASK_KIND = 0xFF; // Mask to get only the kind
+        private static final int KIND_MASK_KIND = 0xFF; // Mask to get only the kind
         public static final int KIND_TYPED = 0; // What user typed
         public static final int KIND_CORRECTION = 1; // Simple correction/suggestion
         public static final int KIND_COMPLETION = 2; // Completion (suggestion with appended chars)
@@ -224,8 +223,6 @@ public class SuggestedWords {
         public static final int KIND_RESUMED = 9;
         public static final int KIND_OOV_CORRECTION = 10; // Most probable string correction
 
-        // TODO: Make KIND_MASK_FLAGS private.
-        public static final int KIND_MASK_FLAGS = 0xFFFFFF00; // Mask to get the flags
         public static final int KIND_FLAG_POSSIBLY_OFFENSIVE = 0x80000000;
         public static final int KIND_FLAG_EXACT_MATCH = 0x40000000;
         public static final int KIND_FLAG_EXACT_MATCH_WITH_INTENTIONAL_OMISSION = 0x20000000;
@@ -235,8 +232,7 @@ public class SuggestedWords {
         // the application (including keyboard-computed ones, so this is almost always null)
         public final CompletionInfo mApplicationSpecifiedCompletionInfo;
         public final int mScore;
-        // TODO: Rename to mKindAndFlags and make this private.
-        public final int mKind; // kind and kind flags
+        public final int mKindAndFlags;
         public final int mCodePointCount;
         public final Dictionary mSourceDict;
         // For auto-commit. This keeps track of the index inside the touch coordinates array
@@ -252,18 +248,19 @@ public class SuggestedWords {
          * Create a new suggested word info.
          * @param word The string to suggest.
          * @param score A measure of how likely this suggestion is.
-         * @param kind The kind of suggestion, as one of the above KIND_* constants with flags.
+         * @param kindAndFlags The kind of suggestion, as one of the above KIND_* constants with
+         * flags.
          * @param sourceDict What instance of Dictionary produced this suggestion.
          * @param indexOfTouchPointOfSecondWord See mIndexOfTouchPointOfSecondWord.
          * @param autoCommitFirstWordConfidence See mAutoCommitFirstWordConfidence.
          */
-        public SuggestedWordInfo(final String word, final int score, final int kind,
+        public SuggestedWordInfo(final String word, final int score, final int kindAndFlags,
                 final Dictionary sourceDict, final int indexOfTouchPointOfSecondWord,
                 final int autoCommitFirstWordConfidence) {
             mWord = word;
             mApplicationSpecifiedCompletionInfo = null;
             mScore = score;
-            mKind = kind;
+            mKindAndFlags = kindAndFlags;
             mSourceDict = sourceDict;
             mCodePointCount = StringUtils.codePointCount(mWord);
             mIndexOfTouchPointOfSecondWord = indexOfTouchPointOfSecondWord;
@@ -279,7 +276,7 @@ public class SuggestedWords {
             mWord = applicationSpecifiedCompletion.getText().toString();
             mApplicationSpecifiedCompletionInfo = applicationSpecifiedCompletion;
             mScore = SuggestedWordInfo.MAX_SCORE;
-            mKind = SuggestedWordInfo.KIND_APP_DEFINED;
+            mKindAndFlags = SuggestedWordInfo.KIND_APP_DEFINED;
             mSourceDict = Dictionary.DICTIONARY_APPLICATION_DEFINED;
             mCodePointCount = StringUtils.codePointCount(mWord);
             mIndexOfTouchPointOfSecondWord = SuggestedWordInfo.NOT_AN_INDEX;
@@ -290,11 +287,26 @@ public class SuggestedWords {
             return (isKindOf(KIND_CORRECTION) && NOT_AN_INDEX != mIndexOfTouchPointOfSecondWord);
         }
 
-        public boolean isKindOf(final int kind) {
-            return (mKind & KIND_MASK_KIND) == kind;
+        public int getKind() {
+            return (mKindAndFlags & KIND_MASK_KIND);
         }
 
-        // TODO: Add predicate methods for each flag.
+        public boolean isKindOf(final int kind) {
+            return getKind() == kind;
+        }
+
+        public boolean isPossiblyOffensive() {
+            return (mKindAndFlags & SuggestedWordInfo.KIND_FLAG_POSSIBLY_OFFENSIVE) != 0;
+        }
+
+        public boolean isExactMatch() {
+            return (mKindAndFlags & SuggestedWordInfo.KIND_FLAG_EXACT_MATCH) != 0;
+        }
+
+        public boolean isExactMatchWithIntentionalOmission() {
+            return (mKindAndFlags
+                    & SuggestedWordInfo.KIND_FLAG_EXACT_MATCH_WITH_INTENTIONAL_OMISSION) != 0;
+        }
 
         public void setDebugString(final String str) {
             if (null == str) throw new NullPointerException("Debug info is null");
@@ -375,7 +387,7 @@ public class SuggestedWords {
             final SuggestedWordInfo info = mSuggestedWordInfoList.get(i);
             final int indexOfLastSpace = info.mWord.lastIndexOf(Constants.CODE_SPACE) + 1;
             final String lastWord = info.mWord.substring(indexOfLastSpace);
-            newSuggestions.add(new SuggestedWordInfo(lastWord, info.mScore, info.mKind,
+            newSuggestions.add(new SuggestedWordInfo(lastWord, info.mScore, info.mKindAndFlags,
                     info.mSourceDict, SuggestedWordInfo.NOT_AN_INDEX,
                     SuggestedWordInfo.NOT_A_CONFIDENCE));
         }
