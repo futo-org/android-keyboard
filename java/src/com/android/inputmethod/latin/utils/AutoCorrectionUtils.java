@@ -35,7 +35,9 @@ public final class AutoCorrectionUtils {
             final float autoCorrectionThreshold) {
         if (null != suggestion) {
             // Shortlist a whitelisted word
-            if (suggestion.mKind == SuggestedWordInfo.KIND_WHITELIST) return true;
+            if (suggestion.isKindOf(SuggestedWordInfo.KIND_WHITELIST)) {
+                return true;
+            }
             final int autoCorrectionSuggestionScore = suggestion.mScore;
             // TODO: when the normalized score of the first suggestion is nearly equals to
             //       the normalized score of the second suggestion, behave less aggressive.

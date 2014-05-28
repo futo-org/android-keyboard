@@ -102,7 +102,7 @@ import java.util.Map;
             jsonWriter.beginObject();
             jsonWriter.name("word").value(wordInfo.toString());
             jsonWriter.name("score").value(wordInfo.mScore);
-            jsonWriter.name("kind").value(wordInfo.mKind);
+            jsonWriter.name("kind").value(wordInfo.getKind());
             jsonWriter.name("sourceDict").value(wordInfo.mSourceDict.mDictType);
             jsonWriter.endObject();
         }
