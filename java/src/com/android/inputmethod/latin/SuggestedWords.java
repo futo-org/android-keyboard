@@ -207,6 +207,8 @@ public class SuggestedWords {
         public static final int NOT_AN_INDEX = -1;
         public static final int NOT_A_CONFIDENCE = -1;
         public static final int MAX_SCORE = Integer.MAX_VALUE;
+
+        // TODO: Make KIND_MASK_KIND private.
         public static final int KIND_MASK_KIND = 0xFF; // Mask to get only the kind
         public static final int KIND_TYPED = 0; // What user typed
         public static final int KIND_CORRECTION = 1; // Simple correction/suggestion
@@ -222,6 +224,7 @@ public class SuggestedWords {
         public static final int KIND_RESUMED = 9;
         public static final int KIND_OOV_CORRECTION = 10; // Most probable string correction
 
+        // TODO: Make KIND_MASK_FLAGS private.
         public static final int KIND_MASK_FLAGS = 0xFFFFFF00; // Mask to get the flags
         public static final int KIND_FLAG_POSSIBLY_OFFENSIVE = 0x80000000;
         public static final int KIND_FLAG_EXACT_MATCH = 0x40000000;
@@ -232,6 +235,7 @@ public class SuggestedWords {
         // the application (including keyboard-computed ones, so this is almost always null)
         public final CompletionInfo mApplicationSpecifiedCompletionInfo;
         public final int mScore;
+        // TODO: Rename to mKindAndFlags and make this private.
         public final int mKind; // kind and kind flags
         public final int mCodePointCount;
         public final Dictionary mSourceDict;
@@ -289,6 +293,8 @@ public class SuggestedWords {
         public boolean isKindOf(final int kind) {
             return (mKind & KIND_MASK_KIND) == kind;
         }
+
+        // TODO: Add predicate methods for each flag.
 
         public void setDebugString(final String str) {
             if (null == str) throw new NullPointerException("Debug info is null");
