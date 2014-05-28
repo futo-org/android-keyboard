@@ -92,7 +92,7 @@ class PrevWordsInfo {
             const DictionaryStructureWithBufferPolicy *const dictStructurePolicy,
             const int *const wordCodePoints, const int wordCodePointCount,
             const bool isBeginningOfSentence, const bool tryLowerCaseSearch) {
-        if (!dictStructurePolicy || !wordCodePoints) {
+        if (!dictStructurePolicy || !wordCodePoints || wordCodePointCount > MAX_WORD_LENGTH) {
             return NOT_A_DICT_POS;
         }
         int codePoints[MAX_WORD_LENGTH];
@@ -122,6 +122,9 @@ class PrevWordsInfo {
             const DictionaryStructureWithBufferPolicy *const dictStructurePolicy,
             const int *const wordCodePoints, const int wordCodePointCount,
             const bool isBeginningOfSentence) {
+        if (!dictStructurePolicy || !wordCodePoints || wordCodePointCount > MAX_WORD_LENGTH) {
+            return NOT_A_DICT_POS;
+        }
         int codePoints[MAX_WORD_LENGTH];
         int codePointCount = wordCodePointCount;
         memmove(codePoints, wordCodePoints, sizeof(int) * codePointCount);
