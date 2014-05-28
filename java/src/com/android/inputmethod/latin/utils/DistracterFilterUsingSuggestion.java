@@ -108,10 +108,9 @@ public class DistracterFilterUsingSuggestion implements DistracterFilter {
                 continue;
             }
             // Exact match can include case errors, accent errors, digraph conversions.
-            final boolean isExactMatch =
-                    (suggestedWordInfo.mKind & SuggestedWordInfo.KIND_FLAG_EXACT_MATCH) != 0;
-            final boolean isExactMatchWithIntentionalOmission = (suggestedWordInfo.mKind
-                    & SuggestedWordInfo.KIND_FLAG_EXACT_MATCH_WITH_INTENTIONAL_OMISSION) != 0;
+            final boolean isExactMatch = suggestedWordInfo.isExactMatch();
+            final boolean isExactMatchWithIntentionalOmission =
+                    suggestedWordInfo.isExactMatchWithIntentionalOmission();
 
             if (DEBUG) {
                 final float normalizedScore = BinaryDictionaryUtils.calcNormalizedScore(

@@ -289,7 +289,7 @@ public final class InputLogic {
         if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
             ResearchLogger.latinIME_pickSuggestionManually(replacedWord, index, suggestion,
                     mWordComposer.isBatchMode(), suggestionInfo.mScore,
-                    suggestionInfo.mKind, suggestionInfo.mSourceDict.mDictType);
+                    suggestionInfo.mKindAndFlags, suggestionInfo.mSourceDict.mDictType);
         }
         mConnection.endBatchEdit();
         // Don't allow cancellation of manual pick
@@ -301,8 +301,8 @@ public final class InputLogic {
         // We should show the "Touch again to save" hint if the user pressed the first entry
         // AND it's in none of our current dictionaries (main, user or otherwise).
         final boolean showingAddToDictionaryHint =
-                (SuggestedWordInfo.KIND_TYPED == suggestionInfo.mKind
-                        || SuggestedWordInfo.KIND_OOV_CORRECTION == suggestionInfo.mKind)
+                (suggestionInfo.isKindOf(SuggestedWordInfo.KIND_TYPED)
+                        || suggestionInfo.isKindOf(SuggestedWordInfo.KIND_OOV_CORRECTION))
                         && !mDictionaryFacilitator.isValidWord(suggestion, true /* ignoreCase */);
 
         if (settingsValues.mIsInternal) {
