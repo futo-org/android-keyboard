@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.latin;
 
+import android.os.Build;
 import android.test.suitebuilder.annotation.LargeTest;
 import android.text.TextUtils;
 import android.view.inputmethod.EditorInfo;
@@ -111,15 +112,23 @@ public class ShiftModeTests extends InputTestsBase {
     }
 
     public void testOtherSentenceSeparators() {
-        changeLanguage("hy-AM");
-        assertTrue("(Armenian) Auto caps at start", isCapsModeAutoShifted());
-        type("Hey. ");
-        assertFalse("(Armenian) No auto-caps after latin period", isCapsModeAutoShifted());
-        type("Hey\u0589");
-        assertFalse("(Armenian) No auto-caps directly after armenian period",
-                isCapsModeAutoShifted());
-        type(" ");
-        assertTrue("(Armenian) Auto-caps after armenian period-whitespace",
-                isCapsModeAutoShifted());
+        // We only run this test on Kitkat+ because previous versions of Android don't
+        // have an Armenian locale. For some reason I don't know, when the requested
+        // locale is not present as a device locale, then the application under test can't
+        // access the resources in that locale -- though it works when the app is actually
+        // running on the device and not under test. If we ever figure out what's going
+        // on, remove this test.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            changeLanguage("hy-AM");
+            assertTrue("(Armenian) Auto caps at start", isCapsModeAutoShifted());
+            type("Hey. ");
+            assertFalse("(Armenian) No auto-caps after latin period", isCapsModeAutoShifted());
+            type("Hey\u0589");
+            assertFalse("(Armenian) No auto-caps directly after armenian period",
+                    isCapsModeAutoShifted());
+            type(" ");
+            assertTrue("(Armenian) Auto-caps after armenian period-whitespace",
+                    isCapsModeAutoShifted());
+        }
     }
 }
