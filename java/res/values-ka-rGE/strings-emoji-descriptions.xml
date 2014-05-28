@@ -37,7 +37,7 @@
     <string name="spoken_emoji_231A" msgid="6751448803233874993">"საათი"</string>
     <string name="spoken_emoji_231B" msgid="5956428809948426182">"ქვიშის საათი"</string>
     <string name="spoken_emoji_23E9" msgid="4022497733535162237">"მარჯვნივ მიმართული შავი ორმაგი სამკუთხედი"</string>
-    <string name="spoken_emoji_23EA" msgid="2251396938087774944">"მარცნხივ მიმართული შავი ორმაგი სამკუთხედი"</string>
+    <string name="spoken_emoji_23EA" msgid="2251396938087774944">"მარცხნივ მიმართული შავი ორმაგი სამკუთხედი"</string>
     <string name="spoken_emoji_23EB" msgid="3746885195641491865">"ზევით მიმართული შავი ორმაგი სამკუთხედი"</string>
     <string name="spoken_emoji_23EC" msgid="7852372752901163416">"ქვევით მიმართული შავი ორმაგი სამკუთხედი"</string>
     <string name="spoken_emoji_23F0" msgid="8474219588750627870">"მაღვიძარა"</string>
@@ -71,7 +71,7 @@
     <string name="spoken_emoji_2651" msgid="840953134601595090">"თხის რქა"</string>
     <string name="spoken_emoji_2652" msgid="3586925968718775281">"მერწყული"</string>
     <string name="spoken_emoji_2653" msgid="8420547731496254492">"თევზები"</string>
-    <string name="spoken_emoji_2660" msgid="4541170554542412536">"ბაქნოს შავი ყვავი"</string>
+    <string name="spoken_emoji_2660" msgid="4541170554542412536">"ბანქოს შავი ყვავი"</string>
     <string name="spoken_emoji_2663" msgid="3669352721942285724">"ბანქოს შავი ჯვარი"</string>
     <string name="spoken_emoji_2665" msgid="6347941599683765843">"ბანქოს შავი გული"</string>
     <string name="spoken_emoji_2666" msgid="8296769213401115999">"ბანქოს შავი აგური"</string>
@@ -128,7 +128,7 @@
     <string name="spoken_emoji_2935" msgid="6198710960720232074">"მარჯვნივ მიმართული და ქვევით მოხვეული ისარი"</string>
     <string name="spoken_emoji_2B05" msgid="4813405635410707690">"მარცხნივ მიმართული შავი ისარი"</string>
     <string name="spoken_emoji_2B06" msgid="1223172079106250748">"ზევით მიმართული შავი ისარი"</string>
-    <string name="spoken_emoji_2B07" msgid="1599124424746596150">"მარცხნივქვევით მიმართული შავი ისარი"</string>
+    <string name="spoken_emoji_2B07" msgid="1599124424746596150">"მარცხნივ ქვევით მიმართული შავი ისარი"</string>
     <string name="spoken_emoji_2B1B" msgid="3461247311988501626">"დიდი შავი კვადრატი"</string>
     <string name="spoken_emoji_2B1C" msgid="5793146430145248915">"დიდი თეთრი კვადრატი"</string>
     <string name="spoken_emoji_2B50" msgid="3850845519526950524">"თეთრი საშუალო ვარსკვლავი"</string>
@@ -261,7 +261,7 @@
     <string name="spoken_emoji_1F369" msgid="7383712944084857350">"დონატი"</string>
     <string name="spoken_emoji_1F36A" msgid="2726271795913042295">"შინაური ნამცხვარი"</string>
     <string name="spoken_emoji_1F36B" msgid="6342163604299875931">"შოკოლადის ფილა"</string>
-    <string name="spoken_emoji_1F36C" msgid="2168934753998218790">"კამფეტი"</string>
+    <string name="spoken_emoji_1F36C" msgid="2168934753998218790">"კანფეტი"</string>
     <string name="spoken_emoji_1F36D" msgid="3671507903799975792">"შაქარყინული"</string>
     <string name="spoken_emoji_1F36E" msgid="4630541402785165902">"ნადუღის კრემი"</string>
     <string name="spoken_emoji_1F36F" msgid="5577915387425169439">"თაფლის ქოთანი"</string>
@@ -330,7 +330,7 @@
     <string name="spoken_emoji_1F3BD" msgid="5490786111375627777">"სარბენი მაისური ლენტით"</string>
     <string name="spoken_emoji_1F3BE" msgid="1851613105691627931">"ტენისის ჩოგანი და ბურთი"</string>
     <string name="spoken_emoji_1F3BF" msgid="6862405997423247921">"თხილამური და ჩექმა"</string>
-    <string name="spoken_emoji_1F3C0" msgid="7421420756115104085">"ბურთ და კალათა"</string>
+    <string name="spoken_emoji_1F3C0" msgid="7421420756115104085">"ბურთი და კალათა"</string>
     <string name="spoken_emoji_1F3C1" msgid="6926537251677319922">"კუბოკრული დროშა"</string>
     <string name="spoken_emoji_1F3C2" msgid="5708596929237987082">"სნოუბორდერი"</string>
     <string name="spoken_emoji_1F3C3" msgid="5850982999510115824">"მორბენალი"</string>
@@ -514,7 +514,7 @@
     <string name="spoken_emoji_1F49D" msgid="3460534750224161888">"გული ლენტით"</string>
     <string name="spoken_emoji_1F49E" msgid="4490636226072523867">"მბრუნავი გულები"</string>
     <string name="spoken_emoji_1F49F" msgid="2059319756421226336">"გულის დეკორაცია"</string>
-    <string name="spoken_emoji_1F4A0" msgid="1954850380550212038">"ალმასის ფორმა შიგნისთ წერტილით"</string>
+    <string name="spoken_emoji_1F4A0" msgid="1954850380550212038">"ალმასის ფორმა შიგნით წერტილით"</string>
     <string name="spoken_emoji_1F4A1" msgid="403137413540909021">"ნათურა"</string>
     <string name="spoken_emoji_1F4A2" msgid="2604192053295622063">"სიბრაზის სიმბოლო"</string>
     <string name="spoken_emoji_1F4A3" msgid="6378351742957821735">"ბომბი"</string>
@@ -596,10 +596,10 @@
     <string name="spoken_emoji_1F4EF" msgid="8801427577198798226">"საფოსტო საყვირი"</string>
     <string name="spoken_emoji_1F4F0" msgid="6330208624731662525">"გაზეთი"</string>
     <string name="spoken_emoji_1F4F1" msgid="3966503935581675695">"მობილური ტელეფონი"</string>
-    <string name="spoken_emoji_1F4F2" msgid="1057540341746100087">"მობილური ტელეფონი მარჯვნივ მიმართლი ისრით მარცხნივ"</string>
+    <string name="spoken_emoji_1F4F2" msgid="1057540341746100087">"მობილური ტელეფონი მარჯვნივ მიმართული ისრით მარცხნივ"</string>
     <string name="spoken_emoji_1F4F3" msgid="5003984447315754658">"ვიბრაციის რეჟიმი"</string>
     <string name="spoken_emoji_1F4F4" msgid="5549847566968306253">"მობილური ტელეფონის გამორთვა"</string>
-    <string name="spoken_emoji_1F4F5" msgid="3660199448671699238">"მობილური ტელეფონიები აკრძალულია"</string>
+    <string name="spoken_emoji_1F4F5" msgid="3660199448671699238">"მობილური ტელეფონები აკრძალულია"</string>
     <string name="spoken_emoji_1F4F6" msgid="2676974903233268860">"ანტენა სვეტებით"</string>
     <string name="spoken_emoji_1F4F7" msgid="2643891943105989039">"ფოტოაპარატი"</string>
     <string name="spoken_emoji_1F4F9" msgid="4475626303058218048">"ვიდეოკამერა"</string>
@@ -607,8 +607,8 @@
     <string name="spoken_emoji_1F4FB" msgid="3848729587403760645">"რადიო"</string>
     <string name="spoken_emoji_1F4FC" msgid="8370432508874310054">"ვიდეოკასეტა"</string>
     <string name="spoken_emoji_1F500" msgid="2389947994502144547">"გადაჯვარედინებული მარჯვნივ მიმართული ისრები"</string>
-    <string name="spoken_emoji_1F501" msgid="2132188352433347009">"საათის მიმართულებით მერჯვენა და მრცხენა ღია წრიული ისრები"</string>
-    <string name="spoken_emoji_1F502" msgid="2361976580513178391">"საათის მიმართულებით მერჯვენა და მრცხენა ღია წრიული ისრები, ერთიანით წრეში"</string>
+    <string name="spoken_emoji_1F501" msgid="2132188352433347009">"საათის მიმართულებით მარჯვენა და მარცხენა ღია წრიული ისრები"</string>
+    <string name="spoken_emoji_1F502" msgid="2361976580513178391">"საათის მიმართულებით მარჯვენა და მარცხენა ღია წრიული ისრები, ერთიანით წრეში"</string>
     <string name="spoken_emoji_1F503" msgid="8936283551917858793">"საათის მიმართულებით ქვედა და ზედა ღია წრიული ისრები"</string>
     <string name="spoken_emoji_1F504" msgid="708290317843535943">"საათის საწინააღმდეგო მიმართულებით ქვედა და ზედა ღია წრიული ისრები"</string>
     <string name="spoken_emoji_1F505" msgid="6348909939004951860">"დაბალი სიკაშკაშის სიმბოლო"</string>
@@ -653,9 +653,9 @@
     <string name="spoken_emoji_1F52C" msgid="1330294501371770790">"მიკროსკოპი"</string>
     <string name="spoken_emoji_1F52D" msgid="7549551775445177140">"ტელესკოპი"</string>
     <string name="spoken_emoji_1F52E" msgid="4457099417872625141">"კრისტალის ბურთი"</string>
-    <string name="spoken_emoji_1F52F" msgid="8899031001317442792">"ექვს"</string>
+    <string name="spoken_emoji_1F52F" msgid="8899031001317442792">"ექვსქიმა ვარსკვლავი შუა წერტილით"</string>
     <string name="spoken_emoji_1F530" msgid="3572898444281774023">"დამწყების იაპონური სიმბოლო"</string>
-    <string name="spoken_emoji_1F531" msgid="5225633376450025396">"საკმაპის ემბლემა"</string>
+    <string name="spoken_emoji_1F531" msgid="5225633376450025396">"სამკაპის ემბლემა"</string>
     <string name="spoken_emoji_1F532" msgid="9169568490485180779">"შავი კვადრატული ღილაკი"</string>
     <string name="spoken_emoji_1F533" msgid="6554193837201918598">"თეთრი კვადრატული ღილაკი"</string>
     <string name="spoken_emoji_1F534" msgid="8339298801331865340">"დიდი წითელი წრე"</string>
@@ -712,7 +712,7 @@
     <string name="spoken_emoji_1F60C" msgid="349384012958268496">"შებამოგვრილი სახე"</string>
     <string name="spoken_emoji_1F60D" msgid="7921853137164938391">"მომღიმარი სახე გულის ფორმის თვალებით"</string>
     <string name="spoken_emoji_1F60E" msgid="441718886380605643">"მომღიმარი სახე მზის სათვალეებით"</string>
-    <string name="spoken_emoji_1F60F" msgid="2674453144890180538">"თავმომწონე სახ"</string>
+    <string name="spoken_emoji_1F60F" msgid="2674453144890180538">"თავმომწონე სახე"</string>
     <string name="spoken_emoji_1F610" msgid="3225675825334102369">"ნეიტრალური სახე"</string>
     <string name="spoken_emoji_1F611" msgid="7199179827619679668">"უემოციო სახე"</string>
     <string name="spoken_emoji_1F612" msgid="985081329745137998">"უკმაყოფილო სახე"</string>
@@ -769,7 +769,7 @@
     <string name="spoken_emoji_1F649" msgid="8486145279809495102">"არ-მესმის მაიმუნი"</string>
     <string name="spoken_emoji_1F64A" msgid="1237524974033228660">"არ ვლაპარაკობ მაიმუნი"</string>
     <string name="spoken_emoji_1F64B" msgid="4251150782016370475">"ბედნიერი, ხელაწეული ადამიანი"</string>
-    <string name="spoken_emoji_1F64C" msgid="5446231430684558344">"სიხარულით ხელაპყრობილი ადამინი"</string>
+    <string name="spoken_emoji_1F64C" msgid="5446231430684558344">"სიხარულით ხელაპყრობილი ადამიანი"</string>
     <string name="spoken_emoji_1F64D" msgid="4646485595309482342">"წარბშეკრული ადამიანი"</string>
     <string name="spoken_emoji_1F64E" msgid="3376579939836656097">"ადამიანი გაბუტული სახით"</string>
     <string name="spoken_emoji_1F64F" msgid="1044439574356230711">"ადამიანი დაწყობილი ხელებით"</string>
@@ -819,7 +819,7 @@
     <string name="spoken_emoji_1F6AB" msgid="5313946262888343544">"შესვლის აკრძალვის ნიშანი"</string>
     <string name="spoken_emoji_1F6AC" msgid="6946858177965948288">"მოწევის ნიშანი"</string>
     <string name="spoken_emoji_1F6AD" msgid="6320088669185507241">"მოწევის აკრძალვის ნიშანი"</string>
-    <string name="spoken_emoji_1F6AE" msgid="1062469925352817189">"ნაგავის გამოყოფილ ადგილზე ჩაყრის სიმბოლო"</string>
+    <string name="spoken_emoji_1F6AE" msgid="1062469925352817189">"ნაგვის გამოყოფილ ადგილზე ჩაყრის სიმბოლო"</string>
     <string name="spoken_emoji_1F6AF" msgid="2286668056123642208">"სიმბოლო ნაგავი არ დაყაროთ"</string>
     <string name="spoken_emoji_1F6B0" msgid="179424763882990952">"დასალევად ვარგისი წყლის სიმბოლო"</string>
     <string name="spoken_emoji_1F6B1" msgid="5585212805429161877">"დასალევად უვარგისი წყლის სიმბოლო"</string>
