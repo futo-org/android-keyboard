@@ -22,7 +22,7 @@
     <style name="KeyboardIcons.LXX_Dark">
         <!-- Keyboard icons -->
         <!-- TODO: Update those icons for LXX theme. -->
-        <item name="iconShiftKey">@drawable/sym_keyboard_shift_holo_dark</item>
+        <item name="iconShiftKey">@drawable/sym_keyboard_shift_lxx_dark</item>
         <item name="iconDeleteKey">@drawable/sym_keyboard_delete_lxx_dark</item>
         <item name="iconSettingsKey">@drawable/sym_keyboard_settings_lxx_dark</item>
         <item name="iconSpaceKey">@drawable/sym_keyboard_spacebar_lxx_dark</item>
@@ -36,7 +36,7 @@
         <item name="iconTabKey">@drawable/sym_keyboard_tab_holo_dark</item>
         <item name="iconShortcutKey">@drawable/sym_keyboard_voice_lxx_dark</item>
         <item name="iconSpaceKeyForNumberLayout">@drawable/sym_keyboard_space_holo_dark</item>
-        <item name="iconShiftKeyShifted">@drawable/sym_keyboard_shift_locked_holo_dark</item>
+        <item name="iconShiftKeyShifted">@drawable/sym_keyboard_shift_locked_lxx_dark</item>
         <item name="iconShortcutKeyDisabled">@drawable/sym_keyboard_voice_off_lxx_dark</item>
         <item name="iconTabKeyPreview">@drawable/sym_keyboard_feedback_tab</item>
         <item name="iconLanguageSwitchKey">@drawable/sym_keyboard_language_switch_lxx_dark</item>
