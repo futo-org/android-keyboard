@@ -25,7 +25,7 @@
     <string name="spoken_emoji_203C" msgid="153340916701508663">"İki nida işarəsi"</string>
     <string name="spoken_emoji_2049" msgid="4877256448299555371">"Suallı nida işarəsi"</string>
     <string name="spoken_emoji_2122" msgid="9188440722954720429">"Ticarət nişanı"</string>
-    <string name="spoken_emoji_2139" msgid="9114342638917304327">"Informasiya mənbəyi"</string>
+    <string name="spoken_emoji_2139" msgid="9114342638917304327">"İnformasiya mənbəyi"</string>
     <string name="spoken_emoji_2194" msgid="8055202727034946680">"Sola-sağa ox"</string>
     <string name="spoken_emoji_2195" msgid="8028122253301087407">"Yuxarı-aşağı ox"</string>
     <string name="spoken_emoji_2196" msgid="4019164898967854363">"Şimal-qərb ox"</string>
@@ -55,7 +55,7 @@
     <string name="spoken_emoji_2601" msgid="6205136889311537150">"Bulud"</string>
     <string name="spoken_emoji_260E" msgid="8670395193046424238">"Qara telefon"</string>
     <string name="spoken_emoji_2611" msgid="4530550203347054611">"Qeydli səsvermə qutusu"</string>
-    <string name="spoken_emoji_2614" msgid="1612791247861229500">"Damcılı çətir"</string>
+    <string name="spoken_emoji_2614" msgid="1612791247861229500">"Yağışlı çətir"</string>
     <string name="spoken_emoji_2615" msgid="3320562382424018588">"İsti içki"</string>
     <string name="spoken_emoji_261D" msgid="4690554173549768467">"Yuxarı göstərən barmaq"</string>
     <string name="spoken_emoji_263A" msgid="3170094381521989300">"Ağ gülümsəyən sima"</string>
@@ -63,7 +63,7 @@
     <string name="spoken_emoji_2649" msgid="7694461245947059086">"Buğa"</string>
     <string name="spoken_emoji_264A" msgid="1258074605878705030">"Əkizlər"</string>
     <string name="spoken_emoji_264B" msgid="4409219914377810956">"Xərçəng"</string>
-    <string name="spoken_emoji_264C" msgid="6520255367817054163">"Leo"</string>
+    <string name="spoken_emoji_264C" msgid="6520255367817054163">"Şir"</string>
     <string name="spoken_emoji_264D" msgid="1504758945499854018">"Qız"</string>
     <string name="spoken_emoji_264E" msgid="2354847104530633519">"Tərəzi"</string>
     <string name="spoken_emoji_264F" msgid="5822933280406416112">"Əqrəb"</string>
@@ -74,12 +74,12 @@
     <string name="spoken_emoji_2660" msgid="4541170554542412536">"Qara nizə"</string>
     <string name="spoken_emoji_2663" msgid="3669352721942285724">"Qara xaç"</string>
     <string name="spoken_emoji_2665" msgid="6347941599683765843">"Qara ürək"</string>
-    <string name="spoken_emoji_2666" msgid="8296769213401115999">"Qara qaval"</string>
+    <string name="spoken_emoji_2666" msgid="8296769213401115999">"Qara romb"</string>
     <string name="spoken_emoji_2668" msgid="7063148281053820386">"İsti bulaqlar"</string>
     <string name="spoken_emoji_267B" msgid="21716857176812762">"Qara universal təkrar istifadə simvolu"</string>
     <string name="spoken_emoji_267F" msgid="8833496533226475443">"Təkərli kreslo"</string>
     <string name="spoken_emoji_2693" msgid="7443148847598433088">"Lövbər"</string>
-    <string name="spoken_emoji_26A0" msgid="6272635532992727510">"Xəbərdarlıq"</string>
+    <string name="spoken_emoji_26A0" msgid="6272635532992727510">"Xəbərdarlıq işarəsi"</string>
     <string name="spoken_emoji_26A1" msgid="5604749644693339145">"Yüksək voltaj simvolu"</string>
     <string name="spoken_emoji_26AA" msgid="8005748091690377153">"Orta ağ çevrə"</string>
     <string name="spoken_emoji_26AB" msgid="1655910278422753244">"Orta qara çevrə"</string>
@@ -91,12 +91,12 @@
     <string name="spoken_emoji_26D4" msgid="2231451988209604130">"Giriş qadağası"</string>
     <string name="spoken_emoji_26EA" msgid="7513319636103804907">"Kilsə"</string>
     <string name="spoken_emoji_26F2" msgid="7134115206158891037">"Fəvvarə"</string>
-    <string name="spoken_emoji_26F3" msgid="4912302210162075465">"Bayraqda deşik"</string>
+    <string name="spoken_emoji_26F3" msgid="4912302210162075465">"Deşikdə bayraq"</string>
     <string name="spoken_emoji_26F5" msgid="4766328116769075217">"Yeklənli qayıq"</string>
     <string name="spoken_emoji_26FA" msgid="5888017494809199037">"Çadır"</string>
     <string name="spoken_emoji_26FD" msgid="2417060622927453534">"Yanacaq nasosu"</string>
     <string name="spoken_emoji_2702" msgid="4005741160717451912">"Qara qayçı"</string>
-    <string name="spoken_emoji_2705" msgid="164605766946697759">"Ağ ağır qeyd nişanı"</string>
+    <string name="spoken_emoji_2705" msgid="164605766946697759">"Ağ qalın qeyd nişanı"</string>
     <string name="spoken_emoji_2708" msgid="7153840886849268988">"Təyyarə"</string>
     <string name="spoken_emoji_2709" msgid="2217319160724311369">"Zərf"</string>
     <string name="spoken_emoji_270A" msgid="508347232762319473">"Qaldırılmış yumruq"</string>
@@ -104,8 +104,8 @@
     <string name="spoken_emoji_270C" msgid="1344288035704944581">"Qələbə əli"</string>
     <string name="spoken_emoji_270F" msgid="6108251586067318718">"Karandaş"</string>
     <string name="spoken_emoji_2712" msgid="6320544535087710482">"Qara pero"</string>
-    <string name="spoken_emoji_2714" msgid="1968242800064001654">"Ağır qeyd nişanı"</string>
-    <string name="spoken_emoji_2716" msgid="511941294762977228">"Ağır vurma x"</string>
+    <string name="spoken_emoji_2714" msgid="1968242800064001654">"Qalın qeyd nişanı"</string>
+    <string name="spoken_emoji_2716" msgid="511941294762977228">"Qalın x vurma işarəsi"</string>
     <string name="spoken_emoji_2728" msgid="5650330815808691881">"Qığılcımlar"</string>
     <string name="spoken_emoji_2733" msgid="8915809595141157327">"Səkkiz guşəli ulduz"</string>
     <string name="spoken_emoji_2734" msgid="4846583547980754332">"Səkkiz guşəli qara ulduz"</string>
@@ -116,23 +116,23 @@
     <string name="spoken_emoji_2753" msgid="6935897159942119808">"Qara sual işarəsi ornamenti"</string>
     <string name="spoken_emoji_2754" msgid="7277504915105532954">"Ağ sual işarəsi ornamenti"</string>
     <string name="spoken_emoji_2755" msgid="6853076969826960210">"Ağ nida işarəsi ornamenti"</string>
-    <string name="spoken_emoji_2757" msgid="3707907828776912174">"Ağır nida işarəsi"</string>
+    <string name="spoken_emoji_2757" msgid="3707907828776912174">"Qalın nida işarəsi"</string>
     <string name="spoken_emoji_2764" msgid="4214257843609432167">"Yüklü qara ürək"</string>
-    <string name="spoken_emoji_2795" msgid="6563954833786162168">"Ağır toplama işarəsi"</string>
-    <string name="spoken_emoji_2796" msgid="5990926508250772777">"Ağır çıxma işarəsi"</string>
-    <string name="spoken_emoji_2797" msgid="24694184172879174">"Ağır bölmə işarəsi"</string>
+    <string name="spoken_emoji_2795" msgid="6563954833786162168">"Qalın toplama işarəsi"</string>
+    <string name="spoken_emoji_2796" msgid="5990926508250772777">"Qalın çıxma işarəsi"</string>
+    <string name="spoken_emoji_2797" msgid="24694184172879174">"Qalın bölmə işarəsi"</string>
     <string name="spoken_emoji_27A1" msgid="3513434778263100580">"Qara sağa ox"</string>
-    <string name="spoken_emoji_27B0" msgid="203395646864662198">"Buruq petlə"</string>
-    <string name="spoken_emoji_27BF" msgid="4940514642375640510">"İkiqat buruq petlə"</string>
-    <string name="spoken_emoji_2934" msgid="9062130477982973457">"Yuxarı əyilən sağa ox"</string>
-    <string name="spoken_emoji_2935" msgid="6198710960720232074">"Aşağı əyilən sağa ox"</string>
+    <string name="spoken_emoji_27B0" msgid="203395646864662198">"Burulmuş halqa"</string>
+    <string name="spoken_emoji_27BF" msgid="4940514642375640510">"İki dəfə burulmuş halqa"</string>
+    <string name="spoken_emoji_2934" msgid="9062130477982973457">"Yuxarı sağa əyilən ox"</string>
+    <string name="spoken_emoji_2935" msgid="6198710960720232074">"Aşağı sağa əyilən ox"</string>
     <string name="spoken_emoji_2B05" msgid="4813405635410707690">"Qara sola ox"</string>
     <string name="spoken_emoji_2B06" msgid="1223172079106250748">"Qara yuxarı ox"</string>
     <string name="spoken_emoji_2B07" msgid="1599124424746596150">"Qara aşağı ox"</string>
     <string name="spoken_emoji_2B1B" msgid="3461247311988501626">"Qara böyük kvadrat"</string>
     <string name="spoken_emoji_2B1C" msgid="5793146430145248915">"Ağ böyük kvadrat"</string>
     <string name="spoken_emoji_2B50" msgid="3850845519526950524">"Ağ orta ulduz"</string>
-    <string name="spoken_emoji_2B55" msgid="9137882158811541824">"Ağır böyük çevrə"</string>
+    <string name="spoken_emoji_2B55" msgid="9137882158811541824">"Böyük qalın çevrə"</string>
     <string name="spoken_emoji_3030" msgid="4609172241893565639">"Dalğalı tire"</string>
     <string name="spoken_emoji_303D" msgid="2545833934975907505">"Qismən dəyişmə işarəsi"</string>
     <string name="spoken_emoji_3297" msgid="928912923628973800">"Çevrəli təbrik ideoqramı"</string>
@@ -163,18 +163,18 @@
     <string name="spoken_emoji_1F234" msgid="3546951604285970768">"Kvadrat qəbul ideoqramı"</string>
     <string name="spoken_emoji_1F235" msgid="5320186982841793711">"Kvadrat tam məşğulluq ideoqramı"</string>
     <string name="spoken_emoji_1F236" msgid="879755752069393034">"Kvadrat ödənilmiş ideoqramı"</string>
-    <string name="spoken_emoji_1F237" msgid="6741807001205851437">"Aylıq kvadrat ideoqraf"</string>
-    <string name="spoken_emoji_1F238" msgid="5504414186438196912">"Kvadrat tətbiq ideoqrafı"</string>
-    <string name="spoken_emoji_1F239" msgid="1634067311597618959">"Kvadrat endirim ideoqrafı"</string>
-    <string name="spoken_emoji_1F23A" msgid="3107862957630169536">"Kvadrat biznes ideoqrafı"</string>
-    <string name="spoken_emoji_1F250" msgid="6586943922806727907">"Çevrəli üstünlük ideoqrafı"</string>
-    <string name="spoken_emoji_1F251" msgid="9099032855993346948">"Çevrəli qəbul ideoqrafı"</string>
+    <string name="spoken_emoji_1F237" msgid="6741807001205851437">"Aylıq kvadrat ideoqram"</string>
+    <string name="spoken_emoji_1F238" msgid="5504414186438196912">"Kvadrat tətbiq ideoqramı"</string>
+    <string name="spoken_emoji_1F239" msgid="1634067311597618959">"Kvadrat endirim ideoqramı"</string>
+    <string name="spoken_emoji_1F23A" msgid="3107862957630169536">"Kvadrat biznes ideoqramı"</string>
+    <string name="spoken_emoji_1F250" msgid="6586943922806727907">"Çevrəli üstünlük ideoqramı"</string>
+    <string name="spoken_emoji_1F251" msgid="9099032855993346948">"Çevrəli qəbul ideoqramı"</string>
     <string name="spoken_emoji_1F300" msgid="4720098285295840383">"Siklon"</string>
     <string name="spoken_emoji_1F301" msgid="3601962477653752974">"Dumanlı"</string>
     <string name="spoken_emoji_1F302" msgid="3404357123421753593">"Bağlı çətir"</string>
     <string name="spoken_emoji_1F303" msgid="3899301321538188206">"Ulduzlu gecə"</string>
     <string name="spoken_emoji_1F304" msgid="2767148930689050040">"Dağların arxasından doğan günəş"</string>
-    <string name="spoken_emoji_1F305" msgid="9165812924292061196">"Sunrise"</string>
+    <string name="spoken_emoji_1F305" msgid="9165812924292061196">"Günəşin doğuşu"</string>
     <string name="spoken_emoji_1F306" msgid="5889294736109193104">"Toranlıqda şəhər peyzajı"</string>
     <string name="spoken_emoji_1F307" msgid="2714290867291163713">"Binaların arxasında günün batması"</string>
     <string name="spoken_emoji_1F308" msgid="688704703985173377">"Göy qurşağı"</string>
@@ -213,14 +213,14 @@
     <string name="spoken_emoji_1F339" msgid="9128891447985256151">"Qızılgül"</string>
     <string name="spoken_emoji_1F33A" msgid="2025828400095233078">"Əməköməci"</string>
     <string name="spoken_emoji_1F33B" msgid="8163868254348448552">"Günəbaxan"</string>
-    <string name="spoken_emoji_1F33C" msgid="6850371206262335812">"Blossom"</string>
+    <string name="spoken_emoji_1F33C" msgid="6850371206262335812">"Çiçək"</string>
     <string name="spoken_emoji_1F33D" msgid="9033484052864509610">"Qarğıdalı qıçası"</string>
     <string name="spoken_emoji_1F33E" msgid="2540173396638444120">"Düyü qıçası"</string>
     <string name="spoken_emoji_1F33F" msgid="4384823344364908558">"Ot"</string>
     <string name="spoken_emoji_1F340" msgid="3494255459156499305">"Dörd yarpaqlı yonca"</string>
     <string name="spoken_emoji_1F341" msgid="4581959481754990158">"Ağcaqayın yarpağı"</string>
     <string name="spoken_emoji_1F342" msgid="3119068426871821222">"Düşmüş yarpaq"</string>
-    <string name="spoken_emoji_1F343" msgid="2663317495805149004">"Küləyin apardığı yarpaq"</string>
+    <string name="spoken_emoji_1F343" msgid="2663317495805149004">"Xəzan yarpağı"</string>
     <string name="spoken_emoji_1F344" msgid="2738517881678722159">"Göbələk"</string>
     <string name="spoken_emoji_1F345" msgid="6135288642349085554">"Pomidor"</string>
     <string name="spoken_emoji_1F346" msgid="2075395322785406367">"Badımcan"</string>
@@ -245,11 +245,11 @@
     <string name="spoken_emoji_1F359" msgid="3988148661730121958">"Düyü küftəsi"</string>
     <string name="spoken_emoji_1F35A" msgid="1763824172198327268">"Bişmiş düyü"</string>
     <string name="spoken_emoji_1F35B" msgid="62530406745717835">"Karri və düyü"</string>
-    <string name="spoken_emoji_1F35C" msgid="7537756539198945509">"Buxarlı fincan"</string>
+    <string name="spoken_emoji_1F35C" msgid="7537756539198945509">"Buxarlanan kasa"</string>
     <string name="spoken_emoji_1F35D" msgid="8173523083861875196">"Spagetti"</string>
     <string name="spoken_emoji_1F35E" msgid="2935428307894662571">"Çörək"</string>
     <string name="spoken_emoji_1F35F" msgid="4840297386785728443">"Fransızsayağı kartof"</string>
-    <string name="spoken_emoji_1F360" msgid="4094659855684686801">"Qovulmuş şirin kartof"</string>
+    <string name="spoken_emoji_1F360" msgid="4094659855684686801">"Qovrulmuş şirin kartof"</string>
     <string name="spoken_emoji_1F361" msgid="6475486395784096109">"Danqo"</string>
     <string name="spoken_emoji_1F362" msgid="5004692577661076275">"Oden"</string>
     <string name="spoken_emoji_1F363" msgid="1606603765717743806">"Suşi"</string>
@@ -267,7 +267,7 @@
     <string name="spoken_emoji_1F36F" msgid="5577915387425169439">"Bal dibçəyi"</string>
     <string name="spoken_emoji_1F370" msgid="7243244547866114951">"Dənəvər peçenye"</string>
     <string name="spoken_emoji_1F371" msgid="6731527040552916358">"Bento qutusu"</string>
-    <string name="spoken_emoji_1F372" msgid="1635035323832181733">"Qida dibçəyi"</string>
+    <string name="spoken_emoji_1F372" msgid="1635035323832181733">"Qazan"</string>
     <string name="spoken_emoji_1F373" msgid="7799289534289221045">"Yeməkbişirmə"</string>
     <string name="spoken_emoji_1F374" msgid="5973820884987069131">"Çəngəl-bıçaq"</string>
     <string name="spoken_emoji_1F375" msgid="1074832087699617700">"Qulpsuz fincan"</string>
@@ -282,8 +282,8 @@
     <string name="spoken_emoji_1F381" msgid="614180683680675444">"Bükülmüş hədiyyə"</string>
     <string name="spoken_emoji_1F382" msgid="4720497171946687501">"Doğum günü tortu"</string>
     <string name="spoken_emoji_1F383" msgid="3536505941578757623">"Jack fənəri"</string>
-    <string name="spoken_emoji_1F384" msgid="1797870204479059004">"Midal yolkası"</string>
-    <string name="spoken_emoji_1F385" msgid="1754174063483626367">"Noel ata"</string>
+    <string name="spoken_emoji_1F384" msgid="1797870204479059004">"Milad yolkası"</string>
+    <string name="spoken_emoji_1F385" msgid="1754174063483626367">"Şaxta Baba"</string>
     <string name="spoken_emoji_1F386" msgid="2130445450758114746">"Fişəng"</string>
     <string name="spoken_emoji_1F387" msgid="3403182563117999933">"Benqal odu fişəngi"</string>
     <string name="spoken_emoji_1F388" msgid="2903047203723251804">"Şar"</string>
@@ -291,14 +291,14 @@
     <string name="spoken_emoji_1F38A" msgid="6280428984773641322">"Konfetti topu"</string>
     <string name="spoken_emoji_1F38B" msgid="4902225837479015489">"Tanabata ağacı"</string>
     <string name="spoken_emoji_1F38C" msgid="7623268024030989365">"Çarpaz bayraqlar"</string>
-    <string name="spoken_emoji_1F38D" msgid="8237542796124408528">"Küknar dekorasiya"</string>
+    <string name="spoken_emoji_1F38D" msgid="8237542796124408528">"Küknar dekorasiyası"</string>
     <string name="spoken_emoji_1F38E" msgid="5373397476238212371">"Yapon kuklaları"</string>
     <string name="spoken_emoji_1F38F" msgid="8754091376829552844">"Karp strimer"</string>
     <string name="spoken_emoji_1F390" msgid="8903307048095431374">"Külək uğultusu"</string>
     <string name="spoken_emoji_1F391" msgid="2134952069191911841">"Aya tamaşa mərasimi"</string>
     <string name="spoken_emoji_1F392" msgid="6380405493914304737">"Məktəb çantası"</string>
     <string name="spoken_emoji_1F393" msgid="6947890064872470996">"Akademik papaq"</string>
-    <string name="spoken_emoji_1F3A0" msgid="3572095190082826057">"Karusel atı"</string>
+    <string name="spoken_emoji_1F3A0" msgid="3572095190082826057">"Karusel at"</string>
     <string name="spoken_emoji_1F3A1" msgid="4300565511681058798">"Mənzərə çarxı"</string>
     <string name="spoken_emoji_1F3A2" msgid="15486093912232140">"Dalğalı yelləncək"</string>
     <string name="spoken_emoji_1F3A3" msgid="921739319504942924">"Qırmaq və balıq"</string>
@@ -307,7 +307,7 @@
     <string name="spoken_emoji_1F3A6" msgid="26019057872319055">"Kino"</string>
     <string name="spoken_emoji_1F3A7" msgid="837856608794094105">"Qulaqlıq"</string>
     <string name="spoken_emoji_1F3A8" msgid="2332260356509244587">"Rəssam palitrası"</string>
-    <string name="spoken_emoji_1F3A9" msgid="9045869366525115256">"Papaq"</string>
+    <string name="spoken_emoji_1F3A9" msgid="9045869366525115256">"Sehrbaz papağı"</string>
     <string name="spoken_emoji_1F3AA" msgid="5728760354237132">"Sirk çadırı"</string>
     <string name="spoken_emoji_1F3AB" msgid="1657997517193216284">"Bilet"</string>
     <string name="spoken_emoji_1F3AC" msgid="4317366554314492152">"Çəkiliş lövhəsi"</string>
@@ -316,8 +316,8 @@
     <string name="spoken_emoji_1F3AF" msgid="5420539221790296407">"Birbaşa zərbə"</string>
     <string name="spoken_emoji_1F3B0" msgid="7440244806527891956">"Oyun avtomatı"</string>
     <string name="spoken_emoji_1F3B1" msgid="545544382391379234">"Bilyard"</string>
-    <string name="spoken_emoji_1F3B2" msgid="8302262034774787493">"Oyun ölüm"</string>
-    <string name="spoken_emoji_1F3B3" msgid="5180870610771027520">"Bowling"</string>
+    <string name="spoken_emoji_1F3B2" msgid="8302262034774787493">"Zər oyunu"</string>
+    <string name="spoken_emoji_1F3B3" msgid="5180870610771027520">"Boulinq"</string>
     <string name="spoken_emoji_1F3B4" msgid="4723852033266071564">"Güllü oyun kartları"</string>
     <string name="spoken_emoji_1F3B5" msgid="1998470239850548554">"Musiqili qeyd"</string>
     <string name="spoken_emoji_1F3B6" msgid="3827730457113941705">"Çoxsaylı musiqili qeyd"</string>
@@ -327,15 +327,15 @@
     <string name="spoken_emoji_1F3BA" msgid="4284064120340683558">"Truba"</string>
     <string name="spoken_emoji_1F3BB" msgid="2856598510069988745">"Skripka"</string>
     <string name="spoken_emoji_1F3BC" msgid="1608424748821446230">"Musiqi qiyməti"</string>
-    <string name="spoken_emoji_1F3BD" msgid="5490786111375627777">"Qaçan qurşaqlı köynək"</string>
+    <string name="spoken_emoji_1F3BD" msgid="5490786111375627777">"Kəmərli qaçış köynəyi"</string>
     <string name="spoken_emoji_1F3BE" msgid="1851613105691627931">"Tennis raketi və topu"</string>
-    <string name="spoken_emoji_1F3BF" msgid="6862405997423247921">"Ski və ski çəkməsi"</string>
+    <string name="spoken_emoji_1F3BF" msgid="6862405997423247921">"Xizək və xizək çəkməsi"</string>
     <string name="spoken_emoji_1F3C0" msgid="7421420756115104085">"Basketbol və çənbər"</string>
     <string name="spoken_emoji_1F3C1" msgid="6926537251677319922">"Dama-dama bayraq"</string>
     <string name="spoken_emoji_1F3C2" msgid="5708596929237987082">"Snoubordçu"</string>
-    <string name="spoken_emoji_1F3C3" msgid="5850982999510115824">"Qaçağan"</string>
-    <string name="spoken_emoji_1F3C4" msgid="8468355585994639838">"Sörfer"</string>
-    <string name="spoken_emoji_1F3C6" msgid="9094474706847545409">"Qənimət"</string>
+    <string name="spoken_emoji_1F3C3" msgid="5850982999510115824">"Qaçışçı"</string>
+    <string name="spoken_emoji_1F3C4" msgid="8468355585994639838">"Sörfçü"</string>
+    <string name="spoken_emoji_1F3C6" msgid="9094474706847545409">"Kubok"</string>
     <string name="spoken_emoji_1F3C7" msgid="8172206200368370116">"At yarışması"</string>
     <string name="spoken_emoji_1F3C8" msgid="5619171461277597709">"Amerikan futbolu"</string>
     <string name="spoken_emoji_1F3C9" msgid="6371294008765871043">"Reqbi Futbolu"</string>
@@ -353,14 +353,14 @@
     <string name="spoken_emoji_1F3EA" msgid="5081084413084360479">"Qarışıq mallar dükanı"</string>
     <string name="spoken_emoji_1F3EB" msgid="7010966528205150525">"Məktəb"</string>
     <string name="spoken_emoji_1F3EC" msgid="4845978861878295154">"Univermaq"</string>
-    <string name="spoken_emoji_1F3ED" msgid="3980316226665215370">"Fabrika"</string>
+    <string name="spoken_emoji_1F3ED" msgid="3980316226665215370">"Zavod"</string>
     <string name="spoken_emoji_1F3EE" msgid="1253964276770550248">"Izakaya fənəri"</string>
-    <string name="spoken_emoji_1F3EF" msgid="1128975573507389883">"Yapon qəsri"</string>
-    <string name="spoken_emoji_1F3F0" msgid="1544632297502291578">"Avropa qəsri"</string>
+    <string name="spoken_emoji_1F3EF" msgid="1128975573507389883">"Yapon qalası"</string>
+    <string name="spoken_emoji_1F3F0" msgid="1544632297502291578">"Avropa qalası"</string>
     <string name="spoken_emoji_1F400" msgid="2063034795679578294">"Siçovul"</string>
     <string name="spoken_emoji_1F401" msgid="6736421616217369594">"Siçan"</string>
     <string name="spoken_emoji_1F402" msgid="7276670995895485604">"Öküz"</string>
-    <string name="spoken_emoji_1F403" msgid="8045709541897118928">"Buyvol"</string>
+    <string name="spoken_emoji_1F403" msgid="8045709541897118928">"Su camışı"</string>
     <string name="spoken_emoji_1F404" msgid="5240777285676662335">"İnək"</string>
     <string name="spoken_emoji_1F406" msgid="5163461930159540018">"Leopard"</string>
     <string name="spoken_emoji_1F407" msgid="6905370221172708160">"Dovşan"</string>
@@ -369,7 +369,7 @@
     <string name="spoken_emoji_1F40A" msgid="1149626786411545043">"Timsah"</string>
     <string name="spoken_emoji_1F40B" msgid="5199104921208397643">"Balina"</string>
     <string name="spoken_emoji_1F40C" msgid="2704006052881702675">"İlbiz"</string>
-    <string name="spoken_emoji_1F40D" msgid="8648186663643157522">"Ilan"</string>
+    <string name="spoken_emoji_1F40D" msgid="8648186663643157522">"İlan"</string>
     <string name="spoken_emoji_1F40E" msgid="7219137467573327268">"At"</string>
     <string name="spoken_emoji_1F40F" msgid="7834336676729040395">"Qoç"</string>
     <string name="spoken_emoji_1F410" msgid="8686765722255775031">"Keçi"</string>
@@ -382,7 +382,7 @@
     <string name="spoken_emoji_1F417" msgid="6836978415840795128">"Qaban"</string>
     <string name="spoken_emoji_1F418" msgid="7926161463897783691">"Fil"</string>
     <string name="spoken_emoji_1F419" msgid="1055233959755784186">"Osminoq"</string>
-    <string name="spoken_emoji_1F41A" msgid="5195666556511558060">"Spiral qabıq"</string>
+    <string name="spoken_emoji_1F41A" msgid="5195666556511558060">"İlbiz qabığı"</string>
     <string name="spoken_emoji_1F41B" msgid="7652480167465557832">"Böcək"</string>
     <string name="spoken_emoji_1F41C" msgid="1123461148697574239">"Qarışqa"</string>
     <string name="spoken_emoji_1F41D" msgid="718579308764058851">"Bal arısı"</string>
@@ -393,8 +393,8 @@
     <string name="spoken_emoji_1F422" msgid="4106724877523329148">"Tısbağa"</string>
     <string name="spoken_emoji_1F423" msgid="4077407945958691907">"Yumurtadan çıxan cücə"</string>
     <string name="spoken_emoji_1F424" msgid="6911326019270172283">"Balaca cücə"</string>
-    <string name="spoken_emoji_1F425" msgid="5466514196557885577">"Balaca cücə üz tərəfdən"</string>
-    <string name="spoken_emoji_1F426" msgid="2163979138772892755">"Bird"</string>
+    <string name="spoken_emoji_1F425" msgid="5466514196557885577">"Önə baxan balaca cücə"</string>
+    <string name="spoken_emoji_1F426" msgid="2163979138772892755">"Quş"</string>
     <string name="spoken_emoji_1F427" msgid="3585670324511212961">"Pinqvin"</string>
     <string name="spoken_emoji_1F428" msgid="7955440808647898579">"Koala"</string>
     <string name="spoken_emoji_1F429" msgid="5028269352809819035">"Pudel"</string>
@@ -407,7 +407,7 @@
     <string name="spoken_emoji_1F430" msgid="525492897063150160">"Dovşan sifəti"</string>
     <string name="spoken_emoji_1F431" msgid="6051358666235016851">"Pişik sifəti"</string>
     <string name="spoken_emoji_1F432" msgid="7698001871193018305">"Əjdaha sifəti"</string>
-    <string name="spoken_emoji_1F433" msgid="3762356053512899326">"Fontanlı balina"</string>
+    <string name="spoken_emoji_1F433" msgid="3762356053512899326">"Fontan vuran balina"</string>
     <string name="spoken_emoji_1F434" msgid="3619943222159943226">"At sifəti"</string>
     <string name="spoken_emoji_1F435" msgid="59199202683252958">"Meymun sifəti"</string>
     <string name="spoken_emoji_1F436" msgid="340544719369009828">"İt sifəti"</string>
@@ -424,12 +424,12 @@
     <string name="spoken_emoji_1F443" msgid="1491504447758933115">"Burun"</string>
     <string name="spoken_emoji_1F444" msgid="3654613047946080332">"Ağız"</string>
     <string name="spoken_emoji_1F445" msgid="7024905244040509204">"Dil"</string>
-    <string name="spoken_emoji_1F446" msgid="2150365643636471745">"Ağ yuxarı göstərən bekhend indeks"</string>
-    <string name="spoken_emoji_1F447" msgid="8794022344940891388">"Ağ aşağı göstərən bekhend indeks"</string>
-    <string name="spoken_emoji_1F448" msgid="3261812959215550650">"Ağ sola göstərən bekhend indeks"</string>
-    <string name="spoken_emoji_1F449" msgid="4764447975177805991">"Ağ sağa göstərən bekhend indeks"</string>
+    <string name="spoken_emoji_1F446" msgid="2150365643636471745">"Yuxarı işarə edən ağ rəngli əl indeksi"</string>
+    <string name="spoken_emoji_1F447" msgid="8794022344940891388">"Aşağı işarə edən ağ rəngli əl indeksi"</string>
+    <string name="spoken_emoji_1F448" msgid="3261812959215550650">"Sola işarə edən ağ rəngli əl indeksi"</string>
+    <string name="spoken_emoji_1F449" msgid="4764447975177805991">"Sağa işarə edən ağ rəngli əl indeksi"</string>
     <string name="spoken_emoji_1F44A" msgid="7197417095486424841">"Yumruq işarəsi"</string>
-    <string name="spoken_emoji_1F44B" msgid="1975968945250833117">"Yellənən ən işarəsi"</string>
+    <string name="spoken_emoji_1F44B" msgid="1975968945250833117">"Yellənən əl işarəsi"</string>
     <string name="spoken_emoji_1F44C" msgid="3185919567897876562">"Ok əl işarəsi"</string>
     <string name="spoken_emoji_1F44D" msgid="6182553970602667815">"Yuxarı baş barmaq işarəsi"</string>
     <string name="spoken_emoji_1F44E" msgid="8030851867365111809">"Aşağı baş barmaq işarəsi"</string>
@@ -439,14 +439,14 @@
     <string name="spoken_emoji_1F452" msgid="4567394011149905466">"Qadın papağı"</string>
     <string name="spoken_emoji_1F453" msgid="5978410551173163010">"Eynək"</string>
     <string name="spoken_emoji_1F454" msgid="348469036193323252">"Qalstuk"</string>
-    <string name="spoken_emoji_1F455" msgid="5665118831861433578">"T-shirt"</string>
+    <string name="spoken_emoji_1F455" msgid="5665118831861433578">"Qısaqol köynək"</string>
     <string name="spoken_emoji_1F456" msgid="1890991330923356408">"Cins"</string>
     <string name="spoken_emoji_1F457" msgid="3904310482655702620">"Don"</string>
     <string name="spoken_emoji_1F458" msgid="5704243858031107692">"Kimono"</string>
     <string name="spoken_emoji_1F459" msgid="3553148747050035251">"Bikini"</string>
     <string name="spoken_emoji_1F45A" msgid="1389654639484716101">"Qadın geyimi"</string>
     <string name="spoken_emoji_1F45B" msgid="1113293170254222904">"Pulqabı"</string>
-    <string name="spoken_emoji_1F45C" msgid="3410257778598006936">"Sumka"</string>
+    <string name="spoken_emoji_1F45C" msgid="3410257778598006936">"Çanta"</string>
     <string name="spoken_emoji_1F45D" msgid="812176504300064819">"Kisə"</string>
     <string name="spoken_emoji_1F45E" msgid="2901741399934723562">"Kişi ayaqqabısı"</string>
     <string name="spoken_emoji_1F45F" msgid="6828566359287798863">"İdmançı ayaqqabısı"</string>
@@ -460,13 +460,13 @@
     <string name="spoken_emoji_1F467" msgid="8237080594860144998">"Qız"</string>
     <string name="spoken_emoji_1F468" msgid="6081300722526675382">"Kişi"</string>
     <string name="spoken_emoji_1F469" msgid="1090140923076108158">"Qadın"</string>
-    <string name="spoken_emoji_1F46A" msgid="5063570981942606595">"Ailəvi"</string>
+    <string name="spoken_emoji_1F46A" msgid="5063570981942606595">"Ailə"</string>
     <string name="spoken_emoji_1F46B" msgid="6795882374287327952">"Qadın və kişi əl-ələ tutur"</string>
     <string name="spoken_emoji_1F46C" msgid="6844464165783964495">"İki kişi əl-ələ tutur"</string>
     <string name="spoken_emoji_1F46D" msgid="2316773068014053180">"İki qadın əl-ələ tutur"</string>
     <string name="spoken_emoji_1F46E" msgid="5897625605860822401">"Polis içşisi"</string>
     <string name="spoken_emoji_1F46F" msgid="7716871657717641490">"Dövşanqulaq qadın"</string>
-    <string name="spoken_emoji_1F470" msgid="6409995400510338892">"Örtüklü gəlin"</string>
+    <string name="spoken_emoji_1F470" msgid="6409995400510338892">"Duvaqlı gəlin"</string>
     <string name="spoken_emoji_1F471" msgid="3058247860441670806">"Sarı saçlı adam"</string>
     <string name="spoken_emoji_1F472" msgid="3928854667819339142">"Qua pi maolu kişi"</string>
     <string name="spoken_emoji_1F473" msgid="5921952095808988381">"Çalmalı kişi"</string>
@@ -480,29 +480,29 @@
     <string name="spoken_emoji_1F47B" msgid="2608250873194079390">"Ruh"</string>
     <string name="spoken_emoji_1F47C" msgid="3838699131276537421">"Uşaq mələk"</string>
     <string name="spoken_emoji_1F47D" msgid="2874077455888369538">"Yad planetli"</string>
-    <string name="spoken_emoji_1F47E" msgid="3642607168625579507">"Yad planetli monster"</string>
+    <string name="spoken_emoji_1F47E" msgid="3642607168625579507">"Yad planetli qulyabani"</string>
     <string name="spoken_emoji_1F47F" msgid="441605977269926252">"İmp"</string>
     <string name="spoken_emoji_1F480" msgid="3696253485164878739">"Kəllə"</string>
     <string name="spoken_emoji_1F481" msgid="320408708521966893">"Qəbul bölməsi adamı"</string>
     <string name="spoken_emoji_1F482" msgid="3424354860245608949">"Keşikçi"</string>
     <string name="spoken_emoji_1F483" msgid="3221113594843849083">"Rəqqas"</string>
-    <string name="spoken_emoji_1F484" msgid="7348014979080444885">"Pomada"</string>
-    <string name="spoken_emoji_1F485" msgid="6133507975565116339">"Lak"</string>
-    <string name="spoken_emoji_1F486" msgid="9085459968247394155">"Üz massajı"</string>
+    <string name="spoken_emoji_1F484" msgid="7348014979080444885">"Dodaq boyası"</string>
+    <string name="spoken_emoji_1F485" msgid="6133507975565116339">"Dırnaq boyası"</string>
+    <string name="spoken_emoji_1F486" msgid="9085459968247394155">"Üz masajı"</string>
     <string name="spoken_emoji_1F487" msgid="1479113637259592150">"Saç düzümü"</string>
     <string name="spoken_emoji_1F488" msgid="6922559285234100252">"Bərbərxana"</string>
     <string name="spoken_emoji_1F489" msgid="8114863680950147305">"Şpris"</string>
     <string name="spoken_emoji_1F48A" msgid="8526843630145963032">"Həb"</string>
-    <string name="spoken_emoji_1F48B" msgid="2538528967897640292">"Öpüş"</string>
+    <string name="spoken_emoji_1F48B" msgid="2538528967897640292">"Öpüş izi"</string>
     <string name="spoken_emoji_1F48C" msgid="1681173271652890232">"Sevgi məktubu"</string>
-    <string name="spoken_emoji_1F48D" msgid="8259886164999042373">"Səs"</string>
+    <string name="spoken_emoji_1F48D" msgid="8259886164999042373">"Zəng"</string>
     <string name="spoken_emoji_1F48E" msgid="8777981696011111101">"Qiymətli daş"</string>
-    <string name="spoken_emoji_1F48F" msgid="741593675183677907">"Öp"</string>
+    <string name="spoken_emoji_1F48F" msgid="741593675183677907">"Öpüş"</string>
     <string name="spoken_emoji_1F490" msgid="4482549128959806736">"Buket"</string>
     <string name="spoken_emoji_1F491" msgid="2305245307882441500">"Ürəkli cütlük"</string>
     <string name="spoken_emoji_1F492" msgid="3884119934804475732">"Toy"</string>
     <string name="spoken_emoji_1F493" msgid="1208828371565525121">"Ürək döyüntüsü"</string>
-    <string name="spoken_emoji_1F494" msgid="6198876398509338718">"Qırılmış ürək"</string>
+    <string name="spoken_emoji_1F494" msgid="6198876398509338718">"Sınmış qəlb"</string>
     <string name="spoken_emoji_1F495" msgid="9206202744967130919">"İki ürək"</string>
     <string name="spoken_emoji_1F496" msgid="5436953041732207775">"Parlaq ürək"</string>
     <string name="spoken_emoji_1F497" msgid="7285142863951448473">"Böyüyən ürək"</string>
@@ -520,7 +520,7 @@
     <string name="spoken_emoji_1F4A3" msgid="6378351742957821735">"Bomba"</string>
     <string name="spoken_emoji_1F4A4" msgid="7217736258870346625">"Yuxu işarəsi"</string>
     <string name="spoken_emoji_1F4A5" msgid="5401995723541239858">"Partlayış"</string>
-    <string name="spoken_emoji_1F4A6" msgid="3837802182716483848">"Sıçrayan damcı işarəsi"</string>
+    <string name="spoken_emoji_1F4A6" msgid="3837802182716483848">"Tər işarəsi"</string>
     <string name="spoken_emoji_1F4A7" msgid="5718438987757885141">"Damcı"</string>
     <string name="spoken_emoji_1F4A8" msgid="4472108229720006377">"Tire simvolu"</string>
     <string name="spoken_emoji_1F4A9" msgid="1240958472788430032">"Kakaşka"</string>
@@ -534,13 +534,13 @@
     <string name="spoken_emoji_1F4B1" msgid="8339494003418572905">"Valyuta mübadiləsi"</string>
     <string name="spoken_emoji_1F4B2" msgid="3179159430187243132">"Ağır dollar işarəsi"</string>
     <string name="spoken_emoji_1F4B3" msgid="5375412518221759596">"Kredit kartı"</string>
-    <string name="spoken_emoji_1F4B4" msgid="1068592463669453204">"Yen işarəsi əskinaz"</string>
+    <string name="spoken_emoji_1F4B4" msgid="1068592463669453204">"Yen işarəli əskinaz"</string>
     <string name="spoken_emoji_1F4B5" msgid="1426708699891832564">"Dollar nişanlı əskinaz"</string>
     <string name="spoken_emoji_1F4B6" msgid="8289249930736444837">"Avro işarəli əskinaz"</string>
     <string name="spoken_emoji_1F4B7" msgid="5245100496860739429">"Funt işarəli əskinaz"</string>
     <string name="spoken_emoji_1F4B8" msgid="4401099580477164440">"Qanadlı pul"</string>
     <string name="spoken_emoji_1F4B9" msgid="647509393536679903">"Qalxan diaqram və yen işarəsi"</string>
-    <string name="spoken_emoji_1F4BA" msgid="1269737854891046321">"Oturac"</string>
+    <string name="spoken_emoji_1F4BA" msgid="1269737854891046321">"Oturacaq"</string>
     <string name="spoken_emoji_1F4BB" msgid="6252883563347816451">"Şəxsi kompüter"</string>
     <string name="spoken_emoji_1F4BC" msgid="6182597732218446206">"Portfel"</string>
     <string name="spoken_emoji_1F4BD" msgid="5820961044768829176">"Mini disk"</string>
@@ -549,17 +549,17 @@
     <string name="spoken_emoji_1F4C0" msgid="491582501089694461">"DVD"</string>
     <string name="spoken_emoji_1F4C1" msgid="6645461382494158111">"Fayl qovluğu"</string>
     <string name="spoken_emoji_1F4C2" msgid="8095638715523765338">"Açıq fayl qovluğu"</string>
-    <string name="spoken_emoji_1F4C3" msgid="3727274466173970142">"Əyilmiş səhifə"</string>
+    <string name="spoken_emoji_1F4C3" msgid="3727274466173970142">"Qatlanmış səhifə"</string>
     <string name="spoken_emoji_1F4C4" msgid="4382570710795501612">"Səhifə"</string>
     <string name="spoken_emoji_1F4C5" msgid="8693944622627762487">"Təqvim"</string>
-    <string name="spoken_emoji_1F4C6" msgid="8469908708708424640">"Cırılan təqvim"</string>
+    <string name="spoken_emoji_1F4C6" msgid="8469908708708424640">"Qoparılan təqvim"</string>
     <string name="spoken_emoji_1F4C7" msgid="2665313547987324495">"Kart indeksi"</string>
     <string name="spoken_emoji_1F4C8" msgid="8007686702282833600">"Qalxan diaqram"</string>
     <string name="spoken_emoji_1F4C9" msgid="2271951411192893684">"Düşən diaqram"</string>
     <string name="spoken_emoji_1F4CA" msgid="3525692829622381444">"Panel diaqramı"</string>
     <string name="spoken_emoji_1F4CB" msgid="977639227554095521">"Pano"</string>
-    <string name="spoken_emoji_1F4CC" msgid="156107396088741574">"Kanselyar düyməsi"</string>
-    <string name="spoken_emoji_1F4CD" msgid="4266572175361190231">"Yumru kanselyar düyməsi"</string>
+    <string name="spoken_emoji_1F4CC" msgid="156107396088741574">"Basmadüymə"</string>
+    <string name="spoken_emoji_1F4CD" msgid="4266572175361190231">"Yumru basmadüymə"</string>
     <string name="spoken_emoji_1F4CE" msgid="6294288509864968290">"Skrepka"</string>
     <string name="spoken_emoji_1F4CF" msgid="149679400831136810">"Düz xətkeş"</string>
     <string name="spoken_emoji_1F4D0" msgid="8130339336619202915">"Üçbücaq xətkeş"</string>
@@ -578,12 +578,12 @@
     <string name="spoken_emoji_1F4DD" msgid="2494006707147586786">"Memo"</string>
     <string name="spoken_emoji_1F4DE" msgid="7883008605002117671">"Telefon qəbuledici"</string>
     <string name="spoken_emoji_1F4DF" msgid="3538610110623780465">"Peycer"</string>
-    <string name="spoken_emoji_1F4E0" msgid="2960778342609543077">"Fak cihazı"</string>
+    <string name="spoken_emoji_1F4E0" msgid="2960778342609543077">"Faks cihazı"</string>
     <string name="spoken_emoji_1F4E1" msgid="6269733703719242108">"Peyk antennası"</string>
-    <string name="spoken_emoji_1F4E2" msgid="1987535386302883116">"İctimai meqafon"</string>
-    <string name="spoken_emoji_1F4E3" msgid="5588916572878599224">"Sevincli meqafon"</string>
-    <string name="spoken_emoji_1F4E4" msgid="2063561529097749707">"Gedən sənəd siyirtməsi"</string>
-    <string name="spoken_emoji_1F4E5" msgid="3232462702926143576">"Gələn sənəd siyirtməsi"</string>
+    <string name="spoken_emoji_1F4E2" msgid="1987535386302883116">"Dinamik səsyüksəldici"</string>
+    <string name="spoken_emoji_1F4E3" msgid="5588916572878599224">"Səsyüksəldici"</string>
+    <string name="spoken_emoji_1F4E4" msgid="2063561529097749707">"Göndəriləcək sənəd siyirməsi"</string>
+    <string name="spoken_emoji_1F4E5" msgid="3232462702926143576">"Gələn sənəd siyirməsi"</string>
     <string name="spoken_emoji_1F4E6" msgid="3399454337197561635">"Paket"</string>
     <string name="spoken_emoji_1F4E7" msgid="5557136988503873238">"E-poçt simvolu"</string>
     <string name="spoken_emoji_1F4E8" msgid="30698793974124123">"Gələn zərf"</string>
@@ -600,23 +600,23 @@
     <string name="spoken_emoji_1F4F3" msgid="5003984447315754658">"Vibrasiya rejimi"</string>
     <string name="spoken_emoji_1F4F4" msgid="5549847566968306253">"Sönmüş mobil telefon"</string>
     <string name="spoken_emoji_1F4F5" msgid="3660199448671699238">"Mobil telefon qadağası"</string>
-    <string name="spoken_emoji_1F4F6" msgid="2676974903233268860">"Çubuqlu antenna"</string>
+    <string name="spoken_emoji_1F4F6" msgid="2676974903233268860">"Şəbəkə dalğası"</string>
     <string name="spoken_emoji_1F4F7" msgid="2643891943105989039">"Kamera"</string>
     <string name="spoken_emoji_1F4F9" msgid="4475626303058218048">"Videokamera"</string>
     <string name="spoken_emoji_1F4FA" msgid="1079796186652960775">"Televiziya"</string>
     <string name="spoken_emoji_1F4FB" msgid="3848729587403760645">"Radio"</string>
     <string name="spoken_emoji_1F4FC" msgid="8370432508874310054">"Videokasset"</string>
-    <string name="spoken_emoji_1F500" msgid="2389947994502144547">"Əyilmiş sağa oxlar"</string>
+    <string name="spoken_emoji_1F500" msgid="2389947994502144547">"Sağa əyilmiş oxlar"</string>
     <string name="spoken_emoji_1F501" msgid="2132188352433347009">"Saat əqrəbi istiqamətində sağa və sola açıq çevrəli oxlar"</string>
     <string name="spoken_emoji_1F502" msgid="2361976580513178391">"Çevrəyə alınmış saat əqrəbi istiqamətində sağa və sola açıq çevrəli oxlar"</string>
     <string name="spoken_emoji_1F503" msgid="8936283551917858793">"Saat əqrəbi istiqamətində aşağı və yuxarı açıq çevrəli oxlar"</string>
     <string name="spoken_emoji_1F504" msgid="708290317843535943">"Saat əqrəbi istiqaməti əksinə aşağı və yuxarı açıq çevrəli oxlar"</string>
     <string name="spoken_emoji_1F505" msgid="6348909939004951860">"Alçaq parlaqlıq simvolu"</string>
     <string name="spoken_emoji_1F506" msgid="4449609297521280173">"Yüksək parlaqlıq simvolu"</string>
-    <string name="spoken_emoji_1F507" msgid="7136386694923708448">"Ləğv edilmə xəttli dinamik"</string>
+    <string name="spoken_emoji_1F507" msgid="7136386694923708448">"Ləğv edilmə xətli dinamik"</string>
     <string name="spoken_emoji_1F508" msgid="5063567689831527865">"Dinamik"</string>
-    <string name="spoken_emoji_1F509" msgid="3948050077992370791">"Bir səs xəttli dinamik"</string>
-    <string name="spoken_emoji_1F50A" msgid="5818194948677277197">"Üç səs xəttli dinamik"</string>
+    <string name="spoken_emoji_1F509" msgid="3948050077992370791">"Bir xətli dinamik"</string>
+    <string name="spoken_emoji_1F50A" msgid="5818194948677277197">"Üç xətli dinamik"</string>
     <string name="spoken_emoji_1F50B" msgid="8083470451266295876">"Batareya"</string>
     <string name="spoken_emoji_1F50C" msgid="7793219132036431680">"Elektrik ştepseli"</string>
     <string name="spoken_emoji_1F50D" msgid="8140244710637926780">"Sola əyilmiş lupa"</string>
@@ -624,18 +624,18 @@
     <string name="spoken_emoji_1F50F" msgid="915079280472199605">"Dolma qələmli kilid"</string>
     <string name="spoken_emoji_1F510" msgid="7658381761691758318">"Açarlı bağlı kilid"</string>
     <string name="spoken_emoji_1F511" msgid="262319867774655688">"Açar"</string>
-    <string name="spoken_emoji_1F512" msgid="5628688337255115175">"Kilidlə"</string>
+    <string name="spoken_emoji_1F512" msgid="5628688337255115175">"Kilid"</string>
     <string name="spoken_emoji_1F513" msgid="8579201846619420981">"Açıq kilid"</string>
     <string name="spoken_emoji_1F514" msgid="7027268683047322521">"Zəng"</string>
     <string name="spoken_emoji_1F515" msgid="8903179856036069242">"Ləğv edilmiş zəng"</string>
     <string name="spoken_emoji_1F516" msgid="108097933937925381">"Əlfəcin"</string>
     <string name="spoken_emoji_1F517" msgid="2450846665734313397">"Link simvolu"</string>
     <string name="spoken_emoji_1F518" msgid="7028220286841437832">"Radio düyməsi"</string>
-    <string name="spoken_emoji_1F519" msgid="8211189165075445687">"Back with leftwards arrow above"</string>
-    <string name="spoken_emoji_1F51A" msgid="823966751787338892">"End with leftwards arrow above"</string>
-    <string name="spoken_emoji_1F51B" msgid="5920570742107943382">"On with exclamation mark with left right arrow above"</string>
-    <string name="spoken_emoji_1F51C" msgid="110609810659826676">"Tezliklə üzərində sağa oxlarla"</string>
-    <string name="spoken_emoji_1F51D" msgid="4087697222026095447">"Yuxarıda üzərində yuxarıya oxlarla"</string>
+    <string name="spoken_emoji_1F519" msgid="8211189165075445687">"Üzərində sola ox olan back simvolu"</string>
+    <string name="spoken_emoji_1F51A" msgid="823966751787338892">"Üzərində sola ox olan end simvolu"</string>
+    <string name="spoken_emoji_1F51B" msgid="5920570742107943382">"Üzərində sola sağa ox olan nida işarəli on simvolu"</string>
+    <string name="spoken_emoji_1F51C" msgid="110609810659826676">"Üzərində sağa ox olan soon simvolu"</string>
+    <string name="spoken_emoji_1F51D" msgid="4087697222026095447">"Üzərində yuxarı ox olan top simvolu"</string>
     <string name="spoken_emoji_1F51E" msgid="8512873526157201775">"On səkkiz yaşdan aşağı qadağası"</string>
     <string name="spoken_emoji_1F51F" msgid="8673370823728653973">"Klaviş qapağı on"</string>
     <string name="spoken_emoji_1F520" msgid="7335109890337048900">"Böyük latın hərfləri üçün daxiletmə simvolu"</string>
@@ -704,7 +704,7 @@
     <string name="spoken_emoji_1F604" msgid="5119021072966343531">"Açıq ağızlı, gülən gözlərlə gülümsəyən sima"</string>
     <string name="spoken_emoji_1F605" msgid="6140813923973561735">"Açıq ağızlı, soyuq tərli gülümsəyən sima"</string>
     <string name="spoken_emoji_1F606" msgid="3549936813966832799">"Açıq ağızlı, qapalı gözlü gülümsəyən sima"</string>
-    <string name="spoken_emoji_1F607" msgid="2826424078212384817">"Nimbalı gülümsyən sima"</string>
+    <string name="spoken_emoji_1F607" msgid="2826424078212384817">"Nimbalı gülümsəyən sima"</string>
     <string name="spoken_emoji_1F608" msgid="7343559595089811640">"Buynuzlu gülümsəyən sima"</string>
     <string name="spoken_emoji_1F609" msgid="5481030187207504405">"Göz vuran sima"</string>
     <string name="spoken_emoji_1F60A" msgid="5023337769148679767">"Gülən gözlərlə gülümsəyən sima"</string>
@@ -714,7 +714,7 @@
     <string name="spoken_emoji_1F60E" msgid="441718886380605643">"Gün eynəkli gülümsəyən sima"</string>
     <string name="spoken_emoji_1F60F" msgid="2674453144890180538">"Oğruncasına gülümsəyən sima"</string>
     <string name="spoken_emoji_1F610" msgid="3225675825334102369">"Neytral sima"</string>
-    <string name="spoken_emoji_1F611" msgid="7199179827619679668">"Ifadəsiz sima"</string>
+    <string name="spoken_emoji_1F611" msgid="7199179827619679668">"İfadəsiz sima"</string>
     <string name="spoken_emoji_1F612" msgid="985081329745137998">"Bezmiş sima"</string>
     <string name="spoken_emoji_1F613" msgid="5548607684830303562">"Soyuq tərli sima"</string>
     <string name="spoken_emoji_1F614" msgid="3196305665259916390">"Fikirli sima"</string>
@@ -724,9 +724,9 @@
     <string name="spoken_emoji_1F618" msgid="408207170572303753">"Öpüş atan sima"</string>
     <string name="spoken_emoji_1F619" msgid="8645430335143153645">"Gülən gözlərlə öpən sima"</string>
     <string name="spoken_emoji_1F61A" msgid="2882157190974340247">"Bağlı gözlərlə öpən sima"</string>
-    <string name="spoken_emoji_1F61B" msgid="3765927202787211499">"Dil çıxardan sima"</string>
-    <string name="spoken_emoji_1F61C" msgid="198943912107589389">"Dil çıxardan və göz vuran sima"</string>
-    <string name="spoken_emoji_1F61D" msgid="7643546385877816182">"Qapalı gözlərlə dil çıxardan sima"</string>
+    <string name="spoken_emoji_1F61B" msgid="3765927202787211499">"Dil çıxaran sima"</string>
+    <string name="spoken_emoji_1F61C" msgid="198943912107589389">"Dil çıxaran və göz vuran sima"</string>
+    <string name="spoken_emoji_1F61D" msgid="7643546385877816182">"Qapalı gözlərlə dil çıxaran sima"</string>
     <string name="spoken_emoji_1F61E" msgid="1528732952202098364">"Məyus sima"</string>
     <string name="spoken_emoji_1F61F" msgid="1853664164636082404">"Narahat sima"</string>
     <string name="spoken_emoji_1F620" msgid="6051942001307375830">"Hirsli sima"</string>
@@ -741,7 +741,7 @@
     <string name="spoken_emoji_1F629" msgid="1411538490319190118">"Bezmiş sima"</string>
     <string name="spoken_emoji_1F62A" msgid="4726686726690289969">"Yuxulu sima"</string>
     <string name="spoken_emoji_1F62B" msgid="3221980473921623613">"Yorğun sima"</string>
-    <string name="spoken_emoji_1F62C" msgid="4616356691941225182">"Qrimaslı sima"</string>
+    <string name="spoken_emoji_1F62C" msgid="4616356691941225182">"Qırışdırılmış sima"</string>
     <string name="spoken_emoji_1F62D" msgid="4283677508698812232">"Hönkür-hönkür ağlayan sima"</string>
     <string name="spoken_emoji_1F62E" msgid="726083405284353894">"Açıq ağızlı sima"</string>
     <string name="spoken_emoji_1F62F" msgid="7746620088234710962">"Susmağa məcbur sima"</string>
@@ -811,10 +811,10 @@
     <string name="spoken_emoji_1F6A3" msgid="8412962252222205387">"Avarlı qayıq"</string>
     <string name="spoken_emoji_1F6A4" msgid="8867571300266339211">"Sürətli qayıq"</string>
     <string name="spoken_emoji_1F6A5" msgid="7650260812741963884">"Horizontal svetofor"</string>
-    <string name="spoken_emoji_1F6A6" msgid="485575967773793454">"Vertikal svetofor"</string>
+    <string name="spoken_emoji_1F6A6" msgid="485575967773793454">"Vertikal işıqfor"</string>
     <string name="spoken_emoji_1F6A7" msgid="6411048933816976794">"Tikinti nişanı"</string>
     <string name="spoken_emoji_1F6A8" msgid="6345717218374788364">"Yanar mayaklı polis maşınları"</string>
-    <string name="spoken_emoji_1F6A9" msgid="6586380356807600412">"Postda üçbucaq bayraq"</string>
+    <string name="spoken_emoji_1F6A9" msgid="6586380356807600412">"Poçtda üçbucaq bayraq"</string>
     <string name="spoken_emoji_1F6AA" msgid="8954448167261738885">"Qapı"</string>
     <string name="spoken_emoji_1F6AB" msgid="5313946262888343544">"Giriş qadağası siqnalı"</string>
     <string name="spoken_emoji_1F6AC" msgid="6946858177965948288">"Siqaret çəkmək simvolu"</string>
