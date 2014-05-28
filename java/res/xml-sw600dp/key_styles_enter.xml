@@ -102,7 +102,7 @@
         latin:keySpec="!icon/enter_key|!code/key_enter"
         latin:keyLabelFlags="preserveCase|autoXScale|followKeyLabelRatio|followFunctionalTextColor"
         latin:keyActionFlags="noKeyPreview"
-        latin:backgroundType="functional"
+        latin:backgroundType="action"
         latin:parentStyle="navigateMoreKeysStyle" />
     <switch>
         <!-- Shift + Enter in textMultiLine field. -->
