@@ -21,7 +21,6 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_input_options" msgid="3909945612939668554">"Opcje wprowadzania"</string>
-    <string name="english_ime_research_log" msgid="8492602295696577851">"Polecenia dziennika badań"</string>
     <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"Przeszukaj kontakty"</string>
     <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"Sprawdzanie pisowni bierze pod uwagę wpisy z listy kontaktów."</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Wibracja przy naciśnięciu"</string>

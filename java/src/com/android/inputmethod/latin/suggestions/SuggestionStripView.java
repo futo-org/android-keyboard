@@ -47,11 +47,9 @@ import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
-import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.latin.settings.Settings;
 import com.android.inputmethod.latin.suggestions.MoreSuggestionsView.MoreSuggestionsListener;
 import com.android.inputmethod.latin.utils.ImportantNoticeUtils;
-import com.android.inputmethod.research.ResearchLogger;
 
 import java.util.ArrayList;
 
@@ -226,9 +224,6 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         mSuggestedWords = suggestedWords;
         mSuggestionsCountInStrip = mLayoutHelper.layoutAndReturnSuggestionCountInStrip(
                 mSuggestedWords, mSuggestionsStrip, this);
-        if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-            ResearchLogger.suggestionStripView_setSuggestions(mSuggestedWords);
-        }
         mStripVisibilityGroup.showSuggestionsStrip(isVoiceKeyEnabled());
     }
 

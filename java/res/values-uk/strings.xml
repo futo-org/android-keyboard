@@ -21,7 +21,6 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_input_options" msgid="3909945612939668554">"Парам. введення"</string>
-    <string name="english_ime_research_log" msgid="8492602295696577851">"Команди журналу дослідж."</string>
     <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"Шукати імена контактів"</string>
     <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"Програма перевірки правопису використ. записи зі списку контактів"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Вібр. при натисканні клавіш"</string>

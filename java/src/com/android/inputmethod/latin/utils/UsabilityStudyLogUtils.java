@@ -43,7 +43,6 @@ import java.util.Date;
 import java.util.Locale;
 
 public final class UsabilityStudyLogUtils {
-    // TODO: remove code duplication with ResearchLog class
     private static final String USABILITY_TAG = UsabilityStudyLogUtils.class.getSimpleName();
     private static final String FILENAME = "log.txt";
     private final Handler mLoggingHandler;
@@ -190,7 +189,7 @@ public final class UsabilityStudyLogUtils {
         return sb.toString();
     }
 
-    public void emailResearcherLogsAll() {
+    public void emailUsabilityStudyLogsAll() {
         mLoggingHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -210,7 +209,7 @@ public final class UsabilityStudyLogUtils {
                 }
                 mWriter.flush();
                 final String destPath = Environment.getExternalStorageDirectory()
-                        + "/research-" + currentDateTimeString + ".log";
+                        + "/usability-" + currentDateTimeString + ".log";
                 final File destFile = new File(destPath);
                 try {
                     final FileInputStream srcStream = new FileInputStream(mFile);
@@ -241,7 +240,7 @@ public final class UsabilityStudyLogUtils {
                 intent.setType("text/plain");
                 intent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + destPath));
                 intent.putExtra(Intent.EXTRA_SUBJECT,
-                        "[Research Logs] " + currentDateTimeString);
+                        "[Usability Study Logs] " + currentDateTimeString);
                 mIms.startActivity(intent);
             }
         });
