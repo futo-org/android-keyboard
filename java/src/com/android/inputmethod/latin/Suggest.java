@@ -18,7 +18,6 @@ package com.android.inputmethod.latin;
 
 import android.text.TextUtils;
 
-import com.android.inputmethod.event.Event;
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.define.ProductionFlag;

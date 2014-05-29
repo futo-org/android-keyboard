@@ -786,10 +786,11 @@ public final class InputLogic {
         final int codePoint = inputTransaction.mEvent.mCodePoint;
         final SettingsValues settingsValues = inputTransaction.mSettingsValues;
         boolean didAutoCorrect = false;
+        final boolean wasComposingWord = mWordComposer.isComposingWord();
         // We avoid sending spaces in languages without spaces if we were composing.
         final boolean shouldAvoidSendingCode = Constants.CODE_SPACE == codePoint
                 && !settingsValues.mSpacingAndPunctuations.mCurrentLanguageHasSpaces
-                && mWordComposer.isComposingWord();
+                && wasComposingWord;
         if (mWordComposer.isCursorFrontOrMiddleOfComposingWord()) {
             // If we are in the middle of a recorrection, we need to commit the recorrection
             // first so that we can insert the separator at the current cursor position.
@@ -840,13 +841,16 @@ public final class InputLogic {
         if (Constants.CODE_SPACE == codePoint) {
             if (maybeDoubleSpacePeriod(inputTransaction)) {
                 inputTransaction.requireShiftUpdate(InputTransaction.SHIFT_UPDATE_NOW);
+                inputTransaction.setRequiresUpdateSuggestions();
                 mSpaceState = SpaceState.DOUBLE;
             } else if (!mSuggestedWords.isPunctuationSuggestions()) {
                 mSpaceState = SpaceState.WEAK;
             }
 
             startDoubleSpacePeriodCountdown(inputTransaction);
-            inputTransaction.setRequiresUpdateSuggestions();
+            if (wasComposingWord) {
+                inputTransaction.setRequiresUpdateSuggestions();
+            }
         } else {
             if (swapWeakSpace) {
                 swapSwapperAndSpace(inputTransaction);
@@ -943,6 +947,11 @@ public final class InputLogic {
                 if (mConnection.revertDoubleSpacePeriod()) {
                     // No need to reset mSpaceState, it has already be done (that's why we
                     // receive it as a parameter)
+                    inputTransaction.setRequiresUpdateSuggestions();
+                    mWordComposer.setCapitalizedModeAndPreviousWordAtStartComposingTime(
+                            WordComposer.CAPS_MODE_OFF,
+                            getPrevWordsInfoFromNthPreviousWordForSuggestion(
+                                    inputTransaction.mSettingsValues.mSpacingAndPunctuations, 1));
                     return;
                 }
             } else if (SpaceState.SWAP_PUNCTUATION == inputTransaction.mSpaceState) {
