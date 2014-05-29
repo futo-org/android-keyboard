@@ -19,23 +19,42 @@ package com.android.inputmethod.latin.utils;
 import com.android.inputmethod.annotations.UsedForTesting;
 
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 
 /**
  * Utilities to manage executors.
  */
 public class ExecutorUtils {
-    private static final ConcurrentHashMap<String, PrioritizedSerialExecutor> sExecutorMap =
+    private static final ConcurrentHashMap<String, ExecutorService> sExecutorMap =
             new ConcurrentHashMap<>();
+
+    private static class ThreadFactoryWithId implements ThreadFactory {
+        private final String mId;
+
+        public ThreadFactoryWithId(final String id) {
+            mId = id;
+        }
+
+        @Override
+        public Thread newThread(final Runnable r) {
+            return new Thread(r, "Executor - " + mId);
+        }
+    }
 
     /**
      * Gets the executor for the given id.
      */
-    public static PrioritizedSerialExecutor getExecutor(final String id) {
-        PrioritizedSerialExecutor executor = sExecutorMap.get(id);
+    public static ExecutorService getExecutor(final String id) {
+        ExecutorService executor = sExecutorMap.get(id);
         if (executor == null) {
             synchronized(sExecutorMap) {
-                executor = new PrioritizedSerialExecutor(id);
-                sExecutorMap.put(id, executor);
+                executor = sExecutorMap.get(id);
+                if (executor == null) {
+                    executor = Executors.newSingleThreadExecutor(new ThreadFactoryWithId(id));
+                    sExecutorMap.put(id, executor);
+                }
             }
         }
         return executor;
@@ -47,7 +66,7 @@ public class ExecutorUtils {
     @UsedForTesting
     public static void shutdownAllExecutors() {
         synchronized(sExecutorMap) {
-            for (final PrioritizedSerialExecutor executor : sExecutorMap.values()) {
+            for (final ExecutorService executor : sExecutorMap.values()) {
                 executor.execute(new Runnable() {
                     @Override
                     public void run() {
