@@ -21,9 +21,6 @@
     <!-- Title for Latin keyboard input options dialog [CHAR LIMIT=25] -->
     <string name="english_ime_input_options">Input options</string>
 
-    <!-- Title for Latin keyboard research log dialog, which contains special commands for users that contribute data for research. [CHAR LIMIT=33] -->
-    <string name="english_ime_research_log">Research Log Commands</string>
-
     <!-- Title for the spell checker option to turn on/off contact names lookup [CHAR LIMIT=25] -->
     <string name="use_contacts_for_spellchecking_option_title">Look up contact names</string>
 
@@ -166,68 +163,8 @@
     <!-- Title for input language selection screen -->
     <string name="language_selection_title">Input languages</string>
 
-    <!-- Title for dialog option to let users cancel logging and delete log for this session [CHAR LIMIT=35] -->
-    <!-- TODO: remove translatable=false attribute once text is stable -->
-    <string name="research_do_not_log_this_session" translatable="false">Suspend logging</string>
-    <!-- Title for dialog option to let users reenable logging [CHAR LIMIT=35] -->
-    <!-- TODO: remove translatable=false attribute once text is stable -->
-    <string name="research_enable_session_logging" translatable="false">Enable logging</string>
-    <!-- Toast notification that the system is processing the request to delete the log for this session [CHAR LIMIT=35] -->
-    <!-- TODO: remove translatable=false attribute once text is stable -->
-    <string name="research_notify_session_log_deleting" translatable="false">Deleting session log</string>
-    <!-- Toast notification that the system has successfully deleted the log for this session [CHAR LIMIT=35] -->
-    <!-- TODO: remove translatable=false attribute once text is stable -->
-    <string name="research_notify_logging_suspended" translatable="false">Logging temporarily suspended.  To disable permanently, go to Android Keyboard Settings</string>
-    <!-- Toast notification that the system has failed to delete the log for this session [CHAR LIMIT=35] -->
-    <!-- TODO: remove translatable=false attribute once text is stable -->
-    <string name="research_notify_session_log_not_deleted" translatable="false">Session log NOT deleted</string>
-    <!-- Toast notification that the system is enabling logging [CHAR LIMIT=35] -->
-    <!-- TODO: remove translatable=false attribute once text is stable -->
-    <string name="research_notify_session_logging_enabled" translatable="false">Session logging enabled</string>
-
-    <!-- Text for checkbox option to include user data in feedback for research purposes [CHAR LIMIT=50] -->
-    <!-- TODO: remove translatable=false attribute once text is stable -->
-    <string name="research_feedback_include_history_label" translatable="false">Include session history</string>
-    <!-- Text for checkbox option to include user account name in feedback for research purposes [CHAR LIMIT=50] -->
-    <!-- TODO: remove translatable=false attribute once text is stable -->
-    <string name="research_feedback_include_account_name_label" translatable="false">Include account name</string>
-    <!-- Text for checkbox option to include a recording in feedback for research purposes [CHAR LIMIT=50] -->
-    <!-- TODO: remove translatable=false attribute once text is stable -->
-    <string name="research_feedback_include_recording_label" translatable="false">Include recorded demonstration</string>
-    <!-- Dialog button choice to send research feedback [CHAR LIMIT=35] -->
-    <!-- TODO: remove translatable=false attribute once text is stable -->
-    <string name="research_feedback_send" translatable="false">Send</string>
-    <!-- Dialog button choice to cancel sending research feedback [CHAR LIMIT=35] -->
-    <!-- TODO: remove translatable=false attribute once text is stable -->
-    <string name="research_feedback_cancel" translatable="false">Cancel</string>
-    <!-- Temporary notification to provide user with instructions about stopping a recording
-      - operation[CHAR LIMIT=100] -->
-    <!-- TODO: remove translatable=false attribute once text is stable -->
-    <string name="research_feedback_demonstration_instructions" translatable="false">Please demonstrate the issue you are writing about.\n\nWhen finished, select the \"Bug?\" button again."</string>
     <!-- Title of a preference to send feedback. [CHAR LIMIT=30]-->
     <string name="send_feedback">Send feedback</string>
-    <!-- Temporary notification of recording failure [CHAR LIMIT=100] -->
-    <!-- TODO: remove translatable=false attribute once text is stable -->
-    <string name="research_feedback_recording_failure" translatable="false">Recording cancelled due to timeout</string>
-    <!-- Toast notification to ask user to quit the research feedback dialog to perform this operation [CHAR LIMIT=100] -->
-    <!-- TODO: remove translatable=false attribute once text is stable -->
-    <string name="research_please_exit_feedback_form" translatable="false">Please exit the feedback dialog to access the research log menu</string>
-
-    <!-- Title of dialog shown at start informing users about contributing research usage data-->
-    <!-- TODO: remove translatable=false attribute once text is stable -->
-    <string name="research_splash_title" translatable="false">Warning</string>
-
-    <!-- Toast message informing users that logging has been disabled -->
-    <!-- TODO: remove translatable=false attribute once text is stable -->
-    <string name="research_logging_disabled" translatable="false">Logging Disabled</string>
-
-    <!-- Name for the research uploading service to be displayed to users.  [CHAR LIMIT=50] -->
-    <!-- TODO: remove translatable=false attribute once text is stable -->
-    <string name="research_log_uploader_name" translatable="false">Research Uploader Service</string>
-
-    <!-- Name for the research replaying service to be displayed to users.  [CHAR LIMIT=50] -->
-    <!-- TODO: remove translatable=false attribute once text is stable -->
-    <string name="research_log_replayer_name" translatable="false">Research Replayer Service</string>
 
     <!-- Preference for input language selection -->
     <string name="select_language">Input languages</string>

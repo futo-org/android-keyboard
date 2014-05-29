@@ -44,7 +44,6 @@ import com.android.inputmethod.latin.Suggest.OnGetSuggestedWordsCallback;
 import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.WordComposer;
-import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.latin.settings.SettingsValues;
 import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
 import com.android.inputmethod.latin.suggestions.SuggestionStripViewAccessor;
@@ -54,7 +53,6 @@ import com.android.inputmethod.latin.utils.LatinImeLoggerUtils;
 import com.android.inputmethod.latin.utils.RecapitalizeStatus;
 import com.android.inputmethod.latin.utils.StringUtils;
 import com.android.inputmethod.latin.utils.TextRange;
-import com.android.inputmethod.research.ResearchLogger;
 
 import java.util.ArrayList;
 import java.util.TreeSet;
@@ -201,19 +199,11 @@ public final class InputLogic {
             resetComposingState(true /* alsoResetLastComposedWord */);
         }
         handler.postUpdateSuggestionStrip();
-        if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS
-                && ResearchLogger.RESEARCH_KEY_OUTPUT_TEXT.equals(rawText)) {
-            ResearchLogger.getInstance().onResearchKeySelected(mLatinIME);
-            return;
-        }
         final String text = performSpecificTldProcessingOnTextInput(rawText);
         if (SpaceState.PHANTOM == mSpaceState) {
             promotePhantomSpace(settingsValues);
         }
         mConnection.commitText(text, 1);
-        if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-            ResearchLogger.latinIME_onTextInput(text, false /* isBatchMode */);
-        }
         mConnection.endBatchEdit();
         // Space state must be updated before calling updateShiftState
         mSpaceState = SpaceState.NONE;
@@ -244,10 +234,6 @@ public final class InputLogic {
             LatinImeLogger.logOnManualSuggestion("", suggestion, index, suggestedWords);
             // Rely on onCodeInput to do the complicated swapping/stripping logic consistently.
             final Event event = Event.createPunctuationSuggestionPickedEvent(suggestionInfo);
-            if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-                ResearchLogger.latinIME_punctuationSuggestion(index, suggestion,
-                        false /* isBatchMode */, suggestedWords.mIsPrediction);
-            }
             return onCodeInput(settingsValues, event, keyboardShiftState, handler);
         }
 
@@ -286,11 +272,6 @@ public final class InputLogic {
         LatinImeLogger.logOnManualSuggestion(replacedWord, suggestion, index, suggestedWords);
         commitChosenWord(settingsValues, suggestion,
                 LastComposedWord.COMMIT_TYPE_MANUAL_PICK, LastComposedWord.NOT_A_SEPARATOR);
-        if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-            ResearchLogger.latinIME_pickSuggestionManually(replacedWord, index, suggestion,
-                    mWordComposer.isBatchMode(), suggestionInfo.mScore,
-                    suggestionInfo.mKindAndFlags, suggestionInfo.mSourceDict.mDictType);
-        }
         mConnection.endBatchEdit();
         // Don't allow cancellation of manual pick
         mLastComposedWord.deactivate();
@@ -403,9 +384,6 @@ public final class InputLogic {
         final InputTransaction inputTransaction = new InputTransaction(settingsValues, event,
                 SystemClock.uptimeMillis(), mSpaceState,
                 getActualCapsMode(settingsValues, keyboardShiftMode));
-        if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-            ResearchLogger.latinIME_onCodeInput(code, event.mX, event.mY);
-        }
         if (event.mKeyCode != Constants.CODE_DELETE
                 || inputTransaction.mTimestamp > mLastKeyTime + Constants.LONG_PRESS_MILLISECONDS) {
             mDeleteCount = 0;
@@ -854,9 +832,6 @@ public final class InputLogic {
         if (needsPrecedingSpace) {
             promotePhantomSpace(settingsValues);
         }
-        if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-            ResearchLogger.latinIME_handleSeparator(codePoint, mWordComposer.isComposingWord());
-        }
 
         if (!shouldAvoidSendingCode) {
             sendKeyCodePoint(settingsValues, codePoint);
@@ -932,10 +907,6 @@ public final class InputLogic {
         }
         if (mWordComposer.isComposingWord()) {
             if (mWordComposer.isBatchMode()) {
-                if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-                    final String word = mWordComposer.getTypedWord();
-                    ResearchLogger.latinIME_handleBackspace_batch(word, 1);
-                }
                 final String rejectedSuggestion = mWordComposer.getTypedWord();
                 mWordComposer.reset();
                 mWordComposer.setRejectedBatchModeSuggestion(rejectedSuggestion);
@@ -961,9 +932,6 @@ public final class InputLogic {
                 // This is triggered on backspace after a key that inputs multiple characters,
                 // like the smiley key or the .com key.
                 mConnection.deleteSurroundingText(mEnteredText.length(), 0);
-                if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-                    ResearchLogger.latinIME_handleBackspace_cancelTextInput(mEnteredText);
-                }
                 mEnteredText = null;
                 // If we have mEnteredText, then we know that mHasUncommittedTypedChars == false.
                 // In addition we know that spaceState is false, and that we should not be
@@ -993,10 +961,6 @@ public final class InputLogic {
                 mConnection.setSelection(mConnection.getExpectedSelectionEnd(),
                         mConnection.getExpectedSelectionEnd());
                 mConnection.deleteSurroundingText(numCharsDeleted, 0);
-                if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-                    ResearchLogger.latinIME_handleBackspace(numCharsDeleted,
-                            false /* shouldUncommitLogUnit */);
-                }
             } else {
                 // There is no selection, just delete one character.
                 if (Constants.NOT_A_CURSOR_POSITION == mConnection.getExpectedSelectionEnd()) {
@@ -1031,10 +995,6 @@ public final class InputLogic {
                     final int lengthToDelete =
                             Character.isSupplementaryCodePoint(codePointBeforeCursor) ? 2 : 1;
                     mConnection.deleteSurroundingText(lengthToDelete, 0);
-                    if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-                        ResearchLogger.latinIME_handleBackspace(lengthToDelete,
-                                true /* shouldUncommitLogUnit */);
-                    }
                     if (mDeleteCount > Constants.DELETE_ACCELERATE_AT) {
                         final int codePointBeforeCursorToDeleteAgain =
                                 mConnection.getCodePointBeforeCursor();
@@ -1042,10 +1002,6 @@ public final class InputLogic {
                             final int lengthToDeleteAgain = Character.isSupplementaryCodePoint(
                                     codePointBeforeCursorToDeleteAgain) ? 2 : 1;
                             mConnection.deleteSurroundingText(lengthToDeleteAgain, 0);
-                            if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-                                ResearchLogger.latinIME_handleBackspace(lengthToDeleteAgain,
-                                        true /* shouldUncommitLogUnit */);
-                            }
                         }
                     }
                 }
@@ -1083,9 +1039,6 @@ public final class InputLogic {
             mConnection.deleteSurroundingText(2, 0);
             final String text = lastTwo.charAt(1) + " ";
             mConnection.commitText(text, 1);
-            if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-                ResearchLogger.latinIME_swapSwapperAndSpace(lastTwo, text);
-            }
             inputTransaction.requireShiftUpdate(InputTransaction.SHIFT_UPDATE_NOW);
         }
     }
@@ -1169,10 +1122,6 @@ public final class InputLogic {
             final String textToInsert = inputTransaction.mSettingsValues.mSpacingAndPunctuations
                     .mSentenceSeparatorAndSpace;
             mConnection.commitText(textToInsert, 1);
-            if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-                ResearchLogger.latinIME_maybeDoubleSpacePeriod(textToInsert,
-                        false /* isBatchMode */);
-            }
             mWordComposer.discardPreviousWordForSuggestion();
             return true;
         }
@@ -1519,13 +1468,7 @@ public final class InputLogic {
             LatinImeLoggerUtils.onSeparator(mLastComposedWord.mSeparatorString,
                     Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
         }
-        if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-            ResearchLogger.latinIME_revertCommit(committedWord.toString(),
-                    originallyTypedWord.toString(),
-                    mWordComposer.isBatchMode(), mLastComposedWord.mSeparatorString);
-        }
-        // Don't restart suggestion yet. We'll restart if the user deletes the
-        // separator.
+        // Don't restart suggestion yet. We'll restart if the user deletes the separator.
         mLastComposedWord = LastComposedWord.NOT_A_COMPOSED_WORD;
         // We have a separator between the word and the cursor: we should show predictions.
         inputTransaction.setRequiresUpdateSuggestions();
@@ -1789,9 +1732,6 @@ public final class InputLogic {
      */
     // TODO: replace these two parameters with an InputTransaction
     private void sendKeyCodePoint(final SettingsValues settingsValues, final int codePoint) {
-        if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-            ResearchLogger.latinIME_sendKeyCodePoint(codePoint);
-        }
         // TODO: Remove this special handling of digit letters.
         // For backward compatibility. See {@link InputMethodService#sendKeyChar(char)}.
         if (codePoint >= '0' && codePoint <= '9') {
@@ -1823,9 +1763,6 @@ public final class InputLogic {
         if (settingsValues.shouldInsertSpacesAutomatically()
                 && settingsValues.mSpacingAndPunctuations.mCurrentLanguageHasSpaces
                 && !mConnection.textBeforeCursorLooksLikeURL()) {
-            if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-                ResearchLogger.latinIME_promotePhantomSpace();
-            }
             sendKeyCodePoint(settingsValues, Constants.CODE_SPACE);
         }
     }
@@ -1867,9 +1804,6 @@ public final class InputLogic {
             mConnection.setComposingText(batchInputText, 1);
         }
         mConnection.endBatchEdit();
-        if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-            ResearchLogger.latinIME_onEndBatchInput(batchInputText, 0, suggestedWords);
-        }
         // Space state must be updated before calling updateShiftState
         mSpaceState = SpaceState.PHANTOM;
         keyboardSwitcher.requestUpdatingShiftState(getCurrentAutoCapsState(settingsValues),
@@ -1896,9 +1830,6 @@ public final class InputLogic {
         if (!mWordComposer.isComposingWord()) return;
         final String typedWord = mWordComposer.getTypedWord();
         if (typedWord.length() > 0) {
-            if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-                ResearchLogger.getInstance().onWordFinished(typedWord, mWordComposer.isBatchMode());
-            }
             commitChosenWord(settingsValues, typedWord,
                     LastComposedWord.COMMIT_TYPE_USER_TYPED_WORD, separatorString);
         }
@@ -1941,11 +1872,6 @@ public final class InputLogic {
             if (settingsValues.mIsInternal) {
                 LatinImeLoggerUtils.onAutoCorrection(
                         typedWord, autoCorrection, separator, mWordComposer);
-            }
-            if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-                final SuggestedWords suggestedWords = mSuggestedWords;
-                ResearchLogger.latinIme_commitCurrentAutoCorrection(typedWord, autoCorrection,
-                        separator, mWordComposer.isBatchMode(), suggestedWords);
             }
             commitChosenWord(settingsValues, autoCorrection,
                     LastComposedWord.COMMIT_TYPE_DECIDED_WORD, separator);

@@ -41,7 +41,6 @@ import com.android.inputmethod.keyboard.KeyboardTheme;
 import com.android.inputmethod.latin.AudioAndHapticFeedbackManager;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SubtypeSwitcher;
-import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.latin.setup.LauncherIconVisibilityManager;
 import com.android.inputmethod.latin.userdictionary.UserDictionaryList;
 import com.android.inputmethod.latin.userdictionary.UserDictionarySettings;
@@ -151,10 +150,6 @@ public final class SettingsFragment extends InputMethodSettingsFragment
                 miscSettings.removePreference(feedbackSettings);
                 miscSettings.removePreference(aboutSettings);
             }
-        }
-        if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-            // The about screen contains items that may be confusing in development-only versions.
-            miscSettings.removePreference(aboutSettings);
         }
 
         final boolean showVoiceKeyOption = res.getBoolean(

@@ -26,7 +26,6 @@ import com.android.inputmethod.latin.userdictionary.UserDictionaryAddWordFragmen
 import com.android.inputmethod.latin.userdictionary.UserDictionaryList;
 import com.android.inputmethod.latin.userdictionary.UserDictionaryLocalePicker;
 import com.android.inputmethod.latin.userdictionary.UserDictionarySettings;
-import com.android.inputmethod.research.FeedbackFragment;
 
 import java.util.HashSet;
 
@@ -43,7 +42,6 @@ public class FragmentUtils {
         sLatinImeFragments.add(UserDictionaryList.class.getName());
         sLatinImeFragments.add(UserDictionaryLocalePicker.class.getName());
         sLatinImeFragments.add(UserDictionarySettings.class.getName());
-        sLatinImeFragments.add(FeedbackFragment.class.getName());
     }
 
     public static boolean isValidFragment(String fragmentName) {
