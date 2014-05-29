@@ -481,6 +481,27 @@ public class InputLogicTests extends InputTestsBase {
                 suggestedWords.size() > 0 ? suggestedWords.getWord(0) : null);
     }
 
+    public void testPredictionsWithDoubleSpaceToPeriod() {
+        final String WORD_TO_TYPE = "Barack ";
+        type(WORD_TO_TYPE);
+        sleep(DELAY_TO_WAIT_FOR_PREDICTIONS);
+        runMessages();
+        // No need to test here, testPredictionsAfterSpace is testing it already
+        type(" ");
+        sleep(DELAY_TO_WAIT_FOR_PREDICTIONS);
+        runMessages();
+        // Test the predictions have been cleared
+        SuggestedWords suggestedWords = mLatinIME.getSuggestedWordsForTest();
+        assertEquals("predictions cleared after double-space-to-period", suggestedWords.size(), 0);
+        type(Constants.CODE_DELETE);
+        sleep(DELAY_TO_WAIT_FOR_PREDICTIONS);
+        runMessages();
+        // Test the first prediction is displayed
+        suggestedWords = mLatinIME.getSuggestedWordsForTest();
+        assertEquals("predictions after cancel double-space-to-period", "Obama",
+                suggestedWords.size() > 0 ? suggestedWords.getWord(0) : null);
+    }
+
     public void testPredictionsAfterManualPick() {
         final String WORD_TO_TYPE = "Barack";
         type(WORD_TO_TYPE);
