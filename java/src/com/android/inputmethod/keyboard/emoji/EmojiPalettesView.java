@@ -343,8 +343,14 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
 
     public void startEmojiPalettes(final String switchToAlphaLabel,
             final KeyVisualAttributes keyVisualAttr, final KeyboardIconsSet iconSet) {
-        mDeleteKey.setImageDrawable(iconSet.getIconDrawable(KeyboardIconsSet.NAME_DELETE_KEY));
-        mSpacebar.setImageDrawable(iconSet.getIconDrawable(KeyboardIconsSet.NAME_SPACE_KEY));
+        final int deleteIconResId = iconSet.getIconResourceId(KeyboardIconsSet.NAME_DELETE_KEY);
+        if (deleteIconResId != 0) {
+            mDeleteKey.setImageResource(deleteIconResId);
+        }
+        final int spacebarResId = iconSet.getIconResourceId(KeyboardIconsSet.NAME_SPACE_KEY);
+        if (spacebarResId != 0) {
+            mSpacebar.setImageResource(spacebarResId);
+        }
         final KeyDrawParams params = new KeyDrawParams();
         params.updateParams(mEmojiLayoutParams.getActionBarHeight(), keyVisualAttr);
         setupAlphabetKey(mAlphabetKeyLeft, switchToAlphaLabel, params);

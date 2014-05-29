@@ -90,6 +90,7 @@ public final class KeyboardIconsSet {
     private static int NUM_ICONS = NAMES_AND_ATTR_IDS.length / 2;
     private static final String[] ICON_NAMES = new String[NUM_ICONS];
     private final Drawable[] mIcons = new Drawable[NUM_ICONS];
+    private final int[] mIconResourceIds = new int[NUM_ICONS];
 
     static {
         int iconId = ICON_UNDEFINED;
@@ -97,7 +98,7 @@ public final class KeyboardIconsSet {
             final String name = (String)NAMES_AND_ATTR_IDS[i];
             final Integer attrId = (Integer)NAMES_AND_ATTR_IDS[i + 1];
             if (attrId != ATTR_UNDEFINED) {
-                ATTR_ID_TO_ICON_ID.put(attrId,  iconId);
+                ATTR_ID_TO_ICON_ID.put(attrId, iconId);
             }
             sNameToIdsMap.put(name, iconId);
             ICON_NAMES[iconId] = name;
@@ -114,6 +115,7 @@ public final class KeyboardIconsSet {
                 setDefaultBounds(icon);
                 final Integer iconId = ATTR_ID_TO_ICON_ID.get(attrId);
                 mIcons[iconId] = icon;
+                mIconResourceIds[iconId] = keyboardAttrs.getResourceId(attrId, 0);
             } catch (Resources.NotFoundException e) {
                 Log.w(TAG, "Drawable resource for icon #"
                         + keyboardAttrs.getResources().getResourceEntryName(attrId)
@@ -138,8 +140,12 @@ public final class KeyboardIconsSet {
         throw new RuntimeException("unknown icon name: " + name);
     }
 
-    public Drawable getIconDrawable(final String name) {
-        return getIconDrawable(getIconId(name));
+    public int getIconResourceId(final String name) {
+        final int iconId = getIconId(name);
+        if (isValidIconId(iconId)) {
+            return mIconResourceIds[iconId];
+        }
+        throw new RuntimeException("unknown icon name: " + name);
     }
 
     public Drawable getIconDrawable(final int iconId) {
