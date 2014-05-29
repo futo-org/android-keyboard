@@ -83,8 +83,6 @@
     <string name="select_language" msgid="3693815588777926848">"輸入語言"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"再次輕觸即可儲存"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"可使用字典"</string>
-    <string name="prefs_enable_log" msgid="6620424505072963557">"啟用用戶意見反映"</string>
-    <string name="prefs_description_log" msgid="7525225584555429211">"自動傳送使用統計資料和當機報告，協助改良這個輸入法編輯器"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"鍵盤主題"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"英文 (英國)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"英文 (美國)"</string>
@@ -117,7 +115,6 @@
     <string name="enable" msgid="5031294444630523247">"啟用"</string>
     <string name="not_now" msgid="6172462888202790482">"暫時不要"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"已存在相同的輸入樣式：<xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
-    <string name="prefs_usability_study_mode" msgid="1261130555134595254">"可用性研究模式"</string>
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"長按鍵延遲"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"按鍵震動時間"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"按鍵音量"</string>

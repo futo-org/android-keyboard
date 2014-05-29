@@ -83,8 +83,6 @@
     <string name="select_language" msgid="3693815588777926848">"შეყვანის ენები"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"შეეხეთ ისევ შესანახად"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"ხელმისაწვდომია ლექსიკონი"</string>
-    <string name="prefs_enable_log" msgid="6620424505072963557">"მომხმარებლის უკუკავშირის ჩართვა"</string>
-    <string name="prefs_description_log" msgid="7525225584555429211">"შეიტანეთ წვლილი შეყვანის ამ მეთოდის გაუმჯობესებაში — გააგზავნეთ მოხმარების სტატისტიკა და ავარიული გათიშვების ანგარიშები"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"კლავიატურის თემა"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"ინგლისური (გართ. სამ.)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"ინგლისური (აშშ)"</string>
@@ -117,7 +115,6 @@
     <string name="enable" msgid="5031294444630523247">"ჩართვა"</string>
     <string name="not_now" msgid="6172462888202790482">"ახლა არა"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"შეყვანის იგივე სტილი უკვე არსებობს: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
-    <string name="prefs_usability_study_mode" msgid="1261130555134595254">"გამოყენებადობის კვლევის რეჟიმი"</string>
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"კლავიშზე გრძელი დაჭერის დაყოვნება"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"კლავიშზე დაჭერის ვიბრაციის ხანგრძლივობა"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"კლავიშზე დაჭერის ხმა"</string>

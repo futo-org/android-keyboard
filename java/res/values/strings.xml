@@ -175,11 +175,6 @@
     <!-- Inform the user that a particular language has an available dictionary -->
     <string name="has_dictionary">Dictionary available</string>
 
-    <!-- Preferences item for enabling to send user statistics for development only diagnostics -->
-    <string name="prefs_enable_log">Enable user feedback</string>
-    <!-- Description for enabling to send user statistics for development only diagnostics -->
-    <string name="prefs_description_log">Help improve this input method editor by automatically sending usage statistics and crash reports</string>
-
     <!-- Title of the item to change the keyboard theme [CHAR LIMIT=20]-->
     <string name="keyboard_layout">Keyboard theme</string>
 
@@ -327,8 +322,6 @@ mobile devices. [CHAR LIMIT=25] -->
     <!-- Toast text to describe the same input style already exists [CHAR LIMIT=64]-->
     <string name="custom_input_style_already_exists">"The same input style already exists: <xliff:g id="INPUT_STYLE_NAME" example="English (Dvorak)">%s</xliff:g>"</string>
 
-    <!-- Title of an option for usability study mode -->
-    <string name="prefs_usability_study_mode">Usability study mode</string>
     <!-- Title of the settings for key long press delay [CHAR LIMIT=35] -->
     <string name="prefs_key_longpress_timeout_settings">Key long press delay</string>
     <!-- Title of the settings for keypress vibration duration [CHAR LIMIT=35] -->

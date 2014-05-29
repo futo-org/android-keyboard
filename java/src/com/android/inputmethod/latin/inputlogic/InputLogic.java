@@ -49,7 +49,6 @@ import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
 import com.android.inputmethod.latin.suggestions.SuggestionStripViewAccessor;
 import com.android.inputmethod.latin.utils.AsyncResultHolder;
 import com.android.inputmethod.latin.utils.InputTypeUtils;
-import com.android.inputmethod.latin.utils.LatinImeLoggerUtils;
 import com.android.inputmethod.latin.utils.RecapitalizeStatus;
 import com.android.inputmethod.latin.utils.StringUtils;
 import com.android.inputmethod.latin.utils.TextRange;
@@ -230,8 +229,6 @@ public final class InputLogic {
         // If this is a punctuation picked from the suggestion strip, pass it to onCodeInput
         if (suggestion.length() == 1 && suggestedWords.isPunctuationSuggestions()) {
             // Word separators are suggested before the user inputs something.
-            // So, LatinImeLogger logs "" as a user's input.
-            LatinImeLogger.logOnManualSuggestion("", suggestion, index, suggestedWords);
             // Rely on onCodeInput to do the complicated swapping/stripping logic consistently.
             final Event event = Event.createPunctuationSuggestionPickedEvent(suggestionInfo);
             return onCodeInput(settingsValues, event, keyboardShiftState, handler);
@@ -269,7 +266,6 @@ public final class InputLogic {
         // We need to log before we commit, because the word composer will store away the user
         // typed word.
         final String replacedWord = mWordComposer.getTypedWord();
-        LatinImeLogger.logOnManualSuggestion(replacedWord, suggestion, index, suggestedWords);
         commitChosenWord(settingsValues, suggestion,
                 LastComposedWord.COMMIT_TYPE_MANUAL_PICK, LastComposedWord.NOT_A_SEPARATOR);
         mConnection.endBatchEdit();
@@ -286,10 +282,6 @@ public final class InputLogic {
                         || suggestionInfo.isKindOf(SuggestedWordInfo.KIND_OOV_CORRECTION))
                         && !mDictionaryFacilitator.isValidWord(suggestion, true /* ignoreCase */);
 
-        if (settingsValues.mIsInternal) {
-            LatinImeLoggerUtils.onSeparator((char)Constants.CODE_SPACE,
-                    Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
-        }
         if (showingAddToDictionaryHint && mDictionaryFacilitator.isUserDictionaryEnabled()) {
             mSuggestionStripViewAccessor.showAddToDictionaryHint(suggestion);
         } else {
@@ -405,7 +397,6 @@ public final class InputLogic {
             switch (event.mKeyCode) {
             case Constants.CODE_DELETE:
                 handleBackspace(inputTransaction);
-                LatinImeLogger.logOnDelete(event.mX, event.mY);
                 break;
             case Constants.CODE_SHIFT:
                 performRecapitalization(inputTransaction.mSettingsValues);
@@ -511,12 +502,6 @@ public final class InputLogic {
         ++mAutoCommitSequenceNumber;
         mConnection.beginBatchEdit();
         if (mWordComposer.isComposingWord()) {
-            if (settingsValues.mIsInternal) {
-                if (mWordComposer.isBatchMode()) {
-                    LatinImeLoggerUtils.onAutoCorrection("", mWordComposer.getTypedWord(), " ",
-                            mWordComposer);
-                }
-            }
             if (mWordComposer.isCursorFrontOrMiddleOfComposingWord()) {
                 // If we are in the middle of a recorrection, we need to commit the recorrection
                 // first so that we can insert the batch input at the current cursor position.
@@ -656,19 +641,9 @@ public final class InputLogic {
                 || Character.getType(codePoint) == Character.OTHER_SYMBOL) {
             didAutoCorrect = handleSeparator(inputTransaction,
                     inputTransaction.mEvent.isSuggestionStripPress(), handler);
-            if (inputTransaction.mSettingsValues.mIsInternal) {
-                LatinImeLoggerUtils.onSeparator((char)codePoint,
-                        inputTransaction.mEvent.mX, inputTransaction.mEvent.mY);
-            }
         } else {
             didAutoCorrect = false;
             if (SpaceState.PHANTOM == inputTransaction.mSpaceState) {
-                if (inputTransaction.mSettingsValues.mIsInternal) {
-                    if (mWordComposer.isComposingWord() && mWordComposer.isBatchMode()) {
-                        LatinImeLoggerUtils.onAutoCorrection("", mWordComposer.getTypedWord(), " ",
-                                mWordComposer);
-                    }
-                }
                 if (mWordComposer.isCursorFrontOrMiddleOfComposingWord()) {
                     // If we are in the middle of a recorrection, we need to commit the recorrection
                     // first so that we can insert the character at the current cursor position.
@@ -767,10 +742,6 @@ public final class InputLogic {
             mSuggestionStripViewAccessor.dismissAddToDictionaryHint();
         }
         inputTransaction.setRequiresUpdateSuggestions();
-        if (settingsValues.mIsInternal) {
-            LatinImeLoggerUtils.onNonSeparator((char)codePoint, inputTransaction.mEvent.mX,
-                    inputTransaction.mEvent.mY);
-        }
     }
 
     /**
@@ -925,9 +896,6 @@ public final class InputLogic {
             inputTransaction.setRequiresUpdateSuggestions();
         } else {
             if (mLastComposedWord.canRevertCommit()) {
-                if (inputTransaction.mSettingsValues.mIsInternal) {
-                    LatinImeLoggerUtils.onAutoCorrectionCancellation();
-                }
                 revertCommit(inputTransaction);
                 return;
             }
@@ -1473,10 +1441,6 @@ public final class InputLogic {
                     mLatinIME.getCoordinatesForCurrentKeyboard(codePoints), prevWordsInfo);
             mConnection.setComposingText(textToCommit, 1);
         }
-        if (inputTransaction.mSettingsValues.mIsInternal) {
-            LatinImeLoggerUtils.onSeparator(mLastComposedWord.mSeparatorString,
-                    Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
-        }
         // Don't restart suggestion yet. We'll restart if the user deletes the separator.
         mLastComposedWord = LastComposedWord.NOT_A_COMPOSED_WORD;
         // We have a separator between the word and the cursor: we should show predictions.
@@ -1877,10 +1841,6 @@ public final class InputLogic {
             if (TextUtils.isEmpty(typedWord)) {
                 throw new RuntimeException("We have an auto-correction but the typed word "
                         + "is empty? Impossible! I must commit suicide.");
-            }
-            if (settingsValues.mIsInternal) {
-                LatinImeLoggerUtils.onAutoCorrection(
-                        typedWord, autoCorrection, separator, mWordComposer);
             }
             commitChosenWord(settingsValues, autoCorrection,
                     LastComposedWord.COMMIT_TYPE_DECIDED_WORD, separator);

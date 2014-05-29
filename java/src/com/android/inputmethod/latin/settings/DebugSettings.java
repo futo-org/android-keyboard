@@ -29,7 +29,6 @@ import android.preference.PreferenceScreen;
 
 import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.DictionaryDumpBroadcastReceiver;
-import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.debug.ExternalDictionaryGetterForDebug;
 import com.android.inputmethod.latin.utils.ApplicationUtils;
@@ -40,8 +39,6 @@ public final class DebugSettings extends PreferenceFragment
 
     public static final String PREF_DEBUG_MODE = "debug_mode";
     public static final String PREF_FORCE_NON_DISTINCT_MULTITOUCH = "force_non_distinct_multitouch";
-    public static final String PREF_USABILITY_STUDY_MODE = "usability_study_mode";
-    public static final String PREF_STATISTICS_LOGGING = "enable_logging";
     public static final String PREF_KEY_PREVIEW_SHOW_UP_START_SCALE =
             "pref_key_preview_show_up_start_scale";
     public static final String PREF_KEY_PREVIEW_DISMISS_END_SCALE =
@@ -58,11 +55,8 @@ public final class DebugSettings extends PreferenceFragment
     public static final String PREF_SLIDING_KEY_INPUT_PREVIEW = "pref_sliding_key_input_preview";
     public static final String PREF_KEY_LONGPRESS_TIMEOUT = "pref_key_longpress_timeout";
 
-    private static final boolean SHOW_STATISTICS_LOGGING = false;
-
     private boolean mServiceNeedsRestart = false;
     private CheckBoxPreference mDebugMode;
-    private CheckBoxPreference mStatisticsLoggingPref;
 
     @Override
     public void onCreate(Bundle icicle) {
@@ -70,20 +64,6 @@ public final class DebugSettings extends PreferenceFragment
         addPreferencesFromResource(R.xml.prefs_for_debug);
         SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
         prefs.registerOnSharedPreferenceChangeListener(this);
-
-        final Preference usabilityStudyPref = findPreference(PREF_USABILITY_STUDY_MODE);
-        if (usabilityStudyPref instanceof CheckBoxPreference) {
-            final CheckBoxPreference checkbox = (CheckBoxPreference)usabilityStudyPref;
-            checkbox.setChecked(prefs.getBoolean(PREF_USABILITY_STUDY_MODE,
-                    LatinImeLogger.getUsabilityStudyMode(prefs)));
-        }
-        final Preference statisticsLoggingPref = findPreference(PREF_STATISTICS_LOGGING);
-        if (statisticsLoggingPref instanceof CheckBoxPreference) {
-            mStatisticsLoggingPref = (CheckBoxPreference) statisticsLoggingPref;
-            if (!SHOW_STATISTICS_LOGGING) {
-                getPreferenceScreen().removePreference(statisticsLoggingPref);
-            }
-        }
 
         final PreferenceScreen readExternalDictionary =
                 (PreferenceScreen) findPreference(PREF_READ_EXTERNAL_DICTIONARY);
@@ -162,27 +142,22 @@ public final class DebugSettings extends PreferenceFragment
     @Override
     public void onStop() {
         super.onStop();
-        if (mServiceNeedsRestart) Process.killProcess(Process.myPid());
+        if (mServiceNeedsRestart) {
+            Process.killProcess(Process.myPid());
+        }
     }
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
-        if (key.equals(PREF_DEBUG_MODE)) {
-            if (mDebugMode != null) {
-                mDebugMode.setChecked(prefs.getBoolean(PREF_DEBUG_MODE, false));
-                final boolean checked = mDebugMode.isChecked();
-                if (mStatisticsLoggingPref != null) {
-                    if (checked) {
-                        getPreferenceScreen().addPreference(mStatisticsLoggingPref);
-                    } else {
-                        getPreferenceScreen().removePreference(mStatisticsLoggingPref);
-                    }
-                }
-                updateDebugMode();
-                mServiceNeedsRestart = true;
-            }
-        } else if (key.equals(PREF_FORCE_NON_DISTINCT_MULTITOUCH)) {
+        if (key.equals(PREF_DEBUG_MODE) && mDebugMode != null) {
+            mDebugMode.setChecked(prefs.getBoolean(PREF_DEBUG_MODE, false));
+            updateDebugMode();
             mServiceNeedsRestart = true;
+            return;
+        }
+        if (key.equals(PREF_FORCE_NON_DISTINCT_MULTITOUCH)) {
+            mServiceNeedsRestart = true;
+            return;
         }
     }
 

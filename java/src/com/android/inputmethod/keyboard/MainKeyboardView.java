@@ -52,14 +52,12 @@ import com.android.inputmethod.keyboard.internal.NonDistinctMultitouchHelper;
 import com.android.inputmethod.keyboard.internal.SlidingKeyInputDrawingPreview;
 import com.android.inputmethod.keyboard.internal.TimerHandler;
 import com.android.inputmethod.latin.Constants;
-import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.settings.DebugSettings;
 import com.android.inputmethod.latin.utils.CoordinateUtils;
 import com.android.inputmethod.latin.utils.SpacebarLanguageUtils;
 import com.android.inputmethod.latin.utils.TypefaceUtils;
-import com.android.inputmethod.latin.utils.UsabilityStudyLogUtils;
 
 import java.util.WeakHashMap;
 
@@ -699,10 +697,6 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     }
 
     public boolean processMotionEvent(final MotionEvent me) {
-        if (LatinImeLogger.sUsabilityStudy) {
-            UsabilityStudyLogUtils.writeMotionEvent(me);
-        }
-
         final int index = me.getActionIndex();
         final int id = me.getPointerId(index);
         final PointerTracker tracker = PointerTracker.getPointerTracker(id);

@@ -83,8 +83,6 @@
     <string name="select_language" msgid="3693815588777926848">"​​បញ្ចូល​ភាសា"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"ប៉ះ​ម្ដង​ទៀត​ ដើម្បី​រក្សា​ទុក"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"មាន​វចនានុក្រម"</string>
-    <string name="prefs_enable_log" msgid="6620424505072963557">"បើក​មតិត្រឡប់"</string>
-    <string name="prefs_description_log" msgid="7525225584555429211">"ជំនួយ​​​ធ្វើ​ឲ្យ​​ប្រសើរ​ឡើង​​នៃ​កម្មវិធី​កែ​​វិធី​សាស្ត្រ​​បញ្ចូល​ដោយ​ស្វ័យ​ប្រវត្តិ​ ដោយ​ផ្ញើ​ស្ថិតិ​​ប្រើ​ប្រាស់​ ​និង​របាយការណ៍​គាំង"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"រូបរាង​ក្ដារចុច"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"អង់គ្លេស (​អង់គ្លេស)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"អង់គ្លេស (សហរដ្ឋ​អាមេរិក)"</string>
@@ -117,7 +115,6 @@
     <string name="enable" msgid="5031294444630523247">"បើក"</string>
     <string name="not_now" msgid="6172462888202790482">"មិនមែន​ឥឡូវ"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"មាន​រចនាប័ទ្ម​បញ្ចូល​ដូច​គ្នា​ដូច​ហើយ៖ <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
-    <string name="prefs_usability_study_mode" msgid="1261130555134595254">"របៀប​ការ​សិក្សា​ដែល​អាច​ប្រើ​បាន"</string>
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"ពន្យារពេល​​​ចុច​គ្រាប់​ចុច​ឲ្យ​​យូរ"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"ថិរវេលា​​ញ័រ​​ពេល​ចុច​គ្រាប់ចុច"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"កម្រិត​សំឡេង​ពេល​ចុច​គ្រាប់​ចុច"</string>
