@@ -162,9 +162,9 @@ public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
         return previousSetting;
     }
 
-    // returns the previous setting value
-    protected boolean setDebugMode(final boolean value) {
-        return setBooleanPreference(DebugSettings.PREF_DEBUG_MODE, value, false);
+    protected void setDebugMode(final boolean value) {
+        setBooleanPreference(DebugSettings.PREF_DEBUG_MODE, value, false);
+        setBooleanPreference(Settings.PREF_KEY_IS_INTERNAL, value, false);
     }
 
     protected EditorInfo enrichEditorInfo(final EditorInfo ei) {
