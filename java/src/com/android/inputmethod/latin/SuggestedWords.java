@@ -296,16 +296,15 @@ public class SuggestedWords {
         }
 
         public boolean isPossiblyOffensive() {
-            return (mKindAndFlags & SuggestedWordInfo.KIND_FLAG_POSSIBLY_OFFENSIVE) != 0;
+            return (mKindAndFlags & KIND_FLAG_POSSIBLY_OFFENSIVE) != 0;
         }
 
         public boolean isExactMatch() {
-            return (mKindAndFlags & SuggestedWordInfo.KIND_FLAG_EXACT_MATCH) != 0;
+            return (mKindAndFlags & KIND_FLAG_EXACT_MATCH) != 0;
         }
 
         public boolean isExactMatchWithIntentionalOmission() {
-            return (mKindAndFlags
-                    & SuggestedWordInfo.KIND_FLAG_EXACT_MATCH_WITH_INTENTIONAL_OMISSION) != 0;
+            return (mKindAndFlags & KIND_FLAG_EXACT_MATCH_WITH_INTENTIONAL_OMISSION) != 0;
         }
 
         public void setDebugString(final String str) {

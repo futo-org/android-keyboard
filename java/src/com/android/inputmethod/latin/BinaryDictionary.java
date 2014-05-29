@@ -318,18 +318,18 @@ public final class BinaryDictionary extends Dictionary {
                 ++len;
             }
             if (len > 0) {
-                final int kindAndFlags = mOutputTypes[j];
-                if (blockOffensiveWords
-                        && 0 != (kindAndFlags & SuggestedWordInfo.KIND_FLAG_POSSIBLY_OFFENSIVE)
-                        && 0 == (kindAndFlags & SuggestedWordInfo.KIND_FLAG_EXACT_MATCH)) {
+                final SuggestedWordInfo suggestedWordInfo =
+                        new SuggestedWordInfo(new String(mOutputCodePoints, start, len),
+                                mOutputScores[j], mOutputTypes[j], this /* sourceDict */,
+                                mSpaceIndices[j] /* indexOfTouchPointOfSecondWord */,
+                                mOutputAutoCommitFirstWordConfidence[0]);
+                if (blockOffensiveWords && suggestedWordInfo.isPossiblyOffensive()
+                        && !suggestedWordInfo.isExactMatch()) {
                     // If we block potentially offensive words, and if the word is possibly
                     // offensive, then we don't output it unless it's also an exact match.
                     continue;
                 }
-                suggestions.add(new SuggestedWordInfo(new String(mOutputCodePoints, start, len),
-                        mOutputScores[j], kindAndFlags, this /* sourceDict */,
-                        mSpaceIndices[j] /* indexOfTouchPointOfSecondWord */,
-                        mOutputAutoCommitFirstWordConfidence[0]));
+                suggestions.add(suggestedWordInfo);
             }
         }
         return suggestions;
