@@ -76,7 +76,6 @@ public final class Suggest {
             final boolean blockOffensiveWords, final boolean isCorrectionEnabled,
             final int[] additionalFeaturesOptions, final int sessionId, final int sequenceNumber,
             final OnGetSuggestedWordsCallback callback) {
-        LatinImeLogger.onStartSuggestion(prevWordsInfo.mPrevWord);
         if (wordComposer.isBatchMode()) {
             getSuggestedWordsForBatchInput(wordComposer, prevWordsInfo, proximityInfo,
                     blockOffensiveWords, additionalFeaturesOptions, sessionId, sequenceNumber,
@@ -100,7 +99,6 @@ public final class Suggest {
         final String consideredWord = trailingSingleQuotesCount > 0
                 ? typedWord.substring(0, typedWord.length() - trailingSingleQuotesCount)
                 : typedWord;
-        LatinImeLogger.onAddSuggestedWord(typedWord, Dictionary.TYPE_USER_TYPED);
 
         final ArrayList<SuggestedWordInfo> rawSuggestions;
         if (ProductionFlag.INCLUDE_RAW_SUGGESTIONS) {
@@ -185,12 +183,6 @@ public final class Suggest {
             }
         }
 
-        for (int i = 0; i < suggestionsCount; ++i) {
-            final SuggestedWordInfo wordInfo = suggestionsContainer.get(i);
-            LatinImeLogger.onAddSuggestedWord(wordInfo.mWord.toString(),
-                    wordInfo.mSourceDict.mDictType);
-        }
-
         if (!TextUtils.isEmpty(typedWord)) {
             suggestionsContainer.add(0, new SuggestedWordInfo(typedWord,
                     SuggestedWordInfo.MAX_SCORE, SuggestedWordInfo.KIND_TYPED,
@@ -232,10 +224,6 @@ public final class Suggest {
         final SuggestionResults suggestionResults = mDictionaryFacilitator.getSuggestionResults(
                 wordComposer, prevWordsInfo, proximityInfo, blockOffensiveWords,
                 additionalFeaturesOptions, sessionId, rawSuggestions);
-        for (SuggestedWordInfo wordInfo : suggestionResults) {
-            LatinImeLogger.onAddSuggestedWord(wordInfo.mWord, wordInfo.mSourceDict.mDictType);
-        }
-
         final ArrayList<SuggestedWordInfo> suggestionsContainer =
                 new ArrayList<>(suggestionResults);
         final int suggestionsCount = suggestionsContainer.size();

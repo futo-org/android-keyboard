@@ -33,7 +33,6 @@ import com.android.inputmethod.keyboard.internal.KeyboardState;
 import com.android.inputmethod.keyboard.internal.KeyboardTextsSet;
 import com.android.inputmethod.latin.InputView;
 import com.android.inputmethod.latin.LatinIME;
-import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.RichInputMethodManager;
 import com.android.inputmethod.latin.SubtypeSwitcher;
@@ -127,7 +126,6 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
             mKeyboardTextsSet.setLocale(mSubtypeSwitcher.getCurrentSubtypeLocale(), mThemeContext);
         } catch (KeyboardLayoutSetException e) {
             Log.w(TAG, "loading keyboard failed: " + e.mKeyboardId, e.getCause());
-            LatinImeLogger.logOnException(e.mKeyboardId.toString(), e.getCause());
             return;
         }
     }

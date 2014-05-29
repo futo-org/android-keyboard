@@ -35,7 +35,6 @@ import android.view.View;
 import com.android.inputmethod.keyboard.internal.KeyDrawParams;
 import com.android.inputmethod.keyboard.internal.KeyVisualAttributes;
 import com.android.inputmethod.latin.Constants;
-import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.utils.TypefaceUtils;
 
@@ -185,7 +184,6 @@ public class KeyboardView extends View {
      */
     public void setKeyboard(final Keyboard keyboard) {
         mKeyboard = keyboard;
-        LatinImeLogger.onSetKeyboard(keyboard);
         final int keyHeight = keyboard.mMostCommonKeyHeight - keyboard.mVerticalGap;
         mKeyDrawParams.updateParams(keyHeight, mKeyVisualAttributes);
         mKeyDrawParams.updateParams(keyHeight, keyboard.mKeyVisualAttributes);
@@ -353,9 +351,6 @@ public class KeyboardView extends View {
         }
         canvas.translate(bgX, bgY);
         background.draw(canvas);
-        if (LatinImeLogger.sVISUALDEBUG) {
-            drawRectangle(canvas, 0.0f, 0.0f, bgWidth, bgHeight, 0x80c00000, new Paint());
-        }
         canvas.translate(-bgX, -bgY);
     }
 
@@ -366,10 +361,6 @@ public class KeyboardView extends View {
         final int keyHeight = key.getHeight();
         final float centerX = keyWidth * 0.5f;
         final float centerY = keyHeight * 0.5f;
-
-        if (LatinImeLogger.sVISUALDEBUG) {
-            drawRectangle(canvas, 0.0f, 0.0f, keyWidth, keyHeight, 0x800000c0, new Paint());
-        }
 
         // Draw key label.
         final Drawable icon = key.getIcon(mKeyboard.mIconsSet, params.mAnimAlpha);
@@ -452,12 +443,6 @@ public class KeyboardView extends View {
                     drawIcon(canvas, icon, iconX, iconY, iconWidth, iconHeight);
                 }
             }
-
-            if (LatinImeLogger.sVISUALDEBUG) {
-                final Paint line = new Paint();
-                drawHorizontalLine(canvas, baseline, keyWidth, 0xc0008000, line);
-                drawVerticalLine(canvas, positionX, keyHeight, 0xc0800080, line);
-            }
         }
 
         // Draw hint label.
@@ -497,12 +482,6 @@ public class KeyboardView extends View {
                 paint.setTextAlign(Align.CENTER);
             }
             canvas.drawText(hintLabel, 0, hintLabel.length(), hintX, hintY + adjustmentY, paint);
-
-            if (LatinImeLogger.sVISUALDEBUG) {
-                final Paint line = new Paint();
-                drawHorizontalLine(canvas, (int)hintY, keyWidth, 0xc0808000, line);
-                drawVerticalLine(canvas, (int)hintX, keyHeight, 0xc0808000, line);
-            }
         }
 
         // Draw key icon.
@@ -514,26 +493,17 @@ public class KeyboardView extends View {
                 iconWidth = Math.min(icon.getIntrinsicWidth(), keyWidth);
             }
             final int iconHeight = icon.getIntrinsicHeight();
-            final int iconX, alignX;
             final int iconY = key.isAlignButtom() ? keyHeight - iconHeight
                     : (keyHeight - iconHeight) / 2;
+            final int iconX;
             if (key.isAlignLeft()) {
                 iconX = mKeyLabelHorizontalPadding;
-                alignX = iconX;
             } else if (key.isAlignRight()) {
                 iconX = keyWidth - mKeyLabelHorizontalPadding - iconWidth;
-                alignX = iconX + iconWidth;
             } else { // Align center
                 iconX = (keyWidth - iconWidth) / 2;
-                alignX = iconX + iconWidth / 2;
             }
             drawIcon(canvas, icon, iconX, iconY, iconWidth, iconHeight);
-
-            if (LatinImeLogger.sVISUALDEBUG) {
-                final Paint line = new Paint();
-                drawVerticalLine(canvas, alignX, keyHeight, 0xc0800080, line);
-                drawRectangle(canvas, iconX, iconY, iconWidth, iconHeight, 0x80c00000, line);
-            }
         }
 
         if (key.hasPopupHint() && key.getMoreKeys() != null) {
@@ -555,12 +525,6 @@ public class KeyboardView extends View {
                 - TypefaceUtils.getReferenceCharWidth(paint) / 2.0f;
         final float hintY = keyHeight - mKeyPopupHintLetterPadding;
         canvas.drawText(POPUP_HINT_CHAR, hintX, hintY, paint);
-
-        if (LatinImeLogger.sVISUALDEBUG) {
-            final Paint line = new Paint();
-            drawHorizontalLine(canvas, (int)hintY, keyWidth, 0xc0808000, line);
-            drawVerticalLine(canvas, (int)hintX, keyHeight, 0xc0808000, line);
-        }
     }
 
     protected static void drawIcon(final Canvas canvas, final Drawable icon, final int x,
@@ -568,32 +532,6 @@ public class KeyboardView extends View {
         canvas.translate(x, y);
         icon.setBounds(0, 0, width, height);
         icon.draw(canvas);
-        canvas.translate(-x, -y);
-    }
-
-    private static void drawHorizontalLine(final Canvas canvas, final float y, final float w,
-            final int color, final Paint paint) {
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(1.0f);
-        paint.setColor(color);
-        canvas.drawLine(0.0f, y, w, y, paint);
-    }
-
-    private static void drawVerticalLine(final Canvas canvas, final float x, final float h,
-            final int color, final Paint paint) {
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(1.0f);
-        paint.setColor(color);
-        canvas.drawLine(x, 0.0f, x, h, paint);
-    }
-
-    private static void drawRectangle(final Canvas canvas, final float x, final float y,
-            final float w, final float h, final int color, final Paint paint) {
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(1.0f);
-        paint.setColor(color);
-        canvas.translate(x, y);
-        canvas.drawRect(0.0f, 0.0f, w, h, paint);
         canvas.translate(-x, -y);
     }
 

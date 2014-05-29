@@ -81,8 +81,6 @@
     <string name="select_language" msgid="3693815588777926848">"Енгізу тілдері"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"Сақтау үшін қайта түртіңіз"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Сөздік қолжетімді"</string>
-    <string name="prefs_enable_log" msgid="6620424505072963557">"Пайдаланушының кері байланысын қосу"</string>
-    <string name="prefs_description_log" msgid="7525225584555429211">"Қолданыс статистикасын және бұзылыс есептерін автоматты түрде жіберу арқылы осы енгізу әдісінің редакторын арттыруға көмектесу"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Пернетақта тақырыбы"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"ағылшын (ҰБ)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"ағылшын (АҚШ)"</string>
@@ -112,7 +110,6 @@
     <string name="enable" msgid="5031294444630523247">"Қосу"</string>
     <string name="not_now" msgid="6172462888202790482">"Қазір емес"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Бірдей енгізу стилі бұрыннан бар: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
-    <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Қолайлылықты зерттеу режимі"</string>
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Пернені ұзақ басу кідірісі"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Пернені басқан кездегі діріл ұзақтығы"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Пернені басқан кездегі дыбыс деңгейі"</string>

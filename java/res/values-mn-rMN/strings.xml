@@ -83,8 +83,6 @@
     <string name="select_language" msgid="3693815588777926848">"Оруулах хэл"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"Хадгалахын тулд дахин хүрнэ үү"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Толь бичиг байна"</string>
-    <string name="prefs_enable_log" msgid="6620424505072963557">"Хэрэглэгчийн санал хүсэлтийг идэвхжүүлэх"</string>
-    <string name="prefs_description_log" msgid="7525225584555429211">"Ашиглалтын статистик болон гацалтын репортуудыг автоматаар илгээснээр энэ оруулах арга засагчийг сайжруулахад туслаарай"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Гарын загвар"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"Англи (ИБ)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"Англи (АНУ)"</string>
@@ -117,7 +115,6 @@
     <string name="enable" msgid="5031294444630523247">"Идэвхжүүлэх"</string>
     <string name="not_now" msgid="6172462888202790482">"Одоо биш"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Ижилхэн оруулах загвар байна: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
-    <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Ашиглалтын судалгааны горим"</string>
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Товч удаан дарах хугацааны тохиргоо"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Товч дарах чичиргээний хугацаа"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Товчны дууны хэмжээ"</string>

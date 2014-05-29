@@ -83,8 +83,6 @@
     <string name="select_language" msgid="3693815588777926848">"Langues de saisie"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"Appuyer de nouveau pour enregistrer"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Dictionnaire disponible"</string>
-    <string name="prefs_enable_log" msgid="6620424505072963557">"Autoriser les commentaires des utilisateurs"</string>
-    <string name="prefs_description_log" msgid="7525225584555429211">"Contribuer à l\'amélioration de cet éditeur du mode de saisie grâce à l\'envoi automatique de statistiques d\'utilisation et de rapports d\'erreur"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Thème du clavier"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"Anglais (Royaume-Uni)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"Anglais (États-Unis)"</string>
@@ -117,7 +115,6 @@
     <string name="enable" msgid="5031294444630523247">"Activer"</string>
     <string name="not_now" msgid="6172462888202790482">"Pas maintenant"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Le style de saisie suivant existe déjà : <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>."</string>
-    <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Mode d\'étude de l\'utilisabilité"</string>
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Délai appui prolongé sur touche"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Durée vibration press. touche"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Volume son pression de touche"</string>
