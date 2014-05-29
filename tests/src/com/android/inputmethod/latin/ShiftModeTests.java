@@ -111,7 +111,7 @@ public class ShiftModeTests extends InputTestsBase {
         assertTrue("(Spanish) Auto caps after inverted bang", isCapsModeAutoShifted());
     }
 
-    public void testOtherSentenceSeparators() {
+    public void DISABLED_testOtherSentenceSeparators() {
         // We only run this test on Kitkat+ because previous versions of Android don't
         // have an Armenian locale. For some reason I don't know, when the requested
         // locale is not present as a device locale, then the application under test can't
