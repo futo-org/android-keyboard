@@ -71,10 +71,12 @@
     <string name="spoken_descrption_emoji_category_places" msgid="1163315840948545317">"สถานที่"</string>
     <string name="spoken_descrption_emoji_category_symbols" msgid="474680659024880601">"สัญลักษณ์"</string>
     <string name="spoken_descrption_emoji_category_emoticons" msgid="456737544787823539">"ไอคอนสื่ออารมณ์"</string>
-    <!-- no translation found for spoke_description_upper_case (397360656350553385) -->
+    <!-- no translation found for spoken_description_upper_case (4904835255229433916) -->
     <skip />
     <!-- no translation found for spoken_letter_0049 (4743162182646977944) -->
     <skip />
     <!-- no translation found for spoken_letter_0130 (4766619646231612274) -->
+    <skip />
+    <!-- no translation found for spoken_emoji_unknown (5981009928135394306) -->
     <skip />
 </resources>
