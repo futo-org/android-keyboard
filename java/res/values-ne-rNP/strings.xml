@@ -83,8 +83,6 @@
     <string name="select_language" msgid="3693815588777926848">"इनपुट भाषाहरू"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"बचत गर्न पुनः छुनुहोस्"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"उपलब्ध शब्दकोश"</string>
-    <string name="prefs_enable_log" msgid="6620424505072963557">"प्रयोगकर्ता प्रतिक्रिया सक्षम पार्नुहोस्"</string>
-    <string name="prefs_description_log" msgid="7525225584555429211">"स्वचालित रूपमा प्रयोग तथ्याङ्कहरू र क्यास रिपोर्टहरू पठाएर यस इनपुट विधि सम्पादकलाई सुधार्न सहयोग गर्नुहोस्।"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"किबोर्ड थिम"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"अंग्रेजी (युके)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"अंग्रेजी (युएस्)"</string>
@@ -117,7 +115,6 @@
     <string name="enable" msgid="5031294444630523247">"सक्षम पार्नुहोस्"</string>
     <string name="not_now" msgid="6172462888202790482">"अहिले होइन"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"यस्तो इनपुट शैली पहिले नै अवस्थित छ: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
-    <string name="prefs_usability_study_mode" msgid="1261130555134595254">"प्रयोग अध्ययन मोड"</string>
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"कुञ्जी लामो थिचाइ ढिलाइ"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"कुञ्जी थिचाइ भाइब्रेसन अवधि"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"कुञ्जी थिचाइ आवाज भोल्युम"</string>

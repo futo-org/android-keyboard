@@ -83,8 +83,6 @@
     <string name="select_language" msgid="3693815588777926848">"Ngôn ngữ nhập"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"Chạm lại để lưu"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Có sẵn từ điển"</string>
-    <string name="prefs_enable_log" msgid="6620424505072963557">"Bật phản hồi của người dùng"</string>
-    <string name="prefs_description_log" msgid="7525225584555429211">"Giúp cải tiến trình chỉnh sửa phương thức nhập này bằng cách tự động gửi thống kê sử dụng và báo cáo sự cố"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Chủ đề bàn phím"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"Tiếng Anh (Anh)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"Tiếng Anh (Mỹ)"</string>
@@ -117,7 +115,6 @@
     <string name="enable" msgid="5031294444630523247">"Bật"</string>
     <string name="not_now" msgid="6172462888202790482">"Để sau"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Đã tồn tại kiểu nhập tương tự: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
-    <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Chế độ nghiên cứu tính khả dụng"</string>
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Tgian chờ cho nhấn và giữ phím"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Thời gian rung khi nhấn phím"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Âm lượng khi nhấn phím"</string>

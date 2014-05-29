@@ -83,8 +83,6 @@
     <string name="select_language" msgid="3693815588777926848">"Sisestuskeeled"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"Salvestamiseks puudutage uuesti"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Sõnastik saadaval"</string>
-    <string name="prefs_enable_log" msgid="6620424505072963557">"Luba kasutaja tagasiside"</string>
-    <string name="prefs_description_log" msgid="7525225584555429211">"Aidake seda sisestusmeetodi redigeerijat parandada, saates automaatselt kasutusstatistikat ja krahhiaruandeid."</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Klaviatuuri teema"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"Inglise (UK)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"Inglise (USA)"</string>
@@ -117,7 +115,6 @@
     <string name="enable" msgid="5031294444630523247">"Luba"</string>
     <string name="not_now" msgid="6172462888202790482">"Mitte kohe"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Sama sisendstiil on juba olemas: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
-    <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Kasutatavuse uurimisrežiim"</string>
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Pika klahvivajutuse viide"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Klahvivajutuse vibreerimise kestus"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Klahvivajutuse helitugevus"</string>

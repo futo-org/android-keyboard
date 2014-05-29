@@ -626,8 +626,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         unregisterReceiver(mDictionaryPackInstallReceiver);
         unregisterReceiver(mDictionaryDumpBroadcastReceiver);
         PersonalizationDictionarySessionRegistrar.close(this);
-        LatinImeLogger.commit();
-        LatinImeLogger.onDestroy();
         StatsUtils.onDestroy();
         super.onDestroy();
     }
@@ -670,9 +668,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mSuggestionStripView = (SuggestionStripView)view.findViewById(R.id.suggestion_strip_view);
         if (hasSuggestionStripView()) {
             mSuggestionStripView.setListener(this, view);
-        }
-        if (LatinImeLogger.sVISUALDEBUG) {
-            mKeyPreviewBackingView.setBackgroundColor(0x10FF0000);
         }
     }
 
@@ -755,7 +750,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             Log.w(TAG, "Use EditorInfo.IME_FLAG_FORCE_ASCII flag instead");
         }
 
-        LatinImeLogger.onStartInputView(editorInfo);
         // In landscape mode, this method gets called without the input view being created.
         if (mainKeyboardView == null) {
             return;
@@ -876,7 +870,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private void onFinishInputInternal() {
         super.onFinishInput();
 
-        LatinImeLogger.commit();
         final MainKeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
         if (mainKeyboardView != null) {
             mainKeyboardView.closing();
@@ -963,7 +956,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public void hideWindow() {
-        LatinImeLogger.commit();
         mKeyboardSwitcher.onHideWindow();
 
         if (TRACE) Debug.stopMethodTracing();

@@ -332,10 +332,6 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
                 R.array.keypress_vibration_durations, DEFAULT_KEYPRESS_VIBRATION_DURATION));
     }
 
-    public static boolean readUsabilityStudyMode(final SharedPreferences prefs) {
-        return prefs.getBoolean(DebugSettings.PREF_USABILITY_STUDY_MODE, true);
-    }
-
     public static float readKeyPreviewAnimationScale(final SharedPreferences prefs,
             final String prefKey, final float defaultValue) {
         final float fraction = prefs.getFloat(prefKey, UNDEFINED_PREFERENCE_VALUE_FLOAT);

@@ -21,12 +21,6 @@
     android:key="english_ime_debug_settings"
 >
     <CheckBoxPreference
-        android:key="enable_logging"
-        android:title="@string/prefs_enable_log"
-        android:summary="@string/prefs_description_log"
-        android:persistent="true"
-        android:defaultValue="false" />
-    <CheckBoxPreference
         android:key="debug_mode"
         android:title="@string/prefs_debug_mode"
         android:persistent="true"
@@ -34,11 +28,6 @@
     <CheckBoxPreference
         android:key="force_non_distinct_multitouch"
         android:title="@string/prefs_force_non_distinct_multitouch"
-        android:persistent="true"
-        android:defaultValue="false" />
-    <CheckBoxPreference
-        android:key="usability_study_mode"
-        android:title="@string/prefs_usability_study_mode"
         android:persistent="true"
         android:defaultValue="false" />
     <CheckBoxPreference

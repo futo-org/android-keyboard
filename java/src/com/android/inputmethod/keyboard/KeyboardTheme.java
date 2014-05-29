@@ -81,20 +81,6 @@ public final class KeyboardTheme {
         return mThemeId;
     }
 
-    // TODO: This method should be removed when {@link LatinImeLogger} is removed.
-    public int getCompatibleThemeIdForLogging() {
-        switch (mThemeId) {
-        case THEME_ID_ICS:
-            return 5;
-        case THEME_ID_KLP:
-            return 9;
-        case THEME_ID_LXX_DARK:
-            return 10;
-        default: // Invalid theme
-            return -1;
-        }
-    }
-
     private static KeyboardTheme searchKeyboardThemeById(final int themeId) {
         // TODO: This search algorithm isn't optimal if there are many themes.
         for (final KeyboardTheme theme : KEYBOARD_THEMES) {
