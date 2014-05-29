@@ -37,9 +37,7 @@ import com.android.inputmethod.keyboard.internal.KeyVisualAttributes;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
-import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.latin.utils.TypefaceUtils;
-import com.android.inputmethod.research.ResearchLogger;
 
 import java.util.HashSet;
 
@@ -315,13 +313,6 @@ public class KeyboardView extends View {
                     onDrawKey(key, canvas, paint);
                 }
             }
-        }
-
-        // Research Logging (Development Only Diagnostics) indicator.
-        // TODO: Reimplement using a keyboard background image specific to the ResearchLogger,
-        // and remove this call.
-        if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-            ResearchLogger.getInstance().paintIndicator(this, paint, canvas, width, height);
         }
 
         mInvalidatedKeys.clear();

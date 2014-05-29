@@ -21,7 +21,6 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_input_options" msgid="3909945612939668554">"ជម្រើស​​បញ្ចូល"</string>
-    <string name="english_ime_research_log" msgid="8492602295696577851">"ពាក្យ​បញ្ជា​កំណត់​ហេតុ​​ការ​ស្រាវជ្រាវ"</string>
     <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"រក​មើល​ឈ្មោះ​ទំនាក់ទំនង"</string>
     <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"កម្មវិធី​ពិនិត្យ​អក្ខរាវិរុទ្ធ​ប្រើ​ធាតុ​ពី​​ក្នុង​បញ្ជី​ទំនាក់ទំនង​របស់​អ្នក"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"ញ័រ​នៅ​ពេល​ចុច​គ្រាប់ចុច"</string>

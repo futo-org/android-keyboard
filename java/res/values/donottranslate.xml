@@ -137,6 +137,4 @@
         <item>tr:AsciiCapable,SupportTouchPositionCorrection,EmojiCapable</item>
         <item>qwerty</item>
     </string-array>
-
-    <string name="settings_warning_researcher_mode">Attention!  You are using the special keyboard for research purposes.</string>
 </resources>
