@@ -63,6 +63,7 @@
             android:layout_width="2dip"
             android:layout_height="match_parent"
             android:background="@drawable/suggestions_strip_divider" />
+        <!-- TODO: Implement KeyView and replace this. -->
         <ImageButton
             android:id="@+id/emoji_keyboard_delete"
             android:layout_width="0dip"
@@ -86,18 +87,30 @@
         android:layout_height="0dip"
         android:layout_weight="1"
     >
+        <!-- TODO: Implement a KeyView and replace this. -->
         <TextView
             android:id="@+id/emoji_keyboard_alphabet_left"
             android:layout_width="0dip"
             android:layout_weight="0.15"
             android:gravity="center"
             android:layout_height="match_parent" />
-        <ImageButton
+        <!-- TODO: Implement KeyView and replace this. -->
+        <RelativeLayout
             android:id="@+id/emoji_keyboard_space"
             android:layout_width="0dip"
             android:layout_weight="0.70"
             android:layout_height="match_parent"
-            android:contentDescription="@string/spoken_description_space"/>
+            android:contentDescription="@string/spoken_description_space">
+            <!-- WORKAROUND: Show the spacebar icon as a bacground of this View. -->
+            <View
+                android:id="@+id/emoji_keyboard_space_icon"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp"
+                android:layout_centerInParent="true" />
+        </RelativeLayout>
+        <!-- TODO: Implement KeyView and replace this. -->
         <TextView
             android:id="@+id/emoji_keyboard_alphabet_right"
             android:layout_width="0dip"
