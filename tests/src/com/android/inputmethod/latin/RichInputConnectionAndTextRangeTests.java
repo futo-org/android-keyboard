@@ -187,6 +187,8 @@ public class RichInputConnectionAndTextRangeTests extends AndroidTestCase {
         assertEquals(RichInputConnection.getPrevWordsInfoFromNthPreviousWord(
                 "abc def ", mSpacingAndPunctuations, 1).mPrevWord, "def");
         assertEquals(RichInputConnection.getPrevWordsInfoFromNthPreviousWord(
+                "abc 'def", mSpacingAndPunctuations, 1).mPrevWord, "'def");
+        assertEquals(RichInputConnection.getPrevWordsInfoFromNthPreviousWord(
                 "abc def.", mSpacingAndPunctuations, 1), PrevWordsInfo.BEGINNING_OF_SENTENCE);
         assertEquals(RichInputConnection.getPrevWordsInfoFromNthPreviousWord(
                 "abc def .", mSpacingAndPunctuations, 1), PrevWordsInfo.BEGINNING_OF_SENTENCE);
@@ -196,6 +198,8 @@ public class RichInputConnectionAndTextRangeTests extends AndroidTestCase {
                 "abc? def", mSpacingAndPunctuations, 2), PrevWordsInfo.EMPTY_PREV_WORDS_INFO);
         assertEquals(RichInputConnection.getPrevWordsInfoFromNthPreviousWord(
                 "abc! def", mSpacingAndPunctuations, 2), PrevWordsInfo.EMPTY_PREV_WORDS_INFO);
+        assertEquals(RichInputConnection.getPrevWordsInfoFromNthPreviousWord(
+                "abc 'def", mSpacingAndPunctuations, 2), PrevWordsInfo.EMPTY_PREV_WORDS_INFO);
     }
 
     /**
