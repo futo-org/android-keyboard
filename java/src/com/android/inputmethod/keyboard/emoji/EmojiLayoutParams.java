@@ -19,7 +19,6 @@ package com.android.inputmethod.keyboard.emoji;
 import android.content.res.Resources;
 import android.support.v4.view.ViewPager;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.android.inputmethod.latin.R;
@@ -84,10 +83,10 @@ final class EmojiLayoutParams {
         ll.setLayoutParams(lp);
     }
 
-    public void setKeyProperties(final ImageView ib) {
-        final LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) ib.getLayoutParams();
+    public void setKeyProperties(final View v) {
+        final LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) v.getLayoutParams();
         lp.leftMargin = mKeyHorizontalGap / 2;
         lp.rightMargin = mKeyHorizontalGap / 2;
-        ib.setLayoutParams(lp);
+        v.setLayoutParams(lp);
     }
 }
