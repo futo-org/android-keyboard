@@ -81,7 +81,9 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
     private ImageButton mDeleteKey;
     private TextView mAlphabetKeyLeft;
     private TextView mAlphabetKeyRight;
-    private ImageButton mSpacebar;
+    private View mSpacebar;
+    // TODO: Remove this workaround.
+    private View mSpacebarIcon;
     private TabHost mTabHost;
     private ViewPager mEmojiPager;
     private int mCurrentPagerPosition = 0;
@@ -221,12 +223,13 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
         mAlphabetKeyRight.setTag(Constants.CODE_ALPHA_FROM_EMOJI);
         mAlphabetKeyRight.setOnTouchListener(this);
         mAlphabetKeyRight.setOnClickListener(this);
-        mSpacebar = (ImageButton)findViewById(R.id.emoji_keyboard_space);
+        mSpacebar = findViewById(R.id.emoji_keyboard_space);
         mSpacebar.setBackgroundResource(mSpacebarBackgroundId);
         mSpacebar.setTag(Constants.CODE_SPACE);
         mSpacebar.setOnTouchListener(this);
         mSpacebar.setOnClickListener(this);
         mEmojiLayoutParams.setKeyProperties(mSpacebar);
+        mSpacebarIcon = findViewById(R.id.emoji_keyboard_space_icon);
     }
 
     @Override
@@ -375,7 +378,8 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
         }
         final int spacebarResId = iconSet.getIconResourceId(KeyboardIconsSet.NAME_SPACE_KEY);
         if (spacebarResId != 0) {
-            mSpacebar.setImageResource(spacebarResId);
+            // TODO: Remove this workaround to place the spacebar icon.
+            mSpacebarIcon.setBackgroundResource(spacebarResId);
         }
         final KeyDrawParams params = new KeyDrawParams();
         params.updateParams(mEmojiLayoutParams.getActionBarHeight(), keyVisualAttr);
