@@ -547,14 +547,17 @@ public final class RichInputConnection {
     // Get information of the nth word before cursor. n = 1 retrieves the word immediately before
     // the cursor, n = 2 retrieves the word before that, and so on. This splits on whitespace only.
     // Also, it won't return words that end in a separator (if the nth word before the cursor
-    // ends in a separator, it returns information represents beginning-of-sentence).
+    // ends in a separator, it returns information representing beginning-of-sentence).
     // Example :
     // (n = 1) "abc def|" -> def
     // (n = 1) "abc def |" -> def
+    // (n = 1) "abc 'def|" -> 'def
     // (n = 1) "abc def. |" -> beginning-of-sentence
     // (n = 1) "abc def . |" -> beginning-of-sentence
     // (n = 2) "abc def|" -> abc
     // (n = 2) "abc def |" -> abc
+    // (n = 2) "abc 'def|" -> empty. The context is different from "abc def", but we cannot
+    // represent this situation using PrevWordsInfo. See TODO in the method.
     // (n = 2) "abc def. |" -> abc
     // (n = 2) "abc def . |" -> def
     // (n = 2) "abc|" -> beginning-of-sentence
@@ -564,6 +567,19 @@ public final class RichInputConnection {
             final SpacingAndPunctuations spacingAndPunctuations, final int n) {
         if (prev == null) return PrevWordsInfo.EMPTY_PREV_WORDS_INFO;
         final String[] w = spaceRegex.split(prev);
+
+        // Referring to the word after the nth word.
+        if ((n - 1) > 0 && (n - 1) <= w.length) {
+            final String wordFollowingTheNthPrevWord = w[w.length - n + 1];
+            if (!wordFollowingTheNthPrevWord.isEmpty()) {
+                final char firstChar = wordFollowingTheNthPrevWord.charAt(0);
+                if (spacingAndPunctuations.isWordConnector(firstChar)) {
+                    // The word following the n-th prev word is starting with a word connector.
+                    // TODO: Return meaningful context for this case.
+                    return PrevWordsInfo.EMPTY_PREV_WORDS_INFO;
+                }
+            }
+        }
 
         // If we can't find n words, or we found an empty word, the context is
         // beginning-of-sentence.

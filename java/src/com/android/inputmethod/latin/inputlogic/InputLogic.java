@@ -704,11 +704,10 @@ public final class InputLogic {
                 (!mConnection.isCursorTouchingWord(settingsValues.mSpacingAndPunctuations)
                         || !settingsValues.mSpacingAndPunctuations.mCurrentLanguageHasSpaces)) {
             // Reset entirely the composing state anyway, then start composing a new word unless
-            // the character is a single quote or a dash. The idea here is, single quote and dash
-            // are not separators and they should be treated as normal characters, except in the
-            // first position where they should not start composing a word.
-            isComposingWord = (Constants.CODE_SINGLE_QUOTE != codePoint
-                    && Constants.CODE_DASH != codePoint);
+            // the character is a word connector. The idea here is, word connectors are not
+            // separators and they should be treated as normal characters, except in the first
+            // position where they should not start composing a word.
+            isComposingWord = !settingsValues.mSpacingAndPunctuations.isWordConnector(codePoint);
             // Here we don't need to reset the last composed word. It will be reset
             // when we commit this one, if we ever do; if on the other hand we backspace
             // it entirely and resume suggestions on the previous word, we'd like to still
@@ -719,12 +718,15 @@ public final class InputLogic {
             mWordComposer.processEvent(inputTransaction.mEvent);
             // If it's the first letter, make note of auto-caps state
             if (mWordComposer.isSingleLetter()) {
-                // We pass 1 to getPreviousWordForSuggestion because we were not composing a word
-                // yet, so the word we want is the 1st word before the cursor.
+                // We pass 2 to getPreviousWordForSuggestion when the previous code point is a word
+                // connector. Otherwise, we pass 1 because we were not composing a word yet, so the
+                // word we want is the 1st word before the cursor.
                 mWordComposer.setCapitalizedModeAndPreviousWordAtStartComposingTime(
                         inputTransaction.mShiftState,
                         getPrevWordsInfoFromNthPreviousWordForSuggestion(
-                                settingsValues.mSpacingAndPunctuations, 1 /* nthPreviousWord */));
+                                settingsValues.mSpacingAndPunctuations,
+                                settingsValues.mSpacingAndPunctuations.isWordConnector(
+                                        mConnection.getCodePointBeforeCursor()) ? 2 : 1));
             }
             mConnection.setComposingText(getTextWithUnderline(
                     mWordComposer.getTypedWord()), 1);
