@@ -158,6 +158,10 @@ public final class Constants {
     // A hint on how many characters to cache from the TextView. A good value of this is given by
     // how many characters we need to be able to almost always find the caps mode.
     public static final int EDITOR_CONTENTS_CACHE_SIZE = 1024;
+    // How many characters we accept for the recapitalization functionality. This needs to be
+    // large enough for all reasonable purposes, but avoid purposeful attacks. 100k sounds about
+    // right for this.
+    public static final int MAX_CHARACTERS_FOR_RECAPITALIZATION = 1024 * 100;
 
     // Must be equal to MAX_WORD_LENGTH in native/jni/src/defines.h
     public static final int DICTIONARY_MAX_WORD_LENGTH = 48;

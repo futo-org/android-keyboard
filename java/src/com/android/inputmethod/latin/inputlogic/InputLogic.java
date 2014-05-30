@@ -1139,15 +1139,21 @@ public final class InputLogic {
         if (!mConnection.hasSelection()) {
             return; // No selection
         }
+        final int selectionStart = mConnection.getExpectedSelectionStart();
+        final int selectionEnd = mConnection.getExpectedSelectionEnd();
+        final int numCharsSelected = selectionEnd - selectionStart;
+        if (numCharsSelected > Constants.MAX_CHARACTERS_FOR_RECAPITALIZATION) {
+            // We bail out if we have too many characters for performance reasons. We don't want
+            // to suck possibly multiple-megabyte data.
+            return;
+        }
         // If we have a recapitalize in progress, use it; otherwise, create a new one.
         if (!mRecapitalizeStatus.isActive()
-                || !mRecapitalizeStatus.isSetAt(mConnection.getExpectedSelectionStart(),
-                        mConnection.getExpectedSelectionEnd())) {
+                || !mRecapitalizeStatus.isSetAt(selectionStart, selectionEnd)) {
             final CharSequence selectedText =
                     mConnection.getSelectedText(0 /* flags, 0 for no styles */);
             if (TextUtils.isEmpty(selectedText)) return; // Race condition with the input connection
-            mRecapitalizeStatus.initialize(mConnection.getExpectedSelectionStart(),
-                    mConnection.getExpectedSelectionEnd(), selectedText.toString(),
+            mRecapitalizeStatus.initialize(selectionStart, selectionEnd, selectedText.toString(),
                     settingsValues.mLocale,
                     settingsValues.mSpacingAndPunctuations.mSortedWordSeparators);
             // We trim leading and trailing whitespace.
@@ -1155,11 +1161,8 @@ public final class InputLogic {
         }
         mConnection.finishComposingText();
         mRecapitalizeStatus.rotate();
-        final int numCharsDeleted = mConnection.getExpectedSelectionEnd()
-                - mConnection.getExpectedSelectionStart();
-        mConnection.setSelection(mConnection.getExpectedSelectionEnd(),
-                mConnection.getExpectedSelectionEnd());
-        mConnection.deleteSurroundingText(numCharsDeleted, 0);
+        mConnection.setSelection(selectionEnd, selectionEnd);
+        mConnection.deleteSurroundingText(numCharsSelected, 0);
         mConnection.commitText(mRecapitalizeStatus.getRecapitalizedString(), 0);
         mConnection.setSelection(mRecapitalizeStatus.getNewCursorStart(),
                 mRecapitalizeStatus.getNewCursorEnd());
