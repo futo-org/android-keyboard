@@ -1033,8 +1033,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
                 final int translatedY = mMoreKeysPanel.translateY(y);
                 mMoreKeysPanel.onUpEvent(translatedX, translatedY, mPointerId, eventTime);
             }
-            mMoreKeysPanel.dismissMoreKeysPanel();
-            mMoreKeysPanel = null;
+            dismissMoreKeysPanel();
             return;
         }
 
@@ -1101,10 +1100,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
         sTimerProxy.cancelKeyTimersOf(this);
         setReleasedKeyGraphics(mCurrentKey);
         resetKeySelectionByDraggingFinger();
-        if (isShowingMoreKeysPanel()) {
-            mMoreKeysPanel.dismissMoreKeysPanel();
-            mMoreKeysPanel = null;
-        }
+        dismissMoreKeysPanel();
     }
 
     private boolean isMajorEnoughMoveToBeOnNewKey(final int x, final int y, final long eventTime,
