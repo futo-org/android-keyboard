@@ -161,10 +161,9 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     private final TimerHandler mKeyTimerHandler;
     private final int mLanguageOnSpacebarHorizontalMargin;
 
-    private final DrawingHandler mDrawingHandler =
-            new DrawingHandler(this);
+    private final DrawingHandler mDrawingHandler = new DrawingHandler(this);
 
-    private final MainKeyboardAccessibilityDelegate mAccessibilityDelegate;
+    private MainKeyboardAccessibilityDelegate mAccessibilityDelegate;
 
     public MainKeyboardView(final Context context, final AttributeSet attrs) {
         this(context, attrs, R.attr.mainKeyboardViewStyle);
@@ -262,8 +261,6 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
 
         mLanguageOnSpacebarHorizontalMargin = (int)getResources().getDimension(
                 R.dimen.config_language_on_spacebar_horizontal_margin);
-
-        mAccessibilityDelegate = new MainKeyboardAccessibilityDelegate(this, mKeyDetector);
     }
 
     @Override
@@ -384,7 +381,14 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         final int keyHeight = keyboard.mMostCommonKeyHeight - keyboard.mVerticalGap;
         mLanguageOnSpacebarTextSize = keyHeight * mLanguageOnSpacebarTextRatio;
 
-        mAccessibilityDelegate.setKeyboard(keyboard);
+        final MainKeyboardAccessibilityDelegate accessibilityDelegate;
+        if (AccessibilityUtils.getInstance().isAccessibilityEnabled()) {
+            accessibilityDelegate = new MainKeyboardAccessibilityDelegate(this, mKeyDetector);
+            accessibilityDelegate.setKeyboard(keyboard);
+        } else {
+            accessibilityDelegate = null;
+        }
+        mAccessibilityDelegate = accessibilityDelegate;
     }
 
     /**
@@ -726,8 +730,9 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     }
 
     public void onHideWindow() {
-        if (AccessibilityUtils.getInstance().isAccessibilityEnabled()) {
-            mAccessibilityDelegate.onHideWindow();
+        final MainKeyboardAccessibilityDelegate accessibilityDelegate = mAccessibilityDelegate;
+        if (accessibilityDelegate != null) {
+            accessibilityDelegate.onHideWindow();
         }
     }
 
@@ -736,8 +741,9 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
      */
     @Override
     public boolean onHoverEvent(final MotionEvent event) {
-        if (AccessibilityUtils.getInstance().isTouchExplorationEnabled()) {
-            return mAccessibilityDelegate.onHoverEvent(event);
+        final MainKeyboardAccessibilityDelegate accessibilityDelegate = mAccessibilityDelegate;
+        if (accessibilityDelegate != null) {
+            return accessibilityDelegate.onHoverEvent(event);
         }
         return super.onHoverEvent(event);
     }
