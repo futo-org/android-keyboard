@@ -34,6 +34,7 @@ import java.util.Locale;
 public final class KeyCodeDescriptionMapper {
     private static final String TAG = KeyCodeDescriptionMapper.class.getSimpleName();
     private static final String SPOKEN_LETTER_RESOURCE_NAME_FORMAT = "spoken_accented_letter_%04X";
+    private static final String SPOKEN_SYMBOL_RESOURCE_NAME_FORMAT = "spoken_symbol_%04X";
     private static final String SPOKEN_EMOJI_RESOURCE_NAME_FORMAT = "spoken_emoji_%04X";
 
     // The resource ID of the string spoken for obscured keys
@@ -290,6 +291,10 @@ public final class KeyCodeDescriptionMapper {
             return accentedLetter;
         }
         // Here, <code>code</code> may be a base (non-accented) letter.
+        final String unsupportedSymbol = getSpokenSymbolDescription(context, code);
+        if (unsupportedSymbol != null) {
+            return unsupportedSymbol;
+        }
         final String emojiDescription = getSpokenEmojiDescription(context, code);
         if (emojiDescription != null) {
             return emojiDescription;
@@ -303,6 +308,7 @@ public final class KeyCodeDescriptionMapper {
         return context.getString(R.string.spoken_description_unknown, code);
     }
 
+    // TODO: Remove this method once TTS supports those accented letters' verbalization.
     private String getSpokenAccentedLetterDescription(final Context context, final int code) {
         final boolean isUpperCase = Character.isUpperCase(code);
         final int baseCode = isUpperCase ? Character.toLowerCase(code) : code;
@@ -317,14 +323,32 @@ public final class KeyCodeDescriptionMapper {
                 : spokenText;
     }
 
+    // TODO: Remove this method once TTS supports those symbols' verbalization.
+    private String getSpokenSymbolDescription(final Context context, final int code) {
+        final int resId = getSpokenDescriptionId(context, code, SPOKEN_SYMBOL_RESOURCE_NAME_FORMAT);
+        if (resId == 0) {
+            return null;
+        }
+        final String spokenText = context.getString(resId);
+        if (!TextUtils.isEmpty(spokenText)) {
+            return spokenText;
+        }
+        // If a translated description is empty, fall back to unknown symbol description.
+        return context.getString(R.string.spoken_symbol_unknown);
+    }
+
+    // TODO: Remove this method once TTS supports emoji verbalization.
     private String getSpokenEmojiDescription(final Context context, final int code) {
         final int resId = getSpokenDescriptionId(context, code, SPOKEN_EMOJI_RESOURCE_NAME_FORMAT);
         if (resId == 0) {
             return null;
         }
         final String spokenText = context.getString(resId);
-        return TextUtils.isEmpty(spokenText) ? context.getString(R.string.spoken_emoji_unknown)
-                : spokenText;
+        if (!TextUtils.isEmpty(spokenText)) {
+            return spokenText;
+        }
+        // If a translated description is empty, fall back to unknown emoji description.
+        return context.getString(R.string.spoken_emoji_unknown);
     }
 
     private int getSpokenDescriptionId(final Context context, final int code,

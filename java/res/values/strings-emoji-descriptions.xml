@@ -17,6 +17,10 @@
 ** limitations under the License.
 */
 -->
+<!--
+    These Emoji symbols are unsupported by TTS.
+    TODO: Remove this file when TTS/TalkBack support these Emoji symbols.
+-->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
      <!-- Spoken description for Unicode code point U+00A9: "©" COPYRIGHT SIGN -->
      <string name="spoken_emoji_00A9">Copyright sign</string>
