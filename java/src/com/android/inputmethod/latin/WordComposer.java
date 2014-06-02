@@ -145,9 +145,12 @@ public final class WordComposer {
      */
     public int copyCodePointsExceptTrailingSingleQuotesAndReturnCodePointCount(
             final int[] destination) {
+        // This method can be called on a separate thread and mTypedWordCache can change while we
+        // are executing this method.
+        final String typedWord = mTypedWordCache.toString();
         // lastIndex is exclusive
-        final int lastIndex = mTypedWordCache.length()
-                - StringUtils.getTrailingSingleQuotesCount(mTypedWordCache);
+        final int lastIndex = typedWord.length()
+                - StringUtils.getTrailingSingleQuotesCount(typedWord);
         if (lastIndex <= 0) {
             // The string is empty or contains only single quotes.
             return 0;
@@ -155,11 +158,11 @@ public final class WordComposer {
 
         // The following function counts the number of code points in the text range which begins
         // at index 0 and extends to the character at lastIndex.
-        final int codePointSize = Character.codePointCount(mTypedWordCache, 0, lastIndex);
+        final int codePointSize = Character.codePointCount(typedWord, 0, lastIndex);
         if (codePointSize > destination.length) {
             return -1;
         }
-        return StringUtils.copyCodePointsAndReturnCodePointCount(destination, mTypedWordCache, 0,
+        return StringUtils.copyCodePointsAndReturnCodePointCount(destination, typedWord, 0,
                 lastIndex, true /* downCase */);
     }
 
