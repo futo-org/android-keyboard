@@ -110,25 +110,31 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
     @Override
     public void onDownEvent(final int x, final int y, final int pointerId, final long eventTime) {
         mActivePointerId = pointerId;
-        onMoveKeyInternal(x, y, pointerId);
+        mCurrentKey = detectKey(x, y, pointerId);
     }
 
     @Override
-    public void onMoveEvent(int x, int y, final int pointerId, long eventTime) {
+    public void onMoveEvent(final int x, final int y, final int pointerId, final long eventTime) {
         if (mActivePointerId != pointerId) {
             return;
         }
         final boolean hasOldKey = (mCurrentKey != null);
-        onMoveKeyInternal(x, y, pointerId);
+        mCurrentKey = detectKey(x, y, pointerId);
         if (hasOldKey && mCurrentKey == null) {
-            // If the pointer has moved too far away from any target then cancel the panel.
+            // A more keys keyboard is canceled when detecting no key.
             mController.onCancelMoreKeysPanel();
         }
     }
 
     @Override
     public void onUpEvent(final int x, final int y, final int pointerId, final long eventTime) {
-        if (mCurrentKey != null && mActivePointerId == pointerId) {
+        if (mActivePointerId != pointerId) {
+            return;
+        }
+        // Calling {@link #detectKey(int,int,int)} here is harmless because the last move event and
+        // the following up event share the same coordinates.
+        mCurrentKey = detectKey(x, y, pointerId);
+        if (mCurrentKey != null) {
             updateReleaseKeyGraphics(mCurrentKey);
             onKeyInput(mCurrentKey, x, y);
             mCurrentKey = null;
@@ -152,23 +158,22 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
         }
     }
 
-    private void onMoveKeyInternal(int x, int y, int pointerId) {
-        if (mActivePointerId != pointerId) {
-            // Ignore old pointers when newer pointer is active.
-            return;
-        }
+    private Key detectKey(int x, int y, int pointerId) {
         final Key oldKey = mCurrentKey;
         final Key newKey = mKeyDetector.detectHitKey(x, y);
-        if (newKey != oldKey) {
-            mCurrentKey = newKey;
-            invalidateKey(mCurrentKey);
-            if (oldKey != null) {
-                updateReleaseKeyGraphics(oldKey);
-            }
-            if (newKey != null) {
-                updatePressKeyGraphics(newKey);
-            }
+        if (newKey == oldKey) {
+            return newKey;
         }
+        // A new key is detected.
+        if (oldKey != null) {
+            updateReleaseKeyGraphics(oldKey);
+            invalidateKey(oldKey);
+        }
+        if (newKey != null) {
+            updatePressKeyGraphics(newKey);
+            invalidateKey(newKey);
+        }
+        return newKey;
     }
 
     private void updateReleaseKeyGraphics(final Key key) {
