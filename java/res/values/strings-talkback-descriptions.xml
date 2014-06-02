@@ -32,7 +32,7 @@
     <string name="spoken_auto_correct_obscured"><xliff:g id="KEY_NAME" example="Space">%1$s</xliff:g> performs auto-correction</string>
 
     <!-- Spoken description for unknown keyboard keys. -->
-    <string name="spoken_description_unknown">Key code %d</string>
+    <string name="spoken_description_unknown">Unknown character</string>
     <!-- Spoken description for the "Shift" keyboard key when "Shift" is off. -->
     <string name="spoken_description_shift">Shift</string>
     <!-- Spoken description for the "Shift" keyboard key in symbols mode. -->
@@ -135,6 +135,8 @@
     <!-- Spoken description for Unicode code point U+0130: "İ" LATIN CAPITAL LETTER I WITH DOT ABOVE
          Note that depending on locale, the lower-case of this letter is U+0069 or U+0131. -->
     <string name="spoken_letter_0130">Capital I, dot above</string>
+    <!-- Spoken description for unknown symbol code point. -->
+    <string name="spoken_symbol_unknown">Unknown symbol</string>
     <!-- Spoken description for unknown emoji code point. -->
     <string name="spoken_emoji_unknown">Unknown emoji</string>
 </resources>

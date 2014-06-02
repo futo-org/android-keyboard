@@ -17,7 +17,11 @@
 ** limitations under the License.
 */
 -->
-<!-- TODO: Remove this file when TTS/TalkBack support these letters. -->
+<!--
+    These accented letters (spoken_accented_letter_*) are unsupported by TTS.
+    These symbols (spoken_symbol_*) are also unsupported by TTS.
+    TODO: Remove these string resources when TTS/TalkBack support these letters.
+-->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- Spoken description for Unicode code point U+00AA: "ª" FEMININE ORDINAL INDICATOR -->
     <string name="spoken_accented_letter_00AA">Feminine ordinal indicator</string>
@@ -319,4 +323,62 @@
     <string name="spoken_accented_letter_1EF7">Y, hook above</string>
     <!-- Spoken description for Unicode code point U+1EF9: "ỹ" LATIN SMALL LETTER Y WITH TILDE -->
     <string name="spoken_accented_letter_1EF9">Y, tilde</string>
+    <!-- Spoken description for Unicode code point U+00A1: "¡" INVERTED EXCLAMATION MARK -->
+    <string name="spoken_symbol_00A1">Inverted exclamation mark</string>
+    <!-- Spoken description for Unicode code point U+00AB: "«" LEFT-POINTING DOUBLE ANGLE QUOTATION MARK -->
+    <string name="spoken_symbol_00AB">Left-pointing double angle quotation mark</string>
+    <!-- Spoken description for Unicode code point U+00B7: "·" MIDDLE DOT -->
+    <string name="spoken_symbol_00B7">Middle dot</string>
+    <!-- Spoken description for Unicode code point U+00B9: "¹" SUPERSCRIPT ONE -->
+    <string name="spoken_symbol_00B9">Superscript one</string>
+    <!-- Spoken description for Unicode code point U+00BB: "»" RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK -->
+    <string name="spoken_symbol_00BB">Right-pointing double angle quotation mark</string>
+    <!-- Spoken description for Unicode code point U+00BF: "¿" INVERTED QUESTION MARK -->
+    <string name="spoken_symbol_00BF">Inverted question mark</string>
+    <!-- Spoken description for Unicode code point U+2018: "‘" LEFT SINGLE QUOTATION MARK -->
+    <string name="spoken_symbol_2018">Left single quotation mark</string>
+    <!-- Spoken description for Unicode code point U+2019: "’" RIGHT SINGLE QUOTATION MARK -->
+    <string name="spoken_symbol_2019">Right single quotation mark</string>
+    <!-- Spoken description for Unicode code point U+201A: "‚" SINGLE LOW-9 QUOTATION MARK -->
+    <string name="spoken_symbol_201A">Single low-9 quotation mark</string>
+    <!-- Spoken description for Unicode code point U+201C: "“" LEFT DOUBLE QUOTATION MARK -->
+    <string name="spoken_symbol_201C">Left double quotation mark</string>
+    <!-- Spoken description for Unicode code point U+201D: "”" RIGHT DOUBLE QUOTATION MARK -->
+    <string name="spoken_symbol_201D">Right double quotation mark</string>
+    <!-- Spoken description for Unicode code point U+2020: "†" DAGGER -->
+    <string name="spoken_symbol_2020">Dagger</string>
+    <!-- Spoken description for Unicode code point U+2021: "‡" DOUBLE DAGGER -->
+    <string name="spoken_symbol_2021">Double dagger</string>
+    <!-- Spoken description for Unicode code point U+2030: "‰" PER MILLE SIGN -->
+    <string name="spoken_symbol_2030">Per mille sign</string>
+    <!-- Spoken description for Unicode code point U+2032: "′" PRIME -->
+    <string name="spoken_symbol_2032">Prime</string>
+    <!-- Spoken description for Unicode code point U+2033: "″" DOUBLE PRIME -->
+    <string name="spoken_symbol_2033">Double prime</string>
+    <!-- Spoken description for Unicode code point U+2039: "‹" SINGLE LEFT-POINTING ANGLE QUOTATION MARK -->
+    <string name="spoken_symbol_2039">Single left-pointing angle quotation mark</string>
+    <!-- Spoken description for Unicode code point U+203A: "›" SINGLE RIGHT-POINTING ANGLE QUOTATION MARK -->
+    <string name="spoken_symbol_203A">Single right-pointing angle quotation mark</string>
+    <!-- Spoken description for Unicode code point U+2074: "⁴" SUPERSCRIPT FOUR -->
+    <string name="spoken_symbol_2074">Superscript four</string>
+    <!-- Spoken description for Unicode code point U+207F: "ⁿ" SUPERSCRIPT LATIN SMALL LETTER N -->
+    <string name="spoken_symbol_207F">Superscript latin small letter n</string>
+    <!-- Spoken description for Unicode code point U+20B1: "₱" PESO SIGN -->
+    <string name="spoken_symbol_20B1">Peso sign</string>
+    <!-- Spoken description for Unicode code point U+2105: "℅" CARE OF -->
+    <string name="spoken_symbol_2105">Care of</string>
+    <!-- Spoken description for Unicode code point U+2192: "→" RIGHTWARDS ARROW -->
+    <string name="spoken_symbol_2192">Rightwards arrow</string>
+    <!-- Spoken description for Unicode code point U+2193: "↓" DOWNWARDS ARROW -->
+    <string name="spoken_symbol_2193">Downwards arrow</string>
+    <!-- Spoken description for Unicode code point U+2205: "∅" EMPTY SET -->
+    <string name="spoken_symbol_2205">Empty set</string>
+    <!-- Spoken description for Unicode code point U+2206: "∆" INCREMENT -->
+    <string name="spoken_symbol_2206">Increment</string>
+    <!-- Spoken description for Unicode code point U+2264: "≤" LESS-THAN OR EQUAL TO -->
+    <string name="spoken_symbol_2264">Less-than or equal to</string>
+    <!-- Spoken description for Unicode code point U+2265: "≥" GREATER-THAN OR EQUAL TO -->
+    <string name="spoken_symbol_2265">Greater-than or equal to</string>
+    <!-- Spoken description for Unicode code point U+2605: "★" BLACK STAR -->
+    <string name="spoken_symbol_2605">Black star</string>
 </resources>
