@@ -80,7 +80,7 @@
          U+061B: "؛" ARABIC SEMICOLON -->
     <string name="keyspec_tablet_comma">"&#x060C;"</string>
     <string name="keyhintlabel_tablet_comma">"&#x061F;"</string>
-    <string name="morekeys_tablet_comma">"!fixedColumnOrder!4,:,!,&#x061F;,&#x061B;,-,/,\",\'"</string>
+    <string name="morekeys_tablet_comma">"!fixedColumnOrder!4,:,!,&#x061F;,&#x061B;,-,\",\'"</string>
     <!-- U+266A: "♪" EIGHTH NOTE -->
     <string name="morekeys_bullet">&#x266A;</string>
     <!-- U+2605: "★" BLACK STAR

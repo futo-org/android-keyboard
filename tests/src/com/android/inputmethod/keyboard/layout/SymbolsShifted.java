@@ -117,15 +117,16 @@ public class SymbolsShifted extends AbstractLayoutBase {
                     // U+2105: "℅" CARE OF
                     "\\", "\u00A9", "\u00AE", "\u2122", "\u2105", "[", "]")
             .setKeysOfRow(4,
+                    ",",
                     // U+2039: "‹" SINGLE LEFT-POINTING ANGLE QUOTATION MARK
                     // U+2264: "≤" LESS-THAN OR EQUAL TO
                     // U+00AB: "«" LEFT-POINTING DOUBLE ANGLE QUOTATION MARK
                     key("<", joinMoreKeys("\u2039", "\u2264", "\u00AB")),
+                    SPACE_KEY,
                     // U+203A: "›" SINGLE RIGHT-POINTING ANGLE QUOTATION MARK
                     // U+2265: "≥" GREATER-THAN EQUAL TO
                     // U+00BB: "»" RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK
                     key(">", joinMoreKeys("\u203A", "\u2265", "\u00BB")),
-                    SPACE_KEY, ",",
                     // U+2026: "…" HORIZONTAL ELLIPSIS
                     key(".", moreKey("\u2026")))
             .build();

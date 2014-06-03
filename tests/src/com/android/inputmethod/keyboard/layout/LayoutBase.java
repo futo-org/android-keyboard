@@ -161,7 +161,8 @@ public abstract class LayoutBase extends AbstractLayoutBase {
          */
         public ExpectedKey[] getKeysLeftToSpacebar(final boolean isPhone) {
             // U+002C: "," COMMA
-            return isPhone ? joinKeys(key("\u002C", SETTINGS_KEY)) : joinKeys("/");
+            return isPhone ? joinKeys(key("\u002C", SETTINGS_KEY))
+                    : joinKeys(key("\u002C", SETTINGS_KEY), "_");
         }
 
         /**
@@ -171,7 +172,7 @@ public abstract class LayoutBase extends AbstractLayoutBase {
          */
         public ExpectedKey[] getKeysRightToSpacebar(final boolean isPhone) {
             final ExpectedKey periodKey = key(".", getPunctuationMoreKeys(isPhone));
-            return isPhone ? joinKeys(periodKey) : joinKeys(",", periodKey);
+            return isPhone ? joinKeys(periodKey) : joinKeys("/", periodKey);
         }
 
         /**
@@ -296,7 +297,7 @@ public abstract class LayoutBase extends AbstractLayoutBase {
         } else {
             builder.addKeysOnTheRightOfRow(1, DELETE_KEY)
                     .addKeysOnTheRightOfRow(2, ENTER_KEY)
-                    .addKeysOnTheLeftOfRow(4, customizer.getSymbolsKey(), SETTINGS_KEY)
+                    .addKeysOnTheLeftOfRow(4, customizer.getSymbolsKey())
                     .addKeysOnTheRightOfRow(4, EMOJI_KEY);
         }
         builder.addKeysOnTheLeftOfRow(3, (Object[])customizer.getLeftShiftKeys(isPhone))

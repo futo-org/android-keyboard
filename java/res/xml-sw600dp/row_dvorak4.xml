@@ -30,19 +30,19 @@
             latin:keyWidth="10.0%p" />
         <include
             latin:keyboardLayout="@xml/key_settings" />
-        <include
-            latin:keyboardLayout="@xml/key_f1" />
+        <Key
+            latin:keySpec="_"
+            latin:keyHintLabel="-"
+            latin:moreKeys="-"
+            latin:keyStyle="hasShiftedLetterHintStyle" />
         <include
             latin:keyXPos="28.0%p"
             latin:keyboardLayout="@xml/key_space_5kw"
             latin:backgroundType="normal" />
         <include
+            latin:keyboardLayout="@xml/key_f1" />
+        <include
             latin:keyboardLayout="@xml/key_question_exclamation" />
-        <Key
-            latin:keySpec="-"
-            latin:keyHintLabel="_"
-            latin:moreKeys="_"
-            latin:keyStyle="hasShiftedLetterHintStyle" />
         <include
             latin:keyboardLayout="@xml/key_f2" />
     </Row>

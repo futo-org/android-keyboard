@@ -30,7 +30,7 @@
         <Key
             latin:keySpec="q"
             latin:backgroundType="normal"
-            latin:keyStyle="f1MoreKeysStyle" />
+            latin:keyStyle="settingsMoreKeysStyle" />
         <include
             latin:keyXPos="25%p"
             latin:keyboardLayout="@xml/key_space_5kw" />

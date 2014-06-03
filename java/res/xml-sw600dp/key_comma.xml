@@ -2,7 +2,7 @@
 <!--
 /*
 **
-** Copyright 2013, The Android Open Source Project
+** Copyright 2014, The Android Open Source Project
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
 ** you may not use this file except in compliance with the License.
@@ -21,33 +21,27 @@
 <merge
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
-    <Key
+    <!-- The table comma key which may have settings as popup key. -->
+    <!-- Kept as a separate file for cleaner overriding by an overlay.  -->
+    <key-style
+        latin:styleName="baseTabletCommaKeyStyle"
         latin:keySpec="!text/keyspec_tablet_comma"
         latin:keyHintLabel="!text/keyhintlabel_tablet_comma"
         latin:keyLabelFlags="hasPopupHint"
-        latin:moreKeys="!text/morekeys_tablet_comma"
-        latin:backgroundType="functional"
-        latin:keyStyle="hasShiftedLetterHintStyle" />
+        latin:parentStyle="hasShiftedLetterHintStyle" />
     <switch>
         <case
-            latin:languageCode="hi"
-            latin:keyboardLayoutSet="hindi_compact"
+            latin:clobberSettingsKey="true"
         >
-            <!-- U+0964: "।" DEVANAGARI DANDA -->
             <Key
-                latin:keySpec="\u0964"
-                latin:keyLabelFlags="hasPopupHint"
-                latin:moreKeys="!autoColumnOrder!8,\\,,.,',#,),(,/,;,@,:,-,&quot;,+,\\%,&amp;"
-                latin:backgroundType="functional" />
+                latin:moreKeys="!text/morekeys_tablet_comma"
+                latin:keyStyle="baseTabletCommaKeyStyle" />
         </case>
+        <!-- clobberSettingsKey="false" -->
         <default>
             <Key
-                latin:keySpec="!text/keyspec_tablet_period"
-                latin:keyHintLabel="!text/keyhintlabel_tablet_period"
-                latin:keyLabelFlags="hasPopupHint"
-                latin:moreKeys="!text/morekeys_tablet_period"
-                latin:backgroundType="functional"
-                latin:keyStyle="hasShiftedLetterHintStyle" />
+                latin:moreKeys="!text/morekeys_tablet_comma,!text/keyspec_settings"
+                latin:keyStyle="baseTabletCommaKeyStyle" />
         </default>
     </switch>
 </merge>
