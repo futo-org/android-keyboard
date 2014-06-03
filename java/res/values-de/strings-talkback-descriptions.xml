@@ -25,7 +25,8 @@
     <string name="spoken_no_text_entered" msgid="1711276837961785646">"Kein Text eingegeben"</string>
     <string name="spoken_auto_correct" msgid="8989324692167993804">"Mit <xliff:g id="KEY_NAME">%1$s</xliff:g> wird \"<xliff:g id="ORIGINAL_WORD">%2$s</xliff:g>\" in \"<xliff:g id="CORRECTED_WORD">%3$s</xliff:g>\" geändert."</string>
     <string name="spoken_auto_correct_obscured" msgid="7769449372355268412">"Mit <xliff:g id="KEY_NAME">%1$s</xliff:g> erfolgt eine Autokorrektur."</string>
-    <string name="spoken_description_unknown" msgid="2382510329910793539">"Tastencode %d"</string>
+    <!-- no translation found for spoken_description_unknown (5139930082759824442) -->
+    <skip />
     <string name="spoken_description_shift" msgid="7209798151676638728">"Umschalttaste"</string>
     <string name="spoken_description_symbols_shift" msgid="3483198879916435717">"Weitere Symbole"</string>
     <string name="spoken_description_shift_shifted" msgid="3122704922642232605">"Shift-Taste"</string>
@@ -76,6 +77,8 @@
     <!-- no translation found for spoken_letter_0049 (4743162182646977944) -->
     <skip />
     <!-- no translation found for spoken_letter_0130 (4766619646231612274) -->
+    <skip />
+    <!-- no translation found for spoken_symbol_unknown (717298227061173706) -->
     <skip />
     <!-- no translation found for spoken_emoji_unknown (5981009928135394306) -->
     <skip />
