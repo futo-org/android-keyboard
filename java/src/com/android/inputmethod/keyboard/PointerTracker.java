@@ -676,10 +676,10 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
 
     private void onDownEvent(final int x, final int y, final long eventTime,
             final KeyDetector keyDetector) {
+        setKeyDetectorInner(keyDetector);
         if (DEBUG_EVENT) {
             printTouchEvent("onDownEvent:", x, y, eventTime);
         }
-        setKeyDetectorInner(keyDetector);
         // Naive up-to-down noise filter.
         final long deltaT = eventTime - mUpTime;
         if (deltaT < sParams.mTouchNoiseThresholdTime) {
