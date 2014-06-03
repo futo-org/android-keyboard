@@ -31,7 +31,7 @@ import com.android.inputmethod.latin.R;
 
 import java.util.Locale;
 
-public final class KeyCodeDescriptionMapper {
+final class KeyCodeDescriptionMapper {
     private static final String TAG = KeyCodeDescriptionMapper.class.getSimpleName();
     private static final String SPOKEN_LETTER_RESOURCE_NAME_FORMAT = "spoken_accented_letter_%04X";
     private static final String SPOKEN_SYMBOL_RESOURCE_NAME_FORMAT = "spoken_symbol_%04X";
@@ -40,24 +40,16 @@ public final class KeyCodeDescriptionMapper {
     // The resource ID of the string spoken for obscured keys
     private static final int OBSCURED_KEY_RES_ID = R.string.spoken_description_dot;
 
-    private static KeyCodeDescriptionMapper sInstance = new KeyCodeDescriptionMapper();
-
-    // Sparse array of spoken description resource IDs indexed by key codes
-    private final SparseIntArray mKeyCodeMap;
-
-    public static void init() {
-        sInstance.initInternal();
-    }
+    private static final KeyCodeDescriptionMapper sInstance = new KeyCodeDescriptionMapper();
 
     public static KeyCodeDescriptionMapper getInstance() {
         return sInstance;
     }
 
-    private KeyCodeDescriptionMapper() {
-        mKeyCodeMap = new SparseIntArray();
-    }
+    // Sparse array of spoken description resource IDs indexed by key codes
+    private final SparseIntArray mKeyCodeMap = new SparseIntArray();
 
-    private void initInternal() {
+    private KeyCodeDescriptionMapper() {
         // Special non-character codes defined in Keyboard
         mKeyCodeMap.put(Constants.CODE_SPACE, R.string.spoken_description_space);
         mKeyCodeMap.put(Constants.CODE_DELETE, R.string.spoken_description_delete);

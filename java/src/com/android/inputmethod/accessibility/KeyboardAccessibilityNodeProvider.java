@@ -47,7 +47,7 @@ import java.util.List;
  * virtual views, thus conveying their logical structure.
  * </p>
  */
-public final class KeyboardAccessibilityNodeProvider extends AccessibilityNodeProviderCompat {
+final class KeyboardAccessibilityNodeProvider extends AccessibilityNodeProviderCompat {
     private static final String TAG = KeyboardAccessibilityNodeProvider.class.getSimpleName();
     private static final int UNDEFINED = Integer.MIN_VALUE;
 
