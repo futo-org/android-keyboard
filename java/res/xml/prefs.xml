@@ -95,6 +95,12 @@
             android:summary="@string/use_personalized_dicts_summary"
             android:persistent="true"
             android:defaultValue="true" />
+        <!-- title will be set programmatically to embed application name -->
+        <CheckBoxPreference
+            android:key="pref_enable_metrics_logging"
+            android:summary="@string/enable_metrics_logging_summary"
+            android:persistent="true"
+            android:defaultValue="true" />
     </PreferenceCategory>
     <PreferenceCategory
         android:title="@string/gesture_typing_category"

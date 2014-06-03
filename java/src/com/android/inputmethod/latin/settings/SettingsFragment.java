@@ -41,6 +41,7 @@ import com.android.inputmethod.keyboard.KeyboardTheme;
 import com.android.inputmethod.latin.AudioAndHapticFeedbackManager;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SubtypeSwitcher;
+import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.latin.setup.LauncherIconVisibilityManager;
 import com.android.inputmethod.latin.userdictionary.UserDictionaryList;
 import com.android.inputmethod.latin.userdictionary.UserDictionarySettings;
@@ -210,6 +211,20 @@ public final class SettingsFragment extends InputMethodSettingsFragment
         final int number = context.getPackageManager().queryIntentActivities(intent, 0).size();
         if (0 >= number) {
             textCorrectionGroup.removePreference(dictionaryLink);
+        }
+
+        if (ProductionFlag.IS_METRICS_LOGGING_SUPPORTED) {
+            final Preference enableMetricsLogging =
+                    findPreference(Settings.PREF_ENABLE_METRICS_LOGGING);
+            if (enableMetricsLogging != null) {
+                final int applicationLabelRes = context.getApplicationInfo().labelRes;
+                final String applicationName = res.getString(applicationLabelRes);
+                final String enableMetricsLoggingTitle = res.getString(
+                        R.string.enable_metrics_logging, applicationName);
+                enableMetricsLogging.setTitle(enableMetricsLoggingTitle);
+            }
+        } else {
+            removePreference(Settings.PREF_ENABLE_METRICS_LOGGING, textCorrectionGroup);
         }
 
         final Preference editPersonalDictionary =
