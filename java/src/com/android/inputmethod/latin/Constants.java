@@ -254,14 +254,16 @@ public final class Constants {
         case CODE_LANGUAGE_SWITCH: return "languageSwitch";
         case CODE_EMOJI: return "emoji";
         case CODE_SHIFT_ENTER: return "shiftEnter";
+        case CODE_ALPHA_FROM_EMOJI: return "alpha";
         case CODE_UNSPECIFIED: return "unspec";
         case CODE_TAB: return "tab";
         case CODE_ENTER: return "enter";
-        case CODE_ALPHA_FROM_EMOJI: return "alpha";
+        case CODE_SPACE: return "space";
         default:
-            if (code < CODE_SPACE) return String.format("'\\u%02x'", code);
-            if (code < 0x100) return String.format("'%c'", code);
-            return String.format("'\\u%04x'", code);
+            if (code < CODE_SPACE) return String.format("\\u%02x", code);
+            if (code < 0x100) return String.format("%c", code);
+            if (code < 0x10000) return String.format("\\u04x", code);
+            return String.format("\\U%05x", code);
         }
     }
 

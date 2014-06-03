@@ -467,15 +467,24 @@ public class Key implements Comparable<Key> {
 
     @Override
     public String toString() {
-        final String label;
-        if (StringUtils.codePointCount(mLabel) == 1 && mLabel.codePointAt(0) == mCode) {
-            label = "";
-        } else {
-            label = "/" + mLabel;
+        return toShortString() + " " + getX() + "," + getY() + " " + getWidth() + "x" + getHeight();
+    }
+
+    public String toShortString() {
+        final int code = getCode();
+        if (code == Constants.CODE_OUTPUT_TEXT) {
+            return getOutputText();
         }
-        return String.format(Locale.ROOT, "%s%s %d,%d %dx%d %s/%s/%s",
-                Constants.printableCode(mCode), label, mX, mY, mWidth, mHeight, mHintLabel,
-                KeyboardIconsSet.getIconName(mIconId), backgroundName(mBackgroundType));
+        return Constants.printableCode(code);
+    }
+
+    public String toLongString() {
+        final int iconId = getIconId();
+        final String topVisual = (iconId == KeyboardIconsSet.ICON_UNDEFINED)
+                ? KeyboardIconsSet.PREFIX_ICON + KeyboardIconsSet.getIconName(iconId) : getLabel();
+        final String hintLabel = getHintLabel();
+        final String visual = (hintLabel == null) ? topVisual : topVisual + "^" + hintLabel;
+        return toString() + " " + visual + "/" + backgroundName(mBackgroundType);
     }
 
     private static String backgroundName(final int backgroundType) {
