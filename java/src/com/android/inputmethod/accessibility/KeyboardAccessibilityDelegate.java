@@ -248,19 +248,15 @@ public class KeyboardAccessibilityDelegate<KV extends KeyboardView>
      * Synthesize a touch event from a hover event.
      *
      * @param touchAction The action of the synthesizing touch event.
-     * @param event The base hover event from that the touch event is synthesized.
+     * @param hoverEvent The base hover event from that the touch event is synthesized.
      * @return The synthesized touch event of <code>touchAction</code> that has pointer information
      * of <code>event</code>.
      */
     protected static MotionEvent synthesizeTouchEvent(final int touchAction,
-            final MotionEvent event) {
-        final long downTime = event.getDownTime();
-        final long eventTime = event.getEventTime();
-        final int actionIndex = event.getActionIndex();
-        final float x = event.getX(actionIndex);
-        final float y = event.getY(actionIndex);
-        final int pointerId = event.getPointerId(actionIndex);
-        return MotionEvent.obtain(downTime, eventTime, touchAction, x, y, pointerId);
+            final MotionEvent hoverEvent) {
+        final MotionEvent touchEvent = MotionEvent.obtain(hoverEvent);
+        touchEvent.setAction(touchAction);
+        return touchEvent;
     }
 
     /**
