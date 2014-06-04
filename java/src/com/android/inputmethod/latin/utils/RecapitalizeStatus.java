@@ -62,17 +62,17 @@ public class RecapitalizeStatus {
     private Locale mLocale;
     private int[] mSortedSeparators;
     private String mStringAfter;
-    private boolean mIsActive;
+    private boolean mIsStarted;
 
     private static final int[] EMPTY_STORTED_SEPARATORS = {};
 
     public RecapitalizeStatus() {
         // By default, initialize with dummy values that won't match any real recapitalize.
-        initialize(-1, -1, "", Locale.getDefault(), EMPTY_STORTED_SEPARATORS);
-        deactivate();
+        start(-1, -1, "", Locale.getDefault(), EMPTY_STORTED_SEPARATORS);
+        stop();
     }
 
-    public void initialize(final int cursorStart, final int cursorEnd, final String string,
+    public void start(final int cursorStart, final int cursorEnd, final String string,
             final Locale locale, final int[] sortedSeparators) {
         mCursorStartBefore = cursorStart;
         mStringBefore = string;
@@ -96,15 +96,15 @@ public class RecapitalizeStatus {
             mRotationStyleCurrentIndex = currentMode;
             mSkipOriginalMixedCaseMode = true;
         }
-        mIsActive = true;
+        mIsStarted = true;
     }
 
-    public void deactivate() {
-        mIsActive = false;
+    public void stop() {
+        mIsStarted = false;
     }
 
-    public boolean isActive() {
-        return mIsActive;
+    public boolean isStarted() {
+        return mIsStarted;
     }
 
     public boolean isSetAt(final int cursorStart, final int cursorEnd) {
