@@ -72,7 +72,13 @@ public final class Farsi extends LayoutBase {
                 // U+060C: "،" ARABIC COMMA
                 return joinKeys(key("\u060C", SETTINGS_KEY));
             }
-            return super.getKeysLeftToSpacebar(isPhone);
+            // U+060C: "،" ARABIC COMMA
+            // U+061F: "؟" ARABIC QUESTION MARK
+            // U+061B: "؛" ARABIC SEMICOLON
+            return joinKeys(key("\u060C", joinMoreKeys(
+                    ":", "!", "\u061F", "\u061B", "-", RtlSymbols.DOUBLE_ANGLE_QUOTES_LR_RTL,
+                    SETTINGS_KEY)),
+                    "_");
         }
 
         @Override
@@ -80,13 +86,7 @@ public final class Farsi extends LayoutBase {
             if (isPhone) {
                 return super.getKeysRightToSpacebar(isPhone);
             }
-            // U+060C: "،" ARABIC COMMA
-            // U+061F: "؟" ARABIC QUESTION MARK
-            // U+061B: "؛" ARABIC SEMICOLON
-            return joinKeys(
-                    key("\u060C", joinMoreKeys(":", "!", "\u061F", "\u061B", "-", "/",
-                            RtlSymbols.DOUBLE_ANGLE_QUOTES_LR_RTL)),
-                    key(".", getPunctuationMoreKeys(isPhone)));
+            return joinKeys("/", key(".", getPunctuationMoreKeys(isPhone)));
         }
 
         @Override

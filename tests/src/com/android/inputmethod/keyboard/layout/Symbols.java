@@ -167,7 +167,7 @@ public class Symbols extends AbstractLayoutBase {
                     // U+00BF: "¿" INVERTED QUESTION MARK
                     key("?", moreKey("\u00BF")))
             .setKeysOfRow(4,
-                    key("_"), key("/"), SPACE_KEY, key(","),
+                    key(","), key("_"), SPACE_KEY, key("/"),
                     // U+2026: "…" HORIZONTAL ELLIPSIS
                     key(".", moreKey("\u2026")))
             .build();

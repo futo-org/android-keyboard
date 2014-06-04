@@ -48,12 +48,18 @@ public final class Myanmar extends LayoutBase {
         }
 
         @Override
+        public ExpectedKey[] getKeysLeftToSpacebar(final boolean isPhone) {
+            // U+002C: "," COMMA
+            // U+104A: "၊" MYANMAR SIGN LITTLE SECTION
+            return isPhone ? joinKeys(key("\u002C", SETTINGS_KEY))
+                    : joinKeys(key("\u104A", moreKey(","), SETTINGS_KEY), "_");
+        }
+
+        @Override
         public ExpectedKey[] getKeysRightToSpacebar(final boolean isPhone) {
             // U+104B: "။" MYANMAR SIGN SECTION
-            // U+104A: "၊" MYANMAR SIGN LITTLE SECTION
             final ExpectedKey periodKey = key("\u104B", getPunctuationMoreKeys(isPhone));
-            final ExpectedKey commaKey = key("\u104A", moreKey(","));
-            return isPhone ? joinKeys(periodKey) : joinKeys(commaKey, periodKey);
+            return isPhone ? joinKeys(periodKey) : joinKeys("/", periodKey);
         }
 
         @Override
@@ -106,7 +112,7 @@ public final class Myanmar extends LayoutBase {
         } else {
             builder.addKeysOnTheRightOfRow(1, DELETE_KEY)
                     .addKeysOnTheRightOfRow(3, ENTER_KEY)
-                    .addKeysOnTheLeftOfRow(5, customizer.getSymbolsKey(), SETTINGS_KEY)
+                    .addKeysOnTheLeftOfRow(5, customizer.getSymbolsKey())
                     .addKeysOnTheRightOfRow(5, EMOJI_KEY);
         }
         builder.addKeysOnTheLeftOfRow(4, (Object[])customizer.getLeftShiftKeys(isPhone))

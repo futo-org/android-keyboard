@@ -82,7 +82,7 @@
          U+00BB: "»" RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK -->
     <string name="keyspec_tablet_comma">"&#x060C;"</string>
     <string name="keyhintlabel_tablet_comma">"&#x061F;"</string>
-    <string name="morekeys_tablet_comma">"!fixedColumnOrder!4,:,!,&#x061F;,&#x061B;,-,/,!text/keyspec_left_double_angle_quote,!text/keyspec_right_double_angle_quote"</string>
+    <string name="morekeys_tablet_comma">"!fixedColumnOrder!4,:,!,&#x061F;,&#x061B;,-,!text/keyspec_left_double_angle_quote,!text/keyspec_right_double_angle_quote"</string>
     <!-- U+FDFC: "﷼" RIAL SIGN -->
     <string name="keyspec_currency">&#xFDFC;</string>
     <!-- U+266A: "♪" EIGHTH NOTE -->
