@@ -181,7 +181,7 @@ public class KeyboardAccessibilityDelegate<KV extends KeyboardView>
     protected void onHoverEnter(final MotionEvent event) {
         final Key key = getHoverKeyOf(event);
         if (key != null) {
-            onHoverEnterKey(key, event);
+            onHoverEnterKey(key);
         }
         setLastHoverKey(key);
     }
@@ -196,14 +196,14 @@ public class KeyboardAccessibilityDelegate<KV extends KeyboardView>
         final Key key = getHoverKeyOf(event);
         if (key != lastKey) {
             if (lastKey != null) {
-                onHoverExitKey(lastKey, event);
+                onHoverExitKey(lastKey);
             }
             if (key != null) {
-                onHoverEnterKey(key, event);
+                onHoverEnterKey(key);
             }
         }
         if (key != null) {
-            onHoverMoveKey(key, event);
+            onHoverMoveKey(key);
         }
         setLastHoverKey(key);
     }
@@ -216,7 +216,7 @@ public class KeyboardAccessibilityDelegate<KV extends KeyboardView>
     protected void onHoverExit(final MotionEvent event) {
         final Key lastKey = getLastHoverKey();
         if (lastKey != null) {
-            onHoverExitKey(lastKey, event);
+            onHoverExitKey(lastKey);
         }
         final Key key = getHoverKeyOf(event);
         // Make sure we're not getting an EXIT event because the user slid
@@ -224,7 +224,7 @@ public class KeyboardAccessibilityDelegate<KV extends KeyboardView>
         if (key != null) {
             simulateTouchEvent(MotionEvent.ACTION_DOWN, event);
             simulateTouchEvent(MotionEvent.ACTION_UP, event);
-            onHoverExitKey(key, event);
+            onHoverExitKey(key);
         }
         setLastHoverKey(null);
     }
@@ -263,9 +263,8 @@ public class KeyboardAccessibilityDelegate<KV extends KeyboardView>
      * Handles a hover enter event on a key.
      *
      * @param key The currently hovered key.
-     * @param event The hover event that triggers a call to this method.
      */
-    protected void onHoverEnterKey(final Key key, final MotionEvent event) {
+    protected void onHoverEnterKey(final Key key) {
         key.onPressed();
         mKeyboardView.invalidateKey(key);
         final KeyboardAccessibilityNodeProvider provider = getAccessibilityNodeProvider();
@@ -277,17 +276,15 @@ public class KeyboardAccessibilityDelegate<KV extends KeyboardView>
      * Handles a hover move event on a key.
      *
      * @param key The currently hovered key.
-     * @param event The hover event that triggers a call to this method.
      */
-    protected void onHoverMoveKey(final Key key, final MotionEvent event) { }
+    protected void onHoverMoveKey(final Key key) { }
 
     /**
      * Handles a hover exit event on a key.
      *
      * @param key The currently hovered key.
-     * @param event The hover event that triggers a call to this method.
      */
-    protected void onHoverExitKey(final Key key, final MotionEvent event) {
+    protected void onHoverExitKey(final Key key) {
         key.onReleased();
         mKeyboardView.invalidateKey(key);
         final KeyboardAccessibilityNodeProvider provider = getAccessibilityNodeProvider();
