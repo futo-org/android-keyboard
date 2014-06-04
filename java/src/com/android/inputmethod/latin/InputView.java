@@ -23,12 +23,14 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import com.android.inputmethod.accessibility.AccessibilityUtils;
 import com.android.inputmethod.keyboard.MainKeyboardView;
 import com.android.inputmethod.latin.suggestions.MoreSuggestionsView;
 import com.android.inputmethod.latin.suggestions.SuggestionStripView;
 
 public final class InputView extends LinearLayout {
     private final Rect mInputViewRect = new Rect();
+    private MainKeyboardView mMainKeyboardView;
     private KeyboardTopPaddingForwarder mKeyboardTopPaddingForwarder;
     private MoreSuggestionsViewCanceler mMoreSuggestionsViewCanceler;
     private MotionEventForwarder<?, ?> mActiveForwarder;
@@ -41,16 +43,26 @@ public final class InputView extends LinearLayout {
     protected void onFinishInflate() {
         final SuggestionStripView suggestionStripView =
                 (SuggestionStripView)findViewById(R.id.suggestion_strip_view);
-        final MainKeyboardView mainKeyboardView =
-                (MainKeyboardView)findViewById(R.id.keyboard_view);
+        mMainKeyboardView = (MainKeyboardView)findViewById(R.id.keyboard_view);
         mKeyboardTopPaddingForwarder = new KeyboardTopPaddingForwarder(
-                mainKeyboardView, suggestionStripView);
+                mMainKeyboardView, suggestionStripView);
         mMoreSuggestionsViewCanceler = new MoreSuggestionsViewCanceler(
-                mainKeyboardView, suggestionStripView);
+                mMainKeyboardView, suggestionStripView);
     }
 
     public void setKeyboardTopPadding(final int keyboardTopPadding) {
         mKeyboardTopPaddingForwarder.setKeyboardTopPadding(keyboardTopPadding);
+    }
+
+    @Override
+    protected boolean dispatchHoverEvent(final MotionEvent event) {
+        if (AccessibilityUtils.getInstance().isTouchExplorationEnabled()
+                && mMainKeyboardView.isShowingMoreKeysPanel()) {
+            // With accessibility mode on, discard hover events while a more keys keyboard is shown.
+            // The {@link MoreKeysKeyboard} receives hover events directly from the platform.
+            return true;
+        }
+        return super.dispatchHoverEvent(event);
     }
 
     @Override

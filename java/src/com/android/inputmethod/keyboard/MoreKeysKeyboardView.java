@@ -17,12 +17,13 @@
 package com.android.inputmethod.keyboard;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.android.inputmethod.accessibility.AccessibilityUtils;
+import com.android.inputmethod.accessibility.MoreKeysKeyboardAccessibilityDelegate;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.utils.CoordinateUtils;
@@ -34,7 +35,7 @@ import com.android.inputmethod.latin.utils.CoordinateUtils;
 public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel {
     private final int[] mCoordinates = CoordinateUtils.newInstance();
 
-    protected final KeyDetector mKeyDetector;
+    protected KeyDetector mKeyDetector;
     private Controller mController = EMPTY_CONTROLLER;
     protected KeyboardActionListener mListener;
     private int mOriginX;
@@ -43,6 +44,8 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
 
     private int mActivePointerId;
 
+    private MoreKeysKeyboardAccessibilityDelegate mAccessibilityDelegate;
+
     public MoreKeysKeyboardView(final Context context, final AttributeSet attrs) {
         this(context, attrs, R.attr.moreKeysKeyboardViewStyle);
     }
@@ -50,10 +53,8 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
     public MoreKeysKeyboardView(final Context context, final AttributeSet attrs,
             final int defStyle) {
         super(context, attrs, defStyle);
-
-        final Resources res = context.getResources();
-        mKeyDetector = new MoreKeysDetector(
-                res.getDimension(R.dimen.config_more_keys_keyboard_slide_allowance));
+        mKeyDetector = new MoreKeysDetector(getResources().getDimension(
+                R.dimen.config_more_keys_keyboard_slide_allowance));
     }
 
     @Override
@@ -71,8 +72,23 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
     @Override
     public void setKeyboard(final Keyboard keyboard) {
         super.setKeyboard(keyboard);
-        mKeyDetector.setKeyboard(keyboard, -getPaddingLeft(),
-                -getPaddingTop() + getVerticalCorrection());
+        if (AccessibilityUtils.getInstance().isTouchExplorationEnabled()) {
+            // With accessibility mode on, any hover event outside {@link MoreKeysKeyboardView} is
+            // discarded at {@link InputView#dispatchHoverEvent(MotionEvent)}. Because only a hover
+            // event that is on this view is dispatched by the platform, we should use a
+            // {@link KeyDetector} that has no sliding allowance and no hysteresis.
+            mKeyDetector = new KeyDetector();
+            mAccessibilityDelegate = new MoreKeysKeyboardAccessibilityDelegate(this, mKeyDetector);
+            mAccessibilityDelegate.setOpenAnnounce(R.string.spoken_open_more_keys_keyboard);
+            mAccessibilityDelegate.setCloseAnnounce(R.string.spoken_close_more_keys_keyboard);
+            mAccessibilityDelegate.setKeyboard(keyboard);
+        } else {
+            mKeyDetector = new MoreKeysDetector(getResources().getDimension(
+                    R.dimen.config_more_keys_keyboard_slide_allowance));
+            mAccessibilityDelegate = null;
+        }
+        mKeyDetector.setKeyboard(
+                keyboard, -getPaddingLeft(), -getPaddingTop() + getVerticalCorrection());
     }
 
     @Override
@@ -98,6 +114,10 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
         mOriginX = x + container.getPaddingLeft();
         mOriginY = y + container.getPaddingTop();
         controller.onShowMoreKeysPanel(this);
+        final MoreKeysKeyboardAccessibilityDelegate accessibilityDelegate = mAccessibilityDelegate;
+        if (accessibilityDelegate != null) {
+            accessibilityDelegate.onShowMoreKeysKeyboard();
+        }
     }
 
     /**
@@ -226,6 +246,18 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
             break;
         }
         return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean onHoverEvent(final MotionEvent event) {
+        final MoreKeysKeyboardAccessibilityDelegate accessibilityDelegate = mAccessibilityDelegate;
+        if (accessibilityDelegate != null) {
+            return accessibilityDelegate.onHoverEvent(event);
+        }
+        return super.onHoverEvent(event);
     }
 
     private View getContainerView() {
