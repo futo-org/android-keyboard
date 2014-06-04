@@ -144,4 +144,9 @@
     <string name="spoken_open_more_keys_keyboard">Alternative characters are available</string>
     <!-- Spoken descriptions when closing a more keys keyboard that has alternative characters. -->
     <string name="spoken_close_more_keys_keyboard">Alternative characters are dismissed</string>
+
+    <!-- Spoken descriptions when opening a more suggestions panel that has alternative suggested words. -->
+    <string name="spoken_open_more_suggestions">Alternative suggestions are available</string>
+    <!-- Spoken descriptions when closing a more suggestions panel that has alternative suggested words. -->
+    <string name="spoken_close_more_suggestions">Alternative suggestions are dismissed</string>
 </resources>

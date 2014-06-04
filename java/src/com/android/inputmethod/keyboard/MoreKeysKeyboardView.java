@@ -44,7 +44,7 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
 
     private int mActivePointerId;
 
-    private MoreKeysKeyboardAccessibilityDelegate mAccessibilityDelegate;
+    protected MoreKeysKeyboardAccessibilityDelegate mAccessibilityDelegate;
 
     public MoreKeysKeyboardView(final Context context, final AttributeSet attrs) {
         this(context, attrs, R.attr.moreKeysKeyboardViewStyle);

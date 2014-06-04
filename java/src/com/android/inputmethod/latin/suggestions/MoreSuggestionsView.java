@@ -20,6 +20,8 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
 
+import com.android.inputmethod.accessibility.AccessibilityUtils;
+import com.android.inputmethod.accessibility.MoreSuggestionsAccessibilityDelegate;
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardActionListener;
@@ -47,6 +49,18 @@ public final class MoreSuggestionsView extends MoreKeysKeyboardView {
     public MoreSuggestionsView(final Context context, final AttributeSet attrs,
             final int defStyle) {
         super(context, attrs, defStyle);
+    }
+
+    @Override
+    public void setKeyboard(final Keyboard keyboard) {
+        super.setKeyboard(keyboard);
+        // With accessibility mode off, {@link #mAccessibilityDelegate} is set to null at the
+        // above {@link MoreKeysKeyboardView#setKeyboard(Keyboard)} call.
+        if (AccessibilityUtils.getInstance().isAccessibilityEnabled()) {
+            mAccessibilityDelegate = new MoreSuggestionsAccessibilityDelegate(this, mKeyDetector);
+            mAccessibilityDelegate.setOpenAnnounce(R.string.spoken_open_more_suggestions);
+            mAccessibilityDelegate.setCloseAnnounce(R.string.spoken_close_more_suggestions);
+        }
     }
 
     @Override
