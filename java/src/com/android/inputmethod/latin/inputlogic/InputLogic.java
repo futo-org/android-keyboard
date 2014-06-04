@@ -134,7 +134,7 @@ public final class InputLogic {
         resetComposingState(true /* alsoResetLastComposedWord */);
         mDeleteCount = 0;
         mSpaceState = SpaceState.NONE;
-        mRecapitalizeStatus.deactivate();
+        mRecapitalizeStatus.stop(); // In case a recapitalization is started
         mCurrentlyPressedHardwareKeys.clear();
         mSuggestedWords = SuggestedWords.EMPTY;
         // In some cases (namely, after rotation of the device) editorInfo.initialSelStart is lying
@@ -347,8 +347,8 @@ public final class InputLogic {
 
         // We moved the cursor. If we are touching a word, we need to resume suggestion.
         mLatinIME.mHandler.postResumeSuggestions();
-        // Reset the last recapitalization.
-        mRecapitalizeStatus.deactivate();
+        // Stop the last recapitalization, if started.
+        mRecapitalizeStatus.stop();
         return true;
     }
 
@@ -1149,13 +1149,13 @@ public final class InputLogic {
             // to suck possibly multiple-megabyte data.
             return;
         }
-        // If we have a recapitalize in progress, use it; otherwise, create a new one.
-        if (!mRecapitalizeStatus.isActive()
+        // If we have a recapitalize in progress, use it; otherwise, start a new one.
+        if (!mRecapitalizeStatus.isStarted()
                 || !mRecapitalizeStatus.isSetAt(selectionStart, selectionEnd)) {
             final CharSequence selectedText =
                     mConnection.getSelectedText(0 /* flags, 0 for no styles */);
             if (TextUtils.isEmpty(selectedText)) return; // Race condition with the input connection
-            mRecapitalizeStatus.initialize(selectionStart, selectionEnd, selectedText.toString(),
+            mRecapitalizeStatus.start(selectionStart, selectionEnd, selectedText.toString(),
                     settingsValues.mLocale,
                     settingsValues.mSpacingAndPunctuations.mSortedWordSeparators);
             // We trim leading and trailing whitespace.
@@ -1498,7 +1498,7 @@ public final class InputLogic {
     }
 
     public int getCurrentRecapitalizeState() {
-        if (!mRecapitalizeStatus.isActive()
+        if (!mRecapitalizeStatus.isStarted()
                 || !mRecapitalizeStatus.isSetAt(mConnection.getExpectedSelectionStart(),
                         mConnection.getExpectedSelectionEnd())) {
             // Not recapitalizing at the moment

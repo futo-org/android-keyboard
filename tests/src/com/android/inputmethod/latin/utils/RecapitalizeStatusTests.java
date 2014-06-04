@@ -29,25 +29,25 @@ public class RecapitalizeStatusTests extends AndroidTestCase {
 
     public void testTrim() {
         final RecapitalizeStatus status = new RecapitalizeStatus();
-        status.initialize(30, 40, "abcdefghij", Locale.ENGLISH, SPACE);
+        status.start(30, 40, "abcdefghij", Locale.ENGLISH, SPACE);
         status.trim();
         assertEquals("abcdefghij", status.getRecapitalizedString());
         assertEquals(30, status.getNewCursorStart());
         assertEquals(40, status.getNewCursorEnd());
 
-        status.initialize(30, 44, "    abcdefghij", Locale.ENGLISH, SPACE);
+        status.start(30, 44, "    abcdefghij", Locale.ENGLISH, SPACE);
         status.trim();
         assertEquals("abcdefghij", status.getRecapitalizedString());
         assertEquals(34, status.getNewCursorStart());
         assertEquals(44, status.getNewCursorEnd());
 
-        status.initialize(30, 40, "abcdefgh  ", Locale.ENGLISH, SPACE);
+        status.start(30, 40, "abcdefgh  ", Locale.ENGLISH, SPACE);
         status.trim();
         assertEquals("abcdefgh", status.getRecapitalizedString());
         assertEquals(30, status.getNewCursorStart());
         assertEquals(38, status.getNewCursorEnd());
 
-        status.initialize(30, 45, "   abcdefghij  ", Locale.ENGLISH, SPACE);
+        status.start(30, 45, "   abcdefghij  ", Locale.ENGLISH, SPACE);
         status.trim();
         assertEquals("abcdefghij", status.getRecapitalizedString());
         assertEquals(33, status.getNewCursorStart());
@@ -56,7 +56,7 @@ public class RecapitalizeStatusTests extends AndroidTestCase {
 
     public void testRotate() {
         final RecapitalizeStatus status = new RecapitalizeStatus();
-        status.initialize(29, 40, "abcd efghij", Locale.ENGLISH, SPACE);
+        status.start(29, 40, "abcd efghij", Locale.ENGLISH, SPACE);
         status.rotate();
         assertEquals("Abcd Efghij", status.getRecapitalizedString());
         assertEquals(29, status.getNewCursorStart());
@@ -68,7 +68,7 @@ public class RecapitalizeStatusTests extends AndroidTestCase {
         status.rotate();
         assertEquals("Abcd Efghij", status.getRecapitalizedString());
 
-        status.initialize(29, 40, "Abcd Efghij", Locale.ENGLISH, SPACE);
+        status.start(29, 40, "Abcd Efghij", Locale.ENGLISH, SPACE);
         status.rotate();
         assertEquals("ABCD EFGHIJ", status.getRecapitalizedString());
         assertEquals(29, status.getNewCursorStart());
@@ -80,7 +80,7 @@ public class RecapitalizeStatusTests extends AndroidTestCase {
         status.rotate();
         assertEquals("ABCD EFGHIJ", status.getRecapitalizedString());
 
-        status.initialize(29, 40, "ABCD EFGHIJ", Locale.ENGLISH, SPACE);
+        status.start(29, 40, "ABCD EFGHIJ", Locale.ENGLISH, SPACE);
         status.rotate();
         assertEquals("abcd efghij", status.getRecapitalizedString());
         assertEquals(29, status.getNewCursorStart());
@@ -92,7 +92,7 @@ public class RecapitalizeStatusTests extends AndroidTestCase {
         status.rotate();
         assertEquals("abcd efghij", status.getRecapitalizedString());
 
-        status.initialize(29, 39, "AbCDefghij", Locale.ENGLISH, SPACE);
+        status.start(29, 39, "AbCDefghij", Locale.ENGLISH, SPACE);
         status.rotate();
         assertEquals("abcdefghij", status.getRecapitalizedString());
         assertEquals(29, status.getNewCursorStart());
@@ -106,7 +106,7 @@ public class RecapitalizeStatusTests extends AndroidTestCase {
         status.rotate();
         assertEquals("abcdefghij", status.getRecapitalizedString());
 
-        status.initialize(29, 40, "Abcd efghij", Locale.ENGLISH, SPACE);
+        status.start(29, 40, "Abcd efghij", Locale.ENGLISH, SPACE);
         status.rotate();
         assertEquals("abcd efghij", status.getRecapitalizedString());
         assertEquals(29, status.getNewCursorStart());
@@ -120,7 +120,7 @@ public class RecapitalizeStatusTests extends AndroidTestCase {
         status.rotate();
         assertEquals("abcd efghij", status.getRecapitalizedString());
 
-        status.initialize(30, 34, "grüß", Locale.GERMAN, SPACE);
+        status.start(30, 34, "grüß", Locale.GERMAN, SPACE);
         status.rotate();
         assertEquals("Grüß", status.getRecapitalizedString());
         assertEquals(30, status.getNewCursorStart());
@@ -138,7 +138,7 @@ public class RecapitalizeStatusTests extends AndroidTestCase {
         assertEquals(30, status.getNewCursorStart());
         assertEquals(34, status.getNewCursorEnd());
 
-        status.initialize(30, 33, "œuf", Locale.FRENCH, SPACE);
+        status.start(30, 33, "œuf", Locale.FRENCH, SPACE);
         status.rotate();
         assertEquals("Œuf", status.getRecapitalizedString());
         assertEquals(30, status.getNewCursorStart());
@@ -156,7 +156,7 @@ public class RecapitalizeStatusTests extends AndroidTestCase {
         assertEquals(30, status.getNewCursorStart());
         assertEquals(33, status.getNewCursorEnd());
 
-        status.initialize(30, 33, "œUf", Locale.FRENCH, SPACE);
+        status.start(30, 33, "œUf", Locale.FRENCH, SPACE);
         status.rotate();
         assertEquals("œuf", status.getRecapitalizedString());
         assertEquals(30, status.getNewCursorStart());
@@ -178,7 +178,7 @@ public class RecapitalizeStatusTests extends AndroidTestCase {
         assertEquals(30, status.getNewCursorStart());
         assertEquals(33, status.getNewCursorEnd());
 
-        status.initialize(30, 35, "école", Locale.FRENCH, SPACE);
+        status.start(30, 35, "école", Locale.FRENCH, SPACE);
         status.rotate();
         assertEquals("École", status.getRecapitalizedString());
         assertEquals(30, status.getNewCursorStart());
