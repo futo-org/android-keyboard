@@ -46,6 +46,8 @@
     <string name="use_contacts_dict" msgid="4435317977804180815">"Kontakt adları təklif edin"</string>
     <string name="use_contacts_dict_summary" msgid="6599983334507879959">"Təklif və korreksiya üçün Kontaktlardakı adlardan istifadə edin"</string>
     <string name="use_personalized_dicts" msgid="5167396352105467626">"Fərdiləşmiş təkliflər"</string>
+    <!-- no translation found for enable_metrics_logging (5506372337118822837) -->
+    <skip />
     <string name="use_double_space_period" msgid="8781529969425082860">"İkili boşluq periodu"</string>
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"Boşluqdakı iki klik boşluqdan sonra pauza daxil edir"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Avtomatik böyük hərfləşmə"</string>
