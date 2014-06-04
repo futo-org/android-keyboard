@@ -134,7 +134,7 @@ public final class InputLogic {
         resetComposingState(true /* alsoResetLastComposedWord */);
         mDeleteCount = 0;
         mSpaceState = SpaceState.NONE;
-        mRecapitalizeStatus.stop(); // In case a recapitalization is started
+        mRecapitalizeStatus.disable(); // Do not perform recapitalize until the cursor is moved once
         mCurrentlyPressedHardwareKeys.clear();
         mSuggestedWords = SuggestedWords.EMPTY;
         // In some cases (namely, after rotation of the device) editorInfo.initialSelStart is lying
@@ -345,6 +345,8 @@ public final class InputLogic {
                     newSelStart, newSelEnd, false /* shouldFinishComposition */);
         }
 
+        // The cursor has been moved : we now accept to perform recapitalization
+        mRecapitalizeStatus.enable();
         // We moved the cursor. If we are touching a word, we need to resume suggestion.
         mLatinIME.mHandler.postResumeSuggestions();
         // Stop the last recapitalization, if started.
@@ -369,10 +371,6 @@ public final class InputLogic {
             final int keyboardShiftMode,
             // TODO: remove this argument
             final LatinIME.UIHandler handler) {
-        // TODO: rework the following to not squash the keycode and the code point into the same
-        // var because it's confusing. Instead the switch() should handle this in a readable manner.
-        final int code =
-                Event.NOT_A_CODE_POINT == event.mCodePoint ? event.mKeyCode : event.mCodePoint;
         final InputTransaction inputTransaction = new InputTransaction(settingsValues, event,
                 SystemClock.uptimeMillis(), mSpaceState,
                 getActualCapsMode(settingsValues, keyboardShiftMode));
@@ -1138,8 +1136,8 @@ public final class InputLogic {
      * @param settingsValues The current settings values.
      */
     private void performRecapitalization(final SettingsValues settingsValues) {
-        if (!mConnection.hasSelection()) {
-            return; // No selection
+        if (!mConnection.hasSelection() || !mRecapitalizeStatus.mIsEnabled()) {
+            return; // No selection or recapitalize is disabled for now
         }
         final int selectionStart = mConnection.getExpectedSelectionStart();
         final int selectionEnd = mConnection.getExpectedSelectionEnd();
