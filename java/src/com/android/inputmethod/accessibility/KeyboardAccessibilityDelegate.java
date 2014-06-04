@@ -222,11 +222,21 @@ public class KeyboardAccessibilityDelegate<KV extends KeyboardView>
         // Make sure we're not getting an EXIT event because the user slid
         // off the keyboard area, then force a key press.
         if (key != null) {
-            simulateTouchEvent(MotionEvent.ACTION_DOWN, event);
-            simulateTouchEvent(MotionEvent.ACTION_UP, event);
+            onRegisterHoverKey(key, event);
             onHoverExitKey(key);
         }
         setLastHoverKey(null);
+    }
+
+    /**
+     * Register a key that is selected by a hover event
+     *
+     * @param key A key to be registered.
+     * @param event A hover exit event that triggers key registering.
+     */
+    protected void onRegisterHoverKey(final Key key, final MotionEvent event) {
+        simulateTouchEvent(MotionEvent.ACTION_DOWN, event);
+        simulateTouchEvent(MotionEvent.ACTION_UP, event);
     }
 
     /**
