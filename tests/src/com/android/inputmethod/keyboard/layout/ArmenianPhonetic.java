@@ -56,11 +56,19 @@ public final class ArmenianPhonetic extends LayoutBase {
         }
 
         @Override
+        public ExpectedKey[] getKeysLeftToSpacebar(final boolean isPhone) {
+            // U+002C: "," COMMA
+            // U+055D: "՝" ARMENIAN COMMA
+            return isPhone ? joinKeys(key("\u002C", SETTINGS_KEY))
+                    : joinKeys(key("\u055D", SETTINGS_KEY), "_");
+        }
+
+        @Override
         public ExpectedKey[] getKeysRightToSpacebar(final boolean isPhone) {
             // U+0589: "։" ARMENIAN FULL STOP
             // U+055D: "՝" ARMENIAN COMMA
             final ExpectedKey fullStopKey = key("\u0589", getPunctuationMoreKeys(isPhone));
-            return isPhone ? joinKeys(fullStopKey) : joinKeys("\u055D", fullStopKey);
+            return isPhone ? joinKeys(fullStopKey) : joinKeys("/", fullStopKey);
         }
 
         @Override
@@ -121,7 +129,7 @@ public final class ArmenianPhonetic extends LayoutBase {
         } else {
             builder.addKeysOnTheRightOfRow(1, DELETE_KEY)
                     .addKeysOnTheRightOfRow(3, ENTER_KEY)
-                    .addKeysOnTheLeftOfRow(5, customizer.getSymbolsKey(), SETTINGS_KEY)
+                    .addKeysOnTheLeftOfRow(5, customizer.getSymbolsKey())
                     .addKeysOnTheRightOfRow(5, EMOJI_KEY);
         }
         builder.addKeysOnTheLeftOfRow(4, (Object[])customizer.getLeftShiftKeys(isPhone))

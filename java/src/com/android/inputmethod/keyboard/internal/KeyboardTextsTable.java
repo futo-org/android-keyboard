@@ -602,7 +602,7 @@ public final class KeyboardTextsTable {
         /* keyspec_right_double_angle_quote */ "\u00BB|\u00AB",
         /* keyspec_left_single_angle_quote */ "\u2039|\u203A",
         /* keyspec_right_single_angle_quote */ "\u203A|\u2039",
-        /* morekeys_tablet_comma */ "!fixedColumnOrder!4,:,!,\u061F,\u061B,-,/,\",\'",
+        /* morekeys_tablet_comma */ "!fixedColumnOrder!4,:,!,\u061F,\u061B,-,\",\'",
         // U+0651: "ّ" ARABIC SHADDA
         /* keyhintlabel_period */ "\u0651",
         /* morekeys_tablet_period */ "!text/morekeys_arabic_diacritics",
@@ -1551,7 +1551,7 @@ public final class KeyboardTextsTable {
         /* keyspec_right_double_angle_quote */ "\u00BB|\u00AB",
         /* keyspec_left_single_angle_quote */ "\u2039|\u203A",
         /* keyspec_right_single_angle_quote */ "\u203A|\u2039",
-        /* morekeys_tablet_comma */ "!fixedColumnOrder!4,:,!,\u061F,\u061B,-,/,!text/keyspec_left_double_angle_quote,!text/keyspec_right_double_angle_quote",
+        /* morekeys_tablet_comma */ "!fixedColumnOrder!4,:,!,\u061F,\u061B,-,!text/keyspec_left_double_angle_quote,!text/keyspec_right_double_angle_quote",
         // U+064B: "ً" ARABIC FATHATAN
         /* keyhintlabel_period */ "\u064B",
         /* morekeys_tablet_period */ "!text/morekeys_arabic_diacritics",

@@ -35,6 +35,9 @@
                 latin:keyLabelFlags="hasShiftedLetterHint" />
         </default>
     </switch>
+    <!-- Base key style for the key which may have settings key as more keys. -->
+    <include
+        latin:keyboardLayout="@xml/key_styles_settings" />
     <!-- Functional key styles -->
     <!-- Base style for shift key. A single space is used for dummy label in moreKeys. -->
     <key-style

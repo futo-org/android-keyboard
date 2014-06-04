@@ -27,20 +27,20 @@
         >
             <Key
                 latin:keySpec="/"
-                latin:keyStyle="f1MoreKeysStyle" />
+                latin:keyStyle="settingsMoreKeysStyle" />
         </case>
         <case
             latin:mode="email"
         >
             <Key
                 latin:keySpec="\@"
-                latin:keyStyle="f1MoreKeysStyle" />
+                latin:keyStyle="settingsMoreKeysStyle" />
         </case>
         <default>
             <Key
                 latin:keySpec="!text/keyspec_comma"
                 latin:keyLabelFlags="hasPopupHint"
-                latin:keyStyle="f1MoreKeysStyle" />
+                latin:keyStyle="settingsMoreKeysStyle" />
         </default>
     </switch>
 </merge>
