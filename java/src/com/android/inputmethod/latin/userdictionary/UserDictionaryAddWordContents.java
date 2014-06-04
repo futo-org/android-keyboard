@@ -167,7 +167,9 @@ public class UserDictionaryAddWordContents {
         // should not insert, because either A. the word exists with no shortcut, in which
         // case the exact same thing we want to insert is already there, or B. the word
         // exists with at least one shortcut, in which case it has priority on our word.
-        if (hasWord(newWord, context)) return CODE_ALREADY_PRESENT;
+        if (TextUtils.isEmpty(newShortcut) && hasWord(newWord, context)) {
+            return CODE_ALREADY_PRESENT;
+        }
 
         // Disallow duplicates. If the same word with no shortcut is defined, remove it; if
         // the same word with the same shortcut is defined, remove it; but we don't mind if
