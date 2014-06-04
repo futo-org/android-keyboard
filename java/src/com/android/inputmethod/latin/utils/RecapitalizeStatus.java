@@ -63,6 +63,7 @@ public class RecapitalizeStatus {
     private int[] mSortedSeparators;
     private String mStringAfter;
     private boolean mIsStarted;
+    private boolean mIsEnabled = true;
 
     private static final int[] EMPTY_STORTED_SEPARATORS = {};
 
@@ -74,6 +75,9 @@ public class RecapitalizeStatus {
 
     public void start(final int cursorStart, final int cursorEnd, final String string,
             final Locale locale, final int[] sortedSeparators) {
+        if (!mIsEnabled) {
+            return;
+        }
         mCursorStartBefore = cursorStart;
         mStringBefore = string;
         mCursorStartAfter = cursorStart;
@@ -105,6 +109,18 @@ public class RecapitalizeStatus {
 
     public boolean isStarted() {
         return mIsStarted;
+    }
+
+    public void enable() {
+        mIsEnabled = true;
+    }
+
+    public void disable() {
+        mIsEnabled = false;
+    }
+
+    public boolean mIsEnabled() {
+        return mIsEnabled;
     }
 
     public boolean isSetAt(final int cursorStart, final int cursorEnd) {
