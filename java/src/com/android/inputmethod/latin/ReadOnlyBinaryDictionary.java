@@ -102,6 +102,18 @@ public final class ReadOnlyBinaryDictionary extends Dictionary {
     }
 
     @Override
+    public int getMaxFrequencyOfExactMatches(final String word) {
+        if (mLock.readLock().tryLock()) {
+            try {
+                return mBinaryDictionary.getMaxFrequencyOfExactMatches(word);
+            } finally {
+                mLock.readLock().unlock();
+            }
+        }
+        return NOT_A_PROBABILITY;
+    }
+
+    @Override
     public void close() {
         mLock.writeLock().lock();
         try {
