@@ -189,6 +189,7 @@ public final class BinaryDictionary extends Dictionary {
     private static native void closeNative(long dict);
     private static native int getFormatVersionNative(long dict);
     private static native int getProbabilityNative(long dict, int[] word);
+    private static native int getMaxProbabilityOfExactMatchesNative(long dict, int[] word);
     private static native int getBigramProbabilityNative(long dict, int[] word0,
             boolean isBeginningOfSentence, int[] word1);
     private static native void getWordPropertyNative(long dict, int[] word,
@@ -350,9 +351,15 @@ public final class BinaryDictionary extends Dictionary {
 
     @Override
     public int getFrequency(final String word) {
-        if (word == null) return NOT_A_PROBABILITY;
+        if (TextUtils.isEmpty(word)) return NOT_A_PROBABILITY;
         int[] codePoints = StringUtils.toCodePointArray(word);
         return getProbabilityNative(mNativeDict, codePoints);
+    }
+
+    public int getMaxFrequencyOfExactMatches(final String word) {
+        if (TextUtils.isEmpty(word)) return NOT_A_PROBABILITY;
+        int[] codePoints = StringUtils.toCodePointArray(word);
+        return getMaxProbabilityOfExactMatchesNative(mNativeDict, codePoints);
     }
 
     @UsedForTesting
