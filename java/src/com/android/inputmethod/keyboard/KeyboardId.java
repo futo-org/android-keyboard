@@ -70,7 +70,6 @@ public final class KeyboardId {
     public final int mElementId;
     public final EditorInfo mEditorInfo;
     public final boolean mClobberSettingsKey;
-    public final boolean mSupportsSwitchingToShortcutIme;
     public final boolean mLanguageSwitchKeyEnabled;
     public final String mCustomActionLabel;
     public final boolean mHasShortcutKey;
@@ -86,11 +85,10 @@ public final class KeyboardId {
         mElementId = elementId;
         mEditorInfo = params.mEditorInfo;
         mClobberSettingsKey = params.mNoSettingsKey;
-        mSupportsSwitchingToShortcutIme = params.mSupportsSwitchingToShortcutIme;
         mLanguageSwitchKeyEnabled = params.mLanguageSwitchKeyEnabled;
         mCustomActionLabel = (mEditorInfo.actionLabel != null)
                 ? mEditorInfo.actionLabel.toString() : null;
-        mHasShortcutKey = mSupportsSwitchingToShortcutIme && params.mShowsVoiceInputKey;
+        mHasShortcutKey = params.mVoiceInputKeyEnabled;
 
         mHashCode = computeHashCode(this);
     }
@@ -103,7 +101,6 @@ public final class KeyboardId {
                 id.mHeight,
                 id.passwordInput(),
                 id.mClobberSettingsKey,
-                id.mSupportsSwitchingToShortcutIme,
                 id.mHasShortcutKey,
                 id.mLanguageSwitchKeyEnabled,
                 id.isMultiLine(),
@@ -124,7 +121,6 @@ public final class KeyboardId {
                 && other.mHeight == mHeight
                 && other.passwordInput() == passwordInput()
                 && other.mClobberSettingsKey == mClobberSettingsKey
-                && other.mSupportsSwitchingToShortcutIme == mSupportsSwitchingToShortcutIme
                 && other.mHasShortcutKey == mHasShortcutKey
                 && other.mLanguageSwitchKeyEnabled == mLanguageSwitchKeyEnabled
                 && other.isMultiLine() == isMultiLine()
@@ -179,7 +175,7 @@ public final class KeyboardId {
 
     @Override
     public String toString() {
-        return String.format(Locale.ROOT, "[%s %s:%s %dx%d %s %s%s%s%s%s%s%s%s%s]",
+        return String.format(Locale.ROOT, "[%s %s:%s %dx%d %s %s%s%s%s%s%s%s%s]",
                 elementIdToName(mElementId),
                 mLocale, mSubtype.getExtraValueOf(KEYBOARD_LAYOUT_SET),
                 mWidth, mHeight,
@@ -189,7 +185,6 @@ public final class KeyboardId {
                 (navigatePrevious() ? " navigatePrevious" : ""),
                 (mClobberSettingsKey ? " clobberSettingsKey" : ""),
                 (passwordInput() ? " passwordInput" : ""),
-                (mSupportsSwitchingToShortcutIme ? " supportsSwitchingToShortcutIme" : ""),
                 (mHasShortcutKey ? " hasShortcutKey" : ""),
                 (mLanguageSwitchKeyEnabled ? " languageSwitchKeyEnabled" : ""),
                 (isMultiLine() ? " isMultiLine" : "")

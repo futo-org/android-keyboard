@@ -115,10 +115,10 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         final int keyboardHeight = ResourceUtils.getDefaultKeyboardHeight(res);
         builder.setKeyboardGeometry(keyboardWidth, keyboardHeight);
         builder.setSubtype(mSubtypeSwitcher.getCurrentSubtype());
-        builder.setOptions(
-                mSubtypeSwitcher.isShortcutImeEnabled(),
-                settingsValues.mShowsVoiceInputKey,
-                mLatinIME.shouldShowLanguageSwitchKey());
+        builder.setVoiceInputKeyEnabled(mSubtypeSwitcher.isShortcutImeEnabled()
+                && settingsValues.mShowsVoiceInputKey
+                && !settingsValues.mInputAttributes.hasNoMicrophoneKeyOption());
+        builder.setLanguageSwitchKeyEnabled(mLatinIME.shouldShowLanguageSwitchKey());
         mKeyboardLayoutSet = builder.build();
         mCurrentSettingsValues = settingsValues;
         try {

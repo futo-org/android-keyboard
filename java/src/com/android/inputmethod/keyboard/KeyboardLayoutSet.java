@@ -17,8 +17,6 @@
 package com.android.inputmethod.keyboard;
 
 import static com.android.inputmethod.latin.Constants.ImeOption.FORCE_ASCII;
-import static com.android.inputmethod.latin.Constants.ImeOption.NO_MICROPHONE;
-import static com.android.inputmethod.latin.Constants.ImeOption.NO_MICROPHONE_COMPAT;
 import static com.android.inputmethod.latin.Constants.ImeOption.NO_SETTINGS_KEY;
 
 import android.content.Context;
@@ -102,12 +100,11 @@ public final class KeyboardLayoutSet {
     public static final class Params {
         String mKeyboardLayoutSetName;
         int mMode;
-        EditorInfo mEditorInfo;
         boolean mDisableTouchPositionCorrectionDataForTest;
+        // TODO: Use {@link InputAttributes} instead of these variables.
+        EditorInfo mEditorInfo;
         boolean mIsPasswordField;
-        boolean mSupportsSwitchingToShortcutIme;
-        boolean mShowsVoiceInputKey;
-        boolean mNoMicrophoneKey;
+        boolean mVoiceInputKeyEnabled;
         boolean mNoSettingsKey;
         boolean mLanguageSwitchKeyEnabled;
         InputMethodSubtype mSubtype;
@@ -228,14 +225,9 @@ public final class KeyboardLayoutSet {
 
             final EditorInfo editorInfo = (ei != null) ? ei : EMPTY_EDITOR_INFO;
             params.mMode = getKeyboardMode(editorInfo);
+            // TODO: Consolidate those with {@link InputAttributes}.
             params.mEditorInfo = editorInfo;
             params.mIsPasswordField = InputTypeUtils.isPasswordInputType(editorInfo.inputType);
-            @SuppressWarnings("deprecation")
-            final boolean deprecatedNoMicrophone = InputAttributes.inPrivateImeOptions(
-                    null, NO_MICROPHONE_COMPAT, editorInfo);
-            params.mNoMicrophoneKey = InputAttributes.inPrivateImeOptions(
-                    mPackageName, NO_MICROPHONE, editorInfo)
-                    || deprecatedNoMicrophone;
             params.mNoSettingsKey = InputAttributes.inPrivateImeOptions(
                     mPackageName, NO_SETTINGS_KEY, editorInfo);
         }
@@ -248,6 +240,7 @@ public final class KeyboardLayoutSet {
 
         public Builder setSubtype(final InputMethodSubtype subtype) {
             final boolean asciiCapable = InputMethodSubtypeCompatUtils.isAsciiCapable(subtype);
+            // TODO: Consolidate with {@link InputAttributes}.
             @SuppressWarnings("deprecation")
             final boolean deprecatedForceAscii = InputAttributes.inPrivateImeOptions(
                     mPackageName, FORCE_ASCII, mParams.mEditorInfo);
@@ -268,12 +261,13 @@ public final class KeyboardLayoutSet {
             return this;
         }
 
-        public Builder setOptions(final boolean isShortcutImeEnabled,
-                final boolean showsVoiceInputKey, final boolean languageSwitchKeyEnabled) {
-            mParams.mSupportsSwitchingToShortcutIme =
-                    isShortcutImeEnabled && !mParams.mNoMicrophoneKey && !mParams.mIsPasswordField;
-            mParams.mShowsVoiceInputKey = showsVoiceInputKey;
-            mParams.mLanguageSwitchKeyEnabled = languageSwitchKeyEnabled;
+        public Builder setVoiceInputKeyEnabled(final boolean enabled) {
+            mParams.mVoiceInputKeyEnabled = enabled;
+            return this;
+        }
+
+        public Builder setLanguageSwitchKeyEnabled(final boolean enabled) {
+            mParams.mLanguageSwitchKeyEnabled = enabled;
             return this;
         }
 

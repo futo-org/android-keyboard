@@ -16,6 +16,9 @@
 
 package com.android.inputmethod.latin;
 
+import static com.android.inputmethod.latin.Constants.ImeOption.NO_MICROPHONE;
+import static com.android.inputmethod.latin.Constants.ImeOption.NO_MICROPHONE_COMPAT;
+
 import android.text.InputType;
 import android.util.Log;
 import android.view.inputmethod.EditorInfo;
@@ -39,8 +42,13 @@ public final class InputAttributes {
     final public boolean mApplicationSpecifiedCompletionOn;
     final public boolean mShouldInsertSpacesAutomatically;
     final private int mInputType;
+    final private EditorInfo mEditorInfo;
+    final private String mPackageNameForPrivateImeOptions;
 
-    public InputAttributes(final EditorInfo editorInfo, final boolean isFullscreenMode) {
+    public InputAttributes(final EditorInfo editorInfo, final boolean isFullscreenMode,
+            final String packageNameForPrivateImeOptions) {
+        mEditorInfo = editorInfo;
+        mPackageNameForPrivateImeOptions = packageNameForPrivateImeOptions;
         mTargetApplicationPackageName = null != editorInfo ? editorInfo.packageName : null;
         final int inputType = null != editorInfo ? editorInfo.inputType : 0;
         final int inputClass = inputType & InputType.TYPE_MASK_CLASS;
@@ -109,6 +117,15 @@ public final class InputAttributes {
 
     public boolean isSameInputType(final EditorInfo editorInfo) {
         return editorInfo.inputType == mInputType;
+    }
+
+    public boolean hasNoMicrophoneKeyOption() {
+        @SuppressWarnings("deprecation")
+        final boolean deprecatedNoMicrophone = InputAttributes.inPrivateImeOptions(
+                null, NO_MICROPHONE_COMPAT, mEditorInfo);
+        final boolean noMicrophone = InputAttributes.inPrivateImeOptions(
+                mPackageNameForPrivateImeOptions, NO_MICROPHONE, mEditorInfo);
+        return noMicrophone || deprecatedNoMicrophone;
     }
 
     @SuppressWarnings("unused")

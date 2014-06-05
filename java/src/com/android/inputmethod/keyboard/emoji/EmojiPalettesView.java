@@ -115,8 +115,6 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
         builder.setSubtype(SubtypeSwitcher.getInstance().getEmojiSubtype());
         builder.setKeyboardGeometry(ResourceUtils.getDefaultKeyboardWidth(res),
                 mEmojiLayoutParams.mEmojiKeyboardHeight);
-        builder.setOptions(false /* shortcutImeEnabled */, false /* showsVoiceInputKey */,
-                false /* languageSwitchKeyEnabled */);
         final KeyboardLayoutSet layoutSet = builder.build();
         final TypedArray emojiPalettesViewAttr = context.obtainStyledAttributes(attrs,
                 R.styleable.EmojiPalettesView, defStyle, R.style.EmojiPalettesView);
