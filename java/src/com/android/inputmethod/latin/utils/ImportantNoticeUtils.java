@@ -23,7 +23,6 @@ import android.provider.Settings.SettingNotFoundException;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.android.inputmethod.latin.InputAttributes;
 import com.android.inputmethod.latin.R;
 
 public final class ImportantNoticeUtils {
@@ -78,19 +77,15 @@ public final class ImportantNoticeUtils {
         return getCurrentImportantNoticeVersion(context) > lastVersion;
     }
 
-    public static boolean shouldShowImportantNotice(final Context context,
-            final InputAttributes inputAttributes) {
-        if (inputAttributes == null || inputAttributes.mIsPasswordField) {
-            return false;
-        }
-        if (isInSystemSetupWizard(context)) {
-            return false;
-        }
+    public static boolean shouldShowImportantNotice(final Context context) {
         if (!hasNewImportantNotice(context)) {
             return false;
         }
         final String importantNoticeTitle = getNextImportantNoticeTitle(context);
         if (TextUtils.isEmpty(importantNoticeTitle)) {
+            return false;
+        }
+        if (isInSystemSetupWizard(context)) {
             return false;
         }
         return true;
