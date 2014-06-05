@@ -273,6 +273,17 @@ static jint latinime_BinaryDictionary_getProbability(JNIEnv *env, jclass clazz, 
     return dictionary->getProbability(codePoints, wordLength);
 }
 
+static jint latinime_BinaryDictionary_getMaxProbabilityOfExactMatches(
+        JNIEnv *env, jclass clazz, jlong dict, jintArray word) {
+    Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
+    if (!dictionary) return NOT_A_PROBABILITY;
+    const jsize wordLength = env->GetArrayLength(word);
+    int codePoints[wordLength];
+    env->GetIntArrayRegion(word, 0, wordLength, codePoints);
+    // TODO: Implement.
+    return NOT_A_PROBABILITY;
+}
+
 static jint latinime_BinaryDictionary_getBigramProbability(JNIEnv *env, jclass clazz,
         jlong dict, jintArray word0, jboolean isBeginningOfSentence, jintArray word1) {
     Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
@@ -632,6 +643,11 @@ static const JNINativeMethod sMethods[] = {
         const_cast<char *>("getProbabilityNative"),
         const_cast<char *>("(J[I)I"),
         reinterpret_cast<void *>(latinime_BinaryDictionary_getProbability)
+    },
+    {
+        const_cast<char *>("getMaxProbabilityOfExactMatchesNative"),
+        const_cast<char *>("(J[I)I"),
+        reinterpret_cast<void *>(latinime_BinaryDictionary_getMaxProbabilityOfExactMatches)
     },
     {
         const_cast<char *>("getBigramProbabilityNative"),
