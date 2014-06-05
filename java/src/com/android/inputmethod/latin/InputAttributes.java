@@ -35,7 +35,7 @@ public final class InputAttributes {
     final public String mTargetApplicationPackageName;
     final public boolean mInputTypeNoAutoCorrect;
     final public boolean mIsPasswordField;
-    final public boolean mIsSettingsSuggestionStripOn;
+    final public boolean mShouldShowSuggestions;
     final public boolean mApplicationSpecifiedCompletionOn;
     final public boolean mShouldInsertSpacesAutomatically;
     final private int mInputType;
@@ -62,7 +62,7 @@ public final class InputAttributes {
                 Log.w(TAG, String.format("Unexpected input class: inputType=0x%08x"
                         + " imeOptions=0x%08x", inputType, editorInfo.imeOptions));
             }
-            mIsSettingsSuggestionStripOn = false;
+            mShouldShowSuggestions = false;
             mInputTypeNoAutoCorrect = false;
             mApplicationSpecifiedCompletionOn = false;
             mShouldInsertSpacesAutomatically = false;
@@ -81,13 +81,13 @@ public final class InputAttributes {
 
         // TODO: Have a helper method in InputTypeUtils
         // Make sure that passwords are not displayed in {@link SuggestionStripView}.
-        final boolean noSuggestionStrip = mIsPasswordField
+        final boolean shouldSuppressSuggestions = mIsPasswordField
                 || InputTypeUtils.isEmailVariation(variation)
                 || InputType.TYPE_TEXT_VARIATION_URI == variation
                 || InputType.TYPE_TEXT_VARIATION_FILTER == variation
                 || flagNoSuggestions
                 || flagAutoComplete;
-        mIsSettingsSuggestionStripOn = !noSuggestionStrip;
+        mShouldShowSuggestions = !shouldSuppressSuggestions;
 
         mShouldInsertSpacesAutomatically = InputTypeUtils.isAutoSpaceFriendlyType(inputType);
 
@@ -241,7 +241,7 @@ public final class InputAttributes {
                 mInputType,
                 (mInputTypeNoAutoCorrect ? " noAutoCorrect" : ""),
                 (mIsPasswordField ? " password" : ""),
-                (mIsSettingsSuggestionStripOn ? " suggestionStrip" : ""),
+                (mShouldShowSuggestions ? " shouldShowSuggestions" : ""),
                 (mApplicationSpecifiedCompletionOn ? " appSpecified" : ""),
                 (mShouldInsertSpacesAutomatically ? " insertSpaces" : ""),
                 mTargetApplicationPackageName);

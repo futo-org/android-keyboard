@@ -602,7 +602,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mDictionaryFacilitator.resetDictionaries(this /* context */, locale,
                 settingsValues.mUseContactsDict, settingsValues.mUsePersonalizedDicts,
                 false /* forceReloadMainDictionary */, this);
-        if (settingsValues.mCorrectionEnabled) {
+        if (settingsValues.mAutoCorrectionEnabled) {
             mInputLogic.mSuggest.setAutoCorrectionThreshold(
                     settingsValues.mAutoCorrectionThreshold);
         }
@@ -814,7 +814,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mainKeyboardView.closing();
             currentSettingsValues = mSettings.getCurrent();
 
-            if (currentSettingsValues.mCorrectionEnabled) {
+            if (currentSettingsValues.mAutoCorrectionEnabled) {
                 suggest.setAutoCorrectionThreshold(
                         currentSettingsValues.mAutoCorrectionThreshold);
             }
@@ -1410,7 +1410,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mInputLogic.mSuggest.getSuggestedWords(mInputLogic.mWordComposer,
                 mInputLogic.mWordComposer.getPrevWordsInfoForSuggestion(),
                 keyboard.getProximityInfo(), currentSettings.mBlockPotentiallyOffensive,
-                currentSettings.mCorrectionEnabled, additionalFeaturesOptions, sessionId,
+                currentSettings.mAutoCorrectionEnabled, additionalFeaturesOptions, sessionId,
                 sequenceNumber, callback);
     }
 
