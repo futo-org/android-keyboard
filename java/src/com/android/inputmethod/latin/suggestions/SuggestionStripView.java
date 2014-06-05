@@ -48,6 +48,7 @@ import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.settings.Settings;
+import com.android.inputmethod.latin.settings.SettingsValues;
 import com.android.inputmethod.latin.suggestions.MoreSuggestionsView.MoreSuggestionsListener;
 import com.android.inputmethod.latin.utils.ImportantNoticeUtils;
 
@@ -89,19 +90,17 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
     private static class StripVisibilityGroup {
         private final View mSuggestionStripView;
         private final View mSuggestionsStrip;
-        private final View mVoiceKey;
         private final View mAddToDictionaryStrip;
         private final View mImportantNoticeStrip;
 
         public StripVisibilityGroup(final View suggestionStripView,
-                final ViewGroup suggestionsStrip, final ImageButton voiceKey,
-                final ViewGroup addToDictionaryStrip, final View importantNoticeStrip) {
+                final ViewGroup suggestionsStrip, final ViewGroup addToDictionaryStrip,
+                final View importantNoticeStrip) {
             mSuggestionStripView = suggestionStripView;
             mSuggestionsStrip = suggestionsStrip;
-            mVoiceKey = voiceKey;
             mAddToDictionaryStrip = addToDictionaryStrip;
             mImportantNoticeStrip = importantNoticeStrip;
-            showSuggestionsStrip(false /* voiceKeyEnabled */);
+            showSuggestionsStrip();
         }
 
         public void setLayoutDirection(final boolean isRtlLanguage) {
@@ -113,23 +112,20 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
             ViewCompat.setLayoutDirection(mImportantNoticeStrip, layoutDirection);
         }
 
-        public void showSuggestionsStrip(final boolean enableVoiceKey) {
+        public void showSuggestionsStrip() {
             mSuggestionsStrip.setVisibility(VISIBLE);
-            mVoiceKey.setVisibility(enableVoiceKey ? VISIBLE : INVISIBLE);
             mAddToDictionaryStrip.setVisibility(INVISIBLE);
             mImportantNoticeStrip.setVisibility(INVISIBLE);
         }
 
         public void showAddToDictionaryStrip() {
             mSuggestionsStrip.setVisibility(INVISIBLE);
-            mVoiceKey.setVisibility(INVISIBLE);
             mAddToDictionaryStrip.setVisibility(VISIBLE);
             mImportantNoticeStrip.setVisibility(INVISIBLE);
         }
 
-        public void showImportantNoticeStrip(final boolean enableVoiceKey) {
+        public void showImportantNoticeStrip() {
             mSuggestionsStrip.setVisibility(INVISIBLE);
-            mVoiceKey.setVisibility(enableVoiceKey ? VISIBLE : INVISIBLE);
             mAddToDictionaryStrip.setVisibility(INVISIBLE);
             mImportantNoticeStrip.setVisibility(VISIBLE);
         }
@@ -159,7 +155,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         mVoiceKey = (ImageButton)findViewById(R.id.suggestions_strip_voice_key);
         mAddToDictionaryStrip = (ViewGroup)findViewById(R.id.add_to_dictionary_strip);
         mImportantNoticeStrip = findViewById(R.id.important_notice_strip);
-        mStripVisibilityGroup = new StripVisibilityGroup(this, mSuggestionsStrip, mVoiceKey,
+        mStripVisibilityGroup = new StripVisibilityGroup(this, mSuggestionsStrip,
                 mAddToDictionaryStrip, mImportantNoticeStrip);
 
         for (int pos = 0; pos < SuggestedWords.MAX_SUGGESTIONS; pos++) {
@@ -207,15 +203,13 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         mMainKeyboardView = (MainKeyboardView)inputView.findViewById(R.id.keyboard_view);
     }
 
-    private boolean isVoiceKeyEnabled() {
-        if (mMainKeyboardView == null) {
-            return false;
-        }
-        final Keyboard keyboard = mMainKeyboardView.getKeyboard();
-        if (keyboard == null) {
-            return false;
-        }
-        return keyboard.mId.mHasShortcutKey;
+    public void updateVisibility(final boolean shouldBeVisible, final boolean isFullscreenMode) {
+        final int visibility = shouldBeVisible ? VISIBLE : (isFullscreenMode ? GONE : INVISIBLE);
+        setVisibility(visibility);
+        final SettingsValues currentSettingsValues = Settings.getInstance().getCurrent();
+        final boolean shouldShowVoiceKey = (currentSettingsValues != null)
+                && currentSettingsValues.mShowsVoiceInputKey;
+        mVoiceKey.setVisibility(shouldShowVoiceKey ? VISIBLE : INVISIBLE);
     }
 
     public void setSuggestions(final SuggestedWords suggestedWords, final boolean isRtlLanguage) {
@@ -224,7 +218,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         mSuggestedWords = suggestedWords;
         mSuggestionsCountInStrip = mLayoutHelper.layoutAndReturnSuggestionCountInStrip(
                 mSuggestedWords, mSuggestionsStrip, this);
-        mStripVisibilityGroup.showSuggestionsStrip(isVoiceKeyEnabled());
+        mStripVisibilityGroup.showSuggestionsStrip();
     }
 
     public int setMoreSuggestionsHeight(final int remainingHeight) {
@@ -271,7 +265,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
             dismissMoreSuggestionsPanel();
         }
         mLayoutHelper.layoutImportantNotice(mImportantNoticeStrip, importantNoticeTitle);
-        mStripVisibilityGroup.showImportantNoticeStrip(isVoiceKeyEnabled());
+        mStripVisibilityGroup.showImportantNoticeStrip();
         mImportantNoticeStrip.setOnClickListener(this);
         return true;
     }
@@ -279,7 +273,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
     public void clear() {
         mSuggestionsStrip.removeAllViews();
         removeAllDebugInfoViews();
-        mStripVisibilityGroup.showSuggestionsStrip(false /* enableVoiceKey */);
+        mStripVisibilityGroup.showSuggestionsStrip();
         dismissMoreSuggestionsPanel();
     }
 

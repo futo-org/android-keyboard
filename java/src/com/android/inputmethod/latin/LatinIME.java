@@ -738,6 +738,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
         Log.i(TAG, "Starting input. Cursor position = "
                 + editorInfo.initialSelStart + "," + editorInfo.initialSelEnd);
+        // TODO: Consolidate these checks with {@link InputAttributes}.
         if (InputAttributes.inPrivateImeOptions(null, NO_MICROPHONE_COMPAT, editorInfo)) {
             Log.w(TAG, "Deprecated private IME option specified: " + editorInfo.privateImeOptions);
             Log.w(TAG, "Use " + getPackageName() + "." + NO_MICROPHONE + " instead");
@@ -1343,11 +1344,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (!onEvaluateInputViewShown()) {
             return;
         }
+
+        mSuggestionStripView.updateVisibility(isSuggestionStripVisible, isFullscreenMode());
         if (!isSuggestionStripVisible) {
-            mSuggestionStripView.setVisibility(isFullscreenMode() ? View.GONE : View.INVISIBLE);
             return;
         }
-        mSuggestionStripView.setVisibility(View.VISIBLE);
 
         final SettingsValues currentSettings = mSettings.getCurrent();
         final boolean showSuggestions;
