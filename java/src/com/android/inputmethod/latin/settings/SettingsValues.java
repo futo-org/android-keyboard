@@ -318,18 +318,18 @@ public final class SettingsValues {
 
     private static boolean needsToShowVoiceInputKey(final SharedPreferences prefs,
             final Resources res) {
-        if (!prefs.contains(Settings.PREF_VOICE_INPUT_KEY)) {
-            // Migrate preference from {@link Settings#PREF_VOICE_MODE_OBSOLETE} to
-            // {@link Settings#PREF_VOICE_INPUT_KEY}.
+        // Migrate preference from {@link Settings#PREF_VOICE_MODE_OBSOLETE} to
+        // {@link Settings#PREF_VOICE_INPUT_KEY}.
+        if (prefs.contains(Settings.PREF_VOICE_MODE_OBSOLETE)) {
             final String voiceModeMain = res.getString(R.string.voice_mode_main);
             final String voiceMode = prefs.getString(
                     Settings.PREF_VOICE_MODE_OBSOLETE, voiceModeMain);
             final boolean shouldShowVoiceInputKey = voiceModeMain.equals(voiceMode);
-            prefs.edit().putBoolean(Settings.PREF_VOICE_INPUT_KEY, shouldShowVoiceInputKey).apply();
-        }
-        // Remove the obsolete preference if exists.
-        if (prefs.contains(Settings.PREF_VOICE_MODE_OBSOLETE)) {
-            prefs.edit().remove(Settings.PREF_VOICE_MODE_OBSOLETE).apply();
+            prefs.edit()
+                    .putBoolean(Settings.PREF_VOICE_INPUT_KEY, shouldShowVoiceInputKey)
+                    // Remove the obsolete preference if exists.
+                    .remove(Settings.PREF_VOICE_MODE_OBSOLETE)
+                    .apply();
         }
         return prefs.getBoolean(Settings.PREF_VOICE_INPUT_KEY, true);
     }
