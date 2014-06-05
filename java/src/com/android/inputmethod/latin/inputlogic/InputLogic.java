@@ -319,8 +319,16 @@ public final class InputLogic {
                 || !mWordComposer.isComposingWord(); // safe to reset
         final boolean hasOrHadSelection = (oldSelStart != oldSelEnd || newSelStart != newSelEnd);
         final int moveAmount = newSelStart - oldSelStart;
-        if (selectionChangedOrSafeToReset && (hasOrHadSelection
-                || !mWordComposer.moveCursorByAndReturnIfInsideComposingWord(moveAmount))) {
+        // As an added small gift from the framework, it happens upon rotation when there
+        // is a selection that we get a wrong cursor position delivered to startInput() that
+        // does not get reflected in the oldSel{Start,End} parameters to the next call to
+        // onUpdateSelection. In this case, we may have set a composition, and when we're here
+        // we realize we shouldn't have. In theory, in this case, selectionChangedOrSafeToReset
+        // should be true, but that is if the framework had taken that wrong cursor position
+        // into account, which means we have to reset the entire composing state whenever there
+        // is or was a selection regardless of whether it changed or not.
+        if (hasOrHadSelection || (selectionChangedOrSafeToReset
+                && !mWordComposer.moveCursorByAndReturnIfInsideComposingWord(moveAmount))) {
             // If we are composing a word and moving the cursor, we would want to set a
             // suggestion span for recorrection to work correctly. Unfortunately, that
             // would involve the keyboard committing some new text, which would move the
@@ -1922,9 +1930,11 @@ public final class InputLogic {
             final boolean tryResumeSuggestions, final int remainingTries,
             // TODO: remove these arguments
             final LatinIME.UIHandler handler) {
+        final boolean shouldFinishComposition = mConnection.hasSelection()
+                || !mConnection.isCursorPositionKnown();
         if (!mConnection.resetCachesUponCursorMoveAndReturnSuccess(
                 mConnection.getExpectedSelectionStart(), mConnection.getExpectedSelectionEnd(),
-                false /* shouldFinishComposition */)) {
+                shouldFinishComposition)) {
             if (0 < remainingTries) {
                 handler.postResetCaches(tryResumeSuggestions, remainingTries - 1);
                 return false;
