@@ -441,6 +441,30 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         return mBinaryDictionary.isValidWord(word);
     }
 
+    @Override
+    public int getMaxFrequencyOfExactMatches(final String word) {
+        reloadDictionaryIfRequired();
+        boolean lockAcquired = false;
+        try {
+            lockAcquired = mLock.readLock().tryLock(
+                    TIMEOUT_FOR_READ_OPS_IN_MILLISECONDS, TimeUnit.MILLISECONDS);
+            if (lockAcquired) {
+                if (mBinaryDictionary == null) {
+                    return NOT_A_PROBABILITY;
+                }
+                return mBinaryDictionary.getMaxFrequencyOfExactMatches(word);
+            }
+        } catch (final InterruptedException e) {
+            Log.e(TAG, "Interrupted tryLock() in getMaxFrequencyOfExactMatches().", e);
+        } finally {
+            if (lockAcquired) {
+                mLock.readLock().unlock();
+            }
+        }
+        return NOT_A_PROBABILITY;
+    }
+
+
     protected boolean isValidNgramLocked(final PrevWordsInfo prevWordsInfo, final String word) {
         if (mBinaryDictionary == null) return false;
         return mBinaryDictionary.isValidNgram(prevWordsInfo, word);

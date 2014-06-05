@@ -95,6 +95,10 @@ public abstract class Dictionary {
         return NOT_A_PROBABILITY;
     }
 
+    public int getMaxFrequencyOfExactMatches(final String word) {
+        return NOT_A_PROBABILITY;
+    }
+
     /**
      * Compares the contents of the character array with the typed word and returns true if they
      * are the same.

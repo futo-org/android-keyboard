@@ -63,7 +63,7 @@ public class DictionaryFacilitator {
     private final Object mLock = new Object();
     private final DistracterFilter mDistracterFilter;
 
-    private static final String[] DICT_TYPES_ORDERED_TO_GET_SUGGESTION =
+    private static final String[] DICT_TYPES_ORDERED_TO_GET_SUGGESTIONS =
             new String[] {
                 Dictionary.TYPE_MAIN,
                 Dictionary.TYPE_USER_HISTORY,
@@ -89,8 +89,8 @@ public class DictionaryFacilitator {
             new Class[] { Context.class, Locale.class, File.class };
 
     private static final String[] SUB_DICT_TYPES =
-            Arrays.copyOfRange(DICT_TYPES_ORDERED_TO_GET_SUGGESTION, 1 /* start */,
-                    DICT_TYPES_ORDERED_TO_GET_SUGGESTION.length);
+            Arrays.copyOfRange(DICT_TYPES_ORDERED_TO_GET_SUGGESTIONS, 1 /* start */,
+                    DICT_TYPES_ORDERED_TO_GET_SUGGESTIONS.length);
 
     /**
      * Class contains dictionaries for a locale.
@@ -333,7 +333,7 @@ public class DictionaryFacilitator {
             dictionaries = mDictionaries;
             mDictionaries = new Dictionaries();
         }
-        for (final String dictType : DICT_TYPES_ORDERED_TO_GET_SUGGESTION) {
+        for (final String dictType : DICT_TYPES_ORDERED_TO_GET_SUGGESTIONS) {
             dictionaries.closeDict(dictType);
         }
         mDistracterFilter.close();
@@ -469,7 +469,7 @@ public class DictionaryFacilitator {
         final SuggestionResults suggestionResults =
                 new SuggestionResults(dictionaries.mLocale, SuggestedWords.MAX_SUGGESTIONS);
         final float[] languageWeight = new float[] { Dictionary.NOT_A_LANGUAGE_WEIGHT };
-        for (final String dictType : DICT_TYPES_ORDERED_TO_GET_SUGGESTION) {
+        for (final String dictType : DICT_TYPES_ORDERED_TO_GET_SUGGESTIONS) {
             final Dictionary dictionary = dictionaries.getDict(dictType);
             if (null == dictionary) continue;
             final ArrayList<SuggestedWordInfo> dictionarySuggestions =
@@ -502,7 +502,7 @@ public class DictionaryFacilitator {
             return false;
         }
         final String lowerCasedWord = word.toLowerCase(dictionaries.mLocale);
-        for (final String dictType : DICT_TYPES_ORDERED_TO_GET_SUGGESTION) {
+        for (final String dictType : DICT_TYPES_ORDERED_TO_GET_SUGGESTIONS) {
             final Dictionary dictionary = dictionaries.getDict(dictType);
             // Ideally the passed map would come out of a {@link java.util.concurrent.Future} and
             // would be immutable once it's finished initializing, but concretely a null test is
@@ -516,21 +516,35 @@ public class DictionaryFacilitator {
         return false;
     }
 
-    public int getFrequency(final String word) {
+    private int getFrequencyInternal(final String word,
+            final boolean isGettingMaxFrequencyOfExactMatches) {
         if (TextUtils.isEmpty(word)) {
             return Dictionary.NOT_A_PROBABILITY;
         }
-        int maxFreq = -1;
+        int maxFreq = Dictionary.NOT_A_PROBABILITY;
         final Dictionaries dictionaries = mDictionaries;
-        for (final String dictType : DICT_TYPES_ORDERED_TO_GET_SUGGESTION) {
+        for (final String dictType : DICT_TYPES_ORDERED_TO_GET_SUGGESTIONS) {
             final Dictionary dictionary = dictionaries.getDict(dictType);
             if (dictionary == null) continue;
-            final int tempFreq = dictionary.getFrequency(word);
+            final int tempFreq;
+            if (isGettingMaxFrequencyOfExactMatches) {
+                tempFreq = dictionary.getMaxFrequencyOfExactMatches(word);
+            } else {
+                tempFreq = dictionary.getFrequency(word);
+            }
             if (tempFreq >= maxFreq) {
                 maxFreq = tempFreq;
             }
         }
         return maxFreq;
+    }
+
+    public int getFrequency(final String word) {
+        return getFrequencyInternal(word, false /* isGettingMaxFrequencyOfExactMatches */);
+    }
+
+    public int getMaxFrequencyOfExactMatches(final String word) {
+        return getFrequencyInternal(word, true /* isGettingMaxFrequencyOfExactMatches */);
     }
 
     public void clearUserHistoryDictionary() {
