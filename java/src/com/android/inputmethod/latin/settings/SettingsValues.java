@@ -84,7 +84,7 @@ public final class SettingsValues {
     public final int mKeyPreviewPopupDismissDelay;
     private final boolean mAutoCorrectEnabled;
     public final float mAutoCorrectionThreshold;
-    public final boolean mCorrectionEnabled;
+    public final boolean mAutoCorrectionEnabled;
     public final int mSuggestionVisibility;
     public final int mDisplayOrientation;
     private final AsyncResultHolder<AppWorkaroundsUtils> mAppWorkarounds;
@@ -150,7 +150,7 @@ public final class SettingsValues {
         mGestureFloatingPreviewTextEnabled = prefs.getBoolean(
                 Settings.PREF_GESTURE_FLOATING_PREVIEW_TEXT, true);
         mPhraseGestureEnabled = Settings.readPhraseGestureEnabled(prefs, res);
-        mCorrectionEnabled = mAutoCorrectEnabled && !mInputAttributes.mInputTypeNoAutoCorrect;
+        mAutoCorrectionEnabled = mAutoCorrectEnabled && !mInputAttributes.mInputTypeNoAutoCorrect;
         final String showSuggestionsSetting = prefs.getString(
                 Settings.PREF_SHOW_SUGGESTIONS_SETTING,
                 res.getString(R.string.prefs_suggestion_visibility_default_value));
@@ -189,8 +189,8 @@ public final class SettingsValues {
     }
 
     public boolean isSuggestionsRequested() {
-        return mInputAttributes.mIsSettingsSuggestionStripOn
-                && (mCorrectionEnabled
+        return mInputAttributes.mShouldShowSuggestions
+                && (mAutoCorrectionEnabled
                         || isCurrentOrientationAllowingSuggestionsPerUserSettings());
     }
 
@@ -390,8 +390,8 @@ public final class SettingsValues {
         sb.append("" + mAutoCorrectEnabled);
         sb.append("\n   mAutoCorrectionThreshold = ");
         sb.append("" + mAutoCorrectionThreshold);
-        sb.append("\n   mCorrectionEnabled = ");
-        sb.append("" + mCorrectionEnabled);
+        sb.append("\n   mAutoCorrectionEnabled = ");
+        sb.append("" + mAutoCorrectionEnabled);
         sb.append("\n   mSuggestionVisibility = ");
         sb.append("" + mSuggestionVisibility);
         sb.append("\n   mDisplayOrientation = ");

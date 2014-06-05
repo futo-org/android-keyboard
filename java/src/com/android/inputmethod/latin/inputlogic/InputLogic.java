@@ -770,7 +770,7 @@ public final class InputLogic {
         }
         // isComposingWord() may have changed since we stored wasComposing
         if (mWordComposer.isComposingWord()) {
-            if (settingsValues.mCorrectionEnabled) {
+            if (settingsValues.mAutoCorrectionEnabled) {
                 final String separator = shouldAvoidSendingCode ? LastComposedWord.NOT_A_SEPARATOR
                         : StringUtils.newSingleCodePointString(codePoint);
                 commitCurrentAutoCorrection(settingsValues, separator, handler);
@@ -1173,7 +1173,7 @@ public final class InputLogic {
         // If correction is not enabled, we don't add words to the user history dictionary.
         // That's to avoid unintended additions in some sensitive fields, or fields that
         // expect to receive non-words.
-        if (!settingsValues.mCorrectionEnabled) return;
+        if (!settingsValues.mAutoCorrectionEnabled) return;
 
         if (TextUtils.isEmpty(suggestion)) return;
         final boolean wasAutoCapitalized =
