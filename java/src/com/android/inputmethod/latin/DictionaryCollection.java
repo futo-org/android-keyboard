@@ -89,9 +89,17 @@ public final class DictionaryCollection extends Dictionary {
         int maxFreq = -1;
         for (int i = mDictionaries.size() - 1; i >= 0; --i) {
             final int tempFreq = mDictionaries.get(i).getFrequency(word);
-            if (tempFreq >= maxFreq) {
-                maxFreq = tempFreq;
-            }
+            maxFreq = Math.max(tempFreq, maxFreq);
+        }
+        return maxFreq;
+    }
+
+    @Override
+    public int getMaxFrequencyOfExactMatches(final String word) {
+        int maxFreq = -1;
+        for (int i = mDictionaries.size() - 1; i >= 0; --i) {
+            final int tempFreq = mDictionaries.get(i).getMaxFrequencyOfExactMatches(word);
+            maxFreq = Math.max(tempFreq, maxFreq);
         }
         return maxFreq;
     }
