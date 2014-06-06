@@ -1472,4 +1472,33 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         assertEquals(bigramProbability,
                 binaryDictionary.getNgramProbability(prevWordsInfoStartOfSentence, "bbb"));
     }
+
+    public void testGetMaxFrequencyOfExactMatches() {
+        for (final int formatVersion : DICT_FORMAT_VERSIONS) {
+            testGetMaxFrequencyOfExactMatches(formatVersion);
+        }
+    }
+
+    private void testGetMaxFrequencyOfExactMatches(final int formatVersion) {
+        File dictFile = null;
+        try {
+            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary", formatVersion);
+        } catch (IOException e) {
+            fail("IOException while writing an initial dictionary : " + e);
+        }
+        final BinaryDictionary binaryDictionary = new BinaryDictionary(dictFile.getAbsolutePath(),
+                0 /* offset */, dictFile.length(), true /* useFullEditDistance */,
+                Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
+        addUnigramWord(binaryDictionary, "abc", 10);
+        addUnigramWord(binaryDictionary, "aBc", 15);
+        assertEquals(15, binaryDictionary.getMaxFrequencyOfExactMatches("abc"));
+        addUnigramWord(binaryDictionary, "ab'c", 20);
+        assertEquals(20, binaryDictionary.getMaxFrequencyOfExactMatches("abc"));
+        addUnigramWord(binaryDictionary, "a-b-c", 25);
+        assertEquals(25, binaryDictionary.getMaxFrequencyOfExactMatches("abc"));
+        addUnigramWord(binaryDictionary, "ab-'-'-'-c", 30);
+        assertEquals(30, binaryDictionary.getMaxFrequencyOfExactMatches("abc"));
+        addUnigramWord(binaryDictionary, "ab c", 255);
+        assertEquals(30, binaryDictionary.getMaxFrequencyOfExactMatches("abc"));
+    }
 }

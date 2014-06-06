@@ -19,6 +19,7 @@
 #include "suggest/core/dictionary/dictionary.h"
 
 #include "defines.h"
+#include "suggest/core/dictionary/dictionary_utils.h"
 #include "suggest/core/policy/dictionary_header_structure_policy.h"
 #include "suggest/core/result/suggestion_results.h"
 #include "suggest/core/session/dic_traverse_session.h"
@@ -72,6 +73,12 @@ int Dictionary::getProbability(const int *word, int length) const {
         return NOT_A_PROBABILITY;
     }
     return getDictionaryStructurePolicy()->getUnigramProbabilityOfPtNode(pos);
+}
+
+int Dictionary::getMaxProbabilityOfExactMatches(const int *word, int length) const {
+    TimeKeeper::setCurrentTime();
+    return DictionaryUtils::getMaxProbabilityOfExactMatches(
+            mDictionaryStructureWithBufferPolicy.get(), word, length);
 }
 
 int Dictionary::getBigramProbability(const PrevWordsInfo *const prevWordsInfo, const int *word,
