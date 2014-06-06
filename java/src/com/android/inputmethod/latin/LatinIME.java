@@ -640,14 +640,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public void onConfigurationChanged(final Configuration conf) {
-        // If orientation changed while predicting, commit the change
         final SettingsValues settingsValues = mSettings.getCurrent();
         if (settingsValues.mDisplayOrientation != conf.orientation) {
             mHandler.startOrientationChanging();
-            mInputLogic.mConnection.beginBatchEdit();
-            mInputLogic.commitTyped(mSettings.getCurrent(), LastComposedWord.NOT_A_SEPARATOR);
-            mInputLogic.mConnection.finishComposingText();
-            mInputLogic.mConnection.endBatchEdit();
+            mInputLogic.finishInput();
         }
         PersonalizationDictionarySessionRegistrar.onConfigurationChanged(this, conf,
                 mDictionaryFacilitator);
