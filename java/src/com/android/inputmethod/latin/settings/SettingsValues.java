@@ -28,6 +28,7 @@ import com.android.inputmethod.compat.AppWorkaroundsUtils;
 import com.android.inputmethod.latin.InputAttributes;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.RichInputMethodManager;
+import com.android.inputmethod.latin.SubtypeSwitcher;
 import com.android.inputmethod.latin.utils.AsyncResultHolder;
 import com.android.inputmethod.latin.utils.ResourceUtils;
 import com.android.inputmethod.latin.utils.TargetPackageInfoGetterTask;
@@ -122,7 +123,10 @@ public final class SettingsValues {
         mKeyPreviewPopupOn = Settings.readKeyPreviewPopupEnabled(prefs, res);
         mSlidingKeyInputPreviewEnabled = prefs.getBoolean(
                 DebugSettings.PREF_SLIDING_KEY_INPUT_PREVIEW, true);
-        mShowsVoiceInputKey = needsToShowVoiceInputKey(prefs, res);
+        mShowsVoiceInputKey = needsToShowVoiceInputKey(prefs, res)
+                && !mInputAttributes.mIsPasswordField
+                && !mInputAttributes.hasNoMicrophoneKeyOption()
+                && SubtypeSwitcher.getInstance().isShortcutImeEnabled();
         final String autoCorrectionThresholdRawValue = prefs.getString(
                 Settings.PREF_AUTO_CORRECTION_THRESHOLD,
                 res.getString(R.string.auto_correction_threshold_mode_index_modest));
