@@ -42,11 +42,6 @@ public class DistracterFilterTest extends InputTestsBase {
         final Locale localeEnUs = new Locale("en", "US");
         String typedWord;
 
-        typedWord = "google";
-        // For this test case, we consider "google" is a distracter to "Google".
-        assertTrue(mDistracterFilter.isDistracterToWordsInDictionaries(
-                EMPTY_PREV_WORDS_INFO, typedWord, localeEnUs));
-
         typedWord = "Bill";
         // For this test case, we consider "Bill" is a distracter to "bill".
         assertTrue(mDistracterFilter.isDistracterToWordsInDictionaries(
@@ -83,13 +78,18 @@ public class DistracterFilterTest extends InputTestsBase {
                 EMPTY_PREV_WORDS_INFO, typedWord, localeEnUs));
 
         typedWord = "cafe";
-        // For this test case, we consider "café" is not a distracter to any word in dictionaries.
+        // For this test case, we consider "cafe" is not a distracter to any word in dictionaries.
+        assertFalse(mDistracterFilter.isDistracterToWordsInDictionaries(
+                EMPTY_PREV_WORDS_INFO, typedWord, localeEnUs));
+
+        typedWord = "I'll";
+        // For this test case, we consider "I'll" is not a distracter to any word in dictionaries.
         assertFalse(mDistracterFilter.isDistracterToWordsInDictionaries(
                 EMPTY_PREV_WORDS_INFO, typedWord, localeEnUs));
 
         typedWord = "ill";
-        // For this test case, we consider "ill" is not a distracter to any word in dictionaries.
-        assertFalse(mDistracterFilter.isDistracterToWordsInDictionaries(
+        // For this test case, we consider "ill" is a distracter to "I'll"
+        assertTrue(mDistracterFilter.isDistracterToWordsInDictionaries(
                 EMPTY_PREV_WORDS_INFO, typedWord, localeEnUs));
 
         typedWord = "asdfd";
@@ -101,8 +101,51 @@ public class DistracterFilterTest extends InputTestsBase {
         typedWord = "thank";
         // For this test case, we consider "thank" is not a distracter to any other word
         // in dictionaries.
-        assertFalse(
-                mDistracterFilter.isDistracterToWordsInDictionaries(
-                        EMPTY_PREV_WORDS_INFO, typedWord, localeEnUs));
+        assertFalse(mDistracterFilter.isDistracterToWordsInDictionaries(
+                EMPTY_PREV_WORDS_INFO, typedWord, localeEnUs));
+
+        final Locale localeDeDe = new Locale("de", "DE");
+
+        typedWord = "fuer";
+        // For this test case, we consider "fuer" is a distracter to "für".
+        assertTrue(mDistracterFilter.isDistracterToWordsInDictionaries(
+                EMPTY_PREV_WORDS_INFO, typedWord, localeDeDe));
+
+        typedWord = "fUEr";
+        // For this test case, we consider "fUEr" is a distracter to "für".
+        assertTrue(mDistracterFilter.isDistracterToWordsInDictionaries(
+                EMPTY_PREV_WORDS_INFO, typedWord, localeDeDe));
+
+        typedWord = "fur";
+        // For this test case, we consider "fur" is a distracter to "für".
+        assertTrue(mDistracterFilter.isDistracterToWordsInDictionaries(
+                EMPTY_PREV_WORDS_INFO, typedWord, localeDeDe));
+
+        final Locale localeFrFr = new Locale("fr", "FR");
+
+        typedWord = "a";
+        // For this test case, we consider "a" is a distracter to "à".
+        assertTrue(mDistracterFilter.isDistracterToWordsInDictionaries(
+                EMPTY_PREV_WORDS_INFO, typedWord, localeFrFr));
+
+        typedWord = "à";
+        // For this test case, we consider "à" is not a distracter to any word in dictionaries.
+        assertFalse(mDistracterFilter.isDistracterToWordsInDictionaries(
+                EMPTY_PREV_WORDS_INFO, typedWord, localeFrFr));
+
+        typedWord = "etre";
+        // For this test case, we consider "etre" is a distracter to "être".
+        assertTrue(mDistracterFilter.isDistracterToWordsInDictionaries(
+                EMPTY_PREV_WORDS_INFO, typedWord, localeFrFr));
+
+        typedWord = "États-unis";
+        // For this test case, we consider "États-unis" is a distracter to "États-Unis".
+        assertTrue(mDistracterFilter.isDistracterToWordsInDictionaries(
+                EMPTY_PREV_WORDS_INFO, typedWord, localeFrFr));
+
+        typedWord = "ÉtatsUnis";
+        // For this test case, we consider "ÉtatsUnis" is a distracter to "États-Unis".
+        assertTrue(mDistracterFilter.isDistracterToWordsInDictionaries(
+                EMPTY_PREV_WORDS_INFO, typedWord, localeFrFr));
     }
 }
