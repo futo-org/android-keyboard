@@ -109,7 +109,8 @@ public final class SettingsValues {
 
         // Store the input attributes
         if (null == inputAttributes) {
-            mInputAttributes = new InputAttributes(null, false /* isFullscreenMode */);
+            mInputAttributes = new InputAttributes(
+                    null, false /* isFullscreenMode */, context.getPackageName());
         } else {
             mInputAttributes = inputAttributes;
         }

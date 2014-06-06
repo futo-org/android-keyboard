@@ -522,7 +522,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     void loadSettings() {
         final Locale locale = mSubtypeSwitcher.getCurrentSubtypeLocale();
         final EditorInfo editorInfo = getCurrentInputEditorInfo();
-        final InputAttributes inputAttributes = new InputAttributes(editorInfo, isFullscreenMode());
+        final InputAttributes inputAttributes = new InputAttributes(
+                editorInfo, isFullscreenMode(), getPackageName());
         mSettings.loadSettings(this, locale, inputAttributes);
         final SettingsValues currentSettingsValues = mSettings.getCurrent();
         AudioAndHapticFeedbackManager.getInstance().onSettingsChanged(currentSettingsValues);

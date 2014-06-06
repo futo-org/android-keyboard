@@ -114,13 +114,13 @@ public abstract class KeyboardLayoutSetTestsBase extends AndroidTestCase {
 
     protected final KeyboardLayoutSet createKeyboardLayoutSet(final InputMethodSubtype subtype,
             final EditorInfo editorInfo) {
-        return createKeyboardLayoutSet(subtype, editorInfo, false /* isShortcutImeEnabled */,
-                false /* showsVoiceInputKey */, false /* isLanguageSwitchKeyEnabled */);
+        return createKeyboardLayoutSet(subtype, editorInfo, false /* voiceInputKeyEnabled */,
+                false /* languageSwitchKeyEnabled */);
     }
 
     protected final KeyboardLayoutSet createKeyboardLayoutSet(final InputMethodSubtype subtype,
-            final EditorInfo editorInfo, final boolean isShortcutImeEnabled,
-            final boolean showsVoiceInputKey, final boolean isLanguageSwitchKeyEnabled) {
+            final EditorInfo editorInfo, final boolean voiceInputKeyEnabled,
+            final boolean languageSwitchKeyEnabled) {
         final Context context = mThemeContext;
         final Resources res = context.getResources();
         final int keyboardWidth = ResourceUtils.getDefaultKeyboardWidth(res);
@@ -128,7 +128,8 @@ public abstract class KeyboardLayoutSetTestsBase extends AndroidTestCase {
         final Builder builder = new Builder(context, editorInfo);
         builder.setKeyboardGeometry(keyboardWidth, keyboardHeight)
                 .setSubtype(subtype)
-                .setOptions(isShortcutImeEnabled, showsVoiceInputKey, isLanguageSwitchKeyEnabled);
+                .setVoiceInputKeyEnabled(voiceInputKeyEnabled)
+                .setLanguageSwitchKeyEnabled(languageSwitchKeyEnabled);
         return builder.build();
     }
 }
