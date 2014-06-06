@@ -48,7 +48,7 @@ namespace latinime {
 ///////////////////////////////////
 // Traverse node expansion utils //
 ///////////////////////////////////
-/* static */ void DicNodeUtils::getAllChildDicNodes(DicNode *dicNode,
+/* static */ void DicNodeUtils::getAllChildDicNodes(const DicNode *dicNode,
         const DictionaryStructureWithBufferPolicy *const dictionaryStructurePolicy,
         DicNodeVector *const childDicNodes) {
     if (dicNode->isTotalInputSizeExceedingLimit()) {

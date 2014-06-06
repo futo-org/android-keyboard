@@ -52,7 +52,7 @@ class DicNodeVector {
         return static_cast<int>(mDicNodes.size());
     }
 
-    void pushPassingChild(DicNode *dicNode) {
+    void pushPassingChild(const DicNode *dicNode) {
         ASSERT(!mLock);
         mDicNodes.emplace_back();
         mDicNodes.back().initAsPassingChild(dicNode);

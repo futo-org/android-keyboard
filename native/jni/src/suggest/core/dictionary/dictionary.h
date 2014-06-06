@@ -73,6 +73,8 @@ class Dictionary {
 
     int getProbability(const int *word, int length) const;
 
+    int getMaxProbabilityOfExactMatches(const int *word, int length) const;
+
     int getBigramProbability(const PrevWordsInfo *const prevWordsInfo,
             const int *word, int length) const;
 
