@@ -24,6 +24,7 @@ import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardId;
 import com.android.inputmethod.keyboard.KeyboardLayoutSet;
 import com.android.inputmethod.keyboard.KeyboardLayoutSetTestsBase;
+import com.android.inputmethod.keyboard.KeyboardTheme;
 import com.android.inputmethod.keyboard.layout.LayoutBase;
 import com.android.inputmethod.keyboard.layout.expected.AbstractLayoutBase;
 import com.android.inputmethod.keyboard.layout.expected.ActualKeyboardBuilder;
@@ -55,6 +56,11 @@ abstract class LayoutTestsBase extends KeyboardLayoutSetTestsBase {
         mKeyboardLayoutSet = createKeyboardLayoutSet(mSubtype, null /* editorInfo */,
                 true /* isShortcutImeEnabled */, true /* showsVoiceInputKey */,
                 true /* isLanguageSwitchKeyEnabled */);
+    }
+
+    @Override
+    protected int getKeyboardThemeForTests() {
+        return KeyboardTheme.THEME_ID_KLP;
     }
 
     // Those helper methods have a lower case name to be readable when defining expected keyboard
