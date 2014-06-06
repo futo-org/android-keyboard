@@ -28,6 +28,7 @@ LATIN_IME_CORE_SRC_FILES := \
     $(addprefix suggest/core/dictionary/, \
         bigram_dictionary.cpp \
         dictionary.cpp \
+        dictionary_utils.cpp \
         digraph_utils.cpp \
         error_type_utils.cpp \
         multi_bigram_map.cpp \

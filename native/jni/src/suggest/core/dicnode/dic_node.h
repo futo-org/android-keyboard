@@ -125,7 +125,7 @@ class DicNode {
         PROF_NODE_COPY(&dicNode->mProfiler, mProfiler);
     }
 
-    void initAsPassingChild(DicNode *parentDicNode) {
+    void initAsPassingChild(const DicNode *parentDicNode) {
         mIsCachedForNextSuggestion = parentDicNode->mIsCachedForNextSuggestion;
         const int codePoint =
                 parentDicNode->mDicNodeState.mDicNodeStateOutput.getCurrentWordCodePointAt(

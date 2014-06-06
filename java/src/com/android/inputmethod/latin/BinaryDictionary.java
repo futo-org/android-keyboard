@@ -356,6 +356,7 @@ public final class BinaryDictionary extends Dictionary {
         return getProbabilityNative(mNativeDict, codePoints);
     }
 
+    @Override
     public int getMaxFrequencyOfExactMatches(final String word) {
         if (TextUtils.isEmpty(word)) return NOT_A_PROBABILITY;
         int[] codePoints = StringUtils.toCodePointArray(word);

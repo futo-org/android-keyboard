@@ -35,7 +35,7 @@ class DicNodeUtils {
             const DictionaryStructureWithBufferPolicy *const dictionaryStructurePolicy,
             const DicNode *const prevWordLastDicNode, DicNode *const newRootDicNode);
     static void initByCopy(const DicNode *const srcDicNode, DicNode *const destDicNode);
-    static void getAllChildDicNodes(DicNode *dicNode,
+    static void getAllChildDicNodes(const DicNode *dicNode,
             const DictionaryStructureWithBufferPolicy *const dictionaryStructurePolicy,
             DicNodeVector *childDicNodes);
     static float getBigramNodeImprobability(

@@ -280,8 +280,7 @@ static jint latinime_BinaryDictionary_getMaxProbabilityOfExactMatches(
     const jsize wordLength = env->GetArrayLength(word);
     int codePoints[wordLength];
     env->GetIntArrayRegion(word, 0, wordLength, codePoints);
-    // TODO: Implement.
-    return NOT_A_PROBABILITY;
+    return dictionary->getMaxProbabilityOfExactMatches(codePoints, wordLength);
 }
 
 static jint latinime_BinaryDictionary_getBigramProbability(JNIEnv *env, jclass clazz,
