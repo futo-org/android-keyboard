@@ -29,9 +29,14 @@ import com.android.inputmethod.latin.utils.RunInLocale;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 
 @MediumTest
-public final class KeyboardLayoutSetActionLabelTests extends KeyboardLayoutSetTestsBase {
+public class KeyboardLayoutSetActionLabelKlpTests extends KeyboardLayoutSetTestsBase {
+    @Override
+    protected int getKeyboardThemeForTests() {
+        return KeyboardTheme.THEME_ID_KLP;
+    }
+
     private static void doTestActionKey(final String tag, final KeyboardLayoutSet layoutSet,
-            final int elementId, final String label, final int iconId) {
+            final int elementId, final CharSequence label, final int iconId) {
         final Keyboard keyboard = layoutSet.getKeyboard(elementId);
         final Key enterKey = keyboard.getKey(Constants.CODE_ENTER);
         assertNotNull(tag + " enter key on " + keyboard.mId, enterKey);
@@ -39,7 +44,7 @@ public final class KeyboardLayoutSetActionLabelTests extends KeyboardLayoutSetTe
         assertEquals(tag + " enter icon " + enterKey, iconId, enterKey.getIconId());
     }
 
-    private void doTestActionLabel(final String tag, final InputMethodSubtype subtype,
+    protected void doTestActionLabel(final String tag, final InputMethodSubtype subtype,
             final int actionId, final int labelResId) {
         final EditorInfo editorInfo = new EditorInfo();
         editorInfo.imeOptions = actionId;
@@ -57,6 +62,11 @@ public final class KeyboardLayoutSetActionLabelTests extends KeyboardLayoutSetTe
         } else {
             label = job.runInLocale(res, SubtypeLocaleUtils.getSubtypeLocale(subtype));
         }
+        doTestActionLabel(tag, subtype, editorInfo, label);
+    }
+
+    protected void doTestActionLabel(final String tag, final InputMethodSubtype subtype,
+            final EditorInfo editorInfo, final CharSequence label) {
         // Test text layouts.
         editorInfo.inputType = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL;
         final KeyboardLayoutSet layoutSet = createKeyboardLayoutSet(subtype, editorInfo);
@@ -82,7 +92,7 @@ public final class KeyboardLayoutSetActionLabelTests extends KeyboardLayoutSetTe
                 label, KeyboardIconsSet.ICON_UNDEFINED);
     }
 
-    private void doTestActionKeyIcon(final String tag, final InputMethodSubtype subtype,
+    protected void doTestActionKeyIcon(final String tag, final InputMethodSubtype subtype,
             final int actionId, final String iconName) {
         final int iconId = KeyboardIconsSet.getIconId(iconName);
         final EditorInfo editorInfo = new EditorInfo();
@@ -111,14 +121,16 @@ public final class KeyboardLayoutSetActionLabelTests extends KeyboardLayoutSetTe
         for (final InputMethodSubtype subtype : getAllSubtypesList()) {
             final String tag = "unspecifiled "
                     + SubtypeLocaleUtils.getSubtypeNameForLogging(subtype);
-            doTestActionKeyIcon(tag, subtype, EditorInfo.IME_ACTION_UNSPECIFIED, "enter_key");
+            doTestActionKeyIcon(tag, subtype, EditorInfo.IME_ACTION_UNSPECIFIED,
+                    KeyboardIconsSet.NAME_ENTER_KEY);
         }
     }
 
     public void testActionNone() {
         for (final InputMethodSubtype subtype : getAllSubtypesList()) {
             final String tag = "none " + SubtypeLocaleUtils.getSubtypeNameForLogging(subtype);
-            doTestActionKeyIcon(tag, subtype, EditorInfo.IME_ACTION_NONE, "enter_key");
+            doTestActionKeyIcon(tag, subtype, EditorInfo.IME_ACTION_NONE,
+                    KeyboardIconsSet.NAME_ENTER_KEY);
         }
     }
 
@@ -132,7 +144,8 @@ public final class KeyboardLayoutSetActionLabelTests extends KeyboardLayoutSetTe
     public void testActionSearch() {
         for (final InputMethodSubtype subtype : getAllSubtypesList()) {
             final String tag = "search " + SubtypeLocaleUtils.getSubtypeNameForLogging(subtype);
-            doTestActionKeyIcon(tag, subtype, EditorInfo.IME_ACTION_SEARCH, "search_key");
+            doTestActionKeyIcon(tag, subtype, EditorInfo.IME_ACTION_SEARCH,
+                    KeyboardIconsSet.NAME_SEARCH_KEY);
         }
     }
 
@@ -162,6 +175,17 @@ public final class KeyboardLayoutSetActionLabelTests extends KeyboardLayoutSetTe
             final String tag = "previous " + SubtypeLocaleUtils.getSubtypeNameForLogging(subtype);
             doTestActionLabel(
                     tag, subtype, EditorInfo.IME_ACTION_PREVIOUS, R.string.label_previous_key);
+        }
+    }
+
+    public void testActionCustom() {
+        for (final InputMethodSubtype subtype : getAllSubtypesList()) {
+            final String tag = "custom " + SubtypeLocaleUtils.getSubtypeNameForLogging(subtype);
+            final CharSequence customLabel = "customLabel";
+            final EditorInfo editorInfo = new EditorInfo();
+            editorInfo.imeOptions = EditorInfo.IME_ACTION_UNSPECIFIED;
+            editorInfo.actionLabel = customLabel;
+            doTestActionLabel(tag, subtype, editorInfo, customLabel);
         }
     }
 }

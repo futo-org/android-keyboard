@@ -29,6 +29,11 @@ public class KeyboardLayoutSetSubtypesCountTests extends KeyboardLayoutSetTestsB
     private static final int NUMBER_OF_ASCII_CAPABLE_SUBTYPES = 45;
     private static final int NUMBER_OF_PREDEFINED_ADDITIONAL_SUBTYPES = 2;
 
+    @Override
+    protected int getKeyboardThemeForTests() {
+        return KeyboardTheme.THEME_ID_KLP;
+    }
+
     private static String toString(final ArrayList<InputMethodSubtype> subtypeList) {
         final StringBuilder sb = new StringBuilder();
         for (int index = 0; index < subtypeList.size(); index++) {

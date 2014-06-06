@@ -21,46 +21,43 @@ import android.os.Build;
 import android.os.Build.VERSION_CODES;
 import android.util.Log;
 
+import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.R;
 
 import java.util.Arrays;
-import java.util.Comparator;
 
-public final class KeyboardTheme {
+public final class KeyboardTheme implements Comparable<KeyboardTheme> {
     private static final String TAG = KeyboardTheme.class.getSimpleName();
 
     static final String KLP_KEYBOARD_THEME_KEY = "pref_keyboard_layout_20110916";
     static final String LXX_KEYBOARD_THEME_KEY = "pref_keyboard_theme_20140509";
 
-    static final int THEME_ID_ICS = 0;
-    static final int THEME_ID_KLP = 2;
-    static final int THEME_ID_LXX_DARK = 3;
-    static final int DEFAULT_THEME_ID = THEME_ID_KLP;
+    public static final int THEME_ID_ICS = 0;
+    public static final int THEME_ID_KLP = 2;
+    public static final int THEME_ID_LXX_DARK = 3;
+    public static final int DEFAULT_THEME_ID = THEME_ID_KLP;
 
     private static final KeyboardTheme[] KEYBOARD_THEMES = {
         new KeyboardTheme(THEME_ID_ICS, R.style.KeyboardTheme_ICS,
+                // This has never been selected because we support ICS or later.
                 VERSION_CODES.BASE),
         new KeyboardTheme(THEME_ID_KLP, R.style.KeyboardTheme_KLP,
+                // Default theme for ICS, JB, and KLP.
                 VERSION_CODES.ICE_CREAM_SANDWICH),
         new KeyboardTheme(THEME_ID_LXX_DARK, R.style.KeyboardTheme_LXX_Dark,
+                // Default theme for LXX.
                 // TODO: Update this constant once the *next* version becomes available.
                 VERSION_CODES.CUR_DEVELOPMENT),
     };
+
     static {
         // Sort {@link #KEYBOARD_THEME} by descending order of {@link #mMinApiVersion}.
-        Arrays.sort(KEYBOARD_THEMES, new Comparator<KeyboardTheme>() {
-            @Override
-            public int compare(final KeyboardTheme lhs, final KeyboardTheme rhs) {
-                if (lhs.mMinApiVersion > rhs.mMinApiVersion) return -1;
-                if (lhs.mMinApiVersion < rhs.mMinApiVersion) return 1;
-                return 0;
-            }
-        });
+        Arrays.sort(KEYBOARD_THEMES);
     }
 
     public final int mThemeId;
     public final int mStyleId;
-    final int mMinApiVersion;
+    private final int mMinApiVersion;
 
     // Note: The themeId should be aligned with "themeId" attribute of Keyboard style
     // in values/themes-<style>.xml.
@@ -68,6 +65,13 @@ public final class KeyboardTheme {
         mThemeId = themeId;
         mStyleId = styleId;
         mMinApiVersion = minApiVersion;
+    }
+
+    @Override
+    public int compareTo(final KeyboardTheme rhs) {
+        if (mMinApiVersion > rhs.mMinApiVersion) return -1;
+        if (mMinApiVersion < rhs.mMinApiVersion) return 1;
+        return 0;
     }
 
     @Override
@@ -81,7 +85,8 @@ public final class KeyboardTheme {
         return mThemeId;
     }
 
-    private static KeyboardTheme searchKeyboardThemeById(final int themeId) {
+    @UsedForTesting
+    static KeyboardTheme searchKeyboardThemeById(final int themeId) {
         // TODO: This search algorithm isn't optimal if there are many themes.
         for (final KeyboardTheme theme : KEYBOARD_THEMES) {
             if (theme.mThemeId == themeId) {
@@ -100,6 +105,7 @@ public final class KeyboardTheme {
         return sdkVersion;
     }
 
+    @UsedForTesting
     static KeyboardTheme getDefaultKeyboardTheme(final SharedPreferences prefs,
             final int sdkVersion) {
         final String klpThemeIdString = prefs.getString(KLP_KEYBOARD_THEME_KEY, null);
@@ -134,6 +140,7 @@ public final class KeyboardTheme {
         saveKeyboardThemeId(themeIdString, prefs, getSdkVersion());
     }
 
+    @UsedForTesting
     static String getPreferenceKey(final int sdkVersion) {
         if (sdkVersion <= VERSION_CODES.KITKAT) {
             return KLP_KEYBOARD_THEME_KEY;
@@ -141,8 +148,9 @@ public final class KeyboardTheme {
         return LXX_KEYBOARD_THEME_KEY;
     }
 
-    static void saveKeyboardThemeId(final String themeIdString, final SharedPreferences prefs,
-            final int sdkVersion) {
+    @UsedForTesting
+    static void saveKeyboardThemeId(final String themeIdString,
+            final SharedPreferences prefs, final int sdkVersion) {
         final String prefKey = getPreferenceKey(sdkVersion);
         prefs.edit().putString(prefKey, themeIdString).apply();
     }
@@ -151,6 +159,7 @@ public final class KeyboardTheme {
         return getKeyboardTheme(prefs, getSdkVersion());
     }
 
+    @UsedForTesting
     static KeyboardTheme getKeyboardTheme(final SharedPreferences prefs, final int sdkVersion) {
         final String lxxThemeIdString = prefs.getString(LXX_KEYBOARD_THEME_KEY, null);
         if (lxxThemeIdString == null) {
