@@ -56,10 +56,18 @@ public final class MoreSuggestionsView extends MoreKeysKeyboardView {
         super.setKeyboard(keyboard);
         // With accessibility mode off, {@link #mAccessibilityDelegate} is set to null at the
         // above {@link MoreKeysKeyboardView#setKeyboard(Keyboard)} call.
+        // With accessibility mode on, {@link #mAccessibilityDelegate} is set to a
+        // {@link MoreKeysKeyboardAccessibilityDelegate} object at the above
+        // {@link MoreKeysKeyboardView#setKeyboard(Keyboard)} call. And the object has to be
+        // overwritten by a {@link MoreSuggestionsAccessibilityDelegate} object here.
         if (AccessibilityUtils.getInstance().isAccessibilityEnabled()) {
-            mAccessibilityDelegate = new MoreSuggestionsAccessibilityDelegate(this, mKeyDetector);
-            mAccessibilityDelegate.setOpenAnnounce(R.string.spoken_open_more_suggestions);
-            mAccessibilityDelegate.setCloseAnnounce(R.string.spoken_close_more_suggestions);
+            if (!(mAccessibilityDelegate instanceof MoreSuggestionsAccessibilityDelegate)) {
+                mAccessibilityDelegate = new MoreSuggestionsAccessibilityDelegate(
+                        this, mKeyDetector);
+                mAccessibilityDelegate.setOpenAnnounce(R.string.spoken_open_more_suggestions);
+                mAccessibilityDelegate.setCloseAnnounce(R.string.spoken_close_more_suggestions);
+            }
+            mAccessibilityDelegate.setKeyboard(keyboard);
         }
     }
 

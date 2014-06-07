@@ -55,7 +55,7 @@ final class EmojiPageKeyboardView extends KeyboardView implements
     private OnKeyEventListener mListener = EMPTY_LISTENER;
     private final KeyDetector mKeyDetector = new KeyDetector();
     private final GestureDetector mGestureDetector;
-    private final KeyboardAccessibilityDelegate<EmojiPageKeyboardView> mAccessibilityDelegate;
+    private KeyboardAccessibilityDelegate<EmojiPageKeyboardView> mAccessibilityDelegate;
 
     public EmojiPageKeyboardView(final Context context, final AttributeSet attrs) {
         this(context, attrs, R.attr.keyboardViewStyle);
@@ -67,7 +67,6 @@ final class EmojiPageKeyboardView extends KeyboardView implements
         mGestureDetector = new GestureDetector(context, this);
         mGestureDetector.setIsLongpressEnabled(false /* isLongpressEnabled */);
         mHandler = new Handler();
-        mAccessibilityDelegate = new KeyboardAccessibilityDelegate<>(this, mKeyDetector);
     }
 
     public void setOnKeyEventListener(final OnKeyEventListener listener) {
@@ -81,6 +80,14 @@ final class EmojiPageKeyboardView extends KeyboardView implements
     public void setKeyboard(final Keyboard keyboard) {
         super.setKeyboard(keyboard);
         mKeyDetector.setKeyboard(keyboard, 0 /* correctionX */, 0 /* correctionY */);
+        if (AccessibilityUtils.getInstance().isAccessibilityEnabled()) {
+            if (mAccessibilityDelegate == null) {
+                mAccessibilityDelegate = new KeyboardAccessibilityDelegate<>(this, mKeyDetector);
+            }
+            mAccessibilityDelegate.setKeyboard(keyboard);
+        } else {
+            mAccessibilityDelegate = null;
+        }
     }
 
     /**
@@ -88,8 +95,10 @@ final class EmojiPageKeyboardView extends KeyboardView implements
      */
     @Override
     public boolean onHoverEvent(final MotionEvent event) {
-        if (AccessibilityUtils.getInstance().isTouchExplorationEnabled()) {
-            return mAccessibilityDelegate.onHoverEvent(event);
+        final KeyboardAccessibilityDelegate<EmojiPageKeyboardView> accessibilityDelegate =
+                mAccessibilityDelegate;
+        if (accessibilityDelegate != null) {
+            return accessibilityDelegate.onHoverEvent(event);
         }
         return super.onHoverEvent(event);
     }

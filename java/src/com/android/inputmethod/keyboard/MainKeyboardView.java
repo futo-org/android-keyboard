@@ -382,7 +382,9 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         mLanguageOnSpacebarTextSize = keyHeight * mLanguageOnSpacebarTextRatio;
 
         if (AccessibilityUtils.getInstance().isAccessibilityEnabled()) {
-            mAccessibilityDelegate = new MainKeyboardAccessibilityDelegate(this, mKeyDetector);
+            if (mAccessibilityDelegate == null) {
+                mAccessibilityDelegate = new MainKeyboardAccessibilityDelegate(this, mKeyDetector);
+            }
             mAccessibilityDelegate.setKeyboard(keyboard);
         } else {
             mAccessibilityDelegate = null;
