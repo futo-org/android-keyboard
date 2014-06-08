@@ -30,6 +30,7 @@ import com.android.inputmethod.latin.personalization.PersonalizationDictionary;
 import com.android.inputmethod.latin.personalization.UserHistoryDictionary;
 import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
 import com.android.inputmethod.latin.utils.DistracterFilter;
+import com.android.inputmethod.latin.utils.DistracterFilterCheckingIsInDictionary;
 import com.android.inputmethod.latin.utils.ExecutorUtils;
 import com.android.inputmethod.latin.utils.LanguageModelParam;
 import com.android.inputmethod.latin.utils.SuggestionResults;
@@ -571,14 +572,15 @@ public class DictionaryFacilitator {
             final PersonalizationDataChunk personalizationDataChunk,
             final SpacingAndPunctuations spacingAndPunctuations,
             final ExpandableBinaryDictionary.AddMultipleDictionaryEntriesCallback callback) {
+        final ExpandableBinaryDictionary personalizationDict =
+                mDictionaries.getSubDict(Dictionary.TYPE_PERSONALIZATION);
         final ArrayList<LanguageModelParam> languageModelParams =
                 LanguageModelParam.createLanguageModelParamsFrom(
                         personalizationDataChunk.mTokens,
                         personalizationDataChunk.mTimestampInSeconds,
                         this /* dictionaryFacilitator */, spacingAndPunctuations,
-                        mDistracterFilter);
-        final ExpandableBinaryDictionary personalizationDict =
-                mDictionaries.getSubDict(Dictionary.TYPE_PERSONALIZATION);
+                        new DistracterFilterCheckingIsInDictionary(
+                                mDistracterFilter, personalizationDict));
         if (personalizationDict == null || languageModelParams == null
                 || languageModelParams.isEmpty()) {
             if (callback != null) {
