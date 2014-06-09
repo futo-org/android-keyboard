@@ -17,6 +17,7 @@
 package com.android.inputmethod.accessibility;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.os.SystemClock;
 import android.util.Log;
 import android.util.SparseIntArray;
@@ -58,7 +59,8 @@ public final class MainKeyboardAccessibilityDelegate
     /** The most recently set keyboard mode. */
     private int mLastKeyboardMode = KEYBOARD_IS_HIDDEN;
     private static final int KEYBOARD_IS_HIDDEN = -1;
-    private boolean mShouldIgnoreOnRegisterHoverKey;
+    // The rectangle region to ignore hover events.
+    private final Rect mBoundsToIgnoreHoverEvent = new Rect();
 
     private final AccessibilityLongPressTimer mAccessibilityLongPressTimer;
 
@@ -192,31 +194,49 @@ public final class MainKeyboardAccessibilityDelegate
 
     @Override
     protected void onRegisterHoverKey(final Key key, final MotionEvent event) {
+        final int x = key.getHitBox().centerX();
+        final int y = key.getHitBox().centerY();
         if (DEBUG_HOVER) {
-            Log.d(TAG, "onRegisterHoverKey: key=" + key + " ignore="
-                    + mShouldIgnoreOnRegisterHoverKey);
+            Log.d(TAG, "onRegisterHoverKey: key=" + key
+                    + " inIgnoreBounds=" + mBoundsToIgnoreHoverEvent.contains(x, y));
         }
-        if (!mShouldIgnoreOnRegisterHoverKey) {
-            super.onRegisterHoverKey(key, event);
+        if (mBoundsToIgnoreHoverEvent.contains(x, y)) {
+            // This hover exit event points to the key that should be ignored.
+            // Clear the ignoring region to handle further hover events.
+            mBoundsToIgnoreHoverEvent.setEmpty();
+            return;
         }
-        mShouldIgnoreOnRegisterHoverKey = false;
+        super.onRegisterHoverKey(key, event);
     }
 
     @Override
     protected void onHoverEnterTo(final Key key) {
+        final int x = key.getHitBox().centerX();
+        final int y = key.getHitBox().centerY();
         if (DEBUG_HOVER) {
-            Log.d(TAG, "onHoverEnterTo: key=" + key);
+            Log.d(TAG, "onHoverEnterTo: key=" + key
+                    + " inIgnoreBounds=" + mBoundsToIgnoreHoverEvent.contains(x, y));
         }
         mAccessibilityLongPressTimer.cancelLongPress();
+        if (mBoundsToIgnoreHoverEvent.contains(x, y)) {
+            return;
+        }
+        // This hover enter event points to the key that isn't in the ignoring region.
+        // Further hover events should be handled.
+        mBoundsToIgnoreHoverEvent.setEmpty();
         super.onHoverEnterTo(key);
         if (key.isLongPressEnabled()) {
             mAccessibilityLongPressTimer.startLongPress(key);
         }
     }
 
+    @Override
     protected void onHoverExitFrom(final Key key) {
+        final int x = key.getHitBox().centerX();
+        final int y = key.getHitBox().centerY();
         if (DEBUG_HOVER) {
-            Log.d(TAG, "onHoverExitFrom: key=" + key);
+            Log.d(TAG, "onHoverExitFrom: key=" + key
+                    + " inIgnoreBounds=" + mBoundsToIgnoreHoverEvent.contains(x, y));
         }
         mAccessibilityLongPressTimer.cancelLongPress();
         super.onHoverExitFrom(key);
@@ -246,6 +266,24 @@ public final class MainKeyboardAccessibilityDelegate
         // or a key invokes IME switcher dialog, we should just ignore the next
         // {@link #onRegisterHoverKey(Key,MotionEvent)}. It can be determined by whether
         // {@link PointerTracker} is in operation or not.
-        mShouldIgnoreOnRegisterHoverKey = !tracker.isInOperation();
+        if (tracker.isInOperation()) {
+            // This long press shows a more keys keyboard and further hover events should be
+            // handled.
+            mBoundsToIgnoreHoverEvent.setEmpty();
+            return;
+        }
+        // This long press has handled at {@link MainKeyboardView#onLongPress(PointerTracker)}.
+        // We should ignore further hover events on this key.
+        mBoundsToIgnoreHoverEvent.set(key.getHitBox());
+        if (key.hasNoPanelAutoMoreKey()) {
+            // This long press has registered a code point without showing a more keys keyboard.
+            // We should talk back the code point if possible.
+            final int codePointOfNoPanelAutoMoreKey = key.getMoreKeys()[0].mCode;
+            final String text = KeyCodeDescriptionMapper.getInstance().getDescriptionForCodePoint(
+                    mKeyboardView.getContext(), codePointOfNoPanelAutoMoreKey);
+            if (text != null) {
+                sendWindowStateChanged(text);
+            }
+        }
     }
 }
