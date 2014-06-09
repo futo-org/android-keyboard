@@ -46,6 +46,7 @@ import com.android.inputmethod.keyboard.KeyboardView;
 import com.android.inputmethod.keyboard.internal.KeyDrawParams;
 import com.android.inputmethod.keyboard.internal.KeyVisualAttributes;
 import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
+import com.android.inputmethod.latin.AudioAndHapticFeedbackManager;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SubtypeSwitcher;
@@ -240,6 +241,8 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
 
     @Override
     public void onTabChanged(final String tabId) {
+        AudioAndHapticFeedbackManager.getInstance().performHapticAndAudioFeedback(
+                Constants.CODE_UNSPECIFIED, this);
         final int categoryId = mEmojiCategory.getCategoryId(tabId);
         setCurrentCategoryId(categoryId, false /* force */);
         updateEmojiCategoryPageIdView();

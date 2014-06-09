@@ -62,11 +62,15 @@
             android:layout_height="match_parent"
             android:background="@drawable/suggestions_strip_divider" />
         <!-- TODO: Implement KeyView and replace this. -->
+        <!-- Provide audio and haptic feedback by ourselves based on the keyboard settings.
+             We just need to ignore the system's audio and haptic feedback settings. -->
         <ImageButton
             android:id="@+id/emoji_keyboard_delete"
             android:layout_width="0dip"
             android:layout_weight="12.5"
             android:layout_height="match_parent"
+            android:hapticFeedbackEnabled="false"
+            android:soundEffectsEnabled="false"
             android:contentDescription="@string/spoken_description_delete" />
     </LinearLayout>
     <android.support.v4.view.ViewPager
@@ -85,18 +89,26 @@
         android:layout_weight="1"
     >
         <!-- TODO: Implement a KeyView and replace this. -->
+        <!-- Provide audio and haptic feedback by ourselves based on the keyboard settings.
+             We just need to ignore the system's audio and haptic feedback settings. -->
         <TextView
             android:id="@+id/emoji_keyboard_alphabet_left"
             android:layout_width="0dip"
             android:layout_weight="0.15"
             android:gravity="center"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:hapticFeedbackEnabled="false"
+            android:soundEffectsEnabled="false" />
         <!-- TODO: Implement KeyView and replace this. -->
+        <!-- Provide audio and haptic feedback by ourselves based on the keyboard settings.
+             We just need to ignore the system's audio and haptic feedback settings. -->
         <RelativeLayout
             android:id="@+id/emoji_keyboard_space"
             android:layout_width="0dip"
             android:layout_weight="0.70"
             android:layout_height="match_parent"
+            android:hapticFeedbackEnabled="false"
+            android:soundEffectsEnabled="false"
             android:contentDescription="@string/spoken_description_space">
             <!-- WORKAROUND: Show the spacebar icon as a bacground of this View. -->
             <View
@@ -108,11 +120,15 @@
                 android:layout_centerInParent="true" />
         </RelativeLayout>
         <!-- TODO: Implement KeyView and replace this. -->
+        <!-- Provide audio and haptic feedback by ourselves based on the keyboard settings.
+             We just need to ignore the system's audio and haptic feedback settings. -->
         <TextView
             android:id="@+id/emoji_keyboard_alphabet_right"
             android:layout_width="0dip"
             android:layout_weight="0.15"
             android:gravity="center"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:hapticFeedbackEnabled="false"
+            android:soundEffectsEnabled="false" />
     </LinearLayout>
 </com.android.inputmethod.keyboard.emoji.EmojiPalettesView>

@@ -16,13 +16,13 @@
 
 package com.android.inputmethod.latin;
 
-import com.android.inputmethod.latin.settings.SettingsValues;
-
 import android.content.Context;
 import android.media.AudioManager;
 import android.os.Vibrator;
 import android.view.HapticFeedbackConstants;
 import android.view.View;
+
+import com.android.inputmethod.latin.settings.SettingsValues;
 
 /**
  * This class gathers audio feedback and haptic feedback functions.
@@ -86,40 +86,41 @@ public final class AudioAndHapticFeedbackManager {
         if (mAudioManager == null) {
             return;
         }
-        if (mSoundOn) {
-            final int sound;
-            switch (code) {
-            case Constants.CODE_DELETE:
-                sound = AudioManager.FX_KEYPRESS_DELETE;
-                break;
-            case Constants.CODE_ENTER:
-                sound = AudioManager.FX_KEYPRESS_RETURN;
-                break;
-            case Constants.CODE_SPACE:
-                sound = AudioManager.FX_KEYPRESS_SPACEBAR;
-                break;
-            default:
-                sound = AudioManager.FX_KEYPRESS_STANDARD;
-                break;
-            }
-            mAudioManager.playSoundEffect(sound, mSettingsValues.mKeypressSoundVolume);
+        if (!mSoundOn) {
+            return;
         }
+        final int sound;
+        switch (code) {
+        case Constants.CODE_DELETE:
+            sound = AudioManager.FX_KEYPRESS_DELETE;
+            break;
+        case Constants.CODE_ENTER:
+            sound = AudioManager.FX_KEYPRESS_RETURN;
+            break;
+        case Constants.CODE_SPACE:
+            sound = AudioManager.FX_KEYPRESS_SPACEBAR;
+            break;
+        default:
+            sound = AudioManager.FX_KEYPRESS_STANDARD;
+            break;
+        }
+        mAudioManager.playSoundEffect(sound, mSettingsValues.mKeypressSoundVolume);
     }
 
     public void performHapticFeedback(final View viewToPerformHapticFeedbackOn) {
         if (!mSettingsValues.mVibrateOn) {
             return;
         }
-        if (mSettingsValues.mKeypressVibrationDuration < 0) {
-            // Go ahead with the system default
-            if (viewToPerformHapticFeedbackOn != null) {
-                viewToPerformHapticFeedbackOn.performHapticFeedback(
-                        HapticFeedbackConstants.KEYBOARD_TAP,
-                        HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
-            }
+        if (mSettingsValues.mKeypressVibrationDuration >= 0) {
+            vibrate(mSettingsValues.mKeypressVibrationDuration);
             return;
         }
-        vibrate(mSettingsValues.mKeypressVibrationDuration);
+        // Go ahead with the system default
+        if (viewToPerformHapticFeedbackOn != null) {
+            viewToPerformHapticFeedbackOn.performHapticFeedback(
+                    HapticFeedbackConstants.KEYBOARD_TAP,
+                    HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
+        }
     }
 
     public void onSettingsChanged(final SettingsValues settingsValues) {

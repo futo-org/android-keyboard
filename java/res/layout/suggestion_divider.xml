@@ -18,13 +18,17 @@
 */
 -->
 
+<!-- Provide audio and haptic feedback by ourselves based on the keyboard settings.
+     We just need to ignore the system's audio and haptic feedback settings. -->
 <ImageView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
+    android:padding="0dp"
+    android:gravity="center"
     android:src="@drawable/suggestions_strip_divider"
+    android:contentDescription="@null"
     android:clickable="false"
     android:longClickable="false"
-    android:contentDescription="@null"
-    android:padding="0dp"
-    android:gravity="center" />
+    android:hapticFeedbackEnabled="false"
+    android:soundEffectsEnabled="false" />

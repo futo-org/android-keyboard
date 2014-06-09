@@ -428,6 +428,8 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
 
     @Override
     public void onClick(final View view) {
+        AudioAndHapticFeedbackManager.getInstance().performHapticAndAudioFeedback(
+                Constants.CODE_UNSPECIFIED, this);
         if (view == mImportantNoticeStrip) {
             mListener.showImportantNoticeContents();
             return;
