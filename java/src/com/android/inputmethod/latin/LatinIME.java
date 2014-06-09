@@ -1374,34 +1374,15 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             callback.onGetSuggestedWords(SuggestedWords.EMPTY);
             return;
         }
-        // Get the word on which we should search the bigrams. If we are composing a word, it's
-        // whatever is *before* the half-committed word in the buffer, hence 2; if we aren't, we
-        // should just skip whitespace if any, so 1.
         final SettingsValues currentSettings = mSettings.getCurrent();
         final int[] additionalFeaturesOptions = currentSettings.mAdditionalFeaturesSettingValues;
-
-        if (DEBUG) {
-            if (mInputLogic.mWordComposer.isComposingWord()
-                    || mInputLogic.mWordComposer.isBatchMode()) {
-                final PrevWordsInfo prevWordsInfo
-                        = mInputLogic.mWordComposer.getPrevWordsInfoForSuggestion();
-                // TODO: this is for checking consistency with older versions. Remove this when
-                // we are confident this is stable.
-                // We're checking the previous word in the text field against the memorized previous
-                // word. If we are composing a word we should have the second word before the cursor
-                // memorized, otherwise we should have the first.
-                final PrevWordsInfo rereadPrevWordsInfo =
-                        mInputLogic.getPrevWordsInfoFromNthPreviousWordForSuggestion(
-                                currentSettings.mSpacingAndPunctuations,
-                                mInputLogic.mWordComposer.isComposingWord() ? 2 : 1);
-                if (!TextUtils.equals(prevWordsInfo.mPrevWord, rereadPrevWordsInfo.mPrevWord)) {
-                    throw new RuntimeException("Unexpected previous word: "
-                            + prevWordsInfo.mPrevWord + " <> " + rereadPrevWordsInfo.mPrevWord);
-                }
-            }
-        }
         mInputLogic.mSuggest.getSuggestedWords(mInputLogic.mWordComposer,
-                mInputLogic.mWordComposer.getPrevWordsInfoForSuggestion(),
+                mInputLogic.getPrevWordsInfoFromNthPreviousWordForSuggestion(
+                        currentSettings.mSpacingAndPunctuations,
+                        // Get the word on which we should search the bigrams. If we are composing
+                        // a word, it's whatever is *before* the half-committed word in the buffer,
+                        // hence 2; if we aren't, we should just skip whitespace if any, so 1.
+                        mInputLogic.mWordComposer.isComposingWord() ? 2 : 1),
                 keyboard.getProximityInfo(), currentSettings.mBlockPotentiallyOffensive,
                 currentSettings.mAutoCorrectionEnabled, additionalFeaturesOptions, sessionId,
                 sequenceNumber, callback);
