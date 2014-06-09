@@ -22,6 +22,7 @@ import java.util.concurrent.TimeUnit;
 
 import android.content.Context;
 import android.util.Log;
+import android.util.LruCache;
 import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.latin.DictionaryFacilitator;
@@ -36,9 +37,11 @@ public class DistracterFilterCheckingExactMatches implements DistracterFilter {
     private static final boolean DEBUG = false;
 
     private static final long TIMEOUT_TO_WAIT_LOADING_DICTIONARIES_IN_SECONDS = 120;
+    private static final int MAX_DISTRACTERS_CACHE_SIZE = 512;
 
     private final Context mContext;
     private final DictionaryFacilitator mDictionaryFacilitator;
+    private final LruCache<String, Boolean> mDistractersCache;
     private final Object mLock = new Object();
 
     /**
@@ -49,6 +52,7 @@ public class DistracterFilterCheckingExactMatches implements DistracterFilter {
     public DistracterFilterCheckingExactMatches(final Context context) {
         mContext = context;
         mDictionaryFacilitator = new DictionaryFacilitator();
+        mDistractersCache = new LruCache<>(MAX_DISTRACTERS_CACHE_SIZE);
     }
 
     @Override
@@ -87,6 +91,7 @@ public class DistracterFilterCheckingExactMatches implements DistracterFilter {
             synchronized (mLock) {
                 // Reset dictionaries for the locale.
                 try {
+                    mDistractersCache.evictAll();
                     loadDictionariesForLocale(locale);
                 } catch (final InterruptedException e) {
                     Log.e(TAG, "Interrupted while waiting for loading dicts in DistracterFilter",
@@ -94,6 +99,15 @@ public class DistracterFilterCheckingExactMatches implements DistracterFilter {
                     return false;
                 }
             }
+        }
+
+        final Boolean isCachedDistracter = mDistractersCache.get(testedWord);
+        if (isCachedDistracter != null && isCachedDistracter) {
+            if (DEBUG) {
+                Log.d(TAG, "testedWord: " + testedWord);
+                Log.d(TAG, "isDistracter: true (cache hit)");
+            }
+            return true;
         }
         // The tested word is a distracter when there is a word that is exact matched to the tested
         // word and its probability is higher than the tested word's probability.
@@ -105,6 +119,10 @@ public class DistracterFilterCheckingExactMatches implements DistracterFilter {
             Log.d(TAG, "perfectMatchFreq: " + perfectMatchFreq);
             Log.d(TAG, "exactMatchFreq: " + exactMatchFreq);
             Log.d(TAG, "isDistracter: " + isDistracter);
+        }
+        if (isDistracter) {
+            // Add the word to the cache.
+            mDistractersCache.put(testedWord, Boolean.TRUE);
         }
         return isDistracter;
     }
