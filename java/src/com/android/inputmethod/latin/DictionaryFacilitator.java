@@ -574,6 +574,12 @@ public class DictionaryFacilitator {
             final ExpandableBinaryDictionary.AddMultipleDictionaryEntriesCallback callback) {
         final ExpandableBinaryDictionary personalizationDict =
                 mDictionaries.getSubDict(Dictionary.TYPE_PERSONALIZATION);
+        if (personalizationDict == null) {
+            if (callback != null) {
+                callback.onFinished();
+            }
+            return;
+        }
         final ArrayList<LanguageModelParam> languageModelParams =
                 LanguageModelParam.createLanguageModelParamsFrom(
                         personalizationDataChunk.mTokens,
@@ -581,8 +587,7 @@ public class DictionaryFacilitator {
                         this /* dictionaryFacilitator */, spacingAndPunctuations,
                         new DistracterFilterCheckingIsInDictionary(
                                 mDistracterFilter, personalizationDict));
-        if (personalizationDict == null || languageModelParams == null
-                || languageModelParams.isEmpty()) {
+        if (languageModelParams == null || languageModelParams.isEmpty()) {
             if (callback != null) {
                 callback.onFinished();
             }
