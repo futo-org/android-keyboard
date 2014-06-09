@@ -163,7 +163,6 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
             word.setOnLongClickListener(this);
             mWordViews.add(word);
             final View divider = inflater.inflate(R.layout.suggestion_divider, null);
-            divider.setOnClickListener(this);
             mDividerViews.add(divider);
             final TextView info = new TextView(context, null, R.attr.suggestionWordStyle);
             info.setTextColor(Color.WHITE);
