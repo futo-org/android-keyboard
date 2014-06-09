@@ -110,7 +110,7 @@ public final class Suggest {
                 wordComposer, prevWordsInfo, proximityInfo, blockOffensiveWords,
                 additionalFeaturesOptions, SESSION_TYPING, rawSuggestions);
 
-        final boolean isFirstCharCapitalized = wordComposer.isFirstCharCapitalized();
+        final boolean isOnlyFirstCharCapitalized = wordComposer.isOnlyFirstCharCapitalized();
         // If resumed, then we don't want to upcase everything: resuming on a fully-capitalized
         // words is rarely done to switch to another fully-capitalized word, but usually to a
         // normal, non-capitalized suggestion.
@@ -122,7 +122,7 @@ public final class Suggest {
         } else {
             final SuggestedWordInfo firstSuggestedWordInfo = getTransformedSuggestedWordInfo(
                     suggestionResults.first(), suggestionResults.mLocale, isAllUpperCase,
-                    isFirstCharCapitalized, trailingSingleQuotesCount);
+                    isOnlyFirstCharCapitalized, trailingSingleQuotesCount);
             firstSuggestion = firstSuggestedWordInfo.mWord;
             if (!firstSuggestedWordInfo.isKindOf(SuggestedWordInfo.KIND_WHITELIST)) {
                 whitelistedWord = null;
@@ -142,7 +142,7 @@ public final class Suggest {
         final boolean allowsToBeAutoCorrected = (null != whitelistedWord
                 && !whitelistedWord.equals(typedWord))
                 || (consideredWord.length() > 1 && !mDictionaryFacilitator.isValidWord(
-                        consideredWord, wordComposer.isFirstCharCapitalized())
+                        consideredWord, isOnlyFirstCharCapitalized)
                         && !typedWord.equals(firstSuggestion));
 
         final boolean hasAutoCorrection;
@@ -173,12 +173,12 @@ public final class Suggest {
         final ArrayList<SuggestedWordInfo> suggestionsContainer =
                 new ArrayList<>(suggestionResults);
         final int suggestionsCount = suggestionsContainer.size();
-        if (isFirstCharCapitalized || isAllUpperCase || 0 != trailingSingleQuotesCount) {
+        if (isOnlyFirstCharCapitalized || isAllUpperCase || 0 != trailingSingleQuotesCount) {
             for (int i = 0; i < suggestionsCount; ++i) {
                 final SuggestedWordInfo wordInfo = suggestionsContainer.get(i);
                 final SuggestedWordInfo transformedWordInfo = getTransformedSuggestedWordInfo(
-                        wordInfo, suggestionResults.mLocale, isAllUpperCase, isFirstCharCapitalized,
-                        trailingSingleQuotesCount);
+                        wordInfo, suggestionResults.mLocale, isAllUpperCase,
+                        isOnlyFirstCharCapitalized, trailingSingleQuotesCount);
                 suggestionsContainer.set(i, transformedWordInfo);
             }
         }
@@ -292,11 +292,11 @@ public final class Suggest {
 
     /* package for test */ static SuggestedWordInfo getTransformedSuggestedWordInfo(
             final SuggestedWordInfo wordInfo, final Locale locale, final boolean isAllUpperCase,
-            final boolean isFirstCharCapitalized, final int trailingSingleQuotesCount) {
+            final boolean isOnlyFirstCharCapitalized, final int trailingSingleQuotesCount) {
         final StringBuilder sb = new StringBuilder(wordInfo.mWord.length());
         if (isAllUpperCase) {
             sb.append(wordInfo.mWord.toUpperCase(locale));
-        } else if (isFirstCharCapitalized) {
+        } else if (isOnlyFirstCharCapitalized) {
             sb.append(StringUtils.capitalizeFirstCodePoint(wordInfo.mWord, locale));
         } else {
             sb.append(wordInfo.mWord);
