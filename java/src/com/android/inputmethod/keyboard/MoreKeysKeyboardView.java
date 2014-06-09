@@ -77,10 +77,13 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
             // discarded at {@link InputView#dispatchHoverEvent(MotionEvent)}. Because only a hover
             // event that is on this view is dispatched by the platform, we should use a
             // {@link KeyDetector} that has no sliding allowance and no hysteresis.
-            mKeyDetector = new KeyDetector();
-            mAccessibilityDelegate = new MoreKeysKeyboardAccessibilityDelegate(this, mKeyDetector);
-            mAccessibilityDelegate.setOpenAnnounce(R.string.spoken_open_more_keys_keyboard);
-            mAccessibilityDelegate.setCloseAnnounce(R.string.spoken_close_more_keys_keyboard);
+            if (mAccessibilityDelegate == null) {
+                mKeyDetector = new KeyDetector();
+                mAccessibilityDelegate = new MoreKeysKeyboardAccessibilityDelegate(
+                        this, mKeyDetector);
+                mAccessibilityDelegate.setOpenAnnounce(R.string.spoken_open_more_keys_keyboard);
+                mAccessibilityDelegate.setCloseAnnounce(R.string.spoken_close_more_keys_keyboard);
+            }
             mAccessibilityDelegate.setKeyboard(keyboard);
         } else {
             mKeyDetector = new MoreKeysDetector(getResources().getDimension(
