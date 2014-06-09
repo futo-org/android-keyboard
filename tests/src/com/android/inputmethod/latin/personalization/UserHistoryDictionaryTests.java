@@ -134,7 +134,7 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
             dict.waitAllTasksForTests();
             for (int i = 0; i < numberOfWords; ++i) {
                 final String word = words.get(i);
-                assertTrue(dict.isInUnderlyingBinaryDictionaryForTests(word));
+                assertTrue(dict.isInDictionary(word));
             }
         }
         // write to file.
@@ -268,19 +268,19 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
                     DistracterFilter.EMPTY_DISTRACTER_FILTER);
             prevWordsInfo = new PrevWordsInfo(word);
             dict.waitAllTasksForTests();
-            assertTrue(dict.isInUnderlyingBinaryDictionaryForTests(word));
+            assertTrue(dict.isInDictionary(word));
         }
         forcePassingShortTime();
         dict.runGCIfRequired();
         dict.waitAllTasksForTests();
         for (final String word : words) {
-            assertTrue(dict.isInUnderlyingBinaryDictionaryForTests(word));
+            assertTrue(dict.isInDictionary(word));
         }
         forcePassingLongTime();
         dict.runGCIfRequired();
         dict.waitAllTasksForTests();
         for (final String word : words) {
-            assertFalse(dict.isInUnderlyingBinaryDictionaryForTests(word));
+            assertFalse(dict.isInDictionary(word));
         }
     }
 }

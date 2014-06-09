@@ -38,10 +38,4 @@ public class PersonalizationDictionary extends DecayingExpandableBinaryDictionar
             final Locale locale, final File dictFile) {
         return PersonalizationHelper.getPersonalizationDictionary(context, locale);
     }
-
-    @Override
-    public boolean isValidWord(final String word) {
-        // Strings out of this dictionary should not be considered existing words.
-        return false;
-    }
 }

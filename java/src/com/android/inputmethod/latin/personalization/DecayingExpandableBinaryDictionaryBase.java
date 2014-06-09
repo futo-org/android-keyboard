@@ -80,4 +80,10 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
     /* package */ void runGCIfRequired() {
         runGCIfRequired(false /* mindsBlockByGC */);
     }
+
+    @Override
+    public boolean isValidWord(final String word) {
+        // Strings out of this dictionary should not be considered existing words.
+        return false;
+    }
 }

@@ -47,9 +47,9 @@ public final class SynchronouslyLoadedContactsBinaryDictionary extends ContactsB
     }
 
     @Override
-    public boolean isValidWord(final String word) {
+    public boolean isInDictionary(final String word) {
         synchronized (mLock) {
-            return super.isValidWord(word);
+            return super.isInDictionary(word);
         }
     }
 }
