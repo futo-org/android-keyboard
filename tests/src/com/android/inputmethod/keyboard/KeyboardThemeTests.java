@@ -83,10 +83,14 @@ public class KeyboardThemeTests extends AndroidTestCase {
      * Test keyboard theme preference on the same platform version and the same keyboard version.
      */
 
-    private void assertKeyboardThemePreference(final int sdkVersion, final int oldThemeId,
+    private void assertKeyboardThemePreference(final int sdkVersion, final int previousThemeId,
             final int expectedThemeId) {
+        // Clear preferences before testing.
+        setKeyboardThemePreference(KeyboardTheme.KLP_KEYBOARD_THEME_KEY, THEME_ID_NULL);
+        setKeyboardThemePreference(KeyboardTheme.LXX_KEYBOARD_THEME_KEY, THEME_ID_NULL);
+        // Set the preference of the sdkVersion to previousThemeId.
         final String prefKey = KeyboardTheme.getPreferenceKey(sdkVersion);
-        setKeyboardThemePreference(prefKey, oldThemeId);
+        setKeyboardThemePreference(prefKey, previousThemeId);
         assertKeyboardTheme(sdkVersion, expectedThemeId);
     }
 
@@ -127,10 +131,10 @@ public class KeyboardThemeTests extends AndroidTestCase {
      * Test default keyboard theme based on the platform version.
      */
 
-    private void assertDefaultKeyboardTheme(final int sdkVersion, final int oldThemeId,
+    private void assertDefaultKeyboardTheme(final int sdkVersion, final int previousThemeId,
             final int expectedThemeId) {
         final String oldPrefKey = KeyboardTheme.KLP_KEYBOARD_THEME_KEY;
-        setKeyboardThemePreference(oldPrefKey, oldThemeId);
+        setKeyboardThemePreference(oldPrefKey, previousThemeId);
 
         final KeyboardTheme defaultTheme =
                 KeyboardTheme.getDefaultKeyboardTheme(mPrefs, sdkVersion);
@@ -139,7 +143,7 @@ public class KeyboardThemeTests extends AndroidTestCase {
         assertEquals(expectedThemeId, defaultTheme.mThemeId);
         if (sdkVersion <= VERSION_CODES.KITKAT) {
             // Old preference must be retained if it is valid. Otherwise it must be pruned.
-            assertEquals(isValidKeyboardThemeId(oldThemeId), mPrefs.contains(oldPrefKey));
+            assertEquals(isValidKeyboardThemeId(previousThemeId), mPrefs.contains(oldPrefKey));
             return;
         }
         // Old preference must be removed.
@@ -181,9 +185,9 @@ public class KeyboardThemeTests extends AndroidTestCase {
      * to the keyboard that supports LXX theme.
      */
 
-    private void assertUpgradeKeyboardToLxxOn(final int sdkVersion, final int oldThemeId,
+    private void assertUpgradeKeyboardToLxxOn(final int sdkVersion, final int previousThemeId,
             final int expectedThemeId) {
-        setKeyboardThemePreference(KeyboardTheme.KLP_KEYBOARD_THEME_KEY, oldThemeId);
+        setKeyboardThemePreference(KeyboardTheme.KLP_KEYBOARD_THEME_KEY, previousThemeId);
         // Clean up new keyboard theme preference to simulate "upgrade to LXX keyboard".
         setKeyboardThemePreference(KeyboardTheme.LXX_KEYBOARD_THEME_KEY, THEME_ID_NULL);
 
@@ -195,9 +199,9 @@ public class KeyboardThemeTests extends AndroidTestCase {
             // New preference must not exist.
             assertFalse(mPrefs.contains(KeyboardTheme.LXX_KEYBOARD_THEME_KEY));
             // Old preference must be retained if it is valid. Otherwise it must be pruned.
-            assertEquals(isValidKeyboardThemeId(oldThemeId),
+            assertEquals(isValidKeyboardThemeId(previousThemeId),
                     mPrefs.contains(KeyboardTheme.KLP_KEYBOARD_THEME_KEY));
-            if (isValidKeyboardThemeId(oldThemeId)) {
+            if (isValidKeyboardThemeId(previousThemeId)) {
                 // Old preference must have an expected value.
                 assertEquals(mPrefs.getString(KeyboardTheme.KLP_KEYBOARD_THEME_KEY, null),
                         Integer.toString(expectedThemeId));
@@ -247,7 +251,7 @@ public class KeyboardThemeTests extends AndroidTestCase {
      */
 
     private void assertUpgradePlatformFromTo(final int oldSdkVersion, final int newSdkVersion,
-            final int oldThemeId, final int expectedThemeId) {
+            final int previousThemeId, final int expectedThemeId) {
         if (newSdkVersion < oldSdkVersion) {
             // No need to test.
             return;
@@ -257,7 +261,7 @@ public class KeyboardThemeTests extends AndroidTestCase {
         setKeyboardThemePreference(KeyboardTheme.LXX_KEYBOARD_THEME_KEY, THEME_ID_NULL);
 
         final String oldPrefKey = KeyboardTheme.getPreferenceKey(oldSdkVersion);
-        setKeyboardThemePreference(oldPrefKey, oldThemeId);
+        setKeyboardThemePreference(oldPrefKey, previousThemeId);
 
         assertKeyboardTheme(newSdkVersion, expectedThemeId);
     }
