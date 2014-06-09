@@ -379,10 +379,9 @@ final class SuggestionStripLayoutHelper {
         } else {
             wordView.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
         }
-
-        // Disable this suggestion if the suggestion is null or empty.
-        // TODO: Fix disabled {@link TextView}'s content description.
-        wordView.setEnabled(!TextUtils.isEmpty(word));
+        // {@link StyleSpan} in a content description may cause an issue of TTS/TalkBack.
+        // Use a simple {@link String} to avoid the issue.
+        wordView.setContentDescription(TextUtils.isEmpty(word) ? null : word.toString());
         final CharSequence text = getEllipsizedText(word, width, wordView.getPaint());
         final float scaleX = getTextScaleX(word, width, wordView.getPaint());
         wordView.setText(text); // TextView.setText() resets text scale x to 1.0.
@@ -461,14 +460,15 @@ final class SuggestionStripLayoutHelper {
             }
 
             final TextView wordView = mWordViews.get(positionInStrip);
-            wordView.setEnabled(true);
-            wordView.setTextColor(mColorAutoCorrect);
+            final String punctuation = punctuationSuggestions.getLabel(positionInStrip);
             // {@link TextView#getTag()} is used to get the index in suggestedWords at
             // {@link SuggestionStripView#onClick(View)}.
             wordView.setTag(positionInStrip);
-            wordView.setText(punctuationSuggestions.getLabel(positionInStrip));
+            wordView.setText(punctuation);
+            wordView.setContentDescription(punctuation);
             wordView.setTextScaleX(1.0f);
             wordView.setCompoundDrawables(null, null, null, null);
+            wordView.setTextColor(mColorAutoCorrect);
             stripView.addView(wordView);
             setLayoutWeight(wordView, 1.0f, mSuggestionsStripHeight);
         }
