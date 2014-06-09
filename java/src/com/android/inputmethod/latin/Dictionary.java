@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.latin;
 
+import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 
@@ -85,11 +86,19 @@ public abstract class Dictionary {
             final int sessionId, final float[] inOutLanguageWeight);
 
     /**
-     * Checks if the given word occurs in the dictionary
+     * Checks if the given word has to be treated as a valid word. Please note that some
+     * dictionaries have entries that should be treated as invalid words.
      * @param word the word to search for. The search should be case-insensitive.
-     * @return true if the word exists, false otherwise
+     * @return true if the word is valid, false otherwise
      */
-    abstract public boolean isValidWord(final String word);
+    public boolean isValidWord(final String word) {
+        return isInDictionary(word);
+    }
+
+    /**
+     * Checks if the given word is in the dictionary regardless of it being valid or not.
+     */
+    abstract public boolean isInDictionary(final String word);
 
     public int getFrequency(final String word) {
         return NOT_A_PROBABILITY;
@@ -165,7 +174,7 @@ public abstract class Dictionary {
         }
 
         @Override
-        public boolean isValidWord(String word) {
+        public boolean isInDictionary(String word) {
             return false;
         }
     }

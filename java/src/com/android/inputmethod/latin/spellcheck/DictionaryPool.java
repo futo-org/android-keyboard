@@ -58,7 +58,7 @@ public final class DictionaryPool extends LinkedBlockingQueue<DictAndKeyboard> {
                     return noSuggestions;
                 }
                 @Override
-                public boolean isValidWord(final String word) {
+                public boolean isInDictionary(final String word) {
                     // This is never called. However if for some strange reason it ever gets
                     // called, returning true is less destructive (it will not underline the
                     // word in red).

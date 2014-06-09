@@ -66,10 +66,10 @@ public final class ReadOnlyBinaryDictionary extends Dictionary {
     }
 
     @Override
-    public boolean isValidWord(final String word) {
+    public boolean isInDictionary(final String word) {
         if (mLock.readLock().tryLock()) {
             try {
-                return mBinaryDictionary.isValidWord(word);
+                return mBinaryDictionary.isInDictionary(word);
             } finally {
                 mLock.readLock().unlock();
             }
