@@ -414,7 +414,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     }
 
     @Override
-    public boolean isValidWord(final String word) {
+    public boolean isInDictionary(final String word) {
         reloadDictionaryIfRequired();
         boolean lockAcquired = false;
         try {
@@ -424,10 +424,10 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                 if (mBinaryDictionary == null) {
                     return false;
                 }
-                return isValidWordLocked(word);
+                return isInDictionaryLocked(word);
             }
         } catch (final InterruptedException e) {
-            Log.e(TAG, "Interrupted tryLock() in isValidWord().", e);
+            Log.e(TAG, "Interrupted tryLock() in isInDictionary().", e);
         } finally {
             if (lockAcquired) {
                 mLock.readLock().unlock();
@@ -436,9 +436,9 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         return false;
     }
 
-    protected boolean isValidWordLocked(final String word) {
+    protected boolean isInDictionaryLocked(final String word) {
         if (mBinaryDictionary == null) return false;
-        return mBinaryDictionary.isValidWord(word);
+        return mBinaryDictionary.isInDictionary(word);
     }
 
     @Override
@@ -588,20 +588,6 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                 }
             }
         });
-    }
-
-    // TODO: Implement BinaryDictionary.isInDictionary().
-    @UsedForTesting
-    public boolean isInUnderlyingBinaryDictionaryForTests(final String word) {
-        mLock.readLock().lock();
-        try {
-            if (mBinaryDictionary != null && mDictType == Dictionary.TYPE_USER_HISTORY) {
-                return mBinaryDictionary.isValidWord(word);
-            }
-            return false;
-        } finally {
-            mLock.readLock().unlock();
-        }
     }
 
     @UsedForTesting

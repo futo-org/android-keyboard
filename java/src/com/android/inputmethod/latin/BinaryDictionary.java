@@ -345,7 +345,7 @@ public final class BinaryDictionary extends Dictionary {
     }
 
     @Override
-    public boolean isValidWord(final String word) {
+    public boolean isInDictionary(final String word) {
         return getFrequency(word) != NOT_A_PROBABILITY;
     }
 

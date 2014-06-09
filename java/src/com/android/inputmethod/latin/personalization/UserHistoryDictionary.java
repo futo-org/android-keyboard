@@ -47,12 +47,6 @@ public class UserHistoryDictionary extends DecayingExpandableBinaryDictionaryBas
         return PersonalizationHelper.getUserHistoryDictionary(context, locale);
     }
 
-    @Override
-    public boolean isValidWord(final String word) {
-        // Strings out of this dictionary should not be considered existing words.
-        return false;
-    }
-
     /**
      * Add a word to the user history dictionary.
      *

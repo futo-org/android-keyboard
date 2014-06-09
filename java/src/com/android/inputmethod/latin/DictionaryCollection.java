@@ -78,9 +78,9 @@ public final class DictionaryCollection extends Dictionary {
     }
 
     @Override
-    public boolean isValidWord(final String word) {
+    public boolean isInDictionary(final String word) {
         for (int i = mDictionaries.size() - 1; i >= 0; --i)
-            if (mDictionaries.get(i).isValidWord(word)) return true;
+            if (mDictionaries.get(i).isInDictionary(word)) return true;
         return false;
     }
 
