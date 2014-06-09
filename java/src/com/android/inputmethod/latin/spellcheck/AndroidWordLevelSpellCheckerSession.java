@@ -282,6 +282,22 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
                         return AndroidSpellCheckerService.getNotInDictEmptySuggestions(
                                 false /* reportAsTypo */);
                     }
+                    if (CHECKABILITY_CONTAINS_PERIOD == checkability) {
+                        final String[] splitText = inText.split(Constants.REGEXP_PERIOD);
+                        boolean allWordsAreValid = true;
+                        for (final String word : splitText) {
+                            if (!dictInfo.mDictionary.isValidWord(word)) {
+                                allWordsAreValid = false;
+                                break;
+                            }
+                        }
+                        if (allWordsAreValid) {
+                            return new SuggestionsInfo(SuggestionsInfo.RESULT_ATTR_LOOKS_LIKE_TYPO
+                                    | SuggestionsInfo.RESULT_ATTR_HAS_RECOMMENDED_SUGGESTIONS,
+                                    new String[] {
+                                            TextUtils.join(Constants.STRING_SPACE, splitText) });
+                        }
+                    }
                     return dictInfo.mDictionary.isValidWord(inText)
                             ? AndroidSpellCheckerService.getInDictEmptySuggestions()
                             : AndroidSpellCheckerService.getNotInDictEmptySuggestions(
