@@ -81,7 +81,7 @@ import com.android.inputmethod.latin.utils.ApplicationUtils;
 import com.android.inputmethod.latin.utils.CapsModeUtils;
 import com.android.inputmethod.latin.utils.CoordinateUtils;
 import com.android.inputmethod.latin.utils.DialogUtils;
-import com.android.inputmethod.latin.utils.DistracterFilterUsingSuggestion;
+import com.android.inputmethod.latin.utils.DistracterFilterCheckingExactMatches;
 import com.android.inputmethod.latin.utils.ImportantNoticeUtils;
 import com.android.inputmethod.latin.utils.IntentUtils;
 import com.android.inputmethod.latin.utils.JniUtils;
@@ -121,7 +121,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     private final Settings mSettings;
     private final DictionaryFacilitator mDictionaryFacilitator =
-            new DictionaryFacilitator(new DistracterFilterUsingSuggestion(this /* context */));
+            new DictionaryFacilitator(new DistracterFilterCheckingExactMatches(this /* context */));
     private final InputLogic mInputLogic = new InputLogic(this /* LatinIME */,
             this /* SuggestionStripViewAccessor */, mDictionaryFacilitator);
     // We expect to have only one decoder in almost all cases, hence the default capacity of 1.

@@ -31,9 +31,8 @@ import com.android.inputmethod.latin.PrevWordsInfo;
  * This class is used to prevent distracters being added to personalization
  * or user history dictionaries
  */
-// TODO: Rename.
-public class DistracterFilterUsingSuggestion implements DistracterFilter {
-    private static final String TAG = DistracterFilterUsingSuggestion.class.getSimpleName();
+public class DistracterFilterCheckingExactMatches implements DistracterFilter {
+    private static final String TAG = DistracterFilterCheckingExactMatches.class.getSimpleName();
     private static final boolean DEBUG = false;
 
     private static final long TIMEOUT_TO_WAIT_LOADING_DICTIONARIES_IN_SECONDS = 120;
@@ -47,7 +46,7 @@ public class DistracterFilterUsingSuggestion implements DistracterFilter {
      *
      * @param context the context.
      */
-    public DistracterFilterUsingSuggestion(final Context context) {
+    public DistracterFilterCheckingExactMatches(final Context context) {
         mContext = context;
         mDictionaryFacilitator = new DictionaryFacilitator();
     }
