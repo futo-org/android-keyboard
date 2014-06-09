@@ -28,6 +28,7 @@ import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardId;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.utils.StringUtils;
 
 import java.util.Locale;
 
@@ -79,14 +80,6 @@ final class KeyCodeDescriptionMapper {
     /**
      * Returns the localized description of the action performed by a specified
      * key based on the current keyboard state.
-     * <p>
-     * The order of precedence for key descriptions is:
-     * <ol>
-     * <li>Manually-defined based on the key label</li>
-     * <li>Automatic or manually-defined based on the key code</li>
-     * <li>Automatically based on the key label</li>
-     * <li>{code null} for keys with no label or key code defined</li>
-     * </p>
      *
      * @param context The package's context.
      * @param keyboard The keyboard on which the key resides.
@@ -121,7 +114,20 @@ final class KeyCodeDescriptionMapper {
 
         // Just attempt to speak the description.
         if (code != Constants.CODE_UNSPECIFIED) {
-            return getDescriptionForKeyCode(context, keyboard, key, shouldObscure);
+            // If the key description should be obscured, now is the time to do it.
+            final boolean isDefinedNonCtrl = Character.isDefined(code)
+                    && !Character.isISOControl(code);
+            if (shouldObscure && isDefinedNonCtrl) {
+                return context.getString(OBSCURED_KEY_RES_ID);
+            }
+            final String description = getDescriptionForCodePoint(context, code);
+            if (description != null) {
+                return description;
+            }
+            if (!TextUtils.isEmpty(key.getLabel())) {
+                return key.getLabel();
+            }
+            return context.getString(R.string.spoken_description_unknown);
         }
         return null;
     }
@@ -247,57 +253,35 @@ final class KeyCodeDescriptionMapper {
 
     /**
      * Returns a localized character sequence describing what will happen when
-     * the specified key is pressed based on its key code.
-     * <p>
-     * The order of precedence for key code descriptions is:
-     * <ol>
-     * <li>Manually-defined shift-locked description</li>
-     * <li>Manually-defined shifted description</li>
-     * <li>Manually-defined normal description</li>
-     * <li>Automatic based on the character represented by the key code</li>
-     * <li>Fall-back for undefined or control characters</li>
-     * </ol>
-     * </p>
+     * the specified key is pressed based on its key code point.
      *
      * @param context The package's context.
-     * @param keyboard The keyboard on which the key resides.
-     * @param key The key from which to obtain a description.
-     * @param shouldObscure {@true} if text (e.g. non-control) characters should be obscured.
-     * @return a character sequence describing the action performed by pressing the key
+     * @param codePoint The code point from which to obtain a description.
+     * @return a character sequence describing the code point.
      */
-    private String getDescriptionForKeyCode(final Context context, final Keyboard keyboard,
-            final Key key, final boolean shouldObscure) {
-        final int code = key.getCode();
-
+    public String getDescriptionForCodePoint(final Context context, final int codePoint) {
         // If the key description should be obscured, now is the time to do it.
-        final boolean isDefinedNonCtrl = Character.isDefined(code) && !Character.isISOControl(code);
-        if (shouldObscure && isDefinedNonCtrl) {
-            return context.getString(OBSCURED_KEY_RES_ID);
-        }
-        final int index = mKeyCodeMap.indexOfKey(code);
+        final int index = mKeyCodeMap.indexOfKey(codePoint);
         if (index >= 0) {
             return context.getString(mKeyCodeMap.valueAt(index));
         }
-        final String accentedLetter = getSpokenAccentedLetterDescription(context, code);
+        final String accentedLetter = getSpokenAccentedLetterDescription(context, codePoint);
         if (accentedLetter != null) {
             return accentedLetter;
         }
         // Here, <code>code</code> may be a base (non-accented) letter.
-        final String unsupportedSymbol = getSpokenSymbolDescription(context, code);
+        final String unsupportedSymbol = getSpokenSymbolDescription(context, codePoint);
         if (unsupportedSymbol != null) {
             return unsupportedSymbol;
         }
-        final String emojiDescription = getSpokenEmojiDescription(context, code);
+        final String emojiDescription = getSpokenEmojiDescription(context, codePoint);
         if (emojiDescription != null) {
             return emojiDescription;
         }
-        if (isDefinedNonCtrl) {
-            return Character.toString((char) code);
+        if (Character.isDefined(codePoint) && !Character.isISOControl(codePoint)) {
+            return StringUtils.newSingleCodePointString(codePoint);
         }
-        if (!TextUtils.isEmpty(key.getLabel())) {
-            return key.getLabel();
-        }
-        return context.getString(R.string.spoken_description_unknown, code);
+        return null;
     }
 
     // TODO: Remove this method once TTS supports those accented letters' verbalization.

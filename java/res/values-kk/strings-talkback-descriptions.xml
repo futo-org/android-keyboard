@@ -27,7 +27,8 @@
     <skip />
     <!-- no translation found for spoken_auto_correct_obscured (6276420476908833791) -->
     <skip />
-    <string name="spoken_description_unknown" msgid="3197434010402179157">"Перне коды %d"</string>
+    <!-- no translation found for spoken_description_unknown (5139930082759824442) -->
+    <skip />
     <string name="spoken_description_shift" msgid="244197883292549308">"Shift"</string>
     <string name="spoken_description_shift_shifted" msgid="1681877323344195035">"Shift қосулы (өшіру үшін түрту)"</string>
     <string name="spoken_description_caps_lock" msgid="3276478269526304432">"Caps lock қосулы (өшіру үшін түрту)"</string>
