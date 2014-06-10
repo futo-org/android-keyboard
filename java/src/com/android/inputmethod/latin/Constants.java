@@ -214,6 +214,9 @@ public final class Constants {
     public static final int CODE_INVERTED_QUESTION_MARK = 0xBF; // ¿
     public static final int CODE_INVERTED_EXCLAMATION_MARK = 0xA1; // ¡
 
+    public static final String REGEXP_PERIOD = "\\.";
+    public static final String STRING_SPACE = " ";
+
     /**
      * Special keys code. Must be negative.
      * These should be aligned with {@link KeyboardCodesSet#ID_TO_NAME},
