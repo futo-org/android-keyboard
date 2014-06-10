@@ -100,8 +100,8 @@ LATIN_IME_CORE_SRC_FILES := \
         log_utils.cpp \
         time_keeper.cpp)
 
-LATIN_IME_CORE_SRC_FILES_BACKWARD_V401 := \
-    $(addprefix suggest/policyimpl/dictionary/structure/backward/v401/, \
+LATIN_IME_CORE_SRC_FILES_BACKWARD_V402 := \
+    $(addprefix suggest/policyimpl/dictionary/structure/backward/v402/, \
         ver4_dict_buffers.cpp \
         ver4_dict_constants.cpp \
         ver4_patricia_trie_node_reader.cpp \
@@ -110,16 +110,16 @@ LATIN_IME_CORE_SRC_FILES_BACKWARD_V401 := \
         ver4_patricia_trie_reading_utils.cpp \
         ver4_patricia_trie_writing_helper.cpp \
         ver4_pt_node_array_reader.cpp) \
-    $(addprefix suggest/policyimpl/dictionary/structure/backward/v401/content/, \
+    $(addprefix suggest/policyimpl/dictionary/structure/backward/v402/content/, \
         bigram_dict_content.cpp \
         probability_dict_content.cpp \
         shortcut_dict_content.cpp \
         sparse_table_dict_content.cpp \
         terminal_position_lookup_table.cpp) \
-    $(addprefix suggest/policyimpl/dictionary/structure/backward/v401/bigram/, \
+    $(addprefix suggest/policyimpl/dictionary/structure/backward/v402/bigram/, \
         ver4_bigram_list_policy.cpp)
 
-LATIN_IME_CORE_SRC_FILES += $(LATIN_IME_CORE_SRC_FILES_BACKWARD_V401)
+LATIN_IME_CORE_SRC_FILES += $(LATIN_IME_CORE_SRC_FILES_BACKWARD_V402)
 
 LATIN_IME_CORE_TEST_FILES := \
     defines_test.cpp \

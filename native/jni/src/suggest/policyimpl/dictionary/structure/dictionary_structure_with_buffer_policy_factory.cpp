@@ -19,9 +19,9 @@
 #include <climits>
 
 #include "defines.h"
-#include "suggest/policyimpl/dictionary/structure/backward/v401/ver4_dict_buffers.h"
-#include "suggest/policyimpl/dictionary/structure/backward/v401/ver4_dict_constants.h"
-#include "suggest/policyimpl/dictionary/structure/backward/v401/ver4_patricia_trie_policy.h"
+#include "suggest/policyimpl/dictionary/structure/backward/v402/ver4_dict_buffers.h"
+#include "suggest/policyimpl/dictionary/structure/backward/v402/ver4_dict_constants.h"
+#include "suggest/policyimpl/dictionary/structure/backward/v402/ver4_patricia_trie_policy.h"
 #include "suggest/policyimpl/dictionary/structure/pt_common/dynamic_pt_writing_utils.h"
 #include "suggest/policyimpl/dictionary/structure/v2/patricia_trie_policy.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_dict_buffers.h"
@@ -57,14 +57,13 @@ namespace latinime {
                 const DictionaryHeaderStructurePolicy::AttributeMap *const attributeMap) {
     FormatUtils::FORMAT_VERSION dictFormatVersion = FormatUtils::getFormatVersion(formatVersion);
     switch (dictFormatVersion) {
-        case FormatUtils::VERSION_401: {
-            return newPolicyForOnMemoryV4Dict<backward::v401::Ver4DictConstants,
-                    backward::v401::Ver4DictBuffers,
-                    backward::v401::Ver4DictBuffers::Ver4DictBuffersPtr,
-                    backward::v401::Ver4PatriciaTriePolicy>(
+        case FormatUtils::VERSION_4: {
+            return newPolicyForOnMemoryV4Dict<backward::v402::Ver4DictConstants,
+                    backward::v402::Ver4DictBuffers,
+                    backward::v402::Ver4DictBuffers::Ver4DictBuffersPtr,
+                    backward::v402::Ver4PatriciaTriePolicy>(
                             dictFormatVersion, locale, attributeMap);
         }
-        case FormatUtils::VERSION_4:
         case FormatUtils::VERSION_4_ONLY_FOR_TESTING:
         case FormatUtils::VERSION_4_DEV: {
             return newPolicyForOnMemoryV4Dict<Ver4DictConstants, Ver4DictBuffers,
@@ -116,14 +115,13 @@ template<class DictConstants, class DictBuffers, class DictBuffersPtr, class Str
         case FormatUtils::VERSION_2:
             AKLOGE("Given path is a directory but the format is version 2. path: %s", path);
             break;
-        case FormatUtils::VERSION_401: {
-            return newPolicyForV4Dict<backward::v401::Ver4DictConstants,
-                    backward::v401::Ver4DictBuffers,
-                    backward::v401::Ver4DictBuffers::Ver4DictBuffersPtr,
-                    backward::v401::Ver4PatriciaTriePolicy>(
+        case FormatUtils::VERSION_4: {
+            return newPolicyForV4Dict<backward::v402::Ver4DictConstants,
+                    backward::v402::Ver4DictBuffers,
+                    backward::v402::Ver4DictBuffers::Ver4DictBuffersPtr,
+                    backward::v402::Ver4PatriciaTriePolicy>(
                             headerFilePath, formatVersion, std::move(mmappedBuffer));
         }
-        case FormatUtils::VERSION_4:
         case FormatUtils::VERSION_4_ONLY_FOR_TESTING:
         case FormatUtils::VERSION_4_DEV: {
             return newPolicyForV4Dict<Ver4DictConstants, Ver4DictBuffers,
@@ -179,7 +177,6 @@ template<class DictConstants, class DictBuffers, class DictBuffersPtr, class Str
         case FormatUtils::VERSION_2:
             return DictionaryStructureWithBufferPolicy::StructurePolicyPtr(
                     new PatriciaTriePolicy(std::move(mmappedBuffer)));
-        case FormatUtils::VERSION_401:
         case FormatUtils::VERSION_4_ONLY_FOR_TESTING:
         case FormatUtils::VERSION_4:
         case FormatUtils::VERSION_4_DEV:
