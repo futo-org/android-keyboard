@@ -98,7 +98,6 @@ typedef DictionaryHeaderStructurePolicy::AttributeMap AttributeMap;
         case FormatUtils::VERSION_2:
             // Version 2 dictionary writing is not supported.
             return false;
-        case FormatUtils::VERSION_401:
         case FormatUtils::VERSION_4_ONLY_FOR_TESTING:
         case FormatUtils::VERSION_4:
         case FormatUtils::VERSION_4_DEV:
