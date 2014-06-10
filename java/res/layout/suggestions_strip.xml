@@ -20,13 +20,19 @@
 
 <merge
     xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Provide audio and haptic feedback by ourselves based on the keyboard settings.
+         We just need to ignore the system's audio and haptic feedback settings. -->
     <LinearLayout
         android:id="@+id/suggestions_strip"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginLeft="@dimen/config_suggestions_strip_horizontal_margin"
-        android:layout_marginRight="@dimen/config_suggestions_strip_horizontal_margin" />
+        android:layout_marginRight="@dimen/config_suggestions_strip_horizontal_margin"
+        android:hapticFeedbackEnabled="false"
+        android:soundEffectsEnabled="false" />
+    <!-- Provide audio and haptic feedback by ourselves based on the keyboard settings.
+         We just need to ignore the system's audio and haptic feedback settings. -->
     <LinearLayout
         android:id="@+id/add_to_dictionary_strip"
         android:orientation="horizontal"
@@ -34,7 +40,8 @@
         android:layout_height="match_parent"
         android:layout_marginLeft="@dimen/config_suggestions_strip_horizontal_margin"
         android:layout_marginRight="@dimen/config_suggestions_strip_horizontal_margin"
-        android:visibility="invisible">
+        android:hapticFeedbackEnabled="false"
+        android:soundEffectsEnabled="false">
         <TextView
             android:id="@+id/word_to_save"
             android:layout_width="match_parent"
@@ -49,13 +56,17 @@
             android:textAlignment="viewStart"
             style="?attr/suggestionWordStyle" />
     </LinearLayout>
+    <!-- Provide audio and haptic feedback by ourselves based on the keyboard settings.
+         We just need to ignore the system's audio and haptic feedback settings. -->
     <LinearLayout
         android:id="@+id/important_notice_strip"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginLeft="@dimen/config_suggestions_strip_horizontal_margin"
-        android:layout_marginRight="@dimen/config_suggestions_strip_horizontal_margin">
+        android:layout_marginRight="@dimen/config_suggestions_strip_horizontal_margin"
+        android:hapticFeedbackEnabled="false"
+        android:soundEffectsEnabled="false" >
         <TextView
             android:id="@+id/important_notice_title"
             android:layout_width="match_parent"

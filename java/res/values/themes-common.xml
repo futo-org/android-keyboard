@@ -124,9 +124,10 @@
         <item name="android:paddingTop">0dp</item>
         <item name="android:paddingRight">@dimen/config_suggestion_text_horizontal_padding</item>
         <item name="android:paddingBottom">0dp</item>
-        <!-- Provide a haptic feedback by ourselves based on the keyboard settings.
-             We just need to ignore the system's haptic feedback settings. -->
+        <!-- Provide audio and haptic feedback by ourselves based on the keyboard settings.
+             We just need to ignore the system's audio and haptic feedback settings. -->
         <item name="android:hapticFeedbackEnabled">false</item>
+        <item name="android:soundEffectsEnabled">false</item>
         <item name="android:focusable">false</item>
         <item name="android:clickable">false</item>
         <item name="android:singleLine">true</item>
