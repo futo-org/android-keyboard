@@ -49,6 +49,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * queries in native code. This binary dictionary is written to internal storage.
  */
 abstract public class ExpandableBinaryDictionary extends Dictionary {
+    private static final boolean DEBUG = false;
 
     /** Used for Log actions from this class */
     private static final String TAG = ExpandableBinaryDictionary.class.getSimpleName();
@@ -325,16 +326,17 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     protected void addNgramEntryLocked(final PrevWordsInfo prevWordsInfo, final String word,
             final int frequency, final int timestamp) {
         if (!mBinaryDictionary.addNgramEntry(prevWordsInfo, word, frequency, timestamp)) {
-            Log.e(TAG, "Cannot add n-gram entry.");
-            Log.e(TAG, "  PrevWordsInfo: " + prevWordsInfo);
-            Log.e(TAG, "  word: " + word);
+            if (DEBUG) {
+                Log.i(TAG, "Cannot add n-gram entry.");
+                Log.i(TAG, "  PrevWordsInfo: " + prevWordsInfo + ", word: " + word);
+            }
         }
     }
 
     /**
      * Dynamically remove the n-gram entry in the dictionary.
      */
-    public void removeNgramDynamically(final PrevWordsInfo prevWordsInfo, final String word1) {
+    public void removeNgramDynamically(final PrevWordsInfo prevWordsInfo, final String word) {
         reloadDictionaryIfRequired();
         asyncExecuteTaskWithWriteLock(new Runnable() {
             @Override
@@ -343,7 +345,12 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                     return;
                 }
                 runGCIfRequiredLocked(true /* mindsBlockByGC */);
-                mBinaryDictionary.removeNgramEntry(prevWordsInfo, word1);
+                if (!mBinaryDictionary.removeNgramEntry(prevWordsInfo, word)) {
+                    if (DEBUG) {
+                        Log.i(TAG, "Cannot remove n-gram entry.");
+                        Log.i(TAG, "  PrevWordsInfo: " + prevWordsInfo + ", word: " + word);
+                    }
+                }
             }
         });
     }
