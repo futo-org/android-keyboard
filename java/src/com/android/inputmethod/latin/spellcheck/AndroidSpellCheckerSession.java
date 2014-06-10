@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.latin.spellcheck;
 
+import android.content.res.Resources;
 import android.os.Binder;
 import android.text.TextUtils;
 import android.util.Log;
@@ -26,14 +27,18 @@ import android.view.textservice.TextInfo;
 import com.android.inputmethod.latin.PrevWordsInfo;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 public final class AndroidSpellCheckerSession extends AndroidWordLevelSpellCheckerSession {
     private static final String TAG = AndroidSpellCheckerSession.class.getSimpleName();
     private static final boolean DBG = false;
     private final static String[] EMPTY_STRING_ARRAY = new String[0];
+    private final Resources mResources;
+    private SentenceLevelAdapter mSentenceLevelAdapter;
 
     public AndroidSpellCheckerSession(AndroidSpellCheckerService service) {
         super(service);
+        mResources = service.getResources();
     }
 
     private SentenceSuggestionsInfo fixWronglyInvalidatedWordWithSingleQuote(TextInfo ti,
@@ -115,8 +120,7 @@ public final class AndroidSpellCheckerSession extends AndroidWordLevelSpellCheck
     @Override
     public SentenceSuggestionsInfo[] onGetSentenceSuggestionsMultiple(TextInfo[] textInfos,
             int suggestionsLimit) {
-        final SentenceSuggestionsInfo[] retval =
-                super.onGetSentenceSuggestionsMultiple(textInfos, suggestionsLimit);
+        final SentenceSuggestionsInfo[] retval = splitAndSuggest(textInfos, suggestionsLimit);
         if (retval == null || retval.length != textInfos.length) {
             return retval;
         }
@@ -126,6 +130,58 @@ public final class AndroidSpellCheckerSession extends AndroidWordLevelSpellCheck
             if (tempSsi != null) {
                 retval[i] = tempSsi;
             }
+        }
+        return retval;
+    }
+
+    /**
+     * Get sentence suggestions for specified texts in an array of TextInfo. This is taken from
+     * SpellCheckerService#onGetSentenceSuggestionsMultiple that we can't use because it's
+     * using private variables.
+     * The default implementation splits the input text to words and returns
+     * {@link SentenceSuggestionsInfo} which contains suggestions for each word.
+     * This function will run on the incoming IPC thread.
+     * So, this is not called on the main thread,
+     * but will be called in series on another thread.
+     * @param textInfos an array of the text metadata
+     * @param suggestionsLimit the maximum number of suggestions to be returned
+     * @return an array of {@link SentenceSuggestionsInfo} returned by
+     * {@link SpellCheckerService.Session#onGetSuggestions(TextInfo, int)}
+     */
+    private SentenceSuggestionsInfo[] splitAndSuggest(TextInfo[] textInfos, int suggestionsLimit) {
+        if (textInfos == null || textInfos.length == 0) {
+            return SentenceLevelAdapter.EMPTY_SENTENCE_SUGGESTIONS_INFOS;
+        }
+        SentenceLevelAdapter sentenceLevelAdapter;
+        synchronized(this) {
+            sentenceLevelAdapter = mSentenceLevelAdapter;
+            if (sentenceLevelAdapter == null) {
+                final String localeStr = getLocale();
+                if (!TextUtils.isEmpty(localeStr)) {
+                    sentenceLevelAdapter = new SentenceLevelAdapter(mResources,
+                            new Locale(localeStr));
+                    mSentenceLevelAdapter = sentenceLevelAdapter;
+                }
+            }
+        }
+        if (sentenceLevelAdapter == null) {
+            return SentenceLevelAdapter.EMPTY_SENTENCE_SUGGESTIONS_INFOS;
+        }
+        final int infosSize = textInfos.length;
+        final SentenceSuggestionsInfo[] retval = new SentenceSuggestionsInfo[infosSize];
+        for (int i = 0; i < infosSize; ++i) {
+            final SentenceLevelAdapter.SentenceTextInfoParams textInfoParams =
+                    sentenceLevelAdapter.getSplitWords(textInfos[i]);
+            final ArrayList<SentenceLevelAdapter.SentenceWordItem> mItems =
+                    textInfoParams.mItems;
+            final int itemsSize = mItems.size();
+            final TextInfo[] splitTextInfos = new TextInfo[itemsSize];
+            for (int j = 0; j < itemsSize; ++j) {
+                splitTextInfos[j] = mItems.get(j).mTextInfo;
+            }
+            retval[i] = SentenceLevelAdapter.reconstructSuggestions(
+                    textInfoParams, onGetSuggestionsMultiple(
+                            splitTextInfos, suggestionsLimit, true));
         }
         return retval;
     }
