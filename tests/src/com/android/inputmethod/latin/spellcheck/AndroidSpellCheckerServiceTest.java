@@ -39,7 +39,7 @@ public class AndroidSpellCheckerServiceTest extends InputTestsBase {
         // it yields 5).
         assertTrue(suggestions.length >= 2);
         // We also assume the top suggestion should be "this".
-        assertEquals("", "this", suggestions[0]);
+        assertEquals("Test basic spell checking", "this", suggestions[0]);
     }
 
     public void testRussianSpellchecker() {
@@ -61,5 +61,22 @@ public class AndroidSpellCheckerServiceTest extends InputTestsBase {
         // We also assume the top suggestion should be "года", which is the top word in the
         // Russian dictionary.
         assertEquals("", "года", suggestions[0]);
+    }
+
+    public void testSpellcheckWithPeriods() {
+        changeLanguage("en_US");
+        mEditText.setText("I'm.sure ");
+        mEditText.setSelection(mEditText.getText().length());
+        mEditText.onAttachedToWindow();
+        sleep(1000);
+        runMessages();
+        sleep(1000);
+
+        final SpanGetter span = new SpanGetter(mEditText.getText(), SuggestionSpan.class);
+        // If no span, the following will crash
+        final String[] suggestions = span.getSuggestions();
+        // The first suggestion should be "I'm sure".
+        assertEquals("Test spell checking of mistyped period for space", "I'm sure",
+                suggestions[0]);
     }
 }
