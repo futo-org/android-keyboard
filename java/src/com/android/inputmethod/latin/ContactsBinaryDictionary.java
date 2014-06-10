@@ -74,11 +74,6 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
      */
     private final boolean mUseFirstLastBigrams;
 
-    private ContactsBinaryDictionary(final Context context, final Locale locale,
-            final File dictFile) {
-        this(context, locale, dictFile, NAME);
-    }
-
     protected ContactsBinaryDictionary(final Context context, final Locale locale,
             final File dictFile, final String name) {
         super(context, getDictName(name, locale, dictFile), locale, Dictionary.TYPE_CONTACTS,
@@ -90,8 +85,8 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
 
     @UsedForTesting
     public static ContactsBinaryDictionary getDictionary(final Context context, final Locale locale,
-            final File dictFile) {
-        return new ContactsBinaryDictionary(context, locale, dictFile);
+            final File dictFile, final String dictNamePrefix) {
+        return new ContactsBinaryDictionary(context, locale, dictFile, dictNamePrefix + NAME);
     }
 
     private synchronized void registerObserver(final Context context) {
