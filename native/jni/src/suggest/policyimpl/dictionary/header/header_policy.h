@@ -139,8 +139,6 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
         switch (mDictFormatVersion) {
             case FormatUtils::VERSION_2:
                 return FormatUtils::VERSION_2;
-            case FormatUtils::VERSION_401:
-                return FormatUtils::VERSION_401;
             case FormatUtils::VERSION_4_ONLY_FOR_TESTING:
                 return FormatUtils::VERSION_4_ONLY_FOR_TESTING;
             case FormatUtils::VERSION_4:
@@ -249,7 +247,7 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
     }
 
     bool supportsBeginningOfSentence() const {
-        return mDictFormatVersion > FormatUtils::VERSION_401;
+        return mDictFormatVersion >= FormatUtils::VERSION_4;
     }
 
  private:

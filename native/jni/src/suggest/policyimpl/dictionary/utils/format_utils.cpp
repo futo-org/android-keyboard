@@ -29,8 +29,6 @@ const int FormatUtils::DICTIONARY_MINIMUM_SIZE = 12;
     switch (formatVersion) {
         case VERSION_2:
             return VERSION_2;
-        case VERSION_401:
-            return VERSION_401;
         case VERSION_4_ONLY_FOR_TESTING:
             return VERSION_4_ONLY_FOR_TESTING;
         case VERSION_4:
@@ -52,7 +50,7 @@ const int FormatUtils::DICTIONARY_MINIMUM_SIZE = 12;
     const uint32_t magicNumber = ByteArrayUtils::readUint32(dict, 0);
     switch (magicNumber) {
         case MAGIC_NUMBER:
-            // Version 2 header is as follows:
+            // The layout of the header is as follows:
             // Magic number (4 bytes) 0x9B 0xC1 0x3A 0xFE
             // Dictionary format version number (2 bytes)
             // Options (2 bytes)
@@ -60,19 +58,7 @@ const int FormatUtils::DICTIONARY_MINIMUM_SIZE = 12;
             // Conceptually this converts the hardcoded value of the bytes in the file into
             // the symbolic value we use in the code. But we want the constants to be the
             // same so we use them for both here.
-            if (ByteArrayUtils::readUint16(dict, 4) == VERSION_2) {
-                return VERSION_2;
-            } else if (ByteArrayUtils::readUint16(dict, 4) == VERSION_401) {
-                return VERSION_401;
-            } else if (ByteArrayUtils::readUint16(dict, 4) == VERSION_4_ONLY_FOR_TESTING) {
-                return VERSION_4_ONLY_FOR_TESTING;
-            } else if (ByteArrayUtils::readUint16(dict, 4) == VERSION_4) {
-                return VERSION_4;
-            } else if (ByteArrayUtils::readUint16(dict, 4) == VERSION_4_DEV) {
-                return VERSION_4_DEV;
-            } else {
-                return UNKNOWN_VERSION;
-            }
+            return getFormatVersion(ByteArrayUtils::readUint16(dict, 4));
         default:
             return UNKNOWN_VERSION;
     }
