@@ -28,7 +28,7 @@
     <string name="popup_on_keypress" msgid="123894815723512944">"លេច​ឡើង​នៅ​​ពេល​ចុច​គ្រាប់​ចុច"</string>
     <string name="general_category" msgid="1859088467017573195">"ទូទៅ"</string>
     <string name="correction_category" msgid="2236750915056607613">"ការ​កែ​អត្ថបទ"</string>
-    <string name="gesture_typing_category" msgid="497263612130532630">"បញ្ចូល​ដោយ​ប្រើ​កាយវិការ"</string>
+    <string name="gesture_typing_category" msgid="497263612130532630">"បញ្ចូល​ដោយ​ប្រើ​កាយវិការ​"</string>
     <string name="misc_category" msgid="6894192814868233453">"ជម្រើស​ផ្សេងទៀត"</string>
     <string name="advanced_settings" msgid="362895144495591463">"ការ​កំណត់​កម្រិត​ខ្ពស់"</string>
     <string name="advanced_settings_summary" msgid="4487980456152830271">"ជម្រើស​សម្រាប់​អ្នក​ជំនាញ"</string>
@@ -38,7 +38,7 @@
     <string name="show_language_switch_key_summary" msgid="7343403647474265713">"បង្ហាញ​នៅ​ពេល​ដែល​បើក​ភាសា​បញ្ចូល​ច្រើន"</string>
     <string name="sliding_key_input_preview" msgid="6604262359510068370">"បង្ហាញ​ទ្រនិច​បង្ហាញ​ស្លាយ"</string>
     <string name="sliding_key_input_preview_summary" msgid="6340524345729093886">"បង្ហាញ​​សញ្ញា​មើល​​ឃើញ​ខណៈ​ពេល​ដែល​រុញ​ពី​ឆ្វេង ឬ​​គ្រាប់​ចុច​​និមិត្ត​សញ្ញា"</string>
-    <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"​សោ​លេចឡើង​បោះបង់​ការ​​ពន្យារពេល"</string>
+    <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"​សោ​លេចឡើង​បោះបង់​ការ​​ពន្យារពេល​"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"គ្មាន​ការ​ពន្យារពេល"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"លំនាំដើម"</string>
     <string name="abbreviation_unit_milliseconds" msgid="8700286094028323363">"<xliff:g id="MILLISECONDS">%s</xliff:g> មិល្លី​វិនាទី"</string>
@@ -50,7 +50,7 @@
     <skip />
     <string name="use_double_space_period" msgid="8781529969425082860">"រយៈ​ពេល​ចុច​ដកឃ្លា​ពីរដង"</string>
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"ប៉ះ​ដកឃ្លា​ពីរ​​ដង​បញ្ចូល​​​រយៈ​ពេល​ដែល​អនុវត្ត​តាម​ដកឃ្លា"</string>
-    <string name="auto_cap" msgid="1719746674854628252">"ការ​សរសេរ​ជា​អក្សរ​ធំ​​ស្វ័យប្រវត្តិ"</string>
+    <string name="auto_cap" msgid="1719746674854628252">"ការ​សរសេរ​ជា​អក្សរ​ធំ​​ស្វ័យប្រវត្តិ​"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"សរសេរ​ពាក្យ​ដំបូង​​​ជា​អក្សរ​ធំ​​នៃ​ប្រយោគ​នីមួយ​ៗ"</string>
     <string name="edit_personal_dictionary" msgid="3996910038952940420">"វចនានុក្រម​ផ្ទាល់ខ្លួន"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"ផ្នែក​បន្ថែម​វចនានុក្រម"</string>
@@ -61,7 +61,7 @@
     <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3859783767435239118">"បង្ហាញ​នៅ​ក្នុង​របៀប​បញ្ឈរ"</string>
     <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"លាក់​ជានិច្ច"</string>
     <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"ទប់ស្កាត់​​ពាក្យ​​បំពាន"</string>
-    <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"កុំ​ស្នើ​ឲ្យ​ពាក្យ​បំពាន​មាន​សក្ដានុពល"</string>
+    <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"កុំ​ស្នើ​ឲ្យ​ពាក្យ​បំពាន​មាន​សក្ដានុពល​"</string>
     <string name="auto_correction" msgid="7630720885194996950">"ការ​កែ​​​ស្វ័យប្រវត្តិ"</string>
     <string name="auto_correction_summary" msgid="5625751551134658006">"ចន្លោះ​មិន​ឃើញ ​និង​សញ្ញា​​វណ្ណយុត្ត​កែ​ពាក្យ​ដែល​បាន​វាយ​ខុស​ស្វ័យប្រវត្តិ"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"បិទ"</string>
@@ -121,7 +121,7 @@
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"ថិរវេលា​​ញ័រ​​ពេល​ចុច​គ្រាប់ចុច"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"កម្រិត​សំឡេង​ពេល​ចុច​គ្រាប់​ចុច"</string>
     <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"អាន​ឯកសារ​វចនានុក្រម​ខាង​ក្រៅ"</string>
-    <string name="read_external_dictionary_no_files_message" msgid="4947420942224623792">"គ្មាន​ឯកសារ​វចនានុក្រម​នៅ​ក្នុង​ថត​ទាញ​យក"</string>
+    <string name="read_external_dictionary_no_files_message" msgid="4947420942224623792">"គ្មាន​ឯកសារ​វចនានុក្រម​នៅ​ក្នុង​ថត​ទាញ​យក​​"</string>
     <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"ជ្រើស​ឯកសារ​វចនានុក្រម​ ដើម្បី​ដំឡើង"</string>
     <string name="read_external_dictionary_confirm_install_message" msgid="4782116251651288054">"ពិត​ជា​ដំឡើង​ឯកសារ​នេះ​សម្រាប់ <xliff:g id="LANGUAGE_NAME">%s</xliff:g>?"</string>
     <string name="error" msgid="8940763624668513648">"មាន​កំហុស"</string>
@@ -152,7 +152,7 @@
     <string name="dictionary_provider_name" msgid="3027315045397363079">"កម្មវិធី​ផ្ដល់​វចនានុក្រម"</string>
     <string name="dictionary_service_name" msgid="6237472350693511448">"សេវាកម្ម​​វចនានុក្រម"</string>
     <string name="download_description" msgid="6014835283119198591">"ព័ត៌មាន​បច្ចុប្បន្នភាព​វចនានុក្រម"</string>
-    <string name="dictionary_settings_title" msgid="8091417676045693313">"ផ្នែក​បន្ថែម​វចនានុក្រម"</string>
+    <string name="dictionary_settings_title" msgid="8091417676045693313">"ផ្នែក​បន្ថែម​វចនានុក្រម​​"</string>
     <string name="dictionary_install_over_metered_network_prompt" msgid="3587517870006332980">"វចនានុក្រម​​​​​អាច​ប្រើ​បាន"</string>
     <string name="dictionary_settings_summary" msgid="5305694987799824349">"ការ​កំណត់​សម្រាប់​វចនានុក្រម"</string>
     <string name="user_dictionaries" msgid="3582332055892252845">"វចនានុក្រម​​​អ្នក​ប្រើ"</string>
@@ -168,10 +168,10 @@
     <string name="message_updating" msgid="4457761393932375219">"ពិនិត្យមើល​បច្ចុប្បន្នភាព"</string>
     <string name="message_loading" msgid="5638680861387748936">"កំពុង​ផ្ទុក..."</string>
     <string name="main_dict_description" msgid="3072821352793492143">"វចនានុក្រម​ចម្បង"</string>
-    <string name="cancel" msgid="6830980399865683324">"បោះ​បង់"</string>
+    <string name="cancel" msgid="6830980399865683324">"បោះ​បង់​"</string>
     <string name="go_to_settings" msgid="3876892339342569259">"ការ​កំណត់"</string>
     <string name="install_dict" msgid="180852772562189365">"ដំឡើង"</string>
-    <string name="cancel_download_dict" msgid="7843340278507019303">"បោះ​បង់"</string>
+    <string name="cancel_download_dict" msgid="7843340278507019303">"បោះ​បង់​"</string>
     <string name="delete_dict" msgid="756853268088330054">"លុប"</string>
     <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"ភាសា​ដែល​បាន​ជ្រើស​នៅ​លើ​ឧបករណ៍​ចល័ត​មាន​វចនានុក្រម​អាច​ប្រើ​បាន។&lt;br/&gt; យើង​ផ្ដល់​អនុសាសន៍​ឲ្យ &lt;b&gt;ទាញ​យក&lt;/b&gt; វចនានុក្រម​ភាសា <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> ដើម្បី​បង្កើន​បទពិសោធន៍​វាយ​បញ្ចូល​របស់​អ្នក។&lt;br/&gt; &lt;br/&gt; ការ​ទាញ​យក​អាច​ចំណាយ​ពេល​ប្រហែល​ពីរ​នាទី​នៅ​តាម 3G។ ការ​គិត​ថ្លៃ​អាច​អនុវត្ត​ប្រសិន​បើ​អ្នក​មិន​ប្រើ &lt;b&gt;ផែនការ​ទិន្នន័យ​គ្មាន​ដែន​កំណត់&lt;/b&gt;.&lt;br/&gt; បើ​អ្នក​មិន​ប្រាកដ​​ថា​ផែនការ​ណា​មួយ​ដែល​អ្នក​មាន យើង​ផ្ដល់​អនុសាសន៍​ឲ្យ​​ភ្ជាប់​វ៉ាយហ្វាយ ដើម្បី​ចាប់ផ្ដើម​ទាញ​យក​ដោយ​ស្វ័យ​ប្រវត្តិ។&lt;br/&gt; &lt;br/&gt; ជំនួយ៖ អ្នក​អាច​ទាញ​យក និង​លុប​វចនានុក្រម​ដោយ​ចូល​ទៅ​ &lt;b&gt;ភាសា &amp; ការ​បញ្ចូល&lt;/b&gt; នៅ​ក្នុង​ម៉ឺនុយ &lt;b&gt;ការ​កំណត់&lt;/b&gt; សម្រាប់​ឧបករណ៍​ចល័ត។"</string>
     <string name="download_over_metered" msgid="1643065851159409546">"ទាញ​យក​ឥឡូវ​នេះ (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> មេកាបៃ)"</string>
@@ -189,7 +189,7 @@
     <string name="user_dict_settings_add_word_option_name" msgid="6665558053408962865">"ពាក្យ៖"</string>
     <string name="user_dict_settings_add_shortcut_option_name" msgid="3094731590655523777">"ផ្លូវកាត់​៖"</string>
     <string name="user_dict_settings_add_locale_option_name" msgid="4738643440987277705">"ភាសា៖"</string>
-    <string name="user_dict_settings_add_word_hint" msgid="4902434148985906707">"វាយ​បញ្ចូល​ពាក្យ"</string>
+    <string name="user_dict_settings_add_word_hint" msgid="4902434148985906707">"វាយ​បញ្ចូល​ពាក្យ​"</string>
     <string name="user_dict_settings_add_shortcut_hint" msgid="2265453012555060178">"ផ្លូវកាត់​ជា​ជម្រើស"</string>
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"កែ​ពាក្យ"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"កែ"</string>
