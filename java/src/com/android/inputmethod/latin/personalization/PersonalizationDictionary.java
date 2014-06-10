@@ -35,7 +35,7 @@ public class PersonalizationDictionary extends DecayingExpandableBinaryDictionar
 
     @UsedForTesting
     public static PersonalizationDictionary getDictionary(final Context context,
-            final Locale locale, final File dictFile) {
+            final Locale locale, final File dictFile, final String dictNamePrefix) {
         return PersonalizationHelper.getPersonalizationDictionary(context, locale);
     }
 }

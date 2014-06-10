@@ -87,7 +87,7 @@ public class DictionaryFacilitator {
 
     private static final String DICT_FACTORY_METHOD_NAME = "getDictionary";
     private static final Class<?>[] DICT_FACTORY_METHOD_ARG_TYPES =
-            new Class[] { Context.class, Locale.class, File.class };
+            new Class[] { Context.class, Locale.class, File.class, String.class };
 
     private static final String[] SUB_DICT_TYPES =
             Arrays.copyOfRange(DICT_TYPES_ORDERED_TO_GET_SUGGESTIONS, 1 /* start */,
@@ -185,7 +185,8 @@ public class DictionaryFacilitator {
     }
 
     private static ExpandableBinaryDictionary getSubDict(final String dictType,
-            final Context context, final Locale locale, final File dictFile) {
+            final Context context, final Locale locale, final File dictFile,
+            final String dictNamePrefix) {
         final Class<? extends ExpandableBinaryDictionary> dictClass =
                 DICT_TYPE_TO_CLASS.get(dictType);
         if (dictClass == null) {
@@ -195,7 +196,7 @@ public class DictionaryFacilitator {
             final Method factoryMethod = dictClass.getMethod(DICT_FACTORY_METHOD_NAME,
                     DICT_FACTORY_METHOD_ARG_TYPES);
             final Object dict = factoryMethod.invoke(null /* obj */,
-                    new Object[] { context, locale, dictFile });
+                    new Object[] { context, locale, dictFile, dictNamePrefix });
             return (ExpandableBinaryDictionary) dict;
         } catch (final NoSuchMethodException | SecurityException | IllegalAccessException
                 | IllegalArgumentException | InvocationTargetException e) {
@@ -208,6 +209,15 @@ public class DictionaryFacilitator {
             final boolean useContactsDict, final boolean usePersonalizedDicts,
             final boolean forceReloadMainDictionary,
             final DictionaryInitializationListener listener) {
+        resetDictionariesWithDictNamePrefix(context, newLocale, useContactsDict,
+                usePersonalizedDicts, forceReloadMainDictionary, listener, "" /* dictNamePrefix */);
+    }
+
+    public void resetDictionariesWithDictNamePrefix(final Context context, final Locale newLocale,
+            final boolean useContactsDict, final boolean usePersonalizedDicts,
+            final boolean forceReloadMainDictionary,
+            final DictionaryInitializationListener listener,
+            final String dictNamePrefix) {
         final boolean localeHasBeenChanged = !newLocale.equals(mDictionaries.mLocale);
         // We always try to have the main dictionary. Other dictionaries can be unused.
         final boolean reloadMainDictionary = localeHasBeenChanged || forceReloadMainDictionary;
@@ -243,7 +253,8 @@ public class DictionaryFacilitator {
                 dict = mDictionaries.getSubDict(dictType);
             } else {
                 // Start to use new dictionary.
-                dict = getSubDict(dictType, context, newLocale, null /* dictFile */);
+                dict = getSubDict(dictType, context, newLocale, null /* dictFile */,
+                        dictNamePrefix);
             }
             subDicts.put(dictType, dict);
         }
@@ -312,7 +323,7 @@ public class DictionaryFacilitator {
             } else {
                 final File dictFile = dictionaryFiles.get(dictType);
                 final ExpandableBinaryDictionary dict = getSubDict(
-                        dictType, context, locale, dictFile);
+                        dictType, context, locale, dictFile, "" /* dictNamePrefix */);
                 if (additionalDictAttributes.containsKey(dictType)) {
                     dict.clearAndFlushDictionaryWithAdditionalAttributes(
                             additionalDictAttributes.get(dictType));

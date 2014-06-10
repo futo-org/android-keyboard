@@ -43,7 +43,7 @@ public class UserHistoryDictionary extends DecayingExpandableBinaryDictionaryBas
 
     @UsedForTesting
     public static UserHistoryDictionary getDictionary(final Context context, final Locale locale,
-            final File dictFile) {
+            final File dictFile, final String dictNamePrefix) {
         return PersonalizationHelper.getUserHistoryDictionary(context, locale);
     }
 
