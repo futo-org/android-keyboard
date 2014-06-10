@@ -74,7 +74,7 @@ public class DictionaryFacilitator {
                 Dictionary.TYPE_CONTEXTUAL
             };
 
-    private static final Map<String, Class<? extends ExpandableBinaryDictionary>>
+    public static final Map<String, Class<? extends ExpandableBinaryDictionary>>
             DICT_TYPE_TO_CLASS = new HashMap<>();
 
     static {

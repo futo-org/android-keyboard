@@ -61,16 +61,8 @@
     <PreferenceScreen
         android:key="read_external_dictionary"
         android:title="@string/prefs_read_external_dictionary" />
-    <PreferenceScreen
-        android:key="dump_contacts_dict"
-        android:title="@string/prefs_dump_contacts_dict" />
-    <PreferenceScreen
-        android:key="dump_user_dict"
-        android:title="@string/prefs_dump_user_dict" />
-    <PreferenceScreen
-        android:key="dump_user_history_dict"
-        android:title="@string/prefs_dump_user_history_dict" />
-    <PreferenceScreen
-        android:key="dump_personalization_dict"
-        android:title="@string/prefs_dump_personalization_dict" />
+    <PreferenceCategory
+        android:key="pref_key_dump_dictionaries"
+        android:title="@string/prefs_dump_dynamic_dicts">
+    </PreferenceCategory>
 </PreferenceScreen>
