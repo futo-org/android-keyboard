@@ -45,9 +45,6 @@ public final class WordComposer {
     // The list of events that served to compose this string.
     private final ArrayList<Event> mEvents;
     private final InputPointers mInputPointers = new InputPointers(MAX_WORD_LENGTH);
-    // The information of previous words (before the composing word). Must not be null. Used as
-    // context for suggestions.
-    private PrevWordsInfo mPrevWordsInfo;
     private String mAutoCorrection;
     private boolean mIsResumed;
     private boolean mIsBatchMode;
@@ -72,9 +69,9 @@ public final class WordComposer {
     private int mCursorPositionWithinWord;
 
     /**
-     * Whether the user chose to capitalize the first char of the word.
+     * Whether the composing word has the only first char capitalized.
      */
-    private boolean mIsFirstCharCapitalized;
+    private boolean mIsOnlyFirstCharCapitalized;
 
     public WordComposer() {
         mCombinerChain = new CombinerChain("");
@@ -84,7 +81,6 @@ public final class WordComposer {
         mIsBatchMode = false;
         mCursorPositionWithinWord = 0;
         mRejectedBatchModeSuggestion = null;
-        mPrevWordsInfo = PrevWordsInfo.EMPTY_PREV_WORDS_INFO;
         refreshTypedWordCache();
     }
 
@@ -111,12 +107,11 @@ public final class WordComposer {
         mAutoCorrection = null;
         mCapsCount = 0;
         mDigitsCount = 0;
-        mIsFirstCharCapitalized = false;
+        mIsOnlyFirstCharCapitalized = false;
         mIsResumed = false;
         mIsBatchMode = false;
         mCursorPositionWithinWord = 0;
         mRejectedBatchModeSuggestion = null;
-        mPrevWordsInfo = PrevWordsInfo.EMPTY_PREV_WORDS_INFO;
         refreshTypedWordCache();
     }
 
@@ -178,12 +173,6 @@ public final class WordComposer {
         return mInputPointers;
     }
 
-    private static boolean isFirstCharCapitalized(final int index, final int codePoint,
-            final boolean previous) {
-        if (index == 0) return Character.isUpperCase(codePoint);
-        return previous && !Character.isUpperCase(codePoint);
-    }
-
     /**
      * Process an input event.
      *
@@ -203,7 +192,7 @@ public final class WordComposer {
         mCursorPositionWithinWord = mCodePointSize;
         // We may have deleted the last one.
         if (0 == mCodePointSize) {
-            mIsFirstCharCapitalized = false;
+            mIsOnlyFirstCharCapitalized = false;
         }
         if (Constants.CODE_DELETE != event.mKeyCode) {
             if (newIndex < MAX_WORD_LENGTH) {
@@ -215,8 +204,12 @@ public final class WordComposer {
                     mInputPointers.addPointerAt(newIndex, keyX, keyY, 0, 0);
                 }
             }
-            mIsFirstCharCapitalized = isFirstCharCapitalized(
-                    newIndex, primaryCode, mIsFirstCharCapitalized);
+            if (0 == newIndex) {
+                mIsOnlyFirstCharCapitalized = Character.isUpperCase(primaryCode);
+            } else {
+                mIsOnlyFirstCharCapitalized = mIsOnlyFirstCharCapitalized
+                        && !Character.isUpperCase(primaryCode);
+            }
             if (Character.isUpperCase(primaryCode)) mCapsCount++;
             if (Character.isDigit(primaryCode)) mDigitsCount++;
         }
@@ -296,10 +289,8 @@ public final class WordComposer {
      * This will register NOT_A_COORDINATE for X and Ys, and use the passed keyboard for proximity.
      * @param codePoints the code points to set as the composing word.
      * @param coordinates the x, y coordinates of the key in the CoordinateUtils format
-     * @param prevWordsInfo the information of previous words, to use as context for suggestions
      */
-    public void setComposingWord(final int[] codePoints, final int[] coordinates,
-            final PrevWordsInfo prevWordsInfo) {
+    public void setComposingWord(final int[] codePoints, final int[] coordinates) {
         reset();
         final int length = codePoints.length;
         for (int i = 0; i < length; ++i) {
@@ -308,7 +299,6 @@ public final class WordComposer {
                     CoordinateUtils.yFromArray(coordinates, i)));
         }
         mIsResumed = true;
-        mPrevWordsInfo = prevWordsInfo;
     }
 
     /**
@@ -319,16 +309,13 @@ public final class WordComposer {
         return mTypedWordCache.toString();
     }
 
-    public PrevWordsInfo getPrevWordsInfoForSuggestion() {
-        return mPrevWordsInfo;
-    }
-
     /**
-     * Whether or not the user typed a capital letter as the first letter in the word
+     * Whether or not the user typed a capital letter as the first letter in the word, and no
+     * other letter is capitalized
      * @return capitalization preference
      */
-    public boolean isFirstCharCapitalized() {
-        return mIsFirstCharCapitalized;
+    public boolean isOnlyFirstCharCapitalized() {
+        return mIsOnlyFirstCharCapitalized;
     }
 
     /**
@@ -364,7 +351,7 @@ public final class WordComposer {
     }
 
     /**
-     * Saves the caps mode and the previous word at the start of composing.
+     * Saves the caps mode at the start of composing.
      *
      * WordComposer needs to know about the caps mode for several reasons. The first is, we need
      * to know after the fact what the reason was, to register the correct form into the user
@@ -373,12 +360,9 @@ public final class WordComposer {
      * Also, batch input needs to know about the current caps mode to display correctly
      * capitalized suggestions.
      * @param mode the mode at the time of start
-     * @param prevWordsInfo the information of previous words
      */
-    public void setCapitalizedModeAndPreviousWordAtStartComposingTime(final int mode,
-            final PrevWordsInfo prevWordsInfo) {
+    public void setCapitalizedModeAtStartComposingTime(final int mode) {
         mCapitalizedMode = mode;
-        mPrevWordsInfo = prevWordsInfo;
     }
 
     /**
@@ -429,11 +413,10 @@ public final class WordComposer {
         mCapsCount = 0;
         mDigitsCount = 0;
         mIsBatchMode = false;
-        mPrevWordsInfo = new PrevWordsInfo(committedWord.toString());
         mCombinerChain.reset();
         mEvents.clear();
         mCodePointSize = 0;
-        mIsFirstCharCapitalized = false;
+        mIsOnlyFirstCharCapitalized = false;
         mCapitalizedMode = CAPS_MODE_OFF;
         refreshTypedWordCache();
         mAutoCorrection = null;
@@ -443,15 +426,7 @@ public final class WordComposer {
         return lastComposedWord;
     }
 
-    // Call this when the recorded previous word should be discarded. This is typically called
-    // when the user inputs a separator that's not whitespace (including the case of the
-    // double-space-to-period feature).
-    public void discardPreviousWordForSuggestion() {
-        mPrevWordsInfo = PrevWordsInfo.EMPTY_PREV_WORDS_INFO;
-    }
-
-    public void resumeSuggestionOnLastComposedWord(final LastComposedWord lastComposedWord,
-            final PrevWordsInfo prevWordsInfo) {
+    public void resumeSuggestionOnLastComposedWord(final LastComposedWord lastComposedWord) {
         mEvents.clear();
         Collections.copy(mEvents, lastComposedWord.mEvents);
         mInputPointers.set(lastComposedWord.mInputPointers);
@@ -462,7 +437,6 @@ public final class WordComposer {
         mCursorPositionWithinWord = mCodePointSize;
         mRejectedBatchModeSuggestion = null;
         mIsResumed = true;
-        mPrevWordsInfo = prevWordsInfo;
     }
 
     public boolean isBatchMode() {

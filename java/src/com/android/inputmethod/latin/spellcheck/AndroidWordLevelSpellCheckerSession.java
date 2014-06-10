@@ -323,7 +323,7 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
                 } else {
                     coordinates = dictInfo.mKeyboard.getCoordinates(codePoints);
                 }
-                composer.setComposingWord(codePoints, coordinates, null /* previousWord */);
+                composer.setComposingWord(codePoints, coordinates);
                 // TODO: make a spell checker option to block offensive words or not
                 final ArrayList<SuggestedWordInfo> suggestions =
                         dictInfo.mDictionary.getSuggestions(composer, prevWordsInfo,

@@ -544,11 +544,8 @@ public final class InputLogic {
             }
         }
         mConnection.endBatchEdit();
-        mWordComposer.setCapitalizedModeAndPreviousWordAtStartComposingTime(
-                getActualCapsMode(settingsValues, keyboardSwitcher.getKeyboardShiftMode()),
-                // Prev word is 1st word before cursor
-                getPrevWordsInfoFromNthPreviousWordForSuggestion(
-                        settingsValues.mSpacingAndPunctuations, 1 /* nthPreviousWord */));
+        mWordComposer.setCapitalizedModeAtStartComposingTime(
+                getActualCapsMode(settingsValues, keyboardSwitcher.getKeyboardShiftMode()));
     }
 
     /* The sequence number member is only used in onUpdateBatchInput. It is increased each time
@@ -584,10 +581,8 @@ public final class InputLogic {
                     mSpaceState = SpaceState.PHANTOM;
                     keyboardSwitcher.requestUpdatingShiftState(
                             getCurrentAutoCapsState(settingsValues), getCurrentRecapitalizeState());
-                    mWordComposer.setCapitalizedModeAndPreviousWordAtStartComposingTime(
-                            getActualCapsMode(settingsValues,
-                                    keyboardSwitcher.getKeyboardShiftMode()),
-                                            new PrevWordsInfo(commitParts[0]));
+                    mWordComposer.setCapitalizedModeAtStartComposingTime(getActualCapsMode(
+                            settingsValues, keyboardSwitcher.getKeyboardShiftMode()));
                     ++mAutoCommitSequenceNumber;
                 }
             }
@@ -724,15 +719,7 @@ public final class InputLogic {
             mWordComposer.processEvent(inputTransaction.mEvent);
             // If it's the first letter, make note of auto-caps state
             if (mWordComposer.isSingleLetter()) {
-                // We pass 2 to getPreviousWordForSuggestion when the previous code point is a word
-                // connector. Otherwise, we pass 1 because we were not composing a word yet, so the
-                // word we want is the 1st word before the cursor.
-                mWordComposer.setCapitalizedModeAndPreviousWordAtStartComposingTime(
-                        inputTransaction.mShiftState,
-                        getPrevWordsInfoFromNthPreviousWordForSuggestion(
-                                settingsValues.mSpacingAndPunctuations,
-                                settingsValues.mSpacingAndPunctuations.isWordConnector(
-                                        mConnection.getCodePointBeforeCursor()) ? 2 : 1));
+                mWordComposer.setCapitalizedModeAtStartComposingTime(inputTransaction.mShiftState);
             }
             mConnection.setComposingText(getTextWithUnderline(
                     mWordComposer.getTypedWord()), 1);
@@ -924,10 +911,8 @@ public final class InputLogic {
                     // No need to reset mSpaceState, it has already be done (that's why we
                     // receive it as a parameter)
                     inputTransaction.setRequiresUpdateSuggestions();
-                    mWordComposer.setCapitalizedModeAndPreviousWordAtStartComposingTime(
-                            WordComposer.CAPS_MODE_OFF,
-                            getPrevWordsInfoFromNthPreviousWordForSuggestion(
-                                    inputTransaction.mSettingsValues.mSpacingAndPunctuations, 1));
+                    mWordComposer.setCapitalizedModeAtStartComposingTime(
+                            WordComposer.CAPS_MODE_OFF);
                     return;
                 }
             } else if (SpaceState.SWAP_PUNCTUATION == inputTransaction.mSpaceState) {
@@ -1107,7 +1092,6 @@ public final class InputLogic {
             final String textToInsert = inputTransaction.mSettingsValues.mSpacingAndPunctuations
                     .mSentenceSeparatorAndSpace;
             mConnection.commitText(textToInsert, 1);
-            mWordComposer.discardPreviousWordForSuggestion();
             return true;
         }
         return false;
@@ -1267,10 +1251,7 @@ public final class InputLogic {
         final int expectedCursorPosition = mConnection.getExpectedSelectionStart();
         if (!mConnection.isCursorTouchingWord(settingsValues.mSpacingAndPunctuations)) {
             // Show predictions.
-            mWordComposer.setCapitalizedModeAndPreviousWordAtStartComposingTime(
-                    WordComposer.CAPS_MODE_OFF,
-                    getPrevWordsInfoFromNthPreviousWordForSuggestion(
-                            settingsValues.mSpacingAndPunctuations, 1));
+            mWordComposer.setCapitalizedModeAtStartComposingTime(WordComposer.CAPS_MODE_OFF);
             mLatinIME.mHandler.postUpdateSuggestionStrip();
             return;
         }
@@ -1322,7 +1303,7 @@ public final class InputLogic {
                 settingsValues.mSpacingAndPunctuations,
                 0 == numberOfCharsInWordBeforeCursor ? 1 : 2);
         mWordComposer.setComposingWord(codePoints,
-                mLatinIME.getCoordinatesForCurrentKeyboard(codePoints), prevWordsInfo);
+                mLatinIME.getCoordinatesForCurrentKeyboard(codePoints));
         mWordComposer.setCursorPositionWithinWord(
                 typedWord.codePointCount(0, numberOfCharsInWordBeforeCursor));
         mConnection.setComposingRegion(expectedCursorPosition - numberOfCharsInWordBeforeCursor,
@@ -1450,7 +1431,7 @@ public final class InputLogic {
             // with the typed word, so we need to resume suggestions right away.
             final int[] codePoints = StringUtils.toCodePointArray(stringToCommit);
             mWordComposer.setComposingWord(codePoints,
-                    mLatinIME.getCoordinatesForCurrentKeyboard(codePoints), prevWordsInfo);
+                    mLatinIME.getCoordinatesForCurrentKeyboard(codePoints));
             mConnection.setComposingText(textToCommit, 1);
         }
         // Don't restart suggestion yet. We'll restart if the user deletes the separator.
@@ -1897,21 +1878,6 @@ public final class InputLogic {
         // strings.
         mLastComposedWord = mWordComposer.commitWord(commitType,
                 chosenWordWithSuggestions, separatorString, prevWordsInfo);
-        final boolean shouldDiscardPreviousWordForSuggestion;
-        if (0 == StringUtils.codePointCount(separatorString)) {
-            // Separator is 0-length, we can keep the previous word for suggestion. Either this
-            // was a manual pick or the language has no spaces in which case we want to keep the
-            // previous word, or it was the keyboard closing or the cursor moving in which case it
-            // will be reset anyway.
-            shouldDiscardPreviousWordForSuggestion = false;
-        } else {
-            // Otherwise, we discard if the separator contains any non-whitespace.
-            shouldDiscardPreviousWordForSuggestion =
-                    !StringUtils.containsOnlyWhitespace(separatorString);
-        }
-        if (shouldDiscardPreviousWordForSuggestion) {
-            mWordComposer.discardPreviousWordForSuggestion();
-        }
     }
 
     /**
