@@ -25,10 +25,12 @@ import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceFragment;
+import android.preference.PreferenceGroup;
 import android.preference.PreferenceScreen;
 
 import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.DictionaryDumpBroadcastReceiver;
+import com.android.inputmethod.latin.DictionaryFacilitator;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.debug.ExternalDictionaryGetterForDebug;
 import com.android.inputmethod.latin.utils.ApplicationUtils;
@@ -48,10 +50,9 @@ public final class DebugSettings extends PreferenceFragment
     public static final String PREF_KEY_PREVIEW_DISMISS_DURATION =
             "pref_key_preview_dismiss_duration";
     private static final String PREF_READ_EXTERNAL_DICTIONARY = "read_external_dictionary";
-    private static final String PREF_DUMP_CONTACTS_DICT = "dump_contacts_dict";
-    private static final String PREF_DUMP_USER_DICT = "dump_user_dict";
-    private static final String PREF_DUMP_USER_HISTORY_DICT = "dump_user_history_dict";
-    private static final String PREF_DUMP_PERSONALIZATION_DICT = "dump_personalization_dict";
+    private static final String PREF_KEY_DUMP_DICTS = "pref_key_dump_dictionaries";
+    private static final String PREF_KEY_DUMP_DICT_PREFIX = "pref_key_dump_dictionaries";
+    private static final String DICT_NAME_KEY_FOR_EXTRAS = "dict_name";
     public static final String PREF_SLIDING_KEY_INPUT_PREVIEW = "pref_sliding_key_input_preview";
     public static final String PREF_KEY_LONGPRESS_TIMEOUT = "pref_key_longpress_timeout";
 
@@ -80,16 +81,18 @@ public final class DebugSettings extends PreferenceFragment
                     });
         }
 
+        final PreferenceGroup dictDumpPreferenceGroup =
+                (PreferenceGroup)findPreference(PREF_KEY_DUMP_DICTS);
         final OnPreferenceClickListener dictDumpPrefClickListener =
                 new DictDumpPrefClickListener(this);
-        findPreference(PREF_DUMP_CONTACTS_DICT).setOnPreferenceClickListener(
-                dictDumpPrefClickListener);
-        findPreference(PREF_DUMP_USER_DICT).setOnPreferenceClickListener(
-                dictDumpPrefClickListener);
-        findPreference(PREF_DUMP_USER_HISTORY_DICT).setOnPreferenceClickListener(
-                dictDumpPrefClickListener);
-        findPreference(PREF_DUMP_PERSONALIZATION_DICT).setOnPreferenceClickListener(
-                dictDumpPrefClickListener);
+        for (final String dictName : DictionaryFacilitator.DICT_TYPE_TO_CLASS.keySet()) {
+            final Preference preference = new Preference(getActivity());
+            preference.setKey(PREF_KEY_DUMP_DICT_PREFIX + dictName);
+            preference.setTitle("Dump " + dictName + " dictionary");
+            preference.setOnPreferenceClickListener(dictDumpPrefClickListener);
+            preference.getExtras().putString(DICT_NAME_KEY_FOR_EXTRAS, dictName);
+            dictDumpPreferenceGroup.addPreference(preference);
+        }
         final Resources res = getResources();
         setupKeyLongpressTimeoutSettings(prefs, res);
         setupKeyPreviewAnimationDuration(prefs, res, PREF_KEY_PREVIEW_SHOW_UP_DURATION,
@@ -117,18 +120,7 @@ public final class DebugSettings extends PreferenceFragment
 
         @Override
         public boolean onPreferenceClick(final Preference arg0) {
-            final String dictName;
-            if (arg0.getKey().equals(PREF_DUMP_CONTACTS_DICT)) {
-                dictName = Dictionary.TYPE_CONTACTS;
-            } else if (arg0.getKey().equals(PREF_DUMP_USER_DICT)) {
-                dictName = Dictionary.TYPE_USER;
-            } else if (arg0.getKey().equals(PREF_DUMP_USER_HISTORY_DICT)) {
-                dictName = Dictionary.TYPE_USER_HISTORY;
-            } else if (arg0.getKey().equals(PREF_DUMP_PERSONALIZATION_DICT)) {
-                dictName = Dictionary.TYPE_PERSONALIZATION;
-            } else {
-                dictName = null;
-            }
+            final String dictName = arg0.getExtras().getString(DICT_NAME_KEY_FOR_EXTRAS);
             if (dictName != null) {
                 final Intent intent =
                         new Intent(DictionaryDumpBroadcastReceiver.DICTIONARY_DUMP_INTENT_ACTION);
