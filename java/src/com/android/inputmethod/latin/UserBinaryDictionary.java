@@ -67,10 +67,6 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
     final private String mLocale;
     final private boolean mAlsoUseMoreRestrictiveLocales;
 
-    private UserBinaryDictionary(final Context context, final Locale locale, final File dictFile) {
-        this(context, locale, false /* alsoUseMoreRestrictiveLocales */, dictFile, NAME);
-    }
-
     protected UserBinaryDictionary(final Context context, final Locale locale,
             final boolean alsoUseMoreRestrictiveLocales, final File dictFile, final String name) {
         super(context, getDictName(name, locale, dictFile), locale, Dictionary.TYPE_USER, dictFile);
@@ -107,8 +103,9 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
 
     @UsedForTesting
     public static UserBinaryDictionary getDictionary(final Context context, final Locale locale,
-            final File dictFile) {
-        return new UserBinaryDictionary(context, locale, dictFile);
+            final File dictFile, final String dictNamePrefix) {
+        return new UserBinaryDictionary(context, locale, false /* alsoUseMoreRestrictiveLocales */,
+                dictFile, dictNamePrefix + NAME);
     }
 
     @Override
