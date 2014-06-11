@@ -26,13 +26,9 @@ import com.android.inputmethod.latin.makedict.WordProperty;
 import com.android.inputmethod.latin.utils.CombinedFormatUtils;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.TreeSet;
@@ -57,27 +53,15 @@ public class CombinedInputOutput {
      * @return true if the file is in the combined format, false otherwise
      */
     public static boolean isCombinedDictionary(final String filename) {
-        BufferedReader reader = null;
-        try {
-            reader = new BufferedReader(new FileReader(new File(filename)));
+        try (final BufferedReader reader = new BufferedReader(new FileReader(filename))) {
             String firstLine = reader.readLine();
             while (firstLine.startsWith(COMMENT_LINE_STARTER)) {
                 firstLine = reader.readLine();
             }
             return firstLine.matches(
                     "^" + CombinedFormatUtils.DICTIONARY_TAG + "=[^:]+(:[^=]+=[^:]+)*");
-        } catch (FileNotFoundException e) {
+        } catch (final IOException e) {
             return false;
-        } catch (IOException e) {
-            return false;
-        } finally {
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException e) {
-                    // do nothing
-                }
-            }
         }
     }
 
@@ -87,12 +71,11 @@ public class CombinedInputOutput {
      * This is the public method that will read a combined file and return the corresponding memory
      * representation.
      *
-     * @param source the file to read the data from.
+     * @param reader the buffered reader to read the data from.
      * @return the in-memory representation of the dictionary.
      */
-    public static FusionDictionary readDictionaryCombined(final InputStream source)
+    public static FusionDictionary readDictionaryCombined(final BufferedReader reader)
             throws IOException {
-        final BufferedReader reader = new BufferedReader(new InputStreamReader(source, "UTF-8"));
         String headerLine = reader.readLine();
         while (headerLine.startsWith(COMMENT_LINE_STARTER)) {
             headerLine = reader.readLine();
@@ -218,11 +201,11 @@ public class CombinedInputOutput {
     /**
      * Writes a dictionary to a combined file.
      *
-     * @param destination a destination stream to write to.
+     * @param destination a destination writer.
      * @param dict the dictionary to write.
      */
-    public static void writeDictionaryCombined(
-            final Writer destination, final FusionDictionary dict) throws IOException {
+    public static void writeDictionaryCombined(final BufferedWriter destination,
+            final FusionDictionary dict) throws IOException {
         final TreeSet<WordProperty> wordPropertiesInDict = new TreeSet<>();
         for (final WordProperty wordProperty : dict) {
             // This for ordering by frequency, then by asciibetic order
@@ -232,6 +215,5 @@ public class CombinedInputOutput {
         for (final WordProperty wordProperty : wordPropertiesInDict) {
             destination.write(CombinedFormatUtils.formatWordProperty(wordProperty));
         }
-        destination.close();
     }
 }

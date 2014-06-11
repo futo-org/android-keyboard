@@ -27,18 +27,22 @@ import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
 import com.android.inputmethod.latin.makedict.Ver2DictEncoder;
 import com.android.inputmethod.latin.makedict.Ver4DictEncoder;
 
+import org.xml.sax.SAXException;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.LinkedList;
 
 import javax.xml.parsers.ParserConfigurationException;
-
-import org.xml.sax.SAXException;
 
 /**
  * Main class/method for DictionaryMaker.
@@ -279,20 +283,19 @@ public class DictionaryMaker {
      */
     private static FusionDictionary readCombinedFile(final String combinedFilename)
         throws FileNotFoundException, IOException {
-        FileInputStream inStream = null;
-        try {
-            final File file = new File(combinedFilename);
-            inStream = new FileInputStream(file);
-            return CombinedInputOutput.readDictionaryCombined(inStream);
-        } finally {
-            if (null != inStream) {
-                try {
-                    inStream.close();
-                } catch (IOException e) {
-                    // do nothing
-                }
-            }
+        try (final BufferedReader reader = new BufferedReader(new InputStreamReader(
+                new FileInputStream(combinedFilename), "UTF-8"))
+        ) {
+            return CombinedInputOutput.readDictionaryCombined(reader);
         }
+    }
+
+    private static BufferedInputStream getBufferedFileInputStream(final String filename)
+            throws FileNotFoundException {
+        if (filename == null) {
+            return null;
+        }
+        return new BufferedInputStream(new FileInputStream(filename));
     }
 
     /**
@@ -310,12 +313,13 @@ public class DictionaryMaker {
     private static FusionDictionary readXmlFile(final String unigramXmlFilename,
             final String shortcutXmlFilename, final String bigramXmlFilename)
             throws FileNotFoundException, SAXException, IOException, ParserConfigurationException {
-        final FileInputStream unigrams = new FileInputStream(new File(unigramXmlFilename));
-        final FileInputStream shortcuts = null == shortcutXmlFilename ? null :
-                new FileInputStream(new File(shortcutXmlFilename));
-        final FileInputStream bigrams = null == bigramXmlFilename ? null :
-                new FileInputStream(new File(bigramXmlFilename));
-        return XmlDictInputOutput.readDictionaryXml(unigrams, shortcuts, bigrams);
+        try (
+            final BufferedInputStream unigrams = getBufferedFileInputStream(unigramXmlFilename);
+            final BufferedInputStream shortcuts = getBufferedFileInputStream(shortcutXmlFilename);
+            final BufferedInputStream bigrams = getBufferedFileInputStream(bigramXmlFilename);
+        ) {
+            return XmlDictInputOutput.readDictionaryXml(unigrams, shortcuts, bigrams);
+        }
     }
 
     /**
@@ -374,8 +378,9 @@ public class DictionaryMaker {
      */
     private static void writeXmlDictionary(final String outputFilename,
             final FusionDictionary dict) throws FileNotFoundException, IOException {
-        XmlDictInputOutput.writeDictionaryXml(new BufferedWriter(new FileWriter(outputFilename)),
-                dict);
+        try (final BufferedWriter writer = new BufferedWriter(new FileWriter(outputFilename))) {
+            XmlDictInputOutput.writeDictionaryXml(writer, dict);
+        }
     }
 
     /**
@@ -388,7 +393,8 @@ public class DictionaryMaker {
      */
     private static void writeCombinedDictionary(final String outputFilename,
             final FusionDictionary dict) throws FileNotFoundException, IOException {
-        CombinedInputOutput.writeDictionaryCombined(
-                new BufferedWriter(new FileWriter(outputFilename)), dict);
+        try (final BufferedWriter writer = new BufferedWriter(new FileWriter(outputFilename))) {
+            CombinedInputOutput.writeDictionaryCombined(writer, dict);
+        }
     }
 }

@@ -16,11 +16,6 @@
 
 package com.android.inputmethod.latin.dicttool;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -32,8 +27,7 @@ public class Compress {
         // This container class is not publicly instantiable.
     }
 
-    public static OutputStream getCompressedStream(final OutputStream out)
-        throws java.io.IOException {
+    public static OutputStream getCompressedStream(final OutputStream out) throws IOException {
         return new GZIPOutputStream(out);
     }
 
@@ -43,7 +37,6 @@ public class Compress {
 
     static public class Compressor extends Dicttool.Command {
         public static final String COMMAND = "compress";
-        public static final String STDIN_OR_STDOUT = "-";
 
         public Compressor() {
         }
@@ -61,17 +54,18 @@ public class Compress {
             }
             final String inFilename = mArgs.length >= 1 ? mArgs[0] : STDIN_OR_STDOUT;
             final String outFilename = mArgs.length >= 2 ? mArgs[1] : STDIN_OR_STDOUT;
-            final InputStream input = inFilename.equals(STDIN_OR_STDOUT) ? System.in
-                    : new BufferedInputStream(new FileInputStream(new File(inFilename)));
-            final OutputStream output = outFilename.equals(STDIN_OR_STDOUT) ? System.out
-                    : new BufferedOutputStream(new FileOutputStream(new File(outFilename)));
-            BinaryDictOffdeviceUtils.copy(input, new GZIPOutputStream(output));
+            try (
+                final InputStream input = getFileInputStreamOrStdIn(inFilename);
+                final OutputStream compressedOutput = getCompressedStream(
+                        getFileOutputStreamOrStdOut(outFilename))
+            ) {
+                BinaryDictOffdeviceUtils.copy(input, compressedOutput);
+            }
         }
     }
 
     static public class Uncompressor extends Dicttool.Command {
         public static final String COMMAND = "uncompress";
-        public static final String STDIN_OR_STDOUT = "-";
 
         public Uncompressor() {
         }
@@ -89,11 +83,13 @@ public class Compress {
             }
             final String inFilename = mArgs.length >= 1 ? mArgs[0] : STDIN_OR_STDOUT;
             final String outFilename = mArgs.length >= 2 ? mArgs[1] : STDIN_OR_STDOUT;
-            final InputStream input = inFilename.equals(STDIN_OR_STDOUT) ? System.in
-                    : new BufferedInputStream(new FileInputStream(new File(inFilename)));
-            final OutputStream output = outFilename.equals(STDIN_OR_STDOUT) ? System.out
-                    : new BufferedOutputStream(new FileOutputStream(new File(outFilename)));
-            BinaryDictOffdeviceUtils.copy(new GZIPInputStream(input), output);
+            try (
+                final InputStream uncompressedInput = getUncompressedStream(
+                        getFileInputStreamOrStdIn(inFilename));
+                final OutputStream output = getFileOutputStreamOrStdOut(outFilename)
+            ) {
+                BinaryDictOffdeviceUtils.copy(uncompressedInput, output);
+            }
         }
     }
 }
