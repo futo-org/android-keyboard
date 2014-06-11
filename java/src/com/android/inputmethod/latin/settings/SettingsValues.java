@@ -85,6 +85,7 @@ public final class SettingsValues {
     public final int mKeyPreviewPopupDismissDelay;
     private final boolean mAutoCorrectEnabled;
     public final float mAutoCorrectionThreshold;
+    // TODO: Rename this to mAutoCorrectionEnabledPerUserSettings.
     public final boolean mAutoCorrectionEnabled;
     public final int mSuggestionVisibility;
     public final int mDisplayOrientation;
@@ -193,6 +194,7 @@ public final class SettingsValues {
         return mInputAttributes.mApplicationSpecifiedCompletionOn;
     }
 
+    // TODO: Rename this to needsToLookupSuggestions().
     public boolean isSuggestionsRequested() {
         return mInputAttributes.mShouldShowSuggestions
                 && (mAutoCorrectionEnabled

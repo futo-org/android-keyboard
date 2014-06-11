@@ -1336,9 +1336,12 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final SettingsValues currentSettingsValues = mSettings.getCurrent();
         final boolean shouldShowImportantNotice =
                 ImportantNoticeUtils.shouldShowImportantNotice(this);
+        final boolean shouldShowSuggestionCandidates =
+                currentSettingsValues.mInputAttributes.mShouldShowSuggestions
+                && currentSettingsValues.isCurrentOrientationAllowingSuggestionsPerUserSettings();
         final boolean shouldShowSuggestionsStripUnlessPassword = shouldShowImportantNotice
                 || currentSettingsValues.mShowsVoiceInputKey
-                || currentSettingsValues.isSuggestionsRequested()
+                || shouldShowSuggestionCandidates
                 || currentSettingsValues.isApplicationSpecifiedCompletionsOn();
         final boolean shouldShowSuggestionsStrip = shouldShowSuggestionsStripUnlessPassword
                 && !currentSettingsValues.mInputAttributes.mIsPasswordField;
@@ -1353,14 +1356,16 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final boolean noSuggestionsToShow = (SuggestedWords.EMPTY == suggestedWords)
                 || suggestedWords.isPunctuationSuggestions()
                 || isEmptyApplicationSpecifiedCompletions;
-        final boolean isShowingImportantNotice;
         if (shouldShowImportantNotice && noSuggestionsToShow) {
-            isShowingImportantNotice = mSuggestionStripView.maybeShowImportantNoticeTitle();
-        } else {
-            isShowingImportantNotice = false;
+            if (mSuggestionStripView.maybeShowImportantNoticeTitle()) {
+                return;
+            }
         }
 
-        if (currentSettingsValues.isSuggestionsRequested() && !isShowingImportantNotice) {
+        if (currentSettingsValues.isCurrentOrientationAllowingSuggestionsPerUserSettings()
+                // We should clear suggestions if there is no suggestion to show.
+                || noSuggestionsToShow
+                || currentSettingsValues.isApplicationSpecifiedCompletionsOn()) {
             mSuggestionStripView.setSuggestions(suggestedWords,
                     SubtypeLocaleUtils.isRtlLanguage(mSubtypeSwitcher.getCurrentSubtype()));
         }
