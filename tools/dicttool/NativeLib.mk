@@ -30,6 +30,9 @@ ifeq ($(FLAG_DBG), true)
 endif #FLAG_DBG
 
 LOCAL_CFLAGS += -DHOST_TOOL -fPIC -Wno-deprecated -Wno-unused-parameter -Wno-unused-function
+ifneq ($(strip $(HOST_JDK_IS_64BIT_VERSION)),)
+LOCAL_MULTILIB := 64
+endif #HOST_JDK_IS_64BIT_VERSION
 
 LOCAL_CLANG := true
 # For C++11
