@@ -26,7 +26,7 @@ import java.io.File;
 import java.util.Locale;
 
 public class ContextualDictionary extends ExpandableBinaryDictionary {
-    /* package */ static final String NAME = PersonalizationDictionary.class.getSimpleName();
+    /* package */ static final String NAME = ContextualDictionary.class.getSimpleName();
 
     private ContextualDictionary(final Context context, final Locale locale,
             final File dictFile) {
