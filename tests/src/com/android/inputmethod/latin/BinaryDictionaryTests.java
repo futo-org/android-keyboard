@@ -1450,27 +1450,23 @@ public class BinaryDictionaryTests extends AndroidTestCase {
                 0 /* offset */, dictFile.length(), true /* useFullEditDistance */,
                 Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
         final int dummyProbability = 0;
-        binaryDictionary.addUnigramEntry("", dummyProbability, "" /* shortcutTarget */,
-                BinaryDictionary.NOT_A_PROBABILITY /* shortcutProbability */,
-                true /* isBeginningOfSentence */, true /* isNotAWord */, false /* isBlacklisted */,
-                BinaryDictionary.NOT_A_VALID_TIMESTAMP /* timestamp */);
-        final PrevWordsInfo prevWordsInfoStartOfSentence = PrevWordsInfo.BEGINNING_OF_SENTENCE;
+        final PrevWordsInfo prevWordsInfoBeginningOfSentence = PrevWordsInfo.BEGINNING_OF_SENTENCE;
         final int bigramProbability = 200;
         addUnigramWord(binaryDictionary, "aaa", dummyProbability);
-        binaryDictionary.addNgramEntry(prevWordsInfoStartOfSentence, "aaa", bigramProbability,
+        binaryDictionary.addNgramEntry(prevWordsInfoBeginningOfSentence, "aaa", bigramProbability,
                 BinaryDictionary.NOT_A_VALID_TIMESTAMP /* timestamp */);
         assertEquals(bigramProbability,
-                binaryDictionary.getNgramProbability(prevWordsInfoStartOfSentence, "aaa"));
-        binaryDictionary.addNgramEntry(prevWordsInfoStartOfSentence, "aaa", bigramProbability,
+                binaryDictionary.getNgramProbability(prevWordsInfoBeginningOfSentence, "aaa"));
+        binaryDictionary.addNgramEntry(prevWordsInfoBeginningOfSentence, "aaa", bigramProbability,
                 BinaryDictionary.NOT_A_VALID_TIMESTAMP /* timestamp */);
         addUnigramWord(binaryDictionary, "bbb", dummyProbability);
-        binaryDictionary.addNgramEntry(prevWordsInfoStartOfSentence, "bbb", bigramProbability,
+        binaryDictionary.addNgramEntry(prevWordsInfoBeginningOfSentence, "bbb", bigramProbability,
                 BinaryDictionary.NOT_A_VALID_TIMESTAMP /* timestamp */);
         binaryDictionary.flushWithGC();
         assertEquals(bigramProbability,
-                binaryDictionary.getNgramProbability(prevWordsInfoStartOfSentence, "aaa"));
+                binaryDictionary.getNgramProbability(prevWordsInfoBeginningOfSentence, "aaa"));
         assertEquals(bigramProbability,
-                binaryDictionary.getNgramProbability(prevWordsInfoStartOfSentence, "bbb"));
+                binaryDictionary.getNgramProbability(prevWordsInfoBeginningOfSentence, "bbb"));
     }
 
     public void testGetMaxFrequencyOfExactMatches() {
