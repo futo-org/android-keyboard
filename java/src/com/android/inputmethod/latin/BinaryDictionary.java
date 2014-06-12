@@ -207,6 +207,7 @@ public final class BinaryDictionary extends Dictionary {
     private static native boolean addUnigramWordNative(long dict, int[] word, int probability,
             int[] shortcutTarget, int shortcutProbability, boolean isBeginningOfSentence,
             boolean isNotAWord, boolean isBlacklisted, int timestamp);
+    private static native boolean removeUnigramWordNative(long dict, int[] word);
     private static native boolean addBigramWordsNative(long dict, int[] word0,
             boolean isBeginningOfSentence, int[] word1, int probability, int timestamp);
     private static native boolean removeBigramWordsNative(long dict, int[] word0,
@@ -430,6 +431,19 @@ public final class BinaryDictionary extends Dictionary {
                 StringUtils.toCodePointArray(shortcutTarget) : null;
         if (!addUnigramWordNative(mNativeDict, codePoints, probability, shortcutTargetCodePoints,
                 shortcutProbability, isBeginningOfSentence, isNotAWord, isBlacklisted, timestamp)) {
+            return false;
+        }
+        mHasUpdated = true;
+        return true;
+    }
+
+    // Remove a unigram entry from the binary dictionary in native code.
+    public boolean removeUnigramEntry(final String word) {
+        if (TextUtils.isEmpty(word)) {
+            return false;
+        }
+        final int[] codePoints = StringUtils.toCodePointArray(word);
+        if (!removeUnigramWordNative(mNativeDict, codePoints)) {
             return false;
         }
         mHasUpdated = true;
