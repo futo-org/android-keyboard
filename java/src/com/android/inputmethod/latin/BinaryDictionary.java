@@ -292,6 +292,7 @@ public final class BinaryDictionary extends Dictionary {
         }
 
         mNativeSuggestOptions.setIsGesture(isGesture);
+        mNativeSuggestOptions.setBlockOffensiveWords(blockOffensiveWords);
         mNativeSuggestOptions.setAdditionalFeaturesOptions(additionalFeaturesOptions);
         if (inOutLanguageWeight != null) {
             mInputOutputLanguageWeight[0] = inOutLanguageWeight[0];
@@ -319,18 +320,10 @@ public final class BinaryDictionary extends Dictionary {
                 ++len;
             }
             if (len > 0) {
-                final SuggestedWordInfo suggestedWordInfo =
-                        new SuggestedWordInfo(new String(mOutputCodePoints, start, len),
-                                mOutputScores[j], mOutputTypes[j], this /* sourceDict */,
-                                mSpaceIndices[j] /* indexOfTouchPointOfSecondWord */,
-                                mOutputAutoCommitFirstWordConfidence[0]);
-                if (blockOffensiveWords && suggestedWordInfo.isPossiblyOffensive()
-                        && !suggestedWordInfo.isExactMatch()) {
-                    // If we block potentially offensive words, and if the word is possibly
-                    // offensive, then we don't output it unless it's also an exact match.
-                    continue;
-                }
-                suggestions.add(suggestedWordInfo);
+                suggestions.add(new SuggestedWordInfo(new String(mOutputCodePoints, start, len),
+                        mOutputScores[j], mOutputTypes[j], this /* sourceDict */,
+                        mSpaceIndices[j] /* indexOfTouchPointOfSecondWord */,
+                        mOutputAutoCommitFirstWordConfidence[0]));
             }
         }
         return suggestions;

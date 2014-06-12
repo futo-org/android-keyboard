@@ -26,6 +26,7 @@
 #include "suggest/core/policy/scoring.h"
 #include "suggest/core/result/suggestion_results.h"
 #include "suggest/core/session/dic_traverse_session.h"
+#include "suggest/core/suggest_options.h"
 
 namespace latinime {
 
@@ -105,6 +106,11 @@ const int SuggestionsOutputUtils::MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT = 16;
 
     // Entries that are blacklisted or do not represent a word should not be output.
     const bool isValidWord = !terminalDicNode->isBlacklistedOrNotAWord();
+    // When we have to block offensive words, non-exact matched offensive words should not be
+    // output.
+    const bool blockOffensiveWords = traverseSession->getSuggestOptions()->blockOffensiveWords();
+    const bool isBlockedOffensiveWord = blockOffensiveWords && isPossiblyOffensiveWord
+            && !isSafeExactMatch;
 
     // Increase output score of top typing suggestion to ensure autocorrection.
     // TODO: Better integration with java side autocorrection logic.
@@ -115,8 +121,9 @@ const int SuggestionsOutputUtils::MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT = 16;
                      || (isValidWord && scoringPolicy->doesAutoCorrectValidWord()),
             boostExactMatches);
 
-    // Don't output invalid words. However, we still need to submit their shortcuts if any.
-    if (isValidWord) {
+    // Don't output invalid or blocked offensive words. However, we still need to submit their
+    // shortcuts if any.
+    if (isValidWord && !isBlockedOffensiveWord) {
         int codePoints[MAX_WORD_LENGTH];
         terminalDicNode->outputResult(codePoints);
         const int indexToPartialCommit = outputSecondWordFirstLetterInputIndex ?
