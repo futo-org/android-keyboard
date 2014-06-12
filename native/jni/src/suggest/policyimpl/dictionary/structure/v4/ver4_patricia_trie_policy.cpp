@@ -221,6 +221,11 @@ bool Ver4PatriciaTriePolicy::addUnigramEntry(const int *const word, const int le
     }
 }
 
+bool Ver4PatriciaTriePolicy::removeUnigramEntry(const int *const word, const int length) {
+    // TODO: Implement.
+    return false;
+}
+
 bool Ver4PatriciaTriePolicy::addNgramEntry(const PrevWordsInfo *const prevWordsInfo,
         const BigramProperty *const bigramProperty) {
     if (!mBuffers->isUpdatable()) {

@@ -99,6 +99,11 @@ bool Dictionary::addUnigramEntry(const int *const word, const int length,
     return mDictionaryStructureWithBufferPolicy->addUnigramEntry(word, length, unigramProperty);
 }
 
+bool Dictionary::removeUnigramEntry(const int *const codePoints, const int codePointCount) {
+    TimeKeeper::setCurrentTime();
+    return mDictionaryStructureWithBufferPolicy->removeUnigramEntry(codePoints, codePointCount);
+}
+
 bool Dictionary::addNgramEntry(const PrevWordsInfo *const prevWordsInfo,
         const BigramProperty *const bigramProperty) {
     TimeKeeper::setCurrentTime();
