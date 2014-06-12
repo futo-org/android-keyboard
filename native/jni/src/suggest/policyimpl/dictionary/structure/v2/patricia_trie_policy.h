@@ -88,6 +88,12 @@ class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
         return false;
     }
 
+    bool removeUnigramEntry(const int *const word, const int length) {
+        // This method should not be called for non-updatable dictionary.
+        AKLOGI("Warning: removeUnigramEntry() is called for non-updatable dictionary.");
+        return false;
+    }
+
     bool addNgramEntry(const PrevWordsInfo *const prevWordsInfo,
             const BigramProperty *const bigramProperty) {
         // This method should not be called for non-updatable dictionary.

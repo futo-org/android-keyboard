@@ -74,6 +74,9 @@ class DictionaryStructureWithBufferPolicy {
             const UnigramProperty *const unigramProperty) = 0;
 
     // Returns whether the update was success or not.
+    virtual bool removeUnigramEntry(const int *const word, const int length) = 0;
+
+    // Returns whether the update was success or not.
     virtual bool addNgramEntry(const PrevWordsInfo *const prevWordsInfo,
             const BigramProperty *const bigramProperty) = 0;
 
