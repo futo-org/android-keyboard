@@ -34,6 +34,10 @@ class SuggestOptions{
         return getBoolOption(USE_FULL_EDIT_DISTANCE);
     }
 
+    AK_FORCE_INLINE bool blockOffensiveWords() const {
+        return getBoolOption(BLOCK_OFFENSIVE_WORDS);
+    }
+
     AK_FORCE_INLINE bool getAdditionalFeaturesBoolOption(const int key) const {
         return getBoolOption(key + ADDITIONAL_FEATURES_OPTIONS);
     }
@@ -45,9 +49,10 @@ class SuggestOptions{
     // reorder options.
     static const int IS_GESTURE = 0;
     static const int USE_FULL_EDIT_DISTANCE = 1;
+    static const int BLOCK_OFFENSIVE_WORDS = 2;
     // Additional features options are stored after the other options and used as setting values of
     // experimental features.
-    static const int ADDITIONAL_FEATURES_OPTIONS = 2;
+    static const int ADDITIONAL_FEATURES_OPTIONS = 3;
 
     const int *const mOptions;
     const int mLength;
