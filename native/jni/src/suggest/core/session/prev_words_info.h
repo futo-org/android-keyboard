@@ -85,6 +85,14 @@ class PrevWordsInfo {
         return mPrevWordCodePointCount[n - 1];
     }
 
+    // n is 1-indexed.
+    bool isNthPrevWordBeginningOfSentence(const int n) const {
+        if (n <= 0 || n > MAX_PREV_WORD_COUNT_FOR_N_GRAM) {
+            return false;
+        }
+        return mIsBeginningOfSentence[n - 1];
+    }
+
  private:
     DISALLOW_COPY_AND_ASSIGN(PrevWordsInfo);
 

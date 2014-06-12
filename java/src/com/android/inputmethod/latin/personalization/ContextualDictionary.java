@@ -35,10 +35,16 @@ public class ContextualDictionary extends ExpandableBinaryDictionary {
         // Always reset the contents.
         clear();
     }
+
     @UsedForTesting
     public static ContextualDictionary getDictionary(final Context context, final Locale locale,
             final File dictFile, final String dictNamePrefix) {
         return new ContextualDictionary(context, locale, dictFile);
+    }
+
+    @Override
+    protected boolean enableBeginningOfSentencePrediction() {
+        return true;
     }
 
     @Override

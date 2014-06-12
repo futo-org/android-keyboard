@@ -246,7 +246,24 @@ bool Ver4PatriciaTriePolicy::addNgramEntry(const PrevWordsInfo *const prevWordsI
             false /* tryLowerCaseSearch */);
     // TODO: Support N-gram.
     if (prevWordsPtNodePos[0] == NOT_A_DICT_POS) {
-        return false;
+        if (prevWordsInfo->isNthPrevWordBeginningOfSentence(1 /* n */)) {
+            const std::vector<UnigramProperty::ShortcutProperty> shortcuts;
+            const UnigramProperty beginningOfSentenceUnigramProperty(
+                    true /* representsBeginningOfSentence */, true /* isNotAWord */,
+                    false /* isBlacklisted */, MAX_PROBABILITY /* probability */,
+                    NOT_A_TIMESTAMP /* timestamp */, 0 /* level */, 0 /* count */, &shortcuts);
+            if (!addUnigramEntry(prevWordsInfo->getNthPrevWordCodePoints(1 /* n */),
+                    prevWordsInfo->getNthPrevWordCodePointCount(1 /* n */),
+                    &beginningOfSentenceUnigramProperty)) {
+                AKLOGE("Cannot add unigram entry for the beginning-of-sentence.");
+                return false;
+            }
+            // Refresh Terminal PtNode positions.
+            prevWordsInfo->getPrevWordsTerminalPtNodePos(this, prevWordsPtNodePos,
+                    false /* tryLowerCaseSearch */);
+        } else {
+            return false;
+        }
     }
     const int word1Pos = getTerminalPtNodePositionOfWord(
             bigramProperty->getTargetCodePoints()->data(),
