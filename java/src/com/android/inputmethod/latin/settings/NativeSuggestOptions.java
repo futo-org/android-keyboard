@@ -20,7 +20,8 @@ public class NativeSuggestOptions {
     // Need to update suggest_options.h when you add, remove or reorder options.
     private static final int IS_GESTURE = 0;
     private static final int USE_FULL_EDIT_DISTANCE = 1;
-    private static final int OPTIONS_SIZE = 2;
+    private static final int BLOCK_OFFENSIVE_WORDS = 2;
+    private static final int OPTIONS_SIZE = 3;
 
     private final int[] mOptions = new int[OPTIONS_SIZE
             + AdditionalFeaturesSettingUtils.ADDITIONAL_FEATURES_SETTINGS_SIZE];
@@ -31,6 +32,10 @@ public class NativeSuggestOptions {
 
     public void setUseFullEditDistance(final boolean value) {
         setBooleanOption(USE_FULL_EDIT_DISTANCE, value);
+    }
+
+    public void setBlockOffensiveWords(final boolean value) {
+        setBooleanOption(BLOCK_OFFENSIVE_WORDS, value);
     }
 
     public void setAdditionalFeaturesOptions(final int[] additionalOptions) {
