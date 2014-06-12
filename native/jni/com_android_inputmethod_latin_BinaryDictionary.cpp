@@ -357,6 +357,18 @@ static bool latinime_BinaryDictionary_addUnigramWord(JNIEnv *env, jclass clazz, 
     return dictionary->addUnigramEntry(codePoints, codePointCount, &unigramProperty);
 }
 
+static bool latinime_BinaryDictionary_removeUnigramWord(JNIEnv *env, jclass clazz, jlong dict,
+        jintArray word) {
+    Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
+    if (!dictionary) {
+        return false;
+    }
+    jsize codePointCount = env->GetArrayLength(word);
+    int codePoints[codePointCount];
+    env->GetIntArrayRegion(word, 0, codePointCount, codePoints);
+    return dictionary->removeUnigramEntry(codePoints, codePointCount);
+}
+
 static bool latinime_BinaryDictionary_addBigramWords(JNIEnv *env, jclass clazz, jlong dict,
         jintArray word0, jboolean isBeginningOfSentence, jintArray word1, jint probability,
         jint timestamp) {
@@ -668,6 +680,11 @@ static const JNINativeMethod sMethods[] = {
         const_cast<char *>("addUnigramWordNative"),
         const_cast<char *>("(J[II[IIZZZI)Z"),
         reinterpret_cast<void *>(latinime_BinaryDictionary_addUnigramWord)
+    },
+    {
+        const_cast<char *>("removeUnigramWordNative"),
+        const_cast<char *>("(J[I)Z"),
+        reinterpret_cast<void *>(latinime_BinaryDictionary_removeUnigramWord)
     },
     {
         const_cast<char *>("addBigramWordsNative"),
