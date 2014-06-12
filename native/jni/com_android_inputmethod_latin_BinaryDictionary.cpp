@@ -249,7 +249,7 @@ static void latinime_BinaryDictionary_getSuggestions(JNIEnv *env, jclass clazz, 
     env->GetFloatArrayRegion(inOutLanguageWeight, 0, 1 /* len */, &languageWeight);
     SuggestionResults suggestionResults(MAX_RESULTS);
     const PrevWordsInfo prevWordsInfo(prevWordCodePoints, prevWordCodePointsLength,
-            false /* isStartOfSentence */);
+            isBeginningOfSentence);
     if (givenSuggestOptions.isGesture() || inputSize > 0) {
         // TODO: Use SuggestionResults to return suggestions.
         dictionary->getSuggestions(pInfo, traverseSession, xCoordinates, yCoordinates,
