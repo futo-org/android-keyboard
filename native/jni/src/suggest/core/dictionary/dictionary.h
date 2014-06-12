@@ -81,6 +81,8 @@ class Dictionary {
     bool addUnigramEntry(const int *const codePoints, const int codePointCount,
             const UnigramProperty *const unigramProperty);
 
+    bool removeUnigramEntry(const int *const codePoints, const int codePointCount);
+
     bool addNgramEntry(const PrevWordsInfo *const prevWordsInfo,
             const BigramProperty *const bigramProperty);
 
