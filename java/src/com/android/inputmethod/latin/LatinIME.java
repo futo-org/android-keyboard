@@ -69,6 +69,7 @@ import com.android.inputmethod.latin.Suggest.OnGetSuggestedWordsCallback;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.latin.inputlogic.InputLogic;
+import com.android.inputmethod.latin.personalization.ContextualDictionaryUpdater;
 import com.android.inputmethod.latin.personalization.DictionaryDecayBroadcastReciever;
 import com.android.inputmethod.latin.personalization.PersonalizationDictionaryUpdater;
 import com.android.inputmethod.latin.personalization.PersonalizationHelper;
@@ -125,6 +126,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // TODO: Move from LatinIME.
     private final PersonalizationDictionaryUpdater mPersonalizationDictionaryUpdater =
             new PersonalizationDictionaryUpdater(this /* context */, mDictionaryFacilitator);
+    private final ContextualDictionaryUpdater mContextualDictionaryUpdater =
+            new ContextualDictionaryUpdater(this /* context */, mDictionaryFacilitator);
     private final InputLogic mInputLogic = new InputLogic(this /* LatinIME */,
             this /* SuggestionStripViewAccessor */, mDictionaryFacilitator);
     // We expect to have only one decoder in almost all cases, hence the default capacity of 1.
@@ -552,8 +555,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mPersonalizationDictionaryUpdater.onLoadSettings(
                 currentSettingsValues.mUsePersonalizedDicts,
                 mSubtypeSwitcher.isSystemLocaleSameAsLocaleOfAllEnabledSubtypesOfEnabledImes());
+        mContextualDictionaryUpdater.onLoadSettings(currentSettingsValues.mUsePersonalizedDicts);
         final boolean shouldKeepUserHistoryDictionaries;
-        if (mSettings.getCurrent().mUsePersonalizedDicts) {
+        if (currentSettingsValues.mUsePersonalizedDicts) {
             shouldKeepUserHistoryDictionaries = true;
         } else {
             shouldKeepUserHistoryDictionaries = false;
@@ -623,6 +627,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     public void onDestroy() {
         mDictionaryFacilitator.closeDictionaries();
         mPersonalizationDictionaryUpdater.onDestroy();
+        mContextualDictionaryUpdater.onDestroy();
         mSettings.onDestroy();
         unregisterReceiver(mConnectivityAndRingerModeChangeReceiver);
         unregisterReceiver(mDictionaryPackInstallReceiver);
@@ -864,6 +869,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 currentSettingsValues.mGestureTrailEnabled,
                 currentSettingsValues.mGestureFloatingPreviewTextEnabled);
 
+        // Contextual dictionary should be updated for the current application.
+        mContextualDictionaryUpdater.onStartInputView(editorInfo.packageName);
         if (TRACE) Debug.startMethodTracing("/data/trace/latinime");
     }
 
