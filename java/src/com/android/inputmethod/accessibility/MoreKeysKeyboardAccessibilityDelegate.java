@@ -23,6 +23,7 @@ import android.view.MotionEvent;
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.KeyDetector;
 import com.android.inputmethod.keyboard.MoreKeysKeyboardView;
+import com.android.inputmethod.keyboard.PointerTracker;
 
 /**
  * This class represents a delegate that can be registered in {@link MoreKeysKeyboardView} to
@@ -102,11 +103,15 @@ public class MoreKeysKeyboardAccessibilityDelegate
             // Invoke {@link MoreKeysKeyboardView#onUpEvent(int,int,int,long)} as if this hover
             // exit event selects a key.
             mKeyboardView.onUpEvent(x, y, pointerId, eventTime);
-            mKeyboardView.dismissMoreKeysPanel();
+            // TODO: Should fix this reference. This is a hack to clear the state of
+            // {@link PointerTracker}.
+            PointerTracker.dismissAllMoreKeysPanels();
             return;
         }
         // Close the more keys keyboard.
-        mKeyboardView.dismissMoreKeysPanel();
+        // TODO: Should fix this reference. This is a hack to clear the state of
+        // {@link PointerTracker}.
+        PointerTracker.dismissAllMoreKeysPanels();
         sendWindowStateChanged(mCloseAnnounceResId);
     }
 }
