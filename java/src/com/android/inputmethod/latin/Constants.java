@@ -263,10 +263,10 @@ public final class Constants {
         case CODE_ENTER: return "enter";
         case CODE_SPACE: return "space";
         default:
-            if (code < CODE_SPACE) return String.format("\\u%02x", code);
+            if (code < CODE_SPACE) return String.format("\\u%02X", code);
             if (code < 0x100) return String.format("%c", code);
-            if (code < 0x10000) return String.format("\\u04x", code);
-            return String.format("\\U%05x", code);
+            if (code < 0x10000) return String.format("\\u%04X", code);
+            return String.format("\\U%05X", code);
         }
     }
 
