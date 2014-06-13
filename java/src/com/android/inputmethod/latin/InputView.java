@@ -202,7 +202,12 @@ public final class InputView extends LinearLayout {
 
         @Override
         protected boolean needsToForward(final int x, final int y) {
-            return isInKeyboardTopPadding(y);
+            // Forwarding an event only when {@link MainKeyboardView} is visible.
+            // Because the visibility of {@link MainKeyboardView} is controlled by its parent
+            // view in {@link KeyboardSwitcher#setMainKeyboardFrame()}, we should check the
+            // visibility of the parent view.
+            final View mainKeyboardFrame = (View)mSenderView.getParent();
+            return mainKeyboardFrame.getVisibility() == View.VISIBLE && isInKeyboardTopPadding(y);
         }
 
         @Override
