@@ -70,7 +70,7 @@ import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.latin.inputlogic.InputLogic;
 import com.android.inputmethod.latin.personalization.DictionaryDecayBroadcastReciever;
-import com.android.inputmethod.latin.personalization.PersonalizationDictionarySessionRegistrar;
+import com.android.inputmethod.latin.personalization.PersonalizationDictionaryUpdater;
 import com.android.inputmethod.latin.personalization.PersonalizationHelper;
 import com.android.inputmethod.latin.settings.Settings;
 import com.android.inputmethod.latin.settings.SettingsActivity;
@@ -122,6 +122,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private final Settings mSettings;
     private final DictionaryFacilitator mDictionaryFacilitator =
             new DictionaryFacilitator(new DistracterFilterCheckingExactMatches(this /* context */));
+    // TODO: Move from LatinIME.
+    private final PersonalizationDictionaryUpdater mPersonalizationDictionaryUpdater =
+            new PersonalizationDictionaryUpdater(this /* context */, mDictionaryFacilitator);
     private final InputLogic mInputLogic = new InputLogic(this /* LatinIME */,
             this /* SuggestionStripViewAccessor */, mDictionaryFacilitator);
     // We expect to have only one decoder in almost all cases, hence the default capacity of 1.
@@ -540,33 +543,25 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
         mDictionaryFacilitator.updateEnabledSubtypes(mRichImm.getMyEnabledInputMethodSubtypeList(
                 true /* allowsImplicitlySelectedSubtypes */));
-        refreshPersonalizationDictionarySession();
+        refreshPersonalizationDictionarySession(currentSettingsValues);
         StatsUtils.onLoadSettings(currentSettingsValues);
     }
 
-    private void refreshPersonalizationDictionarySession() {
+    private void refreshPersonalizationDictionarySession(
+            final SettingsValues currentSettingsValues) {
+        mPersonalizationDictionaryUpdater.onLoadSettings(
+                currentSettingsValues.mUsePersonalizedDicts,
+                mSubtypeSwitcher.isSystemLocaleSameAsLocaleOfAllEnabledSubtypesOfEnabledImes());
         final boolean shouldKeepUserHistoryDictionaries;
-        final boolean shouldKeepPersonalizationDictionaries;
         if (mSettings.getCurrent().mUsePersonalizedDicts) {
             shouldKeepUserHistoryDictionaries = true;
-            // TODO: Eliminate this restriction
-            shouldKeepPersonalizationDictionaries =
-                    mSubtypeSwitcher.isSystemLocaleSameAsLocaleOfAllEnabledSubtypesOfEnabledImes();
         } else {
             shouldKeepUserHistoryDictionaries = false;
-            shouldKeepPersonalizationDictionaries = false;
         }
         if (!shouldKeepUserHistoryDictionaries) {
             // Remove user history dictionaries.
             PersonalizationHelper.removeAllUserHistoryDictionaries(this);
             mDictionaryFacilitator.clearUserHistoryDictionary();
-        }
-        if (!shouldKeepPersonalizationDictionaries) {
-            // Remove personalization dictionaries.
-            PersonalizationHelper.removeAllPersonalizationDictionaries(this);
-            PersonalizationDictionarySessionRegistrar.resetAll(this);
-        } else {
-            PersonalizationDictionarySessionRegistrar.init(this, mDictionaryFacilitator);
         }
     }
 
@@ -627,11 +622,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     @Override
     public void onDestroy() {
         mDictionaryFacilitator.closeDictionaries();
+        mPersonalizationDictionaryUpdater.onDestroy();
         mSettings.onDestroy();
         unregisterReceiver(mConnectivityAndRingerModeChangeReceiver);
         unregisterReceiver(mDictionaryPackInstallReceiver);
         unregisterReceiver(mDictionaryDumpBroadcastReceiver);
-        PersonalizationDictionarySessionRegistrar.close(this);
         StatsUtils.onDestroy();
         super.onDestroy();
     }
@@ -660,8 +655,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 mInputLogic.mConnection.endBatchEdit();
             }
         }
-        PersonalizationDictionarySessionRegistrar.onConfigurationChanged(this, conf,
-                mDictionaryFacilitator);
+        // TODO: Remove this test.
+        if (!conf.locale.equals(mPersonalizationDictionaryUpdater.getLocale())) {
+            refreshPersonalizationDictionarySession(settingsValues);
+        }
         super.onConfigurationChanged(conf);
     }
 
