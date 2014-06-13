@@ -30,6 +30,7 @@ import com.android.inputmethod.compat.SuggestionSpanUtils;
 import com.android.inputmethod.event.Event;
 import com.android.inputmethod.event.InputTransaction;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
+import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.DictionaryFacilitator;
@@ -1916,5 +1917,23 @@ public final class InputLogic {
             handler.postResumeSuggestions(true /* shouldIncludeResumedWordInSuggestions */);
         }
         return true;
+    }
+
+    public void getSuggestedWords(final SettingsValues settingsValues,
+            final ProximityInfo proximityInfo, final int keyboardShiftMode, final int sessionId,
+            final int sequenceNumber, final OnGetSuggestedWordsCallback callback) {
+        mWordComposer.adviseCapitalizedModeBeforeFetchingSuggestions(
+                getActualCapsMode(settingsValues, keyboardShiftMode));
+        mSuggest.getSuggestedWords(mWordComposer,
+                getPrevWordsInfoFromNthPreviousWordForSuggestion(
+                        settingsValues.mSpacingAndPunctuations,
+                        // Get the word on which we should search the bigrams. If we are composing
+                        // a word, it's whatever is *before* the half-committed word in the buffer,
+                        // hence 2; if we aren't, we should just skip whitespace if any, so 1.
+                        mWordComposer.isComposingWord() ? 2 : 1),
+                proximityInfo, settingsValues.mBlockPotentiallyOffensive,
+                settingsValues.mAutoCorrectionEnabled,
+                settingsValues.mAdditionalFeaturesSettingValues,
+                sessionId, sequenceNumber, callback);
     }
 }

@@ -1376,18 +1376,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             callback.onGetSuggestedWords(SuggestedWords.EMPTY);
             return;
         }
-        final SettingsValues currentSettings = mSettings.getCurrent();
-        final int[] additionalFeaturesOptions = currentSettings.mAdditionalFeaturesSettingValues;
-        mInputLogic.mSuggest.getSuggestedWords(mInputLogic.mWordComposer,
-                mInputLogic.getPrevWordsInfoFromNthPreviousWordForSuggestion(
-                        currentSettings.mSpacingAndPunctuations,
-                        // Get the word on which we should search the bigrams. If we are composing
-                        // a word, it's whatever is *before* the half-committed word in the buffer,
-                        // hence 2; if we aren't, we should just skip whitespace if any, so 1.
-                        mInputLogic.mWordComposer.isComposingWord() ? 2 : 1),
-                keyboard.getProximityInfo(), currentSettings.mBlockPotentiallyOffensive,
-                currentSettings.mAutoCorrectionEnabled, additionalFeaturesOptions, sessionId,
-                sequenceNumber, callback);
+        mInputLogic.getSuggestedWords(mSettings.getCurrent(), keyboard.getProximityInfo(),
+                mKeyboardSwitcher.getKeyboardShiftMode(), sessionId, sequenceNumber, callback);
     }
 
     @Override
