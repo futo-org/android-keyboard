@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 The Android Open Source Project
+ * Copyright (C) 2014 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,29 +16,28 @@
 
 package com.android.inputmethod.latin.personalization;
 
+import java.util.Locale;
+
 import android.content.Context;
-import android.content.res.Configuration;
 
 import com.android.inputmethod.latin.DictionaryFacilitator;
 
-public class PersonalizationDictionarySessionRegistrar {
-    public static void init(final Context context,
+public class PersonalizationDictionaryUpdater {
+    public PersonalizationDictionaryUpdater(final Context context,
             final DictionaryFacilitator dictionaryFacilitator) {
+        // Clear and never update the personalization dictionary.
+        PersonalizationHelper.removeAllPersonalizationDictionaries(context);
+        dictionaryFacilitator.clearPersonalizationDictionary();
     }
 
-    public static void onConfigurationChanged(final Context context, final Configuration conf,
-            final DictionaryFacilitator dictionaryFacilitator) {
+    public Locale getLocale() {
+        return null;
     }
 
-    public static void onUpdateData(final Context context, final String type) {
+    public void onLoadSettings(final boolean usePersonalizedDicts,
+            final boolean isSystemLocaleSameAsLocaleOfAllEnabledSubtypesOfEnabledImes) {
     }
 
-    public static void onRemoveData(final Context context, final String type) {
-    }
-
-    public static void resetAll(final Context context) {
-    }
-
-    public static void close(final Context context) {
+    public void onDestroy() {
     }
 }
