@@ -33,6 +33,7 @@ import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+import android.view.accessibility.AccessibilityEvent;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -412,6 +413,12 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
             mMoreSuggestionsView.adjustVerticalCorrectionForModalMode();
         }
         return false;
+    }
+
+    @Override
+    public boolean dispatchPopulateAccessibilityEvent(final AccessibilityEvent event) {
+        // Don't populate accessibility event with suggested words and voice key.
+        return true;
     }
 
     @Override
