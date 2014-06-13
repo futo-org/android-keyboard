@@ -35,7 +35,7 @@ import com.android.inputmethod.latin.utils.CoordinateUtils;
 public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel {
     private final int[] mCoordinates = CoordinateUtils.newInstance();
 
-    protected KeyDetector mKeyDetector;
+    protected final KeyDetector mKeyDetector;
     private Controller mController = EMPTY_CONTROLLER;
     protected KeyboardActionListener mListener;
     private int mOriginX;
@@ -72,13 +72,10 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
     @Override
     public void setKeyboard(final Keyboard keyboard) {
         super.setKeyboard(keyboard);
+        mKeyDetector.setKeyboard(
+                keyboard, -getPaddingLeft(), -getPaddingTop() + getVerticalCorrection());
         if (AccessibilityUtils.getInstance().isTouchExplorationEnabled()) {
-            // With accessibility mode on, any hover event outside {@link MoreKeysKeyboardView} is
-            // discarded at {@link InputView#dispatchHoverEvent(MotionEvent)}. Because only a hover
-            // event that is on this view is dispatched by the platform, we should use a
-            // {@link KeyDetector} that has no sliding allowance and no hysteresis.
             if (mAccessibilityDelegate == null) {
-                mKeyDetector = new KeyDetector();
                 mAccessibilityDelegate = new MoreKeysKeyboardAccessibilityDelegate(
                         this, mKeyDetector);
                 mAccessibilityDelegate.setOpenAnnounce(R.string.spoken_open_more_keys_keyboard);
@@ -86,12 +83,8 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
             }
             mAccessibilityDelegate.setKeyboard(keyboard);
         } else {
-            mKeyDetector = new MoreKeysDetector(getResources().getDimension(
-                    R.dimen.config_more_keys_keyboard_slide_allowance));
             mAccessibilityDelegate = null;
         }
-        mKeyDetector.setKeyboard(
-                keyboard, -getPaddingLeft(), -getPaddingTop() + getVerticalCorrection());
     }
 
     @Override
