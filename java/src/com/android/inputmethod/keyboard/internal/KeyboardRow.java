@@ -45,6 +45,7 @@ public final class KeyboardRow {
 
     private final ArrayDeque<RowAttributes> mRowAttributesStack = new ArrayDeque<>();
 
+    // TODO: Add keyActionFlags.
     private static class RowAttributes {
         /** Default width of a key in this row. */
         public final float mDefaultKeyWidth;
