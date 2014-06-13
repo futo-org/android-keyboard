@@ -23,7 +23,6 @@ import android.view.MotionEvent;
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.KeyDetector;
 import com.android.inputmethod.keyboard.MoreKeysKeyboardView;
-import com.android.inputmethod.latin.Constants;
 
 /**
  * This class represents a delegate that can be registered in {@link MoreKeysKeyboardView} to
@@ -107,8 +106,7 @@ public class MoreKeysKeyboardAccessibilityDelegate
             return;
         }
         // Close the more keys keyboard.
-        mKeyboardView.onMoveEvent(
-                Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE, pointerId, eventTime);
+        mKeyboardView.dismissMoreKeysPanel();
         sendWindowStateChanged(mCloseAnnounceResId);
     }
 }
