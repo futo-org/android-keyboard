@@ -99,7 +99,7 @@ public final class KeyboardTheme implements Comparable<KeyboardTheme> {
     private static int getSdkVersion() {
         final int sdkVersion = Build.VERSION.SDK_INT;
         // TODO: Consider to remove this check once the *next* version becomes available.
-        if (sdkVersion == VERSION_CODES.KITKAT && Build.VERSION.CODENAME.startsWith("L")) {
+        if (sdkVersion > VERSION_CODES.KITKAT) {
             return VERSION_CODES.CUR_DEVELOPMENT;
         }
         return sdkVersion;
