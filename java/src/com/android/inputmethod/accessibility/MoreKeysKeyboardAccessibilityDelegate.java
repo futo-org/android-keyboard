@@ -55,6 +55,10 @@ public class MoreKeysKeyboardAccessibilityDelegate
         sendWindowStateChanged(mOpenAnnounceResId);
     }
 
+    public void onDismissMoreKeysKeyboard() {
+        sendWindowStateChanged(mCloseAnnounceResId);
+    }
+
     @Override
     protected void onHoverEnter(final MotionEvent event) {
         if (DEBUG_HOVER) {
@@ -112,6 +116,5 @@ public class MoreKeysKeyboardAccessibilityDelegate
         // TODO: Should fix this reference. This is a hack to clear the state of
         // {@link PointerTracker}.
         PointerTracker.dismissAllMoreKeysPanels();
-        sendWindowStateChanged(mCloseAnnounceResId);
     }
 }

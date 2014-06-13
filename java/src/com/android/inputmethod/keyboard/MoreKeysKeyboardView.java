@@ -207,6 +207,10 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
         if (!isShowingInParent()) {
             return;
         }
+        final MoreKeysKeyboardAccessibilityDelegate accessibilityDelegate = mAccessibilityDelegate;
+        if (accessibilityDelegate != null) {
+            accessibilityDelegate.onDismissMoreKeysKeyboard();
+        }
         mController.onDismissMoreKeysPanel();
     }
 
