@@ -195,7 +195,8 @@ public class Key implements Comparable<Key> {
         mHintLabel = hintLabel;
         mLabelFlags = labelFlags;
         mBackgroundType = backgroundType;
-        mActionFlags = 0;
+        // TODO: Pass keyActionFlags as an argument.
+        mActionFlags = ACTION_FLAGS_NO_KEY_PREVIEW;
         mMoreKeys = null;
         mMoreKeysColumnAndFlags = 0;
         mLabel = label;

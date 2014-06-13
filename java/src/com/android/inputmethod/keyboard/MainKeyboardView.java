@@ -446,15 +446,15 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
 
     @Override
     public void showKeyPreview(final Key key) {
-        // If key is invalid or IME is already closed, we must not show key preview.
-        // Trying to show key preview while root window is closed causes
-        // WindowManager.BadTokenException.
-        if (key == null) {
+        // If the key is invalid or has no key preview, we must not show key preview.
+        if (key == null || key.noKeyPreview()) {
             return;
         }
-
-        final KeyPreviewDrawParams previewParams = mKeyPreviewDrawParams;
         final Keyboard keyboard = getKeyboard();
+        if (keyboard == null) {
+            return;
+        }
+        final KeyPreviewDrawParams previewParams = mKeyPreviewDrawParams;
         if (!previewParams.isPopupEnabled()) {
             previewParams.setVisibleOffset(-keyboard.mVerticalGap);
             return;

@@ -444,6 +444,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
                     continue;
                 }
                 final int labelFlags = row.getDefaultKeyLabelFlags();
+                // TODO: Should be able to assign default keyActionFlags as well.
                 final int backgroundType = row.getDefaultBackgroundType();
                 final int x = (int)row.getKeyX(null);
                 final int y = row.getKeyY();
