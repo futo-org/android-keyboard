@@ -49,7 +49,9 @@ import java.util.List;
  */
 final class KeyboardAccessibilityNodeProvider extends AccessibilityNodeProviderCompat {
     private static final String TAG = KeyboardAccessibilityNodeProvider.class.getSimpleName();
-    private static final int UNDEFINED = Integer.MIN_VALUE;
+
+    // From {@link android.view.accessibility.AccessibilityNodeInfo#UNDEFINED_ITEM_ID}.
+    private static final int UNDEFINED = Integer.MAX_VALUE;
 
     private final KeyCodeDescriptionMapper mKeyCodeDescriptionMapper;
     private final AccessibilityUtils mAccessibilityUtils;
@@ -167,22 +169,10 @@ final class KeyboardAccessibilityNodeProvider extends AccessibilityNodeProviderC
         }
         if (virtualViewId == View.NO_ID) {
             // We are requested to create an AccessibilityNodeInfo describing
-            // this View, i.e. the root of the virtual sub-tree.
+            // this View. Returning an empty info is sufficient for a keyboard.
             final AccessibilityNodeInfoCompat rootInfo =
                     AccessibilityNodeInfoCompat.obtain(mKeyboardView);
             ViewCompat.onInitializeAccessibilityNodeInfo(mKeyboardView, rootInfo);
-
-            // Add the virtual children of the root View.
-            final List<Key> sortedKeys = mKeyboard.getSortedKeys();
-            final int size = sortedKeys.size();
-            for (int index = 0; index < size; index++) {
-                final Key key = sortedKeys.get(index);
-                if (key.isSpacer()) {
-                    continue;
-                }
-                // Use an index of the sorted keys list as a virtual view id.
-                rootInfo.addChild(mKeyboardView, index);
-            }
             return rootInfo;
         }
 
