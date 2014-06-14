@@ -125,10 +125,6 @@
     <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"インストールする辞書ファイルの選択"</string>
     <string name="read_external_dictionary_confirm_install_message" msgid="4782116251651288054">"この<xliff:g id="LANGUAGE_NAME">%s</xliff:g>のファイルをインストールしますか？"</string>
     <string name="error" msgid="8940763624668513648">"エラーが発生しました"</string>
-    <string name="prefs_dump_contacts_dict" msgid="7227327764402323097">"連絡先辞書のダンプ"</string>
-    <string name="prefs_dump_user_dict" msgid="294870685041741951">"単語リストのダンプ"</string>
-    <string name="prefs_dump_user_history_dict" msgid="6821075152449554628">"ユーザー履歴辞書のダンプ"</string>
-    <string name="prefs_dump_personalization_dict" msgid="7558387996151745284">"カスタマイズ辞書のダンプ"</string>
     <string name="button_default" msgid="3988017840431881491">"デフォルト"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"<xliff:g id="APPLICATION_NAME">%s</xliff:g>へようこそ"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"新しいジェスチャー入力をお試しください"</string>

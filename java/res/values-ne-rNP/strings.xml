@@ -125,10 +125,6 @@
     <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"स्थापना गर्न कुनै शब्दकोश फाइल चयन गर्नुहोस्"</string>
     <string name="read_external_dictionary_confirm_install_message" msgid="4782116251651288054">"वास्तवमै <xliff:g id="LANGUAGE_NAME">%s</xliff:g> को लागि यो फाइल स्थापना गर्नुहुन्छ?"</string>
     <string name="error" msgid="8940763624668513648">"कुनै त्रुटि भयो"</string>
-    <string name="prefs_dump_contacts_dict" msgid="7227327764402323097">"सम्पर्क शब्दकोश भेला गर्नुहोस्"</string>
-    <string name="prefs_dump_user_dict" msgid="294870685041741951">"व्यक्तिगत शब्दकोश डम्प गर्नुहोस्"</string>
-    <string name="prefs_dump_user_history_dict" msgid="6821075152449554628">"प्रयोगकर्ता इतिहास शब्दकोश डम्प गर"</string>
-    <string name="prefs_dump_personalization_dict" msgid="7558387996151745284">"निजीकरण शब्दकोश डम्प गर्नुहोस्"</string>
     <string name="button_default" msgid="3988017840431881491">"पूर्वनिर्धारित"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"तपाईँलाई स्वागत छ<xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"इशारा टाइप गर्नेसँग"</string>

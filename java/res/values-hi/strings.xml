@@ -125,10 +125,6 @@
     <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"इंस्टॉल करने के लिए कोई शब्दकोश फ़ाइल चुनें"</string>
     <string name="read_external_dictionary_confirm_install_message" msgid="4782116251651288054">"क्या वाकई <xliff:g id="LANGUAGE_NAME">%s</xliff:g> के लिए यह फ़ाइल इंस्‍टॉल करें?"</string>
     <string name="error" msgid="8940763624668513648">"कोई त्रुटि हुई थी"</string>
-    <string name="prefs_dump_contacts_dict" msgid="7227327764402323097">"संपर्क शब्दकोश सूचीबद्ध करें"</string>
-    <string name="prefs_dump_user_dict" msgid="294870685041741951">"व्यक्तिगत शब्दकोश डंप करें"</string>
-    <string name="prefs_dump_user_history_dict" msgid="6821075152449554628">"उपयोगकर्ता इतिहास शब्दकोश डंप करें"</string>
-    <string name="prefs_dump_personalization_dict" msgid="7558387996151745284">"वैयक्तिकरण शब्दकोश डंप करें"</string>
     <string name="button_default" msgid="3988017840431881491">"सामान्य"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> में आपका स्वागत है"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"हावभाव लेखन के साथ"</string>
