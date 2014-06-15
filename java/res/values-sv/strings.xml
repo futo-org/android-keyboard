@@ -125,10 +125,6 @@
     <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"Välj en ordboksfil att installera"</string>
     <string name="read_external_dictionary_confirm_install_message" msgid="4782116251651288054">"Vill du verkligen installera filen för <xliff:g id="LANGUAGE_NAME">%s</xliff:g>?"</string>
     <string name="error" msgid="8940763624668513648">"Ett fel uppstod"</string>
-    <string name="prefs_dump_contacts_dict" msgid="7227327764402323097">"Ta fram ordlista för kontakter"</string>
-    <string name="prefs_dump_user_dict" msgid="294870685041741951">"Dumpa personlig ordlista"</string>
-    <string name="prefs_dump_user_history_dict" msgid="6821075152449554628">"Dumpa ordlista för användarhistorik"</string>
-    <string name="prefs_dump_personalization_dict" msgid="7558387996151745284">"Dumpa anpassad ordlista"</string>
     <string name="button_default" msgid="3988017840431881491">"Standard"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"Välkommen till <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"med svepskrivning"</string>
