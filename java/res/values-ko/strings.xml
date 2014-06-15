@@ -125,10 +125,6 @@
     <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"설치할 사전 파일 선택"</string>
     <string name="read_external_dictionary_confirm_install_message" msgid="4782116251651288054">"이 파일을 <xliff:g id="LANGUAGE_NAME">%s</xliff:g>(으)로 설치하시겠습니까?"</string>
     <string name="error" msgid="8940763624668513648">"오류 발생"</string>
-    <string name="prefs_dump_contacts_dict" msgid="7227327764402323097">"연락처 사전 덤프"</string>
-    <string name="prefs_dump_user_dict" msgid="294870685041741951">"개인 사전 덤프"</string>
-    <string name="prefs_dump_user_history_dict" msgid="6821075152449554628">"사용자 기록 사전 덤프"</string>
-    <string name="prefs_dump_personalization_dict" msgid="7558387996151745284">"맞춤설정 사전 덤프"</string>
     <string name="button_default" msgid="3988017840431881491">"기본값"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"<xliff:g id="APPLICATION_NAME">%s</xliff:g>에 오신 것을 환영합니다."</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"제스처 타이핑 사용"</string>
