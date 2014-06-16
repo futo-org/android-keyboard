@@ -351,6 +351,11 @@ public class DictionaryFacilitator {
         mDistracterFilter.close();
     }
 
+    @UsedForTesting
+    public ExpandableBinaryDictionary getSubDictForTesting(final String dictName) {
+        return mDictionaries.getSubDict(dictName);
+    }
+
     // The main dictionary could have been loaded asynchronously.  Don't cache the return value
     // of this method.
     public boolean hasInitializedMainDictionary() {
@@ -605,6 +610,41 @@ public class DictionaryFacilitator {
             return;
         }
         personalizationDict.addMultipleDictionaryEntriesDynamically(languageModelParams, callback);
+    }
+
+    public void addPhraseToContextualDictionary(final String[] phrase, final int probability,
+            final int bigramProbabilityForWords, final int bigramProbabilityForPhrases) {
+        final ExpandableBinaryDictionary contextualDict =
+                mDictionaries.getSubDict(Dictionary.TYPE_CONTEXTUAL);
+        if (contextualDict == null) {
+            return;
+        }
+        PrevWordsInfo prevWordsInfo = PrevWordsInfo.BEGINNING_OF_SENTENCE;
+        for (int i = 0; i < phrase.length; i++) {
+            if (i < phrase.length - 1) {
+                final String[] subPhrase =
+                        Arrays.copyOfRange(phrase, i /* start */, phrase.length);
+                final String subPhraseStr = TextUtils.join(Constants.WORD_SEPARATOR, subPhrase);
+                contextualDict.addUnigramEntryWithCheckingDistracter(
+                        subPhraseStr, probability, null /* shortcutTarget */,
+                        Dictionary.NOT_A_PROBABILITY /* shortcutFreq */,
+                        false /* isNotAWord */, false /* isBlacklisted */,
+                        BinaryDictionary.NOT_A_VALID_TIMESTAMP,
+                        DistracterFilter.EMPTY_DISTRACTER_FILTER);
+                contextualDict.addNgramEntry(prevWordsInfo, subPhraseStr,
+                        bigramProbabilityForPhrases, BinaryDictionary.NOT_A_VALID_TIMESTAMP);
+
+            }
+            contextualDict.addUnigramEntryWithCheckingDistracter(
+                    phrase[i], probability, null /* shortcutTarget */,
+                    Dictionary.NOT_A_PROBABILITY /* shortcutFreq */,
+                    false /* isNotAWord */, false /* isBlacklisted */,
+                    BinaryDictionary.NOT_A_VALID_TIMESTAMP,
+                    DistracterFilter.EMPTY_DISTRACTER_FILTER);
+            contextualDict.addNgramEntry(prevWordsInfo, phrase[i],
+                    bigramProbabilityForWords, BinaryDictionary.NOT_A_VALID_TIMESTAMP);
+            prevWordsInfo = new PrevWordsInfo(phrase[i]);
+        }
     }
 
     public void dumpDictionaryForDebug(final String dictName) {
