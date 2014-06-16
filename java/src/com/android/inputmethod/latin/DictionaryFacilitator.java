@@ -622,28 +622,27 @@ public class DictionaryFacilitator {
         }
         PrevWordsInfo prevWordsInfo = PrevWordsInfo.BEGINNING_OF_SENTENCE;
         for (int i = 0; i < phrase.length; i++) {
-            if (i < phrase.length - 1) {
-                final String[] subPhrase =
-                        Arrays.copyOfRange(phrase, i /* start */, phrase.length);
-                final String subPhraseStr = TextUtils.join(Constants.WORD_SEPARATOR, subPhrase);
-                contextualDict.addUnigramEntryWithCheckingDistracter(
-                        subPhraseStr, probability, null /* shortcutTarget */,
-                        Dictionary.NOT_A_PROBABILITY /* shortcutFreq */,
-                        false /* isNotAWord */, false /* isBlacklisted */,
-                        BinaryDictionary.NOT_A_VALID_TIMESTAMP,
-                        DistracterFilter.EMPTY_DISTRACTER_FILTER);
-                contextualDict.addNgramEntry(prevWordsInfo, subPhraseStr,
-                        bigramProbabilityForPhrases, BinaryDictionary.NOT_A_VALID_TIMESTAMP);
-
-            }
+            final String[] subPhrase = Arrays.copyOfRange(phrase, i /* start */, phrase.length);
+            final String subPhraseStr = TextUtils.join(Constants.WORD_SEPARATOR, subPhrase);
             contextualDict.addUnigramEntryWithCheckingDistracter(
-                    phrase[i], probability, null /* shortcutTarget */,
+                    subPhraseStr, probability, null /* shortcutTarget */,
                     Dictionary.NOT_A_PROBABILITY /* shortcutFreq */,
                     false /* isNotAWord */, false /* isBlacklisted */,
                     BinaryDictionary.NOT_A_VALID_TIMESTAMP,
                     DistracterFilter.EMPTY_DISTRACTER_FILTER);
-            contextualDict.addNgramEntry(prevWordsInfo, phrase[i],
-                    bigramProbabilityForWords, BinaryDictionary.NOT_A_VALID_TIMESTAMP);
+            contextualDict.addNgramEntry(prevWordsInfo, subPhraseStr,
+                    bigramProbabilityForPhrases, BinaryDictionary.NOT_A_VALID_TIMESTAMP);
+
+            if (i < phrase.length - 1) {
+                contextualDict.addUnigramEntryWithCheckingDistracter(
+                        phrase[i], probability, null /* shortcutTarget */,
+                        Dictionary.NOT_A_PROBABILITY /* shortcutFreq */,
+                        false /* isNotAWord */, false /* isBlacklisted */,
+                        BinaryDictionary.NOT_A_VALID_TIMESTAMP,
+                        DistracterFilter.EMPTY_DISTRACTER_FILTER);
+                contextualDict.addNgramEntry(prevWordsInfo, phrase[i],
+                        bigramProbabilityForWords, BinaryDictionary.NOT_A_VALID_TIMESTAMP);
+            }
             prevWordsInfo = new PrevWordsInfo(phrase[i]);
         }
     }
