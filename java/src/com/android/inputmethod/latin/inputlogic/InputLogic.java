@@ -408,6 +408,9 @@ public final class InputLogic {
             case Constants.CODE_SHIFT:
                 performRecapitalization(inputTransaction.mSettingsValues);
                 inputTransaction.requireShiftUpdate(InputTransaction.SHIFT_UPDATE_NOW);
+                if (mSuggestedWords.mIsPrediction) {
+                    inputTransaction.setRequiresUpdateSuggestions();
+                }
                 break;
             case Constants.CODE_CAPSLOCK:
                 // Note: Changing keyboard to shift lock state is handled in
@@ -815,7 +818,7 @@ public final class InputLogic {
             }
 
             startDoubleSpacePeriodCountdown(inputTransaction);
-            if (wasComposingWord) {
+            if (wasComposingWord || mSuggestedWords.isEmpty()) {
                 inputTransaction.setRequiresUpdateSuggestions();
             }
         } else {
