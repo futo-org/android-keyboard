@@ -310,12 +310,18 @@ public final class WordComposer {
     }
 
     /**
-     * Whether or not the user typed a capital letter as the first letter in the word, and no
-     * other letter is capitalized
+     * Whether this composer is composing or about to compose a word in which only the first letter
+     * is a capital.
+     *
+     * If we do have a composing word, we just return whether the word has indeed only its first
+     * character capitalized. If we don't, then we return a value based on the capitalized mode,
+     * which tell us what is likely to happen for the next composing word.
+     *
      * @return capitalization preference
      */
-    public boolean isOnlyFirstCharCapitalized() {
-        return mIsOnlyFirstCharCapitalized;
+    public boolean isOrWillBeOnlyFirstCharCapitalized() {
+        return isComposingWord() ? mIsOnlyFirstCharCapitalized
+                : (CAPS_MODE_OFF != mCapitalizedMode);
     }
 
     /**
@@ -363,6 +369,20 @@ public final class WordComposer {
      */
     public void setCapitalizedModeAtStartComposingTime(final int mode) {
         mCapitalizedMode = mode;
+    }
+
+    /**
+     * Before fetching suggestions, we don't necessarily know about the capitalized mode yet.
+     *
+     * If we don't have a composing word yet, we take a note of this mode so that we can then
+     * supply this information to the suggestion process. If we have a composing word, then
+     * the previous mode has priority over this.
+     * @param mode the mode just before fetching suggestions
+     */
+    public void adviseCapitalizedModeBeforeFetchingSuggestions(final int mode) {
+        if (!isComposingWord()) {
+            mCapitalizedMode = mode;
+        }
     }
 
     /**
