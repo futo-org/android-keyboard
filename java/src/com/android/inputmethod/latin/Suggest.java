@@ -110,7 +110,8 @@ public final class Suggest {
                 wordComposer, prevWordsInfo, proximityInfo, blockOffensiveWords,
                 additionalFeaturesOptions, SESSION_TYPING, rawSuggestions);
 
-        final boolean isOnlyFirstCharCapitalized = wordComposer.isOnlyFirstCharCapitalized();
+        final boolean isOnlyFirstCharCapitalized =
+                wordComposer.isOrWillBeOnlyFirstCharCapitalized();
         // If resumed, then we don't want to upcase everything: resuming on a fully-capitalized
         // words is rarely done to switch to another fully-capitalized word, but usually to a
         // normal, non-capitalized suggestion.
