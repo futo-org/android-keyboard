@@ -564,24 +564,25 @@ public class DictionaryFacilitator {
         return getFrequencyInternal(word, true /* isGettingMaxFrequencyOfExactMatches */);
     }
 
-    public void clearUserHistoryDictionary() {
-        final ExpandableBinaryDictionary userHistoryDict =
-                mDictionaries.getSubDict(Dictionary.TYPE_USER_HISTORY);
-        if (userHistoryDict == null) {
-            return;
+    private void clearSubDictionary(final String dictName) {
+        final ExpandableBinaryDictionary dictionary = mDictionaries.getSubDict(dictName);
+        if (dictionary != null) {
+            dictionary.clear();
         }
-        userHistoryDict.clear();
+    }
+
+    public void clearUserHistoryDictionary() {
+        clearSubDictionary(Dictionary.TYPE_USER_HISTORY);
     }
 
     // This method gets called only when the IME receives a notification to remove the
     // personalization dictionary.
     public void clearPersonalizationDictionary() {
-        final ExpandableBinaryDictionary personalizationDict =
-                mDictionaries.getSubDict(Dictionary.TYPE_PERSONALIZATION);
-        if (personalizationDict == null) {
-            return;
-        }
-        personalizationDict.clear();
+        clearSubDictionary(Dictionary.TYPE_PERSONALIZATION);
+    }
+
+    public void clearContextualDictionary() {
+        clearSubDictionary(Dictionary.TYPE_CONTEXTUAL);
     }
 
     public void addEntriesToPersonalizationDictionary(
