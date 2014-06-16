@@ -236,16 +236,14 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
                 R.styleable.MainKeyboardView_gestureFloatingPreviewTextLingerTimeout, 0);
 
         mGestureFloatingTextDrawingPreview = new GestureFloatingTextDrawingPreview(
-                mDrawingPreviewPlacerView, mainKeyboardViewAttr);
-        mDrawingPreviewPlacerView.addPreview(mGestureFloatingTextDrawingPreview);
+                mainKeyboardViewAttr);
+        mGestureFloatingTextDrawingPreview.setDrawingView(mDrawingPreviewPlacerView);
 
-        mGestureTrailsDrawingPreview = new GestureTrailsDrawingPreview(
-                mDrawingPreviewPlacerView, mainKeyboardViewAttr);
-        mDrawingPreviewPlacerView.addPreview(mGestureTrailsDrawingPreview);
+        mGestureTrailsDrawingPreview = new GestureTrailsDrawingPreview(mainKeyboardViewAttr);
+        mGestureTrailsDrawingPreview.setDrawingView(mDrawingPreviewPlacerView);
 
-        mSlidingKeyInputDrawingPreview = new SlidingKeyInputDrawingPreview(
-                mDrawingPreviewPlacerView, mainKeyboardViewAttr);
-        mDrawingPreviewPlacerView.addPreview(mSlidingKeyInputDrawingPreview);
+        mSlidingKeyInputDrawingPreview = new SlidingKeyInputDrawingPreview(mainKeyboardViewAttr);
+        mSlidingKeyInputDrawingPreview.setDrawingView(mDrawingPreviewPlacerView);
         mainKeyboardViewAttr.recycle();
 
         mMoreKeysKeyboardContainer = LayoutInflater.from(getContext())

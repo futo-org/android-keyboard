@@ -24,17 +24,15 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
-import android.os.Message;
+import android.os.Handler;
 import android.util.SparseArray;
-import android.view.View;
 
 import com.android.inputmethod.keyboard.PointerTracker;
-import com.android.inputmethod.latin.utils.LeakGuardHandlerWrapper;
 
 /**
  * Draw preview graphics of multiple gesture trails during gesture input.
  */
-public final class GestureTrailsDrawingPreview extends AbstractDrawingPreview {
+public final class GestureTrailsDrawingPreview extends AbstractDrawingPreview implements Runnable {
     private final SparseArray<GestureTrailDrawingPoints> mGestureTrails = new SparseArray<>();
     private final GestureTrailDrawingParams mDrawingParams;
     private final Paint mGesturePaint;
@@ -47,45 +45,10 @@ public final class GestureTrailsDrawingPreview extends AbstractDrawingPreview {
     private final Rect mDirtyRect = new Rect();
     private final Rect mGestureTrailBoundsRect = new Rect(); // per trail
 
-    private final DrawingHandler mDrawingHandler;
+    private final Handler mDrawingHandler = new Handler();
 
-    private static final class DrawingHandler
-            extends LeakGuardHandlerWrapper<GestureTrailsDrawingPreview> {
-        private static final int MSG_UPDATE_GESTURE_TRAIL = 0;
-
-        private final GestureTrailDrawingParams mDrawingParams;
-
-        public DrawingHandler(final GestureTrailsDrawingPreview ownerInstance,
-                final GestureTrailDrawingParams drawingParams) {
-            super(ownerInstance);
-            mDrawingParams = drawingParams;
-        }
-
-        @Override
-        public void handleMessage(final Message msg) {
-            final GestureTrailsDrawingPreview preview = getOwnerInstance();
-            if (preview == null) {
-                return;
-            }
-            switch (msg.what) {
-            case MSG_UPDATE_GESTURE_TRAIL:
-                preview.getDrawingView().invalidate();
-                break;
-            }
-        }
-
-        public void postUpdateGestureTrailPreview() {
-            removeMessages(MSG_UPDATE_GESTURE_TRAIL);
-            sendMessageDelayed(obtainMessage(MSG_UPDATE_GESTURE_TRAIL),
-                    mDrawingParams.mUpdateInterval);
-        }
-    }
-
-    public GestureTrailsDrawingPreview(final View drawingView,
-            final TypedArray mainKeyboardViewAttr) {
-        super(drawingView);
+    public GestureTrailsDrawingPreview(final TypedArray mainKeyboardViewAttr) {
         mDrawingParams = new GestureTrailDrawingParams(mainKeyboardViewAttr);
-        mDrawingHandler = new DrawingHandler(this, mDrawingParams);
         final Paint gesturePaint = new Paint();
         gesturePaint.setAntiAlias(true);
         gesturePaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC));
@@ -153,6 +116,12 @@ public final class GestureTrailsDrawingPreview extends AbstractDrawingPreview {
         return needsUpdatingGestureTrail;
     }
 
+    @Override
+    public void run() {
+        // Update preview.
+        invalidateDrawingView();
+    }
+
     /**
      * Draws the preview
      * @param canvas The canvas where the preview is drawn.
@@ -167,7 +136,8 @@ public final class GestureTrailsDrawingPreview extends AbstractDrawingPreview {
         final boolean needsUpdatingGestureTrail = drawGestureTrails(
                 mOffscreenCanvas, mGesturePaint, mDirtyRect);
         if (needsUpdatingGestureTrail) {
-            mDrawingHandler.postUpdateGestureTrailPreview();
+            mDrawingHandler.removeCallbacks(this);
+            mDrawingHandler.postDelayed(this, mDrawingParams.mUpdateInterval);
         }
         // Transfer offscreen buffer to screen.
         if (!mDirtyRect.isEmpty()) {
@@ -199,6 +169,6 @@ public final class GestureTrailsDrawingPreview extends AbstractDrawingPreview {
         trail.addStroke(tracker.getGestureStrokeDrawingPoints(), tracker.getDownTime());
 
         // TODO: Should narrow the invalidate region.
-        getDrawingView().invalidate();
+        invalidateDrawingView();
     }
 }

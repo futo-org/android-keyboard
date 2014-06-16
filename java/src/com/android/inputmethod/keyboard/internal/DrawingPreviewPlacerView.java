@@ -46,7 +46,9 @@ public final class DrawingPreviewPlacerView extends RelativeLayout {
     }
 
     public void addPreview(final AbstractDrawingPreview preview) {
-        mPreviews.add(preview);
+        if (mPreviews.indexOf(preview) < 0) {
+            mPreviews.add(preview);
+        }
     }
 
     public void setKeyboardViewGeometry(final int[] originCoords, final int width,
