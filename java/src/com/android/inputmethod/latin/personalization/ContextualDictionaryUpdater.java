@@ -22,7 +22,8 @@ import com.android.inputmethod.latin.DictionaryFacilitator;
 
 public class ContextualDictionaryUpdater {
     public ContextualDictionaryUpdater(final Context context,
-            final DictionaryFacilitator dictionaryFacilitator) {
+            final DictionaryFacilitator dictionaryFacilitator,
+            final Runnable onUpdateRunnable) {
     }
 
     public void onLoadSettings(final boolean usePersonalizedDicts) {
