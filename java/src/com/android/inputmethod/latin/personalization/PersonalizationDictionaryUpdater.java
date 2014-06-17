@@ -23,11 +23,14 @@ import android.content.Context;
 import com.android.inputmethod.latin.DictionaryFacilitator;
 
 public class PersonalizationDictionaryUpdater {
+    final Context mContext;
+    final DictionaryFacilitator mDictionaryFacilitator;
+    boolean mDictCleared = false;
+
     public PersonalizationDictionaryUpdater(final Context context,
             final DictionaryFacilitator dictionaryFacilitator) {
-        // Clear and never update the personalization dictionary.
-        PersonalizationHelper.removeAllPersonalizationDictionaries(context);
-        dictionaryFacilitator.clearPersonalizationDictionary();
+        mContext = context;
+        mDictionaryFacilitator = dictionaryFacilitator;
     }
 
     public Locale getLocale() {
@@ -36,6 +39,12 @@ public class PersonalizationDictionaryUpdater {
 
     public void onLoadSettings(final boolean usePersonalizedDicts,
             final boolean isSystemLocaleSameAsLocaleOfAllEnabledSubtypesOfEnabledImes) {
+        if (!mDictCleared) {
+            // Clear and never update the personalization dictionary.
+            PersonalizationHelper.removeAllPersonalizationDictionaries(mContext);
+            mDictionaryFacilitator.clearPersonalizationDictionary();
+            mDictCleared = true;
+        }
     }
 
     public void onDestroy() {
