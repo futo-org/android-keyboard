@@ -23,7 +23,6 @@
         <item name="keyboardStyle">@style/Keyboard.ICS</item>
         <item name="keyboardViewStyle">@style/KeyboardView.ICS</item>
         <item name="mainKeyboardViewStyle">@style/MainKeyboardView.ICS</item>
-        <item name="keyPreviewTextViewStyle">@style/KeyPreviewTextView.ICS</item>
         <item name="emojiPalettesViewStyle">@style/EmojiPalettesView.ICS</item>
         <item name="moreKeysKeyboardStyle">@style/MoreKeysKeyboard.ICS</item>
         <item name="moreKeysKeyboardViewStyle">@style/MoreKeysKeyboardView.ICS</item>
@@ -66,6 +65,7 @@
         name="MainKeyboardView.ICS"
         parent="KeyboardView.ICS"
     >
+        <item name="keyPreviewBackground">@drawable/keyboard_key_feedback_ics</item>
         <item name="keyPreviewOffset">@dimen/config_key_preview_offset_holo</item>
         <item name="gestureFloatingPreviewTextColor">@color/highlight_color_ics</item>
         <item name="gestureFloatingPreviewColor">@color/gesture_floating_preview_color_holo</item>
@@ -74,12 +74,6 @@
         <item name="languageOnSpacebarTextColor">@color/spacebar_text_color_holo</item>
         <item name="languageOnSpacebarTextShadowRadius">1.0</item>
         <item name="languageOnSpacebarTextShadowColor">@color/spacebar_text_shadow_color_holo</item>
-    </style>
-    <style
-        name="KeyPreviewTextView.ICS"
-        parent="KeyPreviewTextView"
-    >
-        <item name="android:background">@drawable/keyboard_key_feedback_ics</item>
     </style>
     <!-- Though {@link EmojiPalettesView} doesn't extend {@link KeyboardView}, some views inside it,
          for instance delete button, need themed {@link KeyboardView} attributes. -->

@@ -23,9 +23,9 @@ import com.android.inputmethod.latin.R;
 
 public final class KeyPreviewDrawParams {
     // XML attributes of {@link MainKeyboardView}.
-    public final int mLayoutId;
     public final int mPreviewOffset;
     public final int mPreviewHeight;
+    public final int mPreviewBackgroundResId;
     private int mShowUpDuration;
     private int mDismissDuration;
     private float mShowUpStartScale;
@@ -63,13 +63,10 @@ public final class KeyPreviewDrawParams {
                 R.styleable.MainKeyboardView_keyPreviewOffset, 0);
         mPreviewHeight = mainKeyboardViewAttr.getDimensionPixelSize(
                 R.styleable.MainKeyboardView_keyPreviewHeight, 0);
+        mPreviewBackgroundResId = mainKeyboardViewAttr.getResourceId(
+                R.styleable.MainKeyboardView_keyPreviewBackground, 0);
         mLingerTimeout = mainKeyboardViewAttr.getInt(
                 R.styleable.MainKeyboardView_keyPreviewLingerTimeout, 0);
-        mLayoutId = mainKeyboardViewAttr.getResourceId(
-                R.styleable.MainKeyboardView_keyPreviewLayout, 0);
-        if (mLayoutId == 0) {
-            mShowPopup = false;
-        }
     }
 
     public void setVisibleOffset(final int previewVisibleOffset) {
