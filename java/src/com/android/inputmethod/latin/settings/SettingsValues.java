@@ -125,8 +125,7 @@ public final class SettingsValues {
         mSlidingKeyInputPreviewEnabled = prefs.getBoolean(
                 DebugSettings.PREF_SLIDING_KEY_INPUT_PREVIEW, true);
         mShowsVoiceInputKey = needsToShowVoiceInputKey(prefs, res)
-                && !mInputAttributes.mIsPasswordField
-                && !mInputAttributes.hasNoMicrophoneKeyOption()
+                && mInputAttributes.mShouldShowVoiceInputKey
                 && SubtypeSwitcher.getInstance().isShortcutImeEnabled();
         final String autoCorrectionThresholdRawValue = prefs.getString(
                 Settings.PREF_AUTO_CORRECTION_THRESHOLD,

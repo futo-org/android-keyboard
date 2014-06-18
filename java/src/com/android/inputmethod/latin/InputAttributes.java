@@ -41,6 +41,7 @@ public final class InputAttributes {
     final public boolean mShouldShowSuggestions;
     final public boolean mApplicationSpecifiedCompletionOn;
     final public boolean mShouldInsertSpacesAutomatically;
+    final public boolean mShouldShowVoiceInputKey;
     final private int mInputType;
     final private EditorInfo mEditorInfo;
     final private String mPackageNameForPrivateImeOptions;
@@ -74,6 +75,7 @@ public final class InputAttributes {
             mInputTypeNoAutoCorrect = false;
             mApplicationSpecifiedCompletionOn = false;
             mShouldInsertSpacesAutomatically = false;
+            mShouldShowVoiceInputKey = false;
             return;
         }
         // inputClass == InputType.TYPE_CLASS_TEXT
@@ -99,6 +101,12 @@ public final class InputAttributes {
 
         mShouldInsertSpacesAutomatically = InputTypeUtils.isAutoSpaceFriendlyType(inputType);
 
+        final boolean noMicrophone = mIsPasswordField
+                || InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS == variation
+                || InputType.TYPE_TEXT_VARIATION_URI == variation
+                || hasNoMicrophoneKeyOption();
+        mShouldShowVoiceInputKey = !noMicrophone;
+
         // If it's a browser edit field and auto correct is not ON explicitly, then
         // disable auto correction, but keep suggestions on.
         // If NO_SUGGESTIONS is set, don't do prediction.
@@ -119,7 +127,7 @@ public final class InputAttributes {
         return editorInfo.inputType == mInputType;
     }
 
-    public boolean hasNoMicrophoneKeyOption() {
+    private boolean hasNoMicrophoneKeyOption() {
         @SuppressWarnings("deprecation")
         final boolean deprecatedNoMicrophone = InputAttributes.inPrivateImeOptions(
                 null, NO_MICROPHONE_COMPAT, mEditorInfo);
