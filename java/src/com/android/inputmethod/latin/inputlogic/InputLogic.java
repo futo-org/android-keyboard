@@ -1187,6 +1187,8 @@ public final class InputLogic {
                 Log.w(TAG, "Called updateSuggestionsOrPredictions but suggestions were not "
                         + "requested!");
             }
+            // Clear the suggestions strip.
+            mSuggestionStripViewAccessor.showSuggestionStrip(SuggestedWords.EMPTY);
             return;
         }
 
