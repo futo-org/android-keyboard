@@ -126,16 +126,17 @@ public final class Suggest {
         final boolean didRemoveTypedWord =
                 SuggestedWordInfo.removeDups(typedWord, suggestionsContainer);
 
+        final SuggestedWordInfo firstSuggestedWordInfo;
         final String whitelistedWord;
         if (suggestionsContainer.isEmpty()) {
+            firstSuggestedWordInfo = null;
             whitelistedWord = null;
         } else {
-            final SuggestedWordInfo firstSuggestedWordInfo = suggestionsContainer.get(0);
-            final String firstSuggestion = firstSuggestedWordInfo.mWord;
+            firstSuggestedWordInfo = suggestionsContainer.get(0);
             if (!firstSuggestedWordInfo.isKindOf(SuggestedWordInfo.KIND_WHITELIST)) {
                 whitelistedWord = null;
             } else {
-                whitelistedWord = firstSuggestion;
+                whitelistedWord = firstSuggestedWordInfo.mWord;
             }
         }
 
@@ -151,10 +152,10 @@ public final class Suggest {
         // the current settings. It may also be useful to know, when the setting is off, whether
         // the word *would* have been auto-corrected.
         if (!isCorrectionEnabled || !allowsToBeAutoCorrected || isPrediction
-                || suggestionResults.isEmpty() || wordComposer.hasDigits()
+                || null == firstSuggestedWordInfo || wordComposer.hasDigits()
                 || wordComposer.isMostlyCaps() || wordComposer.isResumed()
                 || !mDictionaryFacilitator.hasInitializedMainDictionary()
-                || suggestionResults.first().isKindOf(SuggestedWordInfo.KIND_SHORTCUT)) {
+                || firstSuggestedWordInfo.isKindOf(SuggestedWordInfo.KIND_SHORTCUT)) {
             // If we don't have a main dictionary, we never want to auto-correct. The reason for
             // this is, the user may have a contact whose name happens to match a valid word in
             // their language, and it will unexpectedly auto-correct. For example, if the user
@@ -166,7 +167,7 @@ public final class Suggest {
             hasAutoCorrection = false;
         } else {
             hasAutoCorrection = AutoCorrectionUtils.suggestionExceedsAutoCorrectionThreshold(
-                    suggestionResults.first(), consideredWord, mAutoCorrectionThreshold);
+                    firstSuggestedWordInfo, consideredWord, mAutoCorrectionThreshold);
         }
 
         if (!TextUtils.isEmpty(typedWord)) {
