@@ -330,29 +330,37 @@ public class SuggestedWords {
         }
 
         // This will always remove the higher index if a duplicate is found.
-        public static void removeDups(final String typedWord,
+        public static boolean removeDups(final String typedWord,
                 ArrayList<SuggestedWordInfo> candidates) {
             if (candidates.isEmpty()) {
-                return;
+                return false;
             }
+            final boolean didRemoveTypedWord;
             if (!TextUtils.isEmpty(typedWord)) {
-                removeSuggestedWordInfoFrom(typedWord, candidates, -1 /* startIndexExclusive */);
+                didRemoveTypedWord = removeSuggestedWordInfoFrom(typedWord, candidates,
+                        -1 /* startIndexExclusive */);
+            } else {
+                didRemoveTypedWord = false;
             }
             for (int i = 0; i < candidates.size(); ++i) {
                 removeSuggestedWordInfoFrom(candidates.get(i).mWord, candidates,
                         i /* startIndexExclusive */);
             }
+            return didRemoveTypedWord;
         }
 
-        private static void removeSuggestedWordInfoFrom(final String word,
+        private static boolean removeSuggestedWordInfoFrom(final String word,
                 final ArrayList<SuggestedWordInfo> candidates, final int startIndexExclusive) {
+            boolean didRemove = false;
             for (int i = startIndexExclusive + 1; i < candidates.size(); ++i) {
                 final SuggestedWordInfo previous = candidates.get(i);
                 if (word.equals(previous.mWord)) {
+                    didRemove = true;
                     candidates.remove(i);
                     --i;
                 }
             }
+            return didRemove;
         }
     }
 
