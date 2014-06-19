@@ -21,6 +21,7 @@ import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
+import android.view.accessibility.AccessibilityEvent;
 
 import com.android.inputmethod.accessibility.AccessibilityUtils;
 import com.android.inputmethod.accessibility.KeyboardAccessibilityDelegate;
@@ -104,6 +105,12 @@ final class EmojiPageKeyboardView extends KeyboardView implements
         } else {
             mAccessibilityDelegate = null;
         }
+    }
+
+    @Override
+    public boolean dispatchPopulateAccessibilityEvent(final AccessibilityEvent event) {
+        // Don't populate accessibility event with all Emoji keys.
+        return true;
     }
 
     /**
