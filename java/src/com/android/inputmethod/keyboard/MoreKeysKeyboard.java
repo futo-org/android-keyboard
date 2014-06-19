@@ -21,7 +21,6 @@ import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 
 import com.android.inputmethod.annotations.UsedForTesting;
-import com.android.inputmethod.keyboard.internal.KeyPreviewDrawParams;
 import com.android.inputmethod.keyboard.internal.KeyboardBuilder;
 import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
 import com.android.inputmethod.keyboard.internal.KeyboardParams;
@@ -260,32 +259,25 @@ public final class MoreKeysKeyboard extends Keyboard {
         /**
          * The builder of MoreKeysKeyboard.
          * @param context the context of {@link MoreKeysKeyboardView}.
-         * @param parentKey the {@link Key} that invokes more keys keyboard.
-         * @param parentKeyboardView the {@link KeyboardView} that contains the parentKey.
+         * @param key the {@link Key} that invokes more keys keyboard.
+         * @param keyboard the {@link Keyboard} that contains the parentKey.
+         * @param singleMoreKeyWithPreview true if the <code>key</code> has only one more key
+         *        and key popup preview is enabled.
          * @param keyPreviewDrawParams the parameter to place key preview.
+         * @param paintToMeasure the {@link Paint} object to measure a more key width
          */
-        public Builder(final Context context, final Key parentKey,
-                final MainKeyboardView parentKeyboardView,
-                final KeyPreviewDrawParams keyPreviewDrawParams) {
+        public Builder(final Context context, final Key key, final Keyboard keyboard,
+                final boolean singleMoreKeyWithPreview, final int keyPreviewVisibleWidth,
+                final int keyPreviewVisibleHeight, final Paint paintToMeasure) {
             super(context, new MoreKeysKeyboardParams());
-            final Keyboard parentKeyboard = parentKeyboardView.getKeyboard();
-            load(parentKeyboard.mMoreKeysTemplate, parentKeyboard.mId);
+            load(keyboard.mMoreKeysTemplate, keyboard.mId);
 
             // TODO: More keys keyboard's vertical gap is currently calculated heuristically.
             // Should revise the algorithm.
-            mParams.mVerticalGap = parentKeyboard.mVerticalGap / 2;
-            mParentKey = parentKey;
+            mParams.mVerticalGap = keyboard.mVerticalGap / 2;
+            mParentKey = key;
 
-            final MoreKeySpec[] moreKeys = parentKey.getMoreKeys();
-            final int width, height;
-            // {@link KeyPreviewDrawParams#mPreviewVisibleWidth} should have been set at
-            // {@link MainKeyboardView#showKeyPreview(PointerTracker}, though there may be
-            // some chances that the value is zero. <code>width == 0</code> will cause
-            // zero-division error at
-            // {@link MoreKeysKeyboardParams#setParameters(int,int,int,int,int,int,boolean,int)}.
-            final boolean singleMoreKeyWithPreview = parentKeyboardView.isKeyPreviewPopupEnabled()
-                    && !parentKey.noKeyPreview() && moreKeys.length == 1
-                    && keyPreviewDrawParams.getVisibleWidth() > 0;
+            final int keyWidth, rowHeight;
             if (singleMoreKeyWithPreview) {
                 // Use pre-computed width and height if this more keys keyboard has only one key to
                 // mitigate visual flicker between key preview and more keys keyboard.
@@ -294,29 +286,28 @@ public final class MoreKeysKeyboard extends Keyboard {
                 // left/right/top paddings. The bottom paddings of both backgrounds don't need to
                 // be considered because the vertical positions of both backgrounds were already
                 // adjusted with their bottom paddings deducted.
-                width = keyPreviewDrawParams.getVisibleWidth();
-                height = keyPreviewDrawParams.getVisibleHeight() + mParams.mVerticalGap;
+                keyWidth = keyPreviewVisibleWidth;
+                rowHeight = keyPreviewVisibleHeight + mParams.mVerticalGap;
             } else {
                 final float padding = context.getResources().getDimension(
                         R.dimen.config_more_keys_keyboard_key_horizontal_padding)
-                        + (parentKey.hasLabelsInMoreKeys()
+                        + (key.hasLabelsInMoreKeys()
                                 ? mParams.mDefaultKeyWidth * LABEL_PADDING_RATIO : 0.0f);
-                width = getMaxKeyWidth(parentKey, mParams.mDefaultKeyWidth, padding,
-                        parentKeyboardView.newLabelPaint(parentKey));
-                height = parentKeyboard.mMostCommonKeyHeight;
+                keyWidth = getMaxKeyWidth(key, mParams.mDefaultKeyWidth, padding, paintToMeasure);
+                rowHeight = keyboard.mMostCommonKeyHeight;
             }
             final int dividerWidth;
-            if (parentKey.needsDividersInMoreKeys()) {
+            if (key.needsDividersInMoreKeys()) {
                 mDivider = mResources.getDrawable(R.drawable.more_keys_divider);
-                dividerWidth = (int)(width * DIVIDER_RATIO);
+                dividerWidth = (int)(keyWidth * DIVIDER_RATIO);
             } else {
                 mDivider = null;
                 dividerWidth = 0;
             }
-            mParams.setParameters(moreKeys.length, parentKey.getMoreKeysColumn(),
-                    width, height, parentKey.getX() + parentKey.getWidth() / 2,
-                    parentKeyboard.mId.mWidth, parentKey.isFixedColumnOrderMoreKeys(),
-                    dividerWidth);
+            final MoreKeySpec[] moreKeys = key.getMoreKeys();
+            mParams.setParameters(moreKeys.length, key.getMoreKeysColumn(), keyWidth, rowHeight,
+                    key.getX() + key.getWidth() / 2, keyboard.mId.mWidth,
+                    key.isFixedColumnOrderMoreKeys(), dividerWidth);
         }
 
         private static int getMaxKeyWidth(final Key parentKey, final int minKeyWidth,
