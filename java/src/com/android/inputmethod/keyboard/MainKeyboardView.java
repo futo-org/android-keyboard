@@ -47,6 +47,7 @@ import com.android.inputmethod.keyboard.internal.KeyDrawParams;
 import com.android.inputmethod.keyboard.internal.KeyPreviewChoreographer;
 import com.android.inputmethod.keyboard.internal.KeyPreviewDrawParams;
 import com.android.inputmethod.keyboard.internal.LanguageOnSpacebarHelper;
+import com.android.inputmethod.keyboard.internal.MoreKeySpec;
 import com.android.inputmethod.keyboard.internal.NonDistinctMultitouchHelper;
 import com.android.inputmethod.keyboard.internal.SlidingKeyInputDrawingPreview;
 import com.android.inputmethod.keyboard.internal.TimerHandler;
@@ -427,15 +428,6 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         windowContentView.addView(mDrawingPreviewPlacerView);
     }
 
-    /**
-     * Returns the enabled state of the key feedback preview
-     * @return whether or not the key feedback preview is enabled
-     * @see #setKeyPreviewPopupEnabled(boolean, int)
-     */
-    public boolean isKeyPreviewPopupEnabled() {
-        return mKeyPreviewDrawParams.isPopupEnabled();
-    }
-
     // Implements {@link DrawingHandler.Callbacks} method.
     @Override
     public void dismissAllKeyPreviews() {
@@ -553,13 +545,25 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     }
 
     private MoreKeysPanel onCreateMoreKeysPanel(final Key key, final Context context) {
-        if (key.getMoreKeys() == null) {
+        final MoreKeySpec[] moreKeys = key.getMoreKeys();
+        if (moreKeys == null) {
             return null;
         }
         Keyboard moreKeysKeyboard = mMoreKeysKeyboardCache.get(key);
         if (moreKeysKeyboard == null) {
-            moreKeysKeyboard = new MoreKeysKeyboard.Builder(
-                    context, key, this, mKeyPreviewDrawParams).build();
+            // {@link KeyPreviewDrawParams#mPreviewVisibleWidth} should have been set at
+            // {@link KeyPreviewChoreographer#placeKeyPreview(Key,TextView,KeyboardIconsSet,KeyDrawParams,int,int[]},
+            // though there may be some chances that the value is zero. <code>width == 0</code>
+            // will cause zero-division error at
+            // {@link MoreKeysKeyboardParams#setParameters(int,int,int,int,int,int,boolean,int)}.
+            final boolean singleMoreKeyWithPreview = mKeyPreviewDrawParams.isPopupEnabled()
+                    && !key.noKeyPreview() && moreKeys.length == 1
+                    && mKeyPreviewDrawParams.getVisibleWidth() > 0;
+            final MoreKeysKeyboard.Builder builder = new MoreKeysKeyboard.Builder(
+                    context, key, getKeyboard(), singleMoreKeyWithPreview,
+                    mKeyPreviewDrawParams.getVisibleWidth(),
+                    mKeyPreviewDrawParams.getVisibleHeight(), newLabelPaint(key));
+            moreKeysKeyboard = builder.build();
             mMoreKeysKeyboardCache.put(key, moreKeysKeyboard);
         }
 
@@ -615,7 +619,8 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
 
         final int[] lastCoords = CoordinateUtils.newInstance();
         tracker.getLastCoordinates(lastCoords);
-        final boolean keyPreviewEnabled = isKeyPreviewPopupEnabled() && !key.noKeyPreview();
+        final boolean keyPreviewEnabled = mKeyPreviewDrawParams.isPopupEnabled()
+                && !key.noKeyPreview();
         // The more keys keyboard is usually horizontally aligned with the center of the parent key.
         // If showMoreKeysKeyboardAtTouchedPoint is true and the key preview is disabled, the more
         // keys keyboard is placed at the touch point of the parent key.
