@@ -57,7 +57,7 @@ public final class KeyPreviewChoreographer {
         mParams = params;
     }
 
-    public TextView getKeyPreviewTextView(final Key key, final ViewGroup placerView) {
+    private TextView getKeyPreviewTextView(final Key key, final ViewGroup placerView) {
         TextView previewTextView = mShowingKeyPreviewTextViews.remove(key);
         if (previewTextView != null) {
             return previewTextView;
@@ -134,7 +134,16 @@ public final class KeyPreviewChoreographer {
     private static final int STATE_NORMAL = 0;
     private static final int STATE_HAS_MOREKEYS = 1;
 
-    public void placeKeyPreview(final Key key, final TextView previewTextView,
+    public void placeKeyPreviewAndShow(final Key key, final KeyboardIconsSet iconsSet,
+            final KeyDrawParams drawParams, final int keyboardViewWidth, final int[] keyboardOrigin,
+            final ViewGroup placerView, final boolean withAnimation) {
+        final TextView previewTextView = getKeyPreviewTextView(key, placerView);
+        placeKeyPreview(
+                key, previewTextView, iconsSet, drawParams, keyboardViewWidth, keyboardOrigin);
+        showKeyPreview(key, previewTextView, withAnimation);
+    }
+
+    private void placeKeyPreview(final Key key, final TextView previewTextView,
             final KeyboardIconsSet iconsSet, final KeyDrawParams drawParams,
             final int keyboardViewWidth, final int[] originCoords) {
         previewTextView.setTextColor(drawParams.mPreviewTextColor);
@@ -189,7 +198,7 @@ public final class KeyPreviewChoreographer {
         previewTextView.setPivotY(previewHeight);
     }
 
-    public void showKeyPreview(final Key key, final TextView previewTextView,
+    private void showKeyPreview(final Key key, final TextView previewTextView,
             final boolean withAnimation) {
         if (!withAnimation) {
             previewTextView.setVisibility(View.VISIBLE);

@@ -35,7 +35,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodSubtype;
-import android.widget.TextView;
 
 import com.android.inputmethod.accessibility.AccessibilityUtils;
 import com.android.inputmethod.accessibility.MainKeyboardAccessibilityDelegate;
@@ -461,12 +460,9 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         }
 
         locatePreviewPlacerView();
-        final TextView previewTextView = mKeyPreviewChoreographer.getKeyPreviewTextView(
-                key, mDrawingPreviewPlacerView);
         getLocationInWindow(mOriginCoords);
-        mKeyPreviewChoreographer.placeKeyPreview(key, previewTextView, keyboard.mIconsSet,
-                mKeyDrawParams, getWidth(), mOriginCoords);
-        mKeyPreviewChoreographer.showKeyPreview(key, previewTextView, isHardwareAccelerated());
+        mKeyPreviewChoreographer.placeKeyPreviewAndShow(key, keyboard.mIconsSet, mKeyDrawParams,
+                getWidth(), mOriginCoords, mDrawingPreviewPlacerView, isHardwareAccelerated());
     }
 
     // Implements {@link TimerHandler.Callbacks} method.
