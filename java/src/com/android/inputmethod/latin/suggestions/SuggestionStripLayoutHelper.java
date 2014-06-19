@@ -49,6 +49,7 @@ import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.PunctuationSuggestions;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SuggestedWords;
+import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.utils.AutoCorrectionUtils;
 import com.android.inputmethod.latin.utils.ResourceUtils;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
@@ -250,8 +251,8 @@ final class SuggestionStripLayoutHelper {
         final int positionInStrip =
                 getPositionInSuggestionStrip(indexInSuggestedWords, suggestedWords);
         // Use identity for strings, not #equals : it's the typed word if it's the same object
-        final boolean isTypedWord =
-                suggestedWords.getWord(indexInSuggestedWords) == suggestedWords.mTypedWord;
+        final boolean isTypedWord = suggestedWords.getInfo(indexInSuggestedWords).isKindOf(
+                SuggestedWordInfo.KIND_TYPED);
 
         final int color;
         if (positionInStrip == mCenterPositionInStrip && suggestedWords.mWillAutoCorrect) {
