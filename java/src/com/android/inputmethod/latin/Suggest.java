@@ -180,6 +180,7 @@ public final class Suggest {
                 suggestionsContainer.set(i, transformedWordInfo);
             }
         }
+        SuggestedWordInfo.removeDups(typedWord, suggestionsContainer);
 
         if (!TextUtils.isEmpty(typedWord)) {
             suggestionsContainer.add(0, new SuggestedWordInfo(typedWord,
@@ -188,7 +189,6 @@ public final class Suggest {
                     SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
                     SuggestedWordInfo.NOT_A_CONFIDENCE /* autoCommitFirstWordConfidence */));
         }
-        SuggestedWordInfo.removeDups(suggestionsContainer);
 
         final ArrayList<SuggestedWordInfo> suggestionsList;
         if (DBG && !suggestionsContainer.isEmpty()) {
@@ -237,7 +237,7 @@ public final class Suggest {
             final SuggestedWordInfo rejected = suggestionsContainer.remove(0);
             suggestionsContainer.add(1, rejected);
         }
-        SuggestedWordInfo.removeDups(suggestionsContainer);
+        SuggestedWordInfo.removeDups(null /* typedWord */, suggestionsContainer);
 
         // For some reason some suggestions with MIN_VALUE are making their way here.
         // TODO: Find a more robust way to detect distractors.
