@@ -44,6 +44,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.android.inputmethod.accessibility.AccessibilityUtils;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.PunctuationSuggestions;
 import com.android.inputmethod.latin.R;
@@ -386,6 +387,12 @@ final class SuggestionStripLayoutHelper {
         final float scaleX = getTextScaleX(word, width, wordView.getPaint());
         wordView.setText(text); // TextView.setText() resets text scale x to 1.0.
         wordView.setTextScaleX(Math.max(scaleX, MIN_TEXT_XSCALE));
+        // A <code>wordView</code> should be disabled when <code>word</code> is empty in order to
+        // make it unclickable.
+        // With accessibility touch exploration on, <code>wordView</code> should be enabled even
+        // when it is empty to avoid announcing as "disabled".
+        wordView.setEnabled(!TextUtils.isEmpty(word)
+                || AccessibilityUtils.getInstance().isTouchExplorationEnabled());
         return wordView;
     }
 
