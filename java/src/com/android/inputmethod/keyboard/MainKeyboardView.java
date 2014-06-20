@@ -666,6 +666,10 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     @Override
     public void onDismissMoreKeysPanel() {
         dimEntireKeyboard(false /* dimmed */);
+        dismissMoreKeysPanel();
+    }
+
+    private void dismissMoreKeysPanel() {
         if (isShowingMoreKeysPanel()) {
             mMoreKeysPanel.removeFromParent();
             mMoreKeysPanel = null;
@@ -731,6 +735,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     }
 
     public void onHideWindow() {
+        dismissMoreKeysPanel();
         final MainKeyboardAccessibilityDelegate accessibilityDelegate = mAccessibilityDelegate;
         if (accessibilityDelegate != null) {
             accessibilityDelegate.onHideWindow();
