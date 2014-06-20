@@ -27,7 +27,8 @@ namespace latinime {
 class PtNodeReader {
  public:
     virtual ~PtNodeReader() {}
-    virtual const PtNodeParams fetchNodeInfoInBufferFromPtNodePos(const int ptNodePos) const = 0;
+    virtual const PtNodeParams fetchPtNodeParamsInBufferFromPtNodePos(
+            const int ptNodePos) const = 0;
 
  protected:
     PtNodeReader() {};

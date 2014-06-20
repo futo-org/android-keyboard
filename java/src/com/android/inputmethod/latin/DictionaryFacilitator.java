@@ -468,13 +468,17 @@ public class DictionaryFacilitator {
                 isValid, timeStampInSeconds, mDistracterFilter);
     }
 
-    public void cancelAddingUserHistory(final PrevWordsInfo prevWordsInfo,
-            final String committedWord) {
-        final ExpandableBinaryDictionary userHistoryDictionary =
-                mDictionaries.getSubDict(Dictionary.TYPE_USER_HISTORY);
-        if (userHistoryDictionary != null) {
-            userHistoryDictionary.removeNgramDynamically(prevWordsInfo, committedWord);
+    private void removeWord(final String dictName, final String word) {
+        final ExpandableBinaryDictionary dictionary = mDictionaries.getSubDict(dictName);
+        if (dictionary != null) {
+            dictionary.removeUnigramEntryDynamically(word);
         }
+    }
+
+    public void removeWordFromPersonalizedDicts(final String word) {
+        removeWord(Dictionary.TYPE_USER_HISTORY, word);
+        removeWord(Dictionary.TYPE_PERSONALIZATION, word);
+        removeWord(Dictionary.TYPE_CONTEXTUAL, word);
     }
 
     // TODO: Revise the way to fusion suggestion results.

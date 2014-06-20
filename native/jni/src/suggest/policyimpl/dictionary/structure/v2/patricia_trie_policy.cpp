@@ -282,7 +282,8 @@ int PatriciaTriePolicy::getUnigramProbabilityOfPtNode(const int ptNodePos) const
     if (ptNodePos == NOT_A_DICT_POS) {
         return NOT_A_PROBABILITY;
     }
-    const PtNodeParams ptNodeParams = mPtNodeReader.fetchNodeInfoInBufferFromPtNodePos(ptNodePos);
+    const PtNodeParams ptNodeParams =
+            mPtNodeReader.fetchPtNodeParamsInBufferFromPtNodePos(ptNodePos);
     if (ptNodeParams.isNotAWord() || ptNodeParams.isBlacklisted()) {
         // If this is not a word, or if it's a blacklisted entry, it should behave as
         // having no probability outside of the suggestion process (where it should be used
@@ -296,14 +297,14 @@ int PatriciaTriePolicy::getShortcutPositionOfPtNode(const int ptNodePos) const {
     if (ptNodePos == NOT_A_DICT_POS) {
         return NOT_A_DICT_POS;
     }
-    return mPtNodeReader.fetchNodeInfoInBufferFromPtNodePos(ptNodePos).getShortcutPos();
+    return mPtNodeReader.fetchPtNodeParamsInBufferFromPtNodePos(ptNodePos).getShortcutPos();
 }
 
 int PatriciaTriePolicy::getBigramsPositionOfPtNode(const int ptNodePos) const {
     if (ptNodePos == NOT_A_DICT_POS) {
         return NOT_A_DICT_POS;
     }
-    return mPtNodeReader.fetchNodeInfoInBufferFromPtNodePos(ptNodePos).getBigramsPos();
+    return mPtNodeReader.fetchPtNodeParamsInBufferFromPtNodePos(ptNodePos).getBigramsPos();
 }
 
 int PatriciaTriePolicy::createAndGetLeavingChildNode(const DicNode *const dicNode,
@@ -339,7 +340,8 @@ const WordProperty PatriciaTriePolicy::getWordProperty(const int *const codePoin
         AKLOGE("getWordProperty was called for invalid word.");
         return WordProperty();
     }
-    const PtNodeParams ptNodeParams = mPtNodeReader.fetchNodeInfoInBufferFromPtNodePos(ptNodePos);
+    const PtNodeParams ptNodeParams =
+            mPtNodeReader.fetchPtNodeParamsInBufferFromPtNodePos(ptNodePos);
     std::vector<int> codePointVector(ptNodeParams.getCodePoints(),
             ptNodeParams.getCodePoints() + ptNodeParams.getCodePointCount());
     // Fetch bigram information.
