@@ -76,7 +76,6 @@ final class KeyboardAccessibilityNodeProvider extends AccessibilityNodeProviderC
         mKeyCodeDescriptionMapper = KeyCodeDescriptionMapper.getInstance();
         mAccessibilityUtils = AccessibilityUtils.getInstance();
         mKeyboardView = keyboardView;
-        updateParentLocation();
 
         // Since this class is constructed lazily, we might not get a subsequent
         // call to setKeyboard() and therefore need to call it now.
@@ -169,10 +168,23 @@ final class KeyboardAccessibilityNodeProvider extends AccessibilityNodeProviderC
         }
         if (virtualViewId == View.NO_ID) {
             // We are requested to create an AccessibilityNodeInfo describing
-            // this View. Returning an empty info is sufficient for a keyboard.
+            // this View, i.e. the root of the virtual sub-tree.
             final AccessibilityNodeInfoCompat rootInfo =
                     AccessibilityNodeInfoCompat.obtain(mKeyboardView);
             ViewCompat.onInitializeAccessibilityNodeInfo(mKeyboardView, rootInfo);
+            updateParentLocation();
+
+            // Add the virtual children of the root View.
+            final List<Key> sortedKeys = mKeyboard.getSortedKeys();
+            final int size = sortedKeys.size();
+            for (int index = 0; index < size; index++) {
+                final Key key = sortedKeys.get(index);
+                if (key.isSpacer()) {
+                    continue;
+                }
+                // Use an index of the sorted keys list as a virtual view id.
+                rootInfo.addChild(mKeyboardView, index);
+            }
             return rootInfo;
         }
 
@@ -200,9 +212,9 @@ final class KeyboardAccessibilityNodeProvider extends AccessibilityNodeProviderC
         info.setBoundsInScreen(boundsInScreen);
         info.setParent(mKeyboardView);
         info.setSource(mKeyboardView, virtualViewId);
-        info.setBoundsInScreen(boundsInScreen);
-        info.setEnabled(true);
+        info.setEnabled(key.isEnabled());
         info.setVisibleToUser(true);
+        // TODO: Add ACTION_CLICK and ACTION_LONG_CLICK.
 
         if (mAccessibilityFocusedView == virtualViewId) {
             info.addAction(AccessibilityNodeInfoCompat.ACTION_CLEAR_ACCESSIBILITY_FOCUS);
