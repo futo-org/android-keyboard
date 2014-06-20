@@ -87,9 +87,9 @@ bool DynamicPtUpdatingHelper::addUnigramWord(
 bool DynamicPtUpdatingHelper::addBigramWords(const int word0Pos, const int word1Pos,
         const BigramProperty *const bigramProperty, bool *const outAddedNewBigram) {
     const PtNodeParams sourcePtNodeParams(
-            mPtNodeReader->fetchNodeInfoInBufferFromPtNodePos(word0Pos));
+            mPtNodeReader->fetchPtNodeParamsInBufferFromPtNodePos(word0Pos));
     const PtNodeParams targetPtNodeParams(
-            mPtNodeReader->fetchNodeInfoInBufferFromPtNodePos(word1Pos));
+            mPtNodeReader->fetchPtNodeParamsInBufferFromPtNodePos(word1Pos));
     return mPtNodeWriter->addNewBigramEntry(&sourcePtNodeParams, &targetPtNodeParams,
             bigramProperty, outAddedNewBigram);
 }
@@ -97,16 +97,16 @@ bool DynamicPtUpdatingHelper::addBigramWords(const int word0Pos, const int word1
 // Remove a bigram relation from word0Pos to word1Pos.
 bool DynamicPtUpdatingHelper::removeBigramWords(const int word0Pos, const int word1Pos) {
     const PtNodeParams sourcePtNodeParams(
-            mPtNodeReader->fetchNodeInfoInBufferFromPtNodePos(word0Pos));
+            mPtNodeReader->fetchPtNodeParamsInBufferFromPtNodePos(word0Pos));
     const PtNodeParams targetPtNodeParams(
-            mPtNodeReader->fetchNodeInfoInBufferFromPtNodePos(word1Pos));
+            mPtNodeReader->fetchPtNodeParamsInBufferFromPtNodePos(word1Pos));
     return mPtNodeWriter->removeBigramEntry(&sourcePtNodeParams, &targetPtNodeParams);
 }
 
 bool DynamicPtUpdatingHelper::addShortcutTarget(const int wordPos,
         const int *const targetCodePoints, const int targetCodePointCount,
         const int shortcutProbability) {
-    const PtNodeParams ptNodeParams(mPtNodeReader->fetchNodeInfoInBufferFromPtNodePos(wordPos));
+    const PtNodeParams ptNodeParams(mPtNodeReader->fetchPtNodeParamsInBufferFromPtNodePos(wordPos));
     return mPtNodeWriter->addShortcutTarget(&ptNodeParams, targetCodePoints, targetCodePointCount,
             shortcutProbability);
 }
@@ -125,7 +125,7 @@ bool DynamicPtUpdatingHelper::createAndInsertNodeIntoPtNodeArray(const int paren
 
 bool DynamicPtUpdatingHelper::setPtNodeProbability(const PtNodeParams *const originalPtNodeParams,
         const UnigramProperty *const unigramProperty, bool *const outAddedNewUnigram) {
-    if (originalPtNodeParams->isTerminal()) {
+    if (originalPtNodeParams->isTerminal() && !originalPtNodeParams->isDeleted()) {
         // Overwrites the probability.
         *outAddedNewUnigram = false;
         return mPtNodeWriter->updatePtNodeUnigramProperty(originalPtNodeParams, unigramProperty);
@@ -260,7 +260,7 @@ bool DynamicPtUpdatingHelper::reallocatePtNodeAndAddNewPtNodes(
     }
     // Load node info. Information of the 1st part will be fetched.
     const PtNodeParams ptNodeParams(
-            mPtNodeReader->fetchNodeInfoInBufferFromPtNodePos(firstPartOfReallocatedPtNodePos));
+            mPtNodeReader->fetchPtNodeParamsInBufferFromPtNodePos(firstPartOfReallocatedPtNodePos));
     // Update children position.
     return mPtNodeWriter->updateChildrenPosition(&ptNodeParams, actualChildrenPos);
 }

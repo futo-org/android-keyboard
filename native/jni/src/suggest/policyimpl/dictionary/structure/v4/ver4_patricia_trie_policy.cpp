@@ -125,7 +125,7 @@ int Ver4PatriciaTriePolicy::getUnigramProbabilityOfPtNode(const int ptNodePos) c
     if (ptNodePos == NOT_A_DICT_POS) {
         return NOT_A_PROBABILITY;
     }
-    const PtNodeParams ptNodeParams(mNodeReader.fetchNodeInfoInBufferFromPtNodePos(ptNodePos));
+    const PtNodeParams ptNodeParams(mNodeReader.fetchPtNodeParamsInBufferFromPtNodePos(ptNodePos));
     if (ptNodeParams.isDeleted() || ptNodeParams.isBlacklisted() || ptNodeParams.isNotAWord()) {
         return NOT_A_PROBABILITY;
     }
@@ -136,7 +136,7 @@ int Ver4PatriciaTriePolicy::getShortcutPositionOfPtNode(const int ptNodePos) con
     if (ptNodePos == NOT_A_DICT_POS) {
         return NOT_A_DICT_POS;
     }
-    const PtNodeParams ptNodeParams(mNodeReader.fetchNodeInfoInBufferFromPtNodePos(ptNodePos));
+    const PtNodeParams ptNodeParams(mNodeReader.fetchPtNodeParamsInBufferFromPtNodePos(ptNodePos));
     if (ptNodeParams.isDeleted()) {
         return NOT_A_DICT_POS;
     }
@@ -148,7 +148,7 @@ int Ver4PatriciaTriePolicy::getBigramsPositionOfPtNode(const int ptNodePos) cons
     if (ptNodePos == NOT_A_DICT_POS) {
         return NOT_A_DICT_POS;
     }
-    const PtNodeParams ptNodeParams(mNodeReader.fetchNodeInfoInBufferFromPtNodePos(ptNodePos));
+    const PtNodeParams ptNodeParams(mNodeReader.fetchPtNodeParamsInBufferFromPtNodePos(ptNodePos));
     if (ptNodeParams.isDeleted()) {
         return NOT_A_DICT_POS;
     }
@@ -222,8 +222,24 @@ bool Ver4PatriciaTriePolicy::addUnigramEntry(const int *const word, const int le
 }
 
 bool Ver4PatriciaTriePolicy::removeUnigramEntry(const int *const word, const int length) {
-    // TODO: Implement.
-    return false;
+    if (!mBuffers->isUpdatable()) {
+        AKLOGI("Warning: removeUnigramEntry() is called for non-updatable dictionary.");
+        return false;
+    }
+    const int ptNodePos = getTerminalPtNodePositionOfWord(word, length,
+            false /* forceLowerCaseSearch */);
+    if (ptNodePos == NOT_A_DICT_POS) {
+        return false;
+    }
+    const PtNodeParams ptNodeParams = mNodeReader.fetchPtNodeParamsInBufferFromPtNodePos(ptNodePos);
+    if (!mNodeWriter.markPtNodeAsDeleted(&ptNodeParams)) {
+        AKLOGE("Cannot remove unigram. ptNodePos: %d", ptNodePos);
+        return false;
+    }
+    if (!ptNodeParams.representsNonWordInfo()) {
+        mUnigramCount--;
+    }
+    return true;
 }
 
 bool Ver4PatriciaTriePolicy::addNgramEntry(const PrevWordsInfo *const prevWordsInfo,
@@ -405,7 +421,7 @@ const WordProperty Ver4PatriciaTriePolicy::getWordProperty(const int *const code
         AKLOGE("getWordProperty is called for invalid word.");
         return WordProperty();
     }
-    const PtNodeParams ptNodeParams = mNodeReader.fetchNodeInfoInBufferFromPtNodePos(ptNodePos);
+    const PtNodeParams ptNodeParams = mNodeReader.fetchPtNodeParamsInBufferFromPtNodePos(ptNodePos);
     std::vector<int> codePointVector(ptNodeParams.getCodePoints(),
             ptNodeParams.getCodePoints() + ptNodeParams.getCodePointCount());
     const ProbabilityEntry probabilityEntry =
