@@ -160,24 +160,36 @@ public final class Suggest {
                 || (consideredWord.length() > 1 && !didRemoveTypedWord);
 
         final boolean hasAutoCorrection;
-        // TODO: using isCorrectionEnabled here is not very good. It's probably useless, because
-        // any attempt to do auto-correction is already shielded with a test for this flag; at the
-        // same time, it feels wrong that the SuggestedWord object includes information about
-        // the current settings. It may also be useful to know, when the setting is off, whether
-        // the word *would* have been auto-corrected.
-        if (!isCorrectionEnabled || !allowsToBeAutoCorrected || resultsArePredictions
-                || suggestionResults.isEmpty() || wordComposer.hasDigits()
-                || wordComposer.isMostlyCaps() || wordComposer.isResumed()
+        // If correction is not enabled, we never auto-correct. This is for example for when
+        // the setting "Auto-correction" is "off": we still suggest, but we don't auto-correct.
+        if (!isCorrectionEnabled
+                // If the word does not allow to be auto-corrected, then we don't auto-correct.
+                || !allowsToBeAutoCorrected
+                // If we are doing prediction, then we never auto-correct of course
+                || resultsArePredictions
+                // If we don't have suggestion results, we can't evaluate the first suggestion
+                // for auto-correction
+                || suggestionResults.isEmpty()
+                // If the word has digits, we never auto-correct because it's likely the word
+                // was type with a lot of care
+                || wordComposer.hasDigits()
+                // If the word is mostly caps, we never auto-correct because this is almost
+                // certainly intentional (and careful input)
+                || wordComposer.isMostlyCaps()
+                // We never auto-correct when suggestions are resumed because it would be unexpected
+                || wordComposer.isResumed()
+                // If we don't have a main dictionary, we never want to auto-correct. The reason
+                // for this is, the user may have a contact whose name happens to match a valid
+                // word in their language, and it will unexpectedly auto-correct. For example, if
+                // the user types in English with no dictionary and has a "Will" in their contact
+                // list, "will" would always auto-correct to "Will" which is unwanted. Hence, no
+                // main dict => no auto-correct. Also, it would probably get obnoxious quickly.
+                // TODO: now that we have personalization, we may want to re-evaluate this decision
                 || !mDictionaryFacilitator.hasAtLeastOneInitializedMainDictionary()
+                // If the first suggestion is a shortcut we never auto-correct to it, regardless
+                // of how strong it is (whitelist entries are not KIND_SHORTCUT but KIND_WHITELIST).
+                // TODO: we may want to have shortcut-only entries auto-correct in the future.
                 || suggestionResults.first().isKindOf(SuggestedWordInfo.KIND_SHORTCUT)) {
-            // If we don't have a main dictionary, we never want to auto-correct. The reason for
-            // this is, the user may have a contact whose name happens to match a valid word in
-            // their language, and it will unexpectedly auto-correct. For example, if the user
-            // types in English with no dictionary and has a "Will" in their contact list, "will"
-            // would always auto-correct to "Will" which is unwanted. Hence, no main dict => no
-            // auto-correct.
-            // Also, shortcuts should never auto-correct unless they are whitelist entries.
-            // TODO: we may want to have shortcut-only entries auto-correct in the future.
             hasAutoCorrection = false;
         } else {
             final SuggestedWordInfo firstSuggestion = suggestionResults.first();
