@@ -362,6 +362,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     /**
      * Dynamically remove the n-gram entry in the dictionary.
      */
+    @UsedForTesting
     public void removeNgramDynamically(final PrevWordsInfo prevWordsInfo, final String word) {
         reloadDictionaryIfRequired();
         asyncExecuteTaskWithWriteLock(new Runnable() {
