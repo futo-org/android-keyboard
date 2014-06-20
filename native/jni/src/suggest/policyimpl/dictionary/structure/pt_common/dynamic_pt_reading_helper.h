@@ -126,7 +126,7 @@ class DynamicPtReadingHelper {
         if (isEnd()) {
             return PtNodeParams();
         }
-        return mPtNodeReader->fetchNodeInfoInBufferFromPtNodePos(mReadingState.mPos);
+        return mPtNodeReader->fetchPtNodeParamsInBufferFromPtNodePos(mReadingState.mPos);
     }
 
     AK_FORCE_INLINE bool isValidTerminalNode(const PtNodeParams &ptNodeParams) const {

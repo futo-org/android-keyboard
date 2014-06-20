@@ -20,7 +20,7 @@
 
 namespace latinime {
 
-const PtNodeParams Ver2ParticiaTrieNodeReader::fetchNodeInfoInBufferFromPtNodePos(
+const PtNodeParams Ver2ParticiaTrieNodeReader::fetchPtNodeParamsInBufferFromPtNodePos(
         const int ptNodePos) const {
     if (ptNodePos < 0 || ptNodePos >= mDictSize) {
         // Reading invalid position because of bug or broken dictionary.

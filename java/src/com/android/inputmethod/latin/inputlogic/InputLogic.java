@@ -884,6 +884,9 @@ public final class InputLogic {
                 final String rejectedSuggestion = mWordComposer.getTypedWord();
                 mWordComposer.reset();
                 mWordComposer.setRejectedBatchModeSuggestion(rejectedSuggestion);
+                if (!TextUtils.isEmpty(rejectedSuggestion)) {
+                    mDictionaryFacilitator.removeWordFromPersonalizedDicts(rejectedSuggestion);
+                }
             } else {
                 mWordComposer.processEvent(inputTransaction.mEvent);
             }
@@ -1363,7 +1366,6 @@ public final class InputLogic {
      * @param inputTransaction The transaction in progress.
      */
     private void revertCommit(final InputTransaction inputTransaction) {
-        final PrevWordsInfo prevWordsInfo = mLastComposedWord.mPrevWordsInfo;
         final CharSequence originallyTypedWord = mLastComposedWord.mTypedWord;
         final CharSequence committedWord = mLastComposedWord.mCommittedWord;
         final String committedWordString = committedWord.toString();
@@ -1385,8 +1387,8 @@ public final class InputLogic {
             }
         }
         mConnection.deleteSurroundingText(deleteLength, 0);
-        if (!TextUtils.isEmpty(prevWordsInfo.mPrevWord) && !TextUtils.isEmpty(committedWord)) {
-            mDictionaryFacilitator.cancelAddingUserHistory(prevWordsInfo, committedWordString);
+        if (!TextUtils.isEmpty(committedWord)) {
+            mDictionaryFacilitator.removeWordFromPersonalizedDicts(committedWordString);
         }
         final String stringToCommit = originallyTypedWord + mLastComposedWord.mSeparatorString;
         final SpannableString textToCommit = new SpannableString(stringToCommit);

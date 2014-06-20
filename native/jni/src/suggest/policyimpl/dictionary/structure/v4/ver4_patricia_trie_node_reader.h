@@ -41,7 +41,7 @@ class Ver4PatriciaTrieNodeReader : public PtNodeReader {
 
     ~Ver4PatriciaTrieNodeReader() {}
 
-    virtual const PtNodeParams fetchNodeInfoInBufferFromPtNodePos(const int ptNodePos) const {
+    virtual const PtNodeParams fetchPtNodeParamsInBufferFromPtNodePos(const int ptNodePos) const {
         return fetchPtNodeInfoFromBufferAndProcessMovedPtNode(ptNodePos,
                 NOT_A_DICT_POS /* siblingNodePos */);
     }

@@ -311,6 +311,27 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     }
 
     /**
+     * Dynamically remove the unigram entry from the dictionary.
+     */
+    public void removeUnigramEntryDynamically(final String word) {
+        reloadDictionaryIfRequired();
+        asyncExecuteTaskWithWriteLock(new Runnable() {
+            @Override
+            public void run() {
+                if (mBinaryDictionary == null) {
+                    return;
+                }
+                runGCIfRequiredLocked(true /* mindsBlockByGC */);
+                if (!mBinaryDictionary.removeUnigramEntry(word)) {
+                    if (DEBUG) {
+                        Log.i(TAG, "Cannot remove unigram entry: " + word);
+                    }
+                }
+            }
+        });
+    }
+
+    /**
      * Adds n-gram information of a word to the dictionary. May overwrite an existing entry.
      */
     public void addNgramEntry(final PrevWordsInfo prevWordsInfo, final String word,

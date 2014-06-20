@@ -36,7 +36,7 @@ class Ver2ParticiaTrieNodeReader : public PtNodeReader {
             : mDictBuffer(dictBuffer), mDictSize(dictSize), mBigramPolicy(bigramPolicy),
               mShortuctPolicy(shortcutPolicy) {}
 
-    virtual const PtNodeParams fetchNodeInfoInBufferFromPtNodePos(const int ptNodePos) const;
+    virtual const PtNodeParams fetchPtNodeParamsInBufferFromPtNodePos(const int ptNodePos) const;
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(Ver2ParticiaTrieNodeReader);

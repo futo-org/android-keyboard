@@ -224,7 +224,7 @@ bool Ver4PatriciaTrieWritingHelper::truncateUnigrams(
         const int ptNodePos = priorityQueue.top().getDictPos();
         priorityQueue.pop();
         const PtNodeParams ptNodeParams =
-                ptNodeReader->fetchNodeInfoInBufferFromPtNodePos(ptNodePos);
+                ptNodeReader->fetchPtNodeParamsInBufferFromPtNodePos(ptNodePos);
         if (ptNodeParams.representsNonWordInfo()) {
             continue;
         }
