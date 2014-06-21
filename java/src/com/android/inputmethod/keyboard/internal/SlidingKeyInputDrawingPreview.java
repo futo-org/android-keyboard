@@ -20,7 +20,6 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.view.View;
 
 import com.android.inputmethod.keyboard.PointerTracker;
 import com.android.inputmethod.latin.R;
@@ -28,6 +27,11 @@ import com.android.inputmethod.latin.utils.CoordinateUtils;
 
 /**
  * Draw rubber band preview graphics during sliding key input.
+ *
+ * @attr ref R.styleable#MainKeyboardView_slidingKeyInputPreviewColor
+ * @attr ref R.styleable#MainKeyboardView_slidingKeyInputPreviewWidth
+ * @attr ref R.styleable#MainKeyboardView_slidingKeyInputPreviewBodyRatio
+ * @attr ref R.styleable#MainKeyboardView_slidingKeyInputPreviewShadowRatio
  */
 public final class SlidingKeyInputDrawingPreview extends AbstractDrawingPreview {
     private final float mPreviewBodyRadius;
@@ -40,9 +44,7 @@ public final class SlidingKeyInputDrawingPreview extends AbstractDrawingPreview 
     private final RoundedLine mRoundedLine = new RoundedLine();
     private final Paint mPaint = new Paint();
 
-    public SlidingKeyInputDrawingPreview(final View drawingView,
-            final TypedArray mainKeyboardViewAttr) {
-        super(drawingView);
+    public SlidingKeyInputDrawingPreview(final TypedArray mainKeyboardViewAttr) {
         final int previewColor = mainKeyboardViewAttr.getColor(
                 R.styleable.MainKeyboardView_slidingKeyInputPreviewColor, 0);
         final float previewRadius = mainKeyboardViewAttr.getDimension(
@@ -69,7 +71,7 @@ public final class SlidingKeyInputDrawingPreview extends AbstractDrawingPreview 
 
     public void dismissSlidingKeyInputPreview() {
         mShowsSlidingKeyInputPreview = false;
-        getDrawingView().invalidate();
+        invalidateDrawingView();
     }
 
     /**
@@ -99,6 +101,6 @@ public final class SlidingKeyInputDrawingPreview extends AbstractDrawingPreview 
         tracker.getDownCoordinates(mPreviewFrom);
         tracker.getLastCoordinates(mPreviewTo);
         mShowsSlidingKeyInputPreview = true;
-        getDrawingView().invalidate();
+        invalidateDrawingView();
     }
 }
