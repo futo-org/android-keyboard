@@ -23,7 +23,6 @@ import android.graphics.Paint.Align;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.text.TextUtils;
-import android.view.View;
 
 import com.android.inputmethod.keyboard.PointerTracker;
 import com.android.inputmethod.latin.R;
@@ -49,6 +48,7 @@ public class GestureFloatingTextDrawingPreview extends AbstractDrawingPreview {
         public final float mGesturePreviewHorizontalPadding;
         public final float mGesturePreviewVerticalPadding;
         public final float mGesturePreviewRoundRadius;
+        public final int mDisplayWidth;
 
         private final int mGesturePreviewTextSize;
         private final int mGesturePreviewTextColor;
@@ -72,6 +72,7 @@ public class GestureFloatingTextDrawingPreview extends AbstractDrawingPreview {
                     R.styleable.MainKeyboardView_gestureFloatingPreviewVerticalPadding, 0.0f);
             mGesturePreviewRoundRadius = mainKeyboardViewAttr.getDimension(
                     R.styleable.MainKeyboardView_gestureFloatingPreviewRoundRadius, 0.0f);
+            mDisplayWidth = mainKeyboardViewAttr.getResources().getDisplayMetrics().widthPixels;
 
             final Paint textPaint = getTextPaint();
             final Rect textRect = new Rect();
@@ -100,9 +101,8 @@ public class GestureFloatingTextDrawingPreview extends AbstractDrawingPreview {
     private SuggestedWords mSuggestedWords = SuggestedWords.EMPTY;
     private final int[] mLastPointerCoords = CoordinateUtils.newInstance();
 
-    public GestureFloatingTextDrawingPreview(final View drawingView, final TypedArray typedArray) {
-        super(drawingView);
-        mParams = new GesturePreviewTextParams(typedArray);
+    public GestureFloatingTextDrawingPreview(final TypedArray mainKeyboardViewAttr) {
+        mParams = new GesturePreviewTextParams(mainKeyboardViewAttr);
     }
 
     @Override
@@ -149,7 +149,7 @@ public class GestureFloatingTextDrawingPreview extends AbstractDrawingPreview {
      */
     protected void updatePreviewPosition() {
         if (mSuggestedWords.isEmpty() || TextUtils.isEmpty(mSuggestedWords.getWord(0))) {
-            getDrawingView().invalidate();
+            invalidateDrawingView();
             return;
         }
         final String text = mSuggestedWords.getWord(0);
@@ -163,10 +163,9 @@ public class GestureFloatingTextDrawingPreview extends AbstractDrawingPreview {
         final float rectWidth = textWidth + hPad * 2.0f;
         final float rectHeight = textHeight + vPad * 2.0f;
 
-        final int displayWidth = getDrawingView().getResources().getDisplayMetrics().widthPixels;
         final float rectX = Math.min(
                 Math.max(CoordinateUtils.x(mLastPointerCoords) - rectWidth / 2.0f, 0.0f),
-                displayWidth - rectWidth);
+                mParams.mDisplayWidth - rectWidth);
         final float rectY = CoordinateUtils.y(mLastPointerCoords)
                 - mParams.mGesturePreviewTextOffset - rectHeight;
         rectangle.set(rectX, rectY, rectX + rectWidth, rectY + rectHeight);
@@ -174,6 +173,6 @@ public class GestureFloatingTextDrawingPreview extends AbstractDrawingPreview {
         mPreviewTextX = (int)(rectX + hPad + textWidth / 2.0f);
         mPreviewTextY = (int)(rectY + vPad) + textHeight;
         // TODO: Should narrow the invalidate region.
-        getDrawingView().invalidate();
+        invalidateDrawingView();
     }
 }

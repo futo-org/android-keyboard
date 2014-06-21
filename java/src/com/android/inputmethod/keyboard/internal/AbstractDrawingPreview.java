@@ -27,16 +27,19 @@ import com.android.inputmethod.keyboard.PointerTracker;
  * SlidingKeyInputDrawingPreview.
  */
 public abstract class AbstractDrawingPreview {
-    private final View mDrawingView;
+    private View mDrawingView;
     private boolean mPreviewEnabled;
     private boolean mHasValidGeometry;
 
-    protected AbstractDrawingPreview(final View drawingView) {
+    public void setDrawingView(final DrawingPreviewPlacerView drawingView) {
         mDrawingView = drawingView;
+        drawingView.addPreview(this);
     }
 
-    protected final View getDrawingView() {
-        return mDrawingView;
+    protected void invalidateDrawingView() {
+        if (mDrawingView != null) {
+            mDrawingView.invalidate();
+        }
     }
 
     protected final boolean isPreviewEnabled() {
