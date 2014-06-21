@@ -65,6 +65,9 @@ final class KeyboardAccessibilityNodeProvider extends AccessibilityNodeProviderC
     /** The virtual view identifier for the focused node. */
     private int mAccessibilityFocusedView = UNDEFINED;
 
+    /** The virtual view identifier for the hovering node. */
+    private int mHoveringNodeId = UNDEFINED;
+
     /** The current keyboard view. */
     private final KeyboardView mKeyboardView;
 
@@ -138,6 +141,28 @@ final class KeyboardAccessibilityNodeProvider extends AccessibilityNodeProviderC
         final AccessibilityRecordCompat record = AccessibilityEventCompat.asRecord(event);
         record.setSource(mKeyboardView, virtualViewId);
         return event;
+    }
+
+    public void onHoverEnterTo(final Key key) {
+        final int id = getVirtualViewIdOf(key);
+        if (id == View.NO_ID) {
+            return;
+        }
+        // Start hovering on the key. Because our accessibility model is lift-to-type, we should
+        // report the node info without click and long click actions to avoid unnecessary
+        // announcements.
+        mHoveringNodeId = id;
+        // Invalidate the node info of the key.
+        sendAccessibilityEventForKey(key, AccessibilityEventCompat.TYPE_WINDOW_CONTENT_CHANGED);
+        sendAccessibilityEventForKey(key, AccessibilityEventCompat.TYPE_VIEW_HOVER_ENTER);
+    }
+
+    public void onHoverExitFrom(final Key key) {
+        mHoveringNodeId = UNDEFINED;
+        // Invalidate the node info of the key to be able to revert the change we have done
+        // in {@link #onHoverEnterTo(Key)}.
+        sendAccessibilityEventForKey(key, AccessibilityEventCompat.TYPE_WINDOW_CONTENT_CHANGED);
+        sendAccessibilityEventForKey(key, AccessibilityEventCompat.TYPE_VIEW_HOVER_EXIT);
     }
 
     /**
@@ -214,7 +239,14 @@ final class KeyboardAccessibilityNodeProvider extends AccessibilityNodeProviderC
         info.setSource(mKeyboardView, virtualViewId);
         info.setEnabled(key.isEnabled());
         info.setVisibleToUser(true);
-        // TODO: Add ACTION_CLICK and ACTION_LONG_CLICK.
+        // Don't add ACTION_CLICK and ACTION_LONG_CLOCK actions while hovering on the key.
+        // See {@link #onHoverEnterTo(Key)} and {@link #onHoverExitFrom(Key)}.
+        if (virtualViewId != mHoveringNodeId) {
+            info.addAction(AccessibilityNodeInfoCompat.ACTION_CLICK);
+            if (key.isLongPressEnabled()) {
+                info.addAction(AccessibilityNodeInfoCompat.ACTION_LONG_CLICK);
+            }
+        }
 
         if (mAccessibilityFocusedView == virtualViewId) {
             info.addAction(AccessibilityNodeInfoCompat.ACTION_CLEAR_ACCESSIBILITY_FOCUS);
@@ -252,6 +284,12 @@ final class KeyboardAccessibilityNodeProvider extends AccessibilityNodeProviderC
             mAccessibilityFocusedView = UNDEFINED;
             sendAccessibilityEventForKey(
                     key, AccessibilityEventCompat.TYPE_VIEW_ACCESSIBILITY_FOCUS_CLEARED);
+            return true;
+        case AccessibilityNodeInfoCompat.ACTION_CLICK:
+            sendAccessibilityEventForKey(key, AccessibilityEvent.TYPE_VIEW_CLICKED);
+            return true;
+        case AccessibilityNodeInfoCompat.ACTION_LONG_CLICK:
+            sendAccessibilityEventForKey(key, AccessibilityEvent.TYPE_VIEW_LONG_CLICKED);
             return true;
         default:
             return false;
