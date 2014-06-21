@@ -305,7 +305,7 @@ public class KeyboardAccessibilityDelegate<KV extends KeyboardView>
         key.onPressed();
         mKeyboardView.invalidateKey(key);
         final KeyboardAccessibilityNodeProvider provider = getAccessibilityNodeProvider();
-        provider.sendAccessibilityEventForKey(key, AccessibilityEventCompat.TYPE_VIEW_HOVER_ENTER);
+        provider.onHoverEnterTo(key);
         provider.performActionForKey(key, AccessibilityNodeInfoCompat.ACTION_ACCESSIBILITY_FOCUS);
     }
 
@@ -328,6 +328,6 @@ public class KeyboardAccessibilityDelegate<KV extends KeyboardView>
         key.onReleased();
         mKeyboardView.invalidateKey(key);
         final KeyboardAccessibilityNodeProvider provider = getAccessibilityNodeProvider();
-        provider.sendAccessibilityEventForKey(key, AccessibilityEventCompat.TYPE_VIEW_HOVER_EXIT);
+        provider.onHoverExitFrom(key);
     }
 }
