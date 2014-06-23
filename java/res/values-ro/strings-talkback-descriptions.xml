@@ -25,8 +25,7 @@
     <string name="spoken_no_text_entered" msgid="1711276837961785646">"Nu a fost introdus text"</string>
     <string name="spoken_auto_correct" msgid="8989324692167993804">"<xliff:g id="KEY_NAME">%1$s</xliff:g> corectează <xliff:g id="ORIGINAL_WORD">%2$s</xliff:g> cu <xliff:g id="CORRECTED_WORD">%3$s</xliff:g>"</string>
     <string name="spoken_auto_correct_obscured" msgid="7769449372355268412">"<xliff:g id="KEY_NAME">%1$s</xliff:g> efectuează corectare automată"</string>
-    <!-- no translation found for spoken_description_unknown (5139930082759824442) -->
-    <skip />
+    <string name="spoken_description_unknown" msgid="5139930082759824442">"Caracter necunoscut"</string>
     <string name="spoken_description_shift" msgid="7209798151676638728">"Shift"</string>
     <string name="spoken_description_symbols_shift" msgid="3483198879916435717">"Mai multe simboluri"</string>
     <string name="spoken_description_shift_shifted" msgid="3122704922642232605">"Shift"</string>
@@ -72,22 +71,13 @@
     <string name="spoken_descrption_emoji_category_places" msgid="1163315840948545317">"Locații"</string>
     <string name="spoken_descrption_emoji_category_symbols" msgid="474680659024880601">"Simboluri"</string>
     <string name="spoken_descrption_emoji_category_emoticons" msgid="456737544787823539">"Emoticonuri"</string>
-    <!-- no translation found for spoken_description_upper_case (4904835255229433916) -->
-    <skip />
-    <!-- no translation found for spoken_letter_0049 (4743162182646977944) -->
-    <skip />
-    <!-- no translation found for spoken_letter_0130 (4766619646231612274) -->
-    <skip />
-    <!-- no translation found for spoken_symbol_unknown (717298227061173706) -->
-    <skip />
-    <!-- no translation found for spoken_emoji_unknown (5981009928135394306) -->
-    <skip />
-    <!-- no translation found for spoken_open_more_keys_keyboard (6832897688371903747) -->
-    <skip />
-    <!-- no translation found for spoken_close_more_keys_keyboard (3524914657934712026) -->
-    <skip />
-    <!-- no translation found for spoken_open_more_suggestions (4231720702882969760) -->
-    <skip />
-    <!-- no translation found for spoken_close_more_suggestions (9118455416075032839) -->
-    <skip />
+    <string name="spoken_description_upper_case" msgid="4904835255229433916">"<xliff:g id="LOWER_LETTER">%s</xliff:g> mare"</string>
+    <string name="spoken_letter_0049" msgid="4743162182646977944">"I mare"</string>
+    <string name="spoken_letter_0130" msgid="4766619646231612274">"I mare, punct deasupra"</string>
+    <string name="spoken_symbol_unknown" msgid="717298227061173706">"Simbol necunoscut"</string>
+    <string name="spoken_emoji_unknown" msgid="5981009928135394306">"Emoji necunoscut"</string>
+    <string name="spoken_open_more_keys_keyboard" msgid="6832897688371903747">"Sunt disponibile caracterele alternative"</string>
+    <string name="spoken_close_more_keys_keyboard" msgid="3524914657934712026">"S-au închis caracterele alternative"</string>
+    <string name="spoken_open_more_suggestions" msgid="4231720702882969760">"Sunt disponibile sugestiile alternative"</string>
+    <string name="spoken_close_more_suggestions" msgid="9118455416075032839">"S-au închis sugestiile alternative"</string>
 </resources>
