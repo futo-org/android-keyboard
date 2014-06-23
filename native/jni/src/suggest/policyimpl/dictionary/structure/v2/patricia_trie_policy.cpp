@@ -391,7 +391,9 @@ const WordProperty PatriciaTriePolicy::getWordProperty(const int *const codePoin
     return WordProperty(&codePointVector, &unigramProperty, &bigrams);
 }
 
-int PatriciaTriePolicy::getNextWordAndNextToken(const int token, int *const outCodePoints) {
+int PatriciaTriePolicy::getNextWordAndNextToken(const int token, int *const outCodePoints,
+        int *const outCodePointCount) {
+    *outCodePointCount = 0;
     if (token == 0) {
         // Start iterating the dictionary.
         mTerminalPtNodePositionsForIteratingWords.clear();
@@ -409,8 +411,8 @@ int PatriciaTriePolicy::getNextWordAndNextToken(const int token, int *const outC
     }
     const int terminalPtNodePos = mTerminalPtNodePositionsForIteratingWords[token];
     int unigramProbability = NOT_A_PROBABILITY;
-    getCodePointsAndProbabilityAndReturnCodePointCount(terminalPtNodePos, MAX_WORD_LENGTH,
-            outCodePoints, &unigramProbability);
+    *outCodePointCount = getCodePointsAndProbabilityAndReturnCodePointCount(terminalPtNodePos,
+            MAX_WORD_LENGTH, outCodePoints, &unigramProbability);
     const int nextToken = token + 1;
     if (nextToken >= terminalPtNodePositionsVectorSize) {
         // All words have been iterated.

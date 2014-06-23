@@ -113,7 +113,8 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     const WordProperty getWordProperty(const int *const codePoints,
             const int codePointCount) const;
 
-    int getNextWordAndNextToken(const int token, int *const outCodePoints);
+    int getNextWordAndNextToken(const int token, int *const outCodePoints,
+            int *const outCodePointCount);
 
     bool isCorrupted() const {
         return mIsCorrupted;

@@ -304,17 +304,18 @@ static jint latinime_BinaryDictionary_getNextWord(JNIEnv *env, jclass clazz,
         jlong dict, jint token, jintArray outCodePoints) {
     Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
     if (!dictionary) return 0;
-    const jsize outCodePointsLength = env->GetArrayLength(outCodePoints);
-    if (outCodePointsLength != MAX_WORD_LENGTH) {
-        AKLOGE("Invalid outCodePointsLength: %d", outCodePointsLength);
+    const jsize codePointBufSize = env->GetArrayLength(outCodePoints);
+    if (codePointBufSize != MAX_WORD_LENGTH) {
+        AKLOGE("Invalid outCodePointsLength: %d", codePointBufSize);
         ASSERT(false);
         return 0;
     }
-    int wordCodePoints[outCodePointsLength];
-    memset(wordCodePoints, 0, sizeof(wordCodePoints));
-    const int nextToken = dictionary->getNextWordAndNextToken(token, wordCodePoints);
+    int wordCodePoints[codePointBufSize];
+    int wordCodePointCount = 0;
+    const int nextToken = dictionary->getNextWordAndNextToken(token, wordCodePoints,
+            &wordCodePointCount);
     JniDataUtils::outputCodePoints(env, outCodePoints, 0 /* start */,
-            MAX_WORD_LENGTH /* maxLength */, wordCodePoints, outCodePointsLength,
+            MAX_WORD_LENGTH /* maxLength */, wordCodePoints, wordCodePointCount,
             false /* needsNullTermination */);
     return nextToken;
 }
@@ -555,12 +556,13 @@ static bool latinime_BinaryDictionary_migrateNative(JNIEnv *env, jclass clazz, j
 
     // TODO: Migrate historical information.
     int wordCodePoints[MAX_WORD_LENGTH];
+    int wordCodePointCount = 0;
     int token = 0;
     // Add unigrams.
     do {
-        token = dictionary->getNextWordAndNextToken(token, wordCodePoints);
-        const int wordLength = CharUtils::getCodePointCount(MAX_WORD_LENGTH, wordCodePoints);
-        const WordProperty wordProperty = dictionary->getWordProperty(wordCodePoints, wordLength);
+        token = dictionary->getNextWordAndNextToken(token, wordCodePoints, &wordCodePointCount);
+        const WordProperty wordProperty = dictionary->getWordProperty(wordCodePoints,
+                wordCodePointCount);
         if (dictionaryStructureWithBufferPolicy->needsToRunGC(true /* mindsBlockByGC */)) {
             dictionaryStructureWithBufferPolicy = runGCAndGetNewStructurePolicy(
                     std::move(dictionaryStructureWithBufferPolicy), dictFilePathChars);
@@ -569,8 +571,8 @@ static bool latinime_BinaryDictionary_migrateNative(JNIEnv *env, jclass clazz, j
                 return false;
             }
         }
-        if (!dictionaryStructureWithBufferPolicy->addUnigramEntry(wordCodePoints, wordLength,
-                wordProperty.getUnigramProperty())) {
+        if (!dictionaryStructureWithBufferPolicy->addUnigramEntry(wordCodePoints,
+                wordCodePointCount, wordProperty.getUnigramProperty())) {
             LogUtils::logToJava(env, "Cannot add unigram to the new dict.");
             return false;
         }
@@ -578,9 +580,9 @@ static bool latinime_BinaryDictionary_migrateNative(JNIEnv *env, jclass clazz, j
 
     // Add bigrams.
     do {
-        token = dictionary->getNextWordAndNextToken(token, wordCodePoints);
-        const int wordLength = CharUtils::getCodePointCount(MAX_WORD_LENGTH, wordCodePoints);
-        const WordProperty wordProperty = dictionary->getWordProperty(wordCodePoints, wordLength);
+        token = dictionary->getNextWordAndNextToken(token, wordCodePoints, &wordCodePointCount);
+        const WordProperty wordProperty = dictionary->getWordProperty(wordCodePoints,
+                wordCodePointCount);
         if (dictionaryStructureWithBufferPolicy->needsToRunGC(true /* mindsBlockByGC */)) {
             dictionaryStructureWithBufferPolicy = runGCAndGetNewStructurePolicy(
                     std::move(dictionaryStructureWithBufferPolicy), dictFilePathChars);
@@ -589,8 +591,8 @@ static bool latinime_BinaryDictionary_migrateNative(JNIEnv *env, jclass clazz, j
                 return false;
             }
         }
-        const PrevWordsInfo prevWordsInfo(wordCodePoints, wordLength,
-                false /* isStartOfSentence */);
+        const PrevWordsInfo prevWordsInfo(wordCodePoints, wordCodePointCount,
+                false /* isBeginningOfSentence */);
         for (const BigramProperty &bigramProperty : *wordProperty.getBigramProperties()) {
             if (!dictionaryStructureWithBufferPolicy->addNgramEntry(&prevWordsInfo,
                     &bigramProperty)) {
