@@ -86,7 +86,7 @@
         </receiver>
 
         <activity android:name=".settings.SettingsActivity"
-                android:theme="@style/platformActivityTheme"
+                android:theme="@style/platformSettingsTheme"
                 android:label="@string/english_ime_settings"
                 android:uiOptions="splitActionBarWhenNarrow">
             <intent-filter>
@@ -95,7 +95,7 @@
         </activity>
 
         <activity android:name=".spellcheck.SpellCheckerSettingsActivity"
-                  android:theme="@style/platformActivityTheme"
+                  android:theme="@style/platformSettingsTheme"
                   android:label="@string/android_spell_checker_settings">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -103,7 +103,7 @@
         </activity>
 
         <activity android:name=".settings.DebugSettingsActivity"
-                android:theme="@style/platformActivityTheme"
+                android:theme="@style/platformSettingsTheme"
                 android:label="@string/english_ime_debug_settings">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -150,7 +150,7 @@
         </receiver>
 
         <activity android:name="com.android.inputmethod.dictionarypack.DictionarySettingsActivity"
-                android:theme="@style/platformActivityTheme"
+                android:theme="@style/platformSettingsTheme"
                 android:label="@string/dictionary_settings_title"
                 android:uiOptions="splitActionBarWhenNarrow">
             <intent-filter>

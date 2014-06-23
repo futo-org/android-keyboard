@@ -18,9 +18,21 @@
 */
 -->
 
-<!-- TODO: This file is temporarily placed under values-v20. -->
-<!-- TODO: It might be moved under values-v21. -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
     <style name="platformActivityTheme" parent="@android:style/Theme.Material.Light" />
+    <!-- From packages/apps/Settings -->
+    <style name="platformSettingsTheme" parent="@android:style/Theme.Material.Settings">
+        <item name="android:actionBarStyle">@android:style/Widget.Material.Light.ActionBar.Solid</item>
+        <item name="android:alertDialogTheme">@style/Theme.AlertDialog</item>
+    </style>
+    <!-- From packages/apps/Settings -->
+    <style name="Theme.AlertDialog" parent="@*android:style/Theme.Material.Light.Dialog.Alert">
+        <!-- Used by the ActionBar: @color/theme_primary -->
+        <item name="android:colorPrimary">#ff263238</item>
+        <!-- Used by the StatusBar: @color/theme_primary_dark -->
+        <item name="android:colorPrimaryDark">#ff21272b</item>
+        <!-- Used by controls, e.g. CheckBox, ProgressBar, etc.: @color/theme_accent -->
+        <item name="android:colorAccent">#ff009688</item>
+    </style>
     <style name="platformDialogTheme" parent="@android:style/Theme.Material.Light.Dialog" />
 </resources>

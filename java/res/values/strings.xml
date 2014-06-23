@@ -36,22 +36,18 @@
     <!-- Option to control whether or not to show a popup with a larger font on each key press. -->
     <string name="popup_on_keypress">Popup on keypress</string>
 
-    <!-- Category title for general settings for Android keyboard -->
-    <string name="general_category">General</string>
-
-    <!-- Category title for text prediction -->
-    <string name="correction_category">Text correction</string>
-
-    <!-- Category title for gesture typing -->
-    <string name="gesture_typing_category">Gesture typing</string>
-
-    <!-- Category title for misc options  -->
-    <string name="misc_category">Other options</string>
-
-    <!-- Option name for advanced settings screen [CHAR LIMIT=25] -->
-    <string name="advanced_settings">Advanced settings</string>
-    <!-- Option summary for advanced settings screen [CHAR LIMIT=65 (two lines) or 30 (fits on one line, preferable)] -->
-    <string name="advanced_settings_summary">Options for experts</string>
+    <!-- Settings screen title for input preferences [CHAR LIMIT=25]-->
+    <string name="settings_screen_input">Input preferences</string>
+    <!-- Settings screen title for appearance preferences [CHAR LIMIT=25] -->
+    <string name="settings_screen_appearances">Appearance</string>
+    <!-- Settings screen title for multi lingual options [CHAR_LIMIT=25] -->
+    <string name="settings_screen_multi_lingual">Multi lingual options</string>
+    <!-- Settings screen title for gesture typing preferences [CHAR_LIMIT=25] -->
+    <string name="settings_screen_gesture">Gesture typing preferences</string>
+    <!-- Settings screen title for text correction options [CHAR_LIMIT=25] -->
+    <string name="settings_screen_correction">Text correction</string>
+    <!-- Settings screen title for advanced settings [CHAR LIMIT=25] -->
+    <string name="settings_screen_advanced">Advanced</string>
 
     <!-- Option name for including other IMEs in the language switch list [CHAR LIMIT=30] -->
     <string name="include_other_imes_in_language_switch_list">Switch to other input methods</string>
@@ -295,12 +291,16 @@ mobile devices. [CHAR LIMIT=25] -->
     <!-- Description for Emoji keyboard subtype [CHAR LIMIT=25] -->
     <string name="subtype_emoji">Emoji</string>
 
-    <!-- Title of the preference settings for switching keyboard color scheme [CHAR LIMIT=35] -->
-    <string name="keyboard_color_scheme">Color scheme</string>
-    <!-- The keyboard color scheme name, White [CHAR LIMIT=16] -->
-    <string name="keyboard_color_scheme_white">White</string>
-    <!-- The keyboard color scheme name, Blue [CHAR LIMIT=16] -->
-    <string name="keyboard_color_scheme_blue">Blue</string>
+    <!-- Title of the preference settings for switching keyboard theme [CHAR LIMIT=35] -->
+    <string name="keyboard_theme">Keyboard theme</string>
+    <!-- The keyboard theme name, Holo White [CHAR LIMIT=25] -->
+    <string name="keyboard_theme_holo_white">Holo White</string>
+    <!-- The keyboard theme name, Holo Blue [CHAR LIMIT=25] -->
+    <string name="keyboard_theme_holo_blue">Holo Blue</string>
+    <!-- The keyboard theme name, Material Dark [CHAR LIMIT=25] -->
+    <string name="keyboard_theme_material_dark">Material Dark</string>
+    <!-- The keyboard theme name, Material Light [CHAR LIMIT=25] -->
+    <string name="keyboard_theme_material_light">Material Light</string>
 
     <!-- Title of the preference settings for custom input styles (language and keyboard layout pairs) [CHAR LIMIT=35]-->
     <string name="custom_input_styles_title">Custom input styles</string>
