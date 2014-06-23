@@ -105,7 +105,7 @@ public final class KeyPreviewChoreographer {
         mFreeKeyPreviewViews.add(keyPreviewView);
     }
 
-    public void placeKeyPreviewAndShow(final Key key, final KeyboardIconsSet iconsSet,
+    public void placeAndShowKeyPreview(final Key key, final KeyboardIconsSet iconsSet,
             final KeyDrawParams drawParams, final int keyboardViewWidth, final int[] keyboardOrigin,
             final ViewGroup placerView, final boolean withAnimation) {
         final KeyPreviewView keyPreviewView = getKeyPreviewView(key, placerView);

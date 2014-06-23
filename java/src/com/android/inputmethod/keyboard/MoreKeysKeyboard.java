@@ -261,13 +261,13 @@ public final class MoreKeysKeyboard extends Keyboard {
          * @param context the context of {@link MoreKeysKeyboardView}.
          * @param key the {@link Key} that invokes more keys keyboard.
          * @param keyboard the {@link Keyboard} that contains the parentKey.
-         * @param singleMoreKeyWithPreview true if the <code>key</code> has only one more key
-         *        and key popup preview is enabled.
+         * @param isSingleMoreKeyWithPreview true if the <code>key</code> has just a single
+         *        "more key" and its key popup preview is enabled.
          * @param keyPreviewDrawParams the parameter to place key preview.
-         * @param paintToMeasure the {@link Paint} object to measure a more key width
+         * @param paintToMeasure the {@link Paint} object to measure a "more key" width
          */
         public Builder(final Context context, final Key key, final Keyboard keyboard,
-                final boolean singleMoreKeyWithPreview, final int keyPreviewVisibleWidth,
+                final boolean isSingleMoreKeyWithPreview, final int keyPreviewVisibleWidth,
                 final int keyPreviewVisibleHeight, final Paint paintToMeasure) {
             super(context, new MoreKeysKeyboardParams());
             load(keyboard.mMoreKeysTemplate, keyboard.mId);
@@ -275,10 +275,11 @@ public final class MoreKeysKeyboard extends Keyboard {
             // TODO: More keys keyboard's vertical gap is currently calculated heuristically.
             // Should revise the algorithm.
             mParams.mVerticalGap = keyboard.mVerticalGap / 2;
+            // This {@link MoreKeysKeyboard} is invoked from the <code>key</code>.
             mParentKey = key;
 
             final int keyWidth, rowHeight;
-            if (singleMoreKeyWithPreview) {
+            if (isSingleMoreKeyWithPreview) {
                 // Use pre-computed width and height if this more keys keyboard has only one key to
                 // mitigate visual flicker between key preview and more keys keyboard.
                 // Caveats for the visual assets: To achieve this effect, both the key preview
