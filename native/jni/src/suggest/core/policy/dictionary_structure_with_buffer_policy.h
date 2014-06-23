@@ -104,7 +104,8 @@ class DictionaryStructureWithBufferPolicy {
     // Method to iterate all words in the dictionary.
     // The returned token has to be used to get the next word. If token is 0, this method newly
     // starts iterating the dictionary.
-    virtual int getNextWordAndNextToken(const int token, int *const outCodePoints) = 0;
+    virtual int getNextWordAndNextToken(const int token, int *const outCodePoints,
+            int *const outCodePointCount) = 0;
 
     virtual bool isCorrupted() const = 0;
 

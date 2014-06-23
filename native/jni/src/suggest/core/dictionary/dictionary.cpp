@@ -145,10 +145,11 @@ const WordProperty Dictionary::getWordProperty(const int *const codePoints,
             codePoints, codePointCount);
 }
 
-int Dictionary::getNextWordAndNextToken(const int token, int *const outCodePoints) {
+int Dictionary::getNextWordAndNextToken(const int token, int *const outCodePoints,
+        int *const outCodePointCount) {
     TimeKeeper::setCurrentTime();
     return mDictionaryStructureWithBufferPolicy->getNextWordAndNextToken(
-            token, outCodePoints);
+            token, outCodePoints, outCodePointCount);
 }
 
 void Dictionary::logDictionaryInfo(JNIEnv *const env) const {
