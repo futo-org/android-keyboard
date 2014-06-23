@@ -485,7 +485,7 @@ public class DictionaryFacilitator {
     public SuggestionResults getSuggestionResults(final WordComposer composer,
             final PrevWordsInfo prevWordsInfo, final ProximityInfo proximityInfo,
             final boolean blockOffensiveWords, final int[] additionalFeaturesOptions,
-            final int sessionId, final ArrayList<SuggestedWordInfo> rawSuggestions) {
+            final int sessionId) {
         final Dictionaries dictionaries = mDictionaries;
         final SuggestionResults suggestionResults =
                 new SuggestionResults(dictionaries.mLocale, SuggestedWords.MAX_SUGGESTIONS);
@@ -499,19 +499,11 @@ public class DictionaryFacilitator {
                             languageWeight);
             if (null == dictionarySuggestions) continue;
             suggestionResults.addAll(dictionarySuggestions);
-            if (null != rawSuggestions) {
-                rawSuggestions.addAll(dictionarySuggestions);
+            if (null != suggestionResults.mRawSuggestions) {
+                suggestionResults.mRawSuggestions.addAll(dictionarySuggestions);
             }
         }
         return suggestionResults;
-    }
-
-    public boolean isValidMainDictWord(final String word) {
-        final Dictionary mainDict = mDictionaries.getDict(Dictionary.TYPE_MAIN);
-        if (TextUtils.isEmpty(word) || mainDict == null) {
-            return false;
-        }
-        return mainDict.isValidWord(word);
     }
 
     public boolean isValidWord(final String word, final boolean ignoreCase) {
