@@ -270,8 +270,8 @@ const PtNodeParams DynamicPtUpdatingHelper::getUpdatedPtNodeParams(
         const bool isNotAWord, const bool isBlacklisted, const bool isTerminal, const int parentPos,
         const int codePointCount, const int *const codePoints, const int probability) const {
     const PatriciaTrieReadingUtils::NodeFlags flags = PatriciaTrieReadingUtils::createAndGetFlags(
-            isBlacklisted, isNotAWord, isTerminal, originalPtNodeParams->hasShortcutTargets(),
-            originalPtNodeParams->hasBigrams(), codePointCount > 1 /* hasMultipleChars */,
+            isBlacklisted, isNotAWord, isTerminal, false /* hasShortcutTargets */,
+            false /* hasBigrams */, codePointCount > 1 /* hasMultipleChars */,
             CHILDREN_POSITION_FIELD_SIZE);
     return PtNodeParams(originalPtNodeParams, flags, parentPos, codePointCount, codePoints,
             probability);
