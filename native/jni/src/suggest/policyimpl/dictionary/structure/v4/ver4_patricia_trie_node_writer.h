@@ -93,8 +93,6 @@ class Ver4PatriciaTrieNodeWriter : public PtNodeWriter {
             const int *const targetCodePoints, const int targetCodePointCount,
             const int shortcutProbability);
 
-    bool updatePtNodeHasBigramsAndShortcutTargetsFlags(const PtNodeParams *const ptNodeParams);
-
  private:
     DISALLOW_COPY_AND_ASSIGN(Ver4PatriciaTrieNodeWriter);
 
@@ -110,8 +108,7 @@ class Ver4PatriciaTrieNodeWriter : public PtNodeWriter {
             const UnigramProperty *const unigramProperty) const;
 
     bool updatePtNodeFlags(const int ptNodePos, const bool isBlacklisted, const bool isNotAWord,
-            const bool isTerminal, const bool hasShortcutTargets, const bool hasBigrams,
-            const bool hasMultipleChars);
+            const bool isTerminal, const bool hasMultipleChars);
 
     static const int CHILDREN_POSITION_FIELD_SIZE;
 
