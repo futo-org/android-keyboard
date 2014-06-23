@@ -100,30 +100,28 @@ public final class Suggest {
                 ? typedWord.substring(0, typedWord.length() - trailingSingleQuotesCount)
                 : typedWord;
 
-        final ArrayList<SuggestedWordInfo> rawSuggestions;
-        if (ProductionFlag.INCLUDE_RAW_SUGGESTIONS) {
-            rawSuggestions = new ArrayList<>();
-        } else {
-            rawSuggestions = null;
-        }
         final SuggestionResults suggestionResults = mDictionaryFacilitator.getSuggestionResults(
                 wordComposer, prevWordsInfo, proximityInfo, blockOffensiveWords,
-                additionalFeaturesOptions, SESSION_TYPING, rawSuggestions);
+                additionalFeaturesOptions, SESSION_TYPING);
 
+        final boolean isPrediction = !wordComposer.isComposingWord();
+        final boolean shouldMakeSuggestionsAllUpperCase = wordComposer.isAllUpperCase()
+                && !wordComposer.isResumed();
         final boolean isOnlyFirstCharCapitalized =
                 wordComposer.isOrWillBeOnlyFirstCharCapitalized();
+
         // If resumed, then we don't want to upcase everything: resuming on a fully-capitalized
         // words is rarely done to switch to another fully-capitalized word, but usually to a
         // normal, non-capitalized suggestion.
-        final boolean isAllUpperCase = wordComposer.isAllUpperCase() && !wordComposer.isResumed();
         final String firstSuggestion;
         final String whitelistedWord;
         if (suggestionResults.isEmpty()) {
             whitelistedWord = firstSuggestion = null;
         } else {
             final SuggestedWordInfo firstSuggestedWordInfo = getTransformedSuggestedWordInfo(
-                    suggestionResults.first(), suggestionResults.mLocale, isAllUpperCase,
-                    isOnlyFirstCharCapitalized, trailingSingleQuotesCount);
+                    suggestionResults.first(), suggestionResults.mLocale,
+                    shouldMakeSuggestionsAllUpperCase, isOnlyFirstCharCapitalized,
+                    trailingSingleQuotesCount);
             firstSuggestion = firstSuggestedWordInfo.mWord;
             if (!firstSuggestedWordInfo.isKindOf(SuggestedWordInfo.KIND_WHITELIST)) {
                 whitelistedWord = null;
@@ -131,8 +129,6 @@ public final class Suggest {
                 whitelistedWord = firstSuggestion;
             }
         }
-
-        final boolean isPrediction = !wordComposer.isComposingWord();
 
         // We allow auto-correction if we have a whitelisted word, or if the word is not a valid
         // word of more than 1 char, except if the first suggestion is the same as the typed string
@@ -174,11 +170,12 @@ public final class Suggest {
         final ArrayList<SuggestedWordInfo> suggestionsContainer =
                 new ArrayList<>(suggestionResults);
         final int suggestionsCount = suggestionsContainer.size();
-        if (isOnlyFirstCharCapitalized || isAllUpperCase || 0 != trailingSingleQuotesCount) {
+        if (isOnlyFirstCharCapitalized || shouldMakeSuggestionsAllUpperCase
+                || 0 != trailingSingleQuotesCount) {
             for (int i = 0; i < suggestionsCount; ++i) {
                 final SuggestedWordInfo wordInfo = suggestionsContainer.get(i);
                 final SuggestedWordInfo transformedWordInfo = getTransformedSuggestedWordInfo(
-                        wordInfo, suggestionResults.mLocale, isAllUpperCase,
+                        wordInfo, suggestionResults.mLocale, shouldMakeSuggestionsAllUpperCase,
                         isOnlyFirstCharCapitalized, trailingSingleQuotesCount);
                 suggestionsContainer.set(i, transformedWordInfo);
             }
@@ -200,12 +197,13 @@ public final class Suggest {
             suggestionsList = suggestionsContainer;
         }
 
-        callback.onGetSuggestedWords(new SuggestedWords(suggestionsList, rawSuggestions,
+        callback.onGetSuggestedWords(new SuggestedWords(suggestionsList,
+                suggestionResults.mRawSuggestions,
                 // TODO: this first argument is lying. If this is a whitelisted word which is an
                 // actual word, it says typedWordValid = false, which looks wrong. We should either
                 // rename the attribute or change the value.
                 !isPrediction && !allowsToBeAutoCorrected /* typedWordValid */,
-                hasAutoCorrection, /* willAutoCorrect */
+                hasAutoCorrection /* willAutoCorrect */,
                 false /* isObsoleteSuggestions */, isPrediction, sequenceNumber));
     }
 
@@ -216,15 +214,9 @@ public final class Suggest {
             final boolean blockOffensiveWords, final int[] additionalFeaturesOptions,
             final int sessionId, final int sequenceNumber,
             final OnGetSuggestedWordsCallback callback) {
-        final ArrayList<SuggestedWordInfo> rawSuggestions;
-        if (ProductionFlag.INCLUDE_RAW_SUGGESTIONS) {
-            rawSuggestions = new ArrayList<>();
-        } else {
-            rawSuggestions = null;
-        }
         final SuggestionResults suggestionResults = mDictionaryFacilitator.getSuggestionResults(
                 wordComposer, prevWordsInfo, proximityInfo, blockOffensiveWords,
-                additionalFeaturesOptions, sessionId, rawSuggestions);
+                additionalFeaturesOptions, sessionId);
         final ArrayList<SuggestedWordInfo> suggestionsContainer =
                 new ArrayList<>(suggestionResults);
         final int suggestionsCount = suggestionsContainer.size();
@@ -257,7 +249,8 @@ public final class Suggest {
 
         // In the batch input mode, the most relevant suggested word should act as a "typed word"
         // (typedWordValid=true), not as an "auto correct word" (willAutoCorrect=false).
-        callback.onGetSuggestedWords(new SuggestedWords(suggestionsContainer, rawSuggestions,
+        callback.onGetSuggestedWords(new SuggestedWords(suggestionsContainer,
+                suggestionResults.mRawSuggestions,
                 true /* typedWordValid */,
                 false /* willAutoCorrect */,
                 false /* isObsoleteSuggestions */,

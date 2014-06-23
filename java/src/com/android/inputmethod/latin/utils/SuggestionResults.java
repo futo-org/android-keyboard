@@ -17,7 +17,9 @@
 package com.android.inputmethod.latin.utils;
 
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
+import com.android.inputmethod.latin.define.ProductionFlag;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Locale;
@@ -29,6 +31,7 @@ import java.util.TreeSet;
  */
 public final class SuggestionResults extends TreeSet<SuggestedWordInfo> {
     public final Locale mLocale;
+    public final ArrayList<SuggestedWordInfo> mRawSuggestions;
     private final int mCapacity;
 
     public SuggestionResults(final Locale locale, final int capacity) {
@@ -40,6 +43,11 @@ public final class SuggestionResults extends TreeSet<SuggestedWordInfo> {
         super(comparator);
         mLocale = locale;
         mCapacity = capacity;
+        if (ProductionFlag.INCLUDE_RAW_SUGGESTIONS) {
+            mRawSuggestions = new ArrayList<>();
+        } else {
+            mRawSuggestions = null;
+        }
     }
 
     @Override
