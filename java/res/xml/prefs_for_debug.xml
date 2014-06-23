@@ -20,26 +20,20 @@
     android:title="@string/prefs_debug_mode"
     android:key="english_ime_debug_settings"
 >
-    <SwitchPreference
+    <CheckBoxPreference
         android:key="debug_mode"
         android:title="@string/prefs_debug_mode"
-        android:switchTextOn=""
-        android:switchTextOff=""
         android:persistent="true"
         android:defaultValue="false" />
-    <SwitchPreference
+    <CheckBoxPreference
         android:key="force_non_distinct_multitouch"
         android:title="@string/prefs_force_non_distinct_multitouch"
-        android:switchTextOn=""
-        android:switchTextOff=""
         android:persistent="true"
         android:defaultValue="false" />
-    <SwitchPreference
+    <CheckBoxPreference
         android:key="pref_sliding_key_input_preview"
         android:title="@string/sliding_key_input_preview"
         android:summary="@string/sliding_key_input_preview_summary"
-        android:switchTextOn=""
-        android:switchTextOff=""
         android:persistent="true"
         android:defaultValue="true" />
     <com.android.inputmethod.latin.settings.SeekBarDialogPreference
