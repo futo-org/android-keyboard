@@ -27,13 +27,15 @@ import android.content.res.Resources;
 import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
-import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceGroup;
 import android.preference.PreferenceScreen;
+import android.preference.TwoStatePreference;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.dictionarypack.DictionarySettingsActivity;
@@ -60,6 +62,10 @@ public final class SettingsFragment extends InputMethodSettingsFragment
     private static final boolean USE_INTERNAL_PERSONAL_DICTIONARY_SETTIGS =
             DBG_USE_INTERNAL_PERSONAL_DICTIONARY_SETTINGS
             || Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN_MR2;
+
+    private static final int NO_MENU_GROUP = Menu.NONE; // We don't care about menu grouping.
+    private static final int MENU_FEEDBACK = Menu.FIRST; // The first menu item id and order.
+    private static final int MENU_ABOUT = Menu.FIRST + 1; // The second menu item id and order.
 
     private void setPreferenceEnabled(final String preferenceKey, final boolean enabled) {
         final Preference preference = findPreference(preferenceKey);
@@ -93,6 +99,7 @@ public final class SettingsFragment extends InputMethodSettingsFragment
     @Override
     public void onCreate(final Bundle icicle) {
         super.onCreate(icicle);
+        setHasOptionsMenu(true);
         setInputMethodSettingsCategoryTitle(R.string.language_selection_title);
         setSubtypeEnablerTitle(R.string.select_language);
         addPreferencesFromResource(R.xml.prefs);
@@ -117,66 +124,42 @@ public final class SettingsFragment extends InputMethodSettingsFragment
 
         ensureConsistencyOfAutoCorrectionSettings();
 
-        final PreferenceGroup generalSettings =
-                (PreferenceGroup) findPreference(Settings.PREF_GENERAL_SETTINGS);
-        final PreferenceGroup miscSettings =
-                (PreferenceGroup) findPreference(Settings.PREF_MISC_SETTINGS);
-
-        final Preference debugSettings = findPreference(Settings.PREF_DEBUG_SETTINGS);
-        if (debugSettings != null) {
-            if (Settings.isInternal(prefs)) {
-                final Intent debugSettingsIntent = new Intent(Intent.ACTION_MAIN);
-                debugSettingsIntent.setClassName(
-                        context.getPackageName(), DebugSettingsActivity.class.getName());
-                debugSettings.setIntent(debugSettingsIntent);
-            } else {
-                miscSettings.removePreference(debugSettings);
-            }
-        }
-
-        final Preference feedbackSettings = findPreference(Settings.PREF_SEND_FEEDBACK);
-        final Preference aboutSettings = findPreference(Settings.PREF_ABOUT_KEYBOARD);
-        if (feedbackSettings != null) {
-            if (FeedbackUtils.isFeedbackFormSupported()) {
-                feedbackSettings.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-                    @Override
-                    public boolean onPreferenceClick(final Preference pref) {
-                        FeedbackUtils.showFeedbackForm(getActivity());
-                        return true;
-                    }
-                });
-                aboutSettings.setTitle(FeedbackUtils.getAboutKeyboardTitleResId());
-                aboutSettings.setIntent(FeedbackUtils.getAboutKeyboardIntent(getActivity()));
-            } else {
-                miscSettings.removePreference(feedbackSettings);
-                miscSettings.removePreference(aboutSettings);
-            }
+        final PreferenceScreen inputScreen =
+                (PreferenceScreen) findPreference(Settings.SCREEN_INPUT);
+        final PreferenceScreen advancedScreen =
+                (PreferenceScreen) findPreference(Settings.SCREEN_ADVANCED);
+        final Preference debugScreen = findPreference(Settings.SCREEN_DEBUG);
+        if (Settings.isInternal(prefs)) {
+            final Intent debugSettingsIntent = new Intent(Intent.ACTION_MAIN);
+            debugSettingsIntent.setClassName(
+                    context.getPackageName(), DebugSettingsActivity.class.getName());
+            debugScreen.setIntent(debugSettingsIntent);
+        } else {
+            advancedScreen.removePreference(debugScreen);
         }
 
         final boolean showVoiceKeyOption = res.getBoolean(
                 R.bool.config_enable_show_voice_key_option);
         if (!showVoiceKeyOption) {
-            removePreference(Settings.PREF_VOICE_INPUT_KEY, generalSettings);
+            removePreference(Settings.PREF_VOICE_INPUT_KEY, inputScreen);
         }
 
-        final PreferenceGroup advancedSettings =
-                (PreferenceGroup) findPreference(Settings.PREF_ADVANCED_SETTINGS);
         if (!AudioAndHapticFeedbackManager.getInstance().hasVibrator()) {
-            removePreference(Settings.PREF_VIBRATE_ON, generalSettings);
-            removePreference(Settings.PREF_VIBRATION_DURATION_SETTINGS, advancedSettings);
+            removePreference(Settings.PREF_VIBRATE_ON, inputScreen);
+            removePreference(Settings.PREF_VIBRATION_DURATION_SETTINGS, advancedScreen);
         }
         if (!Settings.ENABLE_SHOW_LANGUAGE_SWITCH_KEY_SETTINGS) {
+            final PreferenceScreen multiLingualScreen =
+                    (PreferenceScreen) findPreference(Settings.SCREEN_MULTI_LINGUAL);
+            removePreference(Settings.PREF_SHOW_LANGUAGE_SWITCH_KEY, multiLingualScreen);
             removePreference(
-                    Settings.PREF_SHOW_LANGUAGE_SWITCH_KEY, advancedSettings);
-            removePreference(
-                    Settings.PREF_INCLUDE_OTHER_IMES_IN_LANGUAGE_SWITCH_LIST, advancedSettings);
+                    Settings.PREF_INCLUDE_OTHER_IMES_IN_LANGUAGE_SWITCH_LIST, multiLingualScreen);
         }
-
 
         // TODO: consolidate key preview dismiss delay with the key preview animation parameters.
         if (!Settings.readFromBuildConfigIfToShowKeyPreviewPopupOption(res)) {
-            removePreference(Settings.PREF_POPUP_ON, generalSettings);
-            removePreference(Settings.PREF_KEY_PREVIEW_POPUP_DISMISS_DELAY, advancedSettings);
+            removePreference(Settings.PREF_POPUP_ON, inputScreen);
+            removePreference(Settings.PREF_KEY_PREVIEW_POPUP_DISMISS_DELAY, advancedScreen);
         } else {
             // TODO: Cleanup this setup.
             final ListPreference keyPreviewPopupDismissDelay =
@@ -199,18 +182,18 @@ public final class SettingsFragment extends InputMethodSettingsFragment
         }
 
         if (!res.getBoolean(R.bool.config_setup_wizard_available)) {
-            removePreference(Settings.PREF_SHOW_SETUP_WIZARD_ICON, advancedSettings);
+            removePreference(Settings.PREF_SHOW_SETUP_WIZARD_ICON, advancedScreen);
         }
 
-        final PreferenceGroup textCorrectionGroup =
-                (PreferenceGroup) findPreference(Settings.PREF_CORRECTION_SETTINGS);
+        final PreferenceScreen correctionScreen =
+                (PreferenceScreen) findPreference(Settings.SCREEN_CORRECTION);
         final PreferenceScreen dictionaryLink =
                 (PreferenceScreen) findPreference(Settings.PREF_CONFIGURE_DICTIONARIES_KEY);
         final Intent intent = dictionaryLink.getIntent();
         intent.setClassName(context.getPackageName(), DictionarySettingsActivity.class.getName());
         final int number = context.getPackageManager().queryIntentActivities(intent, 0).size();
         if (0 >= number) {
-            textCorrectionGroup.removePreference(dictionaryLink);
+            correctionScreen.removePreference(dictionaryLink);
         }
 
         if (ProductionFlag.IS_METRICS_LOGGING_SUPPORTED) {
@@ -224,7 +207,7 @@ public final class SettingsFragment extends InputMethodSettingsFragment
                 enableMetricsLogging.setTitle(enableMetricsLoggingTitle);
             }
         } else {
-            removePreference(Settings.PREF_ENABLE_METRICS_LOGGING, textCorrectionGroup);
+            removePreference(Settings.PREF_ENABLE_METRICS_LOGGING, advancedScreen);
         }
 
         final Preference editPersonalDictionary =
@@ -238,7 +221,7 @@ public final class SettingsFragment extends InputMethodSettingsFragment
         }
 
         if (!Settings.readFromBuildConfigIfGestureInputEnabled(res)) {
-            removePreference(Settings.PREF_GESTURE_SETTINGS, getPreferenceScreen());
+            removePreference(Settings.SCREEN_GESTURE, getPreferenceScreen());
         }
 
         AdditionalFeaturesSettingUtils.addAdditionalFeaturesPreferences(context, this);
@@ -261,8 +244,8 @@ public final class SettingsFragment extends InputMethodSettingsFragment
             voiceInputKeyOption.setSummary(isShortcutImeEnabled ? null
                     : res.getText(R.string.voice_input_disabled_summary));
         }
-        final CheckBoxPreference showSetupWizardIcon =
-                (CheckBoxPreference)findPreference(Settings.PREF_SHOW_SETUP_WIZARD_ICON);
+        final TwoStatePreference showSetupWizardIcon =
+                (TwoStatePreference)findPreference(Settings.PREF_SHOW_SETUP_WIZARD_ICON);
         if (showSetupWizardIcon != null) {
             showSetupWizardIcon.setChecked(Settings.readShowSetupWizardIcon(prefs, getActivity()));
         }
@@ -475,5 +458,30 @@ public final class SettingsFragment extends InputMethodSettingsFragment
         } else {
             userDictionaryPreference.setFragment(UserDictionaryList.class.getName());
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater) {
+        if (!FeedbackUtils.isFeedbackFormSupported()) {
+            return;
+        }
+        menu.add(NO_MENU_GROUP, MENU_FEEDBACK /* itemId */, MENU_FEEDBACK /* order */,
+                R.string.send_feedback);
+        menu.add(NO_MENU_GROUP, MENU_ABOUT /* itemId */, MENU_ABOUT /* order */,
+                FeedbackUtils.getAboutKeyboardTitleResId());
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(final MenuItem item) {
+        final int itemId = item.getItemId();
+        if (itemId == MENU_FEEDBACK) {
+            FeedbackUtils.showFeedbackForm(getActivity());
+            return true;
+        }
+        if (itemId == MENU_ABOUT) {
+            startActivity(FeedbackUtils.getAboutKeyboardIntent(getActivity()));
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

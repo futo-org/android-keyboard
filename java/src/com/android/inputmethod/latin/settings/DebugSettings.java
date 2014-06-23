@@ -21,14 +21,13 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Process;
-import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceGroup;
 import android.preference.PreferenceScreen;
+import android.preference.TwoStatePreference;
 
-import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.DictionaryDumpBroadcastReceiver;
 import com.android.inputmethod.latin.DictionaryFacilitator;
 import com.android.inputmethod.latin.R;
@@ -57,7 +56,7 @@ public final class DebugSettings extends PreferenceFragment
     public static final String PREF_KEY_LONGPRESS_TIMEOUT = "pref_key_longpress_timeout";
 
     private boolean mServiceNeedsRestart = false;
-    private CheckBoxPreference mDebugMode;
+    private TwoStatePreference mDebugMode;
 
     @Override
     public void onCreate(Bundle icicle) {
@@ -107,7 +106,7 @@ public final class DebugSettings extends PreferenceFragment
                         res, R.fraction.config_key_preview_dismiss_end_scale));
 
         mServiceNeedsRestart = false;
-        mDebugMode = (CheckBoxPreference) findPreference(PREF_DEBUG_MODE);
+        mDebugMode = (TwoStatePreference) findPreference(PREF_DEBUG_MODE);
         updateDebugMode();
     }
 
