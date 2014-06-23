@@ -286,8 +286,9 @@ bool Ver4PatriciaTrieWritingHelper::TraversePolicyToUpdateAllPtNodeFlagsAndTermi
     }
     if (!mPtNodeWriter->updateTerminalId(ptNodeParams, it->second)) {
         AKLOGE("Cannot update terminal id. %d -> %d", it->first, it->second);
+        return false;
     }
-    return mPtNodeWriter->updatePtNodeHasBigramsAndShortcutTargetsFlags(ptNodeParams);
+    return true;
 }
 
 } // namespace latinime

@@ -65,7 +65,7 @@ bool DynamicPtGcEventListeners
 
 bool DynamicPtGcEventListeners::TraversePolicyToUpdateBigramProbability
         ::onVisitingPtNode(const PtNodeParams *const ptNodeParams) {
-    if (!ptNodeParams->isDeleted() && ptNodeParams->hasBigrams()) {
+    if (!ptNodeParams->isDeleted()) {
         int bigramEntryCount = 0;
         if (!mPtNodeWriter->updateAllBigramEntriesAndDeleteUselessEntries(ptNodeParams,
                 &bigramEntryCount)) {
