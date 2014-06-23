@@ -62,13 +62,13 @@ public class BinaryDictOffdeviceUtilsTests extends TestCase {
 
         final File dst = File.createTempFile("testGetRawDict", ".tmp");
         dst.deleteOnExit();
-
-        final OutputStream out = Compress.getCompressedStream(
+        try (final OutputStream out = Compress.getCompressedStream(
                 Compress.getCompressedStream(
                         Compress.getCompressedStream(
-                                new BufferedOutputStream(new FileOutputStream(dst)))));
-        final DictEncoder dictEncoder = new Ver2DictEncoder(out);
-        dictEncoder.writeDictionary(dict, new FormatOptions(2, false));
+                                new BufferedOutputStream(new FileOutputStream(dst)))))) {
+            final DictEncoder dictEncoder = new Ver2DictEncoder(out);
+            dictEncoder.writeDictionary(dict, new FormatOptions(2, false));
+        }
 
         // Test for an actually compressed dictionary and its contents
         final BinaryDictOffdeviceUtils.DecoderChainSpec decodeSpec =
@@ -96,11 +96,11 @@ public class BinaryDictOffdeviceUtilsTests extends TestCase {
         // Randomly create some 4k file containing garbage
         final File dst = File.createTempFile("testGetRawDict", ".tmp");
         dst.deleteOnExit();
-        final OutputStream out = new BufferedOutputStream(new FileOutputStream(dst));
-        for (int i = 0; i < 1024; ++i) {
-            out.write(0x12345678);
+        try (final OutputStream out = new BufferedOutputStream(new FileOutputStream(dst))) {
+            for (int i = 0; i < 1024; ++i) {
+                out.write(0x12345678);
+            }
         }
-        out.close();
 
         // Test that a random data file actually fails
         assertNull("Wrongly identified data file",
@@ -108,12 +108,12 @@ public class BinaryDictOffdeviceUtilsTests extends TestCase {
 
         final File gzDst = File.createTempFile("testGetRawDict", ".tmp");
         gzDst.deleteOnExit();
-        final OutputStream gzOut =
-                Compress.getCompressedStream(new BufferedOutputStream(new FileOutputStream(gzDst)));
-        for (int i = 0; i < 1024; ++i) {
-            gzOut.write(0x12345678);
+        try (final OutputStream gzOut = Compress.getCompressedStream(
+                new BufferedOutputStream(new FileOutputStream(gzDst)))) {
+            for (int i = 0; i < 1024; ++i) {
+                gzOut.write(0x12345678);
+            }
         }
-        gzOut.close();
 
         // Test that a compressed random data file actually fails
         assertNull("Wrongly identified data file",

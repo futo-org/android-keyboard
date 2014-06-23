@@ -23,13 +23,16 @@ import com.android.inputmethod.latin.makedict.ProbabilityInfo;
 import com.android.inputmethod.latin.makedict.WeightedString;
 import com.android.inputmethod.latin.makedict.WordProperty;
 
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
+
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.BufferedWriter;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.Writer;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.TreeSet;
@@ -37,10 +40,6 @@ import java.util.TreeSet;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-
-import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * Reads and writes XML files for a FusionDictionary.
@@ -56,8 +55,6 @@ public class XmlDictInputOutput {
     private static final String PROBABILITY_ATTR = "f";
     private static final String WORD_ATTR = "word";
     private static final String NOT_A_WORD_ATTR = "not_a_word";
-
-    private static final String OPTIONS_KEY = "options";
 
     /**
      * SAX handler for a unigram XML file.
@@ -120,7 +117,6 @@ public class XmlDictInputOutput {
                     final String attrName = attrs.getLocalName(attrIndex);
                     attributes.put(attrName, attrs.getValue(attrIndex));
                 }
-                final String optionsString = attributes.get(OPTIONS_KEY);
                 mDictionary = new FusionDictionary(new PtNodeArray(),
                         new DictionaryOptions(attributes));
             } else {
@@ -244,14 +240,13 @@ public class XmlDictInputOutput {
         protected int getValueFromFreqString(final String freqString) {
             if (WHITELIST_MARKER.equals(freqString)) {
                 return WHITELIST_FREQ_VALUE;
-            } else {
-                final int intValue = super.getValueFromFreqString(freqString);
-                if (intValue < MIN_FREQ || intValue > MAX_FREQ) {
-                    throw new RuntimeException("Shortcut freq out of range. Accepted range is "
-                            + MIN_FREQ + ".." + MAX_FREQ);
-                }
-                return intValue;
             }
+            final int intValue = super.getValueFromFreqString(freqString);
+            if (intValue < MIN_FREQ || intValue > MAX_FREQ) {
+                throw new RuntimeException("Shortcut freq out of range. Accepted range is "
+                        + MIN_FREQ + ".." + MAX_FREQ);
+            }
+            return intValue;
         }
 
         // As per getAssocMap(), this never returns null.
@@ -269,23 +264,12 @@ public class XmlDictInputOutput {
      * @return true if the file is in the unigram XML format, false otherwise
      */
     public static boolean isXmlUnigramDictionary(final String filename) {
-        BufferedReader reader = null;
-        try {
-            reader = new BufferedReader(new FileReader(new File(filename)));
+        try (final BufferedReader reader = new BufferedReader(
+                new InputStreamReader(new FileInputStream(filename), "UTF-8"))) {
             final String firstLine = reader.readLine();
             return firstLine.matches("^\\s*<wordlist .*>\\s*$");
-        } catch (FileNotFoundException e) {
+        } catch (final IOException e) {
             return false;
-        } catch (IOException e) {
-            return false;
-        } finally {
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException e) {
-                    // do nothing
-                }
-            }
         }
     }
 
@@ -300,8 +284,8 @@ public class XmlDictInputOutput {
      * @param bigrams the file to read the bigrams from, or null.
      * @return the in-memory representation of the dictionary.
      */
-    public static FusionDictionary readDictionaryXml(final InputStream unigrams,
-            final InputStream shortcuts, final InputStream bigrams)
+    public static FusionDictionary readDictionaryXml(final BufferedInputStream unigrams,
+            final BufferedInputStream shortcuts, final BufferedInputStream bigrams)
             throws SAXException, IOException, ParserConfigurationException {
         final SAXParserFactory factory = SAXParserFactory.newInstance();
         factory.setNamespaceAware(true);
@@ -350,8 +334,8 @@ public class XmlDictInputOutput {
      * @param destination a destination stream to write to.
      * @param dict the dictionary to write.
      */
-    public static void writeDictionaryXml(Writer destination, FusionDictionary dict)
-            throws IOException {
+    public static void writeDictionaryXml(final BufferedWriter destination,
+            final FusionDictionary dict) throws IOException {
         final TreeSet<WordProperty> wordPropertiesInDict = new TreeSet<>();
         for (WordProperty wordProperty : dict) {
             wordPropertiesInDict.add(wordProperty);
