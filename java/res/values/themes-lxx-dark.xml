@@ -23,7 +23,6 @@
         <item name="keyboardStyle">@style/Keyboard.LXX_Dark</item>
         <item name="keyboardViewStyle">@style/KeyboardView.LXX_Dark</item>
         <item name="mainKeyboardViewStyle">@style/MainKeyboardView.LXX_Dark</item>
-        <item name="keyPreviewTextViewStyle">@style/KeyPreviewTextView.LXX_Dark</item>
         <item name="emojiPalettesViewStyle">@style/EmojiPalettesView.LXX_Dark</item>
         <item name="moreKeysKeyboardStyle">@style/MoreKeysKeyboard.LXX_Dark</item>
         <item name="moreKeysKeyboardViewStyle">@style/MoreKeysKeyboardView.LXX_Dark</item>
@@ -67,6 +66,7 @@
         name="MainKeyboardView.LXX_Dark"
         parent="KeyboardView.LXX_Dark"
     >
+        <item name="keyPreviewBackground">@drawable/keyboard_key_feedback_lxx_dark</item>
         <item name="keyPreviewOffset">@dimen/config_key_preview_offset_holo</item>
         <item name="gestureFloatingPreviewTextColor">@color/highlight_color_lxx_dark</item>
         <item name="gestureFloatingPreviewColor">@color/gesture_floating_preview_color_lxx_dark</item>
@@ -75,12 +75,6 @@
         <item name="languageOnSpacebarTextColor">@color/key_text_inactive_color_lxx_dark</item>
         <!-- A negative value to disable text shadow layer. -->
         <item name="languageOnSpacebarTextShadowRadius">-1.0</item>
-    </style>
-    <style
-        name="KeyPreviewTextView.LXX_Dark"
-        parent="KeyPreviewTextView"
-    >
-        <item name="android:background">@drawable/keyboard_key_feedback_lxx_dark</item>
     </style>
     <!-- Though {@link EmojiPalettesView} doesn't extend {@link KeyboardView}, some views inside it,
          for instance delete button, need themed {@link KeyboardView} attributes. -->

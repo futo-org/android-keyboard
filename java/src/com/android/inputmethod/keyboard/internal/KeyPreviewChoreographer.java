@@ -21,17 +21,12 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.util.TypedValue;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
-import android.widget.TextView;
 
 import com.android.inputmethod.keyboard.Key;
-import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.utils.CoordinateUtils;
 import com.android.inputmethod.latin.utils.ViewLayoutUtils;
 
@@ -46,10 +41,11 @@ import java.util.HashSet;
  * - how key previews should be shown and dismissed.
  */
 public final class KeyPreviewChoreographer {
-    // Free {@link TextView} pool that can be used for key preview.
-    private final ArrayDeque<TextView> mFreeKeyPreviewTextViews = new ArrayDeque<>();
-    // Map from {@link Key} to {@link TextView} that is currently being displayed as key preview.
-    private final HashMap<Key,TextView> mShowingKeyPreviewTextViews = new HashMap<>();
+    // Free {@link KeyPreviewView} pool that can be used for key preview.
+    private final ArrayDeque<KeyPreviewView> mFreeKeyPreviewViews = new ArrayDeque<>();
+    // Map from {@link Key} to {@link KeyPreviewView} that is currently being displayed as key
+    // preview.
+    private final HashMap<Key,KeyPreviewView> mShowingKeyPreviewViews = new HashMap<>();
 
     private final KeyPreviewDrawParams mParams;
 
@@ -57,32 +53,28 @@ public final class KeyPreviewChoreographer {
         mParams = params;
     }
 
-    private TextView getKeyPreviewTextView(final Key key, final ViewGroup placerView) {
-        TextView previewTextView = mShowingKeyPreviewTextViews.remove(key);
-        if (previewTextView != null) {
-            return previewTextView;
+    public KeyPreviewView getKeyPreviewView(final Key key, final ViewGroup placerView) {
+        KeyPreviewView keyPreviewView = mShowingKeyPreviewViews.remove(key);
+        if (keyPreviewView != null) {
+            return keyPreviewView;
         }
-        previewTextView = mFreeKeyPreviewTextViews.poll();
-        if (previewTextView != null) {
-            return previewTextView;
+        keyPreviewView = mFreeKeyPreviewViews.poll();
+        if (keyPreviewView != null) {
+            return keyPreviewView;
         }
         final Context context = placerView.getContext();
-        if (mParams.mLayoutId != 0) {
-            previewTextView = (TextView)LayoutInflater.from(context)
-                    .inflate(mParams.mLayoutId, null);
-        } else {
-            previewTextView = new TextView(context);
-        }
-        placerView.addView(previewTextView, ViewLayoutUtils.newLayoutParam(placerView, 0, 0));
-        return previewTextView;
+        keyPreviewView = new KeyPreviewView(context, null /* attrs */);
+        keyPreviewView.setBackgroundResource(mParams.mPreviewBackgroundResId);
+        placerView.addView(keyPreviewView, ViewLayoutUtils.newLayoutParam(placerView, 0, 0));
+        return keyPreviewView;
     }
 
     public boolean isShowingKeyPreview(final Key key) {
-        return mShowingKeyPreviewTextViews.containsKey(key);
+        return mShowingKeyPreviewViews.containsKey(key);
     }
 
     public void dismissAllKeyPreviews() {
-        for (final Key key : new HashSet<>(mShowingKeyPreviewTextViews.keySet())) {
+        for (final Key key : new HashSet<>(mShowingKeyPreviewViews.keySet())) {
             dismissKeyPreview(key, false /* withAnimation */);
         }
     }
@@ -91,11 +83,11 @@ public final class KeyPreviewChoreographer {
         if (key == null) {
             return;
         }
-        final TextView previewTextView = mShowingKeyPreviewTextViews.get(key);
-        if (previewTextView == null) {
+        final KeyPreviewView keyPreviewView = mShowingKeyPreviewViews.get(key);
+        if (keyPreviewView == null) {
             return;
         }
-        final Object tag = previewTextView.getTag();
+        final Object tag = keyPreviewView.getTag();
         if (withAnimation) {
             if (tag instanceof KeyPreviewAnimations) {
                 final KeyPreviewAnimations animation = (KeyPreviewAnimations)tag;
@@ -104,114 +96,76 @@ public final class KeyPreviewChoreographer {
             }
         }
         // Dismiss preview without animation.
-        mShowingKeyPreviewTextViews.remove(key);
+        mShowingKeyPreviewViews.remove(key);
         if (tag instanceof Animator) {
             ((Animator)tag).cancel();
         }
-        previewTextView.setTag(null);
-        previewTextView.setVisibility(View.INVISIBLE);
-        mFreeKeyPreviewTextViews.add(previewTextView);
+        keyPreviewView.setTag(null);
+        keyPreviewView.setVisibility(View.INVISIBLE);
+        mFreeKeyPreviewViews.add(keyPreviewView);
     }
-
-    // Background state set
-    private static final int[][][] KEY_PREVIEW_BACKGROUND_STATE_TABLE = {
-        { // STATE_MIDDLE
-            {},
-            { R.attr.state_has_morekeys }
-        },
-        { // STATE_LEFT
-            { R.attr.state_left_edge },
-            { R.attr.state_left_edge, R.attr.state_has_morekeys }
-        },
-        { // STATE_RIGHT
-            { R.attr.state_right_edge },
-            { R.attr.state_right_edge, R.attr.state_has_morekeys }
-        }
-    };
-    private static final int STATE_MIDDLE = 0;
-    private static final int STATE_LEFT = 1;
-    private static final int STATE_RIGHT = 2;
-    private static final int STATE_NORMAL = 0;
-    private static final int STATE_HAS_MOREKEYS = 1;
 
     public void placeKeyPreviewAndShow(final Key key, final KeyboardIconsSet iconsSet,
             final KeyDrawParams drawParams, final int keyboardViewWidth, final int[] keyboardOrigin,
             final ViewGroup placerView, final boolean withAnimation) {
-        final TextView previewTextView = getKeyPreviewTextView(key, placerView);
+        final KeyPreviewView keyPreviewView = getKeyPreviewView(key, placerView);
         placeKeyPreview(
-                key, previewTextView, iconsSet, drawParams, keyboardViewWidth, keyboardOrigin);
-        showKeyPreview(key, previewTextView, withAnimation);
+                key, keyPreviewView, iconsSet, drawParams, keyboardViewWidth, keyboardOrigin);
+        showKeyPreview(key, keyPreviewView, withAnimation);
     }
 
-    private void placeKeyPreview(final Key key, final TextView previewTextView,
+    private void placeKeyPreview(final Key key, final KeyPreviewView keyPreviewView,
             final KeyboardIconsSet iconsSet, final KeyDrawParams drawParams,
             final int keyboardViewWidth, final int[] originCoords) {
-        previewTextView.setTextColor(drawParams.mPreviewTextColor);
-        final Drawable background = previewTextView.getBackground();
-        final String label = key.getPreviewLabel();
-        // What we show as preview should match what we show on a key top in onDraw().
-        if (label != null) {
-            // TODO Should take care of temporaryShiftLabel here.
-            previewTextView.setCompoundDrawables(null, null, null, null);
-            previewTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX,
-                    key.selectPreviewTextSize(drawParams));
-            previewTextView.setTypeface(key.selectPreviewTypeface(drawParams));
-            previewTextView.setText(label);
-        } else {
-            previewTextView.setCompoundDrawables(null, null, null, key.getPreviewIcon(iconsSet));
-            previewTextView.setText(null);
-        }
-
-        previewTextView.measure(
+        keyPreviewView.setPreviewVisual(key, iconsSet, drawParams);
+        keyPreviewView.measure(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        mParams.setGeometry(previewTextView);
-        final int previewWidth = previewTextView.getMeasuredWidth();
+        mParams.setGeometry(keyPreviewView);
+        final int previewWidth = keyPreviewView.getMeasuredWidth();
         final int previewHeight = mParams.mPreviewHeight;
         final int keyDrawWidth = key.getDrawWidth();
         // The key preview is horizontally aligned with the center of the visible part of the
         // parent key. If it doesn't fit in this {@link KeyboardView}, it is moved inward to fit and
         // the left/right background is used if such background is specified.
-        final int statePosition;
+        final int keyPreviewPosition;
         int previewX = key.getDrawX() - (previewWidth - keyDrawWidth) / 2
                 + CoordinateUtils.x(originCoords);
         if (previewX < 0) {
             previewX = 0;
-            statePosition = STATE_LEFT;
+            keyPreviewPosition = KeyPreviewView.POSITION_LEFT;
         } else if (previewX > keyboardViewWidth - previewWidth) {
             previewX = keyboardViewWidth - previewWidth;
-            statePosition = STATE_RIGHT;
+            keyPreviewPosition = KeyPreviewView.POSITION_RIGHT;
         } else {
-            statePosition = STATE_MIDDLE;
+            keyPreviewPosition = KeyPreviewView.POSITION_MIDDLE;
         }
+        final boolean hasMoreKeys = (key.getMoreKeys() != null);
+        keyPreviewView.setPreviewBackground(hasMoreKeys, keyPreviewPosition);
         // The key preview is placed vertically above the top edge of the parent key with an
         // arbitrary offset.
         final int previewY = key.getY() - previewHeight + mParams.mPreviewOffset
                 + CoordinateUtils.y(originCoords);
 
-        if (background != null) {
-            final int hasMoreKeys = (key.getMoreKeys() != null) ? STATE_HAS_MOREKEYS : STATE_NORMAL;
-            background.setState(KEY_PREVIEW_BACKGROUND_STATE_TABLE[statePosition][hasMoreKeys]);
-        }
         ViewLayoutUtils.placeViewAt(
-                previewTextView, previewX, previewY, previewWidth, previewHeight);
-        previewTextView.setPivotX(previewWidth / 2.0f);
-        previewTextView.setPivotY(previewHeight);
+                keyPreviewView, previewX, previewY, previewWidth, previewHeight);
+        keyPreviewView.setPivotX(previewWidth / 2.0f);
+        keyPreviewView.setPivotY(previewHeight);
     }
 
-    private void showKeyPreview(final Key key, final TextView previewTextView,
+    private void showKeyPreview(final Key key, final KeyPreviewView keyPreviewView,
             final boolean withAnimation) {
         if (!withAnimation) {
-            previewTextView.setVisibility(View.VISIBLE);
-            mShowingKeyPreviewTextViews.put(key, previewTextView);
+            keyPreviewView.setVisibility(View.VISIBLE);
+            mShowingKeyPreviewViews.put(key, keyPreviewView);
             return;
         }
 
         // Show preview with animation.
-        final Animator showUpAnimation = createShowUpAniation(key, previewTextView);
-        final Animator dismissAnimation = createDismissAnimation(key, previewTextView);
+        final Animator showUpAnimation = createShowUpAniation(key, keyPreviewView);
+        final Animator dismissAnimation = createDismissAnimation(key, keyPreviewView);
         final KeyPreviewAnimations animation = new KeyPreviewAnimations(
                 showUpAnimation, dismissAnimation);
-        previewTextView.setTag(animation);
+        keyPreviewView.setTag(animation);
         animation.startShowUp();
     }
 
@@ -221,13 +175,13 @@ public final class KeyPreviewChoreographer {
     private static final DecelerateInterpolator DECELERATE_INTERPOLATOR =
             new DecelerateInterpolator();
 
-    private Animator createShowUpAniation(final Key key, final TextView previewTextView) {
+    private Animator createShowUpAniation(final Key key, final KeyPreviewView keyPreviewView) {
         // TODO: Optimization for no scale animation and no duration.
         final ObjectAnimator scaleXAnimation = ObjectAnimator.ofFloat(
-                previewTextView, View.SCALE_X, mParams.getShowUpStartScale(),
+                keyPreviewView, View.SCALE_X, mParams.getShowUpStartScale(),
                 KEY_PREVIEW_SHOW_UP_END_SCALE);
         final ObjectAnimator scaleYAnimation = ObjectAnimator.ofFloat(
-                previewTextView, View.SCALE_Y, mParams.getShowUpStartScale(),
+                keyPreviewView, View.SCALE_Y, mParams.getShowUpStartScale(),
                 KEY_PREVIEW_SHOW_UP_END_SCALE);
         final AnimatorSet showUpAnimation = new AnimatorSet();
         showUpAnimation.play(scaleXAnimation).with(scaleYAnimation);
@@ -236,18 +190,18 @@ public final class KeyPreviewChoreographer {
         showUpAnimation.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationStart(final Animator animation) {
-                showKeyPreview(key, previewTextView, false /* withAnimation */);
+                showKeyPreview(key, keyPreviewView, false /* withAnimation */);
             }
         });
         return showUpAnimation;
     }
 
-    private Animator createDismissAnimation(final Key key, final TextView previewTextView) {
+    private Animator createDismissAnimation(final Key key, final KeyPreviewView keyPreviewView) {
         // TODO: Optimization for no scale animation and no duration.
         final ObjectAnimator scaleXAnimation = ObjectAnimator.ofFloat(
-                previewTextView, View.SCALE_X, mParams.getDismissEndScale());
+                keyPreviewView, View.SCALE_X, mParams.getDismissEndScale());
         final ObjectAnimator scaleYAnimation = ObjectAnimator.ofFloat(
-                previewTextView, View.SCALE_Y, mParams.getDismissEndScale());
+                keyPreviewView, View.SCALE_Y, mParams.getDismissEndScale());
         final AnimatorSet dismissAnimation = new AnimatorSet();
         dismissAnimation.play(scaleXAnimation).with(scaleYAnimation);
         final int dismissDuration = Math.min(
