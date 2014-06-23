@@ -20,14 +20,13 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- For keyboard color scheme option dialog. -->
     <string-array name="keyboard_theme_names" translatable="false">
-        <!-- TODO: Implement Material Light theme. -->
-        <item>@string/keyboard_theme_material_dark</item>
-        <item>@string/keyboard_theme_holo_white</item>
-        <item>@string/keyboard_theme_holo_blue</item>
+        <!-- TODO: Make this item as translatable string resource. -->
+        <item>Material</item>
+        <item>@string/keyboard_color_scheme_white</item>
+        <item>@string/keyboard_color_scheme_blue</item>
     </string-array>
     <!-- An element must be a keyboard theme id of {@link KeyboardTheme#THEME_ID_*}. -->
     <string-array name="keyboard_theme_ids" translatable="false">
-        <!-- TODO: Implement Material Light theme. -->
         <item>3</item>
         <item>2</item>
         <item>0</item>

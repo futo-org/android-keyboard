@@ -39,14 +39,8 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public final class Settings implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = Settings.class.getSimpleName();
-    // Settings screens
-    public static final String SCREEN_INPUT = "screen_input";
-    public static final String SCREEN_MULTI_LINGUAL = "screen_multi_lingual";
-    public static final String SCREEN_GESTURE = "screen_gesture";
-    public static final String SCREEN_CORRECTION = "screen_correction";
-    public static final String SCREEN_ADVANCED = "screen_advanced";
-    public static final String SCREEN_DEBUG = "screen_debug";
     // In the same order as xml/prefs.xml
+    public static final String PREF_GENERAL_SETTINGS = "general_settings";
     public static final String PREF_AUTO_CAP = "auto_cap";
     public static final String PREF_VIBRATE_ON = "vibrate_on";
     public static final String PREF_SOUND_ON = "sound_on";
@@ -54,10 +48,13 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     // PREF_VOICE_MODE_OBSOLETE is obsolete. Use PREF_VOICE_INPUT_KEY instead.
     public static final String PREF_VOICE_MODE_OBSOLETE = "voice_mode";
     public static final String PREF_VOICE_INPUT_KEY = "pref_voice_input_key";
+    public static final String PREF_CORRECTION_SETTINGS = "correction_settings";
     public static final String PREF_EDIT_PERSONAL_DICTIONARY = "edit_personal_dictionary";
     public static final String PREF_CONFIGURE_DICTIONARIES_KEY = "configure_dictionaries_key";
     public static final String PREF_AUTO_CORRECTION_THRESHOLD = "auto_correction_threshold";
     public static final String PREF_SHOW_SUGGESTIONS_SETTING = "show_suggestions_setting";
+    public static final String PREF_MISC_SETTINGS = "misc_settings";
+    public static final String PREF_ADVANCED_SETTINGS = "pref_advanced_settings";
     public static final String PREF_KEY_USE_CONTACTS_DICT = "pref_key_use_contacts_dict";
     public static final String PREF_KEY_USE_PERSONALIZED_DICTS = "pref_key_use_personalized_dicts";
     public static final String PREF_KEY_USE_DOUBLE_SPACE_PERIOD =
@@ -78,6 +75,7 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     public static final String PREF_KEY_PREVIEW_POPUP_DISMISS_DELAY =
             "pref_key_preview_popup_dismiss_delay";
     public static final String PREF_BIGRAM_PREDICTIONS = "next_word_prediction";
+    public static final String PREF_GESTURE_SETTINGS = "gesture_typing_settings";
     public static final String PREF_GESTURE_INPUT = "gesture_input";
     public static final String PREF_VIBRATION_DURATION_SETTINGS =
             "pref_vibration_duration_settings";
@@ -91,6 +89,7 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
 
     public static final String PREF_INPUT_LANGUAGE = "input_language";
     public static final String PREF_SELECTED_LANGUAGES = "selected_languages";
+    public static final String PREF_DEBUG_SETTINGS = "debug_settings";
     public static final String PREF_KEY_IS_INTERNAL = "pref_key_is_internal";
 
     public static final String PREF_ENABLE_METRICS_LOGGING = "pref_enable_metrics_logging";
@@ -106,6 +105,8 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
             "pref_last_used_personalization_dict_wiped_time";
     private static final String PREF_CORPUS_HANDLES_FOR_PERSONALIZATION =
             "pref_corpus_handles_for_personalization";
+    public static final String PREF_SEND_FEEDBACK = "send_feedback";
+    public static final String PREF_ABOUT_KEYBOARD = "about_keyboard";
 
     // Emoji
     public static final String PREF_EMOJI_RECENT_KEYS = "emoji_recent_keys";
