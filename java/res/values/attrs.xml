@@ -26,8 +26,6 @@
         <attr name="keyboardViewStyle" format="reference" />
         <!-- MainKeyboardView style -->
         <attr name="mainKeyboardViewStyle" format="reference" />
-        <!-- Key preview text view style -->
-        <attr name="keyPreviewTextViewStyle" format="reference"/>
         <!-- EmojiPalettesView style -->
         <attr name="emojiPalettesViewStyle" format="reference" />
         <!-- MoreKeysKeyboard style -->
@@ -106,8 +104,8 @@
         <attr name="longPressShiftLockTimeout" format="integer" />
         <!-- Ignore special key timeout while typing in millisecond. -->
         <attr name="ignoreAltCodeKeyTimeout" format="integer" />
-        <!-- Layout resource for key press feedback.-->
-        <attr name="keyPreviewLayout" format="reference" />
+        <!-- Background resource for key press feedback.-->
+        <attr name="keyPreviewBackground" format="reference" />
         <!-- Vertical offset of the key press feedback from the key. -->
         <attr name="keyPreviewOffset" format="dimension" />
         <!-- Height of the key press feedback popup. -->
