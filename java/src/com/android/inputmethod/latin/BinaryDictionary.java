@@ -28,7 +28,6 @@ import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.makedict.FormatSpec.DictionaryOptions;
 import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
 import com.android.inputmethod.latin.makedict.WordProperty;
-import com.android.inputmethod.latin.settings.NativeSuggestOptions;
 import com.android.inputmethod.latin.utils.BinaryDictionaryUtils;
 import com.android.inputmethod.latin.utils.FileUtils;
 import com.android.inputmethod.latin.utils.JniUtils;
@@ -49,10 +48,6 @@ import java.util.Map;
 public final class BinaryDictionary extends Dictionary {
     private static final String TAG = BinaryDictionary.class.getSimpleName();
 
-    // Must be equal to MAX_WORD_LENGTH in native/jni/src/defines.h
-    private static final int MAX_WORD_LENGTH = Constants.DICTIONARY_MAX_WORD_LENGTH;
-    // Must be equal to MAX_RESULTS in native/jni/src/defines.h
-    private static final int MAX_RESULTS = 18;
     // The cutoff returned by native for auto-commit confidence.
     // Must be equal to CONFIDENCE_TO_AUTO_COMMIT in native/jni/src/defines.h
     private static final int CONFIDENCE_TO_AUTO_COMMIT = 1000000;
@@ -88,20 +83,9 @@ public final class BinaryDictionary extends Dictionary {
     private final Locale mLocale;
     private final long mDictSize;
     private final String mDictFilePath;
+    private final boolean mUseFullEditDistance;
     private final boolean mIsUpdatable;
     private boolean mHasUpdated;
-
-    private final int[] mInputCodePoints = new int[MAX_WORD_LENGTH];
-    private final int[] mOutputSuggestionCount = new int[1];
-    private final int[] mOutputCodePoints = new int[MAX_WORD_LENGTH * MAX_RESULTS];
-    private final int[] mSpaceIndices = new int[MAX_RESULTS];
-    private final int[] mOutputScores = new int[MAX_RESULTS];
-    private final int[] mOutputTypes = new int[MAX_RESULTS];
-    // Only one result is ever used
-    private final int[] mOutputAutoCommitFirstWordConfidence = new int[1];
-    private final float[] mInputOutputLanguageWeight = new float[1];
-
-    private final NativeSuggestOptions mNativeSuggestOptions = new NativeSuggestOptions();
 
     private final SparseArray<DicTraverseSession> mDicTraverseSessions = new SparseArray<>();
 
@@ -136,7 +120,7 @@ public final class BinaryDictionary extends Dictionary {
         mDictFilePath = filename;
         mIsUpdatable = isUpdatable;
         mHasUpdated = false;
-        mNativeSuggestOptions.setUseFullEditDistance(useFullEditDistance);
+        mUseFullEditDistance = useFullEditDistance;
         loadDictionary(filename, offset, length, isUpdatable);
     }
 
@@ -148,7 +132,6 @@ public final class BinaryDictionary extends Dictionary {
      * @param formatVersion the format version of the dictionary
      * @param attributeMap the attributes of the dictionary
      */
-    @UsedForTesting
     public BinaryDictionary(final String filename, final boolean useFullEditDistance,
             final Locale locale, final String dictType, final long formatVersion,
             final Map<String, String> attributeMap) {
@@ -159,7 +142,7 @@ public final class BinaryDictionary extends Dictionary {
         // On memory dictionary is always updatable.
         mIsUpdatable = true;
         mHasUpdated = false;
-        mNativeSuggestOptions.setUseFullEditDistance(useFullEditDistance);
+        mUseFullEditDistance = useFullEditDistance;
         final String[] keyArray = new String[attributeMap.size()];
         final String[] valueArray = new String[attributeMap.size()];
         int index = 0;
@@ -274,8 +257,8 @@ public final class BinaryDictionary extends Dictionary {
         if (!isValidDictionary()) {
             return null;
         }
-
-        Arrays.fill(mInputCodePoints, Constants.NOT_A_CODE);
+        final DicTraverseSession session = getTraverseSession(sessionId);
+        Arrays.fill(session.mInputCodePoints, Constants.NOT_A_CODE);
         // TODO: toLowerCase in the native code
         final int[] prevWordCodePointArray = (null == prevWordsInfo.mPrevWord)
                 ? null : StringUtils.toCodePointArray(prevWordsInfo.mPrevWord);
@@ -284,47 +267,50 @@ public final class BinaryDictionary extends Dictionary {
         final int inputSize;
         if (!isGesture) {
             inputSize = composer.copyCodePointsExceptTrailingSingleQuotesAndReturnCodePointCount(
-                    mInputCodePoints);
+                    session.mInputCodePoints);
             if (inputSize < 0) {
                 return null;
             }
         } else {
             inputSize = inputPointers.getPointerSize();
         }
-
-        mNativeSuggestOptions.setIsGesture(isGesture);
-        mNativeSuggestOptions.setBlockOffensiveWords(blockOffensiveWords);
-        mNativeSuggestOptions.setAdditionalFeaturesOptions(additionalFeaturesOptions);
+        session.mNativeSuggestOptions.setUseFullEditDistance(mUseFullEditDistance);
+        session.mNativeSuggestOptions.setIsGesture(isGesture);
+        session.mNativeSuggestOptions.setBlockOffensiveWords(blockOffensiveWords);
+        session.mNativeSuggestOptions.setAdditionalFeaturesOptions(additionalFeaturesOptions);
         if (inOutLanguageWeight != null) {
-            mInputOutputLanguageWeight[0] = inOutLanguageWeight[0];
+            session.mInputOutputLanguageWeight[0] = inOutLanguageWeight[0];
         } else {
-            mInputOutputLanguageWeight[0] = Dictionary.NOT_A_LANGUAGE_WEIGHT;
+            session.mInputOutputLanguageWeight[0] = Dictionary.NOT_A_LANGUAGE_WEIGHT;
         }
         // proximityInfo and/or prevWordForBigrams may not be null.
         getSuggestionsNative(mNativeDict, proximityInfo.getNativeProximityInfo(),
                 getTraverseSession(sessionId).getSession(), inputPointers.getXCoordinates(),
                 inputPointers.getYCoordinates(), inputPointers.getTimes(),
-                inputPointers.getPointerIds(), mInputCodePoints, inputSize,
-                mNativeSuggestOptions.getOptions(), prevWordCodePointArray,
-                prevWordsInfo.mIsBeginningOfSentence, mOutputSuggestionCount,
-                mOutputCodePoints, mOutputScores, mSpaceIndices, mOutputTypes,
-                mOutputAutoCommitFirstWordConfidence, mInputOutputLanguageWeight);
+                inputPointers.getPointerIds(), session.mInputCodePoints, inputSize,
+                session.mNativeSuggestOptions.getOptions(), prevWordCodePointArray,
+                prevWordsInfo.mIsBeginningOfSentence, session.mOutputSuggestionCount,
+                session.mOutputCodePoints, session.mOutputScores, session.mSpaceIndices,
+                session.mOutputTypes, session.mOutputAutoCommitFirstWordConfidence,
+                session.mInputOutputLanguageWeight);
         if (inOutLanguageWeight != null) {
-            inOutLanguageWeight[0] = mInputOutputLanguageWeight[0];
+            inOutLanguageWeight[0] = session.mInputOutputLanguageWeight[0];
         }
-        final int count = mOutputSuggestionCount[0];
+        final int count = session.mOutputSuggestionCount[0];
         final ArrayList<SuggestedWordInfo> suggestions = new ArrayList<>();
         for (int j = 0; j < count; ++j) {
-            final int start = j * MAX_WORD_LENGTH;
+            final int start = j * Constants.DICTIONARY_MAX_WORD_LENGTH;
             int len = 0;
-            while (len < MAX_WORD_LENGTH && mOutputCodePoints[start + len] != 0) {
+            while (len < Constants.DICTIONARY_MAX_WORD_LENGTH
+                    && session.mOutputCodePoints[start + len] != 0) {
                 ++len;
             }
             if (len > 0) {
-                suggestions.add(new SuggestedWordInfo(new String(mOutputCodePoints, start, len),
-                        mOutputScores[j], mOutputTypes[j], this /* sourceDict */,
-                        mSpaceIndices[j] /* indexOfTouchPointOfSecondWord */,
-                        mOutputAutoCommitFirstWordConfidence[0]));
+                suggestions.add(new SuggestedWordInfo(
+                        new String(session.mOutputCodePoints, start, len),
+                        session.mOutputScores[j], session.mOutputTypes[j], this /* sourceDict */,
+                        session.mSpaceIndices[j] /* indexOfTouchPointOfSecondWord */,
+                        session.mOutputAutoCommitFirstWordConfidence[0]));
             }
         }
         return suggestions;
@@ -377,7 +363,7 @@ public final class BinaryDictionary extends Dictionary {
             return null;
         }
         final int[] codePoints = StringUtils.toCodePointArray(word);
-        final int[] outCodePoints = new int[MAX_WORD_LENGTH];
+        final int[] outCodePoints = new int[Constants.DICTIONARY_MAX_WORD_LENGTH];
         final boolean[] outFlags = new boolean[FORMAT_WORD_PROPERTY_OUTPUT_FLAG_COUNT];
         final int[] outProbabilityInfo =
                 new int[FORMAT_WORD_PROPERTY_OUTPUT_PROBABILITY_INFO_COUNT];
@@ -412,7 +398,7 @@ public final class BinaryDictionary extends Dictionary {
      * If token is 0, this method newly starts iterating the dictionary.
      */
     public GetNextWordPropertyResult getNextWordProperty(final int token) {
-        final int[] codePoints = new int[MAX_WORD_LENGTH];
+        final int[] codePoints = new int[Constants.DICTIONARY_MAX_WORD_LENGTH];
         final int nextToken = getNextWordNative(mNativeDict, token, codePoints);
         final String word = StringUtils.getStringFromNullTerminatedCodePointArray(codePoints);
         return new GetNextWordPropertyResult(getWordProperty(word), nextToken);
