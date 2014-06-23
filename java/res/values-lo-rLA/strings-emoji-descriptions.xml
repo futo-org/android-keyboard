@@ -210,7 +210,7 @@
     <string name="spoken_emoji_1F330" msgid="3115760035618051575">"​ລູກ​ເກົາ​ລັດ"</string>
     <string name="spoken_emoji_1F331" msgid="5658888205290008691">"​ກ້າ​ໄມ້"</string>
     <string name="spoken_emoji_1F332" msgid="2935650450421165938">"ຕົ້ນ​ໄມ້​ບໍ່​ຜັດ​ໃບ"</string>
-    <string name="spoken_emoji_1F333" msgid="5898847427062482675">"​ຕົ້ນ​ໄມ້​ຜັດໃບ"</string>
+    <string name="spoken_emoji_1F333" msgid="5898847427062482675">"​ຕົ້ນ​ໄມ້​ຜັດໃບ​"</string>
     <string name="spoken_emoji_1F334" msgid="6183375224678417894">"​ຕົ້ນ​ປາມ"</string>
     <string name="spoken_emoji_1F335" msgid="5352418412103584941">"​ກະ​ບອງ​ເພັດ"</string>
     <string name="spoken_emoji_1F337" msgid="3839107352363566289">"​ທິວ​ລິບ"</string>
@@ -450,7 +450,7 @@
     <string name="spoken_emoji_1F458" msgid="5704243858031107692">"​ກິ​ໂມ​ໂນ"</string>
     <string name="spoken_emoji_1F459" msgid="3553148747050035251">"​ບິ​ກີ​ນີ"</string>
     <string name="spoken_emoji_1F45A" msgid="1389654639484716101">"​ເສື້ອ​ຜ້າ​ຜູ່​ຍິງ"</string>
-    <string name="spoken_emoji_1F45B" msgid="1113293170254222904">"ກະ​ເປົາ"</string>
+    <string name="spoken_emoji_1F45B" msgid="1113293170254222904">"ກະ​ເປົາ​"</string>
     <string name="spoken_emoji_1F45C" msgid="3410257778598006936">"ກະ​ເປົາ"</string>
     <string name="spoken_emoji_1F45D" msgid="812176504300064819">"​ກະ​ເປົາ"</string>
     <string name="spoken_emoji_1F45E" msgid="2901741399934723562">"​ເກີບ​ຜູ່​ຊາຍ"</string>
