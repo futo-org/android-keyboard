@@ -451,7 +451,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
 
         locatePreviewPlacerView();
         getLocationInWindow(mOriginCoords);
-        mKeyPreviewChoreographer.placeKeyPreviewAndShow(key, keyboard.mIconsSet, mKeyDrawParams,
+        mKeyPreviewChoreographer.placeAndShowKeyPreview(key, keyboard.mIconsSet, mKeyDrawParams,
                 getWidth(), mOriginCoords, mDrawingPreviewPlacerView, isHardwareAccelerated());
     }
 
@@ -554,11 +554,11 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
             // though there may be some chances that the value is zero. <code>width == 0</code>
             // will cause zero-division error at
             // {@link MoreKeysKeyboardParams#setParameters(int,int,int,int,int,int,boolean,int)}.
-            final boolean singleMoreKeyWithPreview = mKeyPreviewDrawParams.isPopupEnabled()
+            final boolean isSingleMoreKeyWithPreview = mKeyPreviewDrawParams.isPopupEnabled()
                     && !key.noKeyPreview() && moreKeys.length == 1
                     && mKeyPreviewDrawParams.getVisibleWidth() > 0;
             final MoreKeysKeyboard.Builder builder = new MoreKeysKeyboard.Builder(
-                    context, key, getKeyboard(), singleMoreKeyWithPreview,
+                    context, key, getKeyboard(), isSingleMoreKeyWithPreview,
                     mKeyPreviewDrawParams.getVisibleWidth(),
                     mKeyPreviewDrawParams.getVisibleHeight(), newLabelPaint(key));
             moreKeysKeyboard = builder.build();
