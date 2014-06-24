@@ -316,10 +316,6 @@ public class SuggestedWords {
             return mDebugString;
         }
 
-        public int codePointCount() {
-            return mCodePointCount;
-        }
-
         public int codePointAt(int i) {
             return mWord.codePointAt(i);
         }
@@ -333,23 +329,28 @@ public class SuggestedWords {
             }
         }
 
-        // TODO: Consolidate this method and StringUtils.removeDupes() in the future.
-        public static void removeDups(ArrayList<SuggestedWordInfo> candidates) {
-            if (candidates.size() <= 1) {
+        // This will always remove the higher index if a duplicate is found.
+        public static void removeDups(final String typedWord,
+                ArrayList<SuggestedWordInfo> candidates) {
+            if (candidates.isEmpty()) {
                 return;
             }
-            int i = 1;
-            while (i < candidates.size()) {
-                final SuggestedWordInfo cur = candidates.get(i);
-                for (int j = 0; j < i; ++j) {
-                    final SuggestedWordInfo previous = candidates.get(j);
-                    if (cur.mWord.equals(previous.mWord)) {
-                        candidates.remove(cur.mScore < previous.mScore ? i : j);
-                        --i;
-                        break;
-                    }
+            if (!TextUtils.isEmpty(typedWord)) {
+                removeSuggestedWordInfoFrom(typedWord, candidates, 0);
+            }
+            for (int i = 0; i < candidates.size(); ++i) {
+                removeSuggestedWordInfoFrom(candidates.get(i).mWord, candidates, i);
+            }
+        }
+
+        private static void removeSuggestedWordInfoFrom(final String word,
+                final ArrayList<SuggestedWordInfo> candidates, final int startIndex) {
+            for (int i = startIndex + 1; i < candidates.size(); ++i) {
+                final SuggestedWordInfo previous = candidates.get(i);
+                if (word.equals(previous.mWord)) {
+                    candidates.remove(i);
+                    --i;
                 }
-                ++i;
             }
         }
     }
