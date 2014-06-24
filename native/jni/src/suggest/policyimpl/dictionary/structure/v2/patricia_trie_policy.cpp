@@ -268,6 +268,10 @@ int PatriciaTriePolicy::getTerminalPtNodePositionOfWord(const int *const inWord,
 
 int PatriciaTriePolicy::getProbability(const int unigramProbability,
         const int bigramProbability) const {
+    // Due to space constraints, the probability for bigrams is approximate - the lower the unigram
+    // probability, the worse the precision. The theoritical maximum error in resulting probability
+    // is 8 - although in the practice it's never bigger than 3 or 4 in very bad cases. This means
+    // that sometimes, we'll see some bigrams interverted here, but it can't get too bad.
     if (unigramProbability == NOT_A_PROBABILITY) {
         return NOT_A_PROBABILITY;
     } else if (bigramProbability == NOT_A_PROBABILITY) {

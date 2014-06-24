@@ -23,6 +23,7 @@
 #include "suggest/core/policy/dictionary_header_structure_policy.h"
 #include "suggest/core/result/suggestion_results.h"
 #include "suggest/core/session/dic_traverse_session.h"
+#include "suggest/core/session/prev_words_info.h"
 #include "suggest/core/suggest.h"
 #include "suggest/core/suggest_options.h"
 #include "suggest/policyimpl/gesture/gesture_suggest_policy_factory.h"
@@ -37,7 +38,6 @@ const int Dictionary::HEADER_ATTRIBUTE_BUFFER_SIZE = 32;
 Dictionary::Dictionary(JNIEnv *env, DictionaryStructureWithBufferPolicy::StructurePolicyPtr
         dictionaryStructureWithBufferPolicy)
         : mDictionaryStructureWithBufferPolicy(std::move(dictionaryStructureWithBufferPolicy)),
-          mBigramDictionary(mDictionaryStructureWithBufferPolicy.get()),
           mGestureSuggest(new Suggest(GestureSuggestPolicyFactory::getGestureSuggestPolicy())),
           mTypingSuggest(new Suggest(TypingSuggestPolicyFactory::getTypingSuggestPolicy())) {
     logDictionaryInfo(env);
@@ -62,7 +62,29 @@ void Dictionary::getSuggestions(ProximityInfo *proximityInfo, DicTraverseSession
 void Dictionary::getPredictions(const PrevWordsInfo *const prevWordsInfo,
         SuggestionResults *const outSuggestionResults) const {
     TimeKeeper::setCurrentTime();
-    mBigramDictionary.getPredictions(prevWordsInfo, outSuggestionResults);
+    int unigramProbability = 0;
+    int bigramCodePoints[MAX_WORD_LENGTH];
+    BinaryDictionaryBigramsIterator bigramsIt = prevWordsInfo->getBigramsIteratorForPrediction(
+            mDictionaryStructureWithBufferPolicy.get());
+    while (bigramsIt.hasNext()) {
+        bigramsIt.next();
+        if (bigramsIt.getBigramPos() == NOT_A_DICT_POS) {
+            continue;
+        }
+        if (prevWordsInfo->isNthPrevWordBeginningOfSentence(1 /* n */)
+                && bigramsIt.getProbability() == NOT_A_PROBABILITY) {
+            continue;
+        }
+        const int codePointCount = mDictionaryStructureWithBufferPolicy->
+                getCodePointsAndProbabilityAndReturnCodePointCount(bigramsIt.getBigramPos(),
+                        MAX_WORD_LENGTH, bigramCodePoints, &unigramProbability);
+        if (codePointCount <= 0) {
+            continue;
+        }
+        const int probability = mDictionaryStructureWithBufferPolicy->getProbability(
+                unigramProbability, bigramsIt.getProbability());
+        outSuggestionResults->addPrediction(bigramCodePoints, codePointCount, probability);
+    }
 }
 
 int Dictionary::getProbability(const int *word, int length) const {
@@ -84,7 +106,21 @@ int Dictionary::getMaxProbabilityOfExactMatches(const int *word, int length) con
 int Dictionary::getNgramProbability(const PrevWordsInfo *const prevWordsInfo, const int *word,
         int length) const {
     TimeKeeper::setCurrentTime();
-    return mBigramDictionary.getBigramProbability(prevWordsInfo, word, length);
+    int nextWordPos = mDictionaryStructureWithBufferPolicy->getTerminalPtNodePositionOfWord(word,
+            length, false /* forceLowerCaseSearch */);
+    if (NOT_A_DICT_POS == nextWordPos) return NOT_A_PROBABILITY;
+    BinaryDictionaryBigramsIterator bigramsIt = prevWordsInfo->getBigramsIteratorForPrediction(
+            mDictionaryStructureWithBufferPolicy.get());
+    while (bigramsIt.hasNext()) {
+        bigramsIt.next();
+        if (bigramsIt.getBigramPos() == nextWordPos
+                && bigramsIt.getProbability() != NOT_A_PROBABILITY) {
+            return mDictionaryStructureWithBufferPolicy->getProbability(
+                    mDictionaryStructureWithBufferPolicy->getUnigramProbabilityOfPtNode(
+                            nextWordPos), bigramsIt.getProbability());
+        }
+    }
+    return NOT_A_PROBABILITY;
 }
 
 bool Dictionary::addUnigramEntry(const int *const word, const int length,

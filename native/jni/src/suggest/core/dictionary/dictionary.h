@@ -21,7 +21,6 @@
 
 #include "defines.h"
 #include "jni.h"
-#include "suggest/core/dictionary/bigram_dictionary.h"
 #include "suggest/core/dictionary/property/word_property.h"
 #include "suggest/core/policy/dictionary_header_structure_policy.h"
 #include "suggest/core/policy/dictionary_structure_with_buffer_policy.h"
@@ -119,7 +118,6 @@ class Dictionary {
 
     const DictionaryStructureWithBufferPolicy::StructurePolicyPtr
             mDictionaryStructureWithBufferPolicy;
-    const BigramDictionary mBigramDictionary;
     const SuggestInterfacePtr mGestureSuggest;
     const SuggestInterfacePtr mTypingSuggest;
 
