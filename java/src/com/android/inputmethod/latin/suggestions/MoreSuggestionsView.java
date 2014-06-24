@@ -51,6 +51,7 @@ public final class MoreSuggestionsView extends MoreKeysKeyboardView {
         super(context, attrs, defStyle);
     }
 
+    // TODO: Remove redundant override method.
     @Override
     public void setKeyboard(final Keyboard keyboard) {
         super.setKeyboard(keyboard);
