@@ -64,11 +64,12 @@ public final class BinaryDictionary extends Dictionary {
     public static final int NOT_A_VALID_TIMESTAMP = -1;
 
     // Format to get unigram flags from native side via getWordPropertyNative().
-    private static final int FORMAT_WORD_PROPERTY_OUTPUT_FLAG_COUNT = 4;
+    private static final int FORMAT_WORD_PROPERTY_OUTPUT_FLAG_COUNT = 5;
     private static final int FORMAT_WORD_PROPERTY_IS_NOT_A_WORD_INDEX = 0;
     private static final int FORMAT_WORD_PROPERTY_IS_BLACKLISTED_INDEX = 1;
     private static final int FORMAT_WORD_PROPERTY_HAS_BIGRAMS_INDEX = 2;
     private static final int FORMAT_WORD_PROPERTY_HAS_SHORTCUTS_INDEX = 3;
+    private static final int FORMAT_WORD_PROPERTY_IS_BEGINNING_OF_SENTENCE_INDEX = 4;
 
     // Format to get probability and historical info from native side via getWordPropertyNative().
     public static final int FORMAT_WORD_PROPERTY_OUTPUT_PROBABILITY_INFO_COUNT = 4;
@@ -176,10 +177,12 @@ public final class BinaryDictionary extends Dictionary {
     private static native int getBigramProbabilityNative(long dict, int[] word0,
             boolean isBeginningOfSentence, int[] word1);
     private static native void getWordPropertyNative(long dict, int[] word,
-            int[] outCodePoints, boolean[] outFlags, int[] outProbabilityInfo,
-            ArrayList<int[]> outBigramTargets, ArrayList<int[]> outBigramProbabilityInfo,
-            ArrayList<int[]> outShortcutTargets, ArrayList<Integer> outShortcutProbabilities);
-    private static native int getNextWordNative(long dict, int token, int[] outCodePoints);
+            boolean isBeginningOfSentence, int[] outCodePoints, boolean[] outFlags,
+            int[] outProbabilityInfo, ArrayList<int[]> outBigramTargets,
+            ArrayList<int[]> outBigramProbabilityInfo, ArrayList<int[]> outShortcutTargets,
+            ArrayList<Integer> outShortcutProbabilities);
+    private static native int getNextWordNative(long dict, int token, int[] outCodePoints,
+            boolean[] outIsBeginningOfSentence);
     private static native void getSuggestionsNative(long dict, long proximityInfo,
             long traverseSession, int[] xCoordinates, int[] yCoordinates, int[] times,
             int[] pointerIds, int[] inputCodePoints, int inputSize, int[] suggestOptions,
@@ -358,8 +361,8 @@ public final class BinaryDictionary extends Dictionary {
                 prevWordsInfo.mIsBeginningOfSentence, codePoints1);
     }
 
-    public WordProperty getWordProperty(final String word) {
-        if (TextUtils.isEmpty(word)) {
+    public WordProperty getWordProperty(final String word, final boolean isBeginningOfSentence) {
+        if (word == null) {
             return null;
         }
         final int[] codePoints = StringUtils.toCodePointArray(word);
@@ -371,14 +374,15 @@ public final class BinaryDictionary extends Dictionary {
         final ArrayList<int[]> outBigramProbabilityInfo = new ArrayList<>();
         final ArrayList<int[]> outShortcutTargets = new ArrayList<>();
         final ArrayList<Integer> outShortcutProbabilities = new ArrayList<>();
-        getWordPropertyNative(mNativeDict, codePoints, outCodePoints, outFlags, outProbabilityInfo,
-                outBigramTargets, outBigramProbabilityInfo, outShortcutTargets,
-                outShortcutProbabilities);
+        getWordPropertyNative(mNativeDict, codePoints, isBeginningOfSentence, outCodePoints,
+                outFlags, outProbabilityInfo, outBigramTargets, outBigramProbabilityInfo,
+                outShortcutTargets, outShortcutProbabilities);
         return new WordProperty(codePoints,
                 outFlags[FORMAT_WORD_PROPERTY_IS_NOT_A_WORD_INDEX],
                 outFlags[FORMAT_WORD_PROPERTY_IS_BLACKLISTED_INDEX],
                 outFlags[FORMAT_WORD_PROPERTY_HAS_BIGRAMS_INDEX],
-                outFlags[FORMAT_WORD_PROPERTY_HAS_SHORTCUTS_INDEX], outProbabilityInfo,
+                outFlags[FORMAT_WORD_PROPERTY_HAS_SHORTCUTS_INDEX],
+                outFlags[FORMAT_WORD_PROPERTY_IS_BEGINNING_OF_SENTENCE_INDEX], outProbabilityInfo,
                 outBigramTargets, outBigramProbabilityInfo, outShortcutTargets,
                 outShortcutProbabilities);
     }
@@ -399,9 +403,12 @@ public final class BinaryDictionary extends Dictionary {
      */
     public GetNextWordPropertyResult getNextWordProperty(final int token) {
         final int[] codePoints = new int[Constants.DICTIONARY_MAX_WORD_LENGTH];
-        final int nextToken = getNextWordNative(mNativeDict, token, codePoints);
+        final boolean[] isBeginningOfSentence = new boolean[1];
+        final int nextToken = getNextWordNative(mNativeDict, token, codePoints,
+                isBeginningOfSentence);
         final String word = StringUtils.getStringFromNullTerminatedCodePointArray(codePoints);
-        return new GetNextWordPropertyResult(getWordProperty(word), nextToken);
+        return new GetNextWordPropertyResult(
+                getWordProperty(word, isBeginningOfSentence[0]), nextToken);
     }
 
     // Add a unigram entry to binary dictionary with unigram attributes in native code.

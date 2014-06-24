@@ -28,7 +28,8 @@ void WordProperty::outputProperties(JNIEnv *const env, jintArray outCodePoints,
             MAX_WORD_LENGTH /* maxLength */, mCodePoints.data(), mCodePoints.size(),
             false /* needsNullTermination */);
     jboolean flags[] = {mUnigramProperty.isNotAWord(), mUnigramProperty.isBlacklisted(),
-            !mBigrams.empty(), mUnigramProperty.hasShortcuts()};
+            !mBigrams.empty(), mUnigramProperty.hasShortcuts(),
+            mUnigramProperty.representsBeginningOfSentence()};
     env->SetBooleanArrayRegion(outFlags, 0 /* start */, NELEMS(flags), flags);
     int probabilityInfo[] = {mUnigramProperty.getProbability(), mUnigramProperty.getTimestamp(),
             mUnigramProperty.getLevel(), mUnigramProperty.getCount()};

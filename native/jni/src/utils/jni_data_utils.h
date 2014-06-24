@@ -69,18 +69,23 @@ class JniDataUtils {
     static void outputCodePoints(JNIEnv *env, jintArray intArrayToOutputCodePoints, const int start,
             const int maxLength, const int *const codePoints, const int codePointCount,
             const bool needsNullTermination) {
-        const int outputCodePointCount = std::min(maxLength, codePointCount);
-        int outputCodePonts[outputCodePointCount];
-        for (int i = 0; i < outputCodePointCount; ++i) {
+        const int codePointBufSize = std::min(maxLength, codePointCount);
+        int outputCodePonts[codePointBufSize];
+        int outputCodePointCount = 0;
+        for (int i = 0; i < codePointBufSize; ++i) {
             const int codePoint = codePoints[i];
+            int codePointToOutput = codePoint;
             if (!CharUtils::isInUnicodeSpace(codePoint)) {
-                outputCodePonts[i] = CODE_POINT_REPLACEMENT_CHARACTER;
+                if (codePoint == CODE_POINT_BEGINNING_OF_SENTENCE) {
+                    // Just skip Beginning-of-Sentence marker.
+                    continue;
+                }
+                codePointToOutput = CODE_POINT_REPLACEMENT_CHARACTER;
             } else if (codePoint >= 0x01 && codePoint <= 0x1F) {
                 // Control code.
-                outputCodePonts[i] = CODE_POINT_REPLACEMENT_CHARACTER;
-            } else {
-                outputCodePonts[i] = codePoint;
+                codePointToOutput = CODE_POINT_REPLACEMENT_CHARACTER;
             }
+            outputCodePonts[outputCodePointCount++] = codePointToOutput;
         }
         env->SetIntArrayRegion(intArrayToOutputCodePoints, start, outputCodePointCount,
                 outputCodePonts);
@@ -88,6 +93,11 @@ class JniDataUtils {
             env->SetIntArrayRegion(intArrayToOutputCodePoints, start + outputCodePointCount,
                     1 /* len */, &CODE_POINT_NULL);
         }
+    }
+
+    static void putBooleanToArray(JNIEnv *env, jbooleanArray array, const int index,
+            const jboolean value) {
+        env->SetBooleanArrayRegion(array, index, 1 /* len */, &value);
     }
 
     static void putIntToArray(JNIEnv *env, jintArray array, const int index, const int value) {

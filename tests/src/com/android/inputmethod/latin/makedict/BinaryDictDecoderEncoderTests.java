@@ -614,7 +614,8 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
                 0 /* offset */, file.length(), true /* useFullEditDistance */,
                 Locale.ENGLISH, dictName, false /* isUpdatable */);
         for (final String word : words) {
-            final WordProperty wordProperty = binaryDictionary.getWordProperty(word);
+            final WordProperty wordProperty = binaryDictionary.getWordProperty(word,
+                    false /* isBeginningOfSentence */);
             assertEquals(word, wordProperty.mWord);
             assertEquals(UNIGRAM_FREQ, wordProperty.getProbability());
             if (shortcuts.containsKey(word)) {
