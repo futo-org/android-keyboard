@@ -301,7 +301,7 @@ static jint latinime_BinaryDictionary_getBigramProbability(JNIEnv *env, jclass c
 // If token is 0, this method newly starts iterating the dictionary. This method returns 0 when
 // the dictionary does not have a next word.
 static jint latinime_BinaryDictionary_getNextWord(JNIEnv *env, jclass clazz,
-        jlong dict, jint token, jintArray outCodePoints) {
+        jlong dict, jint token, jintArray outCodePoints, jbooleanArray outIsBeginningOfSentence) {
     Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
     if (!dictionary) return 0;
     const jsize codePointBufSize = env->GetArrayLength(outCodePoints);
@@ -317,19 +317,39 @@ static jint latinime_BinaryDictionary_getNextWord(JNIEnv *env, jclass clazz,
     JniDataUtils::outputCodePoints(env, outCodePoints, 0 /* start */,
             MAX_WORD_LENGTH /* maxLength */, wordCodePoints, wordCodePointCount,
             false /* needsNullTermination */);
+    bool isBeginningOfSentence = false;
+    if (wordCodePointCount > 0 && wordCodePoints[0] == CODE_POINT_BEGINNING_OF_SENTENCE) {
+        isBeginningOfSentence = true;
+    }
+    JniDataUtils::putBooleanToArray(env, outIsBeginningOfSentence, 0 /* index */,
+            isBeginningOfSentence);
     return nextToken;
 }
 
 static void latinime_BinaryDictionary_getWordProperty(JNIEnv *env, jclass clazz,
-        jlong dict, jintArray word, jintArray outCodePoints, jbooleanArray outFlags,
-        jintArray outProbabilityInfo, jobject outBigramTargets, jobject outBigramProbabilityInfo,
-        jobject outShortcutTargets, jobject outShortcutProbabilities) {
+        jlong dict, jintArray word, jboolean isBeginningOfSentence, jintArray outCodePoints,
+        jbooleanArray outFlags, jintArray outProbabilityInfo, jobject outBigramTargets,
+        jobject outBigramProbabilityInfo, jobject outShortcutTargets,
+        jobject outShortcutProbabilities) {
     Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
     if (!dictionary) return;
     const jsize wordLength = env->GetArrayLength(word);
-    int wordCodePoints[wordLength];
+    if (wordLength > MAX_WORD_LENGTH) {
+        AKLOGE("Invalid wordLength: %d", wordLength);
+        return;
+    }
+    int wordCodePoints[MAX_WORD_LENGTH];
     env->GetIntArrayRegion(word, 0, wordLength, wordCodePoints);
-    const WordProperty wordProperty = dictionary->getWordProperty(wordCodePoints, wordLength);
+    int codePointCount = wordLength;
+    if (isBeginningOfSentence) {
+        codePointCount = CharUtils::attachBeginningOfSentenceMarker(
+                wordCodePoints, wordLength, MAX_WORD_LENGTH);
+        if (codePointCount < 0) {
+            AKLOGE("Cannot attach Beginning-of-Sentence marker.");
+            return;
+        }
+    }
+    const WordProperty wordProperty = dictionary->getWordProperty(wordCodePoints, codePointCount);
     wordProperty.outputProperties(env, outCodePoints, outFlags, outProbabilityInfo,
             outBigramTargets, outBigramProbabilityInfo, outShortcutTargets,
             outShortcutProbabilities);
@@ -554,7 +574,6 @@ static bool latinime_BinaryDictionary_migrateNative(JNIEnv *env, jclass clazz, j
         return false;
     }
 
-    // TODO: Migrate historical information.
     int wordCodePoints[MAX_WORD_LENGTH];
     int wordCodePointCount = 0;
     int token = 0;
@@ -563,6 +582,10 @@ static bool latinime_BinaryDictionary_migrateNative(JNIEnv *env, jclass clazz, j
         token = dictionary->getNextWordAndNextToken(token, wordCodePoints, &wordCodePointCount);
         const WordProperty wordProperty = dictionary->getWordProperty(wordCodePoints,
                 wordCodePointCount);
+        if (wordCodePoints[0] == CODE_POINT_BEGINNING_OF_SENTENCE) {
+            // Skip beginning-of-sentence unigram.
+            continue;
+        }
         if (dictionaryStructureWithBufferPolicy->needsToRunGC(true /* mindsBlockByGC */)) {
             dictionaryStructureWithBufferPolicy = runGCAndGetNewStructurePolicy(
                     std::move(dictionaryStructureWithBufferPolicy), dictFilePathChars);
@@ -592,7 +615,7 @@ static bool latinime_BinaryDictionary_migrateNative(JNIEnv *env, jclass clazz, j
             }
         }
         const PrevWordsInfo prevWordsInfo(wordCodePoints, wordCodePointCount,
-                false /* isBeginningOfSentence */);
+                wordProperty.getUnigramProperty()->representsBeginningOfSentence());
         for (const BigramProperty &bigramProperty : *wordProperty.getBigramProperties()) {
             if (!dictionaryStructureWithBufferPolicy->addNgramEntry(&prevWordsInfo,
                     &bigramProperty)) {
@@ -669,13 +692,13 @@ static const JNINativeMethod sMethods[] = {
     },
     {
         const_cast<char *>("getWordPropertyNative"),
-        const_cast<char *>("(J[I[I[Z[ILjava/util/ArrayList;Ljava/util/ArrayList;"
+        const_cast<char *>("(J[IZ[I[Z[ILjava/util/ArrayList;Ljava/util/ArrayList;"
                 "Ljava/util/ArrayList;Ljava/util/ArrayList;)V"),
         reinterpret_cast<void *>(latinime_BinaryDictionary_getWordProperty)
     },
     {
         const_cast<char *>("getNextWordNative"),
-        const_cast<char *>("(JI[I)I"),
+        const_cast<char *>("(JI[I[Z)I"),
         reinterpret_cast<void *>(latinime_BinaryDictionary_getNextWord)
     },
     {

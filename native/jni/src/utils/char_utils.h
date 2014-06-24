@@ -98,6 +98,10 @@ class CharUtils {
     // Beginning-of-Sentence.
     static AK_FORCE_INLINE int attachBeginningOfSentenceMarker(int *const codePoints,
             const int codePointCount, const int maxCodePoint) {
+        if (codePointCount > 0 && codePoints[0] == CODE_POINT_BEGINNING_OF_SENTENCE) {
+            // Marker has already been attached.
+            return codePointCount;
+        }
         if (codePointCount >= maxCodePoint) {
             // the code points cannot be marked as a Beginning-of-Sentence.
             return 0;
