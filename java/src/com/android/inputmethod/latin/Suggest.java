@@ -110,6 +110,21 @@ public final class Suggest {
         final boolean isOnlyFirstCharCapitalized =
                 wordComposer.isOrWillBeOnlyFirstCharCapitalized();
 
+        final ArrayList<SuggestedWordInfo> suggestionsContainer =
+                new ArrayList<>(suggestionResults);
+        final int suggestionsCount = suggestionsContainer.size();
+        if (isOnlyFirstCharCapitalized || shouldMakeSuggestionsAllUpperCase
+                || 0 != trailingSingleQuotesCount) {
+            for (int i = 0; i < suggestionsCount; ++i) {
+                final SuggestedWordInfo wordInfo = suggestionsContainer.get(i);
+                final SuggestedWordInfo transformedWordInfo = getTransformedSuggestedWordInfo(
+                        wordInfo, suggestionResults.mLocale, shouldMakeSuggestionsAllUpperCase,
+                        isOnlyFirstCharCapitalized, trailingSingleQuotesCount);
+                suggestionsContainer.set(i, transformedWordInfo);
+            }
+        }
+        SuggestedWordInfo.removeDups(typedWord, suggestionsContainer);
+
         // If resumed, then we don't want to upcase everything: resuming on a fully-capitalized
         // words is rarely done to switch to another fully-capitalized word, but usually to a
         // normal, non-capitalized suggestion.
@@ -166,21 +181,6 @@ public final class Suggest {
             hasAutoCorrection = AutoCorrectionUtils.suggestionExceedsAutoCorrectionThreshold(
                     suggestionResults.first(), consideredWord, mAutoCorrectionThreshold);
         }
-
-        final ArrayList<SuggestedWordInfo> suggestionsContainer =
-                new ArrayList<>(suggestionResults);
-        final int suggestionsCount = suggestionsContainer.size();
-        if (isOnlyFirstCharCapitalized || shouldMakeSuggestionsAllUpperCase
-                || 0 != trailingSingleQuotesCount) {
-            for (int i = 0; i < suggestionsCount; ++i) {
-                final SuggestedWordInfo wordInfo = suggestionsContainer.get(i);
-                final SuggestedWordInfo transformedWordInfo = getTransformedSuggestedWordInfo(
-                        wordInfo, suggestionResults.mLocale, shouldMakeSuggestionsAllUpperCase,
-                        isOnlyFirstCharCapitalized, trailingSingleQuotesCount);
-                suggestionsContainer.set(i, transformedWordInfo);
-            }
-        }
-        SuggestedWordInfo.removeDups(typedWord, suggestionsContainer);
 
         if (!TextUtils.isEmpty(typedWord)) {
             suggestionsContainer.add(0, new SuggestedWordInfo(typedWord,
