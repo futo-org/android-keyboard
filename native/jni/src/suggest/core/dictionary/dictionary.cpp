@@ -81,7 +81,7 @@ int Dictionary::getMaxProbabilityOfExactMatches(const int *word, int length) con
             mDictionaryStructureWithBufferPolicy.get(), word, length);
 }
 
-int Dictionary::getBigramProbability(const PrevWordsInfo *const prevWordsInfo, const int *word,
+int Dictionary::getNgramProbability(const PrevWordsInfo *const prevWordsInfo, const int *word,
         int length) const {
     TimeKeeper::setCurrentTime();
     return mBigramDictionary.getBigramProbability(prevWordsInfo, word, length);
