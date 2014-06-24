@@ -31,6 +31,7 @@ public class CombinedFormatUtils {
     public static final String HISTORICAL_INFO_TAG = "historicalInfo";
     public static final String HISTORICAL_INFO_SEPARATOR = ":";
     public static final String WORD_TAG = "word";
+    public static final String BEGINNING_OF_SENTENCE_TAG = "beginning_of_sentence";
     public static final String NOT_A_WORD_TAG = "not_a_word";
     public static final String BLACKLISTED_TAG = "blacklisted";
 
@@ -56,6 +57,9 @@ public class CombinedFormatUtils {
         builder.append(" " + WORD_TAG + "=" + wordProperty.mWord);
         builder.append(",");
         builder.append(formatProbabilityInfo(wordProperty.mProbabilityInfo));
+        if (wordProperty.mIsBeginningOfSentence) {
+            builder.append("," + BEGINNING_OF_SENTENCE_TAG + "=true");
+        }
         if (wordProperty.mIsNotAWord) {
             builder.append("," + NOT_A_WORD_TAG + "=true");
         }

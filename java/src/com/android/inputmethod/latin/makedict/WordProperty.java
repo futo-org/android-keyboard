@@ -70,8 +70,8 @@ public final class WordProperty implements Comparable<WordProperty> {
     // Construct word property using information from native code.
     // This represents invalid word when the probability is BinaryDictionary.NOT_A_PROBABILITY.
     public WordProperty(final int[] codePoints, final boolean isNotAWord,
-            final boolean isBlacklisted, final boolean hasBigram,
-            final boolean hasShortcuts, final int[] probabilityInfo,
+            final boolean isBlacklisted, final boolean hasBigram, final boolean hasShortcuts,
+            final boolean isBeginningOfSentence, final int[] probabilityInfo,
             final ArrayList<int[]> bigramTargets, final ArrayList<int[]> bigramProbabilityInfo,
             final ArrayList<int[]> shortcutTargets,
             final ArrayList<Integer> shortcutProbabilities) {
@@ -79,7 +79,7 @@ public final class WordProperty implements Comparable<WordProperty> {
         mProbabilityInfo = createProbabilityInfoFromArray(probabilityInfo);
         mShortcutTargets = new ArrayList<>();
         mBigrams = new ArrayList<>();
-        mIsBeginningOfSentence = false;
+        mIsBeginningOfSentence = isBeginningOfSentence;
         mIsNotAWord = isNotAWord;
         mIsBlacklistEntry = isBlacklisted;
         mHasShortcuts = hasShortcuts;
