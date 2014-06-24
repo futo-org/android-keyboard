@@ -733,8 +733,7 @@ public final class InputLogic {
 
             sendKeyCodePoint(settingsValues, codePoint);
 
-            if (swapWeakSpace) {
-                swapSwapperAndSpace(inputTransaction);
+            if (swapWeakSpace && swapSwapperAndSpace(inputTransaction)) {
                 mSpaceState = SpaceState.WEAK;
             }
             // In case the "add to dictionary" hint was still displayed.
@@ -810,8 +809,6 @@ public final class InputLogic {
 
         if (Constants.CODE_SPACE == codePoint) {
             if (maybeDoubleSpacePeriod(inputTransaction)) {
-                inputTransaction.requireShiftUpdate(InputTransaction.SHIFT_UPDATE_NOW);
-                inputTransaction.setRequiresUpdateSuggestions();
                 mSpaceState = SpaceState.DOUBLE;
             } else if (!mSuggestedWords.isPunctuationSuggestions()) {
                 mSpaceState = SpaceState.WEAK;
@@ -823,8 +820,9 @@ public final class InputLogic {
             }
         } else {
             if (swapWeakSpace) {
-                swapSwapperAndSpace(inputTransaction);
-                mSpaceState = SpaceState.SWAP_PUNCTUATION;
+                if (swapSwapperAndSpace(inputTransaction)) {
+                    mSpaceState = SpaceState.SWAP_PUNCTUATION;
+                }
             } else if ((SpaceState.PHANTOM == inputTransaction.mSpaceState
                     && settingsValues.isUsuallyFollowedBySpace(codePoint))
                     || (Constants.CODE_DOUBLE_QUOTE == codePoint
@@ -1008,8 +1006,9 @@ public final class InputLogic {
      * This method will check that there are two characters before the cursor and that the first
      * one is a space before it does the actual swapping.
      * @param inputTransaction The transaction in progress.
+     * @return true if the swap has been performed, false if it was prevented by preliminary checks.
      */
-    private void swapSwapperAndSpace(final InputTransaction inputTransaction) {
+    private boolean swapSwapperAndSpace(final InputTransaction inputTransaction) {
         final CharSequence lastTwo = mConnection.getTextBeforeCursor(2, 0);
         // It is guaranteed lastTwo.charAt(1) is a swapper - else this method is not called.
         if (lastTwo != null && lastTwo.length() == 2 && lastTwo.charAt(0) == Constants.CODE_SPACE) {
@@ -1017,7 +1016,9 @@ public final class InputLogic {
             final String text = lastTwo.charAt(1) + " ";
             mConnection.commitText(text, 1);
             inputTransaction.requireShiftUpdate(InputTransaction.SHIFT_UPDATE_NOW);
+            return true;
         }
+        return false;
     }
 
     /*
@@ -1078,6 +1079,8 @@ public final class InputLogic {
      */
     private boolean maybeDoubleSpacePeriod(final InputTransaction inputTransaction) {
         if (!inputTransaction.mSettingsValues.mUseDoubleSpacePeriod) return false;
+        // This can't happen right now because we don't call this method when the code is not space
+        if (Constants.CODE_SPACE != inputTransaction.mEvent.mCodePoint) return false;
         if (!isDoubleSpacePeriodCountdownActive(inputTransaction)) return false;
         // We only do this when we see two spaces and an accepted code point before the cursor.
         // The code point may be a surrogate pair but the two spaces may not, so we need 4 chars.
@@ -1099,6 +1102,8 @@ public final class InputLogic {
             final String textToInsert = inputTransaction.mSettingsValues.mSpacingAndPunctuations
                     .mSentenceSeparatorAndSpace;
             mConnection.commitText(textToInsert, 1);
+            inputTransaction.requireShiftUpdate(InputTransaction.SHIFT_UPDATE_NOW);
+            inputTransaction.setRequiresUpdateSuggestions();
             return true;
         }
         return false;
