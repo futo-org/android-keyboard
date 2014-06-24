@@ -336,16 +336,17 @@ public class SuggestedWords {
                 return;
             }
             if (!TextUtils.isEmpty(typedWord)) {
-                removeSuggestedWordInfoFrom(typedWord, candidates, 0);
+                removeSuggestedWordInfoFrom(typedWord, candidates, -1 /* startIndexExclusive */);
             }
             for (int i = 0; i < candidates.size(); ++i) {
-                removeSuggestedWordInfoFrom(candidates.get(i).mWord, candidates, i);
+                removeSuggestedWordInfoFrom(candidates.get(i).mWord, candidates,
+                        i /* startIndexExclusive */);
             }
         }
 
         private static void removeSuggestedWordInfoFrom(final String word,
-                final ArrayList<SuggestedWordInfo> candidates, final int startIndex) {
-            for (int i = startIndex + 1; i < candidates.size(); ++i) {
+                final ArrayList<SuggestedWordInfo> candidates, final int startIndexExclusive) {
+            for (int i = startIndexExclusive + 1; i < candidates.size(); ++i) {
                 final SuggestedWordInfo previous = candidates.get(i);
                 if (word.equals(previous.mWord)) {
                     candidates.remove(i);
