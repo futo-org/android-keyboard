@@ -18,15 +18,21 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
     android:key="english_ime_settings">
-    <PreferenceCategory
-        android:title="@string/general_category"
-        android:key="general_settings">
+    <PreferenceScreen
+        android:title="@string/settings_screen_input"
+        android:key="screen_input">
         <CheckBoxPreference
             android:key="auto_cap"
             android:title="@string/auto_cap"
             android:summary="@string/auto_cap_summary"
-            android:persistent="true"
-            android:defaultValue="true" />
+            android:defaultValue="true"
+            android:persistent="true" />
+        <CheckBoxPreference
+            android:key="pref_key_use_double_space_period"
+            android:title="@string/use_double_space_period"
+            android:summary="@string/use_double_space_period_summary"
+            android:defaultValue="true"
+            android:persistent="true" />
         <CheckBoxPreference
             android:key="vibrate_on"
             android:title="@string/vibrate_on_keypress"
@@ -40,17 +46,67 @@
         <CheckBoxPreference
             android:key="popup_on"
             android:title="@string/popup_on_keypress"
-            android:persistent="true"
-            android:defaultValue="@bool/config_default_key_preview_popup" />
+            android:defaultValue="@bool/config_default_key_preview_popup"
+            android:persistent="true" />
         <CheckBoxPreference
             android:key="pref_voice_input_key"
             android:title="@string/voice_input"
-            android:persistent="true"
-            android:defaultValue="true" />
-    </PreferenceCategory>
-    <PreferenceCategory
-        android:title="@string/correction_category"
-        android:key="correction_settings">
+            android:defaultValue="true"
+            android:persistent="true" />
+    </PreferenceScreen>
+    <ListPreference
+        android:key="pref_keyboard_theme"
+        android:title="@string/keyboard_theme"
+        android:entryValues="@array/keyboard_theme_ids"
+        android:entries="@array/keyboard_theme_names"
+        android:persistent="true" />
+    <PreferenceScreen
+        android:title="@string/settings_screen_multi_lingual"
+        android:key="screen_multi_lingual">
+        <CheckBoxPreference
+            android:key="pref_show_language_switch_key"
+            android:title="@string/show_language_switch_key"
+            android:summary="@string/show_language_switch_key_summary"
+            android:defaultValue="true"
+            android:persistent="true" />
+        <CheckBoxPreference
+            android:key="pref_include_other_imes_in_language_switch_list"
+            android:dependency="pref_show_language_switch_key"
+            android:title="@string/include_other_imes_in_language_switch_list"
+            android:summary="@string/include_other_imes_in_language_switch_list_summary"
+            android:defaultValue="false"
+            android:persistent="true" />
+        <PreferenceScreen
+            android:fragment="com.android.inputmethod.latin.settings.AdditionalSubtypeSettings"
+            android:key="custom_input_styles"
+            android:title="@string/custom_input_styles_title" />
+    </PreferenceScreen>
+    <PreferenceScreen
+        android:title="@string/settings_screen_gesture"
+        android:key="screen_gesture">
+        <CheckBoxPreference
+            android:key="gesture_input"
+            android:title="@string/gesture_input"
+            android:summary="@string/gesture_input_summary"
+            android:defaultValue="true"
+            android:persistent="true" />
+        <CheckBoxPreference
+            android:key="pref_gesture_floating_preview_text"
+            android:dependency="gesture_input"
+            android:title="@string/gesture_floating_preview_text"
+            android:summary="@string/gesture_floating_preview_text_summary"
+            android:defaultValue="true"
+            android:persistent="true" />
+        <CheckBoxPreference
+            android:key="pref_gesture_preview_trail"
+            android:dependency="gesture_input"
+            android:title="@string/gesture_preview_trail"
+            android:defaultValue="true"
+            android:persistent="true" />
+    </PreferenceScreen>
+    <PreferenceScreen
+        android:title="@string/settings_screen_correction"
+        android:key="screen_correction">
         <PreferenceScreen
             android:key="edit_personal_dictionary"
             android:title="@string/edit_personal_dictionary">
@@ -71,137 +127,74 @@
             android:key="pref_key_block_potentially_offensive"
             android:title="@string/prefs_block_potentially_offensive_title"
             android:summary="@string/prefs_block_potentially_offensive_summary"
-            android:persistent="true"
-            android:defaultValue="@bool/config_block_potentially_offensive" />
+            android:defaultValue="@bool/config_block_potentially_offensive"
+            android:persistent="true" />
         <ListPreference
             android:key="auto_correction_threshold"
             android:title="@string/auto_correction"
             android:summary="@string/auto_correction_summary"
-            android:persistent="true"
             android:entryValues="@array/auto_correction_threshold_mode_indexes"
             android:entries="@array/auto_correction_threshold_modes"
-            android:defaultValue="@string/auto_correction_threshold_mode_index_modest" />
+            android:defaultValue="@string/auto_correction_threshold_mode_index_modest"
+            android:persistent="true" />
         <ListPreference
             android:key="show_suggestions_setting"
             android:summary="@string/prefs_show_suggestions_summary"
             android:title="@string/prefs_show_suggestions"
-            android:persistent="true"
             android:entryValues="@array/prefs_suggestion_visibility_values"
             android:entries="@array/prefs_suggestion_visibilities"
-            android:defaultValue="@string/prefs_suggestion_visibility_default_value" />
+            android:defaultValue="@string/prefs_suggestion_visibility_default_value"
+            android:persistent="true" />
         <CheckBoxPreference
             android:key="pref_key_use_personalized_dicts"
             android:title="@string/use_personalized_dicts"
             android:summary="@string/use_personalized_dicts_summary"
-            android:persistent="true"
-            android:defaultValue="true" />
-        <!-- title will be set programmatically to embed application name -->
+            android:defaultValue="true"
+            android:persistent="true" />
         <CheckBoxPreference
-            android:key="pref_enable_metrics_logging"
-            android:summary="@string/enable_metrics_logging_summary"
-            android:persistent="true"
-            android:defaultValue="true" />
-    </PreferenceCategory>
-    <PreferenceCategory
-        android:title="@string/gesture_typing_category"
-        android:key="gesture_typing_settings">
-        <CheckBoxPreference
-            android:key="gesture_input"
-            android:title="@string/gesture_input"
-            android:summary="@string/gesture_input_summary"
-            android:persistent="true"
-            android:defaultValue="true" />
-        <!-- TODO: Move these two options to the advanced settings. -->
-        <CheckBoxPreference
-            android:key="pref_gesture_floating_preview_text"
-            android:dependency="gesture_input"
-            android:title="@string/gesture_floating_preview_text"
-            android:summary="@string/gesture_floating_preview_text_summary"
-            android:persistent="true"
-            android:defaultValue="true" />
-        <CheckBoxPreference
-            android:key="pref_gesture_preview_trail"
-            android:dependency="gesture_input"
-            android:title="@string/gesture_preview_trail"
-            android:persistent="true"
-            android:defaultValue="true" />
-    </PreferenceCategory>
-    <PreferenceCategory
-        android:title="@string/misc_category"
-        android:key="misc_settings">
+            android:key="pref_key_use_contacts_dict"
+            android:title="@string/use_contacts_dict"
+            android:summary="@string/use_contacts_dict_summary"
+            android:defaultValue="true"
+            android:persistent="true" />
         <CheckBoxPreference
             android:key="next_word_prediction"
             android:title="@string/bigram_prediction"
             android:summary="@string/bigram_prediction_summary"
-            android:persistent="true"
-            android:defaultValue="true" />
-        <PreferenceScreen
-            android:key="pref_advanced_settings"
-            android:title="@string/advanced_settings"
-            android:summary="@string/advanced_settings_summary">
-            <CheckBoxPreference
-                android:key="pref_key_use_contacts_dict"
-                android:title="@string/use_contacts_dict"
-                android:summary="@string/use_contacts_dict_summary"
-                android:persistent="true"
-                android:defaultValue="true" />
-            <CheckBoxPreference
-                android:key="pref_key_use_double_space_period"
-                android:title="@string/use_double_space_period"
-                android:summary="@string/use_double_space_period_summary"
-                android:persistent="true"
-                android:defaultValue="true" />
-            <CheckBoxPreference
-                android:key="pref_show_language_switch_key"
-                android:title="@string/show_language_switch_key"
-                android:summary="@string/show_language_switch_key_summary"
-                android:persistent="true"
-                android:defaultValue="true" />
-            <CheckBoxPreference
-                android:key="pref_include_other_imes_in_language_switch_list"
-                android:dependency="pref_show_language_switch_key"
-                android:title="@string/include_other_imes_in_language_switch_list"
-                android:summary="@string/include_other_imes_in_language_switch_list_summary"
-                android:persistent="true"
-                android:defaultValue="false" />
-            <ListPreference
-                android:key="pref_keyboard_theme"
-                android:title="@string/keyboard_color_scheme"
-                android:persistent="true"
-                android:entryValues="@array/keyboard_theme_ids"
-                android:entries="@array/keyboard_theme_names" />
-            <PreferenceScreen
-                android:fragment="com.android.inputmethod.latin.settings.AdditionalSubtypeSettings"
-                android:key="custom_input_styles"
-                android:title="@string/custom_input_styles_title" />
-            <!-- TODO: consolidate key preview dismiss delay with the key preview animation parameters. -->
-            <ListPreference
-                android:key="pref_key_preview_popup_dismiss_delay"
-                android:title="@string/key_preview_popup_dismiss_delay" />
-            <com.android.inputmethod.latin.settings.SeekBarDialogPreference
-                android:key="pref_vibration_duration_settings"
-                android:title="@string/prefs_keypress_vibration_duration_settings"
-                latin:maxValue="@integer/config_max_vibration_duration" />
-            <com.android.inputmethod.latin.settings.SeekBarDialogPreference
-                android:key="pref_keypress_sound_volume"
-                android:title="@string/prefs_keypress_sound_volume_settings"
-                latin:maxValue="100" /> <!-- percent -->
-            <!-- The settigs for showing setup wizard application icon shouldn't be persistent and
-                 the default value is added programmatically. -->
-            <CheckBoxPreference
-                android:key="pref_show_setup_wizard_icon"
-                android:title="@string/show_setup_wizard_icon"
-                android:summary="@string/show_setup_wizard_icon_summary" />
+            android:defaultValue="true"
+            android:persistent="true" />
         </PreferenceScreen>
+    <PreferenceScreen
+        android:title="@string/settings_screen_advanced"
+        android:key="screen_advanced">
+        <!-- TODO: consolidate key preview dismiss delay with the key preview animation parameters. -->
+        <ListPreference
+            android:key="pref_key_preview_popup_dismiss_delay"
+            android:title="@string/key_preview_popup_dismiss_delay" />
+        <com.android.inputmethod.latin.settings.SeekBarDialogPreference
+            android:key="pref_vibration_duration_settings"
+            android:title="@string/prefs_keypress_vibration_duration_settings"
+            latin:maxValue="@integer/config_max_vibration_duration" />
+        <com.android.inputmethod.latin.settings.SeekBarDialogPreference
+            android:key="pref_keypress_sound_volume"
+            android:title="@string/prefs_keypress_sound_volume_settings"
+            latin:maxValue="100" /> <!-- percent -->
+        <!-- The settigs for showing setup wizard application icon shouldn't be persistent and
+             the default value is added programmatically. -->
+        <CheckBoxPreference
+            android:key="pref_show_setup_wizard_icon"
+            android:title="@string/show_setup_wizard_icon"
+            android:summary="@string/show_setup_wizard_icon_summary" />
+        <!-- title will be set programmatically to embed application name -->
+        <CheckBoxPreference
+            android:key="pref_enable_metrics_logging"
+            android:summary="@string/enable_metrics_logging_summary"
+            android:defaultValue="true"
+            android:persistent="true" />
         <PreferenceScreen
-            android:key="send_feedback"
-            android:title="@string/send_feedback" />
-        <PreferenceScreen
-            android:key="about_keyboard" />
-        <PreferenceScreen
-            android:key="debug_settings"
+            android:key="screen_debug"
             android:title="Debug settings"
-            android:persistent="true"
-            android:defaultValue="false" />
-    </PreferenceCategory>
+            android:defaultValue="false"
+            android:persistent="true" />
+        </PreferenceScreen>
 </PreferenceScreen>

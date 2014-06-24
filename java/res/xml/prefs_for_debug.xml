@@ -23,19 +23,19 @@
     <CheckBoxPreference
         android:key="debug_mode"
         android:title="@string/prefs_debug_mode"
-        android:persistent="true"
-        android:defaultValue="false" />
+        android:defaultValue="false"
+        android:persistent="true" />
     <CheckBoxPreference
         android:key="force_non_distinct_multitouch"
         android:title="@string/prefs_force_non_distinct_multitouch"
-        android:persistent="true"
-        android:defaultValue="false" />
+        android:defaultValue="false"
+        android:persistent="true" />
     <CheckBoxPreference
         android:key="pref_sliding_key_input_preview"
         android:title="@string/sliding_key_input_preview"
         android:summary="@string/sliding_key_input_preview_summary"
-        android:persistent="true"
-        android:defaultValue="true" />
+        android:defaultValue="true"
+        android:persistent="true" />
     <com.android.inputmethod.latin.settings.SeekBarDialogPreference
         android:key="pref_key_longpress_timeout"
         android:title="@string/prefs_key_longpress_timeout_settings"
