@@ -43,11 +43,6 @@ public class ContextualDictionary extends ExpandableBinaryDictionary {
     }
 
     @Override
-    protected boolean enableBeginningOfSentencePrediction() {
-        return true;
-    }
-
-    @Override
     public boolean isValidWord(final String word) {
         // Strings out of this dictionary should not be considered existing words.
         return false;

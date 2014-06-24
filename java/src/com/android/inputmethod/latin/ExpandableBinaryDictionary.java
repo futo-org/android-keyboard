@@ -122,12 +122,6 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         return mBinaryDictionary.isValidDictionary();
     }
 
-    // TODO: Remove and always enable beginning of sentence prediction. Currently, this is enabled
-    // only for ContextualDictionary.
-    protected boolean enableBeginningOfSentencePrediction() {
-        return false;
-    }
-
     /**
      * Creates a new expandable binary dictionary.
      *
@@ -424,10 +418,6 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                     TIMEOUT_FOR_READ_OPS_IN_MILLISECONDS, TimeUnit.MILLISECONDS);
             if (lockAcquired) {
                 if (mBinaryDictionary == null) {
-                    return null;
-                }
-                if (composer.size() == 0 && prevWordsInfo.mIsBeginningOfSentence
-                        && !enableBeginningOfSentencePrediction()) {
                     return null;
                 }
                 final ArrayList<SuggestedWordInfo> suggestions =
