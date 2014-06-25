@@ -482,6 +482,7 @@ public class InputLogicTests extends InputTestsBase {
     }
 
     public void testPredictionsWithDoubleSpaceToPeriod() {
+        mLatinIME.clearPersonalizedDictionariesForTest();
         final String WORD_TO_TYPE = "Barack ";
         type(WORD_TO_TYPE);
         sleep(DELAY_TO_WAIT_FOR_PREDICTIONS);
@@ -517,6 +518,7 @@ public class InputLogicTests extends InputTestsBase {
     }
 
     public void testNoPredictionsAfterPeriod() {
+        mLatinIME.clearPersonalizedDictionariesForTest();
         final String WORD_TO_TYPE = "Barack. ";
         type(WORD_TO_TYPE);
         sleep(DELAY_TO_WAIT_FOR_PREDICTIONS);
