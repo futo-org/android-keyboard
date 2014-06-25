@@ -267,7 +267,7 @@ public class KeyboardAccessibilityDelegate<KV extends KeyboardView>
      * @param touchAction The action of the synthesizing touch event.
      * @param hoverEvent The base hover event from that the touch event is synthesized.
      */
-    protected void simulateTouchEvent(final int touchAction, final MotionEvent hoverEvent) {
+    private void simulateTouchEvent(final int touchAction, final MotionEvent hoverEvent) {
         final MotionEvent touchEvent = MotionEvent.obtain(hoverEvent);
         touchEvent.setAction(touchAction);
         mKeyboardView.onTouchEvent(touchEvent);

@@ -56,24 +56,7 @@ final class EmojiPageKeyboardView extends KeyboardView implements
     private OnKeyEventListener mListener = EMPTY_LISTENER;
     private final KeyDetector mKeyDetector = new KeyDetector();
     private final GestureDetector mGestureDetector;
-    private EmojiPageKeyboardAccessibilityDelegate mAccessibilityDelegate;
-
-    private static final class EmojiPageKeyboardAccessibilityDelegate
-            extends KeyboardAccessibilityDelegate<EmojiPageKeyboardView> {
-        public EmojiPageKeyboardAccessibilityDelegate(final EmojiPageKeyboardView keyboardView,
-                final KeyDetector keyDetector) {
-            super(keyboardView, keyDetector);
-        }
-
-        // TODO: Remove redundant override method.
-        @Override
-        protected void simulateTouchEvent(int touchAction, MotionEvent hoverEvent) {
-            final MotionEvent touchEvent = MotionEvent.obtain(hoverEvent);
-            touchEvent.setAction(touchAction);
-            mKeyboardView.onTouchEvent(touchEvent);
-            touchEvent.recycle();
-        }
-    }
+    private KeyboardAccessibilityDelegate<EmojiPageKeyboardView> mAccessibilityDelegate;
 
     public EmojiPageKeyboardView(final Context context, final AttributeSet attrs) {
         this(context, attrs, R.attr.keyboardViewStyle);
@@ -100,8 +83,7 @@ final class EmojiPageKeyboardView extends KeyboardView implements
         mKeyDetector.setKeyboard(keyboard, 0 /* correctionX */, 0 /* correctionY */);
         if (AccessibilityUtils.getInstance().isAccessibilityEnabled()) {
             if (mAccessibilityDelegate == null) {
-                mAccessibilityDelegate = new EmojiPageKeyboardAccessibilityDelegate(
-                        this, mKeyDetector);
+                mAccessibilityDelegate = new KeyboardAccessibilityDelegate<>(this, mKeyDetector);
             }
             mAccessibilityDelegate.setKeyboard(keyboard);
         } else {

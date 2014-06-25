@@ -20,8 +20,6 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
 
-import com.android.inputmethod.accessibility.AccessibilityUtils;
-import com.android.inputmethod.accessibility.MoreSuggestionsAccessibilityDelegate;
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardActionListener;
@@ -59,16 +57,10 @@ public final class MoreSuggestionsView extends MoreKeysKeyboardView {
         // above {@link MoreKeysKeyboardView#setKeyboard(Keyboard)} call.
         // With accessibility mode on, {@link #mAccessibilityDelegate} is set to a
         // {@link MoreKeysKeyboardAccessibilityDelegate} object at the above
-        // {@link MoreKeysKeyboardView#setKeyboard(Keyboard)} call. And the object has to be
-        // overwritten by a {@link MoreSuggestionsAccessibilityDelegate} object here.
-        if (AccessibilityUtils.getInstance().isAccessibilityEnabled()) {
-            if (!(mAccessibilityDelegate instanceof MoreSuggestionsAccessibilityDelegate)) {
-                mAccessibilityDelegate = new MoreSuggestionsAccessibilityDelegate(
-                        this, mKeyDetector);
-                mAccessibilityDelegate.setOpenAnnounce(R.string.spoken_open_more_suggestions);
-                mAccessibilityDelegate.setCloseAnnounce(R.string.spoken_close_more_suggestions);
-            }
-            mAccessibilityDelegate.setKeyboard(keyboard);
+        // {@link MoreKeysKeyboardView#setKeyboard(Keyboard)} call.
+        if (mAccessibilityDelegate != null) {
+            mAccessibilityDelegate.setOpenAnnounce(R.string.spoken_open_more_suggestions);
+            mAccessibilityDelegate.setCloseAnnounce(R.string.spoken_close_more_suggestions);
         }
     }
 
