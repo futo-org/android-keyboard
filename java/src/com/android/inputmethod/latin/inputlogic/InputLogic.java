@@ -1528,7 +1528,8 @@ public final class InputLogic {
         } else {
             return LastComposedWord.NOT_A_COMPOSED_WORD == mLastComposedWord ?
                     PrevWordsInfo.BEGINNING_OF_SENTENCE :
-                            new PrevWordsInfo(mLastComposedWord.mCommittedWord.toString());
+                            new PrevWordsInfo(new PrevWordsInfo.WordInfo(
+                                    mLastComposedWord.mCommittedWord.toString()));
         }
     }
 

@@ -60,7 +60,7 @@ public class UserHistoryDictionary extends DecayingExpandableBinaryDictionaryBas
     public static void addToDictionary(final ExpandableBinaryDictionary userHistoryDictionary,
             final PrevWordsInfo prevWordsInfo, final String word, final boolean isValid,
             final int timestamp, final DistracterFilter distracterFilter) {
-        final String prevWord = prevWordsInfo.mPrevWord;
+        final String prevWord = prevWordsInfo.mPrevWordsInfo[0].mWord;
         if (word.length() >= Constants.DICTIONARY_MAX_WORD_LENGTH ||
                 (prevWord != null && prevWord.length() >= Constants.DICTIONARY_MAX_WORD_LENGTH)) {
             return;

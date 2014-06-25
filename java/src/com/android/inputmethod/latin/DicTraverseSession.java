@@ -28,6 +28,10 @@ public final class DicTraverseSession {
     // Must be equal to MAX_RESULTS in native/jni/src/defines.h
     private static final int MAX_RESULTS = 18;
     public final int[] mInputCodePoints = new int[Constants.DICTIONARY_MAX_WORD_LENGTH];
+    public final int[][] mPrevWordCodePointArrays =
+            new int[Constants.MAX_PREV_WORD_COUNT_FOR_N_GRAM][];
+    public final boolean[] mIsBeginningOfSentenceArray =
+            new boolean[Constants.MAX_PREV_WORD_COUNT_FOR_N_GRAM];
     public final int[] mOutputSuggestionCount = new int[1];
     public final int[] mOutputCodePoints =
             new int[Constants.DICTIONARY_MAX_WORD_LENGTH * MAX_RESULTS];

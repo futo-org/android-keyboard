@@ -426,10 +426,6 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                 if (mBinaryDictionary == null) {
                     return null;
                 }
-                if (composer.size() == 0 && prevWordsInfo.mIsBeginningOfSentence
-                        && !enableBeginningOfSentencePrediction()) {
-                    return null;
-                }
                 final ArrayList<SuggestedWordInfo> suggestions =
                         mBinaryDictionary.getSuggestions(composer, prevWordsInfo, proximityInfo,
                                 blockOffensiveWords, additionalFeaturesOptions, sessionId,
