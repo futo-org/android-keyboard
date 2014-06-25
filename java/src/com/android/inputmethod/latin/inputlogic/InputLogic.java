@@ -728,13 +728,13 @@ public final class InputLogic {
             mConnection.setComposingText(getTextWithUnderline(
                     mWordComposer.getTypedWord()), 1);
         } else {
-            final boolean swapWeakSpace = maybeStripSpace(inputTransaction,
-                    inputTransaction.mEvent.isSuggestionStripPress());
+            final boolean swapWeakSpace = tryStripSpaceAndReturnWhetherShouldSwapInstead(
+                    inputTransaction, inputTransaction.mEvent.isSuggestionStripPress());
 
-            sendKeyCodePoint(settingsValues, codePoint);
-
-            if (swapWeakSpace && swapSwapperAndSpace(inputTransaction)) {
+            if (swapWeakSpace && trySwapSwapperAndSpace(inputTransaction)) {
                 mSpaceState = SpaceState.WEAK;
+            } else {
+                sendKeyCodePoint(settingsValues, codePoint);
             }
             // In case the "add to dictionary" hint was still displayed.
             mSuggestionStripViewAccessor.dismissAddToDictionaryHint();
@@ -779,7 +779,8 @@ public final class InputLogic {
             }
         }
 
-        final boolean swapWeakSpace = maybeStripSpace(inputTransaction, isFromSuggestionStrip);
+        final boolean swapWeakSpace = tryStripSpaceAndReturnWhetherShouldSwapInstead(
+                inputTransaction, isFromSuggestionStrip);
 
         final boolean isInsideDoubleQuoteOrAfterDigit = Constants.CODE_DOUBLE_QUOTE == codePoint
                 && mConnection.isInsideDoubleQuoteOrAfterDigit();
@@ -803,14 +804,14 @@ public final class InputLogic {
             promotePhantomSpace(settingsValues);
         }
 
-        if (!shouldAvoidSendingCode) {
-            sendKeyCodePoint(settingsValues, codePoint);
-        }
-
-        if (Constants.CODE_SPACE == codePoint) {
-            if (maybeDoubleSpacePeriod(inputTransaction)) {
-                mSpaceState = SpaceState.DOUBLE;
-            } else if (!mSuggestedWords.isPunctuationSuggestions()) {
+        if (tryPerformDoubleSpacePeriod(inputTransaction)) {
+            mSpaceState = SpaceState.DOUBLE;
+            inputTransaction.setRequiresUpdateSuggestions();
+        } else if (swapWeakSpace && trySwapSwapperAndSpace(inputTransaction)) {
+            mSpaceState = SpaceState.SWAP_PUNCTUATION;
+            mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
+        } else if (Constants.CODE_SPACE == codePoint) {
+            if (!mSuggestedWords.isPunctuationSuggestions()) {
                 mSpaceState = SpaceState.WEAK;
             }
 
@@ -818,12 +819,12 @@ public final class InputLogic {
             if (wasComposingWord || mSuggestedWords.isEmpty()) {
                 inputTransaction.setRequiresUpdateSuggestions();
             }
+
+            if (!shouldAvoidSendingCode) {
+                sendKeyCodePoint(settingsValues, codePoint);
+            }
         } else {
-            if (swapWeakSpace) {
-                if (swapSwapperAndSpace(inputTransaction)) {
-                    mSpaceState = SpaceState.SWAP_PUNCTUATION;
-                }
-            } else if ((SpaceState.PHANTOM == inputTransaction.mSpaceState
+            if ((SpaceState.PHANTOM == inputTransaction.mSpaceState
                     && settingsValues.isUsuallyFollowedBySpace(codePoint))
                     || (Constants.CODE_DOUBLE_QUOTE == codePoint
                             && isInsideDoubleQuoteOrAfterDigit)) {
@@ -840,6 +841,8 @@ public final class InputLogic {
                 // the separator is a stripper. Hence the additional test above.
                 mSpaceState = SpaceState.PHANTOM;
             }
+
+            sendKeyCodePoint(settingsValues, codePoint);
 
             // Set punctuation right away. onUpdateSelection will fire but tests whether it is
             // already displayed or not, so it's okay.
@@ -1008,17 +1011,16 @@ public final class InputLogic {
      * @param inputTransaction The transaction in progress.
      * @return true if the swap has been performed, false if it was prevented by preliminary checks.
      */
-    private boolean swapSwapperAndSpace(final InputTransaction inputTransaction) {
-        final CharSequence lastTwo = mConnection.getTextBeforeCursor(2, 0);
-        // It is guaranteed lastTwo.charAt(1) is a swapper - else this method is not called.
-        if (lastTwo != null && lastTwo.length() == 2 && lastTwo.charAt(0) == Constants.CODE_SPACE) {
-            mConnection.deleteSurroundingText(2, 0);
-            final String text = lastTwo.charAt(1) + " ";
-            mConnection.commitText(text, 1);
-            inputTransaction.requireShiftUpdate(InputTransaction.SHIFT_UPDATE_NOW);
-            return true;
+    private boolean trySwapSwapperAndSpace(final InputTransaction inputTransaction) {
+        final int codePointBeforeCursor = mConnection.getCodePointBeforeCursor();
+        if (Constants.CODE_SPACE != codePointBeforeCursor) {
+            return false;
         }
-        return false;
+        mConnection.deleteSurroundingText(1, 0);
+        final String text = inputTransaction.mEvent.getTextToCommit() + " ";
+        mConnection.commitText(text, 1);
+        inputTransaction.requireShiftUpdate(InputTransaction.SHIFT_UPDATE_NOW);
+        return true;
     }
 
     /*
@@ -1027,8 +1029,8 @@ public final class InputLogic {
      * @param isFromSuggestionStrip Whether this code point is coming from the suggestion strip.
      * @return whether we should swap the space instead of removing it.
      */
-    private boolean maybeStripSpace(final InputTransaction inputTransaction,
-            final boolean isFromSuggestionStrip) {
+    private boolean tryStripSpaceAndReturnWhetherShouldSwapInstead(
+            final InputTransaction inputTransaction, final boolean isFromSuggestionStrip) {
         final int codePoint = inputTransaction.mEvent.mCodePoint;
         if (Constants.CODE_ENTER == codePoint &&
                 SpaceState.SWAP_PUNCTUATION == inputTransaction.mSpaceState) {
@@ -1069,36 +1071,37 @@ public final class InputLogic {
      * period-space sequence of characters. This typically happens when the user presses space
      * twice in a row quickly.
      * This method will check that the double-space-to-period is active in settings, that the
-     * two spaces have been input close enough together, and that the previous character allows
-     * for the transformation to take place. If all of these conditions are fulfilled, this
-     * method applies the transformation and returns true. Otherwise, it does nothing and
-     * returns false.
+     * two spaces have been input close enough together, that the typed character is a space
+     * and that the previous character allows for the transformation to take place. If all of
+     * these conditions are fulfilled, this method applies the transformation and returns true.
+     * Otherwise, it does nothing and returns false.
      *
      * @param inputTransaction The transaction in progress.
      * @return true if we applied the double-space-to-period transformation, false otherwise.
      */
-    private boolean maybeDoubleSpacePeriod(final InputTransaction inputTransaction) {
-        if (!inputTransaction.mSettingsValues.mUseDoubleSpacePeriod) return false;
-        // This can't happen right now because we don't call this method when the code is not space
-        if (Constants.CODE_SPACE != inputTransaction.mEvent.mCodePoint) return false;
-        if (!isDoubleSpacePeriodCountdownActive(inputTransaction)) return false;
-        // We only do this when we see two spaces and an accepted code point before the cursor.
-        // The code point may be a surrogate pair but the two spaces may not, so we need 4 chars.
-        final CharSequence lastThree = mConnection.getTextBeforeCursor(4, 0);
-        if (null == lastThree) return false;
-        final int length = lastThree.length();
-        if (length < 3) return false;
-        if (lastThree.charAt(length - 1) != Constants.CODE_SPACE) return false;
-        if (lastThree.charAt(length - 2) != Constants.CODE_SPACE) return false;
-        // We know there are spaces in pos -1 and -2, and we have at least three chars.
-        // If we have only three chars, isSurrogatePairs can't return true as charAt(1) is a space,
-        // so this is fine.
+    private boolean tryPerformDoubleSpacePeriod(final InputTransaction inputTransaction) {
+        // Check the setting, the typed character and the countdown. If any of the conditions is
+        // not fulfilled, return false.
+        if (!inputTransaction.mSettingsValues.mUseDoubleSpacePeriod
+                || Constants.CODE_SPACE != inputTransaction.mEvent.mCodePoint
+                || !isDoubleSpacePeriodCountdownActive(inputTransaction)) {
+            return false;
+        }
+        // We only do this when we see one space and an accepted code point before the cursor.
+        // The code point may be a surrogate pair but the space may not, so we need 3 chars.
+        final CharSequence lastTwo = mConnection.getTextBeforeCursor(3, 0);
+        if (null == lastTwo) return false;
+        final int length = lastTwo.length();
+        if (length < 2) return false;
+        if (lastTwo.charAt(length - 1) != Constants.CODE_SPACE) return false;
+        // We know there is a space in pos -1, and we have at least two chars. If we have only two
+        // chars, isSurrogatePairs can't return true as charAt(1) is a space, so this is fine.
         final int firstCodePoint =
-                Character.isSurrogatePair(lastThree.charAt(0), lastThree.charAt(1)) ?
-                        Character.codePointAt(lastThree, 0) : lastThree.charAt(length - 3);
+                Character.isSurrogatePair(lastTwo.charAt(0), lastTwo.charAt(1)) ?
+                        Character.codePointAt(lastTwo, length - 3) : lastTwo.charAt(length - 2);
         if (canBeFollowedByDoubleSpacePeriod(firstCodePoint)) {
             cancelDoubleSpacePeriodCountdown();
-            mConnection.deleteSurroundingText(2, 0);
+            mConnection.deleteSurroundingText(1, 0);
             final String textToInsert = inputTransaction.mSettingsValues.mSpacingAndPunctuations
                     .mSentenceSeparatorAndSpace;
             mConnection.commitText(textToInsert, 1);
