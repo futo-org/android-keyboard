@@ -123,21 +123,15 @@ public final class Suggest {
                 suggestionsContainer.set(i, transformedWordInfo);
             }
         }
-        SuggestedWordInfo.removeDups(typedWord, suggestionsContainer);
+        final boolean didRemoveTypedWord =
+                SuggestedWordInfo.removeDups(typedWord, suggestionsContainer);
 
-        // If resumed, then we don't want to upcase everything: resuming on a fully-capitalized
-        // words is rarely done to switch to another fully-capitalized word, but usually to a
-        // normal, non-capitalized suggestion.
-        final String firstSuggestion;
         final String whitelistedWord;
-        if (suggestionResults.isEmpty()) {
+        if (suggestionsContainer.isEmpty()) {
             whitelistedWord = firstSuggestion = null;
         } else {
-            final SuggestedWordInfo firstSuggestedWordInfo = getTransformedSuggestedWordInfo(
-                    suggestionResults.first(), suggestionResults.mLocale,
-                    shouldMakeSuggestionsAllUpperCase, isOnlyFirstCharCapitalized,
-                    trailingSingleQuotesCount);
-            firstSuggestion = firstSuggestedWordInfo.mWord;
+            final SuggestedWordInfo firstSuggestedWordInfo = suggestionsContainer.get(0);
+            final String firstSuggestion = firstSuggestedWordInfo.mWord;
             if (!firstSuggestedWordInfo.isKindOf(SuggestedWordInfo.KIND_WHITELIST)) {
                 whitelistedWord = null;
             } else {
@@ -145,17 +139,10 @@ public final class Suggest {
             }
         }
 
-        // We allow auto-correction if we have a whitelisted word, or if the word is not a valid
-        // word of more than 1 char, except if the first suggestion is the same as the typed string
-        // because in this case if it's strong enough to auto-correct that will mistakenly designate
-        // the second candidate for auto-correction.
-        // TODO: stop relying on indices to find where is the auto-correction in the suggested
-        // words, and correct this test.
-        final boolean allowsToBeAutoCorrected = (null != whitelistedWord
-                && !whitelistedWord.equals(typedWord))
-                || (consideredWord.length() > 1 && !mDictionaryFacilitator.isValidWord(
-                        consideredWord, isOnlyFirstCharCapitalized)
-                        && !typedWord.equals(firstSuggestion));
+        // We allow auto-correction if we have a whitelisted word, or if the word had more than
+        // one char and was not suggested.
+        final boolean allowsToBeAutoCorrected = (null != whitelistedWord)
+                || (consideredWord.length() > 1 && !didRemoveTypedWord);
 
         final boolean hasAutoCorrection;
         // TODO: using isCorrectionEnabled here is not very good. It's probably useless, because
