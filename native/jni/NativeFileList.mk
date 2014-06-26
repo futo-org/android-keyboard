@@ -26,7 +26,6 @@ LATIN_IME_CORE_SRC_FILES := \
         dic_node_utils.cpp \
         dic_nodes_cache.cpp) \
     $(addprefix suggest/core/dictionary/, \
-        bigram_dictionary.cpp \
         dictionary.cpp \
         dictionary_utils.cpp \
         digraph_utils.cpp \
