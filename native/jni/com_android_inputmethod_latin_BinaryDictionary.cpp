@@ -275,17 +275,16 @@ static jint latinime_BinaryDictionary_getMaxProbabilityOfExactMatches(
 }
 
 static jint latinime_BinaryDictionary_getNgramProbability(JNIEnv *env, jclass clazz,
-        jlong dict, jintArray word0, jboolean isBeginningOfSentence, jintArray word1) {
+        jlong dict, jobjectArray prevWordCodePointArrays, jbooleanArray isBeginningOfSentenceArray,
+        jintArray word) {
     Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
     if (!dictionary) return JNI_FALSE;
-    const jsize word0Length = env->GetArrayLength(word0);
-    const jsize word1Length = env->GetArrayLength(word1);
-    int word0CodePoints[word0Length];
-    int word1CodePoints[word1Length];
-    env->GetIntArrayRegion(word0, 0, word0Length, word0CodePoints);
-    env->GetIntArrayRegion(word1, 0, word1Length, word1CodePoints);
-    const PrevWordsInfo prevWordsInfo(word0CodePoints, word0Length, isBeginningOfSentence);
-    return dictionary->getNgramProbability(&prevWordsInfo, word1CodePoints, word1Length);
+    const jsize wordLength = env->GetArrayLength(word);
+    int wordCodePoints[wordLength];
+    env->GetIntArrayRegion(word, 0, wordLength, wordCodePoints);
+    const PrevWordsInfo prevWordsInfo = JniDataUtils::constructPrevWordsInfo(env,
+            prevWordCodePointArrays, isBeginningOfSentenceArray);
+    return dictionary->getNgramProbability(&prevWordsInfo, wordCodePoints, wordLength);
 }
 
 // Method to iterate all words in the dictionary for makedict.
