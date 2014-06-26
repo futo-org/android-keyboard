@@ -225,6 +225,13 @@ public class Event {
                 null /* suggestedWordInfo */, FLAG_NONE, null);
     }
 
+    // Returns whether this is a function key like backspace, ctrl, settings... as opposed to keys
+    // that result in input like letters or space.
+    public boolean isFunctionalKeyEvent() {
+        // This logic may need to be refined in the future
+        return NOT_A_CODE_POINT == mCodePoint;
+    }
+
     // Returns whether this event is for a dead character. @see {@link #FLAG_DEAD}
     public boolean isDead() {
         return 0 != (FLAG_DEAD & mFlags);

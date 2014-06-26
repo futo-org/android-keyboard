@@ -399,7 +399,7 @@ public final class InputLogic {
         }
 
         boolean didAutoCorrect = false;
-        if (Event.NOT_A_KEY_CODE != event.mKeyCode) {
+        if (event.isFunctionalKeyEvent()) {
             // A special key, like delete, shift, emoji, or the settings key.
             switch (event.mKeyCode) {
             case Constants.CODE_DELETE:
