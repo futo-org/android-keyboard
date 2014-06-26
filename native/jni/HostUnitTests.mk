@@ -44,7 +44,7 @@ LOCAL_C_INCLUDES += $(LOCAL_PATH)/$(LATIN_IME_SRC_DIR)
 LOCAL_MODULE := liblatinime_host_unittests
 LOCAL_MODULE_TAGS := tests
 LOCAL_SRC_FILES := $(addprefix $(LATIN_IME_TEST_SRC_DIR)/, $(LATIN_IME_CORE_TEST_FILES))
-LOCAL_STATIC_LIBRARIES += liblatinime_host_static_for_unittests libgtest_host libgtest_main_host
+LOCAL_STATIC_LIBRARIES += liblatinime_host_static_for_unittests
 include $(BUILD_HOST_NATIVE_TEST)
 
 endif # Darwin - TODO: Remove this
