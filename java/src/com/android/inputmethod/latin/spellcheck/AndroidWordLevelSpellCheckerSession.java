@@ -36,6 +36,7 @@ import com.android.inputmethod.latin.WordComposer;
 import com.android.inputmethod.latin.spellcheck.AndroidSpellCheckerService.SuggestionsGatherer;
 import com.android.inputmethod.latin.utils.CoordinateUtils;
 import com.android.inputmethod.latin.utils.LocaleUtils;
+import com.android.inputmethod.latin.utils.ScriptUtils;
 import com.android.inputmethod.latin.utils.StringUtils;
 
 import java.util.ArrayList;
@@ -116,51 +117,13 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
         final String localeString = getLocale();
         mDictionaryPool = mService.getDictionaryPool(localeString);
         mLocale = LocaleUtils.constructLocaleFromString(localeString);
-        mScript = AndroidSpellCheckerService.getScriptFromLocale(mLocale);
+        mScript = ScriptUtils.getScriptFromLocale(mLocale);
     }
 
     @Override
     public void onClose() {
         final ContentResolver cres = mService.getContentResolver();
         cres.unregisterContentObserver(mObserver);
-    }
-
-    /*
-     * Returns whether the code point is a letter that makes sense for the specified
-     * locale for this spell checker.
-     * The dictionaries supported by Latin IME are described in res/xml/spellchecker.xml
-     * and is limited to EFIGS languages and Russian.
-     * Hence at the moment this explicitly tests for Cyrillic characters or Latin characters
-     * as appropriate, and explicitly excludes CJK, Arabic and Hebrew characters.
-     */
-    private static boolean isLetterCheckableByLanguage(final int codePoint,
-            final int script) {
-        switch (script) {
-        case AndroidSpellCheckerService.SCRIPT_LATIN:
-            // Our supported latin script dictionaries (EFIGS) at the moment only include
-            // characters in the C0, C1, Latin Extended A and B, IPA extensions unicode
-            // blocks. As it happens, those are back-to-back in the code range 0x40 to 0x2AF,
-            // so the below is a very efficient way to test for it. As for the 0-0x3F, it's
-            // excluded from isLetter anyway.
-            return codePoint <= 0x2AF && Character.isLetter(codePoint);
-        case AndroidSpellCheckerService.SCRIPT_CYRILLIC:
-            // All Cyrillic characters are in the 400~52F block. There are some in the upper
-            // Unicode range, but they are archaic characters that are not used in modern
-            // Russian and are not used by our dictionary.
-            return codePoint >= 0x400 && codePoint <= 0x52F && Character.isLetter(codePoint);
-        case AndroidSpellCheckerService.SCRIPT_GREEK:
-            // Greek letters are either in the 370~3FF range (Greek & Coptic), or in the
-            // 1F00~1FFF range (Greek extended). Our dictionary contains both sort of characters.
-            // Our dictionary also contains a few words with 0xF2; it would be best to check
-            // if that's correct, but a web search does return results for these words so
-            // they are probably okay.
-            return (codePoint >= 0x370 && codePoint <= 0x3FF)
-                    || (codePoint >= 0x1F00 && codePoint <= 0x1FFF)
-                    || codePoint == 0xF2;
-        default:
-            // Should never come here
-            throw new RuntimeException("Impossible value of script: " + script);
-        }
     }
 
     private static final int CHECKABILITY_CHECKABLE = 0;
@@ -189,7 +152,7 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
         // Filter by first letter
         final int firstCodePoint = text.codePointAt(0);
         // Filter out words that don't start with a letter or an apostrophe
-        if (!isLetterCheckableByLanguage(firstCodePoint, script)
+        if (!ScriptUtils.isLetterCheckableByScript(firstCodePoint, script)
                 && '\'' != firstCodePoint) return CHECKABILITY_FIRST_LETTER_UNCHECKABLE;
 
         // Filter contents
@@ -210,7 +173,7 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
             if (Constants.CODE_PERIOD == codePoint) {
                 return CHECKABILITY_CONTAINS_PERIOD;
             }
-            if (isLetterCheckableByLanguage(codePoint, script)) ++letterCount;
+            if (ScriptUtils.isLetterCheckableByScript(codePoint, script)) ++letterCount;
         }
         // Guestimate heuristic: perform spell checking if at least 3/4 of the characters
         // in this word are letters
