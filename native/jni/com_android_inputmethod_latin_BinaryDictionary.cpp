@@ -283,7 +283,7 @@ static jint latinime_BinaryDictionary_getMaxProbabilityOfExactMatches(
     return dictionary->getMaxProbabilityOfExactMatches(codePoints, wordLength);
 }
 
-static jint latinime_BinaryDictionary_getBigramProbability(JNIEnv *env, jclass clazz,
+static jint latinime_BinaryDictionary_getNgramProbability(JNIEnv *env, jclass clazz,
         jlong dict, jintArray word0, jboolean isBeginningOfSentence, jintArray word1) {
     Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
     if (!dictionary) return JNI_FALSE;
@@ -294,7 +294,7 @@ static jint latinime_BinaryDictionary_getBigramProbability(JNIEnv *env, jclass c
     env->GetIntArrayRegion(word0, 0, word0Length, word0CodePoints);
     env->GetIntArrayRegion(word1, 0, word1Length, word1CodePoints);
     const PrevWordsInfo prevWordsInfo(word0CodePoints, word0Length, isBeginningOfSentence);
-    return dictionary->getBigramProbability(&prevWordsInfo, word1CodePoints, word1Length);
+    return dictionary->getNgramProbability(&prevWordsInfo, word1CodePoints, word1Length);
 }
 
 // Method to iterate all words in the dictionary for makedict.
@@ -355,7 +355,7 @@ static void latinime_BinaryDictionary_getWordProperty(JNIEnv *env, jclass clazz,
             outShortcutProbabilities);
 }
 
-static bool latinime_BinaryDictionary_addUnigramWord(JNIEnv *env, jclass clazz, jlong dict,
+static bool latinime_BinaryDictionary_addUnigramEntry(JNIEnv *env, jclass clazz, jlong dict,
         jintArray word, jint probability, jintArray shortcutTarget, jint shortcutProbability,
         jboolean isBeginningOfSentence, jboolean isNotAWord, jboolean isBlacklisted,
         jint timestamp) {
@@ -378,7 +378,7 @@ static bool latinime_BinaryDictionary_addUnigramWord(JNIEnv *env, jclass clazz, 
     return dictionary->addUnigramEntry(codePoints, codePointCount, &unigramProperty);
 }
 
-static bool latinime_BinaryDictionary_removeUnigramWord(JNIEnv *env, jclass clazz, jlong dict,
+static bool latinime_BinaryDictionary_removeUnigramEntry(JNIEnv *env, jclass clazz, jlong dict,
         jintArray word) {
     Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
     if (!dictionary) {
@@ -390,7 +390,7 @@ static bool latinime_BinaryDictionary_removeUnigramWord(JNIEnv *env, jclass claz
     return dictionary->removeUnigramEntry(codePoints, codePointCount);
 }
 
-static bool latinime_BinaryDictionary_addBigramWords(JNIEnv *env, jclass clazz, jlong dict,
+static bool latinime_BinaryDictionary_addNgramEntry(JNIEnv *env, jclass clazz, jlong dict,
         jintArray word0, jboolean isBeginningOfSentence, jintArray word1, jint probability,
         jint timestamp) {
     Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
@@ -412,7 +412,7 @@ static bool latinime_BinaryDictionary_addBigramWords(JNIEnv *env, jclass clazz, 
     return dictionary->addNgramEntry(&prevWordsInfo, &bigramProperty);
 }
 
-static bool latinime_BinaryDictionary_removeBigramWords(JNIEnv *env, jclass clazz, jlong dict,
+static bool latinime_BinaryDictionary_removeNgramEntry(JNIEnv *env, jclass clazz, jlong dict,
         jintArray word0, jboolean isBeginningOfSentence, jintArray word1) {
     Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
     if (!dictionary) {
@@ -686,9 +686,9 @@ static const JNINativeMethod sMethods[] = {
         reinterpret_cast<void *>(latinime_BinaryDictionary_getMaxProbabilityOfExactMatches)
     },
     {
-        const_cast<char *>("getBigramProbabilityNative"),
+        const_cast<char *>("getNgramProbabilityNative"),
         const_cast<char *>("(J[IZ[I)I"),
-        reinterpret_cast<void *>(latinime_BinaryDictionary_getBigramProbability)
+        reinterpret_cast<void *>(latinime_BinaryDictionary_getNgramProbability)
     },
     {
         const_cast<char *>("getWordPropertyNative"),
@@ -702,24 +702,24 @@ static const JNINativeMethod sMethods[] = {
         reinterpret_cast<void *>(latinime_BinaryDictionary_getNextWord)
     },
     {
-        const_cast<char *>("addUnigramWordNative"),
+        const_cast<char *>("addUnigramEntryNative"),
         const_cast<char *>("(J[II[IIZZZI)Z"),
-        reinterpret_cast<void *>(latinime_BinaryDictionary_addUnigramWord)
+        reinterpret_cast<void *>(latinime_BinaryDictionary_addUnigramEntry)
     },
     {
-        const_cast<char *>("removeUnigramWordNative"),
+        const_cast<char *>("removeUnigramEntryNative"),
         const_cast<char *>("(J[I)Z"),
-        reinterpret_cast<void *>(latinime_BinaryDictionary_removeUnigramWord)
+        reinterpret_cast<void *>(latinime_BinaryDictionary_removeUnigramEntry)
     },
     {
-        const_cast<char *>("addBigramWordsNative"),
+        const_cast<char *>("addNgramEntryNative"),
         const_cast<char *>("(J[IZ[III)Z"),
-        reinterpret_cast<void *>(latinime_BinaryDictionary_addBigramWords)
+        reinterpret_cast<void *>(latinime_BinaryDictionary_addNgramEntry)
     },
     {
-        const_cast<char *>("removeBigramWordsNative"),
+        const_cast<char *>("removeNgramEntryNative"),
         const_cast<char *>("(J[IZ[I)Z"),
-        reinterpret_cast<void *>(latinime_BinaryDictionary_removeBigramWords)
+        reinterpret_cast<void *>(latinime_BinaryDictionary_removeNgramEntry)
     },
     {
         const_cast<char *>("addMultipleDictionaryEntriesNative"),

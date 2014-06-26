@@ -75,7 +75,7 @@ class Dictionary {
 
     int getMaxProbabilityOfExactMatches(const int *word, int length) const;
 
-    int getBigramProbability(const PrevWordsInfo *const prevWordsInfo,
+    int getNgramProbability(const PrevWordsInfo *const prevWordsInfo,
             const int *word, int length) const;
 
     bool addUnigramEntry(const int *const codePoints, const int codePointCount,
