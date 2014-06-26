@@ -128,7 +128,7 @@ public final class Suggest {
 
         final String whitelistedWord;
         if (suggestionsContainer.isEmpty()) {
-            whitelistedWord = firstSuggestion = null;
+            whitelistedWord = null;
         } else {
             final SuggestedWordInfo firstSuggestedWordInfo = suggestionsContainer.get(0);
             final String firstSuggestion = firstSuggestedWordInfo.mWord;
