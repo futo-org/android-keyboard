@@ -166,6 +166,10 @@ public final class Constants {
     // Must be equal to MAX_WORD_LENGTH in native/jni/src/defines.h
     public static final int DICTIONARY_MAX_WORD_LENGTH = 48;
 
+    // (MAX_PREV_WORD_COUNT_FOR_N_GRAM + 1)-gram is supported in Java side. Needs to modify
+    // MAX_PREV_WORD_COUNT_FOR_N_GRAM in native/jni/src/defines.h for suggestions.
+    public static final int MAX_PREV_WORD_COUNT_FOR_N_GRAM = 2;
+
     // Key events coming any faster than this are long-presses.
     public static final int LONG_PRESS_MILLISECONDS = 200;
     // TODO: Set this value appropriately.

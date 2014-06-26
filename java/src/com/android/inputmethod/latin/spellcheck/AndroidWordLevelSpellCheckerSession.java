@@ -72,10 +72,10 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
 
         // TODO: Support n-gram input
         private static String generateKey(final String query, final PrevWordsInfo prevWordsInfo) {
-            if (TextUtils.isEmpty(query) || TextUtils.isEmpty(prevWordsInfo.mPrevWord)) {
+            if (TextUtils.isEmpty(query) || !prevWordsInfo.isValid()) {
                 return query;
             }
-            return query + CHAR_DELIMITER + prevWordsInfo.mPrevWord;
+            return query + CHAR_DELIMITER + prevWordsInfo;
         }
 
         public SuggestionsParams getSuggestionsFromCache(String query,

@@ -262,9 +262,8 @@ public final class BinaryDictionary extends Dictionary {
         }
         final DicTraverseSession session = getTraverseSession(sessionId);
         Arrays.fill(session.mInputCodePoints, Constants.NOT_A_CODE);
-        // TODO: toLowerCase in the native code
-        final int[] prevWordCodePointArray = (null == prevWordsInfo.mPrevWord)
-                ? null : StringUtils.toCodePointArray(prevWordsInfo.mPrevWord);
+        prevWordsInfo.outputToArray(session.mPrevWordCodePointArrays,
+                session.mIsBeginningOfSentenceArray);
         final InputPointers inputPointers = composer.getInputPointers();
         final boolean isGesture = composer.isBatchMode();
         final int inputSize;
@@ -286,13 +285,13 @@ public final class BinaryDictionary extends Dictionary {
         } else {
             session.mInputOutputLanguageWeight[0] = Dictionary.NOT_A_LANGUAGE_WEIGHT;
         }
-        // proximityInfo and/or prevWordForBigrams may not be null.
+        // TOOD: Pass multiple previous words information for n-gram.
         getSuggestionsNative(mNativeDict, proximityInfo.getNativeProximityInfo(),
                 getTraverseSession(sessionId).getSession(), inputPointers.getXCoordinates(),
                 inputPointers.getYCoordinates(), inputPointers.getTimes(),
                 inputPointers.getPointerIds(), session.mInputCodePoints, inputSize,
-                session.mNativeSuggestOptions.getOptions(), prevWordCodePointArray,
-                prevWordsInfo.mIsBeginningOfSentence, session.mOutputSuggestionCount,
+                session.mNativeSuggestOptions.getOptions(), session.mPrevWordCodePointArrays[0],
+                session.mIsBeginningOfSentenceArray[0], session.mOutputSuggestionCount,
                 session.mOutputCodePoints, session.mOutputScores, session.mSpaceIndices,
                 session.mOutputTypes, session.mOutputAutoCommitFirstWordConfidence,
                 session.mInputOutputLanguageWeight);
@@ -355,10 +354,13 @@ public final class BinaryDictionary extends Dictionary {
         if (!prevWordsInfo.isValid() || TextUtils.isEmpty(word)) {
             return NOT_A_PROBABILITY;
         }
-        final int[] codePoints0 = StringUtils.toCodePointArray(prevWordsInfo.mPrevWord);
-        final int[] codePoints1 = StringUtils.toCodePointArray(word);
-        return getBigramProbabilityNative(mNativeDict, codePoints0,
-                prevWordsInfo.mIsBeginningOfSentence, codePoints1);
+        final int[][] prevWordCodePointArrays = new int[Constants.MAX_PREV_WORD_COUNT_FOR_N_GRAM][];
+        final boolean[] isBeginningOfSentenceArray =
+                new boolean[Constants.MAX_PREV_WORD_COUNT_FOR_N_GRAM];
+        prevWordsInfo.outputToArray(prevWordCodePointArrays, isBeginningOfSentenceArray);
+        final int[] wordCodePoints = StringUtils.toCodePointArray(word);
+        return getBigramProbabilityNative(mNativeDict, prevWordCodePointArrays[0],
+                isBeginningOfSentenceArray[0], wordCodePoints);
     }
 
     public WordProperty getWordProperty(final String word, final boolean isBeginningOfSentence) {
@@ -449,10 +451,13 @@ public final class BinaryDictionary extends Dictionary {
         if (!prevWordsInfo.isValid() || TextUtils.isEmpty(word)) {
             return false;
         }
-        final int[] codePoints0 = StringUtils.toCodePointArray(prevWordsInfo.mPrevWord);
-        final int[] codePoints1 = StringUtils.toCodePointArray(word);
-        if (!addBigramWordsNative(mNativeDict, codePoints0, prevWordsInfo.mIsBeginningOfSentence,
-                codePoints1, probability, timestamp)) {
+        final int[][] prevWordCodePointArrays = new int[Constants.MAX_PREV_WORD_COUNT_FOR_N_GRAM][];
+        final boolean[] isBeginningOfSentenceArray =
+                new boolean[Constants.MAX_PREV_WORD_COUNT_FOR_N_GRAM];
+        prevWordsInfo.outputToArray(prevWordCodePointArrays, isBeginningOfSentenceArray);
+        final int[] wordCodePoints = StringUtils.toCodePointArray(word);
+        if (!addBigramWordsNative(mNativeDict, prevWordCodePointArrays[0],
+                isBeginningOfSentenceArray[0], wordCodePoints, probability, timestamp)) {
             return false;
         }
         mHasUpdated = true;
@@ -464,10 +469,13 @@ public final class BinaryDictionary extends Dictionary {
         if (!prevWordsInfo.isValid() || TextUtils.isEmpty(word)) {
             return false;
         }
-        final int[] codePoints0 = StringUtils.toCodePointArray(prevWordsInfo.mPrevWord);
-        final int[] codePoints1 = StringUtils.toCodePointArray(word);
-        if (!removeBigramWordsNative(mNativeDict, codePoints0, prevWordsInfo.mIsBeginningOfSentence,
-                codePoints1)) {
+        final int[][] prevWordCodePointArrays = new int[Constants.MAX_PREV_WORD_COUNT_FOR_N_GRAM][];
+        final boolean[] isBeginningOfSentenceArray =
+                new boolean[Constants.MAX_PREV_WORD_COUNT_FOR_N_GRAM];
+        prevWordsInfo.outputToArray(prevWordCodePointArrays, isBeginningOfSentenceArray);
+        final int[] wordCodePoints = StringUtils.toCodePointArray(word);
+        if (!removeBigramWordsNative(mNativeDict, prevWordCodePointArrays[0],
+                isBeginningOfSentenceArray[0], wordCodePoints)) {
             return false;
         }
         mHasUpdated = true;

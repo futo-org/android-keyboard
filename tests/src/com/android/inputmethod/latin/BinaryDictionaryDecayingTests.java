@@ -20,6 +20,7 @@ import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.LargeTest;
 import android.util.Pair;
 
+import com.android.inputmethod.latin.PrevWordsInfo.WordInfo;
 import com.android.inputmethod.latin.makedict.BinaryDictIOUtils;
 import com.android.inputmethod.latin.makedict.CodePointUtils;
 import com.android.inputmethod.latin.makedict.DictDecoder;
@@ -77,13 +78,13 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
 
     private void addBigramWords(final BinaryDictionary binaryDictionary, final String word0,
             final String word1, final int probability) {
-        binaryDictionary.addNgramEntry(new PrevWordsInfo(word0), word1, probability,
+        binaryDictionary.addNgramEntry(new PrevWordsInfo(new WordInfo(word0)), word1, probability,
                 mCurrentTime /* timestamp */);
     }
 
     private static boolean isValidBigram(final BinaryDictionary binaryDictionary,
             final String word0, final String word1) {
-        return binaryDictionary.isValidNgram(new PrevWordsInfo(word0), word1);
+        return binaryDictionary.isValidNgram(new PrevWordsInfo(new WordInfo(word0)), word1);
     }
 
     private void forcePassingShortTime(final BinaryDictionary binaryDictionary) {

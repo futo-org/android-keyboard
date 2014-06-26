@@ -104,7 +104,8 @@ public class Ver4DictEncoder implements DictEncoder {
         for (final WordProperty word0Property : dict) {
             if (null == word0Property.mBigrams) continue;
             for (final WeightedString word1 : word0Property.mBigrams) {
-                final PrevWordsInfo prevWordsInfo = new PrevWordsInfo(word0Property.mWord);
+                final PrevWordsInfo prevWordsInfo =
+                        new PrevWordsInfo(new PrevWordsInfo.WordInfo(word0Property.mWord));
                 if (!binaryDict.addNgramEntry(prevWordsInfo, word1.mWord,
                         word1.getProbability(), 0 /* timestamp */)) {
                     MakedictLog.e("Cannot add n-gram entry for "

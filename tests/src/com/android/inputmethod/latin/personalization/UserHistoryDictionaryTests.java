@@ -22,6 +22,7 @@ import android.util.Log;
 
 import com.android.inputmethod.latin.ExpandableBinaryDictionary;
 import com.android.inputmethod.latin.PrevWordsInfo;
+import com.android.inputmethod.latin.PrevWordsInfo.WordInfo;
 import com.android.inputmethod.latin.utils.BinaryDictionaryUtils;
 import com.android.inputmethod.latin.utils.DistracterFilter;
 import com.android.inputmethod.latin.utils.FileUtils;
@@ -115,7 +116,7 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
             UserHistoryDictionary.addToDictionary(dict, prevWordsInfo, word, true,
                     (int)TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()),
                     DistracterFilter.EMPTY_DISTRACTER_FILTER);
-            prevWordsInfo = new PrevWordsInfo(word);
+            prevWordsInfo = prevWordsInfo.getNextPrevWordsInfo(new WordInfo(word));
         }
     }
 
@@ -262,11 +263,11 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
         final UserHistoryDictionary dict =
                 PersonalizationHelper.getUserHistoryDictionary(getContext(), dummyLocale);
         dict.waitAllTasksForTests();
-        PrevWordsInfo prevWordsInfo = new PrevWordsInfo(null);
+        PrevWordsInfo prevWordsInfo = PrevWordsInfo.EMPTY_PREV_WORDS_INFO;
         for (final String word : words) {
             UserHistoryDictionary.addToDictionary(dict, prevWordsInfo, word, true, mCurrentTime,
                     DistracterFilter.EMPTY_DISTRACTER_FILTER);
-            prevWordsInfo = new PrevWordsInfo(word);
+            prevWordsInfo = prevWordsInfo.getNextPrevWordsInfo(new WordInfo(word));
             dict.waitAllTasksForTests();
             assertTrue(dict.isInDictionary(word));
         }

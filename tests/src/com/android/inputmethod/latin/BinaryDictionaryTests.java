@@ -21,6 +21,7 @@ import android.test.suitebuilder.annotation.LargeTest;
 import android.text.TextUtils;
 import android.util.Pair;
 
+import com.android.inputmethod.latin.PrevWordsInfo.WordInfo;
 import com.android.inputmethod.latin.makedict.CodePointUtils;
 import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.makedict.WeightedString;
@@ -203,23 +204,23 @@ public class BinaryDictionaryTests extends AndroidTestCase {
 
     private static void addBigramWords(final BinaryDictionary binaryDictionary, final String word0,
             final String word1, final int probability) {
-        binaryDictionary.addNgramEntry(new PrevWordsInfo(word0), word1, probability,
+        binaryDictionary.addNgramEntry(new PrevWordsInfo(new WordInfo(word0)), word1, probability,
                 BinaryDictionary.NOT_A_VALID_TIMESTAMP /* timestamp */);
     }
 
     private static boolean isValidBigram(final BinaryDictionary binaryDictionary,
             final String word0, final String word1) {
-        return binaryDictionary.isValidNgram(new PrevWordsInfo(word0), word1);
+        return binaryDictionary.isValidNgram(new PrevWordsInfo(new WordInfo(word0)), word1);
     }
 
     private static void removeBigramEntry(final BinaryDictionary binaryDictionary,
             final String word0, final String word1) {
-        binaryDictionary.removeNgramEntry(new PrevWordsInfo(word0), word1);
+        binaryDictionary.removeNgramEntry(new PrevWordsInfo(new WordInfo(word0)), word1);
     }
 
     private static int getBigramProbability(final BinaryDictionary binaryDictionary,
             final String word0,  final String word1) {
-        return binaryDictionary.getNgramProbability(new PrevWordsInfo(word0), word1);
+        return binaryDictionary.getNgramProbability(new PrevWordsInfo(new WordInfo(word0)), word1);
     }
 
     public void testAddUnigramWord() {

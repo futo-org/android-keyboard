@@ -603,7 +603,7 @@ public final class RichInputConnection {
                 || spacingAndPunctuations.isWordConnector(lastChar)) {
             return PrevWordsInfo.EMPTY_PREV_WORDS_INFO;
         }
-        return new PrevWordsInfo(nthPrevWord);
+        return new PrevWordsInfo(new PrevWordsInfo.WordInfo(nthPrevWord));
     }
 
     /**
