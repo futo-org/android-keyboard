@@ -23,9 +23,12 @@ import java.util.TreeMap;
  * A class to help with handling different writing scripts.
  */
 public class ScriptUtils {
+    // TODO: should we use ISO 15924 identifiers instead?
     public static final int SCRIPT_LATIN = 0;
     public static final int SCRIPT_CYRILLIC = 1;
     public static final int SCRIPT_GREEK = 2;
+    public static final int SCRIPT_ARABIC = 3;
+    public static final int SCRIPT_HEBREW = 4;
     public static final TreeMap<String, Integer> mLanguageToScript;
     static {
         // List of the supported languages and their associated script. We won't check
