@@ -25,7 +25,6 @@
 namespace latinime {
 
 // TODO: Support n-gram.
-// This class does not take ownership of any code point buffers.
 class PrevWordsInfo {
  public:
     // No prev word information.
@@ -33,21 +32,52 @@ class PrevWordsInfo {
         clear();
     }
 
+    PrevWordsInfo(PrevWordsInfo &&prevWordsInfo) {
+        for (size_t i = 0; i < NELEMS(mPrevWordCodePoints); ++i) {
+            mPrevWordCodePointCount[i] = prevWordsInfo.mPrevWordCodePointCount[i];
+            memmove(mPrevWordCodePoints[i], prevWordsInfo.mPrevWordCodePoints[i],
+                    sizeof(mPrevWordCodePoints[i][0]) * mPrevWordCodePointCount[i]);
+            mIsBeginningOfSentence[i] = prevWordsInfo.mIsBeginningOfSentence[i];
+        }
+    }
+
+    // Construct from previous words.
+    PrevWordsInfo(const int prevWordCodePoints[][MAX_WORD_LENGTH],
+            const int *const prevWordCodePointCount, const bool *const isBeginningOfSentence,
+            const size_t prevWordCount) {
+        clear();
+        for (size_t i = 0; i < std::min(NELEMS(mPrevWordCodePoints), prevWordCount); ++i) {
+            if (prevWordCodePointCount[i] < 0 || prevWordCodePointCount[i] > MAX_WORD_LENGTH) {
+                continue;
+            }
+            memmove(mPrevWordCodePoints[i], prevWordCodePoints[i],
+                    sizeof(mPrevWordCodePoints[i][0]) * prevWordCodePointCount[i]);
+            mPrevWordCodePointCount[i] = prevWordCodePointCount[i];
+            mIsBeginningOfSentence[i] = isBeginningOfSentence[i];
+        }
+    }
+
+    // Construct from a previous word.
     PrevWordsInfo(const int *const prevWordCodePoints, const int prevWordCodePointCount,
             const bool isBeginningOfSentence) {
         clear();
-        mPrevWordCodePoints[0] = prevWordCodePoints;
+        if (prevWordCodePointCount > MAX_WORD_LENGTH || !prevWordCodePoints) {
+            return;
+        }
+        memmove(mPrevWordCodePoints[0], prevWordCodePoints,
+                sizeof(mPrevWordCodePoints[0][0]) * prevWordCodePointCount);
         mPrevWordCodePointCount[0] = prevWordCodePointCount;
         mIsBeginningOfSentence[0] = isBeginningOfSentence;
     }
 
     bool isValid() const {
-        for (size_t i = 0; i < NELEMS(mPrevWordCodePoints); ++i) {
-            if (mPrevWordCodePointCount[i] > MAX_WORD_LENGTH) {
-                return false;
-            }
+        if (mPrevWordCodePointCount[0] > 0) {
+            return true;
         }
-        return true;
+        if (mIsBeginningOfSentence[0]) {
+            return true;
+        }
+        return false;
     }
 
     void getPrevWordsTerminalPtNodePos(
@@ -168,13 +198,12 @@ class PrevWordsInfo {
 
     void clear() {
         for (size_t i = 0; i < NELEMS(mPrevWordCodePoints); ++i) {
-            mPrevWordCodePoints[i] = nullptr;
             mPrevWordCodePointCount[i] = 0;
             mIsBeginningOfSentence[i] = false;
         }
     }
 
-    const int *mPrevWordCodePoints[MAX_PREV_WORD_COUNT_FOR_N_GRAM];
+    int mPrevWordCodePoints[MAX_PREV_WORD_COUNT_FOR_N_GRAM][MAX_WORD_LENGTH];
     int mPrevWordCodePointCount[MAX_PREV_WORD_COUNT_FOR_N_GRAM];
     bool mIsBeginningOfSentence[MAX_PREV_WORD_COUNT_FOR_N_GRAM];
 };
