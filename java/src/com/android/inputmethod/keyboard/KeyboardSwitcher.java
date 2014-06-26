@@ -370,4 +370,8 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
             return WordComposer.CAPS_MODE_OFF;
         }
     }
+
+    public int getCurrentKeyboardScriptId() {
+        return mKeyboardLayoutSet.getScriptId();
+    }
 }

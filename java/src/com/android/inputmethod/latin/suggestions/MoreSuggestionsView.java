@@ -37,7 +37,7 @@ public final class MoreSuggestionsView extends MoreKeysKeyboardView {
     private static final String TAG = MoreSuggestionsView.class.getSimpleName();
 
     public static abstract class MoreSuggestionsListener extends KeyboardActionListener.Adapter {
-        public abstract void onSuggestionSelected(final int index, final SuggestedWordInfo info);
+        public abstract void onSuggestionSelected(final SuggestedWordInfo info);
     }
 
     public MoreSuggestionsView(final Context context, final AttributeSet attrs) {
@@ -104,7 +104,6 @@ public final class MoreSuggestionsView extends MoreKeysKeyboardView {
                     + mListener.getClass().getName());
             return;
         }
-        ((MoreSuggestionsListener)mListener).onSuggestionSelected(
-                index, suggestedWords.getInfo(index));
+        ((MoreSuggestionsListener)mListener).onSuggestionSelected(suggestedWords.getInfo(index));
     }
 }
