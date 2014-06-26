@@ -37,6 +37,7 @@ import com.android.inputmethod.latin.utils.AdditionalSubtypeUtils;
 import com.android.inputmethod.latin.utils.BinaryDictionaryUtils;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.LocaleUtils;
+import com.android.inputmethod.latin.utils.ScriptUtils;
 import com.android.inputmethod.latin.utils.StringUtils;
 
 import java.lang.ref.WeakReference;
@@ -78,40 +79,8 @@ public final class AndroidSpellCheckerService extends SpellCheckerService
     private final HashSet<WeakReference<DictionaryCollection>> mDictionaryCollectionsList =
             new HashSet<>();
 
-    public static final int SCRIPT_LATIN = 0;
-    public static final int SCRIPT_CYRILLIC = 1;
-    public static final int SCRIPT_GREEK = 2;
     public static final String SINGLE_QUOTE = "\u0027";
     public static final String APOSTROPHE = "\u2019";
-    private static final TreeMap<String, Integer> mLanguageToScript;
-    static {
-        // List of the supported languages and their associated script. We won't check
-        // words written in another script than the selected script, because we know we
-        // don't have those in our dictionary so we will underline everything and we
-        // will never have any suggestions, so it makes no sense checking them, and this
-        // is done in {@link #shouldFilterOut}. Also, the script is used to choose which
-        // proximity to pass to the dictionary descent algorithm.
-        // IMPORTANT: this only contains languages - do not write countries in there.
-        // Only the language is searched from the map.
-        mLanguageToScript = new TreeMap<>();
-        mLanguageToScript.put("cs", SCRIPT_LATIN);
-        mLanguageToScript.put("da", SCRIPT_LATIN);
-        mLanguageToScript.put("de", SCRIPT_LATIN);
-        mLanguageToScript.put("el", SCRIPT_GREEK);
-        mLanguageToScript.put("en", SCRIPT_LATIN);
-        mLanguageToScript.put("es", SCRIPT_LATIN);
-        mLanguageToScript.put("fi", SCRIPT_LATIN);
-        mLanguageToScript.put("fr", SCRIPT_LATIN);
-        mLanguageToScript.put("hr", SCRIPT_LATIN);
-        mLanguageToScript.put("it", SCRIPT_LATIN);
-        mLanguageToScript.put("lt", SCRIPT_LATIN);
-        mLanguageToScript.put("lv", SCRIPT_LATIN);
-        mLanguageToScript.put("nb", SCRIPT_LATIN);
-        mLanguageToScript.put("nl", SCRIPT_LATIN);
-        mLanguageToScript.put("pt", SCRIPT_LATIN);
-        mLanguageToScript.put("sl", SCRIPT_LATIN);
-        mLanguageToScript.put("ru", SCRIPT_CYRILLIC);
-    }
 
     @Override public void onCreate() {
         super.onCreate();
@@ -122,22 +91,13 @@ public final class AndroidSpellCheckerService extends SpellCheckerService
         onSharedPreferenceChanged(prefs, PREF_USE_CONTACTS_KEY);
     }
 
-    public static int getScriptFromLocale(final Locale locale) {
-        final Integer script = mLanguageToScript.get(locale.getLanguage());
-        if (null == script) {
-            throw new RuntimeException("We have been called with an unsupported language: \""
-                    + locale.getLanguage() + "\". Framework bug?");
-        }
-        return script;
-    }
-
     private static String getKeyboardLayoutNameForScript(final int script) {
         switch (script) {
-        case AndroidSpellCheckerService.SCRIPT_LATIN:
+        case ScriptUtils.SCRIPT_LATIN:
             return "qwerty";
-        case AndroidSpellCheckerService.SCRIPT_CYRILLIC:
+        case ScriptUtils.SCRIPT_CYRILLIC:
             return "east_slavic";
-        case AndroidSpellCheckerService.SCRIPT_GREEK:
+        case ScriptUtils.SCRIPT_GREEK:
             return "greek";
         default:
             throw new RuntimeException("Wrong script supplied: " + script);
@@ -413,7 +373,7 @@ public final class AndroidSpellCheckerService extends SpellCheckerService
     }
 
     public DictAndKeyboard createDictAndKeyboard(final Locale locale) {
-        final int script = getScriptFromLocale(locale);
+        final int script = ScriptUtils.getScriptFromLocale(locale);
         final String keyboardLayoutName = getKeyboardLayoutNameForScript(script);
         final InputMethodSubtype subtype = AdditionalSubtypeUtils.createAdditionalSubtype(
                 locale.toString(), keyboardLayoutName, null);
