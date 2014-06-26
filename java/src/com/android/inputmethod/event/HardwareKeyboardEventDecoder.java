@@ -74,7 +74,7 @@ public class HardwareKeyboardEventDecoder implements HardwareEventDecoder {
             }
             // If not Enter, then this is just a regular keypress event for a normal character
             // that can be committed right away, taking into account the current state.
-            return Event.createHardwareKeypressEvent(keyCode, codePointAndFlags, null /* next */,
+            return Event.createHardwareKeypressEvent(codePointAndFlags, keyCode, null /* next */,
                     isKeyRepeat);
         }
         return Event.createNotHandledEvent();
