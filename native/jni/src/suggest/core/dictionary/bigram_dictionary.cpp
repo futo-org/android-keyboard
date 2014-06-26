@@ -57,6 +57,10 @@ void BigramDictionary::getPredictions(const PrevWordsInfo *const prevWordsInfo,
         if (bigramsIt.getBigramPos() == NOT_A_DICT_POS) {
             continue;
         }
+        if (prevWordsInfo->isNthPrevWordBeginningOfSentence(1 /* n */)
+                && bigramsIt.getProbability() == NOT_A_PROBABILITY) {
+            continue;
+        }
         const int codePointCount = mDictionaryStructurePolicy->
                 getCodePointsAndProbabilityAndReturnCodePointCount(bigramsIt.getBigramPos(),
                         MAX_WORD_LENGTH, bigramCodePoints, &unigramProbability);

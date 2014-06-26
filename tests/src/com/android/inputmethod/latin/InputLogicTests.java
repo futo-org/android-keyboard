@@ -517,15 +517,21 @@ public class InputLogicTests extends InputTestsBase {
                 suggestedWords.size() > 0 ? suggestedWords.getWord(0) : null);
     }
 
-    public void testNoPredictionsAfterPeriod() {
+    public void testPredictionsAfterPeriod() {
         mLatinIME.clearPersonalizedDictionariesForTest();
         final String WORD_TO_TYPE = "Barack. ";
         type(WORD_TO_TYPE);
         sleep(DELAY_TO_WAIT_FOR_PREDICTIONS);
         runMessages();
-        // Test the first prediction is not displayed
-        final SuggestedWords suggestedWords = mLatinIME.getSuggestedWordsForTest();
-        assertEquals("no prediction after period", 0, suggestedWords.size());
+        SuggestedWords suggestedWords = mLatinIME.getSuggestedWordsForTest();
+        assertEquals("No prediction after period after inputting once.", 0, suggestedWords.size());
+
+        type(WORD_TO_TYPE);
+        sleep(DELAY_TO_WAIT_FOR_PREDICTIONS);
+        runMessages();
+        suggestedWords = mLatinIME.getSuggestedWordsForTest();
+        assertEquals("Beginning-of-Sentence prediction after inputting 2 times.", "Barack",
+                suggestedWords.size() > 0 ? suggestedWords.getWord(0) : null);
     }
 
     public void testPredictionsAfterRecorrection() {
