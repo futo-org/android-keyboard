@@ -21,6 +21,7 @@
 
 #include "defines.h"
 #include "jni.h"
+#include "suggest/core/session/prev_words_info.h"
 #include "suggest/core/policy/dictionary_header_structure_policy.h"
 #include "suggest/policyimpl/dictionary/header/header_read_write_utils.h"
 #include "utils/char_utils.h"
@@ -93,6 +94,37 @@ class JniDataUtils {
             env->SetIntArrayRegion(intArrayToOutputCodePoints, start + outputCodePointCount,
                     1 /* len */, &CODE_POINT_NULL);
         }
+    }
+
+    static PrevWordsInfo constructPrevWordsInfo(JNIEnv *env, jobjectArray prevWordCodePointArrays,
+            jbooleanArray isBeginningOfSentenceArray) {
+        int prevWordCodePoints[MAX_PREV_WORD_COUNT_FOR_N_GRAM][MAX_WORD_LENGTH];
+        int prevWordCodePointCount[MAX_PREV_WORD_COUNT_FOR_N_GRAM];
+        bool isBeginningOfSentence[MAX_PREV_WORD_COUNT_FOR_N_GRAM];
+        jsize prevWordsCount = env->GetArrayLength(prevWordCodePointArrays);
+        for (size_t i = 0; i < NELEMS(prevWordCodePoints); ++i) {
+            prevWordCodePointCount[i] = 0;
+            isBeginningOfSentence[i] = false;
+            if (prevWordsCount <= static_cast<int>(i)) {
+                continue;
+            }
+            jintArray prevWord = (jintArray)env->GetObjectArrayElement(prevWordCodePointArrays, i);
+            if (!prevWord) {
+                continue;
+            }
+            jsize prevWordLength = env->GetArrayLength(prevWord);
+            if (prevWordLength > MAX_WORD_LENGTH) {
+                continue;
+            }
+            env->GetIntArrayRegion(prevWord, 0, prevWordLength, prevWordCodePoints[i]);
+            prevWordCodePointCount[i] = prevWordLength;
+            jboolean isBeginningOfSentenceBoolean = JNI_FALSE;
+            env->GetBooleanArrayRegion(isBeginningOfSentenceArray, i, 1 /* len */,
+                    &isBeginningOfSentenceBoolean);
+            isBeginningOfSentence[i] = isBeginningOfSentenceBoolean == JNI_TRUE;
+        }
+        return PrevWordsInfo(prevWordCodePoints, prevWordCodePointCount, isBeginningOfSentence,
+                MAX_PREV_WORD_COUNT_FOR_N_GRAM);
     }
 
     static void putBooleanToArray(JNIEnv *env, jbooleanArray array, const int index,
