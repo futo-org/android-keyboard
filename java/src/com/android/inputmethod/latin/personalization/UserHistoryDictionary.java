@@ -75,7 +75,13 @@ public class UserHistoryDictionary extends DecayingExpandableBinaryDictionaryBas
             return;
         }
         if (null != prevWord) {
-            userHistoryDictionary.addNgramEntry(prevWordsInfo, word, frequency, timestamp);
+            if (prevWordsInfo.mIsBeginningOfSentence) {
+                // Beginning-of-Sentence n-gram entry is treated as a n-gram entry of invalid word.
+                userHistoryDictionary.addNgramEntry(prevWordsInfo, word,
+                        FREQUENCY_FOR_WORDS_NOT_IN_DICTS, timestamp);
+            } else {
+                userHistoryDictionary.addNgramEntry(prevWordsInfo, word, frequency, timestamp);
+            }
         }
     }
 }
