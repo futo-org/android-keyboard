@@ -23,6 +23,7 @@ import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.ProximityInfo;
+import com.android.inputmethod.latin.PrevWordsInfo.WordInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.personalization.ContextualDictionary;
 import com.android.inputmethod.latin.personalization.PersonalizationDataChunk;
@@ -407,13 +408,14 @@ public class DictionaryFacilitator {
             final boolean blockPotentiallyOffensive) {
         final Dictionaries dictionaries = mDictionaries;
         final String[] words = suggestion.split(Constants.WORD_SEPARATOR);
+        PrevWordsInfo prevWordsInfoForCurrentWord = prevWordsInfo;
         for (int i = 0; i < words.length; i++) {
             final String currentWord = words[i];
-            final PrevWordsInfo prevWordsInfoForCurrentWord =
-                    (i == 0) ? prevWordsInfo : new PrevWordsInfo(words[i - 1]);
             final boolean wasCurrentWordAutoCapitalized = (i == 0) ? wasAutoCapitalized : false;
             addWordToUserHistory(dictionaries, prevWordsInfoForCurrentWord, currentWord,
                     wasCurrentWordAutoCapitalized, timeStampInSeconds, blockPotentiallyOffensive);
+            prevWordsInfoForCurrentWord =
+                    prevWordsInfoForCurrentWord.getNextPrevWordsInfo(new WordInfo(currentWord));
         }
     }
 
@@ -639,7 +641,8 @@ public class DictionaryFacilitator {
                 contextualDict.addNgramEntry(prevWordsInfo, phrase[i],
                         bigramProbabilityForWords, BinaryDictionary.NOT_A_VALID_TIMESTAMP);
             }
-            prevWordsInfo = new PrevWordsInfo(phrase[i]);
+            prevWordsInfo =
+                    prevWordsInfo.getNextPrevWordsInfo(new PrevWordsInfo.WordInfo(phrase[i]));
         }
     }
 

@@ -117,7 +117,8 @@ public final class LanguageModelParam {
                 continue;
             }
             languageModelParams.add(languageModelParam);
-            prevWordsInfo = new PrevWordsInfo(languageModelParam.mTargetWord);
+            prevWordsInfo = prevWordsInfo.getNextPrevWordsInfo(
+                    new PrevWordsInfo.WordInfo(tempWord));
         }
         return languageModelParams;
     }
@@ -153,7 +154,7 @@ public final class LanguageModelParam {
             final DistracterFilter distracterFilter) {
         final String word;
         if (StringUtils.getCapitalizationType(targetWord) == StringUtils.CAPITALIZE_FIRST
-                && prevWordsInfo.mPrevWord == null && !isValidWord) {
+                && !prevWordsInfo.isValid() && !isValidWord) {
             word = targetWord.toLowerCase(locale);
         } else {
             word = targetWord;
@@ -167,7 +168,7 @@ public final class LanguageModelParam {
         }
         final int unigramProbability = isValidWord ?
                 UNIGRAM_PROBABILITY_FOR_VALID_WORD : UNIGRAM_PROBABILITY_FOR_OOV_WORD;
-        if (prevWordsInfo.mPrevWord == null) {
+        if (!prevWordsInfo.isValid()) {
             if (DEBUG) {
                 Log.d(TAG, "--- add unigram: current("
                         + (isValidWord ? "Valid" : "OOV") + ") = " + word);
@@ -175,12 +176,12 @@ public final class LanguageModelParam {
             return new LanguageModelParam(word, unigramProbability, timestamp);
         }
         if (DEBUG) {
-            Log.d(TAG, "--- add bigram: prev = " + prevWordsInfo.mPrevWord + ", current("
+            Log.d(TAG, "--- add bigram: prev = " + prevWordsInfo + ", current("
                     + (isValidWord ? "Valid" : "OOV") + ") = " + word);
         }
         final int bigramProbability = isValidWord ?
                 BIGRAM_PROBABILITY_FOR_VALID_WORD : BIGRAM_PROBABILITY_FOR_OOV_WORD;
-        return new LanguageModelParam(prevWordsInfo.mPrevWord, word, unigramProbability,
-                bigramProbability, timestamp);
+        return new LanguageModelParam(prevWordsInfo.mPrevWordsInfo[0].mWord, word,
+                unigramProbability, bigramProbability, timestamp);
     }
 }

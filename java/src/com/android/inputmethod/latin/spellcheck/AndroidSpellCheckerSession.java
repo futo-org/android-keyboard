@@ -61,7 +61,8 @@ public final class AndroidSpellCheckerSession extends AndroidWordLevelSpellCheck
             final int offset = ssi.getOffsetAt(i);
             final int length = ssi.getLengthAt(i);
             final String subText = typedText.substring(offset, offset + length);
-            final PrevWordsInfo prevWordsInfo = new PrevWordsInfo(currentWord);
+            final PrevWordsInfo prevWordsInfo =
+                    new PrevWordsInfo(new PrevWordsInfo.WordInfo(currentWord));
             currentWord = subText;
             if (!subText.contains(AndroidSpellCheckerService.SINGLE_QUOTE)) {
                 continue;
@@ -203,7 +204,8 @@ public final class AndroidSpellCheckerSession extends AndroidWordLevelSpellCheck
                 } else {
                     prevWord = null;
                 }
-                final PrevWordsInfo prevWordsInfo = new PrevWordsInfo(prevWord);
+                final PrevWordsInfo prevWordsInfo =
+                        new PrevWordsInfo(new PrevWordsInfo.WordInfo(prevWord));
                 retval[i] = onGetSuggestionsInternal(textInfos[i], prevWordsInfo, suggestionsLimit);
                 retval[i].setCookieAndSequence(textInfos[i].getCookie(),
                         textInfos[i].getSequence());

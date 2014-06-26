@@ -233,19 +233,19 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
                 final int wordLen = StringUtils.codePointCount(word);
                 if (wordLen < MAX_WORD_LENGTH && wordLen > 1) {
                     if (DEBUG) {
-                        Log.d(TAG, "addName " + name + ", " + word + ", "
-                                + prevWordsInfo.mPrevWord);
+                        Log.d(TAG, "addName " + name + ", " + word + ", "  + prevWordsInfo);
                     }
                     runGCIfRequiredLocked(true /* mindsBlockByGC */);
                     addUnigramLocked(word, FREQUENCY_FOR_CONTACTS,
                             null /* shortcut */, 0 /* shortcutFreq */, false /* isNotAWord */,
                             false /* isBlacklisted */, BinaryDictionary.NOT_A_VALID_TIMESTAMP);
-                    if (!TextUtils.isEmpty(prevWordsInfo.mPrevWord) && mUseFirstLastBigrams) {
+                    if (!prevWordsInfo.isValid() && mUseFirstLastBigrams) {
                         runGCIfRequiredLocked(true /* mindsBlockByGC */);
                         addNgramEntryLocked(prevWordsInfo, word, FREQUENCY_FOR_CONTACTS_BIGRAM,
                                 BinaryDictionary.NOT_A_VALID_TIMESTAMP);
                     }
-                    prevWordsInfo = new PrevWordsInfo(word);
+                    prevWordsInfo = prevWordsInfo.getNextPrevWordsInfo(
+                            new PrevWordsInfo.WordInfo(word));
                 }
             }
         }
