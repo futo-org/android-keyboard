@@ -77,30 +77,6 @@ template<class DictConstants, class DictBuffers, class DictBuffersPtr>
     return dictBuffers->flush(dirPath);
 }
 
-/* static */ bool DictFileWritingUtils::flushAllHeaderAndBodyToFile(const char *const filePath,
-        BufferWithExtendableBuffer *const dictHeader, BufferWithExtendableBuffer *const dictBody) {
-    const int tmpFileNameBufSize = FileUtils::getFilePathWithSuffixBufSize(filePath,
-            TEMP_FILE_SUFFIX_FOR_WRITING_DICT_FILE);
-    // Name of a temporary file used for writing that is a connected string of original name and
-    // TEMP_FILE_SUFFIX_FOR_WRITING_DICT_FILE.
-    char tmpFileName[tmpFileNameBufSize];
-    FileUtils::getFilePathWithSuffix(filePath, TEMP_FILE_SUFFIX_FOR_WRITING_DICT_FILE,
-            tmpFileNameBufSize, tmpFileName);
-    if (!DictFileWritingUtils::flushBufferToFile(tmpFileName, dictHeader)) {
-        AKLOGE("Dictionary header cannot be written to %s.", tmpFileName);
-        return false;
-    }
-    if (!DictFileWritingUtils::flushBufferToFile(tmpFileName, dictBody)) {
-        AKLOGE("Dictionary structure cannot be written to %s.", tmpFileName);
-        return false;
-    }
-    if (rename(tmpFileName, filePath) != 0) {
-        AKLOGE("Dictionary file %s cannot be renamed to %s", tmpFileName, filePath);;
-        return false;
-    }
-    return true;
-}
-
 /* static */ bool DictFileWritingUtils::flushBufferToFileWithSuffix(const char *const basePath,
         const char *const suffix, const BufferWithExtendableBuffer *const buffer) {
     const int filePathBufSize = FileUtils::getFilePathWithSuffixBufSize(basePath, suffix);
