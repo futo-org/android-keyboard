@@ -126,7 +126,7 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
     @Override
     public void onDownEvent(final int x, final int y, final int pointerId, final long eventTime) {
         mActivePointerId = pointerId;
-        mCurrentKey = detectKey(x, y, pointerId);
+        mCurrentKey = detectKey(x, y);
     }
 
     @Override
@@ -135,7 +135,7 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
             return;
         }
         final boolean hasOldKey = (mCurrentKey != null);
-        mCurrentKey = detectKey(x, y, pointerId);
+        mCurrentKey = detectKey(x, y);
         if (hasOldKey && mCurrentKey == null) {
             // A more keys keyboard is canceled when detecting no key.
             mController.onCancelMoreKeysPanel();
@@ -149,7 +149,7 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
         }
         // Calling {@link #detectKey(int,int,int)} here is harmless because the last move event and
         // the following up event share the same coordinates.
-        mCurrentKey = detectKey(x, y, pointerId);
+        mCurrentKey = detectKey(x, y);
         if (mCurrentKey != null) {
             updateReleaseKeyGraphics(mCurrentKey);
             onKeyInput(mCurrentKey, x, y);
@@ -174,7 +174,7 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
         }
     }
 
-    private Key detectKey(int x, int y, int pointerId) {
+    private Key detectKey(int x, int y) {
         final Key oldKey = mCurrentKey;
         final Key newKey = mKeyDetector.detectHitKey(x, y);
         if (newKey == oldKey) {
