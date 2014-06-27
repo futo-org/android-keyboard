@@ -25,8 +25,7 @@
     <string name="spoken_no_text_entered" msgid="1711276837961785646">"Teksts nav ievadīts"</string>
     <string name="spoken_auto_correct" msgid="8989324692167993804">"Nospiežot taustiņu <xliff:g id="KEY_NAME">%1$s</xliff:g>, “<xliff:g id="ORIGINAL_WORD">%2$s</xliff:g>” tiek labots uz “<xliff:g id="CORRECTED_WORD">%3$s</xliff:g>”."</string>
     <string name="spoken_auto_correct_obscured" msgid="7769449372355268412">"Taustiņam <xliff:g id="KEY_NAME">%1$s</xliff:g> ir automātiskas labošanas funkcija."</string>
-    <!-- no translation found for spoken_description_unknown (5139930082759824442) -->
-    <skip />
+    <string name="spoken_description_unknown" msgid="5139930082759824442">"Nezināma rakstzīme"</string>
     <string name="spoken_description_shift" msgid="7209798151676638728">"Pārslēgšanas taustiņš"</string>
     <string name="spoken_description_symbols_shift" msgid="3483198879916435717">"Citi simboli"</string>
     <string name="spoken_description_shift_shifted" msgid="3122704922642232605">"Pārslēgšanas taustiņš"</string>
@@ -72,22 +71,13 @@
     <string name="spoken_descrption_emoji_category_places" msgid="1163315840948545317">"Vietas"</string>
     <string name="spoken_descrption_emoji_category_symbols" msgid="474680659024880601">"Simboli"</string>
     <string name="spoken_descrption_emoji_category_emoticons" msgid="456737544787823539">"Emocijzīmes"</string>
-    <!-- no translation found for spoken_description_upper_case (4904835255229433916) -->
-    <skip />
-    <!-- no translation found for spoken_letter_0049 (4743162182646977944) -->
-    <skip />
-    <!-- no translation found for spoken_letter_0130 (4766619646231612274) -->
-    <skip />
-    <!-- no translation found for spoken_symbol_unknown (717298227061173706) -->
-    <skip />
-    <!-- no translation found for spoken_emoji_unknown (5981009928135394306) -->
-    <skip />
-    <!-- no translation found for spoken_open_more_keys_keyboard (6832897688371903747) -->
-    <skip />
-    <!-- no translation found for spoken_close_more_keys_keyboard (3524914657934712026) -->
-    <skip />
-    <!-- no translation found for spoken_open_more_suggestions (4231720702882969760) -->
-    <skip />
-    <!-- no translation found for spoken_close_more_suggestions (9118455416075032839) -->
-    <skip />
+    <string name="spoken_description_upper_case" msgid="4904835255229433916">"Lielais burts “<xliff:g id="LOWER_LETTER">%s</xliff:g>”"</string>
+    <string name="spoken_letter_0049" msgid="4743162182646977944">"Lielais burts “I”"</string>
+    <string name="spoken_letter_0130" msgid="4766619646231612274">"Lielais burts “I” ar punktu virs tā"</string>
+    <string name="spoken_symbol_unknown" msgid="717298227061173706">"Nezināms simbols"</string>
+    <string name="spoken_emoji_unknown" msgid="5981009928135394306">"Nezināma emocijzīme"</string>
+    <string name="spoken_open_more_keys_keyboard" msgid="6832897688371903747">"Ir pieejamas alternatīvas rakstzīmes."</string>
+    <string name="spoken_close_more_keys_keyboard" msgid="3524914657934712026">"Alternatīvās rakstzīmes netiek rādītas."</string>
+    <string name="spoken_open_more_suggestions" msgid="4231720702882969760">"Ir pieejami alternatīvi ieteikumi."</string>
+    <string name="spoken_close_more_suggestions" msgid="9118455416075032839">"Alternatīvie ieteikumi netiek rādīti."</string>
 </resources>

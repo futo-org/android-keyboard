@@ -76,8 +76,8 @@
     <string name="spoken_letter_0130" msgid="4766619646231612274">"I mare, punct deasupra"</string>
     <string name="spoken_symbol_unknown" msgid="717298227061173706">"Simbol necunoscut"</string>
     <string name="spoken_emoji_unknown" msgid="5981009928135394306">"Emoji necunoscut"</string>
-    <string name="spoken_open_more_keys_keyboard" msgid="6832897688371903747">"Sunt disponibile caracterele alternative"</string>
+    <string name="spoken_open_more_keys_keyboard" msgid="6832897688371903747">"Sunt disponibile caractere alternative"</string>
     <string name="spoken_close_more_keys_keyboard" msgid="3524914657934712026">"S-au închis caracterele alternative"</string>
-    <string name="spoken_open_more_suggestions" msgid="4231720702882969760">"Sunt disponibile sugestiile alternative"</string>
+    <string name="spoken_open_more_suggestions" msgid="4231720702882969760">"Sunt disponibile sugestii alternative"</string>
     <string name="spoken_close_more_suggestions" msgid="9118455416075032839">"S-au închis sugestiile alternative"</string>
 </resources>

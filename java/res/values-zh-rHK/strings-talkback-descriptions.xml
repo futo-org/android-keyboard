@@ -25,8 +25,7 @@
     <string name="spoken_no_text_entered" msgid="1711276837961785646">"未輸入文字"</string>
     <string name="spoken_auto_correct" msgid="8989324692167993804">"按「<xliff:g id="KEY_NAME">%1$s</xliff:g>」可將「<xliff:g id="ORIGINAL_WORD">%2$s</xliff:g>」修正為「<xliff:g id="CORRECTED_WORD">%3$s</xliff:g>」"</string>
     <string name="spoken_auto_correct_obscured" msgid="7769449372355268412">"按「<xliff:g id="KEY_NAME">%1$s</xliff:g>」可自動修正"</string>
-    <!-- no translation found for spoken_description_unknown (5139930082759824442) -->
-    <skip />
+    <string name="spoken_description_unknown" msgid="5139930082759824442">"未知的字元"</string>
     <string name="spoken_description_shift" msgid="7209798151676638728">"Shift 鍵"</string>
     <string name="spoken_description_symbols_shift" msgid="3483198879916435717">"更多符號"</string>
     <string name="spoken_description_shift_shifted" msgid="3122704922642232605">"Shift 鍵"</string>
@@ -72,22 +71,13 @@
     <string name="spoken_descrption_emoji_category_places" msgid="1163315840948545317">"地點"</string>
     <string name="spoken_descrption_emoji_category_symbols" msgid="474680659024880601">"符號"</string>
     <string name="spoken_descrption_emoji_category_emoticons" msgid="456737544787823539">"表情符號"</string>
-    <!-- no translation found for spoken_description_upper_case (4904835255229433916) -->
-    <skip />
-    <!-- no translation found for spoken_letter_0049 (4743162182646977944) -->
-    <skip />
-    <!-- no translation found for spoken_letter_0130 (4766619646231612274) -->
-    <skip />
-    <!-- no translation found for spoken_symbol_unknown (717298227061173706) -->
-    <skip />
-    <!-- no translation found for spoken_emoji_unknown (5981009928135394306) -->
-    <skip />
-    <!-- no translation found for spoken_open_more_keys_keyboard (6832897688371903747) -->
-    <skip />
-    <!-- no translation found for spoken_close_more_keys_keyboard (3524914657934712026) -->
-    <skip />
-    <!-- no translation found for spoken_open_more_suggestions (4231720702882969760) -->
-    <skip />
-    <!-- no translation found for spoken_close_more_suggestions (9118455416075032839) -->
-    <skip />
+    <string name="spoken_description_upper_case" msgid="4904835255229433916">"大寫 <xliff:g id="LOWER_LETTER">%s</xliff:g>"</string>
+    <string name="spoken_letter_0049" msgid="4743162182646977944">"大寫 I"</string>
+    <string name="spoken_letter_0130" msgid="4766619646231612274">"上方加點的大寫 I"</string>
+    <string name="spoken_symbol_unknown" msgid="717298227061173706">"未知的符號"</string>
+    <string name="spoken_emoji_unknown" msgid="5981009928135394306">"未知的表情符號"</string>
+    <string name="spoken_open_more_keys_keyboard" msgid="6832897688371903747">"有可用的替代字元"</string>
+    <string name="spoken_close_more_keys_keyboard" msgid="3524914657934712026">"已關閉替代字元"</string>
+    <string name="spoken_open_more_suggestions" msgid="4231720702882969760">"有可用的建議字詞"</string>
+    <string name="spoken_close_more_suggestions" msgid="9118455416075032839">"已關閉其他建議字詞"</string>
 </resources>
