@@ -1001,6 +1001,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (!mSettings.getCurrent().isApplicationSpecifiedCompletionsOn()) {
             return;
         }
+        // If we have an update request in flight, we need to cancel it so it does not override
+        // these completions.
+        mHandler.cancelUpdateSuggestionStrip();
         if (applicationSpecifiedCompletions == null) {
             setNeutralSuggestionStrip();
             return;
