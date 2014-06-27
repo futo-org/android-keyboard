@@ -17,6 +17,7 @@
 package com.android.inputmethod.accessibility;
 
 import android.content.Context;
+import android.os.SystemClock;
 import android.support.v4.view.AccessibilityDelegateCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
@@ -49,7 +50,7 @@ public class KeyboardAccessibilityDelegate<KV extends KeyboardView>
     protected final KV mKeyboardView;
     protected final KeyDetector mKeyDetector;
     private Keyboard mKeyboard;
-    private KeyboardAccessibilityNodeProvider mAccessibilityNodeProvider;
+    private KeyboardAccessibilityNodeProvider<KV> mAccessibilityNodeProvider;
     private Key mLastHoverKey;
 
     public static final int HOVER_EVENT_POINTER_ID = 0;
@@ -132,19 +133,20 @@ public class KeyboardAccessibilityDelegate<KV extends KeyboardView>
      * @return The accessibility node provider for the current keyboard.
      */
     @Override
-    public KeyboardAccessibilityNodeProvider getAccessibilityNodeProvider(final View host) {
+    public KeyboardAccessibilityNodeProvider<KV> getAccessibilityNodeProvider(final View host) {
         return getAccessibilityNodeProvider();
     }
 
     /**
      * @return A lazily-instantiated node provider for this view delegate.
      */
-    protected KeyboardAccessibilityNodeProvider getAccessibilityNodeProvider() {
+    protected KeyboardAccessibilityNodeProvider<KV> getAccessibilityNodeProvider() {
         // Instantiate the provide only when requested. Since the system
         // will call this method multiple times it is a good practice to
         // cache the provider instance.
         if (mAccessibilityNodeProvider == null) {
-            mAccessibilityNodeProvider = new KeyboardAccessibilityNodeProvider(mKeyboardView);
+            mAccessibilityNodeProvider =
+                    new KeyboardAccessibilityNodeProvider<>(mKeyboardView, this);
         }
         return mAccessibilityNodeProvider;
     }
@@ -241,35 +243,37 @@ public class KeyboardAccessibilityDelegate<KV extends KeyboardView>
         // Make sure we're not getting an EXIT event because the user slid
         // off the keyboard area, then force a key press.
         if (key != null) {
-            onRegisterHoverKey(key, event);
+            performClickOn(key);
             onHoverExitFrom(key);
         }
         setLastHoverKey(null);
     }
 
     /**
-     * Register a key that is selected by a hover event
+     * Perform click on a key.
      *
      * @param key A key to be registered.
-     * @param event A hover exit event that triggers key registering.
      */
-    protected void onRegisterHoverKey(final Key key, final MotionEvent event) {
+    public void performClickOn(final Key key) {
         if (DEBUG_HOVER) {
-            Log.d(TAG, "onRegisterHoverKey: key=" + key);
+            Log.d(TAG, "performClickOn: key=" + key);
         }
-        simulateTouchEvent(MotionEvent.ACTION_DOWN, event);
-        simulateTouchEvent(MotionEvent.ACTION_UP, event);
+        simulateTouchEvent(MotionEvent.ACTION_DOWN, key);
+        simulateTouchEvent(MotionEvent.ACTION_UP, key);
     }
 
     /**
      * Simulating a touch event by injecting a synthesized touch event into {@link KeyboardView}.
      *
      * @param touchAction The action of the synthesizing touch event.
-     * @param hoverEvent The base hover event from that the touch event is synthesized.
+     * @param key The key that a synthesized touch event is on.
      */
-    private void simulateTouchEvent(final int touchAction, final MotionEvent hoverEvent) {
-        final MotionEvent touchEvent = MotionEvent.obtain(hoverEvent);
-        touchEvent.setAction(touchAction);
+    private void simulateTouchEvent(final int touchAction, final Key key) {
+        final int x = key.getHitBox().centerX();
+        final int y = key.getHitBox().centerY();
+        final long eventTime = SystemClock.uptimeMillis();
+        final MotionEvent touchEvent = MotionEvent.obtain(
+                eventTime, eventTime, touchAction, x, y, 0 /* metaState */);
         mKeyboardView.onTouchEvent(touchEvent);
         touchEvent.recycle();
     }
@@ -285,7 +289,7 @@ public class KeyboardAccessibilityDelegate<KV extends KeyboardView>
         }
         key.onPressed();
         mKeyboardView.invalidateKey(key);
-        final KeyboardAccessibilityNodeProvider provider = getAccessibilityNodeProvider();
+        final KeyboardAccessibilityNodeProvider<KV> provider = getAccessibilityNodeProvider();
         provider.onHoverEnterTo(key);
         provider.performActionForKey(key, AccessibilityNodeInfoCompat.ACTION_ACCESSIBILITY_FOCUS);
     }
@@ -308,7 +312,16 @@ public class KeyboardAccessibilityDelegate<KV extends KeyboardView>
         }
         key.onReleased();
         mKeyboardView.invalidateKey(key);
-        final KeyboardAccessibilityNodeProvider provider = getAccessibilityNodeProvider();
+        final KeyboardAccessibilityNodeProvider<KV> provider = getAccessibilityNodeProvider();
         provider.onHoverExitFrom(key);
+    }
+
+    /**
+     * Perform long click on a key.
+     *
+     * @param key A key to be long pressed on.
+     */
+    public void performLongClickOn(final Key key) {
+        // A extended class should override this method to implement long press.
     }
 }

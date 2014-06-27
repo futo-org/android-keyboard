@@ -207,11 +207,11 @@ public final class MainKeyboardAccessibilityDelegate
     }
 
     @Override
-    protected void onRegisterHoverKey(final Key key, final MotionEvent event) {
+    public void performClickOn(final Key key) {
         final int x = key.getHitBox().centerX();
         final int y = key.getHitBox().centerY();
         if (DEBUG_HOVER) {
-            Log.d(TAG, "onRegisterHoverKey: key=" + key
+            Log.d(TAG, "performClickOn: key=" + key
                     + " inIgnoreBounds=" + mBoundsToIgnoreHoverEvent.contains(x, y));
         }
         if (mBoundsToIgnoreHoverEvent.contains(x, y)) {
@@ -220,7 +220,7 @@ public final class MainKeyboardAccessibilityDelegate
             mBoundsToIgnoreHoverEvent.setEmpty();
             return;
         }
-        super.onRegisterHoverKey(key, event);
+        super.performClickOn(key);
     }
 
     @Override
@@ -257,9 +257,9 @@ public final class MainKeyboardAccessibilityDelegate
     }
 
     @Override
-    public void onLongPressed(final Key key) {
+    public void performLongClickOn(final Key key) {
         if (DEBUG_HOVER) {
-            Log.d(TAG, "onLongPressed: key=" + key);
+            Log.d(TAG, "performLongClickOn: key=" + key);
         }
         final PointerTracker tracker = PointerTracker.getPointerTracker(HOVER_EVENT_POINTER_ID);
         final long eventTime = SystemClock.uptimeMillis();
