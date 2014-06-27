@@ -81,7 +81,7 @@
     pt_PT: Portuguese (Portugal)/qwerty
     ro: Romanian/qwerty
     ru: Russian/east_slavic
-    si_LK: Sinhala (Sri Lanka)/sinhala # This is a preliminary keyboard layout.
+    (si_LK: Sinhala (Sri Lanka)/sinhala) # This is a preliminary keyboard layout.
     sk: Slovak/qwerty
     sl: Slovenian/qwerty
     sr: Serbian/south_slavic
@@ -333,7 +333,6 @@
     />
     <!-- TODO: This hindi_compact keyboard is a preliminary layout.
                This isn't based on the final specification. -->
-    <!--
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic_compact"
             android:subtypeId="0xe49c89a1"
@@ -342,7 +341,6 @@
             android:imeSubtypeExtraValue="KeyboardLayoutSet=hindi_compact,EmojiCapable"
             android:isAsciiCapable="false"
     />
-    -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
             android:subtypeId="0x35b7526a"
@@ -483,7 +481,6 @@
     />
     <!-- TODO: This marathi keyboard is a preliminary layout.
                This isn't based on the final specification. -->
-    <!--
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
             android:subtypeId="0x747b9f03"
@@ -492,7 +489,6 @@
             android:imeSubtypeExtraValue="KeyboardLayoutSet=marathi,EmojiCapable"
             android:isAsciiCapable="false"
     />
-    -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
             android:subtypeId="0x84c87c61"
@@ -503,7 +499,6 @@
     />
     <!-- TODO: This Myanmar keyboard is a preliminary layout.
                This isn't based on the final specification. -->
-    <!--
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
             android:subtypeId="0xea266ea4"
@@ -512,7 +507,6 @@
             android:imeSubtypeExtraValue="KeyboardLayoutSet=myanmar,EmojiCapable,CombiningRules=MyanmarReordering"
             android:isAsciiCapable="false"
     />
-    -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
             android:subtypeId="0x3f12ee14"
@@ -593,6 +587,8 @@
             android:imeSubtypeExtraValue="SupportTouchPositionCorrection,EmojiCapable"
             android:isAsciiCapable="false"
     />
+    <!-- TODO: This sinhala keyboard is a preliminary layout.
+               This isn't based on the final specification. -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
             android:subtypeId="0x5c6b3bde"

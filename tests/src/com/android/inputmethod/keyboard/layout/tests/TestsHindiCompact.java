@@ -16,7 +16,7 @@
 
 package com.android.inputmethod.keyboard.layout.tests;
 
-import android.test.suitebuilder.annotation.Suppress;
+import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.inputmethod.keyboard.layout.HindiCompact;
 import com.android.inputmethod.keyboard.layout.HindiCompact.HindiCompactCustomizer;
@@ -27,7 +27,7 @@ import java.util.Locale;
 /**
  * hi: Hindi/hindi_compact
  */
-@Suppress
+@SmallTest
 public final class TestsHindiCompact extends LayoutTestsBase {
     private static final Locale LOCALE = new Locale("hi");
     private static final LayoutBase LAYOUT = new HindiCompact(new HindiCompactCustomizer(LOCALE));

@@ -16,7 +16,7 @@
 
 package com.android.inputmethod.keyboard.layout.tests;
 
-import android.test.suitebuilder.annotation.Suppress;
+import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.inputmethod.keyboard.layout.LayoutBase;
 import com.android.inputmethod.keyboard.layout.Marathi;
@@ -27,7 +27,7 @@ import java.util.Locale;
 /**
  * mr_IN: Marathi (India)/marathi
  */
-@Suppress
+@SmallTest
 public final class TestsMarathiIN extends LayoutTestsBase {
     private static final Locale LOCALE = new Locale("mr", "IN");
     private static final LayoutBase LAYOUT = new Marathi(new MarathiCustomizer(LOCALE));

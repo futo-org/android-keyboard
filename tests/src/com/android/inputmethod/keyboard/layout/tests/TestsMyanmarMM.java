@@ -16,7 +16,7 @@
 
 package com.android.inputmethod.keyboard.layout.tests;
 
-import android.test.suitebuilder.annotation.Suppress;
+import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.inputmethod.keyboard.layout.LayoutBase;
 import com.android.inputmethod.keyboard.layout.Myanmar;
@@ -27,7 +27,7 @@ import java.util.Locale;
 /**
  * my_MM: Myanmar (Myanmar)/myanmar
  */
-@Suppress
+@SmallTest
 public final class TestsMyanmarMM extends LayoutTestsBase {
     private static final Locale LOCALE = new Locale("my", "MM");
     private static final LayoutBase LAYOUT = new Myanmar(new MyanmarCustomizer(LOCALE));
