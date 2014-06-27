@@ -152,7 +152,7 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
         // Filter by first letter
         final int firstCodePoint = text.codePointAt(0);
         // Filter out words that don't start with a letter or an apostrophe
-        if (!ScriptUtils.isLetterCheckableByScript(firstCodePoint, script)
+        if (!ScriptUtils.isLetterPartOfScript(firstCodePoint, script)
                 && '\'' != firstCodePoint) return CHECKABILITY_FIRST_LETTER_UNCHECKABLE;
 
         // Filter contents
@@ -173,7 +173,7 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
             if (Constants.CODE_PERIOD == codePoint) {
                 return CHECKABILITY_CONTAINS_PERIOD;
             }
-            if (ScriptUtils.isLetterCheckableByScript(codePoint, script)) ++letterCount;
+            if (ScriptUtils.isLetterPartOfScript(codePoint, script)) ++letterCount;
         }
         // Guestimate heuristic: perform spell checking if at least 3/4 of the characters
         // in this word are letters
