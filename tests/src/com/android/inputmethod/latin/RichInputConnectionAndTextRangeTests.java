@@ -30,6 +30,7 @@ import android.view.inputmethod.ExtractedTextRequest;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputConnectionWrapper;
 
+import com.android.inputmethod.latin.PrevWordsInfo.WordInfo;
 import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
 import com.android.inputmethod.latin.utils.RunInLocale;
 import com.android.inputmethod.latin.utils.StringUtils;
@@ -166,6 +167,16 @@ public class RichInputConnectionAndTextRangeTests extends AndroidTestCase {
                 "abc def", mSpacingAndPunctuations, 2).mPrevWordsInfo[0].mIsBeginningOfSentence);
         assertTrue(RichInputConnection.getPrevWordsInfoFromNthPreviousWord(
                 "abc", mSpacingAndPunctuations, 2).mPrevWordsInfo[0].mIsBeginningOfSentence);
+
+        // For n-gram
+        assertEquals(RichInputConnection.getPrevWordsInfoFromNthPreviousWord(
+                "abc def", mSpacingAndPunctuations, 1).mPrevWordsInfo[0].mWord, "def");
+        assertEquals(RichInputConnection.getPrevWordsInfoFromNthPreviousWord(
+                "abc def", mSpacingAndPunctuations, 1).mPrevWordsInfo[1].mWord, "abc");
+        assertEquals(RichInputConnection.getPrevWordsInfoFromNthPreviousWord(
+                "abc def", mSpacingAndPunctuations, 2).mPrevWordsInfo[1],
+                WordInfo.BEGINNING_OF_SENTENCE);
+
         // The following tests reflect the current behavior of the function
         // RichInputConnection#getNthPreviousWord.
         // TODO: However at this time, the code does never go
