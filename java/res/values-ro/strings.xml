@@ -26,12 +26,18 @@
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibrare la apăsarea tastei"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Sunet la apăsarea tastei"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Pop-up la apăsarea tastei"</string>
-    <string name="general_category" msgid="1859088467017573195">"General"</string>
-    <string name="correction_category" msgid="2236750915056607613">"Corectare text"</string>
-    <string name="gesture_typing_category" msgid="497263612130532630">"Tastare gestuală"</string>
-    <string name="misc_category" msgid="6894192814868233453">"Alte opţiuni"</string>
-    <string name="advanced_settings" msgid="362895144495591463">"Setări avansate"</string>
-    <string name="advanced_settings_summary" msgid="4487980456152830271">"Opţiuni pentru experţi"</string>
+    <!-- no translation found for settings_screen_input (2808654300248306866) -->
+    <skip />
+    <!-- no translation found for settings_screen_appearances (3611951947835553700) -->
+    <skip />
+    <!-- no translation found for settings_screen_multi_lingual (6829970893413937235) -->
+    <skip />
+    <!-- no translation found for settings_screen_gesture (9113437621722871665) -->
+    <skip />
+    <!-- no translation found for settings_screen_correction (1616818407747682955) -->
+    <skip />
+    <!-- no translation found for settings_screen_advanced (7472408607625972994) -->
+    <skip />
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Comut. alte metode de introd."</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Tasta de comutare între limbi include şi alte metode de introd."</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Tastă comutare limbi"</string>
@@ -102,9 +108,16 @@
     <string name="subtype_no_language_colemak" msgid="5837418400010302623">"Alfabet (Colemak)"</string>
     <string name="subtype_no_language_pcqwerty" msgid="5354918232046200018">"Alfabet (PC)"</string>
     <string name="subtype_emoji" msgid="7483586578074549196">"Emoji"</string>
-    <string name="keyboard_color_scheme" msgid="9192934113872818070">"Schemă de culori"</string>
-    <string name="keyboard_color_scheme_white" msgid="6684064723850265438">"Alb"</string>
-    <string name="keyboard_color_scheme_blue" msgid="2488527224758177593">"Albastru"</string>
+    <!-- no translation found for keyboard_theme (4909551808526178852) -->
+    <skip />
+    <!-- no translation found for keyboard_theme_holo_white (8506588144096428751) -->
+    <skip />
+    <!-- no translation found for keyboard_theme_holo_blue (192400518003397418) -->
+    <skip />
+    <!-- no translation found for keyboard_theme_material_dark (2701178578784760596) -->
+    <skip />
+    <!-- no translation found for keyboard_theme_material_light (3479400901818790331) -->
+    <skip />
     <string name="custom_input_styles_title" msgid="8429952441821251512">"Stiluri personalizate"</string>
     <string name="add_style" msgid="6163126614514489951">"Stil"</string>
     <string name="add" msgid="8299699805688017798">"Adăugaţi"</string>
