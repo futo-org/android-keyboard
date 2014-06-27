@@ -40,6 +40,7 @@ import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SubtypeSwitcher;
 import com.android.inputmethod.latin.utils.InputTypeUtils;
+import com.android.inputmethod.latin.utils.ScriptUtils;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 import com.android.inputmethod.latin.utils.XmlParseUtils;
 
@@ -63,6 +64,7 @@ public final class KeyboardLayoutSet {
 
     private static final String TAG_KEYBOARD_SET = "KeyboardLayoutSet";
     private static final String TAG_ELEMENT = "Element";
+    private static final String TAG_FEATURE = "Feature";
 
     private static final String KEYBOARD_LAYOUT_SET_RESOURCE_PREFIX = "keyboard_layout_set_";
 
@@ -111,6 +113,7 @@ public final class KeyboardLayoutSet {
         boolean mIsSpellChecker;
         int mKeyboardWidth;
         int mKeyboardHeight;
+        int mScriptId;
         // Sparse array of KeyboardLayoutSet element parameters indexed by element's id.
         final SparseArray<ElementParams> mKeyboardLayoutSetElementIdToParamsMap =
                 new SparseArray<>();
@@ -275,6 +278,10 @@ public final class KeyboardLayoutSet {
             mParams.mDisableTouchPositionCorrectionDataForTest = true;
         }
 
+        public void setScriptId(final int scriptId) {
+            mParams.mScriptId = scriptId;
+        }
+
         public KeyboardLayoutSet build() {
             if (mParams.mSubtype == null)
                 throw new RuntimeException("KeyboardLayoutSet subtype is not specified");
@@ -320,6 +327,8 @@ public final class KeyboardLayoutSet {
                     final String tag = parser.getName();
                     if (TAG_ELEMENT.equals(tag)) {
                         parseKeyboardLayoutSetElement(parser);
+                    } else if (TAG_FEATURE.equals(tag)) {
+                        parseKeyboardLayoutSetFeature(parser);
                     } else {
                         throw new XmlParseUtils.IllegalStartTag(parser, tag, TAG_KEYBOARD_SET);
                     }
@@ -356,6 +365,21 @@ public final class KeyboardLayoutSet {
                         R.styleable.KeyboardLayoutSet_Element_enableProximityCharsCorrection,
                         false);
                 mParams.mKeyboardLayoutSetElementIdToParamsMap.put(elementName, elementParams);
+            } finally {
+                a.recycle();
+            }
+        }
+
+        private void parseKeyboardLayoutSetFeature(final XmlPullParser parser)
+                throws XmlPullParserException, IOException {
+            final TypedArray a = mResources.obtainAttributes(Xml.asAttributeSet(parser),
+                    R.styleable.KeyboardLayoutSet_Feature);
+            try {
+                final int scriptId = a.getInt(
+                        R.styleable.KeyboardLayoutSet_Feature_supportedScript,
+                        ScriptUtils.SCRIPT_LATIN);
+                XmlParseUtils.checkEndTag(TAG_FEATURE, parser);
+                setScriptId(scriptId);
             } finally {
                 a.recycle();
             }

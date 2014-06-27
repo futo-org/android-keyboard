@@ -488,6 +488,17 @@
         <attr name="enableProximityCharsCorrection" format="boolean" />
     </declare-styleable>
 
+    <declare-styleable name="KeyboardLayoutSet_Feature">
+        <!-- This should be aligned with ScriptUtils.SCRIPT_* -->
+        <attr name="supportedScript" format="enum">
+            <enum name="latin" value="0" />
+            <enum name="cyrillic" value="1" />
+            <enum name="greek" value="2" />
+            <enum name="arabic" value="3" />
+            <enum name="hebrew" value="4" />
+        </attr>
+    </declare-styleable>
+
     <declare-styleable name="SeekBarDialogPreference">
         <attr name="maxValue" format="integer" />
         <attr name="minValue" format="integer" />
