@@ -232,10 +232,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 break;
             case MSG_REOPEN_DICTIONARIES:
                 latinIme.resetSuggest();
-                // In theory we could call latinIme.updateSuggestionStrip() right away, but
-                // in the practice, the dictionary is not finished opening yet so we wouldn't
-                // get any suggestions. Wait one frame.
-                postUpdateSuggestionStrip();
+                // We need to re-evaluate the currently composing word in case the script has
+                // changed.
+                postResumeSuggestions(true /* shouldIncludeResumedWordInSuggestions */);
                 break;
             case MSG_UPDATE_TAIL_BATCH_INPUT_COMPLETED:
                 latinIme.mInputLogic.onUpdateTailBatchInputCompleted(
@@ -447,22 +446,22 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     static final class SubtypeState {
         private InputMethodSubtype mLastActiveSubtype;
-        private boolean mCurrentSubtypeUsed;
+        private boolean mCurrentSubtypeHasBeenUsed;
 
-        public void currentSubtypeUsed() {
-            mCurrentSubtypeUsed = true;
+        public void setCurrentSubtypeHasBeenUsed() {
+            mCurrentSubtypeHasBeenUsed = true;
         }
 
         public void switchSubtype(final IBinder token, final RichInputMethodManager richImm) {
             final InputMethodSubtype currentSubtype = richImm.getInputMethodManager()
                     .getCurrentInputMethodSubtype();
             final InputMethodSubtype lastActiveSubtype = mLastActiveSubtype;
-            final boolean currentSubtypeUsed = mCurrentSubtypeUsed;
-            if (currentSubtypeUsed) {
+            final boolean currentSubtypeHasBeenUsed = mCurrentSubtypeHasBeenUsed;
+            if (currentSubtypeHasBeenUsed) {
                 mLastActiveSubtype = currentSubtype;
-                mCurrentSubtypeUsed = false;
+                mCurrentSubtypeHasBeenUsed = false;
             }
-            if (currentSubtypeUsed
+            if (currentSubtypeHasBeenUsed
                     && richImm.checkIfSubtypeBelongsToThisImeAndEnabled(lastActiveSubtype)
                     && !currentSubtype.equals(lastActiveSubtype)) {
                 richImm.setInputMethodAndSubtype(token, lastActiveSubtype);
@@ -796,8 +795,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // span, so we should reset our state unconditionally, even if restarting is true.
         // We also tell the input logic about the combining rules for the current subtype, so
         // it can adjust its combiners if needed.
-        mInputLogic.startInput(restarting, editorInfo,
-                mSubtypeSwitcher.getCombiningRulesExtraValueOfCurrentSubtype());
+        mInputLogic.startInput(mSubtypeSwitcher.getCombiningRulesExtraValueOfCurrentSubtype());
 
         // Note: the following does a round-trip IPC on the main thread: be careful
         final Locale currentLocale = mSubtypeSwitcher.getCurrentSubtypeLocale();
@@ -930,12 +928,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mKeyboardSwitcher.requestUpdatingShiftState(getCurrentAutoCapsState(),
                     getCurrentRecapitalizeState());
         }
-
-        mSubtypeState.currentSubtypeUsed();
     }
 
     @Override
-    public void onUpdateCursor(Rect rect) {
+    public void onUpdateCursor(final Rect rect) {
         if (DEBUG) {
             Log.i(TAG, "onUpdateCursor:" + rect.toShortString());
         }
@@ -1268,9 +1264,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     public void onTextInput(final String rawText) {
         // TODO: have the keyboard pass the correct key code when we need it.
         final Event event = Event.createSoftwareTextEvent(rawText, Event.NOT_A_KEY_CODE);
-        mInputLogic.onTextInput(mSettings.getCurrent(), event, mHandler);
-        mKeyboardSwitcher.requestUpdatingShiftState(getCurrentAutoCapsState(),
-                getCurrentRecapitalizeState());
+        final InputTransaction completeInputTransaction =
+                mInputLogic.onTextInput(mSettings.getCurrent(), event,
+                        mKeyboardSwitcher.getKeyboardShiftMode(), mHandler);
+        updateStateAfterInputTransaction(completeInputTransaction);
         mKeyboardSwitcher.onCodeInput(Constants.CODE_OUTPUT_TEXT, getCurrentAutoCapsState(),
                 getCurrentRecapitalizeState());
     }
@@ -1489,6 +1486,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
         if (inputTransaction.requiresUpdateSuggestions()) {
             mHandler.postUpdateSuggestionStrip();
+        }
+        if (inputTransaction.didAffectContents()) {
+            mSubtypeState.setCurrentSubtypeHasBeenUsed();
         }
     }
 

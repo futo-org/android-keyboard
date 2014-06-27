@@ -119,17 +119,10 @@ public final class InputLogic {
      * Initializes the input logic for input in an editor.
      *
      * Call this when input starts or restarts in some editor (typically, in onStartInputView).
-     * If the input is starting in the same field as before, set `restarting' to true. This allows
-     * the input logic to reset only necessary stuff and save performance. Also, when restarting
-     * some things must not be done (for example, the keyboard should not be reset to the
-     * alphabetic layout), so do not send false to this just in case.
      *
-     * @param restarting whether input is starting in the same field as before. Unused for now.
-     * @param editorInfo the editorInfo associated with the editor.
      * @param combiningSpec the combining spec string for this subtype
      */
-    public void startInput(final boolean restarting, final EditorInfo editorInfo,
-            final String combiningSpec) {
+    public void startInput(final String combiningSpec) {
         mEnteredText = null;
         mWordComposer.restartCombining(combiningSpec);
         resetComposingState(true /* alsoResetLastComposedWord */);
@@ -154,7 +147,8 @@ public final class InputLogic {
      * @param combiningSpec the spec string for the combining rules
      */
     public void onSubtypeChanged(final String combiningSpec) {
-        mWordComposer.restartCombining(combiningSpec);
+        finishInput();
+        startInput(combiningSpec);
     }
 
     /**
@@ -187,11 +181,16 @@ public final class InputLogic {
      *
      * @param settingsValues the current values of the settings.
      * @param event the input event containing the data.
+     * @return the complete transaction object
      */
-    public void onTextInput(final SettingsValues settingsValues, final Event event,
+    public InputTransaction onTextInput(final SettingsValues settingsValues, final Event event,
+            final int keyboardShiftMode,
             // TODO: remove this argument
             final LatinIME.UIHandler handler) {
         final String rawText = event.mText.toString();
+        final InputTransaction inputTransaction = new InputTransaction(settingsValues, event,
+                SystemClock.uptimeMillis(), mSpaceState,
+                getActualCapsMode(settingsValues, keyboardShiftMode));
         mConnection.beginBatchEdit();
         if (mWordComposer.isComposingWord()) {
             commitCurrentAutoCorrection(settingsValues, rawText, handler);
@@ -208,6 +207,9 @@ public final class InputLogic {
         // Space state must be updated before calling updateShiftState
         mSpaceState = SpaceState.NONE;
         mEnteredText = text;
+        inputTransaction.setDidAffectContents();
+        inputTransaction.requireShiftUpdate(InputTransaction.SHIFT_UPDATE_NOW);
+        return inputTransaction;
     }
 
     /**
@@ -238,6 +240,9 @@ public final class InputLogic {
         final Event event = Event.createSuggestionPickedEvent(suggestionInfo);
         final InputTransaction inputTransaction = new InputTransaction(settingsValues,
                 event, SystemClock.uptimeMillis(), mSpaceState, keyboardShiftState);
+        // Manual pick affects the contents of the editor, so we take note of this. It's important
+        // for the sequence of language switching.
+        inputTransaction.setDidAffectContents();
         mConnection.beginBatchEdit();
         if (SpaceState.PHANTOM == mSpaceState && suggestion.length() > 0
                 // In the batch input mode, a manually picked suggested word should just replace
@@ -404,6 +409,8 @@ public final class InputLogic {
             switch (event.mKeyCode) {
             case Constants.CODE_DELETE:
                 handleBackspace(inputTransaction, currentKeyboardScriptId);
+                // Backspace is a functional key, but it affects the contents of the editor.
+                inputTransaction.setDidAffectContents();
                 break;
             case Constants.CODE_SHIFT:
                 performRecapitalization(inputTransaction.mSettingsValues);
@@ -457,11 +464,15 @@ public final class InputLogic {
                         inputTransaction.mTimestamp, inputTransaction.mSpaceState,
                         inputTransaction.mShiftState);
                 didAutoCorrect = handleNonSpecialCharacter(tmpTransaction, handler);
+                // Shift + Enter is treated as a functional key but it results in adding a new
+                // line, so that does affect the contents of the editor.
+                inputTransaction.setDidAffectContents();
                 break;
             default:
                 throw new RuntimeException("Unknown key code : " + event.mKeyCode);
             }
         } else {
+            inputTransaction.setDidAffectContents();
             switch (event.mCodePoint) {
             case Constants.CODE_ENTER:
                 final EditorInfo editorInfo = getCurrentInputEditorInfo();
