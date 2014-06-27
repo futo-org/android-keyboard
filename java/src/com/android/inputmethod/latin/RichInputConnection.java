@@ -741,13 +741,12 @@ public final class RichInputConnection {
         // Here we test whether we indeed have a period and a space before us. This should not
         // be needed, but it's there just in case something went wrong.
         final CharSequence textBeforeCursor = getTextBeforeCursor(2, 0);
-        final String periodSpace = ". ";
-        if (!TextUtils.equals(periodSpace, textBeforeCursor)) {
+        if (!TextUtils.equals(Constants.STRING_PERIOD_AND_SPACE, textBeforeCursor)) {
             // Theoretically we should not be coming here if there isn't ". " before the
             // cursor, but the application may be changing the text while we are typing, so
             // anything goes. We should not crash.
             Log.d(TAG, "Tried to revert double-space combo but we didn't find "
-                    + "\"" + periodSpace + "\" just before the cursor.");
+                    + "\"" + Constants.STRING_PERIOD_AND_SPACE + "\" just before the cursor.");
             return false;
         }
         // Double-space results in ". ". A backspace to cancel this should result in a single

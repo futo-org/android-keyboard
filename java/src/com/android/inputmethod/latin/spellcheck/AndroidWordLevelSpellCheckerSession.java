@@ -258,7 +258,9 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
                             return new SuggestionsInfo(SuggestionsInfo.RESULT_ATTR_LOOKS_LIKE_TYPO
                                     | SuggestionsInfo.RESULT_ATTR_HAS_RECOMMENDED_SUGGESTIONS,
                                     new String[] {
-                                            TextUtils.join(Constants.STRING_SPACE, splitText) });
+                                            TextUtils.join(Constants.STRING_SPACE, splitText),
+                                            TextUtils.join(Constants.STRING_PERIOD_AND_SPACE,
+                                                    splitText) });
                         }
                     }
                     return dictInfo.mDictionary.isValidWord(inText)
