@@ -19,7 +19,6 @@ package com.android.inputmethod.accessibility;
 import android.content.Context;
 import android.support.v4.view.AccessibilityDelegateCompat;
 import android.support.v4.view.ViewCompat;
-import android.support.v4.view.accessibility.AccessibilityEventCompat;
 import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -31,7 +30,6 @@ import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.KeyDetector;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardView;
-import com.android.inputmethod.keyboard.PointerTracker;
 
 /**
  * This class represents a delegate that can be registered in a class that extends
@@ -264,33 +262,16 @@ public class KeyboardAccessibilityDelegate<KV extends KeyboardView>
     }
 
     /**
-     * Simulating a touch event by injecting a synthesized touch event into {@link PointerTracker}.
+     * Simulating a touch event by injecting a synthesized touch event into {@link KeyboardView}.
      *
      * @param touchAction The action of the synthesizing touch event.
      * @param hoverEvent The base hover event from that the touch event is synthesized.
      */
     protected void simulateTouchEvent(final int touchAction, final MotionEvent hoverEvent) {
-        final MotionEvent touchEvent = synthesizeTouchEvent(touchAction, hoverEvent);
-        final int actionIndex = touchEvent.getActionIndex();
-        final int pointerId = touchEvent.getPointerId(actionIndex);
-        final PointerTracker tracker = PointerTracker.getPointerTracker(pointerId);
-        tracker.processMotionEvent(touchEvent, mKeyDetector);
-        touchEvent.recycle();
-    }
-
-    /**
-     * Synthesize a touch event from a hover event.
-     *
-     * @param touchAction The action of the synthesizing touch event.
-     * @param hoverEvent The base hover event from that the touch event is synthesized.
-     * @return The synthesized touch event of <code>touchAction</code> that has pointer information
-     * of <code>event</code>.
-     */
-    protected static MotionEvent synthesizeTouchEvent(final int touchAction,
-            final MotionEvent hoverEvent) {
         final MotionEvent touchEvent = MotionEvent.obtain(hoverEvent);
         touchEvent.setAction(touchAction);
-        return touchEvent;
+        mKeyboardView.onTouchEvent(touchEvent);
+        touchEvent.recycle();
     }
 
     /**

@@ -28,9 +28,11 @@ public final class MoreSuggestionsAccessibilityDelegate
         super(moreKeysKeyboardView, keyDetector);
     }
 
+    // TODO: Remove redundant override method.
     @Override
     protected void simulateTouchEvent(final int touchAction, final MotionEvent hoverEvent) {
-        final MotionEvent touchEvent = synthesizeTouchEvent(touchAction, hoverEvent);
+        final MotionEvent touchEvent = MotionEvent.obtain(hoverEvent);
+        touchEvent.setAction(touchAction);
         mKeyboardView.onTouchEvent(touchEvent);
         touchEvent.recycle();
     }

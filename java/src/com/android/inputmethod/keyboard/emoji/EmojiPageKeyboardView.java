@@ -65,9 +65,11 @@ final class EmojiPageKeyboardView extends KeyboardView implements
             super(keyboardView, keyDetector);
         }
 
+        // TODO: Remove redundant override method.
         @Override
         protected void simulateTouchEvent(int touchAction, MotionEvent hoverEvent) {
-            final MotionEvent touchEvent = synthesizeTouchEvent(touchAction, hoverEvent);
+            final MotionEvent touchEvent = MotionEvent.obtain(hoverEvent);
+            touchEvent.setAction(touchAction);
             mKeyboardView.onTouchEvent(touchEvent);
             touchEvent.recycle();
         }
