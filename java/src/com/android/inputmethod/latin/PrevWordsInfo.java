@@ -27,7 +27,8 @@ import com.android.inputmethod.latin.utils.StringUtils;
 public class PrevWordsInfo {
     public static final PrevWordsInfo EMPTY_PREV_WORDS_INFO =
             new PrevWordsInfo(WordInfo.EMPTY_WORD_INFO);
-    public static final PrevWordsInfo BEGINNING_OF_SENTENCE = new PrevWordsInfo();
+    public static final PrevWordsInfo BEGINNING_OF_SENTENCE =
+            new PrevWordsInfo(WordInfo.BEGINNING_OF_SENTENCE);
 
     /**
      * Word information used to represent previous words information.
@@ -57,6 +58,24 @@ public class PrevWordsInfo {
         public boolean isValid() {
             return mWord != null;
         }
+
+        @Override
+        public int hashCode() {
+            return Arrays.hashCode(new Object[] { mWord, mIsBeginningOfSentence } );
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof WordInfo)) return false;
+            final WordInfo wordInfo = (WordInfo)o;
+            if (mWord == null || wordInfo.mWord == null) {
+                return mWord == wordInfo.mWord
+                        && mIsBeginningOfSentence == wordInfo.mIsBeginningOfSentence;
+            }
+            return mWord.equals(wordInfo.mWord)
+                    && mIsBeginningOfSentence == wordInfo.mIsBeginningOfSentence;
+        }
     }
 
     // The words immediately before the considered word. EMPTY_WORD_INFO element means we don't
@@ -67,16 +86,9 @@ public class PrevWordsInfo {
     // calling getSuggetions* in this situation.
     public WordInfo[] mPrevWordsInfo = new WordInfo[Constants.MAX_PREV_WORD_COUNT_FOR_N_GRAM];
 
-    // Beginning of sentence.
-    public PrevWordsInfo() {
-        mPrevWordsInfo[0] = WordInfo.BEGINNING_OF_SENTENCE;
-        Arrays.fill(mPrevWordsInfo, 1 /* start */, mPrevWordsInfo.length, WordInfo.EMPTY_WORD_INFO);
-    }
-
     // Construct from the previous word information.
     public PrevWordsInfo(final WordInfo prevWordInfo) {
         mPrevWordsInfo[0] = prevWordInfo;
-        Arrays.fill(mPrevWordsInfo, 1 /* start */, mPrevWordsInfo.length, WordInfo.EMPTY_WORD_INFO);
     }
 
     // Construct from WordInfo array. n-th element represents (n+1)-th previous word's information.
@@ -116,6 +128,19 @@ public class PrevWordsInfo {
     }
 
     @Override
+    public int hashCode() {
+        return Arrays.hashCode(mPrevWordsInfo);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof PrevWordsInfo)) return false;
+        final PrevWordsInfo prevWordsInfo = (PrevWordsInfo)o;
+        return Arrays.equals(mPrevWordsInfo, prevWordsInfo.mPrevWordsInfo);
+    }
+
+    @Override
     public String toString() {
         final StringBuffer builder = new StringBuffer();
         for (int i = 0; i < mPrevWordsInfo.length; i++) {
@@ -123,7 +148,7 @@ public class PrevWordsInfo {
             builder.append("PrevWord[");
             builder.append(i);
             builder.append("]: ");
-            if (!wordInfo.isValid()) {
+            if (wordInfo == null || !wordInfo.isValid()) {
                 builder.append("Empty. ");
                 continue;
             }
