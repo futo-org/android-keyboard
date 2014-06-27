@@ -1882,10 +1882,11 @@ public final class InputLogic {
         final CharSequence chosenWordWithSuggestions =
                 SuggestionSpanUtils.getTextWithSuggestionSpan(mLatinIME, chosenWord,
                         suggestedWords);
-        // Use the 2nd previous word as the previous word because the 1st previous word is the word
-        // to be committed.
+        // When we are composing word, get previous words information from the 2nd previous word
+        // because the 1st previous word is the word to be committed. Otherwise get previous words
+        // information from the 1st previous word.
         final PrevWordsInfo prevWordsInfo = mConnection.getPrevWordsInfoFromNthPreviousWord(
-                settingsValues.mSpacingAndPunctuations, 2);
+                settingsValues.mSpacingAndPunctuations, mWordComposer.isComposingWord() ? 2 : 1);
         mConnection.commitText(chosenWordWithSuggestions, 1);
         // Add the word to the user history dictionary
         performAdditionToUserHistoryDictionary(settingsValues, chosenWord, prevWordsInfo);
