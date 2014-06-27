@@ -47,7 +47,8 @@ import java.util.List;
  * virtual views, thus conveying their logical structure.
  * </p>
  */
-final class KeyboardAccessibilityNodeProvider extends AccessibilityNodeProviderCompat {
+final class KeyboardAccessibilityNodeProvider<KV extends KeyboardView>
+        extends AccessibilityNodeProviderCompat {
     private static final String TAG = KeyboardAccessibilityNodeProvider.class.getSimpleName();
 
     // From {@link android.view.accessibility.AccessibilityNodeInfo#UNDEFINED_ITEM_ID}.
@@ -69,16 +70,20 @@ final class KeyboardAccessibilityNodeProvider extends AccessibilityNodeProviderC
     private int mHoveringNodeId = UNDEFINED;
 
     /** The keyboard view to provide an accessibility node info. */
-    private final KeyboardView mKeyboardView;
+    private final KV mKeyboardView;
+    /** The accessibility delegate. */
+    private final KeyboardAccessibilityDelegate<KV> mDelegate;
 
     /** The current keyboard. */
     private Keyboard mKeyboard;
 
-    public KeyboardAccessibilityNodeProvider(final KeyboardView keyboardView) {
+    public KeyboardAccessibilityNodeProvider(final KV keyboardView,
+            final KeyboardAccessibilityDelegate<KV> delegate) {
         super();
         mKeyCodeDescriptionMapper = KeyCodeDescriptionMapper.getInstance();
         mAccessibilityUtils = AccessibilityUtils.getInstance();
         mKeyboardView = keyboardView;
+        mDelegate = delegate;
 
         // Since this class is constructed lazily, we might not get a subsequent
         // call to setKeyboard() and therefore need to call it now.
@@ -287,9 +292,11 @@ final class KeyboardAccessibilityNodeProvider extends AccessibilityNodeProviderC
             return true;
         case AccessibilityNodeInfoCompat.ACTION_CLICK:
             sendAccessibilityEventForKey(key, AccessibilityEvent.TYPE_VIEW_CLICKED);
+            mDelegate.performClickOn(key);
             return true;
         case AccessibilityNodeInfoCompat.ACTION_LONG_CLICK:
             sendAccessibilityEventForKey(key, AccessibilityEvent.TYPE_VIEW_LONG_CLICKED);
+            mDelegate.performLongClickOn(key);
             return true;
         default:
             return false;

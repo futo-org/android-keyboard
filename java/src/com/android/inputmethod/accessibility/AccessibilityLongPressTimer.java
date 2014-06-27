@@ -26,7 +26,7 @@ import com.android.inputmethod.latin.R;
 // Handling long press timer to show a more keys keyboard.
 final class AccessibilityLongPressTimer extends Handler {
     public interface LongPressTimerCallback {
-        public void onLongPressed(Key key);
+        public void performLongClickOn(Key key);
     }
 
     private static final int MSG_LONG_PRESS = 1;
@@ -47,7 +47,7 @@ final class AccessibilityLongPressTimer extends Handler {
         switch (msg.what) {
         case MSG_LONG_PRESS:
             cancelLongPress();
-            mCallback.onLongPressed((Key)msg.obj);
+            mCallback.performLongClickOn((Key)msg.obj);
             return;
         default:
             super.handleMessage(msg);
