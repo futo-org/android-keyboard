@@ -89,9 +89,9 @@ public final class KeyboardTextsTable {
         /*   3:29 */ "morekeys_e",
         /*   4:28 */ "morekeys_i",
         /*   5:23 */ "morekeys_c",
-        /*   6:23 */ "double_quotes",
-        /*   7:22 */ "morekeys_n",
-        /*   8:22 */ "keylabel_to_alpha",
+        /*   6:23 */ "keylabel_to_alpha",
+        /*   7:23 */ "double_quotes",
+        /*   8:22 */ "morekeys_n",
         /*   9:22 */ "single_quotes",
         /*  10:20 */ "morekeys_s",
         /*  11:14 */ "morekeys_y",
@@ -260,10 +260,10 @@ public final class KeyboardTextsTable {
         /* morekeys_a ~ */
         EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY,
         /* ~ morekeys_c */
-        /* double_quotes */ "!text/double_lqm_rqm",
-        /* morekeys_n */ EMPTY,
         // Label for "switch to alphabetic" key.
         /* keylabel_to_alpha */ "ABC",
+        /* double_quotes */ "!text/double_lqm_rqm",
+        /* morekeys_n */ EMPTY,
         /* single_quotes */ "!text/single_lqm_rqm",
         /* morekeys_s ~ */
         EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY,
@@ -507,14 +507,14 @@ public final class KeyboardTextsTable {
         // U+012B: "ī" LATIN SMALL LETTER I WITH MACRON
         // U+0133: "ĳ" LATIN SMALL LIGATURE IJ
         /* morekeys_i */ "\u00ED,\u00EC,\u00EF,\u00EE,\u012F,\u012B,\u0133",
-        /* morekeys_c */ null,
-        /* double_quotes */ null,
+        /* morekeys_c ~ */
+        null, null, null,
+        /* ~ double_quotes */
         // U+00F1: "ñ" LATIN SMALL LETTER N WITH TILDE
         // U+0144: "ń" LATIN SMALL LETTER N WITH ACUTE
         /* morekeys_n */ "\u00F1,\u0144",
-        /* keylabel_to_alpha ~ */
-        null, null, null,
-        /* ~ morekeys_s */
+        /* single_quotes */ null,
+        /* morekeys_s */ null,
         // U+00FD: "ý" LATIN SMALL LETTER Y WITH ACUTE
         // U+0133: "ĳ" LATIN SMALL LIGATURE IJ
         /* morekeys_y */ "\u00FD,\u0133",
@@ -523,17 +523,17 @@ public final class KeyboardTextsTable {
     /* Locale ar: Arabic */
     private static final String[] TEXTS_ar = {
         /* morekeys_a ~ */
-        null, null, null, null, null, null, null, null,
-        /* ~ morekeys_n */
+        null, null, null, null, null, null,
+        /* ~ morekeys_c */
         // Label for "switch to alphabetic" key.
         // U+0623: "أ" ARABIC LETTER ALEF WITH HAMZA ABOVE
         // U+200C: ZERO WIDTH NON-JOINER
         // U+0628: "ب" ARABIC LETTER BEH
         // U+062C: "ج" ARABIC LETTER JEEM
         /* keylabel_to_alpha */ "\u0623\u200C\u0628\u200C\u062C",
-        /* single_quotes ~ */
+        /* double_quotes ~ */
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-        null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null, null,
         /* ~ morekeys_cyrillic_soft_sign */
         // U+0661: "١" ARABIC-INDIC DIGIT ONE
         /* keyspec_symbols_1 */ "\u0661",
@@ -685,7 +685,7 @@ public final class KeyboardTextsTable {
         // U+0107: "ć" LATIN SMALL LETTER C WITH ACUTE
         // U+010D: "č" LATIN SMALL LETTER C WITH CARON
         /* morekeys_c */ "\u00E7,\u0107,\u010D",
-        /* double_quotes ~ */
+        /* keylabel_to_alpha ~ */
         null, null, null, null,
         /* ~ single_quotes */
         // U+015F: "ş" LATIN SMALL LETTER S WITH CEDILLA
@@ -705,13 +705,13 @@ public final class KeyboardTextsTable {
         /* morekeys_a ~ */
         null, null, null, null, null, null,
         /* ~ morekeys_c */
-        /* double_quotes */ "!text/double_9qm_lqm",
-        /* morekeys_n */ null,
         // Label for "switch to alphabetic" key.
         // U+0410: "А" CYRILLIC CAPITAL LETTER A
         // U+0411: "Б" CYRILLIC CAPITAL LETTER BE
         // U+0412: "В" CYRILLIC CAPITAL LETTER VE
         /* keylabel_to_alpha */ "\u0410\u0411\u0412",
+        /* double_quotes */ "!text/double_9qm_lqm",
+        /* morekeys_n */ null,
         /* single_quotes */ "!text/single_9qm_lqm",
         /* morekeys_s ~ */
         null, null, null, null, null, null, null, null, null, null, null, null,
@@ -738,14 +738,13 @@ public final class KeyboardTextsTable {
         /* morekeys_a ~ */
         null, null, null, null, null, null,
         /* ~ morekeys_c */
-        // single_quotes of Bulgarian is default single_quotes_right_left.
-        /* double_quotes */ "!text/double_9qm_lqm",
-        /* morekeys_n */ null,
         // Label for "switch to alphabetic" key.
         // U+0410: "А" CYRILLIC CAPITAL LETTER A
         // U+0411: "Б" CYRILLIC CAPITAL LETTER BE
         // U+0412: "В" CYRILLIC CAPITAL LETTER VE
         /* keylabel_to_alpha */ "\u0410\u0411\u0412",
+        // single_quotes of Bulgarian is default single_quotes_right_left.
+        /* double_quotes */ "!text/double_9qm_lqm",
     };
 
     /* Locale ca: Catalan */
@@ -796,12 +795,13 @@ public final class KeyboardTextsTable {
         // U+0107: "ć" LATIN SMALL LETTER C WITH ACUTE
         // U+010D: "č" LATIN SMALL LETTER C WITH CARON
         /* morekeys_c */ "\u00E7,\u0107,\u010D",
+        /* keylabel_to_alpha */ null,
         /* double_quotes */ null,
         // U+00F1: "ñ" LATIN SMALL LETTER N WITH TILDE
         // U+0144: "ń" LATIN SMALL LETTER N WITH ACUTE
         /* morekeys_n */ "\u00F1,\u0144",
-        /* keylabel_to_alpha ~ */
-        null, null, null, null, null, null, null,
+        /* single_quotes ~ */
+        null, null, null, null, null, null,
         /* ~ morekeys_t */
         // U+00B7: "·" MIDDLE DOT
         // U+0142: "ł" LATIN SMALL LETTER L WITH STROKE
@@ -870,12 +870,12 @@ public final class KeyboardTextsTable {
         // U+00E7: "ç" LATIN SMALL LETTER C WITH CEDILLA
         // U+0107: "ć" LATIN SMALL LETTER C WITH ACUTE
         /* morekeys_c */ "\u010D,\u00E7,\u0107",
+        /* keylabel_to_alpha */ null,
         /* double_quotes */ "!text/double_9qm_lqm",
         // U+0148: "ň" LATIN SMALL LETTER N WITH CARON
         // U+00F1: "ñ" LATIN SMALL LETTER N WITH TILDE
         // U+0144: "ń" LATIN SMALL LETTER N WITH ACUTE
         /* morekeys_n */ "\u0148,\u00F1,\u0144",
-        /* keylabel_to_alpha */ null,
         /* single_quotes */ "!text/single_9qm_lqm",
         // U+0161: "š" LATIN SMALL LETTER S WITH CARON
         // U+00DF: "ß" LATIN SMALL LETTER SHARP S
@@ -930,11 +930,11 @@ public final class KeyboardTextsTable {
         // U+00EF: "ï" LATIN SMALL LETTER I WITH DIAERESIS
         /* morekeys_i */ "\u00ED,\u00EF",
         /* morekeys_c */ null,
+        /* keylabel_to_alpha */ null,
         /* double_quotes */ "!text/double_9qm_lqm",
         // U+00F1: "ñ" LATIN SMALL LETTER N WITH TILDE
         // U+0144: "ń" LATIN SMALL LETTER N WITH ACUTE
         /* morekeys_n */ "\u00F1,\u0144",
-        /* keylabel_to_alpha */ null,
         /* single_quotes */ "!text/single_9qm_lqm",
         // U+00DF: "ß" LATIN SMALL LETTER SHARP S
         // U+015B: "ś" LATIN SMALL LETTER S WITH ACUTE
@@ -1004,13 +1004,13 @@ public final class KeyboardTextsTable {
         // U+00EB: "ë" LATIN SMALL LETTER E WITH DIAERESIS
         // U+0117: "ė" LATIN SMALL LETTER E WITH DOT ABOVE
         /* morekeys_e */ "\u00E9,\u00E8,\u00EA,\u00EB,\u0117",
-        /* morekeys_i */ null,
-        /* morekeys_c */ null,
+        /* morekeys_i ~ */
+        null, null, null,
+        /* ~ keylabel_to_alpha */
         /* double_quotes */ "!text/double_9qm_lqm",
         // U+00F1: "ñ" LATIN SMALL LETTER N WITH TILDE
         // U+0144: "ń" LATIN SMALL LETTER N WITH ACUTE
         /* morekeys_n */ "\u00F1,\u0144",
-        /* keylabel_to_alpha */ null,
         /* single_quotes */ "!text/single_9qm_lqm",
         // U+00DF: "ß" LATIN SMALL LETTER SHARP S
         // U+015B: "ś" LATIN SMALL LETTER S WITH ACUTE
@@ -1043,8 +1043,8 @@ public final class KeyboardTextsTable {
     /* Locale el: Greek */
     private static final String[] TEXTS_el = {
         /* morekeys_a ~ */
-        null, null, null, null, null, null, null, null,
-        /* ~ morekeys_n */
+        null, null, null, null, null, null,
+        /* ~ morekeys_c */
         // Label for "switch to alphabetic" key.
         // U+0391: "Α" GREEK CAPITAL LETTER ALPHA
         // U+0392: "Β" GREEK CAPITAL LETTER BETA
@@ -1092,10 +1092,10 @@ public final class KeyboardTextsTable {
         /* morekeys_i */ "\u00ED,\u00EE,\u00EF,\u012B,\u00EC",
         // U+00E7: "ç" LATIN SMALL LETTER C WITH CEDILLA
         /* morekeys_c */ "\u00E7",
+        /* keylabel_to_alpha */ null,
         /* double_quotes */ null,
         // U+00F1: "ñ" LATIN SMALL LETTER N WITH TILDE
         /* morekeys_n */ "\u00F1",
-        /* keylabel_to_alpha */ null,
         /* single_quotes */ null,
         // U+00DF: "ß" LATIN SMALL LETTER SHARP S
         /* morekeys_s */ "\u00DF",
@@ -1161,6 +1161,7 @@ public final class KeyboardTextsTable {
         // U+00E7: "ç" LATIN SMALL LETTER C WITH CEDILLA
         // U+010B: "ċ" LATIN SMALL LETTER C WITH DOT ABOVE
         /* morekeys_c */ "\u0107,\u010D,\u00E7,\u010B",
+        /* keylabel_to_alpha */ null,
         /* double_quotes */ null,
         // U+00F1: "ñ" LATIN SMALL LETTER N WITH TILDE
         // U+0144: "ń" LATIN SMALL LETTER N WITH ACUTE
@@ -1169,7 +1170,6 @@ public final class KeyboardTextsTable {
         // U+0149: "ŉ" LATIN SMALL LETTER N PRECEDED BY APOSTROPHE
         // U+014B: "ŋ" LATIN SMALL LETTER ENG
         /* morekeys_n */ "\u00F1,\u0144,\u0146,\u0148,\u0149,\u014B",
-        /* keylabel_to_alpha */ null,
         /* single_quotes */ null,
         // U+00DF: "ß" LATIN SMALL LETTER SHARP S
         // U+0161: "š" LATIN SMALL LETTER S WITH CARON
@@ -1297,15 +1297,15 @@ public final class KeyboardTextsTable {
         // U+0107: "ć" LATIN SMALL LETTER C WITH ACUTE
         // U+010D: "č" LATIN SMALL LETTER C WITH CARON
         /* morekeys_c */ "\u00E7,\u0107,\u010D",
+        /* keylabel_to_alpha */ null,
         /* double_quotes */ null,
         // U+00F1: "ñ" LATIN SMALL LETTER N WITH TILDE
         // U+0144: "ń" LATIN SMALL LETTER N WITH ACUTE
         /* morekeys_n */ "\u00F1,\u0144",
-        /* keylabel_to_alpha ~ */
+        /* single_quotes ~ */
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-        null,
         /* ~ morekeys_nordic_row2_11 */
         // U+00A1: "¡" INVERTED EXCLAMATION MARK
         // U+00BF: "¿" INVERTED QUESTION MARK
@@ -1363,12 +1363,12 @@ public final class KeyboardTextsTable {
         // U+00E7: "ç" LATIN SMALL LETTER C WITH CEDILLA
         // U+0107: "ć" LATIN SMALL LETTER C WITH ACUTE
         /* morekeys_c */ "\u010D,\u00E7,\u0107",
+        /* keylabel_to_alpha */ null,
         /* double_quotes */ "!text/double_9qm_lqm",
         // U+0146: "ņ" LATIN SMALL LETTER N WITH CEDILLA
         // U+00F1: "ñ" LATIN SMALL LETTER N WITH TILDE
         // U+0144: "ń" LATIN SMALL LETTER N WITH ACUTE
         /* morekeys_n */ "\u0146,\u00F1,\u0144",
-        /* keylabel_to_alpha */ null,
         /* single_quotes */ "!text/single_9qm_lqm",
         // U+0161: "š" LATIN SMALL LETTER S WITH CARON
         // U+00DF: "ß" LATIN SMALL LETTER SHARP S
@@ -1463,6 +1463,7 @@ public final class KeyboardTextsTable {
         // U+0107: "ć" LATIN SMALL LETTER C WITH ACUTE
         // U+010D: "č" LATIN SMALL LETTER C WITH CARON
         /* morekeys_c */ "\u00E7,\u0107,\u010D",
+        /* keylabel_to_alpha */ null,
         /* double_quotes */ null,
         // U+00F1: "ñ" LATIN SMALL LETTER N WITH TILDE
         // U+0144: "ń" LATIN SMALL LETTER N WITH ACUTE
@@ -1472,16 +1473,16 @@ public final class KeyboardTextsTable {
     /* Locale fa: Persian */
     private static final String[] TEXTS_fa = {
         /* morekeys_a ~ */
-        null, null, null, null, null, null, null, null,
-        /* ~ morekeys_n */
+        null, null, null, null, null, null,
+        /* ~ morekeys_c */
         // Label for "switch to alphabetic" key.
         // U+0627: "ا" ARABIC LETTER ALEF
         // U+200C: ZERO WIDTH NON-JOINER
         // U+0628: "ب" ARABIC LETTER BEH
         // U+067E: "پ" ARABIC LETTER PEH
         /* keylabel_to_alpha */ "\u0627\u200C\u0628\u200C\u067E",
-        /* single_quotes ~ */
-        null, null, null, null, null, null, null,
+        /* double_quotes ~ */
+        null, null, null, null, null, null, null, null, null,
         /* ~ morekeys_l */
         // U+FDFC: "﷼" RIAL SIGN
         /* keyspec_currency */ "\uFDFC",
@@ -1710,7 +1711,7 @@ public final class KeyboardTextsTable {
         // U+0107: "ć" LATIN SMALL LETTER C WITH ACUTE
         // U+010D: "č" LATIN SMALL LETTER C WITH CARON
         /* morekeys_c */ "\u00E7,%,\u0107,\u010D",
-        /* double_quotes ~ */
+        /* keylabel_to_alpha ~ */
         null, null, null, null, null,
         /* ~ morekeys_s */
         // U+00FF: "ÿ" LATIN SMALL LETTER Y WITH DIAERESIS
@@ -1782,6 +1783,7 @@ public final class KeyboardTextsTable {
         // U+0107: "ć" LATIN SMALL LETTER C WITH ACUTE
         // U+010D: "č" LATIN SMALL LETTER C WITH CARON
         /* morekeys_c */ "\u00E7,\u0107,\u010D",
+        /* keylabel_to_alpha */ null,
         /* double_quotes */ null,
         // U+00F1: "ñ" LATIN SMALL LETTER N WITH TILDE
         // U+0144: "ń" LATIN SMALL LETTER N WITH ACUTE
@@ -1791,15 +1793,15 @@ public final class KeyboardTextsTable {
     /* Locale hi: Hindi */
     private static final String[] TEXTS_hi = {
         /* morekeys_a ~ */
-        null, null, null, null, null, null, null, null,
-        /* ~ morekeys_n */
+        null, null, null, null, null, null,
+        /* ~ morekeys_c */
         // Label for "switch to alphabetic" key.
         // U+0915: "क" DEVANAGARI LETTER KA
         // U+0916: "ख" DEVANAGARI LETTER KHA
         // U+0917: "ग" DEVANAGARI LETTER GA
         /* keylabel_to_alpha */ "\u0915\u0916\u0917",
-        /* single_quotes ~ */
-        null, null, null, null, null, null, null,
+        /* double_quotes ~ */
+        null, null, null, null, null, null, null, null, null,
         /* ~ morekeys_l */
         // U+20B9: "₹" INDIAN RUPEE SIGN
         /* keyspec_currency */ "\u20B9",
@@ -1849,11 +1851,11 @@ public final class KeyboardTextsTable {
         // U+0107: "ć" LATIN SMALL LETTER C WITH ACUTE
         // U+00E7: "ç" LATIN SMALL LETTER C WITH CEDILLA
         /* morekeys_c */ "\u010D,\u0107,\u00E7",
+        /* keylabel_to_alpha */ null,
         /* double_quotes */ "!text/double_9qm_rqm",
         // U+00F1: "ñ" LATIN SMALL LETTER N WITH TILDE
         // U+0144: "ń" LATIN SMALL LETTER N WITH ACUTE
         /* morekeys_n */ "\u00F1,\u0144",
-        /* keylabel_to_alpha */ null,
         /* single_quotes */ "!text/single_9qm_rqm",
         // U+0161: "š" LATIN SMALL LETTER S WITH CARON
         // U+015B: "ś" LATIN SMALL LETTER S WITH ACUTE
@@ -1917,9 +1919,9 @@ public final class KeyboardTextsTable {
         // U+012B: "ī" LATIN SMALL LETTER I WITH MACRON
         /* morekeys_i */ "\u00ED,\u00EE,\u00EF,\u00EC,\u012F,\u012B",
         /* morekeys_c */ null,
+        /* keylabel_to_alpha */ null,
         /* double_quotes */ "!text/double_9qm_rqm",
         /* morekeys_n */ null,
-        /* keylabel_to_alpha */ null,
         /* single_quotes */ "!text/single_9qm_rqm",
         /* morekeys_s ~ */
         null, null, null, null, null, null, null, null,
@@ -1931,17 +1933,18 @@ public final class KeyboardTextsTable {
     /* Locale hy_AM: Armenian (Armenia) */
     private static final String[] TEXTS_hy_AM = {
         /* morekeys_a ~ */
-        null, null, null, null, null, null, null, null,
-        /* ~ morekeys_n */
+        null, null, null, null, null, null,
+        /* ~ morekeys_c */
         // Label for "switch to alphabetic" key.
         // U+0531: "Ա" ARMENIAN CAPITAL LETTER AYB
         // U+0532: "Բ" ARMENIAN CAPITAL LETTER BEN
         // U+0533: "Գ" ARMENIAN CAPITAL LETTER GIM
         /* keylabel_to_alpha */ "\u0531\u0532\u0533",
-        /* single_quotes ~ */
+        /* double_quotes ~ */
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null,
         /* ~ morekeys_nordic_row2_11 */
         // U+055E: "՞" ARMENIAN QUESTION MARK
         // U+055C: "՜" ARMENIAN EXCLAMATION MARK
@@ -2027,9 +2030,9 @@ public final class KeyboardTextsTable {
         // U+012B: "ī" LATIN SMALL LETTER I WITH MACRON
         /* morekeys_i */ "\u00ED,\u00EF,\u00EE,\u00EC,\u012F,\u012B",
         /* morekeys_c */ null,
+        /* keylabel_to_alpha */ null,
         /* double_quotes */ "!text/double_9qm_lqm",
         /* morekeys_n */ null,
-        /* keylabel_to_alpha */ null,
         /* single_quotes */ "!text/single_9qm_lqm",
         /* morekeys_s */ null,
         // U+00FD: "ý" LATIN SMALL LETTER Y WITH ACUTE
@@ -2110,13 +2113,13 @@ public final class KeyboardTextsTable {
         /* morekeys_a ~ */
         null, null, null, null, null, null,
         /* ~ morekeys_c */
-        /* double_quotes */ "!text/double_rqm_9qm",
-        /* morekeys_n */ null,
         // Label for "switch to alphabetic" key.
         // U+05D0: "א" HEBREW LETTER ALEF
         // U+05D1: "ב" HEBREW LETTER BET
         // U+05D2: "ג" HEBREW LETTER GIMEL
         /* keylabel_to_alpha */ "\u05D0\u05D1\u05D2",
+        /* double_quotes */ "!text/double_rqm_9qm",
+        /* morekeys_n */ null,
         /* single_quotes */ "!text/single_rqm_9qm",
         /* morekeys_s ~ */
         null, null, null, null, null, null,
@@ -2167,28 +2170,28 @@ public final class KeyboardTextsTable {
         /* morekeys_a ~ */
         null, null, null, null, null, null,
         /* ~ morekeys_c */
-        /* double_quotes */ "!text/double_9qm_lqm",
-        /* morekeys_n */ null,
         // Label for "switch to alphabetic" key.
         // U+10D0: "ა" GEORGIAN LETTER AN
         // U+10D1: "ბ" GEORGIAN LETTER BAN
         // U+10D2: "გ" GEORGIAN LETTER GAN
         /* keylabel_to_alpha */ "\u10D0\u10D1\u10D2",
+        /* double_quotes */ "!text/double_9qm_lqm",
+        /* morekeys_n */ null,
         /* single_quotes */ "!text/single_9qm_lqm",
     };
 
     /* Locale kk: Kazakh */
     private static final String[] TEXTS_kk = {
         /* morekeys_a ~ */
-        null, null, null, null, null, null, null, null,
-        /* ~ morekeys_n */
+        null, null, null, null, null, null,
+        /* ~ morekeys_c */
         // Label for "switch to alphabetic" key.
         // U+0410: "А" CYRILLIC CAPITAL LETTER A
         // U+0411: "Б" CYRILLIC CAPITAL LETTER BE
         // U+0412: "В" CYRILLIC CAPITAL LETTER VE
         /* keylabel_to_alpha */ "\u0410\u0411\u0412",
-        /* single_quotes ~ */
-        null, null, null, null, null, null, null, null, null, null, null, null, null,
+        /* double_quotes ~ */
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         /* ~ morekeys_k */
         // U+0451: "ё" CYRILLIC SMALL LETTER IO
         /* morekeys_cyrillic_ie */ "\u0451",
@@ -2237,14 +2240,14 @@ public final class KeyboardTextsTable {
     /* Locale km_KH: Khmer (Cambodia) */
     private static final String[] TEXTS_km_KH = {
         /* morekeys_a ~ */
-        null, null, null, null, null, null, null, null,
-        /* ~ morekeys_n */
+        null, null, null, null, null, null,
+        /* ~ morekeys_c */
         // Label for "switch to alphabetic" key.
         // U+1780: "ក" KHMER LETTER KA
         // U+1781: "ខ" KHMER LETTER KHA
         // U+1782: "គ" KHMER LETTER KO
         /* keylabel_to_alpha */ "\u1780\u1781\u1782",
-        /* single_quotes ~ */
+        /* double_quotes ~ */
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
@@ -2252,7 +2255,7 @@ public final class KeyboardTextsTable {
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-        null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null,
         /* ~ morekeys_cyrillic_a */
         // U+17DB: "៛" KHMER CURRENCY SYMBOL RIEL
         /* morekeys_currency_dollar */ "\u17DB,\u00A2,\u00A3,\u20AC,\u00A5,\u20B1",
@@ -2261,15 +2264,15 @@ public final class KeyboardTextsTable {
     /* Locale ky: Kirghiz */
     private static final String[] TEXTS_ky = {
         /* morekeys_a ~ */
-        null, null, null, null, null, null, null, null,
-        /* ~ morekeys_n */
+        null, null, null, null, null, null,
+        /* ~ morekeys_c */
         // Label for "switch to alphabetic" key.
         // U+0410: "А" CYRILLIC CAPITAL LETTER A
         // U+0411: "Б" CYRILLIC CAPITAL LETTER BE
         // U+0412: "В" CYRILLIC CAPITAL LETTER VE
         /* keylabel_to_alpha */ "\u0410\u0411\u0412",
-        /* single_quotes ~ */
-        null, null, null, null, null, null, null, null, null, null, null, null, null,
+        /* double_quotes ~ */
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         /* ~ morekeys_k */
         // U+0451: "ё" CYRILLIC SMALL LETTER IO
         /* morekeys_cyrillic_ie */ "\u0451",
@@ -2304,15 +2307,15 @@ public final class KeyboardTextsTable {
     /* Locale lo_LA: Lao (Laos) */
     private static final String[] TEXTS_lo_LA = {
         /* morekeys_a ~ */
-        null, null, null, null, null, null, null, null,
-        /* ~ morekeys_n */
+        null, null, null, null, null, null,
+        /* ~ morekeys_c */
         // Label for "switch to alphabetic" key.
         // U+0E81: "ກ" LAO LETTER KO
         // U+0E82: "ຂ" LAO LETTER KHO SUNG
         // U+0E84: "ຄ" LAO LETTER KHO TAM
         /* keylabel_to_alpha */ "\u0E81\u0E82\u0E84",
-        /* single_quotes ~ */
-        null, null, null, null, null, null, null,
+        /* double_quotes ~ */
+        null, null, null, null, null, null, null, null, null,
         /* ~ morekeys_l */
         // U+20AD: "₭" KIP SIGN
         /* keyspec_currency */ "\u20AD",
@@ -2370,12 +2373,12 @@ public final class KeyboardTextsTable {
         // U+00E7: "ç" LATIN SMALL LETTER C WITH CEDILLA
         // U+0107: "ć" LATIN SMALL LETTER C WITH ACUTE
         /* morekeys_c */ "\u010D,\u00E7,\u0107",
+        /* keylabel_to_alpha */ null,
         /* double_quotes */ "!text/double_9qm_lqm",
         // U+0146: "ņ" LATIN SMALL LETTER N WITH CEDILLA
         // U+00F1: "ñ" LATIN SMALL LETTER N WITH TILDE
         // U+0144: "ń" LATIN SMALL LETTER N WITH ACUTE
         /* morekeys_n */ "\u0146,\u00F1,\u0144",
-        /* keylabel_to_alpha */ null,
         /* single_quotes */ "!text/single_9qm_lqm",
         // U+0161: "š" LATIN SMALL LETTER S WITH CARON
         // U+00DF: "ß" LATIN SMALL LETTER SHARP S
@@ -2464,12 +2467,12 @@ public final class KeyboardTextsTable {
         // U+00E7: "ç" LATIN SMALL LETTER C WITH CEDILLA
         // U+0107: "ć" LATIN SMALL LETTER C WITH ACUTE
         /* morekeys_c */ "\u010D,\u00E7,\u0107",
+        /* keylabel_to_alpha */ null,
         /* double_quotes */ "!text/double_9qm_lqm",
         // U+0146: "ņ" LATIN SMALL LETTER N WITH CEDILLA
         // U+00F1: "ñ" LATIN SMALL LETTER N WITH TILDE
         // U+0144: "ń" LATIN SMALL LETTER N WITH ACUTE
         /* morekeys_n */ "\u0146,\u00F1,\u0144",
-        /* keylabel_to_alpha */ null,
         /* single_quotes */ "!text/single_9qm_lqm",
         // U+0161: "š" LATIN SMALL LETTER S WITH CARON
         // U+00DF: "ß" LATIN SMALL LETTER SHARP S
@@ -2512,13 +2515,13 @@ public final class KeyboardTextsTable {
         /* morekeys_a ~ */
         null, null, null, null, null, null,
         /* ~ morekeys_c */
-        /* double_quotes */ "!text/double_9qm_lqm",
-        /* morekeys_n */ null,
         // Label for "switch to alphabetic" key.
         // U+0410: "А" CYRILLIC CAPITAL LETTER A
         // U+0411: "Б" CYRILLIC CAPITAL LETTER BE
         // U+0412: "В" CYRILLIC CAPITAL LETTER VE
         /* keylabel_to_alpha */ "\u0410\u0411\u0412",
+        /* double_quotes */ "!text/double_9qm_lqm",
+        /* morekeys_n */ null,
         /* single_quotes */ "!text/single_9qm_lqm",
         /* morekeys_s ~ */
         null, null, null, null, null, null, null, null, null, null, null, null,
@@ -2547,15 +2550,15 @@ public final class KeyboardTextsTable {
     /* Locale mn_MN: Mongolian (Mongolia) */
     private static final String[] TEXTS_mn_MN = {
         /* morekeys_a ~ */
-        null, null, null, null, null, null, null, null,
-        /* ~ morekeys_n */
+        null, null, null, null, null, null,
+        /* ~ morekeys_c */
         // Label for "switch to alphabetic" key.
         // U+0410: "А" CYRILLIC CAPITAL LETTER A
         // U+0411: "Б" CYRILLIC CAPITAL LETTER BE
         // U+0412: "В" CYRILLIC CAPITAL LETTER VE
         /* keylabel_to_alpha */ "\u0410\u0411\u0412",
-        /* single_quotes ~ */
-        null, null, null, null, null, null, null,
+        /* double_quotes ~ */
+        null, null, null, null, null, null, null, null, null,
         /* ~ morekeys_l */
         // U+20AE: "₮" TUGRIK SIGN
         /* keyspec_currency */ "\u20AE",
@@ -2564,15 +2567,15 @@ public final class KeyboardTextsTable {
     /* Locale mr_IN: Marathi (India) */
     private static final String[] TEXTS_mr_IN = {
         /* morekeys_a ~ */
-        null, null, null, null, null, null, null, null,
-        /* ~ morekeys_n */
+        null, null, null, null, null, null,
+        /* ~ morekeys_c */
         // Label for "switch to alphabetic" key.
         // U+0915: "क" DEVANAGARI LETTER KA
         // U+0916: "ख" DEVANAGARI LETTER KHA
         // U+0917: "ग" DEVANAGARI LETTER GA
         /* keylabel_to_alpha */ "\u0915\u0916\u0917",
-        /* single_quotes ~ */
-        null, null, null, null, null, null, null,
+        /* double_quotes ~ */
+        null, null, null, null, null, null, null, null, null,
         /* ~ morekeys_l */
         // U+20B9: "₹" INDIAN RUPEE SIGN
         /* keyspec_currency */ "\u20B9",
@@ -2616,17 +2619,18 @@ public final class KeyboardTextsTable {
     /* Locale my_MM: Burmese (Myanmar) */
     private static final String[] TEXTS_my_MM = {
         /* morekeys_a ~ */
-        null, null, null, null, null, null, null, null,
-        /* ~ morekeys_n */
+        null, null, null, null, null, null,
+        /* ~ morekeys_c */
         // Label for "switch to alphabetic" key.
         // U+1000: "က" MYANMAR LETTER KA
         // U+1001: "ခ" MYANMAR LETTER KHA
         // U+1002: "ဂ" MYANMAR LETTER GA
         /* keylabel_to_alpha */ "\u1000\u1001\u1002",
-        /* single_quotes ~ */
+        /* double_quotes ~ */
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null,
         /* ~ morekeys_nordic_row2_11 */
         /* morekeys_punctuation */ "!autoColumnOrder!9,\u104A,.,?,!,#,),(,/,;,...,',@,:,-,\",+,\\%,&",
         // U+104A: "၊" MYANMAR SIGN LITTLE SECTION
@@ -2681,11 +2685,11 @@ public final class KeyboardTextsTable {
         // U+0117: "ė" LATIN SMALL LETTER E WITH DOT ABOVE
         // U+0113: "ē" LATIN SMALL LETTER E WITH MACRON
         /* morekeys_e */ "\u00E9,\u00E8,\u00EA,\u00EB,\u0119,\u0117,\u0113",
-        /* morekeys_i */ null,
-        /* morekeys_c */ null,
+        /* morekeys_i ~ */
+        null, null, null,
+        /* ~ keylabel_to_alpha */
         /* double_quotes */ "!text/double_9qm_rqm",
         /* morekeys_n */ null,
-        /* keylabel_to_alpha */ null,
         /* single_quotes */ "!text/single_9qm_rqm",
         /* morekeys_s ~ */
         null, null, null, null, null, null, null, null, null, null, null, null, null,
@@ -2709,15 +2713,15 @@ public final class KeyboardTextsTable {
     /* Locale ne_NP: Nepali (Nepal) */
     private static final String[] TEXTS_ne_NP = {
         /* morekeys_a ~ */
-        null, null, null, null, null, null, null, null,
-        /* ~ morekeys_n */
+        null, null, null, null, null, null,
+        /* ~ morekeys_c */
         // Label for "switch to alphabetic" key.
         // U+0915: "क" DEVANAGARI LETTER KA
         // U+0916: "ख" DEVANAGARI LETTER KHA
         // U+0917: "ग" DEVANAGARI LETTER GA
         /* keylabel_to_alpha */ "\u0915\u0916\u0917",
-        /* single_quotes ~ */
-        null, null, null, null, null, null, null,
+        /* double_quotes ~ */
+        null, null, null, null, null, null, null, null, null,
         /* ~ morekeys_l */
         // U+0930/U+0941/U+002E "रु." NEPALESE RUPEE SIGN
         /* keyspec_currency */ "\u0930\u0941.",
@@ -2801,11 +2805,11 @@ public final class KeyboardTextsTable {
         // U+0133: "ĳ" LATIN SMALL LIGATURE IJ
         /* morekeys_i */ "\u00ED,\u00EF,\u00EC,\u00EE,\u012F,\u012B,\u0133",
         /* morekeys_c */ null,
+        /* keylabel_to_alpha */ null,
         /* double_quotes */ "!text/double_9qm_rqm",
         // U+00F1: "ñ" LATIN SMALL LETTER N WITH TILDE
         // U+0144: "ń" LATIN SMALL LETTER N WITH ACUTE
         /* morekeys_n */ "\u00F1,\u0144",
-        /* keylabel_to_alpha */ null,
         /* single_quotes */ "!text/single_9qm_rqm",
         /* morekeys_s */ null,
         // U+0133: "ĳ" LATIN SMALL LIGATURE IJ
@@ -2847,11 +2851,11 @@ public final class KeyboardTextsTable {
         // U+00E7: "ç" LATIN SMALL LETTER C WITH CEDILLA
         // U+010D: "č" LATIN SMALL LETTER C WITH CARON
         /* morekeys_c */ "\u0107,\u00E7,\u010D",
+        /* keylabel_to_alpha */ null,
         /* double_quotes */ "!text/double_9qm_rqm",
         // U+0144: "ń" LATIN SMALL LETTER N WITH ACUTE
         // U+00F1: "ñ" LATIN SMALL LETTER N WITH TILDE
         /* morekeys_n */ "\u0144,\u00F1",
-        /* keylabel_to_alpha */ null,
         /* single_quotes */ "!text/single_9qm_rqm",
         // U+015B: "ś" LATIN SMALL LETTER S WITH ACUTE
         // U+00DF: "ß" LATIN SMALL LETTER SHARP S
@@ -2952,9 +2956,9 @@ public final class KeyboardTextsTable {
         // U+012B: "ī" LATIN SMALL LETTER I WITH MACRON
         /* morekeys_i */ "\u00EE,\u00EF,\u00EC,\u00ED,\u012F,\u012B",
         /* morekeys_c */ null,
+        /* keylabel_to_alpha */ null,
         /* double_quotes */ "!text/double_9qm_rqm",
         /* morekeys_n */ null,
-        /* keylabel_to_alpha */ null,
         /* single_quotes */ "!text/single_9qm_rqm",
         // U+0219: "ș" LATIN SMALL LETTER S WITH COMMA BELOW
         // U+00DF: "ß" LATIN SMALL LETTER SHARP S
@@ -2973,13 +2977,13 @@ public final class KeyboardTextsTable {
         /* morekeys_a ~ */
         null, null, null, null, null, null,
         /* ~ morekeys_c */
-        /* double_quotes */ "!text/double_9qm_lqm",
-        /* morekeys_n */ null,
         // Label for "switch to alphabetic" key.
         // U+0410: "А" CYRILLIC CAPITAL LETTER A
         // U+0411: "Б" CYRILLIC CAPITAL LETTER BE
         // U+0412: "В" CYRILLIC CAPITAL LETTER VE
         /* keylabel_to_alpha */ "\u0410\u0411\u0412",
+        /* double_quotes */ "!text/double_9qm_lqm",
+        /* morekeys_n */ null,
         /* single_quotes */ "!text/single_9qm_lqm",
         /* morekeys_s ~ */
         null, null, null, null, null, null, null, null, null, null, null, null,
@@ -2999,6 +3003,17 @@ public final class KeyboardTextsTable {
         /* keyspec_east_slavic_row3_5 */ "\u0438",
         // U+044A: "ъ" CYRILLIC SMALL LETTER HARD SIGN
         /* morekeys_cyrillic_soft_sign */ "\u044A",
+    };
+
+    /* Locale si_LK: Sinhalese (Sri Lanka) */
+    private static final String[] TEXTS_si_LK = {
+        /* morekeys_a ~ */
+        null, null, null, null, null, null,
+        /* ~ morekeys_c */
+        // Label for "switch to alphabetic" key.
+        // U+0D85: "අ" SINHALA LETTER AYANNA
+        // U+0D86: "ආ" SINHALA LETTER AAYANNA
+        /* keylabel_to_alpha */ "\u0D85,\u0D86",
     };
 
     /* Locale sk: Slovak */
@@ -3052,13 +3067,13 @@ public final class KeyboardTextsTable {
         // U+00E7: "ç" LATIN SMALL LETTER C WITH CEDILLA
         // U+0107: "ć" LATIN SMALL LETTER C WITH ACUTE
         /* morekeys_c */ "\u010D,\u00E7,\u0107",
+        /* keylabel_to_alpha */ null,
         /* double_quotes */ "!text/double_9qm_lqm",
         // U+0148: "ň" LATIN SMALL LETTER N WITH CARON
         // U+0146: "ņ" LATIN SMALL LETTER N WITH CEDILLA
         // U+00F1: "ñ" LATIN SMALL LETTER N WITH TILDE
         // U+0144: "ń" LATIN SMALL LETTER N WITH ACUTE
         /* morekeys_n */ "\u0148,\u0146,\u00F1,\u0144",
-        /* keylabel_to_alpha */ null,
         /* single_quotes */ "!text/single_9qm_lqm",
         // U+0161: "š" LATIN SMALL LETTER S WITH CARON
         // U+00DF: "ß" LATIN SMALL LETTER SHARP S
@@ -3104,9 +3119,9 @@ public final class KeyboardTextsTable {
         // U+010D: "č" LATIN SMALL LETTER C WITH CARON
         // U+0107: "ć" LATIN SMALL LETTER C WITH ACUTE
         /* morekeys_c */ "\u010D,\u0107",
+        /* keylabel_to_alpha */ null,
         /* double_quotes */ "!text/double_9qm_lqm",
         /* morekeys_n */ null,
-        /* keylabel_to_alpha */ null,
         /* single_quotes */ "!text/single_9qm_lqm",
         // U+0161: "š" LATIN SMALL LETTER S WITH CARON
         /* morekeys_s */ "\u0161",
@@ -3127,14 +3142,14 @@ public final class KeyboardTextsTable {
         /* morekeys_a ~ */
         null, null, null, null, null, null,
         /* ~ morekeys_c */
-        /* double_quotes */ "!text/double_9qm_lqm",
-        /* morekeys_n */ null,
         // END: More keys definitions for Serbian (Cyrillic)
         // Label for "switch to alphabetic" key.
         // U+0410: "А" CYRILLIC CAPITAL LETTER A
         // U+0411: "Б" CYRILLIC CAPITAL LETTER BE
         // U+0412: "В" CYRILLIC CAPITAL LETTER VE
         /* keylabel_to_alpha */ "\u0410\u0411\u0412",
+        /* double_quotes */ "!text/double_9qm_lqm",
+        /* morekeys_n */ null,
         /* single_quotes */ "!text/single_9qm_lqm",
         /* morekeys_s ~ */
         null, null, null, null, null, null, null, null,
@@ -3217,12 +3232,12 @@ public final class KeyboardTextsTable {
         // U+0107: "ć" LATIN SMALL LETTER C WITH ACUTE
         // U+010D: "č" LATIN SMALL LETTER C WITH CARON
         /* morekeys_c */ "\u00E7,\u0107,\u010D",
+        /* keylabel_to_alpha */ null,
         /* double_quotes */ null,
         // U+0144: "ń" LATIN SMALL LETTER N WITH ACUTE
         // U+00F1: "ñ" LATIN SMALL LETTER N WITH TILDE
         // U+0148: "ň" LATIN SMALL LETTER N WITH CARON
         /* morekeys_n */ "\u0144,\u00F1,\u0148",
-        /* keylabel_to_alpha */ null,
         /* single_quotes */ null,
         // U+015B: "ś" LATIN SMALL LETTER S WITH ACUTE
         // U+0161: "š" LATIN SMALL LETTER S WITH CARON
@@ -3310,10 +3325,10 @@ public final class KeyboardTextsTable {
         /* morekeys_i */ "\u00EE,\u00EF,\u00ED,\u012B,\u00EC",
         // U+00E7: "ç" LATIN SMALL LETTER C WITH CEDILLA
         /* morekeys_c */ "\u00E7",
+        /* keylabel_to_alpha */ null,
         /* double_quotes */ null,
         // U+00F1: "ñ" LATIN SMALL LETTER N WITH TILDE
         /* morekeys_n */ "\u00F1",
-        /* keylabel_to_alpha */ null,
         /* single_quotes */ null,
         // U+00DF: "ß" LATIN SMALL LETTER SHARP S
         /* morekeys_s */ "\u00DF",
@@ -3326,15 +3341,15 @@ public final class KeyboardTextsTable {
     /* Locale th: Thai */
     private static final String[] TEXTS_th = {
         /* morekeys_a ~ */
-        null, null, null, null, null, null, null, null,
-        /* ~ morekeys_n */
+        null, null, null, null, null, null,
+        /* ~ morekeys_c */
         // Label for "switch to alphabetic" key.
         // U+0E01: "ก" THAI CHARACTER KO KAI
         // U+0E02: "ข" THAI CHARACTER KHO KHAI
         // U+0E04: "ค" THAI CHARACTER KHO KHWAI
         /* keylabel_to_alpha */ "\u0E01\u0E02\u0E04",
-        /* single_quotes ~ */
-        null, null, null, null, null, null, null,
+        /* double_quotes ~ */
+        null, null, null, null, null, null, null, null, null,
         /* ~ morekeys_l */
         // U+0E3F: "฿" THAI CURRENCY SYMBOL BAHT
         /* keyspec_currency */ "\u0E3F",
@@ -3388,6 +3403,7 @@ public final class KeyboardTextsTable {
         // U+0107: "ć" LATIN SMALL LETTER C WITH ACUTE
         // U+010D: "č" LATIN SMALL LETTER C WITH CARON
         /* morekeys_c */ "\u00E7,\u0107,\u010D",
+        /* keylabel_to_alpha */ null,
         /* double_quotes */ null,
         // U+00F1: "ñ" LATIN SMALL LETTER N WITH TILDE
         // U+0144: "ń" LATIN SMALL LETTER N WITH ACUTE
@@ -3426,7 +3442,7 @@ public final class KeyboardTextsTable {
         // U+0107: "ć" LATIN SMALL LETTER C WITH ACUTE
         // U+010D: "č" LATIN SMALL LETTER C WITH CARON
         /* morekeys_c */ "\u00E7,\u0107,\u010D",
-        /* double_quotes ~ */
+        /* keylabel_to_alpha ~ */
         null, null, null, null,
         /* ~ single_quotes */
         // U+015F: "ş" LATIN SMALL LETTER S WITH CEDILLA
@@ -3446,13 +3462,13 @@ public final class KeyboardTextsTable {
         /* morekeys_a ~ */
         null, null, null, null, null, null,
         /* ~ morekeys_c */
-        /* double_quotes */ "!text/double_9qm_lqm",
-        /* morekeys_n */ null,
         // Label for "switch to alphabetic" key.
         // U+0410: "А" CYRILLIC CAPITAL LETTER A
         // U+0411: "Б" CYRILLIC CAPITAL LETTER BE
         // U+0412: "В" CYRILLIC CAPITAL LETTER VE
         /* keylabel_to_alpha */ "\u0410\u0411\u0412",
+        /* double_quotes */ "!text/double_9qm_lqm",
+        /* morekeys_n */ null,
         /* single_quotes */ "!text/single_9qm_lqm",
         /* morekeys_s ~ */
         null, null, null, null, null, null,
@@ -3613,10 +3629,10 @@ public final class KeyboardTextsTable {
         /* morekeys_i */ "\u00ED,\u00EE,\u00EF,\u012B,\u00EC",
         // U+00E7: "ç" LATIN SMALL LETTER C WITH CEDILLA
         /* morekeys_c */ "\u00E7",
+        /* keylabel_to_alpha */ null,
         /* double_quotes */ null,
         // U+00F1: "ñ" LATIN SMALL LETTER N WITH TILDE
         /* morekeys_n */ "\u00F1",
-        /* keylabel_to_alpha */ null,
         /* single_quotes */ null,
         // U+00DF: "ß" LATIN SMALL LETTER SHARP S
         /* morekeys_s */ "\u00DF",
@@ -3686,6 +3702,7 @@ public final class KeyboardTextsTable {
         // U+010B: "ċ" LATIN SMALL LETTER C WITH DOT ABOVE
         // U+010D: "č" LATIN SMALL LETTER C WITH CARON
         /* morekeys_c */ "\u00E7,\u0107,\u0109,\u010B,\u010D",
+        /* keylabel_to_alpha */ null,
         /* double_quotes */ null,
         // U+00F1: "ñ" LATIN SMALL LETTER N WITH TILDE
         // U+0144: "ń" LATIN SMALL LETTER N WITH ACUTE
@@ -3694,7 +3711,6 @@ public final class KeyboardTextsTable {
         // U+0149: "ŉ" LATIN SMALL LETTER N PRECEDED BY APOSTROPHE
         // U+014B: "ŋ" LATIN SMALL LETTER ENG
         /* morekeys_n */ "\u00F1,\u0144,\u0146,\u0148,\u0149,\u014B",
-        /* keylabel_to_alpha */ null,
         /* single_quotes */ null,
         // U+00DF: "ß" LATIN SMALL LETTER SHARP S
         // U+015B: "ś" LATIN SMALL LETTER S WITH ACUTE
@@ -3767,21 +3783,21 @@ public final class KeyboardTextsTable {
         "ar"     , TEXTS_ar,    /*  55/110 Arabic */
         "az_AZ"  , TEXTS_az_AZ, /*   8/ 18 Azerbaijani (Azerbaijan) */
         "be_BY"  , TEXTS_be_BY, /*   9/ 32 Belarusian (Belarus) */
-        "bg"     , TEXTS_bg,    /*   2/  9 Bulgarian */
+        "bg"     , TEXTS_bg,    /*   2/  8 Bulgarian */
         "ca"     , TEXTS_ca,    /*  11/ 95 Catalan */
         "cs"     , TEXTS_cs,    /*  17/ 21 Czech */
         "da"     , TEXTS_da,    /*  19/ 54 Danish */
         "de"     , TEXTS_de,    /*  16/ 62 German */
-        "el"     , TEXTS_el,    /*   1/  9 Greek */
+        "el"     , TEXTS_el,    /*   1/  7 Greek */
         "en"     , TEXTS_en,    /*   8/ 11 English */
         "eo"     , TEXTS_eo,    /*  26/118 Esperanto */
         "es"     , TEXTS_es,    /*   8/ 55 Spanish */
         "et_EE"  , TEXTS_et_EE, /*  22/ 27 Estonian (Estonia) */
-        "eu_ES"  , TEXTS_eu_ES, /*   7/  8 Basque (Spain) */
+        "eu_ES"  , TEXTS_eu_ES, /*   7/  9 Basque (Spain) */
         "fa"     , TEXTS_fa,    /*  58/125 Persian */
         "fi"     , TEXTS_fi,    /*  10/ 54 Finnish */
         "fr"     , TEXTS_fr,    /*  13/ 62 French */
-        "gl_ES"  , TEXTS_gl_ES, /*   7/  8 Gallegan (Spain) */
+        "gl_ES"  , TEXTS_gl_ES, /*   7/  9 Gallegan (Spain) */
         "hi"     , TEXTS_hi,    /*  23/ 53 Hindi */
         "hr"     , TEXTS_hr,    /*   9/ 20 Croatian */
         "hu"     , TEXTS_hu,    /*   9/ 20 Hungarian */
@@ -3808,13 +3824,14 @@ public final class KeyboardTextsTable {
         "rm"     , TEXTS_rm,    /*   1/  2 Raeto-Romance */
         "ro"     , TEXTS_ro,    /*   6/ 15 Romanian */
         "ru"     , TEXTS_ru,    /*   9/ 32 Russian */
+        "si_LK"  , TEXTS_si_LK, /*   1/  7 Sinhalese (Sri Lanka) */
         "sk"     , TEXTS_sk,    /*  20/ 22 Slovak */
         "sl"     , TEXTS_sl,    /*   8/ 20 Slovenian */
         "sr"     , TEXTS_sr,    /*  11/ 93 Serbian */
         "sv"     , TEXTS_sv,    /*  21/ 54 Swedish */
         "sw"     , TEXTS_sw,    /*   9/ 18 Swahili */
         "th"     , TEXTS_th,    /*   2/ 17 Thai */
-        "tl"     , TEXTS_tl,    /*   7/  8 Tagalog */
+        "tl"     , TEXTS_tl,    /*   7/  9 Tagalog */
         "tr"     , TEXTS_tr,    /*   7/ 18 Turkish */
         "uk"     , TEXTS_uk,    /*  11/ 87 Ukrainian */
         "vi"     , TEXTS_vi,    /*   8/ 17 Vietnamese */
