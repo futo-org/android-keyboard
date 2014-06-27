@@ -34,33 +34,33 @@
     <string name="spoken_accented_letter_00E1" msgid="7780174500802535063">"A, accent ascuțit"</string>
     <string name="spoken_accented_letter_00E2" msgid="7054108480488102631">"A, accent circumflex"</string>
     <string name="spoken_accented_letter_00E3" msgid="8252569677935693343">"A, tildă"</string>
-    <string name="spoken_accented_letter_00E4" msgid="6610118430986969466">"A, semn diacritic"</string>
+    <string name="spoken_accented_letter_00E4" msgid="6610118430986969466">"A, tremă"</string>
     <string name="spoken_accented_letter_00E5" msgid="7630449270070348394">"A, cerc deasupra"</string>
     <string name="spoken_accented_letter_00E6" msgid="701838036007000032">"A, E, ligatură"</string>
     <string name="spoken_accented_letter_00E7" msgid="2991289211702135310">"C, sedilă"</string>
     <string name="spoken_accented_letter_00E8" msgid="2080035251848179782">"E, accent grav"</string>
     <string name="spoken_accented_letter_00E9" msgid="2708473976407506968">"E, accent ascuțit"</string>
     <string name="spoken_accented_letter_00EA" msgid="1898848081635119449">"E, accent circumflex"</string>
-    <string name="spoken_accented_letter_00EB" msgid="8318942663983499634">"E, semn diacritic"</string>
+    <string name="spoken_accented_letter_00EB" msgid="8318942663983499634">"E, tremă"</string>
     <string name="spoken_accented_letter_00EC" msgid="7643810590358306098">"I, accent grav"</string>
     <string name="spoken_accented_letter_00ED" msgid="8288035355103120759">"I, accent ascuțit"</string>
     <string name="spoken_accented_letter_00EE" msgid="1137417730211688894">"I, accent circumflex"</string>
-    <string name="spoken_accented_letter_00EF" msgid="8993714322731956785">"I, semn diacritic"</string>
+    <string name="spoken_accented_letter_00EF" msgid="8993714322731956785">"I, tremă"</string>
     <string name="spoken_accented_letter_00F0" msgid="3427567511221967857">"Eth"</string>
     <string name="spoken_accented_letter_00F1" msgid="6983294908255378605">"N, tildă"</string>
     <string name="spoken_accented_letter_00F2" msgid="2623804069332183695">"O, accent grav"</string>
     <string name="spoken_accented_letter_00F3" msgid="8945987631729216917">"O, accent ascuțit"</string>
     <string name="spoken_accented_letter_00F4" msgid="2415494299699717276">"O, accent circumflex"</string>
     <string name="spoken_accented_letter_00F5" msgid="7320512716652765243">"O, tildă"</string>
-    <string name="spoken_accented_letter_00F6" msgid="9101179351242478555">"O, semn diacritic"</string>
+    <string name="spoken_accented_letter_00F6" msgid="9101179351242478555">"O, tremă"</string>
     <string name="spoken_accented_letter_00F8" msgid="1488324280918884122">"O, tăiat cu linie"</string>
     <string name="spoken_accented_letter_00F9" msgid="2823570256527173278">"U, accent grav"</string>
     <string name="spoken_accented_letter_00FA" msgid="6883092085077298608">"U, accent ascuțit"</string>
     <string name="spoken_accented_letter_00FB" msgid="4948239400399514418">"U, accent circumflex"</string>
-    <string name="spoken_accented_letter_00FC" msgid="2496066211694000442">"U, semn diacritic"</string>
+    <string name="spoken_accented_letter_00FC" msgid="2496066211694000442">"U, tremă"</string>
     <string name="spoken_accented_letter_00FD" msgid="2400529610834233890">"Y, accent ascuțit"</string>
     <string name="spoken_accented_letter_00FE" msgid="8788160115017853040">"Thorn"</string>
-    <string name="spoken_accented_letter_00FF" msgid="5225610161025124830">"Y, semn diacritic"</string>
+    <string name="spoken_accented_letter_00FF" msgid="5225610161025124830">"Y, tremă"</string>
     <string name="spoken_accented_letter_0101" msgid="5573209280917268157">"A, macron"</string>
     <string name="spoken_accented_letter_0103" msgid="2469151120095164730">"A, căciulă"</string>
     <string name="spoken_accented_letter_0105" msgid="8312689789855786427">"A, ogonek"</string>
@@ -177,10 +177,10 @@
     <string name="spoken_accented_letter_1EF7" msgid="922043627252869200">"Y, cârlig deasupra"</string>
     <string name="spoken_accented_letter_1EF9" msgid="6213977100552260366">"Y, tildă"</string>
     <string name="spoken_symbol_00A1" msgid="4281758332905123408">"Semnul exclamării inversat"</string>
-    <string name="spoken_symbol_00AB" msgid="4093069643313064892">"Ghilimele duble la stânga"</string>
+    <string name="spoken_symbol_00AB" msgid="4093069643313064892">"Ghilimele unghiulare duble la stânga"</string>
     <string name="spoken_symbol_00B7" msgid="2447718728927874920">"Punct la mijloc"</string>
     <string name="spoken_symbol_00B9" msgid="8026257165451461231">"Unu exponent"</string>
-    <string name="spoken_symbol_00BB" msgid="1102740075655373928">"Ghilimele duble la dreapta"</string>
+    <string name="spoken_symbol_00BB" msgid="1102740075655373928">"Ghilimele unghiulare duble la dreapta"</string>
     <string name="spoken_symbol_00BF" msgid="6233794752573788098">"Semnul întrebării inversat"</string>
     <string name="spoken_symbol_2018" msgid="4886476295598930225">"Ghilimele simple la stânga"</string>
     <string name="spoken_symbol_2019" msgid="8892530161598134083">"Ghilimele simple la dreapta"</string>
@@ -192,15 +192,15 @@
     <string name="spoken_symbol_2030" msgid="9068837172419431755">"Semnul la mie"</string>
     <string name="spoken_symbol_2032" msgid="3014506329156664396">"Prim"</string>
     <string name="spoken_symbol_2033" msgid="1251022699713475088">"Prim dublu"</string>
-    <string name="spoken_symbol_2039" msgid="6989616457213775957">"Ghilimele simple la stânga"</string>
-    <string name="spoken_symbol_203A" msgid="31245095449823701">"Ghilimele simple la dreapta"</string>
+    <string name="spoken_symbol_2039" msgid="6989616457213775957">"Ghilimele unghiulare simple la stânga"</string>
+    <string name="spoken_symbol_203A" msgid="31245095449823701">"Ghilimele unghiulare simple la dreapta"</string>
     <string name="spoken_symbol_2074" msgid="2116717717093306894">"Patru exponent"</string>
     <string name="spoken_symbol_207F" msgid="1706731172134246659">"n latin exponent"</string>
     <string name="spoken_symbol_20B1" msgid="2159994270622444689">"Semnul peso"</string>
     <string name="spoken_symbol_2105" msgid="7289404939366976829">"În atenția"</string>
     <string name="spoken_symbol_2192" msgid="827804523596125414">"Săgeată la dreapta"</string>
     <string name="spoken_symbol_2193" msgid="2659541693445985717">"Săgeată în jos"</string>
-    <string name="spoken_symbol_2205" msgid="4457188084269117343">"Zero barat"</string>
+    <string name="spoken_symbol_2205" msgid="4457188084269117343">"Mulțime vidă"</string>
     <string name="spoken_symbol_2206" msgid="4856786565708380687">"Increment"</string>
     <string name="spoken_symbol_2264" msgid="5092061257745123554">"Mai mic sau egal cu"</string>
     <string name="spoken_symbol_2265" msgid="1907966479878036357">"Mai mare sau egal cu"</string>
