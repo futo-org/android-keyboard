@@ -68,7 +68,7 @@ final class KeyboardAccessibilityNodeProvider extends AccessibilityNodeProviderC
     /** The virtual view identifier for the hovering node. */
     private int mHoveringNodeId = UNDEFINED;
 
-    /** The current keyboard view. */
+    /** The keyboard view to provide an accessibility node info. */
     private final KeyboardView mKeyboardView;
 
     /** The current keyboard. */
