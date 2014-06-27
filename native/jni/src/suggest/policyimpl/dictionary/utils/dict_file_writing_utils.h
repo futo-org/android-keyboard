@@ -35,10 +35,6 @@ class DictFileWritingUtils {
             const std::vector<int> localeAsCodePointVector,
             const DictionaryHeaderStructurePolicy::AttributeMap *const attributeMap);
 
-    static bool flushAllHeaderAndBodyToFile(const char *const filePath,
-            BufferWithExtendableBuffer *const dictHeader,
-            BufferWithExtendableBuffer *const dictBody);
-
     static bool flushBufferToFileWithSuffix(const char *const basePath, const char *const suffix,
             const BufferWithExtendableBuffer *const buffer);
 
