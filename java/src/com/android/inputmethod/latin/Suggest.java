@@ -87,6 +87,40 @@ public final class Suggest {
         }
     }
 
+    private static ArrayList<SuggestedWordInfo> getTransformedSuggestedWordInfoList(
+            final WordComposer wordComposer, final SuggestionResults results,
+            final int trailingSingleQuotesCount) {
+        final boolean shouldMakeSuggestionsAllUpperCase = wordComposer.isAllUpperCase()
+                && !wordComposer.isResumed();
+        final boolean isOnlyFirstCharCapitalized =
+                wordComposer.isOrWillBeOnlyFirstCharCapitalized();
+
+        final ArrayList<SuggestedWordInfo> suggestionsContainer = new ArrayList<>(results);
+        final int suggestionsCount = suggestionsContainer.size();
+        if (isOnlyFirstCharCapitalized || shouldMakeSuggestionsAllUpperCase
+                || 0 != trailingSingleQuotesCount) {
+            for (int i = 0; i < suggestionsCount; ++i) {
+                final SuggestedWordInfo wordInfo = suggestionsContainer.get(i);
+                final SuggestedWordInfo transformedWordInfo = getTransformedSuggestedWordInfo(
+                        wordInfo, results.mLocale, shouldMakeSuggestionsAllUpperCase,
+                        isOnlyFirstCharCapitalized, trailingSingleQuotesCount);
+                suggestionsContainer.set(i, transformedWordInfo);
+            }
+        }
+        return suggestionsContainer;
+    }
+
+    private static String getWhitelistedWordOrNull(final ArrayList<SuggestedWordInfo> suggestions) {
+        if (suggestions.isEmpty()) {
+            return null;
+        }
+        final SuggestedWordInfo firstSuggestedWordInfo = suggestions.get(0);
+        if (!firstSuggestedWordInfo.isKindOf(SuggestedWordInfo.KIND_WHITELIST)) {
+            return null;
+        }
+        return firstSuggestedWordInfo.mWord;
+    }
+
     // Retrieves suggestions for the typing input
     // and calls the callback function with the suggestions.
     private void getSuggestedWordsForTypingInput(final WordComposer wordComposer,
@@ -103,42 +137,14 @@ public final class Suggest {
         final SuggestionResults suggestionResults = mDictionaryFacilitator.getSuggestionResults(
                 wordComposer, prevWordsInfo, proximityInfo, blockOffensiveWords,
                 additionalFeaturesOptions, SESSION_TYPING);
-
-        final boolean isPrediction = !wordComposer.isComposingWord();
-        final boolean shouldMakeSuggestionsAllUpperCase = wordComposer.isAllUpperCase()
-                && !wordComposer.isResumed();
-        final boolean isOnlyFirstCharCapitalized =
-                wordComposer.isOrWillBeOnlyFirstCharCapitalized();
-
         final ArrayList<SuggestedWordInfo> suggestionsContainer =
-                new ArrayList<>(suggestionResults);
-        final int suggestionsCount = suggestionsContainer.size();
-        if (isOnlyFirstCharCapitalized || shouldMakeSuggestionsAllUpperCase
-                || 0 != trailingSingleQuotesCount) {
-            for (int i = 0; i < suggestionsCount; ++i) {
-                final SuggestedWordInfo wordInfo = suggestionsContainer.get(i);
-                final SuggestedWordInfo transformedWordInfo = getTransformedSuggestedWordInfo(
-                        wordInfo, suggestionResults.mLocale, shouldMakeSuggestionsAllUpperCase,
-                        isOnlyFirstCharCapitalized, trailingSingleQuotesCount);
-                suggestionsContainer.set(i, transformedWordInfo);
-            }
-        }
+                getTransformedSuggestedWordInfoList(wordComposer, suggestionResults,
+                        trailingSingleQuotesCount);
         final boolean didRemoveTypedWord =
-                SuggestedWordInfo.removeDups(typedWord, suggestionsContainer);
+                SuggestedWordInfo.removeDups(wordComposer.getTypedWord(), suggestionsContainer);
 
-        final SuggestedWordInfo firstSuggestedWordInfo;
-        final String whitelistedWord;
-        if (suggestionsContainer.isEmpty()) {
-            firstSuggestedWordInfo = null;
-            whitelistedWord = null;
-        } else {
-            firstSuggestedWordInfo = suggestionsContainer.get(0);
-            if (!firstSuggestedWordInfo.isKindOf(SuggestedWordInfo.KIND_WHITELIST)) {
-                whitelistedWord = null;
-            } else {
-                whitelistedWord = firstSuggestedWordInfo.mWord;
-            }
-        }
+        final String whitelistedWord = getWhitelistedWordOrNull(suggestionsContainer);
+        final boolean resultsArePredictions = !wordComposer.isComposingWord();
 
         // We allow auto-correction if we have a whitelisted word, or if the word had more than
         // one char and was not suggested.
@@ -151,11 +157,11 @@ public final class Suggest {
         // same time, it feels wrong that the SuggestedWord object includes information about
         // the current settings. It may also be useful to know, when the setting is off, whether
         // the word *would* have been auto-corrected.
-        if (!isCorrectionEnabled || !allowsToBeAutoCorrected || isPrediction
-                || null == firstSuggestedWordInfo || wordComposer.hasDigits()
+        if (!isCorrectionEnabled || !allowsToBeAutoCorrected || resultsArePredictions
+                || suggestionResults.isEmpty() || wordComposer.hasDigits()
                 || wordComposer.isMostlyCaps() || wordComposer.isResumed()
                 || !mDictionaryFacilitator.hasInitializedMainDictionary()
-                || firstSuggestedWordInfo.isKindOf(SuggestedWordInfo.KIND_SHORTCUT)) {
+                || suggestionResults.first().isKindOf(SuggestedWordInfo.KIND_SHORTCUT)) {
             // If we don't have a main dictionary, we never want to auto-correct. The reason for
             // this is, the user may have a contact whose name happens to match a valid word in
             // their language, and it will unexpectedly auto-correct. For example, if the user
@@ -167,7 +173,7 @@ public final class Suggest {
             hasAutoCorrection = false;
         } else {
             hasAutoCorrection = AutoCorrectionUtils.suggestionExceedsAutoCorrectionThreshold(
-                    firstSuggestedWordInfo, consideredWord, mAutoCorrectionThreshold);
+                    suggestionResults.first(), consideredWord, mAutoCorrectionThreshold);
         }
 
         if (!TextUtils.isEmpty(typedWord)) {
@@ -190,9 +196,9 @@ public final class Suggest {
                 // TODO: this first argument is lying. If this is a whitelisted word which is an
                 // actual word, it says typedWordValid = false, which looks wrong. We should either
                 // rename the attribute or change the value.
-                !isPrediction && !allowsToBeAutoCorrected /* typedWordValid */,
+                !resultsArePredictions && !allowsToBeAutoCorrected /* typedWordValid */,
                 hasAutoCorrection /* willAutoCorrect */,
-                false /* isObsoleteSuggestions */, isPrediction, sequenceNumber));
+                false /* isObsoleteSuggestions */, resultsArePredictions, sequenceNumber));
     }
 
     // Retrieves suggestions for the batch input
