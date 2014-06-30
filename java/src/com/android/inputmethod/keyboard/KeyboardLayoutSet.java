@@ -211,6 +211,10 @@ public final class KeyboardLayoutSet {
         return keyboard;
     }
 
+    public int getScriptId() {
+        return mParams.mScriptId;
+    }
+
     public static final class Builder {
         private final Context mContext;
         private final String mPackageName;

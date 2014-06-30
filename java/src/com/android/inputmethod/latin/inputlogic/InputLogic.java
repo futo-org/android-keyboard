@@ -213,7 +213,6 @@ public final class InputLogic {
     /**
      * A suggestion was picked from the suggestion strip.
      * @param settingsValues the current values of the settings.
-     * @param index the index of the suggestion.
      * @param suggestionInfo the suggestion info.
      * @param keyboardShiftState the shift state of the keyboard, as returned by
      *     {@link com.android.inputmethod.keyboard.KeyboardSwitcher#getKeyboardShiftMode()}
@@ -222,9 +221,9 @@ public final class InputLogic {
     // Called from {@link SuggestionStripView} through the {@link SuggestionStripView#Listener}
     // interface
     public InputTransaction onPickSuggestionManually(final SettingsValues settingsValues,
-            final int index, final SuggestedWordInfo suggestionInfo, final int keyboardShiftState,
-            // TODO: remove this argument
-            final LatinIME.UIHandler handler) {
+            final SuggestedWordInfo suggestionInfo, final int keyboardShiftState,
+            // TODO: remove these arguments
+            final int currentKeyboardScriptId, final LatinIME.UIHandler handler) {
         final SuggestedWords suggestedWords = mSuggestedWords;
         final String suggestion = suggestionInfo.mWord;
         // If this is a punctuation picked from the suggestion strip, pass it to onCodeInput
@@ -232,7 +231,8 @@ public final class InputLogic {
             // Word separators are suggested before the user inputs something.
             // Rely on onCodeInput to do the complicated swapping/stripping logic consistently.
             final Event event = Event.createPunctuationSuggestionPickedEvent(suggestionInfo);
-            return onCodeInput(settingsValues, event, keyboardShiftState, handler);
+            return onCodeInput(settingsValues, event, keyboardShiftState,
+                    currentKeyboardScriptId, handler);
         }
 
         final Event event = Event.createSuggestionPickedEvent(suggestionInfo);
@@ -378,8 +378,8 @@ public final class InputLogic {
      */
     public InputTransaction onCodeInput(final SettingsValues settingsValues, final Event event,
             final int keyboardShiftMode,
-            // TODO: remove this argument
-            final LatinIME.UIHandler handler) {
+            // TODO: remove these arguments
+            final int currentKeyboardScriptId, final LatinIME.UIHandler handler) {
         final InputTransaction inputTransaction = new InputTransaction(settingsValues, event,
                 SystemClock.uptimeMillis(), mSpaceState,
                 getActualCapsMode(settingsValues, keyboardShiftMode));
@@ -403,7 +403,7 @@ public final class InputLogic {
             // A special key, like delete, shift, emoji, or the settings key.
             switch (event.mKeyCode) {
             case Constants.CODE_DELETE:
-                handleBackspace(inputTransaction);
+                handleBackspace(inputTransaction, currentKeyboardScriptId);
                 break;
             case Constants.CODE_SHIFT:
                 performRecapitalization(inputTransaction.mSettingsValues);
@@ -857,7 +857,9 @@ public final class InputLogic {
      * Handle a press on the backspace key.
      * @param inputTransaction The transaction in progress.
      */
-    private void handleBackspace(final InputTransaction inputTransaction) {
+    private void handleBackspace(final InputTransaction inputTransaction,
+            // TODO: remove this argument, put it into settingsValues
+            final int currentKeyboardScriptId) {
         mSpaceState = SpaceState.NONE;
         mDeleteCount++;
 
@@ -991,7 +993,7 @@ public final class InputLogic {
                     && !mConnection.isCursorFollowedByWordCharacter(
                             inputTransaction.mSettingsValues.mSpacingAndPunctuations)) {
                 restartSuggestionsOnWordTouchedByCursor(inputTransaction.mSettingsValues,
-                        true /* shouldIncludeResumedWordInSuggestions */);
+                        true /* shouldIncludeResumedWordInSuggestions */, currentKeyboardScriptId);
             }
         }
     }
@@ -1244,7 +1246,9 @@ public final class InputLogic {
      */
     // TODO: make this private.
     public void restartSuggestionsOnWordTouchedByCursor(final SettingsValues settingsValues,
-            final boolean shouldIncludeResumedWordInSuggestions) {
+            final boolean shouldIncludeResumedWordInSuggestions,
+            // TODO: remove this argument, put it into settingsValues
+            final int currentKeyboardScriptId) {
         // HACK: We may want to special-case some apps that exhibit bad behavior in case of
         // recorrection. This is a temporary, stopgap measure that will be removed later.
         // TODO: remove this.
