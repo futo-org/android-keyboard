@@ -23,6 +23,8 @@ import java.util.TreeMap;
  * A class to help with handling different writing scripts.
  */
 public class ScriptUtils {
+    // Used for hardware keyboards
+    public static final int SCRIPT_UNKNOWN = -1;
     // TODO: should we use ISO 15924 identifiers instead?
     public static final int SCRIPT_LATIN = 0;
     public static final int SCRIPT_CYRILLIC = 1;
@@ -89,6 +91,8 @@ public class ScriptUtils {
             return (codePoint >= 0x370 && codePoint <= 0x3FF)
                     || (codePoint >= 0x1F00 && codePoint <= 0x1FFF)
                     || codePoint == 0xF2;
+        case SCRIPT_UNKNOWN:
+            return true;
         default:
             // Should never come here
             throw new RuntimeException("Impossible value of script: " + script);

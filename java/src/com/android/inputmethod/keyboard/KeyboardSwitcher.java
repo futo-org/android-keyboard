@@ -39,6 +39,7 @@ import com.android.inputmethod.latin.SubtypeSwitcher;
 import com.android.inputmethod.latin.WordComposer;
 import com.android.inputmethod.latin.settings.SettingsValues;
 import com.android.inputmethod.latin.utils.ResourceUtils;
+import com.android.inputmethod.latin.utils.ScriptUtils;
 
 public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     private static final String TAG = KeyboardSwitcher.class.getSimpleName();
@@ -372,6 +373,9 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     }
 
     public int getCurrentKeyboardScriptId() {
+        if (null == mKeyboardLayoutSet) {
+            return ScriptUtils.SCRIPT_UNKNOWN;
+        }
         return mKeyboardLayoutSet.getScriptId();
     }
 }
