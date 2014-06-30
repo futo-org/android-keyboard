@@ -42,8 +42,8 @@ public class PunctuationTests extends InputTestsBase {
             runMessages();
             assertTrue("type word then type space should display punctuation strip",
                     mLatinIME.getSuggestedWordsForTest().isPunctuationSuggestions());
-            pickSuggestionManually(0, PUNCTUATION_FROM_STRIP);
-            pickSuggestionManually(0, PUNCTUATION_FROM_STRIP);
+            pickSuggestionManually(PUNCTUATION_FROM_STRIP);
+            pickSuggestionManually(PUNCTUATION_FROM_STRIP);
             assertEquals("type word then type space then punctuation from strip twice",
                     EXPECTED_RESULT, mEditText.getText().toString());
         } finally {
@@ -66,9 +66,9 @@ public class PunctuationTests extends InputTestsBase {
         final String PUNCTUATION_FROM_STRIP = "!";
         final String EXPECTED_RESULT = "this!! is";
         type(WORD1_TO_TYPE);
-        pickSuggestionManually(0, WORD1_TO_TYPE);
-        pickSuggestionManually(0, PUNCTUATION_FROM_STRIP);
-        pickSuggestionManually(0, PUNCTUATION_FROM_STRIP);
+        pickSuggestionManually(WORD1_TO_TYPE);
+        pickSuggestionManually(PUNCTUATION_FROM_STRIP);
+        pickSuggestionManually(PUNCTUATION_FROM_STRIP);
         type(WORD2_TO_TYPE);
         assertEquals("pick word then pick punctuation twice then type", EXPECTED_RESULT,
                 mEditText.getText().toString());
@@ -79,8 +79,8 @@ public class PunctuationTests extends InputTestsBase {
         final String WORD2_TO_PICK = "!is";
         final String EXPECTED_RESULT = "this!is";
         type(WORD1_TO_TYPE);
-        pickSuggestionManually(0, WORD1_TO_TYPE);
-        pickSuggestionManually(1, WORD2_TO_PICK);
+        pickSuggestionManually(WORD1_TO_TYPE);
+        pickSuggestionManually(WORD2_TO_PICK);
         assertEquals("manual pick then manual pick a word with punct at start", EXPECTED_RESULT,
                 mEditText.getText().toString());
     }
@@ -90,7 +90,7 @@ public class PunctuationTests extends InputTestsBase {
         final String PUNCTUATION = ":";
         final String EXPECTED_RESULT = "this:";
         type(WORD_TO_TYPE);
-        pickSuggestionManually(0, WORD_TO_TYPE);
+        pickSuggestionManually(WORD_TO_TYPE);
         type(PUNCTUATION);
         assertEquals("manually pick word then colon",
                 EXPECTED_RESULT, mEditText.getText().toString());
@@ -101,7 +101,7 @@ public class PunctuationTests extends InputTestsBase {
         final String PUNCTUATION = "(";
         final String EXPECTED_RESULT = "this (";
         type(WORD_TO_TYPE);
-        pickSuggestionManually(0, WORD_TO_TYPE);
+        pickSuggestionManually(WORD_TO_TYPE);
         type(PUNCTUATION);
         assertEquals("manually pick word then open paren",
                 EXPECTED_RESULT, mEditText.getText().toString());
@@ -112,7 +112,7 @@ public class PunctuationTests extends InputTestsBase {
         final String PUNCTUATION = ")";
         final String EXPECTED_RESULT = "this)";
         type(WORD_TO_TYPE);
-        pickSuggestionManually(0, WORD_TO_TYPE);
+        pickSuggestionManually(WORD_TO_TYPE);
         type(PUNCTUATION);
         assertEquals("manually pick word then close paren",
                 EXPECTED_RESULT, mEditText.getText().toString());
@@ -123,7 +123,7 @@ public class PunctuationTests extends InputTestsBase {
         final String SPECIAL_KEY = ":-)";
         final String EXPECTED_RESULT = "this :-)";
         type(WORD_TO_TYPE);
-        pickSuggestionManually(0, WORD_TO_TYPE);
+        pickSuggestionManually(WORD_TO_TYPE);
         mLatinIME.onTextInput(SPECIAL_KEY);
         assertEquals("manually pick word then press the smiley key",
                 EXPECTED_RESULT, mEditText.getText().toString());
@@ -134,7 +134,7 @@ public class PunctuationTests extends InputTestsBase {
         final String SPECIAL_KEY = ".com";
         final String EXPECTED_RESULT = "this.com";
         type(WORD_TO_TYPE);
-        pickSuggestionManually(0, WORD_TO_TYPE);
+        pickSuggestionManually(WORD_TO_TYPE);
         mLatinIME.onTextInput(SPECIAL_KEY);
         assertEquals("manually pick word then press the .com key",
                 EXPECTED_RESULT, mEditText.getText().toString());
@@ -189,7 +189,7 @@ public class PunctuationTests extends InputTestsBase {
                 if (wordToType.matches("^\\w+$")) {
                     // Only pick selection if that was a word, because if that was not a word,
                     // then we don't have a composition.
-                    pickSuggestionManually(0, wordToType);
+                    pickSuggestionManually(wordToType);
                 }
             }
             type("\"");

@@ -37,7 +37,7 @@ public class InputLogicTestsNonEnglish extends InputTestsBase {
         final String EXPECTED_RESULT = "test !";
         changeLanguage("fr");
         type(WORD1_TO_TYPE);
-        pickSuggestionManually(0, WORD1_TO_TYPE);
+        pickSuggestionManually(WORD1_TO_TYPE);
         type(WORD2_TO_TYPE);
         assertEquals("manual pick then separator for French", EXPECTED_RESULT,
                 mEditText.getText().toString());
@@ -50,7 +50,7 @@ public class InputLogicTestsNonEnglish extends InputTestsBase {
         final String EXPECTED_RESULT = "test !!?! : !";
         changeLanguage("fr");
         type(WORD1_TO_TYPE);
-        pickSuggestionManually(0, WORD1_TO_TYPE);
+        pickSuggestionManually(WORD1_TO_TYPE);
         type(WORD2_TO_TYPE);
         assertEquals("clustering punctuation for French", EXPECTED_RESULT,
                 mEditText.getText().toString());
@@ -72,8 +72,8 @@ public class InputLogicTestsNonEnglish extends InputTestsBase {
             runMessages();
             assertTrue("type word then type space should display punctuation strip",
                     mLatinIME.getSuggestedWordsForTest().isPunctuationSuggestions());
-            pickSuggestionManually(0, PUNCTUATION_FROM_STRIP);
-            pickSuggestionManually(0, PUNCTUATION_FROM_STRIP);
+            pickSuggestionManually(PUNCTUATION_FROM_STRIP);
+            pickSuggestionManually(PUNCTUATION_FROM_STRIP);
             assertEquals("type word then type space then punctuation from strip twice for French",
                     EXPECTED_RESULT, mEditText.getText().toString());
         } finally {

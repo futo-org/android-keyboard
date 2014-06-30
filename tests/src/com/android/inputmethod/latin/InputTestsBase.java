@@ -345,8 +345,8 @@ public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
         waitForDictionariesToBeLoaded();
     }
 
-    protected void pickSuggestionManually(final int index, final String suggestion) {
-        mLatinIME.pickSuggestionManually(index, new SuggestedWordInfo(suggestion, 1,
+    protected void pickSuggestionManually(final String suggestion) {
+        mLatinIME.pickSuggestionManually(new SuggestedWordInfo(suggestion, 1,
                 SuggestedWordInfo.KIND_CORRECTION, null /* sourceDict */,
                 SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
                 SuggestedWordInfo.NOT_A_CONFIDENCE /* autoCommitFirstWordConfidence */));

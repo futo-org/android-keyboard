@@ -35,7 +35,7 @@ public class InputLogicTests extends InputTestsBase {
         final String WORD_TO_TYPE = "this";
         final String EXPECTED_RESULT = "thi";
         type(WORD_TO_TYPE);
-        pickSuggestionManually(0, WORD_TO_TYPE);
+        pickSuggestionManually(WORD_TO_TYPE);
         mLatinIME.onUpdateSelection(0, 0, WORD_TO_TYPE.length(), WORD_TO_TYPE.length(), -1, -1);
         type(Constants.CODE_DELETE);
         assertEquals("press suggestion then backspace", EXPECTED_RESULT,
@@ -47,9 +47,8 @@ public class InputLogicTests extends InputTestsBase {
         final String WORD_TO_PICK = "this";
         final String EXPECTED_RESULT = "thi";
         type(WORD_TO_TYPE);
-        // Choose the auto-correction, which is always in position 0. For "tgis", the
-        // auto-correction should be "this".
-        pickSuggestionManually(0, WORD_TO_PICK);
+        // Choose the auto-correction. For "tgis", the auto-correction should be "this".
+        pickSuggestionManually(WORD_TO_PICK);
         mLatinIME.onUpdateSelection(0, 0, WORD_TO_TYPE.length(), WORD_TO_TYPE.length(), -1, -1);
         assertEquals("pick typed word over auto-correction then backspace", WORD_TO_PICK,
                 mEditText.getText().toString());
@@ -62,9 +61,8 @@ public class InputLogicTests extends InputTestsBase {
         final String WORD_TO_TYPE = "tgis";
         final String EXPECTED_RESULT = "tgi";
         type(WORD_TO_TYPE);
-        // Choose the typed word, which should be in position 1 (because position 0 should
-        // be occupied by the "this" auto-correction, as checked by testAutoCorrect())
-        pickSuggestionManually(1, WORD_TO_TYPE);
+        // Choose the typed word.
+        pickSuggestionManually(WORD_TO_TYPE);
         mLatinIME.onUpdateSelection(0, 0, WORD_TO_TYPE.length(), WORD_TO_TYPE.length(), -1, -1);
         assertEquals("pick typed word over auto-correction then backspace", WORD_TO_TYPE,
                 mEditText.getText().toString());
@@ -78,9 +76,8 @@ public class InputLogicTests extends InputTestsBase {
         final String WORD_TO_PICK = "thus";
         final String EXPECTED_RESULT = "thu";
         type(WORD_TO_TYPE);
-        // Choose the second suggestion, which should be in position 2 and should be "thus"
-        // when "tgis is typed.
-        pickSuggestionManually(2, WORD_TO_PICK);
+        // Choose the second suggestion, which should be "thus" when "tgis" is typed.
+        pickSuggestionManually(WORD_TO_PICK);
         mLatinIME.onUpdateSelection(0, 0, WORD_TO_TYPE.length(), WORD_TO_TYPE.length(), -1, -1);
         assertEquals("pick different suggestion then backspace", WORD_TO_PICK,
                 mEditText.getText().toString());
@@ -309,7 +306,7 @@ public class InputLogicTests extends InputTestsBase {
         final String WORD_TO_TYPE = "this";
         final String EXPECTED_RESULT = WORD_TO_TYPE;
         type(WORD_TO_TYPE);
-        pickSuggestionManually(0, WORD_TO_TYPE);
+        pickSuggestionManually(WORD_TO_TYPE);
         assertEquals("no space after manual pick", EXPECTED_RESULT,
                 mEditText.getText().toString());
     }
@@ -319,7 +316,7 @@ public class InputLogicTests extends InputTestsBase {
         final String WORD2_TO_TYPE = "is";
         final String EXPECTED_RESULT = "this is";
         type(WORD1_TO_TYPE);
-        pickSuggestionManually(0, WORD1_TO_TYPE);
+        pickSuggestionManually(WORD1_TO_TYPE);
         type(WORD2_TO_TYPE);
         assertEquals("manual pick then type", EXPECTED_RESULT, mEditText.getText().toString());
     }
@@ -329,7 +326,7 @@ public class InputLogicTests extends InputTestsBase {
         final String WORD2_TO_TYPE = "!";
         final String EXPECTED_RESULT = "this!";
         type(WORD1_TO_TYPE);
-        pickSuggestionManually(0, WORD1_TO_TYPE);
+        pickSuggestionManually(WORD1_TO_TYPE);
         type(WORD2_TO_TYPE);
         assertEquals("manual pick then separator", EXPECTED_RESULT, mEditText.getText().toString());
     }
@@ -341,7 +338,7 @@ public class InputLogicTests extends InputTestsBase {
         final String WORD2_TO_TYPE = "!!?!:!";
         final String EXPECTED_RESULT = "test!!?!:!";
         type(WORD1_TO_TYPE);
-        pickSuggestionManually(0, WORD1_TO_TYPE);
+        pickSuggestionManually(WORD1_TO_TYPE);
         type(WORD2_TO_TYPE);
         assertEquals("clustering punctuation", EXPECTED_RESULT, mEditText.getText().toString());
     }
@@ -351,10 +348,10 @@ public class InputLogicTests extends InputTestsBase {
         final String STRIPPER = "\n";
         final String EXPECTED_RESULT = "this\nthis";
         type(WORD_TO_TYPE);
-        pickSuggestionManually(0, WORD_TO_TYPE);
+        pickSuggestionManually(WORD_TO_TYPE);
         type(STRIPPER);
         type(WORD_TO_TYPE);
-        pickSuggestionManually(0, WORD_TO_TYPE);
+        pickSuggestionManually(WORD_TO_TYPE);
         assertEquals("manual pick then \\n then manual pick", EXPECTED_RESULT,
                 mEditText.getText().toString());
     }
@@ -364,7 +361,7 @@ public class InputLogicTests extends InputTestsBase {
         final String WORD2_TO_TYPE = " is";
         final String EXPECTED_RESULT = "this is";
         type(WORD1_TO_TYPE);
-        pickSuggestionManually(0, WORD1_TO_TYPE);
+        pickSuggestionManually(WORD1_TO_TYPE);
         type(WORD2_TO_TYPE);
         assertEquals("manual pick then space then type", EXPECTED_RESULT,
                 mEditText.getText().toString());
@@ -375,11 +372,9 @@ public class InputLogicTests extends InputTestsBase {
         final String WORD2_TO_PICK = "is";
         final String EXPECTED_RESULT = "this is";
         type(WORD1_TO_TYPE);
-        pickSuggestionManually(0, WORD1_TO_TYPE);
-        // Here we fake picking a word through bigram prediction. This test is taking
-        // advantage of the fact that Latin IME blindly trusts the caller of #pickSuggestionManually
-        // to actually pass the right string.
-        pickSuggestionManually(1, WORD2_TO_PICK);
+        pickSuggestionManually(WORD1_TO_TYPE);
+        // Here we fake picking a word through bigram prediction.
+        pickSuggestionManually(WORD2_TO_PICK);
         assertEquals("manual pick then manual pick", EXPECTED_RESULT,
                 mEditText.getText().toString());
     }
@@ -506,9 +501,8 @@ public class InputLogicTests extends InputTestsBase {
     public void testPredictionsAfterManualPick() {
         final String WORD_TO_TYPE = "Barack";
         type(WORD_TO_TYPE);
-        // Choose the auto-correction, which is always in position 0. For "Barack", the
-        // auto-correction should be "Barack".
-        pickSuggestionManually(0, WORD_TO_TYPE);
+        // Choose the auto-correction. For "Barack", the auto-correction should be "Barack".
+        pickSuggestionManually(WORD_TO_TYPE);
         sleep(DELAY_TO_WAIT_FOR_PREDICTIONS);
         runMessages();
         // Test the first prediction is displayed
@@ -545,7 +539,7 @@ public class InputLogicTests extends InputTestsBase {
         type(PREFIX);
         mLatinIME.onUpdateSelection(0, 0, endOfPrefix, endOfPrefix, -1, -1);
         type(WORD_TO_TYPE);
-        pickSuggestionManually(1, FIRST_NON_TYPED_SUGGESTION);
+        pickSuggestionManually(FIRST_NON_TYPED_SUGGESTION);
         mLatinIME.onUpdateSelection(endOfPrefix, endOfPrefix, endOfSuggestion, endOfSuggestion,
                 -1, -1);
         runMessages();
@@ -560,7 +554,7 @@ public class InputLogicTests extends InputTestsBase {
                 indexForManualCursor, indexForManualCursor, -1, -1);
         sleep(DELAY_TO_WAIT_FOR_PREDICTIONS);
         runMessages();
-        pickSuggestionManually(0, WORD_TO_TYPE);
+        pickSuggestionManually(WORD_TO_TYPE);
         mLatinIME.onUpdateSelection(indexForManualCursor, indexForManualCursor,
                 endOfWord, endOfWord, -1, -1);
         sleep(DELAY_TO_WAIT_FOR_PREDICTIONS);
