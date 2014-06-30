@@ -1336,6 +1336,17 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     private void setSuggestedWords(final SuggestedWords suggestedWords) {
+        if (SuggestedWords.EMPTY != suggestedWords) {
+            final String autoCorrection;
+            if (suggestedWords.mWillAutoCorrect) {
+                autoCorrection = suggestedWords.getWord(SuggestedWords.INDEX_OF_AUTO_CORRECTION);
+            } else {
+                // We can't use suggestedWords.getWord(SuggestedWords.INDEX_OF_TYPED_WORD)
+                // because it may differ from mWordComposer.mTypedWord.
+                autoCorrection = suggestedWords.mTypedWord;
+            }
+            mInputLogic.mWordComposer.setAutoCorrection(autoCorrection);
+        }
         mInputLogic.setSuggestedWords(suggestedWords);
         // TODO: Modify this when we support suggestions with hard keyboard
         if (!hasSuggestionStripView()) {
@@ -1399,18 +1410,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     public void showSuggestionStrip(final SuggestedWords sourceSuggestedWords) {
         final SuggestedWords suggestedWords =
                 sourceSuggestedWords.isEmpty() ? SuggestedWords.EMPTY : sourceSuggestedWords;
-        final String autoCorrection;
-        if (suggestedWords.mWillAutoCorrect) {
-            autoCorrection = suggestedWords.getWord(SuggestedWords.INDEX_OF_AUTO_CORRECTION);
-        } else {
-            // We can't use suggestedWords.getWord(SuggestedWords.INDEX_OF_TYPED_WORD)
-            // because it may differ from mWordComposer.mTypedWord.
-            autoCorrection = sourceSuggestedWords.mTypedWord;
-        }
         if (SuggestedWords.EMPTY == suggestedWords) {
             setNeutralSuggestionStrip();
         } else {
-            mInputLogic.mWordComposer.setAutoCorrection(autoCorrection);
             setSuggestedWords(suggestedWords);
         }
         // Cache the auto-correction in accessibility code so we can speak it if the user
