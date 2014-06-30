@@ -227,7 +227,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             case MSG_RESUME_SUGGESTIONS:
                 latinIme.mInputLogic.restartSuggestionsOnWordTouchedByCursor(
                         latinIme.mSettings.getCurrent(),
-                        msg.arg1 == ARG1_TRUE /* shouldIncludeResumedWordInSuggestions */);
+                        msg.arg1 == ARG1_TRUE /* shouldIncludeResumedWordInSuggestions */,
+                        latinIme.mKeyboardSwitcher.getCurrentKeyboardScriptId());
                 break;
             case MSG_REOPEN_DICTIONARIES:
                 latinIme.resetSuggest();
@@ -1239,7 +1240,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final Event event = createSoftwareKeypressEvent(codeToSend, keyX, keyY, isKeyRepeat);
         final InputTransaction completeInputTransaction =
                 mInputLogic.onCodeInput(mSettings.getCurrent(), event,
-                        mKeyboardSwitcher.getKeyboardShiftMode(), mHandler);
+                        mKeyboardSwitcher.getKeyboardShiftMode(),
+                        mKeyboardSwitcher.getCurrentKeyboardScriptId(), mHandler);
         updateStateAfterInputTransaction(completeInputTransaction);
         mKeyboardSwitcher.onCodeInput(codePoint, getCurrentAutoCapsState(),
                 getCurrentRecapitalizeState());
@@ -1423,10 +1425,12 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // Called from {@link SuggestionStripView} through the {@link SuggestionStripView#Listener}
     // interface
     @Override
-    public void pickSuggestionManually(final int index, final SuggestedWordInfo suggestionInfo) {
+    public void pickSuggestionManually(final SuggestedWordInfo suggestionInfo) {
         final InputTransaction completeInputTransaction = mInputLogic.onPickSuggestionManually(
-                mSettings.getCurrent(), index, suggestionInfo,
-                mKeyboardSwitcher.getKeyboardShiftMode(), mHandler);
+                mSettings.getCurrent(), suggestionInfo,
+                mKeyboardSwitcher.getKeyboardShiftMode(),
+                mKeyboardSwitcher.getCurrentKeyboardScriptId(),
+                mHandler);
         updateStateAfterInputTransaction(completeInputTransaction);
     }
 
@@ -1553,7 +1557,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // If it's handled, we return true because we did handle it.
         if (event.isHandled()) {
             mInputLogic.onCodeInput(mSettings.getCurrent(), event,
-                    mKeyboardSwitcher.getKeyboardShiftMode(), mHandler);
+                    mKeyboardSwitcher.getKeyboardShiftMode(),
+                    // TODO: this is not necessarily correct for a hardware keyboard right now
+                    mKeyboardSwitcher.getCurrentKeyboardScriptId(),
+                    mHandler);
             return true;
         }
         return super.onKeyDown(keyCode, keyEvent);

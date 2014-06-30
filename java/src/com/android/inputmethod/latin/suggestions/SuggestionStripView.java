@@ -59,7 +59,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
     public interface Listener {
         public void addWordToUserDictionary(String word);
         public void showImportantNoticeContents();
-        public void pickSuggestionManually(int index, SuggestedWordInfo word);
+        public void pickSuggestionManually(SuggestedWordInfo word);
         public void onCodeInput(int primaryCode, int x, int y, boolean isKeyRepeat);
     }
 
@@ -286,8 +286,8 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
 
     private final MoreSuggestionsListener mMoreSuggestionsListener = new MoreSuggestionsListener() {
         @Override
-        public void onSuggestionSelected(final int index, final SuggestedWordInfo wordInfo) {
-            mListener.pickSuggestionManually(index, wordInfo);
+        public void onSuggestionSelected(final SuggestedWordInfo wordInfo) {
+            mListener.pickSuggestionManually(wordInfo);
             dismissMoreSuggestionsPanel();
         }
 
@@ -465,7 +465,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
                 return;
             }
             final SuggestedWordInfo wordInfo = mSuggestedWords.getInfo(index);
-            mListener.pickSuggestionManually(index, wordInfo);
+            mListener.pickSuggestionManually(wordInfo);
         }
     }
 
