@@ -117,7 +117,7 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
         final String localeString = getLocale();
         mDictionaryPool = mService.getDictionaryPool(localeString);
         mLocale = LocaleUtils.constructLocaleFromString(localeString);
-        mScript = ScriptUtils.getScriptFromLocale(mLocale);
+        mScript = ScriptUtils.getScriptFromSpellCheckerLocale(mLocale);
     }
 
     @Override

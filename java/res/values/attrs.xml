@@ -496,6 +496,8 @@
             <enum name="greek" value="2" />
             <enum name="arabic" value="3" />
             <enum name="hebrew" value="4" />
+            <enum name="armenian" value="5" />
+            <enum name="georgian" value="6" />
         </attr>
     </declare-styleable>
 
