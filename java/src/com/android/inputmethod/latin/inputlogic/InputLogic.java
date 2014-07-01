@@ -712,7 +712,8 @@ public final class InputLogic {
      */
     private void handleNonSeparator(final SettingsValues settingsValues,
             final InputTransaction inputTransaction) {
-        final int codePoint = inputTransaction.mEvent.mCodePoint;
+        final Event processedEvent = mWordComposer.processEvent(inputTransaction.mEvent);
+        final int codePoint = processedEvent.mCodePoint;
         // TODO: refactor this method to stop flipping isComposingWord around all the time, and
         // make it shorter (possibly cut into several pieces). Also factor handleNonSpecialCharacter
         // which has the same name as other handle* methods but is not the same.
@@ -762,7 +763,6 @@ public final class InputLogic {
             resetComposingState(false /* alsoResetLastComposedWord */);
         }
         if (isComposingWord) {
-            final Event processedEvent = mWordComposer.processEvent(inputTransaction.mEvent);
             mWordComposer.applyProcessedEvent(processedEvent);
             // If it's the first letter, make note of auto-caps state
             if (mWordComposer.isSingleLetter()) {
@@ -772,7 +772,7 @@ public final class InputLogic {
                     mWordComposer.getTypedWord()), 1);
         } else {
             final boolean swapWeakSpace = tryStripSpaceAndReturnWhetherShouldSwapInstead(
-                    inputTransaction, inputTransaction.mEvent.isSuggestionStripPress());
+                    inputTransaction, processedEvent.isSuggestionStripPress());
 
             if (swapWeakSpace && trySwapSwapperAndSpace(inputTransaction)) {
                 mSpaceState = SpaceState.WEAK;
@@ -903,6 +903,7 @@ public final class InputLogic {
     private void handleBackspace(final InputTransaction inputTransaction,
             // TODO: remove this argument, put it into settingsValues
             final int currentKeyboardScriptId) {
+        final Event processedEvent = mWordComposer.processEvent(inputTransaction.mEvent);
         mSpaceState = SpaceState.NONE;
         mDeleteCount++;
 
@@ -914,7 +915,7 @@ public final class InputLogic {
         // Then again, even in the case of a key repeat, if the cursor is at start of text, it
         // can't go any further back, so we can update right away even if it's a key repeat.
         final int shiftUpdateKind =
-                inputTransaction.mEvent.isKeyRepeat() && mConnection.getExpectedSelectionStart() > 0
+                processedEvent.isKeyRepeat() && mConnection.getExpectedSelectionStart() > 0
                 ? InputTransaction.SHIFT_UPDATE_LATER : InputTransaction.SHIFT_UPDATE_NOW;
         inputTransaction.requireShiftUpdate(shiftUpdateKind);
 
@@ -934,7 +935,6 @@ public final class InputLogic {
                     mDictionaryFacilitator.removeWordFromPersonalizedDicts(rejectedSuggestion);
                 }
             } else {
-                final Event processedEvent = mWordComposer.processEvent(inputTransaction.mEvent);
                 mWordComposer.applyProcessedEvent(processedEvent);
             }
             if (mWordComposer.isComposingWord()) {
