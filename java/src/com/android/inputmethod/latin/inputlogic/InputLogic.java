@@ -362,7 +362,8 @@ public final class InputLogic {
         // The cursor has been moved : we now accept to perform recapitalization
         mRecapitalizeStatus.enable();
         // We moved the cursor. If we are touching a word, we need to resume suggestion.
-        mLatinIME.mHandler.postResumeSuggestions(false /* shouldIncludeResumedWordInSuggestions */);
+        mLatinIME.mHandler.postResumeSuggestions(false /* shouldIncludeResumedWordInSuggestions */,
+                true /* shouldDelay */);
         // Stop the last recapitalization, if started.
         mRecapitalizeStatus.stop();
         return true;
@@ -1945,7 +1946,8 @@ public final class InputLogic {
         if (tryResumeSuggestions) {
             // This is triggered when starting input anew, so we want to include the resumed
             // word in suggestions.
-            handler.postResumeSuggestions(true /* shouldIncludeResumedWordInSuggestions */);
+            handler.postResumeSuggestions(true /* shouldIncludeResumedWordInSuggestions */,
+                    true /* shouldDelay */);
         }
         return true;
     }

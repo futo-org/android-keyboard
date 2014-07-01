@@ -626,13 +626,17 @@ public class InputLogicTests extends InputTestsBase {
 
     public void testSwitchLanguages() {
         final String WORD_TO_TYPE_FIRST_PART = "com";
-        final String WORD_TO_TYPE_SECOND_PART = "md ";
-        final String EXPECTED_RESULT = "comme ";
+        final String WORD_TO_TYPE_SECOND_PART = "md";
+        final String EXPECTED_RESULT = "comme";
         changeLanguage("en");
         type(WORD_TO_TYPE_FIRST_PART);
         changeLanguage("fr");
+        runMessages();
         type(WORD_TO_TYPE_SECOND_PART);
-        assertEquals("Composing continues after switching languages", EXPECTED_RESULT,
-                mEditText.getText().toString());
+        sleep(DELAY_TO_WAIT_FOR_UNDERLINE);
+        runMessages();
+        final SuggestedWords suggestedWords = mLatinIME.getSuggestedWordsForTest();
+        assertEquals("Suggestions updated after switching languages",
+                    EXPECTED_RESULT, suggestedWords.size() > 0 ? suggestedWords.getWord(1) : null);
     }
 }

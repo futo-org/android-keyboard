@@ -112,6 +112,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     private static final int PENDING_IMS_CALLBACK_DURATION = 800;
 
+    private static final int DELAY_WAIT_FOR_DICTIONARY_LOAD = 2000; // 2s
+
     private static final int PERIOD_FOR_AUDIO_AND_HAPTIC_FEEDBACK_IN_KEY_REPEAT = 2;
 
     /**
@@ -171,8 +173,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         private static final int MSG_REOPEN_DICTIONARIES = 5;
         private static final int MSG_UPDATE_TAIL_BATCH_INPUT_COMPLETED = 6;
         private static final int MSG_RESET_CACHES = 7;
+        private static final int MSG_WAIT_FOR_DICTIONARY_LOAD = 8;
         // Update this when adding new messages
-        private static final int MSG_LAST = MSG_RESET_CACHES;
+        private static final int MSG_LAST = MSG_WAIT_FOR_DICTIONARY_LOAD;
 
         private static final int ARG1_NOT_GESTURE_INPUT = 0;
         private static final int ARG1_DISMISS_GESTURE_FLOATING_PREVIEW_TEXT = 1;
@@ -234,7 +237,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 latinIme.resetSuggest();
                 // We need to re-evaluate the currently composing word in case the script has
                 // changed.
-                postResumeSuggestions(true /* shouldIncludeResumedWordInSuggestions */);
+                postWaitForDictionaryLoad();
                 break;
             case MSG_UPDATE_TAIL_BATCH_INPUT_COMPLETED:
                 latinIme.mInputLogic.onUpdateTailBatchInputCompleted(
@@ -253,6 +256,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                             latinIme.getCurrentRecapitalizeState());
                 }
                 break;
+            case MSG_WAIT_FOR_DICTIONARY_LOAD:
+                Log.i(TAG, "Timeout waiting for dictionary load");
+                break;
             }
         }
 
@@ -264,7 +270,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             sendMessage(obtainMessage(MSG_REOPEN_DICTIONARIES));
         }
 
-        public void postResumeSuggestions(final boolean shouldIncludeResumedWordInSuggestions) {
+        public void postResumeSuggestions(final boolean shouldIncludeResumedWordInSuggestions,
+                final boolean shouldDelay) {
             final LatinIME latinIme = getOwnerInstance();
             if (latinIme == null) {
                 return;
@@ -274,16 +281,35 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 return;
             }
             removeMessages(MSG_RESUME_SUGGESTIONS);
-            sendMessageDelayed(obtainMessage(MSG_RESUME_SUGGESTIONS,
-                    shouldIncludeResumedWordInSuggestions ? ARG1_TRUE : ARG1_FALSE,
-                            0 /* ignored */),
-                    mDelayUpdateSuggestions);
+            if (shouldDelay) {
+                sendMessageDelayed(obtainMessage(MSG_RESUME_SUGGESTIONS,
+                                shouldIncludeResumedWordInSuggestions ? ARG1_TRUE : ARG1_FALSE,
+                                0 /* ignored */),
+                        mDelayUpdateSuggestions);
+            } else {
+                sendMessage(obtainMessage(MSG_RESUME_SUGGESTIONS,
+                        shouldIncludeResumedWordInSuggestions ? ARG1_TRUE : ARG1_FALSE,
+                        0 /* ignored */));
+            }
         }
 
         public void postResetCaches(final boolean tryResumeSuggestions, final int remainingTries) {
             removeMessages(MSG_RESET_CACHES);
             sendMessage(obtainMessage(MSG_RESET_CACHES, tryResumeSuggestions ? 1 : 0,
                     remainingTries, null));
+        }
+
+        public void postWaitForDictionaryLoad() {
+            sendMessageDelayed(obtainMessage(MSG_WAIT_FOR_DICTIONARY_LOAD),
+                    DELAY_WAIT_FOR_DICTIONARY_LOAD);
+        }
+
+        public void cancelWaitForDictionaryLoad() {
+            removeMessages(MSG_WAIT_FOR_DICTIONARY_LOAD);
+        }
+
+        public boolean hasPendingWaitForDictionaryLoad() {
+            return hasMessages(MSG_WAIT_FOR_DICTIONARY_LOAD);
         }
 
         public void cancelUpdateSuggestionStrip() {
@@ -582,6 +608,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (mainKeyboardView != null) {
             mainKeyboardView.setMainDictionaryAvailability(isMainDictionaryAvailable);
         }
+        if (mHandler.hasPendingWaitForDictionaryLoad()) {
+            mHandler.cancelWaitForDictionaryLoad();
+            mHandler.postResumeSuggestions(true /* shouldIncludeResumedWordInSuggestions */,
+                    false /* shouldDelay */);
+        }
     }
 
     private void resetSuggest() {
@@ -821,7 +852,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             // When rotating, initialSelStart and initialSelEnd sometimes are lying. Make a best
             // effort to work around this bug.
             mInputLogic.mConnection.tryFixLyingCursorPosition();
-            mHandler.postResumeSuggestions(true /* shouldIncludeResumedWordInSuggestions */);
+            mHandler.postResumeSuggestions(true /* shouldIncludeResumedWordInSuggestions */,
+                    true /* shouldDelay */);
             canReachInputConnection = true;
         }
 
