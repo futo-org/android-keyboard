@@ -686,16 +686,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final SettingsValues settingsValues = mSettings.getCurrent();
         if (settingsValues.mDisplayOrientation != conf.orientation) {
             mHandler.startOrientationChanging();
-            // If !isComposingWord, #commitTyped() is a no-op, but still, it's better to avoid
-            // the useless IPC of {begin,end}BatchEdit.
-            if (mInputLogic.mWordComposer.isComposingWord()) {
-                mInputLogic.mConnection.beginBatchEdit();
-                // If we had a composition in progress, we need to commit the word so that the
-                // suggestionsSpan will be added. This will allow resuming on the same suggestions
-                // after rotation is finished.
-                mInputLogic.commitTyped(mSettings.getCurrent(), LastComposedWord.NOT_A_SEPARATOR);
-                mInputLogic.mConnection.endBatchEdit();
-            }
+            mInputLogic.onOrientationChange(mSettings.getCurrent());
         }
         // TODO: Remove this test.
         if (!conf.locale.equals(mPersonalizationDictionaryUpdater.getLocale())) {
