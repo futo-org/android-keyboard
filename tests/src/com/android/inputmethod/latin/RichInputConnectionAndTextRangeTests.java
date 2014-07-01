@@ -233,47 +233,21 @@ public class RichInputConnectionAndTextRangeTests extends AndroidTestCase {
 
         ic.beginBatchEdit();
         // basic case
-        r = ic.getWordRangeAtCursor(SPACE, 0);
+        r = ic.getWordRangeAtCursor(SPACE);
         assertTrue(TextUtils.equals("word", r.mWord));
-
-        // more than one word
-        r = ic.getWordRangeAtCursor(SPACE, 1);
-        assertTrue(TextUtils.equals("word word", r.mWord));
-        ic.endBatchEdit();
 
         // tab character instead of space
         mockInputMethodService.setInputConnection(new MockConnection("one\tword\two", "rd", et));
         ic.beginBatchEdit();
-        r = ic.getWordRangeAtCursor(TAB, 1);
+        r = ic.getWordRangeAtCursor(TAB);
         ic.endBatchEdit();
-        assertTrue(TextUtils.equals("word\tword", r.mWord));
-
-        // only one word doesn't go too far
-        mockInputMethodService.setInputConnection(new MockConnection("one\tword\two", "rd", et));
-        ic.beginBatchEdit();
-        r = ic.getWordRangeAtCursor(TAB, 1);
-        ic.endBatchEdit();
-        assertTrue(TextUtils.equals("word\tword", r.mWord));
-
-        // tab or space
-        mockInputMethodService.setInputConnection(new MockConnection("one word\two", "rd", et));
-        ic.beginBatchEdit();
-        r = ic.getWordRangeAtCursor(SPACE_TAB, 1);
-        ic.endBatchEdit();
-        assertTrue(TextUtils.equals("word\tword", r.mWord));
-
-        // tab or space multiword
-        mockInputMethodService.setInputConnection(new MockConnection("one word\two", "rd", et));
-        ic.beginBatchEdit();
-        r = ic.getWordRangeAtCursor(SPACE_TAB, 2);
-        ic.endBatchEdit();
-        assertTrue(TextUtils.equals("one word\tword", r.mWord));
+        assertTrue(TextUtils.equals("word", r.mWord));
 
         // splitting on supplementary character
         mockInputMethodService.setInputConnection(
                 new MockConnection("one word" + SUPPLEMENTARY_CHAR + "wo", "rd", et));
         ic.beginBatchEdit();
-        r = ic.getWordRangeAtCursor(StringUtils.toSortedCodePointArray(SUPPLEMENTARY_CHAR), 0);
+        r = ic.getWordRangeAtCursor(StringUtils.toSortedCodePointArray(SUPPLEMENTARY_CHAR));
         ic.endBatchEdit();
         assertTrue(TextUtils.equals("word", r.mWord));
     }
@@ -303,7 +277,7 @@ public class RichInputConnectionAndTextRangeTests extends AndroidTestCase {
         TextRange r;
         SuggestionSpan[] suggestions;
 
-        r = ic.getWordRangeAtCursor(SPACE, 0);
+        r = ic.getWordRangeAtCursor(SPACE);
         suggestions = r.getSuggestionSpansAtWord();
         assertEquals(suggestions.length, 1);
         MoreAsserts.assertEquals(suggestions[0].getSuggestions(), SUGGESTIONS1);
@@ -315,7 +289,7 @@ public class RichInputConnectionAndTextRangeTests extends AndroidTestCase {
         text.setSpan(new SuggestionSpan(Locale.ENGLISH, SUGGESTIONS2, 0 /* flags */),
                 10 /* start */, 16 /* end */, 0 /* flags */);
         mockInputMethodService.setInputConnection(new MockConnection(text, cursorPos));
-        r = ic.getWordRangeAtCursor(SPACE, 0);
+        r = ic.getWordRangeAtCursor(SPACE);
         suggestions = r.getSuggestionSpansAtWord();
         assertEquals(suggestions.length, 2);
         MoreAsserts.assertEquals(suggestions[0].getSuggestions(), SUGGESTIONS1);
@@ -328,7 +302,7 @@ public class RichInputConnectionAndTextRangeTests extends AndroidTestCase {
         text.setSpan(new SuggestionSpan(Locale.ENGLISH, SUGGESTIONS2, 0 /* flags */),
                 5 /* start */, 16 /* end */, 0 /* flags */);
         mockInputMethodService.setInputConnection(new MockConnection(text, cursorPos));
-        r = ic.getWordRangeAtCursor(SPACE, 0);
+        r = ic.getWordRangeAtCursor(SPACE);
         suggestions = r.getSuggestionSpansAtWord();
         assertEquals(suggestions.length, 1);
         MoreAsserts.assertEquals(suggestions[0].getSuggestions(), SUGGESTIONS1);
@@ -340,7 +314,7 @@ public class RichInputConnectionAndTextRangeTests extends AndroidTestCase {
         text.setSpan(new SuggestionSpan(Locale.ENGLISH, SUGGESTIONS2, 0 /* flags */),
                 10 /* start */, 20 /* end */, 0 /* flags */);
         mockInputMethodService.setInputConnection(new MockConnection(text, cursorPos));
-        r = ic.getWordRangeAtCursor(SPACE, 0);
+        r = ic.getWordRangeAtCursor(SPACE);
         suggestions = r.getSuggestionSpansAtWord();
         assertEquals(suggestions.length, 1);
         MoreAsserts.assertEquals(suggestions[0].getSuggestions(), SUGGESTIONS1);
@@ -352,7 +326,7 @@ public class RichInputConnectionAndTextRangeTests extends AndroidTestCase {
         text.setSpan(new SuggestionSpan(Locale.ENGLISH, SUGGESTIONS2, 0 /* flags */),
                 5 /* start */, 20 /* end */, 0 /* flags */);
         mockInputMethodService.setInputConnection(new MockConnection(text, cursorPos));
-        r = ic.getWordRangeAtCursor(SPACE, 0);
+        r = ic.getWordRangeAtCursor(SPACE);
         suggestions = r.getSuggestionSpansAtWord();
         assertEquals(suggestions.length, 1);
         MoreAsserts.assertEquals(suggestions[0].getSuggestions(), SUGGESTIONS1);
@@ -364,7 +338,7 @@ public class RichInputConnectionAndTextRangeTests extends AndroidTestCase {
         text.setSpan(new SuggestionSpan(Locale.ENGLISH, SUGGESTIONS2, 0 /* flags */),
                 5 /* start */, 20 /* end */, 0 /* flags */);
         mockInputMethodService.setInputConnection(new MockConnection(text, cursorPos));
-        r = ic.getWordRangeAtCursor(SPACE, 0);
+        r = ic.getWordRangeAtCursor(SPACE);
         suggestions = r.getSuggestionSpansAtWord();
         assertEquals(suggestions.length, 0);
     }
