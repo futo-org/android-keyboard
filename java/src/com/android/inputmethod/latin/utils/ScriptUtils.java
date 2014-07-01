@@ -31,7 +31,9 @@ public class ScriptUtils {
     public static final int SCRIPT_GREEK = 2;
     public static final int SCRIPT_ARABIC = 3;
     public static final int SCRIPT_HEBREW = 4;
-    public static final TreeMap<String, Integer> mLanguageToScript;
+    public static final int SCRIPT_ARMENIAN = 5;
+    public static final int SCRIPT_GEORGIAN = 6;
+    public static final TreeMap<String, Integer> mSpellCheckerLanguageToScript;
     static {
         // List of the supported languages and their associated script. We won't check
         // words written in another script than the selected script, because we know we
@@ -41,24 +43,24 @@ public class ScriptUtils {
         // proximity to pass to the dictionary descent algorithm.
         // IMPORTANT: this only contains languages - do not write countries in there.
         // Only the language is searched from the map.
-        mLanguageToScript = new TreeMap<>();
-        mLanguageToScript.put("cs", SCRIPT_LATIN);
-        mLanguageToScript.put("da", SCRIPT_LATIN);
-        mLanguageToScript.put("de", SCRIPT_LATIN);
-        mLanguageToScript.put("el", SCRIPT_GREEK);
-        mLanguageToScript.put("en", SCRIPT_LATIN);
-        mLanguageToScript.put("es", SCRIPT_LATIN);
-        mLanguageToScript.put("fi", SCRIPT_LATIN);
-        mLanguageToScript.put("fr", SCRIPT_LATIN);
-        mLanguageToScript.put("hr", SCRIPT_LATIN);
-        mLanguageToScript.put("it", SCRIPT_LATIN);
-        mLanguageToScript.put("lt", SCRIPT_LATIN);
-        mLanguageToScript.put("lv", SCRIPT_LATIN);
-        mLanguageToScript.put("nb", SCRIPT_LATIN);
-        mLanguageToScript.put("nl", SCRIPT_LATIN);
-        mLanguageToScript.put("pt", SCRIPT_LATIN);
-        mLanguageToScript.put("sl", SCRIPT_LATIN);
-        mLanguageToScript.put("ru", SCRIPT_CYRILLIC);
+        mSpellCheckerLanguageToScript = new TreeMap<>();
+        mSpellCheckerLanguageToScript.put("cs", SCRIPT_LATIN);
+        mSpellCheckerLanguageToScript.put("da", SCRIPT_LATIN);
+        mSpellCheckerLanguageToScript.put("de", SCRIPT_LATIN);
+        mSpellCheckerLanguageToScript.put("el", SCRIPT_GREEK);
+        mSpellCheckerLanguageToScript.put("en", SCRIPT_LATIN);
+        mSpellCheckerLanguageToScript.put("es", SCRIPT_LATIN);
+        mSpellCheckerLanguageToScript.put("fi", SCRIPT_LATIN);
+        mSpellCheckerLanguageToScript.put("fr", SCRIPT_LATIN);
+        mSpellCheckerLanguageToScript.put("hr", SCRIPT_LATIN);
+        mSpellCheckerLanguageToScript.put("it", SCRIPT_LATIN);
+        mSpellCheckerLanguageToScript.put("lt", SCRIPT_LATIN);
+        mSpellCheckerLanguageToScript.put("lv", SCRIPT_LATIN);
+        mSpellCheckerLanguageToScript.put("nb", SCRIPT_LATIN);
+        mSpellCheckerLanguageToScript.put("nl", SCRIPT_LATIN);
+        mSpellCheckerLanguageToScript.put("pt", SCRIPT_LATIN);
+        mSpellCheckerLanguageToScript.put("sl", SCRIPT_LATIN);
+        mSpellCheckerLanguageToScript.put("ru", SCRIPT_CYRILLIC);
     }
     /*
      * Returns whether the code point is a letter that makes sense for the specified
@@ -109,6 +111,17 @@ public class ScriptUtils {
             // Hebrew part of that block, which is U+FB1D..U+FB4F.
             return (codePoint >= 0x590 && codePoint <= 0x5FF
                     || codePoint >= 0xFB1D && codePoint <= 0xFB4F);
+        case SCRIPT_ARMENIAN:
+            // Armenian letters are in the Armenian unicode block, U+0530..U+058F and
+            // Alphabetic Presentation Forms block, U+FB00..U+FB4F, but only in the Armenian part
+            // of that block, which is U+FB13..U+FB17.
+            return (codePoint >= 0x530 && codePoint <= 0x58F
+                    || codePoint >= 0xFB13 && codePoint <= 0xFB17);
+        case SCRIPT_GEORGIAN:
+            // Georgian letters are in the Georgian unicode block, U+10A0..U+10FF,
+            // or Georgian supplement block, U+2D00..U+2D2F
+            return (codePoint >= 0x10A0 && codePoint <= 0x10FF
+                    || codePoint >= 0x2D00 && codePoint <= 0x2D2F);
         case SCRIPT_UNKNOWN:
             return true;
         default:
@@ -117,8 +130,8 @@ public class ScriptUtils {
         }
     }
 
-    public static int getScriptFromLocale(final Locale locale) {
-        final Integer script = mLanguageToScript.get(locale.getLanguage());
+    public static int getScriptFromSpellCheckerLocale(final Locale locale) {
+        final Integer script = mSpellCheckerLanguageToScript.get(locale.getLanguage());
         if (null == script) {
             throw new RuntimeException("We have been called with an unsupported language: \""
                     + locale.getLanguage() + "\". Framework bug?");

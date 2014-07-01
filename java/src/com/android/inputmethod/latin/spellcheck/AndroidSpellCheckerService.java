@@ -48,7 +48,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * Service for spell checking, using LatinIME's dictionaries and mechanisms.
@@ -373,7 +372,7 @@ public final class AndroidSpellCheckerService extends SpellCheckerService
     }
 
     public DictAndKeyboard createDictAndKeyboard(final Locale locale) {
-        final int script = ScriptUtils.getScriptFromLocale(locale);
+        final int script = ScriptUtils.getScriptFromSpellCheckerLocale(locale);
         final String keyboardLayoutName = getKeyboardLayoutNameForScript(script);
         final InputMethodSubtype subtype = AdditionalSubtypeUtils.createAdditionalSubtype(
                 locale.toString(), keyboardLayoutName, null);
