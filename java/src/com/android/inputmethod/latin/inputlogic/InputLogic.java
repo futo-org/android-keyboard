@@ -1288,8 +1288,7 @@ public final class InputLogic {
             return;
         }
         final TextRange range = mConnection.getWordRangeAtCursor(
-                settingsValues.mSpacingAndPunctuations.mSortedWordSeparators,
-                0 /* additionalPrecedingWordsCount */);
+                settingsValues.mSpacingAndPunctuations.mSortedWordSeparators);
         if (null == range) return; // Happens if we don't have an input connection at all
         if (range.length() <= 0) return; // Race condition. No text to resume on, so bail out.
         // If for some strange reason (editor bug or so) we measure the text before the cursor as
