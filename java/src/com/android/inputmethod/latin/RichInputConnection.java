@@ -620,27 +620,13 @@ public final class RichInputConnection {
     }
 
     /**
-     * @param sortedSeparators a sorted array of code points which may separate words
-     * @return the word that surrounds the cursor, including up to one trailing
-     *   separator. For example, if the field contains "he|llo world", where |
-     *   represents the cursor, then "hello " will be returned.
-     */
-    public CharSequence getWordAtCursor(final int[] sortedSeparators) {
-        // getWordRangeAtCursor returns null if the connection is null
-        final TextRange r = getWordRangeAtCursor(sortedSeparators, 0);
-        return (r == null) ? null : r.mWord;
-    }
-
-    /**
      * Returns the text surrounding the cursor.
      *
      * @param sortedSeparators a sorted array of code points that split words.
-     * @param additionalPrecedingWordsCount the number of words before the current word that should
-     *   be included in the returned range
      * @return a range containing the text surrounding the cursor
      */
-    public TextRange getWordRangeAtCursor(final int[] sortedSeparators,
-            final int additionalPrecedingWordsCount) {
+    public TextRange getWordRangeAtCursor(final int[] sortedSeparators) {
+        final int additionalPrecedingWordsCount = 0;
         mIC = mParent.getCurrentInputConnection();
         if (mIC == null) {
             return null;
