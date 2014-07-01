@@ -30,6 +30,7 @@ import com.android.inputmethod.latin.PrevWordsInfo.WordInfo;
 import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
 import com.android.inputmethod.latin.utils.CapsModeUtils;
 import com.android.inputmethod.latin.utils.DebugLogUtils;
+import com.android.inputmethod.latin.utils.ScriptUtils;
 import com.android.inputmethod.latin.utils.SpannableStringUtils;
 import com.android.inputmethod.latin.utils.StringUtils;
 import com.android.inputmethod.latin.utils.TextRange;
@@ -623,9 +624,10 @@ public final class RichInputConnection {
      * Returns the text surrounding the cursor.
      *
      * @param sortedSeparators a sorted array of code points that split words.
+     * @param scriptId the script we consider to be writing words, as one of ScriptUtils.SCRIPT_*
      * @return a range containing the text surrounding the cursor
      */
-    public TextRange getWordRangeAtCursor(final int[] sortedSeparators) {
+    public TextRange getWordRangeAtCursor(final int[] sortedSeparators, final int scriptId) {
         mIC = mParent.getCurrentInputConnection();
         if (mIC == null) {
             return null;
@@ -642,7 +644,8 @@ public final class RichInputConnection {
         int startIndexInBefore = before.length();
         while (startIndexInBefore > 0) {
             final int codePoint = Character.codePointBefore(before, startIndexInBefore);
-            if (isSeparator(codePoint, sortedSeparators)) {
+            if (isSeparator(codePoint, sortedSeparators)
+                    || !ScriptUtils.isLetterPartOfScript(codePoint, scriptId)) {
                 break;
             }
             --startIndexInBefore;
@@ -655,7 +658,8 @@ public final class RichInputConnection {
         int endIndexInAfter = -1;
         while (++endIndexInAfter < after.length()) {
             final int codePoint = Character.codePointAt(after, endIndexInAfter);
-            if (isSeparator(codePoint, sortedSeparators)) {
+            if (isSeparator(codePoint, sortedSeparators)
+                    || !ScriptUtils.isLetterPartOfScript(codePoint, scriptId)) {
                 break;
             }
             if (Character.isSupplementaryCodePoint(codePoint)) {

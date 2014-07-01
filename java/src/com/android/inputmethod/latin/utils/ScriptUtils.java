@@ -68,8 +68,8 @@ public class ScriptUtils {
      * Hence at the moment this explicitly tests for Cyrillic characters or Latin characters
      * as appropriate, and explicitly excludes CJK, Arabic and Hebrew characters.
      */
-    public static boolean isLetterCheckableByScript(final int codePoint, final int script) {
-        switch (script) {
+    public static boolean isLetterPartOfScript(final int codePoint, final int scriptId) {
+        switch (scriptId) {
         case SCRIPT_LATIN:
             // Our supported latin script dictionaries (EFIGS) at the moment only include
             // characters in the C0, C1, Latin Extended A and B, IPA extensions unicode
@@ -91,11 +91,29 @@ public class ScriptUtils {
             return (codePoint >= 0x370 && codePoint <= 0x3FF)
                     || (codePoint >= 0x1F00 && codePoint <= 0x1FFF)
                     || codePoint == 0xF2;
+        case SCRIPT_ARABIC:
+            // Arabic letters can be in any of the following blocks:
+            // Arabic U+0600..U+06FF
+            // Arabic Supplement U+0750..U+077F
+            // Arabic Extended-A U+08A0..U+08FF
+            // Arabic Presentation Forms-A U+FB50..U+FDFF
+            // Arabic Presentation Forms-B U+FE70..U+FEFF
+            return (codePoint >= 0x600 && codePoint <= 0x6FF)
+                    || (codePoint >= 0x750 && codePoint <= 0x77F)
+                    || (codePoint >= 0x8A0 && codePoint <= 0x8FF)
+                    || (codePoint >= 0xFB50 && codePoint <= 0xFDFF)
+                    || (codePoint >= 0xFE70 && codePoint <= 0xFEFF);
+        case SCRIPT_HEBREW:
+            // Hebrew letters are in the Hebrew unicode block, which spans from U+0590 to U+05FF,
+            // or in the Alphabetic Presentation Forms block, U+FB00..U+FB4F, but only in the
+            // Hebrew part of that block, which is U+FB1D..U+FB4F.
+            return (codePoint >= 0x590 && codePoint <= 0x5FF
+                    || codePoint >= 0xFB1D && codePoint <= 0xFB4F);
         case SCRIPT_UNKNOWN:
             return true;
         default:
             // Should never come here
-            throw new RuntimeException("Impossible value of script: " + script);
+            throw new RuntimeException("Impossible value of script: " + scriptId);
         }
     }
 

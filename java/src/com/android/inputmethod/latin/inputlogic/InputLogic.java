@@ -1288,9 +1288,14 @@ public final class InputLogic {
             return;
         }
         final TextRange range = mConnection.getWordRangeAtCursor(
-                settingsValues.mSpacingAndPunctuations.mSortedWordSeparators);
+                settingsValues.mSpacingAndPunctuations.mSortedWordSeparators,
+                currentKeyboardScriptId);
         if (null == range) return; // Happens if we don't have an input connection at all
-        if (range.length() <= 0) return; // Race condition. No text to resume on, so bail out.
+        if (range.length() <= 0) {
+            // Race condition, or touching a word in a non-supported script.
+            mLatinIME.setNeutralSuggestionStrip();
+            return;
+        }
         // If for some strange reason (editor bug or so) we measure the text before the cursor as
         // longer than what the entire text is supposed to be, the safe thing to do is bail out.
         if (range.mHasUrlSpans) return; // If there are links, we don't resume suggestions. Making
