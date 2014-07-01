@@ -626,7 +626,6 @@ public final class RichInputConnection {
      * @return a range containing the text surrounding the cursor
      */
     public TextRange getWordRangeAtCursor(final int[] sortedSeparators) {
-        final int additionalPrecedingWordsCount = 0;
         mIC = mParent.getCurrentInputConnection();
         if (mIC == null) {
             return null;
@@ -639,29 +638,17 @@ public final class RichInputConnection {
             return null;
         }
 
-        // Going backward, alternate skipping non-separators and separators until enough words
-        // have been read.
-        int count = additionalPrecedingWordsCount;
+        // Going backward, find the first breaking point (separator)
         int startIndexInBefore = before.length();
-        boolean isStoppingAtWhitespace = true;  // toggles to indicate what to stop at
-        while (true) { // see comments below for why this is guaranteed to halt
-            while (startIndexInBefore > 0) {
-                final int codePoint = Character.codePointBefore(before, startIndexInBefore);
-                if (isStoppingAtWhitespace == isSeparator(codePoint, sortedSeparators)) {
-                    break;  // inner loop
-                }
+        while (startIndexInBefore > 0) {
+            final int codePoint = Character.codePointBefore(before, startIndexInBefore);
+            if (isSeparator(codePoint, sortedSeparators)) {
+                break;
+            }
+            --startIndexInBefore;
+            if (Character.isSupplementaryCodePoint(codePoint)) {
                 --startIndexInBefore;
-                if (Character.isSupplementaryCodePoint(codePoint)) {
-                    --startIndexInBefore;
-                }
             }
-            // isStoppingAtWhitespace is true every other time through the loop,
-            // so additionalPrecedingWordsCount is guaranteed to become < 0, which
-            // guarantees outer loop termination
-            if (isStoppingAtWhitespace && (--count < 0)) {
-                break;  // outer loop
-            }
-            isStoppingAtWhitespace = !isStoppingAtWhitespace;
         }
 
         // Find last word separator after the cursor
