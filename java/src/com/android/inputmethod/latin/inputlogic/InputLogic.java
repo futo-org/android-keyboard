@@ -80,7 +80,8 @@ public final class InputLogic {
     private final DictionaryFacilitator mDictionaryFacilitator;
 
     public LastComposedWord mLastComposedWord = LastComposedWord.NOT_A_COMPOSED_WORD;
-    public final WordComposer mWordComposer;
+    // This has package visibility so it can be accessed from InputLogicHandler.
+    /* package */ final WordComposer mWordComposer;
     public final RichInputConnection mConnection;
     private final RecapitalizeStatus mRecapitalizeStatus = new RecapitalizeStatus();
 
@@ -149,6 +150,23 @@ public final class InputLogic {
     public void onSubtypeChanged(final String combiningSpec) {
         finishInput();
         startInput(combiningSpec);
+    }
+
+    /**
+     * Call this when the orientation changes.
+     * @param settingsValues the current values of the settings.
+     */
+    public void onOrientationChange(final SettingsValues settingsValues) {
+        // If !isComposingWord, #commitTyped() is a no-op, but still, it's better to avoid
+        // the useless IPC of {begin,end}BatchEdit.
+        if (mWordComposer.isComposingWord()) {
+            mConnection.beginBatchEdit();
+            // If we had a composition in progress, we need to commit the word so that the
+            // suggestionsSpan will be added. This will allow resuming on the same suggestions
+            // after rotation is finished.
+            commitTyped(settingsValues, LastComposedWord.NOT_A_SEPARATOR);
+            mConnection.endBatchEdit();
+        }
     }
 
     /**
