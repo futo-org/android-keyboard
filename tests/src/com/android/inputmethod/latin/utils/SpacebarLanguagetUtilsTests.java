@@ -87,20 +87,20 @@ public class SpacebarLanguagetUtilsTests extends AndroidTestCase {
                 "de_CH", "swiss");
         ZZ = mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
                 SubtypeLocaleUtils.NO_LANGUAGE, "qwerty");
-        DE_QWERTY = AdditionalSubtypeUtils.createAdditionalSubtype(
-                Locale.GERMAN.toString(), "qwerty", null);
-        FR_QWERTZ = AdditionalSubtypeUtils.createAdditionalSubtype(
-                Locale.FRENCH.toString(), "qwertz", null);
-        EN_US_AZERTY = AdditionalSubtypeUtils.createAdditionalSubtype(
-                Locale.US.toString(), "azerty", null);
-        EN_UK_DVORAK = AdditionalSubtypeUtils.createAdditionalSubtype(
-                Locale.UK.toString(), "dvorak", null);
-        ES_US_COLEMAK = AdditionalSubtypeUtils.createAdditionalSubtype(
-                "es_US", "colemak", null);
-        ZZ_AZERTY = AdditionalSubtypeUtils.createAdditionalSubtype(
-                SubtypeLocaleUtils.NO_LANGUAGE, "azerty", null);
-        ZZ_PC = AdditionalSubtypeUtils.createAdditionalSubtype(
-                SubtypeLocaleUtils.NO_LANGUAGE, "pcqwerty", null);
+        DE_QWERTY = AdditionalSubtypeUtils.createAsciiEmojiCapableAdditionalSubtype(
+                Locale.GERMAN.toString(), "qwerty");
+        FR_QWERTZ = AdditionalSubtypeUtils.createAsciiEmojiCapableAdditionalSubtype(
+                Locale.FRENCH.toString(), "qwertz");
+        EN_US_AZERTY = AdditionalSubtypeUtils.createAsciiEmojiCapableAdditionalSubtype(
+                Locale.US.toString(), "azerty");
+        EN_UK_DVORAK = AdditionalSubtypeUtils.createAsciiEmojiCapableAdditionalSubtype(
+                Locale.UK.toString(), "dvorak");
+        ES_US_COLEMAK = AdditionalSubtypeUtils.createAsciiEmojiCapableAdditionalSubtype(
+                "es_US", "colemak");
+        ZZ_AZERTY = AdditionalSubtypeUtils.createAsciiEmojiCapableAdditionalSubtype(
+                SubtypeLocaleUtils.NO_LANGUAGE, "azerty");
+        ZZ_PC = AdditionalSubtypeUtils.createAsciiEmojiCapableAdditionalSubtype(
+                SubtypeLocaleUtils.NO_LANGUAGE, "pcqwerty");
     }
 
     public void testAllFullDisplayNameForSpacebar() {

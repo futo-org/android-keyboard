@@ -374,8 +374,8 @@ public final class AndroidSpellCheckerService extends SpellCheckerService
     public DictAndKeyboard createDictAndKeyboard(final Locale locale) {
         final int script = ScriptUtils.getScriptFromSpellCheckerLocale(locale);
         final String keyboardLayoutName = getKeyboardLayoutNameForScript(script);
-        final InputMethodSubtype subtype = AdditionalSubtypeUtils.createAdditionalSubtype(
-                locale.toString(), keyboardLayoutName, null);
+        final InputMethodSubtype subtype = AdditionalSubtypeUtils.createDummyAdditionalSubtype(
+                locale.toString(), keyboardLayoutName);
         final KeyboardLayoutSet keyboardLayoutSet = createKeyboardSetForSpellChecker(subtype);
 
         final DictionaryCollection dictionaryCollection =

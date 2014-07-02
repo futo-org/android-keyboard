@@ -150,8 +150,9 @@ public final class AdditionalSubtypeSettings extends PreferenceFragment {
             // TODO: Should filter out already existing combinations of locale and layout.
             for (final String layout : SubtypeLocaleUtils.getPredefinedKeyboardLayoutSet()) {
                 // This is a dummy subtype with NO_LANGUAGE, only for display.
-                final InputMethodSubtype subtype = AdditionalSubtypeUtils.createAdditionalSubtype(
-                        SubtypeLocaleUtils.NO_LANGUAGE, layout, null);
+                final InputMethodSubtype subtype =
+                        AdditionalSubtypeUtils.createDummyAdditionalSubtype(
+                                SubtypeLocaleUtils.NO_LANGUAGE, layout);
                 add(new KeyboardLayoutSetItem(subtype));
             }
         }
@@ -286,8 +287,9 @@ public final class AdditionalSubtypeSettings extends PreferenceFragment {
                         (SubtypeLocaleItem) mSubtypeLocaleSpinner.getSelectedItem();
                 final KeyboardLayoutSetItem layout =
                         (KeyboardLayoutSetItem) mKeyboardLayoutSetSpinner.getSelectedItem();
-                final InputMethodSubtype subtype = AdditionalSubtypeUtils.createAdditionalSubtype(
-                        locale.first, layout.first, Constants.Subtype.ExtraValue.ASCII_CAPABLE);
+                final InputMethodSubtype subtype =
+                        AdditionalSubtypeUtils.createAsciiEmojiCapableAdditionalSubtype(
+                                locale.first, layout.first);
                 setSubtype(subtype);
                 notifyChanged();
                 if (isEditing) {

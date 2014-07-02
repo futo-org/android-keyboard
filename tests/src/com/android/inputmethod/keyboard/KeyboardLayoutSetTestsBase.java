@@ -104,8 +104,8 @@ public abstract class KeyboardLayoutSetTestsBase extends AndroidTestCase {
             final Locale subtypeLocale = SubtypeLocaleUtils.getSubtypeLocale(subtype);
             if (locale.equals(subtypeLocale)) {
                 // Create additional subtype.
-                return AdditionalSubtypeUtils.createAdditionalSubtype(
-                        locale.toString(), keyboardLayout, null /* extraValue */);
+                return AdditionalSubtypeUtils.createAsciiEmojiCapableAdditionalSubtype(
+                        locale.toString(), keyboardLayout);
             }
         }
         throw new RuntimeException(

@@ -67,10 +67,10 @@ public class LanguageOnSpacebarHelperTests extends AndroidTestCase {
                 Locale.CANADA_FRENCH.toString(), "qwerty");
         FR_CH_SWISS = mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
                 "fr_CH", "swiss");
-        FR_CH_QWERTZ = AdditionalSubtypeUtils.createAdditionalSubtype(
-                "fr_CH", "qwertz", null);
-        FR_CH_QWERTY = AdditionalSubtypeUtils.createAdditionalSubtype(
-                "fr_CH", "qwerty", null);
+        FR_CH_QWERTZ = AdditionalSubtypeUtils.createAsciiEmojiCapableAdditionalSubtype(
+                "fr_CH", "qwertz");
+        FR_CH_QWERTY = AdditionalSubtypeUtils.createAsciiEmojiCapableAdditionalSubtype(
+                "fr_CH", "qwerty");
         ZZ_QWERTY = mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
                 SubtypeLocaleUtils.NO_LANGUAGE, "qwerty");
     }
