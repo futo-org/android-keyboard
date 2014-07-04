@@ -26,9 +26,9 @@
     android:layout_height="match_parent"
     android:padding="0dp"
     android:gravity="center"
-    android:src="@drawable/suggestions_strip_divider"
     android:contentDescription="@null"
     android:clickable="false"
     android:longClickable="false"
     android:hapticFeedbackEnabled="false"
-    android:soundEffectsEnabled="false" />
+    android:soundEffectsEnabled="false"
+    style="?attr/suggestionStripViewStyle" />
