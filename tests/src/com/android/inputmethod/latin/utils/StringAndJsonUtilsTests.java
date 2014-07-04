@@ -56,48 +56,6 @@ public class StringAndJsonUtilsTests extends AndroidTestCase {
         assertTrue("in 2 elements", StringUtils.containsInCommaSplittableText("key", "key1,key"));
     }
 
-    public void testJoinCommaSplittableText() {
-        assertEquals("2 nulls", "",
-                StringUtils.joinCommaSplittableText(null, null));
-        assertEquals("null and empty", "",
-                StringUtils.joinCommaSplittableText(null, ""));
-        assertEquals("empty and null", "",
-                StringUtils.joinCommaSplittableText("", null));
-        assertEquals("2 empties", "",
-                StringUtils.joinCommaSplittableText("", ""));
-        assertEquals("text and null", "text",
-                StringUtils.joinCommaSplittableText("text", null));
-        assertEquals("text and empty", "text",
-                StringUtils.joinCommaSplittableText("text", ""));
-        assertEquals("null and text", "text",
-                StringUtils.joinCommaSplittableText(null, "text"));
-        assertEquals("empty and text", "text",
-                StringUtils.joinCommaSplittableText("", "text"));
-        assertEquals("2 texts", "text1,text2",
-                StringUtils.joinCommaSplittableText("text1", "text2"));
-    }
-
-    public void testAppendToCommaSplittableTextIfNotExists() {
-        assertEquals("null", "key",
-                StringUtils.appendToCommaSplittableTextIfNotExists("key", null));
-        assertEquals("empty", "key",
-                StringUtils.appendToCommaSplittableTextIfNotExists("key", ""));
-
-        assertEquals("not in 1 element", "key1,key",
-                StringUtils.appendToCommaSplittableTextIfNotExists("key", "key1"));
-        assertEquals("not in 2 elements", "key1,key2,key",
-                StringUtils.appendToCommaSplittableTextIfNotExists("key", "key1,key2"));
-
-        assertEquals("in 1 element", "key",
-                StringUtils.appendToCommaSplittableTextIfNotExists("key", "key"));
-        assertEquals("in 2 elements at position 1", "key,key2",
-                StringUtils.appendToCommaSplittableTextIfNotExists("key", "key,key2"));
-        assertEquals("in 2 elements at position 2", "key1,key",
-                StringUtils.appendToCommaSplittableTextIfNotExists("key", "key1,key"));
-        assertEquals("in 3 elements at position 2", "key1,key,key3",
-                StringUtils.appendToCommaSplittableTextIfNotExists("key", "key1,key,key3"));
-    }
-
     public void testRemoveFromCommaSplittableTextIfExists() {
         assertEquals("null", "", StringUtils.removeFromCommaSplittableTextIfExists("key", null));
         assertEquals("empty", "", StringUtils.removeFromCommaSplittableTextIfExists("key", ""));
