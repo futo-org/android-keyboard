@@ -19,6 +19,7 @@ package com.android.inputmethod.compat;
 import android.os.Build;
 import android.view.inputmethod.InputMethodSubtype;
 
+import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.Constants;
 
 import java.lang.reflect.Constructor;
@@ -64,7 +65,12 @@ public final class InputMethodSubtypeCompatUtils {
     }
 
     public static boolean isAsciiCapable(final InputMethodSubtype subtype) {
-        return (Boolean)CompatUtils.invoke(subtype, false, METHOD_isAsciiCapable)
+        return isAsciiCapableWithAPI(subtype)
                 || subtype.containsExtraValueKey(Constants.Subtype.ExtraValue.ASCII_CAPABLE);
+    }
+
+    @UsedForTesting
+    public static boolean isAsciiCapableWithAPI(final InputMethodSubtype subtype) {
+        return (Boolean)CompatUtils.invoke(subtype, false, METHOD_isAsciiCapable);
     }
 }
