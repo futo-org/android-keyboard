@@ -92,28 +92,17 @@
             <include
                 latin:keyboardLayout="@xml/key_styles_currency_euro" />
         </case>
-        <!-- fa: Persian (Rial and Afgahni)
-             hi: Hindi (Indian Rupee)
-             iw: Hebrew (New Sheqel)
-             lo: Lao (Kip)
-             mn: Mongolian (Tugrik)
-             ne: Nepali (Nepalese Rupee)
-             th: Thai (Baht)
-             uk: Ukrainian (Hryvnia)
-             vi: Vietnamese (Dong)  -->
-        <!-- TODO: The currency sign of Turkish Lira was created in 2012 and assigned U+20BA for
-             its unicode, although there is no font glyph for it as of November 2012. -->
-        <!-- TODO: The currency sign of Armenian Dram was created in 2012 and assigned U+058F for
-             its unicode, although there is no font glyph for it as of September 2013. -->
+        <!-- IN: India (Rupee) -->
         <case
-            latin:languageCode="fa|hi|iw|lo|mn|ne|th|uk|vi"
+            latin:countryCode="IN"
         >
-            <!-- U+00A3: "£" POUND SIGN
+            <!-- U+20B9: "₹" INDIAN RUPEE SIGN
+                 U+00A3: "£" POUND SIGN
                  U+20AC: "€" EURO SIGN
                  U+00A2: "¢" CENT SIGN -->
             <key-style
                 latin:styleName="currencyKeyStyle"
-                latin:keySpec="!text/keyspec_currency"
+                latin:keySpec="&#x20B9;"
                 latin:moreKeys="!text/morekeys_currency" />
             <key-style
                 latin:styleName="moreCurrency1KeyStyle"
@@ -129,17 +118,29 @@
                 latin:styleName="moreCurrency4KeyStyle"
                 latin:keySpec="&#x00A2;" />
         </case>
-        <!-- IN: India (Rupee) -->
+        <!-- bn: Bengali (Bangladesh Taka)
+             fa: Persian (Rial and Afgahni)
+             hi: Hindi (Indian Rupee)
+             iw: Hebrew (New Sheqel)
+             lo: Lao (Kip)
+             mn: Mongolian (Tugrik)
+             ne: Nepali (Nepalese Rupee)
+             th: Thai (Baht)
+             uk: Ukrainian (Hryvnia)
+             vi: Vietnamese (Dong)  -->
+        <!-- TODO: The currency sign of Turkish Lira was created in 2012 and assigned U+20BA for
+             its unicode, although there is no font glyph for it as of November 2012. -->
+        <!-- TODO: The currency sign of Armenian Dram was created in 2012 and assigned U+058F for
+             its unicode, although there is no font glyph for it as of September 2013. -->
         <case
-            latin:countryCode="IN"
+            latin:languageCode="bn|fa|hi|iw|lo|mn|ne|th|uk|vi"
         >
-            <!-- U+20B9: "₹" INDIAN RUPEE SIGN
-                 U+00A3: "£" POUND SIGN
+            <!-- U+00A3: "£" POUND SIGN
                  U+20AC: "€" EURO SIGN
                  U+00A2: "¢" CENT SIGN -->
             <key-style
                 latin:styleName="currencyKeyStyle"
-                latin:keySpec="&#x20B9;"
+                latin:keySpec="!text/keyspec_currency"
                 latin:moreKeys="!text/morekeys_currency" />
             <key-style
                 latin:styleName="moreCurrency1KeyStyle"
