@@ -64,8 +64,7 @@ public final class RichInputMethodManager {
     }
 
     public static void init(final Context context) {
-        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        sInstance.initInternal(context, prefs);
+        sInstance.initInternal(context);
     }
 
     private boolean isInitialized() {
@@ -78,7 +77,7 @@ public final class RichInputMethodManager {
         }
     }
 
-    private void initInternal(final Context context, final SharedPreferences prefs) {
+    private void initInternal(final Context context) {
         if (isInitialized()) {
             return;
         }
@@ -88,11 +87,16 @@ public final class RichInputMethodManager {
 
         // Initialize additional subtypes.
         SubtypeLocaleUtils.init(context);
+        final InputMethodSubtype[] additionalSubtypes = getAdditionalSubtypes(context);
+        setAdditionalInputMethodSubtypes(additionalSubtypes);
+    }
+
+    public InputMethodSubtype[] getAdditionalSubtypes(final Context context) {
+        SubtypeLocaleUtils.init(context);
+        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         final String prefAdditionalSubtypes = Settings.readPrefAdditionalSubtypes(
                 prefs, context.getResources());
-        final InputMethodSubtype[] additionalSubtypes =
-                AdditionalSubtypeUtils.createAdditionalSubtypesArray(prefAdditionalSubtypes);
-        setAdditionalInputMethodSubtypes(additionalSubtypes);
+        return AdditionalSubtypeUtils.createAdditionalSubtypesArray(prefAdditionalSubtypes);
     }
 
     public InputMethodManager getInputMethodManager() {
