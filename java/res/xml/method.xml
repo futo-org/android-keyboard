@@ -28,6 +28,7 @@
     be_BY: Belarusian (Belarus)/east_slavic
     bg: Bulgarian/bulgarian
     bg: Bulgarian/bulgarian_bds
+    (bn_IN: Bengali (India)/bengali)  # This is a preliminary keyboard layout.
     ca: Catalan/spanish
     cs: Czech/qwertz
     da: Danish/nordic
@@ -169,6 +170,16 @@
             android:imeSubtypeLocale="bg"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=bulgarian_bds,EmojiCapable"
+            android:isAsciiCapable="false"
+    />
+    <!-- TODO: This bengali keyboard is a preliminary layout.
+               This isn't based on the final specification. -->
+    <subtype android:icon="@drawable/ic_ime_switcher_dark"
+            android:label="@string/subtype_generic"
+            android:subtypeId="0xbff5986c"
+            android:imeSubtypeLocale="bn_IN"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=bengali,EmojiCapable"
             android:isAsciiCapable="false"
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
