@@ -75,31 +75,6 @@ public final class StringUtils {
         return containsInArray(text, extraValues.split(SEPARATOR_FOR_COMMA_SPLITTABLE_TEXT));
     }
 
-    public static String joinCommaSplittableText(final String head, final String tail) {
-        if (TextUtils.isEmpty(head) && TextUtils.isEmpty(tail)) {
-            return EMPTY_STRING;
-        }
-        // Here either head or tail is not null.
-        if (TextUtils.isEmpty(head)) {
-            return tail;
-        }
-        if (TextUtils.isEmpty(tail)) {
-            return head;
-        }
-        return head + SEPARATOR_FOR_COMMA_SPLITTABLE_TEXT + tail;
-    }
-
-    public static String appendToCommaSplittableTextIfNotExists(final String text,
-            final String extraValues) {
-        if (TextUtils.isEmpty(extraValues)) {
-            return text;
-        }
-        if (containsInCommaSplittableText(text, extraValues)) {
-            return extraValues;
-        }
-        return extraValues + SEPARATOR_FOR_COMMA_SPLITTABLE_TEXT + text;
-    }
-
     public static String removeFromCommaSplittableTextIfExists(final String text,
             final String extraValues) {
         if (TextUtils.isEmpty(extraValues)) {
