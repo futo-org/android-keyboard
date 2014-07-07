@@ -83,7 +83,7 @@
     <string name="spoken_description_shift" msgid="244197883292549308">"Shift"</string>
     <string name="spoken_description_shift_shifted" msgid="1681877323344195035">"Shift เปิดอยู่ (แตะเพื่อปิดใช้งาน)"</string>
     <string name="spoken_description_caps_lock" msgid="3276478269526304432">"Caps lock เปิดอยู่ (แตะเพื่อปิดใช้งาน)"</string>
-    <string name="spoken_description_delete" msgid="8740376944276199801">"ลบ"</string>
+    <string name="spoken_description_delete" msgid="8740376944276199801">"นำออก"</string>
     <string name="spoken_description_to_symbol" msgid="5486340107500448969">"สัญลักษณ์"</string>
     <string name="spoken_description_to_alpha" msgid="23129338819771807">"ตัวอักษร"</string>
     <string name="spoken_description_to_numeric" msgid="591752092685161732">"หมายเลข"</string>
@@ -212,7 +212,7 @@
     <string name="cancel" msgid="6830980399865683324">"ยกเลิก"</string>
     <string name="install_dict" msgid="180852772562189365">"ติดตั้ง"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"ยกเลิก"</string>
-    <string name="delete_dict" msgid="756853268088330054">"ลบ"</string>
+    <string name="delete_dict" msgid="756853268088330054">"นำออก"</string>
     <string name="should_download_over_metered_prompt" msgid="2878629598667658845">"ภาษาที่คุณเลือกใช้ในอุปกรณ์เคลื่อนที่มีพจนานุกรมที่สามารถใช้ได้&lt;br/&gt; เราขอแนะนำให้คุณ &lt;b&gt;ดาวน์โหลด&lt;/b&gt; พจนานุกรม <xliff:g id="LANGUAGE">%1$s</xliff:g> เพื่อรับประสบการณ์การพิมพ์ที่ดียิ่งขึ้น&lt;br/&gt; &lt;br/&gt;การดาวน์โหลดจะใช้เวลาหนึ่งถึงสองนาทีผ่านทาง 3G ซึ่งอาจมีการเรียกเก็บเงินหากคุณไม่ได้ใช้ &lt;b&gt;แผนบริการข้อมูลแบบไม่จำกัดปริมาณ&lt;/b&gt; &lt;br/&gt;หากคุณไม่แน่ใจว่าคุณใช้แผนบริการข้อมูลแบบใด เราขอแนะนำให้คุณเชื่อมต่อ WiFi เพื่อเริ่มการดาวน์โหลดอัตโนมัติ&lt;br/&gt; &lt;br/&gt;เคล็ดลับ: คุณสามารถดาวน์โหลดและนำพจนานุกรมออกได้โดยไปที่ &lt;b&gt;ภาษาและการป้อนข้อมูล&lt;/b&gt; ในเมนู &lt;b&gt;การตั้งค่า&lt;/b&gt; ในอุปกรณ์เคลื่อนที่ของคุณ"</string>
     <string name="download_over_metered" msgid="1643065851159409546">"ดาวน์โหลดเลย (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"ดาวน์โหลดผ่าน WiFi"</string>
@@ -233,10 +233,10 @@
     <string name="user_dict_settings_add_shortcut_hint" msgid="2265453012555060178">"ทางลัดที่ไม่บังคับ"</string>
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"แก้ไขคำ"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"แก้ไข"</string>
-    <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"ลบ"</string>
+    <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"นำออก"</string>
     <string name="user_dict_settings_empty_text" msgid="558499587532668203">"คุณไม่มีคำในพจนานุกรมผู้ใช้เลย เพิ่มคำโดยแตะปุ่มเพิ่ม (+)"</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"สำหรับทุกภาษา"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"ภาษาเพิ่มเติม…"</string>
-    <string name="user_dict_settings_delete" msgid="110413335187193859">"ลบ"</string>
+    <string name="user_dict_settings_delete" msgid="110413335187193859">"นำออก"</string>
     <string name="user_dict_fast_scroll_alphabet" msgid="5431919401558285473">" ABCDEFGHIJKLMNOPQRSTUVWXYZ"</string>
 </resources>

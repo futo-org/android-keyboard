@@ -22,8 +22,8 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_input_options" msgid="3909945612939668554">"Indstillinger for input"</string>
     <string name="english_ime_research_log" msgid="8492602295696577851">"Forskningslogkommandoer"</string>
-    <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"Slå kontaktnavne op"</string>
-    <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"Stavekontrollen bruger poster fra listen over kontaktpersoner"</string>
+    <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"Anvend kontaktnavne"</string>
+    <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"Stavekontrollen bruger ord fra dine kontaktpersondata"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibration ved tastetryk"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Lyd ved tastetryk"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Pop op ved tastetryk"</string>
@@ -35,7 +35,7 @@
     <string name="advanced_settings_summary" msgid="4487980456152830271">"Indstillinger for øvede"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Skift inputmetode"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Tasten til sprogskift gælder også for andre inputmetoder"</string>
-    <string name="show_language_switch_key" msgid="5915478828318774384">"Tast til sprogskift"</string>
+    <string name="show_language_switch_key" msgid="5915478828318774384">"Knap til sprogskift"</string>
     <string name="show_language_switch_key_summary" msgid="7343403647474265713">"Vis, når der er aktiveret flere inputsprog"</string>
     <string name="sliding_key_input_preview" msgid="6604262359510068370">"Vis indikator ved glidning"</string>
     <string name="sliding_key_input_preview_summary" msgid="6340524345729093886">"Vis et visuelt tip, når du glider fra Shift eller symboltaster"</string>
@@ -48,15 +48,15 @@
     <string name="use_contacts_dict_summary" msgid="6599983334507879959">"Brug navne fra Kontaktpersoner til forslag og rettelser"</string>
     <string name="use_double_space_period" msgid="8781529969425082860">"To mellemrum for punktum"</string>
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"To tryk på mellemrumstasten indsætter et punktum og et mellemrum"</string>
-    <string name="auto_cap" msgid="1719746674854628252">"Skriv aut. med stort"</string>
+    <string name="auto_cap" msgid="1719746674854628252">"Skriv automatisk med stort"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"Skriv det første ord i hver sætning med stort"</string>
     <string name="edit_personal_dictionary" msgid="3996910038952940420">"Personlig ordbog"</string>
-    <string name="configure_dictionaries_title" msgid="4238652338556902049">"Tillægsordbøger"</string>
+    <string name="configure_dictionaries_title" msgid="4238652338556902049">"Ekstra ordbøger"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"Hovedordbog"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Vis rettelsesforslag"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Vis ordforslag under indtastning"</string>
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Vis altid"</string>
-    <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3859783767435239118">"Vis i portræt"</string>
+    <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3859783767435239118">"Vis i oprejst format"</string>
     <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"Skjul altid"</string>
     <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"Bloker stødende ord"</string>
     <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"Foreslå ikke potentielt stødende ord"</string>
@@ -90,7 +90,7 @@
     <string name="spoken_description_settings" msgid="4627462689603838099">"Indstillinger"</string>
     <string name="spoken_description_tab" msgid="2667716002663482248">"Tabulatortast"</string>
     <string name="spoken_description_space" msgid="2582521050049860859">"Mellemrum"</string>
-    <string name="spoken_description_mic" msgid="615536748882611950">"Stemmeinput"</string>
+    <string name="spoken_description_mic" msgid="615536748882611950">"Taleinput"</string>
     <string name="spoken_description_smiley" msgid="2256309826200113918">"Smiley"</string>
     <string name="spoken_description_return" msgid="8178083177238315647">"Tilbage"</string>
     <string name="spoken_description_search" msgid="1247236163755920808">"Søg"</string>
@@ -116,13 +116,13 @@
     <string name="keyboard_mode_text" msgid="6479436687899701619">"tekst"</string>
     <string name="keyboard_mode_time" msgid="4381856885582143277">"klokkeslæt"</string>
     <string name="keyboard_mode_url" msgid="1519819835514911218">"Webadresse"</string>
-    <string name="voice_input" msgid="3583258583521397548">"Nøgle til stemmeinput"</string>
+    <string name="voice_input" msgid="3583258583521397548">"Knap til taleinput"</string>
     <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"På hovedtastatur"</string>
     <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"På symboltastatur"</string>
     <string name="voice_input_modes_off" msgid="3745699748218082014">"Fra"</string>
     <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Mik. på hovedtastatur"</string>
     <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Mik. på symboltastatur"</string>
-    <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Stemmeinput deaktiveret"</string>
+    <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Taleinput deaktiveret"</string>
     <string name="configure_input_method" msgid="373356270290742459">"Konfigurer inputmetoder"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Inputsprog"</string>
     <string name="send_feedback" msgid="1780431884109392046">"Send feedback"</string>
@@ -193,7 +193,7 @@
     <string name="dictionary_provider_name" msgid="3027315045397363079">"Dictionary Provider"</string>
     <string name="dictionary_service_name" msgid="6237472350693511448">"Ordbogstjeneste"</string>
     <string name="download_description" msgid="6014835283119198591">"Opdateringsoplysninger for ordbøger"</string>
-    <string name="dictionary_settings_title" msgid="8091417676045693313">"Tillægsordbøger"</string>
+    <string name="dictionary_settings_title" msgid="8091417676045693313">"Ekstra ordbøger"</string>
     <string name="dictionary_install_over_metered_network_prompt" msgid="3587517870006332980">"Ordbog er tilgængelig"</string>
     <string name="dictionary_settings_summary" msgid="5305694987799824349">"Indstillinger for ordbøger"</string>
     <string name="user_dictionaries" msgid="3582332055892252845">"Brugerordbøger"</string>
