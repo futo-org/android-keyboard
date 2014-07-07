@@ -298,6 +298,7 @@
             <flag name="alignLeftOfCenter" value="0x08" />
             <flag name="fontNormal" value="0x10" />
             <flag name="fontMonoSpace" value="0x20" />
+            <flag name="fontDefault" value="0x30" />
             <flag name="followKeyLargeLetterRatio" value="0x40" />
             <flag name="followKeyLetterRatio" value="0x80" />
             <flag name="followKeyLabelRatio" value="0xC0" />
