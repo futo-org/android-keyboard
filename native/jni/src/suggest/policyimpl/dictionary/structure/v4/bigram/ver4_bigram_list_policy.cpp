@@ -71,8 +71,14 @@ bool Ver4BigramListPolicy::addNewEntry(const int terminalId, const int newTarget
         const BigramEntry bigramEntryToWrite = createUpdatedBigramEntryFrom(&newBigramEntry,
                 bigramProperty);
         // Write an entry.
-        const int writingPos =  mBigramDictContent->getBigramListHeadPos(terminalId);
-        if (!mBigramDictContent->writeBigramEntry(&bigramEntryToWrite, writingPos)) {
+        int writingPos =  mBigramDictContent->getBigramListHeadPos(terminalId);
+        if (!mBigramDictContent->writeBigramEntryAndAdvancePosition(&bigramEntryToWrite,
+                &writingPos)) {
+            AKLOGE("Cannot write bigram entry. pos: %d.", writingPos);
+            return false;
+        }
+        if (!mBigramDictContent->writeTerminator(writingPos)) {
+            AKLOGE("Cannot write bigram list terminator. pos: %d.", writingPos);
             return false;
         }
         if (outAddedNewEntry) {
@@ -84,31 +90,36 @@ bool Ver4BigramListPolicy::addNewEntry(const int terminalId, const int newTarget
     int tailEntryPos = NOT_A_DICT_POS;
     const int entryPosToUpdate = getEntryPosToUpdate(newTargetTerminalId, bigramListPos,
             &tailEntryPos);
-    if (tailEntryPos != NOT_A_DICT_POS || entryPosToUpdate == NOT_A_DICT_POS) {
-        // Case 4, 5.
-        // Add new entry to the bigram list.
-        if (tailEntryPos == NOT_A_DICT_POS) {
-            // Case 4. Create new bigram list.
-            if (!mBigramDictContent->createNewBigramList(terminalId)) {
-                return false;
-            }
-            const int destPos = mBigramDictContent->getBigramListHeadPos(terminalId);
-            // Copy existing bigram list.
-            if (!mBigramDictContent->copyBigramList(bigramListPos, destPos, &tailEntryPos)) {
-                return false;
-            }
-        }
+    if (entryPosToUpdate == NOT_A_DICT_POS) {
+        // Case 4, 5. Add new entry to the bigram list.
+        const int contentTailPos = mBigramDictContent->getContentTailPos();
+        // If the tail entry is at the tail of content buffer, the new entry can be written without
+        // link (Case 5).
+        const bool canAppendEntry =
+                contentTailPos == tailEntryPos + mBigramDictContent->getBigramEntrySize();
+        const int newEntryPos = canAppendEntry ? tailEntryPos : contentTailPos;
+        int writingPos = newEntryPos;
         // Write new entry at the tail position of the bigram content.
         const BigramEntry newBigramEntry(false /* hasNext */, NOT_A_PROBABILITY,
                 newTargetTerminalId);
         const BigramEntry bigramEntryToWrite = createUpdatedBigramEntryFrom(
                 &newBigramEntry, bigramProperty);
-        if (!mBigramDictContent->writeBigramEntryAtTail(&bigramEntryToWrite)) {
+        if (!mBigramDictContent->writeBigramEntryAndAdvancePosition(&bigramEntryToWrite,
+                &writingPos)) {
+            AKLOGE("Cannot write bigram entry. pos: %d.", writingPos);
             return false;
         }
-        // Update has next flag of the tail entry.
-        if (!updateHasNextFlag(true /* hasNext */, tailEntryPos)) {
+        if (!mBigramDictContent->writeTerminator(writingPos)) {
+            AKLOGE("Cannot write bigram list terminator. pos: %d.", writingPos);
             return false;
+        }
+        if (!canAppendEntry) {
+            // Update link of the current tail entry.
+            if (!mBigramDictContent->writeLink(newEntryPos, tailEntryPos)) {
+                AKLOGE("Cannot update bigram entry link. pos: %d, linked entry pos: %d.",
+                        tailEntryPos, newEntryPos);
+                return false;
+            }
         }
         if (outAddedNewEntry) {
             *outAddedNewEntry = true;
@@ -228,25 +239,24 @@ int Ver4BigramListPolicy::getEntryPosToUpdate(const int targetTerminalIdToFind,
     if (outTailEntryPos) {
         *outTailEntryPos = NOT_A_DICT_POS;
     }
-    bool hasNext = true;
     int invalidEntryPos = NOT_A_DICT_POS;
     int readingPos = bigramListPos;
-    while (hasNext) {
-        const int entryPos = readingPos;
+    while (true) {
         const BigramEntry bigramEntry =
                 mBigramDictContent->getBigramEntryAndAdvancePosition(&readingPos);
-        hasNext = bigramEntry.hasNext();
+        const int entryPos = readingPos - mBigramDictContent->getBigramEntrySize();
+        if (!bigramEntry.hasNext()) {
+            if (outTailEntryPos) {
+                *outTailEntryPos = entryPos;
+            }
+            break;
+        }
         if (bigramEntry.getTargetTerminalId() == targetTerminalIdToFind) {
             // Entry with same target is found.
             return entryPos;
         } else if (!bigramEntry.isValid()) {
             // Invalid entry that can be reused is found.
             invalidEntryPos = entryPos;
-        }
-        if (!hasNext && mBigramDictContent->isContentTailPos(readingPos)) {
-            if (outTailEntryPos) {
-                *outTailEntryPos = entryPos;
-            }
         }
     }
     return invalidEntryPos;
@@ -267,12 +277,6 @@ const BigramEntry Ver4BigramListPolicy::createUpdatedBigramEntryFrom(
     } else {
         return originalBigramEntry->updateProbabilityAndGetEntry(bigramProperty->getProbability());
     }
-}
-
-bool Ver4BigramListPolicy::updateHasNextFlag(const bool hasNext, const int bigramEntryPos) {
-    const BigramEntry bigramEntry = mBigramDictContent->getBigramEntry(bigramEntryPos);
-    const BigramEntry updatedBigramEntry = bigramEntry.updateHasNextAndGetEntry(hasNext);
-    return mBigramDictContent->writeBigramEntry(&updatedBigramEntry, bigramEntryPos);
 }
 
 } // namespace latinime

@@ -57,8 +57,8 @@ class Ver4DictConstants {
     static const int BIGRAM_FLAGS_FIELD_SIZE;
     static const int BIGRAM_TARGET_TERMINAL_ID_FIELD_SIZE;
     static const int INVALID_BIGRAM_TARGET_TERMINAL_ID;
+    static const int BIGRAM_IS_LINK_MASK;
     static const int BIGRAM_PROBABILITY_MASK;
-    static const int BIGRAM_HAS_NEXT_MASK;
     // Used when bigram list has time stamp.
     static const int BIGRAM_LARGE_PROBABILITY_FIELD_SIZE;
 

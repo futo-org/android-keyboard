@@ -42,6 +42,10 @@ class BigramDictContent : public SparseTableDictContent {
                       Ver4DictConstants::BIGRAM_ADDRESS_TABLE_DATA_SIZE),
               mHasHistoricalInfo(hasHistoricalInfo) {}
 
+    int getContentTailPos() const {
+        return getContentBuffer()->getTailPosition();
+    }
+
     const BigramEntry getBigramEntry(const int bigramEntryPos) const {
         int readingPos = bigramEntryPos;
         return getBigramEntryAndAdvancePosition(&readingPos);
@@ -71,12 +75,17 @@ class BigramDictContent : public SparseTableDictContent {
     bool writeBigramEntryAndAdvancePosition(const BigramEntry *const bigramEntryToWrite,
             int *const entryWritingPos);
 
+    bool writeTerminator(const int writingPos) {
+        // Terminator is a link to the invalid position.
+        return writeLink(INVALID_LINKED_ENTRY_POS, writingPos);
+    }
+
+    bool writeLink(const int linkedPos, const int writingPos);
+
     bool createNewBigramList(const int terminalId) {
         const int bigramListPos = getContentBuffer()->getTailPosition();
         return getUpdatableAddressLookupTable()->set(terminalId, bigramListPos);
     }
-
-    bool copyBigramList(const int bigramListPos, const int toPos, int *const outTailEntryPos);
 
     bool flushToFile(const char *const dictPath) const {
         return flush(dictPath, Ver4DictConstants::BIGRAM_LOOKUP_TABLE_FILE_EXTENSION,
@@ -87,17 +96,6 @@ class BigramDictContent : public SparseTableDictContent {
     bool runGC(const TerminalPositionLookupTable::TerminalIdMap *const terminalIdMap,
             const BigramDictContent *const originalBigramDictContent,
             int *const outBigramEntryCount);
-
-    bool isContentTailPos(const int pos) const {
-        return pos == getContentBuffer()->getTailPosition();
-    }
-
- private:
-    DISALLOW_COPY_AND_ASSIGN(BigramDictContent);
-
-    int createAndGetBigramFlags(const bool hasNext) const {
-        return hasNext ? Ver4DictConstants::BIGRAM_HAS_NEXT_MASK : 0;
-    }
 
     int getBigramEntrySize() const {
         if (mHasHistoricalInfo) {
@@ -112,6 +110,15 @@ class BigramDictContent : public SparseTableDictContent {
                     + Ver4DictConstants::BIGRAM_TARGET_TERMINAL_ID_FIELD_SIZE;
         }
     }
+
+ private:
+    DISALLOW_COPY_AND_ASSIGN(BigramDictContent);
+
+    static const int INVALID_LINKED_ENTRY_POS;
+
+    bool writeBigramEntryAttributesAndAdvancePosition(
+            const bool isLink, const int probability, const int targetTerminalId,
+            const int timestamp, const int level, const int count, int *const entryWritingPos);
 
     bool runGCBigramList(const int bigramListPos,
             const BigramDictContent *const sourceBigramDictContent, const int toPos,
