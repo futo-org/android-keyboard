@@ -60,7 +60,7 @@ const int Ver4DictConstants::INVALID_BIGRAM_TARGET_TERMINAL_ID =
         (1 << (BIGRAM_TARGET_TERMINAL_ID_FIELD_SIZE * 8)) - 1;
 const int Ver4DictConstants::BIGRAM_FLAGS_FIELD_SIZE = 1;
 const int Ver4DictConstants::BIGRAM_PROBABILITY_MASK = 0x0F;
-const int Ver4DictConstants::BIGRAM_HAS_NEXT_MASK = 0x80;
+const int Ver4DictConstants::BIGRAM_IS_LINK_MASK = 0x80;
 const int Ver4DictConstants::BIGRAM_LARGE_PROBABILITY_FIELD_SIZE = 1;
 
 const int Ver4DictConstants::SHORTCUT_FLAGS_FIELD_SIZE = 1;
