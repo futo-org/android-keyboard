@@ -25,18 +25,21 @@
         latin:keyboardLayout="@xml/key_styles_common" />
     <Row
         latin:keyWidth="9.091%p"
+        latin:keyLabelFlags="fontNormal|autoXScale"
     >
         <include
             latin:keyboardLayout="@xml/rowkeys_sinhala1" />
     </Row>
     <Row
-            latin:keyWidth="9.091%p"
+        latin:keyWidth="9.091%p"
+        latin:keyLabelFlags="fontNormal|autoXScale"
     >
         <include
             latin:keyboardLayout="@xml/rowkeys_sinhala2" />
     </Row>
     <Row
         latin:keyWidth="8.711%p"
+        latin:keyLabelFlags="fontNormal|autoXScale"
     >
         <Key
             latin:keyStyle="shiftKeyStyle"
