@@ -115,7 +115,7 @@
     <string name="keyboard_mode_phone" msgid="6851627527401433229">"ስልክ"</string>
     <string name="keyboard_mode_text" msgid="6479436687899701619">"ፅሁፍ"</string>
     <string name="keyboard_mode_time" msgid="4381856885582143277">"ጊዜ"</string>
-    <string name="keyboard_mode_url" msgid="1519819835514911218">"ዩ አር ኤል"</string>
+    <string name="keyboard_mode_url" msgid="1519819835514911218">"ዩአርኤል"</string>
     <string name="voice_input" msgid="3583258583521397548">"የድምፅ ግቤት ቁልፍ"</string>
     <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"በዋናቁልፍ ሰሌዳ ላይ"</string>
     <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"በምልክቶች ቁልፍ ሰሌዳ ላይ"</string>
@@ -209,9 +209,9 @@
     <string name="message_updating" msgid="4457761393932375219">"ዝማኔዎችን በመፈለግ ላይ"</string>
     <string name="message_loading" msgid="8689096636874758814">"በመጫን ላይ..."</string>
     <string name="main_dict_description" msgid="3072821352793492143">"ዋና መዝገበ-ቃላት"</string>
-    <string name="cancel" msgid="6830980399865683324">"ሰርዝ"</string>
+    <string name="cancel" msgid="6830980399865683324">"ይቅር"</string>
     <string name="install_dict" msgid="180852772562189365">"ጫን"</string>
-    <string name="cancel_download_dict" msgid="7843340278507019303">"ሰርዝ"</string>
+    <string name="cancel_download_dict" msgid="7843340278507019303">"ይቅር"</string>
     <string name="delete_dict" msgid="756853268088330054">"ሰርዝ"</string>
     <string name="should_download_over_metered_prompt" msgid="2878629598667658845">"ተንቀሳቃሽ መሣሪያዎ ላይ ለተመረጠው ቋንቋ የሚሆን መዝገበ-ቃላት ይገኛል።&lt;br/&gt; የትየባ ተሞክሮዎን ለማሻሻል የ<xliff:g id="LANGUAGE">%1$s</xliff:g> መዝገበ-ቃላቱን &lt;b&gt;እንዲያወርዱ&lt;/b&gt; እንመክራለን።&lt;br/&gt; &lt;br/&gt; ውርዱ በ3ጂ ላይ አንድ ወይም ሁለት ደቂቃ ሊወስድ ይችላል። &lt;b&gt;ያልተገደበ የውሂብ ዕቅድ&lt;/b&gt; ከሌለዎት ክፍያዎች መከፈል ሊኖርባቸው ይችላል።&lt;br/&gt; የትኛው የውሂብ ዕቅድ እንዳለዎት እርግጠኛ ካልሆኑ ውርዱን በራስ-ሰር ለመጀመር የWi-Fi ግንኙነት እንዲፈልጉ እንመክራለን።&lt;br/&gt; &lt;br/&gt; ጠቃሚ ምክር፦ የተንቀሳቃሽ መሣሪያዎ &lt;b&gt;ቅንብሮች&lt;/b&gt; ምናሌ ውስጥ ወዳለው &lt;b&gt;ቋንቋ እና ግብዓት&lt;/b&gt; በመሄድ መዝገበ-ቃላትን ማውረድና ማስወገድ ይችላሉ።"</string>
     <string name="download_over_metered" msgid="1643065851159409546">"አሁን አውርድ (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> ሜባ)"</string>
