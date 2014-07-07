@@ -62,8 +62,11 @@ public class Key implements Comparable<Key> {
     private static final int LABEL_FLAGS_ALIGN_RIGHT = 0x02;
     private static final int LABEL_FLAGS_ALIGN_BUTTOM = 0x04;
     private static final int LABEL_FLAGS_ALIGN_LEFT_OF_CENTER = 0x08;
+    // Font typeface specification.
+    private static final int LABEL_FLAGS_FONT_MASK = 0x30;
     private static final int LABEL_FLAGS_FONT_NORMAL = 0x10;
     private static final int LABEL_FLAGS_FONT_MONO_SPACE = 0x20;
+    private static final int LABEL_FLAGS_FONT_DEFAULT = 0x30;
     // Start of key text ratio enum values
     private static final int LABEL_FLAGS_FOLLOW_KEY_TEXT_RATIO_MASK = 0x1C0;
     private static final int LABEL_FLAGS_FOLLOW_KEY_LARGE_LETTER_RATIO = 0x40;
@@ -567,14 +570,16 @@ public class Key implements Comparable<Key> {
     }
 
     public final Typeface selectTypeface(final KeyDrawParams params) {
-        // TODO: Handle "bold" here too?
-        if ((mLabelFlags & LABEL_FLAGS_FONT_NORMAL) != 0) {
+        switch (mLabelFlags & LABEL_FLAGS_FONT_MASK) {
+        case LABEL_FLAGS_FONT_NORMAL:
             return Typeface.DEFAULT;
-        }
-        if ((mLabelFlags & LABEL_FLAGS_FONT_MONO_SPACE) != 0) {
+        case LABEL_FLAGS_FONT_MONO_SPACE:
             return Typeface.MONOSPACE;
+        case LABEL_FLAGS_FONT_DEFAULT:
+        default:
+            // The type-face is specified by keyTypeface attribute.
+            return params.mTypeface;
         }
-        return params.mTypeface;
     }
 
     public final int selectTextSize(final KeyDrawParams params) {
