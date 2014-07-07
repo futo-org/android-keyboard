@@ -63,8 +63,6 @@ class Ver4BigramListPolicy : public DictionaryBigramsStructurePolicy {
     const BigramEntry createUpdatedBigramEntryFrom(const BigramEntry *const originalBigramEntry,
             const BigramProperty *const bigramProperty) const;
 
-    bool updateHasNextFlag(const bool hasNext, const int bigramEntryPos);
-
     BigramDictContent *const mBigramDictContent;
     const TerminalPositionLookupTable *const mTerminalPositionLookupTable;
     const HeaderPolicy *const mHeaderPolicy;
