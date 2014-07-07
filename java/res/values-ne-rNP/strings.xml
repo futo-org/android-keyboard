@@ -26,18 +26,12 @@
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"कुञ्जी थिच्दा भाइब्रेट"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"कुञ्जी थिच्दा आवाज"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"कुञ्जी दबाउँदा पपअप"</string>
-    <!-- no translation found for settings_screen_input (2808654300248306866) -->
-    <skip />
-    <!-- no translation found for settings_screen_appearances (3611951947835553700) -->
-    <skip />
-    <!-- no translation found for settings_screen_multi_lingual (6829970893413937235) -->
-    <skip />
-    <!-- no translation found for settings_screen_gesture (9113437621722871665) -->
-    <skip />
-    <!-- no translation found for settings_screen_correction (1616818407747682955) -->
-    <skip />
-    <!-- no translation found for settings_screen_advanced (7472408607625972994) -->
-    <skip />
+    <string name="settings_screen_input" msgid="2808654300248306866">"निवेश प्राथमिकता"</string>
+    <string name="settings_screen_appearances" msgid="3611951947835553700">"उपस्थिति"</string>
+    <string name="settings_screen_multi_lingual" msgid="6829970893413937235">"बहुभाषी विकल्प"</string>
+    <string name="settings_screen_gesture" msgid="9113437621722871665">"इशारा टाइप प्राथमिकता"</string>
+    <string name="settings_screen_correction" msgid="1616818407747682955">"पाठ सुधार"</string>
+    <string name="settings_screen_advanced" msgid="7472408607625972994">"उन्नत"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"अन्य इनपुट विधिमा स्विच गर्नुहोस्"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"भाषा स्विच किले अन्य इनपुट विधि पनि समेट्छ"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"भाषा स्विच कुञ्जी"</string>
@@ -108,16 +102,11 @@
     <string name="subtype_no_language_colemak" msgid="5837418400010302623">"वर्णमाला (Colemak)"</string>
     <string name="subtype_no_language_pcqwerty" msgid="5354918232046200018">"वर्णमाला (PC)"</string>
     <string name="subtype_emoji" msgid="7483586578074549196">"इमोजी"</string>
-    <!-- no translation found for keyboard_theme (4909551808526178852) -->
-    <skip />
-    <!-- no translation found for keyboard_theme_holo_white (8506588144096428751) -->
-    <skip />
-    <!-- no translation found for keyboard_theme_holo_blue (192400518003397418) -->
-    <skip />
-    <!-- no translation found for keyboard_theme_material_dark (2701178578784760596) -->
-    <skip />
-    <!-- no translation found for keyboard_theme_material_light (3479400901818790331) -->
-    <skip />
+    <string name="keyboard_theme" msgid="4909551808526178852">"किबोर्ड थिम"</string>
+    <string name="keyboard_theme_holo_white" msgid="8506588144096428751">"होलो सेतो"</string>
+    <string name="keyboard_theme_holo_blue" msgid="192400518003397418">"होलो नीलो"</string>
+    <string name="keyboard_theme_material_dark" msgid="2701178578784760596">"सामाग्री कालो"</string>
+    <string name="keyboard_theme_material_light" msgid="3479400901818790331">"सामाग्री प्रकाश"</string>
     <string name="custom_input_styles_title" msgid="8429952441821251512">"अनुकूलन इनपुट शैली"</string>
     <string name="add_style" msgid="6163126614514489951">"शैली थप्नुहोस्"</string>
     <string name="add" msgid="8299699805688017798">"थप्नुहोस्"</string>
