@@ -31,7 +31,7 @@
     <string name="spoken_description_shift_shifted" msgid="3122704922642232605">"Shift"</string>
     <string name="spoken_description_symbols_shift_shifted" msgid="5179175466878186081">"สัญลักษณ์"</string>
     <string name="spoken_description_caps_lock" msgid="1224851412185975036">"Shift"</string>
-    <string name="spoken_description_delete" msgid="3878902286264983302">"ลบ"</string>
+    <string name="spoken_description_delete" msgid="3878902286264983302">"นำออก"</string>
     <string name="spoken_description_to_symbol" msgid="8244903740201126590">"สัญลักษณ์"</string>
     <string name="spoken_description_to_alpha" msgid="4081215210530031950">"ตัวอักษร"</string>
     <string name="spoken_description_to_numeric" msgid="4560261331530795682">"หมายเลข"</string>
