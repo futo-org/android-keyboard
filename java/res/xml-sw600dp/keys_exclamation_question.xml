@@ -23,8 +23,10 @@
 >
     <Key
         latin:keySpec="!"
-        latin:moreKeys="!text/morekeys_exclamation" />
+        latin:moreKeys="!text/morekeys_exclamation"
+        latin:keyLabelFlags="fontDefault" />
     <Key
         latin:keySpec="\?"
-        latin:moreKeys="!text/morekeys_question" />
+        latin:moreKeys="!text/morekeys_question"
+        latin:keyLabelFlags="fontDefault" />
 </merge>
