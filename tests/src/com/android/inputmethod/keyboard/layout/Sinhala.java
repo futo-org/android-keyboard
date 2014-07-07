@@ -129,25 +129,17 @@ public final class Sinhala extends LayoutBase {
     private static final ExpectedKey[][] ALPHABET_SHIFTED_COMMON = new ExpectedKeyboardBuilder()
             .setKeysOfRow(1,
                     // U+0DD6: "ූ" SINHALA VOWEL SIGN DIGA PAA-PILLA
-                    key("\u0DD6", moreKey("1")),
                     // U+0D8B: "උ" SINHALA LETTER UYANNA
-                    key("\u0D8B", moreKey("2")),
                     // U+0DD1: "ෑ" SINHALA VOWEL SIGN DIGA AEDA-PILLA
-                    key("\u0DD1", moreKey("3")),
                     // U+0D8D: "ඍ" SINHALA LETTER IRUYANNA
-                    key("\u0D8D", moreKey("4")),
                     // U+0D94: "ඔ" SINHALA LETTER OYANNA
-                    key("\u0D94", moreKey("5")),
                     // U+0DC1: "ශ" SINHALA LETTER TAALUJA SAYANNA
-                    key("\u0DC1", moreKey("6")),
                     // U+0DB9: "ඹ" SINHALA LETTER AMBA BAYANNA
-                    key("\u0DB9", moreKey("7")),
                     // U+0DC2: "ෂ" SINHALA LETTER MUURDHAJA SAYANNA
-                    key("\u0DC2", moreKey("8")),
                     // U+0DB0: "ධ" SINHALA LETTER MAHAAPRAANA DAYANNA
-                    key("\u0DB0", moreKey("9")),
                     // U+0DA1: "ඡ" SINHALA LETTER MAHAAPRAANA CAYANNA
-                    key("\u0DA1", moreKey("0")),
+                    "\u0DD6", "\u0D8B", "\u0DD1", "\u0D8D", "\u0D94", "\u0DC1", "\u0DB9", "\u0DC2",
+                    "\u0DB0", "\u0DA1",
                     // U+0DA5: "ඥ" SINHALA LETTER TAALUJA SANYOOGA NAAKSIKYAYA
                     // U+0DF4: "෴" SINHALA PUNCTUATION KUNDDALIYA
                     key("\u0DA5", moreKey("\u0DF4")))
