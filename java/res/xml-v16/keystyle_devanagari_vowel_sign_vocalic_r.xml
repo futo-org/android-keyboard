@@ -22,30 +22,22 @@
      API version 16 can't automatically render dotted circle for incomplete combining letter
      of some scripts. The files named res/xml/key_*.xml have this U+25CC hack, although the
      counterpart files named res/xml-v16/key_*.xml don't have this hack. -->
-<merge
-    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
->
+<merge xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin">
     <switch>
-        <case
-            latin:keyboardLayoutSet="hindi"
-        >
+        <case latin:keyboardLayoutSet="hindi">
             <!-- U+0944: "ॄ" DEVANAGARI VOWEL SIGN VOCALIC RR -->
             <key-style
                 latin:styleName="moreKeysDevanagariVowelSignVocalicR"
                 latin:moreKeys="&#x0944;" />
         </case>
-        <case
-            latin:keyboardLayoutSet="hindi_compact"
-        >
+        <case latin:keyboardLayoutSet="hindi_compact">
             <!-- U+090B: "ऋ" DEVANAGARI LETTER VOCALIC R
                  U+0943: "ृ" DEVANAGARI VOWEL SIGN VOCALIC R -->
             <key-style
                 latin:styleName="moreKeysDevanagariVowelSignVocalicR"
                 latin:moreKeys="&#x090B;,&#x0943;" />
         </case>
-        <case
-            latin:keyboardLayoutSet="marathi"
-        >
+        <case latin:keyboardLayoutSet="marathi">
             <!-- U+0931: "ऱ" DEVANAGARI LETTER RRA
                  U+090B: "ऋ" DEVANAGARI LETTER VOCALIC R
                  U+0943: "ृ" DEVANAGARI VOWEL SIGN VOCALIC R -->
@@ -53,23 +45,19 @@
                 latin:styleName="moreKeysDevanagariVowelSignVocalicR"
                 latin:moreKeys="&#x0931;,&#x090B;,&#x0943;" />
         </case>
-        <case
-            latin:keyboardLayoutSet="nepali_traditional"
-        >
+        <case latin:keyboardLayoutSet="nepali_traditional">
             <!-- U+0913: "ओ" DEVANAGARI LETTER O -->
             <key-style
                 latin:styleName="moreKeysDevanagariVowelSignVocalicR"
                 latin:moreKeys="&#x0913;" />
         </case>
         <default>
-             <key-style
-                latin:styleName="moreKeysDevanagariVowelSignVocalicR" />
+            <key-style latin:styleName="moreKeysDevanagariVowelSignVocalicR" />
         </default>
     </switch>
     <!-- U+0943: "ृ" DEVANAGARI VOWEL SIGN VOCALIC R -->
     <key-style
         latin:styleName="baseKeyDevanagariVowelSignVocalicR"
         latin:parentStyle="moreKeysDevanagariVowelSignVocalicR"
-        latin:keySpec="&#x0943;"
-        latin:keyLabelFlags="fontNormal" />
+        latin:keySpec="&#x0943;" />
 </merge>

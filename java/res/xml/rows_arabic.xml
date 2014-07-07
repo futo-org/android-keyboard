@@ -18,32 +18,28 @@
 */
 -->
 
-<merge
-    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
->
-    <include
-        latin:keyboardLayout="@xml/key_styles_common" />
+<merge xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin">
+    <include latin:keyboardLayout="@xml/key_styles_common" />
     <Row
         latin:keyWidth="9.091%p"
+        latin:keyLabelFlags="fontNormal"
     >
-        <include
-            latin:keyboardLayout="@xml/rowkeys_arabic1" />
+        <include latin:keyboardLayout="@xml/rowkeys_arabic1" />
     </Row>
     <Row
         latin:keyWidth="9.091%p"
+        latin:keyLabelFlags="fontNormal"
     >
-        <include
-            latin:keyboardLayout="@xml/rowkeys_arabic2" />
+        <include latin:keyboardLayout="@xml/rowkeys_arabic2" />
     </Row>
     <Row
         latin:keyWidth="9.091%p"
+        latin:keyLabelFlags="fontNormal"
     >
-        <include
-            latin:keyboardLayout="@xml/rowkeys_arabic3" />
+        <include latin:keyboardLayout="@xml/rowkeys_arabic3" />
         <Key
             latin:keyStyle="deleteKeyStyle"
             latin:keyWidth="fillRight" />
     </Row>
-    <include
-        latin:keyboardLayout="@xml/row_qwerty4" />
+    <include latin:keyboardLayout="@xml/row_qwerty4" />
 </merge>

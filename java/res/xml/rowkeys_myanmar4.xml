@@ -18,83 +18,52 @@
 */
 -->
 
-<merge
-    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
->
+<merge xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin">
     <switch>
-        <case
-            latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted"
-        >
+        <case latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted">
             <!-- U+1025: "ဥ" MYANMAR LETTER U -->
-            <Key
-                latin:keySpec="&#x1025;"
-                latin:keyLabelFlags="fontNormal" />
+            <Key latin:keySpec="&#x1025;" />
             <!-- U+1026: "ဦ" MYANMAR LETTER UU -->
-            <Key
-                latin:keySpec="&#x1026;"
-                latin:keyLabelFlags="fontNormal" />
+            <Key latin:keySpec="&#x1026;" />
             <!-- U+100C: "ဌ" MYANMAR LETTER TTHA -->
-            <Key
-                latin:keySpec="&#x100C;"
-                latin:keyLabelFlags="fontNormal" />
+            <Key latin:keySpec="&#x100C;" />
             <!-- U+100B: "ဋ" MYANMAR LETTER TTA -->
-            <Key
-                latin:keySpec="&#x100B;"
-                latin:keyLabelFlags="fontNormal" />
+            <Key latin:keySpec="&#x100B;" />
             <!-- U+100D: "ဍ" MYANMAR LETTER DDA -->
-            <Key
-                latin:keySpec="&#x100D;"
-                latin:keyLabelFlags="fontNormal" />
+            <Key latin:keySpec="&#x100D;" />
             <!-- U+1020: "ဠ" MYANMAR LETTER LLA -->
-            <Key
-                latin:keySpec="&#x1020;"
-                latin:keyLabelFlags="fontNormal" />
+            <Key latin:keySpec="&#x1020;" />
             <!-- U+100B/U+1039/U+100C: "ဋ္ဌ" MYANMAR LETTER TTA/MYANMAR SIGN VIRAMA/MYANMAR LETTER TTHA -->
             <Key
                 latin:keySpec="&#x100B;&#x1039;&#x100C;"
-                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+                latin:keyLabelFlags="followKeyLetterRatio" />
             <!-- U+100F/U+1039/U+100D: "ဏ္ဍ" MYANMAR LETTER NNA/MYANMAR SIGN VIRAMA/MYANMAR LETTER DDA
                  U+100F/U+1039/U+100C: "ဏ္ဌ" MYANMAR LETTER NNA/MYANMAR SIGN VIRAMA/MYANMAR LETTER TTHA -->
             <Key
                 latin:keySpec="&#x100F;&#x1039;&#x100D;"
                 latin:moreKeys="&#x100F;&#x1039;&#x100C;"
-                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+                latin:keyLabelFlags="followKeyLetterRatio" />
         </case>
         <default>
             <!-- U+1016: "ဖ" MYANMAR LETTER PHA -->
-            <Key
-                latin:keySpec="&#x1016;"
-                latin:keyLabelFlags="fontNormal" />
+            <Key latin:keySpec="&#x1016;" />
             <!-- U+1011: "ထ" MYANMAR LETTER THA -->
-            <Key
-                latin:keySpec="&#x1011;"
-                latin:keyLabelFlags="fontNormal" />
+            <Key latin:keySpec="&#x1011;" />
             <!-- U+1001: "ခ" MYANMAR LETTER KHA -->
-            <Key
-                latin:keySpec="&#x1001;"
-                latin:keyLabelFlags="fontNormal" />
+            <Key latin:keySpec="&#x1001;" />
             <!-- U+101C: "လ" MYANMAR LETTER LA -->
-            <Key
-                latin:keySpec="&#x101C;"
-                latin:keyLabelFlags="fontNormal" />
+            <Key latin:keySpec="&#x101C;" />
             <!-- U+1018: "ဘ" MYANMAR LETTER BHA -->
-            <Key
-                latin:keySpec="&#x1018;"
-                latin:keyLabelFlags="fontNormal" />
+            <Key latin:keySpec="&#x1018;" />
             <!-- U+100A: "ည" MYANMAR LETTER NNYA
                  U+1009: "ဉ" MYANMAR LETTER NYA -->
             <Key
                 latin:keySpec="&#x100A;"
-                latin:moreKeys="&#x1009;"
-                latin:keyLabelFlags="fontNormal" />
+                latin:moreKeys="&#x1009;" />
             <!-- U+101B: "ရ" MYANMAR LETTER RA -->
-            <Key
-                latin:keySpec="&#x101B;"
-                latin:keyLabelFlags="fontNormal" />
+            <Key latin:keySpec="&#x101B;" />
             <!-- U+101D: "ဝ" MYANMAR LETTER WA -->
-            <Key
-                latin:keySpec="&#x101D;"
-                latin:keyLabelFlags="fontNormal" />
+            <Key latin:keySpec="&#x101D;" />
         </default>
     </switch>
 </merge>

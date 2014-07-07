@@ -22,39 +22,29 @@
      API version 16 can't automatically render dotted circle for incomplete combining letter
      of some scripts. The files named res/xml/key_*.xml have this U+25CC hack, although the
      counterpart files named res/xml-v16/key_*.xml don't have this hack. -->
-<merge
-    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
->
+<merge xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin">
     <switch>
-        <case
-            latin:keyboardLayoutSet="hindi"
-        >
+        <case latin:keyboardLayoutSet="hindi">
             <!-- U+25CC: "◌" DOTTED CIRCLE
                  U+0947/U+0902: "ें" DEVANAGARI VOWEL SIGN E/DEVANAGARI SIGN ANUSVARA -->
             <key-style
                 latin:styleName="moreKeysDevanagariVowelSignE"
                 latin:moreKeys="&#x25CC;&#x0947;&#x0902;|&#x0947;&#x0902;" />
         </case>
-        <case
-            latin:keyboardLayoutSet="hindi_compact"
-        >
+        <case latin:keyboardLayoutSet="hindi_compact">
             <!-- U+25CC: "◌" DOTTED CIRCLE
                  U+0947: "े" DEVANAGARI VOWEL SIGN E -->
             <key-style
                 latin:styleName="moreKeysDevanagariVowelSignE"
                 latin:moreKeys="&#x25CC;&#x0947;|&#x0947;" />
         </case>
-        <case
-            latin:keyboardLayoutSet="marathi"
-        >
+        <case latin:keyboardLayoutSet="marathi">
             <!-- U+090F: "ए" DEVANAGARI LETTER SHORT E -->
             <key-style
                 latin:styleName="moreKeysDevanagariVowelSignE"
                 latin:moreKeys="&#x090F;" />
         </case>
-        <case
-            latin:keyboardLayoutSet="nepali_traditional"
-        >
+        <case latin:keyboardLayoutSet="nepali_traditional">
             <!-- U+25CC: "◌" DOTTED CIRCLE
                  U+0903: "ः‍" DEVANAGARI SIGN VISARGA
                  U+093D: "ऽ" DEVANAGARI SIGN AVAGRAHA -->
@@ -63,8 +53,7 @@
                 latin:moreKeys="&#x25CC;&#x0903;|&#x0903;,&#x093D;" />
         </case>
         <default>
-             <key-style
-                latin:styleName="moreKeysDevanagariVowelSignE" />
+            <key-style latin:styleName="moreKeysDevanagariVowelSignE" />
         </default>
     </switch>
     <!-- U+25CC: "◌" DOTTED CIRCLE
@@ -73,5 +62,5 @@
         latin:styleName="baseKeyDevanagariVowelSignE"
         latin:parentStyle="moreKeysDevanagariVowelSignE"
         latin:keySpec="&#x25CC;&#x0947;|&#x0947;"
-        latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+        latin:keyLabelFlags="followKeyLetterRatio" />
 </merge>

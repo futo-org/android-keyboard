@@ -23,6 +23,5 @@
 >
     <!-- U+0577: "շ" ARMENIAN SMALL LETTER SHA -->
     <Key
-        latin:keySpec="&#x0577;"
-        latin:keyLabelFlags="fontNormal" />
+        latin:keySpec="&#x0577;" />
 </merge>

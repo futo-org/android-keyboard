@@ -22,13 +22,9 @@
      API version 16 can't automatically render dotted circle for incomplete combining letter
      of some scripts. The files named res/xml/key_*.xml have this U+25CC hack, although the
      counterpart files named res/xml-v16/key_*.xml don't have this hack. -->
-<merge
-    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
->
+<merge xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin">
     <switch>
-        <case
-            latin:keyboardLayoutSet="hindi_compact"
-        >
+        <case latin:keyboardLayoutSet="hindi_compact">
             <!-- U+25CC: "◌" DOTTED CIRCLE
                  U+0903: "ः‍" DEVANAGARI SIGN VISARGA
                  U+0901: "ँ" DEVANAGARI SIGN CANDRABINDU
@@ -37,9 +33,7 @@
                 latin:styleName="moreKeysDevanagariSignAnusvara"
                 latin:moreKeys="&#x25CC;&#x0903;|&#x0903;,&#x25CC;&#x0901;|&#x0901;,&#x25CC;&#x093C;|&#x093C;" />
         </case>
-        <case
-            latin:keyboardLayoutSet="marathi"
-        >
+        <case latin:keyboardLayoutSet="marathi">
             <!-- U+25CC: "◌" DOTTED CIRCLE
                  U+0903: "ः‍" DEVANAGARI SIGN VISARGA
                  U+0901: "ँ" DEVANAGARI SIGN CANDRABINDU -->
@@ -48,8 +42,7 @@
                 latin:moreKeys="&#x25CC;&#x0903;|&#x0903;,&#x25CC;&#x0901;|&#x0901;" />
         </case>
         <default>
-             <key-style
-                latin:styleName="moreKeysDevanagariSignAnusvara" />
+            <key-style latin:styleName="moreKeysDevanagariSignAnusvara" />
         </default>
     </switch>
     <!-- U+25CC: "◌" DOTTED CIRCLE
@@ -58,5 +51,5 @@
         latin:styleName="baseKeyDevanagariSignAnusvara"
         latin:parentStyle="moreKeysDevanagariSignAnusvara"
         latin:keySpec="&#x25CC;&#x0902;|&#x0902;"
-        latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+        latin:keyLabelFlags="followKeyLetterRatio" />
 </merge>

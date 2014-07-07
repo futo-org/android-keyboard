@@ -18,50 +18,35 @@
 */
 -->
 
-<merge
-    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
->
+<merge xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin">
     <switch>
-        <case
-            latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted"
-        >
+        <case latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted">
             <!-- Because the font rendering system prior to API version 16 can't automatically
                  render dotted circle for incomplete combining letter of some scripts, different
                  set of Key definitions are needed based on the API version. -->
-            <include
-                latin:keyboardLayout="@xml/keystyle_devanagari_sign_anusvara" />
-            <Key
-                latin:keyStyle="baseKeyDevanagariSignAnusvara" />
+            <include latin:keyboardLayout="@xml/keystyle_devanagari_sign_anusvara" />
+            <Key latin:keyStyle="baseKeyDevanagariSignAnusvara" />
             <!-- U+0919: "ङ" DEVANAGARI LETTER NGA -->
-            <Key
-                latin:keySpec="&#x0919;"
-                latin:keyLabelFlags="fontNormal" />
+            <Key latin:keySpec="&#x0919;" />
             <!-- Because the font rendering system prior to API version 16 can't automatically
                  render dotted circle for incomplete combining letter of some scripts, different
                  set of Key definitions are needed based on the API version. -->
-            <include
-                latin:keyboardLayout="@xml/keystyle_devanagari_vowel_sign_ai" />
-            <Key
-                latin:keyStyle="baseKeyDevanagariVowelSignAi" />
+            <include latin:keyboardLayout="@xml/keystyle_devanagari_vowel_sign_ai" />
+            <Key latin:keyStyle="baseKeyDevanagariVowelSignAi" />
         </case>
         <default>
             <!-- Because the font rendering system prior to API version 16 can't automatically
                  render dotted circle for incomplete combining letter of some scripts, different
                  set of Key definitions are needed based on the API version. -->
-            <include
-                latin:keyboardLayout="@xml/keystyle_devanagari_vowel_sign_e" />
-            <Key
-                latin:keyStyle="baseKeyDevanagariVowelSignE" />
+            <include latin:keyboardLayout="@xml/keystyle_devanagari_vowel_sign_e" />
+            <Key latin:keyStyle="baseKeyDevanagariVowelSignE" />
             <!-- U+0964: "।" DEVANAGARI DANDA -->
-            <Key
-                latin:keySpec="&#x0964;"
-                latin:keyLabelFlags="fontNormal" />
+            <Key latin:keySpec="&#x0964;" />
             <!-- U+0930: "र" DEVANAGARI LETTER RA
                  U+0930/U+0941: "रु" DEVANAGARI LETTER RA/DEVANAGARI VOWEL SIGN U -->
             <Key
                 latin:keySpec="&#x0930;"
-                latin:moreKeys="&#x0930;&#x0941;"
-                latin:keyLabelFlags="fontNormal" />
-         </default>
+                latin:moreKeys="&#x0930;&#x0941;" />
+        </default>
     </switch>
 </merge>
