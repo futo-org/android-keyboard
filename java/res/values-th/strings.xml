@@ -180,8 +180,8 @@
     <string name="go_to_settings" msgid="3876892339342569259">"การตั้งค่า"</string>
     <string name="install_dict" msgid="180852772562189365">"ติดตั้ง"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"ยกเลิก"</string>
-    <string name="delete_dict" msgid="756853268088330054">"ลบ"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"ภาษาที่คุณเลือกในอุปกรณ์เคลื่อนที่มีพจนานุกรมที่สามารถใช้ได้&lt;br/&gt; เราขอแนะนำให้คุณ &lt;b&gt;ดาวน์โหลด&lt;/b&gt; พจนานุกรม <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> เพื่อรับประสบการณ์การพิมพ์ที่ดียิ่งขึ้น&lt;br/&gt; &lt;br/&gt; การดาวน์โหลดอาจใช้เวลาหนึ่งถึงสองนาทีผ่านทาง 3G ซึ่งอาจมีการเรียกเก็บเงินหากคุณไม่ได้ใช้ &lt;b&gt;แผนบริการข้อมูลแบบไม่จำกัดปริมาณ&lt;/b&gt;.&lt;br/&gt; หากไม่แน่ใจว่าใช้แผนบริการข้อมูลแบบใด เราขอแนะนำให้คุณเชื่อมต่อ Wi-Fi เพื่อเริ่มการดาวน์โหลดอัตโนมัติ&lt;br/&gt; &lt;br/&gt; เคล็ดลับ: คุณสามารถดาวน์โหลดและลบพจนานุกรมออกได้โดยไปที่ &lt;b&gt;ภาษาและการป้อนข้อมูล&lt;/b&gt; ในเมนู &lt;b&gt;การตั้งค่า&lt;/b&gt; ในอุปกรณ์เคลื่อนที่ของคุณ"</string>
+    <string name="delete_dict" msgid="756853268088330054">"นำออก"</string>
+    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"ภาษาที่คุณเลือกในอุปกรณ์เคลื่อนที่มีพจนานุกรมที่สามารถใช้ได้&lt;br/&gt; เราขอแนะนำให้คุณ &lt;b&gt;ดาวน์โหลด&lt;/b&gt; พจนานุกรม <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> เพื่อรับประสบการณ์การพิมพ์ที่ดียิ่งขึ้น&lt;br/&gt; &lt;br/&gt; การดาวน์โหลดอาจใช้เวลาหนึ่งถึงสองนาทีผ่านทาง 3G ซึ่งอาจมีการเรียกเก็บเงินหากคุณไม่ได้ใช้ &lt;b&gt;แผนบริการข้อมูลแบบไม่จำกัดปริมาณ&lt;/b&gt;.&lt;br/&gt; หากไม่แน่ใจว่าใช้แผนบริการข้อมูลแบบใด เราขอแนะนำให้คุณเชื่อมต่อ Wi-Fi เพื่อเริ่มการดาวน์โหลดอัตโนมัติ&lt;br/&gt; &lt;br/&gt; เคล็ดลับ: คุณสามารถดาวน์โหลดและนำออกพจนานุกรมออกได้โดยไปที่ &lt;b&gt;ภาษาและการป้อนข้อมูล&lt;/b&gt; ในเมนู &lt;b&gt;การตั้งค่า&lt;/b&gt; ในอุปกรณ์เคลื่อนที่ของคุณ"</string>
     <string name="download_over_metered" msgid="1643065851159409546">"ดาวน์โหลดเลย (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"ดาวน์โหลดผ่าน WiFi"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"มีพจนานุกรมให้ใช้งานสำหรับ <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>
@@ -201,10 +201,10 @@
     <string name="user_dict_settings_add_shortcut_hint" msgid="2265453012555060178">"ทางลัดที่ไม่บังคับ"</string>
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"แก้ไขคำ"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"แก้ไข"</string>
-    <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"ลบ"</string>
+    <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"นำออก"</string>
     <string name="user_dict_settings_empty_text" msgid="558499587532668203">"คุณไม่มีคำในพจนานุกรมผู้ใช้เลย เพิ่มคำโดยแตะปุ่มเพิ่ม (+)"</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"สำหรับทุกภาษา"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"ภาษาเพิ่มเติม…"</string>
-    <string name="user_dict_settings_delete" msgid="110413335187193859">"ลบ"</string>
+    <string name="user_dict_settings_delete" msgid="110413335187193859">"นำออก"</string>
     <string name="user_dict_fast_scroll_alphabet" msgid="5431919401558285473">" ABCDEFGHIJKLMNOPQRSTUVWXYZ"</string>
 </resources>
