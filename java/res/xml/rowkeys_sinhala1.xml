@@ -18,43 +18,29 @@
 */
 -->
 
-<merge
-    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
->
+<merge xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin">
     <switch>
-        <case
-            latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted"
-        >
+        <case latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted">
             <!-- U+0DD6: "ූ" SINHALA VOWEL SIGN DIGA PAA-PILLA -->
-            <Key
-                latin:keySpec="&#x0DD6;" />
+            <Key latin:keySpec="&#x0DD6;" />
             <!-- U+0D8B: "උ" SINHALA LETTER UYANNA -->
-            <Key
-                latin:keySpec="&#x0D8B;" />
+            <Key latin:keySpec="&#x0D8B;" />
             <!-- U+0DD1: "ෑ" SINHALA VOWEL SIGN DIGA AEDA-PILLA -->
-            <Key
-                latin:keySpec="&#x0DD1;" />
+            <Key latin:keySpec="&#x0DD1;" />
             <!-- U+0D8D: "ඍ" SINHALA LETTER IRUYANNA -->
-            <Key
-                latin:keySpec="&#x0D8D;" />
+            <Key latin:keySpec="&#x0D8D;" />
             <!-- U+0D94: "ඔ" SINHALA LETTER OYANNA -->
-            <Key
-                latin:keySpec="&#x0D94;" />
+            <Key latin:keySpec="&#x0D94;" />
             <!-- U+0DC1: "ශ" SINHALA LETTER TAALUJA SAYANNA -->
-            <Key
-                latin:keySpec="&#x0DC1;" />
+            <Key latin:keySpec="&#x0DC1;" />
             <!-- U+0DB9: "ඹ" SINHALA LETTER AMBA BAYANNA -->
-            <Key
-                latin:keySpec="&#x0DB9;" />
+            <Key latin:keySpec="&#x0DB9;" />
             <!-- U+0DC2: "ෂ" SINHALA LETTER MUURDHAJA SAYANNA -->
-            <Key
-                latin:keySpec="&#x0DC2;" />
+            <Key latin:keySpec="&#x0DC2;" />
             <!-- U+0DB0: "ධ" SINHALA LETTER MAHAAPRAANA DAYANNA -->
-            <Key
-                latin:keySpec="&#x0DB0;" />
+            <Key latin:keySpec="&#x0DB0;" />
             <!-- U+0DA1: "ඡ" SINHALA LETTER MAHAAPRAANA CAYANNA -->
-            <Key
-                latin:keySpec="&#x0DA1;" />
+            <Key latin:keySpec="&#x0DA1;" />
             <!-- U+0DA5: "ඥ" SINHALA LETTER TAALUJA SANYOOGA NAAKSIKYAYA
                  U+0DF4: "෴" SINHALA PUNCTUATION KUNDDALIYA  -->
             <Key
@@ -120,6 +106,6 @@
             <Key
                 latin:keySpec="&#x0DA4;"
                 latin:moreKeys="&#x0DF4;" />
-         </default>
+        </default>
     </switch>
 </merge>

@@ -23,6 +23,5 @@
 >
     <!-- U+0686: "چ" ARABIC LETTER TCHEH -->
     <Key
-        latin:keySpec="&#x0686;"
-        latin:keyLabelFlags="fontNormal" />
+        latin:keySpec="&#x0686;" />
 </merge>

@@ -23,10 +23,8 @@
 >
     <!-- U+0630: "ذ" ARABIC LETTER THAL -->
     <Key
-        latin:keySpec="&#x0630;"
-        latin:keyLabelFlags="fontNormal" />
+        latin:keySpec="&#x0630;" />
     <!-- U+0626: "ئ" ARABIC LETTER YEH WITH HAMZA ABOVE -->
     <Key
-        latin:keySpec="&#x0626;"
-        latin:keyLabelFlags="fontNormal" />
+        latin:keySpec="&#x0626;" />
 </merge>

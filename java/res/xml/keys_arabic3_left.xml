@@ -23,6 +23,5 @@
 >
     <!-- U+0630: "ذ" ARABIC LETTER THAL -->
     <Key
-        latin:keySpec="&#x0630;"
-        latin:keyLabelFlags="fontNormal" />
+        latin:keySpec="&#x0630;" />
 </merge>

@@ -22,13 +22,9 @@
      API version 16 can't automatically render dotted circle for incomplete combining letter
      of some scripts. The files named res/xml/key_*.xml have this U+25CC hack, although the
      counterpart files named res/xml-v16/key_*.xml don't have this hack. -->
-<merge
-    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
->
+<merge xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin">
     <switch>
-        <case
-            latin:keyboardLayoutSet="hindi"
-        >
+        <case latin:keyboardLayoutSet="hindi">
             <!-- U+25CC: "◌" DOTTED CIRCLE
                  U+0945: "ॅ" DEVANAGARI VOWEL SIGN CANDRA E -->
             <key-style
@@ -36,8 +32,7 @@
                 latin:moreKeys="&#x25CC;&#x0945;|&#x0945;" />
         </case>
         <default>
-             <key-style
-                latin:styleName="moreKeysDevanagariSignCandrabindu" />
+            <key-style latin:styleName="moreKeysDevanagariSignCandrabindu" />
         </default>
     </switch>
     <!-- U+25CC: "◌" DOTTED CIRCLE
@@ -46,5 +41,5 @@
         latin:styleName="baseKeyDevanagariSignCandrabindu"
         latin:parentStyle="moreKeysDevanagariSignCandrabindu"
         latin:keySpec="&#x25CC;&#x0901;|&#x0901;"
-        latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+        latin:keyLabelFlags="followKeyLetterRatio" />
 </merge>

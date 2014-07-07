@@ -18,39 +18,33 @@
 */
 -->
 
-<merge
-    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
->
-    <include
-        latin:keyboardLayout="@xml/key_styles_common" />
+<merge xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin">
+    <include latin:keyboardLayout="@xml/key_styles_common" />
     <Row
         latin:keyWidth="8.3333%p"
+        latin:keyLabelFlags="fontNormal|autoXScale"
     >
-        <include
-            latin:keyboardLayout="@xml/rowkeys_khmer1" />
+        <include latin:keyboardLayout="@xml/rowkeys_khmer1" />
     </Row>
     <Row
         latin:keyWidth="8.3333%p"
+        latin:keyLabelFlags="fontNormal|autoXScale"
     >
-        <include
-            latin:keyboardLayout="@xml/rowkeys_khmer2" />
+        <include latin:keyboardLayout="@xml/rowkeys_khmer2" />
     </Row>
     <Row
         latin:keyWidth="8.3333%p"
+        latin:keyLabelFlags="fontNormal|autoXScale"
     >
-        <include
-            latin:keyboardLayout="@xml/rowkeys_khmer3" />
+        <include latin:keyboardLayout="@xml/rowkeys_khmer3" />
     </Row>
     <Row
         latin:keyWidth="8.3333%p"
+        latin:keyLabelFlags="fontNormal|autoXScale"
     >
-        <Key
-            latin:keyStyle="shiftKeyStyle" />
-        <include
-            latin:keyboardLayout="@xml/rowkeys_khmer4" />
-        <Key
-            latin:keyStyle="deleteKeyStyle" />
+        <Key latin:keyStyle="shiftKeyStyle" />
+        <include latin:keyboardLayout="@xml/rowkeys_khmer4" />
+        <Key latin:keyStyle="deleteKeyStyle" />
     </Row>
-    <include
-        latin:keyboardLayout="@xml/row_qwerty4" />
+    <include latin:keyboardLayout="@xml/row_qwerty4" />
 </merge>
