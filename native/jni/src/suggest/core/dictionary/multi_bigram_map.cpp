@@ -53,9 +53,8 @@ int MultiBigramMap::getBigramProbability(
 
 void MultiBigramMap::BigramMap::init(
         const DictionaryStructureWithBufferPolicy *const structurePolicy, const int nodePos) {
-    const int bigramsListPos = structurePolicy->getBigramsPositionOfPtNode(nodePos);
-    BinaryDictionaryBigramsIterator bigramsIt(structurePolicy->getBigramsStructurePolicy(),
-            bigramsListPos);
+    BinaryDictionaryBigramsIterator bigramsIt =
+            structurePolicy->getBigramsIteratorOfPtNode(nodePos);
     while (bigramsIt.hasNext()) {
         bigramsIt.next();
         if (bigramsIt.getBigramPos() == NOT_A_DICT_POS) {
@@ -89,9 +88,8 @@ int MultiBigramMap::readBigramProbabilityFromBinaryDictionary(
         const DictionaryStructureWithBufferPolicy *const structurePolicy, const int nodePos,
         const int nextWordPosition, const int unigramProbability) {
     int bigramProbability = NOT_A_PROBABILITY;
-    const int bigramsListPos = structurePolicy->getBigramsPositionOfPtNode(nodePos);
-    BinaryDictionaryBigramsIterator bigramsIt(structurePolicy->getBigramsStructurePolicy(),
-            bigramsListPos);
+    BinaryDictionaryBigramsIterator bigramsIt =
+            structurePolicy->getBigramsIteratorOfPtNode(nodePos);
     while (bigramsIt.hasNext()) {
         bigramsIt.next();
         if (bigramsIt.getBigramPos() == nextWordPosition) {

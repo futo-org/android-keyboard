@@ -154,6 +154,12 @@ int Ver4PatriciaTriePolicy::getShortcutPositionOfPtNode(const int ptNodePos) con
             ptNodeParams.getTerminalId());
 }
 
+BinaryDictionaryBigramsIterator Ver4PatriciaTriePolicy::getBigramsIteratorOfPtNode(
+        const int ptNodePos) const {
+    const int bigramsPosition = getBigramsPositionOfPtNode(ptNodePos);
+    return BinaryDictionaryBigramsIterator(&mBigramPolicy, bigramsPosition);
+}
+
 int Ver4PatriciaTriePolicy::getBigramsPositionOfPtNode(const int ptNodePos) const {
     if (ptNodePos == NOT_A_DICT_POS) {
         return NOT_A_DICT_POS;
