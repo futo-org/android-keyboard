@@ -72,20 +72,25 @@ public final class Bengali extends LayoutBase {
     private static final ExpectedKey[][] ALPHABET_COMMON = new ExpectedKeyboardBuilder()
             .setKeysOfRow(1,
                     // U+0994: "ঔ" BENGALI LETTER AU
+                    // U+09CC: "ৌ" BENGALI VOWEL SIGN AU
                     // U+09E7: "১" BENGALI DIGIT ONE
-                    key("\u0994", joinMoreKeys("\u09E7", "1")),
+                    key("\u0994", joinMoreKeys("\u09CC", "\u09E7", "1")),
                     // U+0990: "ঐ" BENGALI LETTER AI
+                    // U+09C8: "ৈ" BENGALI VOWEL SIGN AI
                     // U+09E8: "২" BENGALI DIGIT TWO
-                    key("\u0990", joinMoreKeys("\u09E8", "2")),
+                    key("\u0990", joinMoreKeys("\u09C8", "\u09E8", "2")),
                     // U+0986: "আ" BENGALI LETTER AA
+                    // U+09BE: "া" BENGALI VOWEL SIGN AA
                     // U+09E9: "৩" BENGALI DIGIT THREE
-                    key("\u0986", joinMoreKeys("\u09E9", "3")),
+                    key("\u0986", joinMoreKeys("\u09BE", "\u09E9", "3")),
                     // U+0988: "ঈ" BENGALI LETTER II
+                    // U+09C0: "ী" BENGALI VOWEL SIGN II
                     // U+09EA: "৪" BENGALI DIGIT FOUR
-                    key("\u0988", joinMoreKeys("\u09EA", "4")),
+                    key("\u0988", joinMoreKeys("\u09C0", "\u09EA", "4")),
                     // U+098A: "ঊ" BENGALI LETTER UU
+                    // U+09C2: "ূ" BENGALI VOWEL SIGN UU
                     // U+09EB: "৫" BENGALI DIGIT FIVE
-                    key("\u098A", joinMoreKeys("\u09EB", "5")),
+                    key("\u098A", joinMoreKeys("\u09C2", "\u09EB", "5")),
                     // U+09AC: "ব" BENGALI LETTER BA
                     // U+09AD: "ভ" BENGALI LETTER BHA
                     // U+09EC: "৬" BENGALI DIGIT SIX
