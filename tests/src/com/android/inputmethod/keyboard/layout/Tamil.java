@@ -48,9 +48,15 @@ public final class Tamil extends LayoutBase {
         public ExpectedKey[] getOtherCurrencyKeys() {
             return SymbolsShifted.CURRENCIES_OTHER_GENERIC;
         }
+
         @Override
         public ExpectedKey[] getLeftShiftKeys(final boolean isPhone) {
             return EMPTY_KEYS;
+        }
+
+        @Override
+        public ExpectedKey[] getRightShiftKeys(final boolean isPhone) {
+            return isPhone ? EMPTY_KEYS : EXCLAMATION_AND_QUESTION_MARKS;
         }
 
         // U+0BA4: "த" TAMIL LETTER TA
