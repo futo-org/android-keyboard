@@ -29,6 +29,7 @@ import com.android.inputmethod.latin.personalization.ContextualDictionary;
 import com.android.inputmethod.latin.personalization.PersonalizationDataChunk;
 import com.android.inputmethod.latin.personalization.PersonalizationDictionary;
 import com.android.inputmethod.latin.personalization.UserHistoryDictionary;
+import com.android.inputmethod.latin.settings.SettingsValuesForSuggestion;
 import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
 import com.android.inputmethod.latin.utils.DistracterFilter;
 import com.android.inputmethod.latin.utils.DistracterFilterCheckingIsInDictionary;
@@ -486,8 +487,7 @@ public class DictionaryFacilitator {
     // TODO: Revise the way to fusion suggestion results.
     public SuggestionResults getSuggestionResults(final WordComposer composer,
             final PrevWordsInfo prevWordsInfo, final ProximityInfo proximityInfo,
-            final boolean blockOffensiveWords, final int[] additionalFeaturesOptions,
-            final int sessionId) {
+            final SettingsValuesForSuggestion settingsValuesForSuggestion, final int sessionId) {
         final Dictionaries dictionaries = mDictionaries;
         final SuggestionResults suggestionResults =
                 new SuggestionResults(dictionaries.mLocale, SuggestedWords.MAX_SUGGESTIONS);
@@ -497,8 +497,7 @@ public class DictionaryFacilitator {
             if (null == dictionary) continue;
             final ArrayList<SuggestedWordInfo> dictionarySuggestions =
                     dictionary.getSuggestions(composer, prevWordsInfo, proximityInfo,
-                            blockOffensiveWords, additionalFeaturesOptions, sessionId,
-                            languageWeight);
+                            settingsValuesForSuggestion, sessionId, languageWeight);
             if (null == dictionarySuggestions) continue;
             suggestionResults.addAll(dictionarySuggestions);
             if (null != suggestionResults.mRawSuggestions) {

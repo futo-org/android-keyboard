@@ -20,7 +20,7 @@ import android.text.TextUtils;
 
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
-import com.android.inputmethod.latin.define.ProductionFlag;
+import com.android.inputmethod.latin.settings.SettingsValuesForSuggestion;
 import com.android.inputmethod.latin.utils.AutoCorrectionUtils;
 import com.android.inputmethod.latin.utils.BinaryDictionaryUtils;
 import com.android.inputmethod.latin.utils.StringUtils;
@@ -73,17 +73,15 @@ public final class Suggest {
 
     public void getSuggestedWords(final WordComposer wordComposer,
             final PrevWordsInfo prevWordsInfo, final ProximityInfo proximityInfo,
-            final boolean blockOffensiveWords, final boolean isCorrectionEnabled,
-            final int[] additionalFeaturesOptions, final int sessionId, final int sequenceNumber,
+            final SettingsValuesForSuggestion settingsValuesForSuggestion,
+            final boolean isCorrectionEnabled, final int sessionId, final int sequenceNumber,
             final OnGetSuggestedWordsCallback callback) {
         if (wordComposer.isBatchMode()) {
             getSuggestedWordsForBatchInput(wordComposer, prevWordsInfo, proximityInfo,
-                    blockOffensiveWords, additionalFeaturesOptions, sessionId, sequenceNumber,
-                    callback);
+                    settingsValuesForSuggestion, sessionId, sequenceNumber, callback);
         } else {
             getSuggestedWordsForTypingInput(wordComposer, prevWordsInfo, proximityInfo,
-                    blockOffensiveWords, isCorrectionEnabled, additionalFeaturesOptions,
-                    sequenceNumber, callback);
+                    settingsValuesForSuggestion, isCorrectionEnabled, sequenceNumber, callback);
         }
     }
 
@@ -125,8 +123,8 @@ public final class Suggest {
     // and calls the callback function with the suggestions.
     private void getSuggestedWordsForTypingInput(final WordComposer wordComposer,
             final PrevWordsInfo prevWordsInfo, final ProximityInfo proximityInfo,
-            final boolean blockOffensiveWords, final boolean isCorrectionEnabled,
-            final int[] additionalFeaturesOptions, final int sequenceNumber,
+            final SettingsValuesForSuggestion settingsValuesForSuggestion,
+            final boolean isCorrectionEnabled, final int sequenceNumber,
             final OnGetSuggestedWordsCallback callback) {
         final String typedWord = wordComposer.getTypedWord();
         final int trailingSingleQuotesCount = StringUtils.getTrailingSingleQuotesCount(typedWord);
@@ -135,8 +133,8 @@ public final class Suggest {
                 : typedWord;
 
         final SuggestionResults suggestionResults = mDictionaryFacilitator.getSuggestionResults(
-                wordComposer, prevWordsInfo, proximityInfo, blockOffensiveWords,
-                additionalFeaturesOptions, SESSION_TYPING);
+                wordComposer, prevWordsInfo, proximityInfo, settingsValuesForSuggestion,
+                SESSION_TYPING);
         final ArrayList<SuggestedWordInfo> suggestionsContainer =
                 getTransformedSuggestedWordInfoList(wordComposer, suggestionResults,
                         trailingSingleQuotesCount);
@@ -205,12 +203,11 @@ public final class Suggest {
     // and calls the callback function with the suggestions.
     private void getSuggestedWordsForBatchInput(final WordComposer wordComposer,
             final PrevWordsInfo prevWordsInfo, final ProximityInfo proximityInfo,
-            final boolean blockOffensiveWords, final int[] additionalFeaturesOptions,
+            final SettingsValuesForSuggestion settingsValuesForSuggestion,
             final int sessionId, final int sequenceNumber,
             final OnGetSuggestedWordsCallback callback) {
         final SuggestionResults suggestionResults = mDictionaryFacilitator.getSuggestionResults(
-                wordComposer, prevWordsInfo, proximityInfo, blockOffensiveWords,
-                additionalFeaturesOptions, sessionId);
+                wordComposer, prevWordsInfo, proximityInfo, settingsValuesForSuggestion, sessionId);
         final ArrayList<SuggestedWordInfo> suggestionsContainer =
                 new ArrayList<>(suggestionResults);
         final int suggestionsCount = suggestionsContainer.size();

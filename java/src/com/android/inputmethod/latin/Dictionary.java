@@ -19,6 +19,7 @@ package com.android.inputmethod.latin;
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
+import com.android.inputmethod.latin.settings.SettingsValuesForSuggestion;
 
 import java.util.ArrayList;
 
@@ -72,8 +73,7 @@ public abstract class Dictionary {
      * @param composer the key sequence to match with coordinate info, as a WordComposer
      * @param prevWordsInfo the information of previous words.
      * @param proximityInfo the object for key proximity. May be ignored by some implementations.
-     * @param blockOffensiveWords whether to block potentially offensive words
-     * @param additionalFeaturesOptions options about additional features used for the suggestion.
+     * @param settingsValuesForSuggestion the settings values used for the suggestion.
      * @param sessionId the session id.
      * @param inOutLanguageWeight the language weight used for generating suggestions.
      * inOutLanguageWeight is a float array that has only one element. This can be updated when the
@@ -82,7 +82,7 @@ public abstract class Dictionary {
      */
     abstract public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
             final PrevWordsInfo prevWordsInfo, final ProximityInfo proximityInfo,
-            final boolean blockOffensiveWords, final int[] additionalFeaturesOptions,
+            final SettingsValuesForSuggestion settingsValuesForSuggestion,
             final int sessionId, final float[] inOutLanguageWeight);
 
     /**
@@ -168,7 +168,7 @@ public abstract class Dictionary {
         @Override
         public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
                 final PrevWordsInfo prevWordsInfo, final ProximityInfo proximityInfo,
-                final boolean blockOffensiveWords, final int[] additionalFeaturesOptions,
+                final SettingsValuesForSuggestion settingsValuesForSuggestion,
                 final int sessionId, final float[] inOutLanguageWeight) {
             return null;
         }

@@ -18,6 +18,7 @@ package com.android.inputmethod.latin;
 
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
+import com.android.inputmethod.latin.settings.SettingsValuesForSuggestion;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -51,13 +52,12 @@ public final class ReadOnlyBinaryDictionary extends Dictionary {
     @Override
     public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
             final PrevWordsInfo prevWordsInfo, final ProximityInfo proximityInfo,
-            final boolean blockOffensiveWords, final int[] additionalFeaturesOptions,
+            final SettingsValuesForSuggestion settingsValuesForSuggestion,
             final int sessionId, final float[] inOutLanguageWeight) {
         if (mLock.readLock().tryLock()) {
             try {
                 return mBinaryDictionary.getSuggestions(composer, prevWordsInfo, proximityInfo,
-                        blockOffensiveWords, additionalFeaturesOptions, sessionId,
-                        inOutLanguageWeight);
+                        settingsValuesForSuggestion, sessionId, inOutLanguageWeight);
             } finally {
                 mLock.readLock().unlock();
             }
