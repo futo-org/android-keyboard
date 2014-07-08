@@ -22,8 +22,11 @@
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
     <switch>
+        <!-- fa: Perisan
+             kn: Kannada
+             ne: Nepali -->
         <case
-            latin:languageCode="fa|ne"
+            latin:languageCode="fa|kn|ne"
             latin:languageSwitchKeyEnabled="true"
         >
             <Key
@@ -35,7 +38,7 @@
                 latin:keyStyle="zwnjKeyStyle" />
         </case>
         <case
-            latin:languageCode="fa|ne"
+            latin:languageCode="fa|kn|ne"
             latin:languageSwitchKeyEnabled="false"
         >
             <Key
