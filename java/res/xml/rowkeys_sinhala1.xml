@@ -45,8 +45,7 @@
                  U+0DF4: "෴" SINHALA PUNCTUATION KUNDDALIYA  -->
             <Key
                 latin:keySpec="&#x0DA5;"
-                latin:moreKeys="&#x0DF4;"
-                latin:keyLabelFlags="autoXScale" />
+                latin:moreKeys="&#x0DF4;" />
         </case>
         <default>
             <!-- U+0DD4: "ු" SINHALA VOWEL SIGN KETTI PAA-PILLA -->
