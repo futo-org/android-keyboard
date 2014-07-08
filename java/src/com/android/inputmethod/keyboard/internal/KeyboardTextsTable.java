@@ -88,7 +88,7 @@ public final class KeyboardTextsTable {
         /*   2:30 */ "morekeys_u",
         /*   3:29 */ "morekeys_e",
         /*   4:28 */ "morekeys_i",
-        /*   5:24 */ "keylabel_to_alpha",
+        /*   5:25 */ "keylabel_to_alpha",
         /*   6:23 */ "morekeys_c",
         /*   7:23 */ "double_quotes",
         /*   8:22 */ "morekeys_n",
@@ -97,7 +97,7 @@ public final class KeyboardTextsTable {
         /*  11:14 */ "morekeys_y",
         /*  12:13 */ "morekeys_d",
         /*  13:12 */ "morekeys_z",
-        /*  14:11 */ "keyspec_currency",
+        /*  14:12 */ "keyspec_currency",
         /*  15:10 */ "morekeys_t",
         /*  16:10 */ "morekeys_l",
         /*  17: 9 */ "morekeys_g",
@@ -3378,6 +3378,23 @@ public final class KeyboardTextsTable {
         /* morekeys_g */ "g\'",
     };
 
+    /* Locale ta_IN: Tamil (India) */
+    private static final String[] TEXTS_ta_IN = {
+        /* morekeys_a ~ */
+        null, null, null, null, null,
+        /* ~ morekeys_i */
+        // Label for "switch to alphabetic" key.
+        // U+0BA4: "த" TAMIL LETTER TA
+        // U+0BAE/U+0BBF: "மி" TAMIL LETTER MA/TAMIL VOWEL SIGN I
+        // U+0BB4/U+0BCD: "ழ்" TAMIL LETTER LLLA/TAMIL SIGN VIRAMA
+        /* keylabel_to_alpha */ "\u0BA4\u0BAE\u0BBF\u0BB4\u0BCD",
+        /* morekeys_c ~ */
+        null, null, null, null, null, null, null, null,
+        /* ~ morekeys_z */
+        // U+0BF9: "௹" TAMIL RUPEE SIGN
+        /* keyspec_currency */ "\u0BF9",
+    };
+
     /* Locale th: Thai */
     private static final String[] TEXTS_th = {
         /* morekeys_a ~ */
@@ -3871,6 +3888,7 @@ public final class KeyboardTextsTable {
         "sr"     , TEXTS_sr,    /*  11/ 94 Serbian */
         "sv"     , TEXTS_sv,    /*  21/ 54 Swedish */
         "sw"     , TEXTS_sw,    /*   9/ 18 Swahili */
+        "ta_IN"  , TEXTS_ta_IN, /*   2/ 15 Tamil (India) */
         "th"     , TEXTS_th,    /*   2/ 15 Thai */
         "tl"     , TEXTS_tl,    /*   7/  9 Tagalog */
         "tr"     , TEXTS_tr,    /*   7/ 18 Turkish */
