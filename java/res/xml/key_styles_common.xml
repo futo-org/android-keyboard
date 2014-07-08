@@ -119,14 +119,12 @@
     <key-style
         latin:styleName="tabKeyStyle"
         latin:keySpec="!icon/tab_key|!code/key_tab"
-        latin:keyIconPreview="!icon/tab_key_preview"
         latin:backgroundType="functional" />
     <!-- Note: This key style is not for functional tab key. This is used for the tab key which is
          laid out as normal letter key. -->
     <key-style
         latin:styleName="nonSpecialBackgroundTabKeyStyle"
-        latin:keySpec="!icon/tab_key|!code/key_tab"
-        latin:keyIconPreview="!icon/tab_key_preview" />
+        latin:keySpec="!icon/tab_key|!code/key_tab" />
     <key-style
         latin:styleName="baseForLayoutSwitchKeyStyle"
         latin:keyLabelFlags="preserveCase|followFunctionalTextColor"

@@ -32,7 +32,6 @@
         <item name="iconSpaceKeyForNumberLayout">@drawable/sym_keyboard_space_holo_dark</item>
         <item name="iconShiftKeyShifted">@drawable/sym_keyboard_shift_locked_holo_dark</item>
         <item name="iconShortcutKeyDisabled">@drawable/sym_keyboard_voice_off_holo_dark</item>
-        <item name="iconTabKeyPreview">@drawable/sym_keyboard_feedback_tab</item>
         <item name="iconLanguageSwitchKey">@drawable/sym_keyboard_language_switch_dark</item>
         <item name="iconZwnjKey">@drawable/sym_keyboard_zwnj_holo_dark</item>
         <item name="iconZwjKey">@drawable/sym_keyboard_zwj_holo_dark</item>
