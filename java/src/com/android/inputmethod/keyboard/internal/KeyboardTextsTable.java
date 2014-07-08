@@ -753,8 +753,8 @@ public final class KeyboardTextsTable {
         /* double_quotes */ "!text/double_9qm_lqm",
     };
 
-    /* Locale bn: Bengali */
-    private static final String[] TEXTS_bn = {
+    /* Locale bn_IN: Bengali (India) */
+    private static final String[] TEXTS_bn_IN = {
         /* morekeys_a ~ */
         null, null, null, null, null,
         /* ~ morekeys_i */
@@ -3824,7 +3824,7 @@ public final class KeyboardTextsTable {
         "az_AZ"  , TEXTS_az_AZ, /*   8/ 18 Azerbaijani (Azerbaijan) */
         "be_BY"  , TEXTS_be_BY, /*   9/ 32 Belarusian (Belarus) */
         "bg"     , TEXTS_bg,    /*   2/  8 Bulgarian */
-        "bn"     , TEXTS_bn,    /*   2/ 15 Bengali */
+        "bn_IN"  , TEXTS_bn_IN, /*   2/ 15 Bengali (India) */
         "ca"     , TEXTS_ca,    /*  11/ 96 Catalan */
         "cs"     , TEXTS_cs,    /*  17/ 21 Czech */
         "da"     , TEXTS_da,    /*  19/ 54 Danish */
