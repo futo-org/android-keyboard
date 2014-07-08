@@ -28,6 +28,7 @@ import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.makedict.FormatSpec.DictionaryOptions;
 import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
 import com.android.inputmethod.latin.makedict.WordProperty;
+import com.android.inputmethod.latin.settings.SettingsValuesForSuggestion;
 import com.android.inputmethod.latin.utils.BinaryDictionaryUtils;
 import com.android.inputmethod.latin.utils.FileUtils;
 import com.android.inputmethod.latin.utils.JniUtils;
@@ -256,7 +257,7 @@ public final class BinaryDictionary extends Dictionary {
     @Override
     public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
             final PrevWordsInfo prevWordsInfo, final ProximityInfo proximityInfo,
-            final boolean blockOffensiveWords, final int[] additionalFeaturesOptions,
+            final SettingsValuesForSuggestion settingsValuesForSuggestion,
             final int sessionId, final float[] inOutLanguageWeight) {
         if (!isValidDictionary()) {
             return null;
@@ -279,8 +280,12 @@ public final class BinaryDictionary extends Dictionary {
         }
         session.mNativeSuggestOptions.setUseFullEditDistance(mUseFullEditDistance);
         session.mNativeSuggestOptions.setIsGesture(isGesture);
-        session.mNativeSuggestOptions.setBlockOffensiveWords(blockOffensiveWords);
-        session.mNativeSuggestOptions.setAdditionalFeaturesOptions(additionalFeaturesOptions);
+        session.mNativeSuggestOptions.setBlockOffensiveWords(
+                settingsValuesForSuggestion.mBlockPotentiallyOffensive);
+        session.mNativeSuggestOptions.setSpaceAwareGestureEnabled(
+                settingsValuesForSuggestion.mSpaceAwareGestureEnabled);
+        session.mNativeSuggestOptions.setAdditionalFeaturesOptions(
+                settingsValuesForSuggestion.mAdditionalFeaturesSettingValues);
         if (inOutLanguageWeight != null) {
             session.mInputOutputLanguageWeight[0] = inOutLanguageWeight[0];
         } else {

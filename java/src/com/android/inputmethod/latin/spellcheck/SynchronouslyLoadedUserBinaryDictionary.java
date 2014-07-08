@@ -21,6 +21,7 @@ import android.content.Context;
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.PrevWordsInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
+import com.android.inputmethod.latin.settings.SettingsValuesForSuggestion;
 import com.android.inputmethod.latin.UserBinaryDictionary;
 import com.android.inputmethod.latin.WordComposer;
 
@@ -43,11 +44,11 @@ public final class SynchronouslyLoadedUserBinaryDictionary extends UserBinaryDic
     @Override
     public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer codes,
             final PrevWordsInfo prevWordsInfo, final ProximityInfo proximityInfo,
-            final boolean blockOffensiveWords, final int[] additionalFeaturesOptions,
+            final SettingsValuesForSuggestion settingsValuesForSuggestion,
             final int sessionId, final float[] inOutLanguageWeight) {
         synchronized (mLock) {
             return super.getSuggestions(codes, prevWordsInfo, proximityInfo,
-                    blockOffensiveWords, additionalFeaturesOptions, sessionId, inOutLanguageWeight);
+                    settingsValuesForSuggestion, sessionId, inOutLanguageWeight);
         }
     }
 
