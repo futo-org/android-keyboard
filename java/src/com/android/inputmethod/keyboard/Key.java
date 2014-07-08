@@ -148,33 +148,28 @@ public class Key implements Comparable<Key> {
         public final int mAltCode;
         /** Icon for disabled state */
         public final int mDisabledIconId;
-        /** Preview version of the icon, for the preview popup */
-        public final int mPreviewIconId;
         /** The visual insets */
         public final int mVisualInsetsLeft;
         public final int mVisualInsetsRight;
 
         private OptionalAttributes(final String outputText, final int altCode,
-                final int disabledIconId, final int previewIconId,
-                final int visualInsetsLeft, final int visualInsetsRight) {
+                final int disabledIconId, final int visualInsetsLeft, final int visualInsetsRight) {
             mOutputText = outputText;
             mAltCode = altCode;
             mDisabledIconId = disabledIconId;
-            mPreviewIconId = previewIconId;
             mVisualInsetsLeft = visualInsetsLeft;
             mVisualInsetsRight = visualInsetsRight;
         }
 
         public static OptionalAttributes newInstance(final String outputText, final int altCode,
-                final int disabledIconId, final int previewIconId,
-                final int visualInsetsLeft, final int visualInsetsRight) {
+                final int disabledIconId, final int visualInsetsLeft, final int visualInsetsRight) {
             if (outputText == null && altCode == CODE_UNSPECIFIED
-                    && disabledIconId == ICON_UNDEFINED && previewIconId == ICON_UNDEFINED
-                    && visualInsetsLeft == 0 && visualInsetsRight == 0) {
+                    && disabledIconId == ICON_UNDEFINED && visualInsetsLeft == 0
+                    && visualInsetsRight == 0) {
                 return null;
             }
-            return new OptionalAttributes(outputText, altCode, disabledIconId, previewIconId,
-                    visualInsetsLeft, visualInsetsRight);
+            return new OptionalAttributes(outputText, altCode, disabledIconId, visualInsetsLeft,
+                    visualInsetsRight);
         }
     }
 
@@ -204,8 +199,7 @@ public class Key implements Comparable<Key> {
         mMoreKeysColumnAndFlags = 0;
         mLabel = label;
         mOptionalAttributes = OptionalAttributes.newInstance(outputText, CODE_UNSPECIFIED,
-                ICON_UNDEFINED, ICON_UNDEFINED,
-                0 /* visualInsetsLeft */, 0 /* visualInsetsRight */);
+                ICON_UNDEFINED, 0 /* visualInsetsLeft */, 0 /* visualInsetsRight */);
         mCode = code;
         mEnabled = (code != CODE_UNSPECIFIED);
         mIconId = iconId;
@@ -306,8 +300,6 @@ public class Key implements Comparable<Key> {
         mIconId = KeySpecParser.getIconId(keySpec);
         final int disabledIconId = KeySpecParser.getIconId(style.getString(keyAttr,
                 R.styleable.Keyboard_Key_keyIconDisabled));
-        final int previewIconId = KeySpecParser.getIconId(style.getString(keyAttr,
-                R.styleable.Keyboard_Key_keyIconPreview));
 
         final int code = KeySpecParser.getCode(keySpec);
         if ((mLabelFlags & LABEL_FLAGS_FROM_CUSTOM_ACTION_LABEL) != 0) {
@@ -361,7 +353,7 @@ public class Key implements Comparable<Key> {
         final int altCode = StringUtils.toUpperCaseOfCodeForLocale(
                 altCodeInAttr, needsToUpperCase, locale);
         mOptionalAttributes = OptionalAttributes.newInstance(outputText, altCode,
-                disabledIconId, previewIconId, visualInsetsLeft, visualInsetsRight);
+                disabledIconId, visualInsetsLeft, visualInsetsRight);
         mKeyVisualAttributes = KeyVisualAttributes.newInstance(keyAttr);
         mHashCode = computeHashCode(this);
     }
@@ -756,10 +748,7 @@ public class Key implements Comparable<Key> {
     }
 
     public Drawable getPreviewIcon(final KeyboardIconsSet iconSet) {
-        final OptionalAttributes attrs = mOptionalAttributes;
-        final int previewIconId = (attrs != null) ? attrs.mPreviewIconId : ICON_UNDEFINED;
-        return previewIconId != ICON_UNDEFINED
-                ? iconSet.getIconDrawable(previewIconId) : iconSet.getIconDrawable(getIconId());
+        return iconSet.getIconDrawable(getIconId());
     }
 
     public int getWidth() {
