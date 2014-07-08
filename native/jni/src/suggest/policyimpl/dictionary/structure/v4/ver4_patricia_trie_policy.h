@@ -76,14 +76,10 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
 
     int getShortcutPositionOfPtNode(const int ptNodePos) const;
 
-    int getBigramsPositionOfPtNode(const int ptNodePos) const;
+    BinaryDictionaryBigramsIterator getBigramsIteratorOfPtNode(const int ptNodePos) const;
 
     const DictionaryHeaderStructurePolicy *getHeaderStructurePolicy() const {
         return mHeaderPolicy;
-    }
-
-    const DictionaryBigramsStructurePolicy *getBigramsStructurePolicy() const {
-        return &mBigramPolicy;
     }
 
     const DictionaryShortcutsStructurePolicy *getShortcutsStructurePolicy() const {
@@ -146,6 +142,8 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     int mBigramCount;
     std::vector<int> mTerminalPtNodePositionsForIteratingWords;
     mutable bool mIsCorrupted;
+
+    int getBigramsPositionOfPtNode(const int ptNodePos) const;
 };
 } // namespace latinime
 #endif // LATINIME_VER4_PATRICIA_TRIE_POLICY_H

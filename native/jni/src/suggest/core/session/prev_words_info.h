@@ -92,11 +92,9 @@ class PrevWordsInfo {
 
     BinaryDictionaryBigramsIterator getBigramsIteratorForPrediction(
             const DictionaryStructureWithBufferPolicy *const dictStructurePolicy) const {
-        const int bigramListPos = getBigramListPositionForWordWithTryingLowerCaseSearch(
+        return getBigramsIteratorForWordWithTryingLowerCaseSearch(
                 dictStructurePolicy, mPrevWordCodePoints[0], mPrevWordCodePointCount[0],
                 mIsBeginningOfSentence[0]);
-        return BinaryDictionaryBigramsIterator(dictStructurePolicy->getBigramsStructurePolicy(),
-                bigramListPos);
     }
 
     // n is 1-indexed.
@@ -156,12 +154,12 @@ class PrevWordsInfo {
                 codePoints, codePointCount, true /* forceLowerCaseSearch */);
     }
 
-    static int getBigramListPositionForWordWithTryingLowerCaseSearch(
+    static BinaryDictionaryBigramsIterator getBigramsIteratorForWordWithTryingLowerCaseSearch(
             const DictionaryStructureWithBufferPolicy *const dictStructurePolicy,
             const int *const wordCodePoints, const int wordCodePointCount,
             const bool isBeginningOfSentence) {
         if (!dictStructurePolicy || !wordCodePoints || wordCodePointCount > MAX_WORD_LENGTH) {
-            return NOT_A_DICT_POS;
+            return BinaryDictionaryBigramsIterator();
         }
         int codePoints[MAX_WORD_LENGTH];
         int codePointCount = wordCodePointCount;
@@ -170,30 +168,30 @@ class PrevWordsInfo {
             codePointCount = CharUtils::attachBeginningOfSentenceMarker(codePoints,
                     codePointCount, MAX_WORD_LENGTH);
             if (codePointCount <= 0) {
-                return NOT_A_DICT_POS;
+                return BinaryDictionaryBigramsIterator();
             }
         }
-        int pos = getBigramListPositionForWord(dictStructurePolicy, codePoints,
-                codePointCount, false /* forceLowerCaseSearch */);
-        // getBigramListPositionForWord returns NOT_A_DICT_POS if this word isn't in the
-        // dictionary or has no bigrams
-        if (NOT_A_DICT_POS == pos) {
-            // If no bigrams for this exact word, search again in lower case.
-            pos = getBigramListPositionForWord(dictStructurePolicy, codePoints,
-                    codePointCount, true /* forceLowerCaseSearch */);
+        BinaryDictionaryBigramsIterator bigramsIt = getBigramsIteratorForWord(dictStructurePolicy,
+                codePoints, codePointCount, false /* forceLowerCaseSearch */);
+        // getBigramsIteratorForWord returns an empty iterator if this word isn't in the dictionary
+        // or has no bigrams.
+        if (bigramsIt.hasNext()) {
+            return bigramsIt;
         }
-        return pos;
+        // If no bigrams for this exact word, search again in lower case.
+        return getBigramsIteratorForWord(dictStructurePolicy, codePoints,
+                codePointCount, true /* forceLowerCaseSearch */);
     }
 
-    static int getBigramListPositionForWord(
+    static BinaryDictionaryBigramsIterator getBigramsIteratorForWord(
             const DictionaryStructureWithBufferPolicy *const dictStructurePolicy,
             const int *wordCodePoints, const int wordCodePointCount,
             const bool forceLowerCaseSearch) {
-        if (!wordCodePoints || wordCodePointCount <= 0) return NOT_A_DICT_POS;
+        if (!wordCodePoints || wordCodePointCount <= 0) return BinaryDictionaryBigramsIterator();
         const int terminalPtNodePos = dictStructurePolicy->getTerminalPtNodePositionOfWord(
                 wordCodePoints, wordCodePointCount, forceLowerCaseSearch);
-        if (NOT_A_DICT_POS == terminalPtNodePos) return NOT_A_DICT_POS;
-        return dictStructurePolicy->getBigramsPositionOfPtNode(terminalPtNodePos);
+        if (NOT_A_DICT_POS == terminalPtNodePos) return BinaryDictionaryBigramsIterator();
+        return dictStructurePolicy->getBigramsIteratorOfPtNode(terminalPtNodePos);
     }
 
     void clear() {
