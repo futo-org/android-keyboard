@@ -33,6 +33,7 @@ import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.PrevWordsInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.WordComposer;
+import com.android.inputmethod.latin.settings.SettingsValuesForSuggestion;
 import com.android.inputmethod.latin.spellcheck.AndroidSpellCheckerService.SuggestionsGatherer;
 import com.android.inputmethod.latin.utils.CoordinateUtils;
 import com.android.inputmethod.latin.utils.LocaleUtils;
@@ -308,8 +309,12 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
                 // TODO: make a spell checker option to block offensive words or not
                 final ArrayList<SuggestedWordInfo> suggestions =
                         dictInfo.mDictionary.getSuggestions(composer, prevWordsInfo,
-                                dictInfo.getProximityInfo(), true /* blockOffensiveWords */,
-                                null /* additionalFeaturesOptions */, 0 /* sessionId */,
+                                dictInfo.getProximityInfo(),
+                                new SettingsValuesForSuggestion(
+                                        true /* blockPotentiallyOffensive */,
+                                        true /* spaceAwareGestureEnabled */,
+                                        null /* additionalFeaturesSettingValues */),
+                                0 /* sessionId */,
                                 null /* inOutLanguageWeight */);
                 if (suggestions != null) {
                     for (final SuggestedWordInfo suggestion : suggestions) {

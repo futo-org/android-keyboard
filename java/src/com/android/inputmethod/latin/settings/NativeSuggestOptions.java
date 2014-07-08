@@ -21,7 +21,8 @@ public class NativeSuggestOptions {
     private static final int IS_GESTURE = 0;
     private static final int USE_FULL_EDIT_DISTANCE = 1;
     private static final int BLOCK_OFFENSIVE_WORDS = 2;
-    private static final int OPTIONS_SIZE = 3;
+    private static final int SPACE_AWARE_GESTURE_ENABLED = 3;
+    private static final int OPTIONS_SIZE = 4;
 
     private final int[] mOptions = new int[OPTIONS_SIZE
             + AdditionalFeaturesSettingUtils.ADDITIONAL_FEATURES_SETTINGS_SIZE];
@@ -36,6 +37,10 @@ public class NativeSuggestOptions {
 
     public void setBlockOffensiveWords(final boolean value) {
         setBooleanOption(BLOCK_OFFENSIVE_WORDS, value);
+    }
+
+    public void setSpaceAwareGestureEnabled(final boolean value) {
+        setBooleanOption(SPACE_AWARE_GESTURE_ENABLED, value);
     }
 
     public void setAdditionalFeaturesOptions(final int[] additionalOptions) {

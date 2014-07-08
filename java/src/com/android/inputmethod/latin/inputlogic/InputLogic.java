@@ -46,6 +46,7 @@ import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.WordComposer;
 import com.android.inputmethod.latin.settings.SettingsValues;
+import com.android.inputmethod.latin.settings.SettingsValuesForSuggestion;
 import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
 import com.android.inputmethod.latin.suggestions.SuggestionStripViewAccessor;
 import com.android.inputmethod.latin.utils.AsyncResultHolder;
@@ -1998,9 +1999,11 @@ public final class InputLogic {
                         // a word, it's whatever is *before* the half-committed word in the buffer,
                         // hence 2; if we aren't, we should just skip whitespace if any, so 1.
                         mWordComposer.isComposingWord() ? 2 : 1),
-                proximityInfo, settingsValues.mBlockPotentiallyOffensive,
+                proximityInfo,
+                new SettingsValuesForSuggestion(settingsValues.mBlockPotentiallyOffensive,
+                        settingsValues.mPhraseGestureEnabled,
+                        settingsValues.mAdditionalFeaturesSettingValues),
                 settingsValues.mAutoCorrectionEnabled,
-                settingsValues.mAdditionalFeaturesSettingValues,
                 sessionId, sequenceNumber, callback);
     }
 }

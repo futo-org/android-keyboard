@@ -26,6 +26,7 @@ import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
 import com.android.inputmethod.latin.makedict.WordProperty;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
+import com.android.inputmethod.latin.settings.SettingsValuesForSuggestion;
 import com.android.inputmethod.latin.utils.CombinedFormatUtils;
 import com.android.inputmethod.latin.utils.DistracterFilter;
 import com.android.inputmethod.latin.utils.ExecutorUtils;
@@ -409,8 +410,8 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     @Override
     public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
             final PrevWordsInfo prevWordsInfo, final ProximityInfo proximityInfo,
-            final boolean blockOffensiveWords, final int[] additionalFeaturesOptions,
-            final int sessionId, final float[] inOutLanguageWeight) {
+            final SettingsValuesForSuggestion settingsValuesForSuggestion, final int sessionId,
+            final float[] inOutLanguageWeight) {
         reloadDictionaryIfRequired();
         boolean lockAcquired = false;
         try {
@@ -422,8 +423,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                 }
                 final ArrayList<SuggestedWordInfo> suggestions =
                         mBinaryDictionary.getSuggestions(composer, prevWordsInfo, proximityInfo,
-                                blockOffensiveWords, additionalFeaturesOptions, sessionId,
-                                inOutLanguageWeight);
+                                settingsValuesForSuggestion, sessionId, inOutLanguageWeight);
                 if (mBinaryDictionary.isCorrupted()) {
                     Log.i(TAG, "Dictionary (" + mDictName +") is corrupted. "
                             + "Remove and regenerate it.");
