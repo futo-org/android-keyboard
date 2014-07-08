@@ -238,7 +238,6 @@
         <attr name="iconSpaceKeyForNumberLayout" format="reference" />
         <attr name="iconShiftKeyShifted" format="reference" />
         <attr name="iconShortcutKeyDisabled" format="reference" />
-        <attr name="iconTabKeyPreview" format="reference" />
         <attr name="iconLanguageSwitchKey" format="reference" />
         <attr name="iconZwnjKey" format="reference" />
         <attr name="iconZwjKey" format="reference" />
@@ -331,8 +330,6 @@
         </attr>
         <!-- The icon for disabled key -->
         <attr name="keyIconDisabled" format="string" />
-        <!-- The icon to show in the popup preview. -->
-        <attr name="keyIconPreview" format="string" />
         <!-- The key style to specify a set of key attributes defined by <key_style/> -->
         <attr name="keyStyle" format="string" />
         <!-- Visual insets, in the proportion of keyboard width. -->
