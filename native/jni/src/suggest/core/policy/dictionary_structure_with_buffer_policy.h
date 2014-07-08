@@ -20,6 +20,7 @@
 #include <memory>
 
 #include "defines.h"
+#include "suggest/core/dictionary/binary_dictionary_bigrams_iterator.h"
 #include "suggest/core/dictionary/property/word_property.h"
 
 namespace latinime {
@@ -61,11 +62,9 @@ class DictionaryStructureWithBufferPolicy {
 
     virtual int getShortcutPositionOfPtNode(const int nodePos) const = 0;
 
-    virtual int getBigramsPositionOfPtNode(const int nodePos) const = 0;
+    virtual BinaryDictionaryBigramsIterator getBigramsIteratorOfPtNode(const int nodePos) const = 0;
 
     virtual const DictionaryHeaderStructurePolicy *getHeaderStructurePolicy() const = 0;
-
-    virtual const DictionaryBigramsStructurePolicy *getBigramsStructurePolicy() const = 0;
 
     virtual const DictionaryShortcutsStructurePolicy *getShortcutsStructurePolicy() const = 0;
 

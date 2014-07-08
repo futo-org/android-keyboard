@@ -67,14 +67,10 @@ class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
 
     int getShortcutPositionOfPtNode(const int ptNodePos) const;
 
-    int getBigramsPositionOfPtNode(const int ptNodePos) const;
+    BinaryDictionaryBigramsIterator getBigramsIteratorOfPtNode(const int ptNodePos) const;
 
     const DictionaryHeaderStructurePolicy *getHeaderStructurePolicy() const {
         return &mHeaderPolicy;
-    }
-
-    const DictionaryBigramsStructurePolicy *getBigramsStructurePolicy() const {
-        return &mBigramListPolicy;
     }
 
     const DictionaryShortcutsStructurePolicy *getShortcutsStructurePolicy() const {
@@ -158,6 +154,7 @@ class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     std::vector<int> mTerminalPtNodePositionsForIteratingWords;
     mutable bool mIsCorrupted;
 
+    int getBigramsPositionOfPtNode(const int ptNodePos) const;
     int createAndGetLeavingChildNode(const DicNode *const dicNode, const int ptNodePos,
             DicNodeVector *const childDicNodes) const;
 };

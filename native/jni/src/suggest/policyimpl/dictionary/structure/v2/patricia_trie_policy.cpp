@@ -304,6 +304,12 @@ int PatriciaTriePolicy::getShortcutPositionOfPtNode(const int ptNodePos) const {
     return mPtNodeReader.fetchPtNodeParamsInBufferFromPtNodePos(ptNodePos).getShortcutPos();
 }
 
+BinaryDictionaryBigramsIterator PatriciaTriePolicy::getBigramsIteratorOfPtNode(
+        const int ptNodePos) const {
+    const int bigramsPosition = getBigramsPositionOfPtNode(ptNodePos);
+    return BinaryDictionaryBigramsIterator(&mBigramListPolicy, bigramsPosition);
+}
+
 int PatriciaTriePolicy::getBigramsPositionOfPtNode(const int ptNodePos) const {
     if (ptNodePos == NOT_A_DICT_POS) {
         return NOT_A_DICT_POS;
@@ -322,7 +328,7 @@ int PatriciaTriePolicy::createAndGetLeavingChildNode(const DicNode *const dicNod
     int bigramPos = NOT_A_DICT_POS;
     int siblingPos = NOT_A_DICT_POS;
     PatriciaTrieReadingUtils::readPtNodeInfo(mDictRoot, ptNodePos, getShortcutsStructurePolicy(),
-            getBigramsStructurePolicy(), &flags, &mergedNodeCodePointCount, mergedNodeCodePoints,
+            &mBigramListPolicy, &flags, &mergedNodeCodePointCount, mergedNodeCodePoints,
             &probability, &childrenPos, &shortcutPos, &bigramPos, &siblingPos);
     // Skip PtNodes don't start with Unicode code point because they represent non-word information.
     if (CharUtils::isInUnicodeSpace(mergedNodeCodePoints[0])) {
@@ -352,7 +358,7 @@ const WordProperty PatriciaTriePolicy::getWordProperty(const int *const codePoin
     std::vector<BigramProperty> bigrams;
     const int bigramListPos = getBigramsPositionOfPtNode(ptNodePos);
     int bigramWord1CodePoints[MAX_WORD_LENGTH];
-    BinaryDictionaryBigramsIterator bigramsIt(getBigramsStructurePolicy(), bigramListPos);
+    BinaryDictionaryBigramsIterator bigramsIt(&mBigramListPolicy, bigramListPos);
     while (bigramsIt.hasNext()) {
         // Fetch the next bigram information and forward the iterator.
         bigramsIt.next();
