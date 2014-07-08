@@ -29,7 +29,7 @@ public final class ArmenianPhonetic extends LayoutBase {
     private static final String LAYOUT_NAME = "armenian_phonetic";
 
     public ArmenianPhonetic(final LayoutCustomizer customizer) {
-        super(customizer, ArmenianSymbols.class, SymbolsShifted.class);
+        super(customizer, ArmenianSymbols.class, ArmenianSymbolsShifted.class);
     }
 
     @Override
@@ -57,16 +57,14 @@ public final class ArmenianPhonetic extends LayoutBase {
 
         @Override
         public ExpectedKey[] getKeysLeftToSpacebar(final boolean isPhone) {
-            // U+002C: "," COMMA
             // U+055D: "՝" ARMENIAN COMMA
-            return isPhone ? joinKeys(key("\u002C", SETTINGS_KEY))
+            return isPhone ? joinKeys(key("\u055D", SETTINGS_KEY))
                     : joinKeys(key("\u055D", SETTINGS_KEY), "_");
         }
 
         @Override
         public ExpectedKey[] getKeysRightToSpacebar(final boolean isPhone) {
             // U+0589: "։" ARMENIAN FULL STOP
-            // U+055D: "՝" ARMENIAN COMMA
             final ExpectedKey fullStopKey = key("\u0589", getPunctuationMoreKeys(isPhone));
             return isPhone ? joinKeys(fullStopKey) : joinKeys("/", fullStopKey);
         }
@@ -204,12 +202,27 @@ public final class ArmenianPhonetic extends LayoutBase {
         public ExpectedKey[][] getLayout(final boolean isPhone) {
             final ExpectedKeyboardBuilder builder = new ExpectedKeyboardBuilder(
                     super.getLayout(isPhone));
+            // U+055D: "՝" ARMENIAN COMMA
+            builder.replaceKeyOfLabel(",", "\u055D");
             // U+055C: "՜" ARMENIAN EXCLAMATION MARK
             // U+00A1: "¡" INVERTED EXCLAMATION MARK
             // U+055E: "՞" ARMENIAN QUESTION MARK
             // U+00BF: "¿" INVERTED QUESTION MARK
             builder.setMoreKeysOf("!", "\u055C", "\u00A1")
                     .setMoreKeysOf("?", "\u055E", "\u00BF");
+            return builder.build();
+        }
+    }
+
+    private static final class ArmenianSymbolsShifted extends SymbolsShifted {
+        public ArmenianSymbolsShifted(final LayoutCustomizer customizer) { super(customizer); }
+
+        @Override
+        public ExpectedKey[][] getLayout(final boolean isPhone) {
+            final ExpectedKeyboardBuilder builder = new ExpectedKeyboardBuilder(
+                    super.getLayout(isPhone));
+            // U+055D: "՝" ARMENIAN COMMA
+            builder.replaceKeyOfLabel(",", "\u055D");
             return builder.build();
         }
     }
