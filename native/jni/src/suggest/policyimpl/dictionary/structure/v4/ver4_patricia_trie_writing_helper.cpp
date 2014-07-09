@@ -242,9 +242,9 @@ bool Ver4PatriciaTrieWritingHelper::truncateBigrams(const int maxBigramCount) {
         bool hasNext = true;
         int readingPos = bigramListPos;
         while (hasNext) {
-            const int entryPos = readingPos;
             const BigramEntry bigramEntry =
                     bigramDictContent->getBigramEntryAndAdvancePosition(&readingPos);
+            const int entryPos = readingPos - bigramDictContent->getBigramEntrySize();
             hasNext = bigramEntry.hasNext();
             if (!bigramEntry.isValid()) {
                 continue;
