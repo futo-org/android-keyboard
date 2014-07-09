@@ -57,7 +57,8 @@ public class TextInfoCompatUtilsTests extends AndroidTestCase {
                 TEST_SEQUENCE_NUMBER);
         final Spanned expectedSpanned = (Spanned) text.subSequence(TEST_CHAR_SEQUENCE_START,
                 TEST_CHAR_SEQUENCE_END);
-        final CharSequence actualCharSequence = TextInfoCompatUtils.getCharSequence(textInfo, null);
+        final CharSequence actualCharSequence =
+                TextInfoCompatUtils.getCharSequence(textInfo, textInfo.getText());
 
         // This should be valid even if TextInfo#getCharSequence is not supported.
         assertTrue(TextUtils.equals(expectedSpanned, actualCharSequence));
