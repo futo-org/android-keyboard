@@ -34,7 +34,7 @@
         parent="Keyboard"
     >
         <!-- This should be aligned with KeyboardSwitcher.KEYBOARD_THEMES[] -->
-        <item name="themeId">3</item>
+        <item name="themeId">4</item>
         <item name="keyboardTopPadding">@fraction/config_keyboard_top_padding_holo</item>
         <item name="keyboardBottomPadding">@fraction/config_keyboard_bottom_padding_holo</item>
         <item name="horizontalGap">@fraction/config_key_horizontal_gap_holo</item>

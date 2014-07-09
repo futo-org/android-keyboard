@@ -40,6 +40,21 @@
     <color name="typed_word_color_klp">#D8F0F0F0</color>
     <color name="suggested_word_color_klp">#B2F0F0F0</color>
     <color name="highlight_translucent_color_klp">#99E0E0E0</color>
+    <!-- Color resources for LXX_Light theme. -->
+    <color name="key_text_color_lxx_light">#546E7A</color>
+    <color name="key_text_inactive_color_lxx_light">#99546E7A</color>
+    <color name="key_hint_letter_color_lxx_light">#99546E7A</color>
+    <color name="highlight_color_lxx_light">#4DB6AC</color>
+    <color name="typed_word_color_lxx_light">#D84DB6AC</color>
+    <color name="suggested_word_color_lxx_light">#B24DB6AC</color>
+    <color name="highlight_translucent_color_lxx_light">#994DB6AC</color>
+    <color name="keyboard_background_lxx_light">#ECEFF1</color>
+    <color name="key_background_lxx_light">#ECEFF1</color>
+    <color name="key_background_pressed_lxx_light">#26546E7A</color>
+    <color name="suggestions_strip_background_lxx_light">#E4E7E9</color>
+    <color name="suggested_word_background_selected_lxx_light">#26546E7A</color>
+    <color name="gesture_floating_preview_color_lxx_light">#C0000000</color>
+    <color name="emoji_tab_page_indicator_background_lxx_light">#E4E7E9</color>
     <!-- Color resources for LXX_Dark theme. -->
     <color name="key_text_color_lxx_dark">#B3FFFFFF</color>
     <color name="key_text_inactive_color_lxx_dark">#66FFFFFF</color>
