@@ -91,7 +91,8 @@
     (sr-Latn: Serbian/qwerty) # not yet implemented.
     sv: Swedish/nordic
     sw: Swahili/qwerty
-    (ta: Tamil/tamil) # This is a preliminary keyboard layout.
+    (ta_IN: Tamil (India)/tamil) # This is a preliminary keyboard layout.
+    (te_IN: Telugu (India)/telugu) # This is a preliminary keyboard layout.
     th: Thai/thai
     tl: Tagalog/spanish
     tr: Turkish/qwerty
@@ -697,6 +698,16 @@
             android:imeSubtypeLocale="ta_IN"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=tamil,EmojiCapable"
+            android:isAsciiCapable="false"
+    />
+    <!-- TODO: This telugu keyboard is a preliminary layout.
+               This isn't based on the final specification. -->
+    <subtype android:icon="@drawable/ic_ime_switcher_dark"
+            android:label="@string/subtype_generic"
+            android:subtypeId="0x1e177389"
+            android:imeSubtypeLocale="te_IN"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=telugu,EmojiCapable"
             android:isAsciiCapable="false"
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
