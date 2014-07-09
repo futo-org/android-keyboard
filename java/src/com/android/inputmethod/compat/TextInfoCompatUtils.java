@@ -22,7 +22,6 @@ import com.android.inputmethod.annotations.UsedForTesting;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
-import java.util.Locale;
 
 @UsedForTesting
 public final class TextInfoCompatUtils {
@@ -50,9 +49,18 @@ public final class TextInfoCompatUtils {
                 sequenceNumber);
     }
 
+    /**
+     * Returns the result of {@link TextInfo#getCharSequence()} when available. Otherwise returns
+     * the result of {@link TextInfo#getText()} as fall back.
+     * @param textInfo the instance for which {@link TextInfo#getCharSequence()} or
+     * {@link TextInfo#getText()} is called.
+     * @return the result of {@link TextInfo#getCharSequence()} when available. Otherwise returns
+     * the result of {@link TextInfo#getText()} as fall back. If {@code textInfo} is {@code null},
+     * returns {@code null}.
+     */
     @UsedForTesting
-    public static CharSequence getCharSequence(final TextInfo textInfo,
-            final CharSequence defaultValue) {
+    public static CharSequence getCharSequenceOrString(final TextInfo textInfo) {
+        final CharSequence defaultValue = (textInfo == null ? null : textInfo.getText());
         return (CharSequence) CompatUtils.invoke(textInfo, defaultValue,
                 TEXT_INFO_GET_CHAR_SEQUENCE);
     }
