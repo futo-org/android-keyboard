@@ -40,21 +40,21 @@
     <color name="typed_word_color_klp">#D8F0F0F0</color>
     <color name="suggested_word_color_klp">#B2F0F0F0</color>
     <color name="highlight_translucent_color_klp">#99E0E0E0</color>
-    <!-- Color resources for LXX theme. Base color = F0F0F0 -->
-    <color name="key_text_color_lxx_dark">#FFFFFF</color>
-    <color name="key_text_inactive_color_lxx_dark">#808184</color>
-    <color name="key_hint_letter_color_lxx_dark">#808184</color>
-    <color name="highlight_color_lxx_dark">#7FCAC3</color>
-    <color name="typed_word_color_lxx_dark">#D87FCAC3</color>
-    <color name="suggested_word_color_lxx_dark">#B27FCAC3</color>
-    <color name="highlight_translucent_color_lxx_dark">#997FCAC3</color>
-    <color name="keyboard_background_lxx_dark">#384248</color>
-    <color name="key_background_lxx_dark">#384248</color>
-    <color name="key_background_pressed_lxx_dark">#546872</color>
-    <color name="suggestions_strip_background_lxx_dark">#263238</color>
-    <color name="suggested_word_background_selected_lxx_dark">#384248</color>
+    <!-- Color resources for LXX_Dark theme. -->
+    <color name="key_text_color_lxx_dark">#B3FFFFFF</color>
+    <color name="key_text_inactive_color_lxx_dark">#66FFFFFF</color>
+    <color name="key_hint_letter_color_lxx_dark">#66FFFFFF</color>
+    <color name="highlight_color_lxx_dark">#80CBC4</color>
+    <color name="typed_word_color_lxx_dark">#D880CBC4</color>
+    <color name="suggested_word_color_lxx_dark">#B280CBC4</color>
+    <color name="highlight_translucent_color_lxx_dark">#9980CBC4</color>
+    <color name="keyboard_background_lxx_dark">#263238</color>
+    <color name="key_background_lxx_dark">#263238</color>
+    <color name="key_background_pressed_lxx_dark">#26CFD8DC</color>
+    <color name="suggestions_strip_background_lxx_dark">#21272B</color>
+    <color name="suggested_word_background_selected_lxx_dark">#26CFD8DC</color>
     <color name="gesture_floating_preview_color_lxx_dark">#C0000000</color>
-    <color name="emoji_tab_page_indicator_background_lxx_dark">#263238</color>
+    <color name="emoji_tab_page_indicator_background_lxx_dark">#21272B</color>
     <!-- Color resources for setup wizard and tutorial -->
     <color name="setup_background">#FFEBEBEB</color>
     <color name="setup_text_dark">#FF707070</color>
