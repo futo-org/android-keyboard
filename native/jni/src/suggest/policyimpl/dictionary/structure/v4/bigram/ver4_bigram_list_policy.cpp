@@ -175,9 +175,9 @@ bool Ver4BigramListPolicy::updateAllBigramEntriesAndDeleteUselessEntries(const i
     bool hasNext = true;
     int readingPos = bigramListPos;
     while (hasNext) {
-        const int entryPos = readingPos;
         const BigramEntry bigramEntry =
                 mBigramDictContent->getBigramEntryAndAdvancePosition(&readingPos);
+        const int entryPos = readingPos - mBigramDictContent->getBigramEntrySize();
         hasNext = bigramEntry.hasNext();
         if (!bigramEntry.isValid()) {
             continue;
