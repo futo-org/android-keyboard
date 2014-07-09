@@ -64,11 +64,11 @@ public final class Kannada extends LayoutBase {
             return joinKeys(LANGUAGE_SWITCH_KEY, SPACE_KEY, key(ZWNJ_KEY, ZWJ_KEY));
         }
 
-        // U+0C95: "ಕ" KANNADA LETTER KA
-        // U+0CA8/U+0CCD/U+0CA8: "ನ್ನ" KANNADA LETTER NA/KANNADA SIGN VIRAMA/KANNADA LETTER NA
-        // U+0CA1: "ಡ" KANNADA LETTER DDA
+        // U+0C85: "ಅ" KANNADA LETTER A
+        // U+0C86: "ಆ" KANNADA LETTER AA
+        // U+0C87: "ಇ" KANNADA LETTER I
         private static final ExpectedKey KANNADA_ALPHABET_KEY = key(
-                "\u0C95\u0CA8\u0CCD\u0CA8\u0CA1", Constants.CODE_SWITCH_ALPHA_SYMBOL);
+                "\u0C85\u0C86\u0C87", Constants.CODE_SWITCH_ALPHA_SYMBOL);
 
         // U+20B9: "₹" INDIAN RUPEE SIGN
         private static final ExpectedKey CURRENCY_RUPEE = key("\u20B9",
