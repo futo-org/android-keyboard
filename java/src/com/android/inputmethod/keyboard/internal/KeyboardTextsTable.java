@@ -2299,10 +2299,10 @@ public final class KeyboardTextsTable {
         null, null, null, null, null,
         /* ~ morekeys_i */
         // Label for "switch to alphabetic" key.
-        // U+0C95: "ಕ" KANNADA LETTER KA
-        // U+0CA8/U+0CCD/U+0CA8: "ನ್ನ" KANNADA LETTER NA/KANNADA SIGN VIRAMA/KANNADA LETTER NA
-        // U+0CA1: "ಡ" KANNADA LETTER DDA
-        /* keylabel_to_alpha */ "\u0C95\u0CA8\u0CCD\u0CA8\u0CA1",
+        // U+0C85: "ಅ" KANNADA LETTER A
+        // U+0C86: "ಆ" KANNADA LETTER AA
+        // U+0C87: "ಇ" KANNADA LETTER I
+        /* keylabel_to_alpha */ "\u0C85\u0C86\u0C87",
         /* morekeys_c ~ */
         null, null, null, null, null,
         /* ~ morekeys_s */
@@ -3434,10 +3434,10 @@ public final class KeyboardTextsTable {
         null, null, null, null, null,
         /* ~ morekeys_i */
         // Label for "switch to alphabetic" key.
-        // U+0C24/U+0C46: "తె" TELUGU LETTER TA/TELUGU VOWEL SIGN E
-        // U+0C32/U+0C41: "లు" TELUGU LETTER LA/TELUGU VOWEL SIGN U
-        // U+0C17/U+0C41: "గు" TELUGU LETTER GA/TELUGU VOWEL SIGN U
-        /* keylabel_to_alpha */ "\u0C24\u0C46\u0C32\u0C41\u0C17\u0C41",
+        // U+0C05: "అ" TELUGU LETTER A
+        // U+0C06: "ఆ" TELUGU LETTER AA
+        // U+0C07: "ఇ" TELUGU LETTER I
+        /* keylabel_to_alpha */ "\u0C05\u0C06\u0C07",
         /* morekeys_c ~ */
         null, null, null, null, null,
         /* ~ morekeys_s */

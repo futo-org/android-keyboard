@@ -64,11 +64,11 @@ public final class Telugu extends LayoutBase {
             return joinKeys(LANGUAGE_SWITCH_KEY, SPACE_KEY, key(ZWNJ_KEY, ZWJ_KEY));
         }
 
-        // U+0C24/U+0C46: "తె" TELUGU LETTER TA/TELUGU VOWEL SIGN E
-        // U+0C32/U+0C41: "లు" TELUGU LETTER LA/TELUGU VOWEL SIGN U
-        // U+0C17/U+0C41: "గు" TELUGU LETTER GA/TELUGU VOWEL SIGN U
+        // U+0C05: "అ" TELUGU LETTER A
+        // U+0C06: "ఆ" TELUGU LETTER AA
+        // U+0C07: "ఇ" TELUGU LETTER I
         private static final ExpectedKey TELUGU_ALPHABET_KEY = key(
-                "\u0C24\u0C46\u0C32\u0C41\u0C17\u0C41", Constants.CODE_SWITCH_ALPHA_SYMBOL);
+                "\u0C05\u0C06\u0C07", Constants.CODE_SWITCH_ALPHA_SYMBOL);
 
         // U+20B9: "₹" INDIAN RUPEE SIGN
         private static final ExpectedKey CURRENCY_RUPEE = key("\u20B9",
