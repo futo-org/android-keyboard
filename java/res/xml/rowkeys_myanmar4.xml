@@ -47,14 +47,26 @@
         <default>
             <!-- U+1016: "ဖ" MYANMAR LETTER PHA -->
             <Key latin:keySpec="&#x1016;" />
-            <!-- U+1011: "ထ" MYANMAR LETTER THA -->
-            <Key latin:keySpec="&#x1011;" />
-            <!-- U+1001: "ခ" MYANMAR LETTER KHA -->
-            <Key latin:keySpec="&#x1001;" />
-            <!-- U+101C: "လ" MYANMAR LETTER LA -->
-            <Key latin:keySpec="&#x101C;" />
-            <!-- U+1018: "ဘ" MYANMAR LETTER BHA -->
-            <Key latin:keySpec="&#x1018;" />
+            <!-- U+1011: "ထ" MYANMAR LETTER THA
+                 U+1039/U+1011: "္ထ" MYANMAR SIGN VIRAMA/MYANMAR LETTER THA -->
+            <Key
+                latin:keySpec="&#x1011;"
+                latin:moreKeys="&#x1039;&#x1011;" />
+            <!-- U+1001: "ခ" MYANMAR LETTER KHA
+                 U+1039/U+1001: "္ခ" MYANMAR SIGN VIRAMA/MYANMAR LETTER KHA -->
+            <Key
+                latin:keySpec="&#x1001;"
+                latin:moreKeys="&#x1039;&#x1001;" />
+            <!-- U+101C: "လ" MYANMAR LETTER LA
+                 U+1039/U+101C: "္လ" MYANMAR SIGN VIRAMA/MYANMAR LETTER LA -->
+            <Key
+                latin:keySpec="&#x101C;"
+                latin:moreKeys="&#x1039;&#x101C;" />
+            <!-- U+1018: "ဘ" MYANMAR LETTER BHA
+                 U+1039/U+1018: "္ဘ" MYANMAR SIGN VIRAMA/MYANMAR LETTER BHA -->
+            <Key
+                latin:keySpec="&#x1018;"
+                latin:moreKeys="&#x1039;&#x1018;" />
             <!-- U+100A: "ည" MYANMAR LETTER NNYA
                  U+1009: "ဉ" MYANMAR LETTER NYA -->
             <Key

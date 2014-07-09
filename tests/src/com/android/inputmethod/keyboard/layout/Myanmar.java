@@ -144,17 +144,29 @@ public final class Myanmar extends LayoutBase {
                     key("\u1040", moreKey("0")))
             .setKeysOfRow(2,
                     // U+1006: "ဆ" MYANMAR LETTER CHA
+                    // U+1039/U+1006: "္ဆ" MYANMAR SIGN VIRAMA/MYANMAR LETTER CHA
+                    key("\u1006", moreKey("\u1039\u1006")),
                     // U+1010: "တ" MYANMAR LETTER TA
+                    // U+1039/U+1010: "္တ" MYANMAR SIGN VIRAMA/MYANMAR LETTER TA
+                    key("\u1010", moreKey("\u1039\u1010")),
                     // U+1014: "န" MYANMAR LETTER NA
+                    // U+1039/U+1014: "္န" MYANMAR SIGN VIRAMA/MYANMAR LETTER NA
+                    key("\u1014", moreKey("\u1039\u1014")),
                     // U+1019: "မ" MYANMAR LETTER MA
+                    // U+1039/U+1019: "္မ" MYANMAR SIGN VIRAMA/MYANMAR LETTER MA
+                    key("\u1019", moreKey("\u1039\u1019")),
                     // U+1021: "အ" MYANMAR LETTER A
                     // U+1015: "ပ" MYANMAR LETTER PA
+                    "\u1021", "\u1015",
                     // U+1000: "က" MYANMAR LETTER KA
+                    // U+1039/U+1000: "္က" MYANMAR SIGN VIRAMA/MYANMAR LETTER KA
+                    key("\u1000", moreKey("\u1039\u1000")),
                     // U+1004: "င" MYANMAR LETTER NGA
                     // U+101E: "သ" MYANMAR LETTER SA
+                    "\u1004", "\u101E",
                     // U+1005: "စ" MYANMAR LETTER CA
-                    "\u1006", "\u1010", "\u1014", "\u1019", "\u1021", "\u1015", "\u1000", "\u1004",
-                    "\u101E", "\u1005")
+                    // U+1039/U+1005: "္စ" MYANMAR SIGN VIRAMA/MYANMAR LETTER CA
+                    key("\u1005", moreKey("\u1039\u1005")))
             .setKeysOfRow(3,
                     // U+1031: "ေ" MYANMAR VOWEL SIGN E
                     // U+103B: "ျ" MYANMAR CONSONANT SIGN MEDIAL YA
@@ -172,7 +184,8 @@ public final class Myanmar extends LayoutBase {
                     // U+1030: "ူ" MYANMAR VOWEL SIGN UU
                     key("\u102F", moreKey("\u1030")),
                     // U+102C: "ာ" MYANMAR VOWEL SIGN AA
-                    "\u102C",
+                    // U+102B: "ါ" MYANMAR VOWEL SIGN TALL AA
+                    key("\u102C", moreKey("\u102B")),
                     // U+103A: "်" MYANMAR SIGN ASAT
                     // U+1032: "ဲ" MYANMAR VOWEL SIGN AI
                     key("\u103A", moreKey("\u1032")),
@@ -183,11 +196,19 @@ public final class Myanmar extends LayoutBase {
                     "\u1038")
             .setKeysOfRow(4,
                     // U+1016: "ဖ" MYANMAR LETTER PHA
+                    "\u1016",
                     // U+1011: "ထ" MYANMAR LETTER THA
+                    // U+1039/U+1011: "္ထ" MYANMAR SIGN VIRAMA/MYANMAR LETTER THA
+                    key("\u1011", moreKey("\u1039\u1011")),
                     // U+1001: "ခ" MYANMAR LETTER KHA
+                    // U+1039/U+1001: "္ခ" MYANMAR SIGN VIRAMA/MYANMAR LETTER KHA
+                    key("\u1001", moreKey("\u1039\u1001")),
                     // U+101C: "လ" MYANMAR LETTER LA
+                    // U+1039/U+101C: "္လ" MYANMAR SIGN VIRAMA/MYANMAR LETTER LA
+                    key("\u101C", moreKey("\u1039\u101C")),
                     // U+1018: "ဘ" MYANMAR LETTER BHA
-                    "\u1016", "\u1011", "\u1001", "\u101C", "\u1018",
+                    // U+1039/U+1018: "္ဘ" MYANMAR SIGN VIRAMA/MYANMAR LETTER BHA
+                    key("\u1018", moreKey("\u1039\u1018")),
                     // U+100A: "ည" MYANMAR LETTER NNYA
                     // U+1009: "ဉ" MYANMAR LETTER NYA
                     key("\u100A", moreKey("\u1009")),
@@ -213,17 +234,28 @@ public final class Myanmar extends LayoutBase {
                     "\u1029", "\u102A", "\u104D", "\u104C")
             .setKeysOfRow(2,
                     // U+1017: "ဗ" MYANMAR LETTER BA
+                    // U+1039/U+1017: "္ဗ" MYANMAR SIGN VIRAMA/MYANMAR LETTER BA
+                    key("\u1017", moreKey("\u1039\u1017")),
                     // U+1012: "ဒ" MYANMAR LETTER DA
+                    // U+1039/U+1012: "္ဒ" MYANMAR SIGN VIRAMA/MYANMAR LETTER DA
+                    key("\u1012", moreKey("\u1039\u1012")),
                     // U+1013: "ဓ" MYANMAR LETTER DHA
+                    // U+1039/U+1013: "္ဓ" MYANMAR SIGN VIRAMA/MYANMAR LETTER DHA
+                    key("\u1013", moreKey("\u1039\u1013")),
                     // U+1003: "ဃ" MYANMAR LETTER GHA
                     // U+100E: "ဎ" MYANMAR LETTER DDHA
                     // U+103F: "ဿ" MYANMAR LETTER GREAT SA
                     // U+100F: "ဏ" MYANMAR LETTER NNA
+                    "\u1003", "\u100E", "\u103F", "\u100F",
                     // U+1008: "ဈ" MYANMAR LETTER JHA
+                    // U+1039/U+1008: "္ဈ" MYANMAR SIGN VIRAMA/MYANMAR LETTER JHA
+                    key("\u1008", moreKey("\u1039\u1008")),
                     // U+1007: "ဇ" MYANMAR LETTER JA
+                    // U+1039/U+1007: "္ဇ" MYANMAR SIGN VIRAMA/MYANMAR LETTER JA
+                    key("\u1007", moreKey("\u1039\u1007")),
                     // U+1002: "ဂ" MYANMAR LETTER GA
-                    "\u1017", "\u1012", "\u1013", "\u1003", "\u100E", "\u103F", "\u100F", "\u1008",
-                    "\u1007", "\u1002")
+                    // U+1039/U+1002: "္ဂ" MYANMAR SIGN VIRAMA/MYANMAR LETTER GA
+                    key("\u1002", moreKey("\u1039\u1002")))
             .setKeysOfRow(3,
                     // U+101A: "ယ" MYANMAR LETTER YA
                     // U+1039: "္" MYANMAR SIGN VIRAMA
