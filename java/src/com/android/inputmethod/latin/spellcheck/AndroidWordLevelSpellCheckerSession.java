@@ -34,19 +34,21 @@ import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.PrevWordsInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.WordComposer;
-import com.android.inputmethod.latin.settings.SettingsValuesForSuggestion;
-import com.android.inputmethod.latin.spellcheck.AndroidSpellCheckerService.SuggestionsGatherer;
+import com.android.inputmethod.latin.utils.BinaryDictionaryUtils;
 import com.android.inputmethod.latin.utils.CoordinateUtils;
 import com.android.inputmethod.latin.utils.LocaleUtils;
 import com.android.inputmethod.latin.utils.ScriptUtils;
 import com.android.inputmethod.latin.utils.StringUtils;
 import com.android.inputmethod.latin.utils.SuggestionResults;
 
+import java.util.ArrayList;
 import java.util.Locale;
 
 public abstract class AndroidWordLevelSpellCheckerSession extends Session {
     private static final String TAG = AndroidWordLevelSpellCheckerSession.class.getSimpleName();
     private static final boolean DBG = false;
+
+    public final static String[] EMPTY_STRING_ARRAY = new String[0];
 
     // Immutable, but not available in the constructor.
     private Locale mLocale;
@@ -279,14 +281,11 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
                 proximityInfo = keyboard.getProximityInfo();
             }
             composer.setComposingWord(codePoints, coordinates);
+            // TODO: Don't gather suggestions if the limit is <= 0 unless necessary
             final SuggestionResults suggestionResults = mService.getSuggestionResults(
                     mLocale, composer, prevWordsInfo, proximityInfo);
-            // TODO: Don't gather suggestions if the limit is <= 0 unless necessary
-            final SuggestionsGatherer suggestionsGatherer = mService.newSuggestionsGatherer(
-                    text, suggestionsLimit);
-            suggestionsGatherer.addResults(suggestionResults);
-            final SuggestionsGatherer.Result result = suggestionsGatherer.getResults(
-                    capitalizeType, mLocale);
+            final Result result = getResult(capitalizeType, mLocale, suggestionsLimit,
+                    mService.getRecommendedThreshold(), text, suggestionResults);
             isInDict = isInDictForAnyCapitalization(text, capitalizeType);
             if (DBG) {
                 Log.i(TAG, "Spell checking results for " + text + " with suggestion limit "
@@ -322,6 +321,62 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
                         false /* reportAsTypo */);
             }
         }
+    }
+
+    private static final class Result {
+        public final String[] mSuggestions;
+        public final boolean mHasRecommendedSuggestions;
+        public Result(final String[] gatheredSuggestions,
+                final boolean hasRecommendedSuggestions) {
+            mSuggestions = gatheredSuggestions;
+            mHasRecommendedSuggestions = hasRecommendedSuggestions;
+        }
+    }
+
+    private static Result getResult(final int capitalizeType, final Locale locale,
+            final int suggestionsLimit, final float recommendedThreshold, final String originalText,
+            final SuggestionResults suggestionResults) {
+        if (suggestionResults.isEmpty() || suggestionsLimit <= 0) {
+            return new Result(null /* gatheredSuggestions */,
+                    false /* hasRecommendedSuggestions */);
+        }
+        if (DBG) {
+            for (final SuggestedWordInfo suggestedWordInfo : suggestionResults) {
+                Log.i(TAG, "" + suggestedWordInfo.mScore + " " + suggestedWordInfo.mWord);
+            }
+        }
+        final ArrayList<String> suggestions = new ArrayList<>();
+        for (final SuggestedWordInfo suggestedWordInfo : suggestionResults) {
+            final String suggestion;
+            if (StringUtils.CAPITALIZE_ALL == capitalizeType) {
+                suggestion = suggestedWordInfo.mWord.toUpperCase(locale);
+            } else if (StringUtils.CAPITALIZE_FIRST == capitalizeType) {
+                suggestion = StringUtils.capitalizeFirstCodePoint(
+                        suggestedWordInfo.mWord, locale);
+            } else {
+                suggestion = suggestedWordInfo.mWord;
+            }
+            suggestions.add(suggestion);
+        }
+        StringUtils.removeDupes(suggestions);
+        // This returns a String[], while toArray() returns an Object[] which cannot be cast
+        // into a String[].
+        final String[] gatheredSuggestions =
+                suggestions.subList(0, Math.min(suggestions.size(), suggestionsLimit))
+                        .toArray(EMPTY_STRING_ARRAY);
+
+        final int bestScore = suggestionResults.first().mScore;
+        final String bestSuggestion = suggestions.get(0);
+        final float normalizedScore = BinaryDictionaryUtils.calcNormalizedScore(
+                originalText, bestSuggestion.toString(), bestScore);
+        final boolean hasRecommendedSuggestions = (normalizedScore > recommendedThreshold);
+        if (DBG) {
+            Log.i(TAG, "Best suggestion : " + bestSuggestion + ", score " + bestScore);
+            Log.i(TAG, "Normalized score = " + normalizedScore
+                    + " (threshold " + recommendedThreshold
+                    + ") => hasRecommendedSuggestions = " + hasRecommendedSuggestions);
+        }
+        return new Result(gatheredSuggestions, hasRecommendedSuggestions);
     }
 
     /*
