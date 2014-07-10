@@ -85,14 +85,13 @@
         <item name="categoryIndicatorEnabled">false</item>
         <item name="categoryPageIndicatorColor">@color/highlight_color_lxx_light</item>
         <item name="categoryPageIndicatorBackground">@color/emoji_tab_page_indicator_background_lxx_light</item>
-        <!-- TODO: Update those icons to LXX_Light theme. -->
-        <item name="iconEmojiRecentsTab">@drawable/ic_emoji_recents_holo_dark</item>
-        <item name="iconEmojiCategory1Tab">@drawable/ic_emoji_people_holo_dark</item>
-        <item name="iconEmojiCategory2Tab">@drawable/ic_emoji_objects_holo_dark</item>
-        <item name="iconEmojiCategory3Tab">@drawable/ic_emoji_nature_holo_dark</item>
-        <item name="iconEmojiCategory4Tab">@drawable/ic_emoji_places_holo_dark</item>
-        <item name="iconEmojiCategory5Tab">@drawable/ic_emoji_symbols_holo_dark</item>
-        <item name="iconEmojiCategory6Tab">@drawable/ic_emoji_emoticons_holo_dark</item>
+        <item name="iconEmojiRecentsTab">@drawable/ic_emoji_recents_lxx_light</item>
+        <item name="iconEmojiCategory1Tab">@drawable/ic_emoji_people_lxx_light</item>
+        <item name="iconEmojiCategory2Tab">@drawable/ic_emoji_objects_lxx_light</item>
+        <item name="iconEmojiCategory3Tab">@drawable/ic_emoji_nature_lxx_light</item>
+        <item name="iconEmojiCategory4Tab">@drawable/ic_emoji_places_lxx_light</item>
+        <item name="iconEmojiCategory5Tab">@drawable/ic_emoji_symbols_lxx_light</item>
+        <item name="iconEmojiCategory6Tab">@drawable/ic_emoji_emoticons_lxx_light</item>
     </style>
     <style
         name="MoreKeysKeyboard.LXX_Light"
