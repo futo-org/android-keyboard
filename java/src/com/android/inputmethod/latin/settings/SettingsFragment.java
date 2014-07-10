@@ -104,10 +104,9 @@ public final class SettingsFragment extends InputMethodSettingsFragment
         setSubtypeEnablerTitle(R.string.select_language);
         addPreferencesFromResource(R.xml.prefs);
         final PreferenceScreen preferenceScreen = getPreferenceScreen();
-        if (preferenceScreen != null) {
-            preferenceScreen.setTitle(
-                    ApplicationUtils.getActivityTitleResId(getActivity(), SettingsActivity.class));
-        }
+        TwoStatePreferenceHelper.replaceCheckBoxPreferencesBySwitchPreferences(preferenceScreen);
+        preferenceScreen.setTitle(
+                ApplicationUtils.getActivityTitleResId(getActivity(), SettingsActivity.class));
 
         final Resources res = getResources();
         final Context context = getActivity();
