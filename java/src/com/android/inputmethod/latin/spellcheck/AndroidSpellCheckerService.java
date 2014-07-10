@@ -231,66 +231,43 @@ public final class AndroidSpellCheckerService extends SpellCheckerService
         }
 
         private final ArrayList<String> mSuggestions;
-        private final int[] mScores;
+        private final ArrayList<Integer> mScores;
         private final String mOriginalText;
         private final float mRecommendedThreshold;
         private final int mMaxLength;
-        private int mLength = 0;
 
         SuggestionsGatherer(final String originalText, final float recommendedThreshold,
                 final int maxLength) {
             mOriginalText = originalText;
             mRecommendedThreshold = recommendedThreshold;
             mMaxLength = maxLength;
-            mSuggestions = new ArrayList<>(maxLength + 1);
-            mScores = new int[mMaxLength];
+            mSuggestions = new ArrayList<>();
+            mScores = new ArrayList<>();
         }
 
-        synchronized public boolean addWord(char[] word, int[] spaceIndices, int wordOffset,
-                int wordLength, int score) {
-            final int positionIndex = Arrays.binarySearch(mScores, 0, mLength, score);
-            // binarySearch returns the index if the element exists, and -<insertion index> - 1
-            // if it doesn't. See documentation for binarySearch.
-            final int insertIndex = positionIndex >= 0 ? positionIndex : -positionIndex - 1;
-
-            // Weak <- insertIndex == 0, ..., insertIndex == mLength -> Strong
-            if (insertIndex == 0 && mLength >= mMaxLength) {
-                return true;
+        public void addResults(final SuggestionResults suggestionResults) {
+            if (suggestionResults == null) {
+                return;
             }
-
-            final String wordString = new String(word, wordOffset, wordLength);
-            if (mLength < mMaxLength) {
-                final int copyLen = mLength - insertIndex;
-                ++mLength;
-                System.arraycopy(mScores, insertIndex, mScores, insertIndex + 1, copyLen);
-                mSuggestions.add(insertIndex, wordString);
-                mScores[insertIndex] = score;
-            } else {
-                System.arraycopy(mScores, 1, mScores, 0, insertIndex - 1);
-                mSuggestions.add(insertIndex, wordString);
-                mSuggestions.remove(0);
-                mScores[insertIndex - 1] = score;
+            // suggestionResults is sorted.
+            for (final SuggestedWordInfo suggestedWordInfo : suggestionResults) {
+                mSuggestions.add(suggestedWordInfo.mWord);
+                mScores.add(suggestedWordInfo.mScore);
             }
-
-            return true;
         }
 
         public Result getResults(final int capitalizeType, final Locale locale) {
             final String[] gatheredSuggestions;
             final boolean hasRecommendedSuggestions;
-            if (0 == mLength) {
+            if (mSuggestions.isEmpty()) {
                 gatheredSuggestions = null;
                 hasRecommendedSuggestions = false;
             } else {
                 if (DBG) {
-                    if (mLength != mSuggestions.size()) {
-                        Log.e(TAG, "Suggestion size is not the same as stored mLength");
-                    }
-                    for (int i = mLength - 1; i >= 0; --i) {
-                        Log.i(TAG, "" + mScores[i] + " " + mSuggestions.get(i));
+                    for (int i = 0; i < mSuggestions.size(); i++) {
+                        Log.i(TAG, "" + mScores.get(i) + " " + mSuggestions.get(i));
                     }
                 }
-                Collections.reverse(mSuggestions);
                 StringUtils.removeDupes(mSuggestions);
                 if (StringUtils.CAPITALIZE_ALL == capitalizeType) {
                     for (int i = 0; i < mSuggestions.size(); ++i) {
@@ -309,7 +286,7 @@ public final class AndroidSpellCheckerService extends SpellCheckerService
                 // into a String[].
                 gatheredSuggestions = mSuggestions.toArray(EMPTY_STRING_ARRAY);
 
-                final int bestScore = mScores[mLength - 1];
+                final int bestScore = mScores.get(0);
                 final String bestSuggestion = mSuggestions.get(0);
                 final float normalizedScore =
                         BinaryDictionaryUtils.calcNormalizedScore(

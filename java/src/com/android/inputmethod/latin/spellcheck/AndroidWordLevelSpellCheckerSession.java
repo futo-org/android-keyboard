@@ -259,14 +259,6 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
             }
             final String text = inText.replaceAll(
                     AndroidSpellCheckerService.APOSTROPHE, AndroidSpellCheckerService.SINGLE_QUOTE);
-
-            // TODO: Don't gather suggestions if the limit is <= 0 unless necessary
-            //final SuggestionsGatherer suggestionsGatherer = new SuggestionsGatherer(text,
-            //mService.mSuggestionThreshold, mService.mRecommendedThreshold,
-            //suggestionsLimit);
-            final SuggestionsGatherer suggestionsGatherer = mService.newSuggestionsGatherer(
-                    text, suggestionsLimit);
-
             final int capitalizeType = StringUtils.getCapitalizationType(text);
             boolean isInDict = true;
             if (!mService.hasMainDictionaryForLocale(mLocale)) {
@@ -289,18 +281,13 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
             composer.setComposingWord(codePoints, coordinates);
             final SuggestionResults suggestionResults = mService.getSuggestionResults(
                     mLocale, composer, prevWordsInfo, proximityInfo);
-            if (suggestionResults != null) {
-                for (final SuggestedWordInfo suggestion : suggestionResults) {
-                    final String suggestionStr = suggestion.mWord;
-                    suggestionsGatherer.addWord(suggestionStr.toCharArray(), null, 0,
-                            suggestionStr.length(), suggestion.mScore);
-                }
-            }
-            isInDict = isInDictForAnyCapitalization(text, capitalizeType);
-
+            // TODO: Don't gather suggestions if the limit is <= 0 unless necessary
+            final SuggestionsGatherer suggestionsGatherer = mService.newSuggestionsGatherer(
+                    text, suggestionsLimit);
+            suggestionsGatherer.addResults(suggestionResults);
             final SuggestionsGatherer.Result result = suggestionsGatherer.getResults(
                     capitalizeType, mLocale);
-
+            isInDict = isInDictForAnyCapitalization(text, capitalizeType);
             if (DBG) {
                 Log.i(TAG, "Spell checking results for " + text + " with suggestion limit "
                         + suggestionsLimit);
