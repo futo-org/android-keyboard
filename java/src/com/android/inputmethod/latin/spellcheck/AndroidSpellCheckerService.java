@@ -155,6 +155,10 @@ public final class AndroidSpellCheckerService extends SpellCheckerService
         onSharedPreferenceChanged(prefs, PREF_USE_CONTACTS_KEY);
     }
 
+    public float getRecommendedThreshold() {
+        return mRecommendedThreshold;
+    }
+
     private static String getKeyboardLayoutNameForScript(final int script) {
         switch (script) {
         case ScriptUtils.SCRIPT_LATIN:
@@ -212,95 +216,6 @@ public final class AndroidSpellCheckerService extends SpellCheckerService
     public static SuggestionsInfo getInDictEmptySuggestions() {
         return new SuggestionsInfo(SuggestionsInfo.RESULT_ATTR_IN_THE_DICTIONARY,
                 EMPTY_STRING_ARRAY);
-    }
-
-    public SuggestionsGatherer newSuggestionsGatherer(final String text, int maxLength) {
-        return new SuggestionsGatherer(text, mRecommendedThreshold, maxLength);
-    }
-
-    // TODO: remove this class and replace it by storage local to the session.
-    public static final class SuggestionsGatherer {
-        public static final class Result {
-            public final String[] mSuggestions;
-            public final boolean mHasRecommendedSuggestions;
-            public Result(final String[] gatheredSuggestions,
-                    final boolean hasRecommendedSuggestions) {
-                mSuggestions = gatheredSuggestions;
-                mHasRecommendedSuggestions = hasRecommendedSuggestions;
-            }
-        }
-
-        private final ArrayList<String> mSuggestions;
-        private final ArrayList<Integer> mScores;
-        private final String mOriginalText;
-        private final float mRecommendedThreshold;
-        private final int mMaxLength;
-
-        SuggestionsGatherer(final String originalText, final float recommendedThreshold,
-                final int maxLength) {
-            mOriginalText = originalText;
-            mRecommendedThreshold = recommendedThreshold;
-            mMaxLength = maxLength;
-            mSuggestions = new ArrayList<>();
-            mScores = new ArrayList<>();
-        }
-
-        public void addResults(final SuggestionResults suggestionResults) {
-            if (suggestionResults == null) {
-                return;
-            }
-            // suggestionResults is sorted.
-            for (final SuggestedWordInfo suggestedWordInfo : suggestionResults) {
-                mSuggestions.add(suggestedWordInfo.mWord);
-                mScores.add(suggestedWordInfo.mScore);
-            }
-        }
-
-        public Result getResults(final int capitalizeType, final Locale locale) {
-            final String[] gatheredSuggestions;
-            final boolean hasRecommendedSuggestions;
-            if (mSuggestions.isEmpty()) {
-                gatheredSuggestions = null;
-                hasRecommendedSuggestions = false;
-            } else {
-                if (DBG) {
-                    for (int i = 0; i < mSuggestions.size(); i++) {
-                        Log.i(TAG, "" + mScores.get(i) + " " + mSuggestions.get(i));
-                    }
-                }
-                StringUtils.removeDupes(mSuggestions);
-                if (StringUtils.CAPITALIZE_ALL == capitalizeType) {
-                    for (int i = 0; i < mSuggestions.size(); ++i) {
-                        // get(i) returns a CharSequence which is actually a String so .toString()
-                        // should return the same object.
-                        mSuggestions.set(i, mSuggestions.get(i).toString().toUpperCase(locale));
-                    }
-                } else if (StringUtils.CAPITALIZE_FIRST == capitalizeType) {
-                    for (int i = 0; i < mSuggestions.size(); ++i) {
-                        // Likewise
-                        mSuggestions.set(i, StringUtils.capitalizeFirstCodePoint(
-                                mSuggestions.get(i).toString(), locale));
-                    }
-                }
-                // This returns a String[], while toArray() returns an Object[] which cannot be cast
-                // into a String[].
-                gatheredSuggestions = mSuggestions.toArray(EMPTY_STRING_ARRAY);
-
-                final int bestScore = mScores.get(0);
-                final String bestSuggestion = mSuggestions.get(0);
-                final float normalizedScore =
-                        BinaryDictionaryUtils.calcNormalizedScore(
-                                mOriginalText, bestSuggestion.toString(), bestScore);
-                hasRecommendedSuggestions = (normalizedScore > mRecommendedThreshold);
-                if (DBG) {
-                    Log.i(TAG, "Best suggestion : " + bestSuggestion + ", score " + bestScore);
-                    Log.i(TAG, "Normalized score = " + normalizedScore
-                            + " (threshold " + mRecommendedThreshold
-                            + ") => hasRecommendedSuggestions = " + hasRecommendedSuggestions);
-                }
-            }
-            return new Result(gatheredSuggestions, hasRecommendedSuggestions);
-        }
     }
 
     public boolean isValidWord(final Locale locale, final String word) {
