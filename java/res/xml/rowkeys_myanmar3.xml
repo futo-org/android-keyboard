@@ -67,8 +67,11 @@
             <Key
                 latin:keySpec="&#x102F;"
                 latin:moreKeys="&#x1030;" />
-            <!-- U+102C: "ာ" MYANMAR VOWEL SIGN AA -->
-            <Key latin:keySpec="&#x102C;" />
+            <!-- U+102C: "ာ" MYANMAR VOWEL SIGN AA
+                 U+102B: "ါ" MYANMAR VOWEL SIGN TALL AA -->
+            <Key
+                latin:keySpec="&#x102C;"
+                latin:moreKeys="&#x102B;" />
             <!-- U+103A: "်" MYANMAR SIGN ASAT
                  U+1032: "ဲ" MYANMAR VOWEL SIGN AI -->
             <Key
