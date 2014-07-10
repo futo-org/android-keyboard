@@ -29,8 +29,8 @@ namespace latinime {
 
 class ShortcutDictContent : public SparseTableDictContent {
  public:
-    ShortcutDictContent(uint8_t *const *buffers, const int *bufferSizes, const bool isUpdatable)
-            : SparseTableDictContent(buffers, bufferSizes, isUpdatable,
+    ShortcutDictContent(uint8_t *const *buffers, const int *bufferSizes)
+            : SparseTableDictContent(buffers, bufferSizes,
                       Ver4DictConstants::SHORTCUT_ADDRESS_TABLE_BLOCK_SIZE,
                       Ver4DictConstants::SHORTCUT_ADDRESS_TABLE_DATA_SIZE) {}
 
