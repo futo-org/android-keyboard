@@ -28,8 +28,9 @@ import android.view.textservice.SuggestionsInfo;
 import android.view.textservice.TextInfo;
 
 import com.android.inputmethod.compat.SuggestionsInfoCompatUtils;
+import com.android.inputmethod.keyboard.Keyboard;
+import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.Constants;
-import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.PrevWordsInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.WordComposer;
@@ -39,17 +40,15 @@ import com.android.inputmethod.latin.utils.CoordinateUtils;
 import com.android.inputmethod.latin.utils.LocaleUtils;
 import com.android.inputmethod.latin.utils.ScriptUtils;
 import com.android.inputmethod.latin.utils.StringUtils;
+import com.android.inputmethod.latin.utils.SuggestionResults;
 
-import java.util.ArrayList;
 import java.util.Locale;
 
 public abstract class AndroidWordLevelSpellCheckerSession extends Session {
     private static final String TAG = AndroidWordLevelSpellCheckerSession.class.getSimpleName();
     private static final boolean DBG = false;
 
-    // Immutable, but need the locale which is not available in the constructor yet
-    private DictionaryPool mDictionaryPool;
-    // Likewise
+    // Immutable, but not available in the constructor.
     private Locale mLocale;
     // Cache this for performance
     private int mScript; // One of SCRIPT_LATIN or SCRIPT_CYRILLIC for now.
@@ -116,7 +115,6 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
     @Override
     public void onCreate() {
         final String localeString = getLocale();
-        mDictionaryPool = mService.getDictionaryPool(localeString);
         mLocale = LocaleUtils.constructLocaleFromString(localeString);
         mScript = ScriptUtils.getScriptFromSpellCheckerLocale(mLocale);
     }
@@ -191,24 +189,24 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
      * If the "TEXT" is fully upper case, we test the exact string "TEXT", the lower-cased
      *  version of it "text" and the capitalized version of it "Text".
      */
-    private boolean isInDictForAnyCapitalization(final Dictionary dict, final String text,
-            final int capitalizeType) {
+    private boolean isInDictForAnyCapitalization(final String text, final int capitalizeType) {
         // If the word is in there as is, then it's in the dictionary. If not, we'll test lower
         // case versions, but only if the word is not already all-lower case or mixed case.
-        if (dict.isValidWord(text)) return true;
+        if (mService.isValidWord(mLocale, text)) return true;
         if (StringUtils.CAPITALIZE_NONE == capitalizeType) return false;
 
         // If we come here, we have a capitalized word (either First- or All-).
         // Downcase the word and look it up again. If the word is only capitalized, we
         // tested all possibilities, so if it's still negative we can return false.
         final String lowerCaseText = text.toLowerCase(mLocale);
-        if (dict.isValidWord(lowerCaseText)) return true;
+        if (mService.isValidWord(mLocale, lowerCaseText)) return true;
         if (StringUtils.CAPITALIZE_FIRST == capitalizeType) return false;
 
         // If the lower case version is not in the dictionary, it's still possible
         // that we have an all-caps version of a word that needs to be capitalized
         // according to the dictionary. E.g. "GERMANS" only exists in the dictionary as "Germans".
-        return dict.isValidWord(StringUtils.capitalizeFirstAndDowncaseRest(lowerCaseText, mLocale));
+        return mService.isValidWord(mLocale,
+                StringUtils.capitalizeFirstAndDowncaseRest(lowerCaseText, mLocale));
     }
 
     // Note : this must be reentrant
@@ -236,46 +234,28 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
                 return new SuggestionsInfo(
                         cachedSuggestionsParams.mFlags, cachedSuggestionsParams.mSuggestions);
             }
-
             final int checkability = getCheckabilityInScript(inText, mScript);
             if (CHECKABILITY_CHECKABLE != checkability) {
-                DictAndKeyboard dictInfo = null;
-                try {
-                    dictInfo = mDictionaryPool.pollWithDefaultTimeout();
-                    if (!DictionaryPool.isAValidDictionary(dictInfo)) {
-                        return AndroidSpellCheckerService.getNotInDictEmptySuggestions(
-                                false /* reportAsTypo */);
-                    }
-                    if (CHECKABILITY_CONTAINS_PERIOD == checkability) {
-                        final String[] splitText = inText.split(Constants.REGEXP_PERIOD);
-                        boolean allWordsAreValid = true;
-                        for (final String word : splitText) {
-                            if (!dictInfo.mDictionary.isValidWord(word)) {
-                                allWordsAreValid = false;
-                                break;
-                            }
-                        }
-                        if (allWordsAreValid) {
-                            return new SuggestionsInfo(SuggestionsInfo.RESULT_ATTR_LOOKS_LIKE_TYPO
-                                    | SuggestionsInfo.RESULT_ATTR_HAS_RECOMMENDED_SUGGESTIONS,
-                                    new String[] {
-                                            TextUtils.join(Constants.STRING_SPACE, splitText),
-                                            TextUtils.join(Constants.STRING_PERIOD_AND_SPACE,
-                                                    splitText) });
+                if (CHECKABILITY_CONTAINS_PERIOD == checkability) {
+                    final String[] splitText = inText.split(Constants.REGEXP_PERIOD);
+                    boolean allWordsAreValid = true;
+                    for (final String word : splitText) {
+                        if (!mService.isValidWord(mLocale, word)) {
+                            allWordsAreValid = false;
+                            break;
                         }
                     }
-                    return dictInfo.mDictionary.isValidWord(inText)
-                            ? AndroidSpellCheckerService.getInDictEmptySuggestions()
-                            : AndroidSpellCheckerService.getNotInDictEmptySuggestions(
-                                    CHECKABILITY_CONTAINS_PERIOD == checkability
-                                    /* reportAsTypo */);
-                } finally {
-                    if (null != dictInfo) {
-                        if (!mDictionaryPool.offer(dictInfo)) {
-                            Log.e(TAG, "Can't re-insert a dictionary into its pool");
-                        }
+                    if (allWordsAreValid) {
+                        return new SuggestionsInfo(SuggestionsInfo.RESULT_ATTR_LOOKS_LIKE_TYPO
+                                | SuggestionsInfo.RESULT_ATTR_HAS_RECOMMENDED_SUGGESTIONS,
+                                new String[] {
+                                        TextUtils.join(Constants.STRING_SPACE, splitText) });
                     }
                 }
+                return mService.isValidWord(mLocale, inText) ?
+                        AndroidSpellCheckerService.getInDictEmptySuggestions() :
+                        AndroidSpellCheckerService.getNotInDictEmptySuggestions(
+                                CHECKABILITY_CONTAINS_PERIOD == checkability /* reportAsTypo */);
             }
             final String text = inText.replaceAll(
                     AndroidSpellCheckerService.APOSTROPHE, AndroidSpellCheckerService.SINGLE_QUOTE);
@@ -289,48 +269,34 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
 
             final int capitalizeType = StringUtils.getCapitalizationType(text);
             boolean isInDict = true;
-            DictAndKeyboard dictInfo = null;
-            try {
-                dictInfo = mDictionaryPool.pollWithDefaultTimeout();
-                if (!DictionaryPool.isAValidDictionary(dictInfo)) {
-                    return AndroidSpellCheckerService.getNotInDictEmptySuggestions(
-                            false /* reportAsTypo */);
-                }
-                final WordComposer composer = new WordComposer();
-                final int[] codePoints = StringUtils.toCodePointArray(text);
-                final int[] coordinates;
-                if (null == dictInfo.mKeyboard) {
-                    coordinates = CoordinateUtils.newCoordinateArray(codePoints.length,
-                            Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
-                } else {
-                    coordinates = dictInfo.mKeyboard.getCoordinates(codePoints);
-                }
-                composer.setComposingWord(codePoints, coordinates);
-                // TODO: make a spell checker option to block offensive words or not
-                final ArrayList<SuggestedWordInfo> suggestions =
-                        dictInfo.mDictionary.getSuggestions(composer, prevWordsInfo,
-                                dictInfo.getProximityInfo(),
-                                new SettingsValuesForSuggestion(
-                                        true /* blockPotentiallyOffensive */,
-                                        true /* spaceAwareGestureEnabled */,
-                                        null /* additionalFeaturesSettingValues */),
-                                0 /* sessionId */,
-                                null /* inOutLanguageWeight */);
-                if (suggestions != null) {
-                    for (final SuggestedWordInfo suggestion : suggestions) {
-                        final String suggestionStr = suggestion.mWord;
-                        suggestionsGatherer.addWord(suggestionStr.toCharArray(), null, 0,
-                                suggestionStr.length(), suggestion.mScore);
-                    }
-                }
-                isInDict = isInDictForAnyCapitalization(dictInfo.mDictionary, text, capitalizeType);
-            } finally {
-                if (null != dictInfo) {
-                    if (!mDictionaryPool.offer(dictInfo)) {
-                        Log.e(TAG, "Can't re-insert a dictionary into its pool");
-                    }
+            if (!mService.hasMainDictionaryForLocale(mLocale)) {
+                return AndroidSpellCheckerService.getNotInDictEmptySuggestions(
+                        false /* reportAsTypo */);
+            }
+            final Keyboard keyboard = mService.getKeyboardForLocale(mLocale);
+            final WordComposer composer = new WordComposer();
+            final int[] codePoints = StringUtils.toCodePointArray(text);
+            final int[] coordinates;
+            final ProximityInfo proximityInfo;
+            if (null == keyboard) {
+                coordinates = CoordinateUtils.newCoordinateArray(codePoints.length,
+                        Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
+                proximityInfo = null;
+            } else {
+                coordinates = keyboard.getCoordinates(codePoints);
+                proximityInfo = keyboard.getProximityInfo();
+            }
+            composer.setComposingWord(codePoints, coordinates);
+            final SuggestionResults suggestionResults = mService.getSuggestionResults(
+                    mLocale, composer, prevWordsInfo, proximityInfo);
+            if (suggestionResults != null) {
+                for (final SuggestedWordInfo suggestion : suggestionResults) {
+                    final String suggestionStr = suggestion.mWord;
+                    suggestionsGatherer.addWord(suggestionStr.toCharArray(), null, 0,
+                            suggestionStr.length(), suggestion.mScore);
                 }
             }
+            isInDict = isInDictForAnyCapitalization(text, capitalizeType);
 
             final SuggestionsGatherer.Result result = suggestionsGatherer.getResults(
                     capitalizeType, mLocale);
