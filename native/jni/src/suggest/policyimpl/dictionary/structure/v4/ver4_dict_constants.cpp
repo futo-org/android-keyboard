@@ -18,25 +18,29 @@
 
 namespace latinime {
 
-// These values MUST match the definitions in FormatSpec.java.
-const char *const Ver4DictConstants::TRIE_FILE_EXTENSION = ".trie";
+const char *const Ver4DictConstants::BODY_FILE_EXTENSION = ".body";
 const char *const Ver4DictConstants::HEADER_FILE_EXTENSION = ".header";
-const char *const Ver4DictConstants::FREQ_FILE_EXTENSION = ".freq";
-// tat = Terminal Address Table
-const char *const Ver4DictConstants::TERMINAL_ADDRESS_TABLE_FILE_EXTENSION = ".tat";
-const char *const Ver4DictConstants::BIGRAM_FILE_EXTENSION = ".bigram_freq";
-const char *const Ver4DictConstants::BIGRAM_LOOKUP_TABLE_FILE_EXTENSION = ".bigram_lookup";
-const char *const Ver4DictConstants::BIGRAM_CONTENT_TABLE_FILE_EXTENSION = ".bigram_index_freq";
-const char *const Ver4DictConstants::SHORTCUT_FILE_EXTENSION = ".shortcut_shortcut";
-const char *const Ver4DictConstants::SHORTCUT_LOOKUP_TABLE_FILE_EXTENSION = ".shortcut_lookup";
-const char *const Ver4DictConstants::SHORTCUT_CONTENT_TABLE_FILE_EXTENSION =
-        ".shortcut_index_shortcut";
 
 // Version 4 dictionary size is implicitly limited to 8MB due to 3-byte offsets.
 const int Ver4DictConstants::MAX_DICTIONARY_SIZE = 8 * 1024 * 1024;
 // Extended region size, which is not GCed region size in dict file + additional buffer size, is
 // limited to 1MB to prevent from inefficient traversing.
 const int Ver4DictConstants::MAX_DICT_EXTENDED_REGION_SIZE = 1 * 1024 * 1024;
+
+// NUM_OF_BUFFERS_FOR_SINGLE_DICT_CONTENT for Trie, TerminalAddressLookupTable and Probability.
+// NUM_OF_BUFFERS_FOR_SPARSE_TABLE_DICT_CONTENT for bigram and shortcut.
+const size_t Ver4DictConstants::NUM_OF_CONTENT_BUFFERS_IN_BODY_FILE =
+        NUM_OF_BUFFERS_FOR_SINGLE_DICT_CONTENT * 3
+                + NUM_OF_BUFFERS_FOR_SPARSE_TABLE_DICT_CONTENT * 2;
+const int Ver4DictConstants::TRIE_BUFFER_INDEX = 0;
+const int Ver4DictConstants::TERMINAL_ADDRESS_LOOKUP_TABLE_BUFFER_INDEX =
+        TRIE_BUFFER_INDEX + NUM_OF_BUFFERS_FOR_SINGLE_DICT_CONTENT;
+const int Ver4DictConstants::PROBABILITY_BUFFER_INDEX =
+        TERMINAL_ADDRESS_LOOKUP_TABLE_BUFFER_INDEX + NUM_OF_BUFFERS_FOR_SINGLE_DICT_CONTENT;
+const int Ver4DictConstants::BIGRAM_BUFFERS_INDEX =
+        PROBABILITY_BUFFER_INDEX + NUM_OF_BUFFERS_FOR_SINGLE_DICT_CONTENT;
+const int Ver4DictConstants::SHORTCUT_BUFFERS_INDEX =
+        BIGRAM_BUFFERS_INDEX + NUM_OF_BUFFERS_FOR_SPARSE_TABLE_DICT_CONTENT;
 
 const int Ver4DictConstants::NOT_A_TERMINAL_ID = -1;
 const int Ver4DictConstants::PROBABILITY_SIZE = 1;
@@ -66,5 +70,8 @@ const int Ver4DictConstants::BIGRAM_LARGE_PROBABILITY_FIELD_SIZE = 1;
 const int Ver4DictConstants::SHORTCUT_FLAGS_FIELD_SIZE = 1;
 const int Ver4DictConstants::SHORTCUT_PROBABILITY_MASK = 0x0F;
 const int Ver4DictConstants::SHORTCUT_HAS_NEXT_MASK = 0x80;
+
+const size_t Ver4DictConstants::NUM_OF_BUFFERS_FOR_SINGLE_DICT_CONTENT = 1;
+const size_t Ver4DictConstants::NUM_OF_BUFFERS_FOR_SPARSE_TABLE_DICT_CONTENT = 3;
 
 } // namespace latinime

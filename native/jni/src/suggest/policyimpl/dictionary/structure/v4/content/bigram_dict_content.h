@@ -17,6 +17,9 @@
 #ifndef LATINIME_BIGRAM_DICT_CONTENT_H
 #define LATINIME_BIGRAM_DICT_CONTENT_H
 
+#include <cstdint>
+#include <cstdio>
+
 #include "defines.h"
 #include "suggest/policyimpl/dictionary/structure/v4/content/bigram_entry.h"
 #include "suggest/policyimpl/dictionary/structure/v4/content/sparse_table_dict_content.h"
@@ -27,12 +30,9 @@ namespace latinime {
 
 class BigramDictContent : public SparseTableDictContent {
  public:
-    BigramDictContent(const char *const dictPath, const bool hasHistoricalInfo,
+    BigramDictContent(uint8_t *const *buffers, const int *bufferSizes, const bool hasHistoricalInfo,
             const bool isUpdatable)
-            : SparseTableDictContent(dictPath,
-                      Ver4DictConstants::BIGRAM_LOOKUP_TABLE_FILE_EXTENSION,
-                      Ver4DictConstants::BIGRAM_CONTENT_TABLE_FILE_EXTENSION,
-                      Ver4DictConstants::BIGRAM_FILE_EXTENSION, isUpdatable,
+            : SparseTableDictContent(buffers, bufferSizes, isUpdatable,
                       Ver4DictConstants::BIGRAM_ADDRESS_TABLE_BLOCK_SIZE,
                       Ver4DictConstants::BIGRAM_ADDRESS_TABLE_DATA_SIZE),
               mHasHistoricalInfo(hasHistoricalInfo) {}
@@ -87,10 +87,8 @@ class BigramDictContent : public SparseTableDictContent {
         return getUpdatableAddressLookupTable()->set(terminalId, bigramListPos);
     }
 
-    bool flushToFile(const char *const dictPath) const {
-        return flush(dictPath, Ver4DictConstants::BIGRAM_LOOKUP_TABLE_FILE_EXTENSION,
-                Ver4DictConstants::BIGRAM_CONTENT_TABLE_FILE_EXTENSION,
-                Ver4DictConstants::BIGRAM_FILE_EXTENSION);
+    bool flushToFile(FILE *const file) const {
+        return flush(file);
     }
 
     bool runGC(const TerminalPositionLookupTable::TerminalIdMap *const terminalIdMap,
