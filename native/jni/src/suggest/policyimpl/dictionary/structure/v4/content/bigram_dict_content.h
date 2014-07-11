@@ -30,9 +30,8 @@ namespace latinime {
 
 class BigramDictContent : public SparseTableDictContent {
  public:
-    BigramDictContent(uint8_t *const *buffers, const int *bufferSizes, const bool hasHistoricalInfo,
-            const bool isUpdatable)
-            : SparseTableDictContent(buffers, bufferSizes, isUpdatable,
+    BigramDictContent(uint8_t *const *buffers, const int *bufferSizes, const bool hasHistoricalInfo)
+            : SparseTableDictContent(buffers, bufferSizes,
                       Ver4DictConstants::BIGRAM_ADDRESS_TABLE_BLOCK_SIZE,
                       Ver4DictConstants::BIGRAM_ADDRESS_TABLE_DATA_SIZE),
               mHasHistoricalInfo(hasHistoricalInfo) {}

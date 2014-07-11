@@ -121,7 +121,7 @@ class Ver4DictBuffers {
 
     Ver4DictBuffers(MmappedBuffer::MmappedBufferPtr &&headerBuffer,
             MmappedBuffer::MmappedBufferPtr &&bodyBuffer,
-            const bool isUpdatable, const FormatUtils::FORMAT_VERSION formatVersion,
+            const FormatUtils::FORMAT_VERSION formatVersion,
             const std::vector<uint8_t *> &contentBuffers,
             const std::vector<int> &contentBufferSizes);
 

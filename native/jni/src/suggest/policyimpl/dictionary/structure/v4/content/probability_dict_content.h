@@ -33,8 +33,8 @@ class ProbabilityEntry;
 class ProbabilityDictContent : public SingleDictContent {
  public:
     ProbabilityDictContent(uint8_t *const buffer, const int bufferSize,
-            const bool hasHistoricalInfo, const bool isUpdatable)
-            : SingleDictContent(buffer, bufferSize, isUpdatable),
+            const bool hasHistoricalInfo)
+            : SingleDictContent(buffer, bufferSize),
               mHasHistoricalInfo(hasHistoricalInfo),
               mSize(getBuffer()->getTailPosition() / getEntrySize()) {}
 

@@ -31,9 +31,8 @@ class TerminalPositionLookupTable : public SingleDictContent {
  public:
     typedef std::unordered_map<int, int> TerminalIdMap;
 
-    TerminalPositionLookupTable(uint8_t *const buffer, const int bufferSize,
-            const bool isUpdatable)
-            : SingleDictContent(buffer, bufferSize, isUpdatable),
+    TerminalPositionLookupTable(uint8_t *const buffer, const int bufferSize)
+            : SingleDictContent(buffer, bufferSize),
               mSize(getBuffer()->getTailPosition()
                       / Ver4DictConstants::TERMINAL_ADDRESS_TABLE_ADDRESS_SIZE) {}
 

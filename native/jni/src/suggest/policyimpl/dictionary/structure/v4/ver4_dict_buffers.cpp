@@ -39,7 +39,6 @@ namespace latinime {
     }
     // TODO: take only dictDirPath, and open both header and trie files in the constructor below
     const bool isUpdatable = headerBuffer->isUpdatable();
-
     MmappedBuffer::MmappedBufferPtr bodyBuffer = MmappedBuffer::openBuffer(dictPath,
             Ver4DictConstants::BODY_FILE_EXTENSION, isUpdatable);
     if (!bodyBuffer) {
@@ -64,7 +63,7 @@ namespace latinime {
         return Ver4DictBuffersPtr(nullptr);
     }
     return Ver4DictBuffersPtr(new Ver4DictBuffers(std::move(headerBuffer), std::move(bodyBuffer),
-            isUpdatable, formatVersion, buffers, bufferSizes));
+            formatVersion, buffers, bufferSizes));
 }
 
 bool Ver4DictBuffers::flushHeaderAndDictBuffers(const char *const dictDirPath,
@@ -175,7 +174,7 @@ bool Ver4DictBuffers::flushDictBuffers(FILE *const file) const {
 
 Ver4DictBuffers::Ver4DictBuffers(MmappedBuffer::MmappedBufferPtr &&headerBuffer,
         MmappedBuffer::MmappedBufferPtr &&bodyBuffer,
-        const bool isUpdatable, const FormatUtils::FORMAT_VERSION formatVersion,
+        const FormatUtils::FORMAT_VERSION formatVersion,
         const std::vector<uint8_t *> &contentBuffers, const std::vector<int> &contentBufferSizes)
         : mHeaderBuffer(std::move(headerBuffer)), mDictBuffer(std::move(bodyBuffer)),
           mHeaderPolicy(mHeaderBuffer->getBuffer(), formatVersion),
@@ -187,18 +186,18 @@ Ver4DictBuffers::Ver4DictBuffers(MmappedBuffer::MmappedBufferPtr &&headerBuffer,
                   BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE),
           mTerminalPositionLookupTable(
                   contentBuffers[Ver4DictConstants::TERMINAL_ADDRESS_LOOKUP_TABLE_BUFFER_INDEX],
-                  contentBufferSizes[Ver4DictConstants::TERMINAL_ADDRESS_LOOKUP_TABLE_BUFFER_INDEX],
-                  isUpdatable),
+                  contentBufferSizes[
+                          Ver4DictConstants::TERMINAL_ADDRESS_LOOKUP_TABLE_BUFFER_INDEX]),
           mProbabilityDictContent(
                   contentBuffers[Ver4DictConstants::PROBABILITY_BUFFER_INDEX],
                   contentBufferSizes[Ver4DictConstants::PROBABILITY_BUFFER_INDEX],
-                  mHeaderPolicy.hasHistoricalInfoOfWords(), isUpdatable),
+                  mHeaderPolicy.hasHistoricalInfoOfWords()),
           mBigramDictContent(&contentBuffers[Ver4DictConstants::BIGRAM_BUFFERS_INDEX],
                   &contentBufferSizes[Ver4DictConstants::BIGRAM_BUFFERS_INDEX],
-                  mHeaderPolicy.hasHistoricalInfoOfWords(), isUpdatable),
+                  mHeaderPolicy.hasHistoricalInfoOfWords()),
           mShortcutDictContent(&contentBuffers[Ver4DictConstants::SHORTCUT_BUFFERS_INDEX],
-                  &contentBufferSizes[Ver4DictConstants::SHORTCUT_BUFFERS_INDEX], isUpdatable),
-          mIsUpdatable(isUpdatable) {}
+                  &contentBufferSizes[Ver4DictConstants::SHORTCUT_BUFFERS_INDEX]),
+          mIsUpdatable(mDictBuffer->isUpdatable()) {}
 
 Ver4DictBuffers::Ver4DictBuffers(const HeaderPolicy *const headerPolicy, const int maxTrieSize)
         : mHeaderBuffer(nullptr), mDictBuffer(nullptr), mHeaderPolicy(headerPolicy),
