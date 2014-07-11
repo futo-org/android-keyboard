@@ -32,7 +32,7 @@ namespace latinime {
 class SparseTableDictContent : public DictContent {
  public:
     AK_FORCE_INLINE SparseTableDictContent(uint8_t *const *buffers, const int *bufferSizes,
-            const bool isUpdatable, const int sparseTableBlockSize, const int sparseTableDataSize)
+            const int sparseTableBlockSize, const int sparseTableDataSize)
             : mExpandableLookupTableBuffer(buffers[LOOKUP_TABLE_BUFFER_INDEX],
                       bufferSizes[LOOKUP_TABLE_BUFFER_INDEX],
                       BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE),

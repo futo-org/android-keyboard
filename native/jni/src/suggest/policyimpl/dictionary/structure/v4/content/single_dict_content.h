@@ -30,7 +30,7 @@ namespace latinime {
 
 class SingleDictContent : public DictContent {
  public:
-    SingleDictContent(uint8_t *const buffer, const int bufferSize, const bool isUpdatable)
+    SingleDictContent(uint8_t *const buffer, const int bufferSize)
             : mExpandableContentBuffer(buffer, bufferSize,
                       BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE) {}
 
