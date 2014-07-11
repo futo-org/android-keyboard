@@ -34,6 +34,8 @@
 namespace latinime {
 
 const char *const DictFileWritingUtils::TEMP_FILE_SUFFIX_FOR_WRITING_DICT_FILE = ".tmp";
+// Enough size to describe buffer size.
+const int DictFileWritingUtils::SIZE_OF_BUFFER_SIZE_FIELD = 4;
 
 /* static */ bool DictFileWritingUtils::createEmptyDictFile(const char *const filePath,
         const int dictVersion, const std::vector<int> localeAsCodePointVector,
@@ -85,6 +87,18 @@ template<class DictConstants, class DictBuffers, class DictBuffersPtr>
     return flushBufferToFile(filePath, buffer);
 }
 
+/* static */ bool DictFileWritingUtils::writeBufferToFileTail(FILE *const file,
+        const BufferWithExtendableBuffer *const buffer) {
+    uint8_t bufferSize[SIZE_OF_BUFFER_SIZE_FIELD];
+    int writingPos = 0;
+    ByteArrayUtils::writeUintAndAdvancePosition(bufferSize, buffer->getTailPosition(),
+            SIZE_OF_BUFFER_SIZE_FIELD, &writingPos);
+    if (fwrite(bufferSize, SIZE_OF_BUFFER_SIZE_FIELD, 1 /* count */, file) < 1) {
+        return false;
+    }
+    return writeBufferToFile(file, buffer);
+}
+
 /* static */ bool DictFileWritingUtils::flushBufferToFile(const char *const filePath,
         const BufferWithExtendableBuffer *const buffer) {
     const int fd = open(filePath, O_WRONLY | O_CREAT | O_EXCL, S_IRUSR | S_IWUSR);
@@ -100,6 +114,7 @@ template<class DictConstants, class DictBuffers, class DictBuffersPtr>
         return false;
     }
     if (!writeBufferToFile(file, buffer)) {
+        fclose(file);
         remove(filePath);
         AKLOGE("Buffer cannot be written to the file %s. size: %d", filePath,
                 buffer->getTailPosition());
@@ -110,20 +125,17 @@ template<class DictConstants, class DictBuffers, class DictBuffersPtr>
     return true;
 }
 
-// This closes file pointer when an error is caused and returns whether the writing was succeeded
-// or not.
+// Returns whether the writing was succeeded or not.
 /* static */ bool DictFileWritingUtils::writeBufferToFile(FILE *const file,
         const BufferWithExtendableBuffer *const buffer) {
     const int originalBufSize = buffer->getOriginalBufferSize();
     if (originalBufSize > 0 && fwrite(buffer->getBuffer(false /* usesAdditionalBuffer */),
             originalBufSize, 1, file) < 1) {
-        fclose(file);
         return false;
     }
     const int additionalBufSize = buffer->getUsedAdditionalBufferSize();
     if (additionalBufSize > 0 && fwrite(buffer->getBuffer(true /* usesAdditionalBuffer */),
             additionalBufSize, 1, file) < 1) {
-        fclose(file);
         return false;
     }
     return true;

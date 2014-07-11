@@ -17,34 +17,27 @@
 #ifndef LATINIME_SINGLE_DICT_CONTENT_H
 #define LATINIME_SINGLE_DICT_CONTENT_H
 
+#include <cstdint>
+#include <cstdio>
+
 #include "defines.h"
 #include "suggest/policyimpl/dictionary/structure/v4/content/dict_content.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_dict_constants.h"
 #include "suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer.h"
 #include "suggest/policyimpl/dictionary/utils/dict_file_writing_utils.h"
-#include "suggest/policyimpl/dictionary/utils/mmapped_buffer.h"
 
 namespace latinime {
 
 class SingleDictContent : public DictContent {
  public:
-    SingleDictContent(const char *const dictPath, const char *const contentFileName,
-            const bool isUpdatable)
-            : mMmappedBuffer(MmappedBuffer::openBuffer(dictPath, contentFileName, isUpdatable)),
-              mExpandableContentBuffer(mMmappedBuffer ? mMmappedBuffer->getBuffer() : nullptr,
-                      mMmappedBuffer ? mMmappedBuffer->getBufferSize() : 0,
-                      BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE),
-              mIsValid(mMmappedBuffer) {}
+    SingleDictContent(uint8_t *const buffer, const int bufferSize, const bool isUpdatable)
+            : mExpandableContentBuffer(buffer, bufferSize,
+                      BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE) {}
 
     SingleDictContent()
-            : mMmappedBuffer(nullptr),
-              mExpandableContentBuffer(Ver4DictConstants::MAX_DICTIONARY_SIZE), mIsValid(true) {}
+            : mExpandableContentBuffer(Ver4DictConstants::MAX_DICTIONARY_SIZE) {}
 
     virtual ~SingleDictContent() {}
-
-    virtual bool isValid() const {
-        return mIsValid;
-    }
 
     bool isNearSizeLimit() const {
         return mExpandableContentBuffer.isNearSizeLimit();
@@ -59,17 +52,14 @@ class SingleDictContent : public DictContent {
         return &mExpandableContentBuffer;
     }
 
-    bool flush(const char *const dictPath, const char *const contentFileNameSuffix) const {
-        return DictFileWritingUtils::flushBufferToFileWithSuffix(dictPath,
-                contentFileNameSuffix, &mExpandableContentBuffer);
+    bool flush(FILE *const file) const {
+        return DictFileWritingUtils::writeBufferToFileTail(file, &mExpandableContentBuffer);
     }
 
  private:
     DISALLOW_COPY_AND_ASSIGN(SingleDictContent);
 
-    const MmappedBuffer::MmappedBufferPtr mMmappedBuffer;
     BufferWithExtendableBuffer mExpandableContentBuffer;
-    const bool mIsValid;
 };
 } // namespace latinime
 #endif /* LATINIME_SINGLE_DICT_CONTENT_H */

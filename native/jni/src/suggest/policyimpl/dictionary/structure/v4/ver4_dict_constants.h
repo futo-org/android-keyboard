@@ -19,25 +19,25 @@
 
 #include "defines.h"
 
+#include <cstddef>
+
 namespace latinime {
 
 // TODO: Create PtConstants under the pt_common and move some constant values there.
 // Note that there are corresponding definitions in FormatSpec.java.
 class Ver4DictConstants {
  public:
-    static const char *const TRIE_FILE_EXTENSION;
+    static const char *const BODY_FILE_EXTENSION;
     static const char *const HEADER_FILE_EXTENSION;
-    static const char *const FREQ_FILE_EXTENSION;
-    static const char *const TERMINAL_ADDRESS_TABLE_FILE_EXTENSION;
-    static const char *const BIGRAM_FILE_EXTENSION;
-    static const char *const BIGRAM_LOOKUP_TABLE_FILE_EXTENSION;
-    static const char *const BIGRAM_CONTENT_TABLE_FILE_EXTENSION;
-    static const char *const SHORTCUT_FILE_EXTENSION;
-    static const char *const SHORTCUT_LOOKUP_TABLE_FILE_EXTENSION;
-    static const char *const SHORTCUT_CONTENT_TABLE_FILE_EXTENSION;
-
     static const int MAX_DICTIONARY_SIZE;
     static const int MAX_DICT_EXTENDED_REGION_SIZE;
+
+    static const size_t NUM_OF_CONTENT_BUFFERS_IN_BODY_FILE;
+    static const int TRIE_BUFFER_INDEX;
+    static const int TERMINAL_ADDRESS_LOOKUP_TABLE_BUFFER_INDEX;
+    static const int PROBABILITY_BUFFER_INDEX;
+    static const int BIGRAM_BUFFERS_INDEX;
+    static const int SHORTCUT_BUFFERS_INDEX;
 
     static const int NOT_A_TERMINAL_ID;
     static const int PROBABILITY_SIZE;
@@ -68,6 +68,9 @@ class Ver4DictConstants {
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(Ver4DictConstants);
+
+    static const size_t NUM_OF_BUFFERS_FOR_SINGLE_DICT_CONTENT;
+    static const size_t NUM_OF_BUFFERS_FOR_SPARSE_TABLE_DICT_CONTENT;
 };
 } // namespace latinime
 #endif /* LATINIME_VER4_DICT_CONSTANTS_H */

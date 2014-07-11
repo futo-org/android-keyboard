@@ -17,6 +17,9 @@
 #ifndef LATINIME_SHORTCUT_DICT_CONTENT_H
 #define LATINIME_SHORTCUT_DICT_CONTENT_H
 
+#include <cstdint>
+#include <cstdio>
+
 #include "defines.h"
 #include "suggest/policyimpl/dictionary/structure/v4/content/sparse_table_dict_content.h"
 #include "suggest/policyimpl/dictionary/structure/v4/content/terminal_position_lookup_table.h"
@@ -26,11 +29,8 @@ namespace latinime {
 
 class ShortcutDictContent : public SparseTableDictContent {
  public:
-    ShortcutDictContent(const char *const dictPath, const bool isUpdatable)
-            : SparseTableDictContent(dictPath,
-                      Ver4DictConstants::SHORTCUT_LOOKUP_TABLE_FILE_EXTENSION,
-                      Ver4DictConstants::SHORTCUT_CONTENT_TABLE_FILE_EXTENSION,
-                      Ver4DictConstants::SHORTCUT_FILE_EXTENSION, isUpdatable,
+    ShortcutDictContent(uint8_t *const *buffers, const int *bufferSizes, const bool isUpdatable)
+            : SparseTableDictContent(buffers, bufferSizes, isUpdatable,
                       Ver4DictConstants::SHORTCUT_ADDRESS_TABLE_BLOCK_SIZE,
                       Ver4DictConstants::SHORTCUT_ADDRESS_TABLE_DATA_SIZE) {}
 
@@ -53,7 +53,9 @@ class ShortcutDictContent : public SparseTableDictContent {
    // Returns head position of shortcut list for a PtNode specified by terminalId.
    int getShortcutListHeadPos(const int terminalId) const;
 
-   bool flushToFile(const char *const dictPath) const;
+   bool flushToFile(FILE *const file) const {
+       return flush(file);
+   }
 
    bool runGC(const TerminalPositionLookupTable::TerminalIdMap *const terminalIdMap,
            const ShortcutDictContent *const originalShortcutDictContent);

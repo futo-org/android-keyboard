@@ -59,12 +59,6 @@ int ShortcutDictContent::getShortcutListHeadPos(const int terminalId) const {
     return addressLookupTable->get(terminalId);
 }
 
-bool ShortcutDictContent::flushToFile(const char *const dictPath) const {
-    return flush(dictPath, Ver4DictConstants::SHORTCUT_LOOKUP_TABLE_FILE_EXTENSION,
-            Ver4DictConstants::SHORTCUT_CONTENT_TABLE_FILE_EXTENSION,
-            Ver4DictConstants::SHORTCUT_FILE_EXTENSION);
-}
-
 bool ShortcutDictContent::runGC(
         const TerminalPositionLookupTable::TerminalIdMap *const terminalIdMap,
         const ShortcutDictContent *const originalShortcutDictContent) {

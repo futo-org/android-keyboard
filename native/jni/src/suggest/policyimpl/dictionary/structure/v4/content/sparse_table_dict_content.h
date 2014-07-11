@@ -17,12 +17,13 @@
 #ifndef LATINIME_SPARSE_TABLE_DICT_CONTENT_H
 #define LATINIME_SPARSE_TABLE_DICT_CONTENT_H
 
+#include <cstdint>
+#include <cstdio>
+
 #include "defines.h"
 #include "suggest/policyimpl/dictionary/structure/v4/content/dict_content.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_dict_constants.h"
 #include "suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer.h"
-#include "suggest/policyimpl/dictionary/utils/dict_file_writing_utils.h"
-#include "suggest/policyimpl/dictionary/utils/mmapped_buffer.h"
 #include "suggest/policyimpl/dictionary/utils/sparse_table.h"
 
 namespace latinime {
@@ -30,44 +31,28 @@ namespace latinime {
 // TODO: Support multiple contents.
 class SparseTableDictContent : public DictContent {
  public:
-    AK_FORCE_INLINE SparseTableDictContent(const char *const dictPath,
-            const char *const lookupTableFileName, const char *const addressTableFileName,
-            const char *const contentFileName, const bool isUpdatable,
-            const int sparseTableBlockSize, const int sparseTableDataSize)
-            : mLookupTableBuffer(
-                      MmappedBuffer::openBuffer(dictPath, lookupTableFileName, isUpdatable)),
-              mAddressTableBuffer(
-                      MmappedBuffer::openBuffer(dictPath, addressTableFileName, isUpdatable)),
-              mContentBuffer(
-                      MmappedBuffer::openBuffer(dictPath, contentFileName, isUpdatable)),
-              mExpandableLookupTableBuffer(
-                      mLookupTableBuffer ? mLookupTableBuffer->getBuffer() : nullptr,
-                      mLookupTableBuffer ? mLookupTableBuffer->getBufferSize() : 0,
+    AK_FORCE_INLINE SparseTableDictContent(uint8_t *const *buffers, const int *bufferSizes,
+            const bool isUpdatable, const int sparseTableBlockSize, const int sparseTableDataSize)
+            : mExpandableLookupTableBuffer(buffers[LOOKUP_TABLE_BUFFER_INDEX],
+                      bufferSizes[LOOKUP_TABLE_BUFFER_INDEX],
                       BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE),
-              mExpandableAddressTableBuffer(
-                      mAddressTableBuffer ? mAddressTableBuffer->getBuffer() : nullptr,
-                      mAddressTableBuffer ? mAddressTableBuffer->getBufferSize() : 0,
+              mExpandableAddressTableBuffer(buffers[ADDRESS_TABLE_BUFFER_INDEX],
+                      bufferSizes[ADDRESS_TABLE_BUFFER_INDEX],
                       BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE),
-              mExpandableContentBuffer(mContentBuffer ? mContentBuffer->getBuffer() : nullptr,
-                      mContentBuffer ? mContentBuffer->getBufferSize() : 0,
+              mExpandableContentBuffer(buffers[CONTENT_BUFFER_INDEX],
+                      bufferSizes[CONTENT_BUFFER_INDEX],
                       BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE),
               mAddressLookupTable(&mExpandableLookupTableBuffer, &mExpandableAddressTableBuffer,
-                      sparseTableBlockSize, sparseTableDataSize),
-              mIsValid(mLookupTableBuffer && mAddressTableBuffer && mContentBuffer) {}
+                      sparseTableBlockSize, sparseTableDataSize) {}
 
     SparseTableDictContent(const int sparseTableBlockSize, const int sparseTableDataSize)
-            : mLookupTableBuffer(), mAddressTableBuffer(), mContentBuffer(),
-              mExpandableLookupTableBuffer(Ver4DictConstants::MAX_DICTIONARY_SIZE),
+            : mExpandableLookupTableBuffer(Ver4DictConstants::MAX_DICTIONARY_SIZE),
               mExpandableAddressTableBuffer(Ver4DictConstants::MAX_DICTIONARY_SIZE),
               mExpandableContentBuffer(Ver4DictConstants::MAX_DICTIONARY_SIZE),
               mAddressLookupTable(&mExpandableLookupTableBuffer, &mExpandableAddressTableBuffer,
-                      sparseTableBlockSize, sparseTableDataSize), mIsValid(true) {}
+                      sparseTableBlockSize, sparseTableDataSize) {}
 
     virtual ~SparseTableDictContent() {}
-
-    virtual bool isValid() const {
-        return mIsValid;
-    }
 
     bool isNearSizeLimit() const {
         return mExpandableLookupTableBuffer.isNearSizeLimit()
@@ -92,20 +77,19 @@ class SparseTableDictContent : public DictContent {
         return &mExpandableContentBuffer;
     }
 
-    bool flush(const char *const dictDirPath, const char *const lookupTableFileName,
-            const char *const addressTableFileName, const char *const contentFileName) const;
+    bool flush(FILE *const file) const;
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(SparseTableDictContent);
 
-    const MmappedBuffer::MmappedBufferPtr mLookupTableBuffer;
-    const MmappedBuffer::MmappedBufferPtr mAddressTableBuffer;
-    const MmappedBuffer::MmappedBufferPtr mContentBuffer;
+    static const int LOOKUP_TABLE_BUFFER_INDEX;
+    static const int ADDRESS_TABLE_BUFFER_INDEX;
+    static const int CONTENT_BUFFER_INDEX;
+
     BufferWithExtendableBuffer mExpandableLookupTableBuffer;
     BufferWithExtendableBuffer mExpandableAddressTableBuffer;
     BufferWithExtendableBuffer mExpandableContentBuffer;
     SparseTable mAddressLookupTable;
-    const bool mIsValid;
 };
 } // namespace latinime
 #endif /* LATINIME_SPARSE_TABLE_DICT_CONTENT_H */
