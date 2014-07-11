@@ -24,7 +24,6 @@ namespace latinime {
 class DictContent {
  public:
     virtual ~DictContent() {}
-    virtual bool isValid() const = 0;
 
  protected:
     DictContent() {}

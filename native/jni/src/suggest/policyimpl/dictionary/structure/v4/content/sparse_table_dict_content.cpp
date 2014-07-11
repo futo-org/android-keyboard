@@ -16,21 +16,22 @@
 
 #include "suggest/policyimpl/dictionary/structure/v4/content/sparse_table_dict_content.h"
 
+#include "suggest/policyimpl/dictionary/utils/dict_file_writing_utils.h"
+
 namespace latinime {
 
-bool SparseTableDictContent::flush(const char *const dictPath,
-        const char *const lookupTableFileNameSuffix, const char *const addressTableFileNameSuffix,
-        const char *const contentFileNameSuffix) const {
-    if (!DictFileWritingUtils::flushBufferToFileWithSuffix(dictPath, lookupTableFileNameSuffix,
-            &mExpandableLookupTableBuffer)){
+const int SparseTableDictContent::LOOKUP_TABLE_BUFFER_INDEX = 0;
+const int SparseTableDictContent::ADDRESS_TABLE_BUFFER_INDEX = 1;
+const int SparseTableDictContent::CONTENT_BUFFER_INDEX = 2;
+
+bool SparseTableDictContent::flush(FILE *const file) const {
+    if (!DictFileWritingUtils::writeBufferToFileTail(file, &mExpandableLookupTableBuffer)) {
         return false;
     }
-    if (!DictFileWritingUtils::flushBufferToFileWithSuffix(dictPath, addressTableFileNameSuffix,
-            &mExpandableAddressTableBuffer)) {
+    if (!DictFileWritingUtils::writeBufferToFileTail(file, &mExpandableAddressTableBuffer)) {
         return false;
     }
-    if (!DictFileWritingUtils::flushBufferToFileWithSuffix(dictPath, contentFileNameSuffix,
-            &mExpandableContentBuffer)) {
+    if (!DictFileWritingUtils::writeBufferToFileTail(file, &mExpandableContentBuffer)) {
         return false;
     }
     return true;

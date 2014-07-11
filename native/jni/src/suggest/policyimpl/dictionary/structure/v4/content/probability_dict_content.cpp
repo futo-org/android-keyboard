@@ -71,7 +71,7 @@ bool ProbabilityDictContent::setProbabilityEntry(const int terminalId,
     return writeEntry(probabilityEntry, entryPos);
 }
 
-bool ProbabilityDictContent::flushToFile(const char *const dictPath) const {
+bool ProbabilityDictContent::flushToFile(FILE *const file) const {
     if (getEntryPos(mSize) < getBuffer()->getTailPosition()) {
         ProbabilityDictContent probabilityDictContentToWrite(mHasHistoricalInfo);
         for (int i = 0; i < mSize; ++i) {
@@ -81,10 +81,9 @@ bool ProbabilityDictContent::flushToFile(const char *const dictPath) const {
                 return false;
             }
         }
-        return probabilityDictContentToWrite.flush(dictPath,
-                Ver4DictConstants::FREQ_FILE_EXTENSION);
+        return probabilityDictContentToWrite.flush(file);
     } else {
-        return flush(dictPath, Ver4DictConstants::FREQ_FILE_EXTENSION);
+        return flush(file);
     }
 }
 

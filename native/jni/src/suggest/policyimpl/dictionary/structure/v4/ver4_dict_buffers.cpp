@@ -18,16 +18,19 @@
 
 #include <cerrno>
 #include <cstring>
+#include <fcntl.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <vector>
 
+#include "suggest/policyimpl/dictionary/utils/byte_array_utils.h"
 #include "suggest/policyimpl/dictionary/utils/dict_file_writing_utils.h"
 #include "suggest/policyimpl/dictionary/utils/file_utils.h"
 
 namespace latinime {
 
 /* static */ Ver4DictBuffers::Ver4DictBuffersPtr Ver4DictBuffers::openVer4DictBuffers(
-        const char *const dictPath, MmappedBuffer::MmappedBufferPtr headerBuffer,
+        const char *const dictPath, MmappedBuffer::MmappedBufferPtr &&headerBuffer,
         const FormatUtils::FORMAT_VERSION formatVersion) {
     if (!headerBuffer) {
         ASSERT(false);
@@ -36,8 +39,32 @@ namespace latinime {
     }
     // TODO: take only dictDirPath, and open both header and trie files in the constructor below
     const bool isUpdatable = headerBuffer->isUpdatable();
-    return Ver4DictBuffersPtr(new Ver4DictBuffers(dictPath, std::move(headerBuffer), isUpdatable,
-            formatVersion));
+
+    MmappedBuffer::MmappedBufferPtr bodyBuffer = MmappedBuffer::openBuffer(dictPath,
+            Ver4DictConstants::BODY_FILE_EXTENSION, isUpdatable);
+    if (!bodyBuffer) {
+        return Ver4DictBuffersPtr(nullptr);
+    }
+    std::vector<uint8_t *> buffers;
+    std::vector<int> bufferSizes;
+    uint8_t *const buffer = bodyBuffer->getBuffer();
+    int position = 0;
+    while (position < bodyBuffer->getBufferSize()) {
+        const int bufferSize = ByteArrayUtils::readUint32AndAdvancePosition(buffer, &position);
+        buffers.push_back(buffer + position);
+        bufferSizes.push_back(bufferSize);
+        position += bufferSize;
+        if (bufferSize < 0 || position < 0 || position > bodyBuffer->getBufferSize()) {
+            AKLOGE("The dict body file is corrupted.");
+            return Ver4DictBuffersPtr(nullptr);
+        }
+    }
+    if (buffers.size() != Ver4DictConstants::NUM_OF_CONTENT_BUFFERS_IN_BODY_FILE) {
+        AKLOGE("The dict body file is corrupted.");
+        return Ver4DictBuffersPtr(nullptr);
+    }
+    return Ver4DictBuffersPtr(new Ver4DictBuffers(std::move(headerBuffer), std::move(bodyBuffer),
+            isUpdatable, formatVersion, buffers, bufferSizes));
 }
 
 bool Ver4DictBuffers::flushHeaderAndDictBuffers(const char *const dictDirPath,
@@ -76,30 +103,32 @@ bool Ver4DictBuffers::flushHeaderAndDictBuffers(const char *const dictDirPath,
                 Ver4DictConstants::HEADER_FILE_EXTENSION);
         return false;
     }
-    // Write trie file.
-    if (!DictFileWritingUtils::flushBufferToFileWithSuffix(dictPath,
-            Ver4DictConstants::TRIE_FILE_EXTENSION, &mExpandableTrieBuffer)) {
-        AKLOGE("Dictionary trie file %s%s cannot be written.", tmpDirPath,
-                Ver4DictConstants::TRIE_FILE_EXTENSION);
+
+    // Write body file.
+    const int bodyFilePathBufSize = FileUtils::getFilePathWithSuffixBufSize(dictPath,
+            Ver4DictConstants::BODY_FILE_EXTENSION);
+    char bodyFilePath[bodyFilePathBufSize];
+    FileUtils::getFilePathWithSuffix(dictPath, Ver4DictConstants::BODY_FILE_EXTENSION,
+            bodyFilePathBufSize, bodyFilePath);
+
+    const int fd = open(bodyFilePath, O_WRONLY | O_CREAT | O_EXCL, S_IRUSR | S_IWUSR);
+    if (fd == -1) {
+        AKLOGE("File %s cannot be opened. errno: %d", bodyFilePath, errno);
+        ASSERT(false);
         return false;
     }
-    // Write dictionary contents.
-    if (!mTerminalPositionLookupTable.flushToFile(dictPath)) {
-        AKLOGE("Terminal position lookup table cannot be written. %s", tmpDirPath);
+    FILE *const file = fdopen(fd, "wb");
+    if (!file) {
+        AKLOGE("fdopen failed for the file %s. errno: %d", filePath, errno);
+        ASSERT(false);
         return false;
     }
-    if (!mProbabilityDictContent.flushToFile(dictPath)) {
-        AKLOGE("Probability dict content cannot be written. %s", tmpDirPath);
+
+    if (!flushDictBuffers(file)) {
+        fclose(file);
         return false;
     }
-    if (!mBigramDictContent.flushToFile(dictPath)) {
-        AKLOGE("Bigram dict content cannot be written. %s", tmpDirPath);
-        return false;
-    }
-    if (!mShortcutDictContent.flushToFile(dictPath)) {
-        AKLOGE("Shortcut dict content cannot be written. %s", tmpDirPath);
-        return false;
-    }
+    fclose(file);
     // Remove existing dictionary.
     if (!FileUtils::removeDirAndFiles(dictDirPath)) {
         AKLOGE("Existing directory %s cannot be removed.", dictDirPath);
@@ -115,23 +144,60 @@ bool Ver4DictBuffers::flushHeaderAndDictBuffers(const char *const dictDirPath,
     return true;
 }
 
-Ver4DictBuffers::Ver4DictBuffers(const char *const dictPath,
-        MmappedBuffer::MmappedBufferPtr headerBuffer, const bool isUpdatable,
-        const FormatUtils::FORMAT_VERSION formatVersion)
-        : mHeaderBuffer(std::move(headerBuffer)),
-          mDictBuffer(MmappedBuffer::openBuffer(dictPath,
-                  Ver4DictConstants::TRIE_FILE_EXTENSION, isUpdatable)),
+bool Ver4DictBuffers::flushDictBuffers(FILE *const file) const {
+    // Write trie.
+    if (!DictFileWritingUtils::writeBufferToFileTail(file, &mExpandableTrieBuffer)) {
+        AKLOGE("Trie cannot be written. %s", tmpDirPath);
+        return false;
+    }
+    // Write terminal position lookup table.
+    if (!mTerminalPositionLookupTable.flushToFile(file)) {
+        AKLOGE("Terminal position lookup table cannot be written. %s", tmpDirPath);
+        return false;
+    }
+    // Write probability dict content.
+    if (!mProbabilityDictContent.flushToFile(file)) {
+        AKLOGE("Probability dict content cannot be written. %s", tmpDirPath);
+        return false;
+    }
+    // Write bigram dict content.
+    if (!mBigramDictContent.flushToFile(file)) {
+        AKLOGE("Bigram dict content cannot be written. %s", tmpDirPath);
+        return false;
+    }
+    // Write shortcut dict content.
+    if (!mShortcutDictContent.flushToFile(file)) {
+        AKLOGE("Shortcut dict content cannot be written. %s", tmpDirPath);
+        return false;
+    }
+    return true;
+}
+
+Ver4DictBuffers::Ver4DictBuffers(MmappedBuffer::MmappedBufferPtr &&headerBuffer,
+        MmappedBuffer::MmappedBufferPtr &&bodyBuffer,
+        const bool isUpdatable, const FormatUtils::FORMAT_VERSION formatVersion,
+        const std::vector<uint8_t *> &contentBuffers, const std::vector<int> &contentBufferSizes)
+        : mHeaderBuffer(std::move(headerBuffer)), mDictBuffer(std::move(bodyBuffer)),
           mHeaderPolicy(mHeaderBuffer->getBuffer(), formatVersion),
           mExpandableHeaderBuffer(mHeaderBuffer ? mHeaderBuffer->getBuffer() : nullptr,
                   mHeaderPolicy.getSize(),
                   BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE),
-          mExpandableTrieBuffer(mDictBuffer ? mDictBuffer->getBuffer() : nullptr,
-                  mDictBuffer ? mDictBuffer->getBufferSize() : 0,
+          mExpandableTrieBuffer(contentBuffers[Ver4DictConstants::TRIE_BUFFER_INDEX],
+                  contentBufferSizes[Ver4DictConstants::TRIE_BUFFER_INDEX],
                   BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE),
-          mTerminalPositionLookupTable(dictPath, isUpdatable),
-          mProbabilityDictContent(dictPath, mHeaderPolicy.hasHistoricalInfoOfWords(), isUpdatable),
-          mBigramDictContent(dictPath, mHeaderPolicy.hasHistoricalInfoOfWords(), isUpdatable),
-          mShortcutDictContent(dictPath, isUpdatable),
+          mTerminalPositionLookupTable(
+                  contentBuffers[Ver4DictConstants::TERMINAL_ADDRESS_LOOKUP_TABLE_BUFFER_INDEX],
+                  contentBufferSizes[Ver4DictConstants::TERMINAL_ADDRESS_LOOKUP_TABLE_BUFFER_INDEX],
+                  isUpdatable),
+          mProbabilityDictContent(
+                  contentBuffers[Ver4DictConstants::PROBABILITY_BUFFER_INDEX],
+                  contentBufferSizes[Ver4DictConstants::PROBABILITY_BUFFER_INDEX],
+                  mHeaderPolicy.hasHistoricalInfoOfWords(), isUpdatable),
+          mBigramDictContent(&contentBuffers[Ver4DictConstants::BIGRAM_BUFFERS_INDEX],
+                  &contentBufferSizes[Ver4DictConstants::BIGRAM_BUFFERS_INDEX],
+                  mHeaderPolicy.hasHistoricalInfoOfWords(), isUpdatable),
+          mShortcutDictContent(&contentBuffers[Ver4DictConstants::SHORTCUT_BUFFERS_INDEX],
+                  &contentBufferSizes[Ver4DictConstants::SHORTCUT_BUFFERS_INDEX], isUpdatable),
           mIsUpdatable(isUpdatable) {}
 
 Ver4DictBuffers::Ver4DictBuffers(const HeaderPolicy *const headerPolicy, const int maxTrieSize)

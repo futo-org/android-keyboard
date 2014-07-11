@@ -17,6 +17,7 @@
 #ifndef LATINIME_VER4_DICT_BUFFER_H
 #define LATINIME_VER4_DICT_BUFFER_H
 
+#include <cstdio>
 #include <memory>
 
 #include "defines.h"
@@ -36,7 +37,7 @@ class Ver4DictBuffers {
     typedef std::unique_ptr<Ver4DictBuffers> Ver4DictBuffersPtr;
 
     static Ver4DictBuffersPtr openVer4DictBuffers(const char *const dictDirPath,
-            MmappedBuffer::MmappedBufferPtr headerBuffer,
+            MmappedBuffer::MmappedBufferPtr &&headerBuffer,
             const FormatUtils::FORMAT_VERSION formatVersion);
 
     static AK_FORCE_INLINE Ver4DictBuffersPtr createVer4DictBuffers(
@@ -45,9 +46,7 @@ class Ver4DictBuffers {
     }
 
     AK_FORCE_INLINE bool isValid() const {
-        return mHeaderBuffer && mDictBuffer && mHeaderPolicy.isValid()
-                && mProbabilityDictContent.isValid() && mTerminalPositionLookupTable.isValid()
-                && mBigramDictContent.isValid() && mShortcutDictContent.isValid();
+        return mHeaderBuffer && mDictBuffer && mHeaderPolicy.isValid();
     }
 
     AK_FORCE_INLINE bool isNearSizeLimit() const {
@@ -120,11 +119,15 @@ class Ver4DictBuffers {
  private:
     DISALLOW_COPY_AND_ASSIGN(Ver4DictBuffers);
 
-    Ver4DictBuffers(const char *const dictDirPath,
-            const MmappedBuffer::MmappedBufferPtr headerBuffer, const bool isUpdatable,
-            const FormatUtils::FORMAT_VERSION formatVersion);
+    Ver4DictBuffers(MmappedBuffer::MmappedBufferPtr &&headerBuffer,
+            MmappedBuffer::MmappedBufferPtr &&bodyBuffer,
+            const bool isUpdatable, const FormatUtils::FORMAT_VERSION formatVersion,
+            const std::vector<uint8_t *> &contentBuffers,
+            const std::vector<int> &contentBufferSizes);
 
     Ver4DictBuffers(const HeaderPolicy *const headerPolicy, const int maxTrieSize);
+
+    bool flushDictBuffers(FILE *const file) const;
 
     const MmappedBuffer::MmappedBufferPtr mHeaderBuffer;
     const MmappedBuffer::MmappedBufferPtr mDictBuffer;

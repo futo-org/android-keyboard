@@ -17,6 +17,9 @@
 #ifndef LATINIME_PROBABILITY_DICT_CONTENT_H
 #define LATINIME_PROBABILITY_DICT_CONTENT_H
 
+#include <cstdint>
+#include <cstdio>
+
 #include "defines.h"
 #include "suggest/policyimpl/dictionary/structure/v4/content/single_dict_content.h"
 #include "suggest/policyimpl/dictionary/structure/v4/content/terminal_position_lookup_table.h"
@@ -29,9 +32,9 @@ class ProbabilityEntry;
 
 class ProbabilityDictContent : public SingleDictContent {
  public:
-    ProbabilityDictContent(const char *const dictPath, const bool hasHistoricalInfo,
-            const bool isUpdatable)
-            : SingleDictContent(dictPath, Ver4DictConstants::FREQ_FILE_EXTENSION, isUpdatable),
+    ProbabilityDictContent(uint8_t *const buffer, const int bufferSize,
+            const bool hasHistoricalInfo, const bool isUpdatable)
+            : SingleDictContent(buffer, bufferSize, isUpdatable),
               mHasHistoricalInfo(hasHistoricalInfo),
               mSize(getBuffer()->getTailPosition() / getEntrySize()) {}
 
@@ -42,7 +45,7 @@ class ProbabilityDictContent : public SingleDictContent {
 
     bool setProbabilityEntry(const int terminalId, const ProbabilityEntry *const probabilityEntry);
 
-    bool flushToFile(const char *const dictPath) const;
+    bool flushToFile(FILE *const file) const;
 
     bool runGC(const TerminalPositionLookupTable::TerminalIdMap *const terminalIdMap,
             const ProbabilityDictContent *const originalProbabilityDictContent);

@@ -38,8 +38,13 @@ class DictFileWritingUtils {
     static bool flushBufferToFileWithSuffix(const char *const basePath, const char *const suffix,
             const BufferWithExtendableBuffer *const buffer);
 
+    static bool writeBufferToFileTail(FILE *const file,
+            const BufferWithExtendableBuffer *const buffer);
+
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(DictFileWritingUtils);
+
+    static const int SIZE_OF_BUFFER_SIZE_FIELD;
 
     static bool createEmptyV401DictFile(const char *const filePath,
             const std::vector<int> localeAsCodePointVector,

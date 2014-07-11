@@ -17,6 +17,8 @@
 #ifndef LATINIME_TERMINAL_POSITION_LOOKUP_TABLE_H
 #define LATINIME_TERMINAL_POSITION_LOOKUP_TABLE_H
 
+#include <cstdint>
+#include <cstdio>
 #include <unordered_map>
 
 #include "defines.h"
@@ -29,9 +31,9 @@ class TerminalPositionLookupTable : public SingleDictContent {
  public:
     typedef std::unordered_map<int, int> TerminalIdMap;
 
-    TerminalPositionLookupTable(const char *const dictPath, const bool isUpdatable)
-            : SingleDictContent(dictPath,
-                      Ver4DictConstants::TERMINAL_ADDRESS_TABLE_FILE_EXTENSION, isUpdatable),
+    TerminalPositionLookupTable(uint8_t *const buffer, const int bufferSize,
+            const bool isUpdatable)
+            : SingleDictContent(buffer, bufferSize, isUpdatable),
               mSize(getBuffer()->getTailPosition()
                       / Ver4DictConstants::TERMINAL_ADDRESS_TABLE_ADDRESS_SIZE) {}
 
@@ -45,7 +47,7 @@ class TerminalPositionLookupTable : public SingleDictContent {
         return mSize;
     }
 
-    bool flushToFile(const char *const dictPath) const;
+    bool flushToFile(FILE *const file) const;
 
     bool runGCTerminalIds(TerminalIdMap *const terminalIdMap);
 

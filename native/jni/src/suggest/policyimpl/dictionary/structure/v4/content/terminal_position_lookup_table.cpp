@@ -50,7 +50,7 @@ bool TerminalPositionLookupTable::setTerminalPtNodePosition(
             Ver4DictConstants::TERMINAL_ADDRESS_TABLE_ADDRESS_SIZE, getEntryPos(terminalId));
 }
 
-bool TerminalPositionLookupTable::flushToFile(const char *const dictPath) const {
+bool TerminalPositionLookupTable::flushToFile(FILE *const file) const {
     // If the used buffer size is smaller than the actual buffer size, regenerate the lookup
     // table and write the new table to the file.
     if (getEntryPos(mSize) < getBuffer()->getTailPosition()) {
@@ -63,12 +63,11 @@ bool TerminalPositionLookupTable::flushToFile(const char *const dictPath) const 
                 return false;
             }
         }
-        return lookupTableToWrite.flush(dictPath,
-                Ver4DictConstants::TERMINAL_ADDRESS_TABLE_FILE_EXTENSION);
+        return lookupTableToWrite.flush(file);
     } else {
         // We can simply use this lookup table because the buffer size has not been
         // changed.
-        return flush(dictPath, Ver4DictConstants::TERMINAL_ADDRESS_TABLE_FILE_EXTENSION);
+        return flush(file);
     }
 }
 
