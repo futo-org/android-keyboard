@@ -36,17 +36,17 @@
     <!-- Option to control whether or not to show a popup with a larger font on each key press. -->
     <string name="popup_on_keypress">Popup on keypress</string>
 
-    <!-- Settings screen title for input preferences [CHAR LIMIT=25]-->
+    <!-- Settings screen title for input preferences [CHAR LIMIT=33]-->
     <string name="settings_screen_input">Input preferences</string>
-    <!-- Settings screen title for appearance preferences [CHAR LIMIT=25] -->
+    <!-- Settings screen title for appearance preferences [CHAR LIMIT=33] -->
     <string name="settings_screen_appearances">Appearance</string>
-    <!-- Settings screen title for multi lingual options [CHAR_LIMIT=25] -->
+    <!-- Settings screen title for multi lingual options [CHAR_LIMIT=33] -->
     <string name="settings_screen_multi_lingual">Multi lingual options</string>
-    <!-- Settings screen title for gesture typing preferences [CHAR_LIMIT=25] -->
+    <!-- Settings screen title for gesture typing preferences [CHAR_LIMIT=33] -->
     <string name="settings_screen_gesture">Gesture typing preferences</string>
-    <!-- Settings screen title for text correction options [CHAR_LIMIT=25] -->
+    <!-- Settings screen title for text correction options [CHAR_LIMIT=33] -->
     <string name="settings_screen_correction">Text correction</string>
-    <!-- Settings screen title for advanced settings [CHAR LIMIT=25] -->
+    <!-- Settings screen title for advanced settings [CHAR LIMIT=33] -->
     <string name="settings_screen_advanced">Advanced</string>
 
     <!-- Option name for including other IMEs in the language switch list [CHAR LIMIT=30] -->
