@@ -36,7 +36,7 @@
         <item name="iconShortcutKey">@drawable/sym_keyboard_voice_lxx_light</item>
         <!-- TODO: Update this icon for LXX_Light theme. -->
         <item name="iconSpaceKeyForNumberLayout">@drawable/sym_keyboard_space_holo_dark</item>
-        <item name="iconShiftKeyShifted">@drawable/sym_keyboard_shift_locked_lxx_dark</item>
+        <item name="iconShiftKeyShifted">@drawable/sym_keyboard_shift_locked_lxx_light</item>
         <item name="iconShortcutKeyDisabled">@drawable/sym_keyboard_voice_off_lxx_light</item>
         <item name="iconLanguageSwitchKey">@drawable/sym_keyboard_language_switch_lxx_light</item>
         <item name="iconZwnjKey">@drawable/sym_keyboard_zwnj_lxx_light</item>
