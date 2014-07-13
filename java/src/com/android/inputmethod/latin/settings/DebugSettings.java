@@ -62,6 +62,8 @@ public final class DebugSettings extends PreferenceFragment
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         addPreferencesFromResource(R.xml.prefs_for_debug);
+        TwoStatePreferenceHelper.replaceCheckBoxPreferencesBySwitchPreferences(
+                getPreferenceScreen());
         SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
         prefs.registerOnSharedPreferenceChangeListener(this);
 
