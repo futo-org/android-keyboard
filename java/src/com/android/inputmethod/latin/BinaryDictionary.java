@@ -80,6 +80,7 @@ public final class BinaryDictionary extends Dictionary {
     public static final int FORMAT_WORD_PROPERTY_COUNT_INDEX = 3;
 
     public static final String DICT_FILE_NAME_SUFFIX_FOR_MIGRATION = ".migrate";
+    public static final String DIR_NAME_SUFFIX_FOR_RECORD_MIGRATION = ".migrating";
 
     private long mNativeDict;
     private final Locale mLocale;
@@ -559,22 +560,39 @@ public final class BinaryDictionary extends Dictionary {
         if (!isValidDictionary()) {
             return false;
         }
-        final String tmpDictFilePath = mDictFilePath + DICT_FILE_NAME_SUFFIX_FOR_MIGRATION;
-        if (!migrateNative(mNativeDict, tmpDictFilePath, newFormatVersion)) {
+        final File isMigratingDir =
+                new File(mDictFilePath + DIR_NAME_SUFFIX_FOR_RECORD_MIGRATION);
+        if (isMigratingDir.exists()) {
+            isMigratingDir.delete();
+            Log.e(TAG, "Previous migration attempt failed probably due to a crash. "
+                        + "Giving up using the old dictionary (" + mDictFilePath + ").");
             return false;
         }
-        close();
-        final File dictFile = new File(mDictFilePath);
-        final File tmpDictFile = new File(tmpDictFilePath);
-        if (!FileUtils.deleteRecursively(dictFile)) {
+        if (!isMigratingDir.mkdir()) {
+            Log.e(TAG, "Cannot create a dir (" + isMigratingDir.getAbsolutePath()
+                    + ") to record migration.");
             return false;
         }
-        if (!BinaryDictionaryUtils.renameDict(tmpDictFile, dictFile)) {
-            return false;
+        try {
+            final String tmpDictFilePath = mDictFilePath + DICT_FILE_NAME_SUFFIX_FOR_MIGRATION;
+            if (!migrateNative(mNativeDict, tmpDictFilePath, newFormatVersion)) {
+                return false;
+            }
+            close();
+            final File dictFile = new File(mDictFilePath);
+            final File tmpDictFile = new File(tmpDictFilePath);
+            if (!FileUtils.deleteRecursively(dictFile)) {
+                return false;
+            }
+            if (!BinaryDictionaryUtils.renameDict(tmpDictFile, dictFile)) {
+                return false;
+            }
+            loadDictionary(dictFile.getAbsolutePath(), 0 /* startOffset */,
+                    dictFile.length(), mIsUpdatable);
+            return true;
+        } finally {
+            isMigratingDir.delete();
         }
-        loadDictionary(dictFile.getAbsolutePath(), 0 /* startOffset */,
-                dictFile.length(), mIsUpdatable);
-        return true;
     }
 
     @UsedForTesting
