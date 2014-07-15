@@ -34,6 +34,12 @@ LOCAL_CFLAGS += -Werror -Wall -Wextra -Weffc++ -Wformat=2 -Wcast-qual -Wcast-ali
 # To suppress compiler warnings for unused variables/functions used for debug features etc.
 LOCAL_CFLAGS += -Wno-unused-parameter -Wno-unused-function
 
+# HACK: -mstackrealign is required for x86 builds running on pre-KitKat devices to avoid crashes
+# with SSE instructions.
+ifeq ($(TARGET_ARCH), x86)
+    LOCAL_CFLAGS += -mstackrealign
+endif # x86
+
 include $(LOCAL_PATH)/NativeFileList.mk
 
 LOCAL_SRC_FILES := \
