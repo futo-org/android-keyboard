@@ -45,11 +45,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.inputmethod.accessibility.AccessibilityUtils;
-import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.PunctuationSuggestions;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
+import com.android.inputmethod.latin.define.DebugFlags;
 import com.android.inputmethod.latin.utils.AutoCorrectionUtils;
 import com.android.inputmethod.latin.utils.ResourceUtils;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
@@ -264,7 +264,7 @@ final class SuggestionStripLayoutHelper {
         } else {
             color = mColorSuggested;
         }
-        if (LatinImeLogger.sDBG && suggestedWords.size() > 1) {
+        if (DebugFlags.DEBUG_ENABLED && suggestedWords.size() > 1) {
             // If we auto-correct, then the autocorrection is in slot 0 and the typed word
             // is in slot 1.
             if (positionInStrip == mCenterPositionInStrip

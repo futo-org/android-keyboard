@@ -21,13 +21,13 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 
 import com.android.inputmethod.latin.Constants;
-import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.define.DebugFlags;
 
 // This hack is applied to certain classes of tablets.
 public final class BogusMoveEventDetector {
     private static final String TAG = BogusMoveEventDetector.class.getSimpleName();
-    private static final boolean DEBUG_MODE = LatinImeLogger.sDBG;
+    private static final boolean DEBUG_MODE = DebugFlags.DEBUG_ENABLED;
 
     // Move these thresholds to resource.
     // These thresholds' unit is a diagonal length of a key.
