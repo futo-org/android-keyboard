@@ -68,10 +68,10 @@
     >
         <item name="keyPreviewBackground">@drawable/keyboard_key_feedback_lxx_dark</item>
         <item name="keyPreviewOffset">@dimen/config_key_preview_offset_holo</item>
-        <item name="gestureFloatingPreviewTextColor">@color/highlight_color_lxx_dark</item>
+        <item name="gestureFloatingPreviewTextColor">@color/auto_correct_color_lxx_dark</item>
         <item name="gestureFloatingPreviewColor">@color/gesture_floating_preview_color_lxx_dark</item>
-        <item name="gestureTrailColor">@color/highlight_color_lxx_dark</item>
-        <item name="slidingKeyInputPreviewColor">@color/highlight_translucent_color_lxx_dark</item>
+        <item name="gestureTrailColor">@color/gesture_trail_color_lxx_dark</item>
+        <item name="slidingKeyInputPreviewColor">@color/sliding_key_input_preview_color_lxx_dark</item>
         <item name="languageOnSpacebarTextColor">@color/key_text_inactive_color_lxx_dark</item>
         <!-- A negative value to disable text shadow layer. -->
         <item name="languageOnSpacebarTextShadowRadius">-1.0</item>
@@ -124,7 +124,7 @@
         <item name="suggestionStripOptions">autoCorrectBold|validTypedWordBold</item>
         <item name="colorValidTypedWord">@color/typed_word_color_lxx_dark</item>
         <item name="colorTypedWord">@color/typed_word_color_lxx_dark</item>
-        <item name="colorAutoCorrect">@color/highlight_color_lxx_dark</item>
+        <item name="colorAutoCorrect">@color/auto_correct_color_lxx_dark</item>
         <item name="colorSuggested">@color/suggested_word_color_lxx_dark</item>
         <item name="alphaObsoleted">70%</item>
     </style>
