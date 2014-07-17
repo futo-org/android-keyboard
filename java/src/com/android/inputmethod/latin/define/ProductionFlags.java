@@ -16,8 +16,8 @@
 
 package com.android.inputmethod.latin.define;
 
-public final class ProductionFlag {
-    private ProductionFlag() {
+public final class ProductionFlags {
+    private ProductionFlags() {
         // This class is not publicly instantiable.
     }
 
