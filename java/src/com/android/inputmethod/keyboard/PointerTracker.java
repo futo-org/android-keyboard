@@ -33,8 +33,8 @@ import com.android.inputmethod.keyboard.internal.PointerTrackerQueue;
 import com.android.inputmethod.keyboard.internal.TypingTimeRecorder;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.InputPointers;
-import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.define.DebugFlags;
 import com.android.inputmethod.latin.settings.Settings;
 import com.android.inputmethod.latin.utils.CoordinateUtils;
 import com.android.inputmethod.latin.utils.ResourceUtils;
@@ -47,7 +47,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
     private static final boolean DEBUG_EVENT = false;
     private static final boolean DEBUG_MOVE_EVENT = false;
     private static final boolean DEBUG_LISTENER = false;
-    private static boolean DEBUG_MODE = LatinImeLogger.sDBG || DEBUG_EVENT;
+    private static boolean DEBUG_MODE = DebugFlags.DEBUG_ENABLED || DEBUG_EVENT;
 
     public interface DrawingProxy {
         public void invalidateKey(Key key);

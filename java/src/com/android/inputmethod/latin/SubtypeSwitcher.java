@@ -35,6 +35,7 @@ import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.compat.InputMethodSubtypeCompatUtils;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.keyboard.internal.LanguageOnSpacebarHelper;
+import com.android.inputmethod.latin.define.DebugFlags;
 import com.android.inputmethod.latin.utils.LocaleUtils;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 
@@ -45,7 +46,7 @@ import java.util.Map;
 import java.util.Set;
 
 public final class SubtypeSwitcher {
-    private static boolean DBG = LatinImeLogger.sDBG;
+    private static boolean DBG = DebugFlags.DEBUG_ENABLED;
     private static final String TAG = SubtypeSwitcher.class.getSimpleName();
 
     private static final SubtypeSwitcher sInstance = new SubtypeSwitcher();

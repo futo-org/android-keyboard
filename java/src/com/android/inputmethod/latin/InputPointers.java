@@ -20,6 +20,7 @@ import android.util.Log;
 import android.util.SparseIntArray;
 
 import com.android.inputmethod.annotations.UsedForTesting;
+import com.android.inputmethod.latin.define.DebugFlags;
 import com.android.inputmethod.latin.utils.ResizableIntArray;
 
 // TODO: This class is not thread-safe.
@@ -60,7 +61,7 @@ public final class InputPointers {
         mXCoordinates.addAt(index, x);
         mYCoordinates.addAt(index, y);
         mPointerIds.addAt(index, pointerId);
-        if (LatinImeLogger.sDBG || DEBUG_TIME) {
+        if (DebugFlags.DEBUG_ENABLED || DEBUG_TIME) {
             fillWithLastTimeUntil(index);
         }
         mTimes.addAt(index, time);
@@ -145,7 +146,7 @@ public final class InputPointers {
     }
 
     public int[] getTimes() {
-        if (LatinImeLogger.sDBG || DEBUG_TIME) {
+        if (DebugFlags.DEBUG_ENABLED || DEBUG_TIME) {
             if (!isValidTimeStamps()) {
                 throw new RuntimeException("Time stamps are invalid.");
             }

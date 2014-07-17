@@ -18,11 +18,11 @@ package com.android.inputmethod.latin.utils;
 
 import android.util.Log;
 
-import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
+import com.android.inputmethod.latin.define.DebugFlags;
 
 public final class AutoCorrectionUtils {
-    private static final boolean DBG = LatinImeLogger.sDBG;
+    private static final boolean DBG = DebugFlags.DEBUG_ENABLED;
     private static final String TAG = AutoCorrectionUtils.class.getSimpleName();
     private static final int MINIMUM_SAFETY_NET_CHAR_LENGTH = 4;
 

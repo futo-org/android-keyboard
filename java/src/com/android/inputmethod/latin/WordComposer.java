@@ -18,6 +18,7 @@ package com.android.inputmethod.latin;
 
 import com.android.inputmethod.event.CombinerChain;
 import com.android.inputmethod.event.Event;
+import com.android.inputmethod.latin.define.DebugFlags;
 import com.android.inputmethod.latin.utils.CoordinateUtils;
 import com.android.inputmethod.latin.utils.StringUtils;
 
@@ -29,7 +30,7 @@ import java.util.Collections;
  */
 public final class WordComposer {
     private static final int MAX_WORD_LENGTH = Constants.DICTIONARY_MAX_WORD_LENGTH;
-    private static final boolean DBG = LatinImeLogger.sDBG;
+    private static final boolean DBG = DebugFlags.DEBUG_ENABLED;
 
     public static final int CAPS_MODE_OFF = 0;
     // 1 is shift bit, 2 is caps bit, 4 is auto bit but this is just a convention as these bits

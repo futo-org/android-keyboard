@@ -20,6 +20,7 @@ import android.text.TextUtils;
 
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
+import com.android.inputmethod.latin.define.DebugFlags;
 import com.android.inputmethod.latin.settings.SettingsValuesForSuggestion;
 import com.android.inputmethod.latin.utils.AutoCorrectionUtils;
 import com.android.inputmethod.latin.utils.BinaryDictionaryUtils;
@@ -50,7 +51,7 @@ public final class Suggest {
     // Close to -2**31
     private static final int SUPPRESS_SUGGEST_THRESHOLD = -2000000000;
 
-    private static final boolean DBG = LatinImeLogger.sDBG;
+    private static final boolean DBG = DebugFlags.DEBUG_ENABLED;
     private final DictionaryFacilitator mDictionaryFacilitator;
 
     private float mAutoCorrectionThreshold;
