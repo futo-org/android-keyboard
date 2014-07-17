@@ -22,8 +22,10 @@ import android.content.Intent;
 import android.text.style.SuggestionSpan;
 import android.util.Log;
 
+import com.android.inputmethod.latin.define.DebugFlags;
+
 public final class SuggestionSpanPickedNotificationReceiver extends BroadcastReceiver {
-    private static final boolean DBG = LatinImeLogger.sDBG;
+    private static final boolean DBG = DebugFlags.DEBUG_ENABLED;
     private static final String TAG =
             SuggestionSpanPickedNotificationReceiver.class.getSimpleName();
 

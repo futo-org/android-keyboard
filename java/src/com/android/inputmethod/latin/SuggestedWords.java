@@ -19,6 +19,7 @@ package com.android.inputmethod.latin;
 import android.text.TextUtils;
 import android.view.inputmethod.CompletionInfo;
 
+import com.android.inputmethod.latin.define.DebugFlags;
 import com.android.inputmethod.latin.utils.StringUtils;
 
 import java.util.ArrayList;
@@ -130,7 +131,7 @@ public class SuggestedWords {
     }
 
     public String getDebugString(final int pos) {
-        if (!LatinImeLogger.sDBG) {
+        if (!DebugFlags.DEBUG_ENABLED) {
             return null;
         }
         final SuggestedWordInfo wordInfo = getInfo(pos);

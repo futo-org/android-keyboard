@@ -37,6 +37,7 @@ import android.net.ConnectivityManager;
 import android.os.Debug;
 import android.os.IBinder;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
@@ -67,6 +68,7 @@ import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.keyboard.MainKeyboardView;
 import com.android.inputmethod.latin.Suggest.OnGetSuggestedWordsCallback;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
+import com.android.inputmethod.latin.define.DebugFlags;
 import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.latin.inputlogic.InputLogic;
 import com.android.inputmethod.latin.personalization.ContextualDictionaryUpdater;
@@ -516,7 +518,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     @Override
     public void onCreate() {
         Settings.init(this);
-        LatinImeLogger.init(this);
+        DebugFlags.init(PreferenceManager.getDefaultSharedPreferences(this));
         RichInputMethodManager.init(this);
         mRichImm = RichInputMethodManager.getInstance();
         SubtypeSwitcher.init(this);
@@ -528,7 +530,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         super.onCreate();
 
         mHandler.onCreate();
-        DEBUG = LatinImeLogger.sDBG;
+        DEBUG = DebugFlags.DEBUG_ENABLED;
 
         // TODO: Resolve mutual dependencies of {@link #loadSettings()} and {@link #initSuggest()}.
         loadSettings();
@@ -764,7 +766,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         if (editorInfo == null) {
             Log.e(TAG, "Null EditorInfo in onStartInputView()");
-            if (LatinImeLogger.sDBG) {
+            if (DebugFlags.DEBUG_ENABLED) {
                 throw new NullPointerException("Null EditorInfo in onStartInputView()");
             }
             return;
