@@ -17,7 +17,7 @@
 package com.android.inputmethod.compat;
 
 import android.inputmethodservice.InputMethodService;
-import com.android.inputmethod.latin.define.ProductionFlag;
+import com.android.inputmethod.latin.define.ProductionFlags;
 
 import java.lang.reflect.Method;
 
@@ -37,7 +37,7 @@ public final class InputMethodServiceCompatUtils {
     }
 
     public static void setCursorAnchorMonitorMode(final InputMethodService ims, final int mode) {
-        if (ProductionFlag.USES_CURSOR_ANCHOR_MONITOR) {
+        if (ProductionFlags.USES_CURSOR_ANCHOR_MONITOR) {
             ExperimentalAPIUtils.setCursorAnchorMonitorMode(ims, mode);
         }
     }
