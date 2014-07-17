@@ -24,14 +24,14 @@ import android.preference.SwitchPreference;
 
 import java.util.ArrayList;
 
-class TwoStatePreferenceHelper {
+public class TwoStatePreferenceHelper {
     private static final String EMPTY_TEXT = "";
 
     private TwoStatePreferenceHelper() {
         // This utility class is not publicly instantiable.
     }
 
-    static void replaceCheckBoxPreferencesBySwitchPreferences(final PreferenceGroup group) {
+    public static void replaceCheckBoxPreferencesBySwitchPreferences(final PreferenceGroup group) {
         // The keyboard settings keeps using a CheckBoxPreference on KitKat or previous.
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
             return;
