@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 The Android Open Source Project
+ * Copyright (C) 2014 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +14,18 @@
  * limitations under the License.
  */
 
-package com.android.inputmethod.latin;
+package com.android.inputmethod.latin.define;
 
-import android.content.Context;
+import android.content.SharedPreferences;
 
-// TODO: Rename this class name to make it more relevant.
-public final class LatinImeLogger {
-    public static final boolean sDBG = false;
+public final class DebugFlags {
+    public static final boolean DEBUG_ENABLED = false;
 
-    public static void init(Context context) {
+    private DebugFlags() {
+        // This class is not publicly instantiable.
+    }
+
+    @SuppressWarnings("unused")
+    public static void init(final SharedPreferences prefs) {
     }
 }

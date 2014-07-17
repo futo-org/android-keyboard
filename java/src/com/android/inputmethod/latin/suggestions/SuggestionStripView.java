@@ -43,10 +43,10 @@ import com.android.inputmethod.keyboard.MainKeyboardView;
 import com.android.inputmethod.keyboard.MoreKeysPanel;
 import com.android.inputmethod.latin.AudioAndHapticFeedbackManager;
 import com.android.inputmethod.latin.Constants;
-import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
+import com.android.inputmethod.latin.define.DebugFlags;
 import com.android.inputmethod.latin.settings.Settings;
 import com.android.inputmethod.latin.settings.SettingsValues;
 import com.android.inputmethod.latin.suggestions.MoreSuggestionsView.MoreSuggestionsListener;
@@ -63,7 +63,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         public void onCodeInput(int primaryCode, int x, int y, boolean isKeyRepeat);
     }
 
-    static final boolean DBG = LatinImeLogger.sDBG;
+    static final boolean DBG = DebugFlags.DEBUG_ENABLED;
     private static final float DEBUG_INFO_TEXT_SIZE_IN_DIP = 6.0f;
 
     private final ViewGroup mSuggestionsStrip;

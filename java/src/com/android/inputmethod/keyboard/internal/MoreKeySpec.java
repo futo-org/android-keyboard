@@ -20,7 +20,7 @@ import android.text.TextUtils;
 
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.latin.Constants;
-import com.android.inputmethod.latin.LatinImeLogger;
+import com.android.inputmethod.latin.define.DebugFlags;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.StringUtils;
 
@@ -110,7 +110,7 @@ public final class MoreKeySpec {
         }
     }
 
-    private static final boolean DEBUG = LatinImeLogger.sDBG;
+    private static final boolean DEBUG = DebugFlags.DEBUG_ENABLED;
     // Constants for parsing.
     private static final char COMMA = Constants.CODE_COMMA;
     private static final char BACKSLASH = Constants.CODE_BACKSLASH;

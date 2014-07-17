@@ -37,7 +37,6 @@ import com.android.inputmethod.latin.DictionaryFacilitator;
 import com.android.inputmethod.latin.InputPointers;
 import com.android.inputmethod.latin.LastComposedWord;
 import com.android.inputmethod.latin.LatinIME;
-import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.PrevWordsInfo;
 import com.android.inputmethod.latin.RichInputConnection;
 import com.android.inputmethod.latin.Suggest;
@@ -45,6 +44,7 @@ import com.android.inputmethod.latin.Suggest.OnGetSuggestedWordsCallback;
 import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.WordComposer;
+import com.android.inputmethod.latin.define.DebugFlags;
 import com.android.inputmethod.latin.settings.SettingsValues;
 import com.android.inputmethod.latin.settings.SettingsValuesForSuggestion;
 import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
@@ -1434,7 +1434,7 @@ public final class InputLogic {
         final int separatorLength = mLastComposedWord.mSeparatorString.length();
         // TODO: should we check our saved separator against the actual contents of the text view?
         final int deleteLength = cancelLength + separatorLength;
-        if (LatinImeLogger.sDBG) {
+        if (DebugFlags.DEBUG_ENABLED) {
             if (mWordComposer.isComposingWord()) {
                 throw new RuntimeException("revertCommit, but we are composing a word");
             }

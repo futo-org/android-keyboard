@@ -17,7 +17,7 @@
 package com.android.inputmethod.keyboard.internal;
 
 import com.android.inputmethod.annotations.UsedForTesting;
-import com.android.inputmethod.latin.LatinImeLogger;
+import com.android.inputmethod.latin.define.DebugFlags;
 
 public final class TouchPositionCorrection {
     private static final int TOUCH_POSITION_CORRECTION_RECORD_SIZE = 3;
@@ -30,7 +30,7 @@ public final class TouchPositionCorrection {
     public void load(final String[] data) {
         final int dataLength = data.length;
         if (dataLength % TOUCH_POSITION_CORRECTION_RECORD_SIZE != 0) {
-            if (LatinImeLogger.sDBG) {
+            if (DebugFlags.DEBUG_ENABLED) {
                 throw new RuntimeException(
                         "the size of touch position correction data is invalid");
             }
@@ -56,7 +56,7 @@ public final class TouchPositionCorrection {
             }
             mEnabled = dataLength > 0;
         } catch (NumberFormatException e) {
-            if (LatinImeLogger.sDBG) {
+            if (DebugFlags.DEBUG_ENABLED) {
                 throw new RuntimeException(
                         "the number format for touch position correction data is invalid");
             }

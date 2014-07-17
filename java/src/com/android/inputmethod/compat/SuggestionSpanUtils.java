@@ -23,9 +23,9 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.SuggestionSpan;
 
-import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
+import com.android.inputmethod.latin.define.DebugFlags;
 import com.android.inputmethod.latin.SuggestionSpanPickedNotificationReceiver;
 
 import java.lang.reflect.Field;
@@ -40,7 +40,7 @@ public final class SuggestionSpanUtils {
             null /* receiver */, null /* defaultValue */, FIELD_FLAG_AUTO_CORRECTION);
 
     static {
-        if (LatinImeLogger.sDBG) {
+        if (DebugFlags.DEBUG_ENABLED) {
             if (OBJ_FLAG_AUTO_CORRECTION == null) {
                 throw new RuntimeException("Field is accidentially null.");
             }
