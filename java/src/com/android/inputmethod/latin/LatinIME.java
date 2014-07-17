@@ -69,7 +69,7 @@ import com.android.inputmethod.keyboard.MainKeyboardView;
 import com.android.inputmethod.latin.Suggest.OnGetSuggestedWordsCallback;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.define.DebugFlags;
-import com.android.inputmethod.latin.define.ProductionFlag;
+import com.android.inputmethod.latin.define.ProductionFlags;
 import com.android.inputmethod.latin.inputlogic.InputLogic;
 import com.android.inputmethod.latin.personalization.ContextualDictionaryUpdater;
 import com.android.inputmethod.latin.personalization.DictionaryDecayBroadcastReciever;
@@ -413,7 +413,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 if (latinIme != null) {
                     executePendingImsCallback(latinIme, editorInfo, restarting);
                     latinIme.onStartInputInternal(editorInfo, restarting);
-                    if (ProductionFlag.USES_CURSOR_ANCHOR_MONITOR) {
+                    if (ProductionFlags.USES_CURSOR_ANCHOR_MONITOR) {
                         // Currently we need to call this every time when the IME is attached to
                         // new application.
                         // TODO: Consider if we can do this automatically in the framework.
@@ -1564,7 +1564,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // Hooks for hardware keyboard
     @Override
     public boolean onKeyDown(final int keyCode, final KeyEvent keyEvent) {
-        if (!ProductionFlag.IS_HARDWARE_KEYBOARD_SUPPORTED) {
+        if (!ProductionFlags.IS_HARDWARE_KEYBOARD_SUPPORTED) {
             return super.onKeyDown(keyCode, keyEvent);
         }
         final Event event = getHardwareKeyEventDecoder(

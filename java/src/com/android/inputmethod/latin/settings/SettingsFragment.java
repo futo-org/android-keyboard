@@ -43,7 +43,7 @@ import com.android.inputmethod.keyboard.KeyboardTheme;
 import com.android.inputmethod.latin.AudioAndHapticFeedbackManager;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SubtypeSwitcher;
-import com.android.inputmethod.latin.define.ProductionFlag;
+import com.android.inputmethod.latin.define.ProductionFlags;
 import com.android.inputmethod.latin.setup.LauncherIconVisibilityManager;
 import com.android.inputmethod.latin.userdictionary.UserDictionaryList;
 import com.android.inputmethod.latin.userdictionary.UserDictionarySettings;
@@ -199,7 +199,7 @@ public final class SettingsFragment extends InputMethodSettingsFragment
             correctionScreen.removePreference(dictionaryLink);
         }
 
-        if (ProductionFlag.IS_METRICS_LOGGING_SUPPORTED) {
+        if (ProductionFlags.IS_METRICS_LOGGING_SUPPORTED) {
             final Preference enableMetricsLogging =
                     findPreference(Settings.PREF_ENABLE_METRICS_LOGGING);
             if (enableMetricsLogging != null) {
