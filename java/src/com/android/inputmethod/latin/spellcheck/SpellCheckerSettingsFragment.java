@@ -21,26 +21,20 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
 
 import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.settings.TwoStatePreferenceHelper;
 import com.android.inputmethod.latin.utils.ApplicationUtils;
 
 /**
  * Preference screen.
  */
 public final class SpellCheckerSettingsFragment extends PreferenceFragment {
-    /**
-     * Empty constructor for fragment generation.
-     */
-    public SpellCheckerSettingsFragment() {
-    }
-
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
+    public void onActivityCreated(final Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         addPreferencesFromResource(R.xml.spell_checker_settings);
         final PreferenceScreen preferenceScreen = getPreferenceScreen();
-        if (preferenceScreen != null) {
-            preferenceScreen.setTitle(ApplicationUtils.getActivityTitleResId(
-                    getActivity(), SpellCheckerSettingsActivity.class));
-        }
+        preferenceScreen.setTitle(ApplicationUtils.getActivityTitleResId(
+                getActivity(), SpellCheckerSettingsActivity.class));
+        TwoStatePreferenceHelper.replaceCheckBoxPreferencesBySwitchPreferences(preferenceScreen);
     }
 }
