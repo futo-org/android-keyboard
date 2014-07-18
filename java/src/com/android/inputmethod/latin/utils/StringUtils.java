@@ -18,6 +18,7 @@ package com.android.inputmethod.latin.utils;
 
 import static com.android.inputmethod.latin.Constants.CODE_UNSPECIFIED;
 
+import android.text.Spanned;
 import android.text.TextUtils;
 
 import com.android.inputmethod.annotations.UsedForTesting;
@@ -26,6 +27,8 @@ import com.android.inputmethod.latin.Constants;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public final class StringUtils {
     public static final int CAPITALIZE_NONE = 0;  // No caps, or mixed case
@@ -501,6 +504,55 @@ public final class StringUtils {
             --i;
         }
         return lastIndex - i;
+    }
+
+    /**
+     * Splits the given {@code charSequence} with at occurrences of the given {@code regex}.
+     * <p>
+     * This is equivalent to
+     * {@code charSequence.toString().split(regex, preserveTrailingEmptySegments ? -1 : 0)}
+     * except that the spans are preserved in the result array.
+     * </p>
+     * @param input the character sequence to be split.
+     * @param regex the regex pattern to be used as the separator.
+     * @param preserveTrailingEmptySegments {@code true} to preserve the trailing empty
+     * segments. Otherwise, trailing empty segments will be removed before being returned.
+     * @return the array which contains the result. All the spans in the {@param input} is
+     * preserved.
+     */
+    @UsedForTesting
+    public static CharSequence[] split(final CharSequence charSequence, final String regex,
+            final boolean preserveTrailingEmptySegments) {
+        // A short-cut for non-spanned strings.
+        if (!(charSequence instanceof Spanned)) {
+            // -1 means that trailing empty segments will be preserved.
+            return charSequence.toString().split(regex, preserveTrailingEmptySegments ? -1 : 0);
+        }
+
+        // Hereafter, emulate String.split for CharSequence.
+        final ArrayList<CharSequence> sequences = new ArrayList<>();
+        final Matcher matcher = Pattern.compile(regex).matcher(charSequence);
+        int nextStart = 0;
+        boolean matched = false;
+        while (matcher.find()) {
+            sequences.add(charSequence.subSequence(nextStart, matcher.start()));
+            nextStart = matcher.end();
+            matched = true;
+        }
+        if (!matched) {
+            // never matched. preserveTrailingEmptySegments is ignored in this case.
+            return new CharSequence[] { charSequence };
+        }
+        sequences.add(charSequence.subSequence(nextStart, charSequence.length()));
+        if (!preserveTrailingEmptySegments) {
+            for (int i = sequences.size() - 1; i >= 0; --i) {
+                if (!TextUtils.isEmpty(sequences.get(i))) {
+                    break;
+                }
+                sequences.remove(i);
+            }
+        }
+        return sequences.toArray(new CharSequence[sequences.size()]);
     }
 
     @UsedForTesting

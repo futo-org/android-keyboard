@@ -18,6 +18,9 @@ package com.android.inputmethod.latin.utils;
 
 import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.SpannedString;
 
 import com.android.inputmethod.latin.Constants;
 
@@ -325,5 +328,172 @@ public class StringAndJsonUtilsTests extends AndroidTestCase {
         assertEquals(0, StringUtils.getTrailingSingleQuotesCount("'this"));
         assertEquals(1, StringUtils.getTrailingSingleQuotesCount("'word'"));
         assertEquals(0, StringUtils.getTrailingSingleQuotesCount("I'm"));
+    }
+
+    private static void assertSpanCount(final int expectedCount, final CharSequence cs) {
+        final int actualCount;
+        if (cs instanceof Spanned) {
+            final Spanned spanned = (Spanned) cs;
+            actualCount = spanned.getSpans(0, spanned.length(), Object.class).length;
+        } else {
+            actualCount = 0;
+        }
+        assertEquals(expectedCount, actualCount);
+    }
+
+    private static void assertSpan(final CharSequence cs, final Object expectedSpan,
+            final int expectedStart, final int expectedEnd, final int expectedFlags) {
+        assertTrue(cs instanceof Spanned);
+        final Spanned spanned = (Spanned) cs;
+        final Object[] actualSpans = spanned.getSpans(0, spanned.length(), Object.class);
+        for (Object actualSpan : actualSpans) {
+            if (actualSpan == expectedSpan) {
+                final int actualStart = spanned.getSpanStart(actualSpan);
+                final int actualEnd = spanned.getSpanEnd(actualSpan);
+                final int actualFlags = spanned.getSpanFlags(actualSpan);
+                assertEquals(expectedStart, actualStart);
+                assertEquals(expectedEnd, actualEnd);
+                assertEquals(expectedFlags, actualFlags);
+                return;
+            }
+        }
+        assertTrue(false);
+    }
+
+    public void testSplitCharSequenceWithSpan() {
+        // text:  " a bcd efg hij  "
+        // span1:  ^^^^^^^
+        // span2:  ^^^^^
+        // span3:              ^
+        final SpannableString spannableString = new SpannableString(" a bcd efg hij  ");
+        final Object span1 = new Object();
+        final Object span2 = new Object();
+        final Object span3 = new Object();
+        final int SPAN1_FLAGS = Spanned.SPAN_EXCLUSIVE_EXCLUSIVE;
+        final int SPAN2_FLAGS = Spanned.SPAN_EXCLUSIVE_INCLUSIVE;
+        final int SPAN3_FLAGS = Spanned.SPAN_INCLUSIVE_INCLUSIVE;
+        spannableString.setSpan(span1, 0, 7, SPAN1_FLAGS);
+        spannableString.setSpan(span2, 0, 5, SPAN2_FLAGS);
+        spannableString.setSpan(span3, 12, 13, SPAN3_FLAGS);
+        final CharSequence[] charSequencesFromSpanned = StringUtils.split(
+                spannableString, " ", true /* preserveTrailingEmptySegmengs */);
+        final CharSequence[] charSequencesFromString = StringUtils.split(
+                spannableString.toString(), " ", true /* preserveTrailingEmptySegmengs */);
+
+
+        assertEquals(7, charSequencesFromString.length);
+        assertEquals(7, charSequencesFromSpanned.length);
+
+        // text:  ""
+        // span1: ^
+        // span2: ^
+        // span3:
+        assertEquals("", charSequencesFromString[0].toString());
+        assertSpanCount(0, charSequencesFromString[0]);
+        assertEquals("", charSequencesFromSpanned[0].toString());
+        assertSpanCount(2, charSequencesFromSpanned[0]);
+        assertSpan(charSequencesFromSpanned[0], span1, 0, 0, SPAN1_FLAGS);
+        assertSpan(charSequencesFromSpanned[0], span2, 0, 0, SPAN2_FLAGS);
+
+        // text:  "a"
+        // span1:  ^
+        // span2:  ^
+        // span3:
+        assertEquals("a", charSequencesFromString[1].toString());
+        assertSpanCount(0, charSequencesFromString[1]);
+        assertEquals("a", charSequencesFromSpanned[1].toString());
+        assertSpanCount(2, charSequencesFromSpanned[1]);
+        assertSpan(charSequencesFromSpanned[1], span1, 0, 1, SPAN1_FLAGS);
+        assertSpan(charSequencesFromSpanned[1], span2, 0, 1, SPAN2_FLAGS);
+
+        // text:  "bcd"
+        // span1:  ^^^
+        // span2:  ^^
+        // span3:
+        assertEquals("bcd", charSequencesFromString[2].toString());
+        assertSpanCount(0, charSequencesFromString[2]);
+        assertEquals("bcd", charSequencesFromSpanned[2].toString());
+        assertSpanCount(2, charSequencesFromSpanned[2]);
+        assertSpan(charSequencesFromSpanned[2], span1, 0, 3, SPAN1_FLAGS);
+        assertSpan(charSequencesFromSpanned[2], span2, 0, 2, SPAN2_FLAGS);
+
+        // text:  "efg"
+        // span1:
+        // span2:
+        // span3:
+        assertEquals("efg", charSequencesFromString[3].toString());
+        assertSpanCount(0, charSequencesFromString[3]);
+        assertEquals("efg", charSequencesFromSpanned[3].toString());
+        assertSpanCount(0, charSequencesFromSpanned[3]);
+
+        // text:  "hij"
+        // span1:
+        // span2:
+        // span3:   ^
+        assertEquals("hij", charSequencesFromString[4].toString());
+        assertSpanCount(0, charSequencesFromString[4]);
+        assertEquals("hij", charSequencesFromSpanned[4].toString());
+        assertSpanCount(1, charSequencesFromSpanned[4]);
+        assertSpan(charSequencesFromSpanned[4], span3, 1, 2, SPAN3_FLAGS);
+
+        // text:  ""
+        // span1:
+        // span2:
+        // span3:
+        assertEquals("", charSequencesFromString[5].toString());
+        assertSpanCount(0, charSequencesFromString[5]);
+        assertEquals("", charSequencesFromSpanned[5].toString());
+        assertSpanCount(0, charSequencesFromSpanned[5]);
+
+        // text:  ""
+        // span1:
+        // span2:
+        // span3:
+        assertEquals("", charSequencesFromString[6].toString());
+        assertSpanCount(0, charSequencesFromString[6]);
+        assertEquals("", charSequencesFromSpanned[6].toString());
+        assertSpanCount(0, charSequencesFromSpanned[6]);
+    }
+
+    public void testSplitCharSequencePreserveTrailingEmptySegmengs() {
+        assertEquals(1, StringUtils.split("", " ",
+                false /* preserveTrailingEmptySegmengs */).length);
+        assertEquals(1, StringUtils.split(new SpannedString(""), " ",
+                false /* preserveTrailingEmptySegmengs */).length);
+
+        assertEquals(1, StringUtils.split("", " ",
+                true /* preserveTrailingEmptySegmengs */).length);
+        assertEquals(1, StringUtils.split(new SpannedString(""), " ",
+                true /* preserveTrailingEmptySegmengs */).length);
+
+        assertEquals(0, StringUtils.split(" ", " ",
+                false /* preserveTrailingEmptySegmengs */).length);
+        assertEquals(0, StringUtils.split(new SpannedString(" "), " ",
+                false /* preserveTrailingEmptySegmengs */).length);
+
+        assertEquals(2, StringUtils.split(" ", " ",
+                true /* preserveTrailingEmptySegmengs */).length);
+        assertEquals(2, StringUtils.split(new SpannedString(" "), " ",
+                true /* preserveTrailingEmptySegmengs */).length);
+
+        assertEquals(3, StringUtils.split("a b c  ", " ",
+                false /* preserveTrailingEmptySegmengs */).length);
+        assertEquals(3, StringUtils.split(new SpannedString("a b c  "), " ",
+                false /* preserveTrailingEmptySegmengs */).length);
+
+        assertEquals(5, StringUtils.split("a b c  ", " ",
+                true /* preserveTrailingEmptySegmengs */).length);
+        assertEquals(5, StringUtils.split(new SpannedString("a b c  "), " ",
+                true /* preserveTrailingEmptySegmengs */).length);
+
+        assertEquals(6, StringUtils.split("a     b ", " ",
+                false /* preserveTrailingEmptySegmengs */).length);
+        assertEquals(6, StringUtils.split(new SpannedString("a     b "), " ",
+                false /* preserveTrailingEmptySegmengs */).length);
+
+        assertEquals(7, StringUtils.split("a     b ", " ",
+                true /* preserveTrailingEmptySegmengs */).length);
+        assertEquals(7, StringUtils.split(new SpannedString("a     b "), " ",
+                true /* preserveTrailingEmptySegmengs */).length);
     }
 }
