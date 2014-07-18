@@ -26,11 +26,6 @@ public final class CollectionUtils {
         // This utility class is not publicly instantiable.
     }
 
-    public static <K, V> Map<K,V> newSynchronizedTreeMap() {
-        final TreeMap<K,V> treeMap = new TreeMap<>();
-        return Collections.synchronizedMap(treeMap);
-    }
-
     public static <E> ArrayList<E> arrayAsList(final E[] array, final int start, final int end) {
         if (array == null) {
             throw new NullPointerException();
