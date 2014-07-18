@@ -19,6 +19,7 @@
 -->
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
-    <style name="platformActivityTheme" parent="@android:style/Theme.Holo" />
-    <style name="platformDialogTheme" parent="@android:style/Theme.Holo.Dialog" />
+    <style name="platformActivityTheme" parent="@android:style/Theme.DeviceDefault" />
+    <style name="platformSettingsTheme" parent="@android:style/Theme.DeviceDefault" />
+    <style name="platformDialogTheme" parent="@android:style/Theme.DeviceDefault.Dialog" />
 </resources>

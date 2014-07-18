@@ -18,9 +18,8 @@
 */
 -->
 
-<!-- TODO: This file is temporarily placed under values-v20. -->
-<!-- TODO: It might be moved under values-v21. -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
-    <style name="platformActivityTheme" parent="@android:style/Theme.Material.Light" />
-    <style name="platformDialogTheme" parent="@android:style/Theme.Material.Light.Dialog" />
+    <style name="platformActivityTheme" parent="@android:style/Theme.DeviceDefault.Light" />
+    <style name="platformSettingsTheme" parent="@android:style/Theme.DeviceDefault.Light" />
+    <style name="platformDialogTheme" parent="@android:style/Theme.DeviceDefault.Light.Dialog" />
 </resources>
