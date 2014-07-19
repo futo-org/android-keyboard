@@ -163,9 +163,11 @@ public final class HindiCompact extends LayoutBase {
                     // U+0911: "ऑ" DEVANAGARI LETTER CANDRA O
                     // U+0949: "ॉ" DEVANAGARI VOWEL SIGN CANDRA O
                     key("\u0911", moreKey(VOWEL_SIGN_CANDRA_O, "\u0949")),
-                    // U+090D: "ऍ" DEVANAGARI LETTER CANDRA E
+                    // U+094D: "्" DEVANAGARI SIGN VIRAMA
                     // U+0945: "ॅ" DEVANAGARI VOWEL SIGN CANDRA E
-                    key("\u090D", moreKey(VOWEL_SIGN_CANDRA_E, "\u0945")),
+                    // U+090D: "ऍ" DEVANAGARI LETTER CANDRA E
+                    key(SIGN_VIRAMA, "\u094D", joinMoreKeys(
+                            moreKey(VOWEL_SIGN_CANDRA_E, "\u0945"), "\u090D")),
                     // U+0902: "ं" DEVANAGARI SIGN ANUSVARA
                     // U+0903: "ः‍" DEVANAGARI SIGN VISARGA
                     // U+0901: "ँ" DEVANAGARI SIGN CANDRABINDU
