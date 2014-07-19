@@ -17,7 +17,6 @@
 package com.android.inputmethod.compat;
 
 import android.inputmethodservice.InputMethodService;
-import com.android.inputmethod.latin.define.ProductionFlags;
 
 import java.lang.reflect.Method;
 
@@ -34,31 +33,5 @@ public final class InputMethodServiceCompatUtils {
     public static boolean enableHardwareAcceleration(final InputMethodService ims) {
         return (Boolean)CompatUtils.invoke(ims, false /* defaultValue */,
                 METHOD_enableHardwareAcceleration);
-    }
-
-    public static void setCursorAnchorMonitorMode(final InputMethodService ims, final int mode) {
-        if (ProductionFlags.USES_CURSOR_ANCHOR_MONITOR) {
-            ExperimentalAPIUtils.setCursorAnchorMonitorMode(ims, mode);
-        }
-    }
-
-    /*
-     * For unreleased APIs. ProGuard will strip this class entirely, unless used explicitly.
-     */
-    private static final class ExperimentalAPIUtils {
-        // Note that {@link InputMethodManager#setCursorAnchorMonitorMode} is not yet available as
-        // an official API as of API level 19 (Build.VERSION_CODES.KITKAT).
-        private static final Method METHOD_setCursorAnchorMonitorMode = CompatUtils.getMethod(
-                InputMethodService.class, "setCursorAnchorMonitorMode", int.class);
-
-        private ExperimentalAPIUtils() {
-            // This utility class is not publicly instantiable.
-        }
-
-        public static void setCursorAnchorMonitorMode(final InputMethodService ims,
-                final int mode) {
-            CompatUtils.invoke(ims, null /* defaultValue */,
-                    METHOD_setCursorAnchorMonitorMode, mode);
-        }
     }
 }
