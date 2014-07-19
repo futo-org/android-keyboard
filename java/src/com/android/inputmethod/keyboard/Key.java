@@ -58,9 +58,6 @@ public class Key implements Comparable<Key> {
     private final String mHintLabel;
     /** Flags of the label */
     private final int mLabelFlags;
-    private static final int LABEL_FLAGS_ALIGN_LEFT = 0x01;
-    private static final int LABEL_FLAGS_ALIGN_RIGHT = 0x02;
-    private static final int LABEL_FLAGS_ALIGN_BUTTOM = 0x04;
     private static final int LABEL_FLAGS_ALIGN_LEFT_OF_CENTER = 0x08;
     // Font typeface specification.
     private static final int LABEL_FLAGS_FONT_MASK = 0x30;
@@ -78,8 +75,6 @@ public class Key implements Comparable<Key> {
     private static final int LABEL_FLAGS_HAS_POPUP_HINT = 0x200;
     private static final int LABEL_FLAGS_HAS_SHIFTED_LETTER_HINT = 0x400;
     private static final int LABEL_FLAGS_HAS_HINT_LABEL = 0x800;
-    private static final int LABEL_FLAGS_WITH_ICON_LEFT = 0x1000;
-    private static final int LABEL_FLAGS_WITH_ICON_RIGHT = 0x2000;
     // The bit to calculate the ratio of key label width against key width. If autoXScale bit is on
     // and autoYScale bit is off, the key label may be shrunk only for X-direction.
     // If both autoXScale and autoYScale bits are on, the key label text size may be auto scaled.
@@ -646,18 +641,6 @@ public class Key implements Comparable<Key> {
         return Typeface.DEFAULT_BOLD;
     }
 
-    public final boolean isAlignLeft() {
-        return (mLabelFlags & LABEL_FLAGS_ALIGN_LEFT) != 0;
-    }
-
-    public final boolean isAlignRight() {
-        return (mLabelFlags & LABEL_FLAGS_ALIGN_RIGHT) != 0;
-    }
-
-    public final boolean isAlignButtom() {
-        return (mLabelFlags & LABEL_FLAGS_ALIGN_BUTTOM) != 0;
-    }
-
     public final boolean isAlignLeftOfCenter() {
         return (mLabelFlags & LABEL_FLAGS_ALIGN_LEFT_OF_CENTER) != 0;
     }
@@ -673,14 +656,6 @@ public class Key implements Comparable<Key> {
 
     public final boolean hasHintLabel() {
         return (mLabelFlags & LABEL_FLAGS_HAS_HINT_LABEL) != 0;
-    }
-
-    public final boolean hasLabelWithIconLeft() {
-        return (mLabelFlags & LABEL_FLAGS_WITH_ICON_LEFT) != 0;
-    }
-
-    public final boolean hasLabelWithIconRight() {
-        return (mLabelFlags & LABEL_FLAGS_WITH_ICON_RIGHT) != 0;
     }
 
     public final boolean needsAutoXScale() {
