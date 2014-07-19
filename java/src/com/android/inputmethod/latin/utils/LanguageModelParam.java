@@ -43,7 +43,7 @@ public final class LanguageModelParam {
     private static final int BIGRAM_PROBABILITY_FOR_VALID_WORD = 10;
     private static final int BIGRAM_PROBABILITY_FOR_OOV_WORD = Dictionary.NOT_A_PROBABILITY;
 
-    public final String mTargetWord;
+    public final CharSequence mTargetWord;
     public final int[] mWord0;
     public final int[] mWord1;
     // TODO: this needs to be a list of shortcuts
@@ -57,13 +57,13 @@ public final class LanguageModelParam {
     public final int mTimestamp;
 
     // Constructor for unigram. TODO: support shortcuts
-    public LanguageModelParam(final String word, final int unigramProbability,
+    public LanguageModelParam(final CharSequence word, final int unigramProbability,
             final int timestamp) {
         this(null /* word0 */, word, unigramProbability, Dictionary.NOT_A_PROBABILITY, timestamp);
     }
 
     // Constructor for unigram and bigram.
-    public LanguageModelParam(final String word0, final String word1,
+    public LanguageModelParam(final CharSequence word0, final CharSequence word1,
             final int unigramProbability, final int bigramProbability,
             final int timestamp) {
         mTargetWord = word1;
