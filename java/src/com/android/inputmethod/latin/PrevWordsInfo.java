@@ -16,9 +16,11 @@
 
 package com.android.inputmethod.latin;
 
-import java.util.Arrays;
+import android.text.TextUtils;
 
 import com.android.inputmethod.latin.utils.StringUtils;
+
+import java.util.Arrays;
 
 /**
  * Class to represent information of previous words. This class is used to add n-gram entries
@@ -37,8 +39,8 @@ public class PrevWordsInfo {
         public static final WordInfo EMPTY_WORD_INFO = new WordInfo(null);
         public static final WordInfo BEGINNING_OF_SENTENCE = new WordInfo();
 
-        // This is an empty string when mIsBeginningOfSentence is true.
-        public final String mWord;
+        // This is an empty char sequence when mIsBeginningOfSentence is true.
+        public final CharSequence mWord;
         // TODO: Have sentence separator.
         // Whether the current context is beginning of sentence or not. This is true when composing
         // at the beginning of an input field or composing a word after a sentence separator.
@@ -50,7 +52,7 @@ public class PrevWordsInfo {
             mIsBeginningOfSentence = true;
         }
 
-        public WordInfo(final String word) {
+        public WordInfo(final CharSequence word) {
             mWord = word;
             mIsBeginningOfSentence = false;
         }
@@ -73,7 +75,7 @@ public class PrevWordsInfo {
                 return mWord == wordInfo.mWord
                         && mIsBeginningOfSentence == wordInfo.mIsBeginningOfSentence;
             }
-            return mWord.equals(wordInfo.mWord)
+            return TextUtils.equals(mWord, wordInfo.mWord)
                     && mIsBeginningOfSentence == wordInfo.mIsBeginningOfSentence;
         }
     }

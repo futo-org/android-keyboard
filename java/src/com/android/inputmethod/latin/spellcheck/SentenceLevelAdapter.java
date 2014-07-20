@@ -21,6 +21,7 @@ import android.view.textservice.SentenceSuggestionsInfo;
 import android.view.textservice.SuggestionsInfo;
 import android.view.textservice.TextInfo;
 
+import com.android.inputmethod.compat.TextInfoCompatUtils;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
 import com.android.inputmethod.latin.utils.RunInLocale;
@@ -127,7 +128,8 @@ public class SentenceLevelAdapter {
 
     public SentenceTextInfoParams getSplitWords(TextInfo originalTextInfo) {
         final WordIterator wordIterator = mWordIterator;
-        final CharSequence originalText = originalTextInfo.getText();
+        final CharSequence originalText =
+                TextInfoCompatUtils.getCharSequenceOrString(originalTextInfo);
         final int cookie = originalTextInfo.getCookie();
         final int start = -1;
         final int end = originalText.length();
@@ -136,8 +138,9 @@ public class SentenceLevelAdapter {
         int wordEnd = wordIterator.getEndOfWord(originalText, wordStart);
         while (wordStart <= end && wordEnd != -1 && wordStart != -1) {
             if (wordEnd >= start && wordEnd > wordStart) {
-                final String query = originalText.subSequence(wordStart, wordEnd).toString();
-                final TextInfo ti = new TextInfo(query, cookie, query.hashCode());
+                CharSequence subSequence = originalText.subSequence(wordStart, wordEnd).toString();
+                final TextInfo ti = TextInfoCompatUtils.newInstance(subSequence, 0,
+                        subSequence.length(), cookie, subSequence.hashCode());
                 wordItems.add(new SentenceWordItem(ti, wordStart, wordEnd));
             }
             wordStart = wordIterator.getBeginningOfNextWord(originalText, wordEnd);
