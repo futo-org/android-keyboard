@@ -42,7 +42,7 @@
     <!-- U+0905: "अ" DEVANAGARI LETTER A -->
     <Key
         latin:keySpec="&#x0905;"
-        latin:keyStyle="moreKeysDevanagariSignVirama" />
+        latin:keyStyle="moreKeySpecDevanagariSignVirama" />
     <!-- Because the font rendering system prior to API version 16 can't automatically
          render dotted circle for incomplete combining letter of some scripts, different
          set of Key definitions are needed based on the API version. -->
