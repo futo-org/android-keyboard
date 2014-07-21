@@ -47,7 +47,6 @@ import java.util.HashSet;
  * @attr ref R.styleable#KeyboardView_functionalKeyBackground
  * @attr ref R.styleable#KeyboardView_spacebarBackground
  * @attr ref R.styleable#KeyboardView_spacebarIconWidthRatio
- * @attr ref R.styleable#KeyboardView_keyLabelHorizontalPadding
  * @attr ref R.styleable#KeyboardView_keyHintLetterPadding
  * @attr ref R.styleable#KeyboardView_keyPopupHintLetterPadding
  * @attr ref R.styleable#KeyboardView_keyShiftedLetterHintPadding
@@ -74,7 +73,6 @@ import java.util.HashSet;
 public class KeyboardView extends View {
     // XML attributes
     private final KeyVisualAttributes mKeyVisualAttributes;
-    private final int mKeyLabelHorizontalPadding;
     private final float mKeyHintLetterPadding;
     private final float mKeyPopupHintLetterPadding;
     private final float mKeyShiftedLetterHintPadding;
@@ -89,11 +87,6 @@ public class KeyboardView extends View {
 
     // HORIZONTAL ELLIPSIS "...", character for popup hint.
     private static final String POPUP_HINT_CHAR = "\u2026";
-
-    // Margin between the label and the icon on a key that has both of them.
-    // Specified by the fraction of the key width.
-    // TODO: Use resource parameter for this value.
-    private static final float LABEL_ICON_MARGIN = 0.05f;
 
     // The maximum key label width in the proportion to the key width.
     private static final float MAX_LABEL_RATIO = 0.90f;
@@ -137,8 +130,6 @@ public class KeyboardView extends View {
         mSpacebarBackground = (spacebarBackground != null) ? spacebarBackground : mKeyBackground;
         mSpacebarIconWidthRatio = keyboardViewAttr.getFloat(
                 R.styleable.KeyboardView_spacebarIconWidthRatio, 1.0f);
-        mKeyLabelHorizontalPadding = keyboardViewAttr.getDimensionPixelOffset(
-                R.styleable.KeyboardView_keyLabelHorizontalPadding, 0);
         mKeyHintLetterPadding = keyboardViewAttr.getDimension(
                 R.styleable.KeyboardView_keyHintLetterPadding, 0.0f);
         mKeyPopupHintLetterPadding = keyboardViewAttr.getDimension(
@@ -376,26 +367,9 @@ public class KeyboardView extends View {
             final float baseline = centerY + labelCharHeight / 2.0f;
 
             // Horizontal label text alignment
-            float labelWidth = 0.0f;
-            if (key.isAlignLeft()) {
-                positionX = mKeyLabelHorizontalPadding;
-                paint.setTextAlign(Align.LEFT);
-            } else if (key.isAlignRight()) {
-                positionX = keyWidth - mKeyLabelHorizontalPadding;
-                paint.setTextAlign(Align.RIGHT);
-            } else if (key.isAlignLeftOfCenter()) {
+            if (key.isAlignLeftOfCenter()) {
                 // TODO: Parameterise this?
                 positionX = centerX - labelCharWidth * 7.0f / 4.0f;
-                paint.setTextAlign(Align.LEFT);
-            } else if (key.hasLabelWithIconLeft() && icon != null) {
-                labelWidth = TypefaceUtils.getStringWidth(label, paint) + icon.getIntrinsicWidth()
-                        + LABEL_ICON_MARGIN * keyWidth;
-                positionX = centerX + labelWidth / 2.0f;
-                paint.setTextAlign(Align.RIGHT);
-            } else if (key.hasLabelWithIconRight() && icon != null) {
-                labelWidth = TypefaceUtils.getStringWidth(label, paint) + icon.getIntrinsicWidth()
-                        + LABEL_ICON_MARGIN * keyWidth;
-                positionX = centerX - labelWidth / 2.0f;
                 paint.setTextAlign(Align.LEFT);
             } else {
                 positionX = centerX;
@@ -430,19 +404,6 @@ public class KeyboardView extends View {
             // Turn off drop shadow and reset x-scale.
             paint.clearShadowLayer();
             paint.setTextScaleX(1.0f);
-
-            if (icon != null) {
-                final int iconWidth = icon.getIntrinsicWidth();
-                final int iconHeight = icon.getIntrinsicHeight();
-                final int iconY = (keyHeight - iconHeight) / 2;
-                if (key.hasLabelWithIconLeft()) {
-                    final int iconX = (int)(centerX - labelWidth / 2.0f);
-                    drawIcon(canvas, icon, iconX, iconY, iconWidth, iconHeight);
-                } else if (key.hasLabelWithIconRight()) {
-                    final int iconX = (int)(centerX + labelWidth / 2.0f - iconWidth);
-                    drawIcon(canvas, icon, iconX, iconY, iconWidth, iconHeight);
-                }
-            }
         }
 
         // Draw hint label.
@@ -493,16 +454,9 @@ public class KeyboardView extends View {
                 iconWidth = Math.min(icon.getIntrinsicWidth(), keyWidth);
             }
             final int iconHeight = icon.getIntrinsicHeight();
-            final int iconY = key.isAlignButtom() ? keyHeight - iconHeight
-                    : (keyHeight - iconHeight) / 2;
-            final int iconX;
-            if (key.isAlignLeft()) {
-                iconX = mKeyLabelHorizontalPadding;
-            } else if (key.isAlignRight()) {
-                iconX = keyWidth - mKeyLabelHorizontalPadding - iconWidth;
-            } else { // Align center
-                iconX = (keyWidth - iconWidth) / 2;
-            }
+            // Align center.
+            final int iconY = (keyHeight - iconHeight) / 2;
+            final int iconX = (keyWidth - iconWidth) / 2;
             drawIcon(canvas, icon, iconX, iconY, iconWidth, iconHeight);
         }
 
