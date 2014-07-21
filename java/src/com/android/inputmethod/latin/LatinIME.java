@@ -55,6 +55,7 @@ import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.accessibility.AccessibilityUtils;
 import com.android.inputmethod.annotations.UsedForTesting;
+import com.android.inputmethod.compat.InputConnectionCompatUtils;
 import com.android.inputmethod.compat.InputMethodServiceCompatUtils;
 import com.android.inputmethod.dictionarypack.DictionaryPackConstants;
 import com.android.inputmethod.event.Event;
@@ -413,11 +414,14 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 if (latinIme != null) {
                     executePendingImsCallback(latinIme, editorInfo, restarting);
                     latinIme.onStartInputInternal(editorInfo, restarting);
-                    if (ProductionFlags.USES_CURSOR_ANCHOR_MONITOR) {
-                        // Currently we need to call this every time when the IME is attached to
-                        // new application.
-                        // TODO: Consider if we can do this automatically in the framework.
-                        InputMethodServiceCompatUtils.setCursorAnchorMonitorMode(latinIme, 1);
+                    if (ProductionFlags.ENABLE_CURSOR_RECT_CALLBACK) {
+                        InputConnectionCompatUtils.requestCursorRect(
+                                latinIme.getCurrentInputConnection(), true /* enableMonitor */);
+                    }
+                    if (ProductionFlags.ENABLE_CURSOR_ANCHOR_INFO_CALLBACK) {
+                        InputConnectionCompatUtils.requestCursorAnchorInfo(
+                                latinIme.getCurrentInputConnection(), true /* enableMonitor */,
+                                true /* requestImmediateCallback */);
                     }
                 }
             }
