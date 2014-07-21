@@ -17,6 +17,7 @@
 package com.android.inputmethod.latin.personalization;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.Constants;
@@ -60,7 +61,7 @@ public class UserHistoryDictionary extends DecayingExpandableBinaryDictionaryBas
     public static void addToDictionary(final ExpandableBinaryDictionary userHistoryDictionary,
             final PrevWordsInfo prevWordsInfo, final String word, final boolean isValid,
             final int timestamp, final DistracterFilter distracterFilter) {
-        final String prevWord = prevWordsInfo.mPrevWordsInfo[0].mWord;
+        final CharSequence prevWord = prevWordsInfo.mPrevWordsInfo[0].mWord;
         if (word.length() >= Constants.DICTIONARY_MAX_WORD_LENGTH ||
                 (prevWord != null && prevWord.length() >= Constants.DICTIONARY_MAX_WORD_LENGTH)) {
             return;
@@ -71,7 +72,7 @@ public class UserHistoryDictionary extends DecayingExpandableBinaryDictionaryBas
                 null /* shortcutTarget */, 0 /* shortcutFreq */, false /* isNotAWord */,
                 false /* isBlacklisted */, timestamp, distracterFilter);
         // Do not insert a word as a bigram of itself
-        if (word.equals(prevWord)) {
+        if (TextUtils.equals(word, prevWord)) {
             return;
         }
         if (null != prevWord) {
