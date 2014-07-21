@@ -50,8 +50,6 @@
              {@link StateListDrawable}, with the following possible states: normal, pressed. -->
         <attr name="spacebarBackground" format="reference" />
         <attr name="spacebarIconWidthRatio" format="float" />
-        <!-- Horizontal padding of left/right aligned key label to the edge of the key. -->
-        <attr name="keyLabelHorizontalPadding" format="dimension" />
         <!-- Right padding of hint letter to the edge of the key.-->
         <attr name="keyHintLetterPadding" format="dimension" />
         <!-- Bottom padding of popup hint letter "..." to the edge of the key.-->
@@ -291,9 +289,6 @@
         <!-- The key label flags. -->
         <attr name="keyLabelFlags" format="integer">
             <!-- This should be aligned with Key.LABEL_FLAGS__* -->
-            <flag name="alignLeft" value="0x01" />
-            <flag name="alignRight" value="0x02" />
-            <flag name="alignButtom" value="0x04" />
             <flag name="alignLeftOfCenter" value="0x08" />
             <flag name="fontNormal" value="0x10" />
             <flag name="fontMonoSpace" value="0x20" />
@@ -306,9 +301,6 @@
             <flag name="hasPopupHint" value="0x200" />
             <flag name="hasShiftedLetterHint" value="0x400" />
             <flag name="hasHintLabel" value="0x800" />
-            <!-- These two flags are currently unused. Leave these for possible future use. -->
-            <flag name="withIconLeft" value="0x1000" />
-            <flag name="withIconRight" value="0x2000" />
             <flag name="autoXScale" value="0x4000" />
             <!-- The autoScale value implies autoXScale bit on to optimize scaling code path. -->
             <flag name="autoScale" value="0xc000" />
