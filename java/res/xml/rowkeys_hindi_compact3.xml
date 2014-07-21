@@ -30,11 +30,8 @@
     <!-- Because the font rendering system prior to API version 16 can't automatically
          render dotted circle for incomplete combining letter of some scripts, different
          set of Key definitions are needed based on the API version. -->
-    <include latin:keyboardLayout="@xml/keystyle_devanagari_vowel_sign_candra_e" />
-    <!-- U+090D: "ऍ" DEVANAGARI LETTER CANDRA E -->
-    <Key
-        latin:keySpec="&#x090D;"
-        latin:keyStyle="moreKeysDevanagariVowelSignCandraE" />
+    <include latin:keyboardLayout="@xml/keystyle_devanagari_sign_virama" />
+    <Key latin:keyStyle="baseKeyDevanagariSignVirama" />
     <!-- Because the font rendering system prior to API version 16 can't automatically
          render dotted circle for incomplete combining letter of some scripts, different
          set of Key definitions are needed based on the API version. -->

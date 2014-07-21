@@ -27,8 +27,13 @@
         <case latin:keyboardLayoutSet="hindi_compact">
             <!-- U+094D: "्" DEVANAGARI SIGN VIRAMA -->
             <key-style
-                latin:styleName="moreKeysDevanagariSignVirama"
+                latin:styleName="moreKeySpecDevanagariSignVirama"
                 latin:moreKeys="&#x094D;" />
+            <!-- U+0945: "ॅ" DEVANAGARI VOWEL SIGN CANDRA E
+                 U+090D: "ऍ" DEVANAGARI LETTER CANDRA E -->
+            <key-style
+                latin:styleName="moreKeysDevanagariSignVirama"
+                latin:moreKeys="&#x0945;,&#x090D;" />
         </case>
         <case latin:keyboardLayoutSet="marathi">
             <!-- U+0905: "अ" DEVANAGARI LETTER A -->
