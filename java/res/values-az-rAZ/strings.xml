@@ -103,10 +103,6 @@
     <string name="subtype_no_language_pcqwerty" msgid="5354918232046200018">"Əlifba (PC)"</string>
     <string name="subtype_emoji" msgid="7483586578074549196">"Emoji"</string>
     <string name="keyboard_theme" msgid="4909551808526178852">"Klaviatura teması"</string>
-    <string name="keyboard_theme_holo_white" msgid="8506588144096428751">"Holo Ağ"</string>
-    <string name="keyboard_theme_holo_blue" msgid="192400518003397418">"Holo Göy"</string>
-    <string name="keyboard_theme_material_dark" msgid="2701178578784760596">"Material Tünd"</string>
-    <string name="keyboard_theme_material_light" msgid="3479400901818790331">"Material Açıq"</string>
     <string name="custom_input_styles_title" msgid="8429952441821251512">"Xüsusi daxiletmə üslubları"</string>
     <string name="add_style" msgid="6163126614514489951">"Stil əlavə et"</string>
     <string name="add" msgid="8299699805688017798">"Əlavə et"</string>

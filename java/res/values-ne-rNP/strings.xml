@@ -103,10 +103,6 @@
     <string name="subtype_no_language_pcqwerty" msgid="5354918232046200018">"वर्णमाला (PC)"</string>
     <string name="subtype_emoji" msgid="7483586578074549196">"इमोजी"</string>
     <string name="keyboard_theme" msgid="4909551808526178852">"किबोर्ड थिम"</string>
-    <string name="keyboard_theme_holo_white" msgid="8506588144096428751">"होलो सेतो"</string>
-    <string name="keyboard_theme_holo_blue" msgid="192400518003397418">"होलो नीलो"</string>
-    <string name="keyboard_theme_material_dark" msgid="2701178578784760596">"सामाग्री कालो"</string>
-    <string name="keyboard_theme_material_light" msgid="3479400901818790331">"सामाग्री प्रकाश"</string>
     <string name="custom_input_styles_title" msgid="8429952441821251512">"अनुकूलन इनपुट शैली"</string>
     <string name="add_style" msgid="6163126614514489951">"शैली थप्नुहोस्"</string>
     <string name="add" msgid="8299699805688017798">"थप्नुहोस्"</string>

@@ -26,18 +26,12 @@
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Rung khi nhấn phím"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Âm thanh khi nhấn phím"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Cửa sổ bật lên khi nhấn phím"</string>
-    <!-- no translation found for settings_screen_input (2808654300248306866) -->
-    <skip />
-    <!-- no translation found for settings_screen_appearances (3611951947835553700) -->
-    <skip />
-    <!-- no translation found for settings_screen_multi_lingual (6829970893413937235) -->
-    <skip />
-    <!-- no translation found for settings_screen_gesture (9113437621722871665) -->
-    <skip />
-    <!-- no translation found for settings_screen_correction (1616818407747682955) -->
-    <skip />
-    <!-- no translation found for settings_screen_advanced (7472408607625972994) -->
-    <skip />
+    <string name="settings_screen_input" msgid="2808654300248306866">"Tùy chọn nhập"</string>
+    <string name="settings_screen_appearances" msgid="3611951947835553700">"Giao diện"</string>
+    <string name="settings_screen_multi_lingual" msgid="6829970893413937235">"Tùy chọn đa ngôn ngữ"</string>
+    <string name="settings_screen_gesture" msgid="9113437621722871665">"Tùy chọn nhập bằng cử chỉ"</string>
+    <string name="settings_screen_correction" msgid="1616818407747682955">"Sửa văn bản"</string>
+    <string name="settings_screen_advanced" msgid="7472408607625972994">"Nâng cao"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Phương thức nhập khác"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Khóa chuyển ngôn ngữ bao gồm cả các phương thức nhập liệu khác"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Phím chuyển đổi ngôn ngữ"</string>
@@ -108,16 +102,7 @@
     <string name="subtype_no_language_colemak" msgid="5837418400010302623">"Bảng chữ cái (Colemak)"</string>
     <string name="subtype_no_language_pcqwerty" msgid="5354918232046200018">"Bảng chữ cái (PC)"</string>
     <string name="subtype_emoji" msgid="7483586578074549196">"Biểu tượng cảm xúc"</string>
-    <!-- no translation found for keyboard_theme (4909551808526178852) -->
-    <skip />
-    <!-- no translation found for keyboard_theme_holo_white (8506588144096428751) -->
-    <skip />
-    <!-- no translation found for keyboard_theme_holo_blue (192400518003397418) -->
-    <skip />
-    <!-- no translation found for keyboard_theme_material_dark (2701178578784760596) -->
-    <skip />
-    <!-- no translation found for keyboard_theme_material_light (3479400901818790331) -->
-    <skip />
+    <string name="keyboard_theme" msgid="4909551808526178852">"Chủ đề bàn phím"</string>
     <string name="custom_input_styles_title" msgid="8429952441821251512">"Kiểu nhập tùy chỉnh"</string>
     <string name="add_style" msgid="6163126614514489951">"Thêm kiểu"</string>
     <string name="add" msgid="8299699805688017798">"Thêm"</string>
@@ -181,7 +166,7 @@
     <string name="install_dict" msgid="180852772562189365">"Cài đặt"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Hủy"</string>
     <string name="delete_dict" msgid="756853268088330054">"Xóa"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"Ngôn ngữ đã chọn trên thiết bị di động của bạn hiện có từ điển.&lt;br/&gt; Bạn nên &lt;b&gt;tải xuống&lt;/b&gt; từ điển <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> để cải thiện trải nghiệm nhập của mình.&lt;br/&gt; &lt;br/&gt; Quá trình tải xuống có thể mất vài phút qua 3G. Có thể mất phí nếu bạn không có &lt;b&gt;gói dữ liệu không giới hạn&lt;/b&gt;.&lt;br/&gt; Nếu bạn không chắc mình có gói dữ liệu nào, bạn nên tìm kết nối Wi-Fi để bắt đầu tải xuống tự động.&lt;br/&gt; &lt;br/&gt; Mẹo: Bạn có thể tải xuống và xóa từ điển bằng cách đi tới &lt;b&gt;Ngôn ngữ và nhập&lt;/b&gt; trong trình đơn &lt;b&gt;Cài đặt&lt;/b&gt; trên thiết bị di động của mình."</string>
+    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"Ngôn ngữ đã chọn trên thiết bị di động của bạn hiện có từ điển.&lt;br/&gt; Bạn nên &lt;b&gt;tải xuống&lt;/b&gt; từ điển <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> để cải thiện trải nghiệm nhập của mình.&lt;br/&gt; &lt;br/&gt; Quá trình tải xuống có thể mất vài phút qua 3G. Có thể mất phí nếu bạn không có &lt;b&gt;gói dữ liệu không giới hạn&lt;/b&gt;.&lt;br/&gt; Nếu bạn không chắc mình có gói dữ liệu nào, bạn nên tìm kết nối Wi-Fi để bắt đầu tải xuống tự động.&lt;br/&gt; &lt;br/&gt; Mẹo: Bạn có thể tải xuống và xóa từ điển bằng cách đi tới &lt;b&gt;Ngôn ngữ và nhập&lt;/b&gt; trong menu &lt;b&gt;Cài đặt&lt;/b&gt; trên thiết bị di động của mình."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"Tải xuống bây giờ (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Tải xuống qua Wi-Fi"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"Hiện có từ điển cho <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>

@@ -103,10 +103,6 @@
     <string name="subtype_no_language_pcqwerty" msgid="5354918232046200018">"বর্ণমালা (PC)"</string>
     <string name="subtype_emoji" msgid="7483586578074549196">"ইমোজি"</string>
     <string name="keyboard_theme" msgid="4909551808526178852">"কীবোর্ড থিম"</string>
-    <string name="keyboard_theme_holo_white" msgid="8506588144096428751">"হলো হোয়াইট"</string>
-    <string name="keyboard_theme_holo_blue" msgid="192400518003397418">"হলো ব্লু"</string>
-    <string name="keyboard_theme_material_dark" msgid="2701178578784760596">"ম্যাটেরিয়াল ডার্ক"</string>
-    <string name="keyboard_theme_material_light" msgid="3479400901818790331">"ম্যাটেরিয়াল লাইট"</string>
     <string name="custom_input_styles_title" msgid="8429952441821251512">"কাস্টম ইনপুট শৈলীগুলি"</string>
     <string name="add_style" msgid="6163126614514489951">"শৈলী জুড়ুন"</string>
     <string name="add" msgid="8299699805688017798">"জুড়ুন"</string>
