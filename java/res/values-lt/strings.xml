@@ -26,18 +26,12 @@
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibruoti, kai paspaudžiami klavišai"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Klavišo paspaudimo garsas"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Iššoka paspaudus klavišą"</string>
-    <!-- no translation found for settings_screen_input (2808654300248306866) -->
-    <skip />
-    <!-- no translation found for settings_screen_appearances (3611951947835553700) -->
-    <skip />
-    <!-- no translation found for settings_screen_multi_lingual (6829970893413937235) -->
-    <skip />
-    <!-- no translation found for settings_screen_gesture (9113437621722871665) -->
-    <skip />
-    <!-- no translation found for settings_screen_correction (1616818407747682955) -->
-    <skip />
-    <!-- no translation found for settings_screen_advanced (7472408607625972994) -->
-    <skip />
+    <string name="settings_screen_input" msgid="2808654300248306866">"Įvesties nuostatos"</string>
+    <string name="settings_screen_appearances" msgid="3611951947835553700">"Išvaizda"</string>
+    <string name="settings_screen_multi_lingual" msgid="6829970893413937235">"Kelių kalbų parinktys"</string>
+    <string name="settings_screen_gesture" msgid="9113437621722871665">"Įvesties gestais nuostat."</string>
+    <string name="settings_screen_correction" msgid="1616818407747682955">"Teksto taisymas"</string>
+    <string name="settings_screen_advanced" msgid="7472408607625972994">"Išplėstiniai"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Perj. į kt. įvesties būd."</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Kalbos perjungimo klavišu taip pat perjungiami įvesties būdai"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Kalbos keitimo klavišas"</string>
@@ -108,16 +102,7 @@
     <string name="subtype_no_language_colemak" msgid="5837418400010302623">"Abėcėlė („Colemak“)"</string>
     <string name="subtype_no_language_pcqwerty" msgid="5354918232046200018">"Abėcėlė (PC)"</string>
     <string name="subtype_emoji" msgid="7483586578074549196">"Jaustukai"</string>
-    <!-- no translation found for keyboard_theme (4909551808526178852) -->
-    <skip />
-    <!-- no translation found for keyboard_theme_holo_white (8506588144096428751) -->
-    <skip />
-    <!-- no translation found for keyboard_theme_holo_blue (192400518003397418) -->
-    <skip />
-    <!-- no translation found for keyboard_theme_material_dark (2701178578784760596) -->
-    <skip />
-    <!-- no translation found for keyboard_theme_material_light (3479400901818790331) -->
-    <skip />
+    <string name="keyboard_theme" msgid="4909551808526178852">"Klaviatūros tema"</string>
     <string name="custom_input_styles_title" msgid="8429952441821251512">"Pasirinkti įvesties stilių"</string>
     <string name="add_style" msgid="6163126614514489951">"Prid. stilių"</string>
     <string name="add" msgid="8299699805688017798">"Pridėti"</string>
