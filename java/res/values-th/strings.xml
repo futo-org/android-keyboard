@@ -26,18 +26,12 @@
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"สั่นเมื่อกดปุ่ม"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"ส่งเสียงเมื่อกดปุ่ม"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"ป๊อปอัปเมื่อกดแป้น"</string>
-    <!-- no translation found for settings_screen_input (2808654300248306866) -->
-    <skip />
-    <!-- no translation found for settings_screen_appearances (3611951947835553700) -->
-    <skip />
-    <!-- no translation found for settings_screen_multi_lingual (6829970893413937235) -->
-    <skip />
-    <!-- no translation found for settings_screen_gesture (9113437621722871665) -->
-    <skip />
-    <!-- no translation found for settings_screen_correction (1616818407747682955) -->
-    <skip />
-    <!-- no translation found for settings_screen_advanced (7472408607625972994) -->
-    <skip />
+    <string name="settings_screen_input" msgid="2808654300248306866">"ค่ากำหนดการป้อนข้อมูล"</string>
+    <string name="settings_screen_appearances" msgid="3611951947835553700">"ลักษณะที่ปรากฏ"</string>
+    <string name="settings_screen_multi_lingual" msgid="6829970893413937235">"ตัวเลือกหลายภาษา"</string>
+    <string name="settings_screen_gesture" msgid="9113437621722871665">"การป้อนข้อมูลด้วยท่าทาง"</string>
+    <string name="settings_screen_correction" msgid="1616818407747682955">"การแก้ไขข้อความ"</string>
+    <string name="settings_screen_advanced" msgid="7472408607625972994">"ขั้นสูง"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"ใช้วิธีการป้อนข้อมูลอื่น"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"แป้นสลับภาษาครอบคลุมวิธีการป้อนข้อมูลอื่นๆ ด้วย"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"แป้นสลับภาษา"</string>
@@ -108,20 +102,11 @@
     <string name="subtype_no_language_colemak" msgid="5837418400010302623">"ตัวอักษร (Colemak)"</string>
     <string name="subtype_no_language_pcqwerty" msgid="5354918232046200018">"ตัวอักษร (PC)"</string>
     <string name="subtype_emoji" msgid="7483586578074549196">"อีโมจิ"</string>
-    <!-- no translation found for keyboard_theme (4909551808526178852) -->
-    <skip />
-    <!-- no translation found for keyboard_theme_holo_white (8506588144096428751) -->
-    <skip />
-    <!-- no translation found for keyboard_theme_holo_blue (192400518003397418) -->
-    <skip />
-    <!-- no translation found for keyboard_theme_material_dark (2701178578784760596) -->
-    <skip />
-    <!-- no translation found for keyboard_theme_material_light (3479400901818790331) -->
-    <skip />
+    <string name="keyboard_theme" msgid="4909551808526178852">"ธีมแป้นพิมพ์"</string>
     <string name="custom_input_styles_title" msgid="8429952441821251512">"รูปแบบอินพุตกำหนดเอง"</string>
     <string name="add_style" msgid="6163126614514489951">"เพิ่มสไตล์"</string>
     <string name="add" msgid="8299699805688017798">"เพิ่ม"</string>
-    <string name="remove" msgid="4486081658752944606">"นำออก"</string>
+    <string name="remove" msgid="4486081658752944606">"ลบ"</string>
     <string name="save" msgid="7646738597196767214">"บันทึก"</string>
     <string name="subtype_locale" msgid="8576443440738143764">"ภาษา"</string>
     <string name="keyboard_layout_set" msgid="4309233698194565609">"การจัดวาง"</string>
@@ -180,8 +165,8 @@
     <string name="go_to_settings" msgid="3876892339342569259">"การตั้งค่า"</string>
     <string name="install_dict" msgid="180852772562189365">"ติดตั้ง"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"ยกเลิก"</string>
-    <string name="delete_dict" msgid="756853268088330054">"นำออก"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"ภาษาที่คุณเลือกในอุปกรณ์เคลื่อนที่มีพจนานุกรมที่สามารถใช้ได้&lt;br/&gt; เราขอแนะนำให้คุณ &lt;b&gt;ดาวน์โหลด&lt;/b&gt; พจนานุกรม <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> เพื่อรับประสบการณ์การพิมพ์ที่ดียิ่งขึ้น&lt;br/&gt; &lt;br/&gt; การดาวน์โหลดอาจใช้เวลาหนึ่งถึงสองนาทีผ่านทาง 3G ซึ่งอาจมีการเรียกเก็บเงินหากคุณไม่ได้ใช้ &lt;b&gt;แผนบริการข้อมูลแบบไม่จำกัดปริมาณ&lt;/b&gt;.&lt;br/&gt; หากไม่แน่ใจว่าใช้แผนบริการข้อมูลแบบใด เราขอแนะนำให้คุณเชื่อมต่อ Wi-Fi เพื่อเริ่มการดาวน์โหลดอัตโนมัติ&lt;br/&gt; &lt;br/&gt; เคล็ดลับ: คุณสามารถดาวน์โหลดและนำออกพจนานุกรมออกได้โดยไปที่ &lt;b&gt;ภาษาและการป้อนข้อมูล&lt;/b&gt; ในเมนู &lt;b&gt;การตั้งค่า&lt;/b&gt; ในอุปกรณ์เคลื่อนที่ของคุณ"</string>
+    <string name="delete_dict" msgid="756853268088330054">"ลบ"</string>
+    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"ภาษาที่คุณเลือกในอุปกรณ์เคลื่อนที่มีพจนานุกรมที่สามารถใช้ได้&lt;br/&gt; เราขอแนะนำให้คุณ &lt;b&gt;ดาวน์โหลด&lt;/b&gt; พจนานุกรม <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g> เพื่อรับประสบการณ์การพิมพ์ที่ดียิ่งขึ้น&lt;br/&gt; &lt;br/&gt; การดาวน์โหลดอาจใช้เวลาหนึ่งถึงสองนาทีผ่านทาง 3G ซึ่งอาจมีการเรียกเก็บเงินหากคุณไม่ได้ใช้ &lt;b&gt;แผนบริการข้อมูลแบบไม่จำกัดปริมาณ&lt;/b&gt;.&lt;br/&gt; หากไม่แน่ใจว่าใช้แผนบริการข้อมูลแบบใด เราขอแนะนำให้คุณเชื่อมต่อ Wi-Fi เพื่อเริ่มการดาวน์โหลดอัตโนมัติ&lt;br/&gt; &lt;br/&gt; เคล็ดลับ: คุณสามารถดาวน์โหลดและลบพจนานุกรมออกได้โดยไปที่ &lt;b&gt;ภาษาและการป้อนข้อมูล&lt;/b&gt; ในเมนู &lt;b&gt;การตั้งค่า&lt;/b&gt; ในอุปกรณ์เคลื่อนที่ของคุณ"</string>
     <string name="download_over_metered" msgid="1643065851159409546">"ดาวน์โหลดเลย (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"ดาวน์โหลดผ่าน WiFi"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"มีพจนานุกรมให้ใช้งานสำหรับ <xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>"</string>
@@ -201,10 +186,10 @@
     <string name="user_dict_settings_add_shortcut_hint" msgid="2265453012555060178">"ทางลัดที่ไม่บังคับ"</string>
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"แก้ไขคำ"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"แก้ไข"</string>
-    <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"นำออก"</string>
+    <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"ลบ"</string>
     <string name="user_dict_settings_empty_text" msgid="558499587532668203">"คุณไม่มีคำในพจนานุกรมผู้ใช้เลย เพิ่มคำโดยแตะปุ่มเพิ่ม (+)"</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"สำหรับทุกภาษา"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"ภาษาเพิ่มเติม…"</string>
-    <string name="user_dict_settings_delete" msgid="110413335187193859">"นำออก"</string>
+    <string name="user_dict_settings_delete" msgid="110413335187193859">"ลบ"</string>
     <string name="user_dict_fast_scroll_alphabet" msgid="5431919401558285473">" ABCDEFGHIJKLMNOPQRSTUVWXYZ"</string>
 </resources>
