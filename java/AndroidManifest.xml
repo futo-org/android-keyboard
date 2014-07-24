@@ -102,14 +102,6 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".settings.DebugSettingsActivity"
-                android:theme="@style/platformSettingsTheme"
-                android:label="@string/english_ime_debug_settings">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-            </intent-filter>
-        </activity>
-
         <receiver android:name="SuggestionSpanPickedNotificationReceiver" android:enabled="true">
             <intent-filter>
                 <action android:name="android.text.style.SUGGESTION_PICKED" />
