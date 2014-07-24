@@ -107,27 +107,37 @@ bool BufferWithExtendableBuffer::extendBuffer() {
 }
 
 bool BufferWithExtendableBuffer::checkAndPrepareWriting(const int pos, const int size) {
-    if (isInAdditionalBuffer(pos)) {
-        const int tailPosition = getTailPosition();
-        if (pos == tailPosition) {
-            // Append data to the tail.
-            if (pos + size > static_cast<int>(mAdditionalBuffer.size()) + mOriginalBufferSize) {
-                // Need to extend buffer.
-                if (!extendBuffer()) {
-                    return false;
-                }
-            }
-            mUsedAdditionalBufferSize += size;
-        } else if (pos + size > tailPosition) {
-            // The access will beyond the tail of used region.
-            return false;
-        }
-    } else {
-        if (pos < 0 || mOriginalBufferSize < pos + size) {
-            // Invalid position or violate the boundary.
-            return false;
-        }
+    if (pos < 0 || size < 0) {
+        // Invalid position or size.
+        return false;
     }
+    const size_t totalRequiredSize = static_cast<size_t>(pos + size);
+    if (!isInAdditionalBuffer(pos)) {
+        // Here don't need to care about the additional buffer.
+        if (static_cast<size_t>(mOriginalBufferSize) < totalRequiredSize) {
+            // Violate the boundary.
+            return false;
+        }
+        // The buffer has sufficient capacity.
+        return true;
+    }
+    // Hereafter, pos is in the additional buffer.
+    const size_t tailPosition = static_cast<size_t>(getTailPosition());
+    if (totalRequiredSize <= tailPosition) {
+        // The buffer has sufficient capacity.
+        return true;
+    }
+    if (static_cast<size_t>(pos) != tailPosition) {
+        // The additional buffer must be extended from the tail position.
+        return false;
+    }
+    const size_t extendSize = totalRequiredSize -
+            std::min(mAdditionalBuffer.size() + mOriginalBufferSize, totalRequiredSize);
+    if (extendSize > 0 && !extendBuffer()) {
+        // Failed to extend the buffer.
+        return false;
+    }
+    mUsedAdditionalBufferSize += size;
     return true;
 }
 
