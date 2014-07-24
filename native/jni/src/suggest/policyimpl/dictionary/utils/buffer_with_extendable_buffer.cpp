@@ -102,8 +102,9 @@ bool BufferWithExtendableBuffer::writeCodePointsAndAdvancePosition(const int *co
 
 bool BufferWithExtendableBuffer::extendBuffer(const size_t size) {
     const size_t extendSize = std::max(EXTEND_ADDITIONAL_BUFFER_SIZE_STEP, size);
-    const size_t sizeAfterExtending = mAdditionalBuffer.size() + extendSize;
-    if (sizeAfterExtending > mMaxAdditionalBufferSize) {
+    const size_t sizeAfterExtending =
+            std::min(mAdditionalBuffer.size() + extendSize, mMaxAdditionalBufferSize);
+    if (sizeAfterExtending < mAdditionalBuffer.size() + size) {
         return false;
     }
     mAdditionalBuffer.resize(sizeAfterExtending);
