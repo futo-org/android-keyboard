@@ -18,9 +18,10 @@ package com.android.inputmethod.latin.utils;
 
 import com.android.inputmethod.dictionarypack.DictionarySettingsFragment;
 import com.android.inputmethod.latin.about.AboutPreferences;
-import com.android.inputmethod.latin.settings.AdditionalSubtypeSettings;
+import com.android.inputmethod.latin.settings.CustomInputStyleSettingsFragment;
 import com.android.inputmethod.latin.settings.DebugSettings;
 import com.android.inputmethod.latin.settings.InputSettingsFragment;
+import com.android.inputmethod.latin.settings.MultiLingualSettingsFragment;
 import com.android.inputmethod.latin.settings.SettingsFragment;
 import com.android.inputmethod.latin.spellcheck.SpellCheckerSettingsFragment;
 import com.android.inputmethod.latin.userdictionary.UserDictionaryAddWordFragment;
@@ -36,7 +37,8 @@ public class FragmentUtils {
         sLatinImeFragments.add(DictionarySettingsFragment.class.getName());
         sLatinImeFragments.add(AboutPreferences.class.getName());
         sLatinImeFragments.add(InputSettingsFragment.class.getName());
-        sLatinImeFragments.add(AdditionalSubtypeSettings.class.getName());
+        sLatinImeFragments.add(MultiLingualSettingsFragment.class.getName());
+        sLatinImeFragments.add(CustomInputStyleSettingsFragment.class.getName());
         sLatinImeFragments.add(DebugSettings.class.getName());
         sLatinImeFragments.add(SettingsFragment.class.getName());
         sLatinImeFragments.add(SpellCheckerSettingsFragment.class.getName());
