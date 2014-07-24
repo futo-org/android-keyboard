@@ -87,6 +87,8 @@ class BufferWithExtendableBuffer {
                 * NEAR_BUFFER_LIMIT_THRESHOLD_PERCENTILE) / 100);
     }
 
+    bool extend(const int size);
+
     /**
      * For writing.
      *
@@ -115,7 +117,7 @@ class BufferWithExtendableBuffer {
     const size_t mMaxAdditionalBufferSize;
 
     // Return if the buffer is successfully extended or not.
-    bool extendBuffer();
+    bool extendBuffer(const size_t size);
 
     // Returns if it is possible to write size-bytes from pos. When pos is at the tail position of
     // the additional buffer, try extending the buffer.
