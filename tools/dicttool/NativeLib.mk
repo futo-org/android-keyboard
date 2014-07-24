@@ -34,7 +34,6 @@ ifneq ($(strip $(HOST_JDK_IS_64BIT_VERSION)),)
 LOCAL_MULTILIB := 64
 endif #HOST_JDK_IS_64BIT_VERSION
 
-LOCAL_CLANG := true
 # For C++11
 LOCAL_CFLAGS += -std=c++11
 
