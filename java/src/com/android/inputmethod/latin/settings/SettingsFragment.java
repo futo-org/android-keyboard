@@ -136,12 +136,7 @@ public final class SettingsFragment extends InputMethodSettingsFragment
         final PreferenceScreen debugScreen =
                 (PreferenceScreen) findPreference(Settings.SCREEN_DEBUG);
 
-        if (Settings.isInternal(prefs)) {
-            final Intent debugSettingsIntent = new Intent(Intent.ACTION_MAIN);
-            debugSettingsIntent.setClassName(
-                    context.getPackageName(), DebugSettingsActivity.class.getName());
-            debugScreen.setIntent(debugSettingsIntent);
-        } else {
+        if (!Settings.isInternal(prefs)) {
             advancedScreen.removePreference(debugScreen);
         }
 
