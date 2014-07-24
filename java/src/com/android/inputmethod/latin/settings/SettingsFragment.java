@@ -42,7 +42,6 @@ import com.android.inputmethod.dictionarypack.DictionarySettingsActivity;
 import com.android.inputmethod.keyboard.KeyboardTheme;
 import com.android.inputmethod.latin.AudioAndHapticFeedbackManager;
 import com.android.inputmethod.latin.R;
-import com.android.inputmethod.latin.SubtypeSwitcher;
 import com.android.inputmethod.latin.define.ProductionFlags;
 import com.android.inputmethod.latin.setup.LauncherIconVisibilityManager;
 import com.android.inputmethod.latin.userdictionary.UserDictionaryList;
@@ -114,7 +113,6 @@ public final class SettingsFragment extends InputMethodSettingsFragment
         // When we are called from the Settings application but we are not already running, some
         // singleton and utility classes may not have been initialized.  We have to call
         // initialization method of these classes here. See {@link LatinIME#onCreate()}.
-        SubtypeSwitcher.init(context);
         SubtypeLocaleUtils.init(context);
         AudioAndHapticFeedbackManager.init(context);
 
@@ -123,8 +121,6 @@ public final class SettingsFragment extends InputMethodSettingsFragment
 
         ensureConsistencyOfAutoCorrectionSettings();
 
-        final PreferenceScreen inputScreen =
-                (PreferenceScreen) findPreference(Settings.SCREEN_INPUT);
         final PreferenceScreen multiLingualScreen =
                 (PreferenceScreen) findPreference(Settings.SCREEN_MULTI_LINGUAL);
         final PreferenceScreen gestureScreen =
@@ -140,14 +136,7 @@ public final class SettingsFragment extends InputMethodSettingsFragment
             advancedScreen.removePreference(debugScreen);
         }
 
-        final boolean showVoiceKeyOption = res.getBoolean(
-                R.bool.config_enable_show_voice_key_option);
-        if (!showVoiceKeyOption) {
-            removePreference(Settings.PREF_VOICE_INPUT_KEY, inputScreen);
-        }
-
         if (!AudioAndHapticFeedbackManager.getInstance().hasVibrator()) {
-            removePreference(Settings.PREF_VIBRATE_ON, inputScreen);
             removePreference(Settings.PREF_VIBRATION_DURATION_SETTINGS, advancedScreen);
         }
         if (!Settings.ENABLE_SHOW_LANGUAGE_SWITCH_KEY_SETTINGS) {
@@ -158,7 +147,6 @@ public final class SettingsFragment extends InputMethodSettingsFragment
 
         // TODO: consolidate key preview dismiss delay with the key preview animation parameters.
         if (!Settings.readFromBuildConfigIfToShowKeyPreviewPopupOption(res)) {
-            removePreference(Settings.PREF_POPUP_ON, inputScreen);
             removePreference(Settings.PREF_KEY_PREVIEW_POPUP_DISMISS_DELAY, advancedScreen);
         } else {
             // TODO: Cleanup this setup.
@@ -234,14 +222,6 @@ public final class SettingsFragment extends InputMethodSettingsFragment
         super.onResume();
         final SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
         final Resources res = getResources();
-        final Preference voiceInputKeyOption = findPreference(Settings.PREF_VOICE_INPUT_KEY);
-        if (voiceInputKeyOption != null) {
-            final boolean isShortcutImeEnabled = SubtypeSwitcher.getInstance()
-                    .isShortcutImeEnabled();
-            voiceInputKeyOption.setEnabled(isShortcutImeEnabled);
-            voiceInputKeyOption.setSummary(isShortcutImeEnabled ? null
-                    : res.getText(R.string.voice_input_disabled_summary));
-        }
         final TwoStatePreference showSetupWizardIcon =
                 (TwoStatePreference)findPreference(Settings.PREF_SHOW_SETUP_WIZARD_ICON);
         if (showSetupWizardIcon != null) {
