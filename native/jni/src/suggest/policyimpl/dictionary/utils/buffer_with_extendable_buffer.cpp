@@ -49,6 +49,10 @@ void BufferWithExtendableBuffer::readCodePointsAndAdvancePosition(const int maxC
     }
 }
 
+bool BufferWithExtendableBuffer::extend(const int size) {
+    return checkAndPrepareWriting(getTailPosition(), size);
+}
+
 bool BufferWithExtendableBuffer::writeUint(const uint32_t data, const int size, const int pos) {
     int writingPos = pos;
     return writeUintAndAdvancePosition(data, size, &writingPos);
@@ -96,13 +100,13 @@ bool BufferWithExtendableBuffer::writeCodePointsAndAdvancePosition(const int *co
     return true;
 }
 
-bool BufferWithExtendableBuffer::extendBuffer() {
-    const size_t sizeAfterExtending =
-            mAdditionalBuffer.size() + EXTEND_ADDITIONAL_BUFFER_SIZE_STEP;
+bool BufferWithExtendableBuffer::extendBuffer(const size_t size) {
+    const size_t extendSize = std::max(EXTEND_ADDITIONAL_BUFFER_SIZE_STEP, size);
+    const size_t sizeAfterExtending = mAdditionalBuffer.size() + extendSize;
     if (sizeAfterExtending > mMaxAdditionalBufferSize) {
         return false;
     }
-    mAdditionalBuffer.resize(mAdditionalBuffer.size() + EXTEND_ADDITIONAL_BUFFER_SIZE_STEP);
+    mAdditionalBuffer.resize(sizeAfterExtending);
     return true;
 }
 
@@ -133,7 +137,7 @@ bool BufferWithExtendableBuffer::checkAndPrepareWriting(const int pos, const int
     }
     const size_t extendSize = totalRequiredSize -
             std::min(mAdditionalBuffer.size() + mOriginalBufferSize, totalRequiredSize);
-    if (extendSize > 0 && !extendBuffer()) {
+    if (extendSize > 0 && !extendBuffer(extendSize)) {
         // Failed to extend the buffer.
         return false;
     }
