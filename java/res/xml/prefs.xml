@@ -33,35 +33,9 @@
         android:title="@string/settings_screen_multi_lingual"
         android:key="screen_multi_lingual" />
     <PreferenceScreen
+        android:fragment="com.android.inputmethod.latin.settings.GestureSettingsFragment"
         android:title="@string/settings_screen_gesture"
-        android:key="screen_gesture">
-        <CheckBoxPreference
-            android:key="gesture_input"
-            android:title="@string/gesture_input"
-            android:summary="@string/gesture_input_summary"
-            android:defaultValue="true"
-            android:persistent="true" />
-        <CheckBoxPreference
-            android:key="pref_gesture_floating_preview_text"
-            android:dependency="gesture_input"
-            android:title="@string/gesture_floating_preview_text"
-            android:summary="@string/gesture_floating_preview_text_summary"
-            android:defaultValue="true"
-            android:persistent="true" />
-        <CheckBoxPreference
-            android:key="pref_gesture_preview_trail"
-            android:dependency="gesture_input"
-            android:title="@string/gesture_preview_trail"
-            android:defaultValue="true"
-            android:persistent="true" />
-        <CheckBoxPreference
-            android:key="pref_gesture_space_aware"
-            android:dependency="gesture_input"
-            android:title="@string/gesture_space_aware"
-            android:summary="@string/gesture_space_aware_summary"
-            android:defaultValue="true"
-            android:persistent="true" />
-    </PreferenceScreen>
+        android:key="screen_gesture" />
     <PreferenceScreen
         android:title="@string/settings_screen_correction"
         android:key="screen_correction">
