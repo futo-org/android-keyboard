@@ -37,63 +37,9 @@
         android:title="@string/settings_screen_gesture"
         android:key="screen_gesture" />
     <PreferenceScreen
+        android:fragment="com.android.inputmethod.latin.settings.CorrectionSettingsFragment"
         android:title="@string/settings_screen_correction"
-        android:key="screen_correction">
-        <PreferenceScreen
-            android:key="edit_personal_dictionary"
-            android:title="@string/edit_personal_dictionary">
-            <intent android:action="android.settings.USER_DICTIONARY_SETTINGS" />
-        </PreferenceScreen>
-        <PreferenceScreen
-            android:key="configure_dictionaries_key"
-            android:title="@string/configure_dictionaries_title">
-           <intent
-              android:action="android.intent.action.MAIN"
-              android:targetClass="@string/dictionary_pack_settings_activity">
-             <extra
-                 android:name="clientId"
-                 android:value="@string/dictionary_pack_client_id" />
-           </intent>
-        </PreferenceScreen>
-        <CheckBoxPreference
-            android:key="pref_key_block_potentially_offensive"
-            android:title="@string/prefs_block_potentially_offensive_title"
-            android:summary="@string/prefs_block_potentially_offensive_summary"
-            android:defaultValue="@bool/config_block_potentially_offensive"
-            android:persistent="true" />
-        <ListPreference
-            android:key="auto_correction_threshold"
-            android:title="@string/auto_correction"
-            android:summary="@string/auto_correction_summary"
-            android:entryValues="@array/auto_correction_threshold_mode_indexes"
-            android:entries="@array/auto_correction_threshold_modes"
-            android:defaultValue="@string/auto_correction_threshold_mode_index_modest"
-            android:persistent="true" />
-        <CheckBoxPreference
-            android:key="show_suggestions"
-            android:summary="@string/prefs_show_suggestions_summary"
-            android:title="@string/prefs_show_suggestions"
-            android:defaultValue="true"
-            android:persistent="true" />
-        <CheckBoxPreference
-            android:key="pref_key_use_personalized_dicts"
-            android:title="@string/use_personalized_dicts"
-            android:summary="@string/use_personalized_dicts_summary"
-            android:defaultValue="true"
-            android:persistent="true" />
-        <CheckBoxPreference
-            android:key="pref_key_use_contacts_dict"
-            android:title="@string/use_contacts_dict"
-            android:summary="@string/use_contacts_dict_summary"
-            android:defaultValue="true"
-            android:persistent="true" />
-        <CheckBoxPreference
-            android:key="next_word_prediction"
-            android:title="@string/bigram_prediction"
-            android:summary="@string/bigram_prediction_summary"
-            android:defaultValue="true"
-            android:persistent="true" />
-        </PreferenceScreen>
+        android:key="screen_correction" />
     <PreferenceScreen
         android:title="@string/settings_screen_advanced"
         android:key="screen_advanced">
