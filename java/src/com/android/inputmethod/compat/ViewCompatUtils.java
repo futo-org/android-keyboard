@@ -31,6 +31,9 @@ public final class ViewCompatUtils {
     private static final Method METHOD_setPaddingRelative = CompatUtils.getMethod(
             View.class, "setPaddingRelative",
             int.class, int.class, int.class, int.class);
+    // Note that View.setElevation(float) has been introduced in API level 21.
+    private static final Method METHOD_setElevation = CompatUtils.getMethod(
+            View.class, "setElevation", float.class);
 
     private ViewCompatUtils() {
         // This utility class is not publicly instantiable.
@@ -50,5 +53,12 @@ public final class ViewCompatUtils {
             return;
         }
         CompatUtils.invoke(view, null, METHOD_setPaddingRelative, start, top, end, bottom);
+    }
+
+    public static void setElevation(final View view, final float elevation) {
+        if (METHOD_setElevation == null) {
+            return;
+        }
+        CompatUtils.invoke(view, null, METHOD_setElevation, elevation);
     }
 }
