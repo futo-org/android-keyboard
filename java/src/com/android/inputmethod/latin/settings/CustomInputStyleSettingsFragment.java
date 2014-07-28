@@ -43,7 +43,6 @@ import android.widget.SpinnerAdapter;
 import android.widget.Toast;
 
 import com.android.inputmethod.compat.InputMethodSubtypeCompatUtils;
-import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.RichInputMethodManager;
 import com.android.inputmethod.latin.utils.AdditionalSubtypeUtils;
@@ -54,7 +53,7 @@ import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 import java.util.ArrayList;
 import java.util.TreeSet;
 
-public final class AdditionalSubtypeSettings extends PreferenceFragment {
+public final class CustomInputStyleSettingsFragment extends PreferenceFragment {
     private RichInputMethodManager mRichImm;
     private SharedPreferences mPrefs;
     private SubtypeLocaleAdapter mSubtypeLocaleAdapter;
@@ -124,9 +123,8 @@ public final class AdditionalSubtypeSettings extends PreferenceFragment {
             if (localeString.equals(SubtypeLocaleUtils.NO_LANGUAGE)) {
                 final String displayName = context.getString(R.string.subtype_no_language);
                 return new SubtypeLocaleItem(localeString, displayName);
-            } else {
-                return new SubtypeLocaleItem(localeString);
             }
+            return new SubtypeLocaleItem(localeString);
         }
     }
 
@@ -385,7 +383,7 @@ public final class AdditionalSubtypeSettings extends PreferenceFragment {
         }
     }
 
-    public AdditionalSubtypeSettings() {
+    public CustomInputStyleSettingsFragment() {
         // Empty constructor for fragment generation.
     }
 

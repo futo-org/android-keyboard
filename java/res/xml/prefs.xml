@@ -29,26 +29,9 @@
         android:entries="@array/keyboard_theme_names"
         android:persistent="true" />
     <PreferenceScreen
+        android:fragment="com.android.inputmethod.latin.settings.MultiLingualSettingsFragment"
         android:title="@string/settings_screen_multi_lingual"
-        android:key="screen_multi_lingual">
-        <CheckBoxPreference
-            android:key="pref_show_language_switch_key"
-            android:title="@string/show_language_switch_key"
-            android:summary="@string/show_language_switch_key_summary"
-            android:defaultValue="true"
-            android:persistent="true" />
-        <CheckBoxPreference
-            android:key="pref_include_other_imes_in_language_switch_list"
-            android:dependency="pref_show_language_switch_key"
-            android:title="@string/include_other_imes_in_language_switch_list"
-            android:summary="@string/include_other_imes_in_language_switch_list_summary"
-            android:defaultValue="false"
-            android:persistent="true" />
-        <PreferenceScreen
-            android:fragment="com.android.inputmethod.latin.settings.AdditionalSubtypeSettings"
-            android:key="custom_input_styles"
-            android:title="@string/custom_input_styles_title" />
-    </PreferenceScreen>
+        android:key="screen_multi_lingual" />
     <PreferenceScreen
         android:title="@string/settings_screen_gesture"
         android:key="screen_gesture">
