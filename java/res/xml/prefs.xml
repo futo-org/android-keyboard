@@ -41,37 +41,7 @@
         android:title="@string/settings_screen_correction"
         android:key="screen_correction" />
     <PreferenceScreen
+        android:fragment="com.android.inputmethod.latin.settings.AdvancedSettingsFragment"
         android:title="@string/settings_screen_advanced"
-        android:key="screen_advanced">
-        <!-- TODO: consolidate key preview dismiss delay with the key preview animation parameters. -->
-        <ListPreference
-            android:key="pref_key_preview_popup_dismiss_delay"
-            android:title="@string/key_preview_popup_dismiss_delay" />
-        <com.android.inputmethod.latin.settings.SeekBarDialogPreference
-            android:key="pref_vibration_duration_settings"
-            android:title="@string/prefs_keypress_vibration_duration_settings"
-            latin:maxValue="@integer/config_max_vibration_duration" />
-        <com.android.inputmethod.latin.settings.SeekBarDialogPreference
-            android:key="pref_keypress_sound_volume"
-            android:title="@string/prefs_keypress_sound_volume_settings"
-            latin:maxValue="100" /> <!-- percent -->
-        <!-- The settigs for showing setup wizard application icon shouldn't be persistent and
-             the default value is added programmatically. -->
-        <CheckBoxPreference
-            android:key="pref_show_setup_wizard_icon"
-            android:title="@string/show_setup_wizard_icon"
-            android:summary="@string/show_setup_wizard_icon_summary" />
-        <!-- title will be set programmatically to embed application name -->
-        <CheckBoxPreference
-            android:key="pref_enable_metrics_logging"
-            android:summary="@string/enable_metrics_logging_summary"
-            android:defaultValue="true"
-            android:persistent="true" />
-        <PreferenceScreen
-            android:fragment="com.android.inputmethod.latin.settings.DebugSettingsFragment"
-            android:key="screen_debug"
-            android:title="Debug settings"
-            android:defaultValue="false"
-            android:persistent="true" />
-        </PreferenceScreen>
+        android:key="screen_advanced" />
 </PreferenceScreen>
