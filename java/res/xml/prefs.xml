@@ -68,7 +68,7 @@
             android:defaultValue="true"
             android:persistent="true" />
         <PreferenceScreen
-            android:fragment="com.android.inputmethod.latin.settings.DebugSettings"
+            android:fragment="com.android.inputmethod.latin.settings.DebugSettingsFragment"
             android:key="screen_debug"
             android:title="Debug settings"
             android:defaultValue="false"
