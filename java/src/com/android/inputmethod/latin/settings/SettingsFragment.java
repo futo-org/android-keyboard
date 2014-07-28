@@ -21,11 +21,8 @@ import android.app.backup.BackupManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.media.AudioManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
@@ -37,27 +34,18 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import com.android.inputmethod.dictionarypack.DictionarySettingsActivity;
 import com.android.inputmethod.keyboard.KeyboardTheme;
 import com.android.inputmethod.latin.AudioAndHapticFeedbackManager;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.define.ProductionFlags;
 import com.android.inputmethod.latin.setup.LauncherIconVisibilityManager;
-import com.android.inputmethod.latin.userdictionary.UserDictionaryList;
-import com.android.inputmethod.latin.userdictionary.UserDictionarySettings;
 import com.android.inputmethod.latin.utils.ApplicationUtils;
 import com.android.inputmethod.latin.utils.FeedbackUtils;
 import com.android.inputmethodcommon.InputMethodSettingsFragment;
 
-import java.util.TreeSet;
-
 public final class SettingsFragment extends InputMethodSettingsFragment
         implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = SettingsFragment.class.getSimpleName();
-    private static final boolean DBG_USE_INTERNAL_PERSONAL_DICTIONARY_SETTINGS = false;
-    private static final boolean USE_INTERNAL_PERSONAL_DICTIONARY_SETTIGS =
-            DBG_USE_INTERNAL_PERSONAL_DICTIONARY_SETTINGS
-            || Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN_MR2;
 
     private static final int NO_MENU_GROUP = Menu.NONE; // We don't care about menu grouping.
     private static final int MENU_FEEDBACK = Menu.FIRST; // The first menu item id and order.
@@ -115,10 +103,6 @@ public final class SettingsFragment extends InputMethodSettingsFragment
         final SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
         prefs.registerOnSharedPreferenceChangeListener(this);
 
-        ensureConsistencyOfAutoCorrectionSettings();
-
-        final PreferenceScreen correctionScreen =
-                (PreferenceScreen) findPreference(Settings.SCREEN_CORRECTION);
         final PreferenceScreen advancedScreen =
                 (PreferenceScreen) findPreference(Settings.SCREEN_ADVANCED);
         final PreferenceScreen debugScreen =
@@ -160,15 +144,6 @@ public final class SettingsFragment extends InputMethodSettingsFragment
             removePreference(Settings.PREF_SHOW_SETUP_WIZARD_ICON, advancedScreen);
         }
 
-        final PreferenceScreen dictionaryLink =
-                (PreferenceScreen) findPreference(Settings.PREF_CONFIGURE_DICTIONARIES_KEY);
-        final Intent intent = dictionaryLink.getIntent();
-        intent.setClassName(context.getPackageName(), DictionarySettingsActivity.class.getName());
-        final int number = context.getPackageManager().queryIntentActivities(intent, 0).size();
-        if (0 >= number) {
-            correctionScreen.removePreference(dictionaryLink);
-        }
-
         if (ProductionFlags.IS_METRICS_LOGGING_SUPPORTED) {
             final Preference enableMetricsLogging =
                     findPreference(Settings.PREF_ENABLE_METRICS_LOGGING);
@@ -181,16 +156,6 @@ public final class SettingsFragment extends InputMethodSettingsFragment
             }
         } else {
             removePreference(Settings.PREF_ENABLE_METRICS_LOGGING, advancedScreen);
-        }
-
-        final Preference editPersonalDictionary =
-                findPreference(Settings.PREF_EDIT_PERSONAL_DICTIONARY);
-        final Intent editPersonalDictionaryIntent = editPersonalDictionary.getIntent();
-        final ResolveInfo ri = USE_INTERNAL_PERSONAL_DICTIONARY_SETTIGS ? null
-                : context.getPackageManager().resolveActivity(
-                        editPersonalDictionaryIntent, PackageManager.MATCH_DEFAULT_ONLY);
-        if (ri == null) {
-            overwriteUserDictionaryPreference(editPersonalDictionary);
         }
 
         if (!Settings.readFromBuildConfigIfGestureInputEnabled(res)) {
@@ -261,20 +226,9 @@ public final class SettingsFragment extends InputMethodSettingsFragment
         } else if (key.equals(Settings.PREF_SHOW_SETUP_WIZARD_ICON)) {
             LauncherIconVisibilityManager.updateSetupWizardIconVisibility(getActivity());
         }
-        ensureConsistencyOfAutoCorrectionSettings();
         updateListPreferenceSummaryToCurrentValue(Settings.PREF_KEY_PREVIEW_POPUP_DISMISS_DELAY);
         updateListPreferenceSummaryToCurrentValue(Settings.PREF_KEYBOARD_THEME);
         refreshEnablingsOfKeypressSoundAndVibrationSettings(prefs, getResources());
-    }
-
-    private void ensureConsistencyOfAutoCorrectionSettings() {
-        final String autoCorrectionOff = getResources().getString(
-                R.string.auto_correction_threshold_mode_index_off);
-        final ListPreference autoCorrectionThresholdPref = (ListPreference)findPreference(
-                Settings.PREF_AUTO_CORRECTION_THRESHOLD);
-        final String currentSetting = autoCorrectionThresholdPref.getValue();
-        setPreferenceEnabled(
-                Settings.PREF_BIGRAM_PREDICTIONS, !currentSetting.equals(autoCorrectionOff));
     }
 
     private void refreshEnablingsOfKeypressSoundAndVibrationSettings(
@@ -380,30 +334,6 @@ public final class SettingsFragment extends InputMethodSettingsFragment
                         AudioManager.FX_KEYPRESS_STANDARD, getValueFromPercentage(value));
             }
         });
-    }
-
-    private void overwriteUserDictionaryPreference(Preference userDictionaryPreference) {
-        final Activity activity = getActivity();
-        final TreeSet<String> localeList = UserDictionaryList.getUserDictionaryLocalesSet(activity);
-        if (null == localeList) {
-            // The locale list is null if and only if the user dictionary service is
-            // not present or disabled. In this case we need to remove the preference.
-            getPreferenceScreen().removePreference(userDictionaryPreference);
-        } else if (localeList.size() <= 1) {
-            userDictionaryPreference.setFragment(UserDictionarySettings.class.getName());
-            // If the size of localeList is 0, we don't set the locale parameter in the
-            // extras. This will be interpreted by the UserDictionarySettings class as
-            // meaning "the current locale".
-            // Note that with the current code for UserDictionaryList#getUserDictionaryLocalesSet()
-            // the locale list always has at least one element, since it always includes the current
-            // locale explicitly. @see UserDictionaryList.getUserDictionaryLocalesSet().
-            if (localeList.size() == 1) {
-                final String locale = (String)localeList.toArray()[0];
-                userDictionaryPreference.getExtras().putString("locale", locale);
-            }
-        } else {
-            userDictionaryPreference.setFragment(UserDictionaryList.class.getName());
-        }
     }
 
     @Override
