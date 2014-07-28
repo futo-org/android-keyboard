@@ -35,9 +35,16 @@ import java.util.Locale;
  * rewrite everything for any small change.
  */
 public class SentenceLevelAdapter {
-    public static final SentenceSuggestionsInfo[] EMPTY_SENTENCE_SUGGESTIONS_INFOS =
-            new SentenceSuggestionsInfo[] {};
+    private static class EmptySentenceSuggestionsInfosInitializationHolder {
+        public static final SentenceSuggestionsInfo[] EMPTY_SENTENCE_SUGGESTIONS_INFOS =
+                new SentenceSuggestionsInfo[]{};
+    }
     private static final SuggestionsInfo EMPTY_SUGGESTIONS_INFO = new SuggestionsInfo(0, null);
+
+    public static SentenceSuggestionsInfo[] getEmptySentenceSuggestionsInfo() {
+        return EmptySentenceSuggestionsInfosInitializationHolder.EMPTY_SENTENCE_SUGGESTIONS_INFOS;
+    }
+
     /**
      * Container for split TextInfo parameters
      */
