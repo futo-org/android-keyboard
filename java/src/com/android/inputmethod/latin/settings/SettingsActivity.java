@@ -35,8 +35,7 @@ public final class SettingsActivity extends PreferenceActivity {
         return intent;
     }
 
-    // TODO: Uncomment the override annotation once we start using SDK version 19.
-    // @Override
+    @Override
     public boolean isValidFragment(String fragmentName) {
         return FragmentUtils.isValidFragment(fragmentName);
     }
