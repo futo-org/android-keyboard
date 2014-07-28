@@ -20,6 +20,7 @@ import com.android.inputmethod.dictionarypack.DictionarySettingsFragment;
 import com.android.inputmethod.latin.about.AboutPreferences;
 import com.android.inputmethod.latin.settings.CustomInputStyleSettingsFragment;
 import com.android.inputmethod.latin.settings.DebugSettings;
+import com.android.inputmethod.latin.settings.GestureSettingsFragment;
 import com.android.inputmethod.latin.settings.InputSettingsFragment;
 import com.android.inputmethod.latin.settings.MultiLingualSettingsFragment;
 import com.android.inputmethod.latin.settings.SettingsFragment;
@@ -39,6 +40,7 @@ public class FragmentUtils {
         sLatinImeFragments.add(InputSettingsFragment.class.getName());
         sLatinImeFragments.add(MultiLingualSettingsFragment.class.getName());
         sLatinImeFragments.add(CustomInputStyleSettingsFragment.class.getName());
+        sLatinImeFragments.add(GestureSettingsFragment.class.getName());
         sLatinImeFragments.add(DebugSettings.class.getName());
         sLatinImeFragments.add(SettingsFragment.class.getName());
         sLatinImeFragments.add(SpellCheckerSettingsFragment.class.getName());
