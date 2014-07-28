@@ -153,7 +153,7 @@ public final class AndroidSpellCheckerSession extends AndroidWordLevelSpellCheck
      */
     private SentenceSuggestionsInfo[] splitAndSuggest(TextInfo[] textInfos, int suggestionsLimit) {
         if (textInfos == null || textInfos.length == 0) {
-            return SentenceLevelAdapter.EMPTY_SENTENCE_SUGGESTIONS_INFOS;
+            return SentenceLevelAdapter.getEmptySentenceSuggestionsInfo();
         }
         SentenceLevelAdapter sentenceLevelAdapter;
         synchronized(this) {
@@ -168,7 +168,7 @@ public final class AndroidSpellCheckerSession extends AndroidWordLevelSpellCheck
             }
         }
         if (sentenceLevelAdapter == null) {
-            return SentenceLevelAdapter.EMPTY_SENTENCE_SUGGESTIONS_INFOS;
+            return SentenceLevelAdapter.getEmptySentenceSuggestionsInfo();
         }
         final int infosSize = textInfos.length;
         final SentenceSuggestionsInfo[] retval = new SentenceSuggestionsInfo[infosSize];
