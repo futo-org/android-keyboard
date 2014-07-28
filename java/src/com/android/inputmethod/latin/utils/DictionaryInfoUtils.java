@@ -386,8 +386,7 @@ public class DictionaryInfoUtils {
             final SpacingAndPunctuations spacingAndPunctuations) {
         if (TextUtils.isEmpty(text)) return false;
         final int length = text.length();
-        // TODO: Make this test "length > Constants.DICTIONARY_MAX_WORD_LENGTH".
-        if (length >= Constants.DICTIONARY_MAX_WORD_LENGTH) {
+        if (length > Constants.DICTIONARY_MAX_WORD_LENGTH) {
             return false;
         }
         int i = 0;

@@ -231,7 +231,7 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
                 // Don't add single letter words, possibly confuses
                 // capitalization of i.
                 final int wordLen = StringUtils.codePointCount(word);
-                if (wordLen < MAX_WORD_LENGTH && wordLen > 1) {
+                if (wordLen <= MAX_WORD_LENGTH && wordLen > 1) {
                     if (DEBUG) {
                         Log.d(TAG, "addName " + name + ", " + word + ", "  + prevWordsInfo);
                     }
