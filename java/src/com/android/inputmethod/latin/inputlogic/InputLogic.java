@@ -745,7 +745,7 @@ public final class InputLogic {
         // a letter or a word connector.
                 && settingsValues.isWordCodePoint(codePoint)
         // We never go into composing state if suggestions are not requested.
-                && settingsValues.isSuggestionsRequested() &&
+                && settingsValues.needsToLookupSuggestions() &&
         // In languages with spaces, we only start composing a word when we are not already
         // touching a word. In languages without spaces, the above conditions are sufficient.
                 (!mConnection.isCursorTouchingWord(settingsValues.mSpacingAndPunctuations)
@@ -810,7 +810,7 @@ public final class InputLogic {
         }
         // isComposingWord() may have changed since we stored wasComposing
         if (mWordComposer.isComposingWord()) {
-            if (settingsValues.mAutoCorrectionEnabled) {
+            if (settingsValues.mAutoCorrectionEnabledPerUserSettings) {
                 final String separator = shouldAvoidSendingCode ? LastComposedWord.NOT_A_SEPARATOR
                         : StringUtils.newSingleCodePointString(codePoint);
                 commitCurrentAutoCorrection(settingsValues, separator, handler);
@@ -1029,7 +1029,7 @@ public final class InputLogic {
                 }
             }
             if (inputTransaction.mSettingsValues
-                    .isCurrentOrientationAllowingSuggestionsPerUserSettings()
+                    .isSuggestionsEnabledPerUserSettings()
                     && inputTransaction.mSettingsValues.mSpacingAndPunctuations
                             .mCurrentLanguageHasSpaces
                     && !mConnection.isCursorFollowedByWordCharacter(
@@ -1224,7 +1224,7 @@ public final class InputLogic {
         // If correction is not enabled, we don't add words to the user history dictionary.
         // That's to avoid unintended additions in some sensitive fields, or fields that
         // expect to receive non-words.
-        if (!settingsValues.mAutoCorrectionEnabled) return;
+        if (!settingsValues.mAutoCorrectionEnabledPerUserSettings) return;
 
         if (TextUtils.isEmpty(suggestion)) return;
         final boolean wasAutoCapitalized =
@@ -1237,7 +1237,7 @@ public final class InputLogic {
 
     public void performUpdateSuggestionStripSync(final SettingsValues settingsValues) {
         // Check if we have a suggestion engine attached.
-        if (!settingsValues.isSuggestionsRequested()) {
+        if (!settingsValues.needsToLookupSuggestions()) {
             if (mWordComposer.isComposingWord()) {
                 Log.w(TAG, "Called updateSuggestionsOrPredictions but suggestions were not "
                         + "requested!");
@@ -1299,7 +1299,7 @@ public final class InputLogic {
         // how to segment them yet.
                 || !settingsValues.mSpacingAndPunctuations.mCurrentLanguageHasSpaces
         // If no suggestions are requested, don't try restarting suggestions.
-                || !settingsValues.isSuggestionsRequested()
+                || !settingsValues.needsToLookupSuggestions()
         // If we are currently in a batch input, we must not resume suggestions, or the result
         // of the batch input will replace the new composition. This may happen in the corner case
         // that the app moves the cursor on its own accord during a batch input.
@@ -2003,7 +2003,7 @@ public final class InputLogic {
                 new SettingsValuesForSuggestion(settingsValues.mBlockPotentiallyOffensive,
                         settingsValues.mPhraseGestureEnabled,
                         settingsValues.mAdditionalFeaturesSettingValues),
-                settingsValues.mAutoCorrectionEnabled,
+                settingsValues.mAutoCorrectionEnabledPerUserSettings,
                 sessionId, sequenceNumber, callback);
     }
 }

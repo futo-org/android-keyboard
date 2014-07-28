@@ -16,11 +16,11 @@
 
 package com.android.inputmethod.latin;
 
-import com.android.inputmethod.latin.settings.Settings;
-
 import android.test.suitebuilder.annotation.LargeTest;
 import android.text.TextUtils;
 import android.view.inputmethod.BaseInputConnection;
+
+import com.android.inputmethod.latin.settings.Settings;
 
 @LargeTest
 public class InputLogicTests extends InputTestsBase {
@@ -242,16 +242,14 @@ public class InputLogicTests extends InputTestsBase {
 
     public void testDoubleSpacePeriod() {
         // Reset settings to default, else these tests will go flaky.
-        setStringPreference(Settings.PREF_SHOW_SUGGESTIONS_SETTING, "0", "0");
+        setBooleanPreference(Settings.PREF_SHOW_SUGGESTIONS, true, true);
         setStringPreference(Settings.PREF_AUTO_CORRECTION_THRESHOLD, "1", "1");
         setBooleanPreference(Settings.PREF_KEY_USE_DOUBLE_SPACE_PERIOD, true, true);
         testDoubleSpacePeriodWithSettings(true /* expectsPeriod */);
-        // "Suggestion visibility" to "always hide"
-        testDoubleSpacePeriodWithSettings(true, Settings.PREF_SHOW_SUGGESTIONS_SETTING, "2");
-        // "Suggestion visibility" to "portrait only"
-        testDoubleSpacePeriodWithSettings(true, Settings.PREF_SHOW_SUGGESTIONS_SETTING, "1");
-        // "Suggestion visibility" to "always show"
-        testDoubleSpacePeriodWithSettings(true, Settings.PREF_SHOW_SUGGESTIONS_SETTING, "0");
+        // "Suggestion visibility" to off
+        testDoubleSpacePeriodWithSettings(true, Settings.PREF_SHOW_SUGGESTIONS, false);
+        // "Suggestion visibility" to on
+        testDoubleSpacePeriodWithSettings(true, Settings.PREF_SHOW_SUGGESTIONS, true);
 
         // "Double-space period" to "off"
         testDoubleSpacePeriodWithSettings(false, Settings.PREF_KEY_USE_DOUBLE_SPACE_PERIOD, false);
@@ -264,10 +262,10 @@ public class InputLogicTests extends InputTestsBase {
         testDoubleSpacePeriodWithSettings(true, Settings.PREF_AUTO_CORRECTION_THRESHOLD, "3");
 
         // "Suggestion visibility" to "always hide" and "Auto-correction" to "off"
-        testDoubleSpacePeriodWithSettings(true, Settings.PREF_SHOW_SUGGESTIONS_SETTING, "0",
+        testDoubleSpacePeriodWithSettings(true, Settings.PREF_SHOW_SUGGESTIONS, false,
                 Settings.PREF_AUTO_CORRECTION_THRESHOLD, "0");
         // "Suggestion visibility" to "always hide" and "Auto-correction" to "off"
-        testDoubleSpacePeriodWithSettings(false, Settings.PREF_SHOW_SUGGESTIONS_SETTING, "0",
+        testDoubleSpacePeriodWithSettings(false, Settings.PREF_SHOW_SUGGESTIONS, false,
                 Settings.PREF_AUTO_CORRECTION_THRESHOLD, "0",
                 Settings.PREF_KEY_USE_DOUBLE_SPACE_PERIOD, false);
     }

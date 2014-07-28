@@ -18,26 +18,6 @@
 */
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <!--  Always show the suggestion strip -->
-    <string name="prefs_suggestion_visibility_show_value">0</string>
-    <!--  Show the suggestion strip only on portrait mode -->
-    <string name="prefs_suggestion_visibility_show_only_portrait_value">1</string>
-    <!--  Always hide the suggestion strip -->
-    <string name="prefs_suggestion_visibility_hide_value">2</string>
-    <!--  Default value of the visibility of the suggestion strip -->
-    <string name="prefs_suggestion_visibility_default_value">0</string>
-    <!--  Option to show/hide the suggestion strip -->
-    <string-array name="prefs_suggestion_visibility_values">
-       <item>@string/prefs_suggestion_visibility_show_value</item>
-       <item>@string/prefs_suggestion_visibility_show_only_portrait_value</item>
-       <item>@string/prefs_suggestion_visibility_hide_value</item>
-    </string-array>
-    <string-array name="prefs_suggestion_visibilities">
-       <item>@string/prefs_suggestion_visibility_show_name</item>
-       <item>@string/prefs_suggestion_visibility_show_only_portrait_name</item>
-       <item>@string/prefs_suggestion_visibility_hide_name</item>
-    </string-array>
-
     <!-- For backward compatibility.
          See {@link SettingsValues#needsToShowVoiceInputKey(SharedPreferences,Resources)} -->
     <string name="voice_mode_main">0</string>

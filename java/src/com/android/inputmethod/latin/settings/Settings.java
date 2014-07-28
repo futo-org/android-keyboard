@@ -57,7 +57,9 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     public static final String PREF_EDIT_PERSONAL_DICTIONARY = "edit_personal_dictionary";
     public static final String PREF_CONFIGURE_DICTIONARIES_KEY = "configure_dictionaries_key";
     public static final String PREF_AUTO_CORRECTION_THRESHOLD = "auto_correction_threshold";
-    public static final String PREF_SHOW_SUGGESTIONS_SETTING = "show_suggestions_setting";
+    // PREF_SHOW_SUGGESTIONS_SETTING_OBSOLETE is obsolete. Use PREF_SHOW_SUGGESTIONS instead.
+    public static final String PREF_SHOW_SUGGESTIONS_SETTING_OBSOLETE = "show_suggestions_setting";
+    public static final String PREF_SHOW_SUGGESTIONS = "show_suggestions";
     public static final String PREF_KEY_USE_CONTACTS_DICT = "pref_key_use_contacts_dict";
     public static final String PREF_KEY_USE_PERSONALIZED_DICTS = "pref_key_use_personalized_dicts";
     public static final String PREF_KEY_USE_DOUBLE_SPACE_PERIOD =
