@@ -42,7 +42,7 @@ class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
               mHeaderPolicy(mMmappedBuffer->getBuffer(), FormatUtils::VERSION_2),
               mDictRoot(mMmappedBuffer->getBuffer() + mHeaderPolicy.getSize()),
               mDictBufferSize(mMmappedBuffer->getBufferSize() - mHeaderPolicy.getSize()),
-              mBigramListPolicy(mDictRoot), mShortcutListPolicy(mDictRoot),
+              mBigramListPolicy(mDictRoot, mDictBufferSize), mShortcutListPolicy(mDictRoot),
               mPtNodeReader(mDictRoot, mDictBufferSize, &mBigramListPolicy, &mShortcutListPolicy),
               mPtNodeArrayReader(mDictRoot, mDictBufferSize),
               mTerminalPtNodePositionsForIteratingWords(), mIsCorrupted(false) {}

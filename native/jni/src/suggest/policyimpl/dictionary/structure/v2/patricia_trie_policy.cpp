@@ -223,7 +223,14 @@ int PatriciaTriePolicy::getCodePointsAndProbabilityAndReturnCodePointCount(
                         mShortcutListPolicy.skipAllShortcuts(&pos);
                     }
                     if (PatriciaTrieReadingUtils::hasBigrams(flags)) {
-                        mBigramListPolicy.skipAllBigrams(&pos);
+                        if (!mBigramListPolicy.skipAllBigrams(&pos)) {
+                            AKLOGE("Cannot skip bigrams. BufSize: %d, pos: %d.", mDictBufferSize,
+                                    pos);
+                            mIsCorrupted = true;
+                            ASSERT(false);
+                            *outUnigramProbability = NOT_A_PROBABILITY;
+                            return 0;
+                        }
                     }
                 }
             } else {
@@ -240,7 +247,13 @@ int PatriciaTriePolicy::getCodePointsAndProbabilityAndReturnCodePointCount(
                     mShortcutListPolicy.skipAllShortcuts(&pos);
                 }
                 if (PatriciaTrieReadingUtils::hasBigrams(flags)) {
-                    mBigramListPolicy.skipAllBigrams(&pos);
+                    if (!mBigramListPolicy.skipAllBigrams(&pos)) {
+                        AKLOGE("Cannot skip bigrams. BufSize: %d, pos: %d.", mDictBufferSize, pos);
+                        mIsCorrupted = true;
+                        ASSERT(false);
+                        *outUnigramProbability = NOT_A_PROBABILITY;
+                        return 0;
+                    }
                 }
             }
 
