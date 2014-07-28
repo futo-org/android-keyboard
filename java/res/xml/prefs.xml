@@ -144,13 +144,11 @@
             android:entries="@array/auto_correction_threshold_modes"
             android:defaultValue="@string/auto_correction_threshold_mode_index_modest"
             android:persistent="true" />
-        <ListPreference
-            android:key="show_suggestions_setting"
+        <CheckBoxPreference
+            android:key="show_suggestions"
             android:summary="@string/prefs_show_suggestions_summary"
             android:title="@string/prefs_show_suggestions"
-            android:entryValues="@array/prefs_suggestion_visibility_values"
-            android:entries="@array/prefs_suggestion_visibilities"
-            android:defaultValue="@string/prefs_suggestion_visibility_default_value"
+            android:defaultValue="true"
             android:persistent="true" />
         <CheckBoxPreference
             android:key="pref_key_use_personalized_dicts"

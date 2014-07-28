@@ -108,9 +108,6 @@
     <string name="prefs_show_suggestions">Show correction suggestions</string>
     <!-- Description for show suggestions -->
     <string name="prefs_show_suggestions_summary">Display suggested words while typing</string>
-    <string name="prefs_suggestion_visibility_show_name">Always show</string>
-    <string name="prefs_suggestion_visibility_show_only_portrait_name">Show in portrait mode</string>
-    <string name="prefs_suggestion_visibility_hide_name">Always hide</string>
 
     <!-- Option to block potentially offensive words to be shown [CHAR_LIMIT=30] -->
     <string name="prefs_block_potentially_offensive_title">Block offensive words</string>

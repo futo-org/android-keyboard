@@ -85,9 +85,8 @@ public final class SettingsValues {
     public final int mKeyPreviewPopupDismissDelay;
     private final boolean mAutoCorrectEnabled;
     public final float mAutoCorrectionThreshold;
-    // TODO: Rename this to mAutoCorrectionEnabledPerUserSettings.
-    public final boolean mAutoCorrectionEnabled;
-    public final int mSuggestionVisibility;
+    public final boolean mAutoCorrectionEnabledPerUserSettings;
+    private final boolean mSuggestionsEnabledPerUserSettings;
     public final int mDisplayOrientation;
     private final AsyncResultHolder<AppWorkaroundsUtils> mAppWorkarounds;
 
@@ -155,11 +154,9 @@ public final class SettingsValues {
         mGestureFloatingPreviewTextEnabled = prefs.getBoolean(
                 Settings.PREF_GESTURE_FLOATING_PREVIEW_TEXT, true);
         mPhraseGestureEnabled = Settings.readPhraseGestureEnabled(prefs, res);
-        mAutoCorrectionEnabled = mAutoCorrectEnabled && !mInputAttributes.mInputTypeNoAutoCorrect;
-        final String showSuggestionsSetting = prefs.getString(
-                Settings.PREF_SHOW_SUGGESTIONS_SETTING,
-                res.getString(R.string.prefs_suggestion_visibility_default_value));
-        mSuggestionVisibility = createSuggestionVisibility(res, showSuggestionsSetting);
+        mAutoCorrectionEnabledPerUserSettings = mAutoCorrectEnabled
+                && !mInputAttributes.mInputTypeNoAutoCorrect;
+        mSuggestionsEnabledPerUserSettings = readSuggestionsEnabled(prefs);
         AdditionalFeaturesSettingUtils.readAdditionalFeaturesPreferencesIntoArray(
                 prefs, mAdditionalFeaturesSettingValues);
         mIsInternal = Settings.isInternal(prefs);
@@ -193,17 +190,13 @@ public final class SettingsValues {
         return mInputAttributes.mApplicationSpecifiedCompletionOn;
     }
 
-    // TODO: Rename this to needsToLookupSuggestions().
-    public boolean isSuggestionsRequested() {
+    public boolean needsToLookupSuggestions() {
         return mInputAttributes.mShouldShowSuggestions
-                && (mAutoCorrectionEnabled
-                        || isCurrentOrientationAllowingSuggestionsPerUserSettings());
+                && (mAutoCorrectionEnabledPerUserSettings || isSuggestionsEnabledPerUserSettings());
     }
 
-    public boolean isCurrentOrientationAllowingSuggestionsPerUserSettings() {
-        return (mSuggestionVisibility == SUGGESTION_VISIBILITY_SHOW_VALUE)
-                || (mSuggestionVisibility == SUGGESTION_VISIBILITY_SHOW_ONLY_PORTRAIT_VALUE
-                        && mDisplayOrientation == Configuration.ORIENTATION_PORTRAIT);
+    public boolean isSuggestionsEnabledPerUserSettings() {
+        return mSuggestionsEnabledPerUserSettings;
     }
 
     public boolean isWordSeparator(final int code) {
@@ -263,26 +256,18 @@ public final class SettingsValues {
         return null == appWorkaroundUtils ? false : appWorkaroundUtils.isBrokenByRecorrection();
     }
 
-    private static final int SUGGESTION_VISIBILITY_SHOW_VALUE =
-            R.string.prefs_suggestion_visibility_show_value;
-    private static final int SUGGESTION_VISIBILITY_SHOW_ONLY_PORTRAIT_VALUE =
-            R.string.prefs_suggestion_visibility_show_only_portrait_value;
-    private static final int SUGGESTION_VISIBILITY_HIDE_VALUE =
-            R.string.prefs_suggestion_visibility_hide_value;
-    private static final int[] SUGGESTION_VISIBILITY_VALUE_ARRAY = new int[] {
-        SUGGESTION_VISIBILITY_SHOW_VALUE,
-        SUGGESTION_VISIBILITY_SHOW_ONLY_PORTRAIT_VALUE,
-        SUGGESTION_VISIBILITY_HIDE_VALUE
-    };
+    private static final String SUGGESTIONS_VISIBILITY_HIDE_VALUE_OBSOLETE = "2";
 
-    private static int createSuggestionVisibility(final Resources res,
-            final String suggestionVisiblityStr) {
-        for (int visibility : SUGGESTION_VISIBILITY_VALUE_ARRAY) {
-            if (suggestionVisiblityStr.equals(res.getString(visibility))) {
-                return visibility;
-            }
+    private static boolean readSuggestionsEnabled(final SharedPreferences prefs) {
+        if (prefs.contains(Settings.PREF_SHOW_SUGGESTIONS_SETTING_OBSOLETE)) {
+            final boolean alwaysHide = SUGGESTIONS_VISIBILITY_HIDE_VALUE_OBSOLETE.equals(
+                    prefs.getString(Settings.PREF_SHOW_SUGGESTIONS_SETTING_OBSOLETE, null));
+            prefs.edit()
+                    .remove(Settings.PREF_SHOW_SUGGESTIONS_SETTING_OBSOLETE)
+                    .putBoolean(Settings.PREF_SHOW_SUGGESTIONS, !alwaysHide)
+                    .apply();
         }
-        throw new RuntimeException("Bug: visibility string is not configured correctly");
+        return prefs.getBoolean(Settings.PREF_SHOW_SUGGESTIONS, true);
     }
 
     private static boolean readBigramPredictionEnabled(final SharedPreferences prefs,
@@ -396,10 +381,10 @@ public final class SettingsValues {
         sb.append("" + mAutoCorrectEnabled);
         sb.append("\n   mAutoCorrectionThreshold = ");
         sb.append("" + mAutoCorrectionThreshold);
-        sb.append("\n   mAutoCorrectionEnabled = ");
-        sb.append("" + mAutoCorrectionEnabled);
-        sb.append("\n   mSuggestionVisibility = ");
-        sb.append("" + mSuggestionVisibility);
+        sb.append("\n   mAutoCorrectionEnabledPerUserSettings = ");
+        sb.append("" + mAutoCorrectionEnabledPerUserSettings);
+        sb.append("\n   mSuggestionsEnabledPerUserSettings = ");
+        sb.append("" + mSuggestionsEnabledPerUserSettings);
         sb.append("\n   mDisplayOrientation = ");
         sb.append("" + mDisplayOrientation);
         sb.append("\n   mAppWorkarounds = ");

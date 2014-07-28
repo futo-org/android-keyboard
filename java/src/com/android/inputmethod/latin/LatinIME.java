@@ -280,7 +280,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 return;
             }
             if (!latinIme.mSettings.getCurrent()
-                    .isCurrentOrientationAllowingSuggestionsPerUserSettings()) {
+                    .isSuggestionsEnabledPerUserSettings()) {
                 return;
             }
             removeMessages(MSG_RESUME_SUGGESTIONS);
@@ -650,7 +650,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mDictionaryFacilitator.resetDictionaries(this /* context */, locale,
                 settingsValues.mUseContactsDict, settingsValues.mUsePersonalizedDicts,
                 false /* forceReloadMainDictionary */, this);
-        if (settingsValues.mAutoCorrectionEnabled) {
+        if (settingsValues.mAutoCorrectionEnabledPerUserSettings) {
             mInputLogic.mSuggest.setAutoCorrectionThreshold(
                     settingsValues.mAutoCorrectionThreshold);
         }
@@ -862,7 +862,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mainKeyboardView.closing();
             currentSettingsValues = mSettings.getCurrent();
 
-            if (currentSettingsValues.mAutoCorrectionEnabled) {
+            if (currentSettingsValues.mAutoCorrectionEnabledPerUserSettings) {
                 suggest.setAutoCorrectionThreshold(
                         currentSettingsValues.mAutoCorrectionThreshold);
             }
@@ -977,7 +977,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
      */
     @Override
     public void onExtractedTextClicked() {
-        if (mSettings.getCurrent().isSuggestionsRequested()) {
+        if (mSettings.getCurrent().needsToLookupSuggestions()) {
             return;
         }
 
@@ -995,7 +995,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
      */
     @Override
     public void onExtractedCursorMovement(final int dx, final int dy) {
-        if (mSettings.getCurrent().isSuggestionsRequested()) {
+        if (mSettings.getCurrent().needsToLookupSuggestions()) {
             return;
         }
 
@@ -1379,7 +1379,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 ImportantNoticeUtils.shouldShowImportantNotice(this);
         final boolean shouldShowSuggestionCandidates =
                 currentSettingsValues.mInputAttributes.mShouldShowSuggestions
-                && currentSettingsValues.isCurrentOrientationAllowingSuggestionsPerUserSettings();
+                && currentSettingsValues.isSuggestionsEnabledPerUserSettings();
         final boolean shouldShowSuggestionsStripUnlessPassword = shouldShowImportantNotice
                 || currentSettingsValues.mShowsVoiceInputKey
                 || shouldShowSuggestionCandidates
@@ -1403,7 +1403,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             }
         }
 
-        if (currentSettingsValues.isCurrentOrientationAllowingSuggestionsPerUserSettings()
+        if (currentSettingsValues.isSuggestionsEnabledPerUserSettings()
                 // We should clear suggestions if there is no suggestion to show.
                 || noSuggestionsToShow
                 || currentSettingsValues.isApplicationSpecifiedCompletionsOn()) {

@@ -247,7 +247,6 @@ public final class SettingsFragment extends InputMethodSettingsFragment
         if (showSetupWizardIcon != null) {
             showSetupWizardIcon.setChecked(Settings.readShowSetupWizardIcon(prefs, getActivity()));
         }
-        updateListPreferenceSummaryToCurrentValue(Settings.PREF_SHOW_SUGGESTIONS_SETTING);
         updateListPreferenceSummaryToCurrentValue(Settings.PREF_KEY_PREVIEW_POPUP_DISMISS_DELAY);
         final ListPreference keyboardThemePref = (ListPreference)findPreference(
                 Settings.PREF_KEYBOARD_THEME);
@@ -298,7 +297,6 @@ public final class SettingsFragment extends InputMethodSettingsFragment
             LauncherIconVisibilityManager.updateSetupWizardIconVisibility(getActivity());
         }
         ensureConsistencyOfAutoCorrectionSettings();
-        updateListPreferenceSummaryToCurrentValue(Settings.PREF_SHOW_SUGGESTIONS_SETTING);
         updateListPreferenceSummaryToCurrentValue(Settings.PREF_KEY_PREVIEW_POPUP_DISMISS_DELAY);
         updateListPreferenceSummaryToCurrentValue(Settings.PREF_KEYBOARD_THEME);
         refreshEnablingsOfKeypressSoundAndVibrationSettings(prefs, getResources());
