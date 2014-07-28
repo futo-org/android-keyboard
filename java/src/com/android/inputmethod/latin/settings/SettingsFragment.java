@@ -117,8 +117,6 @@ public final class SettingsFragment extends InputMethodSettingsFragment
 
         ensureConsistencyOfAutoCorrectionSettings();
 
-        final PreferenceScreen gestureScreen =
-                (PreferenceScreen) findPreference(Settings.SCREEN_GESTURE);
         final PreferenceScreen correctionScreen =
                 (PreferenceScreen) findPreference(Settings.SCREEN_CORRECTION);
         final PreferenceScreen advancedScreen =
@@ -196,7 +194,7 @@ public final class SettingsFragment extends InputMethodSettingsFragment
         }
 
         if (!Settings.readFromBuildConfigIfGestureInputEnabled(res)) {
-            getPreferenceScreen().removePreference(gestureScreen);
+            getPreferenceScreen().removePreference(findPreference(Settings.SCREEN_GESTURE));
         }
 
         AdditionalFeaturesSettingUtils.addAdditionalFeaturesPreferences(context, this);
@@ -210,7 +208,6 @@ public final class SettingsFragment extends InputMethodSettingsFragment
     public void onResume() {
         super.onResume();
         final SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
-        final Resources res = getResources();
         final TwoStatePreference showSetupWizardIcon =
                 (TwoStatePreference)findPreference(Settings.PREF_SHOW_SETUP_WIZARD_ICON);
         if (showSetupWizardIcon != null) {
