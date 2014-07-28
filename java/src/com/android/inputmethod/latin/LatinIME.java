@@ -237,10 +237,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                         latinIme.mKeyboardSwitcher.getCurrentKeyboardScriptId());
                 break;
             case MSG_REOPEN_DICTIONARIES:
-                latinIme.resetSuggest();
                 // We need to re-evaluate the currently composing word in case the script has
                 // changed.
                 postWaitForDictionaryLoad();
+                latinIme.resetSuggest();
                 break;
             case MSG_UPDATE_TAIL_BATCH_INPUT_COMPLETED:
                 latinIme.mInputLogic.onUpdateTailBatchInputCompleted(
