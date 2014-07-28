@@ -36,7 +36,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.dictionarypack.DictionarySettingsActivity;
 import com.android.inputmethod.keyboard.KeyboardTheme;
@@ -46,10 +45,8 @@ import com.android.inputmethod.latin.define.ProductionFlags;
 import com.android.inputmethod.latin.setup.LauncherIconVisibilityManager;
 import com.android.inputmethod.latin.userdictionary.UserDictionaryList;
 import com.android.inputmethod.latin.userdictionary.UserDictionarySettings;
-import com.android.inputmethod.latin.utils.AdditionalSubtypeUtils;
 import com.android.inputmethod.latin.utils.ApplicationUtils;
 import com.android.inputmethod.latin.utils.FeedbackUtils;
-import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 import com.android.inputmethodcommon.InputMethodSettingsFragment;
 
 import java.util.TreeSet;
@@ -113,7 +110,6 @@ public final class SettingsFragment extends InputMethodSettingsFragment
         // When we are called from the Settings application but we are not already running, some
         // singleton and utility classes may not have been initialized.  We have to call
         // initialization method of these classes here. See {@link LatinIME#onCreate()}.
-        SubtypeLocaleUtils.init(context);
         AudioAndHapticFeedbackManager.init(context);
 
         final SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
@@ -121,8 +117,6 @@ public final class SettingsFragment extends InputMethodSettingsFragment
 
         ensureConsistencyOfAutoCorrectionSettings();
 
-        final PreferenceScreen multiLingualScreen =
-                (PreferenceScreen) findPreference(Settings.SCREEN_MULTI_LINGUAL);
         final PreferenceScreen gestureScreen =
                 (PreferenceScreen) findPreference(Settings.SCREEN_GESTURE);
         final PreferenceScreen correctionScreen =
@@ -138,11 +132,6 @@ public final class SettingsFragment extends InputMethodSettingsFragment
 
         if (!AudioAndHapticFeedbackManager.getInstance().hasVibrator()) {
             removePreference(Settings.PREF_VIBRATION_DURATION_SETTINGS, advancedScreen);
-        }
-        if (!Settings.ENABLE_SHOW_LANGUAGE_SWITCH_KEY_SETTINGS) {
-            removePreference(Settings.PREF_SHOW_LANGUAGE_SWITCH_KEY, multiLingualScreen);
-            removePreference(
-                    Settings.PREF_INCLUDE_OTHER_IMES_IN_LANGUAGE_SWITCH_LIST, multiLingualScreen);
         }
 
         // TODO: consolidate key preview dismiss delay with the key preview animation parameters.
@@ -238,7 +227,6 @@ public final class SettingsFragment extends InputMethodSettingsFragment
             keyboardThemePref.setSummary(entryIndex < 0 ? null : entries[entryIndex]);
             keyboardThemePref.setValue(value);
         }
-        updateCustomInputStylesSummary(prefs, res);
     }
 
     @Override
@@ -290,21 +278,6 @@ public final class SettingsFragment extends InputMethodSettingsFragment
         final String currentSetting = autoCorrectionThresholdPref.getValue();
         setPreferenceEnabled(
                 Settings.PREF_BIGRAM_PREDICTIONS, !currentSetting.equals(autoCorrectionOff));
-    }
-
-    private void updateCustomInputStylesSummary(final SharedPreferences prefs,
-            final Resources res) {
-        final PreferenceScreen customInputStyles =
-                (PreferenceScreen)findPreference(Settings.PREF_CUSTOM_INPUT_STYLES);
-        final String prefSubtype = Settings.readPrefAdditionalSubtypes(prefs, res);
-        final InputMethodSubtype[] subtypes =
-                AdditionalSubtypeUtils.createAdditionalSubtypesArray(prefSubtype);
-        final StringBuilder styles = new StringBuilder();
-        for (final InputMethodSubtype subtype : subtypes) {
-            if (styles.length() > 0) styles.append(", ");
-            styles.append(SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(subtype));
-        }
-        customInputStyles.setSummary(styles);
     }
 
     private void refreshEnablingsOfKeypressSoundAndVibrationSettings(
