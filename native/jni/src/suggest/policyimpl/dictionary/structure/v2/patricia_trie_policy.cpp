@@ -21,6 +21,7 @@
 #include "suggest/core/dicnode/dic_node.h"
 #include "suggest/core/dicnode/dic_node_vector.h"
 #include "suggest/core/dictionary/binary_dictionary_bigrams_iterator.h"
+#include "suggest/core/session/prev_words_info.h"
 #include "suggest/policyimpl/dictionary/structure/pt_common/dynamic_pt_reading_helper.h"
 #include "suggest/policyimpl/dictionary/structure/pt_common/patricia_trie_reading_utils.h"
 #include "suggest/policyimpl/dictionary/utils/probability_utils.h"
@@ -284,10 +285,6 @@ int PatriciaTriePolicy::getProbability(const int unigramProbability,
 
 int PatriciaTriePolicy::getProbabilityOfPtNode(const PrevWordsInfo *const prevWordsInfo,
         const int ptNodePos) const {
-    if (prevWordsInfo) {
-        // TODO: Return probability using prevWordsInfo.
-        return NOT_A_PROBABILITY;
-    }
     if (ptNodePos == NOT_A_DICT_POS) {
         return NOT_A_PROBABILITY;
     }
@@ -297,6 +294,18 @@ int PatriciaTriePolicy::getProbabilityOfPtNode(const PrevWordsInfo *const prevWo
         // If this is not a word, or if it's a blacklisted entry, it should behave as
         // having no probability outside of the suggestion process (where it should be used
         // for shortcuts).
+        return NOT_A_PROBABILITY;
+    }
+    if (prevWordsInfo) {
+        BinaryDictionaryBigramsIterator bigramsIt =
+                prevWordsInfo->getBigramsIteratorForPrediction(this /* dictStructurePolicy */);
+        while (bigramsIt.hasNext()) {
+            bigramsIt.next();
+            if (bigramsIt.getBigramPos() == ptNodePos
+                    && bigramsIt.getProbability() != NOT_A_PROBABILITY) {
+                return getProbability(ptNodeParams.getProbability(), bigramsIt.getProbability());
+            }
+        }
         return NOT_A_PROBABILITY;
     }
     return getProbability(ptNodeParams.getProbability(), NOT_A_PROBABILITY);

@@ -140,6 +140,18 @@ int Ver4PatriciaTriePolicy::getProbabilityOfPtNode(const PrevWordsInfo *const pr
     if (ptNodeParams.isDeleted() || ptNodeParams.isBlacklisted() || ptNodeParams.isNotAWord()) {
         return NOT_A_PROBABILITY;
     }
+    if (prevWordsInfo) {
+        BinaryDictionaryBigramsIterator bigramsIt =
+                prevWordsInfo->getBigramsIteratorForPrediction(this /* dictStructurePolicy */);
+        while (bigramsIt.hasNext()) {
+            bigramsIt.next();
+            if (bigramsIt.getBigramPos() == ptNodePos
+                    && bigramsIt.getProbability() != NOT_A_PROBABILITY) {
+                return getProbability(ptNodeParams.getProbability(), bigramsIt.getProbability());
+            }
+        }
+        return NOT_A_PROBABILITY;
+    }
     return getProbability(ptNodeParams.getProbability(), NOT_A_PROBABILITY);
 }
 
