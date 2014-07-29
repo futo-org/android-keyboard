@@ -21,8 +21,6 @@ import com.android.inputmethod.latin.Constants;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import javax.annotation.Nonnull;
-
 /**
  * A combiner that reorders input for Myanmar.
  */
@@ -130,7 +128,6 @@ public class MyanmarReordering implements Combiner {
                 : Event.createSoftwareTextEvent(combinedText, Event.NOT_A_KEY_CODE);
     }
 
-    @Nonnull
     @Override
     public Event processEvent(ArrayList<Event> previousEvents, Event newEvent) {
         final int codePoint = newEvent.mCodePoint;
