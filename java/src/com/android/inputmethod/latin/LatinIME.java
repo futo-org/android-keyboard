@@ -20,7 +20,6 @@ import static com.android.inputmethod.latin.Constants.ImeOption.FORCE_ASCII;
 import static com.android.inputmethod.latin.Constants.ImeOption.NO_MICROPHONE;
 import static com.android.inputmethod.latin.Constants.ImeOption.NO_MICROPHONE_COMPAT;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -1621,24 +1620,22 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (mainKeyboardView != null) {
             mainKeyboardView.closing();
         }
-        launchSubActivity(SettingsActivity.class);
-    }
-
-    private void launchSubActivity(final Class<? extends Activity> activityClass) {
-        Intent intent = new Intent();
-        intent.setClass(LatinIME.this, activityClass);
+        final Intent intent = new Intent();
+        intent.setClass(LatinIME.this, SettingsActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                 | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED
                 | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra(SettingsActivity.EXTRA_SHOW_HOME_AS_UP, false);
         startActivity(intent);
     }
 
     private void showSubtypeSelectorAndSettings() {
         final CharSequence title = getString(R.string.english_ime_input_options);
+        // TODO: Should use new string "Select active input modes".
+        final CharSequence languageSelectionTitle = getString(R.string.language_selection_title);
         final CharSequence[] items = new CharSequence[] {
-                // TODO: Should use new string "Select active input modes".
-                getString(R.string.language_selection_title),
-                getString(ApplicationUtils.getActivityTitleResId(this, SettingsActivity.class)),
+                languageSelectionTitle,
+                getString(ApplicationUtils.getActivityTitleResId(this, SettingsActivity.class))
         };
         final OnClickListener listener = new OnClickListener() {
             @Override
@@ -1651,6 +1648,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                             Intent.FLAG_ACTIVITY_NEW_TASK
                                     | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED
                                     | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.putExtra(Intent.EXTRA_TITLE, languageSelectionTitle);
                     startActivity(intent);
                     break;
                 case 1:
