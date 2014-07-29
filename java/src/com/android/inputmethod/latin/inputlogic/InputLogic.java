@@ -405,6 +405,7 @@ public final class InputLogic {
             final int keyboardShiftMode,
             // TODO: remove these arguments
             final int currentKeyboardScriptId, final LatinIME.UIHandler handler) {
+        final Event processedEvent = mWordComposer.processEvent(event);
         final InputTransaction inputTransaction = new InputTransaction(settingsValues, event,
                 SystemClock.uptimeMillis(), mSpaceState,
                 getActualCapsMode(settingsValues, keyboardShiftMode));
@@ -428,7 +429,6 @@ public final class InputLogic {
             // A special key, like delete, shift, emoji, or the settings key.
             switch (event.mKeyCode) {
             case Constants.CODE_DELETE:
-                final Event processedEvent = mWordComposer.processEvent(inputTransaction.mEvent);
                 handleBackspace(inputTransaction, currentKeyboardScriptId, processedEvent);
                 // Backspace is a functional key, but it affects the contents of the editor.
                 inputTransaction.setDidAffectContents();
@@ -484,7 +484,7 @@ public final class InputLogic {
                         inputTransaction.mSettingsValues, tmpEvent,
                         inputTransaction.mTimestamp, inputTransaction.mSpaceState,
                         inputTransaction.mShiftState);
-                didAutoCorrect = handleNonSpecialCharacter(tmpTransaction, handler);
+                didAutoCorrect = handleNonSpecialCharacter(tmpTransaction, handler, processedEvent);
                 // Shift + Enter is treated as a functional key but it results in adding a new
                 // line, so that does affect the contents of the editor.
                 inputTransaction.setDidAffectContents();
@@ -515,11 +515,13 @@ public final class InputLogic {
                 } else {
                     // No action label, and the action from imeOptions is NONE: this is a regular
                     // enter key that should input a carriage return.
-                    didAutoCorrect = handleNonSpecialCharacter(inputTransaction, handler);
+                    didAutoCorrect = handleNonSpecialCharacter(inputTransaction, handler,
+                            processedEvent);
                 }
                 break;
             default:
-                didAutoCorrect = handleNonSpecialCharacter(inputTransaction, handler);
+                didAutoCorrect = handleNonSpecialCharacter(inputTransaction, handler,
+                        processedEvent);
                 break;
             }
         }
@@ -681,8 +683,9 @@ public final class InputLogic {
      */
     private boolean handleNonSpecialCharacter(final InputTransaction inputTransaction,
             // TODO: remove this argument
-            final LatinIME.UIHandler handler) {
-        final Event processedEvent = mWordComposer.processEvent(inputTransaction.mEvent);
+            final LatinIME.UIHandler handler,
+            // TODO: remove this argument, put it inside the transaction
+            final Event processedEvent) {
         final int codePoint = processedEvent.mCodePoint;
         mSpaceState = SpaceState.NONE;
         final boolean didAutoCorrect;
