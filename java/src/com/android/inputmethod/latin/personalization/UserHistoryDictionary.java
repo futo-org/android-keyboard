@@ -62,8 +62,8 @@ public class UserHistoryDictionary extends DecayingExpandableBinaryDictionaryBas
             final PrevWordsInfo prevWordsInfo, final String word, final boolean isValid,
             final int timestamp, final DistracterFilter distracterFilter) {
         final CharSequence prevWord = prevWordsInfo.mPrevWordsInfo[0].mWord;
-        if (word.length() >= Constants.DICTIONARY_MAX_WORD_LENGTH ||
-                (prevWord != null && prevWord.length() >= Constants.DICTIONARY_MAX_WORD_LENGTH)) {
+        if (word.length() > Constants.DICTIONARY_MAX_WORD_LENGTH ||
+                (prevWord != null && prevWord.length() > Constants.DICTIONARY_MAX_WORD_LENGTH)) {
             return;
         }
         final int frequency = isValid ?
