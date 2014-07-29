@@ -121,7 +121,12 @@ int Ver4PatriciaTriePolicy::getProbability(const int unigramProbability,
     }
 }
 
-int Ver4PatriciaTriePolicy::getUnigramProbabilityOfPtNode(const int ptNodePos) const {
+int Ver4PatriciaTriePolicy::getProbabilityOfPtNode(const PrevWordsInfo *const prevWordsInfo,
+        const int ptNodePos) const {
+    if (prevWordsInfo) {
+        // TODO: Return probability using prevWordsInfo.
+        return NOT_A_PROBABILITY;
+    }
     if (ptNodePos == NOT_A_DICT_POS) {
         return NOT_A_PROBABILITY;
     }
