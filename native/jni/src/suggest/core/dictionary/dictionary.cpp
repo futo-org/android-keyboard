@@ -94,7 +94,7 @@ int Dictionary::getProbability(const int *word, int length) const {
     if (NOT_A_DICT_POS == pos) {
         return NOT_A_PROBABILITY;
     }
-    return getDictionaryStructurePolicy()->getUnigramProbabilityOfPtNode(pos);
+    return getDictionaryStructurePolicy()->getProbabilityOfPtNode(nullptr /* prevWordsInfo */, pos);
 }
 
 int Dictionary::getMaxProbabilityOfExactMatches(const int *word, int length) const {
@@ -116,8 +116,8 @@ int Dictionary::getNgramProbability(const PrevWordsInfo *const prevWordsInfo, co
         if (bigramsIt.getBigramPos() == nextWordPos
                 && bigramsIt.getProbability() != NOT_A_PROBABILITY) {
             return mDictionaryStructureWithBufferPolicy->getProbability(
-                    mDictionaryStructureWithBufferPolicy->getUnigramProbabilityOfPtNode(
-                            nextWordPos), bigramsIt.getProbability());
+                    mDictionaryStructureWithBufferPolicy->getProbabilityOfPtNode(
+                            nullptr /* prevWordsInfo */, nextWordPos), bigramsIt.getProbability());
         }
     }
     return NOT_A_PROBABILITY;
