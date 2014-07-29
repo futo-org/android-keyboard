@@ -23,6 +23,8 @@ import com.android.inputmethod.latin.Constants;
 
 import java.util.ArrayList;
 
+import javax.annotation.Nonnull;
+
 /**
  * A combiner that handles dead keys.
  */
@@ -31,6 +33,7 @@ public class DeadKeyCombiner implements Combiner {
     final StringBuilder mDeadSequence = new StringBuilder();
 
     @Override
+    @Nonnull
     public Event processEvent(final ArrayList<Event> previousEvents, final Event event) {
         if (TextUtils.isEmpty(mDeadSequence)) {
             if (event.isDead()) {
