@@ -84,7 +84,8 @@ LATIN_IME_CORE_SRC_FILES := \
         forgetting_curve_utils.cpp \
         format_utils.cpp \
         mmapped_buffer.cpp \
-        sparse_table.cpp) \
+        sparse_table.cpp \
+        trie_map.cpp ) \
     suggest/policyimpl/gesture/gesture_suggest_policy_factory.cpp \
     $(addprefix suggest/policyimpl/typing/, \
         scoring_params.cpp \
@@ -125,4 +126,5 @@ LATIN_IME_CORE_TEST_FILES := \
     suggest/core/layout/normal_distribution_2d_test.cpp \
     suggest/core/dictionary/bloom_filter_test.cpp \
     suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer_test.cpp \
+    suggest/policyimpl/dictionary/utils/trie_map_test.cpp \
     utils/autocorrection_threshold_utils_test.cpp
