@@ -22,12 +22,10 @@
         android:fragment="com.android.inputmethod.latin.settings.InputSettingsFragment"
         android:title="@string/settings_screen_input"
         android:key="screen_input" />
-    <ListPreference
-        android:key="pref_keyboard_theme"
+    <PreferenceScreen
+        android:fragment="com.android.inputmethod.latin.settings.ThemeSettingsFragment"
         android:title="@string/keyboard_theme"
-        android:entryValues="@array/keyboard_theme_ids"
-        android:entries="@array/keyboard_theme_names"
-        android:persistent="true" />
+        android:key="screen_theme" />
     <PreferenceScreen
         android:fragment="com.android.inputmethod.latin.settings.MultiLingualSettingsFragment"
         android:title="@string/settings_screen_multi_lingual"
