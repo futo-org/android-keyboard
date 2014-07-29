@@ -36,9 +36,4 @@ public final class GestureSettingsFragment extends SubScreenFragment {
         super.onCreate(icicle);
         addPreferencesFromResource(R.xml.prefs_screen_gesture);
     }
-
-    @Override
-    public void onSharedPreferenceChanged(final SharedPreferences prefs, final String key) {
-        // Nothing to do here.
-    }
 }

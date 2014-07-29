@@ -63,11 +63,6 @@ public final class MultiLingualSettingsFragment extends SubScreenFragment {
         updateCustomInputStylesSummary();
     }
 
-    @Override
-    public void onSharedPreferenceChanged(final SharedPreferences prefs, final String key) {
-        // Nothing to do here.
-    }
-
     private void updateCustomInputStylesSummary() {
         final SharedPreferences prefs = getSharedPreferences();
         final Resources res = getResources();
