@@ -27,27 +27,34 @@ namespace latinime {
 
 class BigramListPolicy : public DictionaryBigramsStructurePolicy {
  public:
-    explicit BigramListPolicy(const uint8_t *const bigramsBuf) : mBigramsBuf(bigramsBuf) {}
+    BigramListPolicy(const uint8_t *const bigramsBuf, const int bufSize)
+            : mBigramsBuf(bigramsBuf), mBufSize(bufSize) {}
 
     ~BigramListPolicy() {}
 
     void getNextBigram(int *const outBigramPos, int *const outProbability, bool *const outHasNext,
             int *const pos) const {
         BigramListReadWriteUtils::BigramFlags flags;
-        BigramListReadWriteUtils::getBigramEntryPropertiesAndAdvancePosition(mBigramsBuf, &flags,
-                outBigramPos, pos);
+        if (!BigramListReadWriteUtils::getBigramEntryPropertiesAndAdvancePosition(mBigramsBuf,
+                mBufSize, &flags, outBigramPos, pos)) {
+            AKLOGE("Cannot read bigram entry. mBufSize: %d, pos: %d. ", mBufSize, *pos);
+            *outProbability = NOT_A_PROBABILITY;
+            *outHasNext = false;
+            return;
+        }
         *outProbability = BigramListReadWriteUtils::getProbabilityFromFlags(flags);
         *outHasNext = BigramListReadWriteUtils::hasNext(flags);
     }
 
-    void skipAllBigrams(int *const pos) const {
-        BigramListReadWriteUtils::skipExistingBigrams(mBigramsBuf, pos);
+    bool skipAllBigrams(int *const pos) const {
+        return BigramListReadWriteUtils::skipExistingBigrams(mBigramsBuf, mBufSize, pos);
     }
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(BigramListPolicy);
 
     const uint8_t *const mBigramsBuf;
+    const int mBufSize;
 };
 } // namespace latinime
 #endif // LATINIME_BIGRAM_LIST_POLICY_H

@@ -38,9 +38,14 @@ const BigramListReadWriteUtils::BigramFlags BigramListReadWriteUtils::FLAG_ATTRI
 const BigramListReadWriteUtils::BigramFlags
         BigramListReadWriteUtils::MASK_ATTRIBUTE_PROBABILITY = 0x0F;
 
-/* static */ void BigramListReadWriteUtils::getBigramEntryPropertiesAndAdvancePosition(
-        const uint8_t *const bigramsBuf, BigramFlags *const outBigramFlags,
+/* static */ bool BigramListReadWriteUtils::getBigramEntryPropertiesAndAdvancePosition(
+        const uint8_t *const bigramsBuf, const int bufSize, BigramFlags *const outBigramFlags,
         int *const outTargetPtNodePos, int *const bigramEntryPos) {
+    if (bufSize <= *bigramEntryPos) {
+        AKLOGE("Read invalid pos in getBigramEntryPropertiesAndAdvancePosition(). bufSize: %d, "
+                "bigramEntryPos: %d.", bufSize, *bigramEntryPos);
+        return false;
+    }
     const BigramFlags bigramFlags = ByteArrayUtils::readUint8AndAdvancePosition(bigramsBuf,
             bigramEntryPos);
     if (outBigramFlags) {
@@ -51,15 +56,19 @@ const BigramListReadWriteUtils::BigramFlags
     if (outTargetPtNodePos) {
         *outTargetPtNodePos = targetPos;
     }
+    return true;
 }
 
-/* static */ void BigramListReadWriteUtils::skipExistingBigrams(const uint8_t *const bigramsBuf,
-        int *const bigramListPos) {
+/* static */ bool BigramListReadWriteUtils::skipExistingBigrams(const uint8_t *const bigramsBuf,
+        const int bufSize, int *const bigramListPos) {
     BigramFlags flags;
     do {
-        getBigramEntryPropertiesAndAdvancePosition(bigramsBuf, &flags, 0 /* outTargetPtNodePos */,
-                bigramListPos);
+        if (!getBigramEntryPropertiesAndAdvancePosition(bigramsBuf, bufSize, &flags,
+                0 /* outTargetPtNodePos */, bigramListPos)) {
+            return false;
+        }
     } while(hasNext(flags));
+    return true;
 }
 
 /* static */ int BigramListReadWriteUtils::getBigramAddressAndAdvancePosition(
