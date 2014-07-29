@@ -24,8 +24,6 @@ import com.android.inputmethod.latin.Constants;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import javax.annotation.Nonnull;
-
 /**
  * This class implements the logic chain between receiving events and generating code points.
  *
@@ -89,7 +87,6 @@ public class CombinerChain {
      * @return the processed event. It may be the same event, or a consumed event, or a completely
      *   new event. However it may never be null.
      */
-    @Nonnull
     public Event processEvent(final ArrayList<Event> previousEvents, final Event newEvent) {
         final ArrayList<Event> modifiablePreviousEvents = new ArrayList<>(previousEvents);
         Event event = newEvent;
@@ -97,6 +94,10 @@ public class CombinerChain {
             // A combiner can never return more than one event; it can return several
             // code points, but they should be encapsulated within one event.
             event = combiner.processEvent(modifiablePreviousEvents, event);
+            if (null == event) {
+                // Combiners return null if they eat the event.
+                break;
+            }
         }
         return event;
     }

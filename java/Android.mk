@@ -25,7 +25,7 @@ LOCAL_CERTIFICATE := shared
 
 LOCAL_JNI_SHARED_LIBRARIES := libjni_latinime
 
-LOCAL_STATIC_JAVA_LIBRARIES := android-common inputmethod-common android-support-v4 jsr305
+LOCAL_STATIC_JAVA_LIBRARIES := android-common inputmethod-common android-support-v4
 
 # Do not compress dictionary files to mmap dict data runtime
 LOCAL_AAPT_FLAGS := -0 .dict
