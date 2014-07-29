@@ -31,4 +31,5 @@
     android:longClickable="false"
     android:hapticFeedbackEnabled="false"
     android:soundEffectsEnabled="false"
+    android:background="@null"
     style="?attr/suggestionStripViewStyle" />
