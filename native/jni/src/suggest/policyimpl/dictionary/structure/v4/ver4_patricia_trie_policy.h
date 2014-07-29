@@ -72,7 +72,7 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
 
     int getProbability(const int unigramProbability, const int bigramProbability) const;
 
-    int getUnigramProbabilityOfPtNode(const int ptNodePos) const;
+    int getProbabilityOfPtNode(const PrevWordsInfo *const prevWordsInfo, const int ptNodePos) const;
 
     int getShortcutPositionOfPtNode(const int ptNodePos) const;
 
