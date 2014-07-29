@@ -88,13 +88,7 @@ void Dictionary::getPredictions(const PrevWordsInfo *const prevWordsInfo,
 }
 
 int Dictionary::getProbability(const int *word, int length) const {
-    TimeKeeper::setCurrentTime();
-    int pos = getDictionaryStructurePolicy()->getTerminalPtNodePositionOfWord(word, length,
-            false /* forceLowerCaseSearch */);
-    if (NOT_A_DICT_POS == pos) {
-        return NOT_A_PROBABILITY;
-    }
-    return getDictionaryStructurePolicy()->getProbabilityOfPtNode(nullptr /* prevWordsInfo */, pos);
+    return getNgramProbability(nullptr /* prevWordsInfo */, word, length);
 }
 
 int Dictionary::getMaxProbabilityOfExactMatches(const int *word, int length) const {
@@ -109,18 +103,7 @@ int Dictionary::getNgramProbability(const PrevWordsInfo *const prevWordsInfo, co
     int nextWordPos = mDictionaryStructureWithBufferPolicy->getTerminalPtNodePositionOfWord(word,
             length, false /* forceLowerCaseSearch */);
     if (NOT_A_DICT_POS == nextWordPos) return NOT_A_PROBABILITY;
-    BinaryDictionaryBigramsIterator bigramsIt = prevWordsInfo->getBigramsIteratorForPrediction(
-            mDictionaryStructureWithBufferPolicy.get());
-    while (bigramsIt.hasNext()) {
-        bigramsIt.next();
-        if (bigramsIt.getBigramPos() == nextWordPos
-                && bigramsIt.getProbability() != NOT_A_PROBABILITY) {
-            return mDictionaryStructureWithBufferPolicy->getProbability(
-                    mDictionaryStructureWithBufferPolicy->getProbabilityOfPtNode(
-                            nullptr /* prevWordsInfo */, nextWordPos), bigramsIt.getProbability());
-        }
-    }
-    return NOT_A_PROBABILITY;
+    return getDictionaryStructurePolicy()->getProbabilityOfPtNode(prevWordsInfo, nextWordPos);
 }
 
 bool Dictionary::addUnigramEntry(const int *const word, const int length,
