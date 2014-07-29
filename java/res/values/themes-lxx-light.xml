@@ -45,7 +45,7 @@
         name="KeyboardView.LXX_Light"
         parent="KeyboardView"
     >
-        <item name="android:background">@color/keyboard_background_lxx_light</item>
+        <item name="android:background">@drawable/keyboard_background_lxx_light</item>
         <item name="keyBackground">@drawable/btn_keyboard_key_lxx_light</item>
         <item name="functionalKeyBackground">@drawable/btn_keyboard_key_functional_lxx_light</item>
         <item name="spacebarBackground">@drawable/btn_keyboard_spacebar_lxx_light</item>
@@ -120,7 +120,7 @@
         <item name="centerSuggestionPercentile">@fraction/config_center_suggestion_percentile</item>
         <item name="maxMoreSuggestionsRow">@integer/config_max_more_suggestions_row</item>
         <item name="minMoreSuggestionsWidth">@fraction/config_min_more_suggestions_width</item>
-        <item name="android:background">@color/suggestions_strip_background_lxx_light</item>
+        <item name="android:background">@drawable/keyboard_suggest_strip_lxx_light</item>
         <item name="android:src">@drawable/suggestions_strip_divider_lxx_light</item>
         <item name="suggestionStripOptions">autoCorrectBold|validTypedWordBold</item>
         <item name="colorValidTypedWord">@color/typed_word_color_lxx_light</item>
