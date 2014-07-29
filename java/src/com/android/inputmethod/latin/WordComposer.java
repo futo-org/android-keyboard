@@ -25,8 +25,6 @@ import com.android.inputmethod.latin.utils.StringUtils;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import javax.annotation.Nonnull;
-
 /**
  * A place to store the currently composing word with information such as adjacent key codes as well
  */
@@ -181,7 +179,6 @@ public final class WordComposer {
      * @param event the unprocessed event.
      * @return the processed event. Never null, but may be marked as consumed.
      */
-    @Nonnull
     public Event processEvent(final Event event) {
         final Event processedEvent = mCombinerChain.processEvent(mEvents, event);
         mEvents.add(event);
