@@ -30,8 +30,8 @@ class BigramListReadWriteUtils {
 public:
    typedef uint8_t BigramFlags;
 
-   static void getBigramEntryPropertiesAndAdvancePosition(const uint8_t *const bigramsBuf,
-           BigramFlags *const outBigramFlags, int *const outTargetPtNodePos,
+   static bool getBigramEntryPropertiesAndAdvancePosition(const uint8_t *const bigramsBuf,
+           const int bufSize, BigramFlags *const outBigramFlags, int *const outTargetPtNodePos,
            int *const bigramEntryPos);
 
    static AK_FORCE_INLINE int getProbabilityFromFlags(const BigramFlags flags) {
@@ -43,7 +43,8 @@ public:
    }
 
    // Bigrams reading methods
-   static void skipExistingBigrams(const uint8_t *const bigramsBuf, int *const bigramListPos);
+   static bool skipExistingBigrams(const uint8_t *const bigramsBuf, const int bufSize,
+           int *const bigramListPos);
 
 private:
    DISALLOW_IMPLICIT_CONSTRUCTORS(BigramListReadWriteUtils);
