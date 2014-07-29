@@ -13,6 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Only build if it's explicitly requested, or running mm/mmm.
+ifneq ($(ONE_SHOT_MAKEFILE)$(filter $(MAKECMDGOALS),dicttool_aosp),)
+
 # HACK: Temporarily disable host tool build on Mac until the build system is ready for C++11.
 LATINIME_HOST_OSNAME := $(shell uname -s)
 ifeq ($(LATINIME_HOST_OSNAME), Darwin) # TODO: Remove this
@@ -98,3 +101,5 @@ endif # Darwin - TODO: Remove this
 LATINIME_DICTTOOL_AOSP_LOCAL_PATH :=
 LATINIME_LOCAL_DIR :=
 LATINIME_HOST_OSNAME :=
+
+endif
