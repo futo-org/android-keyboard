@@ -40,8 +40,9 @@ class Ver4BigramListPolicy : public DictionaryBigramsStructurePolicy {
     void getNextBigram(int *const outBigramPos, int *const outProbability,
             bool *const outHasNext, int *const bigramEntryPos) const;
 
-    void skipAllBigrams(int *const pos) const {
+    bool skipAllBigrams(int *const pos) const {
         // Do nothing because we don't need to skip bigram lists in ver4 dictionaries.
+        return true;
     }
 
     bool addNewEntry(const int terminalId, const int newTargetTerminalId,

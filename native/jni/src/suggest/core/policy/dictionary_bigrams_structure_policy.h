@@ -30,7 +30,7 @@ class DictionaryBigramsStructurePolicy {
 
     virtual void getNextBigram(int *const outBigramPos, int *const outProbability,
             bool *const outHasNext, int *const pos) const = 0;
-    virtual void skipAllBigrams(int *const pos) const = 0;
+    virtual bool skipAllBigrams(int *const pos) const = 0;
 
  protected:
     DictionaryBigramsStructurePolicy() {}
