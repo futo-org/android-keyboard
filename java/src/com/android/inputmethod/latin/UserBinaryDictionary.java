@@ -253,12 +253,12 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
                 final int frequency = cursor.getInt(indexFrequency);
                 final int adjustedFrequency = scaleFrequencyFromDefaultToLatinIme(frequency);
                 // Safeguard against adding really long words.
-                if (word.length() < MAX_WORD_LENGTH) {
+                if (word.length() <= MAX_WORD_LENGTH) {
                     runGCIfRequiredLocked(true /* mindsBlockByGC */);
                     addUnigramLocked(word, adjustedFrequency, null /* shortcutTarget */,
                             0 /* shortcutFreq */, false /* isNotAWord */,
                             false /* isBlacklisted */, BinaryDictionary.NOT_A_VALID_TIMESTAMP);
-                    if (null != shortcut && shortcut.length() < MAX_WORD_LENGTH) {
+                    if (null != shortcut && shortcut.length() <= MAX_WORD_LENGTH) {
                         runGCIfRequiredLocked(true /* mindsBlockByGC */);
                         addUnigramLocked(shortcut, adjustedFrequency, word,
                                 USER_DICT_SHORTCUT_FREQUENCY, true /* isNotAWord */,
