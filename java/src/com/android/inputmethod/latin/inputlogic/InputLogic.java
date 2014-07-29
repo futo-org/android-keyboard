@@ -428,7 +428,8 @@ public final class InputLogic {
             // A special key, like delete, shift, emoji, or the settings key.
             switch (event.mKeyCode) {
             case Constants.CODE_DELETE:
-                handleBackspace(inputTransaction, currentKeyboardScriptId);
+                final Event processedEvent = mWordComposer.processEvent(inputTransaction.mEvent);
+                handleBackspace(inputTransaction, currentKeyboardScriptId, processedEvent);
                 // Backspace is a functional key, but it affects the contents of the editor.
                 inputTransaction.setDidAffectContents();
                 break;
@@ -681,13 +682,14 @@ public final class InputLogic {
     private boolean handleNonSpecialCharacter(final InputTransaction inputTransaction,
             // TODO: remove this argument
             final LatinIME.UIHandler handler) {
-        final int codePoint = inputTransaction.mEvent.mCodePoint;
+        final Event processedEvent = mWordComposer.processEvent(inputTransaction.mEvent);
+        final int codePoint = processedEvent.mCodePoint;
         mSpaceState = SpaceState.NONE;
         final boolean didAutoCorrect;
         if (inputTransaction.mSettingsValues.isWordSeparator(codePoint)
                 || Character.getType(codePoint) == Character.OTHER_SYMBOL) {
             didAutoCorrect = handleSeparator(inputTransaction,
-                    inputTransaction.mEvent.isSuggestionStripPress(), handler);
+                    processedEvent.isSuggestionStripPress(), handler);
         } else {
             didAutoCorrect = false;
             if (SpaceState.PHANTOM == inputTransaction.mSpaceState) {
@@ -700,7 +702,7 @@ public final class InputLogic {
                     commitTyped(inputTransaction.mSettingsValues, LastComposedWord.NOT_A_SEPARATOR);
                 }
             }
-            handleNonSeparator(inputTransaction.mSettingsValues, inputTransaction);
+            handleNonSeparator(inputTransaction.mSettingsValues, inputTransaction, processedEvent);
         }
         return didAutoCorrect;
     }
@@ -711,8 +713,9 @@ public final class InputLogic {
      * @param inputTransaction The transaction in progress.
      */
     private void handleNonSeparator(final SettingsValues settingsValues,
-            final InputTransaction inputTransaction) {
-        final Event processedEvent = mWordComposer.processEvent(inputTransaction.mEvent);
+            final InputTransaction inputTransaction,
+            // TODO: remove this arg, put it into the input transaction
+            final Event processedEvent) {
         final int codePoint = processedEvent.mCodePoint;
         // TODO: refactor this method to stop flipping isComposingWord around all the time, and
         // make it shorter (possibly cut into several pieces). Also factor handleNonSpecialCharacter
@@ -902,8 +905,9 @@ public final class InputLogic {
      */
     private void handleBackspace(final InputTransaction inputTransaction,
             // TODO: remove this argument, put it into settingsValues
-            final int currentKeyboardScriptId) {
-        final Event processedEvent = mWordComposer.processEvent(inputTransaction.mEvent);
+            final int currentKeyboardScriptId,
+            // TODO: remove this argument, put it into the transaction
+            final Event processedEvent) {
         mSpaceState = SpaceState.NONE;
         mDeleteCount++;
 
