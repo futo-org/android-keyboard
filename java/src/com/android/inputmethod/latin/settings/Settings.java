@@ -41,6 +41,7 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     private static final String TAG = Settings.class.getSimpleName();
     // Settings screens
     public static final String SCREEN_INPUT = "screen_input";
+    public static final String SCREEN_THEME = "screen_theme";
     public static final String SCREEN_MULTI_LINGUAL = "screen_multi_lingual";
     public static final String SCREEN_GESTURE = "screen_gesture";
     public static final String SCREEN_CORRECTION = "screen_correction";

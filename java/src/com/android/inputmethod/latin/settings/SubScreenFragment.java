@@ -115,4 +115,9 @@ abstract class SubScreenFragment extends PreferenceFragment
                 mSharedPreferenceChangeListener);
         super.onDestroy();
     }
+
+    @Override
+    public void onSharedPreferenceChanged(final SharedPreferences prefs, final String key) {
+        // This method may be overridden by an extended class.
+    }
 }
