@@ -123,15 +123,23 @@ int Ver4PatriciaTriePolicy::getProbability(const int unigramProbability,
 
 int Ver4PatriciaTriePolicy::getProbabilityOfPtNode(const PrevWordsInfo *const prevWordsInfo,
         const int ptNodePos) const {
-    if (prevWordsInfo) {
-        // TODO: Return probability using prevWordsInfo.
-        return NOT_A_PROBABILITY;
-    }
     if (ptNodePos == NOT_A_DICT_POS) {
         return NOT_A_PROBABILITY;
     }
     const PtNodeParams ptNodeParams(mNodeReader.fetchPtNodeParamsInBufferFromPtNodePos(ptNodePos));
     if (ptNodeParams.isDeleted() || ptNodeParams.isBlacklisted() || ptNodeParams.isNotAWord()) {
+        return NOT_A_PROBABILITY;
+    }
+    if (prevWordsInfo) {
+        BinaryDictionaryBigramsIterator bigramsIt =
+                prevWordsInfo->getBigramsIteratorForPrediction(this /* dictStructurePolicy */);
+        while (bigramsIt.hasNext()) {
+            bigramsIt.next();
+            if (bigramsIt.getBigramPos() == ptNodePos
+                    && bigramsIt.getProbability() != NOT_A_PROBABILITY) {
+                return getProbability(ptNodeParams.getProbability(), bigramsIt.getProbability());
+            }
+        }
         return NOT_A_PROBABILITY;
     }
     return getProbability(ptNodeParams.getProbability(), NOT_A_PROBABILITY);
