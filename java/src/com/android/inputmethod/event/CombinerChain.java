@@ -84,8 +84,6 @@ public class CombinerChain {
      * Process an event through the combining chain, and return a processed event to apply.
      * @param previousEvents the list of previous events in this composition
      * @param newEvent the new event to process
-     * @return the processed event. It may be the same event, or a consumed event, or a completely
-     *   new event. However it may never be null.
      */
     public Event processEvent(final ArrayList<Event> previousEvents, final Event newEvent) {
         final ArrayList<Event> modifiablePreviousEvents = new ArrayList<>(previousEvents);

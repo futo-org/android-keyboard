@@ -111,7 +111,7 @@ public class MyanmarReordering implements Combiner {
      * Clears the currently combining stream of events and returns the resulting software text
      * event corresponding to the stream. Optionally adds a new event to the cleared stream.
      * @param newEvent the new event to add to the stream. null if none.
-     * @return the resulting software text event. Never null.
+     * @return the resulting software text event. Null if none.
      */
     private Event clearAndGetResultingEvent(final Event newEvent) {
         final CharSequence combinedText;
@@ -124,7 +124,7 @@ public class MyanmarReordering implements Combiner {
         if (null != newEvent) {
             mCurrentEvents.add(newEvent);
         }
-        return null == combinedText ? Event.createConsumedEvent(newEvent)
+        return null == combinedText ? null
                 : Event.createSoftwareTextEvent(combinedText, Event.NOT_A_KEY_CODE);
     }
 
@@ -135,7 +135,7 @@ public class MyanmarReordering implements Combiner {
             final Event lastEvent = getLastEvent();
             if (null == lastEvent) {
                 mCurrentEvents.add(newEvent);
-                return Event.createConsumedEvent(newEvent);
+                return null;
             } else if (isConsonantOrMedial(lastEvent.mCodePoint)) {
                 final Event resultingEvent = clearAndGetResultingEvent(null);
                 mCurrentEvents.add(Event.createSoftwareKeypressEvent(ZERO_WIDTH_NON_JOINER,
@@ -151,7 +151,7 @@ public class MyanmarReordering implements Combiner {
             final Event lastEvent = getLastEvent();
             if (null == lastEvent) {
                 mCurrentEvents.add(newEvent);
-                return Event.createConsumedEvent(newEvent);
+                return null;
             } else if (VOWEL_E == lastEvent.mCodePoint) {
                 final int eventSize = mCurrentEvents.size();
                 if (eventSize >= 2
@@ -162,7 +162,7 @@ public class MyanmarReordering implements Combiner {
                     mCurrentEvents.remove(eventSize - 2);
                     mCurrentEvents.add(newEvent);
                     mCurrentEvents.add(lastEvent);
-                    return Event.createConsumedEvent(newEvent);
+                    return null;
                 }
                 // If there is already a consonant, then we are starting a new syllable.
                 for (int i = eventSize - 2; i >= 0; --i) {
@@ -174,7 +174,7 @@ public class MyanmarReordering implements Combiner {
                 mCurrentEvents.remove(eventSize - 1);
                 mCurrentEvents.add(newEvent);
                 mCurrentEvents.add(lastEvent);
-                return Event.createConsumedEvent(newEvent);
+                return null;
             } else { // lastCodePoint is a consonant/medial. But if it's something else it's fine
                 return clearAndGetResultingEvent(newEvent);
             }
@@ -182,7 +182,7 @@ public class MyanmarReordering implements Combiner {
             final Event lastEvent = getLastEvent();
             if (null == lastEvent) {
                 mCurrentEvents.add(newEvent);
-                return Event.createConsumedEvent(newEvent);
+                return null;
             } else if (VOWEL_E == lastEvent.mCodePoint) {
                 final int eventSize = mCurrentEvents.size();
                 // If there is already a consonant, then we are in the middle of a syllable, and we
@@ -198,7 +198,7 @@ public class MyanmarReordering implements Combiner {
                     mCurrentEvents.remove(eventSize - 1);
                     mCurrentEvents.add(newEvent);
                     mCurrentEvents.add(lastEvent);
-                    return Event.createConsumedEvent(newEvent);
+                    return null;
                 }
                 // Otherwise, we just commit everything.
                 return clearAndGetResultingEvent(null);
@@ -228,10 +228,10 @@ public class MyanmarReordering implements Combiner {
                             mCurrentEvents.remove(eventSize - 1);
                         }
                     }
-                    return Event.createConsumedEvent(newEvent);
+                    return null;
                 } else if (eventSize > 0) {
                     mCurrentEvents.remove(eventSize - 1);
-                    return Event.createConsumedEvent(newEvent);
+                    return null;
                 }
             }
         }
