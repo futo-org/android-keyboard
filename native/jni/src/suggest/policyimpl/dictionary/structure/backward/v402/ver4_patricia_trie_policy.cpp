@@ -28,6 +28,7 @@
 
 #include "suggest/core/dicnode/dic_node.h"
 #include "suggest/core/dicnode/dic_node_vector.h"
+#include "suggest/core/dictionary/ngram_listener.h"
 #include "suggest/core/dictionary/property/bigram_property.h"
 #include "suggest/core/dictionary/property/unigram_property.h"
 #include "suggest/core/dictionary/property/word_property.h"
@@ -153,6 +154,16 @@ int Ver4PatriciaTriePolicy::getProbabilityOfPtNode(const PrevWordsInfo *const pr
         return NOT_A_PROBABILITY;
     }
     return getProbability(ptNodeParams.getProbability(), NOT_A_PROBABILITY);
+}
+
+void Ver4PatriciaTriePolicy::iterateNgramEntries(const PrevWordsInfo *const prevWordsInfo,
+        NgramListener *const listener) const {
+    BinaryDictionaryBigramsIterator bigramsIt = prevWordsInfo->getBigramsIteratorForPrediction(
+            this /* dictStructurePolicy */);
+    while (bigramsIt.hasNext()) {
+        bigramsIt.next();
+        listener->onVisitEntry(bigramsIt.getProbability(), bigramsIt.getBigramPos());
+    }
 }
 
 int Ver4PatriciaTriePolicy::getShortcutPositionOfPtNode(const int ptNodePos) const {
