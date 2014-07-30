@@ -215,13 +215,13 @@ class ProximityInfoState {
     std::vector<float> mSpeedRates;
     std::vector<float> mDirections;
     // probabilities of skipping or mapping to a key for each point.
-    std::vector<std::unordered_map<int, float> > mCharProbabilities;
+    std::vector<std::unordered_map<int, float>> mCharProbabilities;
     // The vector for the key code set which holds nearby keys of some trailing sampled input points
     // for each sampled input point. These nearby keys contain the next characters which can be in
     // the dictionary. Specifically, currently we are looking for keys nearby trailing sampled
     // inputs including the current input point.
     std::vector<ProximityInfoStateUtils::NearKeycodesSet> mSampledSearchKeySets;
-    std::vector<std::vector<int> > mSampledSearchKeyVectors;
+    std::vector<std::vector<int>> mSampledSearchKeyVectors;
     bool mTouchPositionCorrectionEnabled;
     int mInputProximities[MAX_PROXIMITY_CHARS_SIZE * MAX_WORD_LENGTH];
     int mSampledInputSize;

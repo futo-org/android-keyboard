@@ -621,7 +621,7 @@ namespace latinime {
         const std::vector<int> *const sampledLengthCache,
         const std::vector<float> *const sampledNormalizedSquaredLengthCache,
         const ProximityInfo *const proximityInfo,
-        std::vector<std::unordered_map<int, float> > *charProbabilities) {
+        std::vector<std::unordered_map<int, float>> *charProbabilities) {
     charProbabilities->resize(sampledInputSize);
     // Calculates probabilities of using a point as a correlated point with the character
     // for each point.
@@ -822,9 +822,9 @@ namespace latinime {
 /* static */ void ProximityInfoStateUtils::updateSampledSearchKeySets(
         const ProximityInfo *const proximityInfo, const int sampledInputSize,
         const int lastSavedInputSize, const std::vector<int> *const sampledLengthCache,
-        const std::vector<std::unordered_map<int, float> > *const charProbabilities,
+        const std::vector<std::unordered_map<int, float>> *const charProbabilities,
         std::vector<NearKeycodesSet> *sampledSearchKeySets,
-        std::vector<std::vector<int> > *sampledSearchKeyVectors) {
+        std::vector<std::vector<int>> *sampledSearchKeyVectors) {
     sampledSearchKeySets->resize(sampledInputSize);
     sampledSearchKeyVectors->resize(sampledInputSize);
     const int readForwordLength = static_cast<int>(
@@ -868,7 +868,7 @@ namespace latinime {
 /* static */ bool ProximityInfoStateUtils::suppressCharProbabilities(const int mostCommonKeyWidth,
         const int sampledInputSize, const std::vector<int> *const lengthCache,
         const int index0, const int index1,
-        std::vector<std::unordered_map<int, float> > *charProbabilities) {
+        std::vector<std::unordered_map<int, float>> *charProbabilities) {
     ASSERT(0 <= index0 && index0 < sampledInputSize);
     ASSERT(0 <= index1 && index1 < sampledInputSize);
     const float keyWidthFloat = static_cast<float>(mostCommonKeyWidth);
@@ -933,7 +933,7 @@ namespace latinime {
 // returns probability of generating the word.
 /* static */ float ProximityInfoStateUtils::getMostProbableString(
         const ProximityInfo *const proximityInfo, const int sampledInputSize,
-        const std::vector<std::unordered_map<int, float> > *const charProbabilities,
+        const std::vector<std::unordered_map<int, float>> *const charProbabilities,
         int *const codePointBuf) {
     ASSERT(sampledInputSize >= 0);
     memset(codePointBuf, 0, sizeof(codePointBuf[0]) * MAX_WORD_LENGTH);
