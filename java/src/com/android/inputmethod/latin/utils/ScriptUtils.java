@@ -33,6 +33,8 @@ public class ScriptUtils {
     public static final int SCRIPT_HEBREW = 4;
     public static final int SCRIPT_ARMENIAN = 5;
     public static final int SCRIPT_GEORGIAN = 6;
+    public static final int SCRIPT_KHMER = 7;
+    public static final int SCRIPT_LAO = 8;
     public static final TreeMap<String, Integer> mSpellCheckerLanguageToScript;
     static {
         // List of the supported languages and their associated script. We won't check
@@ -122,6 +124,14 @@ public class ScriptUtils {
             // or Georgian supplement block, U+2D00..U+2D2F
             return (codePoint >= 0x10A0 && codePoint <= 0x10FF
                     || codePoint >= 0x2D00 && codePoint <= 0x2D2F);
+        case SCRIPT_KHMER:
+            // Khmer letters are in unicode block U+1780..U+17FF, and the Khmer symbols block
+            // is U+19E0..U+19FF
+            return (codePoint >= 0x1780 && codePoint <= 0x17FF
+                    || codePoint >= 0x19E0 && codePoint <= 0x19FF);
+        case SCRIPT_LAO:
+            // The Lao block is U+0E80..U+0EFF
+            return (codePoint >= 0xE80 && codePoint <= 0xEFF);
         case SCRIPT_UNKNOWN:
             return true;
         default:
