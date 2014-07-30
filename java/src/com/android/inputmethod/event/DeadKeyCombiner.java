@@ -32,11 +32,12 @@ public class DeadKeyCombiner implements Combiner {
 
     @Override
     public Event processEvent(final ArrayList<Event> previousEvents, final Event event) {
+        if (null == event) return null; // Just in case some combiner is broken
         if (TextUtils.isEmpty(mDeadSequence)) {
             if (event.isDead()) {
                 mDeadSequence.appendCodePoint(event.mCodePoint);
             }
-            return Event.createConsumedEvent(event);
+            return event;
         } else {
             // TODO: Allow combining for several dead chars rather than only the first one.
             // The framework doesn't know how to do this now.
