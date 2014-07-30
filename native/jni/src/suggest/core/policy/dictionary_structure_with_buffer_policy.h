@@ -59,10 +59,10 @@ class DictionaryStructureWithBufferPolicy {
     virtual int getProbability(const int unigramProbability,
             const int bigramProbability) const = 0;
 
-    virtual int getProbabilityOfPtNode(const PrevWordsInfo *const prevWordsInfo,
+    virtual int getProbabilityOfPtNode(const int *const prevWordsPtNodePos,
             const int nodePos) const = 0;
 
-    virtual void iterateNgramEntries(const PrevWordsInfo *const prevWordsInfo,
+    virtual void iterateNgramEntries(const int *const prevWordsPtNodePos,
             NgramListener *const listener) const = 0;
 
     virtual int getShortcutPositionOfPtNode(const int nodePos) const = 0;
