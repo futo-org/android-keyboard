@@ -59,32 +59,40 @@ void Dictionary::getSuggestions(ProximityInfo *proximityInfo, DicTraverseSession
     }
 }
 
+Dictionary::NgramListenerForPrediction::NgramListenerForPrediction(
+        const PrevWordsInfo *const prevWordsInfo, SuggestionResults *const suggestionResults,
+        const DictionaryStructureWithBufferPolicy *const dictStructurePolicy)
+    : mPrevWordsInfo(prevWordsInfo), mSuggestionResults(suggestionResults),
+      mDictStructurePolicy(dictStructurePolicy) {}
+
+void Dictionary::NgramListenerForPrediction::onVisitEntry(const int ngramProbability,
+        const int targetPtNodePos) {
+    if (targetPtNodePos == NOT_A_DICT_POS) {
+        return;
+    }
+    if (mPrevWordsInfo->isNthPrevWordBeginningOfSentence(1 /* n */)
+            && ngramProbability == NOT_A_PROBABILITY) {
+        return;
+    }
+    int targetWordCodePoints[MAX_WORD_LENGTH];
+    int unigramProbability = 0;
+    const int codePointCount = mDictStructurePolicy->
+            getCodePointsAndProbabilityAndReturnCodePointCount(targetPtNodePos,
+                    MAX_WORD_LENGTH, targetWordCodePoints, &unigramProbability);
+    if (codePointCount <= 0) {
+        return;
+    }
+    const int probability = mDictStructurePolicy->getProbability(
+            unigramProbability, ngramProbability);
+    mSuggestionResults->addPrediction(targetWordCodePoints, codePointCount, probability);
+}
+
 void Dictionary::getPredictions(const PrevWordsInfo *const prevWordsInfo,
         SuggestionResults *const outSuggestionResults) const {
     TimeKeeper::setCurrentTime();
-    int unigramProbability = 0;
-    int bigramCodePoints[MAX_WORD_LENGTH];
-    BinaryDictionaryBigramsIterator bigramsIt = prevWordsInfo->getBigramsIteratorForPrediction(
+    NgramListenerForPrediction listener(prevWordsInfo, outSuggestionResults,
             mDictionaryStructureWithBufferPolicy.get());
-    while (bigramsIt.hasNext()) {
-        bigramsIt.next();
-        if (bigramsIt.getBigramPos() == NOT_A_DICT_POS) {
-            continue;
-        }
-        if (prevWordsInfo->isNthPrevWordBeginningOfSentence(1 /* n */)
-                && bigramsIt.getProbability() == NOT_A_PROBABILITY) {
-            continue;
-        }
-        const int codePointCount = mDictionaryStructureWithBufferPolicy->
-                getCodePointsAndProbabilityAndReturnCodePointCount(bigramsIt.getBigramPos(),
-                        MAX_WORD_LENGTH, bigramCodePoints, &unigramProbability);
-        if (codePointCount <= 0) {
-            continue;
-        }
-        const int probability = mDictionaryStructureWithBufferPolicy->getProbability(
-                unigramProbability, bigramsIt.getProbability());
-        outSuggestionResults->addPrediction(bigramCodePoints, codePointCount, probability);
-    }
+    mDictionaryStructureWithBufferPolicy->iterateNgramEntries(prevWordsInfo, &listener);
 }
 
 int Dictionary::getProbability(const int *word, int length) const {

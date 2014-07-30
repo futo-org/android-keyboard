@@ -30,6 +30,7 @@ class DicNodeVector;
 class DictionaryBigramsStructurePolicy;
 class DictionaryHeaderStructurePolicy;
 class DictionaryShortcutsStructurePolicy;
+class NgramListener;
 class PrevWordsInfo;
 class UnigramProperty;
 
@@ -60,6 +61,9 @@ class DictionaryStructureWithBufferPolicy {
 
     virtual int getProbabilityOfPtNode(const PrevWordsInfo *const prevWordsInfo,
             const int nodePos) const = 0;
+
+    virtual void iterateNgramEntries(const PrevWordsInfo *const prevWordsInfo,
+            NgramListener *const listener) const = 0;
 
     virtual int getShortcutPositionOfPtNode(const int nodePos) const = 0;
 
