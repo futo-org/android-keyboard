@@ -74,6 +74,9 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
 
     int getProbabilityOfPtNode(const PrevWordsInfo *const prevWordsInfo, const int ptNodePos) const;
 
+    void iterateNgramEntries(const PrevWordsInfo *const prevWordsInfo,
+            NgramListener *const listener) const;
+
     int getShortcutPositionOfPtNode(const int ptNodePos) const;
 
     BinaryDictionaryBigramsIterator getBigramsIteratorOfPtNode(const int ptNodePos) const;

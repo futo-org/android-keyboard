@@ -21,6 +21,7 @@
 
 #include "defines.h"
 #include "jni.h"
+#include "suggest/core/dictionary/ngram_listener.h"
 #include "suggest/core/dictionary/property/word_property.h"
 #include "suggest/core/policy/dictionary_header_structure_policy.h"
 #include "suggest/core/policy/dictionary_structure_with_buffer_policy.h"
@@ -113,6 +114,21 @@ class Dictionary {
     DISALLOW_IMPLICIT_CONSTRUCTORS(Dictionary);
 
     typedef std::unique_ptr<SuggestInterface> SuggestInterfacePtr;
+
+    class NgramListenerForPrediction : public NgramListener {
+     public:
+        NgramListenerForPrediction(const PrevWordsInfo *const prevWordsInfo,
+                SuggestionResults *const suggestionResults,
+                const DictionaryStructureWithBufferPolicy *const dictStructurePolicy);
+        virtual void onVisitEntry(const int ngramProbability, const int targetPtNodePos);
+
+     private:
+        DISALLOW_IMPLICIT_CONSTRUCTORS(NgramListenerForPrediction);
+
+        const PrevWordsInfo *const mPrevWordsInfo;
+        SuggestionResults *const mSuggestionResults;
+        const DictionaryStructureWithBufferPolicy *const mDictStructurePolicy;
+    };
 
     static const int HEADER_ATTRIBUTE_BUFFER_SIZE;
 
