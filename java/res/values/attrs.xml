@@ -488,6 +488,8 @@
             <enum name="hebrew" value="4" />
             <enum name="armenian" value="5" />
             <enum name="georgian" value="6" />
+            <enum name="khmer" value="7" />
+            <enum name="lao" value="8" />
         </attr>
     </declare-styleable>
 
