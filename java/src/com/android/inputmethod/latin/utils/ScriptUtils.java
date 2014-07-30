@@ -35,6 +35,10 @@ public class ScriptUtils {
     public static final int SCRIPT_GEORGIAN = 6;
     public static final int SCRIPT_KHMER = 7;
     public static final int SCRIPT_LAO = 8;
+    public static final int SCRIPT_MYANMAR = 9;
+    public static final int SCRIPT_SINHALA = 10;
+    public static final int SCRIPT_THAI = 11;
+    public static final int SCRIPT_TELUGU = 12;
     public static final TreeMap<String, Integer> mSpellCheckerLanguageToScript;
     static {
         // List of the supported languages and their associated script. We won't check
@@ -132,6 +136,23 @@ public class ScriptUtils {
         case SCRIPT_LAO:
             // The Lao block is U+0E80..U+0EFF
             return (codePoint >= 0xE80 && codePoint <= 0xEFF);
+        case SCRIPT_MYANMAR:
+            // Myanmar has three unicode blocks :
+            // Myanmar U+1000..U+109F
+            // Myanmar extended-A U+AA60..U+AA7F
+            // Myanmar extended-B U+A9E0..U+A9FF
+            return (codePoint >= 0x1000 && codePoint <= 0x109F
+                    || codePoint >= 0xAA60 && codePoint <= 0xAA7F
+                    || codePoint >= 0xA9E0 && codePoint <= 0xA9FF);
+        case SCRIPT_SINHALA:
+            // Sinhala unicode block is U+0D80..U+0DFF
+            return (codePoint >= 0xD80 && codePoint <= 0xDFF);
+        case SCRIPT_THAI:
+            // Thai unicode block is U+0E00..U+0E7F
+            return (codePoint >= 0xE00 && codePoint <= 0xE7F);
+        case SCRIPT_TELUGU:
+            // Telugu unicode block is U+0C00..U+0C7F
+            return (codePoint >= 0xC00 && codePoint <= 0xC7F);
         case SCRIPT_UNKNOWN:
             return true;
         default:
