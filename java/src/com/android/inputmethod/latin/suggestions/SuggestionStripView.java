@@ -38,6 +38,7 @@ import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.android.inputmethod.accessibility.AccessibilityUtils;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.MainKeyboardView;
 import com.android.inputmethod.keyboard.MoreKeysPanel;
@@ -368,13 +369,15 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         return true;
     }
 
-    // Working variables for {@link #onLongClick(View)} and
-    // {@link onInterceptTouchEvent(MotionEvent)}.
+    // Working variables for {@link onInterceptTouchEvent(MotionEvent)} and
+    // {@link onTouchEvent(MotionEvent)}.
     private int mLastX;
     private int mLastY;
     private int mOriginX;
     private int mOriginY;
     private final int mMoreSuggestionsModalTolerance;
+    private boolean mNeedsToTransformTouchEventToHoverEvent;
+    private boolean mIsDispatchingHoverEventToMoreSuggestions;
     private final GestureDetector mMoreSuggestionsSlidingDetector;
     private final GestureDetector.OnGestureListener mMoreSuggestionsSlidingListener =
             new GestureDetector.SimpleOnGestureListener() {
@@ -402,9 +405,12 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         final int y = (int)me.getY(index);
         if (Math.abs(x - mOriginX) >= mMoreSuggestionsModalTolerance
                 || mOriginY - y >= mMoreSuggestionsModalTolerance) {
-            // Decided to be in the sliding input mode only when the touch point has been moved
+            // Decided to be in the sliding suggestion mode only when the touch point has been moved
             // upward. Further {@link MotionEvent}s will be delivered to
             // {@link #onTouchEvent(MotionEvent)}.
+            mNeedsToTransformTouchEventToHoverEvent = AccessibilityUtils.getInstance()
+                    .isTouchExplorationEnabled();
+            mIsDispatchingHoverEventToMoreSuggestions = false;
             return true;
         }
 
@@ -426,10 +432,41 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         // In the sliding input mode. {@link MotionEvent} should be forwarded to
         // {@link MoreSuggestionsView}.
         final int index = me.getActionIndex();
-        final int x = (int)me.getX(index);
-        final int y = (int)me.getY(index);
-        me.setLocation(mMoreSuggestionsView.translateX(x), mMoreSuggestionsView.translateY(y));
-        mMoreSuggestionsView.onTouchEvent(me);
+        final int x = mMoreSuggestionsView.translateX((int)me.getX(index));
+        final int y = mMoreSuggestionsView.translateY((int)me.getY(index));
+        me.setLocation(x, y);
+        if (!mNeedsToTransformTouchEventToHoverEvent) {
+            mMoreSuggestionsView.onTouchEvent(me);
+            return true;
+        }
+        // In sliding suggestion mode with accessibility mode on, a touch event should be
+        // transformed to a hover event.
+        final int width = mMoreSuggestionsView.getWidth();
+        final int height = mMoreSuggestionsView.getHeight();
+        final boolean onMoreSuggestions = (x >= 0 && x < width && y >= 0 && y < height);
+        if (!onMoreSuggestions && !mIsDispatchingHoverEventToMoreSuggestions) {
+            // Just drop this touch event because dispatching hover event isn't started yet and
+            // the touch event isn't on {@link MoreSuggestionsView}.
+            return true;
+        }
+        final int hoverAction;
+        if (onMoreSuggestions && !mIsDispatchingHoverEventToMoreSuggestions) {
+            // Transform this touch event to a hover enter event and start dispatching a hover
+            // event to {@link MoreSuggestionsView}.
+            mIsDispatchingHoverEventToMoreSuggestions = true;
+            hoverAction = MotionEvent.ACTION_HOVER_ENTER;
+        } else if (me.getActionMasked() == MotionEvent.ACTION_UP) {
+            // Transform this touch event to a hover exit event and stop dispatching a hover event
+            // after this.
+            mIsDispatchingHoverEventToMoreSuggestions = false;
+            mNeedsToTransformTouchEventToHoverEvent = false;
+            hoverAction = MotionEvent.ACTION_HOVER_EXIT;
+        } else {
+            // Transform this touch event to a hover move event.
+            hoverAction = MotionEvent.ACTION_HOVER_MOVE;
+        }
+        me.setAction(hoverAction);
+        mMoreSuggestionsView.onHoverEvent(me);
         return true;
     }
 
