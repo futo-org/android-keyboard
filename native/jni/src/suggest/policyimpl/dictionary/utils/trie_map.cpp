@@ -98,6 +98,43 @@ bool TrieMap::put(const int key, const uint64_t value, const int bitmapEntryInde
     return putInternal(unsignedKey, value, getBitShuffledKey(unsignedKey), bitmapEntryIndex,
             readEntry(bitmapEntryIndex), 0 /* level */);
 }
+/**
+ * Iterate next entry in a certain level.
+ *
+ * @param iterationState the iteration state that will be read and updated in this method.
+ * @param outKey the output key
+ * @return Result instance. mIsValid is false when all entries are iterated.
+ */
+const TrieMap::Result TrieMap::iterateNext(std::vector<TableIterationState> *const iterationState,
+        int *const outKey) const {
+    while (!iterationState->empty()) {
+        TableIterationState &state = iterationState->back();
+        if (state.mTableSize <= state.mCurrentIndex) {
+            // Move to parent.
+            iterationState->pop_back();
+        } else {
+            const int entryIndex = state.mTableIndex + state.mCurrentIndex;
+            state.mCurrentIndex += 1;
+            const Entry entry = readEntry(entryIndex);
+            if (entry.isBitmapEntry()) {
+                // Move to child.
+                iterationState->emplace_back(popCount(entry.getBitmap()), entry.getTableIndex());
+            } else {
+                if (outKey) {
+                    *outKey = entry.getKey();
+                }
+                if (!entry.hasTerminalLink()) {
+                    return Result(entry.getValue(), true, INVALID_INDEX);
+                }
+                const int valueEntryIndex = entry.getValueEntryIndex();
+                const Entry valueEntry = readEntry(valueEntryIndex);
+                return Result(valueEntry.getValueOfValueEntry(), true, valueEntryIndex + 1);
+            }
+        }
+    }
+    // Visited all entries.
+    return Result(0, false, INVALID_INDEX);
+}
 
 /**
  * Shuffle bits of the key in the fixed order.
