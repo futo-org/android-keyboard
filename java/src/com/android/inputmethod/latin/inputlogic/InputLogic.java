@@ -762,8 +762,7 @@ public final class InputLogic {
             resetComposingState(false /* alsoResetLastComposedWord */);
         }
         if (isComposingWord) {
-            final Event processedEvent = mWordComposer.processEvent(inputTransaction.mEvent);
-            mWordComposer.applyProcessedEvent(processedEvent);
+            mWordComposer.processEvent(inputTransaction.mEvent);
             // If it's the first letter, make note of auto-caps state
             if (mWordComposer.isSingleLetter()) {
                 mWordComposer.setCapitalizedModeAtStartComposingTime(inputTransaction.mShiftState);
@@ -934,8 +933,7 @@ public final class InputLogic {
                     mDictionaryFacilitator.removeWordFromPersonalizedDicts(rejectedSuggestion);
                 }
             } else {
-                final Event processedEvent = mWordComposer.processEvent(inputTransaction.mEvent);
-                mWordComposer.applyProcessedEvent(processedEvent);
+                mWordComposer.processEvent(inputTransaction.mEvent);
             }
             if (mWordComposer.isComposingWord()) {
                 mConnection.setComposingText(getTextWithUnderline(mWordComposer.getTypedWord()), 1);
