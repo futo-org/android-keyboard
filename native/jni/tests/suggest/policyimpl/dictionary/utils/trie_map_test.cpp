@@ -54,7 +54,7 @@ TEST(TrieMapTest, TestSetAndGetLarge) {
         EXPECT_TRUE(trieMap.putRoot(i, i));
     }
     for (int i = 0; i < ELEMENT_COUNT; ++i) {
-        EXPECT_EQ(trieMap.getRoot(i).mValue, static_cast<uint64_t>(i));
+        EXPECT_EQ(static_cast<uint64_t>(i), trieMap.getRoot(i).mValue);
     }
 }
 
@@ -78,7 +78,7 @@ TEST(TrieMapTest, TestRandSetAndGetLarge) {
         testKeyValuePairs[key] = value;
     }
     for (const auto &v : testKeyValuePairs) {
-        EXPECT_EQ(trieMap.getRoot(v.first).mValue, v.second);
+        EXPECT_EQ(v.second, trieMap.getRoot(v.first).mValue);
     }
 }
 
@@ -163,6 +163,61 @@ TEST(TrieMapTest, TestMultiLevel) {
             }
         }
     }
+
+    // Iteration
+    for (const auto &firstLevelEntry : trieMap.getEntriesInRootLevel()) {
+        EXPECT_EQ(trieMap.getRoot(firstLevelEntry.key()).mValue, firstLevelEntry.value());
+        EXPECT_EQ(firstLevelEntries[firstLevelEntry.key()], firstLevelEntry.value());
+        firstLevelEntries.erase(firstLevelEntry.key());
+        for (const auto &secondLevelEntry : firstLevelEntry.getEntriesInNextLevel()) {
+            EXPECT_EQ(twoLevelMap[firstLevelEntry.key()][secondLevelEntry.key()],
+                    secondLevelEntry.value());
+            twoLevelMap[firstLevelEntry.key()].erase(secondLevelEntry.key());
+            for (const auto &thirdLevelEntry : secondLevelEntry.getEntriesInNextLevel()) {
+                EXPECT_EQ(threeLevelMap[firstLevelEntry.key()][secondLevelEntry.key()]
+                        [thirdLevelEntry.key()], thirdLevelEntry.value());
+                threeLevelMap[firstLevelEntry.key()][secondLevelEntry.key()].erase(
+                        thirdLevelEntry.key());
+            }
+        }
+    }
+
+    // Ensure all entries have been traversed.
+    EXPECT_TRUE(firstLevelEntries.empty());
+    for (const auto &secondLevelEntry : twoLevelMap) {
+        EXPECT_TRUE(secondLevelEntry.second.empty());
+    }
+    for (const auto &secondLevelEntry : threeLevelMap) {
+        for (const auto &thirdLevelEntry : secondLevelEntry.second) {
+            EXPECT_TRUE(thirdLevelEntry.second.empty());
+        }
+    }
+}
+
+TEST(TrieMapTest, TestIteration) {
+    static const int ELEMENT_COUNT = 200000;
+    TrieMap trieMap;
+    std::unordered_map<int, uint64_t> testKeyValuePairs;
+
+    // Use the uniform integer distribution [S_INT_MIN, S_INT_MAX].
+    std::uniform_int_distribution<int> keyDistribution(S_INT_MIN, S_INT_MAX);
+    auto keyRandomNumberGenerator = std::bind(keyDistribution, std::mt19937());
+
+    // Use the uniform distribution [0, TrieMap::MAX_VALUE].
+    std::uniform_int_distribution<uint64_t> valueDistribution(0, TrieMap::MAX_VALUE);
+    auto valueRandomNumberGenerator = std::bind(valueDistribution, std::mt19937());
+    for (int i = 0; i < ELEMENT_COUNT; ++i) {
+        const int key = keyRandomNumberGenerator();
+        const uint64_t value = valueRandomNumberGenerator();
+        EXPECT_TRUE(trieMap.putRoot(key, value));
+        testKeyValuePairs[key] = value;
+    }
+    for (const auto &entry : trieMap.getEntriesInRootLevel()) {
+        EXPECT_EQ(trieMap.getRoot(entry.key()).mValue, entry.value());
+        EXPECT_EQ(testKeyValuePairs[entry.key()], entry.value());
+        testKeyValuePairs.erase(entry.key());
+    }
+    EXPECT_TRUE(testKeyValuePairs.empty());
 }
 
 }  // namespace
