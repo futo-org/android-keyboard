@@ -81,11 +81,11 @@ public class CombinerChain {
     }
 
     /**
-     * Pass a new event through the whole chain.
+     * Process an event through the combining chain, and return a processed event to apply.
      * @param previousEvents the list of previous events in this composition
      * @param newEvent the new event to process
      */
-    public void processEvent(final ArrayList<Event> previousEvents, final Event newEvent) {
+    public Event processEvent(final ArrayList<Event> previousEvents, final Event newEvent) {
         final ArrayList<Event> modifiablePreviousEvents = new ArrayList<>(previousEvents);
         Event event = newEvent;
         for (final Combiner combiner : mCombiners) {
@@ -97,6 +97,14 @@ public class CombinerChain {
                 break;
             }
         }
+        return event;
+    }
+
+    /**
+     * Apply a processed event.
+     * @param event the event to be applied
+     */
+    public void applyProcessedEvent(final Event event) {
         if (null != event) {
             // TODO: figure out the generic way of doing this
             if (Constants.CODE_DELETE == event.mKeyCode) {
