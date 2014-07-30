@@ -67,8 +67,6 @@ public class Event {
     final private static int FLAG_DEAD = 0x1;
     // This event is coming from a key repeat, software or hardware.
     final private static int FLAG_REPEAT = 0x2;
-    // This event has already been consumed.
-    final private static int FLAG_CONSUMED = 0x4;
 
     final private int mEventType; // The type of event - one of the constants above
     // The code point associated with the event, if relevant. This is a unicode code point, and
@@ -221,17 +219,6 @@ public class Event {
                 null /* next */);
     }
 
-    /**
-     * Creates an event identical to the passed event, but that has already been consumed.
-     * @param source the event to copy the properties of.
-     * @return an identical event marked as consumed.
-     */
-    public static Event createConsumedEvent(final Event source) {
-        return new Event(source.mEventType, source.mText, source.mCodePoint, source.mKeyCode,
-                source.mX, source.mY, source.mSuggestedWordInfo, source.mFlags | FLAG_CONSUMED,
-                source.mNextEvent);
-    }
-
     public static Event createNotHandledEvent() {
         return new Event(EVENT_TYPE_NOT_HANDLED, null /* text */, NOT_A_CODE_POINT, NOT_A_KEY_CODE,
                 Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE,
@@ -253,8 +240,6 @@ public class Event {
     public boolean isKeyRepeat() {
         return 0 != (FLAG_REPEAT & mFlags);
     }
-
-    public boolean isConsumed() { return 0 != (FLAG_CONSUMED & mFlags); }
 
     // Returns whether this is a fake key press from the suggestion strip. This happens with
     // punctuation signs selected from the suggestion strip.
