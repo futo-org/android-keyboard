@@ -30,7 +30,7 @@ namespace latinime {
  */
 class DictionaryHeaderStructurePolicy {
  public:
-    typedef std::map<std::vector<int>, std::vector<int> > AttributeMap;
+    typedef std::map<std::vector<int>, std::vector<int>> AttributeMap;
 
     virtual ~DictionaryHeaderStructurePolicy() {}
 
