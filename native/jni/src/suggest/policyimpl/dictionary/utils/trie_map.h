@@ -44,6 +44,117 @@ class TrieMap {
                   mNextLevelBitmapEntryIndex(nextLevelBitmapEntryIndex) {}
     };
 
+    /**
+     * Struct to record iteration state in a table.
+     */
+    struct TableIterationState {
+        int mTableSize;
+        int mTableIndex;
+        int mCurrentIndex;
+
+        TableIterationState(const int tableSize, const int tableIndex)
+                : mTableSize(tableSize), mTableIndex(tableIndex), mCurrentIndex(0) {}
+    };
+
+    class TrieMapRange;
+    class TrieMapIterator {
+     public:
+        class IterationResult {
+         public:
+            IterationResult(const TrieMap *const trieMap, const int key, const uint64_t value,
+                    const int nextLeveBitmapEntryIndex)
+                    : mTrieMap(trieMap), mKey(key), mValue(value),
+                      mNextLevelBitmapEntryIndex(nextLeveBitmapEntryIndex) {}
+
+            const TrieMapRange getEntriesInNextLevel() const {
+                return TrieMapRange(mTrieMap, mNextLevelBitmapEntryIndex);
+            }
+
+            bool hasNextLevelMap() const {
+                return mNextLevelBitmapEntryIndex != INVALID_INDEX;
+            }
+
+            AK_FORCE_INLINE int key() const {
+                return mKey;
+            }
+
+            AK_FORCE_INLINE uint64_t value() const {
+                return mValue;
+            }
+
+         private:
+            const TrieMap *const mTrieMap;
+            const int mKey;
+            const uint64_t mValue;
+            const int mNextLevelBitmapEntryIndex;
+        };
+
+        TrieMapIterator(const TrieMap *const trieMap, const int bitmapEntryIndex)
+                : mTrieMap(trieMap), mStateStack(), mBaseBitmapEntryIndex(bitmapEntryIndex),
+                  mKey(0), mValue(0), mIsValid(false), mNextLevelBitmapEntryIndex(INVALID_INDEX) {
+            if (!trieMap) {
+                return;
+            }
+            const Entry bitmapEntry = mTrieMap->readEntry(mBaseBitmapEntryIndex);
+            mStateStack.emplace_back(
+                    mTrieMap->popCount(bitmapEntry.getBitmap()), bitmapEntry.getTableIndex());
+            this->operator++();
+        }
+
+        const IterationResult operator*() const {
+            return IterationResult(mTrieMap, mKey, mValue, mNextLevelBitmapEntryIndex);
+        }
+
+        bool operator!=(const TrieMapIterator &other) const {
+            // Caveat: This works only for for loops.
+            return mIsValid || other.mIsValid;
+        }
+
+        const TrieMapIterator &operator++() {
+            const Result result = mTrieMap->iterateNext(&mStateStack, &mKey);
+            mValue = result.mValue;
+            mIsValid = result.mIsValid;
+            mNextLevelBitmapEntryIndex = result.mNextLevelBitmapEntryIndex;
+            return *this;
+        }
+
+     private:
+        DISALLOW_DEFAULT_CONSTRUCTOR(TrieMapIterator);
+        DISALLOW_ASSIGNMENT_OPERATOR(TrieMapIterator);
+
+        const TrieMap *const mTrieMap;
+        std::vector<TrieMap::TableIterationState> mStateStack;
+        const int mBaseBitmapEntryIndex;
+        int mKey;
+        uint64_t mValue;
+        bool mIsValid;
+        int mNextLevelBitmapEntryIndex;
+    };
+
+    /**
+     * Class to support iterating entries in TrieMap by range base for loops.
+     */
+    class TrieMapRange {
+     public:
+        TrieMapRange(const TrieMap *const trieMap, const int bitmapEntryIndex)
+                : mTrieMap(trieMap), mBaseBitmapEntryIndex(bitmapEntryIndex) {};
+
+        TrieMapIterator begin() const {
+            return TrieMapIterator(mTrieMap, mBaseBitmapEntryIndex);
+        }
+
+        const TrieMapIterator end() const {
+            return TrieMapIterator(nullptr, INVALID_INDEX);
+        }
+
+     private:
+        DISALLOW_DEFAULT_CONSTRUCTOR(TrieMapRange);
+        DISALLOW_ASSIGNMENT_OPERATOR(TrieMapRange);
+
+        const TrieMap *const mTrieMap;
+        const int mBaseBitmapEntryIndex;
+    };
+
     static const int INVALID_INDEX;
     static const uint64_t MAX_VALUE;
 
@@ -72,6 +183,14 @@ class TrieMap {
     }
 
     bool put(const int key, const uint64_t value, const int bitmapEntryIndex);
+
+    const TrieMapRange getEntriesInRootLevel() const {
+        return getEntriesInSpecifiedLevel(ROOT_BITMAP_ENTRY_INDEX);
+    }
+
+    const TrieMapRange getEntriesInSpecifiedLevel(const int bitmapEntryIndex) const {
+        return TrieMapRange(this, bitmapEntryIndex);
+    }
 
  private:
     DISALLOW_COPY_AND_ASSIGN(TrieMap);
@@ -171,6 +290,8 @@ class TrieMap {
     bool addNewEntryByExpandingTable(const uint32_t key, const uint64_t value,
             const int tableIndex, const uint32_t bitmap, const int bitmapEntryIndex,
             const int label);
+    const Result iterateNext(std::vector<TableIterationState> *const iterationState,
+            int *const outKey) const;
 
     AK_FORCE_INLINE const Entry readEntry(const int entryIndex) const {
         return Entry(readField0(entryIndex), readField1(entryIndex));
