@@ -20,6 +20,8 @@
 
 <KeyboardLayoutSet
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin">
+    <Feature
+        latin:supportedScript="thai" />
     <Element
         latin:elementName="alphabet"
         latin:elementKeyboard="@xml/kbd_thai"

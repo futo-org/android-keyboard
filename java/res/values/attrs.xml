@@ -490,6 +490,10 @@
             <enum name="georgian" value="6" />
             <enum name="khmer" value="7" />
             <enum name="lao" value="8" />
+            <enum name="myanmar" value="9" />
+            <enum name="sinhala" value="10" />
+            <enum name="thai" value="11" />
+            <enum name="telugu" value="12" />
         </attr>
     </declare-styleable>
 
