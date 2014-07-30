@@ -297,7 +297,7 @@ int PatriciaTriePolicy::getProbability(const int unigramProbability,
     }
 }
 
-int PatriciaTriePolicy::getProbabilityOfPtNode(const PrevWordsInfo *const prevWordsInfo,
+int PatriciaTriePolicy::getProbabilityOfPtNode(const int *const prevWordsPtNodePos,
         const int ptNodePos) const {
     if (ptNodePos == NOT_A_DICT_POS) {
         return NOT_A_PROBABILITY;
@@ -310,9 +310,9 @@ int PatriciaTriePolicy::getProbabilityOfPtNode(const PrevWordsInfo *const prevWo
         // for shortcuts).
         return NOT_A_PROBABILITY;
     }
-    if (prevWordsInfo) {
+    if (prevWordsPtNodePos) {
         BinaryDictionaryBigramsIterator bigramsIt =
-                prevWordsInfo->getBigramsIteratorForPrediction(this /* dictStructurePolicy */);
+                getBigramsIteratorOfPtNode(prevWordsPtNodePos[0]);
         while (bigramsIt.hasNext()) {
             bigramsIt.next();
             if (bigramsIt.getBigramPos() == ptNodePos
@@ -325,10 +325,12 @@ int PatriciaTriePolicy::getProbabilityOfPtNode(const PrevWordsInfo *const prevWo
     return getProbability(ptNodeParams.getProbability(), NOT_A_PROBABILITY);
 }
 
-void PatriciaTriePolicy::iterateNgramEntries(const PrevWordsInfo *const prevWordsInfo,
+void PatriciaTriePolicy::iterateNgramEntries(const int *const prevWordsPtNodePos,
         NgramListener *const listener) const {
-    BinaryDictionaryBigramsIterator bigramsIt = prevWordsInfo->getBigramsIteratorForPrediction(
-            this /* dictStructurePolicy */);
+    if (!prevWordsPtNodePos) {
+        return;
+    }
+    BinaryDictionaryBigramsIterator bigramsIt = getBigramsIteratorOfPtNode(prevWordsPtNodePos[0]);
     while (bigramsIt.hasNext()) {
         bigramsIt.next();
         listener->onVisitEntry(bigramsIt.getProbability(), bigramsIt.getBigramPos());

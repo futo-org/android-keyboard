@@ -63,9 +63,9 @@ class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
 
     int getProbability(const int unigramProbability, const int bigramProbability) const;
 
-    int getProbabilityOfPtNode(const PrevWordsInfo *const prevWordsInfo, const int ptNodePos) const;
+    int getProbabilityOfPtNode(const int *const prevWordsPtNodePos, const int ptNodePos) const;
 
-    void iterateNgramEntries(const PrevWordsInfo *const prevWordsInfo,
+    void iterateNgramEntries(const int *const prevWordsPtNodePos,
             NgramListener *const listener) const;
 
     int getShortcutPositionOfPtNode(const int ptNodePos) const;
