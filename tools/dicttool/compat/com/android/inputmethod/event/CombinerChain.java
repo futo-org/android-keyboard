@@ -31,8 +31,12 @@ public class CombinerChain {
         mComposingWord = new StringBuilder(initialText);
     }
 
-    public void processEvent(final ArrayList<Event> previousEvents, final Event newEvent) {
-        mComposingWord.append(newEvent.getTextToCommit());
+    public Event processEvent(final ArrayList<Event> previousEvents, final Event newEvent) {
+        return newEvent;
+    }
+
+    public void applyProcessedEvent(final Event event) {
+        mComposingWord.append(event.getTextToCommit());
     }
 
     public CharSequence getComposingWordWithCombiningFeedback() {
