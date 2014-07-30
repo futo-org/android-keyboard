@@ -494,6 +494,11 @@
             <enum name="sinhala" value="10" />
             <enum name="thai" value="11" />
             <enum name="telugu" value="12" />
+            <enum name="devanagari" value="13" />
+            <enum name="bengali" value="14" />
+            <enum name="tamil" value="15" />
+            <enum name="kannada" value="16" />
+            <enum name="malayalam" value="17" />
         </attr>
     </declare-styleable>
 
