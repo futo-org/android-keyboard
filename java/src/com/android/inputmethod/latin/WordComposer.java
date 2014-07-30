@@ -175,30 +175,20 @@ public final class WordComposer {
     }
 
     /**
-     * Process an event and return an event, and return a processed event to apply.
-     * @param event the unprocessed event.
-     * @return the processed event.
-     */
-    public Event processEvent(final Event event) {
-        final Event processedEvent = mCombinerChain.processEvent(mEvents, event);
-        mEvents.add(event);
-        return processedEvent;
-    }
-
-    /**
-     * Apply a processed input event.
+     * Process an input event.
      *
      * All input events should be supported, including software/hardware events, characters as well
      * as deletions, multiple inputs and gestures.
      *
-     * @param event the event to apply.
+     * @param event the event to process.
      */
-    public void applyProcessedEvent(final Event event) {
+    public void processEvent(final Event event) {
         final int primaryCode = event.mCodePoint;
         final int keyX = event.mX;
         final int keyY = event.mY;
         final int newIndex = size();
-        mCombinerChain.applyProcessedEvent(event);
+        mCombinerChain.processEvent(mEvents, event);
+        mEvents.add(event);
         refreshTypedWordCache();
         mCursorPositionWithinWord = mCodePointSize;
         // We may have deleted the last one.
