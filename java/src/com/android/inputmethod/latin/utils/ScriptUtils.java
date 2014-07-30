@@ -39,6 +39,11 @@ public class ScriptUtils {
     public static final int SCRIPT_SINHALA = 10;
     public static final int SCRIPT_THAI = 11;
     public static final int SCRIPT_TELUGU = 12;
+    public static final int SCRIPT_DEVANAGARI = 13;
+    public static final int SCRIPT_BENGALI = 14;
+    public static final int SCRIPT_TAMIL = 15;
+    public static final int SCRIPT_KANNADA = 16;
+    public static final int SCRIPT_MALAYALAM = 17;
     public static final TreeMap<String, Integer> mSpellCheckerLanguageToScript;
     static {
         // List of the supported languages and their associated script. We won't check
@@ -102,12 +107,12 @@ public class ScriptUtils {
         case SCRIPT_ARABIC:
             // Arabic letters can be in any of the following blocks:
             // Arabic U+0600..U+06FF
-            // Arabic Supplement U+0750..U+077F
+            // Arabic Supplement, Thaana U+0750..U+077F, U+0780..U+07BF
             // Arabic Extended-A U+08A0..U+08FF
             // Arabic Presentation Forms-A U+FB50..U+FDFF
             // Arabic Presentation Forms-B U+FE70..U+FEFF
             return (codePoint >= 0x600 && codePoint <= 0x6FF)
-                    || (codePoint >= 0x750 && codePoint <= 0x77F)
+                    || (codePoint >= 0x750 && codePoint <= 0x7BF)
                     || (codePoint >= 0x8A0 && codePoint <= 0x8FF)
                     || (codePoint >= 0xFB50 && codePoint <= 0xFDFF)
                     || (codePoint >= 0xFE70 && codePoint <= 0xFEFF);
@@ -153,6 +158,21 @@ public class ScriptUtils {
         case SCRIPT_TELUGU:
             // Telugu unicode block is U+0C00..U+0C7F
             return (codePoint >= 0xC00 && codePoint <= 0xC7F);
+        case SCRIPT_DEVANAGARI:
+            // Devanagari unicode block is +0900..U+097F
+            return (codePoint >= 0x900 && codePoint <= 0x97F);
+        case SCRIPT_BENGALI:
+            // Bengali unicode block is U+0980..U+09FF
+            return (codePoint >= 0x980 && codePoint <= 0x9FF);
+        case SCRIPT_TAMIL:
+            // Tamil unicode block is U+0B80..U+0BFF
+            return (codePoint >= 0xB80 && codePoint <= 0xBFF);
+        case SCRIPT_KANNADA:
+            // Kannada unicode block is U+0C80..U+0CFF
+            return (codePoint >= 0xC80 && codePoint <= 0xCFF);
+        case SCRIPT_MALAYALAM:
+            // Malayalam unicode block is U+0D00..U+0D7F
+            return (codePoint >= 0xD00 && codePoint <= 0xD7F);
         case SCRIPT_UNKNOWN:
             return true;
         default:
