@@ -56,9 +56,6 @@
     <string name="main_dictionary" msgid="4798763781818361168">"പ്രധാന നിഘണ്ടു"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"തിരുത്തൽ നിർദ്ദേശങ്ങൾ വായിക്കുക"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"ടൈപ്പുചെയ്യുമ്പോൾ നിർദ്ദേശിച്ച വാക്കുകൾ പ്രദർശിപ്പിക്കുക"</string>
-    <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"എല്ലായ്പ്പോഴും ദൃശ്യമാക്കുക"</string>
-    <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3859783767435239118">"പോർട്രെയ്‌റ്റ് മോഡിൽ കാണിക്കുക"</string>
-    <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"എല്ലായ്പ്പോഴും മറയ്‌ക്കുക"</string>
     <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"നിന്ദ്യമായ വാക്കുകൾ തടയുക"</string>
     <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"നിന്ദ്യമാകാനിടയുള്ള വാക്കുകൾ നിർദ്ദേശിക്കരുത്"</string>
     <string name="auto_correction" msgid="7630720885194996950">"യാന്ത്രികമായി-തിരുത്തൽ"</string>

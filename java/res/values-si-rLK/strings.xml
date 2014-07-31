@@ -56,9 +56,6 @@
     <string name="main_dictionary" msgid="4798763781818361168">"ප්‍රධාන ශබ්ද කෝෂය"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"නිවැරදි කිරීම් යෝජනා පෙන්වන්න"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"ටයිප් කරන අතරතුර යෝජිත වචන දර්ශනය කරන්න"</string>
-    <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"සැමවිටම පෙන්වන්න"</string>
-    <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3859783767435239118">"සිරස් ආකෘති ප්‍රකාරය තුළ පෙන්වන්න"</string>
-    <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"සැමවිට සඟවන්න"</string>
     <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"අප්‍රසන්න වචන අවහිර කරන්න"</string>
     <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"විභව්‍යව අප්‍රසන්න වචන යෝජනා නොකරන්න"</string>
     <string name="auto_correction" msgid="7630720885194996950">"ස්වයං-නිවැරදි කිරීම"</string>

@@ -56,9 +56,6 @@
     <string name="main_dictionary" msgid="4798763781818361168">"ዋና መዝገበ ቃላት"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"የማስተካከያ ጥቆማዎች አሳይ"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"እየተየብክ ተመራጭ ቃላትን አሳይ"</string>
-    <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"ሁልጊዜ አሳይ"</string>
-    <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3859783767435239118">"በቁም አቀማመጥ ሁነታ አሳይ"</string>
-    <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"ሁልጊዜ ደብቅ"</string>
     <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"አፀያፊ ቃላትን አግድ"</string>
     <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"አጸያፊ ሊሆኑ የሚችሉ ቃላትን አትጠቁም"</string>
     <string name="auto_correction" msgid="7630720885194996950">"በራስ-ማስተካከል"</string>
