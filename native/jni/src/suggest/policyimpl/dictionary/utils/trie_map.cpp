@@ -43,6 +43,10 @@ TrieMap::TrieMap() : mBuffer(MAX_BUFFER_SIZE) {
     writeEntry(EMPTY_BITMAP_ENTRY, ROOT_BITMAP_ENTRY_INDEX);
 }
 
+TrieMap::TrieMap(uint8_t *const buffer, const int bufferSize)
+        : mBuffer(buffer, bufferSize,
+                BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE) {}
+
 void TrieMap::dump(const int from, const int to) const {
     AKLOGI("BufSize: %d", mBuffer.getTailPosition());
     for (int i = from; i < to; ++i) {

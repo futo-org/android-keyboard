@@ -160,6 +160,8 @@ class TrieMap {
     static const uint64_t MAX_VALUE;
 
     TrieMap();
+    // Construct TrieMap using existing data in the memory region written by save().
+    TrieMap(uint8_t *const buffer, const int bufferSize);
     void dump(const int from = 0, const int to = 0) const;
 
     bool isNearSizeLimit() const {
