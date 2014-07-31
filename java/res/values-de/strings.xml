@@ -56,9 +56,6 @@
     <string name="main_dictionary" msgid="4798763781818361168">"Allgemeines Wörterbuch"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Änderungsvorschläge"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Vorgeschlagene Wörter während des Tippens anzeigen"</string>
-    <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Immer anzeigen"</string>
-    <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3859783767435239118">"Im Hochformat anzeigen"</string>
-    <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"Nie anzeigen"</string>
     <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"Anstößige Wörter sperren"</string>
     <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"Keine potenziell anstößigen Wörter vervollständigen"</string>
     <string name="auto_correction" msgid="7630720885194996950">"Autokorrektur"</string>

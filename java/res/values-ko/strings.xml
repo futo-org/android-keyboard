@@ -56,9 +56,6 @@
     <string name="main_dictionary" msgid="4798763781818361168">"기본 사전"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"수정 제안 표시"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"글자를 입력하는 동안 추천 단어 표시"</string>
-    <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"항상 표시"</string>
-    <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3859783767435239118">"세로 모드로 표시"</string>
-    <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"항상 숨기기"</string>
     <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"불쾌감을 주는 단어 차단"</string>
     <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"불쾌감을 줄 수 있는 단어는 추천하지 않음"</string>
     <string name="auto_correction" msgid="7630720885194996950">"자동 수정"</string>
