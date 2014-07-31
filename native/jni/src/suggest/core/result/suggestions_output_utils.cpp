@@ -117,8 +117,7 @@ const int SuggestionsOutputUtils::MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT = 16;
     const int finalScore = scoringPolicy->calculateFinalScore(
             compoundDistance, traverseSession->getInputSize(),
             terminalDicNode->getContainedErrorTypes(),
-            (forceCommitMultiWords && terminalDicNode->hasMultipleWords())
-                     || (isValidWord && scoringPolicy->doesAutoCorrectValidWord()),
+            (forceCommitMultiWords && terminalDicNode->hasMultipleWords()),
             boostExactMatches);
 
     // Don't output invalid or blocked offensive words. However, we still need to submit their
@@ -145,12 +144,7 @@ const int SuggestionsOutputUtils::MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT = 16;
                 traverseSession->getDictionaryStructurePolicy()
                         ->getShortcutPositionOfPtNode(terminalDicNode->getPtNodePos()));
         const bool sameAsTyped = scoringPolicy->sameAsTyped(traverseSession, terminalDicNode);
-        const int shortcutBaseScore = scoringPolicy->doesAutoCorrectValidWord() ?
-                 scoringPolicy->calculateFinalScore(compoundDistance,
-                         traverseSession->getInputSize(),
-                         terminalDicNode->getContainedErrorTypes(),
-                         true /* forceCommit */, boostExactMatches) : finalScore;
-        outputShortcuts(&shortcutIt, shortcutBaseScore, sameAsTyped, outSuggestionResults);
+        outputShortcuts(&shortcutIt, finalScore, sameAsTyped, outSuggestionResults);
     }
 }
 
