@@ -19,6 +19,7 @@
 
 #include <climits>
 #include <cstdint>
+#include <cstdio>
 #include <vector>
 
 #include "defines.h"
@@ -191,6 +192,8 @@ class TrieMap {
     const TrieMapRange getEntriesInSpecifiedLevel(const int bitmapEntryIndex) const {
         return TrieMapRange(this, bitmapEntryIndex);
     }
+
+    bool save(FILE *const file) const;
 
  private:
     DISALLOW_COPY_AND_ASSIGN(TrieMap);
