@@ -16,6 +16,8 @@
 
 #include "suggest/policyimpl/dictionary/utils/trie_map.h"
 
+#include "suggest/policyimpl/dictionary/utils/dict_file_writing_utils.h"
+
 namespace latinime {
 
 const int TrieMap::INVALID_INDEX = -1;
@@ -98,6 +100,11 @@ bool TrieMap::put(const int key, const uint64_t value, const int bitmapEntryInde
     return putInternal(unsignedKey, value, getBitShuffledKey(unsignedKey), bitmapEntryIndex,
             readEntry(bitmapEntryIndex), 0 /* level */);
 }
+
+bool TrieMap::save(FILE *const file) const {
+    return DictFileWritingUtils::writeBufferToFileTail(file, &mBuffer);
+}
+
 /**
  * Iterate next entry in a certain level.
  *
