@@ -406,10 +406,10 @@ public final class InputLogic {
             // TODO: remove these arguments
             final int currentKeyboardScriptId, final LatinIME.UIHandler handler) {
         final Event processedEvent = mWordComposer.processEvent(event);
-        final InputTransaction inputTransaction = new InputTransaction(settingsValues, event,
-                SystemClock.uptimeMillis(), mSpaceState,
+        final InputTransaction inputTransaction = new InputTransaction(settingsValues,
+                processedEvent, SystemClock.uptimeMillis(), mSpaceState,
                 getActualCapsMode(settingsValues, keyboardShiftMode));
-        if (event.mKeyCode != Constants.CODE_DELETE
+        if (processedEvent.mKeyCode != Constants.CODE_DELETE
                 || inputTransaction.mTimestamp > mLastKeyTime + Constants.LONG_PRESS_MILLISECONDS) {
             mDeleteCount = 0;
         }
@@ -420,16 +420,16 @@ public final class InputLogic {
         }
 
         // TODO: Consolidate the double-space period timer, mLastKeyTime, and the space state.
-        if (event.mCodePoint != Constants.CODE_SPACE) {
+        if (processedEvent.mCodePoint != Constants.CODE_SPACE) {
             cancelDoubleSpacePeriodCountdown();
         }
 
         boolean didAutoCorrect = false;
-        if (event.isFunctionalKeyEvent()) {
+        if (processedEvent.isFunctionalKeyEvent()) {
             // A special key, like delete, shift, emoji, or the settings key.
-            switch (event.mKeyCode) {
+            switch (processedEvent.mKeyCode) {
             case Constants.CODE_DELETE:
-                handleBackspace(inputTransaction, currentKeyboardScriptId, processedEvent);
+                handleBackspace(inputTransaction, currentKeyboardScriptId);
                 // Backspace is a functional key, but it affects the contents of the editor.
                 inputTransaction.setDidAffectContents();
                 break;
@@ -479,22 +479,23 @@ public final class InputLogic {
             case Constants.CODE_SHIFT_ENTER:
                 // TODO: remove this object
                 final Event tmpEvent = Event.createSoftwareKeypressEvent(Constants.CODE_ENTER,
-                        event.mKeyCode, event.mX, event.mY, event.isKeyRepeat());
+                        processedEvent.mKeyCode, processedEvent.mX, processedEvent.mY,
+                        processedEvent.isKeyRepeat());
                 final InputTransaction tmpTransaction = new InputTransaction(
                         inputTransaction.mSettingsValues, tmpEvent,
                         inputTransaction.mTimestamp, inputTransaction.mSpaceState,
                         inputTransaction.mShiftState);
-                didAutoCorrect = handleNonSpecialCharacter(tmpTransaction, handler, processedEvent);
+                didAutoCorrect = handleNonSpecialCharacter(tmpTransaction, handler);
                 // Shift + Enter is treated as a functional key but it results in adding a new
                 // line, so that does affect the contents of the editor.
                 inputTransaction.setDidAffectContents();
                 break;
             default:
-                throw new RuntimeException("Unknown key code : " + event.mKeyCode);
+                throw new RuntimeException("Unknown key code : " + processedEvent.mKeyCode);
             }
         } else {
             inputTransaction.setDidAffectContents();
-            switch (event.mCodePoint) {
+            switch (processedEvent.mCodePoint) {
             case Constants.CODE_ENTER:
                 final EditorInfo editorInfo = getCurrentInputEditorInfo();
                 final int imeOptionsActionId =
@@ -515,21 +516,19 @@ public final class InputLogic {
                 } else {
                     // No action label, and the action from imeOptions is NONE: this is a regular
                     // enter key that should input a carriage return.
-                    didAutoCorrect = handleNonSpecialCharacter(inputTransaction, handler,
-                            processedEvent);
+                    didAutoCorrect = handleNonSpecialCharacter(inputTransaction, handler);
                 }
                 break;
             default:
-                didAutoCorrect = handleNonSpecialCharacter(inputTransaction, handler,
-                        processedEvent);
+                didAutoCorrect = handleNonSpecialCharacter(inputTransaction, handler);
                 break;
             }
         }
-        if (!didAutoCorrect && event.mKeyCode != Constants.CODE_SHIFT
-                && event.mKeyCode != Constants.CODE_CAPSLOCK
-                && event.mKeyCode != Constants.CODE_SWITCH_ALPHA_SYMBOL)
+        if (!didAutoCorrect && processedEvent.mKeyCode != Constants.CODE_SHIFT
+                && processedEvent.mKeyCode != Constants.CODE_CAPSLOCK
+                && processedEvent.mKeyCode != Constants.CODE_SWITCH_ALPHA_SYMBOL)
             mLastComposedWord.deactivate();
-        if (Constants.CODE_DELETE != event.mKeyCode) {
+        if (Constants.CODE_DELETE != processedEvent.mKeyCode) {
             mEnteredText = null;
         }
         mConnection.endBatchEdit();
@@ -683,16 +682,14 @@ public final class InputLogic {
      */
     private boolean handleNonSpecialCharacter(final InputTransaction inputTransaction,
             // TODO: remove this argument
-            final LatinIME.UIHandler handler,
-            // TODO: remove this argument, put it inside the transaction
-            final Event processedEvent) {
-        final int codePoint = processedEvent.mCodePoint;
+            final LatinIME.UIHandler handler) {
+        final int codePoint = inputTransaction.mEvent.mCodePoint;
         mSpaceState = SpaceState.NONE;
         final boolean didAutoCorrect;
         if (inputTransaction.mSettingsValues.isWordSeparator(codePoint)
                 || Character.getType(codePoint) == Character.OTHER_SYMBOL) {
             didAutoCorrect = handleSeparator(inputTransaction,
-                    processedEvent.isSuggestionStripPress(), handler);
+                    inputTransaction.mEvent.isSuggestionStripPress(), handler);
         } else {
             didAutoCorrect = false;
             if (SpaceState.PHANTOM == inputTransaction.mSpaceState) {
@@ -705,7 +702,7 @@ public final class InputLogic {
                     commitTyped(inputTransaction.mSettingsValues, LastComposedWord.NOT_A_SEPARATOR);
                 }
             }
-            handleNonSeparator(inputTransaction.mSettingsValues, inputTransaction, processedEvent);
+            handleNonSeparator(inputTransaction.mSettingsValues, inputTransaction);
         }
         return didAutoCorrect;
     }
@@ -716,10 +713,8 @@ public final class InputLogic {
      * @param inputTransaction The transaction in progress.
      */
     private void handleNonSeparator(final SettingsValues settingsValues,
-            final InputTransaction inputTransaction,
-            // TODO: remove this arg, put it into the input transaction
-            final Event processedEvent) {
-        final int codePoint = processedEvent.mCodePoint;
+            final InputTransaction inputTransaction) {
+        final int codePoint = inputTransaction.mEvent.mCodePoint;
         // TODO: refactor this method to stop flipping isComposingWord around all the time, and
         // make it shorter (possibly cut into several pieces). Also factor handleNonSpecialCharacter
         // which has the same name as other handle* methods but is not the same.
@@ -769,7 +764,7 @@ public final class InputLogic {
             resetComposingState(false /* alsoResetLastComposedWord */);
         }
         if (isComposingWord) {
-            mWordComposer.applyProcessedEvent(processedEvent);
+            mWordComposer.applyProcessedEvent(inputTransaction.mEvent);
             // If it's the first letter, make note of auto-caps state
             if (mWordComposer.isSingleLetter()) {
                 mWordComposer.setCapitalizedModeAtStartComposingTime(inputTransaction.mShiftState);
@@ -778,7 +773,7 @@ public final class InputLogic {
                     mWordComposer.getTypedWord()), 1);
         } else {
             final boolean swapWeakSpace = tryStripSpaceAndReturnWhetherShouldSwapInstead(
-                    inputTransaction, processedEvent.isSuggestionStripPress());
+                    inputTransaction);
 
             if (swapWeakSpace && trySwapSwapperAndSpace(inputTransaction)) {
                 mSpaceState = SpaceState.WEAK;
@@ -829,7 +824,7 @@ public final class InputLogic {
         }
 
         final boolean swapWeakSpace = tryStripSpaceAndReturnWhetherShouldSwapInstead(
-                inputTransaction, isFromSuggestionStrip);
+                inputTransaction);
 
         final boolean isInsideDoubleQuoteOrAfterDigit = Constants.CODE_DOUBLE_QUOTE == codePoint
                 && mConnection.isInsideDoubleQuoteOrAfterDigit();
@@ -908,9 +903,8 @@ public final class InputLogic {
      */
     private void handleBackspace(final InputTransaction inputTransaction,
             // TODO: remove this argument, put it into settingsValues
-            final int currentKeyboardScriptId,
-            // TODO: remove this argument, put it into the transaction
-            final Event processedEvent) {
+            final int currentKeyboardScriptId) {
+        final Event event = inputTransaction.mEvent;
         mSpaceState = SpaceState.NONE;
         mDeleteCount++;
 
@@ -922,7 +916,7 @@ public final class InputLogic {
         // Then again, even in the case of a key repeat, if the cursor is at start of text, it
         // can't go any further back, so we can update right away even if it's a key repeat.
         final int shiftUpdateKind =
-                processedEvent.isKeyRepeat() && mConnection.getExpectedSelectionStart() > 0
+                event.isKeyRepeat() && mConnection.getExpectedSelectionStart() > 0
                 ? InputTransaction.SHIFT_UPDATE_LATER : InputTransaction.SHIFT_UPDATE_NOW;
         inputTransaction.requireShiftUpdate(shiftUpdateKind);
 
@@ -942,7 +936,7 @@ public final class InputLogic {
                     mDictionaryFacilitator.removeWordFromPersonalizedDicts(rejectedSuggestion);
                 }
             } else {
-                mWordComposer.applyProcessedEvent(processedEvent);
+                mWordComposer.applyProcessedEvent(event);
             }
             if (mWordComposer.isComposingWord()) {
                 mConnection.setComposingText(getTextWithUnderline(mWordComposer.getTypedWord()), 1);
@@ -1079,12 +1073,12 @@ public final class InputLogic {
     /*
      * Strip a trailing space if necessary and returns whether it's a swap weak space situation.
      * @param inputTransaction The transaction in progress.
-     * @param isFromSuggestionStrip Whether this code point is coming from the suggestion strip.
      * @return whether we should swap the space instead of removing it.
      */
     private boolean tryStripSpaceAndReturnWhetherShouldSwapInstead(
-            final InputTransaction inputTransaction, final boolean isFromSuggestionStrip) {
+            final InputTransaction inputTransaction) {
         final int codePoint = inputTransaction.mEvent.mCodePoint;
+        final boolean isFromSuggestionStrip = inputTransaction.mEvent.isSuggestionStripPress();
         if (Constants.CODE_ENTER == codePoint &&
                 SpaceState.SWAP_PUNCTUATION == inputTransaction.mSpaceState) {
             mConnection.removeTrailingSpace();
