@@ -56,9 +56,6 @@
     <string name="main_dictionary" msgid="4798763781818361168">"Isichazamazwi sakho ngqangi"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Bonisa ukusikesela kokulungisa"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Bonisa amagama aphakamisiwe ngenkathi uthayipha"</string>
-    <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Bonisa njalo"</string>
-    <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3859783767435239118">"Bonisa ngomumo oqondile"</string>
-    <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"Fihla njalo"</string>
     <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"Vimba amagama ahlaselayo"</string>
     <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"Ungaphakamisi amagama angaba nokuhlaselayo"</string>
     <string name="auto_correction" msgid="7630720885194996950">"Ukulungisa okuzenzakalelayo"</string>

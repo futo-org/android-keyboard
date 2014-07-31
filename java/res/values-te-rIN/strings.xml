@@ -56,9 +56,6 @@
     <string name="main_dictionary" msgid="4798763781818361168">"ప్రధాన నిఘంటువు"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"సవరణ సూచనలను చూపు"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"టైప్ చేసేటప్పుడు సూచిత పదాలను ప్రదర్శించు"</string>
-    <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"ఎల్లప్పుడూ చూపు"</string>
-    <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3859783767435239118">"పోర్ట్రెయిట్ మోడ్‌లో చూపు"</string>
-    <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"ఎల్లప్పుడూ దాచు"</string>
     <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"అభ్యంతరకరమైన పదాలను బ్లాక్ చేయి"</string>
     <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"సంభావ్యంగా అభ్యంతరకరమైన పదాలను సూచించవద్దు"</string>
     <string name="auto_correction" msgid="7630720885194996950">"స్వీయ-సవరణ"</string>

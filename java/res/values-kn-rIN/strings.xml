@@ -56,9 +56,6 @@
     <string name="main_dictionary" msgid="4798763781818361168">"ಮುಖ್ಯ ನಿಘಂಟು"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"ತಿದ್ದುಪಡಿ ಸಲಹೆಗಳನ್ನು ತೋರಿಸು"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"ಟೈಪ್ ಮಾಡುವಾಗ ಸಲಹೆ ನೀಡಿದ ಪದಗಳನ್ನು ಪ್ರದರ್ಶಿಸು"</string>
-    <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"ಯಾವಾಗಲೂ ತೋರಿಸು"</string>
-    <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3859783767435239118">"ಪೋಟ್ರೇಟ್ ಮೋಡ್‌ನಲ್ಲಿ ತೋರಿಸು"</string>
-    <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"ಯಾವಾಗಲೂ ಮರೆಮಾಡು"</string>
     <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"ಅಕ್ಷೇಪಾರ್ಹ ಪದಗಳನ್ನು ನಿರ್ಬಂಧಿಸು"</string>
     <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"ಸಂಭಾವ್ಯ ಆಕ್ಷೇಪಾರ್ಹ ಪದಗಳ ಸಲಹೆ ನೀಡದಿರು"</string>
     <string name="auto_correction" msgid="7630720885194996950">"ಸ್ವಯಂ-ತಿದ್ದುಪಡಿ"</string>

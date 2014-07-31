@@ -56,9 +56,6 @@
     <string name="main_dictionary" msgid="4798763781818361168">"முதன்மை அகராதி"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"திருத்துதல் விருப்பங்களைக் காட்டு"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"உள்ளிடும்போது பரிந்துரைக்கப்பட்ட வார்த்தைகளைக் காட்டும்"</string>
-    <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"எப்போதும் காட்டு"</string>
-    <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3859783767435239118">"நிலைப்பதிப்பு பயன்முறையில் காட்டு"</string>
-    <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"எப்போதும் மறை"</string>
     <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"தீங்குவிளைவிக்கும் வார்த்தைகளை தடு"</string>
     <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"தீங்குவிளைவிக்க சாத்தியமுள்ளதான வார்த்தைகளைப் பரிந்துரைக்க வேண்டாம்"</string>
     <string name="auto_correction" msgid="7630720885194996950">"தன்னியக்க திருத்தம்"</string>
