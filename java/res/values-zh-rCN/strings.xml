@@ -56,9 +56,6 @@
     <string name="main_dictionary" msgid="4798763781818361168">"主词典"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"显示更正建议"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"键入时显示建议的字词"</string>
-    <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"始终显示"</string>
-    <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3859783767435239118">"在纵向模式中显示"</string>
-    <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"始终隐藏"</string>
     <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"屏蔽不文明的字词"</string>
     <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"屏蔽可能不文明的字词"</string>
     <string name="auto_correction" msgid="7630720885194996950">"自动更正"</string>
@@ -168,7 +165,7 @@
     <string name="delete_dict" msgid="756853268088330054">"删除"</string>
     <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"您的移动设备上选择的语言有一个词典可供下载。&lt;br/&gt;我们建议您&lt;b&gt;下载&lt;/b&gt;这个<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>词典，以便获得更好的输入体验。&lt;br/&gt;&lt;br/&gt;通过3G网络下载可能需要一两分钟的时间。如果您使用的不是&lt;b&gt;无流量限制的套餐&lt;/b&gt;，则可能产生一定的流量费。&lt;br/&gt;如果您不确定自己使用的是哪种流量套餐，我们建议您连接到WLAN网络以便自动开始下载。&lt;br/&gt;&lt;br/&gt;提示：您可以在移动设备上的&lt;b&gt;语言和输入法&lt;/b&gt;部分（位于&lt;b&gt;设置&lt;/b&gt;菜单中）下载和删除词典。"</string>
     <string name="download_over_metered" msgid="1643065851159409546">"立即下载 (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
-    <string name="do_not_download_over_metered" msgid="2176209579313941583">"通过 WLAN 下载"</string>
+    <string name="do_not_download_over_metered" msgid="2176209579313941583">"通过WLAN网络下载"</string>
     <string name="dict_available_notification_title" msgid="4583842811218581658">"有一个<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>词典可供下载"</string>
     <string name="dict_available_notification_description" msgid="1075194169443163487">"按此通知即可查看和下载"</string>
     <string name="toast_downloading_suggestions" msgid="6128155879830851739">"正在下载：<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>输入建议功能马上就可以使用了！"</string>
