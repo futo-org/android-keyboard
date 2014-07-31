@@ -29,7 +29,7 @@
     <string name="spoken_accented_letter_00AA" msgid="4374325261868451570">"ဣထိလိင် အစဉ်ပြ အညွှန်း"</string>
     <string name="spoken_accented_letter_00B5" msgid="9031387673828823891">"မိုက်ခရို သင်္ကေတ"</string>
     <string name="spoken_accented_letter_00BA" msgid="5045198452071207437">"ပုလိင် အစဉ်ပြ အညွှန်း"</string>
-    <string name="spoken_accented_letter_00DF" msgid="2260098367028134281">"ပြတ်သားသည့် S"</string>
+    <string name="spoken_accented_letter_00DF" msgid="2260098367028134281">"ပြတ်သားသည့် S"</string>
     <string name="spoken_accented_letter_00E0" msgid="2234515772182387086">"A၊ တည်ငြိမ်သော"</string>
     <string name="spoken_accented_letter_00E1" msgid="7780174500802535063">"A၊ စူးရှသော"</string>
     <string name="spoken_accented_letter_00E2" msgid="7054108480488102631">"A၊ သရသံသင်္ကေတ"</string>
@@ -133,45 +133,45 @@
     <string name="spoken_accented_letter_0259" msgid="2464085263158415898">"Schwa"</string>
     <string name="spoken_accented_letter_1EA1" msgid="688124877202887630">"A၊ အောက်မှာ အစက်"</string>
     <string name="spoken_accented_letter_1EA3" msgid="327960130366386256">"A အပေါ်မှာ ချိတ်"</string>
-    <string name="spoken_accented_letter_1EA5" msgid="637406363453769610">"A၊ သရသံသင်္ကေတ နှင့် စူးရှသော"</string>
-    <string name="spoken_accented_letter_1EA7" msgid="1419591804181615409">"A၊ သရသံသင်္ကေတ နှင့် တည်ငြိမ်သော"</string>
-    <string name="spoken_accented_letter_1EA9" msgid="6068887382734896756">"A၊ သရသံသင်္ကေတ နှင့် အပေါ်မှာ ချိတ်"</string>
-    <string name="spoken_accented_letter_1EAB" msgid="7236523151662538333">"A၊ သရသံသင်္ကေတ နှင့် tilde"</string>
-    <string name="spoken_accented_letter_1EAD" msgid="2363364864106332076">"A,၊ သရသံသင်္ကေတ နှင့် အောက်မှာ အစက်"</string>
-    <string name="spoken_accented_letter_1EAF" msgid="1576329511464272935">"A၊ တည်ငြိမ်သော နှင့် စူးရှသော"</string>
-    <string name="spoken_accented_letter_1EB1" msgid="4634735072816076592">"A၊ breve နှင့် တည်ငြိမ်သော"</string>
-    <string name="spoken_accented_letter_1EB3" msgid="2325245849038771534">"A၊ breve နှင့် အပေါ်မှာ ချိတ်"</string>
-    <string name="spoken_accented_letter_1EB5" msgid="3720427596242746295">"A၊ breve နှင့် tilde"</string>
-    <string name="spoken_accented_letter_1EB7" msgid="700415535653646695">"A၊ breve နှင့် အောက်မှာ အစက်"</string>
+    <string name="spoken_accented_letter_1EA5" msgid="637406363453769610">"A၊ သရသံသင်္ကေတ နှင့် စူးရှသော"</string>
+    <string name="spoken_accented_letter_1EA7" msgid="1419591804181615409">"A၊ သရသံသင်္ကေတ နှင့် တည်ငြိမ်သော"</string>
+    <string name="spoken_accented_letter_1EA9" msgid="6068887382734896756">"A၊ သရသံသင်္ကေတ နှင့် အပေါ်မှာ ချိတ်"</string>
+    <string name="spoken_accented_letter_1EAB" msgid="7236523151662538333">"A၊ သရသံသင်္ကေတ နှင့် tilde"</string>
+    <string name="spoken_accented_letter_1EAD" msgid="2363364864106332076">"A,၊ သရသံသင်္ကေတ နှင့် အောက်မှာ အစက်"</string>
+    <string name="spoken_accented_letter_1EAF" msgid="1576329511464272935">"A၊ တည်ငြိမ်သော နှင့် စူးရှသော"</string>
+    <string name="spoken_accented_letter_1EB1" msgid="4634735072816076592">"A၊ breve နှင့် တည်ငြိမ်သော"</string>
+    <string name="spoken_accented_letter_1EB3" msgid="2325245849038771534">"A၊ breve နှင့် အပေါ်မှာ ချိတ်"</string>
+    <string name="spoken_accented_letter_1EB5" msgid="3720427596242746295">"A၊ breve နှင့် tilde"</string>
+    <string name="spoken_accented_letter_1EB7" msgid="700415535653646695">"A၊ breve နှင့် အောက်မှာ အစက်"</string>
     <string name="spoken_accented_letter_1EB9" msgid="3901338692305890487">"E၊ အောက်မှာ အစက်"</string>
     <string name="spoken_accented_letter_1EBB" msgid="4028688699415417302">"E၊ အပေါ်မှာ ချိတ်"</string>
     <string name="spoken_accented_letter_1EBD" msgid="181253633045931897">"E၊ tilde"</string>
-    <string name="spoken_accented_letter_1EBF" msgid="3309618845007944963">"E၊ သရသံသင်္ကေတ နှင့် စူးရှသော"</string>
-    <string name="spoken_accented_letter_1EC1" msgid="8139046749226332542">"E၊ သရသံသင်္ကေတ နှင့် တည်ငြိမ်သော"</string>
-    <string name="spoken_accented_letter_1EC3" msgid="3239674223053133383">"E၊ သရသံသင်္ကေတ နှင့် ချိတ် အပေါ်မှာ"</string>
-    <string name="spoken_accented_letter_1EC5" msgid="2216559244705714587">"E၊ သရသံသင်္ကေတ နှင့် tilde"</string>
-    <string name="spoken_accented_letter_1EC7" msgid="9012731468253986792">"E၊ သရသံသင်္ကေတ နှင့် အောက်မှာ အစက်"</string>
+    <string name="spoken_accented_letter_1EBF" msgid="3309618845007944963">"E၊ သရသံသင်္ကေတ နှင့် စူးရှသော"</string>
+    <string name="spoken_accented_letter_1EC1" msgid="8139046749226332542">"E၊ သရသံသင်္ကေတ နှင့် တည်ငြိမ်သော"</string>
+    <string name="spoken_accented_letter_1EC3" msgid="3239674223053133383">"E၊ သရသံသင်္ကေတ နှင့် ချိတ် အပေါ်မှာ"</string>
+    <string name="spoken_accented_letter_1EC5" msgid="2216559244705714587">"E၊ သရသံသင်္ကေတ နှင့် tilde"</string>
+    <string name="spoken_accented_letter_1EC7" msgid="9012731468253986792">"E၊ သရသံသင်္ကေတ နှင့် အောက်မှာ အစက်"</string>
     <string name="spoken_accented_letter_1EC9" msgid="2901917620195717034">"I၊ အပေါ်မှာ ချိတ်"</string>
     <string name="spoken_accented_letter_1ECB" msgid="5470387489820034621">"I၊ အောက်မှာ အစက်"</string>
     <string name="spoken_accented_letter_1ECD" msgid="1340122876914839806">"O၊ အောက်မှာ အစက်"</string>
     <string name="spoken_accented_letter_1ECF" msgid="2326921263882559755">"O၊ အပေါ်မှာ ချိတ်"</string>
-    <string name="spoken_accented_letter_1ED1" msgid="2885683296042774958">"O၊ သရသံသင်္ကေတ နှင့် စူးရှသော"</string>
-    <string name="spoken_accented_letter_1ED3" msgid="6857664926477376178">"O၊ သရသံသင်္ကေတ နှင့် တည်ငြိမ်သော"</string>
-    <string name="spoken_accented_letter_1ED5" msgid="2015209467290624062">"O၊ သရသံသင်္ကေတ နှင့် အပေါ်မှာ ချိတ်"</string>
-    <string name="spoken_accented_letter_1ED7" msgid="7924481354960306389">"O၊ သရသံသင်္ကေတ နှင့် tilde"</string>
-    <string name="spoken_accented_letter_1ED9" msgid="7023315590332365554">"O၊ သရသံသင်္ကေတ နှင့် အောက်မှာ အစက်"</string>
-    <string name="spoken_accented_letter_1EDB" msgid="2379438944917634496">"O၊ horn နှင့် စူးရှသော"</string>
-    <string name="spoken_accented_letter_1EDD" msgid="8107077534204404085">"O၊ horn နှင့် တည်ငြိမ်သော"</string>
-    <string name="spoken_accented_letter_1EDF" msgid="1846880105528347966">"O၊ horn နှင့် အပေါ်မှာ ချိတ်"</string>
-    <string name="spoken_accented_letter_1EE1" msgid="1520037313389776718">"O၊ horn နှင့် tilde"</string>
-    <string name="spoken_accented_letter_1EE3" msgid="907964027171008963">"O၊ horn နှင့် အောက်မှာ အစက်"</string>
+    <string name="spoken_accented_letter_1ED1" msgid="2885683296042774958">"O၊ သရသံသင်္ကေတ နှင့် စူးရှသော"</string>
+    <string name="spoken_accented_letter_1ED3" msgid="6857664926477376178">"O၊ သရသံသင်္ကေတ နှင့် တည်ငြိမ်သော"</string>
+    <string name="spoken_accented_letter_1ED5" msgid="2015209467290624062">"O၊ သရသံသင်္ကေတ နှင့် အပေါ်မှာ ချိတ်"</string>
+    <string name="spoken_accented_letter_1ED7" msgid="7924481354960306389">"O၊ သရသံသင်္ကေတ နှင့် tilde"</string>
+    <string name="spoken_accented_letter_1ED9" msgid="7023315590332365554">"O၊ သရသံသင်္ကေတ နှင့် အောက်မှာ အစက်"</string>
+    <string name="spoken_accented_letter_1EDB" msgid="2379438944917634496">"O၊ horn နှင့် စူးရှသော"</string>
+    <string name="spoken_accented_letter_1EDD" msgid="8107077534204404085">"O၊ horn နှင့် တည်ငြိမ်သော"</string>
+    <string name="spoken_accented_letter_1EDF" msgid="1846880105528347966">"O၊ horn နှင့် အပေါ်မှာ ချိတ်"</string>
+    <string name="spoken_accented_letter_1EE1" msgid="1520037313389776718">"O၊ horn နှင့် tilde"</string>
+    <string name="spoken_accented_letter_1EE3" msgid="907964027171008963">"O၊ horn နှင့် အောက်မှာ အစက်"</string>
     <string name="spoken_accented_letter_1EE5" msgid="1522024630360038700">"U၊ အောက်မှာ အစက်"</string>
     <string name="spoken_accented_letter_1EE7" msgid="7815412228302952637">"U၊ အပေါ်မှာ ချိတ်"</string>
-    <string name="spoken_accented_letter_1EE9" msgid="4219119671251485651">"U၊ horn နှင့် စူးရှသော"</string>
-    <string name="spoken_accented_letter_1EEB" msgid="4086009841269002231">"U၊ horn နှင့် တည်ငြိမ်သော"</string>
-    <string name="spoken_accented_letter_1EED" msgid="3528151733528719847">"U၊  horn နှင့် အပေါ်မှာ ချိတ်"</string>
-    <string name="spoken_accented_letter_1EEF" msgid="3508548229409072119">"U၊ horn နှင့် tilde"</string>
-    <string name="spoken_accented_letter_1EF1" msgid="1912816350401931115">"U၊ horn နှင့် အောက်မှာ အစက်"</string>
+    <string name="spoken_accented_letter_1EE9" msgid="4219119671251485651">"U၊ horn နှင့် စူးရှသော"</string>
+    <string name="spoken_accented_letter_1EEB" msgid="4086009841269002231">"U၊ horn နှင့် တည်ငြိမ်သော"</string>
+    <string name="spoken_accented_letter_1EED" msgid="3528151733528719847">"U၊  horn နှင့် အပေါ်မှာ ချိတ်"</string>
+    <string name="spoken_accented_letter_1EEF" msgid="3508548229409072119">"U၊ horn နှင့် tilde"</string>
+    <string name="spoken_accented_letter_1EF1" msgid="1912816350401931115">"U၊ horn နှင့် အောက်မှာ အစက်"</string>
     <string name="spoken_accented_letter_1EF3" msgid="7211760439435946494">"Y၊ တည်ငြိမ်သော"</string>
     <string name="spoken_accented_letter_1EF5" msgid="8998864482764007384">"Y၊ အောက်မှာ အစက်"</string>
     <string name="spoken_accented_letter_1EF7" msgid="922043627252869200">"Y၊ အပေါ်မှာ ချိတ်"</string>
