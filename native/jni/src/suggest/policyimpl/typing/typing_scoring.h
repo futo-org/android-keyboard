@@ -69,10 +69,6 @@ class TypingScoring : public Scoring {
         return 0.0f;
     }
 
-    AK_FORCE_INLINE bool doesAutoCorrectValidWord() const {
-        return false;
-    }
-
     AK_FORCE_INLINE bool autoCorrectsToMultiWordSuggestionIfTop() const {
         return true;
     }

@@ -37,7 +37,6 @@ class Scoring {
             DicNode *const terminals, const int size) const = 0;
     virtual float getDoubleLetterDemotionDistanceCost(
             const DicNode *const terminalDicNode) const = 0;
-    virtual bool doesAutoCorrectValidWord() const = 0;
     virtual bool autoCorrectsToMultiWordSuggestionIfTop() const = 0;
     virtual bool sameAsTyped(const DicTraverseSession *const traverseSession,
             const DicNode *const dicNode) const = 0;
