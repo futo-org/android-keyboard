@@ -118,7 +118,7 @@ bool Ver4DictBuffers::flushHeaderAndDictBuffers(const char *const dictDirPath,
     }
     FILE *const file = fdopen(fd, "wb");
     if (!file) {
-        AKLOGE("fdopen failed for the file %s. errno: %d", filePath, errno);
+        AKLOGE("fdopen failed for the file %s. errno: %d", bodyFilePath, errno);
         ASSERT(false);
         return false;
     }
@@ -146,27 +146,27 @@ bool Ver4DictBuffers::flushHeaderAndDictBuffers(const char *const dictDirPath,
 bool Ver4DictBuffers::flushDictBuffers(FILE *const file) const {
     // Write trie.
     if (!DictFileWritingUtils::writeBufferToFileTail(file, &mExpandableTrieBuffer)) {
-        AKLOGE("Trie cannot be written. %s", tmpDirPath);
+        AKLOGE("Trie cannot be written.");
         return false;
     }
     // Write terminal position lookup table.
     if (!mTerminalPositionLookupTable.flushToFile(file)) {
-        AKLOGE("Terminal position lookup table cannot be written. %s", tmpDirPath);
+        AKLOGE("Terminal position lookup table cannot be written.");
         return false;
     }
     // Write probability dict content.
     if (!mProbabilityDictContent.flushToFile(file)) {
-        AKLOGE("Probability dict content cannot be written. %s", tmpDirPath);
+        AKLOGE("Probability dict content cannot be written.");
         return false;
     }
     // Write bigram dict content.
     if (!mBigramDictContent.flushToFile(file)) {
-        AKLOGE("Bigram dict content cannot be written. %s", tmpDirPath);
+        AKLOGE("Bigram dict content cannot be written.");
         return false;
     }
     // Write shortcut dict content.
     if (!mShortcutDictContent.flushToFile(file)) {
-        AKLOGE("Shortcut dict content cannot be written. %s", tmpDirPath);
+        AKLOGE("Shortcut dict content cannot be written.");
         return false;
     }
     return true;
