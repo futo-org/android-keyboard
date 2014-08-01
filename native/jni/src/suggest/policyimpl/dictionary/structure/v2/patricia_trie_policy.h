@@ -70,8 +70,6 @@ class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
 
     int getShortcutPositionOfPtNode(const int ptNodePos) const;
 
-    BinaryDictionaryBigramsIterator getBigramsIteratorOfPtNode(const int ptNodePos) const;
-
     const DictionaryHeaderStructurePolicy *getHeaderStructurePolicy() const {
         return &mHeaderPolicy;
     }

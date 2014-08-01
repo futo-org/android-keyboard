@@ -26,7 +26,6 @@
 
 namespace latinime {
 
-class DictionaryBigramsStructurePolicy;
 class DictionaryShortcutsStructurePolicy;
 class PtNodeArrayReader;
 
