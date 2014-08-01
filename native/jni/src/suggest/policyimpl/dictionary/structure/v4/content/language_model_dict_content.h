@@ -17,16 +17,28 @@
 #ifndef LATINIME_LANGUAGE_MODEL_DICT_CONTENT_H
 #define LATINIME_LANGUAGE_MODEL_DICT_CONTENT_H
 
+#include <cstdio>
+
 #include "defines.h"
+#include "suggest/policyimpl/dictionary/utils/trie_map.h"
+#include "utils/byte_array_view.h"
 
 namespace latinime {
 
 class LanguageModelDictContent {
  public:
-    explicit LanguageModelDictContent(const bool hasHistoricalInfo) {}
+    LanguageModelDictContent(const ReadWriteByteArrayView trieMapBuffer,
+            const bool hasHistoricalInfo)
+            : mTrieMap(trieMapBuffer) {}
+
+    explicit LanguageModelDictContent(const bool hasHistoricalInfo) : mTrieMap() {}
+
+    bool save(FILE *const file) const;
 
  private:
     DISALLOW_COPY_AND_ASSIGN(LanguageModelDictContent);
+
+    TrieMap mTrieMap;
 };
 } // namespace latinime
 #endif /* LATINIME_LANGUAGE_MODEL_DICT_CONTENT_H */
