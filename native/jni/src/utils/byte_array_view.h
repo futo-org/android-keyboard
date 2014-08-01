@@ -71,6 +71,11 @@ class ReadWriteByteArrayView {
         return ReadOnlyByteArrayView(mPtr, mSize);
     }
 
+    ReadWriteByteArrayView subView(const size_t start, const size_t n) const {
+        ASSERT(start + n <= mSize);
+        return ReadWriteByteArrayView(mPtr + start, n);
+    }
+
  private:
     DISALLOW_ASSIGNMENT_OPERATOR(ReadWriteByteArrayView);
 

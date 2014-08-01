@@ -26,6 +26,7 @@
 #include "suggest/policyimpl/dictionary/utils/byte_array_utils.h"
 #include "suggest/policyimpl/dictionary/utils/dict_file_writing_utils.h"
 #include "suggest/policyimpl/dictionary/utils/file_utils.h"
+#include "utils/byte_array_view.h"
 
 namespace latinime {
 
@@ -46,14 +47,16 @@ namespace latinime {
     }
     std::vector<uint8_t *> buffers;
     std::vector<int> bufferSizes;
-    uint8_t *const buffer = bodyBuffer->getBuffer();
+    const ReadWriteByteArrayView buffer = bodyBuffer->getReadWriteByteArrayView();
     int position = 0;
-    while (position < bodyBuffer->getBufferSize()) {
-        const int bufferSize = ByteArrayUtils::readUint32AndAdvancePosition(buffer, &position);
-        buffers.push_back(buffer + position);
-        bufferSizes.push_back(bufferSize);
+    while (position < static_cast<int>(buffer.size())) {
+        const int bufferSize = ByteArrayUtils::readUint32AndAdvancePosition(
+                buffer.data(), &position);
+        const ReadWriteByteArrayView subBuffer = buffer.subView(position, bufferSize);
+        buffers.push_back(subBuffer.data());
+        bufferSizes.push_back(subBuffer.size());
         position += bufferSize;
-        if (bufferSize < 0 || position < 0 || position > bodyBuffer->getBufferSize()) {
+        if (bufferSize < 0 || position < 0 || position > static_cast<int>(buffer.size())) {
             AKLOGE("The dict body file is corrupted.");
             return Ver4DictBuffersPtr(nullptr);
         }
@@ -177,12 +180,12 @@ Ver4DictBuffers::Ver4DictBuffers(MmappedBuffer::MmappedBufferPtr &&headerBuffer,
         const FormatUtils::FORMAT_VERSION formatVersion,
         const std::vector<uint8_t *> &contentBuffers, const std::vector<int> &contentBufferSizes)
         : mHeaderBuffer(std::move(headerBuffer)), mDictBuffer(std::move(bodyBuffer)),
-          mHeaderPolicy(mHeaderBuffer->getBuffer(), formatVersion),
-          mExpandableHeaderBuffer(mHeaderBuffer ? mHeaderBuffer->getBuffer() : nullptr,
-                  mHeaderPolicy.getSize(),
+          mHeaderPolicy(mHeaderBuffer->getReadOnlyByteArrayView().data(), formatVersion),
+          mExpandableHeaderBuffer(mHeaderBuffer->getReadWriteByteArrayView(),
                   BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE),
-          mExpandableTrieBuffer(contentBuffers[Ver4DictConstants::TRIE_BUFFER_INDEX],
-                  contentBufferSizes[Ver4DictConstants::TRIE_BUFFER_INDEX],
+          mExpandableTrieBuffer(
+                  ReadWriteByteArrayView(contentBuffers[Ver4DictConstants::TRIE_BUFFER_INDEX],
+                          contentBufferSizes[Ver4DictConstants::TRIE_BUFFER_INDEX]),
                   BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE),
           mTerminalPositionLookupTable(
                   contentBuffers[Ver4DictConstants::TERMINAL_ADDRESS_LOOKUP_TABLE_BUFFER_INDEX],

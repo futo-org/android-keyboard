@@ -31,6 +31,7 @@
 #include "suggest/policyimpl/dictionary/utils/dict_file_writing_utils.h"
 #include "suggest/policyimpl/dictionary/utils/mmapped_buffer.h"
 #include "suggest/policyimpl/dictionary/utils/sparse_table.h"
+#include "utils/byte_array_view.h"
 
 namespace latinime {
 namespace backward {
@@ -50,15 +51,16 @@ class SparseTableDictContent : public DictContent {
               mContentBuffer(
                       MmappedBuffer::openBuffer(dictPath, contentFileName, isUpdatable)),
               mExpandableLookupTableBuffer(
-                      mLookupTableBuffer ? mLookupTableBuffer->getBuffer() : nullptr,
-                      mLookupTableBuffer ? mLookupTableBuffer->getBufferSize() : 0,
+                      mLookupTableBuffer ? mLookupTableBuffer->getReadWriteByteArrayView() :
+                              ReadWriteByteArrayView(),
                       BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE),
               mExpandableAddressTableBuffer(
-                      mAddressTableBuffer ? mAddressTableBuffer->getBuffer() : nullptr,
-                      mAddressTableBuffer ? mAddressTableBuffer->getBufferSize() : 0,
+                      mAddressTableBuffer ? mAddressTableBuffer->getReadWriteByteArrayView() :
+                              ReadWriteByteArrayView(),
                       BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE),
-              mExpandableContentBuffer(mContentBuffer ? mContentBuffer->getBuffer() : nullptr,
-                      mContentBuffer ? mContentBuffer->getBufferSize() : 0,
+              mExpandableContentBuffer(
+                      mContentBuffer ? mContentBuffer->getReadWriteByteArrayView() :
+                              ReadWriteByteArrayView(),
                       BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE),
               mAddressLookupTable(&mExpandableLookupTableBuffer, &mExpandableAddressTableBuffer,
                       sparseTableBlockSize, sparseTableDataSize),

@@ -30,6 +30,7 @@
 
 #include "suggest/policyimpl/dictionary/utils/dict_file_writing_utils.h"
 #include "suggest/policyimpl/dictionary/utils/file_utils.h"
+#include "utils/byte_array_view.h"
 
 namespace latinime {
 namespace backward {
@@ -130,12 +131,12 @@ Ver4DictBuffers::Ver4DictBuffers(const char *const dictPath,
         : mHeaderBuffer(std::move(headerBuffer)),
           mDictBuffer(MmappedBuffer::openBuffer(dictPath,
                   Ver4DictConstants::TRIE_FILE_EXTENSION, isUpdatable)),
-          mHeaderPolicy(mHeaderBuffer->getBuffer(), formatVersion),
-          mExpandableHeaderBuffer(mHeaderBuffer ? mHeaderBuffer->getBuffer() : nullptr,
-                  mHeaderPolicy.getSize(),
+          mHeaderPolicy(mHeaderBuffer->getReadOnlyByteArrayView().data(), formatVersion),
+          mExpandableHeaderBuffer(mHeaderBuffer->getReadWriteByteArrayView(),
                   BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE),
-          mExpandableTrieBuffer(mDictBuffer ? mDictBuffer->getBuffer() : nullptr,
-                  mDictBuffer ? mDictBuffer->getBufferSize() : 0,
+          mExpandableTrieBuffer(
+                  mDictBuffer ? mDictBuffer->getReadWriteByteArrayView() :
+                          ReadWriteByteArrayView(),
                   BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE),
           mTerminalPositionLookupTable(dictPath, isUpdatable),
           mProbabilityDictContent(dictPath, mHeaderPolicy.hasHistoricalInfoOfWords(), isUpdatable),
