@@ -117,7 +117,7 @@ class DicNode {
         int newPrevWordsPtNodePos[MAX_PREV_WORD_COUNT_FOR_N_GRAM];
         newPrevWordsPtNodePos[0] = dicNode->mDicNodeProperties.getPtNodePos();
         for (size_t i = 1; i < NELEMS(newPrevWordsPtNodePos); ++i) {
-            newPrevWordsPtNodePos[i] = dicNode->getNthPrevWordTerminalPtNodePos(i);
+            newPrevWordsPtNodePos[i] = dicNode->getPrevWordsTerminalPtNodePos()[i - 1];
         }
         mDicNodeProperties.init(rootPtNodeArrayPos, newPrevWordsPtNodePos);
         mDicNodeState.initAsRootWithPreviousWord(&dicNode->mDicNodeState,
@@ -208,12 +208,9 @@ class DicNode {
         return mDicNodeProperties.getPtNodePos();
     }
 
-    // Used to get n-gram probability in DicNodeUtils. n is 1-indexed.
-    int getNthPrevWordTerminalPtNodePos(const int n) const {
-        if (n <= 0 || n > MAX_PREV_WORD_COUNT_FOR_N_GRAM) {
-            return NOT_A_DICT_POS;
-        }
-        return mDicNodeProperties.getPrevWordsTerminalPtNodePos()[n - 1];
+    // TODO: Use view class to return PtNodePos array.
+    const int *getPrevWordsTerminalPtNodePos() const {
+        return mDicNodeProperties.getPrevWordsTerminalPtNodePos();
     }
 
     // Used in DicNodeUtils
