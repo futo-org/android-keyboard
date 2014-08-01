@@ -21,14 +21,13 @@
 #include <cstdio>
 
 #include "defines.h"
-#include "suggest/policyimpl/dictionary/structure/v4/content/dict_content.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_dict_constants.h"
 #include "suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer.h"
 #include "suggest/policyimpl/dictionary/utils/dict_file_writing_utils.h"
 
 namespace latinime {
 
-class SingleDictContent : public DictContent {
+class SingleDictContent {
  public:
     SingleDictContent(uint8_t *const buffer, const int bufferSize)
             : mExpandableContentBuffer(buffer, bufferSize,
