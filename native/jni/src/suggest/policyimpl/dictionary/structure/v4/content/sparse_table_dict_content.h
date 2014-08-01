@@ -24,6 +24,7 @@
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_dict_constants.h"
 #include "suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer.h"
 #include "suggest/policyimpl/dictionary/utils/sparse_table.h"
+#include "utils/byte_array_view.h"
 
 namespace latinime {
 
@@ -32,14 +33,17 @@ class SparseTableDictContent {
  public:
     AK_FORCE_INLINE SparseTableDictContent(uint8_t *const *buffers, const int *bufferSizes,
             const int sparseTableBlockSize, const int sparseTableDataSize)
-            : mExpandableLookupTableBuffer(buffers[LOOKUP_TABLE_BUFFER_INDEX],
-                      bufferSizes[LOOKUP_TABLE_BUFFER_INDEX],
+            : mExpandableLookupTableBuffer(
+                      ReadWriteByteArrayView(buffers[LOOKUP_TABLE_BUFFER_INDEX],
+                              bufferSizes[LOOKUP_TABLE_BUFFER_INDEX]),
                       BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE),
-              mExpandableAddressTableBuffer(buffers[ADDRESS_TABLE_BUFFER_INDEX],
-                      bufferSizes[ADDRESS_TABLE_BUFFER_INDEX],
+              mExpandableAddressTableBuffer(
+                      ReadWriteByteArrayView(buffers[ADDRESS_TABLE_BUFFER_INDEX],
+                              bufferSizes[ADDRESS_TABLE_BUFFER_INDEX]),
                       BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE),
-              mExpandableContentBuffer(buffers[CONTENT_BUFFER_INDEX],
-                      bufferSizes[CONTENT_BUFFER_INDEX],
+              mExpandableContentBuffer(
+                      ReadWriteByteArrayView(buffers[CONTENT_BUFFER_INDEX],
+                              bufferSizes[CONTENT_BUFFER_INDEX]),
                       BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE),
               mAddressLookupTable(&mExpandableLookupTableBuffer, &mExpandableAddressTableBuffer,
                       sparseTableBlockSize, sparseTableDataSize) {}

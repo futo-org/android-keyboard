@@ -30,6 +30,7 @@
 #include "suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer.h"
 #include "suggest/policyimpl/dictionary/utils/dict_file_writing_utils.h"
 #include "suggest/policyimpl/dictionary/utils/mmapped_buffer.h"
+#include "utils/byte_array_view.h"
 
 namespace latinime {
 namespace backward {
@@ -40,8 +41,9 @@ class SingleDictContent : public DictContent {
     SingleDictContent(const char *const dictPath, const char *const contentFileName,
             const bool isUpdatable)
             : mMmappedBuffer(MmappedBuffer::openBuffer(dictPath, contentFileName, isUpdatable)),
-              mExpandableContentBuffer(mMmappedBuffer ? mMmappedBuffer->getBuffer() : nullptr,
-                      mMmappedBuffer ? mMmappedBuffer->getBufferSize() : 0,
+              mExpandableContentBuffer(
+                      mMmappedBuffer ? mMmappedBuffer->getReadWriteByteArrayView() :
+                              ReadWriteByteArrayView(),
                       BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE),
               mIsValid(mMmappedBuffer) {}
 
