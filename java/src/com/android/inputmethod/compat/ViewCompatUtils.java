@@ -30,7 +30,7 @@ public final class ViewCompatUtils {
             View.class, "getPaddingEnd");
     private static final Method METHOD_setPaddingRelative = CompatUtils.getMethod(
             View.class, "setPaddingRelative",
-            Integer.TYPE, Integer.TYPE, Integer.TYPE, Integer.TYPE);
+            int.class, int.class, int.class, int.class);
 
     private ViewCompatUtils() {
         // This utility class is not publicly instantiable.

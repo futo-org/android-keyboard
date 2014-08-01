@@ -32,8 +32,8 @@ public final class InputMethodSubtypeCompatUtils {
     // has been introduced in API level 17 (Build.VERSION_CODE.JELLY_BEAN_MR1).
     private static final Constructor<?> CONSTRUCTOR_INPUT_METHOD_SUBTYPE =
             CompatUtils.getConstructor(InputMethodSubtype.class,
-                    Integer.TYPE, Integer.TYPE, String.class, String.class, String.class,
-                    Boolean.TYPE, Boolean.TYPE, Integer.TYPE);
+                    int.class, int.class, String.class, String.class, String.class, boolean.class,
+                    boolean.class, int.class);
     static {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             if (CONSTRUCTOR_INPUT_METHOD_SUBTYPE == null) {

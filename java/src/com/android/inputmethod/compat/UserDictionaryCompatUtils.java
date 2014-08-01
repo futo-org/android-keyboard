@@ -26,7 +26,7 @@ public final class UserDictionaryCompatUtils {
     // UserDictionary.Words#addWord(Context, String, int, String, Locale) was introduced
     // in API level 16 (Build.VERSION_CODES.JELLY_BEAN).
     private static final Method METHOD_addWord = CompatUtils.getMethod(Words.class, "addWord",
-            Context.class, String.class, Integer.TYPE, String.class, Locale.class);
+            Context.class, String.class, int.class, String.class, Locale.class);
 
     @SuppressWarnings("deprecation")
     public static void addWord(final Context context, final String word,
