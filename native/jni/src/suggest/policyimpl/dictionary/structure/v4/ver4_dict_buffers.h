@@ -23,6 +23,7 @@
 #include "defines.h"
 #include "suggest/policyimpl/dictionary/header/header_policy.h"
 #include "suggest/policyimpl/dictionary/structure/v4/content/bigram_dict_content.h"
+#include "suggest/policyimpl/dictionary/structure/v4/content/language_model_dict_content.h"
 #include "suggest/policyimpl/dictionary/structure/v4/content/probability_dict_content.h"
 #include "suggest/policyimpl/dictionary/structure/v4/content/shortcut_dict_content.h"
 #include "suggest/policyimpl/dictionary/structure/v4/content/terminal_position_lookup_table.h"
@@ -136,6 +137,7 @@ class Ver4DictBuffers {
     BufferWithExtendableBuffer mExpandableTrieBuffer;
     TerminalPositionLookupTable mTerminalPositionLookupTable;
     ProbabilityDictContent mProbabilityDictContent;
+    LanguageModelDictContent mLanguageModelDictContent;
     BigramDictContent mBigramDictContent;
     ShortcutDictContent mShortcutDictContent;
     const int mIsUpdatable;
