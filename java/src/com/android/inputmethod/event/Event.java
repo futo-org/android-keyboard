@@ -227,6 +227,7 @@ public class Event {
      * @return an identical event marked as consumed.
      */
     public static Event createConsumedEvent(final Event source) {
+        // A consumed event should not input any text at all, so we pass the empty string as text.
         return new Event(source.mEventType, source.mText, source.mCodePoint, source.mKeyCode,
                 source.mX, source.mY, source.mSuggestedWordInfo, source.mFlags | FLAG_CONSUMED,
                 source.mNextEvent);
@@ -267,6 +268,9 @@ public class Event {
     }
 
     public CharSequence getTextToCommit() {
+        if (isConsumed()) {
+            return ""; // A consumed event should input no text.
+        }
         switch (mEventType) {
         case EVENT_TYPE_MODE_KEY:
         case EVENT_TYPE_NOT_HANDLED:
