@@ -132,8 +132,8 @@ int Ver4PatriciaTriePolicy::getProbabilityOfPtNode(const int *const prevWordsPtN
         return NOT_A_PROBABILITY;
     }
     if (prevWordsPtNodePos) {
-        BinaryDictionaryBigramsIterator bigramsIt =
-                getBigramsIteratorOfPtNode(prevWordsPtNodePos[0]);
+        const int bigramsPosition = getBigramsPositionOfPtNode(prevWordsPtNodePos[0]);
+        BinaryDictionaryBigramsIterator bigramsIt(&mBigramPolicy, bigramsPosition);
         while (bigramsIt.hasNext()) {
             bigramsIt.next();
             if (bigramsIt.getBigramPos() == ptNodePos
@@ -151,7 +151,8 @@ void Ver4PatriciaTriePolicy::iterateNgramEntries(const int *const prevWordsPtNod
     if (!prevWordsPtNodePos) {
         return;
     }
-    BinaryDictionaryBigramsIterator bigramsIt = getBigramsIteratorOfPtNode(prevWordsPtNodePos[0]);
+    const int bigramsPosition = getBigramsPositionOfPtNode(prevWordsPtNodePos[0]);
+    BinaryDictionaryBigramsIterator bigramsIt(&mBigramPolicy, bigramsPosition);
     while (bigramsIt.hasNext()) {
         bigramsIt.next();
         listener->onVisitEntry(bigramsIt.getProbability(), bigramsIt.getBigramPos());
@@ -168,12 +169,6 @@ int Ver4PatriciaTriePolicy::getShortcutPositionOfPtNode(const int ptNodePos) con
     }
     return mBuffers->getShortcutDictContent()->getShortcutListHeadPos(
             ptNodeParams.getTerminalId());
-}
-
-BinaryDictionaryBigramsIterator Ver4PatriciaTriePolicy::getBigramsIteratorOfPtNode(
-        const int ptNodePos) const {
-    const int bigramsPosition = getBigramsPositionOfPtNode(ptNodePos);
-    return BinaryDictionaryBigramsIterator(&mBigramPolicy, bigramsPosition);
 }
 
 int Ver4PatriciaTriePolicy::getBigramsPositionOfPtNode(const int ptNodePos) const {
