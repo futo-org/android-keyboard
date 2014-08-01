@@ -35,34 +35,30 @@ const int MultiBigramMap::BigramMap::DEFAULT_HASH_MAP_SIZE_FOR_EACH_BIGRAM_MAP =
 // Also caches the bigrams if there is space remaining and they have not been cached already.
 int MultiBigramMap::getBigramProbability(
         const DictionaryStructureWithBufferPolicy *const structurePolicy,
-        const int wordPosition, const int nextWordPosition, const int unigramProbability) {
+        const int *const prevWordsPtNodePos, const int nextWordPosition,
+        const int unigramProbability) {
+    if (!prevWordsPtNodePos || prevWordsPtNodePos[0] == NOT_A_DICT_POS) {
+        return structurePolicy->getProbability(unigramProbability, NOT_A_PROBABILITY);
+    }
     std::unordered_map<int, BigramMap>::const_iterator mapPosition =
-            mBigramMaps.find(wordPosition);
+            mBigramMaps.find(prevWordsPtNodePos[0]);
     if (mapPosition != mBigramMaps.end()) {
         return mapPosition->second.getBigramProbability(structurePolicy, nextWordPosition,
                 unigramProbability);
     }
     if (mBigramMaps.size() < MAX_CACHED_PREV_WORDS_IN_BIGRAM_MAP) {
-        addBigramsForWordPosition(structurePolicy, wordPosition);
-        return mBigramMaps[wordPosition].getBigramProbability(structurePolicy,
+        addBigramsForWordPosition(structurePolicy, prevWordsPtNodePos);
+        return mBigramMaps[prevWordsPtNodePos[0]].getBigramProbability(structurePolicy,
                 nextWordPosition, unigramProbability);
     }
-    return readBigramProbabilityFromBinaryDictionary(structurePolicy, wordPosition,
+    return readBigramProbabilityFromBinaryDictionary(structurePolicy, prevWordsPtNodePos,
             nextWordPosition, unigramProbability);
 }
 
 void MultiBigramMap::BigramMap::init(
-        const DictionaryStructureWithBufferPolicy *const structurePolicy, const int nodePos) {
-    BinaryDictionaryBigramsIterator bigramsIt =
-            structurePolicy->getBigramsIteratorOfPtNode(nodePos);
-    while (bigramsIt.hasNext()) {
-        bigramsIt.next();
-        if (bigramsIt.getBigramPos() == NOT_A_DICT_POS) {
-            continue;
-        }
-        mBigramMap[bigramsIt.getBigramPos()] = bigramsIt.getProbability();
-        mBloomFilter.setInFilter(bigramsIt.getBigramPos());
-    }
+        const DictionaryStructureWithBufferPolicy *const structurePolicy,
+        const int *const prevWordsPtNodePos) {
+    structurePolicy->iterateNgramEntries(prevWordsPtNodePos, this /* listener */);
 }
 
 int MultiBigramMap::BigramMap::getBigramProbability(
@@ -79,25 +75,33 @@ int MultiBigramMap::BigramMap::getBigramProbability(
     return structurePolicy->getProbability(unigramProbability, bigramProbability);
 }
 
+void MultiBigramMap::BigramMap::onVisitEntry(const int ngramProbability,
+        const int targetPtNodePos) {
+    if (targetPtNodePos == NOT_A_DICT_POS) {
+        return;
+    }
+    mBigramMap[targetPtNodePos] = ngramProbability;
+    mBloomFilter.setInFilter(targetPtNodePos);
+}
+
 void MultiBigramMap::addBigramsForWordPosition(
-        const DictionaryStructureWithBufferPolicy *const structurePolicy, const int position) {
-    mBigramMaps[position].init(structurePolicy, position);
+        const DictionaryStructureWithBufferPolicy *const structurePolicy,
+        const int *const prevWordsPtNodePos) {
+    if (prevWordsPtNodePos) {
+        mBigramMaps[prevWordsPtNodePos[0]].init(structurePolicy, prevWordsPtNodePos);
+    }
 }
 
 int MultiBigramMap::readBigramProbabilityFromBinaryDictionary(
-        const DictionaryStructureWithBufferPolicy *const structurePolicy, const int nodePos,
-        const int nextWordPosition, const int unigramProbability) {
-    int bigramProbability = NOT_A_PROBABILITY;
-    BinaryDictionaryBigramsIterator bigramsIt =
-            structurePolicy->getBigramsIteratorOfPtNode(nodePos);
-    while (bigramsIt.hasNext()) {
-        bigramsIt.next();
-        if (bigramsIt.getBigramPos() == nextWordPosition) {
-            bigramProbability = bigramsIt.getProbability();
-            break;
-        }
+        const DictionaryStructureWithBufferPolicy *const structurePolicy,
+        const int *const prevWordsPtNodePos, const int nextWordPosition,
+        const int unigramProbability) {
+    const int bigramProbability = structurePolicy->getProbabilityOfPtNode(prevWordsPtNodePos,
+            nextWordPosition);
+    if (bigramProbability != NOT_A_PROBABILITY) {
+        return bigramProbability;
     }
-    return structurePolicy->getProbability(unigramProbability, bigramProbability);
+    return structurePolicy->getProbability(unigramProbability, NOT_A_PROBABILITY);
 }
 
 } // namespace latinime
