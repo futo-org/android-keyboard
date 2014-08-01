@@ -72,6 +72,7 @@ LATIN_IME_CORE_SRC_FILES := \
         ver4_pt_node_array_reader.cpp) \
     $(addprefix suggest/policyimpl/dictionary/structure/v4/content/, \
         bigram_dict_content.cpp \
+        language_model_dict_content.cpp \
         probability_dict_content.cpp \
         shortcut_dict_content.cpp \
         sparse_table_dict_content.cpp \
