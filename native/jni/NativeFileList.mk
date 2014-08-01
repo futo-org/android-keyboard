@@ -127,4 +127,5 @@ LATIN_IME_CORE_TEST_FILES := \
     suggest/core/dictionary/bloom_filter_test.cpp \
     suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer_test.cpp \
     suggest/policyimpl/dictionary/utils/trie_map_test.cpp \
-    utils/autocorrection_threshold_utils_test.cpp
+    utils/autocorrection_threshold_utils_test.cpp \
+    utils/int_array_view_test.cpp
