@@ -36,6 +36,7 @@ class Ver4DictConstants {
     static const int TRIE_BUFFER_INDEX;
     static const int TERMINAL_ADDRESS_LOOKUP_TABLE_BUFFER_INDEX;
     static const int PROBABILITY_BUFFER_INDEX;
+    static const int LANGUAGE_MODEL_BUFFER_INDEX;
     static const int BIGRAM_BUFFERS_INDEX;
     static const int SHORTCUT_BUFFERS_INDEX;
 
@@ -71,6 +72,7 @@ class Ver4DictConstants {
 
     static const size_t NUM_OF_BUFFERS_FOR_SINGLE_DICT_CONTENT;
     static const size_t NUM_OF_BUFFERS_FOR_SPARSE_TABLE_DICT_CONTENT;
+    static const size_t NUM_OF_BUFFERS_FOR_LANGUAGE_MODEL_DICT_CONTENT;
 };
 } // namespace latinime
 #endif /* LATINIME_VER4_DICT_CONSTANTS_H */

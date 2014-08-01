@@ -162,6 +162,11 @@ bool Ver4DictBuffers::flushDictBuffers(FILE *const file) const {
         AKLOGE("Probability dict content cannot be written.");
         return false;
     }
+    // Write language model content.
+    if (!mLanguageModelDictContent.save(file)) {
+        AKLOGE("Language model dict content cannot be written.");
+        return false;
+    }
     // Write bigram dict content.
     if (!mBigramDictContent.flushToFile(file)) {
         AKLOGE("Bigram dict content cannot be written.");
@@ -195,7 +200,11 @@ Ver4DictBuffers::Ver4DictBuffers(MmappedBuffer::MmappedBufferPtr &&headerBuffer,
                   contentBuffers[Ver4DictConstants::PROBABILITY_BUFFER_INDEX],
                   contentBufferSizes[Ver4DictConstants::PROBABILITY_BUFFER_INDEX],
                   mHeaderPolicy.hasHistoricalInfoOfWords()),
-          mLanguageModelDictContent(mHeaderPolicy.hasHistoricalInfoOfWords()),
+          mLanguageModelDictContent(
+                  ReadWriteByteArrayView(
+                          contentBuffers[Ver4DictConstants::LANGUAGE_MODEL_BUFFER_INDEX],
+                          contentBufferSizes[Ver4DictConstants::LANGUAGE_MODEL_BUFFER_INDEX]),
+                  mHeaderPolicy.hasHistoricalInfoOfWords()),
           mBigramDictContent(&contentBuffers[Ver4DictConstants::BIGRAM_BUFFERS_INDEX],
                   &contentBufferSizes[Ver4DictConstants::BIGRAM_BUFFERS_INDEX],
                   mHeaderPolicy.hasHistoricalInfoOfWords()),
