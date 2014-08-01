@@ -192,6 +192,7 @@ Ver4DictBuffers::Ver4DictBuffers(MmappedBuffer::MmappedBufferPtr &&headerBuffer,
                   contentBuffers[Ver4DictConstants::PROBABILITY_BUFFER_INDEX],
                   contentBufferSizes[Ver4DictConstants::PROBABILITY_BUFFER_INDEX],
                   mHeaderPolicy.hasHistoricalInfoOfWords()),
+          mLanguageModelDictContent(mHeaderPolicy.hasHistoricalInfoOfWords()),
           mBigramDictContent(&contentBuffers[Ver4DictConstants::BIGRAM_BUFFERS_INDEX],
                   &contentBufferSizes[Ver4DictConstants::BIGRAM_BUFFERS_INDEX],
                   mHeaderPolicy.hasHistoricalInfoOfWords()),
@@ -204,6 +205,7 @@ Ver4DictBuffers::Ver4DictBuffers(const HeaderPolicy *const headerPolicy, const i
           mExpandableHeaderBuffer(Ver4DictConstants::MAX_DICTIONARY_SIZE),
           mExpandableTrieBuffer(maxTrieSize), mTerminalPositionLookupTable(),
           mProbabilityDictContent(headerPolicy->hasHistoricalInfoOfWords()),
+          mLanguageModelDictContent(headerPolicy->hasHistoricalInfoOfWords()),
           mBigramDictContent(headerPolicy->hasHistoricalInfoOfWords()), mShortcutDictContent(),
           mIsUpdatable(true) {}
 
