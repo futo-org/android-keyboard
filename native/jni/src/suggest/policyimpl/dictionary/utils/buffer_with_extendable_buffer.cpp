@@ -25,7 +25,7 @@ const size_t BufferWithExtendableBuffer::EXTEND_ADDITIONAL_BUFFER_SIZE_STEP = 12
 
 uint32_t BufferWithExtendableBuffer::readUint(const int size, const int pos) const {
     const bool readingPosIsInAdditionalBuffer = isInAdditionalBuffer(pos);
-    const int posInBuffer = readingPosIsInAdditionalBuffer ? pos - mOriginalBufferSize : pos;
+    const int posInBuffer = readingPosIsInAdditionalBuffer ? pos - mOriginalBuffer.size() : pos;
     return ByteArrayUtils::readUint(getBuffer(readingPosIsInAdditionalBuffer), size, posInBuffer);
 }
 
@@ -40,12 +40,12 @@ void BufferWithExtendableBuffer::readCodePointsAndAdvancePosition(const int maxC
         int *const outCodePoints, int *outCodePointCount, int *const pos) const {
     const bool readingPosIsInAdditionalBuffer = isInAdditionalBuffer(*pos);
     if (readingPosIsInAdditionalBuffer) {
-        *pos -= mOriginalBufferSize;
+        *pos -= mOriginalBuffer.size();
     }
     *outCodePointCount = ByteArrayUtils::readStringAndAdvancePosition(
             getBuffer(readingPosIsInAdditionalBuffer), maxCodePointCount, outCodePoints, pos);
     if (readingPosIsInAdditionalBuffer) {
-        *pos += mOriginalBufferSize;
+        *pos += mOriginalBuffer.size();
     }
 }
 
@@ -69,13 +69,14 @@ bool BufferWithExtendableBuffer::writeUintAndAdvancePosition(const uint32_t data
         return false;
     }
     const bool usesAdditionalBuffer = isInAdditionalBuffer(*pos);
-    uint8_t *const buffer = usesAdditionalBuffer ? &mAdditionalBuffer[0] : mOriginalBuffer;
+    uint8_t *const buffer =
+            usesAdditionalBuffer ? mAdditionalBuffer.data() : mOriginalBuffer.data();
     if (usesAdditionalBuffer) {
-        *pos -= mOriginalBufferSize;
+        *pos -= mOriginalBuffer.size();
     }
     ByteArrayUtils::writeUintAndAdvancePosition(buffer, data, size, pos);
     if (usesAdditionalBuffer) {
-        *pos += mOriginalBufferSize;
+        *pos += mOriginalBuffer.size();
     }
     return true;
 }
@@ -88,14 +89,15 @@ bool BufferWithExtendableBuffer::writeCodePointsAndAdvancePosition(const int *co
         return false;
     }
     const bool usesAdditionalBuffer = isInAdditionalBuffer(*pos);
-    uint8_t *const buffer = usesAdditionalBuffer ? &mAdditionalBuffer[0] : mOriginalBuffer;
+    uint8_t *const buffer =
+            usesAdditionalBuffer ? mAdditionalBuffer.data() : mOriginalBuffer.data();
     if (usesAdditionalBuffer) {
-        *pos -= mOriginalBufferSize;
+        *pos -= mOriginalBuffer.size();
     }
     ByteArrayUtils::writeCodePointsAndAdvancePosition(buffer, codePoints, codePointCount,
             writesTerminator, pos);
     if (usesAdditionalBuffer) {
-        *pos += mOriginalBufferSize;
+        *pos += mOriginalBuffer.size();
     }
     return true;
 }
@@ -119,7 +121,7 @@ bool BufferWithExtendableBuffer::checkAndPrepareWriting(const int pos, const int
     const size_t totalRequiredSize = static_cast<size_t>(pos + size);
     if (!isInAdditionalBuffer(pos)) {
         // Here don't need to care about the additional buffer.
-        if (static_cast<size_t>(mOriginalBufferSize) < totalRequiredSize) {
+        if (mOriginalBuffer.size() < totalRequiredSize) {
             // Violate the boundary.
             return false;
         }
@@ -137,7 +139,7 @@ bool BufferWithExtendableBuffer::checkAndPrepareWriting(const int pos, const int
         return false;
     }
     const size_t extendSize = totalRequiredSize -
-            std::min(mAdditionalBuffer.size() + mOriginalBufferSize, totalRequiredSize);
+            std::min(mAdditionalBuffer.size() + mOriginalBuffer.size(), totalRequiredSize);
     if (extendSize > 0 && !extendBuffer(extendSize)) {
         // Failed to extend the buffer.
         return false;

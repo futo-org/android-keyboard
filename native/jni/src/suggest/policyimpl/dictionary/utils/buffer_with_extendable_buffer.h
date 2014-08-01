@@ -23,6 +23,7 @@
 
 #include "defines.h"
 #include "suggest/policyimpl/dictionary/utils/byte_array_utils.h"
+#include "utils/byte_array_view.h"
 
 namespace latinime {
 
@@ -36,18 +37,17 @@ class BufferWithExtendableBuffer {
 
     BufferWithExtendableBuffer(uint8_t *const originalBuffer, const int originalBufferSize,
             const int maxAdditionalBufferSize)
-            : mOriginalBuffer(originalBuffer), mOriginalBufferSize(originalBufferSize),
+            : mOriginalBuffer(originalBuffer, originalBufferSize),
               mAdditionalBuffer(0), mUsedAdditionalBufferSize(0),
               mMaxAdditionalBufferSize(maxAdditionalBufferSize) {}
 
     // Without original buffer.
     BufferWithExtendableBuffer(const int maxAdditionalBufferSize)
-            : mOriginalBuffer(0), mOriginalBufferSize(0),
-              mAdditionalBuffer(0), mUsedAdditionalBufferSize(0),
+            : mOriginalBuffer(), mAdditionalBuffer(0), mUsedAdditionalBufferSize(0),
               mMaxAdditionalBufferSize(maxAdditionalBufferSize) {}
 
     AK_FORCE_INLINE int getTailPosition() const {
-        return mOriginalBufferSize + mUsedAdditionalBufferSize;
+        return mOriginalBuffer.size() + mUsedAdditionalBufferSize;
     }
 
     AK_FORCE_INLINE int getUsedAdditionalBufferSize() const {
@@ -58,16 +58,16 @@ class BufferWithExtendableBuffer {
      * For reading.
      */
     AK_FORCE_INLINE bool isInAdditionalBuffer(const int position) const {
-        return position >= mOriginalBufferSize;
+        return position >= static_cast<int>(mOriginalBuffer.size());
     }
 
     // TODO: Resolve the issue that the address can be changed when the vector is resized.
     // CAVEAT!: Be careful about array out of bound access with buffers
     AK_FORCE_INLINE const uint8_t *getBuffer(const bool usesAdditionalBuffer) const {
         if (usesAdditionalBuffer) {
-            return &mAdditionalBuffer[0];
+            return mAdditionalBuffer.data();
         } else {
-            return mOriginalBuffer;
+            return mOriginalBuffer.data();
         }
     }
 
@@ -79,7 +79,7 @@ class BufferWithExtendableBuffer {
             int *const outCodePoints, int *outCodePointCount, int *const pos) const;
 
     AK_FORCE_INLINE int getOriginalBufferSize() const {
-        return mOriginalBufferSize;
+        return mOriginalBuffer.size();
     }
 
     AK_FORCE_INLINE bool isNearSizeLimit() const {
@@ -110,8 +110,7 @@ class BufferWithExtendableBuffer {
     static const int NEAR_BUFFER_LIMIT_THRESHOLD_PERCENTILE;
     static const size_t EXTEND_ADDITIONAL_BUFFER_SIZE_STEP;
 
-    uint8_t *const mOriginalBuffer;
-    const int mOriginalBufferSize;
+    const ReadWriteByteArrayView mOriginalBuffer;
     std::vector<uint8_t> mAdditionalBuffer;
     int mUsedAdditionalBufferSize;
     const size_t mMaxAdditionalBufferSize;
