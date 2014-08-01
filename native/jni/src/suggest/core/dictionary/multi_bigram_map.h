@@ -23,6 +23,7 @@
 #include "defines.h"
 #include "suggest/core/dictionary/binary_dictionary_bigrams_iterator.h"
 #include "suggest/core/dictionary/bloom_filter.h"
+#include "suggest/core/dictionary/ngram_listener.h"
 #include "suggest/core/policy/dictionary_structure_with_buffer_policy.h"
 
 namespace latinime {
@@ -38,7 +39,8 @@ class MultiBigramMap {
     // Look up the bigram probability for the given word pair from the cached bigram maps.
     // Also caches the bigrams if there is space remaining and they have not been cached already.
     int getBigramProbability(const DictionaryStructureWithBufferPolicy *const structurePolicy,
-            const int wordPosition, const int nextWordPosition, const int unigramProbability);
+            const int *const prevWordsPtNodePos, const int nextWordPosition,
+            const int unigramProbability);
 
     void clear() {
         mBigramMaps.clear();
@@ -47,32 +49,35 @@ class MultiBigramMap {
  private:
     DISALLOW_COPY_AND_ASSIGN(MultiBigramMap);
 
-    class BigramMap {
+    class BigramMap : public NgramListener {
      public:
         BigramMap() : mBigramMap(DEFAULT_HASH_MAP_SIZE_FOR_EACH_BIGRAM_MAP), mBloomFilter() {}
-        ~BigramMap() {}
+        // Copy constructor needed for std::unordered_map.
+        BigramMap(const BigramMap &bigramMap)
+                : mBigramMap(bigramMap.mBigramMap), mBloomFilter(bigramMap.mBloomFilter) {}
+        virtual ~BigramMap() {}
 
         void init(const DictionaryStructureWithBufferPolicy *const structurePolicy,
-                const int nodePos);
-
+                const int *const prevWordsPtNodePos);
         int getBigramProbability(
                 const DictionaryStructureWithBufferPolicy *const structurePolicy,
                 const int nextWordPosition, const int unigramProbability) const;
+        virtual void onVisitEntry(const int ngramProbability, const int targetPtNodePos);
 
      private:
-        // NOTE: The BigramMap class doesn't use DISALLOW_COPY_AND_ASSIGN() because its default
-        // copy constructor is needed for use in hash_map.
         static const int DEFAULT_HASH_MAP_SIZE_FOR_EACH_BIGRAM_MAP;
         std::unordered_map<int, int> mBigramMap;
         BloomFilter mBloomFilter;
     };
 
     void addBigramsForWordPosition(
-            const DictionaryStructureWithBufferPolicy *const structurePolicy, const int position);
+            const DictionaryStructureWithBufferPolicy *const structurePolicy,
+            const int *const prevWordsPtNodePos);
 
     int readBigramProbabilityFromBinaryDictionary(
-            const DictionaryStructureWithBufferPolicy *const structurePolicy, const int nodePos,
-            const int nextWordPosition, const int unigramProbability);
+            const DictionaryStructureWithBufferPolicy *const structurePolicy,
+            const int *const prevWordsPtNodePos, const int nextWordPosition,
+            const int unigramProbability);
 
     static const size_t MAX_CACHED_PREV_WORDS_IN_BIGRAM_MAP;
     std::unordered_map<int, BigramMap> mBigramMaps;

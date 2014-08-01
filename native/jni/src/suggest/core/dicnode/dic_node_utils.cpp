@@ -85,17 +85,10 @@ namespace latinime {
         const DictionaryStructureWithBufferPolicy *const dictionaryStructurePolicy,
         const DicNode *const dicNode, MultiBigramMap *const multiBigramMap) {
     const int unigramProbability = dicNode->getProbability();
-    const int ptNodePos = dicNode->getPtNodePos();
-    const int prevWordTerminalPtNodePos = dicNode->getNthPrevWordTerminalPtNodePos(1 /* n */);
-    if (NOT_A_DICT_POS == ptNodePos || NOT_A_DICT_POS == prevWordTerminalPtNodePos) {
-        // Note: Normally wordPos comes from the dictionary and should never equal
-        // NOT_A_VALID_WORD_POS.
-        return dictionaryStructurePolicy->getProbability(unigramProbability,
-                NOT_A_PROBABILITY);
-    }
     if (multiBigramMap) {
+        const int *const prevWordsPtNodePos = dicNode->getPrevWordsTerminalPtNodePos();
         return multiBigramMap->getBigramProbability(dictionaryStructurePolicy,
-                prevWordTerminalPtNodePos, ptNodePos, unigramProbability);
+                prevWordsPtNodePos, dicNode->getPtNodePos(), unigramProbability);
     }
     return dictionaryStructurePolicy->getProbability(unigramProbability,
             NOT_A_PROBABILITY);
