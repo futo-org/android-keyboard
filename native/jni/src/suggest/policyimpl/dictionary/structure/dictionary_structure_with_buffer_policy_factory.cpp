@@ -31,6 +31,7 @@
 #include "suggest/policyimpl/dictionary/utils/file_utils.h"
 #include "suggest/policyimpl/dictionary/utils/format_utils.h"
 #include "suggest/policyimpl/dictionary/utils/mmapped_buffer.h"
+#include "utils/byte_array_view.h"
 
 namespace latinime {
 
@@ -110,7 +111,8 @@ template<class DictConstants, class DictBuffers, class DictBuffersPtr, class Str
         return nullptr;
     }
     const FormatUtils::FORMAT_VERSION formatVersion = FormatUtils::detectFormatVersion(
-            mmappedBuffer->getBuffer(), mmappedBuffer->getBufferSize());
+            mmappedBuffer->getReadOnlyByteArrayView().data(),
+            mmappedBuffer->getReadOnlyByteArrayView().size());
     switch (formatVersion) {
         case FormatUtils::VERSION_2:
             AKLOGE("Given path is a directory but the format is version 2. path: %s", path);
@@ -172,8 +174,8 @@ template<class DictConstants, class DictBuffers, class DictBuffersPtr, class Str
     if (!mmappedBuffer) {
         return nullptr;
     }
-    switch (FormatUtils::detectFormatVersion(mmappedBuffer->getBuffer(),
-            mmappedBuffer->getBufferSize())) {
+    switch (FormatUtils::detectFormatVersion(mmappedBuffer->getReadOnlyByteArrayView().data(),
+            mmappedBuffer->getReadOnlyByteArrayView().size())) {
         case FormatUtils::VERSION_2:
             return DictionaryStructureWithBufferPolicy::StructurePolicyPtr(
                     new PatriciaTriePolicy(std::move(mmappedBuffer)));

@@ -21,6 +21,7 @@
 #include <memory>
 
 #include "defines.h"
+#include "utils/byte_array_view.h"
 
 namespace latinime {
 
@@ -39,12 +40,12 @@ class MmappedBuffer {
 
     ~MmappedBuffer();
 
-    AK_FORCE_INLINE uint8_t *getBuffer() const {
-        return mBuffer;
+    ReadWriteByteArrayView getReadWriteByteArrayView() const {
+        return mByteArrayView;
     }
 
-    AK_FORCE_INLINE int getBufferSize() const {
-        return mBufferSize;
+    ReadOnlyByteArrayView getReadOnlyByteArrayView() const {
+        return mByteArrayView.getReadOnlyView();
     }
 
     AK_FORCE_INLINE bool isUpdatable() const {
@@ -55,18 +56,17 @@ class MmappedBuffer {
     AK_FORCE_INLINE MmappedBuffer(uint8_t *const buffer, const int bufferSize,
             void *const mmappedBuffer, const int alignedSize, const int mmapFd,
             const bool isUpdatable)
-            : mBuffer(buffer), mBufferSize(bufferSize), mMmappedBuffer(mmappedBuffer),
+            : mByteArrayView(buffer, bufferSize), mMmappedBuffer(mmappedBuffer),
               mAlignedSize(alignedSize), mMmapFd(mmapFd), mIsUpdatable(isUpdatable) {}
 
     // Empty file. We have to handle an empty file as a valid part of a dictionary.
     AK_FORCE_INLINE MmappedBuffer(const bool isUpdatable)
-            : mBuffer(nullptr), mBufferSize(0), mMmappedBuffer(nullptr), mAlignedSize(0),
+            : mByteArrayView(), mMmappedBuffer(nullptr), mAlignedSize(0),
               mMmapFd(0), mIsUpdatable(isUpdatable) {}
 
     DISALLOW_IMPLICIT_CONSTRUCTORS(MmappedBuffer);
 
-    uint8_t *const mBuffer;
-    const int mBufferSize;
+    const ReadWriteByteArrayView mByteArrayView;
     void *const mMmappedBuffer;
     const int mAlignedSize;
     const int mMmapFd;

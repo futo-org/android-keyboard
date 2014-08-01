@@ -24,6 +24,7 @@
 
 #include "defines.h"
 #include "suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer.h"
+#include "utils/byte_array_view.h"
 
 namespace latinime {
 
@@ -161,7 +162,7 @@ class TrieMap {
 
     TrieMap();
     // Construct TrieMap using existing data in the memory region written by save().
-    TrieMap(uint8_t *const buffer, const int bufferSize);
+    TrieMap(const ReadWriteByteArrayView buffer);
     void dump(const int from = 0, const int to = 0) const;
 
     bool isNearSizeLimit() const {
