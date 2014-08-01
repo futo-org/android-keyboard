@@ -24,13 +24,14 @@
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_dict_constants.h"
 #include "suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer.h"
 #include "suggest/policyimpl/dictionary/utils/dict_file_writing_utils.h"
+#include "utils/byte_array_view.h"
 
 namespace latinime {
 
 class SingleDictContent {
  public:
     SingleDictContent(uint8_t *const buffer, const int bufferSize)
-            : mExpandableContentBuffer(buffer, bufferSize,
+            : mExpandableContentBuffer(ReadWriteByteArrayView(buffer, bufferSize),
                       BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE) {}
 
     SingleDictContent()

@@ -35,15 +35,14 @@ class BufferWithExtendableBuffer {
  public:
     static const size_t DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE;
 
-    BufferWithExtendableBuffer(uint8_t *const originalBuffer, const int originalBufferSize,
+    BufferWithExtendableBuffer(const ReadWriteByteArrayView originalBuffer,
             const int maxAdditionalBufferSize)
-            : mOriginalBuffer(originalBuffer, originalBufferSize),
-              mAdditionalBuffer(0), mUsedAdditionalBufferSize(0),
+            : mOriginalBuffer(originalBuffer), mAdditionalBuffer(), mUsedAdditionalBufferSize(0),
               mMaxAdditionalBufferSize(maxAdditionalBufferSize) {}
 
     // Without original buffer.
     BufferWithExtendableBuffer(const int maxAdditionalBufferSize)
-            : mOriginalBuffer(), mAdditionalBuffer(0), mUsedAdditionalBufferSize(0),
+            : mOriginalBuffer(), mAdditionalBuffer(), mUsedAdditionalBufferSize(0),
               mMaxAdditionalBufferSize(maxAdditionalBufferSize) {}
 
     AK_FORCE_INLINE int getTailPosition() const {

@@ -29,6 +29,7 @@
 #include "suggest/policyimpl/dictionary/structure/v2/ver2_pt_node_array_reader.h"
 #include "suggest/policyimpl/dictionary/utils/format_utils.h"
 #include "suggest/policyimpl/dictionary/utils/mmapped_buffer.h"
+#include "utils/byte_array_view.h"
 
 namespace latinime {
 
@@ -39,9 +40,12 @@ class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
  public:
     PatriciaTriePolicy(MmappedBuffer::MmappedBufferPtr mmappedBuffer)
             : mMmappedBuffer(std::move(mmappedBuffer)),
-              mHeaderPolicy(mMmappedBuffer->getBuffer(), FormatUtils::VERSION_2),
-              mDictRoot(mMmappedBuffer->getBuffer() + mHeaderPolicy.getSize()),
-              mDictBufferSize(mMmappedBuffer->getBufferSize() - mHeaderPolicy.getSize()),
+              mHeaderPolicy(mMmappedBuffer->getReadOnlyByteArrayView().data(),
+                      FormatUtils::VERSION_2),
+              mDictRoot(mMmappedBuffer->getReadOnlyByteArrayView().data()
+                      + mHeaderPolicy.getSize()),
+              mDictBufferSize(mMmappedBuffer->getReadOnlyByteArrayView().size()
+                      - mHeaderPolicy.getSize()),
               mBigramListPolicy(mDictRoot, mDictBufferSize), mShortcutListPolicy(mDictRoot),
               mPtNodeReader(mDictRoot, mDictBufferSize, &mBigramListPolicy, &mShortcutListPolicy),
               mPtNodeArrayReader(mDictRoot, mDictBufferSize),
