@@ -21,7 +21,6 @@
 #include <cstdio>
 
 #include "defines.h"
-#include "suggest/policyimpl/dictionary/structure/v4/content/dict_content.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_dict_constants.h"
 #include "suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer.h"
 #include "suggest/policyimpl/dictionary/utils/sparse_table.h"
@@ -29,7 +28,7 @@
 namespace latinime {
 
 // TODO: Support multiple contents.
-class SparseTableDictContent : public DictContent {
+class SparseTableDictContent {
  public:
     AK_FORCE_INLINE SparseTableDictContent(uint8_t *const *buffers, const int *bufferSizes,
             const int sparseTableBlockSize, const int sparseTableDataSize)
