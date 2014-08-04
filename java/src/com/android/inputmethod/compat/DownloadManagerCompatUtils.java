@@ -24,7 +24,7 @@ public final class DownloadManagerCompatUtils {
     // DownloadManager.Request#setAllowedOverMetered() has been introduced
     // in API level 16 (Build.VERSION_CODES.JELLY_BEAN).
     private static final Method METHOD_setAllowedOverMetered = CompatUtils.getMethod(
-            DownloadManager.Request.class, "setAllowedOverMetered", Boolean.TYPE);
+            DownloadManager.Request.class, "setAllowedOverMetered", boolean.class);
 
     public static DownloadManager.Request setAllowedOverMetered(
             final DownloadManager.Request request, final boolean allowOverMetered) {

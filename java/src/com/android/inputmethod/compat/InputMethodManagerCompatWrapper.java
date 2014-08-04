@@ -26,7 +26,7 @@ public final class InputMethodManagerCompatWrapper {
     // Note that InputMethodManager.switchToNextInputMethod() has been introduced
     // in API level 16 (Build.VERSION_CODES.JELLY_BEAN).
     private static final Method METHOD_switchToNextInputMethod = CompatUtils.getMethod(
-            InputMethodManager.class, "switchToNextInputMethod", IBinder.class, Boolean.TYPE);
+            InputMethodManager.class, "switchToNextInputMethod", IBinder.class, boolean.class);
 
     // Note that InputMethodManager.shouldOfferSwitchingToNextInputMethod() has been introduced
     // in API level 19 (Build.VERSION_CODES.KITKAT).
