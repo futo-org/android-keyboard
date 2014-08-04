@@ -34,9 +34,9 @@ import java.util.ArrayList;
 public final class SuggestionSpanUtils {
     // Note that SuggestionSpan.FLAG_AUTO_CORRECTION has been introduced
     // in API level 15 (Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1).
-    public static final Field FIELD_FLAG_AUTO_CORRECTION = CompatUtils.getField(
+    private static final Field FIELD_FLAG_AUTO_CORRECTION = CompatUtils.getField(
             SuggestionSpan.class, "FLAG_AUTO_CORRECTION");
-    public static final Integer OBJ_FLAG_AUTO_CORRECTION = (Integer) CompatUtils.getFieldValue(
+    private static final Integer OBJ_FLAG_AUTO_CORRECTION = (Integer) CompatUtils.getFieldValue(
             null /* receiver */, null /* defaultValue */, FIELD_FLAG_AUTO_CORRECTION);
 
     static {
