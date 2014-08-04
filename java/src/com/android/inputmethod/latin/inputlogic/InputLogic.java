@@ -206,7 +206,7 @@ public final class InputLogic {
             final int keyboardShiftMode,
             // TODO: remove this argument
             final LatinIME.UIHandler handler) {
-        final String rawText = event.mText.toString();
+        final String rawText = event.getTextToCommit().toString();
         final InputTransaction inputTransaction = new InputTransaction(settingsValues, event,
                 SystemClock.uptimeMillis(), mSpaceState,
                 getActualCapsMode(settingsValues, keyboardShiftMode));
@@ -416,6 +416,8 @@ public final class InputLogic {
         mLastKeyTime = inputTransaction.mTimestamp;
         mConnection.beginBatchEdit();
         if (!mWordComposer.isComposingWord()) {
+            // TODO: is this useful? It doesn't look like it should be done here, but rather after
+            // a word is committed.
             mIsAutoCorrectionIndicatorOn = false;
         }
 
@@ -425,7 +427,21 @@ public final class InputLogic {
         }
 
         boolean didAutoCorrect = false;
-        if (processedEvent.isFunctionalKeyEvent()) {
+        if (processedEvent.isConsumed()) {
+            // A consumed event may have text to commit and an update to the composing state, so
+            // we evaluate both. With some combiners, it's possible than an event contains both
+            // and we enter both of the following if clauses.
+            final CharSequence textToCommit = processedEvent.getTextToCommit();
+            if (!TextUtils.isEmpty(textToCommit)) {
+                mConnection.commitText(textToCommit, 1);
+                inputTransaction.setDidAffectContents();
+            }
+            if (mWordComposer.isComposingWord()) {
+                mConnection.setComposingText(mWordComposer.getTypedWord(), 1);
+                inputTransaction.setDidAffectContents();
+                inputTransaction.setRequiresUpdateSuggestions();
+            }
+        } else if (processedEvent.isFunctionalKeyEvent()) {
             // A special key, like delete, shift, emoji, or the settings key.
             switch (processedEvent.mKeyCode) {
             case Constants.CODE_DELETE:
