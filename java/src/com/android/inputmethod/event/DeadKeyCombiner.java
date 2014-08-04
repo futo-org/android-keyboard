@@ -36,10 +36,16 @@ public class DeadKeyCombiner implements Combiner {
     @Nonnull
     public Event processEvent(final ArrayList<Event> previousEvents, final Event event) {
         if (TextUtils.isEmpty(mDeadSequence)) {
+            // No dead char is currently being tracked: this is the most common case.
             if (event.isDead()) {
+                // The event was a dead key. Start tracking it.
                 mDeadSequence.appendCodePoint(event.mCodePoint);
+                return Event.createConsumedEvent(event);
             }
-            return Event.createConsumedEvent(event);
+            // Regular keystroke when not keeping track of a dead key. Simply said, there are
+            // no dead keys at all in the current input, so this combiner has nothing to do and
+            // simply returns the event as is. The majority of events will go through this path.
+            return event;
         } else {
             // TODO: Allow combining for several dead chars rather than only the first one.
             // The framework doesn't know how to do this now.
