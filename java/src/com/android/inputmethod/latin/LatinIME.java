@@ -248,7 +248,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 break;
             case MSG_RESET_CACHES:
                 final SettingsValues settingsValues = latinIme.mSettings.getCurrent();
-                if (latinIme.mInputLogic.retryResetCachesAndReturnSuccess(settingsValues,
+                if (latinIme.mInputLogic.retryResetCachesAndReturnSuccess(
                         msg.arg1 == 1 /* tryResumeSuggestions */,
                         msg.arg2 /* remainingTries */, this /* handler */)) {
                     // If we were able to reset the caches, then we can reload the keyboard.

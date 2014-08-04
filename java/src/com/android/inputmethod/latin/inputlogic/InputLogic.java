@@ -426,18 +426,14 @@ public final class InputLogic {
             cancelDoubleSpacePeriodCountdown();
         }
 
-        final boolean didAutoCorrect;
         if (processedEvent.isConsumed()) {
             handleConsumedEvent(inputTransaction);
-            didAutoCorrect = false;
         } else if (processedEvent.isFunctionalKeyEvent()) {
-            didAutoCorrect = handleFunctionalEventAndReturnIfDidAutoCorrect(inputTransaction,
-                    currentKeyboardScriptId, handler);
+            handleFunctionalEvent(inputTransaction, currentKeyboardScriptId, handler);
         } else {
-            didAutoCorrect = handleNonFunctionalEventAndReturnIfDidAutoCorrect(inputTransaction,
-                    handler);
+            handleNonFunctionalEvent(inputTransaction, handler);
         }
-        if (!didAutoCorrect && processedEvent.mKeyCode != Constants.CODE_SHIFT
+        if (!inputTransaction.didAutoCorrect() && processedEvent.mKeyCode != Constants.CODE_SHIFT
                 && processedEvent.mKeyCode != Constants.CODE_CAPSLOCK
                 && processedEvent.mKeyCode != Constants.CODE_SWITCH_ALPHA_SYMBOL)
             mLastComposedWord.deactivate();
@@ -616,14 +612,11 @@ public final class InputLogic {
      * any key that results in multiple code points like the ".com" key.
      *
      * @param inputTransaction The transaction in progress.
-     * @return whether this caused an auto-correction to happen.
      */
-    private boolean handleFunctionalEventAndReturnIfDidAutoCorrect(
-            final InputTransaction inputTransaction,
+    private void handleFunctionalEvent(final InputTransaction inputTransaction,
             // TODO: remove these arguments
             final int currentKeyboardScriptId, final LatinIME.UIHandler handler) {
         final Event event = inputTransaction.mEvent;
-        boolean didAutoCorrect = false;
         switch (event.mKeyCode) {
             case Constants.CODE_DELETE:
                 handleBackspace(inputTransaction, currentKeyboardScriptId);
@@ -681,7 +674,7 @@ public final class InputLogic {
                         inputTransaction.mSettingsValues, tmpEvent,
                         inputTransaction.mTimestamp, inputTransaction.mSpaceState,
                         inputTransaction.mShiftState);
-                didAutoCorrect = handleNonSpecialCharacter(tmpTransaction, handler);
+                handleNonSpecialCharacter(tmpTransaction, handler);
                 // Shift + Enter is treated as a functional key but it results in adding a new
                 // line, so that does affect the contents of the editor.
                 inputTransaction.setDidAffectContents();
@@ -689,7 +682,6 @@ public final class InputLogic {
             default:
                 throw new RuntimeException("Unknown key code : " + event.mKeyCode);
         }
-        return didAutoCorrect;
     }
 
     /**
@@ -699,15 +691,12 @@ public final class InputLogic {
      * things like trigger an editor action.
      *
      * @param inputTransaction The transaction in progress.
-     * @return whether this caused an auto-correction to happen.
      */
-    private boolean handleNonFunctionalEventAndReturnIfDidAutoCorrect(
-            final InputTransaction inputTransaction,
+    private void handleNonFunctionalEvent(final InputTransaction inputTransaction,
             // TODO: remove this argument
             final LatinIME.UIHandler handler) {
         final Event event = inputTransaction.mEvent;
         inputTransaction.setDidAffectContents();
-        boolean didAutoCorrect = false;
         switch (event.mCodePoint) {
             case Constants.CODE_ENTER:
                 final EditorInfo editorInfo = getCurrentInputEditorInfo();
@@ -729,14 +718,13 @@ public final class InputLogic {
                 } else {
                     // No action label, and the action from imeOptions is NONE: this is a regular
                     // enter key that should input a carriage return.
-                    didAutoCorrect = handleNonSpecialCharacter(inputTransaction, handler);
+                    handleNonSpecialCharacter(inputTransaction, handler);
                 }
                 break;
             default:
-                didAutoCorrect = handleNonSpecialCharacter(inputTransaction, handler);
+                handleNonSpecialCharacter(inputTransaction, handler);
                 break;
         }
-        return didAutoCorrect;
     }
 
     /**
@@ -748,20 +736,16 @@ public final class InputLogic {
      * any key that results in multiple code points like the ".com" key.
      *
      * @param inputTransaction The transaction in progress.
-     * @return whether this caused an auto-correction to happen.
      */
-    private boolean handleNonSpecialCharacter(final InputTransaction inputTransaction,
+    private void handleNonSpecialCharacter(final InputTransaction inputTransaction,
             // TODO: remove this argument
             final LatinIME.UIHandler handler) {
         final int codePoint = inputTransaction.mEvent.mCodePoint;
         mSpaceState = SpaceState.NONE;
-        final boolean didAutoCorrect;
         if (inputTransaction.mSettingsValues.isWordSeparator(codePoint)
                 || Character.getType(codePoint) == Character.OTHER_SYMBOL) {
-            didAutoCorrect = handleSeparator(inputTransaction,
-                    inputTransaction.mEvent.isSuggestionStripPress(), handler);
+            handleSeparator(inputTransaction, handler);
         } else {
-            didAutoCorrect = false;
             if (SpaceState.PHANTOM == inputTransaction.mSpaceState) {
                 if (mWordComposer.isCursorFrontOrMiddleOfComposingWord()) {
                     // If we are in the middle of a recorrection, we need to commit the recorrection
@@ -774,7 +758,6 @@ public final class InputLogic {
             }
             handleNonSeparator(inputTransaction.mSettingsValues, inputTransaction);
         }
-        return didAutoCorrect;
     }
 
     /**
@@ -859,16 +842,12 @@ public final class InputLogic {
     /**
      * Handle input of a separator code point.
      * @param inputTransaction The transaction in progress.
-     * @param isFromSuggestionStrip whether this code point comes from the suggestion strip.
-     * @return whether this caused an auto-correction to happen.
      */
-    private boolean handleSeparator(final InputTransaction inputTransaction,
-            final boolean isFromSuggestionStrip,
+    private void handleSeparator(final InputTransaction inputTransaction,
             // TODO: remove this argument
             final LatinIME.UIHandler handler) {
         final int codePoint = inputTransaction.mEvent.mCodePoint;
         final SettingsValues settingsValues = inputTransaction.mSettingsValues;
-        boolean didAutoCorrect = false;
         final boolean wasComposingWord = mWordComposer.isComposingWord();
         // We avoid sending spaces in languages without spaces if we were composing.
         final boolean shouldAvoidSendingCode = Constants.CODE_SPACE == codePoint
@@ -886,7 +865,7 @@ public final class InputLogic {
                 final String separator = shouldAvoidSendingCode ? LastComposedWord.NOT_A_SEPARATOR
                         : StringUtils.newSingleCodePointString(codePoint);
                 commitCurrentAutoCorrection(settingsValues, separator, handler);
-                didAutoCorrect = true;
+                inputTransaction.setDidAutoCorrect();
             } else {
                 commitTyped(settingsValues,
                         StringUtils.newSingleCodePointString(codePoint));
@@ -964,7 +943,6 @@ public final class InputLogic {
         }
 
         inputTransaction.requireShiftUpdate(InputTransaction.SHIFT_UPDATE_NOW);
-        return didAutoCorrect;
     }
 
     /**
@@ -2028,14 +2006,13 @@ public final class InputLogic {
      * This method handles the retry, and re-schedules a new retry if we still can't access.
      * We only retry up to 5 times before giving up.
      *
-     * @param settingsValues the current values of the settings.
      * @param tryResumeSuggestions Whether we should resume suggestions or not.
      * @param remainingTries How many times we may try again before giving up.
      * @return whether true if the caches were successfully reset, false otherwise.
      */
     // TODO: make this private
-    public boolean retryResetCachesAndReturnSuccess(final SettingsValues settingsValues,
-            final boolean tryResumeSuggestions, final int remainingTries,
+    public boolean retryResetCachesAndReturnSuccess(final boolean tryResumeSuggestions,
+            final int remainingTries,
             // TODO: remove these arguments
             final LatinIME.UIHandler handler) {
         final boolean shouldFinishComposition = mConnection.hasSelection()
