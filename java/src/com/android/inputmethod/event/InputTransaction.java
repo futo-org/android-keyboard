@@ -33,7 +33,7 @@ public class InputTransaction {
 
     // Initial conditions
     public final SettingsValues mSettingsValues;
-    public final Event mEvent;
+    private final Event mEvent;
     public final long mTimestamp;
     public final int mSpaceState;
     public final int mShiftState;
