@@ -53,7 +53,7 @@ public class MoreKeySpecSplitTests extends InstrumentationTestCase {
     private static String[] getAllResourceIdNames(final Class<?> resourceIdClass) {
         final ArrayList<String> names = new ArrayList<>();
         for (final Field field : resourceIdClass.getFields()) {
-            if (field.getType() == Integer.TYPE) {
+            if (field.getType() == int.class) {
                 names.add(field.getName());
             }
         }

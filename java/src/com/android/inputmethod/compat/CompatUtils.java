@@ -21,6 +21,7 @@ import android.util.Log;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public final class CompatUtils {
@@ -33,31 +34,31 @@ public final class CompatUtils {
     public static Class<?> getClass(final String className) {
         try {
             return Class.forName(className);
-        } catch (ClassNotFoundException e) {
+        } catch (final ClassNotFoundException e) {
             return null;
         }
     }
 
     public static Method getMethod(final Class<?> targetClass, final String name,
             final Class<?>... parameterTypes) {
-        if (targetClass == null || TextUtils.isEmpty(name)) return null;
+        if (targetClass == null || TextUtils.isEmpty(name)) {
+            return null;
+        }
         try {
             return targetClass.getMethod(name, parameterTypes);
-        } catch (SecurityException e) {
-            // ignore
-        } catch (NoSuchMethodException e) {
+        } catch (final SecurityException | NoSuchMethodException e) {
             // ignore
         }
         return null;
     }
 
     public static Field getField(final Class<?> targetClass, final String name) {
-        if (targetClass == null || TextUtils.isEmpty(name)) return null;
+        if (targetClass == null || TextUtils.isEmpty(name)) {
+            return null;
+        }
         try {
             return targetClass.getField(name);
-        } catch (SecurityException e) {
-            // ignore
-        } catch (NoSuchFieldException e) {
+        } catch (final SecurityException | NoSuchFieldException e) {
             // ignore
         }
         return null;
@@ -65,22 +66,25 @@ public final class CompatUtils {
 
     public static Constructor<?> getConstructor(final Class<?> targetClass,
             final Class<?> ... types) {
-        if (targetClass == null || types == null) return null;
+        if (targetClass == null || types == null) {
+            return null;
+        }
         try {
             return targetClass.getConstructor(types);
-        } catch (SecurityException e) {
-            // ignore
-        } catch (NoSuchMethodException e) {
+        } catch (final SecurityException | NoSuchMethodException e) {
             // ignore
         }
         return null;
     }
 
     public static Object newInstance(final Constructor<?> constructor, final Object ... args) {
-        if (constructor == null) return null;
+        if (constructor == null) {
+            return null;
+        }
         try {
             return constructor.newInstance(args);
-        } catch (Exception e) {
+        } catch (final InstantiationException | IllegalAccessException | IllegalArgumentException
+                | InvocationTargetException e) {
             Log.e(TAG, "Exception in newInstance", e);
         }
         return null;
@@ -88,10 +92,13 @@ public final class CompatUtils {
 
     public static Object invoke(final Object receiver, final Object defaultValue,
             final Method method, final Object... args) {
-        if (method == null) return defaultValue;
+        if (method == null) {
+            return defaultValue;
+        }
         try {
             return method.invoke(receiver, args);
-        } catch (Exception e) {
+        } catch (final IllegalAccessException | IllegalArgumentException
+                | InvocationTargetException e) {
             Log.e(TAG, "Exception in invoke", e);
         }
         return defaultValue;
@@ -99,20 +106,24 @@ public final class CompatUtils {
 
     public static Object getFieldValue(final Object receiver, final Object defaultValue,
             final Field field) {
-        if (field == null) return defaultValue;
+        if (field == null) {
+            return defaultValue;
+        }
         try {
             return field.get(receiver);
-        } catch (Exception e) {
+        } catch (final IllegalAccessException | IllegalArgumentException e) {
             Log.e(TAG, "Exception in getFieldValue", e);
         }
         return defaultValue;
     }
 
     public static void setFieldValue(final Object receiver, final Field field, final Object value) {
-        if (field == null) return;
+        if (field == null) {
+            return;
+        }
         try {
             field.set(receiver, value);
-        } catch (Exception e) {
+        } catch (final IllegalAccessException | IllegalArgumentException e) {
             Log.e(TAG, "Exception in setFieldValue", e);
         }
     }
