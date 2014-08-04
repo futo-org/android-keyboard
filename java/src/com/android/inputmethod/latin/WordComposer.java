@@ -184,6 +184,9 @@ public final class WordComposer {
     @Nonnull
     public Event processEvent(final Event event) {
         final Event processedEvent = mCombinerChain.processEvent(mEvents, event);
+        // The retained state of the combiner chain may have changed while processing the event,
+        // so we need to update our cache.
+        refreshTypedWordCache();
         mEvents.add(event);
         return processedEvent;
     }
