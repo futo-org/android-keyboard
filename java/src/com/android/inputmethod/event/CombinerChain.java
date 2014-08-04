@@ -82,6 +82,13 @@ public class CombinerChain {
         }
     }
 
+    private void updateStateFeedback() {
+        mStateFeedback.clear();
+        for (int i = mCombiners.size() - 1; i >= 0; --i) {
+            mStateFeedback.append(mCombiners.get(i).getCombiningStateFeedback());
+        }
+    }
+
     /**
      * Process an event through the combining chain, and return a processed event to apply.
      * @param previousEvents the list of previous events in this composition
@@ -97,7 +104,13 @@ public class CombinerChain {
             // A combiner can never return more than one event; it can return several
             // code points, but they should be encapsulated within one event.
             event = combiner.processEvent(modifiablePreviousEvents, event);
+            if (event.isConsumed()) {
+                // If the event is consumed, then we don't pass it to subsequent combiners:
+                // they should not see it at all.
+                break;
+            }
         }
+        updateStateFeedback();
         return event;
     }
 
@@ -121,10 +134,7 @@ public class CombinerChain {
                 }
             }
         }
-        mStateFeedback.clear();
-        for (int i = mCombiners.size() - 1; i >= 0; --i) {
-            mStateFeedback.append(mCombiners.get(i).getCombiningStateFeedback());
-        }
+        updateStateFeedback();
     }
 
     /**
