@@ -426,119 +426,16 @@ public final class InputLogic {
             cancelDoubleSpacePeriodCountdown();
         }
 
-        boolean didAutoCorrect = false;
+        final boolean didAutoCorrect;
         if (processedEvent.isConsumed()) {
-            // A consumed event may have text to commit and an update to the composing state, so
-            // we evaluate both. With some combiners, it's possible than an event contains both
-            // and we enter both of the following if clauses.
-            final CharSequence textToCommit = processedEvent.getTextToCommit();
-            if (!TextUtils.isEmpty(textToCommit)) {
-                mConnection.commitText(textToCommit, 1);
-                inputTransaction.setDidAffectContents();
-            }
-            if (mWordComposer.isComposingWord()) {
-                mConnection.setComposingText(mWordComposer.getTypedWord(), 1);
-                inputTransaction.setDidAffectContents();
-                inputTransaction.setRequiresUpdateSuggestions();
-            }
+            handleConsumedEvent(inputTransaction);
+            didAutoCorrect = false;
         } else if (processedEvent.isFunctionalKeyEvent()) {
-            // A special key, like delete, shift, emoji, or the settings key.
-            switch (processedEvent.mKeyCode) {
-            case Constants.CODE_DELETE:
-                handleBackspace(inputTransaction, currentKeyboardScriptId);
-                // Backspace is a functional key, but it affects the contents of the editor.
-                inputTransaction.setDidAffectContents();
-                break;
-            case Constants.CODE_SHIFT:
-                performRecapitalization(inputTransaction.mSettingsValues);
-                inputTransaction.requireShiftUpdate(InputTransaction.SHIFT_UPDATE_NOW);
-                if (mSuggestedWords.mIsPrediction) {
-                    inputTransaction.setRequiresUpdateSuggestions();
-                }
-                break;
-            case Constants.CODE_CAPSLOCK:
-                // Note: Changing keyboard to shift lock state is handled in
-                // {@link KeyboardSwitcher#onCodeInput(int)}.
-                break;
-            case Constants.CODE_SYMBOL_SHIFT:
-                // Note: Calling back to the keyboard on the symbol Shift key is handled in
-                // {@link #onPressKey(int,int,boolean)} and {@link #onReleaseKey(int,boolean)}.
-                break;
-            case Constants.CODE_SWITCH_ALPHA_SYMBOL:
-                // Note: Calling back to the keyboard on symbol key is handled in
-                // {@link #onPressKey(int,int,boolean)} and {@link #onReleaseKey(int,boolean)}.
-                break;
-            case Constants.CODE_SETTINGS:
-                onSettingsKeyPressed();
-                break;
-            case Constants.CODE_SHORTCUT:
-                // We need to switch to the shortcut IME. This is handled by LatinIME since the
-                // input logic has no business with IME switching.
-                break;
-            case Constants.CODE_ACTION_NEXT:
-                performEditorAction(EditorInfo.IME_ACTION_NEXT);
-                break;
-            case Constants.CODE_ACTION_PREVIOUS:
-                performEditorAction(EditorInfo.IME_ACTION_PREVIOUS);
-                break;
-            case Constants.CODE_LANGUAGE_SWITCH:
-                handleLanguageSwitchKey();
-                break;
-            case Constants.CODE_EMOJI:
-                // Note: Switching emoji keyboard is being handled in
-                // {@link KeyboardState#onCodeInput(int,int)}.
-                break;
-            case Constants.CODE_ALPHA_FROM_EMOJI:
-                // Note: Switching back from Emoji keyboard to the main keyboard is being
-                // handled in {@link KeyboardState#onCodeInput(int,int)}.
-                break;
-            case Constants.CODE_SHIFT_ENTER:
-                // TODO: remove this object
-                final Event tmpEvent = Event.createSoftwareKeypressEvent(Constants.CODE_ENTER,
-                        processedEvent.mKeyCode, processedEvent.mX, processedEvent.mY,
-                        processedEvent.isKeyRepeat());
-                final InputTransaction tmpTransaction = new InputTransaction(
-                        inputTransaction.mSettingsValues, tmpEvent,
-                        inputTransaction.mTimestamp, inputTransaction.mSpaceState,
-                        inputTransaction.mShiftState);
-                didAutoCorrect = handleNonSpecialCharacter(tmpTransaction, handler);
-                // Shift + Enter is treated as a functional key but it results in adding a new
-                // line, so that does affect the contents of the editor.
-                inputTransaction.setDidAffectContents();
-                break;
-            default:
-                throw new RuntimeException("Unknown key code : " + processedEvent.mKeyCode);
-            }
+            didAutoCorrect = handleFunctionalEventAndReturnIfDidAutoCorrect(inputTransaction,
+                    currentKeyboardScriptId, handler);
         } else {
-            inputTransaction.setDidAffectContents();
-            switch (processedEvent.mCodePoint) {
-            case Constants.CODE_ENTER:
-                final EditorInfo editorInfo = getCurrentInputEditorInfo();
-                final int imeOptionsActionId =
-                        InputTypeUtils.getImeOptionsActionIdFromEditorInfo(editorInfo);
-                if (InputTypeUtils.IME_ACTION_CUSTOM_LABEL == imeOptionsActionId) {
-                    // Either we have an actionLabel and we should performEditorAction with
-                    // actionId regardless of its value.
-                    performEditorAction(editorInfo.actionId);
-                } else if (EditorInfo.IME_ACTION_NONE != imeOptionsActionId) {
-                    // We didn't have an actionLabel, but we had another action to execute.
-                    // EditorInfo.IME_ACTION_NONE explicitly means no action. In contrast,
-                    // EditorInfo.IME_ACTION_UNSPECIFIED is the default value for an action, so it
-                    // means there should be an action and the app didn't bother to set a specific
-                    // code for it - presumably it only handles one. It does not have to be treated
-                    // in any specific way: anything that is not IME_ACTION_NONE should be sent to
-                    // performEditorAction.
-                    performEditorAction(imeOptionsActionId);
-                } else {
-                    // No action label, and the action from imeOptions is NONE: this is a regular
-                    // enter key that should input a carriage return.
-                    didAutoCorrect = handleNonSpecialCharacter(inputTransaction, handler);
-                }
-                break;
-            default:
-                didAutoCorrect = handleNonSpecialCharacter(inputTransaction, handler);
-                break;
-            }
+            didAutoCorrect = handleNonFunctionalEventAndReturnIfDidAutoCorrect(inputTransaction,
+                    handler);
         }
         if (!didAutoCorrect && processedEvent.mKeyCode != Constants.CODE_SHIFT
                 && processedEvent.mKeyCode != Constants.CODE_CAPSLOCK
@@ -683,6 +580,163 @@ public final class InputLogic {
             // the practice.
             mConnection.setComposingText(textWithUnderline, 1);
         }
+    }
+
+    /**
+     * Handle a consumed event.
+     *
+     * Consumed events represent events that have already been consumed, typically by the
+     * combining chain.
+     *
+     * @param inputTransaction The transaction in progress.
+     */
+    private void handleConsumedEvent(final InputTransaction inputTransaction) {
+        // A consumed event may have text to commit and an update to the composing state, so
+        // we evaluate both. With some combiners, it's possible than an event contains both
+        // and we enter both of the following if clauses.
+        final CharSequence textToCommit = inputTransaction.mEvent.getTextToCommit();
+        if (!TextUtils.isEmpty(textToCommit)) {
+            mConnection.commitText(textToCommit, 1);
+            inputTransaction.setDidAffectContents();
+        }
+        if (mWordComposer.isComposingWord()) {
+            mConnection.setComposingText(mWordComposer.getTypedWord(), 1);
+            inputTransaction.setDidAffectContents();
+            inputTransaction.setRequiresUpdateSuggestions();
+        }
+    }
+
+    /**
+     * Handle a functional key event.
+     *
+     * A functional event is a special key, like delete, shift, emoji, or the settings key.
+     * Non-special keys are those that generate a single code point.
+     * This includes all letters, digits, punctuation, separators, emoji. It excludes keys that
+     * manage keyboard-related stuff like shift, language switch, settings, layout switch, or
+     * any key that results in multiple code points like the ".com" key.
+     *
+     * @param inputTransaction The transaction in progress.
+     * @return whether this caused an auto-correction to happen.
+     */
+    private boolean handleFunctionalEventAndReturnIfDidAutoCorrect(
+            final InputTransaction inputTransaction,
+            // TODO: remove these arguments
+            final int currentKeyboardScriptId, final LatinIME.UIHandler handler) {
+        final Event event = inputTransaction.mEvent;
+        boolean didAutoCorrect = false;
+        switch (event.mKeyCode) {
+            case Constants.CODE_DELETE:
+                handleBackspace(inputTransaction, currentKeyboardScriptId);
+                // Backspace is a functional key, but it affects the contents of the editor.
+                inputTransaction.setDidAffectContents();
+                break;
+            case Constants.CODE_SHIFT:
+                performRecapitalization(inputTransaction.mSettingsValues);
+                inputTransaction.requireShiftUpdate(InputTransaction.SHIFT_UPDATE_NOW);
+                if (mSuggestedWords.mIsPrediction) {
+                    inputTransaction.setRequiresUpdateSuggestions();
+                }
+                break;
+            case Constants.CODE_CAPSLOCK:
+                // Note: Changing keyboard to shift lock state is handled in
+                // {@link KeyboardSwitcher#onCodeInput(int)}.
+                break;
+            case Constants.CODE_SYMBOL_SHIFT:
+                // Note: Calling back to the keyboard on the symbol Shift key is handled in
+                // {@link #onPressKey(int,int,boolean)} and {@link #onReleaseKey(int,boolean)}.
+                break;
+            case Constants.CODE_SWITCH_ALPHA_SYMBOL:
+                // Note: Calling back to the keyboard on symbol key is handled in
+                // {@link #onPressKey(int,int,boolean)} and {@link #onReleaseKey(int,boolean)}.
+                break;
+            case Constants.CODE_SETTINGS:
+                onSettingsKeyPressed();
+                break;
+            case Constants.CODE_SHORTCUT:
+                // We need to switch to the shortcut IME. This is handled by LatinIME since the
+                // input logic has no business with IME switching.
+                break;
+            case Constants.CODE_ACTION_NEXT:
+                performEditorAction(EditorInfo.IME_ACTION_NEXT);
+                break;
+            case Constants.CODE_ACTION_PREVIOUS:
+                performEditorAction(EditorInfo.IME_ACTION_PREVIOUS);
+                break;
+            case Constants.CODE_LANGUAGE_SWITCH:
+                handleLanguageSwitchKey();
+                break;
+            case Constants.CODE_EMOJI:
+                // Note: Switching emoji keyboard is being handled in
+                // {@link KeyboardState#onCodeInput(int,int)}.
+                break;
+            case Constants.CODE_ALPHA_FROM_EMOJI:
+                // Note: Switching back from Emoji keyboard to the main keyboard is being
+                // handled in {@link KeyboardState#onCodeInput(int,int)}.
+                break;
+            case Constants.CODE_SHIFT_ENTER:
+                // TODO: remove this object
+                final Event tmpEvent = Event.createSoftwareKeypressEvent(Constants.CODE_ENTER,
+                        event.mKeyCode, event.mX, event.mY, event.isKeyRepeat());
+                final InputTransaction tmpTransaction = new InputTransaction(
+                        inputTransaction.mSettingsValues, tmpEvent,
+                        inputTransaction.mTimestamp, inputTransaction.mSpaceState,
+                        inputTransaction.mShiftState);
+                didAutoCorrect = handleNonSpecialCharacter(tmpTransaction, handler);
+                // Shift + Enter is treated as a functional key but it results in adding a new
+                // line, so that does affect the contents of the editor.
+                inputTransaction.setDidAffectContents();
+                break;
+            default:
+                throw new RuntimeException("Unknown key code : " + event.mKeyCode);
+        }
+        return didAutoCorrect;
+    }
+
+    /**
+     * Handle an event that is not a functional event.
+     *
+     * These events are generally events that cause input, but in some cases they may do other
+     * things like trigger an editor action.
+     *
+     * @param inputTransaction The transaction in progress.
+     * @return whether this caused an auto-correction to happen.
+     */
+    private boolean handleNonFunctionalEventAndReturnIfDidAutoCorrect(
+            final InputTransaction inputTransaction,
+            // TODO: remove this argument
+            final LatinIME.UIHandler handler) {
+        final Event event = inputTransaction.mEvent;
+        inputTransaction.setDidAffectContents();
+        boolean didAutoCorrect = false;
+        switch (event.mCodePoint) {
+            case Constants.CODE_ENTER:
+                final EditorInfo editorInfo = getCurrentInputEditorInfo();
+                final int imeOptionsActionId =
+                        InputTypeUtils.getImeOptionsActionIdFromEditorInfo(editorInfo);
+                if (InputTypeUtils.IME_ACTION_CUSTOM_LABEL == imeOptionsActionId) {
+                    // Either we have an actionLabel and we should performEditorAction with
+                    // actionId regardless of its value.
+                    performEditorAction(editorInfo.actionId);
+                } else if (EditorInfo.IME_ACTION_NONE != imeOptionsActionId) {
+                    // We didn't have an actionLabel, but we had another action to execute.
+                    // EditorInfo.IME_ACTION_NONE explicitly means no action. In contrast,
+                    // EditorInfo.IME_ACTION_UNSPECIFIED is the default value for an action, so it
+                    // means there should be an action and the app didn't bother to set a specific
+                    // code for it - presumably it only handles one. It does not have to be treated
+                    // in any specific way: anything that is not IME_ACTION_NONE should be sent to
+                    // performEditorAction.
+                    performEditorAction(imeOptionsActionId);
+                } else {
+                    // No action label, and the action from imeOptions is NONE: this is a regular
+                    // enter key that should input a carriage return.
+                    didAutoCorrect = handleNonSpecialCharacter(inputTransaction, handler);
+                }
+                break;
+            default:
+                didAutoCorrect = handleNonSpecialCharacter(inputTransaction, handler);
+                break;
+        }
+        return didAutoCorrect;
     }
 
     /**
