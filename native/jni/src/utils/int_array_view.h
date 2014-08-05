@@ -61,6 +61,10 @@ class IntArrayView {
         return mPtr[index];
     }
 
+    AK_FORCE_INLINE bool empty() const {
+        return size() == 0;
+    }
+
     AK_FORCE_INLINE size_t size() const {
         return mSize;
     }
@@ -75,6 +79,8 @@ class IntArrayView {
     const int *const mPtr;
     const size_t mSize;
 };
+
+using WordIdArrayView = IntArrayView;
 
 } // namespace latinime
 #endif // LATINIME_MEMORY_VIEW_H
