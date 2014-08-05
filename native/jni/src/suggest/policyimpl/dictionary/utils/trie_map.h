@@ -169,6 +169,10 @@ class TrieMap {
         return mBuffer.isNearSizeLimit();
     }
 
+    int getRootBitmapEntryIndex() const {
+        return ROOT_BITMAP_ENTRY_INDEX;
+    }
+
     // Returns bitmapEntryIndex. Create the next level map if it doesn't exist.
     int getNextLevelBitmapEntryIndex(const int key) {
         return getNextLevelBitmapEntryIndex(key, ROOT_BITMAP_ENTRY_INDEX);
