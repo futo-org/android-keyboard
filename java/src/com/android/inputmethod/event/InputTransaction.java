@@ -42,6 +42,7 @@ public class InputTransaction {
     private int mRequiredShiftUpdate = SHIFT_NO_UPDATE;
     private boolean mRequiresUpdateSuggestions = false;
     private boolean mDidAffectContents = false;
+    private boolean mDidAutoCorrect = false;
 
     public InputTransaction(final SettingsValues settingsValues, final Event event,
             final long timestamp, final int spaceState, final int shiftState) {
@@ -96,5 +97,20 @@ public class InputTransaction {
      */
     public boolean didAffectContents() {
         return mDidAffectContents;
+    }
+
+    /**
+     * Indicate that this transaction performed an auto-correction.
+     */
+    public void setDidAutoCorrect() {
+        mDidAutoCorrect = true;
+    }
+
+    /**
+     * Find out whether this transaction performed an auto-correction.
+     * @return Whether this transaction performed an auto-correction.
+     */
+    public boolean didAutoCorrect() {
+        return mDidAutoCorrect;
     }
 }
