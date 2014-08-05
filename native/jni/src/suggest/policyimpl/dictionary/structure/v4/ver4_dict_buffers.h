@@ -90,6 +90,14 @@ class Ver4DictBuffers {
         return &mProbabilityDictContent;
     }
 
+    AK_FORCE_INLINE LanguageModelDictContent *getMutableLanguageModelDictContent() {
+        return &mLanguageModelDictContent;
+    }
+
+    AK_FORCE_INLINE const LanguageModelDictContent *getLanguageModelDictContent() const {
+        return &mLanguageModelDictContent;
+    }
+
     AK_FORCE_INLINE BigramDictContent *getMutableBigramDictContent() {
         return &mBigramDictContent;
     }
