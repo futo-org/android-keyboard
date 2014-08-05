@@ -426,13 +426,17 @@ public final class InputLogic {
             cancelDoubleSpacePeriodCountdown();
         }
 
-        if (processedEvent.isConsumed()) {
-            handleConsumedEvent(processedEvent, inputTransaction);
-        } else if (processedEvent.isFunctionalKeyEvent()) {
-            handleFunctionalEvent(processedEvent, inputTransaction, currentKeyboardScriptId,
-                    handler);
-        } else {
-            handleNonFunctionalEvent(processedEvent, inputTransaction, handler);
+        Event currentEvent = processedEvent;
+        while (null != currentEvent) {
+            if (currentEvent.isConsumed()) {
+                handleConsumedEvent(currentEvent, inputTransaction);
+            } else if (currentEvent.isFunctionalKeyEvent()) {
+                handleFunctionalEvent(currentEvent, inputTransaction, currentKeyboardScriptId,
+                        handler);
+            } else {
+                handleNonFunctionalEvent(currentEvent, inputTransaction, handler);
+            }
+            currentEvent = currentEvent.mNextEvent;
         }
         if (!inputTransaction.didAutoCorrect() && processedEvent.mKeyCode != Constants.CODE_SHIFT
                 && processedEvent.mKeyCode != Constants.CODE_CAPSLOCK
