@@ -46,7 +46,7 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
                       mBuffers->getTerminalPositionLookupTable(), mHeaderPolicy),
               mShortcutPolicy(mBuffers->getMutableShortcutDictContent(),
                       mBuffers->getTerminalPositionLookupTable()),
-              mNodeReader(mDictBuffer, mBuffers->getProbabilityDictContent(), mHeaderPolicy),
+              mNodeReader(mDictBuffer, mBuffers->getLanguageModelDictContent(), mHeaderPolicy),
               mPtNodeArrayReader(mDictBuffer),
               mNodeWriter(mDictBuffer, mBuffers.get(), mHeaderPolicy, &mNodeReader,
                       &mPtNodeArrayReader, &mBigramPolicy, &mShortcutPolicy),

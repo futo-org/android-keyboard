@@ -157,11 +157,6 @@ bool Ver4DictBuffers::flushDictBuffers(FILE *const file) const {
         AKLOGE("Terminal position lookup table cannot be written.");
         return false;
     }
-    // Write probability dict content.
-    if (!mProbabilityDictContent.flushToFile(file)) {
-        AKLOGE("Probability dict content cannot be written.");
-        return false;
-    }
     // Write language model content.
     if (!mLanguageModelDictContent.save(file)) {
         AKLOGE("Language model dict content cannot be written.");
@@ -196,10 +191,6 @@ Ver4DictBuffers::Ver4DictBuffers(MmappedBuffer::MmappedBufferPtr &&headerBuffer,
                   contentBuffers[Ver4DictConstants::TERMINAL_ADDRESS_LOOKUP_TABLE_BUFFER_INDEX],
                   contentBufferSizes[
                           Ver4DictConstants::TERMINAL_ADDRESS_LOOKUP_TABLE_BUFFER_INDEX]),
-          mProbabilityDictContent(
-                  contentBuffers[Ver4DictConstants::PROBABILITY_BUFFER_INDEX],
-                  contentBufferSizes[Ver4DictConstants::PROBABILITY_BUFFER_INDEX],
-                  mHeaderPolicy.hasHistoricalInfoOfWords()),
           mLanguageModelDictContent(
                   ReadWriteByteArrayView(
                           contentBuffers[Ver4DictConstants::LANGUAGE_MODEL_BUFFER_INDEX],
@@ -216,7 +207,6 @@ Ver4DictBuffers::Ver4DictBuffers(const HeaderPolicy *const headerPolicy, const i
         : mHeaderBuffer(nullptr), mDictBuffer(nullptr), mHeaderPolicy(headerPolicy),
           mExpandableHeaderBuffer(Ver4DictConstants::MAX_DICTIONARY_SIZE),
           mExpandableTrieBuffer(maxTrieSize), mTerminalPositionLookupTable(),
-          mProbabilityDictContent(headerPolicy->hasHistoricalInfoOfWords()),
           mLanguageModelDictContent(headerPolicy->hasHistoricalInfoOfWords()),
           mBigramDictContent(headerPolicy->hasHistoricalInfoOfWords()), mShortcutDictContent(),
           mIsUpdatable(true) {}

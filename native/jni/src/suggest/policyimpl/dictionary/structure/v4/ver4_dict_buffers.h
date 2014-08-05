@@ -24,7 +24,6 @@
 #include "suggest/policyimpl/dictionary/header/header_policy.h"
 #include "suggest/policyimpl/dictionary/structure/v4/content/bigram_dict_content.h"
 #include "suggest/policyimpl/dictionary/structure/v4/content/language_model_dict_content.h"
-#include "suggest/policyimpl/dictionary/structure/v4/content/probability_dict_content.h"
 #include "suggest/policyimpl/dictionary/structure/v4/content/shortcut_dict_content.h"
 #include "suggest/policyimpl/dictionary/structure/v4/content/terminal_position_lookup_table.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_dict_constants.h"
@@ -53,7 +52,7 @@ class Ver4DictBuffers {
     AK_FORCE_INLINE bool isNearSizeLimit() const {
         return mExpandableTrieBuffer.isNearSizeLimit()
                 || mTerminalPositionLookupTable.isNearSizeLimit()
-                || mProbabilityDictContent.isNearSizeLimit()
+                || mLanguageModelDictContent.isNearSizeLimit()
                 || mBigramDictContent.isNearSizeLimit()
                 || mShortcutDictContent.isNearSizeLimit();
     }
@@ -80,14 +79,6 @@ class Ver4DictBuffers {
 
     AK_FORCE_INLINE const TerminalPositionLookupTable *getTerminalPositionLookupTable() const {
         return &mTerminalPositionLookupTable;
-    }
-
-    AK_FORCE_INLINE ProbabilityDictContent *getMutableProbabilityDictContent() {
-        return &mProbabilityDictContent;
-    }
-
-    AK_FORCE_INLINE const ProbabilityDictContent *getProbabilityDictContent() const {
-        return &mProbabilityDictContent;
     }
 
     AK_FORCE_INLINE LanguageModelDictContent *getMutableLanguageModelDictContent() {
@@ -144,7 +135,6 @@ class Ver4DictBuffers {
     BufferWithExtendableBuffer mExpandableHeaderBuffer;
     BufferWithExtendableBuffer mExpandableTrieBuffer;
     TerminalPositionLookupTable mTerminalPositionLookupTable;
-    ProbabilityDictContent mProbabilityDictContent;
     LanguageModelDictContent mLanguageModelDictContent;
     BigramDictContent mBigramDictContent;
     ShortcutDictContent mShortcutDictContent;
