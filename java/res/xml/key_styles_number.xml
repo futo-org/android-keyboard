@@ -122,12 +122,4 @@
         latin:keySpec="!icon/space_key_for_number_layout|!code/key_space"
         latin:keyActionFlags="enableLongPress"
         latin:parentStyle="numKeyBaseStyle" />
-    <!-- Override defaultEnterKeyStyle in key_styles_enter.xml -->
-    <key-style
-        latin:styleName="defaultEnterKeyStyle"
-        latin:keySpec="!icon/enter_key|!code/key_enter"
-        latin:keyLabelFlags="preserveCase|autoXScale|followKeyLargeLabelRatio"
-        latin:keyActionFlags="noKeyPreview"
-        latin:backgroundType="functional"
-        latin:parentStyle="navigateMoreKeysStyle" />
 </merge>
