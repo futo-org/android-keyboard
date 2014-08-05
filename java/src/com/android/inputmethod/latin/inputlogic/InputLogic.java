@@ -1437,6 +1437,7 @@ public final class InputLogic {
                 mLatinIME.getCoordinatesForCurrentKeyboard(codePoints));
         mWordComposer.setCursorPositionWithinWord(
                 typedWord.codePointCount(0, numberOfCharsInWordBeforeCursor));
+        mConnection.maybeMoveTheCursorAroundAndRestoreToWorkaroundABug();
         mConnection.setComposingRegion(expectedCursorPosition - numberOfCharsInWordBeforeCursor,
                 expectedCursorPosition + range.getNumberOfCharsInWordAfterCursor());
         if (suggestions.size() <= (shouldIncludeResumedWordInSuggestions ? 1 : 0)) {

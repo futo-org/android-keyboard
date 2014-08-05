@@ -17,6 +17,7 @@
 package com.android.inputmethod.latin;
 
 import android.inputmethodservice.InputMethodService;
+import android.os.Build;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -810,5 +811,26 @@ public final class RichInputConnection {
 
     public boolean isCursorPositionKnown() {
         return INVALID_CURSOR_POSITION != mExpectedSelStart;
+    }
+
+    /**
+     * Work around a bug that was present before Jelly Bean upon rotation.
+     *
+     * Before Jelly Bean, there is a bug where setComposingRegion and other committing
+     * functions on the input connection get ignored until the cursor moves. This method works
+     * around the bug by wiggling the cursor first, which reactivates the connection and has
+     * the subsequent methods work, then restoring it to its original position.
+     *
+     * On platforms on which this method is not present, this is a no-op.
+     */
+    public void maybeMoveTheCursorAroundAndRestoreToWorkaroundABug() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+            if (mExpectedSelStart > 0) {
+                mIC.setSelection(mExpectedSelStart - 1, mExpectedSelStart - 1);
+            } else {
+                mIC.setSelection(mExpectedSelStart + 1, mExpectedSelStart + 1);
+            }
+            mIC.setSelection(mExpectedSelStart, mExpectedSelEnd);
+        }
     }
 }
