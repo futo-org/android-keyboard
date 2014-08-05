@@ -30,7 +30,7 @@ bool LanguageModelDictContent::runGC(
             0 /* nextLevelBitmapEntryIndex */, outNgramCount);
 }
 
-ProbabilityEntry LanguageModelDictContent::getProbabilityEntry(
+ProbabilityEntry LanguageModelDictContent::getNgramProbabilityEntry(
         const WordIdArrayView prevWordIds, const int wordId) const {
     if (!prevWordIds.empty()) {
         // TODO: Read n-gram entry.
@@ -44,7 +44,7 @@ ProbabilityEntry LanguageModelDictContent::getProbabilityEntry(
     return ProbabilityEntry::decode(result.mValue, mHasHistoricalInfo);
 }
 
-bool LanguageModelDictContent::setProbabilityEntry(const WordIdArrayView prevWordIds,
+bool LanguageModelDictContent::setNgramProbabilityEntry(const WordIdArrayView prevWordIds,
         const int terminalId, const ProbabilityEntry *const probabilityEntry) {
     if (!prevWordIds.empty()) {
         // TODO: Add n-gram entry.

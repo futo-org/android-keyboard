@@ -452,7 +452,7 @@ const WordProperty Ver4PatriciaTriePolicy::getWordProperty(const int *const code
     std::vector<int> codePointVector(ptNodeParams.getCodePoints(),
             ptNodeParams.getCodePoints() + ptNodeParams.getCodePointCount());
     const ProbabilityEntry probabilityEntry =
-            mBuffers->getProbabilityDictContent()->getProbabilityEntry(
+            mBuffers->getLanguageModelDictContent()->getProbabilityEntry(
                     ptNodeParams.getTerminalId());
     const HistoricalInfo *const historicalInfo = probabilityEntry.getHistoricalInfo();
     // Fetch bigram information.

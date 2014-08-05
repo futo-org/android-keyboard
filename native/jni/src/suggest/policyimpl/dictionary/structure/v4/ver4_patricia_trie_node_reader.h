@@ -25,18 +25,18 @@ namespace latinime {
 
 class BufferWithExtendableBuffer;
 class HeaderPolicy;
-class ProbabilityDictContent;
+class LanguageModelDictContent;
 
 /*
  * This class is used for helping to read nodes of ver4 patricia trie. This class handles moved
- * node and reads node attributes including probability form probabilityBuffer.
+ * node and reads node attributes including probability form language model.
  */
 class Ver4PatriciaTrieNodeReader : public PtNodeReader {
  public:
     Ver4PatriciaTrieNodeReader(const BufferWithExtendableBuffer *const buffer,
-            const ProbabilityDictContent *const probabilityDictContent,
+            const LanguageModelDictContent *const languageModelDictContent,
             const HeaderPolicy *const headerPolicy)
-            : mBuffer(buffer), mProbabilityDictContent(probabilityDictContent),
+            : mBuffer(buffer), mLanguageModelDictContent(languageModelDictContent),
               mHeaderPolicy(headerPolicy) {}
 
     ~Ver4PatriciaTrieNodeReader() {}
@@ -50,7 +50,7 @@ class Ver4PatriciaTrieNodeReader : public PtNodeReader {
     DISALLOW_COPY_AND_ASSIGN(Ver4PatriciaTrieNodeReader);
 
     const BufferWithExtendableBuffer *const mBuffer;
-    const ProbabilityDictContent *const mProbabilityDictContent;
+    const LanguageModelDictContent *const mLanguageModelDictContent;
     const HeaderPolicy *const mHeaderPolicy;
 
     const PtNodeParams fetchPtNodeInfoFromBufferAndProcessMovedPtNode(const int ptNodePos,

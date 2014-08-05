@@ -53,9 +53,18 @@ class LanguageModelDictContent {
             const LanguageModelDictContent *const originalContent,
             int *const outNgramCount);
 
-    ProbabilityEntry getProbabilityEntry(const WordIdArrayView prevWordIds, const int wordId) const;
+    ProbabilityEntry getProbabilityEntry(const int wordId) const {
+        return getNgramProbabilityEntry(WordIdArrayView(), wordId);
+    }
 
-    bool setProbabilityEntry(const WordIdArrayView prevWordIds, const int wordId,
+    bool setProbabilityEntry(const int wordId, const ProbabilityEntry *const probabilityEntry) {
+        return setNgramProbabilityEntry(WordIdArrayView(), wordId, probabilityEntry);
+    }
+
+    ProbabilityEntry getNgramProbabilityEntry(const WordIdArrayView prevWordIds,
+            const int wordId) const;
+
+    bool setNgramProbabilityEntry(const WordIdArrayView prevWordIds, const int wordId,
             const ProbabilityEntry *const probabilityEntry);
 
  private:
