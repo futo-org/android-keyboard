@@ -17,6 +17,9 @@
 #ifndef LATINIME_PROBABILITY_ENTRY_H
 #define LATINIME_PROBABILITY_ENTRY_H
 
+#include <climits>
+#include <cstdint>
+
 #include "defines.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_dict_constants.h"
 #include "suggest/policyimpl/dictionary/utils/historical_info.h"
@@ -67,6 +70,50 @@ class ProbabilityEntry {
         return &mHistoricalInfo;
     }
 
+    uint64_t encode(const bool hasHistoricalInfo) const {
+        uint64_t encodedEntry = static_cast<uint64_t>(mFlags);
+        if (hasHistoricalInfo) {
+            encodedEntry = (encodedEntry << (Ver4DictConstants::TIME_STAMP_FIELD_SIZE * CHAR_BIT))
+                    ^ static_cast<uint64_t>(mHistoricalInfo.getTimeStamp());
+            encodedEntry = (encodedEntry << (Ver4DictConstants::WORD_LEVEL_FIELD_SIZE * CHAR_BIT))
+                    ^ static_cast<uint64_t>(mHistoricalInfo.getLevel());
+            encodedEntry = (encodedEntry << (Ver4DictConstants::WORD_COUNT_FIELD_SIZE * CHAR_BIT))
+                    ^ static_cast<uint64_t>(mHistoricalInfo.getCount());
+        } else {
+            encodedEntry = (encodedEntry << (Ver4DictConstants::PROBABILITY_SIZE * CHAR_BIT))
+                    ^ static_cast<uint64_t>(mProbability);
+        }
+        return encodedEntry;
+    }
+
+    static ProbabilityEntry decode(const uint64_t encodedEntry, const bool hasHistoricalInfo) {
+        if (hasHistoricalInfo) {
+            const int flags = readFromEncodedEntry(encodedEntry,
+                    Ver4DictConstants::FLAGS_IN_PROBABILITY_FILE_SIZE,
+                    Ver4DictConstants::TIME_STAMP_FIELD_SIZE
+                            + Ver4DictConstants::WORD_LEVEL_FIELD_SIZE
+                            + Ver4DictConstants::WORD_COUNT_FIELD_SIZE);
+            const int timestamp = readFromEncodedEntry(encodedEntry,
+                    Ver4DictConstants::TIME_STAMP_FIELD_SIZE,
+                    Ver4DictConstants::WORD_LEVEL_FIELD_SIZE
+                            + Ver4DictConstants::WORD_COUNT_FIELD_SIZE);
+            const int level = readFromEncodedEntry(encodedEntry,
+                    Ver4DictConstants::WORD_LEVEL_FIELD_SIZE,
+                    Ver4DictConstants::WORD_COUNT_FIELD_SIZE);
+            const int count = readFromEncodedEntry(encodedEntry,
+                    Ver4DictConstants::WORD_COUNT_FIELD_SIZE, 0 /* pos */);
+            const HistoricalInfo historicalInfo(timestamp, level, count);
+            return ProbabilityEntry(flags, NOT_A_PROBABILITY, &historicalInfo);
+        } else {
+            const int flags = readFromEncodedEntry(encodedEntry,
+                    Ver4DictConstants::FLAGS_IN_PROBABILITY_FILE_SIZE,
+                    Ver4DictConstants::PROBABILITY_SIZE);
+            const int probability = readFromEncodedEntry(encodedEntry,
+                    Ver4DictConstants::PROBABILITY_SIZE, 0 /* pos */);
+            return ProbabilityEntry(flags, probability);
+        }
+    }
+
  private:
     // Copy constructor is public to use this class as a type of return value.
     DISALLOW_ASSIGNMENT_OPERATOR(ProbabilityEntry);
@@ -74,6 +121,11 @@ class ProbabilityEntry {
     const int mFlags;
     const int mProbability;
     const HistoricalInfo mHistoricalInfo;
+
+    static int readFromEncodedEntry(const uint64_t encodedEntry, const int size, const int pos) {
+        return static_cast<int>(
+                (encodedEntry >> (pos * CHAR_BIT)) & ((1ull << (size * CHAR_BIT)) - 1));
+    }
 };
 } // namespace latinime
 #endif /* LATINIME_PROBABILITY_ENTRY_H */
