@@ -18,7 +18,7 @@
 
 #include "suggest/policyimpl/dictionary/structure/pt_common/dynamic_pt_reading_utils.h"
 #include "suggest/policyimpl/dictionary/structure/pt_common/patricia_trie_reading_utils.h"
-#include "suggest/policyimpl/dictionary/structure/v4/content/probability_dict_content.h"
+#include "suggest/policyimpl/dictionary/structure/v4/content/language_model_dict_content.h"
 #include "suggest/policyimpl/dictionary/structure/v4/content/probability_entry.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_patricia_trie_reading_utils.h"
 #include "suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer.h"
@@ -61,8 +61,9 @@ const PtNodeParams Ver4PatriciaTrieNodeReader::fetchPtNodeInfoFromBufferAndProce
             terminalIdFieldPos += mBuffer->getOriginalBufferSize();
         }
         terminalId = Ver4PatriciaTrieReadingUtils::getTerminalIdAndAdvancePosition(dictBuf, &pos);
+        // TODO: Quit reading probability here.
         const ProbabilityEntry probabilityEntry =
-                mProbabilityDictContent->getProbabilityEntry(terminalId);
+                mLanguageModelDictContent->getProbabilityEntry(terminalId);
         if (probabilityEntry.hasHistoricalInfo()) {
             probability = ForgettingCurveUtils::decodeProbability(
                     probabilityEntry.getHistoricalInfo(), mHeaderPolicy);

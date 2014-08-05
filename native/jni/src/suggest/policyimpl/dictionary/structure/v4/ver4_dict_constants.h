@@ -35,7 +35,6 @@ class Ver4DictConstants {
     static const size_t NUM_OF_CONTENT_BUFFERS_IN_BODY_FILE;
     static const int TRIE_BUFFER_INDEX;
     static const int TERMINAL_ADDRESS_LOOKUP_TABLE_BUFFER_INDEX;
-    static const int PROBABILITY_BUFFER_INDEX;
     static const int LANGUAGE_MODEL_BUFFER_INDEX;
     static const int BIGRAM_BUFFERS_INDEX;
     static const int SHORTCUT_BUFFERS_INDEX;

@@ -75,7 +75,7 @@ bool Ver4PatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
         const HeaderPolicy *const headerPolicy, Ver4DictBuffers *const buffersToWrite,
         int *const outUnigramCount, int *const outBigramCount) {
     Ver4PatriciaTrieNodeReader ptNodeReader(mBuffers->getTrieBuffer(),
-            mBuffers->getProbabilityDictContent(), headerPolicy);
+            mBuffers->getLanguageModelDictContent(), headerPolicy);
     Ver4PtNodeArrayReader ptNodeArrayReader(mBuffers->getTrieBuffer());
     Ver4BigramListPolicy bigramPolicy(mBuffers->getMutableBigramDictContent(),
             mBuffers->getTerminalPositionLookupTable(), headerPolicy);
@@ -138,7 +138,7 @@ bool Ver4PatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
 
     // Create policy instances for the GCed dictionary.
     Ver4PatriciaTrieNodeReader newPtNodeReader(buffersToWrite->getTrieBuffer(),
-            buffersToWrite->getProbabilityDictContent(), headerPolicy);
+            buffersToWrite->getLanguageModelDictContent(), headerPolicy);
     Ver4PtNodeArrayReader newPtNodeArrayreader(buffersToWrite->getTrieBuffer());
     Ver4BigramListPolicy newBigramPolicy(buffersToWrite->getMutableBigramDictContent(),
             buffersToWrite->getTerminalPositionLookupTable(), headerPolicy);
@@ -154,8 +154,8 @@ bool Ver4PatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
         return false;
     }
     // Run GC for probability dict content.
-    if (!buffersToWrite->getMutableProbabilityDictContent()->runGC(&terminalIdMap,
-            mBuffers->getProbabilityDictContent())) {
+    if (!buffersToWrite->getMutableLanguageModelDictContent()->runGC(&terminalIdMap,
+            mBuffers->getLanguageModelDictContent(), nullptr /* outNgramCount */)) {
         return false;
     }
     // Run GC for bigram dict content.
@@ -201,7 +201,7 @@ bool Ver4PatriciaTrieWritingHelper::truncateUnigrams(
             continue;
         }
         const ProbabilityEntry probabilityEntry =
-                mBuffers->getProbabilityDictContent()->getProbabilityEntry(i);
+                mBuffers->getLanguageModelDictContent()->getProbabilityEntry(i);
         const int probability = probabilityEntry.hasHistoricalInfo() ?
                 ForgettingCurveUtils::decodeProbability(
                         probabilityEntry.getHistoricalInfo(), mBuffers->getHeaderPolicy()) :
