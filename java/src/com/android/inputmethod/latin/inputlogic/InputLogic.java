@@ -427,11 +427,12 @@ public final class InputLogic {
         }
 
         if (processedEvent.isConsumed()) {
-            handleConsumedEvent(inputTransaction);
+            handleConsumedEvent(processedEvent, inputTransaction);
         } else if (processedEvent.isFunctionalKeyEvent()) {
-            handleFunctionalEvent(inputTransaction, currentKeyboardScriptId, handler);
+            handleFunctionalEvent(processedEvent, inputTransaction, currentKeyboardScriptId,
+                    handler);
         } else {
-            handleNonFunctionalEvent(inputTransaction, handler);
+            handleNonFunctionalEvent(processedEvent, inputTransaction, handler);
         }
         if (!inputTransaction.didAutoCorrect() && processedEvent.mKeyCode != Constants.CODE_SHIFT
                 && processedEvent.mKeyCode != Constants.CODE_CAPSLOCK
@@ -584,13 +585,14 @@ public final class InputLogic {
      * Consumed events represent events that have already been consumed, typically by the
      * combining chain.
      *
+     * @param event The event to handle.
      * @param inputTransaction The transaction in progress.
      */
-    private void handleConsumedEvent(final InputTransaction inputTransaction) {
+    private void handleConsumedEvent(final Event event, final InputTransaction inputTransaction) {
         // A consumed event may have text to commit and an update to the composing state, so
         // we evaluate both. With some combiners, it's possible than an event contains both
         // and we enter both of the following if clauses.
-        final CharSequence textToCommit = inputTransaction.mEvent.getTextToCommit();
+        final CharSequence textToCommit = event.getTextToCommit();
         if (!TextUtils.isEmpty(textToCommit)) {
             mConnection.commitText(textToCommit, 1);
             inputTransaction.setDidAffectContents();
@@ -611,15 +613,15 @@ public final class InputLogic {
      * manage keyboard-related stuff like shift, language switch, settings, layout switch, or
      * any key that results in multiple code points like the ".com" key.
      *
+     * @param event The event to handle.
      * @param inputTransaction The transaction in progress.
      */
-    private void handleFunctionalEvent(final InputTransaction inputTransaction,
+    private void handleFunctionalEvent(final Event event, final InputTransaction inputTransaction,
             // TODO: remove these arguments
             final int currentKeyboardScriptId, final LatinIME.UIHandler handler) {
-        final Event event = inputTransaction.mEvent;
         switch (event.mKeyCode) {
             case Constants.CODE_DELETE:
-                handleBackspace(inputTransaction, currentKeyboardScriptId);
+                handleBackspaceEvent(event, inputTransaction, currentKeyboardScriptId);
                 // Backspace is a functional key, but it affects the contents of the editor.
                 inputTransaction.setDidAffectContents();
                 break;
@@ -670,11 +672,7 @@ public final class InputLogic {
                 // TODO: remove this object
                 final Event tmpEvent = Event.createSoftwareKeypressEvent(Constants.CODE_ENTER,
                         event.mKeyCode, event.mX, event.mY, event.isKeyRepeat());
-                final InputTransaction tmpTransaction = new InputTransaction(
-                        inputTransaction.mSettingsValues, tmpEvent,
-                        inputTransaction.mTimestamp, inputTransaction.mSpaceState,
-                        inputTransaction.mShiftState);
-                handleNonSpecialCharacter(tmpTransaction, handler);
+                handleNonSpecialCharacterEvent(tmpEvent, inputTransaction, handler);
                 // Shift + Enter is treated as a functional key but it results in adding a new
                 // line, so that does affect the contents of the editor.
                 inputTransaction.setDidAffectContents();
@@ -690,12 +688,13 @@ public final class InputLogic {
      * These events are generally events that cause input, but in some cases they may do other
      * things like trigger an editor action.
      *
+     * @param event The event to handle.
      * @param inputTransaction The transaction in progress.
      */
-    private void handleNonFunctionalEvent(final InputTransaction inputTransaction,
+    private void handleNonFunctionalEvent(final Event event,
+            final InputTransaction inputTransaction,
             // TODO: remove this argument
             final LatinIME.UIHandler handler) {
-        final Event event = inputTransaction.mEvent;
         inputTransaction.setDidAffectContents();
         switch (event.mCodePoint) {
             case Constants.CODE_ENTER:
@@ -718,11 +717,11 @@ public final class InputLogic {
                 } else {
                     // No action label, and the action from imeOptions is NONE: this is a regular
                     // enter key that should input a carriage return.
-                    handleNonSpecialCharacter(inputTransaction, handler);
+                    handleNonSpecialCharacterEvent(event, inputTransaction, handler);
                 }
                 break;
             default:
-                handleNonSpecialCharacter(inputTransaction, handler);
+                handleNonSpecialCharacterEvent(event, inputTransaction, handler);
                 break;
         }
     }
@@ -735,16 +734,18 @@ public final class InputLogic {
      * manage keyboard-related stuff like shift, language switch, settings, layout switch, or
      * any key that results in multiple code points like the ".com" key.
      *
+     * @param event The event to handle.
      * @param inputTransaction The transaction in progress.
      */
-    private void handleNonSpecialCharacter(final InputTransaction inputTransaction,
+    private void handleNonSpecialCharacterEvent(final Event event,
+            final InputTransaction inputTransaction,
             // TODO: remove this argument
             final LatinIME.UIHandler handler) {
-        final int codePoint = inputTransaction.mEvent.mCodePoint;
+        final int codePoint = event.mCodePoint;
         mSpaceState = SpaceState.NONE;
         if (inputTransaction.mSettingsValues.isWordSeparator(codePoint)
                 || Character.getType(codePoint) == Character.OTHER_SYMBOL) {
-            handleSeparator(inputTransaction, handler);
+            handleSeparatorEvent(event, inputTransaction, handler);
         } else {
             if (SpaceState.PHANTOM == inputTransaction.mSpaceState) {
                 if (mWordComposer.isCursorFrontOrMiddleOfComposingWord()) {
@@ -756,21 +757,23 @@ public final class InputLogic {
                     commitTyped(inputTransaction.mSettingsValues, LastComposedWord.NOT_A_SEPARATOR);
                 }
             }
-            handleNonSeparator(inputTransaction.mSettingsValues, inputTransaction);
+            handleNonSeparatorEvent(event, inputTransaction.mSettingsValues, inputTransaction);
         }
     }
 
     /**
      * Handle a non-separator.
+     * @param event The event to handle.
      * @param settingsValues The current settings values.
      * @param inputTransaction The transaction in progress.
      */
-    private void handleNonSeparator(final SettingsValues settingsValues,
+    private void handleNonSeparatorEvent(final Event event, final SettingsValues settingsValues,
             final InputTransaction inputTransaction) {
-        final int codePoint = inputTransaction.mEvent.mCodePoint;
+        final int codePoint = event.mCodePoint;
         // TODO: refactor this method to stop flipping isComposingWord around all the time, and
-        // make it shorter (possibly cut into several pieces). Also factor handleNonSpecialCharacter
-        // which has the same name as other handle* methods but is not the same.
+        // make it shorter (possibly cut into several pieces). Also factor
+        // handleNonSpecialCharacterEvent which has the same name as other handle* methods but is
+        // not the same.
         boolean isComposingWord = mWordComposer.isComposingWord();
 
         // TODO: remove isWordConnector() and use isUsuallyFollowedBySpace() instead.
@@ -817,7 +820,7 @@ public final class InputLogic {
             resetComposingState(false /* alsoResetLastComposedWord */);
         }
         if (isComposingWord) {
-            mWordComposer.applyProcessedEvent(inputTransaction.mEvent);
+            mWordComposer.applyProcessedEvent(event);
             // If it's the first letter, make note of auto-caps state
             if (mWordComposer.isSingleLetter()) {
                 mWordComposer.setCapitalizedModeAtStartComposingTime(inputTransaction.mShiftState);
@@ -825,10 +828,10 @@ public final class InputLogic {
             mConnection.setComposingText(getTextWithUnderline(
                     mWordComposer.getTypedWord()), 1);
         } else {
-            final boolean swapWeakSpace = tryStripSpaceAndReturnWhetherShouldSwapInstead(
+            final boolean swapWeakSpace = tryStripSpaceAndReturnWhetherShouldSwapInstead(event,
                     inputTransaction);
 
-            if (swapWeakSpace && trySwapSwapperAndSpace(inputTransaction)) {
+            if (swapWeakSpace && trySwapSwapperAndSpace(event, inputTransaction)) {
                 mSpaceState = SpaceState.WEAK;
             } else {
                 sendKeyCodePoint(settingsValues, codePoint);
@@ -841,12 +844,13 @@ public final class InputLogic {
 
     /**
      * Handle input of a separator code point.
+     * @param event The event to handle.
      * @param inputTransaction The transaction in progress.
      */
-    private void handleSeparator(final InputTransaction inputTransaction,
+    private void handleSeparatorEvent(final Event event, final InputTransaction inputTransaction,
             // TODO: remove this argument
             final LatinIME.UIHandler handler) {
-        final int codePoint = inputTransaction.mEvent.mCodePoint;
+        final int codePoint = event.mCodePoint;
         final SettingsValues settingsValues = inputTransaction.mSettingsValues;
         final boolean wasComposingWord = mWordComposer.isComposingWord();
         // We avoid sending spaces in languages without spaces if we were composing.
@@ -872,7 +876,7 @@ public final class InputLogic {
             }
         }
 
-        final boolean swapWeakSpace = tryStripSpaceAndReturnWhetherShouldSwapInstead(
+        final boolean swapWeakSpace = tryStripSpaceAndReturnWhetherShouldSwapInstead(event,
                 inputTransaction);
 
         final boolean isInsideDoubleQuoteOrAfterDigit = Constants.CODE_DOUBLE_QUOTE == codePoint
@@ -897,10 +901,10 @@ public final class InputLogic {
             promotePhantomSpace(settingsValues);
         }
 
-        if (tryPerformDoubleSpacePeriod(inputTransaction)) {
+        if (tryPerformDoubleSpacePeriod(event, inputTransaction)) {
             mSpaceState = SpaceState.DOUBLE;
             inputTransaction.setRequiresUpdateSuggestions();
-        } else if (swapWeakSpace && trySwapSwapperAndSpace(inputTransaction)) {
+        } else if (swapWeakSpace && trySwapSwapperAndSpace(event, inputTransaction)) {
             mSpaceState = SpaceState.SWAP_PUNCTUATION;
             mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
         } else if (Constants.CODE_SPACE == codePoint) {
@@ -947,12 +951,12 @@ public final class InputLogic {
 
     /**
      * Handle a press on the backspace key.
+     * @param event The event to handle.
      * @param inputTransaction The transaction in progress.
      */
-    private void handleBackspace(final InputTransaction inputTransaction,
+    private void handleBackspaceEvent(final Event event, final InputTransaction inputTransaction,
             // TODO: remove this argument, put it into settingsValues
             final int currentKeyboardScriptId) {
-        final Event event = inputTransaction.mEvent;
         mSpaceState = SpaceState.NONE;
         mDeleteCount++;
 
@@ -1103,16 +1107,18 @@ public final class InputLogic {
      *
      * This method will check that there are two characters before the cursor and that the first
      * one is a space before it does the actual swapping.
+     * @param event The event to handle.
      * @param inputTransaction The transaction in progress.
      * @return true if the swap has been performed, false if it was prevented by preliminary checks.
      */
-    private boolean trySwapSwapperAndSpace(final InputTransaction inputTransaction) {
+    private boolean trySwapSwapperAndSpace(final Event event,
+            final InputTransaction inputTransaction) {
         final int codePointBeforeCursor = mConnection.getCodePointBeforeCursor();
         if (Constants.CODE_SPACE != codePointBeforeCursor) {
             return false;
         }
         mConnection.deleteSurroundingText(1, 0);
-        final String text = inputTransaction.mEvent.getTextToCommit() + " ";
+        final String text = event.getTextToCommit() + " ";
         mConnection.commitText(text, 1);
         inputTransaction.requireShiftUpdate(InputTransaction.SHIFT_UPDATE_NOW);
         return true;
@@ -1120,13 +1126,14 @@ public final class InputLogic {
 
     /*
      * Strip a trailing space if necessary and returns whether it's a swap weak space situation.
+     * @param event The event to handle.
      * @param inputTransaction The transaction in progress.
      * @return whether we should swap the space instead of removing it.
      */
-    private boolean tryStripSpaceAndReturnWhetherShouldSwapInstead(
+    private boolean tryStripSpaceAndReturnWhetherShouldSwapInstead(final Event event,
             final InputTransaction inputTransaction) {
-        final int codePoint = inputTransaction.mEvent.mCodePoint;
-        final boolean isFromSuggestionStrip = inputTransaction.mEvent.isSuggestionStripPress();
+        final int codePoint = event.mCodePoint;
+        final boolean isFromSuggestionStrip = event.isSuggestionStripPress();
         if (Constants.CODE_ENTER == codePoint &&
                 SpaceState.SWAP_PUNCTUATION == inputTransaction.mSpaceState) {
             mConnection.removeTrailingSpace();
@@ -1171,14 +1178,16 @@ public final class InputLogic {
      * these conditions are fulfilled, this method applies the transformation and returns true.
      * Otherwise, it does nothing and returns false.
      *
+     * @param event The event to handle.
      * @param inputTransaction The transaction in progress.
      * @return true if we applied the double-space-to-period transformation, false otherwise.
      */
-    private boolean tryPerformDoubleSpacePeriod(final InputTransaction inputTransaction) {
+    private boolean tryPerformDoubleSpacePeriod(final Event event,
+            final InputTransaction inputTransaction) {
         // Check the setting, the typed character and the countdown. If any of the conditions is
         // not fulfilled, return false.
         if (!inputTransaction.mSettingsValues.mUseDoubleSpacePeriod
-                || Constants.CODE_SPACE != inputTransaction.mEvent.mCodePoint
+                || Constants.CODE_SPACE != event.mCodePoint
                 || !isDoubleSpacePeriodCountdownActive(inputTransaction)) {
             return false;
         }
