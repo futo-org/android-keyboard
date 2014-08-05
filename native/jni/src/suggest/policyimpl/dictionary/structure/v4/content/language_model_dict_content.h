@@ -20,25 +20,53 @@
 #include <cstdio>
 
 #include "defines.h"
+#include "suggest/policyimpl/dictionary/structure/v4/content/probability_entry.h"
+#include "suggest/policyimpl/dictionary/structure/v4/content/terminal_position_lookup_table.h"
+#include "suggest/policyimpl/dictionary/structure/v4/ver4_dict_constants.h"
 #include "suggest/policyimpl/dictionary/utils/trie_map.h"
 #include "utils/byte_array_view.h"
+#include "utils/int_array_view.h"
 
 namespace latinime {
 
+/**
+ * Class representing language model.
+ *
+ * This class provides methods to get and store unigram/n-gram probability information and flags.
+ */
 class LanguageModelDictContent {
  public:
     LanguageModelDictContent(const ReadWriteByteArrayView trieMapBuffer,
             const bool hasHistoricalInfo)
-            : mTrieMap(trieMapBuffer) {}
+            : mTrieMap(trieMapBuffer), mHasHistoricalInfo(hasHistoricalInfo) {}
 
-    explicit LanguageModelDictContent(const bool hasHistoricalInfo) : mTrieMap() {}
+    explicit LanguageModelDictContent(const bool hasHistoricalInfo)
+            : mTrieMap(), mHasHistoricalInfo(hasHistoricalInfo) {}
+
+    bool isNearSizeLimit() const {
+        return mTrieMap.isNearSizeLimit();
+    }
 
     bool save(FILE *const file) const;
+
+    bool runGC(const TerminalPositionLookupTable::TerminalIdMap *const terminalIdMap,
+            const LanguageModelDictContent *const originalContent,
+            int *const outNgramCount);
+
+    ProbabilityEntry getProbabilityEntry(const WordIdArrayView prevWordIds, const int wordId) const;
+
+    bool setProbabilityEntry(const WordIdArrayView prevWordIds, const int wordId,
+            const ProbabilityEntry *const probabilityEntry);
 
  private:
     DISALLOW_COPY_AND_ASSIGN(LanguageModelDictContent);
 
     TrieMap mTrieMap;
+    const bool mHasHistoricalInfo;
+
+    bool runGCInner(const TerminalPositionLookupTable::TerminalIdMap *const terminalIdMap,
+            const TrieMap::TrieMapRange trieMapRange, const int nextLevelBitmapEntryIndex,
+            int *const outNgramCount);
 };
 } // namespace latinime
 #endif /* LATINIME_LANGUAGE_MODEL_DICT_CONTENT_H */

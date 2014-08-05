@@ -22,4 +22,63 @@ bool LanguageModelDictContent::save(FILE *const file) const {
     return mTrieMap.save(file);
 }
 
+bool LanguageModelDictContent::runGC(
+        const TerminalPositionLookupTable::TerminalIdMap *const terminalIdMap,
+        const LanguageModelDictContent *const originalContent,
+        int *const outNgramCount) {
+    return runGCInner(terminalIdMap, originalContent->mTrieMap.getEntriesInRootLevel(),
+            0 /* nextLevelBitmapEntryIndex */, outNgramCount);
+}
+
+ProbabilityEntry LanguageModelDictContent::getProbabilityEntry(
+        const WordIdArrayView prevWordIds, const int wordId) const {
+    if (!prevWordIds.empty()) {
+        // TODO: Read n-gram entry.
+        return ProbabilityEntry();
+    }
+    const TrieMap::Result result = mTrieMap.getRoot(wordId);
+    if (!result.mIsValid) {
+        // Not found.
+        return ProbabilityEntry();
+    }
+    return ProbabilityEntry::decode(result.mValue, mHasHistoricalInfo);
+}
+
+bool LanguageModelDictContent::setProbabilityEntry(const WordIdArrayView prevWordIds,
+        const int terminalId, const ProbabilityEntry *const probabilityEntry) {
+    if (!prevWordIds.empty()) {
+        // TODO: Add n-gram entry.
+        return false;
+    }
+    return mTrieMap.putRoot(terminalId, probabilityEntry->encode(mHasHistoricalInfo));
+}
+
+
+bool LanguageModelDictContent::runGCInner(
+        const TerminalPositionLookupTable::TerminalIdMap *const terminalIdMap,
+        const TrieMap::TrieMapRange trieMapRange,
+        const int nextLevelBitmapEntryIndex, int *const outNgramCount) {
+    for (auto &entry : trieMapRange) {
+        const auto it = terminalIdMap->find(entry.key());
+        if (it == terminalIdMap->end() || it->second == Ver4DictConstants::NOT_A_TERMINAL_ID) {
+            // The word has been removed.
+            continue;
+        }
+        if (!mTrieMap.put(it->second, entry.value(), nextLevelBitmapEntryIndex)) {
+            return false;
+        }
+        if (outNgramCount) {
+            *outNgramCount += 1;
+        }
+        if (entry.hasNextLevelMap()) {
+            if (!runGCInner(terminalIdMap, entry.getEntriesInNextLevel(),
+                    mTrieMap.getNextLevelBitmapEntryIndex(it->second, nextLevelBitmapEntryIndex),
+                    outNgramCount)) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
 } // namespace latinime
