@@ -30,9 +30,9 @@ TEST(LanguageModelDictContentTest, TestUnigramProbability) {
     const int probability = 10;
     const int wordId = 100;
     const ProbabilityEntry probabilityEntry(flag, probability);
-    LanguageModelDictContent.setProbabilityEntry(WordIdArrayView(), wordId, &probabilityEntry);
+    LanguageModelDictContent.setProbabilityEntry(wordId, &probabilityEntry);
     const ProbabilityEntry entry =
-            LanguageModelDictContent.getProbabilityEntry(WordIdArrayView(), wordId);
+            LanguageModelDictContent.getProbabilityEntry(wordId);
     EXPECT_EQ(flag, entry.getFlags());
     EXPECT_EQ(probability, entry.getProbability());
 }
@@ -47,9 +47,8 @@ TEST(LanguageModelDictContentTest, TestUnigramProbabilityWithHistoricalInfo) {
     const int wordId = 100;
     const HistoricalInfo historicalInfo(timestamp, level, count);
     const ProbabilityEntry probabilityEntry(flag, NOT_A_PROBABILITY, &historicalInfo);
-    LanguageModelDictContent.setProbabilityEntry(WordIdArrayView(), wordId, &probabilityEntry);
-    const ProbabilityEntry entry =
-            LanguageModelDictContent.getProbabilityEntry(WordIdArrayView(), wordId);
+    LanguageModelDictContent.setProbabilityEntry(wordId, &probabilityEntry);
+    const ProbabilityEntry entry = LanguageModelDictContent.getProbabilityEntry(wordId);
     EXPECT_EQ(flag, entry.getFlags());
     EXPECT_EQ(timestamp, entry.getHistoricalInfo()->getTimeStamp());
     EXPECT_EQ(level, entry.getHistoricalInfo()->getLevel());
