@@ -143,11 +143,11 @@ bool Ver4PatriciaTrieNodeWriter::updatePtNodeUnigramProperty(
         return false;
     }
     const ProbabilityEntry originalProbabilityEntry =
-            mBuffers->getProbabilityDictContent()->getProbabilityEntry(
+            mBuffers->getLanguageModelDictContent()->getProbabilityEntry(
                     toBeUpdatedPtNodeParams->getTerminalId());
     const ProbabilityEntry probabilityEntry = createUpdatedEntryFrom(&originalProbabilityEntry,
             unigramProperty);
-    return mBuffers->getMutableProbabilityDictContent()->setProbabilityEntry(
+    return mBuffers->getMutableLanguageModelDictContent()->setProbabilityEntry(
             toBeUpdatedPtNodeParams->getTerminalId(), &probabilityEntry);
 }
 
@@ -158,14 +158,14 @@ bool Ver4PatriciaTrieNodeWriter::updatePtNodeProbabilityAndGetNeedsToKeepPtNodeA
         return false;
     }
     const ProbabilityEntry originalProbabilityEntry =
-            mBuffers->getProbabilityDictContent()->getProbabilityEntry(
+            mBuffers->getLanguageModelDictContent()->getProbabilityEntry(
                     toBeUpdatedPtNodeParams->getTerminalId());
     if (originalProbabilityEntry.hasHistoricalInfo()) {
         const HistoricalInfo historicalInfo = ForgettingCurveUtils::createHistoricalInfoToSave(
                 originalProbabilityEntry.getHistoricalInfo(), mHeaderPolicy);
         const ProbabilityEntry probabilityEntry =
                 originalProbabilityEntry.createEntryWithUpdatedHistoricalInfo(&historicalInfo);
-        if (!mBuffers->getMutableProbabilityDictContent()->setProbabilityEntry(
+        if (!mBuffers->getMutableLanguageModelDictContent()->setProbabilityEntry(
                 toBeUpdatedPtNodeParams->getTerminalId(), &probabilityEntry)) {
             AKLOGE("Cannot write updated probability entry. terminalId: %d",
                     toBeUpdatedPtNodeParams->getTerminalId());
@@ -218,8 +218,8 @@ bool Ver4PatriciaTrieNodeWriter::writeNewTerminalPtNodeAndAdvancePosition(
     ProbabilityEntry newProbabilityEntry;
     const ProbabilityEntry probabilityEntryToWrite = createUpdatedEntryFrom(
             &newProbabilityEntry, unigramProperty);
-    return mBuffers->getMutableProbabilityDictContent()->setProbabilityEntry(terminalId,
-            &probabilityEntryToWrite);
+    return mBuffers->getMutableLanguageModelDictContent()->setProbabilityEntry(
+            terminalId, &probabilityEntryToWrite);
 }
 
 bool Ver4PatriciaTrieNodeWriter::addNewBigramEntry(
