@@ -52,7 +52,9 @@
         <attr name="spacebarIconWidthRatio" format="float" />
         <!-- Right padding of hint letter to the edge of the key.-->
         <attr name="keyHintLetterPadding" format="dimension" />
-        <!-- Bottom padding of popup hint letter "..." to the edge of the key.-->
+        <!-- Popup hint letter string-->
+        <attr name="keyPopupHintLetter" format="string" />
+        <!-- Bottom padding of popup hint letter to the edge of the key.-->
         <attr name="keyPopupHintLetterPadding" format="dimension" />
         <!-- Right padding of shifted letter hint to the edge of the key.-->
         <attr name="keyShiftedLetterHintPadding" format="dimension" />

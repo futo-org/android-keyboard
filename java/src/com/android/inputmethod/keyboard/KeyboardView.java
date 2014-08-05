@@ -29,6 +29,7 @@ import android.graphics.Region;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.NinePatchDrawable;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -48,6 +49,7 @@ import java.util.HashSet;
  * @attr ref R.styleable#KeyboardView_spacebarBackground
  * @attr ref R.styleable#KeyboardView_spacebarIconWidthRatio
  * @attr ref R.styleable#KeyboardView_keyHintLetterPadding
+ * @attr ref R.styleable#KeyboardView_keyPopupHintLetter
  * @attr ref R.styleable#KeyboardView_keyPopupHintLetterPadding
  * @attr ref R.styleable#KeyboardView_keyShiftedLetterHintPadding
  * @attr ref R.styleable#KeyboardView_keyTextShadowRadius
@@ -74,6 +76,7 @@ public class KeyboardView extends View {
     // XML attributes
     private final KeyVisualAttributes mKeyVisualAttributes;
     private final float mKeyHintLetterPadding;
+    private final String mKeyPopupHintLetter;
     private final float mKeyPopupHintLetterPadding;
     private final float mKeyShiftedLetterHintPadding;
     private final float mKeyTextShadowRadius;
@@ -84,9 +87,6 @@ public class KeyboardView extends View {
     private final float mSpacebarIconWidthRatio;
     private final Rect mKeyBackgroundPadding = new Rect();
     private static final float KET_TEXT_SHADOW_RADIUS_DISABLED = -1.0f;
-
-    // HORIZONTAL ELLIPSIS "...", character for popup hint.
-    private static final String POPUP_HINT_CHAR = "\u2026";
 
     // The maximum key label width in the proportion to the key width.
     private static final float MAX_LABEL_RATIO = 0.90f;
@@ -132,6 +132,8 @@ public class KeyboardView extends View {
                 R.styleable.KeyboardView_spacebarIconWidthRatio, 1.0f);
         mKeyHintLetterPadding = keyboardViewAttr.getDimension(
                 R.styleable.KeyboardView_keyHintLetterPadding, 0.0f);
+        mKeyPopupHintLetter = keyboardViewAttr.getString(
+                R.styleable.KeyboardView_keyPopupHintLetter);
         mKeyPopupHintLetterPadding = keyboardViewAttr.getDimension(
                 R.styleable.KeyboardView_keyPopupHintLetterPadding, 0.0f);
         mKeyShiftedLetterHintPadding = keyboardViewAttr.getDimension(
@@ -468,6 +470,9 @@ public class KeyboardView extends View {
     // Draw popup hint "..." at the bottom right corner of the key.
     protected void drawKeyPopupHint(final Key key, final Canvas canvas, final Paint paint,
             final KeyDrawParams params) {
+        if (TextUtils.isEmpty(mKeyPopupHintLetter)) {
+            return;
+        }
         final int keyWidth = key.getDrawWidth();
         final int keyHeight = key.getHeight();
 
@@ -478,7 +483,7 @@ public class KeyboardView extends View {
         final float hintX = keyWidth - mKeyHintLetterPadding
                 - TypefaceUtils.getReferenceCharWidth(paint) / 2.0f;
         final float hintY = keyHeight - mKeyPopupHintLetterPadding;
-        canvas.drawText(POPUP_HINT_CHAR, hintX, hintY, paint);
+        canvas.drawText(mKeyPopupHintLetter, hintX, hintY, paint);
     }
 
     protected static void drawIcon(final Canvas canvas, final Drawable icon, final int x,

@@ -60,6 +60,8 @@
         <item name="keyPreviewTextColor">@color/key_text_color_holo</item>
         <!-- A negative value to disable key text shadow layer. -->
         <item name="keyTextShadowRadius">-1.0</item>
+        <!-- U+2026: "…" HORIZONTAL ELLIPSIS -->
+        <item name="keyPopupHintLetter">&#x2026;</item>
     </style>
     <style
         name="MainKeyboardView.ICS"
