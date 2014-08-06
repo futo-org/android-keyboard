@@ -295,7 +295,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             }
         }
 
-        public void postResetCaches(final boolean tryResumeSuggestions, final int remainingTries) {
+        public void postResetInputConnectionCaches(final boolean tryResumeSuggestions,
+                final int remainingTries) {
             removeMessages(MSG_RESET_CACHES);
             sendMessage(obtainMessage(MSG_RESET_CACHES, tryResumeSuggestions ? 1 : 0,
                     remainingTries, null));
@@ -762,9 +763,12 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private static class EditorChangeInfo {
         public final boolean mIsSameInputType;
         public final boolean mHasSameOrientation;
-        public EditorChangeInfo(final boolean isSameInputType, final boolean hasSameOrientation) {
+        public final boolean mCanReachInputConnection;
+        public EditorChangeInfo(final boolean isSameInputType, final boolean hasSameOrientation,
+                final boolean canReachInputConnection) {
             mIsSameInputType = isSameInputType;
             mHasSameOrientation = hasSameOrientation;
+            mCanReachInputConnection = canReachInputConnection;
         }
     }
 
@@ -773,15 +777,65 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private void onStartInputInternal(final EditorInfo editorInfo, final boolean restarting) {
         super.onStartInput(editorInfo, restarting);
         SettingsValues currentSettingsValues = mSettings.getCurrent();
-        mLastEditorChangeInfo = new EditorChangeInfo(
-                currentSettingsValues.isSameInputType(editorInfo),
-                currentSettingsValues.hasSameOrientation(getResources().getConfiguration()));
+        final boolean isSameInputType = currentSettingsValues.isSameInputType(editorInfo);
+        final boolean hasSameOrientation =
+                currentSettingsValues.hasSameOrientation(getResources().getConfiguration());
+        mRichImm.clearSubtypeCaches();
+        if (editorInfo == null) {
+            Log.e(TAG, "Null EditorInfo in onStartInput()");
+            return;
+        }
+        final boolean inputTypeChanged = !isSameInputType;
+        final boolean isDifferentTextField = !restarting || inputTypeChanged;
+        if (isDifferentTextField || !hasSameOrientation) {
+            loadSettings();
+            currentSettingsValues = mSettings.getCurrent();
+        }
+
+        // Note: the following does a round-trip IPC on the main thread: be careful
+        final Locale currentLocale = mSubtypeSwitcher.getCurrentSubtypeLocale();
+        final Suggest suggest = mInputLogic.mSuggest;
+        if (null != currentLocale && !currentLocale.equals(suggest.getLocale())) {
+            // TODO: Do this automatically.
+            resetSuggest();
+        }
+        if (isDifferentTextField && currentSettingsValues.mAutoCorrectionEnabledPerUserSettings) {
+            suggest.setAutoCorrectionThreshold(currentSettingsValues.mAutoCorrectionThreshold);
+        }
+
+        // The app calling setText() has the effect of clearing the composing
+        // span, so we should reset our state unconditionally, even if restarting is true.
+        // We also tell the input logic about the combining rules for the current subtype, so
+        // it can adjust its combiners if needed.
+        mInputLogic.startInput(mSubtypeSwitcher.getCombiningRulesExtraValueOfCurrentSubtype());
+        // TODO[IL]: Can the following be moved to InputLogic#startInput?
+        final boolean canReachInputConnection;
+        if (!mInputLogic.mConnection.resetCachesUponCursorMoveAndReturnSuccess(
+                editorInfo.initialSelStart, editorInfo.initialSelEnd,
+                false /* shouldFinishComposition */)) {
+            // Sometimes, while rotating, for some reason the framework tells the app we are not
+            // connected to it and that means we can't refresh the cache. In this case, schedule a
+            // refresh later.
+            // We try resetting the caches up to 5 times before giving up.
+            mHandler.postResetInputConnectionCaches(isDifferentTextField || !hasSameOrientation,
+                    5 /* remainingTries */);
+            canReachInputConnection = false;
+        } else {
+            // When rotating, initialSelStart and initialSelEnd sometimes are lying. Make a best
+            // effort to work around this bug.
+            mInputLogic.mConnection.tryFixLyingCursorPosition();
+            mHandler.postResumeSuggestions(true /* shouldIncludeResumedWordInSuggestions */,
+                    true /* shouldDelay */);
+            canReachInputConnection = true;
+        }
+
+        mLastEditorChangeInfo = new EditorChangeInfo(isSameInputType, hasSameOrientation,
+                canReachInputConnection);
     }
 
     @SuppressWarnings("deprecation")
     private void onStartInputViewInternal(final EditorInfo editorInfo, final boolean restarting) {
         super.onStartInputView(editorInfo, restarting);
-        mRichImm.clearSubtypeCaches();
         final KeyboardSwitcher switcher = mKeyboardSwitcher;
         switcher.updateKeyboardTheme();
         final MainKeyboardView mainKeyboardView = switcher.getMainKeyboardView();
@@ -837,56 +891,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // Note: This call should be done by InputMethodService?
         updateFullscreenMode();
 
-        // The app calling setText() has the effect of clearing the composing
-        // span, so we should reset our state unconditionally, even if restarting is true.
-        // We also tell the input logic about the combining rules for the current subtype, so
-        // it can adjust its combiners if needed.
-        mInputLogic.startInput(mSubtypeSwitcher.getCombiningRulesExtraValueOfCurrentSubtype());
-
-        // Note: the following does a round-trip IPC on the main thread: be careful
-        final Locale currentLocale = mSubtypeSwitcher.getCurrentSubtypeLocale();
-        final Suggest suggest = mInputLogic.mSuggest;
-        if (null != currentLocale && !currentLocale.equals(suggest.getLocale())) {
-            // TODO: Do this automatically.
-            resetSuggest();
-        }
-
-        // TODO[IL]: Can the following be moved to InputLogic#startInput?
-        final boolean canReachInputConnection;
-        if (!mInputLogic.mConnection.resetCachesUponCursorMoveAndReturnSuccess(
-                editorInfo.initialSelStart, editorInfo.initialSelEnd,
-                false /* shouldFinishComposition */)) {
-            // Sometimes, while rotating, for some reason the framework tells the app we are not
-            // connected to it and that means we can't refresh the cache. In this case, schedule a
-            // refresh later.
-            // We try resetting the caches up to 5 times before giving up.
-            mHandler.postResetCaches(isDifferentTextField, 5 /* remainingTries */);
-            // mLastSelection{Start,End} are reset later in this method, don't need to do it here
-            canReachInputConnection = false;
-        } else {
-            // When rotating, initialSelStart and initialSelEnd sometimes are lying. Make a best
-            // effort to work around this bug.
-            mInputLogic.mConnection.tryFixLyingCursorPosition();
-            mHandler.postResumeSuggestions(true /* shouldIncludeResumedWordInSuggestions */,
-                    true /* shouldDelay */);
-            canReachInputConnection = true;
-        }
-
-        if (isDifferentTextField || !mLastEditorChangeInfo.mHasSameOrientation) {
-            loadSettings();
-        }
         final SettingsValues currentSettingsValues = mSettings.getCurrent();
         if (isDifferentTextField) {
             mainKeyboardView.closing();
 
-            if (currentSettingsValues.mAutoCorrectionEnabledPerUserSettings) {
-                suggest.setAutoCorrectionThreshold(
-                        currentSettingsValues.mAutoCorrectionThreshold);
-            }
-
             switcher.loadKeyboard(editorInfo, currentSettingsValues, getCurrentAutoCapsState(),
                     getCurrentRecapitalizeState());
-            if (!canReachInputConnection) {
+            if (!mLastEditorChangeInfo.mCanReachInputConnection) {
                 // If we can't reach the input connection, we will call loadKeyboard again later,
                 // so we need to save its state now. The call will be done in #retryResetCaches.
                 switcher.saveKeyboardState();
