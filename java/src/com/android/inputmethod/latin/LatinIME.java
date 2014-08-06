@@ -776,15 +776,15 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     private void onStartInputInternal(final EditorInfo editorInfo, final boolean restarting) {
         super.onStartInput(editorInfo, restarting);
+        if (editorInfo == null) {
+            Log.e(TAG, "Null EditorInfo in onStartInput()");
+            return;
+        }
         SettingsValues currentSettingsValues = mSettings.getCurrent();
         final boolean isSameInputType = currentSettingsValues.isSameInputType(editorInfo);
         final boolean hasSameOrientation =
                 currentSettingsValues.hasSameOrientation(getResources().getConfiguration());
         mRichImm.clearSubtypeCaches();
-        if (editorInfo == null) {
-            Log.e(TAG, "Null EditorInfo in onStartInput()");
-            return;
-        }
         final boolean inputTypeChanged = !isSameInputType;
         final boolean isDifferentTextField = !restarting || inputTypeChanged;
         if (isDifferentTextField || !hasSameOrientation) {
