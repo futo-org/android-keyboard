@@ -2035,7 +2035,7 @@ public final class InputLogic {
                 mConnection.getExpectedSelectionStart(), mConnection.getExpectedSelectionEnd(),
                 shouldFinishComposition)) {
             if (0 < remainingTries) {
-                handler.postResetInputConnectionCaches(tryResumeSuggestions, remainingTries - 1);
+                handler.postResetCaches(tryResumeSuggestions, remainingTries - 1);
                 return false;
             }
             // If remainingTries is 0, we should stop waiting for new tries, however we'll still
