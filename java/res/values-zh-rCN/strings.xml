@@ -51,9 +51,9 @@
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"双击空格键可插入句号并后跟空格"</string>
     <string name="auto_cap" msgid="1719746674854628252">"自动大写"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"句首字词大写"</string>
-    <string name="edit_personal_dictionary" msgid="3996910038952940420">"个人词典"</string>
-    <string name="configure_dictionaries_title" msgid="4238652338556902049">"附加词典"</string>
-    <string name="main_dictionary" msgid="4798763781818361168">"主词典"</string>
+    <string name="edit_personal_dictionary" msgid="3996910038952940420">"个人字典"</string>
+    <string name="configure_dictionaries_title" msgid="4238652338556902049">"附加字典"</string>
+    <string name="main_dictionary" msgid="4798763781818361168">"主字典"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"显示更正建议"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"键入时显示建议的字词"</string>
     <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"屏蔽不文明的字词"</string>
@@ -80,7 +80,7 @@
     <string name="send_feedback" msgid="1780431884109392046">"发送反馈"</string>
     <string name="select_language" msgid="3693815588777926848">"输入语言"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"再次触摸即可保存"</string>
-    <string name="has_dictionary" msgid="6071847973466625007">"有可用词典"</string>
+    <string name="has_dictionary" msgid="6071847973466625007">"有可用字典"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"键盘主题"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"英语(英国)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"英语(美国)"</string>
@@ -114,10 +114,10 @@
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"按键长按延迟"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"按键振动时长"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"按键音量"</string>
-    <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"读取外部词典文件"</string>
-    <string name="read_external_dictionary_no_files_message" msgid="4947420942224623792">"“下载内容”文件夹中没有词典文件"</string>
-    <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"选择要安装的词典文件"</string>
-    <string name="read_external_dictionary_confirm_install_message" msgid="4782116251651288054">"确定要安装这个<xliff:g id="LANGUAGE_NAME">%s</xliff:g>词典吗？"</string>
+    <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"读取外部字典文件"</string>
+    <string name="read_external_dictionary_no_files_message" msgid="4947420942224623792">"“下载内容”文件夹中没有字典文件"</string>
+    <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"选择要安装的字典文件"</string>
+    <string name="read_external_dictionary_confirm_install_message" msgid="4782116251651288054">"确定要安装这个<xliff:g id="LANGUAGE_NAME">%s</xliff:g>字典吗？"</string>
     <string name="error" msgid="8940763624668513648">"出现错误"</string>
     <string name="button_default" msgid="3988017840431881491">"默认"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"欢迎使用 <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
@@ -138,40 +138,40 @@
     <string name="setup_finish_action" msgid="276559243409465389">"完成"</string>
     <string name="show_setup_wizard_icon" msgid="5008028590593710830">"显示应用图标"</string>
     <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"在启动器中显示应用图标"</string>
-    <string name="app_name" msgid="6320102637491234792">"词典提供程序"</string>
-    <string name="dictionary_provider_name" msgid="3027315045397363079">"词典提供程序"</string>
-    <string name="dictionary_service_name" msgid="6237472350693511448">"词典服务"</string>
-    <string name="download_description" msgid="6014835283119198591">"词典更新信息"</string>
-    <string name="dictionary_settings_title" msgid="8091417676045693313">"附加词典"</string>
-    <string name="dictionary_install_over_metered_network_prompt" msgid="3587517870006332980">"词典可供下载"</string>
-    <string name="dictionary_settings_summary" msgid="5305694987799824349">"词典设置"</string>
-    <string name="user_dictionaries" msgid="3582332055892252845">"用户词典"</string>
-    <string name="default_user_dict_pref_name" msgid="1625055720489280530">"用户词典"</string>
-    <string name="dictionary_available" msgid="4728975345815214218">"词典可供下载"</string>
+    <string name="app_name" msgid="6320102637491234792">"字典提供程序"</string>
+    <string name="dictionary_provider_name" msgid="3027315045397363079">"字典提供程序"</string>
+    <string name="dictionary_service_name" msgid="6237472350693511448">"字典服务"</string>
+    <string name="download_description" msgid="6014835283119198591">"字典更新信息"</string>
+    <string name="dictionary_settings_title" msgid="8091417676045693313">"附加字典"</string>
+    <string name="dictionary_install_over_metered_network_prompt" msgid="3587517870006332980">"字典可供下载"</string>
+    <string name="dictionary_settings_summary" msgid="5305694987799824349">"字典设置"</string>
+    <string name="user_dictionaries" msgid="3582332055892252845">"用户字典"</string>
+    <string name="default_user_dict_pref_name" msgid="1625055720489280530">"用户字典"</string>
+    <string name="dictionary_available" msgid="4728975345815214218">"字典可供下载"</string>
     <string name="dictionary_downloading" msgid="2982650524622620983">"目前正在下载"</string>
     <string name="dictionary_installed" msgid="8081558343559342962">"已安装"</string>
     <string name="dictionary_disabled" msgid="8950383219564621762">"已安装，但目前已停用"</string>
-    <string name="cannot_connect_to_dict_service" msgid="9216933695765732398">"连接到词典服务时发生问题"</string>
-    <string name="no_dictionaries_available" msgid="8039920716566132611">"没有可供下载的词典"</string>
+    <string name="cannot_connect_to_dict_service" msgid="9216933695765732398">"连接到字典服务时发生问题"</string>
+    <string name="no_dictionaries_available" msgid="8039920716566132611">"没有可供下载的字典"</string>
     <string name="check_for_updates_now" msgid="8087688440916388581">"刷新"</string>
     <string name="last_update" msgid="730467549913588780">"上次更新时间"</string>
     <string name="message_updating" msgid="4457761393932375219">"正在检查更新"</string>
     <string name="message_loading" msgid="5638680861387748936">"正在加载…"</string>
-    <string name="main_dict_description" msgid="3072821352793492143">"主词典"</string>
+    <string name="main_dict_description" msgid="3072821352793492143">"主字典"</string>
     <string name="cancel" msgid="6830980399865683324">"取消"</string>
     <string name="go_to_settings" msgid="3876892339342569259">"设置"</string>
     <string name="install_dict" msgid="180852772562189365">"安装"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"取消"</string>
     <string name="delete_dict" msgid="756853268088330054">"删除"</string>
-    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"您的移动设备上选择的语言有一个词典可供下载。&lt;br/&gt;我们建议您&lt;b&gt;下载&lt;/b&gt;这个<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>词典，以便获得更好的输入体验。&lt;br/&gt;&lt;br/&gt;通过3G网络下载可能需要一两分钟的时间。如果您使用的不是&lt;b&gt;无流量限制的套餐&lt;/b&gt;，则可能产生一定的流量费。&lt;br/&gt;如果您不确定自己使用的是哪种流量套餐，我们建议您连接到WLAN网络以便自动开始下载。&lt;br/&gt;&lt;br/&gt;提示：您可以在移动设备上的&lt;b&gt;语言和输入法&lt;/b&gt;部分（位于&lt;b&gt;设置&lt;/b&gt;菜单中）下载和删除词典。"</string>
+    <string name="should_download_over_metered_prompt" msgid="1583881200688185508">"您的移动设备上选择的语言有一个字典可供下载。&lt;br/&gt;我们建议您&lt;b&gt;下载&lt;/b&gt;这个<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>字典，以便获得更好的输入体验。&lt;br/&gt;&lt;br/&gt;通过3G网络下载可能需要一两分钟的时间。如果您使用的不是&lt;b&gt;无流量限制的套餐&lt;/b&gt;，则可能产生一定的流量费。&lt;br/&gt;如果您不确定自己使用的是哪种流量套餐，我们建议您连接到WLAN网络以便自动开始下载。&lt;br/&gt;&lt;br/&gt;提示：您可以在移动设备上的&lt;b&gt;语言和输入法&lt;/b&gt;部分（位于&lt;b&gt;设置&lt;/b&gt;菜单中）下载和删除字典。"</string>
     <string name="download_over_metered" msgid="1643065851159409546">"立即下载 (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"通过WLAN网络下载"</string>
-    <string name="dict_available_notification_title" msgid="4583842811218581658">"有一个<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>词典可供下载"</string>
+    <string name="dict_available_notification_title" msgid="4583842811218581658">"有一个<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>字典可供下载"</string>
     <string name="dict_available_notification_description" msgid="1075194169443163487">"按此通知即可查看和下载"</string>
     <string name="toast_downloading_suggestions" msgid="6128155879830851739">"正在下载：<xliff:g id="LANGUAGE_NAME">%1$s</xliff:g>输入建议功能马上就可以使用了！"</string>
     <string name="version_text" msgid="2715354215568469385">"版本<xliff:g id="VERSION_NUMBER">%1$s</xliff:g>"</string>
     <string name="user_dict_settings_add_menu_title" msgid="1254195365689387076">"添加"</string>
-    <string name="user_dict_settings_add_dialog_title" msgid="4096700390211748168">"添加到词典"</string>
+    <string name="user_dict_settings_add_dialog_title" msgid="4096700390211748168">"添加到字典"</string>
     <string name="user_dict_settings_add_screen_title" msgid="5818914331629278758">"词组"</string>
     <string name="user_dict_settings_add_dialog_more_options" msgid="5671682004887093112">"更多选项"</string>
     <string name="user_dict_settings_add_dialog_less_options" msgid="2716586567241724126">"隐藏部分选项"</string>
@@ -184,7 +184,7 @@
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"修改字词"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"修改"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"删除"</string>
-    <string name="user_dict_settings_empty_text" msgid="558499587532668203">"用户词典中没有您定义的任何字词。您可以触摸“添加”(+) 按钮添加字词。"</string>
+    <string name="user_dict_settings_empty_text" msgid="558499587532668203">"用户字典中没有您定义的任何字词。您可以触摸“添加”(+) 按钮添加字词。"</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"所有语言"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"更多语言…"</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"删除"</string>
