@@ -752,34 +752,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         loadKeyboard();
     }
 
-    /**
-     * A class that holds information to pass from onStartInputInternal to onStartInputViewInternal
-     *
-     * OnStartInput needs to reload the settings and that will prevent onStartInputViewInternal
-     * from comparing the old settings with the new ones, so we use this memory to pass the
-     * necessary information along.
-     */
-    private static class EditorChangeInfo {
-        public final boolean mIsSameInputType;
-        public final boolean mHasSameOrientation;
-        public EditorChangeInfo(final boolean isSameInputType, final boolean hasSameOrientation) {
-            mIsSameInputType = isSameInputType;
-            mHasSameOrientation = hasSameOrientation;
-        }
-    }
-
-    private EditorChangeInfo mLastEditorChangeInfo;
-
     private void onStartInputInternal(final EditorInfo editorInfo, final boolean restarting) {
         super.onStartInput(editorInfo, restarting);
-        if (editorInfo == null) {
-            Log.e(TAG, "Null EditorInfo in onStartInput()");
-            return;
-        }
-        SettingsValues currentSettingsValues = mSettings.getCurrent();
-        mLastEditorChangeInfo = new EditorChangeInfo(
-                currentSettingsValues.isSameInputType(editorInfo),
-                currentSettingsValues.hasSameOrientation(getResources().getConfiguration()));
     }
 
     @SuppressWarnings("deprecation")
@@ -789,6 +763,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final KeyboardSwitcher switcher = mKeyboardSwitcher;
         switcher.updateKeyboardTheme();
         final MainKeyboardView mainKeyboardView = switcher.getMainKeyboardView();
+        // If we are starting input in a different text field from before, we'll have to reload
+        // settings, so currentSettingsValues can't be final.
+        SettingsValues currentSettingsValues = mSettings.getCurrent();
 
         if (editorInfo == null) {
             Log.e(TAG, "Null EditorInfo in onStartInputView()");
@@ -831,7 +808,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             accessUtils.onStartInputViewInternal(mainKeyboardView, editorInfo, restarting);
         }
 
-        final boolean inputTypeChanged = !mLastEditorChangeInfo.mIsSameInputType;
+        final boolean inputTypeChanged = !currentSettingsValues.isSameInputType(editorInfo);
         final boolean isDifferentTextField = !restarting || inputTypeChanged;
         if (isDifferentTextField) {
             mSubtypeSwitcher.updateParametersOnStartInputView();
@@ -876,12 +853,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             canReachInputConnection = true;
         }
 
-        if (isDifferentTextField || !mLastEditorChangeInfo.mHasSameOrientation) {
+        if (isDifferentTextField ||
+                !currentSettingsValues.hasSameOrientation(getResources().getConfiguration())) {
             loadSettings();
         }
-        final SettingsValues currentSettingsValues = mSettings.getCurrent();
         if (isDifferentTextField) {
             mainKeyboardView.closing();
+            currentSettingsValues = mSettings.getCurrent();
 
             if (currentSettingsValues.mAutoCorrectionEnabledPerUserSettings) {
                 suggest.setAutoCorrectionThreshold(
