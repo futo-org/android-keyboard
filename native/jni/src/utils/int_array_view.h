@@ -73,6 +73,14 @@ class IntArrayView {
         return mPtr;
     }
 
+    AK_FORCE_INLINE const int *begin() const {
+        return mPtr;
+    }
+
+    AK_FORCE_INLINE const int *end() const {
+        return mPtr + mSize;
+    }
+
  private:
     DISALLOW_ASSIGNMENT_OPERATOR(IntArrayView);
 

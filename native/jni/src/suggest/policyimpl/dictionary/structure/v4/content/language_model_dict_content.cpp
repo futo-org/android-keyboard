@@ -32,11 +32,11 @@ bool LanguageModelDictContent::runGC(
 
 ProbabilityEntry LanguageModelDictContent::getNgramProbabilityEntry(
         const WordIdArrayView prevWordIds, const int wordId) const {
-    if (!prevWordIds.empty()) {
-        // TODO: Read n-gram entry.
+    const int bitmapEntryIndex = getBitmapEntryIndex(prevWordIds);
+    if (bitmapEntryIndex == TrieMap::INVALID_INDEX) {
         return ProbabilityEntry();
     }
-    const TrieMap::Result result = mTrieMap.getRoot(wordId);
+    const TrieMap::Result result = mTrieMap.get(wordId, bitmapEntryIndex);
     if (!result.mIsValid) {
         // Not found.
         return ProbabilityEntry();
@@ -46,13 +46,12 @@ ProbabilityEntry LanguageModelDictContent::getNgramProbabilityEntry(
 
 bool LanguageModelDictContent::setNgramProbabilityEntry(const WordIdArrayView prevWordIds,
         const int terminalId, const ProbabilityEntry *const probabilityEntry) {
-    if (!prevWordIds.empty()) {
-        // TODO: Add n-gram entry.
+    const int bitmapEntryIndex = getBitmapEntryIndex(prevWordIds);
+    if (bitmapEntryIndex == TrieMap::INVALID_INDEX) {
         return false;
     }
-    return mTrieMap.putRoot(terminalId, probabilityEntry->encode(mHasHistoricalInfo));
+    return mTrieMap.put(terminalId, probabilityEntry->encode(mHasHistoricalInfo), bitmapEntryIndex);
 }
-
 
 bool LanguageModelDictContent::runGCInner(
         const TerminalPositionLookupTable::TerminalIdMap *const terminalIdMap,
@@ -79,6 +78,18 @@ bool LanguageModelDictContent::runGCInner(
         }
     }
     return true;
+}
+
+int LanguageModelDictContent::getBitmapEntryIndex(const WordIdArrayView prevWordIds) const {
+    int bitmapEntryIndex = mTrieMap.getRootBitmapEntryIndex();
+    for (const int wordId : prevWordIds) {
+        const TrieMap::Result result = mTrieMap.get(wordId, bitmapEntryIndex);
+        if (!result.mIsValid) {
+            return TrieMap::INVALID_INDEX;
+        }
+        bitmapEntryIndex = result.mNextLevelBitmapEntryIndex;
+    }
+    return bitmapEntryIndex;
 }
 
 } // namespace latinime
