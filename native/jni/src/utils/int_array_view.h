@@ -56,6 +56,16 @@ class IntArrayView {
     explicit IntArrayView(const std::vector<int> &vector)
             : mPtr(vector.data()), mSize(vector.size()) {}
 
+    template <int N>
+    AK_FORCE_INLINE static IntArrayView fromFixedSizeArray(const int (&array)[N]) {
+        return IntArrayView(array, N);
+    }
+
+    // Returns a view that points one int object. Does not take ownership of the given object.
+    AK_FORCE_INLINE static IntArrayView fromObject(const int *const object) {
+        return IntArrayView(object, 1);
+    }
+
     AK_FORCE_INLINE int operator[](const size_t index) const {
         ASSERT(index < mSize);
         return mPtr[index];
@@ -89,6 +99,7 @@ class IntArrayView {
 };
 
 using WordIdArrayView = IntArrayView;
+using PtNodePosArrayView = IntArrayView;
 
 } // namespace latinime
 #endif // LATINIME_MEMORY_VIEW_H

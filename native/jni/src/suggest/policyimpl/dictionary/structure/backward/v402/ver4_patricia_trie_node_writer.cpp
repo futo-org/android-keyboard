@@ -231,30 +231,31 @@ bool Ver4PatriciaTrieNodeWriter::writeNewTerminalPtNodeAndAdvancePosition(
             &probabilityEntryToWrite);
 }
 
-bool Ver4PatriciaTrieNodeWriter::addNewBigramEntry(
-        const PtNodeParams *const sourcePtNodeParams, const PtNodeParams *const targetPtNodeParam,
-        const BigramProperty *const bigramProperty, bool *const outAddedNewBigram) {
-    if (!mBigramPolicy->addNewEntry(sourcePtNodeParams->getTerminalId(),
-            targetPtNodeParam->getTerminalId(), bigramProperty, outAddedNewBigram)) {
+bool Ver4PatriciaTrieNodeWriter::addNgramEntry(const WordIdArrayView prevWordIds, const int wordId,
+        const BigramProperty *const bigramProperty, bool *const outAddedNewEntry) {
+    if (!mBigramPolicy->addNewEntry(prevWordIds[0], wordId, bigramProperty, outAddedNewEntry)) {
         AKLOGE("Cannot add new bigram entry. terminalId: %d, targetTerminalId: %d",
                 sourcePtNodeParams->getTerminalId(), targetPtNodeParam->getTerminalId());
         return false;
     }
-    if (!sourcePtNodeParams->hasBigrams()) {
+    const int ptNodePos =
+            mBuffers->getTerminalPositionLookupTable()->getTerminalPtNodePosition(prevWordIds[0]);
+    const PtNodeParams sourcePtNodeParams =
+            mPtNodeReader->fetchPtNodeParamsInBufferFromPtNodePos(ptNodePos);
+    if (!sourcePtNodeParams.hasBigrams()) {
         // Update has bigrams flag.
-        return updatePtNodeFlags(sourcePtNodeParams->getHeadPos(),
-                sourcePtNodeParams->isBlacklisted(), sourcePtNodeParams->isNotAWord(),
-                sourcePtNodeParams->isTerminal(), sourcePtNodeParams->hasShortcutTargets(),
+        return updatePtNodeFlags(sourcePtNodeParams.getHeadPos(),
+                sourcePtNodeParams.isBlacklisted(), sourcePtNodeParams.isNotAWord(),
+                sourcePtNodeParams.isTerminal(), sourcePtNodeParams.hasShortcutTargets(),
                 true /* hasBigrams */,
-                sourcePtNodeParams->getCodePointCount() > 1 /* hasMultipleChars */);
+                sourcePtNodeParams.getCodePointCount() > 1 /* hasMultipleChars */);
     }
     return true;
 }
 
-bool Ver4PatriciaTrieNodeWriter::removeBigramEntry(
-        const PtNodeParams *const sourcePtNodeParams, const PtNodeParams *const targetPtNodeParam) {
-    return mBigramPolicy->removeEntry(sourcePtNodeParams->getTerminalId(),
-            targetPtNodeParam->getTerminalId());
+bool Ver4PatriciaTrieNodeWriter::removeNgramEntry(const WordIdArrayView prevWordIds,
+        const int wordId) {
+    return mBigramPolicy->removeEntry(prevWordIds[0], wordId);
 }
 
 bool Ver4PatriciaTrieNodeWriter::updateAllBigramEntriesAndDeleteUselessEntries(
