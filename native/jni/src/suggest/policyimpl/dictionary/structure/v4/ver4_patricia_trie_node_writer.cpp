@@ -222,22 +222,19 @@ bool Ver4PatriciaTrieNodeWriter::writeNewTerminalPtNodeAndAdvancePosition(
             terminalId, &probabilityEntryToWrite);
 }
 
-bool Ver4PatriciaTrieNodeWriter::addNewBigramEntry(
-        const PtNodeParams *const sourcePtNodeParams, const PtNodeParams *const targetPtNodeParam,
+bool Ver4PatriciaTrieNodeWriter::addNgramEntry(const WordIdArrayView prevWordIds, const int wordId,
         const BigramProperty *const bigramProperty, bool *const outAddedNewBigram) {
-    if (!mBigramPolicy->addNewEntry(sourcePtNodeParams->getTerminalId(),
-            targetPtNodeParam->getTerminalId(), bigramProperty, outAddedNewBigram)) {
+    if (!mBigramPolicy->addNewEntry(prevWordIds[0], wordId, bigramProperty, outAddedNewBigram)) {
         AKLOGE("Cannot add new bigram entry. terminalId: %d, targetTerminalId: %d",
-                sourcePtNodeParams->getTerminalId(), targetPtNodeParam->getTerminalId());
+                prevWordIds[0], wordId);
         return false;
     }
     return true;
 }
 
-bool Ver4PatriciaTrieNodeWriter::removeBigramEntry(
-        const PtNodeParams *const sourcePtNodeParams, const PtNodeParams *const targetPtNodeParam) {
-    return mBigramPolicy->removeEntry(sourcePtNodeParams->getTerminalId(),
-            targetPtNodeParam->getTerminalId());
+bool Ver4PatriciaTrieNodeWriter::removeNgramEntry(const WordIdArrayView prevWordIds,
+        const int wordId) {
+    return mBigramPolicy->removeEntry(prevWordIds[0], wordId);
 }
 
 bool Ver4PatriciaTrieNodeWriter::updateAllBigramEntriesAndDeleteUselessEntries(

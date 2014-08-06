@@ -29,6 +29,7 @@
 #include "suggest/policyimpl/dictionary/structure/pt_common/pt_node_params.h"
 #include "suggest/policyimpl/dictionary/structure/pt_common/pt_node_writer.h"
 #include "suggest/policyimpl/dictionary/structure/backward/v402/content/probability_entry.h"
+#include "utils/int_array_view.h"
 
 namespace latinime {
 namespace backward {
@@ -61,8 +62,8 @@ class Ver4PatriciaTrieNodeWriter : public PtNodeWriter {
             const PtNodeArrayReader *const ptNodeArrayReader,
             Ver4BigramListPolicy *const bigramPolicy, Ver4ShortcutListPolicy *const shortcutPolicy)
             : mTrieBuffer(trieBuffer), mBuffers(buffers), mHeaderPolicy(headerPolicy),
-              mReadingHelper(ptNodeReader, ptNodeArrayReader), mBigramPolicy(bigramPolicy),
-              mShortcutPolicy(shortcutPolicy) {}
+              mPtNodeReader(ptNodeReader), mReadingHelper(ptNodeReader, ptNodeArrayReader),
+              mBigramPolicy(bigramPolicy), mShortcutPolicy(shortcutPolicy) {}
 
     virtual ~Ver4PatriciaTrieNodeWriter() {}
 
@@ -92,12 +93,10 @@ class Ver4PatriciaTrieNodeWriter : public PtNodeWriter {
     virtual bool writeNewTerminalPtNodeAndAdvancePosition(const PtNodeParams *const ptNodeParams,
             const UnigramProperty *const unigramProperty, int *const ptNodeWritingPos);
 
-    virtual bool addNewBigramEntry(const PtNodeParams *const sourcePtNodeParams,
-            const PtNodeParams *const targetPtNodeParam, const BigramProperty *const bigramProperty,
-            bool *const outAddedNewBigram);
+    virtual bool addNgramEntry(const WordIdArrayView prevWordIds, const int wordId,
+            const BigramProperty *const bigramProperty, bool *const outAddedNewEntry);
 
-    virtual bool removeBigramEntry(const PtNodeParams *const sourcePtNodeParams,
-            const PtNodeParams *const targetPtNodeParam);
+    virtual bool removeNgramEntry(const WordIdArrayView prevWordIds, const int wordId);
 
     virtual bool updateAllBigramEntriesAndDeleteUselessEntries(
             const PtNodeParams *const sourcePtNodeParams, int *const outBigramEntryCount);
@@ -135,6 +134,7 @@ class Ver4PatriciaTrieNodeWriter : public PtNodeWriter {
     BufferWithExtendableBuffer *const mTrieBuffer;
     Ver4DictBuffers *const mBuffers;
     const HeaderPolicy *const mHeaderPolicy;
+    const PtNodeReader *const mPtNodeReader;
     DynamicPtReadingHelper mReadingHelper;
     Ver4BigramListPolicy *const mBigramPolicy;
     Ver4ShortcutListPolicy *const mShortcutPolicy;

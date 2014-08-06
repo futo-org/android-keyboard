@@ -43,5 +43,19 @@ TEST(IntArrayViewTest, TestIteration) {
     EXPECT_EQ(expectedIndex, intArrayView.size());
 }
 
+TEST(IntArrayViewTest, TestConstructFromArray) {
+    const size_t ARRAY_SIZE = 100;
+    int intArray[ARRAY_SIZE];
+    const auto intArrayView = IntArrayView::fromFixedSizeArray(intArray);
+    EXPECT_EQ(ARRAY_SIZE, intArrayView.size());
+}
+
+TEST(IntArrayViewTest, TestConstructFromObject) {
+    const int object = 10;
+    const auto intArrayView = IntArrayView::fromObject(&object);
+    EXPECT_EQ(1, intArrayView.size());
+    EXPECT_EQ(object, intArrayView[0]);
+}
+
 }  // namespace
 }  // namespace latinime
