@@ -802,20 +802,13 @@ public class BinaryDictEncoderUtils {
         }
 
         MakedictLog.i("Statistics:\n"
-                + "  total file size " + size + "\n"
+                + "  Total file size " + size + "\n"
                 + "  " + ptNodeArrays.size() + " node arrays\n"
                 + "  " + ptNodes + " PtNodes (" + ((float)ptNodes / ptNodeArrays.size())
                         + " PtNodes per node)\n"
-                + "  first terminal at " + firstTerminalAddress + "\n"
-                + "  last terminal at " + lastTerminalAddress + "\n"
+                + "  First terminal at " + firstTerminalAddress + "\n"
+                + "  Last terminal at " + lastTerminalAddress + "\n"
                 + "  PtNode stats : max = " + maxNodes);
-        for (int i = 0; i < ptNodeCounts.length; ++i) {
-            MakedictLog.i("    " + i + " : " + ptNodeCounts[i]);
-        }
-        MakedictLog.i("  Character run stats : max = " + maxRuns);
-        for (int i = 0; i < runCounts.length; ++i) {
-            MakedictLog.i("    " + i + " : " + runCounts[i]);
-        }
     }
 
     /**
