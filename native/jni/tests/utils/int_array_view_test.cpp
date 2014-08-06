@@ -24,14 +24,23 @@ namespace latinime {
 namespace {
 
 TEST(MemoryViewTest, TestAccess) {
-    static const int DATA_SIZE = 10000;
-
     std::vector<int> intVector = {3, 2, 1, 0, -1, -2};
     IntArrayView intArrayView(intVector);
     EXPECT_EQ(intVector.size(), intArrayView.size());
-    for (int i = 0; i < DATA_SIZE; ++i) {
+    for (int i = 0; i < static_cast<int>(intVector.size()); ++i) {
         EXPECT_EQ(intVector[i], intArrayView[i]);
     }
+}
+
+TEST(MemoryViewTest, TestIteration) {
+    std::vector<int> intVector = {3, 2, 1, 0, -1, -2};
+    IntArrayView intArrayView(intVector);
+    std::set<int> intSet(intVector.begin(), intVector.end());
+    for (const int i : intArrayView) {
+        EXPECT_TRUE(intSet.count(i) > 0);
+        intSet.erase(i);
+    }
+    EXPECT_TRUE(intSet.empty());
 }
 
 }  // namespace
