@@ -309,8 +309,8 @@ bool Ver4PatriciaTriePolicy::addNgramEntry(const PrevWordsInfo *const prevWordsI
         return false;
     }
     bool addedNewBigram = false;
-    if (mUpdatingHelper.addBigramWords(prevWordsPtNodePos[0], word1Pos, bigramProperty,
-            &addedNewBigram)) {
+    if (mUpdatingHelper.addNgramEntry(PtNodePosArrayView::fromObject(prevWordsPtNodePos),
+            word1Pos, bigramProperty, &addedNewBigram)) {
         if (addedNewBigram) {
             mBigramCount++;
         }
@@ -350,7 +350,8 @@ bool Ver4PatriciaTriePolicy::removeNgramEntry(const PrevWordsInfo *const prevWor
     if (wordPos == NOT_A_DICT_POS) {
         return false;
     }
-    if (mUpdatingHelper.removeBigramWords(prevWordsPtNodePos[0], wordPos)) {
+    if (mUpdatingHelper.removeNgramEntry(
+            PtNodePosArrayView::fromObject(prevWordsPtNodePos), wordPos)) {
         mBigramCount--;
         return true;
     } else {

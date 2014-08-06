@@ -19,6 +19,7 @@
 
 #include "defines.h"
 #include "suggest/policyimpl/dictionary/structure/pt_common/pt_node_params.h"
+#include "utils/int_array_view.h"
 
 namespace latinime {
 
@@ -42,12 +43,12 @@ class DynamicPtUpdatingHelper {
             const int *const wordCodePoints, const int codePointCount,
             const UnigramProperty *const unigramProperty, bool *const outAddedNewUnigram);
 
-    // Add a bigram relation from word0Pos to word1Pos.
-    bool addBigramWords(const int word0Pos, const int word1Pos,
-            const BigramProperty *const bigramProperty, bool *const outAddedNewBigram);
+    // Add an n-gram entry.
+    bool addNgramEntry(const PtNodePosArrayView prevWordsPtNodePos, const int wordPos,
+            const BigramProperty *const bigramProperty, bool *const outAddedNewEntry);
 
-    // Remove a bigram relation from word0Pos to word1Pos.
-    bool removeBigramWords(const int word0Pos, const int word1Pos);
+    // Remove an n-gram entry.
+    bool removeNgramEntry(const PtNodePosArrayView prevWordsPtNodePos, const int wordPos);
 
     // Add a shortcut target.
     bool addShortcutTarget(const int wordPos, const int *const targetCodePoints,

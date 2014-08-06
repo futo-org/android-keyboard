@@ -292,6 +292,7 @@ bool Ver4PatriciaTriePolicy::addNgramEntry(const PrevWordsInfo *const prevWordsI
     int prevWordsPtNodePos[MAX_PREV_WORD_COUNT_FOR_N_GRAM];
     prevWordsInfo->getPrevWordsTerminalPtNodePos(this, prevWordsPtNodePos,
             false /* tryLowerCaseSearch */);
+    const auto prevWordsPtNodePosView = PtNodePosArrayView::fromFixedSizeArray(prevWordsPtNodePos);
     // TODO: Support N-gram.
     if (prevWordsPtNodePos[0] == NOT_A_DICT_POS) {
         if (prevWordsInfo->isNthPrevWordBeginningOfSentence(1 /* n */)) {
@@ -319,10 +320,10 @@ bool Ver4PatriciaTriePolicy::addNgramEntry(const PrevWordsInfo *const prevWordsI
     if (word1Pos == NOT_A_DICT_POS) {
         return false;
     }
-    bool addedNewBigram = false;
-    if (mUpdatingHelper.addBigramWords(prevWordsPtNodePos[0], word1Pos, bigramProperty,
-            &addedNewBigram)) {
-        if (addedNewBigram) {
+    bool addedNewEntry = false;
+    if (mUpdatingHelper.addNgramEntry(prevWordsPtNodePosView, word1Pos, bigramProperty,
+            &addedNewEntry)) {
+        if (addedNewEntry) {
             mBigramCount++;
         }
         return true;
@@ -352,6 +353,7 @@ bool Ver4PatriciaTriePolicy::removeNgramEntry(const PrevWordsInfo *const prevWor
     int prevWordsPtNodePos[MAX_PREV_WORD_COUNT_FOR_N_GRAM];
     prevWordsInfo->getPrevWordsTerminalPtNodePos(this, prevWordsPtNodePos,
             false /* tryLowerCaseSerch */);
+    const auto prevWordsPtNodePosView = PtNodePosArrayView::fromFixedSizeArray(prevWordsPtNodePos);
     // TODO: Support N-gram.
     if (prevWordsPtNodePos[0] == NOT_A_DICT_POS) {
         return false;
@@ -361,7 +363,7 @@ bool Ver4PatriciaTriePolicy::removeNgramEntry(const PrevWordsInfo *const prevWor
     if (wordPos == NOT_A_DICT_POS) {
         return false;
     }
-    if (mUpdatingHelper.removeBigramWords(prevWordsPtNodePos[0], wordPos)) {
+    if (mUpdatingHelper.removeNgramEntry(prevWordsPtNodePosView, wordPos)) {
         mBigramCount--;
         return true;
     } else {
