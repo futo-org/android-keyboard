@@ -123,9 +123,10 @@ public class Key implements Comparable<Key> {
     public static final int BACKGROUND_TYPE_EMPTY = 0;
     public static final int BACKGROUND_TYPE_NORMAL = 1;
     public static final int BACKGROUND_TYPE_FUNCTIONAL = 2;
-    public static final int BACKGROUND_TYPE_ACTION = 3;
-    public static final int BACKGROUND_TYPE_STICKY_OFF = 4;
-    public static final int BACKGROUND_TYPE_STICKY_ON = 5;
+    public static final int BACKGROUND_TYPE_STICKY_OFF = 3;
+    public static final int BACKGROUND_TYPE_STICKY_ON = 4;
+    public static final int BACKGROUND_TYPE_ACTION = 5;
+    public static final int BACKGROUND_TYPE_CUSTOM_ACTION = 6;
 
     private final int mActionFlags;
     private static final int ACTION_FLAGS_IS_REPEATABLE = 0x01;
@@ -483,9 +484,10 @@ public class Key implements Comparable<Key> {
         case BACKGROUND_TYPE_EMPTY: return "empty";
         case BACKGROUND_TYPE_NORMAL: return "normal";
         case BACKGROUND_TYPE_FUNCTIONAL: return "functional";
-        case BACKGROUND_TYPE_ACTION: return "action";
         case BACKGROUND_TYPE_STICKY_OFF: return "stickyOff";
         case BACKGROUND_TYPE_STICKY_ON: return "stickyOn";
+        case BACKGROUND_TYPE_ACTION: return "action";
+        case BACKGROUND_TYPE_CUSTOM_ACTION: return "customAction";
         default: return null;
         }
     }
@@ -814,47 +816,37 @@ public class Key implements Comparable<Key> {
         return dx * dx + dy * dy;
     }
 
-    private final static int[] KEY_STATE_NORMAL_HIGHLIGHT_ON = {
-        android.R.attr.state_checkable,
-        android.R.attr.state_checked
-    };
+    static class KeyBackgroundState {
+        private final int[] mReleasedState;
+        private final int[] mPressedState;
 
-    private final static int[] KEY_STATE_PRESSED_HIGHLIGHT_ON = {
-        android.R.attr.state_pressed,
-        android.R.attr.state_checkable,
-        android.R.attr.state_checked
-    };
+        private KeyBackgroundState(final int ... attrs) {
+            mReleasedState = attrs;
+            mPressedState = Arrays.copyOf(attrs, attrs.length + 1);
+            mPressedState[attrs.length] = android.R.attr.state_pressed;
+        }
 
-    private final static int[] KEY_STATE_NORMAL_HIGHLIGHT_OFF = {
-        android.R.attr.state_checkable
-    };
+        public int[] getState(final boolean pressed) {
+            return pressed ? mPressedState : mReleasedState;
+        }
 
-    private final static int[] KEY_STATE_PRESSED_HIGHLIGHT_OFF = {
-        android.R.attr.state_pressed,
-        android.R.attr.state_checkable
-    };
-
-    private final static int[] KEY_STATE_NORMAL = {
-    };
-
-    private final static int[] KEY_STATE_PRESSED = {
-        android.R.attr.state_pressed
-    };
-
-    private final static int[] KEY_STATE_EMPTY = {
-        android.R.attr.state_empty
-    };
-
-    // action normal state (with properties)
-    private static final int[] KEY_STATE_ACTIVE_NORMAL = {
-            android.R.attr.state_active
-    };
-
-    // action pressed state (with properties)
-    private static final int[] KEY_STATE_ACTIVE_PRESSED = {
-            android.R.attr.state_active,
-            android.R.attr.state_pressed
-    };
+        public static final KeyBackgroundState[] STATES = {
+            // 0: BACKGROUND_TYPE_EMPTY
+            new KeyBackgroundState(android.R.attr.state_empty),
+            // 1: BACKGROUND_TYPE_NORMAL
+            new KeyBackgroundState(),
+            // 2: BACKGROUND_TYPE_FUNCTIONAL
+            new KeyBackgroundState(),
+            // 3: BACKGROUND_TYPE_STICKY_OFF
+            new KeyBackgroundState(android.R.attr.state_checkable),
+            // 4: BACKGROUND_TYPE_STICKY_ON
+            new KeyBackgroundState(android.R.attr.state_checkable, android.R.attr.state_checked),
+            // 5: BACKGROUND_TYPE_ACTION
+            new KeyBackgroundState(android.R.attr.state_active),
+            // 6: BACKGROUND_TYPE_CUSTOM_ACTION
+            new KeyBackgroundState(android.R.attr.state_active, android.R.attr.state_checked)
+        };
+    }
 
     /**
      * Returns the background drawable for the key, based on the current state and type of the key.
@@ -871,28 +863,8 @@ public class Key implements Comparable<Key> {
         } else {
             background = keyBackground;
         }
-        final int[] stateSet;
-        switch (mBackgroundType) {
-        case BACKGROUND_TYPE_ACTION:
-            stateSet = mPressed ? KEY_STATE_ACTIVE_PRESSED : KEY_STATE_ACTIVE_NORMAL;
-            break;
-        case BACKGROUND_TYPE_STICKY_OFF:
-            stateSet = mPressed ? KEY_STATE_PRESSED_HIGHLIGHT_OFF : KEY_STATE_NORMAL_HIGHLIGHT_OFF;
-            break;
-        case BACKGROUND_TYPE_STICKY_ON:
-            stateSet = mPressed ? KEY_STATE_PRESSED_HIGHLIGHT_ON : KEY_STATE_NORMAL_HIGHLIGHT_ON;
-            break;
-        case BACKGROUND_TYPE_EMPTY:
-            stateSet = mPressed ? KEY_STATE_PRESSED : KEY_STATE_EMPTY;
-            break;
-        case BACKGROUND_TYPE_FUNCTIONAL:
-            stateSet = mPressed ? KEY_STATE_PRESSED : KEY_STATE_NORMAL;
-            break;
-        default: /* BACKGROUND_TYPE_NORMAL */
-            stateSet = mPressed ? KEY_STATE_PRESSED : KEY_STATE_NORMAL;
-            break;
-        }
-        background.setState(stateSet);
+        final int[] state = KeyBackgroundState.STATES[mBackgroundType].getState(mPressed);
+        background.setState(state);
         return background;
     }
 
