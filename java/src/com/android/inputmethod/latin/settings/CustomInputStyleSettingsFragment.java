@@ -63,7 +63,6 @@ public final class CustomInputStyleSettingsFragment extends PreferenceFragment {
     private AlertDialog mSubtypeEnablerNotificationDialog;
     private String mSubtypePreferenceKeyForSubtypeEnabler;
 
-    private static final int MENU_ADD_SUBTYPE = Menu.FIRST;
     private static final String KEY_IS_ADDING_NEW_SUBTYPE = "is_adding_new_subtype";
     private static final String KEY_IS_SUBTYPE_ENABLER_NOTIFICATION_DIALOG_OPEN =
             "is_subtype_enabler_notification_dialog_open";
@@ -581,14 +580,13 @@ public final class CustomInputStyleSettingsFragment extends PreferenceFragment {
 
     @Override
     public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater) {
-        final MenuItem addSubtypeMenu = menu.add(0, MENU_ADD_SUBTYPE, 0, R.string.add_style);
-        addSubtypeMenu.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        inflater.inflate(R.menu.add_style, menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
         final int itemId = item.getItemId();
-        if (itemId == MENU_ADD_SUBTYPE) {
+        if (itemId == R.id.action_add_style) {
             final SubtypePreference newSubtype =
                     SubtypePreference.newIncompleteSubtypePreference(getActivity(), mSubtypeProxy);
             getPreferenceScreen().addPreference(newSubtype);
