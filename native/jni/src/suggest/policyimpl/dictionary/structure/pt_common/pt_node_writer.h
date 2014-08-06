@@ -21,6 +21,7 @@
 
 #include "defines.h"
 #include "suggest/policyimpl/dictionary/structure/pt_common/pt_node_params.h"
+#include "utils/int_array_view.h"
 
 namespace latinime {
 
@@ -70,12 +71,10 @@ class PtNodeWriter {
     virtual bool writeNewTerminalPtNodeAndAdvancePosition(const PtNodeParams *const ptNodeParams,
             const UnigramProperty *const unigramProperty, int *const ptNodeWritingPos) = 0;
 
-    virtual bool addNewBigramEntry(const PtNodeParams *const sourcePtNodeParams,
-            const PtNodeParams *const targetPtNodeParam, const BigramProperty *const bigramProperty,
-            bool *const outAddedNewBigram) = 0;
+    virtual bool addNgramEntry(const WordIdArrayView prevWordIds, const int wordId,
+            const BigramProperty *const bigramProperty, bool *const outAddedNewEntry) = 0;
 
-    virtual bool removeBigramEntry(const PtNodeParams *const sourcePtNodeParams,
-            const PtNodeParams *const targetPtNodeParam) = 0;
+    virtual bool removeNgramEntry(const WordIdArrayView prevWordIds, const int wordId) = 0;
 
     virtual bool updateAllBigramEntriesAndDeleteUselessEntries(
             const PtNodeParams *const sourcePtNodeParams, int *const outBigramEntryCount) = 0;

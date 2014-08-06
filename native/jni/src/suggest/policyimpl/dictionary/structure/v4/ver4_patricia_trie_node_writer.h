@@ -75,12 +75,10 @@ class Ver4PatriciaTrieNodeWriter : public PtNodeWriter {
     virtual bool writeNewTerminalPtNodeAndAdvancePosition(const PtNodeParams *const ptNodeParams,
             const UnigramProperty *const unigramProperty, int *const ptNodeWritingPos);
 
-    virtual bool addNewBigramEntry(const PtNodeParams *const sourcePtNodeParams,
-            const PtNodeParams *const targetPtNodeParam, const BigramProperty *const bigramProperty,
-            bool *const outAddedNewBigram);
+    virtual bool addNgramEntry(const WordIdArrayView prevWordIds, const int wordId,
+            const BigramProperty *const bigramProperty, bool *const outAddedNewEntry);
 
-    virtual bool removeBigramEntry(const PtNodeParams *const sourcePtNodeParams,
-            const PtNodeParams *const targetPtNodeParam);
+    virtual bool removeNgramEntry(const WordIdArrayView prevWordIds, const int wordId);
 
     virtual bool updateAllBigramEntriesAndDeleteUselessEntries(
             const PtNodeParams *const sourcePtNodeParams, int *const outBigramEntryCount);

@@ -84,23 +84,39 @@ bool DynamicPtUpdatingHelper::addUnigramWord(
             unigramProperty, &pos);
 }
 
-bool DynamicPtUpdatingHelper::addBigramWords(const int word0Pos, const int word1Pos,
-        const BigramProperty *const bigramProperty, bool *const outAddedNewBigram) {
-    const PtNodeParams sourcePtNodeParams(
-            mPtNodeReader->fetchPtNodeParamsInBufferFromPtNodePos(word0Pos));
-    const PtNodeParams targetPtNodeParams(
-            mPtNodeReader->fetchPtNodeParamsInBufferFromPtNodePos(word1Pos));
-    return mPtNodeWriter->addNewBigramEntry(&sourcePtNodeParams, &targetPtNodeParams,
-            bigramProperty, outAddedNewBigram);
+bool DynamicPtUpdatingHelper::addNgramEntry(const PtNodePosArrayView prevWordsPtNodePos,
+        const int wordPos, const BigramProperty *const bigramProperty,
+        bool *const outAddedNewEntry) {
+    if (prevWordsPtNodePos.empty()) {
+        return false;
+    }
+    ASSERT(prevWordsPtNodePos.size() <= MAX_PREV_WORD_COUNT_FOR_N_GRAM);
+    int prevWordTerminalIds[MAX_PREV_WORD_COUNT_FOR_N_GRAM];
+    for (size_t i = 0; i < prevWordsPtNodePos.size(); ++i) {
+        prevWordTerminalIds[i] = mPtNodeReader->fetchPtNodeParamsInBufferFromPtNodePos(
+                prevWordsPtNodePos[i]).getTerminalId();
+    }
+    const WordIdArrayView prevWordIds(prevWordTerminalIds, prevWordsPtNodePos.size());
+    const int wordId =
+            mPtNodeReader->fetchPtNodeParamsInBufferFromPtNodePos(wordPos).getTerminalId();
+    return mPtNodeWriter->addNgramEntry(prevWordIds, wordId, bigramProperty, outAddedNewEntry);
 }
 
-// Remove a bigram relation from word0Pos to word1Pos.
-bool DynamicPtUpdatingHelper::removeBigramWords(const int word0Pos, const int word1Pos) {
-    const PtNodeParams sourcePtNodeParams(
-            mPtNodeReader->fetchPtNodeParamsInBufferFromPtNodePos(word0Pos));
-    const PtNodeParams targetPtNodeParams(
-            mPtNodeReader->fetchPtNodeParamsInBufferFromPtNodePos(word1Pos));
-    return mPtNodeWriter->removeBigramEntry(&sourcePtNodeParams, &targetPtNodeParams);
+bool DynamicPtUpdatingHelper::removeNgramEntry(const PtNodePosArrayView prevWordsPtNodePos,
+        const int wordPos) {
+    if (prevWordsPtNodePos.empty()) {
+        return false;
+    }
+    ASSERT(prevWordsPtNodePos.size() <= MAX_PREV_WORD_COUNT_FOR_N_GRAM);
+    int prevWordTerminalIds[MAX_PREV_WORD_COUNT_FOR_N_GRAM];
+    for (size_t i = 0; i < prevWordsPtNodePos.size(); ++i) {
+        prevWordTerminalIds[i] = mPtNodeReader->fetchPtNodeParamsInBufferFromPtNodePos(
+                prevWordsPtNodePos[i]).getTerminalId();
+    }
+    const WordIdArrayView prevWordIds(prevWordTerminalIds, prevWordsPtNodePos.size());
+    const int wordId =
+            mPtNodeReader->fetchPtNodeParamsInBufferFromPtNodePos(wordPos).getTerminalId();
+    return mPtNodeWriter->removeNgramEntry(prevWordIds, wordId);
 }
 
 bool DynamicPtUpdatingHelper::addShortcutTarget(const int wordPos,
