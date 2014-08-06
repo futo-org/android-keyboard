@@ -398,6 +398,7 @@
                 latin:styleName="enterKeyStyle"
                 latin:keySpec="dummy_label|!code/key_enter"
                 latin:keyLabelFlags="fromCustomActionLabel"
+                latin:backgroundType="customAction"
                 latin:parentStyle="defaultEnterKeyStyle" />
         </case>
         <!-- imeAction is either actionNone or actionUnspecified. -->
