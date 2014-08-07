@@ -16,7 +16,7 @@
 
 package com.android.inputmethod.keyboard.layout.tests;
 
-import android.test.suitebuilder.annotation.SmallTest;
+import android.test.suitebuilder.annotation.Suppress;
 
 import com.android.inputmethod.keyboard.layout.LayoutBase;
 import com.android.inputmethod.keyboard.layout.Malayalam;
@@ -25,9 +25,9 @@ import com.android.inputmethod.keyboard.layout.Malayalam.MalayalamCustomizer;
 import java.util.Locale;
 
 /**
- * ta_IN: Malayalam (India)/malayalam
+ * ml_IN: Malayalam (India)/malayalam
  */
-@SmallTest
+@Suppress
 public final class TestsMalayalamIN extends LayoutTestsBase {
     private static final Locale LOCALE = new Locale("ml", "IN");
     private static final LayoutBase LAYOUT = new Malayalam(new MalayalamCustomizer(LOCALE));
