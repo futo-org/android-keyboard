@@ -43,12 +43,10 @@
 
     <fraction name="config_key_preview_text_ratio">90%</fraction>
     <fraction name="config_key_letter_ratio">65%</fraction>
-    <fraction name="config_key_large_letter_ratio_holo">74%</fraction>
-    <fraction name="config_key_large_letter_ratio_lxx">90%</fraction>
+    <fraction name="config_key_large_letter_ratio">74%</fraction>
     <fraction name="config_key_label_ratio">40%</fraction>
     <fraction name="config_key_hint_letter_ratio">30%</fraction>
-    <fraction name="config_key_hint_label_ratio_holo">52%</fraction>
-    <fraction name="config_key_hint_label_ratio_lxx">30%</fraction>
+    <fraction name="config_key_hint_label_ratio">52%</fraction>
     <fraction name="config_key_shifted_letter_hint_ratio">40%</fraction>
     <fraction name="config_language_on_spacebar_text_ratio">40.000%</fraction>
 
