@@ -38,13 +38,11 @@
         <!-- TODO: Apply default {@link KeyboardTheme} to {@link InputTestBase} and remove this. -->
         <item name="keyBackground">@drawable/btn_keyboard_key_klp</item>
         <item name="keyLetterSize">@fraction/config_key_letter_ratio</item>
-        <item name="keyLargeLetterRatio">@fraction/config_key_large_letter_ratio</item>
+        <item name="keyLargeLetterRatio">@fraction/config_key_large_letter_ratio_holo</item>
         <item name="keyLabelSize">@fraction/config_key_label_ratio</item>
         <item name="keyHintLetterRatio">@fraction/config_key_hint_letter_ratio</item>
-        <item name="keyHintLabelRatio">@fraction/config_key_hint_label_ratio</item>
+        <item name="keyHintLabelRatio">@fraction/config_key_hint_label_ratio_holo</item>
         <item name="keyShiftedLetterHintRatio">@fraction/config_key_shifted_letter_hint_ratio</item>
-        <item name="keyLabelOffCenterRatio">-175%</item>
-        <item name="keyHintLabelOffCenterRatio">200%</item>
         <item name="keyTypeface">normal</item>
         <!-- A negative value to disable key text shadow layer. -->
         <item name="keyTextShadowRadius">-1.0</item>
