@@ -16,7 +16,7 @@
 
 package com.android.inputmethod.keyboard.layout.tests;
 
-import android.test.suitebuilder.annotation.SmallTest;
+import android.test.suitebuilder.annotation.Suppress;
 
 import com.android.inputmethod.keyboard.layout.Kannada;
 import com.android.inputmethod.keyboard.layout.Kannada.KannadaCustomizer;
@@ -27,7 +27,7 @@ import java.util.Locale;
 /**
  * kn_IN: Kannada (India)/kannada
  */
-@SmallTest
+@Suppress
 public final class TestsKannadaIN extends LayoutTestsBase {
     private static final Locale LOCALE = new Locale("kn", "IN");
     private static final LayoutBase LAYOUT = new Kannada(new KannadaCustomizer(LOCALE));

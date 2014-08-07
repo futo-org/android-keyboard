@@ -178,6 +178,7 @@
     />
     <!-- TODO: This bengali keyboard is a preliminary layout.
                This isn't based on the final specification. -->
+    <!--
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
             android:subtypeId="0xbff5986c"
@@ -186,6 +187,7 @@
             android:imeSubtypeExtraValue="KeyboardLayoutSet=bengali,EmojiCapable"
             android:isAsciiCapable="false"
     />
+    -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
             android:subtypeId="0xd2e520d5"
@@ -446,6 +448,7 @@
     />
     <!-- TODO: This kannada keyboard is a preliminary layout.
                This isn't based on the final specification. -->
+    <!--
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
             android:subtypeId="0x8c78064f"
@@ -454,6 +457,7 @@
             android:imeSubtypeExtraValue="KeyboardLayoutSet=kannada,EmojiCapable"
             android:isAsciiCapable="false"
     />
+    -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
             android:subtypeId="0x2e391c04"
@@ -496,6 +500,7 @@
     />
     <!-- TODO: This malayalam keyboard is a preliminary layout.
                This isn't based on the final specification. -->
+    <!--
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
             android:subtypeId="0xc182ebd4"
@@ -504,6 +509,7 @@
             android:imeSubtypeExtraValue="KeyboardLayoutSet=malayalam,EmojiCapable"
             android:isAsciiCapable="false"
     />
+    -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
             android:subtypeId="0xcdcfc3ab"
@@ -514,6 +520,7 @@
     />
     <!-- TODO: This marathi keyboard is a preliminary layout.
                This isn't based on the final specification. -->
+    <!--
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
             android:subtypeId="0x747b9f03"
@@ -522,6 +529,7 @@
             android:imeSubtypeExtraValue="KeyboardLayoutSet=marathi,EmojiCapable"
             android:isAsciiCapable="false"
     />
+    -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
             android:subtypeId="0x84c87c61"
@@ -532,6 +540,7 @@
     />
     <!-- TODO: This Myanmar keyboard is a preliminary layout.
                This isn't based on the final specification. -->
+    <!--
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
             android:subtypeId="0xea266ea4"
@@ -540,6 +549,7 @@
             android:imeSubtypeExtraValue="KeyboardLayoutSet=myanmar,EmojiCapable,CombiningRules=MyanmarReordering"
             android:isAsciiCapable="false"
     />
+    -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
             android:subtypeId="0x3f12ee14"
@@ -622,6 +632,7 @@
     />
     <!-- TODO: This sinhala keyboard is a preliminary layout.
                This isn't based on the final specification. -->
+    <!--
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
             android:subtypeId="0x5c6b3bde"
@@ -630,6 +641,7 @@
             android:imeSubtypeExtraValue="KeyboardLayoutSet=sinhala,EmojiCapable"
             android:isAsciiCapable="false"
     />
+    -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
             android:subtypeId="0x8e94d413"
@@ -690,6 +702,7 @@
     />
     <!-- TODO: This tamil keyboard is a preliminary layout.
                This isn't based on the final specification. -->
+    <!--
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
             android:subtypeId="0x67acea2a"
@@ -698,8 +711,10 @@
             android:imeSubtypeExtraValue="KeyboardLayoutSet=tamil,EmojiCapable"
             android:isAsciiCapable="false"
     />
+    -->
     <!-- TODO: This telugu keyboard is a preliminary layout.
                This isn't based on the final specification. -->
+    <!--
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
             android:subtypeId="0x1e177389"
@@ -708,6 +723,7 @@
             android:imeSubtypeExtraValue="KeyboardLayoutSet=telugu,EmojiCapable"
             android:isAsciiCapable="false"
     />
+    -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
             android:subtypeId="0x1f94d5d4"

@@ -16,7 +16,7 @@
 
 package com.android.inputmethod.keyboard.layout.tests;
 
-import android.test.suitebuilder.annotation.SmallTest;
+import android.test.suitebuilder.annotation.Suppress;
 
 import com.android.inputmethod.keyboard.layout.LayoutBase;
 import com.android.inputmethod.keyboard.layout.Telugu;
@@ -27,7 +27,7 @@ import java.util.Locale;
 /**
  * te_IN: Telugu (India)/telugu
  */
-@SmallTest
+@Suppress
 public final class TestsTeluguIN extends LayoutTestsBase {
     private static final Locale LOCALE = new Locale("te", "IN");
     private static final LayoutBase LAYOUT = new Telugu(new TeluguCustomizer(LOCALE));

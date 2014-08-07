@@ -16,7 +16,7 @@
 
 package com.android.inputmethod.keyboard.layout.tests;
 
-import android.test.suitebuilder.annotation.SmallTest;
+import android.test.suitebuilder.annotation.Suppress;
 
 import com.android.inputmethod.keyboard.layout.LayoutBase;
 import com.android.inputmethod.keyboard.layout.Tamil;
@@ -27,7 +27,7 @@ import java.util.Locale;
 /**
  * ta_IN: Tamil (India)/tamil
  */
-@SmallTest
+@Suppress
 public final class TestsTamilIN extends LayoutTestsBase {
     private static final Locale LOCALE = new Locale("ta", "IN");
     private static final LayoutBase LAYOUT = new Tamil(new TamilCustomizer(LOCALE));
