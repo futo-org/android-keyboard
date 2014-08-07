@@ -138,8 +138,4 @@
         <item name="android:singleLine">true</item>
         <item name="android:ellipsize">none</item>
     </style>
-    <style name="MoreKeysKeyboardAnimation">
-        <item name="android:windowEnterAnimation">@anim/more_keys_keyboard_fadein</item>
-        <item name="android:windowExitAnimation">@anim/more_keys_keyboard_fadeout</item>
-    </style>
 </resources>
