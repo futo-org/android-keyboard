@@ -26,6 +26,7 @@ public final class KeyDrawParams {
     public int mLetterSize;
     public int mLabelSize;
     public int mLargeLetterSize;
+    public int mLargeLabelSize;
     public int mHintLetterSize;
     public int mShiftedLetterHintSize;
     public int mHintLabelSize;
@@ -55,6 +56,7 @@ public final class KeyDrawParams {
         mLetterSize = copyFrom.mLetterSize;
         mLabelSize = copyFrom.mLabelSize;
         mLargeLetterSize = copyFrom.mLargeLetterSize;
+        mLargeLabelSize = copyFrom.mLargeLabelSize;
         mHintLetterSize = copyFrom.mHintLetterSize;
         mShiftedLetterHintSize = copyFrom.mShiftedLetterHintSize;
         mHintLabelSize = copyFrom.mHintLabelSize;
@@ -90,6 +92,7 @@ public final class KeyDrawParams {
                 attr.mLetterSize, attr.mLetterRatio, mLetterSize);
         mLabelSize = selectTextSizeFromDimensionOrRatio(keyHeight,
                 attr.mLabelSize, attr.mLabelRatio, mLabelSize);
+        mLargeLabelSize = selectTextSize(keyHeight, attr.mLargeLabelRatio, mLargeLabelSize);
         mLargeLetterSize = selectTextSize(keyHeight, attr.mLargeLetterRatio, mLargeLetterSize);
         mHintLetterSize = selectTextSize(keyHeight, attr.mHintLetterRatio, mHintLetterSize);
         mShiftedLetterHintSize = selectTextSize(keyHeight,
