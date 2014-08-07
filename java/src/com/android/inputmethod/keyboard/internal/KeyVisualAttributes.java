@@ -31,7 +31,6 @@ public final class KeyVisualAttributes {
     public final float mLabelRatio;
     public final int mLabelSize;
     public final float mLargeLetterRatio;
-    public final float mLargeLabelRatio;
     public final float mHintLetterRatio;
     public final float mShiftedLetterHintRatio;
     public final float mHintLabelRatio;
@@ -56,7 +55,6 @@ public final class KeyVisualAttributes {
         R.styleable.Keyboard_Key_keyLetterSize,
         R.styleable.Keyboard_Key_keyLabelSize,
         R.styleable.Keyboard_Key_keyLargeLetterRatio,
-        R.styleable.Keyboard_Key_keyLargeLabelRatio,
         R.styleable.Keyboard_Key_keyHintLetterRatio,
         R.styleable.Keyboard_Key_keyShiftedLetterHintRatio,
         R.styleable.Keyboard_Key_keyHintLabelRatio,
@@ -113,8 +111,6 @@ public final class KeyVisualAttributes {
                 R.styleable.Keyboard_Key_keyLabelSize);
         mLargeLetterRatio = ResourceUtils.getFraction(keyAttr,
                 R.styleable.Keyboard_Key_keyLargeLetterRatio);
-        mLargeLabelRatio = ResourceUtils.getFraction(keyAttr,
-                R.styleable.Keyboard_Key_keyLargeLabelRatio);
         mHintLetterRatio = ResourceUtils.getFraction(keyAttr,
                 R.styleable.Keyboard_Key_keyHintLetterRatio);
         mShiftedLetterHintRatio = ResourceUtils.getFraction(keyAttr,
