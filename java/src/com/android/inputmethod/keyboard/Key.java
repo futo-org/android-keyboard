@@ -59,7 +59,7 @@ public class Key implements Comparable<Key> {
     /** Flags of the label */
     private final int mLabelFlags;
     private static final int LABEL_FLAGS_ALIGN_ICON_TO_BOTTOM = 0x04;
-    private static final int LABEL_FLAGS_ALIGN_LEFT_OF_CENTER = 0x08;
+    private static final int LABEL_FLAGS_ALIGN_LABEL_OFF_CENTER = 0x08;
     // Font typeface specification.
     private static final int LABEL_FLAGS_FONT_MASK = 0x30;
     private static final int LABEL_FLAGS_FONT_NORMAL = 0x10;
@@ -648,8 +648,8 @@ public class Key implements Comparable<Key> {
         return (mLabelFlags & LABEL_FLAGS_ALIGN_ICON_TO_BOTTOM) != 0;
     }
 
-    public final boolean isAlignLeftOfCenter() {
-        return (mLabelFlags & LABEL_FLAGS_ALIGN_LEFT_OF_CENTER) != 0;
+    public final boolean isAlignLabelOffCenter() {
+        return (mLabelFlags & LABEL_FLAGS_ALIGN_LABEL_OFF_CENTER) != 0;
     }
 
     public final boolean hasPopupHint() {
