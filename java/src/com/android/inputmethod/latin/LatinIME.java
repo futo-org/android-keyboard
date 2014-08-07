@@ -1232,26 +1232,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mSubtypeState.switchSubtype(token, mRichImm);
     }
 
-    // TODO: Instead of checking for alphabetic keyboard here, separate keycodes for
-    // alphabetic shift and shift while in symbol layout and get rid of this method.
-    private int getCodePointForKeyboard(final int codePoint) {
-        if (Constants.CODE_SHIFT == codePoint) {
-            final Keyboard currentKeyboard = mKeyboardSwitcher.getKeyboard();
-            if (null != currentKeyboard && currentKeyboard.mId.isAlphabetKeyboard()) {
-                return codePoint;
-            } else {
-                return Constants.CODE_SYMBOL_SHIFT;
-            }
-        } else {
-            return codePoint;
-        }
-    }
-
     // Implementation of {@link KeyboardActionListener}.
     @Override
     public void onCodeInput(final int codePoint, final int x, final int y,
             final boolean isKeyRepeat) {
-        // TODO: this processing does not belong inside LatinIME, the caller should be doing this.
         final MainKeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
         // x and y include some padding, but everything down the line (especially native
         // code) needs the coordinates in the keyboard frame.
@@ -1260,23 +1244,30 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // this transformation, it should be done already before calling onCodeInput.
         final int keyX = mainKeyboardView.getKeyX(x);
         final int keyY = mainKeyboardView.getKeyY(y);
-        final Event event = createSoftwareKeypressEvent(getCodePointForKeyboard(codePoint),
-                keyX, keyY, isKeyRepeat);
-        onEvent(event);
-    }
-
-    // This method is public for testability of LatinIME, but also in the future it should
-    // completely replace #onCodeInput.
-    public void onEvent(final Event event) {
-        if (Constants.CODE_SHORTCUT == event.mCodePoint) {
-            mSubtypeSwitcher.switchToShortcutIME(this);
+        final int codeToSend;
+        if (Constants.CODE_SHIFT == codePoint) {
+            // TODO: Instead of checking for alphabetic keyboard here, separate keycodes for
+            // alphabetic shift and shift while in symbol layout.
+            final Keyboard currentKeyboard = mKeyboardSwitcher.getKeyboard();
+            if (null != currentKeyboard && currentKeyboard.mId.isAlphabetKeyboard()) {
+                codeToSend = codePoint;
+            } else {
+                codeToSend = Constants.CODE_SYMBOL_SHIFT;
+            }
+        } else {
+            codeToSend = codePoint;
         }
+        if (Constants.CODE_SHORTCUT == codePoint) {
+            mSubtypeSwitcher.switchToShortcutIME(this);
+            // Still call the *#onCodeInput methods for readability.
+        }
+        final Event event = createSoftwareKeypressEvent(codeToSend, keyX, keyY, isKeyRepeat);
         final InputTransaction completeInputTransaction =
                 mInputLogic.onCodeInput(mSettings.getCurrent(), event,
                         mKeyboardSwitcher.getKeyboardShiftMode(),
                         mKeyboardSwitcher.getCurrentKeyboardScriptId(), mHandler);
         updateStateAfterInputTransaction(completeInputTransaction);
-        mKeyboardSwitcher.onCodeInput(event.mCodePoint, getCurrentAutoCapsState(),
+        mKeyboardSwitcher.onCodeInput(codePoint, getCurrentAutoCapsState(),
                 getCurrentRecapitalizeState());
     }
 
