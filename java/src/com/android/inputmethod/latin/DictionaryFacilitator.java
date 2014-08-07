@@ -468,7 +468,9 @@ public class DictionaryFacilitator {
         // We don't add words with 0-frequency (assuming they would be profanity etc.).
         final boolean isValid = maxFreq > 0;
         UserHistoryDictionary.addToDictionary(userHistoryDictionary, prevWordsInfo, secondWord,
-                isValid, timeStampInSeconds, mDistracterFilter);
+                isValid, timeStampInSeconds,
+                new DistracterFilterCheckingIsInDictionary(
+                        mDistracterFilter, userHistoryDictionary));
     }
 
     private void removeWord(final String dictName, final String word) {
