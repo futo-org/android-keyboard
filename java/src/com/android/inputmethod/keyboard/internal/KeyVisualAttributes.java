@@ -48,8 +48,6 @@ public final class KeyVisualAttributes {
     public final int mPreviewTextColor;
 
     public final float mHintLabelVerticalAdjustment;
-    public final float mLabelOffCenterRatio;
-    public final float mHintLabelOffCenterRatio;
 
     private static final int[] VISUAL_ATTRIBUTE_IDS = {
         R.styleable.Keyboard_Key_keyTypeface,
@@ -71,8 +69,6 @@ public final class KeyVisualAttributes {
         R.styleable.Keyboard_Key_keyShiftedLetterHintActivatedColor,
         R.styleable.Keyboard_Key_keyPreviewTextColor,
         R.styleable.Keyboard_Key_keyHintLabelVerticalAdjustment,
-        R.styleable.Keyboard_Key_keyLabelOffCenterRatio,
-        R.styleable.Keyboard_Key_keyHintLabelOffCenterRatio
     };
     private static final SparseIntArray sVisualAttributeIds = new SparseIntArray();
     private static final int ATTR_DEFINED = 1;
@@ -139,9 +135,5 @@ public final class KeyVisualAttributes {
 
         mHintLabelVerticalAdjustment = ResourceUtils.getFraction(keyAttr,
                 R.styleable.Keyboard_Key_keyHintLabelVerticalAdjustment, 0.0f);
-        mLabelOffCenterRatio = ResourceUtils.getFraction(keyAttr,
-                R.styleable.Keyboard_Key_keyLabelOffCenterRatio, 0.0f);
-        mHintLabelOffCenterRatio = ResourceUtils.getFraction(keyAttr,
-                R.styleable.Keyboard_Key_keyHintLabelOffCenterRatio, 0.0f);
     }
 }
