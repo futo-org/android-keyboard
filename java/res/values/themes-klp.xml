@@ -35,15 +35,21 @@
     >
         <!-- This should be aligned with KeyboardSwitcher.KEYBOARD_THEMES[] -->
         <item name="themeId">0</item>
+        <item name="keyboardTopPadding">@fraction/config_keyboard_top_padding_holo</item>
+        <item name="keyboardBottomPadding">@fraction/config_keyboard_bottom_padding_holo</item>
+        <item name="horizontalGap">@fraction/config_key_horizontal_gap_holo</item>
+        <item name="verticalGap">@fraction/config_key_vertical_gap_holo</item>
+        <item name="touchPositionCorrectionData">@array/touch_position_correction_data_holo</item>
     </style>
     <style
         name="KeyboardView.KLP"
-        parent="KeyboardView.Holo"
+        parent="KeyboardView"
     >
         <item name="android:background">@drawable/keyboard_background_holo</item>
         <item name="keyBackground">@drawable/btn_keyboard_key_klp</item>
         <item name="functionalKeyBackground">@drawable/btn_keyboard_key_functional_klp</item>
         <item name="spacebarBackground">@drawable/btn_keyboard_spacebar_klp</item>
+        <item name="keyTypeface">bold</item>
         <item name="keyTextColor">@color/key_text_color_holo</item>
         <item name="keyTextInactivatedColor">@color/key_text_inactivated_color_holo</item>
         <item name="functionalTextColor">@color/key_text_color_holo</item>
@@ -52,6 +58,10 @@
         <item name="keyShiftedLetterHintInactivatedColor">@color/key_shifted_letter_hint_inactivated_color_holo</item>
         <item name="keyShiftedLetterHintActivatedColor">@color/key_shifted_letter_hint_activated_color_holo</item>
         <item name="keyPreviewTextColor">@color/key_text_color_holo</item>
+        <!-- A negative value to disable key text shadow layer. -->
+        <item name="keyTextShadowRadius">-1.0</item>
+        <!-- U+2026: "…" HORIZONTAL ELLIPSIS -->
+        <item name="keyPopupHintLetter">&#x2026;</item>
     </style>
     <style
         name="MainKeyboardView.KLP"
