@@ -456,9 +456,13 @@ public class KeyboardView extends View {
                 iconWidth = Math.min(icon.getIntrinsicWidth(), keyWidth);
             }
             final int iconHeight = icon.getIntrinsicHeight();
-            // Align center.
-            final int iconY = (keyHeight - iconHeight) / 2;
-            final int iconX = (keyWidth - iconWidth) / 2;
+            final int iconY;
+            if (key.isAlignIconToBottom()) {
+                iconY = keyHeight - iconHeight;
+            } else {
+                iconY = (keyHeight - iconHeight) / 2; // Align vertically center.
+            }
+            final int iconX = (keyWidth - iconWidth) / 2; // Align horizontally center.
             drawIcon(canvas, icon, iconX, iconY, iconWidth, iconHeight);
         }
 
