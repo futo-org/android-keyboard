@@ -35,15 +35,22 @@
     >
         <!-- This should be aligned with KeyboardSwitcher.KEYBOARD_THEMES[] -->
         <item name="themeId">3</item>
+        <item name="keyboardTopPadding">@fraction/config_keyboard_top_padding_holo</item>
+        <item name="keyboardBottomPadding">@fraction/config_keyboard_bottom_padding_holo</item>
+        <item name="horizontalGap">@fraction/config_key_horizontal_gap_holo</item>
+        <item name="verticalGap">@fraction/config_key_vertical_gap_holo</item>
+        <item name="touchPositionCorrectionData">@array/touch_position_correction_data_holo</item>
     </style>
     <style
         name="KeyboardView.LXX_Light"
-        parent="KeyboardView.LXX"
+        parent="KeyboardView"
     >
         <item name="android:background">@drawable/keyboard_background_lxx_light</item>
         <item name="keyBackground">@drawable/btn_keyboard_key_lxx_light</item>
         <item name="functionalKeyBackground">@drawable/btn_keyboard_key_functional_lxx_light</item>
         <item name="spacebarBackground">@drawable/btn_keyboard_spacebar_lxx_light</item>
+        <item name="spacebarIconWidthRatio">0.9</item>
+        <item name="keyTypeface">normal</item>
         <item name="keyTextColor">@color/key_text_color_lxx_light</item>
         <item name="keyTextInactivatedColor">@color/key_text_inactive_color_lxx_light</item>
         <item name="functionalTextColor">@color/key_functional_text_color_lxx_light</item>
@@ -52,6 +59,9 @@
         <item name="keyShiftedLetterHintInactivatedColor">@color/key_text_inactive_color_lxx_light</item>
         <item name="keyShiftedLetterHintActivatedColor">@color/key_text_color_lxx_light</item>
         <item name="keyPreviewTextColor">@color/key_text_color_lxx_light</item>
+        <!-- A negative value to disable key text shadow layer. -->
+        <item name="keyTextShadowRadius">-1.0</item>
+        <item name="keyPopupHintLetter"></item> <!-- No popup hint letter -->
     </style>
     <style
         name="MainKeyboardView.LXX_Light"
