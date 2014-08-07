@@ -22,15 +22,18 @@
     <style name="KeyboardIcons" />
     <!-- Default theme values -->
     <style name="Keyboard">
-        <item name="touchPositionCorrectionData">@array/touch_position_correction_data_default</item>
         <item name="rowHeight">25%p</item>
-        <item name="moreKeysTemplate">@xml/kbd_more_keys_keyboard_template</item>
+        <item name="horizontalGap">@fraction/config_key_horizontal_gap_holo</item>
+        <item name="verticalGap">@fraction/config_key_vertical_gap_holo</item>
+        <item name="touchPositionCorrectionData">@array/touch_position_correction_data_holo</item>
+        <item name="keyboardTopPadding">@fraction/config_keyboard_top_padding_holo</item>
+        <item name="keyboardBottomPadding">@fraction/config_keyboard_bottom_padding_holo</item>
         <item name="keyboardLeftPadding">@fraction/config_keyboard_left_padding</item>
         <item name="keyboardRightPadding">@fraction/config_keyboard_right_padding</item>
+        <item name="moreKeysTemplate">@xml/kbd_more_keys_keyboard_template</item>
         <item name="maxMoreKeysColumn">@integer/config_max_more_keys_column</item>
     </style>
     <style name="KeyboardView">
-        <item name="keyBackground">@drawable/btn_keyboard_key_klp</item>
         <item name="keyLetterSize">@fraction/config_key_letter_ratio</item>
         <item name="keyLargeLetterRatio">@fraction/config_key_large_letter_ratio</item>
         <item name="keyLabelSize">@fraction/config_key_label_ratio</item>
@@ -39,6 +42,8 @@
         <item name="keyHintLabelRatio">@fraction/config_key_hint_label_ratio</item>
         <item name="keyShiftedLetterHintRatio">@fraction/config_key_shifted_letter_hint_ratio</item>
         <item name="keyTypeface">normal</item>
+        <!-- A negative value to disable key text shadow layer. -->
+        <item name="keyTextShadowRadius">-1.0</item>
         <item name="keyHintLetterPadding">@dimen/config_key_hint_letter_padding</item>
         <item name="keyPopupHintLetterPadding">@dimen/config_key_popup_hint_letter_padding</item>
         <item name="keyShiftedLetterHintPadding">@dimen/config_key_shifted_letter_hint_padding</item>
