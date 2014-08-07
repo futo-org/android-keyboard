@@ -48,6 +48,7 @@ import java.util.HashSet;
  * @attr ref R.styleable#KeyboardView_functionalKeyBackground
  * @attr ref R.styleable#KeyboardView_spacebarBackground
  * @attr ref R.styleable#KeyboardView_spacebarIconWidthRatio
+ * @attr ref R.styleable#Keyboard_Key_keyLabelFlags
  * @attr ref R.styleable#KeyboardView_keyHintLetterPadding
  * @attr ref R.styleable#KeyboardView_keyPopupHintLetter
  * @attr ref R.styleable#KeyboardView_keyPopupHintLetterPadding
@@ -62,6 +63,8 @@ import java.util.HashSet;
  * @attr ref R.styleable#Keyboard_Key_keyHintLetterRatio
  * @attr ref R.styleable#Keyboard_Key_keyShiftedLetterHintRatio
  * @attr ref R.styleable#Keyboard_Key_keyHintLabelRatio
+ * @attr ref R.styleable#Keyboard_Key_keyLabelOffCenterRatio
+ * @attr ref R.styleable#Keyboard_Key_keyHintLabelOffCenterRatio
  * @attr ref R.styleable#Keyboard_Key_keyPreviewTextRatio
  * @attr ref R.styleable#Keyboard_Key_keyTextColor
  * @attr ref R.styleable#Keyboard_Key_keyTextColorDisabled
@@ -75,6 +78,9 @@ import java.util.HashSet;
 public class KeyboardView extends View {
     // XML attributes
     private final KeyVisualAttributes mKeyVisualAttributes;
+    // Default keyLabelFlags from {@link KeyboardTheme}.
+    // Currently only "alignHintLabelToBottom" is supported.
+    private final int mDefaultKeyLabelFlags;
     private final float mKeyHintLetterPadding;
     private final String mKeyPopupHintLetter;
     private final float mKeyPopupHintLetterPadding;
@@ -146,6 +152,7 @@ public class KeyboardView extends View {
 
         final TypedArray keyAttr = context.obtainStyledAttributes(attrs,
                 R.styleable.Keyboard_Key, defStyle, R.style.KeyboardView);
+        mDefaultKeyLabelFlags = keyAttr.getInt(R.styleable.Keyboard_Key_keyLabelFlags, 0);
         mKeyVisualAttributes = KeyVisualAttributes.newInstance(keyAttr);
         keyAttr.recycle();
 
@@ -357,7 +364,8 @@ public class KeyboardView extends View {
 
         // Draw key label.
         final Drawable icon = key.getIcon(mKeyboard.mIconsSet, params.mAnimAlpha);
-        float positionX = centerX;
+        float labelX = centerX;
+        float labelBaseline = centerY;
         final String label = key.getLabel();
         if (label != null) {
             paint.setTypeface(key.selectTypeface(params));
@@ -366,15 +374,15 @@ public class KeyboardView extends View {
             final float labelCharWidth = TypefaceUtils.getReferenceCharWidth(paint);
 
             // Vertical label text alignment.
-            final float baseline = centerY + labelCharHeight / 2.0f;
+            labelBaseline = centerY + labelCharHeight / 2.0f;
 
             // Horizontal label text alignment
             if (key.isAlignLabelOffCenter()) {
                 // The label is placed off center of the key. Used mainly on "phone number" layout.
-                positionX = centerX + params.mLabelOffCenterRatio * labelCharWidth;
+                labelX = centerX + params.mLabelOffCenterRatio * labelCharWidth;
                 paint.setTextAlign(Align.LEFT);
             } else {
-                positionX = centerX;
+                labelX = centerX;
                 paint.setTextAlign(Align.CENTER);
             }
             if (key.needsAutoXScale()) {
@@ -402,7 +410,7 @@ public class KeyboardView extends View {
                 paint.clearShadowLayer();
             }
             blendAlpha(paint, params.mAnimAlpha);
-            canvas.drawText(label, 0, label.length(), positionX, baseline, paint);
+            canvas.drawText(label, 0, label.length(), labelX, labelBaseline, paint);
             // Turn off drop shadow and reset x-scale.
             paint.clearShadowLayer();
             paint.setTextScaleX(1.0f);
@@ -418,19 +426,22 @@ public class KeyboardView extends View {
             blendAlpha(paint, params.mAnimAlpha);
             final float labelCharHeight = TypefaceUtils.getReferenceCharHeight(paint);
             final float labelCharWidth = TypefaceUtils.getReferenceCharWidth(paint);
-            final float adjustmentY = params.mHintLabelVerticalAdjustment * labelCharHeight;
-            final float hintX, hintY;
+            final float hintX, hintBaseline;
             if (key.hasHintLabel()) {
                 // The hint label is placed just right of the key label. Used mainly on
                 // "phone number" layout.
-                hintX = positionX + params.mHintLabelOffCenterRatio * labelCharWidth;
-                hintY = centerY + labelCharHeight / 2.0f;
+                hintX = labelX + params.mHintLabelOffCenterRatio * labelCharWidth;
+                if (key.isAlignHintLabelToBottom(mDefaultKeyLabelFlags)) {
+                    hintBaseline = labelBaseline;
+                } else {
+                    hintBaseline = centerY + labelCharHeight / 2.0f;
+                }
                 paint.setTextAlign(Align.LEFT);
             } else if (key.hasShiftedLetterHint()) {
                 // The hint label is placed at top-right corner of the key. Used mainly on tablet.
                 hintX = keyWidth - mKeyShiftedLetterHintPadding - labelCharWidth / 2.0f;
                 paint.getFontMetrics(mFontMetrics);
-                hintY = -mFontMetrics.top;
+                hintBaseline = -mFontMetrics.top;
                 paint.setTextAlign(Align.CENTER);
             } else { // key.hasHintLetter()
                 // The hint letter is placed at top-right corner of the key. Used mainly on phone.
@@ -438,10 +449,12 @@ public class KeyboardView extends View {
                 final float hintLabelWidth = TypefaceUtils.getStringWidth(hintLabel, paint);
                 hintX = keyWidth - mKeyHintLetterPadding
                         - Math.max(hintDigitWidth, hintLabelWidth) / 2.0f;
-                hintY = -paint.ascent();
+                hintBaseline = -paint.ascent();
                 paint.setTextAlign(Align.CENTER);
             }
-            canvas.drawText(hintLabel, 0, hintLabel.length(), hintX, hintY + adjustmentY, paint);
+            final float adjustmentY = params.mHintLabelVerticalAdjustment * labelCharHeight;
+            canvas.drawText(
+                    hintLabel, 0, hintLabel.length(), hintX, hintBaseline + adjustmentY, paint);
         }
 
         // Draw key icon.
