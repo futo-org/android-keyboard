@@ -369,9 +369,9 @@ public class KeyboardView extends View {
             final float baseline = centerY + labelCharHeight / 2.0f;
 
             // Horizontal label text alignment
-            if (key.isAlignLabelOffCenter()) {
-                // The label is placed off center of the key. Used mainly on "phone number" layout.
-                positionX = centerX + params.mLabelOffCenterRatio * labelCharWidth;
+            if (key.isAlignLeftOfCenter()) {
+                // TODO: Parameterise this?
+                positionX = centerX - labelCharWidth * 7.0f / 4.0f;
                 paint.setTextAlign(Align.LEFT);
             } else {
                 positionX = centerX;
@@ -418,12 +418,15 @@ public class KeyboardView extends View {
             blendAlpha(paint, params.mAnimAlpha);
             final float labelCharHeight = TypefaceUtils.getReferenceCharHeight(paint);
             final float labelCharWidth = TypefaceUtils.getReferenceCharWidth(paint);
-            final float adjustmentY = params.mHintLabelVerticalAdjustment * labelCharHeight;
+            final KeyVisualAttributes visualAttr = key.getVisualAttributes();
+            final float adjustmentY = (visualAttr == null) ? 0.0f
+                    : visualAttr.mHintLabelVerticalAdjustment * labelCharHeight;
             final float hintX, hintY;
             if (key.hasHintLabel()) {
                 // The hint label is placed just right of the key label. Used mainly on
                 // "phone number" layout.
-                hintX = positionX + params.mHintLabelOffCenterRatio * labelCharWidth;
+                // TODO: Generalize the following calculations.
+                hintX = positionX + labelCharWidth * 2.0f;
                 hintY = centerY + labelCharHeight / 2.0f;
                 paint.setTextAlign(Align.LEFT);
             } else if (key.hasShiftedLetterHint()) {

@@ -39,7 +39,7 @@
         latin:parentStyle="numKeyBaseStyle" />
     <key-style
         latin:styleName="numberKeyStyle"
-        latin:keyLabelFlags="alignLabelOffCenter|hasHintLabel"
+        latin:keyLabelFlags="alignLeftOfCenter|hasHintLabel"
         latin:parentStyle="numKeyStyle" />
     <key-style
         latin:styleName="num0KeyStyle"

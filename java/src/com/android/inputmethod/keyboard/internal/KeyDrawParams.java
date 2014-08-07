@@ -42,10 +42,6 @@ public final class KeyDrawParams {
     public int mShiftedLetterHintActivatedColor;
     public int mPreviewTextColor;
 
-    public float mHintLabelVerticalAdjustment;
-    public float mLabelOffCenterRatio;
-    public float mHintLabelOffCenterRatio;
-
     public int mAnimAlpha;
 
     public KeyDrawParams() {}
@@ -71,10 +67,6 @@ public final class KeyDrawParams {
         mShiftedLetterHintInactivatedColor = copyFrom.mShiftedLetterHintInactivatedColor;
         mShiftedLetterHintActivatedColor = copyFrom.mShiftedLetterHintActivatedColor;
         mPreviewTextColor = copyFrom.mPreviewTextColor;
-
-        mHintLabelVerticalAdjustment = copyFrom.mHintLabelVerticalAdjustment;
-        mLabelOffCenterRatio = copyFrom.mLabelOffCenterRatio;
-        mHintLabelOffCenterRatio = copyFrom.mHintLabelOffCenterRatio;
 
         mAnimAlpha = copyFrom.mAnimAlpha;
     }
@@ -111,13 +103,6 @@ public final class KeyDrawParams {
         mShiftedLetterHintActivatedColor = selectColor(
                 attr.mShiftedLetterHintActivatedColor, mShiftedLetterHintActivatedColor);
         mPreviewTextColor = selectColor(attr.mPreviewTextColor, mPreviewTextColor);
-
-        mHintLabelVerticalAdjustment = selectFloatIfNonZero(
-                attr.mHintLabelVerticalAdjustment, mHintLabelVerticalAdjustment);
-        mLabelOffCenterRatio = selectFloatIfNonZero(
-                attr.mLabelOffCenterRatio, mLabelOffCenterRatio);
-        mHintLabelOffCenterRatio = selectFloatIfNonZero(
-                attr.mHintLabelOffCenterRatio, mHintLabelOffCenterRatio);
     }
 
     public KeyDrawParams mayCloneAndUpdateParams(final int keyHeight,
@@ -130,7 +115,7 @@ public final class KeyDrawParams {
         return newParams;
     }
 
-    private static int selectTextSizeFromDimensionOrRatio(final int keyHeight,
+    private static final int selectTextSizeFromDimensionOrRatio(final int keyHeight,
             final int dimens, final float ratio, final int defaultDimens) {
         if (ResourceUtils.isValidDimensionPixelSize(dimens)) {
             return dimens;
@@ -141,7 +126,7 @@ public final class KeyDrawParams {
         return defaultDimens;
     }
 
-    private static int selectTextSize(final int keyHeight, final float ratio,
+    private static final int selectTextSize(final int keyHeight, final float ratio,
             final int defaultSize) {
         if (ResourceUtils.isValidFraction(ratio)) {
             return (int)(keyHeight * ratio);
@@ -149,17 +134,10 @@ public final class KeyDrawParams {
         return defaultSize;
     }
 
-    private static int selectColor(final int attrColor, final int defaultColor) {
+    private static final int selectColor(final int attrColor, final int defaultColor) {
         if (attrColor != 0) {
             return attrColor;
         }
         return defaultColor;
-    }
-
-    private static float selectFloatIfNonZero(final float attrFloat, final float defaultFloat) {
-        if (attrFloat != 0) {
-            return attrFloat;
-        }
-        return defaultFloat;
     }
 }
