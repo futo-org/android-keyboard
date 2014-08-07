@@ -26,9 +26,10 @@
     >
         <item name="keyTypeface">normal</item>
         <item name="keyLargeLetterRatio">@fraction/config_key_large_letter_ratio_lxx</item>
-        <item name="keyLabelOffCenterRatio">-100%</item>
+        <item name="keyLabelOffCenterRatio">-80%</item>
         <item name="keyHintLabelRatio">@fraction/config_key_hint_label_ratio_lxx</item>
-        <item name="keyHintLabelOffCenterRatio">400%</item>
+        <item name="keyHintLabelOffCenterRatio">300%</item>
+        <item name="keyLabelFlags">alignHintLabelToBottom</item>
         <item name="spacebarIconWidthRatio">0.9</item>
         <!-- No popup hint letter -->
         <item name="keyPopupHintLetter"></item>

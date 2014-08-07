@@ -292,6 +292,7 @@
         <!-- The key label flags. -->
         <attr name="keyLabelFlags" format="integer">
             <!-- This should be aligned with Key.LABEL_FLAGS__* -->
+            <flag name="alignHintLabelToBottom" value="0x02" />
             <flag name="alignIconToBottom" value="0x04" />
             <flag name="alignLabelOffCenter" value="0x08" />
             <flag name="fontNormal" value="0x10" />
