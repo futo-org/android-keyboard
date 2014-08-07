@@ -38,6 +38,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -163,9 +164,31 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     }
 
     private void asyncExecuteTaskWithLock(final Lock lock, final Runnable task) {
+        asyncPreCheckAndExecuteTaskWithLock(lock, null /* preCheckTask */, task);
+    }
+
+    private void asyncPreCheckAndExecuteTaskWithWriteLock(
+            final Callable<Boolean> preCheckTask, final Runnable task) {
+        asyncPreCheckAndExecuteTaskWithLock(mLock.writeLock(), preCheckTask, task);
+
+    }
+
+    // Execute task with lock when the result of preCheckTask is true or preCheckTask is null.
+    private void asyncPreCheckAndExecuteTaskWithLock(final Lock lock,
+            final Callable<Boolean> preCheckTask, final Runnable task) {
         ExecutorUtils.getExecutor(mDictName).execute(new Runnable() {
             @Override
             public void run() {
+                if (preCheckTask != null) {
+                    try {
+                        if (!preCheckTask.call().booleanValue()) {
+                            return;
+                        }
+                    } catch (final Exception e) {
+                        Log.e(TAG, "The pre check task throws an exception.", e);
+                        return;
+                    }
+                }
                 lock.lock();
                 try {
                     task.run();
@@ -278,22 +301,25 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
             final boolean isBlacklisted, final int timestamp,
             final DistracterFilter distracterFilter) {
         reloadDictionaryIfRequired();
-        asyncExecuteTaskWithWriteLock(new Runnable() {
-            @Override
-            public void run() {
-                if (mBinaryDictionary == null) {
-                    return;
-                }
-                if (distracterFilter.isDistracterToWordsInDictionaries(
-                        PrevWordsInfo.EMPTY_PREV_WORDS_INFO, word, mLocale)) {
-                    // The word is a distracter.
-                    return;
-                }
-                runGCIfRequiredLocked(true /* mindsBlockByGC */);
-                addUnigramLocked(word, frequency, shortcutTarget, shortcutFreq,
-                        isNotAWord, isBlacklisted, timestamp);
-            }
-        });
+        asyncPreCheckAndExecuteTaskWithWriteLock(
+                new Callable<Boolean>() {
+                    @Override
+                    public Boolean call() throws Exception {
+                        return !distracterFilter.isDistracterToWordsInDictionaries(
+                                PrevWordsInfo.EMPTY_PREV_WORDS_INFO, word, mLocale);
+                    }
+                },
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        if (mBinaryDictionary == null) {
+                            return;
+                        }
+                        runGCIfRequiredLocked(true /* mindsBlockByGC */);
+                        addUnigramLocked(word, frequency, shortcutTarget, shortcutFreq,
+                                isNotAWord, isBlacklisted, timestamp);
+                    }
+                });
     }
 
     protected void addUnigramLocked(final String word, final int frequency,
