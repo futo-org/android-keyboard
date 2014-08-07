@@ -58,7 +58,6 @@ public class Key implements Comparable<Key> {
     private final String mHintLabel;
     /** Flags of the label */
     private final int mLabelFlags;
-    private static final int LABEL_FLAGS_ALIGN_HINT_LABEL_TO_BOTTOM = 0x02;
     private static final int LABEL_FLAGS_ALIGN_ICON_TO_BOTTOM = 0x04;
     private static final int LABEL_FLAGS_ALIGN_LABEL_OFF_CENTER = 0x08;
     // Font typeface specification.
@@ -640,10 +639,6 @@ public class Key implements Comparable<Key> {
             return selectTypeface(params);
         }
         return Typeface.DEFAULT_BOLD;
-    }
-
-    public final boolean isAlignHintLabelToBottom(final int defaultFlags) {
-        return ((mLabelFlags | defaultFlags) & LABEL_FLAGS_ALIGN_HINT_LABEL_TO_BOTTOM) != 0;
     }
 
     public final boolean isAlignIconToBottom() {
