@@ -145,6 +145,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // If it turns out we need several, it will get grown seamlessly.
     final SparseArray<HardwareEventDecoder> mHardwareEventDecoders = new SparseArray<>(1);
 
+    // TODO: Move these {@link View}s to {@link KeyboardSwitcher}.
+    private View mInputView;
     private View mExtractArea;
     private View mKeyPreviewBackingView;
     private SuggestionStripView mSuggestionStripView;
@@ -709,6 +711,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     @Override
     public void setInputView(final View view) {
         super.setInputView(view);
+        mInputView = view;
         mExtractArea = getWindow().getWindow().getDecorView()
                 .findViewById(android.R.id.extractArea);
         mKeyPreviewBackingView = view.findViewById(R.id.key_preview_backing);
@@ -1079,6 +1082,14 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (visibleKeyboardView == null || !hasSuggestionStripView()) {
             return;
         }
+        final boolean hasHardwareKeyboard = mKeyboardSwitcher.hasHardwareKeyboard();
+        if (hasHardwareKeyboard && visibleKeyboardView.getVisibility() == View.GONE) {
+            // If there is a hardware keyboard and a visible software keyboard view has been hidden,
+            // no visual element will be shown on the screen.
+            outInsets.touchableInsets = mInputView.getHeight();
+            outInsets.visibleTopInsets = mInputView.getHeight();
+            return;
+        }
         final int adjustedBackingHeight = getAdjustedBackingViewHeight();
         final boolean backingGone = (mKeyPreviewBackingView.getVisibility() == View.GONE);
         final int backingHeight = backingGone ? 0 : adjustedBackingHeight;
@@ -1111,7 +1122,17 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     @Override
+    public boolean onEvaluateInputViewShown() {
+        // Always show {@link InputView}.
+        return true;
+    }
+
+    @Override
     public boolean onEvaluateFullscreenMode() {
+        if (mKeyboardSwitcher.hasHardwareKeyboard()) {
+            // If there is a hardware keyboard, disable full screen mode.
+            return false;
+        }
         // Reread resource value here, because this method is called by the framework as needed.
         final boolean isFullscreenModeAllowed = Settings.readUseFullscreenMode(getResources());
         if (super.onEvaluateFullscreenMode() && isFullscreenModeAllowed) {
