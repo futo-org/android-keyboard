@@ -159,8 +159,9 @@
     <!-- Title for input language selection screen -->
     <string name="language_selection_title">Input languages</string>
 
-    <!-- Title of a preference to send feedback. [CHAR LIMIT=30]-->
-    <string name="send_feedback">Send feedback</string>
+    <!-- Title for the 'Help & feedback' settings fragment which shows a help page and has a button
+         for submitting feedback. [CHAR LIMIT=35] -->
+    <string name="help_and_feedback">Help &amp; feedback</string>
 
     <!-- Preference for input language selection -->
     <string name="select_language">Input languages</string>
