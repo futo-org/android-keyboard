@@ -16,9 +16,13 @@
 
 package com.android.inputmethod.latin;
 
+import java.util.ArrayList;
 import java.util.Locale;
 
+import android.content.Context;
+import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.LargeTest;
+import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.latin.utils.DistracterFilterCheckingExactMatches;
 
@@ -26,14 +30,24 @@ import com.android.inputmethod.latin.utils.DistracterFilterCheckingExactMatches;
  * Unit test for DistracterFilter
  */
 @LargeTest
-public class DistracterFilterTest extends InputTestsBase {
+public class DistracterFilterTest extends AndroidTestCase {
     private DistracterFilterCheckingExactMatches mDistracterFilter;
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        mDistracterFilter = new DistracterFilterCheckingExactMatches(getContext());
-        mDistracterFilter.updateEnabledSubtypes(mLatinIME.getEnabledSubtypesForTest());
+        final Context context = getContext();
+        mDistracterFilter = new DistracterFilterCheckingExactMatches(context);
+        RichInputMethodManager.init(context);
+        final RichInputMethodManager richImm = RichInputMethodManager.getInstance();
+        final ArrayList<InputMethodSubtype> subtypes = new ArrayList<>();
+        subtypes.add(richImm.findSubtypeByLocaleAndKeyboardLayoutSet(
+                Locale.US.toString(), "qwerty"));
+        subtypes.add(richImm.findSubtypeByLocaleAndKeyboardLayoutSet(
+                Locale.FRENCH.toString(), "azerty"));
+        subtypes.add(richImm.findSubtypeByLocaleAndKeyboardLayoutSet(
+                Locale.GERMAN.toString(), "qwertz"));
+        mDistracterFilter.updateEnabledSubtypes(subtypes);
     }
 
     public void testIsDistractorToWordsInDictionaries() {
@@ -104,15 +118,47 @@ public class DistracterFilterTest extends InputTestsBase {
         assertFalse(mDistracterFilter.isDistracterToWordsInDictionaries(
                 EMPTY_PREV_WORDS_INFO, typedWord, localeEnUs));
 
-        final Locale localeDeDe = new Locale("de", "DE");
-
-        typedWord = "fuer";
-        // For this test case, we consider "fuer" is a distracter to "für".
+        typedWord = "thabk";
+        // For this test case, we consider "thabk" is a distracter to "thank"
         assertTrue(mDistracterFilter.isDistracterToWordsInDictionaries(
-                EMPTY_PREV_WORDS_INFO, typedWord, localeDeDe));
+                EMPTY_PREV_WORDS_INFO, typedWord, localeEnUs));
+
+        typedWord = "thanks";
+        // For this test case, we consider "thanks" is not a distracter to any other word
+        // in dictionaries.
+        assertFalse(mDistracterFilter.isDistracterToWordsInDictionaries(
+                EMPTY_PREV_WORDS_INFO, typedWord, localeEnUs));
+
+        typedWord = "thabks";
+        // For this test case, we consider "thabks" is a distracter to "thanks"
+        assertTrue(mDistracterFilter.isDistracterToWordsInDictionaries(
+                EMPTY_PREV_WORDS_INFO, typedWord, localeEnUs));
+
+        typedWord = "think";
+        // For this test case, we consider "think" is not a distracter to any other word
+        // in dictionaries.
+        assertFalse(mDistracterFilter.isDistracterToWordsInDictionaries(
+                EMPTY_PREV_WORDS_INFO, typedWord, localeEnUs));
+
+        typedWord = "thibk";
+        // For this test case, we consider "thibk" is a distracter to "think"
+        assertTrue(mDistracterFilter.isDistracterToWordsInDictionaries(
+                EMPTY_PREV_WORDS_INFO, typedWord, localeEnUs));
+
+        typedWord = "tgis";
+        // For this test case, we consider "tgis" is a distracter to "this"
+        assertTrue(mDistracterFilter.isDistracterToWordsInDictionaries(
+                EMPTY_PREV_WORDS_INFO, typedWord, localeEnUs));
+
+        final Locale localeDeDe = new Locale("de");
 
         typedWord = "fUEr";
         // For this test case, we consider "fUEr" is a distracter to "für".
+        assertTrue(mDistracterFilter.isDistracterToWordsInDictionaries(
+                EMPTY_PREV_WORDS_INFO, typedWord, localeDeDe));
+
+        typedWord = "fuer";
+        // For this test case, we consider "fuer" is a distracter to "für".
         assertTrue(mDistracterFilter.isDistracterToWordsInDictionaries(
                 EMPTY_PREV_WORDS_INFO, typedWord, localeDeDe));
 
@@ -121,7 +167,7 @@ public class DistracterFilterTest extends InputTestsBase {
         assertTrue(mDistracterFilter.isDistracterToWordsInDictionaries(
                 EMPTY_PREV_WORDS_INFO, typedWord, localeDeDe));
 
-        final Locale localeFrFr = new Locale("fr", "FR");
+        final Locale localeFrFr = new Locale("fr");
 
         typedWord = "a";
         // For this test case, we consider "a" is a distracter to "à".
