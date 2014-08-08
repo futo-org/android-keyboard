@@ -32,9 +32,9 @@ public final class SettingsFragment extends InputMethodSettingsFragment {
     // We don't care about menu grouping.
     private static final int NO_MENU_GROUP = Menu.NONE;
     // The first menu item id and order.
-    private static final int MENU_HELP_AND_FEEDBACK = Menu.FIRST;
+    private static final int MENU_ABOUT = Menu.FIRST;
     // The second menu item id and order.
-    private static final int MENU_ABOUT = Menu.FIRST + 1;
+    private static final int MENU_HELP_AND_FEEDBACK = Menu.FIRST + 1;
 
     @Override
     public void onCreate(final Bundle icicle) {
