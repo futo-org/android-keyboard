@@ -24,20 +24,20 @@ import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.LargeTest;
 import android.view.inputmethod.InputMethodSubtype;
 
-import com.android.inputmethod.latin.utils.DistracterFilterCheckingExactMatches;
+import com.android.inputmethod.latin.utils.DistracterFilterCheckingExactMatchesAndSuggestions;
 
 /**
  * Unit test for DistracterFilter
  */
 @LargeTest
 public class DistracterFilterTest extends AndroidTestCase {
-    private DistracterFilterCheckingExactMatches mDistracterFilter;
+    private DistracterFilterCheckingExactMatchesAndSuggestions mDistracterFilter;
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
         final Context context = getContext();
-        mDistracterFilter = new DistracterFilterCheckingExactMatches(context);
+        mDistracterFilter = new DistracterFilterCheckingExactMatchesAndSuggestions(context);
         RichInputMethodManager.init(context);
         final RichInputMethodManager richImm = RichInputMethodManager.getInstance();
         final ArrayList<InputMethodSubtype> subtypes = new ArrayList<>();
