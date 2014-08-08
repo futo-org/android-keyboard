@@ -29,9 +29,12 @@ import com.android.inputmethod.latin.utils.FeedbackUtils;
 import com.android.inputmethodcommon.InputMethodSettingsFragment;
 
 public final class SettingsFragment extends InputMethodSettingsFragment {
-    private static final int NO_MENU_GROUP = Menu.NONE; // We don't care about menu grouping.
-    private static final int MENU_FEEDBACK = Menu.FIRST; // The first menu item id and order.
-    private static final int MENU_ABOUT = Menu.FIRST + 1; // The second menu item id and order.
+    // We don't care about menu grouping.
+    private static final int NO_MENU_GROUP = Menu.NONE;
+    // The first menu item id and order.
+    private static final int MENU_HELP_AND_FEEDBACK = Menu.FIRST;
+    // The second menu item id and order.
+    private static final int MENU_ABOUT = Menu.FIRST + 1;
 
     @Override
     public void onCreate(final Bundle icicle) {
@@ -53,9 +56,9 @@ public final class SettingsFragment extends InputMethodSettingsFragment {
 
     @Override
     public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater) {
-        if (FeedbackUtils.isFeedbackFormSupported()) {
-            menu.add(NO_MENU_GROUP, MENU_FEEDBACK /* itemId */, MENU_FEEDBACK /* order */,
-                    R.string.send_feedback);
+        if (FeedbackUtils.isHelpAndFeedbackFormSupported()) {
+            menu.add(NO_MENU_GROUP, MENU_HELP_AND_FEEDBACK /* itemId */,
+                    MENU_HELP_AND_FEEDBACK /* order */, R.string.help_and_feedback);
         }
         final int aboutResId = FeedbackUtils.getAboutKeyboardTitleResId();
         if (aboutResId != 0) {
@@ -66,8 +69,8 @@ public final class SettingsFragment extends InputMethodSettingsFragment {
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
         final int itemId = item.getItemId();
-        if (itemId == MENU_FEEDBACK) {
-            FeedbackUtils.showFeedbackForm(getActivity());
+        if (itemId == MENU_HELP_AND_FEEDBACK) {
+            FeedbackUtils.showHelpAndFeedbackForm(getActivity());
             return true;
         }
         if (itemId == MENU_ABOUT) {
