@@ -20,11 +20,11 @@ import android.content.Context;
 import android.content.Intent;
 
 public class FeedbackUtils {
-    public static boolean isFeedbackFormSupported() {
+    public static boolean isHelpAndFeedbackFormSupported() {
         return false;
     }
 
-    public static void showFeedbackForm(Context context) {
+    public static void showHelpAndFeedbackForm(Context context) {
     }
 
     public static int getAboutKeyboardTitleResId() {
