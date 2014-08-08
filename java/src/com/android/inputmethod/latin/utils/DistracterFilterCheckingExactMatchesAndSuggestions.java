@@ -43,8 +43,9 @@ import com.android.inputmethod.latin.settings.SettingsValuesForSuggestion;
  * This class is used to prevent distracters being added to personalization
  * or user history dictionaries
  */
-public class DistracterFilterCheckingExactMatches implements DistracterFilter {
-    private static final String TAG = DistracterFilterCheckingExactMatches.class.getSimpleName();
+public class DistracterFilterCheckingExactMatchesAndSuggestions implements DistracterFilter {
+    private static final String TAG =
+            DistracterFilterCheckingExactMatchesAndSuggestions.class.getSimpleName();
     private static final boolean DEBUG = false;
 
     private static final long TIMEOUT_TO_WAIT_LOADING_DICTIONARIES_IN_SECONDS = 120;
@@ -70,7 +71,7 @@ public class DistracterFilterCheckingExactMatches implements DistracterFilter {
      *
      * @param context the context.
      */
-    public DistracterFilterCheckingExactMatches(final Context context) {
+    public DistracterFilterCheckingExactMatchesAndSuggestions(final Context context) {
         mContext = context;
         mLocaleToSubtypeMap = new HashMap<>();
         mLocaleToKeyboardMap = new HashMap<>();

@@ -84,7 +84,7 @@ import com.android.inputmethod.latin.utils.ApplicationUtils;
 import com.android.inputmethod.latin.utils.CapsModeUtils;
 import com.android.inputmethod.latin.utils.CoordinateUtils;
 import com.android.inputmethod.latin.utils.DialogUtils;
-import com.android.inputmethod.latin.utils.DistracterFilterCheckingExactMatches;
+import com.android.inputmethod.latin.utils.DistracterFilterCheckingExactMatchesAndSuggestions;
 import com.android.inputmethod.latin.utils.ImportantNoticeUtils;
 import com.android.inputmethod.latin.utils.IntentUtils;
 import com.android.inputmethod.latin.utils.JniUtils;
@@ -126,7 +126,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     private final Settings mSettings;
     private final DictionaryFacilitator mDictionaryFacilitator =
-            new DictionaryFacilitator(new DistracterFilterCheckingExactMatches(this /* context */));
+            new DictionaryFacilitator(
+                    new DistracterFilterCheckingExactMatchesAndSuggestions(this /* context */));
     // TODO: Move from LatinIME.
     private final PersonalizationDictionaryUpdater mPersonalizationDictionaryUpdater =
             new PersonalizationDictionaryUpdater(this /* context */, mDictionaryFacilitator);
