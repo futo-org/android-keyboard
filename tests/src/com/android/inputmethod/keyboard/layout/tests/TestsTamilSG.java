@@ -19,38 +19,19 @@ package com.android.inputmethod.keyboard.layout.tests;
 import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.inputmethod.keyboard.layout.LayoutBase;
-import com.android.inputmethod.keyboard.layout.Symbols;
-import com.android.inputmethod.keyboard.layout.SymbolsShifted;
 import com.android.inputmethod.keyboard.layout.Tamil;
 import com.android.inputmethod.keyboard.layout.Tamil.TamilCustomizer;
-import com.android.inputmethod.keyboard.layout.expected.ExpectedKey;
 
 import java.util.Locale;
 
 /**
- * ta_IN: Tamil (India)/tamil
+ * ta_SG: Tamil (Singapore)/tamil
  */
 @SmallTest
-public final class TestsTamilIN extends LayoutTestsBase {
-    private static final Locale LOCALE = new Locale("ta", "IN");
-    private static final LayoutBase LAYOUT = new Tamil(new TamilINCustomizer(LOCALE));
+public final class TestsTamilSG extends LayoutTestsBase {
+    private static final Locale LOCALE = new Locale("ta", "SG");
+    private static final LayoutBase LAYOUT = new Tamil(new TamilCustomizer(LOCALE));
 
     @Override
     LayoutBase getLayout() { return LAYOUT; }
-
-    private static class TamilINCustomizer extends TamilCustomizer {
-        public TamilINCustomizer(final Locale locale) { super(locale); }
-
-        @Override
-        public ExpectedKey getCurrencyKey() { return CURRENCY_RUPEE; }
-
-        @Override
-        public ExpectedKey[] getOtherCurrencyKeys() {
-            return SymbolsShifted.CURRENCIES_OTHER_GENERIC;
-        }
-
-        // U+20B9: "₹" INDIAN RUPEE SIGN
-        private static final ExpectedKey CURRENCY_RUPEE = key("\u20B9",
-                Symbols.CURRENCY_GENERIC_MORE_KEYS);
-    }
 }

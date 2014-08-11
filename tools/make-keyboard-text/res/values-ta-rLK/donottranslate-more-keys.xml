@@ -19,10 +19,10 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- Label for "switch to alphabetic" key.
-         U+0995: "क" BENGALI LETTER KA
-         U+0996: "ख" BENGALI LETTER KHA
-         U+0997: "ग" BENGALI LETTER GA -->
-    <string name="keylabel_to_alpha">&#x0995;&#x0996;&#x0997;</string>
-    <!-- U+20B9: "₹" INDIAN RUPEE SIGN -->
-    <string name="keyspec_currency">&#x20B9;</string>
+         U+0BA4: "த" TAMIL LETTER TA
+         U+0BAE/U+0BBF: "மி" TAMIL LETTER MA/TAMIL VOWEL SIGN I
+         U+0BB4/U+0BCD: "ழ்" TAMIL LETTER LLLA/TAMIL SIGN VIRAMA -->
+    <string name="keylabel_to_alpha">&#x0BA4;&#x0BAE;&#x0BBF;&#x0BB4;&#x0BCD;</string>
+    <!-- U+0DBB/U+0DD4: "රු" SINHALA LETTER RAYANNA/SINHALA VOWEL SIGN KETTI PAA-PILLA -->
+    <string name="keyspec_currency">&#x0DBB;&#x0DD4;</string>
 </resources>

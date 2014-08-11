@@ -92,6 +92,8 @@
     sv: Swedish/nordic
     sw: Swahili/qwerty
     ta_IN: Tamil (India)/tamil
+    ta_LK: Tamil (Sri Lanka)/tamil
+    ta_SG: Tamil (Singapore)/tamil
     te_IN: Telugu (India)/telugu
     th: Thai/thai
     tl: Tagalog/spanish
@@ -682,6 +684,22 @@
             android:label="@string/subtype_generic"
             android:subtypeId="0x67acea2a"
             android:imeSubtypeLocale="ta_IN"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=tamil,EmojiCapable"
+            android:isAsciiCapable="false"
+    />
+    <subtype android:icon="@drawable/ic_ime_switcher_dark"
+            android:label="@string/subtype_generic"
+            android:subtypeId="0x6ca12d84"
+            android:imeSubtypeLocale="ta_LK"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=tamil,EmojiCapable"
+            android:isAsciiCapable="false"
+    />
+    <subtype android:icon="@drawable/ic_ime_switcher_dark"
+            android:label="@string/subtype_generic"
+            android:subtypeId="0x785abbd9"
+            android:imeSubtypeLocale="ta_SG"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=tamil,EmojiCapable"
             android:isAsciiCapable="false"

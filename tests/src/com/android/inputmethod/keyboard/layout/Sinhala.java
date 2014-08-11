@@ -43,6 +43,14 @@ public final class Sinhala extends LayoutBase {
         public ExpectedKey getAlphabetKey() { return SINHALA_ALPHABET_KEY; }
 
         @Override
+        public ExpectedKey getCurrencyKey() { return CURRENCY_RUPEE; }
+
+        @Override
+        public ExpectedKey[] getOtherCurrencyKeys() {
+            return SymbolsShifted.CURRENCIES_OTHER_GENERIC;
+        }
+
+        @Override
         public ExpectedKey[] getRightShiftKeys(final boolean isPhone) {
             return isPhone ? EMPTY_KEYS : EXCLAMATION_AND_QUESTION_MARKS;
         }
@@ -51,6 +59,10 @@ public final class Sinhala extends LayoutBase {
         // U+0D86: "ආ" SINHALA LETTER AAYANNA
         private static final ExpectedKey SINHALA_ALPHABET_KEY = key(
                 "\u0D85,\u0D86", Constants.CODE_SWITCH_ALPHA_SYMBOL);
+
+        // U+0DBB/U+0DD4: "රු" SINHALA LETTER RAYANNA/SINHALA VOWEL SIGN KETTI PAA-PILLA
+        private static final ExpectedKey CURRENCY_RUPEE = key("\u0DBB\u0DD4",
+                Symbols.CURRENCY_GENERIC_MORE_KEYS);
     }
 
     @Override

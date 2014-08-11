@@ -84,7 +84,6 @@
              lo: Lao (Kip)
              mn: Mongolian (Tugrik)
              ne: Nepali (Nepalese Rupee)
-             ta_IN: Tamil (Tamil Rupee)
              th: Thai (Baht)
              uk: Ukrainian (Hryvnia)
              vi: Vietnamese (Dong)  -->
@@ -92,29 +91,24 @@
              its unicode, although there is no font glyph for it as of November 2012. -->
         <!-- TODO: The currency sign of Armenian Dram was created in 2012 and assigned U+058F for
              its unicode, although there is no font glyph for it as of September 2013. -->
-        <case latin:languageCode="fa|hi|iw|lo|mn|ne|ta|th|uk|vi">
-            <!-- U+00A3: "£" POUND SIGN
-                 U+20AC: "€" EURO SIGN
-                 U+00A2: "¢" CENT SIGN -->
-            <key-style
-                latin:styleName="currencyKeyStyle"
-                latin:keySpec="!text/keyspec_currency"
-                latin:moreKeys="!text/morekeys_currency" />
-            <key-style
-                latin:styleName="moreCurrency1KeyStyle"
-                latin:keySpec="&#x00A3;" />
-            <key-style
-                latin:styleName="moreCurrency2KeyStyle"
-                latin:keySpec="&#x20AC;" />
-            <key-style
-                latin:styleName="moreCurrency3KeyStyle"
-                latin:keySpec="$"
-                latin:moreKeys="&#x00A2;" />
-            <key-style
-                latin:styleName="moreCurrency4KeyStyle"
-                latin:keySpec="&#x00A2;" />
+        <!-- TODO: The currency sign of Russian Ruble was created in 2014 and assigned U+20BD for
+             its unicode, although there is no font glyph for it as of August 2014. -->
+        <case latin:languageCode="fa|hi|iw|lo|mn|ne|th|uk|vi">
+            <include latin:keyboardLayout="@xml/key_styles_currency_generic" />
         </case>
-        <!-- IN: India (Rupee) -->
+        <!-- si_LK: Sinhala (Sri Lanka) (Sri Lanka Rupee)
+             ta_LK: Tamil (Sri Lanka) (Sri Lanka Rupee) -->
+        <case latin:countryCode="LK">
+            <include latin:keyboardLayout="@xml/key_styles_currency_generic" />
+        </case>
+        <!-- bn_IN: Bengali (India) (Indian Rupee)
+             en_IN: English (India) (Indian Rupee)
+             kn_IN: Kannada (India) (Indian Rupee)
+             ml_IN: Malayalam (India) (Indian Rupee)
+             mr_IN: Marathi (India) (Indian Rupee)
+             ta_IN: Tamil (India) (Indian Rupee)
+             te_IN: Telugu (India) (Indian Rupee)
+         -->
         <case latin:countryCode="IN">
             <!-- U+20B9: "₹" INDIAN RUPEE SIGN
                  U+00A3: "£" POUND SIGN
@@ -123,7 +117,7 @@
             <key-style
                 latin:styleName="currencyKeyStyle"
                 latin:keySpec="&#x20B9;"
-                latin:moreKeys="!text/morekeys_currency" />
+                latin:moreKeys="!text/morekeys_currency_generic" />
             <key-style
                 latin:styleName="moreCurrency1KeyStyle"
                 latin:keySpec="&#x00A3;" />

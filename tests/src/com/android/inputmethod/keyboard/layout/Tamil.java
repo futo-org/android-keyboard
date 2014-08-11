@@ -42,14 +42,6 @@ public final class Tamil extends LayoutBase {
         public ExpectedKey getAlphabetKey() { return TAMIL_ALPHABET_KEY; }
 
         @Override
-        public ExpectedKey getCurrencyKey() { return CURRENCY_RUPEE; }
-
-        @Override
-        public ExpectedKey[] getOtherCurrencyKeys() {
-            return SymbolsShifted.CURRENCIES_OTHER_GENERIC;
-        }
-
-        @Override
         public ExpectedKey[] getLeftShiftKeys(final boolean isPhone) {
             return EMPTY_KEYS;
         }
@@ -64,10 +56,6 @@ public final class Tamil extends LayoutBase {
         // U+0BB4/U+0BCD: "ழ்" TAMIL LETTER LLLA/TAMIL SIGN VIRAMA
         private static final ExpectedKey TAMIL_ALPHABET_KEY = key(
                 "\u0BA4\u0BAE\u0BBF\u0BB4\u0BCD", Constants.CODE_SWITCH_ALPHA_SYMBOL);
-
-        // U+0BF9: "௹" TAMIL RUPEE SIGN
-        private static final ExpectedKey CURRENCY_RUPEE = key("\u0BF9",
-                Symbols.CURRENCY_GENERIC_MORE_KEYS);
     }
 
     @Override
@@ -81,15 +69,20 @@ public final class Tamil extends LayoutBase {
     private static final ExpectedKey[][] ALPHABET_COMMON = new ExpectedKeyboardBuilder()
             .setKeysOfRow(1,
                     // U+0B94: "ஔ" TAMIL LETTER AU
-                    key("\u0B94", moreKey("1")),
+                    // U+0BCC: "ௌ" TAMIL VOWEL SIGN AU
+                    key("\u0B94", joinMoreKeys("\u0BCC", "1")),
                     // U+0B90: "ஐ" TAMIL LETTER AI
-                    key("\u0B90", moreKey("2")),
+                    // U+0BC8: "ை" TAMIL VOWEL SIGN AI
+                    key("\u0B90", joinMoreKeys("\u0BC8", "2")),
                     // U+0B86: "ஆ" TAMIL LETTER AA
-                    key("\u0B86", moreKey("3")),
+                    // U+0BBE: "ா" TAMIL VOWEL SIGN AA
+                    key("\u0B86", joinMoreKeys("\u0BBE", "3")),
                     // U+0B88: "ஈ" TAMIL LETTER II
-                    key("\u0B88", moreKey("4")),
+                    // U+0BC0: "ீ" TAMIL VOWEL SIGN II
+                    key("\u0B88", joinMoreKeys("\u0BC0", "4")),
                     // U+0B8A: "ஊ" TAMIL LETTER UU
-                    key("\u0B8A", moreKey("5")),
+                    // U+0BC2: "ூ" TAMIL VOWEL SIGN UU
+                    key("\u0B8A", joinMoreKeys("\u0BC2","5")),
                     // U+0BAE: "ம" TAMIL LETTER MA
                     key("\u0BAE", moreKey("6")),
                     // U+0BA9: "ன" TAMIL LETTER NNNA
@@ -104,18 +97,24 @@ public final class Tamil extends LayoutBase {
                     "\u0B9E")
             .setKeysOfRow(2,
                     // U+0B93: "ஓ" TAMIL LETTER OO
+                    // U+0BCB: "ோ" TAMIL VOWEL SIGN OO
                     // U+0BD0: "ௐ" TAMIL OM
-                    key("\u0B93", moreKey("\u0BD0")),
+                    key("\u0B93", joinMoreKeys("\u0BCB", "\u0BD0")),
                     // U+0B8F: "ஏ" TAMIL LETTER EE
-                    "\u0B8F",
+                    // U+0BC7: "ே" TAMIL VOWEL SIGN EE
+                    key("\u0B8F", moreKey("\u0BC7")),
                     // U+0B85: "அ" TAMIL LETTER A
                     // U+0B83: "ஃ" TAMIL SIGN VISARGA
                     key("\u0B85", moreKey("\u0B83")),
                     // U+0B87: "இ" TAMIL LETTER I
+                    // U+0BBF: "ி" TAMIL VOWEL SIGN I
+                    key("\u0B87", moreKey("\u0BBF")),
                     // U+0B89: "உ" TAMIL LETTER U
+                    // U+0BC1: "ு" TAMIL VOWEL SIGN U
+                    key("\u0B89", moreKey("\u0BC1")),
                     // U+0BB1: "ற" TAMIL LETTER RRA
                     // U+0BAA: "ப" TAMIL LETTER PA
-                    "\u0B87", "\u0B89", "\u0BB1", "\u0BAA",
+                    "\u0BB1", "\u0BAA",
                     // U+0B95: "க" TAMIL LETTER KA
                     // U+0BB9: "ஹ" TAMIL LETTER HA
                     // U+0B95/U+0BCD/U+0BB7:
@@ -133,7 +132,11 @@ public final class Tamil extends LayoutBase {
                     "\u0B9F")
             .setKeysOfRow(3,
                     // U+0B92: "ஒ" TAMIL LETTER O
+                    // U+0BCA: "ொ" TAMIL VOWEL SIGN O
+                    key("\u0B92", moreKey("\u0BCA")),
                     // U+0B8E: "எ" TAMIL LETTER E
+                    // U+0BC6: "ெ" TAMIL VOWEL SIGN E
+                    key("\u0B8E", moreKey("\u0BC6")),
                     // U+0BCD: "்" TAMIL SIGN VIRAMA
                     // U+0BB0: "ர" TAMIL LETTER RA
                     // U+0BB5: "வ" TAMIL LETTER VA
@@ -141,8 +144,7 @@ public final class Tamil extends LayoutBase {
                     // U+0BB2: "ல" TAMIL LETTER LA
                     // U+0BB3: "ள" TAMIL LETTER LLA
                     // U+0BAF: "ய" TAMIL LETTER YA
-                    "\u0B92", "\u0B8E", "\u0BCD", "\u0BB0", "\u0BB5", "\u0BB4", "\u0BB2", "\u0BB3",
-                    "\u0BAF",
+                    "\u0BCD", "\u0BB0", "\u0BB5", "\u0BB4", "\u0BB2", "\u0BB3", "\u0BAF",
                     // U+0BB7: "ஷ" TAMIL LETTER SSA
                     // U+0B9C: "ஜ" TAMIL LETTER JA
                     key("\u0BB7", moreKey("\u0B9C")))
