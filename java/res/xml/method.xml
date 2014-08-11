@@ -84,7 +84,7 @@
     pt_PT: Portuguese (Portugal)/qwerty
     ro: Romanian/qwerty
     ru: Russian/east_slavic
-    si_LK: Sinhala (Sri Lanka)/sinhala
+    (si_LK: Sinhala (Sri Lanka)/sinhala) # This is a preliminary keyboard layout.
     sk: Slovak/qwerty
     sl: Slovenian/qwerty
     sr: Serbian/south_slavic
@@ -92,7 +92,7 @@
     sv: Swedish/nordic
     sw: Swahili/qwerty
     ta_IN: Tamil (India)/tamil
-    ta_LK: Tamil (Sri Lanka)/tamil
+    (ta_LK: Tamil (Sri Lanka)/tamil) # Disabled in conjunction with si_LK.
     ta_SG: Tamil (Singapore)/tamil
     te_IN: Telugu (India)/telugu
     th: Thai/thai
@@ -616,6 +616,9 @@
             android:imeSubtypeExtraValue="SupportTouchPositionCorrection,EmojiCapable"
             android:isAsciiCapable="false"
     />
+    <!-- TODO: This Sinhala keyboard is a preliminary layout.
+               This isn't based on the final specification. -->
+    <!--
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
             android:subtypeId="0x5c6b3bde"
@@ -624,6 +627,7 @@
             android:imeSubtypeExtraValue="KeyboardLayoutSet=sinhala,EmojiCapable"
             android:isAsciiCapable="false"
     />
+    -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
             android:subtypeId="0x8e94d413"
@@ -690,6 +694,8 @@
             android:imeSubtypeExtraValue="KeyboardLayoutSet=tamil,EmojiCapable"
             android:isAsciiCapable="false"
     />
+    <!-- TODO: Enable ta_LK subtype when si_LK subtype is ready -->
+    <!--
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
             android:subtypeId="0x6ca12d84"
@@ -698,6 +704,7 @@
             android:imeSubtypeExtraValue="KeyboardLayoutSet=tamil,EmojiCapable"
             android:isAsciiCapable="false"
     />
+    -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
             android:subtypeId="0x785abbd9"
