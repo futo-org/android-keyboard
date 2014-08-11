@@ -171,11 +171,12 @@ public final class Kannada extends LayoutBase {
                     // U+0C8E: "ಎ" KANNADA LETTER E
                     key("\u0C82", moreKey("\u0C8E")),
                     // U+0CAE: "ಮ" KANNADA LETTER MA
-                    // U+0CA3: "ಣ" KANNADA LETTER NNA
-                    key("\u0CAE", moreKey("\u0CA3")),
+                    "\u0CAE",
                     // U+0CA8: "ನ" KANNADA LETTER NA
+                    // U+0CA3: "ಣ" KANNADA LETTER NNA
+                    key("\u0CA8", moreKey("\u0CA3")),
                     // U+0CB5: "ವ" KANNADA LETTER VA
-                    "\u0CA8", "\u0CB5",
+                    "\u0CB5",
                     // U+0CB2: "ಲ" KANNADA LETTER LA
                     // U+0CB3: "ಳ" KANNADA LETTER LLA
                     key("\u0CB2", moreKey("\u0CB3")),
