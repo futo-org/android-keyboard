@@ -20,21 +20,31 @@
 
 <merge xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin">
     <!-- U+0B93: "ஓ" TAMIL LETTER OO
+         U+0BCB: "ோ" TAMIL VOWEL SIGN OO
          U+0BD0: "ௐ" TAMIL OM -->
     <Key
         latin:keySpec="&#x0B93;"
-        latin:moreKeys="&#x0BD0;" />
-    <!-- U+0B8F: "ஏ" TAMIL LETTER EE -->
-    <Key latin:keySpec="&#x0B8F;" />
+        latin:moreKeys="&#x0BCB;,&#x0BD0;" />
+    <!-- U+0B8F: "ஏ" TAMIL LETTER EE
+         U+0BC7: "ே" TAMIL VOWEL SIGN EE -->
+    <Key
+        latin:keySpec="&#x0B8F;"
+        latin:moreKeys="&#x0BC7;" />
     <!-- U+0B85: "அ" TAMIL LETTER A
          U+0B83: "ஃ" TAMIL SIGN VISARGA -->
     <Key
         latin:keySpec="&#x0B85;"
         latin:moreKeys="&#x0B83;" />
-    <!-- U+0B87: "இ" TAMIL LETTER I -->
-    <Key latin:keySpec="&#x0B87;" />
-    <!-- U+0B89: "உ" TAMIL LETTER U -->
-    <Key latin:keySpec="&#x0B89;" />
+    <!-- U+0B87: "இ" TAMIL LETTER I
+         U+0BBF: "ி" TAMIL VOWEL SIGN I -->
+    <Key
+        latin:keySpec="&#x0B87;"
+        latin:moreKeys="&#x0BBF;" />
+    <!-- U+0B89: "உ" TAMIL LETTER U
+         U+0BC1: "ு" TAMIL VOWEL SIGN U -->
+    <Key
+        latin:keySpec="&#x0B89;"
+        latin:moreKeys="&#x0BC1;" />
     <!-- U+0BB1: "ற" TAMIL LETTER RRA -->
     <Key latin:keySpec="&#x0BB1;" />
     <!-- U+0BAA: "ப" TAMIL LETTER PA -->

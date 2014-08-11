@@ -693,9 +693,10 @@ public class Key implements Comparable<Key> {
     }
 
     public final int getMoreKeyLabelFlags() {
-        return hasLabelsInMoreKeys()
+        final int labelSizeFlag = hasLabelsInMoreKeys()
                 ? LABEL_FLAGS_FOLLOW_KEY_LABEL_RATIO
                 : LABEL_FLAGS_FOLLOW_KEY_LETTER_RATIO;
+        return labelSizeFlag | LABEL_FLAGS_AUTO_X_SCALE;
     }
 
     public final boolean needsDividersInMoreKeys() {
