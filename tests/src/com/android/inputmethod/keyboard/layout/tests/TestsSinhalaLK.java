@@ -16,7 +16,7 @@
 
 package com.android.inputmethod.keyboard.layout.tests;
 
-import android.test.suitebuilder.annotation.Suppress;
+import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.inputmethod.keyboard.layout.LayoutBase;
 import com.android.inputmethod.keyboard.layout.Sinhala;
@@ -27,7 +27,7 @@ import java.util.Locale;
 /**
  * si_LK: Sinhala (Sri Lanka)/sinhala
  */
-@Suppress
+@SmallTest
 public final class TestsSinhalaLK extends LayoutTestsBase {
     private static final Locale LOCALE = new Locale("si", "LK");
     private static final LayoutBase LAYOUT = new Sinhala(new SinhalaCustomizer(LOCALE));
