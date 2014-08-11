@@ -16,7 +16,7 @@
 
 package com.android.inputmethod.keyboard.layout.tests;
 
-import android.test.suitebuilder.annotation.Suppress;
+import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.inputmethod.keyboard.layout.Bengali;
 import com.android.inputmethod.keyboard.layout.Bengali.BengaliCustomizer;
@@ -29,7 +29,7 @@ import java.util.Locale;
 /**
  * bn_IN: Bengali (India)/bengali
  */
-@Suppress
+@SmallTest
 public final class TestsBengaliIN extends LayoutTestsBase {
     private static final Locale LOCALE = new Locale("bn", "IN");
     private static final LayoutBase LAYOUT = new Bengali(new BengaliINCustomzier(LOCALE));
