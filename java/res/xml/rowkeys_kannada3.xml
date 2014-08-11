@@ -29,13 +29,12 @@
     <Key
         latin:keySpec="&#x0C82;"
         latin:moreKeys="&#x0C8E;" />
-    <!-- U+0CAE: "ಮ" KANNADA LETTER MA
+    <!-- U+0CAE: "ಮ" KANNADA LETTER MA -->
+    <Key latin:keySpec="&#x0CAE;" />
+    <!-- U+0CA8: "ನ" KANNADA LETTER NA
          U+0CA3: "ಣ" KANNADA LETTER NNA -->
-    <Key
-        latin:keySpec="&#x0CAE;"
+    <Key latin:keySpec="&#x0CA8;"
         latin:moreKeys="&#x0CA3;" />
-    <!-- U+0CA8: "ನ" KANNADA LETTER NA -->
-    <Key latin:keySpec="&#x0CA8;" />
     <!-- U+0CB5: "ವ" KANNADA LETTER VA -->
     <Key latin:keySpec="&#x0CB5;" />
     <!-- U+0CB2: "ಲ" KANNADA LETTER LA
