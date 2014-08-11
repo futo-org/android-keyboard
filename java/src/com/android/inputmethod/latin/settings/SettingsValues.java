@@ -40,7 +40,8 @@ import java.util.Locale;
  * When you call the constructor of this class, you may want to change the current system locale by
  * using {@link com.android.inputmethod.latin.utils.RunInLocale}.
  */
-public final class SettingsValues {
+// Non-final for testing via mock library.
+public class SettingsValues {
     private static final String TAG = SettingsValues.class.getSimpleName();
     // "floatMaxValue" and "floatNegativeInfinity" are special marker strings for
     // Float.NEGATIVE_INFINITE and Float.MAX_VALUE. Currently used for auto-correction settings.
@@ -184,6 +185,10 @@ public final class SettingsValues {
             new TargetPackageInfoGetterTask(context, mAppWorkarounds)
                     .execute(mInputAttributes.mTargetApplicationPackageName);
         }
+    }
+
+    public boolean isMetricsLoggingEnabled() {
+        return mEnableMetricsLogging;
     }
 
     public boolean isApplicationSpecifiedCompletionsOn() {
