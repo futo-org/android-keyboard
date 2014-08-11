@@ -28,18 +28,18 @@ import com.android.inputmethod.keyboard.layout.expected.ExpectedKey;
 import java.util.Locale;
 
 /**
- * ta_IN: Tamil (India)/tamil
+ * ta_LK: Tamil (Sri Lanka)/tamil
  */
 @SmallTest
-public final class TestsTamilIN extends LayoutTestsBase {
-    private static final Locale LOCALE = new Locale("ta", "IN");
-    private static final LayoutBase LAYOUT = new Tamil(new TamilINCustomizer(LOCALE));
+public final class TestsTamilLK extends LayoutTestsBase {
+    private static final Locale LOCALE = new Locale("ta", "LK");
+    private static final LayoutBase LAYOUT = new Tamil(new TamilLKCustomizer(LOCALE));
 
     @Override
     LayoutBase getLayout() { return LAYOUT; }
 
-    private static class TamilINCustomizer extends TamilCustomizer {
-        public TamilINCustomizer(final Locale locale) { super(locale); }
+    private static class TamilLKCustomizer extends TamilCustomizer {
+        public TamilLKCustomizer(final Locale locale) { super(locale); }
 
         @Override
         public ExpectedKey getCurrencyKey() { return CURRENCY_RUPEE; }
@@ -49,8 +49,8 @@ public final class TestsTamilIN extends LayoutTestsBase {
             return SymbolsShifted.CURRENCIES_OTHER_GENERIC;
         }
 
-        // U+20B9: "₹" INDIAN RUPEE SIGN
-        private static final ExpectedKey CURRENCY_RUPEE = key("\u20B9",
+        // U+0DBB/U+0DD4: "රු" SINHALA LETTER RAYANNA/SINHALA VOWEL SIGN KETTI PAA-PILLA
+        private static final ExpectedKey CURRENCY_RUPEE = key("\u0DBB\u0DD4",
                 Symbols.CURRENCY_GENERIC_MORE_KEYS);
     }
 }

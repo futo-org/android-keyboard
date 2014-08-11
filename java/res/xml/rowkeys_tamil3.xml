@@ -19,10 +19,16 @@
 -->
 
 <merge xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin">
-    <!-- U+0B92: "ஒ" TAMIL LETTER O -->
-    <Key latin:keySpec="&#x0B92;" />
-    <!-- U+0B8E: "எ" TAMIL LETTER E -->
-    <Key latin:keySpec="&#x0B8E;" />
+    <!-- U+0B92: "ஒ" TAMIL LETTER O
+         U+0BCA: "ொ" TAMIL VOWEL SIGN O -->
+    <Key
+        latin:keySpec="&#x0B92;"
+        latin:moreKeys="&#x0BCA;" />
+    <!-- U+0B8E: "எ" TAMIL LETTER E
+         U+0BC6: "ெ" TAMIL VOWEL SIGN E -->
+    <Key
+        latin:keySpec="&#x0B8E;"
+        latin:moreKeys="&#x0BC6;" />
     <!-- U+0BCD: "்" TAMIL SIGN VIRAMA -->
     <Key latin:keySpec="&#x0BCD;" />
     <!-- U+0BB0: "ர" TAMIL LETTER RA -->
