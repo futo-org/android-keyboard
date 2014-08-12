@@ -22,10 +22,11 @@
          See {@link SettingsValues#needsToShowVoiceInputKey(SharedPreferences,Resources)} -->
     <string name="voice_mode_main">0</string>
 
-    <!-- Title for Latin keyboard debug settings activity / dialog -->
-    <string name="english_ime_debug_settings">Android keyboard Debug settings</string>
+    <!-- Title for Android keyboard debug settings activity / dialog -->
+    <string name="english_ime_debug_settings">Android Keyboard Debug settings</string>
     <string name="prefs_debug_mode">Debug Mode</string>
     <string name="prefs_force_non_distinct_multitouch">Force non-distinct multitouch</string>
+    <string name="prefs_force_physical_keyboard_special_key">Force physical keyboard special key</string>
 
     <!-- Subtype locale display name exceptions.
          For each exception, there should be related string resources for display name that may have
