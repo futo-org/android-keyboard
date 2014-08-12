@@ -77,7 +77,8 @@
     <string name="voice_input_disabled_summary" msgid="8141750303464726129">"குரல் உள்ளீட்டு முறைகள் எதுவும் இயக்கப்படவில்லை. மொழி &amp; உள்ளீட்டு அமைப்புகளைச் சரிபார்க்கவும்."</string>
     <string name="configure_input_method" msgid="373356270290742459">"உள்ளீட்டு முறைகளை உள்ளமைத்தல்"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"உள்ளீட்டு மொழிகள்"</string>
-    <string name="send_feedback" msgid="1780431884109392046">"கருத்தை அனுப்பு"</string>
+    <!-- no translation found for help_and_feedback (5328219371839879161) -->
+    <skip />
     <string name="select_language" msgid="3693815588777926848">"உள்ளீட்டு மொழிகள்"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"சேமிக்க தொடவும்"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"அகராதி உள்ளது"</string>

@@ -77,7 +77,7 @@
     <string name="voice_input_disabled_summary" msgid="8141750303464726129">"ไม่ได้เปิดใช้วิธีการป้อนข้อมูลด้วยเสียง ตรวจสอบภาษาและการตั้งค่าการป้อนข้อมูล"</string>
     <string name="configure_input_method" msgid="373356270290742459">"กำหนดค่าวิธีการป้อนข้อมูล"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"ภาษาในการป้อนข้อมูล"</string>
-    <string name="send_feedback" msgid="1780431884109392046">"ส่งข้อเสนอแนะ"</string>
+    <string name="help_and_feedback" msgid="5328219371839879161">"ความช่วยเหลือและความคิดเห็น"</string>
     <string name="select_language" msgid="3693815588777926848">"ภาษาสำหรับการป้อนข้อมูล"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"แตะอีกครั้งเพื่อบัน​​ทึก"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"มีพจนานุกรมให้ใช้งาน"</string>

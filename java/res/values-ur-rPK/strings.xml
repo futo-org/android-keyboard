@@ -77,7 +77,8 @@
     <string name="voice_input_disabled_summary" msgid="8141750303464726129">"کوئی صوتی اندراج کے طریقے فعال نہیں ہیں۔ زبان اور ان پٹ ترتیبات کو چیک کریں۔"</string>
     <string name="configure_input_method" msgid="373356270290742459">"اندراج کے طریقے کنفیگر کریں"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"ان پٹ زبانیں"</string>
-    <string name="send_feedback" msgid="1780431884109392046">"تاثرات بھیجیں"</string>
+    <!-- no translation found for help_and_feedback (5328219371839879161) -->
+    <skip />
     <string name="select_language" msgid="3693815588777926848">"ان پٹ زبانیں"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"محفوظ کرنے کیلئے دوبارہ ٹچ کریں"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"لغت دستیاب ہے"</string>

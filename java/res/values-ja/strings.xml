@@ -77,7 +77,8 @@
     <string name="voice_input_disabled_summary" msgid="8141750303464726129">"有効になっている音声入力方法がありません。[言語と入力]設定をご確認ください。"</string>
     <string name="configure_input_method" msgid="373356270290742459">"入力方法を設定"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"入力言語"</string>
-    <string name="send_feedback" msgid="1780431884109392046">"フィードバックを送信"</string>
+    <!-- no translation found for help_and_feedback (5328219371839879161) -->
+    <skip />
     <string name="select_language" msgid="3693815588777926848">"入力言語"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"保存するにはもう一度タップ"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"辞書を利用できます"</string>
