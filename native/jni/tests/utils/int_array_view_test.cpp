@@ -53,8 +53,23 @@ TEST(IntArrayViewTest, TestConstructFromArray) {
 TEST(IntArrayViewTest, TestConstructFromObject) {
     const int object = 10;
     const auto intArrayView = IntArrayView::fromObject(&object);
-    EXPECT_EQ(1, intArrayView.size());
+    EXPECT_EQ(1u, intArrayView.size());
     EXPECT_EQ(object, intArrayView[0]);
+}
+
+TEST(IntArrayViewTest, TestLimit) {
+    const std::vector<int> intVector = {3, 2, 1, 0, -1, -2};
+    IntArrayView intArrayView(intVector);
+
+    EXPECT_TRUE(intArrayView.limit(0).empty());
+    EXPECT_EQ(intArrayView.size(), intArrayView.limit(intArrayView.size()).size());
+    EXPECT_EQ(intArrayView.size(), intArrayView.limit(1000).size());
+
+    IntArrayView subView = intArrayView.limit(4);
+    EXPECT_EQ(4u, subView.size());
+    for (size_t i = 0; i < subView.size(); ++i) {
+        EXPECT_EQ(intVector[i], subView[i]);
+    }
 }
 
 }  // namespace

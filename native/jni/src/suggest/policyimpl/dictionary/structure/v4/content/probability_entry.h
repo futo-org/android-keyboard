@@ -21,6 +21,8 @@
 #include <cstdint>
 
 #include "defines.h"
+#include "suggest/core/dictionary/property/bigram_property.h"
+#include "suggest/core/dictionary/property/unigram_property.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_dict_constants.h"
 #include "suggest/policyimpl/dictionary/utils/historical_info.h"
 
@@ -45,6 +47,20 @@ class ProbabilityEntry {
             const HistoricalInfo *const historicalInfo)
             : mFlags(flags), mProbability(probability), mHistoricalInfo(*historicalInfo) {}
 
+    // Create from unigram property.
+    // TODO: Set flags.
+    ProbabilityEntry(const UnigramProperty *const unigramProperty)
+            : mFlags(0), mProbability(unigramProperty->getProbability()),
+              mHistoricalInfo(unigramProperty->getTimestamp(), unigramProperty->getLevel(),
+                      unigramProperty->getCount()) {}
+
+    // Create from bigram property.
+    // TODO: Set flags.
+    ProbabilityEntry(const BigramProperty *const bigramProperty)
+            : mFlags(0), mProbability(bigramProperty->getProbability()),
+              mHistoricalInfo(bigramProperty->getTimestamp(), bigramProperty->getLevel(),
+                      bigramProperty->getCount()) {}
+
     const ProbabilityEntry createEntryWithUpdatedProbability(const int probability) const {
         return ProbabilityEntry(mFlags, probability, &mHistoricalInfo);
     }
@@ -52,6 +68,10 @@ class ProbabilityEntry {
     const ProbabilityEntry createEntryWithUpdatedHistoricalInfo(
             const HistoricalInfo *const historicalInfo) const {
         return ProbabilityEntry(mFlags, mProbability, historicalInfo);
+    }
+
+    bool isValid() const {
+        return (mProbability != NOT_A_PROBABILITY) || hasHistoricalInfo();
     }
 
     bool hasHistoricalInfo() const {
@@ -89,7 +109,7 @@ class ProbabilityEntry {
     static ProbabilityEntry decode(const uint64_t encodedEntry, const bool hasHistoricalInfo) {
         if (hasHistoricalInfo) {
             const int flags = readFromEncodedEntry(encodedEntry,
-                    Ver4DictConstants::FLAGS_IN_PROBABILITY_FILE_SIZE,
+                    Ver4DictConstants::FLAGS_IN_LANGUAGE_MODEL_SIZE,
                     Ver4DictConstants::TIME_STAMP_FIELD_SIZE
                             + Ver4DictConstants::WORD_LEVEL_FIELD_SIZE
                             + Ver4DictConstants::WORD_COUNT_FIELD_SIZE);
@@ -106,7 +126,7 @@ class ProbabilityEntry {
             return ProbabilityEntry(flags, NOT_A_PROBABILITY, &historicalInfo);
         } else {
             const int flags = readFromEncodedEntry(encodedEntry,
-                    Ver4DictConstants::FLAGS_IN_PROBABILITY_FILE_SIZE,
+                    Ver4DictConstants::FLAGS_IN_LANGUAGE_MODEL_SIZE,
                     Ver4DictConstants::PROBABILITY_SIZE);
             const int probability = readFromEncodedEntry(encodedEntry,
                     Ver4DictConstants::PROBABILITY_SIZE, 0 /* pos */);

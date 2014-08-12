@@ -234,8 +234,8 @@ bool Ver4PatriciaTrieNodeWriter::writeNewTerminalPtNodeAndAdvancePosition(
 bool Ver4PatriciaTrieNodeWriter::addNgramEntry(const WordIdArrayView prevWordIds, const int wordId,
         const BigramProperty *const bigramProperty, bool *const outAddedNewEntry) {
     if (!mBigramPolicy->addNewEntry(prevWordIds[0], wordId, bigramProperty, outAddedNewEntry)) {
-        AKLOGE("Cannot add new bigram entry. terminalId: %d, targetTerminalId: %d",
-                sourcePtNodeParams->getTerminalId(), targetPtNodeParam->getTerminalId());
+        AKLOGE("Cannot add new bigram entry. prevWordId: %d, wordId: %d",
+                prevWordIds[0], wordId);
         return false;
     }
     const int ptNodePos =

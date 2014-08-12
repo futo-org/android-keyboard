@@ -76,7 +76,7 @@ class LanguageModelDictContent {
     bool runGCInner(const TerminalPositionLookupTable::TerminalIdMap *const terminalIdMap,
             const TrieMap::TrieMapRange trieMapRange, const int nextLevelBitmapEntryIndex,
             int *const outNgramCount);
-
+    int createAndGetBitmapEntryIndex(const WordIdArrayView prevWordIds);
     int getBitmapEntryIndex(const WordIdArrayView prevWordIds) const;
 };
 } // namespace latinime
