@@ -46,7 +46,7 @@ ProbabilityEntry LanguageModelDictContent::getNgramProbabilityEntry(
 
 bool LanguageModelDictContent::setNgramProbabilityEntry(const WordIdArrayView prevWordIds,
         const int terminalId, const ProbabilityEntry *const probabilityEntry) {
-    const int bitmapEntryIndex = getBitmapEntryIndex(prevWordIds);
+    const int bitmapEntryIndex = createAndGetBitmapEntryIndex(prevWordIds);
     if (bitmapEntryIndex == TrieMap::INVALID_INDEX) {
         return false;
     }
@@ -78,6 +78,19 @@ bool LanguageModelDictContent::runGCInner(
         }
     }
     return true;
+}
+
+int LanguageModelDictContent::createAndGetBitmapEntryIndex(const WordIdArrayView prevWordIds) {
+    if (prevWordIds.empty()) {
+        return mTrieMap.getRootBitmapEntryIndex();
+    }
+    const int lastBitmapEntryIndex =
+            getBitmapEntryIndex(prevWordIds.limit(prevWordIds.size() - 1));
+    if (lastBitmapEntryIndex == TrieMap::INVALID_INDEX) {
+        return TrieMap::INVALID_INDEX;
+    }
+    return mTrieMap.getNextLevelBitmapEntryIndex(prevWordIds[prevWordIds.size() - 1],
+            lastBitmapEntryIndex);
 }
 
 int LanguageModelDictContent::getBitmapEntryIndex(const WordIdArrayView prevWordIds) const {
