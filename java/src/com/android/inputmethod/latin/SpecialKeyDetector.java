@@ -16,9 +16,17 @@
 
 package com.android.inputmethod.latin;
 
+import android.content.Context;
 import android.view.KeyEvent;
 
 final class SpecialKeyDetector {
+    /**
+     * Special physical key detector
+     * @param context a context of this detector.
+     */
+    public SpecialKeyDetector(final Context context) {
+    }
+
     /**
      * Record a down key event.
      * @param keyEvent a down key event.
