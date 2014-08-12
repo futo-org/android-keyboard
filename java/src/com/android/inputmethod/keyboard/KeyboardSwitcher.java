@@ -18,6 +18,7 @@ package com.android.inputmethod.keyboard;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -233,9 +234,19 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     }
 
     private void setMainKeyboardFrame() {
-        mMainKeyboardFrame.setVisibility(View.VISIBLE);
+        mMainKeyboardFrame.setVisibility(hasHardwareKeyboard() ? View.GONE : View.VISIBLE);
         mEmojiPalettesView.setVisibility(View.GONE);
         mEmojiPalettesView.stopEmojiPalettes();
+    }
+
+    // TODO: Move this boolean to a member of {@link SettingsValues} and reset it
+    // at {@link LatinIME#onConfigurationChanged(Configuration)}.
+    public boolean hasHardwareKeyboard() {
+        // Copied from {@link InputMethodServce#onEvaluateInputViewShown()}.
+        final Configuration config = mLatinIME.getResources().getConfiguration();
+        final boolean noHardwareKeyboard = config.keyboard == Configuration.KEYBOARD_NOKEYS
+                || config.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_YES;
+        return !noHardwareKeyboard;
     }
 
     // Implements {@link KeyboardState.SwitchActions}.
@@ -247,6 +258,14 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
                 mKeyboardTextsSet.getText(KeyboardTextsSet.SWITCH_TO_ALPHA_KEY_LABEL),
                 mKeyboardView.getKeyVisualAttribute(), keyboard.mIconsSet);
         mEmojiPalettesView.setVisibility(View.VISIBLE);
+    }
+
+    public void onToggleEmojiKeyboard() {
+        if (isShowingEmojiPalettes()) {
+            setAlphabetKeyboard();
+        } else {
+            setEmojiKeyboard();
+        }
     }
 
     // Implements {@link KeyboardState.SwitchActions}.
