@@ -25,7 +25,7 @@ import com.android.inputmethod.keyboard.layout.Malayalam.MalayalamCustomizer;
 import java.util.Locale;
 
 /**
- * ta_IN: Malayalam (India)/malayalam
+ * ml_IN: Malayalam (India)/malayalam
  */
 @SmallTest
 public final class TestsMalayalamIN extends LayoutTestsBase {
