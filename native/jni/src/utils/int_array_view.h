@@ -91,6 +91,11 @@ class IntArrayView {
         return mPtr + mSize;
     }
 
+    // Returns the view whose size is smaller than or equal to the given count.
+    const IntArrayView limit(const size_t maxSize) const {
+        return IntArrayView(mPtr, std::min(maxSize, mSize));
+    }
+
  private:
     DISALLOW_ASSIGNMENT_OPERATOR(IntArrayView);
 

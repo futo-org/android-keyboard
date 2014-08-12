@@ -98,12 +98,12 @@ class Ver4PatriciaTrieNodeWriter : public PtNodeWriter {
             const PtNodeParams *const ptNodeParams, int *const outTerminalId,
             int *const ptNodeWritingPos);
 
-    // Create updated probability entry using given unigram property. In addition to the
+    // Create updated probability entry using given probability property. In addition to the
     // probability, this method updates historical information if needed.
-    // TODO: Update flags belonging to the unigram property.
+    // TODO: Update flags.
     const ProbabilityEntry createUpdatedEntryFrom(
             const ProbabilityEntry *const originalProbabilityEntry,
-            const UnigramProperty *const unigramProperty) const;
+            const ProbabilityEntry *const probabilityEntry) const;
 
     bool updatePtNodeFlags(const int ptNodePos, const bool isBlacklisted, const bool isNotAWord,
             const bool isTerminal, const bool hasMultipleChars);

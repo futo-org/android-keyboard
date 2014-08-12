@@ -145,10 +145,11 @@ bool Ver4PatriciaTrieNodeWriter::updatePtNodeUnigramProperty(
     const ProbabilityEntry originalProbabilityEntry =
             mBuffers->getLanguageModelDictContent()->getProbabilityEntry(
                     toBeUpdatedPtNodeParams->getTerminalId());
-    const ProbabilityEntry probabilityEntry = createUpdatedEntryFrom(&originalProbabilityEntry,
-            unigramProperty);
+    const ProbabilityEntry probabilityEntryOfUnigramProperty = ProbabilityEntry(unigramProperty);
+    const ProbabilityEntry updatedProbabilityEntry =
+            createUpdatedEntryFrom(&originalProbabilityEntry, &probabilityEntryOfUnigramProperty);
     return mBuffers->getMutableLanguageModelDictContent()->setProbabilityEntry(
-            toBeUpdatedPtNodeParams->getTerminalId(), &probabilityEntry);
+            toBeUpdatedPtNodeParams->getTerminalId(), &updatedProbabilityEntry);
 }
 
 bool Ver4PatriciaTrieNodeWriter::updatePtNodeProbabilityAndGetNeedsToKeepPtNodeAfterGC(
@@ -216,16 +217,36 @@ bool Ver4PatriciaTrieNodeWriter::writeNewTerminalPtNodeAndAdvancePosition(
     }
     // Write probability.
     ProbabilityEntry newProbabilityEntry;
+    const ProbabilityEntry probabilityEntryOfUnigramProperty = ProbabilityEntry(unigramProperty);
     const ProbabilityEntry probabilityEntryToWrite = createUpdatedEntryFrom(
-            &newProbabilityEntry, unigramProperty);
+            &newProbabilityEntry, &probabilityEntryOfUnigramProperty);
     return mBuffers->getMutableLanguageModelDictContent()->setProbabilityEntry(
             terminalId, &probabilityEntryToWrite);
 }
 
 bool Ver4PatriciaTrieNodeWriter::addNgramEntry(const WordIdArrayView prevWordIds, const int wordId,
         const BigramProperty *const bigramProperty, bool *const outAddedNewBigram) {
+    // TODO: Support n-gram.
+    LanguageModelDictContent *const languageModelDictContent =
+            mBuffers->getMutableLanguageModelDictContent();
+    const ProbabilityEntry probabilityEntry =
+            languageModelDictContent->getNgramProbabilityEntry(
+                    prevWordIds.limit(1 /* maxSize */), wordId);
+    const ProbabilityEntry probabilityEntryOfBigramProperty(bigramProperty);
+    const ProbabilityEntry updatedProbabilityEntry = createUpdatedEntryFrom(
+            &probabilityEntry, &probabilityEntryOfBigramProperty);
+    if (!languageModelDictContent->setNgramProbabilityEntry(
+            prevWordIds.limit(1 /* maxSize */), wordId, &updatedProbabilityEntry)) {
+        AKLOGE("Cannot add new ngram entry. prevWordId: %d, wordId: %d",
+                prevWordIds[0], wordId);
+        return false;
+    }
+    if (!probabilityEntry.isValid() && outAddedNewBigram) {
+        *outAddedNewBigram = true;
+    }
+    // TODO: Remove.
     if (!mBigramPolicy->addNewEntry(prevWordIds[0], wordId, bigramProperty, outAddedNewBigram)) {
-        AKLOGE("Cannot add new bigram entry. terminalId: %d, targetTerminalId: %d",
+        AKLOGE("Cannot add new bigram entry. prevWordId: %d, wordId: %d",
                 prevWordIds[0], wordId);
         return false;
     }
@@ -234,6 +255,7 @@ bool Ver4PatriciaTrieNodeWriter::addNgramEntry(const WordIdArrayView prevWordIds
 
 bool Ver4PatriciaTrieNodeWriter::removeNgramEntry(const WordIdArrayView prevWordIds,
         const int wordId) {
+    // TODO: Remove.
     return mBigramPolicy->removeEntry(prevWordIds[0], wordId);
 }
 
@@ -352,20 +374,19 @@ bool Ver4PatriciaTrieNodeWriter::writePtNodeAndGetTerminalIdAndAdvancePosition(
 
 const ProbabilityEntry Ver4PatriciaTrieNodeWriter::createUpdatedEntryFrom(
         const ProbabilityEntry *const originalProbabilityEntry,
-        const UnigramProperty *const unigramProperty) const {
+        const ProbabilityEntry *const probabilityEntry) const {
     // TODO: Consolidate historical info and probability.
     if (mHeaderPolicy->hasHistoricalInfoOfWords()) {
-        const HistoricalInfo historicalInfoForUpdate(unigramProperty->getTimestamp(),
-                unigramProperty->getLevel(), unigramProperty->getCount());
         const HistoricalInfo updatedHistoricalInfo =
                 ForgettingCurveUtils::createUpdatedHistoricalInfo(
                         originalProbabilityEntry->getHistoricalInfo(),
-                        unigramProperty->getProbability(), &historicalInfoForUpdate, mHeaderPolicy);
+                        probabilityEntry->getProbability(), probabilityEntry->getHistoricalInfo(),
+                        mHeaderPolicy);
         return originalProbabilityEntry->createEntryWithUpdatedHistoricalInfo(
                 &updatedHistoricalInfo);
     } else {
         return originalProbabilityEntry->createEntryWithUpdatedProbability(
-                unigramProperty->getProbability());
+                probabilityEntry->getProbability());
     }
 }
 
