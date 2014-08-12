@@ -647,7 +647,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     @UsedForTesting
     public void waitAllTasksForTests() {
         final CountDownLatch countDownLatch = new CountDownLatch(1);
-        ExecutorUtils.getExecutor(mDictName).execute(new Runnable() {
+        asyncExecuteTaskWithWriteLock(new Runnable() {
             @Override
             public void run() {
                 countDownLatch.countDown();
