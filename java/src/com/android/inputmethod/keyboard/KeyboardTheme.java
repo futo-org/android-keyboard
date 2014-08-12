@@ -17,11 +17,11 @@
 package com.android.inputmethod.keyboard;
 
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Build.VERSION_CODES;
 import android.util.Log;
 
 import com.android.inputmethod.annotations.UsedForTesting;
+import com.android.inputmethod.compat.BuildCompatUtils;
 import com.android.inputmethod.latin.R;
 
 import java.util.Arrays;
@@ -47,8 +47,7 @@ public final class KeyboardTheme implements Comparable<KeyboardTheme> {
                 VERSION_CODES.ICE_CREAM_SANDWICH),
         new KeyboardTheme(THEME_ID_LXX_LIGHT, R.style.KeyboardTheme_LXX_Light,
                 // Default theme for LXX.
-                // TODO: Update this constant once the *next* version becomes available.
-                VERSION_CODES.CUR_DEVELOPMENT),
+                BuildCompatUtils.VERSION_CODES_LXX),
         new KeyboardTheme(THEME_ID_LXX_DARK, R.style.KeyboardTheme_LXX_Dark,
                 VERSION_CODES.BASE),
     };
@@ -99,15 +98,6 @@ public final class KeyboardTheme implements Comparable<KeyboardTheme> {
         return null;
     }
 
-    private static int getSdkVersion() {
-        final int sdkVersion = Build.VERSION.SDK_INT;
-        // TODO: Consider to remove this check once the *next* version becomes available.
-        if (sdkVersion > VERSION_CODES.KITKAT) {
-            return VERSION_CODES.CUR_DEVELOPMENT;
-        }
-        return sdkVersion;
-    }
-
     @UsedForTesting
     static KeyboardTheme getDefaultKeyboardTheme(final SharedPreferences prefs,
             final int sdkVersion) {
@@ -140,7 +130,7 @@ public final class KeyboardTheme implements Comparable<KeyboardTheme> {
 
     public static void saveKeyboardThemeId(final String themeIdString,
             final SharedPreferences prefs) {
-        saveKeyboardThemeId(themeIdString, prefs, getSdkVersion());
+        saveKeyboardThemeId(themeIdString, prefs, BuildCompatUtils.EFFECTIVE_SDK_INT);
     }
 
     @UsedForTesting
@@ -159,7 +149,7 @@ public final class KeyboardTheme implements Comparable<KeyboardTheme> {
     }
 
     public static KeyboardTheme getKeyboardTheme(final SharedPreferences prefs) {
-        return getKeyboardTheme(prefs, getSdkVersion());
+        return getKeyboardTheme(prefs, BuildCompatUtils.EFFECTIVE_SDK_INT);
     }
 
     @UsedForTesting
