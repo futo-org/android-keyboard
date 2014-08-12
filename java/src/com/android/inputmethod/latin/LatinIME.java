@@ -155,6 +155,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     @UsedForTesting final KeyboardSwitcher mKeyboardSwitcher;
     private final SubtypeSwitcher mSubtypeSwitcher;
     private final SubtypeState mSubtypeState = new SubtypeState();
+    private final SpecialKeyDetector mSpecialKeyDetector = new SpecialKeyDetector();
 
     // Object for reacting to adding/removing a dictionary pack.
     private final BroadcastReceiver mDictionaryPackInstallReceiver =
@@ -1589,6 +1590,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // Hooks for hardware keyboard
     @Override
     public boolean onKeyDown(final int keyCode, final KeyEvent keyEvent) {
+        mSpecialKeyDetector.onKeyDown(keyEvent);
         if (!ProductionFlags.IS_HARDWARE_KEYBOARD_SUPPORTED) {
             return super.onKeyDown(keyCode, keyEvent);
         }
@@ -1608,12 +1610,16 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     @Override
-    public boolean onKeyUp(final int keyCode, final KeyEvent event) {
-        final long keyIdentifier = event.getDeviceId() << 32 + event.getKeyCode();
+    public boolean onKeyUp(final int keyCode, final KeyEvent keyEvent) {
+        mSpecialKeyDetector.onKeyUp(keyEvent);
+        if (!ProductionFlags.IS_HARDWARE_KEYBOARD_SUPPORTED) {
+            return super.onKeyUp(keyCode, keyEvent);
+        }
+        final long keyIdentifier = keyEvent.getDeviceId() << 32 + keyEvent.getKeyCode();
         if (mInputLogic.mCurrentlyPressedHardwareKeys.remove(keyIdentifier)) {
             return true;
         }
-        return super.onKeyUp(keyCode, event);
+        return super.onKeyUp(keyCode, keyEvent);
     }
 
     // onKeyDown and onKeyUp are the main events we are interested in. There are two more events
