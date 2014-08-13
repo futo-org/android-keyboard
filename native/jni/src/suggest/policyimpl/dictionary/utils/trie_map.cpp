@@ -26,6 +26,7 @@ const int TrieMap::FIELD1_SIZE = 3;
 const int TrieMap::ENTRY_SIZE = FIELD0_SIZE + FIELD1_SIZE;
 const uint32_t TrieMap::VALUE_FLAG = 0x400000;
 const uint32_t TrieMap::VALUE_MASK = 0x3FFFFF;
+const uint32_t TrieMap::INVALID_VALUE_IN_KEY_VALUE_ENTRY = VALUE_MASK;
 const uint32_t TrieMap::TERMINAL_LINK_FLAG = 0x800000;
 const uint32_t TrieMap::TERMINAL_LINK_MASK = 0x7FFFFF;
 const int TrieMap::NUM_OF_BITS_USED_FOR_ONE_LEVEL = 5;
@@ -34,6 +35,7 @@ const int TrieMap::MAX_NUM_OF_ENTRIES_IN_ONE_LEVEL = 1 << NUM_OF_BITS_USED_FOR_O
 const int TrieMap::ROOT_BITMAP_ENTRY_INDEX = 0;
 const int TrieMap::ROOT_BITMAP_ENTRY_POS = MAX_NUM_OF_ENTRIES_IN_ONE_LEVEL * FIELD0_SIZE;
 const TrieMap::Entry TrieMap::EMPTY_BITMAP_ENTRY = TrieMap::Entry(0, 0);
+const int TrieMap::TERMINAL_LINKED_ENTRY_COUNT = 2; // Value entry and bitmap entry.
 const uint64_t TrieMap::MAX_VALUE =
         (static_cast<uint64_t>(1) << ((FIELD0_SIZE + FIELD1_SIZE) * CHAR_BIT)) - 1;
 const int TrieMap::MAX_BUFFER_SIZE = TERMINAL_LINK_MASK * ENTRY_SIZE;
@@ -76,7 +78,7 @@ int TrieMap::getNextLevelBitmapEntryIndex(const int key, const int bitmapEntryIn
         return terminalEntry.getValueEntryIndex() + 1;
     }
     // Create a value entry and a bitmap entry.
-    const int valueEntryIndex = allocateTable(2 /* entryCount */);
+    const int valueEntryIndex = allocateTable(TERMINAL_LINKED_ENTRY_COUNT);
     if (!writeEntry(Entry(0, terminalEntry.getValue()), valueEntryIndex)) {
         return INVALID_INDEX;
     }
@@ -108,6 +110,31 @@ bool TrieMap::save(FILE *const file) const {
     return DictFileWritingUtils::writeBufferToFileTail(file, &mBuffer);
 }
 
+bool TrieMap::remove(const int key, const int bitmapEntryIndex) {
+    const Entry bitmapEntry = readEntry(bitmapEntryIndex);
+    const uint32_t unsignedKey = static_cast<uint32_t>(key);
+    const int terminalEntryIndex = getTerminalEntryIndex(
+            unsignedKey, getBitShuffledKey(unsignedKey), bitmapEntry, 0 /* level */);
+    if (terminalEntryIndex == INVALID_INDEX) {
+        // Not found.
+        return false;
+    }
+    const Entry terminalEntry = readEntry(terminalEntryIndex);
+    if (!writeField1(VALUE_FLAG ^ INVALID_VALUE_IN_KEY_VALUE_ENTRY , terminalEntryIndex)) {
+        return false;
+    }
+    if (terminalEntry.hasTerminalLink()) {
+        const Entry nextLevelBitmapEntry = readEntry(terminalEntry.getValueEntryIndex() + 1);
+        if (!freeTable(terminalEntry.getValueEntryIndex(), TERMINAL_LINKED_ENTRY_COUNT)) {
+            return false;
+        }
+        if (!removeInner(nextLevelBitmapEntry)){
+            return false;
+        }
+    }
+    return true;
+}
+
 /**
  * Iterate next entry in a certain level.
  *
@@ -129,7 +156,7 @@ const TrieMap::Result TrieMap::iterateNext(std::vector<TableIterationState> *con
             if (entry.isBitmapEntry()) {
                 // Move to child.
                 iterationState->emplace_back(popCount(entry.getBitmap()), entry.getTableIndex());
-            } else {
+            } else if (entry.isValidTerminalEntry()) {
                 if (outKey) {
                     *outKey = entry.getKey();
                 }
@@ -162,12 +189,12 @@ uint32_t TrieMap::getBitShuffledKey(const uint32_t key) const {
 }
 
 bool TrieMap::writeValue(const uint64_t value, const int terminalEntryIndex) {
-    if (value <= VALUE_MASK) {
+    if (value < VALUE_MASK) {
         // Write value into the terminal entry.
         return writeField1(value | VALUE_FLAG, terminalEntryIndex);
     }
     // Create value entry and write value.
-    const int valueEntryIndex = allocateTable(2 /* entryCount */);
+    const int valueEntryIndex = allocateTable(TERMINAL_LINKED_ENTRY_COUNT);
     if (!writeEntry(Entry(value >> (FIELD1_SIZE * CHAR_BIT), value), valueEntryIndex)) {
         return false;
     }
@@ -226,6 +253,9 @@ int TrieMap::getTerminalEntryIndex(const uint32_t key, const uint32_t hashedKey,
     if (entry.isBitmapEntry()) {
         // Move to the next level.
         return getTerminalEntryIndex(key, hashedKey, entry, level + 1);
+    }
+    if (!entry.isValidTerminalEntry()) {
+        return INVALID_INDEX;
     }
     if (entry.getKey() == key) {
         // Terminal entry is found.
@@ -286,6 +316,10 @@ bool TrieMap::putInternal(const uint32_t key, const uint64_t value, const uint32
     if (entry.isBitmapEntry()) {
         // Bitmap entry is found. Go to the next level.
         return putInternal(key, value, hashedKey, entryIndex, entry, level + 1);
+    }
+    if (!entry.isValidTerminalEntry()) {
+        // Overwrite invalid terminal entry.
+        return writeTerminalEntry(key, value, entryIndex);
     }
     if (entry.getKey() == key) {
         // Terminal entry for the key is found. Update the value.
@@ -382,6 +416,35 @@ bool TrieMap::addNewEntryByExpandingTable(const uint32_t key, const uint64_t val
         return freeTable(tableIndex, entryCount);
     }
     return true;
+}
+
+bool TrieMap::removeInner(const Entry &bitmapEntry) {
+    const int tableSize = popCount(bitmapEntry.getBitmap());
+    for (int i = 0; i < tableSize; ++i) {
+        const int entryIndex = bitmapEntry.getTableIndex() + i;
+        const Entry entry = readEntry(entryIndex);
+        if (entry.isBitmapEntry()) {
+            // Delete next bitmap entry recursively.
+            if (!removeInner(entry)) {
+                return false;
+            }
+        } else {
+            // Invalidate terminal entry just in case.
+            if (!writeField1(VALUE_FLAG ^ INVALID_VALUE_IN_KEY_VALUE_ENTRY , entryIndex)) {
+                return false;
+            }
+            if (entry.hasTerminalLink()) {
+                const Entry nextLevelBitmapEntry = readEntry(entry.getValueEntryIndex() + 1);
+                if (!freeTable(entry.getValueEntryIndex(), TERMINAL_LINKED_ENTRY_COUNT)) {
+                    return false;
+                }
+                if (!removeInner(nextLevelBitmapEntry)) {
+                    return false;
+                }
+            }
+        }
+    }
+    return freeTable(bitmapEntry.getTableIndex(), tableSize);
 }
 
 }  // namespace latinime
