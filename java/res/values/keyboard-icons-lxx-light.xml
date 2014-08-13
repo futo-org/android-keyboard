@@ -40,6 +40,9 @@
         <item name="iconLanguageSwitchKey">@drawable/sym_keyboard_language_switch_lxx_light</item>
         <item name="iconZwnjKey">@drawable/sym_keyboard_zwnj_lxx_light</item>
         <item name="iconZwjKey">@drawable/sym_keyboard_zwj_lxx_light</item>
-        <item name="iconEmojiKey">@drawable/sym_keyboard_smiley_lxx_light</item>
+        <!-- Use white emoji icon (for lxx_dark) because an action key has green/dark color background. -->
+        <item name="iconEmojiActionKey">@drawable/sym_keyboard_smiley_lxx_dark</item>
+        <!-- Use dark green emoji icon (for lxx_light) because a normal key has white color background. -->
+        <item name="iconEmojiNormalKey">@drawable/sym_keyboard_smiley_lxx_light</item>
     </style>
 </resources>

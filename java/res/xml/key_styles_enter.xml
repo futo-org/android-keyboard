@@ -21,7 +21,7 @@
 <merge
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
-    <!-- TODO: Stop using many conditional cases for keyspec_emoji_key. There are way too many to maintain. -->
+    <!-- TODO: Stop using many conditional cases for keyspec_emoji_action_key. There are way too many to maintain. -->
     <!-- Navigate more keys style -->
     <switch>
         <!-- latin:passwordInput="true" -->
@@ -182,7 +182,7 @@
             <key-style
                 latin:styleName="navigateMoreKeysStyle"
                 latin:keyLabelFlags="hasPopupHint|preserveCase"
-                latin:moreKeys="!fixedColumnOrder!2,!needsDividers!,!text/keyspec_emoji_key,!text/keyspec_action_previous" />
+                latin:moreKeys="!fixedColumnOrder!2,!needsDividers!,!text/keyspec_emoji_action_key,!text/keyspec_action_previous" />
         </case>
         <case
             latin:imeAction="actionNext"
@@ -191,7 +191,7 @@
             <key-style
                 latin:styleName="navigateMoreKeysStyle"
                 latin:keyLabelFlags="hasPopupHint|preserveCase"
-                latin:moreKeys="!text/keyspec_emoji_key" />
+                latin:moreKeys="!text/keyspec_emoji_action_key" />
         </case>
         <case
             latin:imeAction="actionPrevious"
@@ -200,7 +200,7 @@
             <key-style
                 latin:styleName="navigateMoreKeysStyle"
                 latin:keyLabelFlags="hasPopupHint|preserveCase"
-                latin:moreKeys="!fixedColumnOrder!2,!needsDividers!,!text/keyspec_emoji_key,!text/keyspec_action_next" />
+                latin:moreKeys="!fixedColumnOrder!2,!needsDividers!,!text/keyspec_emoji_action_key,!text/keyspec_action_next" />
         </case>
         <case
             latin:imeAction="actionPrevious"
@@ -209,7 +209,7 @@
             <key-style
                 latin:styleName="navigateMoreKeysStyle"
                 latin:keyLabelFlags="hasPopupHint|preserveCase"
-                latin:moreKeys="!text/keyspec_emoji_key" />
+                latin:moreKeys="!text/keyspec_emoji_action_key" />
         </case>
         <case
             latin:navigateNext="true"
@@ -218,7 +218,7 @@
             <key-style
                 latin:styleName="navigateMoreKeysStyle"
                 latin:keyLabelFlags="hasPopupHint|preserveCase"
-                latin:moreKeys="!fixedColumnOrder!3,!needsDividers!,!text/keyspec_emoji_key,!text/keyspec_action_previous,!text/keyspec_action_next" />
+                latin:moreKeys="!fixedColumnOrder!3,!needsDividers!,!text/keyspec_emoji_action_key,!text/keyspec_action_previous,!text/keyspec_action_next" />
         </case>
         <case
             latin:navigateNext="true"
@@ -227,7 +227,7 @@
             <key-style
                 latin:styleName="navigateMoreKeysStyle"
                 latin:keyLabelFlags="hasPopupHint|preserveCase"
-                latin:moreKeys="!fixedColumnOrder!2,!needsDividers!,!text/keyspec_emoji_key,!text/keyspec_action_next" />
+                latin:moreKeys="!fixedColumnOrder!2,!needsDividers!,!text/keyspec_emoji_action_key,!text/keyspec_action_next" />
         </case>
         <case
             latin:navigateNext="false"
@@ -236,7 +236,7 @@
             <key-style
                 latin:styleName="navigateMoreKeysStyle"
                 latin:keyLabelFlags="hasPopupHint|preserveCase"
-                latin:moreKeys="!fixedColumnOrder!2,!needsDividers!,!text/keyspec_emoji_key,!text/keyspec_action_previous" />
+                latin:moreKeys="!fixedColumnOrder!2,!needsDividers!,!text/keyspec_emoji_action_key,!text/keyspec_action_previous" />
         </case>
         <case
             latin:navigateNext="false"
@@ -245,7 +245,7 @@
             <key-style
                 latin:styleName="navigateMoreKeysStyle"
                 latin:keyLabelFlags="hasPopupHint|preserveCase"
-                latin:moreKeys="!text/keyspec_emoji_key" />
+                latin:moreKeys="!text/keyspec_emoji_action_key" />
         </case>
         <default>
             <key-style

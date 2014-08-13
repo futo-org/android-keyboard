@@ -40,6 +40,9 @@ public final class Lao extends LayoutBase {
         public LaoCustomizer(final Locale locale) { super(locale); }
 
         @Override
+        public int getNumberOfRows() { return 5; }
+
+        @Override
         public ExpectedKey getAlphabetKey() { return LAO_ALPHABET_KEY; }
 
         @Override
@@ -81,29 +84,6 @@ public final class Lao extends LayoutBase {
             return getCommonAlphabetLayout(isPhone);
         }
         return ALPHABET_SHIFTED_COMMON;
-    }
-
-    // Helper method to create alphabet layout by adding special function keys.
-    @Override
-    ExpectedKeyboardBuilder convertCommonLayoutToKeyboard(final ExpectedKeyboardBuilder builder,
-            final boolean isPhone) {
-        final LayoutCustomizer customizer = getCustomizer();
-        builder.setKeysOfRow(5, (Object[])customizer.getSpaceKeys(isPhone));
-        builder.addKeysOnTheLeftOfRow(5, (Object[])customizer.getKeysLeftToSpacebar(isPhone));
-        builder.addKeysOnTheRightOfRow(5, (Object[])customizer.getKeysRightToSpacebar(isPhone));
-        if (isPhone) {
-            builder.addKeysOnTheRightOfRow(4, DELETE_KEY)
-                    .addKeysOnTheLeftOfRow(5, customizer.getSymbolsKey())
-                    .addKeysOnTheRightOfRow(5, key(ENTER_KEY, EMOJI_KEY));
-        } else {
-            builder.addKeysOnTheRightOfRow(1, DELETE_KEY)
-                    .addKeysOnTheRightOfRow(3, ENTER_KEY)
-                    .addKeysOnTheLeftOfRow(5, customizer.getSymbolsKey())
-                    .addKeysOnTheRightOfRow(5, EMOJI_KEY);
-        }
-        builder.addKeysOnTheLeftOfRow(4, (Object[])customizer.getLeftShiftKeys(isPhone))
-                .addKeysOnTheRightOfRow(4, (Object[])customizer.getRightShiftKeys(isPhone));
-        return builder;
     }
 
     private static final ExpectedKey[][] ALPHABET_COMMON = new ExpectedKeyboardBuilder()
