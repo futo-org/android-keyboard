@@ -29,7 +29,7 @@ public final class ProductionFlags {
      *  and prior. In general, this callback provides more detailed positional information,
      *  even though an explicit support is required by the editor.
      */
-    public static final boolean ENABLE_CURSOR_ANCHOR_INFO_CALLBACK = false;
+    public static final boolean ENABLE_CURSOR_ANCHOR_INFO_CALLBACK = true;
 
     /**
      * When true, enable {@link InputMethodService#onUpdateCursor} callback via
