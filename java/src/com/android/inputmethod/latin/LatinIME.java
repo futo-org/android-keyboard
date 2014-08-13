@@ -49,11 +49,13 @@ import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.CompletionInfo;
+import android.view.inputmethod.CursorAnchorInfo;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.accessibility.AccessibilityUtils;
 import com.android.inputmethod.annotations.UsedForTesting;
+import com.android.inputmethod.compat.CursorAnchorInfoCompatWrapper;
 import com.android.inputmethod.compat.InputConnectionCompatUtils;
 import com.android.inputmethod.compat.InputMethodServiceCompatUtils;
 import com.android.inputmethod.dictionarypack.DictionaryPackConstants;
@@ -970,6 +972,16 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             Log.i(TAG, "onUpdateCursor:" + rect.toShortString());
         }
         super.onUpdateCursor(rect);
+    }
+
+    // We cannot mark this method as @Override until new SDK becomes publicly available.
+    // @Override
+    public void onUpdateCursorAnchorInfo(final CursorAnchorInfo info) {
+        if (ProductionFlags.ENABLE_CURSOR_ANCHOR_INFO_CALLBACK) {
+            final CursorAnchorInfoCompatWrapper wrapper =
+                    CursorAnchorInfoCompatWrapper.fromObject(info);
+            // TODO: Implement here
+        }
     }
 
     /**
