@@ -24,6 +24,7 @@ import android.os.Build;
 import android.util.Log;
 import android.util.Pair;
 
+import com.android.inputmethod.compat.BuildCompatUtils;
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardId;
@@ -121,9 +122,7 @@ final class EmojiCategory {
                     sCategoryTabIconAttr[i], 0);
         }
         addShownCategoryId(EmojiCategory.ID_RECENTS);
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2
-                || android.os.Build.VERSION.CODENAME.equalsIgnoreCase("KeyLimePie")
-                || android.os.Build.VERSION.CODENAME.equalsIgnoreCase("KitKat")) {
+        if (BuildCompatUtils.EFFECTIVE_SDK_INT >= Build.VERSION_CODES.KITKAT) {
             addShownCategoryId(EmojiCategory.ID_PEOPLE);
             addShownCategoryId(EmojiCategory.ID_OBJECTS);
             addShownCategoryId(EmojiCategory.ID_NATURE);
