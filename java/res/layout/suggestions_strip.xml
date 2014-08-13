@@ -48,12 +48,13 @@
             android:layout_height="match_parent"
             style="?attr/suggestionWordStyle" />
         <include
+            android:id="@+id/word_to_save_divider"
             layout="@layout/suggestion_divider" />
         <TextView
             android:id="@+id/hint_add_to_dictionary"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:textAlignment="viewStart"
+            android:gravity="center_vertical|start"
             style="?attr/suggestionWordStyle" />
     </LinearLayout>
     <!-- Provide audio and haptic feedback by ourselves based on the keyboard settings.
