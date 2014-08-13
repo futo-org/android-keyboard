@@ -21,6 +21,8 @@ public final class DebugSettings {
     public static final String PREF_FORCE_NON_DISTINCT_MULTITOUCH = "force_non_distinct_multitouch";
     public static final String PREF_FORCE_PHYSICAL_KEYBOARD_SPECIAL_KEY =
             "force_physical_keyboard_special_key";
+    public static final String PREF_SHOW_UI_TO_ACCEPT_TYPED_WORD =
+            "pref_show_ui_to_accept_typed_word";
     public static final String PREF_KEY_PREVIEW_SHOW_UP_START_SCALE =
             "pref_key_preview_show_up_start_scale";
     public static final String PREF_KEY_PREVIEW_DISMISS_END_SCALE =

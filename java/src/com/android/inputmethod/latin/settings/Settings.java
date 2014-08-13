@@ -70,6 +70,8 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
             "pref_key_block_potentially_offensive";
     public static final boolean ENABLE_SHOW_LANGUAGE_SWITCH_KEY_SETTINGS =
             BuildCompatUtils.EFFECTIVE_SDK_INT <= Build.VERSION_CODES.KITKAT;
+    public static final boolean HAS_UI_TO_ACCEPT_TYPED_WORD =
+            BuildCompatUtils.EFFECTIVE_SDK_INT >= BuildCompatUtils.VERSION_CODES_LXX;
     public static final String PREF_SHOW_LANGUAGE_SWITCH_KEY =
             "pref_show_language_switch_key";
     public static final String PREF_INCLUDE_OTHER_IMES_IN_LANGUAGE_SWITCH_LIST =
