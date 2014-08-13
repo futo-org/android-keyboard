@@ -31,6 +31,11 @@
         android:defaultValue="false"
         android:persistent="true" />
     <CheckBoxPreference
+        android:key="force_physical_keyboard_special_key"
+        android:title="@string/prefs_force_physical_keyboard_special_key"
+        android:defaultValue="false"
+        android:persistent="true" />
+    <CheckBoxPreference
         android:key="pref_sliding_key_input_preview"
         android:title="@string/sliding_key_input_preview"
         android:summary="@string/sliding_key_input_preview_summary"
