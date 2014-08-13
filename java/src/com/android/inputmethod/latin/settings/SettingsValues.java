@@ -76,6 +76,7 @@ public class SettingsValues {
     public final int mKeyLongpressTimeout;
     public final Locale mLocale;
     public final boolean mEnableMetricsLogging;
+    public final boolean mShouldShowUiToAcceptTypedWord;
 
     // From the input box
     public final InputAttributes mInputAttributes;
@@ -143,6 +144,8 @@ public class SettingsValues {
         mBigramPredictionEnabled = readBigramPredictionEnabled(prefs, res);
         mDoubleSpacePeriodTimeout = res.getInteger(R.integer.config_double_space_period_timeout);
         mEnableMetricsLogging = prefs.getBoolean(Settings.PREF_ENABLE_METRICS_LOGGING, true);
+        mShouldShowUiToAcceptTypedWord = Settings.HAS_UI_TO_ACCEPT_TYPED_WORD
+                && prefs.getBoolean(DebugSettings.PREF_SHOW_UI_TO_ACCEPT_TYPED_WORD, true);
         // Compute other readable settings
         mKeyLongpressTimeout = Settings.readKeyLongpressTimeout(prefs, res);
         mKeypressVibrationDuration = Settings.readKeypressVibrationDuration(prefs, res);
