@@ -39,6 +39,9 @@ public final class PcQwerty extends LayoutBase {
         public PcQwertyCustomizer(final Locale locale) { super(locale); }
 
         @Override
+        public int getNumberOfRows() { return 5; }
+
+        @Override
         public ExpectedKey[] getLeftShiftKeys(final boolean isPhone) {
             return joinKeys(SHIFT_KEY);
         }
@@ -55,7 +58,9 @@ public final class PcQwerty extends LayoutBase {
 
         @Override
         public ExpectedKey[] getKeysRightToSpacebar(final boolean isPhone) {
-            return isPhone ? joinKeys(key(ENTER_KEY, EMOJI_KEY)) : joinKeys(EMOJI_KEY);
+            return isPhone
+                    ? joinKeys(key(ENTER_KEY, EMOJI_ACTION_KEY))
+                    : joinKeys(EMOJI_NORMAL_KEY);
         }
     }
 

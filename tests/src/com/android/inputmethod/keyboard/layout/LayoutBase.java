@@ -46,6 +46,10 @@ public abstract class LayoutBase extends AbstractLayoutBase {
             return mLocale;
         }
 
+        public int getNumberOfRows() {
+            return 4;
+        }
+
         /**
          * Set accented letters to common layout.
          * @param builder the {@link ExpectedKeyboardBuilder} object that contains common keyboard
@@ -277,7 +281,7 @@ public abstract class LayoutBase extends AbstractLayoutBase {
             ",", "'", "#", ")", "(", "/", ";",
             "@", ":", "-", "\"", "+", "%", "&");
 
-   /**
+    /**
      * Helper method to create alphabet layout adding special function keys.
      * @param builder the {@link ExpectedKeyboardBuilder} object that contains common keyboard
      *     layout
@@ -287,21 +291,26 @@ public abstract class LayoutBase extends AbstractLayoutBase {
     ExpectedKeyboardBuilder convertCommonLayoutToKeyboard(final ExpectedKeyboardBuilder builder,
             final boolean isPhone) {
         final LayoutCustomizer customizer = getCustomizer();
-        builder.setKeysOfRow(4, (Object[])customizer.getSpaceKeys(isPhone));
-        builder.addKeysOnTheLeftOfRow(4, (Object[])customizer.getKeysLeftToSpacebar(isPhone));
-        builder.addKeysOnTheRightOfRow(4, (Object[])customizer.getKeysRightToSpacebar(isPhone));
+        final int numberOfRows = customizer.getNumberOfRows();
+        builder.setKeysOfRow(numberOfRows, (Object[])customizer.getSpaceKeys(isPhone));
+        builder.addKeysOnTheLeftOfRow(
+                numberOfRows, (Object[])customizer.getKeysLeftToSpacebar(isPhone));
+        builder.addKeysOnTheRightOfRow(
+                numberOfRows, (Object[])customizer.getKeysRightToSpacebar(isPhone));
         if (isPhone) {
-            builder.addKeysOnTheRightOfRow(3, DELETE_KEY)
-                    .addKeysOnTheLeftOfRow(4, customizer.getSymbolsKey())
-                    .addKeysOnTheRightOfRow(4, key(ENTER_KEY, EMOJI_KEY));
+            builder.addKeysOnTheRightOfRow(numberOfRows - 1, DELETE_KEY)
+                    .addKeysOnTheLeftOfRow(numberOfRows, customizer.getSymbolsKey())
+                    .addKeysOnTheRightOfRow(numberOfRows, key(ENTER_KEY, EMOJI_ACTION_KEY));
         } else {
             builder.addKeysOnTheRightOfRow(1, DELETE_KEY)
-                    .addKeysOnTheRightOfRow(2, ENTER_KEY)
-                    .addKeysOnTheLeftOfRow(4, customizer.getSymbolsKey())
-                    .addKeysOnTheRightOfRow(4, EMOJI_KEY);
+                    .addKeysOnTheRightOfRow(numberOfRows - 2, ENTER_KEY)
+                    .addKeysOnTheLeftOfRow(numberOfRows, customizer.getSymbolsKey())
+                    .addKeysOnTheRightOfRow(numberOfRows, EMOJI_NORMAL_KEY);
         }
-        builder.addKeysOnTheLeftOfRow(3, (Object[])customizer.getLeftShiftKeys(isPhone))
-                .addKeysOnTheRightOfRow(3, (Object[])customizer.getRightShiftKeys(isPhone));
+        builder.addKeysOnTheLeftOfRow(
+                numberOfRows - 1, (Object[])customizer.getLeftShiftKeys(isPhone));
+        builder.addKeysOnTheRightOfRow(
+                numberOfRows - 1, (Object[])customizer.getRightShiftKeys(isPhone));
         return builder;
     }
 
