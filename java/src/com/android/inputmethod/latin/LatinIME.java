@@ -424,9 +424,12 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                                 latinIme.getCurrentInputConnection(), true /* enableMonitor */);
                     }
                     if (ProductionFlags.ENABLE_CURSOR_ANCHOR_INFO_CALLBACK) {
-                        InputConnectionCompatUtils.requestCursorAnchorInfo(
-                                latinIme.getCurrentInputConnection(), true /* enableMonitor */,
-                                true /* requestImmediateCallback */);
+                        // AcceptTypedWord feature relies on CursorAnchorInfo.
+                        if (latinIme.mSettings.getCurrent().mShouldShowUiToAcceptTypedWord) {
+                            InputConnectionCompatUtils.requestCursorAnchorInfo(
+                                    latinIme.getCurrentInputConnection(), true /* enableMonitor */,
+                                    true /* requestImmediateCallback */);
+                        }
                     }
                 }
             }
