@@ -27,6 +27,7 @@
     <string name="prefs_debug_mode">Debug Mode</string>
     <string name="prefs_force_non_distinct_multitouch">Force non-distinct multitouch</string>
     <string name="prefs_force_physical_keyboard_special_key">Force physical keyboard special key</string>
+    <string name="prefs_show_ui_to_accept_typed_word">Show UI to accept typed word</string>
 
     <!-- Subtype locale display name exceptions.
          For each exception, there should be related string resources for display name that may have

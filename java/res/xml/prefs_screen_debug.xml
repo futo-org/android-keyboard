@@ -36,6 +36,11 @@
         android:defaultValue="false"
         android:persistent="true" />
     <CheckBoxPreference
+        android:key="pref_show_ui_to_accept_typed_word"
+        android:title="@string/prefs_show_ui_to_accept_typed_word"
+        android:defaultValue="true"
+        android:persistent="true" />
+    <CheckBoxPreference
         android:key="pref_sliding_key_input_preview"
         android:title="@string/sliding_key_input_preview"
         android:summary="@string/sliding_key_input_preview_summary"

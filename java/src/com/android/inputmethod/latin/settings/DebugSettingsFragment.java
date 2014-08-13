@@ -56,6 +56,10 @@ public final class DebugSettingsFragment extends SubScreenFragment
         super.onCreate(icicle);
         addPreferencesFromResource(R.xml.prefs_screen_debug);
 
+        if (!Settings.HAS_UI_TO_ACCEPT_TYPED_WORD) {
+            removePreference(DebugSettings.PREF_SHOW_UI_TO_ACCEPT_TYPED_WORD);
+        }
+
         mReadExternalDictionaryPref = findPreference(PREF_READ_EXTERNAL_DICTIONARY);
         if (mReadExternalDictionaryPref != null) {
             mReadExternalDictionaryPref.setOnPreferenceClickListener(this);
