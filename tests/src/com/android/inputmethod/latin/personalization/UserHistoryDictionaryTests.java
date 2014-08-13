@@ -67,6 +67,13 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
         FileUtils.deleteFilteredFiles(dictFile.getParentFile(), filenameFilter);
     }
 
+    private void printAllFiles(final File dir) {
+        Log.d(TAG, dir.getAbsolutePath());
+        for (final File file : dir.listFiles()) {
+            Log.d(TAG, "  " + file.getName());
+        }
+    }
+
     @Override
     protected void setUp() throws Exception {
         super.setUp();
@@ -274,6 +281,7 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
                 try {
                     Log.d(TAG, dictFile +" is not existing. Wait "
                             + WAIT_FOR_WRITING_FILE_IN_MILLISECONDS + " ms for writing.");
+                    printAllFiles(dictFile.getParentFile());
                     Thread.sleep(WAIT_FOR_WRITING_FILE_IN_MILLISECONDS);
                 } catch (final InterruptedException e) {
                     Log.e(TAG, "Interrupted during waiting for writing the dict file.");
