@@ -202,6 +202,8 @@ class TrieMap {
 
     bool save(FILE *const file) const;
 
+    bool remove(const int key, const int bitmapEntryIndex);
+
  private:
     DISALLOW_COPY_AND_ASSIGN(TrieMap);
 
@@ -245,6 +247,11 @@ class TrieMap {
         }
 
         // For terminal entry.
+        AK_FORCE_INLINE bool isValidTerminalEntry() const {
+            return hasTerminalLink() || ((mData1 & VALUE_MASK) != INVALID_VALUE_IN_KEY_VALUE_ENTRY);
+        }
+
+        // For terminal entry.
         AK_FORCE_INLINE uint32_t getValueEntryIndex() const {
             return mData1 & TERMINAL_LINK_MASK;
         }
@@ -272,6 +279,7 @@ class TrieMap {
     static const int ENTRY_SIZE;
     static const uint32_t VALUE_FLAG;
     static const uint32_t VALUE_MASK;
+    static const uint32_t INVALID_VALUE_IN_KEY_VALUE_ENTRY;
     static const uint32_t TERMINAL_LINK_FLAG;
     static const uint32_t TERMINAL_LINK_MASK;
     static const int NUM_OF_BITS_USED_FOR_ONE_LEVEL;
@@ -280,6 +288,7 @@ class TrieMap {
     static const int ROOT_BITMAP_ENTRY_INDEX;
     static const int ROOT_BITMAP_ENTRY_POS;
     static const Entry EMPTY_BITMAP_ENTRY;
+    static const int TERMINAL_LINKED_ENTRY_COUNT;
     static const int MAX_BUFFER_SIZE;
 
     uint32_t getBitShuffledKey(const uint32_t key) const;
@@ -378,6 +387,8 @@ class TrieMap {
     AK_FORCE_INLINE int getTailEntryIndex() const {
         return (mBuffer.getTailPosition() - ROOT_BITMAP_ENTRY_POS) / ENTRY_SIZE;
     }
+
+    bool removeInner(const Entry &bitmapEntry);
 };
 
 } // namespace latinime

@@ -47,6 +47,31 @@ TEST(TrieMapTest, TestSetAndGet) {
     EXPECT_EQ(0xFFFFFFFFFull, trieMap.getRoot(0).mValue);
 }
 
+TEST(TrieMapTest, TestRemove) {
+    TrieMap trieMap;
+    trieMap.putRoot(10, 10);
+    EXPECT_EQ(10ull, trieMap.getRoot(10).mValue);
+    EXPECT_TRUE(trieMap.remove(10, trieMap.getRootBitmapEntryIndex()));
+    EXPECT_FALSE(trieMap.getRoot(10).mIsValid);
+    for (const auto &element : trieMap.getEntriesInRootLevel()) {
+        EXPECT_TRUE(false);
+    }
+    EXPECT_TRUE(trieMap.putRoot(10, 0x3FFFFF));
+    EXPECT_FALSE(trieMap.remove(11, trieMap.getRootBitmapEntryIndex()))
+            << "Should fail if the key does not exist.";
+    EXPECT_EQ(0x3FFFFFull, trieMap.getRoot(10).mValue);
+    trieMap.putRoot(12, 11);
+    const int nextLevel = trieMap.getNextLevelBitmapEntryIndex(10);
+    trieMap.put(10, 10, nextLevel);
+    EXPECT_EQ(0x3FFFFFull, trieMap.getRoot(10).mValue);
+    EXPECT_EQ(10ull, trieMap.get(10, nextLevel).mValue);
+    EXPECT_TRUE(trieMap.remove(10, trieMap.getRootBitmapEntryIndex()));
+    const TrieMap::Result result = trieMap.getRoot(10);
+    EXPECT_FALSE(result.mIsValid);
+    EXPECT_EQ(TrieMap::INVALID_INDEX, result.mNextLevelBitmapEntryIndex);
+    EXPECT_EQ(11ull, trieMap.getRoot(12).mValue);
+}
+
 TEST(TrieMapTest, TestSetAndGetLarge) {
     static const int ELEMENT_COUNT = 200000;
     TrieMap trieMap;
