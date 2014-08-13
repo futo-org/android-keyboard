@@ -28,6 +28,7 @@ import com.android.inputmethod.latin.utils.DistracterFilter;
 import com.android.inputmethod.latin.utils.FileUtils;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -42,6 +43,7 @@ import java.util.concurrent.TimeUnit;
 public class UserHistoryDictionaryTests extends AndroidTestCase {
     private static final String TAG = UserHistoryDictionaryTests.class.getSimpleName();
     private static final int WAIT_FOR_WRITING_FILE_IN_MILLISECONDS = 3000;
+    private static final String TEST_LOCALE_PREFIX = "test_";
 
     private static final String[] CHARACTERS = {
         "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m",
@@ -50,14 +52,31 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
 
     private int mCurrentTime = 0;
 
+    private void removeAllTestDictFiles() {
+        final Locale dummyLocale = new Locale(TEST_LOCALE_PREFIX);
+        final String dictName = ExpandableBinaryDictionary.getDictName(
+                UserHistoryDictionary.NAME, dummyLocale, null /* dictFile */);
+        final File dictFile = ExpandableBinaryDictionary.getDictFile(
+                mContext, dictName, null /* dictFile */);
+        final FilenameFilter filenameFilter = new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String filename) {
+                return filename.startsWith(UserHistoryDictionary.NAME + "." + TEST_LOCALE_PREFIX);
+            }
+        };
+        FileUtils.deleteFilteredFiles(dictFile.getParentFile(), filenameFilter);
+    }
+
     @Override
     protected void setUp() throws Exception {
         super.setUp();
         resetCurrentTimeForTestMode();
+        removeAllTestDictFiles();
     }
 
     @Override
     protected void tearDown() throws Exception {
+        removeAllTestDictFiles();
         stopTestModeInNativeCode();
         super.tearDown();
     }
@@ -169,7 +188,8 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
     public void testRandomWords() {
         Log.d(TAG, "This test can be used for profiling.");
         Log.d(TAG, "Usage: please set UserHistoryDictionary.PROFILE_SAVE_RESTORE to true.");
-        final Locale dummyLocale = new Locale("test_random_words" + System.currentTimeMillis());
+        final Locale dummyLocale =
+                new Locale(TEST_LOCALE_PREFIX + "random_words" + System.currentTimeMillis());
         final String dictName = ExpandableBinaryDictionary.getDictName(
                 UserHistoryDictionary.NAME, dummyLocale, null /* dictFile */);
         final File dictFile = ExpandableBinaryDictionary.getDictFile(
@@ -202,7 +222,7 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
 
             // Create filename suffixes for this test.
             for (int i = 0; i < numberOfLanguages; i++) {
-                dummyLocales[i] = new Locale("test_switching_languages" + i);
+                dummyLocales[i] = new Locale(TEST_LOCALE_PREFIX + "switching_languages" + i);
                 final String dictName = ExpandableBinaryDictionary.getDictName(
                         UserHistoryDictionary.NAME, dummyLocales[i], null /* dictFile */);
                 dictFiles[i] = ExpandableBinaryDictionary.getDictFile(
@@ -236,7 +256,8 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
     }
 
     public void testAddManyWords() {
-        final Locale dummyLocale = new Locale("test_random_words" + System.currentTimeMillis());
+        final Locale dummyLocale =
+                new Locale(TEST_LOCALE_PREFIX + "random_words" + System.currentTimeMillis());
         final String dictName = ExpandableBinaryDictionary.getDictName(
                 UserHistoryDictionary.NAME, dummyLocale, null /* dictFile */);
         final File dictFile = ExpandableBinaryDictionary.getDictFile(
@@ -264,7 +285,8 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
     }
 
     public void testDecaying() {
-        final Locale dummyLocale = new Locale("test_decaying" + System.currentTimeMillis());
+        final Locale dummyLocale =
+                new Locale(TEST_LOCALE_PREFIX + "decaying" + System.currentTimeMillis());
         final int numberOfWords = 5000;
         final Random random = new Random(123456);
         resetCurrentTimeForTestMode();
