@@ -39,7 +39,7 @@ public class SymbolsShifted extends AbstractLayoutBase {
             builder.addKeysOnTheLeftOfRow(3, customizer.getBackToSymbolsKey())
                     .addKeysOnTheRightOfRow(3, DELETE_KEY)
                     .addKeysOnTheLeftOfRow(4, customizer.getAlphabetKey())
-                    .addKeysOnTheRightOfRow(4, key(ENTER_KEY, EMOJI_KEY));
+                    .addKeysOnTheRightOfRow(4, key(ENTER_KEY, EMOJI_ACTION_KEY));
         } else {
             // Tablet symbols shifted keyboard has extra two keys at the right edge of the 3rd row.
             // U+00BF: "¿" INVERTED QUESTION MARK
@@ -50,7 +50,7 @@ public class SymbolsShifted extends AbstractLayoutBase {
                     .addKeysOnTheLeftOfRow(3, customizer.getBackToSymbolsKey())
                     .addKeysOnTheRightOfRow(3, customizer.getBackToSymbolsKey())
                     .addKeysOnTheLeftOfRow(4, customizer.getAlphabetKey())
-                    .addKeysOnTheRightOfRow(4, EMOJI_KEY);
+                    .addKeysOnTheRightOfRow(4, EMOJI_NORMAL_KEY);
         }
         return builder.build();
     }

@@ -21,7 +21,6 @@
 <merge
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
-    <!-- TODO: Stop using many conditional cases for keyspec_emoji_key. There are way too many to maintain. -->
     <!-- Navigate more keys style -->
     <switch>
         <!-- latin:passwordInput="true" -->

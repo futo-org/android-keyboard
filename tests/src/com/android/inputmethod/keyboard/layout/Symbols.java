@@ -43,7 +43,7 @@ public class Symbols extends AbstractLayoutBase {
             builder.addKeysOnTheLeftOfRow(3, customizer.getSymbolsShiftKey(isPhone))
                     .addKeysOnTheRightOfRow(3, DELETE_KEY)
                     .addKeysOnTheLeftOfRow(4, customizer.getAlphabetKey())
-                    .addKeysOnTheRightOfRow(4, key(ENTER_KEY, EMOJI_KEY));
+                    .addKeysOnTheRightOfRow(4, key(ENTER_KEY, EMOJI_ACTION_KEY));
         } else {
             // Tablet symbols keyboard has extra two keys at the left edge of the 3rd row.
             builder.addKeysOnTheLeftOfRow(3, (Object[])joinKeys("\\", "="));
@@ -52,7 +52,7 @@ public class Symbols extends AbstractLayoutBase {
                     .addKeysOnTheLeftOfRow(3, customizer.getSymbolsShiftKey(isPhone))
                     .addKeysOnTheRightOfRow(3, customizer.getSymbolsShiftKey(isPhone))
                     .addKeysOnTheLeftOfRow(4, customizer.getAlphabetKey())
-                    .addKeysOnTheRightOfRow(4, EMOJI_KEY);
+                    .addKeysOnTheRightOfRow(4, EMOJI_NORMAL_KEY);
         }
         return builder.build();
     }

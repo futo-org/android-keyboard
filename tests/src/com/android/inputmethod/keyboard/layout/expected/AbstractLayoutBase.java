@@ -120,8 +120,10 @@ public abstract class AbstractLayoutBase {
             KeyboardIconsSet.NAME_LANGUAGE_SWITCH_KEY);
     private static final int ICON_ENTER = KeyboardIconsSet.getIconId(
             KeyboardIconsSet.NAME_ENTER_KEY);
-    private static final int ICON_EMOJI = KeyboardIconsSet.getIconId(
-            KeyboardIconsSet.NAME_EMOJI_KEY);
+    private static final int ICON_EMOJI_ACTION = KeyboardIconsSet.getIconId(
+            KeyboardIconsSet.NAME_EMOJI_ACTION_KEY);
+    private static final int ICON_EMOJI_NORMAL = KeyboardIconsSet.getIconId(
+            KeyboardIconsSet.NAME_EMOJI_NORMAL_KEY);
 
     // Functional keys.
     public static final ExpectedKey DELETE_KEY = key(ICON_DELETE, Constants.CODE_DELETE);
@@ -131,6 +133,7 @@ public abstract class AbstractLayoutBase {
     public static final ExpectedKey LANGUAGE_SWITCH_KEY = key(
             ICON_LANGUAGE_SWITCH, Constants.CODE_LANGUAGE_SWITCH);
     public static final ExpectedKey ENTER_KEY = key(ICON_ENTER, Constants.CODE_ENTER);
-    public static final ExpectedKey EMOJI_KEY = key(ICON_EMOJI, Constants.CODE_EMOJI);
+    public static final ExpectedKey EMOJI_ACTION_KEY = key(ICON_EMOJI_ACTION, Constants.CODE_EMOJI);
+    public static final ExpectedKey EMOJI_NORMAL_KEY = key(ICON_EMOJI_NORMAL, Constants.CODE_EMOJI);
     public static final ExpectedKey SPACE_KEY = key(ICON_SPACE, Constants.CODE_SPACE);
 }
