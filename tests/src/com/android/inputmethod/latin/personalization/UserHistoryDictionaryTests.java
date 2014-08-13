@@ -41,6 +41,7 @@ import java.util.concurrent.TimeUnit;
 @LargeTest
 public class UserHistoryDictionaryTests extends AndroidTestCase {
     private static final String TAG = UserHistoryDictionaryTests.class.getSimpleName();
+    private static final int WAIT_FOR_WRITING_FILE_IN_MILLISECONDS = 3000;
 
     private static final String[] CHARACTERS = {
         "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m",
@@ -248,6 +249,15 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
         } finally {
             Log.d(TAG, "waiting for writing ...");
             waitForWriting(dummyLocale);
+            if (!dictFile.exists()) {
+                try {
+                    Log.d(TAG, dictFile +" is not existing. Wait "
+                            + WAIT_FOR_WRITING_FILE_IN_MILLISECONDS + " ms for writing.");
+                    Thread.sleep(WAIT_FOR_WRITING_FILE_IN_MILLISECONDS);
+                } catch (final InterruptedException e) {
+                    Log.e(TAG, "Interrupted during waiting for writing the dict file.");
+                }
+            }
             assertTrue("check exisiting of " + dictFile, dictFile.exists());
             FileUtils.deleteRecursively(dictFile);
         }
