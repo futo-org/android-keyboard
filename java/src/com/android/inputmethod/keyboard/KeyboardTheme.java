@@ -38,9 +38,6 @@ public final class KeyboardTheme implements Comparable<KeyboardTheme> {
     public static final int THEME_ID_LXX_DARK = 4;
     public static final int DEFAULT_THEME_ID = THEME_ID_KLP;
 
-    // TODO: Update this constant once the *next* version becomes available.
-    public static final int VERSION_CODES_LXX = 21;
-
     private static final KeyboardTheme[] KEYBOARD_THEMES = {
         new KeyboardTheme(THEME_ID_ICS, R.style.KeyboardTheme_ICS,
                 // This has never been selected because we support ICS or later.
@@ -50,7 +47,8 @@ public final class KeyboardTheme implements Comparable<KeyboardTheme> {
                 VERSION_CODES.ICE_CREAM_SANDWICH),
         new KeyboardTheme(THEME_ID_LXX_LIGHT, R.style.KeyboardTheme_LXX_Light,
                 // Default theme for LXX.
-                VERSION_CODES_LXX),
+                // TODO: Update this constant once the *next* version becomes available.
+                VERSION_CODES.CUR_DEVELOPMENT),
         new KeyboardTheme(THEME_ID_LXX_DARK, R.style.KeyboardTheme_LXX_Dark,
                 VERSION_CODES.BASE),
     };
@@ -102,7 +100,12 @@ public final class KeyboardTheme implements Comparable<KeyboardTheme> {
     }
 
     private static int getSdkVersion() {
-        return Build.VERSION.SDK_INT;
+        final int sdkVersion = Build.VERSION.SDK_INT;
+        // TODO: Consider to remove this check once the *next* version becomes available.
+        if (sdkVersion > VERSION_CODES.KITKAT) {
+            return VERSION_CODES.CUR_DEVELOPMENT;
+        }
+        return sdkVersion;
     }
 
     @UsedForTesting
