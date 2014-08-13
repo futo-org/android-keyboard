@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.keyboard;
 
+import static com.android.inputmethod.compat.BuildCompatUtils.VERSION_CODES_LXX;
 import static com.android.inputmethod.keyboard.KeyboardTheme.THEME_ID_ICS;
 import static com.android.inputmethod.keyboard.KeyboardTheme.THEME_ID_KLP;
 import static com.android.inputmethod.keyboard.KeyboardTheme.THEME_ID_LXX_DARK;
@@ -30,9 +31,6 @@ import android.test.suitebuilder.annotation.SmallTest;
 @SmallTest
 public class KeyboardThemeTests extends AndroidTestCase {
     private SharedPreferences mPrefs;
-
-    // TODO: Remove this constant once the *next* version becomes available.
-    private static final int VERSION_CODES_LXX = VERSION_CODES.CUR_DEVELOPMENT;
 
     private static final int THEME_ID_NULL = -1;
     private static final int THEME_ID_UNKNOWN = -2;
