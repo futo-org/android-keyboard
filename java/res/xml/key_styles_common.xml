@@ -80,7 +80,7 @@
     <!-- emojiKeyStyle must be defined before including @xml/key_syles_enter. -->
     <key-style
         latin:styleName="emojiKeyStyle"
-        latin:keySpec="!icon/emoji_key|!code/key_emoji"
+        latin:keySpec="!icon/emoji_action_key|!code/key_emoji"
         latin:keyActionFlags="noKeyPreview"
         latin:backgroundType="action" />
     <include

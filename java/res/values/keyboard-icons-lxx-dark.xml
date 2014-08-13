@@ -40,6 +40,7 @@
         <item name="iconLanguageSwitchKey">@drawable/sym_keyboard_language_switch_lxx_dark</item>
         <item name="iconZwnjKey">@drawable/sym_keyboard_zwnj_lxx_dark</item>
         <item name="iconZwjKey">@drawable/sym_keyboard_zwj_lxx_dark</item>
-        <item name="iconEmojiKey">@drawable/sym_keyboard_smiley_lxx_dark</item>
+        <item name="iconEmojiActionKey">@drawable/sym_keyboard_smiley_lxx_dark</item>
+        <item name="iconEmojiNormalKey">@drawable/sym_keyboard_smiley_lxx_dark</item>
     </style>
 </resources>

@@ -53,7 +53,8 @@ public final class KeyboardIconsSet {
     public static final String NAME_LANGUAGE_SWITCH_KEY = "language_switch_key";
     public static final String NAME_ZWNJ_KEY = "zwnj_key";
     public static final String NAME_ZWJ_KEY = "zwj_key";
-    public static final String NAME_EMOJI_KEY = "emoji_key";
+    public static final String NAME_EMOJI_ACTION_KEY = "emoji_action_key";
+    public static final String NAME_EMOJI_NORMAL_KEY = "emoji_normal_key";
 
     private static final SparseIntArray ATTR_ID_TO_ICON_ID = new SparseIntArray();
 
@@ -81,7 +82,8 @@ public final class KeyboardIconsSet {
         NAME_LANGUAGE_SWITCH_KEY,         R.styleable.Keyboard_iconLanguageSwitchKey,
         NAME_ZWNJ_KEY,                    R.styleable.Keyboard_iconZwnjKey,
         NAME_ZWJ_KEY,                     R.styleable.Keyboard_iconZwjKey,
-        NAME_EMOJI_KEY,                   R.styleable.Keyboard_iconEmojiKey,
+        NAME_EMOJI_ACTION_KEY,            R.styleable.Keyboard_iconEmojiActionKey,
+        NAME_EMOJI_NORMAL_KEY,            R.styleable.Keyboard_iconEmojiNormalKey,
     };
 
     private static int NUM_ICONS = NAMES_AND_ATTR_IDS.length / 2;
