@@ -35,7 +35,8 @@ public final class PunctuationSuggestions extends SuggestedWords {
                 false /* typedWordValid */,
                 false /* hasAutoCorrectionCandidate */,
                 false /* isObsoleteSuggestions */,
-                false /* isPrediction */);
+                false /* isPrediction */,
+                INPUT_STYLE_NONE /* inputStyle */);
     }
 
     /**
