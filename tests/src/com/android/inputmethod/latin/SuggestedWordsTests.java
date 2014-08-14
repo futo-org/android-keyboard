@@ -48,7 +48,8 @@ public class SuggestedWordsTests extends AndroidTestCase {
                 false /* typedWordValid */,
                 false /* willAutoCorrect */,
                 false /* isObsoleteSuggestions */,
-                false /* isPrediction*/);
+                false /* isPrediction*/,
+                SuggestedWords.INPUT_STYLE_NONE);
         assertEquals(NUMBER_OF_ADDED_SUGGESTIONS + 1, words.size());
         assertEquals("typed", words.getWord(0));
         assertTrue(words.getInfo(0).isKindOf(SuggestedWordInfo.KIND_TYPED));
@@ -57,7 +58,8 @@ public class SuggestedWordsTests extends AndroidTestCase {
         assertEquals("4", words.getWord(5));
         assertTrue(words.getInfo(5).isKindOf(SuggestedWordInfo.KIND_CORRECTION));
 
-        final SuggestedWords wordsWithoutTyped = words.getSuggestedWordsExcludingTypedWord();
+        final SuggestedWords wordsWithoutTyped = words.getSuggestedWordsExcludingTypedWord(
+                SuggestedWords.INPUT_STYLE_NONE);
         assertEquals(words.size() - 1, wordsWithoutTyped.size());
         assertEquals("0", wordsWithoutTyped.getWord(0));
         assertTrue(wordsWithoutTyped.getInfo(0).isKindOf(SuggestedWordInfo.KIND_CORRECTION));

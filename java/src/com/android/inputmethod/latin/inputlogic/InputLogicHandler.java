@@ -96,7 +96,7 @@ class InputLogicHandler implements Handler.Callback {
     public boolean handleMessage(final Message msg) {
         switch (msg.what) {
             case MSG_GET_SUGGESTED_WORDS:
-                mLatinIME.getSuggestedWords(msg.arg1 /* sessionId */,
+                mLatinIME.getSuggestedWords(msg.arg1 /* inputStyle */,
                         msg.arg2 /* sequenceNumber */, (OnGetSuggestedWordsCallback) msg.obj);
                 break;
         }
@@ -134,7 +134,8 @@ class InputLogicHandler implements Handler.Callback {
                 return;
             }
             mInputLogic.mWordComposer.setBatchInputPointers(batchPointers);
-            getSuggestedWords(Suggest.SESSION_GESTURE, sequenceNumber,
+            getSuggestedWords(isTailBatchInput ? SuggestedWords.INPUT_STYLE_TAIL_BATCH
+                    : SuggestedWords.INPUT_STYLE_UPDATE_BATCH, sequenceNumber,
                     new OnGetSuggestedWordsCallback() {
                         @Override
                         public void onGetSuggestedWords(SuggestedWords suggestedWords) {
@@ -205,9 +206,9 @@ class InputLogicHandler implements Handler.Callback {
         updateBatchInput(batchPointers, sequenceNumber, true /* isTailBatchInput */);
     }
 
-    public void getSuggestedWords(final int sessionId, final int sequenceNumber,
+    public void getSuggestedWords(final int inputStyle, final int sequenceNumber,
             final OnGetSuggestedWordsCallback callback) {
         mNonUIThreadHandler.obtainMessage(
-                MSG_GET_SUGGESTED_WORDS, sessionId, sequenceNumber, callback).sendToTarget();
+                MSG_GET_SUGGESTED_WORDS, inputStyle, sequenceNumber, callback).sendToTarget();
     }
 }

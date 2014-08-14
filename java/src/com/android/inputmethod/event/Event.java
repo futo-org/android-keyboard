@@ -257,6 +257,8 @@ public class Event {
 
     public boolean isConsumed() { return 0 != (FLAG_CONSUMED & mFlags); }
 
+    public boolean isGesture() { return EVENT_TYPE_GESTURE == mEventType; }
+
     // Returns whether this is a fake key press from the suggestion strip. This happens with
     // punctuation signs selected from the suggestion strip.
     public boolean isSuggestionStripPress() {
