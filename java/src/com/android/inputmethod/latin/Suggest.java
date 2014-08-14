@@ -40,13 +40,8 @@ public final class Suggest {
     // Session id for
     // {@link #getSuggestedWords(WordComposer,String,ProximityInfo,boolean,int)}.
     // We are sharing the same ID between typing and gesture to save RAM footprint.
-    public static final int SESSION_TYPING = 0;
-    public static final int SESSION_GESTURE = 0;
-
-    // TODO: rename this to CORRECTION_OFF
-    public static final int CORRECTION_NONE = 0;
-    // TODO: rename this to CORRECTION_ON
-    public static final int CORRECTION_FULL = 1;
+    public static final int SESSION_ID_TYPING = 0;
+    public static final int SESSION_ID_GESTURE = 0;
 
     // Close to -2**31
     private static final int SUPPRESS_SUGGEST_THRESHOLD = -2000000000;
@@ -75,14 +70,15 @@ public final class Suggest {
     public void getSuggestedWords(final WordComposer wordComposer,
             final PrevWordsInfo prevWordsInfo, final ProximityInfo proximityInfo,
             final SettingsValuesForSuggestion settingsValuesForSuggestion,
-            final boolean isCorrectionEnabled, final int sessionId, final int sequenceNumber,
+            final boolean isCorrectionEnabled, final int inputStyle, final int sequenceNumber,
             final OnGetSuggestedWordsCallback callback) {
         if (wordComposer.isBatchMode()) {
             getSuggestedWordsForBatchInput(wordComposer, prevWordsInfo, proximityInfo,
-                    settingsValuesForSuggestion, sessionId, sequenceNumber, callback);
+                    settingsValuesForSuggestion, inputStyle, sequenceNumber, callback);
         } else {
-            getSuggestedWordsForTypingInput(wordComposer, prevWordsInfo, proximityInfo,
-                    settingsValuesForSuggestion, isCorrectionEnabled, sequenceNumber, callback);
+            getSuggestedWordsForNonBatchInput(wordComposer, prevWordsInfo, proximityInfo,
+                    settingsValuesForSuggestion, inputStyle, isCorrectionEnabled,
+                    sequenceNumber, callback);
         }
     }
 
@@ -120,11 +116,11 @@ public final class Suggest {
         return firstSuggestedWordInfo.mWord;
     }
 
-    // Retrieves suggestions for the typing input
+    // Retrieves suggestions for non-batch input (typing, recorrection, predictions...)
     // and calls the callback function with the suggestions.
-    private void getSuggestedWordsForTypingInput(final WordComposer wordComposer,
+    private void getSuggestedWordsForNonBatchInput(final WordComposer wordComposer,
             final PrevWordsInfo prevWordsInfo, final ProximityInfo proximityInfo,
-            final SettingsValuesForSuggestion settingsValuesForSuggestion,
+            final SettingsValuesForSuggestion settingsValuesForSuggestion, final int inputStyle,
             final boolean isCorrectionEnabled, final int sequenceNumber,
             final OnGetSuggestedWordsCallback callback) {
         final String typedWord = wordComposer.getTypedWord();
@@ -135,7 +131,7 @@ public final class Suggest {
 
         final SuggestionResults suggestionResults = mDictionaryFacilitator.getSuggestionResults(
                 wordComposer, prevWordsInfo, proximityInfo, settingsValuesForSuggestion,
-                SESSION_TYPING);
+                SESSION_ID_TYPING);
         final ArrayList<SuggestedWordInfo> suggestionsContainer =
                 getTransformedSuggestedWordInfoList(wordComposer, suggestionResults,
                         trailingSingleQuotesCount);
@@ -197,7 +193,8 @@ public final class Suggest {
                 // rename the attribute or change the value.
                 !resultsArePredictions && !allowsToBeAutoCorrected /* typedWordValid */,
                 hasAutoCorrection /* willAutoCorrect */,
-                false /* isObsoleteSuggestions */, resultsArePredictions, sequenceNumber));
+                false /* isObsoleteSuggestions */, resultsArePredictions,
+                inputStyle, sequenceNumber));
     }
 
     // Retrieves suggestions for the batch input
@@ -205,10 +202,11 @@ public final class Suggest {
     private void getSuggestedWordsForBatchInput(final WordComposer wordComposer,
             final PrevWordsInfo prevWordsInfo, final ProximityInfo proximityInfo,
             final SettingsValuesForSuggestion settingsValuesForSuggestion,
-            final int sessionId, final int sequenceNumber,
+            final int inputStyle, final int sequenceNumber,
             final OnGetSuggestedWordsCallback callback) {
         final SuggestionResults suggestionResults = mDictionaryFacilitator.getSuggestionResults(
-                wordComposer, prevWordsInfo, proximityInfo, settingsValuesForSuggestion, sessionId);
+                wordComposer, prevWordsInfo, proximityInfo, settingsValuesForSuggestion,
+                SESSION_ID_GESTURE);
         final ArrayList<SuggestedWordInfo> suggestionsContainer =
                 new ArrayList<>(suggestionResults);
         final int suggestionsCount = suggestionsContainer.size();
@@ -246,7 +244,8 @@ public final class Suggest {
                 true /* typedWordValid */,
                 false /* willAutoCorrect */,
                 false /* isObsoleteSuggestions */,
-                false /* isPrediction */, sequenceNumber));
+                false /* isPrediction */,
+                inputStyle, sequenceNumber));
     }
 
     private static ArrayList<SuggestedWordInfo> getSuggestionsInfoListWithDebugInfo(

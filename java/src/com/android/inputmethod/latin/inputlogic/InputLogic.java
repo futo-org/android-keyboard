@@ -216,7 +216,7 @@ public final class InputLogic {
         } else {
             resetComposingState(true /* alsoResetLastComposedWord */);
         }
-        handler.postUpdateSuggestionStrip();
+        handler.postUpdateSuggestionStrip(SuggestedWords.INPUT_STYLE_TYPING);
         final String text = performSpecificTldProcessingOnTextInput(rawText);
         if (SpaceState.PHANTOM == mSpaceState) {
             promotePhantomSpace(settingsValues);
@@ -288,9 +288,6 @@ public final class InputLogic {
             return inputTransaction;
         }
 
-        // We need to log before we commit, because the word composer will store away the user
-        // typed word.
-        final String replacedWord = mWordComposer.getTypedWord();
         commitChosenWord(settingsValues, suggestion,
                 LastComposedWord.COMMIT_TYPE_MANUAL_PICK, LastComposedWord.NOT_A_SEPARATOR);
         mConnection.endBatchEdit();
@@ -311,7 +308,8 @@ public final class InputLogic {
             mSuggestionStripViewAccessor.showAddToDictionaryHint(suggestion);
         } else {
             // If we're not showing the "Touch again to save", then update the suggestion strip.
-            handler.postUpdateSuggestionStrip();
+            // That's going to be predictions (or punctuation suggestions), so INPUT_STYLE_NONE.
+            handler.postUpdateSuggestionStrip(SuggestedWords.INPUT_STYLE_NONE);
         }
         return inputTransaction;
     }
@@ -1299,7 +1297,8 @@ public final class InputLogic {
                 prevWordsInfo, timeStampInSeconds, settingsValues.mBlockPotentiallyOffensive);
     }
 
-    public void performUpdateSuggestionStripSync(final SettingsValues settingsValues) {
+    public void performUpdateSuggestionStripSync(final SettingsValues settingsValues,
+            final int inputStyle) {
         // Check if we have a suggestion engine attached.
         if (!settingsValues.needsToLookupSuggestions()) {
             if (mWordComposer.isComposingWord()) {
@@ -1317,8 +1316,8 @@ public final class InputLogic {
         }
 
         final AsyncResultHolder<SuggestedWords> holder = new AsyncResultHolder<>();
-        mInputLogicHandler.getSuggestedWords(Suggest.SESSION_TYPING,
-                SuggestedWords.NOT_A_SEQUENCE_NUMBER, new OnGetSuggestedWordsCallback() {
+        mInputLogicHandler.getSuggestedWords(inputStyle, SuggestedWords.NOT_A_SEQUENCE_NUMBER,
+                new OnGetSuggestedWordsCallback() {
                     @Override
                     public void onGetSuggestedWords(final SuggestedWords suggestedWords) {
                         final String typedWord = mWordComposer.getTypedWord();
@@ -1379,7 +1378,7 @@ public final class InputLogic {
         if (!mConnection.isCursorTouchingWord(settingsValues.mSpacingAndPunctuations)) {
             // Show predictions.
             mWordComposer.setCapitalizedModeAtStartComposingTime(WordComposer.CAPS_MODE_OFF);
-            mLatinIME.mHandler.postUpdateSuggestionStrip();
+            mLatinIME.mHandler.postUpdateSuggestionStrip(SuggestedWords.INPUT_STYLE_RECORRECTION);
             return;
         }
         final TextRange range = mConnection.getWordRangeAtCursor(
@@ -1444,7 +1443,7 @@ public final class InputLogic {
             // If there weren't any suggestion spans on this word, suggestions#size() will be 1
             // if shouldIncludeResumedWordInSuggestions is true, 0 otherwise. In this case, we
             // have no useful suggestions, so we will try to compute some for it instead.
-            mInputLogicHandler.getSuggestedWords(Suggest.SESSION_TYPING,
+            mInputLogicHandler.getSuggestedWords(Suggest.SESSION_ID_TYPING,
                     SuggestedWords.NOT_A_SEQUENCE_NUMBER, new OnGetSuggestedWordsCallback() {
                         @Override
                         public void onGetSuggestedWords(
@@ -1457,7 +1456,8 @@ public final class InputLogic {
                                 // case. The #getSuggestedWordsExcludingTypedWord() method sets
                                 // willAutoCorrect to false.
                                 suggestedWords = suggestedWordsIncludingTypedWord
-                                        .getSuggestedWordsExcludingTypedWord();
+                                        .getSuggestedWordsExcludingTypedWord(SuggestedWords
+                                                .INPUT_STYLE_RECORRECTION);
                             } else {
                                 // No saved suggestions, and we were unable to compute any good one
                                 // either. Rather than displaying an empty suggestion strip, we'll
@@ -1477,6 +1477,7 @@ public final class InputLogic {
                     null /* rawSuggestions */, typedWord,
                     false /* typedWordValid */, false /* willAutoCorrect */,
                     false /* isObsoleteSuggestions */, false /* isPrediction */,
+                    SuggestedWords.INPUT_STYLE_RECORRECTION,
                     SuggestedWords.NOT_A_SEQUENCE_NUMBER);
             mIsAutoCorrectionIndicatorOn = false;
             mLatinIME.mHandler.showSuggestionStrip(suggestedWords);
@@ -1773,7 +1774,8 @@ public final class InputLogic {
                 SuggestedWords.getTypedWordAndPreviousSuggestions(typedWord, oldSuggestedWords);
         return new SuggestedWords(typedWordAndPreviousSuggestions, null /* rawSuggestions */,
                 false /* typedWordValid */, false /* hasAutoCorrectionCandidate */,
-                true /* isObsoleteSuggestions */, false /* isPrediction */);
+                true /* isObsoleteSuggestions */, false /* isPrediction */,
+                oldSuggestedWords.mInputStyle);
     }
 
     /**
@@ -1956,7 +1958,15 @@ public final class InputLogic {
         // Complete any pending suggestions query first
         if (handler.hasPendingUpdateSuggestions()) {
             handler.cancelUpdateSuggestionStrip();
-            performUpdateSuggestionStripSync(settingsValues);
+            // To know the input style here, we should retrieve the in-flight "update suggestions"
+            // message and read its arg1 member here. However, the Handler class does not let
+            // us retrieve this message, so we can't do that. But in fact, we notice that
+            // we only ever come here when the input style was typing. In the case of batch
+            // input, we update the suggestions synchronously when the tail batch comes. Likewise
+            // for application-specified completions. As for recorrections, we never auto-correct,
+            // so we don't come here either. Hence, the input style is necessarily
+            // INPUT_STYLE_TYPING.
+            performUpdateSuggestionStripSync(settingsValues, SuggestedWords.INPUT_STYLE_TYPING);
         }
         final String typedAutoCorrection = mWordComposer.getAutoCorrectionOrNull();
         final String typedWord = mWordComposer.getTypedWord();
@@ -2052,7 +2062,7 @@ public final class InputLogic {
     }
 
     public void getSuggestedWords(final SettingsValues settingsValues,
-            final ProximityInfo proximityInfo, final int keyboardShiftMode, final int sessionId,
+            final ProximityInfo proximityInfo, final int keyboardShiftMode, final int inputStyle,
             final int sequenceNumber, final OnGetSuggestedWordsCallback callback) {
         mWordComposer.adviseCapitalizedModeBeforeFetchingSuggestions(
                 getActualCapsMode(settingsValues, keyboardShiftMode));
@@ -2068,6 +2078,6 @@ public final class InputLogic {
                         settingsValues.mPhraseGestureEnabled,
                         settingsValues.mAdditionalFeaturesSettingValues),
                 settingsValues.mAutoCorrectionEnabledPerUserSettings,
-                sessionId, sequenceNumber, callback);
+                inputStyle, sequenceNumber, callback);
     }
 }
