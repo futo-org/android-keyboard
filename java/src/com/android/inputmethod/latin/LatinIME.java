@@ -561,7 +561,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         DictionaryDecayBroadcastReciever.setUpIntervalAlarmForDictionaryDecaying(this);
 
-        StatsUtils.onCreate(mSettings.getCurrent());
+        StatsUtils.onCreate(mSettings.getCurrent(), mRichImm);
     }
 
     // Has to be package-visible for unit tests
