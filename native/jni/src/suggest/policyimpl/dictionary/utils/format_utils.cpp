@@ -23,7 +23,7 @@ namespace latinime {
 const uint32_t FormatUtils::MAGIC_NUMBER = 0x9BC13AFE;
 
 // Magic number (4 bytes), version (2 bytes), flags (2 bytes), header size (4 bytes) = 12
-const int FormatUtils::DICTIONARY_MINIMUM_SIZE = 12;
+const size_t FormatUtils::DICTIONARY_MINIMUM_SIZE = 12;
 
 /* static */ FormatUtils::FORMAT_VERSION FormatUtils::getFormatVersion(const int formatVersion) {
     switch (formatVersion) {
@@ -40,14 +40,14 @@ const int FormatUtils::DICTIONARY_MINIMUM_SIZE = 12;
     }
 }
 /* static */ FormatUtils::FORMAT_VERSION FormatUtils::detectFormatVersion(
-        const uint8_t *const dict, const int dictSize) {
+        const ReadOnlyByteArrayView dictBuffer) {
     // The magic number is stored big-endian.
     // If the dictionary is less than 4 bytes, we can't even read the magic number, so we don't
     // understand this format.
-    if (dictSize < DICTIONARY_MINIMUM_SIZE) {
+    if (dictBuffer.size() < DICTIONARY_MINIMUM_SIZE) {
         return UNKNOWN_VERSION;
     }
-    const uint32_t magicNumber = ByteArrayUtils::readUint32(dict, 0);
+    const uint32_t magicNumber = ByteArrayUtils::readUint32(dictBuffer.data(), 0);
     switch (magicNumber) {
         case MAGIC_NUMBER:
             // The layout of the header is as follows:
@@ -58,7 +58,7 @@ const int FormatUtils::DICTIONARY_MINIMUM_SIZE = 12;
             // Conceptually this converts the hardcoded value of the bytes in the file into
             // the symbolic value we use in the code. But we want the constants to be the
             // same so we use them for both here.
-            return getFormatVersion(ByteArrayUtils::readUint16(dict, 4));
+            return getFormatVersion(ByteArrayUtils::readUint16(dictBuffer.data(), 4));
         default:
             return UNKNOWN_VERSION;
     }
