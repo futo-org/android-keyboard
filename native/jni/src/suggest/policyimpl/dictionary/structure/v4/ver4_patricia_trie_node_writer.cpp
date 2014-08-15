@@ -255,6 +255,14 @@ bool Ver4PatriciaTrieNodeWriter::addNgramEntry(const WordIdArrayView prevWordIds
 
 bool Ver4PatriciaTrieNodeWriter::removeNgramEntry(const WordIdArrayView prevWordIds,
         const int wordId) {
+    // TODO: Support n-gram.
+    LanguageModelDictContent *const languageModelDictContent =
+            mBuffers->getMutableLanguageModelDictContent();
+    if (!languageModelDictContent->removeNgramProbabilityEntry(prevWordIds.limit(1 /* maxSize */),
+            wordId)) {
+        // TODO: Uncomment.
+        // return false;
+    }
     // TODO: Remove.
     return mBigramPolicy->removeEntry(prevWordIds[0], wordId);
 }
