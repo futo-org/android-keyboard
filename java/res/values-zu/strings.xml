@@ -77,7 +77,7 @@
     <string name="voice_input_disabled_summary" msgid="8141750303464726129">"Azikho izindlela zokufaka zezwi ezinikwe amandla. Hlola izilungiselelo zolimi kanye nezokufaka."</string>
     <string name="configure_input_method" msgid="373356270290742459">"Misa izindlela zokufakwayo"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Izilimi zokufakwayo"</string>
-    <string name="send_feedback" msgid="1780431884109392046">"Thumela impendulo"</string>
+    <string name="help_and_feedback" msgid="5328219371839879161">"Usizo nempendulo"</string>
     <string name="select_language" msgid="3693815588777926848">"Izilimi zokufakwayo"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"Thinta futhi ukuze ulondoloze"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Isichazamazwi siyatholakala"</string>
