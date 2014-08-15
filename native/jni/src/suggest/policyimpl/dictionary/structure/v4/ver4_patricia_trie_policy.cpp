@@ -200,7 +200,7 @@ bool Ver4PatriciaTriePolicy::addUnigramEntry(const int *const word, const int le
     }
     for (const auto &shortcut : unigramProperty->getShortcuts()) {
         if (shortcut.getTargetCodePoints()->size() > MAX_WORD_LENGTH) {
-            AKLOGE("One of shortcut targets is too long to insert to the dictionary, length: %d",
+            AKLOGE("One of shortcut targets is too long to insert to the dictionary, length: %zd",
                     shortcut.getTargetCodePoints()->size());
             return false;
         }
@@ -235,7 +235,7 @@ bool Ver4PatriciaTriePolicy::addUnigramEntry(const int *const word, const int le
                 if (!mUpdatingHelper.addShortcutTarget(wordPos,
                         shortcut.getTargetCodePoints()->data(),
                         shortcut.getTargetCodePoints()->size(), shortcut.getProbability())) {
-                    AKLOGE("Cannot add new shortcut target. PtNodePos: %d, length: %d, "
+                    AKLOGE("Cannot add new shortcut target. PtNodePos: %d, length: %zd, "
                             "probability: %d", wordPos, shortcut.getTargetCodePoints()->size(),
                             shortcut.getProbability());
                     return false;
@@ -286,7 +286,7 @@ bool Ver4PatriciaTriePolicy::addNgramEntry(const PrevWordsInfo *const prevWordsI
     }
     if (bigramProperty->getTargetCodePoints()->size() > MAX_WORD_LENGTH) {
         AKLOGE("The word is too long to insert the ngram to the dictionary. "
-                "length: %d", bigramProperty->getTargetCodePoints()->size());
+                "length: %zd", bigramProperty->getTargetCodePoints()->size());
         return false;
     }
     int prevWordsPtNodePos[MAX_PREV_WORD_COUNT_FOR_N_GRAM];
