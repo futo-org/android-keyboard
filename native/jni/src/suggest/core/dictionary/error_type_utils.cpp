@@ -19,17 +19,18 @@
 namespace latinime {
 
 const ErrorTypeUtils::ErrorType ErrorTypeUtils::NOT_AN_ERROR = 0x0;
-const ErrorTypeUtils::ErrorType ErrorTypeUtils::MATCH_WITH_CASE_ERROR = 0x1;
-const ErrorTypeUtils::ErrorType ErrorTypeUtils::MATCH_WITH_ACCENT_ERROR = 0x2;
-const ErrorTypeUtils::ErrorType ErrorTypeUtils::MATCH_WITH_DIGRAPH = 0x4;
-const ErrorTypeUtils::ErrorType ErrorTypeUtils::INTENTIONAL_OMISSION = 0x8;
-const ErrorTypeUtils::ErrorType ErrorTypeUtils::EDIT_CORRECTION = 0x10;
-const ErrorTypeUtils::ErrorType ErrorTypeUtils::PROXIMITY_CORRECTION = 0x20;
-const ErrorTypeUtils::ErrorType ErrorTypeUtils::COMPLETION = 0x40;
-const ErrorTypeUtils::ErrorType ErrorTypeUtils::NEW_WORD = 0x80;
+const ErrorTypeUtils::ErrorType ErrorTypeUtils::MATCH_WITH_WRONG_CASE = 0x1;
+const ErrorTypeUtils::ErrorType ErrorTypeUtils::MATCH_WITH_MISSING_ACCENT = 0x2;
+const ErrorTypeUtils::ErrorType ErrorTypeUtils::MATCH_WITH_WRONG_ACCENT = 0x4;
+const ErrorTypeUtils::ErrorType ErrorTypeUtils::MATCH_WITH_DIGRAPH = 0x8;
+const ErrorTypeUtils::ErrorType ErrorTypeUtils::INTENTIONAL_OMISSION = 0x10;
+const ErrorTypeUtils::ErrorType ErrorTypeUtils::EDIT_CORRECTION = 0x20;
+const ErrorTypeUtils::ErrorType ErrorTypeUtils::PROXIMITY_CORRECTION = 0x40;
+const ErrorTypeUtils::ErrorType ErrorTypeUtils::COMPLETION = 0x80;
+const ErrorTypeUtils::ErrorType ErrorTypeUtils::NEW_WORD = 0x100;
 
 const ErrorTypeUtils::ErrorType ErrorTypeUtils::ERRORS_TREATED_AS_AN_EXACT_MATCH =
-        NOT_AN_ERROR | MATCH_WITH_CASE_ERROR | MATCH_WITH_ACCENT_ERROR | MATCH_WITH_DIGRAPH;
+        NOT_AN_ERROR | MATCH_WITH_WRONG_CASE | MATCH_WITH_MISSING_ACCENT | MATCH_WITH_DIGRAPH;
 
 const ErrorTypeUtils::ErrorType
         ErrorTypeUtils::ERRORS_TREATED_AS_AN_EXACT_MATCH_WITH_INTENTIONAL_OMISSION =

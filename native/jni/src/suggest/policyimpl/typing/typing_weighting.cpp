@@ -36,25 +36,34 @@ ErrorTypeUtils::ErrorType TypingWeighting::getErrorType(const CorrectionType cor
                 // Compare the node code point with original primary code point on the keyboard.
                 const ProximityInfoState *const pInfoState =
                         traverseSession->getProximityInfoState(0);
-                const int primaryOriginalCodePoint = pInfoState->getPrimaryOriginalCodePointAt(
+                const int primaryCodePoint = pInfoState->getPrimaryCodePointAt(
                         dicNode->getInputIndex(0));
                 const int nodeCodePoint = dicNode->getNodeCodePoint();
-                if (primaryOriginalCodePoint == nodeCodePoint) {
+                // TODO: Check whether the input code point is on the keyboard.
+                if (primaryCodePoint == nodeCodePoint) {
                     // Node code point is same as original code point on the keyboard.
                     return ErrorTypeUtils::NOT_AN_ERROR;
-                } else if (CharUtils::toLowerCase(primaryOriginalCodePoint) ==
+                } else if (CharUtils::toLowerCase(primaryCodePoint) ==
                         CharUtils::toLowerCase(nodeCodePoint)) {
                     // Only cases of the code points are different.
-                    return ErrorTypeUtils::MATCH_WITH_CASE_ERROR;
-                } else if (CharUtils::toBaseCodePoint(primaryOriginalCodePoint) ==
-                        CharUtils::toBaseCodePoint(nodeCodePoint)) {
+                    return ErrorTypeUtils::MATCH_WITH_WRONG_CASE;
+                } else if (primaryCodePoint == CharUtils::toBaseCodePoint(nodeCodePoint)) {
                     // Node code point is a variant of original code point.
-                    return ErrorTypeUtils::MATCH_WITH_ACCENT_ERROR;
-                } else {
+                    return ErrorTypeUtils::MATCH_WITH_MISSING_ACCENT;
+                } else if (CharUtils::toBaseCodePoint(primaryCodePoint)
+                        == CharUtils::toBaseCodePoint(nodeCodePoint)) {
+                    // Base code points are the same but the code point is intentionally input.
+                    return ErrorTypeUtils::MATCH_WITH_WRONG_ACCENT;
+                } else if (CharUtils::toLowerCase(primaryCodePoint)
+                        == CharUtils::toBaseLowerCase(nodeCodePoint)) {
                     // Node code point is a variant of original code point and the cases are also
                     // different.
-                    return ErrorTypeUtils::MATCH_WITH_ACCENT_ERROR
-                            | ErrorTypeUtils::MATCH_WITH_CASE_ERROR;
+                    return ErrorTypeUtils::MATCH_WITH_MISSING_ACCENT
+                            | ErrorTypeUtils::MATCH_WITH_WRONG_CASE;
+                } else {
+                    // Base code points are the same and the cases are different.
+                    return ErrorTypeUtils::MATCH_WITH_WRONG_ACCENT
+                            | ErrorTypeUtils::MATCH_WITH_WRONG_CASE;
                 }
             }
             break;
