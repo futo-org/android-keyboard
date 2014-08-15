@@ -77,7 +77,8 @@
     <string name="voice_input_disabled_summary" msgid="8141750303464726129">"কোনো ভয়েস ইনপুট পদ্ধতি সক্ষম নয়। ভাষা &amp; ইনপুট সেটিংস পরীক্ষা করুন।"</string>
     <string name="configure_input_method" msgid="373356270290742459">"ইনপুট পদ্ধতি কনফিগার করুন"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"ইনপুট ভাষাগুলি"</string>
-    <string name="send_feedback" msgid="1780431884109392046">"প্রতিক্রিয়া পাঠান"</string>
+    <!-- no translation found for help_and_feedback (5328219371839879161) -->
+    <skip />
     <string name="select_language" msgid="3693815588777926848">"ইনপুট ভাষাগুলি"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"সংরক্ষণ করতে আবার ছোঁন"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"অভিধান উপলব্ধ"</string>
