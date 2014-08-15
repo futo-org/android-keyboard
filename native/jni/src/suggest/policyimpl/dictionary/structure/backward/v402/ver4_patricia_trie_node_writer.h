@@ -111,6 +111,11 @@ class Ver4PatriciaTrieNodeWriter : public PtNodeWriter {
 
     bool updatePtNodeHasBigramsAndShortcutTargetsFlags(const PtNodeParams *const ptNodeParams);
 
+    // Suppress unigram not to use the word for generating suggestions. So, this method can be used
+    // only for dictionaries with historical info. Also, suppressed entries are included in unigram
+    // count. They will be removed from the dictionary during GC.
+    bool suppressUnigramEntry(const PtNodeParams *const ptNodeParams);
+
  private:
     DISALLOW_COPY_AND_ASSIGN(Ver4PatriciaTrieNodeWriter);
 

@@ -258,6 +258,20 @@ bool Ver4PatriciaTriePolicy::addUnigramEntry(const int *const word, const int le
     }
 }
 
+bool Ver4PatriciaTriePolicy::removeUnigramEntry(const int *const word, const int length) {
+    if (!mBuffers->isUpdatable()) {
+        AKLOGI("Warning: removeUnigramEntry() is called for non-updatable dictionary.");
+        return false;
+    }
+    const int ptNodePos = getTerminalPtNodePositionOfWord(word, length,
+            false /* forceLowerCaseSearch */);
+    if (ptNodePos == NOT_A_DICT_POS) {
+        return false;
+    }
+    const PtNodeParams ptNodeParams = mNodeReader.fetchPtNodeParamsInBufferFromPtNodePos(ptNodePos);
+    return mNodeWriter.suppressUnigramEntry(&ptNodeParams);
+}
+
 bool Ver4PatriciaTriePolicy::addNgramEntry(const PrevWordsInfo *const prevWordsInfo,
         const BigramProperty *const bigramProperty) {
     if (!mBuffers->isUpdatable()) {
