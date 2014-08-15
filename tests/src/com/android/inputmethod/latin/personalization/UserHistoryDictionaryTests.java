@@ -74,6 +74,23 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
         }
     }
 
+    private void checkExistenceAndRemoveDictFile(final Locale locale, final File dictFile) {
+        Log.d(TAG, "waiting for writing ...");
+        waitForWriting(locale);
+        if (!dictFile.exists()) {
+            try {
+                Log.d(TAG, dictFile + " is not existing. Wait "
+                        + WAIT_FOR_WRITING_FILE_IN_MILLISECONDS + " ms for writing.");
+                printAllFiles(dictFile.getParentFile());
+                Thread.sleep(WAIT_FOR_WRITING_FILE_IN_MILLISECONDS);
+            } catch (final InterruptedException e) {
+                Log.e(TAG, "Interrupted during waiting for writing the dict file.");
+            }
+        }
+        assertTrue("check exisiting of " + dictFile, dictFile.exists());
+        FileUtils.deleteRecursively(dictFile);
+    }
+
     @Override
     protected void setUp() throws Exception {
         super.setUp();
@@ -210,10 +227,7 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
             addAndWriteRandomWords(dummyLocale, numberOfWords, random,
                     true /* checksContents */);
         } finally {
-            Log.d(TAG, "waiting for writing ...");
-            waitForWriting(dummyLocale);
-            assertTrue("check exisiting of " + dictFile, dictFile.exists());
-            FileUtils.deleteRecursively(dictFile);
+            checkExistenceAndRemoveDictFile(dummyLocale, dictFile);
         }
     }
 
@@ -251,20 +265,15 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
             Log.d(TAG, "testStressTestForSwitchingLanguageAndAddingWords took "
                     + (end - start) + " ms");
         } finally {
-            Log.d(TAG, "waiting for writing ...");
             for (int i = 0; i < numberOfLanguages; i++) {
-                waitForWriting(dummyLocales[i]);
-            }
-            for (final File dictFile : dictFiles) {
-                assertTrue("check exisiting of " + dictFile, dictFile.exists());
-                FileUtils.deleteRecursively(dictFile);
+                checkExistenceAndRemoveDictFile(dummyLocales[i], dictFiles[i]);
             }
         }
     }
 
     public void testAddManyWords() {
         final Locale dummyLocale =
-                new Locale(TEST_LOCALE_PREFIX + "random_words" + System.currentTimeMillis());
+                new Locale(TEST_LOCALE_PREFIX + "many_random_words" + System.currentTimeMillis());
         final String dictName = ExpandableBinaryDictionary.getDictName(
                 UserHistoryDictionary.NAME, dummyLocale, null /* dictFile */);
         final File dictFile = ExpandableBinaryDictionary.getDictFile(
@@ -275,20 +284,7 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
         try {
             addAndWriteRandomWords(dummyLocale, numberOfWords, random, true /* checksContents */);
         } finally {
-            Log.d(TAG, "waiting for writing ...");
-            waitForWriting(dummyLocale);
-            if (!dictFile.exists()) {
-                try {
-                    Log.d(TAG, dictFile +" is not existing. Wait "
-                            + WAIT_FOR_WRITING_FILE_IN_MILLISECONDS + " ms for writing.");
-                    printAllFiles(dictFile.getParentFile());
-                    Thread.sleep(WAIT_FOR_WRITING_FILE_IN_MILLISECONDS);
-                } catch (final InterruptedException e) {
-                    Log.e(TAG, "Interrupted during waiting for writing the dict file.");
-                }
-            }
-            assertTrue("check exisiting of " + dictFile, dictFile.exists());
-            FileUtils.deleteRecursively(dictFile);
+            checkExistenceAndRemoveDictFile(dummyLocale, dictFile);
         }
     }
 
