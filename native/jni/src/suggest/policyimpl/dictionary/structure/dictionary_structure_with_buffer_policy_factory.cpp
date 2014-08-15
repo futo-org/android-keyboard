@@ -111,8 +111,7 @@ template<class DictConstants, class DictBuffers, class DictBuffersPtr, class Str
         return nullptr;
     }
     const FormatUtils::FORMAT_VERSION formatVersion = FormatUtils::detectFormatVersion(
-            mmappedBuffer->getReadOnlyByteArrayView().data(),
-            mmappedBuffer->getReadOnlyByteArrayView().size());
+            mmappedBuffer->getReadOnlyByteArrayView());
     switch (formatVersion) {
         case FormatUtils::VERSION_2:
             AKLOGE("Given path is a directory but the format is version 2. path: %s", path);
@@ -174,8 +173,7 @@ template<class DictConstants, class DictBuffers, class DictBuffersPtr, class Str
     if (!mmappedBuffer) {
         return nullptr;
     }
-    switch (FormatUtils::detectFormatVersion(mmappedBuffer->getReadOnlyByteArrayView().data(),
-            mmappedBuffer->getReadOnlyByteArrayView().size())) {
+    switch (FormatUtils::detectFormatVersion(mmappedBuffer->getReadOnlyByteArrayView())) {
         case FormatUtils::VERSION_2:
             return DictionaryStructureWithBufferPolicy::StructurePolicyPtr(
                     new PatriciaTriePolicy(std::move(mmappedBuffer)));

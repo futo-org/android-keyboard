@@ -20,6 +20,7 @@
 #include <cstdint>
 
 #include "defines.h"
+#include "utils/byte_array_view.h"
 
 namespace latinime {
 
@@ -42,12 +43,12 @@ class FormatUtils {
     static const uint32_t MAGIC_NUMBER;
 
     static FORMAT_VERSION getFormatVersion(const int formatVersion);
-    static FORMAT_VERSION detectFormatVersion(const uint8_t *const dict, const int dictSize);
+    static FORMAT_VERSION detectFormatVersion(const ReadOnlyByteArrayView dictBuffer);
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(FormatUtils);
 
-    static const int DICTIONARY_MINIMUM_SIZE;
+    static const size_t DICTIONARY_MINIMUM_SIZE;
 };
 } // namespace latinime
 #endif /* LATINIME_FORMAT_UTILS_H */
