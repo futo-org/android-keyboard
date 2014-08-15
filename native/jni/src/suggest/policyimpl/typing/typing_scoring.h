@@ -51,10 +51,10 @@ class TypingScoring : public Scoring {
         }
         if (boostExactMatches && ErrorTypeUtils::isExactMatch(containedErrorTypes)) {
             score += ScoringParams::EXACT_MATCH_PROMOTION;
-            if ((ErrorTypeUtils::MATCH_WITH_CASE_ERROR & containedErrorTypes) != 0) {
+            if ((ErrorTypeUtils::MATCH_WITH_WRONG_CASE & containedErrorTypes) != 0) {
                 score -= ScoringParams::CASE_ERROR_PENALTY_FOR_EXACT_MATCH;
             }
-            if ((ErrorTypeUtils::MATCH_WITH_ACCENT_ERROR & containedErrorTypes) != 0) {
+            if ((ErrorTypeUtils::MATCH_WITH_MISSING_ACCENT & containedErrorTypes) != 0) {
                 score -= ScoringParams::ACCENT_ERROR_PENALTY_FOR_EXACT_MATCH;
             }
             if ((ErrorTypeUtils::MATCH_WITH_DIGRAPH & containedErrorTypes) != 0) {

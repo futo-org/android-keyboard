@@ -30,8 +30,9 @@ class ErrorTypeUtils {
     typedef uint32_t ErrorType;
 
     static const ErrorType NOT_AN_ERROR;
-    static const ErrorType MATCH_WITH_CASE_ERROR;
-    static const ErrorType MATCH_WITH_ACCENT_ERROR;
+    static const ErrorType MATCH_WITH_WRONG_CASE;
+    static const ErrorType MATCH_WITH_MISSING_ACCENT;
+    static const ErrorType MATCH_WITH_WRONG_ACCENT;
     static const ErrorType MATCH_WITH_DIGRAPH;
     // Treat error as an intentional omission when the CorrectionType is omission and the node can
     // be intentional omission.
