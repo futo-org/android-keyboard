@@ -108,10 +108,7 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     bool addUnigramEntry(const int *const word, const int length,
             const UnigramProperty *const unigramProperty);
 
-    bool removeUnigramEntry(const int *const word, const int length) {
-        // Removing unigram entry is not supported.
-        return false;
-    }
+    bool removeUnigramEntry(const int *const word, const int length);
 
     bool addNgramEntry(const PrevWordsInfo *const prevWordsInfo,
             const BigramProperty *const bigramProperty);

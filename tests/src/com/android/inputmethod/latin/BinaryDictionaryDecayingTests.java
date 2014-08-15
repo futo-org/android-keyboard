@@ -689,4 +689,36 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
         binaryDictionary.close();
         dictFile.delete();
     }
+
+    public void testRemoveUnigrams() {
+        for (final int formatVersion : DICT_FORMAT_VERSIONS) {
+            testRemoveUnigrams(formatVersion);
+        }
+    }
+
+    private void testRemoveUnigrams(final int formatVersion) {
+        final int unigramInputCount = 20;
+        setCurrentTimeForTestMode(mCurrentTime);
+        File dictFile = null;
+        try {
+            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary", formatVersion);
+        } catch (IOException e) {
+            fail("IOException while writing an initial dictionary : " + e);
+        }
+        final BinaryDictionary binaryDictionary = new BinaryDictionary(dictFile.getAbsolutePath(),
+                0 /* offset */, dictFile.length(), true /* useFullEditDistance */,
+                Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
+
+        addUnigramWord(binaryDictionary, "aaa", Dictionary.NOT_A_PROBABILITY);
+        assertFalse(binaryDictionary.isValidWord("aaa"));
+        for (int i = 0; i < unigramInputCount; i++) {
+            addUnigramWord(binaryDictionary, "aaa", Dictionary.NOT_A_PROBABILITY);
+        }
+        assertTrue(binaryDictionary.isValidWord("aaa"));
+        assertTrue(binaryDictionary.removeUnigramEntry("aaa"));
+        assertFalse(binaryDictionary.isValidWord("aaa"));
+
+        binaryDictionary.close();
+        dictFile.delete();
+    }
 }

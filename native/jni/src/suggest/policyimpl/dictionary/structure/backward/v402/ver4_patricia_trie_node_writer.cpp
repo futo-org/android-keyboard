@@ -425,6 +425,18 @@ bool Ver4PatriciaTrieNodeWriter::updatePtNodeFlags(const int ptNodePos,
     return true;
 }
 
+bool Ver4PatriciaTrieNodeWriter::suppressUnigramEntry(const PtNodeParams *const ptNodeParams) {
+    if (!mHeaderPolicy->hasHistoricalInfoOfWords()) {
+        // Require historical info to suppress unigram entry.
+        return false;
+    }
+    const HistoricalInfo suppressedHistorycalInfo(0 /* timestamp */, 0 /* level */, 0 /* count */);
+    const ProbabilityEntry probabilityEntryToWrite =
+            ProbabilityEntry().createEntryWithUpdatedHistoricalInfo(&suppressedHistorycalInfo);
+    return mBuffers->getMutableProbabilityDictContent()->setProbabilityEntry(
+            ptNodeParams->getTerminalId(), &probabilityEntryToWrite);
+}
+
 } // namespace v402
 } // namespace backward
 } // namespace latinime
