@@ -1089,7 +1089,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 - keyboardHeight;
 
         final LayoutParams params = mKeyPreviewBackingView.getLayoutParams();
-        params.height = mSuggestionStripView.setMoreSuggestionsHeight(remainingHeight);
+        mSuggestionStripView.setMoreSuggestionsHeight(remainingHeight);
+
+        // Let the backing cover the remaining region entirely.
+        params.height = remainingHeight;
         mKeyPreviewBackingView.setLayoutParams(params);
         return params.height;
     }
