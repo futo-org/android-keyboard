@@ -420,6 +420,10 @@ bool TrieMap::addNewEntryByExpandingTable(const uint32_t key, const uint64_t val
 
 bool TrieMap::removeInner(const Entry &bitmapEntry) {
     const int tableSize = popCount(bitmapEntry.getBitmap());
+    if (tableSize <= 0) {
+        // The table is empty. No need to remove any entries.
+        return true;
+    }
     for (int i = 0; i < tableSize; ++i) {
         const int entryIndex = bitmapEntry.getTableIndex() + i;
         const Entry entry = readEntry(entryIndex);
@@ -444,7 +448,7 @@ bool TrieMap::removeInner(const Entry &bitmapEntry) {
             }
         }
     }
-    return freeTable(bitmapEntry.getTableIndex(), tableSize);
+    return true;
 }
 
 }  // namespace latinime

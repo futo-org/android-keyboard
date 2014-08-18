@@ -61,11 +61,17 @@ class LanguageModelDictContent {
         return setNgramProbabilityEntry(WordIdArrayView(), wordId, probabilityEntry);
     }
 
+    bool removeProbabilityEntry(const int wordId) {
+        return removeNgramProbabilityEntry(WordIdArrayView(), wordId);
+    }
+
     ProbabilityEntry getNgramProbabilityEntry(const WordIdArrayView prevWordIds,
             const int wordId) const;
 
     bool setNgramProbabilityEntry(const WordIdArrayView prevWordIds, const int wordId,
             const ProbabilityEntry *const probabilityEntry);
+
+    bool removeNgramProbabilityEntry(const WordIdArrayView prevWordIds, const int wordId);
 
  private:
     DISALLOW_COPY_AND_ASSIGN(LanguageModelDictContent);
