@@ -45,12 +45,15 @@ ProbabilityEntry LanguageModelDictContent::getNgramProbabilityEntry(
 }
 
 bool LanguageModelDictContent::setNgramProbabilityEntry(const WordIdArrayView prevWordIds,
-        const int terminalId, const ProbabilityEntry *const probabilityEntry) {
+        const int wordId, const ProbabilityEntry *const probabilityEntry) {
+    if (wordId == Ver4DictConstants::NOT_A_TERMINAL_ID) {
+        return false;
+    }
     const int bitmapEntryIndex = createAndGetBitmapEntryIndex(prevWordIds);
     if (bitmapEntryIndex == TrieMap::INVALID_INDEX) {
         return false;
     }
-    return mTrieMap.put(terminalId, probabilityEntry->encode(mHasHistoricalInfo), bitmapEntryIndex);
+    return mTrieMap.put(wordId, probabilityEntry->encode(mHasHistoricalInfo), bitmapEntryIndex);
 }
 
 bool LanguageModelDictContent::removeNgramProbabilityEntry(const WordIdArrayView prevWordIds,

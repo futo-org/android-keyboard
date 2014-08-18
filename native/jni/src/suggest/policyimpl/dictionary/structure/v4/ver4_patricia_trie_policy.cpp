@@ -263,6 +263,11 @@ bool Ver4PatriciaTriePolicy::removeUnigramEntry(const int *const word, const int
         AKLOGE("Cannot remove unigram. ptNodePos: %d", ptNodePos);
         return false;
     }
+    if (!mBuffers->getMutableLanguageModelDictContent()->removeProbabilityEntry(
+            ptNodeParams.getTerminalId())) {
+        // TODO: Uncomment.
+        // return false;
+    }
     if (!ptNodeParams.representsNonWordInfo()) {
         mUnigramCount--;
     }
