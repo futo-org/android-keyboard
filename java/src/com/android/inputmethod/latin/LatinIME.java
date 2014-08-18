@@ -1213,13 +1213,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             // Probably never supposed to happen, but just in case.
             return;
         }
-        final String wordToEdit;
-        if (CapsModeUtils.isAutoCapsMode(mInputLogic.mLastComposedWord.mCapitalizedMode)) {
-            wordToEdit = word.toLowerCase(getCurrentSubtypeLocale());
-        } else {
-            wordToEdit = word;
-        }
-        mDictionaryFacilitator.addWordToUserDictionary(this /* context */, wordToEdit);
+        mDictionaryFacilitator.addWordToUserDictionary(this /* context */, word);
     }
 
     // Callback for the {@link SuggestionStripView}, to call when the important notice strip is
@@ -1499,7 +1493,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (!hasSuggestionStripView()) {
             return;
         }
-        mSuggestionStripView.showAddToDictionaryHint(word);
+        final String wordToShow;
+        if (CapsModeUtils.isAutoCapsMode(mInputLogic.mLastComposedWord.mCapitalizedMode)) {
+            wordToShow = word.toLowerCase(getCurrentSubtypeLocale());
+        } else {
+            wordToShow = word;
+        }
+        mSuggestionStripView.showAddToDictionaryHint(wordToShow);
     }
 
     // This will show either an empty suggestion strip (if prediction is enabled) or
