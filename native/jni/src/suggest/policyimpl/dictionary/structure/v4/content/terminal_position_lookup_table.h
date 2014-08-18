@@ -17,13 +17,13 @@
 #ifndef LATINIME_TERMINAL_POSITION_LOOKUP_TABLE_H
 #define LATINIME_TERMINAL_POSITION_LOOKUP_TABLE_H
 
-#include <cstdint>
 #include <cstdio>
 #include <unordered_map>
 
 #include "defines.h"
 #include "suggest/policyimpl/dictionary/structure/v4/content/single_dict_content.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_dict_constants.h"
+#include "utils/byte_array_view.h"
 
 namespace latinime {
 
@@ -31,8 +31,8 @@ class TerminalPositionLookupTable : public SingleDictContent {
  public:
     typedef std::unordered_map<int, int> TerminalIdMap;
 
-    TerminalPositionLookupTable(uint8_t *const buffer, const int bufferSize)
-            : SingleDictContent(buffer, bufferSize),
+    TerminalPositionLookupTable(const ReadWriteByteArrayView buffer)
+            : SingleDictContent(buffer),
               mSize(getBuffer()->getTailPosition()
                       / Ver4DictConstants::TERMINAL_ADDRESS_TABLE_ADDRESS_SIZE) {}
 

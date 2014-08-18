@@ -122,8 +122,7 @@ class Ver4DictBuffers {
     Ver4DictBuffers(MmappedBuffer::MmappedBufferPtr &&headerBuffer,
             MmappedBuffer::MmappedBufferPtr &&bodyBuffer,
             const FormatUtils::FORMAT_VERSION formatVersion,
-            const std::vector<uint8_t *> &contentBuffers,
-            const std::vector<int> &contentBufferSizes);
+            const std::vector<ReadWriteByteArrayView> &contentBuffers);
 
     Ver4DictBuffers(const HeaderPolicy *const headerPolicy, const int maxTrieSize);
 
