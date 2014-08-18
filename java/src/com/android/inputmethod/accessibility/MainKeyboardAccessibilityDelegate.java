@@ -121,7 +121,7 @@ public final class MainKeyboardAccessibilityDelegate
      */
     private void announceKeyboardLanguage(final Keyboard keyboard) {
         final String languageText = SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(
-                keyboard.mId.mSubtype);
+                keyboard.mId.mSubtype.getRawSubtype());
         sendWindowStateChanged(languageText);
     }
 
