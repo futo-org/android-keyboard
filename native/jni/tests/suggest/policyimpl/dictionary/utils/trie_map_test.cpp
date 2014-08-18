@@ -70,6 +70,8 @@ TEST(TrieMapTest, TestRemove) {
     EXPECT_FALSE(result.mIsValid);
     EXPECT_EQ(TrieMap::INVALID_INDEX, result.mNextLevelBitmapEntryIndex);
     EXPECT_EQ(11ull, trieMap.getRoot(12).mValue);
+    EXPECT_TRUE(trieMap.putRoot(S_INT_MAX, 0xFFFFFFFFFull));
+    EXPECT_TRUE(trieMap.remove(S_INT_MAX, trieMap.getRootBitmapEntryIndex()));
 }
 
 TEST(TrieMapTest, TestSetAndGetLarge) {

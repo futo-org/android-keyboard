@@ -53,6 +53,16 @@ bool LanguageModelDictContent::setNgramProbabilityEntry(const WordIdArrayView pr
     return mTrieMap.put(terminalId, probabilityEntry->encode(mHasHistoricalInfo), bitmapEntryIndex);
 }
 
+bool LanguageModelDictContent::removeNgramProbabilityEntry(const WordIdArrayView prevWordIds,
+        const int wordId) {
+    const int bitmapEntryIndex = getBitmapEntryIndex(prevWordIds);
+    if (bitmapEntryIndex == TrieMap::INVALID_INDEX) {
+        // Cannot find bitmap entry for the probability entry. The entry doesn't exist.
+        return false;
+    }
+    return mTrieMap.remove(wordId, bitmapEntryIndex);
+}
+
 bool LanguageModelDictContent::runGCInner(
         const TerminalPositionLookupTable::TerminalIdMap *const terminalIdMap,
         const TrieMap::TrieMapRange trieMapRange,
