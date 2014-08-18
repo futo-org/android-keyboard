@@ -35,6 +35,13 @@ TEST(LanguageModelDictContentTest, TestUnigramProbability) {
             LanguageModelDictContent.getProbabilityEntry(wordId);
     EXPECT_EQ(flag, entry.getFlags());
     EXPECT_EQ(probability, entry.getProbability());
+
+    // Remove
+    EXPECT_TRUE(LanguageModelDictContent.removeProbabilityEntry(wordId));
+    EXPECT_FALSE(LanguageModelDictContent.getProbabilityEntry(wordId).isValid());
+    EXPECT_FALSE(LanguageModelDictContent.removeProbabilityEntry(wordId));
+    EXPECT_TRUE(LanguageModelDictContent.setProbabilityEntry(wordId, &probabilityEntry));
+    EXPECT_TRUE(LanguageModelDictContent.getProbabilityEntry(wordId).isValid());
 }
 
 TEST(LanguageModelDictContentTest, TestUnigramProbabilityWithHistoricalInfo) {
@@ -53,6 +60,13 @@ TEST(LanguageModelDictContentTest, TestUnigramProbabilityWithHistoricalInfo) {
     EXPECT_EQ(timestamp, entry.getHistoricalInfo()->getTimeStamp());
     EXPECT_EQ(level, entry.getHistoricalInfo()->getLevel());
     EXPECT_EQ(count, entry.getHistoricalInfo()->getCount());
+
+    // Remove
+    EXPECT_TRUE(LanguageModelDictContent.removeProbabilityEntry(wordId));
+    EXPECT_FALSE(LanguageModelDictContent.getProbabilityEntry(wordId).isValid());
+    EXPECT_FALSE(LanguageModelDictContent.removeProbabilityEntry(wordId));
+    EXPECT_TRUE(LanguageModelDictContent.setProbabilityEntry(wordId, &probabilityEntry));
+    EXPECT_TRUE(LanguageModelDictContent.removeProbabilityEntry(wordId));
 }
 
 }  // namespace
