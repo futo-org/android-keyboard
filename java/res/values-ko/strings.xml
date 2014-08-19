@@ -77,8 +77,7 @@
     <string name="voice_input_disabled_summary" msgid="8141750303464726129">"사용 설정된 음성 입력 방법이 없습니다. 언어 및 입력 설정을 확인하세요."</string>
     <string name="configure_input_method" msgid="373356270290742459">"입력 방법 설정"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"입력 언어"</string>
-    <!-- no translation found for help_and_feedback (5328219371839879161) -->
-    <skip />
+    <string name="help_and_feedback" msgid="5328219371839879161">"도움말 및 의견"</string>
     <string name="select_language" msgid="3693815588777926848">"입력 언어"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"저장하려면 다시 터치"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"사전 사용 가능"</string>

@@ -77,8 +77,7 @@
     <string name="voice_input_disabled_summary" msgid="8141750303464726129">"कुनै आवाज इनपुट विधिहरू सक्षम गरिएका छैनन्। भाषा र इनपुट सेटिङहरूको जाँच गर्नुहोस्।"</string>
     <string name="configure_input_method" msgid="373356270290742459">"इनपुट विधिहरू कन्फिगर गर्नुहोस्"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"इनपुट भाषाहरू"</string>
-    <!-- no translation found for help_and_feedback (5328219371839879161) -->
-    <skip />
+    <string name="help_and_feedback" msgid="5328219371839879161">"मद्दत र प्रतिक्रिया"</string>
     <string name="select_language" msgid="3693815588777926848">"इनपुट भाषाहरू"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"बचत गर्न पुनः छुनुहोस्"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"उपलब्ध शब्दकोश"</string>
