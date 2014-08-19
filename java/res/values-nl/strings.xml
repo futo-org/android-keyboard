@@ -77,10 +77,9 @@
     <string name="voice_input_disabled_summary" msgid="8141750303464726129">"Geen spraakinvoermethoden ingeschakeld. Ga naar \'Instellingen voor taal en invoer\'."</string>
     <string name="configure_input_method" msgid="373356270290742459">"Invoermethoden configureren"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Invoertalen"</string>
-    <!-- no translation found for help_and_feedback (5328219371839879161) -->
-    <skip />
+    <string name="help_and_feedback" msgid="5328219371839879161">"Help en feedback"</string>
     <string name="select_language" msgid="3693815588777926848">"Invoertalen"</string>
-    <string name="hint_add_to_dictionary" msgid="573678656946085380">"Raak nogmaals aan om op te slaan"</string>
+    <string name="hint_add_to_dictionary" msgid="573678656946085380">"Tik nogmaals om op te slaan"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Woordenboek beschikbaar"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Toetsenbordthema"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"Engels (GB)"</string>
