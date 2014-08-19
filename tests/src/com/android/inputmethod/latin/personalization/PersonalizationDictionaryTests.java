@@ -78,7 +78,8 @@ public class PersonalizationDictionaryTests extends AndroidTestCase {
                 tokens.add(CodePointUtils.generateWord(random, codePointSet));
             }
             final PersonalizationDataChunk personalizationDataChunk = new PersonalizationDataChunk(
-                    true /* inputByUser */, tokens, timeStampInSeconds, DUMMY_PACKAGE_NAME);
+                    true /* inputByUser */, tokens, timeStampInSeconds, DUMMY_PACKAGE_NAME,
+                    LOCALE_EN_US.getLanguage());
             final CountDownLatch countDownLatch = new CountDownLatch(1);
             final AddMultipleDictionaryEntriesCallback callback =
                     new AddMultipleDictionaryEntriesCallback() {
