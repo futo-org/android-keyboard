@@ -164,8 +164,8 @@ bool Ver4PatriciaTrieNodeWriter::updatePtNodeProbabilityAndGetNeedsToKeepPtNodeA
     if (originalProbabilityEntry.hasHistoricalInfo()) {
         const HistoricalInfo historicalInfo = ForgettingCurveUtils::createHistoricalInfoToSave(
                 originalProbabilityEntry.getHistoricalInfo(), mHeaderPolicy);
-        const ProbabilityEntry probabilityEntry =
-                originalProbabilityEntry.createEntryWithUpdatedHistoricalInfo(&historicalInfo);
+        const ProbabilityEntry probabilityEntry(originalProbabilityEntry.getFlags(),
+                &historicalInfo);
         if (!mBuffers->getMutableLanguageModelDictContent()->setProbabilityEntry(
                 toBeUpdatedPtNodeParams->getTerminalId(), &probabilityEntry)) {
             AKLOGE("Cannot write updated probability entry. terminalId: %d",
@@ -383,18 +383,15 @@ bool Ver4PatriciaTrieNodeWriter::writePtNodeAndGetTerminalIdAndAdvancePosition(
 const ProbabilityEntry Ver4PatriciaTrieNodeWriter::createUpdatedEntryFrom(
         const ProbabilityEntry *const originalProbabilityEntry,
         const ProbabilityEntry *const probabilityEntry) const {
-    // TODO: Consolidate historical info and probability.
     if (mHeaderPolicy->hasHistoricalInfoOfWords()) {
         const HistoricalInfo updatedHistoricalInfo =
                 ForgettingCurveUtils::createUpdatedHistoricalInfo(
                         originalProbabilityEntry->getHistoricalInfo(),
                         probabilityEntry->getProbability(), probabilityEntry->getHistoricalInfo(),
                         mHeaderPolicy);
-        return originalProbabilityEntry->createEntryWithUpdatedHistoricalInfo(
-                &updatedHistoricalInfo);
+        return ProbabilityEntry(probabilityEntry->getFlags(), &updatedHistoricalInfo);
     } else {
-        return originalProbabilityEntry->createEntryWithUpdatedProbability(
-                probabilityEntry->getProbability());
+        return *probabilityEntry;
     }
 }
 

@@ -20,6 +20,7 @@
 #include "defines.h"
 
 #include <cstddef>
+#include <cstdint>
 
 namespace latinime {
 
@@ -48,6 +49,8 @@ class Ver4DictConstants {
     static const int TIME_STAMP_FIELD_SIZE;
     static const int WORD_LEVEL_FIELD_SIZE;
     static const int WORD_COUNT_FIELD_SIZE;
+    // Flags in probability entry.
+    static const uint8_t FLAG_REPRESENTS_BEGINNING_OF_SENTENCE;
 
     static const int BIGRAM_ADDRESS_TABLE_BLOCK_SIZE;
     static const int BIGRAM_ADDRESS_TABLE_DATA_SIZE;
