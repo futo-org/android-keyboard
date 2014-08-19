@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 @SmallTest
-public class SpacebarLanguagetUtilsTests extends AndroidTestCase {
+public class SpacebarLanguageUtilsTests extends AndroidTestCase {
     // All input method subtypes of LatinIME.
     private final ArrayList<InputMethodSubtype> mSubtypesList = new ArrayList<>();
 
