@@ -77,10 +77,12 @@ class ReadWriteByteArrayView {
     }
 
  private:
-    DISALLOW_ASSIGNMENT_OPERATOR(ReadWriteByteArrayView);
+    // Default copy constructor and assignment operator are used for using this class with STL
+    // containers.
 
-    uint8_t *const mPtr;
-    const size_t mSize;
+    // These members cannot be const to have the assignment operator.
+    uint8_t *mPtr;
+    size_t mSize;
 };
 
 } // namespace latinime

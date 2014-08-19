@@ -17,7 +17,6 @@
 #ifndef LATINIME_SHORTCUT_DICT_CONTENT_H
 #define LATINIME_SHORTCUT_DICT_CONTENT_H
 
-#include <cstdint>
 #include <cstdio>
 
 #include "defines.h"
@@ -27,11 +26,12 @@
 
 namespace latinime {
 
+class ReadWriteByteArrayView;
+
 class ShortcutDictContent : public SparseTableDictContent {
  public:
-    ShortcutDictContent(uint8_t *const *buffers, const int *bufferSizes)
-            : SparseTableDictContent(buffers, bufferSizes,
-                      Ver4DictConstants::SHORTCUT_ADDRESS_TABLE_BLOCK_SIZE,
+    ShortcutDictContent(const ReadWriteByteArrayView *const buffers)
+            : SparseTableDictContent(buffers, Ver4DictConstants::SHORTCUT_ADDRESS_TABLE_BLOCK_SIZE,
                       Ver4DictConstants::SHORTCUT_ADDRESS_TABLE_DATA_SIZE) {}
 
     ShortcutDictContent()

@@ -17,7 +17,6 @@
 #ifndef LATINIME_BIGRAM_DICT_CONTENT_H
 #define LATINIME_BIGRAM_DICT_CONTENT_H
 
-#include <cstdint>
 #include <cstdio>
 
 #include "defines.h"
@@ -28,11 +27,12 @@
 
 namespace latinime {
 
+class ReadWriteByteArrayView;
+
 class BigramDictContent : public SparseTableDictContent {
  public:
-    BigramDictContent(uint8_t *const *buffers, const int *bufferSizes, const bool hasHistoricalInfo)
-            : SparseTableDictContent(buffers, bufferSizes,
-                      Ver4DictConstants::BIGRAM_ADDRESS_TABLE_BLOCK_SIZE,
+    BigramDictContent(const ReadWriteByteArrayView *const buffers, const bool hasHistoricalInfo)
+            : SparseTableDictContent(buffers, Ver4DictConstants::BIGRAM_ADDRESS_TABLE_BLOCK_SIZE,
                       Ver4DictConstants::BIGRAM_ADDRESS_TABLE_DATA_SIZE),
               mHasHistoricalInfo(hasHistoricalInfo) {}
 
