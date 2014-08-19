@@ -45,16 +45,13 @@ namespace latinime {
     if (!bodyBuffer) {
         return Ver4DictBuffersPtr(nullptr);
     }
-    std::vector<uint8_t *> buffers;
-    std::vector<int> bufferSizes;
+    std::vector<ReadWriteByteArrayView> buffers;
     const ReadWriteByteArrayView buffer = bodyBuffer->getReadWriteByteArrayView();
     int position = 0;
     while (position < static_cast<int>(buffer.size())) {
         const int bufferSize = ByteArrayUtils::readUint32AndAdvancePosition(
                 buffer.data(), &position);
-        const ReadWriteByteArrayView subBuffer = buffer.subView(position, bufferSize);
-        buffers.push_back(subBuffer.data());
-        bufferSizes.push_back(subBuffer.size());
+        buffers.push_back(buffer.subView(position, bufferSize));
         position += bufferSize;
         if (bufferSize < 0 || position < 0 || position > static_cast<int>(buffer.size())) {
             AKLOGE("The dict body file is corrupted.");
@@ -66,7 +63,7 @@ namespace latinime {
         return Ver4DictBuffersPtr(nullptr);
     }
     return Ver4DictBuffersPtr(new Ver4DictBuffers(std::move(headerBuffer), std::move(bodyBuffer),
-            formatVersion, buffers, bufferSizes));
+            formatVersion, buffers));
 }
 
 bool Ver4DictBuffers::flushHeaderAndDictBuffers(const char *const dictDirPath,
@@ -178,29 +175,20 @@ bool Ver4DictBuffers::flushDictBuffers(FILE *const file) const {
 Ver4DictBuffers::Ver4DictBuffers(MmappedBuffer::MmappedBufferPtr &&headerBuffer,
         MmappedBuffer::MmappedBufferPtr &&bodyBuffer,
         const FormatUtils::FORMAT_VERSION formatVersion,
-        const std::vector<uint8_t *> &contentBuffers, const std::vector<int> &contentBufferSizes)
+        const std::vector<ReadWriteByteArrayView> &contentBuffers)
         : mHeaderBuffer(std::move(headerBuffer)), mDictBuffer(std::move(bodyBuffer)),
           mHeaderPolicy(mHeaderBuffer->getReadOnlyByteArrayView().data(), formatVersion),
           mExpandableHeaderBuffer(mHeaderBuffer->getReadWriteByteArrayView(),
                   BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE),
-          mExpandableTrieBuffer(
-                  ReadWriteByteArrayView(contentBuffers[Ver4DictConstants::TRIE_BUFFER_INDEX],
-                          contentBufferSizes[Ver4DictConstants::TRIE_BUFFER_INDEX]),
+          mExpandableTrieBuffer(contentBuffers[Ver4DictConstants::TRIE_BUFFER_INDEX],
                   BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE),
           mTerminalPositionLookupTable(
-                  contentBuffers[Ver4DictConstants::TERMINAL_ADDRESS_LOOKUP_TABLE_BUFFER_INDEX],
-                  contentBufferSizes[
-                          Ver4DictConstants::TERMINAL_ADDRESS_LOOKUP_TABLE_BUFFER_INDEX]),
-          mLanguageModelDictContent(
-                  ReadWriteByteArrayView(
-                          contentBuffers[Ver4DictConstants::LANGUAGE_MODEL_BUFFER_INDEX],
-                          contentBufferSizes[Ver4DictConstants::LANGUAGE_MODEL_BUFFER_INDEX]),
+                  contentBuffers[Ver4DictConstants::TERMINAL_ADDRESS_LOOKUP_TABLE_BUFFER_INDEX]),
+          mLanguageModelDictContent(contentBuffers[Ver4DictConstants::LANGUAGE_MODEL_BUFFER_INDEX],
                   mHeaderPolicy.hasHistoricalInfoOfWords()),
           mBigramDictContent(&contentBuffers[Ver4DictConstants::BIGRAM_BUFFERS_INDEX],
-                  &contentBufferSizes[Ver4DictConstants::BIGRAM_BUFFERS_INDEX],
                   mHeaderPolicy.hasHistoricalInfoOfWords()),
-          mShortcutDictContent(&contentBuffers[Ver4DictConstants::SHORTCUT_BUFFERS_INDEX],
-                  &contentBufferSizes[Ver4DictConstants::SHORTCUT_BUFFERS_INDEX]),
+          mShortcutDictContent(&contentBuffers[Ver4DictConstants::SHORTCUT_BUFFERS_INDEX]),
           mIsUpdatable(mDictBuffer->isUpdatable()) {}
 
 Ver4DictBuffers::Ver4DictBuffers(const HeaderPolicy *const headerPolicy, const int maxTrieSize)

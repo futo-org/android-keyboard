@@ -17,7 +17,6 @@
 #ifndef LATINIME_SPARSE_TABLE_DICT_CONTENT_H
 #define LATINIME_SPARSE_TABLE_DICT_CONTENT_H
 
-#include <cstdint>
 #include <cstdio>
 
 #include "defines.h"
@@ -31,19 +30,13 @@ namespace latinime {
 // TODO: Support multiple contents.
 class SparseTableDictContent {
  public:
-    AK_FORCE_INLINE SparseTableDictContent(uint8_t *const *buffers, const int *bufferSizes,
+    AK_FORCE_INLINE SparseTableDictContent(const ReadWriteByteArrayView *const buffers,
             const int sparseTableBlockSize, const int sparseTableDataSize)
-            : mExpandableLookupTableBuffer(
-                      ReadWriteByteArrayView(buffers[LOOKUP_TABLE_BUFFER_INDEX],
-                              bufferSizes[LOOKUP_TABLE_BUFFER_INDEX]),
+            : mExpandableLookupTableBuffer(buffers[LOOKUP_TABLE_BUFFER_INDEX],
                       BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE),
-              mExpandableAddressTableBuffer(
-                      ReadWriteByteArrayView(buffers[ADDRESS_TABLE_BUFFER_INDEX],
-                              bufferSizes[ADDRESS_TABLE_BUFFER_INDEX]),
+              mExpandableAddressTableBuffer(buffers[ADDRESS_TABLE_BUFFER_INDEX],
                       BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE),
-              mExpandableContentBuffer(
-                      ReadWriteByteArrayView(buffers[CONTENT_BUFFER_INDEX],
-                              bufferSizes[CONTENT_BUFFER_INDEX]),
+              mExpandableContentBuffer(buffers[CONTENT_BUFFER_INDEX],
                       BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE),
               mAddressLookupTable(&mExpandableLookupTableBuffer, &mExpandableAddressTableBuffer,
                       sparseTableBlockSize, sparseTableDataSize) {}

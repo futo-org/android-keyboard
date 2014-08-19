@@ -17,7 +17,6 @@
 #ifndef LATINIME_SINGLE_DICT_CONTENT_H
 #define LATINIME_SINGLE_DICT_CONTENT_H
 
-#include <cstdint>
 #include <cstdio>
 
 #include "defines.h"
@@ -30,9 +29,9 @@ namespace latinime {
 
 class SingleDictContent {
  public:
-    SingleDictContent(uint8_t *const buffer, const int bufferSize)
-            : mExpandableContentBuffer(ReadWriteByteArrayView(buffer, bufferSize),
-                      BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE) {}
+    SingleDictContent(const ReadWriteByteArrayView buffer)
+            : mExpandableContentBuffer(buffer,
+                    BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE) {}
 
     SingleDictContent()
             : mExpandableContentBuffer(Ver4DictConstants::MAX_DICTIONARY_SIZE) {}
