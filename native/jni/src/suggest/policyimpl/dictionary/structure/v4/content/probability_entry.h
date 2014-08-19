@@ -43,14 +43,13 @@ class ProbabilityEntry {
             : mFlags(flags), mProbability(probability), mHistoricalInfo() {}
 
     // Entry with historical information.
-    ProbabilityEntry(const int flags, const int probability,
-            const HistoricalInfo *const historicalInfo)
-            : mFlags(flags), mProbability(probability), mHistoricalInfo(*historicalInfo) {}
+    ProbabilityEntry(const int flags, const HistoricalInfo *const historicalInfo)
+            : mFlags(flags), mProbability(NOT_A_PROBABILITY), mHistoricalInfo(*historicalInfo) {}
 
     // Create from unigram property.
-    // TODO: Set flags.
     ProbabilityEntry(const UnigramProperty *const unigramProperty)
-            : mFlags(0), mProbability(unigramProperty->getProbability()),
+            : mFlags(createFlags(unigramProperty->representsBeginningOfSentence())),
+              mProbability(unigramProperty->getProbability()),
               mHistoricalInfo(unigramProperty->getTimestamp(), unigramProperty->getLevel(),
                       unigramProperty->getCount()) {}
 
@@ -61,15 +60,6 @@ class ProbabilityEntry {
               mHistoricalInfo(bigramProperty->getTimestamp(), bigramProperty->getLevel(),
                       bigramProperty->getCount()) {}
 
-    const ProbabilityEntry createEntryWithUpdatedProbability(const int probability) const {
-        return ProbabilityEntry(mFlags, probability, &mHistoricalInfo);
-    }
-
-    const ProbabilityEntry createEntryWithUpdatedHistoricalInfo(
-            const HistoricalInfo *const historicalInfo) const {
-        return ProbabilityEntry(mFlags, mProbability, historicalInfo);
-    }
-
     bool isValid() const {
         return (mProbability != NOT_A_PROBABILITY) || hasHistoricalInfo();
     }
@@ -78,7 +68,7 @@ class ProbabilityEntry {
         return mHistoricalInfo.isValid();
     }
 
-    int getFlags() const {
+    uint8_t getFlags() const {
         return mFlags;
     }
 
@@ -88,6 +78,10 @@ class ProbabilityEntry {
 
     const HistoricalInfo *getHistoricalInfo() const {
         return &mHistoricalInfo;
+    }
+
+    bool representsBeginningOfSentence() const {
+        return (mFlags & Ver4DictConstants::FLAG_REPRESENTS_BEGINNING_OF_SENTENCE) != 0;
     }
 
     uint64_t encode(const bool hasHistoricalInfo) const {
@@ -123,7 +117,7 @@ class ProbabilityEntry {
             const int count = readFromEncodedEntry(encodedEntry,
                     Ver4DictConstants::WORD_COUNT_FIELD_SIZE, 0 /* pos */);
             const HistoricalInfo historicalInfo(timestamp, level, count);
-            return ProbabilityEntry(flags, NOT_A_PROBABILITY, &historicalInfo);
+            return ProbabilityEntry(flags, &historicalInfo);
         } else {
             const int flags = readFromEncodedEntry(encodedEntry,
                     Ver4DictConstants::FLAGS_IN_LANGUAGE_MODEL_SIZE,
@@ -138,13 +132,21 @@ class ProbabilityEntry {
     // Copy constructor is public to use this class as a type of return value.
     DISALLOW_ASSIGNMENT_OPERATOR(ProbabilityEntry);
 
-    const int mFlags;
+    const uint8_t mFlags;
     const int mProbability;
     const HistoricalInfo mHistoricalInfo;
 
     static int readFromEncodedEntry(const uint64_t encodedEntry, const int size, const int pos) {
         return static_cast<int>(
                 (encodedEntry >> (pos * CHAR_BIT)) & ((1ull << (size * CHAR_BIT)) - 1));
+    }
+
+    static uint8_t createFlags(const bool representsBeginningOfSentence) {
+        uint8_t flags = 0;
+        if (representsBeginningOfSentence) {
+            flags ^= Ver4DictConstants::FLAG_REPRESENTS_BEGINNING_OF_SENTENCE;
+        }
+        return flags;
     }
 };
 } // namespace latinime

@@ -43,7 +43,7 @@ TEST(ProbabilityEntryTest, TestEncodeDecodeWithHistoricalInfo) {
     const int count = 10;
 
     const HistoricalInfo historicalInfo(timestamp, level, count);
-    const ProbabilityEntry entry(flag, NOT_A_PROBABILITY, &historicalInfo);
+    const ProbabilityEntry entry(flag, &historicalInfo);
 
     const uint64_t encodedEntry = entry.encode(true /* hasHistoricalInfo */);
     EXPECT_EQ(0xF03FFFFFFF030Aull, encodedEntry);
