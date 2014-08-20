@@ -420,18 +420,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 if (latinIme != null) {
                     executePendingImsCallback(latinIme, editorInfo, restarting);
                     latinIme.onStartInputInternal(editorInfo, restarting);
-                    if (ProductionFlags.ENABLE_CURSOR_RECT_CALLBACK) {
-                        InputConnectionCompatUtils.requestCursorRect(
-                                latinIme.getCurrentInputConnection(), true /* enableMonitor */);
-                    }
-                    if (ProductionFlags.ENABLE_CURSOR_ANCHOR_INFO_CALLBACK) {
-                        // AcceptTypedWord feature relies on CursorAnchorInfo.
-                        if (latinIme.mSettings.getCurrent().mShouldShowUiToAcceptTypedWord) {
-                            InputConnectionCompatUtils.requestCursorAnchorInfo(
-                                    latinIme.getCurrentInputConnection(), true /* enableMonitor */,
-                                    true /* requestImmediateCallback */);
-                        }
-                    }
                 }
             }
         }
@@ -766,6 +754,18 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     private void onStartInputInternal(final EditorInfo editorInfo, final boolean restarting) {
         super.onStartInput(editorInfo, restarting);
+        if (ProductionFlags.ENABLE_CURSOR_RECT_CALLBACK) {
+            InputConnectionCompatUtils.requestCursorRect(getCurrentInputConnection(),
+                    true /* enableMonitor */);
+        }
+        if (ProductionFlags.ENABLE_CURSOR_ANCHOR_INFO_CALLBACK) {
+            // AcceptTypedWord feature relies on CursorAnchorInfo.
+            if (mSettings.getCurrent().mShouldShowUiToAcceptTypedWord) {
+                InputConnectionCompatUtils.requestCursorAnchorInfo(
+                        getCurrentInputConnection(), true /* enableMonitor */,
+                        true /* requestImmediateCallback */);
+            }
+        }
     }
 
     @SuppressWarnings("deprecation")
