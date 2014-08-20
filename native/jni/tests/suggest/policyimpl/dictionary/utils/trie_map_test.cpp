@@ -40,6 +40,7 @@ TEST(TrieMapTest, TestSetAndGet) {
     trieMap.putRoot(11, 1000);
     EXPECT_EQ(1000ull, trieMap.getRoot(11).mValue);
     const int next = trieMap.getNextLevelBitmapEntryIndex(10);
+    EXPECT_EQ(1000ull, trieMap.getRoot(10).mValue);
     trieMap.put(9, 9, next);
     EXPECT_EQ(9ull, trieMap.get(9, next).mValue);
     EXPECT_FALSE(trieMap.get(11, next).mIsValid);
