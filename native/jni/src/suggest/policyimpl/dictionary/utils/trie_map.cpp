@@ -85,7 +85,7 @@ int TrieMap::getNextLevelBitmapEntryIndex(const int key, const int bitmapEntryIn
     if (!writeEntry(EMPTY_BITMAP_ENTRY, valueEntryIndex + 1)) {
         return INVALID_INDEX;
     }
-    if (!writeField1(valueEntryIndex | TERMINAL_LINK_FLAG, valueEntryIndex)) {
+    if (!writeField1(valueEntryIndex | TERMINAL_LINK_FLAG, terminalEntryIndex)) {
         return INVALID_INDEX;
     }
     return valueEntryIndex + 1;
