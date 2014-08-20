@@ -21,39 +21,8 @@ import android.graphics.RectF;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 
-import java.lang.reflect.Method;
-
 @UsedForTesting
 public final class CursorAnchorInfoCompatWrapper {
-    // Note that CursorAnchorInfo has been introduced in API level XX (Build.VERSION_CODE.LXX).
-    private static Class<?> getCursorAnchorInfoClass() {
-        try {
-            return Class.forName("android.view.inputmethod.CursorAnchorInfo");
-        } catch (ClassNotFoundException e) {
-            return null;
-        }
-    }
-    private static final Class<?> CLASS;
-    private static final Method METHOD_GET_CHARACTER_RECT;
-    private static final Method METHOD_GET_CHARACTER_RECT_FLAGS;
-    private static final Method METHOD_GET_COMPOSING_TEXT;
-    private static final Method METHOD_GET_COMPOSING_TEXT_START;
-    private static final Method METHOD_GET_MATRIX;
-    static {
-        CLASS = getCursorAnchorInfoClass();
-        METHOD_GET_CHARACTER_RECT = CompatUtils.getMethod(CLASS, "getCharacterRect", int.class);
-        METHOD_GET_CHARACTER_RECT_FLAGS = CompatUtils.getMethod(CLASS, "getCharacterRectFlags",
-                int.class);
-        METHOD_GET_COMPOSING_TEXT = CompatUtils.getMethod(CLASS, "getComposingText");
-        METHOD_GET_COMPOSING_TEXT_START = CompatUtils.getMethod(CLASS, "getComposingTextStart");
-        METHOD_GET_MATRIX = CompatUtils.getMethod(CLASS, "getMatrix");
-    }
-
-    @UsedForTesting
-    public static boolean isAvailable() {
-        return CLASS != null;
-    }
-
     public static final int CHARACTER_RECT_TYPE_MASK = 0x0f;
 
     /**
@@ -83,6 +52,49 @@ public final class CursorAnchorInfoCompatWrapper {
      */
     public static final int CHARACTER_RECT_TYPE_NOT_FEASIBLE = 4;
 
+    // Note that CursorAnchorInfo has been introduced in API level XX (Build.VERSION_CODE.LXX).
+    private static final CompatUtils.ClassWrapper sCursorAnchorInfoClass;
+    private static final CompatUtils.ToObjectMethodWrapper<RectF> sGetCharacterRectMethod;
+    private static final CompatUtils.ToIntMethodWrapper sGetCharacterRectFlagsMethod;
+    private static final CompatUtils.ToObjectMethodWrapper<CharSequence> sGetComposingTextMethod;
+    private static final CompatUtils.ToIntMethodWrapper sGetComposingTextStartMethod;
+    private static final CompatUtils.ToFloatMethodWrapper sGetInsertionMarkerBaselineMethod;
+    private static final CompatUtils.ToFloatMethodWrapper sGetInsertionMarkerBottomMethod;
+    private static final CompatUtils.ToFloatMethodWrapper sGetInsertionMarkerHorizontalMethod;
+    private static final CompatUtils.ToFloatMethodWrapper sGetInsertionMarkerTopMethod;
+    private static final CompatUtils.ToObjectMethodWrapper<Matrix> sGetMatrixMethod;
+    private static final CompatUtils.ToBooleanMethodWrapper sIsInsertionMarkerClippedMethod;
+
+    private static int COMPOSING_TEXT_START_DEFAULT = -1;
+    static {
+        sCursorAnchorInfoClass = CompatUtils.getClassWrapper(
+                "android.view.inputmethod.CursorAnchorInfo");
+        sGetCharacterRectMethod = sCursorAnchorInfoClass.getMethod(
+                "getCharacterRect", (RectF)null, int.class);
+        sGetCharacterRectFlagsMethod = sCursorAnchorInfoClass.getPrimitiveMethod(
+                "getCharacterRectFlags", CHARACTER_RECT_TYPE_UNSPECIFIED, int.class);
+        sGetComposingTextMethod = sCursorAnchorInfoClass.getMethod(
+                "getComposingText", (CharSequence)null);
+        sGetComposingTextStartMethod = sCursorAnchorInfoClass.getPrimitiveMethod(
+                "getComposingTextStart", COMPOSING_TEXT_START_DEFAULT);
+        sGetInsertionMarkerBaselineMethod = sCursorAnchorInfoClass.getPrimitiveMethod(
+                "getInsertionMarkerBaseline", 0.0f);
+        sGetInsertionMarkerBottomMethod = sCursorAnchorInfoClass.getPrimitiveMethod(
+                "getInsertionMarkerBottom", 0.0f);
+        sGetInsertionMarkerHorizontalMethod = sCursorAnchorInfoClass.getPrimitiveMethod(
+                "getInsertionMarkerHorizontal", 0.0f);
+        sGetInsertionMarkerTopMethod = sCursorAnchorInfoClass.getPrimitiveMethod(
+                "getInsertionMarkerTop", 0.0f);
+        sGetMatrixMethod = sCursorAnchorInfoClass.getMethod("getMatrix", (Matrix)null);
+        sIsInsertionMarkerClippedMethod = sCursorAnchorInfoClass.getPrimitiveMethod(
+                "isInsertionMarkerClipped", false);
+    }
+
+    @UsedForTesting
+    public static boolean isAvailable() {
+        return sCursorAnchorInfoClass.exists();
+    }
+
     private Object mInstance;
 
     private CursorAnchorInfoCompatWrapper(final Object instance) {
@@ -107,29 +119,42 @@ public final class CursorAnchorInfoCompatWrapper {
     }
 
     public CharSequence getComposingText() {
-        return (CharSequence) CompatUtils.invoke(mInstance, null, METHOD_GET_COMPOSING_TEXT);
+        return sGetComposingTextMethod.invoke(mInstance);
     }
 
-    private static int COMPOSING_TEXT_START_DEFAULT = -1;
     public int getComposingTextStart() {
-        if (mInstance == null || METHOD_GET_COMPOSING_TEXT_START == null) {
-            return COMPOSING_TEXT_START_DEFAULT;
-        }
-        return (int) CompatUtils.invoke(mInstance, null, METHOD_GET_COMPOSING_TEXT_START);
+        return sGetComposingTextStartMethod.invoke(mInstance);
     }
 
     public Matrix getMatrix() {
-        return (Matrix) CompatUtils.invoke(mInstance, null, METHOD_GET_MATRIX);
+        return sGetMatrixMethod.invoke(mInstance);
     }
 
     public RectF getCharacterRect(final int index) {
-        return (RectF) CompatUtils.invoke(mInstance, null, METHOD_GET_CHARACTER_RECT, index);
+        return sGetCharacterRectMethod.invoke(mInstance, index);
     }
 
     public int getCharacterRectFlags(final int index) {
-        if (mInstance == null || METHOD_GET_CHARACTER_RECT_FLAGS == null) {
-            return CHARACTER_RECT_TYPE_UNSPECIFIED;
-        }
-        return (int) CompatUtils.invoke(mInstance, null, METHOD_GET_CHARACTER_RECT_FLAGS, index);
+        return sGetCharacterRectFlagsMethod.invoke(mInstance, index);
+    }
+
+    public float getInsertionMarkerBaseline() {
+        return sGetInsertionMarkerBaselineMethod.invoke(mInstance);
+    }
+
+    public float getInsertionMarkerBottom() {
+        return sGetInsertionMarkerBottomMethod.invoke(mInstance);
+    }
+
+    public float getInsertionMarkerHorizontal() {
+        return sGetInsertionMarkerHorizontalMethod.invoke(mInstance);
+    }
+
+    public float getInsertionMarkerTop() {
+        return sGetInsertionMarkerTopMethod.invoke(mInstance);
+    }
+
+    public boolean isInsertionMarkerClipped() {
+        return sIsInsertionMarkerClippedMethod.invoke(mInstance);
     }
 }
