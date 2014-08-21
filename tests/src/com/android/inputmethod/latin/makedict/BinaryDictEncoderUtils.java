@@ -548,28 +548,6 @@ public class BinaryDictEncoderUtils {
     }
 
     /**
-     * Helper method to write a signed children position to a file.
-     *
-     * @param buffer the buffer to write to.
-     * @param index the index in the buffer to write the address to.
-     * @param position the position to write.
-     * @return the size in bytes the address actually took.
-     */
-    /* package */ static int writeSignedChildrenPosition(final byte[] buffer, int index,
-            final int position) {
-        if (!BinaryDictIOUtils.hasChildrenAddress(position)) {
-            buffer[index] = buffer[index + 1] = buffer[index + 2] = 0;
-        } else {
-            final int absPosition = Math.abs(position);
-            buffer[index++] =
-                    (byte)((position < 0 ? FormatSpec.MSB8 : 0) | (0xFF & (absPosition >> 16)));
-            buffer[index++] = (byte)(0xFF & (absPosition >> 8));
-            buffer[index++] = (byte)(0xFF & absPosition);
-        }
-        return 3;
-    }
-
-    /**
      * Makes the flag value for a PtNode.
      *
      * @param hasMultipleChars whether the PtNode has multiple chars.
@@ -734,10 +712,6 @@ public class BinaryDictEncoderUtils {
 
         final int ptNodeCount = ptNodeArray.mData.size();
         dictEncoder.writePtNodeCount(ptNodeCount);
-        final int parentPosition =
-                (ptNodeArray.mCachedParentAddress == FormatSpec.NO_PARENT_ADDRESS)
-                ? FormatSpec.NO_PARENT_ADDRESS
-                : ptNodeArray.mCachedParentAddress + ptNodeArray.mCachedAddressAfterUpdate;
         for (int i = 0; i < ptNodeCount; ++i) {
             final PtNode ptNode = ptNodeArray.mData.get(i);
             if (dictEncoder.getPosition() != ptNode.mCachedAddressAfterUpdate) {

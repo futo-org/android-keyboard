@@ -141,10 +141,6 @@ public class Ver4DictEncoder implements DictEncoder {
     }
 
     @Override
-    public void writeForwardLinkAddress(int forwardLinkAddress) {
-    }
-
-    @Override
     public void writePtNode(PtNode ptNode, FusionDictionary dict) {
     }
 }

@@ -33,6 +33,5 @@ public interface DictEncoder {
     public void setPosition(final int position);
     public int getPosition();
     public void writePtNodeCount(final int ptNodeCount);
-    public void writeForwardLinkAddress(final int forwardLinkAddress);
     public void writePtNode(final PtNode ptNode, final FusionDictionary dict);
 }
