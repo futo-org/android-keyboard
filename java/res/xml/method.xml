@@ -52,6 +52,7 @@
     gl_ES: Galician (Spain)/spanish
     hi: Hindi/hindi
     hi: Hindi/hindi_compact
+    (hi_ZZ: Hinglish/qwerty)  # This is a preliminary keyboard layout.
     hr: Croatian/qwertz
     hu: Hungarian/qwertz
     hy_AM: Armenian (Armenia) Phonetic/armenian_phonetic
@@ -353,6 +354,16 @@
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=hindi_compact,EmojiCapable"
             android:isAsciiCapable="false"
+    />
+    <!-- TODO: This Hinglish keyboard is a preliminary layout.
+               This isn't based on the final specification. -->
+    <subtype android:icon="@drawable/ic_ime_switcher_dark"
+            android:label="@string/subtype_hi_ZZ"
+            android:subtypeId="0x352eb37c"
+            android:imeSubtypeLocale="hi_ZZ"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="AsciiCapable,KeyboardLayoutSet=qwerty,EmojiCapable"
+            android:isAsciiCapable="true"
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"

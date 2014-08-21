@@ -44,6 +44,7 @@ public class SubtypeLocaleUtilsTests extends AndroidTestCase {
     InputMethodSubtype FR_CH;
     InputMethodSubtype DE;
     InputMethodSubtype DE_CH;
+    InputMethodSubtype HI_ZZ;
     InputMethodSubtype ZZ;
     InputMethodSubtype DE_QWERTY;
     InputMethodSubtype FR_QWERTZ;
@@ -85,6 +86,8 @@ public class SubtypeLocaleUtilsTests extends AndroidTestCase {
                 Locale.GERMAN.toString(), "qwertz");
         DE_CH = mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
                 "de_CH", "swiss");
+        HI_ZZ = mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
+                "hi_ZZ", "qwerty");
         ZZ = mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
                 SubtypeLocaleUtils.NO_LANGUAGE, "qwerty");
         DE_QWERTY = AdditionalSubtypeUtils.createAsciiEmojiCapableAdditionalSubtype(
@@ -128,6 +131,7 @@ public class SubtypeLocaleUtilsTests extends AndroidTestCase {
         assertEquals("fr_CH", "swiss", SubtypeLocaleUtils.getKeyboardLayoutSetName(FR_CH));
         assertEquals("de", "qwertz", SubtypeLocaleUtils.getKeyboardLayoutSetName(DE));
         assertEquals("de_CH", "swiss", SubtypeLocaleUtils.getKeyboardLayoutSetName(DE_CH));
+        assertEquals("hi_ZZ", "qwerty", SubtypeLocaleUtils.getKeyboardLayoutSetName(HI_ZZ));
         assertEquals("zz", "qwerty", SubtypeLocaleUtils.getKeyboardLayoutSetName(ZZ));
 
         assertEquals("de qwerty", "qwerty", SubtypeLocaleUtils.getKeyboardLayoutSetName(DE_QWERTY));
@@ -154,6 +158,7 @@ public class SubtypeLocaleUtilsTests extends AndroidTestCase {
     //  fr_CH swiss   F  French (Switzerland)
     //  de    qwertz  F  German
     //  de_CH swiss   F  German (Switzerland)
+    //  hi_ZZ qwerty  F  Hinglish
     //  zz    qwerty  F  Alphabet (QWERTY)
     //  fr    qwertz  T  French (QWERTZ)
     //  de    qwerty  T  German (QWERTY)
@@ -182,6 +187,8 @@ public class SubtypeLocaleUtilsTests extends AndroidTestCase {
                         SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(DE));
                 assertEquals("de_CH", "German (Switzerland)",
                         SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(DE_CH));
+                assertEquals("hi_ZZ", "Hinglish",
+                        SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(HI_ZZ));
                 assertEquals("zz", "Alphabet (QWERTY)",
                         SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(ZZ));
                 return null;
@@ -226,6 +233,7 @@ public class SubtypeLocaleUtilsTests extends AndroidTestCase {
     //  fr_CH swiss   F  Français (Suisse)
     //  de    qwertz  F  Allemand
     //  de_CH swiss   F  Allemand (Suisse)
+    //  hi_ZZ qwerty  F  Hinglish
     //  zz    qwerty  F  Alphabet latin (QWERTY)
     //  fr    qwertz  T  Français (QWERTZ)
     //  de    qwerty  T  Allemand (QWERTY)
@@ -254,6 +262,8 @@ public class SubtypeLocaleUtilsTests extends AndroidTestCase {
                         SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(DE));
                 assertEquals("de_CH", "Allemand (Suisse)",
                         SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(DE_CH));
+                assertEquals("hi_ZZ", "Hinglish",
+                        SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(HI_ZZ));
                 assertEquals("zz", "Alphabet latin (QWERTY)",
                         SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(ZZ));
                 return null;

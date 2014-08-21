@@ -94,7 +94,7 @@ public final class KeyboardTextsTable {
         /*   8:22 */ "morekeys_n",
         /*   9:22 */ "single_quotes",
         /*  10:20 */ "morekeys_s",
-        /*  11:17 */ "keyspec_currency",
+        /*  11:18 */ "keyspec_currency",
         /*  12:14 */ "morekeys_y",
         /*  13:13 */ "morekeys_d",
         /*  14:12 */ "morekeys_z",
@@ -1872,6 +1872,15 @@ public final class KeyboardTextsTable {
         /* additional_morekeys_symbols_8 */ "8",
         /* additional_morekeys_symbols_9 */ "9",
         /* additional_morekeys_symbols_0 */ "0",
+    };
+
+    /* Locale hi_ZZ: Hindi (ZZ) */
+    private static final String[] TEXTS_hi_ZZ = {
+        /* morekeys_a ~ */
+        null, null, null, null, null, null, null, null, null, null, null,
+        /* ~ morekeys_s */
+        // U+20B9: "₹" INDIAN RUPEE SIGN
+        /* keyspec_currency */ "\u20B9",
     };
 
     /* Locale hr: Croatian */
@@ -3957,6 +3966,7 @@ public final class KeyboardTextsTable {
         "fr"     , TEXTS_fr,    /*  13/ 62 French */
         "gl_ES"  , TEXTS_gl_ES, /*   7/  9 Gallegan (Spain) */
         "hi"     , TEXTS_hi,    /*  23/ 53 Hindi */
+        "hi_ZZ"  , TEXTS_hi_ZZ, /*   1/ 12 Hindi (ZZ) */
         "hr"     , TEXTS_hr,    /*   9/ 20 Croatian */
         "hu"     , TEXTS_hu,    /*   9/ 20 Hungarian */
         "hy_AM"  , TEXTS_hy_AM, /*   9/126 Armenian (Armenia) */
