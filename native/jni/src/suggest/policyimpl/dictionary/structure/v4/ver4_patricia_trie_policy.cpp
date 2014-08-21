@@ -127,21 +127,28 @@ int Ver4PatriciaTriePolicy::getProbabilityOfPtNode(const int *const prevWordsPtN
     if (ptNodePos == NOT_A_DICT_POS) {
         return NOT_A_PROBABILITY;
     }
-    const PtNodeParams ptNodeParams(mNodeReader.fetchPtNodeParamsInBufferFromPtNodePos(ptNodePos));
+    const PtNodeParams ptNodeParams = mNodeReader.fetchPtNodeParamsInBufferFromPtNodePos(ptNodePos);
     if (ptNodeParams.isDeleted() || ptNodeParams.isBlacklisted() || ptNodeParams.isNotAWord()) {
         return NOT_A_PROBABILITY;
     }
     if (prevWordsPtNodePos) {
-        const int bigramsPosition = getBigramsPositionOfPtNode(prevWordsPtNodePos[0]);
-        BinaryDictionaryBigramsIterator bigramsIt(&mBigramPolicy, bigramsPosition);
-        while (bigramsIt.hasNext()) {
-            bigramsIt.next();
-            if (bigramsIt.getBigramPos() == ptNodePos
-                    && bigramsIt.getProbability() != NOT_A_PROBABILITY) {
-                return getProbability(ptNodeParams.getProbability(), bigramsIt.getProbability());
-            }
+        // TODO: Support n-gram.
+        const PtNodeParams prevWordPtNodeParams =
+                mNodeReader.fetchPtNodeParamsInBufferFromPtNodePos(prevWordsPtNodePos[0]);
+        const int prevWordTerminalId = prevWordPtNodeParams.getTerminalId();
+        const ProbabilityEntry probabilityEntry =
+                mBuffers->getLanguageModelDictContent()->getNgramProbabilityEntry(
+                        IntArrayView::fromObject(&prevWordTerminalId),
+                        ptNodeParams.getTerminalId());
+        if (!probabilityEntry.isValid()) {
+            return NOT_A_PROBABILITY;
         }
-        return NOT_A_PROBABILITY;
+        if (mHeaderPolicy->hasHistoricalInfoOfWords()) {
+            return ForgettingCurveUtils::decodeProbability(probabilityEntry.getHistoricalInfo(),
+                    mHeaderPolicy);
+        } else {
+            return probabilityEntry.getProbability();
+        }
     }
     return getProbability(ptNodeParams.getProbability(), NOT_A_PROBABILITY);
 }
