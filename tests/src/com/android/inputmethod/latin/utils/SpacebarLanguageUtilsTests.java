@@ -44,6 +44,7 @@ public class SpacebarLanguageUtilsTests extends AndroidTestCase {
     InputMethodSubtype FR_CH;
     InputMethodSubtype DE;
     InputMethodSubtype DE_CH;
+    InputMethodSubtype HI_ZZ;
     InputMethodSubtype ZZ;
     InputMethodSubtype DE_QWERTY;
     InputMethodSubtype FR_QWERTZ;
@@ -85,6 +86,8 @@ public class SpacebarLanguageUtilsTests extends AndroidTestCase {
                 Locale.GERMAN.toString(), "qwertz");
         DE_CH = mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
                 "de_CH", "swiss");
+        HI_ZZ = mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
+                "hi_ZZ", "qwerty");
         ZZ = mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
                 SubtypeLocaleUtils.NO_LANGUAGE, "qwerty");
         DE_QWERTY = AdditionalSubtypeUtils.createAsciiEmojiCapableAdditionalSubtype(
@@ -122,6 +125,12 @@ public class SpacebarLanguageUtilsTests extends AndroidTestCase {
         for (final InputMethodSubtype subtype : mSubtypesList) {
             final String subtypeName = SubtypeLocaleUtils
                     .getSubtypeDisplayNameInSystemLocale(subtype);
+            if (SubtypeLocaleUtils.sExceptionalLocaleDisplayedInRootLocale.contains(
+                    subtype.getLocale())) {
+                // Skip test because the language part of this locale string doesn't represent
+                // the locale to be displayed on the spacebar (for example hi_ZZ and Hinglish).
+                continue;
+            }
             final String spacebarText = SpacebarLanguageUtils.getMiddleDisplayName(subtype);
             if (SubtypeLocaleUtils.isNoLanguage(subtype)) {
                 assertEquals(subtypeName,
@@ -147,6 +156,7 @@ public class SpacebarLanguageUtilsTests extends AndroidTestCase {
     //  fr_CH swiss   F  Français  Français (Suisse)
     //  de    qwertz  F  Deutsch   Deutsch
     //  de_CH swiss   F  Deutsch   Deutsch (Schweiz)
+    //  hi_ZZ qwerty  F  Hinglish  Hinglish
     //  zz    qwerty  F  QWERTY    QWERTY
     //  fr    qwertz  T  Français  Français
     //  de    qwerty  T  Deutsch   Deutsch
@@ -172,6 +182,8 @@ public class SpacebarLanguageUtilsTests extends AndroidTestCase {
                     SpacebarLanguageUtils.getFullDisplayName(DE));
             assertEquals("de_CH", "Deutsch (Schweiz)",
                     SpacebarLanguageUtils.getFullDisplayName(DE_CH));
+            assertEquals("hi_ZZ", "Hinglish",
+                    SpacebarLanguageUtils.getFullDisplayName(HI_ZZ));
             assertEquals("zz", "QWERTY",
                     SpacebarLanguageUtils.getFullDisplayName(ZZ));
 
@@ -191,6 +203,8 @@ public class SpacebarLanguageUtilsTests extends AndroidTestCase {
                     SpacebarLanguageUtils.getMiddleDisplayName(DE));
             assertEquals("de_CH", "Deutsch",
                     SpacebarLanguageUtils.getMiddleDisplayName(DE_CH));
+            assertEquals("hi_ZZ", "Hinglish",
+                    SpacebarLanguageUtils.getMiddleDisplayName(HI_ZZ));
             assertEquals("zz", "QWERTY",
                     SpacebarLanguageUtils.getMiddleDisplayName(ZZ));
             return null;

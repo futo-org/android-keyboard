@@ -37,6 +37,12 @@
         <item>en_US</item>
         <item>en_GB</item>
         <item>es_US</item>
+        <item>hi_ZZ</item>
+    </string-array>
+
+    <!-- Subtype locale whose name should be displayed in Locale.ROOT. -->
+    <string-array name="subtype_locale_displayed_in_root_locale">
+        <item>hi_ZZ</item>
     </string-array>
 
     <!-- Generic subtype label -->
