@@ -223,12 +223,6 @@ public class Ver2DictEncoder implements DictEncoder {
     }
 
     @Override
-    public void writeForwardLinkAddress(final int forwardLinkAddress) {
-        mPosition = BinaryDictEncoderUtils.writeUIntToBuffer(mBuffer, mPosition, forwardLinkAddress,
-                FormatSpec.FORWARD_LINK_ADDRESS_SIZE);
-    }
-
-    @Override
     public void writePtNode(final PtNode ptNode, final FusionDictionary dict) {
         writePtNodeFlags(ptNode);
         writeCharacters(ptNode.mChars, ptNode.hasSeveralChars());
