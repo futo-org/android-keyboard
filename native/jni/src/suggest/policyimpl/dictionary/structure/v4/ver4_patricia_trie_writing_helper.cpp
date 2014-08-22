@@ -85,6 +85,12 @@ bool Ver4PatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
             mBuffers, headerPolicy, &ptNodeReader, &ptNodeArrayReader, &bigramPolicy,
             &shortcutPolicy);
 
+    int entryCountTable[MAX_PREV_WORD_COUNT_FOR_N_GRAM + 1];
+    if (!mBuffers->getMutableLanguageModelDictContent()->updateAllProbabilityEntries(headerPolicy,
+            entryCountTable)) {
+        AKLOGE("Failed to update probabilities in language model dict content.");
+        return false;
+    }
     DynamicPtReadingHelper readingHelper(&ptNodeReader, &ptNodeArrayReader);
     readingHelper.initWithPtNodeArrayPos(rootPtNodeArrayPos);
     DynamicPtGcEventListeners

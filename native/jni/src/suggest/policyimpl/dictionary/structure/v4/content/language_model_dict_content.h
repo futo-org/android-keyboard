@@ -29,6 +29,8 @@
 
 namespace latinime {
 
+class HeaderPolicy;
+
 /**
  * Class representing language model.
  *
@@ -73,6 +75,12 @@ class LanguageModelDictContent {
 
     bool removeNgramProbabilityEntry(const WordIdArrayView prevWordIds, const int wordId);
 
+    bool updateAllProbabilityEntries(const HeaderPolicy *const headerPolicy,
+            int *const outEntryCounts) {
+        return updateAllProbabilityEntriesInner(mTrieMap.getRootBitmapEntryIndex(), 0 /* level */,
+                headerPolicy, outEntryCounts);
+    }
+
  private:
     DISALLOW_COPY_AND_ASSIGN(LanguageModelDictContent);
 
@@ -84,6 +92,8 @@ class LanguageModelDictContent {
             int *const outNgramCount);
     int createAndGetBitmapEntryIndex(const WordIdArrayView prevWordIds);
     int getBitmapEntryIndex(const WordIdArrayView prevWordIds) const;
+    bool updateAllProbabilityEntriesInner(const int bitmapEntryIndex, const int level,
+            const HeaderPolicy *const headerPolicy, int *const outEntryCounts);
 };
 } // namespace latinime
 #endif /* LATINIME_LANGUAGE_MODEL_DICT_CONTENT_H */
