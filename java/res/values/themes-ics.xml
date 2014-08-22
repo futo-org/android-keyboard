@@ -25,7 +25,9 @@
         <item name="mainKeyboardViewStyle">@style/MainKeyboardView.ICS</item>
         <item name="emojiPalettesViewStyle">@style/EmojiPalettesView.ICS</item>
         <item name="moreKeysKeyboardStyle">@style/MoreKeysKeyboard.ICS</item>
+        <!-- Note: ICS theme uses the same style for both general more keys and action more keys. -->
         <item name="moreKeysKeyboardViewStyle">@style/MoreKeysKeyboardView.ICS</item>
+        <item name="moreKeysKeyboardViewForActionStyle">@style/MoreKeysKeyboardView.ICS</item>
         <item name="suggestionStripViewStyle">@style/SuggestionStripView.ICS</item>
         <item name="suggestionWordStyle">@style/SuggestionWord.ICS</item>
     </style>
