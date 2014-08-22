@@ -34,7 +34,6 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.accessibility.AccessibilityUtils;
 import com.android.inputmethod.accessibility.MainKeyboardAccessibilityDelegate;
@@ -54,10 +53,10 @@ import com.android.inputmethod.keyboard.internal.SlidingKeyInputDrawingPreview;
 import com.android.inputmethod.keyboard.internal.TimerHandler;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.RichInputMethodSubtype;
 import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.settings.DebugSettings;
 import com.android.inputmethod.latin.utils.CoordinateUtils;
-import com.android.inputmethod.latin.utils.SpacebarLanguageUtils;
 import com.android.inputmethod.latin.utils.TypefaceUtils;
 
 import java.util.WeakHashMap;
@@ -849,16 +848,16 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
 
     // Layout language name on spacebar.
     private String layoutLanguageOnSpacebar(final Paint paint,
-            final InputMethodSubtype subtype, final int width) {
+            final RichInputMethodSubtype subtype, final int width) {
         // Choose appropriate language name to fit into the width.
         if (mLanguageOnSpacebarFormatType == LanguageOnSpacebarHelper.FORMAT_TYPE_FULL_LOCALE) {
-            final String fullText = SpacebarLanguageUtils.getFullDisplayName(subtype);
+            final String fullText = subtype.getFullDisplayName();
             if (fitsTextIntoWidth(width, fullText, paint)) {
                 return fullText;
             }
         }
 
-        final String middleText = SpacebarLanguageUtils.getMiddleDisplayName(subtype);
+        final String middleText = subtype.getMiddleDisplayName();
         if (fitsTextIntoWidth(width, middleText, paint)) {
             return middleText;
         }
@@ -872,7 +871,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         paint.setTextAlign(Align.CENTER);
         paint.setTypeface(Typeface.DEFAULT);
         paint.setTextSize(mLanguageOnSpacebarTextSize);
-        final InputMethodSubtype subtype = getKeyboard().mId.mSubtype;
+        final RichInputMethodSubtype subtype = getKeyboard().mId.mSubtype;
         final String language = layoutLanguageOnSpacebar(paint, subtype, width);
         // Draw language text with shadow
         final float descent = paint.descent();
