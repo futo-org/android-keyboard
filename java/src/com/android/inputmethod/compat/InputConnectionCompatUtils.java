@@ -16,67 +16,35 @@
 
 package com.android.inputmethod.compat;
 
-import android.util.Log;
 import android.view.inputmethod.InputConnection;
-
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
+import android.view.inputmethod.InputMethodManager;
 
 public final class InputConnectionCompatUtils {
-    private static final String TAG = InputConnectionCompatUtils.class.getSimpleName();
-
-    // Note that CursorAnchorInfoRequest is supposed to be available in API level 21 and later.
-    private static Class<?> getCursorAnchorInfoRequestClass() {
-        try {
-            return Class.forName("android.view.inputmethod.CursorAnchorInfoRequest");
-        } catch (ClassNotFoundException e) {
-            return null;
-        }
-    }
-
-    private static final Class<?> TYPE_CursorAnchorInfoRequest;
-    private static final Constructor<?> CONSTRUCTOR_CursorAnchorInfoRequest;
-    private static final Method METHOD_requestCursorAnchorInfo;
+    private static final CompatUtils.ClassWrapper sInputConnectionType;
+    private static final CompatUtils.ToBooleanMethodWrapper sRequestUpdateCursorAnchorInfoMethod;
     static {
-        TYPE_CursorAnchorInfoRequest = getCursorAnchorInfoRequestClass();
-        CONSTRUCTOR_CursorAnchorInfoRequest = CompatUtils.getConstructor(
-                TYPE_CursorAnchorInfoRequest, int.class, int.class);
-        METHOD_requestCursorAnchorInfo = CompatUtils.getMethod(InputConnection.class,
-                "requestCursorAnchorInfo", TYPE_CursorAnchorInfoRequest);
+        sInputConnectionType = new CompatUtils.ClassWrapper(InputConnection.class);
+        sRequestUpdateCursorAnchorInfoMethod = sInputConnectionType.getPrimitiveMethod(
+                "requestUpdateCursorAnchorInfo", false, int.class);
     }
 
-    public static boolean isRequestCursorAnchorInfoAvailable() {
-        return METHOD_requestCursorAnchorInfo != null &&
-                CONSTRUCTOR_CursorAnchorInfoRequest != null;
+    public static boolean isRequestUpdateCursorAnchorInfoAvailable() {
+        return sRequestUpdateCursorAnchorInfoMethod != null;
     }
 
     /**
      * Local copies of some constants in CursorAnchorInfoRequest until the SDK becomes publicly
      * available.
      */
-    private final static int RESULT_NOT_HANDLED = 0;
-    private final static int RESULT_SCHEDULED = 1;
-    private final static int TYPE_CURSOR_ANCHOR_INFO = 1;
-    private final static int FLAG_CURSOR_ANCHOR_INFO_MONITOR = 1;
-    private final static int FLAG_CURSOR_ANCHOR_INFO_IMMEDIATE = 2;
-    private final static int TYPE_CURSOR_RECT = 2;
-    private final static int FLAG_CURSOR_RECT_MONITOR = 1;
-    private final static int FLAG_CURSOR_RECT_IN_SCREEN_COORDINATES = 2;
-    private final static int FLAG_CURSOR_RECT_WITH_VIEW_MATRIX = 4;
+    private static int REQUEST_UPDATE_CURSOR_UPDATE_IMMEDIATE = 1 << 0;
+    private static int REQUEST_UPDATE_CURSOR_UPDATE_MONITOR = 1 << 1;
 
-    private static int requestCursorAnchorInfoImpl(final InputConnection inputConnection,
-            final int type, final int flags) {
-        if (!isRequestCursorAnchorInfoAvailable()) {
-             return RESULT_NOT_HANDLED;
+    private static boolean requestUpdateCursorAnchorInfoImpl(final InputConnection inputConnection,
+            final int cursorUpdateMode) {
+        if (!isRequestUpdateCursorAnchorInfoAvailable()) {
+             return false;
         }
-        final Object requestObject = CompatUtils.newInstance(
-                CONSTRUCTOR_CursorAnchorInfoRequest, type, flags);
-        if (requestObject == null) {
-            return RESULT_NOT_HANDLED;
-        }
-        return (Integer) CompatUtils.invoke(inputConnection,
-                RESULT_NOT_HANDLED /* defaultValue */,
-                METHOD_requestCursorAnchorInfo, requestObject);
+        return sRequestUpdateCursorAnchorInfoMethod.invoke(inputConnection, cursorUpdateMode);
     }
 
     /**
@@ -88,47 +56,11 @@ public final class InputConnectionCompatUtils {
      * as soon as possible to notify the current cursor/anchor position to the input method.
      * @return {@code false} if the request is not handled. Otherwise returns {@code true}.
      */
-    public static boolean requestCursorAnchorInfo(final InputConnection inputConnection,
+    public static boolean requestUpdateCursorAnchorInfo(final InputConnection inputConnection,
             final boolean enableMonitor, final boolean requestImmediateCallback) {
-        final int requestFlags = (enableMonitor ? FLAG_CURSOR_ANCHOR_INFO_MONITOR : 0)
-                | (requestImmediateCallback ? FLAG_CURSOR_ANCHOR_INFO_IMMEDIATE : 0);
-        final int requestResult = requestCursorAnchorInfoImpl(inputConnection,
-                TYPE_CURSOR_ANCHOR_INFO, requestFlags);
-        switch (requestResult) {
-            case RESULT_NOT_HANDLED:
-                return false;
-            case RESULT_SCHEDULED:
-                return true;
-            default:
-                Log.w(TAG, "requestCursorAnchorInfo returned unknown result=" + requestResult
-                        + " for type=TYPE_CURSOR_ANCHOR_INFO flags=" + requestFlags);
-                return true;
-        }
+        final int cursorUpdateMode = (enableMonitor ? REQUEST_UPDATE_CURSOR_UPDATE_MONITOR : 0)
+                | (requestImmediateCallback ? REQUEST_UPDATE_CURSOR_UPDATE_IMMEDIATE : 0);
+        return requestUpdateCursorAnchorInfoImpl(inputConnection, cursorUpdateMode);
     }
 
-    /**
-     * Requests the editor to call back {@link InputMethodManager#updateCursor}.
-     * @param inputConnection the input connection to which the request is to be sent.
-     * @param enableMonitor {@code true} to request the editor to call back the method whenever the
-     * cursor position is changed.
-     * @return {@code false} if the request is not handled. Otherwise returns {@code true}.
-     */
-    public static boolean requestCursorRect(final InputConnection inputConnection,
-            final boolean enableMonitor) {
-        final int requestFlags = enableMonitor ?
-                FLAG_CURSOR_RECT_MONITOR | FLAG_CURSOR_RECT_IN_SCREEN_COORDINATES |
-                FLAG_CURSOR_RECT_WITH_VIEW_MATRIX : 0;
-        final int requestResult = requestCursorAnchorInfoImpl(inputConnection, TYPE_CURSOR_RECT,
-                requestFlags);
-        switch (requestResult) {
-            case RESULT_NOT_HANDLED:
-                return false;
-            case RESULT_SCHEDULED:
-                return true;
-            default:
-                Log.w(TAG, "requestCursorAnchorInfo returned unknown result=" + requestResult
-                        + " for type=TYPE_CURSOR_RECT flags=" + requestFlags);
-                return true;
-        }
-    }
 }
