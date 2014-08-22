@@ -20,7 +20,7 @@ import android.os.Build;
 import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.annotations.UsedForTesting;
-import com.android.inputmethod.latin.Constants;
+import com.android.inputmethod.latin.RichInputMethodSubtype;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -64,9 +64,12 @@ public final class InputMethodSubtypeCompatUtils {
                 overridesImplicitlyEnabledSubtype, id);
     }
 
+    public static boolean isAsciiCapable(final RichInputMethodSubtype subtype) {
+        return isAsciiCapable(subtype.getRawSubtype());
+    }
+
     public static boolean isAsciiCapable(final InputMethodSubtype subtype) {
-        return isAsciiCapableWithAPI(subtype)
-                || subtype.containsExtraValueKey(Constants.Subtype.ExtraValue.ASCII_CAPABLE);
+        return InputMethodSubtypeCompatUtils.isAsciiCapableWithAPI(subtype);
     }
 
     @UsedForTesting

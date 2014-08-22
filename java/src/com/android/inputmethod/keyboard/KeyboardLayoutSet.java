@@ -28,7 +28,6 @@ import android.util.Log;
 import android.util.SparseArray;
 import android.util.Xml;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.compat.EditorInfoCompatUtils;
 import com.android.inputmethod.compat.InputMethodSubtypeCompatUtils;
@@ -37,6 +36,7 @@ import com.android.inputmethod.keyboard.internal.KeyboardParams;
 import com.android.inputmethod.keyboard.internal.KeysCache;
 import com.android.inputmethod.latin.InputAttributes;
 import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.RichInputMethodSubtype;
 import com.android.inputmethod.latin.SubtypeSwitcher;
 import com.android.inputmethod.latin.define.DebugFlags;
 import com.android.inputmethod.latin.utils.InputTypeUtils;
@@ -109,7 +109,7 @@ public final class KeyboardLayoutSet {
         boolean mVoiceInputKeyEnabled;
         boolean mNoSettingsKey;
         boolean mLanguageSwitchKeyEnabled;
-        InputMethodSubtype mSubtype;
+        RichInputMethodSubtype mSubtype;
         boolean mIsSpellChecker;
         int mKeyboardWidth;
         int mKeyboardHeight;
@@ -245,7 +245,7 @@ public final class KeyboardLayoutSet {
             return this;
         }
 
-        public Builder setSubtype(final InputMethodSubtype subtype) {
+        public Builder setSubtype(final RichInputMethodSubtype subtype) {
             final boolean asciiCapable = InputMethodSubtypeCompatUtils.isAsciiCapable(subtype);
             // TODO: Consolidate with {@link InputAttributes}.
             @SuppressWarnings("deprecation")
@@ -254,7 +254,7 @@ public final class KeyboardLayoutSet {
             final boolean forceAscii = EditorInfoCompatUtils.hasFlagForceAscii(
                     mParams.mEditorInfo.imeOptions)
                     || deprecatedForceAscii;
-            final InputMethodSubtype keyboardSubtype = (forceAscii && !asciiCapable)
+            final RichInputMethodSubtype keyboardSubtype = (forceAscii && !asciiCapable)
                     ? SubtypeSwitcher.getInstance().getNoLanguageSubtype()
                     : subtype;
             mParams.mSubtype = keyboardSubtype;
