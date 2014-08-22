@@ -83,7 +83,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
 
     Listener mListener;
     private SuggestedWords mSuggestedWords = SuggestedWords.EMPTY;
-    private int mSuggestionsCountInStrip;
+    private int mStartIndexOfMoreSuggestions;
 
     private final SuggestionStripLayoutHelper mLayoutHelper;
     private final StripVisibilityGroup mStripVisibilityGroup;
@@ -214,7 +214,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         clear();
         mStripVisibilityGroup.setLayoutDirection(isRtlLanguage);
         mSuggestedWords = suggestedWords;
-        mSuggestionsCountInStrip = mLayoutHelper.layoutAndReturnSuggestionCountInStrip(
+        mStartIndexOfMoreSuggestions = mLayoutHelper.layoutAndReturnStartIndexOfMoreSuggestions(
                 mSuggestedWords, mSuggestionsStrip, this);
         mStripVisibilityGroup.showSuggestionsStrip();
     }
@@ -337,7 +337,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
             return false;
         }
         final SuggestionStripLayoutHelper layoutHelper = mLayoutHelper;
-        if (!layoutHelper.mMoreSuggestionsAvailable) {
+        if (mSuggestedWords.size() <= mStartIndexOfMoreSuggestions) {
             return false;
         }
         // Dismiss another {@link MoreKeysPanel} that may be being showed, for example
@@ -350,7 +350,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         final View container = mMoreSuggestionsContainer;
         final int maxWidth = stripWidth - container.getPaddingLeft() - container.getPaddingRight();
         final MoreSuggestions.Builder builder = mMoreSuggestionsBuilder;
-        builder.layout(mSuggestedWords, mSuggestionsCountInStrip, maxWidth,
+        builder.layout(mSuggestedWords, mStartIndexOfMoreSuggestions, maxWidth,
                 (int)(maxWidth * layoutHelper.mMinMoreSuggestionsWidth),
                 layoutHelper.getMaxMoreSuggestionsRow(), parentKeyboard);
         mMoreSuggestionsView.setKeyboard(builder.build());
@@ -363,7 +363,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
                 mMoreSuggestionsListener);
         mOriginX = mLastX;
         mOriginY = mLastY;
-        for (int i = 0; i < mSuggestionsCountInStrip; i++) {
+        for (int i = 0; i < mStartIndexOfMoreSuggestions; i++) {
             mWordViews.get(i).setPressed(false);
         }
         return true;
