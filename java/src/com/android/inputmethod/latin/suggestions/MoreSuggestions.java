@@ -125,9 +125,9 @@ public final class MoreSuggestions extends Keyboard {
         }
 
         private static final int[][] COLUMN_ORDER_TO_NUMBER = {
-            { 0, },
-            { 1, 0, },
-            { 2, 0, 1},
+            { 0 }, // center
+            { 1, 0 }, // right-left
+            { 1, 0, 2 }, // center-left-right
         };
 
         public int getNumColumnInRow(final int index) {
