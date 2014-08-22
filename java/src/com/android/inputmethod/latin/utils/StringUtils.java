@@ -41,9 +41,9 @@ public final class StringUtils {
         // This utility class is not publicly instantiable.
     }
 
-    public static int codePointCount(final String text) {
+    public static int codePointCount(final CharSequence text) {
         if (TextUtils.isEmpty(text)) return 0;
-        return text.codePointCount(0, text.length());
+        return Character.codePointCount(text, 0, text.length());
     }
 
     public static String newSingleCodePointString(int codePoint) {
