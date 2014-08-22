@@ -755,14 +755,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     private void onStartInputInternal(final EditorInfo editorInfo, final boolean restarting) {
         super.onStartInput(editorInfo, restarting);
-        if (ProductionFlags.ENABLE_CURSOR_RECT_CALLBACK) {
-            InputConnectionCompatUtils.requestCursorRect(getCurrentInputConnection(),
-                    true /* enableMonitor */);
-        }
         if (ProductionFlags.ENABLE_CURSOR_ANCHOR_INFO_CALLBACK) {
             // AcceptTypedWord feature relies on CursorAnchorInfo.
             if (mSettings.getCurrent().mShouldShowUiToAcceptTypedWord) {
-                InputConnectionCompatUtils.requestCursorAnchorInfo(
+                InputConnectionCompatUtils.requestUpdateCursorAnchorInfo(
                         getCurrentInputConnection(), true /* enableMonitor */,
                         true /* requestImmediateCallback */);
             }
@@ -969,14 +965,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mKeyboardSwitcher.requestUpdatingShiftState(getCurrentAutoCapsState(),
                     getCurrentRecapitalizeState());
         }
-    }
-
-    @Override
-    public void onUpdateCursor(final Rect rect) {
-        if (DEBUG) {
-            Log.i(TAG, "onUpdateCursor:" + rect.toShortString());
-        }
-        super.onUpdateCursor(rect);
     }
 
     // We cannot mark this method as @Override until new SDK becomes publicly available.
