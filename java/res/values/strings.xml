@@ -168,6 +168,8 @@
 
     <!-- Add to dictionary hint -->
     <string name="hint_add_to_dictionary">Touch again to save</string>
+    <!-- Add to dictionary hint -->
+    <string name="hint_add_to_dictionary_without_word">Touch here to save</string>
 
     <!-- Inform the user that a particular language has an available dictionary -->
     <string name="has_dictionary">Dictionary available</string>
