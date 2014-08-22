@@ -644,6 +644,17 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         });
     }
 
+    public DictionaryStats getDictionaryStats() {
+        reloadDictionaryIfRequired();
+        mLock.readLock().lock();
+        try {
+            // TODO: Get stats form the dictionary.
+            return new DictionaryStats(mLocale, mDictName, mDictFile);
+        } finally {
+            mLock.readLock().unlock();
+        }
+    }
+
     @UsedForTesting
     public void waitAllTasksForTests() {
         final CountDownLatch countDownLatch = new CountDownLatch(1);
