@@ -77,8 +77,7 @@
     <string name="voice_input_disabled_summary" msgid="8141750303464726129">"വോയ്‌സ് ടൈപ്പുചെയ്യൽ രീതികളൊന്നും പ്രവർത്തനക്ഷമമല്ല. ഭാഷ &amp; ടൈപ്പു ചെയ്യൽ ക്രമീകരണങ്ങൾ പരിശോധിക്കുക."</string>
     <string name="configure_input_method" msgid="373356270290742459">"ടൈപ്പുചെയ്യൽ രീതികൾ കോൺഫിഗർ ചെയ്യുക"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"ടൈപ്പുചെയ്യൽ ഭാഷകൾ"</string>
-    <!-- no translation found for help_and_feedback (5328219371839879161) -->
-    <skip />
+    <string name="help_and_feedback" msgid="5328219371839879161">"സഹായവും ഫീഡ്‌ബാക്കും"</string>
     <string name="select_language" msgid="3693815588777926848">"ടൈപ്പുചെയ്യൽ ഭാഷകൾ"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"സംരക്ഷിക്കുന്നതിനായി വീണ്ടും സ്‌പർശിക്കുക"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"നിഘണ്ടു ലഭ്യമാണ്"</string>
