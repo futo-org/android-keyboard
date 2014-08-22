@@ -21,9 +21,9 @@ import static com.android.inputmethod.latin.Constants.Subtype.ExtraValue.KEYBOAR
 import android.text.InputType;
 import android.text.TextUtils;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.compat.EditorInfoCompatUtils;
-import com.android.inputmethod.latin.RichInputMethodSubtype;
 import com.android.inputmethod.latin.utils.InputTypeUtils;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 
@@ -62,7 +62,7 @@ public final class KeyboardId {
     public static final int ELEMENT_EMOJI_CATEGORY5 = 15;
     public static final int ELEMENT_EMOJI_CATEGORY6 = 16;
 
-    public final RichInputMethodSubtype mSubtype;
+    public final InputMethodSubtype mSubtype;
     public final Locale mLocale;
     public final int mWidth;
     public final int mHeight;

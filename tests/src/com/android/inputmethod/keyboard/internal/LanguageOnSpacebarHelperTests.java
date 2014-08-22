@@ -26,7 +26,6 @@ import android.test.suitebuilder.annotation.SmallTest;
 import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.latin.RichInputMethodManager;
-import com.android.inputmethod.latin.RichInputMethodSubtype;
 import com.android.inputmethod.latin.utils.AdditionalSubtypeUtils;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 
@@ -41,14 +40,14 @@ public class LanguageOnSpacebarHelperTests extends AndroidTestCase {
 
     private RichInputMethodManager mRichImm;
 
-    RichInputMethodSubtype EN_US_QWERTY;
-    RichInputMethodSubtype EN_GB_QWERTY;
-    RichInputMethodSubtype FR_AZERTY;
-    RichInputMethodSubtype FR_CA_QWERTY;
-    RichInputMethodSubtype FR_CH_SWISS;
-    RichInputMethodSubtype FR_CH_QWERTY;
-    RichInputMethodSubtype FR_CH_QWERTZ;
-    RichInputMethodSubtype ZZ_QWERTY;
+    InputMethodSubtype EN_US_QWERTY;
+    InputMethodSubtype EN_GB_QWERTY;
+    InputMethodSubtype FR_AZERTY;
+    InputMethodSubtype FR_CA_QWERTY;
+    InputMethodSubtype FR_CH_SWISS;
+    InputMethodSubtype FR_CH_QWERTY;
+    InputMethodSubtype FR_CH_QWERTZ;
+    InputMethodSubtype ZZ_QWERTY;
 
     @Override
     protected void setUp() throws Exception {
@@ -58,22 +57,22 @@ public class LanguageOnSpacebarHelperTests extends AndroidTestCase {
         mRichImm = RichInputMethodManager.getInstance();
         SubtypeLocaleUtils.init(context);
 
-        EN_US_QWERTY = new RichInputMethodSubtype(mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
-                Locale.US.toString(), "qwerty"));
-        EN_GB_QWERTY = new RichInputMethodSubtype(mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
-                Locale.UK.toString(), "qwerty"));
-        FR_AZERTY = new RichInputMethodSubtype(mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
-                Locale.FRENCH.toString(), "azerty"));
-        FR_CA_QWERTY = new RichInputMethodSubtype(mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
-                Locale.CANADA_FRENCH.toString(), "qwerty"));
-        FR_CH_SWISS = new RichInputMethodSubtype(mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
-                "fr_CH", "swiss"));
-        FR_CH_QWERTZ = new RichInputMethodSubtype(
-                AdditionalSubtypeUtils.createAsciiEmojiCapableAdditionalSubtype("fr_CH", "qwertz"));
-        FR_CH_QWERTY = new RichInputMethodSubtype(
-                AdditionalSubtypeUtils.createAsciiEmojiCapableAdditionalSubtype("fr_CH", "qwerty"));
-        ZZ_QWERTY = new RichInputMethodSubtype(mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
-                SubtypeLocaleUtils.NO_LANGUAGE, "qwerty"));
+        EN_US_QWERTY = mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
+                Locale.US.toString(), "qwerty");
+        EN_GB_QWERTY = mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
+                Locale.UK.toString(), "qwerty");
+        FR_AZERTY = mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
+                Locale.FRENCH.toString(), "azerty");
+        FR_CA_QWERTY = mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
+                Locale.CANADA_FRENCH.toString(), "qwerty");
+        FR_CH_SWISS = mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
+                "fr_CH", "swiss");
+        FR_CH_QWERTZ = AdditionalSubtypeUtils.createAsciiEmojiCapableAdditionalSubtype(
+                "fr_CH", "qwertz");
+        FR_CH_QWERTY = AdditionalSubtypeUtils.createAsciiEmojiCapableAdditionalSubtype(
+                "fr_CH", "qwerty");
+        ZZ_QWERTY = mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
+                SubtypeLocaleUtils.NO_LANGUAGE, "qwerty");
     }
 
     private static List<InputMethodSubtype> asList(final InputMethodSubtype ... subtypes) {
@@ -81,14 +80,14 @@ public class LanguageOnSpacebarHelperTests extends AndroidTestCase {
     }
 
     public void testOneSubtype() {
-        mLanguageOnSpacebarHelper.updateEnabledSubtypes(asList(EN_US_QWERTY.getRawSubtype()));
+        mLanguageOnSpacebarHelper.updateEnabledSubtypes(asList(EN_US_QWERTY));
         mLanguageOnSpacebarHelper.updateIsSystemLanguageSameAsInputLanguage(true /* isSame */);
         assertEquals("one same English (US)", FORMAT_TYPE_NONE,
                 mLanguageOnSpacebarHelper.getLanguageOnSpacebarFormatType(EN_US_QWERTY));
         assertEquals("one same NoLanguage", FORMAT_TYPE_FULL_LOCALE,
                 mLanguageOnSpacebarHelper.getLanguageOnSpacebarFormatType(ZZ_QWERTY));
 
-        mLanguageOnSpacebarHelper.updateEnabledSubtypes(asList(FR_AZERTY.getRawSubtype()));
+        mLanguageOnSpacebarHelper.updateEnabledSubtypes(asList(FR_AZERTY));
         mLanguageOnSpacebarHelper.updateIsSystemLanguageSameAsInputLanguage(false /* isSame */);
         assertEquals("one diff English (US)", FORMAT_TYPE_LANGUAGE_ONLY,
                 mLanguageOnSpacebarHelper.getLanguageOnSpacebarFormatType(EN_US_QWERTY));
@@ -97,8 +96,8 @@ public class LanguageOnSpacebarHelperTests extends AndroidTestCase {
     }
 
     public void testTwoSubtypes() {
-        mLanguageOnSpacebarHelper.updateEnabledSubtypes(asList(EN_US_QWERTY.getRawSubtype(),
-                FR_AZERTY.getRawSubtype()));
+        mLanguageOnSpacebarHelper.updateEnabledSubtypes(asList(EN_US_QWERTY, FR_AZERTY));
+
         mLanguageOnSpacebarHelper.updateIsSystemLanguageSameAsInputLanguage(true /* isSame */);
         assertEquals("two same English (US)", FORMAT_TYPE_LANGUAGE_ONLY,
                 mLanguageOnSpacebarHelper.getLanguageOnSpacebarFormatType(EN_US_QWERTY));
@@ -118,8 +117,7 @@ public class LanguageOnSpacebarHelperTests extends AndroidTestCase {
 
     public void testSameLanuageSubtypes() {
         mLanguageOnSpacebarHelper.updateEnabledSubtypes(
-                asList(EN_US_QWERTY.getRawSubtype(), EN_GB_QWERTY.getRawSubtype(),
-                        FR_AZERTY.getRawSubtype(), ZZ_QWERTY.getRawSubtype()));
+                asList(EN_US_QWERTY, EN_GB_QWERTY, FR_AZERTY, ZZ_QWERTY));
 
         mLanguageOnSpacebarHelper.updateIsSystemLanguageSameAsInputLanguage(true /* isSame */);
         assertEquals("two same English (US)", FORMAT_TYPE_FULL_LOCALE,
@@ -140,9 +138,7 @@ public class LanguageOnSpacebarHelperTests extends AndroidTestCase {
 
     public void testMultiSameLanuageSubtypes() {
         mLanguageOnSpacebarHelper.updateEnabledSubtypes(
-                asList(FR_AZERTY.getRawSubtype(), FR_CA_QWERTY.getRawSubtype(),
-                        FR_CH_SWISS.getRawSubtype(), FR_CH_QWERTY.getRawSubtype(),
-                        FR_CH_QWERTZ.getRawSubtype()));
+                asList(FR_AZERTY, FR_CA_QWERTY, FR_CH_SWISS, FR_CH_QWERTY, FR_CH_QWERTZ));
 
         mLanguageOnSpacebarHelper.updateIsSystemLanguageSameAsInputLanguage(true /* isSame */);
         assertEquals("multi same French", FORMAT_TYPE_LANGUAGE_ONLY,

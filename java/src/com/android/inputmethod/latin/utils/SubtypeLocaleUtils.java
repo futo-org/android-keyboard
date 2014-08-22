@@ -27,17 +27,12 @@ import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.R;
-import com.android.inputmethod.latin.RichInputMethodSubtype;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
 
-/**
- * A helper class to deal with subtype locales.
-  */
-// TODO: consolidate this into RichInputMethodSubtype
 public final class SubtypeLocaleUtils {
     private static final String TAG = SubtypeLocaleUtils.class.getSimpleName();
 
@@ -114,10 +109,10 @@ public final class SubtypeLocaleUtils {
             sKeyboardLayoutToNameIdsMap.put(key, noLanguageResId);
         }
 
-        final String[] exceptionalLocaleInRootLocale = res.getStringArray(
+        final String[] excetionalLocaleInRootLocale = res.getStringArray(
                 R.array.subtype_locale_displayed_in_root_locale);
-        for (int i = 0; i < exceptionalLocaleInRootLocale.length; i++) {
-            sExceptionalLocaleDisplayedInRootLocale.add(exceptionalLocaleInRootLocale[i]);
+        for (int i = 0; i < excetionalLocaleInRootLocale.length; i++) {
+            sExceptionalLocaleDisplayedInRootLocale.add(excetionalLocaleInRootLocale[i]);
         }
 
         final String[] exceptionalLocales = res.getStringArray(
@@ -265,7 +260,6 @@ public final class SubtypeLocaleUtils {
     private static String getSubtypeDisplayNameInternal(final InputMethodSubtype subtype,
             final Locale displayLocale) {
         final String replacementString = getReplacementString(subtype, displayLocale);
-        // TODO: rework this for multi-lingual subtypes
         final int nameResId = subtype.getNameResId();
         final RunInLocale<String> getSubtypeName = new RunInLocale<String>() {
             @Override
@@ -288,14 +282,12 @@ public final class SubtypeLocaleUtils {
                 getSubtypeName.runInLocale(sResources, displayLocale), displayLocale);
     }
 
-    public static Locale getSubtypeLocale(final InputMethodSubtype subtype) {
+    public static boolean isNoLanguage(final InputMethodSubtype subtype) {
         final String localeString = subtype.getLocale();
-        return LocaleUtils.constructLocaleFromString(localeString);
+        return NO_LANGUAGE.equals(localeString);
     }
 
-    // TODO: remove this. When RichInputMethodSubtype#getLocale is removed we can do away with this
-    // method at the same time.
-    public static Locale getSubtypeLocale(final RichInputMethodSubtype subtype) {
+    public static Locale getSubtypeLocale(final InputMethodSubtype subtype) {
         final String localeString = subtype.getLocale();
         return LocaleUtils.constructLocaleFromString(localeString);
     }
@@ -307,10 +299,6 @@ public final class SubtypeLocaleUtils {
 
     public static String getKeyboardLayoutSetDisplayName(final String layoutName) {
         return sKeyboardLayoutToDisplayNameMap.get(layoutName);
-    }
-
-    public static String getKeyboardLayoutSetName(final RichInputMethodSubtype subtype) {
-        return getKeyboardLayoutSetName(subtype.getRawSubtype());
     }
 
     public static String getKeyboardLayoutSetName(final InputMethodSubtype subtype) {
@@ -348,7 +336,7 @@ public final class SubtypeLocaleUtils {
         return Arrays.binarySearch(SORTED_RTL_LANGUAGES, language) >= 0;
     }
 
-    public static boolean isRtlLanguage(final RichInputMethodSubtype subtype) {
+    public static boolean isRtlLanguage(final InputMethodSubtype subtype) {
         return isRtlLanguage(getSubtypeLocale(subtype));
     }
 

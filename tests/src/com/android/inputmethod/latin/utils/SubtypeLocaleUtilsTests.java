@@ -24,7 +24,6 @@ import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.latin.RichInputMethodManager;
-import com.android.inputmethod.latin.RichInputMethodSubtype;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -32,7 +31,7 @@ import java.util.Locale;
 @SmallTest
 public class SubtypeLocaleUtilsTests extends AndroidTestCase {
     // All input method subtypes of LatinIME.
-    private final ArrayList<RichInputMethodSubtype> mSubtypesList = new ArrayList<>();
+    private final ArrayList<InputMethodSubtype> mSubtypesList = new ArrayList<>();
 
     private RichInputMethodManager mRichImm;
     private Resources mRes;
@@ -68,7 +67,7 @@ public class SubtypeLocaleUtilsTests extends AndroidTestCase {
         final int subtypeCount = imi.getSubtypeCount();
         for (int index = 0; index < subtypeCount; index++) {
             final InputMethodSubtype subtype = imi.getSubtypeAt(index);
-            mSubtypesList.add(new RichInputMethodSubtype(subtype));
+            mSubtypesList.add(subtype);
         }
 
         EN_US = mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
@@ -108,12 +107,12 @@ public class SubtypeLocaleUtilsTests extends AndroidTestCase {
     }
 
     public void testAllFullDisplayName() {
-        for (final RichInputMethodSubtype subtype : mSubtypesList) {
+        for (final InputMethodSubtype subtype : mSubtypesList) {
             final String subtypeName = SubtypeLocaleUtils
-                    .getSubtypeDisplayNameInSystemLocale(subtype.getRawSubtype());
-            if (subtype.isNoLanguage()) {
+                    .getSubtypeDisplayNameInSystemLocale(subtype);
+            if (SubtypeLocaleUtils.isNoLanguage(subtype)) {
                 final String layoutName = SubtypeLocaleUtils
-                        .getKeyboardLayoutSetDisplayName(subtype.getRawSubtype());
+                        .getKeyboardLayoutSetDisplayName(subtype);
                 assertTrue(subtypeName, subtypeName.contains(layoutName));
             } else {
                 final String languageName = SubtypeLocaleUtils
@@ -309,9 +308,9 @@ public class SubtypeLocaleUtilsTests extends AndroidTestCase {
                 .findSubtypeByLocaleAndKeyboardLayoutSet("iw", "hebrew");
         assertNotNull("Hebrew", HEBREW);
 
-        for (final RichInputMethodSubtype subtype : mSubtypesList) {
+        for (final InputMethodSubtype subtype : mSubtypesList) {
             final String subtypeName = SubtypeLocaleUtils
-                    .getSubtypeDisplayNameInSystemLocale(subtype.getRawSubtype());
+                    .getSubtypeDisplayNameInSystemLocale(subtype);
             if (subtype.equals(ARABIC) || subtype.equals(FARSI) || subtype.equals(HEBREW)) {
                 assertTrue(subtypeName, SubtypeLocaleUtils.isRtlLanguage(subtype));
             } else {

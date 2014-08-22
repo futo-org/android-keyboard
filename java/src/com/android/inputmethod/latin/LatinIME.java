@@ -747,8 +747,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     public void onCurrentInputMethodSubtypeChanged(final InputMethodSubtype subtype) {
         // Note that the calling sequence of onCreate() and onCurrentInputMethodSubtypeChanged()
         // is not guaranteed. It may even be called at the same time on a different thread.
-        final RichInputMethodSubtype richSubtype = new RichInputMethodSubtype(subtype);
-        mSubtypeSwitcher.onSubtypeChanged(richSubtype);
+        mSubtypeSwitcher.onSubtypeChanged(subtype);
         mInputLogic.onSubtypeChanged(SubtypeLocaleUtils.getCombiningRulesExtraValue(subtype));
         loadKeyboard();
     }
