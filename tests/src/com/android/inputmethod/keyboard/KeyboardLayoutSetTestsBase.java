@@ -29,7 +29,6 @@ import com.android.inputmethod.keyboard.KeyboardLayoutSet.Builder;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.RichInputMethodManager;
-import com.android.inputmethod.latin.RichInputMethodSubtype;
 import com.android.inputmethod.latin.utils.AdditionalSubtypeUtils;
 import com.android.inputmethod.latin.utils.ResourceUtils;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
@@ -128,7 +127,7 @@ public abstract class KeyboardLayoutSetTestsBase extends AndroidTestCase {
         final int keyboardHeight = ResourceUtils.getDefaultKeyboardHeight(res);
         final Builder builder = new Builder(context, editorInfo);
         builder.setKeyboardGeometry(keyboardWidth, keyboardHeight)
-                .setSubtype(new RichInputMethodSubtype(subtype))
+                .setSubtype(subtype)
                 .setVoiceInputKeyEnabled(voiceInputKeyEnabled)
                 .setLanguageSwitchKeyEnabled(languageSwitchKeyEnabled);
         return builder.build();

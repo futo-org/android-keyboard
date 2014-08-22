@@ -18,7 +18,6 @@ package com.android.inputmethod.keyboard.internal;
 
 import android.view.inputmethod.InputMethodSubtype;
 
-import com.android.inputmethod.latin.RichInputMethodSubtype;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 
 import java.util.Collections;
@@ -35,8 +34,8 @@ public final class LanguageOnSpacebarHelper {
     private List<InputMethodSubtype> mEnabledSubtypes = Collections.emptyList();
     private boolean mIsSystemLanguageSameAsInputLanguage;
 
-    public int getLanguageOnSpacebarFormatType(final RichInputMethodSubtype subtype) {
-        if (subtype.isNoLanguage()) {
+    public int getLanguageOnSpacebarFormatType(final InputMethodSubtype subtype) {
+        if (SubtypeLocaleUtils.isNoLanguage(subtype)) {
             return FORMAT_TYPE_FULL_LOCALE;
         }
         // Only this subtype is enabled and equals to the system locale.
