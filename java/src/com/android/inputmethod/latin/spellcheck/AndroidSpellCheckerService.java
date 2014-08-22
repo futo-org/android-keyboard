@@ -39,7 +39,6 @@ import com.android.inputmethod.latin.DictionaryFacilitator;
 import com.android.inputmethod.latin.DictionaryFactory;
 import com.android.inputmethod.latin.PrevWordsInfo;
 import com.android.inputmethod.latin.R;
-import com.android.inputmethod.latin.RichInputMethodSubtype;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.settings.SettingsValuesForSuggestion;
 import com.android.inputmethod.latin.UserBinaryDictionary;
@@ -335,7 +334,7 @@ public final class AndroidSpellCheckerService extends SpellCheckerService
         final KeyboardLayoutSet.Builder builder = new KeyboardLayoutSet.Builder(this, editorInfo);
         builder.setKeyboardGeometry(
                 SPELLCHECKER_DUMMY_KEYBOARD_WIDTH, SPELLCHECKER_DUMMY_KEYBOARD_HEIGHT);
-        builder.setSubtype(new RichInputMethodSubtype(subtype));
+        builder.setSubtype(subtype);
         builder.setIsSpellChecker(true /* isSpellChecker */);
         builder.disableTouchPositionCorrectionData();
         return builder.build();
