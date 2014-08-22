@@ -17,13 +17,16 @@
 package com.android.inputmethod.latin.utils;
 
 import android.content.Context;
+
+import com.android.inputmethod.latin.RichInputMethodManager;
 import com.android.inputmethod.latin.settings.SettingsValues;
 
 public final class StatsUtils {
     public static void init(final Context context) {
     }
 
-    public static void onCreate(final SettingsValues settingsValues) {
+    public static void onCreate(final SettingsValues settingsValues,
+            RichInputMethodManager richImm) {
     }
 
     public static void onLoadSettings(final SettingsValues settingsValues) {

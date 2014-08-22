@@ -40,7 +40,8 @@ import java.util.List;
 /**
  * Enrichment class for InputMethodManager to simplify interaction and add functionality.
  */
-public final class RichInputMethodManager {
+// non final for easy mocking.
+public class RichInputMethodManager {
     private static final String TAG = RichInputMethodManager.class.getSimpleName();
 
     private RichInputMethodManager() {
