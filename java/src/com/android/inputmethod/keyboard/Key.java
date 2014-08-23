@@ -108,11 +108,23 @@ public class Key implements Comparable<Key> {
     private final MoreKeySpec[] mMoreKeys;
     /** More keys column number and flags */
     private final int mMoreKeysColumnAndFlags;
-    private static final int MORE_KEYS_COLUMN_MASK = 0x000000ff;
-    private static final int MORE_KEYS_FLAGS_FIXED_COLUMN_ORDER = 0x80000000;
+    private static final int MORE_KEYS_COLUMN_NUMBER_MASK = 0x000000ff;
+    // If this flag is specified, more keys keyboard should have the specified number of columns.
+    // Otherwise more keys keyboard should have less than or equal to the specified maximum number
+    // of columns.
+    private static final int MORE_KEYS_FLAGS_FIXED_COLUMN = 0x00000100;
+    // If this flag is specified, the order of more keys is determined by the order in the more
+    // keys' specification. Otherwise the order of more keys is automatically determined.
+    private static final int MORE_KEYS_FLAGS_FIXED_ORDER = 0x00000200;
+    private static final int MORE_KEYS_MODE_MAX_COLUMN_WITH_AUTO_ORDER = 0;
+    private static final int MORE_KEYS_MODE_FIXED_COLUMN_WITH_AUTO_ORDER =
+            MORE_KEYS_FLAGS_FIXED_COLUMN;
+    private static final int MORE_KEYS_MODE_FIXED_COLUMN_WITH_FIXED_ORDER =
+            (MORE_KEYS_FLAGS_FIXED_COLUMN | MORE_KEYS_FLAGS_FIXED_ORDER);
     private static final int MORE_KEYS_FLAGS_HAS_LABELS = 0x40000000;
     private static final int MORE_KEYS_FLAGS_NEEDS_DIVIDERS = 0x20000000;
     private static final int MORE_KEYS_FLAGS_NO_PANEL_AUTO_MORE_KEY = 0x10000000;
+    // TODO: Rename these specifiers to !autoOrder! and !fixedOrder! respectively.
     private static final String MORE_KEYS_AUTO_COLUMN_ORDER = "!autoColumnOrder!";
     private static final String MORE_KEYS_FIXED_COLUMN_ORDER = "!fixedColumnOrder!";
     private static final String MORE_KEYS_HAS_LABELS = "!hasLabels!";
@@ -255,25 +267,31 @@ public class Key implements Comparable<Key> {
         int actionFlags = style.getFlags(keyAttr, R.styleable.Keyboard_Key_keyActionFlags);
         String[] moreKeys = style.getStringArray(keyAttr, R.styleable.Keyboard_Key_moreKeys);
 
-        int moreKeysColumn = style.getInt(keyAttr,
-                R.styleable.Keyboard_Key_maxMoreKeysColumn, params.mMaxMoreKeysKeyboardColumn);
+        // Get maximum column order number and set a relevant mode value.
+        int moreKeysColumnAndFlags = MORE_KEYS_MODE_MAX_COLUMN_WITH_AUTO_ORDER
+                | style.getInt(keyAttr, R.styleable.Keyboard_Key_maxMoreKeysColumn,
+                        params.mMaxMoreKeysKeyboardColumn);
         int value;
         if ((value = MoreKeySpec.getIntValue(moreKeys, MORE_KEYS_AUTO_COLUMN_ORDER, -1)) > 0) {
-            moreKeysColumn = value & MORE_KEYS_COLUMN_MASK;
+            // Override with fixed column order number and set a relevant mode value.
+            moreKeysColumnAndFlags = MORE_KEYS_MODE_FIXED_COLUMN_WITH_AUTO_ORDER
+                    | (value & MORE_KEYS_COLUMN_NUMBER_MASK);
         }
         if ((value = MoreKeySpec.getIntValue(moreKeys, MORE_KEYS_FIXED_COLUMN_ORDER, -1)) > 0) {
-            moreKeysColumn = MORE_KEYS_FLAGS_FIXED_COLUMN_ORDER | (value & MORE_KEYS_COLUMN_MASK);
+            // Override with fixed column order number and set a relevant mode value.
+            moreKeysColumnAndFlags = MORE_KEYS_MODE_FIXED_COLUMN_WITH_FIXED_ORDER
+                    | (value & MORE_KEYS_COLUMN_NUMBER_MASK);
         }
         if (MoreKeySpec.getBooleanValue(moreKeys, MORE_KEYS_HAS_LABELS)) {
-            moreKeysColumn |= MORE_KEYS_FLAGS_HAS_LABELS;
+            moreKeysColumnAndFlags |= MORE_KEYS_FLAGS_HAS_LABELS;
         }
         if (MoreKeySpec.getBooleanValue(moreKeys, MORE_KEYS_NEEDS_DIVIDERS)) {
-            moreKeysColumn |= MORE_KEYS_FLAGS_NEEDS_DIVIDERS;
+            moreKeysColumnAndFlags |= MORE_KEYS_FLAGS_NEEDS_DIVIDERS;
         }
         if (MoreKeySpec.getBooleanValue(moreKeys, MORE_KEYS_NO_PANEL_AUTO_MORE_KEY)) {
-            moreKeysColumn |= MORE_KEYS_FLAGS_NO_PANEL_AUTO_MORE_KEY;
+            moreKeysColumnAndFlags |= MORE_KEYS_FLAGS_NO_PANEL_AUTO_MORE_KEY;
         }
-        mMoreKeysColumnAndFlags = moreKeysColumn;
+        mMoreKeysColumnAndFlags = moreKeysColumnAndFlags;
 
         final String[] additionalMoreKeys;
         if ((mLabelFlags & LABEL_FLAGS_DISABLE_ADDITIONAL_MORE_KEYS) != 0) {
@@ -680,12 +698,16 @@ public class Key implements Comparable<Key> {
                 && !TextUtils.isEmpty(mHintLabel);
     }
 
-    public final int getMoreKeysColumn() {
-        return mMoreKeysColumnAndFlags & MORE_KEYS_COLUMN_MASK;
+    public final int getMoreKeysColumnNumber() {
+        return mMoreKeysColumnAndFlags & MORE_KEYS_COLUMN_NUMBER_MASK;
     }
 
-    public final boolean isFixedColumnOrderMoreKeys() {
-        return (mMoreKeysColumnAndFlags & MORE_KEYS_FLAGS_FIXED_COLUMN_ORDER) != 0;
+    public final boolean isMoreKeysFixedColumn() {
+        return (mMoreKeysColumnAndFlags & MORE_KEYS_FLAGS_FIXED_COLUMN) != 0;
+    }
+
+    public final boolean isMoreKeysFixedOrder() {
+        return (mMoreKeysColumnAndFlags & MORE_KEYS_FLAGS_FIXED_ORDER) != 0;
     }
 
     public final boolean hasLabelsInMoreKeys() {
