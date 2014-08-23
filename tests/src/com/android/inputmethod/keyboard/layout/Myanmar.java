@@ -55,14 +55,14 @@ public final class Myanmar extends LayoutBase {
             // U+002C: "," COMMA
             // U+104A: "၊" MYANMAR SIGN LITTLE SECTION
             return isPhone ? joinKeys(key("\u002C", SETTINGS_KEY))
-                    : joinKeys(key("\u104A", moreKey(","), SETTINGS_KEY), "_");
+                    : joinKeys(key("\u104A", moreKey(","), SETTINGS_KEY));
         }
 
         @Override
         public ExpectedKey[] getKeysRightToSpacebar(final boolean isPhone) {
             // U+104B: "။" MYANMAR SIGN SECTION
             final ExpectedKey periodKey = key("\u104B", getPunctuationMoreKeys(isPhone));
-            return isPhone ? joinKeys(periodKey) : joinKeys("/", periodKey);
+            return joinKeys(periodKey);
         }
 
         @Override

@@ -78,8 +78,7 @@ public final class Arabic extends LayoutBase {
             // U+061F: "؟" ARABIC QUESTION MARK
             // U+061B: "؛" ARABIC SEMICOLON
             return joinKeys(key("\u060C", joinMoreKeys(
-                    ":", "!", "\u061F", "\u061B", "-", "\"", "'", SETTINGS_KEY)),
-                    "_");
+                    ":", "!", "\u061F", "\u061B", "-", "\"", "'", SETTINGS_KEY)));
         }
 
         @Override
@@ -90,7 +89,7 @@ public final class Arabic extends LayoutBase {
             // U+060C: "،" ARABIC COMMA
             // U+061F: "؟" ARABIC QUESTION MARK
             // U+061B: "؛" ARABIC SEMICOLON
-            return joinKeys("/", key(".", getPunctuationMoreKeys(isPhone)));
+            return joinKeys(key(".", getPunctuationMoreKeys(isPhone)));
         }
 
         @Override

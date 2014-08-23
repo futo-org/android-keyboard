@@ -35,6 +35,13 @@
                 latin:moreKeys="!autoColumnOrder!8,\\,,.,',#,),(,/,;,@,:,-,&quot;,+,\\%,&amp;"
                 latin:backgroundType="functional" />
         </case>
+        <case
+            latin:keyboardLayoutSet="dvorak"
+        >
+            <Key
+                latin:keySpec="\?"
+                latin:moreKeys="!text/morekeys_tablet_period,!text/morekeys_question" />
+        </case>
         <default>
             <Key
                 latin:keySpec="!text/keyspec_tablet_period"

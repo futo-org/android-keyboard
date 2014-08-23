@@ -149,6 +149,24 @@ public abstract class LayoutBase extends AbstractLayoutBase {
         }
 
         /**
+         * Get the enter key.
+         * @param isPhone true if requesting phone's key.
+         * @return the array of {@link ExpectedKey} that should be placed as an enter key.
+         */
+        public ExpectedKey getEnterKey(final boolean isPhone) {
+            return isPhone ? key(ENTER_KEY, EMOJI_ACTION_KEY) : ENTER_KEY;
+        }
+
+        /**
+         * Get the emoji key.
+         * @param isPhone true if requesting phone's key.
+         * @return the array of {@link ExpectedKey} that should be placed as an emoji key.
+         */
+        public ExpectedKey getEmojiKey(final boolean isPhone) {
+            return EMOJI_NORMAL_KEY;
+        }
+
+        /**
          * Get the space keys.
          * @param isPhone true if requesting phone's keys.
          * @return the array of {@link ExpectedKey} that should be placed at the center of the
@@ -165,8 +183,7 @@ public abstract class LayoutBase extends AbstractLayoutBase {
          */
         public ExpectedKey[] getKeysLeftToSpacebar(final boolean isPhone) {
             // U+002C: "," COMMA
-            return isPhone ? joinKeys(key("\u002C", SETTINGS_KEY))
-                    : joinKeys(key("\u002C", SETTINGS_KEY), "_");
+            return joinKeys(key("\u002C", SETTINGS_KEY));
         }
 
         /**
@@ -176,7 +193,7 @@ public abstract class LayoutBase extends AbstractLayoutBase {
          */
         public ExpectedKey[] getKeysRightToSpacebar(final boolean isPhone) {
             final ExpectedKey periodKey = key(".", getPunctuationMoreKeys(isPhone));
-            return isPhone ? joinKeys(periodKey) : joinKeys("/", periodKey);
+            return joinKeys(periodKey);
         }
 
         /**
@@ -241,7 +258,25 @@ public abstract class LayoutBase extends AbstractLayoutBase {
      */
     public final LayoutCustomizer getCustomizer() { return mCustomizer; }
 
-    // Icon id.
+    // Icon ids.
+    private static final int ICON_DELETE = KeyboardIconsSet.getIconId(
+            KeyboardIconsSet.NAME_DELETE_KEY);
+    private static final int ICON_SPACE = KeyboardIconsSet.getIconId(
+            KeyboardIconsSet.NAME_SPACE_KEY);
+    private static final int ICON_TAB = KeyboardIconsSet.getIconId(
+            KeyboardIconsSet.NAME_TAB_KEY);
+    private static final int ICON_SHORTCUT = KeyboardIconsSet.getIconId(
+            KeyboardIconsSet.NAME_SHORTCUT_KEY);
+    private static final int ICON_SETTINGS = KeyboardIconsSet.getIconId(
+            KeyboardIconsSet.NAME_SETTINGS_KEY);
+    private static final int ICON_LANGUAGE_SWITCH = KeyboardIconsSet.getIconId(
+            KeyboardIconsSet.NAME_LANGUAGE_SWITCH_KEY);
+    private static final int ICON_ENTER = KeyboardIconsSet.getIconId(
+            KeyboardIconsSet.NAME_ENTER_KEY);
+    private static final int ICON_EMOJI_ACTION = KeyboardIconsSet.getIconId(
+            KeyboardIconsSet.NAME_EMOJI_ACTION_KEY);
+    private static final int ICON_EMOJI_NORMAL = KeyboardIconsSet.getIconId(
+            KeyboardIconsSet.NAME_EMOJI_NORMAL_KEY);
     private static final int ICON_SHIFT = KeyboardIconsSet.getIconId(
             KeyboardIconsSet.NAME_SHIFT_KEY);
     private static final int ICON_SHIFTED_SHIFT = KeyboardIconsSet.getIconId(
@@ -251,11 +286,21 @@ public abstract class LayoutBase extends AbstractLayoutBase {
     private static final int ICON_ZWJ = KeyboardIconsSet.getIconId(
             KeyboardIconsSet.NAME_ZWJ_KEY);
 
-    // Functional key.
+    // Functional keys.
+    public static final ExpectedKey DELETE_KEY = key(ICON_DELETE, Constants.CODE_DELETE);
+    public static final ExpectedKey TAB_KEY = key(ICON_TAB, Constants.CODE_TAB);
+    public static final ExpectedKey SHORTCUT_KEY = key(ICON_SHORTCUT, Constants.CODE_SHORTCUT);
+    public static final ExpectedKey SETTINGS_KEY = key(ICON_SETTINGS, Constants.CODE_SETTINGS);
+    public static final ExpectedKey LANGUAGE_SWITCH_KEY = key(
+            ICON_LANGUAGE_SWITCH, Constants.CODE_LANGUAGE_SWITCH);
+    public static final ExpectedKey ENTER_KEY = key(ICON_ENTER, Constants.CODE_ENTER);
+    public static final ExpectedKey EMOJI_ACTION_KEY = key(ICON_EMOJI_ACTION, Constants.CODE_EMOJI);
+    public static final ExpectedKey EMOJI_NORMAL_KEY = key(ICON_EMOJI_NORMAL, Constants.CODE_EMOJI);
+    public static final ExpectedKey SPACE_KEY = key(ICON_SPACE, Constants.CODE_SPACE);
     static final ExpectedKey CAPSLOCK_MORE_KEY = key(" ", Constants.CODE_CAPSLOCK);
-    static final ExpectedKey SHIFT_KEY = key(ICON_SHIFT,
+    public static final ExpectedKey SHIFT_KEY = key(ICON_SHIFT,
             Constants.CODE_SHIFT, CAPSLOCK_MORE_KEY);
-    static final ExpectedKey SHIFTED_SHIFT_KEY = key(ICON_SHIFTED_SHIFT,
+    public static final ExpectedKey SHIFTED_SHIFT_KEY = key(ICON_SHIFTED_SHIFT,
             Constants.CODE_SHIFT, CAPSLOCK_MORE_KEY);
     static final ExpectedKey ALPHABET_KEY = key("ABC", Constants.CODE_SWITCH_ALPHA_SYMBOL);
     static final ExpectedKey SYMBOLS_KEY = key("?123", Constants.CODE_SWITCH_ALPHA_SYMBOL);
@@ -271,6 +316,9 @@ public abstract class LayoutBase extends AbstractLayoutBase {
     // U+200D: ZERO WIDTH JOINER
     static final ExpectedKey ZWNJ_KEY = key(ICON_ZWNJ, "\u200C");
     static final ExpectedKey ZWJ_KEY = key(ICON_ZWJ, "\u200D");
+    // Domain key
+    public static final ExpectedKey DOMAIN_KEY =
+            key(".com", joinMoreKeys(".net", ".org", ".gov", ".edu")).preserveCase();
 
     // Punctuation more keys for phone form factor.
     public static final ExpectedKey[] PHONE_PUNCTUATION_MORE_KEYS = joinKeys(
@@ -300,12 +348,12 @@ public abstract class LayoutBase extends AbstractLayoutBase {
         if (isPhone) {
             builder.addKeysOnTheRightOfRow(numberOfRows - 1, DELETE_KEY)
                     .addKeysOnTheLeftOfRow(numberOfRows, customizer.getSymbolsKey())
-                    .addKeysOnTheRightOfRow(numberOfRows, key(ENTER_KEY, EMOJI_ACTION_KEY));
+                    .addKeysOnTheRightOfRow(numberOfRows, customizer.getEnterKey(isPhone));
         } else {
             builder.addKeysOnTheRightOfRow(1, DELETE_KEY)
-                    .addKeysOnTheRightOfRow(numberOfRows - 2, ENTER_KEY)
+                    .addKeysOnTheRightOfRow(numberOfRows - 2, customizer.getEnterKey(isPhone))
                     .addKeysOnTheLeftOfRow(numberOfRows, customizer.getSymbolsKey())
-                    .addKeysOnTheRightOfRow(numberOfRows, EMOJI_NORMAL_KEY);
+                    .addKeysOnTheRightOfRow(numberOfRows, customizer.getEmojiKey(isPhone));
         }
         builder.addKeysOnTheLeftOfRow(
                 numberOfRows - 1, (Object[])customizer.getLeftShiftKeys(isPhone));

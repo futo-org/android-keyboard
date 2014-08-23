@@ -112,13 +112,13 @@ public abstract class KeyboardLayoutSetTestsBase extends AndroidTestCase {
                 "Unknown subtype: locale=" + locale + " keyboardLayout=" + keyboardLayout);
     }
 
-    protected final KeyboardLayoutSet createKeyboardLayoutSet(final InputMethodSubtype subtype,
+    protected KeyboardLayoutSet createKeyboardLayoutSet(final InputMethodSubtype subtype,
             final EditorInfo editorInfo) {
         return createKeyboardLayoutSet(subtype, editorInfo, false /* voiceInputKeyEnabled */,
                 false /* languageSwitchKeyEnabled */);
     }
 
-    protected final KeyboardLayoutSet createKeyboardLayoutSet(final InputMethodSubtype subtype,
+    protected KeyboardLayoutSet createKeyboardLayoutSet(final InputMethodSubtype subtype,
             final EditorInfo editorInfo, final boolean voiceInputKeyEnabled,
             final boolean languageSwitchKeyEnabled) {
         final Context context = mThemeContext;

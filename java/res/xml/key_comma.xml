@@ -23,6 +23,15 @@
 >
     <switch>
         <case
+            latin:keyboardLayoutSet="dvorak"
+        >
+            <Key
+                latin:keySpec="q"
+                latin:moreKeys="!text/morekeys_q,%"
+                latin:backgroundType="normal"
+                latin:keyStyle="settingsMoreKeysStyle" />
+        </case>
+        <case
             latin:mode="url"
         >
             <Key

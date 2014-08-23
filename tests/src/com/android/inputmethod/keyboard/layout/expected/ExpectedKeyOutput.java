@@ -42,6 +42,7 @@ abstract class ExpectedKeyOutput {
     }
 
     abstract ExpectedKeyOutput toUpperCase(final Locale locale);
+    abstract ExpectedKeyOutput preserveCase();
     abstract boolean equalsTo(final String text);
     abstract boolean equalsTo(final Key key);
     abstract boolean equalsTo(final MoreKeySpec moreKeySpec);
@@ -69,6 +70,11 @@ abstract class ExpectedKeyOutput {
         }
 
         @Override
+        ExpectedKeyOutput preserveCase() {
+            return new CasePreservedCode(mCode);
+        }
+
+        @Override
         boolean equalsTo(final String text) {
             return StringUtils.codePointCount(text) == 1 && text.codePointAt(0) == mCode;
         }
@@ -93,6 +99,16 @@ abstract class ExpectedKeyOutput {
             return Constants.isLetterCode(mCode) ? StringUtils.newSingleCodePointString(mCode)
                     : Constants.printableCode(mCode);
         }
+
+        private static class CasePreservedCode extends Code {
+            CasePreservedCode(final int code) { super(code); }
+
+            @Override
+            ExpectedKeyOutput toUpperCase(final Locale locale) { return this; }
+
+            @Override
+            ExpectedKeyOutput preserveCase() { return this; }
+        }
     }
 
     /**
@@ -106,6 +122,11 @@ abstract class ExpectedKeyOutput {
         @Override
         ExpectedKeyOutput toUpperCase(final Locale locale) {
             return newInstance(mText.toUpperCase(locale));
+        }
+
+        @Override
+        ExpectedKeyOutput preserveCase() {
+            return new CasePreservedText(mText);
         }
 
         @Override
@@ -133,6 +154,16 @@ abstract class ExpectedKeyOutput {
         @Override
         public String toString() {
             return mText;
+        }
+
+        private static class CasePreservedText extends Text {
+            CasePreservedText(final String text) { super(text); }
+
+            @Override
+            ExpectedKeyOutput toUpperCase(final Locale locale) { return this; }
+
+            @Override
+            ExpectedKeyOutput preserveCase() { return this; }
         }
     }
 }

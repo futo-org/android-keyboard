@@ -53,6 +53,8 @@
             latin:keyStyle="shiftKeyStyle"
             latin:keyWidth="fillRight" />
     </Row>
+    <!-- Dvorak layout shares almost the same row with Qwerty layout.
+         The difference is defined in xml-sw600dp/row_qwerty4.xml. -->
     <include
-        latin:keyboardLayout="@xml/row_dvorak4" />
+        latin:keyboardLayout="@xml/row_qwerty4" />
 </merge>
