@@ -188,18 +188,6 @@ int Ver4PatriciaTriePolicy::getShortcutPositionOfPtNode(const int ptNodePos) con
             ptNodeParams.getTerminalId());
 }
 
-int Ver4PatriciaTriePolicy::getBigramsPositionOfPtNode(const int ptNodePos) const {
-    if (ptNodePos == NOT_A_DICT_POS) {
-        return NOT_A_DICT_POS;
-    }
-    const PtNodeParams ptNodeParams(mNodeReader.fetchPtNodeParamsInBufferFromPtNodePos(ptNodePos));
-    if (ptNodeParams.isDeleted()) {
-        return NOT_A_DICT_POS;
-    }
-    return mBuffers->getBigramDictContent()->getBigramListHeadPos(
-            ptNodeParams.getTerminalId());
-}
-
 bool Ver4PatriciaTriePolicy::addUnigramEntry(const int *const word, const int length,
         const UnigramProperty *const unigramProperty) {
     if (!mBuffers->isUpdatable()) {
@@ -480,41 +468,32 @@ const WordProperty Ver4PatriciaTriePolicy::getWordProperty(const int *const code
                     ptNodeParams.getTerminalId());
     const HistoricalInfo *const historicalInfo = probabilityEntry.getHistoricalInfo();
     // Fetch bigram information.
+    // TODO: Support n-gram.
     std::vector<BigramProperty> bigrams;
-    const int bigramListPos = getBigramsPositionOfPtNode(ptNodePos);
-    if (bigramListPos != NOT_A_DICT_POS) {
-        int bigramWord1CodePoints[MAX_WORD_LENGTH];
-        const BigramDictContent *const bigramDictContent = mBuffers->getBigramDictContent();
-        const TerminalPositionLookupTable *const terminalPositionLookupTable =
-                mBuffers->getTerminalPositionLookupTable();
-        bool hasNext = true;
-        int readingPos = bigramListPos;
-        while (hasNext) {
-            const BigramEntry bigramEntry =
-                    bigramDictContent->getBigramEntryAndAdvancePosition(&readingPos);
-            hasNext = bigramEntry.hasNext();
-            const int word1TerminalId = bigramEntry.getTargetTerminalId();
-            const int word1TerminalPtNodePos =
-                    terminalPositionLookupTable->getTerminalPtNodePosition(word1TerminalId);
-            if (word1TerminalPtNodePos == NOT_A_DICT_POS) {
-                continue;
-            }
-            // Word (unigram) probability
-            int word1Probability = NOT_A_PROBABILITY;
-            const int codePointCount = getCodePointsAndProbabilityAndReturnCodePointCount(
-                    word1TerminalPtNodePos, MAX_WORD_LENGTH, bigramWord1CodePoints,
-                    &word1Probability);
-            const std::vector<int> word1(bigramWord1CodePoints,
-                    bigramWord1CodePoints + codePointCount);
-            const HistoricalInfo *const historicalInfo = bigramEntry.getHistoricalInfo();
-            const int probability = bigramEntry.hasHistoricalInfo() ?
-                    ForgettingCurveUtils::decodeProbability(
-                            bigramEntry.getHistoricalInfo(), mHeaderPolicy) :
-                    bigramEntry.getProbability();
-            bigrams.emplace_back(&word1, probability,
-                    historicalInfo->getTimeStamp(), historicalInfo->getLevel(),
-                    historicalInfo->getCount());
-        }
+    const int wordId = ptNodeParams.getTerminalId();
+    const WordIdArrayView prevWordIds = WordIdArrayView::fromObject(&wordId);
+    const TerminalPositionLookupTable *const terminalPositionLookupTable =
+            mBuffers->getTerminalPositionLookupTable();
+    int bigramWord1CodePoints[MAX_WORD_LENGTH];
+    for (const auto entry : mBuffers->getLanguageModelDictContent()->getProbabilityEntries(
+            prevWordIds)) {
+        const int word1TerminalPtNodePos =
+                terminalPositionLookupTable->getTerminalPtNodePosition(entry.getWordId());
+        // Word (unigram) probability
+        int word1Probability = NOT_A_PROBABILITY;
+        const int codePointCount = getCodePointsAndProbabilityAndReturnCodePointCount(
+                word1TerminalPtNodePos, MAX_WORD_LENGTH, bigramWord1CodePoints,
+                &word1Probability);
+        const std::vector<int> word1(bigramWord1CodePoints,
+                bigramWord1CodePoints + codePointCount);
+        const ProbabilityEntry probabilityEntry = entry.getProbabilityEntry();
+        const HistoricalInfo *const historicalInfo = probabilityEntry.getHistoricalInfo();
+        const int probability = probabilityEntry.hasHistoricalInfo() ?
+                ForgettingCurveUtils::decodeProbability(historicalInfo, mHeaderPolicy) :
+                probabilityEntry.getProbability();
+        bigrams.emplace_back(&word1, probability,
+                historicalInfo->getTimeStamp(), historicalInfo->getLevel(),
+                historicalInfo->getCount());
     }
     // Fetch shortcut information.
     std::vector<UnigramProperty::ShortcutProperty> shortcuts;

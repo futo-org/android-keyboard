@@ -143,8 +143,6 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     int mBigramCount;
     std::vector<int> mTerminalPtNodePositionsForIteratingWords;
     mutable bool mIsCorrupted;
-
-    int getBigramsPositionOfPtNode(const int ptNodePos) const;
 };
 } // namespace latinime
 #endif // LATINIME_VER4_PATRICIA_TRIE_POLICY_H
