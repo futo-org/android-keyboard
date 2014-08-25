@@ -36,6 +36,8 @@
         </default>
     </switch>
     <!-- Base key style for the key which may have settings key as more keys. -->
+    <key-style
+        latin:styleName="baseSettingsMoreKeysStyle" />
     <include
         latin:keyboardLayout="@xml/key_styles_settings" />
     <!-- Functional key styles -->

@@ -29,15 +29,17 @@
         >
             <key-style
                 latin:styleName="settingsMoreKeysStyle"
-                latin:backgroundType="functional" />
+                latin:backgroundType="functional"
+                latin:parentStyle="baseSettingsMoreKeysStyle" />
         </case>
         <!-- clobberSettingsKey="false" -->
         <default>
             <key-style
                 latin:styleName="settingsMoreKeysStyle"
                 latin:keyLabelFlags="hasPopupHint"
-                latin:moreKeys="!text/keyspec_settings"
-                latin:backgroundType="functional" />
+                latin:additionalMoreKeys="!text/keyspec_settings"
+                latin:backgroundType="functional"
+                latin:parentStyle="baseSettingsMoreKeysStyle" />
         </default>
     </switch>
 </merge>

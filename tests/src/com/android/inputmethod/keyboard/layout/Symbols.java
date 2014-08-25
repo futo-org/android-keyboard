@@ -41,18 +41,18 @@ public class Symbols extends AbstractLayoutBase {
                 customizer.getSingleQuoteMoreKeys(), customizer.getSingleAngleQuoteKeys())));
         if (isPhone) {
             builder.addKeysOnTheLeftOfRow(3, customizer.getSymbolsShiftKey(isPhone))
-                    .addKeysOnTheRightOfRow(3, DELETE_KEY)
+                    .addKeysOnTheRightOfRow(3, LayoutBase.DELETE_KEY)
                     .addKeysOnTheLeftOfRow(4, customizer.getAlphabetKey())
-                    .addKeysOnTheRightOfRow(4, key(ENTER_KEY, EMOJI_ACTION_KEY));
+                    .addKeysOnTheRightOfRow(4, customizer.getEnterKey(isPhone));
         } else {
             // Tablet symbols keyboard has extra two keys at the left edge of the 3rd row.
             builder.addKeysOnTheLeftOfRow(3, (Object[])joinKeys("\\", "="));
-            builder.addKeysOnTheRightOfRow(1, DELETE_KEY)
-                    .addKeysOnTheRightOfRow(2, ENTER_KEY)
+            builder.addKeysOnTheRightOfRow(1, LayoutBase.DELETE_KEY)
+                    .addKeysOnTheRightOfRow(2, customizer.getEnterKey(isPhone))
                     .addKeysOnTheLeftOfRow(3, customizer.getSymbolsShiftKey(isPhone))
                     .addKeysOnTheRightOfRow(3, customizer.getSymbolsShiftKey(isPhone))
                     .addKeysOnTheLeftOfRow(4, customizer.getAlphabetKey())
-                    .addKeysOnTheRightOfRow(4, EMOJI_NORMAL_KEY);
+                    .addKeysOnTheRightOfRow(4, customizer.getEmojiKey(isPhone));
         }
         return builder.build();
     }
@@ -167,7 +167,7 @@ public class Symbols extends AbstractLayoutBase {
                     // U+00BF: "¿" INVERTED QUESTION MARK
                     key("?", moreKey("\u00BF")))
             .setKeysOfRow(4,
-                    key(","), key("_"), SPACE_KEY, key("/"),
+                    key(","), key("_"), LayoutBase.SPACE_KEY, key("/"),
                     // U+2026: "…" HORIZONTAL ELLIPSIS
                     key(".", moreKey("\u2026")))
             .build();
