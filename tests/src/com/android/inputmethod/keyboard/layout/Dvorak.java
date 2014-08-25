@@ -20,13 +20,14 @@ import com.android.inputmethod.keyboard.KeyboardId;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKey;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKeyboardBuilder;
 import com.android.inputmethod.keyboard.layout.expected.ExpectedKey.ExpectedAdditionalMoreKey;
+import com.android.inputmethod.latin.settings.CustomInputStyleSettingsFragment;
 
 import java.util.Locale;
 
 /**
- * The QWERTY alphabet keyboard.
+ * The Dvorak alphabet keyboard.
  */
-public final class Dvorak extends LayoutBase {
+public class Dvorak extends LayoutBase {
     private static final String LAYOUT_NAME = "dvorak";
 
     public Dvorak(final LayoutCustomizer customizer) {
@@ -51,17 +52,19 @@ public final class Dvorak extends LayoutBase {
 
         @Override
         public ExpectedKey[] getKeysLeftToSpacebar(final boolean isPhone) {
-            return isPhone ? joinKeys(key("q", SETTINGS_KEY)) :
-                joinKeys(SETTINGS_KEY, key("_", moreKey("-")));
+            // U+00A1: "¡" INVERTED EXCLAMATION MARK
+            return isPhone ? joinKeys(key("q", SETTINGS_KEY))
+                    : joinKeys(key("!", joinMoreKeys("\u00A1", SETTINGS_KEY)));
         }
 
         @Override
         public ExpectedKey[] getKeysRightToSpacebar(final boolean isPhone) {
             final ExpectedAdditionalMoreKey[] punctuationMoreKeys =
                     convertToAdditionalMoreKeys(getPunctuationMoreKeys(isPhone));
+            // U+00BF: "¿" INVERTED QUESTION MARK
             return isPhone
                     ? joinKeys(key("z", punctuationMoreKeys))
-                    : joinKeys("/", key("?", moreKey("!")));
+                    : joinKeys(key("?", joinMoreKeys(punctuationMoreKeys, "\u00BF")));
         }
 
         private static ExpectedAdditionalMoreKey[] convertToAdditionalMoreKeys(
@@ -76,7 +79,33 @@ public final class Dvorak extends LayoutBase {
     }
 
     @Override
-    ExpectedKey[][] getCommonAlphabetLayout(final boolean isPhone) { return ALPHABET_COMMON; }
+    public ExpectedKey[][] getCommonAlphabetLayout(final boolean isPhone) {
+        return ALPHABET_COMMON;
+    }
+
+    protected ExpectedKey getRow1_1Key(final boolean isPhone, final int elementId) {
+        if (elementId == KeyboardId.ELEMENT_ALPHABET
+                || elementId == KeyboardId.ELEMENT_ALPHABET_AUTOMATIC_SHIFTED) {
+            return key("'", joinMoreKeys(additionalMoreKey("1"), "!", "\""));
+        }
+        return key("\"", additionalMoreKey("1"));
+    }
+
+    protected ExpectedKey getRow1_2Key(final boolean isPhone, final int elementId) {
+        if (elementId == KeyboardId.ELEMENT_ALPHABET
+                || elementId == KeyboardId.ELEMENT_ALPHABET_AUTOMATIC_SHIFTED) {
+            return key(",", joinMoreKeys(additionalMoreKey("2"), "?", "<"));
+        }
+        return key("<", additionalMoreKey("2"));
+    }
+
+    protected ExpectedKey getRow1_3Key(final boolean isPhone, final int elementId) {
+        if (elementId == KeyboardId.ELEMENT_ALPHABET
+                || elementId == KeyboardId.ELEMENT_ALPHABET_AUTOMATIC_SHIFTED) {
+            return key(".", joinMoreKeys(additionalMoreKey("3"), ">"));
+        }
+        return key(">", additionalMoreKey("3"));
+    }
 
     @Override
     public ExpectedKey[][] getLayout(final boolean isPhone, final int elementId) {
@@ -86,18 +115,9 @@ public final class Dvorak extends LayoutBase {
         }
         final ExpectedKeyboardBuilder builder = new ExpectedKeyboardBuilder(
                 getCommonAlphabetLayout(isPhone));
-        if (elementId == KeyboardId.ELEMENT_ALPHABET
-                || elementId == KeyboardId.ELEMENT_ALPHABET_AUTOMATIC_SHIFTED) {
-            builder.addKeysOnTheLeftOfRow(1,
-                    key("'", joinMoreKeys(additionalMoreKey("1"), "!", "\"")),
-                    key(",", joinMoreKeys(additionalMoreKey("2"), "?", "<")),
-                    key(".", joinMoreKeys(additionalMoreKey("3"), ">")));
-        } else {
-            builder.addKeysOnTheLeftOfRow(1,
-                    key("\"", additionalMoreKey("1")),
-                    key("<", additionalMoreKey("2")),
-                    key(">", additionalMoreKey("3")));
-        }
+        builder.replaceKeyOfLabel(ROW1_1, getRow1_1Key(isPhone, elementId))
+                .replaceKeyOfLabel(ROW1_2, getRow1_2Key(isPhone, elementId))
+                .replaceKeyOfLabel(ROW1_3, getRow1_3Key(isPhone, elementId));
         convertCommonLayoutToKeyboard(builder, isPhone);
         getCustomizer().setAccentedLetters(builder);
         if (elementId != KeyboardId.ELEMENT_ALPHABET) {
@@ -107,8 +127,13 @@ public final class Dvorak extends LayoutBase {
         return builder.build();
     }
 
+    public static final String ROW1_1 = "ROW1_1";
+    public static final String ROW1_2 = "ROW1_2";
+    public static final String ROW1_3 = "ROW1_3";
+
     private static final ExpectedKey[][] ALPHABET_COMMON = new ExpectedKeyboardBuilder()
             .setKeysOfRow(1,
+                    ROW1_1, ROW1_2, ROW1_3,
                     key("p", additionalMoreKey("4")),
                     key("y", additionalMoreKey("5")),
                     key("f", additionalMoreKey("6")),

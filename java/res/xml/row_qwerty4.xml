@@ -28,7 +28,7 @@
             latin:keyStyle="toSymbolKeyStyle"
             latin:keyWidth="15%p" />
         <include
-            latin:keyboardLayout="@xml/key_f1" />
+            latin:keyboardLayout="@xml/key_comma" />
         <include
             latin:keyXPos="25%p"
             latin:keyboardLayout="@xml/key_space_5kw" />

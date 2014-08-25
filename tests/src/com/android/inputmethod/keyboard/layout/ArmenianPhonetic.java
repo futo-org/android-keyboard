@@ -62,14 +62,14 @@ public final class ArmenianPhonetic extends LayoutBase {
         public ExpectedKey[] getKeysLeftToSpacebar(final boolean isPhone) {
             // U+055D: "՝" ARMENIAN COMMA
             return isPhone ? joinKeys(key("\u055D", SETTINGS_KEY))
-                    : joinKeys(key("\u055D", SETTINGS_KEY), "_");
+                    : joinKeys(key("\u055D", SETTINGS_KEY));
         }
 
         @Override
         public ExpectedKey[] getKeysRightToSpacebar(final boolean isPhone) {
             // U+0589: "։" ARMENIAN FULL STOP
             final ExpectedKey fullStopKey = key("\u0589", getPunctuationMoreKeys(isPhone));
-            return isPhone ? joinKeys(fullStopKey) : joinKeys("/", fullStopKey);
+            return joinKeys(fullStopKey);
         }
 
         @Override
