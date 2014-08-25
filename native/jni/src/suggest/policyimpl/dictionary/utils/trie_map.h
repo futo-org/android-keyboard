@@ -84,6 +84,10 @@ class TrieMap {
                 return mValue;
             }
 
+            AK_FORCE_INLINE int getNextLevelBitmapEntryIndex() const {
+                return mNextLevelBitmapEntryIndex;
+            }
+
          private:
             const TrieMap *const mTrieMap;
             const int mKey;

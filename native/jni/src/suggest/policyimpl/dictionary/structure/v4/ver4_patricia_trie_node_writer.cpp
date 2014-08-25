@@ -161,29 +161,15 @@ bool Ver4PatriciaTrieNodeWriter::updatePtNodeProbabilityAndGetNeedsToKeepPtNodeA
     const ProbabilityEntry originalProbabilityEntry =
             mBuffers->getLanguageModelDictContent()->getProbabilityEntry(
                     toBeUpdatedPtNodeParams->getTerminalId());
-    if (originalProbabilityEntry.hasHistoricalInfo()) {
-        const HistoricalInfo historicalInfo = ForgettingCurveUtils::createHistoricalInfoToSave(
-                originalProbabilityEntry.getHistoricalInfo(), mHeaderPolicy);
-        const ProbabilityEntry probabilityEntry(originalProbabilityEntry.getFlags(),
-                &historicalInfo);
-        if (!mBuffers->getMutableLanguageModelDictContent()->setProbabilityEntry(
-                toBeUpdatedPtNodeParams->getTerminalId(), &probabilityEntry)) {
-            AKLOGE("Cannot write updated probability entry. terminalId: %d",
-                    toBeUpdatedPtNodeParams->getTerminalId());
-            return false;
-        }
-        const bool isValid = ForgettingCurveUtils::needsToKeep(&historicalInfo, mHeaderPolicy);
-        if (!isValid) {
-            if (!markPtNodeAsWillBecomeNonTerminal(toBeUpdatedPtNodeParams)) {
-                AKLOGE("Cannot mark PtNode as willBecomeNonTerminal.");
-                return false;
-            }
-        }
-        *outNeedsToKeepPtNode = isValid;
-    } else {
-        // No need to update probability.
+    if (originalProbabilityEntry.isValid()) {
         *outNeedsToKeepPtNode = true;
+        return true;
     }
+    if (!markPtNodeAsWillBecomeNonTerminal(toBeUpdatedPtNodeParams)) {
+        AKLOGE("Cannot mark PtNode as willBecomeNonTerminal.");
+        return false;
+    }
+    *outNeedsToKeepPtNode = false;
     return true;
 }
 
@@ -380,6 +366,7 @@ bool Ver4PatriciaTrieNodeWriter::writePtNodeAndGetTerminalIdAndAdvancePosition(
             isTerminal, ptNodeParams->getCodePointCount() > 1 /* hasMultipleChars */);
 }
 
+// TODO: Move probability handling code to LanguageModelDictContent.
 const ProbabilityEntry Ver4PatriciaTrieNodeWriter::createUpdatedEntryFrom(
         const ProbabilityEntry *const originalProbabilityEntry,
         const ProbabilityEntry *const probabilityEntry) const {
