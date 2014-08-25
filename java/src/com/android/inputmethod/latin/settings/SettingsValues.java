@@ -95,6 +95,12 @@ public final class SettingsValues {
     public final int[] mAdditionalFeaturesSettingValues =
             new int[AdditionalFeaturesSettingUtils.ADDITIONAL_FEATURES_SETTINGS_SIZE];
 
+    // TextDecorator
+    public final int mTextHighlightColorForCommitIndicator;
+    public final int mTextHighlightColorForAddToDictionaryIndicator;
+    public final boolean mShowCommitIndicatorOnlyForAutoCorrection;
+    public final boolean mShowCommitIndicatorOnlyForOutOfVocabulary;
+
     // Debug settings
     public final boolean mIsInternal;
     public final int mKeyPreviewShowUpDuration;
@@ -163,6 +169,14 @@ public final class SettingsValues {
         mSuggestionsEnabledPerUserSettings = readSuggestionsEnabled(prefs);
         AdditionalFeaturesSettingUtils.readAdditionalFeaturesPreferencesIntoArray(
                 prefs, mAdditionalFeaturesSettingValues);
+        mShowCommitIndicatorOnlyForAutoCorrection = res.getBoolean(
+                R.bool.text_decorator_only_for_auto_correction);
+        mShowCommitIndicatorOnlyForOutOfVocabulary = res.getBoolean(
+                R.bool.text_decorator_only_for_out_of_vocabulary);
+        mTextHighlightColorForCommitIndicator = res.getColor(
+                R.color.text_decorator_commit_indicator_text_highlight_color);
+        mTextHighlightColorForAddToDictionaryIndicator = res.getColor(
+                R.color.text_decorator_add_to_dictionary_indicator_text_highlight_color);
         mIsInternal = Settings.isInternal(prefs);
         mKeyPreviewShowUpDuration = Settings.readKeyPreviewAnimationDuration(
                 prefs, DebugSettings.PREF_KEY_PREVIEW_SHOW_UP_DURATION,
@@ -396,6 +410,14 @@ public final class SettingsValues {
         sb.append("" + (null == awu ? "null" : awu.toString()));
         sb.append("\n   mAdditionalFeaturesSettingValues = ");
         sb.append("" + Arrays.toString(mAdditionalFeaturesSettingValues));
+        sb.append("\n   mShowCommitIndicatorOnlyForAutoCorrection = ");
+        sb.append("" + mShowCommitIndicatorOnlyForAutoCorrection);
+        sb.append("\n   mShowCommitIndicatorOnlyForOutOfVocabulary = ");
+        sb.append("" + mShowCommitIndicatorOnlyForOutOfVocabulary);
+        sb.append("\n   mTextHighlightColorForCommitIndicator = ");
+        sb.append("" + mTextHighlightColorForCommitIndicator);
+        sb.append("\n   mTextHighlightColorForAddToDictionaryIndicator = ");
+        sb.append("" + mTextHighlightColorForAddToDictionaryIndicator);
         sb.append("\n   mIsInternal = ");
         sb.append("" + mIsInternal);
         sb.append("\n   mKeyPreviewShowUpDuration = ");
