@@ -19,7 +19,10 @@ package com.android.inputmethod.latin.utils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.MarginLayoutParams;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 public final class ViewLayoutUtils {
@@ -49,6 +52,42 @@ public final class ViewLayoutUtils {
             marginLayoutParams.width = w;
             marginLayoutParams.height = h;
             marginLayoutParams.setMargins(x, y, 0, 0);
+        }
+    }
+
+    public static void updateLayoutHeightOf(final Window window, final int layoutHeight) {
+        final WindowManager.LayoutParams params = window.getAttributes();
+        if (params.height != layoutHeight) {
+            params.height = layoutHeight;
+            window.setAttributes(params);
+        }
+    }
+
+    public static void updateLayoutHeightOf(final View view, final int layoutHeight) {
+        final ViewGroup.LayoutParams params = view.getLayoutParams();
+        if (params.height != layoutHeight) {
+            params.height = layoutHeight;
+            view.setLayoutParams(params);
+        }
+    }
+
+    public static void updateLayoutGravityOf(final View view, final int layoutGravity) {
+        final ViewGroup.LayoutParams lp = view.getLayoutParams();
+        if (lp instanceof LinearLayout.LayoutParams) {
+            final LinearLayout.LayoutParams params = (LinearLayout.LayoutParams)lp;
+            if (params.gravity != layoutGravity) {
+                params.gravity = layoutGravity;
+                view.setLayoutParams(params);
+            }
+        } else if (lp instanceof FrameLayout.LayoutParams) {
+            final FrameLayout.LayoutParams params = (FrameLayout.LayoutParams)lp;
+            if (params.gravity != layoutGravity) {
+                params.gravity = layoutGravity;
+                view.setLayoutParams(params);
+            }
+        } else {
+            throw new IllegalArgumentException("Layout parameter doesn't have gravity: "
+                    + lp.getClass().getName());
         }
     }
 }

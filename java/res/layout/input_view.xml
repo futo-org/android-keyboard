@@ -21,38 +21,11 @@
 <com.android.inputmethod.latin.InputView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:gravity="bottom|center_horizontal"
-    android:orientation="vertical" >
-    <!-- The height of key_preview_backing view will automatically be determined by code. -->
-    <FrameLayout
-        android:id="@+id/key_preview_backing"
-        android:layout_width="match_parent"
-        android:layout_height="0dp" />
-    <LinearLayout
-        android:id="@+id/main_keyboard_frame"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical" >
-
-        <!-- To ensure that key preview popup is correctly placed when the current system locale is
-             one of RTL locales, layoutDirection="ltr" is needed in the SDK version 17+. -->
-        <com.android.inputmethod.latin.suggestions.SuggestionStripView
-            android:id="@+id/suggestion_strip_view"
-            android:layoutDirection="ltr"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/config_suggestions_strip_height"
-            android:gravity="center_vertical"
-            style="?attr/suggestionStripViewStyle" />
-
-        <!-- To ensure that key preview popup is correctly placed when the current system locale is
-             one of RTL locales, layoutDirection="ltr" is needed in the SDK version 17+. -->
-        <com.android.inputmethod.keyboard.MainKeyboardView
-            android:id="@+id/keyboard_view"
-            android:layoutDirection="ltr"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
+    android:layout_height="wrap_content">
     <include
+        android:id="@+id/main_keyboard_frame"
+        layout="@layout/main_keyboard_frame" />
+    <include
+        android:id="@+id/emoji_palettes_view"
         layout="@layout/emoji_palettes_view" />
 </com.android.inputmethod.latin.InputView>
