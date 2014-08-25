@@ -51,6 +51,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.CompletionInfo;
 import android.view.inputmethod.CursorAnchorInfo;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethod;
 import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.accessibility.AccessibilityUtils;
@@ -1135,6 +1136,17 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     public boolean onEvaluateInputViewShown() {
         // Always show {@link InputView}.
         return true;
+    }
+
+    @Override
+    public boolean onShowInputRequested(final int flags, final boolean configChange) {
+        if ((flags & InputMethod.SHOW_EXPLICIT) == 0 && mKeyboardSwitcher.hasHardwareKeyboard()) {
+            // Even when IME is implicitly shown and physical keyboard is connected, we should
+            // show {@link InputView}.
+            // See {@link InputMethodService#onShowInputRequested(int,boolean)}.
+            return true;
+        }
+        return super.onShowInputRequested(flags, configChange);
     }
 
     @Override
