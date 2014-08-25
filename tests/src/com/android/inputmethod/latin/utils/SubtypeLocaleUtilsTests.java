@@ -310,9 +310,11 @@ public class SubtypeLocaleUtilsTests extends AndroidTestCase {
         assertNotNull("Hebrew", HEBREW);
 
         for (final RichInputMethodSubtype subtype : mSubtypesList) {
+            final InputMethodSubtype rawSubtype = subtype.getRawSubtype();
             final String subtypeName = SubtypeLocaleUtils
-                    .getSubtypeDisplayNameInSystemLocale(subtype.getRawSubtype());
-            if (subtype.equals(ARABIC) || subtype.equals(FARSI) || subtype.equals(HEBREW)) {
+                    .getSubtypeDisplayNameInSystemLocale(rawSubtype);
+            if (rawSubtype.equals(ARABIC) || rawSubtype.equals(FARSI)
+                    || rawSubtype.equals(HEBREW)) {
                 assertTrue(subtypeName, SubtypeLocaleUtils.isRtlLanguage(subtype));
             } else {
                 assertFalse(subtypeName, SubtypeLocaleUtils.isRtlLanguage(subtype));
