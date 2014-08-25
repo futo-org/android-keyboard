@@ -751,6 +751,13 @@ public final class InputLogic {
             final InputTransaction inputTransaction,
             // TODO: remove this argument
             final LatinIME.UIHandler handler) {
+        // In case the "add to dictionary" hint was still displayed.
+        // TODO: Do we really need to check if we have composing text here?
+        if (!mWordComposer.isComposingWord() &&
+                mSuggestionStripViewAccessor.isShowingAddToDictionaryHint()) {
+            mSuggestionStripViewAccessor.dismissAddToDictionaryHint();
+        }
+
         final int codePoint = event.mCodePoint;
         mSpaceState = SpaceState.NONE;
         if (inputTransaction.mSettingsValues.isWordSeparator(codePoint)
@@ -846,8 +853,6 @@ public final class InputLogic {
             } else {
                 sendKeyCodePoint(settingsValues, codePoint);
             }
-            // In case the "add to dictionary" hint was still displayed.
-            mSuggestionStripViewAccessor.dismissAddToDictionaryHint();
         }
         inputTransaction.setRequiresUpdateSuggestions();
     }
