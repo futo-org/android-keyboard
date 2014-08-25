@@ -51,7 +51,7 @@ public class SettingsValues {
 
     // From resources:
     public final SpacingAndPunctuations mSpacingAndPunctuations;
-    public final int mDelayUpdateOldSuggestions;
+    public final int mDelayInMillisecondsToUpdateOldSuggestions;
     public final long mDoubleSpacePeriodTimeout;
 
     // From preferences, in the same order as xml/prefs.xml:
@@ -107,7 +107,8 @@ public class SettingsValues {
             final InputAttributes inputAttributes) {
         mLocale = res.getConfiguration().locale;
         // Get the resources
-        mDelayUpdateOldSuggestions = res.getInteger(R.integer.config_delay_update_old_suggestions);
+        mDelayInMillisecondsToUpdateOldSuggestions =
+                res.getInteger(R.integer.config_delay_in_milliseconds_to_update_old_suggestions);
         mSpacingAndPunctuations = new SpacingAndPunctuations(res);
 
         // Store the input attributes
@@ -337,8 +338,8 @@ public class SettingsValues {
         final StringBuilder sb = new StringBuilder("Current settings :");
         sb.append("\n   mSpacingAndPunctuations = ");
         sb.append("" + mSpacingAndPunctuations.dump());
-        sb.append("\n   mDelayUpdateOldSuggestions = ");
-        sb.append("" + mDelayUpdateOldSuggestions);
+        sb.append("\n   mDelayInMillisecondsToUpdateOldSuggestions = ");
+        sb.append("" + mDelayInMillisecondsToUpdateOldSuggestions);
         sb.append("\n   mAutoCap = ");
         sb.append("" + mAutoCap);
         sb.append("\n   mVibrateOn = ");
