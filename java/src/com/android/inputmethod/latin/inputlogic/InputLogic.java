@@ -242,7 +242,7 @@ public final class InputLogic {
         // AND it's in none of our current dictionaries (main, user or otherwise).
         return (suggestionInfo.isKindOf(SuggestedWordInfo.KIND_TYPED)
                 || suggestionInfo.isKindOf(SuggestedWordInfo.KIND_OOV_CORRECTION))
-                && !mDictionaryFacilitator.isValidWord(suggestionInfo.mWord,　true /* ignoreCase */)
+                && !mDictionaryFacilitator.isValidWord(suggestionInfo.mWord, true /* ignoreCase */)
                 && mDictionaryFacilitator.isUserDictionaryEnabled();
     }
 
