@@ -193,8 +193,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         private static final int ARG1_FALSE = 0;
         private static final int ARG1_TRUE = 1;
 
-        private int mDelayUpdateSuggestions;
-        private int mDelayUpdateShiftState;
+        private int mDelayInMillisecondsToUpdateSuggestions;
+        private int mDelayInMillisecondsToUpdateShiftState;
 
         public UIHandler(final LatinIME ownerInstance) {
             super(ownerInstance);
@@ -206,8 +206,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 return;
             }
             final Resources res = latinIme.getResources();
-            mDelayUpdateSuggestions = res.getInteger(R.integer.config_delay_update_suggestions);
-            mDelayUpdateShiftState = res.getInteger(R.integer.config_delay_update_shift_state);
+            mDelayInMillisecondsToUpdateSuggestions =
+                    res.getInteger(R.integer.config_delay_in_milliseconds_to_update_suggestions);
+            mDelayInMillisecondsToUpdateShiftState =
+                    res.getInteger(R.integer.config_delay_in_milliseconds_to_update_shift_state);
         }
 
         @Override
@@ -273,7 +275,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         public void postUpdateSuggestionStrip(final int inputStyle) {
             sendMessageDelayed(obtainMessage(MSG_UPDATE_SUGGESTION_STRIP, inputStyle,
-                    0 /* ignored */), mDelayUpdateSuggestions);
+                    0 /* ignored */), mDelayInMillisecondsToUpdateSuggestions);
         }
 
         public void postReopenDictionaries() {
@@ -286,16 +288,14 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             if (latinIme == null) {
                 return;
             }
-            if (!latinIme.mSettings.getCurrent()
-                    .isSuggestionsEnabledPerUserSettings()) {
+            if (!latinIme.mSettings.getCurrent().isSuggestionsEnabledPerUserSettings()) {
                 return;
             }
             removeMessages(MSG_RESUME_SUGGESTIONS);
             if (shouldDelay) {
                 sendMessageDelayed(obtainMessage(MSG_RESUME_SUGGESTIONS,
-                                shouldIncludeResumedWordInSuggestions ? ARG1_TRUE : ARG1_FALSE,
-                                0 /* ignored */),
-                        mDelayUpdateSuggestions);
+                        shouldIncludeResumedWordInSuggestions ? ARG1_TRUE : ARG1_FALSE,
+                        0 /* ignored */), mDelayInMillisecondsToUpdateSuggestions);
             } else {
                 sendMessage(obtainMessage(MSG_RESUME_SUGGESTIONS,
                         shouldIncludeResumedWordInSuggestions ? ARG1_TRUE : ARG1_FALSE,
@@ -336,7 +336,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         public void postUpdateShiftState() {
             removeMessages(MSG_UPDATE_SHIFT_STATE);
-            sendMessageDelayed(obtainMessage(MSG_UPDATE_SHIFT_STATE), mDelayUpdateShiftState);
+            sendMessageDelayed(obtainMessage(MSG_UPDATE_SHIFT_STATE),
+                    mDelayInMillisecondsToUpdateShiftState);
         }
 
         @UsedForTesting
